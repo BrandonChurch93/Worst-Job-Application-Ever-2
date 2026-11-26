@@ -90,10 +90,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -143,6 +143,7 @@ const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHORT: Record<Acting, Acting> = { plain: 'plain', confident: 'plain', nervous: 'nervous', shocked: 'scared', angry: 'nervous', scared: 'scared', proud: 'plain', exhausted: 'exhausted' }
+const SHELL = { shut: 0.27, open: 0.2 }
 const ACT = { doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
 
 export function makePage(): PageLogic {
@@ -542,6 +543,7 @@ export function makePage(): PageLogic {
   const sealNow = (io: StepIo): void => {
     const mc = machine()
     s.phase = 'sealed'
+    s.took = s.t
     io.cursor.take('ball')
     io.cursor.seal(true)
     io.cursor.act('nervous')
@@ -633,8 +635,9 @@ export function makePage(): PageLogic {
         const lead = ACT.lead * Math.max(0, Math.min(1, (ACT.tall - io.cursor.pose().squash) / ACT.ease))
         if (b.mode !== 'hold') io.cursor.knock(px(b.vx) * lead, px(b.vy) * lead)
         if (b.mode === 'hold' && b.hold === 'outlet') {
+          if (s.home < 0) s.home = s.t
           s.opened += dt
-          if (s.opened >= 0.2) {
+          if (s.opened >= SHELL.open) {
             mc.remove(0)
             s.phase = 'open'
             s.opened = 0
@@ -700,8 +703,11 @@ export function makePage(): PageLogic {
       for (const id of ['marquee-score', ...TIERS.map((z) => `display.${z}.score`)]) over[id] = { ...over[id], ...changed }
       drawLayout(out, layout, { states, runtime: { score: scoreText() }, over })
       if (s.mode === 'live' && s.phase === 'sealed' && !s.flipped && s.t >= T.onTable && s.t < T.onTable + HINT) out.push({ id: 'display.hint', part: 'displays', kind: 'box', x: px(MID), y: px(MARQUEE_Y), w: 0, h: 0, z0: 0, z1: 0, tone: 'dark', v: [s.t - T.onTable] })
-      for (const shape of fixedShapes()) out.push(shape)
-      for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape)
+      const ago = (at: number): number => (at < 0 ? 9 : Math.min(9, s.t - at))
+      const rings: Record<string, number> = { 'loader.ring': ago(s.took), 'outlet.ring': ago(s.home) }
+      for (const shape of fixedShapes()) out.push(shape.id in rings ? { ...shape, v: [rings[shape.id]!] } : shape)
+      const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0] : [Math.min(1, ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0]
+      for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, v: shell } : shape)
       out.push(hqPlate)
     },
     scroll: () => s.scroll,
