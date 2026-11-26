@@ -44,15 +44,15 @@ One draft still of a key counts once for each of my parts judged in it.
 
 | part | looks |
 | --- | --- |
-| table-frame | 26 |
-| marquee | 7 |
-| loader | 9 |
-| table-hardware | 14 |
+| table-frame | 32 |
+| marquee | 9 |
+| loader | 13 |
+| table-hardware | 19 |
 | lift | 0 |
 | flippers | 5 |
-| bumpers | 7 |
+| bumpers | 13 |
 | targets | 2 |
-| ramps | 12 |
+| ramps | 14 |
 
 ## Counts (`npm run counts -- --key table-wide --live low`)
 
@@ -113,7 +113,8 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 32. Front lands again (the Builder's mail of 12:25Z): the cap's steel tone at a lower level (0.8), so that the bright band runs round the near corners. MEASURED 12:28 UTC `table-wide` draft: mean 1.029 of approved (the Builder measured 0.994 at final where my draft read 1.004); land 78.7 against cap 143.6 and apron 148.1.
 33. Wire sheen and M3 on `rail-cam`: MEASURED 12:25 UTC, the same still with the sheen off reads 0.4046 against 0.4048 with it (mean square of the Laplacian over approved's, my own script, which gave the measure's 0.4048). The sheen is not the cause and stays. By thirds of the picture the two middle cells read 0.09 of approved: there the build is out of focus behind the ball, which is the camera's and the look's.
 34. Loader ring (the Builder's mail of 12:29Z): the ring's face from 0x44474b to 0x74777b, its edge to 0x66696d, the bowl's base three times lighter so that it shades from dark to mid grey. Seen in my own `loader-page` still at 12:31 UTC before it was kept.
-35. Struck cup at `tier-office` (the Builder's mail of 12:34Z). Cause: the lamp's glow shell stood straight while the lid rocked, so one side of the tilted lid came up through the shell and was drawn without it; the torn edge was the two surfaces crossing. The lid also rocked about a point on the floor, which threw it about 7 px out of its seat. Now the shell takes the lid's own tilt and place, and the lid rocks about its own seat. The glow on the lid is cut from 1.4 to 0.45. MEASURED 12:38 UTC on my `tier-office` draft still, box (850,380,1070,600), brightest channel: lid deck 192 to 220 with the middle brightest, the lid at rest beside it 171; whole picture 27285 pixels at 250 or more before and after, so the rest of them are the lamps' and the chrome's.
+35. Struck cup at `tier-office` (the Builder's mail of 12:34Z). Cause: the lamp's glow shell stood straight while the lid rocked, so one side of the tilted lid came up through the shell and was drawn without it; the torn edge was the two surfaces crossing. The lid also rocked about a point on the floor, which threw it about 7 px out of its seat. Now the shell takes the lid's own tilt and place, and the lid rocks about its own seat. The glow on the lid was first cut from 1.4 to 0.45, which left the lids at rest grey (171), so it is now 1 and the lamp's level passes through `lidGlow` (2.25 l over 1 + 2.65 l), which holds the lid at rest near white and cannot pass 0.85 on a hit. MEASURED 12:43 UTC on the same box: struck deck 198 to 222, lid at rest 199. MEASURED 12:38 UTC on my `tier-office` draft still, box (850,380,1070,600), brightest channel: lid deck 192 to 220 with the middle brightest, the lid at rest beside it 171; whole picture 27285 pixels at 250 or more before and after, so the rest of them are the lamps' and the chrome's.
+36. Steel balls (the Builder's mail of 12:32Z): one step tried at 12:41 UTC, a lower half 1.9 times brighter and warmed by the lamp's colour, and a thin pale rim. Seen in my own `reply-all` still: the lower half stayed a flat grey green and the rim read as a plastic bead, no nearer to approved's chrome. Taken out again; open item.
 
 ## Measurements
 

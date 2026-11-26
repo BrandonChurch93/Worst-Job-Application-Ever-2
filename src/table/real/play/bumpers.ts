@@ -113,7 +113,8 @@ function lidGeometry(): THREE.BufferGeometry {
   return b.done()
 }
 
-const GLOW = 0.45
+const GLOW = 1
+export const lidGlow = (level: number): number => (2.25 * level) / (1 + 2.65 * level)
 const WELL: [number, number, number] = [0.94, 1, 1.16]
 const RIM: [number, number, number] = [0.94, 1, 1.16]
 
@@ -161,7 +162,7 @@ export const lidPop = (t: number): number => (t < 0 || t > 0.7 ? 0 : Math.exp(-1
 export const lidRock = (t: number): number => (t < 0 || t > 0.7 ? 0 : 0.085 * Math.exp(-6 * t) * Math.cos((2 * Math.PI * t) / 0.1))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-28',
+  version: 'play-bumpers-29',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
@@ -224,7 +225,7 @@ export const bumpers = whole('bumpers', {
       const lx = p[0] - Math.sin(turn) * seat
       const ly = p[1] + Math.cos(turn) * seat
       b.lids.setMatrixAt(i, b.m.makeRotationZ(turn).multiply(b.r.makeRotationX(rock)).scale(b.s.setScalar(1 + 0.06 * pop)).setPosition(lx, ly, jump))
-      const level = (L.byName[`bumper.${i + 1}`] ?? 0) * 1.5
+      const level = lidGlow((L.byName[`bumper.${i + 1}`] ?? 0) * 1.5)
       const glow = b.glows[i]!
       ;(glow.material as THREE.MeshBasicMaterial).color.setRGB(col[0] * level, col[1] * level, col[2] * level)
       glow.position.set(lx, ly, jump)
