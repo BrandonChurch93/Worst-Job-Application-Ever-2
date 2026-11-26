@@ -5,16 +5,16 @@
       "beat": "step1.tug",
       "at": 0.5,
       "camera": "film",
-      "tier": "draft"
+      "tier": "final"
     }
   },
-  "engineHash": "e6f9508050543b35",
-  "sharedHash": "a365b739db2b651c",
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
   "pageHashes": {
-    "step1": "143605278a5b331a"
+    "step1": "263044f80dcca6af"
   },
   "format": "hd",
-  "tier": "draft",
+  "tier": "final",
   "assets": "full",
   "diagnostic": "beauty",
   "browser": "147.0.7727.15",
@@ -26,50 +26,27 @@
     "platform": "linux 6.1.155",
     "node": "v20.20.2"
   },
-  "seconds": 5.738,
+  "seconds": 119.27,
   "invalidValues": 0,
-  "standIns": [
-    {
-      "name": "cursor-acting",
-      "unit": "step1"
-    },
-    {
-      "name": "cursor-arms",
-      "unit": "step1"
-    },
-    {
-      "name": "cursor-body",
-      "unit": "step1"
-    },
-    {
-      "name": "paper",
-      "unit": "step1"
-    },
-    {
-      "name": "shell",
-      "unit": "step1"
-    },
-    {
-      "name": "shredder",
-      "unit": "step1"
-    },
-    {
-      "name": "type",
-      "unit": "step1"
-    }
-  ],
+  "standIns": [],
   "counts": {
-    "triangles": 29716,
-    "drawCalls": 81
+    "triangles": 666485,
+    "drawCalls": 300
   },
   "problems": [],
   "compare": {
     "id": "step1-tug",
     "approved": "references/approved/step1-tug.png",
-    "still": "out/work/stills/key-step1-tug-hd-draft.png",
-    "crops": [],
+    "still": "out/work/stills/key-step1-tug-hd-final.png",
+    "crops": [
+      "cursor",
+      "paper",
+      "paper.below",
+      "chip",
+      "card.glass"
+    ],
     "width": 1400,
-    "height": 426
+    "height": 1191
   },
   "keptFrom": "out/work/compare/compare-step1-tug.jpg"
 }
