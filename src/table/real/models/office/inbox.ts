@@ -7,9 +7,9 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, mix, rounded, shade, smooth, SURF, type RGB, type Surf, type V3 } from './kit'
 
 const C = {
-  cream: hex(0xe6dcc0),
-  creamIn: hex(0xcfc4a6),
-  creamLow: hex(0xb5a98b),
+  cream: hex(0xd6cdb4),
+  creamIn: hex(0xc1b89e),
+  creamLow: hex(0xaa9f85),
   white: hex(0xf5f3ec),
   shadeWhite: hex(0xe2dfd6),
   steel: hex(0xb4bac1),
@@ -25,7 +25,7 @@ const TRAY = { wall: 14, round: 16, lip: 4.5, bed: 0.6, foot: 0.2, step: 1.8 }
 const CARD = { w: 46, h: 22, z: 0.44 }
 // The chute on the side of the hold: how far it stands out, how wide its mouth is, and its steel frame.
 const CHUTE = { deep: 40, wide: 88, drop: 8, tall: 84, bar: 6, proud: 2.4, side: 8 }
-const LIFT = { mould: 0.42, paper: 0.52 }
+const LIFT = { mould: 0.36, paper: 0.52 }
 // The shade one envelope lays on what is under it: how far it reaches, and its colour.
 const SHADE = { x: 2.2, y: 3, col: [0.5, 0.47, 0.42] as RGB, lift: 0.22 }
 // The layer that fills the tray to its walls under the two heaps that hop: how many envelopes, how far beyond the heaps they spread, how light they are.
