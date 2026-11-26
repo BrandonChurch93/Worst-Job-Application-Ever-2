@@ -47,9 +47,14 @@ Branch `agent/street-models`, made from `origin/main` (3a83a25, then merged up).
 - The hydrant is an oxide red (0.6 of `TONE.red`): the full red was the one toy colour left in `last-save`.
 - The lamp heads on the garage are the concrete's tone, not black: from above the black ones read as stubs.
 
+- Roof lights: two on the firehouse and two on the police station, each a kerb, a lit pane and iron glazing bars (`roofLight`). `tier-street` looks straight down, where a roof was felt and units only; the panes are in the windows' mesh, so no draw call was added.
+- The light in a pane runs between the corners of its faces (`Geo.blend`), so the hot core has no steps at the distance of `youre-fired`.
+
 ## The garage after 04:10 UTC
 
 `/root/table_runner` agreed to two turns of the spiral instead of three (`table.spiralTurns` 3 to 2, their `NEEDS:` commit): top 5.4 to 4.1 balls, the garage 4.3 to 3.0 balls high on its 3.05 ball width, base, box, `SPIRAL.r` and `SPIRAL.frame` as they were. Nothing in this folder holds a number of the spiral: the wall, its piers, its lit strips and its lamps are built from `SPIRAL`, the model's box and the two rails. LOOKED AT in a trial merge of `agent/table-runner` b9d307cc that was not kept: it builds, lower, with the same bands, the street tests pass, and the sign of the police station is whole again in `tier-street` (the three turn garage leaned over it). `garageLamps` gives six lamps at that height, not seven: the lower one at (13.77, 6.88) is left out, the tube passes there. Told to `/root/lamp_keeper` at 04:23 UTC with the new heights (upper z 390.8 px, lower z 240 px).
+
+With `main` at 020efac5 the two turns are in (a823890f): LOOKED AT in `tier-street`, `last-save` and `youre-fired`; the lamp keeper's `highOf` leaves the same lower lamp out when the garage is under 3.6 balls.
 
 ## Asked of other owners
 
@@ -62,3 +67,17 @@ Branch `agent/street-models`, made from `origin/main` (3a83a25, then merged up).
 ## Pushing
 
 From about 04:31 UTC `git push` failed in this VM (`could not read Username for 'https://github.com'`), as in several VMs after sessions were resumed. The Builder pushes my commits from bundles (`git bundle create NAME.bundle origin/agent/street-models..agent/street-models`) that I attach to my reports. No credential was looked for.
+
+## Last measures (05:00 UTC, at 77779a6d)
+
+MEASURED with `npm run build && npm run counts -- --key table-wide --live low`: firehouse 6 calls, 50144 triangles; road signs 4, 3076; mom's 3, 2982; police 2, 2276; garage 1, 8120; bank 1, 4770; houses none at low. The folder: 17 calls, 71368 triangles, against 17 and 92094. The whole: 192 calls, 442250 triangles. `--key tier-street --live low`: the same rows; the whole 107 calls, 279901 triangles.
+
+MEASURED: `tier-street` draft 32.8 s, review 67.8 s; `youre-fired` draft 40.2 s; `last-save` draft 41.9 s. `npm test`: 98 files, 1361 passed. `npm run build`: built. `npm run bots`: all clear.
+
+The three asset folders of the street do not exist: every surface is drawn in the shader, 0 MB.
+
+## Least real at the end
+
+1. The garage: a ring of concrete bands on eight piers round the ball's spiral, standing 1.3 balls up over the highway. Its shape is the layout's; two turns made it lower, but the approved one is a squat building with decks, and this is a tower of rails with a wall.
+2. The bank and the small houses: the bank's box is 1.0 by 1.1 balls and cannot grow, so its sign plate is as wide as its roof and it has no pediment; the houses are simple at their size.
+3. The side windows of the firehouse at a grazing angle in `youre-fired` read as grey frames with a thin lit slit, and the bay behind the ball there is a pale red where the approved one is a deep red in the dark.
