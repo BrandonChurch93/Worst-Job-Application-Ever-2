@@ -11,6 +11,8 @@ export const hex = (h: number): RGB => {
   const c = new THREE.Color(h)
   return [c.r, c.g, c.b]
 }
+// The machine's orange, on the bats, the plunger's knob, the lift's doors and elbows: the colour that reads as the approved bats under the lamps of a tier.
+export const MACHINE_ORANGE = 0xc48004
 export const shade = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k]
 
 export const TONE = {

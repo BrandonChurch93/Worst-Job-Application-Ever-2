@@ -7,7 +7,7 @@ import { Screws, TONE, aluOf, clearOf, mesh, paintOf, screwOf, shade } from './m
 
 const SLAB = { height: 16, bevel: 3.2, corner: 10, inlay: 9, line: 1.5, grain: 0.03 }
 // The frame round the apron: the two rails run on from the street tier and a slim rail closes them in front. `low` is how high they stand where the apron lies at the page's own height.
-const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7 }
+export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7 }
 const WALL: [number, number, number] = [0.2, 0.208, 0.22]
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
 
