@@ -1,35 +1,35 @@
 {
   "folder": "office-models",
-  "pushed": "2026-11-26T05:39:44.765Z",
-  "commit": "9563e8e9e4eb2bd9e905c6723fa38e46ed68232b",
+  "pushed": "2026-11-26T05:55:36.845Z",
+  "commit": "af095f9eae00157afa7d0d5c26a4f0b73d9225c0",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Cubicles: approved image beside the build in reply-all (draft, 9563e8e9), in the runner's 2.6 wide box and under the closer camera of merge 23. Greyer caps and cloth, thicker partitions",
-      "time": "2026-11-26T05:39:43.031Z",
+      "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:43:46.793Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126053943-cub-approved-now-3.jpg"
+      "from": "out/work/stills/key-tier-office-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Inbox: approved image beside the build in reply-all (draft, 9563e8e9). The tray is full to its walls and greyer",
-      "time": "2026-11-26T05:39:43.258Z",
+      "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:49:11.002Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126053943-inbox-approved-now-3.jpg"
+      "from": "out/work/stills/key-reply-all-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Left stapler: approved image beside the build in reply-all and tier-office (draft, 5b1766f5). Deeper red, a steel edge under the arm",
-      "time": "2026-11-26T05:39:43.499Z",
+      "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:51:29.218Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126053943-stap-approved-now-5.jpg"
+      "from": "out/work/stills/key-reply-all-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "reply-all, draft, 9563e8e9 on main with merge 23: loose paper now also round the cabinet in the left lower corner",
-      "time": "2026-11-26T05:39:43.724Z",
+      "caption": "Left stapler in reply-all: the approved image beside the build at af095f9e, with the higher crown and smoother enamel on the arm",
+      "time": "2026-11-26T05:55:35.627Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126053943-reply-z10.jpg"
+      "from": "out/work/looks/files/20261126055535-stap-approved-now-6.jpg"
     }
   ]
 }
