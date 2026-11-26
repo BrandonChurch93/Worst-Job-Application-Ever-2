@@ -54,3 +54,13 @@ The pack of f7701533 (round 22, R4, sheets set-A-09 and set-A-10): the stroke me
 - The pack's hint presses first while the ball is in the gate's mouth (the hint is not my file); the save's lob is then struck by the falling bat and gives a weak arc with a slow top (3 to 4 px a frame for ten frames) and a slow roll back. Not mended.
 - The slow roll down a bat at rest (6.5 balls/s2) is as on main. Not mended.
 - The met stroke of this commit (no set throw off the sling, nest aims off) was seen in the sim's table and in the rows of the pack, not on a sheet.
+
+## The met stroke of pack 2's visit, drawn after the pack
+
+- `node pipeline/phase5/polish-ball-shots.mjs out/work/packs/cache/09d800f57ea2/live-high/site-run.json 6829 24 <dir>` gives the run's own events to the browser again (the pack's `replay`) and writes the 24 pictures of rows 6829 to 6852, 1:53.82 to 1:54.20, at 960 px.
+- Seen at real size: the left bat is at rest at row 6832, nearly up at 6833 and up at 6834; it stays up while the key is held (to 6843) and is down again at 6847. The ball leaves the bat between 6832 and 6833 and is above the green lamp one frame later, at the cup at 6837, and comes down over the blue lamp to 6840.
+- From row 6841 the ball slides up and to the right at one speed, over the blue lamp and across the right sling's body, toward the inbox: the tow. It is on the picture and it is not mended.
+
+## The choice left to the Builder
+
+- The brief wants every beat by its deadline and no drag at constant speed. A visitor who strikes the ball 0.13 s before a deadline has it 5 balls from the device at 36 balls/s going the other way: no gate, kicker or save can deliver it in that time. Either the deadline may slide in live while the ball is in play (the save's lob then delivers on the next drain, measured 0.85 s to 1.4 s in the runs where it did), or the tow stays for that case. The branch keeps the tow.
