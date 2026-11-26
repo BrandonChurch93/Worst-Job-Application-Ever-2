@@ -116,3 +116,9 @@ Looks spent on `ticker`: 4 of 40.
 - MEASURED after, the review key: ratio 0.6838; M4 4.61 (`npm run -s measure -- --unit marketing --only M4 --tier review`, 54 s).
 - M3 stays red. What would close it and is not in my files: the type's edges (the shared type) and the paper's grain (the shared surface) are softer in every still than in the approved image, and they are about a third of the gap. What is in my files and not done: the medal's edges (bevel on the words is not mine; the leaves' outline, the ring's lines and the scallops' lip are).
 - Looks spent on the medal in this pass: 5, so 21 of 40. On `acting-marketing`: 9 more (sheets of perks, apply, ticker, the card-flip motion sheet, seven stills of the press), so 23 of 40.
+
+## The landing, second pass (06:18 to 06:22 UTC)
+
+- The flat read was 10.7 frames with `stamp`, whose flat part is 0.35 s and locked. Decision: `duck` in its place (flat and laid over for 0.74 of 0.55 s, then a stretch out of it), called at 0.22 s, and the arrow let down by 0.25 s (was 0.30).
+- MEASURED by `tests/careers-fix-landing.test.ts`: flat 0.254 to 0.675 s, 0.421 s, 12.6 frames at 30 a second; stood 0.775 to 1.183, 0.408 s, 12.3 frames; leant 1.329 to 1.746, 0.417 s, 12.5 frames. The test now asks 0.4 s of each.
+- Looked at: four stills of the beat (shares 0.27, 0.36, 0.62, 0.9) and its sheet. Looks, part `acting-marketing`: 5 more, so 28 of 40.
