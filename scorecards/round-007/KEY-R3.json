@@ -1,0 +1,342 @@
+{
+  "role": "R3",
+  "round": 7,
+  "unit": "marketing",
+  "commit": "be1d14569b6f8c5ab0fa3612d60bb16d85f93930",
+  "tier": "final",
+  "engineHash": "cc2bd747b83999a7",
+  "sharedHash": "83acc506710c2995",
+  "pageHashes": {
+    "step1": "a8d57d044ecfea65",
+    "step2": "c4f0babb81717da5",
+    "marketing": "8f627e70205cb5b3",
+    "pinball": "be1ee040af5dd7b1",
+    "boss": "b390b7975ca13f67",
+    "decision": "adce718c8bb8c9ee"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 1 of 5. The page at one moment",
+      "still": {
+        "page": "marketing",
+        "beat": "marketing.apply",
+        "at": 0,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "marketing-top"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 2 of 5. The page at rest",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0
+      },
+      "from": {
+        "id": "rest-marketing"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 3 of 5. The page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0.25
+      },
+      "from": {
+        "id": "marketing-perks"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 4 of 5. The page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0.5
+      },
+      "from": {
+        "id": "marketing-proof"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 5 of 5. The page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 1
+      },
+      "from": {
+        "id": "marketing-foot"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "marketing",
+        "beat": "marketing.apply",
+        "at": 0,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "marketing-top"
+      },
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            470,
+            335,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            428,
+            719,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "surface.low",
+          "window": [
+            94,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-07.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0
+      },
+      "from": {
+        "id": "rest-marketing"
+      },
+      "crops": [
+        {
+          "part": "card.glass",
+          "window": [
+            428,
+            719,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1425,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            1329,
+            230,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            0,
+            461,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.contact",
+          "window": [
+            0,
+            719,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            103,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-08.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0.25
+      },
+      "from": {
+        "id": "marketing-perks"
+      },
+      "crops": [
+        {
+          "part": "type",
+          "window": [
+            942,
+            639,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            0,
+            461,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-09.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0.5
+      },
+      "from": {
+        "id": "marketing-proof"
+      },
+      "crops": [
+        {
+          "part": "type",
+          "window": [
+            80,
+            188,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            0,
+            461,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-10.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 1
+      },
+      "from": {
+        "id": "marketing-foot"
+      },
+      "crops": [
+        {
+          "part": "type",
+          "window": [
+            730,
+            293,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            0,
+            461,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}
