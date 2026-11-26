@@ -99,7 +99,7 @@ Decisions after 08:30:
 - The shared look (merge 30, main 7f82c9cc) and the arrow's new fit (main 5429fcf2) were merged and the three keys rendered and looked at beside approved, twice. Nothing of mine reads worse on them.
 - The tray: a thin dark rim and a lighter floor, read off the approved keys at a zoom (`TRAY` rim 3.4, lean 0.3, floor base 1.12, soak base 0.94; the soak stays under 1 with its bounce, as its test asks).
 - The crank: hub 18 px lower and meter 9 px lower, where approved has them. The arm is longer and wider (`arm` 128, `armW` 23), the grip larger (90 by 52), and the arrow's tip is held on the grip's middle through the turns (`hold` 8, `holdAside` 6), as the approved key shows it. The bar is a lighter aluminium (0x8e9398, was 0x74797e): the approved key has it pale. With the arm at 128 the grip's far end stays inside the tray's top wall when it points up. Looked at in six stills of the beat (14.7 to 19.0 s) and two close ones: the arrow rides the grip round, is thrown, and comes back.
-- The dial: the wheel is one turned steel face up to the orange cap (the cream disc and its seam are gone, the boss stays a step proud), the wheel is wider (92.9) under a thin bezel (5.5), the holes stand nearer the rim (`ring` 70), and the housing and the base ring are the shared steel unchanged (`housingDark` 1, `seatDark` 1). The drag was looked at in two stills (3.9 and 4.6 s): the tip is in its hole.
+- The dial: the wheel is one turned steel face up to the orange cap (the cream disc and its seam are gone, the boss stays a step proud), the wheel is wider (92.9) under a thin bezel (5.5), the holes stand nearer the rim (`ring` 70), and the housing and the base ring are the shared steel unchanged (`housingDark` 1, `seatDark` 1). The drag was looked at in two stills (3.9 and 4.6 s): the tip is in its hole. Last, the cap's lacquer is harder (`hubCoat` 0.05, `hubRough` 0.3, `hubEnv` 0.5) and the stop a mid grey steel (`stopDark` 0.45, was 0.3), both read off the approved key.
 - The meter, second pass: the unlit lenses carry a brighter line on their rim and a slightly darker body (`clear.low` 0.57); the lit ones are a deeper orange round a narrower pale core; the lamp is weaker and shorter (`power` 0.55, `reach` 72, were 0.9 and 84), so the light stays under the lenses on the tray and on the sheet's paper, as approved has it.
 
 Decisions after 08:55:
@@ -112,7 +112,7 @@ Decisions after 08:55:
 ## Looks, counted by part
 
 - rows: 15 (the rest key eight times; the dial key four times and the crank key three times for the tray and the rows).
-- dial: 33 (the dial key nineteen times, once at the review tier; the sheet three times; 8 stills of the whip and the fling; 2 of the drag; one zoom of the tray).
+- dial: 35 (the dial key twenty-one times, once at the review tier; the sheet three times; 8 stills of the whip and the fling; 2 of the drag; one zoom of the tray).
 - crank: 40 (the crank key twenty-five times, one at the review tier for the measure of time; 11 stills of the beat; the sheet four times). None left this round.
 - slot: 40 (one still of the coins lying at 13.0 s; the sheet six times; 8 stills at a wrong time that showed nothing; 22 stills of the lever, the reels and the coins; three stills of the tray shutting over the coins).
 - acting: 40 (12 of the slot beat, 4 at a wrong time, 7 of the dial beat, 4 of the open beat, 8 of the crank beat, 5 of the peel). None left this round.

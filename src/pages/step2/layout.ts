@@ -52,8 +52,8 @@ export const HUB_ORANGE_LIFT = 1.6
 
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.6, bezel: 5.5, bezelDrop: 0.8, bezelChamfer: 2, bezelSlope: 0.9, wheel: 92.9, thick: 5.2, chamfer: 1, holeRim: 0.8, holeChamfer: 2.6,
-  hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.14, hubRough: 0.4, hubIor: 1.5, hubEnv: 0.3, hubFoot: 3, hubStep: 3.2, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.17, faceStretch: 1, faceLight: 1.45,
-  housingDark: 1, housingRough: 0.36, seat: 10, seatDark: 1, seatGap: 1.2, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 111, stopWide: 15, stopClear: 2.4, stopTall: 3.6, stopFoot: 12, stopDark: 0.3,
+  hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.05, hubRough: 0.3, hubIor: 1.5, hubEnv: 0.5, hubFoot: 3, hubStep: 3.2, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.17, faceStretch: 1, faceLight: 1.45,
+  housingDark: 1, housingRough: 0.36, seat: 10, seatDark: 1, seatGap: 1.2, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 111, stopWide: 15, stopClear: 2.4, stopTall: 3.6, stopFoot: 12, stopDark: 0.45,
   inner: 45, innerTall: 0.35, innerSeam: 0.5, footLine: 1.5,
   grooveOver: 0.15, grooveUnder: 3, fanAxis: 0.2, fanLow: 0.78, fanGain: 0.5, fanSharp: 1.6,
   glint: 0.5, glintLong: 13, glintWide: 10, glintOut: 9, glintUp: 17.3,
