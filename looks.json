@@ -1,0 +1,35 @@
+{
+  "folder": "decision-fix",
+  "pushed": "2026-11-26T06:27:18.258Z",
+  "commit": "e3a35125bdb79cfe91e37611fe4a01277d29fe5d",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Step 5 key beside the approved image: mark low right in the sheet, stamp and flat cursor right of it, panel and letter tops on one line",
+      "time": "2026-11-26T06:27:16.381Z",
+      "by": "decision-fix",
+      "from": "out/work/compare/compare-decision.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "The stamp's hit, 12 frames: large and high, the fall, contact with the page jump and lifted corners, one rebound frame, the hold",
+      "time": "2026-11-26T06:27:16.613Z",
+      "by": "decision-fix",
+      "from": "out/work/sheets/sheet-motion-stamp_decision-preview-draft.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "The lift toward the eye: the wet word uncovered, the arrow carried on the block's corner and set down right of it",
+      "time": "2026-11-26T06:27:16.846Z",
+      "by": "decision-fix",
+      "from": "out/work/fling-lift.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Step 5 at rest: the wait panel, lower and taller, the counter's glare softened",
+      "time": "2026-11-26T06:27:17.110Z",
+      "by": "decision-fix",
+      "from": "out/work/stills/still-rest-step5-hd-draft.png"
+    }
+  ]
+}
