@@ -14,13 +14,13 @@ const SKIRT = look(0xe2e5e8, 0.1, 1, 0)
 const PAPER = look(0x8c4a25, 0.22, 1, 0)
 const KRAFT = look(0x9a562c, 0.26, 1, 0)
 const KRAFT_DARK = look(0xf0f2f4, 0.09, 1, 0)
-const LID = look(0xf4f2ec, 0.26, 0, 0.8)
+const LID = look(0xf8f7f3, 0.46, 0, 0.3)
 const LID_DARK = look(0x2a2826, 0.7, 0, 0)
 const CHROME = look(0xf4f6f8, 0.09, 1, 0)
 const SCREW = look(0xd2d5d8, 0.26, 1, 0)
 
 // The heights of a cup, in page pixels over the floor.
-export const CUP = { foot: 12, footR: 46, rimZ: 88, rimR: 58, sleeve0: 22, sleeve1: 68, ringRest: 89, ringDown: 34, ringIn: 77.5, ringOut: 84.5, lidZ: 86, lidR: 76, deck: 100, top: 108, flutes: 60 }
+export const CUP = { foot: 12, footR: 46, rimZ: 88, rimR: 58, sleeve0: 22, sleeve1: 68, ringRest: 89, ringDown: 34, ringIn: 79.7, ringOut: 84.5, lidZ: 86, lidR: 76, deck: 100, top: 108, flutes: 60 }
 const wallR = (z: number): number => CUP.footR + ((CUP.rimR - CUP.footR) * (z - CUP.foot)) / (CUP.rimZ - CUP.foot)
 
 // The corrugated sleeve: a cone whose wall runs in and out in flutes.
@@ -111,7 +111,8 @@ function lidGeometry(): THREE.BufferGeometry {
   return b.done()
 }
 
-const WELL: [number, number, number] = [1, 0.95, 0.84]
+const WELL: [number, number, number] = [1, 0.97, 0.91]
+const RIM: [number, number, number] = [1, 0.97, 0.9]
 
 // The lamp in the cup, as it shows: through the lid, brightest in the middle, and in the gap under the lid.
 function glowGeometry(): THREE.BufferGeometry {
@@ -132,7 +133,7 @@ function glowGeometry(): THREE.BufferGeometry {
   for (let k = 1; k < lid.length; k++) {
     const a = lid[k - 1]!
     const b = lid[k]!
-    band(a[0], a[1], a[2], b[0], b[1], b[2], b[0] < deckR + 0.6 ? WELL : [1, 1, 1])
+    band(a[0], a[1], a[2] * 1.4, b[0], b[1], b[2] * 1.4, b[0] < deckR + 0.6 ? WELL : RIM)
   }
   band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.86, 0.62])
   band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.74, 0.46])
@@ -157,7 +158,7 @@ export const lidPop = (t: number): number => (t < 0 || t > 0.7 ? 0 : Math.exp(-1
 export const lidRock = (t: number): number => (t < 0 || t > 0.7 ? 0 : 0.085 * Math.exp(-6 * t) * Math.cos((2 * Math.PI * t) / 0.1))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-24',
+  version: 'play-bumpers-26',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`

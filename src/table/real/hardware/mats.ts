@@ -147,10 +147,12 @@ varying vec3 hbAt;
 vec3 hbRoom( vec3 R, vec3 P ) {
 	float az = atan( R.y, R.x );
 	float ph = P.x * 0.013 + P.y * 0.017;
-	vec3 col = vec3( 0.022, 0.024, 0.03 ) + vec3( 0.075, 0.072, 0.068 ) * smoothstep( 0.2, 1.0, R.z );
+	vec3 col = vec3( 0.014, 0.016, 0.021 ) + vec3( 0.03, 0.03, 0.03 ) * smoothstep( 0.2, 1.0, R.z );
+	vec2 c3 = R.xy - vec2( 0.2, 0.52 ) + P.xy * 0.0003;
+	col += vec3( 0.86, 0.92, 1.0 ) * 0.55 * ( 1.0 - smoothstep( 0.3, 0.36, abs( c3.x ) ) ) * ( 1.0 - smoothstep( 0.035, 0.06, abs( c3.y ) ) ) * step( 0.0, R.z );
 	vec2 c = R.xy - vec2( -0.24, 0.3 ) + P.xy * 0.0005;
 	float box = ( 1.0 - smoothstep( 0.17, 0.23, abs( c.x * 0.8 + c.y * 0.6 ) ) ) * ( 1.0 - smoothstep( 0.08, 0.12, abs( c.y * 0.8 - c.x * 0.6 ) ) );
-	col += vec3( 1.0, 0.97, 0.92 ) * 1.5 * box * step( 0.0, R.z );
+	col += vec3( 1.0, 0.97, 0.92 ) * 2.1 * box * step( 0.0, R.z );
 	vec2 c2 = R.xy - vec2( 0.36, -0.14 ) + P.yx * 0.0004;
 	col += vec3( 1.0, 0.94, 0.84 ) * 0.8 * exp( - dot( c2, c2 ) / 0.0026 ) * step( 0.0, R.z );
 	for ( int i = 0; i < 5; i ++ ) {
@@ -163,7 +165,7 @@ vec3 hbRoom( vec3 R, vec3 P ) {
 	float stand = smoothstep( high, high - 0.035, R.z );
 	vec3 thing = mix( vec3( 0.05, 0.04, 0.032 ), mix( hbLamp, vec3( 1.0 ), 0.2 ) * 0.5, pow( 0.5 + 0.5 * sin( az * 3.0 + ph * 2.3 + 1.3 ), 3.0 ) * smoothstep( 0.0, 0.12, R.z ) );
 	col = mix( col, thing, stand );
-	vec3 low = hbFloor * ( 0.035 + 0.2 * smoothstep( -0.9, -0.05, R.z ) );
+	vec3 low = hbFloor * ( 0.03 + 0.36 * smoothstep( -0.9, -0.05, R.z ) );
 	low += hbLamp * 0.5 * pow( 0.5 + 0.5 * cos( az - ph * 0.5 - 0.9 ), 14.0 ) * exp( - ( R.z + 0.3 ) * ( R.z + 0.3 ) / 0.03 );
 	low += vec3( 0.25, 0.5, 1.0 ) * 0.5 * pow( 0.5 + 0.5 * cos( az + ph * 0.4 + 2.2 ), 26.0 ) * exp( - ( R.z + 0.45 ) * ( R.z + 0.45 ) / 0.015 );
 	low *= 0.1 + 0.9 * smoothstep( -0.995, -0.82, R.z );
@@ -194,7 +196,7 @@ export const ballOf = (z: Zone): THREE.MeshPhysicalMaterial => {
     shader.vertexShader = 'varying vec3 hbAt;\n' + shader.vertexShader.replace('#include <project_vertex>', '#ifdef USE_INSTANCING\nhbAt = instanceMatrix[ 3 ].xyz;\n#else\nhbAt = vec3( 0.0 );\n#endif\n#include <project_vertex>')
     shader.fragmentShader = BALL_ROOM + shader.fragmentShader.replace('#include <aomap_fragment>', BALL_BODY + '#include <aomap_fragment>')
   }
-  m.customProgramCacheKey = () => 'wja-studio-hardware-ball-1'
+  m.customProgramCacheKey = () => 'wja-studio-hardware-ball-2'
   m = lit(m, z)
   m.name = `hardware.ball.${z.id}`
   balls.set(z.id, m)
