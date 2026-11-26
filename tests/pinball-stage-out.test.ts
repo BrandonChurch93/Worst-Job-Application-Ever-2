@@ -6,10 +6,10 @@ import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { CameraPose, Shape } from '../src/stage/types'
 import { BALL, LAST_Y, PAGE_H, floorZ } from '../src/table/layout'
 
-const OUT = ['table-wide', 'table-save']
+const OUT = ['table-wide', 'table-save', 'table-gap']
 const far = (a: number[], b: number[]): number => Math.hypot(a[0]! - b[0]!, a[1]! - b[1]!, a[2]! - b[2]!)
 
-describe('the two cameras that look in over the apron', () => {
+describe('the cameras that look in over the apron', () => {
   it('leaves the last screen out for table-wide and table-save, and for no other camera', () => {
     const page = makePage()
     page.reset({ mode: 'live', variant: '', applicant: null, seed: config.seed })

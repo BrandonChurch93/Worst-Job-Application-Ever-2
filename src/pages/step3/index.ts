@@ -117,14 +117,15 @@ const NAMED: Record<string, CameraPose> = {
   'table-replyall': look('table-replyall', [MID, Y1 + 18.3, 13.6], [MID, Y1 + 5.9, -2]),
   'table-nest': { ...look('table-nest', [MID, Y1 + 12.4, 0.5], [MID, Y1 + 6.4, -1.4]), fov: fov('rail') },
   'table-fired': look('table-fired', [8.1, Y2 + 6.45, 0.25], [4.45, Y2 + 3.75, -1.95]),
-  'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT }
+  'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT },
+  'table-gap': { ...look('table-save', [11.9, Y2 + 14.3, 1.5], [12.2, Y2 + 8.3, -2.5]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
   [0, 'follow', 0], [4.1, 'tube', 0.5], [5.2, 'table-wide', 0], [8.65, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [18.95, 'near-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.6, 'follow', 0],
-  [30.75, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [37.2, 'follow', 0]
+  [30.75, 'rail', 0], [32.3, 'follow', 0.6], [34.65, 'table-gap', 0], [35.35, 'table-save', 0], [37.2, 'follow', 0]
 ]
 const TUBE: { eye: [number, number, number]; at: [number, number, number]; wide: number } = { eye: [0.55, 2.7, 1.5], at: [-2.7, -1.2, 0.1], wide: 12 }
-const LENS: Record<string, number> = { tube: 9, 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-nest': 12, 'table-fired': 10, 'table-save': 12, rail: 10, ride: 7, 'near-nest': 14, 'near-spent': 14 }
+const LENS: Record<string, number> = { tube: 9, 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-nest': 12, 'table-fired': 10, 'table-save': 12, 'table-gap': 12, rail: 10, ride: 7, 'near-nest': 14, 'near-spent': 14 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 0.5, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
