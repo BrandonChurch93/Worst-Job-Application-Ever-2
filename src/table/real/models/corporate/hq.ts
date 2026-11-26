@@ -26,7 +26,7 @@ const GLASS: RGB = [0.016, 0.085, 0.1]
 const CARPET: RGB = [0.028, 0.05, 0.075]
 const CEILING: RGB = [COOL[0] * 0.004, COOL[1] * 0.008, COOL[2] * 0.01]
 const RISE: [number, number][] = [[0, 0.3], [0.22, 0.55], [0.58, 1.5], [0.8, 1.1], [1, 0.35]]
-const PILE = { step: 4.3, lean: 0.07 }
+const PILE = { step: 3.8, lean: 0.13, grain: 0.1 }
 const CRIMSON: RGB = [0.21, 0.012, 0.022]
 const DESK: RGB = [0.5, 0.38, 0.24]
 const GLASS_PALE: RGB = [0.02, 0.085, 0.1]
@@ -538,7 +538,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       }, 1)
     }
     // The glass roof of the atrium: through it the lit galleries of the floors below and the hall at the foot of the well.
-    const sky: Rect = { x0: -62, x1: 62, y0: cy - dd * 0.2 + 3, y1: cy - dd * 0.03 }
+    const sky: Rect = { x0: -84, x1: 84, y0: cy - dd * 0.22 + 3, y1: cy - dd * 0.03 }
     fin(S, FINISH.brushed, () => {
       S.box(sky.x0 - 3, sky.x1 + 3, sky.y0 - 3, sky.y0, roof + 2, roof + 7, STEEL, { bevel: 0.8 })
       S.box(sky.x0 - 3, sky.x1 + 3, sky.y1, sky.y1 + 3, roof + 2, roof + 7, STEEL, { bevel: 0.8 })
@@ -552,18 +552,18 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       level(G, well, foot, roof + 2.9, 1, warm(0.2))
       flat(G, foot, roof + 2.8, 1, warm(0.07))
       flat(G, { x0: -9, x1: 9, y0: (foot.y0 + foot.y1) / 2 - 4, y1: (foot.y0 + foot.y1) / 2 + 4 }, roof + 2.85, 1, warm(0.5))
-      for (let k = 0; k < 9; k++) {
-        const x = sky.x0 + 6 + (k * (sky.x1 - sky.x0 - 12)) / 8
+      for (let k = 0; k < 15; k++) {
+        const x = sky.x0 + 6 + (k * (sky.x1 - sky.x0 - 12)) / 14
         for (const y of [sky.y0 + 4.5, sky.y1 - 4.5]) flat(G, { x0: x - 2.2, x1: x + 2.2, y0: y - 1.5, y1: y + 1.5 }, roof + 3.1, 1, lamp(slab.next() < 0.2 ? 0.2 : slab.range(0.6, 0.95)))
       }
     }, 1)
     fin(S, FINISH.satin, () => {
-      for (let k = 1; k < 8; k++) {
-        const x = sky.x0 + (k * (sky.x1 - sky.x0)) / 8
+      for (let k = 1; k < 14; k++) {
+        const x = sky.x0 + (k * (sky.x1 - sky.x0)) / 14
         flat(S, { x0: x - 0.8, x1: x + 0.8, y0: sky.y0, y1: sky.y1 }, roof + 6.4, 1, shade(STEEL_DARK, 0.5))
       }
-      for (let k = 1; k < 3; k++) {
-        const y = sky.y0 + (k * (sky.y1 - sky.y0)) / 3
+      for (let k = 1; k < 4; k++) {
+        const y = sky.y0 + (k * (sky.y1 - sky.y0)) / 4
         flat(S, { x0: sky.x0, x1: sky.x1, y0: y - 0.8, y1: y + 0.8 }, roof + 6.5, 1, shade(STEEL_DARK, 0.5))
       }
     })
@@ -631,7 +631,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
           const xb = c0[0] + 5 + ((c1[0] - c0[0] - 10) * (i + 1)) / nx
           const ya = c1[1] + 5 + ((c0[1] - c1[1] - 5) * j) / ny
           const yb = c1[1] + 5 + ((c0[1] - c1[1] - 5) * (j + 1)) / ny
-          S.blend([[xa, ya, 2.5], [xb, ya, 2.5], [xb, yb, 2.5], [xa, yb, 2.5]], [pile.range(-PILE.lean, PILE.lean), pile.range(-PILE.lean, PILE.lean), 1], [0, 1, 0], [tone[i]![j]!, tone[i + 1]![j]!, tone[i + 1]![j + 1]!, tone[i]![j + 1]!])
+          const g = pile.range(1 - PILE.grain, 1 + PILE.grain)
+          S.blend([[xa, ya, 2.5], [xb, ya, 2.5], [xb, yb, 2.5], [xa, yb, 2.5]], [pile.range(-PILE.lean, PILE.lean), pile.range(-PILE.lean, PILE.lean), 1], [0, 1, 0], [shade(tone[i]![j]!, g), shade(tone[i + 1]![j]!, g), shade(tone[i + 1]![j + 1]!, g), shade(tone[i]![j + 1]!, g)])
         }
       }
       S.box(c0[0], c0[0] + 5, c1[1], c0[1], 0, 3, TONE.carpetEdge, { bevel: 0.8 })
