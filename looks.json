@@ -1,35 +1,35 @@
 {
   "folder": "step2-dial",
-  "pushed": "2026-11-26T02:02:08.123Z",
-  "commit": "43a726962101c9e89fddd24080b2391eb466f48e",
+  "pushed": "2026-11-26T02:26:31.204Z",
+  "commit": "53f819731c2e6795d056f635498af2ecbd13125e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T01:59:48.883Z",
+      "caption": "53f8197 key step2-dial beside approved (review): tray 250 px tall, floor shade, lacquered hub, dial's shade on the floor",
+      "time": "2026-11-26T02:26:29.484Z",
       "by": "step2-dial",
-      "from": "out/work/stills/key-step2-crank-hd-draft.png"
+      "from": "out/work/looks/files/20261126022629-compare-step2-dial.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Contact sheet, the beat step2.crank: 12 frames from 1:00.00 to 1:05.97, draft tier, preview",
-      "time": "2026-11-26T02:00:16.148Z",
+      "caption": "53f8197 dial tray close, approved above, build below (review)",
+      "time": "2026-11-26T02:26:29.714Z",
       "by": "step2-dial",
-      "from": "out/work/sheets/sheet-beat-step2_crank-preview-draft.jpg"
+      "from": "out/work/looks/files/20261126022629-dial-tray-close.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "43a7269 dial tray, approved above, build below (draft): floor shade held under the upper and left wall, words in on-glass ink",
-      "time": "2026-11-26T02:02:06.411Z",
+      "caption": "53f8197 key step2-crank beside approved (review): grip 52 px, crank and prompt in from the wall",
+      "time": "2026-11-26T02:26:29.954Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126020206-dial-tray-close.jpg"
+      "from": "out/work/looks/files/20261126022629-compare-step2-crank.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "43a7269 crank tray at key step2-crank, approved above, build below (draft): grip 52 px, crank and prompt further in from the wall",
-      "time": "2026-11-26T02:02:06.637Z",
+      "caption": "53f8197 slot tray at 11.3 s (draft): cabinet 12 px in from the wall, centred in the taller tray",
+      "time": "2026-11-26T02:26:30.180Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126020206-crank-tray-close.jpg"
+      "from": "out/work/looks/files/20261126022630-slot-tray.jpg"
     }
   ]
 }
