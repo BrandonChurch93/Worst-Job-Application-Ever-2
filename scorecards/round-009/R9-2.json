@@ -1,0 +1,74 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: one sheet of each acting state the page uses, confident, nervous, plain, scared, angry, shocked and exhausted, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "Below the lever throughout the spin, especially the last two frames",
+   "what": "The reels stop on a result without a readable reaction. The arrow keeps nearly the same default-pointer silhouette for most of the sheet.",
+   "fix": "Lean it toward the moving reels, tighten into a compressed waiting pose before the stop, then snap to a distinct held response on the result."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "First row at the crank and final two rows at the meter",
+   "what": "Only the first pose connects the arrow to the handle, so the crank appears to turn by itself. A held sideways pose shows attention to the meter, but the arrow barely changes as the bars light.",
+   "fix": "Keep its tip planted on the handle through a visible part of the turn, then give the meter a tense lean and one readable perk or recoil on a light change."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "Second-row launch and third-row stop between the dropdowns",
+   "what": "The directional stretch sells speed, but the arrow jumps out of a long neutral pose without winding up and returns to pointer shape with little compression or overshoot.",
+   "fix": "Add a low counterlean before departure and a short squash and rebound when it stops, then hold the settled pose."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "First-row ignition and the blurred upright poses in rows two and three",
+   "what": "The orange and smoke explain the heat immediately, but the body mostly rotates and blurs rather than producing a clear fright silhouette of its own.",
+   "fix": "Hold a clean kinked or pulled-back silhouette at ignition before the jitter, then stretch decisively in the escape direction."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "After the top-row wilt, through the final drop",
+   "what": "The wilt reads, but the crumpled shape loses much of the arrow's defining point and notch and then moves down almost unchanged. There is no distinct settling pose.",
+   "fix": "Keep a bent but recognizable point and notch in the melted shape, and add a small buckle or squash at the end of the drop."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "Tentatively curious; the arrow comes into view beside two dropdowns, pauses, then darts right between them and steadies itself."
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "Alert, then briefly uneasy; the arrow perks up as the assessment text comes into view, bunches inward, then springs away toward the form fields."
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "Waiting, with no clear feeling beyond watchfulness; the birth-date reels spin and settle on 1991 while the arrow stays under the lever."
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "Startled, then dazed; coins burst from the slot, one appears to clip the arrow, and it recoils and slides away looking washed out."
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "Alarmed and agitated; the tip suddenly glows and starts smoking, and the arrow shakes and shoots upward to the strip that lights orange."
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "Intent, then watchful and impatient; the arrow starts beside the turning crank, races across the progress meter, and leans back toward it while more lights come on."
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "Spent and limp; the smoking arrow wilts into a crumpled shape as the crank stops, then sinks as the panel closes."
+  }
+ ]
+}
