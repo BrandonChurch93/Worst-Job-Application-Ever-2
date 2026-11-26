@@ -101,6 +101,17 @@ CHANGED WITHOUT HAVING SEEN IT (for the pictures of the next merge):
 
 CHANGED WITHOUT HAVING SEEN IT (for the pictures of the 12:05 UTC merge): everything in 18, on every key. Look for: three separate reflections in the wall with clear glass between them, and one small warm spot inside the ball on the side away from the head lamps (lower left from above, at the foot at `lobby-doors`).
 
+## Counts (MEASURED 11:39 UTC on a0e5bc10, and on cfd83123 in a second work tree at 11:15 UTC)
+
+`npm run counts -- --key <key> --live low`, the rows `clear-ball` and `displays`:
+
+| key | part | calls before | calls after | triangles before | triangles after |
+|---|---|---|---|---|---|
+| tier-corporate, tier-office, tier-street | clear-ball | 3 | 3 | 18874 | 18874 |
+| tier-corporate, tier-office, tier-street | displays | 4 | 4 | 164 | 164 |
+| table-wide | clear-ball | 2 | 2 | 18872 | 18872 |
+| table-wide | displays | 8 | 8 | 328 | 328 |
+
 ## Tuning looks, by part
 
-Counted strictly, one for each still or row of film frames, all `draft` but one `review`. `clear-ball`: 20 by 10:46 UTC (first pass, as reported); 22 (sheet, `youre-fired`); 25 (sheet, `last-save`, `lobby-doors`); 28 (the same three); 29 (film frames 5121 to 5125); 31, 33, 35, 37 (sheet and `lobby-doors`, four runs). 37; 38 (`lobby-doors`, 11:22 UTC); 39 (sheet, 11:33 UTC). 39 of 40. `displays`: 2 by 10:46 UTC; 3 (`tier-corporate`); 5 (`table-wide`, `last-save`); 7 (`last-save` twice, the display alone studied); 8 (`table-wide`, 11:31 UTC, the two displays alone studied). 8 of 40.
+Counted strictly, one for each still or row of film frames, all `draft` but one `review`. `clear-ball`: 20 by 10:46 UTC (first pass, as reported); 22 (sheet, `youre-fired`); 25 (sheet, `last-save`, `lobby-doors`); 28 (the same three); 29 (film frames 5121 to 5125); 31, 33, 35, 37 (sheet and `lobby-doors`, four runs). 37; 38 (`lobby-doors`, 11:22 UTC); 39 (sheet, 11:33 UTC). 39 of 40. `displays`: 2 by 10:46 UTC; 3 (`tier-corporate`); 5 (`table-wide`, `last-save`); 7 (`last-save` twice, the display alone studied); 8 (`table-wide`, 11:31 UTC, the two displays alone studied); 10 (`tier-office`, `tier-street`, 11:41 UTC: SEEN a page of whole words on each, "(In Lieu of" and "Entry-Level", lit behind the dark bezel). 10 of 40.
