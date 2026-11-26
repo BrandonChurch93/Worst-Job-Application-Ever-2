@@ -59,6 +59,7 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 - 08:48 UTC, sheet `clear-ball`: three panels, gutter 21. The first two balls stand on the Street tier (on the left flipper with sweat 1, and in flight). The third stands at the Office tier's lowest white cup, at `cup.r + 0.5` (touching, as ball_fixer asked at 08:54), pressed with strength 1: the white cups are on the Office tier only, and the Builder said the part touched matters more than the floor.
 - 08:55 UTC, `step3-result`: the paragraph's measure 1040 to 720 px, two even lines; seen in a draft still at 41.5 s.
 - 08:56 UTC, `table-lobby` (key `lobby-doors`): eye height 0.8 to 1.3 balls, so it looks 12.4 degrees down (was 5.9) and the carpet with the ball's shadow is in the picture, as ball_fixer asked. Seen in a draft compare. The tower is still small beside approved: the model is a narrow box, the camera's distance and lens are unchanged.
+- 09:00 UTC, the way in, on the Builder's word of 08:58 (calm it, overlap, no frame darker than half, over in about 1.2 s): the tiers begin to wake at 4.3 s (`T.wake`), 0.3 s apart and 0.3 s each, so the third is full at 5.2 s, the step the website's light reaches dusk. Before: the wake began at 5.2 s and ended at 6.25 s. The event `power-on` stays at 5.2 s; the kit's line 12 gives the order and no duration. `tests/pinball.test.ts` line 195 looked at the wave 0.5 s after `T.powerOn`; it looks 0.5 s after `T.wake` now, since the wave moved.
 
 ## Moves of things a model stands on
 

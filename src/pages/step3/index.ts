@@ -25,7 +25,7 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.1, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, wake: 4.3, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.1, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
   drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedBy: 27.2, scoopKick: 29.0, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
@@ -131,7 +131,7 @@ const NAME = 1
 const HINT = 8
 const TURN = 1.5707963267948966
 const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
-const WAKE = 0.35
+const WAKE = 0.3
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
 const LOW = 2.4
@@ -191,17 +191,17 @@ export function makePage(): PageLogic {
   }
   const gagAt = (t: number): string => (beats.find((b) => t < b.to) ?? beats[beats.length - 1]!).id
   const ball = () => machine().balls[0]!
-  const powered = (): boolean => s.said.includes('power-on')
+  const powered = (): boolean => s.said.includes('wake')
   const drawn = (): number => {
     const b = ball()
     return b.mode === 'hold' && b.hold === 'plunger' && s.t < T.plunger ? Math.max(0, Math.min(1, (s.t - T.atPlunger) / (T.plunger - T.atPlunger - 0.15))) : 0
   }
-  const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.powerOn + k * WAKE)
+  const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.wake + k * WAKE)
   // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain.
   const website = (): number => 1 - (1 - DUSK) * smooth(s.dim)
   // How bright each tier's general lighting is: a wave down the tiers when the machine wakes, and a slow dim once the ball has left by the drain.
-  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.powerOn - k * WAKE) / WAKE) * (s.t > T.powerOn + 3 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))
-  const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.powerOn + n.tier * WAKE && s.t < T.powerOn + n.tier * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
+  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - k * WAKE) / WAKE) * (s.t > T.wake + 3 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))
+  const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + n.tier * WAKE && s.t < T.wake + n.tier * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
   const modeOf = (k: number): number | null => {
     let out: number | null = null
     if (s.phase === 'wait' || s.phase === 'pull') return null
@@ -487,6 +487,7 @@ export function makePage(): PageLogic {
       mc.release(0)
     }
     if (t >= T.lightsDown && once('lights-down')) io.emit('lights-down', px(MID), px(MARQUEE_Y + 2), false)
+    if (t >= T.wake) once('wake')
     if (t >= T.powerOn && once('power-on')) io.emit('power-on', px(MID), px(MARQUEE_Y + 2), false)
     if (b.mode === 'rail' && b.rail === 'feed') b.speed = Math.max(6, Math.min(40, (railLength(railOf('feed')) - b.s) / Math.max(0.05, T.atPlunger - t)))
     if (b.mode === 'hold' && b.hold === 'plunger' && t >= T.plunger) {

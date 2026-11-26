@@ -192,7 +192,7 @@ describe('the pinball page', () => {
       })
       note('red', lights[2]![3]!)
       note('blue', lights[2]![4]!)
-      if (Math.abs(s.time - (T.powerOn + 0.5)) < 0.02) expect(lights[0]![0]!).toBeGreaterThan(lights[2]![0]!)
+      if (Math.abs(s.time - (T.wake + 0.5)) < 0.02) expect(lights[0]![0]!).toBeGreaterThan(lights[2]![0]!)
       last = lights
     }
     expect(low.bumper).toBeLessThan(0.1)
