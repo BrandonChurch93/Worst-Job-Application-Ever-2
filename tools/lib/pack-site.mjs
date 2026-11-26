@@ -538,7 +538,7 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
       await page.waitForFunction(() => document.querySelector('#controls')?.children.length > 0, null, { timeout: 120000 })
       await page.waitForTimeout(2500)
       await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))))
-      const png = await page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: hd.width, height: hd.height } })
+      const png = await page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: hd.width, height: hd.height }, timeout: 240000 })
       shots.set('film', { png, boxes: await controlBoxes(page), spec: { url: 'index.html?mode=film', reducedMotion: 'reduce', at: 0 } })
     } finally {
       await context.close()
