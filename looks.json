@@ -1,35 +1,35 @@
 {
   "folder": "shared-look",
-  "pushed": "2026-11-26T08:29:57.481Z",
-  "commit": "22041d91f3d6b67673ea43e71859c92e4165396d",
+  "pushed": "2026-11-26T09:00:01.564Z",
+  "commit": "c467a1063eac3ffec75b9161ecd5480aed793af2",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Step 2 rail at 2.6x: approved on top, the build before in the middle, the build now below. The rail is a flat strip, the caps have a rolled rim and stamped numerals, the shadows are wider",
-      "time": "2026-11-26T08:29:55.723Z",
+      "caption": "The arrow where the stem meets the wings on the acting sheet, 3x: before, after the mend, approved. The grey dimple is gone",
+      "time": "2026-11-26T08:59:59.706Z",
       "by": "shared-look",
-      "from": "out/work/looks/files/20261126082955-CE-rail.jpg"
+      "from": "out/work/looks/files/20261126085959-1-dimple-before-after-approved.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The arrow on step 2's dial at 4.8x: approved, the build before, the build now. A whiter flatter face and a heavier black edge",
-      "time": "2026-11-26T08:29:55.954Z",
+      "caption": "The acting sheet: approved above, the build at c467a106 below. The build's black edge is wider than the approved one on the sheet",
+      "time": "2026-11-26T08:59:59.941Z",
       "by": "shared-look",
-      "from": "out/work/looks/files/20261126082955-D-arrow.jpg"
+      "from": "out/work/looks/files/20261126085959-2-acting-sheet-approved-over-build.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Open page at 2.6x on step 2 and on the decision page: approved, the build before, the build now. The tooth runs in short diagonal strokes",
-      "time": "2026-11-26T08:29:56.184Z",
+      "caption": "The arrow on the dial of step2-dial, 6x: approved, the build at 78e4cfd5 at review, the build after the mend at draft",
+      "time": "2026-11-26T09:00:00.188Z",
       "by": "shared-look",
-      "from": "out/work/looks/files/20261126082956-G-tooth.jpg"
+      "from": "out/work/looks/files/20261126090000-3-step2-dial-arrow-approved-before-after.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The SUBMIT bar's pocket at 3.5x: approved, the build before with a hairline past the round end, the build now without it",
-      "time": "2026-11-26T08:29:56.424Z",
+      "caption": "The sealed arrow on loader-page, 4x: approved, the build before the last merges of main, the build after the mend with main's ball",
+      "time": "2026-11-26T09:00:00.425Z",
       "by": "shared-look",
-      "from": "out/work/looks/files/20261126082956-H-hairline.jpg"
+      "from": "out/work/looks/files/20261126090000-4-loader-sealed-arrow-approved-before-after.jpg"
     }
   ]
 }
