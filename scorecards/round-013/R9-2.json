@@ -1,0 +1,74 @@
+{
+ "critic": "R9",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: one sheet of each acting state the page uses, confident, nervous, plain, scared, angry, shocked and exhausted, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "Frames 2–7, pause beside the first two fields",
+   "what": "The unchanged stock cursor stance gives the pause duration but almost no readable response to the transition or anticipation before the dash.",
+   "fix": "Give the transition a short recoil, then hold a visibly loaded lean or compression just before the stretched launch."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "Frames 5–10, between the fields and at the rotary dial reveal",
+   "what": "The arrow mostly changes angle and position. There is a small compression at the field, but no held reaction that separates discovering the dial from simply navigating to it.",
+   "fix": "Add a readable checked pose as the dial is revealed, then load the tail and release into the existing dash."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "Frames 5–9, between the incoming lines of text",
+   "what": "A brief bend signals unease, but it resolves to a near-stock cursor before the feeling registers clearly; the text motion carries more of the beat than the arrow does.",
+   "fix": "Hold the bent, braced posture a little longer and let the tip turn toward the new line before settling or leaving."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "Frames 7–12, after the coin burst",
+   "what": "The burst gets a crisp initial flinch, but the long departure reads as an ordinary pointer glide once the coins are out of view. The startled state drops away without a visible recovery.",
+   "fix": "Add a compact overshoot or shudder on stopping and hold a distinct recovering pose before returning to neutral."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "Frames 9–12, crossing the orange crank handle",
+   "what": "The handle partly covers the arrow, but its body does not clearly dodge, squash or snap back through the crossing. The flame reads immediately; the arrow's response to the moving handle does not.",
+   "fix": "Stage a clear recoil or compression on one side of the handle, with a readable arrow silhouette and a brief aftermath pose."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "Wary or briefly stunned after a bright scene change, it pauses beside two fields, then commits and darts between them."
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "Curious and tentative, it noses between two fields, activates one, then lunges for the rotary telephone dial that appears and starts dialing."
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "Alert, then uneasy or puzzled as lines of text appear around it; it cringes briefly, hesitates, then moves toward the fields."
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "Startled when the date-of-birth slot machine spits out coins; it flinches toward the lever, then bolts away and settles."
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "It leaves the volume crank and rushes toward Continue, then stalls in a drooping, frustrated crouch when the gauge drains; it perks up as the bars begin lighting again."
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "Alarmed and urgent as its tip catches fire, it shoots back across the rising volume gauge toward the still-spinning crank, where the handle sweeps into its path."
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "Spent and lifeless: the smoking arrow goes out and collapses into a crumpled shell, then hangs limp as the crank panel slides out of view."
+  }
+ ]
+}

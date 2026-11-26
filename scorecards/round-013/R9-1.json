@@ -1,0 +1,73 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: one sheet across each of the five beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "rows 1-2, the arrow on the rotary dial",
+   "what": "while dialing, the arrow just sits on the dial at the same angle and size frame to frame, sliding like a pointer; no push into each digit, no strain or release, so the comic frustration of dialing is not acted",
+   "fix": "give each digit a press-and-drag with a lean into the turn, a small squash at the stop, and a spring back; build impatience over the digits (faster, sharper tilts)"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "row 2 to row 3, lever pull and coin spill",
+   "what": "the lever pull has no wind-up (no rise or lean back before yanking) and no squash on the pull; when coins spill the arrow barely reacts before moving off, so 'cheated' is weak and easily missed",
+   "fix": "add a 2-3 frame anticipation lean up and back before the pull, a stretched yank down, and a clear take (jump back, hold 6+ frames) as the coins pour out"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "row 3 col 2 to row 4, after clicking Continue",
+   "what": "the hit/knock-back after the click is a motion-blurred smear with no clear contact pose and no squash; the arrow then appears unchanged and upright as the page folds, so its reaction to the page collapsing is not held",
+   "fix": "hold a squashed impact pose at the click, then a clear stretched recoil, and give it a readable reaction (tilt, shrink, cling) while the page folds"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "rows 3-4, approaching the contact field",
+   "what": "the arrow drifts from field to field at nearly the same angle and scale for 5+ frames, reading as a plain pointer move rather than a choice; the 'eyeing the form' feeling is not held as a clear pose",
+   "fix": "stop it with a lean/tilt toward the field it chooses, a small hold, then an anticipation dip before it commits"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "row 3 col 3 to row 4, after reaching 100%",
+   "what": "the 'You were warned' moment gets no reaction; the arrow just wanders down to Continue at a constant pose, so the threat lands on nobody",
+   "fix": "add a double-take or a shrink-back hold of at least half a second when the warning appears, then a reluctant approach to Continue"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "all sheets, arrow size in frame",
+   "what": "the arrow is small against the full UI, so its silhouette changes (tilts, leans) only read on close looking; poses rely on subtle rotation",
+   "fix": "push the pose extremes further (bigger tilts, stronger squash/stretch) so they read at a glance at this size"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "curious and eager: the form unfolds in, the arrow streaks in stretched, settles, eyes the fields, then perks up and opens the contact-number field, about to find a rotary dial"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "dutiful then fed up: it dials the rotary phone digit by digit, the field gives up ('Close enough'), and it backs off tilted, deflated and a little dazed, before drifting down to the next field"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "wary then cheated: it opens date of birth, finds a slot-machine lever, pulls it, gets a random date and coins spill out; it recoils and slinks away to the audio field"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "determined, working hard: it opens volume, grabs and cranks a hand crank all the way to 100% ('You were warned'), then drifts uneasily toward the now-lit Continue button"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "hesitant, then resigned: it hovers and leans back from Continue, finally clicks it, is knocked back and tumbles, and the page folds away with it carried off"
+  }
+ ]
+}

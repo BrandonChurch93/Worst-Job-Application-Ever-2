@@ -1,0 +1,81 @@
+{
+ "critic": "R9",
+ "score": 4,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: one sheet across each of the seven beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "rows 3-4, after the button mutates",
+   "what": "the biggest event of the unit - the Submit button cracking the page and rising as a spider-machine - gets no reaction from the arrow; it holds the same pointer pose and in several frames is barely present, no recoil, no shocked hold",
+   "fix": "the instant the machine rises, streak the arrow backward, hold a tilted-back shocked pose with a small wobble for a beat, then let it set itself for the fight"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "error-tag frames, and same pattern in set-A-04.png",
+   "what": "the hits never visibly land: 'Field cannot be blank' and 'Invalid input' tags fly past the arrow with no contact frame, no squash on impact, no knock-back arc; it tilts near the hole as if drifting, so the beating reads as weather, not as things hitting it",
+   "fix": "give each hit a contact frame with the tag against the arrow, the arrow squashed flat against its flight direction plus a small flash, then a tumble away"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "whole sheet, 12 frames",
+   "what": "the struggle beat is flat: near-identical frames of the arrow beaming the machine in the same pose, the attack never builds, and the machine blinks out entirely for one frame (r2c3) so a shot reads as hitting nothing",
+   "fix": "escalate the approach frame by frame - strain tilt, closer range, bigger flash on the hit - and keep the machine on screen in every frame"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "checkbox frames, rows 2-4",
+   "what": "the arrow is pure pointer here: it slides to the checkbox and the box is simply checked, no wind-up before the click and no held reaction after 'Humanity Confirmed'; nothing in the pose says nervous or relieved",
+   "fix": "hover-hesitate over the box, pull back in a small wind-up, dip-squash on the click, then a brief upright settled hold as the confirmation appears"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "all sheets",
+   "what": "the arrow is roughly 5% of frame width at delivery size, so tilts and knock-backs that do exist (set-A-03, set-A-04) only read when zoomed",
+   "fix": "stage tighter or scale the arrow up, and exaggerate the tilt angles so a glance reads them"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "dim frames here and in set-A-01 top rows",
+   "what": "at small scale the white arrow with dark outline collapses to a dark speck against the grey page, weakening the silhouette read",
+   "fix": "keep the fill bright with a clean dark outline and a contact shadow at every scale"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "wary and dutiful; it arrives at the final step, studies the 'I am not a robot' box, clicks it and is confirmed human; it is about to try to submit"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "determined, then ambushed; it presses Submit and the button bucks, cracks the page open into a black slot and rises as a spider-machine"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "shocked and under fire; the machine hurls 'Field cannot be blank', 'Invalid input' and 'Session expired' errors at it and it is knocked about beside the hole"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "harried; the bombardment continues with a cookie 'Accept All' banner, a session-expiring warning and a 'leave this page?' dialog while it struggles to stay in the fight"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "stubborn and worn down; a 'Session expired' banner hangs over it as it keeps firing back at the machine while the progress bar drains"
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "vindicated; the machine breaks apart into scattered debris as it watches, the fight is won"
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "weary triumph; among the wreckage the battered Submit pill waits with 'Click to submit' and it flies in to finally finish"
+  }
+ ]
+}
