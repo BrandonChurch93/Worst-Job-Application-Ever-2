@@ -362,7 +362,7 @@
       "id": "rail-cam",
       "unit": "pinball",
       "beat": "pinball.highway",
-      "at": 0.4,
+      "at": 0.556,
       "camera": "rail",
       "image": "references/approved/rail-cam.png",
       "settled": ["Which buildings pass below the ramp, and on which side, follows the layout of tier-street and not this image."]

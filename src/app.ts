@@ -22,10 +22,11 @@ import { FONTS } from './shell/metrics'
 import { loadFont } from './shell/type'
 import type { QualityId } from './core/quality'
 import { homePose, project, toWorld } from './stage/camera'
+import { panelPlan, type PanelPlan } from './stage/panels'
 import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
 import type { CameraPose, PageLogic, Shape, Tone } from './stage/types'
 
-export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
+export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; panel?: number; interface?: boolean; touchOnly?: boolean; live?: string }
 
 export interface CursorState { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; reaction: string | null; reactionAt: number; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number; ballX: number; ballY: number }
 
@@ -177,13 +178,25 @@ export class App {
   }
 
   // A sheet: several moments of a part side by side, from the page that owns it or from the cursor's own sheets.
-  sheet(spec: StillSpec): { frame: Frame; pose: CameraPose; page: PageLogic; size: { width: number; height: number } } | null {
+  sheet(spec: StillSpec): { frame: Frame; pose: CameraPose; page: PageLogic; size: { width: number; height: number }; panels: PanelPlan | null } | null {
     if (!spec.sheet) return null
     const page = this.pageOf(spec.page)
     const made = page.sheet?.(spec.sheet) ?? cursorSheet(spec.sheet, page)
     if (!made) return null
-    const frame: Frame = { list: made.list, cursor: made.cursors[0] ?? restPose(-400, -400, { onPage: false }), cursors: made.cursors, turn: 0, scroll: 0, page: `${page.id}:${spec.sheet}`, view: made.view }
-    return { frame, pose: made.view, page, size: { width: made.width ?? page.width, height: made.height ?? page.height } }
+    const size = { width: made.width ?? page.width, height: made.height ?? page.height }
+    const panels = made.panels && made.panels.length > 1 ? panelPlan(hd.width, made.panels.length, made.gutter ?? 0) : null
+    const one = panels && spec.panel !== undefined ? made.panels![Math.max(0, Math.min(panels.count - 1, Math.floor(spec.panel)))]! : null
+    const list = one?.list ?? made.list
+    const cursors = one?.cursors ?? made.cursors
+    const view = one?.view ?? made.view
+    const frame: Frame = { list, cursor: cursors[0] ?? restPose(-400, -400, { onPage: false }), cursors, turn: 0, scroll: 0, page: `${page.id}:${spec.sheet}`, view }
+    return { frame, pose: view, page, size, panels }
+  }
+
+  // How a sheet in panels is laid out in the current format, or null where the sheet is one picture.
+  sheetPanels(spec: StillSpec): PanelPlan | null {
+    const plan = this.sheet(spec)?.panels
+    return plan ? panelPlan(this.format.width, plan.count, plan.gutter * (this.format.width / hd.width)) : null
   }
 
   // The frame a still shows, and the camera it is seen from.
@@ -280,7 +293,8 @@ export class App {
     const { frame, pose, page, size } = this.still(spec)
     const entry = spec.sheet ? (config.sheets as { id: string; width?: number; height?: number }[]).find((s) => s.id === spec.sheet) : undefined
     const k = this.format.width / hd.width
-    const width = entry?.width ? Math.round(entry.width * k) : this.format.width
+    const panel = spec.panel !== undefined ? this.sheetPanels(spec) : null
+    const width = panel ? panel.width : entry?.width ? Math.round(entry.width * k) : this.format.width
     const height = entry?.height ? Math.round(entry.height * k) : this.format.height
     this.engine.setSize(width, height)
     this.mark(spec.beat && !spec.sheet ? this.film(spec.page) : null, this.momentOf(spec))
