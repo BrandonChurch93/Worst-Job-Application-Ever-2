@@ -103,6 +103,7 @@ Round 11 (opened 05:42 UTC, 40 a part, 80), the same one list:
 | 06:07 | q10 | 2 | the pushed state without the patch, and `lobby-doors` |
 | 06:09 | q11 | 2 | less of the room in the insert glass: no change seen, not kept |
 | 06:11 | q12 | 2 | a paler glow in the inserts: the moulded pictures fade, not kept |
+| 06:13 | q13 | 2 | merge 26 on main: the marquee's title in `table-wide`, the notes with the patch |
 
 ## Diagnosis (04:00 to 04:25 UTC, 26 stills with a local switch on each term, counted in the list of looks)
 
@@ -247,4 +248,6 @@ Point (e), `table-wide` at review (05:57 UTC, 70.5 s, 936517 triangles, 580 draw
 The pushed state without the patch (q10, 06:07 UTC, MEASURED): the sheets come out at (170, 153, 87), linear (0.427, 0.335, 0.099), 2.5 times what they were. The Builder applied the patch in merge 26 with d1af448c, so that state is on no main. `lobby-doors` whole frame 0.92 of approved.
 
 Two trials not kept (06:09 to 06:12 UTC). In `lobby-doors` the blue insert in the foreground is a large pale blur: less of the room in its glass (`WINDOW.room` 2.4 to 1.3) changed nothing to the eye, so the blur is its own glow out of focus. A paler glow (more white in the middle stops) made the red nearer the approved pink in `last-save` but the ladder and the hats faded into it; the pictures count for more. Both back as they were, files as committed.
+
+Merge 26 (06:13 UTC, origin/main 8fdbc4b7 merged in, MEASURED at draft): the patch is on main (`PAPER` [0.98, 0.82, 0.25]) and the sheets come out at (114, 103, 57), as in my trial. The marquee's title, now the frame's own letters under my `panel` group, is a dark warm print over the lit sky, as approved has it: the panel's level and the letters agree, nothing to change. Whole frames: table-wide 0.86, tier-corporate 1.12.
 
