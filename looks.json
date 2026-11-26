@@ -1,35 +1,35 @@
 {
   "folder": "decision",
-  "pushed": "2026-11-26T02:32:07.139Z",
-  "commit": "eab51aea152c0c1afce4fe6e8efaf7f8fbb9f8e4",
+  "pushed": "2026-11-26T02:38:46.743Z",
+  "commit": "819751b4561637fd7d1a587c54ea22bbf580a105",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Consecutive frames of the event called stamp: the event stamp at 2:25.30 in decision.letter, draft tier, preview",
-      "time": "2026-11-26T02:29:17.386Z",
+      "caption": "Contact sheet, the beat decision.letter: 12 frames from 2:23.00 to 2:26.97, draft tier, preview",
+      "time": "2026-11-26T02:34:14.071Z",
       "by": "decision",
-      "from": "out/work/sheets/sheet-motion-stamp_decision-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-beat-decision_letter-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-decision-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T02:29:41.649Z",
+      "time": "2026-11-26T02:36:26.200Z",
       "by": "decision",
       "from": "out/work/stills/key-decision-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key picture at review, 02:32Z: approved on the left, build on the right. Careers glass for the panel, a short tipped stamp, a heavier mark turned further",
-      "time": "2026-11-26T02:32:05.662Z",
+      "caption": "Key picture at 819751b4: approved left, build right (review tier)",
+      "time": "2026-11-26T02:38:45.440Z",
       "by": "decision",
-      "from": "out/work/look-compare2.jpg"
+      "from": "out/work/look-cmp.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Metrics panel, 02:32Z: approved on the left, build on the right, now the careers page's slab of pale glass with three inset slabs",
-      "time": "2026-11-26T02:32:06.028Z",
+      "caption": "Stamp at rest in profile: approved left, build right",
+      "time": "2026-11-26T02:38:45.665Z",
       "by": "decision",
-      "from": "out/work/look-panel2.jpg"
+      "from": "out/work/look-stamp.jpg"
     }
   ]
 }
