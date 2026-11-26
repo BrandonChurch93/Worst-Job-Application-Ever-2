@@ -1,0 +1,35 @@
+{
+  "folder": "lamp-finish",
+  "pushed": "2026-11-26T10:40:32.353Z",
+  "commit": "814d6b5134cb71ef1c07d7b8b7f66bf038ced351",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "tier-office: approved left, build right. Short soft shadows, pale lit inserts, fine grain, no fan of guide lines",
+      "time": "2026-11-26T10:40:30.680Z",
+      "by": "lamp-finish",
+      "from": "out/work/lights/r1-office.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "tier-corporate: approved left, build right. All three inserts lit, hot warm middles under the slings, dark between the lamps",
+      "time": "2026-11-26T10:40:30.907Z",
+      "by": "lamp-finish",
+      "from": "out/work/lights/r1-corporate.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-street: approved left, build right. No long highway shadow, pale inserts with dark line art",
+      "time": "2026-11-26T10:40:31.147Z",
+      "by": "lamp-finish",
+      "from": "out/work/lights/r1-street.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "reply-all: main before (left), agent/lamp-finish 814d6b51 (right)",
+      "time": "2026-11-26T10:40:31.372Z",
+      "by": "lamp-finish",
+      "from": "out/work/lights/r1-replyall-before-after.jpg"
+    }
+  ]
+}
