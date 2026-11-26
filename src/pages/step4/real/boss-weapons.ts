@@ -491,8 +491,10 @@ export const bossWeapons: PartMaker | null = {
         }
         const t = v[1] ?? 9
         const ring = t < 2 ? Math.exp(-t * 7) : 0
-        const rx = ring * 0.03 * Math.cos(t * 52)
-        const ry = ring * 0.008 * Math.sin(t * 41)
+        const hard = (v[3] ?? 0) > 0 ? 2.4 : 1
+        const rx = ring * 0.03 * hard * Math.cos(t * 52)
+        const ry = ring * 0.008 * hard * Math.sin(t * 41)
+        if (hard > 1) o.rotation.z += ring * 0.035 * Math.sin(t * 38)
         o.rotation.x += rx
         o.rotation.y += ry
         o.position.z -= Math.abs(Math.sin(rx)) * (s.h / 2) + Math.abs(Math.sin(ry)) * (s.w / 2)

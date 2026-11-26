@@ -12,6 +12,7 @@ import { makeScript } from './script'
 import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
+const CAP_CLEARS = 0.6
 const SAG_AFTER = 1.45
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
@@ -56,7 +57,7 @@ const FILL_TOP = 3.4
 // The body takes a sixth argument for the shield's flash and the cap's soot once the modeller's body is in; until then it is ignored.
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
 const easeIn = (t: number): number => t * t
-const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863], fold: 0.78, out: 8, reach: 104 } as const
+const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863], fold: 0.78, out: 8, reach: 104, seated: 0.001, shut: -5 } as const
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
@@ -337,7 +338,7 @@ export function makePage(): PageLogic {
           if (gained >= h) out.push({ ...fillAt(gained), id: 'health-gain', x: L.track.x + FILL_GAP + w - gained, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - prog(f.expired, GAIN.glow[0], GAIN.glow[1])] })
         }
       }
-      if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open')
+      if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open', undefined, s.stage === 'unfold' && s.t < UNFOLD.lift + CAP_CLEARS ? 'dark' : 'ink')
       const rig = rigNow()
       if (rig) drawRig(out, rig, 'boss', s.pressed >= 0 ? heights.keyTravel : 0)
       if (s.stage === 'fight' && s.fight) drawWeapons(out, s.fight, L.weapons)
@@ -411,9 +412,9 @@ export function makePage(): PageLogic {
       const list: DrawList = []
       const [x0, x1, x2, x3] = STAGES.x
       const y = STAGES.y
-      drawSocket(list, x0, y, 0, 'stage-0-socket')
+      drawSocket(list, x0, y, STAGES.seated, 'stage-0-socket', STAGES.shut)
       drawRig(list, restRig(x0, y), 'stage-0')
-      drawSocket(list, x1, y + 14, 1, 'stage-1-socket')
+      drawSocket(list, x1, y + 14, 1, 'stage-1-socket', undefined, 'dark')
       const loose = restRig(x1, y)
       loose.cap.lift = 0.5
       loose.cap.rot = -0.11

@@ -134,33 +134,44 @@ const SCATTER = {
   shield: { x: 1480, y: 990, rot: 1.48 }
 }
 
+const LANDS = { plate: 0.9, sides: [0.96, 1.01], cannons: [1.1, 1.17], legs: [1.14, 1.21, 1.26, 1.18], shield: 1.24, skid: 0.3, short: 0.86 } as const
+
+function fall(c: number, lands: number, light: boolean): { e: number; hop: number } {
+  const t = prog(c, 0.35, lands)
+  const go = 1 - Math.pow(1 - t, 1.5)
+  if (!light) return { e: go, hop: Math.sin(Math.PI * t) }
+  const after = prog(c, lands, lands + LANDS.skid)
+  return { e: LANDS.short * go + (1 - LANDS.short) * (1 - (1 - after) * (1 - after)), hop: Math.sin(Math.PI * t) + 0.22 * Math.sin(Math.PI * after) }
+}
+
 export function collapseRig(from: Rig, c: number): Rig {
-  const t = Math.min(1, Math.max(0, (c - 0.35) / 0.95))
-  const e = 1 - Math.pow(1 - t, 3)
-  const hop = Math.sin(Math.PI * t)
   const fold = prog(c, 0, 0.35)
-  const sag = fold * (1 - e) * 20
-  const spot = (s: Spot, to: { x: number; y: number; rot: number }, turns = 0): Spot => ({ ...s, x: mix(s.x, to.x, e), y: mix(s.y, to.y, e) - hop * 50, rot: mix(s.rot, to.rot + turns, e), k: s.k, z: mix(s.z - sag, 0, e) + hop * 70, flat: e, recoil: 0 })
+  const spot = (s: Spot, to: { x: number; y: number; rot: number }, lands: number, light: boolean): Spot => {
+    const { e, hop } = fall(c, lands, light)
+    const sag = fold * (1 - e) * 20
+    return { ...s, x: mix(s.x, to.x, e), y: mix(s.y, to.y, e) - hop * 50, rot: mix(s.rot, to.rot, e), k: s.k, z: mix(s.z - sag, 0, e) + hop * 70, flat: e, recoil: 0 }
+  }
   const capE = prog(c, 0.3, 1.35)
   const bounce = c > 1.35 ? Math.max(0, Math.sin((c - 1.35) * 14)) * Math.exp(-(c - 1.35) * 6) * 14 : 0
   return {
     cap: { x: mix(from.cap.x, FALLEN.x, capE), y: mix(from.cap.y, FALLEN.y, capE) - Math.sin(Math.PI * capE) * 30 - bounce, rot: mix(from.cap.rot, FALLEN.rot, capE) + Math.sin(c * 40) * 0.03 * (1 - capE), lift: 1 - capE, down: capE },
-    plate: spot(from.plate, SCATTER.plate),
-    sides: from.sides.map((s, i) => spot(s, SCATTER.sides[i]!)),
+    plate: spot(from.plate, SCATTER.plate, LANDS.plate, false),
+    sides: from.sides.map((s, i) => spot(s, SCATTER.sides[i]!, LANDS.sides[i]!, false)),
     legs: from.legs.map((l, i) => {
       const to = SCATTER.legs[i]!
       const half = 58
+      const { e, hop } = fall(c, LANDS.legs[i]!, true)
       const cx = mix((l.hx + l.fx) / 2, to.x, e)
       const cy = mix((l.hy + l.fy) / 2, to.y, e) - hop * 40
       const a = mix(Math.atan2(l.fy - l.hy, l.fx - l.hx), to.rot, e)
       const len = mix(Math.hypot(l.fx - l.hx, l.fy - l.hy) / 2, half, e) * (1 - 0.18 * fold * (1 - e))
       return { hx: cx - Math.cos(a) * len, hy: cy - Math.sin(a) * len, fx: cx + Math.cos(a) * len, fy: cy + Math.sin(a) * len, k: 1, z: hop * 50, flat: e }
     }),
-    cannons: from.cannons.map((s, i) => spot(s, SCATTER.cannons[i]!)),
-    shield: spot(from.shield, SCATTER.shield),
+    cannons: from.cannons.map((s, i) => spot(s, SCATTER.cannons[i]!, LANDS.cannons[i]!, true)),
+    shield: spot(from.shield, SCATTER.shield, LANDS.shield, true),
     hurt: mix(from.hurt, 1, prog(c, 0, 0.5)),
     flash: 0,
-    split: e
+    split: fall(c, LANDS.plate, false).e
   }
 }
 
@@ -257,7 +268,7 @@ function hole(out: DrawList, id: string, cx: number, cy: number, w: number, h: n
   }
 }
 
-export function drawSocket(out: DrawList, x: number, y: number, cracked: number, id = 'socket'): void {
+export function drawSocket(out: DrawList, x: number, y: number, cracked: number, id = 'socket', floor: number = HOLE.floor, deep: Tone = 'ink'): void {
   const gap = 5
   const w = CAP_W + gap * 2
   const h = CAP_H + gap * 2
@@ -267,8 +278,10 @@ export function drawSocket(out: DrawList, x: number, y: number, cracked: number,
   }
   drawRim(out, x, y, cracked, id)
   hole(out, `${id}-lip`, x, y, w, h, HOLE.lip, 'pocket')
-  hole(out, `${id}-wall`, x, y, w - HOLE.inset * 2, h - HOLE.inset * 2, HOLE.lip - 1, 'ink')
-  hole(out, `${id}-pit`, x, y, w - HOLE.inset * 2 - 3, h - HOLE.inset * 2 - 3, HOLE.floor, 'ink')
+  if (floor < HOLE.lip - 1) {
+    hole(out, `${id}-wall`, x, y, w - HOLE.inset * 2, h - HOLE.inset * 2, HOLE.lip - 1, deep)
+    hole(out, `${id}-pit`, x, y, w - HOLE.inset * 2 - 3, h - HOLE.inset * 2 - 3, floor, deep)
+  }
   const grow = Math.min(1, cracked)
   CRACKS.forEach((c, i) => {
     let px = x + c.at[0]
