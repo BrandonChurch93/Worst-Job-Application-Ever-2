@@ -33,6 +33,7 @@ Branch `agent/step2-dial`. Looks branch `agent/step2-dial-looks`.
 - A tray is 250 px tall (was 232), as the approved one (MEASURED on `references/approved/step2-dial.png`, column x 1500: rim at y 395, lower joint at y 645): the dial no longer stands against the lower wall, and the rows under an open tray lie 18 px lower, nearer the approved. The slot machine stands 9 px lower and 12 px further in, so it is centred as before and clear of the wall; its prompt stayed where it was (its gap to the knob 64 to 52). No event moved in time.
 - A reel's legend is not drawn while its machine is in the floor (under 0.05 of its rise): on the sheet of `step2.slot` at 13.43 s the three legends lay bare on the tray's floor for a few frames while the tray closed.
 - Main was red at 8d230d7 for one test that is not of this part; green again from 3a83a25 (the Builder's fix), merged at 68f9dbf.
+- The risen dial lays a soft painted shade on the tray's floor on the side away from the key (`castGeometry()` in `dial.ts`, `DIAL_BODY.cast` 0.62, 22 px away, 44 px of fall-off): the sunk glass is filled with light and held almost nothing of the lamp's shadow, and the approved dial stands in a deep soft one. It lies 0.2 px over the floor, under the plate, and is drawn in under the wheel while the dial lies in the floor.
 - The crank's prompt line lies 14 px lower, 37 px under the tray's edge (approved: 33 px), out of the deep part of that band.
 - The dial stands 136 px in from the tray's padding (`DIAL.cx` 1160), where the approved image has it.
 - The cursor's ground now holds the Continue button's cap: the flat cursor used to slide under the cap and go out of sight for 0.2 s before the peel (seen on the sheet of `step2.continue`).
@@ -59,3 +60,7 @@ One word for each beat, and the poses that carry it. Times are seconds of the un
 
 - After the merge of `origin/main` at 8d230d7, `tests/glass3.test.ts` fails: "orange: expected 4.570085953127007 to be greater than or equal to 4.6". MEASURED on a clean checkout of `origin/main` 8d230d7 with `npx vitest run tests/glass3.test.ts`: the same failure, so it is main's own (the shared orange and the light type changed there). It is not a file of this part. The commit before the merge, ab2fe46, was green (92 files, 1329 tests). Pushed with the merge and reported to the Builder at once.
 
+## Tray rim and walls at 02:35 UTC
+
+- The tray's wall is the shared `cardSeal` (matt grey), no longer the satin aluminium: under the key the metal burnt white on the right wall and went dark grey on the lower one, where the approved image has both near the floor's tone. The upper and left walls keep their painted shade (`TRAY.wallShade` 0.55, `TRAY.wallLit` 1).
+- The rim is 8 px wide (was 5.6) and the joint outside it 0.6 px (was 0.9): the approved rim is a wide soft band and has no black hairline round it.
