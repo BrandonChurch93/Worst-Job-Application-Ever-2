@@ -72,5 +72,10 @@ export const look = {
     surfaceMax: 1.25,
     // How much of the glow each wider ring of the spread carries, from the tightest to the widest.
     rings: [1.0, 1.0, 0.6, 0.25, 0.08, 0.02] as number[]
+  },
+  // The lens of a camera that states an opening: what is nearer or farther than its focus is spread over a circle.
+  // `most` is the largest radius of that circle, as a share of the picture's height.
+  lens: {
+    most: 0.02
   }
 }
