@@ -1,35 +1,35 @@
 {
   "folder": "site-loader",
-  "pushed": "2026-11-26T17:11:08.537Z",
-  "commit": "bbd20adba1ef4eb4bdc19c1663ee71d6cd57c4f6",
+  "pushed": "2026-11-26T18:41:20.368Z",
+  "commit": "90c735923a0be0d1ace8ac96f12eee899e1a281e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Before, origin/main a5724fb9: a skipper on a 1.5 Mbit line, the tiles around the turn into step 3 with the count of table pictures loaded",
-      "time": "2026-11-26T17:11:06.081Z",
+      "caption": "Still key-step1-fire-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T18:14:23.840Z",
       "by": "site-loader",
-      "from": "out/work/site-loader/base-skipper-1.5.png"
+      "from": "out/work/stills/key-step1-fire-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "After, 3c28d6f6: the same line and bot. Step 2 is done at 431 s with 11 of 13 table pictures on the card, the turn is held 4 s of play with the cursor tapping, step 3 opens without its floor art, which is in at 494 s",
-      "time": "2026-11-26T17:11:06.393Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T18:15:58.432Z",
       "by": "site-loader",
-      "from": "out/work/site-loader/wait-skipper-1.5.png"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The dial's hub on step2-dial, hd draft: approved, with HUB_ORANGE_LIFT 1.6, without it (removed in d4cc9d4e)",
-      "time": "2026-11-26T17:11:06.658Z",
+      "caption": "Still key-boss-fight-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T18:16:31.362Z",
       "by": "site-loader",
-      "from": "out/work/site-loader/hub-three.png"
+      "from": "out/work/stills/key-boss-fight-hd-draft.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key step2-dial without the hub's lift: approved on the left, the build d4cc9d4e on the right, draft tier",
-      "time": "2026-11-26T17:11:06.993Z",
+      "caption": "Slow line after the physics split: step 2 answered at 424 s, held with the tip tapping, step 3 at 462 s with 10 of 13 pictures on the card",
+      "time": "2026-11-26T18:41:18.604Z",
       "by": "site-loader",
-      "from": "out/work/site-loader/compare-step2-dial-no-lift.jpg"
+      "from": "out/work/site-loader/split-skipper-1.5.png"
     }
   ]
 }
