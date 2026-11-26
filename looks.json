@@ -1,35 +1,35 @@
 {
   "folder": "office-models",
-  "pushed": "2026-11-26T05:16:12.040Z",
-  "commit": "6dfd0b87681ee48be88eb0cd53c430ee61dfa304",
+  "pushed": "2026-11-26T05:39:44.765Z",
+  "commit": "9563e8e9e4eb2bd9e905c6723fa38e46ed68232b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Left stapler: approved image, then the build in tier-office and in reply-all (draft, 6dfd0b87). A steel edge and a shade band now set the arm off the plate",
-      "time": "2026-11-26T05:16:10.331Z",
+      "caption": "Cubicles: approved image beside the build in reply-all (draft, 9563e8e9), in the runner's 2.6 wide box and under the closer camera of merge 23. Greyer caps and cloth, thicker partitions",
+      "time": "2026-11-26T05:39:43.031Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126051610-stap-approved-now-4.jpg"
+      "from": "out/work/looks/files/20261126053943-cub-approved-now-3.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The inbox in the beat pinball.replyAll from the home camera (draft): at 0.082 the heap at rest, at 0.098 mid hop, larger, turned and pushed aside",
-      "time": "2026-11-26T05:16:10.561Z",
+      "caption": "Inbox: approved image beside the build in reply-all (draft, 9563e8e9). The tray is full to its walls and greyer",
+      "time": "2026-11-26T05:39:43.258Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126051610-hop-rest-mid.jpg"
+      "from": "out/work/looks/files/20261126053943-inbox-approved-now-3.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Coffee machine and inbox in tier-office and reply-all (draft, 6dfd0b87): the tray is full of envelopes to its walls",
-      "time": "2026-11-26T05:16:10.794Z",
+      "caption": "Left stapler: approved image beside the build in reply-all and tier-office (draft, 5b1766f5). Deeper red, a steel edge under the arm",
+      "time": "2026-11-26T05:39:43.499Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126051610-right-z6.jpg"
+      "from": "out/work/looks/files/20261126053943-stap-approved-now-5.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-office, draft, 6dfd0b87 on main 02c2f3d9",
-      "time": "2026-11-26T05:16:11.027Z",
+      "caption": "reply-all, draft, 9563e8e9 on main with merge 23: loose paper now also round the cabinet in the left lower corner",
+      "time": "2026-11-26T05:39:43.724Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126051611-tier-z6.jpg"
+      "from": "out/work/looks/files/20261126053943-reply-z10.jpg"
     }
   ]
 }
