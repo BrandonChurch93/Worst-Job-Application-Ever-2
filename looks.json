@@ -1,35 +1,35 @@
 {
   "folder": "pinball-stage",
-  "pushed": "2026-11-26T02:45:07.256Z",
-  "commit": "9b033222207d22da743cc9d16ba6b602770d2625",
+  "pushed": "2026-11-26T02:56:28.654Z",
+  "commit": "d715ac91c00cb0a0b4ce2d95cc894f7f5a34ccfa",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key table-wide: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T02:43:57.698Z",
+      "caption": "Still sheet-table-map-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:52:37.128Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/stills/sheet-table-map-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Key last-save: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T02:44:47.538Z",
+      "time": "2026-11-26T02:54:38.271Z",
       "by": "pinball-stage",
       "from": "out/work/compare/compare-last-save.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "table-wide beside approved, on the framer's 95511d0: approved angle, the last screen left out, apron, plate, knob and both Street flippers in view",
-      "time": "2026-11-26T02:45:05.518Z",
+      "caption": "last-save beside approved, a step nearer: near rail under the picture, slot cut by the bottom edge, cursor turned to the lens",
+      "time": "2026-11-26T02:56:27.237Z",
       "by": "pinball-stage",
-      "from": "out/work/c-wide5.jpg"
+      "from": "out/work/c-save5.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "last-save beside approved, on the framer's 95511d0: low again, 32 degrees down, plate at the bottom centre",
-      "time": "2026-11-26T02:45:05.750Z",
+      "caption": "youre-fired beside approved on the doorway hold: firehouse 58% of the width",
+      "time": "2026-11-26T02:56:27.461Z",
       "by": "pinball-stage",
-      "from": "out/work/c-save4.jpg"
+      "from": "out/work/c-fired3.jpg"
     }
   ]
 }
