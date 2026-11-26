@@ -28,6 +28,9 @@ const GRAZE = { most: 8, from: 7 }
 const AXIS_X = new THREE.Vector3(1, 0, 0)
 // The most, in radians, that the lights go round a slab whose face is turning toward the key: past it the page would stand near white for the frames of its way in.
 const TOWARD = (8 * Math.PI) / 180
+// How the studio's room goes round a turning slab, as a share of the slab's angle. At -1 the room stands with the camera, and a polished face of the slab sweeps the room at twice the slab's speed: the steel of the step row went from dark to lit in one frame.
+// At 1 the room goes the other way, and a face that lies flat on the slab mirrors the same piece of the room in every frame of the turn.
+const ROOM = 1
 const lightTurn = (angle: number): number => (angle < 0 ? -TOWARD * Math.tanh(-angle / TOWARD) : angle)
 
 // What a page that is turning over says to whoever draws it: the angle of the slab about its long axis and where that axis lies.
@@ -36,6 +39,10 @@ export const slabTurn = (scene: THREE.Scene): SlabTurn | null => {
   const t = scene.userData.turn as SlabTurn | undefined
   return t && Math.abs(t.angle) > 1e-6 ? t : null
 }
+
+// The knock a seating slab gives whoever looks at it: the camera goes `push` of its height over the page toward it and `rise` page units down, for the frames the page says.
+export interface ViewJolt { push: number; rise: number }
+export const viewJolt = (scene: THREE.Scene): ViewJolt | null => (scene.userData.jolt as ViewJolt | null | undefined) ?? null
 
 // How far the map leans so that the page's upward axis, seen from the light through `m`, runs along the map's columns.
 export function squareLean(m: THREE.Matrix4): number {
@@ -442,16 +449,23 @@ export class Engine {
     const turn = slabTurn(shot.scene)
     shot.rig.setTurn(turn)
     shot.rig.place(s, shot.camera, alone, hold)
-    if (turn) {
+    const jolt = viewJolt(shot.scene)
+    if (turn || jolt) {
       const c = shot.camera
       this.stood.position.copy(c.position)
       this.stood.quaternion.copy(c.quaternion)
-      c.position.y -= turn.y
-      c.position.applyAxisAngle(AXIS_X, -turn.angle)
-      c.position.y += turn.y
-      c.quaternion.premultiply(this.swing.setFromAxisAngle(AXIS_X, -turn.angle))
+      if (jolt) {
+        c.position.z -= c.position.z * jolt.push
+        c.position.y -= jolt.rise
+      }
+      if (turn) {
+        c.position.y -= turn.y
+        c.position.applyAxisAngle(AXIS_X, -turn.angle)
+        c.position.y += turn.y
+        c.quaternion.premultiply(this.swing.setFromAxisAngle(AXIS_X, -turn.angle))
+        shot.scene.environmentRotation.x = ROOM * turn.angle
+      }
       c.updateMatrixWorld()
-      shot.scene.environmentRotation.x = -turn.angle
     }
     lightLaw.viewInverse.value.copy(shot.camera.matrixWorld)
     if (keep && view === 'beauty') {
@@ -472,7 +486,7 @@ export class Engine {
     r.render(shot.scene, shot.camera)
     this.sampleBounds?.apply(r, this.acc.sample)
     if (restore) restore()
-    if (turn) {
+    if (turn || jolt) {
       shot.camera.position.copy(this.stood.position)
       shot.camera.quaternion.copy(this.stood.quaternion)
       shot.camera.updateMatrixWorld()
