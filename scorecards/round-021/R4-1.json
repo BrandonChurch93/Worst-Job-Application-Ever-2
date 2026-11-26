@@ -1,0 +1,107 @@
+{
+ "critic": "R4",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: motion on the live site under a visitor's input: the arrow walked across a page, a page turn, a hit on the arrow, control taken and given back, the arrow into the ball and a flipper's strike, consecutive frames",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-09.png + set-A-10.png",
+   "where": "the clear ball after the right flipper fires, between the green bumper, blue bumper and the white cap, 1:52.42 to 1:52.62",
+   "what": "the flipper throws the ball about 30 to 45 px a frame for two frames, then it hangs in a 30 px cluster for seven frames (about 0.2 s), moving 3 to 10 px a frame with no clear hit or rebound. It reads as hovering, not as steel thrown off a flipper",
+   "fix": "keep the launch speed and let it fall off only through real hits and gravity on the slope. Each contact should reverse direction within one or two frames, with no frames where the ball creeps near a bumper. The ball should clear this area in about 3 to 4 frames"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-10.png",
+   "where": "the ball around the orange bumper and down toward the green one, 1:52.65 to 1:53.02",
+   "what": "the ball wraps around the orange bumper at a steady 5 to 10 px a frame while the bumper lights. The bumper never kicks it away; the ball orbits as if glued and then glides down at constant speed. That looks like something being moved by hand, not a ball loose in a machine",
+   "fix": "make the lit bumper kick the ball out along the contact normal with a sharp speed jump on the hit frame, then let gravity speed it up as it runs down the slope. Never let it slide along a bumper's rim"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the ball resting near the tip of the right flipper, 1:52.25 to 1:52.32",
+   "what": "before the hit the ball sits almost still on a sloped flipper for three frames, without rolling down toward the pivot",
+   "fix": "have it roll down the flipper with growing speed until it is hit, or rest it at the flipper's lowest point"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "right flipper stroke, 1:52.32 to 1:52.42",
+   "what": "the lamp lights at 1:52.32, then the flipper takes about three frames to reach full stroke. That is soft for a solenoid flipper, and the hit lacks snap",
+   "fix": "reach full stroke in one or two frames, hold it up while the button is held, then drop back with a small bounce at rest"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the cord that takes the arrow, from the resume tag at lower right of the drop zone, 0:30.93 to 0:31.17",
+   "what": "the cord appears in one frame (0:30.97), already looped round the arrow, with no wind-up or throw. After that the arrow drifts slowly up and left, away from the tag, so the cord seems to have no pull. Without a caption it is unclear what took control or how",
+   "fix": "add a wind-up of 3 to 4 frames: the tag jerks and the cord lashes out and visibly travels to the arrow. On contact the arrow should jolt toward the tag and the tag should swing. Then the arrow should be hauled toward the tag with tension, not drift away"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the slot under the drop zone and the arrow below it, 0:43.23 to 0:43.33",
+   "what": "the release is a one-frame pop: the slot flashes white at 0:43.30 and is gone at 0:43.33. In the same step the arrow snaps from its normal tilt to pointing straight up. No spring or recoil shows control being handed back, so the moment is unclear",
+   "fix": "show a clear release: the clamp opens over 2 to 3 frames, the arrow gets a small kick and settles back to its standard tilt with a short ease, and there is a hold of about 0.2 s before the visitor's movement takes over"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png + set-A-03.png",
+   "where": "the new page slab seating, 0:10.70 to 0:10.87",
+   "what": "the slab rises in about 0.3 s, then eases into place on a long soft tail with a slight tilt still visible at 0:10.83. There is no landing beat, and nothing on the page answers when it seats. It feels floaty, not heavy",
+   "fix": "bring it in faster and land it with a hard stop. Add one or two frames of small overshoot or compression with a tight contact shadow, and give a tiny tremor to the elements on it, then hold still"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the Unlimited PTO card as the arrow leaves it, 0:00.87 to 0:00.90",
+   "what": "the card goes from a strong tilt with a large shadow to nearly flat in one frame, a weightless snap",
+   "fix": "ease it back over 4 to 6 frames with a small settle, and ramp its shadow down to match"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the arrow crossing the Competitive Salary card, 0:00.90 to 0:01.17",
+   "what": "the arrow lies almost on its side for about 0.2 s, then turns upright between 0:01.13 and 0:01.17 in about one frame. The turn has no cause and reads as a glitch",
+   "fix": "tie any lean to the arrow's speed and ease it back, or keep the standard cursor angle"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png + set-A-03.png",
+   "where": "the dark smudge below and right of the arrow, 0:10.53 to 0:11.00",
+   "what": "the arrow's shadow sits about 30 px away from the arrow and slides as a separate blob",
+   "fix": "tighten the shadow offset so it reads as attached to the arrow"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "step bubbles 2 to 5, top right, 0:10.67 to 0:10.70",
+   "what": "the bubbles switch from flat grey to steel in one frame while the page is still moving",
+   "fix": "have the final material from the first frame of the turn, or fade it in"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-07.png",
+   "where": "the arrow in the port, 1:36.63 to 1:36.67",
+   "what": "the arrow shrinks and jumps to the center of the port in one frame before the shells close",
+   "fix": "ease the shrink and pull it in over 3 to 4 frames"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-08.png",
+   "where": "the ball dropping into the glass tube, 1:38.25 to 1:38.48",
+   "what": "the camera tracks the ball so closely that it barely moves on screen, which hides its speed. The ball's highlight and the arrow inside never show it rolling, so it glides",
+   "fix": "let the camera lag and ease behind the ball so the ball visibly speeds up through the tube. Add rolling: turn the arrow or a mark inside the ball in proportion to the distance it travels"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the scorch mark on the G key after the hit, 0:15.05 to 0:15.25",
+   "what": "the hit reads clearly: the key goes down, the arrow is knocked aside and recovers. But the G key never visibly springs back to full height inside the run",
+   "fix": "have the key spring back with a small overshoot within about 0.15 s of the hit"
+  }
+ ]
+}

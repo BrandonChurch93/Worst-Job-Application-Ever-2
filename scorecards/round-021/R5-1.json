@@ -1,0 +1,30 @@
+{
+ "critic": "R5",
+ "score": 8,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: the whole site: the six pages at rest on one sheet, the screens with the controls, and sheets across one visitor's visit through the live site",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "Page 5 of 6, between the Human Verification card and the isolated Submit button",
+   "what": "At rest this reads like a partially populated form rather than a deliberate scene. The large bare area and detached button give no hint of the mechanical submit sequence that occupies this space later.",
+   "fix": "Give Submit a low-profile mount or recessed track that anchors it to the page from the start, then let that same part unfold into the larger mechanism."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "Page 3 of 6, closed states at 0:44.97 and 1:34.38",
+   "what": "With all three rows shut, this is the closest thing to a repeat scene: the three empty fields on the right echo About You, while the rotary dial, date wheels and crank that distinguish this page are entirely hidden.",
+   "fix": "Give the three closed rows a restrained preview of their own hardware, such as a dial face, number wheel and crank socket, without opening any controls in advance."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "Touch fallback, centered apology panel",
+   "what": "The panel looks like part of the same site, but it ends at an apology. The desktop still offers a film alternative, while the visitor who cannot enter the application has no visible route to that alternative.",
+   "fix": "Put the same Watch the film instead action below the apology, styled as a secondary control in the existing material palette."
+  }
+ ]
+}

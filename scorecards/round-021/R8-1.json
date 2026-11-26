@@ -1,0 +1,51 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the site as web pages: the six pages at rest, the application with its controls on, the message page for touch devices, and the controls at their real size",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-04.png",
+   "where": "Skills Assessment, under the introduction and beside the circular port",
+   "what": "The heading and copy tell me an assessment is required, but at rest there is neither an action nor a status. The port looks deliberately built into the page, but I cannot tell whether to click it, look elsewhere, or wait.",
+   "fix": "Put a visible Start assessment action under the introduction, or show a short readiness status there if the sequence starts on its own. Keep the port in its current site grid position."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-08.png",
+   "where": "Touch-device message card",
+   "what": "The card explains why the application is unavailable but leaves the visitor at a dead end, even though the desktop page offers a film alternative.",
+   "fix": "Add a clearly labeled Watch the film action below the message. Keep the mouse-and-keyboard gag in the copy."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "Submit action beneath the Human Verification card",
+   "what": "The button is isolated far below and to the right of the only field, and it switches to a centered axis after right-aligned Continue buttons. The verification and submission read as unrelated controls.",
+   "fix": "Give the resting form a shared action-row alignment with the earlier steps, or place Submit directly under the verification card on its grid. Let any deliberate displacement happen after interaction."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "The three blank fields in Personal Details",
+   "what": "The fields are aligned and readable, but the same unlabeled empty dropdown surface is used for a phone number, a date, and volume. The page gives no cue for what each control will accept or whether an initial value is set.",
+   "fix": "Add field-specific resting cues inside the controls, such as a phone-format hint, a date hint, and a current volume value, while preserving the matching housings and any later reveal."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "Bottom half of each of the three benefits cards",
+   "what": "Each card has a divider immediately after its only sentence, with a conspicuously empty row below. In the resting layout this reads like missing content rather than ordinary padding.",
+   "fix": "Remove the dividers and tighten the card height, or give the lower row a small purposeful label if the height is needed for the interaction."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "Top utility row, sound icon and Skip step link",
+   "what": "The row is unobtrusive and the text is readable, but the bare muted-speaker icon looks like an indicator more than a control, and Accept Defeat makes the escape hatch sound like another in-world trick.",
+   "fix": "Use an understated, legibly labeled sound toggle and make Skip step the primary utility wording; keep any joke separate from the action label."
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 # Status pictures
 
-Time: 2026-11-26T22:18Z. Phase 5, status 119.
+Time: 2026-11-26T22:44Z. Phase 5, status 120.
 
-1. `01-the-view-comes-down-onto-the-machine-at-the-low-.jpg`: The live site at the low level, 1280 by 720 shown at half size, 4.7 s to 5.0 s after the pinball page lands: the view leaves the first screen and comes down onto the marquee, and the page above the machine is dimmed. The row of controls is not in these pictures (they are the 3D picture alone); it now stands on its dark capsule through all four. Looked at by the Builder.
-2. `02-a-bolt-hits-the-arrow-on-step-1-the-hit-sheet-of.jpg`: Twelve steps in a row at real size from the motion pack the packs agent mended: the first of three bolts in flight and its hit on the arrow, which round 20's sheet did not show. Looked at by the Builder.
-3. `03-the-ball-rolls-over-the-yellow-lamp-window-the-s.jpg`: Twelve steps in a row, 1:52.15 to 1:52.52 of a visit, at 82 percent of real size: after the flipper's stroke the ball bounces off the post by the left slingshot and rolls across the yellow lamp window, which is flat in the floor. Drawn as it is, the window reads as a bumper; that is on the list for the next pinball pass. Looked at by the Builder.
+1. `01-three-design-points-the-critics-raise-again-your.jpg`: Top: the careers page, where the approved image shows the fine print on every card and the kit hides it until the arrow touches a card. Middle: step 2 at rest, three empty fields in both. Bottom: the approved sheet of the Submit button's four stages, and step 4 at rest on the live site. The pictures on the right are round 21's, at the high level. Looked at by the Builder.
+2. `02-control-taken-on-step-1-the-sheet-round-21-s-mot.jpg`: Twelve steps in a row of a visitor's run, 0:30.87 to 0:31.23: the shredder bites the resume and the arrow's arms are there in one frame, with no reach. The critic's words: the cord appears in one frame, already looped round the arrow. Below the bar; in the polish round. Looked at by the Builder.
+3. `03-the-page-turn-into-step-1-its-last-twelve-frames.jpg`: The second of two sheets of one run, 0:10.63 to 0:11.00: the slab comes face on and settles on a long soft tail. The critic's words: no landing beat, nothing on the page answers when it seats. Below the bar; in the polish round. Looked at by the Builder.
