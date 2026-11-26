@@ -57,3 +57,48 @@ Calls / triangles from `npm run build && npm run counts -- --key <key> --live lo
 | tier-street | flippers | 6 / 11472 | 6 / 15336 | |
 
 Draft stills in hd (`npm run still -- --key <key> --format hd --tier draft`): table-wide 41 to 45 s, 646 calls at a842706 and 638 at c65c00d with the apron's well; tier-street 31 to 33 s, 527 calls at a842706, 535 with the well and main's merge 14.
+
+## Decisions after the Builder's words of 02:28, 02:36 and 02:58 UTC
+
+- The machine's orange is one number in my folder, `MACHINE_ORANGE = 0xc48004` in `frame/mats.ts`, used by the bats, the plunger knob, the lift doors and the elbows. It was tuned by measurement against the approved bats under the tier lamps (medians below), not by eye.
+- The street's end wall at the apron is a sill 7 px high (`EDGE.low`), open at the mouth, with no wear strips.
+- The apron's near rail stands at the slabs' height (16 px) from the left rail to the right. Its top face, width and place are as before.
+- The side rails' south ends come down from the street's height to the near rail over the apron's length. Each is a slim bright rail 44 px wide at the machine's edge, one with the near rail round the corner, and a dark panel sunk 10 px inside it (`EDGE.panel`). The first version was one full sloped face and read as a tall block from the player's end.
+- The outside of the near end is one face of brushed aluminium (`EDGE.skin`, `EDGE.skirt`), for the cameras that see it without the last screen's ground.
+- The walls give back the tier's lit floor (`under` in `frame/steel.ts`), so the inner faces do not go dead.
+- `pipe` in `frame/geo.ts` carries its side vector along the path: the feed tube no longer twists where it dives.
+- The clear tubes are slimmer: 53 px outer radius and a 3.6 px wall (were 59.5 and 4.5), the ball clears by 1.4 px. The collars follow (58.5 and 56 px). The lane widths and the feed tube's place outside the right wall are the layout's.
+- The lift's foot is a pale satin cap in a chrome rim. The drain tube's cut end has a slim ring.
+- The drain's plate on the last screen lies square to the page where the tube leaves within 0.3 rad of the grid (`PORT.square`).
+- The ramp wire is polished (roughness 0.12).
+- Shadow casts cut where no shadow was seen: loader metal, bands, tips, the drain's static metal, the lift's static metal and door, the standups, the apron's ceramic in the well.
+- One merge commit of mine, 95f7612, has no trailer. It was pushed before I saw it and is not rewritten.
+
+## Measurements at a3bb463 (before is origin/main 6060c7a)
+
+| key | part | before | after |
+|---|---|---|---|
+| table-wide | table-hardware | 28 / 36340 | 22 / 32846 |
+| table-wide | table-frame | 18 / 12802 | 16 / 11724 |
+| table-wide | targets | 16 / 24072 | 15 / 23180 |
+| table-wide | loader | 15 / 29406 | 10 / 13994 |
+| table-wide | lift | 13 / 19336 | 8 / 8108 |
+| table-wide | flippers | 12 / 22944 | 12 / 33360 |
+| table-wide | bumpers | 8 / 48192 | 8 / 48192 |
+| table-wide | ramps | 5 / 20584 | 5 / 20536 |
+| table-wide | marquee | 4 / 2120 | 4 / 2168 |
+| table-wide | sum of my parts | 119 / 215796 | 100 / 194108 |
+| tier-street | table-hardware | 23 / 30886 | 19 / 28152 |
+| tier-street | table-frame | 15 / 10822 | 13 / 9658 |
+| tier-street | lift | 8 / 12314 | 3 / 2342 |
+| tier-street | targets | 8 / 12060 | 8 / 12060 |
+| tier-street | flippers | 6 / 11472 | 6 / 16680 |
+| tier-street | ramps | 5 / 20584 | 5 / 20536 |
+| tier-street | loader | 4 / 10968 | 2 / 4352 |
+| tier-street | bumpers | 2 / 17556 | 2 / 17556 |
+
+The camera of `table-wide` changed on main between the two columns.
+
+Orange, medians of the orange pixels over the left bat's top face (R, G, B), draft hd: tier-street approved 206,126,47, ours 204,125,52 (214,91,52 with `0xc74c00`); tier-office approved 204,131,56, ours 209,126,53 (220,92,53).
+
+Draft still of `table-wide` at 05948a4: 40.0 s, 583 draw calls (638 at 02:24). Assets: `assets-src/table/frame` 2080 KB, `public/assets/table/frame` 64 KB, `assets-full/table/frame` 140 KB.

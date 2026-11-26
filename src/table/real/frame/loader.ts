@@ -6,7 +6,7 @@ import { Geo, type V2, type V3 } from './geo'
 import { Screws, TONE, aluOf, clearOf, mesh, screwOf } from './mats'
 
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
-export const TUBE = { outer: 59.5, wall: 4.5, sides: 24, opacity: 0.05, collar: 22, collarOut: 66, ferrule: 9, ferruleOut: 63, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
+export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22, collarOut: 58.5, ferrule: 9, ferruleOut: 56, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
 const RING = { height: 26, lip: 6, floor: 2.4, slot: 2, mouth: 6, dish: 34, cuts: 7 }
 const BED = { height: 6, land: 5 }
 const CUP: [number, number, number] = [0.045, 0.047, 0.052]

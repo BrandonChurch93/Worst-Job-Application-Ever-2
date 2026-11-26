@@ -5,7 +5,7 @@ import { Geo, type V2, type V3 } from './geo'
 import { TUBE, clamp, collar, frameAt, lengthOf, shells, spot } from './kit'
 import { FIN, Screws, TONE, shade } from './mats'
 
-export const LIFT = { cup: 3.6, centre: TUBE.outer + 1.5, foot: 10.55, face: 2.1, joint: 14, crown: 1.5, elbowOut: 66, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
+export const LIFT = { cup: 3.6, centre: TUBE.outer + 1.5, foot: 10.55, face: 2.1, joint: 14, crown: 1.5, elbowOut: 58.5, bend: 0.75 * BALL, lean: 0, swing: 1.25, decay: 4, beat: 7 }
 export const DOOR = { high: 88 }
 const tierStep = floorZ(0) - floorZ(1)
 
