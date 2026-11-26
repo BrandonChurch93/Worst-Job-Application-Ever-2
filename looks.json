@@ -1,35 +1,35 @@
 {
   "folder": "look-finish",
-  "pushed": "2026-11-26T11:55:10.537Z",
-  "commit": "979389dd049d0fb248c20e7072116065b0a0ac25",
+  "pushed": "2026-11-26T12:09:13.203Z",
+  "commit": "17d70424953c5b4cb7e1658d61acfa8be1533ab3",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Quiet ink: marketing-top hero subline and the row under the button: approved, after the ink pass, now",
-      "time": "2026-11-26T11:53:54.479Z",
+      "caption": "Still key-step2-rest-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T12:08:47.247Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/c/Q-marketing-rows.jpg"
+      "from": "out/work/stills/key-step2-rest-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-marketing-top-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T11:54:33.951Z",
+      "caption": "D: the flattened arrow, approved, before, after: Continue at 0.6 and the sheet cursor-damage, review",
+      "time": "2026-11-26T12:09:11.478Z",
       "by": "look-finish",
-      "from": "out/work/stills/key-marketing-top-hd-review.png"
+      "from": "out/work/look-finish/d2/D-all.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Quiet ink (rendered again at 979389dd): marketing-top hero subline dark, the row under the button quiet: approved, after the ink pass, now",
-      "time": "2026-11-26T11:54:41.600Z",
+      "caption": "D: the angry arrow without flecks, approved, before, after, draft",
+      "time": "2026-11-26T12:09:11.715Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/c/Q-marketing-rows.jpg"
+      "from": "out/work/look-finish/d2/D-angry.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Still step2-step2_continue-0p6-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T11:55:06.371Z",
+      "caption": "D: the exhausted arrow keeps a dark contour, approved, before, after: Continue at 0.2 at review and the sheet cursor-acting at draft",
+      "time": "2026-11-26T12:09:11.992Z",
       "by": "look-finish",
-      "from": "out/work/stills/step2-step2_continue-0p6-hd-review.png"
+      "from": "out/work/look-finish/d3/D-exhausted.jpg"
     }
   ]
 }
