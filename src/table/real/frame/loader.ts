@@ -27,6 +27,8 @@ interface Ring { x: number; y: number; at: number; runs: { mesh: THREE.Mesh; fro
 const CUP: [number, number, number] = [0.03, 0.032, 0.036]
 // The colour a vertex of the rim of light carries: the tube's material knows it by its blue.
 const RIM: [number, number, number] = [1, 1, 0]
+// The light falls off down the wall of the bowl in three steps: a glow under the lip, not a drawn line.
+const RIM_FALL = [0.62, 0.34, 0.14]
 const FACE = hex(0x8c9094)
 const EDGE = hex(0x6a6e72)
 const SOCKET = hex(0x3a3c40)
@@ -139,6 +141,8 @@ function collar(A: Geo, f: { at: THREE.Vector3; m: THREE.Matrix4 }, long = TUBE.
   const outline: V2[] = [[TUBE.outer + 0.2, -c], [out - 1.6, -c], [out, -c + 1.6], [out, c - 1.6], [out - 1.6, c], [TUBE.outer + 0.2, c]]
   A.lathe(outline, 0, 0, 28, (i) => (i === 2 ? TONE.aluBright : TONE.alu))
   A.move(from, f.m)
+  // A round band seen from above: bright along its crown, dark where it turns down to the page.
+  A.tint(from, (_x, _y, z) => 0.42 + 0.58 * Math.pow(Math.max(0, Math.min(1, (z - f.at.z) / out)), 2.2))
 }
 
 function clamp(A: Geo, f: { at: THREE.Vector3; m: THREE.Matrix4 }, ground: number): void {
@@ -194,7 +198,11 @@ function port(A: Geo, G: Geo | null, z: Zone, c: { x: number; y: number; ring: n
   const side = (x: number, y: number): number => Math.pow(0.5 + 0.5 * Math.cos(Math.atan2(y - p[1], x - p[0]) - 1.75), 1.2)
   A.tint(first, (x, y, zz) => (zz < h - 8 ? 1 : 1.3 - 0.7 * side(x, y)))
   // Under the ring's lip a rim of light, then the plain dark bowl: lit from the upper left, so its lower right wall is the paler.
-  if (G) G.lathe([[r + RING.lip, h - 3], bowl[0]!], p[0], p[1], 72, RIM)
+  if (G) {
+    const top: V2 = [r + RING.lip - 0.6, h - 3]
+    const at = (t: number): V2 => [top[0] + (bowl[0]![0] - 0.6 - top[0]) * t, top[1] + (bowl[0]![1] - top[1]) * t]
+    G.lathe([top, at(0.26), at(0.58), at(1)], p[0], p[1], 72, (i) => [RIM[0], RIM_FALL[i]!, RIM[2]])
+  }
   if (G) {
     // The ring's own soft shadow on the page, toward the lower right: drawn, so the port costs no drawing in the shadow pass.
     const cx = p[0] + SHADE.dx * 0.5
