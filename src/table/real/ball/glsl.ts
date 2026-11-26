@@ -1,5 +1,7 @@
 import { BOXES, LAMPS } from './lamps'
 
+export const SQUASH = { cut: 0.6, thin: 0.35, wide: 0.25 }
+
 // What every surface of the ball shares: the lamps as the ball sees them, the soft light from above, the dark surround.
 export const head = /* glsl */ `
 #define LAMPS ${LAMPS}
@@ -102,9 +104,9 @@ void main() {
 	}
 	if ( uPress.w > 0.0 ) {
 		float along = dot( p, uPress.xyz );
-		float top = 1.0 - 0.15 * uPress.w;
-		float thin = 1.0 - 0.65 * uPress.w;
-		float wide = 1.0 + 0.4 * uPress.w;
+		float top = 1.0 - ${SQUASH.cut.toFixed(2)} * uPress.w;
+		float thin = 1.0 - ${SQUASH.thin.toFixed(2)} * uPress.w;
+		float wide = 1.0 + ${SQUASH.wide.toFixed(2)} * uPress.w;
 		float na = dot( n, uPress.xyz );
 		n = normalize( ( n - uPress.xyz * na ) / wide + uPress.xyz * na / thin );
 		n = normalize( mix( n, uPress.xyz, smoothstep( 0.0, 0.03, along - top ) ) );
