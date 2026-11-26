@@ -106,7 +106,7 @@ export function lying(points: [number, number][], segments = 32): THREE.BufferGe
   return lathe(points, segments).rotateY(-Math.PI / 2)
 }
 
-export const SHIELD_GLASS = { colour: 0x808c89, through: 0.86, perPx: 2.4 }
+export const SHIELD_GLASS = { colour: 0x8c9895, through: 0.82, perPx: 2.4 }
 
 // The careers page's picture of the page under glass, laid finer: the block is seen closer than a card.
 function blockPicture(): THREE.Texture {
@@ -185,7 +185,7 @@ export function bossKit(): BossKit {
     plate: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7c8085), roughness: 0.34, metalness: 1, map: brushing(), anisotropy: 0.55, anisotropyRotation: Math.PI / 2 })),
     plateSide: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x35373a), roughness: 0.55, metalness: 0.9 })),
     pocket: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x63666a), roughness: 0.5, metalness: 0.9 })),
-    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb2b6ba), roughness: 0.45, metalness: 0.5 })),
+    link: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.45, metalness: 0.5 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x3a1608), roughness: 0.85, metalness: 0, specularIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
   }
   return made

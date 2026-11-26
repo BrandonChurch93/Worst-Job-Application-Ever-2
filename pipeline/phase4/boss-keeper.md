@@ -22,11 +22,11 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 
 | Part | Looks |
 | --- | --- |
-| boss-body | 30 |
-| boss-transform | 11 |
-| boss-weapons | 11 |
+| boss-body | 33 |
+| boss-transform | 14 |
+| boss-weapons | 15 |
 | health-bar | 1 |
-| acting-boss | 4 |
+| acting-boss | 5 |
 | verify-card | 0 |
 
 ## Measures
@@ -66,3 +66,5 @@ MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the career
 23. The arrow aims along its shot: the script turns it to the line from its tip to the boss and 0.36 rad further up (`AIM_LIFT` in `src/pages/step4/index.ts`). MEASURED by a probe at the key (12.5 s): the cursor's own lean while it fires is 0.42 rad against 0.22 at rest and its spin lags by 0.03, so without the lift the arrow lay 0.24 rad below its shot, which is the flat arrow of the first report.
 24. The scorch is held to the end of the film unit, ruled by the Builder at 05:07 UTC. In the film the script scorches the cursor at the power-down (27.2 s) and again when the wreck has come to rest (29.2 s, the moment the cursor sags), each for the cursor's longest 3.4 s, so the state is on at the key (29.0 s) and still on when the unit ends (32 s). Live visitors keep the first scorch only, and the page still waits for a whole cursor before it is done. In the film the page is done 0.35 s after the press whatever the cursor's state, since the film turns the page by the clock. `tests/boss.test.ts`: the check "leaves the cursor whole from the collapse on and when the film turns the page" held the opposite of the ruling at 31.5 s; it now holds that the cursor is scorched at the key and at 31.5 s, that the page is done, and, unchanged, that nothing hits the cursor after the power-down. Decision 16 is withdrawn.
 25. The shield is the careers page's slab: `slabGeometry`, `SLAB` and `glassOptions` of `perk-cards.ts` are imported, so the shade of the ground edge and the bend near the rim are that page's. Its material is a grey of its own (0x808c89, 0.86 opaque) with the same picture laid finer (2.4 texels to a page pixel), and the picture also runs down the wall (`walled()`), because the block leans and its wall is seen: the careers page's 1 texel to a pixel failed measure M2 on the block (0.33 soft at `boss-fight`), and the wall alone left 0.027.
+26. The spark of a dart on the shield was hidden: the slab is now nearly opaque and writes depth, and the plan put the spark at 60 px, inside the glass. `SHIELD` in `src/boss/plan.ts` is now `half: 108` (the block's real half height, was 118, so a dart that passes the block's end goes on to the hull) and `z: 92` (on the outer face of the leaning block). The spark's star is larger and fades slower (`(60 + 70 sqrt(u)) (1 - u)^1.1`), nearer the burst of the approved image. MEASURED after it, `npm run measure -- --unit boss --tier review`: M2 0.0095, M3 0.9226, 8 green.
+27. The links of the legs are 0x9a9ea3 (were 0xc2c6c9): beside the darker hull the pale links read as another metal. The glass is 0x8c9895, 0.82 opaque. The smoke ring fades slower (`(1 - u)^0.8` at full strength).
