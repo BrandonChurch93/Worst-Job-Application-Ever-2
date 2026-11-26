@@ -22,16 +22,16 @@ const ROUGH_METAL: [number, number][] = [[0.13, 1], [0.34, 1], [0.2, 0], [0.82, 
 const uvOf = (f: Finish): V2 => [(f + 0.5) / ROUGH_METAL.length, 0.5]
 
 export const TONE = {
-  brass: hex(0xc4a873),
-  brassDark: hex(0x9b8252),
-  gold: hex(0xd8be88),
+  brass: hex(0xc79a45),
+  brassDark: hex(0x8f6a2a),
+  gold: hex(0xd6b160),
   steel: hex(0xb3bcc6),
   steelDark: hex(0x7c8792),
   graphite: hex(0x3a3f47),
   roof: hex(0x565c66),
   stone: hex(0x70757b),
   nickel: hex(0xd3d7da),
-  carpet: hex(0x4c0a10),
+  carpet: hex(0x6a0a10),
   carpetEdge: hex(0x33060a),
   rubber: hex(0x1b1b1d),
   marble: hex(0xc9cfdc),
@@ -89,7 +89,7 @@ const made = new Map<string, Mats>()
 export function matsOf(z: Zone): Mats {
   const have = made.get(z.id)
   if (have) return have
-  const solid = lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes() })), z), z)
+  const solid = lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes() })), z, { panel: 0.6, horizon: 2.2, lamps: 2.2 }), z)
   solid.name = `corporate.solid.${z.id}`
   // What gives light: its own colour, vertex by vertex, is the light it gives, at the level of its light group.
   const glow = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes(), emissive: new THREE.Color(...colours.CORPORATE_WINDOW), emissiveIntensity: 0 }))
