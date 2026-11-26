@@ -5,7 +5,7 @@ import { pages } from '../src/pages'
 import { SLOT } from '../src/pages/step1/layout'
 import { TUG } from '../src/pages/step1/script'
 import { BotDriver } from '../src/stage/bots'
-import { liveFlow, Stage } from '../src/stage/stage'
+import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage } from '../src/stage/stage'
 import type { DrawList } from '../src/stage/types'
 
 interface Row { step: number; gag: string; x: number; y: number; lean: number; squash: number; sprout: number; grip: number; strain: number; taken: boolean; arms: boolean; shed: number; arm: number; hx: number; hy: number; px: number; py: number; rot: number; far: number; open: number; slotY: number }
@@ -117,5 +117,57 @@ describe('polish tug: the takeover and the release of step 1 on the live site, s
     expect(still / stepHz).toBeGreaterThanOrEqual(0.2)
     expect(first).toBeLessThan(4)
     expect((turn * 180) / Math.PI).toBeLessThan(12)
+  })
+})
+
+describe('polish tug: a key struck by a bolt', () => {
+  it('springs back to its full height with a small overshoot within 0.15 s of the hit', () => {
+    const tops: Map<string, number>[] = []
+    const hits: number[] = []
+    const s = new Stage({ mode: 'film', flow: filmFlow('step1'), pages, driver: new ScriptDriver(), film: filmOptions('step1') })
+    let seen = 0
+    while (s.time < 12) {
+      s.advance(1)
+      const list: DrawList = []
+      s.page.draw(list)
+      const now = new Map<string, number>()
+      for (const x of list) if (x.id.startsWith('key-') && !x.id.endsWith('-legend') && x.tone !== 'pocket') now.set(x.id, x.z1)
+      if (s.events.slice(seen).some((e) => e.name === 'sizzle')) hits.push(tops.length)
+      seen = s.events.length
+      tops.push(now)
+    }
+    const within = Math.round(stepHz * 0.15)
+    let checked = 0
+    for (const h of hits) {
+      if (h < 2 || h + stepHz / 2 >= tops.length) continue
+      const rest = tops[h + stepHz / 2 - 1]!
+      let key = ''
+      let deep = 0
+      for (const [id, z] of tops[h + 4]!) {
+        const full = rest.get(id)
+        if (full !== undefined && full - z > deep) {
+          deep = full - z
+          key = id
+        }
+      }
+      if (!key || deep < 1) continue
+      const full = rest.get(key)!
+      const at = (i: number): number => tops[h + i]!.get(key) ?? full - deep
+      let back = -1
+      let high = -Infinity
+      for (let i = 0; i < stepHz / 2; i++) {
+        if (back < 0 && at(i) >= full && i > 4) back = i
+        high = Math.max(high, at(i))
+      }
+      console.log(`struck key ${key}: ${deep.toFixed(2)} down on the hit, back at its full height ${(back / stepHz).toFixed(3)} s after it, ${(high - full).toFixed(2)} above it at the most, ${(at(Math.round(stepHz * 0.25)) - full).toFixed(2)} from it at 0.25 s`)
+      expect(back).toBeGreaterThan(0)
+      expect(back).toBeLessThanOrEqual(within)
+      expect(high - full).toBeGreaterThan(0.5)
+      expect(high - full).toBeLessThan(8)
+      expect(Math.abs(at(Math.round(stepHz * 0.25)) - full)).toBeLessThan(0.05)
+      checked++
+    }
+    console.log(`struck keys read: ${checked} of ${hits.length} hits on the arrow`)
+    expect(checked).toBeGreaterThan(0)
   })
 })

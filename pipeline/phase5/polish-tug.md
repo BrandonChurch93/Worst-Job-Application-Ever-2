@@ -28,6 +28,17 @@ Before, round the release (step 7832):
 6. The slot's closing. `SHUT`: 0.36 s, and the last 0.3 of its travel, where the panels meet and drop into the page, 2.2 times as slowly. It is the same in the film.
 7. The struck key. `THUD.held`, `THUD.back`, `THUD.pop`: the key is held down 0.05 s, is back at its full height 0.10 s after the hit, goes `THUD.pop` px above it and is at rest at 0.2 s. The scorch is untouched.
 
+## What was measured after (MEASURED)
+
+`npx vitest run tests/polish-tug.test.ts`, the live stage under the keen bot at 240 steps a second, and the film of step 1 for the key:
+
+- reach: the hands close 0.079 s after the bite; the arms are 0.18, 0.47, 0.73, 0.91 of their length after 1, 2, 3, 4 frames of 60; the body leans 0.081 rad toward the paper by then. The paper does not turn before the hands close.
+- grab and haul: the paper moves 9.78 px a step at most in the second after the bite; in the 0.3 s after the hands close the arrow comes 92.1 px nearer the slot and never falls back more than 1.41 px; the arms are 187.9 px at the grab and 70.9 px after; the body leans 0.453 rad back from the paper at the most in the second after the grab.
+- release: the arms are shed over 0.292 s; the page holds the arrow 4.25 s of the 8 s it may; the arrow stands still 0.221 s before the mouse has it; in the first frame of 60 after it moves 0.28 px; its lean changes 10.4 degrees in a frame of 60 at the most in the half second after.
+- struck key (film, the H key): 6.00 down on the hit, back at its full height 0.100 s after it, 3.56 above it at the most, at rest at 0.25 s.
+
+In pictures (`node pipeline/phase5/fix-tug-steps.mjs walk a2`, the pack's own visitor, every second step of 60, real size): `out/work/fix-tug/a2-take.png` shows the bite at step 1764, the hands in the air at 1766, on the paper at 1768 with the paper swung, and the arrow hauled to the paper from 1770 to 1782; `a2-lose.png` shows the arms shed over steps 2312 to 2318; the slot's panels arrive over two pictures and sink over four.
+
 ## Decisions
 
 - `SPRING.sprout` in `body.ts` is left where it is and is no longer read: its line belongs to a block the arrow agent edits at the same time. It can go when both branches are in.

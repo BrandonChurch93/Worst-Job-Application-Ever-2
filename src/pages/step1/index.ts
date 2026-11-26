@@ -61,7 +61,7 @@ const DOWN = { seconds: 0.02, first: 0.5 }
 const TAP = { seconds: 0.2, hold: 0.05, depth: 1, shake: 0.22 }
 const STRIKE = { seconds: 1.5, id: 90000, z: 96, over: 1.46 }
 // The key under an arrow a bolt hits: it stays down `held` seconds, is back at its full height a third of the way from there to `back`, goes `pop` px over its seat and is still at `back`.
-const THUD = { seconds: 0.17, hold: 0.085, shake: 0.7, hop: 9, reach: 260, toss: 0.1, speed: 6000, held: 0.05, back: 0.2, pop: 5 }
+const THUD = { seconds: 0.17, hold: 0.085, shake: 0.7, hop: 9, reach: 260, toss: 0.1, speed: 6000, held: 0.05, back: 0.2, pop: 2 }
 const PULSE = { hold: 0.05, fade: 0.3 }
 const FLIGHT = { over: 1.25, under: 0.75, ripple: 0.17, span: 800, jitter: 0.02, seconds: 0.2, rise: 0.58, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 4, land: 2.2, rattle: 1.6, clear: 5 }
 const SEATED = FLIGHT.crouch + FLIGHT.ripple + FLIGHT.jitter + FLIGHT.seconds
