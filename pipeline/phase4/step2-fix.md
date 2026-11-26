@@ -94,10 +94,30 @@ Decisions after 08:30:
 15. The existing test of the rest place (`tests/step2-keeper.test.ts`, 1575, 374) now holds 1575, 392: the rows moved, so the place between them moved.
 16. The footer keeps the shared place of Continue although approved has it 12 px lower (6 px after the header's own 6).
 
+## After 08:55 UTC, on the shared look
+
+- The shared look (merge 30, main 7f82c9cc) and the arrow's new fit (main 5429fcf2) were merged and the three keys rendered and looked at beside approved, twice. Nothing of mine reads worse on them.
+- The tray: a thin dark rim and a lighter floor, read off the approved keys at a zoom (`TRAY` rim 3.4, lean 0.3, floor base 1.12, soak base 0.94; the soak stays under 1 with its bounce, as its test asks).
+- The crank: hub 18 px lower and meter 9 px lower, where approved has them. The arm is longer and wider (`arm` 128, `armW` 23), the grip larger (90 by 52), and the arrow's tip is held on the grip's middle through the turns (`hold` 8, `holdAside` 6), as the approved key shows it. The bar is a lighter aluminium (0x8e9398, was 0x74797e): the approved key has it pale. With the arm at 128 the grip's far end stays inside the tray's top wall when it points up. Looked at in six stills of the beat (14.7 to 19.0 s) and two close ones: the arrow rides the grip round, is thrown, and comes back.
+- The dial: the wheel is one turned steel face up to the orange cap (the cream disc and its seam are gone, the boss stays a step proud), the wheel is wider (92.9) under a thin bezel (5.5), the holes stand nearer the rim (`ring` 70), and the housing and the base ring are the shared steel unchanged (`housingDark` 1, `seatDark` 1). The drag was looked at in two stills (3.9 and 4.6 s): the tip is in its hole.
+
+Decisions after 08:55:
+
+17. The dial's middle follows the approved key, not the approved sheet. The key (`step2-dial`) shows one steel face up to the cap; the sheet (`machines`) shows a cream disc with a rim round the cap. The two cannot both be met, and the key is the page as the film shows it. On the sheet the build's dial now has a steel middle where approved has cream.
+18. The grip follows the approved key (about 80 by 50 px on screen), which makes it stouter than the grip of the approved sheet.
+19. The tray's floor base is 1.12, a little over the page's own tone before the shade is laid on it: approved has the floor pale (about 200 of 255). The soak that lies over words stays under 1.
+20. The arm stops at 128 and not at the 145 or so of the approved key: longer, and the grip would sweep over the open field's words above the tray.
+
 ## Looks, counted by part
 
-- rows: 11 (the rest key four times; the dial key four times and the crank key three times for the tray and the rows).
-- dial: 20 (the dial key ten times, once at the review tier; the sheet twice; 8 stills of the whip and the fling).
-- crank: 21 (the crank key sixteen times; three stills of the wind-up; the sheet twice).
+- rows: 15 (the rest key eight times; the dial key four times and the crank key three times for the tray and the rows).
+- dial: 33 (the dial key nineteen times, once at the review tier; the sheet three times; 8 stills of the whip and the fling; 2 of the drag; one zoom of the tray).
+- crank: 36 (the crank key twenty-two times, the last at the review tier for the measure of time; 11 stills of the beat; the sheet three times).
 - slot: 40 (one still of the coins lying at 13.0 s; the sheet six times; 8 stills at a wrong time that showed nothing; 22 stills of the lever, the reels and the coins; three stills of the tray shutting over the coins).
 - acting: 40 (12 of the slot beat, 4 at a wrong time, 7 of the dial beat, 4 of the open beat, 8 of the crank beat, 5 of the peel). None left this round.
+
+## Left for the next owner, worst first
+
+1. The slot's lever is a short straight rod with a ball, where approved has a bent rod from a socket on the housing's side, and the reels' digits are smaller than approved (sheet `machines`). No slot looks were left.
+2. The arrow's poses of round 9 (R9-1 issues 1 to 4 and 6 to 10, R9-2 issues 1 to 8) were built in the first pass and not looked at again after the acting looks ran out; the place of the peel, 190 px left of the button, was never seen in a still.
+3. The crank's arm is shorter than approved (128 against about 145 at the key) and has an eye round the boss where approved has the bar under a cap; lit lenses are flatter than approved and their light on the paper of the sheet is wider than approved shows (key `step2-crank`, sheet `machines`).

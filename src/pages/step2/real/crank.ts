@@ -67,7 +67,7 @@ function own(): NonNullable<typeof made> {
   const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.0, roughness: 0.4, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5 }))
   const washer = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2826), roughness: 0.6, metalness: 0.4 }))
   const bar = studio(materials().aluminium.clone())
-  bar.color = srgb(0x74797e)
+  bar.color = srgb(0x8e9398)
   bar.roughness = 0.4
   bar.normalScale = new THREE.Vector2(0.09, 0.09)
   bar.anisotropyRotation = 0
