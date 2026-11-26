@@ -7,7 +7,9 @@ import { damageLook } from './act/damage'
 import { makeTape, type Tape } from './act/tape'
 import type { CursorPose } from './body'
 import { restLook, SHOULDERS, UNIT, type BodyModel, type EffectsModel } from './contract'
+import { middleOf } from './fit'
 import { makeBody } from './model/body'
+import { drawnStretch } from './model/deform'
 import { makeEffects } from './model/effects'
 
 // Which of the cursor's five parts are made. The rest are drawn as stand-ins by the page's view.
@@ -53,12 +55,30 @@ export class CursorView {
     look.body.stretch = c.squash
     actingLook?.(c, look)
     damageLook?.(c, look)
+    if (c.inBall) {
+      // Nothing rises out of a sealed ball.
+      look.effects.smoke = []
+      look.effects.steam = 0
+      look.effects.dust = -1
+    }
     look.body.sealed = c.inBall ? 1 : 0
     look.arms.grip = [c.grip[0], c.grip[1]]
     look.arms.strain = c.strain
     const turn = -c.lean - c.spin
     this.at.quaternion.identity()
-    if (c.inBall && c.face) {
+    if (c.inBall && c.centred) {
+      // The middle of the outline as it is drawn stands on the ball's middle, whatever its lean, its turn and its length.
+      const m = middleOf(drawnStretch(look.body.stretch, look.body.melt))
+      this.at.position.set(-m.x * UNIT, m.y * UNIT, 0).applyAxisAngle(UP, turn)
+      if (c.face) {
+        this.spot.set(c.face.x, c.face.y, c.face.z).normalize()
+        this.at.quaternion.setFromUnitVectors(UP, this.spot)
+        this.at.position.applyQuaternion(this.at.quaternion).addScaledVector(this.spot, -c.face.back)
+      }
+      this.at.position.x += c.x - 960
+      this.at.position.y += 540 - c.y
+      this.at.position.z += c.z + half + 1
+    } else if (c.inBall && c.face) {
       this.spot.set(c.face.x, c.face.y, c.face.z).normalize()
       this.at.quaternion.setFromUnitVectors(UP, this.spot)
       this.at.position.set(-4.2 * UNIT, 9.5 * UNIT, 0).applyAxisAngle(UP, -c.spin).applyQuaternion(this.at.quaternion).addScaledVector(this.spot, -c.face.back)
