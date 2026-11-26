@@ -89,10 +89,10 @@ export function stock(): Stock {
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4
-      const v = Math.min(1, Math.max(0.84, 0.972 + h[y * size + x]! * 0.07))
+      const v = Math.min(0.992, Math.max(0.84, 0.974 + h[y * size + x]! * 0.06))
       tint[i] = Math.round(v * 255)
-      tint[i + 1] = Math.round(Math.min(1, v * 0.997) * 255)
-      tint[i + 2] = Math.round(Math.min(1, v * 0.99) * 255)
+      tint[i + 1] = Math.round(Math.min(1, v * 0.998) * 255)
+      tint[i + 2] = Math.round(Math.min(1, v * 0.992) * 255)
       tint[i + 3] = 255
       const dx = (at(x + 1, y) - at(x - 1, y)) * 0.9
       const dy = (at(x, y + 1) - at(x, y - 1)) * 0.9
@@ -106,7 +106,7 @@ export function stock(): Stock {
   const fibre = texture(tint, size, true)
   const tooth = texture(bump, size, false)
   const sheet = studio(
-    new THREE.MeshPhysicalMaterial({ color: srgb(0xfffdf8), roughness: 0.93, metalness: 0, specularIntensity: 0.3, map: fibre, normalMap: tooth, normalScale: new THREE.Vector2(0.22, 0.22), vertexColors: true, side: THREE.DoubleSide })
+    new THREE.MeshPhysicalMaterial({ color: srgb(0xfefdfb), roughness: 0.93, metalness: 0, specularIntensity: 0.3, map: fibre, normalMap: tooth, normalScale: new THREE.Vector2(0.22, 0.22), vertexColors: true, side: THREE.DoubleSide })
   )
   sheet.name = 'letter-stock'
   const megabytes = (2 * size * size * 4 * (4 / 3)) / (1024 * 1024)

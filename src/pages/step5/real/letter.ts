@@ -12,7 +12,7 @@ const ease = (t: number): number => {
 
 const GRID = { nx: 72, ny: 48 }
 const CURL: [number, number, number, number][] = [[1, 1, 3.4, 96], [1, 0, 1.3, 60], [0, 1, 1.1, 54], [0, 0, 0.5, 44]]
-const SHADE = { rings: [[-10, 0.5], [0, 0.5], [1.2, 0.34], [3, 0.2], [6, 0.12], [10, 0.07], [16, 0.03], [26, 0]] as [number, number][], dx: 3.2, dy: -4.2, colour: 0x1b1815 }
+const SHADE = { rings: [[-12, 0.62], [0, 0.62], [1.2, 0.44], [3, 0.3], [6, 0.2], [10, 0.12], [15, 0.065], [21, 0.03], [30, 0]] as [number, number][], dx: 5, dy: -6.5, colour: 0x1b1815 }
 
 export function liftAt(u: number, v: number, w: number, h: number): number {
   let z = 0

@@ -34,7 +34,24 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 
 - A stand-in shape that floats above the page (the stamp block in the air, the letter while it drops) casts a hollow shadow in the blockout view: an outline, with light inside it. A shape that rests on the page is right. The cause is not known. This page only gives the shape its place and its height. The stamp flies at 200 to 220 and is carried at 120, under the 320 the lamps cover.
 
+## The real parts (Phase 4)
+
+Makers in `real/`: `wait.ts`, `letter.ts` with `letterStock.ts`, `stamp.ts` with `stampInk.ts`, `metrics.ts`. What each is made of and why is in `pipeline/phase4/decision.md`; the textures are in `assets-src/decision/RECIPE.md`.
+
+- `wait`: the panel is the shared glass card. The counter is a chrome bezel, a dark gap and smoked glass 1.6 px below the bezel's top. The digits (`wait-value`, `wait-count`, part `wait`) are lamps under the glass with a halo, and they light the panel through `ctx.light`.
+- `letter`: one sheet of 72 by 48 cells, flat under its print, lifted at its four corners (3.4 px at the lower right), with fibre in its colour and in its normals. A painted shade lies under it and fades as the sheet leaves the page.
+- `stamp`: a lacquered block on a rubber pad with a waisted grip, both red. The mark is geometry in red ink: a double border drawn from `letter-mark-top`, and the word `letter-stamp` (part `stamp`), both under one picture of uneven ink cover.
+- `metrics`: the panel and the three readouts are the shared glass card.
+
+### The numbers in `v`
+
+| Shape | v[0] | v[1] | v[2] |
+| --- | --- | --- | --- |
+| `stamp-block`, `stamp-grip` | seconds since the hit, capped at 9 | seconds since the block came to rest at its place, capped at 9 | lean of the block before the fall, in radians |
+| `stamp-dust` | seconds since the hit | | |
+
+`stamp-dust` is in the draw list only for `HIT.dustSeconds` (0.62 s) after the hit.
+
 ## Not done
 
-- No beauty: every part is a stand-in shape.
 - The share line is not copied to the clipboard by this page.

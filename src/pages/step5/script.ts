@@ -8,6 +8,9 @@ interface Key { t: number; x: number; y: number }
 
 export interface Cue { at: number; act?: Acting; react?: Reaction }
 
+// The hit of the stamp: it draws back and leans before it falls, the fall speeds up, the rubber gives, the block rocks and comes to rest, and paper dust leaves from under its edges.
+export const HIT = { windSeconds: 0.24, windRise: 30, windTilt: -0.13, fallPower: 2.6, over: 9, give: 1.5, giveSeconds: 0.06, rock: 0.03, rockSeconds: 0.11, rockRate: 50, landRock: 0.014, dustSeconds: 0.62, dustReach: 70 } as const
+
 export const CUES: Cue[] = [
   { at: 0.55, react: 'anticipate' },
   { at: 1.3, react: 'flinch' },

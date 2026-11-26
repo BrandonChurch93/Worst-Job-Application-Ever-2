@@ -6,7 +6,9 @@ import { setRun, type Style } from '../../../shell/real/type'
 import { arc, outlineOf, profile, roundedRect, sweep, type ProfilePoint } from '../../../shell/solids'
 import { words } from '../../../shell/words'
 import type { Shape } from '../../../stage/types'
+import { hash01 } from '../../../core/random'
 import { markOf } from '../layout'
+import { HIT } from '../script'
 import { studio } from '../../../post/studio'
 import { INK, ink } from './stampInk'
 
@@ -18,7 +20,7 @@ const PAD = { out: 1.6, tall: 5, gap: 1.6 }
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 function lacquer(): THREE.MeshPhysicalMaterial {
-  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xa8140f, THREE.SRGBColorSpace), roughness: 0.38, metalness: 0, specularIntensity: 0.45, clearcoat: 1, clearcoatRoughness: 0.07 }))
+  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xc41a10, THREE.SRGBColorSpace), roughness: 0.34, metalness: 0, specularIntensity: 0.45, clearcoat: 1, clearcoatRoughness: 0.07 }))
   lacquerMade.name = 'stamp-lacquer'
   return lacquerMade
 }
@@ -40,7 +42,7 @@ function blockOf(s: Shape): THREE.Object3D {
   root.add(solid(sweep(outlineOf(s, 0, 12), profile(pad), false), m.rubber))
   const round = 12
   const top = h - 0.7
-  const body: ProfilePoint[] = [[1.6, PAD.tall + PAD.gap - 0.4, true], [0.2, PAD.tall + PAD.gap + 1.2], [0, PAD.tall + PAD.gap + 3], [0, top - round], ...arc(0, top - round, round, round, 12).slice(1), ...[0.8, 0.55, 0.3, 0.06].map((t): ProfilePoint => [half - (half - round) * t, top + 0.7 * (1 - t * t)])]
+  const body: ProfilePoint[] = [[1.6, PAD.tall + PAD.gap - 0.4, true], [0.2, PAD.tall + PAD.gap + 1.2], [0, PAD.tall + PAD.gap + 3], [0, top - round], ...arc(0, top - round, round, round, 12).slice(1), [round + 5, top + 0.25], [Math.min(half - 1, round + 14), top + 0.4]]
   root.add(solid(sweep(outlineOf(s, 0, 12), profile(body)), lacquer()))
   return root
 }
@@ -129,12 +131,85 @@ function wordOf(s: Shape): THREE.Mesh {
   return print(inked(pos, data.colour, data.index, m.w, m.h, 0, 0))
 }
 
+const DUST = { seed: INK.seed + 41, motes: 96, fan: 8, colour: 0x979083, slow: 0.17 }
+
+interface Mote { x: number; y: number; nx: number; ny: number; speed: number; r: number; grow: number; a: number }
+
+function motes(): Mote[] {
+  const m = markOf()
+  const hw = m.blockW / 2
+  const hh = m.blockH / 2
+  const out: Mote[] = []
+  for (let i = 0; i < DUST.motes; i++) {
+    const h = (k: number) => hash01(i, k, DUST.seed)
+    const along = h(1) * (hw + hh) * 2
+    const flip = h(2) < 0.5 ? -1 : 1
+    const onLong = along < hw * 2
+    const x = onLong ? along - hw : flip * hw
+    const y = onLong ? flip * hh : along - hw * 2 - hh
+    const spread = (h(3) - 0.5) * 0.9
+    const bx = onLong ? spread : flip
+    const by = onLong ? flip : spread
+    const l = Math.hypot(bx, by)
+    const speck = h(4) < 0.42
+    out.push({ x, y, nx: bx / l, ny: by / l, speed: speck ? 500 + h(5) * 800 : 220 + h(5) * 460, r: speck ? 0.8 + h(6) * 1.2 : 8 + h(6) * 14, grow: speck ? 0 : 90, a: speck ? 0.8 : 0.2 + h(7) * 0.2 })
+  }
+  return out
+}
+
+function dustOf(): THREE.Mesh {
+  const list = motes()
+  const per = DUST.fan + 1
+  const pos = new Float32Array(list.length * per * 3)
+  const col = new Float32Array(list.length * per * 4)
+  const idx: number[] = []
+  list.forEach((mote, i) => {
+    const base = i * per
+    col.set([1, 1, 1, mote.a], base * 4)
+    for (let k = 0; k < DUST.fan; k++) {
+      col.set([1, 1, 1, 0], (base + 1 + k) * 4)
+      idx.push(base, base + 1 + k, base + 1 + ((k + 1) % DUST.fan))
+    }
+  })
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.BufferAttribute(col, 4))
+  g.setIndex(idx)
+  const mesh = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: new THREE.Color().setHex(DUST.colour, THREE.SRGBColorSpace), vertexColors: true, transparent: true, depthWrite: false }))
+  mesh.frustumCulled = false
+  mesh.castShadow = false
+  mesh.userData.motes = list
+  return mesh
+}
+
+function blow(mesh: THREE.Mesh, age: number): void {
+  const list = mesh.userData.motes as Mote[]
+  const pos = mesh.geometry.getAttribute('position') as THREE.BufferAttribute
+  const per = DUST.fan + 1
+  const gone = DUST.slow * (1 - Math.exp(-age / DUST.slow))
+  list.forEach((mote, i) => {
+    const cx = mote.x + mote.nx * mote.speed * gone
+    const cy = mote.y + mote.ny * mote.speed * gone
+    const r = mote.r + mote.grow * gone
+    const z = 0.4 + (mote.grow > 0 ? 14 : 30) * gone
+    pos.setXYZ(i * per, cx, cy, z)
+    for (let k = 0; k < DUST.fan; k++) {
+      const a = (k / DUST.fan) * Math.PI * 2
+      pos.setXYZ(i * per + 1 + k, cx + Math.cos(a) * r, cy + Math.sin(a) * r, z)
+    }
+  })
+  pos.needsUpdate = true
+  const left = Math.max(0, 1 - age / HIT.dustSeconds)
+  ;(mesh.material as THREE.MeshBasicMaterial).opacity = left * left * Math.min(1, age / 0.02)
+}
+
 export const stamp: PartMaker | null = {
   key(s) {
     if (s.id === 'letter-stamp') return `word:${s.type!.font}:${s.type!.px}:${q(s.w)}:${q(s.h)}:${words(s.words!, s.text)}`
     if (s.kind === 'text') return null
     if (s.id === 'letter-mark-top') return `frame:${q(s.w)}:${q(s.h)}`
     if (s.id.startsWith('letter-mark-')) return ''
+    if (s.role === 'dust') return 'dust'
     if (s.role === 'stampBlock') return `block:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
     if (s.role === 'stampGrip') return `grip:${q(s.w)}:${q(s.h)}:${q(s.z1 - s.z0)}`
     return null
@@ -142,13 +217,35 @@ export const stamp: PartMaker | null = {
   make(s) {
     if (s.id === 'letter-stamp') return wordOf(s)
     if (s.id === 'letter-mark-top') return frameOf()
+    if (s.role === 'dust') return dustOf()
     if (s.role === 'stampGrip') return gripOf(s)
     return blockOf(s)
+  },
+  pose(o, s, ctx) {
+    if (s.role === 'dust') {
+      blow(o as THREE.Mesh, s.v?.[0] ?? 0)
+      return
+    }
+    if (s.role !== 'stampBlock' && s.role !== 'stampGrip') return
+    const age = s.v?.[0] ?? HIT.over
+    const down = s.v?.[1] ?? HIT.over
+    const lean = s.v?.[2] ?? 0
+    const rock = HIT.rock * Math.exp(-age / HIT.rockSeconds) * Math.cos(age * HIT.rockRate) + HIT.landRock * Math.exp(-down / 0.09) * Math.cos(down * 44)
+    const give = HIT.give * Math.exp(-age / HIT.giveSeconds)
+    const base = ctx.byId.get('stamp-block')
+    const up = base ? s.z0 - base.z0 : 0
+    const tall = base ? base.h / 2 : s.h / 2
+    const a = lean + rock
+    o.rotation.x += a
+    o.position.y -= up * Math.sin(a)
+    o.position.z += up * (Math.cos(a) - 1) - give + Math.abs(Math.sin(rock)) * tall
   },
   drop(o) {
     o.traverse((c) => {
       const m = c as THREE.Mesh
-      if (m.isMesh) m.geometry.dispose()
+      if (!m.isMesh) return
+      m.geometry.dispose()
+      if (m.userData.motes) (m.material as THREE.Material).dispose()
     })
   }
 }

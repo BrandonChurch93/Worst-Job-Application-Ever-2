@@ -5,7 +5,7 @@ import { words } from '../../shell/words'
 import { homePose } from '../../stage/camera'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { KEYS, makeLayout, MARK_ROT, markOf, placesOf, spotOf, turned } from './layout'
-import { CUES, pointerAt, type Marks } from './script'
+import { CUES, HIT, pointerAt, type Marks } from './script'
 import { AT } from './timeline'
 
 type Phase = 'wait' | 'letter' | 'metrics' | 'reset'
@@ -139,7 +139,7 @@ export function makePage(): PageLogic {
 
   const yourTime = (io: StepIo): number => (s.mode === 'film' ? filmSeconds() : (io.elapsed ?? io.time))
 
-  function stampPose(): { cx: number; cy: number; z: number; rot: number } | null {
+  function stampPose(): { cx: number; cy: number; z: number; rot: number; tilt?: number } | null {
     if (s.phase === 'wait') return null
     const rest = { cx: places.rest.cx, cy: places.rest.cy, z: 0, rot: 0 }
     if (s.phase !== 'letter') return rest
@@ -150,11 +150,12 @@ export function makePage(): PageLogic {
     if (p < AT.swoop[0]) return null
     if (p < AT.swoop[1]) {
       const u = out3(span(p, AT.swoop))
-      return { cx: mark.cx + (1 - u) * 190, cy: mark.cy - (1 - u) * (mark.cy + 260), z: high + (1 - u) * 20, rot: MARK_ROT }
+      const wind = smooth(span(p, [AT.swoop[1] - HIT.windSeconds, AT.swoop[1]]))
+      return { cx: mark.cx + (1 - u) * 190, cy: mark.cy - (1 - u) * (mark.cy + 260), z: high + (1 - u) * 20 + HIT.windRise * wind, rot: MARK_ROT, tilt: HIT.windTilt * wind }
     }
     if (p < AT.slam[1]) {
       const u = span(p, AT.slam)
-      return { cx: mark.cx, cy: mark.cy, z: on + (high - on) * (1 - u * u), rot: MARK_ROT }
+      return { cx: mark.cx, cy: mark.cy, z: on + (high + HIT.windRise - on) * (1 - Math.pow(u, HIT.fallPower)), rot: MARK_ROT, tilt: HIT.windTilt * (1 - smooth(clamp(u / 0.7))) }
     }
     if (p < AT.lift[0]) return { cx: mark.cx, cy: mark.cy, z: on, rot: MARK_ROT }
     if (p < AT.lift[1]) return { cx: mark.cx, cy: mark.cy, z: on + (carryZ - on) * smooth(span(p, AT.lift)), rot: MARK_ROT }
@@ -203,7 +204,18 @@ export function makePage(): PageLogic {
     else if (lettering && p < AT.panel[1]) carry(over, nodes.metrics, { dx: 0, dy: 0, dz: -(heights.card + 4) * (1 - smooth(span(p, AT.panel))), rot: 0, px: 0, py: 0 })
     const pose = stampPose()
     if (!pose) over[nodes.stamp.id] = null
-    else if (pose.z !== 0 || pose.rot !== 0 || pose.cx !== places.rest.cx) carry(over, nodes.stamp, { dx: pose.cx - places.rest.cx, dy: pose.cy - places.rest.cy, dz: pose.z, rot: pose.rot, px: places.rest.cx, py: places.rest.cy })
+    else {
+      if (pose.z !== 0 || pose.rot !== 0 || pose.cx !== places.rest.cx) carry(over, nodes.stamp, { dx: pose.cx - places.rest.cx, dy: pose.cy - places.rest.cy, dz: pose.z, rot: pose.rot, px: places.rest.cx, py: places.rest.cy })
+      const age = lettering && s.jolt >= 0 ? (s.n - s.jolt) / stepHz : HIT.over
+      const down = lettering && p >= AT.lower[1] ? p - AT.lower[1] : HIT.over
+      const v = [Math.min(HIT.over, age), Math.min(HIT.over, down), pose.tilt ?? 0]
+      over['stamp-block'] = { ...(over['stamp-block'] ?? {}), v }
+      over['stamp-grip'] = { ...(over['stamp-grip'] ?? {}), v }
+      if (age < HIT.dustSeconds) {
+        const reach = HIT.dustReach
+        bars.push({ id: 'stamp-dust', part: 'stamp', kind: 'box', role: 'dust', x: mark.cx - mark.blockW / 2 - reach, y: mark.cy - mark.blockH / 2 - reach, w: mark.blockW + reach * 2, h: mark.blockH + reach * 2, z0: heights.paper, z1: heights.paper + 0.05, tone: 'paper', rot: MARK_ROT, v: [age] })
+      }
+    }
     if (s.stamped) {
       states.push('stamped')
       over['letter-stamp'] = { ...(over['letter-stamp'] ?? {}), rot: MARK_ROT }
