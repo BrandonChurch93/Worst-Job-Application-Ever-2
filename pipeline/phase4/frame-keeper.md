@@ -1,0 +1,65 @@
+# Frame keeper, round 6
+
+Branch `agent/frame-keeper`, from `origin/main` 4f64ab74. Folders: `src/table/real/frame/`, `hardware/`, `play/`.
+
+## What a quick look misses in the approved images (my parts)
+
+1. The chrome is dark, not pale: a rail, a hoop or a cap is mostly the dark room, cut by two or three thin white lines that run its whole length, with the lamp colour only on its under side.
+2. The rails of the frame are shallow and nearly as dark as the floor from above: the long highlight sits on the inner chamfer only, the land itself is a slow gradient with no seam and no row of dark screws.
+3. Every sling plate stands off the floor on three posts with a ring of wire or rubber round them: the ring shows as a rim all round under the plate's edge, and the lamp under the plate lights the posts, not the plate.
+4. A bat is one clean orange lozenge with a black band on its side and one small chrome screw at each end: no disc on top, no wall under it.
+5. The drain is a deep dark mouth with walls: its plate, its screws and its slot share one grid, and the apron beside it is plain ceramic with no seam running into the slot.
+
+## Point 1: three largest differences of each key that are these folders' (MEASURED at 4f64ab74, draft hd, each looked at full size)
+
+- table-wide: side walls and south rail ends tall pale slabs with striped lands; marquee smaller, paler, on a ribbed grey foot; highway wire and trestles pale grey to white, tubes thick and dark (size is the layout's).
+- tier-corporate: rails near white sheets with black dot screws and seams; bats washed orange with a white pivot disc and black dot, grey shoulder wall under each; sling posts and ring hidden under the plates, lift tube near black with a brown elbow.
+- tier-office: same rails; bumpers flat pale discs; ramp wire and hoops pale grey.
+- tier-street: top right corner a large white rounded block; lower shoulders black with pockets; lift tube and elbow.
+- rail-cam: wire rails thick matte blue grey with no glints; hoops full white rings; back wall a flat striped grey slab, lift elbow a large ribbed barrel.
+- last-save: each bat on a tall grey slab wall with the white disc and black dot; slings and inlane guides flat plate on thin dark posts and slab walls; apron flat near white with grey seams, shallow drain, black box at lower right, post caps and rings dark.
+
+## Counts before any change (MEASURED: `npm run build && npm run counts -- --key <key> --live low`, at 4f64ab74)
+
+| key | hardware | frame | targets | flippers | bumpers | loader | lift | ramps | marquee | scene |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| table-wide | 21 / 30368 | 16 / 11732 | 15 / 23180 | 12 / 33360 | 8 / 48192 | 8 / 9408 | 8 / 8108 | 5 / 20536 | 4 / 2168 | 195 / 449426 |
+| tier-corporate | 13 / 19488 | 9 / 8375 | 7 / 11420 | 5 / 13900 | 2 / 17556 | 4 / 3696 | 3 / 2416 | 0 / 0 | 4 / 2168 | 109 / 252142 |
+| tier-office | 16 / 26252 | 12 / 10766 | 11 / 18208 | 7 / 19460 | 8 / 48192 | 3 / 4432 | 6 / 5892 | 3 / 15740 | 1 / 806 | 129 / 335094 |
+| tier-street | 19 / 27952 | 13 / 9666 | 8 / 12060 | 6 / 16680 | 2 / 17556 | 2 / 4352 | 3 / 2342 | 5 / 20536 | 0 / 0 | 106 / 269420 |
+
+Cells are draw calls / triangles.
+
+## Counts after (MEASURED at 04:17 UTC on 67501935, same command)
+
+| key | hardware | frame | targets | flippers | bumpers | loader | lift | ramps | marquee |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| table-wide | 21 / 30368 | 16 / 11732 | 15 / 23180 | 12 / 33216 | 8 / 48192 | 8 / 9408 | 8 / 8108 | 5 / 20536 | 4 / 2168 |
+| tier-corporate | 13 / 19488 | 9 / 8375 | 7 / 11420 | 5 / 13840 | 2 / 17556 | 4 / 3696 | 3 / 2416 | 0 / 0 | 4 / 2168 |
+| tier-office | 16 / 26252 | 12 / 10766 | 11 / 18208 | 7 / 19376 | 8 / 48192 | 3 / 4432 | 6 / 5892 | 3 / 15740 | 1 / 806 |
+| tier-street | 19 / 27952 | 13 / 9666 | 8 / 12060 | 6 / 16608 | 2 / 17556 | 2 / 4352 | 3 / 2342 | 5 / 20536 | 0 / 0 |
+
+Draw calls equal in every part and every key; triangles equal or fewer (bats lost 144 with the pivot disc).
+
+## Looks used (limit 40 per part in this round)
+
+One draft still shows several parts; each still is counted once, under the part it was rendered for.
+
+| time UTC | key | for | count |
+| --- | --- | --- | --- |
+| 03:40 to 03:55 | six keys of point 1 | all | 6 |
+| 03:57 to 04:07 | rail-cam 1, last-save 2, tier-street 1, table-wide 1, loader-page 1 | chrome, bats, drain, loader | 6 |
+| 04:08 to 04:13 | youre-fired 2, table-wide 1, tier-corporate 1, loader-page 1, last-save 1, tier-office 1 | walls, loader | 7 |
+| 04:19 to 04:21 | youre-fired, loader-page, tier-office, table-wide | walls, loader, marquee | 4 |
+
+## Decisions
+
+- Point 2. `steel()` term `sky` now draws a dark ceiling with long thin tube lamps and lamp colour only near the horizon below; the hardware's caps, rings and posts carry it (`sky: 0.6`), the highway's wire is 0.07 rough so it takes it whole. The room is the same code for all three folders: one place to tune.
+- Point 2, walls. `steel()` has a new term `wall`: the share of the room and of the lamps' broad shine an upright face keeps (by its world normal). Frame aluminium runs `wall: 0.12`, so tall walls are dark with the glints of the chamfers, where lands and chamfers keep the room. MEASURED in `youre-fired` draft, x 0..600, y 0..450: (96,81,77) before, (59,49,47) at 0.3, (52,43,42) at 0.12, approved (29,34,38). lamp_keeper asked for it and leaves `wjlEnv` alone.
+- Point 3. The sling plates, their corner screws and cups are the modellers' (`models/corporate/wedges.ts`, `models/street/things.ts`, `models/office/staplers.ts`); mine are the three posts and the rubber ring. The ring's size is a promise to them (`waist + 2 * bandThick` = 11.5, held by `tests/table-hardware.test.ts`), so it stays; the ring no longer takes the plate's shadow, so it shows as a rim under the plate's edge.
+- Point 4. The drain's slot is as wide as the two grey blocks stand apart, so block screws and bezel screws share their columns. Sent to table_runner: `drain-label` stands at 7 over a plate whose top is at 6, `apron-card-words` at slab + 2 hangs between the paper (slab + 1) and the cover (slab + 2.4).
+- Point 5. Every place in `frame/tier.ts` and `hardware/tier.ts` reads the layout (`COLS`, `MOUTH`, `OUTLANE`, `<tier>.exit`, `<tier>.chute.mouth`). Left typed, as my own detail with no counterpart in the layout: the rail joint at 5.6 balls and the kerb stripe's span. The shoulder rim's height is my own constant: lowered from 56 to 30 px, so a bat no longer stands on a slab wall.
+- Point 6. `MACHINE_ORANGE` untouched. The bats' paint is a little less rough so the orange is deeper under the lamps; the pivot is a chrome dome with a slot, where a white disc with a black hole read as an eye.
+- Point 8. Loader: the cup is near black, deep, and aluminium outside the lamps now loses its mirror where its paint is dark (`wjf-dim`), so the bowl no longer reads mid grey; ring toned to the approved brushed grey. Marquee: its size is the layout's `marquee.back`; the grey behind and under it was my foot (beam, braces, plate), now dark.
+- Rail-cam: the near wire lies inside the camera's blur, so its glints cannot show; told table_runner.
+- The clear tube's turned-away wall was 4.2 times bright over the table and read as a pale striped sheet at a low eye; now 1.8.

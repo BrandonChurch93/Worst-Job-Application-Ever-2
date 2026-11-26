@@ -7,13 +7,13 @@ import { MACHINE_ORANGE } from '../frame/mats'
 import { drop, matsOf, part } from './mats'
 
 const deep = (h: number, k: number): number => new THREE.Color(h).multiplyScalar(k).getHex()
-export const ORANGE = look(MACHINE_ORANGE, 0.5, 0, 0.3)
-const ORANGE_TOP = look(MACHINE_ORANGE, 0.48, 0, 0.3)
+export const ORANGE = look(MACHINE_ORANGE, 0.56, 0, 0.14)
+const ORANGE_TOP = look(MACHINE_ORANGE, 0.54, 0, 0.14)
 const ORANGE_LOW = look(deep(MACHINE_ORANGE, 0.68), 0.45, 0, 0.4)
 const RUBBER = look(0x161617, 0.86, 0, 0)
 const RUBBER_LINE = look(0x2c2c2e, 0.7, 0, 0)
 const NYLON = look(0xe4e0d6, 0.5, 0, 0.2)
-const CHROME = look(0xe6e9ec, 0.1, 1, 0)
+const CHROME = look(0xe6e9ec, 0.07, 1, 0)
 const SOCKET = look(0x2a2b2d, 0.6, 1, 0)
 const SHAFT = look(0xc9cdd1, 0.25, 1, 0)
 
@@ -58,8 +58,8 @@ export function batGeometry(): THREE.BufferGeometry {
   b.add(prism(line(BAT.lip + BAT.crown + 2.4), BAT.top - 0.6, BAT.top + 1.1, 0.9, 2), ORANGE_TOP)
   const boss = Math.max(8, ra * 0.33)
   b.add(lathe([[boss + 2.2, BAT.top + 0.6], [boss + 2.2, BAT.top + 1.6], [boss + 1, BAT.top + 2.6], [boss - 0.4, BAT.top + 2.6]], 24), ORANGE_TOP)
-  b.add(lathe([[boss, BAT.top + 2.2], [boss, BAT.top + 3.4], [boss - 1.2, BAT.top + 4.6], [boss * 0.45, BAT.top + 5.2], [boss * 0.4, BAT.top + 5.2]], 24), CHROME)
-  b.add(lathe([[boss * 0.4, BAT.top + 5.2], [boss * 0.36, BAT.top + 3.2], [0, BAT.top + 3.2]], 6, 80), SOCKET)
+  b.add(lathe([[boss, BAT.top + 2.2], [boss, BAT.top + 3.2], [boss - 1.4, BAT.top + 4.5], [boss * 0.5, BAT.top + 5.1], [0, BAT.top + 5.2]], 24), CHROME)
+  b.add(prism([[-boss * 0.62, -0.7], [boss * 0.62, -0.7], [boss * 0.62, 0.7], [-boss * 0.62, 0.7]], BAT.top + 4.6, BAT.top + 5.26, 0), SOCKET, mat({ rz: 0.6 }))
   const stud = Math.max(5, rb * 0.3)
   b.add(lathe([[stud + 1.4, BAT.top + 0.6], [stud + 1.4, BAT.top + 1.5], [stud, BAT.top + 2.3], [stud * 0.5, BAT.top + 3.1], [0, BAT.top + 3.2]], 16), CHROME, mat({ x: len }))
   shared = b.done()
@@ -70,7 +70,7 @@ export function batGeometry(): THREE.BufferGeometry {
 const flippersOf = (z: Zone) => table.flippers.filter((f) => f.tier === z.tier)
 
 export const flippers = whole('flippers', {
-  version: 'play-flippers-12',
+  version: 'play-flippers-13',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.flippers.${z.id}`

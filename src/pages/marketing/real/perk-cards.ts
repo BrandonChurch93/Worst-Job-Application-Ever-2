@@ -6,6 +6,7 @@ import { look } from '../../../post/look'
 import { merge, outlineOf, profile, sweep } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { dims, mesh, q, shared, srgb } from './careers-solids'
+import { glassPicture, PICTURE } from './glass-picture'
 
 export const SLAB = { frame: 2.6, bevel: 10.5, rise: 3.6, round: 1.8, band: 3.4, flat: 3 }
 
@@ -34,7 +35,7 @@ export function cardGlass(): THREE.MeshPhysicalMaterial {
   return glassMade
 }
 
-export const GLASS = { colour: 0xc4cecb, shade: 0.27, after: 0.6, exit: 1.4, rim: 1.8, glint: 0.25, line: 0.9, wash: 0.13, warm: 0.07, lean: 0.03, caster: 4.2, least: 0.4, most: 4.4, through: 0.8, grain: 0.024 }
+export const GLASS = { colour: 0xc4cecb, shade: 0.62, exit: 0.72, glint: 0.36, wash: 0.13, warm: 0.07, lean: 0.03, caster: 6.4, least: 0.4, most: 4.4, through: 0.8, grain: 0.024, mostSide: 0.7, fade: [3, 13] as [number, number], bend: 7 }
 
 const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
 const KX = look.key.direction[0] / keyFlat
@@ -46,29 +47,71 @@ const bevelOf = (s: Shape): number => SLAB.bevel * Math.min(1, Math.min(s.w, s.h
 // How far in from a slab's outline its ground edge ends and its flat face begins.
 export const groundEdge = (s: Shape): number => SLAB.frame + SLAB.round + bevelOf(s) + SLAB.flat
 
-// One face of the slab, from the middle of its wall to the middle of its face. `d` is how far in from the edge a ring lies, `z` its height,
-// `lit` what the side toward the light shows there and `away` what the far side shows: the near bevel lies in the glass's own shade with a
-// bright line where it meets the face, the far bevel lets the light out and ends in a bright line at the very edge.
+// How the ground edge shows, read off the approved card. `d` is how far in from the slab's outline, in page pixels.
+// The side toward the light: a bright hairline on the rounded top of the wall, then the edge's own shade on the page under the slab, seen through the glass:
+// a thin dark line, a paler line where the bevel meets the face, and a soft shade that is longer the more the edge faces the light.
+// The far side: the light leaves there, so the face brightens toward the edge, dips, and ends in a white rim.
+const NEAR: [number, number][] = [[0, -0.9], [0.9, -0.9], [1.7, 0.8], [3.6, 1], [5.4, 0.92], [6.8, 0.74], [8.4, 0.9], [10, 0.96], [12.3, 0.94]]
+const FAR: [number, number][] = [[0, 1.2], [1.2, 1.15], [2.2, 0.8], [3.2, 0.45], [4.5, 0.18], [6, 0.26], [8, 0.38], [10, 0.38], [12, 0.34], [14, 0.27], [16, 0.19], [18, 0.14], [20, 0.09], [24, 0.04], [28, 0]]
+
+const along = (table: [number, number][], d: number): number => {
+  if (d <= table[0]![0]) return table[0]![1]
+  for (let i = 1; i < table.length; i++) {
+    const [d1, v1] = table[i]!
+    const [d0, v0] = table[i - 1]!
+    if (d <= d1) return v0 + ((v1 - v0) * (d - d0)) / (d1 - d0 || 1)
+  }
+  return table[table.length - 1]![1]
+}
+
+// What the glass's own colour is multiplied by at `d` px in from the outline, where the outline faces the light by `side` (1 toward it, -1 away).
+export function edgeLight(d: number, facing: number, reach = 1): number {
+  const G = GLASS
+  const side = Math.max(-G.mostSide, Math.min(G.mostSide, facing)) / G.mostSide
+  if (side >= 0) {
+    const end = 12.3 + (G.fade[0] + G.fade[1] * side) * reach
+    const shade = d <= 12.3 ? along(NEAR, d) : 0.94 * (1 - smooth((d - 12.3) / (end - 12.3)))
+    return shade < 0 ? 1 - side * shade * G.glint : 1 - side * G.shade * shade
+  }
+  return 1 - side * G.exit * along(FAR, d)
+}
+
+const smooth = (t: number): number => {
+  const u = Math.max(0, Math.min(1, t))
+  return u * u * (3 - 2 * u)
+}
+
+// One face of the slab, from the middle of its wall to the middle of its face. `d` is how far in from the edge a ring lies, `z` its height.
 // A ring further in than the corner's radius keeps its corners square, so no ring ever folds over itself.
+// The picture coordinates of the ground edge are pushed outward, so what shows through the edge is bent as a rounded edge of glass bends it.
 function face(s: Shape, half: number, flip: number, open: boolean): THREE.BufferGeometry {
   const bevel = bevelOf(s)
   const foot = half - SLAB.rise
   const G = GLASS
-  const rings: { d: number; z: number; lit: number; away: number; lean: number; warm?: number }[] = [
-    { d: 0, z: 0, lit: G.glint, away: 0.9, lean: 1 },
-    { d: 0, z: foot - SLAB.round, lit: G.glint, away: 1, lean: 1 },
-    { d: 0.5, z: foot - 0.5, lit: G.glint, away: G.rim, lean: 0.5, warm: 1 },
-    { d: SLAB.round, z: foot, lit: G.shade, away: G.rim, lean: G.lean * 2, warm: 1 },
-    { d: SLAB.round + 1.4, z: foot + SLAB.rise * 0.2, lit: G.shade, away: G.exit, lean: G.lean, warm: 0.5 },
-    { d: SLAB.round + bevel * 0.42, z: foot + SLAB.rise * 0.62, lit: G.shade - 0.02, away: G.exit - 0.04, lean: G.lean },
-    { d: SLAB.round + bevel - 1.6, z: foot + SLAB.rise * 0.97, lit: G.shade + 0.02, away: G.exit - 0.02, lean: G.lean },
-    { d: SLAB.round + bevel - 0.4, z: half, lit: G.line, away: G.exit, lean: 0.05 },
-    { d: SLAB.round + bevel + 1, z: half, lit: G.line, away: G.exit, lean: 0 },
-    { d: SLAB.round + bevel + SLAB.flat, z: half, lit: open ? 0.9 : G.after, away: open ? 1.04 : G.exit - 0.02, lean: 0 }
+  const k = bevel / SLAB.bevel
+  const top = SLAB.round + bevel
+  const lowest = Math.min(s.w, s.h) / 2 - SLAB.frame
+  const rings: { d: number; z: number; lean: number }[] = [
+    { d: 0, z: 0, lean: 1 },
+    { d: 0, z: foot - SLAB.round, lean: 1 },
+    { d: 0.5, z: foot - 0.5, lean: 0.5 },
+    { d: 1.1, z: foot - 0.1, lean: 0.2 },
+    { d: SLAB.round, z: foot, lean: G.lean * 2 },
+    { d: SLAB.round + 1.8 * k, z: foot + SLAB.rise * 0.24, lean: G.lean },
+    { d: SLAB.round + 3.4 * k, z: foot + SLAB.rise * 0.45, lean: G.lean },
+    { d: SLAB.round + 4.8 * k, z: foot + SLAB.rise * 0.62, lean: G.lean },
+    { d: SLAB.round + 6.4 * k, z: foot + SLAB.rise * 0.8, lean: G.lean },
+    { d: SLAB.round + 8.2 * k, z: foot + SLAB.rise * 0.94, lean: G.lean },
+    { d: top - 0.4, z: half, lean: 0.05 },
+    { d: top + SLAB.flat, z: half, lean: 0 }
   ]
-  if (!open) rings.push({ d: SLAB.round + bevel + SLAB.flat + bevel * 0.6, z: half, lit: (1 + G.after) / 2 + 0.05, away: (1 + G.exit) / 2 - 0.03, lean: 0 }, { d: SLAB.round + bevel + SLAB.flat + bevel * 1.4, z: half, lit: 1, away: 1, lean: 0 })
-  const lowest = Math.min(s.w, s.h) / 2
-  if (!open) for (const f of [0.3, 0.65]) rings.push({ d: SLAB.round + bevel * 2.4 + SLAB.flat + f * (lowest - SLAB.round - bevel * 2.4 - SLAB.flat - 1), z: half, lit: 1, away: 1, lean: 0 })
+  const reach = open ? 0.12 : Math.min(1, Math.max(0.12, (lowest - 2 - top - SLAB.flat) / (G.fade[0] + G.fade[1] - SLAB.flat)))
+  if (!open) {
+    const last = top + SLAB.flat + (G.fade[0] + G.fade[1] - SLAB.flat) * reach
+    const steps = Math.max(2, Math.round((last - top - SLAB.flat) / 2.2))
+    for (let i = 1; i <= steps; i++) rings.push({ d: top + SLAB.flat + ((last - top - SLAB.flat) * i) / steps, z: half, lean: 0 })
+    for (const f of [0.3, 0.65]) rings.push({ d: last + f * Math.max(0, lowest - last - 1), z: half, lean: 0 })
+  }
   const outline = outlineOf(s, SLAB.frame, 14)
   const n = outline.count
   const pos: number[] = []
@@ -83,11 +126,11 @@ function face(s: Shape, half: number, flip: number, open: boolean): THREE.Buffer
     wide = Math.max(wide, outline.x[i]!)
     tall = Math.max(tall, outline.y[i]!)
   }
-  const put = (x: number, y: number, z: number, nx: number, ny: number, nz: number, v: number, warm = 0): void => {
+  const put = (x: number, y: number, z: number, nx: number, ny: number, nz: number, v: number, warm: number, ux: number, uy: number): void => {
     const wash = 1 + G.wash * ((x * KX + flip * y * KY) / span)
     pos.push(x, y, z)
     nor.push(nx, ny, nz)
-    uv.push(x, y)
+    uv.push(ux, uy)
     col.push(v * wash * (1 + warm * 0.6), v * wash, v * wash * (1 - warm))
   }
   rings.forEach((ring, r) => {
@@ -96,16 +139,19 @@ function face(s: Shape, half: number, flip: number, open: boolean): THREE.Buffer
     const run = after.d - before.d
     const up = after.z - before.z
     const l = Math.hypot(run, up) || 1
+    const dd = ring.d / k
+    const bend = G.bend * Math.max(0, 1 - ring.d / top) ** 2
     for (let i = 0; i < n; i++) {
       const ox = outline.nx[i]!
       const oy = outline.ny[i]!
       const side = ox * KX + flip * oy * KY
-      const v = side > 0 ? 1 + side * (ring.lit - 1) : 1 - side * (ring.away - 1)
+      const v = r === 0 && side > 0 ? 0.9 : edgeLight(dd, side, reach)
       const out = (up / l) * ring.lean
       const rise = Math.sqrt(Math.max(0, 1 - out * out))
       const x = Math.max(-(wide - ring.d), Math.min(wide - ring.d, outline.x[i]! - ring.d * ox))
       const y = Math.max(-(tall - ring.d), Math.min(tall - ring.d, outline.y[i]! - ring.d * oy))
-      put(x, y, ring.z, ox * out, oy * out, rise, v, side < 0 ? -side * (ring.warm ?? 0) * G.warm : 0)
+      const warm = side < 0 && dd < 3 ? -side * G.warm * (1 - dd / 3) : 0
+      put(x, y, ring.z, ox * out, oy * out, rise, v, warm, x + ox * bend, y + oy * bend)
     }
   })
   for (let r = 0; r < rings.length - 1; r++) {
@@ -116,7 +162,7 @@ function face(s: Shape, half: number, flip: number, open: boolean): THREE.Buffer
   }
   const last = (rings.length - 1) * n
   if (!open) {
-    put(0, 0, half, 0, 0, 1, 1)
+    put(0, 0, half, 0, 0, 1, 1, 0, 0, 0)
     for (let i = 0; i < n; i++) idx.push(rings.length * n, last + i, last + ((i + 1) % n))
   }
   const g = new THREE.BufferGeometry()
@@ -174,11 +220,52 @@ function sealGeometry(s: Shape): THREE.BufferGeometry {
 
 const AXIS = new THREE.Vector3(1, 0, 0)
 
-// The page's own grain, read again as the glass's normal: what lies under a frosted slab shows through it softly. The picture is shared, so it costs no memory.
+// The glass's own colour is multiplied by its picture (what shows through it), and the page's own grain is read again as its normal, far weaker: the frost of its face.
 export const glassOptions = (): THREE.MeshPhysicalMaterialParameters => ({
-  color: srgb(GLASS.colour), roughness: 0.34, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, vertexColors: true, shadowSide: THREE.BackSide,
+  color: srgb(GLASS.colour).multiplyScalar(1 / PICTURE.level), map: glassPicture(), roughness: 0.34, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, vertexColors: true, shadowSide: THREE.BackSide,
   normalMap: materials().ceramic.normalMap, normalScale: new THREE.Vector2(GLASS.grain, GLASS.grain)
 })
+
+let spillMade: THREE.MeshPhysicalMaterial | null = null
+
+// The light that comes through a slab of glass and falls on the page beyond its far edge: the page's own ceramic, warm as light is that has
+// passed through a ground edge, laid thin over the slab's shadow. It takes no shadow, so where it lies the shadow is paler and warmer.
+const spillMaterial = (): THREE.MeshPhysicalMaterial =>
+  (spillMade ??= studio(new THREE.MeshPhysicalMaterial({
+    color: srgb(0xf2f1ee).multiply(new THREE.Color(SPILL.tint[0], SPILL.tint[1], SPILL.tint[2])), roughness: 0.74, metalness: 0, specularIntensity: 0.6, vertexColors: true, transparent: true, depthWrite: false,
+    normalMap: materials().ceramic.normalMap, normalScale: new THREE.Vector2(0.04, 0.04), polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2
+  })))
+
+export const SPILL = { tint: [1, 0.9, 0.7] as [number, number, number], rings: [[-2, 0], [0, 0.15], [2, 0.14], [4, 0.2], [6, 0.33], [8, 0.45], [10, 0.5], [14, 0.4], [20, 0.15], [28, 0]] as [number, number][], turn: 1.6 }
+
+// The ring of spilled light round a slab's far edges, lying on the page.
+export function spillGeometry(s: Shape): THREE.BufferGeometry {
+  const outline = outlineOf(s, SLAB.frame, 14)
+  const n = outline.count
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  for (const [d, a] of SPILL.rings) {
+    for (let i = 0; i < n; i++) {
+      const side = outline.nx[i]! * KX + outline.ny[i]! * KY
+      pos.push(outline.x[i]! + d * outline.nx[i]!, outline.y[i]! + d * outline.ny[i]!, 0.06)
+      col.push(1, 1, 1, a * Math.max(0, Math.min(1, -side * SPILL.turn)))
+    }
+  }
+  for (let r = 0; r < SPILL.rings.length - 1; r++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(r * n + i, (r + 1) * n + i, r * n + j, r * n + j, (r + 1) * n + i, (r + 1) * n + j)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  g.setIndex(idx)
+  g.computeVertexNormals()
+  return g
+}
 
 const keyLength = Math.hypot(look.key.direction[0], look.key.direction[1], look.key.direction[2]) || 1
 const KEY_Y = look.key.direction[1] / keyLength
@@ -224,6 +311,9 @@ export function restingSlab(s: Shape): THREE.Object3D {
   const foot = mesh(shared(`perkFoot:${dims(s)}`, () => sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, 0, true], [0, GLASS.caster, true]]))), cardGlass(), true, false)
   foot.name = 'foot'
   root.add(foot)
+  const spill = mesh(shared(`perkSpill:${dims(s)}`, () => spillGeometry(s)), spillMaterial(), false, false)
+  spill.name = 'spill'
+  root.add(spill)
   return root
 }
 
