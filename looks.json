@@ -1,35 +1,35 @@
 {
   "folder": "street-finish",
-  "pushed": "2026-11-26T12:15:55.143Z",
-  "commit": "46030588f9993d30b4cdafc4c71577a46d3c764b",
+  "pushed": "2026-11-26T12:36:03.002Z",
+  "commit": "76fe15a1645ebc0bde8c98106aafdd2ac45f6b55",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:15:23.100Z",
+      "time": "2026-11-26T12:32:54.207Z",
       "by": "street-finish",
       "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Key tier-street: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, shape:model.street.police, shape:model.street.garage, shape:model.street.bank, cursor, shape:model.street.mom, shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3, shape:flipper.street.flipper.left, shape:rail.highway.a.4",
-      "time": "2026-11-26T12:15:32.870Z",
+      "time": "2026-11-26T12:36:01.319Z",
       "by": "street-finish",
       "from": "out/work/compare/compare-tier-street.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "table-wide draft, garage: approved left, build right: grey concrete decks with kerbs round the clear spiral",
-      "time": "2026-11-26T12:15:53.785Z",
+      "caption": "table-wide draft, garage: approved left, build right: five cast decks, the one under the rim open before the police sign",
+      "time": "2026-11-26T12:36:01.713Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/garage-side-4.jpg"
+      "from": "out/work/street-finish/garage-side-5.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-street draft, crop: the garage from straight above, a concrete deck with marked bays round the spiral",
-      "time": "2026-11-26T12:15:54.006Z",
+      "caption": "tier-street draft beside approved: concrete deck round the garage, lit roof windows on Mom's house",
+      "time": "2026-11-26T12:36:01.941Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/tier-street-garage-4.jpg"
+      "from": "out/work/street-finish/compare-tier-street-5.jpg"
     }
   ]
 }
