@@ -1,35 +1,35 @@
 {
   "folder": "step2-fix",
-  "pushed": "2026-11-26T07:37:46.055Z",
-  "commit": "b9027488ef33964bf384f4d445f1a97d563710fc",
+  "pushed": "2026-11-26T08:01:52.797Z",
+  "commit": "f7a0b25ecf7ad74a8e1b440ea66e10dc00becb6e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step2-step2_slot-0p83333-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T07:35:27.915Z",
+      "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T07:56:40.646Z",
       "by": "step2-fix",
-      "from": "out/work/stills/step2-step2_slot-0p83333-hd-draft.png"
+      "from": "out/work/stills/key-step2-dial-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still step2-step2_slot-0p90333-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T07:35:40.885Z",
+      "caption": "Key step2-dial: approved on the left, this build on the right, draft tier, with crops of dialWheel, machineTray, cursor, field.start, progressButton, button",
+      "time": "2026-11-26T07:59:37.704Z",
       "by": "step2-fix",
-      "from": "out/work/stills/step2-step2_slot-0p90333-hd-draft.png"
+      "from": "out/work/compare/compare-step2-dial.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Slot beat at 12.05, 12.2, 12.35, 12.6, 13.0, 13.42 s: coins spat at the arrow, falling, lying on the ledge of the tray, swept in as it shuts",
-      "time": "2026-11-26T07:37:44.591Z",
+      "caption": "step2-crank: approved above, 66b36514 below: the tray's wall as a cove, the arm at 30 degrees",
+      "time": "2026-11-26T08:01:51.319Z",
       "by": "step2-fix",
-      "from": "out/work/ap/slot-coins.png"
+      "from": "out/work/looks/files/20261126080151-cmp-crank-cove.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Slot beat at 9.12, 9.42, 9.55, 10.25 s: the knob rises, is pulled to its stop, springs back, the reels stop one after another (before the coins were finished)",
-      "time": "2026-11-26T07:37:44.823Z",
+      "caption": "step2-dial: approved above, 66b36514 below: the tray's wall as a cove, the inner disc",
+      "time": "2026-11-26T08:01:51.554Z",
       "by": "step2-fix",
-      "from": "out/work/ap/slot-strip.png"
+      "from": "out/work/looks/files/20261126080151-cmp-dial-cove.png"
     }
   ]
 }
