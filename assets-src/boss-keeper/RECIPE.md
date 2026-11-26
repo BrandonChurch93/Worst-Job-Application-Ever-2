@@ -100,6 +100,8 @@ Every texture and built asset of the boss that this owner changed or added. All 
 - Why this one: a satin ring that does not mirror the room, over a wall that reads as broken stone. 0 MB.
 - Date: 2026-11-26
 
+Added later to the glass block: its colour is multiplied by 0.8 while it stands (`SHIELD_GLASS.up`), and is the full 0x8c9895 once it lies in the wreck.
+
 ## glass of the verification card (material and geometry, no new image)
 
 - Made by: `card()` in `src/pages/step4/real/verify-card.ts`; the material is `paleGlass` in `bossKit()` (`src/boss/real/body-kit.ts`)
