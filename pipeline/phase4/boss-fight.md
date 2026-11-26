@@ -102,7 +102,7 @@ For the next owner of the body, seen from this part:
 
 - At `boss-down` the body's `SCATTER` lays one leg under the long top plate and one leg and a plate at the lower right edge of the frame; the approved wreck is smaller pieces spread with air between them.
 - At stage 3 of the stage sheet (every leg at half) the left legs are spread and the right legs folded over the plate.
-- The fallen cap is flat dark at its two ends where the approved cap has char with broken edges and two smoke trails from the ends.
+- The fallen cap is flat dark at its two ends where the approved cap has char with broken, flaked edges; the smoke is there but thin.
 - The barrel turns to the aim point by at most 0.7 rad; only a turn of 0.13 rad has been seen in a picture (the firing frame at 11.76 s). UNKNOWN how a large turn looks.
 - The hole and its cracks, as above.
 - The shield is a pale plate with two cross lines and two rods; the approved shield is a thick glass block on a bracket that shows the page through it.
