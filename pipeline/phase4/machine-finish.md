@@ -75,6 +75,9 @@ Not mine: R8-1 issue 7 and R8-2 issue 2 (the words on the display: `displays/`),
 31. Before the port (R9-1 issue 4, R9-2 issue 3): the hesitation outside the mouth is held 0.5 s (it was 0.32), tilted 0.7 rad back (0.5) and pressed to 0.8 (0.84): `LOADER.away`. The seal is still at 2.30 s (MEASURED, `npm run take -- --check`). Looked at: seal sheet, the tilted, shortened arrow stands beside the port in two frames 0.37 s apart, then is pulled in tip first.
 32. Scared at the plunger (R9-2 issue 8, and the hold of R4-1 issue 3): 0.45 s after the ball seats (9.05 s) the arrow turns 0.6 rad away from the lane, is pressed to 0.86 and trembles (0.12 rad at 11 swings a second, dying away) until the brace at 10.05 (`BEATS.dread`, with `BEATS.shiver`). Looked at: launch sheet, first with the sign wrong (the arrow turned up the lane, toward where it goes), then right: it points across the lane, away, for four frames and comes back as it braces. Pale and stiff are the cursor's own state `scared`, not mine.
 33. `rail-cam` keeps its settled view (ruled). Found on the key's compare after the new take: at the key (32.0 s) the ball stood at about 92% of the frame's height, nearly cut by the bottom edge (approved: about 68%). Cause: the ride on the wire is now 2.38 s long and not 1.95, so at the key the ball is slower (MEASURED from the pacing rule: 3.7 balls a second against 4.9) and the camera's fixed lead (1.93 balls) put the view 0.46 balls ahead of it. Now the lead follows 0.6 of the way to the ball's own speed (`BACK.keep`): the ball stands at about 75% at the key and drifts a little down the frame as it slows, so it is not pinned (R4-2 issue 1). Looked at: `rail-cam` compare before and after. Also tried and taken out: a stretch tall after the doors for the double take (R9-2 issue 9); the cursor caps its length in the ball at 1.06 (`GLASS.long`, `src/cursor/body.ts`, not mine), so it would not show.
+34. The fall to the flippers seen close (R9-1 issue 10 in part; decision 29 stands for the rest). A new still camera `table-gap`: low over the apron beside the right flipper, eye (11.9, Y2 + 14.3, 1.5), target (12.2, Y2 + 8.3, -2.5), the lens of `table-save`, the last screen left out as for `table-save`, hard cuts in and out. The film: `follow` to 34.65, `table-gap` from 34.65 (the ball has just left the spiral, 34.6) to 35.35, `table-save` to 37.2. The worn out ball rolls down the right inlane onto the flipper in a view 0.7 s long with the ball about 70 px across (it was about 40); the catch (35.62) is in the wide view, 0.27 s after the cut. First tried with the catch in the close view too (cut out at 35.95): it read well on the sheet, but it broke a rule I keep, MEASURED by `npm test`: `tests/pinball-stage.test.ts`, "shows every key of the film through the camera the key names" (the key `last-save` at 35.59 s names `table-save`, and the key is in `config/showcase.json`, not mine). So the cut out sits before the key. `tests/pinball-stage-out.test.ts` holds the list of cameras that leave the last screen out; `table-gap` is added to it, since my work adds one. Looked at: three save sheets. Still not there: the catch at a size, the slow motion, the sag of relief after the catch.
+35. Lens blur at three cameras brought down (the Builder's mail of 12:36Z and 12:40Z, from the final pictures of merge 36: `youre-fired` M3 0.508 and `rail-cam` M3 0.332 of approved, least 0.8, STATED by the Builder). The blur is mine: one number per camera in `LENS` of `src/pages/step3/index.ts`, the focus on the ball. Place, aim and focus of each camera unchanged. Set: `table-fired` 10 to 3, `table-lobby` 7 to 4, `rail` 10 to 5. MEASURED with `node out/work/mf/m3.mjs <still> <approved>` (calls `highFrequencyEnergy` of `tools/lib/measure-core.mjs`, the function M3 uses; draft and review stills carry more grain than final, so these are not the Builder's final numbers): `lobby-doors` draft 0.7965 before, 1.0494 after; `rail-cam` draft 0.4501 before, 0.5353 after; `youre-fired` after only, draft 1.3803 at 4, review 1.0845 at 3 (no still of before at these tiers). Seen in my stills: at `youre-fired` the mortar of the brick and the ribs of the beacon are there, the word 'Fired' reads, a little soft still at native size; at `lobby-doors` the plate 'Corporate HQ' is crisp; at `rail-cam` the police station behind the ball reads as a building with windows and the garage as a spiral, where it was a blue glow, and the far wall stays soft. `rail-cam` is still far under 0.8: the rest is not blur (large dark fields, few small lights), not mine to add this late.
+36. The light on the way out, after the Builder's ruling of 12:44Z (the step limit in `tests/pinball.test.ts` may go from 0.07 to 0.12 for that one rise, a slight overshoot, no dip back): NOT taken, open. It came 13 minutes before the last push with the blur still to push, and it needs a sheet looked at and the full checks; an overshoot also takes the website's light above 1, and what the drawn page does with that is UNKNOWN to me. The shape I would use: from dusk (0.05) to 1.04 in 0.14 s at an even rate (0.088 per 1/80 s, under 0.12), then eased down to exactly 1 by 0.3 s after the ball leaves, never under 1 again; the page's turn still starts at `LEAVE.up` 0.3 s. The 0.3 s rise of decision 4 stays in the film.
 
 ## Looks spent (draft unless said), by part
 
@@ -105,6 +108,9 @@ Not mine: R8-1 issue 7 and R8-2 issue 2 (the words on the display: `displays/`),
 | Plunger, scared | 3 | launch beat sheets |
 | Rail camera at its key | 2 | `rail-cam` compares |
 | Doors after the flat hold | 1 | `lobby-doors` compare |
+| Rail camera, whole shot | 1 | highway beat sheet |
+| Save, `table-gap` | 3 | save beat sheets |
+| Lens blur | 4 | `youre-fired` compare draft and review, `lobby-doors` compare, `rail-cam` compare |
 | Report measures | 2 | `tier-office` draft still, `reply-all` review still |
 
 Take searches: 25 of 31 used before this round, 1 spent in it (search 26, decision 21), 26 of 31 used now. The edit of one flip's end in `cut/TABLE-TAKE.json` was by hand and is not a search; the one layout change (the door post) left the events and the track the same, so the three searches it buys are unspent.
@@ -132,7 +138,7 @@ MEASURED from the event and track dump (`node out/work/mf/ev.mjs`): the clear ba
 - Lamp finisher and frame finisher were sent the shapes of the contact times early in the round; nothing came back that asked a change of me.
 - Ball finisher: its two asks (above) are not done; I answered "no change on my side" at the time.
 
-## End state (12:20 UTC)
+## End state (12:48 UTC)
 
 MEASURED on 7d159780, this sandbox (4 cores), 12:16 to 12:18 UTC:
 
@@ -148,13 +154,13 @@ Not done, of what was mine in round 12:
 
 - R4-1 issue 7 (the light on the way out as a lamp): decision 26, needs a ruling on the rule in `tests/pinball.test.ts`.
 - R4-1 issue 9 (the Continue key): the key goes down its 6 px at once and the page turns 0.25 s later with the key still down. Not changed: a travel and a spring back inside 0.25 s cannot be seen on a sheet, and a longer press moves the page turn.
-- R9-1 issue 10 and R9-2 issue 11 (the save and the worn out arrow at a size): decision 29.
+- R9-1 issue 10 in part and R9-2 issue 11 (the catch at a size, the sag of relief after it, the worn out arrow held at a size): decisions 29 and 34. Only the fall to the flipper is seen close. A close catch needs the key `last-save` to name the close camera (`config/showcase.json`, the Builder's).
 - R9-2 issue 9 (the double take): decision 33, the cursor's cap in the ball.
 - R4-3 issue 9 (the ball on the carpet at one even speed, posts that answer), R4-3 issue 10 (one frame slivers at 15.07 s, not looked for after the retiming), R4-4 issue 3.
 - The steel balls' ending as the kit has it (the inbox takes them back one by one): they leave by the chute, seen, and are taken off at the rail's end.
 
 Three least real things in my part:
 
-1. The save. The ball is about 40 px across in the one `table-save` view; the catch is seen, the arrow in the ball is not, and there is no slow motion.
+1. The save. The fall to the flipper is seen close now (decision 34, ball about 70 px), but the catch itself is in the wide view with the ball about 40 px across, there is no slow motion, and the arrow's relief after the catch is not seen.
 2. The Corporate lobby. The ball is brought to the doors by the director at an even speed and nothing on the carpet answers it; the flat arrow on the doors is 0.6 s in a view where the ball is about 80 px.
 3. The steel balls. They pour, strike and leave by the chute; which ball is the cursor's reads only by the arrow in it, and the kit's ending (the inbox taking them back) is not there.
