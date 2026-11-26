@@ -68,12 +68,12 @@ function buildLayout(): LayoutNode {
   }
   const ay = px(APRON_Y)
   const sunk = { part: 'table-frame', tone: 'danger' as const, height: config.scale.heights.slab }
-  kids.push(node('apron-left', 'apronSlab', [312, ay + 24, 520, 144], sunk))
-  kids.push(node('apron-right', 'apronSlab', [1088, ay + 24, 520, 144], {
-    ...sunk, children: [node('apron-card', 'apronCard', [1128, ay + 56, 440, 80], {
-      part: 'table-frame', floor: 16, height: 17, tone: 'paper', children: [centred('apron-card-words', 'copy:step3.table.apronCard', { font: 'inter-500', px: 18 }, 1348, ay + 96, { part: 'type', on: 18 })]
+  kids.push(node('apron-left', 'apronSlab', [312, ay + 24, 520, 144], {
+    ...sunk, children: [node('apron-card', 'apronCard', [352, ay + 56, 440, 80], {
+      part: 'table-frame', floor: 16, height: 17, tone: 'paper', children: [centred('apron-card-words', 'copy:step3.table.apronCard', { font: 'inter-500', px: 18 }, 572, ay + 96, { part: 'type', on: 18 })]
     })]
   }))
+  kids.push(node('apron-right', 'apronSlab', [1088, ay + 24, 520, 144], sunk))
   kids.push(centred('drain-label', 'copy:step3.table.buildings.drain', { font: 'inter-600', px: 18 }, 960, ay + 48, { part: 'table-frame', on: 7, tone: 'ink' }))
   const ly = px(LAST_Y)
   kids.push(node('outlet-port', 'port', [px(OUTLET.x - OUTLET.ring / 2), px(OUTLET.y - OUTLET.ring / 2), px(OUTLET.ring), px(OUTLET.ring)], { part: 'loader', shape: 'none' }))
