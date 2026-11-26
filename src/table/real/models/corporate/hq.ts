@@ -20,6 +20,7 @@ const ROOF = hex(0x6a707a)
 const BRIGHT = hex(0xbac4d4)
 const GLASS: RGB = [0.016, 0.085, 0.1]
 const CARPET: RGB = [0.028, 0.05, 0.075]
+const CEILING: RGB = [COOL[0] * 0.007, COOL[1] * 0.015, COOL[2] * 0.019]
 const PILE = { step: 3, lean: 0.56 }
 const DESK: RGB = [0.5, 0.38, 0.24]
 const GLASS_PALE: RGB = [0.02, 0.085, 0.1]
@@ -67,7 +68,7 @@ function upright(g: Geo, r: Rect, z0: number, z1: number, inside: boolean, col: 
   g.face([[r.x1, r.y0, z0], [r.x1, r.y1, z0], [r.x1, r.y1, z1], [r.x1, r.y0, z1]], [-k, 0, 0], [0, 1, 0], col)
 }
 // Rows of light panels let into a ceiling, each one a lamp of the room under it.
-function panels(g: Geo, o: Rect, h: Rect | null, z: number, k: (x: number, y: number) => number): void {
+function panels(g: Geo, o: Rect, h: Rect | null, z: number, k: (x: number, y: number) => number, tone: (v: number) => RGB = lamp): void {
   const nx = Math.max(2, 2 * Math.round((o.x1 - o.x0) / BAY))
   const ny = Math.max(2, Math.round((o.y1 - o.y0) / 21))
   const px = (o.x1 - o.x0) / nx
@@ -79,7 +80,7 @@ function panels(g: Geo, o: Rect, h: Rect | null, z: number, k: (x: number, y: nu
       if (h && x > h.x0 - 5 && x < h.x1 + 5 && y > h.y0 - 3 && y < h.y1 + 3) continue
       const v = k(x, y)
       if (v <= 0) continue
-      flat(g, { x0: x - px * 0.3, x1: x + px * 0.3, y0: y - 3.6, y1: y + 3.6 }, z, -1, lamp(v))
+      flat(g, { x0: x - px * 0.3, x1: x + px * 0.3, y0: y - 3.6, y1: y + 3.6 }, z, -1, tone(v))
     }
   }
 }
@@ -355,8 +356,8 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       }
       if (i > 0) {
         fin(G, FINISH.matte, () => {
-          level(G, shaft, h, zz - ROOM.slab, -1, warm(0.022))
-          panels(G, shaft, h, zz - ROOM.slab - 0.5, (x, y) => 0.95 * zone(x, y))
+          level(G, shaft, h, zz - ROOM.slab, -1, CEILING)
+          panels(G, shaft, h, zz - ROOM.slab - 0.5, (x, y) => 0.8 * zone(x, y), warm)
         }, 1)
       }
     }
@@ -377,7 +378,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   const sides: [V2, V2, number][] = [[[shaft.x0, shaft.y0], [shaft.x1, shaft.y0], cols], [[shaft.x1, shaft.y0], [shaft.x1, shaft.y1], rows], [[shaft.x1, shaft.y1], [shaft.x0, shaft.y1], cols], [[shaft.x0, shaft.y1], [shaft.x0, shaft.y0], rows]]
   here(() => {
     sides.forEach(([a, b, n], k) => {
-      glazing(C, a, b, pz1, roof, k === 2 ? 1 : n, k === 2 ? 1 : FLOORS * 2, rnd, GLASS, k === 2 ? 0.8 : 0.66)
+      glazing(C, a, b, pz1, roof, k === 2 ? 1 : n, k === 2 ? 1 : FLOORS * 2, rnd, GLASS, k === 2 ? 0.8 : k === 0 ? 0.36 : 0.66)
       framing(S, W, a, b, pz1, roof, n, FLOORS, { transom: 0.5, fin: k === 0 ? 3.6 : 3 })
     })
     fin(S, FINISH.polished, () => {
