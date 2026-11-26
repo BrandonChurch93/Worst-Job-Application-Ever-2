@@ -157,9 +157,12 @@ function field(s: Shape): THREE.Object3D {
 }
 
 const CROWN_RAIL = 1.2
-const CROWN_BUTTON = 1.3
+const CROWN_BUTTON = 0.4
 const FOOT_RING = 6
-const SHOULDER = 13
+const FOOT_RISE = 0.34
+const FOOT_ROUND = 2.4
+const WALL_LEAN = 1.6
+const EDGE = 4.6
 const FLANGE = 4.4
 
 function rail(s: Shape): THREE.Object3D {
@@ -306,10 +309,12 @@ function progressButton(s: Shape, current: boolean): THREE.Object3D {
   const up = h - foot
   const d = s.w
   if (current) {
+    const ring = foot + up * FOOT_RISE
+    const brow = h - CROWN_BUTTON - EDGE * 0.7
     const points: ProfilePoint[] = [
-      [0, foot - 0.5, true], [0, foot + up * 0.1], ...arc(0, foot + up * 0.1, FOOT_RING - 1, up * 0.3, 7).slice(1), [FOOT_RING, foot + up * 0.42], [FOOT_RING + 0.5, foot + up * 0.52],
-      ...arc(FOOT_RING + 0.5, foot + up * 0.52, SHOULDER, up * 0.48 - CROWN_BUTTON, 11).slice(1),
-      ...[0.82, 0.64, 0.46, 0.28, 0.12].map((t): ProfilePoint => [d / 2 - (d / 2 - FOOT_RING - 0.5 - SHOULDER) * t, h - CROWN_BUTTON * t * t])
+      [0, foot - 0.5, true], [0, ring - FOOT_ROUND], ...arc(0, ring - FOOT_ROUND, FOOT_ROUND, FOOT_ROUND, 6).slice(1), [FOOT_RING - 0.8, ring + 0.3], [FOOT_RING, ring + 1.1],
+      [FOOT_RING + WALL_LEAN, brow], ...arc(FOOT_RING + WALL_LEAN, brow, EDGE, EDGE * 0.7, 8).slice(1),
+      ...[0.8, 0.6, 0.4, 0.2, 0.06].map((t): ProfilePoint => [d / 2 - (d / 2 - FOOT_RING - WALL_LEAN - EDGE) * t, h - CROWN_BUTTON * t * t])
     ]
     return mesh(shared(`progress:${dims(s)}:1`, () => sweep(circle(d / 2, 72), profile(points))), m.orange)
   }

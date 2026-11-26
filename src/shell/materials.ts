@@ -412,6 +412,16 @@ function lightFilled<T extends THREE.MeshPhysicalMaterial>(material: T, fill: nu
   })
 }
 
+// The orange is a day-glow pigment: it gives back more of the lamps' light than its colour says. What reads the colour of the material reads the pigment, not this.
+export const ORANGE_LIFT = 1.7
+function lifted<T extends THREE.MeshPhysicalMaterial>(material: T, gain: number): T {
+  return also(material, `lifted-${gain}`, (shader) => {
+    const end = '#include <lights_fragment_end>'
+    if (!shader.fragmentShader.includes(end)) throw new Error('The surface code of this three.js release is not the one this build was written for')
+    shader.fragmentShader = shader.fragmentShader.replace(end, `${end}\n\treflectedLight.directDiffuse *= ${gain.toFixed(3)};\n\treflectedLight.indirectDiffuse *= ${gain.toFixed(3)};`)
+  })
+}
+
 export interface Materials {
   ceramic: THREE.MeshPhysicalMaterial
   pocket: THREE.MeshPhysicalMaterial
@@ -470,7 +480,7 @@ export function makeMaterials(seed: number): Materials {
   const aluminiumEdge = physical({ color: srgb(0xd0d4d7), roughness: 0.34, metalness: 0.8 })
   const cardSeal = physical({ color: srgb(0xa2a4a3), roughness: 0.7, metalness: 0 })
   const aluminiumSatin = physical({ color: srgb(0xb7bbbe), roughness: 0.3, metalness: 0.8 })
-  const orange = physical({ color: srgb(0xc74c00), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.17, specularIntensity: 0.8, specularColor: srgb(0xff9a52), envMapIntensity: 0.25 })
+  const orange = lifted(physical({ color: srgb(0xbe5418), roughness: 0.55, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.1, specularIntensity: 0.3, specularColor: srgb(0xff9a52), envMapIntensity: 0.5 }), ORANGE_LIFT)
   const chrome = physical({ color: srgb(0xdfe1e3), roughness: 0.16, metalness: 1 })
   const railSatin = physical({ color: srgb(0xd2d6d9), roughness: 0.36, metalness: 0.85, normalMap: brushed, normalScale: new THREE.Vector2(0.2, 0.2), anisotropy: 0.6, anisotropyRotation: Math.PI / 2 })
   const gap = physical({ color: srgb(0x23211f), roughness: 0.85, metalness: 0, specularIntensity: 0.3 })
@@ -480,7 +490,7 @@ export function makeMaterials(seed: number): Materials {
   const edge = physical({ color: srgb(0x1b1a19), roughness: 0.35, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.08 })
   const smoked = physical({ color: srgb(0x676d75), roughness: 0.55, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.32, specularIntensity: 0.7 })
   const chip = physical({ color: srgb(0x666c74), roughness: 0.56, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.3, specularIntensity: 0.6, vertexColors: true })
-  const waiting = physical({ color: srgb(0x5b6168), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.17, specularIntensity: 0.8, specularColor: srgb(0xc9d6e2), sheen: 0.5, sheenRoughness: 0.4, sheenColor: srgb(0x8f9aa6) })
+  const waiting = physical({ color: srgb(0x6e7379), roughness: 0.5, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.1, specularIntensity: 0.8, specularColor: srgb(0xc9d6e2), sheen: 0.5, sheenRoughness: 0.4, sheenColor: srgb(0x8f9aa6) })
   const paper = physical({ color: srgb(0xf3efe6), roughness: 0.9, metalness: 0, specularIntensity: 0.25, side: THREE.DoubleSide })
   const red = physical({ color: srgb(0xc22a1e), roughness: 0.42, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.1 })
   const keycap = physical({ color: srgb(0xece4d4), roughness: 0.52, metalness: 0, clearcoat: 0.25, clearcoatRoughness: 0.4 })
