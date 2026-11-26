@@ -27,7 +27,7 @@ import type { CameraPose, PageLogic, Shape, Tone } from './stage/types'
 
 export interface StillSpec { page: string; beat?: string; at?: number; scroll?: number; camera: string; tier: string; sheet?: string; interface?: boolean; touchOnly?: boolean; live?: string }
 
-export interface CursorState { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; reaction: string | null; reactionAt: number; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number }
+export interface CursorState { x: number; y: number; heightPx: number; screenHeightPx: number; worldScale: number; acting: string; reaction: string | null; reactionAt: number; damage: string[]; arms: boolean; onPage: boolean; inBall: boolean; ballScreenPx: number; ballX: number; ballY: number }
 
 export const pageUnits = config.film.units.map((u) => u.id)
 export const unitOfPart = (name: string): string => register.parts.find((p) => p.name === name)?.unit ?? 'site'
@@ -364,9 +364,11 @@ export class App {
   cursorState(c: CursorPose, pose: CameraPose): CursorState {
     const p = project(pose, toWorld(c.x, c.y, c.z), hd.width, hd.height)
     const heightPx = config.cursor.heightPxAt1080 * c.scale
+    // Sealed in the ball, the character is the ball: its middle stands half a ball above the place the cursor has.
+    const ball = c.inBall ? project(pose, toWorld(c.x, c.y, c.z + config.table.ballPx / 2), hd.width, hd.height) : null
     return {
       x: p.x, y: p.y, heightPx, screenHeightPx: heightPx * p.pxPerUnit, worldScale: c.scale, acting: c.acting, reaction: c.reaction, reactionAt: c.reactionAt, damage: [...c.damage], arms: c.arms, onPage: c.onPage, inBall: c.inBall,
-      ballScreenPx: c.inBall ? config.table.ballPx * p.pxPerUnit : 0
+      ballScreenPx: ball ? config.table.ballPx * ball.pxPerUnit : 0, ballX: ball ? ball.x : 0, ballY: ball ? ball.y : 0
     }
   }
 
