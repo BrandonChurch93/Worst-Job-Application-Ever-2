@@ -40,6 +40,8 @@ export interface BodyLook {
   melt: number
   // Pressed thin.
   flat: number
+  // 1 while sealed in the clear ball, else 0.
+  sealed?: number
   // Blackened from the tip.
   char: number
   holes: Hole[]
