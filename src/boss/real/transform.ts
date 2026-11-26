@@ -73,7 +73,7 @@ export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
       const bare = inside * seam * smooth((big - 0.5) / 0.2) * 0.45
       const i = (y * w + x) * 4
       const tone = 9 + Math.round(9 * fine)
-      const grey = 74 + Math.round(70 * fine)
+      const grey = 40 + Math.round(34 * fine)
       data[i] = Math.round(mix(tone + 4, grey, ash))
       data[i + 1] = Math.round(mix(tone + 2, grey - 2, ash))
       data[i + 2] = Math.round(mix(tone, grey - 5, ash))
