@@ -6,7 +6,8 @@ import { execFileSync } from 'node:child_process'
 import sharp from 'sharp'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { buildInfo } from './lib/hashes.mjs'
-import { BANNED, FORMAT, briefFor, neutral, packPlan, roles, roundName } from './lib/pack-plan.mjs'
+import { BANNED, FORMAT, briefFor, neutral, packPlan, roleOf, roles, rolesOf, roundName } from './lib/pack-plan.mjs'
+import { SITE, SITE_TIER } from './lib/pack-site.mjs'
 
 const a = args()
 const cfg = config()
@@ -21,8 +22,11 @@ const round = Number(a.round)
 if (!Number.isInteger(round) || round < 1) stop('give --round N, the number of the round as kit/PROGRESS.md counts it')
 const unit = a.unit === undefined || a.unit === true ? null : String(a.unit)
 const role = a.role && a.role !== true ? String(a.role) : Object.keys(roles).find((r) => roles[r].unit === unit)
-if (!role || !roles[role]) stop(`no pack is defined for the unit "${unit}" yet. Give --role, one of ${Object.keys(roles).join(', ')}`)
-if (a.phase !== undefined && roles[role].phase && Number(a.phase) !== roles[role].phase) stop(`the role ${role} belongs to phase ${roles[role].phase}`)
+const mine = roleOf(role, unit)
+if (!role || !mine) stop(`no pack is defined for ${role ? `the role ${role} of ` : ''}the unit "${unit}" yet. Give --role, one of ${rolesOf(unit).join(', ')}`)
+if (a.phase !== undefined && mine.phase && Number(a.phase) !== mine.phase) stop(`the role ${role} belongs to phase ${mine.phase}`)
+const site = unit === SITE
+if (site && a.tier !== undefined) stop('the unit "site" is drawn through the live site\'s own path at one level, and has no --tier')
 
 const slice = a.slice && a.slice !== true ? String(a.slice).split('/').map(Number) : null
 if (slice && !(slice.length === 2 && Number.isInteger(slice[0]) && Number.isInteger(slice[1]) && slice[1] > 0 && slice[0] >= 0 && slice[0] < slice[1])) stop('give --slice I/N with I from 0 to N less 1: one machine of N draws every Nth file of the pack, to fill the cache of this commit')
@@ -45,10 +49,12 @@ if (a['release-key']) {
 const dirty = git('status', '--porcelain', '--', 'src', 'config', 'content', 'public', 'assets-full', 'index.html', 'vite.config.ts', 'package.json', 'cut')
 if (dirty && !a['allow-dirty']) stop(`a pack is of a commit, and these are not committed:\n${dirty}`)
 const commit = git('rev-parse', 'HEAD')
-const tier = a.tier && a.tier !== true ? String(a.tier) : 'draft'
+const tier = site ? SITE_TIER : a.tier && a.tier !== true ? String(a.tier) : 'draft'
 const cache = dirty ? null : at('out', 'work', 'packs', 'cache', commit.slice(0, 12), tier)
-const facts = roles[role].facts ? await (await import('./lib/pack-look.mjs')).lookFacts(cfg, unit, cache) : null
+const said = (line) => console.log(`pack: ${line}`)
+const facts = !mine.facts ? null : site ? await (await import('./lib/pack-site.mjs')).siteFacts(cfg, cache, said) : await (await import('./lib/pack-look.mjs')).lookFacts(cfg, unit, cache)
 const plan = packPlan(cfg, { role, round, unit, facts })
+const everyFile = plan.sets.flatMap((s) => s.files)
 if (slice) {
   let n = 0
   for (const s of plan.sets) s.files = s.files.filter(() => n++ % slice[1] === slice[0])
@@ -72,7 +78,7 @@ const { buildPack } = await import('./lib/pack-build.mjs')
 const t0 = process.hrtime.bigint()
 fs.rmSync(dir, { recursive: true, force: true })
 fs.mkdirSync(dir, { recursive: true })
-const built = await buildPack(cfg, plan, { tier, cache, log: (line) => console.log(`pack: ${line}`) })
+const built = await buildPack(cfg, plan, { tier, cache, facts, whole: everyFile, log: said })
 const edge = cfg.critics.maxImageLongEdgePx
 const key = { ...stamp, browser: built.browser, files: {} }
 const manifest = { stamp, format: FORMAT, longEdgeMostPx: edge, filesMostPerCritic: cfg.critics.maxFilesPerMessage, sets: [] }
