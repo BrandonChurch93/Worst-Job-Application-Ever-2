@@ -1,35 +1,35 @@
 {
   "folder": "machine-finish",
-  "pushed": "2026-11-26T11:14:24.868Z",
-  "commit": "0dfa01aaa3856dbf220a3e686612acef3298da21",
+  "pushed": "2026-11-26T11:32:39.314Z",
+  "commit": "f7360140c7b591bffa2746f0bf06db090f6dbc0a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the beat pinball.replyAll: 12 frames from 1:26.00 to 1:32.97, draft tier, preview",
-      "time": "2026-11-26T11:08:13.476Z",
+      "caption": "Contact sheet, the beat pinball.fired: 12 frames from 1:33.00 to 1:36.47, draft tier, preview",
+      "time": "2026-11-26T11:19:16.902Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_replyAll-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_fired-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key tier-corporate at 0.4 of the lobby beat: approved left, the build right, the ball on the carpet at the door post",
-      "time": "2026-11-26T11:14:22.649Z",
+      "caption": "Contact sheet, the beat pinball.drain: 12 frames from 1:44.00 to 1:48.97, draft tier, preview",
+      "time": "2026-11-26T11:20:35.143Z",
       "by": "machine-finish",
-      "from": "out/work/mf/q1-tier-corporate.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_drain-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Coffee beat after the new take: the first bumper throws the ball across and down the lane, no roll along the roof guide; top view to 16.55 s, then ball height",
-      "time": "2026-11-26T11:14:22.883Z",
+      "caption": "Key tier-street: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, shape:model.street.police, shape:model.street.garage, shape:model.street.bank, cursor, shape:model.street.mom, shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3, shape:flipper.street.flipper.left, shape:rail.highway.a.4",
+      "time": "2026-11-26T11:21:16.828Z",
       "by": "machine-finish",
-      "from": "out/work/mf/q2-coffee.jpg"
+      "from": "out/work/compare/compare-tier-street.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Reply-all beat: the cut to the wide view comes before the inbox throws the ball out; the steel balls leave down the middle, seen",
-      "time": "2026-11-26T11:14:23.129Z",
+      "caption": "tier-street beside the approved image: 'Background Check' in two lines clear of the spiral, every model sign in ink on its cream board",
+      "time": "2026-11-26T11:32:38.113Z",
       "by": "machine-finish",
-      "from": "out/work/mf/q3-replyall.jpg"
+      "from": "out/work/mf/q5-tier-street.jpg"
     }
   ]
 }
