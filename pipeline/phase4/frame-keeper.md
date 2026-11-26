@@ -54,8 +54,14 @@ One draft still shows several parts; each still is counted once, under the part 
 | 04:23 to 04:25 | youre-fired, table-wide, loader-page, tier-office | loader, marquee foot, tube | 4 |
 | 04:29 to 04:34 | last-save, rail-cam, tier-corporate, tier-street, table-wide at draft; last-save at review | all, and the time of a review still | 6 |
 | 04:34 to 04:36 | tier-corporate, last-save | bats, elbow | 2 |
+| 04:42 to 04:45 | last-save 2, rail-cam 2 | highway wire | 4 |
+| 04:46 to 04:57 | tier-street 2, table-wide 1, loader-page 3, last-save 3, tier-office 2, rail-cam 2 | walls, loader bed, wire | 13 |
+| 05:01 to 05:05 | tier-street, last-save, table-wide, tier-corporate | tubes, wire | 4 |
+| 05:06 to 05:10 | last-save, tier-street | tube line, wire | 2 |
+| 05:12 to 05:15 | last-save, tier-corporate | wire | 2 |
+| 05:20 to 05:40 | last-save 5, tier-office 1, rail-cam 1 | wire: which term makes it pale | 7 |
 
-Total at 04:40 UTC: 35 stills over nine parts; the most any one part was rendered for is the frame, 14.
+Total at 05:40 UTC: 67 stills (the rows above summed). One still shows several parts, so the split by part is my reading of what each was rendered for, not a log: ramps about 24, frame about 17, loader 8, hardware 6, flippers 5, lift 5, marquee 3, bumpers 2, targets 1. No part is at 40.
 
 ## Decisions
 
@@ -70,6 +76,13 @@ Total at 04:40 UTC: 35 stills over nine parts; the most any one part was rendere
 - The clear tube's turned-away wall was 4.2 times bright over the table and read as a pale striped sheet at a low eye; now 1.8.
 - `steel()` has a third new term, `paint`: the share of the room that paint, plastic and rubber give back. Play and hardware run 0.4. MEASURED on the left bat's top in `tier-corporate` draft: blue channel 55, 50, 47 before and 36, 32, 29 after (approved 27 to 30); the orange itself is untouched.
 - The bats' two screws are dull steel: polished domes read as white discs from above.
+
+- The chrome's ceiling is rings of lamp at two heights, not strips at fixed bearings: a straight wire shows either as one line, and a curved wire keeps its line where strips broke into dashes that read as a rope. The rings are narrower on a thin wire's energy (`keep`), so a wire a few pixels wide goes dark grey, not pale.
+- Clear tubes under the lamps (the lift's, the drain's, the feed's inside a tier) show the upper ring of lamp as one soft line down the wall that faces the eye. Two rings on both walls drew eight hard lines and read as ribbed glass. Not on the page, not on the flat covers.
+- The highway's wire stayed a pale tube at a low eye whatever the room did. MEASURED by turning terms off one at a time in `last-save`: not the lamps' direct shine, not the rows of lamps, not the floor field; it is `sky` (the polish rings) spread over a wire a few pixels wide. The rings now lose energy with the square of the thinning and play's steel runs `sky: 0.3`, `panel: 0.2`, `horizon: 0.4`.
+- The loader's tube lies in a bed that is the bowl's own tone inside the bowl and the ring's dark aluminium through the ring: it read as a dark box.
+- Frame aluminium's upright faces keep 0.06 of the room (`wall`), its screws mirror a ceiling near the lands' own, so a row of screws is not a row of black dots.
+- Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens).
 
 ## MEASURED times (04:07 to 04:34 UTC, this VM)
 
