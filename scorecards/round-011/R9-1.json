@@ -74,6 +74,46 @@
    "where": "row 2 frames 1-3, the approach to the vent",
    "what": "the pull toward the vent has only a faint tilt and no clear moment where it notices the danger and resists",
    "fix": "add a held beat where it stops and leans away from the vent before it is yanked in, with a stretch toward the vent as it goes"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: the wait in the lane and the firing are read; that the arrow inside the ball realizes what the plunger is about to do is not: it is read as passive, with no clear feeling, just carried.",
+   "fix": "The realizing as a held pose of its own before the plunger lets go: the arrow seen large enough in the ball to be read, a look down at the plunger, a brace, then the launch.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the hope at the open doors and being shut out are read; that the doors slam, the ball hits them and the arrow is pressed flat against the inside of the glass is not: the read ends with it turned away, disappointed.",
+   "fix": "The slam and the flattening seen close: the doors closing in one or two frames, the ball on them, the arrow flat on the inside of the glass and held there before it slides back.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the rattling between the bumpers is read; that the arrow is thrown flat inside the ball on each hit is not: the read is of a small ball being battered with no readable feeling.",
+   "fix": "Each hit answered by the arrow in the ball: thrown against the far wall and flat for a few frames, at a size in the picture at which it can be seen.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the whole sheet",
+   "what": "did not read: the read is of a worn out ball bounced between flippers and a spinner. The fall toward the gap, the flipper catching it at the last instant and the arrow sagging with relief are not in the read.",
+   "fix": "The fall toward the gap as its own moment, the catch at the last instant, and the sag of relief held inside the ball in the slow motion the beat has.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-10.png",
+   "where": "the whole sheet",
+   "what": "did not read: the drain, the way out of the outlet, the dazed arrow and the press on Continue are read. The result card saying it passed, the peel off the page and the shake are not; and the page turn is read as a zoom out that shows the page as part of another machine.",
+   "fix": "The result card readable as a pass before the arrow moves; the peel and the shake as actions of their own; and a page turn that reads as a page turning (the stage's, the Builder's).",
+   "by": "builder"
   }
  ],
  "reads": [

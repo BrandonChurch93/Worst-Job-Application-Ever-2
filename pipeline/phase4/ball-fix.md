@@ -93,6 +93,17 @@ Mine by the Builder's list: R4-3 issue 1 (the capture reads as a swap), R4-2 iss
 - R4-3 issue 4: STATED by `/root/machine_runner`: the arrow is placed at the ball's own middle each step, z included, and its reach is tested on every step. To be looked at when its branch is on main.
 - The bore: inner wall 42 px. At a full squash it is 35.7 px along the hit axis for one frame and 46 px across.
 
+## From 08:29 UTC: the capture, the way out, the hit from the page, the rim
+
+- A scratch tree (`git worktree`, branch `scratch-ball`, never pushed) holds my branch merged with `origin/agent/machine-runner`, so that what the page gives (`v[0..5]`) can be seen with my shell before it is on main.
+- Capture and way out, SEEN 08:32 to 08:35 UTC (`hit.mjs --frame 4164` and `--frame 6352`): the halves close as two jaws over three pictures; on the way out shut, parting, apart, wide, fading, gone. Changed for it: the tilt of the open halves from -1.2 to -0.35 rad (`OPEN`), `PARTING = { swung: 0.8, sinks: 0.55, deep: 1.9, fades: 0.8 }`.
+- The hit from the page, SEEN 08:38 and 08:54 UTC (`hit.mjs --frame 5009 --count 6 --step 1`, then `--frame 5011 --count 5 --step 1 --size 260`, ball 97 px): round before the contact, pressed flat on the coffee cap on the first frame after it, less on the next, round on the third. The page sets the hit on the step of the contact (STATED by `/root/machine_runner`: it cannot be a frame sooner), so on that frame the ball has already left the cap by its step. For that the drawn shell leans toward the thing struck by what the press takes off that side (`lean` in `pose`, a function of `v[3..5]` alone), and the flat side stays where the round edge was.
+- Proportions of the press (`SQUASH` in `glsl.ts`), changed 09:02 UTC after the sheet: the struck side is cut flat at `1 - 0.6 x amount` of the radius, the shell is `1 - 0.35 x amount` thin along the hit and `1 + 0.25 x amount` wide across. Before (0.15, 0.65, 0.4) the held third ball of the sheet read as a lens. At the full 0.3: flat face at 0.73 radius, 0.76 as thick along the hit as across. On the sheet (strength 0.6): 0.85.
+- The sheet, SEEN 08:58 to 09:02 UTC in the scratch tree (`npm run still -- --sheet clear-ball --tier draft --format hd --force`, 41 s, machine_runner's three panels of 419c65c2): three panels with gutters, the ball about 290 px wide; the third ball pressed on the cap of the cup. Agreed with `/root/machine_runner`: `sheet-ball-3` carries `v: [1, 9, 0, 0.6, angle to the cup, 0]` at `cup.r + 0.5`.
+- R4-3 issue 4, SEEN 08:57 UTC (`hit.mjs --frame 5168 --count 5 --step 3`): the arrow is inside the shell in all five frames over the recess.
+- The rim (point 2, thickness), 08:46 to 08:50 UTC: concentric bright and dark streaks in the rim band that wander with the angle round the ball, two arcs of light and two of dark, and two more sets of lamp points mirrored off tilted walls. All in the front shell's fragment, no new draw. SEEN at `draft` beside approved in `rail-cam`, `lobby-doors`, `youre-fired`, `tier-street`.
+- After merge 30 (the shared look) SEEN 09:06 UTC at `draft` beside approved: `youre-fired`, `tier-office`, `lobby-doors`, `reply-all`. Nothing of mine reads wrong from it.
+
 ## Tuning looks, by part
 
 Critic round 1 (to 08:15 UTC):
@@ -100,7 +111,7 @@ Critic round 1 (to 08:15 UTC):
 - `displays`: 1 of 40 (`table-wide` at `draft`, the main display beside approved: six amber numerals in a lit window, in place; nothing changed).
 
 Critic round 2 (from 08:15 UTC):
-- `clear-ball`: 2 so far. One sheet of 12 film frames round the bumper hit (`npm run sheet -- --motion bumper --tier draft --every-frame`), one row of 8 film frames at the ball's real size (`hit.mjs`).
+- `clear-ball`: 24 at 09:07 UTC, all `draft`. One sheet of 12 film frames round the bumper hit, 9 rows of film frames at the ball's real size (`hit.mjs`: 5010 twice, 4158, 4164, 6352, 6346, 5009, 5011, 5168), 11 key stills beside approved (`rail-cam` 3, `lobby-doors` 3, `youre-fired` 2, `tier-street`, `tier-office`, `reply-all`), 3 sheets of three panels.
 - `displays`: 0.
 
 Time of one still on this VM, MEASURED by `assets-src/table/ball/diag.mjs` (it prints the seconds of each render): `draft` 17.7 to 47.6 s, `review` 56.3 to 84.0 s. One film frame at `draft` after the first: 16.6 to 17.4 s (`hit.mjs`).

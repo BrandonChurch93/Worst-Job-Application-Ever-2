@@ -6,10 +6,9 @@ import { Bag, DEG, lathe, look, mat, prism, type V2 } from './g'
 import { MACHINE_ORANGE } from '../frame/mats'
 import { drop, matsOf, part } from './mats'
 
-const deep = (h: number, k: number): number => new THREE.Color(h).multiplyScalar(k).getHex()
 export const ORANGE = look(MACHINE_ORANGE, 0.3, 0, 1)
 const ORANGE_TOP = look(MACHINE_ORANGE, 0.28, 0, 1)
-const ORANGE_LOW = look(deep(MACHINE_ORANGE, 0.68), 0.4, 0, 0.6)
+const ORANGE_LOW = look(MACHINE_ORANGE, 0.32, 0, 1)
 const RUBBER = look(0x121213, 0.62, 0, 0)
 const RUBBER_LINE = look(0x2c2c2e, 0.7, 0, 0)
 const NYLON = look(0xe4e0d6, 0.5, 0, 0.2)
@@ -18,7 +17,7 @@ const SHAFT = look(0xe6e9ec, 0.08, 1, 0)
 const SCREW = look(0xe6e9ec, 0.08, 1, 0)
 
 // The bat stands on its shaft: a low orange foot, the rubber round its waist, and the moulded top above it.
-const BAT = { floor: 9, waist: 20, band: 15, top: 56, lip: 5.2, crown: 9 }
+const BAT = { floor: 5, waist: 23, band: 10, top: 56, lip: 4.4, crown: 9 }
 // The rubber's outer line is the line the ball meets: a round at the pivot, a round at the tip, the two flanks between.
 export const BAT_LINE = { pivot: FLIP.radius * BALL, tip: FLIP.tip * BALL, reach: (FLIP.length - FLIP.tip) * BALL }
 
@@ -51,7 +50,7 @@ export function batGeometry(): THREE.BufferGeometry {
   b.add(lathe([[hub + 3, 0], [hub + 3, 1.4], [hub, 2.8], [hub, BAT.floor + 1]], 20), NYLON)
   b.add(lathe([[hub * 0.45, 0.5], [hub * 0.45, BAT.floor + 2]], 12), SHAFT)
   b.add(lathe([[4.2, 0], [4.2, BAT.floor + 1]], 10), NYLON, mat({ x: len }))
-  b.add(prism(line(BAT.lip + 1.2), BAT.floor, BAT.waist + 1, 2.2, 3), ORANGE_LOW)
+  b.add(prism(line(BAT.lip), BAT.floor, BAT.waist + 1, 2.6, 3), ORANGE_LOW)
   b.add(prism(line(0), BAT.waist, BAT.waist + BAT.band, 2.4, 3), RUBBER)
   b.add(prism(batOutline(ra + 0.35, rb + 0.35, len, 12), BAT.waist + BAT.band / 2 - 0.5, BAT.waist + BAT.band / 2 + 0.5, 0), RUBBER_LINE)
   b.add(prism(line(BAT.lip), BAT.waist + BAT.band - 1, BAT.top, BAT.crown, 6), ORANGE)
@@ -59,8 +58,6 @@ export function batGeometry(): THREE.BufferGeometry {
   b.add(lathe([[boss + 1.6, BAT.top - 0.4], [boss + 1.2, BAT.top + 1.4], [boss - 0.4, BAT.top + 2.3]], 24), SHAFT)
   b.add(lathe([[boss, BAT.top + 2.2], [boss, BAT.top + 2.8], [boss - 1.2, BAT.top + 3.9], [boss * 0.5, BAT.top + 4.5], [0, BAT.top + 4.6]], 24), SCREW)
   b.add(prism([[-boss * 0.62, -0.7], [boss * 0.62, -0.7], [boss * 0.62, 0.7], [-boss * 0.62, 0.7]], BAT.top + 4.1, BAT.top + 4.7, 0), SOCKET, mat({ rz: 0.6 }))
-  const stud = Math.max(4, rb * 0.24)
-  b.add(lathe([[stud + 1.4, BAT.top + 0.6], [stud + 1.4, BAT.top + 1.5], [stud, BAT.top + 2.3], [stud * 0.5, BAT.top + 3.1], [0, BAT.top + 3.2]], 16), SCREW, mat({ x: len }))
   shared = b.done()
   shared.userData.shared = true
   return shared
@@ -69,7 +66,7 @@ export function batGeometry(): THREE.BufferGeometry {
 const flippersOf = (z: Zone) => table.flippers.filter((f) => f.tier === z.tier)
 
 export const flippers = whole('flippers', {
-  version: 'play-flippers-16',
+  version: 'play-flippers-17',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.flippers.${z.id}`

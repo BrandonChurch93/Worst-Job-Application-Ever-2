@@ -80,10 +80,24 @@ Decisions after the first pass:
 12. The tray again, after a look at four times the size beside the approved key: the wall was 37 px wide, wider than the tray's corner is round (18 px), so the floor's corners were square and the wall met itself in a mitre. The rim is now 7 px and the wall leans 0.25 (5 px wide), so the floor's corner stays round and the wall is a thin band, dark on the light's side and bright across from it, as approved. The coins lie 14 px in from the tray's edge.
 13. The meter: the unlit lenses are lighter (`clear.low` 0.44, was 0.3), the lit ones have a pale core, and the light the lit ones throw on the floor is stronger (0.8 a segment, was 0.5). The brief says dark inset lenses; the approved key `step2-crank` shows pale clear ones. The kit wins: lighter, not yet as clear as approved.
 
+## After 08:30 UTC
+
+- The dial key: the pointer leads past the cap (17 px left of its centre) and comes back to its lower right shoulder at 3.18 s, so the strut has the tip there at the key and settles on it. MEASURED with the probe: 16, 14 px from the cap's centre at 3.2 s, within 4 px of 15, 14 until 3.5 s; approved, measured at three times the size, has 15, 14 (my earlier 25, 21 was a bad reading).
+- The dial: the base ring is its own darker steel (`seatDark` 0.6) so the stack reads as a wheel, a bezel and a dark base; the stop is darker (`stopDark` 0.3).
+- R9-1 issue 7, the whip and the fling: in the whip the dial holds the arrow by its tip in the hole, its tail thrown outward and trailing the turn (`strike`, the angle following at 30 a second), drawn up to 1.3 long by the speed (`press`). Flung, it goes end over end twice in its 0.72 s in the air and lands upright, where the recoil takes over. No event moves. Looked at in 8 stills from 4.86 to 5.95 s.
+- The rows: the Builder measured the rows of `step2-rest` against approved. MEASURED by me in both pictures (dark rows of type at x 120 to 520): approved has the first label at y 325 and the labels 148 and 149 px apart, the build had 307 and 143, 144. `ROW_Y` is now `HEADER.contentY + 12` and `PITCH` 149; the arrow rests 18 px lower (392). The edges of the open trays at the dial and crank keys are within 2 to 5 px of approved. The 6 px left at the top is the heading's place, the shell's. The footer is not moved: it is the shared place of Continue.
+- The meter: segments 116 px tall, as approved (were 96). The lit ones have a warm pale core inside an orange rim and their lamp reaches 84 px (was 130), so the light stays near them on the tray's floor and on the sheet. The unlit ones are clearer (`clear` core 0.42, low 0.64, gain 0.3).
+
+Decisions after 08:30:
+
+14. The stills of the whip and the fling are counted as dial looks: they show what the machine does to the arrow, as the three stills of the crank's wind-up were counted as crank looks. The poses the arrow takes of itself stay acting, and those looks are used up.
+15. The existing test of the rest place (`tests/step2-keeper.test.ts`, 1575, 374) now holds 1575, 392: the rows moved, so the place between them moved.
+16. The footer keeps the shared place of Continue although approved has it 12 px lower (6 px after the header's own 6).
+
 ## Looks, counted by part
 
-- rows: 9 (the rest key three times; the dial key three times and the crank key three times for the tray).
-- dial: 7 (the dial key seven times).
-- crank: 11 (the crank key eight times; three stills of the wind-up).
+- rows: 11 (the rest key four times; the dial key four times and the crank key three times for the tray and the rows).
+- dial: 20 (the dial key ten times, once at the review tier; the sheet twice; 8 stills of the whip and the fling).
+- crank: 21 (the crank key sixteen times; three stills of the wind-up; the sheet twice).
 - slot: 40 (one still of the coins lying at 13.0 s; the sheet six times; 8 stills at a wrong time that showed nothing; 22 stills of the lever, the reels and the coins; three stills of the tray shutting over the coins).
 - acting: 40 (12 of the slot beat, 4 at a wrong time, 7 of the dial beat, 4 of the open beat, 8 of the crank beat, 5 of the peel). None left this round.

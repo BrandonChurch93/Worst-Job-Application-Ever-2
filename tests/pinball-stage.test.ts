@@ -7,7 +7,7 @@ import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { CameraPose, Shape } from '../src/stage/types'
 import { BALL, TIER_Y, floorZ } from '../src/table/layout'
 
-const CLOSE = ['table-wide', 'table-lobby', 'table-replyall', 'table-fired', 'table-save', 'rail', 'ride']
+const CLOSE = ['table-wide', 'table-lobby', 'table-replyall', 'table-fired', 'table-save', 'rail', 'ride', 'near-nest', 'near-spent']
 const HITS = ['plunger', 'doors-slam', 'bumper', 'sling', 'scoop-kick', 'flipper-save', 'drain']
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver(), film: filmOptions('pinball') })
 const far = (a: number[], b: number[]): number => Math.hypot(a[0]! - b[0]!, a[1]! - b[1]!, a[2]! - b[2]!)
@@ -67,7 +67,7 @@ describe('the cameras of the pinball machine', () => {
 
   it('cuts inside the beats and never beside a hit', () => {
     expect(cuts.length).toBeGreaterThanOrEqual(10)
-    expect(cuts.length).toBeLessThanOrEqual(14)
+    expect(cuts.length).toBeLessThanOrEqual(18)
     const hits = taken.events.filter((e) => HITS.includes(e.name))
     expect(hits.length).toBeGreaterThan(8)
     for (const c of cuts) for (const h of hits) expect(Math.abs(c - h.time), `cut at ${c}, ${h.name} at ${h.time}`).toBeGreaterThanOrEqual(0.15)
