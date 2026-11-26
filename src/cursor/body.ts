@@ -66,6 +66,8 @@ export interface Strip { x: number; y: number; z: number; rot: number; tilt: num
 interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number }
 export interface Wound { kind: Damage; at: number; x: number; y: number }
 
+export interface Face { x: number; y: number; z: number; back: number }
+
 export interface CursorPose {
   x: number
   y: number
@@ -82,6 +84,8 @@ export interface CursorPose {
   hands: [Place, Place] | null
   onPage: boolean
   inBall: boolean
+  // In the ball alone: where its face looks (a direction in the sheet's space, z out of the page) and how far back from the ball's middle it lies, in px. Null or absent: flat, face up.
+  face?: Face | null
   taken: boolean
   scale: number
   // The tail's lag behind the body, from its own acceleration.
@@ -144,6 +148,7 @@ interface State {
   hands: [Place, Place] | null
   onPage: boolean
   inBall: boolean
+  face: Face | null
   air: { x: number; y: number } | null
   ground: number
   aloft: boolean
@@ -158,7 +163,7 @@ interface State {
 const fresh = (x: number, y: number): State => ({
   x, y, z: hover, vx: 0, vy: 0, vz: 0, squash: 1, squashV: 0, lean: 0, spin: 0, stride: 0, fast: 0, acting: 'plain', reaction: null, reactionLeft: 0,
   damage: [], windowLeft: 0, leanV: 0, spinV: 0, bend: 0, bendV: 0, foot: 1, drag: 0, ticks: 0, dir: 1, feel: freshFeel(), gulp: -1,
-  strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, air: null, ground: 0, aloft: false, taken: null, takenFor: 0, drive: null, handback: 1, shove: null, from: { x, y }
+  strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, face: null, air: null, ground: 0, aloft: false, taken: null, takenFor: 0, drive: null, handback: 1, shove: null, from: { x, y }
 })
 
 export class CursorBody {
@@ -320,6 +325,11 @@ export class CursorBody {
 
   seal(inBall: boolean): void {
     this.s.inBall = inBall
+    if (!inBall) this.s.face = null
+  }
+
+  turn(face: Face | null): void {
+    this.s.face = face ? { ...face } : null
   }
 
   setOnPage(on: boolean): void {
@@ -522,7 +532,7 @@ export class CursorBody {
     return {
       x: s.x, y: s.y, z: s.z, squash: softSquash(s.squash), lean: softLean(s.lean), spin: s.spin, acting: s.acting, reaction: s.reaction,
       reactionAt: s.reaction ? 1 - s.reactionLeft / REACTION_SECONDS[s.reaction] : 0,
-      damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, taken: s.taken !== null, scale: 1,
+      damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, taken: s.taken !== null, scale: 1,
       bend: s.bend, feel: { ...s.feel }, gulp: s.gulp,
       wounds: s.damage.map((d) => ({ kind: d.kind, at: Math.min(1, Math.max(0, 1 - d.left / Math.max(d.whole, dt))), x: d.x, y: d.y })),
       strips: s.strips ? s.strips.map((p) => ({ x: p.x, y: p.y, z: p.z, rot: p.rot, tilt: p.tilt })) : null,
@@ -756,8 +766,9 @@ export function blendPose(a: CursorPose, b: CursorPose, t: number): CursorPose {
         return { x: mix(p.x, q.x), y: mix(p.y, q.y), z: mix(p.z, q.z), rot: mix(p.rot, q.rot), tilt: mix(p.tilt, q.tilt) }
       })
     : b.strips
+  const face = a.face && b.face ? { x: mix(a.face.x, b.face.x), y: mix(a.face.y, b.face.y), z: mix(a.face.z, b.face.z), back: mix(a.face.back, b.face.back) } : b.face ?? null
   return {
-    ...b, x: mix(a.x, b.x), y: mix(a.y, b.y), z: mix(a.z, b.z), squash: mix(a.squash, b.squash), lean: mix(a.lean, b.lean), spin: mix(a.spin, b.spin), healing: mix(a.healing, b.healing), hands,
+    ...b, face, x: mix(a.x, b.x), y: mix(a.y, b.y), z: mix(a.z, b.z), squash: mix(a.squash, b.squash), lean: mix(a.lean, b.lean), spin: mix(a.spin, b.spin), healing: mix(a.healing, b.healing), hands,
     bend: mix(a.bend, b.bend), feel, gulp: a.gulp >= 0 && b.gulp >= a.gulp ? mix(a.gulp, b.gulp) : b.gulp, wounds, strips,
     sprout: mix(a.sprout, b.sprout), strain: mix(a.strain, b.strain), grip: [mix(a.grip[0], b.grip[0]), mix(a.grip[1], b.grip[1])], shed: b.shed >= a.shed ? mix(a.shed, b.shed) : b.shed
   }

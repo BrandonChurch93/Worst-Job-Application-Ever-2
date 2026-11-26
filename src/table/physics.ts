@@ -29,6 +29,8 @@ const LIFT_SHUT = 0.4
 const FOREVER = 1e9
 const BAT = { bounce: 0.3, grip: 0.4 }
 const KICK = { bumper: 18, sling: 12, face: 0.3 }
+const PULSE = { gap: Math.round(0.34 / DT), swell: Math.round(0.4 / DT), rest: Math.round(0.5 / DT), lead: Math.round(0.12 / DT) }
+const FLASHERS = new Set([...table.bumpers, ...table.slings, ...table.targets].map((x) => x.id))
 const SETTLE = { seconds: 0.28, land: 0.45, sink: 0, hop: 0.07 }
 const CARPET = table.flats.find((f) => f.id === 'corporate.carpet')!.box
 
@@ -188,6 +190,19 @@ export class Machine {
     this.events.push({ name, ball, id, x: b.x, y: b.y })
     this.last[id] = this.steps
     this.last[`${name}:${id}`] = this.steps
+    if (!FLASHERS.has(id)) return
+    const k = (TIERS as string[]).indexOf(id.slice(0, id.indexOf('.')))
+    if (this.steps - (this.last[`rise.${k}`] ?? -PULSE.gap) < PULSE.gap) return
+    this.last[`rise.${k}`] = this.steps
+    this.last[`flash.${k}`] = this.steps
+  }
+
+  private swell(): void {
+    if (!this.balls.some((b) => b.steel && b.mode !== 'none')) return
+    if (this.steps - (this.last['swell.1'] ?? -PULSE.swell) < PULSE.swell || this.steps - (this.last['flash.1'] ?? -PULSE.rest) < PULSE.rest) return
+    if (this.steps + PULSE.lead - (this.last['rise.1'] ?? -PULSE.gap) < PULSE.gap) return
+    this.last['swell.1'] = this.steps
+    this.last['rise.1'] = this.steps + PULSE.lead
   }
 
   // Seconds since a thing was last named in an event (`office.bumper.1`), or since one kind of event at it (`scoop-kick:street.firehouse`): 9 when that never was, or was longer ago.
@@ -506,6 +521,7 @@ export class Machine {
 
   step(left: boolean, right: boolean): TableEvent[] {
     this.events = []
+    this.swell()
     const want: [boolean, boolean] = [left, right]
     let done = -1
     for (let s = 0; s < 2; s++) {

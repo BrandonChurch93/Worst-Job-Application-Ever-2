@@ -461,6 +461,12 @@ export class PageView {
     if (c.inBall) a.group.position.set(c.x - 960 - 4.2 * k, 540 - c.y + 9.5 * k, c.z + config.table.ballPx / 2 + 1)
     else a.group.position.set(c.x - 960, 540 - c.y, c.z)
     a.group.rotation.set(0, 0, -c.lean - c.spin)
+    if (c.inBall && c.face) {
+      const n = new THREE.Vector3(c.face.x, c.face.y, c.face.z).normalize()
+      const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), n)
+      a.group.quaternion.premultiply(q)
+      a.group.position.set(-4.2 * k, 9.5 * k, 0).applyQuaternion(q).addScaledVector(n, -c.face.back).add(new THREE.Vector3(c.x - 960, 540 - c.y, c.z + config.table.ballPx / 2 + 1))
+    }
     const sq = Math.max(0.3, c.squash)
     a.group.scale.set(flat ? 1.35 : 1 / Math.sqrt(sq), flat ? 1.35 : sq, flat ? 0.25 : 1)
     a.mark.visible = !cursorReal.damage && (c.damage.includes('burn') || c.damage.includes('scorched'))
