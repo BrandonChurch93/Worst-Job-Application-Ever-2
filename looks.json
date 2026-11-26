@@ -1,35 +1,35 @@
 {
   "folder": "shared-look",
-  "pushed": "2026-11-26T07:21:13.978Z",
-  "commit": "7f1f50b80cc4be7ceaa07bb99d48f5873d7fcfca",
+  "pushed": "2026-11-26T08:29:57.481Z",
+  "commit": "22041d91f3d6b67673ea43e71859c92e4165396d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "The one orange after the first pass: the current progress cap, the hero button and the waiting Continue, approved left, before middle, after right",
-      "time": "2026-11-26T07:21:11.505Z",
+      "caption": "Step 2 rail at 2.6x: approved on top, the build before in the middle, the build now below. The rail is a flat strip, the caps have a rolled rim and stamped numerals, the shadows are wider",
+      "time": "2026-11-26T08:29:55.723Z",
       "by": "shared-look",
-      "from": "out/work/looks/files/20261126072111-A-orange-approved-before-after.jpg"
+      "from": "out/work/looks/files/20261126082955-CE-rail.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Where the header lies on step 2: approved left, the build right, before above and after below",
-      "time": "2026-11-26T07:21:12.014Z",
+      "caption": "The arrow on step 2's dial at 4.8x: approved, the build before, the build now. A whiter flatter face and a heavier black edge",
+      "time": "2026-11-26T08:29:55.954Z",
       "by": "shared-look",
-      "from": "out/work/looks/files/20261126072112-B-header-approved-before-then-approved-after.jpg"
+      "from": "out/work/looks/files/20261126082955-D-arrow.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Step 2 at rest: approved above, before in the middle, after the first pass below",
-      "time": "2026-11-26T07:21:12.278Z",
+      "caption": "Open page at 2.6x on step 2 and on the decision page: approved, the build before, the build now. The tooth runs in short diagonal strokes",
+      "time": "2026-11-26T08:29:56.184Z",
       "by": "shared-look",
-      "from": "out/work/looks/files/20261126072112-step2-rest.jpg"
+      "from": "out/work/looks/files/20261126082956-G-tooth.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The careers page: approved above, before in the middle, after the first pass below",
-      "time": "2026-11-26T07:21:12.584Z",
+      "caption": "The SUBMIT bar's pocket at 3.5x: approved, the build before with a hairline past the round end, the build now without it",
+      "time": "2026-11-26T08:29:56.424Z",
       "by": "shared-look",
-      "from": "out/work/looks/files/20261126072112-marketing-top.jpg"
+      "from": "out/work/looks/files/20261126082956-H-hairline.jpg"
     }
   ]
 }
