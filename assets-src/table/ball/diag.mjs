@@ -11,7 +11,7 @@ const keys = String(a.keys || 'reply-all').split(',')
 const variants = String(a.variants || 'asis').split(',')
 const tier = a.tier || 'draft'
 const size = Number(a.size || 420)
-const DETAIL = { asis: { shell: true, bend: true }, noshell: { shell: false, bend: true }, nobend: { shell: true, bend: false } }
+const DETAIL = { asis: { shell: true, bend: true, press: null }, noshell: { shell: false, bend: true, press: null }, nobend: { shell: true, bend: false, press: null }, press: { shell: true, bend: true, press: [1, 0, 0.1] }, pressmost: { shell: true, bend: true, press: [1, 0, 0.14] } }
 const dir = at('out', 'work', 'ball-diag')
 fs.mkdirSync(dir, { recursive: true })
 const session = await openSession({ format: 'hd' })

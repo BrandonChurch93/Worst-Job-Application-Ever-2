@@ -63,7 +63,7 @@ vec3 lampsBack( vec3 r, vec3 p ) {
 		vec3 to = uLampPos[ i ] - p;
 		float dist = length( to );
 		float near = clamp( 15.0 / dist, 0.045, 0.15 );
-		float size = near * 1.4;
+		float size = near * 1.1;
 		float k = 2.0 * ( 1.0 - dot( r, to / dist ) );
 		float spread = min( 1.0, 0.0049 / ( near * near ) );
 		c += uLampCol[ i ].rgb * ( 1.0 - uLampCol[ i ].w ) * exp( - k / ( size * size ) ) * spread;
@@ -412,7 +412,7 @@ void main() {
 	vec3 C = vec3( 0.0, 0.0, uR );
 	vec3 soft = uSoft / max( 1.0, dot( uSoft, vec3( 0.2126, 0.7152, 0.0722 ) ) / 0.35 );
 	vec3 col = pane( Np, rho, V, - 1.0, 0.62, 0.045, 0.2, 0.03 ) * SOFT * 0.03;
-	col += lampsBack( R, vP ) * ( 0.1 + 0.5 * F );
+	col += lampsBack( R, vP ) * ( 0.03 + 0.09 * smoothstep( 0.5, 0.8, rho ) + 0.5 * F );
 	col += surround( R ) * F * 0.5;
 	float alpha = F * 0.25 + 0.1 * ( 1.0 - uTrue );
 

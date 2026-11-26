@@ -37,7 +37,7 @@ export const stateOf = (s: Shape): State => ({ closed: clamp01(s.v?.[0] ?? 1), s
 
 // The two grades of what is seen through the ball: 'bend' bends a picture of the floor in the shell's own drawing, 'true' adds one drawing that carries the scene behind it through the wall.
 export type Grade = 'bend' | 'true'
-const debug: { grade: Grade; sweat: number | null; open: number | null; shell: boolean; bend: boolean } = { grade: 'bend', sweat: null, open: null, shell: true, bend: true }
+const debug: { grade: Grade; sweat: number | null; open: number | null; shell: boolean; bend: boolean; press: number[] | null } = { grade: 'bend', sweat: null, open: null, shell: true, bend: true, press: null }
 export const setGrade = (g: Grade): void => {
   debug.grade = g
 }
@@ -351,7 +351,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   rollAt(cx, -cy, r, own.roll.quaternion)
   if (open > 0) own.roll.quaternion.slerp(OPEN, smooth(open * 4))
 
-  const pressed = pressAt(cx, cy, r, s.z0, ctx)
+  const pressed = debug.press ? { x: debug.press[0] ?? 1, y: debug.press[1] ?? 0, amount: debug.press[2] ?? 0 } : pressAt(cx, cy, r, s.z0, ctx)
   toward.set(pressed.x, -pressed.y, 0).applyQuaternion(unroll.copy(own.roll.quaternion).invert())
   ;(u.uPress!.value as THREE.Vector4).set(toward.x, toward.y, toward.z, open > 0 ? 0 : pressed.amount)
 

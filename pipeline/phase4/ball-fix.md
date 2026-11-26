@@ -73,14 +73,17 @@ The zeros in `table-wide` are the moment, not a fault. STATED in `config/showcas
 
 - 07:49 UTC: the rim band darker at the edge (0.4), one thin bright arc at rho 0.925 on the side away from the soft light, the far wall carries the lamps as warm points (0.1 + 0.5 F). Looked at in `rail-cam`, `tier-street`, `youre-fired` at `draft`.
 
+- 07:57 UTC, the press seen in profile: `node assets-src/table/ball/diag.mjs --keys last-save --variants press,pressmost --tier draft` forces a press of 0.1 and of 0.14 radius toward page right. The ball shows one flat side there with the glass rim running along it. In the sheet as the page frames it today the cup stands behind the third ball, so the flat side faces away from the camera and is not seen: told `/root/machine_runner`.
+- 08:00 UTC: the lamp points on the far wall are smaller and sit toward the rim (they were two broad warm blobs in `last-save`).
+
 After these changes, MEASURED 07:46 UTC with `npm run counts -- --key table-wide --live low` and `--key tier-office`: `clear-ball` 2 calls 18872 triangles and 3 calls 18874 triangles, `displays` 8 calls 328 triangles and 4 calls 164 triangles. The same as before, number for number.
 
 Asset sets: MEASURED with `ls public/assets/table`: `art`, `frame`. There is no set for the ball or for the displays, 0 MB each. `assets-src/table/ball` holds two scripts, 6078 bytes.
 
 ## Tuning looks, by part, critic round 1
 
-- `clear-ball`: 35 of 40. 10 `review` (6 diagnosis, 4 report), 22 `draft` key stills (2 of them for the probe), 3 `draft` sheets.
-- `displays`: 0 of 40.
+- `clear-ball`: 38 of 40. 10 `review` (6 diagnosis, 4 report), 25 `draft` key stills (2 of them for the probe), 3 `draft` sheets.
+- `displays`: 1 of 40 (`table-wide` at `draft`, the main display beside approved: six amber numerals in a lit window, in place and in step with approved; nothing changed).
 
 Time of one still on this VM, MEASURED by `assets-src/table/ball/diag.mjs` (it prints the seconds of each render): `draft` 17.7 to 41.6 s, `review` 56.3 to 84.0 s.
 
