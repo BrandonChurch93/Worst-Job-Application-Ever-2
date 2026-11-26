@@ -30,11 +30,14 @@ Branch `agent/decision-fix`. Pictures in `looks/decision-fix/` of branch `agent/
 - The flat arrow's spread is the cursor's (`FLAT.wide` in `src/cursor/model/deform.ts`): `decision-fix-NEEDS.patch` holds the one line, not run.
 - The second hurt at the landing lasts 0.78 s, so the film's look at the button is at 7.88 and the walk 8.29 to 8.9.
 
+- The dust at the contact is darker and its specks larger (`DUST`), so it is seen against the white sheet in the two frames after the hit.
+- `tests/decision-fix.test.ts` holds the hit's frames, the shake at the top of the carry, and the arrow's 14 frames down before the key.
+
 ## Looks spent (40 a part)
 
 Counted as renders looked at for tuning, a sheet or a montage as one.
 
-- stamp (hit, lift, release, block, ink): 17
+- stamp (hit, lift, release, block, ink, dust): 19
 - letter (paper shade, corners, places): 6
 - metrics (glass paint, lips, readout type, underline): 7
 - wait (panel place, counter glare): 2

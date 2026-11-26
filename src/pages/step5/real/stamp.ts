@@ -199,7 +199,7 @@ function wordOf(s: Shape): THREE.Object3D {
   return print(inked(pos, data.colour, data.index, m.w, m.h, 0, 0))
 }
 
-const DUST = { seed: INK.seed + 41, motes: 96, fan: 8, colour: 0xb3ab9e, slow: 0.17 }
+const DUST = { seed: INK.seed + 41, motes: 96, fan: 8, colour: 0x978d7b, slow: 0.17 }
 
 interface Mote { x: number; y: number; nx: number; ny: number; speed: number; r: number; grow: number; a: number }
 
@@ -220,7 +220,7 @@ function motes(): Mote[] {
     const by = onLong ? flip : spread
     const l = Math.hypot(bx, by)
     const speck = h(4) < 0.42
-    out.push({ x, y, nx: bx / l, ny: by / l, speed: speck ? 500 + h(5) * 800 : 220 + h(5) * 460, r: speck ? 0.8 + h(6) * 1.2 : 8 + h(6) * 14, grow: speck ? 0 : 90, a: speck ? 0.7 : 0.07 + h(7) * 0.09 })
+    out.push({ x, y, nx: bx / l, ny: by / l, speed: speck ? 500 + h(5) * 800 : 220 + h(5) * 460, r: speck ? 1.3 + h(6) * 1.7 : 8 + h(6) * 14, grow: speck ? 0 : 90, a: speck ? 0.8 : 0.15 + h(7) * 0.14 })
   }
   return out
 }
