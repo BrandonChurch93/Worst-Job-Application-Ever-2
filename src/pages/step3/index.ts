@@ -122,7 +122,7 @@ const FILM: [number, string, number][] = [
   [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [29.3, 'follow', 0],
   [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
 ]
-const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 6, ride: 7 }
+const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 9, ride: 7 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
@@ -136,7 +136,7 @@ const ASLEEP = 0.25
 const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05] }
-const BACK = { ahead: 2.5, clear: 3.4, lift: 1.35, behind: 0.6, before: 2.2 }
+const BACK = { ahead: 3, clear: 2.3, lift: 0.7, behind: 0.6, before: 2.2 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
@@ -278,7 +278,7 @@ export function makePage(): PageLogic {
     const a = soft(r, Math.max(0, b.s - BACK.behind))
     const f = soft(r, Math.min(railLength(r), b.s + BACK.before))
     const d = Math.hypot(f.x - a.x, f.y - a.y) || 1
-    return { eye: toWorld(px(c.x + ((f.x - a.x) / d) * BACK.ahead), px(c.y + ((f.y - a.y) / d) * BACK.ahead), px(c.z + BACK.clear)), target: toWorld(px(c.x), px(c.y), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
+    return { eye: toWorld(px(c.x + ((f.x - a.x) / d) * BACK.ahead), px(c.y + ((f.y - a.y) / d) * BACK.ahead), px(Math.max(c.z, soft(r, Math.min(railLength(r), b.s + BACK.ahead)).z) + BACK.clear)), target: toWorld(px(c.x), px(c.y), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const lens = (name: string, p: CameraPose | null): CameraPose | null => {
