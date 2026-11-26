@@ -48,7 +48,7 @@ export const POOL: Record<string, number> = { marquee: 1, corporate: 0.9, office
 // How much of a far lamp's light the print of a floor gives back, seen from straight above and seen along the floor. The night tiers are dark lacquer between their pools; the Office is a lit room.
 export const DEEP: Record<string, [number, number]> = {
   corporate: [0.65, 0.45],
-  office: [1, 0.7],
+  office: [0.82, 0.7],
   street: [0.75, 0.5]
 }
 

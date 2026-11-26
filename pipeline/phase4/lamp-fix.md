@@ -112,6 +112,8 @@ Lights went 2 over the 40 of round 2 with the last looks before a push. Round 3 
 | --- | --- | --- | --- | --- |
 | 09:20 | lights | 3 | d1, the lamp under each sling toward its foot edge and low: tier-office, tier-corporate, tier-street | 3, 0 |
 | 09:21 | lights | 2 | d2, the same at power 4, reach 1.5: tier-office, tier-street | 5, 0 |
+| 09:25 | lights | 3 | f1, what is pushed in bd91577a: tier-corporate, table-wide, reply-all | 8, 0 |
+| 09:29 | lights | 2 | g1, the Office keeps 0.82 of far light from above: tier-office, reply-all | 10, 0 |
 
 ## Decisions
 
@@ -152,6 +154,20 @@ Lights went 2 over the 40 of round 2 with the last looks before a push. Round 3 
 35. The Street gives back 0.75 of far light seen from above (`DEEP.street`), with its pools at 0.6: `tier-street` 1.13, dark share 12% against 20% (the frame's strips are the pale part).
 36. `youre-fired` reads 1.63 of approved on main 7f82c9cc (c5): the camera now stands where the pale aluminium wall behind the firehouse fills the top third of the picture. Camera and wall are not mine.
 37. The lamp under a sling stood at the sling's middle, 30 px up, and its pool was hidden under the plastic. It now stands toward the sling's foot edge, 16 px up, stronger and tighter (`SLING` in `groups.ts`: foot 0.85, power 4, reach 1.5 balls; the place is worked out from the sling's three corners in the layout), so a warm pool lies on the floor beside each sling as in the approved tier keys. MEASURED (`means2.mjs d2`): tier-office 1.11, tier-street 1.13.
+38. The Office gives back 0.82 of far light seen from above (`DEEP.office`), so the floor between the pools of the slings and lamps is a step deeper. MEASURED (`means2.mjs g1`): tier-office 1.09, reply-all 1.04, dark share 4% and 7% against 10% and 15%.
+
+## End of the pass (09:35 UTC)
+
+MEASURED on the last tree:
+- Calls and triangles (`npm run build && npm run counts -- --key K --live low`, 09:27 UTC), the same as at the start: table-wide table-lights 8 and 22662, tier-art 6 and 3534; tier-corporate 6 and 16204, 3 and 1180; tier-office 6 and 20166, 3 and 1180; tier-street 4 and 12916, 2 and 1178.
+- Asset sets (`du -cb public/assets/table/art/*`, `du -cb assets-full/table/art/*`): web 7148154 bytes (8288329 at the start), full 23139338 bytes (26326693 at the start), largest file 6653148 bytes. There is no `table/lights` set.
+- `TRUE.shadows` is 0 (`src/table/real/lights/index.ts`).
+- Means of build over approved on main 7e7ddb05 (`means2.mjs` f1, g1, c5, d2): tier-corporate 1.10, tier-office 1.09, tier-street 1.13, reply-all 1.04, lobby-doors 1.03, table-wide 1.15, youre-fired 1.63. Before the frame went to pale aluminium (merge 29) the same floors read 1.01, 1.00, 1.00, 0.98, 0.92, 0.88, 1.17.
+
+The three things in my files that still look least real, for whoever comes after:
+1. The windows in the floor (`tier-corporate`, `tier-street`, `last-save`): lit, each is a wide flat coloured disc with thin line art. Approved has a small domed lens with a bright highlight on its rim and a hot middle. The size is the layout's; what is mine is the dome (`WINDOW` in `art/index.ts`), the atlas (`inserts.mjs`) and the seat (`lamps.ts`).
+2. The lacquer seen along the floor (`lobby-doors`, `rail-cam`, `last-save`): lit fronts stand in it as soft bright columns and the lamps as short streaks; approved mirrors windows and lamps as sharp warm shapes with the floor's own depth under them (`MIRROR`, `STREAK`, `GLINT` in `hook.ts`).
+3. The shadows of the head lamps (`tier-office`, `reply-all`, `tier-street`): they are swept from each part's foot and height, so they are even in tone and stop short; approved has long soft shadows with a dark contact at the foot. Dark share: tier-office 4% against 10%, reply-all 7% against 15% (`SHADOW`, `shadeOf` in `key.ts`). With it goes the beacon in `youre-fired`: an evenly glowing dome (the model's) and a red that lies broad on the roof instead of tight round the lamp.
 
 ## Needs
 
