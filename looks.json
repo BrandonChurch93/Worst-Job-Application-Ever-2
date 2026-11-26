@@ -1,33 +1,33 @@
 {
   "folder": "pinball-director",
-  "pushed": "2026-11-26T01:55:54.392Z",
-  "commit": "7125cd0ef76829f6345ae838ba171518aaedf7ba",
+  "pushed": "2026-11-26T02:11:35.806Z",
+  "commit": "3edf15f95fc10a63afef2938bb29321572fc6e32",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "reply-all beside the approved image: the clear ball under bumper 3, three steel balls in a line to the inbox, the bumpers in a tight cluster (floor art still baked from the old layout)",
-      "time": "2026-11-26T01:55:52.621Z",
+      "caption": "Key tier-office: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T02:11:15.182Z",
       "by": "pinball-director",
-      "from": "out/work/report/compare-reply-all.jpg"
+      "from": "out/work/compare/compare-tier-office.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-office beside the approved image: bumper cluster, capsule flippers, the ball under the cluster on the pizza insert",
-      "time": "2026-11-26T01:55:52.848Z",
+      "caption": "lobby-doors beside the approved image: the revolving door's post on the carpet's left border, the ball clear of it at the doors (draft, the camera not yet refitted)",
+      "time": "2026-11-26T02:11:34.216Z",
       "by": "pinball-director",
-      "from": "out/work/report/compare-tier-office.jpg"
+      "from": "out/work/report/compare-lobby-doors.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-corporate beside the approved image: the ball on the carpet at the revolving door at 12.0 s",
-      "time": "2026-11-26T01:55:53.077Z",
+      "caption": "tier-corporate beside the approved image: the ball stands on the carpet beside the door's post at 12.0 s (draft)",
+      "time": "2026-11-26T02:11:34.454Z",
       "by": "pinball-director",
       "from": "out/work/report/compare-tier-corporate.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide beside the approved image after the apron zone went to the street floor: frame and page nodes have not followed yet",
-      "time": "2026-11-26T01:55:53.321Z",
+      "caption": "table-wide beside the approved image: the apron now lies open at the street floor's height (draft)",
+      "time": "2026-11-26T02:11:34.689Z",
       "by": "pinball-director",
       "from": "out/work/report/compare-table-wide.jpg"
     }
