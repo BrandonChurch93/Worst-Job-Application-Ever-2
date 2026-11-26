@@ -9,7 +9,7 @@ import { BODY_Z, CAP_H, CAP_W, HOLE_H, HOLE_W, crackRuns } from '../body'
 import { controls } from '../../shell/real/controls'
 import type { RealContext } from '../../real/types'
 import { mesh } from './body-kit'
-import { pillGeometry, PILL } from './pill'
+import { holeAt, pillGeometry, LIP, PILL } from './pill'
 
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
 const smooth = (t: number): number => { const u = clamp(t); return u * u * (3 - 2 * u) }
@@ -74,10 +74,13 @@ export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
       const i = (y * w + x) * 4
       const tone = 9 + Math.round(9 * fine)
       const grey = 40 + Math.round(34 * fine)
-      data[i] = Math.round(mix(tone + 4, grey, ash))
-      data[i + 1] = Math.round(mix(tone + 2, grey - 2, ash))
-      data[i + 2] = Math.round(mix(tone, grey - 5, ash))
-      data[i + 3] = Math.round(255 * Math.max(clamp(d) * 0.985 * (1 - bare), halo))
+      const hole = holeAt(px, -py).d
+      const pit = 1 - smooth((hole - 0.86) / 0.1)
+      const torn = hole < LIP.out ? smooth((hole - 0.9) / 0.1) * (1 - smooth((hole - 1.12) / (LIP.out - 1.12))) * (0.55 + 0.45 * smooth((fine - 0.35) / 0.3)) * smooth(((CAP_W / 2 - 21.5 - Math.abs(px)) / 14 + 0.9) / 0.8) : 0
+      data[i] = Math.round(mix(mix(tone + 4, grey, ash), 5, pit))
+      data[i + 1] = Math.round(mix(mix(tone + 2, grey - 2, ash), 4, pit))
+      data[i + 2] = Math.round(mix(mix(tone, grey - 5, ash), 4, pit))
+      data[i + 3] = Math.round(255 * Math.max(pit, Math.max(clamp(d) * 0.985 * (1 - bare), halo) * (1 - 0.9 * torn)))
     }
   }
   return data
@@ -212,7 +215,7 @@ function chipPlaces(): Chip[] {
     const ex = c * (half + r)
     const ey = s * r
     const far = 10 + hash01(i, 3, 43) ** 1.5 * 78
-    out.push({ fx: ex * 0.96, fy: ey * 0.9, tx: ex + c * far, ty: ey + s * far * 0.9, size: 2.6 + hash01(i, 4, 47) * 4.6, turn: hash01(i, 5, 53) * 6.283, tip: (hash01(i, 6, 59) - 0.5) * 0.9 })
+    out.push({ fx: ex * 0.96, fy: ey * 0.9, tx: ex + c * far, ty: ey + s * far * 0.9, size: 2.8 + hash01(i, 4, 47) ** 2 * 8.4, turn: hash01(i, 5, 53) * 6.283, tip: (hash01(i, 6, 59) - 0.5) * 0.9 })
   }
   return out
 }
@@ -220,21 +223,24 @@ function chipPlaces(): Chip[] {
 let wallMaterial: THREE.MeshPhysicalMaterial | null = null
 let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 let collarMaterial: THREE.MeshPhysicalMaterial | null = null
-const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial; collar: THREE.MeshPhysicalMaterial } => {
+let lipMaterial: THREE.MeshPhysicalMaterial | null = null
+const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial; collar: THREE.MeshPhysicalMaterial; lip: THREE.MeshPhysicalMaterial } => {
   const grain = materials().ceramic.normalMap
   wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x34312e, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(0.3, 0.3) }))
   floorMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x0d0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.1 }))
   if (!collarMaterial) {
     collarMaterial = materials().aluminiumSatin.clone()
-    collarMaterial.color.setHex(0xb6b8b8, THREE.SRGBColorSpace)
-    collarMaterial.roughness = 0.6
-    collarMaterial.metalness = 0.55
-    collarMaterial.envMapIntensity = 0.5
-    collarMaterial.normalMap = null
+    collarMaterial.color.setHex(0xbfc0be, THREE.SRGBColorSpace)
+    collarMaterial.roughness = 0.52
+    collarMaterial.metalness = 0.3
+    collarMaterial.envMapIntensity = 0.6
+    collarMaterial.normalMap = grain
+    collarMaterial.normalScale = new THREE.Vector2(0.1, 0.1)
     collarMaterial.roughnessMap = null
     studio(collarMaterial)
   }
-  return { wall: wallMaterial, floor: floorMaterial, collar: collarMaterial }
+  lipMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x403d3a, THREE.SRGBColorSpace), roughness: 0.9, metalness: 0.2, specularIntensity: 0.3, normalMap: grain, normalScale: new THREE.Vector2(0.55, 0.55) }))
+  return { wall: wallMaterial, floor: floorMaterial, collar: collarMaterial, lip: lipMaterial }
 }
 
 export const PIT = { collar: 15, wallTo: 25, deep: -58 }
@@ -243,9 +249,10 @@ function rim(): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const line = roundedRect(HOLE_W, HOLE_H, HOLE_H / 2, 22)
-  const ring = sweep(line, profile([[-2.4, 0, true], [-2.4, 0.35], [-1.7, 0.6], [3.4, 0.6], [4.4, 0.15], [7.2, -6.4], [8.6, -9.6], [PIT.collar, -12, true]]), false)
+  const ring = sweep(line, profile([[-5.4, 0, true], [-5.4, 0.7], [-4.9, 1.25], [-4, 1.5], [3.2, 1.5], [4.2, 1.2], [4.9, 0.4], [5.2, -0.8, true]]), false)
   const pit = pitStuff()
   root.add(mesh(ring, pit.collar, false, true))
+  root.add(mesh(sweep(line, profile([[5, -0.6, true], [6.4, -5.4], [8.6, -9.6], [PIT.collar, -12, true]]), false), pit.lip, false, true))
   const wall = sweep(line, profile([[PIT.collar - 0.4, -12, true], [PIT.collar + 3, -17], [PIT.collar + 7, -36], [PIT.wallTo, PIT.deep, true]]), false)
   root.add(mesh(wall, pit.wall, false, true))
   root.add(mesh(sweep(roundedRect(HOLE_W - PIT.wallTo * 2 + 2, HOLE_H - PIT.wallTo * 2 + 2, HOLE_H / 2 - PIT.wallTo + 1, 14), [{ inset: 0, z: PIT.deep, out: 0, up: 1 }], true), pit.floor, false, true))
@@ -306,8 +313,8 @@ const WISP_ACROSS = [0, 0.75, 1, 0.75, 0]
 let wispMaterial: THREE.MeshBasicMaterial | null = null
 
 export function wispPoint(u: number, t: number, w: number): [number, number, number, number] {
-  const sway = Math.sin(u * 5.6 + w * 2.3 - t * 1.1) * 24 * u + Math.sin(u * 13 + w - t * 1.9) * 11 * u * u
-  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 7 + 36 * Math.pow(u, 0.8)]
+  const sway = Math.sin(u * 7.4 + w * 2.3 - t * 1.1) * 26 * Math.pow(u, 0.8) + Math.sin(u * 16 + w - t * 1.9) * 12 * u
+  return [sway + u * 22, Math.pow(u, 1.3) * 190, u * 110, 6 + 22 * Math.pow(u, 0.9)]
 }
 
 function smoke(): THREE.Object3D {
@@ -315,7 +322,7 @@ function smoke(): THREE.Object3D {
     puffMade = texture(puffPixels(), PUFF_PX, PUFF_PX, false)
     puffMade.wrapT = THREE.RepeatWrapping
   }
-  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.2, 0.205), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
+  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.12, 0.12, 0.125), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
   const across = WISP_ACROSS.length
   const count = (WISP_N + 1) * across
   const g = new THREE.BufferGeometry()

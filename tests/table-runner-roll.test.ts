@@ -70,13 +70,13 @@ describe('the rail shot of the film', () => {
     const rolls: [number, number][] = []
     while (stage.time < 32.5 && !stage.finished) {
       stage.advance(1)
-      if (stage.time > 30.9) rolls.push([stage.time, stage.cursor.pose().spin])
+      if (stage.time > 30.5) rolls.push([stage.time, stage.cursor.pose().spin])
     }
-    const first = rolls.findIndex(([t, r], i) => i > 0 && Math.abs(t - 31.15) < 0.03 && Math.abs(r - rolls[i - 1]![1]) > 0.5)
+    const first = rolls.findIndex(([t, r], i) => i > 0 && Math.abs(t - 30.75) < 0.03 && Math.abs(r - rolls[i - 1]![1]) > 0.5)
     expect(first).toBeGreaterThan(0)
     const last = rolls.findIndex(([t]) => t >= 32.3 + 0.02)
     expect(rolls[last]![1]).toBe(0)
-    const inShot = rolls.filter(([t]) => t > 31.2 && t < 32.25)
+    const inShot = rolls.filter(([t]) => t > 30.8 && t < 32.25)
     expect(inShot.every(([, r]) => r !== 0)).toBe(true)
     expect(rolls.filter(([t]) => t > 32.32).every(([, r]) => r === 0)).toBe(true)
   })
