@@ -247,6 +247,7 @@ const hex = (h: number): Rgb => lin(new THREE.Color().setHex(h, THREE.SRGBColorS
 const INK = 0x201f1d
 const INK_WARM = 0x52473c
 const INK_SOFT = 0x3e3933
+const INK_QUIET = 0x67625c
 const SOFT_FONT = 'inter-400'
 const INK_LIGHT = 0xfdfdfd
 const LIP = 0xf2efe8
@@ -265,6 +266,7 @@ export function styles(): Record<string, Style> {
   const ink = hex(INK)
   const warm = hex(INK_WARM)
   const soft = hex(INK_SOFT)
+  const quiet = hex(INK_QUIET)
   const light = hex(INK_LIGHT)
   const lip = hex(LIP)
   const onMetal = hex(INK_ON_METAL)
@@ -276,6 +278,7 @@ export function styles(): Record<string, Style> {
   styleSet = {
     'page:ink': { setting: 'sunk', fill: ink, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: ink }, { d: 0.9, a: 0.5, c: lip }] },
     'page:soft': { setting: 'sunk', fill: soft, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: soft }, { d: 0.9, a: 0.5, c: lip }] },
+    'page:quiet': { setting: 'sunk', fill: quiet, lean: 0.5, rings: [{ d: 0.3, a: 0.8, c: quiet }, { d: 0.9, a: 0.5, c: lip }] },
     'cap:ink': { setting: 'sunk', fill: warm, lean: 0.42, rings: [{ d: 0.3, a: 0.8, c: warm }, { d: 0.8, a: 0.4, c: lip }] },
     'glass:ink': { setting: 'flat', fill: onGlass, lean: 0, rings: [{ d: 0.45, a: 0.85, c: onGlass }] },
     'glass:soft': { setting: 'flat', fill: softOnGlass, lean: 0, rings: [{ d: 0.45, a: 0.85, c: softOnGlass }] },
@@ -297,6 +300,7 @@ export function styleName(ground: Ground, tone: string, font = '', ink = ''): st
   const inkName = tone === 'inkLight' || tone === 'light' ? 'light' : 'ink'
   if (inkName === 'light') return ground === 'gloss' || ground === 'metal' ? 'gloss:light' : 'page:light'
   if (ground === 'glass' && ink === 'soft') return 'glass:soft'
+  if (ground === 'page' && ink === 'soft' && font === SOFT_FONT) return 'page:quiet'
   return ground === 'page' && font === SOFT_FONT ? 'page:soft' : `${ground}:ink`
 }
 
