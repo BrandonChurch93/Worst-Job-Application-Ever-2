@@ -83,3 +83,14 @@ One look is one draft still, comparison or sheet. Counted to 12:28 UTC. The limi
 30. The well of a tray, the Builder's look at merge 34: the floor's shade under the upper and left wall is deeper and shorter (soak 0.44 over 13 px, was 0.25 over 22 px), the floor is a little darker (1.13, was 1.16) and the far side is lighter (0.13 over 12 px). All three trays share it.
 31. The unlit lens of the meter had a dark outline where approved's is clear glass with a light edge. MEASURED in a draft still with the wall painted green: the outline is the lens's upright wall and seat, which the studio's light from above leaves at about a quarter of their tone. The wall and seat now give off a little of their own pale tone (`edgeLight` 0.5), standing for the light a clear block carries to its edges; their tone is lighter (`rimTone` 0.86, was 0.68), the dark line inside the rim of the picture is fainter (0.12, was 0.3) and the foot line is a lighter grey. The lit lens keeps its picture and its orange wall.
 32. The well again, measured this time. MEASURED down one column of the crank key (approved and the build at the review tier, green channel, 10 to 90 px under the upper wall): approved 81, 105, 130, 146, 154, 156, 160, 165, 163; the build before 101, 126, 144, 156, 165, 170, 175, 177, 179; the build after 86, 112, 128, 143, 153, 160, 166, 169, 172 at the draft tier. The floor's shade has a second, long part (`far` 0.4 over 120, base 1.28; 0.32 over 110 was tried first and gave 91, 117, 133, 148, 157, 164, 170, 173, 176), the floor is a little warmer (blue down 3.5 percent) and the lower lip's light reaches twice as far (0.16 over 24). Approved's is still a little deeper from 60 px on (156 to 163 against 160 to 172). The build's column after is 30 px to the right of the one before, clear of the last lens. All three trays share it; seen on the dial key too.
+
+## End of the round (12:35 UTC)
+
+The three things least real in step 2, as I see them in my own stills and film frames:
+
+1. The well of a tray is still shallower than approved's at the dial: approved's dial well is dark to half its height, the build's shade is the crank's, lighter. The rim of a tray is one bright line and a grey one where approved's is a thick clear lip with a bright lower edge.
+2. The shade under the crank's arm and grip, and under the slot's lever, is fainter and cooler than approved's long warm shade to the lower right.
+3. On the way to Continue the arrow is a pale lump for three seconds (the exhausted body over the flat one); at the size the film is judged in, the peel and the refill are small changes of a small shape. The body is the cursor's; the timing is mine and is as slow as the kit's beat lets it be.
+
+Not done: R1-1 issue 11 and R1-2 issue 9 (decision 24); the dial's repeated rim rings at the draft tier; a held pose of the whip longer than the 1.36 s it has.
+
