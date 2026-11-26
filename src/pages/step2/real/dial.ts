@@ -415,7 +415,6 @@ const plainDial: PartMaker = {
     wheel.add(mesh(g.edges, housingMaterial))
     wheel.add(mesh(g.holes, m.aluminiumSatin))
     wheel.add(mesh(g.inner, faceMaterial, false))
-    wheel.add(mesh(g.seam, m.gap, false))
     const hubRing = mesh(g.hubRing, m.gap, false)
     hubRing.position.z = B.innerTall + B.hubSeatDeep - 0.1
     wheel.add(hubRing)
