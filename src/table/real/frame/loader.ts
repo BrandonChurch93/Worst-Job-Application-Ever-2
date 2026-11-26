@@ -3,7 +3,7 @@ import type { RealContext } from '../../../real/types'
 import { BALL, OUTLET, PORT, railOf } from '../../layout'
 import { local, localBalls, type Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
-import { BREATH, TONE, aluOf, clearOf, hex, mesh } from './mats'
+import { TONE, aluOf, breathOf, clearOf, hex, mesh } from './mats'
 
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
 export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22, collarOut: 58.5, ferrule: 9, ferruleOut: 56, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
@@ -12,6 +12,18 @@ const RING = { height: 26, lip: 6, floor: 2.4, slot: 2, mouth: 6, dish: 34, cuts
 const SHADE = { dx: 56, dy: -38, wide: 1, dark: 0.64, up: 0.5, ease: 70 }
 // The rim of light in the port: how dim and how bright it breathes, and how many seconds one breath takes.
 const GLOW = { low: 0.25, high: 0.95, seconds: 4.6 }
+// The port's answer when the arrow is taken or the ball comes home: the ring is struck down for two frames, which from above is seen as the ring drawn in, and springs back, and the rim of light flashes and dies.
+export const ANSWER = { hold: 2 / 60, shrink: 0.034, ring: 0.085, damp: 16, over: 0.32, flash: 3.2, fade: 0.075 }
+// How far the ring is down, 1 to 0 and a little past it, `t` seconds after the contact.
+export const dipOf = (t: number): number => {
+  if (t < 0 || t >= ANSWER.over) return 0
+  if (t < ANSWER.hold) return 1
+  const u = t - ANSWER.hold
+  return Math.exp(-ANSWER.damp * u) * Math.cos((Math.PI * 2 * u) / ANSWER.ring) * (1 - u / (ANSWER.over - ANSWER.hold))
+}
+// How bright the flash of the rim stands, 1 to 0.
+export const flashOf = (t: number): number => (t < 0 || t >= ANSWER.over ? 0 : Math.exp(-t / ANSWER.fade) * (1 - t / ANSWER.over))
+interface Ring { x: number; y: number; at: number; runs: { mesh: THREE.Mesh; from: number; rest: Float32Array }[] }
 const CUP: [number, number, number] = [0.03, 0.032, 0.036]
 // The colour a vertex of the rim of light carries: the tube's material knows it by its blue.
 const RIM: [number, number, number] = [1, 1, 0]
@@ -214,17 +226,26 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
   const { first, last } = whole
   let { path, from } = whole
   let seat = -1
+  let ring: { a: [number, number]; g: [number, number]; x: number; y: number } | null = null
+  const ringed = (c: { x: number; y: number }, build: () => void): void => {
+    const a = A.vertices
+    const g = G.vertices
+    build()
+    const q = localBalls(z, c.x, c.y)
+    ring = { a: [a, A.vertices], g: [g, G.vertices], x: q[0], y: q[1] }
+  }
+  const run = (m: THREE.Mesh, r: [number, number]): { mesh: THREE.Mesh; from: number; rest: Float32Array } => ({ mesh: m, from: r[0], rest: (m.geometry.getAttribute('position').array as Float32Array).slice(r[0] * 3, r[1] * 3) })
   if (first && path.length > 1) {
     // The tube's mouth stands at the wall of the cup, so the ball is seen lying in the cup before it goes.
     const cut = (PORT.cup / 2) * BALL - RING.mouth
     const a = path[0]!
     const b = path[1]!
-    port(A, G, z, PORT, Math.atan2(b[1] - a[1], b[0] - a[0]))
+    ringed(PORT, () => port(A, G, z, PORT, Math.atan2(b[1] - a[1], b[0] - a[0])))
     path = trim(path, cut)
     from += cut
     seat = (PORT.ring / 2) * BALL - cut + RING.seatLong / 2 - 3
-  } else if (z.id === 'first') port(A, G, z, PORT)
-  if (z.id === 'last') port(A, null, z, OUTLET)
+  } else if (z.id === 'first') ringed(PORT, () => port(A, G, z, PORT))
+  if (z.id === 'last') ringed(OUTLET, () => port(A, G, z, OUTLET))
   if (path.length > 1) {
     G.pipe(path, TUBE.outer, TUBE.sides, [1, 1, 1])
     G.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, [1, 1, 1], true)
@@ -278,17 +299,42 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
       if (f) collar(A, f)
     }
   }
-  if (A.vertices > 0) o.add(mesh(A, aluOf(z), `loader.metal.${z.id}`))
+  if (A.vertices > 0) {
+    const metal = mesh(A, aluOf(z), `loader.metal.${z.id}`)
+    o.add(metal)
+    const r = ring as { a: [number, number]; g: [number, number]; x: number; y: number } | null
+    if (r) o.userData.ring = { x: r.x, y: r.y, at: 0, runs: [run(metal, r.a)] } satisfies Ring
+  }
   if (G.vertices > 0) {
-    const tube = mesh(G, clearOf(z, 'tube', TUBE.opacity), `loader.tube.${z.id}`)
+    const tube = mesh(G, clearOf(z, 'tube', TUBE.opacity), path.length > 1 ? `loader.tube.${z.id}` : `loader.light.${z.id}`)
     tube.renderOrder = 3
     o.add(tube)
+    const r = ring as { a: [number, number]; g: [number, number]; x: number; y: number } | null
+    if (r && o.userData.ring) (o.userData.ring as Ring).runs.push(run(tube, r.g))
   }
   return o
 }
 
-// The rim of light in the port breathes slowly: it is the one thing on the resting page that moves.
-export function loaderPose(_o: THREE.Object3D, z: Zone, ctx: RealContext): void {
-  if (z.id !== 'first') return
-  BREATH.value = GLOW.low + (GLOW.high - GLOW.low) * (0.5 - 0.5 * Math.cos((ctx.time * Math.PI * 2) / GLOW.seconds))
+// The rim of light in the port breathes slowly: it is the one thing on the resting page that moves. Both ports answer a contact: the page gives each ring the seconds since it.
+export function loaderPose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
+  if (z.id !== 'first' && z.id !== 'last') return
+  const t = ctx.byId.get(z.id === 'first' ? 'loader.ring' : 'outlet.ring')?.v?.[0] ?? 9
+  const rest = z.id === 'first' ? GLOW.low + (GLOW.high - GLOW.low) * (0.5 - 0.5 * Math.cos((ctx.time * Math.PI * 2) / GLOW.seconds)) : GLOW.low
+  breathOf(z).value = rest + ANSWER.flash * flashOf(t)
+  const r = o.userData.ring as Ring | undefined
+  if (!r) return
+  const d = dipOf(t)
+  if (d === r.at) return
+  r.at = d
+  const k = 1 - ANSWER.shrink * d
+  for (const part of r.runs) {
+    const pos = part.mesh.geometry.getAttribute('position') as THREE.BufferAttribute
+    const a = pos.array as Float32Array
+    for (let i = 0; i < part.rest.length; i += 3) {
+      const j = part.from * 3 + i
+      a[j] = r.x + (part.rest[i]! - r.x) * k
+      a[j + 1] = r.y + (part.rest[i + 1]! - r.y) * k
+    }
+    pos.needsUpdate = true
+  }
 }

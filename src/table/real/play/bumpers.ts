@@ -11,8 +11,8 @@ const PLATE = look(0xdde0e3, 0.2, 1, 0)
 const PRINT = look(0x20262a, 0.55, 0, 0.4)
 const PRINT_PALE = look(0xd9d4c4, 0.55, 0, 0.4)
 const SKIRT = look(0xd4d7da, 0.16, 1, 0)
-const PAPER = look(0xa67a5c, 0.3, 1, 0)
-const KRAFT = look(0xb98d6c, 0.26, 1, 0)
+const PAPER = look(0xb0906e, 0.3, 1, 0)
+const KRAFT = look(0xc2a480, 0.26, 1, 0)
 const KRAFT_DARK = look(0xe2e4e6, 0.14, 1, 0)
 const LID = look(0xf4f2ec, 0.26, 0, 0.8)
 const LID_DARK = look(0x2a2826, 0.7, 0, 0)
@@ -93,7 +93,7 @@ function lidGeometry(): THREE.BufferGeometry {
   return b.done()
 }
 
-const WELL: [number, number, number] = [1, 0.8, 0.52]
+const WELL: [number, number, number] = [1, 0.95, 0.84]
 
 // The lamp in the cup, as it shows: through the lid, brightest in the middle, and in the gap under the lid.
 function glowGeometry(): THREE.BufferGeometry {
@@ -103,10 +103,10 @@ function glowGeometry(): THREE.BufferGeometry {
   const lid = lidProfile().map((q) => [q[0] + 0.5, q[1] + 0.6] as V2)
   const deckR = CUP.lidR - 24
   const shine = (r: number, z: number): number => {
-    if (z < CUP.lidZ + 5.4) return 0.2
-    if (z < CUP.lidZ + 8) return 0.32
-    if (r > deckR + 0.6) return z > CUP.top ? 0.24 : 0.3
-    return 0.3 + 0.6 * Math.pow(Math.max(0, 1 - r / deckR), 1.3)
+    if (z < CUP.lidZ + 5.4) return 0.4
+    if (z < CUP.lidZ + 8) return 0.5
+    if (r > deckR + 0.6) return z > CUP.top ? 0.56 : 0.52
+    return 0.56 + 0.3 * Math.pow(Math.max(0, 1 - r / deckR), 1.3)
   }
   const band = (r0: number, z0: number, v0: number, r1: number, z1: number, v1: number, tint: [number, number, number] = [1, 1, 1]): void => {
     for (let i = 0; i < n; i++) {
@@ -122,8 +122,8 @@ function glowGeometry(): THREE.BufferGeometry {
     const b = lid[k]!
     band(a[0], a[1], shine(a[0], a[1]), b[0], b[1], shine(b[0], b[1]), b[0] < deckR + 0.6 ? WELL : [1, 1, 1])
   }
-  band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.74, 0.4])
-  band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.42, 0.14])
+  band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.86, 0.62])
+  band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.74, 0.46])
   const g = new THREE.BufferGeometry()
   g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3))
   g.setAttribute('color', new THREE.Float32BufferAttribute(c, 3))
@@ -142,7 +142,7 @@ export const ringDown = (t: number): number => (t < 0.03 ? t / 0.03 : 1 - ease(0
 export const lidJump = (t: number): number => (t > 0.7 ? 0 : 4.5 * Math.exp(-7 * t) * Math.abs(Math.sin((Math.PI * t) / 0.14)))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-19',
+  version: 'play-bumpers-20',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`

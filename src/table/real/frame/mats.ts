@@ -116,7 +116,12 @@ export const paintOf = (z: Zone, name = 'paint', grain = 0.035): THREE.MeshPhysi
 }
 
 // How bright the rim of light in the loader's port stands: the loader's pose breathes it.
-export const BREATH = { value: 0.6 }
+const breaths = new Map<string, { value: number }>()
+export const breathOf = (z: Zone): { value: number } => {
+  let u = breaths.get(z.id)
+  if (!u) breaths.set(z.id, (u = { value: 0.6 }))
+  return u
+}
 
 export const steelOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   const on = roomOf(z) !== undefined
@@ -134,7 +139,7 @@ export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysica
   m.onBeforeCompile = (shader, renderer) => {
     room.call(m, shader, renderer)
     if (name === 'tube') {
-      shader.uniforms.wjfBreath = BREATH
+      shader.uniforms.wjfBreath = breathOf(z)
       shader.fragmentShader = 'uniform float wjfBreath;\n' + shader.fragmentShader
     }
     shader.fragmentShader = shader.fragmentShader.replace(
