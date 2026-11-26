@@ -12,9 +12,9 @@ import { clamp01, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, smoo
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
   top: 58, corner: 12, roundOver: 3, band: 10.4, chamfer: 5, chamferDrop: 4.2, gasket: 2.2, glass: 54.2, floor: 18,
-  drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4, fall: 3.6 },
+  drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4, fall: 4.4 },
   line: { z: 53.1, r: 0.6, pin: 1.9, glow: 0.06 },
-  sheen: { top: 0.1, streak: 0.045, order: 800001 },
+  sheen: { top: 0.06, streak: 0.045, order: 800001 },
   lever: { rod: 4.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
   mouthFloor: 8.5,
@@ -85,7 +85,7 @@ function own(): Own {
   if (made) return made
   const face = normalsFrom(256, 1.7, (u, v) => coinHeight(u, v, config.seed + 211))
   const m = materials()
-  const drum = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6de), roughness: 0.46, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5, vertexColors: true }))
+  const drum = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6de), roughness: 0.5, metalness: 0, clearcoat: 0.15, clearcoatRoughness: 0.3, specularIntensity: 0.3, vertexColors: true }))
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x10161b), roughness: 0.05, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.5, transparent: true, opacity: 0.12, depthWrite: false }))
   const well = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1d1c1b), roughness: 0.8, metalness: 0, specularIntensity: 0.3 }))
   const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd4a543), roughness: 0.6, metalness: 1, envMapIntensity: 1.1, normalMap: face, normalScale: new THREE.Vector2(2, 2) }))
