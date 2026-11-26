@@ -1,35 +1,35 @@
 {
   "folder": "step2-fix",
-  "pushed": "2026-11-26T08:15:47.999Z",
-  "commit": "a6776a4133f39d94fd8670f0181549a6703bd020",
+  "pushed": "2026-11-26T08:22:54.277Z",
+  "commit": "d9e59183b67bdde10ba482aade08198ea340775e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key step2-crank: approved on the left, this build on the right, draft tier, with crops of crankBase, crankGrip, meterSegment, cursor, progressButton, button",
-      "time": "2026-11-26T08:11:48.287Z",
+      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T08:20:38.676Z",
       "by": "step2-fix",
-      "from": "out/work/compare/compare-step2-crank.jpg"
+      "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key step2-dial: approved on the left, this build on the right, draft tier, with crops of dialWheel, machineTray, cursor, field.start, progressButton, button",
-      "time": "2026-11-26T08:13:51.505Z",
+      "caption": "the tray's corners at four times the size: approved left, the branch right (rim 5, before the last step to rim 7)",
+      "time": "2026-11-26T08:22:52.088Z",
       "by": "step2-fix",
-      "from": "out/work/compare/compare-step2-dial.jpg"
+      "from": "out/work/looks/files/20261126082252-tray-zoom.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "step2-dial: approved above, the branch below: the tray's wall in the floor's glass, the tip on the cap's lower right shoulder",
-      "time": "2026-11-26T08:15:46.733Z",
+      "caption": "step2-crank: approved above, cf77cf3a below: thin wall, round floor corners, lighter lenses",
+      "time": "2026-11-26T08:22:52.334Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126081546-cmp-dial-3.png"
+      "from": "out/work/looks/files/20261126082252-cmp-crank-4.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step2-crank: approved above, the branch below: the tray's wall in the floor's glass",
-      "time": "2026-11-26T08:15:46.963Z",
+      "caption": "step2.slot at 13.0 s on cf77cf3a: the coins lie at the foot of the tray's wall",
+      "time": "2026-11-26T08:22:52.601Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126081546-cmp-crank-3.png"
+      "from": "out/work/looks/files/20261126082252-slot-lie.png"
     }
   ]
 }
