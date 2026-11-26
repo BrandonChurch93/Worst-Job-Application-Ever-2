@@ -1,0 +1,35 @@
+{
+  "folder": "boss-keeper",
+  "pushed": "2026-11-26T04:11:56.847Z",
+  "commit": "3f01ed8f1a1221c7d95b81226d1b6ce97b82b718",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T04:11:37.819Z",
+      "by": "boss-keeper",
+      "from": "out/work/compare/compare-boss-fight.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key boss-down: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T04:11:42.799Z",
+      "by": "boss-keeper",
+      "from": "out/work/compare/compare-boss-down.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "boss-fight beside approved after the first pass on point 1: cast metal body, glass block shield, pit with long cracks",
+      "time": "2026-11-26T04:11:55.474Z",
+      "by": "boss-keeper",
+      "from": "out/work/compare/compare-boss-fight.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "boss-down beside approved after the first pass on point 2: wings broken in halves, flaked char, scorched cursor",
+      "time": "2026-11-26T04:11:55.701Z",
+      "by": "boss-keeper",
+      "from": "out/work/compare/compare-boss-down.jpg"
+    }
+  ]
+}
