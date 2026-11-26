@@ -1,35 +1,35 @@
 {
   "folder": "lamp-keeper",
-  "pushed": "2026-11-26T05:54:13.317Z",
-  "commit": "ac3f758e7d16238daf3468b55acadac6c13b8ef7",
+  "pushed": "2026-11-26T06:05:56.253Z",
+  "commit": "d1af448cc174db444cdfab53189d8954c865a1e8",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-office at draft, approved left, build right at ac3f758e: inserts in wells, pit at 1.06 of approved",
-      "time": "2026-11-26T05:54:11.450Z",
-      "by": "lamp-keeper",
-      "from": "out/work/lights/send/q6-tier-office-pair.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "the three Office inserts lit, from above at draft: glass at the foot of a dark well, hot centre",
-      "time": "2026-11-26T05:54:11.680Z",
-      "by": "lamp-keeper",
-      "from": "out/work/lights/send/q6-inserts.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "tier-street at draft, approved left, build right: pit at 1.03 of approved",
-      "time": "2026-11-26T05:54:11.912Z",
-      "by": "lamp-keeper",
-      "from": "out/work/lights/send/q2-tier-street-pair.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "table-wide at draft, approved left, build right, whole frame 0.86 of approved",
       "time": "2026-11-26T05:54:12.138Z",
       "by": "lamp-keeper",
       "from": "out/work/lights/send/q3-table-wide-pair.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-table-wide-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T05:57:43.583Z",
+      "by": "lamp-keeper",
+      "from": "out/work/stills/key-table-wide-hd-review.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "boardroom notes from above at draft: left paper (2.4, 2.0, 0.62) with no lamp, right paper (0.98, 0.82, 0.25) under the new low lamp",
+      "time": "2026-11-26T06:05:54.852Z",
+      "by": "lamp-keeper",
+      "from": "out/work/lights/send/q9-notes.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "table-wide at review, approved above, build below at ac3f758e, whole frame 0.87 of approved",
+      "time": "2026-11-26T06:05:55.075Z",
+      "by": "lamp-keeper",
+      "from": "out/work/lights/send/table-wide-review-pair.jpg"
     }
   ]
 }
