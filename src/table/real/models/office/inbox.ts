@@ -39,7 +39,7 @@ export function envelope(k: Kit, w: number, d: number, col: RGB, r: Random, back
   k.box(0, 0, 0, w, d, t, col, SURF.paper, 0.35)
   const z = t + 0.06
   const up: V3 = [0, 0, 1]
-  const fold = shade(col, 0.74)
+  const fold = shade(col, 0.6)
   if (back) {
     const tip = -d * 0.1
     const lift = 1.5
@@ -50,9 +50,10 @@ export function envelope(k: Kit, w: number, d: number, col: RGB, r: Random, back
     const l = Math.hypot(n[1], n[2])
     const nn: V3 = [0, n[1] / l, n[2] / l]
     k.tri(a, b, c, nn, nn, nn, mix(col, [1, 1, 1], 0.2), SURF.paper)
+    k.flat([[a[0], a[1], z + 0.02], [b[0], b[1], z + 0.02], [b[0] - 1.2, b[1] - 0.9, z + 0.02], [a[0] + 1.2, a[1] - 0.9, z + 0.02]], up, shade(col, 0.8), SURF.paper)
     k.tri(a, c, [a[0], a[1], z], [-0.6, -0.6, 0.5], [-0.6, -0.6, 0.5], [-0.6, -0.6, 0.5], fold, SURF.paper)
     k.tri(b, c, [b[0], b[1], z], [0.6, -0.6, 0.5], [0.6, -0.6, 0.5], [0.6, -0.6, 0.5], fold, SURF.paper)
-    const lw = 0.45
+    const lw = 0.75
     const line = (p: V3, q: V3): void => {
       const dx = q[0] - p[0]
       const dy = q[1] - p[1]
@@ -74,11 +75,11 @@ export function envelope(k: Kit, w: number, d: number, col: RGB, r: Random, back
   }
 }
 
-function heap(k: Kit, r: Random, count: number, hx: number, hy: number, z0: number, z1: number, wild: number): void {
+function heap(k: Kit, r: Random, count: number, hx: number, hy: number, z0: number, z1: number, wild: number, dim = 1): void {
   for (let i = 0; i < count; i++) {
-    const w = r.range(40, 47)
-    const d = r.range(27, 31)
-    const col = mix(C.white, C.shadeWhite, r.next() * 0.5)
+    const w = r.range(44, 52)
+    const d = r.range(29, 34)
+    const col = shade(mix(C.white, C.shadeWhite, r.next()), dim * (0.9 + 0.1 * (i / Math.max(1, count - 1))))
     const a = (i / count) * Math.PI * 2 + r.range(-0.5, 0.5)
     const out = Math.sqrt(r.range(0.05, 1))
     k.at(Math.cos(a) * out * hx, Math.sin(a) * out * hy, z0 + ((z1 - z0) * i) / Math.max(1, count - 1), r.range(0, Math.PI * 2), r.range(-wild, wild), r.range(-wild, wild))
@@ -195,7 +196,7 @@ export function buildInbox(z: Zone): THREE.Object3D {
   k.box(p.side * (p.w / 2 - CHUTE.deep / 2), free * (p.d / 2 - 9), 0, CHUTE.deep - 6, 13, 2.4, shade(C.steel, 0.8), SURF.brushed, 0.8)
   k.lift = LIFT.paper
   k.at(p.trayX, 0, p.bed + 0.4)
-  heap(k, r, 9, hx, hy, 0, p.h - p.bed - 12, 0.12)
+  heap(k, r, 9, hx, hy, 0, p.h - p.bed - 12, 0.12, 0.86)
   k.back()
   k.back()
   root.add(meshOf(k.done(), mats.solid, 'office.inbox.tray', { cast: true }))

@@ -145,7 +145,7 @@ function draw(z: Zone, ctx: RealContext): { k: Kit; g: Kit; c: Kit } {
   }
   k.box(0, -5.6, 30, 130, 1.2, 62, C.steel, PLATE, 0.4)
 
-  prism(k, -HEAD.x, HEAD.x, [[HEAD.back, HEAD.low], [HEAD.back, HEAD.top], [HEAD.deck, HEAD.top], [HEAD.lip, HEAD.slope], [HEAD.lip, HEAD.low]], [C.bronze, C.bronze, C.bronze, C.bronze, C.bronze], [BRONZE, BRONZE, BRONZE, BRONZE, BRONZE], C.bronze, BRONZE)
+  prism(k, -HEAD.x, HEAD.x, [[HEAD.back, HEAD.low], [HEAD.back, HEAD.top], [HEAD.deck, HEAD.top], [HEAD.lip, HEAD.slope], [HEAD.lip, HEAD.low]], [C.bronze, C.bronze, C.bronze, C.steelLight, C.bronze], [BRONZE, BRONZE, BRONZE, PLATE, BRONZE], C.bronze, BRONZE)
   k.flat([[-HEAD.x, HEAD.lip, HEAD.low], [HEAD.x, HEAD.lip, HEAD.low], [HEAD.x, -4, HEAD.low], [-HEAD.x, -4, HEAD.low]], [0, 0, -1], C.black, SURF.plastic)
   k.tube([[-HEAD.x, HEAD.deck, HEAD.top], [HEAD.x, HEAD.deck, HEAD.top]], 1, C.chrome, SURF.chrome, 5)
   k.tube([[-HEAD.x, HEAD.lip, HEAD.slope], [HEAD.x, HEAD.lip, HEAD.slope]], 1, C.chrome, SURF.chrome, 5)

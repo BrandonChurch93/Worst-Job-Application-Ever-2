@@ -5,7 +5,7 @@ import type { RealContext } from '../../../../real/types'
 import { BALL, table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { coffeeFine, coffeeScrews } from './coffee'
-import { boxOf, inboxScrews } from './inbox'
+import { boxOf, envelope, inboxScrews } from './inbox'
 import { hex, Kit, matsOf, meshOf, mix, rrect, screwGeometry, shade, SURF, type RGB, type V2, type V3 } from './kit'
 import { staplerFine, staplerScrews } from './staplers'
 
@@ -21,8 +21,8 @@ const C = {
   steel: hex(0x7c8590),
   grey: hex(0x8b8f93),
   dark: hex(0x2b2c30),
-  screen: [0.04, 0.07, 0.13] as RGB,
-  pane: [0.2, 0.25, 0.31] as RGB,
+  screen: [0.14, 0.24, 0.42] as RGB,
+  pane: [0.56, 0.62, 0.66] as RGB,
   key: hex(0xd9d3c2),
   keyBed: hex(0xb9b3a2),
   base: hex(0x8d9298),
@@ -249,6 +249,81 @@ export function things(tier = 1): Thing[] {
   ]
 }
 
+export interface Loose { id: string; kind: 'sheet' | 'envelope' | 'folder' | 'clip' | 'band'; at: [number, number]; r: number; turn: number }
+
+// What lies loose on the floor, in balls. It lies in the right lower corner, behind the inlane guide and over the display, where no ball comes: each is placed from the lower post of the right stapler's plate.
+export function loose(tier = 1): Loose[] {
+  const sling = table.slings.find((s) => s.tier === tier && s.side === 'right')!
+  const [sx, sy] = sling.b
+  return [
+    { id: 'sheet.a', kind: 'sheet', at: [sx + 0.78, sy + 2.02], r: 0.3, turn: 0.5 },
+    { id: 'sheet.b', kind: 'sheet', at: [sx + 0.42, sy + 2.3], r: 0.3, turn: -0.3 },
+    { id: 'folder', kind: 'folder', at: [sx + 0.95, sy + 2.62], r: 0.31, turn: 1.25 },
+    { id: 'sheet.c', kind: 'sheet', at: [sx + 0.8, sy + 2.5], r: 0.3, turn: 1.0 },
+    { id: 'envelope.a', kind: 'envelope', at: [sx + 0.2, sy + 2.78], r: 0.3, turn: 0.3 },
+    { id: 'envelope.b', kind: 'envelope', at: [sx + 0.56, sy + 2.9], r: 0.3, turn: -0.7 },
+    { id: 'clip.a', kind: 'clip', at: [sx - 0.02, sy + 2.3], r: 0.1, turn: 0.9 },
+    { id: 'clip.b', kind: 'clip', at: [sx + 1.14, sy + 2.2], r: 0.1, turn: -0.4 },
+    { id: 'band', kind: 'band', at: [sx + 1.1, sy + 3.0], r: 0.11, turn: 0 }
+  ]
+}
+
+function scattered(k: Kit, f: Kit, z: Zone, r: Random): void {
+  const lift = k.lift
+  k.lift = LIFT.paper
+  loose(z.tier).forEach((t, i) => {
+    const [x, y] = localBalls(z, t.at[0], t.at[1])
+    const zz = 0.2 + i * 0.45
+    if (t.kind === 'sheet') {
+      k.at(x, y, zz, t.turn, r.range(-0.02, 0.02), r.range(-0.02, 0.02))
+      k.box(0, 0, 0, 32, 44, 0.35, shade(C.paper, r.range(0.95, 1)), SURF.paper, 0.1)
+      k.flat([[-12, 14, 0.4], [4, 14, 0.4], [4, 17, 0.4], [-12, 17, 0.4]], [0, 0, 1], shade(C.paper, 0.8), SURF.paper)
+      for (let j = 0; j < 5; j++) k.flat([[-12, 8 - j * 5, 0.4], [12 - (j % 3) * 4, 8 - j * 5, 0.4], [12 - (j % 3) * 4, 9 - j * 5, 0.4], [-12, 9 - j * 5, 0.4]], [0, 0, 1], shade(C.paper, 0.86), SURF.paper)
+      k.back()
+    } else if (t.kind === 'folder') {
+      k.at(x, y, zz, t.turn)
+      k.box(0, 0, 0, 36, 48, 0.9, C.manila, SURF.paper, 0.3)
+      k.box(1.5, 1, 0.9, 32, 44, 0.3, C.paper, SURF.paper, 0.1, 0.06)
+      k.box(-1, 0, 1.2, 36, 48, 0.5, shade(C.manila, 1.06), SURF.paper, 0.2, -0.05)
+      k.box(-12, 25, 1.2, 10, 3, 0.5, shade(C.manila, 1.06), SURF.paper, 0.2, -0.05)
+      k.back()
+    } else if (t.kind === 'envelope') {
+      k.at(x, y, zz, t.turn)
+      envelope(k, 48, 31, shade(C.paper, r.range(0.96, 1.02)), r, i % 2 === 0)
+      k.back()
+    } else if (t.kind === 'clip') {
+      f.at(x, y, 0.5, t.turn)
+      const wire: V3[] = []
+      const run = (x0: number, x1: number, yy: number): void => {
+        wire.push([x0, yy, 0], [x1, yy, 0])
+      }
+      const bend = (cx: number, y0: number, y1: number, dir: number): void => {
+        for (let j = 1; j < 6; j++) {
+          const a = (j / 6) * Math.PI
+          wire.push([cx + dir * Math.sin(a) * Math.abs(y1 - y0) * 0.5, (y0 + y1) / 2 + (Math.cos(a) * (y0 - y1)) / 2, 0])
+        }
+      }
+      run(-4, 6, 2.4)
+      bend(6, 2.4, -2.4, 1)
+      run(6, -6, -2.4)
+      bend(-6, -2.4, 1.2, -1)
+      run(-6, 4, 1.2)
+      bend(4, 1.2, -1.2, 1)
+      run(4, -3, -1.2)
+      f.tube(wire, 0.45, C.steel, SURF.chrome, 4)
+      f.back()
+    } else {
+      const ring: V3[] = []
+      for (let j = 0; j < 20; j++) {
+        const a = (j / 20) * Math.PI * 2
+        ring.push([x + Math.cos(a) * 9 * (1 + 0.12 * Math.sin(a * 2)), y + Math.sin(a) * 7.4, 0.9])
+      }
+      f.tube(ring, 0.8, hex(0x9c3b34), SURF.rubber, 5, true)
+    }
+  })
+  k.lift = lift
+}
+
 function bottleOn(c: Kit, k: Kit, x: number, y: number, z: number, down: boolean): void {
   const prof: V2[] = [[0, 0], [9.4, 0], [10.6, 1.4], [10.6, 9], [10, 10], [10.6, 11], [10.6, 20], [10, 21], [10.6, 22], [10.6, 30], [8, 34], [3.4, 37], [3.4, 41]]
   const p: V2[] = down ? prof.map((q) => [q[0], 41 - q[1]] as V2).reverse() : prof
@@ -472,6 +547,7 @@ export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   f.lift = 0.3
 
   small(k, f, c, z, r)
+  scattered(k, f, z, r)
 
   root.add(meshOf(k.done(), mats.solid, 'office.cubicles.body', { cast: false }))
   f.takeFine(k).takeFine(coffeeFine(z, ctx)).takeFine(staplerFine(z))

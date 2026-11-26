@@ -6,7 +6,7 @@ import { groupsOf } from '../src/table/real/lights'
 import { localBalls, zone } from '../src/table/real/zone'
 import type { RealContext } from '../src/real/types'
 import { buildCoffee } from '../src/table/real/models/office/coffee'
-import { buildCubicles, things } from '../src/table/real/models/office/cubicles'
+import { buildCubicles, loose, things } from '../src/table/real/models/office/cubicles'
 import { boxOf, buildInbox, hopAt, poseInbox } from '../src/table/real/models/office/inbox'
 import { buildStaplers, openAt, PLATE, poseStaplers } from '../src/table/real/models/office/staplers'
 import { parts } from '../src/table/real/models/office'
@@ -201,6 +201,18 @@ describe('the models of the office', () => {
       expect(side(t.at, 'office.inlane.floor.left')).toBeGreaterThan(0)
       expect(side(t.at, 'office.shoulder.edge.left')).toBeGreaterThan(0)
       expect(t.at[1] + t.r).toBeLessThan(seg('office.outlane.floor.left').a[1])
+    }
+    const lying = loose()
+    expect(lying.length).toBeGreaterThan(5)
+    const display = table.displays.find((d) => d.tier === 1)!
+    for (const t of lying) {
+      for (const q of table.segs) if (q.tier === 1) expect(far(t.at, q.a, q.b)).toBeGreaterThan(t.r + 0.08)
+      for (const q of table.posts) if (q.tier === 1) expect(Math.hypot(q.c[0] - t.at[0], q.c[1] - t.at[1])).toBeGreaterThan(q.r + t.r + 0.08)
+      for (const n of table.inserts) expect(Math.hypot(n.c[0] - t.at[0], n.c[1] - t.at[1])).toBeGreaterThan(n.r + t.r)
+      expect(t.at[0] + t.r).toBeLessThan(seg('office.outlane.side.right').a[0])
+      expect(t.at[0] - t.r).toBeGreaterThan(seg('office.shoulder.step.right').a[0])
+      expect(side(t.at, 'office.inlane.floor.right')).toBeLessThan(0)
+      expect(t.at[1] + t.r).toBeLessThan(display.box[1])
     }
   })
 })
