@@ -56,8 +56,7 @@ function buildLayout(): LayoutNode {
     const light = k !== 1
     for (const m of table.models) {
       if (m.tier !== k || !m.sign) continue
-      const dark = m.tone === 'danger'
-      kids.push(centred(`sign.${m.id}`, m.sign, { font: 'inter-600', px: m.signPx ?? 22, wrap: px(m.box[2]) - 6 }, px(m.box[0] + m.box[2] / 2), px(m.box[1] + m.box[3] / 2), { part: m.part, on: f + px((m.base ?? 0) + m.h) + 1, tone: dark ? 'inkLight' : 'ink' }))
+      kids.push(centred(`sign.${m.id}`, m.sign, { font: 'inter-600', px: m.signPx ?? 22, wrap: px(m.signAt ? m.signAt[1] : m.box[2]) - 6 }, px(m.box[0] + (m.signAt ? m.signAt[0] : m.box[2] / 2)), px(m.box[1] + m.box[3] / 2), { part: m.part, on: f + px((m.base ?? 0) + m.h) + 1, tone: 'ink' }))
     }
     const d = table.displays[k]!
     for (const n of table.inserts) {
@@ -199,7 +198,7 @@ export function makePage(): PageLogic {
     return b.mode === 'hold' && b.hold === 'plunger' && s.t < T.plunger ? Math.max(0, Math.min(1, (s.t - T.atPlunger) / (T.plunger - T.atPlunger - 0.15))) : 0
   }
   const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.wake + k * WAKE)
-  // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain.
+  // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain, as a lamp strikes: on, a dip, then full.
   const website = (): number => 1 - (1 - DUSK) * smooth(s.dim)
   // How bright each tier's general lighting is: a wave down the tiers when the machine wakes, and a slow dim once the ball has left by the drain.
   const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - k * WAKE) / WAKE) * (s.t > T.wake + 3 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))

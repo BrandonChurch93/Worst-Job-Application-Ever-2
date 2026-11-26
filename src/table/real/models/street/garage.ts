@@ -65,7 +65,7 @@ export function garageLamps(z: Zone): GarageLamp[] {
   return out
 }
 
-// The round garage: a concrete frame of columns and ring beams round the clear spiral, open where the highway comes in and where the ball leaves, hung from the right wall and tied to the police station.
+// The round garage: clear moulded decks stacked on grey posts round the clear spiral, each deck on a steel hoop, open where the highway comes in and where the ball leaves, hung from the right wall and tied to the police station.
 export function garage(b: Buckets, z: Zone): void {
   const S = site(z, 'street.garage')
   const g = b.paint
@@ -77,12 +77,21 @@ export function garage(b: Buckets, z: Zone): void {
   const base = S.base
   const top = S.base + S.h
   const pitch = SPIRAL.pitch * BALL
-  const con = rgb(0x9aa5b0)
+  const con = rgb(0x596169)
+  const hoop = rgb(0x7d858c)
+  const CLEAR: [number, number, number] = [1, 1, 1]
+  const CUT: [number, number, number] = [2.4, 2.4, 2.4]
   const pts = tube(z)
   const N = 96
   const step = (Math.PI * 2) / N
   const margin = 3
+  // Toward the police station the garage stands no higher than that station's roof, so its front and its sign are left clear from above.
+  const P = site(z, 'street.police')
+  const toward = Math.atan2(P.cy - cy, P.cx - cx)
+  const low = P.h + 0.3 * BALL
+  const faces = (a: number): boolean => Math.abs(Math.atan2(Math.sin(a - toward), Math.cos(a - toward))) < 1.02
   const free = (a: number, z0: number, z1: number, half = 0): boolean => {
+    if (z1 > low && faces(a)) return false
     for (const da of [-half, 0, half]) for (const r of [Ri, Ro]) if (inTube(pts, cx + Math.cos(a + da) * r, cy + Math.sin(a + da) * r, z0, z1, margin)) return false
     return true
   }
@@ -92,14 +101,14 @@ export function garage(b: Buckets, z: Zone): void {
   const slim: boolean[] = []
   const cap = 4
   for (let zz = base; zz + pitch < top - 1; zz += pitch) {
-    levels.push([zz, zz + 0.44 * BALL])
+    levels.push([zz, zz + 0.34 * BALL])
     slim.push(false)
     if (zz + pitch * 1.5 < top - 1) {
-      levels.push([zz + pitch * 0.5, zz + pitch * 0.5 + 0.44 * BALL])
+      levels.push([zz + pitch * 0.5, zz + pitch * 0.5 + 0.34 * BALL])
       slim.push(false)
     }
   }
-  levels.push([top - 0.5 * BALL, top - cap])
+  levels.push([top - 0.42 * BALL, top - cap])
   slim.push(false)
   const has: boolean[][] = levels.map(([z0, z1]) => Array.from({ length: N }, (_, i) => free((i + 0.5) * step, z0, z1, step / 2)))
 
@@ -128,9 +137,9 @@ export function garage(b: Buckets, z: Zone): void {
     }
   })
   const cols = 8
-  const half = 7
+  const half = 4.6
   const rib = 3
-  const fin = 2
+  const fin = 1.4
   const piece = 6
   const angle = (k: number): number => ((k + 0.5) / cols) * Math.PI * 2
   const piers: Pier[] = []
@@ -177,35 +186,46 @@ export function garage(b: Buckets, z: Zone): void {
     const thin = slim[r.li]!
     const ri = thin ? Ri + 1.6 : Ri
     const ro = thin ? Ro - 1.6 : Ro
-    g.lathe([[ri, z0], [ro, z0], [ro, z1 - 1.2], [ro - 1.2, z1], [ri + 1.2, z1], [ri, z1 - 1.2], [ri, z0]], cx, cy, n, (k) => (k === 0 ? shade(con, 0.86) : k === 3 ? shade(con, 1.08) : con), { arc: [a0, a1], kind: KIND.concrete })
-    // A dark joint cast into the outer face, and on the rim a steel coping.
-    if (!thin) g.lathe([[Ro + 0.15, z0 + (z1 - z0) * 0.3], [Ro + 0.15, z0 + (z1 - z0) * 0.3 + 1.1]], cx, cy, n, shade(con, 0.38), { arc: [a0, a1] })
-    if (rim) b.metal.lathe([[Ri - 0.3, z1], [Ro + 0.3, z1], [Ro + 0.3, z1 + 1.4], [Ri - 0.3, z1 + 1.4], [Ri - 0.3, z1]], cx, cy, n, TONE.steel, { arc: [a0, a1] })
+    // The deck: a band of clear plastic with a bright cut edge on top, standing on a steel hoop.
+    b.glass.lathe([[ri, z0 + 2.2], [ro, z0 + 2.2], [ro, z1 - 1], [ro - 1, z1], [ri + 1, z1], [ri, z1 - 1], [ri, z0 + 2.2]], cx, cy, n, (k) => (k === 3 ? CUT : k === 2 || k === 4 ? [2, 2, 2] : CLEAR), { arc: [a0, a1] })
+    b.metal.lathe([[ri - 0.4, z0], [ro + 1.2, z0], [ro + 1.2, z0 + 2.2], [ri - 0.4, z0 + 2.2], [ri - 0.4, z0]], cx, cy, n, hoop, { arc: [a0, a1] })
+    if (rim) g.lathe([[Ri - 0.3, z1], [Ro + 0.3, z1], [Ro + 0.3, z1 + 1.4], [Ri - 0.3, z1 + 1.4], [Ri - 0.3, z1]], cx, cy, n, shade(con, 1.1), { arc: [a0, a1], kind: KIND.gloss })
     if (!r.whole) {
       for (const [a, sg] of [[a0, -1], [a1, 1]] as const) {
         const c = Math.cos(a)
         const sn = Math.sin(a)
-        const q: V3[] = [[cx + c * ri, cy + sn * ri, z0], [cx + c * ro, cy + sn * ro, z0], [cx + c * ro, cy + sn * ro, z1], [cx + c * ri, cy + sn * ri, z1]]
-        g.face(sg > 0 ? q : [...q].reverse(), shade(con, 0.9), KIND.concrete)
+        const q: V3[] = [[cx + c * ri, cy + sn * ri, z0 + 2.2], [cx + c * ro, cy + sn * ro, z0 + 2.2], [cx + c * ro, cy + sn * ro, z1], [cx + c * ri, cy + sn * ri, z1]]
+        b.glass.face(sg > 0 ? q : [...q].reverse(), CUT)
       }
     }
     // A strip lamp under the beam in each bay, lit, on the inner edge.
     for (let k = 0; !thin && k + 3 <= n; k += 3) {
       const a = a0 + (k + 1.5) * step
       const m = b.glow.mark()
-      b.glow.box(Ri + 0.5, Ri + 3.2, -12, 12, z0 - 3, z0 - 0.2, [1.5, 1.4, 1.1], { under: true, skip: 't' })
+      b.glow.box(Ri + 1, Ri + 3, -9, 9, z0 - 2.2, z0 - 0.2, [1.5, 1.4, 1.1], { under: true, skip: 't' })
       b.glow.place(m, cx, cy, 0, a)
     }
   }
 
-  // The piers: ribbed on the outer face, with a cap where one reaches the rim.
+  // The posts: grey painted steel outside the decks, a bolted clip at every deck and a cap where one reaches the rim.
   for (const p of piers) {
     if (!p.held) continue
     const m = g.mark()
-    g.box(Ri, Ro + rib, -half, half, p.lo, p.hi, con, { kind: KIND.concrete, under: true, bevel: 0.8 })
-    for (const sg of [-1, 1]) g.box(Ro + rib - 0.5, Ro + rib + fin, sg > 0 ? half - 4.5 : -half + 0.8, sg > 0 ? half - 0.8 : -half + 4.5, p.lo + 1.5, p.hi - 1.5, shade(con, 1.04), { kind: KIND.concrete, under: true, skip: 'l' })
-    if (p.hi >= top - 0.01) g.box(Ri, Ro + rib + fin + 0.6, -half - 1.6, half + 1.6, top - 2.4, top, shade(con, 1.08), { kind: KIND.concrete, under: true, bevel: 0.6 })
+    const mm = b.metal.mark()
+    g.box(Ro + 0.6, Ro + rib + fin + 2.4, -half, half, p.lo, p.hi, con, { kind: KIND.gloss, under: true, bevel: 1.1 })
+    g.box(Ri, Ro + 0.6, -1.6, 1.6, p.lo, p.hi, shade(con, 0.8), { kind: KIND.gloss, under: true, skip: 'r' })
+    levels.forEach(([z0, z1]) => {
+      if (z0 < p.lo - 1 || z1 > p.hi + 1) return
+      b.metal.box(Ro + rib + fin + 2.4, Ro + rib + fin + 3.6, -half - 1.4, half + 1.4, z0 - 1, z0 + 7, hoop, { under: true, bevel: 0.4 })
+    })
+    if (p.hi >= top - 0.01) g.box(Ri, Ro + rib + fin + 3, -half - 1.4, half + 1.4, top - 2.4, top, shade(con, 1.15), { kind: KIND.gloss, under: true, bevel: 0.6 })
     g.place(m, cx, cy, 0, angle(p.k))
+    b.metal.place(mm, cx, cy, 0, angle(p.k))
+    levels.forEach(([z0, z1]) => {
+      if (z0 < p.lo - 1 || z1 > p.hi + 1) return
+      const a = angle(p.k)
+      b.screws.push([cx + Math.cos(a) * (Ro + rib + fin + 3.7), cy + Math.sin(a) * (Ro + rib + fin + 3.7), z0 + 3, 0.9])
+    })
   }
 
   // The lamps of the garage, each a real source of the tier's warm white (see `garageLamps`): a row on arms under the rim and a row half way up the wall. One that would stand in the way of the ball is left out.
@@ -214,7 +234,7 @@ export function garage(b: Buckets, z: Zone): void {
     const m = [g.mark(), b.metal.mark(), b.glow.mark()]
     b.metal.rod([Ro, 0, l.z + 12], [l.r - 3, 0, l.z + 3], 1.1, 8, TONE.steel)
     b.metal.box(Ro - 0.4, Ro + 1.6, -4, 4, l.z + 7, l.z + 16, TONE.steel, { under: true })
-    g.box(l.r - 8, l.r + 6, -5, 5, l.z + 1.2, l.z + 4.6, shade(con, 0.72), { bevel: 1.2, kind: KIND.gloss, under: true })
+    g.box(l.r - 8, l.r + 6, -5, 5, l.z + 1.2, l.z + 4.6, shade(con, 0.8), { bevel: 1.2, kind: KIND.gloss, under: true })
     b.glow.box(l.r - 7.5, l.r + 5.5, -4.6, 4.6, l.z, l.z + 1.2, [1.9, 1.7, 1.3], { under: true, skip: 't' })
     g.place(m[0]!, cx, cy, 0, a)
     b.metal.place(m[1]!, cx, cy, 0, a)

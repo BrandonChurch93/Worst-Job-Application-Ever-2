@@ -68,10 +68,10 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   const side = (x0: number, x1: number, inner: 0 | 1): void => {
     if (sunk) {
       const [a, b] = inner === 1 ? [X(0), x1] : [x0, X(20)]
-      // The bright land of the rail runs on down the wedge as a narrow band at the page's side: the rest of the slope is the navy of the walls.
+      // The enamelled land of the rail runs on down the wedge to the near rail: only its upright sides are the navy of the walls.
       const m = inner === 1 ? xb + EDGE.land : xe - EDGE.shell
-      wedge(A, a, m, 0, inner === 1 ? BAND : WALL, inner === 0 ? WALL : TONE.aluDark, null)
-      wedge(A, m, b, 0, inner === 1 ? WALL : BAND, null, inner === 1 ? WALL : TONE.aluDark)
+      wedge(A, a, m, 0, BAND, inner === 0 ? WALL : TONE.aluDark, null)
+      wedge(A, m, b, 0, BAND, null, inner === 1 ? WALL : TONE.aluDark)
       A.face([[a, yT, 0], [b, yT, 0], [b, yT, H], [a, yT, H]], [0, 1, 0], [1, 0, 0], TONE.aluDark)
       const xm = inner === 1 ? a + EDGE.near / 2 : b - EDGE.near / 2
       for (const t of [0.3, 0.8]) screws.add(xm, y0 + (yT - y0) * t, heightAt(y0 + (yT - y0) * t), 0.7, x0 + t, new THREE.Vector3(...up))

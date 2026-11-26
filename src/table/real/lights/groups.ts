@@ -124,7 +124,7 @@ function build(z: Zone): Group[] {
     const police = model('street.police')
     const beacon = (m: Model): Source => at(centre(m)[0], m.box[1] + m.box[3] * 0.3, m.h * BALL + 24, 0.8, 2.6, m.id)
     // The lit bay of the firehouse throws its red on the floor before its mouth, with the beacon.
-    add('red', 1, C.STREET_RED, [beacon(fire), at(centre(fire)[0] + 0.55, fire.box[1] + fire.box[3] + 0.45, 24, 1.7, 2.6, fire.id)], true)
+    add('red', 1, C.STREET_RED, [beacon(fire), at(centre(fire)[0] + 0.55, fire.box[1] + fire.box[3] + 0.45, 24, 2.6, 3, fire.id)], true)
     add('blue', 1, C.STREET_BLUE, [beacon(police)], true)
     const windows: Source[] = []
     for (const m of [fire, police]) {

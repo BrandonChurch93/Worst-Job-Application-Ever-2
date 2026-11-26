@@ -16,13 +16,13 @@ import { clamp01, contact, fuse, lathe, loft, mesh, moved, noise, normalsFrom, r
 
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
-  pay: { r: 6, lip: 3.4, top: 14, floor: 3.2, foot: 1.2 },
+  pay: { r: 6, lip: 4, top: 14, floor: 8.5, foot: 1, bed: 0x8d9093, rough: 0.55 },
   top: 58, corner: 16, window: 13, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
-  drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.5, full: 0.985 },
+  drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.6, full: 0.985 },
   line: { z: 53.3, r: 0.85, pin: 1.9, glow: 0.1 },
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
   lever: { rod: 7.4, pivotX: 11, pivotZ: 28, foot: -2, head: 22, ferrule: 7, ferruleAt: 25, bend: 15, stub: 26, socket: 14.5, socketIn: 3, socketOut: 10, ring: 12.2, ringW: 3.4, rodRough: 0.3 },
-  legend: { fit: 72, tall: 1.16, lift: 0.14, order: 799990, style: 'paper:ink' },
+  legend: { fit: 72, tall: 1.16, lift: 0.14, order: 799990, style: 'paper:ink', narrow: 0.9, high: 1.1, heavy: 0.014 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
   frame: { colour: 0x7e8286, rough: 0.37, grain: 0.08, grainLong: 1200, grainWide: 150, fan: 0.34, fanAcross: 0.6, fanUp: 2.2 },
   bevel: { colour: 0x7c8084, rough: 0.34 },
@@ -372,8 +372,8 @@ function legend(s: Shape): THREE.Group {
   const type = { ...s.type!, px: s.type!.px / sheetScale(s.id) }
   const g = geometryOf(dataOf({ ...s, type }, said, styles()[L.legend.style]!))
   const wide = measure(type.font, said, type.px).width
-  if (wide > L.legend.fit) g.scale(1, L.legend.tall, 1)
-  const run = mesh(g, o.ink, false, false)
+  g.scale(L.legend.narrow, wide > L.legend.fit ? L.legend.tall * L.legend.high : L.legend.high, 1)
+  const run = mesh(fuse([moved(g, -L.legend.heavy * type.px, 0, 0), g, moved(g, L.legend.heavy * type.px, 0, 0)]), o.ink, false, false)
   run.userData.order = L.legend.order
   run.renderOrder = L.legend.order
   const root = new THREE.Group()
@@ -444,6 +444,8 @@ export function coinGeometry(): THREE.BufferGeometry {
   return fuse([edge, face(), back])
 }
 
+let bedMaterial: THREE.MeshPhysicalMaterial | null = null
+
 function payout(): THREE.Group {
   const o = own()
   const root = new THREE.Group()
@@ -454,11 +456,12 @@ function payout(): THREE.Group {
   coins.frustumCulled = false
   coins.count = 0
   const P = L.pay
+  bedMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(P.bed), roughness: P.rough, metalness: 0.5, name: 'slot-pay-bed' }))
   const at = (inset: number, z: number, out: number, up: number): LoftRing => ({ o: roundedRect(SLOT.payW - inset * 2, SLOT.payH - inset * 2, Math.max(0.8, P.r - inset), 10), z, out, up })
   const lip = shared('payLip', () => loft([at(0, 0, 1, 0), at(0, P.top - 1.2, 1, 0), at(0.35, P.top - 0.35, 0.7, 0.7), at(1.2, P.top, 0, 1), at(P.lip - 0.9, P.top, 0, 1), at(P.lip - 0.25, P.top - 0.5, -0.7, 0.7), at(P.lip, P.top - 1.4, -1, 0), at(P.lip, P.floor, -1, 0)]))
   const bed = shared('payBed', () => loft([at(P.lip, P.floor, 0, 1)], 1))
   const foot = shared('payFoot', () => contact(roundedRect(SLOT.payW + P.foot * 2, SLOT.payH + P.foot * 2, P.r + P.foot, 10), P.foot + 0.6))
-  body.add(mesh(foot, materials().gap, false), mesh(lip, o.frame), mesh(bed, o.mouth, false, true))
+  body.add(mesh(foot, materials().gap, false), mesh(lip, materials().aluminiumSatin), mesh(bed, bedMaterial, false, true))
   root.add(body, coins)
   root.userData.body = body
   root.userData.coins = coins
