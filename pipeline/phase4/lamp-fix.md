@@ -88,6 +88,13 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 | 08:25 | lights | 4 | r1, head lamps weaker on what stands over them: youre-fired, tier-street, tier-corporate, table-wide | 8, 6 |
 | 08:27 | lights | 3 | r2, the same from 60 px up, beacon light nearer its beacon: youre-fired, tier-street, tier-office | 11, 6 |
 | 08:34 | art | 3 | u1, the dark print under posts and bumpers small: tier-office, tier-corporate, tier-street | 11, 9 |
+| 08:39 | lights | 3 | v1, the film's cameras after the roof change: lobby-doors, last-save, table-wide | 14, 9 |
+| 08:42 | lights | 2 | x1, lane lamps hotter and warmer: table-wide, last-save | 16, 9 |
+| 08:44 | art | 3 | x2, window glow steeper: tier-street, table-wide, tier-corporate | 16, 12 |
+| 08:45 | lights | 2 | x3, the worn sheen and its veil lower (no change seen: the blotches were the coat map): table-wide, rail-cam | 18, 12 |
+| 08:46 | art | 2 | x4, the wear in the coat map soft and beside the ball's lines: table-wide, last-save | 18, 14 |
+| 08:49 | both | 6 | x5, all of it together: tier-street, tier-office, tier-corporate (art), reply-all, youre-fired, rail-cam (lights) | 21, 17 |
+| 08:51 | lights | 3 | x6, Street head lamps 1.55 to 1.38, beacon light tighter: youre-fired, tier-street, last-save | 24, 17 |
 
 ## Decisions
 
@@ -117,6 +124,11 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 24. The head lamps hang under the cross rail, one ball over the floor, so they cannot light what faces up above them: a top over 60 px takes less of them, a quarter from 100 px up (`SHADOW.roof`). The roofs keep the tier's soft light, the hidden lamps over the low models and the beacons. MEASURED (`means2.mjs r2`): tier-office 0.99, tier-street 1.02, youre-fired 1.21, and r1 tier-corporate 1.03, table-wide 0.88.
 25. A window at rest glows at 0.5: at 0.3 the white and amber windows of the Street read grey in `tier-street`.
 26. The dark print under a post or a bumper is only a soft contact mark now (a post's radius plus 0.06 of a ball, a bumper's plus 0.12, at 0.7, without a ring): on the Office the old discs read as black saucers under the cups from straight above. MEASURED after it (`means2.mjs u1`): tier-corporate 1.01, tier-office 1.00, tier-street 1.02.
+27. The lane lamps' windows are hotter in the middle (`LENS.window` 1.3 to 2.2) and warmer (`WARM` 1, 0.78, 0.5), so from the film's cameras they read as warm lamps and not as pale tiles.
+28. A lit window's glow falls off faster from its middle (stops at 0.14, 0.34 and 0.62 of the radius), so the middle is the lamp and the rim keeps the colour.
+29. The wear in the lacquer was a camouflage of hard-edged patches that showed from `table-wide` as grey clouds on the Street. MEASURED by looking: lowering `SHEEN.worn` and `SHEEN.veil` (x3) changed nothing, so the clouds were the coat map itself under the page's light. The coat map now has soft wear that is strongest beside the lines the ball runs most (`WORN` 22, 32, 36 and the `broad` trail in `make.mjs`), and the clouds are gone in x4.
+30. `table-wide` stands at 0.86 to 0.88 of its approved mean and no lamp of mine moves it (x1 to x4: 0.88, 0.88, 0.88, 0.86): in the build's framing the machine fills less of the picture and the room round it is black. Left: the camera is not mine, and a general fill is ruled out.
+31. Street head lamps 1.55 to 1.38 and the beacon's own lamp nearer and tighter (`BEACON` z 14, reach 0.85, power 0.7), for `youre-fired`. MEASURED (`means2.mjs x6`): tier-street 1.00, youre-fired 1.17 (was 1.19), last-save 0.90. The roof and the right wall in `youre-fired` hardly changed, so most of what lights them is not the head lamps; left there.
 
 ## Needs
 

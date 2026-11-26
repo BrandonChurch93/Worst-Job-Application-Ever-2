@@ -26,7 +26,7 @@ Every picture here is made by one command: `node assets-src/table/art/make.mjs` 
 
 - Made by: `coat()` in `make.mjs`
 - From: the layout: the launch lane, the top lane, the inlanes, the shots from each flipper and the way to the drain
-- Prompt or command: green is the roughness of the clear coat as three.js reads it: low everywhere, a little higher with fine scuffs along the lines the ball runs most, and higher again in broad soft patches where play has taken the polish (`WORN` in `make.mjs`, three octaves of value noise about a ball wide, by seed). Blue is the metal of the print, as three.js reads metalness: on the corporate floor the gold lines, found by rule (red above blue by more than 24 of 255, full at 74), and nothing on the other two
+- Prompt or command: green is the roughness of the clear coat as three.js reads it: low everywhere, a little higher with fine scuffs along the lines the ball runs most, and higher again in soft wear that is strongest beside those lines and faint elsewhere (`WORN` in `make.mjs`: three octaves of value noise by seed, times a wide blur of the ball's lines). Blue is the metal of the print, as three.js reads metalness: on the corporate floor the gold lines, found by rule (red above blue by more than 24 of 255, full at 74), and nothing on the other two
 - Takes: about 2 s each (web)
 - Why this one: a played table is dullest where the ball goes; the trail is faint and is only seen where a light is reflected
 - Size: web 2048 by 1152, full 4096 by 2304

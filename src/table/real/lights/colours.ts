@@ -53,7 +53,7 @@ export const DEEP: Record<string, [number, number]> = {
 }
 
 // How bright a lens is when its lamp is on, in linear light: the middle is above the threshold of the lens glow, the rim below.
-export const LENS = { on: 4.2, window: 1.3, rim: 0.42, off: 0.0 }
+export const LENS = { on: 4.2, window: 2.2, rim: 0.42, off: 0.0 }
 // The lamp in a bumper stands at this share of the general lighting and flashes to full on a hit.
 export const BUMPER = { rest: 0.5, seconds: 0.25 }
 

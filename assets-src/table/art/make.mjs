@@ -180,8 +180,8 @@ async function mask(artPng, file) {
 }
 
 // The clear coat's roughness in green (as three.js reads it): smooth everywhere, a little duller along the lines the ball runs most, where it has worn the lacquer. Blue is how much of a place is metal leaf: the gold of the corporate floor, nothing on the others.
-// How much duller the lacquer is in the broad patches where years of play have taken its polish, by tier, in steps of 255.
-const WORN = [26, 40, 46]
+// How much duller the lacquer is where years of play have taken its polish, by tier, in steps of 255: soft patches, strongest beside the lines the ball runs most.
+const WORN = [22, 32, 36]
 
 async function coat(L, k, file, w, gilded) {
   const D = tierOf(L, k)
@@ -205,6 +205,7 @@ async function coat(L, k, file, w, gilded) {
   paths.push(run(`M${m} 7.9 L${m} 11.25`, 0.5, 0.45))
   const body = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 20 11.25"><rect width="20" height="11.25" fill="#000"/><g filter="url(#b)">${paths.join('')}</g><defs><filter id="b" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="0.07"/></filter></defs></svg>`
   const trail = await sharp(Buffer.from(body)).greyscale().raw().toBuffer()
+  const broad = await sharp(trail, { raw: { width: w, height: h, channels: 1 } }).blur(w / 48).raw().toBuffer()
   const gold = gilded ? await sharp(gilded, { limitInputPixels: false }).resize(w, h, { kernel: 'lanczos3' }).removeAlpha().raw().toBuffer() : null
   const out = Buffer.alloc(w * h * 3)
   for (let i = 0; i < w * h; i++) {
@@ -213,7 +214,7 @@ async function coat(L, k, file, w, gilded) {
     const scuff = hash2(x >> 1, y >> 1, SEED + 77 + k)
     const fine = trail[i] / 255
     const wide = fbm((x / w) * 18, (y / w) * 18, SEED + 300 + k, 3)
-    const worn = smooth(Math.max(0, Math.min(1, (wide - 0.44) / 0.22)))
+    const worn = smooth(Math.max(0, Math.min(1, (wide - 0.3) / 0.5))) * Math.min(1, 0.3 + (broad[i] / 255) * 5)
     const g = lo + fine * (34 + scuff * 26) + worn * WORN[k] + (hash2(x >> 3, y >> 3, SEED + 91) - 0.5) * 5
     out[i * 3] = 128
     out[i * 3 + 1] = Math.max(4, Math.min(250, Math.round(g)))

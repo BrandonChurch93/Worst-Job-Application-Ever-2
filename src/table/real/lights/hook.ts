@@ -41,7 +41,7 @@ const EDGE = (COLS.launchB - W / 2) * BALL
 const HAZE = 0.042
 
 // Lacquer seen along the floor sends back more of the light on it than lacquer seen from above: the sheen of a waxed floor from across the room. Nothing is added straight down.
-const SHEEN = { coat: 0.03, pools: 0.0, worn: 0.22, from: 0.07, to: 0.24, veil: 0.5 }
+const SHEEN = { coat: 0.03, pools: 0.0, worn: 0.2, from: 0.07, to: 0.24, veil: 0.4 }
 
 // Metal leaf laid in a floor is not a mirror: it is beaten thin over the grain of the print and throws a lamp's light back in every direction, in its own colour.
 const LEAF = 1.1
