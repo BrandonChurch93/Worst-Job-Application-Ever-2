@@ -4,7 +4,7 @@ import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { applyButton } from '../src/pages/marketing/real/apply-button'
 import { careersPage } from '../src/pages/marketing/real/careers-page'
-import { perkCards } from '../src/pages/marketing/real/perk-cards'
+import { cardGlass, groundEdge, perkCards } from '../src/pages/marketing/real/perk-cards'
 import { ticker } from '../src/pages/marketing/real/ticker'
 import type { Emitter, PartMaker, RealContext } from '../src/real/types'
 import type { Shape } from '../src/stage/types'
@@ -114,7 +114,7 @@ describe('the real careers page', () => {
     expect(box.max.x - box.min.x).toBeGreaterThan(slab.w - 8)
   })
 
-  it('makes a button cap once and lowers it by the press, and the tape gives off its own light and asks for no lamp', () => {
+  it('makes a button cap once and lowers it by the press, and the ticker is the glass of the cards over a channel the words run in, and asks for no lamp', () => {
     const s = film()
     const tops: number[] = []
     const keys = new Set<string>()
@@ -132,15 +132,21 @@ describe('the real careers page', () => {
     const { list, time } = at(9)
     const asked: Emitter[] = []
     const ctx = context(list, time, asked)
-    const tape = list.find((x) => x.id === 'ticker-tape')!
-    const o = ticker!.make(tape, ctx)
-    ticker!.pose?.(o, tape, ctx)
-    let glow = 0
+    const strip = list.find((x) => x.id === 'ticker-glass')!
+    const pocket = list.find((x) => x.id === 'ticker-window')!
+    expect(ticker!.key(pocket, ctx)).toBe('')
+    expect(pocket.x - strip.x).toBeLessThan(groundEdge(strip) - 2)
+    const o = ticker!.make(strip, ctx)
+    let glass = 0
+    let clear = 0
     o.traverse((n) => {
       const m = (n as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
-      if (m && m.emissiveIntensity > 0 && m.emissive.r > 0) glow++
+      if (m === cardGlass()) glass++
+      if (m?.transparent) clear++
     })
-    expect(glow).toBe(1)
+    expect(glass).toBe(2)
+    expect(clear).toBe(1)
+    for (const r of list.filter((x) => x.kind === 'text' && x.id.startsWith('ticker-'))) expect(r.z1).toBeLessThan(0)
     expect(asked.length).toBe(0)
   })
 })

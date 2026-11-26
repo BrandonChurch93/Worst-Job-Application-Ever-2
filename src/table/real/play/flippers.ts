@@ -58,11 +58,11 @@ export function batGeometry(): THREE.BufferGeometry {
   b.add(prism(batOutline(ra + 0.35, rb + 0.35, len, 12), BAT.waist + BAT.band / 2 - 0.5, BAT.waist + BAT.band / 2 + 0.5, 0), RUBBER_LINE)
   b.add(prism(line(BAT.lip), BAT.waist + BAT.band - 1, BAT.top, BAT.crown, 4), ORANGE)
   b.add(prism(line(BAT.lip + BAT.crown + 2.4), BAT.top - 0.6, BAT.top + 1.1, 0.9, 2), ORANGE_TOP)
-  const boss = Math.max(7, ra * 0.26)
+  const boss = Math.max(8, ra * 0.33)
   b.add(lathe([[boss + 2.2, BAT.top + 0.6], [boss + 2.2, BAT.top + 1.6], [boss + 1, BAT.top + 2.6], [boss - 0.4, BAT.top + 2.6]], 24), ORANGE_TOP)
   b.add(lathe([[boss, BAT.top + 2.2], [boss, BAT.top + 3.4], [boss - 1.2, BAT.top + 4.6], [boss * 0.45, BAT.top + 5.2], [boss * 0.4, BAT.top + 5.2]], 24), CHROME)
   b.add(lathe([[boss * 0.4, BAT.top + 5.2], [boss * 0.36, BAT.top + 3.2], [0, BAT.top + 3.2]], 6, 80), SOCKET)
-  const stud = Math.max(4.2, rb * 0.24)
+  const stud = Math.max(5, rb * 0.3)
   b.add(lathe([[stud + 1.4, BAT.top + 0.6], [stud + 1.4, BAT.top + 1.5], [stud, BAT.top + 2.3], [stud * 0.5, BAT.top + 3.1], [0, BAT.top + 3.2]], 16), CHROME, mat({ x: len }))
   shared = b.done()
   shared.userData.shared = true
@@ -72,7 +72,7 @@ export function batGeometry(): THREE.BufferGeometry {
 const flippersOf = (z: Zone) => table.flippers.filter((f) => f.tier === z.tier)
 
 export const flippers = whole('flippers', {
-  version: 'play-flippers-7',
+  version: 'play-flippers-8',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.flippers.${z.id}`

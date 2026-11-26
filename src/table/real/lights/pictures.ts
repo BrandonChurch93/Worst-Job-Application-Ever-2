@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { BALL, COLS, table } from '../../layout'
 import { localBalls, type Zone } from '../zone'
-import { CHANNELS, groupsOf, type Group, type Source } from './groups'
+import { CHANNELS, LAMP, groupsOf, type Group, type Source } from './groups'
 
 // The light pictures of a zone: how much light of each group arrives at each place of the zone's floor, seen from straight above.
 // Three textures of four channels: the groups, how far the general lighting leans from straight above (in the last group channel, which the flash leaves free), and the side it comes from.
@@ -18,6 +18,7 @@ export const TEXEL = 6
 export const BODY = 20
 export const LEAN = CHANNELS - 1
 const SLING_TOP = 0.22
+export const CORE = { level: 80, radius: 13, light: 2.6 }
 
 interface Blocker { kind: 0 | 1 | 2; id: string; a: number; b: number; c: number; d: number; h: number }
 
@@ -206,6 +207,18 @@ function addSource(z: Zone, s: Source, plane: Float32Array, dir: Float32Array[] 
   }
 }
 
+// The lamp itself, a small disc written into the texture of its group below zero, where no light is: what the lacquer mirrors of it. The planes keep the light alone.
+function addCore(z: Zone, s: Source, plane: Float32Array, w: number, h: number): void {
+  const i0 = Math.floor((s.x + 960) / TEXEL)
+  const j0 = Math.floor((s.y + z.height / 2) / TEXEL)
+  for (let j = Math.max(0, j0 - 3); j <= Math.min(h - 1, j0 + 3); j++) {
+    for (let i = Math.max(0, i0 - 3); i <= Math.min(w - 1, i0 + 3); i++) {
+      const d = Math.hypot((i + 0.5) * TEXEL - 960 - s.x, (j + 0.5) * TEXEL - z.height / 2 - s.y)
+      plane[j * w + i]! += CORE.level * Math.max(0, 1 - d / CORE.radius)
+    }
+  }
+}
+
 const made = new Map<string, Pictures>()
 
 export function picturesOf(z: Zone): Pictures {
@@ -218,12 +231,18 @@ export function picturesOf(z: Zone): Pictures {
   for (let c = 0; c < CHANNELS + 2; c++) planes.push(new Float32Array(w * h))
   const dir = [new Float32Array(w * h), new Float32Array(w * h), new Float32Array(w * h), new Float32Array(w * h)]
   const all = blockersOf(z)
+  const cores = new Map<number, Float32Array>()
   for (const g of groups) {
     const plane = planes[g.index]!
     if (g.name === 'flash') continue
     if (g.index === LEAN) throw new Error(`The last channel of "${z.id}" is kept for the lean of the light and "${g.id}" is in it`)
     for (const s of g.sources) addSource(z, s, plane, g.mode === 2 ? dir : null, w, h, all)
     blur(plane, w, h)
+    if (g.mode === 2) {
+      const core = new Float32Array(w * h)
+      for (const s of g.sources) if (s.z === LAMP.z) addCore(z, s, core, w, h)
+      cores.set(g.index, core)
+    }
   }
   for (const d of dir) blur(d, w, h)
   for (let i = 0; i < w * h; i++) {
@@ -235,7 +254,10 @@ export function picturesOf(z: Zone): Pictures {
   const textures: THREE.DataTexture[] = []
   for (let t = 0; t < 3; t++) {
     const data = new Uint16Array(w * h * 4)
-    for (let i = 0; i < w * h; i++) for (let c = 0; c < 4; c++) data[i * 4 + c] = THREE.DataUtils.toHalfFloat(Math.max(-60000, Math.min(60000, planes[t * 4 + c]![i]!)))
+    for (let c = 0; c < 4; c++) {
+      const core = cores.get(t * 4 + c)
+      for (let i = 0; i < w * h; i++) data[i * 4 + c] = THREE.DataUtils.toHalfFloat(core && core[i]! > 0 ? -core[i]! : Math.max(-60000, Math.min(60000, planes[t * 4 + c]![i]!)))
+    }
     const tex = new THREE.DataTexture(data, w, h, THREE.RGBAFormat, THREE.HalfFloatType)
     tex.name = `table-lights.${z.id}.${t}`
     tex.colorSpace = THREE.NoColorSpace

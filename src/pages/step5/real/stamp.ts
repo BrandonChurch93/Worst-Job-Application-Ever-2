@@ -10,26 +10,49 @@ import { hash01 } from '../../../core/random'
 import { markOf } from '../layout'
 import { HIT, LIE } from '../script'
 import { studio } from '../../../post/studio'
+import { stock } from './letterStock'
 import { INK, ink } from './stampInk'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 const WHITE: [number, number, number] = [1, 1, 1]
-const PRINT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 0.55, a: 0.7, c: WHITE }] }
+const PRINT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 0.9, a: 1, c: WHITE }, { d: 1.7, a: 0.5, c: WHITE }] }
 const FRAME = { r: 12, inner: 12, thin: 2.6, feather: 0.7 }
-const PAD = { out: 2.6, tall: 5, gap: 1.6 }
+const PAD = { in: 2.2, foam: 1, tall: 11, gap: 3.4 }
+
+const GRAIN = { die: 22, coat: 46 }
+const BELLY = 2.4
+let roughMade: THREE.Texture | null = null
+
+// The tooth of the letter's stock, used again as the grain of the rubber and the faint orange peel of the lacquer.
+function rough(): THREE.Texture {
+  roughMade ??= stock().tooth
+  return roughMade
+}
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 function lacquer(): THREE.MeshPhysicalMaterial {
-  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xd6220f, THREE.SRGBColorSpace), roughness: 0.3, metalness: 0, specularIntensity: 0.5, clearcoat: 1, clearcoatRoughness: 0.05 }))
+  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xc81509, THREE.SRGBColorSpace), roughness: 0.46, metalness: 0, specularIntensity: 0.3, clearcoat: 1, clearcoatRoughness: 0.07, clearcoatNormalMap: rough(), clearcoatNormalScale: new THREE.Vector2(0.05, 0.05) }))
   lacquerMade.name = 'stamp-lacquer'
   return lacquerMade
 }
 
 let dieMade: THREE.MeshPhysicalMaterial | null = null
 function die(): THREE.MeshPhysicalMaterial {
-  dieMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x6e1712, THREE.SRGBColorSpace), roughness: 0.86, metalness: 0, specularIntensity: 0.3 }))
+  dieMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x4d0f0e, THREE.SRGBColorSpace), roughness: 0.92, metalness: 0, specularIntensity: 0.25, normalMap: rough(), normalScale: new THREE.Vector2(3.5, 3.5) }))
   dieMade.name = 'stamp-die'
   return dieMade
+}
+
+// A sweep's own uv is its place on the page, which does not change up a wall. This lays the grain across walls and tops alike.
+function grained(g: THREE.BufferGeometry, tile: number): THREE.BufferGeometry {
+  const pos = g.getAttribute('position')
+  const uv = new Float32Array(pos.count * 2)
+  for (let i = 0; i < pos.count; i++) {
+    uv[i * 2] = (pos.getX(i) + pos.getZ(i) * 0.83) / tile
+    uv[i * 2 + 1] = (pos.getY(i) + pos.getZ(i) * 0.61) / tile
+  }
+  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
+  return g
 }
 
 function solid(g: THREE.BufferGeometry, m: THREE.Material): THREE.Mesh {
@@ -45,13 +68,16 @@ function blockOf(s: Shape): THREE.Object3D {
   const h = s.z1 - s.z0
   const root = new THREE.Group()
   const half = Math.min(s.w, s.h) / 2
-  const pad: ProfilePoint[] = [[-PAD.out + 0.8, 0.2, true], [-PAD.out, 1], [-PAD.out, PAD.tall - 1], [-PAD.out + 1, PAD.tall], [2.4, PAD.tall, true], [2.4, PAD.tall + PAD.gap, true]]
-  root.add(solid(sweep(outlineOf(s, 0, 12), profile(pad)), die()))
-  root.add(solid(sweep(outlineOf(s, 0, 12), profile([[0.6, PAD.tall - 0.2, true], [0.6, PAD.tall + PAD.gap + 0.2, true]]), false), m.rubber))
+  const pad: ProfilePoint[] = [[PAD.in + 0.8, 0.2, true], [PAD.in, 1], [PAD.in, PAD.tall - 0.6], [PAD.in + 0.6, PAD.tall], [PAD.in + 5, PAD.tall, true]]
+  root.add(solid(grained(sweep(outlineOf(s, 0, 12), profile(pad)), GRAIN.die), die()))
+  root.add(solid(sweep(outlineOf(s, 0, 12), profile([[PAD.foam, PAD.tall - 0.4, true], [PAD.foam, PAD.tall + PAD.gap + 0.2, true], [PAD.foam + 4, PAD.tall + PAD.gap + 0.2, true]]), false), m.rubber))
   const round = 12
   const top = h - 0.7
-  const body: ProfilePoint[] = [[1.6, PAD.tall + PAD.gap - 0.4, true], [0.2, PAD.tall + PAD.gap + 1.2], [0, PAD.tall + PAD.gap + 3], [0, top - round], ...arc(0, top - round, round, round, 12).slice(1)]
-  root.add(solid(sweep(outlineOf(s, 0, 12), profile(body)), lacquer()))
+  const foot = PAD.tall + PAD.gap
+  const wall = top - round - foot - 3
+  const belly = [0, 0.14, 0.28, 0.42, 0.56, 0.7, 0.84, 1].map((u): ProfilePoint => [BELLY * (2 * u - 1) * (2 * u - 1), foot + 3 + wall * u])
+  const body: ProfilePoint[] = [[BELLY + 1.6, foot - 0.4, true], [BELLY + 0.3, foot + 1.2], ...belly, ...arc(BELLY, top - round, round, round, 12).slice(1)]
+  root.add(solid(grained(sweep(outlineOf(s, 0, 12), profile(body)), GRAIN.coat), lacquer()))
   return root
 }
 
@@ -71,7 +97,7 @@ function gripOf(s: Shape): THREE.Object3D {
   const root = new THREE.Group()
   const outline = outlineOf({ ...s, kind: 'box', r }, 0, 20)
   root.add(solid(sweep(outline, profile([[-3, 0, true], [-3, 3], [-2.2, 3.9], [1.2, 3.9, true]]), false), materials().chrome))
-  root.add(solid(sweep(outline, profile(points)), lacquer()))
+  root.add(solid(grained(sweep(outline, profile(points)), GRAIN.coat), lacquer()))
   return root
 }
 
