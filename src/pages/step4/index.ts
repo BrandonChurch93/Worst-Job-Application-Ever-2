@@ -264,10 +264,6 @@ export function makePage(): PageLogic {
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
           s.t = 0
-          if (s.mode === 'film') {
-            io.cursor.heal()
-            io.cursor.hurt('scorched')
-          }
         } else if (s.t >= SAG_AT && s.t - dt < SAG_AT) io.cursor.act('exhausted')
       } else if (s.stage === 'press') {
         if (s.pressed < 0) {

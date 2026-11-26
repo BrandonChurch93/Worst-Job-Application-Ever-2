@@ -4,6 +4,7 @@ import { copy } from '../src/copy'
 import { pages } from '../src/pages'
 import { FLOOR, SOCKET, WAKE_AFTER_TICK } from '../src/boss/plan'
 import { makePage } from '../src/pages/step4'
+import { ACT } from '../src/pages/step4/script'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords } from '../src/shell/words'
 import { filmFlow, filmOptions, runBot, ScriptDriver, Stage, type Driver, type DriverView, type FlowEntry, type Pointer } from '../src/stage/stage'
@@ -111,19 +112,39 @@ describe('step 4, the boss', () => {
     }
   })
 
-  it('holds the scorch from the power-down to the end of the film unit, with nothing more hitting the cursor', () => {
+  it('scorches the cursor once at the power-down, over the key and the press, and no longer than the config lets a damage last', () => {
     const stage = film()
     const key = beats.find((b) => b.id === 'boss.collapse')!.to
-    stage.advance(Math.round(key * stepHz))
-    expect(stage.cursor.damaged).toBe(true)
-    stage.advance(Math.round((unit.seconds - 0.5 - key) * stepHz))
-    expect(stage.cursor.damaged).toBe(true)
+    const down = () => stage.events.find((e) => e.name === 'power-down')
+    let from = -1
+    let last = -1
+    let atKey = false
+    let atPress = false
+    const steps = Math.round((unit.seconds - 0.5) * stepHz)
+    for (let i = 0; i < steps; i++) {
+      stage.advance(1)
+      const d = down()
+      if (!d || stage.step < d.step) continue
+      if (stage.cursor.damaged) {
+        if (from < 0) from = stage.step
+        expect(last < 0 || last === stage.step - 1, 'the scorch does not come back once it is gone').toBe(true)
+        last = stage.step
+      }
+      if (stage.step === Math.round(key * stepHz)) atKey = stage.cursor.damaged
+      if (stage.step === Math.round(ACT.press * stepHz)) atPress = stage.cursor.damaged
+    }
+    expect(from - down()!.step).toBeGreaterThanOrEqual(0)
+    expect(from - down()!.step).toBeLessThanOrEqual(1)
+    expect(atKey).toBe(true)
+    expect(atPress).toBe(true)
+    expect((last - from + 1) / stepHz).toBeLessThanOrEqual(config.cursor.damageHealSeconds)
+    expect(stage.cursor.damaged).toBe(false)
     expect(stage.page.done()).toBe(true)
-    const down = stage.events.find((e) => e.name === 'power-down')!
-    expect(stage.events.filter((e) => e.hitsCursor && e.step >= down.step)).toEqual([])
+    const power = down()!
+    expect(stage.events.filter((e) => e.hitsCursor && e.step >= power.step)).toEqual([])
     const hits = stage.events.filter((e) => e.hitsCursor)
     expect(hits.length).toBeGreaterThan(0)
-    expect(hits.every((e) => e.step < down.step - 3 * stepHz)).toBe(true)
+    expect(hits.every((e) => e.step < power.step - 3 * stepHz)).toBe(true)
   })
 
   it.each([['a still pointer', still], ['a wrong pointer', wrong]])('ends every gag by itself with %s', (_name, driver) => {
