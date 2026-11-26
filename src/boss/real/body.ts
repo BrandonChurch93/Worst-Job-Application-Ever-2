@@ -62,13 +62,33 @@ function bedOutline(): [number, number][] {
   return pts
 }
 
+function lipOutline(): [number, number][] {
+  const cx = FRAME.bedW / 2 - FRAME.bedH / 2
+  const arc = (r: number): [number, number][] => {
+    const pts: [number, number][] = [[-cx - r, 0.4]]
+    for (let i = 1; i < 12; i++) {
+      const a = Math.PI - (i / 12) * (Math.PI / 2)
+      pts.push([-cx + r * Math.cos(a), r * Math.sin(a)])
+    }
+    pts.push([-cx, r], [cx, r])
+    for (let i = 1; i < 12; i++) {
+      const a = Math.PI / 2 - (i / 12) * (Math.PI / 2)
+      pts.push([cx + r * Math.cos(a), r * Math.sin(a)])
+    }
+    pts.push([cx + r, 0.4])
+    return pts
+  }
+  return [...arc(FRAME.bedH / 2 + 6.5), ...arc(FRAME.bedH / 2 - 0.2).reverse()]
+}
+
 function wing(flip: boolean): THREE.Group {
   const m = materials()
   const k = bossKit()
   const g = new THREE.Group()
   const turnZ = flip ? Math.PI : 0
-  g.add(mesh(geo(`wing:${flip}`, () => cutPlate(wingOutline(), FRAME.tall, 1.6).rotateZ(turnZ)), m.aluminium))
+  g.add(mesh(geo(`wing:${flip}`, () => cutPlate(wingOutline(), FRAME.tall, 2.4).rotateZ(turnZ)), m.aluminium))
   g.add(mesh(geo(`wingBed:${flip}`, () => cutPlate(bedOutline(), 4, 0.5).rotateZ(turnZ)), k.bed))
+  g.add(mesh(geo(`wingLip:${flip}`, () => cutPlate(lipOutline(), 2.6, 1).translate(0, 0, FRAME.tall - 0.4).rotateZ(turnZ)), m.aluminiumEdge))
   g.add(mesh(geo(`wingScrews:${flip}`, () => joined([
     ...WING_SCREWS.map(([x, y], i) => moved(screw(4.2, 1.6, i + (flip ? 9 : 0)), x, y, FRAME.tall)),
     ...[-168, 168].map((x) => moved(lathe([[12, 0], [12, 2.2], [10.5, 3.4], [7.5, 3.4], [7.5, 1.2], [0, 1.2]], 40), x, 50, FRAME.tall))
@@ -118,7 +138,7 @@ function side(i: number): THREE.Object3D {
   return root
 }
 
-const BARREL = { long: 64, r: 10, z: 11, out: -8, home: 32 }
+const BARREL = { long: 84, r: 12, z: 12.5, out: -8, home: 33 }
 
 function cannon(s: Shape, ctx: RealContext): THREE.Object3D {
   const m = materials()
@@ -130,9 +150,9 @@ function cannon(s: Shape, ctx: RealContext): THREE.Object3D {
   const barrel = new THREE.Group()
   const L = BARREL.long
   const r = BARREL.r
-  barrel.add(mesh(geo('barrel', () => lying([[0, 0], [r, 0], [r, 5], [r + 1.6, 5], [r + 1.6, 12], [r, 12], [r, 30], [r - 1.7, 31.5], [r - 1.7, L - 13], [r + 1.2, L - 9], [r + 1.2, L - 1], [r + 0.4, L], [r - 2.8, L], [r - 3.2, L - 1.2]], 36)), m.aluminiumSatin))
-  barrel.add(mesh(geo('bore', () => lying([[r - 3.2, L - 1.2], [r - 3.2, L - 16], [0, L - 16]], 28)), k.bore, false))
-  barrel.add(mesh(geo('barrelBand', () => lying([[r + 0.2, 16], [r + 0.2, 24]], 36)), k.pin))
+  barrel.add(mesh(geo('barrel', () => lying([[0, 0], [r, 0], [r, 34], [r + 2, 34], [r + 2, 44], [r, 44], [r - 2.2, 46], [r - 2.2, L - 17], [r - 0.6, L - 15], [r + 1.4, L - 12], [r + 1.4, L - 2], [r + 0.4, L], [r - 3.4, L], [r - 4.2, L - 1.6]], 40)), m.aluminiumSatin))
+  barrel.add(mesh(geo('bore', () => lying([[r - 4.2, L - 1.6], [r - 4.2, L - 20], [0, L - 20]], 28)), k.bore, false))
+  barrel.add(mesh(geo('barrelBand', () => lying([[r - 2, L - 30], [r - 2 + 0.3, L - 24]], 36)), k.pin))
   root.add(base, housing, button, barrel)
   root.userData.c = { housing, button, barrel }
   return root
@@ -150,7 +170,7 @@ function poseCannon(o: THREE.Object3D, s: Shape): void {
   c.button.position.z = lift
   c.barrel.position.set(mix(BARREL.home, BARREL.out, outK) + recoil * 0.75, 0, 2.6 + Math.max(0.2, up) * (BARREL.z - 2.6))
   const thin = Math.max(0.12, up)
-  c.barrel.scale.set(1, thin, thin)
+  c.barrel.scale.set(mix(0.78, 1, outK), thin, thin)
 }
 
 function shield(): THREE.Object3D {
@@ -160,12 +180,13 @@ function shield(): THREE.Object3D {
   const leaf = new THREE.Group()
   const w = SHIELD.w
   const h = SHIELD.h
-  leaf.add(mesh(geo('glass', () => sweep(roundedRect(w - 5, h - 5, 12, 10), plateProfile(SHIELD.tall, 5, 0, 10))), k.glass))
-  leaf.add(mesh(geo('glassBack', () => sweep(roundedRect(w - 5, h - 5, 12, 10), [{ inset: 0, z: 0, out: 0, up: 1 }]).rotateY(Math.PI)), m.glassThick))
+  leaf.add(mesh(geo('glass', () => sweep(roundedRect(w - 12, h - 12, 9, 10), [{ inset: 0, z: 1, out: 0, up: 1 }, { inset: 0, z: SHIELD.tall - 1.2, out: 0, up: 1 }], true)), k.glass))
+  
   leaf.add(mesh(geo('glassRim', () => {
-    const ring = roundedRect(w, h, 14.5, 10)
-    return sweep(ring, [{ inset: 3.2, z: -0.6, out: 0, up: -1 }, { inset: 0, z: -0.6, out: 0, up: -1 }, { inset: 0, z: -0.6, out: 1, up: 0 }, { inset: 0, z: SHIELD.tall - 2.2, out: 1, up: 0 }, { inset: 0.9, z: SHIELD.tall - 1.2, out: 0.7, up: 0.7 }, { inset: 2.6, z: SHIELD.tall - 1.2, out: 0, up: 1 }, { inset: 2.6, z: SHIELD.tall - 1.2, out: -1, up: 0 }, { inset: 2.6, z: SHIELD.tall - 3, out: -1, up: 0 }], false)
-  }), m.aluminiumEdge))
+    const ring = roundedRect(w, h, 15, 12)
+    const t = SHIELD.tall
+    return sweep(ring, [{ inset: 7, z: 0, out: 0, up: -1 }, { inset: 0.8, z: 0, out: 0, up: -1 }, { inset: 0, z: 0.8, out: 1, up: 0 }, { inset: 0, z: t - 3, out: 1, up: 0 }, { inset: 0.9, z: t - 1.2, out: 0.8, up: 0.6 }, { inset: 2.8, z: t, out: 0.3, up: 0.95 }, { inset: 4.4, z: t, out: -0.3, up: 0.95 }, { inset: 6.4, z: t - 1.2, out: -0.6, up: 0.8 }], false)
+  }), k.glassEdge))
   const cracks = mesh(geo('glassCracks', () => {
     const pos: number[] = []
     const line = (x0: number, y0: number, x1: number, y1: number, wide: number): void => {
@@ -266,11 +287,11 @@ function leg(): THREE.Object3D {
   const L = LEG.link
   const W = LEG.wide
   const link = (): THREE.Mesh => mesh(geo('link', () => {
-    const body = sweep(roundedRect(L + W, W, W / 2, 10), plateProfile(6, 1.5, 0, 4)).translate(L / 2, 0, -3)
-    const under = sweep(roundedRect(L + W, W, W / 2, 10), [{ inset: 0, z: 0, out: 0, up: 1 }]).rotateX(Math.PI).translate(L / 2, 0, -3)
-    const slot = sweep(roundedRect(L - 36, 6, 3, 6), [{ inset: 0, z: 3, out: 0, up: 1 }, { inset: 1, z: 2, out: -0.7, up: 0.7 }, { inset: 1, z: 2, out: 0, up: 1 }]).translate(L / 2, 0, 0.03)
+    const body = sweep(roundedRect(L + W, W, W / 2, 10), plateProfile(7, 1.8, 0, 4)).translate(L / 2, 0, -3.5)
+    const under = sweep(roundedRect(L + W, W, W / 2, 10), [{ inset: 0, z: 0, out: 0, up: 1 }]).rotateX(Math.PI).translate(L / 2, 0, -3.5)
+    const slot = sweep(roundedRect(L - 40, 7, 3.5, 6), [{ inset: 0, z: 3.5, out: 0, up: 1 }, { inset: 1.2, z: 2.3, out: -0.7, up: 0.7 }, { inset: 1.2, z: 2.3, out: 0, up: 1 }]).translate(L / 2, 0, 0.03)
     return joined([body, under, slot])
-  }), m.aluminiumSatin)
+  }), k.link)
   const upper = link()
   const lower = link()
   const hip = mesh(geo('hipBall', () => new THREE.SphereGeometry(9, 28, 18)), k.pin)
@@ -280,8 +301,8 @@ function leg(): THREE.Object3D {
   const foot = new THREE.Group()
   const fr = LEG.foot / 2
   foot.add(mesh(geo('footPad', () => lathe([[fr - 1.4, 0], [fr - 0.8, 2.4], [0, 2.4]], 44)), m.rubber))
-  foot.add(mesh(geo('foot', () => lathe([[fr, 1.8], [fr, 5.6], [fr - 1.6, 7.2], [fr - 5, 7.2], [fr - 6, 5.6], [9.5, 4.4], [8.4, 6.6], [0, 6.6]], 52)), m.aluminiumEdge))
-  foot.add(mesh(geo('ankle', () => new THREE.SphereGeometry(7, 24, 16).translate(0, 0, 9)), k.pin))
+  foot.add(mesh(geo('foot', () => lathe([[fr, 1.8], [fr, 7], [fr - 1.8, 9], [fr - 5.5, 9], [fr - 6.2, 8.2], [fr - 7, 9.6], [11, 10.6], [10, 9.4], [9, 10.8], [0, 11.2]], 52)), m.aluminiumTurned))
+  foot.add(mesh(geo('ankle', () => new THREE.SphereGeometry(6, 24, 16).translate(0, 0, 10.5)), k.pin))
   root.add(upper, lower, hip, knee, foot, rod)
   root.userData.l = { upper, lower, hip, knee, foot, rod }
   return root

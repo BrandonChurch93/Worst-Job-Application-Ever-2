@@ -26,7 +26,7 @@ Owner: boss-body agent. Branch `agent/boss-body`. Parts: `boss-body`, `boss-tran
 
 ## Agreed with the boss-fight agent
 
-- The mouth of each barrel stays at (x + CANNON_OFF[i][0] - 70, y), z 46, and the barrels stay level: their flash `muzzle-N` is drawn there. No aim.
+- The mouth of each barrel was agreed at (x + CANNON_OFF[i][0] - 70, y), z 46, barrels level, no aim: their flash `muzzle-N` is drawn there. I then made the barrels thicker and longer to match the approved image and told them the mouth is now at x - 92, z 48.5; until they move the flash it sits 22 px inside the barrel.
 - Feet moved to (236, 192) from the centre; they read `FOOT_OFF`.
 - The shield stays centred at (x - 252, y). Darts from the left stop on the plane x - 288 while |dy| < 118 and fly at z 30 to 34; shield sparks sit at z 72.
 - They call `fightRig` with a sixth argument `{ flash: f.flash / 0.12, hurt: 1 - shown / 100 }`.
