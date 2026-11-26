@@ -42,6 +42,22 @@
   align-items: flex-start;
 }
 
+/* --above and --below share the room under the rule round the card, 42 parts to 58, so the card stands at the optical middle; --gap is the least room between the rule and the card. */
+.page::before,
+.page::after {
+  --above: 42;
+  --below: 58;
+  --gap: max(30px, calc(var(--u) * 62));
+  content: '';
+  flex: var(--below) 0 0;
+  order: 3;
+}
+
+.page::before {
+  flex: var(--above) 0 var(--gap);
+  order: 1;
+}
+
 .device,
 .device body {
   background: #ece9e4;
@@ -54,6 +70,7 @@
 }
 
 .header {
+  flex: none;
   width: 100%;
 }
 
@@ -81,8 +98,10 @@
 .card {
   position: relative;
   box-sizing: border-box;
+  flex: none;
+  order: 2;
+  align-self: center;
   max-width: 100%;
-  margin-top: max(30px, calc(var(--u) * 62));
   padding: max(26px, calc(var(--u) * 60)) max(26px, calc(var(--u) * 68)) max(30px, calc(var(--u) * 66));
   border-radius: var(--corner);
   /* Frosted sage glass: shaded under its upper edge, clearer toward the lower one, with the grain of the page showing through. */
@@ -95,11 +114,11 @@
   background-blend-mode: normal, normal, multiply;
   box-shadow:
     inset 0 0 0 max(1.5px, calc(var(--u) * 2)) rgba(240, 246, 241, 0.95),
-    inset max(3px, calc(var(--u) * 5)) max(3px, calc(var(--u) * 5)) max(3px, calc(var(--u) * 5)) max(-1px, calc(var(--u) * -1)) rgba(62, 68, 64, 0.55),
-    inset max(-3px, calc(var(--u) * -5)) max(-3px, calc(var(--u) * -5)) max(4px, calc(var(--u) * 6)) max(-2px, calc(var(--u) * -3)) rgba(238, 246, 239, 0.8),
-    max(1px, calc(var(--u) * 2)) max(3px, calc(var(--u) * 4)) max(2px, calc(var(--u) * 3)) rgba(66, 58, 44, 0.62),
-    max(3px, calc(var(--u) * 5)) max(6px, calc(var(--u) * 9)) max(7px, calc(var(--u) * 11)) rgba(66, 58, 44, 0.34),
-    max(7px, calc(var(--u) * 12)) max(11px, calc(var(--u) * 18)) max(16px, calc(var(--u) * 26)) rgba(66, 58, 44, 0.18);
+    inset max(3px, calc(var(--u) * 5)) max(3px, calc(var(--u) * 5)) max(3px, calc(var(--u) * 5)) calc(var(--u) * -1) rgba(62, 68, 64, 0.55),
+    inset min(-3px, calc(var(--u) * -6)) min(-3px, calc(var(--u) * -6)) max(4px, calc(var(--u) * 6)) min(-1px, calc(var(--u) * -2)) rgba(240, 248, 241, 0.9),
+    max(2px, calc(var(--u) * 3)) max(3px, calc(var(--u) * 6)) max(3px, calc(var(--u) * 4)) rgba(58, 50, 38, 0.7),
+    max(4px, calc(var(--u) * 6)) max(7px, calc(var(--u) * 11)) max(8px, calc(var(--u) * 10)) rgba(62, 54, 42, 0.4),
+    max(8px, calc(var(--u) * 12)) max(13px, calc(var(--u) * 20)) max(18px, calc(var(--u) * 28)) rgba(66, 58, 44, 0.2);
 }
 
 .card::before {
@@ -109,7 +128,7 @@
   inset: max(7px, calc(var(--u) * 12));
   border-radius: calc(var(--corner) - max(7px, calc(var(--u) * 12)));
   box-shadow:
-    max(-1px, calc(var(--u) * -1.5)) max(-1px, calc(var(--u) * -1.5)) 0 0 rgba(236, 244, 238, 0.5),
+    min(-1px, calc(var(--u) * -1.5)) min(-1px, calc(var(--u) * -1.5)) 0 0 rgba(236, 244, 238, 0.5),
     max(1px, calc(var(--u) * 1.5)) max(1px, calc(var(--u) * 1.5)) 0 0 rgba(236, 244, 238, 0.28);
   pointer-events: none;
 }
@@ -131,7 +150,7 @@
 
 .words {
   margin: 0;
-  max-width: 31em;
+  max-width: 25em;
   /* The apology's words: 28 page pixels, never under 18 px. */
   font-size: clamp(18px, 4.7vw, max(22px, calc(var(--u) * 28)));
   line-height: 1.5;
@@ -154,7 +173,7 @@
     linear-gradient(to bottom, #e06a33 0%, #cb4d16 10%, #c4460f 24%, #be430e 60%, #b23d0c 84%, #8e2f07 100%);
   box-shadow:
     inset 0 max(1.5px, calc(var(--u) * 2.5)) max(1px, calc(var(--u) * 2)) rgba(255, 176, 128, 0.7),
-    inset 0 max(-3px, calc(var(--u) * -5)) max(3px, calc(var(--u) * 5)) rgba(66, 20, 2, 0.5),
+    inset 0 min(-3px, calc(var(--u) * -5)) max(3px, calc(var(--u) * 5)) rgba(66, 20, 2, 0.5),
     0 0 0 calc(var(--ring) * 0.4) #121110,
     0 0 0 calc(var(--ring) * 0.86) #f1f1ef,
     0 0 0 var(--ring) rgba(128, 126, 121, 0.9),
@@ -201,8 +220,11 @@
     margin-top: 14px;
   }
 
+  .page::before {
+    --gap: 22px;
+  }
+
   .card {
-    margin-top: 22px;
     padding-top: 20px;
     padding-bottom: 22px;
   }
