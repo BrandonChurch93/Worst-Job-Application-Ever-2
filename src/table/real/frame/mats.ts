@@ -116,10 +116,10 @@ export const clearOf = (z: Zone, name = 'clear', base = 0.06): THREE.MeshPhysica
     room.call(m, shader, renderer)
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wjfTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wjfEdge = pow( wjfTurn, 1.6 );\nfloat wjfDark = smoothstep( 0.6, 0.78, wjfTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wjfTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.72 * wjfDark;\n' + (line ? 'vec3 wjfR = normalize( ( wjaViewInverse * vec4( reflect( - normalize( vViewPosition ), normalize( normal ) ), 0.0 ) ).xyz );\nfloat wjfLine = gl_FrontFacing ? exp( - ( wjfR.z - 0.84 ) * ( wjfR.z - 0.84 ) / 0.004 ) : 0.0;\ngl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * wjfLine * 0.45;\n' : 'float wjfLine = 0.0;\n') + 'gl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.62 + wjfDark * 0.22 + wjfLine * 0.4 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.45, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wjfTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wjfEdge = pow( wjfTurn, 1.6 );\nfloat wjfDark = smoothstep( 0.6, 0.78, wjfTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wjfTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.72 * wjfDark;\n' + (line ? 'vec3 wjfR = normalize( ( wjaViewInverse * vec4( reflect( - normalize( vViewPosition ), normalize( normal ) ), 0.0 ) ).xyz );\nfloat wjfLine = gl_FrontFacing ? exp( - ( wjfR.z - 0.84 ) * ( wjfR.z - 0.84 ) / 0.0009 ) * ( 0.2 + 0.8 * smoothstep( -0.25, 0.3, wjfR.x + 0.6 * wjfR.y ) ) : 0.0;\ngl_FragColor.rgb += vec3( 0.8, 0.86, 0.88 ) * wjfLine * 0.9;\n' : 'float wjfLine = 0.0;\n') + 'gl_FragColor.a = clamp( diffuseColor.a + wjfEdge * 0.62 + wjfDark * 0.22 + wjfLine * 0.4 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.45, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   }
-  m.customProgramCacheKey = () => (line ? 'wja-studio-frame-clear-line-2' : 'wja-studio-frame-clear')
+  m.customProgramCacheKey = () => (line ? 'wja-studio-frame-clear-line-3' : 'wja-studio-frame-clear')
   return own(lit(m, z), `frame.${name}.${z.id}`)
 }
 
