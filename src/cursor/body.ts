@@ -55,6 +55,13 @@ const smooth01 = (t: number): number => {
   return u * u * (3 - 2 * u)
 }
 const softSquash = (v: number): number => (v >= 1 ? 1 + soft(v - 1, LIMIT.long - 1) : 1 - soft(1 - v, 1 - LIMIT.short))
+// The spring's own number for a length as drawn: what softSquash turns back into `v`.
+const hard = (v: number, limit: number): number => limit * Math.atanh(Math.min(0.999, v / limit))
+const hardSquash = (v: number): number => (v >= 1 ? 1 + hard(v - 1, LIMIT.long - 1) : 1 - hard(1 - v, 1 - LIMIT.short))
+// In the glass: the arrow is 74 px from corner to corner at rest and the bore of the ball is 84, so it is never drawn longer than this there.
+export const GLASS = { long: 1.06 }
+// What a page may ask of the body directly: the lengths a press may set.
+export const PRESS = { short: 0.58, long: 1.3 }
 const softLean = (v: number): number => (v >= 0 ? soft(v, LIMIT.right) : -soft(-v, LIMIT.left))
 const GULP = { every: stepHz, steps: Math.round(0.6 * stepHz) }
 export const STRIPS = 15
@@ -86,6 +93,8 @@ export interface CursorPose {
   inBall: boolean
   // In the ball alone: where its face looks (a direction in the sheet's space, z out of the page) and how far back from the ball's middle it lies, in px. Null or absent: flat, face up.
   face?: Face | null
+  // In the ball alone: the middle of the outline as it is drawn stands on x, y whatever its lean, its turn and its length. Absent or false: the tip's own place does, as on a page.
+  centred?: boolean
   taken: boolean
   scale: number
   // The tail's lag behind the body, from its own acceleration.
@@ -159,12 +168,19 @@ interface State {
   shove: { x: number; y: number; t: number } | null
   from: { x: number; y: number }
   aimed: number | null
+  // What the page asks of the body over its springs: an angle struck and held, a length pressed and held, a reaction held at its phase, a swing that dies away.
+  struck: { turn: number; left: number } | null
+  pressed: { squash: number; left: number } | null
+  held: number
+  sway: { amount: number; hz: number; whole: number; t: number } | null
+  swing: number
+  centred: boolean
 }
 
 const fresh = (x: number, y: number): State => ({
   x, y, z: hover, vx: 0, vy: 0, vz: 0, squash: 1, squashV: 0, lean: 0, spin: 0, stride: 0, fast: 0, acting: 'plain', reaction: null, reactionLeft: 0,
   damage: [], windowLeft: 0, leanV: 0, spinV: 0, bend: 0, bendV: 0, foot: 1, drag: 0, ticks: 0, dir: 1, feel: freshFeel(), gulp: -1,
-  strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, face: null, air: null, ground: 0, aloft: false, taken: null, takenFor: 0, drive: null, handback: 1, shove: null, from: { x, y }, aimed: null
+  strips: null, seed: config.seed, shreds: 0, sprout: 0, sproutV: 0, strain: 0, grip: 0, shed: 0, shedHands: null, arms: false, hands: null, onPage: true, inBall: false, face: null, air: null, ground: 0, aloft: false, taken: null, takenFor: 0, drive: null, handback: 1, shove: null, from: { x, y }, aimed: null, struck: null, pressed: null, held: 0, sway: null, swing: 0, centred: false
 })
 
 export class CursorBody {
@@ -210,6 +226,7 @@ export class CursorBody {
   react(name: Reaction): void {
     this.s.reaction = name
     this.s.reactionLeft = REACTION_SECONDS[name]
+    this.s.held = 0
     this.s.dir = this.s.vx < -40 ? -1 : this.s.vx > 40 ? 1 : this.s.dir
     if (name === 'jump' && !this.s.aloft) this.s.vz = Math.max(this.s.vz, 420)
     if (name === 'startle' && !this.s.aloft) this.s.vz = Math.max(this.s.vz, 300)
@@ -324,9 +341,38 @@ export class CursorBody {
     s.hands = on ? (hands ?? s.hands) : null
   }
 
-  seal(inBall: boolean): void {
+  // centred: in the ball the middle of the outline as drawn is kept on the place the body is given, so a page puts it at the ball's middle and nothing else.
+  seal(inBall: boolean, centred = false): void {
     this.s.inBall = inBall
+    this.s.centred = inBall && centred
     if (!inBall) this.s.face = null
+  }
+
+  // The arrow's angle set at once, with no spring to build it, and held for `seconds`. Then the spring takes it back. `turn` is in the sense of `aim`.
+  strike(turn: number, seconds: number): void {
+    const s = this.s
+    s.struck = { turn, left: Math.max(dt, seconds) }
+    s.spin = turn - softLean(s.lean)
+    s.spinV = 0
+  }
+
+  // The body's length as drawn set at once and held for `seconds`: short for a squash on a contact or a brace, long for a reach. Then the spring takes it back.
+  press(squash: number, seconds: number): void {
+    const s = this.s
+    const to = Math.min(s.inBall ? GLASS.long : PRESS.long, Math.max(PRESS.short, squash))
+    s.pressed = { squash: to, left: Math.max(dt, seconds) }
+    s.squash = hardSquash(to)
+    s.squashV = 0
+  }
+
+  // The running reaction stops at the phase it has reached and stays there for `seconds`: a held pose. A new reaction ends the hold.
+  hold(seconds: number): void {
+    if (this.s.reaction !== null) this.s.held = Math.max(0, seconds)
+  }
+
+  // A swing of the arrow's angle, `amount` radians to each side at first, `hz` swings a second, that dies away to nothing over `seconds`.
+  wobble(amount: number, hz: number, seconds: number): void {
+    this.s.sway = { amount, hz, whole: Math.max(dt, seconds), t: 0 }
   }
 
   aim(turn: number | null): void {
@@ -480,8 +526,19 @@ export class CursorBody {
       s.strain = 0
       s.grip = 0
     }
+    if (s.inBall) stretch = Math.min(GLASS.long, stretch)
     s.squashV += (SPRING.squash.k * (stretch - s.squash) - SPRING.squash.c * s.squashV) * dt
     s.squash = Math.min(1.6, Math.max(0.35, s.squash + s.squashV * dt))
+    if (s.inBall && s.squash > GLASS.long) {
+      s.squash = GLASS.long
+      s.squashV = Math.min(0, s.squashV)
+    }
+    if (s.pressed) {
+      s.squash = hardSquash(Math.min(s.inBall ? GLASS.long : PRESS.long, s.pressed.squash))
+      s.squashV = 0
+      s.pressed.left -= dt
+      if (s.pressed.left <= dt / 2) s.pressed = null
+    }
     const free = !s.air && s.taken === null && !s.inBall
     const flying = free && s.reaction !== 'rear' && s.reaction !== 'dart' && s.reaction !== 'fume' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
     const aimed = free || s.inBall ? s.aimed : null
@@ -496,15 +553,32 @@ export class CursorBody {
     }
     s.leanV += (SPRING.lean.k * (Math.max(-0.9, Math.min(0.9, lean)) - s.lean) - SPRING.lean.c * s.leanV) * dt
     s.lean += s.leanV * dt
+    if (s.struck) {
+      s.spin = s.struck.turn - softLean(s.lean)
+      s.spinV = 0
+      s.struck.left -= dt
+      if (s.struck.left <= dt / 2) s.struck = null
+    }
+    s.swing = 0
+    if (s.sway) {
+      s.sway.t += dt
+      const u = s.sway.t / s.sway.whole
+      if (u >= 1) s.sway = null
+      else s.swing = s.sway.amount * (1 - u) * (1 - u) * Math.sin(2 * Math.PI * s.sway.hz * s.sway.t)
+    }
     s.bendV += (SPRING.bend.k * (s.feel.bend + (pose ? pose.bend : 0) - ax * 0.9 - ay * 0.35 - s.bend) - SPRING.bend.c * s.bendV) * dt
     s.bend = Math.max(-1, Math.min(1, s.bend + s.bendV * dt))
     const beat = s.ticks % GULP.every
     s.gulp = s.acting === 'nervous' && beat < GULP.steps ? beat / GULP.steps : -1
     if (s.gulp === 0) s.squashV -= 1.6
     if (s.reaction !== null) {
-      s.reactionLeft -= dt
-      if (s.reactionLeft <= 0) s.reaction = null
-    }
+      if (s.held > dt / 2) s.held -= dt
+      else {
+        s.held = 0
+        s.reactionLeft -= dt
+        if (s.reactionLeft <= 0) s.reaction = null
+      }
+    } else s.held = 0
     if (s.damage.length) {
       s.windowLeft -= dt
       for (const d of s.damage) {
@@ -540,9 +614,9 @@ export class CursorBody {
     const arms = s.arms || shed
     const hands = s.arms ? s.hands : s.shedHands
     return {
-      x: s.x, y: s.y, z: s.z, squash: softSquash(s.squash), lean: softLean(s.lean), spin: s.spin, acting: s.acting, reaction: s.reaction,
+      x: s.x, y: s.y, z: s.z, squash: softSquash(s.squash), lean: softLean(s.lean), spin: s.spin + s.swing, acting: s.acting, reaction: s.reaction,
       reactionAt: s.reaction ? 1 - s.reactionLeft / REACTION_SECONDS[s.reaction] : 0,
-      damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, taken: s.taken !== null, scale: 1,
+      damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, centred: s.inBall && s.centred, taken: s.taken !== null, scale: 1,
       bend: s.bend, feel: { ...s.feel }, gulp: s.gulp,
       wounds: s.damage.map((d) => ({ kind: d.kind, at: Math.min(1, Math.max(0, 1 - d.left / Math.max(d.whole, dt))), x: d.x, y: d.y })),
       strips: s.strips ? s.strips.map((p) => ({ x: p.x, y: p.y, z: p.z, rot: p.rot, tilt: p.tilt })) : null,
@@ -555,7 +629,7 @@ export class CursorBody {
   }
 
   load(state: unknown): void {
-    this.s = JSON.parse(JSON.stringify(state)) as State
+    this.s = { ...fresh(0, 0), ...(JSON.parse(JSON.stringify(state)) as State) }
   }
 }
 
