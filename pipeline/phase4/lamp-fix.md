@@ -97,6 +97,19 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 | 08:51 | lights | 3 | x6, Street head lamps 1.55 to 1.38, beacon light tighter: youre-fired, tier-street, last-save | 24, 17 |
 | 08:55 | lights | 4 | y1, after merge 29 (the frame's aluminium): table-wide, tier-office, tier-corporate, tier-street | 28, 17 |
 | 08:58 | lights | 1 | y2, riser light 0.06 to 0.015: table-wide | 29, 17 |
+| 09:03 | lights | 4 | z1, after merge 30 (the shared look): tier-office, tier-corporate, tier-street, reply-all | 33, 17 |
+| 09:05 | art | 3 | z2, print of all three floors lower (Office and Street taken back on the Builder's ruling): tier-office, tier-corporate, tier-street | 33, 20 |
+| 09:06 | lights | 1 | e3, Street head lamps off to see who lights the frame (taken back): tier-street | 34, 20 |
+| 09:07 | lights | 2 | c1, Corporate pools 0.55 to 0.9, head lamps 2.3 to 1.9: tier-corporate, lobby-doors | 36, 20 |
+| 09:09 | art | 2 | c2, Corporate print 0.85, head lamps 1.7: tier-corporate, lobby-doors | 36, 22 |
+| 09:10 | lights | 2 | c3, Corporate keeps 0.65 of far light from above, print 1.0: tier-corporate, lobby-doors | 38, 22 |
+| 09:11 | lights | 2 | c4, the same for the Street (0.75) with pools 0.68: tier-street, last-save | 40, 22 |
+| 09:15 | both | 4 | c5, what is pushed: tier-street, youre-fired (lights), tier-corporate, lobby-doors (art) | 42, 24 |
+
+Lights went 2 over the 40 of round 2 with the last looks before a push. Round 3 is counted from merge 31 (09:15 UTC).
+
+| Time UTC | Part | Stills | What | Running: lights, art |
+| --- | --- | --- | --- | --- |
 
 ## Decisions
 
@@ -132,6 +145,10 @@ Round 2 of the critics began at 08:15 UTC, so the count begins again here.
 30. `table-wide` stands at 0.86 to 0.88 of its approved mean and no lamp of mine moves it (x1 to x4: 0.88, 0.88, 0.88, 0.86): in the build's framing the machine fills less of the picture and the room round it is black. Left: the camera is not mine, and a general fill is ruled out.
 31. Street head lamps 1.55 to 1.38 and the beacon's own lamp nearer and tighter (`BEACON` z 14, reach 0.85, power 0.7), for `youre-fired`. MEASURED (`means2.mjs x6`): tier-street 1.00, youre-fired 1.17 (was 1.19), last-save 0.90. The roof and the right wall in `youre-fired` hardly changed, so most of what lights them is not the head lamps; left there.
 32. After merge 29 the frame is pale aluminium and every key rose with it. MEASURED (`means2.mjs y1`): table-wide 1.15, tier-corporate 1.11, tier-office 1.10, tier-street 1.14, with my floors as they were (the Street's floor box in `table-wide` 57.1 before, 57.6 after). The riser faces went from 59.0 and 63.5 to 92.7 and 110.2 against a floor of 57.6, so they are now the palest large shapes. My light on them is down from 0.06 to 0.015 (`SHADOW.riser`): 78.7 and 96.5. The rest is the frame's metal under the page's light, which is not mine; I do not darken the floors to make up for it.
+33. RULED by the Builder at 09:06 UTC: the floors are not darkened to make up for the pale frame, `SHADOW.riser` stays 0.015 (the riser faces go to `/root/frame_fixer` with a number), the head lamps are not lowered for the cup lids. MEASURED with the Street's head lamps off (e3): the frame's strips left and right of `tier-street` stand at 93.6 and 99.5 against 98.9 and 101.6 with them on, so the frame is not lit by my head lamps.
+34. The Corporate floor, the Builder's largest gap (a dark mirror with soft pools, mine flatter and more even). The floor now gives back 0.65 of a far lamp's light seen from above (`DEEP.corporate` 1 to 0.65, along the floor 0.35 to 0.45), its print is at 1.0 instead of 1.3 (`COAT` in `art/index.ts`), the pools of its lamps are 0.9 of their whole instead of 0.55 and the head lamps 1.7 instead of 2.3: the marble between the lamps is deep navy and each lane lamp and window has a soft pool of its own. MEASURED (`means2.mjs c5`): dark share of `tier-corporate` 34% against 36% approved (was 23% after merge 30), mean 1.08 (was 1.11), `lobby-doors` 1.03.
+35. The Street gives back 0.75 of far light seen from above (`DEEP.street`), with its pools at 0.6: `tier-street` 1.13, dark share 12% against 20% (the frame's strips are the pale part).
+36. `youre-fired` reads 1.63 of approved on main 7f82c9cc (c5): the camera now stands where the pale aluminium wall behind the firehouse fills the top third of the picture. Camera and wall are not mine.
 
 ## Needs
 
