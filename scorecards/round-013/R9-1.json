@@ -46,6 +46,30 @@
    "where": "all sheets, arrow size in frame",
    "what": "the arrow is small against the full UI, so its silhouette changes (tilts, leans) only read on close looking; poses rely on subtle rotation",
    "fix": "push the pose extremes further (bigger tilts, stronger squash/stretch) so they read at a glance at this size"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the dialing digit by digit and the form giving up are read; that on the return the dial whips the arrow in a full circle and flings it is not: the read has it back off tilted, deflated and a little dazed.",
+   "fix": "The whip as the event of the beat: the arrow carried the whole way round by the returning dial, seen on the dial through the turn, then thrown clear along the line of the throw and landing where the throw sends it.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the cranking to 100 percent is read as the arrow's own hard work; that the crank takes off by itself, spins to full and flattens the arrow on the way round is not in the read.",
+   "fix": "The moment the crank leaves the arrow's hold as its own beat: the arrow thrown off and left behind, the handle seen to speed up alone, then the handle striking the arrow and the arrow flat on the page.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the hesitation and the press on Continue are read; that the arrow lies flat as paper, peels itself up and refills is not: the read has it hover and lean back from the button.",
+   "fix": "The flat arrow held on the page long enough to be seen as flat, the peel from one corner, the refill as a swelling back to its body, each a held pose before it goes to Continue.",
+   "by": "builder"
   }
  ],
  "reads": [
