@@ -303,7 +303,8 @@ function shield(): THREE.Object3D {
   const gk = glassKit()
   const pane = mesh(geo('glass', () => walled(paneGeometry(slab, t, SHIELD_PANE)).translate(0, 0, t / 2)), gk.clear, false)
   pane.renderOrder = 2
-  leaf.add(pane, mesh(geo('glassRim', () => rimGeometry(slab, t, RIM.shield, 0).translate(0, 0, t / 2)), gk.rim, false))
+  const bead = mesh(geo('glassRim', () => rimGeometry(slab, t, RIM.shield, 0).translate(0, 0, t / 2)), gk.edge, false)
+  leaf.add(pane, bead)
   const cracks = new THREE.Group()
   const f = brokenGlass()
   const sheet = mesh(f.sheet, gk.crackSheet, false, false)
@@ -328,7 +329,7 @@ function shield(): THREE.Object3D {
     return g
   })
   root.add(leaf, pin, ...tubes, ...rods)
-  root.userData.s = { leaf, pin, tubes, rods, cracks }
+  root.userData.s = { leaf, pin, tubes, rods, cracks, bead }
   return root
 }
 
@@ -338,9 +339,10 @@ const vb = new THREE.Vector3()
 const vc = new THREE.Vector3()
 
 const TORN = 0.9
+const beadTone = new THREE.Color().setHex(CLEAR_GLASS.bead, THREE.SRGBColorSpace)
 
 function poseShield(o: THREE.Object3D, s: Shape): void {
-  const d = o.userData.s as { leaf: THREE.Group; pin: THREE.Mesh; tubes: THREE.Group[]; rods: THREE.Group[]; cracks: THREE.Group }
+  const d = o.userData.s as { leaf: THREE.Group; pin: THREE.Mesh; tubes: THREE.Group[]; rods: THREE.Group[]; cracks: THREE.Group; bead: THREE.Mesh }
   const k = s.v?.[0] ?? 1
   const flat = s.v?.[1] ?? 0
   const hurt = s.v?.[5] ?? 0
@@ -348,6 +350,9 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   glassKit().clear.color.copy(clearTone()).multiplyScalar(1 - (1 - CLEAR_GLASS.up) * stand)
   if (flat > 0) glassKit().clear.color.lerp(deepTone(), flat)
   glassKit().clear.opacity = mix(CLEAR_GLASS.through, CLEAR_GLASS.lying, flat)
+  glassKit().edge.color.setHex(CLEAR_GLASS.edge, THREE.SRGBColorSpace).lerp(beadTone, flat)
+  glassKit().edge.metalness = mix(CLEAR_GLASS.metal, 0.05, flat)
+  d.bead.castShadow = flat > TORN
   const swing = (1 - prog(k, 0.1, 0.6)) * (Math.PI / 2)
   const lean = stand * (0.62 + 0.07 * clamp(s.v?.[2] ?? 0))
   const half = SHIELD.w / 2

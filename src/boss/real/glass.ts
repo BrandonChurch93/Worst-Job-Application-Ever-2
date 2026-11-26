@@ -144,7 +144,7 @@ export function paneGeometry(s: Shape, thick: number, P: Pane): THREE.BufferGeom
   return g
 }
 
-export const RIM = { card: 7.4, shield: 5 }
+export const RIM = { card: 7.4, shield: 12 }
 
 // The polished edge of a pane: a round bead of the same glass that runs all the way round, stands a little above the face and takes the room's light as one bright line.
 export function rimGeometry(s: Shape, thick: number, wide: number, inset: number): THREE.BufferGeometry {
@@ -161,7 +161,7 @@ export function rimGeometry(s: Shape, thick: number, wide: number, inset: number
 }
 
 export const CARD_GLASS = { colour: 0x9fb1ae, through: 0.86, perPx: 2.4 }
-export const CLEAR_GLASS = { colour: 0x93a099, through: 0.8, up: 0.92, lying: 0.62, deep: 0x5f8376 }
+export const CLEAR_GLASS = { colour: 0x93a099, through: 0.8, up: 0.8, lying: 0.62, deep: 0x5f8376, edge: 0x727d7a, bead: 0xc9dad4, metal: 0.7 }
 
 let picture: THREE.Texture | null = null
 
@@ -178,6 +178,7 @@ export interface GlassKit {
   card: THREE.MeshPhysicalMaterial
   clear: THREE.MeshPhysicalMaterial
   rim: THREE.MeshPhysicalMaterial
+  edge: THREE.MeshPhysicalMaterial
   crackLight: THREE.MeshPhysicalMaterial
   crackDark: THREE.MeshPhysicalMaterial
   crackSheet: THREE.MeshPhysicalMaterial
@@ -203,6 +204,7 @@ export function glassKit(): GlassKit {
       normalMap: grain, normalScale: new THREE.Vector2(0.012, 0.012), transparent: true, opacity: CLEAR_GLASS.through
     })),
     rim: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xb7c4c0, THREE.SRGBColorSpace), roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, specularIntensity: 1 })),
+    edge: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(CLEAR_GLASS.edge, THREE.SRGBColorSpace), roughness: 0.26, metalness: CLEAR_GLASS.metal, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1 })),
     crackLight: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.96, 0.99, 0.97), emissive: new THREE.Color(0.22, 0.23, 0.22), roughness: 0.25, metalness: 0, specularIntensity: 1, vertexColors: true, transparent: true, opacity: 0.92, depthWrite: false })),
     crackDark: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.08, 0.1, 0.095), roughness: 0.6, metalness: 0, specularIntensity: 0.2, vertexColors: true, transparent: true, opacity: 0.5, depthWrite: false })),
     crackSheet: studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.9, 0.95, 0.93), roughness: 0.2, metalness: 0, specularIntensity: 1, vertexColors: true, transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide }))

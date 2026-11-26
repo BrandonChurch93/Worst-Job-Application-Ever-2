@@ -1,5 +1,5 @@
 import { config } from '../../config'
-import { collapseRig, drawRig, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
+import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
 import { clearSpot, newFight, SPARK_SECONDS, stepFight, threat, type Arena, type Fight } from '../../boss/fight'
 import { ARENA, COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawWeapons } from '../../boss/weapons'
@@ -57,7 +57,7 @@ const FILL_TOP = 3.4
 // The body takes a sixth argument for the shield's flash and the cap's soot once the modeller's body is in; until then it is ignored.
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
 const easeIn = (t: number): number => t * t
-const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863], fold: 0.78, out: 8, reach: 104, seated: 0.001, shut: -5 } as const
+const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863], fold: 0.78, out: 8, reach: 104, seated: 0.001 } as const
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
@@ -412,7 +412,7 @@ export function makePage(): PageLogic {
       const list: DrawList = []
       const [x0, x1, x2, x3] = STAGES.x
       const y = STAGES.y
-      drawSocket(list, x0, y, STAGES.seated, 'stage-0-socket', STAGES.shut)
+      drawRim(list, x0, y, STAGES.seated, 'stage-0-socket')
       drawRig(list, restRig(x0, y), 'stage-0')
       drawSocket(list, x1, y + 14, 1, 'stage-1-socket', undefined, 'dark')
       const loose = restRig(x1, y)
