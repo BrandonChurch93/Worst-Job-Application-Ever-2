@@ -1,0 +1,37 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: surface and detail, the ten keys whole",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the cursor arrow beside the red stamp",
+   "what": "it is a flat white shape with a dark outline, no thickness and no gloss, with soft fuzzy edges; its shadow is one soft blur that hugs the shape with no dark contact line and no separation, so it reads as a pasted sticker, not an object resting on the page",
+   "fix": "give the arrow a little body: a gloss highlight and a crisp edge, plus a shadow with a dark contact line at the surface that lightens as it falls off"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "the Performance Metrics glass card, and the 'glass at its edge' crop in set-A-04.png",
+   "what": "the pale green glass is perfectly smooth and even with nothing showing through; it reads as a flat opaque panel rather than glass",
+   "fix": "add a subtle reflection streak, a faint gradient, and a hint of the paper grain refracting through the bevel at the edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the crop tile labeled 'the arrow, its edge and its shadow'",
+   "what": "the tile contains no arrow; it shows the bottom of the LED display and the two dots of an ellipsis, so the crop misses its subject",
+   "fix": "re-cut the tile onto the arrow, or relabel it if the at-rest picture has no arrow"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "the orange 5 button at the end of the progress rail",
+   "what": "it butts against the rail with no socket and no gap and is flatter than the brushed-metal buttons beside it",
+   "fix": "seat it in a bezel with a dark gap all round and match the depth and gloss of the metal buttons"
+  }
+ ]
+}

@@ -1,0 +1,72 @@
+{
+ "critic": "R1",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the glass card, upper right, and its three readout wells",
+   "what": "it reads as an opaque, grey-green frosted slab that looks painted. The target is clear, pale glass: the paper shows through, the edges are bright and refractive, and the wells are raised clear blocks with light catching their rims",
+   "fix": "raise the transparency and drop the green tint so the page shows through. Add bright refractive edge highlights on the slab and on each well, and make the wells read as clear raised glass, not darker recessed panels"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the page surface, whole frame",
+   "what": "the page is greyer, cooler and darker than the target's warm off-white cream paper, so the whole image feels dimmer and colder",
+   "fix": "warm the page toward cream and lift its brightness to match the target, keeping the fine grain"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the arrow, right of the stamp",
+   "what": "the arrow has lost its dark outline. It also shows no visible crack lines and reads as a soft cream-grey blob, while the target has a crisp black edge round a white enamel face with cracks",
+   "fix": "restore the thin dark edge all round, keep the face bright white, and keep the crack lines visible on the flattened arrow"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the stamp, centre right",
+   "what": "the red body looks like glossy CG plastic, with hard specular streaks and a saturated, uniform red. The target is a softer, satin red with gentle highlights. The dark rubber pad at the base is also thinner and less defined",
+   "fix": "lower the gloss to a satin finish with soft, broad highlights, and deepen the dark rubber pad band at the base"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the stamp, its place on the page",
+   "what": "the stamp sits further left, close under the glass card's lower-left corner. In the target it sits centred below the card, with clear space between it and the card",
+   "fix": "move the stamp right and down so it sits centred under the glass card with clear space above it, as in the target"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the letter, left",
+   "what": "the sheet sits almost flat, with a hard edge and only a faint shadow. The target lifts it slightly, with a soft shadow along the right and bottom edges",
+   "fix": "add a soft, short shadow falling to the lower right of the sheet so it reads as paper resting on the page"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the shadows across all objects",
+   "what": "the shadows are shorter and tighter than the target's soft, long shadows cast to the lower right from upper-left light, most visibly under the stamp, the arrow and the large button",
+   "fix": "lengthen and soften the cast shadows toward the lower right, keeping the same upper-left light"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02-b.png",
+   "where": "the large button, Accept Rejection",
+   "what": "the orange is darker and more burnt than the target's bright, saturated orange, and the glossy highlight along the top is weaker",
+   "fix": "brighten the orange toward the target and strengthen the soft top highlight"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02-b.png",
+   "where": "the progress row, the metal buttons and track",
+   "what": "the chrome buttons and the track are darker and higher in contrast than the target's lighter brushed steel",
+   "fix": "lighten the metal toward a soft brushed silver with gentler reflections"
+  }
+ ]
+}
