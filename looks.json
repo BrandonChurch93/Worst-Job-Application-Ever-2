@@ -1,0 +1,35 @@
+{
+  "folder": "corporate-models",
+  "pushed": "2026-11-26T03:03:34.834Z",
+  "commit": "46236928284db19aa49e82c7cf6cf05acf95935b",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T03:02:48.920Z",
+      "by": "corporate-models",
+      "from": "out/work/compare/compare-lobby-doors.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T03:03:32.956Z",
+      "by": "corporate-models",
+      "from": "out/work/compare/compare-tier-corporate.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "lobby-doors beside approved: glass tower with rooms and ceiling lamps behind teal glass, steel band, brass portal, lobby behind the doors, rods off the carpet",
+      "time": "2026-11-26T03:03:33.463Z",
+      "by": "corporate-models",
+      "from": "out/work/looks/files/20261126030333-cmp-lobby-6.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "tier-corporate beside approved: HQ from above with a glazed roof over the lit hall and its floors of desks",
+      "time": "2026-11-26T03:03:33.720Z",
+      "by": "corporate-models",
+      "from": "out/work/looks/files/20261126030333-cmp-tier-6.jpg"
+    }
+  ]
+}
