@@ -1,28 +1,35 @@
 {
   "folder": "lamp-fix",
-  "pushed": "2026-11-26T07:37:48.341Z",
-  "commit": "ede2e252deef9a51f7251fa5db5fef9be5452e7d",
+  "pushed": "2026-11-26T07:53:26.946Z",
+  "commit": "0a2937d142f4b631b86f2322512ae79966ef048c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "reply-all, approved left, build right: head lamps of the Office first time, shadows fall to the lower left; this still has them at 1.75, the push has 1.6; floor still too light and green",
-      "time": "2026-11-26T07:16:56.944Z",
-      "by": "lamp-fix",
-      "from": "out/work/looks/files/20261126071656-k3-reply-all-pair.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "tier-street, approved left, build right: roads forward, no grid, short lamp reflections, warm lane lamps in dark seats",
-      "time": "2026-11-26T07:37:47.174Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-a3-tier-street.jpg"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "tier-office, approved left, build right: slate floor, fine grain, thinned clutter, flush frosted inserts",
       "time": "2026-11-26T07:37:47.401Z",
       "by": "lamp-fix",
       "from": "out/work/lights/look-a3-tier-office.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "reply-all, approved left, build right: head lamps from the upper right fall off across the tier, pools down, slate floor",
+      "time": "2026-11-26T07:53:25.554Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-p2-reply-all.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-corporate, approved left, build right: shadows of the models to the lower left, inserts with a warm seat",
+      "time": "2026-11-26T07:53:25.808Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-p2-tier-corporate.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "youre-fired, approved left, build right: the beacon's red now lies on the roof round it",
+      "time": "2026-11-26T07:53:26.046Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-p3-youre-fired.jpg"
     }
   ]
 }
