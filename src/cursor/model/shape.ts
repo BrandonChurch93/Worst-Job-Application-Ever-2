@@ -5,21 +5,21 @@ import { OUTLINE } from '../contract'
 export const AXIS: [number, number] = [0.409, 0.912]
 export const CENTRE: [number, number] = [4.2, 9.5]
 export const TOP = 2.3
-const ENAMEL_AT = 0.63
+const ENAMEL_AT = 0.9
 // The finish paints the band black where the distance it is handed is under this.
 const INK_AT = 0.56
 const BEAD = { in: 0.09, deep: 0.05 }
 // The rounded form stands this far outside the outline, so that its rounded corners still reach the outline's own: the arrow keeps its configured height.
 const GROW = 0.22
-const SHOULDER = 1.0
+const SHOULDER = 0.6
 const FOOT = { in: 0.34, tall: 0.62 }
 const CROWN = 1.76
-const DOME = 0.1
+const DOME = 0.05
 const RISE = TOP - CROWN - DOME
 const ROLL = 2.2
 const SOFT = 6
 const POWER = 5
-const BLEND = { from: 0.9, over: 0.5 }
+const BLEND = { from: 0.98, over: 0.5 }
 
 // The edge band's section: how far in from the outline, how high, in outline units. A full round from the foot, tucked under, out to the outline and over to the enamel.
 const BAND: [number, number][] = []
@@ -35,7 +35,8 @@ for (const turn of [12, 24, 36, 48, 60, 72, 82, 90]) {
 BAND.push([ENAMEL_AT - BEAD.in * 0.45, CROWN - BEAD.deep * 0.4], [ENAMEL_AT - 0.005, CROWN - BEAD.deep])
 // The distance handed to the finish for a distance in from the outline: the band ends where the finish expects it.
 const told = (t: number): number => (t < ENAMEL_AT ? (Math.max(0, t) * INK_AT) / ENAMEL_AT : t - ENAMEL_AT + INK_AT)
-const LIP = [0, 0.04, 0.1, 0.18, 0.27, 0.36, 0.48, 0.62, 0.78]
+const REACH = 1.41
+const LIP = [0, 0.04, 0.1, 0.18, 0.27, 0.36, 0.48, 0.62, 0.78].map((v) => (v * (REACH - ENAMEL_AT)) / 0.78)
 const NARROW = 1.47
 const RADII = [0.5, 0.62, 0.36, 0.9, 0.9, 0.36, 0.62]
 const ARC = 11

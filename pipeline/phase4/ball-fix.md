@@ -56,7 +56,7 @@ At 07:20 UTC the shadow did not show on the lit insert domes (`tier-office`). Se
 
 ## Point 4: the sheet `clear-ball`
 
-Mine: the third ball is pressed flat where it strikes. `pressAt` in `src/table/real/ball/index.ts` reads the bumper the ball stands in or has just struck (`bumper.<id>`, `v[0]` seconds since the hit) and a steel ball it overlaps, and flattens the shell on that side by at most 0.14 of the radius. No new field in a shape. Test: `tests/table-ball-press.test.ts`.
+Mine: the third ball is pressed flat where it strikes. `pressAt` in `src/table/real/ball/index.ts` reads the bumper the ball stands in or has just struck (`bumper.<id>`, `v[0]` seconds since the hit) and a steel ball it overlaps. First at most 0.14 of the radius; the Builder at 08:03 UTC: approved's third ball is about a fifth flatter on the bumper's side and 0.1 will not be seen, so it is now up to 0.3 (see the film issues below). Test: `tests/table-ball-press.test.ts`.
 
 The page's: the list sent to `/root/machine_runner` is under Decisions.
 
@@ -80,12 +80,30 @@ After these changes, MEASURED 07:46 UTC with `npm run counts -- --key table-wide
 
 Asset sets: MEASURED with `ls public/assets/table`: `art`, `frame`. There is no set for the ball or for the displays, 0 MB each. `assets-src/table/ball` holds two scripts, 6078 bytes.
 
-## Tuning looks, by part, critic round 1
+## The film issues of round 11 (from 08:03 UTC)
 
-- `clear-ball`: 38 of 40. 10 `review` (6 diagnosis, 4 report), 25 `draft` key stills (2 of them for the probe), 3 `draft` sheets.
-- `displays`: 1 of 40 (`table-wide` at `draft`, the main display beside approved: six amber numerals in a lit window, in place and in step with approved; nothing changed).
+Mine by the Builder's list: R4-3 issue 1 (the capture reads as a swap), R4-2 issue 2 (the ball vanishes on the way out), R4-3 issue 4 (the arrow outside the shell over the Coffee recess), R9-1 issue 6 and R9-2 issue 1 (no squash on any impact), R9-2 issue 2 (the shell closing).
 
-Time of one still on this VM, MEASURED by `assets-src/table/ball/diag.mjs` (it prints the seconds of each render): `draft` 17.7 to 41.6 s, `review` 56.3 to 84.0 s.
+- The shell opens and closes on `v[0]` of the ball's shape (`PARTING` in `index.ts`): the halves have swung apart by 0.7 of the way, they sink by 1.9 radii from 0.45 on, and they fade out between 0.7 and 1. MEASURED 08:12 UTC with `node assets-src/table/ball/diag.mjs --keys loader-page --variants asis,open25,open50,open75,open90 --tier draft --noref`: shut, two halves apart at 25 and 50 percent, nothing left at 75 and 90. `/root/machine_runner` sets `v[0]` over 0.27 s at the capture and over 0.2 s on the way out (its c56cd02a). Not yet seen in the film: its branch is not on main.
+- The squash (`PRESS`): up to 0.3, which is 0.85 thin along the hit with a flat face and 1.1 wide across. Two sources, both a function of the frame alone:
+  - the ball stands inside a bumper or a steel ball: 3 times the overlap (`pressAt`);
+  - the page tells of a hit on the shape: `v[3]` strength 0 to 1, `v[4]` the angle on the page from the ball's middle to the thing struck (0 page right, a quarter turn page down), `v[5]` seconds since. Squash = 0.3 x strength x exp(-since / 0.05) (`hitOf`). With nothing given the ball is round.
+- Ruling of `/root`, 08:23 UTC: no memory in `pose`. I had first let the ball know a hit by the turn of its own speed over three frames; that is taken out (4afe77c0), since a film rendered in pieces would draw the first frames of a piece differently. The slots went to `/root/machine_runner` at 08:25 UTC.
+- MEASURED 08:23 UTC with the memory version, `node assets-src/table/ball/hit.mjs --frame 5010 --count 6 --step 2 --size 220` (the bumper hit of `pinball.coffee`, every second frame, the ball at its real size): the ball is seen out of round in the three frames after the contact. The drawing is the same now, only the numbers come from the page. Not rendered with the new source: no page gives it yet.
+- R4-3 issue 4: STATED by `/root/machine_runner`: the arrow is placed at the ball's own middle each step, z included, and its reach is tested on every step. To be looked at when its branch is on main.
+- The bore: inner wall 42 px. At a full squash it is 35.7 px along the hit axis for one frame and 46 px across.
+
+## Tuning looks, by part
+
+Critic round 1 (to 08:15 UTC):
+- `clear-ball`: 45, which is 5 over the 40. 10 `review` (6 diagnosis, 4 report), 27 `draft` key stills, 3 `draft` sheets, and the 5 `draft` stills of the shell opening at 08:12 UTC, taken for the film issues after the count stood at 40. Reported to `/root`.
+- `displays`: 1 of 40 (`table-wide` at `draft`, the main display beside approved: six amber numerals in a lit window, in place; nothing changed).
+
+Critic round 2 (from 08:15 UTC):
+- `clear-ball`: 2 so far. One sheet of 12 film frames round the bumper hit (`npm run sheet -- --motion bumper --tier draft --every-frame`), one row of 8 film frames at the ball's real size (`hit.mjs`).
+- `displays`: 0.
+
+Time of one still on this VM, MEASURED by `assets-src/table/ball/diag.mjs` (it prints the seconds of each render): `draft` 17.7 to 47.6 s, `review` 56.3 to 84.0 s. One film frame at `draft` after the first: 16.6 to 17.4 s (`hit.mjs`).
 
 ## Decisions
 
@@ -98,4 +116,4 @@ Time of one still on this VM, MEASURED by `assets-src/table/ball/diag.mjs` (it p
 
 - Three equal panels with dark gutters between them, one ball state in each, in the order of the approved sheet: at rest by the bat, in flight, struck against the bumper.
 - The third ball: no `flattened` damage, the arrow thrown flat against the inside wall away from the bumper.
-- The ball in the third panel stands at `cup.r + 0.45` balls from the cup's centre. That overlaps the cup by 0.05 ball and my shell presses by 0.1 of its radius there. Nearer presses more, up to 0.14.
+- The ball in the third panel stands at `cup.r + 0.45` balls from the cup's centre. That overlaps the cup by 0.05 ball and my shell is fully pressed there (0.3). At `cup.r + 0.40` the flat face just touches the cup. The cup to the screen side of the ball, so the flat face is seen in profile.
