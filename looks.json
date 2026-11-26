@@ -1,35 +1,35 @@
 {
   "folder": "step2-slot",
-  "pushed": "2026-11-26T01:44:22.375Z",
-  "commit": "f340b44e197dca9c2f0dbe30880c361e3a6fc4a8",
+  "pushed": "2026-11-26T01:48:28.445Z",
+  "commit": "0ffd89c5f4fda16247ac623a86a9ac3863ec8f34",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:40:58.376Z",
-      "by": "step2-slot",
-      "from": "out/work/stills/key-step2-crank-hd-review.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:44:19.914Z",
-      "by": "step2-slot",
-      "from": "out/work/stills/sheet-machines-hd-review.png"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "Crank key at review tier on the branch as pushed (main's layout), approved above, build below: forged arm with an eye, smaller cap, lower glass pills, cream core in the lit ones",
       "time": "2026-11-26T01:44:20.874Z",
       "by": "step2-slot",
       "from": "out/work/looks/files/20261126014420-crank-0150.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "Machines sheet at review tier, approved above, build below: arm tapers from its eye, unlit glass keeps a body on the white page",
       "time": "2026-11-26T01:44:21.100Z",
       "by": "step2-slot",
       "from": "out/work/looks/files/20261126014421-machines-0150.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T01:46:46.011Z",
+      "by": "step2-slot",
+      "from": "out/work/stills/sheet-machines-hd-review.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Machines sheet at review tier, approved above, build below. Replaces machines-0150, whose caption was wrong: there the six unlit segments were under the page. Now all ten stand on it",
+      "time": "2026-11-26T01:48:27.218Z",
+      "by": "step2-slot",
+      "from": "out/work/looks/files/20261126014827-machines-0155.jpg"
     }
   ]
 }
