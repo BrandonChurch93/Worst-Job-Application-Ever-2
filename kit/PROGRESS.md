@@ -25,21 +25,21 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 112, 2026-11-26T19:34Z, Phase 5.
+Status 113, 2026-11-26T19:54Z, Phase 5.
 
-1. `out/stills/status/01-the-live-site-under-a-visitor-the-pinball-page-f.jpg`: Made by the packs agent in its dry run of round 20's pack for R5 on merge 40 (d498b5ed), looked at by the Builder. Drawn through the live site's own path at the high level, 960 by 540, with a bot as the visitor. The times are the visit's own clock.
-2. `out/stills/status/02-the-live-site-under-a-visitor-a-bolt-hits-the-ar.jpg`: Made by the packs agent in its dry run of round 20's pack for R4 on merge 40, looked at by the Builder. A fixed window round the arrow, one pixel for one pixel of the 960 px picture, 30 frames a second. On merge 41 the same bot is not hit by a bolt, so the round's pack shows another hit; see the text.
-3. `out/stills/status/03-what-a-visitor-can-have-on-screen-besides-the-pa.jpg`: Made by the packs agent in its dry run of round 20's pack for R8 on merge 40, looked at by the Builder. The same five crops are in the pack that R8 judged at 19:33Z.
+1. `out/stills/status/01-the-six-pages-of-the-live-site-as-round-20-s-jur.jpg`: Drawn by the packs agent through the live site's own path at the high level on round 20's commit e17eb5f8, 1400 by 788 each; put together and looked at by the Builder. Each of the 30 jurors saw one picture alone, with no word about where it came from.
+2. `out/stills/status/02-five-pages-at-rest-the-approved-image-left-the-l.jpg`: The right column is the jury's pictures of round 20. Rows 2 to 4 show what R8's two major points are about: step 2's empty menus and the bare lower page of steps 3 and 4 are in the approved images too. Step 4 and step 5 are shown at other beats than the approved images, as the captions say.
+3. `out/stills/status/03-preview-03-the-first-piece-in-step-5-decision-tw.jpg`: Drawn by a render agent from round 20's commit at the draft tier, 960 by 540; frames taken by the Builder from the delivered file. The first frame is the page turning in edge on; the last is the careers page after the turn back.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 201 at 2026-11-26T19:34:57Z, allowance: continuation 1
-time used in this phase: 1.87 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 1.87 h of 12.00 h allowed
-time used: 37.88 of 48.00 hours before the review
+clock: phase 5, tick 202 at 2026-11-26T19:54:41Z, allowance: continuation 1
+time used in this phase: 2.20 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 2.20 h of 12.00 h allowed
+time used: 38.21 of 48.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
@@ -1194,6 +1194,7 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-26T19:51Z, round 20, the packs built a second time and the keys. `site_packs_b` (a fresh sandbox, a clean checkout of e17eb5f8) reported at 19:48Z, STATED by it: engine hash 084c6e798d8e8fe9 and all six page hashes as expected; R8 in 94 s by the tool, R2 in 8 s. MEASURED here from its list of sha256 against the files the critic and the jurors saw (built by `site_packs` on another sandbox at 19:25Z to 19:27Z): all 40 files of the two packs are the same, the six judged stills among them. So the six stills are byte equal on two machines, and the two key files of the second build are the keys of the judged packs. They are in `scorecards/round-020/` as `KEY-R2.json` and `KEY-R8.json`, with each pack's plan as `PACK-R2.json` and `PACK-R8.json`. One fact read in the key: the sandbox drew with Chrome 159.0.8154.6; this machine, where the packs of rounds 7 to 19 were built, has 147.0.7727.15 (`tools/lib/browser.mjs` takes the browser it finds). A visitor's browser is neither by rule; it matters for the film's final render, where every piece must come from one browser, and is carried under "Open items". `site_packs` wrote again at 19:46Z that its machine does not answer; it was told at 19:46Z that its job is done.
 - 2026-11-26T19:51Z, round 20, the jury's card (`scorecards/round-020/R2-1.json`): R2 passes by the kit's rule, 0 of 30 (a) or (b) on the six judged pictures against 0 of 50 on the ten approved pictures of whole pages (votes reused from the cards of rounds 3, 7, 8, 9, 10 and 11); held against all 19 approved keys, 36 of 95, it would not pass. Said plainly in the card and here: 28 of the 30 jurors put the live pages in class (d), a web 3D demo, a mobile game or a low-budget app; the approved whole pages drew 24 (d) and 26 (c) of 50. One slip of mine, mended before anything was committed: the card's note first carried 23 and 27, written before I had counted. The script for this card is `rounds/jcard20b.py` in the scratch folder: the script of round 19 with two changes, so that it reads the controls of rounds 3 to 6 (whose cards name a control by a plain string) and keeps the key's `judged` field.
 - 2026-11-26T19:51Z, round 20, R8's five points held against the approved images (pictures: the six live pages beside `marketing-top`, `step2-rest`, `loader-page`, `decision`, `boss-fight` and `boss-down`, looked at by the Builder). Both major points ask the build to move away from an approved image and are declined under "Declined issues", by `kit/07-QUALITY-BAR.md`: the empty menus of step 2 (the approved `step2-rest.png` shows the three bars empty with a chevron, and `content/copy.json` has no word for a placeholder) and the bare lower page of steps 3 to 5 (the approved `loader-page.png` with its settled line on the seams, `boss-fight.png` and `boss-down.png` give those layouts; the same points were declined in rounds 1 and 2). The minor point on the perk cards repeats a point declined in round 1. The minor point on the arrow in the stills is not taken: the arrow is the hero and is always on the page. The minor point on the tube's lower end is an open item for the loader's owner. R8's score stays what the critic gave, 7, and R8 does not pass round 20. Both declined points go to Brandon in the status as his to overrule: they are about what he approved, not about how well it was built.
+- 2026-11-26T19:55Z, Status 110 delivered as a message with three picture files (the tool's own count: 113): the six live pages as round 20's jury saw them with each juror's answer, five pages at rest beside the approved images, and twelve frames of Preview 03's first delivered piece (the Decision page, from `draft3_renderer_6`, received 19:53Z, both sha256 sums as reported; engine hash 084c6e798d8e8fe9, six page hashes as expected; the piece's browser is Chrome 159.0.8154.6). Said plainly in it: the jury's card passes by the kit's rule while 28 of 30 jurors chose (d) for the live site against 24 of 50 for the approved pages; R8 at 7 is under the bar; R8's two major points are declined by the rule on approved images and are Brandon's to overrule. Gate at 19:55Z: G1 to G14 passed, G15 to G18 running.
 
 ## Notes from Brandon
 
