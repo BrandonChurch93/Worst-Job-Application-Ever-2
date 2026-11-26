@@ -1,35 +1,35 @@
 {
   "folder": "table-runner",
-  "pushed": "2026-11-26T06:04:03.183Z",
-  "commit": "63fde4c76112e03ccbce5b876eb63e706bc79d5c",
+  "pushed": "2026-11-26T06:25:49.526Z",
+  "commit": "bdaef0afb9bd29232557dad2c90a402e7bd2a4ab",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.firehouse",
-      "time": "2026-11-26T05:59:04.962Z",
-      "by": "table-runner",
-      "from": "out/work/compare/compare-rail-cam.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
-      "time": "2026-11-26T05:59:57.842Z",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, review tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
+      "time": "2026-11-26T06:25:32.641Z",
       "by": "table-runner",
       "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, cursor, shape:seg.street.firehouse.roof",
-      "time": "2026-11-26T06:01:49.139Z",
+      "file": "look-2.jpg",
+      "caption": "rail-cam review beside approved, the camera ahead of the ball looking back: firehouse and bank in the frame, tip up right (judged in round 12)",
+      "time": "2026-11-26T06:25:47.958Z",
       "by": "table-runner",
-      "from": "out/work/compare/compare-youre-fired.jpg"
+      "from": "out/work/report/table-runner-r11-rail-cam.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "lobby-doors review beside approved, the eye 1.8 balls over the floor: carpet and the ball's shadow in the picture (judged in round 12)",
+      "time": "2026-11-26T06:25:48.204Z",
+      "by": "table-runner",
+      "from": "out/work/report/table-runner-r11-lobby.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "rail-cam draft beside approved, round 11 look 6: aimed further ahead so the ball sits at 72% of the height as approved, lens less open so the police station reads",
-      "time": "2026-11-26T06:04:01.867Z",
+      "caption": "the foot of table-wide, draft: the apron card on the left slab as the kit says, the drain's plate in the middle",
+      "time": "2026-11-26T06:25:48.429Z",
       "by": "table-runner",
-      "from": "out/work/report/r11-rail-cam-look6.jpg"
+      "from": "out/work/report/r11-apron-left.jpg"
     }
   ]
 }
