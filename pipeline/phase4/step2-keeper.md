@@ -32,6 +32,7 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 18. The crank's beat looked at in seven frames (15.26 s to 19.1 s): the crank throws the cursor, it comes back angry with steam, the meter fills, the result line stands in the field, the tray shuts over the sunk crank, Continue turns orange. From 16.95 s the cursor is `exhausted`, which the cursor draws as a pale crumpled body; that look is the cursor's own.
 19. The dial's housing is darker and less polished (`housingDark` 0.72, `housingRough` 0.36): its upper left rim read white where the approved bezel is mid grey.
 20. The slot's beat looked at in six frames (9.3 s to 12.5 s): the knob is pulled under the bracket and springs back over it, the reels spin and settle on 07, 23, 1991, the result line stands in the field, the coins leave the mouth and the cursor flees them.
+21. The slot's frame is lighter (`SLOT_LOOK.frame.colour`), its brushing finer and fainter (the grain stretched to 1200 px along the band, strength 0.08, was 300 and 0.15: it read as a woven cloth), and its upward faces carry a slow painted gradient, lighter toward the key and darker away from it (`fanned`, `frame.fan`), as the approved frame is light on top and dark below. The legends under the glass stay at the shared ink's tone (about 50 where the approved legends read 12 to 24): the ink is the shell's.
 
 ## Looks counted (at most 40 a part)
 
@@ -40,7 +41,7 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 | `dial` | 15 |
 | `rows` | 4 |
 | `crank` | 8 |
-| `slot` | 9 |
+| `slot` | 15 |
 | `acting-step2` | 28 |
 
 The stills that `npm run measure` renders by itself are not counted.
