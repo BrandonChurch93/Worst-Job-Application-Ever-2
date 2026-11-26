@@ -16,6 +16,7 @@ const skipAfter = config.live.skipLinkAfterSeconds
 
 export const FLIP_SECONDS = 0.63
 const PIT_CLEAR = 8
+const SHOCK = 0.8
 const TURN_SHARP = 5
 const tapeSpeed = 120
 const REJECTED_SETTLE = 1.7
@@ -326,7 +327,7 @@ export function makePage(): PageLogic {
           s.flip[i] = next
           if (i === 0 && !s.took && p < 0.8 && next >= 0.8 && walking && inside(cards[0]!, tip)) {
             s.took = true
-            s.shock = 0.7
+            s.shock = SHOCK
             io.cursor.react('doubleTake')
           }
         }
