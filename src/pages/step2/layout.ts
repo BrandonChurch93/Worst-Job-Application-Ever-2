@@ -23,9 +23,9 @@ export const TRAY_GAP = 12
 export const TRAY_H = 250
 export const TRAY_R = 18
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 7, lean: 0.25, cove: 2, rimShade: 0.55, wallShade: 0.26, wallShadeTop: 0.12, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
-  floor: { soak: 0.2, hold: 0.2, reach: 22, bounce: 0.05, bounceReach: 16, base: 1, side: 0.8 },
-  soak: { soak: 0.62, hold: 1, reach: 15, bounce: 0.05, bounceReach: 20, base: 0.93, side: 0.8, cool: 0.14 } }
+export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 3.4, lean: 0.3, cove: 2, rimShade: 0.55, wallShade: 0.26, wallShadeTop: 0.12, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
+  floor: { soak: 0.2, hold: 0.2, reach: 22, bounce: 0.05, bounceReach: 16, base: 1.12, side: 0.8 },
+  soak: { soak: 0.62, hold: 1, reach: 15, bounce: 0.05, bounceReach: 20, base: 0.94, side: 0.8, cool: 0.14 } }
 export const COIN = { r: 13, wall: 14, clear: 0.3, fall: 2600, spring: 0.38, least: 150, hops: 2, rows: 2, roll: 150, pitch: 23, stack: 1.4 }
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
@@ -81,8 +81,8 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 73, hy: cy + 156, rest: -0.75, arm: 118, armW: 18, gripW: 80, gripH: 44, tip: 126, hold: 34, holdAside: 8, base: 110, hub: 44,
-  segW: 28, segH: 116, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 156 - 58
+  hx: FX + PAD + 73, hy: cy + 174, rest: -0.75, arm: 118, armW: 18, gripW: 80, gripH: 44, tip: 126, hold: 34, holdAside: 8, base: 110, hub: 44,
+  segW: 28, segH: 116, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 107
 }
 
 // The sheet of the machines: the page's header, and each machine under its label at the size the approved sheet shows it.
