@@ -365,7 +365,7 @@ function play(first: PlayMode): void {
     step: stepNow,
     setStep(step) {
       const to = Math.min(5, Math.max(0, Math.round(step)))
-      if (!app.code(liveFlow()[to]!.page)) return
+      if (!app.code(liveFlow()[to]!.page, () => api.setStep(to))) return
       base = to
       stage = makeStage()
       sound?.stop()
