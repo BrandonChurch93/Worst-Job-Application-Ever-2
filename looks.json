@@ -1,0 +1,35 @@
+{
+  "folder": "careers-fix",
+  "pushed": "2026-11-26T04:06:40.082Z",
+  "commit": "6075602ad6d09fbfd0979cb7467375ead05c8c54",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-marketing-top-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T04:02:31.184Z",
+      "by": "careers-fix",
+      "from": "out/work/stills/key-marketing-top-hd-review.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Point 1, glass: approved left, build right, cards 0 and 1 at native size",
+      "time": "2026-11-26T04:06:38.553Z",
+      "by": "careers-fix",
+      "from": "out/work/looks1/glass-cards.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Point 1, glass: the corner toward the light at 3 times, approved left, build right",
+      "time": "2026-11-26T04:06:38.775Z",
+      "by": "careers-fix",
+      "from": "out/work/looks1/glass-top-left-3x.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Point 1, glass: the far corner and its shadow at 3 times, approved left, build right",
+      "time": "2026-11-26T04:06:39.000Z",
+      "by": "careers-fix",
+      "from": "out/work/looks1/glass-far-corner-3x.png"
+    }
+  ]
+}
