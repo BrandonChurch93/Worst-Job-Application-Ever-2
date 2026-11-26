@@ -5,7 +5,8 @@ import { actingLook } from '../src/cursor/act/acting'
 import { damageLook } from '../src/cursor/act/damage'
 import type { CursorPose } from '../src/cursor/body'
 import { restLook, UNIT } from '../src/cursor/contract'
-import { Deform } from '../src/cursor/model/deform'
+import { middleOf } from '../src/cursor/fit'
+import { Deform, drawnStretch } from '../src/cursor/model/deform'
 import { CENTRE, TOP } from '../src/cursor/model/shape'
 import { pages } from '../src/pages'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
@@ -28,11 +29,12 @@ const reach = (c: CursorPose, time: number, ball: { x: number; y: number; z: num
   deform.set(look.body)
   deform.lean(turn)
   const q = new THREE.Quaternion()
-  const at = new THREE.Vector3(-CENTRE[0] * UNIT, CENTRE[1] * UNIT, 0)
+  const m = middleOf(drawnStretch(look.body.stretch, look.body.melt))
+  const at = c.centred ? new THREE.Vector3(-m.x * UNIT, m.y * UNIT, 0).applyAxisAngle(UP, turn) : new THREE.Vector3(-CENTRE[0] * UNIT, CENTRE[1] * UNIT, 0).applyAxisAngle(UP, -c.spin)
   if (c.face) {
     const n = new THREE.Vector3(c.face.x, c.face.y, c.face.z).normalize()
     q.setFromUnitVectors(UP, n)
-    at.applyAxisAngle(UP, -c.spin).applyQuaternion(q).addScaledVector(n, -c.face.back)
+    at.applyQuaternion(q).addScaledVector(n, -c.face.back)
   }
   at.x += c.x - ball.x * BALL
   at.y -= c.y - ball.y * BALL

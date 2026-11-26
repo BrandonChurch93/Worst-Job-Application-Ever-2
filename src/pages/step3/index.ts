@@ -90,10 +90,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -145,6 +145,7 @@ const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHORT: Record<Acting, Acting> = { plain: 'plain', confident: 'plain', nervous: 'nervous', shocked: 'scared', angry: 'nervous', scared: 'scared', proud: 'plain', exhausted: 'exhausted' }
+const LOADER = { land: [0.66, 0.1], away: [-0.5, 0.84, 0.32], go: [1.25, 0.2], short: 0.72, by: 1.8, low: 16, shut: [-0.6, 0.78], alarm: [0.55, 0.45, 0.8] }
 const HIT = { least: 0.3, hold: 0.1, short: 0.66, big: 0.9, sway: [0.3, 8, 0.4] }
 const BEATS = { brace: [0.4, 0.68], catch: [0.12, 0.64], shiver: [0.35, 0.12, 11, 1.3], kick: [0.12, 0.7], alarm: [0.3, 0.36, 1, -0.5], lip: [0.35, 0.72, -0.6], dizzy: [[0, 0.25, 3, 0.5], [0.5, 0.5, 3, 0.5], [1, 0.8, 2.5, 1.3]] }
 const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
@@ -565,6 +566,14 @@ export function makePage(): PageLogic {
       io.cursor.press(squash, seconds)
       s.snap = s.t
     }
+    if (s.took >= 0 && t >= s.took + SHELL.shut && t < T.tube && once('act.caught')) {
+      io.cursor.react('flinch')
+      io.cursor.hold(LOADER.alarm[1]!)
+      s.lay = [LOADER.alarm[0]!, t + LOADER.alarm[1]!]
+      io.cursor.strike(s.lay[0]!, LOADER.alarm[1]!)
+      io.cursor.press(LOADER.alarm[2]!, LOADER.alarm[1]!)
+      s.snap = t
+    }
     if (t >= T.plunger - BEATS.brace[0]! && t < T.plunger && once('act.brace')) snap(BEATS.brace[1]!, BEATS.brace[0]!)
     if (t >= T.eject - BEATS.alarm[1]! && t < T.eject && once('act.alarm')) {
       io.cursor.react('startle')
@@ -581,8 +590,12 @@ export function makePage(): PageLogic {
     s.phase = 'sealed'
     s.took = s.t
     io.cursor.take('ball')
-    io.cursor.seal(true)
+    io.cursor.seal(true, true)
     io.cursor.act('nervous')
+    s.lay = [LOADER.shut[0]!, s.t + SHELL.shut]
+    io.cursor.strike(s.lay[0]!, SHELL.shut)
+    io.cursor.press(LOADER.shut[1]!, SHELL.shut)
+    s.snap = s.t
     mc.hold(0, 'loader', 1e9)
     mc.balls[0]!.z = -0.4
     io.emit('ball-seal', port.x, port.y, true)
@@ -622,11 +635,8 @@ export function makePage(): PageLogic {
     const pose = io.cursor.pose()
     const len = Math.hypot(s.face[0]!, s.face[1]!, s.face[2]!) || 1
     const n = [s.face[0]! / len, s.face[1]! / len, s.face[2]! / len]
-    const now = [pose.lean, pose.spin, pose.squash]
-    const same = s.was[3] === 1 && (s.was[4] === 1) === held && s.snap !== s.t
-    const next = now.map((v, i) => (same && (i < 2 || Math.abs(v - s.was[i]!) < FACE.step) ? 2 * v - s.was[i]! : v))
     s.was = [pose.lean, pose.spin, pose.squash, 1, held ? 1 : 0]
-    const at = berth(pose, next[0]!, next[1]!, next[2]!, n, s.face[3]!, s.time)
+    const at = berth(pose, pose.lean, pose.spin, pose.squash, n, s.face[3]!, s.time, true)
     io.cursor.turn({ x: n[0]!, y: n[1]!, z: n[2]!, back: at.back })
     io.cursor.place(px(b.x) + at.x, px(b.y) - at.y, px(b.z) + at.z)
   }
@@ -650,10 +660,21 @@ export function makePage(): PageLogic {
         s.t = Math.min(s.t + dt, T.seal)
         const reach = 150 + Math.max(0, io.time - 1.2) * 420
         const d = Math.hypot(io.cursor.x - port.x, io.cursor.y - port.y)
+        if (io.time > 0.5 && io.cursor.pose().z < LOADER.low && once('act.land')) io.cursor.press(LOADER.land[0]!, LOADER.land[1]!)
         if (s.phase === 'wait' && d < reach && io.time >= T.arrive && !io.cursor.inAir) {
-          s.phase = 'pull'
-          s.pull = 0
-          io.cursor.take('ball')
+          if (s.seen < 0) {
+            const p = io.cursor.pose()
+            s.seen = s.t
+            io.cursor.react('recoil')
+            io.cursor.hold(LOADER.away[2]!)
+            io.cursor.strike(p.lean + p.spin + LOADER.away[0]!, LOADER.away[2]!)
+            io.cursor.press(LOADER.away[1]!, LOADER.away[2]!)
+          } else if (s.t >= s.seen + LOADER.away[2]!) {
+            s.phase = 'pull'
+            s.pull = 0
+            io.cursor.take('ball')
+            io.cursor.press(LOADER.go[0]!, LOADER.go[1]!)
+          }
         }
         if (s.phase === 'pull') {
           s.pull += dt
@@ -787,7 +808,8 @@ export function makePage(): PageLogic {
       const flipRight = held('R', time)
       if (time < T.streetBy) {
         const u = smooth(Math.min(1, Math.max(0, (time - TURN_HALF - 0.1) / 1.2)))
-        return { x: HANDOFF.x + (port.x - 40 - HANDOFF.x) * u, y: HANDOFF.y + (port.y + 30 - HANDOFF.y) * u, down: false, flipLeft, flipRight }
+        const v = time < LOADER.by ? Math.min(u, LOADER.short) : u
+        return { x: HANDOFF.x + (port.x - 40 - HANDOFF.x) * v, y: HANDOFF.y + (port.y + 30 - HANDOFF.y) * v, down: false, flipLeft, flipRight }
       }
       const u = smooth(Math.min(1, Math.max(0, (time - (T.press - 1.2)) / 0.9)))
       const from = { x: outlet.x, y: outlet.y - lastScroll }
