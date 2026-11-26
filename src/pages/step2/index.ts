@@ -26,7 +26,7 @@ const heights = config.scale.heights
 const G = 2400
 const TAU = Math.PI * 2
 const STOPS = [0.8, 1.15, 1.5]
-const REEL = { gather: 0.3, jolt: 0.2, die: 13, ring: 24, read: 0.366 }
+const REEL = { gather: 0.3, jolt: 0.2, die: 13, ring: 24, read: 0.388 }
 const LEVER = { rise: 0.1, give: 0.045, drive: 5.5, hold: 0.1, spring: 230, damp: 12, over: 0.075 }
 const REEL_PITCH = 62
 const COINS = 14
@@ -308,7 +308,7 @@ export function makePage(): PageLogic {
           io.emit('coins', c.x, c.y, true)
           mark(io, 'strike', 'scared')
         }
-        if (sl.cool === 0) {
+        if (sl.cool === 0 && s.mode === 'live') {
           c.react('flinch')
           sl.cool = 0.2
         }
