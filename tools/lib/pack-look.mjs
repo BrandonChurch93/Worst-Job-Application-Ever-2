@@ -267,6 +267,7 @@ const join = (a, b) => {
 const seen = (b, width, height) => b && b[0] < width - 8 && b[0] + b[2] > 8 && b[1] < height - 8 && b[1] + b[3] > 8
 
 // Where a named thing lies in a still of the build, in the picture's own pixels. Null when the still does not show it.
+// A name is one of the things below, a kind of the layout tree, `shape:ID` for one shape of the frame's draw list (`shape:ID+ID` for several taken together), or `part:NAME` for all the shapes of a part.
 export function finder(state, width, height) {
   const kind = (k, n = 0) => state.layout.filter((p) => p.kind === k)[n]
   const box = (k, n = 0) => (kind(k, n) ? kind(k, n).screen : null)
@@ -303,8 +304,17 @@ export function finder(state, width, height) {
       return all.length ? all.reduce(join) : null
     }
   }
+  const shapes = state.shapes || []
+  const shape = (ids) => {
+    const all = ids.split('+').map((id) => shapes.find((x) => x.id === id)).filter((s) => s && seen(s.screen, width, height)).map((s) => s.screen)
+    return all.length ? all.reduce(join) : null
+  }
+  const part = (id) => {
+    const all = shapes.filter((x) => x.part === id && x.kind !== 'anchor' && seen(x.screen, width, height)).map((x) => x.screen)
+    return all.length ? all.reduce(join) : null
+  }
   return (name) => {
-    const b = things[name] ? things[name]() : box(name)
+    const b = things[name] ? things[name]() : name.startsWith('shape:') ? shape(name.slice(6)) : name.startsWith('part:') ? part(name.slice(5)) : box(name)
     return seen(b, width, height) ? b : null
   }
 }
