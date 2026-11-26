@@ -8,7 +8,7 @@ import { CRANK } from '../layout'
 import { clamp01, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
-  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 9, pillRound: 2.4,
+  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 6.5, pillRound: 2.4,
   plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 3.2, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 1.05, gain: 1.15, second: 0.22, sharp: 4, axis: 2.5, capAxis: 2.2 },
@@ -47,7 +47,7 @@ function own(): NonNullable<typeof made> {
     const dark = smooth((p.depth - 2.4) / 0.8) * (1 - smooth((p.depth - 3.6) / 1.4))
     const gather = smooth(side) * smooth((p.depth - 3.2) / 1.5) * (1 - smooth((p.depth - 5.5) / 4))
     const hi = smooth((0.3 - side) / 0.9)
-    const k = 0.8 + 0.2 * line * hi - 0.3 * dark * (1 - 0.6 * smooth(side + 0.4)) - 0.34 * edge + 0.16 * gather
+    const k = 0.7 + 0.3 * line * hi - 0.26 * dark * (1 - 0.6 * smooth(side + 0.4)) - 0.3 * edge + 0.22 * gather
     const a = 0.3 + (0.2 + 0.6 * hi) * line + 0.5 * edge + 0.36 * dark + 0.3 * gather
     return [k * 0.965, k * 0.995, k * 0.985, a]
   })
@@ -56,7 +56,7 @@ function own(): NonNullable<typeof made> {
     const p = inPill(u, v)
     const t = Math.pow(smooth((p.depth - 2.5) / 8), 1.1) * (1 - 0.25 * smooth((Math.abs(p.y) - 26) / 18))
     const rim = smooth((p.depth - 0.4) / 0.8) * (1 - smooth((p.depth - 1.8) / 1.2))
-    return [1, 0.28 + 0.55 * t + 0.24 * rim, 0.02 + 0.5 * t * t + 0.08 * rim, 1]
+    return [1, 0.28 + 0.6 * t + 0.24 * rim, 0.02 + 0.72 * t * t + 0.08 * rim, 1]
   })
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
   const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.0, roughness: 0.4, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5 }))
