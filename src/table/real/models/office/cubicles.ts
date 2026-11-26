@@ -7,22 +7,22 @@ import { localBalls, type Zone } from '../../zone'
 import { coffeeFine, coffeeLit, coffeeScrews } from './coffee'
 import { boxOf, envelope, inboxScrews } from './inbox'
 import { hex, Kit, matsOf, meshOf, mix, rrect, screwGeometry, shade, SURF, type RGB, type V2, type V3 } from './kit'
-import { staplerFine, staplerScrews } from './staplers'
+import { staplerFine, staplerLit, staplerScrews } from './staplers'
 
 const C = {
-  slab: hex(0xa59c86),
-  carpet: hex(0x5d5a55),
-  fabric: [hex(0x9f9685), hex(0x968d7c), hex(0xa69d8c)] as RGB[],
-  frame: hex(0xa39b89),
-  cap: hex(0xd9d2c0),
+  slab: hex(0x6a6055),
+  carpet: hex(0x403a35),
+  fabric: [hex(0x6b6157), hex(0x61574e), hex(0x746a5e)] as RGB[],
+  frame: hex(0x574f46),
+  cap: hex(0x857b6e),
   kick: hex(0x55585c),
-  wood: hex(0xead7b2),
-  woodEdge: hex(0xa5855c),
+  wood: hex(0xb48a5a),
+  woodEdge: hex(0x73542f),
   steel: hex(0x7c8590),
   grey: hex(0x8b8f93),
   dark: hex(0x2b2c30),
-  screen: [0.055, 0.085, 0.145] as RGB,
-  pane: [0.25, 0.28, 0.31] as RGB,
+  screen: [0.01, 0.012, 0.018] as RGB,
+  pane: [0.03, 0.036, 0.046] as RGB,
   key: hex(0xd9d3c2),
   keyBed: hex(0xb9b3a2),
   base: hex(0x8d9298),
@@ -32,7 +32,7 @@ const C = {
   notes: [hex(0xe9d95a), hex(0x8fc7e8), hex(0xe58aa8), hex(0x9fd58a)] as RGB[],
   pin: hex(0xb3202a),
   mugs: [hex(0xe9e6dd), hex(0x27406b), hex(0x3f6b4c), hex(0xd9c24a), hex(0x2f7f86), hex(0x7b4a6e)] as RGB[],
-  seats: [hex(0x9a9282), hex(0x8f8878), hex(0xa39a88), hex(0x8a8474), hex(0x969080), hex(0x9e9684)] as RGB[],
+  seats: [hex(0x4a4640), hex(0x3d3a36), hex(0x55504a), hex(0x35383c), hex(0x4f463c), hex(0x443f3a)] as RGB[],
   lamps: [hex(0x2a2c30), hex(0x3d5a48), hex(0x2a2c30), hex(0x8a8d91), hex(0x27406b), hex(0x2a2c30)] as RGB[],
   cabinet: hex(0xc4c0ac),
   cooler: hex(0xdcdad2),
@@ -46,13 +46,13 @@ const C = {
   manila: hex(0xd3b073),
 }
 
-const WALL = { t: 7.6, h: 54, base: 10 }
+const WALL = { t: 7.6, h: 64, base: 10 }
 const SCREEN_LEAN = 0.5
-const LIFT = { wall: 0.22, cap: 0.6, inside: 0.7, paper: 0.9 }
+const LIFT = { wall: 0.18, cap: 0.3, inside: 0.42, paper: 0.6 }
 // The shade the partitions lay on the carpet at their feet: how far it reaches in, and how dark it is against the wall.
 // The cell the furniture of one cubicle is drawn for; in a larger or smaller cell it grows or shrinks with it, within these bounds.
 const FIT = { w: 82.2, d: 66, least: 0.85, most: 1.3 }
-const FOOT = { reach: 13, dark: 0.42 }
+const FOOT = { reach: 19, dark: 0.26 }
 
 function wall(k: Kit, a: V2, b: V2, r: Random): void {
   const len = Math.hypot(b[0] - a[0], b[1] - a[1])
@@ -161,7 +161,7 @@ function lamp(k: Kit, col: RGB): void {
 }
 
 function papers(k: Kit, r: Random): void {
-  const n = 2 + r.int(2)
+  const n = 1 + r.int(2)
   const lift = k.lift
   k.lift = LIFT.paper
   for (let i = 0; i < n; i++) k.box(r.range(-1.5, 1.5), r.range(-1, 1), i * 0.22, 9.5, 12.6, 0.25, shade(C.paper, r.range(0.93, 1)), SURF.paper, 0, r.range(-0.5, 0.5))
@@ -174,7 +174,7 @@ function cubicle(k: Kit, f: Kit, g: Kit, r: Random, n: number, w: number, d: num
   const y1 = d / 2 - WALL.t / 2 - 1
   const top = 26
   const desk: V2[] = [[x0, y1], [w / 2 - 8, y1], [w / 2 - 8, y1 - 20], [x0 + 21, y1 - 20], [x0 + 21, -d / 2 + 9], [x0, -d / 2 + 9]]
-  k.poly(desk, top, 2.4, C.woodEdge, SURF.laminate, 0.5, mix(C.wood, shade(C.wood, 0.9), r.next()))
+  k.poly(desk, top, 2.4, C.woodEdge, SURF.laminate, 0.5, shade(mix(C.wood, hex(0x8f6540), r.next()), r.range(0.82, 1.08)))
   k.box(w / 2 - 9.4, y1 - 10, 0, 1.6, 19, top, C.grey, SURF.satin, 0.4)
   k.box(x0 + 10.5, -d / 2 + 10, 0, 20, 1.6, top, C.grey, SURF.satin, 0.4)
   k.box((x0 + w / 2 - 8) / 2, y1 - 2.4, 9, w - 14, 1.2, 16, C.grey, SURF.satin, 0.3)
@@ -236,7 +236,7 @@ function cubicle(k: Kit, f: Kit, g: Kit, r: Random, n: number, w: number, d: num
   chair(k, C.seats[n % C.seats.length]!)
   k.back()
   f.lift = LIFT.paper
-  for (let i = 0; i < 2; i++) f.box(x0 + 30 + i * 22 + r.range(-3, 3), -d / 2 + 14 + r.range(-3, 6), 0.1 + i * 0.2, 9.5, 12.6, 0.25, shade(C.paper, r.range(0.94, 1)), SURF.paper, 0, r.range(0, 3))
+  if (n % 3 === 0) f.box(x0 + 30 + r.range(-3, 3), -d / 2 + 14 + r.range(-3, 6), 0.1, 9.5, 12.6, 0.25, shade(C.paper, r.range(0.8, 0.9)), SURF.paper, 0, r.range(0, 3))
   f.lift = LIFT.inside
 }
 
@@ -264,13 +264,9 @@ export function loose(tier = 1): Loose[] {
   const [sx, sy] = sling.b
   return [
     { id: 'sheet.a', kind: 'sheet', at: [sx + 0.78, sy + 2.02], r: 0.3, turn: 0.5 },
-    { id: 'sheet.b', kind: 'sheet', at: [sx + 0.42, sy + 2.3], r: 0.3, turn: -0.3 },
     { id: 'folder', kind: 'folder', at: [sx + 0.95, sy + 2.62], r: 0.31, turn: 1.25 },
-    { id: 'sheet.c', kind: 'sheet', at: [sx + 0.8, sy + 2.5], r: 0.3, turn: 1.0 },
     { id: 'envelope.a', kind: 'envelope', at: [sx + 0.2, sy + 2.78], r: 0.3, turn: 0.3 },
-    { id: 'envelope.b', kind: 'envelope', at: [sx + 0.56, sy + 2.9], r: 0.3, turn: -0.7 },
     { id: 'clip.a', kind: 'clip', at: [sx - 0.02, sy + 2.3], r: 0.1, turn: 0.9 },
-    { id: 'clip.b', kind: 'clip', at: [sx + 1.14, sy + 2.2], r: 0.1, turn: -0.4 },
     { id: 'band', kind: 'band', at: [sx + 1.1, sy + 3.0], r: 0.11, turn: 0 }
   ]
 }
@@ -281,11 +277,9 @@ export function spill(tier = 1): Loose[] {
   const [sx, sy] = sling.b
   return [
     { id: 'sheet.d', kind: 'sheet', at: [sx - 0.85, sy + 1.67], r: 0.3, turn: -0.45 },
-    { id: 'sheet.e', kind: 'sheet', at: [sx - 0.2, sy + 1.9], r: 0.3, turn: 0.8 },
     { id: 'folder.b', kind: 'folder', at: [sx - 0.07, sy + 2.47], r: 0.31, turn: -0.35 },
     { id: 'envelope.c', kind: 'envelope', at: [sx - 0.39, sy + 3.11], r: 0.3, turn: 0.55 },
-    { id: 'clip.c', kind: 'clip', at: [sx - 1.1, sy + 2.2], r: 0.1, turn: -0.6 },
-    { id: 'clip.d', kind: 'clip', at: [sx + 0.15, sy + 1.75], r: 0.1, turn: 0.3 }
+    { id: 'clip.c', kind: 'clip', at: [sx - 1.1, sy + 2.2], r: 0.1, turn: -0.6 }
   ]
 }
 
@@ -297,7 +291,7 @@ function scattered(k: Kit, f: Kit, z: Zone, r: Random): void {
     const zz = 0.7 + i * 0.45
     if (t.kind === 'sheet') {
       k.at(x, y, zz, t.turn, r.range(-0.02, 0.02), r.range(-0.02, 0.02))
-      k.box(0, 0, 0, 32, 44, 0.35, shade(C.paper, r.range(0.95, 1)), SURF.paper, 0.1)
+      k.box(0, 0, 0, 32, 44, 0.35, shade(C.paper, r.range(0.74, 0.82)), SURF.paper, 0.1)
       k.flat([[-12, 14, 0.4], [4, 14, 0.4], [4, 17, 0.4], [-12, 17, 0.4]], [0, 0, 1], shade(C.paper, 0.8), SURF.paper)
       for (let j = 0; j < 5; j++) k.flat([[-12, 8 - j * 5, 0.4], [12 - (j % 3) * 4, 8 - j * 5, 0.4], [12 - (j % 3) * 4, 9 - j * 5, 0.4], [-12, 9 - j * 5, 0.4]], [0, 0, 1], shade(C.paper, 0.86), SURF.paper)
       k.back()
@@ -599,7 +593,7 @@ export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   const clear = meshOf(c.take(lit.c).done(), mats.clear, 'office.clear')
   clear.renderOrder = 2
   root.add(clear)
-  const glow = meshOf(g.take(lit.g).done(), mats.glow, 'office.glow')
+  const glow = meshOf(g.take(lit.g).take(staplerLit(z)).done(), mats.glow, 'office.glow')
   glow.userData.lightGroup = 'office.windows'
   root.add(glow)
 

@@ -13,7 +13,7 @@ import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
 const CAP_CLEARS = 0.6
-const SAG_AT = 1.66
+const SAG_AT = 1.57
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -43,12 +43,13 @@ interface State {
 const heights = config.scale.heights
 const REALLY = [0.7, 1.5] as const
 const REALLY_TAKE = 0.04
-const HORROR = { start: UNFOLD.open + 0.04, scared: UNFOLD.legs[0] } as const
+const HORROR = { thrown: UNFOLD.crack + 0.06, start: UNFOLD.open + 0.04, scared: UNFOLD.legs[0] } as const
 const PRIDE = 1.2
 const SQUARE_UP = 0.8
 const BUCKLE = 1.1
-const KICK = { shot: 240, popup: 200, gap: 0.6 } as const
+const KICK = { shot: 150, popup: 200 } as const
 const RELIEF = { pose: 0.42, hold: 1.5 } as const
+const PRESS = { down: 0.03, deep: 12, hold: 0.06, back: 0.07, over: 0.4, ring: 0.5, stand: 16, shove: [7, -10], rock: -0.07 } as const
 const GAIN = { from: 25, glow: [1.0, 1.6] } as const
 const SEAT = 0.2
 const LIFT = 7
@@ -88,11 +89,19 @@ export function makePage(): PageLogic {
     if (s.stage === 'press' && s.from) return collapseRig(s.from, COLLAPSE_SECONDS)
     return null
   }
+  const sunk = (): number => {
+    if (s.pressed < 0) return 0
+    const lets = s.pressed - PRESS.hold
+    if (lets <= 0) return prog(s.pressed, 0, PRESS.down)
+    const u = lets / PRESS.back
+    if (u < 1) return 1 - u
+    return u < 1 + PRESS.ring ? -PRESS.over * Math.sin((Math.PI * (u - 1)) / PRESS.ring) : 0
+  }
   const groundAt = (x: number, y: number): number => {
     const p = { x, y }
     let z = inBox({ x: L.card.x, y: L.card.y, w: L.card.w, h: L.card.h - shut() }, p) ? heights.card : 0
     if ((s.stage === 'verify' || s.inSocket) && inBox(L.cap, p)) z = heights.button
-    if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = 16
+    if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = PRESS.stand - PRESS.deep * sunk()
     if (s.stage === 'fight' && s.fight) {
       for (const up of s.fight.popups) if (up.closing < 0 && up.t > 0.14 && inBox(L.weapons.popups[up.slot]!.box, p)) z = Math.max(z, heights.card)
       for (const slab of s.fight.slabs) {
@@ -171,9 +180,9 @@ export function makePage(): PageLogic {
         if (!s.cracked && s.t >= UNFOLD.crack) {
           s.cracked = true
           io.emit('button-crack', SOCKET.x, SOCKET.y, false)
-          io.cursor.react('recoil')
           io.cursor.act('shocked')
         }
+        if (s.t >= HORROR.thrown && s.t - dt < HORROR.thrown) io.cursor.react('recoil')
         if (!s.opened && s.t >= UNFOLD.open) {
           s.opened = true
           const at = bossPlaceAt(s.t)
@@ -205,8 +214,10 @@ export function makePage(): PageLogic {
           const dx = io.cursor.x - box.cx
           const dy = io.cursor.y - box.cy
           const d = Math.hypot(dx, dy) || 1
-          io.cursor.knock((dx / d) * KICK.popup, (dy / d) * KICK.popup)
-          io.cursor.react('cower')
+          if (f.popupCount === 1) {
+            io.cursor.knock((dx / d) * KICK.popup, (dy / d) * KICK.popup)
+            io.cursor.react('cower')
+          } else io.cursor.react('fume')
           s.busy = 0.7
         }
         if (io.pressed && !f.over) {
@@ -214,7 +225,6 @@ export function makePage(): PageLogic {
           const dy = f.y - io.cursor.y
           const d = Math.hypot(dx, dy) || 1
           io.cursor.knock((-dx / d) * KICK.shot, (-dy / d) * KICK.shot)
-          if (s.busy <= 0 && s.time - s.last > KICK.gap) io.cursor.react('flinch')
           s.last = s.time
         }
         const to = TIP_AT_REST - AIM_LIFT - Math.atan2(io.cursor.y - f.y, f.x - io.cursor.x)
@@ -237,8 +247,11 @@ export function makePage(): PageLogic {
         }
         if (f.phase === 2 && f.expired >= 0) {
           const was = f.expired - io.dt
-          if (f.expired >= REALLY_TAKE && was < REALLY_TAKE) io.cursor.react('doubleTake')
-          if (f.expired >= REALLY_TAKE && was < REALLY_TAKE) io.cursor.act('shocked')
+          if (f.expired >= REALLY_TAKE && was < REALLY_TAKE) {
+            io.cursor.react('rear')
+            io.cursor.act('shocked')
+          }
+          if (f.expired >= REALLY[0] && was < REALLY[0]) io.cursor.react('doubleTake')
           if (f.expired >= REALLY[1] && was < REALLY[1]) {
             io.cursor.act('angry')
             io.cursor.react('fume')
@@ -338,7 +351,8 @@ export function makePage(): PageLogic {
       }
       if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open', undefined, s.stage === 'unfold' && s.t < UNFOLD.lift + CAP_CLEARS ? 'dark' : 'ink')
       const rig = rigNow()
-      if (rig) drawRig(out, rig, 'boss', s.pressed >= 0 ? heights.keyTravel : 0)
+      const give = s.inSocket || s.stage !== 'press' ? 0 : sunk()
+      if (rig) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
       if (s.stage === 'fight' && s.fight) drawWeapons(out, s.fight, L.weapons)
       if (s.stage === 'collapse' && s.from) {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)

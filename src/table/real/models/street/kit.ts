@@ -213,95 +213,87 @@ export function roofDeck(g: Geo, x0: number, x1: number, y0: number, y1: number,
   for (const [ax, bx, ay, by] of [[x0 + 1, x1 - 1, y0 + 1, y0 + 3.5], [x0 + 1, x1 - 1, y1 - 3.5, y1 - 1], [x0 + 1, x0 + 3.5, y0 + 3.5, y1 - 3.5], [x1 - 3.5, x1 - 1, y0 + 3.5, y1 - 3.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], shade(felt, 0.74))
 }
 
-// A beacon: a chromed base on a roof, in the metal bucket. Its lens and its reflector are meshes of their own.
-// A roof light: a kerb, a lit pane seen from above and its glazing bars.
-export function roofLight(b: Buckets, x0: number, x1: number, y0: number, y1: number, deck: number, kerb: RGB, lum = 1): void {
+// A mounting plate: brushed steel with a turned edge, screwed down at its corners and along its long sides. What stands on it is a part of the machine.
+export function plate(b: Buckets, x0: number, x1: number, y0: number, y1: number, h: number): void {
+  b.metal.box(x0, x1, y0, y1, 0, h, TONE.steel, { bevel: 0.9 })
+  const n = Math.max(1, Math.round((x1 - x0) / 60))
+  for (let i = 0; i <= n; i++) {
+    const x = x0 + 3 + ((x1 - x0 - 6) * i) / n
+    b.screws.push([x, y0 + 2.6, h, 1.3], [x, y1 - 2.6, h, 1.3])
+  }
+}
+
+// A roof hatch: a low kerb with a plain felt lid and a handle. Nothing on a roof is lit.
+export function roofHatch(b: Buckets, x0: number, x1: number, y0: number, y1: number, deck: number, kerb: RGB): void {
   const top = deck + 4.5
-  b.paint.box(x0, x1, y0, y1, deck, top, kerb, { bevel: 0.6 })
-  const ax = x0 + 2.2
-  const bx = x1 - 2.2
-  const ay = y0 + 2.2
-  const by = y1 - 2.2
-  const lo: RGB = [lum * 0.3, lum * 0.19, lum * 0.08]
-  const core: RGB = [lum * 1.15, lum * 0.9, lum * 0.5]
-  const nx = 8
-  const ny = 6
-  const at = (i: number, j: number): RGB => {
-    const r = Math.hypot((i / nx - 0.5) * 1.5, (j / ny - 0.5) * 1.5)
-    return mix(lo, core, Math.exp(-r * r * 6))
-  }
-  for (let i = 0; i < nx; i++) {
-    for (let j = 0; j < ny; j++) {
-      const u0 = ax + ((bx - ax) * i) / nx
-      const u1 = ax + ((bx - ax) * (i + 1)) / nx
-      const v0 = ay + ((by - ay) * j) / ny
-      const v1 = ay + ((by - ay) * (j + 1)) / ny
-      b.glow.blend([[u0, v0, top + 0.1], [u1, v0, top + 0.1], [u1, v1, top + 0.1], [u0, v1, top + 0.1]], [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)], [0, 0, 1])
-    }
-  }
-  const n = Math.max(2, Math.round((bx - ax) / 9))
-  for (let k = 0; k <= n; k++) {
-    const x = ax + ((bx - ax) * k) / n
-    b.metal.box(x - 0.45, x + 0.45, ay - 0.6, by + 0.6, top + 0.1, top + 1, TONE.iron)
-  }
-  for (const y of [ay, (ay + by) / 2, by]) b.metal.box(ax - 0.6, bx + 0.6, y - 0.45, y + 0.45, top + 0.1, top + 1, TONE.iron)
+  b.paint.box(x0, x1, y0, y1, deck, top, kerb, { bevel: 0.6, kind: KIND.stucco })
+  b.paint.box(x0 + 2, x1 - 2, y0 + 2, y1 - 2, top, top + 1.2, TONE.roof, { bevel: 0.5, kind: KIND.tar })
+  b.metal.box((x0 + x1) / 2 - 5, (x0 + x1) / 2 + 5, y0 + 4, y0 + 5.4, top + 1.2, top + 2.2, TONE.steel, { under: true })
 }
 
 export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
-  b.metal.lathe([[0, 0], [31, 0], [31, 2.5], [28.6, 4.8], [28.6, 7.4], [26.4, 8.6], [0, 8.6]], x, y, 36, TONE.chrome, { base: z })
-  b.metal.lathe([[2.2, 8], [2.2, 14], [0, 14]], x, y, 10, TONE.steel, { base: z })
+  // A polished chrome ring: a foot flange, a rolled bead, a waist and a lip that takes the lens.
+  const ring: [number, number][] = [[0, 0], [32, 0], [32.6, 0.8], [32.6, 2.2], [31.6, 3.1]]
+  for (let i = 0; i <= 8; i++) {
+    const a = -Math.PI / 2 + (i / 8) * Math.PI
+    ring.push([29.4 + 2.2 * Math.cos(a), 5.3 + 2.2 * Math.sin(a)])
+  }
+  ring.push([28.2, 7.8], [27.6, 9.4], [26.2, 10], [0, 10])
+  b.metal.lathe(ring, x, y, 72, TONE.chrome, { base: z, soft: true })
   for (let i = 0; i < 4; i++) {
     const a = Math.PI / 4 + (i * Math.PI) / 2
-    b.screws.push([x + Math.cos(a) * 29.8, y + Math.sin(a) * 29.8, z + 2.5, 1.3])
+    b.screws.push([x + Math.cos(a) * 30.6, y + Math.sin(a) * 30.6, z + 3.1, 1.2])
   }
 }
 
-// The lens of a beacon, round the origin: a fluted dome.
+// The lens of a beacon, round the origin: a dome of clear ribbed plastic, smooth in its outline.
 export function beaconLens(): THREE.BufferGeometry {
   const g = new Geo()
   const c: RGB = [1, 1, 1]
-  const dome: [number, number][] = [[25, 0], [25, 6]]
+  const dome: [number, number][] = [[25.4, 0], [25.4, 2.2], [25, 3], [25, 9]]
+  for (let i = 1; i <= 22; i++) {
+    const a = (i / 22) * (Math.PI / 2)
+    dome.push([25 * Math.pow(Math.cos(a), 0.62), 9 + 26 * Math.sin(a)])
+  }
+  g.lathe(dome, 0, 0, 160, c, { base: 8, wave: [32, 0.026], lean: 2.8, soft: true })
+  return g.done()
+}
+
+// The lamp inside a beacon, round the origin: a small hot bulb in its holder. `at` moves it to its beacon.
+export function beaconBulb(g: Geo, at: V3 = [0, 0, 0]): Geo {
+  const m = g.mark()
+  const bulb: [number, number][] = [[0, 12], [2.6, 12.4], [3.4, 14]]
   for (let i = 0; i <= 10; i++) {
-    const a = (i / 10) * (Math.PI / 2)
-    dome.push([25 * Math.pow(Math.cos(a), 0.62), 12 + 23 * Math.sin(a)])
+    const a = -Math.PI / 2 + (i / 10) * Math.PI
+    bulb.push([6.2 * Math.cos(a), 21 + 6.2 * Math.sin(a)])
   }
-  g.lathe(dome, 0, 0, 84, c, { base: 8, wave: [28, 0.035] })
-  g.lathe([[26, 0], [26, 2], [25, 2]], 0, 0, 36, c, { base: 8 })
-  return g.done()
+  g.lathe(bulb, 0, 0, 20, [2.6, 2.6, 2.6], { soft: true })
+  g.lathe([[0, 9.6], [7.4, 9.6], [7.4, 11.6], [0, 12]], 0, 0, 20, [0.05, 0.05, 0.05])
+  g.place(m, at[0], at[1], at[2], 0)
+  return g
 }
 
-// The reflector inside a beacon, round the origin: a curved mirror seen only from its bright side, and the bulb.
-export function beaconReflector(): THREE.BufferGeometry {
-  const g = new Geo()
-  const c: RGB = [0.6, 0.6, 0.6]
-  const segs = 10
-  for (let i = 0; i < segs; i++) {
-    const a0 = -1.05 + (2.1 * i) / segs
-    const a1 = -1.05 + (2.1 * (i + 1)) / segs
-    const at = (a: number, zz: number): [V3, V3] => [[-15 * Math.cos(a) + 4.5, 15 * Math.sin(a), zz], [Math.cos(a), -Math.sin(a), 0]]
-    g.smooth([at(a0, 10), at(a1, 10), at(a1, 31), at(a0, 31)], c)
-  }
-  g.lathe([[0, 13], [3.6, 14.5], [4.8, 19], [3.6, 23.5], [0, 25]], 0, 0, 12, [2.4, 2.4, 2.4])
-  return g.done()
-}
-
-// A sign board under the words of a model: a cream face in a brass frame on two brackets, at the place, size and turn of the model's sign shape.
+// A sign board under the words of a model: a plate of cream enamel in a thin gilt bezel on two brackets, at the place, size and turn of the model's sign shape.
+export const ENAMEL = rgb(0xefe8d6)
+export const GILT = rgb(0xd0a445)
 export function board(b: Buckets, z: Zone, ctx: RealContext, id: string, roof: number): void {
   const s = ctx.byId.get(`sign.${id}`)
   if (!s) return
   const c = localOf(z, s)
   const turn = s.turnX ?? 0
-  const w = s.w / 2 + 9
-  const h = s.h / 2 + 5
+  const w = s.w / 2 + 10
+  const h = s.h / 2 + 5.5
   const m = new THREE.Matrix4().makeRotationX(turn).setPosition(c[0], c[1], c[2])
   const pm = b.paint.mark()
   const mm = b.metal.mark()
-  b.paint.box(-w, w, -h, h, -4.5, -1, TONE.board, { kind: KIND.gloss, under: true })
-  const f = 1.7
-  b.metal.box(-w - f, w + f, -h - f, -h, -5, 0.4, TONE.brass, { under: true, bevel: 0.7 })
-  b.metal.box(-w - f, w + f, h, h + f, -5, 0.4, TONE.brass, { under: true, bevel: 0.7 })
-  b.metal.box(-w - f, -w, -h, h, -5, 0.4, TONE.brass, { under: true, bevel: 0.7, skip: 'fb' })
-  b.metal.box(w, w + f, -h, h, -5, 0.4, TONE.brass, { under: true, bevel: 0.7, skip: 'fb' })
+  // The enamel face lies just under the words, flat, with a darker back and a fine rule inside its edge.
+  b.paint.box(-w, w, -h, h, -4.5, -1, shade(ENAMEL, 0.5), { kind: KIND.enamel, under: true, top: ENAMEL, topKind: KIND.enamel })
+  const f = 1.25
+  const up = 0.5
+  b.metal.box(-w - f, w + f, -h - f, -h, -5, up, GILT, { under: true, bevel: 0.5 })
+  b.metal.box(-w - f, w + f, h, h + f, -5, up, GILT, { under: true, bevel: 0.5 })
+  b.metal.box(-w - f, -w, -h, h, -5, up, GILT, { under: true, bevel: 0.5, skip: 'fb' })
+  b.metal.box(w, w + f, -h, h, -5, up, GILT, { under: true, bevel: 0.5, skip: 'fb' })
   b.paint.move(pm, m)
   b.metal.move(mm, m)
   const v = new THREE.Vector3()
@@ -311,10 +303,10 @@ export function board(b: Buckets, z: Zone, ctx: RealContext, id: string, roof: n
     b.metal.rod(foot, [v.x, v.y, v.z], 1.5, 8, TONE.steel)
     b.metal.box(foot[0] - 3.5, foot[0] + 3.5, foot[1] - 3.5, foot[1] + 3.5, roof, roof + 1.2, TONE.steel)
     b.screws.push([foot[0], foot[1] + 2.2, roof + 1.2, 1.1])
-    v.set(sx * (w + f * 0.5), -h - f * 0.5, 0.4).applyMatrix4(m)
-    b.screws.push([v.x, v.y, v.z, 1.0])
-    v.set(sx * (w + f * 0.5), h + f * 0.5, 0.4).applyMatrix4(m)
-    b.screws.push([v.x, v.y, v.z, 1.0])
+    v.set(sx * (w - 3.4), -h + 3.4, -1).applyMatrix4(m)
+    b.screws.push([v.x, v.y, v.z, 0.9])
+    v.set(sx * (w - 3.4), h - 3.4, -1).applyMatrix4(m)
+    b.screws.push([v.x, v.y, v.z, 0.9])
   }
 }
 

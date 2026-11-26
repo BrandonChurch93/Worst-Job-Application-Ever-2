@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
-import { table } from '../../../layout'
+import { BALL, table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { Geo, type RGB, type V3 } from './geo'
+import { Geo, roundedLoop, type RGB, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, screw, shade } from './mats'
 
 export const NOTE = { leaf: 42, wide: 26, paper: 34, hinge: 4, lean: 0.3, rest: 1.12 }
@@ -17,7 +17,9 @@ const UP = new THREE.Vector3(0, 0, 1)
 const ONE = new THREE.Vector3(1, 1, 1)
 const P = new THREE.Vector3()
 
-const PAPER: RGB = [0.98, 0.82, 0.25]
+const PAPER: RGB = [0.98, 0.82, 0.34]
+const GLOWS = 0.5
+const LOOSE = { right: 0.5, down: 0.52, turn: 0.33, lift: 0.9 }
 // The sheet: stuck along its top edge, hanging a hair off the steel, and one lower corner curled up off it.
 const paperAt = (u: number, v: number): V3 => {
   const hang = Math.max(0, v - 0.3) / 0.7
@@ -33,11 +35,11 @@ function leaf(): Geo {
     g.box(-w, w, -0.5, 0.5, 0, NOTE.leaf, TONE.steel, { bottom: true, along: [0, 0, 1] })
     g.box(-w, w, 0.5, 1.6, 0, 9, TONE.steelDark, { along: [1, 0, 0] })
     g.box(-w + 3, w - 3, 0.5, 1.2, NOTE.leaf - 9, NOTE.leaf - 3, TONE.steelDark)
-  })
+  }, 0)
   fin(g, FINISH.polished, () => {
     g.pipe([[-w - 2, 0, 0], [w + 2, 0, 0]], 2.4, 8, TONE.steel)
     for (const x of [-w + 4.5, w - 4.5]) moved(g, place(x, -0.5, 4.5, 0, Math.PI / 2), () => g.lathe([[2, 0], [1.7, 0.7], [0, 0.9]], 0, 0, 8, TONE.steelDark))
-  })
+  }, 0)
   const n = 7
   fin(g, FINISH.cloth, () => {
     for (let a = 0; a < n; a++) {
@@ -52,8 +54,38 @@ function leaf(): Geo {
         g.face(q.map((v): V3 => [v[0], v[1] + 0.12, v[2]]), [-nn[0], -nn[1], -nn[2]], [1, 0, 0], shade(PAPER, 0.62))
       }
     }
-  })
+  }, GLOWS)
   return g
+}
+
+// Where the notes stand, from the layout.
+const standing = (z: Zone): V3[] => table.targets.filter((t) => t.tier === z.tier && t.id.startsWith('corporate.note')).map((t) => localBalls(z, t.box[0] + t.box[2] / 2, t.box[1] + t.box[3] / 2))
+
+// One more note that has come off its leaf and lies on the floor past the end of the row, a corner curled. It glows as paper does under the lamps, so it is built into the tier's one glowing mesh.
+export function looseNote(G: Geo, z: Zone): void {
+  const at = standing(z)
+  const last = at[at.length - 1]
+  if (!last) return
+  const n = 6
+  const flatAt = (u: number, v: number): V3 => {
+    const corner = Math.max(0, u + v - 1.3) / 0.7
+    return [(u - 0.5) * NOTE.paper - corner * corner * 2.2, (0.5 - v) * NOTE.paper + corner * corner * 2.2, LOOSE.lift + corner * corner * 6]
+  }
+  moved(G, place(last[0] + LOOSE.right * BALL, last[1] - LOOSE.down * BALL, 0, LOOSE.turn), () => {
+    fin(G, FINISH.cloth, () => {
+      for (let a = 0; a < n; a++) {
+        for (let b = 0; b < n; b++) {
+          const q: [V3, V3, V3, V3] = [flatAt(a / n, b / n), flatAt((a + 1) / n, b / n), flatAt((a + 1) / n, (b + 1) / n), flatAt(a / n, (b + 1) / n)]
+          const e1: V3 = [q[1][0] - q[0][0], q[1][1] - q[0][1], q[1][2] - q[0][2]]
+          const e2: V3 = [q[3][0] - q[0][0], q[3][1] - q[0][1], q[3][2] - q[0][2]]
+          const nn: V3 = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]]
+          const up: V3 = nn[2] < 0 ? [-nn[0], -nn[1], -nn[2]] : nn
+          const lift = Math.max(0, (a + b + 1) / n - 1.3)
+          G.face(q, up, [1, 0, 0], shade(PAPER, (b === 0 ? 0.88 : 1) * (1 + lift * 0.3)))
+        }
+      }
+    }, GLOWS)
+  })
 }
 
 export function buildNotes(z: Zone, _ctx: RealContext): THREE.Object3D {
@@ -63,8 +95,9 @@ export function buildNotes(z: Zone, _ctx: RealContext): THREE.Object3D {
     const c = localBalls(z, t.box[0] + t.box[2] / 2, t.box[1] + t.box[3] / 2)
     return { id: `target.${t.id}`, p: [c[0], c[1], NOTE.hinge] as V3, turn: Math.atan2(-t.n[1], t.n[0]) + Math.PI / 2 }
   })
-  const leaves = new THREE.InstancedMesh(leaf().done(), mats.solid, Math.max(1, at.length))
+  const leaves = new THREE.InstancedMesh(leaf().done(), mats.glow, Math.max(1, at.length))
   leaves.name = `notes.leaves.${z.id}`
+  if (mats.group) leaves.userData.lightGroup = mats.group
   leaves.receiveShadow = true
   leaves.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
   leaves.count = at.length
@@ -84,6 +117,14 @@ export function buildNotes(z: Zone, _ctx: RealContext): THREE.Object3D {
       for (const x of [-w, w]) screw(F, x, 6.2, 1.6, 1.9, TONE.steel)
     })
   }
+  // The short soft shade each sheet lays on the floor, and the one the loose sheet lays.
+  const SHADE: RGB = [0.006, 0.008, 0.014]
+  fin(F, FINISH.cloth, () => {
+    const lie = NOTE.leaf * Math.sin(NOTE.rest)
+    for (const n of at) moved(F, place(n.p[0] + 3.5, n.p[1] - 3, 0, n.turn), () => F.slab(roundedLoop(-NOTE.paper / 2 - 1, NOTE.paper / 2 + 1, 3, lie + 2, 4, 3), 0.25, 0.4, SHADE, { sides: false }))
+    const last = at[at.length - 1]
+    if (last) moved(F, place(last.p[0] + LOOSE.right * BALL + 3, last.p[1] - LOOSE.down * BALL - 3, 0, LOOSE.turn), () => F.slab(roundedLoop(-NOTE.paper / 2, NOTE.paper / 2, -NOTE.paper / 2, NOTE.paper / 2, 4, 3), 0.25, 0.4, SHADE, { sides: false }))
+  })
   o.add(mesh(F, mats.solid, `notes.feet.${z.id}`, { fine: true }))
   const T = new Geo()
   const pencil = hex(0x4a4c52)
