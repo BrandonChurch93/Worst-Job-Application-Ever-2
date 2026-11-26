@@ -254,7 +254,11 @@ void main() {
   }
 }
 
-// Runs once, after the samples are averaged: the lens, glow, exposure, the tone curve, the grade, grain and dither.
+// The finished picture is sharpened once, as a camera does it: after the tone curve and the grade and before the grain and the dither, each pixel moves away from the mean of its eight neighbours by SHARPEN of the difference. It never goes further than SHARPEN_MOST past the lightest or the darkest of them, so no line of light or dark rings type or a lamp.
+const SHARPEN = 0.4
+const SHARPEN_MOST = 0.03
+
+// Runs once, after the samples are averaged: the lens, glow, exposure, the tone curve, the grade, the sharpening, grain and dither.
 export class Post {
   private quad = new Quad()
   private glow = new Glow()
@@ -266,6 +270,7 @@ export class Post {
       /* glsl */ `
 uniform sampler2D tMean;
 uniform sampler2D tGlow;
+uniform vec2 texel;
 uniform float glow;
 uniform float cover;
 uniform float exposure;
@@ -297,24 +302,46 @@ vec3 fromSrgb( vec3 c ) {
   vec3 hi = pow( ( max( c, vec3( 0.0 ) ) + 0.055 ) / 1.055, vec3( 2.4 ) );
   return mix( lo, hi, step( vec3( 0.04045 ), c ) );
 }
-void main() {
-  vec3 c = texture( tMean, vUv ).rgb;
+vec3 graded( vec2 uv ) {
+  vec3 c = texture( tMean, uv ).rgb;
   if ( encoded == 1 ) c = fromSrgb( c );
-  uvec2 px = uvec2( gl_FragCoord.xy );
-  if ( flat_ == 1 ) {
-    outColor = vec4( toSrgb( clamp( c, 0.0, 1.0 ) ), 1.0 );
-    return;
-  }
   c = max( c, vec3( 0.0 ) ) * exposure;
   if ( glow > 0.0 ) {
-    vec3 g = texture( tGlow, vUv ).rgb * glow;
+    vec3 g = texture( tGlow, uv ).rgb * glow;
     float behind = 1.0 - smoothstep( 1.25, 2.5, max( c.r, max( c.g, c.b ) ) );
     c = c * ( 1.0 - cover * behind * min( 1.0, max( g.r, max( g.g, g.b ) ) ) ) + g;
   }
   c = shoulder( c );
   float l = dot( c, vec3( 0.2126, 0.7152, 0.0722 ) );
-  c = max( mix( vec3( l ), c, saturation ), vec3( 0.0 ) );
+  return max( mix( vec3( l ), c, saturation ), vec3( 0.0 ) );
+}
+void main() {
+  uvec2 px = uvec2( gl_FragCoord.xy );
+  if ( flat_ == 1 ) {
+    vec3 c = texture( tMean, vUv ).rgb;
+    if ( encoded == 1 ) c = fromSrgb( c );
+    outColor = vec4( toSrgb( clamp( c, 0.0, 1.0 ) ), 1.0 );
+    return;
+  }
+  vec3 c = graded( vUv );
+  float l = dot( c, vec3( 0.2126, 0.7152, 0.0722 ) );
   vec3 d = toSrgb( c );
+  vec3 side = vec3( 0.0 );
+  vec3 corner = vec3( 0.0 );
+  vec3 least = d;
+  vec3 most = d;
+  for ( int i = 0; i < 4; i ++ ) {
+    vec2 a = i == 0 ? vec2( 1.0, 0.0 ) : i == 1 ? vec2( -1.0, 0.0 ) : i == 2 ? vec2( 0.0, 1.0 ) : vec2( 0.0, -1.0 );
+    vec2 b = i == 0 ? vec2( 1.0, 1.0 ) : i == 1 ? vec2( -1.0, 1.0 ) : i == 2 ? vec2( 1.0, -1.0 ) : vec2( -1.0, -1.0 );
+    vec3 s = toSrgb( graded( vUv + a * texel ) );
+    vec3 k = toSrgb( graded( vUv + b * texel ) );
+    side += s;
+    corner += k;
+    least = min( least, min( s, k ) );
+    most = max( most, max( s, k ) );
+  }
+  vec3 soft = ( d * 4.0 + side * 2.0 + corner ) / 16.0;
+  d = clamp( d + ( d - soft ) * ${SHARPEN.toFixed(3)}, least - ${SHARPEN_MOST.toFixed(3)}, most + ${SHARPEN_MOST.toFixed(3)} );
   float g = rnd( uvec3( px, uint( frame ) * 2U ) ) + rnd( uvec3( px, uint( frame ) * 2U + 1U ) ) - 1.0;
   d += g * grain * ( 0.35 + 0.65 * ( 1.0 - l ) );
   float t = rnd( uvec3( px, uint( frame ) + 7919U ) ) + rnd( uvec3( px, uint( frame ) + 104729U ) ) - 1.0;
@@ -324,6 +351,7 @@ void main() {
       {
         tMean: { value: null },
         tGlow: { value: null },
+        texel: { value: new THREE.Vector2() },
         glow: { value: 0 },
         cover: { value: 0 },
         exposure: { value: look.exposure },
@@ -346,6 +374,7 @@ void main() {
     u.glow!.value = spread ? look.glow.strength : 0
     u.cover!.value = look.glow.cover
     u.tMean!.value = mean
+    u.texel!.value.set(1 / size.x, 1 / size.y)
     u.frame!.value = frame
     u.flat_!.value = flat ? 1 : 0
     u.encoded!.value = encoded ? 1 : 0

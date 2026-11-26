@@ -167,6 +167,16 @@ Still short of approved: the well 6 px inside is 170,149,128 against 219,173,137
 
 Looks used on G: shell 3 (`step2-crank` at review twice, `step2-dial` at review).
 
+## The sharpening of the finished picture (the Builder's item, 12:15Z; `src/post/post.ts` lent for this alone)
+
+Built in `Post`, the pass that runs once after the samples are averaged. Where: after the lens, the glow, exposure, the tone curve and the grade, on the picture as shown (in display values), and before the grain and the dither, so the grain is not sharpened. How: each pixel moves away from the mean of itself and its eight neighbours (weights 4, 2, 1, a blur of about one pixel) by `SHARPEN` 0.4 of the difference, and is held within `SHARPEN_MOST` 0.03 (under 8 levels of 255) of the lightest and the darkest of those nine, so an edge is made steeper but cannot ring. One amount for every page and tier. The flat view is not sharpened. Cost: the tone curve is worked nine times a pixel in that one pass.
+
+MEASURED (`node out/work/look-finish/hfe.mjs <png>`, M3's own energy, review tier, the same commit with and without the change): step2-rest 14724.5 to 22440.8 (against approved 13600.3: ratio 1.083 to 1.650); tier-corporate 12042.2 to 17993.5 (against approved 21296.8: ratio 0.565 to 0.845).
+
+Seen at native size and at four times (`out/work/look-finish/s1/S-zoom.png`): no light or dark line round the type on the page, round the lamps of the corporate tier or round its sign. The paper's grain reads stronger on the page: with the sharpening step2-rest carries 1.65 times approved's fine detail.
+
+MEASURED with the sharpening (`npm run -s measure -- --unit <unit> --only M2,M3,M4 --tier review`): step2 M2 0, M3 1.6038, M4 4.62; marketing M2 0.0001, M3 1.2507, M4 4.62; decision M2 0, M3 1.3979, M4 4.62; boss M3 1.5085, M4 4.62 and M2 RED at 0.0254 against 0.02 on the sheet `boss-stages`. That red is not from the sharpening and not from this branch: the same command on origin/main at 32dd68f8 in a second worktree gives the same 0.0254 of the same 91790 pixels, and my whole measure of boss before the sharpening gave it too. At the start of my work (11:16Z) boss M2 was 0.0089.
+
 ## E. The progress row: measured, not built
 
 MEASURED (`prof.cjs <png> 600 150 300 26` on step2-rest; the same on decision and marketing-top by rows darker than 200): the header rule is as thick in the build as in approved (step2-rest: 9 rows against 10; marketing-top: 6 against 5). Its body matches (162 to 173 against 151 to 169). What differs is the dark line along its lower edge: one hard row at 59 to 64 in the build, three soft rows at 86 to 122 in approved. One try: the rule in the satin rail metal (`railSatin`). The body went up to 204 to 211 and the top to 240, both away from approved, and the dark row stayed at 57, so it was taken back. The dark row is the shadow at the rule's foot, not its metal; changing it means changing the shadow of every page, which I did not do at this hour. The buttons, the numerals, the puck and the empty seat of the boss page were not looked at.
