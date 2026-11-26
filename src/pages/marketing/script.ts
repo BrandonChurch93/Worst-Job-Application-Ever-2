@@ -5,6 +5,7 @@ export interface Marks {
   start: { x: number; y: number }
   corner: { x: number; y: number }
   cards: { x: number; y: number }[]
+  round: { x: number; y: number }
   lane: { x: number; y: number }
   medal: { x: number; y: number }
   stand: { x: number; y: number }
@@ -25,8 +26,11 @@ export const TOUCH = { poke: { x: -6, y: -28 }, back: { x: 44, y: 8 }, take: { x
 export const VISITS = [
   { plant: 1.92, poke: 2.02, back: 2.14, take: 2.6, till: 3.44, home: 3.58, leave: 3.98 },
   { plant: 4.76, poke: 4.86, back: 4.98, take: 0, till: 5.6, home: 5.72, leave: 6.08 },
-  { plant: 6.86, poke: 6.96, back: 7.08, take: 0, till: 7.7, home: 7.82, leave: 8.9 }
+  { plant: 6.86, poke: 6.96, back: 7.08, take: 0, till: 7.7, home: 7.82, leave: 8.86 }
 ]
+
+// From under the third card it goes round the card, never over it: a step aside to the page's right margin, up the margin to `round`, along above the cards to `lane`.
+export const ROUND = { aside: 9.06, up: 9.34, lane: 9.72, off: 9.8 }
 
 export function path(m: Marks): Key[] {
   const T = TOUCH
@@ -43,8 +47,8 @@ export function path(m: Marks): Key[] {
     } else keys.push({ t: v.till, ...back })
     keys.push({ t: v.home, x: p.x, y: p.y }, { t: v.leave, x: p.x, y: p.y })
   })
-  keys.push({ t: 9.55, ...m.lane, e: 'line' }, { t: 9.74, ...m.lane })
-  keys.push({ t: 10.26, x: m.stand.x - T.over, y: m.stand.y, e: 'line' }, { t: 10.4, ...m.stand }, { t: 11.38, ...m.stand })
+  keys.push({ t: ROUND.aside, x: m.round.x, y: m.cards[2]!.y }, { t: ROUND.up, ...m.round, e: 'line' }, { t: ROUND.lane, ...m.lane, e: 'line' }, { t: ROUND.off, ...m.lane })
+  keys.push({ t: 10.3, x: m.stand.x - T.over, y: m.stand.y, e: 'line' }, { t: 10.44, ...m.stand }, { t: 11.38, ...m.stand })
   keys.push({ t: 11.42, ...m.perch }, { t: PRESS_AT - 0.02, ...m.perch }, { t: PRESS_AT, ...m.press })
   return keys
 }
