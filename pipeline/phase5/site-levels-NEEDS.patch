@@ -1,0 +1,92 @@
+diff --git a/src/boss/real/transform.ts b/src/boss/real/transform.ts
+index 6b96662c..8abe8e51 100644
+--- a/src/boss/real/transform.ts
++++ b/src/boss/real/transform.ts
+@@ -263,6 +263,7 @@ function rim(): THREE.Object3D {
+   chips.castShadow = true
+   chips.receiveShadow = true
+   chips.frustumCulled = false
++  chips.userData.small = 'each'
+   root.add(chips)
+   root.userData.r = { cracks, chips, places: chipPlaces(), last: -1 }
+   return root
+diff --git a/src/cursor/model/effects.ts b/src/cursor/model/effects.ts
+index 12fc6e6d..0cc1e81c 100644
+--- a/src/cursor/model/effects.ts
++++ b/src/cursor/model/effects.ts
+@@ -196,6 +196,7 @@ class Effects implements EffectsModel {
+     this.puffs = new THREE.InstancedMesh(ball, cloud, PUFFS)
+     this.puffs.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
+     for (const mesh of [this.drops, this.puffs]) {
++      mesh.userData.small = 'count'
+       mesh.frustumCulled = false
+       mesh.castShadow = mesh === this.drops
+       mesh.receiveShadow = false
+diff --git a/src/pages/step1/real/turrets.ts b/src/pages/step1/real/turrets.ts
+index 48743b66..6bd69a3f 100644
+--- a/src/pages/step1/real/turrets.ts
++++ b/src/pages/step1/real/turrets.ts
+@@ -204,6 +204,7 @@ function makeTurret(s: Shape): THREE.Object3D {
+   barrel.add(halo)
+   const sparks = overlay(new THREE.InstancedMesh(f.orb, chargeMaterial, TURRET_LOOK.sparks), 1) as THREE.InstancedMesh
+   sparks.frustumCulled = false
++  sparks.userData.small = 'each'
+   barrel.add(sparks)
+   const flashMaterial = f.flashMaterial.clone()
+   const flash = overlay(new THREE.Mesh(f.quad, flashMaterial), 2)
+@@ -425,6 +426,7 @@ function makeScorch(s: Shape): THREE.Object3D {
+   const sparkMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.chargeHigh), toneMapped: false })
+   const sparks = overlay(new THREE.InstancedMesh(f.orb, sparkMaterial, SCORCH.sparks), 20) as THREE.InstancedMesh
+   sparks.frustumCulled = false
++  sparks.userData.small = 'each'
+   root.add(sparks)
+   const flareMaterial = f.flashMaterial.clone()
+   const flare = overlay(new THREE.Mesh(f.quad, flareMaterial), 30)
+diff --git a/src/pages/step2/real/slot.ts b/src/pages/step2/real/slot.ts
+index 900f6fa2..83c5b9fa 100644
+--- a/src/pages/step2/real/slot.ts
++++ b/src/pages/step2/real/slot.ts
+@@ -455,6 +455,7 @@ function payout(): THREE.Group {
+   coins.receiveShadow = true
+   coins.frustumCulled = false
+   coins.count = 0
++  coins.userData.small = 'count'
+   const P = L.pay
+   bedMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(P.bed), roughness: P.rough, metalness: 0.5, name: 'slot-pay-bed' }))
+   const at = (inset: number, z: number, out: number, up: number): LoftRing => ({ o: roundedRect(SLOT.payW - inset * 2, SLOT.payH - inset * 2, Math.max(0.8, P.r - inset), 10), z, out, up })
+diff --git a/src/pages/step4/real/boss-weapons.ts b/src/pages/step4/real/boss-weapons.ts
+index bc59dac3..7039ebfe 100644
+--- a/src/pages/step4/real/boss-weapons.ts
++++ b/src/pages/step4/real/boss-weapons.ts
+@@ -321,6 +321,7 @@ function makeSpark(): THREE.Object3D {
+   const flecks = overlay(new THREE.Mesh(needles(), k.fleckMaterial), 6)
+   flecks.name = 'flecks'
+   flecks.frustumCulled = false
++  flecks.userData.small = FLECKS
+   flecks.position.z = 3
+   root.add(flecks)
+   return root
+diff --git a/src/pages/step5/real/stamp.ts b/src/pages/step5/real/stamp.ts
+index eb5ab961..a07e73ff 100644
+--- a/src/pages/step5/real/stamp.ts
++++ b/src/pages/step5/real/stamp.ts
+@@ -247,6 +247,7 @@ function dustOf(): THREE.Mesh {
+   mesh.frustumCulled = false
+   mesh.castShadow = false
+   mesh.userData.motes = list
++  mesh.userData.small = list.length
+   return mesh
+ }
+ 
+diff --git a/src/table/real/ball/index.ts b/src/table/real/ball/index.ts
+index 914ead81..58a0c244 100644
+--- a/src/table/real/ball/index.ts
++++ b/src/table/real/ball/index.ts
+@@ -307,6 +307,7 @@ function build(s: Shape): THREE.Group {
+   const sweat = new THREE.InstancedMesh(k.drop.clone(), mat(dropFragment, dropVertex, THREE.DoubleSide), DROPS)
+   sweat.name = 'ball.sweat'
+   sweat.userData.fine = true
++  sweat.userData.small = 'each'
+   const seeds = new Float32Array(DROPS)
+   const m4 = new THREE.Matrix4()
+   const q = new THREE.Quaternion()

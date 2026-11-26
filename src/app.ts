@@ -21,6 +21,7 @@ import { layoutProblems } from './shell/layout'
 import { FONTS } from './shell/metrics'
 import { loadFont } from './shell/type'
 import type { QualityId } from './core/quality'
+import { SmallThings } from './core/levelSmall'
 import { homePose, project, toWorld } from './stage/camera'
 import { panelPlan, type PanelPlan } from './stage/panels'
 import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, TURN_HALF, type Frame } from './stage/stage'
@@ -56,6 +57,7 @@ export class App {
   private marks: ViewEvent[] = []
   private level: QualityId | null = null
   private hidFine = false
+  private small = new SmallThings()
   readonly view = new PageView()
   readonly rig = new LightRig()
   readonly camera = new THREE.PerspectiveCamera()
@@ -246,6 +248,7 @@ export class App {
   put(frame: Frame, page: { width: number; height: number }, pose: CameraPose, size?: { width: number; height: number }): void {
     this.view.apply(frame, size ?? { width: page.width, height: page.height })
     this.fine()
+    this.small.apply(this.view.scene, this.engine.levelPlan?.particles ?? 1, config.seed)
     this.shown = { frame, page: 'layout' in page ? (page as PageLogic) : null, pose }
     const cy = pose.target[1]
     this.view.focus = -cy
@@ -261,6 +264,7 @@ export class App {
   setLevel(level: QualityId | null): void {
     this.level = level
     this.rig.setLevel(level)
+    this.engine.setLevel(level)
   }
 
   private fine(): void {
@@ -282,7 +286,7 @@ export class App {
   }
 
   shot(pose?: (shutter: number) => void): Shot {
-    return { scene: this.view.scene, camera: this.camera, rig: this.rig, pose, lens: this.level === 'low' ? null : this.lens }
+    return { scene: this.view.scene, camera: this.camera, rig: this.rig, pose, lens: this.level === 'low' ? null : this.lens, list: this.shown?.frame.list }
   }
 
   private note(unit: string): void {
