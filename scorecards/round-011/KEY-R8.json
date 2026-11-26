@@ -1,0 +1,301 @@
+{
+  "role": "R8",
+  "round": 11,
+  "unit": "pinball",
+  "commit": "8fdbc4b764f1aad0b39e272cde4632d82d14079f",
+  "tier": "final",
+  "engineHash": "08923a79a1f8309e",
+  "sharedHash": "2912b618e02bbcd1",
+  "pageHashes": {
+    "step1": "22e9e1f0fe8aac8a",
+    "step2": "9642a08e4b612a58",
+    "marketing": "7f2b9135d4766abb",
+    "pinball": "bd1f629657030de6",
+    "boss": "391d666deb431806",
+    "decision": "0baf0cef7ca90495"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at rest",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step3"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at rest, scrolled",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "final",
+        "beat": "pinball.drain",
+        "at": 1,
+        "scroll": 1
+      },
+      "from": {
+        "id": "step3-result"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at one moment, 1 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.seal",
+        "at": 0.7,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "loader-page"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 2 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.reveal",
+        "at": 1,
+        "camera": "table-wide",
+        "tier": "final"
+      },
+      "from": {
+        "key": "table-wide"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 3 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.25,
+        "camera": "tier-3",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-corporate"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 4 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.7,
+        "camera": "table-lobby",
+        "tier": "final"
+      },
+      "from": {
+        "key": "lobby-doors"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-07.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 5 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.coffee",
+        "at": 0.6,
+        "camera": "tier-2",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-office"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-08.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 6 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.replyAll",
+        "at": 0.3,
+        "camera": "table-replyall",
+        "tier": "final"
+      },
+      "from": {
+        "key": "reply-all"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-09.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 7 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.15,
+        "camera": "tier-1",
+        "tier": "final"
+      },
+      "from": {
+        "key": "tier-street"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-10.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 8 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.5,
+        "camera": "table-fired",
+        "tier": "final"
+      },
+      "from": {
+        "key": "youre-fired"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-B-01.png": {
+      "set": "B",
+      "critic": "R8-2",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 9 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.highway",
+        "at": 0.4,
+        "camera": "rail",
+        "tier": "final"
+      },
+      "from": {
+        "key": "rail-cam"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-B-02.png": {
+      "set": "B",
+      "critic": "R8-2",
+      "kind": "judged",
+      "heading": "Part of the page at one moment, seen close, 10 of 10",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.save",
+        "at": 0.53,
+        "camera": "table-save",
+        "tier": "final"
+      },
+      "from": {
+        "key": "last-save"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-B-03.png": {
+      "set": "B",
+      "critic": "R8-2",
+      "kind": "text-crops",
+      "heading": "Text and controls of the page at rest, at their real size",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step3"
+      },
+      "crops": [
+        {
+          "part": "header",
+          "window": [
+            79,
+            0,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "progress",
+          "window": [
+            1004,
+            0,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            59,
+            207,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "data:numerals.3",
+          "window": [
+            1065,
+            0,
+            696,
+            270
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

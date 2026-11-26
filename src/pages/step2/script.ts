@@ -22,8 +22,9 @@ const dialC: P = { x: DIAL.cx, y: DIAL.cy }
 export const FILM_DIGITS = [10, 1, 5]
 const holeAt = (k: number, a = 0): P => ({ x: DIAL.cx + DIAL.ring * Math.cos(DIAL.holeAngle(k) + a), y: DIAL.cy + DIAL.ring * Math.sin(DIAL.holeAngle(k) + a) })
 const woundAt = (k: number): P => holeAt(k, DIAL.travel(k))
-// Between two numbers it rests its tip on the lower right shoulder of the cap.
-const shoulder: P = { x: DIAL.cx + 5, y: DIAL.cy + 16 }
+// Between two numbers it rests its tip on the lower right shoulder of the cap. The pointer leads past it first, so the strut is there in time and settles on it.
+const shoulder: P = { x: DIAL.cx + 15, y: DIAL.cy + 14 }
+const lead: P = { x: DIAL.cx - 17, y: DIAL.cy - 1 }
 export const LANDING: P = { x: DIAL.cx - 600, y: DIAL.cy + 30 }
 const knob: P = { x: SLOT.leverX, y: SLOT.knobY }
 const pulled: P = { x: SLOT.leverX, y: SLOT.knobY + SLOT.pull + 6 }
@@ -60,7 +61,7 @@ const TEMPER = { safe: 12.7, dust: 12.76, fume: 13.3, red: 13.5, march: 13.52, t
 // Flat, it drags itself to the button and stops short of it. There it peels up and fills out, standing still, and only then steps on to press.
 const RISE = { there: 19.4, go: 20.04 }
 const THROWN = { see: T.runaway + 0.05, cower: T.runaway + 0.43, back: T.lean - 0.08 }
-const idle: P = { x: 1575, y: 374 }
+const idle: P = { x: 1575, y: 392 }
 const refuge: P = { x: 800, y: 700 }
 const hand: P = { x: HANDOFF.x, y: HANDOFF.y }
 
@@ -81,8 +82,10 @@ const path: Seg[] = [
   line(T.zero + 0.26, T.one - 0.06, woundAt(10), holeAt(1)),
   line(T.one - 0.06, T.one, holeAt(1), holeAt(1)),
   ...wind(T.one, 1, 0.1),
-  line(T.one + 0.12, T.one + 0.19, woundAt(1), shoulder),
-  line(T.one + 0.19, 3.5, shoulder, shoulder),
+  line(T.one + 0.12, T.one + 0.19, woundAt(1), lead),
+  line(T.one + 0.19, 3.18, lead, lead),
+  line(3.18, 3.2, lead, shoulder),
+  line(3.2, 3.5, shoulder, shoulder),
   line(3.5, T.third - 0.2, shoulder, holeAt(5)),
   line(T.third - 0.2, T.third, holeAt(5), holeAt(5)),
   ...wind(T.third, 5, 0.55),

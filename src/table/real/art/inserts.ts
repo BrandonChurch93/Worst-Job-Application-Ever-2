@@ -21,7 +21,7 @@ export const insertColour = (n: Insert): THREE.Color => {
 }
 
 // How bright a window is: with the machine asleep it only catches the room, with the tier's lamps on it glows low in its colour, lit it glows from below, brightest in the middle.
-export const INSERT_GLOW = { off: 0.05, rest: 0.3, on: 0.85 }
+export const INSERT_GLOW = { off: 0.05, rest: 0.5, on: 0.85 }
 
 // The cell of the three by three atlases a window's picture lies in: its index in `table.inserts`.
 export const insertCell = (n: Insert): [number, number] => [n.index % 3, Math.floor(n.index / 3)]
