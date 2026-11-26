@@ -662,18 +662,24 @@ export function makePage(): PageLogic {
         for (const shape of fixedShapes()) list.push(shape)
         for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
         const f = px(floorZ(1))
+        const bat = table.flippers.find((x) => x.tier === 1 && x.side === 'left')!.pivot
+        const cup = table.bumpers.filter((x) => x.tier === 1).reduce((p, q) => (q.c[1] > p.c[1] ? q : p))
+        const lean = (FLIP.rest * Math.PI) / 180
+        const rest = { x: bat[0] + 0.9 * Math.cos(lean) + (0.6 + FLIP.radius) * Math.sin(lean), y: bat[1] + 0.9 * Math.sin(lean) - (0.6 + FLIP.radius) * Math.cos(lean) }
+        const hit = { x: cup.c[0] + (cup.r + 0.45) * 0.26, y: cup.c[1] + (cup.r + 0.45) * 0.966 }
+        const mid = { x: (rest.x + hit.x) / 2, y: (rest.y + hit.y) / 2 }
         const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
-          { x: 7.68, y: Y1 + 8.84, lift: 0, pose: { acting: 'nervous' } },
-          { x: 8.735, y: Y1 + 7.86, lift: 0.7, pose: { acting: 'scared', lean: 0.3 } },
-          { x: 9.79, y: Y1 + 6.88, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
+          { x: rest.x, y: rest.y, lift: 0, pose: { acting: 'nervous' } },
+          { x: mid.x, y: mid.y, lift: 0.5, pose: { acting: 'scared', lean: 0.3 } },
+          { x: hit.x, y: hit.y, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
         ]
         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: { ...look('table-fired', [11.19, Y1 + 10.5, 1.17], [8.735, Y1 + 7.86, -1.4]), focus: px(4.46), aperture: LENS['table-fired']! } }
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: { ...look('home', [mid.x + 1.92, mid.y + 6.1, 3.2], [mid.x, mid.y, -1.45]), focus: px(7.9), aperture: 15 } }
       }
       if (id !== 'table-map') return null
       const mc = machine()
       const list: DrawList = []
-      drawLayout(list, layout, { states: ['play', 'on', 'mode5', 'mode0', 'mode3'], runtime: { score: scoreText() }, over: stood })
+      drawLayout(list, layout, { states: ['play', 'on', 'score0', 'score1', 'score2'], runtime: { score: scoreText() }, over: stood })
       for (const shape of fixedShapes()) list.push(shape)
       const tall = (1920 * 1920) / 1080
       const top = px(Y0 - 0.35)
