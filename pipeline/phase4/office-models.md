@@ -49,6 +49,8 @@ Folder: 18 calls, 31208 triangles. Whole frame: 207 draw calls against a limit o
 - The stapler from straight above. The arm, the base and the plate were three reds that ran together. The arm is now 2.8 px narrower on each side than the steel base, so a steel edge shows on both sides of it, and the base lays a dark band on the plate (`SIDE`).
 - The tray is full to its walls. Under the two heaps that hop lies a still layer of 13 envelopes just under the rim (`FILL_LAYER`), in the mesh of the tray, so no bed shows round the heaps from straight above. The test that holds the inbox inside its box caught the first version of it 1.6 px outside, and the spread was taken in.
 - The hop was looked at in two `draft` stills of the beat `pinball.replyAll`, at 0.082 (the ball at the hold, the heap at rest) and at 0.098 (the heap larger, turned and pushed aside). It reads from straight above.
+- The left lower corner. The cabinet, the bin and the plant stood on a wide black floor. Two sheets, a folder, an envelope and two paper clips now lie round them (`spill()` in `cubicles.ts`, placed from the lower post of the left stapler's plate), inside the floor the runner gave as free (u 4.7 to 6.4, v 8.6 to 10.3). The test holds each 0.08 balls clear of every segment and post and off the three standing things.
+- Loose paper lies 0.7 px over the floor at the least: at 0.2 px a tilted sheet cut into the floor at one corner.
 
 ## Counts after (MEASURED on d27f182b, with main at b62bc72b)
 
