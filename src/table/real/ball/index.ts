@@ -368,6 +368,9 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const pressed = debug.press ? { x: debug.press[0] ?? 1, y: debug.press[1] ?? 0, amount: debug.press[2] ?? 0 } : hit.amount > stood.amount ? hit : stood
   const gone = smooth((open - PARTING.fades) / (1 - PARTING.fades))
   own.roll.position.z = r - smooth((open - PARTING.sinks) / (1 - PARTING.sinks)) * PARTING.deep * r
+  const lean = open > 0 || debug.press || pressed !== hit ? 0 : (1 - (1 - 0.15 * hit.amount) * (1 - 0.65 * hit.amount)) * r
+  own.roll.position.x = hit.x * lean
+  own.roll.position.y = -hit.y * lean
   toward.set(pressed.x, -pressed.y, 0).applyQuaternion(unroll.copy(own.roll.quaternion).invert())
   ;(u.uPress!.value as THREE.Vector4).set(toward.x, toward.y, toward.z, open > 0 ? 0 : pressed.amount)
 

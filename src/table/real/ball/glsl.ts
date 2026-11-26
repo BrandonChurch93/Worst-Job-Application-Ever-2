@@ -103,8 +103,8 @@ void main() {
 	if ( uPress.w > 0.0 ) {
 		float along = dot( p, uPress.xyz );
 		float top = 1.0 - 0.15 * uPress.w;
-		float thin = 1.0 - 0.5 * uPress.w;
-		float wide = 1.0 + 0.35 * uPress.w;
+		float thin = 1.0 - 0.65 * uPress.w;
+		float wide = 1.0 + 0.4 * uPress.w;
 		float na = dot( n, uPress.xyz );
 		n = normalize( ( n - uPress.xyz * na ) / wide + uPress.xyz * na / thin );
 		n = normalize( mix( n, uPress.xyz, smoothstep( 0.0, 0.03, along - top ) ) );
@@ -372,6 +372,20 @@ void paint() {
 	col += brim * ( min( uFloor, vec3( 0.8 ) ) * 0.05 + uSoft * SOFT * ( 0.16 * pow( max( lightward, 0.0 ), 4.0 ) + 0.05 * pow( max( - lightward, 0.0 ), 6.0 ) ) + max( soft * 0.06, vec3( 0.022, 0.025, 0.03 ) ) * ( 1.0 + 2.0 * max( lightward, 0.0 ) ) + gather * 0.6 );
 	float arc = ( 1.0 - smoothstep( 0.0, 0.014, abs( rho - 0.925 ) ) ) * pow( max( - lightward, 0.0 ), 3.0 );
 	col += arc * ( uSoft * SOFT * 0.22 + max( soft * 0.1, vec3( 0.02, 0.022, 0.026 ) ) + gather * 0.5 );
+	vec3 e1 = normalize( cross( V, vec3( 1.0, 0.0, 0.0 ) ) );
+	float th = atan( dot( Np, cross( V, e1 ) ), dot( Np, e1 ) );
+	float bright = ( 1.0 - smoothstep( 0.0, 0.017, abs( rho - 0.9 ) ) ) * pow( 0.5 + 0.5 * sin( th * 2.0 + 0.6 ), 3.0 );
+	bright += 0.8 * ( 1.0 - smoothstep( 0.0, 0.01, abs( rho - 0.95 ) ) ) * pow( 0.5 + 0.5 * sin( th * 3.0 - 1.1 ), 2.0 );
+	float dim = ( 1.0 - smoothstep( 0.0, 0.024, abs( rho - 0.862 ) ) ) * pow( 0.5 + 0.5 * sin( th * 2.0 + 2.6 ), 2.0 );
+	dim = max( dim, ( 1.0 - smoothstep( 0.0, 0.013, abs( rho - 0.927 ) ) ) * pow( 0.5 + 0.5 * sin( th * 3.0 + 1.0 ), 2.0 ) );
+	float rings = smoothstep( 0.3, 0.7, 0.5 + 0.5 * sin( rho * 150.0 + 1.6 * sin( th * 2.0 + 1.0 ) + 0.8 * sin( th * 5.0 ) ) );
+	float inRim = band * ( 1.0 - smoothstep( 0.955, 0.975, rho ) );
+	col *= mix( 1.0, mix( 0.45, 1.5, rings ), inRim );
+	col *= 1.0 - 0.6 * dim;
+	alpha = max( alpha, 0.55 * dim );
+	col += bright * ( max( soft * 0.5, vec3( 0.05, 0.054, 0.062 ) ) + min( uFloor, vec3( 0.8 ) ) * 0.04 + gather * 0.4 );
+	float thick = smoothstep( 0.8, 0.87, rho ) * ( 1.0 - smoothstep( 0.97, 0.996, rho ) );
+	col += ( lampsIn( reflect( - V, normalize( N - Np * 0.7 ) ), vP, 0.5 ) + lampsIn( reflect( - V, normalize( N + Np * 0.9 ) ), vP, 0.45 ) ) * 0.4 * thick;
 	float edge = smoothstep( 0.97, 0.996, rho );
 	col = mix( col, col * 0.16, edge * 0.9 );
 	alpha = mix( alpha, 0.92, edge * 0.9 );
