@@ -169,7 +169,7 @@ export function buildLayout(): LayoutNode {
   const by = SCREEN_H - 40 - sizes.button
   const go = button('continue', RIGHT - w, by, w, 'copy:step2.continue', { part: 'shell', tone: 'metal' })
   find(go, 'continue-label').tone = 'ink'
-  const note = text('note', 'copy:step2.note', TYPE.helper, LEFT, by + (sizes.button - block(TYPE.helper.font, 'X', TYPE.helper.px).cap) / 2, { part: 'type' })
+  const note = text('note', 'copy:step2.note', ROW_HELPER, LEFT, by + (sizes.button - block(ROW_HELPER.font, 'X', ROW_HELPER.px).cap) / 2, { part: 'type' })
   return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...trays, note, go])
 }
 

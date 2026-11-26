@@ -64,3 +64,4 @@ One word for each beat, and the poses that carry it. Times are seconds of the un
 
 - The tray's wall is the shared `cardSeal` (matt grey), no longer the satin aluminium: under the key the metal burnt white on the right wall and went dark grey on the lower one, where the approved image has both near the floor's tone. The upper and left walls keep their painted shade (`TRAY.wallShade` 0.55, `TRAY.wallLit` 1).
 - The rim is 8 px wide (was 5.6) and the joint outside it 0.6 px (was 0.9): the approved rim is a wide soft band and has no black hairline round it.
+- The line beside Continue (`note`) takes the row helper style (inter-400 20) in place of the shared 18 px helper: in the approved `step2-rest` it is as large as the row helpers. `TYPE.helper` is unchanged.
