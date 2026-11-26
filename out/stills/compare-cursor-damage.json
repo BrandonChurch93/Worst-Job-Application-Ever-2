@@ -1,0 +1,45 @@
+{
+  "what": {
+    "still": {
+      "page": "step1",
+      "camera": "sheet",
+      "tier": "final",
+      "sheet": "cursor-damage"
+    }
+  },
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
+  "pageHashes": {
+    "step1": "263044f80dcca6af"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 95.742,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 928336,
+    "drawCalls": 111
+  },
+  "problems": [],
+  "compare": {
+    "id": "cursor-damage",
+    "approved": "references/approved/cursor-damage.png",
+    "still": "out/work/stills/sheet-cursor-damage-hd-final.png",
+    "crops": [],
+    "width": 1400,
+    "height": 426
+  },
+  "keptFrom": "out/work/compare/compare-cursor-damage.jpg"
+}
