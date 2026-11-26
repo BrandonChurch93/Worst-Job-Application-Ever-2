@@ -3,12 +3,17 @@ import type { RealContext } from '../../../real/types'
 import { APRON_Y, BALL, COLS } from '../../layout'
 import { local, localBalls, localOf, shapesIn, type Zone } from '../zone'
 import { Geo, roundedLoop, type V2 } from './geo'
-import { Screws, TONE, aluOf, clearOf, mesh, paintOf, screwOf, shade } from './mats'
+import { Screws, TONE, aluOf, clearOf, hex, mesh, paintOf, screwOf, shade } from './mats'
 
 const SLAB = { height: 16, bevel: 6.5, corner: 18, cuts: 4, grain: 0.02 }
 // The frame round the apron: the two rails run on from the street tier and a slim rail closes them in front. `low` is how high they stand where the apron lies at the page's own height.
-export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7, skin: 1.2, skirt: 1, panel: 10 }
-const WALL: [number, number, number] = [0.2, 0.208, 0.22]
+export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7, skin: 1.2, skirt: 1, panel: 10, land: 60, shell: 20 }
+const WALL: [number, number, number] = [0.085, 0.125, 0.235]
+// The outside of the near end faces the room, not the well: it stands as bright as the land on top of the rails.
+const FRONT = shade(hex(0xf4ecd9), 5)
+const BAND = shade(hex(0xf4ecd9), 2.1)
+// The slabs are cast a warm cream white.
+const CREAM = hex(0xf4ecd9)
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
 const THROAT = { long: 150, deep: 80, cheek: 12 }
 
@@ -63,7 +68,10 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   const side = (x0: number, x1: number, inner: 0 | 1): void => {
     if (sunk) {
       const [a, b] = inner === 1 ? [X(0), x1] : [x0, X(20)]
-      wedge(A, a, b, 0, TONE.aluBright, inner === 0 ? TONE.alu : TONE.aluDark, inner === 1 ? TONE.alu : TONE.aluDark)
+      // The bright land of the rail runs on down the wedge as a narrow band at the page's side: the rest of the slope is the navy of the walls.
+      const m = inner === 1 ? xb + EDGE.land : xe - EDGE.shell
+      wedge(A, a, m, 0, inner === 1 ? BAND : WALL, inner === 0 ? WALL : TONE.aluDark, null)
+      wedge(A, m, b, 0, inner === 1 ? WALL : BAND, null, inner === 1 ? WALL : TONE.aluDark)
       A.face([[a, yT, 0], [b, yT, 0], [b, yT, H], [a, yT, H]], [0, 1, 0], [1, 0, 0], TONE.aluDark)
       const xm = inner === 1 ? a + EDGE.near / 2 : b - EDGE.near / 2
       for (const t of [0.3, 0.8]) screws.add(xm, y0 + (yT - y0) * t, heightAt(y0 + (yT - y0) * t), 0.7, x0 + t, new THREE.Vector3(...up))
@@ -75,7 +83,7 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   }
   if (sunk) {
     // The outside of the near end is one face of aluminium.
-    A.box(X(0), X(20), yB, yB + EDGE.skin, -EDGE.skirt * BALL, Hn, TONE.alu, { along: [1, 0, 0], top: TONE.aluBright })
+    A.box(X(0), X(20), yB, yB + EDGE.skin, -EDGE.skirt * BALL, Hn, FRONT, { along: [1, 0, 0], top: TONE.aluBright })
     for (const [x0, x1] of [[X(0), xb], [xe, X(20)]] as [number, number][]) A.box(x0, x1, yB + EDGE.skin, y0, 0, Hn, TONE.alu, { along: [0, 1, 0], top: TONE.aluBright })
   }
   side(xb, xa, 1)
@@ -99,7 +107,7 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     for (let j = 0; j < foot.length; j++) {
       const p = foot[j]!
       const q = foot[(j + 1) % foot.length]!
-      C.face([[p[0], p[1], 0], [q[0], q[1], 0], [q[0], q[1], top - r], [p[0], p[1], top - r]], [q[1] - p[1], p[0] - q[0], 0], [q[0] - p[0], q[1] - p[1], 0], TONE.ceramic)
+      C.face([[p[0], p[1], 0], [q[0], q[1], 0], [q[0], q[1], top - r], [p[0], p[1], top - r]], [q[1] - p[1], p[0] - q[0], 0], [q[0] - p[0], q[1] - p[1], 0], CREAM)
     }
     for (let i = 0; i < SLAB.cuts; i++) {
       const [d0, z0] = at(i)
@@ -112,16 +120,17 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
         const p = lo[j]!
         const q = lo[k]!
         const l = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1
-        C.face([[p[0], p[1], z0], [q[0], q[1], z0], [hi[k]![0], hi[k]![1], z1], [hi[j]![0], hi[j]![1], z1]], [((q[1] - p[1]) / l) * Math.cos(a), ((p[0] - q[0]) / l) * Math.cos(a), Math.sin(a)], [q[0] - p[0], q[1] - p[1], 0], TONE.ceramic)
+        C.face([[p[0], p[1], z0], [q[0], q[1], z0], [hi[k]![0], hi[k]![1], z1], [hi[j]![0], hi[j]![1], z1]], [((q[1] - p[1]) / l) * Math.cos(a), ((p[0] - q[0]) / l) * Math.cos(a), Math.sin(a)], [q[0] - p[0], q[1] - p[1], 0], CREAM)
       }
     }
-    C.slab(ring(r), top - 0.01, top, TONE.ceramic, { sides: false })
+    C.slab(ring(r), top - 0.01, top, CREAM, { sides: false })
     C.map(0, (x, y) => [x + 960, z.top + z.height / 2 - y])
     P.slab(roundedLoop(s.x0 - 1.4, s.x1 + 1.4, s.y0 - 1.4, s.y1 + 1.4, SLAB.corner + 1.4, 5), 0, 0.5, TONE.gap, { sides: false })
   }
   if (card) {
     // The card lies under a clear cover held by four screws.
-    P.box(card.x0, card.x1, card.y0, card.y1, card.z0, card.z1, TONE.paper, { bevel: 0.3 })
+    C.box(card.x0, card.x1, card.y0, card.y1, card.z0, card.z1, CREAM, { bevel: 0.3 })
+    C.map(0, (x, y) => [x + 960, z.top + z.height / 2 - y])
     const m = CARD.cover
     const z0 = card.z1 + CARD.lift
     G.slab(roundedLoop(card.x0 - m, card.x1 + m, card.y0 - m, card.y1 + m, 6, 4), z0, z0 + CARD.thick, [1, 1, 1], { bevel: 0.8 })
@@ -162,7 +171,7 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   }
   // The cast plate the two fields lie on, from rail to rail, open where the drain's throat goes down through it.
   {
-    const tone = shade(TONE.ceramic, 0.82)
+    const tone = shade(CREAM, 0.82)
     const y0d = yB + EDGE.near
     if (throat) {
       C.box(xa, throat[0], y0d, yT, 0, EDGE.deck, tone, { bevel: 0.8 })

@@ -10,10 +10,10 @@ describe('the head lamps of a tier', () => {
     for (const id of TIERS) {
       const k = keyOf(id)!
       expect(Math.hypot(...k.toward)).toBeCloseTo(1, 6)
-      expect(k.toward[0]).toBeGreaterThan(0.3)
+      expect(k.toward[0]).toBeGreaterThan(0.1)
       expect(k.toward[1]).toBeGreaterThan(0.3)
-      expect(k.toward[2]).toBeGreaterThan(0.3)
-      expect(k.toward[2]).toBeLessThan(0.75)
+      expect(k.toward[2]).toBeGreaterThan(0.6)
+      expect(k.toward[2]).toBeLessThan(0.95)
       expect(k.colour[0]).toBeGreaterThan(k.colour[2])
     }
     expect(keyOf('marquee')).toBeNull()

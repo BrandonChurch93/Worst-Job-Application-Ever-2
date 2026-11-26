@@ -194,7 +194,7 @@ describe('the boss fight, made real', () => {
       const cap = sheet.list.find((s) => s.id === `stage-${n}-cap`)!
       return cap.x + cap.w / 2
     })
-    const reach = [[150, 150], [200, 160], [310, 310], [310, 310]] as const
+    const reach = [[150, 150], [200, 160], [215, 215], [330, 275]] as const
     expect(centre[0]! - reach[0]![0]).toBeGreaterThan(60)
     for (let n = 0; n < 3; n++) expect(centre[n + 1]! - reach[n + 1]![0] - (centre[n]! + reach[n]![1])).toBeGreaterThan(20)
     expect(sheet.width! - (centre[3]! + reach[3]![1])).toBeGreaterThan(60)

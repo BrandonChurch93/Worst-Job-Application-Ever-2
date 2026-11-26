@@ -9,18 +9,20 @@ import { zoneAt } from '../../draw'
 import { table, TIER_Y } from '../../layout'
 import { lit } from '../light'
 import { zone } from '../zone'
-import { backFragment, decalFragment, decalVertex, dropFragment, dropVertex, frontFragment, shellVertex, SQUASH } from './glsl'
+import { keyOf } from '../lights/key'
+import { backFragment, decalFragment, decalVertex, dropFragment, dropVertex, frontFragment, shellVertex, SQUASH, WALL } from './glsl'
 import { BOXES, LAMPS, lightAt, washAt, type Light, type RGB } from './lamps'
 
 export const PART = 'clear-ball'
 export const RIN = 0.875
-export const DROPS = 64
+export { WALL }
+export const DROPS = 22
 export const ORDER = { decal: 900000, back: 900001, sweat: 900002, core: 900003, front: 900004 }
 const AROUND = 96
 const RINGS = 24
 const PLUG = 0.085
 const SOFT_DIR = new THREE.Vector3(-0.66, 0.56, 0.5).normalize()
-const KEY_AWAY = new THREE.Vector2(0.52, -0.5).normalize()
+const KEY_AWAY = { x: -0.46, y: -0.89, slant: 1.2 }
 const TIERS = ['corporate', 'office', 'street']
 const FLATS: Record<string, number> = { 'corporate.carpet': 0xa3161c }
 const INSET = 0.45
@@ -30,7 +32,7 @@ const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [
 export const PRESS = { most: 0.4, hit: 0.4, stood: 0.3, dies: 0.05, stand: 3 }
 // How the shell opens, as shares of the way open: the halves have swung apart by `swung`, they sink from `sinks` on, by `deep` radii, and they are gone from sight between `fades` and 1.
 export const PARTING = { swung: 0.8, sinks: 0.55, deep: 1.9, fades: 0.8 }
-const INSIDE = { key: 2.6, fill: 0.5, lamps: 0.12, face: 1.0, least: 0.5, most: 0.6 }
+const INSIDE = { key: 2.6, fill: 0.6, lamps: 0.12, face: 1.6, least: 0.85, most: 1.0 }
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
 
 // What the page tells the maker about the ball, on the shape's `v`: the share it is closed, the seconds since it closed, how much it sweats.
@@ -39,7 +41,7 @@ export const stateOf = (s: Shape): State => ({ closed: clamp01(s.v?.[0] ?? 1), s
 
 // The two grades of what is seen through the ball: 'bend' bends a picture of the floor in the shell's own drawing, 'true' adds one drawing that carries the scene behind it through the wall.
 export type Grade = 'bend' | 'true'
-const debug: { grade: Grade; sweat: number | null; open: number | null; shell: boolean; bend: boolean; press: number[] | null } = { grade: 'bend', sweat: null, open: null, shell: true, bend: true, press: null }
+const debug: { grade: Grade; sweat: number | null; open: number | null; shell: boolean; bend: boolean; press: number[] | null; loud: number } = { grade: 'bend', sweat: null, open: null, shell: true, bend: true, press: null, loud: 0 }
 export const setGrade = (g: Grade): void => {
   debug.grade = g
 }
@@ -112,7 +114,7 @@ export function shellGeometry(): THREE.BufferGeometry {
     const outer: number[] = []
     for (let j = 0; j <= AROUND; j++) {
       const a = (j / AROUND) * Math.PI * 2
-      inner.push(put([Math.cos(a) * RIN, 0, Math.sin(a) * RIN], [0, -h, 0], [0, 0], h, 1))
+      inner.push(put([Math.cos(a) * WALL, 0, Math.sin(a) * WALL], [0, -h, 0], [0, 0], h, 1))
       outer.push(put([Math.cos(a), 0, Math.sin(a)], [0, -h, 0], [0, 0], h, 1))
     }
     for (let j = 0; j < AROUND; j++) {
@@ -146,7 +148,7 @@ export function dropPlaces(seed: number): { at: THREE.Vector3; size: number; ord
     const z = rnd.range(-1, 1)
     const a = rnd.range(0, Math.PI * 2)
     const r = Math.sqrt(1 - z * z)
-    out.push({ at: new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, z), size: rnd.range(0.022, 0.05), order: rnd.next() })
+    out.push({ at: new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, z), size: rnd.range(0.018, 0.04), order: rnd.next() })
   }
   return out
 }
@@ -287,6 +289,7 @@ function build(s: Shape): THREE.Group {
     uR: { value: r },
     uNear: { value: 0 },
     uLift: { value: 0 },
+    uLoud: { value: 0 },
     uSize: { value: r * 5.2 }
   }
   const dm = new THREE.ShaderMaterial({ uniforms: d, vertexShader: decalVertex, fragmentShader: decalFragment, transparent: true, depthWrite: false, premultipliedAlpha: true, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 })
@@ -310,7 +313,7 @@ function build(s: Shape): THREE.Group {
   const Z = new THREE.Vector3(0, 0, 1)
   dropPlaces(config.seed).forEach((p, i) => {
     q.setFromUnitVectors(Z, p.at)
-    m4.compose(p.at.clone().multiplyScalar(RIN - p.size * 0.35), q, new THREE.Vector3(p.size, p.size * (0.8 + 0.4 * p.order), p.size * 0.55))
+    m4.compose(p.at.clone().multiplyScalar(WALL - p.size * 0.35), q, new THREE.Vector3(p.size, p.size * (0.8 + 0.4 * p.order), p.size * 0.55))
     sweat.setMatrixAt(i, m4)
     seeds[i] = p.order
   })
@@ -471,30 +474,28 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const high = (1 - gone) / (1 + lift / (r * 2.5))
   const dim = 1 - 0.7 * open
   const key = Math.min(1, Math.max(lum(L.soft) * 2.2, lum(L.floor) * 0.7))
-  const reach = Math.hypot(door.x, door.y)
-  const lobby = door.z > 0 && reach > 1 ? smooth(1 - (reach - B * 1.5) / (B * 6)) : 0
-  let kx = KEY_AWAY.x * (1 - lobby) - (door.x / Math.max(1, reach)) * lobby
-  let ky = KEY_AWAY.y * (1 - lobby) - (door.y / Math.max(1, reach)) * lobby
-  const kl = Math.max(1e-4, Math.hypot(kx, ky))
-  kx /= kl
-  ky /= kl
-  shade[0]!.set(kx, ky, 0.55 + 1.85 * lobby, Math.min(0.78, 0.52 + 0.5 * key) * Math.min(1, key * 8) * high)
-  const gathered = L.soft.map((v, c) => Math.max(v, L.floor[c]! * 0.3))
-  spot[0]!.set(gathered[0]! * 1.5 * high * dim, gathered[1]! * 1.3 * high * dim, gathered[2]! * 1.05 * high * dim)
+  const head = keyOf(L.zone)
+  const flatKey = head ? Math.hypot(head.toward[0], head.toward[1]) : 1
+  const kx = head && flatKey > 1e-4 ? -head.toward[0] / flatKey : KEY_AWAY.x
+  const ky = head && flatKey > 1e-4 ? -head.toward[1] / flatKey : KEY_AWAY.y
+  const slant = head ? Math.max(1.2, Math.min(2.4, flatKey / Math.max(0.2, head.toward[2]))) : KEY_AWAY.slant
+  shade[0]!.set(kx, ky, slant, Math.min(0.8, 0.56 + 0.5 * key) * Math.min(1, key * 8) * high)
+  const warm = head ? head.colour : ([1, 0.86, 0.66] as RGB)
+  const gathered = Math.max(lum(L.soft), lum(L.floor) * 0.3)
+  spot[0]!.set(warm[0] * gathered * 1.6 * high * dim, warm[1] * gathered * 1.6 * high * dim, warm[2] * gathered * 1.6 * high * dim)
   const low = L.lamps.filter((l) => !l.window && l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
   for (let i = 1; i < 3; i++) {
     const l = low[i - 1]
+    spot[i]!.set(0, 0, 0)
     if (!l) {
       shade[i]!.set(1, 0, 0, 0)
-      spot[i]!.set(0, 0, 0)
       continue
     }
     const flat = Math.hypot(l.x, l.y)
-    const slant = Math.min(1.4, flat / Math.max(20, l.z - L.drop))
-    shade[i]!.set(-l.x / flat, -l.y / flat, slant, Math.min(0.6, 0.55 * lum(l.colour) * l.amount) * high)
-    const gain = 0.45 * Math.min(1.5, l.amount) * high * dim
-    spot[i]!.set(l.colour[0] * gain, l.colour[1] * gain, l.colour[2] * gain)
+    shade[i]!.set(-l.x / flat, -l.y / flat, Math.min(1.4, flat / Math.max(20, l.z - L.drop)), Math.min(0.4, 0.4 * lum(l.colour) * l.amount) * high)
   }
+  d.uLoud!.value = debug.loud
+  ;(own.decal.material as THREE.Material).depthTest = debug.loud < 1.5
   d.uNear!.value = Math.max(0, 1 - lift / (r * 0.6))
   d.uLift!.value = lift
 }
