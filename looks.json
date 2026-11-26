@@ -1,35 +1,35 @@
 {
   "folder": "frame-finish",
-  "pushed": "2026-11-26T12:41:46.590Z",
-  "commit": "68c9769bf13b2449e2c0f6a407b9147929b46215",
+  "pushed": "2026-11-26T12:50:09.147Z",
+  "commit": "9be6981bd439f6f0796826333e3c0f068e1a657e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key reply-all: approved on the left, this build on the right, draft tier, with crops of shape:ball.steel.2, cursor, shape:model.office.inbox, shape:bumper.office.bumper.3, shape:model.office.cubicles, shape:model.office.coffee, shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3, shape:flipper.office.flipper.left, shape:lift.elbow.office",
-      "time": "2026-11-26T12:41:25.414Z",
-      "by": "frame-finish",
-      "from": "out/work/compare/compare-reply-all.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "tier-office, the struck cup: left merge 36 at final (grey patch, clipped lid), right this build at draft (glow shell rocks with the lid, lid in its seat, deck 192 to 220)",
-      "time": "2026-11-26T12:41:45.104Z",
-      "by": "frame-finish",
-      "from": "out/work/frame-finish/seventh-struck-cup.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "loader-page crops, approved left, build right: brighter brushed ring, bowl shading dark to mid grey",
-      "time": "2026-11-26T12:41:45.326Z",
-      "by": "frame-finish",
-      "from": "out/work/frame-finish/sixth-loader.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "table-wide, approved left, build right: bright rail cap on navy walls, front lands in the cap's tone at 0.8",
       "time": "2026-11-26T12:41:45.554Z",
       "by": "frame-finish",
       "from": "out/work/frame-finish/sixth-table-wide.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key tier-office: approved on the left, this build on the right, draft tier, with crops of shape:model.office.cubicles, shape:bumper.office.bumper.3, shape:model.office.coffee, shape:model.office.inbox, shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3, shape:flipper.office.flipper.left, cursor, shape:insert.office.insert.1, shape:lift.elbow.office",
+      "time": "2026-11-26T12:43:14.499Z",
+      "by": "frame-finish",
+      "from": "out/work/compare/compare-tier-office.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key table-wide: approved on the left, this build on the right, draft tier, with crops of shape:marquee.back, shape:model.corporate.hq, shape:bumper.office.bumper.3, shape:model.street.firehouse, shape:model.street.garage, shape:flipper.street.flipper.left, apronCard, cursor, shape:plunger.knob",
+      "time": "2026-11-26T12:47:22.967Z",
+      "by": "frame-finish",
+      "from": "out/work/compare/compare-table-wide.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "table-wide at the end, approved left, build right at draft: mean 1.027 of approved",
+      "time": "2026-11-26T12:50:07.917Z",
+      "by": "frame-finish",
+      "from": "out/work/frame-finish/eighth-table-wide.jpg"
     }
   ]
 }
