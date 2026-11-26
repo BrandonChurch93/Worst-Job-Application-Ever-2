@@ -130,11 +130,13 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
     const core: RGB = [lum * 1.3, lum * 1.04, lum * 0.6]
     const nx = 6
     const nz = 8
+    const at = (i: number, j: number): RGB => {
+      const r = Math.hypot((i / nx - 0.5) * 1.5, (j / nz - 0.6) * 1.3)
+      return mix(lo, core, Math.exp(-r * r * 7))
+    }
     for (let i = 0; i < nx; i++) {
       for (let j = 0; j < nz; j++) {
-        const r = Math.hypot(((i + 0.5) / nx - 0.5) * 1.5, ((j + 0.5) / nz - 0.6) * 1.3)
-        const c = mix(lo, core, Math.exp(-r * r * 7))
-        b.glow.face([[x + (w * i) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * (j + 1)) / nz], [x + (w * i) / nx, d, z + (h.h * (j + 1)) / nz]], c, 0, [0, -1, 0])
+        b.glow.blend([[x + (w * i) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * (j + 1)) / nz], [x + (w * i) / nx, d, z + (h.h * (j + 1)) / nz]], [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)], [0, -1, 0])
       }
     }
   }
@@ -224,15 +226,17 @@ export function roofLight(b: Buckets, x0: number, x1: number, y0: number, y1: nu
   const core: RGB = [lum * 1.15, lum * 0.9, lum * 0.5]
   const nx = 8
   const ny = 6
+  const at = (i: number, j: number): RGB => {
+    const r = Math.hypot((i / nx - 0.5) * 1.5, (j / ny - 0.5) * 1.5)
+    return mix(lo, core, Math.exp(-r * r * 6))
+  }
   for (let i = 0; i < nx; i++) {
     for (let j = 0; j < ny; j++) {
-      const r = Math.hypot(((i + 0.5) / nx - 0.5) * 1.5, ((j + 0.5) / ny - 0.5) * 1.5)
-      const c = mix(lo, core, Math.exp(-r * r * 6))
       const u0 = ax + ((bx - ax) * i) / nx
       const u1 = ax + ((bx - ax) * (i + 1)) / nx
       const v0 = ay + ((by - ay) * j) / ny
       const v1 = ay + ((by - ay) * (j + 1)) / ny
-      b.glow.face([[u0, v0, top + 0.1], [u1, v0, top + 0.1], [u1, v1, top + 0.1], [u0, v1, top + 0.1]], c, 0, [0, 0, 1])
+      b.glow.blend([[u0, v0, top + 0.1], [u1, v0, top + 0.1], [u1, v1, top + 0.1], [u0, v1, top + 0.1]], [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)], [0, 0, 1])
     }
   }
   const n = Math.max(2, Math.round((bx - ax) / 9))
