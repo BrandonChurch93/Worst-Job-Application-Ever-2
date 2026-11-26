@@ -46,12 +46,19 @@ Pictures (`node pipeline/phase5/fix-tug-steps.mjs walk after3`, the pack's own v
 - Loss, 2006 to 2058: thrown slot at 2012, skid with arms 2012 to 2032, the paper fed in under the hands 2034 to 2040, arms gone and the slot and the panel thrown at 2042, the arrow cut off by the mouth 2044 to 2056, gone at 2058.
 - Give-back, 2202 to 2246: worn arrow to 2214, back to its shape 2216 to 2224, stands to 2236 while the slot shuts, follows the mouse from 2238.
 
-## Open
+## Not mended, and why
 
-- Step 2040 to 2042: the arms are there in one picture and gone in the next (short by then). The stage takes the arms off on the step the gag stops being `step1.tug`.
-- Step 2042: the panel is thrown about 9 px and its edge covers the upper part of the slot for that one picture; by 2044 it is 3 px.
-- The last pull back is 20 px of page (10 px at preview size) and small in the picture.
-- What the film shows at the moment of the give-back was not looked at: UNKNOWN.
+- Step 2040 to 2042: the arms are there in one picture and gone in the next. They are short by then. The stage lets the arrow have arms only while the gag is `step1.tug` (`config.cursor.armsOnlyInBeat`, which G12 holds), and the arrow goes into the mouth after that gag ends, so the arms cannot stay on. Builder: this stays, the stage's rule stands.
+- Step 2042: the thrown panel (about 9 px at preview size) covers the upper part of the slot for that one picture; by 2044 it is 3 px. Left as it is: a smaller throw would fall under the 6 px a critic can see.
+- The slot's answer reaches 6 to 10 px at preview size on the paper's edge and on the panel, not on the cassette (about 3 px at the bite). The cassette slips only 0.6 of the throw so that it does not leave the panel.
+- The last pull back before the loss is 20 px of page (10 px at preview size) and small in the picture. Not made larger: Builder dropped the point at 21:02 UTC.
+- The film at the moment of the give-back: STATED from `index.ts`, the film sets `exhausted` and releases on the same step, so it has no recovery to match; not seen in a film picture.
+
+## The film's path, before and after (read 21:02 UTC)
+
+- MEASURED `npm run sheet -- --motion shredder --unit step1 --every-frame` on origin/main (dc83c2d0) and on 4f68f93f, the two sheets compared tile by tile: of the 12 frames 2158 to 2169, 4 do not differ (2158 to 2161, largest difference 9 of 255, the picture format's own noise) and 8 differ (2162 to 2169, largest 236 of 255, in the panel only, rows 3 to 177 of a 289 px tile).
+- What the pictures show: from 2162 the panel with its words and button sits about 5 px lower, about 1 px by 2169. The arrow, the arms and the paper stand where they stood.
+- Film frames outside these twelve: UNKNOWN in pictures. STATED from the code: the film's path is kept step for step and the slot answers three times (the bite, the lost moment, the entry), each for 0.24 s.
 
 ## Checks on the second pass (commit 4f68f93f, read 21:00 UTC)
 
