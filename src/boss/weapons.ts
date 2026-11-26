@@ -3,7 +3,7 @@ import { TYPE } from '../shell/parts'
 import type { DrawList, TypeSpec } from '../stage/types'
 import { label, prog } from './body'
 import { bannerUp, FLASH_SECONDS, SPARK_SECONDS, type Fight } from './fight'
-import { ARENA, POPUP, SLAB } from './plan'
+import { ARENA, MUZZLE, POPUP, SLAB } from './plan'
 
 const heights = config.scale.heights
 const sizes = config.scale.sizes
@@ -15,11 +15,11 @@ export interface PopupPlan { title: string; box: Box; titleAt: { x: number; y: n
 export interface BannerPlan { key: string; w: number; h: number }
 export interface WeaponPlan { slabs: SlabPlan[]; popups: PopupPlan[]; banner: BannerPlan; slabType: TypeSpec; bannerType: TypeSpec; titleType: TypeSpec }
 
-const FLY = { z0: 14, z1: 14 + heights.slab }
-export const DART_LONG = 34
-export const DART_Z = 30
+const FLY = { z0: 14, z1: 14 + heights.slab, fall: 0.26 }
+export const DART_LONG = 26
+export const DART_Z = 17
 export const SPARK_Z = 30
-export const MUZZLE_Z = 46
+export const MUZZLE_Z = MUZZLE.z
 export const BANNER_Z = 64
 
 export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
@@ -49,10 +49,11 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     if (k <= 0.02) continue
     const drop = s.state === 0 ? 0 : 1 - prog(s.t, 0, 0.12)
     const sink = s.state === 2 ? prog(s.t, 0, SLAB.out) : 0
-    const z0 = (s.state === 0 ? FLY.z0 : FLY.z0 * drop) - sink * (heights.slab + 1.5)
+    const high = s.state === 0 ? (MUZZLE.z - heights.slab / 2 - FLY.z0) * (1 - prog(s.t, 0, FLY.fall)) ** 2 : 0
+    const z0 = (s.state === 0 ? FLY.z0 + high : FLY.z0 * drop) - sink * (heights.slab + 1.5)
     const landed = s.state === 0 ? 9 : s.state === 1 ? s.t : s.t + 9
     out.push({ id: `fired-${s.m}`, part, kind: 'box', x: s.x - made.w / 2, y: s.y - made.h / 2, w: made.w, h: made.h, z0, z1: z0 + heights.slab, tone: 'danger', r: 8, rot: s.rot, role: 'slab', v: [k, landed, s.state === 0 ? s.t : 9] })
-    if (k >= 0.98 && sink < 0.5) out.push(label(`fired-${s.m}-words`, part, made.key, s.x, s.y, plan.slabType, z0 + heights.slab, 'inkLight', s.rot))
+    if (k >= 0.98 && sink < 0.5) out.push(label(`fired-${s.m}-words`, part, made.key, s.x, s.y, plan.slabType, z0 + heights.slab + (s.state === 1 && s.t < 0.6 ? 1.2 : 0), 'inkLight', s.rot))
   }
   if (bannerUp(f)) {
     const k = Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5))

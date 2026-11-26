@@ -81,9 +81,8 @@ describe('the boss fight, made real', () => {
     for (let i = 0; i < stepHz * 1.2; i++) stepFight(f, io(false, { x: 450, y: 900 }, events), arena)
     expect(events.filter((e) => e === 'dart-fire').length).toBe(DART.volley)
     expect(events.filter((e) => e === 'dart-hit').length).toBe(DART.volley)
-    expect(DART.damage * DART.volley).toBe(3)
     expect(POPUP.hp).toBe(3 * DART.volley)
-    expect(100 - f.health).toBeCloseTo(3, 5)
+    expect(100 - f.health).toBeCloseTo(DART.damage[0] * DART.volley, 5)
   })
 
   it('stops a dart from the left on the glass shield, and sets its spark on the glass', () => {
@@ -165,6 +164,21 @@ describe('the boss fight, made real', () => {
     }
     expect(lights.length).toBe(2)
     for (const e of lights) expect(e.power).toBeGreaterThan(0)
+  })
+
+  it('shows the fight of the key: three slabs in the air, darts in a stream, a spark, the health near half', () => {
+    const beat = beats.find((b) => b.id === 'boss.slabs')!
+    const at = (beat.from + beat.to) / 2
+    const frame = frames().find((f) => f.time >= at - 1e-6)!
+    const flying = frame.list.filter((s) => /^fired-\d+$/.test(s.id) && (s.v?.[2] ?? 9) < 9)
+    expect(flying.length).toBe(3)
+    expect(new Set(flying.map((s) => Math.round(s.y / 60))).size).toBe(3)
+    expect(frame.list.filter((s) => s.id.startsWith('dart-')).length).toBeGreaterThanOrEqual(4)
+    expect(frame.list.some((s) => s.id.startsWith('spark-'))).toBe(true)
+    const fill = frame.list.find((s) => s.id === 'health-fill')!
+    const part = fill.w / fill.v![0]!
+    expect(part).toBeGreaterThan(0.5)
+    expect(part).toBeLessThan(0.62)
   })
 
   it('presses the checkbox cap down under the click and lets it come back to rest', () => {

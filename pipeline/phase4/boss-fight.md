@@ -29,8 +29,25 @@ Looked at `references/approved/boss-fight.png` at full size in crops (health bar
 
 ## Agreed with `boss_modeller`
 
-- The cannon mouth stays where `muzzle()` has it: 70 px left of the cannon's centre, z 46. The muzzle flash is the shape `muzzle-N`, mine.
-- Darts from the left stop on the shield plane above; sparks on the glass at z 72. The plate stays where the modeller put it.
-- I pass `flash` and `hurt`; I do not pass `aim`, the barrels stay level.
-- The wider stance (`FOOT_OFF`) comes from the modeller's export; the times of the unfold stay.
+- The cannon mouth is 92 px from the cannon's centre along the barrel, z 82.5 (`MUZZLE` in `src/boss/plan.ts`; first 70 px and z 46, then 92 px and z 48.5, then the body grew taller). The muzzle flash is the shape `muzzle-N`, mine, and sits at that mouth.
+- The barrels aim. I keep a point in the fight (`look`: the cursor's centre eased over 0.25 s), pass it as `aim` in the sixth argument of `fightRig`, and fire slabs and flash from the same formula the body turns its barrels with: rot = atan2(cy - aim.y, cx - aim.x) held inside 0.7 rad either way, mouth = (cx - 92 cos rot, cy - 92 sin rot). My copy is `muzzle()` in `src/boss/fight.ts`; when the modeller's `muzzleAt` is on `main` it replaces my copy.
+- Darts from the left stop on the shield plane above; sparks on the glass at z 100 (was 72, the body is taller). The plate stays where the modeller put it.
+- I pass `aim`, `flash` and `hurt`.
+- The wider stance (`FOOT_OFF`) and the cannons' places (`CANNON_OFF`, soon (-10, 110) either way) come from the modeller's export; the times of the unfold stay.
+- Draw calls: the Builder wants 520 or less at high at the key for the two of us together. Told the modeller my share and that both of us merge.
 
+## The key picture fitted (round 2, the Builder's point 1)
+
+The approved picture has the health near 55 percent, three slabs in the air at three heights, a stream of darts and a spark on the glass. The key stays at 12.5 s; the fight changed so that this is what the film has there, and the live fight got the same rules.
+
+- Phases end at 51, 25 and 0 percent of the health (were 75, 40, 0): `THRESHOLD`. Each dart does 1.9, 0.56 and 0.53 in the three phases (`DART.damage`), so the clicks a phase takes stay about as they were. The health can fall no faster than `FLOOR` (3.9, 4, 3 s for a phase) and a still visitor is taken down over `CAPS` (12.5, 14.5, 13 s), so the narrator's `boss-slow` still fires for one who does nothing.
+- In the first phase the first attack is one slab ("Field cannot be blank"), every later attack is a salvo of three, 0.18 s apart: the middle one at the cursor, one fanned 0.3 rad above from cannon 0, one below from cannon 1 (`SLAB.salvo`, `salvoGap`, `fan`). The cursor has one lane to step out of, and the tests of fairness and the bots pass unchanged.
+- A slab stops before the verify card (`Arena.keep`), so the card's words are never covered.
+- A slab leaves the mouth at the mouth's height and comes down to its flying height in 0.26 s.
+- The film's clicks in `boss.slabs`: every 0.34 s from 9.82 to 12.3 s, then one at 15.27 s. The snap aside is at 11.85 s, two frames after the first slab of the salvo.
+- Events of the film, measured (`npx vitest run` on a scratch test that prints `stage.events`): `checkbox` 3.80, `button-crack` 6.11, `unfold` 6.71, `slab-fire` 9.86, 11.81, 11.99, 12.18, 14.33, 14.52, 14.70, 19.49, `slab-drop` 11.30, 12.82, 13.01, 13.22, 15.15, 15.26, 15.66, 20.24 (this one hits the cursor, the only hit of the film), `popup` 15.93, 17.73, 18.73, `session-expired` 22.30, `power-down` 27.23, `button-press` 30.50, `page-turn` 31.50. All inside their beats.
+- At the key (12.5 s): three slabs in flight, five darts on screen, sparks on the glass, the fill at 57.7 percent of its length. Tested in `tests/boss-fight.test.ts`.
+
+## The darts (round 2, the Builder's point 2)
+
+The brief says small hot glints with a long thin tail and a warm pool on the paper; the kit says tiny glowing white arrows. Both are kept: the dart is a white arrowhead 26 px long (was 34) under a small four pointed glint, with one mesh for its two tails (a bright one of 140 px and a hair of 520 px) and a warm pool on the paper where its shadow falls. The pool takes blue and a little green out of the paper (a subtracting blend), because light added to paper that is already near white does not show. Darts fly at z 17 to 21 (was 30 to 34), so the shadow sits close to the dart as in the approved picture.

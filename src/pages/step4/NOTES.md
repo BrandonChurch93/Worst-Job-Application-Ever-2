@@ -78,7 +78,7 @@ The numbers in `v`:
 
 | Shape | `v` |
 | --- | --- |
-| `fired-N` | 0: scale while it leaves the muzzle (0 to 1 in 0.1 s). 1: seconds since it landed (9 in flight). 2: seconds in flight (9 once landed) |
+| `fired-N` | 0: scale while it leaves the mouth (0 to 1 in 0.1 s); it leaves at the mouth's height and comes down to its flying height in 0.26 s. 1: seconds since it landed (9 in flight). 2: seconds in flight (9 once landed) |
 | `banner-up` | 0: scale, 1: seconds since `session-expired` |
 | `popup-up-N` | 0: how far it is up (0 to 1), 1: clicks it has taken, 2: seconds since it began to sink (9 before) |
 | `popup-up-N-button-J` | 0: how far it is up |
@@ -98,10 +98,12 @@ The acting, beat by beat (the word a stranger should say, and what carries it):
 | --- | --- | --- |
 | `boss.verify` | doubt | tiptoes in (`nervous`), flinches off the box at 2.72 s, stands off and sweats 3.05 to 3.45 s, winds up 3.36 s, taps 3.72 s so the strike is the tick at 3.8 s, struts off (`confident`), double take at the answer 4.7 s |
 | `boss.unfold` | horror | `recoil` and `shocked` on the crack, a jump back, `rear` two frames after the body opens, `cower` under the cannons, `scared` from 2.3 s, then it steels itself at 8.7 s |
-| `boss.slabs` | fight | `confident`; a `snap` out of the second slab's way two frames after it is fired; hit, knocked back, dust off |
-| `boss.popups` | anger | `angry` from the phase change; hit and shake off |
+| `boss.slabs` | fight | `confident`; a `snap` aside at 11.85 s, two frames after the first slab of the salvo of three is fired; stands its ground and fires through the key |
+| `boss.popups` | anger | `angry` from the phase change; the one hit of the film at 20.24 s, knocked back, dust off |
 | `boss.lastStand` | really | double take two frames after the banner, sags (`exhausted`) from 0.7 s and holds 0.8 s, then `fume` and `angry` at 1.5 s, and the rush |
 | `boss.collapse` | spent | `exhausted`, drags itself to the button and stands 0.9 s |
 | `boss.press` | done | gathers itself 29.45 s, climbs on, drops its weight on the button (`stamp` at 30.42 s, flat at 30.5 s) |
 
 The cues the page gives itself (`rear`, `cower`, the double take and the `fume` at the banner) play in the live site too. The others are the film's, in `ACT` of `script.ts`.
+
+The fight after the key was fitted (numbers in `src/boss/plan.ts`): phases end at 51, 25 and 0 percent; a dart does 1.9, 0.56, 0.53 by phase; the first attack is one slab, later attacks of the first phase are salvos of three (0.18 s apart, fanned 0.3 rad); slabs stop before the verify card; the barrels aim at `fight.look`, the cursor's centre eased over 0.25 s, and slabs and flash leave from the mouth `muzzle()` gives. The film's events and the key are in `pipeline/phase4/boss-fight.md`.
