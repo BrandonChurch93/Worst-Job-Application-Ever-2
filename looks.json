@@ -1,35 +1,35 @@
 {
   "folder": "careers-fix",
-  "pushed": "2026-11-26T04:06:40.082Z",
-  "commit": "6075602ad6d09fbfd0979cb7467375ead05c8c54",
+  "pushed": "2026-11-26T04:59:51.655Z",
+  "commit": "51908a6598eb54b1ddf5118783c03dbc86434cb7",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-marketing-top-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T04:02:31.184Z",
+      "caption": "marketing-top at review, commit 51908a65: approved left, built right",
+      "time": "2026-11-26T04:59:49.988Z",
       "by": "careers-fix",
-      "from": "out/work/stills/key-marketing-top-hd-review.png"
+      "from": "out/work/looks/files/20261126045949-r-top-compare.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Point 1, glass: approved left, build right, cards 0 and 1 at native size",
-      "time": "2026-11-26T04:06:38.553Z",
+      "caption": "hero medal at 3x: approved left, built right (brushed face, leaned rim, contact ring)",
+      "time": "2026-11-26T04:59:50.214Z",
       "by": "careers-fix",
-      "from": "out/work/looks1/glass-cards.png"
+      "from": "out/work/looks/files/20261126045950-r-medal.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Point 1, glass: the corner toward the light at 3 times, approved left, build right",
-      "time": "2026-11-26T04:06:38.775Z",
+      "caption": "ticker: approved, built at the key (11 s), built at rest (0 s); no cut word in either",
+      "time": "2026-11-26T04:59:50.438Z",
       "by": "careers-fix",
-      "from": "out/work/looks1/glass-top-left-3x.png"
+      "from": "out/work/looks/files/20261126045950-r-tick2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Point 1, glass: the far corner and its shadow at 3 times, approved left, build right",
-      "time": "2026-11-26T04:06:39.000Z",
+      "caption": "card 0 at 3x: approved left, built right",
+      "time": "2026-11-26T04:59:50.663Z",
       "by": "careers-fix",
-      "from": "out/work/looks1/glass-far-corner-3x.png"
+      "from": "out/work/looks/files/20261126045950-r-cards.jpg"
     }
   ]
 }
