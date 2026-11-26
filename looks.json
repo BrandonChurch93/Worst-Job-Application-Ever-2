@@ -1,35 +1,35 @@
 {
   "folder": "boss-finish",
-  "pushed": "2026-11-26T10:21:13.909Z",
-  "commit": "b37d019a163b411dce48e37b23e2a3dea0da952d",
+  "pushed": "2026-11-26T10:50:21.587Z",
+  "commit": "b0d68e6d0e1f310b75e33ab24e43bfb19c3460bc",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-boss-fight-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T10:13:06.046Z",
+      "caption": "Key boss-down: approved on the left, this build on the right, draft tier, with crops of shape:boss-cap, cursor, shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:boss-side-0, shape:rim-socket-open, shape:health-track, checkbox",
+      "time": "2026-11-26T10:44:52.884Z",
       "by": "boss-finish",
-      "from": "out/work/stills/key-boss-fight-hd-draft.png"
+      "from": "out/work/compare/compare-boss-down.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
-      "time": "2026-11-26T10:15:59.839Z",
+      "caption": "Key boss-down: approved on the left, this build on the right, draft tier, with crops of shape:boss-cap, cursor, shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:boss-side-0, shape:rim-socket-open, shape:health-track, checkbox",
+      "time": "2026-11-26T10:47:39.134Z",
       "by": "boss-finish",
-      "from": "out/work/compare/compare-boss-fight.jpg"
+      "from": "out/work/compare/compare-boss-down.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
-      "time": "2026-11-26T10:18:09.775Z",
+      "caption": "boss-down, approved left, build right: toothed plates, burst cap ends, smoke, tinted lying shield",
+      "time": "2026-11-26T10:50:20.434Z",
       "by": "boss-finish",
-      "from": "out/work/compare/compare-boss-fight.jpg"
+      "from": "out/work/looks/files/20261126105020-look-down.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "boss-fight at draft, approved left, build right: glass shield with thin rim, slabs in a column",
-      "time": "2026-11-26T10:21:12.689Z",
+      "caption": "boss-fight, approved left, build right: straight steel legs, heavier barrels, shield hit on its outward face",
+      "time": "2026-11-26T10:50:20.656Z",
       "by": "boss-finish",
-      "from": "out/work/looks/files/20261126102112-look-fight-1.jpg"
+      "from": "out/work/looks/files/20261126105020-look-boss.jpg"
     }
   ]
 }
