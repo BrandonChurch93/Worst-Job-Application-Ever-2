@@ -176,3 +176,86 @@ export function picture(w: number, h: number, colour: boolean, paint: (u: number
   tex.needsUpdate = true
   return tex
 }
+
+export interface LoftRing { o: Outline; z: number; out: number; up: number }
+
+// Joins outlines of the same count ring to ring. The last ring is closed with a flat face when `cap` says which way it looks.
+export function loft(rings: LoftRing[], cap: 0 | 1 | -1 = 0): THREE.BufferGeometry {
+  const n = rings[0]!.o.count
+  const pos: number[] = []
+  const nor: number[] = []
+  const uv: number[] = []
+  const idx: number[] = []
+  for (const ring of rings) {
+    for (let i = 0; i < n; i++) {
+      const x = ring.o.x[i]!
+      const y = ring.o.y[i]!
+      const l = Math.hypot(ring.out, ring.up) || 1
+      pos.push(x, y, ring.z)
+      nor.push((ring.o.nx[i]! * ring.out) / l, (ring.o.ny[i]! * ring.out) / l, ring.up / l)
+      uv.push(x, y)
+    }
+  }
+  for (let k = 0; k < rings.length - 1; k++) {
+    const a = k * n
+    const b = (k + 1) * n
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(a + i, a + j, b + i, a + j, b + j, b + i)
+    }
+  }
+  if (cap !== 0) {
+    const last = rings[rings.length - 1]!
+    const start = pos.length / 3
+    let cx = 0
+    let cy = 0
+    for (let i = 0; i < n; i++) {
+      cx += last.o.x[i]! / n
+      cy += last.o.y[i]! / n
+      pos.push(last.o.x[i]!, last.o.y[i]!, last.z)
+      nor.push(0, 0, cap)
+      uv.push(last.o.x[i]!, last.o.y[i]!)
+    }
+    pos.push(cx, cy, last.z)
+    nor.push(0, 0, cap)
+    uv.push(cx, cy)
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      if (cap > 0) idx.push(start + n, start + i, start + j)
+      else idx.push(start + n, start + j, start + i)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  g.setIndex(idx)
+  return g
+}
+
+// A normal map from a field of heights that wraps at neither edge.
+export function normalsFrom(size: number, strength: number, height: (u: number, v: number) => number): THREE.DataTexture {
+  const h = new Float32Array(size * size)
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) h[y * size + x] = height((x + 0.5) / size, (y + 0.5) / size)
+  const at = (x: number, y: number): number => h[Math.min(size - 1, Math.max(0, y)) * size + Math.min(size - 1, Math.max(0, x))]!
+  const data = new Uint8Array(size * size * 4)
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const dx = (at(x + 1, y) - at(x - 1, y)) * strength
+      const dy = (at(x, y + 1) - at(x, y - 1)) * strength
+      const l = Math.hypot(dx, dy, 1)
+      const i = (y * size + x) * 4
+      data[i] = Math.round((-dx / l) * 127.5 + 127.5)
+      data[i + 1] = Math.round((-dy / l) * 127.5 + 127.5)
+      data[i + 2] = Math.round((1 / l) * 127.5 + 127.5)
+      data[i + 3] = 255
+    }
+  }
+  const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat, THREE.UnsignedByteType)
+  tex.magFilter = THREE.LinearFilter
+  tex.minFilter = THREE.LinearMipmapLinearFilter
+  tex.generateMipmaps = true
+  tex.colorSpace = THREE.NoColorSpace
+  tex.needsUpdate = true
+  return tex
+}
