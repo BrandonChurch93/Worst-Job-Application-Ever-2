@@ -12,7 +12,6 @@ import { makeScript } from './script'
 import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
-const SCORCH_SECONDS = 2.4
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -113,6 +112,7 @@ export function makePage(): PageLogic {
   }
 
   const TIP_AT_REST = 1.965
+  const AIM_LIFT = 0.36
 
   const page: PageLogic = {
     id: 'step4', unit: 'boss', width: 1920, height: SCREEN_H, layout: L.tree, gags, start: { x: 700, y: 820 }, control: 'pointer',
@@ -180,7 +180,7 @@ export function makePage(): PageLogic {
         const f = s.fight
         const before = f.phase
         stepFight(f, io, arena)
-        const to = TIP_AT_REST - Math.atan2(io.cursor.y - f.y, f.x - io.cursor.x)
+        const to = TIP_AT_REST - AIM_LIFT - Math.atan2(io.cursor.y - f.y, f.x - io.cursor.x)
         io.cursor.aim(Math.atan2(Math.sin(to), Math.cos(to)))
         if (f.phase !== before) {
           s.t = 0
@@ -197,13 +197,13 @@ export function makePage(): PageLogic {
         }
         if (f.over) toCollapse(io, rigNow()!)
       } else if (s.stage === 'collapse') {
-        if (s.t >= CAP_LANDS && s.t - dt < CAP_LANDS) {
-          io.cursor.heal()
-          io.cursor.hurt('scorched', SCORCH_SECONDS)
-        }
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
           s.t = 0
+          if (s.mode === 'film') {
+            io.cursor.heal()
+            io.cursor.hurt('scorched')
+          }
           io.cursor.act('exhausted')
         }
       } else if (s.stage === 'press') {
@@ -216,7 +216,7 @@ export function makePage(): PageLogic {
           }
         } else {
           s.pressed += dt
-          if (s.pressed >= 0.35 && !s.damaged) s.done = true
+          if (s.pressed >= 0.35 && (!s.damaged || s.mode === 'film')) s.done = true
         }
       }
       io.cursor.setGround(groundAt(io.cursor.x, io.cursor.y))
