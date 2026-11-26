@@ -86,7 +86,7 @@ function build(z: Zone): Group[] {
   const d = table.displays[k]!
   const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 34, 0.22, 2.4)))
   if (z.id === 'corporate') {
-    add('general', 2, C.CORPORATE_WHITE, [...both(rail, 1.45), ...elbow])
+    add('general', 2, C.CORPORATE_WHITE, [...both(rail, 0.6), ...elbow])
     add('lanes', 2, C.CORPORATE_GOLD, [...both(lane, 1.4), ...slings])
     inserts.forEach(insert)
     for (const p of table.posts) if (p.tier === k && p.lamp) add(p.id.slice(p.id.indexOf('.') + 1), 1, C.CORPORATE_GLOBE, [at(p.c[0], p.c[1], 46, 1.5, 5.2, `post.${p.id}`)], true)
@@ -103,15 +103,15 @@ function build(z: Zone): Group[] {
     add('flash', 0, C.CORPORATE_FLASH, [])
   } else if (z.id === 'office') {
     // The Office is a lit room: its lamps throw wide, so the floor between them is never dark.
-    add('general', 2, C.OFFICE_FLUORESCENT, [...both(rail, 0.6).map((s) => (s.z > 100 ? { ...s, power: s.power * 1.5 } : s)), ...elbow])
+    add('general', 2, C.OFFICE_FLUORESCENT, [...both(rail, 0.14).map((s) => (s.z > 100 ? { ...s, power: s.power * 1.5 } : s)), ...elbow])
     inserts.forEach(insert)
     table.bumpers.filter((b) => b.tier === k).forEach((b, i) => add(`bumper.${i + 1}`, 1, C.OFFICE_BUMPER, [at(b.c[0], b.c[1], 58, 1.1, 4.2, `bumper.${b.id}`)], true))
     const coffee = model('office.coffee')
-    add('windows', 0, C.OFFICE_COFFEE, [...lane.map((l) => at(l.c[0], l.c[1], LAMP.z, LAMP.power * 0.8, LAMP.reach / BALL)), ...slings, ...bats, ...shoulders.map((s) => ({ ...s, power: s.power * 0.7 })), at(centre(coffee)[0], coffee.box[1] + coffee.box[3] + 0.12, 90, 0.9, 3.6, coffee.id), at(coffee.box[0] - 0.12, centre(coffee)[1], 90, 0.7, 3.2, coffee.id)])
+    add('windows', 0, C.OFFICE_COFFEE, [...lane.map((l) => at(l.c[0], l.c[1], LAMP.z, LAMP.power * 0.5, LAMP.reach / BALL)), ...slings, ...bats, ...shoulders.map((s) => ({ ...s, power: s.power * 0.7 })), at(centre(coffee)[0], coffee.box[1] + coffee.box[3] + 0.12, 90, 0.9, 3.6, coffee.id), at(coffee.box[0] - 0.12, centre(coffee)[1], 90, 0.7, 3.2, coffee.id)])
     display()
     add('flash', 0, C.OFFICE_FLASH, [])
   } else {
-    add('general', 2, C.STREET_DUSK, both(rail, 1.2))
+    add('general', 2, C.STREET_DUSK, both(rail, 0.7))
     add('lanes', 2, C.STREET_SODIUM, [...both(lane, 1.4), ...slings])
     inserts.forEach(insert)
     const fire = model('street.firehouse')
@@ -144,9 +144,9 @@ const made = new Map<string, Group[]>()
 
 // The light groups of a zone, in the order of their channels. A zone without lamps has none.
 // A lit front at the foot of a model, and its image in the wet floor before it: where it stands, half its width and its height in pixels, its colour, and the group whose level it follows. A front with a row of windows is mirrored as a row of bars, `pitch` pixels apart.
-export interface Spill { x: number; y: number; half: number; high: number; colour: RGB; follows: string; power: number; pitch: number; phase: number }
+export interface Spill { x: number; y: number; half: number; high: number; colour: RGB; follows: string; power: number; pitch: number; phase: number; side?: boolean }
 
-export const SPILLS = 4
+export const SPILLS = 7
 
 export function spillsOf(z: Zone): Spill[] {
   const front = (id: string, off: number, half: number, high: number, colour: RGB, follows: string, power: number, pitch = 0, phase = 0): Spill => {
@@ -154,8 +154,17 @@ export function spillsOf(z: Zone): Spill[] {
     const p = localBalls(z, centre(m)[0] + off, m.box[1] + m.box[3] + 0.05)
     return { x: p[0], y: p[1], half: half * BALL, high: high * BALL, colour, follows, power, pitch: pitch * BALL, phase }
   }
+  // The same for a wall that looks across the tier: `way` 1 is the model's right wall, -1 its left.
+  const side = (id: string, way: number, half: number, high: number, colour: RGB, follows: string, power: number, pitch = 0): Spill => {
+    const m = model(id)
+    const p = localBalls(z, way > 0 ? m.box[0] + m.box[2] + 0.05 : m.box[0] - 0.05, centre(m)[1])
+    return { x: p[0], y: p[1], half: half * BALL, high: high * BALL, colour, follows, power, pitch: pitch * BALL, phase: 0, side: true }
+  }
   if (z.id === 'street') {
     return [
+      side('street.firehouse', 1, 0.7, 1.1, C.STREET_WINDOW, 'windows', 0.5, 0.42),
+      side('street.police', -1, 0.7, 1.1, C.STREET_WINDOW, 'windows', 0.5, 0.42),
+      side('street.bank', 1, 0.5, 0.9, C.STREET_WINDOW, 'windows', 0.45, 0.21),
       front('street.firehouse', 0.55, 0.42, 1.5, C.STREET_RED, 'red', 1.6),
       front('street.firehouse', -0.62, 0.6, 1.1, C.STREET_WINDOW, 'windows', 0.55, 0.42),
       front('street.police', 0, 1.05, 1.1, C.STREET_WINDOW, 'windows', 0.55, 0.42),
@@ -170,8 +179,10 @@ export function spillsOf(z: Zone): Spill[] {
 // A lamp that stands high on a model, over the reach of the floor's pictures: it lights the walls and roofs near it straight from its own place.
 export interface High { x: number; y: number; z: number; reach: number; colour: RGB; follows: string; power: number }
 
-export const HIGHS = 7
+export const HIGHS = 9
 export const HIGH_BODY = 60
+// The beacon's lamp over its roof, in pixels and balls: low and near, so its colour lies on the roof and not on the street.
+const BEACON = { z: 20, reach: 1.5, power: 0.8 }
 const NOTES = { out: 0.75, z: 70, reach: 2, power: 0.2 }
 
 export function highOf(z: Zone): High[] {
@@ -210,7 +221,13 @@ export function highOf(z: Zone): High[] {
   const upper: [number, number][] = [[x1, y0], [x0, y1], [x1, y1]]
   // With the spiral of two turns the ball's tube passes the lower fitting at the left of the garage's foot, and the owner of the model left that one out.
   const lower: [number, number][] = g.h < 3.6 ? [[x1, y0], [x0, y0], [x1, y1]] : [[x1, y0], [x0, y0], [x0, y1], [x1, y1]]
-  return [...upper.map(([u, v]) => lamp(u, v, (base + g.h) * BALL - 22, 0.45, 2.8)), ...lower.map(([u, v]) => lamp(u, v, (base + 0.4 * g.h) * BALL, 0.55, 3.2))]
+  // The beacons stand over the reach of the floor's pictures: each throws its colour on the roof round it from its own place.
+  const beacon = (id: string, colour: RGB, follows: string): High => {
+    const m = model(id)
+    const p = localBalls(z, centre(m)[0], m.box[1] + m.box[3] * 0.3)
+    return { x: p[0], y: p[1], z: ((m.base ?? 0) + m.h) * BALL + BEACON.z, reach: BEACON.reach * BALL, colour, follows, power: BEACON.power }
+  }
+  return [...upper.map(([u, v]) => lamp(u, v, (base + g.h) * BALL - 22, 0.45, 2.8)), ...lower.map(([u, v]) => lamp(u, v, (base + 0.4 * g.h) * BALL, 0.55, 3.2)), beacon('street.firehouse', C.STREET_RED, 'red'), beacon('street.police', C.STREET_BLUE, 'blue')]
 }
 
 export function groupsOf(z: Zone | string): Group[] {

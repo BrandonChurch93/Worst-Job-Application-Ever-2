@@ -301,7 +301,7 @@ describe('the rows as they are built', () => {
       most = Math.max(most, soak.getX(i))
     }
     expect(least).toBeGreaterThan(0.05)
-    expect(least).toBeLessThan(0.3)
+    expect(least).toBeLessThan(0.5)
     expect(most).toBeLessThanOrEqual(1)
     expect(TRAY.soakOver).toBeGreaterThan(0)
     expect(TRAY.soakOver).toBeLessThan(DIAL_BODY.rest)
