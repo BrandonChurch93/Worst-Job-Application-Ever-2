@@ -177,7 +177,7 @@ if (wants('band')) {
 }
 
 if (wants('skip')) {
-  const page = await open('?step=1', { width: 1920, height: 1080 }, wired)
+  const page = await open('?step=1&quality=low', { width: 1920, height: 1080 }, wired)
   const said = () => page.evaluate(() => document.querySelector('#controls [role="status"]')?.textContent ?? '')
   const link = () => page.evaluate(() => {
     const e = [...document.querySelectorAll('#controls button')].find((b) => !b.hidden && (b.getAttribute('aria-label') ?? b.textContent ?? '').startsWith('Skip'))

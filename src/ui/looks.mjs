@@ -1,4 +1,4 @@
-// The interface on the wired site, measured in a browser: node src/ui/looks.mjs [keys] [bar] [ink] [motion] [touch]
+// The interface on the wired site, measured in a browser: node src/ui/looks.mjs [keys] [bar] [ink] [motion] [touch]. Asked for by name only: history, probe.
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -264,6 +264,68 @@ if (wants('touch')) {
     console.log(`dist/bundle: ${sizes.join(', ')}`)
     await new Promise((done) => built.httpServer.close(done))
   } else console.log('touch, built: no dist, run npm run build first')
+}
+
+if (only.includes('history')) {
+  const page = await open('')
+  await page.waitForTimeout(2000)
+  const trail = []
+  const note = async (what) => {
+    const s = await state(page)
+    trail.push(`${what}: ${s.mode} "${s.search}"`)
+    return s
+  }
+  await note('opened')
+  await page.locator('#controls a').click()
+  await page.waitForFunction(() => document.querySelector('#controls [data-mode]').dataset.mode === 'film', null, { timeout: 60000 }).catch(() => {})
+  const film = await note('film link')
+  await page.goBack()
+  await page.waitForFunction(() => document.querySelector('#controls [data-mode]').dataset.mode === 'live', null, { timeout: 60000 }).catch(() => {})
+  const back = await note('browser back')
+  await page.goForward()
+  await page.waitForFunction(() => document.querySelector('#controls [data-mode]').dataset.mode === 'film', null, { timeout: 60000 }).catch(() => {})
+  const forward = await note('browser forward')
+  await page.locator('#controls button[aria-label="Back to the application"]').click()
+  await page.waitForFunction(() => document.querySelector('#controls [data-mode]').dataset.mode === 'live', null, { timeout: 60000 }).catch(() => {})
+  const control = await note('back control')
+  await page.goBack()
+  await page.waitForFunction(() => document.querySelector('#controls [data-mode]').dataset.mode === 'film', null, { timeout: 60000 }).catch(() => {})
+  const again = await note('browser back again')
+  await page.waitForTimeout(1500)
+  await page.screenshot({ path: path.join(out, 'looks-history.png') })
+  const loads = page.asked.filter((u) => /\/(index\.html)?(\?[^/]*)?$/.test(u.replace('http://localhost:5199', ''))).length
+  check('history: the film link, the browser\'s back and forward and the back control each change the mode and the address together, without a new load of the page', film.mode === 'film' && film.search.includes('mode=film') && back.mode === 'live' && !back.search.includes('mode=film') && forward.mode === 'film' && forward.search.includes('mode=film') && control.mode === 'live' && !control.search.includes('mode=film') && again.mode === 'film' && loads === 1, `${trail.join('; ')}; the page was loaded ${loads} time`)
+  check('history: no error on the page', page.errors.length === 0, page.errors.slice(0, 3).join(' | '))
+  await page.context().close()
+}
+
+if (only.includes('probe')) {
+  const page = await open('?mode=probe')
+  const t = process.hrtime.bigint()
+  const seen = new Set()
+  const done = () => page.evaluate(() => (document.querySelector('#controls pre')?.textContent.length ?? 0) > 0 && !document.querySelector('#controls section').hidden)
+  while (!(await done()) && Number((process.hrtime.bigint() - t) / 1000000000n) < 1500) {
+    const now = await page.evaluate(() => document.querySelector('#controls [role="status"]')?.textContent ?? document.querySelector('#controls')?.innerText ?? '')
+    for (const line of now.split('\n')) if (line.trim()) seen.add(line.trim())
+    await page.waitForTimeout(1000)
+  }
+  const seconds = Number((process.hrtime.bigint() - t) / 1000000000n)
+  const text = await page.evaluate(() => document.querySelector('#controls pre')?.textContent ?? '')
+  console.log(`probe, said while it ran: ${[...seen].join(' | ')}`)
+  console.log(text)
+  fs.writeFileSync(path.join(out, 'looks-probe.txt'), text)
+  await page.screenshot({ path: path.join(out, 'looks-probe.png') })
+  check('probe at 1280 by 720: it runs to its end and gives its block of text', /The site would pick: \w+/.test(text), `${seconds} s, ${text.split('\n').length} lines`)
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {})
+  const copy = page.locator('#controls button', { hasText: 'Copy' }).first()
+  await copy.click()
+  await page.waitForTimeout(500)
+  const label = await copy.evaluate((e) => e.getAttribute('aria-label') ?? e.textContent)
+  const clip = await page.evaluate(() => navigator.clipboard.readText()).catch((e) => `not readable: ${e}`)
+  await page.screenshot({ path: path.join(out, 'looks-probe-copied.png') })
+  check('probe: Copy puts the block on the clipboard and says so', clip === text && label === 'Copied', `the control reads "${label}", the clipboard holds ${clip === text ? 'the same text' : clip.slice(0, 80)}`)
+  check('probe: no error on the page', page.errors.length === 0, page.errors.slice(0, 3).join(' | '))
+  await page.context().close()
 }
 
 await browser.close()
