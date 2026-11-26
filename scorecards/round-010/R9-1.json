@@ -46,6 +46,22 @@
    "where": "frames 1 to 4, the arrow ramming the machine",
    "what": "the ram reads, but there is no stretch on the charge in and no squash on impact; the arrow keeps its normal shape while hitting a much bigger object",
    "fix": "stretch it along its axis on the run in, squash it hard on contact, then let it bounce out before the explosion"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the dialogs are read as things the machine throws at the arrow, like the slabs before them. That they stand up as shields in front of the machine, and that the arrow has to shoot them down or go round them, is not in the read; the hit and the going on are.",
+   "fix": "The dialogs standing up between the arrow and the machine and taking its darts, one of them shot down or gone round in plain view, before the hit.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the words Session expired are read as a hit that crumples the arrow. That the machine was nearly beaten, that its bar jumps back up a little, and the arrow's whole body saying really, are not in the read; the charge that finishes it is.",
+   "fix": "The bar's jump back up seen in the sheet, and the arrow's answer to it as a held pose of disbelief that is not a hurt pose, before it goes back in.",
+   "by": "builder"
   }
  ],
  "reads": [
