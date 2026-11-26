@@ -32,6 +32,8 @@ export const sealed = {
 
 // How much of the ball's lamp reaches the body through the glass.
 export const SEALED_LEVEL = 0.78
+// The lamp's own level once the ball is wholly inside the machine. Out on the page the lamp is off and the page's light is left as it is.
+export const SEALED_FULL = 1.3
 
 const SEALED = /* glsl */ `
 vec3 wjaSealed = vec3( 0.0 );
@@ -47,7 +49,7 @@ if ( uShape.y > 0.0 ) {
 `
 // The sealed lamp sets the body's level: where the scene lights the body more it is held down to the lamp's own level, where less it is topped up to it.
 const SEALED_TOP = /* glsl */ `
-if ( uShape.y > 0.0 ) outgoingLight *= mix( 1.0, min( 1.0, dot( wjaSealed, vec3( 0.2126, 0.7152, 0.0722 ) ) / max( dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) ), 1e-4 ) ), min( 1.0, uShape.y ) );
+if ( uShape.y > 0.0 ) outgoingLight *= mix( 1.0, min( 1.0, dot( wjaSealed, vec3( 0.2126, 0.7152, 0.0722 ) ) / max( dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) ), 1e-4 ) ), min( 1.0, uShape.y ) * clamp( dot( uSealedLight, vec3( 0.2126, 0.7152, 0.0722 ) ) / ${SEALED_FULL.toFixed(3)}, 0.0, 1.0 ) );
 outgoingLight += wjaSealed * clamp( 1.0 - dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) ) / max( dot( wjaSealed, vec3( 0.2126, 0.7152, 0.0722 ) ), 1e-4 ), 0.0, 1.0 );
 `
 

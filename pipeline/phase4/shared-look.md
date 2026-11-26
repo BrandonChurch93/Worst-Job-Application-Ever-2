@@ -105,6 +105,8 @@ Not built:
 
 What still shows: a small grey dimple where the stem meets the wings at 6x.
 
+A fault of this item found on the ten keys and mended. MEASURED on `loader-page` at review, a 10 px square on the sealed arrow at 1640, 510 (`patch.cjs`), median linear luminance: 0.378 before item D, 0.040 at 78e4cfd5 (the arrow all but gone), 0.267 after the mend (p90 0.711; before D 0.639). The cause: out on the page the ball's lamp is off (`within` is 0 in the ball's maker), so holding the body down to the lamp's level held it down to nothing. Mended: the hold is weighed by the lamp's own level against `SEALED_FULL` 1.3, its level once the ball is wholly inside the machine, so on the page the page's light is left as it is. MEASURED on `reply-all` at draft, the still after the mend against the still of item D: 112 of 2073600 pixels differ by more than 12 of 255 in green, scattered; the arrow in the machine is as item D left it. The fault was mine: D's sealed arrow was checked on `reply-all` only. `SEALED_FULL` follows the ball's `INSIDE` (key 2.6 by least 0.5); if the ball's owner changes those, this number follows.
+
 ## Item E: where the shadows fall
 
 The control: a steel cap of the progress rail, the same part at the same place on every page. The measure (`out/work/shared-look/shadow3.cjs <png> <x> <y> <deg>`): the cap's radius across the light, then the page's linear luminance along a ray from the cap's middle toward where the shadow falls, as a share of the lit page; past the cap's far edge, where the shadow has lost 0.2, 0.5 and 0.8 of its depth. Offset is the half depth point, width is from 0.8 to 0.2 of the depth.
@@ -181,7 +183,7 @@ Built: `collar` adds every corner between the two sides. MEASURED after: the sam
 | shell | 37 | 40 |
 | type | 3 | 40 |
 | light-engine | 3 | 40 |
-| cursor-body | 8 | 40 |
+| cursor-body | 10 | 40 |
 
 ## Measures, before and after
 
