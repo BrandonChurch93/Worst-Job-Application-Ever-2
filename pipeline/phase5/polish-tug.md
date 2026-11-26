@@ -51,3 +51,26 @@ In pictures (`node pipeline/phase5/fix-tug-steps.mjs walk a2`, the pack's own vi
 
 - When the visitor's pointer is far from the slot at the bite (269 px under the keen bot, 290 px under the pack's visitor) the arms are up to 190 px long on the frame they close, before the haul shortens them to 71 px in 0.3 s.
 - The slot's pale panels still leave in one picture at the very end: they sink under the page. A fade needs a material of its own in `real/shredder.ts`; not done.
+
+## Which film frames change (MEASURED 23:39Z)
+
+How: `pipeline/phase5/polish-tug-filmdiff.ts.txt` copied as `tests/polish-tug-filmdiff.test.ts` into this branch and into a worktree of `origin/main` (fb56846a), run on each with `FILMDIFF=<path> npx vitest run tests/polish-tug-filmdiff.test.ts`, then removed. It plays the film of step 1 by its script and writes, per frame of 60, a hash of the page's draw list and the arrow's pose, and per event its step and name.
+
+- Events: 351 on both, the two lists byte equal by `cmp`: no event moved. The beat of every frame is the same on both (0 of 1920 differ).
+- Frames of step 1 that differ: 337 of 1920. Unit frame (film frame, step 1 starts at film second 14, frame 840):
+  - 352 to 360 (film 1192 to 1200, unit 5.87 to 6.00 s, `step1.firstName`): the struck key springs back.
+  - 1322 to 1613 and 1615 to 1621 (film 2162 to 2453 and 2455 to 2461, unit 22.03 to 27.02 s, `step1.tug`): the reach, the grab and the haul.
+  - 1830 to 1858 (film 2670 to 2698, unit 30.50 to 30.97 s, `step1.shredded`): the slot's last closing.
+- This reads the state a frame is drawn from, not the drawn picture. The film sheets (`npm run sheet -- --beat step1.tug`) were not made: the one browser was taken by the pack until the limit.
+
+## The pack of round 22 (MEASURED 23:48Z)
+
+`npm run -s pack -- --phase 5 --round 22 --unit site --role R4` at commit c7730f7d: exit 0, 10 files, 412 s. Sheets in `out/work/packs/round-022/R4/`: `set-A-04.png` the hit at step 899, `set-A-05.png` control taken at step 1854, `set-A-06.png` given back at step 2614. What the pictures show, each looked at, the small things in crops:
+
+- Control taken (0:30.80 to 0:31.17, a picture every 1/30 s): the paper stands in the slot; at 0:30.93 the arms are out of the body with the hands in the air on the way; at 0:30.97 the hands are on the paper, arms long; at 0:31.00 the paper is swung and the arrow has begun toward it; 0:31.03 to 0:31.17 the arrow comes nearer the paper in every picture, leaning, arms shortening. The arrow does not drift away from the paper. The paper's jerk at the bite is not legible at this size and stride.
+- Given back (0:43.47 to 0:43.83): the arrow stands still at its standard tilt from 0:43.47 to 0:43.60; the slot is dark and shut until 0:43.60, bright with a dark core at 0:43.63, pale at 0:43.67, then fainter in each of 0:43.70, 0:43.73 and 0:43.77, gone at 0:43.80: no single white frame. The arrow moves with the visitor from 0:43.63 and turns from its standard tilt to upright over 0:43.63, 0:43.67, 0:43.70 (three pictures, four frames of 60), where round 21 showed it in one picture. The angle per frame of 60 under the pack's visitor is UNKNOWN: the sheet shows every second frame; by eye about 35 degrees over four frames. The turn itself is the lean into the visitor's move, which is not my part of `body.ts`.
+- The hit (0:14.88 to 0:15.25): the bolt meets the arrow on G at 0:14.98, the page shakes, the scorch is on G from 0:15.05. Whether G stands at its full height again is not resolved by the picture at this size: UNKNOWN on the live site. The spring back is MEASURED in the film only (H key, 0.100 s); the code is the same for both (`sprung` in `index.ts`, no branch on the mode), and a key the visitor holds down stays down.
+
+## Seen in the film's numbers, not mine, not changed
+
+The arrow's place jumps 90 px in one frame at unit frame 1682 (unit 28.03 s, film frame 2522) in the film of step 1: (789.4, 643.0) to (783.4, 733.0). The same on `origin/main` (that frame's state is equal on both).
