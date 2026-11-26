@@ -113,7 +113,7 @@ const LAST_OUT: Shape = { id: 'last.out', part: 'table-layout', kind: 'well', x:
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
   'table-wide': { ...look('table-wide', [MID, APRON_Y + 17.4, 8.4], [MID, Y2 + 0.45, -1.86]), omit: LAST_OUT },
-  'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9, -0.5], [MID - 0.55, Y0 + 5.02, 0.35]),
+  'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9.2, 0.8], [MID - 0.55, Y0 + 5.02, 0.36]),
   'table-replyall': look('table-replyall', [MID, Y1 + 15.34, 12], [MID, Y1 + 6.6, -2]),
   'table-fired': look('table-fired', [7.25, Y2 + 7.45, 0.95], [4.6, Y2 + 3.5, -2]),
   'table-save': { ...look('table-save', [MID, Y2 + 16.7, 4.8], [MID + 0.15, Y2 + 10.71, -0.5]), omit: LAST_OUT }
