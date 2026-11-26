@@ -1,0 +1,960 @@
+{
+ "critic": "R2",
+ "pass": true,
+ "round": 21,
+ "carriedFrom": "scorecards/round-020/R2-1.json",
+ "carried": "No juror was asked again in round 21. MEASURED by sha256, the packs agent's list against the files of round 20 held by the Builder: all 25 pictures of round 21's jury pack (6 judged stills of the live site at f6a5e0eb, 10 controls of whole pages, 9 controls of another kind) and its three briefs are byte equal to round 20's; only the pack's plan differs, by its round number and commit. So the 30 answers of round 20 on the six judged stills stand for these pictures.",
+ "judgedCommit": "f6a5e0eb16c421947e11de960a3774144fd5bcf5",
+ "jurors": 5,
+ "judged": [
+  {
+   "file": "set-A-01.png",
+   "what": {
+    "judged": "site:marketing",
+    "still": {
+     "page": "marketing",
+     "camera": "home",
+     "tier": "draft",
+     "live": "high"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r20_juror_01",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 60,
+     "why": "it's a flat webpage layout dressed in skeuomorphic glossy-3D chrome (beveled buttons, badge, cards over a noisy texture) with no cinematic lighting or scene depth, reading like a styled mock-up/stock render rather than a photo or production frame",
+     "at": "19:32Z"
+    },
+    {
+     "juror": "r20_juror_02",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the beveled 3D elements are laid out as an interactive careers webpage",
+     "at": "19:32Z"
+    },
+    {
+     "juror": "r20_juror_03",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 80,
+     "why": "it is plainly a web page UI (nav bar, buttons, cursor, card layout) with faux-3D skeuomorphic styling, i.e. a web demo",
+     "at": "19:32Z"
+    },
+    {
+     "juror": "r20_juror_04",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "the beveled 3D elements are arranged as a complete clickable webpage, down to the visible mouse cursor",
+     "at": "19:32Z"
+    },
+    {
+     "juror": "r20_juror_05",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 85,
+     "why": "it's a flat web-page screenshot with UI chrome, nav bar, glossy CSS-style buttons, cards, and a visible mouse cursor, not a 3D scene, photo, or cinematic frame",
+     "at": "19:32Z"
+    }
+   ],
+   "letters": "c d d d d",
+   "reusedFrom": "scorecards/round-020/R2-1.json"
+  },
+  {
+   "file": "set-A-02.png",
+   "what": {
+    "judged": "site:step1",
+    "still": {
+     "page": "step1",
+     "camera": "home",
+     "tier": "draft",
+     "live": "high"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r20_juror_06",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the bevelled controls are arranged as an interactive browser form",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_07",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "it is a flat web form UI (job application with a step indicator and a cursor) with skeuomorphic shading, clearly a browser game or web app screen",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_08",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the mouse cursor over an interactive web form",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_09",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 82,
+     "why": "flat web-form UI with CSS-looking widgets and a mouse cursor",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_10",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 98,
+     "why": "the interactive web-form layout with a visible mouse cursor",
+     "at": "19:33Z"
+    }
+   ],
+   "letters": "d d d d d",
+   "reusedFrom": "scorecards/round-020/R2-1.json"
+  },
+  {
+   "file": "set-A-03.png",
+   "what": {
+    "judged": "site:step2",
+    "still": {
+     "page": "step2",
+     "camera": "home",
+     "tier": "draft",
+     "live": "high"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r20_juror_11",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 88,
+     "why": "it's a flat web form UI (a joke browser game) with skeuomorphic shading on its buttons, not a photographed or rendered scene",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_12",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the visible mouse cursor hovering over an interactive form dropdown",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_13",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 90,
+     "why": "it is a flat web-app UI screen (a joke job-application form with skeuomorphic 3D-styled knobs and sliders), not a photo, cinematic frame, or product render",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_14",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the visible cursor hovering over a dropdown in an interactive form",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_15",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 88,
+     "why": "it's a web app UI (a form with dropdowns, a stepper and a cursor) with skeuomorphic 3D-style buttons, so it reads as a browser game or web demo, not a photo or film frame",
+     "at": "19:33Z"
+    }
+   ],
+   "letters": "d d d d d",
+   "reusedFrom": "scorecards/round-020/R2-1.json"
+  },
+  {
+   "file": "set-A-04.png",
+   "what": {
+    "judged": "site:pinball",
+    "still": {
+     "page": "pinball",
+     "camera": "home",
+     "tier": "draft",
+     "live": "high"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r20_juror_16",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the rendered hardware is embedded in an interactive web-style application form",
+     "at": "19:33Z"
+    },
+    {
+     "juror": "r20_juror_17",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 88,
+     "why": "the web-app UI layout, HTML headings, a numbered step indicator, body text and a mouse cursor over a rendered object, marks it as an interactive browser 3D demo/app rather than a photo, film frame or product render",
+     "at": "19:34Z"
+    },
+    {
+     "juror": "r20_juror_18",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the embedded numbered progress bar makes it look like an interactive web app",
+     "at": "19:34Z"
+    },
+    {
+     "juror": "r20_juror_19",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 90,
+     "why": "it is a web page UI (title, step progress bar, cursor) with 3D-rendered pipe and button elements, i.e. a browser web 3D demo",
+     "at": "19:34Z"
+    },
+    {
+     "juror": "r20_juror_20",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the 3D pipe is embedded in an interactive job-application UI",
+     "at": "19:34Z"
+    }
+   ],
+   "letters": "d d d d d",
+   "reusedFrom": "scorecards/round-020/R2-1.json"
+  },
+  {
+   "file": "set-A-05.png",
+   "what": {
+    "judged": "site:boss",
+    "still": {
+     "page": "boss",
+     "camera": "home",
+     "tier": "draft",
+     "live": "high"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r20_juror_21",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 88,
+     "why": "the simple gag web-app UI with a mouse cursor and low-budget styled 3D buttons",
+     "at": "19:34Z"
+    },
+    {
+     "juror": "r20_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 98,
+     "why": "the image is laid out as an interactive web form with a visible cursor",
+     "at": "19:34Z"
+    },
+    {
+     "juror": "r20_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "it is a flat browser-game UI screen (form, cursor, skeuomorphic buttons) rather than a rendered or photographed object",
+     "at": "19:34Z"
+    },
+    {
+     "juror": "r20_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the raised buttons and checkbox are arranged as a flat interactive web form",
+     "at": "19:34Z"
+    },
+    {
+     "juror": "r20_juror_25",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 82,
+     "why": "cursor and CAPTCHA web-app UI framing",
+     "at": "19:35Z"
+    }
+   ],
+   "letters": "d d d d d",
+   "reusedFrom": "scorecards/round-020/R2-1.json"
+  },
+  {
+   "file": "set-A-06.png",
+   "what": {
+    "judged": "site:decision",
+    "still": {
+     "page": "decision",
+     "camera": "home",
+     "tier": "draft",
+     "live": "high"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r20_juror_26",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 96,
+     "why": "the full-screen numbered stepper and processing panel look like a stylized web form",
+     "at": "19:35Z"
+    },
+    {
+     "juror": "r20_juror_27",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "it is plainly a web app UI screen (flat title, step indicator, body text in a web font) with skeuomorphic styling, not a photographed object or film frame",
+     "at": "19:35Z"
+    },
+    {
+     "juror": "r20_juror_28",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "the full-screen job-application wizard layout with its numbered progress bar",
+     "at": "19:35Z"
+    },
+    {
+     "juror": "r20_juror_29",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 85,
+     "why": "the clean, artificial 3D lighting on perfectly smooth plastic and metal",
+     "at": "19:35Z"
+    },
+    {
+     "juror": "r20_juror_30",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 96,
+     "why": "the front-on step-by-step application UI with beveled controls",
+     "at": "19:35Z"
+    }
+   ],
+   "letters": "d d d c d",
+   "reusedFrom": "scorecards/round-020/R2-1.json"
+  }
+ ],
+ "controls": [
+  {
+   "file": "set-B-01.png",
+   "what": {
+    "control": "marketing-top",
+    "image": "references/approved/marketing-top.png"
+   },
+   "votes": [
+    {
+     "juror": "r7_juror_21",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 70,
+     "why": "the image is a rendered webpage layout (nav bar, hero text, chunky beveled orange buttons, glass-effect info cards, metal medal icon) - it reads as a stylized web/UI demo mockup, not a photograph, cinematic frame, or standalone product render. The skeuomorphic 3D buttons and glass cards look like a web 3D demo or app UI illustration, which is what pushed me to (d) over (c).",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 88,
+     "why": "The raised 3D elements form a complete web interface, with navigation, clickable-looking buttons, and a sculpted mouse cursor.",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 55,
+     "why": "The biggest factor was that this is a web page drawn as physical materials: paper-textured background, a brushed-metal seal, glass cards and glossy buttons. The lighting is clean and even, and the surfaces are too uniform for a photo of a real object. It looks staged like a stock render, without the cinematic lighting of a top-budget film frame. (It may actually be AI-generated, but of the four options it fits c best.)",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 94,
+     "why": "the entire image is laid out as an interactive webpage, down to the cursor hovering beside a beveled call-to-action.",
+     "at": "03:25Z"
+    },
+    {
+     "juror": "r7_juror_25",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 70,
+     "why": "The image is a satirical fake corporate landing page (\"Mandatory Optional Overtime\") laid out exactly like a website, complete with nav bar, hero text, CTA buttons, and a mouse cursor. The deciding factor was the flat webpage composition with a rendered cursor and faux-tactile skeuomorphic UI (glass buttons, paper texture, metal seal) - it reads as a styled web/app design mockup rather than a photo, cinematic, or standalone product render. While the individual textures (metallic seal, glossy button) are rendered decently, their simplistic, template-like quality and the joke-copy web layout place it closest to a web 3D demo or low-budget app piece.",
+     "at": "03:25Z"
+    }
+   ],
+   "letters": "d d c d d",
+   "reusedFrom": "scorecards/round-007/R2-1.json"
+  },
+  {
+   "file": "set-B-02.png",
+   "what": {
+    "control": "step1-fire",
+    "image": "references/approved/step1-fire.png"
+   },
+   "votes": [
+    {
+     "juror": "r3_juror_16",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 82,
+     "why": "the polished but essentially stock or product-style 3D rendering of a UI and keyboard, rather than a cinematic scene with narrative-scale environments or characters",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_17",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 95,
+     "why": "the rendered keyboard is embedded directly in an interactive job-application form",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_18",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 45,
+     "why": "the polished, product-shot look: soft studio lighting, brushed-metal and keycap materials, and clean UI text rendered as physical objects; too finely shaded for a low-budget web or app demo (d), and a staged concept piece rather than a real photograph or a film frame",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_19",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 88,
+     "why": "the active text-entry form (visible caret and field-validation message) makes the 3D scene read as a playable web-interface gag",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_20",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 78,
+     "why": "the polished but static product-render composition and studio-like materials most suggested an ordinary high-quality 3D render rather than a photograph or cinematic scene",
+     "at": "15:57Z"
+    }
+   ],
+   "letters": "c d c d c",
+   "reusedFrom": "scorecards/round-003/R2-1.json"
+  },
+  {
+   "file": "set-B-03.png",
+   "what": {
+    "control": "step1-tug",
+    "image": "references/approved/step1-tug.png"
+   },
+   "votes": [
+    {
+     "juror": "r3_juror_21",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 89,
+     "why": "the consistent studio-style contact shadows on the sculpted interface make it look like a polished standalone 3D illustration",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_22",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 65,
+     "why": "a clean, evenly lit, stylized UI-as-physical-object scene (soft shadows, paper texture, glossy buttons, cartoon cursor with arms): a polished but ordinary illustrative or stock-style 3D render, not a real photographed object, a film frame, or a low-fidelity real-time app",
+     "at": "15:56Z"
+    },
+    {
+     "juror": "r3_juror_23",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 88,
+     "why": "the cursor physically feeding a paper resume into the form looks like a staged 3D illustration rather than a functioning interface",
+     "at": "15:57Z"
+    },
+    {
+     "juror": "r3_juror_24",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 80,
+     "why": "a polished but generic conceptual 3D illustration of a skeuomorphic job-application UI with a cartoon cursor character: the kind of stylized editorial or stock render that illustrates an article, not a photograph, a big-budget cinematic scene, or an actual low-budget app or game screenshot",
+     "at": "15:57Z"
+    },
+    {
+     "juror": "r3_juror_25",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 87,
+     "why": "the form's controls are styled as tactile, studio-lit 3D objects in a static product-style composition",
+     "at": "15:57Z"
+    }
+   ],
+   "letters": "c c c c c",
+   "reusedFrom": "scorecards/round-003/R2-1.json"
+  },
+  {
+   "file": "set-B-04.png",
+   "what": {
+    "control": "step2-rest",
+    "image": "references/approved/step2-rest.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_16",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 88,
+     "why": "The cursor hovering over a satirical dropdown form makes it look like an interactive web demo.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_17",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 55,
+     "why": "The image is a full-screen flat UI form (\"The Worst Job Application Ever\" with step indicator, dropdown fields, and a cursor): it looks like a screen capture or mockup of a web app/joke demo rather than a photograph, big-budget cinematic, or stock product render. Its skeuomorphic-glassy styling and slightly warped details (e.g., the cursor shape) suggest an AI-generated or low-budget app-style demo rather than professional 3D product work.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_18",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 96,
+     "why": "the on-screen cursor hovering over a dropdown in an interactive form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_19",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "it's a web app/form UI (a joke \"worst job application\" page with step indicators, dropdowns, a mouse cursor and a Continue button). That makes it a browser/app screen, even though it has fairly polished skeuomorphic paper and metal textures.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_20",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The on-screen cursor among the dropdown controls makes it read as a screenshot of an interactive web app.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d",
+   "reusedFrom": "scorecards/round-009/R2-1.json"
+  },
+  {
+   "file": "set-B-05.png",
+   "what": {
+    "control": "step2-dial",
+    "image": "references/approved/step2-dial.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_21",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 85,
+     "why": "the stylized skeuomorphic application-form UI, including joke text and interactive-looking rotary dial, most strongly suggests a web 3D demo or low-budget app rather than a photograph, film frame, or generic stock render.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "The cursor poised over a rotary dial inside an open form field makes it read as an interactive web-app/game screen.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "it's a flat app/web UI screen (a joke job-application form with skeuomorphic buttons and a rotary dial widget, plus a mouse cursor), so it looks like a web or low-budget app, not a photo, film frame or product render. The dial's numbers are jumbled and repeated (two 6s), which points to AI-generated or low-fidelity rendering.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "The active form field and visible mouse cursor make it look like an interactive web demo.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_25",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 88,
+     "why": "It shows a humorous skeuomorphic web form titled \"The Worst Job Application Ever\" with a rotary-dial phone input, step indicator, and dropdown fields. The most influential factor: it's clearly a novelty/joke interactive web UI demo: flat 2D typography combined with moderately rendered 3D skeuomorphic controls (plastic buttons, drop shadows) of the type found in web demos or low-budget app concepts, not a photo, film frame, or polished stock product render.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d",
+   "reusedFrom": "scorecards/round-009/R2-1.json"
+  },
+  {
+   "file": "set-B-06.png",
+   "what": {
+    "control": "step2-crank",
+    "image": "references/approved/step2-crank.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_26",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "The mouse cursor on the volume crank makes it look like an interactive web form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_27",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 65,
+     "why": "It's a skeuomorphic web-app UI screen (a joke job application form with a cursor and form fields), so it reads as a picture from a web or low-budget app rather than a photo, a film frame or a product render. That said, the photoreal materials suggest it was AI-generated.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_28",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "The on-screen cursor operating a crank embedded in a step-by-step web form is the strongest clue that this is an interactive web 3D demo.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_29",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 78,
+     "why": "The image is a polished skeuomorphic 3D render of a satirical job-application UI (\"The Worst Job Application Ever\"): cleanly staged typography and retro knobs/dropdowns rendered like a stock-style concept mockup. The single most influential factor: it reads as a static, product-mockup-style 3D composition (flat layout, presentation typography, game-like crank widget rendered as illustration) rather than a cinematic film/game frame or a photo, and its quality is above a cheap low-budget app demo.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_30",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "the mouse cursor poised over a crank that functions as a volume control in an interactive form.",
+     "at": "05:51Z"
+    }
+   ],
+   "letters": "d d d c d",
+   "reusedFrom": "scorecards/round-009/R2-1.json"
+  },
+  {
+   "file": "set-B-07.png",
+   "what": {
+    "control": "loader-page",
+    "image": "references/approved/loader-page.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_21",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 72,
+     "why": "most influenced by the polished studio-CGI look: realistic metal/glass/paper materials and soft shadows, but it reads like a conceptual stock/product illustration rather than a real photograph or a narrative film/game cinematic.",
+     "at": "07:03Z"
+    },
+    {
+     "juror": "r11_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 89,
+     "why": "The numbered progress indicator is built into the 3D scene itself, making the image read as an interactive web interface.",
+     "at": "07:03Z"
+    },
+    {
+     "juror": "r11_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 50,
+     "why": "the photoreal material detail: fine paper grain, brushed-metal rings, clear acrylic tube and soft contact shadows. That looks like a polished offline still render of a stylized UI mockup. A real-time web or mobile scene would usually look simpler, and it isn't a physical object or a film frame.",
+     "at": "07:04Z"
+    },
+    {
+     "juror": "r11_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 76,
+     "why": "The numbered stepper with step 3 visibly active makes it look like an interactive web demo rather than a standalone product render.",
+     "at": "07:04Z"
+    },
+    {
+     "juror": "r11_juror_25",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 75,
+     "why": "the clean, studio-lit illustrative style - a 3D-rendered \"physical\" UI layout with a title, placeholder text bars, and a glossy whistle/button object - which matches the aesthetic of a stock/banner 3D illustration rather than a photographic scene or a cinematic film frame.",
+     "at": "07:06Z"
+    }
+   ],
+   "letters": "c d c d c",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-C-07.png",
+   "what": {
+    "control": "boss-fight",
+    "image": "references/approved/boss-fight.png"
+   },
+   "votes": [
+    {
+     "juror": "r10_juror_16",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 86,
+     "why": "The strongest clue is the staged, straight-on layout of a web form rendered as raised metal-and-glass hardware, like a standalone 3D illustration.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_17",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 83,
+     "why": "The tightly controlled studio lighting, uniform synthetic materials, and illustrative UI-object composition look like a polished but conventional 3D render rather than a cinematic frame.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_18",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 88,
+     "why": "the perfectly front-on arrangement of sculpted UI controls reads like a standalone 3D illustration rather than a cinematic frame.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_19",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 60,
+     "why": "it's a clean, evenly lit studio-style still on a seamless paper background. The skeuomorphic UI elements (metal Submit mechanism, glossy error tags, cracked hole) look like a polished conceptual or stock illustration render. It's not a photo of a real object, and it doesn't look like a cinematic film or game frame. It's too detailed and realistically shaded for a low-budget web or mobile 3D demo. It also looks AI-generated rather than hand-modeled.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_20",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 88,
+     "why": "The straight-on, product-mockup arrangement of the beveled 3D interface controls was the strongest cue.",
+     "at": "05:52Z"
+    }
+   ],
+   "letters": "c c c c c",
+   "reusedFrom": "scorecards/round-010/R2-1.json"
+  },
+  {
+   "file": "set-C-08.png",
+   "what": {
+    "control": "boss-down",
+    "image": "references/approved/boss-down.png"
+   },
+   "votes": [
+    {
+     "juror": "r10_juror_21",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 75,
+     "why": "the image is a stylized conceptual 3D composition: flat \"UI element as physical object\" props (submit pill, progress beads, cursor icon) arranged on a plain paper-like backdrop with clean, even studio lighting and smooth untextured surfaces, exactly the look of a high-end stock/concept 3D render. It lacks the environmental storytelling, characters, and cinematic framing of a film/game cinematic (b), and the physical impossibilities (floating smoke, cracked \"button hole,\" typo \"I am not a rabot\") plus overly perfect materials rule out a real photograph (a). It's too polished for a low-budget app (d).",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 72,
+     "why": "the straight-on, evenly sharp arrangement reads like a staged 3D mockup of a job application rather than a cinematic shot.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 60,
+     "why": "It is a polished, stylized 3D-looking UI concept: brushed-metal pieces, a frosted glass card, and a burnt \"Submit\" pill, all under clean studio lighting. That makes it look like an ordinary render or illustration, not a real photo or a film frame. Typos like \"rabot\" also hint that it may be AI-generated.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 79,
+     "why": "The app interface is staged as a static 3D product-style flat lay, with its buttons and cursor rendered as physical props.",
+     "at": "05:53Z"
+    },
+    {
+     "juror": "r10_juror_25",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 82,
+     "why": "The polished but generic studio-lit CGI materials and static conceptual-product composition look most like an ordinary high-end 3D render rather than a photograph or cinematic frame.",
+     "at": "05:53Z"
+    }
+   ],
+   "letters": "c c c c c",
+   "reusedFrom": "scorecards/round-010/R2-1.json"
+  },
+  {
+   "file": "set-C-09.png",
+   "what": {
+    "control": "decision",
+    "image": "references/approved/decision.png"
+   },
+   "votes": [
+    {
+     "juror": "r8_juror_11",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 50,
+     "why": "it's a UI screen for a joke web game or app (\"The Worst Job Application Ever\", step tracker, \"Accept Rejection\" button, cursor). The photoreal paper and stamp textures look like generated or skeuomorphic app art, not a real photo or a film or cinematic frame.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_12",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 83,
+     "why": "The interface is staged as a polished 3D mockup, most clearly in the physical cursor casting a shadow onto the textured paper.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_13",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 65,
+     "why": "The deciding factor was the impeccably smooth skeuomorphic materials (clay-like stamp, flawless plastic button, paper with uniform fiber texture) under soft, idealized studio lighting: the signature of a professional 3D illustration or stock-style render rather than a real photograph. It avoided (b) because the composition is a flat, static UI mockup with no cinematic framing or motion storytelling, and the overly clean perfection pushed it away from an ordinary real photo (a).",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_14",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 86,
+     "why": "The strongest cue is that the whole image is an interactive results screen, with a 3D-styled \"Accept Rejection\" button and cursor.",
+     "at": "05:03Z"
+    },
+    {
+     "juror": "r8_juror_15",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 55,
+     "why": "It looks like a tactile, skeuomorphic UI mockup with clean studio lighting and photoreal materials (paper texture, glass panel, rubber stamp). That reads as a polished ordinary render or stock-style image, not film-grade cinematic work or a real photo. It's probably AI-generated. The web-app/game UI theme points toward (d), but the rendering quality is too high for a low-budget app.",
+     "at": "05:04Z"
+    }
+   ],
+   "letters": "d c c d c",
+   "reusedFrom": "scorecards/round-008/R2-1.json"
+  }
+ ],
+ "controlsOfAnotherKind": [
+  {
+   "file": "set-B-08.png",
+   "what": {
+    "control": "table-wide",
+    "image": "references/approved/table-wide.png"
+   },
+   "letters": "c a c c b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-09.png",
+   "what": {
+    "control": "tier-corporate",
+    "image": "references/approved/tier-corporate.png"
+   },
+   "letters": "a c a b a",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-10.png",
+   "what": {
+    "control": "lobby-doors",
+    "image": "references/approved/lobby-doors.png"
+   },
+   "letters": "b c b a b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-C-01.png",
+   "what": {
+    "control": "tier-office",
+    "image": "references/approved/tier-office.png"
+   },
+   "letters": "b b a b c",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-C-02.png",
+   "what": {
+    "control": "reply-all",
+    "image": "references/approved/reply-all.png"
+   },
+   "letters": "b a b c c",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-C-03.png",
+   "what": {
+    "control": "tier-street",
+    "image": "references/approved/tier-street.png"
+   },
+   "letters": "a b a b a",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-C-04.png",
+   "what": {
+    "control": "youre-fired",
+    "image": "references/approved/youre-fired.png"
+   },
+   "letters": "b b b a b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-C-05.png",
+   "what": {
+    "control": "rail-cam",
+    "image": "references/approved/rail-cam.png"
+   },
+   "letters": "c b a b b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-C-06.png",
+   "what": {
+    "control": "last-save",
+    "image": "references/approved/last-save.png"
+   },
+   "letters": "b a b a b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  }
+ ],
+ "judgedShare": {
+  "votes": 30,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "controlShare": {
+  "votes": 50,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "allKeysShare": {
+  "votes": 95,
+  "aOrB": 36,
+  "share": 0.37894736842105264
+ },
+ "rule": "R2 passes when the judged share is no lower than the control share minus quality.jury.maxShareGap (0.2)",
+ "note": "It passes by the rule: 0 of 30 on the judged pictures against 0 of 50 on the controls of a like kind, and the judged share is no lower than the control share less 0.2. Held against all 19 approved keys instead, 36 of 95, it would not pass. The six judged pictures are the six pages at rest, drawn through the live site's own path at the level high. The key file is the pack tool's own, written by a second build of the same commit on another machine (site_packs_b, 19:47Z), after the first packs agent's machine had stopped answering before it sent its key; all 40 files of that second build's R8 and R2 packs are the same by sha256 as the files the critic and the jurors saw. Said plainly: the pass says the live pages are no further from (a) or (b) than the approved pictures of whole pages are; 28 of the 30 jurors put the live pages in class (d), a web 3D demo, a mobile game or a low-budget app, where the approved whole pages drew 24 (d) and 26 (c) of 50.",
+ "replaced": 0
+}
