@@ -84,8 +84,10 @@ export interface SteelLook {
   keep?: number
 }
 
+// `from` is the lit zone whose room a zone outside the lamps mirrors: the apron stands in the street's room.
 // Lays the room over a material that has passed through studio() and has not yet passed through lit(). In a zone the lamps do not light, the material keeps the website's own studio.
-export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, z: Zone, o: SteelLook = {}): T {
+export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, own: Zone, o: SteelLook = {}, from?: Zone): T {
+  const z = from ?? own
   if (!LIT.includes(z.id)) return m
   const room = ROOM[z.id]!
   const before = m.onBeforeCompile
@@ -106,6 +108,6 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, z: Zone, o: St
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs7`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs8`
   return m
 }
