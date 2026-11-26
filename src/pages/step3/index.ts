@@ -90,10 +90,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -120,7 +120,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [17.0, 'near-nest', 0], [20.95, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.3, 'follow', 0],
+  [0, 'follow', 0], [4.2, 'table-wide', 0], [8.05, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [17.0, 'near-nest', 0], [20.95, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.3, 'follow', 0],
   [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [34.8, 'near-spent', 0], [35.45, 'table-save', 0], [36.6, 'follow', 0]
 ]
 const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 10, ride: 7, 'near-nest': 14, 'near-spent': 14 }
@@ -145,6 +145,8 @@ const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHORT: Record<Acting, Acting> = { plain: 'plain', confident: 'plain', nervous: 'nervous', shocked: 'scared', angry: 'nervous', scared: 'scared', proud: 'plain', exhausted: 'exhausted' }
+const HIT = { least: 0.3, hold: 0.1, short: 0.66, big: 0.9, sway: [0.3, 8, 0.4] }
+const BEATS = { brace: [0.4, 0.68], catch: [0.12, 0.64], shiver: [0.35, 0.12, 11, 1.3], kick: [0.12, 0.7], alarm: [0.3, 0.36, 1, -0.5], lip: [0.35, 0.72, -0.6], dizzy: [[0, 0.25, 3, 0.5], [0.5, 0.5, 3, 0.5], [1, 0.8, 2.5, 1.3]] }
 const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
 const ACT = { wake: 0.3, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
 
@@ -388,6 +390,8 @@ export function makePage(): PageLogic {
     } else if (e.name === 'scoop-kick') {
       say('scoop-kick', true)
       flat()
+      io.cursor.press(BEATS.kick[1]!, BEATS.kick[0]!)
+      s.snap = s.t
     } else if (e.name === 'ball-hit') {
       say('flasher', true)
       flat()
@@ -406,6 +410,8 @@ export function makePage(): PageLogic {
       if (e.id === 'office.inbox') say('inbox-take', true)
       if (e.id === 'street.firehouse') say('firehouse-take', true)
       io.cursor.react('cower')
+      io.cursor.press(BEATS.catch[1]!, BEATS.catch[0]!)
+      s.snap = s.t
     } else if (e.name === 'kicker-in') io.cursor.react('flinch')
     else if (e.name === 'sling' || e.name === 'drop-target' || e.name === 'standup') {
       if (e.name !== 'standup') say(e.name)
@@ -550,6 +556,24 @@ export function makePage(): PageLogic {
     if (b.mode === 'rail' && b.rail === 'spiral') b.speed = Math.max(RIDE.crest, Math.min(30, (2 * (railLength(railOf('spiral')) - b.s)) / Math.max(0.05, T.spiralEnd - t) - RIDE.foot))
     if (b.mode === 'rail' && b.rail === 'drain') b.speed = s.skipped ? 40 : 13
     io.cursor.act(SHORT[mood()])
+    const snap = (squash: number, seconds: number, turn = 0): void => {
+      const p = io.cursor.pose()
+      if (turn !== 0) {
+        s.lay = [p.lean + p.spin + turn, s.t + seconds]
+        io.cursor.strike(s.lay[0]!, seconds)
+      }
+      io.cursor.press(squash, seconds)
+      s.snap = s.t
+    }
+    if (t >= T.plunger - BEATS.brace[0]! && t < T.plunger && once('act.brace')) snap(BEATS.brace[1]!, BEATS.brace[0]!)
+    if (t >= T.eject - BEATS.alarm[1]! && t < T.eject && once('act.alarm')) {
+      io.cursor.react('startle')
+      io.cursor.hold(BEATS.alarm[0]!)
+      snap(BEATS.alarm[2]!, BEATS.alarm[1]!, BEATS.alarm[3]!)
+    }
+    if (b.mode === 'hold' && b.hold === 'street.firehouse' && t >= T.firedBy + BEATS.shiver[0]! && once('act.shiver')) io.cursor.wobble(BEATS.shiver[1]!, BEATS.shiver[2]!, BEATS.shiver[3]!)
+    if (b.mode === 'rail' && b.rail === 'highway' && t >= T.highwayEnd - BEATS.lip[0]! && once('act.lip')) snap(BEATS.lip[1]!, BEATS.lip[0]!, BEATS.lip[2]!)
+    if (b.mode === 'rail' && b.rail === 'spiral') for (const d of BEATS.dizzy) if (t >= T.highwayEnd + d[0]! * (T.spiralEnd - T.highwayEnd) && once(`act.dizzy.${d[0]}`)) io.cursor.wobble(d[1]!, d[2]!, d[3]!)
   }
 
   const sealNow = (io: StepIo): void => {
@@ -588,13 +612,18 @@ export function makePage(): PageLogic {
     const held = tip !== undefined && flat > 0.05 && (b.mode === 'rail' || shot(s.time) !== 'rail')
     if (held) {
       const turn = ROLL.rest - tip - Math.atan2(e[0]!, -e[1]!)
-      io.cursor.aim(turn - Math.PI * 2 * Math.floor((turn + Math.PI / 2) / (Math.PI * 2)))
+      const p = io.cursor.pose()
+      io.cursor.aim(s.was[4] === 1 ? turn - Math.PI * 2 * Math.round((turn - p.lean - p.spin) / (Math.PI * 2)) : turn - Math.PI * 2 * Math.floor((turn + Math.PI / 2) / (Math.PI * 2)))
     } else io.cursor.aim(null)
+    if (s.t < s.lay[1]! && (s.was[4] === 1) !== held) {
+      io.cursor.strike(s.lay[0]!, s.lay[1]! - s.t)
+      s.snap = s.t
+    }
     const pose = io.cursor.pose()
     const len = Math.hypot(s.face[0]!, s.face[1]!, s.face[2]!) || 1
     const n = [s.face[0]! / len, s.face[1]! / len, s.face[2]! / len]
     const now = [pose.lean, pose.spin, pose.squash]
-    const same = s.was[3] === 1 && (s.was[4] === 1) === held
+    const same = s.was[3] === 1 && (s.was[4] === 1) === held && s.snap !== s.t
     const next = now.map((v, i) => (same && (i < 2 || Math.abs(v - s.was[i]!) < FACE.step) ? 2 * v - s.was[i]! : v))
     s.was = [pose.lean, pose.spin, pose.squash, 1, held ? 1 : 0]
     const at = berth(pose, next[0]!, next[1]!, next[2]!, n, s.face[3]!, s.time)
@@ -640,7 +669,19 @@ export function makePage(): PageLogic {
         const after = ball()
         if (was && after.mode === 'plane') {
           const push = Math.hypot(was[0]! - after.vx, was[1]! - after.vy)
-          if (push > SHELL.soft) s.blow = [Math.min(1, (push - SHELL.soft) / (SHELL.full - SHELL.soft)), Math.atan2(was[1]! - after.vy, was[0]! - after.vx), s.t]
+          if (push > SHELL.soft) {
+            const way = Math.atan2(was[1]! - after.vy, was[0]! - after.vx)
+            s.blow = [Math.min(1, (push - SHELL.soft) / (SHELL.full - SHELL.soft)), way, s.t]
+            if (s.blow[0]! >= HIT.least) {
+              const along = was[1]! * Math.cos(way) - was[0]! * Math.sin(way)
+              const turn = ROLL.rest + way + (along >= 0 ? TURN : -TURN)
+              s.lay = [turn - 6.283185307179586 * Math.round(turn / 6.283185307179586), s.t + HIT.hold]
+              io.cursor.strike(s.lay[0]!, HIT.hold)
+              io.cursor.press(HIT.short, HIT.hold)
+              s.snap = s.t
+              s.sway = s.blow[0]! >= HIT.big ? s.t + HIT.hold : -9
+            }
+          }
         }
         for (const e of events) emitTable(io, e)
         if (mc.score !== s.score) {
@@ -649,6 +690,10 @@ export function makePage(): PageLogic {
         }
         s.score = mc.score
         if (io.pointer.flipLeft === true || io.pointer.flipRight === true) s.flipped = true
+        if (s.sway >= 0 && s.t >= s.sway) {
+          io.cursor.wobble(HIT.sway[0]!, HIT.sway[1]!, HIT.sway[2]!)
+          s.sway = -9
+        }
         const b = ball()
         const ease = b.mode === 'none' ? 0 : s.t < T.onTable ? 1 : Math.min(1, dt / PAN.lag)
         s.pan = [s.pan[0]! + (b.x - s.pan[0]!) * ease, s.pan[1]! + (b.y - s.pan[1]!) * ease, s.pan[2]! + (b.z - s.pan[2]!) * ease, s.pan[3]! + ((b.mode === 'hold' ? PAN.in : 1) - s.pan[3]!) * Math.min(1, dt / PAN.slow)]
