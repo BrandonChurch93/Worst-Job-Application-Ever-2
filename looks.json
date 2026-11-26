@@ -1,0 +1,35 @@
+{
+  "folder": "table-runner",
+  "pushed": "2026-11-26T04:58:00.111Z",
+  "commit": "6bcbb15698422054816f9f60444e15a9ae4fd03c",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "last-save at review, approved left, this build right: the eye lower, the whole Street to the far wall, the ball on the right bat",
+      "time": "2026-11-26T04:57:56.501Z",
+      "by": "table-runner",
+      "from": "out/work/report/table-runner-last-save.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "youre-fired at review, approved left, this build right: the house from its front right corner, the cursor upright to the lens; the bank stands before the left front",
+      "time": "2026-11-26T04:57:56.906Z",
+      "by": "table-runner",
+      "from": "out/work/report/table-runner-youre-fired.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "rail-cam at review, approved left, this build right: the eye ahead of the ball over the rail, the firehouse behind; the rail bends where approved runs straight",
+      "time": "2026-11-26T04:57:57.461Z",
+      "by": "table-runner",
+      "from": "out/work/report/table-runner-rail-cam.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "table-wide at review, approved left, this build right: the machine fills the frame's width",
+      "time": "2026-11-26T04:57:57.990Z",
+      "by": "table-runner",
+      "from": "out/work/report/table-runner-table-wide.jpg"
+    }
+  ]
+}
