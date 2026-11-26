@@ -287,13 +287,15 @@ export function collar(hw: number, hh: number, hole: Outline): THREE.BufferGeome
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n
     idx.push(i * 2, i * 2 + 1, j * 2 + 1, i * 2, j * 2 + 1, j * 2)
-    if (side[i] !== side[j]) {
-      const c = corners[side[i]!]!
+    let from = i * 2 + 1
+    for (let s = side[i]!; s !== side[j]; s = (s + 1) % 4) {
+      const c = corners[s]!
       const at = pos.length / 3
       pos.push(c[0], c[1], 0)
       nor.push(0, 0, 1)
       uv.push(c[0], c[1])
-      idx.push(i * 2 + 1, at, j * 2 + 1)
+      idx.push(from, at, j * 2 + 1)
+      from = at
     }
   }
   const g = new THREE.BufferGeometry()

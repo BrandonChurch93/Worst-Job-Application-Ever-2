@@ -30,6 +30,11 @@ export const sealed = {
   fill: { value: new THREE.Vector3() }
 }
 
+// How much of the ball's lamp reaches the body through the glass.
+export const SEALED_LEVEL = 0.78
+// The lamp's own level once the ball is wholly inside the machine. Out on the page the lamp is off and the page's light is left as it is.
+export const SEALED_FULL = 1.3
+
 const SEALED = /* glsl */ `
 vec3 wjaSealed = vec3( 0.0 );
 if ( uShape.y > 0.0 ) {
@@ -39,11 +44,12 @@ if ( uShape.y > 0.0 ) {
 	wjaLamp.color = uSealedLight * uShape.y;
 	ReflectedLight wjaIn = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
 	RE_Direct( wjaLamp, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, wjaIn );
-	wjaSealed = wjaIn.directDiffuse + wjaIn.directSpecular + uSealedFill * uShape.y * material.diffuseColor;
+	wjaSealed = ( wjaIn.directDiffuse + wjaIn.directSpecular + uSealedFill * uShape.y * material.diffuseColor ) * ${SEALED_LEVEL.toFixed(3)};
 }
 `
-// The sealed lamp tops the body up to its own level: where the scene already lights the body as much, it adds nothing.
+// The sealed lamp sets the body's level: where the scene lights the body more it is held down to the lamp's own level, where less it is topped up to it.
 const SEALED_TOP = /* glsl */ `
+if ( uShape.y > 0.0 ) outgoingLight *= mix( 1.0, min( 1.0, dot( wjaSealed, vec3( 0.2126, 0.7152, 0.0722 ) ) / max( dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) ), 1e-4 ) ), min( 1.0, uShape.y ) * clamp( dot( uSealedLight, vec3( 0.2126, 0.7152, 0.0722 ) ) / ${SEALED_FULL.toFixed(3)}, 0.0, 1.0 ) );
 outgoingLight += wjaSealed * clamp( 1.0 - dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) ) / max( dot( wjaSealed, vec3( 0.2126, 0.7152, 0.0722 ) ), 1e-4 ), 0.0, 1.0 );
 `
 
@@ -328,6 +334,9 @@ let enamelColour: THREE.Color | null = null
 let edgeColour: THREE.Color | null = null
 
 // The body's one material: the shared enamel and the shared edge, mixed by where on the body a point is, and every state the surface can be in.
+// The enamel is a bright white paint: its face gives back more of the lamps' light than the black edge beside it.
+export const FACE_LIFT = 1.3
+
 export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial {
   latest = uniforms
   const shared = materials()
@@ -358,7 +367,7 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
       .replace('#include <clearcoat_normal_fragment_maps>', '#include <clearcoat_normal_fragment_maps>\nclearcoatNormal = normalize( clearcoatNormal + vAcross * wjaCoatTilt.x + vDown * wjaCoatTilt.y );')
       .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nmaterial.clearcoat = saturate( wjaCoat );\nmaterial.specularColor *= wjaSpec;\nmaterial.specularF90 *= wjaSpec;\nmaterial.clearcoatRoughness = max( wjaCoatRough, 0.0525 );\ntotalEmissiveRadiance += diffuseColor.rgb * wjaFill * ( 1.0 - dot( normal, normalize( ( viewMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz ) ) );')
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += wjaGlow;')
-      .replace('#include <aomap_fragment>', '#include <aomap_fragment>\nvec3 wjaTone = max( diffuseColor.rgb, vec3( 1e-4 ) );\nreflectedLight.directDiffuse = mix( reflectedLight.directDiffuse, wjaTone * vec3( 1.0, 0.975, 0.945 ) * dot( reflectedLight.directDiffuse / wjaTone, vec3( 0.25, 0.6, 0.15 ) ), 0.85 * wjaPlain );')
+      .replace('#include <aomap_fragment>', '#include <aomap_fragment>\nvec3 wjaTone = max( diffuseColor.rgb, vec3( 1e-4 ) );\nreflectedLight.directDiffuse = mix( reflectedLight.directDiffuse, wjaTone * vec3( 1.0, 0.975, 0.945 ) * dot( reflectedLight.directDiffuse / wjaTone, vec3( 0.25, 0.6, 0.15 ) ), 0.85 * wjaPlain );\nreflectedLight.directDiffuse *= 1.0 + ' + (FACE_LIFT - 1).toFixed(3) + ' * wjaPlain;')
   }
   m.customProgramCacheKey = () => 'wja-studio-cursor-body'
   return m
