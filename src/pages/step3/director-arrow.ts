@@ -2,10 +2,11 @@ import { actingLook } from '../../cursor/act/acting'
 import { damageLook } from '../../cursor/act/damage'
 import type { CursorPose } from '../../cursor/body'
 import { OUTLINE, restLook, UNIT } from '../../cursor/contract'
-import { Deform } from '../../cursor/model/deform'
+import { middleOf } from '../../cursor/fit'
+import { Deform, drawnStretch } from '../../cursor/model/deform'
 import { CENTRE, TOP } from '../../cursor/model/shape'
 
-export const GLASS = { wall: 40, keep: 2.4 }
+export const GLASS = { wall: 40, keep: 2.7 }
 export interface Berth { x: number; y: number; z: number; back: number; reach: number }
 
 const deform = new Deform()
@@ -27,7 +28,7 @@ const tilt = (v: number[], n: number[]): number[] => {
 }
 
 // Where the body has to be put for its outline, as it is posed now, to lie round the middle of the ball, and how deep toward the wall behind it it may go before a corner meets the glass.
-export function berth(c: CursorPose, lean: number, spin: number, squash: number, face: number[] | null, deep: number, time: number): Berth {
+export function berth(c: CursorPose, lean: number, spin: number, squash: number, face: number[] | null, deep: number, time: number, seen = false): Berth {
   const look = restLook(time)
   look.body.stretch = squash
   actingLook?.(c, look)
@@ -57,6 +58,9 @@ export function berth(c: CursorPose, lean: number, spin: number, squash: number,
     mx += p[0]! / pts.length
     my += p[1]! / pts.length
   }
+  const m = middleOf(drawnStretch(look.body.stretch, look.body.melt))
+  const vx = cs * m.x * UNIT + sn * m.y * UNIT
+  const vy = sn * m.x * UNIT - cs * m.y * UNIT
   let reach = 0
   for (let i = 0; i < 80; i++) {
     let far = pts[0]!
@@ -82,6 +86,6 @@ export function berth(c: CursorPose, lean: number, spin: number, squash: number,
   const at = face ? [ox * c0 - oy * s0, ox * s0 + oy * c0, 0] : [ox, oy, 0]
   const n = face ?? [0, 0, 1]
   const back = behind + (lo + hi) / 2
-  const off = tilt([at[0]! + mx, at[1]! + my, 0], n)
+  const off = seen ? tilt([mx - vx, my - vy, 0], n) : tilt([at[0]! + mx, at[1]! + my, 0], n)
   return { x: -off[0]!, y: -off[1]!, z: -off[2]! - 1, back, reach: Math.hypot(reach, behind + half) }
 }

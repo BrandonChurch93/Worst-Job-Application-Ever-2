@@ -44,6 +44,22 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 - 07:10 UTC, with `/root/ball_fixer`: the glass never magnifies the arrow; the test limit is 40 px; faults of the glass are its, the arrow's attitude and damage are mine. At `youre-fired` the arrow lies tip up left (about 10 o'clock) as approved.
 - 07:20 UTC, with `/root/frame_fixer`: the floors stay; it lowered its cross rail top over the lower floor from 152 px to 130 px; no layout value touched.
 - 07:45 UTC, sheet `clear-ball`, third ball: no damage, `scared` with `recoil`, the arrow seated against the wall away from the cup. The three panels with gutters are not built yet.
+- 08:13 UTC, shapes told of time: `loader.ring` and `outlet.ring` carry `v: [seconds since the arrow was taken or the ball came home]`; `ball.clear` carries `v = [share closed, seconds since closed, sweat, strength, angle, since]`. Strength comes from the change of the ball's velocity over one step in plane mode: 0 under 3.6 balls a second, 1 at 14.6; none on a rail or in a hold.
+- 08:20 UTC, two close cameras that pan after the ball with a lag of 0.25 s: `near-nest` (17.0 to 20.95 s) and `near-spent` (34.8 to 35.45 s). Both reached with `--camera film` only: they are not in `config/showcase.json`, so they use home's lens.
+- 08:22 UTC, the doors: the leaves swing shut over 0.15 s from the spinner so they are shut at the slam (13.30 s). The camera's shake at the slam lowered 1.3 to 0.5 so the jamb and the carpet stay steady.
+- 08:24 UTC, the cut to the cup moved 27.2 to 26.9 s so the arrival is seen. The five 0.1 s flips of the take are held 0.2 s; MEASURED `node out/work/mr/ev.mjs` diffed against the list before: identical.
+- 08:25 UTC, the rail camera follows a low-pass of the ball's arc (0.4 s), so the ball moves through the frame.
+- 08:31 UTC, acting on hits: at each plane contact of strength 0.3 or more, `strike` lays the arrow across the hit axis and `press(0.66)`, both held 0.1 s (6 film frames); `wobble` after hits of 0.9 or more. Brace at the plunger, alarm before the copies pour, catch and shiver in the cup, kick, lip of the spiral, dizzy in the spiral.
+- 08:31 UTC, stretch presses (launch, kick-out, alarm) are not used in the ball: with them the arrow leaves the 40 px glass. Squash presses and strikes are used instead.
+- 08:44 UTC, `seal(true, true)` is used, as the Builder said. `middleOf` centres the bare outline; MEASURED with `npx vitest run tests/machine-runner-arrow.test.ts` and the view's rule alone: plain 40.40 px, exhausted 42.53, scared with flinch 45.34 to 46.12. So the page adds only the small rest: the centre of the acted outline less the centre the view uses (`berth(..., true)`), with no extrapolation. With it the worst is 40.37 px (flattened, limit 42) and under 40 everywhere else. The Builder said at 08:45 that the view will measure the acted outline itself; when that is merged the rest is dropped and the mirrored test follows the new rule.
+- 08:44 UTC, the swap `SHORT` (confident, shocked, angry, proud drawn as shorter states in the ball) stays until the view fits the arrow itself: true states MEASURED 41.3 to 45.4 px.
+- 08:46 UTC, the way in: MEASURED `node out/work/mr/proj.mjs 4.2,4.37,5.4,8 none`: the film camera's eye is the same at every step from 4.2 to 8.05 s, so it is one cut and a hold already. Two draft stills at 4.4 and 5.4 s show what changes: the lights go down and the tiers power on. Nothing changed.
+- 08:47 UTC, the way out: from the step the ball enters the drain wire the page makes one move of 0.55 s to its last scroll (eased in, firm stop, 5 px back over 0.12 s), and the lights come up over 0.3 s after it has landed. MEASURED `node out/work/mr/proj.mjs`: the eye is still from 38.47 s, the ball reaches the seal at 38.75 s, `ball-open` 38.94 s; events identical.
+- 08:47 UTC, the loader: a squash held 0.1 s at touchdown, a lean away from the vent held 0.32 s, a pull in, the arrow struck and pressed as the shell closes, then a flinch held 0.45 s. The wait is counted on the page's clock: `s.t` stops at 2.4 s until the seal, which left the live page waiting for ever (caught by `tests/pinball.test.ts`, fixed before any push).
+- 08:48 UTC, sheet `clear-ball`: three panels, gutter 21. The first two balls stand on the Street tier (on the left flipper with sweat 1, and in flight). The third stands at the Office tier's lowest white cup, at `cup.r + 0.5` (touching, as ball_fixer asked at 08:54), pressed with strength 0.6 (its word of 09:01: strength 1 is the film's one frame, not a held picture): the white cups are on the Office tier only, and the Builder said the part touched matters more than the floor.
+- 08:55 UTC, `step3-result`: the paragraph's measure 1040 to 720 px, two even lines; seen in a draft still at 41.5 s.
+- 08:56 UTC, `table-lobby` (key `lobby-doors`): eye height 0.8 to 1.3 balls, so it looks 12.4 degrees down (was 5.9) and the carpet with the ball's shadow is in the picture, as ball_fixer asked. Seen in a draft compare. The tower is still small beside approved: the model is a narrow box, the camera's distance and lens are unchanged.
+- 09:00 UTC, the way in, on the Builder's word of 08:58 (calm it, overlap, no frame darker than half, over in about 1.2 s): the tiers begin to wake at 4.3 s (`T.wake`), 0.3 s apart and 0.3 s each, so the third is full at 5.2 s, the step the website's light reaches dusk. Before: the wake began at 5.2 s and ended at 6.25 s. The event `power-on` stays at 5.2 s; the kit's line 12 gives the order and no duration. `tests/pinball.test.ts` line 195 looked at the wave 0.5 s after `T.powerOn`; it looks 0.5 s after `T.wake` now, since the wave moved.
 
 ## Moves of things a model stands on
 
@@ -54,11 +70,13 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 
 | Part | Looks | What |
 | --- | --- | --- |
-| table-cameras | 26 | 6 baseline compares, 1 tier view by mistake, 5 rail stills looking back, 2 youre-fired compares, 1 last-save compare, 1 rail compare looking ahead, 1 rail still at 32.0 s, 1 rail compare at the new key, 3 `review` stills (rail-cam, youre-fired, last-save), 1 youre-fired compare, 3 last-save compares |
+| table-cameras | 32 | 6 baseline compares, 1 tier view by mistake, 5 rail stills looking back, 2 youre-fired compares, 1 last-save compare, 1 rail compare looking ahead, 1 rail still at 32.0 s, 1 rail compare at the new key, 3 `review` stills (rail-cam, youre-fired, last-save), 1 youre-fired compare, 3 last-save compares, near-nest at 17.35 s, near-spent at 36.85 and 35.1 s, doors-swing at 13.23 s, last-save again, lobby-doors compare at 12.4 degrees down |
+| clear-ball sheet | 2 | three panels, first draft; third ball at `cup.r + 0.5` |
+| page | 2 | loader-caught at 2.76 s, result at 41.5 s |
 | table-layout | 0 | |
 | table-physics | 0 | |
-| director | 0 | |
-| acting-pinball | 0 | |
+| director | 3 | ride-brace at 9.2 s, wayin at 4.4 and 5.4 s |
+| acting-pinball | 2 | near-nest struck pose at 17.37 s, alarm in the inbox at 20.5 s |
 
 ## Take searches
 
