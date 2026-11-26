@@ -147,7 +147,7 @@ function metrics(): LayoutNode {
     const tx = x + i * (tileW + gap)
     for (const v of values) v.box[0] = tx + inner
     return node(`metrics-${id}`, 'readout', [tx, tilesY, tileW, tileH], {
-      part: 'metrics', height: READOUT_TOP, floor: on, tone: 'light', r: 14,
+      part: 'metrics', height: READOUT_TOP, floor: on, tone: 'glass', r: 14,
       children: [text(`metrics-${id}-label`, label, TYPE.label, tx + inner, labelY, { part: 'type', on: READOUT_TOP }), ...values]
     })
   }

@@ -110,7 +110,8 @@ function build(z: Zone): Group[] {
     const fire = model('street.firehouse')
     const police = model('street.police')
     const beacon = (m: Model): Source => at(centre(m)[0], m.box[1] + m.box[3] * 0.3, m.h * BALL + 24, 0.8, 5.2, m.id)
-    add('red', 1, C.STREET_RED, [beacon(fire)], true)
+    // The lit bay of the firehouse throws its red on the floor before its mouth, with the beacon.
+    add('red', 1, C.STREET_RED, [beacon(fire), at(centre(fire)[0] + 0.55, fire.box[1] + fire.box[3] + 0.45, 24, 1.7, 2.6, fire.id)], true)
     add('blue', 1, C.STREET_BLUE, [beacon(police)], true)
     const windows: Source[] = []
     for (const m of [fire, police]) {
@@ -135,6 +136,19 @@ function build(z: Zone): Group[] {
 const made = new Map<string, Group[]>()
 
 // The light groups of a zone, in the order of their channels. A zone without lamps has none.
+// A lit opening at the foot of a model, and what it throws on the wet floor before it: where it stands, half its width and its height in pixels, its colour, and the group whose level it follows.
+export interface Spill { x: number; y: number; half: number; high: number; colour: RGB; follows: string; power: number }
+
+export function spillsOf(z: Zone): Spill[] {
+  if (z.id !== 'corporate' && z.id !== 'street') return []
+  const m = model(z.id === 'street' ? 'street.firehouse' : 'corporate.hq')
+  const u = z.id === 'street' ? centre(m)[0] + 0.55 : centre(m)[0]
+  const p = localBalls(z, u, m.box[1] + m.box[3] + 0.05)
+  return z.id === 'street'
+    ? [{ x: p[0], y: p[1], half: 0.5 * BALL, high: 0.6 * BALL, colour: C.STREET_RED, follows: 'red', power: 1 }]
+    : [{ x: p[0], y: p[1], half: 0.75 * BALL, high: 1.0 * BALL, colour: C.CORPORATE_WINDOW, follows: 'windows', power: 0.6 }]
+}
+
 export function groupsOf(z: Zone | string): Group[] {
   const id = typeof z === 'string' ? z : z.id
   if (!LIT.includes(id)) return []
