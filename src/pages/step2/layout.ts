@@ -23,9 +23,9 @@ export const TRAY_GAP = 12
 export const TRAY_H = 232
 export const TRAY_R = 14
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 5.6, lean: 1.3, wallShade: 0.8, wallLit: 0.62, soakOver: 0.5,
-  floor: { soak: 0.3, hold: 0.2, reach: 20, bounce: 0.12, bounceReach: 9, base: 1 },
-  soak: { soak: 0.8, hold: 0.4, reach: 7, bounce: 0.16, bounceReach: 12, base: 0.76 } }
+export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 5.6, lean: 1.3, wallShade: 0.1, wallLit: 0.62, soakOver: 0.5,
+  floor: { soak: 0.3, hold: 0.2, reach: 20, bounce: 0.12, bounceReach: 9, base: 1, side: 0.8 },
+  soak: { soak: 0.85, hold: 0.8, reach: 8, bounce: 0.16, bounceReach: 12, base: 0.76, side: 0.8 } }
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
@@ -72,8 +72,8 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 55, hy: cy + 156, rest: -0.75, arm: 96, armW: 24, gripW: 84, gripH: 40, tip: 126, base: 110, hub: 44,
-  segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 55 + 227, segY: cy + 156 - 48
+  hx: FX + PAD + 73, hy: cy + 156, rest: -0.75, arm: 96, armW: 24, gripW: 84, gripH: 52, tip: 126, base: 110, hub: 44,
+  segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 156 - 48
 }
 
 export const ROW_TITLE = { font: 'inter-600', px: 26 }
@@ -141,7 +141,7 @@ function slotNodes(): LayoutNode[] {
 
 function crankNodes(): LayoutNode[] {
   const c = CRANK
-  const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD, cy + PAD + 14, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
+  const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD + 12, cy + PAD + 14, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
   const base = node('crank-base', 'crankBase', [c.hx - c.base / 2, c.hy - c.base / 2, c.base, c.base], { part: 'crank', shape: 'disc', height: 18, floor: TRAY_Z, tone: 'metal' })
   const ax = c.hx + (c.arm / 2) * Math.cos(c.rest)
   const ay = c.hy + (c.arm / 2) * Math.sin(c.rest)
