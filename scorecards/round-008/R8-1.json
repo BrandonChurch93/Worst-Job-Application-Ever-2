@@ -1,0 +1,58 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the judged stills of the Decision page and one more still of it, with no approved image beside them",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the two-column result area, paper card left and Performance Metrics card right",
+   "what": "the columns don't share a grid: the paper card's top edge sits about 6px above the metrics card's, the paper card runs about 155px lower, and the red stamp fills the gap under the metrics like an object left on a desk. The 'Accept Rejection' button is centred on the page, so it straddles the gutter instead of belonging to either column",
+   "fix": "align the top edges of both cards. Either make the right column as tall as the paper card (metrics plus a defined area for the stamp) or put the stamp inside its own zone. Then left-align the button and link under the paper card, or centre them under the full content width with clear space above"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the progress bar, steps 1 to 4",
+   "what": "steps 1 to 4 are identical silver knobs, so nothing shows that they are completed. Only the current step is set apart, and the bar reads as five buttons rather than as progress",
+   "fix": "give completed steps a distinct state, such as a filled track up to the current step or a small check or darker face, while keeping the orange for the current step"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "below the glass card, bottom quarter of the page",
+   "what": "about 190px of empty paper under the card. There is no action, link or footer on the resting state, so the page looks unfinished or cut off rather than deliberately on hold",
+   "fix": "move the card down towards the optical centre or add a quiet footer line, such as a disabled 'Check status' control or fine print, to close the page"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "paper card, lower half",
+   "what": "the text block uses only the top half of the card. The REJECTED stamp sits low right, which leaves a dead band along the bottom of the card",
+   "fix": "reduce the card's height by about 80px, or move the stamp lower and larger so that it uses the space"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "LED display, top-left corner",
+   "what": "the glare wedge in the top-left of the display has a hard diagonal edge that reads slightly like a rendering artefact rather than a reflection",
+   "fix": "soften the glare into a gradient with no hard edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "'Share Your Achievement' link under the button",
+   "what": "the underline is a heavy grey bar set well below the baseline, so it reads like a separate divider rather than a link underline. The link text is also quite small next to the large button",
+   "fix": "use a standard 1px underline close to the baseline and bump the link text up one size step"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "paper card text",
+   "what": "the second paragraph's left edge sits about 2px left of the first because of the card's rotation, so the text column looks slightly ragged",
+   "fix": "rotate the text with the card so that both paragraphs share one left edge"
+  }
+ ]
+}

@@ -1,0 +1,184 @@
+{
+  "role": "R8",
+  "round": 7,
+  "unit": "marketing",
+  "commit": "be1d14569b6f8c5ab0fa3612d60bb16d85f93930",
+  "tier": "final",
+  "engineHash": "cc2bd747b83999a7",
+  "sharedHash": "83acc506710c2995",
+  "pageHashes": {
+    "step1": "a8d57d044ecfea65",
+    "step2": "c4f0babb81717da5",
+    "marketing": "8f627e70205cb5b3",
+    "pinball": "be1ee040af5dd7b1",
+    "boss": "b390b7975ca13f67",
+    "decision": "adce718c8bb8c9ee"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at rest",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0
+      },
+      "from": {
+        "id": "rest-marketing"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0.25
+      },
+      "from": {
+        "id": "marketing-perks"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0.5
+      },
+      "from": {
+        "id": "marketing-proof"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at rest, scrolled",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 1
+      },
+      "from": {
+        "id": "marketing-foot"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "judged",
+      "heading": "The page at one moment, 1 of 1",
+      "still": {
+        "page": "marketing",
+        "beat": "marketing.apply",
+        "at": 0,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "marketing-top"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "text-crops",
+      "heading": "Text and controls of the page at rest, at their real size",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0
+      },
+      "from": {
+        "id": "rest-marketing"
+      },
+      "crops": [
+        {
+          "part": "header",
+          "window": [
+            79,
+            0,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "heading",
+          "window": [
+            79,
+            268,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            1212,
+            265,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1224,
+            0,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "card.corner",
+          "window": [
+            0,
+            505,
+            696,
+            270
+          ]
+        },
+        {
+          "part": "copy:marketing.nav.cta",
+          "window": [
+            1224,
+            0,
+            696,
+            270
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

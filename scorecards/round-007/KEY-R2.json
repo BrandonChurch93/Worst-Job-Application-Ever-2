@@ -1,0 +1,117 @@
+{
+  "role": "R2",
+  "round": 7,
+  "unit": "marketing",
+  "commit": "be1d14569b6f8c5ab0fa3612d60bb16d85f93930",
+  "tier": "final",
+  "engineHash": "cc2bd747b83999a7",
+  "sharedHash": "83acc506710c2995",
+  "pageHashes": {
+    "step1": "a8d57d044ecfea65",
+    "step2": "c4f0babb81717da5",
+    "marketing": "8f627e70205cb5b3",
+    "pinball": "be1ee040af5dd7b1",
+    "boss": "b390b7975ca13f67",
+    "decision": "adce718c8bb8c9ee"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "key": "marketing-top"
+      },
+      "still": {
+        "page": "marketing",
+        "beat": "marketing.apply",
+        "at": 0,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "id": "rest-marketing"
+      },
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "id": "marketing-perks"
+      },
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0.25
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "judged": {
+        "id": "marketing-proof"
+      },
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "final",
+        "scroll": 0.5
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R2-1",
+      "kind": "jury",
+      "heading": "",
+      "control": "marketing-top",
+      "image": "references/approved/marketing-top.png",
+      "size": [
+        1400,
+        788
+      ]
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+ "critic": "R1",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the key `decision`, whole and in native crops, each beside the approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "physical stamp and cursor below the metrics card",
+   "what": "The stamp is crowded into the far right of the frame, and the cursor is even farther right and lower. The target groups both directly below the glass, leaving a conspicuous stretch of empty page on the right. In the build there is instead a large empty gap between the stamp and the centered action.",
+   "fix": "Move the stamp left toward the middle of the space under the glass, and place the cursor up and left beside it. Keep their configured sizes and the settled views."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "red imprint on the letter",
+   "what": "The imprint sits just under the copy, leaving most of the lower paper blank. The target anchors the mark just inside the bottom-right corner, clearly separated from the copy.",
+   "fix": "Move the imprint substantially down and a little left, giving it bottom and right insets close to those in the target without changing its configured scale."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "glass card and all three readout wells",
+   "what": "The panel reads as matte gray-green molded material. Its broad, hard bevel and angular recesses lack the target's blue-green translucent body, rounded glass lips, bright thin edge reflections and soft, dark pockets around the readouts. The far right and bottom are especially flat.",
+   "fix": "Introduce a cool translucent body with a rolled highlight around the outer lip, and give each well a softly rounded, shaded perimeter with a narrow bright rim. Keep the faces quiet enough for the numbers to read."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "exposed page and cast shadows across the composition",
+   "what": "The page is grayer and smoother, with less tactile microcontrast than the pale warm target. Several cast shadows fall mostly downward as gray blurs; the target has a stronger upper-left key and clearer lower-right shadows with a dark contact that opens out into softer edges.",
+   "fix": "Bring the exposed page toward warm off-white and recover its fine grain without adding a lighting band. Keep the upper-left lighting consistent and move the cast-shadow emphasis rightward, with tighter contact and softer distant falloff."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "header, step track, and divider",
+   "what": "The headline and progress track ride high in the top strip, and the divider sits too high above the step heading. The headline also spreads a little wider than the target at a similar visible letter height.",
+   "fix": "Bring the headline and track down, lower the divider to restore the gap balance, and tighten the headline's horizontal spacing slightly."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "inactive metal progress buttons and the rail",
+   "what": "The buttons have a uniform gray concentric-groove finish and the rail reads as a bright neutral pipe. The target uses darker brushed faces, a brighter directional silver rim and a subdued rail with more differentiated edges.",
+   "fix": "Reduce the prominence of perfect concentric rings, use a directional brushed-metal sheen with a light upper-left rim and darker lower-right face, and give the rail a flatter, darker metal interior and narrow lit edges."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "orange current-step button",
+   "what": "The face is darker and browner, with a comparatively flat central finish and no convincing warm glint onto the adjoining rail. The target reads as bright polished orange plastic with a shaped highlight and a dark stepped edge.",
+   "fix": "Lift the orange saturation and upper-left highlight, refine the layered dark lower rim, and add a restrained warm reflection to the neighboring rail."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "letter paper, especially its top and lower-right edges",
+   "what": "The build's paper is gray-white and more evenly rough. Its perimeter has a gray halo along the lit top and left and a dark wedge at the lower-right corner; the target has a cleaner lit edge and warmer, more localized shadows on the right and below.",
+   "fix": "Brighten the paper slightly and soften its evenly coarse tooth. Clean up the top-left edge light, remove the dark halo there, and seat the lower-right edge with a warm contact shadow rather than a hard dark wedge."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "letter heading and copy block",
+   "what": "The text block starts too far up and left in the paper, and the isolated last line sits too close to the preceding paragraph. The target has a deeper inset and more breathing room before the last line.",
+   "fix": "Move the whole text block right and down within the letter, and increase the paragraph gap before the last line."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "ink borders and lettering inside the red imprint",
+   "what": "The build looks like dense red artwork with fairly even borders. The target's line weight and coverage vary more, with pale paper flecks and broken patches through both the borders and the heavy letters.",
+   "fix": "Use a slightly warmer red and let irregular paper grain break up the ink more strongly, including localized dry patches and unevenness in the thin inner border."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "stamp handle, red block, and pad layers",
+   "what": "The silver collar at the handle base is conspicuous and absent from the target. The block and base are very smooth and factory-new, while the target has rounded red lacquer glints and a rough, ink-dark pad over a visibly worn red bottom edge.",
+   "fix": "Blend the collar into the red handle and block, tighten the bright lacquer highlights on the lit corners, and add fine ink residue and texture to the black pad and red lower layer without changing the settled viewpoint."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "metrics typography inside and below the readouts",
+   "what": "The timer figures have less dense, heavy strokes than the target, and the heading and applicant line feel a little less substantial; the small timer captions compete more with the figures.",
+   "fix": "Use heavier, slightly tighter figure styling, give the heading and applicant line a little more presence, and lighten the timer captions so the figures dominate as in the target."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "large orange action button and the link underneath",
+   "what": "The pair sits high on the full page. The button face is dark burnt orange with a narrow rim and heavy pale-gray lettering, while the target has a brighter amber-orange face, a stronger metallic surround, and lighter-weight, cleaner white lettering. The link underline reads as a dropped shadowed rule rather than a close text underline.",
+   "fix": "Move the button and link down together. Bring back the orange highlight and rolled metallic surround, ease the label weight and brighten it, and tuck a crisp underline close under the link text."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "cursor silhouette and face",
+   "what": "Even apart from the settled size and flatness, it has a round, swept silhouette and soft gray face. The target has a sharper tip, straighter edges, a more defined shaft notch, a pale bright face, and a continuous dark edge; the hairline crack pattern is no longer legible.",
+   "fix": "Keep it flat and at the configured size, but sharpen the contour and shaft notch, brighten the face with a restrained upper-left glint, add a continuous dark keyline, and retain fine surface cracks as flat markings."
+  }
+ ]
+}
