@@ -1,0 +1,72 @@
+{
+  "stamp": {
+    "role": "R8",
+    "round": 7,
+    "unit": "marketing",
+    "commit": "be1d14569b6f8c5ab0fa3612d60bb16d85f93930",
+    "tier": "final",
+    "engineHash": "cc2bd747b83999a7",
+    "sharedHash": "83acc506710c2995",
+    "pageHashes": {
+      "step1": "a8d57d044ecfea65",
+      "step2": "c4f0babb81717da5",
+      "marketing": "8f627e70205cb5b3",
+      "pinball": "be1ee040af5dd7b1",
+      "boss": "b390b7975ca13f67",
+      "decision": "adce718c8bb8c9ee"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R8-1",
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1478482,
+          "sha256": "2ee788a7c94415a77d14797771972d862416d983d6744eb46ccaf4c97632b20f"
+        },
+        {
+          "name": "set-A-02.png",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1541141,
+          "sha256": "4031fcf83397be002698331d4b9dcf4a34cdbff75745fb14fe325750311d1a1c"
+        },
+        {
+          "name": "set-A-03.png",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1409394,
+          "sha256": "1f926caa2cc0daf5e65e52695b7f89a00043c62d6df5fde8104ca24d0cf02ac6"
+        },
+        {
+          "name": "set-A-04.png",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1368211,
+          "sha256": "2fbed76f1baa2d189ac2252a35bbbb4f62803d987337c25b33f6dbf9ad8e0a12"
+        },
+        {
+          "name": "set-A-05.png",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1491846,
+          "sha256": "1f57e98cdc1c9b015f6dece52c8cc2fb3be0c3b6179b8f250991056b3370a065"
+        },
+        {
+          "name": "set-A-06.png",
+          "width": 1400,
+          "height": 948,
+          "bytes": 1490719,
+          "sha256": "74a7e92489911196b67e823112026d468afc0a81cc2b0b8f4715acd17b69559c"
+        }
+      ]
+    }
+  ]
+}
