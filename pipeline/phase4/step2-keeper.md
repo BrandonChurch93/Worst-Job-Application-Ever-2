@@ -33,12 +33,13 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 19. The dial's housing is darker and less polished (`housingDark` 0.72, `housingRough` 0.36): its upper left rim read white where the approved bezel is mid grey.
 20. The slot's beat looked at in six frames (9.3 s to 12.5 s): the knob is pulled under the bracket and springs back over it, the reels spin and settle on 07, 23, 1991, the result line stands in the field, the coins leave the mouth and the cursor flees them.
 21. The slot's frame is lighter (`SLOT_LOOK.frame.colour`), its brushing finer and fainter (the grain stretched to 1200 px along the band, strength 0.08, was 300 and 0.15: it read as a woven cloth), and its upward faces carry a slow painted gradient, lighter toward the key and darker away from it (`fanned`, `frame.fan`), as the approved frame is light on top and dark below. The legends under the glass stay at the shared ink's tone (about 50 where the approved legends read 12 to 24): the ink is the shell's.
+22. The dial's face carries its bow tie as vertex colour laid in for the wheel's angle (`fanFace`, `DIAL_BODY.fanAxis`, `fanLow`, `fanGain`, `fanSharp`), so the bright fans stay with the light while the wheel turns under them. MEASURED on a ring of 40 px round the hub, sixteen places counter-clockwise from the right, green channel: approved 121 96 81 81 98 169 225 233 197 135 99 100 (then the cursor), build 133 95 89 98 113 167 209 223 166 103 83 89 (before: 139 110 102 106 114 162 193 204 172 120 93 96).
 
 ## Looks counted (at most 40 a part)
 
 | Part | Looks |
 | --- | --- |
-| `dial` | 15 |
+| `dial` | 20 |
 | `rows` | 4 |
 | `crank` | 8 |
 | `slot` | 15 |

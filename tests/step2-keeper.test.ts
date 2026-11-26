@@ -5,7 +5,7 @@ import { HANDOFF } from '../src/cursor/body'
 import { pages } from '../src/pages'
 import { CRANK, DIAL_BODY, ROWS, SLOT, TRAY } from '../src/pages/step2/layout'
 import { crank, CRANK_LOOK } from '../src/pages/step2/real/crank'
-import { glintGeometry, holesGeometry } from '../src/pages/step2/real/dial'
+import { faceGeometry, fanFace, glintGeometry, holesGeometry } from '../src/pages/step2/real/dial'
 import { actingAt, pointerAt } from '../src/pages/step2/script'
 import type { RealContext } from '../src/real/types'
 import type { Shape } from '../src/stage/types'
@@ -93,5 +93,30 @@ describe('the parts of step 2 as their keeper left them', () => {
     expect(TRAY.wallShade).toBeLessThan(0.7)
     expect(TRAY.wallShadeTop).toBeLessThan(TRAY.wallShade)
     expect(TRAY.rimShade).toBeGreaterThan(0.5)
+  })
+
+  it('keeps the bright fans of the dial with the light while the wheel turns', () => {
+    const face = faceGeometry()
+    const p = face.getAttribute('position')
+    const c = face.getAttribute('color')
+    const brightest = (turn: number): number => {
+      fanFace(face, turn)
+      let best = 0
+      for (let i = 1; i < p.count; i++) if (c.getX(i) > c.getX(best)) best = i
+      return Math.atan2(p.getY(best), p.getX(best)) - turn
+    }
+    const fold = (a: number): number => ((a % Math.PI) + Math.PI) % Math.PI
+    const apart = (a: number, b: number): number => Math.min(fold(a - b), Math.PI - fold(a - b))
+    expect(apart(brightest(0), brightest(1.1))).toBeLessThan(0.12)
+    fanFace(face, 0)
+    let low = Infinity
+    let high = 0
+    for (let i = 0; i < c.count; i++) {
+      low = Math.min(low, c.getX(i))
+      high = Math.max(high, c.getX(i))
+    }
+    expect(low).toBeGreaterThanOrEqual(DIAL_BODY.fanLow - 1e-6)
+    expect(high).toBeLessThanOrEqual(DIAL_BODY.fanLow + DIAL_BODY.fanGain + 1e-6)
+    expect(high - low).toBeGreaterThan(DIAL_BODY.fanGain * 0.9)
   })
 })
