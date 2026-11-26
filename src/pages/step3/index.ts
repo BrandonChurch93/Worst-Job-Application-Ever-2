@@ -140,7 +140,7 @@ const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05], over: [1.05, 0.8] }
 const ROLL: { rest: number; tip: Record<string, number> } = { rest: 1.992, tip: { rail: 0.77, 'table-lobby': 0.77, 'table-fired': 2.13 } }
-const BACK = { behind: 2.8, up: 3.6, aim: 2.4, lift: -0.8, lag: 0.4, lead: 1.93, start: 0.9 }
+const BACK = { behind: 2.8, up: 3.6, aim: 2.4, lift: -0.8, lag: 0.4, lead: 1.93, start: 0.9, keep: 0.6 }
 const NEAR: Record<string, { off: [number, number, number]; mid: [number, number]; keep: number }> = { 'near-nest': { off: [0, 6, 15], mid: [11.3, Y1 + 6.9], keep: 0.6 }, 'near-spent': { off: [0, 3.4, 8.6], mid: [0, 0], keep: 1 } }
 const PAN = { lag: 0.25, in: 0.68, slow: 0.5 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
@@ -287,7 +287,7 @@ export function makePage(): PageLogic {
     const b = ball()
     if (b.mode !== 'rail' || b.rail !== 'highway') return railPose()
     const r = railOf(b.rail)
-    const g = s.arc < -8 ? b.s : s.arc + BACK.lead
+    const g = s.arc < -8 ? b.s : s.arc + BACK.lead + BACK.keep * (b.speed * BACK.lag - BACK.lead)
     const c = soft(r, g)
     const e = soft(r, Math.max(0, g - BACK.behind))
     const a = soft(r, Math.min(railLength(r), g + BACK.aim))

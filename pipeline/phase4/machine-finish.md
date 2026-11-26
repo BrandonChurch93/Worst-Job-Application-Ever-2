@@ -74,6 +74,7 @@ Not mine: R8-1 issue 7 and R8-2 issue 2 (the words on the display: `displays/`),
 30. Confident on the wire (R9-2 issue 10, "a bounce with the ride"): while the ball is on the highway wire the arrow is pressed to 0.9 of its length for 0.05 s every 0.385 s and springs back (`LOAD.hop`), on top of the rock and the lean into the bend of decision 18; it stops 0.385 s before the brace at the wire's lip. Looked at: highway sheet, the arrow fills the ball in the `rail` view and turns with the bend; the bounce itself is shorter than the sheet's frame spacing (0.4 s) and was NOT seen as a bounce.
 31. Before the port (R9-1 issue 4, R9-2 issue 3): the hesitation outside the mouth is held 0.5 s (it was 0.32), tilted 0.7 rad back (0.5) and pressed to 0.8 (0.84): `LOADER.away`. The seal is still at 2.30 s (MEASURED, `npm run take -- --check`). Looked at: seal sheet, the tilted, shortened arrow stands beside the port in two frames 0.37 s apart, then is pulled in tip first.
 32. Scared at the plunger (R9-2 issue 8, and the hold of R4-1 issue 3): 0.45 s after the ball seats (9.05 s) the arrow turns 0.6 rad away from the lane, is pressed to 0.86 and trembles (0.12 rad at 11 swings a second, dying away) until the brace at 10.05 (`BEATS.dread`, with `BEATS.shiver`). Looked at: launch sheet, first with the sign wrong (the arrow turned up the lane, toward where it goes), then right: it points across the lane, away, for four frames and comes back as it braces. Pale and stiff are the cursor's own state `scared`, not mine.
+33. `rail-cam` keeps its settled view (ruled). Found on the key's compare after the new take: at the key (32.0 s) the ball stood at about 92% of the frame's height, nearly cut by the bottom edge (approved: about 68%). Cause: the ride on the wire is now 2.38 s long and not 1.95, so at the key the ball is slower (MEASURED from the pacing rule: 3.7 balls a second against 4.9) and the camera's fixed lead (1.93 balls) put the view 0.46 balls ahead of it. Now the lead follows 0.6 of the way to the ball's own speed (`BACK.keep`): the ball stands at about 75% at the key and drifts a little down the frame as it slows, so it is not pinned (R4-2 issue 1). Looked at: `rail-cam` compare before and after. Also tried and taken out: a stretch tall after the doors for the double take (R9-2 issue 9); the cursor caps its length in the ball at 1.06 (`GLASS.long`, `src/cursor/body.ts`, not mine), so it would not show.
 
 ## Looks spent (draft unless said), by part
 
@@ -102,6 +103,8 @@ Not mine: R8-1 issue 7 and R8-2 issue 2 (the words on the display: `displays/`),
 | After merge 34: `table-wide` compare, replyAll and coffee sheets | 3 | no change made from them |
 | Port, hesitation | 1 | seal beat sheet |
 | Plunger, scared | 3 | launch beat sheets |
+| Rail camera at its key | 2 | `rail-cam` compares |
+| Doors after the flat hold | 1 | `lobby-doors` compare |
 | Report measures | 2 | `tier-office` draft still, `reply-all` review still |
 
 Take searches: 25 of 31 used before this round, 1 spent in it (search 26, decision 21), 26 of 31 used now. The edit of one flip's end in `cut/TABLE-TAKE.json` was by hand and is not a search; the one layout change (the door post) left the events and the track the same, so the three searches it buys are unspent.
