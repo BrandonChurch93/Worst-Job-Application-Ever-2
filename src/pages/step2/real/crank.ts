@@ -12,7 +12,7 @@ export const CRANK_LOOK = {
   plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
-  lamp: { colour: [1, 0.46, 0.12] as [number, number, number], power: 0.24, reach: 170, lift: 14, most: 4 }
+  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.45, reach: 210, lift: 14, most: 4 }
 }
 const L = CRANK_LOOK
 
