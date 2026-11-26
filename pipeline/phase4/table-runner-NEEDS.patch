@@ -11,3 +11,16 @@ index 54e60ae2..bc099074 100644
      const knocked = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share
      const over = (knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0) + (pose ? pose.turn * (aimed !== null ? 0.3 : 1) : 0) + (aimed !== null ? aimed - s.feel.lean : 0)
      const swing = over !== 0 ? TUMBLE.out : TUMBLE.back
+diff --git a/src/cursor/view.ts b/src/cursor/view.ts
+index 20347915..e67ee80e 100644
+--- a/src/cursor/view.ts
++++ b/src/cursor/view.ts
+@@ -61,7 +61,7 @@ export class CursorView {
+     if (c.inBall && c.face) {
+       this.spot.set(c.face.x, c.face.y, c.face.z).normalize()
+       this.at.quaternion.setFromUnitVectors(UP, this.spot)
+-      this.at.position.set(-4.2 * UNIT, 9.5 * UNIT, 0).applyQuaternion(this.at.quaternion).addScaledVector(this.spot, -c.face.back)
++      this.at.position.set(-4.2 * UNIT, 9.5 * UNIT, 0).applyAxisAngle(UP, -c.spin).applyQuaternion(this.at.quaternion).addScaledVector(this.spot, -c.face.back)
+       this.at.position.x += c.x - 960
+       this.at.position.y += 540 - c.y
+       this.at.position.z += c.z + half + 1
