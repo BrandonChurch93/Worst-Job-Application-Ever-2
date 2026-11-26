@@ -7,14 +7,17 @@ import { buildInbox, poseInbox } from './inbox'
 import { matsOf } from './kit'
 import { buildStaplers, poseStaplers } from './staplers'
 
-const VERSION = 'office-1'
+const VERSION = 'office-2'
 
 export const parts: Record<string, PartMaker | null> = {
   'model-coffee-machine': whole('model-coffee-machine', {
     version: VERSION,
     build: (z, ctx) => buildCoffee(z, ctx),
     pose: (_o, z, ctx) => {
-      matsOf(z).level.value = levels(ctx, z).byName.windows ?? 0
+      const l = levels(ctx, z)
+      const m = matsOf(z)
+      m.level.value = l.byName.windows ?? 0
+      m.fill.value = l.general
     }
   }),
   'model-cubicles': whole('model-cubicles', { version: VERSION, build: (z, ctx) => buildCubicles(z, ctx) }),
