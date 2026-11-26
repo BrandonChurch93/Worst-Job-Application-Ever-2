@@ -50,6 +50,8 @@ const WALL = { t: 6.4, h: 54, base: 10 }
 const SCREEN_LEAN = 0.5
 const LIFT = { wall: 0.24, cap: 0.5, inside: 0.5, paper: 0.7 }
 // The shade the partitions lay on the carpet at their feet: how far it reaches in, and how dark it is against the wall.
+// The cell the furniture of one cubicle is drawn for; in a larger or smaller cell it grows or shrinks with it, within these bounds.
+const FIT = { w: 82.2, d: 66, least: 0.85, most: 1.3 }
 const FOOT = { reach: 13, dark: 0.42 }
 
 function wall(k: Kit, a: V2, b: V2, r: Random): void {
@@ -541,6 +543,7 @@ export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
   const { cols, rows } = gridOf(b.w, b.d)
   const cw = (2 * hw) / cols
   const cd = (2 * hd) / rows
+  const fit = Math.max(FIT.least, Math.min(FIT.most, cw / FIT.w, cd / FIT.d))
   k.lift = LIFT.wall
   for (let i = 0; i <= cols; i++) wall(k, [-hw + cw * i, -hd], [-hw + cw * i, hd], r)
   for (let j = 0; j <= rows; j++) wall(k, [-hw, -hd + cd * j], [hw, -hd + cd * j], r)
@@ -555,8 +558,10 @@ export function buildCubicles(z: Zone, ctx: RealContext): THREE.Object3D {
       if (flip) q.mirror()
     }
     foot(k, cw / 2 - WALL.t / 2, cd / 2 - WALL.t / 2)
-    cubicle(k, f, g, r, n, cw, cd)
+    for (const q of [k, f, g]) q.grow(fit)
+    cubicle(k, f, g, r, n, cw / fit, cd / fit)
     for (const q of [k, f, g]) {
+      q.back()
       if (flip) q.back()
       q.back()
     }

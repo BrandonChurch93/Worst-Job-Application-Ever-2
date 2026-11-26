@@ -111,6 +111,13 @@ export class Kit {
     this.flip = !this.flip
     return this
   }
+  // What follows is built larger or smaller by one factor, about the place the kit stands at.
+  grow(k: number): this {
+    this.stack.push(this.m.clone())
+    this.flips.push(this.flip)
+    this.m.multiply(new THREE.Matrix4().makeScale(k, k, k))
+    return this
+  }
   where(a: V3): V3 {
     this.v.set(a[0], a[1], a[2]).applyMatrix4(this.m)
     return [this.v.x, this.v.y, this.v.z]
