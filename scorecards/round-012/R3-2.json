@@ -1,0 +1,65 @@
+{
+ "critic": "R3",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "B: surface and detail, the clear ball sheet, the table map, the page at rest and its result, with crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-04.png",
+   "where": "the arrow on the orange Continue button, also every crop in set-B-06",
+   "what": "the pointer is a lumpy, melted white shape like a glove or a hand, with a broken outline and no clean arrow form. It reads as a hand on the button and gives the render away at once",
+   "fix": "replace it with the same solid glossy arrow used elsewhere, or a clean pointing-hand cursor with crisp edges, a bevel and a tight contact shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the ASSESSMENT COMPLETE glass slab, and the glass-edge crop in set-B-06",
+   "what": "the glass is a flat opaque grey panel. None of the paper texture shows through it and there is no refraction at the bevel, so it reads as a grey box with an inner shadow and not as glass",
+   "fix": "make the slab see-through so the paper grain shows, slightly tinted and refracted, with a bright edge highlight and a thin dark line where it meets the page"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the small white plaque at the top with the dark bullet or pen shape, where the clear tube ends",
+   "what": "it is a flat white rectangle with no thickness, and the dark capsule on it looks pasted on. The tube just stops at its edge with no fitting, so it reads like a stray sticker",
+   "fix": "give the plaque a bevel and an edge, seat the tube in a collar fitting, and set the object into a recess or behind glass, with a contact shadow"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the arrow on the page, centre (and the arrow crop in set-B-05)",
+   "what": "it is a flat white cursor with a black outline, no thickness and no gloss. Only its drop shadow suggests depth",
+   "fix": "give it a modelled body with a bevel, a specular highlight and a dark edge, so it matches the glossy arrow inside the ball"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the clear tube leaving the porthole, lower right (and the same joint in set-B-04, left)",
+   "what": "the tube lies over the metal rim and the dark well with no fitting or flange, so it seems to pass through the rim. The clear bands have broken, smeared highlights",
+   "fix": "add a flanged collar where the tube enters the rim, block the rim behind it with occlusion, and give the bands clean continuous highlights"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01.png",
+   "where": "third panel, the ball pressed on a bumper hit",
+   "what": "the ball is still almost round. It is not visibly squashed against the bumper, so the 'pressed flat' state does not come across",
+   "fix": "flatten it clearly along the contact axis and bend the arrow's highlight to match"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02.png",
+   "where": "middle tier floor, and the grey seam blocks between tiers at the centre",
+   "what": "the carpet floor is matte with no gloss or reflections, so the tier looks more like a diorama than a playfield. The joints between tiers are plain grey blocks",
+   "fix": "add a clear-coat gloss with lamp reflections over the carpet print, and detail the tier joints as metal transfer channels"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-06.png",
+   "where": "the Continue button socket",
+   "what": "the socket ring is a uniform white outline with no inner dark gap, so the button looks outlined rather than sunk in",
+   "fix": "add a dark gap between the button and the socket and give the ring a metal gradient"
+  }
+ ]
+}

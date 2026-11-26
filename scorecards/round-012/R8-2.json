@@ -1,0 +1,23 @@
+{
+ "critic": "R8",
+ "score": 8,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: the last two keys and the native-size crops of the page's text and controls",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the numbered progress rail in the right-hand crops",
+   "what": "The deeply beveled discs all look like push buttons, while completed and upcoming steps get identical styling. The orange disc marks the current step, but the rail does not make it clear whether the other discs are navigation or just status.",
+   "fix": "If the rail is status-only, keep the orange current step and make the surrounding markers visually quieter, with a distinct completed state. If the discs navigate, make availability and state visibly distinct."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the amber readout along the lower-right edge of the mechanism",
+   "what": "The bright readout draws the eye, but its right edge shows a cut-off message rather than a complete label, making it hard to tell what the display is there to communicate in this still.",
+   "fix": "Use a shorter phrase that fits the visible aperture, or make the held state show a complete message before scrolling it."
+  }
+ ]
+}

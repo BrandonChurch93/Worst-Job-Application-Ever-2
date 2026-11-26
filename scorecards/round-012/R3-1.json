@@ -1,0 +1,51 @@
+{
+ "critic": "R3",
+ "score": 8,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: surface and detail, the ten keys whole",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the diagonal from the arrow ball to the coffee station",
+   "what": "Three separate cloudy spheres have complete rims and their own fixed reflections, so they read as additional balls rather than a trace of the one clear arrow ball.",
+   "fix": "Keep one sharply resolved ball. If a trail is needed, use a short fading streak without complete rims or independent highlights."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the long clear tube below the circular socket at right",
+   "what": "Between the collars, the tube reads as an even gray strip; the page grain behind it barely shifts and the shadow is broad without a tight contact line at the mounts.",
+   "fix": "Show restrained cylindrical refraction of the page grain, preserve clear interior transmission, and add tight contact shadows beneath the mounting collars."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the arrow in the clear ball directly in front of the gold doors",
+   "what": "The face reads as uniform white inside a black outline; the bright highlights describe the ball, but the arrow itself looks more like an icon than a solid piece inside it.",
+   "fix": "Make the arrow's beveled sidewall visibly distinct from the front face, catch a narrow highlight along its bevel, and let the ball refract the silhouette asymmetrically."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the office-tier floor between the bumpers and below the flippers",
+   "what": "The high-frequency carpet print stays matte across the exposed floor. Nearby lamps make pools of light, but there is little specular reflection to show that the print is under a polished playfield coating.",
+   "fix": "Put the carpet motif below a clear lacquer layer and add restrained reflections of the lamp cores and hardware edges over the print."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-10.png",
+   "where": "the miniature house clusters beside Mom's Basement and behind the lower-right display",
+   "what": "The houses read as model-railway scenery. They sit in grouped plots with no obvious relationship to a pinball switch, target, or lane.",
+   "fix": "Integrate the clusters with visible switch or target hardware and fastened mounting plates, so the scenery reads as part of a playable feature."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "the orange 3 button in the progress rail",
+   "what": "The stepped orange cap has thickness, but its black lower band and the rail do not resolve into a distinct recessed socket.",
+   "fix": "Add a narrow socket bezel and a dark clearance gap between the moving cap and the rail mount."
+  }
+ ]
+}

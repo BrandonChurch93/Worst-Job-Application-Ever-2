@@ -1,0 +1,205 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "C: tier 2 from above and Reply All beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-C-01-b.png",
+   "where": "whole playfield, especially the upper objects and near rail",
+   "what": "The build looks almost straight down, flattening the front faces of the office props and bumpers into a diagram. The target is an oblique tabletop photograph looking toward the back wall.",
+   "fix": "Tilt the tier camera toward the back of the playfield so the front faces, layered rails, and near-to-far depth read as in the target."
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-03-b.png",
+   "where": "whole playfield, especially the left lift, far rail and near corners",
+   "what": "The more oblique build is still framed closer and higher over the active field: the left elbow and outer rails are cut away and the foreground shoulder construction falls out of frame. The target shows the table perimeter wrapping around the scene.",
+   "fix": "Pull back and adjust the pitch/framing to recover the target's visible far rail, curved perimeter, left elbow and foreground hardware without changing configured object dimensions."
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-01-b.png",
+   "where": "lighting across the playfield and mounted objects",
+   "what": "Cool, hard-edged shadows and muted, synthetic surfaces dominate the build. The target has warm pinball-light reflections, luminous underside trims and softer, more naturally graduated shadows falling largely down and right.",
+   "fix": "Match the clean key and its shadow direction and penumbra, and restore warm local reflections and bounce on the bumper bases, slingshots, rails and adjacent page."
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-03-b.png",
+   "where": "lighting across the playfield and mounted objects",
+   "what": "The target reads as warm, deep and reflective; the build is cooler and flatter, with long dark shadows around the top row and almost no warm reflected light beneath the main mechanisms.",
+   "fix": "Soften and reorient the key shadows, deepen the reflective metals without flattening the midtones, and restore the localized warm pools and bounce on the page."
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-03-b.png",
+   "where": "the three plain balls beside the cursor ball",
+   "what": "The three balls look cloudy, silvery gray and nearly translucent, and carry the same conspicuous white halo pattern. The target's are dark, opaque, mirror-polished steel with sharp warm, teal and blue reflections and a strong grounded contact.",
+   "fix": "Use opaque dark chrome with individually varying reflected scene colors and highlights, and restore tight contact shadows and reflected glints on the field."
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-01-b.png",
+   "where": "the two orange flippers at the bottom",
+   "what": "The flippers point in almost the same direction, breaking the shallow mirrored V that immediately defines the target's playfield.",
+   "fix": "Match the flipper rest angles in this view so both inner tips point down toward the center gap."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png",
+   "where": "upper and right perimeter and top-center chute",
+   "what": "A straight right lane and pale squared metal frame replace the target's swept, round-cornered, dark polished channel. The upper-center chute reads as a flat gray block rather than a recessed mouth with a rounded reflective rim.",
+   "fix": "Rebuild the interior perimeter as a continuous dark radiused channel with layered metal highlights; shape and shade the chute as a deep rounded opening."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-03-b.png",
+   "where": "upper and right perimeter and top-center chute",
+   "what": "The lane looks like a flat teal strip with separate light inserts, and the far channel loses the curved reflective surround and rounded chute visible in the target.",
+   "fix": "Recover the continuous curved metal channel and rounded recessed chute; seat the directional lights into the lane hardware while retaining their configured directions."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png",
+   "where": "page finish and lower lane layout",
+   "what": "The build's stipple is coarse and repetitive, and a faint fan of guide lines, triangular dark pockets, hard tall rail edges and conspicuous paper clusters take over the lower shoulders. The target has fine grain, cleaner teal shoulders, restrained gold diagonals and low polished rails.",
+   "fix": "Use a finer and less uniform page grain, replace the radial guides with the target's gold line treatment, and bring the shoulder rails, pockets and surrounding loose details toward the simpler integrated target treatment."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-03-b.png",
+   "where": "page finish and lower lane layout",
+   "what": "Large dark triangular shoulder pockets, scattered white paperwork and fan-like linework change the lower field from the target's relatively clean diagonals and layered reflective hardware; the surface grain is also coarser and more regular.",
+   "fix": "Restore the simpler gold diagonals and integrated rail/shoulder finish, reduce the extra paperwork and props there, and tune the grain toward a finer photographic surface."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "bumper crop, upper middle",
+   "what": "The visible cap looks like a smooth featureless cream dish with a thin dark ring. The target is a stepped takeaway lid with a defined rim and small oval drinking opening, over a copper-brown cup and warm under-cap light.",
+   "fix": "Model the molded lid steps and oval opening, and recover the copper-brown side and warm reflected light wherever the camera exposes them."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "bumper crop, middle left",
+   "what": "The cap is a smooth cream bowl without the lid's small oval opening, and a dark ribbed base replaces the target's warm cylindrical brown cup wall with bright polished rings.",
+   "fix": "Give the lid its stepped profile and oval opening; restore the smooth brown cup material, polished foot and gold light reflected below the lid."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "coffee-machine crop, top right",
+   "what": "A pale flat metal lid, rows of pale dots and a large bold white plaque dominate instead of the target's darker bronze espresso body, small colored controls and sculpted service bay. The label type is heavier and less refined.",
+   "fix": "Restore the dark bronze housing, differentiated colored controls, cup and service-bay detail, and the understated warm plate with finer script-like type; retain the settled sign mounting and copy."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "coffee-machine crop, middle right",
+   "what": "The build reads as a large pale face and exposed grate with nearly identical pale buttons and black outlets. The target has warmer bronze panels, small colored indicators, a handled cup in its bay and a discreet cream script label.",
+   "fix": "Match the warmer casing, recessed bays, front controls, drip hardware and cup, and use a less conspicuous plate and script-like lettering while preserving the configured sign orientation."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "letter tray crop, middle left",
+   "what": "A rounded bin opening with a separate conspicuous circular black receptacle replaces the target's squared beige tray and integral black rectangular opening in its front face. The contents read more as a dense pattern than a pile of individually layered envelopes.",
+   "fix": "Square the beige enclosure, integrate a rectangular dark chute into its front and remove the unrelated circular surround; give the envelopes discernible paper layers and folds."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "letter tray crop, top right",
+   "what": "The rounded beige bin has a small plate on its visible face and an external black chute leading to a separate round socket, whereas the target has flat paneled sides and a rectangular black mouth set into its own front.",
+   "fix": "Use the boxy tray surfaces and recessed rectangular front mouth, remove the separate round socket, and separate the paper edges and envelope flaps as in the target."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "slingshot crop, center",
+   "what": "The diagonally mounted red piece reads as a rounded bar inset on a thin triangle. The target has a flatter, chunky red mechanical strike surface over exposed layered dark and plated hardware, a bright metal foot, and warm light below it.",
+   "fix": "Recover the more slab-like red strike face, visible support layers and bright polished trim, and restore the warm light beneath the slingshot."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "slingshot crop, bottom left",
+   "what": "The rounded hollow-looking red bar and exposed pale slotted end piece do not resemble the target's solid flatter red paddle with a recessed metal mechanism underneath. The base is dim rather than plated and warmly lit.",
+   "fix": "Reprofile the red paddle, tuck the mechanism into the target's dark and chrome sandwich, replace the prominent exposed end piece and light the base warmly."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "arrow crop, bottom left",
+   "what": "The arrow is so oblique and curled-looking that it reads as a sideways pointed blob rather than the distinct flat-faced pointer with a clearly cut tail and dark edge. The glass reads cooler and lacks the warm caustic on the page.",
+   "fix": "Keep the configured cursor size and ball position, but make the face legible in camera, define the notch and thin dark bevel, and match the polished highlight and warm glass caustic."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "arrow crop, top middle",
+   "what": "The glyph reads as an upright thin spear with a long shaft and strongly black side rather than the target's wider diagonally aimed desktop pointer with a short, broad cut tail. Its glass highlight and floor caustic are also less distinct.",
+   "fix": "Use the broader desktop-pointer contour, short notched tail, subtler dark bevel and target-like camera-facing angle; restore the glass surface glint and projected caustic without changing configured size or location."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "floor lamp crop, bottom middle, and neighboring green and blue inserts",
+   "what": "Broad dark radial fields with glowing colored centers replace the target's luminous pale enamel faces, concentric bezels and fine dark illustration. The blue mark is especially simplified into a clean three-loop form.",
+   "fix": "Brighten and spread the light across each inset face, give the inserts layered metal bezels and restore the finer line-art cues and warm/green/blue face colors."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "field inserts visible in the arrow and slingshot crops",
+   "what": "The inserts have dark, uniform radial dishes and central bloom instead of softly colored off-white lit faces with crisp engraved linework and layered rim reflections.",
+   "fix": "Use more evenly illuminated enamel faces, clearer dark icon strokes, and the concentric reflective rims seen in the target."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "lift elbow crop, bottom right",
+   "what": "The mustard-orange opaque elbow, gray mount and pale hoops replace the target's dark glossy, optically layered elbow and reflective collars. The adjacent tube looks very uniform and graphic.",
+   "fix": "Keep the prescribed opening but give the elbow and its mounts the target's polished dark and transparent materials, stronger reflected glints and layered glass edges; preserve the orange door treatment separately."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "left lift in the full view and the tube crop, bottom right",
+   "what": "The visible orange elbow surround and light hardware do not have the dark polished and partly glass-like treatment of the target, and the transparent tube's reflections and refraction are comparatively flat.",
+   "fix": "Retain the open lift routing, use darker polished and clear materials for the main elbow/collars, and add the harder glass highlight and refracted inner contours."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "cubicle crop, top left",
+   "what": "The six desks appear as a single bright board of uniform framed square cells with pale computer faces and furniture symbols. The target has individually legible, darker cubicle interiors, deeper partitions, dark monitor faces and warm desk/floor variation.",
+   "fix": "Differentiate the six cubicle interiors, darken the screens and recesses, and restore the warm desk, chair, partition and contact-shadow treatment within the configured dimensions."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "cubicle crop, middle center",
+   "what": "The pale connected tray and bright blue monitors create a bright modular block in place of the target's individually grounded gray-brown cubicles, nearly black screens and more irregular paper and desktop detail.",
+   "fix": "Separate their visual boundaries and contact shadows, darken the screen faces and vary the warm desks and small contents, without changing configured size."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "flipper crop, middle right",
+   "what": "The dark bumper edge and unusually bright screw dominate the build; the target has clear orange/black/orange layering, a subdued rounded screw and a visible polished support at the pivot.",
+   "fix": "Restore the distinct lower orange rim, subtler pin finish and reflective pivot/support treatment, and retain a narrow highlight along the glossy orange top."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "flipper crop, bottom center",
+   "what": "The orange face is in the right material family but the pivot reads as a bright slotted spot, the layered underside reads as one dark strip, and the exposed support is replaced visually by a prominent pale rail.",
+   "fix": "Show the dark rubber band as a separate layer between orange edges, use the target's darker round screw, and restore the polished pivot support and tighter glints."
+  }
+ ]
+}

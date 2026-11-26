@@ -1,0 +1,142 @@
+{
+ "critic": "R1",
+ "score": 3,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "D: tier 1 from above and You're Fired beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-D-03-b.png",
+   "where": "the whole background behind the firehouse, top half and left side",
+   "what": "the cabinet walls behind are bright pale grey-white and evenly lit, so the close view reads as a daylit showroom; -a is a dark night scene where only the beacon, windows and door glow",
+   "fix": "take the background walls and rails down to near-black blue-grey with only thin chrome highlights, and drop overall exposure so the practical lights (beacon, windows, door) carry the frame"
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-01-b.png",
+   "where": "whole table view",
+   "what": "the camera looks straight down, flat and orthographic, so every building shows only its roof and the page reads as a plan drawing; -a is a low oblique view in perspective where the brick and stone facades, windows and doors of each building are seen",
+   "fix": "tilt the tier camera to the -a angle (looking up the table from the apron, about 35-45 degrees off vertical) with mild perspective so facades and heights read"
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-01-b.png",
+   "where": "the garage, right middle, overlapping the police station",
+   "what": "the garage is a large round drum with spokes like a bicycle wheel, seen from above, covering the police station's front; -a has a stacked clear-plastic spiral ramp on grey posts standing beside the police station",
+   "fix": "build the garage as a tiered spiral of clear ramps on vertical grey columns, set to the right of and below the police station so the station's front stays clear"
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-03-b.png",
+   "where": "the floor around the ball and building base",
+   "what": "the page is matte with fine blueprint lines; -a's floor is dark glossy, wet-looking tiles with strong red and warm reflections spilling from the door and beacon",
+   "fix": "raise the page's clearcoat gloss so it mirrors the door glow, the windows and the beacon in soft streaked reflections; darken the page base"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-03-b.png",
+   "where": "the arrow inside the ball, centre",
+   "what": "the cursor is grey with water droplets on its face and the ball carries strong ring highlights and sparkles; in -a the cursor is clean matte white with a crisp black edge in a clear, quiet glass ball with one soft highlight",
+   "fix": "remove the droplet texture from the cursor, make it flat bright white with its dark edge, and cut the ball's specular rings to a single soft window highlight and a faint rim"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "the arrow crop, ball on the highway",
+   "what": "the ball's interior reads dark and speckled with sparkles, so the cursor is grey and low-contrast; in -a the ball is clear glass and the white cursor stands out",
+   "fix": "make the glass clear with no dark interior fill or sparkle, and keep the cursor bright white"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "all sign plaques (You're Fired, Background Check, Student Loans, Mom's Basement, Unemployment Office)",
+   "what": "the lettering is a bold black sans-serif on tan or brown plaques; -a uses a dark brown serif on cream enamel plaques with a thin gold bezel",
+   "fix": "set the sign lettering in a dark brown serif face of regular weight on cream plaques with a thin brass frame"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-03-b.png",
+   "where": "You're Fired sign on the roof",
+   "what": "the lettering is a black italic sans-serif on a tan plate; -a has a dark brown upright serif on cream with a gold edge",
+   "fix": "use the upright serif in dark brown on a cream plate with a brass edge"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "left and right edges of the frame and the lift tube on the left",
+   "what": "the side rails are wide flat grey panels with rivets, and the lift tube is a wide dark column with lamps in it; -a has narrow brushed-chrome rails and a slim clear glass tube with chrome collars",
+   "fix": "narrow the side rails to thin polished chrome, and make the lift tube a slim, clear, reflective glass tube with chrome bands"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "Student Loans bank, upper left under the firehouse",
+   "what": "the bank is a small grey box squeezed under the firehouse with a tiny sign; -a has a separate columned stone bank with its own frontage in the left middle, with three small gabled houses beside it",
+   "fix": "set the bank apart from the firehouse with its columned portico facing the camera, and put the row of three gabled houses to its right"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "rows of small houses, lower left and lower right",
+   "what": "the little houses sit in flat boxed trays near the apron and read as coloured squares from above; in -a two rows of three red-roofed gabled houses with lit windows stand just above the slingshots",
+   "fix": "move the house rows up to the inlane shoulders above the slingshots and show their gabled roofs and lit windows"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "the page, centre right running to lower left",
+   "what": "a large hard dark shadow from the highway and garage falls across the page, so the page looks unevenly lit; -a has soft, short shadows from a warm top light with pools of light round each lamp",
+   "fix": "soften and shorten the cast shadows of the highway and garage, and add warm light pools round the inserts, lamps and slingshots"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "firehouse and police station crops",
+   "what": "the buildings show only flat grey roofs with a strip of brick or blue at one edge; -a shows red-brick and blue-painted facades with rows of lit windows and the door",
+   "fix": "follows from the camera angle: show the facades, and give the police station blue-painted walls"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02-b.png",
+   "where": "slingshot crop",
+   "what": "the slingshot is a flat yellow-black chevron triangle with no chrome ring and no lit glow; in -a it has a chrome wire guide and a rubber edge round it, posts at its corners, and a bright white glow underneath",
+   "fix": "add the chrome wire guide, the rubber and the corner posts, and light it from below with a warm white glow"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01-b.png",
+   "where": "apron along the bottom",
+   "what": "the apron is cool grey with large inset panels and extra text; -a's apron is a warm cream-white slab with only the Unemployment Office plaque in the middle",
+   "fix": "warm the apron to cream, remove the large grey insets, and leave the centre plaque as the only feature"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-02-b.png",
+   "where": "flipper crop",
+   "what": "the flipper is plain orange with no dark rubber edge; -a has a black rubber band along its lower edge",
+   "fix": "add a thin black rubber stripe along the flipper's edge"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-03-b.png",
+   "where": "left of the firehouse, in front of the bank",
+   "what": "a row of pale green fence posts and a glowing grid panel on the roof have been added; neither appears in -a",
+   "fix": "remove the green posts and the lit roof grid, or tone them down to plain stone and roof grey"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-04-b.png",
+   "where": "beacon crop",
+   "what": "the beacon's glow is pinkish and flat, spilling over the roof, where -a's is a deep red ribbed dome with a hot core and a chrome base",
+   "fix": "deepen the dome to saturated red, add a hot inner core and a polished chrome base ring, and cut the pink spill"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-04-b.png",
+   "where": "wall and windows crop",
+   "what": "the brick is fine and uniform and the windows are bright and flat; -a's brick is weathered and uneven, with deep-set windows behind mullions",
+   "fix": "add mortar depth and colour variation to the brick, and recess the windows behind mullions"
+  }
+ ]
+}

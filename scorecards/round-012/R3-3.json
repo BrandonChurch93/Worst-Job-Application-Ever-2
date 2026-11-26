@@ -1,0 +1,51 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "C: surface and detail, native-size crops of the ten keys",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-C-01.png",
+   "where": "the outer metal ring, especially the right and lower-right arc",
+   "what": "The grazing highlight breaks into evenly spaced radial wedges, exposing the mesh facets beneath the concentric brushing.",
+   "fix": "Increase the ring's segment count and smooth its normals so the anisotropic brushed highlight moves continuously around the rim."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-06.png",
+   "where": "the steel balls beside the bumpers, upper-left crop",
+   "what": "The balls read as milky beads rather than opaque steel: the lower halves wash to gray and the same circular hotspot repeats on each sphere instead of reflecting its surroundings distinctly.",
+   "fix": "Use opaque polished steel with tighter contrast and resolve nearby bumper, floor, and rail reflections separately on each ball."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-07.png",
+   "where": "the wire ramp where it enters the circular parking garage, upper-right crop",
+   "what": "Bright wire ends cross the garage lip and stop in midair over the interior; there is no visible receiver or continuous ball path through the joint.",
+   "fix": "Open a slot in the rim and terminate the wires at a mounted track receiver with a clear running transition."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-08.png",
+   "where": "the firehouse beacon, left crop",
+   "what": "The glowing lens has convincing vertical ribs, but the dome and collar stair-step in polygonal bands that are visible at native size.",
+   "fix": "Subdivide and smooth the lens and collar profiles while preserving the molded ribs and the local red spill."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-06.png",
+   "where": "the office-tier floor near the bumpers and flipper",
+   "what": "The heavy, even speckle looks like exposed carpet rather than artwork under a polished pinball coating; the floor does not pick up a distinct reflection from the nearby bright rims.",
+   "fix": "Keep the carpet pattern in the print beneath a lower-roughness clearcoat and let nearby hardware register as faint, distinct reflections."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-10.png",
+   "where": "the front-edge warning card and Unemployment Office drain plaque",
+   "what": "The small print is conspicuously soft at delivery size, especially on the warning card, so the physical lettering does not hold up in its own close-up.",
+   "fix": "Bring the front plaques into the focal plane for this shot and keep the lettering sharp in the decal texture."
+  }
+ ]
+}

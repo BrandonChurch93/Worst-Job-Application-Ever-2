@@ -1,0 +1,107 @@
+{
+ "critic": "R1",
+ "score": 3,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "E: the rail camera and the last save beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-E-01-b.png",
+   "where": "the whole frame",
+   "what": "the approved still is a warm night city: deep teal glossy streets, warm lamp glow, dark mood; the build is a bright, cool, grey daylight scene with flat pale ambience and no warm pools of light",
+   "fix": "relight the build as a night scene: darken everything, warm the lamps to orange, deepen the streets to glossy dark teal with mirror reflections"
+  },
+  {
+   "severity": "severe",
+   "file": "set-E-01-b.png",
+   "where": "the city around the ball",
+   "what": "the build's background is a spiral glass tower, a hazard-striped yellow wedge and bare grey railings where the approved still has the columned bank and the red firehouse on dark reflective streets",
+   "fix": "rebuild the surrounding city to the approved one: the white-columned bank left, the red brick firehouse with the red beacon right, on dark mirror-gloss streets with glowing floor lamps"
+  },
+  {
+   "severity": "severe",
+   "file": "set-E-02-b.png",
+   "where": "the crops labelled 'the bank' and 'the firehouse'",
+   "what": "under matching labels the build shows a yellow hazard wedge for 'the bank' and a glass bubble with wireframe for 'the firehouse'; the approved crops show the lit columned bank and the red firehouse",
+   "fix": "restore the same objects in those regions so each labelled crop shows the same building as the approved sheet"
+  },
+  {
+   "severity": "severe",
+   "file": "set-E-03-b.png",
+   "where": "the whole frame",
+   "what": "the approved key is a dark, warm night table with glowing lamps and mirror-gloss streets; the build is a bright, flat, cool-grey daylight render with dim lamps and little reflection",
+   "fix": "relight to the approved night mood: dark frame, warm orange lamps, glossy teal streets with long reflections"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-01-b.png",
+   "where": "the arrow inside the glass ball",
+   "what": "the approved arrow is a clean matte white pointer floating in clear glass; the build's arrow is bevelled grey metal with a heavy black outline, and the ball carries an inset rectangular panel and small text that the approved ball does not have",
+   "fix": "make the arrow matte white with only a thin dark edge, and remove the inset panel and text so the glass is clear round the arrow"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-01-b.png",
+   "where": "the tubes framing the ball, centre",
+   "what": "the approved tubes are thick smooth polished-chrome loops; the build's are thin white angular wireframe struts forming a truss and cage",
+   "fix": "replace the white wireframe with thick smooth chrome tubes looping as in the approved still"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png",
+   "where": "the ball and its cursor, centre of the table",
+   "what": "the approved ball is a round clear glass bubble holding a floating matte white cursor; the build's ball is a flattened grey smear of glass and its cursor is grey metal with a black edge",
+   "fix": "make the ball a round clear bubble and the cursor matte white with a thin dark edge"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png",
+   "where": "both flippers, lower half",
+   "what": "the approved flippers are plain orange bats with a dark lower band and a screw end sitting straight on the table; the build's flippers ride on thick white plastic bracket frames that the approved table does not have",
+   "fix": "remove the white under-frames so each orange bat sits on the table on its screw post, with the dark band along its lower edge"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png",
+   "where": "the aprons and floor, lower edge and left",
+   "what": "the build adds a large glowing orange dot-matrix sign on the lower right apron and a line of glowing italic text on the left slab; the approved table has bare aprons and slab there",
+   "fix": "remove the dot-matrix sign and the italic text so the aprons and slab are bare as in the approved table"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-03-b.png",
+   "where": "upper right of the table",
+   "what": "the build's ramp there is a thin white open framework; the approved ramp is thick smooth chrome",
+   "fix": "rebuild the ramp in thick polished chrome with smooth curves"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-04-b.png",
+   "where": "the crops 'the card at the foot' and 'the slab at the foot'",
+   "what": "where the approved crops show a cream serif plaque and bare warm slab, the build crops show a glowing italic sans line on a cool grey slab, with no plaque card in the slab crop",
+   "fix": "match the approved treatment: for the card crop show the cream serif plaque, and keep the slab crop bare of any glowing text"
+  },
+  {
+   "severity": "major",
+   "file": "set-E-04-b.png",
+   "where": "the crop 'the arrow' and the crop 'a slingshot'",
+   "what": "the build's arrow crop repeats the grey smeared bubble and black-edged metallic arrow, and its slingshot crop adds a red mug and a dense black-on-yellow chevron wedge on a black bracket where the approved crop shows a clear bubble with white arrow and a spare yellow triangle on a chrome wire frame",
+   "fix": "clear round bubble with matte white arrow in the arrow crop; in the slingshot crop drop the red mug and match the approved triangle with wide-spaced chevrons on a chrome frame"
+  },
+  {
+   "severity": "minor",
+   "file": "set-E-04-b.png",
+   "where": "the crop 'a lamp in the floor'",
+   "what": "the build adds a large lit gold pedestal lamp beside the red floor insert and cools the scene; the approved crop has only the red insert glowing warm among dark teal",
+   "fix": "remove the added pedestal lamp and warm the crop's light to the approved tone"
+  },
+  {
+   "severity": "minor",
+   "file": "set-E-04-b.png",
+   "where": "the crops 'a flipper' and 'the drain'",
+   "what": "the approved crops are warm, grainy and soft with glossy dark reflections; the build's are cool, hard-edged and flatly lit, showing the build's white flipper bracket and pale metal rail by the drain",
+   "fix": "warm and darken these crops, restore the glossy reflections, and drop the white bracket"
+  }
+ ]
+}

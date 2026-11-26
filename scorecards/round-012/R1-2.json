@@ -1,0 +1,107 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "B: tier 3 from above, the lobby doors and the table map beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-01-b.png",
+   "where": "the whole overview frame",
+   "what": "-b is a strictly flat top-down shot; -a is a near-vertical but clearly oblique shot in which the tower, the lift tube, the Retirement box and the flippers rise off the playfield with visible sides, so the two do not read as the same table photographed twice",
+   "fix": "tilt the camera back to -a's oblique angle so the tower stands up, the tube shows its side and the parts keep their height off the page"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "the Corporate HQ sign band above the doors, and the same lettering in set-B-01-b.png and set-B-04-b.png",
+   "what": "the lettering is a flat black sans-serif print on a grey band; -a shows raised brushed-metal serif letters with weight, colour and sheen of metal catching the light",
+   "fix": "render the letters as metal serif forms with soft highlights, in the same weight, colour and place as -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the boardroom at upper left, also 'the long table' panel in set-B-02-b.png and the top tier of set-B-05-b.png",
+   "what": "-b draws a small orange plastic desk with green chairs and olive footrests, no lamps; -a shows a long dark walnut table with two rows of black chairs under warm brass lamps",
+   "fix": "give the piece a dark wood top with a warm sheen, black chairs, and the warm task lamps of -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the playfield below the boardroom, also the top tier of set-B-05-b.png",
+   "what": "the four yellow sticky notes scattered on the field in -a are missing in -b",
+   "fix": "place the four yellow notes where -a has them"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "the tower body, also the tower in set-B-01-b.png, the 'the tower' panel in set-B-04-b.png, and the top tier of set-B-05-b.png",
+   "what": "the tower is a bare grey metal frame with exposed ceiling light strips and no glass; -a's tower is a glass curtain wall with warm lit office floors and reflections, so -b reads skeletal and unfinished",
+   "fix": "skin the tower in glass with warm interior glow and window reflections like -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the playfield light overall, and the backdrop of set-B-03-b.png, also set-B-05-b.png",
+   "what": "-b's field is dimmer and cooler, with large soft dark shadow pools across the upper half, and in the close view the surroundings beyond the table are bright flat grey slabs; -a's field is an even deep blue with warm localised lamp glows and a dark night backdrop",
+   "fix": "even out and lift the ambient light on the field, keep accent glows warm, and drop the surroundings back into darkness"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the hourglass floor insert below the ball, also 'a flipper' panel in set-B-02-b.png and the top tier of set-B-05-b.png",
+   "what": "the hourglass insert is dark grey and unlit while the magnifier and clipboard glow; in -a all three inserts are lit, the hourglass a bright silver-white like its neighbours",
+   "fix": "light the hourglass insert to match the brightness and colour of -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "the carpet under the ball, also 'the arrow' panel in set-B-04-b.png",
+   "what": "-b puts a bright red glowing pool beneath and inside the ball; -a grounds the ball with a big soft dark cast shadow and one small warm highlight on the carpet",
+   "fix": "replace the red glow under the ball with a soft dark shadow cast away from the key light"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01-b.png",
+   "where": "the right outer wall, the top wall and the tier-divider walls of set-B-05-b.png",
+   "what": "-b's outer strips are pale smooth grey with plain lozenge-shaped lamps; -a's are deep navy with gold trim and glowing chevron arrow lamps, and the walls otherwise carry no lit lamp rows",
+   "fix": "dark navy panels with gold edging and chevron arrow lamps, and drop the white pill lamp rows from the plain walls"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03-b.png",
+   "where": "the revolving door on the carpet, also 'the post of the revolving door' panel in set-B-04-b.png",
+   "what": "the door's post stands at the left edge of the carpet with its blades sweeping off onto the bare floor; in the tier view and the intended look it stands on the carpet in front of the doors",
+   "fix": "centre the post on the carpet in front of the doors, as in the tier view"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04-b.png",
+   "where": "'the carpet' panel, also visible in set-B-03-b.png and the 'the revolving door' panel of set-B-02-b.png",
+   "what": "-b's carpet is a glossy ribbed cord with visible ridges and streaky shine; -a's is a soft matte plush crimson with a fine even pile",
+   "fix": "swap to a matte plush pile with the even crimson tone of -a and lose the ribbing and gloss"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-04-b.png",
+   "where": "'the arrow' panel, also the cursor in set-B-03-b.png",
+   "what": "the cursor carries a heavy black outline and a mid-grey fill; -a's arrow is bright white with a fine dark edge and a glassier highlight",
+   "fix": "thin the dark edge and brighten the fill towards white"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02-b.png",
+   "where": "'the beach' panel",
+   "what": "the deckchair reads as a tilted flat brown slab and the palm as a flat green star, with washed-out sea; -a shows a readable striped lounger with legs and fronds with depth",
+   "fix": "give the lounger its striped body and legs, tone the palm, and keep the bright turquoise sea band of -a"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02-b.png",
+   "where": "'a slingshot' panel, also the slings in set-B-01-b.png",
+   "what": "the slings are flat dull grey with hard dark crack lines; -a's are bright white glossy marble with soft grey veining and warm rim light",
+   "fix": "whiten the marble, soften the veins and add the gloss highlights of -a"
+  }
+ ]
+}

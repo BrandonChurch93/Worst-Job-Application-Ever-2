@@ -1,0 +1,72 @@
+{
+ "critic": "R8",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the page at rest, its result, and eight of the keys, as a web page",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole body below the intro text",
+   "what": "the page has a title, a step header and three lines of copy, then nothing: no field, no button, no instruction. A visitor can't tell what to do first. The only thing that might be a control is the big chrome port on the right, and nothing says it is one. About 60% of the page is empty texture.",
+   "fix": "add one clear call to action under the intro, e.g. a 'Begin assessment' button or a line like 'Place your cursor in the intake port to begin', and visually connect it to the port. Or move the port into the content column so the reading order goes title, copy, port."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the white plaque with the black capsule, top centre",
+   "what": "the plaque has no label and no clear purpose. It looks like a stray image or a broken embed that the tube happens to run into, so it reads as a layout mistake rather than part of the machine.",
+   "fix": "label it (e.g. 'Specimen received' or 'Applicant #...'), give it the same bevelled metal frame as the other hardware, and line its left edge up with the results panel below it"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the 'ASSESSMENT COMPLETE' panel",
+   "what": "the copy fills only the left half of a full-width panel, so the right half is a dead grey slab. Its left edge also doesn't line up with the step 3 content column from set-A-01 (x≈93), because content has moved right to make room for the port.",
+   "fix": "narrow the panel to fit the copy (about 600px), or make the copy run wider. Keep the left edge on one content column across both states of the page."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the scrolled page as a whole",
+   "what": "the header and step indicator are gone and nothing marks this as step 3. A second, identical port appears on the left with no explanation. The page loses its frame, so it no longer reads as one step of a form.",
+   "fix": "keep a compact sticky header with the step indicator, or repeat 'Step 3 · Result' above the panel. Make the second port look like an outlet (different finish or label) so its role is clear."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "'THE DAILY GRIND' backglass, top centre",
+   "what": "thin white type sits on a busy, bright skyline photo and is hard to read at delivery size",
+   "fix": "set it in a heavier face with a dark plate or a strong shadow behind it, or darken the skyline behind the text"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-09.png",
+   "where": "the 'Background Check' sign, upper right",
+   "what": "the spiral ramp cuts across the sign, and its first letters crowd the building edge",
+   "fix": "move the sign forward or above the ramp, or nudge the ramp so the label is clear"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "the dot-matrix display, lower right",
+   "what": "it shows only one glyph ('M') in a big empty panel, which reads as a blank or broken display in this still",
+   "fix": "start the scroll with text already filling the window, or show a fixed message when idle"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-09.png",
+   "where": "the 'Student Loans' and 'Mom's Basement' signs",
+   "what": "the type is very small next to the other signs and only just legible at delivery size",
+   "fix": "raise them to match the 'You're Fired' sign size, or cut them to one word"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "the step indicator, top right",
+   "what": "the step indicator's chrome-and-orange 3D style doesn't match the flat title and body type next to it, and the rule below it runs under the pills with no breathing room",
+   "fix": "add 8–12px between the pills and the rule, and tone the bevel down slightly so the header reads as one piece"
+  }
+ ]
+}

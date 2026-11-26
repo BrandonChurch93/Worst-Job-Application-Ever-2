@@ -1,0 +1,135 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the cabinet sidewalls, tier fronts and playfield as a whole",
+   "what": "Broad, flat gray metal faces and boxy tier dividers dominate the build, interrupting a view that reads as one continuous dark teal, warmly lit miniature in the target. The rails and inserts are isolated points of light rather than a coherent field of reflections.",
+   "fix": "Keep the prescribed dimensions, but recess and darken inset cabinet and riser faces; give exposed lips tight bevel highlights and carry warm grazing reflections across the rails and continuous blue lacquer."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "right panel, arrow inside the glass",
+   "what": "The arrow reads as another straight, hard, mostly matte pointer; the target is visibly warped and pinched, with an irregular glossy face and heavy dark edge.",
+   "fix": "Sculpt the right-state pointer with an uneven bowed face, pinched waist, uneven shoulder and curved stem, then restore broad cream specular highlights and the dark beveled edge."
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "all three panels, glass and surrounding macro photography",
+   "what": "The spheres read as clear graphic outlines with repeated rims, over relatively flat and sparsely reflected surfaces. The target has deep curved refraction, dense warm light reflections, tangible ball-to-table contact and a soft photographic falloff.",
+   "fix": "Add refracted and reflected surroundings across the body of each sphere, vary highlights by state, strengthen each contact reflection and shadow, and give the lacquer and metal small coherent warm glints with optical softness behind the ball."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the ivory page",
+   "what": "The build has a cool gray, heavily embossed, nearly uniform fabric-like surface rather than the brighter, warmer paper with fine, low-contrast irregular grain.",
+   "fix": "Lift the neutral base slightly toward warm ivory and replace the pronounced repeating texture with finer, shallower irregular paper grain."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the right-side loader ring and dish",
+   "what": "The silver ring is flat and radially banded, the inner rim a continuous white line, and the dark dish lacks the target's deep concavity and isolated lower-right highlight. The paper shadow is more diffuse and less anchored.",
+   "fix": "Use continuous fine brushed metal with narrow beveled lips, break up the white outline, deepen the dish with a localized lower-right reflection, and add a tighter contact shadow feeding into the soft down-right falloff."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the arrow and ball in the loader",
+   "what": "The pointer is near upright with a distorted, dark stem and small flat pale face. The target reads as a smooth ivory upper-left pointer with a clean dark bevel, clearly seen through glass.",
+   "fix": "Keep the configured scale, turn the arrow diagonally up-left, clean up the tail silhouette and dark bevel, and refine glass distortion so the glaze and face remain legible."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the transparent vertical rail and its three collars",
+   "what": "The rail looks like a gray sleeve over the paper; the collars wash out nearly white and lack the warm, darker reflected metal and distinct shadows in the target.",
+   "fix": "Make the glass clearer through its center with sharper paired wall reflections, give the collars a short polished bevel with dark-to-bright contrast, and restore separate diagonal shadows beneath them."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the progress row, its connector and the lower header rule",
+   "what": "The metal rail and heavy textured rule are dark, while the orange face reads as a flat opaque cap with muted sheen. The target has a finer, more integrated header seam and a glossy, light-catching orange button.",
+   "fix": "Retain shared header geometry, but soften and thin the rule's visual weight, reduce the connector contrast, and add curved orange highlights, a dark seating ring and tighter contact shadow to the active button; soften the concentric machining on the silver ones."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "left step title",
+   "what": "The title sits noticeably closer to the header boundary and is slightly denser visually, reducing the open interval above it.",
+   "fix": "Restore breathing room under the shared header without moving the left alignment, and ease the title weight slightly toward the target."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "marquee and Corporate HQ tower",
+   "what": "White glowing title styling and concentrated orange flare overpower the skyline; the tower's dark, horizontal striping and bright edge bulbs flatten the glazed facade against a broad aluminum panel.",
+   "fix": "Render the marquee title as finer, darker lettering over a readable skyline with a restrained central glow; articulate the tower with a fine glass mullion grid, warm interior windows, and a luminous doorway instead of relying on exposed bulbs."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "middle tier bumpers and adjacent playfield details",
+   "what": "The bumper tops read as flat ivory discs on beige drums and the flipper surround reads as unlit flat machine stock. The target has stepped milky domes, distinct warm brass/chrome collars, and soft highlights spreading over the surrounding inserts, miniature partitions and coffee-area fixtures.",
+   "fix": "Give the caps domed stepped profiles and milk-glass sheen, define the layered brass/chrome bases with warm underlighting, and add selective warm detail to the miniature fixtures and adjacent lacquer."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "firehouse, columned building, garage and bridge on the lower tier",
+   "what": "The firehouse looks flat and dark, the columned facade is weakly modeled, and the garage becomes a pale translucent drum behind a conspicuous white wire gantry. The target separates the red and blue lit buildings, a darker layered metallic garage, and a less dominant polished bridge.",
+   "fix": "Model the firehouse facade and windows with warm inset depth and a glossy beacon, give the columned facade proper relief, add clear blue-beacon contrast behind darker curved garage bands, and reduce the bridge's white glare by shaping warm, narrow highlights on polished metal."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "lower orange flippers, yellow lane plates, circular inserts and drain card",
+   "what": "Muted ochre flippers, flat yellow plates, soft dark inserts and a thin graphic-looking drain card lose the glossy plastics, lit hardware sockets, bright opaline inserts and solid cream sign of the reference.",
+   "fix": "Use richer glossy orange faces with speculars and visible fasteners, give the yellow plates reflective mounts, raise insert diffusion while retaining the cream faces and dark edge rings, and give the drain card a visibly seated cream plate and stronger dark typographic contrast without changing its copy."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "plunger at lower right",
+   "what": "Even allowing for the feed tube, the plunger has a dull brown knob and a weakly separated coil in empty-looking gray metal. The target knob is glassy orange and the black/chrome spring sits in a clearly defined dark channel.",
+   "fix": "Give the knob a saturated amber-orange glossy face, pick out the spring's dark winding and bright edges, and define the plunger seat with a narrow shadowed channel while retaining the feed tube."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "arrow in ball on the right feed tube",
+   "what": "The pointer face reads dim, gray and edge-heavy compared with the bright ivory face and clean dark bevel in the target.",
+   "fix": "Maintain the take position and prescribed scale, but give the face a bright ivory body and keep its dark outline clean, with glass highlights clear of the silhouette."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "left panel, pointer and foreground flipper material",
+   "what": "Dense pinpoints in the sphere and a very large flat-looking slab of ochre read harsher than the target's restrained droplets and glossy, rounded orange plastic with visible metal pivot detail.",
+   "fix": "Keep the configured scale and framing rules; quiet the pinpoints, keep a few legible wet marks on the arrow face, and give the flipper a rounded amber highlight, dark gasket and metallic fastener."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "middle panel, arrow and adjacent metal",
+   "what": "The pointer stands almost straight up and is matte cool gray, while the reference state tips sharply upper right with a glossy ivory face, an obvious dark bevel and diagonal chrome glints nearby.",
+   "fix": "Rotate the middle-state pointer upper right and light the beveled ivory with a broad moving highlight; carry a narrow warm highlight down the nearby rail without treating the reference sheet as tier layout."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "right panel, bumper and playfield materials",
+   "what": "The cap and brass base next to the ball are flatter and heavier, and the mottled surface reads matte rather than like the target's rich glossy blue lacquer catching warm bumper and ball highlights.",
+   "fix": "Retain the tier layout, but give the bumper a warmer white glazed dome and luminous rolled base, and tune the adjacent surface for deeper blue gloss and visible reflected light."
+  }
+ ]
+}
