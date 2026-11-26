@@ -18,7 +18,8 @@ export const WEAPON_GLOW = {
   streak: [0.4, 0.34, 0.26] as [number, number, number],
   halo: [0.34, 0.24, 0.13] as [number, number, number],
   glint: [2.6, 2.2, 1.6] as [number, number, number],
-  pool: [0, 0.05, 0.14] as [number, number, number],
+  pool: [0.01, 0.07, 0.18] as [number, number, number],
+  shade: [0.2, 0.2, 0.21] as [number, number, number],
   spark: [6, 5.2, 4] as [number, number, number],
   fleck: [5, 3.9, 2.4] as [number, number, number],
   muzzle: [9, 2.6, 0.7] as [number, number, number]
@@ -34,6 +35,7 @@ interface Kit {
   dart: THREE.BufferGeometry
   dartMaterial: THREE.MeshBasicMaterial
   tails: THREE.BufferGeometry
+  under: THREE.BufferGeometry
   tailMaterial: THREE.MeshBasicMaterial
   haloMaterial: THREE.MeshBasicMaterial
   glintMaterial: THREE.MeshBasicMaterial
@@ -59,8 +61,9 @@ function arrow(grow: number, depth: number): THREE.BufferGeometry {
   return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.6, bevelSize: 0.6, bevelSegments: 2, curveSegments: 2 })
 }
 
-// Where a dart's light falls beside it, in px of the page for each px of its height: the place of its shadow.
-const POOL = { x: 0.45, y: 0.6, wide: 104 }
+// Where a dart's light and its shadow fall on the paper beside it, in px of the page.
+const POOL = { x: 6, y: 7, wide: 104 }
+const SHADE = { x: 11, y: 12, wide: 30 }
 const TAIL = { streak: 520, trail: 140 }
 const FLECKS = 14
 const NEEDLE: [number, number][] = [[0, 0.5], [0, -0.5], [-1, 0], [0.35, 0]]
@@ -124,6 +127,62 @@ function tails(source: THREE.BufferGeometry): THREE.BufferGeometry {
   return out
 }
 
+// What a dart leaves on the paper under it, one mesh that filters what it lies on: a wide warm pool and a small soft shadow.
+function under(): THREE.BufferGeometry {
+  const parts: [number, number, number, [number, number, number]][] = [[POOL.wide, POOL.x, POOL.y, WEAPON_GLOW.pool], [SHADE.wide, SHADE.x, SHADE.y, WEAPON_GLOW.shade]]
+  const position: number[] = []
+  const uv: number[] = []
+  const colour: number[] = []
+  const index: number[] = []
+  parts.forEach(([wide, x, y, tint], n) => {
+    for (const [u, w] of [[0, 0], [1, 0], [1, 1], [0, 1]] as [number, number][]) {
+      position.push(x + (u - 0.5) * wide, -y + (w - 0.5) * wide, n * 0.1)
+      uv.push(u, w)
+      colour.push(...tint)
+    }
+    index.push(n * 4, n * 4 + 1, n * 4 + 2, n * 4, n * 4 + 2, n * 4 + 3)
+  })
+  const out = new THREE.BufferGeometry()
+  out.setAttribute('position', new THREE.Float32BufferAttribute(position, 3))
+  out.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  out.setAttribute('color', new THREE.Float32BufferAttribute(colour, 3))
+  out.setIndex(index)
+  return out
+}
+
+// Of all the darts in the air one gives off true light, the first of the stream, and of all the sparks the newest:
+// the others show their light as the pool on the paper. More lamps than a few make every lamp throw a shadow.
+const lead = { ctx: null as RealContext | null, dart: '', spark: '', heat: 0 }
+
+function leaders(ctx: RealContext): typeof lead {
+  if (lead.ctx === ctx) return lead
+  lead.ctx = ctx
+  lead.dart = ''
+  lead.spark = ''
+  lead.heat = 0
+  let first = Infinity
+  let last = -1
+  for (const s of ctx.list) {
+    if (s.part !== 'boss-weapons') continue
+    if (s.id.startsWith('dart-')) {
+      const n = Number(s.id.slice(5))
+      if (n < first) {
+        first = n
+        lead.dart = s.id
+      }
+    } else if (s.id.startsWith('spark-')) {
+      const n = Number(s.id.slice(6))
+      const u = Math.min(1, Math.max(0, s.v?.[0] ?? 0))
+      lead.heat += (1 - u) * (1 - u)
+      if (n > last) {
+        last = n
+        lead.spark = s.id
+      }
+    }
+  }
+  return lead
+}
+
 let made: Kit | null = null
 
 function kit(): Kit {
@@ -134,11 +193,12 @@ function kit(): Kit {
     dart: head(),
     dartMaterial: new THREE.MeshBasicMaterial({ vertexColors: true, toneMapped: false }),
     tails: tails(f.tail),
+    under: under(),
     tailMaterial: new THREE.MeshBasicMaterial({ vertexColors: true, ...add }),
     haloMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.halo), map: f.halo, ...add }),
     glintMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.glint), map: f.star, ...add }),
-    // The warm pool under a dart takes blue and a little green out of the paper: light on white paper can only warm it.
-    poolMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.pool), map: f.halo, ...add, blending: THREE.CustomBlending, blendEquation: THREE.ReverseSubtractEquation, blendSrc: THREE.SrcAlphaFactor, blendDst: THREE.OneFactor, blendEquationAlpha: THREE.AddEquation, blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor }),
+    // The pool under a dart takes blue and a little green out of what lies under it: light on white paper can only warm it.
+    poolMaterial: new THREE.MeshBasicMaterial({ vertexColors: true, map: f.halo, ...add, blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.ZeroFactor, blendDst: THREE.OneMinusSrcColorFactor, blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor }),
     sparkMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.spark), map: f.star, ...add }),
     fleckMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.fleck), vertexColors: true, ...add }),
     muzzleMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.muzzle), map: f.star, ...add }),
@@ -161,15 +221,13 @@ function makeDart(): THREE.Object3D {
   const glint = overlay(new THREE.Mesh(f.quad, k.glintMaterial), 4)
   glint.name = 'glint'
   glint.position.set(2, 0, 5)
-  // The dart's light on the paper under it: it lies on the page, where the dart's shadow falls.
-  const pool = overlay(new THREE.Mesh(f.quad, k.poolMaterial), 0)
+  const pool = overlay(new THREE.Mesh(k.under, k.poolMaterial), 0)
   pool.name = 'pool'
-  pool.scale.set(POOL.wide, POOL.wide, 1)
   const tail = overlay(new THREE.Mesh(k.tails, k.tailMaterial), 2)
   tail.name = 'tail'
   tail.position.z = 2
   const body = plain(new THREE.Mesh(k.dart, k.dartMaterial))
-  body.castShadow = true
+  body.castShadow = false
   root.add(pool, tail, body, glint)
   return root
 }
@@ -267,11 +325,10 @@ export const bossWeapons: PartMaker | null = {
         const glint = o.getObjectByName('glint')!
         glint.scale.set(36 * flick, 36 * flick, 1)
         glint.rotation.z = -(s.rot ?? 0) + 0.4
-        const rot = s.rot ?? 0
-        const lx = POOL.x * s.z0
-        const ly = POOL.y * s.z0
-        o.getObjectByName('pool')!.position.set(lx * Math.cos(rot) + ly * Math.sin(rot), lx * Math.sin(rot) - ly * Math.cos(rot), 0.7 - s.z0)
-        ctx.light({ x: cx, y: cy, z: s.z1 + 4, ...WEAPON_EMIT.dart })
+        const pool = o.getObjectByName('pool')!
+        pool.position.z = 0.7 - s.z0
+        pool.rotation.z = s.rot ?? 0
+        if (leaders(ctx).dart === s.id) ctx.light({ x: cx, y: cy, z: s.z1 + 4, ...WEAPON_EMIT.dart })
         break
       }
       case 'spark': {
@@ -301,7 +358,8 @@ export const bossWeapons: PartMaker | null = {
         }
         at.needsUpdate = true
         // The star and the flecks share materials, so the burst dims by shrinking, and by the light it gives off.
-        ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.spark.colour, power: WEAPON_EMIT.spark.power * hot, reach: WEAPON_EMIT.spark.reach })
+        const all = leaders(ctx)
+        if (all.spark === s.id) ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.spark.colour, power: WEAPON_EMIT.spark.power * Math.min(1.5, all.heat), reach: WEAPON_EMIT.spark.reach })
         break
       }
       case 'muzzle': {

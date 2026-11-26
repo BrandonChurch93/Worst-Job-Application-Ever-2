@@ -12,7 +12,7 @@ export interface FilmScript { pointer(time: number): Pointer; reactions: { at: n
 // The horror: a jump at the crack; the page itself cues the rear at the unfold and the cower under the cannons.
 // The anger: a snap aside two frames after the first slab of the salvo is fired.
 // The press: it gathers itself, climbs on and drops its whole weight on the button.
-export const ACT = { flinch: 2.72, windup: 3.36, tap: 3.72, take: 4.7, jump: 6.15, steel: 8.7, snap: 11.85, gather: 29.45, press: 30.42 } as const
+export const ACT = { flinch: 2.72, windup: 3.36, tap: 3.72, take: 4.7, jump: 6.15, steel: 8.7, snap: 11.78, gather: 29.45, press: 30.42 } as const
 
 export function makeScript(L: Step4Layout): FilmScript {
   const cb = L.checkbox

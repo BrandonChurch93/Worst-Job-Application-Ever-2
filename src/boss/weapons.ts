@@ -1,7 +1,7 @@
 import { config } from '../config'
 import { TYPE } from '../shell/parts'
 import type { DrawList, TypeSpec } from '../stage/types'
-import { label, prog } from './body'
+import { label, prog, smooth } from './body'
 import { bannerUp, FLASH_SECONDS, SPARK_SECONDS, type Fight } from './fight'
 import { ARENA, MUZZLE, POPUP, SLAB } from './plan'
 
@@ -15,7 +15,8 @@ export interface PopupPlan { title: string; box: Box; titleAt: { x: number; y: n
 export interface BannerPlan { key: string; w: number; h: number }
 export interface WeaponPlan { slabs: SlabPlan[]; popups: PopupPlan[]; banner: BannerPlan; slabType: TypeSpec; bannerType: TypeSpec; titleType: TypeSpec }
 
-const FLY = { z0: 14, z1: 14 + heights.slab, fall: 0.26 }
+// A slab is lobbed: it leaves the mouth, clears the top of the leaning shield and comes down to its flying height.
+const FLY = { z0: 14, z1: 14 + heights.slab, rise: 0.12, over: 128, fall: 0.5 }
 export const DART_LONG = 26
 export const DART_Z = 17
 export const SPARK_Z = 30
@@ -49,7 +50,9 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     if (k <= 0.02) continue
     const drop = s.state === 0 ? 0 : 1 - prog(s.t, 0, 0.12)
     const sink = s.state === 2 ? prog(s.t, 0, SLAB.out) : 0
-    const high = s.state === 0 ? (MUZZLE.z - heights.slab / 2 - FLY.z0) * (1 - prog(s.t, 0, FLY.fall)) ** 2 : 0
+    const from = MUZZLE.z - heights.slab / 2
+    const up = prog(s.t, 0, FLY.rise)
+    const high = s.state !== 0 ? 0 : s.t < FLY.rise ? from + (FLY.over - from) * (1 - (1 - up) ** 2) - FLY.z0 : (FLY.over - FLY.z0) * (1 - smooth(prog(s.t, FLY.rise, FLY.fall)))
     const z0 = (s.state === 0 ? FLY.z0 + high : FLY.z0 * drop) - sink * (heights.slab + 1.5)
     const landed = s.state === 0 ? 9 : s.state === 1 ? s.t : s.t + 9
     out.push({ id: `fired-${s.m}`, part, kind: 'box', x: s.x - made.w / 2, y: s.y - made.h / 2, w: made.w, h: made.h, z0, z1: z0 + heights.slab, tone: 'danger', r: 8, rot: s.rot, role: 'slab', v: [k, landed, s.state === 0 ? s.t : 9] })

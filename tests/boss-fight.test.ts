@@ -154,7 +154,7 @@ describe('the boss fight, made real', () => {
     expect(width()).toBeCloseTo(full, 1)
   })
 
-  it('gives off light from every dart and every spark', () => {
+  it('gives off light from the first dart of a stream and from the newest spark', () => {
     const lights: Emitter[] = []
     const dart: Shape = { id: 'dart-1', part: 'boss-weapons', kind: 'capsule', x: 100, y: 100, w: 34, h: 12, z0: 30, z1: 34, tone: 'light', rot: 0.3, v: [1] }
     const spark: Shape = { id: 'spark-1', part: 'boss-weapons', kind: 'disc', x: 100, y: 100, w: 80, h: 80, z0: 72, z1: 76, tone: 'light', v: [0.1, 1] }

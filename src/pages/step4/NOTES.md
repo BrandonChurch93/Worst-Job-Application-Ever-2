@@ -98,7 +98,7 @@ The acting, beat by beat (the word a stranger should say, and what carries it):
 | --- | --- | --- |
 | `boss.verify` | doubt | tiptoes in (`nervous`), flinches off the box at 2.72 s, stands off and sweats 3.05 to 3.45 s, winds up 3.36 s, taps 3.72 s so the strike is the tick at 3.8 s, struts off (`confident`), double take at the answer 4.7 s |
 | `boss.unfold` | horror | `recoil` and `shocked` on the crack, a jump back, `rear` two frames after the body opens, `cower` under the cannons, `scared` from 2.3 s, then it steels itself at 8.7 s |
-| `boss.slabs` | fight | `confident`; a `snap` aside at 11.85 s, two frames after the first slab of the salvo of three is fired; stands its ground and fires through the key |
+| `boss.slabs` | fight | `confident`; a `snap` aside at 11.78 s, two frames after the first slab of the salvo of three is fired; stands its ground and fires through the key |
 | `boss.popups` | anger | `angry` from the phase change; the one hit of the film at 20.24 s, knocked back, dust off |
 | `boss.lastStand` | really | double take two frames after the banner, sags (`exhausted`) from 0.7 s and holds 0.8 s, then `fume` and `angry` at 1.5 s, and the rush |
 | `boss.collapse` | spent | `exhausted`, drags itself to the button and stands 0.9 s |
