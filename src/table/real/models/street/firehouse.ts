@@ -161,7 +161,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     const mid = (fl + fr) / 2
     for (const dx of [-44, -22, 22, 44]) g.quad([mid + dx - 0.45, -jz, ft + 2.6], [mid + dx + 0.45, -jz, ft + 2.6], [mid + dx + 0.45, -jz, head], [mid + dx - 0.45, -jz, head], shade(STONE, 0.42))
     g.box(mid - 7, mid + 7, -5.6, 0, ft - 1.5, head + 3.5, shade(STONE, 1.05), { skip: 'b', under: true, bevel: 1.2, kind: KIND.stucco })
-    for (const fx of [fl - MOUTH.jamb - 1, fr - 0.5]) g.box(fx, fx + 4.5, -7, -3.4, 0, 12, TONE.yellow, { skip: 'b', bevel: 0.9, kind: KIND.gloss })
+    for (const fx of [fl - MOUTH.jamb - 1, fr - 0.5]) g.box(fx, fx + 4.5, -7, -3.4, 0, 12, TONE.iron, { skip: 'b', bevel: 0.9, kind: KIND.gloss })
 
     // The bay behind the mouth: a dark floor let in level with the street, and the slot the door runs up in.
     g.quad([fl, -3.4, 0.22], [fr, -3.4, 0.22], [fr, deep, 0.22], [fl, deep, 0.22], shade(BAY, 0.5), KIND.gloss)

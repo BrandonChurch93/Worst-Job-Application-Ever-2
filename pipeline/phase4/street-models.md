@@ -68,6 +68,8 @@ With `main` at 020efac5 the two turns are in (a823890f): LOOKED AT in `tier-stre
 
 From about 04:31 UTC `git push` failed in this VM (`could not read Username for 'https://github.com'`), as in several VMs after sessions were resumed. The Builder pushes my commits from bundles (`git bundle create NAME.bundle origin/agent/street-models..agent/street-models`) that I attach to my reports. No credential was looked for.
 
+- The two wheel guards at the foot of the firehouse's jambs are iron, not yellow: under the red light the yellow read as orange, which only the flippers, the plunger knob and the lift may be.
+
 ## Last measures (05:00 UTC, at 77779a6d)
 
 MEASURED with `npm run build && npm run counts -- --key table-wide --live low`: firehouse 6 calls, 50144 triangles; road signs 4, 3076; mom's 3, 2982; police 2, 2276; garage 1, 8120; bank 1, 4770; houses none at low. The folder: 17 calls, 71368 triangles, against 17 and 92094. The whole: 192 calls, 442250 triangles. `--key tier-street --live low`: the same rows; the whole 107 calls, 279901 triangles.
@@ -80,4 +82,4 @@ The three asset folders of the street do not exist: every surface is drawn in th
 
 1. The garage: a ring of concrete bands on eight piers round the ball's spiral, standing 1.3 balls up over the highway. Its shape is the layout's; two turns made it lower, but the approved one is a squat building with decks, and this is a tower of rails with a wall.
 2. The bank and the small houses: the bank's box is 1.0 by 1.1 balls and cannot grow, so its sign plate is as wide as its roof and it has no pediment; the houses are simple at their size.
-3. The side windows of the firehouse at a grazing angle in `youre-fired` read as grey frames with a thin lit slit, and the bay behind the ball there is a pale red where the approved one is a deep red in the dark.
+3. The side windows of the firehouse at a grazing angle in `youre-fired` read as grey frames with a thin lit slit, and the roofs from straight above are felt, a few units and four roof lights.
