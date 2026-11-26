@@ -10,6 +10,10 @@ import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 // What the walls of a tier are made to, in page pixels.
 const WALL = { height: 60, seg: 34, rim: 30, blade: 2.4, post: 5.4, chamfer: 4.5, strip: [30, 54] as V2, stripOut: 0.9 }
 const METAL: [number, number, number] = [0.52, 0.53, 0.55]
+// The face of a cross rail between two floors is anodised darker than the rails and carries no strike strip: no bright band stands between the floors.
+const RISER: [number, number, number] = [0.2, 0.208, 0.22]
+// Its ledge lies face up under the lamps, so it is darker still.
+const LEDGE: [number, number, number] = [0.15, 0.155, 0.165]
 const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 15, land: 84, step: 5, lip: 3, slope: 0.84, bank: 11, cuts: 10, tilt: [20, 58] as V2, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
 const exitOf = table.openings.find((o) => o.id.endsWith('.exit'))!
 const chuteOf = table.openings.find((o) => o.id.endsWith('.chute.mouth'))!
@@ -215,7 +219,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     const g = STEP.groove
     const in0 = top - STEP.back
     const cross: V2[] = [[0, 0], [0, h - c], [c, h], [in0 - c, h], [in0, h - c], [in0, rise + STEP.rise], [top - STEP.rise, rise + STEP.rise], [top, rise], [top, g + STEP.grooveWide], [top - STEP.grooveDeep, g + STEP.grooveWide - 1.2], [top - STEP.grooveDeep, g + 1.2], [top, g], [top, 0]]
-    const tone = (edge: number): [number, number, number] => (edge === 9 ? TONE.gap : edge >= 1 && edge <= 5 ? TONE.aluBright : edge >= 7 ? TONE.alu : METAL)
+    const tone = (edge: number): [number, number, number] => (edge === 9 ? TONE.gap : edge >= 1 && edge <= 3 ? TONE.aluBright : edge === 5 ? LEDGE : edge >= 4 ? RISER : METAL)
     A.prism(cross, [xL, yT], [X(MID - CROSS.throat), yT], tone)
     A.prism(cross, [X(MID + CROSS.throat), yT], [xR, yT], tone)
     A.box(xl, xL, yT - 4, yT, 0, rise, TONE.aluDark)
@@ -270,8 +274,6 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
       }
     }
     A.box(X(MID - CROSS.throat), X(MID + CROSS.throat), yT - 4, yT, 0, rise * 0.42, TONE.aluDark)
-    S.box(xL + 6, X(MID - CROSS.throat) - 6, yT - top - WALL.stripOut, yT - top, WALL.strip[0], WALL.strip[1], [1, 1, 1])
-    S.box(X(MID + CROSS.throat) + 6, xR - 6, yT - top - WALL.stripOut, yT - top, WALL.strip[0], WALL.strip[1], [1, 1, 1])
     for (let u = COLS.left + 0.75; u < COLS.right; u += RAIL.screwStep) if (Math.abs(u - MID) > CROSS.throat + 0.3) screws.add(X(u), yT - in0 / 2, h, 0.8, turnOf(u, 2))
     const r = 0.5
     const fillet: V2[] = [at(COLS.right, CROSS.lower), at(COLS.right, CROSS.lower + r)]
