@@ -61,6 +61,9 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 - 08:56 UTC, `table-lobby` (key `lobby-doors`): eye height 0.8 to 1.3 balls, so it looks 12.4 degrees down (was 5.9) and the carpet with the ball's shadow is in the picture, as ball_fixer asked. Seen in a draft compare. The tower is still small beside approved: the model is a narrow box, the camera's distance and lens are unchanged.
 - 09:00 UTC, the way in, on the Builder's word of 08:58 (calm it, overlap, no frame darker than half, over in about 1.2 s): the tiers begin to wake at 4.3 s (`T.wake`), 0.3 s apart and 0.3 s each, so the third is full at 5.2 s, the step the website's light reaches dusk. Before: the wake began at 5.2 s and ended at 6.25 s. The event `power-on` stays at 5.2 s; the kit's line 12 gives the order and no duration. `tests/pinball.test.ts` line 195 looked at the wave 0.5 s after `T.powerOn`; it looks 0.5 s after `T.wake` now, since the wave moved.
 - 09:08 UTC, the fitting view (main a3f57091) taken up: the page places the sealed body on the ball's middle and nothing more (`io.cursor.place(px(b.x), px(b.y), px(b.z) - 1)`), `berth` gives only how far back toward the wall the body may sit, the swap of acting states is gone (confident, shocked, angry and proud play as themselves). `tests/machine-runner-arrow.test.ts` now asks the view's own measure: `sealedFit(pose, time).r` at most `boreRoom(tremble)` at every step, the body within 1.5 px of the ball's middle, and a list (empty) of poses the glass holds under 0.93 outside the doors' damage. MEASURED with `node out/work/mr/off.mjs`: the only holds under 1 in the take are shocked with flattened 0.903 (the doors) and confident 0.999; the body sits at most 1.10 px from the saved ball (35.73 s, the flipper's strike; 0.32 px in the feed tube), which is the ball's last nudge in the step after the body is placed.
+- 09:18 UTC, `near-nest` tried closer (eye 10.5 and 12 balls up in place of 15, measured by projection only, no render): the ball is 12 to 13.7 of 100 across in place of 9.6, but the bumper hit at 18.91 s and the inbox's take at 19.02 s sit at 6 to 10 of 100 from the top edge, the ball cut by the frame, because the camera trails the ball by 0.25 s. Put back: a cut never hides a hit. The camera stays at 15.
+- 09:16 UTC, R9-1 issue 7 (the arrow in the reveal beat) is not done. The ball reaches the plunger at 8.3 s, 0.3 s after the beat ends, and the key `table-wide` sits at the beat's last frame, so a landing inside the beat needs the event `at-plunger` moved about 1 s and the key's camera changed: both are the Builder's.
+- 09:16 UTC, one run of the whole checks on the merge of main 5429fcf2 timed out in `tests/pinball.test.ts` (continues exactly after load(save()), 20.8 s against 20 s) while four stills were rendering beside it. Run again with nothing beside it before the push.
 
 ## Moves of things a model stands on
 
@@ -71,13 +74,14 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 
 | Part | Looks | What |
 | --- | --- | --- |
-| table-cameras | 32 | 6 baseline compares, 1 tier view by mistake, 5 rail stills looking back, 2 youre-fired compares, 1 last-save compare, 1 rail compare looking ahead, 1 rail still at 32.0 s, 1 rail compare at the new key, 3 `review` stills (rail-cam, youre-fired, last-save), 1 youre-fired compare, 3 last-save compares, near-nest at 17.35 s, near-spent at 36.85 and 35.1 s, doors-swing at 13.23 s, last-save again, lobby-doors compare at 12.4 degrees down |
+| table-cameras | 37 | 6 baseline compares, 1 tier view by mistake, 5 rail stills looking back, 2 youre-fired compares, 1 last-save compare, 1 rail compare looking ahead, 1 rail still at 32.0 s, 1 rail compare at the new key, 3 `review` stills (rail-cam, youre-fired, last-save), 1 youre-fired compare, 3 last-save compares, near-nest at 17.35 s, near-spent at 36.85 and 35.1 s, doors-swing at 13.23 s, last-save again, lobby-doors compare at 12.4 degrees down, 1 lobby-doors at review after the eye went up (146.7 s), 1 lobby-doors at draft with the fitting view, 3 film stills with the true states (near-nest 17.48 s, ride 8.6 s, near-spent 35.1 s) |
 | clear-ball sheet | 2 | three panels, first draft; third ball at `cup.r + 0.5` |
 | page | 2 | loader-caught at 2.76 s, result at 41.5 s |
 | table-layout | 0 | |
 | table-physics | 0 | |
-| director | 3 | ride-brace at 9.2 s, wayin at 4.4 and 5.4 s |
+| director | 7 | ride-brace at 9.2 s, wayin at 4.4 and 5.4 s, the calmer way in at 4.4, 4.7, 5.0 and 5.3 s |
 | acting-pinball | 2 | near-nest struck pose at 17.37 s, alarm in the inbox at 20.5 s |
+| keys after merge 30, asked by the Builder, not tuning | 5 | table-wide, reply-all, youre-fired, rail-cam, last-save at draft |
 
 ## Take searches
 
