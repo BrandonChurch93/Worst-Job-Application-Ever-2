@@ -7,7 +7,8 @@ import type { Shape } from '../../../stage/types'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 
-export const HEALTH = { proud: 0.6, rim: 2.2, under: 1.5, wall: 0.8, shoulder: 3.4, crown: 0.3, gutter: 2 }
+export const HEALTH = { proud: 0.6, rim: 2.2, under: 1.5, wall: 0.8, shoulder: 2.2, crown: 0.3, gutter: 2 }
+export const TROUGH = { near: 2.15, far: 0.62, shade: 0.42, lit: 1.2 }
 
 let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 
@@ -18,6 +19,7 @@ function floor(): THREE.MeshPhysicalMaterial {
     floorMaterial.color.setRGB(0.15, 0.166, 0.168)
     floorMaterial.roughness = 0.42
     floorMaterial.normalScale.set(0.09, 0.09)
+    floorMaterial.vertexColors = true
   }
   return floorMaterial
 }
@@ -60,8 +62,35 @@ function track(s: Shape): THREE.Object3D {
   root.add(mesh(sweep(outlineOf(s, 0, 16), profile(points), false), rimStuff(), true))
   const reach = s.h / 2 - (rim - 0.5)
   const gutter: ProfilePoint[] = [0, 0.1, 0.2, 0.32, 0.46, 0.62, 0.8, 0.98].map((t, i): ProfilePoint => [reach * t, 0.05 + HEALTH.gutter * (1 - t) * (1 - t), i === 0])
-  root.add(mesh(sweep(outlineOf(s, rim - 0.5, 16), profile(gutter)), floor(), false))
+  const bed = sweep(outlineOf(s, rim - 0.5, 16), profile(gutter))
+  const at = bed.getAttribute('position')
+  const tint = new Float32Array(at.count * 3)
+  for (let i = 0; i < at.count; i++) {
+    const along = Math.min(1, Math.max(0, at.getX(i) / s.w + 0.5))
+    const across = Math.min(1, Math.max(-1, at.getY(i) / reach))
+    const wall = across > 0 ? 1 + (TROUGH.shade - 1) * across * across : 1 + (TROUGH.lit - 1) * across * across
+    const v = (TROUGH.near + (TROUGH.far - TROUGH.near) * along) * wall
+    tint[i * 3] = v
+    tint[i * 3 + 1] = v
+    tint[i * 3 + 2] = v
+  }
+  bed.setAttribute('color', new THREE.BufferAttribute(tint, 3))
+  root.add(mesh(bed, floor(), false))
   return root
+}
+
+let fillMaterial: THREE.MeshPhysicalMaterial | null = null
+export const FILL = { tone: 0.9, room: 0.22, coat: 0, coatRough: 0.18 }
+
+function fillStuff(): THREE.MeshPhysicalMaterial {
+  if (!fillMaterial) {
+    fillMaterial = studio(materials().orange.clone())
+    fillMaterial.color.multiplyScalar(FILL.tone)
+    fillMaterial.envMapIntensity = FILL.room
+    fillMaterial.clearcoat = FILL.coat
+    fillMaterial.clearcoatRoughness = FILL.coatRough
+  }
+  return fillMaterial
 }
 
 let gainMaterial: THREE.MeshPhysicalMaterial | null = null
@@ -85,7 +114,7 @@ function fill(s: Shape, full: number, gain = false): THREE.Object3D {
   const points: ProfilePoint[] = [[0, 0, true], [0, HEALTH.wall], ...arc(0, HEALTH.wall, lip, flat - HEALTH.wall, 9).slice(1), [lip + (half - lip) * 0.45, flat + HEALTH.crown * 0.7], [half * 0.97, h]]
   const g = sweep(outlineOf({ kind: 'capsule', w: full, h: s.h }, 0, 18), profile(points))
   const at = g.getAttribute('position') as THREE.BufferAttribute
-  const m = mesh(g, gain ? gainStuff() : materials().orange, !gain)
+  const m = mesh(g, gain ? gainStuff() : fillStuff(), !gain)
   m.userData.rest = Float32Array.from(at.array as ArrayLike<number>)
   m.userData.full = full
   m.userData.now = full

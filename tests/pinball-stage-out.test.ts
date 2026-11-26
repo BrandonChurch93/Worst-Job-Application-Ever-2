@@ -63,7 +63,7 @@ describe('the two cameras that look in over the apron', () => {
       }
       before = pose
     }
-    expect(flips).toBe(6)
+    expect(flips).toBe(4)
     expect(out).toBeGreaterThan(200)
   })
 })

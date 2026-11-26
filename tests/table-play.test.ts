@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import * as THREE from 'three'
 import { parts } from '../src/table/real/play'
-import { lidJump, ringDown } from '../src/table/real/play/bumpers'
+import { lidJump, lidPop, lidRock, ringDown } from '../src/table/real/play/bumpers'
 import { flapLift, FLAP } from '../src/table/real/play/ramps'
 import { PLATE, plateDown, spinnerTurn, standupLean } from '../src/table/real/play/targets'
 import { isAnchor, zoneOf } from '../src/table/real/zone'
@@ -93,6 +93,12 @@ describe('the parts that play', () => {
     expect(lidJump(0.03)).toBeGreaterThan(1)
     expect(lidJump(0.03)).toBeLessThan(8)
     expect(Math.abs(lidJump(1))).toBeLessThan(0.05)
+    expect(lidJump(0)).toBeGreaterThan(6)
+    expect(lidPop(0)).toBe(1)
+    expect(lidPop(0.05)).toBeGreaterThan(0.5)
+    expect(lidPop(1)).toBe(0)
+    expect(Math.abs(lidRock(0))).toBeGreaterThan(0.05)
+    expect(lidRock(1)).toBe(0)
   })
 
   test('a drop target is down in 0.05 s, flush with its frame, and the bank rises when its state returns', () => {

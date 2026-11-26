@@ -13,7 +13,7 @@ import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
 const CAP_CLEARS = 0.6
-const SAG_AFTER = 0.15
+const SAG_AT = 1.66
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -57,7 +57,7 @@ const FILL_TOP = 3.4
 // The body takes a sixth argument for the shield's flash and the cap's soot once the modeller's body is in; until then it is ignored.
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
 const easeIn = (t: number): number => t * t
-const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863], fold: 0.78, out: 8, reach: 104, seated: 0.001 } as const
+const STAGES = { w: 1920, h: 1080, y: 505, x: [232, 600, 1012, 1580], tuck: 30, reach: 125, crouch: 0.9, side: 54, seated: 0.001 } as const
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
@@ -253,10 +253,8 @@ export function makePage(): PageLogic {
             io.cursor.heal()
             io.cursor.hurt('scorched')
           }
-          io.cursor.act('plain')
-        }
+        } else if (s.t >= SAG_AT && s.t - dt < SAG_AT) io.cursor.act('exhausted')
       } else if (s.stage === 'press') {
-        if (s.t >= SAG_AFTER && s.t - dt < SAG_AFTER && s.pressed < 0) io.cursor.act('exhausted')
         if (s.pressed < 0) {
           const target = s.inSocket ? L.cap : fallenBox
           const self = s.t >= GAG_MAX || (s.skipping && s.t >= 0.5)
@@ -421,14 +419,15 @@ export function makePage(): PageLogic {
       loose.cap.x += 14
       loose.cap.y -= 12
       drawRig(list, loose, 'stage-1')
-      drawSocket(list, x2, y + 8, 1, 'stage-2-socket')
+      drawSocket(list, x2, y, 1, 'stage-2-socket')
       const half = fightRig(x2, y, null)
       half.legs.forEach((l, i) => {
-        l.k = STAGES.fold
-        l.fx = l.hx + (i % 2 === 0 ? -1 : 1) * STAGES.out
+        const sx = i % 2 === 0 ? -1 : 1
+        l.fx = l.hx - sx * STAGES.tuck
         l.fy = l.hy + (i < 2 ? -1 : 1) * STAGES.reach
+        l.crouch = STAGES.crouch
       })
-      half.sides.forEach((side, i) => { side.y = y + (i === 0 ? -1 : 1) * 64 })
+      half.sides.forEach((side, i) => { side.y = y + (i === 0 ? -1 : 1) * STAGES.side })
       for (const c of half.cannons) c.k = 0
       half.shield.k = 0
       drawRig(list, half, 'stage-2')

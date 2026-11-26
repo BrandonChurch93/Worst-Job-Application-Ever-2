@@ -7,7 +7,7 @@ import { lit } from '../light'
 import { whole, type Zone } from '../zone'
 import { Floor } from './floor'
 import { INSERT_GLOW } from './inserts'
-import { levels } from '../lights/levels'
+import { ANSWER, levels, near } from '../lights/levels'
 import { setGlow, windowGeometry } from './windows'
 
 const TIER_NAMES = ['corporate', 'office', 'street'] as const
@@ -127,7 +127,10 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     const ids = c.userData.inserts as string[] | undefined
     if (!ids) continue
     const spans = c.userData.spans as [number, number][]
-    ids.forEach((id, k) => setGlow((c as THREE.Mesh).geometry, spans[k]!, rest + (INSERT_GLOW.on - rest) * (ctx.byId.get(`insert.${id}`)?.v?.[0] ?? 0)))
+    ids.forEach((id, k) => {
+      const lit = rest + (INSERT_GLOW.on - rest) * (ctx.byId.get(`insert.${id}`)?.v?.[0] ?? 0)
+      setGlow((c as THREE.Mesh).geometry, spans[k]!, lit + (INSERT_GLOW.hit - lit) * levels(ctx, z).general * near(ctx, `insert.${id}`, ANSWER.reach, 0.8))
+    })
   }
 }
 

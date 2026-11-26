@@ -261,6 +261,12 @@ export class Geo {
     return this
   }
 
+  // Scales the second channel of every vertex from `from` on by its place: how strongly a drawn light or shadow stands there.
+  gain(from: number, by: (x: number, y: number, z: number) => number): this {
+    for (let i = from; i < this.vertices; i++) this.c[i * 3 + 1] = this.c[i * 3 + 1]! * by(this.p[i * 3]!, this.p[i * 3 + 1]!, this.p[i * 3 + 2]!)
+    return this
+  }
+
   move(from: number, m: THREE.Matrix4): this {
     const v = new THREE.Vector3()
     const nm = new THREE.Matrix3().getNormalMatrix(m)
