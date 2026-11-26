@@ -8,7 +8,18 @@ import type { Shape } from '../../../stage/types'
 import { dims, leaf, mesh, q, scalloped, scattered, shared, srgb } from './careers-solids'
 import { engraved } from './perk-cards'
 
-export const MEDAL_LOOK = { lobes: 32, deep: 6.5, rim: 9.2, band: 153, ring: 147.5, face: 136, wreath: 112, leaves: 12, leaf: [27, 10.5, 1.7] as const }
+export const MEDAL_LOOK = { lobes: 32, deep: 6.5, rim: 9.2, band: 153, ring: 147.5, face: 136, wreath: 122, leaves: 12, leaf: [24, 9, 1.5] as const }
+
+let faceMade: THREE.MeshPhysicalMaterial | null = null
+
+// The medal's face: the shared turned aluminium's own pictures on a paler, softer metal, as a struck medal is beside a machined knob.
+function medalFace(): THREE.MeshPhysicalMaterial {
+  if (!faceMade) {
+    const turned = materials().aluminiumTurned
+    faceMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc3c7cb), roughness: 0.38, metalness: 0.9, normalMap: turned.normalMap, normalScale: new THREE.Vector2(0.05, 0.05), anisotropy: 0.7, anisotropyMap: turned.anisotropyMap }))
+  }
+  return faceMade
+}
 
 // The face of a turned part: its pictures lie across the whole disc once.
 function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
@@ -39,7 +50,7 @@ function medallion(s: Shape): THREE.Object3D {
     [b(ring - 5.1), h - 0.9, true], [b(ring - 5.6), h + 0.2], [b(ring - 6.2), h + 0.9], [b(ring - 8.0), h + 0.9], [b(ring - 8.7), h + 0.3], [b(face + 1.4), h - 0.7, true], [b(face + 0.5), h - 0.7, true], [b(face), h, true]
   ]
   root.add(mesh(shared(`medalBody:${q(s.w)}:${q(h)}`, () => sweep(circle(band, 144), profile(body), false)), m.aluminiumSatin))
-  root.add(mesh(shared(`medalFace:${q(s.w)}:${q(h)}`, () => discUv(sweep(circle(face + 0.2, 144), [{ inset: 0, z: h, out: 0, up: 1 }]), face * 2)), m.aluminiumTurned, false))
+  root.add(mesh(shared(`medalFace:${q(s.w)}:${q(h)}`, () => discUv(sweep(circle(face + 0.2, 144), [{ inset: 0, z: h, out: 0, up: 1 }]), face * 2)), medalFace(), false))
   const wreath = shared(`medalWreath:${q(s.w)}:${q(h)}`, () => {
     const one = leaf(L.leaf[0] * k, L.leaf[1] * k, L.leaf[2])
     const places: { x: number; y: number; z: number; turn: number }[] = []
@@ -49,7 +60,7 @@ function medallion(s: Shape): THREE.Object3D {
         const x = side * Math.sin(a) * L.wreath * k
         const y = -Math.cos(a) * L.wreath * k
         const along = Math.atan2(Math.sin(a), side * Math.cos(a))
-        places.push({ x, y, z: h - 0.05, turn: along - side * 0.5 })
+        places.push({ x, y, z: h - 0.05, turn: along - side * 0.55 })
       }
     }
     const g = scattered(one, places)

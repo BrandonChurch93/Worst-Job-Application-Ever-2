@@ -17,7 +17,7 @@ export const GAP = 40
 export const CARD_W = (WIDTH - GAP * 2) / 3
 export const CARD_H = 248
 export const CARD_R = 18
-export const MEDAL = 324
+export const MEDAL = 356
 export const MEDAL_H = 10
 export const HERO_W = 460
 export const TICKER = { x: LEFT, y: 984, w: WIDTH, h: 56, floor: -6, tape: -5, pad: 28, gap: 64 }
@@ -32,7 +32,7 @@ export const T = {
   kicker: { font: 'inter-600', px: 20 },
   cardTitle: { font: 'inter-600', px: 30 },
   strong: { font: 'inter-600', px: 22 },
-  medalTitle: { font: 'inter-600', px: 30, lead: 38 },
+  medalTitle: { font: 'inter-600', px: 28, lead: 36 },
   medalFrom: { font: 'inter-400', px: 18, lead: 24 },
   quote: { font: 'inter-400', px: 20, lead: 30 },
   role: { font: 'inter-600', px: 20 },
@@ -89,15 +89,15 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
 
 function medallion(i: number, cx: number, y: number): LayoutNode[] {
   const k = `copy:marketing.awards.items.${i}`
-  const title = { ...T.medalTitle, align: 'centre' as const, wrap: 232 }
-  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 226 }
+  const title = { ...T.medalTitle, align: 'centre' as const, wrap: 196 }
+  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 214 }
   const th = tall(title, `${k}.title`, title.wrap)
   const fh = tall(from, `${k}.from`, from.wrap)
-  const top = y + (MEDAL - (th + 24 + fh)) / 2
+  const top = y + (MEDAL - (th + 22 + fh)) / 2
   const on = { part: 'type', on: MEDAL_H }
   const disc = node(`award-${i}`, 'medallion', [cx - MEDAL / 2, y, MEDAL, MEDAL], {
     part: PAGE, shape: 'disc', height: MEDAL_H, tone: 'metal',
-    children: [text(`award-${i}-title`, `${k}.title`, title, cx, top, on), text(`award-${i}-from`, `${k}.from`, from, cx, top + th + 24, on)]
+    children: [text(`award-${i}-title`, `${k}.title`, title, cx, top, on), text(`award-${i}-from`, `${k}.from`, from, cx, top + th + 22, on)]
   })
   return [disc, text(`award-${i}-fine`, `${k}.finePrint`, { ...TYPE.helper, align: 'centre' }, cx, y + MEDAL + 28, type)]
 }

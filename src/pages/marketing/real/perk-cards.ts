@@ -2,10 +2,10 @@ import * as THREE from 'three'
 import { studio } from '../../../post/studio'
 import type { PartMaker } from '../../../real/types'
 import { materials } from '../../../shell/materials'
-import { controls } from '../../../shell/real/controls'
-import { arc, merge, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
+import { look } from '../../../post/look'
+import { merge, outlineOf } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
-import { dims, mesh, mirrored, q, shared, srgb } from './careers-solids'
+import { dims, mesh, q, shared, srgb } from './careers-solids'
 
 export const SLAB = { frame: 2.6, bevel: 10.5, rise: 3.6, round: 1.8, band: 3.4 }
 
@@ -30,31 +30,103 @@ export function engraved(s: Shape): THREE.Object3D {
   return m
 }
 
-// Where each point of the slab lies on its card, as the shared glass wants it.
-function placed(g: THREE.BufferGeometry, s: Shape): THREE.BufferGeometry {
-  const pos = g.getAttribute('position')
-  const at = new Float32Array(pos.count * 4)
-  const edge = new Float32Array(pos.count * 2)
-  for (let i = 0; i < pos.count; i++) {
-    at.set([pos.getX(i), pos.getY(i), s.w / 2, s.h / 2], i * 4)
-    edge.set([Math.max(0.6, s.r ?? 0), 0], i * 2)
+let glassMade: THREE.MeshPhysicalMaterial | null = null
+
+// The perk cards' own glass: paler and greener than the form's cards, frosted, with the light and shade of its ground edge laid into the slab itself.
+export function cardGlass(): THREE.MeshPhysicalMaterial {
+  if (!glassMade) {
+    glassMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(GLASS.colour), roughness: 0.34, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, vertexColors: true }))
   }
-  g.setAttribute('slab', new THREE.BufferAttribute(at, 4))
-  g.setAttribute('slabEdge', new THREE.BufferAttribute(edge, 2))
+  return glassMade
+}
+
+export const GLASS = { colour: 0xe6f0e9, shade: 0.72, exit: 1.1, rim: 1.3, glint: 1.16, line: 1.12, wash: 0.045, lean: 0.3 }
+
+const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
+const KX = look.key.direction[0] / keyFlat
+const KY = look.key.direction[1] / keyFlat
+
+// One face of the slab, from the middle of its wall to the middle of its face. `d` is how far in from the edge a ring lies, `z` its height,
+// `lit` what the side toward the light shows there and `away` what the far side shows: the near bevel lies in the glass's own shade with a
+// bright line where it meets the face, the far bevel lets the light out and ends in a bright line at the very edge.
+function face(s: Shape, half: number, flip: number): THREE.BufferGeometry {
+  const k = Math.min(1, Math.min(s.w, s.h) / 90)
+  const bevel = SLAB.bevel * k
+  const foot = half - SLAB.rise
+  const G = GLASS
+  const rings: { d: number; z: number; lit: number; away: number; lean: number }[] = [
+    { d: 0, z: 0, lit: 0.9, away: 0.9, lean: 1 },
+    { d: 0, z: foot - SLAB.round, lit: 0.95, away: 1, lean: 1 },
+    { d: 0.5, z: foot - 0.5, lit: G.glint, away: G.rim, lean: 0.8 },
+    { d: SLAB.round, z: foot, lit: G.shade + 0.1, away: G.rim, lean: 0.5 },
+    { d: SLAB.round + 1.2, z: foot + SLAB.rise * 0.2, lit: G.shade, away: G.exit, lean: G.lean },
+    { d: SLAB.round + bevel * 0.5, z: foot + SLAB.rise * 0.72, lit: G.shade + 0.03, away: G.exit - 0.02, lean: G.lean },
+    { d: SLAB.round + bevel - 1.6, z: foot + SLAB.rise * 0.97, lit: G.shade + 0.08, away: G.exit - 0.04, lean: G.lean },
+    { d: SLAB.round + bevel - 0.6, z: half, lit: G.line, away: 0.95, lean: 0.1 },
+    { d: SLAB.round + bevel + 0.7, z: half, lit: G.line, away: 0.96, lean: 0 },
+    { d: SLAB.round + bevel + 2.2, z: half, lit: 1, away: 1, lean: 0 }
+  ]
+  const lowest = Math.min(s.w, s.h) / 2
+  for (const f of [0.22, 0.45, 0.7, 0.92]) rings.push({ d: SLAB.round + bevel + 2.2 + f * (lowest - SLAB.round - bevel - 3), z: half, lit: 1, away: 1, lean: 0 })
+  const outline = outlineOf(s, SLAB.frame, 14)
+  const n = outline.count
+  const pos: number[] = []
+  const nor: number[] = []
+  const uv: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  const span = Math.hypot(s.w / 2, s.h / 2)
+  const put = (x: number, y: number, z: number, nx: number, ny: number, nz: number, v: number): void => {
+    const wash = 1 + G.wash * ((x * KX + flip * y * KY) / span)
+    pos.push(x, y, z)
+    nor.push(nx, ny, nz)
+    uv.push(x, y)
+    col.push(v * wash, v * wash, v * wash)
+  }
+  rings.forEach((ring, r) => {
+    const before = rings[Math.max(0, r - 1)]!
+    const after = rings[Math.min(rings.length - 1, r + 1)]!
+    const run = after.d - before.d
+    const up = after.z - before.z
+    const l = Math.hypot(run, up) || 1
+    for (let i = 0; i < n; i++) {
+      const ox = outline.nx[i]!
+      const oy = outline.ny[i]!
+      const side = ox * KX + flip * oy * KY
+      const v = side > 0 ? 1 + side * (ring.lit - 1) : 1 - side * (ring.away - 1)
+      const out = (up / l) * ring.lean
+      const rise = Math.sqrt(Math.max(0, 1 - out * out))
+      put(outline.x[i]! - ring.d * ox, outline.y[i]! - ring.d * oy, ring.z, ox * out, oy * out, rise, v)
+    }
+  })
+  for (let r = 0; r < rings.length - 1; r++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(r * n + i, r * n + j, (r + 1) * n + i, r * n + j, (r + 1) * n + j, (r + 1) * n + i)
+    }
+  }
+  const last = (rings.length - 1) * n
+  put(0, 0, half, 0, 0, 1, 1)
+  for (let i = 0; i < n; i++) idx.push(rings.length * n, last + i, last + ((i + 1) % n))
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setIndex(idx)
   return g
 }
 
 // One slab of glass with both of its faces: each face is ground to the same wide bevel, with a short wall between them.
-// It is built round its middle, so it turns about its own long axis.
-function slabGeometry(s: Shape, thick: number): THREE.BufferGeometry {
-  const half = thick / 2
-  const k = Math.min(1, Math.min(s.w, s.h) / 90)
-  const foot = half - SLAB.rise
-  const wall = Math.max(0.2, foot - SLAB.round)
-  const points: ProfilePoint[] = [[0, 0, true], [0, wall, true], ...arc(0, wall, SLAB.round, foot - wall, 5).slice(1), ...[0.14, 0.28, 0.42, 0.56, 0.7, 0.84, 1].map((t): ProfilePoint => [SLAB.round + SLAB.bevel * k * t, foot + SLAB.rise * Math.sin((t * Math.PI) / 2)])]
-  const upper = sweep(outlineOf(s, SLAB.frame, 14), profile(points))
-  const lower = mirrored(upper)
-  return placed(merge([upper, lower]), s)
+// It is built round its middle, so it turns about its own long axis. The under side carries its light and shade as it will lie when it is up.
+export function slabGeometry(s: Shape, thick: number): THREE.BufferGeometry {
+  const upper = face(s, thick / 2, 1)
+  const lower = face(s, thick / 2, -1)
+  lower.rotateX(Math.PI)
+  const colour = new Float32Array([...(upper.getAttribute('color').array as Float32Array), ...(lower.getAttribute('color').array as Float32Array)])
+  const g = merge([upper, lower])
+  g.setAttribute('color', new THREE.BufferAttribute(colour, 3))
+  return g
 }
 
 // The seal the card sits in. It stays in the mouth of the well while the slab turns, and squares the well's corners off to the card's round ones.
@@ -79,7 +151,7 @@ function sealGeometry(s: Shape): THREE.BufferGeometry {
   for (let i = 0; i < n; i++) {
     const a = i * 3
     const b = ((i + 1) % n) * 3
-    idx.push(a, a + 1, b, a + 1, b + 1, b, a + 1, a + 2, b + 1, a + 2, b + 2, b + 1)
+    idx.push(a, b, a + 1, a + 1, b, b + 1, a + 1, b + 1, a + 2, a + 2, b + 1, b + 2)
   }
   const g = new THREE.BufferGeometry()
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
@@ -91,10 +163,10 @@ function sealGeometry(s: Shape): THREE.BufferGeometry {
 
 const AXIS = new THREE.Vector3(1, 0, 0)
 
-function turningSlab(s: Shape): THREE.Object3D {
+function glassSlab(s: Shape, thick: number): THREE.Object3D {
   const root = new THREE.Group()
-  const thick = s.v?.[0] ?? 12
-  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}`, () => slabGeometry(s, thick)), materials().glassCard, true)
+  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}`, () => slabGeometry(s, thick)), cardGlass(), true)
+  glass.name = 'glass'
   root.add(glass)
   const seal = mesh(shared(`perkSeal:${dims(s)}`, () => sealGeometry(s)), liningMaterial(), false)
   seal.name = 'seal'
@@ -103,16 +175,21 @@ function turningSlab(s: Shape): THREE.Object3D {
 }
 
 export const perkCards: PartMaker | null = {
-  key(s, ctx) {
+  key(s) {
     if (s.kind === 'text' || s.kind === 'well') return null
-    if (s.id.endsWith('-slab')) return `perkSlab:${dims(s)}`
+    if (s.id.endsWith('-slab')) return `perkSlab:${dims(s)}:${q(s.v?.[0] ?? 12)}`
     if (s.role === 'cardRule') return `perkRule:${q(s.w)}x${q(s.h)}`
-    if (s.role === 'card') return controls.key(s, ctx)
+    if (s.role === 'card') return `perkSlab:${dims(s)}:${q(s.z1 - s.z0)}`
     return null
   },
-  make(s, ctx) {
-    if (s.id.endsWith('-slab')) return turningSlab(s)
-    if (s.role === 'card') return controls.make(s, ctx)
+  make(s) {
+    if (s.id.endsWith('-slab')) return glassSlab(s, s.v?.[0] ?? 12)
+    if (s.role === 'card') {
+      const root = glassSlab(s, s.z1 - s.z0)
+      root.getObjectByName('glass')!.position.z = (s.z1 - s.z0) / 2
+      root.remove(root.getObjectByName('seal')!)
+      return root
+    }
     return engraved(s)
   },
   pose(o, s) {
