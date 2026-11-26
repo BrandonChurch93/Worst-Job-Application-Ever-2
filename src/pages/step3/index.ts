@@ -136,6 +136,7 @@ const ASLEEP = 0.25
 const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05] }
+const ROLL = { tip: 2.09, rail: 0.7 }
 const BACK = { off: 3.6, clear: 1.3, lift: 0.7, behind: 0.6, before: 2.2, aim: 1.5 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
@@ -292,6 +293,11 @@ export function makePage(): PageLogic {
   }
   const named = (name: string): CameraPose | null => lens(name, name === 'follow' ? follow() : name === 'rail' ? backPose() : name === 'ride' ? ridePose() : NAMED[name] ?? null)
 
+  const shot = (time: number): string => {
+    let i = 0
+    while (i + 1 < FILM.length && time >= FILM[i + 1]![0]) i++
+    return FILM[i]![1]
+  }
   const cut = (time: number): CameraPose => {
     let i = 0
     while (i + 1 < FILM.length && time >= FILM[i + 1]![0]) i++
@@ -566,6 +572,13 @@ export function makePage(): PageLogic {
     const flatUp = low === 0 && s.face[3]! < 0.05
     if (flatUp) s.face = [0, 0, 1, 0]
     io.cursor.turn(flatUp ? null : { x: s.face[0]!, y: s.face[1]!, z: s.face[2]!, back: s.face[3]! })
+    const flat = Math.hypot(e[0]!, e[1]!)
+    if (s.mode === 'film' && shot(s.time) === 'rail' && b.mode === 'rail' && flat > 0.05) {
+      const tx = (-Math.cos(ROLL.rail) * e[0]! - Math.sin(ROLL.rail) * e[1]!) / flat
+      const ty = (-Math.cos(ROLL.rail) * e[1]! + Math.sin(ROLL.rail) * e[0]!) / flat
+      const turn = ROLL.tip - Math.atan2(ty, tx)
+      io.cursor.aim(turn - Math.PI * 2 * Math.floor((turn + Math.PI / 2) / (Math.PI * 2)))
+    } else io.cursor.aim(null)
   }
 
   const logic: PageLogic = {
