@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import type { RealContext, Emitter } from '../src/real/types'
 import { crank, CRANK_LOOK, gripGeometry } from '../src/pages/step2/real/crank'
-import { CRANK, TRAY_Z } from '../src/pages/step2/layout'
+import { CRANK, SHEET, sheetScale, TRAY_Z } from '../src/pages/step2/layout'
 import type { Shape } from '../src/stage/types'
 
 const shape = (id: string, kind: Shape['kind'], w: number, h: number, z0: number, z1: number, tone: Shape['tone'], over: Partial<Shape> = {}): Shape => ({ id, part: 'crank', kind, x: 100, y: 100, w, h, z0, z1, tone, ...over })
@@ -60,7 +60,10 @@ describe('the crank', () => {
 
   it('answers the shapes of the sheet as it answers the page', () => {
     const { ctx } = context([])
-    for (const s of shapes(0)) expect(crank!.key({ ...s, id: `sheet-${s.id}` }, ctx)).toBe(crank!.key(s, ctx))
+    for (const s of shapes(0)) {
+      const k = sheetScale(`sheet-${s.id}`)
+      expect(crank!.key({ ...s, id: `sheet-${s.id}`, w: s.w * k, h: s.h * k, z1: s.z0 + (s.z1 - s.z0) * k }, ctx)).toBe(crank!.key(s, ctx))
+    }
   })
 
   it('keeps nothing of a frame in its key', () => {
@@ -117,7 +120,9 @@ describe('the crank', () => {
   it('stands a segment on the floor of its tray, and on the page when there is no tray', () => {
     const seg = shapes(0)[4]!
     const tray: Shape = { id: 'volume-tray', part: 'rows', kind: 'box', x: 0, y: 0, w: 900, h: 300, z0: TRAY_Z, z1: 0, tone: 'metal' }
-    for (const [list, low] of [[[seg, tray], TRAY_Z], [[{ ...seg, id: 'sheet-meter-5' }], 0]] as [Shape[], number][]) {
+    const k = SHEET.meter.times
+    const onSheet: Shape = { ...seg, id: 'sheet-meter-5', w: seg.w * k, h: seg.h * k, z0: 0, z1: (seg.z1 - seg.z0) * k }
+    for (const [list, low, times] of [[[seg, tray], TRAY_Z, 1], [[onSheet], 0, k]] as [Shape[], number, number][]) {
       const { ctx } = context(list)
       const s = list[0]!
       const o = crank!.make(s, ctx)
@@ -126,7 +131,7 @@ describe('the crank', () => {
       o.updateMatrixWorld(true)
       const box = new THREE.Box3().setFromObject(o)
       expect(box.min.z).toBeCloseTo(low, 4)
-      expect(box.max.z).toBeCloseTo(low + CRANK_LOOK.pill, 4)
+      expect(box.max.z).toBeCloseTo(low + CRANK_LOOK.pill * times, 4)
     }
   })
 })

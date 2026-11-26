@@ -55,5 +55,8 @@
   },
   "phone": {
     "prefix": "(555) "
+  },
+  "volume": {
+    "percent": "%"
   }
 }

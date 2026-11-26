@@ -2,17 +2,18 @@ import * as THREE from 'three'
 import { studio } from '../../../post/studio'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { materials } from '../../../shell/materials'
-import { arc, profile, roundedRect, sweep } from '../../../shell/solids'
+import { arc, circle, profile, roundedRect, sweep } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
+import { scaled } from './sheet'
 import { CRANK, ROWS } from '../layout'
-import { clamp01, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
+import { clamp01, contact, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
-  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 6.5, pillRound: 2.4, pillCorner: 12, clear: { core: 0.56, low: 0.5, gain: 0.48 }, wallRings: 3, picture: [128, 512] as [number, number], rimTone: 0.4,
+  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 3.4, pillRound: 2.4, pillCorner: 12, clear: { core: 0.6, low: 0.44, gain: 0.4 }, footLine: 1.5, wallRings: 3, picture: [128, 512] as [number, number], rimTone: 0.4,
   plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
-  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.45, reach: 210, lift: 14, most: 4 }
+  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.8, reach: 130, lift: 10, most: 4 }
 }
 const L = CRANK_LOOK
 
@@ -59,14 +60,14 @@ function own(): NonNullable<typeof made> {
     const p = inPill(u, v)
     const t = Math.pow(smooth((p.depth - 2.5) / 8), 1.1) * (1 - 0.25 * smooth((Math.abs(p.y) - 26) / 18))
     const rim = smooth((p.depth - 0.4) / 0.8) * (1 - smooth((p.depth - 1.8) / 1.2))
-    return [1, 0.3 + 0.44 * t + 0.22 * rim, 0.03 + 0.5 * Math.pow(t, 1.6) + 0.08 * rim, 1]
+    return [1, 0.28 + 0.5 * t + 0.16 * rim, 0.02 + 0.4 * Math.pow(t, 1.7) + 0.04 * rim, 1]
   })
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
   const wall = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7).multiply(new THREE.Color().setRGB(L.rimTone * 0.955, L.rimTone * 0.995, L.rimTone * 0.975, THREE.SRGBColorSpace)), roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6 }))
   const lit = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd9772c), emissive: new THREE.Color(1, 1, 1), emissiveMap: glow, emissiveIntensity: 1.0, roughness: 0.4, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, specularIntensity: 0.5 }))
   const washer = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2826), roughness: 0.6, metalness: 0.4 }))
   const bar = studio(materials().aluminium.clone())
-  bar.color = srgb(0x989da2)
+  bar.color = srgb(0x74797e)
   bar.roughness = 0.4
   bar.normalScale = new THREE.Vector2(0.09, 0.09)
   bar.anisotropyRotation = 0
@@ -115,6 +116,7 @@ function base(): THREE.Group {
     floors.push(moved(s.floor, Math.cos(at) * L.screwAt, Math.sin(at) * L.screwAt, L.plate - 0.5))
   }
   root.add(
+    mesh(shared('foot', () => contact(circle(R + L.footLine, 96), L.footLine + 0.8)), m.gap, false),
     mesh(shared('wall', () => lathe([[R - 0.8, 0], [R, 0.8], [R, L.plate - L.rim * 0.8, true]], 96)), m.aluminiumSatin),
     mesh(shared('rim', () => lathe([[R, L.plate - L.rim * 0.8, true], ...round(R, L.plate - L.rim * 0.8, R - L.rim, L.plate, 4)], 96)), m.chrome),
     mesh(shared('face', () => bowTie(lathe([[R - L.rim, L.plate, true], [0, L.plate]], 96, (R - L.rim) * 2), L.tie.axis)), o.turned),
@@ -311,7 +313,7 @@ const kindOf = (s: Shape): 'base' | 'hub' | 'arm' | 'grip' | 'meter' | null => {
   return null
 }
 
-export const crank: PartMaker | null = {
+const plainCrank: PartMaker = {
   key(s) {
     if (s.kind === 'text') return null
     const kind = kindOf(s)
@@ -343,3 +345,5 @@ export const crank: PartMaker | null = {
     if (on && up > 0.5) lamp(s, ctx)
   }
 }
+
+export const crank: PartMaker | null = scaled(plainCrank)
