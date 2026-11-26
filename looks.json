@@ -1,35 +1,35 @@
 {
   "folder": "boss-closer",
-  "pushed": "2026-11-26T09:04:52.781Z",
-  "commit": "c2eaff55b60fd6edc844dd5f8275dd0775699f34",
+  "pushed": "2026-11-26T09:25:49.126Z",
+  "commit": "5f255c86fb4fb8980ca7519811dd12b1211f3bf7",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
-      "time": "2026-11-26T09:00:27.339Z",
+      "caption": "boss-fight at 5f255c86 on merge 31, approved left, build right: darker plates, deeper red slabs, heavier cracks, frost in the card",
+      "time": "2026-11-26T09:25:47.462Z",
       "by": "boss-closer",
-      "from": "out/work/compare/compare-boss-fight.jpg"
+      "from": "out/work/report/fifth-fight.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key boss-down: approved on the left, this build on the right, draft tier, with crops of shape:boss-cap, cursor, shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:boss-side-0, shape:rim-socket-open, shape:health-track, checkbox",
-      "time": "2026-11-26T09:00:43.927Z",
+      "caption": "boss-down at 5f255c86 on merge 31, approved left, build right: the arrow stands at the key, darker wreck",
+      "time": "2026-11-26T09:25:47.702Z",
       "by": "boss-closer",
-      "from": "out/work/compare/compare-boss-down.jpg"
+      "from": "out/work/report/fifth-down.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "boss-fight on the shared look, approved left, build right: slabs a deeper red with light on the upper bevel, cracks round the socket heavier",
-      "time": "2026-11-26T09:04:51.479Z",
+      "caption": "the verify card in boss-fight, approved left, build right: frost in the face of the glass",
+      "time": "2026-11-26T09:25:47.944Z",
       "by": "boss-closer",
-      "from": "out/work/report/fourth-fight.jpg"
+      "from": "out/work/report/fifth-card.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "boss-down on the shared look, approved left, build right: the arrow stands upright with its outline at the key and sags after it",
-      "time": "2026-11-26T09:04:51.718Z",
+      "caption": "sheet boss-stages as drawn at 09:10 UTC, approved left, build right: the Unfolding stage and the Resting bezel still differ",
+      "time": "2026-11-26T09:25:48.178Z",
       "by": "boss-closer",
-      "from": "out/work/report/fourth-down.jpg"
+      "from": "out/work/report/fifth-stages.jpg"
     }
   ]
 }
