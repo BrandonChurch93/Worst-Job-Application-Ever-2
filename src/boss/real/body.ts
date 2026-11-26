@@ -5,7 +5,7 @@ import { materials } from '../../shell/materials'
 import { controls } from '../../shell/real/controls'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
-import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H } from '../body'
+import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
 import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw } from './body-kit'
 
 const heights = config.scale.heights
@@ -81,21 +81,73 @@ function lipOutline(): [number, number][] {
   return [...arc(FRAME.bedH / 2 + 6.5), ...arc(FRAME.bedH / 2 - 0.2).reverse()]
 }
 
-function wing(flip: boolean): THREE.Group {
+const BREAK: [number, number, number, number] = [-12, 0, 16, 70]
+
+function cut(points: [number, number][], keepLeft: boolean): [number, number][] {
+  const [x0, y0, x1, y1] = BREAK
+  const side = (p: [number, number]): number => ((p[0] - x0) * (y1 - y0) - (p[1] - y0) * (x1 - x0)) * (keepLeft ? -1 : 1)
+  const out: [number, number][] = []
+  points.forEach((p, i) => {
+    const q = points[(i + 1) % points.length]!
+    const a = side(p)
+    const c = side(q)
+    if (a >= 0) out.push(p)
+    if (a >= 0 !== c >= 0) {
+      const t = a / (a - c)
+      out.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t])
+    }
+  })
+  return out
+}
+
+const HALF_AT: [number, number][] = [[-96, 40], [96, 40]]
+const HALF_TO: [number, number, number][][] = [[[1290, 432, 0.16], [1236, 952, -0.3]], [[1752, 590, 1.42], [1768, 944, 0.5]]]
+
+function wingParts(flip: boolean, half: -1 | 0 | 1): THREE.Group {
   const m = materials()
   const k = bossKit()
   const g = new THREE.Group()
-  const turnZ = flip ? Math.PI : 0
-  g.add(mesh(geo(`wing:${flip}`, () => cutPlate(wingOutline(), FRAME.tall, 3.4).rotateZ(turnZ)), k.plate))
-  g.add(mesh(geo(`wingBed:${flip}`, () => cutPlate(bedOutline(), 9, 0.5).rotateZ(turnZ)), k.pocket, false))
-  g.add(mesh(geo(`wingBright:${flip}`, () => joined([
-    cutPlate(lipOutline(), 3, 1.1).translate(0, 0, FRAME.tall - 0.4).rotateZ(turnZ),
-    ...WING_SCREWS.map(([x, y], i) => moved(screw(4.6, 1.8, i + (flip ? 9 : 0)), x, y, FRAME.tall).rotateZ(turnZ)),
-    ...(flip ? [] : [-1, 1].flatMap((e) => [0, 1, 2].map((i) => moved(lying([[0, 0], [4.6, 0], [4.6, 9], [0, 9]], 20), e * 168 + 15 - i * 10.5, 0, FRAME.tall - 0.5))))
-  ])), m.aluminiumEdge, false))
-  const tail = mesh(geo(`tail:${flip}`, () => cutPlate(flip ? [[0, -34], [28, -20], [28, -0.3], [0, -0.3]] : [[0, 0.3], [28, 0.3], [28, 20], [0, 34]], 5, 1.1).translate(0, 0, 0.5)), k.plate, false)
+  const name = `${flip}:${half}`
+  const shape = (pts: [number, number][]): [number, number][] => (half === 0 ? pts : cut(pts, half < 0))
+  const mine = (x: number): boolean => half === 0 || x < 0 === half < 0
+  const [ox, oy] = half === 0 ? [0, 0] : HALF_AT[half < 0 ? 0 : 1]!
+  const put = (geometry: THREE.BufferGeometry): THREE.BufferGeometry => geometry.translate(-ox, -oy, 0)
+  g.add(mesh(geo(`wing:${name}`, () => put(cutPlate(shape(wingOutline()), FRAME.tall, half === 0 ? 5.5 : 4.2))), k.plate))
+  g.add(mesh(geo(`wingBed:${name}`, () => put(cutPlate(shape(bedOutline()), 9, 0.5))), k.pocket, false))
+  g.add(mesh(geo(`wingBright:${name}`, () => put(joined([
+    cutPlate(shape(lipOutline()), 3, 1.1).translate(0, 0, FRAME.tall - 0.4),
+    ...WING_SCREWS.filter(([x]) => mine(x)).map(([x, y], i) => moved(screw(4.6, 1.8, i + (flip ? 9 : 0) + (half > 0 ? 3 : 0)), x, y, FRAME.tall)),
+    ...(flip ? [] : [-1, 1].filter(mine).flatMap((e) => [0, 1, 2].map((i) => moved(lying([[0, 0], [4.6, 0], [4.6, 9], [0, 9]], 20), e * 168 + 15 - i * 10.5, 0, FRAME.tall - 0.5))))
+  ]))), m.aluminiumEdge, false))
+  g.position.set(ox, oy, 0)
+  return g
+}
+
+function wing(flip: boolean): THREE.Group {
+  const k = bossKit()
+  const g = new THREE.Group()
+  const turned = new THREE.Group()
+  const turn = flip ? Math.PI : 0
+  turned.rotation.z = turn
+  const whole = wingParts(flip, 0)
+  const halves = [wingParts(flip, -1), wingParts(flip, 1)]
+  turned.add(whole, ...halves)
+  g.add(turned)
+  const tab = (): THREE.Mesh => mesh(geo(`tail:${flip}`, () => cutPlate([[0, 0.3], [28, 0.3], [28, 20], [0, 34]], 5, 1.1).translate(0, 0, 0.5)), k.plate, false)
+  const tail = tab()
+  if (flip) tail.scale.y = -1
+  const gone = tab()
+  const far = halves[1]!
+  gone.position.set(FRAME.w / 2 - 3 - HALF_AT[1]![0], -HALF_AT[1]![1], 0)
+  if (flip) {
+    gone.geometry = geo('tail:turned', () => cutPlate([[0, -34], [28, -20], [28, -0.3], [0, -0.3]], 5, 1.1).translate(0, 0, 0.5).rotateZ(Math.PI))
+    gone.position.set(-(FRAME.w / 2 - 3) - HALF_AT[0]![0], -HALF_AT[0]![1], 0)
+    halves[0]!.add(gone)
+  } else far.add(gone)
   g.add(tail)
   g.userData.tail = tail
+  g.userData.whole = whole
+  g.userData.halves = halves
   return g
 }
 
@@ -113,13 +165,29 @@ function poseFrame(o: THREE.Object3D, s: Shape): void {
   const split = s.v?.[2] ?? 0
   const [a, b] = o.userData.wings as THREE.Group[]
   const fold = (1 - k) * (Math.PI / 2)
-  a!.rotation.set(-fold, 0, split * 0.34)
-  b!.rotation.set(fold, 0, split * -1.5)
-  a!.position.set(split * -46, split * 62, 0)
-  b!.position.set(split * 524, split * -226, 0)
+  a!.rotation.set(-fold, 0, 0)
+  b!.rotation.set(fold, 0, 0)
   const out = mix(FRAME.w / 2 - 31, FRAME.w / 2 - 3, prog(k, 0.7, 1))
-  ;(a!.userData.tail as THREE.Mesh).position.x = out
-  ;(b!.userData.tail as THREE.Mesh).position.x = out
+  const broken = split > 0.002
+  const ca = Math.cos(WRECK.rot)
+  const sa = Math.sin(WRECK.rot)
+  ;[a!, b!].forEach((w, n) => {
+    const tail = w.userData.tail as THREE.Mesh
+    tail.position.x = out
+    tail.visible = !broken
+    ;(w.userData.whole as THREE.Group).visible = !broken
+    const sign = n === 1 ? -1 : 1
+    ;(w.userData.halves as THREE.Group[]).forEach((h, i) => {
+      h.visible = broken
+      const [tx, ty, turn] = HALF_TO[n]![i]!
+      const dx = tx - WRECK.x
+      const dy = ty - WRECK.y
+      const lx = (dx * ca + dy * sa) * sign
+      const ly = -(-dx * sa + dy * ca) * sign
+      h.position.set(mix(HALF_AT[i]![0], lx, split), mix(HALF_AT[i]![1], ly, split), 0)
+      h.rotation.z = -(turn - WRECK.rot) * split
+    })
+  })
 }
 
 function side(i: number): THREE.Object3D {
@@ -130,9 +198,8 @@ function side(i: number): THREE.Object3D {
   const hw = SIDE.w / 2
   const hh = SIDE.h / 2
   const turnZ = i === 0 ? 0 : Math.PI
-  root.add(mesh(geo(`side:${i}`, () => cutPlate([[-hw, -hh], [hw, -hh], [hw, -hh + 16], [hw - SIDE.lean, hh], [-hw + SIDE.lean, hh], [-hw, -hh + 16]], SIDE.tall, 3).rotateZ(turnZ)), k.plate))
+  root.add(mesh(geo(`side:${i}`, () => cutPlate([[-hw, -hh], [hw, -hh], [hw, -hh + 16], [hw - SIDE.lean, hh], [-hw + SIDE.lean, hh], [-hw, -hh + 16]], SIDE.tall, 4.6).rotateZ(turnZ)), k.plate))
   root.add(mesh(geo(`sideParts:${i}`, () => joined([
-    moved(lathe([[46, 0], [46, 1.4], [44.6, 2.6], [42.4, 2.6], [42.4, 0]], 64), -10, 0, SIDE.tall),
     ...[[-98, -36], [98, -36], [-70, 38], [70, 38]].map(([x, y], n) => moved(screw(4.2, 1.6, 20 + n + i * 5), x!, y! * sign, SIDE.tall))
   ])), m.aluminiumEdge, false))
   return root
@@ -175,6 +242,43 @@ function poseCannon(o: THREE.Object3D, s: Shape): void {
   c.barrel.scale.set(mix(0.78, 1, outK), thin, thin)
 }
 
+const GLASS_CRACKS: [number, number][][] = [
+  [[-47, 104], [-30, 70], [-12, 42], [4, 6], [22, -34], [36, -72], [47, -112]],
+  [[49, 74], [30, 48], [4, 6], [-20, -22], [-48, -52]],
+  [[4, 6], [26, 2], [50, 14]],
+  [[-12, 42], [-4, 82], [10, 120]],
+  [[22, -34], [-6, -60], [-22, -96], [-46, -118]],
+  [[-30, 70], [-49, 64]]
+]
+
+function crackLines(lines: [number, number][][], wide: number, z: number, dx = 0, dy = 0): THREE.BufferGeometry {
+  const pos: number[] = []
+  lines.forEach((line, n) => {
+    for (let i = 0; i < line.length - 1; i++) {
+      const [x0, y0] = line[i]!
+      const [x1, y1] = line[i + 1]!
+      const l = Math.hypot(x1 - x0, y1 - y0) || 1
+      const taper = (j: number): number => wide * (0.35 + 0.65 * Math.sin((Math.PI * (j + 0.5 * (n % 2))) / line.length))
+      const w0 = taper(i)
+      const w1 = taper(i + 1)
+      const nx = -(y1 - y0) / l
+      const ny = (x1 - x0) / l
+      const ax = x0 + dx
+      const ay = y0 + dy
+      const bx = x1 + dx
+      const by = y1 + dy
+      pos.push(ax - nx * w0, ay - ny * w0, z, bx - nx * w1, by - ny * w1, z, ax + nx * w0, ay + ny * w0, z, ax + nx * w0, ay + ny * w0, z, bx - nx * w1, by - ny * w1, z, bx + nx * w1, by + ny * w1, z)
+    }
+  })
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  const nor = new Float32Array(pos.length)
+  for (let i = 2; i < nor.length; i += 3) nor[i] = 1
+  g.setAttribute('normal', new THREE.BufferAttribute(nor, 3))
+  g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
+  return g
+}
+
 function shield(): THREE.Object3D {
   const m = materials()
   const k = bossKit()
@@ -182,42 +286,17 @@ function shield(): THREE.Object3D {
   const leaf = new THREE.Group()
   const w = SHIELD.w
   const h = SHIELD.h
-  leaf.add(mesh(geo('glass', () => sweep(roundedRect(w - 12, h - 12, 9, 10), [{ inset: 0, z: 1, out: 0, up: 1 }, { inset: 0, z: SHIELD.tall - 1.2, out: 0, up: 1 }], true)), k.glass))
-  
-  leaf.add(mesh(geo('glassRim', () => {
-    const ring = roundedRect(w, h, 15, 12)
-    const t = SHIELD.tall
-    return sweep(ring, [{ inset: 7, z: 0, out: 0, up: -1 }, { inset: 0.8, z: 0, out: 0, up: -1 }, { inset: 0, z: 0.8, out: 1, up: 0 }, { inset: 0, z: t - 3, out: 1, up: 0 }, { inset: 0.9, z: t - 1.2, out: 0.8, up: 0.6 }, { inset: 2.8, z: t, out: 0.3, up: 0.95 }, { inset: 4.4, z: t, out: -0.3, up: 0.95 }, { inset: 6.4, z: t - 1.2, out: -0.6, up: 0.8 }], false)
-  }), m.aluminiumEdge))
-  const cracks = mesh(geo('glassCracks', () => {
-    const pos: number[] = []
-    const line = (x0: number, y0: number, x1: number, y1: number, wide: number): void => {
-      const dx = x1 - x0
-      const dy = y1 - y0
-      const l = Math.hypot(dx, dy) || 1
-      const nx = (-dy / l) * wide * 0.5
-      const ny = (dx / l) * wide * 0.5
-      pos.push(x0 - nx, y0 - ny, 0, x1, y1, 0, x0 + nx, y0 + ny, 0)
-    }
-    const hub: [number, number] = [8, -22]
-    const ends: [number, number][] = [[-52, -60], [-30, 20], [10, 96], [52, 30], [50, -44], [20, -98], [-48, -98]]
-    ends.forEach(([x, y], i) => {
-      const mx = (hub[0] + x) / 2 + ((i * 37) % 11) - 5
-      const my = (hub[1] + y) / 2 + ((i * 53) % 13) - 6
-      line(hub[0], hub[1], mx, my, 1.5)
-      line(mx, my, x, y, 1.1)
-      if (i % 2 === 0) line(mx, my, mx + (y - my) * 0.4, my - (x - mx) * 0.4, 0.9)
-    })
-    const g = new THREE.BufferGeometry()
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
-    const nor = new Float32Array(pos.length)
-    for (let i = 2; i < nor.length; i += 3) nor[i] = 1
-    g.setAttribute('normal', new THREE.BufferAttribute(nor, 3))
-    g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
-    return g.translate(0, 0, SHIELD.tall + 0.12)
-  }), k.bore, false)
+  const t = SHIELD.tall
+  const round = 8
+  const block = (): THREE.BufferGeometry => sweep(roundedRect(w, h, 18, 14), plateProfile(t, round, 0.4, 8), true)
+  leaf.add(mesh(geo('glassDeep', () => sweep(roundedRect(w - 12, h - 12, 13, 12), [{ inset: 0, z: 1.1, out: 0, up: 1 }], true)), k.glassDeep, false, false))
+  leaf.add(mesh(geo('glass', block), k.glass))
+  leaf.add(mesh(geo('glassEdge', () => sweep(roundedRect(w, h, 18, 14), [{ inset: 0, z: t - round - 5, out: 1, up: 0 }, ...plateProfile(t, round, 0.4, 8).slice(1), { inset: round + 2.5, z: t, out: 0, up: 1 }], false)), k.glassEdge, false, false))
+  const cracks = new THREE.Group()
+  cracks.add(mesh(geo('glassCracksDeep', () => crackLines(GLASS_CRACKS, 1.1, 1.6, 3.2, -2.6)), k.bed, false, false))
+  cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 1.5, t + 0.12)), k.glassCrack, false, false))
   leaf.add(cracks)
-  const pin = mesh(geo('shieldPin', () => lying([[0, 0], [3.4, 0], [3.4, 170], [0, 170]], 20).rotateZ(Math.PI / 2).translate(0, 85, 0)), k.pin, false)
+  const pin = mesh(geo('shieldPin', () => joined([-1, 1].map((e) => new THREE.BoxGeometry(11, 18, 9).translate(0, e * 34, 2)))), m.aluminiumSatin, false)
   const tubes = [-1, 1].map((sy) => {
     const g = new THREE.Group()
     g.add(mesh(geo('armTube', () => lying([[0, 0], [5, 0], [5, 82], [3.2, 82]], 20).rotateZ(Math.PI)), m.aluminiumSatin))
@@ -241,7 +320,7 @@ const vb = new THREE.Vector3()
 const vc = new THREE.Vector3()
 
 function poseShield(o: THREE.Object3D, s: Shape): void {
-  const d = o.userData.s as { leaf: THREE.Group; pin: THREE.Mesh; tubes: THREE.Group[]; rods: THREE.Group[]; cracks: THREE.Mesh }
+  const d = o.userData.s as { leaf: THREE.Group; pin: THREE.Mesh; tubes: THREE.Group[]; rods: THREE.Group[]; cracks: THREE.Group }
   const k = s.v?.[0] ?? 1
   const flat = s.v?.[1] ?? 0
   const hurt = s.v?.[5] ?? 0
@@ -292,7 +371,7 @@ function leg(): THREE.Object3D {
   const link = (): THREE.Mesh => mesh(geo('link', () => {
     const body = sweep(roundedRect(L + W, W, W / 2, 10), plateProfile(8, 2.2, 0, 4)).translate(L / 2, 0, -4)
     const under = sweep(roundedRect(L + W, W, W / 2, 10), [{ inset: 0, z: 0, out: 0, up: 1 }]).rotateX(Math.PI).translate(L / 2, 0, -4)
-    const slot = sweep(roundedRect(L - 52, 10, 5, 6), [{ inset: 0, z: 3.9, out: 1, up: 0 }, { inset: 0, z: 4.7, out: 0.7, up: 0.7 }, { inset: 1.3, z: 5.5, out: 0, up: 1 }]).translate(L / 2, 0, 0)
+    const slot = sweep(roundedRect(L - 46, 6, 3, 6), [{ inset: 0, z: 3.9, out: 1, up: 0 }, { inset: 0, z: 4.7, out: 0.7, up: 0.7 }, { inset: 1.3, z: 5.5, out: 0, up: 1 }]).translate(L / 2, 0, 0)
     return joined([body, under, slot])
   }), k.link)
   const upper = link()

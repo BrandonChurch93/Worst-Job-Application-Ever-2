@@ -104,6 +104,8 @@ export function makePage(): PageLogic {
       s.fight.flashes = []
     }
     io.emit('power-down', from.cap.x, from.cap.y, false)
+    io.cursor.heal()
+    io.cursor.hurt('scorched')
     io.cursor.act('plain')
     io.cursor.aim(null)
   }
