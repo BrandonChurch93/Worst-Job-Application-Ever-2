@@ -1,0 +1,37 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: the two keys, the sheet `boss-stages` and the page at rest, whole, and native crops of each",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-06.png / set-A-02.png",
+   "where": "the fallen orange Submit cap ('the cap' crop, top-left cell)",
+   "what": "the burnt/torn ends of the cap are flat dark patches with ember speckles painted onto the ends of the pill; there is no torn opening, no inner wall, no thickness - a dark spot pretending to be a broken end",
+   "fix": "model the ends as true openings: ragged torn rims with visible inner wall thickness, a dark cavity with depth shading, and a few small edge fragments"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png / set-A-02.png",
+   "where": "the fallen glass panel ('the shield' crop, centre cell)",
+   "what": "the cracks are thin white inscribed lines that read as drawn, and the panel is a fully opaque sage slab - nothing of the page below it shows through, so it reads as tinted plastic with etching rather than cracked glass lying on the paper",
+   "fix": "give the panel some transmission: let the page texture show through dimly and blur it, make the cracks break the surface with bright refractive edges and slight thickness at the breaks"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png / set-A-01.png",
+   "where": "the spark tracer behind the flying arrow ('the arrow' and 'a shot in flight' crops)",
+   "what": "the trail is glowing nodes evenly strung on a thin hairline, like fairy lights; it reads as a decorative dotted line rather than a scattering of sparks",
+   "fix": "replace the string with irregular spark bursts of varying size and brightness that taper and drift away from the flight line, with faint smoke or afterglow"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-07.png",
+   "where": "'the arrow, its edge and its shadow' crop",
+   "what": "the arrow is a flat white shape with a dark outline, no thickness and no gloss, and its shadow sits hard under it with almost no offset",
+   "fix": "give the arrow a very slight bevel with a top edge highlight, a hint of gloss on the face, and push the soft shadow a touch further out so it reads as hovering just off the paper"
+  }
+ ]
+}
