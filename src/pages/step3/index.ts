@@ -11,7 +11,7 @@ import { ZONES } from '../../table/draw'
 import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, TableState } from '../../stage/types'
 import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
-import { APRON_Y, BALL, FLIP, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
+import { APRON_Y, BALL, FLIP, FLIP_REACH, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -759,7 +759,12 @@ export function makePage(): PageLogic {
       for (const f of table.flippers) {
         const a = (mc.flipperAngle(f.side) * Math.PI) / 180
         const dir = f.side === 'left' ? 1 : -1
-        add(f.id, 'flipper', f.tier, [...f.pivot, f.pivot[0] + dir * FLIP.length * Math.cos(a), f.pivot[1] + FLIP.length * Math.sin(a)], { r: FLIP.radius })
+        const d = [dir * Math.cos(a), Math.sin(a)]
+        const tip = [f.pivot[0] + d[0]! * FLIP_REACH, f.pivot[1] + d[1]! * FLIP_REACH]
+        const side = (c: number[], r: number, k: number): number[] => [c[0]! - d[1]! * r * k, c[1]! + d[0]! * r * k]
+        add(f.id, 'flipper', f.tier, [...side(f.pivot, FLIP.radius, -1), ...side(tip, FLIP.tip, -1), ...side(tip, FLIP.tip, 1), ...side(f.pivot, FLIP.radius, 1)], { closed: true })
+        add(`${f.id}.pivot`, 'flipper', f.tier, [...f.pivot], { r: FLIP.radius })
+        add(`${f.id}.tip`, 'flipper', f.tier, tip, { r: FLIP.tip })
       }
       for (const h of table.holds) add(h.id, 'hold', h.tier, [...h.c], { r: h.r })
       for (const o of table.openings) add(o.id, 'opening', o.tier, [...o.a, ...o.b])
@@ -780,7 +785,7 @@ export function makePage(): PageLogic {
         const bat = table.flippers.find((x) => x.tier === 1 && x.side === 'left')!.pivot
         const cup = table.bumpers.filter((x) => x.tier === 1).reduce((p, q) => (q.c[1] > p.c[1] ? q : p))
         const lean = (FLIP.rest * Math.PI) / 180
-        const rest = { x: bat[0] + 0.9 * Math.cos(lean) + (0.6 + FLIP.radius) * Math.sin(lean), y: bat[1] + 0.9 * Math.sin(lean) - (0.6 + FLIP.radius) * Math.cos(lean) }
+        const rest = { x: bat[0] + 0.9 * Math.cos(lean) + (0.46 + FLIP.radius) * Math.sin(lean), y: bat[1] + 0.9 * Math.sin(lean) - (0.46 + FLIP.radius) * Math.cos(lean) }
         const hit = { x: cup.c[0] + (cup.r + 0.45) * 0.26, y: cup.c[1] + (cup.r + 0.45) * 0.966 }
         const mid = { x: (rest.x + hit.x) / 2, y: (rest.y + hit.y) / 2 }
         const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
@@ -789,7 +794,7 @@ export function makePage(): PageLogic {
           { x: hit.x, y: hit.y, lift: 0, pose: { acting: 'shocked', damage: ['flattened'] } }
         ]
         spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: { ...look('home', [mid.x + 1.92, mid.y + 6.1, 3.2], [mid.x, mid.y, -1.45]), focus: px(7.9), aperture: 15 } }
+        return { list, cursors: spots.map((p) => restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })), view: { ...look('home', [mid.x + 1.63, mid.y + 7.36, 4.2], [mid.x - 0.02, mid.y + 0.41, -1.5]), focus: px(9.3), aperture: 15 } }
       }
       if (id !== 'table-map') return null
       const mc = machine()
