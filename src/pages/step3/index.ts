@@ -25,7 +25,7 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, wake: 4.3, powerOn: 5.2, atPlunger: 8.6, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.1, wake: 5.6, powerOn: 7.2, atPlunger: 8.6, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
   drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedBy: 27.2, scoopKick: 29.35, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
@@ -120,7 +120,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.1, 'tube', 0.5], [6.4, 'table-wide', 0], [8.65, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [18.95, 'near-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.6, 'follow', 0],
+  [0, 'follow', 0], [4.1, 'tube', 0.5], [5.2, 'table-wide', 0], [8.65, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [18.95, 'near-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.6, 'follow', 0],
   [30.75, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [37.2, 'follow', 0]
 ]
 const TUBE: { eye: [number, number, number]; at: [number, number, number]; wide: number } = { eye: [0.55, 2.7, 1.5], at: [-2.7, -1.2, 0.1], wide: 12 }
@@ -132,14 +132,15 @@ const NAME = 1
 const HINT = 8
 const TURN = 1.5707963267948966
 const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
-const WAKE = 0.3
+const WAKE = 0.4
+const DIM = 1.1
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
 const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05], over: [1.05, 0.8] }
 const ROLL: { rest: number; tip: Record<string, number> } = { rest: 1.992, tip: { rail: 0.77, 'table-lobby': 0.77, 'table-fired': 2.13 } }
-const BACK = { behind: 2.8, up: 3.6, aim: 2.4, lift: -0.8, lag: 0.4, lead: 1.93, start: 0.9 }
+const BACK = { behind: 2.8, up: 3.6, aim: 2.4, lift: -0.8, lag: 0.4, lead: 1.93, start: 0.9, keep: 0.6 }
 const NEAR: Record<string, { off: [number, number, number]; mid: [number, number]; keep: number }> = { 'near-nest': { off: [0, 6, 15], mid: [11.3, Y1 + 6.9], keep: 0.6 }, 'near-spent': { off: [0, 3.4, 8.6], mid: [0, 0], keep: 1 } }
 const PAN = { lag: 0.25, in: 0.68, slow: 0.5 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
@@ -147,12 +148,12 @@ const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHEET = { along: 0.9, gap: 0.5, press: 0.6, side: 2.6, fly: [0.4, 7.4, 0.6], from: [0.18, 0.76, 0.624], far: 10.2, open: 15 }
 const LEAVE = { seconds: 0.55, in: 1.7, firm: 0.25, back: 5, settle: 0.12, up: 0.3 }
-const LOADER = { land: [0.66, 0.1], away: [-0.5, 0.84, 0.32], go: [1.25, 0.2], short: 0.72, by: 1.8, low: 16, shut: [-0.6, 0.78], alarm: [0.55, 0.45, 0.8] }
+const LOADER = { land: [0.66, 0.1], away: [-0.7, 0.8, 0.5], go: [1.25, 0.2], short: 0.72, by: 1.8, low: 16, shut: [-0.6, 0.78], alarm: [0.55, 0.45, 0.8] }
 const HIT = { least: 0.3, hold: 0.2, short: 0.66, big: 0.9, sway: [0.3, 8, 0.4] }
-const LOAD = { reach: 0.8, gain: 1.6, most: 0.8, rock: [0.1, 1.3] }
-const BEATS = { brace: [0.4, 0.68], catch: [0.12, 0.64], shiver: [0.35, 0.12, 11, 1.3], kick: [0.12, 0.7], alarm: [0.3, 0.36, 1, -0.5], lip: [0.35, 0.72, -0.6], dizzy: [[0, 0.25, 3, 0.5], [0.5, 0.5, 3, 0.5], [1, 0.8, 2.5, 1.3]] }
+const LOAD = { reach: 0.8, gain: 1.6, most: 0.8, rock: [0.1, 1.3], hop: [0.385, 0.9, 0.05] }
+const BEATS = { dread: [0.86, -0.6], brace: [0.4, 0.68], catch: [0.12, 0.64], shiver: [0.35, 0.12, 11, 1.3], kick: [0.12, 0.7], alarm: [0.3, 0.36, 1, -0.5], lip: [0.35, 0.72, -0.6], dizzy: [[0, 0.25, 3, 0.5], [0.5, 0.5, 3, 0.5], [1, 0.8, 2.5, 1.3]] }
 const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
-const ACT = { wake: 0.3, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
+const ACT = { wake: 0.3, doors: 0.6, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
@@ -197,12 +198,12 @@ export function makePage(): PageLogic {
     const b = ball()
     return b.mode === 'hold' && b.hold === 'plunger' && s.t < T.plunger ? Math.max(0, Math.min(1, (s.t - T.atPlunger) / (T.plunger - T.atPlunger - 0.15))) : 0
   }
-  const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.wake + k * WAKE)
-  // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain, as a lamp strikes: on, a dip, then full.
+  const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.wake + (k + 1) * WAKE)
+  // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain.
   const website = (): number => 1 - (1 - DUSK) * smooth(s.dim)
   // How bright each tier's general lighting is: a wave down the tiers when the machine wakes, and a slow dim once the ball has left by the drain.
-  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - k * WAKE) / WAKE) * (s.t > T.wake + 3 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))
-  const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + n.tier * WAKE && s.t < T.wake + n.tier * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
+  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - (k + 1) * WAKE) / WAKE) * (s.t > T.wake + 4 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))
+  const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + (n.tier + 1) * WAKE && s.t < T.wake + (n.tier + 1) * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
   const modeOf = (k: number): number | null => {
     let out: number | null = null
     if (s.phase === 'wait' || s.phase === 'pull') return null
@@ -286,7 +287,7 @@ export function makePage(): PageLogic {
     const b = ball()
     if (b.mode !== 'rail' || b.rail !== 'highway') return railPose()
     const r = railOf(b.rail)
-    const g = s.arc < -8 ? b.s : s.arc + BACK.lead
+    const g = s.arc < -8 ? b.s : s.arc + BACK.lead + BACK.keep * (b.speed * BACK.lag - BACK.lead)
     const c = soft(r, g)
     const e = soft(r, Math.max(0, g - BACK.behind))
     const a = soft(r, Math.min(railLength(r), g + BACK.aim))
@@ -584,6 +585,10 @@ export function makePage(): PageLogic {
       io.cursor.press(LOADER.alarm[2]!, LOADER.alarm[1]!)
       s.snap = t
     }
+    if (b.mode === 'hold' && b.hold === 'plunger' && t >= T.atPlunger + ACT.realise && t < T.plunger - BEATS.brace[0]! && once('act.dread')) {
+      snap(BEATS.dread[0]!, T.plunger - BEATS.brace[0]! - t, BEATS.dread[1]!)
+      io.cursor.wobble(BEATS.shiver[1]!, BEATS.shiver[2]!, T.plunger - BEATS.brace[0]! - t)
+    }
     if (t >= T.plunger - BEATS.brace[0]! && t < T.plunger && once('act.brace')) snap(BEATS.brace[1]!, BEATS.brace[0]!)
     if (t >= T.eject - BEATS.alarm[1]! && t < T.eject && once('act.alarm')) {
       io.cursor.react('startle')
@@ -591,6 +596,7 @@ export function makePage(): PageLogic {
       snap(BEATS.alarm[2]!, BEATS.alarm[1]!, BEATS.alarm[3]!)
     }
     if (b.mode === 'hold' && b.hold === 'street.firehouse' && t >= T.firedBy + BEATS.shiver[0]! && once('act.shiver')) io.cursor.wobble(BEATS.shiver[1]!, BEATS.shiver[2]!, BEATS.shiver[3]!)
+    if (b.mode === 'rail' && b.rail === 'highway' && t < T.highwayEnd - BEATS.lip[0]! - LOAD.hop[0]! && Math.floor(t / LOAD.hop[0]!) !== Math.floor((t - dt) / LOAD.hop[0]!)) io.cursor.press(LOAD.hop[1]!, LOAD.hop[2]!)
     if (b.mode === 'rail' && b.rail === 'highway' && t >= T.highwayEnd - BEATS.lip[0]! && once('act.lip')) snap(BEATS.lip[1]!, BEATS.lip[0]!, BEATS.lip[2]!)
     if (b.mode === 'rail' && b.rail === 'spiral') for (const d of BEATS.dizzy) if (t >= T.highwayEnd + d[0]! * (T.spiralEnd - T.highwayEnd) && once(`act.dizzy.${d[0]}`)) io.cursor.wobble(d[1]!, d[2]!, d[3]!)
   }
@@ -782,7 +788,7 @@ export function makePage(): PageLogic {
       }
       const inside = s.phase === 'sealed' && s.t >= T.lightsDown && !(ball().mode === 'rail' && ball().rail === 'drain') && !(ball().mode === 'hold' && ball().hold === 'outlet')
       if (s.out[0]! < 0 && s.phase === 'sealed' && ball().mode === 'rail' && ball().rail === 'drain') s.out = [s.time, s.scroll, s.floor]
-      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt / (T.powerOn - T.lightsDown) : -dt / (s.out[0]! < 0 ? T.powerOn - T.lightsDown : LEAVE.up))))
+      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt / DIM : -dt / (s.out[0]! < 0 ? DIM : LEAVE.up))))
       if (s.phase !== 'sealed') {
         const on = [port, outlet].some((c) => Math.hypot(io.cursor.x + 8 - c.x, io.cursor.y + 14 - c.y) < px(OUTLET.ring) / 2 + 12)
         io.cursor.setGround(on ? PORT_TOP : 0)

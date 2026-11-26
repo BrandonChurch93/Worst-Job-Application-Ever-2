@@ -6,6 +6,8 @@ import { Bag, ball, box, DEG, lathe, look, mat, prism, rod, sweep, wire, type V2
 import { drop, matsOf, part } from './mats'
 
 const WIRE = look(0x8a9097, 0.067, 1, 0)
+// A chrome wire under the lamps: one bright line along its top, dark down its sides, a little of the floor's light from below.
+const SHEEN = (_x: number, _y: number, nz: number): number => 0.6 + 0.8 * Math.min(1, Math.max(0, (nz - 0.5) / 0.45)) + 0.25 * Math.max(0, -nz)
 const PLATE = look(0x8d9299, 0.14, 1, 0)
 const SPRING = look(0xbfc4c9, 0.24, 1, 0)
 const WORN = look(0xf0f2f3, 0.1, 1, 0)
@@ -92,14 +94,14 @@ function trestle(b: Bag, fine: Bag, f: Frame, turn: number): void {
   }
   for (let i = 0; i < 2; i++) {
     footPlate(b, fine, feet[i]![0], feet[i]![1], turn)
-    b.add(rod(feet[i]!, tops[i]!, r, 8, r * 0.8), WIRE)
+    b.add(rod(feet[i]!, tops[i]!, r, 8, r * 0.8), WIRE, undefined, 1, SHEEN)
     b.add(lathe([[r + 2.6, 2.4], [r + 2.6, 7], [r + 1, 9], [r, 9.6]], 10), PLATE, mat({ x: feet[i]![0], y: feet[i]![1] }))
     fine.add(ball(TRACK.bead + 0.6, 8, 6), BEAD, mat({ x: tops[i]![0], y: tops[i]![1], z: tops[i]![2] + 0.6, s: [1.25, 1.25, 0.8] }))
   }
   for (let h = tall - 64; h > 44; h -= 2 * BALL) {
     const p = at(0, h)
     const q = at(1, h)
-    b.add(rod(p, q, 3.1, 6), WIRE)
+    b.add(rod(p, q, 3.1, 6), WIRE, undefined, 1, SHEEN)
     for (const e of [p, q]) fine.add(ball(TRACK.bead - 0.2, 8, 6), BEAD, mat({ x: e[0], y: e[1], z: e[2] }))
   }
 }
@@ -111,10 +113,10 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
   const line = (across: number, up: number, from = 0): V3[] => frames.filter((f) => f.s >= from).map((f) => put(f, across, up))
   const e = frames[frames.length - 1]!
   for (const side of [-1, 1]) {
-    b.add(wire(line(side * TRACK.under, TRACK.underUp).slice(0, -Math.round(TRACK.stop / 16)), TRACK.wire, 8, 1), WIRE)
-    b.add(wire(line(side * TRACK.side, TRACK.sideUp, 40), TRACK.wire, 8, 1), WIRE)
+    b.add(wire(line(side * TRACK.under, TRACK.underUp).slice(0, -Math.round(TRACK.stop / 16)), TRACK.wire, 8, 1), WIRE, undefined, 1, SHEEN)
+    b.add(wire(line(side * TRACK.side, TRACK.sideUp, 40), TRACK.wire, 8, 1), WIRE, undefined, 1, SHEEN)
     const a = frames.find((f) => f.s >= 40)!
-    b.add(wire([put(a, side * TRACK.side, TRACK.sideUp), put(a, side * (TRACK.side + 3), TRACK.sideUp - 6, -14), put(a, side * (TRACK.side + 10), TRACK.sideUp - 18, -26)], TRACK.wire, 8, 4), WIRE)
+    b.add(wire([put(a, side * TRACK.side, TRACK.sideUp), put(a, side * (TRACK.side + 3), TRACK.sideUp - 6, -14), put(a, side * (TRACK.side + 10), TRACK.sideUp - 18, -26)], TRACK.wire, 8, 4), WIRE, undefined, 1, SHEEN)
     const stop = frames[frames.length - 1 - Math.round(TRACK.stop / 16)]!
     const p = put(stop, side * TRACK.under, TRACK.underUp)
     b.add(ball(TRACK.wire + 1.2, 8, 6), BEAD, mat({ x: p[0], y: p[1], z: p[2] }))
@@ -128,8 +130,8 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
     }
     return pts
   }
-  b.add(wire(loop(TRACK.side, TRACK.sideUp, 0, Math.PI), TRACK.wire, 8, 2), WIRE)
-  b.add(wire(loop(TRACK.side, 4, -0.5, Math.PI + 0.5), TRACK.wire + 1.6, 8, 2), WIRE)
+  b.add(wire(loop(TRACK.side, TRACK.sideUp, 0, Math.PI), TRACK.wire, 8, 2), WIRE, undefined, 1, SHEEN)
+  b.add(wire(loop(TRACK.side, 4, -0.5, Math.PI + 0.5), TRACK.wire + 1.6, 8, 2), WIRE, undefined, 1, SHEEN)
   for (const a of [-0.5, Math.PI + 0.5]) {
     const p = put(e, -Math.cos(a) * TRACK.side, 4, Math.sin(a) * TRACK.side)
     b.add(ball(TRACK.wire + 2.6, 8, 6), BEAD, mat({ x: p[0], y: p[1], z: p[2] }))
@@ -138,7 +140,7 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
     const a = (Math.PI * i) / 4
     const top = put(e, -Math.cos(a) * TRACK.side, TRACK.sideUp, Math.sin(a) * TRACK.side)
     const foot = put(e, -Math.cos(a) * TRACK.side, 4, Math.sin(a) * TRACK.side)
-    b.add(rod(foot, top, TRACK.wire - 0.6, 6), WIRE)
+    b.add(rod(foot, top, TRACK.wire - 0.6, 6), WIRE, undefined, 1, SHEEN)
     fine.add(ball(TRACK.bead - 0.6, 8, 6), BEAD, mat({ x: top[0], y: top[1], z: top[2] }))
   }
   const crown: V3[] = []
@@ -146,7 +148,7 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
     const a = Math.PI / 2 + (Math.PI * i) / 16
     crown.push(put(e, 0, TRACK.sideUp + Math.sin(a) * (TRACK.centre * 2 - TRACK.sideUp + 14), TRACK.side * Math.cos(a) * -1))
   }
-  b.add(wire(crown, TRACK.wire - 0.4, 8, 2), WIRE)
+  b.add(wire(crown, TRACK.wire - 0.4, 8, 2), WIRE, undefined, 1, SHEEN)
   const total = e.s
   const count = Math.floor((total - 90) / TRACK.every)
   const first = 70 + (total - 90 - count * TRACK.every) / 2
@@ -159,7 +161,7 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
       const a = -open + (i / 14) * open * 2
       arc.push(put(f, Math.sin(a) * TRACK.hoopR, TRACK.centre - Math.cos(a) * TRACK.hoopR))
     }
-    b.add(wire(arc, TRACK.hoop, 8, 2), WIRE)
+    b.add(wire(arc, TRACK.hoop, 8, 2), WIRE, undefined, 1, SHEEN)
     for (const side of [-1, 1]) {
       for (const [across, up] of [[TRACK.under, TRACK.underUp], [TRACK.side, TRACK.sideUp]] as const) {
         const d = put(f, side * across * 1.035, up + (up - TRACK.centre) * 0.035)
@@ -184,7 +186,7 @@ function flapGeometry(): THREE.BufferGeometry {
   b.add(prism(outline, -0.7, 0.7, 0.3, 1), SPRING)
   b.add(prism([[l - 13, -w / 2 + 2], [l - 0.6, -w / 2 + 8.6], [l - 0.6, w / 2 - 8.6], [l - 13, w / 2 - 2]], 0.5, 0.95, 0), WORN)
   for (const y of [-26, 0, 26]) b.add(prism([[8, y - 1.4], [l - 16, y - 1.4], [l - 16, y + 1.4], [8, y + 1.4]], 0.6, 1.3, 0.4, 1), SPRING)
-  b.add(rod([0, -w / 2 + 6, 0], [0, w / 2 - 6, 0], 2.4, 8), WIRE)
+  b.add(rod([0, -w / 2 + 6, 0], [0, w / 2 - 6, 0], 2.4, 8), WIRE, undefined, 1, SHEEN)
   for (const y of [-30, 30]) b.add(lathe([[2.6, 0], [2.6, 0.8], [0, 1.1]], 8), SCREW, mat({ x: 10, y, z: 0.7 }))
   return b.done()
 }
@@ -254,7 +256,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-35',
+  version: 'play-ramps-38',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`

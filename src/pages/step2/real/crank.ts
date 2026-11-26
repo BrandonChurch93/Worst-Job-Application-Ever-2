@@ -10,7 +10,7 @@ import { CRANK, ROWS } from '../layout'
 import { clamp01, contact, fuse, lathe, mesh, moved, outline, picture, rise, round, smooth, srgb } from './slot-kit'
 
 export const CRANK_LOOK = {
-  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 8, pillRound: 5, pillCorner: 12, clear: { core: 0.2, low: 0.6, gain: 0.3 }, footLine: 0.8, wallRings: 3, seat: { out: 1.5, up: 0.8, top: 0.9, line: 0.3, foot: 0.45 }, glow: { core: [0.6, 0.66] as [number, number], wide: 5, power: 0.94 }, picture: [128, 512] as [number, number], rimTone: 0.56,
+  full: { base: 26, hub: 22, arm: 10, grip: 24, meter: 20 }, pill: 8, pillRound: 5, pillCorner: 12, clear: { core: 0.2, low: 0.6, gain: 0.3 }, footLine: 0.8, wallRings: 3, seat: { out: 1.5, up: 0.8, top: 0.9, line: 0.3, foot: 0.3, tone: 0x6f7877 }, glow: { core: [0.6, 0.66] as [number, number], wide: 5, power: 0.94 }, picture: [128, 512] as [number, number], rimTone: 0.68,
   plate: 8, rim: 3.6, screwAt: 38, screw: 5.6, face: { tone: 0.8, cut: 0.05, rough: 0.34 }, cast: { dark: 0.5, in: 10, out: 34, away: 24, over: 0.2 }, washer: 25.5, neck: 20, eye: 3.4, bar: 0.68, end: 0.44, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
@@ -19,7 +19,7 @@ export const CRANK_LOOK = {
 const L = CRANK_LOOK
 
 let shade: THREE.MeshBasicMaterial | null = null
-let made: { glass: THREE.MeshPhysicalMaterial; wall: THREE.MeshPhysicalMaterial; lit: THREE.MeshPhysicalMaterial; washer: THREE.MeshPhysicalMaterial; bar: THREE.MeshPhysicalMaterial; turned: THREE.MeshPhysicalMaterial; textures: THREE.Texture[] } | null = null
+let made: { glass: THREE.MeshPhysicalMaterial; wall: THREE.MeshPhysicalMaterial; lit: THREE.MeshPhysicalMaterial; washer: THREE.MeshPhysicalMaterial; foot: THREE.MeshPhysicalMaterial; bar: THREE.MeshPhysicalMaterial; turned: THREE.MeshPhysicalMaterial; textures: THREE.Texture[] } | null = null
 const cache = new Map<string, THREE.BufferGeometry>()
 const shared = (key: string, build: () => THREE.BufferGeometry): THREE.BufferGeometry => {
   let g = cache.get(key)
@@ -54,7 +54,7 @@ function own(): NonNullable<typeof made> {
     const shade = smooth(-side) * smooth((p.depth - 4.2) / 1.2) * (1 - smooth((p.depth - 6.2) / 3.5))
     const hi = smooth((0.25 - side) / 0.8)
     const across = smooth(0.5 + 0.5 * ((p.x / 14) * 0.85 - (p.y / 48) * 0.25))
-    const k = L.clear.low + L.clear.gain * across + 0.9 * line * (0.15 + 0.85 * hi) - 0.3 * dark - 0.34 * edge + 0.2 * gather - 0.16 * shade
+    const k = L.clear.low + L.clear.gain * across + 0.9 * line * (0.15 + 0.85 * hi) - 0.3 * dark - 0.22 * edge + 0.2 * gather - 0.16 * shade
     const a = Math.min(1, L.clear.core + (0.12 + 0.72 * hi) * line + 0.5 * edge + 0.42 * dark + 0.3 * gather + 0.22 * shade)
     return [k * 0.955, k * 0.995, k * 0.975, a]
   })
@@ -83,7 +83,8 @@ function own(): NonNullable<typeof made> {
   turned.roughness = L.face.rough
   turned.color = turned.color.clone().multiplyScalar(L.face.tone)
   turned.vertexColors = true
-  made = { glass, wall, lit, washer, bar, turned, textures: [off, glow] }
+  const foot = studio(new THREE.MeshPhysicalMaterial({ color: srgb(L.seat.tone), roughness: 0.85, metalness: 0 }))
+  made = { glass, wall, lit, washer, foot, bar, turned, textures: [off, glow] }
   return made
 }
 
@@ -321,7 +322,7 @@ function segment(): THREE.Group {
   const body = mesh(top, own().glass)
   const wall = mesh(side, own().wall)
   const seat = new THREE.Group()
-  seat.add(mesh(lip, own().wall), mesh(foot, materials().gap, false))
+  seat.add(mesh(lip, own().wall), mesh(foot, own().foot, false))
   root.add(body, wall, seat)
   root.userData.body = body
   root.userData.wall = wall

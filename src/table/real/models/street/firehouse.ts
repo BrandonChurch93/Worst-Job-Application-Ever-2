@@ -3,7 +3,7 @@ import type { RealContext } from '../../../../real/types'
 import { BALL } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, type Buckets, type RGB, type V3 } from './geo'
-import { KIND, TONE, band, beaconBase, beaconBulb, board, framed, mix, parapet, reveal, rgb, roofDeck, roofHatch, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
+import { KIND, TONE, band, beaconBase, beaconBulb, board, framed, mix, parapet, reveal, rgb, roofDeck, roofHatch, roofWorks, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
 
 export type Side = 'front' | 'right' | 'back' | 'left'
 
@@ -54,7 +54,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   const yf = S.yf + 3
   const yb = S.yb - 3
   const top = S.h
-  const deck = top - 12
+  const deck = top - 20
   const span = S.m.bay ?? [S.m.box[0] + S.m.box[2] * 0.46, S.m.box[0] + S.m.box[2] * 0.98, 0.55]
   const bl = localBalls(z, span[0], S.m.box[1])[0] - x0
   const br = localBalls(z, span[1], S.m.box[1])[0] - x0
@@ -99,9 +99,9 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     band(g, -1.6, W + 1.6, deck - 4, top - 3, 1.6, STONE, KIND.stucco)
     quoins(b, W, course + 0.5, cornice - 3, STONE, side === 'front' ? head + 2 : course)
     upper.forEach((h, k) => {
-      windowAt(b, h, { ...up, depth: side === 'front' ? 3.5 : 2.1, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
+      windowAt(b, h, { ...up, depth: side === 'front' ? 6 : 3.4, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
     })
-    lower.forEach((h) => windowAt(b, h, { ...down, depth: side === 'front' ? 3.5 : 2.1, glow: lum() }))
+    lower.forEach((h) => windowAt(b, h, { ...down, depth: side === 'front' ? 6 : 3.4, glow: lum() }))
     if (side !== 'front') return
 
     // The stone frame of the mouth: two jambs and a head with round inner corners, proud of the brick and as deep as the wall. Its right jamb is the corner of the building.
@@ -199,6 +199,7 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
 
   roofDeck(g, x0 + 7, x1 - 7, yf + 7, yb - 7, deck)
   parapet(g, x0, x1, yf, yb, deck, top, 8, STONE, TONE.cap, KIND.stucco)
+  roofWorks(b, x0, x1, yf, yb, deck, top, 8, TONE.deck, 0)
 
   // The stair head at the back left corner: a low rendered box with a louvre and a capped flat roof, as the small units on the approved roof are.
   const tx0 = x0 + 10
@@ -234,8 +235,10 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   for (const [sx, sy] of [[x0 + 9, yf + 9], [x1 - 9, yf + 9], [x1 - 9, yb - 9]] as const) b.screws.push([sx, sy, deck, 1.6])
 
   roofHatch(b, x0 + 44, x0 + 72, yf + 36, yf + 58, deck, TONE.stoneDark)
-  const beacon: V3 = [S.cx, S.yb - S.d * 0.3, deck]
-  beaconBase(b, beacon[0], beacon[1], deck)
+  // The beacon stands on a round kerb, clear of the parapet.
+  const beacon: V3 = [S.cx, S.yb - S.d * 0.3, deck + 9]
+  g.lathe([[39, 0], [39, 7.6], [37.4, 9], [0, 9]], beacon[0], beacon[1], 40, TONE.stoneDark, { base: deck, kind: KIND.stucco })
+  beaconBase(b, beacon[0], beacon[1], deck + 9)
   beaconBulb(bay, beacon)
   board(b, z, ctx, 'street.firehouse', deck)
 
