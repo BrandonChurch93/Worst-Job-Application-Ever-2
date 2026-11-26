@@ -166,6 +166,17 @@ export async function levelsRun(load, c, pub) {
         pageBusiest3s: busiest ? { visitSeconds: Number((busiest.at - PRE).toFixed(2)), lufs: busiest.lufs, underTheLine: busiest.at < pick.to && busiest.at + 3 > pick.from } : null
       }
     })
+    // Third render: the visit as the visitor hears it, every event live, the narrator saying what its rules let it say.
+    await page.reload()
+    await page.waitForFunction('window.ready === true')
+    const heardLines = v.log.filter((e) => e.what === 'spoken' && !v.log.some((x) => x.what === 'taken back' && x.line === e.line && x.start === e.start))
+    const asHeard = await render(shifted.map((x) => (x.event ? { ...x, live: true } : x)), heardLines.map((e) => ({ line: e.line, at: e.start + PRE, from: e.start + PRE, to: e.start + PRE + e.seconds })), 0)
+    const heard = asHeard.spans.map((s) => ({
+      line: s.line, page: v.turns.filter((t) => t.at <= s.at - PRE + 1e-9).pop()?.page ?? '', visitSeconds: Number((s.at - PRE).toFixed(2)), lineSeconds: Number((s.to - s.from).toFixed(3)),
+      voiceLufs: s.voice, bedLufs: s.bed, marginDb: s.voice !== null && s.bed !== null ? Number((s.voice - s.bed).toFixed(2)) : null,
+      bedLoudestMomentLufs: s.bedLoudestMoment?.lufs ?? null, marginAtLoudestMomentDb: s.voice !== null && s.bedLoudestMoment ? Number((s.voice - s.bedLoudestMoment.lufs).toFixed(2)) : null,
+      outputTruePeakDb: s.outputTruePeakDb, voiceTruePeakDb: s.voiceTruePeakDb
+    }))
     const want = c.audio.duckDb
     const ceiling = c.audio.truePeakDb
     const record = {
@@ -173,13 +184,15 @@ export async function levelsRun(load, c, pub) {
       browser: version, bot: 'keen', seed: c.seed, visitSeconds: v.seconds, events: shifted.filter((x) => x.event).length, backend: withLines.backend, errors,
       wantedMarginDb: want, rows, holds: rows.every((r) => r.marginDb !== null && r.marginDb >= want),
       filmCeilingDb: ceiling, overTheFilmCeiling: rows.filter((r) => r.outputTruePeakDb !== null && r.outputTruePeakDb > ceiling).map((r) => r.moment),
-      wholeVisit: { withoutLines: bare.whole, withTheFourLines: withLines.whole },
+      heard, heardHolds: heard.every((r) => r.marginDb !== null && r.marginDb >= want), linesSpokenInTheBrowser: asHeard.log.filter((e) => e.what === 'spoken').length, linesSpokenOnTheStageClock: v.log.filter((e) => e.what === 'spoken').length,
+      wholeVisit: { withoutLines: bare.whole, withTheLinesOfTheMoments: withLines.whole, asHeard: asHeard.whole },
       narratorLog: withLines.log
     }
     writeJson(at('out', 'work', 'audio', 'levels.json'), record)
     console.log(`levels: the keen visit, ${record.events} events over ${v.seconds} s, rendered offline through the site's engine in ${version}, backend ${record.backend}. Voice against bed over each line, wanted ${want} dB or more`)
     for (const r of rows) console.log(`levels: ${r.moment}: ${r.line} by ${r.trigger} at ${r.visitSeconds} s (loudest of ${r.occurrences}), spoken at ${r.spokenAt} s for ${r.lineSeconds} s. Voice ${r.voiceLufs} LUFS, bed ${r.bedLufs} LUFS, margin ${r.marginDb} dB. Bed with no line there ${r.bedWithoutLineLufs} LUFS, so the duck took ${r.duckDb} dB. Loudest 0.4 s of the bed ${r.bedLoudestMomentLufs} LUFS, margin there ${r.marginAtLoudestMomentDb} dB. Output ${r.outputLufs} LUFS, true peak ${r.outputTruePeakDb} dB; the voice alone peaks at ${r.voiceTruePeakDb} dB. The page's busiest 3 s: ${r.pageBusiest3s ? `at ${r.pageBusiest3s.visitSeconds} s, ${r.pageBusiest3s.lufs} LUFS, ${r.pageBusiest3s.underTheLine ? 'under the line' : 'not under the line'}` : 'unknown'}`)
-    console.log(`levels: the whole visit at the output: ${bare.whole.lufs} LUFS and true peak ${bare.whole.truePeakDb} dB with no line, ${withLines.whole.lufs} LUFS and ${withLines.whole.truePeakDb} dB with the four. ${errors.length ? `Page errors: ${errors.join('; ')}` : 'No page error'}. Written to out/work/audio/levels.json`)
+    for (const r of heard) console.log(`levels: as heard, ${r.page}: ${r.line} at ${r.visitSeconds} s for ${r.lineSeconds} s. Voice ${r.voiceLufs} LUFS, bed ${r.bedLufs} LUFS, margin ${r.marginDb} dB, at the bed's loudest 0.4 s ${r.marginAtLoudestMomentDb} dB. Output true peak ${r.outputTruePeakDb} dB, the voice alone ${r.voiceTruePeakDb} dB`)
+    console.log(`levels: the whole visit at the output: ${bare.whole.lufs} LUFS and true peak ${bare.whole.truePeakDb} dB with no line, ${withLines.whole.lufs} LUFS and ${withLines.whole.truePeakDb} dB with the lines of the moments, ${asHeard.whole.lufs} LUFS and ${asHeard.whole.truePeakDb} dB as heard (${record.linesSpokenInTheBrowser} lines booked in the browser, ${record.linesSpokenOnTheStageClock} on the stage's clock). ${errors.length ? `Page errors: ${errors.join('; ')}` : 'No page error'}. Written to out/work/audio/levels.json`)
     return record
   } finally {
     await browser.close()
