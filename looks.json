@@ -1,35 +1,35 @@
 {
   "folder": "frame-finish",
-  "pushed": "2026-11-26T11:45:12.143Z",
-  "commit": "4efbcfc729268fddcba70380e9131e30ae04a61b",
+  "pushed": "2026-11-26T12:12:10.877Z",
+  "commit": "fe8cea32a644ccd87648c34410b3ce814cc2ac97",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
-      "time": "2026-11-26T11:43:20.779Z",
+      "caption": "table-wide, marquee: approved left, build right (dark title on the dusk sky, no band; M4 green at 4.62)",
+      "time": "2026-11-26T12:12:09.121Z",
       "by": "frame-finish",
-      "from": "out/work/compare/compare-rail-cam.jpg"
+      "from": "out/work/frame-finish/fourth-title.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key loader-page: approved on the left, this build on the right, draft tier, with crops of shape:loader.ring, shape:rail.feed.2, progressButtonCurrent, header",
-      "time": "2026-11-26T11:44:00.311Z",
+      "caption": "reply-all, cups and steel balls: approved left, build right (white moulded lids, mirror balls)",
+      "time": "2026-11-26T12:12:09.346Z",
       "by": "frame-finish",
-      "from": "out/work/compare/compare-loader-page.jpg"
+      "from": "out/work/frame-finish/fourth-lids-balls.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "loader-page, ring and tube: approved left, build right (darker ring and bowl, flange collar, tube shadow)",
-      "time": "2026-11-26T11:45:10.644Z",
+      "caption": "loader-page, cup and tube: approved left, build right (near black dish, bright lip, flange collar)",
+      "time": "2026-11-26T12:12:09.582Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/third-loader.jpg"
+      "from": "out/work/frame-finish/fourth-loader.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "rail-cam: approved left, build right (wire sheen, navy walls, cream rail)",
-      "time": "2026-11-26T11:45:10.882Z",
+      "caption": "table-wide: approved left, build right (dark front lands, navy walls, mean 0.976 of approved)",
+      "time": "2026-11-26T12:12:09.819Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/third-rail-cam.jpg"
+      "from": "out/work/frame-finish/fourth-table-wide.jpg"
     }
   ]
 }
