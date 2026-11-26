@@ -1,0 +1,35 @@
+{
+  "folder": "corporate-finish",
+  "pushed": "2026-11-26T11:37:51.184Z",
+  "commit": "7452e955e3dd9267527e47d56a9fc624267e95ce",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "lobby-doors, approved left, this build right (draft, after merge 33): pale plate under the name (letters 0.020 against 0.607, ratio 9.37), lit core walls behind the tower glass, plush carpet with the revolving door on it",
+      "time": "2026-11-26T11:36:52.470Z",
+      "by": "corporate-finish",
+      "from": "out/work/report/lobby-doors-side.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "tier-corporate, approved left, this build right (draft, after merge 33): closed roof with plant, yellow notes and a loose fourth, walnut boardroom with brass lamps, white wedges with a warm lip, striped lounger and a brighter sea",
+      "time": "2026-11-26T11:36:52.703Z",
+      "by": "corporate-finish",
+      "from": "out/work/report/tier-corporate-side.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key tier-office: approved on the left, this build on the right, draft tier, with crops of shape:model.office.cubicles, shape:bumper.office.bumper.3, shape:model.office.coffee, shape:model.office.inbox, shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3, shape:flipper.office.flipper.left, cursor, shape:insert.office.insert.1, shape:lift.elbow.office",
+      "time": "2026-11-26T11:37:38.390Z",
+      "by": "corporate-finish",
+      "from": "out/work/compare/compare-tier-office.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "tier-office, approved left, this build right (draft, after merge 33): bronze coffee machine with a cream plate, squared beige tray, red paddles on steel feet, grey brown cubicles with dark screens, fewer loose papers",
+      "time": "2026-11-26T11:37:50.090Z",
+      "by": "corporate-finish",
+      "from": "out/work/report/tier-office-side.jpg"
+    }
+  ]
+}
