@@ -85,6 +85,8 @@ Built:
 - The collar: a thin ring of `capRim` round the current cap, 2.2 px wide with 1.3 px of dark clearance, made by the rail and keyed by where the current cap stands. It lies at the rail's height, so it shows where it crosses the rail and is under the page elsewhere: the rail's outline in the layout does not grow. DECISION: the approved pictures show no collar; it is built as the order of work words it, set into the rail.
 - Declined as told: no new state for finished steps.
 
+A blocker found and mended. MEASURED at dd9082fa (`npm run -s measure -- --unit step2 --tier review`): M4 red, least contrast 3.9 against 4.5, the numerals on the steel caps; it was 4.62 before this item. The measure reads the materials' colours, and the darker face (0x7c8085) under the old ink (0x232427) gives 3.9. Mended: ink on metal 0x17181a, the cap's face 0x7f8388. The fault was mine: I pushed C on tests, build, bots and paths and did not wait for the measure.
+
 ## Item D: the arrow's body
 
 MEASURED, the arrow's face on the page (`step2-dial`, the same 6x crop of the approved image and the build): the approved face is near white with a black edge about a fifth of the stem's width; the build's face was drawn at about 0.66 of its colour and its black edge was a thin line.

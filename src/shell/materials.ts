@@ -491,7 +491,7 @@ export function makeMaterials(seed: number): Materials {
   }))
   const aluminiumEdge = physical({ color: srgb(0xd0d4d7), roughness: 0.34, metalness: 0.8 })
   const capFace = stretched(physical({
-    color: srgb(0x7c8085), roughness: 0.2, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.1, 0.1), anisotropy: 0.9, anisotropyMap: turned.direction
+    color: srgb(0x7f8388), roughness: 0.2, metalness: 1, normalMap: turned.normal, normalScale: new THREE.Vector2(0.1, 0.1), anisotropy: 0.9, anisotropyMap: turned.direction
   }), 0.42)
   const capRim = physical({ color: srgb(0xc2c6ca), roughness: 0.3, metalness: 1 })
   const railFlat = physical({ color: srgb(0x7b8085), roughness: 0.5, metalness: 0.55, normalMap: brushed, normalScale: new THREE.Vector2(0.12, 0.12), anisotropy: 0.5, anisotropyRotation: Math.PI / 2 })
