@@ -97,6 +97,8 @@ function rowParts(tree: LayoutNode, prefix: string): RowIds {
 
 // Under this share of its rise a machine is in the floor, and what is printed on it is out of sight with it.
 const SUNK = 0.05
+// A machine that has sunk under the page is covered by its tray as the tray shuts: the tray starts to shut at this share of the lift, not after the machine has gone.
+const COVER = 0.25
 
 function machineParts(tree: LayoutNode, tray: string): { id: string; floor: number; top: number; text: boolean }[] {
   const out: { id: string; floor: number; top: number; text: boolean }[] = []
@@ -597,7 +599,7 @@ export function makePage(): PageLogic {
       ground(io)
       if (s.mode === 'film') grip(io)
       for (let i = 0; i < 3; i++) {
-        const target = s.open === i && (s.phase === 'opening' || s.phase === 'ready' || s.phase === 'ending' || (s.phase === 'closing' && s.lift > 0)) ? 1 : 0
+        const target = s.open === i && (s.phase === 'opening' || s.phase === 'ready' || s.phase === 'ending' || (s.phase === 'closing' && s.lift > COVER)) ? 1 : 0
         if (target === 0 && s.spring[i] === 0) continue
         s.springV[i] = s.springV[i]! + (300 * (target - s.spring[i]!) - 27 * s.springV[i]!) * dt
         s.spring[i] = s.spring[i]! + s.springV[i]! * dt

@@ -1,4 +1,4 @@
-import type { Acting, Reaction } from '../../cursor/body'
+import { HANDOFF, type Acting, type Reaction } from '../../cursor/body'
 import type { Pointer } from '../../stage/types'
 import { CRANK, DIAL, FH, FW, FX, rowY, SLOT } from './layout'
 
@@ -33,17 +33,20 @@ const T = {
 
 // Each idea of the acting has its own times: the wind-up, the move, the pose and how long it is held.
 // It looks easy: it stands between the rows, strolls to the first field and taps it as if it owned the page.
+// The page arrives with the cursor in the air at the hand-off place and sets it down there at 0.5 s. The pointer waits under it and then walks to where it stands at rest, so the cursor does not dash across the page after a pointer that stood somewhere else.
+const ARRIVE = { look: 0.56, there: 0.96 }
 const EASY = { stroll: 1.06, there: 1.62, tap: T.phone - 0.14 }
 // A row opens under it. The first time it only starts, the second time it rears, the third time it has lost its temper and stamps the field open.
 const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: T.birth + 0.08, go: T.birth + 0.5 } }
 // The lever: it has learnt to be careful, so it draws the knob up a little before it pulls.
 const PULL = { there: 8.98, back: 9.03, up: 9.11, rise: 12 }
-// The coins: it hides, shakes them off where it is safe, and comes back angry.
-const TEMPER = { safe: 12.7, dust: 12.76, red: 13.36, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22 }
+// The coins: it hides, shakes them off where it is safe, and comes back angry. The temper is spent on the stamp: it takes the crank with a cool head.
+const TEMPER = { safe: 12.7, dust: 12.76, red: 13.36, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
 const THROWN = { see: T.runaway + 0.05, cower: T.runaway + 0.43, back: T.lean - 0.08 }
 const idle: P = { x: 1575, y: 395 }
 const refuge: P = { x: 800, y: 700 }
+const hand: P = { x: HANDOFF.x, y: HANDOFF.y }
 
 const wind = (t: number, k: number, long: number): Seg[] => [
   arc(t, t + long, dialC, DIAL.ring, DIAL.holeAngle(k), DIAL.holeAngle(k) + DIAL.travel(k) + 0.04, (u) => u),
@@ -51,7 +54,9 @@ const wind = (t: number, k: number, long: number): Seg[] => [
 ]
 
 const path: Seg[] = [
-  line(0, EASY.stroll, idle, idle),
+  line(0, ARRIVE.look, hand, hand),
+  line(ARRIVE.look, ARRIVE.there, hand, idle),
+  line(ARRIVE.there, EASY.stroll, idle, idle),
   line(EASY.stroll, EASY.there, idle, field(0)),
   line(EASY.there, DREAD.phone.go, field(0), field(0)),
   line(DREAD.phone.go, T.zero - 0.04, field(0), holeAt(10)),
@@ -122,7 +127,7 @@ export type Mark = 'fling' | 'strike'
 export type Marks = Partial<Record<Mark, number>>
 
 const acts: [number | Mark, Acting][] = [
-  [0, 'confident'], [T.third + 0.56, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'],
+  [0, 'confident'], [T.third + 0.56, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
   [THROWN.see, 'shocked'], [THROWN.back, 'angry'], [16.95, 'exhausted'], [20.28, 'plain']
 ]
 
