@@ -1143,6 +1143,10 @@ async function main() {
         console.log(`site: ${JSON.stringify(s)}`)
       }
     }
+    else if (a.loops) {
+      const { loopsRun } = await import('./lib/sound-loops.mjs')
+      loopsRun(P.pub, c, decodeFile, M.levels)
+    }
     else if (a.visit) {
       const { visitRun } = await import('./lib/sound-visit.mjs')
       const { logic } = await import('./lib/logic.mjs')

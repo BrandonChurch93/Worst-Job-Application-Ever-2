@@ -6,7 +6,6 @@ import * as pagesModule from '../src/pages'
 import * as configModule from '../src/config'
 import { filmLive, filmLineId, pagelessLive, unitPage } from '../src/audio/cues'
 import { config } from '../src/config'
-// @ts-expect-error a tool of the build, plain JavaScript
 import { visit } from '../tools/lib/sound-visit.mjs'
 
 interface Entry { at: number; line: string; trigger: string; what: string; start?: number; seconds?: number; why?: string; page: string }
