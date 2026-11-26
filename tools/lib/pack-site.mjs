@@ -729,7 +729,6 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
   if (!sheets.length) return
   const run = needRun(facts, 'R4 or R5')
   const rf = cfg.formats[RUN.format]
-  const k = rf.width / hd.width
   const frames = await replay(cfg, run, sheets.flatMap((f) => f.steps), { plan: (whole || files).flatMap((f) => f.steps || []), cache, log })
   const columns = 3
   const tileW = Math.floor((edge - GAP * (columns - 1)) / columns)
