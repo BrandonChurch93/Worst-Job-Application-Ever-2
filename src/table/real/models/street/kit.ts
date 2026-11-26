@@ -124,8 +124,20 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
   const { x, z, w } = h
   const t = z + h.h
   // The pane is brighter at the top, where the lamp inside hangs.
-  b.glow.face([[x, d, z], [x + w, d, z], [x + w, d, (z + t) / 2], [x, d, (z + t) / 2]], lo, 0, [0, -1, 0])
-  b.glow.face([[x, d, (z + t) / 2], [x + w, d, (z + t) / 2], [x + w, d, t], [x, d, t]], pane, 0, [0, -1, 0])
+  if (o.dark) b.glow.face([[x, d, z], [x + w, d, z], [x + w, d, t], [x, d, t]], pane, 0, [0, -1, 0])
+  else {
+    // The lamp inside is seen through the pane: hot behind its upper middle, amber toward the frame.
+    const core: RGB = [lum * 1.3, lum * 1.04, lum * 0.6]
+    const nx = 6
+    const nz = 8
+    for (let i = 0; i < nx; i++) {
+      for (let j = 0; j < nz; j++) {
+        const r = Math.hypot(((i + 0.5) / nx - 0.5) * 1.5, ((j + 0.5) / nz - 0.6) * 1.3)
+        const c = mix(lo, core, Math.exp(-r * r * 7))
+        b.glow.face([[x + (w * i) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * (j + 1)) / nz], [x + (w * i) / nx, d, z + (h.h * (j + 1)) / nz]], c, 0, [0, -1, 0])
+      }
+    }
+  }
   const f = 1.3
   const fy0 = d - 1.4
   g.box(x, x + f, fy0, d, z, t, o.frame, { skip: 'bl' })
