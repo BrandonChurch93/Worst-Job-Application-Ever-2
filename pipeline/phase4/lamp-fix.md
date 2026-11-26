@@ -110,6 +110,8 @@ Lights went 2 over the 40 of round 2 with the last looks before a push. Round 3 
 
 | Time UTC | Part | Stills | What | Running: lights, art |
 | --- | --- | --- | --- | --- |
+| 09:20 | lights | 3 | d1, the lamp under each sling toward its foot edge and low: tier-office, tier-corporate, tier-street | 3, 0 |
+| 09:21 | lights | 2 | d2, the same at power 4, reach 1.5: tier-office, tier-street | 5, 0 |
 
 ## Decisions
 
@@ -149,6 +151,7 @@ Lights went 2 over the 40 of round 2 with the last looks before a push. Round 3 
 34. The Corporate floor, the Builder's largest gap (a dark mirror with soft pools, mine flatter and more even). The floor now gives back 0.65 of a far lamp's light seen from above (`DEEP.corporate` 1 to 0.65, along the floor 0.35 to 0.45), its print is at 1.0 instead of 1.3 (`COAT` in `art/index.ts`), the pools of its lamps are 0.9 of their whole instead of 0.55 and the head lamps 1.7 instead of 2.3: the marble between the lamps is deep navy and each lane lamp and window has a soft pool of its own. MEASURED (`means2.mjs c5`): dark share of `tier-corporate` 34% against 36% approved (was 23% after merge 30), mean 1.08 (was 1.11), `lobby-doors` 1.03.
 35. The Street gives back 0.75 of far light seen from above (`DEEP.street`), with its pools at 0.6: `tier-street` 1.13, dark share 12% against 20% (the frame's strips are the pale part).
 36. `youre-fired` reads 1.63 of approved on main 7f82c9cc (c5): the camera now stands where the pale aluminium wall behind the firehouse fills the top third of the picture. Camera and wall are not mine.
+37. The lamp under a sling stood at the sling's middle, 30 px up, and its pool was hidden under the plastic. It now stands toward the sling's foot edge, 16 px up, stronger and tighter (`SLING` in `groups.ts`: foot 0.85, power 4, reach 1.5 balls; the place is worked out from the sling's three corners in the layout), so a warm pool lies on the floor beside each sling as in the approved tier keys. MEASURED (`means2.mjs d2`): tier-office 1.11, tier-street 1.13.
 
 ## Needs
 
