@@ -10,7 +10,7 @@ import { LIFT, lift } from './lift'
 import { FIN, TONE, drop, mesh, metalOf, tubeOf as clearTube } from './mats'
 import { GATE, SLING, tier } from './tier'
 
-export const VERSION = 'hardware-10'
+export const VERSION = 'hardware-11'
 const STEEL_BALLS = 8
 const TURN = 0.34
 // The lift's rings stand upright and are seen on their flat faces from the player's end, so they keep more of their tone.
@@ -33,6 +33,7 @@ function buildHardware(z: Zone): THREE.Object3D {
     if (t.F.vertices > 0) o.add(mesh(t.F.turn(TURN, SOFT), m, 'hardware.fine', { fine: true }))
     const band = mesh(t.B, m, 'hardware.bands')
     band.userData.slings = t.slings
+    band.receiveShadow = false
     o.add(band)
     const gate = mesh(t.gate.mesh, m, 'hardware.gate')
     gate.position.set(...t.gate.at)

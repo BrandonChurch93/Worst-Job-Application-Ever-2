@@ -3,13 +3,14 @@ import type { RealContext } from '../../../real/types'
 import { BALL, OUTLET, PORT, railOf } from '../../layout'
 import { local, localBalls, type Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
-import { Screws, TONE, aluOf, clearOf, mesh, screwOf } from './mats'
+import { Screws, TONE, aluOf, clearOf, hex, mesh, screwOf } from './mats'
 
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
 export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22, collarOut: 58.5, ferrule: 9, ferruleOut: 56, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
 const RING = { height: 26, lip: 6, floor: 2.4, slot: 2, mouth: 6, dish: 34, cuts: 7 }
 const BED = { height: 6, land: 5 }
-const CUP: [number, number, number] = [0.045, 0.047, 0.052]
+const CUP: [number, number, number] = [0.02, 0.021, 0.024]
+const BAND = { face: hex(0x565a5f), groove: hex(0x3c3f43) }
 
 // The middle line of the tube on the page, in page pixels, its corners rounded.
 function line(): V3[] {
@@ -118,7 +119,7 @@ function collar(A: Geo, screws: Screws, f: { at: THREE.Vector3; m: THREE.Matrix4
   const c = TUBE.ferrule / 2
   const o = TUBE.ferruleOut
   const outline: V2[] = [[TUBE.outer + 0.2, -c], [o - 1.2, -c], [o, -c + 1.2], [o, c - 1.2], [o - 1.2, c], [TUBE.outer + 0.2, c]]
-  A.lathe(outline, 0, 0, 28, TONE.aluBright)
+  A.lathe(outline, 0, 0, 28, TONE.aluDark)
   A.move(from, f.m)
   for (const side of [-1, 1]) {
     const a = Math.PI / 2 + side * 0.5
@@ -159,14 +160,14 @@ function port(A: Geo, screws: Screws, z: Zone, c: { x: number; y: number; ring: 
     bowl.push([r + RING.lip - (RING.lip + RING.dish) * (1 - Math.cos(t)), h - 3 - (h - 3 - RING.floor) * Math.sin(t)])
   }
   const outline: V2[] = [[R, 0], [R, h - 5], [R - 5, h], [R - 22, h], [R - 24, h - 2.2], [R - 34, h - 2.2], [R - 36, h], [r + RING.lip + 4, h], [r + RING.lip, h - 3], ...bowl]
-  const tone = (i: number): [number, number, number] => (i >= 8 ? CUP : i === 4 ? TONE.aluDeep : TONE.aluDark)
+  const tone = (i: number): [number, number, number] => (i >= 8 ? CUP : i === 4 ? BAND.groove : i === 1 || i === 7 ? TONE.aluDeep : BAND.face)
   if (toward === null) A.lathe(outline, p[0], p[1], 72, tone)
   else {
     // The tube leaves through a slot cut in the ring, and lies there on a dark bed.
     const half = TUBE.outer + RING.slot
     A.slotted(outline, p[0], p[1], 72, tone, toward, half)
     const from = A.vertices
-    A.box(r - RING.dish - 2, Math.sqrt(R * R - half * half), -half, half, 0, RING.floor, CUP)
+    A.box(Math.sqrt(Math.max(0, (r - RING.dish) * (r - RING.dish) - half * half)) - 2, Math.sqrt(R * R - half * half), -half, half, 0, RING.floor, CUP)
     A.move(from, new THREE.Matrix4().makeTranslation(p[0], p[1], 0).multiply(new THREE.Matrix4().makeRotationZ(toward)))
   }
   A.lathe([[r - RING.dish, RING.floor], [BALL * 0.62, RING.floor - 0.6], [BALL * 0.5, RING.floor - 1.6], [0, RING.floor - 1.8]], p[0], p[1], 48, (i) => (i === 0 ? CUP : [0.006, 0.006, 0.008]))

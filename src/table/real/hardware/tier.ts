@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { hash01 } from '../../../core/random'
-import { BALL, MID, PLUNGER, TH, TIERS, railOf, table } from '../../layout'
+import { BALL, COLS, MID, MOUTH, OUTLANE, PLUNGER, TH, TIERS, railOf, table } from '../../layout'
 import { localBalls, type Zone } from '../zone'
 import { Geo, circleLoop, roundedLoop, type RGB, type V2, type V3 } from './geo'
 import { flat, rounded, spot, wire } from './kit'
@@ -183,8 +183,9 @@ export interface Gate { mesh: Geo; at: V3 }
 // The wire gate of the tier's exit, built round its pin.
 function gate(G: Geo, S: Screws, z: Zone): Gate {
   const y = TH - 0.15
-  const a = spot(z, MID - 1.2, y)
-  const b = spot(z, MID + 1.2, y)
+  const exit = table.openings.find((o) => o.tier === z.tier && o.id.endsWith('.exit'))!
+  const a = spot(z, Math.min(exit.a[0], exit.b[0]), y)
+  const b = spot(z, Math.max(exit.a[0], exit.b[0]), y)
   const half = (b[0] - a[0]) / 2 - 7
   const mid: V3 = [(a[0] + b[0]) / 2, a[1], GATE.pin]
   for (const side of [-1, 1]) {
@@ -259,9 +260,10 @@ export function tier(z: Zone): Tier {
   }
 
   for (const side of ['left', 'right']) {
-    const u = side === 'left' ? 3.35 : 2 * MID - 3.35 - 1.2
-    const a = spot(z, u, 10.35)
-    const b = spot(z, u + 1.2, 10.35 + 0.8)
+    const wide = OUTLANE.inner - COLS.left - 0.2
+    const u = side === 'left' ? COLS.left + 0.1 : 2 * MID - COLS.left - 0.1 - wide
+    const a = spot(z, u, MOUTH.v)
+    const b = spot(z, u + wide, MOUTH.hole + 0.1)
     const x0 = Math.min(a[0], b[0])
     const x1 = Math.max(a[0], b[0])
     const y0 = Math.min(a[1], b[1])

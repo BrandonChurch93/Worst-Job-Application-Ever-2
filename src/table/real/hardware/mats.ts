@@ -128,7 +128,7 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
     }
   }
   m.customProgramCacheKey = () => `wja-studio-hardware-metal-${from === z ? 'lit' : from ? 'foot' : 'page'}`
-  m = lit(steel(m, z, { ceiling: 0.035, panel: 0.34, wide: 0.12, horizon: 1.25 }, from), z)
+  m = lit(steel(m, z, { ceiling: 0.035, panel: 0.34, wide: 0.12, horizon: 1.25, sky: 0.6 }, from), z)
   m.name = `hardware.${z.id}`
   made.set(z.id, m)
   return m
