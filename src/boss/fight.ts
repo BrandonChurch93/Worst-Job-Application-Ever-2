@@ -61,6 +61,7 @@ const LEAVE = { back: 0.3, pull: 9, power: 2.6, past: 30, tall: 44, machine: 230
 const PAGE = { w: 1920, h: 1080 } as const
 export const SPARK_SECONDS = 0.3
 export const FLASH_SECONDS = 0.16
+const DUST_AFTER = 0.3
 const TIP_FLASH = { n: 5000, ahead: 14, r: 26 }
 
 export const cursorCentre = (c: { x: number; y: number }): { x: number; y: number } => ({ x: c.x + 18, y: c.y + 32 })
@@ -307,7 +308,7 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
       const hit = f.safe <= 0 && s.t > 0.12 && Math.abs(c.x - s.x) < size.w / 2 + STRIKE.x && Math.abs(c.y - s.y) < size.h / 2 + STRIKE.y
       if (hit) {
         f.safe = HIT.safe
-        f.dust = 0.95
+        f.dust = DUST_AFTER
         f.hits++
         io.cursor.hurt('scorched')
         io.cursor.react('recoil')
