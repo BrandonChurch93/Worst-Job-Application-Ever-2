@@ -22,8 +22,8 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 
 | Part | Looks |
 | --- | --- |
-| boss-body | 33 |
-| boss-transform | 14 |
+| boss-body | 35 |
+| boss-transform | 16 |
 | boss-weapons | 15 |
 | health-bar | 1 |
 | acting-boss | 5 |
@@ -68,3 +68,5 @@ MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the career
 25. The shield is the careers page's slab: `slabGeometry`, `SLAB` and `glassOptions` of `perk-cards.ts` are imported, so the shade of the ground edge and the bend near the rim are that page's. Its material is a grey of its own (0x808c89, 0.86 opaque) with the same picture laid finer (2.4 texels to a page pixel), and the picture also runs down the wall (`walled()`), because the block leans and its wall is seen: the careers page's 1 texel to a pixel failed measure M2 on the block (0.33 soft at `boss-fight`), and the wall alone left 0.027.
 26. The spark of a dart on the shield was hidden: the slab is now nearly opaque and writes depth, and the plan put the spark at 60 px, inside the glass. `SHIELD` in `src/boss/plan.ts` is now `half: 108` (the block's real half height, was 118, so a dart that passes the block's end goes on to the hull) and `z: 92` (on the outer face of the leaning block). The spark's star is larger and fades slower (`(60 + 70 sqrt(u)) (1 - u)^1.1`), nearer the burst of the approved image. MEASURED after it, `npm run measure -- --unit boss --tier review`: M2 0.0095, M3 0.9226, 8 green.
 27. The links of the legs are 0x9a9ea3 (were 0xc2c6c9): beside the darker hull the pale links read as another metal. The glass is 0x8c9895, 0.82 opaque. The smoke ring fades slower (`(1 - u)^0.8` at full strength).
+28. The plates' roughness is 0.4 (was 0.34): while the plates fly in `boss.unfold` the tighter highlight filled whole plates with near white (share of pixels at 250 or more on every channel 0.051 before, 0.005 after, one still of the unfold at 0.5). The hull in the two keys keeps its sheen.
+29. The pit: the collar is wider (`PIT.collar` 15, was 12) and lighter (0xb6b8b8), with a rolled lip, and the wall under it is darker (0x5a5550, was 0x7a746d) and steeper, so the hole reads as approved's bright ring round a black pit and not as a grey bowl. Judged from one crop beside approved's.
