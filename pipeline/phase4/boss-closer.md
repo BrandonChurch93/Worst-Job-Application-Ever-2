@@ -145,3 +145,13 @@ Looks added since 08:20 UTC, by part:
 | boss-weapons | 5 | 14 | `boss-fight` compare 1, motion sheet `slab-drop` 1, stills of a landing 2, sheet of the unit 1 |
 | health-bar | 0 | 3 | |
 | acting-boss | 5 | 29 | beat sheet verify 1, stills of the stand 3, sheet of the unit 1 |
+
+## Fourth pass (08:42 UTC on)
+
+Ruling of the Builder at 08:42 UTC (the arrow at `boss-down`): at the key the arrow stands, with hurt `scorched` on a standing act, and exhaustion comes after the key's moment with a seen change. The cursor model is not changed.
+
+- Built: the arrow walks to the fallen button (28.0 to 28.6 s), stands there in act `plain` and is scorched from 29.0 s, sags to `exhausted` 0.15 s after the key (`SAG_AFTER` in `src/pages/step4/index.ts`), drags itself over and presses at 29.88 s, then holds `proud`. The sag in the collapse is gone.
+- `tests/boss-closer-acting.test.ts`: the last test now holds the ruling (plain from 28.6 to 29.05 s, exhausted held 0.9 s or more between 29.05 and 30.4 s, proud 1.5 s or more after the press). It was changed because the ruling changes what it holds.
+- SEEN in `npm run compare -- --key boss-down --tier draft --format hd` at 08:44 UTC: the arrow stands upright with its dark outline beside the fallen button. Its scorch marks are too small to read at this size (the cursor's size and its marks are not mine).
+
+Looks: acting-boss 30 (one `boss-down` compare).

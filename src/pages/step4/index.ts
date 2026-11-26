@@ -13,7 +13,7 @@ import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
 const CAP_CLEARS = 0.6
-const SAG_AFTER = 1.45
+const SAG_AFTER = 0.15
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -246,7 +246,6 @@ export function makePage(): PageLogic {
         }
         if (f.over) toCollapse(io, rigNow()!)
       } else if (s.stage === 'collapse') {
-        if (s.t >= SAG_AFTER && s.t - dt < SAG_AFTER) io.cursor.act('exhausted')
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
           s.t = 0
@@ -254,9 +253,10 @@ export function makePage(): PageLogic {
             io.cursor.heal()
             io.cursor.hurt('scorched')
           }
-          io.cursor.act('exhausted')
+          io.cursor.act('plain')
         }
       } else if (s.stage === 'press') {
+        if (s.t >= SAG_AFTER && s.t - dt < SAG_AFTER && s.pressed < 0) io.cursor.act('exhausted')
         if (s.pressed < 0) {
           const target = s.inSocket ? L.cap : fallenBox
           const self = s.t >= GAG_MAX || (s.skipping && s.t >= 0.5)

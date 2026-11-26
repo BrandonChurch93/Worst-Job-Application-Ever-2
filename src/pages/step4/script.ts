@@ -11,7 +11,7 @@ export interface FilmScript { pointer(time: number): Pointer; reactions: { at: n
 // The doubt: it comes to the box and hangs back from it, creeps in, flinches off, stands and sweats, winds up and drops its weight on the box.
 // The horror: a jump at the crack, a tall shocked hold while it backs off, a dart to the far edge of the card, and pale and stiff there while the machine builds.
 // The anger: a loaded point before the first shot, a snap aside two frames after the first slab of the salvo is fired.
-// The collapse: it ducks two frames after the power goes, then walks to the fallen button and sags there through the key.
+// The collapse: it ducks two frames after the power goes, then walks to the fallen button and stands scorched at the key; it sags just after it.
 // The press: it gathers itself, sets its point on the button's edge and drops its whole weight on it (the page cues the stamp and the relief that is held after it).
 export const ACT = { flinch: 2.72, windup: 3.36, tap: 3.72, take: 4.7, jump: 6.15, hide: 6.95, steel: 8.75, load: 9.45, snap: 11.78, charge: 24.2, ram: 26.9, duck: 27.31, gather: 29.5, press: 29.88 } as const
 
