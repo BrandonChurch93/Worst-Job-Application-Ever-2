@@ -1,0 +1,77 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "B: one sheet of each acting state the page uses, plain, nervous, shocked, confident, scared and exhausted, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "all twelve frames, arrow inside the ball",
+   "what": "the arrow holds one static upright pose across the whole sheet while the ball and background move; it slides along like a pointer with no tumble, lean, or reaction, so no feeling is readable at a glance",
+   "fix": "rotate and lean the arrow with the ball's roll, and give it a visible reaction when the track turns or the scene changes"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "frames 2 through 9 on the spiral chute",
+   "what": "the ball corkscrews down the coil but the arrow stays upright and unchanged in frame after frame, reading as glued in place rather than riding or tumbling; no stretch during the fast descent",
+   "fix": "tumble the arrow as the ball spirals and stretch it along the direction of travel in the fastest drops"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "frames 2 through 8, then the final funnel frames",
+   "what": "seven frames hover with no change in pose or feeling and no wind-up as the funnel appears; the fall at the end has no anticipation or alarm before it happens",
+   "fix": "add a lean-back or alarm beat as the funnel opens (compressed, tilted away, shadow tightening) so the fall reads as a reaction"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "frames after each flipper hit, rows 1, 3 and 4",
+   "what": "the ball is clearly struck and rolls, but the arrow inside does not squash or jolt on impact and stays rigid and upright in several post-hit frames, so the hits don't register on the character",
+   "fix": "squash the arrow against the side of the ball on each impact and let it rebound with a short overshoot"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-04.png",
+   "where": "arrow throughout the sheet",
+   "what": "the stapler arm and coils visibly hit and squeeze the ball, but the arrow keeps constant size and shape; there is good tumbling yet no squash on contact, so impacts feel slightly weightless",
+   "fix": "add a one-to-two frame squash on each contact and a stretch in the fastest motion-blur frames"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02.png",
+   "where": "bottom row, arrow in the glass pipe",
+   "what": "the tumbled pose is readable but small; at delivery size the arrow inside the reflective ball and pipe gets lost against the metal highlights for a beat",
+   "fix": "thicken the arrow's black outline and rim-light the ball so the silhouette stays readable in the pipe"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "drifting idly with no clear feeling for most of the sheet; a metal funnel opens beside it and, caught off guard at the very end, it tips and topples in"
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "frightened and overwhelmed; swallowed by the metal bowl, sealed into a clear bubble, tumbled around, then flushed down a glass pipe and carried away"
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "calm and passive; carried along an elevated conveyor track inside its ball, just riding upright as the city of tracks scrolls past, not reacting to anything"
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "panicked and jostled; bounced between big glowing coils on a desk and struck by a swinging stapler arm while trapped in the ball"
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "tense but mostly passive; riding its ball down a tall spiral coil chute, staying upright instead of tumbling as the world spirals"
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "dazed, being batted around like a pinball; struck by orange flippers and rolled past warning lights and a background-check machine"
+  }
+ ]
+}

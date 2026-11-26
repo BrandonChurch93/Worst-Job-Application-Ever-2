@@ -1,0 +1,107 @@
+{
+ "critic": "R1",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the keys `step2-rest` and `step2-dial`, whole and in native crops, and the sheet `machines`, each beside the approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "the Continue button, lower right (also set-A-02-b, set-A-03-b, set-A-04-b crops)",
+   "what": "it is a dark slate glossy pill with bright bold white text, so it reads as an active button; the target's is a pale, translucent, frosted grey pill with faint low-contrast text, clearly disabled and sunk into the page",
+   "fix": "lighten the pill to the pale frosted grey of -a, drop the gloss and the dark rim, fade the label to a light grey close to the pill, and seat it low on the page with only a soft short shadow"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "the whole page surface (all b files)",
+   "what": "the page is a cooler, darker grey with a coarse pebbled, embossed grain; the target is a brighter warm cream paper with a fine, flat fibre grain",
+   "fix": "raise the page brightness and warm it toward cream, and replace the pebble texture with a fine, low-relief paper fibre grain"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the three fields, right column (also set-A-02-b, set-A-03-b, set-A-04-b)",
+   "what": "the fields are flat neutral grey wells with a thin bright rim; the target's are glass with a cool green-grey tint, a soft inner top shadow and a lit lower lip that reads as a thick pane set into the page",
+   "fix": "tint the field fill cool green-grey, add the soft inner shadow under the top edge and a soft bright glass lip along the bottom, and soften the hard light outline"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the arrow cursor (all b files)",
+   "what": "the arrow has a thin grey outline and an off-white, shaded fill with a broad blurred shadow; the target's arrow has a crisp, heavy near-black outline, a clean white fill and a tight shadow to the lower right",
+   "fix": "thicken the outline and darken it to near black, make the fill flat clean white, and tighten the shadow to a short soft offset down-right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the progress row, top right (all b files)",
+   "what": "the round buttons are polished mirror chrome with a hard white rim highlight and the rail is a dark grooved bar; the target's buttons are satin brushed steel with engraved-looking numerals, the rail is a light satin steel rod, and the orange button is a taller satin puck",
+   "fix": "move the buttons from chrome to satin brushed steel with softer highlights, lighten the rail to a pale satin rod, and give the orange button a straighter, taller side with a satin, less glossy finish"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "shadows of the raised parts: orange progress button, dial, cranks (all b files)",
+   "what": "shadows are short and close; in the target the key light from the upper left throws long, soft shadows down and to the right (the orange step button, the dial, and the crank knobs all trail a long soft shadow across the page)",
+   "fix": "lengthen the cast shadows down-right and soften their ends, keeping them a light-to-mid grey"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the rotary dial in the tray (also set-A-03-b)",
+   "what": "the dial is dark, high-contrast chrome with concentric ridges and sits flat in the tray; the target's dial is bright satin brushed aluminium with soft highlights and casts a long soft shadow down-right out over the tray rim",
+   "fix": "lighten the dial to satin brushed aluminium, reduce the ring contrast, and add the long soft cast shadow toward the lower right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the orange centre button of the dial and the orange step button",
+   "what": "both are glossy, domed red-orange spheres with a hard specular spot; the target's are satin, brighter orange pucks with flatter tops and a soft highlight",
+   "fix": "shift the orange slightly brighter and less red, flatten the dome, and cut the gloss to a soft satin sheen"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the phone dial, left",
+   "what": "the centre is a brushed metal disc with a glossy dome button and the finger stop is a rod; the target has a flat cream inner disc in a metal ring around a satin orange button, a wedge-shaped finger stop at the lower right, and a lighter, flatter satin aluminium body",
+   "fix": "replace the centre with the cream inner disc and metal ring, make the finger stop a wedge, and move the body from chrome to satin aluminium"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the date counter, centre",
+   "what": "the window is shallow with flat cream drums and mid-weight numerals; the target has a deep, dark-glassed window in a thick steel frame, rounded drums shaded top and bottom like cylinders, and heavy black condensed numerals",
+   "fix": "deepen the window and darken its glass, shade the drums as cylinders, and make the numerals heavier, blacker and condensed"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the date counter's crank, right of the counter",
+   "what": "the crank is short and its orange knob stops near the counter's bottom edge; in the target it is a long bent steel arm hanging well below the counter to an orange ball, with a long soft shadow",
+   "fix": "lengthen the crank arm downward with the bend of -a and add its long cast shadow down-right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the volume crank and its light bars, right",
+   "what": "the orange handle is oversized and bulbous and the lit bars throw a large orange halo; in the target the arm is slimmer, the orange handle is a small neat cylinder, and the lit bars are small glowing pills with only a faint glow",
+   "fix": "slim the arm, shrink the handle to a small cylinder, and cut the bar glow down to a tight soft glow around each lit pill"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-03-b.png",
+   "where": "the focused Contact number field",
+   "what": "the orange focus ring is thinner with a tighter glow than the target's wider soft orange halo",
+   "fix": "widen and soften the orange glow around the focused field slightly"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "secondary text (helper lines and footnote)",
+   "what": "helper text is a slightly lighter, greyer tone than the target's darker warm grey",
+   "fix": "darken the helper and footnote text a little toward the target's warm dark grey"
+  }
+ ]
+}
