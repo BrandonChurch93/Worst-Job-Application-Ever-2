@@ -254,9 +254,11 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     const ground = z.tier >= 0 ? -z.floor : 0
     // Collars stand at even steps along the whole tube, so they fall where they would if it were one piece; a clamp stands half a step from each.
     const step = TUBE.collarStep
-    for (let s = Math.ceil((from + 30) / step) * step - from; s < length - 20; s += step) {
+    // On the page by the port the collars stand three to a step: the tube is seen to be held all the way from the ring.
+    const near = first ? step / 3 : step
+    for (let s = Math.ceil((from + 30) / near) * near - from; s < length - 20; s += near) {
       const f = frameAt(path, s)
-      if (f && Math.abs(s - seat) > 60) collar(A, f)
+      if (f && Math.abs(s - seat) > 60) first ? collar(A, f, 17, TUBE.outer + 7.5) : collar(A, f)
     }
     for (let s = Math.ceil((from + 30 - step / 2) / step) * step + step / 2 - from; s < length - 20; s += TUBE.clampStep) {
       const f = frameAt(path, s)

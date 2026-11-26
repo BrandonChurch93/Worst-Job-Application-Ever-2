@@ -10,7 +10,7 @@ import { FIN, Screws, TONE, shade } from './mats'
 export const POST = { shoulder: 46, shoulderRadius: 7, band: 36, bandThick: 3.2, waist: 5.1, laneRing: 32 }
 export const SLING = { bow: 0.2 * BALL, decay: 38, period: 0.085 }
 export const GATE = { pin: 7, tall: 30, shut: -0.3, open: 1.45 }
-export const WIRE = { radius: 4.8, height: 34, roofRadius: 3.8, roofHeight: 30 }
+export const WIRE = { radius: 3.1, height: 34, roofRadius: 2.7, roofHeight: 30 }
 
 const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
 
