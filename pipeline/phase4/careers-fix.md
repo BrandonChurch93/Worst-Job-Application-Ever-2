@@ -28,3 +28,32 @@ Looks spent on `perk-cards` in this round: 5 of 40.
 
 Textures: glass picture, 512 by 512 px, 1.0 MB (1.4 MB with its smaller copies). Recipe in `assets-src/careers-fix/RECIPE.md`.
 
+## Point 2, the medal (04:15 to 04:35 UTC)
+
+- The face has its own picture, `brushedPicture()` in `real/medal-picture.ts`: rings one pixel wide, each of its own brightness, and 2600 short arcs, the single strokes of the brush. It multiplies the face's colour, and the colour is divided by the picture's mean (`BRUSHED.level`), so the face under the words is no paler than before and M4 keeps its room.
+- The rim: the lobes are rounder (`flange()` raises the lobe to 0.88, was 0.8) and shallower (`deep` 9, was 12), the top edge of the wall is a wider round, the wall leans out by 3.4 px at its foot, and the whole rim is brighter on the side toward the light and duller on the far side (`leaned()`, `MEDAL_LOOK.side` 0.3, the wall 0.8).
+- The contact line: `contact()` lays a thin dark ring on the page that follows the lobes, only round the far side (`MEDAL_LOOK.under`): 0.9 dark under the edge, gone 18 px out.
+- The leaves are brighter (0xa6a7a7) so that each takes a highlight.
+- Decision: the rim's metal has no picture. With the brushed picture on the rim the lobes read as dirty at 3 times.
+
+Looks spent on `careers-page` (the medal): 7 of 40.
+
+## Point 3, the ticker at rest (04:20 to 04:50 UTC)
+
+- What was wrong: the tape stood so that whole items lay in the middle only at the key's moment (11.0 s). At 0 s, the judged still `rest-marketing`, a word lay across the end.
+- Now the tape's speed is `tapeRate`, the speed nearest 120 px a second at which a whole set of items is centred at 0 s as well as at 11 s. The frost of the ends reaches to one gap before the first whole item; that reach glides from the one set's width to the other's over the 11 seconds (`whole` in `ticker()` of `index.ts`), so at both moments every item in sight is whole and its neighbours are under solid frost.
+- A dot between two items grows from nothing over 24 px as it leaves the frost, so no half dot stands at the end of the clear part.
+- The pane over the words is thinner (`TICKER_LOOK.clear` 0.02, clearcoat 0.12), so the words are darker.
+- Tried and left: a soft frost 150 px long. At rest it showed a word half faded, which a critic may read as a cut word.
+- The test `tests/careers-fix.test.ts` holds it: at 0 s and at 11 s at least three whole items, every run in sight whole, the same clear glass on both sides within 1 px.
+
+Looks spent on `ticker`: 4 of 40.
+
+## Point 5, the cards at rest
+
+- Approved shows a card with the title at the top, the promise under it, a rule, and the fine print. The kit hides the fine print until the cursor touches the card (`kit/02-SUBJECT.md` line 154). Decision: a shut card now holds the title, the promise and the rule where the open card has them, so a card at rest matches approved in all but the fine print, and the rule says that something lies under it. Before, the title and the promise stood in the middle of an empty face.
+
+## Point 6, the lower screens
+
+- The well under a turning card read near black. The slab now brings its own bed: `troughGeometry()` in `real/perk-cards.ts`, a round trough of the page's ceramic as deep as half the card, with its light laid in as vertex colour (darker under the lip toward the light, never under 0.46 of the page) and normals straight up. It stays in the mouth of the well as the seal does.
+

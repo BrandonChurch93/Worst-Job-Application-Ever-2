@@ -5,10 +5,11 @@ import { materials } from '../../../shell/materials'
 import { controls } from '../../../shell/real/controls'
 import { arc, circle, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
-import { dims, flange, leaf, mesh, q, scattered, shared, sheen, srgb } from './careers-solids'
+import { contact, dims, flange, leaf, leaned, mesh, q, scattered, shared, sheen, srgb } from './careers-solids'
+import { BRUSHED, brushedPicture } from './medal-picture'
 import { engraved, restingSlab, slabKey } from './perk-cards'
 
-export const MEDAL_LOOK = { lobes: 30, deep: 12, band: 141, ring: 138, face: 127, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.58, axis: 2.2, rim: 0.94, lean: 0.14 }
+export const MEDAL_LOOK = { lobes: 30, deep: 9, toward: 2.4, side: 0.3, wall: 3.4, wallSide: 0.8, under: [[-2.5, 0.9], [0, 0.9], [1.5, 0.78], [4, 0.5], [8, 0.24], [13, 0.07], [18, 0]] as [number, number][], underTurn: 1.5, band: 141, ring: 138, face: 127, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.58, axis: 2.2, rim: 0.94, lean: 0.14 }
 
 let faceMade: THREE.MeshPhysicalMaterial | null = null
 
@@ -16,7 +17,7 @@ let faceMade: THREE.MeshPhysicalMaterial | null = null
 function medalFace(): THREE.MeshPhysicalMaterial {
   if (!faceMade) {
     const turned = materials().aluminiumTurned
-    faceMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8d8f), roughness: 0.5, metalness: 0.88, vertexColors: true, normalMap: turned.normalMap, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.45, anisotropyMap: turned.anisotropyMap }))
+    faceMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8a8d8f).multiplyScalar(1 / BRUSHED.level), map: brushedPicture(), roughness: 0.5, metalness: 0.88, vertexColors: true, normalMap: turned.normalMap, normalScale: new THREE.Vector2(0.06, 0.06), anisotropy: 0.45, anisotropyMap: turned.anisotropyMap }))
   }
   return faceMade
 }
@@ -25,9 +26,15 @@ let metalMade: THREE.MeshPhysicalMaterial | null = null
 
 // The medal's rim, ring and leaves: the same metal as its face, left as it was struck.
 function medalMetal(): THREE.MeshPhysicalMaterial {
-  if (!metalMade) metalMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xa3a5a6), roughness: 0.36, metalness: 0.9 }))
+  if (!metalMade) metalMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9d9d9b), roughness: 0.4, metalness: 0.9, vertexColors: true }))
   return metalMade
 }
+
+let underMade: THREE.MeshPhysicalMaterial | null = null
+
+// The dark under the medal's far edge, where no light gets between it and the page.
+const underDark = (): THREE.MeshPhysicalMaterial =>
+  (underMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2b2824), roughness: 1, metalness: 0, specularIntensity: 0, vertexColors: true, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })))
 
 // The face of a turned part: its pictures lie across the whole disc once.
 function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
@@ -39,7 +46,7 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
 let leafMade: THREE.MeshPhysicalMaterial | null = null
 
 // The wreath: pressed into the face, so it is the face's own darker metal.
-const leafMetal = (): THREE.MeshPhysicalMaterial => (leafMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7e8183), roughness: 0.4, metalness: 0.9 })))
+const leafMetal = (): THREE.MeshPhysicalMaterial => (leafMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xa6a7a7), roughness: 0.32, metalness: 0.9 })))
 
 // A medal struck from aluminium: a scalloped rim, a band, a ring cut with two grooves, a turned face and a wreath pressed into it.
 // Its face lies at the shape's height, where the type is laid. The rim and the ring stand a little above it.
@@ -51,8 +58,9 @@ function medallion(s: Shape): THREE.Object3D {
   const L = MEDAL_LOOK
   const r = s.w / 2
   const rimTop = h + 0.6
-  const rim = [{ d: -0.8, z: 0 }, { d: 0, z: 0.9 }, { d: 0, z: rimTop - 1.6 }, { d: 0.5, z: rimTop - 0.6 }, { d: 1.4, z: rimTop - 0.1 }, { d: 2.6, z: rimTop }, { t: 0.5, z: rimTop - 0.25 }, { t: 0.92, z: rimTop - 0.35 }, { t: 1, z: rimTop - 1.2 }, { t: 1.04, z: h - 2 }]
-  root.add(mesh(shared(`medalRim:${q(s.w)}:${q(h)}`, () => flange(r, L.lobes, L.deep * k, L.band * k, rim)), medalMetal()))
+  const rim = [{ d: -L.wall, z: 0 }, { d: -L.wall + 0.5, z: 1 }, { d: -0.7, z: rimTop - 2.6 }, { d: 0, z: rimTop - 1.5 }, { d: 0.9, z: rimTop - 0.6 }, { d: 2.2, z: rimTop - 0.15 }, { d: 3.8, z: rimTop }, { t: 0.5, z: rimTop - 0.25 }, { t: 0.92, z: rimTop - 0.35 }, { t: 1, z: rimTop - 1.2 }, { t: 1.04, z: h - 2 }]
+  root.add(mesh(shared(`medalRim:${q(s.w)}:${q(h)}`, () => leaned(flange(r, L.lobes, L.deep * k, L.band * k, rim), L.toward, L.side, s.w, [rimTop - 1.2, L.wallSide])), medalMetal()))
+  root.add(mesh(shared(`medalUnder:${q(s.w)}`, () => contact(r, L.lobes, L.deep * k, L.toward, L.under, L.underTurn)), underDark(), false, false))
   const band = L.band * k
   const ring = L.ring * k
   const face = L.face * k
@@ -62,7 +70,7 @@ function medallion(s: Shape): THREE.Object3D {
     [b(ring), h - 0.6], [b(ring - 1.1), h + 1.1], [b(ring - 3.1), h + 1.1], [b(ring - 3.7), h + 0.2], [b(ring - 4.2), h - 0.9, true],
     [b(ring - 5.1), h - 0.9, true], [b(ring - 5.6), h + 0.2], [b(ring - 6.2), h + 0.9], [b(ring - 8.0), h + 0.9], [b(ring - 8.7), h + 0.3], [b(face + 1.4), h - 0.7, true], [b(face + 0.5), h - 0.7, true], [b(face), h, true]
   ]
-  root.add(mesh(shared(`medalBody:${q(s.w)}:${q(h)}`, () => sweep(circle(band, 144), profile(body), false)), medalMetal()))
+  root.add(mesh(shared(`medalBody:${q(s.w)}:${q(h)}`, () => leaned(sweep(circle(band, 144), profile(body), false), L.toward, L.side, s.w)), medalMetal()))
   root.add(mesh(shared(`medalFace:${q(s.w)}:${q(h)}`, () => sheen(discUv(sweep(circle(face + 0.2, 144), [{ inset: 0, z: h, out: 0, up: 1 }]), face * 2), L.axis, L.sheen, L.rim, L.lean)), medalFace(), false))
   const wreath = shared(`medalWreath:${q(s.w)}:${q(h)}`, () => {
     const one = leaf(L.leaf[0] * k, L.leaf[1] * k, L.leaf[2])
