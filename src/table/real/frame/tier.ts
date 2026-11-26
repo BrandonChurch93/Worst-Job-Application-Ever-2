@@ -17,7 +17,8 @@ const RISER: [number, number, number] = [0.098, 0.143, 0.266]
 // Its ledge lies face up under the lamps, so it is darker still.
 const LEDGE: [number, number, number] = [0.05, 0.075, 0.14]
 // The land on top of a rail: the cabinet's cream enamel, bright against the navy under it.
-export const ENAMEL = shade(hex(0xf4ecd9), 2.1)
+export const ENAMEL = shade(hex(0xeceae3), 1.9)
+const CAP = { cuts: 5, groove: 1.5 }
 const FAR = [1, 1.2, 1.38]
 const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 15, land: EDGE.land, step: 5, lip: 3, slope: 0.84, bank: 11, cuts: 10, tilt: [20, 58] as V2, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
 const exitOf = table.openings.find((o) => o.id.endsWith('.exit'))!
@@ -94,15 +95,16 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   }
   const zl = round[round.length - 1]![1]
   const mid = (land0 + land1) / 2
-  const landed = (outline: V2[], rest: (edge: number) => [number, number, number], low = c) => (edge: number): [number, number, number] => {
+  const landed = (outline: V2[], rest: (edge: number) => [number, number, number], low = c, cap = H) => (edge: number): [number, number, number] => {
     const p = outline[edge]!
     const q = outline[(edge + 1) % outline.length]!
-    return p[1] >= H - 0.01 && q[1] >= H - 0.01 ? shade(ENAMEL, FAR[2 - k] ?? 1) : p[1] >= H - low - 0.01 && q[1] >= H - low - 0.01 ? TONE.aluBright : rest(edge)
+    return p[1] >= cap - 0.01 && q[1] >= cap - 0.01 ? shade(ENAMEL, FAR[2 - k] ?? 1) : p[1] >= H - low - 0.01 && q[1] >= H - low - 0.01 ? TONE.aluBright : rest(edge)
   }
   const left: V2[] = [[xb, 0], [xb, H - c], [land0, H], [land1 - c, H], [land1, H - c], [land1, H - RAIL.step], ...round, [xa - c, zl], [xa, zl - c], ...reveal(xa, -1), [xa, 0]]
   for (const [y0, y1] of lengths(0, TH, 5.6)) {
-    A.prism(left, [0, y0], [0, y1], landed(left, grooved(left, [xa - RAIL.revealDeep], METAL, TONE.gap)))
-    for (let i = 1; i < round.length; i++) {
+    A.prism(left, [0, y0], [0, y1], landed(left, grooved(left, [xa - RAIL.revealDeep], METAL, TONE.gap), c, round[CAP.cuts]![1]))
+    for (const f of [0.2, 0.8]) P.box(land0 + (land1 - land0) * f - CAP.groove / 2, land0 + (land1 - land0) * f + CAP.groove / 2, y0, y1, H - 0.3, H + 0.2, TONE.gap, { along: [0, 1, 0] })
+    for (let i = CAP.cuts + 1; i < round.length; i++) {
       const p = round[i - 1]!
       const q = round[i]!
       S.face([[p[0], y0, p[1] + 0.3], [q[0], y0, q[1] + 0.3], [q[0], y1, q[1] + 0.3], [p[0], y1, p[1] + 0.3]], [p[1] - q[1], 0, q[0] - p[0]], [0, 1, 0], POLISH)
@@ -123,7 +125,8 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
   }
   right.push([xf + half, H], [xe - c, H], [xe, H - c], [xe, 0])
   for (const [y0, y1] of lengths(0, dive, 5.6)) {
-    A.prism(right, [0, y0], [0, y1], landed(right, grooved(right, [xc + RAIL.revealDeep], METAL, TONE.gap), 0))
+    A.prism(right, [0, y0], [0, y1], landed(right, grooved(right, [xc + RAIL.revealDeep], METAL, TONE.gap), 0, H - RAIL.bank * RAIL.slope))
+    for (const gx of [xc + RAIL.bank + 3, xe - c - 3]) P.box(gx - CAP.groove / 2, gx + CAP.groove / 2, y0, y1, H - 0.3, H + 0.2, TONE.gap, { along: [0, 1, 0] })
   }
   P.box(xc, xe, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
   for (let v = RAIL.screwStep / 2; v < dive - 0.2; v += RAIL.screwStep) {
