@@ -23,6 +23,17 @@ const key = c.keys.find((k) => k.id === 'last-save')
 const keyBeat = beats.find((b) => b.id === key.beat)
 const keyTime = keyBeat.from + key.at * (keyBeat.to - keyBeat.from)
 const r4 = (n) => Number(n.toFixed(4))
+// Where the approved key pictures show the ball: tier, place in balls from the tier's top left, and how near counts.
+const PLACES = [
+  { key: 'tier-office', tier: 1, at: [10.3, 6.9], within: 1.7 },
+  { key: 'reply-all', tier: 1, at: [10.5, 7.0], within: 1.7 },
+  { key: 'tier-street', tier: 2, at: [6.2, 4.2], within: 2 }
+].map((p) => {
+  const k = c.keys.find((x) => x.id === p.key)
+  const b = beats.find((x) => x.id === k.beat)
+  return { ...p, time: b.from + k.at * (b.to - b.from) }
+})
+const stops = [keyTime, ...PLACES.map((p) => p.time)]
 
 const { load, close } = await logic()
 const { Stage, ScriptDriver, filmFlow, filmOptions } = await load('/src/stage/stage.ts')
@@ -73,13 +84,24 @@ function play(driver) {
   const stage = new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver, film: filmOptions('pinball') })
   let tows = 0
   let atKey = false
+  const placed = []
   while (!stage.finished && stage.time < unitSeconds + 1) {
     if (stage.page.id === 'step3') tows = stage.page.save().s.tows
-    const toKey = Math.round((keyTime - stage.time) * hz)
-    stage.advance(toKey > 0 && toKey < hz / 4 ? toKey : hz / 4)
-    if (stage.page.id === 'step3' && Math.abs(stage.time - keyTime) < 0.5 / hz) atKey = caught(stage.page.save().m.balls[0])
+    let go = hz / 4
+    for (const t of stops) {
+      const n = Math.round((t - stage.time) * hz)
+      if (n > 0 && n < go) go = n
+    }
+    stage.advance(go)
+    if (stage.page.id !== 'step3') continue
+    if (Math.abs(stage.time - keyTime) < 0.5 / hz) atKey = caught(stage.page.save().m.balls[0])
+    for (const p of PLACES) {
+      if (Math.abs(stage.time - p.time) >= 0.5 / hz) continue
+      const b = stage.page.save().m.balls[0]
+      if (b && b.mode !== 'none' && b.mode !== 'rail' && b.tier === p.tier && Math.hypot(b.x - p.at[0], b.y - TIER_Y[p.tier] - p.at[1]) < p.within) placed.push(p.key)
+    }
   }
-  const out = { beats: [], inside: 0, wanted: 0, tows, bumpers: 0, flipSave: false, atKey, finished: stage.finished }
+  const out = { beats: [], inside: 0, wanted: 0, tows, bumpers: 0, flipSave: false, atKey, placed, finished: stage.finished }
   for (const b of beats) {
     if (!b.event) continue
     const times = stage.events.filter((e) => e.name === b.event).map((e) => r4(e.step / hz))
@@ -92,7 +114,7 @@ function play(driver) {
   const save = stage.events.find((e) => e.name === 'flipper-save')
   out.flipSave = !!save && stage.events.some((e) => e.name === 'flipper' && e.step === save.step)
   out.reached = beats.every((b) => stage.gagsReached.includes(b.id))
-  out.score = out.inside * 1000 + (out.reached ? 500 : 0) + (out.flipSave ? 40 : 0) + (out.atKey ? 300 : 0) + Math.min(out.bumpers, 8) * 4 - out.tows * 15
+  out.score = out.inside * 1000 + (out.reached ? 500 : 0) + (out.flipSave ? 40 : 0) + (out.atKey ? 300 : 0) + Math.min(out.bumpers, 8) * 4 + out.placed.length * 150 - out.tows * 15
   return out
 }
 
@@ -104,9 +126,9 @@ function check() {
     console.log(`${b.inside ? 'inside ' : 'OUTSIDE'}  ${b.id.padEnd(18)} ${b.event.padEnd(13)} ${when.padEnd(30)} beat ${b.from} to ${b.to} s, give or take ${tolerance} s`)
   }
   const ok = r.inside === r.wanted && r.reached
-  console.log(`the director brought the ball in ${r.tows} times; bumper hits in the coffee beat ${r.bumpers}; the save was ${r.flipSave ? 'a flip' : 'the gate'}; at the key last-save (${keyTime} s) the ball is ${r.atKey ? 'on a flipper' : 'not on a flipper'}`)
+  console.log(`the director brought the ball in ${r.tows} times; bumper hits in the coffee beat ${r.bumpers}; the save was ${r.flipSave ? 'a flip' : 'the gate'}; at the key last-save (${keyTime} s) the ball is ${r.atKey ? 'on a flipper' : 'not on a flipper'}; where the approved pictures have it at ${r.placed.length} of ${PLACES.length} other keys${r.placed.length ? ` (${r.placed.join(', ')})` : ''}`)
   console.log(ok ? `take: every one of the ${r.wanted} beat events fell inside its beat` : `take: ${r.wanted - r.inside} of ${r.wanted} beat events fell outside their beats`)
-  writeJson(checkFile, { made: new Date().toISOString(), searches: kept.searches, flips: kept.flips.length, toleranceSeconds: tolerance, beats: r.beats, tows: r.tows, bumpers: r.bumpers, flipSave: r.flipSave, ballOnFlipperAtLastSave: r.atKey, everyGagReached: r.reached, score: r.score, ok })
+  writeJson(checkFile, { made: new Date().toISOString(), searches: kept.searches, flips: kept.flips.length, toleranceSeconds: tolerance, beats: r.beats, tows: r.tows, bumpers: r.bumpers, flipSave: r.flipSave, ballOnFlipperAtLastSave: r.atKey, ballPlacedAtKeys: r.placed, everyGagReached: r.reached, score: r.score, ok })
   return ok
 }
 
@@ -134,7 +156,7 @@ while (state.next < state.runs) {
   const p = { hold: 20 + rnd.int(60), delay: rnd.int(10), rest: 12 + rnd.int(60), skip: rnd.range(0, 0.5) }
   const player = new Player(rnd, p, keepBefore > 0 ? kept.flips.filter((f) => f[1] < keepBefore) : [])
   const r = play(player)
-  console.log(`search ${state.search} run ${String(state.next + 1).padStart(2)}: score ${r.score}, ${r.inside} of ${r.wanted} inside, brought in ${r.tows} times, bumpers ${r.bumpers}, ${player.flips.length} flips, save by ${r.flipSave ? 'flip' : 'gate'}, at the key ${r.atKey ? 'on a flipper' : 'elsewhere'}`)
+  console.log(`search ${state.search} run ${String(state.next + 1).padStart(2)}: score ${r.score}, ${r.inside} of ${r.wanted} inside, brought in ${r.tows} times, bumpers ${r.bumpers}, ${player.flips.length} flips, save by ${r.flipSave ? 'flip' : 'gate'}, at the key ${r.atKey ? 'on a flipper' : 'elsewhere'}, placed ${r.placed.length}`)
   state.tried.push({ run: state.next, policy: p, score: r.score, inside: r.inside, tows: r.tows, flips: player.flips.length })
   if (r.inside === r.wanted && r.reached && (!state.best || r.score > state.best.score)) state.best = { run: state.next, policy: p, score: r.score, tows: r.tows, flips: player.flips }
   state.next++

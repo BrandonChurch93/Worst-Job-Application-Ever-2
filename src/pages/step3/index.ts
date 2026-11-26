@@ -23,8 +23,8 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 17.9, inboxBy: 19.1,
-  drops: [20.0, 20.35, 20.7], eject: 21.4, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, below: 15.9, inboxOn: 17.9, inboxBy: 19.1,
+  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -129,9 +129,10 @@ const WAKE = 0.35
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
 const LOW = 2.4
-const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40 }
+const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, nest: 20, cup: 3 }
+const NEST = { v: 4.3, out: [1.7, 5.2], pour: [-10.6, 2.4, 0.3] }
 const SHOT = { door: 13, scoop: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
-const ACT = { bumper: 0.5, kick: 0.7, doors: 1.6, shock: 0.45, realise: 0.45, slow: 7, lead: 0.3 }
+const ACT = { bumper: 0.5, kick: 0.7, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.3 }
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
@@ -418,25 +419,21 @@ export function makePage(): PageLogic {
         else if (t >= T.officeOpen) mc.magnet = [MID, Y1 + 11.2, PULL.gate]
         mc.aim = [MID, Y1 + MOUTH.v, SHOT.lean]
       } else {
-        const jets = table.bumpers.filter((m) => m.tier === 1)
-        let near = 0
-        for (let i = 1; i < jets.length; i++) if (Math.hypot(b.x - jets[i]!.c[0], b.y - jets[i]!.c[1]) < Math.hypot(b.x - jets[near]!.c[0], b.y - jets[near]!.c[1])) near = i
-        const to = jets[(near + 1) % jets.length]!.c
         mc.shot = [MID, Y1 + 5.7, SHOT.nest]
-        mc.aim = [to[0], to[1], SHOT.jets]
+        if (t < T.below) {
+          mc.aim = [MID, Y1 + NEST.v, SHOT.jets]
+          mc.magnet = [MID, Y1 + NEST.v, PULL.nest, PULL.cup]
+        } else mc.aim = [MID + NEST.out[0], Y1 + NEST.out[1], SHOT.lean]
       }
     }
-    if (b.mode === 'hold' && b.hold === 'office.inbox') {
-      b.wait = 1e9
+    if (b.mode === 'hold' && b.hold === 'office.inbox') b.wait = t >= T.eject ? 0 : 1e9
+    while (s.drops < T.drops.length && t >= T.drops[s.drops]! && b.tier === 1) {
       const h = holdOf('office.inbox')
-      while (s.drops < T.drops.length && t >= T.drops[s.drops]!) {
-        s.drops++
-        if (s.drops < mc.balls.length) {
-          mc.toPlane(s.drops, h.c[0], h.c[1], -7 - s.drops * 1.5, -5 + s.drops * 2.5)
-          io.emit('ball-drop', px(h.c[0]), px(h.c[1]), false)
-        }
+      s.drops++
+      if (s.drops < mc.balls.length) {
+        mc.toPlane(s.drops, h.c[0], h.c[1], NEST.pour[0]! + s.drops * NEST.pour[2]!, NEST.pour[1]! - s.drops * NEST.pour[2]!)
+        io.emit('ball-drop', px(h.c[0]), px(h.c[1]), false)
       }
-      if (t >= T.eject) b.wait = 0
     }
     if (t >= T.officeBy + 2) for (let i = 1; i < mc.balls.length; i++) if (mc.balls[i]!.mode !== 'none') mc.remove(i)
     on['street.firehouse'] = t < T.scoopKick + 0.3

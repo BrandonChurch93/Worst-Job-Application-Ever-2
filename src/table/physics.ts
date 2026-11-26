@@ -374,7 +374,7 @@ export class Machine {
       this.toPlane(i, b.x, b.y, 0.3, 6)
       this.say('doors-open', i, id)
     } else if (id === 'office.inbox') {
-      this.toPlane(i, b.x, b.y, -7, 3)
+      this.toPlane(i, b.x, b.y, -10.8, 2.6)
       this.say('eject', i, id)
     } else if (id === 'street.firehouse') {
       this.toPlane(i, b.x, b.y, 8.5, -2.5)

@@ -41,9 +41,9 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 - One clock for film and live. In the film it equals the unit's time. In live it waits at 2.4 s until the ball is sealed, then runs the same script.
 - Each beat has a place the ball must reach and a last moment. The director names the place to the machine (`aim`, `shot`) and adds a weak pull within 2.2 balls of it. At the last moment the ball is towed there. So every beat event falls in its beat whatever the flippers do.
-- Lobby: the launched ball lands on the left slingshot and is thrown to the revolving door. Coffee: each bumper throws to the next. From 17.9 s every throw and flip goes to the inbox. Fired: every flip goes to the firehouse, a lob when the ball is on the left bat. Highway: flips go to the flap from 29.3 s. Save: flips are asked for from 35.6 s. One second before a tier's exit opens no flip is asked for and throws go to the mouth.
+- Lobby: the launched ball lands on the left slingshot and is thrown to the revolving door. Coffee: until 15.9 s each bumper throws the ball back into the middle of the three, after that out to the right, where bumper 3 and the right slingshot bat it between them. Reply All: the clear ball is kicked out of the inbox first (20.72 s) and the steel balls pour out behind it (20.78, 20.88, 20.98 s). From 17.9 s every throw and flip goes to the inbox. Fired: every flip goes to the firehouse, a lob when the ball is on the left bat. Highway: flips go to the flap from 29.3 s. Save: flips are asked for from 35.6 s. One second before a tier's exit opens no flip is asked for and throws go to the mouth.
 - Stage events added: `carpet-roll` (once), `inbox-take`, `firehouse-take`.
-- The cursor: one acting state per situation (`mood`), set once a step. A hit presses it flat (bumper 0.5 s, kick 0.7 s, the doors 1.6 s) and it peels off the glass. It leans where the ball goes.
+- The cursor: one acting state per situation (`mood`), set once a step. A hit presses it flat (bumper 0.5 s, kick 0.7 s, the doors 0.45 s) and it peels off the glass. It leans where the ball goes.
 - Each tier's exit is closed until that tier's beats are over. A ball that reaches a closed exit is kicked back up the middle.
 - `bumper` is emitted for the applicant's ball during the Coffee beat only. Bumper hits at other times and hits by steel balls emit `flasher`.
 - `flipper-save` is emitted when a flipper is pressed with the ball over it during the Save beat. If nobody flips, the kick from the closed exit emits it once.
@@ -68,7 +68,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 - Search 4 was allowed by the Builder (10:03 UTC) for one thing: the key `last-save` at 35.5 s must show the ball caught by a flipper. `npm run take -- --allow 4 --from 34` keeps the eight flips before 34 s as they were and searches only the flips after. A run earns more when the ball is on a flipper at 35.5 s. Kept: run 5, 9 flips, the last one the right flipper at 35.53 s.
 - For this the ball leaves the spiral 0.4 s later (`T.spiralEnd` 34.2 to 34.6). What moved: `flipper-save` 35.12 s to 35.53 s, `drain` 38.52 s to 37.88 s. The other eight events did not move. All ten are inside their beats.
 - `npm run take -- --check` also says whether the ball is on a flipper at the key.
-- Phase 4 (pinball-director): the replay stops on the exact step of the key, so the check sees 35.59 s. Searches 5 to 12 were bought by the layout and physics changes, three each (see `pipeline/phase4/pinball-director.md`). Kept: search 12, run 21, 5 flips, 1 tow.
+- Phase 4 (pinball-director): the replay stops on the exact step of the key, so the check sees 35.59 s. Searches 5 to 12 were bought by the layout and physics changes, three each (see `pipeline/phase4/pinball-director.md`). Searches 13 and 14 were bought by the inbox kick, the coffee nest and the order of the pour. Kept: search 14, run 2, 8 flips, 1 tow. A run also earns for the ball standing where the approved key pictures have it at `tier-office`, `reply-all` and `tier-street`.
 
 ## Needs
 
