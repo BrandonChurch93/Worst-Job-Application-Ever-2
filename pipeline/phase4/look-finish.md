@@ -41,11 +41,54 @@ Decisions:
 
 Looks used on A: shell 3 (two draft, one review), type 0 (the label was read in the same three), plus 2 state checks in draft counted to shell: 5.
 
+## B. The paper
+
+Measured first, on review stills at 1920 by 1080, approved against the build before any change (`node out/work/look-finish/med.cjs`, `grainsize.cjs`, `bands.cjs`, `hfe.mjs` on the PNG files).
+
+Tone, the median colour of the same bare patch:
+
+| Key and patch | Approved | Build before | Build after |
+| --- | --- | --- | --- |
+| step2-rest 700,880 200x120 | 218,215,209 | 216,213,207 | 217,213,208 |
+| step2-rest 1000,950 200x100 | 216,212,205 | 210,206,201 | not read again |
+| boss-fight 1300,180 300x60 | 220,216,210 | 214,211,205 | 215,211,206 |
+| decision 1300,180 300x60 | 218,215,208 | 214,211,205 | 215,211,206 |
+| marketing-top 700,880 200x120 | 214,210,203 | 213,210,204 | 214,211,205 |
+
+So the tone was never far off: 2 to 6 levels of 255, the build a little darker and a little less warm, most toward the lower right, which is the fall of the key light and not the paper. The paper's colour (0xf2f1ee) is also written in `src/pages/marketing/real/perk-cards.ts`, a file not lent, for the spill on the page, so the colour stays: a change here would show there as a patch. The tone is not changed.
+
+Grain size, the half-width of the autocorrelation of the bare patch after a high pass, in pixels: approved 0.56 to 0.70 across and 0.82 to 1.04 down; build before 0.54 to 0.55 across and 0.82 to 0.85 down. The size was the same: specks of one to two pixels in both.
+
+What did differ, the strength of the grain by band (rms of the difference of two blurs as a percent of the mean, sigma in px):
+
+| Patch | 0 to 0.6 | 0.6 to 1.2 | 1.2 to 2.4 | 2.4 to 4.8 |
+| --- | --- | --- | --- | --- |
+| approved, four keys | 1.95 to 2.91 | 1.77 to 2.51 | 0.95 to 1.26 | 0.52 to 1.12 |
+| build before, four keys | 2.81 to 3.14 | 2.10 to 2.29 | 1.26 to 1.41 | 0.47 to 0.69 |
+| build after, four keys | 2.38 to 2.66 | 1.65 to 1.81 | 0.68 to 0.75 | 0.28 to 0.52 |
+
+And the shape, seen in a crop at three times the size: the build had diagonal streaks a few pixels long (the `FIBRE` term of the grain shader, at 14), which is what read as pebbled and grey; the approved image has even specks with no direction.
+
+Built, three numbers of the grain shader in `src/shell/materials.ts` and nothing else (the grain picture and its bytes are the same, so no texture changed): `FIBRE` 14 to 2.5, `HOME_TOOTH` 0.6 to 1, `HOME_GAIN` 0.5 to 0.9. The streaks are gone, the finest specks stay, the bands from 1.2 px up are about half what they were. `HOME_GAIN` only acts from the home camera, so the paper near a close camera is as it was.
+
+M3. M3 is the mean square of the Laplacian of the whole picture against the approved image. The grain was about a third of it on step2-rest (not nearly all of it, as I wrote in the report of pass A: that was wrong). Read with `node out/work/look-finish/hfe.mjs`, the same function M3 calls:
+
+| Key | Before | After | Limit |
+| --- | --- | --- | --- |
+| step2-rest | 1.0534 | 0.9421 | 0.8 |
+| boss-fight | 1.0333 | 0.9342 | 0.8 |
+| decision | 0.9272 | 0.8667 | 0.8 |
+| marketing-top | 0.7854 | 0.7346 | 0.8 |
+
+marketing-top was red before and is further under after this item alone; the darker ink, next, is what brings it back. A first try with the grain flatter still (`HOME_GAIN` 0.82) left decision at 0.846, so the gain went up to 0.9 to keep a margin.
+
+Looks used on B: light-engine 0, shell 3 (review stills of step2-rest at three settings; the other keys were rendered once each for the pictures).
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 5 | 40 |
+| shell | 8 | 40 |
 | type | 0 | 40 |
 | light-engine | 0 | 40 |
 | cursor-body | 0 | 40 |

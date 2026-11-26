@@ -59,9 +59,9 @@ const CLOSE_FALL = 1.5
 const CLOSE_FLOOR = 0.03
 const CLOSE_TOOTH = 2.85
 const SHEET_TOOTH = 0.4
-const HOME_TOOTH = 0.6
-const FIBRE = 14
-const HOME_GAIN = 0.5
+const HOME_TOOTH = 1
+const FIBRE = 2.5
+const HOME_GAIN = 0.9
 const MOTTLE = 0.015
 
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
