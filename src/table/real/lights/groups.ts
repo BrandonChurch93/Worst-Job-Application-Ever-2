@@ -75,7 +75,13 @@ function build(z: Zone): Group[] {
   const both = (list: typeof lamps, gain = 1): Source[] => [...list.map((l) => ({ ...lampAt(l, false), power: LAMP.power * place(l) })), ...list.map((l) => lampAt(l, true))].map((s) => ({ ...s, power: s.power * gain }))
   const inserts = table.inserts.filter((n) => n.tier === k)
   // Under each sling plastic stands a lamp that lights the floor round it and the flipper before it.
-  const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.95, 2.4, `sling.${s.id}`))
+  const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => {
+    const foot = [s.a, s.b, s.c].sort((p, q) => q[1] - p[1])
+    const mid = [(s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3]
+    const x = ((foot[0]![0] + foot[1]![0]) / 2) * SLING.foot + mid[0]! * (1 - SLING.foot)
+    const y = ((foot[0]![1] + foot[1]![1]) / 2) * SLING.foot + mid[1]! * (1 - SLING.foot)
+    return at(x, y, SLING.z, SLING.power, SLING.reach, `sling.${s.id}`)
+  })
   // A lamp high over the middle of each bat, in the warm white of the tier's windows, so a flipper is lit evenly from pivot to tip and keeps its own colour.
   const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 1 : -1) * FLIP.length * 0.46, f.pivot[1] + FLIP.length * 0.2, 150, 2.1, 3.6))
   // The shoulders under the bats lie behind the guide walls, in the shadow of every lamp of the lanes: one lamp high over each, so the print runs on lit to the foot of the tier.
@@ -182,6 +188,8 @@ export interface High { x: number; y: number; z: number; reach: number; colour: 
 export const HIGHS = 9
 export const HIGH_BODY = 60
 // The beacon's lamp over its roof, in pixels and balls: low and near, so its colour lies on the roof and not on the street.
+// The lamp under a sling stands toward its foot edge, low, so its pool lies on the floor before the sling and on the flipper.
+const SLING = { foot: 0.85, z: 16, power: 4, reach: 1.5 }
 const BEACON = { z: 14, reach: 0.85, power: 0.7 }
 const NOTES = { out: 0.75, z: 70, reach: 2, power: 0.2 }
 
