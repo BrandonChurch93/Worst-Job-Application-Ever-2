@@ -74,6 +74,8 @@ describe('the machine page\'s own moments in the film', () => {
     expect(latch.ring).toBeLessThan(0.02)
     expect(take.rows[take.rows.indexOf(latch) - 1]!.ring).toBeGreaterThan(0.2)
     expect(at(latch.time + 0.6).shell![3]).toBe(0)
+    const close = between(2.3 + 1 / 60, latch.time + 0.2)
+    for (let i = 1; i < close.length; i++) expect(Math.abs(close[i]!.turn - close[i - 1]!.turn)).toBeLessThan(0.25)
   })
 
   it('lets the ball run down the screen and brings the view after it', () => {

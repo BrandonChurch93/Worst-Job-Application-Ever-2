@@ -167,8 +167,8 @@ const BEATS = { dread: [0.86, -0.6], brace: [0.4, 0.68], catch: [0.12, 0.64], sh
 const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
 // The way into the cup: the seconds in which the pull's aim runs from the arrow to the port, with growing speed from `lead` of its mean speed and the body stretched to `long` as it goes, and the seconds of the sink, in which the arrow goes down into the cup to `floor` px over the page, shortens and turns to the pose it is sealed in.
 const PLUNGE = { reach: 0.24, sink: 5 / 60, grow: 2, lead: 0.35, floor: 2, long: 1.3 }
-// The latch of the half shells: the share of the close that is the slow swing and how far shut it brings them, then the snap into the seam. On the latch the ball is squeezed across the seam by `squeeze` for at most `over` seconds, and the port's ring answers a second time.
-const LATCH = { swing: 0.7, to: 0.5, squeeze: 0.85, way: 1.5707963267948966, over: 0.5 }
+// The latch of the half shells: the share of the close that is the slow swing and how far shut it brings them, then the snap into the seam. On the latch the ball is squeezed across the seam by `squeeze` for at most `over` seconds, and the port's ring answers a second time. From `turn` of the close on the arrow turns to the pose it is caught in, so the catch does not turn it in one frame.
+const LATCH = { swing: 0.7, to: 0.5, squeeze: 0.85, way: 1.5707963267948966, over: 0.5, turn: 0.5 }
 // The drop into the feed tube: the view follows the ball as a damped spring whose stiffness grows from `slow` to `firm` (1 / s) over `ramp` seconds after `hold`, so the ball runs down the screen and the view catches it up. After `over` seconds the page's plain rule follows again.
 const DROP = { slow: 4, firm: 13.8, hold: 0.15, ramp: 0.8, over: 1.3 }
 // The roll in a tube: the arrow turns by `gear` radians for each ball's width travelled, a whole number of turns over the tube, and the last `ease` of the way slows the turn to rest. In the film the roll down the feed tube is over after `film` balls, before the cut to the wide view of the table.
@@ -787,6 +787,14 @@ export function makePage(): PageLogic {
       } else s.t += dt
       if (s.phase === 'sealed') {
         direct(io)
+        if (s.took >= 0 && s.t < s.took + SHELL.shut && s.t < T.tube) {
+          const k = smooth(Math.max(0, ((s.t - s.took) / SHELL.shut - LATCH.turn) / (1 - LATCH.turn)))
+          if (k > 0) {
+            s.lay = [LOADER.shut[0]! + (LOADER.alarm[0]! - LOADER.shut[0]!) * k, s.lay[1]!]
+            io.cursor.strike(s.lay[0]!, dt)
+            io.cursor.press(LOADER.shut[1]! + (LOADER.alarm[2]! - LOADER.shut[1]!) * k, dt)
+          }
+        }
         if (s.latch < 0 && s.took >= 0 && s.t >= s.took + SHELL.shut) {
           s.latch = s.t
           if (s.t < T.tube) s.blow = [LATCH.squeeze, LATCH.way, s.t]
