@@ -1,0 +1,76 @@
+# lamp-fix: the light in the machine and the printed floors
+
+Agent `lamp_fixer`, parts `table-lights` and `tier-art`, branch `agent/lamp-fix`, from main 997de9fb. Started 2026-11-26 06:55 UTC.
+Earlier owners' notes are read, not edited: `lamp-keeper.md`, `table-light.md`, `lights.md`, `art.md`.
+
+Labels: MEASURED (a command was run and its number read), STATED (read in code or a note), UNKNOWN.
+
+## Start
+
+- MEASURED 06:56 to 06:57 UTC on untouched main: `npm test` 102 files, 1390 of 1390 passed; `npm run build` exits 0; `npm run bots` prints "bots: all clear".
+- MEASURED: `node assets-src/table/lights/look.mjs --name b0 --keys <all ten>`: one draft still with its pair takes 15.1 to 28.1 s (table-wide 28.1 s, tier keys 15 to 17 s).
+- MEASURED: `npm run build && npm run counts -- --key table-wide --live low`: table-lights 8 meshes, 8 calls, 22662 triangles; tier-art 6 meshes, 6 calls, 3534 triangles; 201 draw calls of 300.
+
+## What the approved images show in my part that a quick look misses
+
+1. The light of a close view comes from one side and behind: in `reply-all` and `last-save` every cup, ball and sling throws one long soft shadow toward the lower left, and the floor between things is dim. There is no even glow from above.
+2. The floor is not lit by pools. It is a dark mirror: what makes it read as lacquer is the short, warm, sharp picture of each window and lamp standing in it, and a broad dull sheen that breaks on scuffs.
+3. An insert is almost nothing: one slim brass ring, a milky lens level with the floor that is brightest in the middle, and fine dark line art. No dark well, no second ring.
+4. The Street print is broad: wide teal road bands, thin white lane lines, one dashed centre line. There are no plots or bays in fine line. The Office print is a slate-teal field with a pale cross and a fine speckle, and about six loose things on the whole tier.
+5. The lane lamps are warm rectangles that sit in a dark metal channel and are mirrored in its steel wall. The beacon is clear ribbed red plastic with a small white-pink core, a chrome collar, and red light lying on the roof around it.
+
+## Issues of round 11 that are mine and still true on main (b0 stills, 07:00 UTC)
+
+Severe:
+
+- R1-3 issue 2 (`reply-all`, also `tier-office`, `last-save`, `rail-cam`): "lit flat from above with even brightness and pools of lamp glow; -a has a warm oblique key light, so one side is lit and shadows fall long, dark and soft to the lower left". Still true: nothing that stands throws a shadow, share of the frame darker than 24 is 3% in the build and 15% in the approved image.
+- R1-4 issue 2 (`tier-street`): "dark technical artwork with fine parking grids, outlined plots and repeating soft pools. The target reads as a deep glossy petrol-blue playfield with broad painted roads, distressed markings, fine irregular wear and crisp warm reflections". Still true.
+- R1-1 issue 2 (`table-wide`): "-b is darker, muddier and cooler, with far fewer lit inserts, and the strip of lamps along the inner right wall is missing". Still true: mean 0.84 of approved.
+- R1-2 issue 3 (`lobby-doors`), my half: "Cold hard glints and repetitive whitish overhead lamps dominate instead of warm lobby spill. The floor picks up broad white glare". Still true.
+
+Major:
+
+- R1-3 issue 7 (`tier-office`): "coarse, bright green carpet grain with tan felt strips; -a's floor is a smooth, muted slate-teal with a fine speckle, and -b also adds heavy clutter piles". Still true.
+- R1-5 issues 7 and 12 (`rail-cam`, `last-save`): "Fine grid art, highly legible road markings and long straight white light streaks dominate"; "fine blue grit over grid-printed road art. The red, white and amber inserts look like intense stepped concentric buttons". Still true.
+- R1-4 issue 13, R1-5 issue 20, R1-2 issue 13 (inserts, all tiers): "Heavy concentric black surrounds and broad even gradients make the centers look like recessed instrument dials"; "Several dark and red concentric rims"; "multiple concentric gold bands". Still true.
+- R1-4 issue 9, R1-2 issue 6 (lane lamps): "The capsules float in circular cyan halos on open flat lanes; the target has warm, wide rectangular inserts seated into rounded dark metal". Still true.
+- R1-2 issue 5 (`tier-corporate` floor): "Oversized dense gold arcs and a prominent stair or grille pattern under the center inserts". Still true.
+- R1-4 issue 18, R1-5 issue 17 (beacons), my half: "an evenly luminous ribbed cap with almost no local bloom", no red on the roof. Still true.
+- R1-1 issue 12 (sheet `clear-ball`), my half: "green speckled, terrazzo-like grain under flat, even light". Follows the Office floor.
+
+## Brightness on untouched main
+
+MEASURED 07:01 UTC, `node assets-src/table/lights/means2.mjs b0` (whole frame at 960 by 540; mean colour, share darker than 24, share brighter than 200, build over approved in luminance):
+
+| Key | Approved | Build | Ratio |
+| --- | --- | --- | --- |
+| loader-page | 210,208,203 | 214,211,206 | 1.02 |
+| table-wide | 58,56,52, dark 47% | 50,47,43, dark 51% | 0.84 |
+| tier-corporate | 61,59,57, dark 36% | 68,66,64, dark 24% | 1.12 |
+| lobby-doors | 78,74,70, dark 18% | 73,68,65, dark 26% | 0.92 |
+| tier-office | 87,87,77, dark 10% | 89,91,78, dark 1% | 1.04 |
+| reply-all | 85,87,81, dark 15% | 90,88,70, dark 3% | 1.01 |
+| tier-street | 65,67,64, dark 20% | 71,71,66, dark 19% | 1.06 |
+| youre-fired | 58,48,47, dark 32% | 65,57,51, dark 29% | 1.16 |
+| rail-cam | 58,59,58, dark 20% | 59,49,44, dark 31% | 0.86 |
+| last-save | 85,84,80, dark 16% | 82,76,65, dark 20% | 0.91 |
+
+## Looks
+
+Counted from the first still, by part. Limit 40 a part in this round.
+
+| Time UTC | Part | Stills | What | Running: lights, art |
+| --- | --- | --- | --- | --- |
+| 07:00 | both | 10 | b0, all ten keys, untouched main (7 booked to lights, 3 tier keys to art) | 7, 3 |
+| 07:08 | lights | 3 | k1, head lamps first time: reply-all, tier-office, last-save | 10, 3 |
+| 07:10 | lights | 4 | k2, general lamps of the Office down: reply-all, tier-office, last-save, rail-cam | 14, 3 |
+| 07:12 | lights | 3 | k3, general lamps of all tiers down, head lamps up: reply-all, last-save, table-wide | 17, 3 |
+| 07:14 | lights | 1 | k4, reply-all with the head lamps off, to see what the rest gives alone | 18, 3 |
+
+## Decisions
+
+1. Point 2, the side light. Each tier has one bar of warm spots hidden under the cross rail at its head, right of the middle, aimed down the tier: `src/table/real/lights/key.ts`. It is a lamp of the machine: it follows the tier's general lighting and has its own solo name `<zone>.key`. It costs no light of `ctx.light` and no shadow map (`TRUE.shadows` stays 0): the shadows of everything that stands are worked out once per tier from the layout as a height map swept away from the lamps, three times for a soft edge that widens with distance; the balls and the flippers move, so their shadows are worked out in the shader from their places each frame.
+2. The pit rails and the sling walls do not throw the head lamps' shadow: the rails would put the whole right side of a tier in the dark, and the sling's body is filled in as one block instead.
+3. With the head lamps on, the general lamps of a tier are lower (Corporate 1.45 to 0.8, Office 0.6 to 0.14, Street 1.2 to 0.7) and the soft fill is lower per tier (`SOFT` in `colours.ts`), so a shadow is dark and the head lamps are what shapes a tier. MEASURED with `node assets-src/table/lights/means2.mjs k4 reply-all`: with the head lamps off `reply-all` stands at 0.91 of the approved mean, with them on at 1.26 (k3). The Office floor print is still too light and too green for that light; point 4 takes it down, and the brightness is set after it.
+
+## Needs

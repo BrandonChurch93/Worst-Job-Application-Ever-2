@@ -3,6 +3,7 @@ import type { Zone } from '../zone'
 import { BALL, COLS, W } from '../../layout'
 import { FLASH } from './colours'
 import { CHANNELS, HIGH_BODY, HIGHS, LAMP, LIT, SPILLS } from './groups'
+import { BALLS, BAT, BATS } from './key'
 import { BODY, CORE } from './pictures'
 import { zoneLight, type ZoneLight } from './state'
 import { surroundOf } from './surround'
@@ -26,6 +27,11 @@ uniform vec3 wjlFill;
 uniform vec4 wjlHole[ 2 ];
 uniform float wjlEnv;
 uniform vec2 wjlDeep;
+uniform sampler2D wjlKey;
+uniform vec3 wjlKeyDir;
+uniform vec3 wjlKeyCol;
+uniform vec4 wjlBall[ ${BALLS} ];
+uniform vec4 wjlBat[ ${BATS} ];
 `
 
 // The deck of the frame outside a tier's pit stands at the page's surface, over every lamp of the tier: no lamp reaches its top.
@@ -54,6 +60,9 @@ const SPILL = 1.6
 
 // The lacquer is a dark mirror too: it shows each lamp over it as a small bright spot where the eye's line, turned by the floor, meets the lamp. From straight above the spot lies under its lamp, from a low eye it runs out toward the eye.
 const GLINT = { level: 5.0, body: 13, low: 30 }
+
+// The shadows of the head lamps. A wall is asked a little outside its own foot, and a thing that stands is taken a little higher than it is, so nothing lies in its own shadow; `soft` is how many pixels of height the tip of a shadow fades over, `edge` how much of its depth its side does.
+export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0.9, spotAt: 0.1, gloss: 0.6 }
 
 // For each group: its picture at the fragment's place, a term for the fragment's height and for the way its surface faces the lamps, the group's colour and level.
 const body = /* glsl */ `
@@ -186,6 +195,58 @@ const body = /* glsl */ `
 			clearcoatSpecularDirect = mix( wjlCoat, clearcoatSpecularDirect, wjlShine );
 			#endif
 		}
+	}
+	if ( wjlKeyCol.r + wjlKeyCol.g + wjlKeyCol.b > 0.0 ) {
+		float wjlOff = smoothstep( 2.0, 10.0, wjlUp );
+		vec4 wjlUnder = texture2D( wjlKey, ( wjlP.xy + wjlN.xy * ${SHADOW.out.toFixed(1)} * wjlOff ) / wjlSize + 0.5 );
+		float wjlAtZ = wjlUp + wjlOff * ( ${SHADOW.slack.toFixed(1)} + ${SHADOW.lean.toFixed(2)} * wjlUp );
+		float wjlOpen = 0.0;
+		for ( int k = 0; k < 3; k ++ ) {
+			float wjlS = k == 0 ? wjlUnder.r : k == 1 ? wjlUnder.g : wjlUnder.b;
+			wjlOpen += 1.0 - smoothstep( 0.0, max( ${SHADOW.soft.toFixed(1)}, ${SHADOW.edge.toFixed(2)} * wjlS ), wjlS - wjlAtZ );
+		}
+		wjlOpen /= 3.0;
+		for ( int b = 0; b < ${BALLS}; b ++ ) {
+			vec4 ball = wjlBall[ b ];
+			if ( ball.w == 0.0 ) continue;
+			float r = abs( ball.w );
+			vec3 v = ball.xyz - wjlP;
+			float t = dot( v, wjlKeyDir );
+			float d = length( v - t * wjlKeyDir );
+			float wide = 2.0 + ${SHADOW.ball.toFixed(3)} * max( t, 0.0 );
+			float dark = ( 1.0 - smoothstep( r - wide, r + wide, d ) ) * step( 0.0, t ) * step( r * 1.06, length( v ) );
+			wjlOpen *= 1.0 - dark * ( ball.w > 0.0 ? ${SHADOW.steel.toFixed(2)} : ${SHADOW.clear.toFixed(2)} );
+			if ( ball.w < 0.0 ) wjlOpen += ${SHADOW.spot.toFixed(2)} * dark * exp( - d * d / ( ${SHADOW.spotAt.toFixed(3)} * r * r ) );
+		}
+		vec2 wjlSlant = wjlKeyDir.xy / wjlKeyDir.z;
+		for ( int b = 0; b < ${BATS}; b ++ ) {
+			vec4 bat = wjlBat[ b ];
+			vec2 e = bat.zw - bat.xy;
+			float l2 = dot( e, e );
+			if ( l2 < 1.0 || wjlUp > ${(BAT.top - 3).toFixed(1)} ) continue;
+			float least = 1.0e6;
+			for ( int q = 0; q < 4; q ++ ) {
+				float up = mix( wjlUp, ${BAT.top.toFixed(1)}, ( float( q ) + 0.6 ) / 4.0 );
+				vec2 pt = wjlP.xy + wjlSlant * ( up - wjlUp ) - bat.xy;
+				float f = clamp( dot( pt, e ) / l2, 0.0, 1.0 );
+				least = min( least, length( pt - e * f ) - mix( ${BAT.pivot.toFixed(1)}, ${BAT.tip.toFixed(1)}, f ) );
+			}
+			vec2 own = wjlP.xy - bat.xy;
+			float g = clamp( dot( own, e ) / l2, 0.0, 1.0 );
+			float onIt = step( length( own - e * g ) - mix( ${BAT.pivot.toFixed(1)}, ${BAT.tip.toFixed(1)}, g ), 2.0 ) * step( 2.0, wjlUp );
+			wjlOpen *= 1.0 - ${SHADOW.steel.toFixed(2)} * ( 1.0 - smoothstep( - 3.0, 7.0, least ) ) * ( 1.0 - onIt );
+		}
+		wjlLight.direction = normalize( ( viewMatrix * vec4( wjlKeyDir, 0.0 ) ).xyz );
+		wjlLight.color = wjlKeyCol * wjlOpen * wjlInside * wjlClear * PI;
+		vec3 wjlGloss = reflectedLight.directSpecular;
+		#ifdef USE_CLEARCOAT
+		vec3 wjlCoat = clearcoatSpecularDirect;
+		#endif
+		RE_Direct( wjlLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
+		reflectedLight.directSpecular = mix( wjlGloss, reflectedLight.directSpecular, wjlShine * ${SHADOW.gloss.toFixed(2)} );
+		#ifdef USE_CLEARCOAT
+		clearcoatSpecularDirect = mix( wjlCoat, clearcoatSpecularDirect, wjlShine * ${SHADOW.gloss.toFixed(2)} );
+		#endif
 	}
 	for ( int k = 0; k < ${HIGHS}; k ++ ) {
 		vec4 hi = wjlHigh[ k ];

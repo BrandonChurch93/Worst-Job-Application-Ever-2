@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { zoneAt } from '../../draw'
-import { BALL } from '../../layout'
-import { whole, type Zone } from '../zone'
-import { FILL, FLASH } from './colours'
+import { BALL, FLIP_REACH, table } from '../../layout'
+import { localBalls, whole, type Zone } from '../zone'
+import { FILL, FLASH, SOFT } from './colours'
 import { groupsOf, highOf, LIT, spillsOf, type Group } from './groups'
+import { BALLS, keyOf } from './key'
 import { buildLamps, type Lamps } from './lamps'
 import { levels, solo, soloed } from './levels'
 import { zoneLight } from './state'
@@ -102,8 +103,34 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     u.wjlHigh.value[i]!.set(p.x, p.y, p.z, p.reach)
     u.wjlHighCol.value[i]!.set(p.colour[0] * level, p.colour[1] * level, p.colour[2] * level)
   })
+  const key = keyOf(z)
+  if (key) {
+    const level = soloed() !== null ? (soloed() === `${z.id}.key` ? 1 : 0) : L.general
+    u.wjlKeyDir.value.set(...key.toward)
+    u.wjlKeyCol.value.set(key.colour[0] * key.power * level, key.colour[1] * key.power * level, key.colour[2] * key.power * level)
+    const balls = u.wjlBall.value
+    let n = 0
+    for (let i = 0; i < BALLS + 4 && n < BALLS; i++) {
+      const s = ctx.byId.get(i === 0 ? 'ball.clear' : `ball.steel.${i}`)
+      if (!s || zoneAt(s.y + s.h / 2) !== z.id) continue
+      balls[n++]!.set(s.x + s.w / 2 - 960, z.top + z.height / 2 - (s.y + s.h / 2), (s.z0 ?? 0) + BALL / 2 - z.floor, i === 0 ? -BALL / 2 : BALL / 2)
+    }
+    for (; n < BALLS; n++) balls[n]!.set(0, 0, 0, 0)
+    const bats = u.wjlBat.value
+    let m = 0
+    for (const f of table.flippers) {
+      if (f.tier !== z.tier || m >= bats.length) continue
+      const a = ctx.byId.get(`flipper.${f.id}`)?.v?.[0]
+      if (a === undefined) continue
+      const dir = f.side === 'left' ? 1 : -1
+      const p = localBalls(z, f.pivot[0], f.pivot[1])
+      const q = localBalls(z, f.pivot[0] + dir * FLIP_REACH * Math.cos(a), f.pivot[1] + FLIP_REACH * Math.sin(a))
+      bats[m++]!.set(p[0], p[1], q[0], q[1])
+    }
+    for (; m < bats.length; m++) bats[m]!.set(0, 0, 0, 0)
+  }
   const fill = FILL[z.id]!
-  const soft = 0.028 * L.general + FLASH.fill * L.flash
+  const soft = (SOFT[z.id] ?? 0.028) * L.general + FLASH.fill * L.flash
   u.wjlFill.value.set(fill[0] * soft, fill[1] * soft, fill[2] * soft)
   u.wjlEnv.value = soloed() !== null ? 0.5 : L.general * (1 + FLASH.room * L.flash) + 0.2 * L.website
   if (!b) return

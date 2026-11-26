@@ -22,6 +22,11 @@ export const STREET_BLUE: RGB = [0.05, 0.22, 1.0]
 export const STREET_WINDOW: RGB = [1.0, 0.76, 0.42]
 export const STREET_FLASH: RGB = [1.0, 0.93, 0.84]
 
+// The head lamps of each tier: the one warm light from one side.
+export const CORPORATE_KEY: RGB = [1.0, 0.88, 0.7]
+export const OFFICE_KEY: RGB = [1.0, 0.9, 0.72]
+export const STREET_KEY: RGB = [1.0, 0.8, 0.56]
+
 // The four dot displays, and the marquee's panel at dusk.
 export const DISPLAY_AMBER: RGB = [1.0, 0.5, 0.08]
 export const MARQUEE_PANEL: RGB = [0.72, 0.8, 1.0]
@@ -33,6 +38,9 @@ export const FILL: Record<string, RGB> = {
   office: [0.72, 0.84, 0.78],
   street: [0.6, 0.56, 0.7]
 }
+
+// How strong that soft light is, as a share of the general lighting. The head lamps carry a tier now, so it is weak: a shadow is dark and never black.
+export const SOFT: Record<string, number> = { marquee: 0.028, corporate: 0.02, office: 0.012, street: 0.016 }
 
 // How much of a far lamp's light the print of a floor gives back, seen from straight above and seen along the floor. The night tiers are dark lacquer between their pools; the Office is a lit room.
 export const DEEP: Record<string, [number, number]> = {

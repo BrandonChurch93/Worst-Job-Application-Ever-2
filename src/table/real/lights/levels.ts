@@ -4,6 +4,7 @@ import { anchorId } from '../../draw'
 import type { Zone } from '../zone'
 import { BUMPER } from './colours'
 import { groupsOf } from './groups'
+import { keyOf } from './key'
 
 export interface Levels {
   // The level of every group of the zone, 0 to 1, in the order of `groupsOf(zone)`.
@@ -31,6 +32,7 @@ if (typeof window !== 'undefined') {
   window.addEventListener('wjl-groups', (e) => {
     const d = (e as CustomEvent<{ zone: string; into: Set<string> }>).detail
     for (const g of groupsOf(d.zone)) d.into.add(g.id)
+    if (keyOf(d.zone)) d.into.add(`${d.zone}.key`)
   })
 }
 
