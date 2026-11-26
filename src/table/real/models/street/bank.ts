@@ -53,7 +53,7 @@ export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
       for (let k = 0; k < 3; k++) b.metal.box(p + 1.6, q - 1.6, d - 2, d - 1.4, 2.5 + k * 12, 12 + k * 12, shade(TONE.bronze, 1.25), { skip: 'b', bevel: 0.4 })
     }
     for (const hx of [mid - 1.9, mid + 0.9]) b.metal.box(hx, hx + 1, d - 3.2, d - 2, 15, 24, TONE.brass, { under: true })
-    b.glow.face([[a, d - 0.4, doorH - 7], [c, d - 0.4, doorH - 7], [c, d - 0.4, doorH], [a, d - 0.4, doorH]], [1, 0.9, 0.7], 0, [0, -1, 0])
+    b.glow.face([[a, d - 0.4, doorH - 7], [c, d - 0.4, doorH - 7], [c, d - 0.4, doorH], [a, d - 0.4, doorH]], [0.7, 0.48, 0.2], 0, [0, -1, 0])
     b.metal.box(a, c, d - 1.2, d, doorH - 8, doorH - 7, TONE.bronze, { skip: 'b', under: true })
     band(g, a - 3, c + 3, doorH, doorH + 3.5, 1.4, shade(stone, 1.05))
     const nx = c + 7

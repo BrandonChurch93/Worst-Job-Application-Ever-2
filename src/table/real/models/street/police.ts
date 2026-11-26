@@ -63,11 +63,13 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
     g.quad([a, deep, dz], [c, deep, dz], [c, deep, zt], [a, deep, zt], shade(TONE.stonePale, 0.7))
     for (const [p, q] of [[a + 5, mid - 0.4], [mid + 0.4, c - 5]] as const) {
       g.box(p, q, deep - 1.3, deep, dz, dt, TONE.blueDark, { skip: 'b', kind: KIND.gloss, bevel: 0.3 })
-      b.glow.face([[p + 2.5, deep - 1.35, dz + 22], [q - 2.5, deep - 1.35, dz + 22], [q - 2.5, deep - 1.35, dt - 3], [p + 2.5, deep - 1.35, dt - 3]], [0.75, 0.68, 0.55], 0, [0, -1, 0])
+      b.glow.face([[p + 2.5, deep - 1.35, dz + 22], [q - 2.5, deep - 1.35, dz + 22], [q - 2.5, deep - 1.35, dt - 3], [p + 2.5, deep - 1.35, dt - 3]], [0.46, 0.31, 0.14], 0, [0, -1, 0])
+      g.box((p + q) / 2 - 0.45, (p + q) / 2 + 0.45, deep - 1.9, deep - 1.35, dz + 22, dt - 3, TONE.blueDark, { skip: 'btu' })
+      g.box(p + 2.5, q - 2.5, deep - 1.9, deep - 1.35, (dz + 22 + dt - 3) / 2 - 0.45, (dz + 22 + dt - 3) / 2 + 0.45, TONE.blueDark, { skip: 'blr', under: true })
       g.box(p + 2.5, q - 2.5, deep - 1.8, deep - 1.3, dz + 3, dz + 18, shade(TONE.blueDark, 1.25), { skip: 'b', kind: KIND.gloss, bevel: 0.3 })
     }
     for (const hx of [mid - 2.6, mid + 1.4]) b.metal.box(hx, hx + 1.2, deep - 3, deep - 1.3, dz + 14, dz + 24, TONE.brass, { under: true })
-    b.glow.face([[a + 5, deep - 0.4, dt + 1], [c - 5, deep - 0.4, dt + 1], [c - 5, deep - 0.4, zt - 1.5], [a + 5, deep - 0.4, zt - 1.5]], [0.9, 0.8, 0.6], 0, [0, -1, 0])
+    b.glow.face([[a + 5, deep - 0.4, dt + 1], [c - 5, deep - 0.4, dt + 1], [c - 5, deep - 0.4, zt - 1.5], [a + 5, deep - 0.4, zt - 1.5]], [0.6, 0.41, 0.17], 0, [0, -1, 0])
     g.box(a - 6, a, -2.6, 0, 3, zt, TONE.stonePale, { skip: 'b', bevel: 0.7, kind: KIND.block })
     g.box(c, c + 6, -2.6, 0, 3, zt, TONE.stonePale, { skip: 'b', bevel: 0.7, kind: KIND.block })
     g.box(a - 8, c + 8, -3.4, 0, zt, zt + 5, TONE.stonePale, { skip: 'b', under: true, bevel: 0.7 })
