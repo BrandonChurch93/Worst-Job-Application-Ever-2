@@ -351,7 +351,7 @@ vec3 blobs( vec3 Np, float rho, vec3 V, vec3 C, float at, float deep, float wide
 float arc( float la, float rho, float c, float w, float r, float t ) {
 	float d = abs( atan( sin( la - c ), cos( la - c ) ) ) / w;
 	float e = abs( rho - r ) / t;
-	return ( 1.0 - smoothstep( 0.45, 1.0, d ) ) * ( 1.0 - smoothstep( 0.3, 1.0, e ) );
+	return ( 1.0 - smoothstep( 0.7, 1.0, d ) ) * ( 1.0 - smoothstep( 0.55, 1.0, e ) );
 }
 
 float seamLine( out float glint ) {
@@ -422,8 +422,8 @@ void paint() {
 	vec3 refl = sky * window( Np, rho, V, 0.64, 0.07, 0.24 ) * 0.3;
 	refl += plain( pane( Np, rho, V, - 1.0, 0.78, 0.03, 0.3, 0.0 ) ) * SOFT * 0.04;
 	refl += blobs( Np, rho, V, C, 0.83, 0.035, 0.24 ) * 0.45;
-	refl += sky * ( 0.45 * arc( la, rho, 0.5 + 0.5 * sin( ph ), 0.8, 0.76, 0.05 ) + 0.5 * arc( la, rho, - 0.7 + 0.4 * sin( ph + 1.3 ), 0.5, 0.88, 0.04 ) + 0.4 * arc( la, rho, - 2.3 + 0.5 * sin( ph + 2.1 ), 0.45, 0.9, 0.035 ) );
-	refl += ( sky * 0.5 + gather ) * ( 0.3 * arc( la, rho, 2.6 + 0.4 * sin( ph + 0.7 ), 0.7, 0.74, 0.05 ) + 0.35 * arc( la, rho, 1.6 + 0.5 * sin( ph + 3.3 ), 0.35, 0.86, 0.045 ) );
+	refl += sky * ( 0.8 * arc( la, rho, 0.35 + 0.3 * sin( ph ), 0.42, 0.775, 0.04 ) + 0.5 * arc( la, rho, - 0.9 + 0.3 * sin( ph + 1.3 ), 0.26, 0.885, 0.03 ) );
+	refl += ( sky * 0.5 + gather ) * 0.4 * arc( la, rho, 2.7 + 0.4 * sin( ph + 0.7 ), 0.4, 0.75, 0.04 );
 	vec3 under = floorAt( vP, R ).rgb;
 	refl += mix( plain( under ), under, 0.5 ) * F * 0.9;
 	refl += lampsIn( R, vP, 0.7 ) * ( 0.3 + 0.9 * F ) * rimward;
@@ -511,8 +511,8 @@ void paint() {
 
 	vec3 down = - normalize( uSoftDir );
 	vec3 away = normalize( down - V * dot( down, V ) + vec3( 1e-4, 2e-4, 0.0 ) );
-	float pool = smoothstep( 0.45, 0.78, rho ) * ( 1.0 - smoothstep( RIN - 0.03, RIN + 0.03, rho ) ) * pow( max( dot( Np, away ), 0.0 ), 3.0 );
-	col += ( max( plain( soft ), vec3( 0.22 ) ) * vec3( 1.1, 0.88, 0.62 ) * 1.5 + flecks( Np, C ) * 0.25 ) * pool * shut;
+	float pool = smoothstep( 0.56, 0.72, rho ) * ( 1.0 - smoothstep( 0.77, 0.85, rho ) ) * pow( max( dot( Np, away ), 0.0 ), 12.0 );
+	col += ( max( plain( soft ), vec3( 0.22 ) ) * vec3( 1.1, 0.88, 0.62 ) * 2.4 + flecks( Np, C ) * 0.25 ) * pool * shut;
 
 	float glint;
 	float line = seamLine( glint );
