@@ -16,8 +16,8 @@ export const CENTRE = (LEFT + RIGHT) / 2
 export const GAP = 40
 export const CARD_W = (WIDTH - GAP * 2) / 3
 export const CARD_H = 248
-export const CARD_R = 18
-export const MEDAL = 324
+export const CARD_R = 22
+export const MEDAL = 356
 export const MEDAL_H = 10
 export const HERO_W = 460
 export const TICKER = { x: LEFT, y: 984, w: WIDTH, h: 56, floor: -6, tape: -5, pad: 28, gap: 64 }
@@ -32,7 +32,7 @@ export const T = {
   kicker: { font: 'inter-600', px: 20 },
   cardTitle: { font: 'inter-600', px: 30 },
   strong: { font: 'inter-600', px: 22 },
-  medalTitle: { font: 'inter-600', px: 30, lead: 38 },
+  medalTitle: { font: 'inter-600', px: 31, lead: 38 },
   medalFrom: { font: 'inter-400', px: 18, lead: 24 },
   quote: { font: 'inter-400', px: 20, lead: 30 },
   role: { font: 'inter-600', px: 20 },
@@ -89,15 +89,15 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
 
 function medallion(i: number, cx: number, y: number): LayoutNode[] {
   const k = `copy:marketing.awards.items.${i}`
-  const title = { ...T.medalTitle, align: 'centre' as const, wrap: 232 }
-  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 226 }
+  const title = { ...T.medalTitle, align: 'centre' as const, wrap: 190 }
+  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 200 }
   const th = tall(title, `${k}.title`, title.wrap)
   const fh = tall(from, `${k}.from`, from.wrap)
-  const top = y + (MEDAL - (th + 24 + fh)) / 2
+  const top = y + (MEDAL - (th + 22 + fh)) / 2
   const on = { part: 'type', on: MEDAL_H }
   const disc = node(`award-${i}`, 'medallion', [cx - MEDAL / 2, y, MEDAL, MEDAL], {
     part: PAGE, shape: 'disc', height: MEDAL_H, tone: 'metal',
-    children: [text(`award-${i}-title`, `${k}.title`, title, cx, top, on), text(`award-${i}-from`, `${k}.from`, from, cx, top + th + 24, on)]
+    children: [text(`award-${i}-title`, `${k}.title`, title, cx, top, on), text(`award-${i}-from`, `${k}.from`, from, cx, top + th + 22, on)]
   })
   return [disc, text(`award-${i}-fine`, `${k}.finePrint`, { ...TYPE.helper, align: 'centre' }, cx, y + MEDAL + 28, type)]
 }
@@ -123,7 +123,7 @@ function firstScreen(): LayoutNode[] {
   const buttonY = 424
   out.push(button('hero-cta', LEFT, buttonY, HERO_W, 'copy:marketing.hero.cta', { hero: true, part: 'apply-button' }))
   out.push(text('hero-under', 'copy:marketing.hero.underCta', TYPE.helper, LEFT, buttonY + sizes.heroButton + 28, type))
-  out.push(...medallion(0, RIGHT - MEDAL / 2, buttonY + sizes.heroButton - MEDAL))
+  out.push(...medallion(0, RIGHT - MEDAL / 2 - 52, buttonY + sizes.heroButton - MEDAL))
   const cards: Item[] = [0, 1, 2].map((i) => (x: number, y: number) => perkCard(i, x, y))
   out.push(row('perks-first', LEFT, 640, GAP, cards))
   out.push(tickerNode())
@@ -137,7 +137,7 @@ function tickerNode(): LayoutNode {
   const at = { part: 'type', on: TICKER.tape }
   const items = m.ticker.map((_, i) => text(`ticker-${i}`, `copy:marketing.ticker.${i}`, T.tape, TICKER.x + TICKER.pad, y, { ...at, states: [tapeStates(i)] }))
   items.push(text('ticker-after', 'copy:marketing.tickerAfterRejection', T.tape, TICKER.x + TICKER.pad, y, { ...at, states: ['tape-after'] }))
-  return node('ticker-window', 'tickerWindow', [TICKER.x, TICKER.y, TICKER.w, TICKER.h], { part: 'ticker', shape: 'none', children: items })
+  return node('ticker-window', 'tickerWindow', [TICKER.x, TICKER.y, TICKER.w, TICKER.h], { part: 'ticker', shape: 'capsule', height: TICKER.floor, tone: 'pocket', children: items })
 }
 
 function perks(y: number): Section {
