@@ -2,8 +2,7 @@ import { actingLook } from '../../cursor/act/acting'
 import { damageLook } from '../../cursor/act/damage'
 import type { CursorPose } from '../../cursor/body'
 import { OUTLINE, restLook, UNIT } from '../../cursor/contract'
-import { middleOf } from '../../cursor/fit'
-import { Deform, drawnStretch } from '../../cursor/model/deform'
+import { Deform } from '../../cursor/model/deform'
 import { CENTRE, TOP } from '../../cursor/model/shape'
 
 export const GLASS = { wall: 40, keep: 2.7 }
@@ -58,9 +57,6 @@ export function berth(c: CursorPose, lean: number, spin: number, squash: number,
     mx += p[0]! / pts.length
     my += p[1]! / pts.length
   }
-  const m = middleOf(drawnStretch(look.body.stretch, look.body.melt))
-  const vx = cs * m.x * UNIT + sn * m.y * UNIT
-  const vy = sn * m.x * UNIT - cs * m.y * UNIT
   let reach = 0
   for (let i = 0; i < 80; i++) {
     let far = pts[0]!
@@ -86,6 +82,7 @@ export function berth(c: CursorPose, lean: number, spin: number, squash: number,
   const at = face ? [ox * c0 - oy * s0, ox * s0 + oy * c0, 0] : [ox, oy, 0]
   const n = face ?? [0, 0, 1]
   const back = behind + (lo + hi) / 2
-  const off = seen ? tilt([mx - vx, my - vy, 0], n) : tilt([at[0]! + mx, at[1]! + my, 0], n)
+  // A seen cursor is centred by its own view from the outline as it is drawn (`src/cursor/view.ts`), so the page adds nothing in the plane.
+  const off = seen ? [0, 0, 0] : tilt([at[0]! + mx, at[1]! + my, 0], n)
   return { x: -off[0]!, y: -off[1]!, z: -off[2]! - 1, back, reach: Math.hypot(reach, behind + half) }
 }

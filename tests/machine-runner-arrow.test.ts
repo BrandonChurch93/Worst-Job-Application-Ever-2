@@ -1,18 +1,17 @@
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
-import { actingLook } from '../src/cursor/act/acting'
-import { damageLook } from '../src/cursor/act/damage'
 import type { CursorPose } from '../src/cursor/body'
-import { restLook, UNIT } from '../src/cursor/contract'
-import { middleOf } from '../src/cursor/fit'
-import { Deform, drawnStretch } from '../src/cursor/model/deform'
+import { UNIT } from '../src/cursor/contract'
+import { lookOf } from '../src/cursor/look'
+import { Deform } from '../src/cursor/model/deform'
 import { CENTRE, TOP } from '../src/cursor/model/shape'
 import { pages } from '../src/pages'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 
 const OUTLINE: [number, number][] = [[0, 0], [0, 16.2], [3.9, 12.6], [6.9, 19], [9.6, 17.8], [6.7, 11.6], [11.8, 11.6]]
-const GLASS = 40
+// The inner wall of the ball stands 42 px from its middle. The cursor's fit keeps a sealed body's outline inside 41 px of it in its own plane (`boreRoom` in `src/cursor/model/deform.ts`), so a whole arrow is asked to stay inside 41 px and a flattened one inside the wall.
+const GLASS = 41
 const BORE = 42
 const BALL = config.table.ballPx
 const UP = new THREE.Vector3(0, 0, 1)
@@ -20,17 +19,14 @@ const deform = new Deform()
 const out = { x: 0, y: 0, z: 0 }
 
 const reach = (c: CursorPose, time: number, ball: { x: number; y: number; z: number }): number => {
-  const look = restLook(time)
-  look.body.stretch = c.squash
-  actingLook?.(c, look)
-  damageLook?.(c, look)
-  look.body.sealed = 1
+  // As the cursor's view places a sealed body (`src/cursor/view.ts`): the look of the pose, the outline measured as it is drawn, its middle on the ball's middle, and the glass's hold on a pose wider than its room.
+  const look = lookOf(c, time)
   const turn = -c.lean - c.spin
   deform.set(look.body)
   deform.lean(turn)
+  deform.fit()
   const q = new THREE.Quaternion()
-  const m = middleOf(drawnStretch(look.body.stretch, look.body.melt))
-  const at = c.centred ? new THREE.Vector3(-m.x * UNIT, m.y * UNIT, 0).applyAxisAngle(UP, turn) : new THREE.Vector3(-CENTRE[0] * UNIT, CENTRE[1] * UNIT, 0).applyAxisAngle(UP, -c.spin)
+  const at = c.centred ? new THREE.Vector3(-deform.mid.x, -deform.mid.y, 0).applyAxisAngle(UP, turn) : new THREE.Vector3(-CENTRE[0] * UNIT, CENTRE[1] * UNIT, 0).applyAxisAngle(UP, -c.spin)
   if (c.face) {
     const n = new THREE.Vector3(c.face.x, c.face.y, c.face.z).normalize()
     q.setFromUnitVectors(UP, n)
