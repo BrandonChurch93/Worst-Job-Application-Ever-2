@@ -108,19 +108,20 @@ const look = (name: string, eye: [number, number, number], at: [number, number, 
 const Y0 = TIER_Y[0]!
 const Y1 = TIER_Y[1]!
 const Y2 = TIER_Y[2]!
+const LAST_OUT: Shape = { id: 'last.out', part: 'table-layout', kind: 'well', x: 0, y: px(LAST_Y), w: 1920, h: PAGE_H - px(LAST_Y), z0: -px(40), z1: 0, tone: 'dark' }
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
-  'table-wide': look('table-wide', [MID, APRON_Y + 16.41, 12.61], [MID, Y2 + 3.94, 1.96]),
+  'table-wide': { ...look('table-wide', [MID, APRON_Y + 20.07, 13.09], [MID, Y2 + 7.6, 2.44]), omit: LAST_OUT },
   'table-lobby': look('table-lobby', [MID + 0.8, Y0 + 8.3, -0.45], [MID - 0.15, Y0 + 5.02, 0.19]),
   'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
   'table-fired': look('table-fired', [6.91, Y2 + 6.8, -0.67], [4.4, Y2 + 3.8, -2.27]),
-  'table-save': look('table-save', [MID, Y2 + 12.45, 7.5], [MID, Y2 + 8.95, -3])
+  'table-save': { ...look('table-save', [MID, Y2 + 18.48, 3.91], [MID, Y2 + 11.7, -0.33]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
   [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [28.8, 'follow', 0],
   [31.15, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [36.6, 'follow', 0]
 ]
-const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 9, rail: 6, ride: 7 }
+const LENS: Record<string, number> = { 'table-wide': 5, 'table-lobby': 7, 'table-replyall': 12, 'table-fired': 10, 'table-save': 12, rail: 6, ride: 7 }
 const HARD: Record<string, number> = { bumper: 1, sling: 0.7, 'doors-slam': 1.3, 'scoop-kick': 0.8, plunger: 1, 'ball-hit': 0.6, 'drop-target': 0.5, 'mom-save': 1, 'ball-save': 0.8 }
 const SHAKE = { size: 0.006, decay: 0.09, hz: 23, most: 1.5, last: 0.5 }
 const SOFT = 0.4
@@ -289,7 +290,10 @@ export function makePage(): PageLogic {
     const now = named(FILM[i]![1])!
     const u = i > 0 && FILM[i]![2] > 0 ? (time - FILM[i]![0]) / FILM[i]![2] : 1
     if (u >= 1) return now
-    return mixPose(named(FILM[i - 1]![1])!, now, smooth(Math.max(0, u)))
+    const before = named(FILM[i - 1]![1])!
+    const omit = now.omit ?? before.omit
+    const mixed = mixPose(before, now, smooth(Math.max(0, u)))
+    return omit ? { ...mixed, omit } : mixed
   }
   const jolt = (): { x: number; y: number } => {
     const mc = machine()
