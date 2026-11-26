@@ -23,7 +23,7 @@ export const FILM_DIGITS = [10, 1, 5]
 const holeAt = (k: number, a = 0): P => ({ x: DIAL.cx + DIAL.ring * Math.cos(DIAL.holeAngle(k) + a), y: DIAL.cy + DIAL.ring * Math.sin(DIAL.holeAngle(k) + a) })
 const woundAt = (k: number): P => holeAt(k, DIAL.travel(k))
 // Between two numbers it rests its tip on the lower right shoulder of the cap.
-const shoulder: P = { x: DIAL.cx - 2, y: DIAL.cy + 13 }
+const shoulder: P = { x: DIAL.cx + 5, y: DIAL.cy + 16 }
 export const LANDING: P = { x: DIAL.cx - 600, y: DIAL.cy + 30 }
 const knob: P = { x: SLOT.leverX, y: SLOT.knobY }
 const pulled: P = { x: SLOT.leverX, y: SLOT.knobY + SLOT.pull + 6 }
@@ -38,7 +38,7 @@ export const BUTTON: P = { x: 1688, y: 1004 }
 const beside: P = { x: BUTTON.x - 190, y: BUTTON.y - 30 }
 
 const T = {
-  phone: 1.88, zero: 2.33, one: 2.87, third: 4.25,
+  phone: 1.88, zero: 2.31, one: 2.83, third: 4.25,
   birth: 8.2, lever: 9.15,
   volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.32, press: 20.3
 }

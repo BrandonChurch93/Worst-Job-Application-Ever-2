@@ -74,12 +74,13 @@ Not this part's:
 Decisions after the first pass:
 
 9. The coins do not ride the tray's lower wall as it shuts (decision 4 said they did): that carried them over the next field.
-10. The tip at the dial key stays about 35 px right and 30 px below the centre of the cap. The cursor's own follow keeps it at the stop for 0.2 s after the pointer leaves; beginning the second digit earlier than 2.87 s breaks the dial (tried 2.80 s: the second digit is not taken). Not solved.
+10. The tip at the dial key: the cursor's own follow keeps it at the stop for about 0.1 s after the pointer leaves and takes 0.3 s over the way. The two digits are now dialled 0.02 s and 0.04 s earlier (2.31 s and 2.83 s; the tray is not ready for a press before 2.30 s, and the second digit is not taken before 2.82 s), and the pointer rests at 5, 16 from the centre of the cap. MEASURED with the probe: at 3.2 s the tip is 28 px right of and 23 px below the centre of the cap, on its lower right shoulder (was 43, 30; the approved has about 25, 21).
+11. The tray's wall is the floor's own frosted glass (`glassSunk`, was `cardSeal`), so wall and floor are one piece; its shade fades out at the foot. The rim's roll is flatter (36 degrees, was 60) so it shows less of a dark flank on each side.
 
 ## Looks, counted by part
 
-- rows: 5 (the rest key three times; the dial and crank keys once each for the cove).
-- dial: 6 (the dial key six times).
+- rows: 7 (the rest key three times; the dial and crank keys twice each for the cove and the glass wall).
+- dial: 7 (the dial key seven times).
 - crank: 9 (the crank key six times; three stills of the wind-up).
 - slot: 39 (the sheet six times; 8 stills at a wrong time that showed nothing; 22 stills of the lever, the reels and the coins; three stills of the tray shutting over the coins).
 - acting: 40 (12 of the slot beat, 4 at a wrong time, 7 of the dial beat, 4 of the open beat, 8 of the crank beat, 5 of the peel). None left this round.

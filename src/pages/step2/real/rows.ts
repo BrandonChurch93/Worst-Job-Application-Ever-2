@@ -20,7 +20,7 @@ export function trayJoint(s: Shape): THREE.BufferGeometry {
   return sweep(outlineOf(s, 0, 12), [{ inset: -0.4, z, out: 0, up: 1 }, { inset: TRAY.joint + 0.3, z, out: 0, up: 1 }], false)
 }
 
-const BEAD = Math.PI / 3
+const BEAD = Math.PI / 5
 const COVE = 7
 
 // How far under the liner's top its rolled rim lies, a given way in from the joint.
@@ -61,7 +61,9 @@ export function trayLiner(s: Shape): THREE.BufferGeometry {
     points.push([inset, wallAt(inset, top, foot)])
   }
   points.push([foot, 0], [foot + 0.6, -0.4, true])
-  return sweep(outlineOf(s, 0, 12), profile(points), false)
+  const g = sweep(outlineOf(s, 0, 12), profile(points), false)
+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 3).fill(1), 3))
+  return g
 }
 
 // The wall on the light's side sees neither the key nor much of the room: its shade is painted over the liner, strongest where the wall faces away from the key.
@@ -82,7 +84,8 @@ export function trayWallShade(s: Shape): THREE.BufferGeometry {
   for (let i = 1; i <= COVE; i++) {
     const u = i / COVE
     const inset = from + (foot - from) * u
-    steps.push([inset, wallAt(inset, top, foot) + over, TRAY.wallShade + (TRAY.wallFoot - TRAY.wallShade) * u, TRAY.wallShadeTop + (TRAY.wallFootTop - TRAY.wallShadeTop) * u])
+    const fade = 1 - u * u * u
+    steps.push([inset, wallAt(inset, top, foot) + over, (TRAY.wallShade + (TRAY.wallFoot - TRAY.wallShade) * u) * fade, (TRAY.wallShadeTop + (TRAY.wallFootTop - TRAY.wallShadeTop) * u) * fade])
   }
   const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
   const [lx, ly] = look.key.direction
@@ -213,7 +216,7 @@ function tray(s: Shape): THREE.Object3D {
   }
   add(kit.joint, m.gap, false, true)
   add(kit.rim, m.aluminiumSatin, true, true)
-  add(kit.liner, m.cardSeal, true, true)
+  add(kit.liner, m.glassSunk, true, true)
   add(kit.floor, m.glassSunk, false, true)
   shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })
   add(kit.shade, shadeMaterial, false, false)
