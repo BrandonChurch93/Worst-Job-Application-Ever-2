@@ -1,35 +1,35 @@
 {
   "folder": "machine-finish",
-  "pushed": "2026-11-26T12:34:30.146Z",
-  "commit": "c3fa4737337dff7f10ea0cc3769dbaf2f8fa0cda",
+  "pushed": "2026-11-26T12:45:45.650Z",
+  "commit": "02f44b6208c624c1fff8180c854aec821b39a260",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the beat pinball.save: 12 frames from 1:41.00 to 1:43.97, draft tier, preview",
-      "time": "2026-11-26T12:22:46.146Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
+      "time": "2026-11-26T12:41:33.139Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Contact sheet, the beat pinball.save: 12 frames from 1:41.00 to 1:43.97, draft tier, preview",
-      "time": "2026-11-26T12:24:46.728Z",
+      "caption": "youre-fired beside approved, review still, lens blur of table-fired 10 to 3: sign, beacon and brick hold",
+      "time": "2026-11-26T12:45:43.983Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
+      "from": "out/work/mf/s-youre-fired.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Contact sheet, the beat pinball.save: 12 frames from 1:41.00 to 1:43.97, draft tier, preview",
-      "time": "2026-11-26T12:28:52.163Z",
+      "caption": "rail-cam beside approved, draft still, lens blur of rail 10 to 5: the police station behind the ball reads as a building",
+      "time": "2026-11-26T12:45:44.250Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
+      "from": "out/work/mf/s-rail-cam.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Save beat sheet: the fall to the right flipper seen close through the new camera table-gap (34.65 to 35.35 s), then the catch at 35.62 s in table-save",
-      "time": "2026-11-26T12:34:29.029Z",
+      "caption": "lobby-doors beside approved, draft still, lens blur of table-lobby 7 to 4: the plate Corporate HQ is crisp",
+      "time": "2026-11-26T12:45:44.490Z",
       "by": "machine-finish",
-      "from": "out/work/mf/r5-save.jpg"
+      "from": "out/work/mf/s-lobby-doors.jpg"
     }
   ]
 }
