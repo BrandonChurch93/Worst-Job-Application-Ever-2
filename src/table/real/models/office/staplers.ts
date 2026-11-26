@@ -5,8 +5,9 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type Surf, type V2, type V3 } from './kit'
 
 const C = {
-  red: hex(0xa8151b),
-  plate: hex(0x7b828b),
+  red: hex(0x98161b),
+  plate: hex(0x7c1318),
+  foot: hex(0xc4cbd3),
   under: [1, 0.6, 0.26] as RGB,
   steel: hex(0x9aa1aa),
   chrome: hex(0xc9d0d8),
@@ -67,12 +68,13 @@ function plateOutline(f: Frame): V2[] {
 const taper = (f: Frame, x: number): number => 21 - (5.5 * Math.max(0, Math.min(f.length, x))) / f.length
 const LIFT = 0.08
 const UNDER = { out: 2.4, drop: 2 }
+const FOOT = { show: 2.6, thick: 2 }
 // The enamel of the arm is smoother than the plate's, so the lamps draw a narrow highlight on its crown.
 const ARM: Surf = [0.17, 0, 1]
 // Across the stapler, in px beyond its taper: the top arm, the steel base that shows on both sides of it, and the shade the two lay on the plate.
 const SIDE = { arm: -1, steel: 1.8, shade: 4.8 }
 // The long highlight of the enamel, baked along the two shoulders of the arm: how much of it each ring of the section takes.
-const SHEEN = [0, 0, 0, 0.04, 0.34, 0.12, 0.02, 0, 0]
+const SHEEN = [0, 0, 0, 0.1, 0.22, 0.05, 0, 0, 0]
 
 function body(k: Kit, f: Frame): void {
   const L = f.length
@@ -89,7 +91,7 @@ function body(k: Kit, f: Frame): void {
     }
     return out
   }
-  k.poly(strip(2, L + 1, SIDE.shade), 0.05, 0.3, shade(C.plate, 0.34), SURF.brushed, 0)
+  k.poly(strip(2, L + 1, SIDE.shade), 0.05, 0.3, shade(C.plate, 0.5), SURF.enamel, 0)
   k.poly(strip(3, L - 3, SIDE.steel - 1), 0, 1.6, C.rubber, SURF.rubber, 0.3)
   k.poly(strip(0, L, SIDE.steel), 1.4, 3.2, C.dark, SURF.brushed, 1.2)
   k.poly(strip(4, L - 4, SIDE.steel - 2.6), 4.4, 0.5, C.chrome, SURF.chrome, 0.3)
@@ -133,7 +135,7 @@ function arm(k: Kit, f: Frame): void {
   const section = (x: number, grow: number, wide: number, tall: number, skirt: number): V3[] => {
     const w = (taper(f, x + PIN.x) + SIDE.arm) * wide * (0.6 + 0.4 * grow)
     const h = 1 + (21 - (5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
-    const half: V2[] = [[w - 0.8, -skirt], [w, -skirt + 1], [w, h * 0.5], [w * 0.975, h * 0.7], [w * 0.91, h * 0.86], [w * 0.8, h * 0.93], [w * 0.62, h * 0.99], [w * 0.36, h * 1.04], [w * 0.12, h * 1.065]]
+    const half: V2[] = [[w - 0.8, -skirt], [w, -skirt + 1], [w, h * 0.55], [w * 0.985, h * 0.8], [w * 0.94, h * 0.93], [w * 0.86, h * 0.99], [w * 0.64, h * 1.01], [w * 0.36, h * 1.02], [w * 0.12, h * 1.025]]
     const out: V3[] = half.map((q) => [x, -q[0], q[1]] as V3)
     for (let i = half.length - 1; i >= 0; i--) out.push([x, half[i]![0], half[i]![1]])
     return out
@@ -149,7 +151,7 @@ function arm(k: Kit, f: Frame): void {
     const low = step < 2 ? 0.72 : 1
     return mix(shade(C.red, low), C.sheen, Math.min(0.85, sheen))
   }
-  k.loft(xs.map(([x, g]) => section(x, g, 1.04, 0.66, 4 * g)), tint, ARM)
+  k.loft(xs.map(([x, g]) => section(x, g, 1.2 - 0.42 * Math.max(0, Math.min(1, x / L)), 0.7, 4 * g)), tint, ARM)
   k.box(L - 9, 0, -6.2, 5, 13, 2.4, C.chrome, SURF.chrome, 0.3)
   for (const s of [-1, 1]) {
     const seam: V3[] = []
@@ -179,8 +181,15 @@ function bases(z: Zone): Kit {
   for (const g of slingsOf(z)) {
     const f = frameOf(z, g)
     const outline = plateOutline(f)
-    k.poly(outline, PLATE.z, PLATE.thick, shade(C.plate, 0.8), SURF.brushed, 2.2, C.plate)
-    k.tube(outline.map((q) => [q[0], q[1], PLATE.z + PLATE.thick - 0.2] as V3), 1.25, C.chrome, SURF.chrome, 5, true)
+    const cx = (f.a[0] + f.b[0] + f.c[0]) / 3
+    const cy = (f.a[1] + f.b[1] + f.c[1]) / 3
+    const inner = outline.map((q) => {
+      const l = Math.hypot(q[0] - cx, q[1] - cy) || 1
+      return [q[0] - ((q[0] - cx) / l) * FOOT.show, q[1] - ((q[1] - cy) / l) * FOOT.show] as V2
+    })
+    k.poly(outline, PLATE.z, FOOT.thick, C.foot, SURF.chrome, 0.8, C.foot)
+    k.poly(inner, PLATE.z + FOOT.thick, PLATE.thick - FOOT.thick, C.plate, SURF.enamel, 1.8, shade(C.plate, 1.08))
+    k.tube(inner.map((q) => [q[0], q[1], PLATE.z + PLATE.thick - 0.2] as V3), 1.1, shade(C.plate, 1.2), SURF.enamel, 5, true)
     for (const q of [f.a, f.b, f.c]) k.cyl(q[0], q[1], PLATE.z + PLATE.thick, 5.8, 0.8, C.chrome, SURF.steel, 16, 0.3)
     k.at(f.s[0], f.s[1], PLATE.z + PLATE.thick, f.turn)
     body(k, f)

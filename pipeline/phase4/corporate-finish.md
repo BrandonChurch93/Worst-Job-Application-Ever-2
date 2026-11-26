@@ -93,3 +93,30 @@ The stills behind the counts: 11:21 `tier-corporate` and `lobby-doors`; 11:24 th
 - The warm lip under the staplers is in the tier's one glowing mesh, which the cubicles hold.
 - The black ring beside the tray is the hold of the layout and the frame's ejector: not mine, left alone.
 - `tests/table-corporate.test.ts`: the triangle limits of the tier went up with the new parts, and the test of the tower's box leaves out the glowing mesh, which now also holds the boardroom's pools and the loose note.
+
+## After the first pass (MEASURED 11:34 to 11:37 UTC, on the tree with merge 33 in it, commit 522854d5)
+
+- `npm test`: 116 files, 1466 of 1466 tests. `npm run build`: built. `npm run bots`: all clear, keen reached every one of the 37 gags on every seed.
+- `npm run counts -- --key table-wide --live low`, my rows (calls, triangles), before and after:
+
+| part | calls before | calls after | triangles before | triangles after |
+| --- | --- | --- | --- | --- |
+| model-hq | 5 | 5 | 12154 | 35246 |
+| model-beach | 4 | 4 | 9859 | 9859 |
+| model-boardroom | 4 | 4 | 8220 | 9252 |
+| model-revolving-door | 3 | 3 | 4008 | 4008 |
+| model-ladder | 2 | 2 | 9888 | 9888 |
+| model-wedges | 2 | 2 | 4844 | 4844 |
+| model-notes | 1 | 1 | 924 | 924 |
+| model-staplers | 6 | 6 | 7356 | 7708 |
+| model-inbox | 5 | 5 | 4364 | 4041 |
+| model-cubicles | 3 | 3 | 12355 | 12284 |
+| model-coffee-machine | 2 | 2 | 6628 | 7392 |
+
+Corporate: 21 calls (21 before), 74021 triangles (49897). Office: 16 calls (16), 31425 triangles (30703). Together 37 calls and 105446 triangles against 37 and 110600. Whole frame at the lowest level: 199 calls against 300.
+- No asset file in either folder: 0 MB in `assets-src`, `public/assets` and `assets-full` for `table/corporate` and `table/office`.
+- Band, on the `draft` still of `lobby-doors` after the merge: letters 0.0201, plate 0.6070, ratio 9.37.
+- Fine detail by the formula of M3 (`node out/work/tmp/m3.mjs <still> <approved>`, which calls `highFrequencyEnergy` of `tools/lib/measure-core.mjs`) on my `draft` stills: `tier-corporate` 0.785, `lobby-doors` 0.811, `tier-office` 1.012. The judged number is taken at the `final` tier, which I did not render.
+- The revolving door after merge 33: its post and foot stand wholly on the carpet in `tier-corporate` and `lobby-doors`; the carpet's width was not changed.
+
+A fault of mine: the merge commit 7452e955 (of `origin/main` at 11:36 UTC, records only) went out with git's own message and without the trailer. It is pushed and I do not rewrite history; every merge after it carries the trailer.
