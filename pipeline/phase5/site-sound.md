@@ -232,6 +232,12 @@ FINDING, MEASURED: the mp3 encoder turns a line down by about 0.45 dB at 128 kbi
 
 `--pack-check` now fails when a packed line decodes over 0 dB, when it cannot be decoded, and when ffmpeg is missing (the line says so): `linesOverFullScale` in `tools/lib/sound-packcheck.mjs`, `tests/audio-packcheck.test.ts`. MEASURED on this pack: pass, 38 files, the largest sample of the 34 lines at -1.12 dB (`line.marketing.perks.0.mp3`).
 
+### The momentary margins, and two visits kept for the ear (18:30Z)
+
+`npm run sound -- --levels` prints one more line, marked "information, not judged": the voice against the bed's loudest 0.4 s under each line, smallest first, and how many are under `audio.duckDb`. MEASURED: 2 of 16 are under 8 dB, 7.28 dB (the bumpers, `line.pinball.coffee.0`) and 7.52 dB (as heard, `line.decision.letter.0`). What `--levels` judges is unchanged. The same list is in `out/work/audio/levels.json` as `momentaryMargins`.
+
+`npm run sound -- --levels --ear` also keeps the output of the two renders as heard, as stereo mp3 at 192 kbit in `out/work/audio/heard/` (never in the repo): the same render the numbers come from, 16 bit, nothing made new. MEASURED: `live-keen-as-heard.mp3` 127.12 s, 3052224 bytes, -19.8 LUFS and peak -1.8 dB by ffmpeg; `live-skipper-as-heard.mp3` 118.93 s, 2855808 bytes, -18.7 LUFS and peak -3.0 dB. Each starts 0.5 s before the visit and runs 1 s past it. The 3 lines of the keen visit that were booked and taken back (`step2.crank.0`, `pinball.drain.0`, `decision.metrics.0`) are not in it: their page was turned before they began.
+
 ## The crank (point 5)
 
 `src/pages/step2/index.ts` line 857: the page's volume is `max(0.1, level)` from the moment the Audio volume row opens until that row is done, and 1 otherwise; `level` is a tenth for each whole turn.
@@ -260,6 +266,7 @@ Not heard by anyone: every number here is from a tool, none from an ear.
 ## What is not done, and what is not known
 
 - A6 and A9 wait for the mix; A10 is left as ruled.
+- `npm run sound -- --check` at 18:27Z on the 128 kbit pack, MEASURED: 8 pass (A1 to A5, A7, A8, A11), 1 fail (A10, `line.live.tugLost.0`), 2 not yet (A6, A9).
 - The lines with a peak over the bound were kept again by the Builder (24 of 34, main cc6329a6), not by me: the takes are not in this VM.
 - The packed lines are about 0.45 dB under their kept level (the encoder, see above).
 - `cut/CUTLIST.json` on main is older than the stage: 689 events against the 977 `npm run cut` gives now.
