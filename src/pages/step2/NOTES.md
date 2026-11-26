@@ -70,4 +70,8 @@ Decisions taken without asking, in the order they were met.
 - The dial: the housing is a sloped bezel on a stepped base ring in a darker copy of the shared steel; each hole has a countersink (`holesGeometry`); the hub stands on a foot and carries one painted sheen toward the key (`glintGeometry`).
 - The tray's wall shade (`trayWallShade`) also runs over the rim on the light's side, and tints the shade a little cool (`TRAY.cool`).
 - The temper of the cursor ends after the stamp (`TEMPER.spent`): it is `plain` at the crank until the crank throws it.
+- The cursor comes to a grip over `REACH` seconds and the ground under it rises at `CLIMB.rise` at most, with a look `CLIMB.ahead` px toward the pointer (`grip()` and `ground()` in `index.ts`): nothing sets the cursor on a machine in one step.
+- At the crank the page hands the cursor the grip's speed with `knock()` after each `place()`, so the cursor's own lean and stretch work; the share fades over the last `SWING.settle` turns before the crank takes off.
+- A field's chevron turns with its tray's spring.
+- The slot's window is rounded (`SLOT_LOOK.window`), its drums 97 px wide with a bright plateau (`drum.dark`, `drum.full`). The meter's lamps: `CRANK_LOOK.lamp`.
 - The keeper's notes, decisions and counts: `pipeline/phase4/step2-keeper.md`. Recipes: `assets-src/step2-keeper/RECIPE.md`.
