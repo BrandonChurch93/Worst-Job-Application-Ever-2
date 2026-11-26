@@ -1,0 +1,35 @@
+{
+  "folder": "ball-finish",
+  "pushed": "2026-11-26T10:41:18.127Z",
+  "commit": "fd193dd3d62930d3c15788f89e1601e8a1b78cb9",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "clear-ball sheet at draft, approved above, the build below: round hard glass with no repeating ring, the arrow lit ivory, the struck ball round",
+      "time": "2026-11-26T10:41:16.466Z",
+      "by": "ball-finish",
+      "from": "out/work/looks/ball-sheet.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "the ball at its real size, approved then build: youre-fired, lobby-doors (draft)",
+      "time": "2026-11-26T10:41:16.689Z",
+      "by": "ball-finish",
+      "from": "out/work/looks/ball-pairs.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "film frames 5011 to 5016 across the bumper hit of 5010 (round 12 R4-3 issue 5): a whole round sphere on every frame",
+      "time": "2026-11-26T10:41:16.915Z",
+      "by": "ball-finish",
+      "from": "out/work/looks/ball-hit.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "displays: last-save approved and build, and the display of tier-corporate: a whole word on each, never a lone letter or a cut word",
+      "time": "2026-11-26T10:41:17.144Z",
+      "by": "ball-finish",
+      "from": "out/work/looks/displays.jpg"
+    }
+  ]
+}
