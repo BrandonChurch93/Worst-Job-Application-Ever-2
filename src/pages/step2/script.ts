@@ -36,8 +36,11 @@ const TURNS = 3.03
 const away: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
 const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
 const thrown: P = { x: caught.x + 127, y: caught.y + 27 }
+const shrunk: P = { x: thrown.x - 12, y: thrown.y + 26 }
+const WARNED = { see: 17.3, back: 17.38, held: 17.96, half: 18.62, stall: 18.95 }
 export const BUTTON: P = { x: 1688, y: 1004 }
 const beside: P = { x: BUTTON.x - 160, y: BUTTON.y - 30 }
+const halfway: P = { x: shrunk.x + (beside.x - shrunk.x) * 0.42, y: shrunk.y + (beside.y - shrunk.y) * 0.42 }
 const coiled: P = { x: beside.x - 18, y: beside.y - 9 }
 
 const T = {
@@ -118,8 +121,12 @@ const path: Seg[] = [
   line(T.lean, T.lean + 0.3, away, caught),
   line(T.lean + 0.3, 16.85, caught, caught),
   line(16.85, 17.0, caught, thrown),
-  line(17.0, 17.9, thrown, thrown),
-  line(17.9, RISE.there, thrown, beside),
+  line(17.0, WARNED.see, thrown, thrown),
+  line(WARNED.see, WARNED.back, thrown, shrunk),
+  line(WARNED.back, WARNED.held, shrunk, shrunk),
+  line(WARNED.held, WARNED.half, shrunk, halfway),
+  line(WARNED.half, WARNED.stall, halfway, halfway),
+  line(WARNED.stall, RISE.there, halfway, beside),
   line(RISE.there, RISE.back, beside, beside),
   line(RISE.back, RISE.coiled, beside, coiled),
   line(RISE.coiled, RISE.on, coiled, BUTTON),
@@ -189,7 +196,7 @@ export const poses: Pose[] = [
   [STRUCK.read, 'aim', 0.34], [STRUCK.read, 'press', 1.3, 0.5],
   [STRUCK.near, 'aim', null], [STRUCK.duck + 0.3, 'hold', 0.2],
   [TEMPER.safe, 'wobble', 0.5, 9, 0.5], [TEMPER.safe, 'aim', -1], [TEMPER.safe + 0.04, 'press', 0.66, TEMPER.fume - TEMPER.safe - 0.04], [TEMPER.fume, 'aim', null], [TEMPER.fume, 'press', 1.3, 0.12],
-  [17.3, 'aim', -1.1], [17.88, 'aim', null],
+  [WARNED.see, 'aim', -1.1], [WARNED.see + 0.02, 'wobble', 0.6, 11, 0.4], [WARNED.held - 0.04, 'aim', null], [WARNED.half, 'aim', -0.7], [WARNED.stall, 'aim', null],
   [RISE.heave, 'flat', RISE.heaved], [RISE.flop, 'flat', RISE.life],
   [RISE.back, 'press', 0.78, RISE.coiled - RISE.back],
   [RISE.coiled, 'press', 1.28, RISE.on - RISE.coiled],
