@@ -93,4 +93,5 @@ The ball off the flipper is the machine's own physics and the picture shows the 
 - `npm test`: 140 files, 1764 tests passed.
 - `npm run bots`: "bots: all clear".
 - `npm run still -- --key <step1-fire|table-wide|boss-fight> --format hd --tier draft --force`, then `cmp` against the three made on `origin/main` before any work: byte equal, all three.
-- `npm run determinism` and `npx tsc --noEmit -p .`: see the report.
+- `npm run determinism`: "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders".
+- `npx tsc --noEmit -p .`: exit 0, no output.
