@@ -17,6 +17,27 @@ Branch `agent/step2-dial`. Looks branch `agent/step2-dial-looks`.
 - The open field's ring is one shape `field-focus` and its caret is `field-caret`, both `part: 'rows'`, both lying inside the pocket. The four boxes `focus-n/s/w/e` and `caret` are gone.
 - The dial is one object carried by the shape `dial-wheel`. The shapes `dial-centre`, `dial-stop` and `dial-hole-<k>` stay in the list for the logic and are drawn by that object (key `''`).
 - `dial-wheel` carries `v: [angle]`, the wheel's turn in radians, clockwise on the page.
-- The dial rises as one rigid body. Before it has risen it stands 7.4 px out of the tray's floor (`DIAL_BODY.rest`), which is under the page, so the tray opens on a dial lying low and the dial then rises to its 40 px.
+- The dial rises as one body. Before it has risen its wheel stands 1.6 px out of the tray's floor (`DIAL_BODY.rest`), which is under the floor of a field (6 px under the page), its hub and its stop are drawn down into it, and its plate is held 0.4 px over the floor. So while the page parts, nothing of the dial shows outside the tray, and the tray opens on a dial lying in its floor. Then it rises to its 40 px and the hub and the stop come up with it.
 - The numerals stay `text` shapes of part `type` with keys `data:step2.dial.<d>`. They lie on the plate, 6.2 px under the wheel's top, and are seen through the holes. When the wheel turns it covers them, as on a real dial.
 - The shade inside each hole is painted (one instanced disc per hole, multiplied over the plate, turned with the wheel and always facing the key), because a 5 px wall is under what the shadow map resolves.
+- The tray is built in `rows.ts` and no longer by the shell's control maker: a dark joint, an aluminium rim 4.2 px wide, a wall that leans in to the floor, a glass floor in vertex-colour shade, and a painted shade on the wall of the light's side. Fields, the focus ring, the caret and the chevrons are still the shell's.
+- The dial stands 136 px in from the tray's padding (`DIAL.cx` 1160), where the approved image has it.
+- The cursor's ground now holds the Continue button's cap: the flat cursor used to slide under the cap and go out of sight for 0.2 s before the peel (seen on the sheet of `step2.continue`).
+- For `/root/slot_maker` (asked 00:56 UTC, done 01:00 UTC): `CRANK.gripW` 84, `gripH` 40, new `armW` 24; the crank's reach on the cursor is its own number `CRANK.tip` 126, so no event moved. The hub of the crank went 10 px down (`hy` cy + 156) so the wider grip clears the prompt line. `slot-reel-0..2` carry `v: [position]` in legends. The shape `slot-cabinet` has `height: TOP + 20` and the cursor's ground over the cabinet is `TOP + 20`. On this branch alone, where the cabinet is still a stand-in, the stand-in box covers the reel legends (they lie at `TOP + 14`); the real cabinet has them under its glass.
+
+## Acting (recipe 5)
+
+One word for each beat, and the poses that carry it. Times are seconds of the unit.
+
+| Beat | Word | Poses |
+| --- | --- | --- |
+| `step2.open` | cocky | stands between the rows till 1.06, strolls to the first field (there 1.62), a decided `tap` at 1.74 that lands on the click at 1.88 |
+| `step2.dial` | caught out | `startle` at 1.96 as the row opens under it; `jump` at 3.3 when the wheel snaps home; `anticipate` at 4.13 before the third digit; scared in the whip, shocked at the fling, the page's `recoil` where it lands; nervous and a `doubleTake` at 6.6, held to 7.55 |
+| `step2.slot` | wary | `rear` at 8.28 as the second row opens, held to 8.64; draws the knob up 12 px (9.03 to 9.11) before the pull; plain while the reels turn, shocked at 11.0 on the wrong date; the page's `flinch` under the coins, scared, runs to the left column |
+| `step2.crank` | temper | `dustOff` at 12.76 where it is safe, angry from 13.36, marches back, `stamp` at 13.9 that drives the third field open at 14.0; shocked at 15.22 when the crank runs away; `cower` at 15.60 where it lands, held to 16.22; angry again and back in at 16.32; flat at 16.80, exhausted |
+| `step2.continue` | spent | flat and dragging to the button, peels up at 19.80, plain at 20.28, presses at 20.30 |
+
+- No reaction is used twice in the page: tap, startle, jump, anticipate, recoil, doubleTake, rear, flinch, dustOff, stamp, cower.
+- Nothing is cued in the half second before a key picture: 1.0 s (the cursor stands still from 0 to 1.06), 3.2 s (nothing between 1.96 and 3.3), 15.2 s (the shock of the runaway moved from 15.17 to 15.22, the old recoil at 15.20 is gone).
+- No event of the page moved. MEASURED by listing the film's events before and after: row-open 1.88, 8.20, 14.00; dial-fling 5.58; lever-pull 9.37; coins 11.96; crank-runaway 15.17; flatten 16.80; peel-up 19.80; button-press 20.30. Only footsteps moved.
+- At key `step2-rest` the cursor now stands at (1575, 395), between the first and second rows, where the approved image has it (it stood at (1590, 425), half on the second field).

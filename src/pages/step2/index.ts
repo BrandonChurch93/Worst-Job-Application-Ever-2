@@ -454,7 +454,7 @@ export function makePage(): PageLogic {
 
   function topAt(x: number, y: number): number {
     const i = s.open
-    if (i < 0) return 0
+    if (i < 0) return overGo({ x, y }) ? heights.button - (s.pressed ? heights.keyTravel : 0) : 0
     let top = TRAY_Z
     const put = (v: number): void => {
       top = Math.max(top, v)

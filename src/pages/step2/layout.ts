@@ -70,8 +70,8 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 55, hy: cy + 146, rest: -0.75, arm: 96, armW: 24, gripW: 84, gripH: 40, tip: 126, base: 110, hub: 44,
-  segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 55 + 227, segY: cy + 146 - 48
+  hx: FX + PAD + 55, hy: cy + 156, rest: -0.75, arm: 96, armW: 24, gripW: 84, gripH: 40, tip: 126, base: 110, hub: 44,
+  segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 55 + 227, segY: cy + 156 - 48
 }
 
 export const REEL_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
