@@ -1,35 +1,35 @@
 {
   "folder": "step2-fix",
-  "pushed": "2026-11-26T08:22:54.277Z",
-  "commit": "d9e59183b67bdde10ba482aade08198ea340775e",
+  "pushed": "2026-11-26T08:37:11.730Z",
+  "commit": "d7f4ad800d76d036c91163629d3ea72ee5413e7b",
   "looks": [
     {
       "file": "look-1.jpg",
+      "caption": "Still sheet-machines-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T08:34:52.412Z",
+      "by": "step2-fix",
+      "from": "out/work/stills/sheet-machines-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
       "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T08:20:38.676Z",
+      "time": "2026-11-26T08:35:05.540Z",
       "by": "step2-fix",
       "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
-      "file": "look-2.jpg",
-      "caption": "the tray's corners at four times the size: approved left, the branch right (rim 5, before the last step to rim 7)",
-      "time": "2026-11-26T08:22:52.088Z",
-      "by": "step2-fix",
-      "from": "out/work/looks/files/20261126082252-tray-zoom.png"
-    },
-    {
       "file": "look-3.jpg",
-      "caption": "step2-crank: approved above, cf77cf3a below: thin wall, round floor corners, lighter lenses",
-      "time": "2026-11-26T08:22:52.334Z",
+      "caption": "step2-dial key, approved above, build below: the tip now settles on the lower right shoulder of the cap; base ring darker",
+      "time": "2026-11-26T08:37:10.194Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126082252-cmp-crank-4.png"
+      "from": "out/work/looks/files/20261126083710-cmp-dial-5.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step2.slot at 13.0 s on cf77cf3a: the coins lie at the foot of the tray's wall",
-      "time": "2026-11-26T08:22:52.601Z",
+      "caption": "step2-crank key, approved above, build below: lit segments with a pale core and an orange rim, their light kept near them",
+      "time": "2026-11-26T08:37:10.423Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126082252-slot-lie.png"
+      "from": "out/work/looks/files/20261126083710-cmp-crank-5.png"
     }
   ]
 }
