@@ -1,35 +1,35 @@
 {
   "folder": "machine-finish",
-  "pushed": "2026-11-26T11:44:26.045Z",
-  "commit": "c530339c7ecbe5a5c199484dcb9bc49e271b9317",
+  "pushed": "2026-11-26T12:07:14.741Z",
+  "commit": "6902685fb6be3d714cee4f7047850759a0da13a2",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
-      "time": "2026-11-26T11:37:52.044Z",
+      "caption": "Contact sheet, the beat pinball.launch: 12 frames from 1:15.00 to 1:17.97, draft tier, preview",
+      "time": "2026-11-26T11:59:57.354Z",
       "by": "machine-finish",
-      "from": "out/work/compare/compare-lobby-doors.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Contact sheet, the beat pinball.reveal: 12 frames from 1:11.00 to 1:14.97, draft tier, preview",
-      "time": "2026-11-26T11:39:36.904Z",
+      "caption": "Contact sheet, the beat pinball.launch: 12 frames from 1:15.00 to 1:17.97, draft tier, preview",
+      "time": "2026-11-26T12:02:22.151Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_reveal-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Contact sheet, the beat pinball.save: 12 frames from 1:41.00 to 1:43.97, draft tier, preview",
-      "time": "2026-11-26T11:41:30.646Z",
+      "caption": "Contact sheet, the beat pinball.launch: 12 frames from 1:15.00 to 1:17.97, draft tier, preview",
+      "time": "2026-11-26T12:04:14.333Z",
       "by": "machine-finish",
-      "from": "out/work/sheets/sheet-beat-pinball_save-preview-draft.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "the reveal beat: the page's light goes down behind the tube, cut to the dark machine, the marquee first, then the tiers from the top, the whole machine held lit",
-      "time": "2026-11-26T11:44:24.867Z",
+      "caption": "the launch beat: at the plunger the arrow turns away from the lane and trembles, then braces before the launch",
+      "time": "2026-11-26T12:07:13.450Z",
       "by": "machine-finish",
-      "from": "out/work/mf/q6-reveal.jpg"
+      "from": "out/work/sheets/sheet-beat-pinball_launch-preview-draft.jpg"
     }
   ]
 }
