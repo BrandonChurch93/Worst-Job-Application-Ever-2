@@ -11,7 +11,8 @@ const keys = String(a.keys || 'reply-all').split(',')
 const variants = String(a.variants || 'asis').split(',')
 const tier = a.tier || 'draft'
 const size = Number(a.size || 420)
-const DETAIL = { asis: { shell: true, bend: true, press: null }, noshell: { shell: false, bend: true, press: null }, nobend: { shell: true, bend: false, press: null }, press: { shell: true, bend: true, press: [1, 0, 0.1] }, pressmost: { shell: true, bend: true, press: [1, 0, 0.14] } }
+const DETAIL = { asis: {}, noshell: { shell: false }, nobend: { bend: false }, press: { press: [1, 0, 0.15] }, pressmost: { press: [1, 0, 0.3] }, open25: { open: 0.25 }, open50: { open: 0.5 }, open75: { open: 0.75 }, open90: { open: 0.9 } }
+const PLAIN = { shell: true, bend: true, press: null, open: null }
 const dir = at('out', 'work', 'ball-diag')
 fs.mkdirSync(dir, { recursive: true })
 const session = await openSession({ format: 'hd' })
@@ -25,11 +26,12 @@ try {
       const t0 = Date.now()
       const b64 = await session.page.evaluate(async ([s, d]) => {
         window.dispatchEvent(new CustomEvent('wjb-ball', { detail: d }))
+        window.dispatchEvent(new CustomEvent('wjb-open', { detail: d.open }))
         window.showcase.setDiagnostic('beauty')
         await window.showcase.renderStill(s)
         const c = document.querySelector('canvas')
         return c.toDataURL('image/png').split(',')[1]
-      }, [spec, DETAIL[v] || DETAIL.asis])
+      }, [spec, { ...PLAIN, ...(DETAIL[v] || {}) }])
       const png = Buffer.from(b64, 'base64')
       const file = path.join(dir, `${key.replace(':', '-')}-${v}-${tier}.png`)
       fs.writeFileSync(file, png)

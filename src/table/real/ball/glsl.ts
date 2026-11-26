@@ -102,12 +102,13 @@ void main() {
 	}
 	if ( uPress.w > 0.0 ) {
 		float along = dot( p, uPress.xyz );
-		float over = along - ( 1.0 - uPress.w );
-		p += ( p - uPress.xyz * along ) * uPress.w * 0.3 * smoothstep( - 0.3, 1.0, along );
-		if ( over > 0.0 ) {
-			p -= uPress.xyz * over;
-			n = normalize( mix( n, uPress.xyz, smoothstep( 0.0, 0.03, over ) ) );
-		}
+		float top = 1.0 - 0.15 * uPress.w;
+		float thin = 1.0 - 0.5 * uPress.w;
+		float wide = 1.0 + 0.35 * uPress.w;
+		float na = dot( n, uPress.xyz );
+		n = normalize( ( n - uPress.xyz * na ) / wide + uPress.xyz * na / thin );
+		n = normalize( mix( n, uPress.xyz, smoothstep( 0.0, 0.03, along - top ) ) );
+		p = ( p - uPress.xyz * along ) * wide + uPress.xyz * min( along, top ) * thin;
 	}
 	mat3 m = mat3( uToPage ) * mat3( modelMatrix );
 	vec4 wp = modelMatrix * vec4( p, 1.0 );
@@ -140,6 +141,7 @@ uniform float uDrop;
 uniform float uTrue;
 uniform float uPlugTurn;
 uniform float uOpen;
+uniform float uGone;
 uniform float uBend;
 varying vec3 vO;
 varying vec3 vP;
@@ -320,7 +322,7 @@ export const frontFragment = /* glsl */ `
 ${head}
 ${shared}
 
-void main() {
+void paint() {
 	vec3 V = normalize( uEye - vP );
 	vec3 N = normalize( vN );
 	if ( vKind > 1.5 ) {
@@ -383,6 +385,10 @@ void main() {
 
 	gl_FragColor = vec4( col, alpha );
 }
+void main() {
+	paint();
+	gl_FragColor *= 1.0 - uGone;
+}
 `
 
 export const backFragment = /* glsl */ `
@@ -392,7 +398,7 @@ uniform mat4 projectionMatrix;
 varying vec3 vView;
 varying vec3 vMid;
 varying float vRw;
-void main() {
+void paint() {
 	vec3 V = normalize( uEye - vP );
 	vec3 N = normalize( vN );
 	gl_FragDepth = gl_FragCoord.z;
@@ -445,6 +451,10 @@ void main() {
 		gl_FragDepth = at.z / at.w * 0.5 + 0.5;
 	}
 	gl_FragColor = vec4( col, alpha );
+}
+void main() {
+	paint();
+	gl_FragColor *= 1.0 - uGone;
 }
 `
 
