@@ -1,33 +1,33 @@
 {
   "folder": "decision",
-  "pushed": "2026-11-26T03:04:54.012Z",
-  "commit": "e2264429e7eb5a5872725f775510b6183c0b5415",
+  "pushed": "2026-11-26T03:11:20.872Z",
+  "commit": "b8ea46634329b43c2d36190e886451e4a6e06fd4",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-decision-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T03:04:35.649Z",
+      "caption": "Still key-decision-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T03:08:07.773Z",
       "by": "decision",
-      "from": "out/work/stills/key-decision-hd-draft.png"
+      "from": "out/work/stills/key-decision-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key picture at e2264429: approved left, build right (review tier)",
-      "time": "2026-11-26T03:04:52.336Z",
+      "caption": "Contact sheet, the beat decision.metrics: 12 frames from 2:27.00 to 2:30.97, draft tier, preview",
+      "time": "2026-11-26T03:11:05.772Z",
+      "by": "decision",
+      "from": "out/work/sheets/sheet-beat-decision_metrics-preview-draft.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key picture at b8ea4663: approved above, build below (review tier)",
+      "time": "2026-11-26T03:11:19.529Z",
       "by": "decision",
       "from": "out/work/report-cmp.jpg"
     },
     {
-      "file": "look-3.jpg",
-      "caption": "Stamp and cursor: approved left, build right",
-      "time": "2026-11-26T03:04:52.561Z",
-      "by": "decision",
-      "from": "out/work/report-stamp.jpg"
-    },
-    {
       "file": "look-4.jpg",
-      "caption": "Metrics panel: approved above, build below",
-      "time": "2026-11-26T03:04:52.794Z",
+      "caption": "Metrics panel at b8ea4663: approved above, build below",
+      "time": "2026-11-26T03:11:19.757Z",
       "by": "decision",
       "from": "out/work/report-panel.jpg"
     }
