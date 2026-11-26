@@ -7,6 +7,13 @@ type Key = [number, number, number]
 
 export interface FilmScript { pointer(time: number): Pointer; reactions: { at: number; name: Reaction }[]; tickAt: number }
 
+// The film's cues, in seconds of the unit. Each idea has a wind-up, a move, a pose and a hold of 0.4 s or more.
+// The doubt: it comes to the box, flinches off it, stands and sweats, winds up and taps it.
+// The horror: a jump at the crack; the page itself cues the rear at the unfold and the cower under the cannons.
+// The anger: a snap out of the second slab's way two frames after it is fired.
+// The press: it gathers itself, climbs on and drops its whole weight on the button.
+export const ACT = { flinch: 2.72, windup: 3.36, tap: 3.72, take: 4.7, jump: 6.15, steel: 8.7, snap: 11.46, gather: 29.45, press: 30.42 } as const
+
 export function makeScript(L: Step4Layout): FilmScript {
   const cb = L.checkbox
   const tickAt = 3.8
@@ -14,15 +21,17 @@ export function makeScript(L: Step4Layout): FilmScript {
     [0, 960, 560], [0.6, 960, 560],
     [1.5, cb.cx + 330, cb.cy + 26], [2.3, cb.cx + 70, cb.cy + 26], [2.7, cb.cx + 26, cb.cy + 14], [3.05, cb.cx + 96, cb.cy + 56], [3.45, cb.cx + 96, cb.cy + 56], [3.75, cb.cx, cb.cy + 2], [3.92, cb.cx, cb.cy + 2],
     [4.4, cb.cx + 430, cb.cy + 44], [5.3, cb.cx + 430, cb.cy + 44], [6.0, 820, 890], [6.12, 824, 894], [6.5, 600, 800], [7.4, 450, 830], [9.0, 430, 840],
-    [9.45, 430, 880], [10.3, 430, 880], [10.75, 420, 700], [11.85, 420, 700], [12.3, 450, 900], [14.9, 450, 900], [15.3, 400, 720], [17.35, 400, 720],
+    [9.45, 430, 880], [10.3, 430, 880], [10.75, 420, 700], [11.5, 420, 700], [11.95, 450, 900], [14.9, 450, 900], [15.3, 400, 720], [17.35, 400, 720],
     [17.8, 520, 900], [23.95, 520, 900], [25.4, 960, 770], [26.6, 1300, 800], [27.1, 1330, 880],
-    [27.4, 1380, 934], [28.1, 1380, 934], [28.9, FALLEN.x - 215, FALLEN.y + 62], [29.5, FALLEN.x - 215, FALLEN.y + 62], [30.25, FALLEN.x - 122, FALLEN.y - 28], [32, FALLEN.x - 122, FALLEN.y - 28]
+    [27.4, 1380, 934], [28.0, 1380, 934], [28.6, FALLEN.x - 215, FALLEN.y + 62], [29.5, FALLEN.x - 215, FALLEN.y + 62], [30.25, FALLEN.x - 122, FALLEN.y - 28], [32, FALLEN.x - 122, FALLEN.y - 28]
   ]
   const clicks: number[] = [tickAt]
   const burst = (from: number, to: number, every: number): void => {
     for (let t = from; t < to - 1e-6; t += every) clicks.push(Number(t.toFixed(3)))
   }
-  burst(9.9, 15.6, 0.66)
+  burst(9.9, 11.3, 0.66)
+  clicks.push(12.01, 12.37)
+  burst(13.2, 15.6, 0.66)
   clicks.push(16.45, 16.85, 17.25, 17.55)
   clicks.push(18.0, 18.16, 18.32, 18.6, 18.8)
   clicks.push(19.05, 19.3, 19.52, 19.72, 19.9, 20.07)
@@ -57,11 +66,15 @@ export function makeScript(L: Step4Layout): FilmScript {
     return { x, y, down }
   }
   const reactions: { at: number; name: Reaction }[] = [
-    { at: 3.5, name: 'anticipate' },
-    { at: 4.7, name: 'doubleTake' },
-    { at: 6.15, name: 'jump' },
-    { at: 8.7, name: 'anticipate' },
-    { at: 29.45, name: 'anticipate' }
+    { at: ACT.flinch, name: 'flinch' },
+    { at: ACT.windup, name: 'anticipate' },
+    { at: ACT.tap, name: 'tap' },
+    { at: ACT.take, name: 'doubleTake' },
+    { at: ACT.jump, name: 'jump' },
+    { at: ACT.steel, name: 'anticipate' },
+    { at: ACT.snap, name: 'snap' },
+    { at: ACT.gather, name: 'anticipate' },
+    { at: ACT.press, name: 'stamp' }
   ]
   return { pointer, reactions, tickAt }
 }

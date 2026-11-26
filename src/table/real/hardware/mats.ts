@@ -2,7 +2,9 @@ import * as THREE from 'three'
 import { hash01 } from '../../../core/random'
 import { studio } from '../../../post/studio'
 import { lit } from '../light'
+import { LIT } from '../lights/groups'
 import type { Zone } from '../zone'
+import { steel } from '../frame/steel'
 import { Geo, type RGB } from './geo'
 
 export const hex = (h: number): RGB => {
@@ -16,12 +18,12 @@ export const FIN = { steel: 0, alu: 1, brass: 2, rubber: 3, gloss: 4, dark: 5, z
 // Clear coat, roughness, metalness of each finish.
 const FINISH: [number, number, number][] = [
   [0, 0.09, 1],
-  [0, 0.34, 0.85],
-  [0, 0.22, 0.95],
+  [0, 0.3, 1],
+  [0, 0.2, 1],
   [0, 0.9, 0],
   [1, 0.34, 0],
   [0, 0.5, 0.6],
-  [0, 0.38, 0.92],
+  [0, 0.3, 1],
   [0, 0.5, 0],
   [0, 0.035, 1]
 ]
@@ -117,10 +119,10 @@ export const metalOf = (z: Zone): THREE.MeshPhysicalMaterial => {
   m.onBeforeCompile = (shader, renderer) => {
     room.call(made0, shader, renderer)
     shader.uniforms.hwFloor = { value: new THREE.Vector3(...(FLOOR[z.id] ?? [0.72, 0.72, 0.72])) }
-    shader.fragmentShader = 'uniform vec3 hwFloor;\n' + shader.fragmentShader.replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + MIRROR)
+    if (!LIT.includes(z.id)) shader.fragmentShader = 'uniform vec3 hwFloor;\n' + shader.fragmentShader.replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\n' + MIRROR)
   }
-  m.customProgramCacheKey = () => 'wja-studio-hardware-metal'
-  m = lit(m, z)
+  m.customProgramCacheKey = () => `wja-studio-hardware-metal-${LIT.includes(z.id) ? 'lit' : 'page'}`
+  m = lit(steel(m, z, { ceiling: 0.035, panel: 0.34, wide: 0.12, horizon: 1.25 }), z)
   m.name = `hardware.${z.id}`
   made.set(z.id, m)
   return m
