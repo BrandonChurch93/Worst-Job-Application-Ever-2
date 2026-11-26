@@ -12,11 +12,12 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 ## The page, top to bottom (px)
 
-- 0 to 1080: heading, subline, the paragraph `copy:transitions.step3`, the loader port at the right content edge (ring 330, cup 220, centre 1627, 520).
+- 0 to 1080: the first screen, laid out as `loader-page.png`. Heading, subline and the paragraph `copy:transitions.step3` in the left column (wrap 600, three lines of 34), the loader port at the right content edge (ring 330, cup 220, centre 1627, 520: its right edge is the content edge 1792). The feed tube leaves the port's foot and runs straight off the bottom of the screen.
 - 1080 to 1464: the marquee, 4 balls tall, as wide as the playfield.
 - 1464, 2544, 3624: the three tiers, 1920 x 1080 each, floors at -96, -192, -288.
-- 4704 to 4896: the apron, 2 balls deep, with the drain plate, its label and the card.
-- 4896 to 5976: the last screen, with the outlet port on the left content edge, the result card and its button.
+- 4704 to 4896: the apron, 2 balls deep: two ceramic slabs, the drain plate between them with `copy:step3.table.buildings.drain`, and the card `copy:step3.table.apronCard` on the right slab.
+- 4896 to 5976: the last screen. The outlet port stands on the left content edge (its left edge is 128), the result card and its button share one left edge at 560 and the card ends on the right content edge.
+- No word stands on or beside an insert. The kit: an insert carries a picture and no words. The name of a mode's insert and its line are shown by the display of its tier: the page gives the text `display.<tier>.<mode>` (the line, state `mode<mode>`) with `v[0]` the seconds since the mode was lit, and the text `display.<tier>.<mode>.insert` (the name, state `name<mode>`) for the first 1.5 s (`NAME`, the hold of the displays).
 
 ## The tier
 
@@ -76,16 +77,39 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 ## Cameras
 
-- `tier-1`, `tier-2`, `tier-3`: the home camera moved to the tier, at home's distance from its floor.
-- `table-wide`, `table-lobby`, `table-replyall`, `table-fired`, `table-save`: fixed poses, set by eye against the approved images. To be refitted when the models exist.
-- `rail`: above and behind the ball, looking a little ahead. Its heading is the chord of the rail from 1.6 balls behind the ball to 2.2 ahead, so it does not jump at the joints of the rail. The whole ball is in the frame.
-- `film`: a list of times and camera names, blended over 0.6 s.
-- The site sets a camera's near plane at 1500 px in front of its target, so a fixed pose keeps its target within 1500 px of the nearest thing it must show. `table-wide` lost the Street tier until its target was moved toward the eye.
-- The wells are deep (the Street floor is 288 px down), so a low camera cannot see the flippers. `table-save` is steep for that reason.
+Lengths in balls, page coordinates, z up from the page surface. `look(name, eye, target)` builds a pose; the lens is `cameras.<name>.fovDeg`.
 
-- `table-lobby` looks down from the south-east at about 38 degrees, far enough back to hold the top of the HQ box. The approved image is a low close view of the doors. In the blockout a low view shows a blank wall, because the sign is type on the top of the box. To be refitted low when the model has a sign on its front.
-- `table-save` shows the whole Street tier from above the apron, so the flippers, the inserts and the drain are in one picture.
-- Film order: follow, `table-wide` at 4.2 s, follow at 8.2, `tier-3` at 11.2, `table-lobby` at 13.0, follow at 14.3, `table-replyall` at 20.6, follow at 22.6, `table-fired` at 27.2, follow at 28.8, `rail` at 31.0, follow at 33.0, `table-save` at 34.3, follow at 36.6.
+- `tier-3`, `tier-2`, `tier-1`: the home camera moved down the page to the tier, at home's distance from its floor, home's lens, sharp edge to edge. Not fitted. `tier-1` is 0.95 balls lower and 5% further so the apron edge is in the frame.
+- `table-wide`, lens 43: eye (MID + 0.35, APRON_Y + 12.4, 11.22), target (MID + 0.35, APRON_Y - 9.24, 0.85). Solved from the approved image: near frame corners in the bottom corners, far frame end 23% from the top, 25.6 degrees down. The 0.35 to the right takes in the launch lane and the feed tube, which make the machine wider on the right than the approved one.
+- `table-lobby`, lens 56: eye (MID + 2.65, Y0 + 6.43, -0.35), target (MID - 0.13, Y0 + 5.31, 0). 0.65 ball above the Corporate floor, from the right of the carpet. From the front the revolving door (on the carpet axis, in front of the doors hold) covers the ball.
+- `table-replyall`, lens 30: eye (MID, Y1 + 16.35, 15.4), target (MID, Y1 + 6.3, -2). The whole Office tier from the player's end, 30 degrees from straight down.
+- `table-fired`, lens 35: eye (8.56, Y2 + 7.8, 1.1), target (5.2, Y2 + 3.8, -2.3). Front right of the firehouse, 33 degrees down.
+- `table-save`, lens 40: eye (MID, Y2 + 13.4, 6.05), target (MID, Y2 + 8.6, -2.26). Over the apron, 60 degrees down. Not flatter: the Street floor is 3 balls under the apron edge and a flatter view loses the flipper tips behind it.
+- `rail`, lens 40: 3.4 behind the ball along its rail, 2.85 above it, looking at a point 0.85 ahead at the ball's height. The heading is the chord of the rail from 1.6 behind the ball to 2.2 ahead. The point it follows is a smoothed copy of the rail (seven samples 0.4 apart, weights 1 2 3 4 3 2 1), never the raw path.
+- `ride`: the rail camera's rule up the launch lane, 0.7 behind and 2.6 above at the plunger with a 76 degree lens, opening to 3.4 behind, 3.4 above and 40 degrees over the first 7 balls.
+- The lens: every close camera (`LENS`) carries `focus`, the distance in page px from the eye along the view axis to the centre of the cursor's ball on that frame (`table-wide`: to its target), and `aperture`, the width of the opening in page px. Blur circle on screen in px = aperture x |d - focus| / d x (H / 2 / tan(fov / 2)) / focus. Apertures: `table-wide` 8, `table-lobby` 7, `table-replyall` 12, `table-fired` 10, `table-save` 20, `rail` 16, `ride` 10. The tier cameras and `follow` carry none.
+- Shake: the film camera's target is pushed sideways on a hard hit (`HARD`: bumper, sling, doors-slam, scoop-kick, plunger, ball-hit, drop-target, mom-save, ball-save). It reads the machine's own table of last events and its step count, so it is a pure function of the state. Size 0.6% of the frame's height for a hit of weight 1, 23 Hz, gone by half its size every 0.06 s, nothing after 0.5 s, never more than 0.9% of the height. Live mode has no shake: the visitor is aiming.
+- The film (`FILM`: time, camera, seconds of move). A close view is entered by a cut, never a blend: a blend was half way through its move on the hit. Two moves only: `ride` to `tier-3` (0.6 s, the ball arrives on the table) and `rail` to `follow` (0.6 s). No cut within 0.15 s of a hit: `tests/pinball-stage.test.ts`.
+
+| At (s) | Camera | Why there |
+| --- | --- | --- |
+| 0 | follow | the seal and the tube, the view goes down the page with the ball |
+| 4.2 | `table-wide` | lights down at 4.0, power on at 5.2: the wake is seen whole |
+| 8.5 | `ride` | the ball is on the plunger from 8.3, launched at 9.4 |
+| 11.0 | `tier-3` | the ball comes onto the Corporate tier |
+| 13.0 | `table-lobby` | 0.3 s before `doors-slam` (13.31) |
+| 14.3 | follow | the doors have opened (14.1), the flippers are needed |
+| 19.5 | `table-replyall` | the ball is in the inbox, before the first `ball-drop` (20.0) |
+| 22.2 | follow | the multiball is in play |
+| 27.2 | `table-fired` | the ball is in the firehouse, the `scoop-kick` is at 28.5 |
+| 28.8 | follow | after the kick |
+| 31.0 | `rail` | the ball is on the highway ramp |
+| 32.2 | follow | before the spiral |
+| 34.3 | `table-save` | the ball comes down to the flippers, `flipper-save` at 35.5 |
+| 36.6 | follow | the drain and the way out |
+
+- Live mode: the view is `follow`, the tier camera of the tier the ball is on, travelling in `live.pinball.tierTravelSeconds`. No close view in live mode yet.
+- The site sets a camera's near plane 1500 px in front of its target, so a fixed pose keeps its target within 1500 px of the nearest thing it must show.
 - While the ball is at the plunger or low on the feed rail the follow camera scrolls 2.4 balls further down, so the knob is in the frame.
 
 ## What shows the state
@@ -97,12 +121,11 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 ## Sheets
 
-- `table-map`: the machine from above in 1080 x 1920.
-- `clear-ball`: three balls on the Office tier: at rest on the left flipper, in flight, flattened beside a bumper.
+- `table-map`: straight above, 1080 x 1920, the page's full width across the frame (20 balls), from 0.35 balls above Tier 3 down into the apron. The marquee is not in it: the approved map is the three tiers and the apron inside the frame.
+- `clear-ball`: three balls on the Office tier in one close, low view with the lens of `table-fired`, left to right as the approved sheet has them: at rest on the left flipper (`nervous`, the sweat is the cursor's), in flight half a ball above the floor (`scared`), pressed on the lowest bumper (`shocked`, `flattened`). The places are computed from the flipper's pivot and the bumper's centre, so they follow the layout. The approved sheet is three separate pictures side by side; a sheet has one view, so this is one picture.
 
 ## Open
 
-- Each insert has its name beside it as a small label (`copy:step3.table.modes.N.insert`), because the moulded pictures do not exist yet and the copy has to be shown. The kit says an insert carries no words: when the pictures exist the names move to where the kit puts them.
 - The models are boxes. Signs are type on top of the boxes.
 - Lights down and power on change no light yet: the blockout has no dusk.
 - The ball's tone `glass` renders opaque in the blockout. That is the shell's view and stays. The cursor is placed at the ball's centre, so the blockout draws it on top of the ball.

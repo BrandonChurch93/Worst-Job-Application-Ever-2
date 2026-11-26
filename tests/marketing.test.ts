@@ -263,20 +263,18 @@ describe('the careers page', () => {
       s.advance(1)
       if (step % 8 !== 0) continue
       const list = drawn(s)
-      const slabs = list.filter((i) => /^perk-\d+-slab-/.test(i.id))
+      const slabs = list.filter((i) => /^perk-\d+-slab$/.test(i.id))
       if (slabs.length === 0) continue
       turningSteps++
-      const ids = new Set(slabs.map((i) => i.id.replace(/-slab-.*$/, '')))
-      for (const id of ids) {
-        const mine = slabs.filter((i) => i.id.startsWith(`${id}-slab-`))
+      for (const slab of slabs) {
+        const id = slab.id.replace(/-slab$/, '')
         const pit = list.filter((i) => i.id === `${id}-pit`)
         expect(pit.length, id).toBe(1)
         expect(pit[0]!.kind).toBe('well')
-        expect(mine.map((i) => i.id).sort()).toEqual([`${id}-slab-back`, `${id}-slab-front`])
-        for (const m of mine) {
-          expect([m.w, m.h]).toEqual([pit[0]!.w, pit[0]!.h])
-          expect(m.z1 - m.z0).toBeCloseTo(card, 6)
-        }
+        expect(list.filter((i) => i.id.startsWith(`${id}-slab`) && i.kind !== 'text' && i.role !== 'cardRule').map((i) => i.id)).toEqual([slab.id])
+        expect([slab.w, slab.h]).toEqual([pit[0]!.w, pit[0]!.h])
+        expect(slab.z0).toBeCloseTo(card / 2, 6)
+        expect(slab.v).toEqual([card])
         expect(-pit[0]!.z0).toBeGreaterThan(pit[0]!.h / 2)
         expect(list.some((i) => i.id === id)).toBe(false)
       }
@@ -401,7 +399,7 @@ describe('the careers page', () => {
     for (let i = 0; i < 52; i++) {
       s.advance(seconds(0.25))
       const list = drawn(s)
-      const well = list.find((d) => d.id === 'ticker-well')!
+      const well = list.find((d) => d.id === 'ticker-window')!
       const runs = list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-'))
       expect(runs.length).toBeGreaterThan(2)
       for (const r of runs) {
