@@ -5,7 +5,7 @@ import path from 'node:path'
 import { spawn, spawnSync } from 'node:child_process'
 import sharp from 'sharp'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
-import { readCanvas } from './lib/capture.mjs'
+import { drawStill, readCanvas } from './lib/capture.mjs'
 import { difference, label, psnrText, rawOf } from './lib/image.mjs'
 import { formatOfConfig, framesIn, tierOfConfig, timeLabel } from './lib/film-plan.mjs'
 import { addSound, checkDisk, clock, join, probe, probeLine, seconds, took } from './lib/film-encode.mjs'
@@ -186,11 +186,7 @@ async function stillCheck() {
   if (!rec.what || !rec.what.still) throw new Error(`${rel(pick.file)} has a record without the still it shows`)
   const session = await openLocal({ format: rec.format, assets: rec.assets || 'full', software })
   try {
-    await session.page.evaluate(async (s) => {
-      window.showcase.setDiagnostic('beauty')
-      await window.showcase.renderStill(s)
-    }, rec.what.still)
-    const png = await readCanvas(session.page)
+    const { png } = await drawStill(session, rec.what.still)
     const dir = path.join(rootDir, 'test')
     fs.mkdirSync(dir, { recursive: true })
     const here = path.join(dir, `${path.basename(pick.file, '.jpg')}-here.jpg`)

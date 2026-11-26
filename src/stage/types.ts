@@ -138,12 +138,22 @@ export interface Collider {
   closed?: boolean
 }
 
+// One panel of a sheet that an approved image shows as several pictures side by side: its own moment and its own camera.
+export interface SheetPanel {
+  list?: DrawList
+  cursors: CursorPose[]
+  view: CameraPose
+}
+
 export interface SheetFrame {
   list: DrawList
   cursors: CursorPose[]
   view: CameraPose
   width?: number
   height?: number
+  // Panels are drawn one by one, each as its own picture, and put side by side with a dark gutter of `gutter` px (at 1920 wide) between them.
+  panels?: SheetPanel[]
+  gutter?: number
 }
 
 export interface PageLogic {

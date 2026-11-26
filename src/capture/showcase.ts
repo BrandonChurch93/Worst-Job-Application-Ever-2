@@ -10,6 +10,7 @@ import { standInsOf, TONES } from '../shell/view'
 import { plannedHeight, typeRegister, walk } from '../shell/layout'
 import { words } from '../shell/words'
 import { projectPage } from '../stage/camera'
+import type { PanelPlan } from '../stage/panels'
 import type { CameraPose, Shape, TableState } from '../stage/types'
 
 export type { StillSpec, CursorState }
@@ -21,6 +22,7 @@ export interface Showcase {
   setAssets(id: string): Promise<void>
   setDiagnostic(view: string): void
   renderStill(spec: StillSpec): Promise<void>
+  sheetPanels(spec: StillSpec): PanelPlan | null
   countParts(spec: StillSpec): Promise<PartCounts>
   pictureStats(): { invalidValues: number }
   typeRegister(page: string): { key: string; text: string; states: string[]; made: 'copy' | 'config' | 'runtime' }[]
@@ -573,6 +575,9 @@ export function makeShowcase(app: App, ready: Promise<void>): Showcase {
       await ready
       await app.renderStill(spec)
       drew(spec.page)
+    },
+    sheetPanels(spec) {
+      return app.sheetPanels(spec)
     },
     async countParts(spec) {
       await ready
