@@ -54,6 +54,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 10:22 | both | 3 | a3, fine Office grain, no fan, bounce: tier-office, reply-all (art), tier-street (lights) | 10, 9 |
 | 10:26 | both | 4 | a4, after first push: tier-street (art), tier-corporate, youre-fired, table-wide (lights) | 13, 10 |
 | 10:28 | lights | 4 | a5, walls cut, haze peaked: tier-street, youre-fired, last-save, table-wide | 17, 10 |
+| 10:32 | both | 3 | a6: reply-all, lobby-doors (lights), tier-corporate (art) | 19, 11 |
+| 10:39 | both | 4 | a7, lamps answer the ball: tier-office (art), lobby-doors, last-save, table-wide (lights) | 22, 12 |
+| 10:42 | art | 1 | review still of tier-office for the time of one review still (87.3 s) | 22, 13 |
 
 ## Decisions
 
@@ -66,3 +69,12 @@ Counted from the first still, by part. Limit 40 a part in this round.
 - 10:20 Warm bounce: `BOUNCE` 0.55, tint 1.0/0.74/0.46, dying out 46 px over the floor, strongest on undersides. Reason: point 2.
 - 10:24 Told `/root/frame_finisher` what walls take from the hook. 10:27 `SHADOW.wall` 0.45: an upright face takes 0.55 of the head lamp, so no wall outshines the floor beside it.
 - 10:27 The haze round a lamp is peaked (`HAZE` 0.014 from amount 2 to 12, light compression): a hot warm middle under each sling in place of a flat pale disc. Street pools 0.85 of full (were 0.6), Corporate 0.95.
+- 10:31 Lacquer: `WET` 0.16 (was 0.1), `GLINT.level` 7, `STREAK.level` 3, `SPILL` 1.5: each globe and lane lamp leaves a streak toward the camera in the close keys (seen in `lobby-doors` a7 under the right globe).
+- 10:31 Inserts quieter: `INSERT_GLOW` rest 0.34, lit 0.64, and 1.0 only under a ball. Reason: beside the approved `reply-all` the lit windows were the brightest things on the floor.
+- 10:36 Round 12 motion issues given to me by /root (R4-3 issues 2, 3, 8, R4-4 issue 2), done in `levels.ts` as a pure reading of the draw list, no clock and no state:
+  - an insert rises as a ball rolls onto it and is full with the ball over its middle (`near()`, `ANSWER.reach` 0.55 balls), a window the score has lit stands at `INSERT_LIT` 0.72 so the ball still raises it; the window's glow in `art/index.ts` follows the same number (`INSERT_GLOW.hit` 1.0);
+  - the two globes at the carpet rest at 0.62 and flare to full when a ball strikes their post (`ANSWER.globeRest`, `globeReach` 1.1 balls);
+  - a bumper lamp rests at 0.36 (was 0.5), is full on the frame of the hit and falls back over 0.4 s (was 0.25);
+  - the red of the firehouse holds 0.6 with the ball in the bay, is full on the frame of the catch (0.3 s) and of the kick (falls to idle over 1.2 s); its pool before the bay and its image in the lacquer follow the same level;
+  - the scoop of the letter tray flashes the Office (0.8 of a flash, 0.25 s) on the frame it takes the ball and the frame it kicks it.
+  `/root/machine_finisher` confirmed the numbers in the draw list (10:41): nothing needed from it.
