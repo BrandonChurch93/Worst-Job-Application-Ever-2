@@ -433,7 +433,7 @@ function poseLeg(o: THREE.Object3D, s: Shape): void {
   N.set(-U.y, U.x, 0)
   if (N.lengthSq() < 1e-6) N.set(sx, 0, 0)
   N.normalize()
-  if (N.x < 0) N.negate()
+  if (N.x * sx < 0) N.negate()
   N.multiplyScalar(mix(-1, 1, open))
   N.z += 0.16 * open * (1 - flat)
   N.addScaledVector(U, -N.dot(U)).normalize()

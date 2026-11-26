@@ -18,10 +18,33 @@ Looked at `boss-fight.png`, `boss-down.png` and `boss-stages.png` at full size a
 
 ## Looks spent
 
-Counted by part, 40 each for this round.
+Counted by part, 40 each for this round. A look is one still rendered and looked at.
 
 | Part | Looks |
 | --- | --- |
+| boss-body | 9 |
+| boss-transform | 5 |
+| boss-weapons | 8 |
+| health-bar | 1 |
+| acting-boss | 2 |
+| verify-card | 0 |
+
+## Measures
+
+MEASURED at 04:19 UTC, `npm run measure -- --unit boss --tier review`, 1 m 28.6 s, record `out/work/measures/boss.json`: M1 pass, M2 FAIL (0.761 of 42754 textured pixels under 1 texel per pixel, limit 0.02, key `boss-fight`), M3 pass 0.8574 against 0.8, M4 pass (smallest type 18 px, contrast 4.63), M5, M6, M7, M9 pass. 7 green, 1 red.
+
+M2: the texels view counts only meshes whose material holds a colour `map`. The soft pixels were the halo of each spark and muzzle and the pool under each dart, which stretched step 1's 64 px halo picture over up to 230 px. They are now fans of rings with the light in the corners of their faces (`glow()` in `boss-weapons.ts`), so no picture is stretched. MEASURED after the change, `npm run still -- --key boss-fight --format hd --tier draft --diag texels`: the only textured pixels left are the stars of the darts and the muzzle, all at full density. The measure is to be run again.
 
 ## Decisions
 
+1. The hull is cast metal, no brushing: the brushed streaks came from the normal map on a full metal, which is gone. Plate 0xb2b6ba, roughness 0.42.
+2. The numerals stay on the cannons (settled by the brief).
+3. A wing breaks into two halves when the boss splits, so the wreck holds six small plates where the approved image holds four. Whole wings as wreck were the "few large flat plates" of the brief.
+4. The cursor's scorch at the power-down is `heal()` and then `hurt('scorched')` in the page's script: the damage window of the earlier hits cut the scorch short without the `heal()`.
+5. The knees of the legs bend outward on both sides, as approved.
+6. The fired slabs take the lacquer numbers of step 1's slabs (colour 0xa00d0b, roughness 0.46, coat 0.09).
+7. The rim of the health track is lit by the lamps and not by the room: metalness 0.25 in place of 1, so the side toward the key light is the bright one.
+8. A barrel turn of 0.70 rad is seen at `boss.lastStand` at 0.98 (26.9 s, cannon 0).
+9. `content/copy.json` holds no key for the four stage words of the sheet (Resting, Breaking loose, Unfolding, Boss): none added, told to the Builder.
+10. The merge commit 3f01ed8f was pushed without the trailer, by my mistake. History is not rewritten; every later merge carries it.
+11. The halo and pool of the weapons are geometry with vertex colours, not a stretched picture (see Measures).
