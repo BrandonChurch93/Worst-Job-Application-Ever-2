@@ -63,6 +63,11 @@ Each cell is draw calls / triangles.
 | before, cfd83123 | 201 | 21 / 31056 | 16 / 11980 | 15 / 23180 | 12 / 27120 | 10 / 15974 | 8 / 41304 | 8 / 10166 | 5 / 20920 | 4 / 1528 |
 | first pass, 10:51 UTC | 201 | 21 / 31484 | 16 / 11936 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 19144 | 4 / 1688 |
 | second pass, 11:54 UTC, f8ebae70 | 198 (rows 203) | 21 / 31868 | 16 / 11936 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 23624 | 4 / 1688 |
+| end, 12:24 UTC, 3286ac81 | 198 | 21 / 31868 | 16 / 12116 | 15 / 23180 | 12 / 29808 | 10 / 22214 | 8 / 49488 | 8 / 10166 | 5 / 23624 | 4 / 1528 |
+
+Sum of my rows at the end: 99 calls (99 before), 204000 triangles (183228 before, 20772 more of 30000 allowed).
+
+Tier keys at the end, 12:24 UTC (scene calls / triangles; before my work UNKNOWN, never measured): `tier-street` 107 / 298644, `tier-office` 128 / 351041, `tier-corporate` 110 / 270383.
 
 Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 before, 199108 after, 15880 more against the 30000 allowed.
 
@@ -104,6 +109,9 @@ Draw calls of my folders: 99 before, 99 after. Triangles of my folders: 183228 b
 
 30. Steel balls, third step: stripes overhead tried and taken back (read as drawn); the room overhead is a soft pale glow round the window, the floor in the lower half fades to dark under the ball.
 31. Rail cap (the Builder's mail of 12:16Z: walls keep their height, the rail on top wider and bright). The bright brushed land now takes the upper half of the round face that falls to the lane on the left (`CAP.cuts` of `RAIL.cuts`) and the bank and the shoulders of the cradle on the right; its tone is a neutral bright steel (0xeceae3) and not cream; two fine dark grooves run along each land as an extrusion's die leaves them. The walls under it stay navy.
+
+32. Front lands again (the Builder's mail of 12:25Z): the cap's steel tone at a lower level (0.8), so that the bright band runs round the near corners. MEASURED 12:28 UTC `table-wide` draft: mean 1.029 of approved (the Builder measured 0.994 at final where my draft read 1.004); land 78.7 against cap 143.6 and apron 148.1.
+33. Wire sheen and M3 on `rail-cam`: MEASURED 12:25 UTC, the same still with the sheen off reads 0.4046 against 0.4048 with it (mean square of the Laplacian over approved's, my own script, which gave the measure's 0.4048). The sheen is not the cause and stays. By thirds of the picture the two middle cells read 0.09 of approved: there the build is out of focus behind the ball, which is the camera's and the look's.
 
 ## Measurements
 

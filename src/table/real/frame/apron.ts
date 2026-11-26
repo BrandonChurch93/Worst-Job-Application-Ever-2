@@ -11,7 +11,7 @@ export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86
 const WALL: [number, number, number] = [0.085, 0.125, 0.235]
 // The outside of the near end faces the room, not the well: it stands as bright as the land on top of the rails.
 const FRONT = shade(hex(0xf4ecd9), 5)
-const SLOPE = shade(hex(0xe6dfce), 0.4)
+const SLOPE = shade(hex(0xeceae3), 0.8)
 // The slabs are cast a warm cream white.
 const CREAM = hex(0xf4ecd9)
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
