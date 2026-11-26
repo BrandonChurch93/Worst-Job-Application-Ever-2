@@ -15,8 +15,15 @@ export interface PopupPlan { title: string; box: Box; titleAt: { x: number; y: n
 export interface BannerPlan { key: string; w: number; h: number }
 export interface WeaponPlan { slabs: SlabPlan[]; popups: PopupPlan[]; banner: BannerPlan; slabType: TypeSpec; bannerType: TypeSpec; titleType: TypeSpec }
 
-// A slab is lobbed: it leaves the mouth, clears the top of the shield (z 80) and comes down to its flying height.
-const FLY = { z0: 24, z1: 24 + heights.slab, rise: 0.12, over: 112, fall: 0.5 }
+// A slab is lobbed: it leaves the mouth, clears the top of the shield (z 80), comes down to its flying height and dives into the page over the last of its way.
+const FLY = { z0: 24, rise: 0.12, over: 112, fall: 0.5, dive: 150, hop: 5, hopFrom: 0.02, hopTo: 0.16, drop: 0.1 }
+const flightHeight = (t: number, left: number): number => {
+  const from = MUZZLE.z - heights.slab / 2
+  const up = prog(t, 0, FLY.rise)
+  const high = t < FLY.rise ? from + (FLY.over - from) * (1 - (1 - up) ** 2) : FLY.z0 + (FLY.over - FLY.z0) * (1 - smooth(prog(t, FLY.rise, FLY.fall)))
+  const near = Math.min(1, Math.max(0, left / FLY.dive))
+  return high * near * (2 - near)
+}
 export const DART_LONG = 26
 export const DART_Z = 17
 export const SPARK_Z = 30
@@ -60,17 +67,16 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     const made = plan.slabs[s.m]!
     const k = s.state === 0 ? Math.min(1, (2 * SLAB.speed[f.phase]! * s.t) / made.w) : 1
     if (k <= 0.02) continue
-    const drop = s.state === 0 ? 0 : 1 - prog(s.t, 0, 0.12)
-    const sink = s.state === 2 ? smooth(prog(s.t, 0, SLAB.out)) : 0
-    const from = MUZZLE.z - heights.slab / 2
-    const up = prog(s.t, 0, FLY.rise)
-    const high = s.state !== 0 ? 0 : s.t < FLY.rise ? from + (FLY.over - from) * (1 - (1 - up) ** 2) - FLY.z0 : (FLY.over - FLY.z0) * (1 - smooth(prog(s.t, FLY.rise, FLY.fall)))
-    const z0 = (s.state === 0 ? FLY.z0 + high : FLY.z0 * drop) - sink * (heights.slab + 1.5)
+    const struck = s.push !== undefined
+    const fell = s.state === 0 ? 0 : flightHeight(s.air ?? 9, struck ? s.left : 0)
+    const hop = s.state === 1 && !struck ? FLY.hop * Math.sin(Math.PI * prog(s.t, FLY.hopFrom, FLY.hopTo)) : 0
+    const z0 = s.state === 0 ? flightHeight(s.t, s.left) : s.state === 1 ? fell * (1 - prog(s.t, 0, FLY.drop)) + hop : 0
     const landed = s.state === 0 ? 9 : s.state === 1 ? s.t : s.t + 9
     const sx = s.x
     const sy = s.y
-    out.push({ id: `fired-${s.m}`, part, kind: 'box', x: sx - made.w / 2, y: sy - made.h / 2, w: made.w, h: made.h, z0, z1: z0 + heights.slab, tone: 'danger', r: 8, rot: s.rot, role: 'slab', v: [k, landed, s.state === 0 ? s.t : 9, s.push === undefined ? 0 : 1] })
-    if (k >= 0.98 && sink < 0.82) out.push(label(`fired-${s.m}-words`, part, made.key, sx, sy, plan.slabType, Math.max(0.3, z0 + heights.slab) + (s.state === 1 && s.t < 0.6 ? 1.2 : 0), 'inkLight', s.rot))
+    out.push({ id: `fired-${s.m}`, part, kind: 'box', x: sx - made.w / 2, y: sy - made.h / 2, w: made.w, h: made.h, z0, z1: z0 + heights.slab, tone: 'danger', r: 8, rot: s.rot, role: 'slab', v: [k, landed, s.state === 0 ? s.t : 9, struck || s.rim ? 1 : 0] })
+    const type = k >= 1 ? plan.slabType : { ...plan.slabType, px: plan.slabType.px * k }
+    if (k >= 0.25) out.push(label(`fired-${s.m}-words`, part, made.key, sx, sy, type, Math.max(0.3, z0 + heights.slab) + (s.state === 1 && s.t < 0.6 ? 1.2 : 0), 'inkLight', s.rot))
   }
   if (bannerUp(f)) {
     const k = Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5))

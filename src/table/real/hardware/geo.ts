@@ -248,6 +248,15 @@ export class Geo {
     return this
   }
 
+  // What was added since `from` takes a tone that turns with the way each face looks.
+  tint(from: number, by: (nx: number, ny: number, nz: number) => RGB): this {
+    for (let i = from; i < this.vertices; i++) {
+      const k = by(this.n[i * 3]!, this.n[i * 3 + 1]!, this.n[i * 3 + 2]!)
+      for (let j = 0; j < 3; j++) this.c[i * 3 + j] = this.c[i * 3 + j]! * k[j]!
+    }
+    return this
+  }
+
   // What was added since `from` and lies on a ball round a centre takes the ball's own smooth turn, so no ring shows on it.
   round(from: number, cx: number, cy: number, cz: number, r: number, slack: number): this {
     for (let i = from; i < this.vertices; i++) {
