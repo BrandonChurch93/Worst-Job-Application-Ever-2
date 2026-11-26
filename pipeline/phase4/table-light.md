@@ -49,6 +49,11 @@ Branch `agent/table-light`, made from `origin/phase4-base` (f634ffb). Folders `s
 - The windows in the lanes are 38 by 25 px (were 29 by 18) with a larger arrow, in a brass bezel on Corporate: at the tier camera they read as lit windows, not dashes.
 - The brass rods across the red carpet (the Builder's point 4) are built in `src/table/real/models/corporate/hq.ts`, not in my folders. Told the Builder.
 
+- Rail and lane lamps (the Builder's order of 01:57 UTC): each is a round domed lens (12.5 px radius, 6.4 high) in a chrome cup 19.5 px wide with a rolled lip, bright in the middle and dim at the rim (`LENS.window` 4.2). The arrow of the way the ball travels stays on every lens, raised and dark, because the kit asks for arrow lamps along a lane and the kit wins over the order. Told the Builder.
+- Corporate's lamps are warm white (`CORPORATE_WHITE` `[1.0, 0.94, 0.84]`): the kit says "cold white and gold", the approved image and the Builder's order show warm lamps. The cold stays in the fill and the flash. Told the Builder.
+- The pools on the lacquer start later (`smoothstep(0.8, 2.6)`), so a lamp has one tight ring of light and no wide mist.
+- Deep lacquer: the coat of Corporate is at roughness 0.4 (was 0.48) and the room in the coat stands at 2.6 on Corporate, 2.2 on the Street and 1.6 in the Office (all were 1).
+
 ## Measured after (at the first full version)
 
 - `npm run build && npm run counts -- --key <key> --live low`, row `table-lights`, draw calls and triangles, before then after: tier-corporate 7 and 14902, then 6 and 14668; tier-office 7 and 18096, then 6 and 17862; tier-street 5 and 11614, then 4 and 11380; table-wide 11 and 21060, then 8 and 20358. Row `tier-art` is the same before and after: 3 and 172, 3 and 172, 2 and 170, 6 and 510. The "before" of the three tier keys was taken on a worktree of `origin/phase4-base`.

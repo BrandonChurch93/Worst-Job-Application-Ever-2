@@ -113,7 +113,7 @@ const body = /* glsl */ `
 		float amount = wjlPhi[ i ] * wjlInside * wjlClear;
 		if ( at.w < 0.5 ) {
 			wjlField += c * amount * ( 0.34 + 0.66 * max( wjlN.z, 0.0 ) ) / ( 1.0 + wjlUp * wjlUp * at.z );
-			wjlHaze += c * amount * smoothstep( 0.5, 2.4, amount );
+			wjlHaze += c * amount * smoothstep( 0.8, 2.6, amount );
 			continue;
 		}
 		vec3 from = at.xyz;
@@ -121,7 +121,7 @@ const body = /* glsl */ `
 			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z + wjlUp * wjlTop );
 			amount *= wjlCut / ( 1.0 + wjlTop * wjlUp * wjlUp * ${(1 / (170 * 170)).toExponential(4)} );
 			amount = mix( amount, 0.6 * amount / ( 1.0 + 1.5 * amount ), max( wjlWall, smoothstep( 40.0, 100.0, wjlUp ) ) );
-			wjlHaze += c * amount * smoothstep( 0.5, 2.4, amount );
+			wjlHaze += c * amount * smoothstep( 0.8, 2.6, amount );
 		}
 		vec3 low = vec3( from.xy - wjlP.xy, at.z );
 		vec3 to = from - wjlP;
