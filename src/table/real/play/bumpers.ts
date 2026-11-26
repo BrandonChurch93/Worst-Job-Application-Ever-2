@@ -113,6 +113,8 @@ function lidGeometry(): THREE.BufferGeometry {
   return b.done()
 }
 
+const GLOW = 1
+export const lidGlow = (level: number): number => (2.25 * level) / (1 + 2.65 * level)
 const WELL: [number, number, number] = [0.94, 1, 1.16]
 const RIM: [number, number, number] = [0.94, 1, 1.16]
 
@@ -135,7 +137,7 @@ function glowGeometry(): THREE.BufferGeometry {
   for (let k = 1; k < lid.length; k++) {
     const a = lid[k - 1]!
     const b = lid[k]!
-    band(a[0], a[1], a[2] * 1.4, b[0], b[1], b[2] * 1.4, b[0] < deckR + 0.6 ? WELL : RIM)
+    band(a[0], a[1], a[2] * GLOW, b[0], b[1], b[2] * GLOW, b[0] < deckR + 0.6 ? WELL : RIM)
   }
   band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.86, 0.62])
   band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.74, 0.46])
@@ -160,7 +162,7 @@ export const lidPop = (t: number): number => (t < 0 || t > 0.7 ? 0 : Math.exp(-1
 export const lidRock = (t: number): number => (t < 0 || t > 0.7 ? 0 : 0.085 * Math.exp(-6 * t) * Math.cos((2 * Math.PI * t) / 0.1))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-27',
+  version: 'play-bumpers-29',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
@@ -196,6 +198,7 @@ export const bumpers = whole('bumpers', {
       const glow = new THREE.Mesh(glowShape, mat)
       glow.name = `play.bumpers.lamp.${b.id}`
       glow.position.set(at[i]![0], at[i]![1], 0)
+      glow.rotation.order = 'ZXY'
       glow.rotation.z = SEAMS[i % SEAMS.length]! + 2.4
       glow.userData.lightGroup = groups.find((x) => x.name === `bumper.${i + 1}`)?.id ?? `${z.id}.bumper.${i + 1}`
       glow.renderOrder = 2
@@ -216,11 +219,17 @@ export const bumpers = whole('bumpers', {
       const pop = lidPop(t)
       b.rings.setMatrixAt(i, b.m.makeRotationZ(0.5 + i * 0.4).scale(b.s.set(1 + 0.11 * pop, 1 + 0.11 * pop, 1)).setPosition(p[0], p[1], CUP.ringRest - (CUP.ringRest - CUP.ringDown) * ringDown(t)))
       const jump = lidJump(t)
-      b.lids.setMatrixAt(i, b.m.makeRotationZ(SEAMS[i % SEAMS.length]! + 2.4).multiply(b.r.makeRotationX(lidRock(t))).scale(b.s.setScalar(1 + 0.06 * pop)).setPosition(p[0], p[1], jump))
-      const level = (L.byName[`bumper.${i + 1}`] ?? 0) * 1.5
+      const turn = SEAMS[i % SEAMS.length]! + 2.4
+      const rock = lidRock(t)
+      const seat = (CUP.lidZ + 8) * Math.sin(rock)
+      const lx = p[0] - Math.sin(turn) * seat
+      const ly = p[1] + Math.cos(turn) * seat
+      b.lids.setMatrixAt(i, b.m.makeRotationZ(turn).multiply(b.r.makeRotationX(rock)).scale(b.s.setScalar(1 + 0.06 * pop)).setPosition(lx, ly, jump))
+      const level = lidGlow((L.byName[`bumper.${i + 1}`] ?? 0) * 1.5)
       const glow = b.glows[i]!
       ;(glow.material as THREE.MeshBasicMaterial).color.setRGB(col[0] * level, col[1] * level, col[2] * level)
-      glow.position.z = jump
+      glow.position.set(lx, ly, jump)
+      glow.rotation.x = rock
       glow.scale.setScalar(1 + 0.06 * pop)
       glow.visible = level > 0.004
     })
