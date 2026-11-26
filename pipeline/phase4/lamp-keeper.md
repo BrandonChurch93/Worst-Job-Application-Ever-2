@@ -104,6 +104,8 @@ Round 11 (opened 05:42 UTC, 40 a part, 80), the same one list:
 | 06:09 | q11 | 2 | less of the room in the insert glass: no change seen, not kept |
 | 06:11 | q12 | 2 | a paler glow in the inserts: the moulded pictures fade, not kept |
 | 06:13 | q13 | 2 | merge 26 on main: the marquee's title in `table-wide`, the notes with the patch |
+| 06:16 | q14 | 2 | the insert dome under the ball's shadow plane |
+| 06:18 | q15 | 1 | `lobby-doors` with my true lights off, for the cursor in the ball |
 
 ## Diagnosis (04:00 to 04:25 UTC, 26 stills with a local switch on each term, counted in the list of looks)
 
@@ -250,4 +252,10 @@ The pushed state without the patch (q10, 06:07 UTC, MEASURED): the sheets come o
 Two trials not kept (06:09 to 06:12 UTC). In `lobby-doors` the blue insert in the foreground is a large pale blur: less of the room in its glass (`WINDOW.room` 2.4 to 1.3) changed nothing to the eye, so the blur is its own glow out of focus. A paler glow (more white in the middle stops) made the red nearer the approved pink in `last-save` but the ladder and the hats faded into it; the pictures count for more. Both back as they were, files as committed.
 
 Merge 26 (06:13 UTC, origin/main 8fdbc4b7 merged in, MEASURED at draft): the patch is on main (`PAPER` [0.98, 0.82, 0.25]) and the sheets come out at (114, 103, 57), as in my trial. The marquee's title, now the frame's own letters under my `panel` group, is a dark warm print over the lit sky, as approved has it: the panel's level and the letters agree, nothing to change. Whole frames: table-wide 0.86, tier-corporate 1.12.
+
+## Two notes from the ball's owner, by the Builder (06:14 UTC)
+
+1. The ball casts no shadow on a lit insert. Cause as the ball's owner named it: the glass of an insert was a dome 4.5 px high, its middle at 5.35 px over the floor, and the ball's shadow lies on a plane 3.4 px up, so the middle of the glass hid it. Change: `WINDOW.dome` 4.5 to 1.6 in `src/table/real/art/index.ts`; the top of the glass is now at 2.45 px, under the shadow's plane. MEASURED by looking (q14, `tier-office` from above, the ball half over the green insert): before the insert under the ball was as bright as the rest of it, now the ball's shade lies on the glass and its bright point of gathered light shows on it. No flicker of surfaces seen in `reply-all` at its low angle. The art tests pass (17 of 17). A dome of 1.6 px over a glass 97 px across still turns the glints a little; from the keys I looked at I see no loss.
+
+2. The cursor in the ball white and flat in `lobby-doors`. MEASURED at draft, mean linear luminance of a box inside the arrow's face (x 1075, y 700, w 50, h 80): 0.897 as pushed; 0.705 with every true light of mine (`ctx.light`) at zero in a local trial, not kept. Approved is 0.33 to 0.37 by the ball's owner. So my lamps round the ball give about a fifth of it and the rest is not mine: the stage's own lights and the lamp inside the ball. With my true lights off the doors behind the ball go dark, so I did not lower them. The cursor's material is `sealed` in `src/cursor/` (frozen); a point light cannot be kept off one mesh from my folder. Left to the Builder: a factor on the scene's light in the sealed material.
 
