@@ -1,35 +1,35 @@
 {
   "folder": "boss-keeper",
-  "pushed": "2026-11-26T05:00:27.775Z",
-  "commit": "df62e95871ea06714dd98120786c24068b08b3cb",
+  "pushed": "2026-11-26T05:29:07.189Z",
+  "commit": "b696d05728cb5f80085fe10c8d63a1b55f4365f9",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "boss-fight beside the approved image after the first pass: mid steel hull, glass block, deep pit, ankle stems",
-      "time": "2026-11-26T05:00:26.013Z",
+      "caption": "Still sheet-boss-stages-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:24:30.624Z",
       "by": "boss-keeper",
-      "from": "out/work/k/send/compare-boss-fight.jpg"
+      "from": "out/work/stills/sheet-boss-stages-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "boss-down beside the approved image after the first pass: wings in halves, flaked char, cracked glass block",
-      "time": "2026-11-26T05:00:26.249Z",
+      "caption": "boss-fight beside approved at b696d057: brushed dark plates with a bright top edge and a dark side, the careers slab as shield, the arrow along its shot",
+      "time": "2026-11-26T05:29:05.630Z",
       "by": "boss-keeper",
-      "from": "out/work/k/send/compare-boss-down.jpg"
+      "from": "out/work/k/send2/compare-boss-fight.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The sheet boss-stages after the first pass: stage 3 stands symmetric, no captions (no copy key)",
-      "time": "2026-11-26T05:00:26.496Z",
+      "caption": "boss-down beside approved at b696d057: the wreck as four dark plate heaps close round the cap, the glass block lying flat",
+      "time": "2026-11-26T05:29:05.890Z",
       "by": "boss-keeper",
-      "from": "out/work/k/send/sheet-boss-stages.jpg"
+      "from": "out/work/k/send2/compare-boss-down.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Left: a barrel turned 0.70 rad at boss.lastStand 0.98. Right: the muzzle's smoke ring at boss.slabs 0.4474",
-      "time": "2026-11-26T05:00:26.722Z",
+      "caption": "sheet boss-stages under approved at b696d057, no captions by ruling",
+      "time": "2026-11-26T05:29:06.114Z",
       "by": "boss-keeper",
-      "from": "out/work/k/send/barrel-and-ring.jpg"
+      "from": "out/work/k/send2/sheet-boss-stages.jpg"
     }
   ]
 }
