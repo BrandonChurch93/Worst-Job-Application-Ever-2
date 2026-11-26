@@ -152,17 +152,17 @@ The measure (`out/work/shared-look/hf.cjs <still> <approved>`): M3's own sum, th
 
 What the approved page has that the build did not: short diagonal strokes that run up to the right, a few pixels long and about one wide, with a dark dash here and there, plain in the lamp's raking light and in the shade alike. The build: flat, with a faint even speckle. On the open page the build held 0.25 to 0.55 of the approved energy.
 
-Built in the ceramic's shader in `materials.ts`. No texture added or changed (the one grain picture, 1024 by 1024 px, 4 MB with its mips as before; `tests/surface.test.ts` holds its bytes), and `ground.ts` is not changed:
+Built in the ceramic's shader in `materials.ts`. No texture added or changed (the one grain picture, 1024 by 1024 px of four bytes, 4.0 MB by that count, as before; `tests/surface.test.ts` holds its bytes), and `ground.ts` is not changed:
 
 - The fibre readings of the grain are finer across and stay long: `vec2(0.25, 0.9)` to `vec2(0.3, 1.6)` and `vec2(0.2, 1.1)` to `vec2(0.27, 1.9)`.
 - `FIBRE` 7 to 14, `HOME_TOOTH` 0.9 to 0.6 (less of the even speckle, more of the stroke), `HOME_GAIN` 0.45 to 0.5.
 
-Seven trials (g1 to g7). Raising the gain alone (g1, `HOME_GAIN` 0.9) lifts the number to 0.92 with speckle and no strokes: that is noise, not built. g5 (`FIBRE` 12 with short strokes and gain 0.6) passed marketing at 0.99 but stood at twice the approved energy on the open lit page: too coarse beside the approved page, not built. g7 is the level where the open page's tiles stand at 1.0 to 1.6 of approved and the picture beside the approved one reads the same strength.
+Seven trials (g1 to g7). Raising the gain alone (g1, `HOME_GAIN` 0.9) lifts the number to 0.92 with speckle and no strokes: that is noise, not built. g5 (`FIBRE` 12 with short strokes and gain 0.6) passed marketing at 0.99 but stood at twice the approved energy on the open lit page: too coarse beside the approved page, not built. g7 is the level where the open page's tiles stand at 0.8 to 1.5 of approved and the picture beside the approved one reads the same strength. Three of decision's lower left tiles stand at 1.26 to 1.49: a little more than approved there, said so it can be turned down.
 
 | Key | whole picture before | after | open page tiles before | after |
 | --- | --- | --- | --- | --- |
-| `decision` | 0.8056 | 0.9272 | 0.36 to 0.52 | 0.80 to 1.68 |
-| `marketing-top` | 0.6895 | 0.7855 | 0.40 to 0.65 | 0.53 to 1.22 |
+| `decision` (the bottom row's eight tiles) | 0.8056 | 0.9272 | 0.24 to 0.61 | 0.80 to 1.49 |
+| `marketing-top` (the three tiles with no content) | 0.6895 | 0.7855 | 0.40 to 0.64 | 0.97 to 1.18 |
 
 DECISION: marketing's M3 stays under 0.8 by this count and I do not raise the tooth further to pass it. The tiles that hold it down are not open page: the tile at column 7, row 2 holds 26711 against the approved 51753 and the one beside it 9322 against 17429 (the hero's right side), and the type rows hold 0.6 to 0.8. That is the marketing page's content, not the ceramic.
 
