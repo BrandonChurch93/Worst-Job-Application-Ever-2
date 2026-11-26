@@ -1,35 +1,35 @@
 {
   "folder": "step2-slot",
-  "pushed": "2026-11-26T01:48:28.445Z",
-  "commit": "0ffd89c5f4fda16247ac623a86a9ac3863ec8f34",
+  "pushed": "2026-11-26T01:52:34.610Z",
+  "commit": "45cfd84861d25d87117be82675883ecc757deded",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Crank key at review tier on the branch as pushed (main's layout), approved above, build below: forged arm with an eye, smaller cap, lower glass pills, cream core in the lit ones",
-      "time": "2026-11-26T01:44:20.874Z",
+      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T01:49:47.912Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126014420-crank-0150.jpg"
+      "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Machines sheet at review tier, approved above, build below: arm tapers from its eye, unlit glass keeps a body on the white page",
-      "time": "2026-11-26T01:44:21.100Z",
+      "caption": "Still step2-step2_slot-0p8-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T01:50:50.890Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126014421-machines-0150.jpg"
+      "from": "out/work/stills/step2-step2_slot-0p8-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:46:46.011Z",
+      "caption": "Crank key at draft tier, approved above, build below: chamfer line along the arm, stronger bow tie on bezel and cap",
+      "time": "2026-11-26T01:52:33.099Z",
       "by": "step2-slot",
-      "from": "out/work/stills/sheet-machines-hd-review.png"
+      "from": "out/work/looks/files/20261126015233-crank-0152.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Machines sheet at review tier, approved above, build below. Replaces machines-0150, whose caption was wrong: there the six unlit segments were under the page. Now all ten stand on it",
-      "time": "2026-11-26T01:48:27.218Z",
+      "caption": "Step 2 slot beat at 0.8, draft tier: ferrule where the rod enters the knob, polished rod",
+      "time": "2026-11-26T01:52:33.346Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126014827-machines-0155.jpg"
+      "from": "out/work/looks/files/20261126015233-slot-0152.jpg"
     }
   ]
 }
