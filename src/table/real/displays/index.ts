@@ -16,6 +16,7 @@ const MAIN = { w: 472, h: 68, up: 88, floor: 0.9, proud: 6, glassUnder: 1.6, mas
 const GLASS = { smoke: [0.0, 0.0, 0.0] as const, dust: [0.05, 0.047, 0.042] as const, clear: 0.36, dusty: 0.6, edge: 2.4, corner: 7, haze: 0.07 }
 const LINER = { thick: 0.3, tone: [0.014, 0.013, 0.012] as const }
 const SWEEP = { every: 9, takes: 2.6 }
+const TONE = [1.15, 0.8, 0.86]
 const MIRROR = { spots: 8, away: 250, near: 300, deep: 26, gain: 0.2, size: 2.6, grows: 1.6 }
 
 interface Seat { matrix: THREE.Matrix4; w: number; h: number; glass: number; mask: number; dotsUnder: number; pitch: number }
@@ -144,7 +145,7 @@ const body = /* glsl */ `
 	float wjdCore = exp( - wjdR * wjdR / 0.045 );
 	float wjdPass = exp( - pow( ( wjdQ.x - wjdDeep.z ) / 11.0, 2.0 ) );
 	float wjdSweep = 1.0 + 0.3 * wjdPass;
-	vec3 wjdHot = vec3( 1.0, 0.66, 0.26 );
+	vec3 wjdHot = vec3( 1.0, 0.8, 0.42 );
 	vec3 wjdOn = ( wjdAmber * ( 0.55 + 2.7 * wjdCore ) + wjdHot * 1.5 * wjdCore * wjdCore ) * wjdSweep;
 	vec3 wjdOff = wjdAmber * ( ( 0.012 + 0.03 * wjdCore ) * wjdLight.y + 0.014 * wjdLight.x );
 	vec3 wjdNear = wjdHole * wjdBead * ( wjdOff + wjdOn * wjdLv * wjdLight.x );
@@ -160,7 +161,7 @@ const body = /* glsl */ `
 		wjdWide += wjdField( wjdG + d * 1.6 );
 		wjdWider += wjdField( wjdG + vec2( d.x * 0.9239 - d.y * 0.3827, d.x * 0.3827 + d.y * 0.9239 ) * 3.3 );
 	}
-	vec3 wjdHalo = ( wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + 0.011 * wjdWider ) + wjdAmber * vec3( 1.0, 0.6, 0.38 ) * 0.4 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x * ( 1.0 + 0.9 * wjdPass );
+	vec3 wjdHalo = ( wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + ( 0.011 + 0.012 * wjdFar ) * wjdWider ) + wjdAmber * vec3( 1.0, 0.6, 0.38 ) * 0.4 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x * ( 1.0 + 0.9 * wjdPass );
 	vec3 wjdCoarse = ( wjdAmber * 1.3 + wjdHot * 1.1 ) * wjdField( wjdQ ) * wjdLight.x * wjdSweep + wjdAmber * 0.006 * wjdLight.y * wjdRows;
 	totalEmissiveRadiance = mix( wjdNear, wjdCoarse, wjdFar ) + wjdHalo;
 }
@@ -170,7 +171,7 @@ interface Uniforms { map: THREE.Vector4; deep: THREE.Vector4; light: THREE.Vecto
 
 function dotMaterial(z: Zone, u: Uniforms): THREE.MeshStandardMaterial {
   const p = pictures()
-  const amber = new THREE.Vector3(...colours.DISPLAY_AMBER)
+  const amber = new THREE.Vector3(colours.DISPLAY_AMBER[0] * TONE[0], colours.DISPLAY_AMBER[1] * TONE[1], colours.DISPLAY_AMBER[2] * TONE[2])
   const m = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.004, 0.004, 0.004), roughness: 1, metalness: 0, emissive: new THREE.Color(1, 1, 1), emissiveIntensity: 1 })
   lit(studio(m), z)
   const inner = m.onBeforeCompile
