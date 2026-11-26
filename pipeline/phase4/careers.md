@@ -78,3 +78,23 @@ None of my own so far. Every surface uses the shared pictures of `materials()`.
 - MEASURED: `npm run still -- --key marketing-top --format hd --tier final` takes 53.28 s (triangles 582338, draw calls 196). Seen at native size beside approved.
 - The medal's turned face: the dull sectors are deeper (`MEDAL_LOOK.sheen` 0.58), the side toward the light is brighter than the far one (`lean` 0.14) and the rim of the face is a little darker than its middle (`rim` 0.94). MEASURED on approved at 100 px from the centre, round the face: 78 to 186 of 255; mine was 123 to 189 and is now nearer. With `rim` 0.84 and `sheen` 0.6 M4 failed ("copy:marketing.awards.items.1.from", 4.49 of 4.5), so those are the limit.
 - The slab's shadow stays thrown by a foot 4.2 high. Tried 6.4: the shadow became a dark bar 12 px wide (MEASURED 95 to 104 of 255 over 10 px), where approved has a core of about 6 px and a soft tail. Taken back.
+
+## 03:00 UTC, end notes for whoever takes the round's issues
+
+State. The head judged in the page's first critic round is a79de6d2 (in merge 18). The first screen was not touched after it.
+
+Where each thing is set.
+- The glass of the cards, the table, the badges and the strip: `SLAB` (the ground edge's sizes) and `GLASS` (colour, the light and shade of the edge as vertex colour, the frost) in `src/pages/marketing/real/perk-cards.ts`. `cardGlass`, `slabGeometry`, `groundEdge`, `SLAB` and `GLASS` are imported by the decision page: keep their names and meanings.
+- The strip: `TICKER` in `layout.ts` (sizes, `gap` between items, `solid` and `ramp` of the frosted ends), `TICKER_LOOK` in `real/ticker.ts` (`clear` is the pane over the words: more makes the words paler). `leadOf()` in `index.ts` centres the whole items at the key's moment.
+- The medal: `MEDAL_LOOK` in `real/careers-page.ts`. The face's colour 0x8a8d8f, `sheen` 0.58 and `rim` 0.94 are at M4's limit: the run "copy:marketing.awards.items.1.from" read 4.49 of 4.5 with `rim` 0.84 and `sheen` 0.6, and the words read 4.0 on a face of 0x7e8183.
+- The acting: `script.ts` (`TAKE`, the path's keys, `CUES`), held by `tests/careers-acting.test.ts`. The page's events fall on steps 505, 1034, 1522 (`card-flip`) and 3065 (`button-press`); do not move them.
+
+Tried and taken back.
+- A nav button 58 high (M9 red; ruled at 02:39Z: it stays the shared button).
+- A dark well under the turning card (read as a black hole); a slab shadow from a foot 6.4 high (a dark bar); a frost of 0.07 on the glass (pebbled plastic); a chrome bezel and dark sleeve for the ticker (the Builder's first list).
+
+Known and open, lower screens.
+- The turning card. MEASURED on stills at 0.45 of `marketing.perks`, draft and review: the well seen past the turned card reads about 50 of 255 where the page reads 224, at both tiers. It is the page's own ceramic in the shade of a well 108 deep (half the card's height and 8). It is true to a real pit and still the darkest thing in the frame. To try next: a trough for a floor (a half cylinder round the card's axis) so the floor near the lips lies close to the page; the well itself is the stage's (`kind: 'well'`), so the trough would be a mesh of the slab's own, like its seal.
+- The redaction bars on the testimonial badges are matt black tape, flat. The comparison table is one wide even slab.
+
+Looks. STATED, not counted exactly: well over the 40 a part is allowed, about 80 stills and 11 sheets over the cards, the strip, the medal and the acting together.
