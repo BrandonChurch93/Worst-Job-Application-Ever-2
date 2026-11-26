@@ -96,11 +96,13 @@ const lidPoints = (): [number, number, number][] => {
   }
   return out
 }
+// The moulding reads by its form: what faces up is pale, the walls of its steps are a shade darker.
+const FORM = (_x: number, _y: number, nz: number): number => 0.62 + 0.38 * Math.max(0, nz) * Math.max(0, nz)
 const lidProfile = (): V2[] => lidPoints().map((q) => [q[0], q[1]])
 
 function lidGeometry(): THREE.BufferGeometry {
   const b = new Bag()
-  b.add(lathe(lidProfile(), 64, 28), LID)
+  b.add(lathe(lidProfile(), 64, 28), LID, undefined, 1, FORM)
   // The drinking opening: a small oval let into the raised ring, dark inside a pressed lip. A pin hole for the air stands across the deck from it.
   const r = CUP.lidR - SIP.at
   const top = CUP.lidZ + 13.7
@@ -111,8 +113,8 @@ function lidGeometry(): THREE.BufferGeometry {
   return b.done()
 }
 
-const WELL: [number, number, number] = [1, 0.97, 0.91]
-const RIM: [number, number, number] = [1, 0.97, 0.9]
+const WELL: [number, number, number] = [0.94, 1, 1.16]
+const RIM: [number, number, number] = [0.94, 1, 1.16]
 
 // The lamp in the cup, as it shows: through the lid, brightest in the middle, and in the gap under the lid.
 function glowGeometry(): THREE.BufferGeometry {
@@ -158,7 +160,7 @@ export const lidPop = (t: number): number => (t < 0 || t > 0.7 ? 0 : Math.exp(-1
 export const lidRock = (t: number): number => (t < 0 || t > 0.7 ? 0 : 0.085 * Math.exp(-6 * t) * Math.cos((2 * Math.PI * t) / 0.1))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-26',
+  version: 'play-bumpers-27',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
