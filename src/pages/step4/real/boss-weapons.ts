@@ -27,7 +27,7 @@ export const WEAPON_GLOW = {
   muzzle: [9, 2.6, 0.7] as [number, number, number]
 }
 
-export const LACQUER = { colour: 0xa00d0b, rough: 0.46, spec: 0.4, coat: 0.09, env: 1.05 }
+export const LACQUER = { colour: 0xba0a0b, rough: 0.42, spec: 0.35, coat: 0.15, env: 0.7 }
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 

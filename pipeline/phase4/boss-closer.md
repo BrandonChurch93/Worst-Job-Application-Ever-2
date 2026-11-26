@@ -155,3 +155,6 @@ Ruling of the Builder at 08:42 UTC (the arrow at `boss-down`): at the key the ar
 - SEEN in `npm run compare -- --key boss-down --tier draft --format hd` at 08:44 UTC: the arrow stands upright with its dark outline beside the fallen button. Its scorch marks are too small to read at this size (the cursor's size and its marks are not mine).
 
 Looks: acting-boss 30 (one `boss-down` compare).
+
+- Slabs (the `fired-0` crop of `boss-fight`): the lacquer is a deeper red with a line of light on the upper bevel (`LACQUER` in `src/pages/step4/real/boss-weapons.ts`: colour `0xba0a0b`, coat roughness 0.15, room 0.7). Before, the room's reflection laid a pale haze on the face and the slab read rose and matte. The shape of the slab is step 1's (`makeSlab`), not mine; its side walls stay less shaded than approved. Looks: boss-weapons 18 (four `boss-fight` compares).
+- MEASURED 08:49 UTC, `npm run compare -- --key boss-fight --tier draft --format hd`: 11.718 s, 642536 triangles, 472 draw calls.

@@ -91,3 +91,12 @@ Every texture and built asset of the boss that this owner changed or added. All 
 - Takes: 1
 - Why this one: the pale specks inside the burns read as a print at film size. 512 x 128 x 4 bytes = 0.25 MB, 0.33 MB with its mip chain, unchanged.
 - Date: 2026-11-26
+
+## slab lacquer, deeper red (numbers, no texture)
+
+- Made by: code, `lacquer()` in `src/pages/step4/real/boss-weapons.ts`, passed through `studio()`.
+- From: nothing but numbers: `LACQUER` colour `0xba0a0b` (was `0xa00d0b`), base roughness 0.42 (was 0.46), base specular 0.35 (was 0.4), clear coat roughness 0.15 (was 0.09), reflection of the room 0.7 (was 1.05). The grain normal map on the coat is the shell's (256 px, seed 71 past the site's seed), as before. No file, 0 MB added.
+- Command: none.
+- Takes: fourth of this pass (`0x8f0707` with the room at 0.62 was dark and dull; `0xc20b0c` with the coat at 0.07 had no light on the edge; the coat at 0.26 washed the face pink).
+- Why this one: the room's reflection at 1.05 laid a pale haze over the face, so the slab read rose and matte. With less of the room and a wider coat the face is a deep red and the upper bevel carries a thin line of light, as the approved `boss-fight` shows it.
+- Date: 2026-11-26.
