@@ -1,35 +1,35 @@
 {
   "folder": "step2-finish",
-  "pushed": "2026-11-26T12:05:39.443Z",
-  "commit": "bf56ef7b1031bc89fb5bd4b7dc89956fd78d1279",
+  "pushed": "2026-11-26T12:12:58.009Z",
+  "commit": "3faa90967fc22d982b13d7161b6f2918e0dacfc1",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T11:59:47.381Z",
-      "by": "step2-finish",
-      "from": "out/work/stills/key-step2-crank-hd-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Still key-step2-dial-hd-draft: draft tier, hd, view beauty",
       "time": "2026-11-26T12:00:11.177Z",
       "by": "step2-finish",
       "from": "out/work/stills/key-step2-dial-hd-draft.png"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "Step 2 film, cut round the arrow at the far end of the meter, 15.65 to 16.24 s: landed on its side, a look at the crank, away, a second look, the stretch tall, the snap back",
       "time": "2026-11-26T12:05:37.603Z",
       "by": "step2-finish",
       "from": "out/work/looks/files/20261126120537-r3-double-take.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "Step 2 crank key, approved left, the build right at the draft tier: the well's floor now has a shade under its upper and left wall",
       "time": "2026-11-26T12:05:37.842Z",
       "by": "step2-finish",
       "from": "out/work/looks/files/20261126120537-r3-well.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Step 2 film, the frames the Continue beat is seen in (19.967 to 20.433 s), cut round the arrow: flat, the peel, half refilled, whole, on Continue",
+      "time": "2026-11-26T12:12:56.836Z",
+      "by": "step2-finish",
+      "from": "out/work/looks/files/20261126121256-r3-refill.jpg"
     }
   ]
 }
