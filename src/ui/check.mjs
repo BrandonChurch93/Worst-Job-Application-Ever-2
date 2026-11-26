@@ -61,6 +61,13 @@ const focus = (page) => page.evaluate(() => {
     return { pressed: b.getAttribute('aria-pressed'), icon: b.querySelector('svg').dataset.icon }
   })
   check('sound control shows its state', state.pressed === 'false' && state.icon === 'soundOff', JSON.stringify(state))
+  const button = await page.evaluate(() => {
+    const b = document.querySelector('button[aria-label]')
+    const s = getComputedStyle(b)
+    const r = b.getBoundingClientRect()
+    return { ring: s.boxShadow, round: parseFloat(s.borderTopLeftRadius) >= r.width / 2, width: Math.round(r.width), height: Math.round(r.height) }
+  })
+  check('sound control on the live row stands in a round ring, so it reads as a button', /inset/.test(button.ring) && button.round && button.width === button.height && button.width >= 24, JSON.stringify(button))
   await page.click('button[aria-label="Sound"]')
   l = await log(page)
   check('sound by pointer: one toggle, nothing reaches the page', l.join() === 'setMuted:false', l.join())

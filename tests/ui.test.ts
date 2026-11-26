@@ -197,6 +197,21 @@ describe('the words of the interface', () => {
   })
 })
 
+describe('the sound control on the live row', () => {
+  const sheet = fs.readFileSync('src/ui/interface.module.css', 'utf8')
+
+  it('stands in a ring of its own ink, so it reads as a button and not as a sign of a state', () => {
+    const rule = sheet.match(/\.root\[data-mode='live'\] \.live \.icon \{([^}]*)\}/)
+    expect(rule, 'the rule for the icon on the live row').not.toBeNull()
+    expect(rule![1]).toMatch(/border-radius:\s*999px/)
+    expect(rule![1]).toMatch(/box-shadow:\s*inset 0 0 0 [^;]*currentColor/)
+  })
+
+  it('keeps the film bar\'s controls bare', () => {
+    expect(sheet).not.toMatch(/\.bar \.icon \{[^}]*box-shadow/)
+  })
+})
+
 describe('the names of the controls that show no word', () => {
   const source = fs.readFileSync('src/ui/interface.ts', 'utf8')
 
