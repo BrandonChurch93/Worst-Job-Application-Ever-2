@@ -23,7 +23,7 @@ The shadow standing off is the same height: at z 260 the shadow lies far from th
 
 - `LED`: the drawn angle under a visitor's pointer. While the page has not hit or thrown the arrow, the angle the body asks for is bounded softly at `LED.most` (35 degrees off the standard angle, soft from `LED.knee`), and the drawn angle goes to it by at most `LED.rate` radians a second (12.5, which is 11.9 degrees in a frame of 60). The acting stays: the mood's lean at rest is inside the bound and is drawn as before (Builder, 23:03Z, citing `kit/03-METHOD.md` line 123).
 - The dive is the page's: `flying` needs a knock by the page (`thrown`, set in `knock()` and held for `LED.longest` seconds at most or until it is down).
-- `HOVER`: the height in a page turn under a visitor. The arrow no longer hangs at `HANDOFF.z` through the turn. It rides only as high as the slab turning under it needs (`hover + ground + HOVER.reach * tan(turn of the slab)`, with the turn read from `src/stage/turn.ts`), so it is down on the page when the page is seated and there is no fall after the let-go. Off a raised thing with no throw it comes down at `HOVER.fall` instead of floating.
+- `HOVER`: the height in a page turn under a visitor. In the leaving half the arrow lies on its page (`hover + ground`) and goes over with it, so its shadow stays on it. In the arriving half it no longer hangs at `HANDOFF.z` to the end and falls after the let-go: it rides only as high as the slab coming over needs (`hover + ground + HOVER.reach * tan(turn of the slab)`, the turn read from `src/stage/turn.ts`), so it is down on the page when the page is seated. Off a raised thing with no throw it comes down at `HOVER.fall` instead of floating.
 - The numbers `LED` and `HOVER` are named in the file with one line each. No number of the kit changed: `config.scale.heights.cursorHover` is read, not set.
 
 `src/pages/marketing/index.ts`:
@@ -43,3 +43,12 @@ MEASURED after (`npx vitest run tests/polish-arrow.test.ts`, the card test): at 
 - Optional state fields (`thrown`, `drawn`, `hung`, `arriving`) are added at the end of the state and not to `fresh()`, to keep the lines the tug's owner edits unchanged.
 - A hit (`struck`), a recoil, the ball, an aim and a takeover by the page are excepted from the limit, as the brief says.
 - The arrow still rides the highest edge of a turning perk card (the page's `turningTop`). A height for the very point under the tip was weighed and left: it can jump by tens of px in one step where the card's edge passes.
+
+## Pictures, and what is still open
+
+Shot with `out/work/shoot.mjs` (the pack's visitor in the browser, hd, real size) and the motion pack of round 22 on commit 1be367dc.
+
+- MEASURED in pictures, high level: at rest (0:03.45), walking over a perk card (0:00.98, 0:01.05), in the leaving half of the turn (0:10.02 to 0:10.42), from 0:10.68 to the seat, and right after the turn (0:11.08 to 0:11.35) the shadow's dark touches the arrow's lower right edge. Medium and low level: the same at rest, walking, 0:10.35, 0:10.68 and 0:11.08.
+- OPEN: in the first part of the arriving half, 0:10.48 to about 0:10.65, the arrow hangs up to 260 over the slab and its shadow lies 50 to 80 px off as a soft blob, at all three levels. Tried: the arrow at `hover` through the arriving half. MEASURED in the picture: it is then drawn as a dot until 0:10.70, as if the slab coming over stood through its body. So the height there is needed while the arrow lies level. What would mend it is the arrow pitched with the slab in those frames, or the shadow dropped there: not done, the cause in the drawing was not read. UNKNOWN.
+- OPEN: on a turning perk card the arrow rides the card's highest edge (z up to 169 at 0:00.65). Not cropped at real size: UNKNOWN whether the shadow stands off there.
+- With `origin/agent/polish-turn` (98404c17) merged in a scratch tree, never pushed: MEASURED, the let-go lands at z 5 on the seat frame (0:10.95) as before, 0 frames over 12 degrees, furthest 34.6 degrees. The arrow lags the slab's new knocks by 3.35 px at most (0.33 px before that merge), so the arrive test allows 5 px. No number in `src` follows the turn's timing except `HOVER.half`, which the test ties to `TURN_HALF`.

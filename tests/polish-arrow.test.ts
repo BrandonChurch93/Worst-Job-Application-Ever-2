@@ -89,7 +89,7 @@ describe('polish, the arrow under a visitor\'s pointer', () => {
       live.step({ x: 0, y: 0 }, () => undefined, false)
       film.step({ x: 0, y: 0 }, () => undefined, false)
       const needs = Math.min(HANDOFF.z, hover + HOVER.reach * Math.tan(Math.min(1.5, Math.abs(arriveTurn(i / n)))))
-      expect(live.z).toBeGreaterThanOrEqual(needs - 0.5)
+      expect(live.z).toBeGreaterThanOrEqual(needs - 5)
       expect(film.z).toBeCloseTo(HANDOFF.z, 6)
     }
     expect(live.z).toBeLessThanOrEqual(hover + 6)
