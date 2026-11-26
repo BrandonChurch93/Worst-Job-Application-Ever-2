@@ -1,0 +1,141 @@
+{
+  "stamp": {
+    "role": "R9",
+    "round": 14,
+    "unit": "boss",
+    "commit": "cfd83123e325f189bf569f753c3e60edec66f4a7",
+    "tier": "final",
+    "engineHash": "4a32522105f508db",
+    "sharedHash": "0cdfd2c004bce5cf",
+    "pageHashes": {
+      "step1": "554fd748a7d0bf1f",
+      "step2": "504860ae9a1d7171",
+      "marketing": "f5cc2fcd805829ae",
+      "pinball": "541dc867512621cc",
+      "boss": "5d65ea59e9304a5b",
+      "decision": "740d3c0f81bae216"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R9-1",
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1613006,
+          "sha256": "d7bbf11e3ebaeafe9ee2987f30a0b89b2f43890244518fe435d0987ae42ab8c8"
+        },
+        {
+          "name": "set-A-02.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1768006,
+          "sha256": "1d70fade446af8fbddc92481a964fdbfd490e206ed613c116a0000a0ad60136a"
+        },
+        {
+          "name": "set-A-03.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1929593,
+          "sha256": "3cbcca2d90df9d3ec834537b79bc0b3cd325634209dab655a371f93b5862c0e1"
+        },
+        {
+          "name": "set-A-04.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1920398,
+          "sha256": "434ba0ff59dd85e4ed98a6fed624488c6be0bb18ef56a98041e10bd1cf3ec57e"
+        },
+        {
+          "name": "set-A-05.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1895418,
+          "sha256": "ff1a8c1576beb86803a02f487b05ba0e9104d6464dbc09688b6012a385c4bec4"
+        },
+        {
+          "name": "set-A-06.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1893124,
+          "sha256": "dd1e60055b4abde62a3df35381d4ef8e6ce0e568c5f0a9d36d92f4f8d60c324b"
+        },
+        {
+          "name": "set-A-07.png",
+          "width": 1399,
+          "height": 1060,
+          "bytes": 1894018,
+          "sha256": "3228920b012debc9b0abbeb7b82570a103a0e1efb651dbd2f9dc166014f03cd1"
+        }
+      ]
+    },
+    {
+      "set": "B",
+      "critic": "R9-2",
+      "files": [
+        {
+          "name": "set-B-01.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2107199,
+          "sha256": "ffacace93576c7da4bf882fa1fdee775ad0e01f1e8e0a7e5c300e7aa49690882"
+        },
+        {
+          "name": "set-B-02.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2176762,
+          "sha256": "7a6809e0ae7cecf29d7ab5e9b2ce9efe1e03554503bc045eba5ef38569a230ab"
+        },
+        {
+          "name": "set-B-03.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2076701,
+          "sha256": "0c1a0130dee4b0ae8311ee3faf553b1405473acdf8605b1ab29580cbec796970"
+        },
+        {
+          "name": "set-B-04.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2128025,
+          "sha256": "7f28e0f7211853dcdf59e0a55c196fb67c8922b734cf3ffe34a8b2d9989e1d84"
+        },
+        {
+          "name": "set-B-05.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2293734,
+          "sha256": "075f5dbb94c4747b105814fe6891c7c81752c9b20038c786c56e13f7256232df"
+        },
+        {
+          "name": "set-B-06.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2051382,
+          "sha256": "2da7be6bf20a118d977ab49cca8f1063a97e4d82bc5e96abfb3ded6aa9bc2628"
+        },
+        {
+          "name": "set-B-07.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2489309,
+          "sha256": "4271a2076f881cf3809468985a910a49674d600d8cf41cbc6445178ca14c8c06"
+        },
+        {
+          "name": "set-B-08.png",
+          "width": 1399,
+          "height": 1304,
+          "bytes": 2555176,
+          "sha256": "8b2e9ef0a96bff04fbae7eb6adb569fe4419d77e2501037669bac5ab5739202a"
+        }
+      ]
+    }
+  ]
+}

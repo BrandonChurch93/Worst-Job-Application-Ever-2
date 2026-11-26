@@ -46,6 +46,30 @@
    "where": "dim frames here and in set-A-01 top rows",
    "what": "at small scale the white arrow with dark outline collapses to a dark speck against the grey page, weakening the silhouette read",
    "fix": "keep the fill bright with a clean dark outline and a contact shadow at every scale"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: that the boss hurls error messages at the arrow is read; that the arrow dodges them and shoots a stream of small darts back with each click, and that the bar starts to drop, is not: the read has it shocked and knocked about beside the hole.",
+   "fix": "The dodge as a readable move clear of each slab, and the arrow's own fire seen leaving its tip and landing on the boss, with the bar answering each landing.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the dialogs are read as more bombardment; that the boss raises them as shields, that the arrow shoots them down or goes round them, and that it takes a hit and shakes it off is not in the read.",
+   "fix": "The dialogs standing between the arrow and the boss as cover, the arrow's shots breaking one, its path round another, and one clear hit on the arrow followed by a shake held long enough to be read.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the 'Session expired' banner and the arrow firing on are read; that the boss's health jumps back up and that the arrow's whole body says 'really' is not: the read has the bar draining while it is stubborn and worn down.",
+   "fix": "The bar seen to fill back up as the event of the beat, with the arrow stopped by it: a held pose of disbelief turned to the bar before it goes back to work.",
+   "by": "builder"
   }
  ],
  "reads": [
