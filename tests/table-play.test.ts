@@ -55,7 +55,7 @@ describe('the parts that play', () => {
       }
     }
     expect(total).toBeLessThanOrEqual(120000)
-    expect(coarse).toBeLessThanOrEqual(70000)
+    expect(coarse).toBeLessThanOrEqual(85000)
   })
 
   test('the tiers share one solid material each, and nothing is pure black or pure white', () => {

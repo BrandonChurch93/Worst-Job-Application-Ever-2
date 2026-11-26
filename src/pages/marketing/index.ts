@@ -2,7 +2,6 @@ import { beat, config, stepHz } from '../../config'
 import { copy, type LayoutNode } from '../../copy'
 import type { Acting } from '../../cursor/body'
 import { boxOf, drawLayout, find } from '../../shell/layout'
-import { look } from '../../post/look'
 import { block } from '../../shell/metrics'
 import { SCREEN_H } from '../../shell/parts'
 import { words } from '../../shell/words'
@@ -19,7 +18,6 @@ export const FLIP_SECONDS = 0.63
 const PIT_CLEAR = 8
 const TURN_SHARP = 5
 const tapeSpeed = 120
-const BACK_TONES: [number, Tone][] = [[0.648, 'glass'], [0.553, 'page'], [0.47, 'raised'], [0.418, 'paper'], [0, 'light']]
 const REJECTED_SETTLE = 1.7
 export const TRAVEL = heights.button - 4
 const WIND = 0.45
@@ -239,15 +237,6 @@ export function makePage(): PageLogic {
 
   const turnOf = (i: number): number => Math.PI * (0.5 + (0.5 * Math.tanh(TURN_SHARP * (s.flip[i]! - 0.5))) / Math.tanh(TURN_SHARP / 2))
 
-  const keyLength = Math.hypot(...look.key.direction)
-  const keyY = look.key.direction[1] / keyLength
-  const keyZ = look.key.direction[2] / keyLength
-
-  function backTone(a: number): Tone {
-    const lit = Math.max(0, -keyY * Math.sin(a) - keyZ * Math.cos(a))
-    return BACK_TONES.find(([from]) => lit >= from)![1]
-  }
-
   const turningTop = (i: number): number => heights.card + (cards[i]!.h / 2) * Math.abs(Math.sin(turnOf(i)))
 
   function turning(out: DrawList, i: number): void {
@@ -258,24 +247,21 @@ export function makePage(): PageLogic {
     const a = turnOf(i)
     const sin = Math.sin(a)
     const cos = Math.cos(a)
-    const slab = { part: 'perk-cards', kind: 'box', x: b.x, w: b.w, h: b.h, tone: 'glass', r: CARD_R, mechanism: true } as const
-    out.push({ id: `${n.id}-pit`, part: 'perk-cards', kind: 'well', x: b.x, y: b.y, w: b.w, h: b.h, z0: -(b.h / 2 + PIT_CLEAR), z1: 0, tone: 'pocket', mechanism: true })
-    out.push({ ...slab, id: `${n.id}-slab-front`, y: b.y + half * sin, z0: half * (1 - cos), z1: half * (1 - cos) + heights.card, turnX: -a })
-    out.push({ ...slab, tone: backTone(a), id: `${n.id}-slab-back`, y: b.y - half * sin, z0: half * (1 + cos), z1: half * (1 + cos) + heights.card, turnX: Math.PI - a })
-    for (const c of n.children ?? []) {
+    out.push({ id: `${n.id}-pit`, part: 'perk-cards', kind: 'well', x: b.x, y: b.y, w: b.w, h: b.h, z0: -(b.h / 2 + PIT_CLEAR), z1: 0, tone: 'dark', mechanism: true })
+    out.push({ id: `${n.id}-slab`, part: 'perk-cards', kind: 'box', x: b.x, y: b.y, w: b.w, h: b.h, z0: half, z1: turningTop(i), tone: 'glass', r: CARD_R, turnX: -a, mechanism: true, v: [heights.card] })
+    ;(n.children ?? []).forEach((c, k) => {
       const front = c.states?.includes(st.shut) === true
       const [cx, cy, cw, ch] = c.box as [number, number, number, number]
       const v = cy + ch / 2 - b.cy
       const y = b.cy + (front ? v * cos - half * sin : -v * cos + half * sin) - ch / 2
       const z = half + (front ? v * sin + half * cos : -v * sin - half * cos)
       const turnX = front ? -a : Math.PI - a
-      if (c.copy !== undefined && c.type !== undefined) out.push({ id: `${c.id}-turning`, part: 'type', kind: 'text', x: cx, y, w: cw, h: ch, z0: z, z1: z, tone: 'ink', words: c.copy, type: c.type, turnX })
-      else out.push({ id: `${c.id}-turning`, part: 'perk-cards', kind: 'box', x: cx, y, w: cw, h: ch, z0: z, z1: z + 1, tone: (c.tone as Tone | undefined) ?? 'metal', turnX, mechanism: true })
-    }
+      if (c.copy !== undefined && c.type !== undefined) out.push({ id: `${n.id}-slab-${k}`, part: 'type', kind: 'text', x: cx, y, w: cw, h: ch, z0: z, z1: z, tone: 'ink', words: c.copy, type: c.type, turnX })
+      else out.push({ id: `${n.id}-slab-${k}`, part: 'perk-cards', kind: 'box', role: 'cardRule', x: cx, y, w: cw, h: ch, z0: z, z1: z + 1, tone: (c.tone as Tone | undefined) ?? 'metal', turnX, mechanism: true })
+    })
   }
 
   function ticker(out: DrawList): void {
-    out.push({ id: 'ticker-well', part: 'ticker', kind: 'well', x: TICKER.x, y: TICKER.y, w: TICKER.w, h: TICKER.h, z0: TICKER.floor, z1: 0, tone: 'pocket' })
     out.push({ id: 'ticker-tape', part: 'ticker', kind: 'box', x: TICKER.x, y: TICKER.y + 4, w: TICKER.w, h: TICKER.h - 8, z0: TICKER.floor, z1: TICKER.tape, tone: 'paper' })
     const items = rejected() ? afterItems : tapeItems
     const length = rejected() ? afterLength : tapeLength

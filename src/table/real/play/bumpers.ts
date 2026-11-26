@@ -7,7 +7,7 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, ball, box, ease, lathe, look, mat, prism, rod, type V2 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const PLATE = look(0xdde0e3, 0.2, 0.78, 0)
+const PLATE = look(0xdde0e3, 0.2, 1, 0)
 const PRINT = look(0x20262a, 0.55, 0, 0.4)
 const PRINT_PALE = look(0xd9d4c4, 0.55, 0, 0.4)
 const SKIRT = look(0x2c2d30, 0.46, 0, 0.5)
@@ -17,8 +17,8 @@ const KRAFT_DARK = look(0x5e351d, 0.85, 0, 0)
 const LID = look(0xf3f0e9, 0.58, 0, 0)
 const LID_DARK = look(0x2a2826, 0.7, 0, 0)
 const SIP = look(0x5a3a26, 0.6, 0, 0.3)
-const CHROME = look(0xf4f6f8, 0.18, 0.32, 1)
-const SCREW = look(0xd2d5d8, 0.26, 0.76, 0)
+const CHROME = look(0xf4f6f8, 0.18, 1, 0)
+const SCREW = look(0xd2d5d8, 0.26, 1, 0)
 
 // The heights of a cup, in page pixels over the floor.
 export const CUP = { foot: 12, footR: 46, rimZ: 88, rimR: 58, sleeve0: 22, sleeve1: 68, ringRest: 89, ringDown: 34, ringIn: 77.5, ringOut: 84.5, lidZ: 86, lidR: 76, deck: 100, top: 108, flutes: 60 }
