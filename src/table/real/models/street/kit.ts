@@ -213,7 +213,12 @@ export function beaconBase(b: Buckets, x: number, y: number, z: number): void {
 export function beaconLens(): THREE.BufferGeometry {
   const g = new Geo()
   const c: RGB = [1, 1, 1]
-  g.lathe([[25, 0], [25, 12], [23.6, 20], [19.8, 27], [13.6, 32], [6, 34.6], [0, 35]], 0, 0, 72, c, { base: 8, wave: [24, 0.07] })
+  const dome: [number, number][] = [[25, 0], [25, 6]]
+  for (let i = 0; i <= 10; i++) {
+    const a = (i / 10) * (Math.PI / 2)
+    dome.push([25 * Math.pow(Math.cos(a), 0.62), 12 + 23 * Math.sin(a)])
+  }
+  g.lathe(dome, 0, 0, 84, c, { base: 8, wave: [28, 0.035] })
   g.lathe([[26, 0], [26, 2], [25, 2]], 0, 0, 36, c, { base: 8 })
   return g.done()
 }

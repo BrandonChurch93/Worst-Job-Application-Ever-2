@@ -176,10 +176,10 @@ export function lensOf(z: Zone, name: string, colour: [number, number, number]):
   )
   m.userData.lit = true
   // The dome gathers its lamp: bright where the eye looks straight through it at the bulb, deep in colour toward its rim.
-  over(m, 'wja-studio-street-lens-2', (shader) => {
+  over(m, 'wja-studio-street-lens-3', (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
-      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.1 + 1.5 * pow( wsF, 3.0 ) ) + vec3( 0.3 ) * wsL * pow( wsF, 14.0 );\n\t}'
+      '#include <emissivemap_fragment>\n\t{\n\t\tfloat wsF = clamp( dot( normalize( vNormal ), normalize( vViewPosition ) ), 0.0, 1.0 );\n\t\tfloat wsL = max( totalEmissiveRadiance.r, max( totalEmissiveRadiance.g, totalEmissiveRadiance.b ) );\n\t\ttotalEmissiveRadiance = totalEmissiveRadiance * ( 0.1 + 1.9 * pow( wsF, 2.6 ) ) + vec3( 0.34 ) * wsL * pow( wsF, 10.0 );\n\t}'
     )
   })
   return named(lit(m, z), `street.lens.${name}.${z.id}`)

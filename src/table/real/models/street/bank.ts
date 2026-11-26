@@ -2,12 +2,12 @@ import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
 import type { Buckets } from './geo'
 import { walls } from './firehouse'
-import { KIND, TONE, band, board, mix, parapet, roofDeck, shade, site, wallFace, windowAt, type Hole } from './kit'
+import { KIND, TONE, band, board, parapet, rgb, roofDeck, shade, site, wallFace, windowAt, type Hole } from './kit'
 
 export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const S = site(z, 'street.bank')
   const g = b.paint
-  const stone = mix(TONE.stonePale, TONE.lime, 0.3)
+  const stone = rgb(0xc3c6c6)
   const top = S.h
   const steps = 3
   const tread = 3.6
