@@ -1,35 +1,35 @@
 {
   "folder": "corporate-models",
-  "pushed": "2026-11-26T03:48:13.613Z",
-  "commit": "92524864c62bc0b7b4108d294202a4ba37a607aa",
+  "pushed": "2026-11-26T04:04:18.290Z",
+  "commit": "79ee8100930e2fae7c04ed922c80877deb584cf9",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "lobby-doors draft at 92524864 beside the approved image: dark blue green glass, red carpet, deeper brass",
-      "time": "2026-11-26T03:48:11.797Z",
+      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T04:04:04.671Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126034811-lobby-compare-0346.jpg"
+      "from": "out/work/compare/compare-tier-corporate.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-corporate draft at 92524864 beside the approved image",
-      "time": "2026-11-26T03:48:12.023Z",
+      "caption": "Corporate at 79ee8100 beside the approved image: ladder with stringers, boardroom stops short of the notes",
+      "time": "2026-11-26T04:04:16.716Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126034812-tier-compare-0346.jpg"
+      "from": "out/work/looks/files/20261126040416-tier-compare-0404.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-corporate draft at 92524864, this build alone: tower with glazed lantern, red carpet, glass revolving door, marble wedges, beach case, walnut boardroom",
-      "time": "2026-11-26T03:48:12.256Z",
+      "caption": "The ladder at 79ee8100, native size: two flat stringers outside the wires, rungs bent in a U",
+      "time": "2026-11-26T04:04:16.948Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126034812-tier-0346.jpg"
+      "from": "out/work/looks/files/20261126040416-ladder-0404.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "lobby-doors draft at 92524864, this build alone",
-      "time": "2026-11-26T03:48:12.481Z",
+      "caption": "Boardroom and notes at 79ee8100, three times native: the table and chairs follow the layout box, paler notes",
+      "time": "2026-11-26T04:04:17.201Z",
       "by": "corporate-models",
-      "from": "out/work/looks/files/20261126034812-lobby-0346.jpg"
+      "from": "out/work/looks/files/20261126040417-board-0404.jpg"
     }
   ]
 }
