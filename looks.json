@@ -1,35 +1,35 @@
 {
   "folder": "careers",
-  "pushed": "2026-11-26T02:55:34.641Z",
-  "commit": "a79de6d274b3111a0444432278e6c822a3d38aa2",
+  "pushed": "2026-11-26T03:10:19.989Z",
+  "commit": "4539d38de714d839f0a8705adce619ffe45e359f",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-marketing-top-hd-final: final tier, hd, view beauty",
-      "time": "2026-11-26T02:55:25.019Z",
+      "caption": "Still marketing-rest-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T03:05:43.760Z",
       "by": "careers",
-      "from": "out/work/stills/key-marketing-top-hd-final.png"
+      "from": "out/work/stills/marketing-rest-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "marketing-top at the final tier on a79de6d2 (below) beside the approved image (above)",
-      "time": "2026-11-26T02:55:33.007Z",
+      "caption": "Lower screens at draft: the awards row and the last call with the footer",
+      "time": "2026-11-26T03:10:18.429Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126025533-cmp-final-0255.jpg"
+      "from": "out/work/looks/files/20261126031018-end-sections.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The medal at the final tier (right) beside approved (left): deeper dull sectors on the turned face",
-      "time": "2026-11-26T02:55:33.246Z",
+      "caption": "The turning card at 0.45 of marketing.perks, review tier: the well past the card reads about 50 of 255",
+      "time": "2026-11-26T03:10:18.652Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126025533-medal-final-0255.jpg"
+      "from": "out/work/looks/files/20261126031018-turn.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Testimonial badges at draft: the blacked out photograph as a glossy print that takes the light",
-      "time": "2026-11-26T02:55:33.510Z",
+      "caption": "Testimonial badges at draft: the photograph as a glossy print, the bars as tape with a faint sheen",
+      "time": "2026-11-26T03:10:18.887Z",
       "by": "careers",
-      "from": "out/work/looks/files/20261126025533-badge.jpg"
+      "from": "out/work/looks/files/20261126031018-badge2.jpg"
     }
   ]
 }
