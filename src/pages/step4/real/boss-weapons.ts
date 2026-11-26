@@ -237,13 +237,13 @@ export const bossWeapons: PartMaker | null = {
         const n = Math.round(v[1] ?? 0)
         const hot = (1 - u) * (1 - u)
         const star = o.getObjectByName('star')!
-        const size = 44 + 70 * Math.sqrt(u)
+        const size = (40 + 80 * Math.sqrt(u)) * Math.pow(1 - u, 1.4) + 56 * Math.max(0, 1 - u / 0.08)
         star.scale.set(size, size, 1)
         star.rotation.z = hash01(n, 3, seed) * Math.PI * 2
-        star.visible = hot > 0.01
-        ;(star as THREE.Mesh).position.z = 2
+        star.visible = size > 1
+        star.position.z = 2
         const halo = o.getObjectByName('halo')!
-        halo.scale.set(110 * (0.6 + 0.4 * hot), 110 * (0.6 + 0.4 * hot), 1)
+        halo.scale.set(130 * hot + 4, 130 * hot + 4, 1)
         for (let i = 0; i < FLECKS; i++) {
           const fleck = o.getObjectByName(`fleck-${i}`)!
           const a = hash01(n, i, seed + 1) * Math.PI * 2
@@ -265,12 +265,13 @@ export const bossWeapons: PartMaker | null = {
         const n = Math.round(v[1] ?? 0)
         const hot = (1 - u) * (1 - u)
         const star = o.getObjectByName('star')!
-        star.scale.set(60 + 190 * Math.sqrt(u) * 0.8, (60 + 190 * Math.sqrt(u) * 0.8) * 0.62, 1)
+        const size = (70 + 150 * Math.sqrt(u)) * Math.pow(1 - u, 1.2)
+        star.scale.set(size, size * 0.62, 1)
         star.position.set(18 + 30 * u, 0, 2)
         star.rotation.z = (hash01(n, 5, seed) - 0.5) * 0.5
-        star.visible = u < 0.7
+        star.visible = size > 1
         const halo = o.getObjectByName('halo')!
-        halo.scale.set(230 * (0.5 + 0.5 * hot), 170 * (0.5 + 0.5 * hot), 1)
+        halo.scale.set(230 * hot + 4, 170 * hot + 4, 1)
         halo.position.set(10, 0, 1)
         const smoke = o.getObjectByName('smoke')!
         smoke.scale.set(40 + 70 * u, 40 + 70 * u, 1)
