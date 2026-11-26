@@ -137,7 +137,7 @@ const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05] }
 const ROLL = { tip: 2.09, rail: 0.7 }
-const BACK = { off: 2.9, clear: 3.1, lift: 0, behind: 0.6, before: 2.2, aim: 1.8 }
+const BACK = { ahead: 3.2, clear: 3.6, behind: 0.6, before: 2.2, aim: 2 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
@@ -280,7 +280,7 @@ export function makePage(): PageLogic {
     const f = soft(r, Math.min(railLength(r), b.s + BACK.before))
     const d = Math.hypot(f.x - a.x, f.y - a.y) || 1
     const u = [(f.x - a.x) / d, (f.y - a.y) / d]
-    return { eye: toWorld(px(c.x - u[0]! * BACK.off), px(c.y - u[1]! * BACK.off), px(c.z + BACK.clear)), target: toWorld(px(c.x + u[0]! * BACK.aim), px(c.y + u[1]! * BACK.aim), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
+    return { eye: toWorld(px(c.x + u[0]! * BACK.ahead), px(c.y + u[1]! * BACK.ahead), px(c.z + BACK.clear)), target: toWorld(px(c.x - u[0]! * BACK.aim), px(c.y - u[1]! * BACK.aim), px(c.z)), up: [0, 0, 1], fov: fov('rail') }
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const lens = (name: string, p: CameraPose | null): CameraPose | null => {
