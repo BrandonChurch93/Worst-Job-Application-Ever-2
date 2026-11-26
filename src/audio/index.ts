@@ -23,6 +23,7 @@ export interface SoundApi {
   event(e: { name: string; x: number; y: number; hitsCursor: boolean; page?: string }, mode: SoundMode): void
   beat(id: string, mode: SoundMode, into?: number): void
   trigger(name: string): void
+  quiet(seconds: number): void
   opening(from: number, to: number): void
   start(): void
   stop(): void
@@ -287,6 +288,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   let isMuted = false
   let level = 1
   let tone: Voice | null = null
+  let idleSaid = false
   let flowing = true
   let lead = false
   let filmAt = 0
@@ -544,6 +546,13 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       if (state !== 'ready' || !backend) return
       if (name === 'watchFilm') sayLive(name, null, `call ${name}`, lead ? openingFrames() / config.film.fps - filmAt : 0)
       else sayLive(name, desk.page, `call ${name}`)
+    },
+    quiet(seconds) {
+      if (seconds < config.live.idleSeconds) idleSaid = false
+      else if (!idleSaid) {
+        idleSaid = true
+        api.trigger('idle')
+      }
     },
     opening(from, to) {
       lead = to < openingFrames() / config.film.fps

@@ -207,7 +207,6 @@ function play(first: PlayMode): void {
   let shown: Frame | null = null
   let volume = -1
   let lastInput = wallSeconds()
-  let idleSaid = false
 
   const stepNow = (): number => {
     const i = base + stage.entryIndex
@@ -310,14 +309,10 @@ function play(first: PlayMode): void {
       volume = v
       sound.setVolume(v)
     }
-    if (!idleSaid && wallSeconds() - lastInput >= config.live.idleSeconds) {
-      idleSaid = true
-      sound.trigger('idle')
-    }
+    sound.quiet(wallSeconds() - lastInput)
   }
   const touched = () => {
     lastInput = wallSeconds()
-    idleSaid = false
   }
 
   const setMode = (next: PlayMode, record = true) => {

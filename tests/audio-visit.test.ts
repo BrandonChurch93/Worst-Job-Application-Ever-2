@@ -9,7 +9,7 @@ import { config } from '../src/config'
 import { visit } from '../tools/lib/sound-visit.mjs'
 
 interface Entry { at: number; line: string; trigger: string; what: string; start?: number; seconds?: number; why?: string; page: string }
-interface Visit { bot: string; finished: boolean; seconds: number; skips: number; turns: { at: number; page: string }[]; log: Entry[]; loops: { id: string; page: string; start: number; stop: number | null }[]; volumes: { at: number; page: string; volume: number }[]; events: Record<string, number> }
+interface Visit { bot: string; finished: boolean; seconds: number; skips: number; turns: { at: number; page: string }[]; log: Entry[]; loops: { id: string; page: string; start: number; stop: number | null }[]; volumes: { at: number; page: string; volume: number }[]; volumeSteps: { at: number; page: string; volume: number; output: number }[]; events: Record<string, number> }
 
 const modules: Record<string, unknown> = { '/src/audio/index.ts': engine, '/src/stage/stage.ts': stageModule, '/src/stage/bots.ts': botsModule, '/src/pages/index.ts': pagesModule, '/src/config.ts': configModule }
 const load = async (f: string) => modules[f]
@@ -90,5 +90,21 @@ describe('a whole visit of the live site through the stage and the sound engine'
     expect(step2[0]!.volume).toBeCloseTo(0.1, 6)
     expect(step2[step2.length - 1]!.volume).toBe(1)
     for (let i = 1; i < step2.length; i++) expect(step2[i]!.volume).toBeGreaterThanOrEqual(step2[i - 1]!.volume)
+  })
+
+  it('turns the crank from nothing to 100 percent and reads the output of the engine at each tenth: it is the level the crank shows', async () => {
+    const v = await run('keen')
+    expect(v.events['crank-runaway']).toBe(1)
+    const before = v.volumeSteps.filter((x) => x.page !== 'step2')
+    expect(before).toEqual([{ at: before[0]!.at, page: 'marketing', volume: 1, output: 1 }])
+    const crank = v.volumeSteps.filter((x) => x.page === 'step2')
+    expect(crank.map((x) => x.output)).toEqual([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
+    for (const x of crank) expect(x.output).toBe(x.volume)
+    for (const tenth of [0.1, 0.3, 0.5, 0.7, 1]) expect(crank.filter((x) => x.output === tenth).length).toBe(1)
+    const step3 = v.turns.find((t) => t.page === 'step3')!.at
+    expect(crank[crank.length - 1]!.at).toBeLessThan(step3)
+    expect(v.volumeSteps[v.volumeSteps.length - 1]).toMatchObject({ page: 'step2', output: 1 })
+    const skipper = await run('skipper')
+    expect(skipper.volumeSteps.map((x) => x.output)).toEqual([1])
   })
 })

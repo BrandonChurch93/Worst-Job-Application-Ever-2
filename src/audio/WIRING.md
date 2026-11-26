@@ -13,7 +13,7 @@ if (mode !== 'capture') {
     for (; sent < stage.events.length; sent++) sound.event(stage.events[sent], mode === 'live' ? 'live' : 'film')
   })
   onBeatStart((id) => sound.beat(id, mode === 'live' ? 'live' : 'film'))
-  onIdle(() => sound.trigger('idle'))
+  onFrame(() => sound.quiet(secondsSinceTheLastMovementOrClick))
   onWatchFilm(() => sound.trigger('watchFilm'))
 }
 ```
@@ -34,3 +34,4 @@ The rules it keeps:
 12. An event plays the cue `cueOfEvent(name)` gives it: the table `eventCues`, then the eleven added cues of `extraCues`, each on the event of its own name. An event with no cue, or a cue whose sound is not loaded, plays nothing and throws nothing. `carpet-roll`, `inbox-take`, `firehouse-take` and `metrics-card` are emitted by their pages since Phase 5 and sound. An event may start a second sound beside its own (`alsoStarts`): `unfold` starts `boss-loop`.
 13. The volume. In each drawn frame of the live site `src/main.ts` passes `stage.page.volume?.() ?? 1` to `setVolume` when it has changed. A page without a volume of its own is at 1, so only step 2 turns the site down, and only between the opening of the Audio volume row and the end of that row.
 14. `log()` gives the engine's own record of the narrator: for each line the time on the sound clock, what set it off, and whether it was spoken, dropped (with the reason in words), taken back before it began, or cut. `npm run sound -- --visit keen` plays the whole live site with a bot through the stage and this engine and prints it.
+15. The idle line. In each drawn frame of the live site `src/main.ts` passes the seconds since the visitor last moved or clicked to `quiet(seconds)`. The engine holds the rule: at `live.idleSeconds` it says the next idle line, once, and not again until the number has been under `live.idleSeconds`. `trigger('idle')` still says the line outright and is what the engine calls.

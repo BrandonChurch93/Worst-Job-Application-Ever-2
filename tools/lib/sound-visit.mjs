@@ -23,7 +23,8 @@ function fakeContext(heard) {
     resume() { this.state = 'running'; return Promise.resolve() }
     suspend() { this.state = 'suspended'; return Promise.resolve() }
     close() { return Promise.resolve() }
-    createGain() { return new Gain() }
+    gains = []
+    createGain() { const g = new Gain(); this.gains.push(g); return g }
     createStereoPanner() { return new Panner() }
     createBufferSource() {
       const ctx = this
@@ -93,7 +94,6 @@ export async function visit(load, c, bot, seed = c.seed) {
     globalThis.window = before.window
     const inner = new BotDriver(bot, seed)
     let lastInput = 0
-    let idleSaid = false
     let was = ''
     const driver = {
       name: inner.name,
@@ -103,7 +103,6 @@ export async function visit(load, c, bot, seed = c.seed) {
         if (key !== was) {
           was = key
           lastInput = view.time
-          idleSaid = false
         }
         return p
       }
@@ -111,6 +110,7 @@ export async function visit(load, c, bot, seed = c.seed) {
     const stage = new Stage({ mode: 'live', flow: liveFlow(), pages, driver, seed })
     const limit = Math.round(c.live.botMaxSeconds * stepHz)
     const volumes = []
+    const steps = []
     const turns = []
     const events = {}
     let sent = 0
@@ -135,22 +135,20 @@ export async function visit(load, c, bot, seed = c.seed) {
       if (v !== volume) {
         volume = v
         sound.setVolume(v)
+        steps.push({ at: Number(stage.time.toFixed(2)), page: stage.page.id, volume: Number(v.toFixed(3)), output: Number(ctx.gains[0].gain.value.toFixed(3)) })
         const last = volumes[volumes.length - 1]
         const row = { at: Number(stage.time.toFixed(2)), page: stage.page.id, volume: Number(v.toFixed(3)) }
         if (last && last.page === row.page && row.at - last.at < 0.5 && volumes.length > 1 && volumes[volumes.length - 2].page === row.page && row.at - volumes[volumes.length - 2].at < 0.5) volumes[volumes.length - 1] = row
         else volumes.push(row)
       }
-      if (!idleSaid && stage.time - lastInput >= c.live.idleSeconds) {
-        idleSaid = true
-        sound.trigger('idle')
-      }
+      sound.quiet(stage.time - lastInput)
     }
     const pageAt = (t) => turns.filter((x) => x.at <= t + 1e-9).pop()?.page ?? turns[0]?.page ?? ''
     const log = sound.log().map((e) => ({ ...e, page: pageAt(e.at) }))
     const loops = heard.filter((h) => h.loop || h.id === 'hold-music').map((h) => ({ id: h.id, page: pageAt(h.asked), start: Number(h.start.toFixed(2)), stop: h.stop === null ? null : Number(h.stop.toFixed(2)) }))
     return {
       bot, seed, finished: stage.finished, seconds: Number(stage.time.toFixed(2)), skips: events.skip ?? 0, turns, gags: stage.gagsReached,
-      sounds: heard.length, lines: heard.filter((h) => h.id.startsWith('line.')).length, log, loops, volumes, events
+      sounds: heard.length, lines: heard.filter((h) => h.id.startsWith('line.')).length, log, loops, volumes, volumeSteps: steps, events
     }
   } finally {
     globalThis.window = before.window
