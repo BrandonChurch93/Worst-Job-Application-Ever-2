@@ -85,6 +85,24 @@ Built:
 - The collar: a thin ring of `capRim` round the current cap, 2.2 px wide with 1.3 px of dark clearance, made by the rail and keyed by where the current cap stands. It lies at the rail's height, so it shows where it crosses the rail and is under the page elsewhere: the rail's outline in the layout does not grow. DECISION: the approved pictures show no collar; it is built as the order of work words it, set into the rail.
 - Declined as told: no new state for finished steps.
 
+## Item D: the arrow's body
+
+MEASURED, the arrow's face on the page (`step2-dial`, the same 6x crop of the approved image and the build): the approved face is near white with a black edge about a fifth of the stem's width; the build's face was drawn at about 0.66 of its colour and its black edge was a thin line.
+
+Built, all in `src/cursor/model/`:
+
+- `shape.ts`: the black band is wider (`ENAMEL_AT` 0.63 to 0.9 of an outline unit, about 3.6 px), the enamel's roll up from it is shorter (`SHOULDER` 1.0 to 0.6) and its face flatter (`DOME` 0.1 to 0.05). The enamel's inner rings stop where they did (`REACH` 1.41), since the stem is 1.47 wide and a ring past it turned the solid inside out: `tests/cursor-model.test.ts` "is one closed solid" caught it and is green again with no change to the test. No number of that test changed.
+- `material.ts`: `FACE_LIFT` 1.3 on the enamel's diffuse light only (the black edge is not lifted).
+- `material.ts`, the sealed arrow: the body is first held down to what the ball's lamp gives, then topped up as before, and the lamp reaches it at `SEALED_LEVEL` 0.78. MEASURED on `reply-all` at draft with `patch.cjs`, 10 px squares on the arrow's face, linear luminance: approved 0.40 to 0.44 (four squares); build with the hold alone 0.53 to 0.57; build with the level 0.42 to 0.45 (two squares fully on the face). The brief's 0.33 to 0.37 for the approved picture is STATED, measured another way; mine is the same squares on both pictures.
+
+Not built:
+
+- The visible sidewall. The approved arrow shows a light lip under the black edge on the side toward the viewer. The page is seen straight down, so the wall of a body 7 px tall has no width in the picture; widening it would be a second outline, not a wall. UNKNOWN whether the owner of the camera wants a tilt.
+- The shadow that moves off and softens with height is the light's (`look.ts`), item E.
+- "flattened" is left as it is, as ruled at 07:13Z.
+
+What still shows: a small grey dimple where the stem meets the wings at 6x.
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
@@ -92,7 +110,7 @@ Built:
 | shell | 25 | 40 |
 | type | 2 | 40 |
 | light-engine | 0 | 40 |
-| cursor-body | 0 | 40 |
+| cursor-body | 8 | 40 |
 
 ## Measures, before and after
 
