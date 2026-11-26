@@ -111,7 +111,7 @@ export function riskyType(runs, w, h, width, height) {
 }
 
 // The boxes of the controls a visitor can see, read from the page.
-const controlBoxes = (page) =>
+export const controlBoxes = (page) =>
   page.evaluate(() => {
     const host = document.getElementById('controls')
     if (!host) return []
@@ -158,7 +158,7 @@ export function controlWindows(boxes, w, h, width, height, pad = 40) {
 }
 
 // Builds every file of a plan. Gives back, for each file, its PNG bytes and what the key file says of it.
-export async function buildPack(cfg, plan, { tier = 'draft', log = () => {}, cache = null } = {}) {
+export async function buildPack(cfg, plan, { tier = 'draft', log = () => {}, cache = null, facts = null } = {}) {
   const edge = cfg.critics.maxImageLongEdgePx
   const fps = cfg.film.fps
   const hd = cfg.formats.hd
@@ -281,6 +281,9 @@ export async function buildPack(cfg, plan, { tier = 'draft', log = () => {}, cac
 
     const { LOOK_KINDS, buildLook } = await import('./pack-look.mjs')
     if (files.some((x) => LOOK_KINDS.includes(x.kind))) await buildLook({ cfg, session, files, built, about, tier, log, cache })
+
+    const { SITE_KINDS, buildSite } = await import('./pack-site.mjs')
+    if (files.some((x) => SITE_KINDS.includes(x.kind))) await buildSite({ cfg, session, files, built, about, log, cache, facts })
 
     const sheets = files.filter((x) => x.kind === 'film-sheet' || x.kind === 'beat-sheet')
     if (sheets.length) {

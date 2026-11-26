@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import { at } from './paths.mjs'
 import { filmPlan, spread, stepOf, timeLabel } from './film-plan.mjs'
 import { lookRoles } from './pack-look.mjs'
+import { SITE, siteLines, siteRoles } from './pack-site.mjs'
 
 export const FORMAT = 'png'
 const LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
@@ -110,10 +111,14 @@ export const roles = {
   ...lookRoles
 }
 
+// The role of a pack: the unit `site` has its own packs under the names of the critics that judge it.
+export const roleOf = (role, unit) => (unit === SITE ? siteRoles[role] : roles[role])
+export const rolesOf = (unit) => Object.keys(unit === SITE ? siteRoles : roles)
+
 // The whole plan of one pack: its sets, and for each file its neutral name and what it is.
 export function packPlan(cfg, { role, round, unit, facts = null }) {
-  const r = roles[role]
-  if (!r) throw new Error(`No pack is defined for the role "${role}" yet. Defined: ${Object.keys(roles).join(', ')}`)
+  const r = roleOf(role, unit)
+  if (!r) throw new Error(`No pack is defined for the role "${role}"${unit === SITE ? ' of the unit "site"' : ''} yet. Defined: ${rolesOf(unit).join(', ')}`)
   if (unit && r.unit && unit !== r.unit) throw new Error(`The role ${role} judges the unit "${r.unit}", not "${unit}"`)
   if (!r.unit && !unit) throw new Error(`The role ${role} needs --unit`)
   const sets = splitGroups(r.groups(cfg, unit, facts), cfg.critics.maxFilesPerMessage).map((s, i) => {
@@ -148,8 +153,9 @@ export function briefFor(plan, set, text = fs.readFileSync(at('kit', '07-QUALITY
   if (plan.critic === 'R2') return lines.find((l) => l.startsWith('> You will see one image.')).slice(2)
   const settled = s.files.filter((f) => f.side === 'a' && f.settled).map((f) => ['Settled', `${f.name} and ${f.name.replace('-a.', '-b.')}`, ...f.settled.map((l) => `- ${l}`)].join('\n'))
   const part = plan.sets.length > 1 ? `Your ${s.files.length} files, ${s.files[0].name} to ${s.files[s.files.length - 1].name}, are one part of the pack. Judge what your files show.` : `Your ${s.files.length} files are ${s.files[0].name} to ${s.files[s.files.length - 1].name}.`
+  const section = sectionOf(text, plan.section)
   return [
-    sectionOf(text, plan.section),
+    plan.unit === SITE ? siteLines(section) : section,
     sectionOf(text, 'The severity scale'),
     ['### The return format', '', `Return one JSON object, with "critic" set to "${plan.critic}".`, '', format, '', rule].join('\n'),
     ...settled,
