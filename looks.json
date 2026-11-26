@@ -1,0 +1,35 @@
+{
+  "folder": "frame-finish",
+  "pushed": "2026-11-26T10:57:57.199Z",
+  "commit": "68de69cad90d1d0e789478a78b1d9ceefa659660",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "table-wide first pass: approved left, build right. Navy walls under a cream rail land, title on a dark plate, mean 0.952 of approved",
+      "time": "2026-11-26T10:57:55.508Z",
+      "by": "frame-finish",
+      "from": "out/work/frame-finish/first-table-wide.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "youre-fired first pass: approved left, build right. Walls behind the firehouse are dark navy, ejector housing under the seat",
+      "time": "2026-11-26T10:57:55.740Z",
+      "by": "frame-finish",
+      "from": "out/work/frame-finish/first-youre-fired.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "reply-all first pass: approved left, build right. Dark mirror steel balls, stepped cup lids with sip hole, lacquered bats with black band",
+      "time": "2026-11-26T10:57:55.975Z",
+      "by": "frame-finish",
+      "from": "out/work/frame-finish/first-reply-all.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "loader-page first pass: approved left, build right. Turned ring with unbroken highlight, flange at the tube, collar shadows",
+      "time": "2026-11-26T10:57:56.196Z",
+      "by": "frame-finish",
+      "from": "out/work/frame-finish/first-loader-page.jpg"
+    }
+  ]
+}
