@@ -32,6 +32,20 @@ void main() {
 	gl_FragDepth = texture2D( tKept, vUv ).r;
 }`
 
+// A map for the kept depths, as three makes one for a light whose shadows are read without a filter: its depths can be
+// read as plain numbers by the quad that lays them under the moving things.
+export const keptMap = (size: number): THREE.WebGLRenderTarget => {
+  const map = new THREE.WebGLRenderTarget(size, size)
+  const depth = new THREE.DepthTexture(size, size, THREE.UnsignedIntType)
+  depth.name = 'kept-shadows.map'
+  depth.format = THREE.DepthFormat
+  depth.compareFunction = null
+  depth.minFilter = THREE.NearestFilter
+  depth.magFilter = THREE.NearestFilter
+  map.depthTexture = depth
+  return map
+}
+
 const hash = (m: THREE.Mesh): number => {
   const e = m.matrixWorld.elements
   let h = m.geometry.id * 0.6180339887
@@ -63,6 +77,7 @@ export class StillShadows {
   private camera = new THREE.Matrix4()
   private cameraAt = new THREE.Matrix4()
   private keptCamera = new THREE.Matrix4()
+  private projection = new THREE.Matrix4()
   private cameraStill = 0
   private frame = 0
   private valid = false
@@ -211,17 +226,28 @@ export class StillShadows {
     }
     const size = key.shadow.mapSize.x
     const mine = key.shadow.map as THREE.WebGLRenderTarget | null
-    const next = this.spare && this.spare.width === size ? this.spare : null
-    if (this.spare && !next) this.drop(this.spare)
+    // The map of the bake is made here and never left to three. three makes a light's map on the first pass that finds
+    // none and sets the shadow camera's projection anew as it does, which drops the turn and the shear the renderer gave
+    // it: the kept depths would then lie beside the frames that read them, and the page's own slab would shade the page.
+    const next = this.spare && this.spare.width === size ? this.spare : keptMap(size)
+    if (this.spare && this.spare !== next) this.drop(this.spare)
     this.spare = null
     key.shadow.map = next
     this.quad.visible = false
     key.shadow.camera.layers.set(STANDS)
     key.shadow.autoUpdate = false
-    key.shadow.needsUpdate = true
+    const cam = key.shadow.camera
+    this.projection.copy(cam.projectionMatrix)
     const target = renderer.getRenderTarget()
     renderer.setRenderTarget(this.tiny)
-    renderer.render(scene, this.away)
+    // Should a pass change the projection all the same, it is put back and the pass is drawn once more.
+    for (let pass = 0; pass < 2; pass++) {
+      key.shadow.needsUpdate = true
+      renderer.render(scene, this.away)
+      if (cam.projectionMatrix.equals(this.projection)) break
+      cam.projectionMatrix.copy(this.projection)
+      cam.projectionMatrixInverse.copy(this.projection).invert()
+    }
     renderer.setRenderTarget(target)
     if (this.kept) {
       if (this.kept.width === size) this.spare = this.kept
