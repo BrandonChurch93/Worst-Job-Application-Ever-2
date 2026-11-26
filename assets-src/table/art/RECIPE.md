@@ -38,7 +38,7 @@ Every picture here is made by one command: `node assets-src/table/art/make.mjs` 
 - From: `config.table.inserts`, in its order: cell `index % 3` across, `floor(index / 3)` down. The picture of a cell is chosen by the insert's `picture`
 - Prompt or command: `node assets-src/table/art/make.mjs --only inserts`
 - Takes: about 1 s
-- Why this one: the lens is the window unlit, dark in its own colour; the glow is what it emits when lit, brightest in the middle with the moulded picture dark against it; the relief is the picture and the rings of the lens as heights, for the bump of the surface
+- Why this one: the lens is the window unlit, dark in its own colour; the glow is what it emits when lit, brightest in the middle with the moulded picture dark against it; the relief is the picture and the rings of the lens as heights, for the bump of the surface. The glass is 0.82 of the window's width (`WELL` in `inserts.mjs`): round it a dark well and a thin metal trim, so a lit window is a small deep light and not a plate
 - Size: web 1152 square, full 2304 square
 - Date: 2026-11-25
 
