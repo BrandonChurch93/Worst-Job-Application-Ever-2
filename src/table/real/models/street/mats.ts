@@ -32,6 +32,8 @@ float wsNoise( vec2 p ) {
 	f = f * f * ( 3.0 - 2.0 * f );
 	return mix( mix( wsHash( i ), wsHash( i + vec2( 1.0, 0.0 ) ), f.x ), mix( wsHash( i + vec2( 0.0, 1.0 ) ), wsHash( i + vec2( 1.0, 1.0 ) ), f.x ), f.y );
 }
+vec2 wsIn = vec2( 0.5 );
+float wsFade = 1.0;
 // A grid of cells with a joint between them: x the joint (1 in the joint), y a number for the cell.
 vec2 wsCells( vec2 uv, vec2 size, float shift, float joint ) {
 	float row = floor( uv.y / size.y );
@@ -43,6 +45,8 @@ vec2 wsCells( vec2 uv, vec2 size, float shift, float joint ) {
 	float jx = 1.0 - smoothstep( joint * 0.5 - w.x, joint * 0.5 + w.x, edge.x );
 	float jy = 1.0 - smoothstep( joint * 0.5 - w.y, joint * 0.5 + w.y, edge.y );
 	float fade = clamp( 1.6 - max( w.x / size.x, w.y / size.y ) * 5.0, 0.0, 1.0 );
+	wsIn = f / size;
+	wsFade = fade;
 	return vec2( max( jx, jy ) * fade, wsHash( cell + 7.0 ) );
 }
 // The surface a face is moulded with: xyz the tone its paint is multiplied by, w its height for the relief. wsGloss is taken off the roughness.
@@ -59,12 +63,14 @@ vec4 wsSurface( vec3 face ) {
 		vec2 c = wsCells( uv, vec2( 6.0, 2.5 ), 0.5, 0.5 );
 		float burnt = step( 0.86, wsHash( vec2( c.y * 53.0, 11.0 ) ) );
 		if ( kind == 1.0 ) {
-			tone = vec3( 0.78 + 0.4 * c.y ) * vec3( 1.0, 0.92 + 0.14 * wsHash( vec2( c.y * 91.0, 3.0 ) ), 0.9 ) * ( 1.0 - 0.4 * burnt ) * ( 0.9 + 0.2 * grain );
-			wsOver = vec4( vec3( 0.33, 0.3, 0.27 ) * ( 0.7 + 0.5 * grain ), c.x * 0.6 );
+			float lip = smoothstep( 0.52, 0.86, wsIn.y ) * ( 1.0 - c.x ) * wsFade;
+			float foot = smoothstep( 0.42, 0.1, wsIn.y ) * wsFade;
+			tone = vec3( 0.74 + 0.44 * c.y ) * vec3( 1.0, 0.9 + 0.16 * wsHash( vec2( c.y * 91.0, 3.0 ) ), 0.88 ) * ( 1.0 - 0.45 * burnt ) * ( 0.88 + 0.22 * grain ) * ( 1.0 + 0.5 * lip - 0.22 * foot );
+			wsOver = vec4( vec3( 0.05, 0.036, 0.03 ) * ( 0.7 + 0.6 * grain ), c.x * 0.86 );
 		} else {
 			tone = vec3( 0.9 + 0.18 * c.y ) * ( 1.0 - 0.3 * c.x ) * ( 0.92 + 0.14 * grain );
 		}
-		h = ( 1.0 - c.x ) * 0.12 + grain * 0.3;
+		h = ( 1.0 - c.x ) * 0.55 + grain * 0.3;
 	} else if ( kind == 2.0 ) {
 		vec2 c = wsCells( uv, vec2( 22.0, 9.6 ), 0.5, 1.3 );
 		tone = vec3( 0.84 + 0.22 * c.y + 0.1 * grain ) * ( 1.0 - 0.2 * c.x );
@@ -120,7 +126,7 @@ vec4 wsSurface( vec3 face ) {
 // The moulded and painted plastic of the models: one material for the zone, a colour for each vertex and a kind of surface for each face.
 export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.6, metalness: 0, specularIntensity: 0.5, clearcoat: 0.22, clearcoatRoughness: 0.38 }))
-  over(m, 'wja-studio-street-paint-10', (shader) => {
+  over(m, 'wja-studio-street-paint-11', (shader) => {
     shader.vertexShader = 'attribute vec3 face;\nvarying vec3 vWsFace;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsFace = face;')
     shader.fragmentShader =
       'varying vec3 vWsFace;\n' +

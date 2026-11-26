@@ -7,7 +7,7 @@ import { KIND, TONE, band, board, mix, parapet, shade, site, wallFace, windowAt,
 export function bank(b: Buckets, z: Zone, ctx: RealContext): void {
   const S = site(z, 'street.bank')
   const g = b.paint
-  const stone = shade(mix(TONE.stone, TONE.lime, 0.3), 0.9)
+  const stone = mix(TONE.stonePale, TONE.lime, 0.3)
   const top = S.h
   const steps = 3
   const tread = 3.6

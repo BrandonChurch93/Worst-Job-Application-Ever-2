@@ -2,7 +2,7 @@ import { config } from '../../../../config'
 import { BALL, COLS, SPIRAL, railOf } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import type { Buckets, V3 } from './geo'
-import { KIND, TONE, shade, site } from './kit'
+import { KIND, TONE, rgb, shade, site } from './kit'
 
 export type V4 = [number, number, number, number]
 
@@ -42,6 +42,29 @@ export const inTube = (pts: V4[], x: number, y: number, z0: number, z1: number, 
   return false
 }
 
+export interface GarageLamp { a: number; r: number; z: number; at: V3 }
+
+// Where the lamps of the garage hang, in the zone's frame: `at` is the lit face of each, `a` its angle round the garage, `r` how far out it is.
+export function garageLamps(z: Zone): GarageLamp[] {
+  const S = site(z, 'street.garage')
+  const pts = tube(z)
+  const Ro = SPIRAL.frame * BALL
+  const top = S.base + S.h
+  const out: GarageLamp[] = []
+  for (const roof of [true, false]) {
+    for (let k = 0; k < 4; k++) {
+      const a = Math.PI / 4 + (k * Math.PI) / 2
+      const r = Ro + 0.5 * BALL
+      const zz = roof ? top - 22 : S.base + S.h * 0.4
+      const at: V3 = [S.cx + Math.cos(a) * r, S.cy + Math.sin(a) * r, zz]
+      let free = true
+      for (let q = Ro - 6; q <= r + 8; q += 4) if (inTube(pts, S.cx + Math.cos(a) * q, S.cy + Math.sin(a) * q, zz - 4, zz + 22, 4)) free = false
+      if (free) out.push({ a, r, z: zz, at })
+    }
+  }
+  return out
+}
+
 // The round garage: a concrete frame of columns and ring beams round the clear spiral, open where the highway comes in and where the ball leaves, hung from the right wall and tied to the police station.
 export function garage(b: Buckets, z: Zone): void {
   const S = site(z, 'street.garage')
@@ -54,7 +77,7 @@ export function garage(b: Buckets, z: Zone): void {
   const base = S.base
   const top = S.base + S.h
   const pitch = SPIRAL.pitch * BALL
-  const con = shade(TONE.concrete, 1.34)
+  const con = rgb(0xc6c9c9)
   const pts = tube(z)
   const N = 96
   const step = (Math.PI * 2) / N
@@ -69,11 +92,11 @@ export function garage(b: Buckets, z: Zone): void {
   const slim: boolean[] = []
   const cap = 4
   for (let zz = base; zz + pitch < top - 1; zz += pitch) {
-    levels.push([zz, zz + 0.34 * BALL])
+    levels.push([zz, zz + 0.44 * BALL])
     slim.push(false)
     if (zz + pitch * 1.5 < top - 1) {
-      levels.push([zz + pitch * 0.5 + 0.1 * BALL, zz + pitch * 0.5 + 0.3 * BALL])
-      slim.push(true)
+      levels.push([zz + pitch * 0.5, zz + pitch * 0.5 + 0.44 * BALL])
+      slim.push(false)
     }
   }
   levels.push([top - 0.5 * BALL, top - cap])
@@ -104,8 +127,8 @@ export function garage(b: Buckets, z: Zone): void {
       done += n
     }
   })
-  const cols = 8
-  const half = 11
+  const cols = 12
+  const half = 8
   const rib = 3
   const fin = 2
   const piece = 6
@@ -180,9 +203,22 @@ export function garage(b: Buckets, z: Zone): void {
     if (!p.held) continue
     const m = g.mark()
     g.box(Ri, Ro + rib, -half, half, p.lo, p.hi, con, { kind: KIND.concrete, under: true, bevel: 0.8 })
-    for (const sg of [-1, 1]) g.box(Ro + rib - 0.5, Ro + rib + fin, sg > 0 ? half - 5.5 : -half + 0.8, sg > 0 ? half - 0.8 : -half + 5.5, p.lo + 1.5, p.hi - 1.5, shade(con, 1.04), { kind: KIND.concrete, under: true, skip: 'l' })
+    for (const sg of [-1, 1]) g.box(Ro + rib - 0.5, Ro + rib + fin, sg > 0 ? half - 4.5 : -half + 0.8, sg > 0 ? half - 0.8 : -half + 4.5, p.lo + 1.5, p.hi - 1.5, shade(con, 1.04), { kind: KIND.concrete, under: true, skip: 'l' })
     if (p.hi >= top - 0.01) g.box(Ri, Ro + rib + fin + 0.6, -half - 1.6, half + 1.6, top - 2.4, top, shade(con, 1.08), { kind: KIND.concrete, under: true, bevel: 0.6 })
     g.place(m, cx, cy, 0, angle(p.k))
+  }
+
+  // The lamps of the garage, each a real source of the tier's warm white (see `garageLamps`): a row on arms under the rim and a row half way up the wall. One that would stand in the way of the ball is left out.
+  for (const l of garageLamps(z)) {
+    const a = l.a
+    const m = [g.mark(), b.metal.mark(), b.glow.mark()]
+    b.metal.rod([Ro, 0, l.z + 12], [l.r - 3, 0, l.z + 3], 1.1, 8, TONE.steel)
+    b.metal.box(Ro - 0.4, Ro + 1.6, -4, 4, l.z + 7, l.z + 16, TONE.steel, { under: true })
+    g.box(l.r - 9, l.r + 7, -6, 6, l.z + 1.2, l.z + 5, TONE.iron, { bevel: 1.2, kind: KIND.gloss, under: true })
+    b.glow.box(l.r - 7.5, l.r + 5.5, -4.6, 4.6, l.z, l.z + 1.2, [1.9, 1.7, 1.3], { under: true, skip: 't' })
+    g.place(m[0]!, cx, cy, 0, a)
+    b.metal.place(m[1]!, cx, cy, 0, a)
+    b.glow.place(m[2]!, cx, cy, 0, a)
   }
 
   // Carried on the right wall: a steel stanchion stands on the wall's top behind each of the two piers nearest it, with an arm to the pier at every deck.

@@ -14,7 +14,7 @@ import { HATCH, moms, type Moms } from './moms'
 import { police } from './police'
 import { roadSign, streetThings } from './things'
 
-const VERSION = 'street-models-23'
+const VERSION = 'street-models-25'
 
 // Everything the seven parts are built from in one zone, made once and shared: each part keeps the meshes that are its own.
 interface Street {
@@ -69,7 +69,7 @@ const ease = (t: number): number => {
   return u * u * (3 - 2 * u)
 }
 
-// How far the firehouse door is raised, 0 shut to 1 fully up, and how hard its frame shakes. It stands raised at rest with its lowest panel in the opening, runs right up as a ball is caught, stays up while the ball is held and fired out, then comes down again.
+// How far the firehouse door is raised, 0 shut to 1 fully up, and how hard it rattles in its tracks. It stands raised at rest with its foot in the head of the opening, runs right up as a ball is caught, stays up while the ball is held and fired out, then comes down again.
 export function doorOf(v: number[]): { raise: number; shake: number } {
   const held = (v[0] ?? 0) > 0.5
   const sinceIn = v[1] ?? 9
@@ -134,8 +134,6 @@ const fire = whole('model-firehouse', {
     const door = mesh(s.fire.door.done(), s.paint, `street.firehouse.door.${z.id}`)
     door.position.set(s.fire.doorAt[0], s.fire.doorAt[1], s.fire.doorAt[2])
     o.add(door)
-    const frame = mesh(s.fire.frame.done(), s.paint, `street.firehouse.frame.${z.id}`)
-    o.add(frame)
     const lens = lensOf(z, 'red', colours.STREET_RED)
     const glow = glowOf(z, 'red', colours.STREET_RED)
     const dome = mesh(beaconLens(), lens, `street.firehouse.beacon.${z.id}`, { receive: false })
@@ -144,8 +142,10 @@ const fire = whole('model-firehouse', {
     const turn = mesh(beaconReflector(), glow, `street.firehouse.reflector.${z.id}`, { receive: false })
     turn.position.copy(dome.position)
     turn.userData.lightGroup = group(z, 'red')
-    o.add(turn, dome)
-    kept.set(o, { door, frame, lens, glow, turn, z0: s.fire.doorAt[2], travel: s.fire.travel })
+    const bay = mesh(s.fire.bay.done(), glow, `street.firehouse.bay.${z.id}`, { receive: false })
+    bay.userData.lightGroup = group(z, 'red')
+    o.add(bay, turn, dome)
+    kept.set(o, { door, lens, glow, turn, x0: s.fire.doorAt[0], z0: s.fire.doorAt[2], travel: s.fire.travel })
     return o
   },
   pose(o, z, ctx) {
@@ -153,11 +153,10 @@ const fire = whole('model-firehouse', {
     if (!k) return
     const d = doorOf(stateOf(ctx, 'model.street.firehouse'))
     const door = k.door as THREE.Mesh
-    door.position.z = (k.z0 as number) + d.raise * (k.travel as number)
-    const frame = k.frame as THREE.Mesh
-    frame.position.set(Math.sin(ctx.time * 71) * 0.9 * d.shake, 0, Math.abs(Math.sin(ctx.time * 53)) * 1.1 * d.shake)
+    door.position.z = (k.z0 as number) + d.raise * (k.travel as number) + Math.abs(Math.sin(ctx.time * 53)) * 0.8 * d.shake
+    door.position.x = (k.x0 as number) + Math.sin(ctx.time * 71) * 0.7 * d.shake
     const red = levels(ctx, z).byName.red ?? 0
-    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.18 + 0.6 * red
+    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.35 + 1.5 * red
     ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 3 * red
     ;(k.turn as THREE.Mesh).rotation.z = red > 0.6 ? ctx.time * 8.5 : 0.6
   }
@@ -185,7 +184,7 @@ const cops = whole('model-police', {
     const k = kept.get(o)
     if (!k) return
     const blue = levels(ctx, z).byName.blue ?? 0
-    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.18 + 0.6 * blue
+    ;(k.lens as THREE.MeshPhysicalMaterial).emissiveIntensity = 0.35 + 1.5 * blue
     ;(k.glow as THREE.MeshStandardMaterial).emissiveIntensity = 0.3 + 3 * blue
     ;(k.turn as THREE.Mesh).rotation.z = blue > 0.6 ? -ctx.time * 8.5 : 2.2
   }
