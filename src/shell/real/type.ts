@@ -401,7 +401,7 @@ const q = (v: number): number => Math.round(v * 4) / 4
 const HOVER = 0.05
 const UNSEEN = 31
 
-function dataOf(s: Shape, said: string, style: Style): RunData {
+export function dataOf(s: Shape, said: string, style: Style): RunData {
   const t = s.type!
   const b = block(t.font, said, t.px, t.wrap, t.lead)
   const align = t.align ?? 'left'
@@ -417,7 +417,7 @@ function dataOf(s: Shape, said: string, style: Style): RunData {
 }
 
 // A run that is drawn alone: type under or on glass, which has to keep its own place in the order of drawing, and type whose words are made while the page runs, which would set the whole sheet again at every change.
-function geometryOf(data: RunData): THREE.BufferGeometry {
+export function geometryOf(data: RunData): THREE.BufferGeometry {
   const n = data.position.length / 3
   const ring = new Float32Array(n * 3)
   const uv = new Float32Array(n * 2)

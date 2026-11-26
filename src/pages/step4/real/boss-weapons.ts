@@ -425,7 +425,7 @@ export const bossWeapons: PartMaker | null = {
         const n = Math.round(v[1] ?? 0)
         const hot = (1 - u) * (1 - u)
         const star = o.getObjectByName('star')!
-        const size = (44 + 50 * Math.sqrt(u)) * Math.pow(1 - u, 1.4) + 56 * Math.max(0, 1 - u / 0.08)
+        const size = (60 + 70 * Math.sqrt(u)) * Math.pow(1 - u, 1.1) + 56 * Math.max(0, 1 - u / 0.08)
         star.scale.set(size, size, 1)
         star.rotation.z = hash01(n, 3, seed) * Math.PI * 2
         star.visible = size > 1
@@ -474,7 +474,7 @@ export const bossWeapons: PartMaker | null = {
         ring.scale.set(wide * RING.flat, wide, 1)
         ring.position.set(8 + RING.ahead * Math.sqrt(u), 0, RING.z)
         const ringStuff = ring.material as THREE.MeshBasicMaterial
-        ringStuff.opacity = 0.85 * Math.min(1, u / 0.12) * Math.pow(1 - u, 1.1)
+        ringStuff.opacity = Math.min(1, u / 0.1) * Math.pow(1 - u, 0.8)
         ring.visible = u > 0.04 && u < 0.98
         ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.muzzle.colour, power: WEAPON_EMIT.muzzle.power * hot, reach: WEAPON_EMIT.muzzle.reach })
         break

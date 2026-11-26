@@ -1,0 +1,81 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: one sheet across each of the seven beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "frames 4 to 9, the arrow over the checkbox",
+   "what": "it just steps along the checkbox in small slides like a real pointer; no pose change, no lean or wobble, so the hesitation (if that's what it is) doesn't read as a feeling, and the click in frame 10 has no anticipation and no squash",
+   "fix": "give it a clear hover pose (lean back, slight tip-up) held for 3-4 frames, then a wind-up rise and a visible squash on the click, followed by a little upright pop of pride when 'Humanity Confirmed' appears"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "frames 4 to 12, the arrow lower left while popups land around it",
+   "what": "error popups land right next to it and it keeps the same rigid right-pointing pose; it does not flinch, recoil or squash, so the hits from the machine don't read as hits on it",
+   "fix": "on each popup landing near or on it, add a 2-3 frame flinch: squash on contact, a knock-back tilt, then a recover; give each shot a small recoil stretch back along its axis"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "frames 4 to 10, the arrow at the Submit button",
+   "what": "the final click, the payoff of the unit, is not clearly staged: the arrow is crumpled and overlaps the button, but there is no readable wind-up, press squash or reaction after it, so it's hard to tell whether it clicked and how it feels about it",
+   "fix": "hold a clear exhausted pose, then a slow lift as wind-up, a hard squash press on the button, and a held relieved or triumphant pose for at least 6 frames before the page tilts"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "frames 6 to 12, the arrow lower left while the machine builds itself",
+   "what": "after the knock-back the arrow mostly hangs in place in a near-neutral pointer pose as the button transforms; the surprise and alarm are not pushed or held, so it reads as idle",
+   "fix": "after the knock-back, hold a big shocked stretch (tall, tipped back) and then a cower or backing-off pose that tracks the machine as it grows"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "frames 4 and 5, the crumpled arrow",
+   "what": "the crumpled/hurt pose is good but very small; at delivery size the bent silhouette is only ~20 px and reads as a smudge more than a slump",
+   "fix": "push the crumple further (stronger bend, lower) and hold it a couple more frames so the silhouette reads at a glance"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "frames 1 to 4, the arrow ramming the machine",
+   "what": "the ram reads, but there is no stretch on the charge in and no squash on impact; the arrow keeps its normal shape while hitting a much bigger object",
+   "fix": "stretch it along its axis on the run in, squash it hard on contact, then let it bounce out before the explosion"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "breezy and confident: it flips in, tips over cockily, then drifts to the 'I am not a robot' box, hesitates over it, ticks it and gets 'Humanity Confirmed'; it is pleased and about to go submit"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "satisfied, then startled: it reaches the Submit button, the button tears out of the page and knocks it sideways, then armours itself into a walking machine with a shield; the arrow is left stunned and wary, keeping its distance"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "determined and angry: it turns to face the machine and starts shooting (its tip glows like a hot barrel), the shots hit the shield and the machine fires error popups back at it ('Field cannot be blank', 'Invalid input', 'Session expired') that land around it"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "stubborn, keeps firing while the machine throws cookie, session-timeout and 'leave this page?' dialogs at it; an 'Invalid input' popup slams into it and knocks it back, but it keeps shooting"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "worn down and hurt: after a 'Session expired' hit it crumples and droops, then recovers, gets angry again and charges right up to the machine firing point blank until its tip burns the Submit button"
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "furious, all in: it rams the machine from underneath, the machine blows apart into pieces, then the arrow is dazed and limp, slowly drifting back up among the wreckage toward the scorched Submit button"
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "exhausted and beaten up but triumphant: it creeps to the charred Submit button, 'Click to submit' appears, it crumples and leans in, presses the button wearily, and the page tilts away as the scene ends"
+  }
+ ]
+}

@@ -51,24 +51,27 @@ Folder: 18 calls, 31208 triangles. Whole frame: 207 draw calls against a limit o
 - The hop was looked at in two `draft` stills of the beat `pinball.replyAll`, at 0.082 (the ball at the hold, the heap at rest) and at 0.098 (the heap larger, turned and pushed aside). It reads from straight above.
 - The left lower corner. The cabinet, the bin and the plant stood on a wide black floor. Two sheets, a folder, an envelope and two paper clips now lie round them (`spill()` in `cubicles.ts`, placed from the lower post of the left stapler's plate), inside the floor the runner gave as free (u 4.7 to 6.4, v 8.6 to 10.3). The test holds each 0.08 balls clear of every segment and post and off the three standing things.
 - Loose paper lies 0.7 px over the floor at the least: at 0.2 px a tilted sheet cut into the floor at one corner.
+- After merge 23 the camera of `reply-all` stands closer and lower, and the models show their sides. Looked at beside the approved crops there: the reds of the staplers were lighter than approved (now 0x8e161c on the arm, 0x701419 on the plate); the caps and cloth of the cubicles were more cream than the approved warm grey (caps 0xd9d2c0, less lift, walls 7.6 px thick, screens a quarter dimmer); the tray was more yellow than the approved one (0xd6cdb4).
+- The farm in the runner's box of 2.6 by 1.85 balls (in `main` since merge 23) is three across and two deep with the furniture at its drawn size (`fit` 1.0 by the numbers of the box).
+- The arm of the stapler has a higher crown and a smoother enamel than the plate (`ARM`), so the lamps draw a narrower highlight on it. Looked at in a `draft` still: a small gain, kept.
 
-## Counts after (MEASURED on d27f182b, with main at b62bc72b)
+## Counts after (MEASURED on 37a53b8a, with main at merge 24)
 
 `npm run build && npm run counts -- --key table-wide --live low` (the rows are the same for `tier-office` and `reply-all`)
 
 | part | meshes | colour | shadow | calls | triangles |
 | --- | --- | --- | --- | --- | --- |
 | model-staplers | 3 | 3 | 3 | 6 | 7356 |
-| model-inbox | 3 | 3 | 2 | 5 | 3313 |
+| model-inbox | 3 | 3 | 2 | 5 | 4364 |
 | model-coffee-machine | 1 | 1 | 1 | 2 | 6628 |
-| model-cubicles | 3 | 3 | 0 | 3 | 12297 |
+| model-cubicles | 3 | 3 | 0 | 3 | 12355 |
 
-Folder: 16 calls (18 before), 29594 triangles (31208 before). Whole frame: `table-wide` 192, `tier-office` 126, `reply-all` 140 draw calls against a limit of 300 (207, 144, 158 before).
+Folder: 16 calls (18 before), 30703 triangles (31208 before). Whole frame, with every other part's changes of the same hours in it: `table-wide` 201, `tier-office` 126, `reply-all` 129 draw calls against a limit of 300 (207, 144, 158 before).
 
 ## Answers
 
 - `/root/table_runner` (04:10 UTC by its clock): inbox box becomes [15.2, 3.6, 1.55, 1.45] h 1.15, not wider (the lane to the right inlane needs 1.25 balls); the hold stays at (14.6, 4.35), beside the tray. Cubicles box becomes [3.25, 2.25, 3.2, 1.85] h 0.7, drop bank at u 6.45. Free floor: the right lower corner (x 13.6 to 15.3, v 8.6 to 10.3), the left shoulder (u 4.7 to 6.4, v 8.6 to 10.3) and the strips between a wall and its lamp row. Everything between v 4.5 and 8 is ball path. These boxes reach me through `main`.
-- `/root/table_runner` (later): the cubicles box becomes [3.25, 2.25, 2.6, 1.85] with the drop bank at u 5.85, on its branch at 3b9bb50d. The farm is still three across there (the box is wider than deep). Not looked at until it is in `main`.
+- `/root/table_runner` (later): the cubicles box becomes [3.25, 2.25, 2.6, 1.85] with the drop bank at u 5.85, on its branch at 3b9bb50d. The farm is still three across there (the box is wider than deep). In `main` since merge 23 and looked at.
 - `/root/lamp_keeper` (04:36 UTC by its clock): two high lamps, power 0.75, follow the boxes of the inbox and the cubicles and the `general` group.
 - `/root` (04:14 UTC): the right lower corner of the Office floor is mine.
 - One mistake of mine, 04:05 UTC: I tried a local edit of `src/table/layout.ts` to preview the new boxes. The file is frozen for me; the attempt was stopped before it ran and nothing was changed. I do not preview boxes that are not in `main`.
@@ -77,3 +80,8 @@ Folder: 16 calls (18 before), 29594 triangles (31208 before). Whole frame: `tabl
 
 - `/root/table_runner` (sent 03:50 UTC): inbox box [14.0, 3.6, 2.75, 1.5] h 1.15 with the hold in its front left corner, or at least h 1.15 and 0.3 deeper; cubicles box [3.25, 2.25, 3.2, 2.15] with `cubicles.drop` at about u 6.5; and where the Office floor is free of ball paths for loose paper. Answered, see above.
 - `/root/lamp_keeper` (sent 03:50 UTC): a hidden lamp or spill over the inbox (15.2 to 16.75, 3.6 to 4.8) and over the cubicles (3.25 to 5.05, 2.25 to 4.4). Glowing things of mine: the screens of the six monitors and the lamps and display of the coffee machine, both in group `office.windows`.
+
+## Looks
+
+- Before 05:42 UTC: about 37 render runs (stills, one sheet of the beat, three `review` stills), counted from my own log, not exact.
+- Since 05:42 UTC (round 11, 40 for the part): 2. The `draft` pair for the arm of the stapler, and one `draft` still of `reply-all` with the body of the cubicles casting shadow: no difference to see beside the still without, so it does not cast and the draw call is saved.

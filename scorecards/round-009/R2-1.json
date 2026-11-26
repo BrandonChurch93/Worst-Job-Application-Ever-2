@@ -1,0 +1,337 @@
+{
+ "critic": "R2",
+ "pass": true,
+ "jurors": 5,
+ "judged": [
+  {
+   "file": "set-A-01.png",
+   "what": {
+    "still": {
+     "page": "step2",
+     "beat": "step2.open",
+     "at": 0.5,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_01",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 85,
+     "why": "it's a flat web-form UI (dropdowns, cursor, step indicator, \"Continue\" button) with simple skeuomorphic styling: clearly an interactive web demo/app screen, not a photograph, film frame, or standalone 3D product render.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_02",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The beveled 3D elements are controls in a cursor-driven web-style form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_03",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 80,
+     "why": "The image is a web app UI (\"The Worst Job Application Ever\" form) with skeuomorphic 3D-styled buttons and fields, so it reads as a web/low-budget app rather than a photo, film frame, or product render.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_04",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The rendered 3D elements are interactive-looking form controls, especially the cursor hovering over a dropdown, characteristic of a web demo or app interface.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_05",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 92,
+     "why": "The image is a flat 2D UI screen (a joke job application form titled \"The Worst Job Application Ever\") with typography, dropdown fields, and a skeuomorphic Continue button: it's rendered app/demo UI, not a physical object, but the simple CSS-styled form and snarky microcopy (\"Blood type, credit score, childhood trauma\") indicate a web demo or low-budget app rather than a big-budget cinematic or polished stock render.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-02.png",
+   "what": {
+    "still": {
+     "page": "step2",
+     "beat": "step2.dial",
+     "at": 0.2,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_06",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The faux-3D rotary dial is embedded as an interactive control in an on-screen job-application form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_07",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 88,
+     "why": "It is a skeuomorphic web app UI (a joke job-application form with a rotary-dial phone input, a text cursor and a mouse pointer). That reads as a screenshot from a low-budget web app or demo, not a photo, film frame or product render.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_08",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the 3D rotary dial is presented as an interactive phone-number field in a web form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_09",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 80,
+     "why": "the image is a flat web-app form page (headings, input fields, a \"Continue\" button, and joke copy like \"The Worst Job Application Ever\") rendered with skeuomorphic styling: characteristic of a playful web demo or low-budget app, not a photograph, big-budget cinematic frame, or stock product render.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_10",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The prominent rotary dial is embedded as an interactive control in an unmistakable web-style form.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-03.png",
+   "what": {
+    "still": {
+     "page": "step2",
+     "beat": "step2.crank",
+     "at": 0.2,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_11",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "It's a screenshot of a joke web form UI (\"The Worst Job Application Ever\") with a mouse cursor and skeuomorphic 3D-styled controls, so it's clearly a web app or demo, not a photo, film frame, or product render.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_12",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The mouse cursor visibly operates a crank inside a web-style form, making this look like an interactive demo screenshot.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_13",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 92,
+     "why": "The image is clearly a full-screen application interface with form fields, a progress stepper, and an interactive crank control, most consistent with a web 3D demo or low-budget app rather than a photograph or cinematic frame.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_14",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The cursor hovering over a 3D volume crank embedded in a web form makes it look like an interactive browser demo.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_15",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 88,
+     "why": "The image is a web app UI, a joke job-application form with a mouse cursor, dropdowns and a skeuomorphic crank. That makes it a web or low-budget app screenshot, not a photo, a film frame or a product render.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d"
+  }
+ ],
+ "controls": [
+  {
+   "file": "set-A-04.png",
+   "what": {
+    "control": "step2-rest",
+    "image": "references/approved/step2-rest.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_16",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 88,
+     "why": "The cursor hovering over a satirical dropdown form makes it look like an interactive web demo.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_17",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 55,
+     "why": "The image is a full-screen flat UI form (\"The Worst Job Application Ever\" with step indicator, dropdown fields, and a cursor): it looks like a screen capture or mockup of a web app/joke demo rather than a photograph, big-budget cinematic, or stock product render. Its skeuomorphic-glassy styling and slightly warped details (e.g., the cursor shape) suggest an AI-generated or low-budget app-style demo rather than professional 3D product work.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_18",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 96,
+     "why": "the on-screen cursor hovering over a dropdown in an interactive form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_19",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "it's a web app/form UI (a joke \"worst job application\" page with step indicators, dropdowns, a mouse cursor and a Continue button). That makes it a browser/app screen, even though it has fairly polished skeuomorphic paper and metal textures.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_20",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The on-screen cursor among the dropdown controls makes it read as a screenshot of an interactive web app.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-05.png",
+   "what": {
+    "control": "step2-dial",
+    "image": "references/approved/step2-dial.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_21",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 85,
+     "why": "the stylized skeuomorphic application-form UI, including joke text and interactive-looking rotary dial, most strongly suggests a web 3D demo or low-budget app rather than a photograph, film frame, or generic stock render.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "The cursor poised over a rotary dial inside an open form field makes it read as an interactive web-app/game screen.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "it's a flat app/web UI screen (a joke job-application form with skeuomorphic buttons and a rotary dial widget, plus a mouse cursor), so it looks like a web or low-budget app, not a photo, film frame or product render. The dial's numbers are jumbled and repeated (two 6s), which points to AI-generated or low-fidelity rendering.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "The active form field and visible mouse cursor make it look like an interactive web demo.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_25",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 88,
+     "why": "It shows a humorous skeuomorphic web form titled \"The Worst Job Application Ever\" with a rotary-dial phone input, step indicator, and dropdown fields. The most influential factor: it's clearly a novelty/joke interactive web UI demo: flat 2D typography combined with moderately rendered 3D skeuomorphic controls (plastic buttons, drop shadows) of the type found in web demos or low-budget app concepts, not a photo, film frame, or polished stock product render.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-06.png",
+   "what": {
+    "control": "step2-crank",
+    "image": "references/approved/step2-crank.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_26",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "The mouse cursor on the volume crank makes it look like an interactive web form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_27",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 65,
+     "why": "It's a skeuomorphic web-app UI screen (a joke job application form with a cursor and form fields), so it reads as a picture from a web or low-budget app rather than a photo, a film frame or a product render. That said, the photoreal materials suggest it was AI-generated.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_28",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "The on-screen cursor operating a crank embedded in a step-by-step web form is the strongest clue that this is an interactive web 3D demo.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_29",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 78,
+     "why": "The image is a polished skeuomorphic 3D render of a satirical job-application UI (\"The Worst Job Application Ever\"): cleanly staged typography and retro knobs/dropdowns rendered like a stock-style concept mockup. The single most influential factor: it reads as a static, product-mockup-style 3D composition (flat layout, presentation typography, game-like crank widget rendered as illustration) rather than a cinematic film/game frame or a photo, and its quality is above a cheap low-budget app demo.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_30",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "the mouse cursor poised over a crank that functions as a volume control in an interactive form.",
+     "at": "05:51Z"
+    }
+   ],
+   "letters": "d d d c d"
+  }
+ ],
+ "judgedShare": {
+  "votes": 15,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "controlShare": {
+  "votes": 15,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "rule": "R2 passes when the judged share is no lower than the control share minus quality.jury.maxShareGap (0.2)",
+ "note": "It passes by the rule: 0 of 15 on the judged pictures against 0 of 15 on the control, and the judged share is no lower than the control share less 0.2. All 30 jurors answered between 05:49Z and 05:52Z, none replaced. Every juror of the judged pictures and 14 of the 15 on the approved controls chose (d), most naming the form and the cursor: the jury tells a web form from a film frame, and it does so for the approved images as for the build.",
+ "replaced": 0
+}

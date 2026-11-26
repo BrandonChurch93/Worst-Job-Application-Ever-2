@@ -1,0 +1,66 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: one sheet across each of the five beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "row 2 onward, the arrow after the name snap-back and for most of the sheet",
+   "what": "the arrow keeps its normal pointer shape and glides at a steady clip; it did not read as alarmed or shocked by the form erasing its typing. No squash, no flinch, no recoil — it slides along like an ordinary cursor doing data entry. The single strongest beat of the sheet (its work being erased) gets no bodily reaction.",
+   "fix": "on the snap frame give the arrow a sharp squash-and-rebound (flatten vertically, tip flung up), 2-3 frames of jittered hold over the erased text, then a slower, smaller retreat; make the body carry the shock the spark only hints at."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the orange spark frames and the frames after them",
+   "what": "the field visibly erupts with sparks and a broken border, but the arrow does not physically react: no recoil, no bracing lean-away, no trembling; it just hovers nearby in its stock pose and then drifts on. The event and the character read as two separate layers.",
+   "fix": "pair each spark burst with a recoil pose — arrow tilted away from the field, stretched backward with a motion smear, then a held wary hover at a distance before it dares to approach again."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "whole sheet, rows 1-3",
+   "what": "twelve frames of near-identical stock pointer drifting down the page. The intended feeling reads only from the insult text in the fields; the arrow's body tells nothing. No change of tilt, droop, speed or hesitation — it slides along like a pointer being screenshotted, the exact failure the unit is meant to avoid.",
+   "fix": "give the drift a physical signature of discouragement: tip angled down, tail low, long holds with tiny sinking settles between moves, and a pause where it almost touches a field then pulls back."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the cranking frames, rows 0-2",
+   "what": "across ten crank rotations the arrow is a static pointer with motion blur while the crank handle spins around its own pivot; the arrow never wraps, leans or circles with the handle, so it reads as a pointer floating near an animation rather than a character doing work. No effort, wind-up or follow-through in the body.",
+   "fix": "pin the arrow's tail to the crank knob and orbit its body with the rotation, stretch it along the direction of travel on the fast frames, and squash it on each completed rotation; let it sag in a settle when the target is hit."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "rows 0-1, the approach to the Continue button",
+   "what": "the approach to the press is six frames of the same hover nudging closer; no anticipation before the press and no squash on contact, so the click reads as a plain UI hover rather than a decision the character commits to.",
+   "fix": "add a one-frame pullback (wind-up) before the press and a small squash of the arrow against the button on the press frame, then release."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "busy typing, then the form betrays it and it recoils: it completes the full name field and the form snaps the text to 'The candidate' as if it never existed; the arrow is alarmed (green flash) and re-types, about to discover its work cannot survive the field."
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "cautious probing turns to shock: it reaches for the email field, the field seems to shove or shatter at its touch with orange sparks and a torn border, and the arrow flinches back from a hostile input."
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "discouraged and hanging its head: after the insults in the fields ('Close enough. We were never going to call.'), it drifts down the page past the date and audio rows, barely touching anything, moving flat and slow like it has given up trying."
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "weary effort turning to relief and mild pride: it cranks and cranks the volume handle through glowing segments until the field accepts it ('Volume set to 100%. You were warned.'), the Continue button lights up orange, and the arrow slides down toward it ready to move on."
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "committed and about to act, then shaken: it leans into the Continue button and presses, only for the whole screen to tilt, dim and collapse away like the world is ending, and it backs off into the dark, retreating up the page."
+  }
+ ]
+}

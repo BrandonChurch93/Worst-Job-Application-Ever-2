@@ -24,7 +24,7 @@ Every texture and built asset of the boss that this owner changed or added. All 
 
 - Made by: `pitStuff()` in `src/boss/real/transform.ts`
 - From: the page's own grain normal map (`materials().ceramic.normalMap`), shared, so it costs no memory
-- Prompt or command: two `MeshPhysicalMaterial` through `studio()`: wall `0x7a746d`, roughness 0.96, grain at 0.7; floor `0x0d0c0c`, roughness 0.95
+- Prompt or command: two `MeshPhysicalMaterial` through `studio()`: wall `0x5a5550`, roughness 0.96, grain at 0.9; floor `0x0d0c0c`, roughness 0.95
 - Takes: 3 (a wall at `0x55514c` with grain at 1.6, which striped; one at `0x3f3c39`, which read as one black pill; then this one)
 - Why this one: the hole reads as a broken pit with a rough sloped wall down to 58 px and a floor that is near black but not black. 0 MB.
 - Date: 2026-11-26
@@ -51,7 +51,7 @@ Every texture and built asset of the boss that this owner changed or added. All 
 
 - Made by: `cutPlate()` and `bossKit()` in `src/boss/real/body-kit.ts`; `crown()`, `wingParts()`, `side()` in `src/boss/real/body.ts`
 - From: `THREE.ExtrudeGeometry` over outlines given as numbers
-- Prompt or command: none; made on first use and shared by name. Each plate is two solids: the plate itself (`plate`, 0x7c8085, roughness 0.34, full metal, the brushing as its map, anisotropy 0.55) with a chamfer of 2.4 px in two facets, and under it a darker solid (`plateSide`, 0x35373a) that stands 3 px out and ends 3.4 px lower (`EDGE`). `crown()` leans the normals of the top face by a hair (`CROWN`), so the light fades across a plate
+- Prompt or command: none; made on first use and shared by name. Each plate is two solids: the plate itself (`plate`, 0x7c8085, roughness 0.4, full metal, the brushing as its map, anisotropy 0.55) with a chamfer of 2.4 px in two facets, and under it a darker solid (`plateSide`, 0x35373a) that stands 3 px out and ends 3.4 px lower (`EDGE`). `crown()` leans the normals of the top face by a hair (`CROWN`), so the light fades across a plate
 - Takes: 6 on the tone (0xb2b6ba, 0x6f7378, 0x62666c, 0x7b7f84, 0x898d92, 0x7c8085), 2 on the edge (one rounded chamfer 5.5 px wide, then the narrow chamfer over the dark step)
 - Why this one: each piece reads as a thick cut plate: a bright line at the top edge, a dark side below it, a sheen that fades across the face. 0 MB beyond the brushing.
 - Date: 2026-11-26
@@ -95,7 +95,7 @@ Every texture and built asset of the boss that this owner changed or added. All 
 ## collar of the pit (material, no texture)
 
 - Made by: `pitStuff()` in `src/boss/real/transform.ts`
-- From: numbers only: 0x9a9c9c, roughness 0.6, metalness 0.55; the wall under it is now 0x7a746d
+- From: numbers only: 0xb6b8b8, roughness 0.6, metalness 0.55, 15 px wide with a rolled outer lip; the wall under it is now 0x5a5550
 - Takes: 2
 - Why this one: a satin ring that does not mirror the room, over a wall that reads as broken stone. 0 MB.
 - Date: 2026-11-26
