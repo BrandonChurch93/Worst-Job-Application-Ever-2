@@ -36,4 +36,8 @@ Read from `references/approved/step2-crank.png` and `machines.png` at full size,
 20. The payout's mouth is 3 px deep (floor at 8.5 above the tray floor) and not 10. On the `machines` sheet the machine stands on the page with its floor 8 px under it, and a deeper mouth showed the page's ground through its floor.
 21. The frame is darker and less brushed than the shared aluminium (0x6a6e72, roughness 0.5, brushing 0.07) after the approved image's bead blasted frame. The drums fall to dark faster toward the top and the bottom (share of light = 0.05 + 0.95 cos^3.6).
 22. The lever's mount: a block in the frame's metal with two screw heads, and a chrome barrel with a collar at each end.
+23. The grip is a bar of soft plastic and not a sausage: a squared cross section (superellipse of power 3.2) so its top is flat, round ends, 10% fuller at its free end, with a collar 5% thinner and a seam 9 px from the arm's end. It fills the page's box and height.
+24. The bezel's and the hub's turned faces carry a bow tie in vertex colour (0.8 to 1.75 times the metal's colour, along the axis toward the key light). The shared metal's anisotropy gives the shape of the highlight but under the studio's light it was too flat to read as a lathe's face.
+25. The drums carry no mark of their own, as in the approved image. `v[0]` of `slot-reel-N` is received and not used: a blank drum that turns looks the same, and the legends that pass over it are the page's.
+26. Looks made after 01:15 UTC show my branch with the dial maker's branch laid over it (`src/pages/step2/index.ts`, `layout.ts`, `real/dial.ts`, `real/rows.ts` from `origin/agent/step2-dial`, checked out for the render and put back), because the sizes agreed with it are not on `main` yet.
 
