@@ -2,7 +2,7 @@ import { expect, test } from 'vitest'
 import { CUES, GIVE, HOPE, PACE, pointerAt, type Marks } from '../src/pages/step5/script'
 import { AT, FILM } from '../src/pages/step5/timeline'
 
-const marks: Marks = { start: { x: 400, y: 500 }, spot: { x: 700, y: 620 }, press: { x: 900, y: 800 } }
+const marks: Marks = { start: { x: 400, y: 500 }, spot: { x: 700, y: 620 }, drop: { x: 1300, y: 700 }, press: { x: 900, y: 800 } }
 const moved = (a: number, b: number): number => {
   const p = pointerAt(marks, a)
   const q = pointerAt(marks, b)
