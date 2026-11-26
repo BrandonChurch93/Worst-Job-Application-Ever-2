@@ -57,11 +57,12 @@ One draft still shows several parts; each still is counted once, under the part 
 | 04:42 to 04:45 | last-save 2, rail-cam 2 | highway wire | 4 |
 | 04:46 to 04:57 | tier-street 2, table-wide 1, loader-page 3, last-save 3, tier-office 2, rail-cam 2 | walls, loader bed, wire | 13 |
 | 05:01 to 05:05 | tier-street, last-save, table-wide, tier-corporate | tubes, wire | 4 |
-| 05:06 to 05:10 | last-save, tier-street | tube line, wire | 2 |
-| 05:12 to 05:15 | last-save, tier-corporate | wire | 2 |
-| 05:20 to 05:40 | last-save 5, tier-office 1, rail-cam 1 | wire: which term makes it pale | 7 |
+| 05:05 to 05:07 | last-save, tier-street | tube line, wire | 2 |
+| 05:08 to 05:10 | last-save, tier-corporate | wire | 2 |
+| 05:10 to 05:20 | last-save 5, tier-office 1, rail-cam 1 | wire: which term makes it pale | 7 |
+| 05:21 to 05:27 | loader-page 2, table-wide 2 | loader ring and bowl, rail ends, marquee | 4 |
 
-Total at 05:40 UTC: 67 stills (the rows above summed). One still shows several parts, so the split by part is my reading of what each was rendered for, not a log: ramps about 24, frame about 17, loader 8, hardware 6, flippers 5, lift 5, marquee 3, bumpers 2, targets 1. No part is at 40.
+Total at 05:27 UTC: 71 stills (the rows above summed). One still shows several parts, so the split by part is my reading of what each was rendered for, not a log: ramps about 24, frame about 19, loader 10, hardware 6, flippers 5, lift 5, marquee 3, bumpers 2, targets 1. No part is at 40.
 
 ## Decisions
 
@@ -82,7 +83,9 @@ Total at 05:40 UTC: 67 stills (the rows above summed). One still shows several p
 - The highway's wire stayed a pale tube at a low eye whatever the room did. MEASURED by turning terms off one at a time in `last-save`: not the lamps' direct shine, not the rows of lamps, not the floor field; it is `sky` (the polish rings) spread over a wire a few pixels wide. The rings now lose energy with the square of the thinning and play's steel runs `sky: 0.3`, `panel: 0.2`, `horizon: 0.4`.
 - The loader's tube lies in a bed that is the bowl's own tone inside the bowl and the ring's dark aluminium through the ring: it read as a dark box.
 - Frame aluminium's upright faces keep 0.06 of the room (`wall`), its screws mirror a ceiling near the lands' own, so a row of screws is not a row of black dots.
-- Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens).
+- The loader's bowl is turned whole and the tube's mouth stands out of its wall; only the ring is slotted. The slot's bed inside the bowl read as a dark box whatever its tone. The ring's face is a mid grey of its own (`FACE`, `EDGE`), darker than the collars.
+- The sunk panels of the side rails' south ends are near black (`SLOPE`): from the player's end they read as two grey planks. MEASURED in `table-wide` draft: (34,33,31).
+- Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens). The marquee's title draws heavy and black across the whole picture in `table-wide` (table_runner, 05:25).
 
 ## MEASURED times (04:07 to 04:34 UTC, this VM)
 
