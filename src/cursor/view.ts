@@ -61,7 +61,7 @@ export class CursorView {
     if (c.inBall && c.face) {
       this.spot.set(c.face.x, c.face.y, c.face.z).normalize()
       this.at.quaternion.setFromUnitVectors(UP, this.spot)
-      this.at.position.set(-4.2 * UNIT, 9.5 * UNIT, 0).applyQuaternion(this.at.quaternion).addScaledVector(this.spot, -c.face.back)
+      this.at.position.set(-4.2 * UNIT, 9.5 * UNIT, 0).applyAxisAngle(UP, -c.spin).applyQuaternion(this.at.quaternion).addScaledVector(this.spot, -c.face.back)
       this.at.position.x += c.x - 960
       this.at.position.y += 540 - c.y
       this.at.position.z += c.z + half + 1

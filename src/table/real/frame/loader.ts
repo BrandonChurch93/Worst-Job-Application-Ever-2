@@ -163,6 +163,7 @@ function port(A: Geo, screws: Screws, z: Zone, c: { x: number; y: number; ring: 
   }
   const outline: V2[] = [[R, 0], [R, h - 5], [R - 5, h], [R - 22, h], [R - 24, h - 2.2], [R - 34, h - 2.2], [R - 36, h], [r + RING.lip + 4, h], [r + RING.lip, h - 3], ...bowl]
   const tone = (i: number): [number, number, number] => (i >= 8 ? CUP : i === 4 ? BAND : i === 1 || i === 7 ? EDGE : FACE)
+  const first = A.vertices
   if (toward === null) A.lathe(outline, p[0], p[1], 72, tone)
   else {
     // The tube leaves through a slot cut in the ring, and lies there on a dark bed; the bowl is whole, and the tube's mouth stands out of its wall.
@@ -174,6 +175,8 @@ function port(A: Geo, screws: Screws, z: Zone, c: { x: number; y: number; ring: 
     A.box(wall, Math.sqrt(R * R - half * half), -half, half, 0, RING.floor, EDGE)
     A.move(from, new THREE.Matrix4().makeTranslation(p[0], p[1], 0).multiply(new THREE.Matrix4().makeRotationZ(toward)))
   }
+  // The ring's brushed face is dark toward the top of the page and light toward its lower right, as a turned face under one soft lamp.
+  A.tint(first, (x, y, zz) => (zz < h - 6 ? 1 : 1.25 - 0.8 * Math.pow(0.5 + 0.5 * Math.cos(Math.atan2(y - p[1], x - p[0]) - 1.75), 1.2)))
   A.lathe([[r - RING.dish, RING.floor], [BALL * 0.62, RING.floor - 0.6], [BALL * 0.5, RING.floor - 1.6], [0, RING.floor - 1.8]], p[0], p[1], 48, (i) => (i === 0 ? CUP : [0.006, 0.006, 0.008]))
   for (let i = 0; i < 8; i++) {
     const a = Math.PI / 8 + (i * Math.PI) / 4
