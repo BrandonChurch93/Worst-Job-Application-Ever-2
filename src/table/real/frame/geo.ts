@@ -242,6 +242,14 @@ export class Geo {
   }
 
   // Everything added since `from` is moved by the matrix.
+  // A flat face whose colour runs from point to point.
+  shaded(points: V3[], normal: V3, cols: RGB[]): this {
+    const nn = unit(normal)
+    const front = sign(points[0]!, points[1]!, points[2]!, points[2]!, nn)
+    for (let i = 1; i < points.length - 1; i++) for (const k of front ? [0, i, i + 1] : [0, i + 1, i]) this.push(points[k]!, nn, points[k]![0], points[k]![1], cols[k]!)
+    return this
+  }
+
   // Shades the colour of every vertex from `from` on by its place: a turned face that is lighter on one side.
   tint(from: number, by: (x: number, y: number, z: number) => number): this {
     for (let i = from; i < this.vertices; i++) {

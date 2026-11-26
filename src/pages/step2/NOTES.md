@@ -7,7 +7,7 @@ Decisions taken without asking, in the order they were met.
 - Form on `stepHead(2)`. Three rows at rest, 144 apart, fields 792 wide in the right column, labels and helpers in the left column. Continue sits bottom right, the note bottom left.
 - A row opens a `well` under its own field: the tray floor is at `scale.heights.machineTray`, the rows below move down by the height of the tray. Only one row is open at a time.
 - Continue is grey until all three rows hold a value, then takes the accent.
-- Legends of the machines (digits of the dial, months, days, years of the reels) are data, not copy: `src/pages/step2/legends.json`, registered as `data:step2....`. The phone mask is `runtime:step2.phone`: the prefix `data:step2.phone.prefix` and the digits dialled so far. The field of the volume stays empty while the crank is turned, as in the approved key; the meter shows the level.
+- Legends of the machines (digits of the dial, months, days, years of the reels) are data, not copy: `src/pages/step2/legends.json`, registered as `data:step2....`. The phone mask is `runtime:step2.phone`: the prefix `data:step2.phone.prefix` and the digits dialled so far. The field of the volume shows the level as a percent while the crank is turned: `runtime:step2.volume`, the number from the turns of the crank so far, the sign from `data:step2.volume.percent`. When the crank is done the field shows the value of the copy.
 
 ## The machines
 
