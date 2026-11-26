@@ -45,7 +45,7 @@ function buildLayout(): LayoutNode {
   const my = px(MARQUEE_Y)
   kids.push(node('marquee', 'marquee', [312, my + 24, 1296, 336], {
     part: 'marquee', shape: 'none', children: [
-      text('marquee-title', 'copy:step3.table.title', { font: 'inter-display-600', px: 128, align: 'centre' }, 960, my + 70, { part: 'marquee', on: 41, tone: 'inkLight', states: ['on'] }),
+      text('marquee-title', 'copy:step3.table.title', { font: 'inter-400', px: 76, align: 'centre' }, 960, my + 62, { part: 'marquee', on: 41, tone: 'inkLight', states: ['on'] }),
       text('marquee-score', 'runtime:score', { font: 'inter-600', px: 44, align: 'centre', wrap: 420 }, 960, my + 250, { part: 'displays', on: 41, tone: 'inkLight', states: ['on'] })
     ]
   }))
