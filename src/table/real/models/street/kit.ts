@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
 import { BALL, table, type Model } from '../../../layout'
 import { localBalls, localOf, type Zone } from '../../zone'
+import { hash01 } from '../../../../core/random'
 import { Geo, KIND, mix, rgb, shade, type Buckets, type RGB, type V3 } from './geo'
 
 export const TONE = {
@@ -117,9 +118,14 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
   const d = o.depth ?? 5.5
   const g = b.paint
   reveal(g, h, d, shade(o.wall, 0.5))
-  const lum = o.glow ?? 1
-  const warm = o.warm ?? 0.5
-  const pane: RGB = o.dark ? [0.02, 0.025, 0.03] : [lum * 0.64, lum * (0.41 + 0.07 * warm), lum * (0.15 + 0.11 * warm)]
+  // No two rooms are lit alike: each has its own level and warmth, its lamp hangs where it hangs, and some have a blind part way down.
+  const u = (k: number): number => hash01(Math.round(h.x * 3 + h.w), Math.round(h.z * 3 + h.h), k)
+  const dim = !o.dark && u(6) < 0.17
+  const lum = (o.glow ?? 1) * (o.dark ? 1 : dim ? 0.1 : 0.5 + 0.8 * u(1) * u(1))
+  const warm = Math.min(1, Math.max(0, (o.warm ?? 0.5) + (u(2) - 0.5) * 0.5))
+  const lampX = 0.32 + 0.36 * u(3)
+  const blind = !dim && h.h > 12 && u(4) < 0.36 ? 2 + Math.floor(u(5) * 3) : 0
+  const pane: RGB = o.dark ? [0.02, 0.025, 0.03] : dim ? [0.03, 0.035, 0.046] : [lum * 0.64, lum * (0.41 + 0.07 * warm), lum * (0.15 + 0.11 * warm)]
   const lo: RGB = o.dark ? pane : shade(pane, 0.55)
   const { x, z, w } = h
   const t = z + h.h
@@ -127,15 +133,21 @@ export function windowAt(b: Buckets, h: Hole, o: WindowLook): void {
   if (o.dark) b.glow.face([[x, d, z], [x + w, d, z], [x + w, d, t], [x, d, t]], pane, 0, [0, -1, 0])
   else {
     // The lamp inside is seen through the pane: hot behind its upper middle, amber toward the frame.
-    const core: RGB = [lum * 1.3, lum * 1.04, lum * 0.6]
+    const core: RGB = dim ? [0.07, 0.07, 0.082] : [lum * 1.3, lum * 1.04, lum * 0.6]
     const nx = 6
     const nz = 8
     const at = (i: number, j: number): RGB => {
-      const r = Math.hypot((i / nx - 0.5) * 1.5, (j / nz - 0.6) * 1.3)
+      const r = Math.hypot((i / nx - lampX) * 1.5, (j / nz - 0.6) * 1.3)
       return mix(lo, core, Math.exp(-r * r * 7))
     }
+    const cloth: RGB = [lum * 0.4, lum * 0.32, lum * 0.2]
     for (let i = 0; i < nx; i++) {
       for (let j = 0; j < nz; j++) {
+        if (j >= nz - blind) {
+          const c0 = shade(cloth, 0.86 + (0.14 * (j - nz + blind)) / Math.max(1, blind))
+          b.glow.face([[x + (w * i) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * (j + 1)) / nz], [x + (w * i) / nx, d, z + (h.h * (j + 1)) / nz]], c0, 0, [0, -1, 0])
+          continue
+        }
         b.glow.blend([[x + (w * i) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * j) / nz], [x + (w * (i + 1)) / nx, d, z + (h.h * (j + 1)) / nz], [x + (w * i) / nx, d, z + (h.h * (j + 1)) / nz]], [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)], [0, -1, 0])
       }
     }

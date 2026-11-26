@@ -207,10 +207,10 @@ export function lensOf(z: Zone, name: string, colour: [number, number, number]):
 // Clear plastic, moulded thick: the decks of the garage. Thin where it is seen straight through, bright where it turns away from the eye and wherever a lamp lies on it, with the dark line a clear wall shows just inside its edge.
 export function plasticOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0x9aa7ad, vertexColors: true, roughness: 0.07, metalness: 0, transparent: true, opacity: 0.2, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.05, specularIntensity: 1 }))
-  over(m, 'wja-studio-street-plastic-1', (shader) => {
+  over(m, 'wja-studio-street-plastic-3', (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wsTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wsEdge = pow( wsTurn, 1.7 );\nfloat wsDark = smoothstep( 0.6, 0.78, wsTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wsTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.6 * wsDark;\ngl_FragColor.a = clamp( diffuseColor.a * vColor.r + wsEdge * 0.5 + wsDark * 0.2 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.5, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wsTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wsEdge = pow( wsTurn, 1.4 );\nfloat wsDark = smoothstep( 0.6, 0.78, wsTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wsTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.6 * wsDark;\ngl_FragColor.rgb += vec3( 0.14, 0.16, 0.18 ) * wsEdge;\ngl_FragColor.a = clamp( diffuseColor.a * vColor.r + wsEdge * 0.8 + wsDark * 0.2 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.5, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   })
   return named(lit(m, z), `street.plastic.${z.id}`)
