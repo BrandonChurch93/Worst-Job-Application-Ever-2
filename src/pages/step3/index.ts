@@ -90,10 +90,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, out: [-9, 0, 0], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -145,6 +145,8 @@ const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHORT: Record<Acting, Acting> = { plain: 'plain', confident: 'plain', nervous: 'nervous', shocked: 'scared', angry: 'nervous', scared: 'scared', proud: 'plain', exhausted: 'exhausted' }
+const SHEET = { along: 0.9, gap: 0.4, side: 2.6, fly: [0.4, 7.4, 0.6], from: [0.18, 0.76, 0.624], far: 10.2, open: 15 }
+const LEAVE = { seconds: 0.55, in: 1.7, firm: 0.25, back: 5, settle: 0.12, up: 0.3 }
 const LOADER = { land: [0.66, 0.1], away: [-0.5, 0.84, 0.32], go: [1.25, 0.2], short: 0.72, by: 1.8, low: 16, shut: [-0.6, 0.78], alarm: [0.55, 0.45, 0.8] }
 const HIT = { least: 0.3, hold: 0.1, short: 0.66, big: 0.9, sway: [0.3, 8, 0.4] }
 const BEATS = { brace: [0.4, 0.68], catch: [0.12, 0.64], shiver: [0.35, 0.12, 11, 1.3], kick: [0.12, 0.7], alarm: [0.3, 0.36, 1, -0.5], lip: [0.35, 0.72, -0.6], dizzy: [[0, 0.25, 3, 0.5], [0.5, 0.5, 3, 0.5], [1, 0.8, 2.5, 1.3]] }
@@ -664,12 +666,12 @@ export function makePage(): PageLogic {
         if (s.phase === 'wait' && d < reach && io.time >= T.arrive && !io.cursor.inAir) {
           if (s.seen < 0) {
             const p = io.cursor.pose()
-            s.seen = s.t
+            s.seen = io.time
             io.cursor.react('recoil')
             io.cursor.hold(LOADER.away[2]!)
             io.cursor.strike(p.lean + p.spin + LOADER.away[0]!, LOADER.away[2]!)
             io.cursor.press(LOADER.away[1]!, LOADER.away[2]!)
-          } else if (s.t >= s.seen + LOADER.away[2]!) {
+          } else if (io.time >= s.seen + LOADER.away[2]!) {
             s.phase = 'pull'
             s.pull = 0
             io.cursor.take('ball')
@@ -758,7 +760,9 @@ export function makePage(): PageLogic {
         }
       }
       const inside = s.phase === 'sealed' && s.t >= T.lightsDown && !(ball().mode === 'rail' && ball().rail === 'drain') && !(ball().mode === 'hold' && ball().hold === 'outlet')
-      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt : -dt) / (T.powerOn - T.lightsDown)))
+      if (s.out[0]! < 0 && s.phase === 'sealed' && ball().mode === 'rail' && ball().rail === 'drain') s.out = [s.time, s.scroll, s.floor]
+      const landed = s.out[0]! < 0 || s.time >= s.out[0]! + LEAVE.seconds + LEAVE.settle
+      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt / (T.powerOn - T.lightsDown) : landed ? -dt / (s.out[0]! < 0 ? T.powerOn - T.lightsDown : LEAVE.up) : 0)))
       if (s.phase !== 'sealed') {
         const on = [port, outlet].some((c) => Math.hypot(io.cursor.x + 8 - c.x, io.cursor.y + 14 - c.y) < px(OUTLET.ring) / 2 + 12)
         io.cursor.setGround(on ? PORT_TOP : 0)
@@ -766,9 +770,18 @@ export function makePage(): PageLogic {
       const to = target()
       const rate = Math.min(1, dt / (live.tierTravelSeconds / 4))
       const cap = 4200 * dt
-      s.scroll += Math.max(-cap, Math.min(cap, (to.scroll - s.scroll) * rate))
-      s.floor += (to.floor - s.floor) * rate
-      if (Math.abs(to.scroll - s.scroll) < 0.01) s.scroll = to.scroll
+      if (s.out[0]! >= 0) {
+        const u = (s.time - s.out[0]!) / LEAVE.seconds
+        const w = Math.pow(Math.max(0, Math.min(1, u)), LEAVE.in)
+        const p = (1 - LEAVE.firm) * w * (2 - w) + LEAVE.firm * w
+        const after = (u - 1) * LEAVE.seconds / LEAVE.settle
+        s.scroll = s.out[1]! + (lastScroll - s.out[1]!) * p - (after > 0 && after < 1 ? LEAVE.back * Math.sin(Math.PI * after) : 0)
+        s.floor = s.out[2]! * (1 - p)
+      } else {
+        s.scroll += Math.max(-cap, Math.min(cap, (to.scroll - s.scroll) * rate))
+        s.floor += (to.floor - s.floor) * rate
+        if (Math.abs(to.scroll - s.scroll) < 0.01) s.scroll = to.scroll
+      }
     },
     save() {
       return { s: { ...s, said: [...s.said] }, m: machine().save() }
@@ -897,23 +910,24 @@ export function makePage(): PageLogic {
         drawLayout(list, layout, { states: ['play', 'on', 'mode0', 'score0', 'score2'], runtime: { score: scoreText() }, over: stood })
         for (const shape of fixedShapes()) list.push(shape)
         for (const shape of movingShapes(mc, table.inserts.map(() => true), true, [true, true, true], 0, false, DUSK)) list.push(shape)
-        const f = px(floorZ(1))
-        const bat = table.flippers.find((x) => x.tier === 1 && x.side === 'left')!.pivot
+        const bat = table.flippers.find((x) => x.tier === 2 && x.side === 'left')!.pivot
         const cup = table.bumpers.filter((x) => x.tier === 1).reduce((p, q) => (q.c[1] > p.c[1] ? q : p))
         const lean = (FLIP.rest * Math.PI) / 180
-        const rest = { x: bat[0] + 0.9 * Math.cos(lean) + (0.46 + FLIP.radius) * Math.sin(lean), y: bat[1] + 0.9 * Math.sin(lean) - (0.46 + FLIP.radius) * Math.cos(lean) }
-        const hit = { x: cup.c[0] + (cup.r + 0.45) * 0.26, y: cup.c[1] + (cup.r + 0.45) * 0.966 }
-        const mid = { x: (rest.x + hit.x) / 2, y: (rest.y + hit.y) / 2 }
-        const spots: { x: number; y: number; lift: number; pose: Partial<CursorPose> }[] = [
-          { x: rest.x, y: rest.y, lift: 0, pose: { acting: 'nervous' } },
-          { x: mid.x, y: mid.y, lift: 0.5, pose: { acting: 'scared', lean: 0.3 } },
-          { x: hit.x, y: hit.y, lift: 0, pose: { acting: 'scared', reaction: 'recoil', reactionAt: 0.5 } }
+        const rest = { x: bat[0] + SHEET.along * Math.cos(lean) + (0.46 + FLIP.radius) * Math.sin(lean), y: bat[1] + SHEET.along * Math.sin(lean) - (0.46 + FLIP.radius) * Math.cos(lean) }
+        const side = [Math.cos(SHEET.side), Math.sin(SHEET.side)]
+        const hit = { x: cup.c[0] + (cup.r + SHEET.gap) * side[0]!, y: cup.c[1] + (cup.r + SHEET.gap) * side[1]! }
+        const spots: { x: number; y: number; f: number; lift: number; v: number[]; pose: Partial<CursorPose> }[] = [
+          { x: rest.x, y: rest.y, f: px(floorZ(2)), lift: 0, v: [1, 9, 1, 0, 0, 9], pose: { acting: 'nervous' } },
+          { x: MID + SHEET.fly[0]!, y: Y2 + SHEET.fly[1]!, f: px(floorZ(2)), lift: SHEET.fly[2]!, v: [1, 9, 0, 0, 0, 9], pose: { acting: 'scared', lean: 0.3 } },
+          { x: hit.x, y: hit.y, f: px(floorZ(1)), lift: 0, v: [1, 9, 0, 1, Math.atan2(-side[1]!, -side[0]!), 0], pose: { acting: 'scared', reaction: 'recoil', reactionAt: 0.5 } }
         ]
-        const view = look('home', [mid.x + 1.63, mid.y + 7.36, 4.2], [mid.x - 0.02, mid.y + 0.41, -1.5])
-        const away = Math.hypot(hit.x - cup.c[0], hit.y - cup.c[1]) || 1
-        const seat = (p: (typeof spots)[number], wall: number[] | null): CursorPose => {
-          const at = restPose(px(p.x), px(p.y), { z: f + px(p.lift), inBall: true, taken: true, ...p.pose })
-          const c = toWorld(px(p.x), px(p.y), f + px(p.lift) + BALL / 2)
+        const seen = (p: (typeof spots)[number]): CameraPose => {
+          const c: [number, number, number] = [p.x, p.y, p.f / BALL + p.lift + 0.5]
+          return { ...look('home', [c[0]! + SHEET.from[0]! * SHEET.far, c[1]! + SHEET.from[1]! * SHEET.far, c[2]! + SHEET.from[2]! * SHEET.far], c), focus: px(SHEET.far), aperture: SHEET.open }
+        }
+        const seat = (p: (typeof spots)[number], view: CameraPose, wall: number[] | null): CursorPose => {
+          const at = restPose(px(p.x), px(p.y), { z: p.f + px(p.lift), inBall: true, taken: true, ...p.pose })
+          const c = toWorld(px(p.x), px(p.y), p.f + px(p.lift) + BALL / 2)
           const d = Math.hypot(view.eye[0] - c[0], view.eye[1] - c[1], view.eye[2] - c[2]) || 1
           const e = [(view.eye[0] - c[0]) / d, (view.eye[1] - c[1]) / d, (view.eye[2] - c[2]) / d]
           const n = wall ? [e[0]! * FACE.lens - wall[0]! * FACE.wall, e[1]! * FACE.lens - wall[1]! * FACE.wall, Math.max(0.2, e[2]!) * FACE.lens] : [e[0]! * FACE.turn, e[1]! * FACE.turn, 1 - FACE.turn + e[2]! * FACE.turn]
@@ -924,8 +938,10 @@ export function makePage(): PageLogic {
           const room = berth(at, at.lean, at.spin, at.squash, n, wall ? FACE.press : FACE.back, 0)
           return { ...at, x: at.x + room.x, y: at.y - room.y, z: at.z + room.z, face: { x: n[0]!, y: n[1]!, z: n[2]!, back: room.back } }
         }
-        spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: f + px(p.lift), z1: f + px(p.lift) + BALL, tone: 'glass' }))
-        return { list, cursors: spots.map((p, i) => seat(p, i === 2 ? [(hit.x - cup.c[0]) / away, -(hit.y - cup.c[1]) / away] : null)), view: { ...view, focus: px(9.3), aperture: 15 } }
+        const wall = (i: number): number[] | null => (i === 2 ? [side[0]!, -side[1]!] : null)
+        spots.forEach((p, i) => list.push({ id: `sheet-ball-${i + 1}`, part: 'clear-ball', kind: 'ball', x: px(p.x - 0.5), y: px(p.y - 0.5), w: BALL, h: BALL, z0: p.f + px(p.lift), z1: p.f + px(p.lift) + BALL, tone: 'glass', v: p.v }))
+        const views = spots.map(seen)
+        return { list, cursors: spots.map((p, i) => seat(p, views[0]!, wall(i))), view: views[0]!, panels: spots.map((p, i) => ({ cursors: [seat(p, views[i]!, wall(i))], view: views[i]! })), gutter: 21 }
       }
       if (id !== 'table-map') return null
       const mc = machine()
