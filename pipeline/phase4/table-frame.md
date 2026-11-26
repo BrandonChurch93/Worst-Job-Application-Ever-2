@@ -25,10 +25,35 @@ Branch `agent/table-frame`, made from `origin/phase4-base` (f634ffb). Folders: `
 - `tests/table-play.test.ts`: the limit for triangles not marked fine is 85000 (was 70000): the six bats are thick moulded bodies now.
 
 - Brushed aluminium is bright only where the approved images show it bright: the land of both rails and the marquee's housing (`TONE.aluBright`, `TONE.alu`). The walls, heads and banks of a tier are a dark metal (`METAL` in `frame/tier.ts`), so the inside of the machine stays dark steel.
-- The marquee's foot and its ribbed beam are dark paint: nothing grey shows between the housing and the top tier.
+- The marquee's foot, braces and ribbed beam are brushed aluminium again (02:00 UTC). I had made them dark paint at 01:10 and the Builder's review named the backbox as near black against the approved silver bezel: my error.
 - The loader's cup is a dish that falls in a quarter round from the lip to the floor, in the cup's dark tone, 34 px across the fall. It cannot go below the page, so its depth is drawn by the fall and the tone.
 - The tube's bend at the loader and the marquee's size are the layout's (`railOf('feed')`, the shape `marquee.back`): they go to the director.
 
+## Decisions after the Builder's review of 01:42 UTC
+
+- The apron's zone lies at the street floor's height (the Builder's ruling, the director's 7125cd0). `frame/apron.ts` builds for whatever height the zone has: `H = max(7, -zone.floor)`. Side rails carry the tier's rails on, a slim near rail (44 px) closes them, a cast deck lies between them with the two plates, the plaque and a square drain slot in an aluminium bezel. The page's fields `apron-left`, `apron-right` and `apron-card` are laid on the deck whether the page gives their height from its own surface or from the floor.
+- Where the apron lies at the street's height the street's end wall is a low wall (56 px), open at the mouth. Where it stands at the page's height the wall stays the well's end with its tunnel. The switch is `zone('apron').floor`, so it follows the layout.
+- The page's slab opens only where the draw list has a `well`: the apron needed one. Asked of the director (in as 3edf15f on their branch); my patch `table-frame-NEEDS.patch` is the same line and is not applied on my branch.
+- The apron's metal mirrors the street's room: `steel(material, zone, look, from)` takes the lit zone whose room an unlit zone stands in (`roomOf` in `frame/mats.ts`). Its ceramic is lifted from the street's website level and takes no shadow of the page's light in the well.
+- Every land of the frame is pale: left rail, right rail and the bed under the feed tube, head rail, corner block, cross rails, lift housings. The inner faces stay dark (`METAL`).
+- The tubes' ferrules are 9 px chrome rings every 5.1 balls with 5 px straps (were 22 px grooved collars every 3.4 balls). The collars at a tier's joints and at the tube's ends keep their size.
+- The wire ramps: wire 4.2 px in radius (was 2.6), hoops 3.4 (was 2.2), with the under wires moved out so the ball still rests on them. The play metal mirrors a brighter panel, so chrome reads bright.
+- Orange is the site's shared number `0xc74c00` on bats, plunger knob, lift doors and elbows (the Builder's word of 02:10). The bats had `0xff9838` from 01:15 to 02:12 to match the amber of the approved bats.
+
 ## Measurements
 
-See the report sent to the Builder; rows are copied here after each push.
+Calls / triangles from `npm run build && npm run counts -- --key <key> --live low`. Before is origin/main 6060c7a.
+
+| key | part | before | 876cb74 | 9994ce2 |
+|---|---|---|---|---|
+| table-wide | table-frame | 18 / 12802 | 18 / 13024 | 17 / 11948 |
+| table-wide | table-hardware | 28 / 36340 | 28 / 36340 | 28 / 35380 |
+| table-wide | loader | 15 / 29406 | 15 / 31154 | 14 / 19482 |
+| table-wide | lift | 13 / 19336 | 13 / 19336 | 13 / 15640 |
+| table-wide | flippers | 12 / 22944 | 12 / 30672 | 12 / 30672 |
+| table-wide | ramps | 5 / 20584 | 5 / 20584 | 5 / 20584 |
+| table-wide | marquee | 4 / 2120 | 4 / 1730 | 4 / 2168 |
+| tier-street | table-frame | 15 / 10822 | 15 / 10966 | |
+| tier-street | flippers | 6 / 11472 | 6 / 15336 | |
+
+Draft stills in hd (`npm run still -- --key <key> --format hd --tier draft`): table-wide 41 to 45 s, 646 calls at a842706 and 638 at c65c00d with the apron's well; tier-street 31 to 33 s, 527 calls at a842706, 535 with the well and main's merge 14.

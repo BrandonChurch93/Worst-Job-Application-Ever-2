@@ -145,7 +145,12 @@ describe('the real careers page', () => {
       if (m?.transparent) clear++
     })
     expect(glass).toBe(2)
-    expect(clear).toBe(1)
+    expect(clear).toBe(2)
+    const frost = o.children.find((n) => ((n as THREE.Mesh).geometry?.getAttribute('color')?.itemSize ?? 0) === 4) as THREE.Mesh
+    const alpha = frost.geometry.getAttribute('color')
+    const seen = new Set<number>()
+    for (let i = 0; i < alpha.count; i++) seen.add(alpha.getW(i))
+    expect(seen.has(1) && seen.has(0)).toBe(true)
     for (const r of list.filter((x) => x.kind === 'text' && x.id.startsWith('ticker-'))) expect(r.z1).toBeLessThan(0)
     expect(asked.length).toBe(0)
   })

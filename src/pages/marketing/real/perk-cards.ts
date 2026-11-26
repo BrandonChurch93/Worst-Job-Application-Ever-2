@@ -34,7 +34,7 @@ export function cardGlass(): THREE.MeshPhysicalMaterial {
   return glassMade
 }
 
-export const GLASS = { colour: 0xc4cecb, shade: 0.27, after: 0.6, exit: 1.4, rim: 1.8, glint: 0.25, line: 0.9, wash: 0.13, warm: 0.07, lean: 0.03, caster: 4.2, least: 0.4, most: 2, through: 0.8 }
+export const GLASS = { colour: 0xc4cecb, shade: 0.27, after: 0.6, exit: 1.4, rim: 1.8, glint: 0.25, line: 0.9, wash: 0.13, warm: 0.07, lean: 0.03, caster: 4.2, least: 0.4, most: 4.4, through: 0.8 }
 
 const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
 const KX = look.key.direction[0] / keyFlat
