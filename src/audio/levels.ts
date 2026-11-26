@@ -75,7 +75,12 @@ export const LIVE = {
   sameCueSeconds: 0.012,
   // A loop that nothing stops ends by itself after this long.
   loopMaxSeconds: 30,
+  // A loop comes in and goes out over this long, so it neither starts nor stops on a step. The room tone comes in slower.
+  loopFadeSeconds: 0.03,
+  toneFadeInSeconds: 0.4,
   volumeRampSeconds: 0.03,
+  // The engine keeps this many entries of its log of the narrator's lines, the newest.
+  logMax: 600,
   // The sounds of film A's opening are known before they are due, so each is set on the sound clock this long ahead of the picture.
   // It is longer than the longest step the film takes in one drawn frame, so a slow page drops none.
   aheadSeconds: 0.6,

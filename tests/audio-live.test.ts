@@ -70,14 +70,17 @@ describe('the table of what sets each line of the film off on the live site', ()
     expect(filmKeysForGag('step1.email')).toEqual([])
   })
 
-  it('lists every event that is wanted and does not exist in the needs file', () => {
-    const needs = readFileSync(path.join(root, 'pipeline', 'sound', 'NEEDS.md'), 'utf8')
-    const standIns = Object.entries(filmLive).filter(([, t]) => t.on === 'gag' && t.standIn)
-    expect(standIns.length).toBeGreaterThan(0)
-    for (const [key, t] of standIns) {
-      expect(needs.includes(`\`${(t as { standIn: string }).standIn}\``), key).toBe(true)
-      expect(needs.includes(narration.film[beatOf(key)][0].live), key).toBe(true)
-    }
+  it('has no line left on a stand-in: the four that waited for an event of a page hang on that event, and the page emits it', () => {
+    const page = (n: string) => readFileSync(path.join(root, 'src', 'pages', n, 'index.ts'), 'utf8')
+    expect(readFileSync(path.join(root, 'src', 'audio', 'cues.ts'), 'utf8').includes('standIn')).toBe(false)
+    expect(filmLive['pinball.lobby.0']).toEqual({ on: 'event', event: 'carpet-roll' })
+    expect(filmLive['pinball.replyAll.0']).toEqual({ on: 'event', event: 'inbox-take' })
+    expect(filmLive['pinball.fired.0']).toEqual({ on: 'event', event: 'firehouse-take' })
+    expect(filmLive['decision.metrics.0']).toEqual({ on: 'event', event: 'count-run' })
+    expect(Object.entries(filmLive).filter(([, t]) => t.on === 'gag').map(([key]) => key)).toEqual(['step2.dial.0', 'step2.crank.0'])
+    for (const name of ['carpet-roll', 'inbox-take', 'firehouse-take']) expect(page('step3').includes(`'${name}'`), name).toBe(true)
+    for (const name of ['metrics-card', 'count-run']) expect(page('step5').split(`io.emit('${name}'`).length - 1, name).toBe(1)
+    expect(readFileSync(path.join(root, 'src', 'boss', 'fight.ts'), 'utf8').split("io.emit('boss-slow'").length - 1).toBe(1)
   })
 
   it('says by number how long each kind of line may wait', () => {
@@ -464,51 +467,25 @@ describe('the live narrator inside the sound engine, on a fake clock', () => {
     expect(source(none.ctx, 'line.marketing.stroll.0')[0]!.started).toBeCloseTo(20 + narration.film['marketing.stroll'][0].at * 2, 9)
   })
 
-  it('says the button is winning once, at the first event of a fight that has lasted longer than the fight of the film', async () => {
-    const beat = (id: string) => cfg.film.beats.find((x: any) => x.id === id)
-    const fight = beat('boss.collapse').from - beat('boss.unfold').from
-    expect(fight).toBeGreaterThan(0)
+  it('says the button is winning when the page reports that the fight is slow, and at no other time however long the fight lasts', async () => {
     const id = liveLineId('boss.slow', 0)
     const { s, ctx } = await ready()
     ctx.currentTime = 100
     s.event(ev('unfold', 'step4'), 'live')
-    ctx.currentTime = 100 + fight - 0.01
+    ctx.currentTime = 100 + cfg.live.bossSlowSeconds * 4
     s.event(ev('slab-drop', 'step4'), 'live')
+    s.beat('boss.popups', 'live')
     expect(source(ctx, id).length).toBe(0)
-    ctx.currentTime = 100 + fight
-    s.event(ev('slab-drop', 'step4'), 'live')
-    expect(source(ctx, id).map((x) => x.started)).toEqual([100 + fight])
-    ctx.currentTime += far + fight
-    s.event(ev('slab-drop', 'step4'), 'live')
-    expect(source(ctx, id).length).toBe(1)
-  })
-
-  it.each(['power-down', 'skip', 'page-turn'])('does not say the button is winning when the fight ends in time by %s', async (end) => {
-    const beat = (id: string) => cfg.film.beats.find((x: any) => x.id === id)
-    const fight = beat('boss.collapse').from - beat('boss.unfold').from
-    const { s, ctx } = await ready()
-    ctx.currentTime = 100
-    s.event(ev('unfold', 'step4'), 'live')
-    ctx.currentTime = 100 + fight - 1
-    s.event(ev(end, 'step4'), 'live')
-    ctx.currentTime = 100 + fight + 1
-    s.event(ev('slab-drop', 'step4'), 'live')
-    expect(source(ctx, liveLineId('boss.slow', 0)).length).toBe(0)
-  })
-
-  it('leaves the button is winning to the page once the page reports it itself', async () => {
-    const beat = (id: string) => cfg.film.beats.find((x: any) => x.id === id)
-    const fight = beat('boss.collapse').from - beat('boss.unfold').from
-    const id = liveLineId('boss.slow', 0)
-    const { s, ctx } = await ready()
-    ctx.currentTime = 100
-    s.event(ev('unfold', 'step4'), 'live')
-    ctx.currentTime = 110
     s.event(ev('boss-slow', 'step4'), 'live')
-    expect(source(ctx, id).map((x) => x.started)).toEqual([110])
-    ctx.currentTime = 100 + fight + far
-    s.event(ev('slab-drop', 'step4'), 'live')
-    expect(source(ctx, id).length).toBe(1)
+    expect(source(ctx, id).map((x) => x.started)).toEqual([100 + cfg.live.bossSlowSeconds * 4])
+    expect(s.log().filter((e) => e.line === id)).toEqual([{ at: ctx.currentTime, line: id, trigger: 'event boss-slow', what: 'spoken', start: ctx.currentTime, seconds: LINE }])
+  })
+
+  it('does not say the button is winning in the film, where the event is never sent', async () => {
+    const { s, ctx } = await ready()
+    ctx.currentTime = 100
+    s.event(ev('boss-slow', 'step4'), 'film')
+    expect(source(ctx, liveLineId('boss.slow', 0)).length).toBe(0)
   })
 
   it('leaves the film as it was: its lines are placed by their beats and events set none off', async () => {

@@ -209,7 +209,6 @@ function play(first: PlayMode): void {
   let shown: Frame | null = null
   let volume = -1
   let lastInput = wallSeconds()
-  let idleSaid = false
 
   const stepNow = (): number => {
     const i = base + stage.entryIndex
@@ -307,19 +306,15 @@ function play(first: PlayMode): void {
     for (; sent < stage.events.length; sent++) sound.event(stage.events[sent]!, 'live')
     const reached = stage.gagsReached
     for (; gags < reached.length; gags++) sound.beat(reached[gags]!, 'live')
-    const v = stage.page.volume?.()
-    if (v !== undefined && v !== volume) {
+    const v = stage.page.volume?.() ?? 1
+    if (v !== volume) {
       volume = v
       sound.setVolume(v)
     }
-    if (!idleSaid && wallSeconds() - lastInput >= config.live.idleSeconds) {
-      idleSaid = true
-      sound.trigger('idle')
-    }
+    sound.quiet(wallSeconds() - lastInput)
   }
   const touched = () => {
     lastInput = wallSeconds()
-    idleSaid = false
   }
 
   const setMode = (next: PlayMode, record = true) => {
