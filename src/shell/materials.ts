@@ -59,9 +59,9 @@ const CLOSE_FALL = 1.5
 const CLOSE_FLOOR = 0.03
 const CLOSE_TOOTH = 2.85
 const SHEET_TOOTH = 0.4
-const HOME_TOOTH = 0.9
-const FIBRE = 7
-const HOME_GAIN = 0.45
+const HOME_TOOTH = 0.6
+const FIBRE = 14
+const HOME_GAIN = 0.5
 const MOTTLE = 0.015
 
 // The eggshell grain as heights, one number a texel, with a mean of nought and a spread of one. The size is a power of two and the picture tiles.
@@ -244,10 +244,10 @@ vec3 wjaGrain( vec2 uv ) {
 	wjaGrainHeight = relief * ( a.a + b.a - 1.0 );
 	vec2 uvM = mat2( 0.8829, 0.4695, -0.4695, 0.8829 ) * uv;
 	wjaMottle = 2.3 * ( texture2D( normalMap, uvM * 0.125 + vec2( 0.613, 0.277 ), 2.0 ).a - 0.5 ) + 1.5 * ( texture2D( normalMap, uvM.yx * 0.25 + vec2( 0.211, 0.671 ), 2.0 ).a - 0.5 );
-	vec2 uvG = mat2( 0.5736, 0.8192, -0.8192, 0.5736 ) * uv * vec2( 0.25, 0.9 ) + vec2( 0.137, 0.733 );
-	vec2 g = vec2( 0.25, 0.9 ) * ( texture2D( normalMap, uvG ).xy - texture2D( normalMap, uvG, 2.0 ).xy );
-	vec2 uvH = mat2( 0.7431, 0.6691, -0.6691, 0.7431 ) * uv * vec2( 0.2, 1.1 ) + vec2( 0.613, 0.291 );
-	vec2 h = vec2( 0.2, 1.1 ) * ( texture2D( normalMap, uvH ).xy - texture2D( normalMap, uvH, 2.0 ).xy );
+	vec2 uvG = mat2( 0.5736, 0.8192, -0.8192, 0.5736 ) * uv * vec2( 0.3, 1.6 ) + vec2( 0.137, 0.733 );
+	vec2 g = vec2( 0.3, 1.6 ) * ( texture2D( normalMap, uvG ).xy - texture2D( normalMap, uvG, 2.0 ).xy );
+	vec2 uvH = mat2( 0.7431, 0.6691, -0.6691, 0.7431 ) * uv * vec2( 0.27, 1.9 ) + vec2( 0.613, 0.291 );
+	vec2 h = vec2( 0.27, 1.9 ) * ( texture2D( normalMap, uvH ).xy - texture2D( normalMap, uvH, 2.0 ).xy );
 	vec2 fibre = mat2( 0.5736, -0.8192, 0.8192, 0.5736 ) * g + 0.7 * ( mat2( 0.7431, -0.6691, 0.6691, 0.7431 ) * h );
 	float home = mix( HOME_GAIN, 1.0, smoothstep( 1.5, 2.4, close ) );
 	return normalize( vec3( home * ( relief * ( a.xy * 2.0 - 1.0 + 0.5 * tilt ) + tooth * fine + relief * ( HOME_TOOTH * c + FIBRE * fibre ) ), a.z * 2.0 - 1.0 ) );

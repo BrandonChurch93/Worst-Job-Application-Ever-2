@@ -146,19 +146,39 @@ The measure (`out/work/shared-look/stroke.cjs <png> x y w h`): one line of type;
 - Helper and subline: the build is heavier on every page that has one, but that is two pages, not three. Not changed. Said for the pages' owners: the quiet voice is drawn about a tenth heavier than approved, and on step 2 the approved helper's ink is darker than ours (linear luminance 0.03 against 0.10).
 - M4: no size changed.
 
+## Item G: the page's fine detail
+
+The measure (`out/work/shared-look/hf.cjs <still> <approved>`): M3's own sum, the mean squared Laplacian, for the whole picture and for each tile of an 8 by 4 grid, still over approved. And a look at 4x beside the approved page (`decision` 1500, 880 and `marketing-top` 880, 500).
+
+What the approved page has that the build did not: short diagonal strokes that run up to the right, a few pixels long and about one wide, with a dark dash here and there, plain in the lamp's raking light and in the shade alike. The build: flat, with a faint even speckle. On the open page the build held 0.25 to 0.55 of the approved energy.
+
+Built in the ceramic's shader in `materials.ts`. No texture added or changed (the one grain picture, 1024 by 1024 px, 4 MB with its mips as before; `tests/surface.test.ts` holds its bytes), and `ground.ts` is not changed:
+
+- The fibre readings of the grain are finer across and stay long: `vec2(0.25, 0.9)` to `vec2(0.3, 1.6)` and `vec2(0.2, 1.1)` to `vec2(0.27, 1.9)`.
+- `FIBRE` 7 to 14, `HOME_TOOTH` 0.9 to 0.6 (less of the even speckle, more of the stroke), `HOME_GAIN` 0.45 to 0.5.
+
+Seven trials (g1 to g7). Raising the gain alone (g1, `HOME_GAIN` 0.9) lifts the number to 0.92 with speckle and no strokes: that is noise, not built. g5 (`FIBRE` 12 with short strokes and gain 0.6) passed marketing at 0.99 but stood at twice the approved energy on the open lit page: too coarse beside the approved page, not built. g7 is the level where the open page's tiles stand at 1.0 to 1.6 of approved and the picture beside the approved one reads the same strength.
+
+| Key | whole picture before | after | open page tiles before | after |
+| --- | --- | --- | --- | --- |
+| `decision` | 0.8056 | 0.9272 | 0.36 to 0.52 | 0.80 to 1.68 |
+| `marketing-top` | 0.6895 | 0.7855 | 0.40 to 0.65 | 0.53 to 1.22 |
+
+DECISION: marketing's M3 stays under 0.8 by this count and I do not raise the tooth further to pass it. The tiles that hold it down are not open page: the tile at column 7, row 2 holds 26711 against the approved 51753 and the one beside it 9322 against 17429 (the hero's right side), and the type rows hold 0.6 to 0.8. That is the marketing page's content, not the ceramic.
+
 ## Item H: the hairlines past the round ends of a pocket
 
 MEASURED on `boss-down` at review, the SUBMIT bar's pocket, the green of row 260 from x 240 to 252 (the row above the lip, left of where the round end turns): 190 against the page's 232, a grey hairline that ran the whole top edge and past the round end to the left; the same along the bottom edge to the right. A draft still does not show it; review's samples do.
 
 The cause, found by two trials in the measuring tree (the collar left out: the row goes black; the page's overlap raised from 0.25 to 1.5 px: the line goes): `collar` in `solids.ts` throws each point of the hole outward from the centre to the tile's edge. Round a long capsule every point lands on the left or the right edge, none on the top, and where the side changed the code added one corner only. So half of the strip along the top and half along the bottom was never drawn: a wedge up to 0.5 px open to the dark backing, of which the page's overlap hid 0.25.
 
-Built: `collar` adds every corner between the two sides. MEASURED after: the same row reads 224 to 236. `tests/shared-look-collar.test.ts` holds that the collar's area is the tile's less the hole's for a long capsule, a tall one, a field and a disc (the long capsule was 724 square px short before). `ground.ts` is not changed. Triangles on `boss-down` at review: 565227 before, 565767 after.
+Built: `collar` adds every corner between the two sides. MEASURED after: the same row reads 224 to 236. `tests/shared-look-collar.test.ts` holds that the collar's area is the tile's less the hole's for a long capsule, a tall one, a field and a disc (the long capsule was 724 square px short before). `ground.ts` is not changed.
 
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 26 | 40 |
+| shell | 37 | 40 |
 | type | 3 | 40 |
 | light-engine | 3 | 40 |
 | cursor-body | 8 | 40 |
