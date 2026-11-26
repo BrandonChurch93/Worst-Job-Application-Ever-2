@@ -49,8 +49,15 @@ export function path(m: Marks): Key[] {
   return keys
 }
 
+// The arrow comes back with the page. It is let down from the height of the hand-off from `from` to `down`, a little before the page
+// lies flat at `lands`, the stage's half turn; `flat` is when it draws itself up for the landing, so it is driven flat as it touches. It gets up, stands, then
+// takes half a step of `step` px toward Apply for a Job and stays leant at it from `lean` on.
+export const LANDING = { lands: 0.5, from: 0.04, down: 0.3, flat: 0.2, lean: 1.24, step: 46, walk: 2.4 }
+
 export function rejectedPath(m: Marks): Key[] {
-  return [{ t: 0, x: HANDOFF.x, y: HANDOFF.y }, { t: 0.5, x: HANDOFF.x, y: HANDOFF.y }, { t: 1.35, ...m.stand }]
+  const toward = Math.sign(m.press.x - HANDOFF.x) || -1
+  const leant = { x: HANDOFF.x + toward * LANDING.step, y: HANDOFF.y }
+  return [{ t: 0, x: HANDOFF.x, y: HANDOFF.y }, { t: LANDING.lean - 0.14, x: HANDOFF.x, y: HANDOFF.y }, { t: LANDING.lean + 0.02, ...leant, e: 'line' }, { t: LANDING.walk, ...leant }, { t: LANDING.walk + 0.85, ...m.stand }]
 }
 
 const ease = (u: number): number => u * u * (3 - 2 * u)
@@ -91,4 +98,4 @@ export const CUES: Cue[] = [
   { at: TURN_AT + 0.16, act: 'shocked', react: 'startle' }
 ]
 
-export const REJECTED_CUES: Cue[] = [{ at: 0, act: 'exhausted' }]
+export const REJECTED_CUES: Cue[] = [{ at: 0, act: 'exhausted' }, { at: LANDING.flat, react: 'stamp' }, { at: LANDING.lean, react: 'recoil' }]

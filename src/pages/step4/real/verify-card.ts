@@ -5,6 +5,9 @@ import { materials } from '../../../shell/materials'
 import { controls } from '../../../shell/real/controls'
 import { arc, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
+import { cardGlass, GLASS, SLAB, slabGeometry } from '../../marketing/real/perk-cards'
+import { bossKit } from '../../../boss/real/body-kit'
+import { walled } from '../../../boss/real/body'
 
 const heights = config.scale.heights
 const q = (v: number): number => Math.round(v * 4) / 4
@@ -19,6 +22,19 @@ function mesh(g: THREE.BufferGeometry, m: THREE.Material, cast = true): THREE.Me
   out.castShadow = cast
   out.receiveShadow = true
   return out
+}
+
+// The card is the careers page's slab of pale glass, lying on the page, with the picture under it laid as fine as on the boss's block.
+function card(s: Shape): THREE.Object3D {
+  const thick = s.z1 - s.z0
+  const root = new THREE.Group()
+  const glass = mesh(walled(slabGeometry(s, thick)), bossKit().paleGlass, false)
+  glass.position.z = thick / 2
+  glass.userData.own = true
+  const foot = mesh(sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, 0, true], [0, Math.min(GLASS.caster, thick * 0.4), true]])), cardGlass())
+  foot.userData.own = true
+  root.add(glass, foot)
+  return root
 }
 
 // The checkbox: a thin polished frame set on the glass, a dark seam inside it, and a cap. The cap is white enamel and sits low until it is ticked; then it is the orange and stands up.
@@ -117,7 +133,7 @@ export const verifyCard: PartMaker | null = {
   key(s: Shape, ctx: RealContext): string | null {
     if (s.kind === 'text') return null
     switch (kindOf(s)) {
-      case 'card': return `verify-${controls.key(cardOf(s), ctx)}`
+      case 'card': return `verify-card:${q(s.w)}:${q(stepped(s.h))}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
       case 'box': return `verify-box:${q(s.w)}:${q(s.r ?? 0)}:${s.tone}`
       case 'tick': return 'verify-tick'
       case 'rule': return `verify-rule:${q(s.v?.[0] ?? s.w)}:${q(s.h)}`
@@ -126,7 +142,7 @@ export const verifyCard: PartMaker | null = {
   },
   make(s: Shape, ctx: RealContext): THREE.Object3D {
     switch (kindOf(s)) {
-      case 'card': return controls.make(cardOf(s), ctx)
+      case 'card': return card(cardOf(s))
       case 'box': return box(s)
       case 'tick': {
         const m = mesh(tick(), materials().inkOnOrange, false)
@@ -165,8 +181,10 @@ export const verifyCard: PartMaker | null = {
     }
   },
   drop(o: THREE.Object3D): void {
-    const m = o as THREE.Mesh
-    if (m.geometry && m.geometry.userData.slices) m.geometry.dispose()
+    o.traverse((c) => {
+      const m = c as THREE.Mesh
+      if (m.isMesh && (m.userData.own || m.geometry.userData.slices)) m.geometry.dispose()
+    })
   }
 }
 
