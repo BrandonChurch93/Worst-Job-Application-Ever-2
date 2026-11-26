@@ -1,35 +1,35 @@
 {
   "folder": "street-finish",
-  "pushed": "2026-11-26T11:52:09.521Z",
-  "commit": "fb31d445e7bbfbe3ea0b751113fb8b832dc3665d",
+  "pushed": "2026-11-26T12:07:24.138Z",
+  "commit": "db70b5fbb44bfc9b76cb32f8b9b82017b99923aa",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "youre-fired after merge 34, approved left, this build right: deeper parapet with a dark inner face, beacon on a kerb with a banded chrome ring, windows behind their bars, bank pediment",
-      "time": "2026-11-26T11:52:07.726Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T12:02:48.358Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/compare-youre-fired-2.jpg"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-street after merge 34, approved left, this build right: worked roofs, the police board under the moved two line sign",
-      "time": "2026-11-26T11:52:07.953Z",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T12:03:52.083Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/compare-tier-street-2.jpg"
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street crop: both roofs from straight above with felt laps, patches, stains, cap joints, drains, pipes and hatches",
-      "time": "2026-11-26T11:52:08.177Z",
+      "caption": "youre-fired draft, crop: rooms lit unlike their neighbours, two dark, one with a blind",
+      "time": "2026-11-26T12:07:22.441Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/tier-street-roofs-2.jpg"
+      "from": "out/work/street-finish/youre-fired-windows-3.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "youre-fired crop at native size: board, beacon, kerb and parapet",
-      "time": "2026-11-26T11:52:08.417Z",
+      "caption": "table-wide draft, crop enlarged: garage decks show as stacked clear bands at the sides, sign behind stays clear (ratio 6.11)",
+      "time": "2026-11-26T12:07:22.662Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/youre-fired-roof-2.jpg"
+      "from": "out/work/street-finish/table-wide-garage-3.jpg"
     }
   ]
 }
