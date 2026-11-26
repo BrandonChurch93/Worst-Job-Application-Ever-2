@@ -1,35 +1,35 @@
 {
   "folder": "boss-keeper",
-  "pushed": "2026-11-26T06:20:37.789Z",
-  "commit": "ec724222dcf7720badf520128755102d2893cecd",
+  "pushed": "2026-11-26T06:31:59.299Z",
+  "commit": "566ef91e741d700082c4ea0ea908bd11e729fb91",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
-      "time": "2026-11-26T06:20:19.616Z",
-      "by": "boss-keeper",
-      "from": "out/work/compare/compare-boss-fight.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "boss-fight at ec724222 beside approved: brushed darker hull, careers glass on the block and on the verification card, arrow aimed along its shot",
-      "time": "2026-11-26T06:20:36.167Z",
-      "by": "boss-keeper",
-      "from": "out/work/k/send3/compare-boss-fight.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "boss-down at ec724222 beside approved: plates darken as they fall, brighter collar round a darker pit, finer cracks in the glass",
-      "time": "2026-11-26T06:20:36.403Z",
-      "by": "boss-keeper",
-      "from": "out/work/k/send3/compare-boss-down.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "boss-stages at ec724222 under approved: the unfolding state compact with short bent legs",
       "time": "2026-11-26T06:20:36.646Z",
       "by": "boss-keeper",
       "from": "out/work/k/send3/sheet-over-approved.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-boss-fight-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T06:21:27.071Z",
+      "by": "boss-keeper",
+      "from": "out/work/stills/key-boss-fight-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
+      "time": "2026-11-26T06:26:40.851Z",
+      "by": "boss-keeper",
+      "from": "out/work/compare/compare-boss-fight.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "boss-fight at 566ef91e beside approved: the glass block darker while it stands",
+      "time": "2026-11-26T06:31:57.990Z",
+      "by": "boss-keeper",
+      "from": "out/work/k/send3/compare-boss-fight.jpg"
     }
   ]
 }
