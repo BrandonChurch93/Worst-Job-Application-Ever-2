@@ -1,0 +1,84 @@
+diff --git a/src/cursor/contract.ts b/src/cursor/contract.ts
+index b0b95d81..2f9b741b 100644
+--- a/src/cursor/contract.ts
++++ b/src/cursor/contract.ts
+@@ -40,6 +40,8 @@ export interface BodyLook {
+   melt: number
+   // Pressed thin.
+   flat: number
++  // 1 inside the clear ball, where the light the ball's owner gives (`sealed` of the body's material) stands in for the website's own. Left out: 0.
++  sealed?: number
+   // Blackened from the tip.
+   char: number
+   holes: Hole[]
+diff --git a/src/cursor/model/body.ts b/src/cursor/model/body.ts
+index 3cb79bcb..ef1a0e9d 100644
+--- a/src/cursor/model/body.ts
++++ b/src/cursor/model/body.ts
+@@ -100,7 +100,7 @@ export class Body implements BodyModel {
+     this.deform.lean(turn)
+     const u = this.uniforms
+     u.uState.value.set(clamp01(look.pale), clamp01(look.heat), clamp01(look.char), clamp01(look.melt))
+-    u.uShape.value.set(clamp01(look.flat), 0, 0, 0)
++    u.uShape.value.set(clamp01(look.flat), clamp01(look.sealed ?? 0), 0, 0)
+     const crack = Math.max(clamp01(look.crack ?? 0), 0)
+     const seamCount = look.strips ? look.strips.length : Math.max(1, Math.round(look.seamCount ?? 9))
+     u.uMarks.value.set(crack, look.strips ? 0 : clamp01(look.seam ?? 0), seamCount, look.time)
+diff --git a/src/cursor/model/material.ts b/src/cursor/model/material.ts
+index b32d3a5c..dc7c6392 100644
+--- a/src/cursor/model/material.ts
++++ b/src/cursor/model/material.ts
+@@ -23,6 +23,24 @@ export interface BodyUniforms {
+   uDetail: { value: THREE.Texture }
+ }
+ 
++// The light on a body sealed in the clear ball. The website's own light leaves when the machine wakes and the lamps of a tier are not lights of the scene, so the owner of the ball writes here, for each frame, what the lamps round the ball give the body: `light` is the colour and level of one lamp, `from` the way to it in the world (x right, y up the page, z off it) with in `w` the share by which it follows the body's own face, `fill` the light from all sides. It counts on a body only while its look has `sealed`.
++export const sealed = {
++  light: { value: new THREE.Vector3() },
++  from: { value: new THREE.Vector4(0, 0, 1, 0) },
++  fill: { value: new THREE.Vector3() }
++}
++
++const SEALED = /* glsl */ `
++if ( uShape.y > 0.0 ) {
++	IncidentLight wjaLamp;
++	wjaLamp.visible = true;
++	wjaLamp.direction = normalize( normalize( cross( vAcross, - vDown ) ) * uSealedFrom.w + ( viewMatrix * vec4( uSealedFrom.xyz, 0.0 ) ).xyz );
++	wjaLamp.color = uSealedLight * uShape.y;
++	RE_Direct( wjaLamp, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
++	reflectedLight.directDiffuse += uSealedFill * uShape.y * material.diffuseColor;
++}
++`
++
+ export function bodyUniforms(): BodyUniforms {
+   return {
+     uState: { value: new THREE.Vector4() },
+@@ -318,11 +336,15 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
+     Object.assign(shader.uniforms, uniforms)
+     shader.uniforms.uEnamel = { value: enamel }
+     shader.uniforms.uEdge = { value: edge }
++    shader.uniforms.uSealedLight = sealed.light
++    shader.uniforms.uSealedFrom = sealed.from
++    shader.uniforms.uSealedFill = sealed.fill
+     shader.vertexShader = VERTEX_HEAD + shader.vertexShader.replace(
+       '#include <begin_vertex>',
+       '#include <begin_vertex>\nvRest = aRest;\nvInk = aInk;\nvInset = aInset;\nvAcross = normalize( normalMatrix * vec3( 1.0, 0.0, 0.0 ) );\nvDown = normalize( normalMatrix * vec3( 0.0, -1.0, 0.0 ) );'
+     )
+-    shader.fragmentShader = ('uniform vec3 uEnamel;\nuniform vec3 uEdge;\n' + FRAGMENT_HEAD + shader.fragmentShader)
++    shader.fragmentShader = ('uniform vec3 uEnamel;\nuniform vec3 uEdge;\nuniform vec3 uSealedLight;\nuniform vec4 uSealedFrom;\nuniform vec3 uSealedFill;\n' + FRAGMENT_HEAD + shader.fragmentShader)
++      .replace('#include <lights_fragment_end>', SEALED + '#include <lights_fragment_end>')
+       .replace('#include <color_fragment>', '#include <color_fragment>\nwjaHoles( vRest );\ndiffuseColor.rgb = wjaSurface( uEnamel, uEdge );')
+       .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = wjaRough;')
+       .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize( normal + vAcross * wjaTilt.x + vDown * wjaTilt.y );')
+diff --git a/src/cursor/view.ts b/src/cursor/view.ts
+index 6ada973d..20347915 100644
+--- a/src/cursor/view.ts
++++ b/src/cursor/view.ts
+@@ -53,6 +53,7 @@ export class CursorView {
+     look.body.stretch = c.squash
+     actingLook?.(c, look)
+     damageLook?.(c, look)
++    look.body.sealed = c.inBall ? 1 : 0
+     look.arms.grip = [c.grip[0], c.grip[1]]
+     look.arms.strain = c.strain
+     const turn = -c.lean - c.spin

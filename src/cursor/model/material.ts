@@ -23,6 +23,24 @@ export interface BodyUniforms {
   uDetail: { value: THREE.Texture }
 }
 
+// The light on a body sealed in the clear ball, written each frame by the ball's owner.
+export const sealed = {
+  light: { value: new THREE.Vector3() },
+  from: { value: new THREE.Vector4(0, 0, 1, 0) },
+  fill: { value: new THREE.Vector3() }
+}
+
+const SEALED = /* glsl */ `
+if ( uShape.y > 0.0 ) {
+	IncidentLight wjaLamp;
+	wjaLamp.visible = true;
+	wjaLamp.direction = normalize( normalize( cross( vAcross, - vDown ) ) * uSealedFrom.w + ( viewMatrix * vec4( uSealedFrom.xyz, 0.0 ) ).xyz );
+	wjaLamp.color = uSealedLight * uShape.y;
+	RE_Direct( wjaLamp, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
+	reflectedLight.directDiffuse += uSealedFill * uShape.y * material.diffuseColor;
+}
+`
+
 export function bodyUniforms(): BodyUniforms {
   return {
     uState: { value: new THREE.Vector4() },
@@ -318,11 +336,15 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
     Object.assign(shader.uniforms, uniforms)
     shader.uniforms.uEnamel = { value: enamel }
     shader.uniforms.uEdge = { value: edge }
+    shader.uniforms.uSealedLight = sealed.light
+    shader.uniforms.uSealedFrom = sealed.from
+    shader.uniforms.uSealedFill = sealed.fill
     shader.vertexShader = VERTEX_HEAD + shader.vertexShader.replace(
       '#include <begin_vertex>',
       '#include <begin_vertex>\nvRest = aRest;\nvInk = aInk;\nvInset = aInset;\nvAcross = normalize( normalMatrix * vec3( 1.0, 0.0, 0.0 ) );\nvDown = normalize( normalMatrix * vec3( 0.0, -1.0, 0.0 ) );'
     )
-    shader.fragmentShader = ('uniform vec3 uEnamel;\nuniform vec3 uEdge;\n' + FRAGMENT_HEAD + shader.fragmentShader)
+    shader.fragmentShader = ('uniform vec3 uEnamel;\nuniform vec3 uEdge;\nuniform vec3 uSealedLight;\nuniform vec4 uSealedFrom;\nuniform vec3 uSealedFill;\n' + FRAGMENT_HEAD + shader.fragmentShader)
+      .replace('#include <lights_fragment_end>', SEALED + '#include <lights_fragment_end>')
       .replace('#include <color_fragment>', '#include <color_fragment>\nwjaHoles( vRest );\ndiffuseColor.rgb = wjaSurface( uEnamel, uEdge );')
       .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = wjaRough;')
       .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize( normal + vAcross * wjaTilt.x + vDown * wjaTilt.y );')
