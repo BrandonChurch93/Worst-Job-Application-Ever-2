@@ -79,25 +79,25 @@ About 19 renders of `lobby-doors` and `tier-corporate` each by 03:40 UTC, shared
 - Note paper stays over 1, at (2.4, 2.0, 0.62). MEASURED in draft stills: with the lamp, matte paper of albedo (0.98, 0.9, 0.46) comes out at sRGB (86, 77, 53), an olive grey; a finish with more shine gives (81, 73, 53); without shadows on the leaves nothing changes; a plain mesh in place of the instanced one gives the same. So the lamp reaches the table by its shine and a matte face near the floor gets little of it. `/root/lamp_keeper` was told at 04:39 UTC and asked for a factor; when it comes, the paper is divided by it. This is the one colour of the folder that is over 1.
 - Push: from 04:31 to about 04:40 UTC `git push` failed on this machine (no credential after the sessions were resumed). The Builder ruled a hand over by bundle; one bundle (311b7a60 and its merge 956ba75a) was sent at 04:34 UTC and pushed by the Builder. The push works again since 04:40 UTC.
 
-## Final counts (MEASURED 04:57 UTC at 8a8ceddc, `npm run build && npm run counts -- --key <key> --live low`)
+## Final counts (MEASURED 05:10 UTC, after the last change, `npm run build && npm run counts -- --key <key> --live low`)
 
 | key | calls of my folder | triangles of my folder | whole frame calls | whole frame triangles |
 | --- | --- | --- | --- | --- |
-| table-wide | 19 (baseline 21) | 43833 (baseline 57169) | 192 | 435330 |
-| tier-corporate | 21 (baseline 22) | 49773 (baseline 58165) | 111 | 256387 |
-| lobby-doors | 18 (baseline 19) | 40910 (baseline 51244) | 124 | 304951 |
+| table-wide | 19 (baseline 21) | 43957 (baseline 57169) | 192 | 435454 |
+| tier-corporate | 21 (baseline 22) | 49897 (baseline 58165) | 111 | 256511 |
+| lobby-doors | 18 (baseline 19) | 41034 (baseline 51244) | 124 | 305075 |
 
-Per part at tier-corporate (calls/triangles): hq 5/12030; beach 4/9859; boardroom 4/8220; revolving 3/4008; ladder 2/9888; wedges 2/4844; notes 1/924.
+Per part at tier-corporate (calls/triangles): hq 5/12154; beach 4/9859; boardroom 4/8220; revolving 3/4008; ladder 2/9888; wedges 2/4844; notes 1/924.
 
 Assets: none. The three asset folders of Corporate do not exist; every part is built in code. 0 MB.
 
 ## Looks used by the end
 
-About 57 renders across the three keys since 02:39 UTC, shared by the seven parts; no part has had 40.
+About 59 renders across the three keys since 02:39 UTC, shared by the seven parts; no part has had 40.
 
 ## The three least real things at the end
 
-1. The brass at the doors under the lobby camera: the portal and the leaves read as flat yellow gold, where the approved image has dark mirrored brass with hard highlights. The streaks and worn edge lines are there but blur away.
+1. The brass at the doors under the lobby camera: the door leaves still read as flat yellow gold, where the approved image has dark mirrored brass with hard highlights. The portal is better since 05:07 UTC (see below), the leaves are not.
 2. The notes: the paper needs a colour over 1 to read as paper in that corner, and from straight above three squares on steel leaves are all that shows.
 3. The revolving door from straight above: the four slabs show edge on, as thin pale bars, where the approved image, seen at a slant, shows broad clear wings.
 
@@ -105,3 +105,4 @@ About 57 renders across the three keys since 02:39 UTC, shared by the seven part
 
 - `tier-corporate` review 77.894 s, draft 41.212 s. `lobby-doors` review 75.287 s. `table-wide` review 63.595 s.
 - Each was looked at whole and in native size crops. The ceilings of the tower were made darker once more after the first review still of `lobby-doors` (0.004, 0.008, 0.01 of the lamp colour); the second review still shows no change I can see, so the blue green of the tower front is the glass itself and the value stays.
+- Portal brass, 05:07 UTC: each upright streak of the jambs now runs from dark at the floor through a bright band above the middle to dark under the head, and the head has one face that goes from dark at its lower edge to lit at the top, as a polished face mirrors a dark floor and a lit room. Looked at in a draft still and in the last review still of `lobby-doors`: the jambs and the head no longer read as one flat yellow. 124 triangles more in the HQ.

@@ -21,6 +21,7 @@ const BRIGHT = hex(0xbac4d4)
 const GLASS: RGB = [0.016, 0.085, 0.1]
 const CARPET: RGB = [0.028, 0.05, 0.075]
 const CEILING: RGB = [COOL[0] * 0.004, COOL[1] * 0.008, COOL[2] * 0.01]
+const RISE: [number, number][] = [[0, 0.3], [0.22, 0.55], [0.58, 1.5], [0.8, 1.1], [1, 0.35]]
 const PILE = { step: 3, lean: 0.56 }
 const DESK: RGB = [0.5, 0.38, 0.24]
 const GLASS_PALE: RGB = [0.02, 0.085, 0.1]
@@ -275,6 +276,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       }
       S.box(-dw, dw, F - 6, F + 6, dh - 4.6, pz0, shade(PORTAL, 0.5), { bottom: true })
       S.box(-dw, dw, F + 6, F + 6.1, dh - 4.6, dh - 3.8, shade(TONE.gold, 1.5))
+      S.blend([[-dw, F + 6.06, dh - 3.8], [dw, F + 6.06, dh - 3.8], [dw, F + 6.06, pz0 - 1.6], [-dw, F + 6.06, pz0 - 1.6]], [0, 1, 0], [1, 0, 0], [shade(PORTAL, 0.16), shade(PORTAL, 0.16), shade(PORTAL, 0.8), shade(PORTAL, 0.8)])
       S.box(-dw, dw, F + 6, F + 6.1, pz0 - 1.6, pz0 - 0.8, shade(TONE.gold, 1.1))
       // What polished brass mirrors: upright streaks of the room, no two of one tone.
       const gleam = new Random(SEED, 'corporate.hq.brass')
@@ -282,7 +284,15 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
         const a = s > 0 ? dw : -dw - 11
         for (let x = a + 1.2; x < a + 9.4;) {
           const w = gleam.range(0.5, 2.2)
-          S.face([[x, F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, pz0 - 0.5], [x, F + 6.12, pz0 - 0.5]], [0, 1, 0], [0, 0, 1], shade(PORTAL, gleam.next() < 0.2 ? gleam.range(1.6, 2.8) : gleam.range(0.2, 0.6)))
+          const x1 = Math.min(a + 9.8, x + w)
+          const k = gleam.next() < 0.2 ? gleam.range(1.6, 2.8) : gleam.range(0.2, 0.6)
+          for (let i = 0; i < RISE.length - 1; i++) {
+            const lo = shade(PORTAL, k * RISE[i]![1])
+            const hi = shade(PORTAL, k * RISE[i + 1]![1])
+            const z0 = 2.4 + (pz0 - 2.9) * RISE[i]![0]
+            const z1 = 2.4 + (pz0 - 2.9) * RISE[i + 1]![0]
+            S.blend([[x, F + 6.12, z0], [x1, F + 6.12, z0], [x1, F + 6.12, z1], [x, F + 6.12, z1]], [0, 1, 0], [0, 0, 1], [lo, lo, hi, hi])
+          }
           x += w + gleam.range(0, 1.4)
         }
       }
