@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "D: consecutive frames at hits 11 to 20 of the page's 22",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-D-02.png",
+   "where": "Coffee socket and the diagonal toward the blue insert, 1:27.80–1:28.07; also visible in set-D-01.png",
+   "what": "The clear arrow ball pulls away while several evenly spaced pale ball-shaped copies follow it. They read as solid duplicate balls, not one steel-speed roll, and it's unclear which ball is making contact.",
+   "fix": "Give each ball a distinct, independently moving silhouette and consistent contact shadow. If the duplicates are a motion trail, replace them with a short directional streak that cannot read as additional balls."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-10.png",
+   "where": "Circular seat in front of the You're Fired opening, 1:36.00–1:36.20; arrival is in set-D-09.png at 1:34.03–1:34.27",
+   "what": "The ball eases onto the seat, holds, then eases away. No visible door, latch, ejector or local light change explains the stop and release, so neither sheet reads as a mechanical hit.",
+   "fix": "Show a quick catch at the seat, hold the ball, then synchronize a visible gate or ejector movement and local light cue with the first frame of departure. Frame the arrival wide enough to show contact."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-05.png",
+   "where": "Left edge and white bumper, 1:28.50–1:28.87, continuing into set-D-06.png through 1:28.97",
+   "what": "The bumper pops on contact, but the ball reverses at the cropped left edge and retraces almost the same line on successive passes. The other end of the rebound isn't readable, making it look like a repeated animation rather than a loose ball.",
+   "fix": "Keep the left deflector and the ball in frame together through the reversal. Let its contact geometry and the ball's incoming spin produce a visibly different return angle."
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01.png",
+   "where": "Last two panels, 1:27.93–1:27.97, also row three of set-D-02.png",
+   "what": "The view jumps from the socket close-up to a wider table shot while the ball is still moving through the release. The sudden change of scale breaks the visual track before the outcome is clear.",
+   "fix": "Hold the close-up until the ball clears the socket, or ease straight out while keeping the ball in roughly the same screen position through the release."
+  }
+ ]
+}

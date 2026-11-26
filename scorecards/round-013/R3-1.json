@@ -1,0 +1,44 @@
+{
+ "critic": "R3",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: the three keys, the sheet `machines` and the page at rest, whole, and native crops of each",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "field crops at middle right, and the field across the arrow crop",
+   "what": "The lips have a bevel, but the field faces are opaque, even grey gradients. There is no visible glass edge or plane beneath the glass, so they read as generic shaded slots.",
+   "fix": "Give the glass a refractive bevel and a restrained grazing reflection, with a visibly separate backing plane beneath it."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the arrow spanning the date-field rim, middle center",
+   "what": "The face stays matte off-white and most of the edge reads as a black outline rather than a lit sidewall. Its diffuse shadow does not visibly respond to the step from page to recess.",
+   "fix": "Render a shallow extruded sidewall with a glossy bevel and cast the offset shadow separately onto the page, rim, and lower field surface."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the rotary dial and its tray in the upper crops",
+   "what": "The dial has layered metal and brushed highlights, but the broad shadow under its lower-right quadrant makes it look perched on top of the tray. There is no readable seat or mounting seam at the base.",
+   "fix": "Sink the outer dial housing into a machined opening with a narrow annular clearance and a tight contact shadow before the wider cast shadow."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "Continue button and surrounding page, upper right",
+   "what": "The cap is beveled, but the bright surround follows the cap as a trim line, and the outer shadow does the work of attaching the whole assembly to the page. A socket is not distinct from the cap.",
+   "fix": "Separate the cap from a recessed bezel with a thin dark clearance gap and a tight bezel-to-page contact line."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "volume meter segments in the upper-right crop",
+   "what": "The lit segments look like orange outline shapes with soft bloom rather than lenses set into the tray. The unlit segments have a raised outline but no clear socket wall.",
+   "fix": "Set each lens below a narrow seat, give the lit lens an interior gradient, and let a little orange light catch on the adjacent socket edge."
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "critic": "R8",
+ "score": 8,
+ "pass": true,
+ "model": "kimi_k3",
+ "set": "A: the page at rest and the three keys, whole, and the smallest type at native size",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole form, between the label column and the field column",
+   "what": "roughly 330px of dead paper separates each label/helper from its field; rows are held together only by whitespace, so the label-to-field association is weak and the page reads wider than it needs to",
+   "fix": "narrow the label-column gap (pull fields left or cap the form width), or move labels above their fields so each row reads as one unit"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "all three fields at rest",
+   "what": "every field is an identical empty trough with only a chevron: no placeholder, example value, or format hint, so what to do first rests entirely on the helper text and the chevrons make 'Contact number' and 'Date of birth' read as dropdowns",
+   "fix": "give each field a faint placeholder or example (e.g. '(555) 555-5555', 'DD / MM / YYYY') so the expected input is legible at a glance"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "over the Date of birth field, right of center",
+   "what": "the 'page at rest' shot contains a floating mouse cursor, so it is not actually at rest and the pointer draws the eye away from the intended first read",
+   "fix": "remove the cursor from the at-rest still; keep it only in the moment shots where it marks the mechanism being operated"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "inside the crank panel, center-right",
+   "what": "the instruction line hugs the top-left while the crank sits bottom-left and the meter bottom-right, leaving a large hollow middle; the panel interior reads sparse compared with the dial panel's tighter composition",
+   "fix": "vertically center the crank and meter against the instruction block, or reduce the panel height so the mechanism fills its container like the dial does"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "bottom-right crop, captioned 'the text with the least contrast'",
+   "what": "the crop shows the step-indicator knobs and the header rule again, not any text, so the lowest-contrast text on the page is never shown at native size and cannot be verified",
+   "fix": "recrop the lowest-contrast text (the gray helper lines or footer note) at native size to match the caption"
+  }
+ ]
+}
