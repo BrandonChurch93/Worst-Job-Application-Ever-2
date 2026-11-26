@@ -85,3 +85,30 @@ Minor
 | sheet `boss-stages` draft | `npm run compare -- --sheet boss-stages --tier draft --format hd` | 9.066 s, 651466 triangles, 500 draw calls |
 
 Textures: none added. STATED from the recipes: soot 512 x 128 (0.33 MB with mips), puff 64 x 64 (0.021 MB), brushing 512 x 128 (0.33 MB).
+
+## Second pass (07:40 to 08:20 UTC)
+
+Decisions:
+
+- Seam on the lifted cap (R1-1 issue 16): the line moved with the socket when the socket was moved in the sheet, so it was the top edge of the `ink` toned well showing through the cap and not a seam of the cap. The wells are now toned `dark` while the cap lies over the hole (sheet stage 1, and the first 0.6 s after the lift in the film), `ink` after. The check in `tests/boss.test.ts` that asks for `ink` at 12 s was not touched and passes.
+- Bezel at Resting (R1-1 issue 14): the sheet's Resting stage is drawn with the steel rim of the socket and a floor 5 below the page.
+- Page at rest (R8-1 issue 1): not changed. `kit/02-SUBJECT.md` line 447 says "The socket is at the bottom center of the page, as the approved images show it."; Submit under the helper line would break both approved keys.
+- Pop-ups as shields (R9-1 issue 7): they already stopped the darts. Now each dart kicks the dialog along its line on a spring (`POPUP.kick`, `spring`, `damp`), its title, words and buttons move with it, and the one that is shot down leans 13 px and holds its damage 0.34 s before it closes. A pressed button also holds 0.34 s.
+- Session expired slab (R4-2 issues 2 and 3): a slab's landing point is moved short or long so that none comes to rest across the open socket (`SOCKET_CLEAR` in `src/boss/fight.ts`). A slab that hits the arrow drives 30 px on through it, a slab that lands plainly skids 16 px. Cracks that grow where a slab lands are not built.
+- Collapse (smaller read of 07:12Z and R4-1 issue 4): the machine draws in on itself for 0.6 s (`FOLD`) before it falls apart; heavy plates stop first and at once, light parts overshoot and skid (`LANDS`); the hop is 0.4 of what it was so it reads less as a blast.
+- Charge of the last stand (R9-1 issue 6): the arrow holds 0.15 s longer, winds up (`anticipate` at 24.2 s) and stamps at point blank (26.9 s), in the film.
+- Wreck: steel `0x6c7076` (was `0x9a9ea2`), the shelves of the halves in brushed plate, the pins, rods and tubes of the torn shield hidden once it lies flat, the lying shield deeper green and less clear (`CLEAR_GLASS.lying` 0.62, `deep` `0x5f8376`).
+- Live plates `0x7b7f85` (was `0x8e9296`), nearer the dark brushed steel of `boss-fight.png`.
+- Socket collar: no normal and no roughness map (the dotted pattern is gone), a flat steel lip 5.8 px wide that stands 0.6 over the page and a steep step down behind it, pit wall `0x34312e`.
+- The smoke over the scorched arrow and the size and line of the arrow in `boss-down` belong to the cursor (frozen for me); said to the Builder and to look_fixer.
+
+Looks added since 07:40 UTC, by part (first-pass counts above):
+
+| part | added | total | what they were |
+| --- | --- | --- | --- |
+| verify-card | 0 | 8 | |
+| boss-body | 12 | 26 | `boss-fight` compare 5, `boss-down` compare 7 |
+| boss-transform | 16 | 27 | `boss-down` compare 7, sheet `boss-stages` 8, beat sheet unfold 1 |
+| boss-weapons | 8 | 10 | `boss-fight` compare 5, beat sheet popups 1, motion sheets `slab-drop` 1 and `hit` 1 |
+| health-bar | 2 | 3 | beat sheet lastStand 2 |
+| acting-boss | 9 | 24 | beat sheets popups 1, lastStand 2, collapse 3, unfold 1, press 1, motion sheet `hit` 1 |

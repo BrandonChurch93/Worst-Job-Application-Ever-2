@@ -33,8 +33,8 @@ Every texture and built asset of the boss that this owner changed or added. All 
 
 - Made by: `brushing()` in `src/boss/real/body-kit.ts`, unchanged in size
 - From: nothing but numbers, as the boss keeper's recipe says
-- Prompt or command: `BRUSH.deep` 0.3 to 0.42; plate tone `0x8e9296` alive and `0x9a9ea2` in the wreck; roughness 0.4 to 0.46
-- Takes: 3 (darker and smoother, which went near black under this light; `0xa2a6aa`, too pale; then this one)
+- Prompt or command: `BRUSH.deep` 0.3 to 0.42; plate tone `0x7b7f85` alive and `0x6c7076` in the wreck; roughness 0.4 to 0.46
+- Takes: 5 (darker and smoother, which went near black under this light; `0xa2a6aa`, too pale; `0x8e9296` alive with `0x9a9ea2` in the wreck, paler than the approved steel; then these two)
 - Why this one: the plates read as brushed steel slabs in both keys, and the wreck's plates are no longer dark flat shapes with bright rivets. 512 x 128 x 4 bytes = 0.25 MB, 0.33 MB with its mip chain, unchanged.
 - Date: 2026-11-26
 
@@ -45,4 +45,22 @@ Every texture and built asset of the boss that this owner changed or added. All 
 - Prompt or command: emissive strength `GAIN_GLOW` 1.7, faded out by the page between 1.0 and 1.6 s after Session expired
 - Takes: 1
 - Why this one: the part of the bar that comes back is seen as a hot piece on the end of the fill, then is the same orange as the rest. 0 MB.
+- Date: 2026-11-26
+
+## socket collar and pit (geometry and materials, no texture of their own)
+
+- Made by: `transform.ts` in `src/boss/real/`, the sweep of the ring and of the wall round the hole
+- From: nothing but numbers: the profile of the ring (a lip 5.8 px wide that stands 0.6 over the page, a step down to 9.6 below it, then the wall), `PIT`
+- Prompt or command: the ring is drawn in the plate steel without its normal and roughness maps; the wall is `0x34312e` with its normal map at 0.3
+- Takes: 4 (with the maps, which showed as dots; flat and sunk, which was lost in the dark; a wide ramp, a pale band; then this one)
+- Why this one: beside `boss-down.png` it is a thin steel lip with a dark step behind it. 0 MB of its own.
+- Date: 2026-11-26
+
+## lying shield (materials, no texture of its own)
+
+- Made by: `src/boss/real/body.ts` with `CLEAR_GLASS` and `deepTone()` of `src/boss/real/glass.ts`
+- From: nothing but numbers: opacity mixed to `CLEAR_GLASS.lying` 0.62 and colour to `0x5f8376` as the shield comes to lie flat; pins, rods and tubes hidden from 0.9 of the fall
+- Prompt or command: none
+- Takes: 2
+- Why this one: against the page a clear pane was lost; this reads as green glass with its cracks. It is still a thin sheet where `boss-down.png` shows a thick bar. 0 MB of its own.
 - Date: 2026-11-26

@@ -243,7 +243,7 @@ function rim(): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const line = roundedRect(HOLE_W, HOLE_H, HOLE_H / 2, 22)
-  const ring = sweep(line, profile([[0.25, -4.9, true], [0.25, -1.2], [1.2, -0.6], [3.6, -1], [12.6, -5.6], [14, -7.2], [PIT.collar, -12, true]]), false)
+  const ring = sweep(line, profile([[-2.4, 0, true], [-2.4, 0.35], [-1.7, 0.6], [3.4, 0.6], [4.4, 0.15], [7.2, -6.4], [8.6, -9.6], [PIT.collar, -12, true]]), false)
   const pit = pitStuff()
   root.add(mesh(ring, pit.collar, false, true))
   const wall = sweep(line, profile([[PIT.collar - 0.4, -12, true], [PIT.collar + 3, -17], [PIT.collar + 7, -36], [PIT.wallTo, PIT.deep, true]]), false)
