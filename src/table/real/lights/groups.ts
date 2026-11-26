@@ -149,7 +149,7 @@ export function spillsOf(z: Zone): Spill[] {
   }
   if (z.id === 'street') {
     return [
-      front('street.firehouse', 0.55, 0.5, 0.6, C.STREET_RED, 'red', 1),
+      front('street.firehouse', 0.55, 0.65, 0.6, C.STREET_RED, 'red', 1),
       front('street.firehouse', -0.6, 0.55, 0.9, C.STREET_WINDOW, 'windows', 0.4),
       front('street.police', 0, 0.9, 0.9, C.STREET_WINDOW, 'windows', 0.4),
       front('street.bank', 0, 0.6, 0.8, C.STREET_WINDOW, 'windows', 0.35)
@@ -157,6 +157,25 @@ export function spillsOf(z: Zone): Spill[] {
   }
   if (z.id === 'corporate') return [front('corporate.hq', 0, 0.75, 1.0, C.CORPORATE_WINDOW, 'windows', 0.6)]
   return []
+}
+
+// A lamp that stands high on a model, over the reach of the floor's pictures: it lights the walls and roofs near it straight from its own place.
+export interface High { x: number; y: number; z: number; reach: number; colour: RGB; follows: string; power: number }
+
+export const HIGHS = 7
+export const HIGH_BODY = 60
+
+export function highOf(z: Zone): High[] {
+  if (z.id !== 'street') return []
+  const top = TIER_Y[z.tier]!
+  const lamp = (u: number, v: number, zPx: number, power: number, reachBalls: number): High => {
+    const p = localBalls(z, u, top + v)
+    return { x: p[0], y: p[1], z: zPx, reach: reachBalls * BALL, colour: C.STREET_WINDOW, follows: 'windows', power }
+  }
+  // The seven fittings of the garage, where the owner of the street's models built them: arms half a ball outside its wall, three under the rim and four lower.
+  const upper: [number, number][] = [[16.63, 4.02], [13.77, 6.88], [16.63, 6.88]]
+  const lower: [number, number][] = [[16.63, 4.02], [13.77, 4.02], [13.77, 6.88], [16.63, 6.88]]
+  return [...upper.map(([u, v]) => lamp(u, v, 516, 0.45, 2.8)), ...lower.map(([u, v]) => lamp(u, v, 290, 0.55, 3.2))]
 }
 
 export function groupsOf(z: Zone | string): Group[] {

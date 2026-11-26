@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import type { Zone } from '../zone'
 import { BALL, COLS, W } from '../../layout'
 import { FLASH } from './colours'
-import { CHANNELS, LAMP, LIT, SPILLS } from './groups'
+import { CHANNELS, HIGH_BODY, HIGHS, LAMP, LIT, SPILLS } from './groups'
 import { BODY, CORE } from './pictures'
 import { zoneLight, type ZoneLight } from './state'
 import { surroundOf } from './surround'
@@ -18,6 +18,8 @@ uniform vec3 wjlCol[ ${CHANNELS} ];
 uniform vec3 wjlFull[ ${CHANNELS} ];
 uniform vec4 wjlSpill[ ${SPILLS} ];
 uniform vec3 wjlSpillCol[ ${SPILLS} ];
+uniform vec4 wjlHigh[ ${HIGHS} ];
+uniform vec3 wjlHighCol[ ${HIGHS} ];
 uniform vec4 wjlAt[ ${CHANNELS} ];
 uniform vec3 wjlFill;
 uniform vec4 wjlHole[ 2 ];
@@ -176,6 +178,16 @@ const body = /* glsl */ `
 			clearcoatSpecularDirect = mix( wjlCoat, clearcoatSpecularDirect, wjlShine );
 			#endif
 		}
+	}
+	for ( int k = 0; k < ${HIGHS}; k ++ ) {
+		vec4 hi = wjlHigh[ k ];
+		if ( hi.w <= 0.0 ) continue;
+		vec3 to = hi.xyz - wjlP;
+		float d2 = dot( to, to );
+		float q = d2 / ( hi.w * hi.w );
+		if ( q >= 1.0 ) continue;
+		float w = 1.0 - q * q;
+		wjlField += wjlHighCol[ k ] * w * w * ${(100 * 100 + HIGH_BODY * HIGH_BODY).toFixed(1)} / ( d2 + ${(HIGH_BODY * HIGH_BODY).toFixed(1)} ) * ( 0.4 + 0.6 * max( dot( wjlN, to ) * inversesqrt( d2 + 1.0 ), 0.0 ) ) * wjlInside * wjlClear;
 	}
 	wjlField += wjlFill * ( 0.5 + 0.5 * wjlN.z ) * ( 1.0 + 1.6 * wjlTop * smoothstep( 20.0, 130.0, wjlUp ) ) * wjlPit;
 	reflectedLight.directDiffuse += wjlField * material.diffuseColor;
