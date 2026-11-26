@@ -8,9 +8,9 @@ import { lit } from '../light'
 import { levels } from '../lights'
 import { zone } from '../zone'
 
-// The title on the marquee's picture: the type's own run of letters, as cream print on the lit picture. The print lets the panel's light through, so it glows with the picture behind it.
+// The title on the marquee's picture: the type's own run of letters, as dark print on the lit sky. The print lets none of the panel's light through, so the words stand dark against the dusk behind them.
 const TITLE = 'marquee-title'
-const PRINT = { ink: 0xf1e8d2, tone: 0xf1e8d2, rest: 0.7, lit: 1.25 }
+const PRINT = { ink: 0x17131c, tone: 0x17131c, rest: 0, lit: 0 }
 const HOVER = 0.05
 const NEAR = `
 float wjtDepth = - ( modelViewMatrix * vec4( position, 1.0 ) ).z;

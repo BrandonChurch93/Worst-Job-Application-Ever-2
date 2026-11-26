@@ -162,12 +162,19 @@ function chute(G: Geo, S: Screws, z: Zone, upper: number): void {
     const q = path[i + 1]!
     const n = up(p, q)
     const along: V3 = [0, q[1] - p[1], q[2] - p[2]]
-    G.f(FIN.zinc).face([[x - w, p[1], p[2] + 0.8], [x + w, p[1], p[2] + 0.8], [x + w, q[1], q[2] + 0.8], [x - w, q[1], q[2] + 0.8]], n, along, shade(TONE.zinc, i % 2 === 0 ? 0.56 : 0.52))
+    // The transfer channel: a dark pressed floor with two polished runners the ball rides down on.
+    G.f(FIN.dark).face([[x - w, p[1], p[2] + 0.8], [x + w, p[1], p[2] + 0.8], [x + w, q[1], q[2] + 0.8], [x - w, q[1], q[2] + 0.8]], n, along, shade(TONE.zinc, i % 2 === 0 ? 0.2 : 0.15))
+    for (const side of [-1, 1]) {
+      const xr = x + side * w * 0.42
+      const lift = (e: V3, d: number): V3 => [e[0], e[1] + n[1] * d, e[2] + 0.8 + n[2] * d]
+      G.f(FIN.steel).face([lift([xr - 1.5, p[1], p[2]], 2.2), lift([xr + 1.5, p[1], p[2]], 2.2), lift([xr + 1.5, q[1], q[2]], 2.2), lift([xr - 1.5, q[1], q[2]], 2.2)], n, along, TONE.chrome)
+      for (const e of [-1, 1]) G.f(FIN.zinc).face([lift([xr + e * 2.6, p[1], p[2]], 0), lift([xr + e * 1.5, p[1], p[2]], 2.2), lift([xr + e * 1.5, q[1], q[2]], 2.2), lift([xr + e * 2.6, q[1], q[2]], 0)], [e * 0.9, n[1] * 0.44, n[2] * 0.44], along, shade(TONE.zinc, 0.45))
+    }
     for (const side of [-1, 1]) {
       const xi = x + side * w
       const xo = x + side * (w + t)
-      G.f(FIN.zinc).face([[xi, p[1], p[2]], [xi, q[1], q[2]], [xi, q[1], q[2] + hw], [xi, p[1], p[2] + hw]], [-side, 0, 0], along, shade(TONE.zinc, 0.7))
-      G.face([[xo, p[1], p[2]], [xo, q[1], q[2]], [xo, q[1], q[2] + hw], [xo, p[1], p[2] + hw]], [side, 0, 0], along, shade(TONE.zinc, 0.8))
+      G.f(FIN.zinc).face([[xi, p[1], p[2]], [xi, q[1], q[2]], [xi, q[1], q[2] + hw], [xi, p[1], p[2] + hw]], [-side, 0, 0], along, shade(TONE.zinc, 0.34))
+      G.face([[xo, p[1], p[2]], [xo, q[1], q[2]], [xo, q[1], q[2] + hw], [xo, p[1], p[2] + hw]], [side, 0, 0], along, shade(TONE.zinc, 0.4))
       G.f(FIN.steel).face([[xi, p[1], p[2] + hw], [xo, p[1], p[2] + hw], [xo, q[1], q[2] + hw], [xi, q[1], q[2] + hw]], n, along, TONE.chrome)
     }
   }
