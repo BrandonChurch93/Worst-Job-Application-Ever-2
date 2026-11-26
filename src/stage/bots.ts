@@ -24,6 +24,12 @@ export class BotDriver implements Driver {
     this.rng = stream(`bot:${bot}`, seed)
   }
 
+  // The hand is somewhere else now: a visitor who left the picture comes back in where the mouse is.
+  moveTo(x: number, y: number): void {
+    this.x = x
+    this.y = y
+  }
+
   private walk(tx: number, ty: number): void {
     const max = SPEED[this.bot] / stepHz
     const dx = tx - this.x

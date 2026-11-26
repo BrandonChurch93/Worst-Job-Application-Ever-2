@@ -19,8 +19,15 @@ export interface PickerOptions {
 export const PICKER = {
   // Frames left out after a start or a change of level, while shaders compile and buffers are made.
   warmUpFrames: 12,
-  // A frame longer than this is a stall, a hidden tab or a file loading, and says nothing about the level.
-  stallSeconds: 1,
+  // A frame longer than this is a stall, a hidden tab that comes back or a file loading, and says nothing about the level.
+  // The frame loop never reports more than half a second for one frame, so the number lies under that.
+  stallSeconds: 0.4,
+  // Frames left out after a stall: the ones a tab draws as it comes back, or while a file is still being read.
+  afterStallFrames: 6,
+  // This many stalls in a row are no stall: the machine is that slow, and its frames count again.
+  stallRun: 6,
+  // A window closes after this many times its seconds even with too few frames, so a very slow machine is not left waiting.
+  windowMaxTimes: 4,
   // The first frames: one short window at each level, down to the first level that holds.
   firstWindowSeconds: 0.75,
   firstWindowMinFrames: 12,
@@ -53,6 +60,7 @@ export function makeQualityPicker(levels: QualityLevel[], o: PickerOptions = {})
   let window: number[] = []
   let sum = 0
   let under = 0
+  let stalls = 0
 
   const clear = () => {
     window = []
@@ -61,6 +69,7 @@ export function makeQualityPicker(levels: QualityLevel[], o: PickerOptions = {})
   const down = () => {
     index++
     under = 0
+    stalls = 0
     skip = PICKER.warmUpFrames
     clear()
   }
@@ -77,7 +86,16 @@ export function makeQualityPicker(levels: QualityLevel[], o: PickerOptions = {})
     },
     frame(seconds: number): string {
       const here = levels[index]!
-      if (fixed || !(seconds > 0) || seconds > PICKER.stallSeconds) return here.id
+      if (fixed || !(seconds > 0)) return here.id
+      if (seconds > PICKER.stallSeconds) {
+        stalls++
+        if (stalls < PICKER.stallRun) {
+          clear()
+          skip = Math.max(skip, PICKER.afterStallFrames)
+          return here.id
+        }
+        skip = 0
+      } else stalls = 0
       if (skip > 0) {
         skip--
         return here.id
@@ -86,7 +104,7 @@ export function makeQualityPicker(levels: QualityLevel[], o: PickerOptions = {})
       sum += seconds
       const needSeconds = first ? PICKER.firstWindowSeconds : PICKER.steadyWindowSeconds
       const needFrames = first ? PICKER.firstWindowMinFrames : PICKER.steadyWindowMinFrames
-      if (sum < needSeconds || window.length < needFrames) return here.id
+      if (sum < needSeconds || (window.length < needFrames && sum < needSeconds * PICKER.windowMaxTimes)) return here.id
       const slow = medianFps(window) < here.minFps
       clear()
       const last = index === levels.length - 1

@@ -7,6 +7,8 @@ import { chooseEmitters, lampIntensity } from '../post/emitters'
 import { EMITTER_BODY_PX, lightLaw, shadowFilter } from '../post/studio'
 import type { Emitter } from '../real/types'
 import { quality, type QualityId } from './quality'
+import { levelPlan, restSample, type LevelPlan } from './levelPlan'
+import { StillShadows, type StillStats } from './levelShadows'
 
 // What the lamps must cover, in world units: the page and everything that stands on it.
 export interface Bounds { minX: number; maxX: number; minY: number; maxY: number; minZ: number; maxZ: number }
@@ -253,9 +255,12 @@ export class LightRig {
   // Puts the key at this sample's point of its area and the fill at this sample's point of the dome, each blurred by
   // the piece of the light it stands for, and turns this frame's emitters into the lamps of the pool.
   // `alone` is a picture of one sample: the light stays in the middle and the filter does all the softening.
-  place(s: Sample, camera?: THREE.Camera, alone = s.count === 1): void {
+  // `hold` is a live frame of a level that does not gather the light's area: the light stays in the middle as in a
+  // picture of one sample, and each frame takes its own share of the filter's taps.
+  place(s: Sample, camera?: THREE.Camera, alone = s.count === 1, hold = false): void {
     if (alone || s.index === 0) this.close()
-    const split = areaSplit(alone ? 1 : s.count)
+    const one = alone || hold
+    const split = areaSplit(one ? 1 : s.count)
     const r = Math.tan(look.key.radius)
     const d = this.v.copy(this.base).addScaledVector(this.axisU, s.light[0] * r * split.move).addScaledVector(this.axisV, s.light[1] * r * split.move).normalize()
     const [dx, dy, dz] = [d.x, d.y, d.z]
@@ -264,9 +269,9 @@ export class LightRig {
     this.key.intensity = look.key.intensity * this.level
     this.aim(this.key, dx, dy, dz, r * split.blur, look.key, s, alone)
     this.dome.color.setRGB(...look.dome.colour)
-    const up = alone ? 1 : s.dome[2]
+    const up = one ? 1 : s.dome[2]
     this.dome.intensity = (look.dome.intensity * this.level) / up
-    if (alone) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome, s, alone)
+    if (one) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome, s, alone)
     else this.aim(this.dome, s.dome[0], s.dome[1], up, domeSpread(s.count), look.dome, s, alone)
     const cx = (this.rect.minX + this.rect.maxX) / 2
     const cy = (this.rect.minY + this.rect.maxY) / 2
@@ -276,7 +281,7 @@ export class LightRig {
     lightLaw.keySpecular.value = look.keySpecular
     lightLaw.cap.value.set(look.glow.surfaceKnee, look.glow.surfaceMax)
     lightLaw.shade.value.set(look.studio.shadeKey, look.studio.shadeFill, look.studio.floorKept)
-    const taps = filterTaps(alone ? 1 : s.count, shadowFilter.tapsPerPicture, shadowFilter.minTaps, shadowFilter.blurTaps)
+    const taps = filterTaps(one ? 1 : s.count, shadowFilter.tapsPerPicture, shadowFilter.minTaps, shadowFilter.blurTaps)
     const code = taps + 32 * (alone ? 1 : s.count)
     this.key.shadow.intensity = code
     this.dome.shadow.intensity = code
@@ -293,6 +298,8 @@ export interface Shot {
   // The lens of the camera, read after `pose`: the distance that is sharp and the width of the opening, in page pixels.
   // Absent, or with no opening, everything is sharp.
   lens?: { focus: number; aperture: number } | null
+  // The frame's draw list, for a level that keeps its still shadows: a shape that differs from the frame before has moved.
+  list?: readonly { id: string }[]
 }
 
 export interface PictureOptions {
@@ -312,6 +319,9 @@ export class Engine {
   lastCounts = { triangles: 0, drawCalls: 0 }
   private lens: { near: number; far: number; focus: number; reach: number } | null = null
   beforeSample: ((shot: Shot, view: string) => (() => void) | void) | null = null
+  private plan: LevelPlan | null = null
+  private still = new StillShadows()
+  private keeps = false
 
   constructor(canvas: HTMLCanvasElement, width: number, height: number, opts: { preserve: boolean; forceKind?: TargetKind; multisamples?: number }) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, depth: false, stencil: false, preserveDrawingBuffer: opts.preserve, powerPreference: 'high-performance' })
@@ -340,13 +350,33 @@ export class Engine {
     this.acc.setSize(width, height)
   }
 
+  // The level of `live.quality` the live frames are drawn at, or null for a computed picture.
+  setLevel(level: QualityId | null): void {
+    this.plan = level === null ? null : levelPlan(level)
+  }
+
+  get levelPlan(): LevelPlan | null {
+    return this.plan
+  }
+
+  get stillShadows(): StillStats {
+    return this.still.stats
+  }
+
   // Draws one sample into the mean. The caller decides how many and when to show the result.
-  private sample(shot: Shot, s: Sample, view: string, alone: boolean): void {
+  private sample(shot: Shot, s: Sample, view: string, alone: boolean, hold = false, keep = false): void {
     const r = this.renderer
     shot.pose?.(s.shutter)
     shot.camera.updateMatrixWorld()
     lightLaw.viewInverse.value.copy(shot.camera.matrixWorld)
-    shot.rig.place(s, shot.camera, alone)
+    shot.rig.place(s, shot.camera, alone, hold)
+    if (keep && view === 'beauty') {
+      this.still.prepare(r, shot.scene, shot.rig.key, shot.list)
+      this.keeps = true
+    } else if (this.keeps) {
+      this.still.release(shot.rig.key)
+      this.keeps = false
+    }
     shot.camera.setViewOffset(this.width, this.height, s.pixel[0], s.pixel[1], this.width, this.height)
     const l = view === 'beauty' && this.kind !== 'byte' && shot.lens && shot.lens.aperture > 0 && shot.lens.focus > 0 ? shot.lens : null
     this.acc.keepDepth(l !== null)
@@ -375,9 +405,13 @@ export class Engine {
   }
 
   // The live site's path: one sample, drawn now.
+  // A page at rest is gathered over the frames its level's shadows ask for, then the picture is kept as it is.
   frame(shot: Shot, s: Sample, restart: boolean, frame: number, view: string): void {
+    const mode = this.plan?.shadows ?? 'accumulated'
+    const own = restart ? s : restSample(mode, s)
+    if (!own) return
     if (restart) this.acc.begin()
-    this.sample(shot, s, view, restart)
+    this.sample(shot, own, view, restart, mode !== 'accumulated', mode === 'baked')
     this.present(frame, view, true)
   }
 
