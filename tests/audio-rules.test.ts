@@ -3,7 +3,7 @@ import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
 import { filmKeysForGag, filmLive, filmLineId, liveLineId, liveTriggers, unitPage } from '../src/audio/cues'
-import { LIVE } from '../src/audio/levels'
+import { LIVE, db } from '../src/audio/levels'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
 const cfg: any = read('config', 'showcase.json')
@@ -250,10 +250,13 @@ describe('the rules of the narrator on the live site, each at the level of the e
 })
 
 describe('the volume and the sound control', () => {
-  it('follows the volume it is given at five points from 0 to 100 percent, at the output of the whole engine', async () => {
+  it('follows the volume it is given at five points from 0 to 100 percent, at the output of the whole engine, with one fixed headroom after it', async () => {
     const { s, ctx } = await ready()
     const out = ctx.gains[0]!
-    expect(out.to).toBe(ctx.destination)
+    const head = ctx.gains[4]!
+    expect(out.to).toBe(head)
+    expect(head.to).toBe(ctx.destination)
+    expect(head.gain.value).toBeCloseTo(db(-LIVE.headroomDb), 12)
     for (const v of [0, 0.25, 0.5, 0.75, 1]) {
       ctx.currentTime += 1
       s.setVolume(v)
@@ -261,6 +264,8 @@ describe('the volume and the sound control', () => {
       expect(out.gain.calls[out.gain.calls.length - 1]).toEqual(['ramp', v, ctx.currentTime + LIVE.volumeRampSeconds])
       expect(s.volume()).toBe(v)
     }
+    expect(head.gain.calls).toEqual([])
+    expect(ctx.gains.slice(1, 4).every((bus) => bus.to === out)).toBe(true)
   })
 
   it('mutes everything at once, a line being spoken and a loop included, and gives all of it back', async () => {

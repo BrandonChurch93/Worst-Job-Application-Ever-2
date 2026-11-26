@@ -117,6 +117,7 @@ export async function visit(load, c, bot, seed = c.seed, calls = null) {
     let gags = 0
     let volume = -1
     let entry = -1
+    let idle = false
     while (!stage.finished && stage.step < limit) {
       stage.advance(Math.round(stepHz / 60))
       ctx.currentTime = stage.time
@@ -146,7 +147,12 @@ export async function visit(load, c, bot, seed = c.seed, calls = null) {
         if (last && last.page === row.page && row.at - last.at < 0.5 && volumes.length > 1 && volumes[volumes.length - 2].page === row.page && row.at - volumes[volumes.length - 2].at < 0.5) volumes[volumes.length - 1] = row
         else volumes.push(row)
       }
-      sound.quiet(stage.time - lastInput)
+      const still = stage.time - lastInput
+      if (calls && (still >= c.live.idleSeconds) !== idle) {
+        idle = !idle
+        calls.push({ at: stage.time, quiet: still })
+      }
+      sound.quiet(still)
     }
     const pageAt = (t) => turns.filter((x) => x.at <= t + 1e-9).pop()?.page ?? turns[0]?.page ?? ''
     const log = sound.log().map((e) => ({ ...e, page: pageAt(e.at) }))
@@ -193,6 +199,7 @@ export function visitText(r) {
 
 export async function visitRun(load, c, a) {
   const bot = a.visit === true ? 'keen' : String(a.visit)
+  if (bot === 'all') return surveyRun(load, c, a)
   if (!c.live.bots.includes(bot)) throw new Error(`no bot called ${bot}: ${c.live.bots.join(', ')}`)
   const r = await visit(load, c, bot, a.seed !== undefined ? Number(a.seed) : c.seed)
   const file = at('out', 'work', 'audio', `visit-${bot}.json`)
@@ -200,4 +207,43 @@ export async function visitRun(load, c, a) {
   writeJson(file, r)
   console.log(visitText(r))
   return r
+}
+
+// Every bot's visit, and for each line only the live site has: how often it was asked for, how often it was heard, and why not.
+export async function surveyRun(load, c, a) {
+  const seed = a.seed !== undefined ? Number(a.seed) : c.seed
+  const keys = Object.entries(JSON.parse(fs.readFileSync(at('content', 'narration.json'), 'utf8')).liveOnly).filter(([, list]) => Array.isArray(list)).map(([key]) => key)
+  const rows = Object.fromEntries(keys.map((key) => [key, { asked: 0, heard: 0, takenBack: 0, dropped: 0, bots: {}, why: {} }]))
+  const film = { bots: {} }
+  const visits = []
+  for (const bot of c.live.bots) {
+    const r = await visit(load, c, bot, seed)
+    visits.push({ bot, seconds: r.seconds, finished: r.finished, skips: r.skips })
+    const back = (e) => r.log.some((x) => x.what === 'taken back' && x.line === e.line && x.start === e.start)
+    film.bots[bot] = r.log.filter((e) => e.what === 'spoken' && !e.line.startsWith('line.live.') && !back(e)).length
+    for (const e of r.log) {
+      if (!e.line.startsWith('line.live.') || e.what === 'taken back') continue
+      const key = e.line.slice('line.live.'.length, e.line.lastIndexOf('.'))
+      const row = rows[key]
+      if (!row) continue
+      row.asked++
+      if (e.what === 'spoken' && !back(e)) {
+        row.heard++
+        row.bots[bot] = (row.bots[bot] ?? 0) + 1
+      } else if (e.what === 'spoken') row.takenBack++
+      else {
+        row.dropped++
+        const why = (e.why ?? '').replace(/[0-9.]+ s/g, 'N s').replace(/line\.[A-Za-z0-9.]+/g, 'a line')
+        row.why[why] = (row.why[why] ?? 0) + 1
+      }
+    }
+  }
+  const record = { seed, visits, filmLinesHeard: film.bots, liveOnly: rows }
+  const file = at('out', 'work', 'audio', 'visit-all.json')
+  fs.mkdirSync(path.dirname(file), { recursive: true })
+  writeJson(file, record)
+  console.log(`visits: ${visits.map((x) => `${x.bot} ${x.seconds} s${x.finished ? '' : ' not finished'}, ${x.skips} skips, ${film.bots[x.bot]} lines of the film heard`).join('; ')}. Seed ${seed}`)
+  for (const [key, row] of Object.entries(rows)) console.log(`visits: live.${key}: asked for ${row.asked} times, heard ${row.heard}${row.heard ? ` (${Object.entries(row.bots).map(([b, n]) => `${b} ${n}`).join(', ')})` : ''}, taken back ${row.takenBack}, dropped ${row.dropped}${row.dropped ? `: ${Object.entries(row.why).sort((x, y) => y[1] - x[1]).slice(0, 2).map(([w, n]) => `${n} times "${w}"`).join('; ')}` : ''}`)
+  console.log('visits: written to out/work/audio/visit-all.json')
+  return record
 }
