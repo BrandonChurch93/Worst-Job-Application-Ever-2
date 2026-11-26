@@ -6,7 +6,7 @@ import { look } from '../../../post/look'
 import { cardGlass, GLASS, groundEdge, SLAB, slabGeometry } from '../../marketing/real/perk-cards'
 
 const q = (v: number): number => Math.round(v * 4) / 4
-const INSET = { thick: 12, face: 1.16, lit: 0.72, away: 1.16, band: 30, small: 0.55 }
+const INSET = { thick: 12, face: 1.16, lit: 0.94, away: 1.16, band: 30, small: 0.55 }
 
 function solid(g: THREE.BufferGeometry, cast: boolean): THREE.Mesh {
   const mesh = new THREE.Mesh(g, cardGlass())
@@ -87,6 +87,109 @@ function faceOf(s: Shape, z: number): THREE.BufferGeometry {
   return g
 }
 
+// What is painted over the glass: the thin bright rim of a readout's rounded lip, the soft shade where the lip rolls into the face,
+// the blue-green of the panel's body, and the faint reflection of the room that lies across the cover over one readout.
+const LIP = { rim: 0xf6fbf9, lit: 0.78, away: 0.42, shade: 0x3f4f4b, shadeLit: 0.035, shadeAway: 0.17, tint: 0x7fb5a8, body: 0.13, glare: 0xffffff, glareMost: 0.085 }
+let paintMade: THREE.MeshBasicMaterial | null = null
+const paint = (): THREE.MeshBasicMaterial => (paintMade ??= new THREE.MeshBasicMaterial({ name: 'metrics-paint', vertexColors: true, transparent: true, depthWrite: false }))
+
+function painted(pos: number[], col: number[], idx: number[]): THREE.Mesh {
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  g.setIndex(idx)
+  const mesh = new THREE.Mesh(g, paint())
+  mesh.castShadow = false
+  mesh.receiveShadow = false
+  mesh.userData.own = true
+  return mesh
+}
+
+const rgb = (hex: number): [number, number, number] => {
+  const c = new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
+  return [c.r, c.g, c.b]
+}
+
+// Bands that follow a shape's outline. Each ring is how far in from the outline and how strong; `lit` and `away` are the strength on the side toward the light and on the far side.
+function bandsOf(s: Shape, z: number, rings: [number, number][], hex: number, lit: number, away: number): THREE.Mesh {
+  const [kx, ky] = look.key.direction
+  const flat = Math.hypot(kx, ky) || 1
+  const c = rgb(hex)
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  let n = 0
+  rings.forEach(([d, a], r) => {
+    const o = outlineOf(s, d, 12)
+    n = o.count
+    for (let i = 0; i < n; i++) {
+      const side = (o.nx[i]! * kx + o.ny[i]! * ky) / flat
+      const k = 0.5 + 0.5 * side
+      pos.push(o.x[i]!, o.y[i]!, z)
+      col.push(c[0], c[1], c[2], a * (away + (lit - away) * k * k * (3 - 2 * k)))
+    }
+    if (r === 0) return
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push((r - 1) * n + i, (r - 1) * n + j, r * n + i, (r - 1) * n + j, r * n + j, r * n + i)
+    }
+  })
+  return painted(pos, col, idx)
+}
+
+function fillOf(s: Shape, inset: number, z: number, hex: number, a: number): THREE.Mesh {
+  const c = rgb(hex)
+  const pos: number[] = [0, 0, z]
+  const col: number[] = [c[0], c[1], c[2], a]
+  const idx: number[] = []
+  const edge = outlineOf(s, inset, 12)
+  const soft = outlineOf(s, inset + 5, 12)
+  const n = edge.count
+  for (let i = 0; i < n; i++) {
+    pos.push(soft.x[i]!, soft.y[i]!, z)
+    col.push(c[0], c[1], c[2], a)
+  }
+  for (let i = 0; i < n; i++) {
+    pos.push(edge.x[i]!, edge.y[i]!, z)
+    col.push(c[0], c[1], c[2], 0)
+  }
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n
+    idx.push(0, 1 + i, 1 + j, 1 + i, 1 + n + i, 1 + j, 1 + j, 1 + n + i, 1 + n + j)
+  }
+  return painted(pos, col, idx)
+}
+
+// A soft band of light leaning across a readout, strongest in its middle and gone at its sides and ends.
+function glareOf(s: Shape, z: number): THREE.Mesh {
+  const c = rgb(LIP.glare)
+  const hw = s.w / 2 - 12
+  const hh = s.h / 2 - 10
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  const rows = 6
+  const across: [number, number][] = [[-0.34, 0], [-0.16, 1], [0.02, 0.55], [0.22, 0]]
+  for (let j = 0; j <= rows; j++) {
+    const v = j / rows
+    const y = hh - v * 2 * hh
+    const lean = (0.5 - v) * 0.5
+    const end = Math.sin(Math.PI * Math.min(1, Math.max(0, v * 1.1 - 0.05)))
+    for (const [u, a] of across) {
+      pos.push((u + lean + 0.18) * hw, y, z)
+      col.push(c[0], c[1], c[2], LIP.glareMost * a * end)
+    }
+  }
+  const w = across.length
+  for (let j = 0; j < rows; j++) {
+    for (let i = 0; i < w - 1; i++) {
+      const a = j * w + i
+      idx.push(a, a + w, a + 1, a + 1, a + w, a + w + 1)
+    }
+  }
+  return painted(pos, col, idx)
+}
+
 // A readout is a smaller slab of the same glass let into the panel, standing a little proud of its face.
 // It is cut at a larger size and set down smaller, so its ground edge is as narrow as a small piece of glass has it.
 function readoutOf(s: Shape): THREE.Object3D {
@@ -100,18 +203,53 @@ function readoutOf(s: Shape): THREE.Object3D {
   small.add(glass, solid(faceOf(cut, top), false))
   small.scale.set(k, k, 1)
   root.add(small)
+  root.add(bandsOf(s, top + 0.12, [[4, 0], [6.5, 1], [9.5, 0.55], [15, 0]], LIP.shade, LIP.shadeLit, LIP.shadeAway))
+  root.add(bandsOf(s, top + 0.16, [[-0.7, 0], [0.2, 1], [1.5, 1], [3.2, 0]], LIP.rim, LIP.lit, LIP.away))
+  if (s.id === 'metrics-average') root.add(glareOf(s, top + 0.2))
   return root
+}
+
+// The line under the link is printed: flat ink, close under its words, with no height to throw a shade.
+const UNDERLINE = { ink: 0x3a3733, soft: 0.5 }
+let lineMade: THREE.MeshBasicMaterial | null = null
+
+function underlineOf(s: Shape): THREE.Object3D {
+  const m = (lineMade ??= new THREE.MeshBasicMaterial({ name: 'share-underline', color: new THREE.Color().setHex(UNDERLINE.ink, THREE.SRGBColorSpace), vertexColors: true, transparent: true, depthWrite: false }))
+  const hw = s.w / 2
+  const hh = s.h / 2
+  const f = UNDERLINE.soft
+  const pos: number[] = []
+  const col: number[] = []
+  for (const [y, a] of [[hh + f, 0], [hh - f, 1], [-hh + f, 1], [-hh - f, 0]] as [number, number][]) {
+    pos.push(-hw, y, 0.02, hw, y, 0.02)
+    col.push(1, 1, 1, a, 1, 1, 1, a)
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  g.setIndex([0, 2, 1, 1, 2, 3, 2, 4, 3, 3, 4, 5, 4, 6, 5, 5, 6, 7])
+  const mesh = new THREE.Mesh(g, m)
+  mesh.castShadow = false
+  mesh.receiveShadow = false
+  mesh.userData.own = true
+  return mesh
 }
 
 export const metrics: PartMaker | null = {
   key(s) {
     if (s.kind === 'text') return null
+    if (s.role === 'underline') return `underline:${q(s.w)}:${q(s.h)}`
     if (s.role === 'card') return panelKey(s)
-    if (s.role === 'readout') return `readout:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
+    if (s.role === 'readout') return `readout:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}:${s.id === 'metrics-average' ? 'lit' : 'plain'}`
     return null
   },
   make(s) {
-    if (s.role === 'card') return panelOf(s)
+    if (s.role === 'card') {
+      const root = panelOf(s)
+      root.add(fillOf(s, groundEdge(s) - 4, s.z1 - s.z0 + 0.1, LIP.tint, LIP.body))
+      return root
+    }
+    if (s.role === 'underline') return underlineOf(s)
     return readoutOf(s)
   },
   drop(o) {

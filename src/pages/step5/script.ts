@@ -2,51 +2,57 @@ import type { Acting, Reaction } from '../../cursor/body'
 import type { Pointer } from '../../stage/types'
 import { AT, FILM } from './timeline'
 
-export interface Marks { start: { x: number; y: number }; spot: { x: number; y: number }; drop: { x: number; y: number }; press: { x: number; y: number } }
+type P = { x: number; y: number }
+export interface Marks { hand: P; wait: P; spot: P; drop: P; press: P }
 
 interface Key { t: number; x: number; y: number }
 
-export interface Cue { at: number; act?: Acting; react?: Reaction }
+export interface Cue { at: number; act?: Acting; react?: Reaction; aim?: number | null }
 
-// The hit of the stamp: it draws back and leans before it falls, the fall speeds up, the rubber gives, the block rocks and comes to rest, and paper dust leaves from under its edges.
-export const HIT = { windSeconds: 0.24, windRise: 30, windTilt: -0.13, fallPower: 2.6, over: 9, give: 1.5, giveSeconds: 0.06, rock: 0.03, rockSeconds: 0.11, rockRate: 50, landRock: 0.014, dustSeconds: 0.62, dustReach: 70 } as const
+// The hit of the stamp. It hangs high and draws back (`wind`), falls in four frames, strikes, gives, rebounds once (`rebound` px, over by `reboundSeconds`), rocks and is still.
+// Seen from straight above a fall has no travel across the picture, so the block is drawn larger the higher it is: `grow` more at `growOver` px over the sheet.
+export const HIT = {
+  windSeconds: 0.24, windRise: 30, windTilt: -0.13, fallPower: 1.6, over: 9, give: 2.4, giveSeconds: 0.05, bulge: 5, rock: 0.022, rockSeconds: 0.07, rockRate: 60, landRock: 0.03, dustSeconds: 0.5, dustReach: 90,
+  grow: 0.38, growOver: 150, pinch: 0.02, back: { x: -40, y: -66 }, rebound: 9, reboundAt: 0.012, reboundSeconds: 0.05, sheetHop: 5, sheetSeconds: 0.066, carry: 124, shake: 13
+} as const
 
-// Struck flat, the cursor sticks to the rubber, is carried off under the block and falls from it to the right as the stamp is laid down: `right` and `down` from the stamp's rest. It lies low enough that its straight walk to the button passes under the stamp's lower edge.
-export const STUCK = { right: 96, down: 84, toss: 26 } as const
+export const grown = (over: number): number => 1 + HIT.grow * Math.min(1.2, Math.max(0, over / HIT.growOver))
+export const reboundAt = (age: number): number => (age <= HIT.reboundAt || age >= HIT.reboundAt + HIT.reboundSeconds ? 0 : Math.sin((Math.PI * (age - HIT.reboundAt)) / HIT.reboundSeconds))
+export const hopAt = (age: number): number => (age <= 0 || age >= HIT.sheetSeconds ? 0 : Math.sin((Math.PI * age) / HIT.sheetSeconds))
+
+// Struck flat, the cursor sticks to the rubber with its tail out from under the block's edge, rises with the block and is carried off with it.
+// As the block slows to be set down the cursor comes off the rubber and flies on, and lands flat right of the block: `right` of the block's edge and `down` from its middle, with a `toss` on the way. `heal` is the seconds it then lies flat, peels and fills.
+export const STUCK = { right: 118, down: 44, toss: 64, heal: 1.27 } as const
 
 // Set down, the stamp is laid on its side, grip away from the reader, a little off square: `turn` about its long axis, `rot` on the page.
 export const LIE = { turn: Math.PI / 2, rot: -0.17 } as const
 
-// The wait: the word is worried. It comes in with the page and stands, tiptoes right, reads the months and shrinks, tiptoes back further than it came, and stands again.
-export const PACE = { stand: 0.9, right: [0.9, 1.2], read: 1.24, left: [1.62, 1.92], far: 170, back: -70 } as const
-// The letter: the word is hope. It stays put while the sheet falls, hops when it lands, struts to it and reads, looks up at what comes, and freezes.
-export const HOPE = { walk: [2.9, 3.5], look: 3.62 } as const
-// The button: the word is beaten. Whole again it looks at the one button there is, drags itself there, stands for 0.4 s and presses with no flourish.
-export const GIVE = { look: 7.82, walk: [8.25, 8.9] } as const
+// The wait: the word is nervous. The page turn sets it down at the hand-off place, on the counter. It backs off the counter to the bare glass under it and holds its place there: beads, tremble, gulp.
+export const ARRIVE = { look: 0.52, there: 0.86 } as const
+// The letter: shocked, then proud, then scared. It starts as the counter spins, does its double take as the sheet lands and holds a tilt toward it; puffs up and holds; dusts itself off; struts to the sheet's corner; and the shadow is on it.
+export const HOPE = { spin: 2.03, tilt: 3.06, lean: -0.36, proud: 3.5, dust: 3.94, walk: [4.44, 4.8] } as const
+// The button: the word is beaten. Whole again it looks at the one button there is, drags itself there, leans back from it for 0.3 s, rises and drives its tip into it.
+export const GIVE = { look: 7.86, walk: [8.28, 8.9], strike: 9.2 } as const
 
 export const CUES: Cue[] = [
-  { at: PACE.right[0] - 0.06, react: 'anticipate' },
-  { at: PACE.read, react: 'flinch' },
-  { at: HOPE.look, react: 'doubleTake' },
-  { at: GIVE.look, react: 'doubleTake' }
+  { at: HOPE.spin, react: 'flinch' },
+  { at: HOPE.tilt, aim: HOPE.lean },
+  { at: HOPE.proud, aim: null },
+  { at: HOPE.dust, react: 'dustOff' },
+  { at: GIVE.look, react: 'doubleTake' },
+  { at: GIVE.strike, react: 'stamp' }
 ]
 
 function keys(m: Marks): Key[] {
-  const s = m.start
-  const stamped = AT.decide + AT.slam[1]
   return [
-    { t: 0, x: s.x, y: s.y },
-    { t: PACE.right[0], x: s.x, y: s.y },
-    { t: PACE.right[1], x: s.x + PACE.far, y: s.y - 4 },
-    { t: PACE.left[0], x: s.x + PACE.far, y: s.y - 4 },
-    { t: PACE.left[1], x: s.x + PACE.back, y: s.y + 2 },
-    { t: HOPE.walk[0], x: s.x + PACE.back, y: s.y + 2 },
+    { t: 0, x: m.hand.x, y: m.hand.y },
+    { t: ARRIVE.look, x: m.hand.x, y: m.hand.y },
+    { t: ARRIVE.there, x: m.wait.x, y: m.wait.y },
+    { t: HOPE.walk[0], x: m.wait.x, y: m.wait.y },
     { t: HOPE.walk[1], x: m.spot.x, y: m.spot.y },
-    { t: AT.decide + AT.lift[1], x: m.spot.x, y: m.spot.y },
-    { t: AT.decide + AT.lower[1], x: m.drop.x, y: m.drop.y },
-    { t: stamped + 3.55, x: m.drop.x, y: m.drop.y },
-    { t: stamped + 3.9, x: m.drop.x - 14, y: m.drop.y + 30 },
-    { t: GIVE.walk[0], x: m.drop.x - 14, y: m.drop.y + 30 },
+    { t: FILM.flat, x: m.spot.x, y: m.spot.y },
+    { t: FILM.landed, x: m.drop.x, y: m.drop.y },
+    { t: GIVE.walk[0], x: m.drop.x, y: m.drop.y },
     { t: GIVE.walk[1], x: m.press.x, y: m.press.y },
     { t: 12, x: m.press.x, y: m.press.y }
   ]

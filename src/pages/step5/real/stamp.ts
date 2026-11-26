@@ -21,6 +21,8 @@ const PAD = { in: 2.2, foam: 1, tall: 16, gap: 5 }
 
 const GRAIN = { die: 22, coat: 46 }
 const BELLY = 2.4
+// Struck, the block is shorter and a little broader for a frame.
+const SQUASH = { z: 0.2, seconds: 0.028, spread: 0.1 }
 let roughMade: THREE.Texture | null = null
 
 // The tooth of the letter's stock, used again as the grain of the rubber and the faint orange peel of the lacquer.
@@ -302,7 +304,10 @@ export const stamp: PartMaker | null = {
     o.rotation.x += a
     o.position.x -= along * Math.sin(turn)
     o.position.y += along * Math.cos(turn)
-    o.position.z += up * (Math.cos(a) - 1) - give + (Math.abs(Math.sin(rock)) + flat) * tall
+    const k = s.v?.[4] ?? 1
+    const press = SQUASH.z * Math.exp(-age / SQUASH.seconds)
+    o.position.z += up * (Math.cos(a) - 1) * k - give + (Math.abs(Math.sin(rock)) + flat) * tall - up * press
+    o.scale.set(k * (1 + press * SQUASH.spread), k * (1 + press * SQUASH.spread), 1 - press)
   },
   drop(o) {
     o.traverse((c) => {

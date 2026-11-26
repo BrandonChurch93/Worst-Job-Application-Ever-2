@@ -14,6 +14,30 @@ const GRID = { nx: 72, ny: 48 }
 const CURL: [number, number, number, number][] = [[1, 1, 5.6, 104], [1, 0, 1.8, 64], [0, 1, 1.5, 58], [0, 0, 0.7, 44]]
 const SHADE = { rings: [[-14, 0.62], [0, 0.62], [1.4, 0.48], [3.6, 0.35], [7, 0.24], [12, 0.15], [18, 0.085], [26, 0.04], [38, 0]] as [number, number][], round: [[-10, 0.26], [0, 0.26], [1.5, 0.17], [4, 0.1], [8, 0.045], [14, 0]] as [number, number][], dx: 7, dy: -8.5, colour: 0x1b1815 }
 const AIR = { glow: 0.16, full: 140 }
+// Struck in its lower right corner, the sheet kicks: the three far corners leave the page for a frame.
+const KICK: [number, number, number, number][] = [[0, 0, 8, 92], [1, 0, 7, 100], [0, 1, 7, 100]]
+
+export function kickAt(u: number, v: number, w: number, h: number): number {
+  let z = 0
+  for (const [cu, cv, tall, reach] of KICK) {
+    const d = Math.hypot((u - cu) * w, (v - cv) * h)
+    const k = ease(1 - d / reach)
+    z += tall * k * k
+  }
+  return z
+}
+
+function flex(sheet: THREE.Mesh, w: number, h: number, thick: number, k: number): void {
+  if ((sheet.userData.kick ?? 0) === k) return
+  sheet.userData.kick = k
+  const { nx, ny } = GRID
+  const pos = sheet.geometry.getAttribute('position') as THREE.BufferAttribute
+  for (let j = 0; j <= ny; j++) {
+    for (let i = 0; i <= nx; i++) pos.setZ(j * (nx + 1) + i, thick + liftAt(i / nx, j / ny, w, h) + k * kickAt(i / nx, j / ny, w, h))
+  }
+  pos.needsUpdate = true
+  sheet.geometry.computeVertexNormals()
+}
 
 export function liftAt(u: number, v: number, w: number, h: number): number {
   let z = 0
@@ -110,6 +134,7 @@ export const letter: PartMaker | null = {
   make(s) {
     const root = new THREE.Group()
     const sheet = new THREE.Mesh(sheetGeometry(s.w, s.h, s.z1 - s.z0), stock().sheet)
+    sheet.name = 'sheet'
     sheet.castShadow = true
     sheet.receiveShadow = true
     sheet.frustumCulled = false
@@ -136,6 +161,7 @@ export const letter: PartMaker | null = {
     round.position.set(0, 0, 0.05 - up)
     ;(shade.material as THREE.MeshBasicMaterial).opacity = k
     stock().sheet.emissive.setScalar(AIR.glow * Math.min(1, up / AIR.full))
+    flex(o.getObjectByName('sheet') as THREE.Mesh, s.w, s.h, s.z1 - s.z0, Math.round((s.v?.[0] ?? 0) * 64) / 64)
   },
   drop(o) {
     o.traverse((c) => {

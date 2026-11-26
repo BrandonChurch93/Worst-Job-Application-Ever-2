@@ -12,7 +12,7 @@ const sizes = config.scale.sizes
 export const TOP = 296
 export const GUTTER = 48
 export const COLUMN = (RIGHT - LEFT - GUTTER) / 2
-export const CONTENT_H = 528
+export const CONTENT_H = 560
 export const BOTTOM = TOP + CONTENT_H
 export const RIGHT_X = LEFT + COLUMN + GUTTER
 export const CENTRE = (LEFT + RIGHT) / 2
@@ -21,22 +21,31 @@ export const COUNTER_TOP = heights.card + 6
 export const READOUT_TOP = heights.card + 4
 export const STAMP = { blockTop: heights.machineMinTop + 58, gripTop: heights.machineMinTop + 134, high: 120 }
 const SHOWN = ['decided', 'link', 'shared']
-// The stamp at rest lies a little under the line the columns end on, so the panel above it keeps its room.
-export const REST_LOW = 34
+// The wait panel lies lower than the two columns that follow it, nearer the middle of the page under the heading.
+export const WAIT = { top: TOP + 52, h: 528 }
+export const PANEL_H = 322
+// The mark lies just inside the lower right corner of the sheet: the insets of its turned outline from the sheet's right and lower edges.
+export const MARK_AT = { right: 39, bottom: 30 }
+// Where the stamp lies at rest: the middle of its block from the right column's left edge and from the columns' lower line.
+export const REST_AT = { x: 196, up: 138 }
 export const MARK_ROT = -0.27
-// The sheet does not lie square on the page: it is turned a little, clockwise as seen, about its middle.
-export const SHEET_ROT = 0.012
+// The sheet lies square on the page, so its top edge is on the panel's line and its paragraphs share one left edge.
+export const SHEET_ROT = 0
 
 const T = {
   waitTitle: { font: 'inter-display-600', px: 44 },
   waitValue: { font: 'inter-display-600', px: 112, align: 'centre' },
   letterTitle: { font: 'inter-display-600', px: 40 },
-  letterBody: { font: 'inter-400', px: 24, wrap: COLUMN - 128, lead: 38 },
+  letterBody: { font: 'inter-400', px: 24, wrap: COLUMN - 152, lead: 38 },
   mark: { font: 'inter-display-600', px: 62, align: 'centre' },
   panelTitle: { font: 'inter-600', px: 28 },
-  readout: { font: 'inter-display-600', px: 56 },
+  readout: { font: 'inter-display-600', px: 58 },
+  caption: { font: 'inter-400', px: 20 },
   link: { font: 'inter-500', px: 20, align: 'centre' }
 } satisfies Record<string, TypeSpec>
+
+// The letter's print: its inset from the sheet's left and top, the room under its title and the room between its two paragraphs.
+export const LETTER_PAD = { x: 76, y: 76, title: 52, para: 52 }
 
 const cap = (t: TypeSpec): number => block(t.font, 'X', t.px).cap
 
@@ -56,7 +65,7 @@ function waitPanel(): LayoutNode {
   const pad = 64
   const x = LEFT + pad
   const on = heights.card
-  const titleY = TOP + pad
+  const titleY = WAIT.top + pad
   const labelY = titleY + cap(T.waitTitle) + 48
   const counterY = labelY + cap(TYPE.value) + 22
   const counterH = 212
@@ -70,7 +79,7 @@ function waitPanel(): LayoutNode {
       text('wait-count', KEYS.waitCount, T.waitValue, CENTRE, valueY, { part: 'wait', on: COUNTER_TOP, tone: 'inkLight', states: ['spinning'], runtime: value })
     ]
   })
-  return node('wait-panel', 'card', [LEFT, TOP, RIGHT - LEFT, CONTENT_H], {
+  return node('wait-panel', 'card', [LEFT, WAIT.top, RIGHT - LEFT, WAIT.h], {
     part: 'wait', r: 24, states: ['wait'],
     children: [
       text('wait-title', 'copy:transitions.step5', T.waitTitle, x, titleY, { part: 'type', on }),
@@ -82,13 +91,12 @@ function waitPanel(): LayoutNode {
 }
 
 function letter(): LayoutNode {
-  const pad = 64
-  const x = LEFT + pad
+  const x = LEFT + LETTER_PAD.x
   const on = heights.paper
-  const titleY = TOP + pad
-  const bodyY = titleY + cap(T.letterTitle) + 44
+  const titleY = TOP + LETTER_PAD.y
+  const bodyY = titleY + cap(T.letterTitle) + LETTER_PAD.title
   const body = text('letter-body', 'copy:step5.letter.body', T.letterBody, x, bodyY, { part: 'type', on })
-  const closingY = bodyY + body.box[3]! + T.letterBody.lead
+  const closingY = bodyY + body.box[3]! + LETTER_PAD.para
   const mark = markOf()
   const stamp = text('letter-stamp', 'copy:step5.letter.stamp', T.mark, mark.cx, mark.cy - cap(T.mark) / 2, { part: 'stamp', on, tone: 'dark' })
   return node('letter', 'paper', [LEFT, TOP, COLUMN, CONTENT_H], {
@@ -102,6 +110,9 @@ function letter(): LayoutNode {
   })
 }
 
+// Where the cursor waits: on the bare glass under the counter, right of the line of print there.
+export const waitSpotOf = (): { x: number; y: number } => ({ x: RIGHT - 330, y: WAIT.top + WAIT.h - 92 })
+
 export interface Mark { cx: number; cy: number; w: number; h: number; bar: number; blockW: number; blockH: number }
 
 let made: Mark | null = null
@@ -113,8 +124,9 @@ export function markOf(): Mark {
   const h = Math.round(said.cap + 52)
   const blockW = w + 12
   const blockH = h + 100
-  const lift = Math.abs(Math.sin(MARK_ROT)) * (blockW / 2)
-  made = { cx: LEFT + COLUMN - 28 - blockW / 2, cy: BOTTOM - 36 - blockH / 2 - lift, w, h, bar: 10, blockW, blockH }
+  const c = Math.abs(Math.cos(MARK_ROT))
+  const t = Math.abs(Math.sin(MARK_ROT))
+  made = { cx: LEFT + COLUMN - MARK_AT.right - (w / 2) * c - (h / 2) * t, cy: BOTTOM - MARK_AT.bottom - (w / 2) * t - (h / 2) * c, w, h, bar: 10, blockW, blockH }
   return made
 }
 
@@ -124,9 +136,11 @@ export function turned(m: { cx: number; cy: number }, lx: number, ly: number, ro
   return { x: m.cx + lx * c - ly * s, y: m.cy + lx * s + ly * c }
 }
 
+// Where the cursor stands when the block strikes: its tip under the block's lower edge, clear of the mark, so that its tail is left in sight under the edge.
+export const SPOT = { fromRight: 70, fromEdge: 8 }
 export const spotOf = (): { x: number; y: number } => {
   const m = markOf()
-  return turned(m, m.w / 2 - 150, m.h / 2 - 16)
+  return turned(m, m.blockW / 2 - SPOT.fromRight, m.blockH / 2 - SPOT.fromEdge)
 }
 
 function metrics(): LayoutNode {
@@ -139,16 +153,16 @@ function metrics(): LayoutNode {
   const tilesY = titleY + cap(T.panelTitle) + 32
   const inner = 26
   const labelY = tilesY + inner
-  const valueY = labelY + cap(TYPE.label) + 22
+  const valueY = labelY + cap(T.caption) + 22
   const tileH = Math.round(valueY + cap(T.readout) + inner + 2 - tilesY)
   const applicantY = tilesY + tileH + 30
-  const height = CONTENT_H - GUTTER - markOf().blockH + REST_LOW
+  const height = PANEL_H
   const tile = (i: number, id: string, label: string, values: LayoutNode[]): LayoutNode => {
     const tx = x + i * (tileW + gap)
     for (const v of values) v.box[0] = tx + inner
     return node(`metrics-${id}`, 'readout', [tx, tilesY, tileW, tileH], {
       part: 'metrics', height: READOUT_TOP, floor: on, tone: 'glass', r: 14,
-      children: [text(`metrics-${id}-label`, label, TYPE.label, tx + inner, labelY, { part: 'type', on: READOUT_TOP }), ...values]
+      children: [text(`metrics-${id}-label`, label, T.caption, tx + inner, labelY, { part: 'type', on: READOUT_TOP }), ...values]
     })
   }
   const run = (id: string, key: string, states?: string[]): LayoutNode =>
@@ -174,8 +188,8 @@ function metrics(): LayoutNode {
 function stampAtRest(): LayoutNode {
   const m = markOf()
   const BLOCK = { w: m.blockW, h: m.blockH }
-  const x = RIGHT_X + Math.round((COLUMN - BLOCK.w) * 0.62)
-  const y = BOTTOM - BLOCK.h + REST_LOW
+  const x = RIGHT_X + REST_AT.x - Math.round(BLOCK.w / 2)
+  const y = BOTTOM - REST_AT.up - Math.round(BLOCK.h / 2)
   const gripW = Math.round(BLOCK.w * 0.5)
   const gripH = Math.round(BLOCK.h * 0.6)
   return node('stamp', 'stamp', [x, y, BLOCK.w, BLOCK.h], {
@@ -195,7 +209,7 @@ function controls(): LayoutNode[] {
   const accept = button('accept', CENTRE - w / 2, y, w, 'copy:step5.accept', { hero: true, part: 'shell', states: SHOWN })
   const linkY = y + sizes.heroButton + 34
   const link = text('share-link', 'copy:step5.share', T.link, CENTRE, linkY, { part: 'type' })
-  const rule = node('share-rule', 'rule', [link.box[0]!, linkY + cap(T.link) + 7, link.box[2]!, 2], { part: 'shell', tone: 'ink' })
+  const rule = node('share-rule', 'underline', [link.box[0]!, linkY + cap(T.link) + 3, link.box[2]!, 1.5], { part: 'metrics', tone: 'ink', height: 0.05 })
   const share = group('share', [link, rule], { states: ['link'] })
   const sample = words(KEYS.shareText).replace('{time}', '00:00')
   const line = text('share-line', KEYS.shareLine, T.link, CENTRE, linkY, { part: 'type', states: ['shared'], runtime: sample })
