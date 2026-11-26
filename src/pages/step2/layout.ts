@@ -66,7 +66,7 @@ export const SLOT = {
   reelW: 92, reelH: 106, reelGap: 12,
   reelX: (r: number): number => sx + 18 + r * (92 + 12),
   reelY: sy + PAD + 22,
-  leverX: sx + 336 + 34, knobY: sy + PAD + 30, pull: 96, knob: 44,
+  leverX: sx + 336 + 34, knobY: sy + PAD + 30, pull: 96, knob: 44, pivotY: sy + PAD + 58,
   payX: sx + 60, payY: sy + PAD + 150 + 8, payW: 216, payH: 22,
   strips: [Object.keys(legends.months).sort(), Object.keys(legends.days).sort(), Object.keys(legends.years).sort()] as string[][],
   names: ['months', 'days', 'years'] as const,

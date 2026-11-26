@@ -57,3 +57,14 @@ Decisions taken without asking, in the order they were met.
 - The slot stands 12 px in from the tray's padding and 9 px under its top (`SLOT`), the crank's hub at `CRANK.hx` (padding plus 73), its grip 84 by 52.
 - The dial's hub is a lacquered copy of the shared orange (`DIAL_BODY.hubCoat`, `hubRough`, `hubIor`); the risen dial lays a painted shade on the floor (`DIAL_BODY.cast`), away from the key.
 - While the slot is sunk in the floor (`SUNK`, under 0.05 of its rise) its reel legends are not drawn.
+
+## Phase 4: the keeper (agent step2-keeper)
+
+- The pointer of the film waits at the stage's hand-off place (`HANDOFF` of `src/cursor/body.ts`) until the page has set the cursor down at 0.5 s, then walks to its place (`ARRIVE` in `script.ts`). A script whose pointer stands elsewhere at 0.5 s makes the cursor dash to it.
+- A tray starts to shut when the machine's lift is under `COVER` (`index.ts`), not when the machine has gone, so no tray stands empty.
+- The slot's lever: `slot-mount` is a bracket at the cabinet's side at `SLOT.pivotY`; `slot-arm` runs between the knob and the bracket and hands its maker `v: [1]` when the knob is over the bracket and `v: [-1]` when it hangs under it.
+- A meter segment is two meshes: the top carries the picture, the upright wall is plain glass. The picture is `CRANK_LOOK.picture` px.
+- The dial: the housing is a sloped bezel on a stepped base ring in a darker copy of the shared steel; each hole has a countersink (`holesGeometry`); the hub stands on a foot and carries one painted sheen toward the key (`glintGeometry`).
+- The tray's wall shade (`trayWallShade`) also runs over the rim on the light's side, and tints the shade a little cool (`TRAY.cool`).
+- The temper of the cursor ends after the stamp (`TEMPER.spent`): it is `plain` at the crank until the crank throws it.
+- The keeper's notes, decisions and counts: `pipeline/phase4/step2-keeper.md`. Recipes: `assets-src/step2-keeper/RECIPE.md`.
