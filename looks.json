@@ -1,0 +1,35 @@
+{
+  "folder": "machine-finish",
+  "pushed": "2026-11-26T10:37:56.938Z",
+  "commit": "e28fc57951edfde8dca7bfecfa84b01b1e6542d8",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Key reply-all at review: approved left, this build right. The camera is pulled back so the lift tube, its orange elbow, the far rail, the right lane and the shoulders are in frame",
+      "time": "2026-11-26T10:37:55.157Z",
+      "by": "machine-finish",
+      "from": "out/work/mf/p1-reply-all.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key tier-office at draft: approved left, this build right. Both bats at rest in a mirrored V after the first flip of the take was ended 0.2 s sooner",
+      "time": "2026-11-26T10:37:55.422Z",
+      "by": "machine-finish",
+      "from": "out/work/mf/p2-tier-office.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Beat pinball.reveal at draft: the new tube camera rides beside the ball from 4.1 s to 6.2 s, the arrow on screen as the machine lights behind it, then the wide view",
+      "time": "2026-11-26T10:37:55.662Z",
+      "by": "machine-finish",
+      "from": "out/work/mf/p3-reveal.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Beat pinball.coffee at draft: tier-2 for the drop, then the new nest camera at ball height for all six bumper hits",
+      "time": "2026-11-26T10:37:55.902Z",
+      "by": "machine-finish",
+      "from": "out/work/mf/p4-coffee.jpg"
+    }
+  ]
+}
