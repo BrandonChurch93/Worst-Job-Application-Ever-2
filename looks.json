@@ -1,35 +1,35 @@
 {
   "folder": "boss-finish",
-  "pushed": "2026-11-26T12:16:38.288Z",
-  "commit": "63669ae7e87d4ba8cb009476b47ec0336afefb2b",
+  "pushed": "2026-11-26T12:32:38.836Z",
+  "commit": "2afafc5cb4863a7aad74438d998dabb7baa9f756",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "boss-down, the arrow at the key (4x crop, draft): slumped with its outline whole",
-      "time": "2026-11-26T12:16:36.607Z",
+      "caption": "boss.lastStand, frames 7908 to 7983: the double take as a look at the bar, a look at the boss, a second look at the bar, then the shot",
+      "time": "2026-11-26T12:32:37.169Z",
       "by": "boss-finish",
-      "from": "out/work/looks/files/20261126121636-arrow-down.jpg"
+      "from": "out/work/looks/files/20261126123237-rep-take-b.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "boss.popups, the hit at 20.24 s and the shake: the arrow stays whole (shocked, not melted)",
-      "time": "2026-11-26T12:16:36.838Z",
+      "caption": "boss.slabs, the hit at 13.1 s: struck, thrown, the dust off 0.3 s after",
+      "time": "2026-11-26T12:32:37.399Z",
       "by": "boss-finish",
-      "from": "out/work/looks/files/20261126121636-rep-shake-b.jpg"
+      "from": "out/work/looks/files/20261126123237-rep-hit-c.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "boss.lastStand, frames 7860 to 8004: the bar fills back with the arrow stopped under it",
-      "time": "2026-11-26T12:16:37.082Z",
+      "caption": "boss-fight: approved left, the build at review right",
+      "time": "2026-11-26T12:32:37.646Z",
       "by": "boss-finish",
-      "from": "out/work/looks/files/20261126121637-rep-bar-b.jpg"
+      "from": "out/work/looks/files/20261126123237-rep-ab-fight.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "boss.slabs, frames 7416 to 7492: the arrow moves clear and the slab lands where it stood, then fires from its tip",
-      "time": "2026-11-26T12:16:37.304Z",
+      "caption": "boss-down: approved left, the build at review right",
+      "time": "2026-11-26T12:32:37.873Z",
       "by": "boss-finish",
-      "from": "out/work/looks/files/20261126121637-rep-dodge-b.jpg"
+      "from": "out/work/looks/files/20261126123237-rep-ab-down.jpg"
     }
   ]
 }
