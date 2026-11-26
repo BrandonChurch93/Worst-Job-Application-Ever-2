@@ -1,35 +1,35 @@
 {
   "folder": "street-models",
-  "pushed": "2026-11-26T04:17:29.313Z",
-  "commit": "167eb813edba83727fa0b68304d741916c9559b7",
+  "pushed": "2026-11-26T05:01:26.718Z",
+  "commit": "e3d98e973f577e2e6f033f057cd39ec9f629dee7",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key last-save: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T04:17:20.143Z",
+      "caption": "tier-street at 77779a6d beside approved: the garage at two turns, roof lights on the firehouse and the police station",
+      "time": "2026-11-26T05:01:24.959Z",
       "by": "street-models",
-      "from": "out/work/compare/compare-last-save.jpg"
+      "from": "out/work/looks/files/20261126050124-final-compare-tier-street.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "youre-fired beside approved at 167eb81: brick without sheen on the side wall, felt roof, amber windows",
-      "time": "2026-11-26T04:17:27.824Z",
+      "caption": "youre-fired at 77779a6d beside approved: smooth hot cores in the panes, round beacon dome",
+      "time": "2026-11-26T05:01:25.190Z",
       "by": "street-models",
-      "from": "out/work/compare/compare-youre-fired.jpg"
+      "from": "out/work/looks/files/20261126050125-final-compare-youre-fired.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street beside approved at 167eb81: blue felt on the police station, pale caps",
-      "time": "2026-11-26T04:17:28.052Z",
+      "caption": "last-save at 77779a6d beside approved",
+      "time": "2026-11-26T05:01:25.418Z",
       "by": "street-models",
-      "from": "out/work/compare/compare-tier-street.jpg"
+      "from": "out/work/looks/files/20261126050125-final-compare-last-save.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "last-save beside approved at 167eb81",
-      "time": "2026-11-26T04:17:28.290Z",
+      "caption": "last-save draft at 77779a6d, whole frame",
+      "time": "2026-11-26T05:01:25.650Z",
       "by": "street-models",
-      "from": "out/work/compare/compare-last-save.jpg"
+      "from": "out/work/looks/files/20261126050125-final-last-save.jpg"
     }
   ]
 }
