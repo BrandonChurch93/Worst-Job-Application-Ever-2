@@ -353,7 +353,7 @@ export function office(D, seed) {
   const low = D.bumpers.reduce((m, q) => (q.c[1] > m.c[1] ? q : m), D.bumpers[0])
   const band = [low.c[1] - 0.8, low.c[1] + 0.9]
   const tile = (C.right - D.MID - half) / 2
-  const cream = '#a1a493'
+  const cream = '#a7aba4'
   const cream2 = '#989c8b'
   const tan = '#7d7a62'
   // Broad tiles in two slate tones, chequered, and a pale walkway down the middle and across under the cups.
