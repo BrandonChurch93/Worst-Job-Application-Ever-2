@@ -34,7 +34,7 @@ export function cardGlass(): THREE.MeshPhysicalMaterial {
   return glassMade
 }
 
-export const GLASS = { colour: 0xc4cecb, shade: 0.27, after: 0.6, exit: 1.4, rim: 1.8, glint: 0.25, line: 0.9, wash: 0.13, warm: 0.07, lean: 0.03, caster: 4.2, least: 0.4, most: 4.4, through: 0.8 }
+export const GLASS = { colour: 0xc4cecb, shade: 0.27, after: 0.6, exit: 1.4, rim: 1.8, glint: 0.25, line: 0.9, wash: 0.13, warm: 0.07, lean: 0.03, caster: 4.2, least: 0.4, most: 4.4, through: 0.8, grain: 0.024 }
 
 const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
 const KX = look.key.direction[0] / keyFlat
@@ -174,7 +174,11 @@ function sealGeometry(s: Shape): THREE.BufferGeometry {
 
 const AXIS = new THREE.Vector3(1, 0, 0)
 
-export const glassOptions = (): THREE.MeshPhysicalMaterialParameters => ({ color: srgb(GLASS.colour), roughness: 0.34, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, vertexColors: true, shadowSide: THREE.BackSide })
+// The page's own grain, read again as the glass's normal: what lies under a frosted slab shows through it softly. The picture is shared, so it costs no memory.
+export const glassOptions = (): THREE.MeshPhysicalMaterialParameters => ({
+  color: srgb(GLASS.colour), roughness: 0.34, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, vertexColors: true, shadowSide: THREE.BackSide,
+  normalMap: materials().ceramic.normalMap, normalScale: new THREE.Vector2(GLASS.grain, GLASS.grain)
+})
 
 const keyLength = Math.hypot(look.key.direction[0], look.key.direction[1], look.key.direction[2]) || 1
 const KEY_Y = look.key.direction[1] / keyLength

@@ -195,8 +195,9 @@ export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: (b
   const out: Shape[] = []
   const level = glow.map(Number)
   fixedShapes()
-  const struck = (k: number): number => Math.min(9, ...table.bumpers.filter((b) => b.tier === k).map((b) => m.since(b.id)), ...table.slings.filter((s) => s.tier === k).map((s) => m.since(s.id)), ...table.targets.filter((t) => t.tier === k).map((t) => m.since(t.id)))
-  const strobe = m.balls.some((b) => b.steel && b.mode !== 'none') ? 0.5 - 0.5 * Math.cos(m.seconds * STROBE_HZ * 2 * Math.PI) : 0
+  const struck = (k: number): number => m.since(`flash.${k}`)
+  const swell = m.since('swell.1') * STROBE_HZ
+  const strobe = swell < 1 ? 0.5 - 0.5 * Math.cos(swell * 2 * Math.PI) : 0
   const fire = m.balls.some((b) => b.mode === 'hold' && b.hold === 'street.firehouse') || m.since('scoop-kick:street.firehouse') < BEACON.seconds
   const check = m.since('street.spinner') < BEACON.seconds
   for (const z of ZONES) {
