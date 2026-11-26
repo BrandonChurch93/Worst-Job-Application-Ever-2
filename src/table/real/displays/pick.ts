@@ -2,7 +2,7 @@ import type { RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 import { words } from '../../../shell/words'
 import { zoneAt } from '../../draw'
-import { modeSeconds, type Show } from './screen'
+import { PACE, modeSeconds, scrollSeconds, type Show } from './screen'
 
 const MODE = /^copy:step3\.table\.modes\.(\d+)\.display$/
 const SCORE = 'runtime:score'
@@ -10,6 +10,27 @@ const SCORE = 'runtime:score'
 const REST = 4
 
 const first = (s: Shape, i: number): number | undefined => (s.v !== undefined && s.v.length > i ? s.v[i] : undefined)
+
+// A mode that lights is shown at once and cuts the line that is running. A line that was cut waits and is shown whole, once, in the order the modes were lit, as soon as no newer mode is on.
+export function running(lit: { id: string; since: number; line: string }[]): { id: string; t: number } | null {
+  const order = lit.map((m) => ({ id: m.id, line: m.line, at: -Math.max(0, m.since) })).sort((a, b) => a.at - b.at || (a.id < b.id ? -1 : 1))
+  const wait: typeof order = []
+  let on: { m: (typeof order)[number]; from: number; again: boolean } | null = null
+  const ends = (): number => on!.from + (on!.again ? scrollSeconds(on!.m.line) : modeSeconds(on!.m.line))
+  const run = (to: number): void => {
+    while (on && ends() <= to) {
+      const next = wait.shift()
+      on = next ? { m: next, from: ends(), again: true } : null
+    }
+  }
+  for (const m of order) {
+    run(m.at)
+    if (on) wait.push(on.m)
+    on = { m, from: m.at, again: false }
+  }
+  run(0)
+  return on ? { id: on.m.id, t: (on.again ? PACE.hold : 0) - on.from } : null
+}
 
 // What all four displays show on this frame, read from the `text` shapes of the part and from nothing else.
 export function pick(ctx: RealContext): Show {
@@ -29,9 +50,8 @@ export function pick(ctx: RealContext): Show {
   const say = (s: Shape, t: number): Show => ({ kind: 'mode', name: words(s.words!.replace(/\.display$/, '.insert')), line: words(s.words!), t })
   const timed = modes.filter((s) => first(s, 0) !== undefined)
   if (timed.length > 0) {
-    let best: Shape | null = null
-    for (const s of timed) if (first(s, 0)! < modeSeconds(words(s.words!)) && (best === null || first(s, 0)! < first(best, 0)!)) best = s
-    return best ? say(best, Math.max(0, first(best, 0)!)) : scoreShape ? score : say(timed[timed.length - 1]!, 0)
+    const now = running(timed.map((s) => ({ id: s.id, since: first(s, 0)!, line: words(s.words!) })))
+    return now ? say(timed.find((s) => s.id === now.id)!, now.t) : scoreShape ? score : say(timed[timed.length - 1]!, 0)
   }
   const ball = ctx.byId.get('ball.clear')
   const where = ball ? zoneAt(ball.y + ball.h / 2) : ''
