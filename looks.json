@@ -1,35 +1,35 @@
 {
   "folder": "step2-dial",
-  "pushed": "2026-11-26T01:42:07.235Z",
-  "commit": "a7ae0cb182067edbacfc7f4238da549a53c2c586",
+  "pushed": "2026-11-26T02:02:08.123Z",
+  "commit": "43a726962101c9e89fddd24080b2391eb466f48e",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "key step2-dial beside approved, review tier, commit a7ae0cb: deep tray, chrome rim, semi-bold row titles",
-      "time": "2026-11-26T01:42:05.496Z",
+      "caption": "Still key-step2-crank-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T01:59:48.883Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126014205-compare-step2-dial.jpg"
+      "from": "out/work/stills/key-step2-crank-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "dial and tray close, approved above, build below",
-      "time": "2026-11-26T01:42:05.720Z",
+      "caption": "Contact sheet, the beat step2.crank: 12 frames from 1:00.00 to 1:05.97, draft tier, preview",
+      "time": "2026-11-26T02:00:16.148Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126014205-dial-close.jpg"
+      "from": "out/work/sheets/sheet-beat-step2_crank-preview-draft.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "key step2-crank beside approved, review tier, with the slot maker's crank merged",
-      "time": "2026-11-26T01:42:05.950Z",
+      "caption": "43a7269 dial tray, approved above, build below (draft): floor shade held under the upper and left wall, words in on-glass ink",
+      "time": "2026-11-26T02:02:06.411Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126014205-compare-step2-crank.jpg"
+      "from": "out/work/looks/files/20261126020206-dial-tray-close.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "motion sheet of the dial's whip, 12 frames round the event dial-fling",
-      "time": "2026-11-26T01:42:06.180Z",
+      "caption": "43a7269 crank tray at key step2-crank, approved above, build below (draft): grip 52 px, crank and prompt further in from the wall",
+      "time": "2026-11-26T02:02:06.637Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126014206-motion-dial-fling.jpg"
+      "from": "out/work/looks/files/20261126020206-crank-tray-close.jpg"
     }
   ]
 }
