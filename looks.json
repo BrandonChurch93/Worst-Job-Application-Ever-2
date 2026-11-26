@@ -1,35 +1,35 @@
 {
   "folder": "decision",
-  "pushed": "2026-11-26T00:47:13.266Z",
-  "commit": "0151eeced9d310aad63ac05bb2cee651faa8fdc8",
+  "pushed": "2026-11-26T01:30:39.789Z",
+  "commit": "f512992b08e3a0f6ca76f56e14477acb79362f2b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the beat decision.letter: 12 frames from 2:23.00 to 2:26.97, draft tier, preview",
-      "time": "2026-11-26T00:46:23.728Z",
+      "caption": "Decision key at review tier beside the approved image, 01:30 UTC: stamp laid on its side, sheet off square, panel with its line of light",
+      "time": "2026-11-26T01:30:38.077Z",
       "by": "decision",
-      "from": "out/work/sheets/sheet-beat-decision_letter-preview-draft.jpg"
+      "from": "out/work/compare/compare-decision.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key decision: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T00:46:57.621Z",
+      "caption": "The stamp at rest, laid on its side: grip, chrome band, lacquered block, dark red die",
+      "time": "2026-11-26T01:30:38.300Z",
       "by": "decision",
-      "from": "out/work/compare/compare-decision.jpg"
+      "from": "out/work/look-stamp.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "First real pass of the decision key beside the approved image: paper, inked mark, lacquered stamp, glass metrics panel",
-      "time": "2026-11-26T00:47:10.100Z",
+      "caption": "The letter: fibre, lifted corner, shade all round, the mark printed twice and unevenly",
+      "time": "2026-11-26T01:30:38.523Z",
       "by": "decision",
-      "from": "out/work/compare/compare-decision.jpg"
+      "from": "out/work/look-letter.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The letter beat in 12 frames: display spins to zeros, sheet drops, stamp swoops, slams and leaves the mark",
-      "time": "2026-11-26T00:47:10.341Z",
+      "caption": "The wait display: a grid of round lamps behind smoked glass",
+      "time": "2026-11-26T01:30:38.748Z",
       "by": "decision",
-      "from": "out/work/sheets/sheet-beat-decision_letter-preview-draft.jpg"
+      "from": "out/work/r-wait.jpg"
     }
   ]
 }
