@@ -19,9 +19,9 @@ const unit = (x: number, y: number, z: number): [number, number, number] => {
 }
 
 export const KEYS: Record<string, Key> = {
-  corporate: { toward: unit(0.56, 0.72, 0.5), colour: C.CORPORATE_KEY, power: 1.7 },
-  office: { toward: unit(0.56, 0.72, 0.52), colour: C.OFFICE_KEY, power: 1.6 },
-  street: { toward: unit(0.56, 0.72, 0.5), colour: C.STREET_KEY, power: 1.5 }
+  corporate: { toward: unit(0.56, 0.72, 0.5), colour: C.CORPORATE_KEY, power: 1.2 },
+  office: { toward: unit(0.56, 0.72, 0.52), colour: C.OFFICE_KEY, power: 1.15 },
+  street: { toward: unit(0.56, 0.72, 0.5), colour: C.STREET_KEY, power: 0.9 }
 }
 
 export const keyOf = (z: Zone | string): Key | null => KEYS[typeof z === 'string' ? z : z.id] ?? null

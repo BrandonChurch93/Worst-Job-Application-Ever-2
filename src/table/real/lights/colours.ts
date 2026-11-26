@@ -24,7 +24,7 @@ export const STREET_FLASH: RGB = [1.0, 0.93, 0.84]
 
 // The head lamps of each tier: the one warm light from one side.
 export const CORPORATE_KEY: RGB = [1.0, 0.88, 0.7]
-export const OFFICE_KEY: RGB = [1.0, 0.9, 0.72]
+export const OFFICE_KEY: RGB = [1.0, 0.93, 0.82]
 export const STREET_KEY: RGB = [1.0, 0.8, 0.56]
 
 // The four dot displays, and the marquee's panel at dusk.

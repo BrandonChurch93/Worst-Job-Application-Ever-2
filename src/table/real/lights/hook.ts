@@ -47,7 +47,7 @@ const SHEEN = { coat: 0.03, pools: 0.0 }
 const LEAF = 1.1
 
 // Lacquer is not a flat mirror: the orange peel of the coat draws each lamp out into a streak that runs toward the eye, longer the lower the eye. A lamp is looked for at several heights along the turned line of sight, a different set for each pixel.
-const STREAK = { taps: 6, head: 0.45, at: 0.3, near: 0.42, far: 2.8, level: 2.6, long: 3.5 }
+const STREAK = { taps: 6, head: 0.5, at: 0.3, near: 0.42, far: 1.25, level: 2.2, long: 2.0 }
 
 // Print under lacquer is dark where no lamp stands near: the coat sends most of a far lamp's light away from the eye, and only in the pool round a lamp does the print show in full.
 const DEEP = { from: 0.12, to: 1.3 }

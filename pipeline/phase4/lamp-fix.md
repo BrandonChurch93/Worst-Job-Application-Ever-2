@@ -66,11 +66,20 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 07:10 | lights | 4 | k2, general lamps of the Office down: reply-all, tier-office, last-save, rail-cam | 14, 3 |
 | 07:12 | lights | 3 | k3, general lamps of all tiers down, head lamps up: reply-all, last-save, table-wide | 17, 3 |
 | 07:14 | lights | 1 | k4, reply-all with the head lamps off, to see what the rest gives alone | 18, 3 |
+| 07:23 | art | 4 | a1, new Office and Street floors: reply-all, tier-office, tier-street, last-save | 18, 7 |
+| 07:29 | art | 4 | a2, flush inserts, warm lane lamps, no printed halos: tier-office, tier-street, tier-corporate, last-save | 18, 11 |
+| 07:33 | lights | 4 | a3, head lamps down a step: tier-corporate, tier-office, tier-street, reply-all | 22, 11 |
 
 ## Decisions
 
 1. Point 2, the side light. Each tier has one bar of warm spots hidden under the cross rail at its head, right of the middle, aimed down the tier: `src/table/real/lights/key.ts`. It is a lamp of the machine: it follows the tier's general lighting and has its own solo name `<zone>.key`. It costs no light of `ctx.light` and no shadow map (`TRUE.shadows` stays 0): the shadows of everything that stands are worked out once per tier from the layout as a height map swept away from the lamps, three times for a soft edge that widens with distance; the balls and the flippers move, so their shadows are worked out in the shader from their places each frame.
 2. The pit rails and the sling walls do not throw the head lamps' shadow: the rails would put the whole right side of a tier in the dark, and the sling's body is filled in as one block instead.
 3. With the head lamps on, the general lamps of a tier are lower (Corporate 1.45 to 0.8, Office 0.6 to 0.14, Street 1.2 to 0.7) and the soft fill is lower per tier (`SOFT` in `colours.ts`), so a shadow is dark and the head lamps are what shapes a tier. MEASURED with `node assets-src/table/lights/means2.mjs k4 reply-all`: with the head lamps off `reply-all` stands at 0.91 of the approved mean, with them on at 1.26 (k3). The Office floor print is still too light and too green for that light; point 4 takes it down, and the brightness is set after it.
+4. Point 3, the Street floor. The grid is gone and the plots are broad faint slabs without outlines; the road lines are wider and brighter, the kerb has no ticks, and 150 fine scratches lie in the lacquer (`wear` in `assets-src/table/art/tiers.mjs`). The reflections of the lamps are shorter and softer: `STREAK` in `hook.ts` (far 2.8 to 1.25, level 2.6 to 2.2, long 3.5 to 2.0).
+5. Point 4, the Office floor. Slate teal instead of bright green, cream squares greyer, the carpet strokes replaced by a fine speckle, the clutter thinned to one sheet, one tab, four clips, one band and five dots.
+6. Point 5, the inserts. No printed ring and no trim ring: a frosted milky lens with a finer line (9 px in the atlas), the glow brightest in the middle, the lens 0.35 px over the floor with a low dome, and one slim seat of warm metal round it in `lamps.ts` (vertex colour in the mesh that was there, no new draw call).
+7. Point 6, the lane lamps. Warm lens, wider than long, in a frame of dark metal; the printed round halos under every lamp are gone from the floors. AGREED with `/root/frame_fixer` at 07:29 UTC: I draw the seat of every lane lamp, they draw none and keep only the edge strips of the lane.
+8. Nothing is printed round a lamp or a window on any floor any more: what is round a lamp is metal in `lamps.ts`, what is in a window is the atlas.
+9. Brightness after a3, MEASURED with `node assets-src/table/lights/means2.mjs a3`: tier-corporate 1.14, tier-office 1.08, reply-all 1.11, tier-street 1.15 of the approved means. Halving the head lamp of the Street moved its key by 0.01, so what is too bright there is the floor under its own lamps, not the head lamp.
 
 ## Needs
