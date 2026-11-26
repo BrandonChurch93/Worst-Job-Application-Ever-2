@@ -93,31 +93,44 @@
     "levelDb": -18,
     "gainDb": 1.77,
     "channels": 1,
-    "loop": null
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.02,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": -0.49,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 0.53,
+      "lufsBefore": -18,
+      "lufsAfter": -18.01
+    }
   },
   "measured": {
     "seconds": 5.864,
     "start": 0,
     "end": 5.834,
-    "peakDb": -0.49,
-    "rmsDb": -20.64,
-    "lufs": -18,
-    "truePeakDb": -0.49,
+    "peakDb": -1.02,
+    "rmsDb": -20.65,
+    "lufs": -18.01,
+    "truePeakDb": -1.02,
     "low": 0.423,
-    "mid": 0.371,
+    "mid": 0.37,
     "high": 0.207,
-    "tailDb": -21.7,
+    "tailDb": -21.17,
     "hits": 5,
     "hitsAt": [
       {
         "start": 0.004,
-        "end": 1.272,
+        "end": 1.274,
         "peakDb": -1.86
       },
       {
         "start": 2.446,
         "end": 2.764,
-        "peakDb": -0.49
+        "peakDb": -1.02
       },
       {
         "start": 2.84,
@@ -180,5 +193,14 @@
   "fixture": false,
   "file": "line.step2.dial.0.wav",
   "seconds": 5.864,
-  "sha256": "20d7ad6ada0d19271937dcdf0151504452387c78aa46491ff8ef5385b20cc730"
+  "sha256": "6207450ffe8c9296d23ae52248a468ab9aa5f10b46543747b2cfd05646e7e25b",
+  "rekept": {
+    "when": "2026-11-26T17:46:32Z",
+    "why": "its levelled true peak was -0.49 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
+    "was": {
+      "sha256": "20d7ad6ada0d19271937dcdf0151504452387c78aa46491ff8ef5385b20cc730",
+      "truePeakDb": -0.49,
+      "lufs": -18
+    }
+  }
 }
