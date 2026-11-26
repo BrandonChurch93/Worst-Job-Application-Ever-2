@@ -115,7 +115,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-wide': { ...look('table-wide', [MID, APRON_Y + 20.07, 13.09], [MID, Y2 + 7.6, 2.44]), omit: LAST_OUT },
   'table-lobby': look('table-lobby', [MID + 0.8, Y0 + 8.3, -0.45], [MID - 0.15, Y0 + 5.02, 0.19]),
   'table-replyall': look('table-replyall', [MID, Y1 + 16.35, 15.4], [MID, Y1 + 6.3, -2]),
-  'table-fired': look('table-fired', [6.91, Y2 + 6.8, -0.67], [4.4, Y2 + 3.8, -2.27]),
+  'table-fired': look('table-fired', [7.14, Y2 + 7.44, 0.27], [4.6, Y2 + 3.8, -1.8]),
   'table-save': { ...look('table-save', [MID, Y2 + 17.42, 3.33], [MID, Y2 + 10.64, -0.91]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
