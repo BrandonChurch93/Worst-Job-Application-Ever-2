@@ -321,6 +321,7 @@ function makeSpark(): THREE.Object3D {
   const flecks = overlay(new THREE.Mesh(needles(), k.fleckMaterial), 6)
   flecks.name = 'flecks'
   flecks.frustumCulled = false
+  flecks.userData.small = FLECKS
   flecks.position.z = 3
   root.add(flecks)
   return root

@@ -1,5 +1,6 @@
 // What the interface needs from the site, and what the site calls. The Builder builds against this file.
 import { mountInterface } from './interface'
+import { messagesOf } from './said'
 import { makeQualityPicker, type QualityLevel, type QualityPicker } from './picker'
 import { lessMotion, touchOnly } from './device'
 import { ready } from './glyphs'
@@ -41,7 +42,7 @@ export interface InterfaceApi {
   setStep(step: number): void
   // The current step's heading, as the page shows it, for the hidden live region.
   heading(): string
-  // The messages the page shows now, oldest first. Each one is said once.
+  // The messages the page shows now, oldest first. Each one is said once a step.
   messages(): string[]
   skipOffered(): boolean
   skip(): void
@@ -70,4 +71,4 @@ export interface Mounted {
 }
 
 export type { ProbeRunner, ProbeScene, QualityLevel, QualityPicker }
-export { lessMotion, makeQualityPicker, mountInterface, mountProbe, mountTouchMessage, PROBE_SCENES, ready, touchOnly }
+export { lessMotion, makeQualityPicker, messagesOf, mountInterface, mountProbe, mountTouchMessage, PROBE_SCENES, ready, touchOnly }

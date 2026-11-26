@@ -13,6 +13,8 @@ const turnSteps = Math.round(TURN_HALF * stepHz)
 const checkpointSteps = Math.round(config.sim.checkpointSeconds * stepHz)
 const skipAfter = Math.round(config.live.skipLinkAfterSeconds * stepHz)
 const armsBeat = beat(config.cursor.armsOnlyInBeat)
+// A click lands where the hero is. The page is told the hero's place on the step of the press, and the place it is told then eases back to the mouse over this many seconds, so a drag that starts with the click has no jump in it.
+export const CLICK_EASE_SECONDS = 0.12
 
 export interface StageOptions {
   mode: Mode
@@ -36,6 +38,7 @@ interface Saved {
   skipped: boolean
   run: number
   max: { pointer: number; flippers: number }
+  lag: { x: number; y: number; left: number }
   reached: string[]
   visited: string[]
   events: number
@@ -61,6 +64,7 @@ export class Stage {
   private skipped = false
   private run = 0
   private max = { pointer: 0, flippers: 0 }
+  private lag = { x: 0, y: 0, left: 0 }
   private reached = new Set<string>()
   private visited = new Set<string>()
   private made = new Map<string, PageLogic>()
@@ -70,6 +74,7 @@ export class Stage {
 
   constructor(readonly o: StageOptions) {
     this.driver = o.driver
+    this.cursor.hand = o.mode === 'live'
     this.reset()
   }
 
@@ -91,6 +96,7 @@ export class Stage {
     this.page.reset({ mode: this.o.mode, variant: entry.variant ?? '', applicant: this.o.mode === 'film' ? applicant : null, seed: this.o.seed ?? config.seed })
     this.pageStep = 0
     this.skipped = false
+    this.lag = { x: 0, y: 0, left: 0 }
     if (entry.opens !== false) this.unitStep = 0
     this.phaseStep = 0
     this.phase = arrive ? 'arrive' : 'play'
@@ -105,6 +111,7 @@ export class Stage {
     this.down = false
     this.run = 0
     this.max = { pointer: 0, flippers: 0 }
+    this.lag = { x: 0, y: 0, left: 0 }
     this.reached = new Set()
     this.visited = new Set()
     this.checkpoints.clear()
@@ -161,7 +168,8 @@ export class Stage {
       page.skip()
     }
     if (this.phase !== 'end') {
-      page.step({ step: this.pageStep, time: this.pageTime, elapsed: this.time, dt, pointer, pressed: pointer.down && !this.down, released: !pointer.down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
+      const pressed = pointer.down && !this.down
+      page.step({ step: this.pageStep, time: this.pageTime, elapsed: this.time, dt, pointer: this.o.mode === 'live' ? this.landed(pointer, pressed) : pointer, pressed, released: !pointer.down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
       const gag = page.gag()
       if (gag) this.reached.add(gag)
       const inBeat = this.o.mode === 'live' || (this.index === 0 && this.pageTime >= armsBeat.from && this.pageTime < armsBeat.to)
@@ -179,6 +187,14 @@ export class Stage {
     this.phaseStep++
     this.step++
     this.advancePhase(emit)
+  }
+
+  private landed(pointer: Pointer, pressed: boolean): Pointer {
+    const c = this.cursor
+    if (pressed && this.page.control === 'pointer' && !c.taken && !c.inAir && c.onPage) this.lag = { x: c.x - pointer.x, y: c.y - pointer.y, left: 1 }
+    else if (this.lag.left > 0) this.lag.left = Math.max(0, this.lag.left - dt / CLICK_EASE_SECONDS)
+    if (this.lag.left <= 0) return pointer
+    return { ...pointer, x: pointer.x + this.lag.x * this.lag.left, y: pointer.y + this.lag.y * this.lag.left }
   }
 
   private advancePhase(emit: (name: string, x: number, y: number) => void): void {
@@ -214,7 +230,7 @@ export class Stage {
 
   private save(): Saved {
     return {
-      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max },
+      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max }, lag: { ...this.lag },
       reached: [...this.reached], visited: [...this.visited], events: this.events.length, page: JSON.parse(JSON.stringify(this.page.save() ?? null)), cursor: this.cursor.save()
     }
   }
@@ -235,6 +251,7 @@ export class Stage {
     this.skipped = s.skipped
     this.run = s.run
     this.max = { ...s.max }
+    this.lag = { ...(s.lag ?? { x: 0, y: 0, left: 0 }) }
     this.reached = new Set(s.reached)
     this.visited = new Set(s.visited)
     this.events.length = s.events

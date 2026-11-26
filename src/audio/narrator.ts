@@ -9,6 +9,8 @@ export interface BeatLine { id: string; offset: number; seconds: number }
 
 export class Narrator {
   private booked: Booking[] = []
+  // Why the last line asked of live() was not booked, in words; null when it was.
+  why: string | null = null
 
   constructor(readonly rules: NarratorRules) {}
 
@@ -55,9 +57,20 @@ export class Narrator {
   // A live line starts as soon as nothing is said and the gap since the last line is kept. If that is later than it may wait, it is not spoken at all.
   live(now: number, id: string, group: string, seconds: number, wait: number = this.rules.liveLate): Booking | null {
     let start = now
-    for (const b of this.bookings(now)) if (b.start <= start && b.end + this.rules.minGap > start) start = b.end + this.rules.minGap
-    if (start - now > wait + 1e-9) return null
-    for (const b of this.booked) if (b.start > start && start + seconds + this.rules.minGap > b.start) return null
+    let after = ''
+    this.why = null
+    for (const b of this.bookings(now)) if (b.start <= start && b.end + this.rules.minGap > start) {
+      start = b.end + this.rules.minGap
+      after = b.id
+    }
+    if (start - now > wait + 1e-9) {
+      this.why = wait < 0 ? 'it may not be said here' : `it could start ${(start - now).toFixed(2)} s after its trigger, ${this.rules.minGap} s after ${after} ends, and may wait ${wait.toFixed(2)} s`
+      return null
+    }
+    for (const b of this.booked) if (b.start > start && start + seconds + this.rules.minGap > b.start) {
+      this.why = `it would end less than ${this.rules.minGap} s before ${b.id}, which is booked`
+      return null
+    }
     return this.add({ id, kind: 'live', group, start, end: start + seconds })
   }
 

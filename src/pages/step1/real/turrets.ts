@@ -204,6 +204,7 @@ function makeTurret(s: Shape): THREE.Object3D {
   barrel.add(halo)
   const sparks = overlay(new THREE.InstancedMesh(f.orb, chargeMaterial, TURRET_LOOK.sparks), 1) as THREE.InstancedMesh
   sparks.frustumCulled = false
+  sparks.userData.small = 'each'
   barrel.add(sparks)
   const flashMaterial = f.flashMaterial.clone()
   const flash = overlay(new THREE.Mesh(f.quad, flashMaterial), 2)
@@ -425,6 +426,7 @@ function makeScorch(s: Shape): THREE.Object3D {
   const sparkMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.chargeHigh), toneMapped: false })
   const sparks = overlay(new THREE.InstancedMesh(f.orb, sparkMaterial, SCORCH.sparks), 20) as THREE.InstancedMesh
   sparks.frustumCulled = false
+  sparks.userData.small = 'each'
   root.add(sparks)
   const flareMaterial = f.flashMaterial.clone()
   const flare = overlay(new THREE.Mesh(f.quad, flareMaterial), 30)
