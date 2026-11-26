@@ -77,10 +77,13 @@ Decisions after the first pass:
 10. The tip at the dial key: the cursor's own follow keeps it at the stop for about 0.1 s after the pointer leaves and takes 0.3 s over the way. The two digits are now dialled 0.02 s and 0.04 s earlier (2.31 s and 2.83 s; the tray is not ready for a press before 2.30 s, and the second digit is not taken before 2.82 s), and the pointer rests at 5, 16 from the centre of the cap. MEASURED with the probe: at 3.2 s the tip is 28 px right of and 23 px below the centre of the cap, on its lower right shoulder (was 43, 30; the approved has about 25, 21).
 11. The tray's wall is the floor's own frosted glass (`glassSunk`, was `cardSeal`), so wall and floor are one piece; its shade fades out at the foot. The rim's roll is flatter (36 degrees, was 60) so it shows less of a dark flank on each side.
 
+12. The tray again, after a look at four times the size beside the approved key: the wall was 37 px wide, wider than the tray's corner is round (18 px), so the floor's corners were square and the wall met itself in a mitre. The rim is now 7 px and the wall leans 0.25 (5 px wide), so the floor's corner stays round and the wall is a thin band, dark on the light's side and bright across from it, as approved. The coins lie 14 px in from the tray's edge.
+13. The meter: the unlit lenses are lighter (`clear.low` 0.44, was 0.3), the lit ones have a pale core, and the light the lit ones throw on the floor is stronger (0.8 a segment, was 0.5). The brief says dark inset lenses; the approved key `step2-crank` shows pale clear ones. The kit wins: lighter, not yet as clear as approved.
+
 ## Looks, counted by part
 
-- rows: 7 (the rest key three times; the dial and crank keys twice each for the cove and the glass wall).
+- rows: 9 (the rest key three times; the dial key three times and the crank key three times for the tray).
 - dial: 7 (the dial key seven times).
-- crank: 9 (the crank key six times; three stills of the wind-up).
-- slot: 39 (the sheet six times; 8 stills at a wrong time that showed nothing; 22 stills of the lever, the reels and the coins; three stills of the tray shutting over the coins).
+- crank: 11 (the crank key eight times; three stills of the wind-up).
+- slot: 40 (one still of the coins lying at 13.0 s; the sheet six times; 8 stills at a wrong time that showed nothing; 22 stills of the lever, the reels and the coins; three stills of the tray shutting over the coins).
 - acting: 40 (12 of the slot beat, 4 at a wrong time, 7 of the dial beat, 4 of the open beat, 8 of the crank beat, 5 of the peel). None left this round.
