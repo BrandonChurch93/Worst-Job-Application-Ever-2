@@ -39,7 +39,7 @@ Unit `decision`, page `step5`. Files: `layout.ts` (the page and its places), `ti
 Makers in `real/`: `wait.ts`, `letter.ts` with `letterStock.ts`, `stamp.ts` with `stampInk.ts`, `metrics.ts`. What each is made of and why is in `pipeline/phase4/decision.md`; the textures are in `assets-src/decision/RECIPE.md`.
 
 - `wait`: the panel is the shared glass card. The counter is a chrome bezel, a dark gap and smoked glass 1.6 px below the bezel's top. The digits (`wait-value`, `wait-count`, part `wait`) are lamps under the glass with a halo, and they light the panel through `ctx.light`.
-- `letter`: one sheet of 72 by 48 cells, flat under its print, lifted at its four corners (3.4 px at the lower right), with fibre in its colour and in its normals. A painted shade lies under it and fades as the sheet leaves the page.
+- `letter`: one sheet of 72 by 48 cells, flat under its print, lifted at its four corners (3.4 px at the lower right), with fibre in its colour and in its normals. A painted shade lies under it and fades as the sheet leaves the page. In the air the sheet is lifted by a little light of its own (`AIR` in `letter.ts`, by height only) so that it does not fall grey.
 - `stamp`: a lacquered block on a rubber pad with a waisted grip, both red. The mark is geometry in red ink: a double border drawn from `letter-mark-top`, and the word `letter-stamp` (part `stamp`), both under one picture of uneven ink cover.
 - `metrics`: the panel and the three readouts are the shared glass card.
 
@@ -51,6 +51,19 @@ Makers in `real/`: `wait.ts`, `letter.ts` with `letterStock.ts`, `stamp.ts` with
 | `stamp-dust` | seconds since the hit | | |
 
 `stamp-dust` is in the draw list only for `HIT.dustSeconds` (0.62 s) after the hit.
+
+### The acting (recipe 5)
+
+One word for each beat, all in `script.ts` as `PACE`, `HOPE`, `GIVE` and `CUES`, tested in `tests/decision-acting.test.ts`.
+
+| Beat | Word | What the cursor does |
+| --- | --- | --- |
+| The wait, 0 to 2 s | worried | stands under the panel to 0.9 s, crouches (`anticipate`), tiptoes 110 px right, flinches at the count (1.24 s), tiptoes back 44 px past where it stood, and stands, `nervous` |
+| The letter falls, 2 to 4.3 s | hope | stands still while the sheet falls, hops when it lands (`jump`, `proud`), struts to the foot of the sheet (2.9 to 3.5 s), looks up at 3.62 s (`doubleTake`) and freezes |
+| The stamp, 4.3 s | frozen | no move from 3.5 s to the hit, then flat |
+| The peel and the button, 6 to 10 s | beaten | peels itself up, looks at the one button (7.82 s), drags itself there in 0.65 s, stands 0.4 s, and presses once with no flourish, `exhausted` |
+
+Every hold is a pointer that does not move, so the gag ends by itself in live mode: the script only drives the film.
 
 ## Not done
 

@@ -16,11 +16,11 @@ const q = (v: number): number => Math.round(v * 4) / 4
 const WHITE: [number, number, number] = [1, 1, 1]
 const PRINT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 0.55, a: 0.7, c: WHITE }] }
 const FRAME = { r: 12, inner: 12, thin: 2.6, feather: 0.7 }
-const PAD = { out: 1.6, tall: 5, gap: 1.6 }
+const PAD = { out: 2.6, tall: 5, gap: 1.6 }
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 function lacquer(): THREE.MeshPhysicalMaterial {
-  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xc41a10, THREE.SRGBColorSpace), roughness: 0.34, metalness: 0, specularIntensity: 0.45, clearcoat: 1, clearcoatRoughness: 0.07 }))
+  lacquerMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0xd6220f, THREE.SRGBColorSpace), roughness: 0.3, metalness: 0, specularIntensity: 0.5, clearcoat: 1, clearcoatRoughness: 0.05 }))
   lacquerMade.name = 'stamp-lacquer'
   return lacquerMade
 }
@@ -42,7 +42,7 @@ function blockOf(s: Shape): THREE.Object3D {
   root.add(solid(sweep(outlineOf(s, 0, 12), profile(pad), false), m.rubber))
   const round = 12
   const top = h - 0.7
-  const body: ProfilePoint[] = [[1.6, PAD.tall + PAD.gap - 0.4, true], [0.2, PAD.tall + PAD.gap + 1.2], [0, PAD.tall + PAD.gap + 3], [0, top - round], ...arc(0, top - round, round, round, 12).slice(1), [round + 5, top + 0.25], [Math.min(half - 1, round + 14), top + 0.4]]
+  const body: ProfilePoint[] = [[1.6, PAD.tall + PAD.gap - 0.4, true], [0.2, PAD.tall + PAD.gap + 1.2], [0, PAD.tall + PAD.gap + 3], [0, top - round], ...arc(0, top - round, round, round, 12).slice(1)]
   root.add(solid(sweep(outlineOf(s, 0, 12), profile(body)), lacquer()))
   return root
 }
@@ -52,13 +52,15 @@ function gripOf(s: Shape): THREE.Object3D {
   const half = Math.min(s.w, s.h) / 2
   const neck = Math.min(9, half * 0.3)
   const dome = Math.min(13, half - 3)
-  const top = h - 1
+  const top = h - 3
+  const r = half * 0.86
+  const end = r - 2
   const points: ProfilePoint[] = [
     [-2.5, 0, true], [-2.5, 2.2], [-1.2, 3.6], [neck * 0.55, 5.5], [neck, 10], [neck, h * 0.42], [neck * 0.5, h * 0.55], [1.5, h * 0.64], [1, top - dome],
     ...arc(1, top - dome, dome, dome, 12).slice(1),
-    ...[0.8, 0.55, 0.3, 0.06].map((t): ProfilePoint => [half - (half - dome - 1) * t, top + 1 * (1 - t * t)])
+    ...[0.8, 0.6, 0.4, 0.2, 0].map((t): ProfilePoint => [end - (end - dome - 1) * t, top + 3 * (1 - t * t)])
   ]
-  return solid(sweep(outlineOf(s, 0, 20), profile(points)), lacquer())
+  return solid(sweep(outlineOf({ ...s, kind: 'box', r }, 0, 20), profile(points)), lacquer())
 }
 
 function inked(position: ArrayLike<number>, colour: ArrayLike<number>, index: ArrayLike<number>, w: number, h: number, ox: number, oy: number): THREE.BufferGeometry {
@@ -131,7 +133,7 @@ function wordOf(s: Shape): THREE.Mesh {
   return print(inked(pos, data.colour, data.index, m.w, m.h, 0, 0))
 }
 
-const DUST = { seed: INK.seed + 41, motes: 96, fan: 8, colour: 0x979083, slow: 0.17 }
+const DUST = { seed: INK.seed + 41, motes: 96, fan: 8, colour: 0xb3ab9e, slow: 0.17 }
 
 interface Mote { x: number; y: number; nx: number; ny: number; speed: number; r: number; grow: number; a: number }
 
@@ -152,7 +154,7 @@ function motes(): Mote[] {
     const by = onLong ? flip : spread
     const l = Math.hypot(bx, by)
     const speck = h(4) < 0.42
-    out.push({ x, y, nx: bx / l, ny: by / l, speed: speck ? 500 + h(5) * 800 : 220 + h(5) * 460, r: speck ? 0.8 + h(6) * 1.2 : 8 + h(6) * 14, grow: speck ? 0 : 90, a: speck ? 0.8 : 0.2 + h(7) * 0.2 })
+    out.push({ x, y, nx: bx / l, ny: by / l, speed: speck ? 500 + h(5) * 800 : 220 + h(5) * 460, r: speck ? 0.8 + h(6) * 1.2 : 8 + h(6) * 14, grow: speck ? 0 : 90, a: speck ? 0.7 : 0.07 + h(7) * 0.09 })
   }
   return out
 }

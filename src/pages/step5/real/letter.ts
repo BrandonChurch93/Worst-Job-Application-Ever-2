@@ -12,7 +12,8 @@ const ease = (t: number): number => {
 
 const GRID = { nx: 72, ny: 48 }
 const CURL: [number, number, number, number][] = [[1, 1, 3.4, 96], [1, 0, 1.3, 60], [0, 1, 1.1, 54], [0, 0, 0.5, 44]]
-const SHADE = { rings: [[-12, 0.62], [0, 0.62], [1.2, 0.44], [3, 0.3], [6, 0.2], [10, 0.12], [15, 0.065], [21, 0.03], [30, 0]] as [number, number][], dx: 5, dy: -6.5, colour: 0x1b1815 }
+const SHADE = { rings: [[-14, 0.62], [0, 0.62], [1.4, 0.48], [3.6, 0.35], [7, 0.24], [12, 0.15], [18, 0.085], [26, 0.04], [38, 0]] as [number, number][], dx: 7, dy: -8.5, colour: 0x1b1815 }
+const AIR = { glow: 0.16, full: 140 }
 
 export function liftAt(u: number, v: number, w: number, h: number): number {
   let z = 0
@@ -125,6 +126,7 @@ export const letter: PartMaker | null = {
     shade.visible = k > 0.02
     shade.position.set(SHADE.dx + up * 0.6, SHADE.dy - up * 0.6, 0.06 - up)
     ;(shade.material as THREE.MeshBasicMaterial).opacity = k
+    stock().sheet.emissive.setScalar(AIR.glow * Math.min(1, up / AIR.full))
   },
   drop(o) {
     o.traverse((c) => {

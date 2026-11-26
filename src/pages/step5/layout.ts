@@ -172,8 +172,8 @@ function stampAtRest(): LayoutNode {
   const BLOCK = { w: m.blockW, h: m.blockH }
   const x = RIGHT_X
   const y = BOTTOM - BLOCK.h
-  const gripW = Math.round(BLOCK.w * 0.56)
-  const gripH = Math.round(BLOCK.h * 0.46)
+  const gripW = Math.round(BLOCK.w * 0.54)
+  const gripH = Math.round(BLOCK.h * 0.6)
   return node('stamp', 'stamp', [x, y, BLOCK.w, BLOCK.h], {
     part: 'stamp', shape: 'none', states: SHOWN,
     children: [

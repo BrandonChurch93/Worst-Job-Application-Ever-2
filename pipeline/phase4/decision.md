@@ -23,3 +23,7 @@ Read from `references/approved/decision.png` at full size, crop by crop.
 - The lacquer of the stamp is the part's own material through `studio()`: the shared red reads pale and chalky on a face this large.
 - The hit of the stamp has four parts, all in `HIT` of `script.ts`: the block draws back and leans for 0.24 s, falls with a rising speed, the rubber gives 1.5 px and the block rocks for about 0.3 s, and paper dust leaves from under its edges for 0.62 s. The times of the page's events are not moved.
 - Dust is one more shape, `stamp-dust`, that exists only for 0.62 s after the hit. Its motes are placed by `hash01` from the seed, so a frame is the same on every machine.
+- The acting has one word a beat: worried, hope, frozen, beaten. The times are in `PACE`, `HOPE` and `GIVE` of `script.ts`. The stand of 0.9 s at the start is there because the page is still turning in.
+- The grip is wider than the first layout gave it (0.54 by 0.6 of the block) and its top is a rounded bar with a 3 px crown, so that the lamps leave a broad highlight on it when it is seen from straight above.
+- The sheet in the air read grey beside the page (about 205 against 234 in 8 bit). It now carries a light of its own that grows with its height and is zero when it rests: `AIR` in `letter.ts`.
+- The glass of the metrics panel is darker and flatter than in the approved image. It is the shared card, which is not mine to change. Told to `/root`.
