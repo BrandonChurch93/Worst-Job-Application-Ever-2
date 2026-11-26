@@ -419,8 +419,8 @@ function makeCassette(): THREE.Group {
   return root
 }
 
-// A contact throws the unit: for each page pixel of it, how far the cassette dips into its well, how far the two panels are knocked apart and how far the chute swings.
-const THROWN = { dip: 1.6, panels: 0.5, chute: 0.02 }
+// A contact throws the unit: for each page pixel of it, how far the cassette dips into its well and slips down the page in its seat, how far the two panels are knocked apart and how far the chute swings.
+const THROWN = { dip: 1, slip: 0.6, panels: 0.5, chute: 0.02 }
 
 function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const rig = o.userData.rig as Cassette
@@ -431,6 +431,7 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const p = panelsOf(open)
   const thrown = s.y - housingY
   rig.lift.position.z = RAISE - TRAVEL * (1 - rise) - thrown * THROWN.dip
+  rig.lift.position.y = -thrown * THROWN.slip
   rig.lift.visible = p > 0.5
   rig.seat.visible = rig.lift.visible
   for (const e of rig.ears) {

@@ -32,14 +32,14 @@ const SINGE = 0.2
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
 const TIDY = 0.3
-// The live takeover: the seconds the arms take to reach the bitten paper, then the seconds over which the paper's pull on the arrow comes on.
-const TAKE = { reach: 0.16, pull: 0.42 }
-// The live loss: the last pull back in seconds and page pixels, the seconds of the skid to the slot, how much of the paper it wins back a second meanwhile, and the arrow's stretch and its seconds on the frame its grip goes.
-const LOSS = { pull: 0.22, back: 20, gain: 0.12, skid: 0.36, long: 1.28, kick: 0.07 }
+// The live takeover: the seconds the arms take to reach the bitten paper, then the seconds over which the paper's pull on the arrow comes on, and the most the held paper leans from upright, in radians, wherever the arrow stands.
+const TAKE = { reach: 0.16, pull: 0.42, lean: 0.6 }
+// The live loss: the last pull back in seconds and page pixels, the seconds of the skid to the slot, how much of the paper it wins back a second meanwhile, the arrow's stretch and its seconds on the frame its grip goes, then the seconds the hands ride the last of the paper into the mouth and how far that draws the arrow down after it.
+const LOSS = { pull: 0.22, back: 20, gain: 0.12, skid: 0.36, long: 1.28, kick: 0.07, feed: 0.16, sink: 26 }
 // The slot's answer to a contact: its seconds, and how far the cassette and the panel round it are thrown, in page pixels, at the bite, at the lost grip and where the arrow meets the slot.
-const JOLT = { seconds: 0.16, bite: 5, lost: 8, meet: 10, panel: 0.45 }
-// The live give-back: the seconds the whole arrow settles where it stands before the mouse has it again, and how short it is pressed as it drops its pose, for how long.
-const GIVE = { settle: 0.34, low: 0.78, press: 0.06 }
+const JOLT = { seconds: 0.24, bite: 12, lost: 16, meet: 24, panel: 0.75 }
+// The live give-back: the seconds the whole arrow settles where it stands before the mouse has it again, how short it is pressed as it drops its pose, for how long, and the seconds over which the page lets it back to its length.
+const GIVE = { settle: 0.34, low: 0.78, press: 0.06, rise: 0.2 }
 const PANEL = ['resume-zone', 'resume-prompt', 'resume-browse', 'resume-browse-label', 'resume-received']
 const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
 const SLAB_FALL = { seconds: 0.1, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6 }
@@ -478,7 +478,7 @@ export function makePage(): PageLogic {
         s.lost = -1
         s.last = -1
         jolt(JOLT.bite)
-        grip(io)
+        if (s.mode === 'film') grip(io)
         io.emit('shredder', SLOT.cx, SLOT.cy, false)
         io.emit('arms-out', io.cursor.x, io.cursor.y, false)
         act(io, 'angry')
@@ -519,8 +519,8 @@ export function makePage(): PageLogic {
     s.jolt = 0
     s.joltAmp = amp
   }
-  const joltNow = (): number => (s.jolt < JOLT.seconds ? s.joltAmp * (1 - s.jolt / JOLT.seconds) ** 3 : 0)
-  const holding = (): boolean => s.phase === 'tug' && (s.lost < 0 || (s.mode !== 'film' && s.lost < LOSS.skid))
+  const joltNow = (): number => (s.jolt < JOLT.seconds ? s.joltAmp * (1 - s.jolt / JOLT.seconds) ** 2 : 0)
+  const holding = (): boolean => s.phase === 'tug' && (s.lost < 0 || (s.mode !== 'film' && s.lost < LOSS.skid + LOSS.feed))
 
   const grip = (io: StepIo): void => {
     const t = s.tug
@@ -546,6 +546,14 @@ export function makePage(): PageLogic {
     if (reach < 1) {
       t.gx = lerp(SLOT.cx, t.gx, reach)
       t.gy = lerp(SLOT.cy - PAPER.h, t.gy, reach)
+    }
+    const tx = t.gx - SLOT.cx
+    const ty = t.gy - SLOT.cy
+    const td = Math.hypot(tx, ty) || 1
+    if (!film) {
+      const lean = clamp(Math.atan2(tx, -ty), -TAKE.lean, TAKE.lean)
+      t.gx = SLOT.cx + Math.sin(lean) * td
+      t.gy = SLOT.cy - Math.cos(lean) * td
     }
     t.vx = (t.gx - ox) / io.dt
     t.vy = (t.gy - oy) / io.dt
@@ -586,13 +594,13 @@ export function makePage(): PageLogic {
       const u = clamp(s.lost / LOSS.skid, 0, 1)
       const e = u * (1.5 - 0.5 * u)
       const f = s.lostFrom
-      io.cursor.drive(lerp(f.x + f.ux * LOSS.back, SLOT.cx - BODY.x, e), lerp(f.y + f.uy * LOSS.back, SLOT.cy - 70, e), heights.card + 6)
+      const w = smooth((s.lost - LOSS.skid) / LOSS.feed)
+      io.cursor.drive(lerp(f.x + f.ux * LOSS.back, SLOT.cx - BODY.x, e), lerp(f.y + f.uy * LOSS.back, SLOT.cy - 70, e) + LOSS.sink * w, heights.card + 6)
       t.pull = 1
       t.amount = Math.min(1, t.amount + (io.dt / LOSS.skid) * 0.5)
-      hands(Math.max(TUG.least, PAPER.h * (1 - t.amount) - TUG.inside))
-      if (s.lost >= LOSS.skid) {
+      hands(Math.max(TUG.least, PAPER.h * (1 - t.amount) - TUG.inside) * (1 - w))
+      if (s.lost >= LOSS.skid + LOSS.feed) {
         io.cursor.setArms(false)
-        io.cursor.react('cower')
         jolt(JOLT.meet)
         s.shred = 0
         enter('shredded')
@@ -603,7 +611,7 @@ export function makePage(): PageLogic {
     const strain = Math.max(0, d - hold)
     if (strain > 0 && s.last < 0) {
       const a = TUG.stiff * Math.min(strain, 320) * io.dt * haul
-      io.cursor.knock((-dx / d) * a, (-dy / d) * a, 0)
+      io.cursor.knock((-tx / td) * a, (-ty / td) * a, 0)
     }
     const pull = Math.min(1, strain / TUG.strainPx) * haul
     t.pull = pull
@@ -664,7 +672,7 @@ export function makePage(): PageLogic {
     s.tug.amount = Math.min(1, s.tug.amount + io.dt / 0.25)
     if (s.shred < SHRED.gone) {
       const u = s.shred / SHRED.gone
-      io.cursor.drive(SLOT.cx - BODY.x, lerp(SLOT.cy - 70, SLOT.cy - 30, smooth(u / 0.7)), lerp(heights.card + 6, -60, smooth((u - 0.2) / 0.6)))
+      io.cursor.drive(SLOT.cx - BODY.x, lerp(SLOT.cy - 70 + (s.mode === 'film' ? 0 : LOSS.sink), SLOT.cy - 30, smooth(u / 0.7)), lerp(heights.card + 6, -60, smooth((u - 0.2) / 0.6)))
     }
     if (crossed(SHRED.gone)) io.cursor.setOnPage(false)
     if (crossed(SHRED.pile)) {
@@ -709,6 +717,7 @@ export function makePage(): PageLogic {
   const stepReceived = (io: StepIo): void => {
     if (s.give >= 0) {
       s.give += io.dt
+      if (s.give > GIVE.press && s.give < GIVE.rise) io.cursor.press(lerp(GIVE.low, 1, smooth((s.give - GIVE.press) / (GIVE.rise - GIVE.press))), io.dt)
       if (s.give >= GIVE.settle) {
         s.give = -1
         io.cursor.release()

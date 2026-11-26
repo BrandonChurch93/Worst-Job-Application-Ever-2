@@ -24,7 +24,7 @@ class Still implements Driver {
   }
 }
 
-interface Row { step: number; gag: string; x: number; y: number; taken: boolean; arms: boolean; lost: boolean; thrown: number; panel: number; received: boolean }
+interface Row { step: number; gag: string; x: number; y: number; taken: boolean; arms: boolean; lost: boolean; thrown: number; panel: number; lean: number; received: boolean }
 
 function run(): Row[] {
   const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: new Still() })
@@ -41,8 +41,10 @@ function run(): Row[] {
     s.page.draw(list)
     const jaw = list.find((x) => x.id === 'shredder-jaw-1')
     const zone = list.find((x) => x.id === 'resume-zone')
+    const paper = gag === 'step1.tug' ? list.find((x) => x.id === 'resume-paper') : undefined
+    const lean = paper?.rot ?? 0
     const received = s.page.states?.().includes('received') ?? false
-    rows.push({ step: s.step, gag, x: p.x, y: p.y, taken: s.cursor.taken, arms: p.arms, lost: s.events.slice(seen).some((e) => e.name === 'tug-lost'), thrown: jaw ? jaw.y - housingY : 0, panel: zone ? zone.y : 0, received })
+    rows.push({ step: s.step, gag, x: p.x, y: p.y, taken: s.cursor.taken, arms: p.arms, lost: s.events.slice(seen).some((e) => e.name === 'tug-lost'), thrown: jaw ? jaw.y - housingY : 0, panel: zone ? zone.y : 0, lean: Math.abs(Math.atan2(Math.sin(lean), Math.cos(lean))), received })
     seen = s.events.length
     if (gag === 'step1.shredded' && received && !s.cursor.taken && after < 0) after = stepHz
     if (after > 0) after--
@@ -88,6 +90,9 @@ describe('fix tug: the takeover, the loss and the give-back of step 1 on the liv
     expect(rows[first + 2]!.arms).toBe(true)
     expect(rows[first]!.thrown).toBeGreaterThan(0)
     expect(rows[first - 1]!.thrown).toBe(0)
+    const lean = rows.slice(first, lost).reduce((m, r) => Math.max(m, r.lean), 0)
+    console.log(`takeover and tug: the held paper leans ${lean.toFixed(3)} rad from upright at most`)
+    expect(lean).toBeLessThanOrEqual(0.6 + 1e-9)
   })
 
   it('loses in steps the eye follows: a last pull, the grip going with the slot and the panel thrown on that step, a skid with the arms still on the paper, the slot thrown again where the arrow meets it', () => {
@@ -109,7 +114,7 @@ describe('fix tug: the takeover, the loss and the give-back of step 1 on the liv
     expect(rows[lost]!.thrown).toBeGreaterThan(0)
     expect(rows[lost]!.panel).toBeGreaterThan(rows[lost - 1]!.panel)
     expect(rows[shredded]!.thrown).toBeGreaterThan(rows[shredded - 1]!.thrown)
-    const rest = rows[shredded + Math.round(stepHz * 0.2)]!
+    const rest = rows[shredded + Math.round(stepHz * 0.3)]!
     expect(rest.thrown).toBe(0)
     expect(rest.panel).toBe(rows[lost - 1]!.panel)
   })
