@@ -23,7 +23,9 @@ export const TRAY_GAP = 12
 export const TRAY_H = 232
 export const TRAY_R = 14
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 4.2, lean: 0.7, soak: 0.52, soakHold: 0.2, soakReach: 20, bounce: 0.16, bounceReach: 9, wallShade: 0.62 }
+export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 5.6, lean: 1.3, wallShade: 0.1, wallLit: 0.62, soakOver: 0.5,
+  floor: { soak: 0.3, hold: 0.2, reach: 20, bounce: 0.12, bounceReach: 9, base: 1, side: 0.8 },
+  soak: { soak: 0.85, hold: 0.8, reach: 8, bounce: 0.16, bounceReach: 12, base: 0.76, side: 0.8 } }
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
@@ -46,7 +48,7 @@ export const DIAL = {
 // The dial's body, in page pixels: how tall it stands on the tray's floor, how much of it shows before it has risen, and its turned steps.
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
-  hub: 30, hubTall: 14, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
+  hub: 30, hubTall: 17, hubFlat: 0.02, turned: 256, cut: 0.012, faceRough: 0.2, faceStretch: 1, faceLight: 1.5, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
   shade: 0.46, shadeReach: 0.78
 }
 
@@ -70,10 +72,12 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 55, hy: cy + 156, rest: -0.75, arm: 96, armW: 24, gripW: 84, gripH: 40, tip: 126, base: 110, hub: 44,
-  segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 55 + 227, segY: cy + 156 - 48
+  hx: FX + PAD + 73, hy: cy + 156, rest: -0.75, arm: 96, armW: 24, gripW: 84, gripH: 52, tip: 126, base: 110, hub: 44,
+  segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 156 - 48
 }
 
+export const ROW_TITLE = { font: 'inter-600', px: 26 }
+export const ROW_HELPER = { font: 'inter-400', px: 20 }
 export const REEL_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
 export const DIAL_TYPE = { font: 'inter-600', px: 20, align: 'centre' as const }
 
@@ -95,8 +99,8 @@ function rowNodes(i: number, low: boolean): LayoutNode[] {
   const chevron = node(`${id}-chevron`, 'chevron', [FX + FW - PAD - 28, y + (FH - 28) / 2, 28, 28], { part: 'rows', shape: 'none' })
   const extra = here ? { states: here } : {}
   return [
-    text(`${id}-label`, `copy:step2.rows.${name}.label`, TYPE.label, LEFT, y + 8, { part: 'type', ...extra }),
-    text(`${id}-helper`, `copy:step2.rows.${name}.helper`, TYPE.helper, LEFT, y + 42, { part: 'type', ...extra }),
+    text(`${id}-label`, `copy:step2.rows.${name}.label`, ROW_TITLE, LEFT, y + 6, { part: 'type', ...extra }),
+    text(`${id}-helper`, `copy:step2.rows.${name}.helper`, ROW_HELPER, LEFT, y + 42, { part: 'type', ...extra }),
     node(`${id}-pocket`, 'field', [FX, y, FW, FH], { part: 'rows', r: 14, children: [...values, chevron], ...extra })
   ]
 }
@@ -137,7 +141,7 @@ function slotNodes(): LayoutNode[] {
 
 function crankNodes(): LayoutNode[] {
   const c = CRANK
-  const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD, cy + PAD, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
+  const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD + 12, cy + PAD + 14, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
   const base = node('crank-base', 'crankBase', [c.hx - c.base / 2, c.hy - c.base / 2, c.base, c.base], { part: 'crank', shape: 'disc', height: 18, floor: TRAY_Z, tone: 'metal' })
   const ax = c.hx + (c.arm / 2) * Math.cos(c.rest)
   const ay = c.hy + (c.arm / 2) * Math.sin(c.rest)
@@ -154,7 +158,7 @@ function crankNodes(): LayoutNode[] {
 
 export function buildLayout(): LayoutNode {
   const machines = [dialNodes(), slotNodes(), crankNodes()]
-  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: TRAY_R, states: [`${name}-open`], children: machines[i]! }))
+  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: TRAY_R, tone: 'glass', states: [`${name}-open`], children: machines[i]! }))
   const rows: LayoutNode[] = []
   for (let i = 0; i < 3; i++) {
     rows.push(...rowNodes(i, false))
