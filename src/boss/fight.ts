@@ -1,10 +1,10 @@
 import type { StepIo } from '../stage/types'
 import { CANNON_OFF, FOOT_OFF, smooth } from './body'
-import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, POPUP, RAMP, SHIELD, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
+import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, MUZZLE, POPUP, RAMP, SHIELD, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
-export interface Arena { slabs: SlabSize[]; popups: { box: Rect; buttons: Rect[] }[] }
+export interface Arena { slabs: SlabSize[]; popups: { box: Rect; buttons: Rect[] }[]; keep?: Rect }
 
 export interface Slab { m: number; x: number; y: number; dx: number; dy: number; rot: number; left: number; state: 0 | 1 | 2; t: number }
 export interface Popup { slot: number; hp: number; t: number; closing: number }
@@ -31,6 +31,9 @@ export interface Fight {
   windup: number
   aim: { x: number; y: number }
   cannon: 0 | 1
+  attacks: number
+  burst: number
+  burstDue: number
   recoil: [number, number]
   slabCount: number
   popupCount: number
@@ -43,6 +46,7 @@ export interface Fight {
   dust: number
   hits: number
   flash: number
+  look: { x: number; y: number }
   over: boolean
 }
 
@@ -58,8 +62,8 @@ export function newFight(x: number = HOME.x, y: number = HOME.y): Fight {
   return {
     phase: 0, clock: 0, phaseClock: 0, health: HEALTH, shown: HEALTH, x, y,
     feet: FOOT_OFF.map(([ox, oy]) => ({ x: x + ox, y: y + oy, fx: 0, fy: 0, tx: 0, ty: 0, t: -1 })),
-    slabs: [], popups: [], darts: [], sparks: [], flashes: [], nextSlab: SLAB.first, windup: -1, aim: { x: 0, y: 0 }, cannon: 0, recoil: [0, 0], slabCount: 0, popupCount: 0, popupDue: POPUP.first,
-    dartCount: 0, sparkCount: 0, expired: -1, slow: false, safe: 0, dust: -1, hits: 0, flash: 0, over: false
+    slabs: [], popups: [], darts: [], sparks: [], flashes: [], nextSlab: SLAB.first, windup: -1, aim: { x: 0, y: 0 }, cannon: 0, attacks: 0, burst: 0, burstDue: 0, recoil: [0, 0], slabCount: 3, popupCount: 0, popupDue: POPUP.first,
+    dartCount: 0, sparkCount: 0, expired: -1, slow: false, safe: 0, dust: -1, hits: 0, flash: 0, look: { x: x - 600, y }, over: false
   }
 }
 
@@ -80,7 +84,12 @@ const floor = (f: Fight): number => {
 
 const inside = (r: Rect, x: number, y: number, grow = 0): boolean => x >= r.x - grow && x <= r.x + r.w + grow && y >= r.y - grow && y <= r.y + r.h + grow
 
-export const muzzle = (f: Fight, i: number): { x: number; y: number } => ({ x: f.x + CANNON_OFF[i]![0] - 70, y: f.y + CANNON_OFF[i]![1] })
+export const muzzle = (f: Fight, i: number): { x: number; y: number; rot: number } => {
+  const cx = f.x + CANNON_OFF[i]![0]
+  const cy = f.y + CANNON_OFF[i]![1]
+  const rot = Math.max(-MUZZLE.turn, Math.min(MUZZLE.turn, Math.atan2(cy - f.look.y, cx - f.look.x)))
+  return { x: cx - MUZZLE.reach * Math.cos(rot), y: cy - MUZZLE.reach * Math.sin(rot), rot }
+}
 
 export const bannerUp = (f: Fight): boolean => f.expired >= 0 && f.expired < 1.5
 export const spent = (f: Fight): boolean => f.phase === 2 && f.expired >= 1.5 && f.health <= LAST_CLEAR
@@ -95,6 +104,7 @@ function clearPage(f: Fight): void {
     }
   }
   f.windup = -1
+  f.burst = 0
 }
 
 function wander(f: Fight): { x: number; y: number; speed: number } {
@@ -150,33 +160,59 @@ function spark(f: Fight, x: number, y: number, z = 0): void {
   f.sparks.push({ n: f.sparkCount++, x, y, t: 0, z })
 }
 
-function fire(f: Fight, io: StepIo, arena: Arena): void {
+// Which slab a shot of a salvo is, and where it goes beside the aim: the middle one first, then below, then above.
+const SALVO: { m: number; side: number }[] = [{ m: 1, side: 0 }, { m: 2, side: 1 }, { m: 0, side: -1 }]
+
+function fire(f: Fight, io: StepIo, arena: Arena, shot: { m: number; side: number } | null = null): void {
   let m = -1
+  const first = shot ? shot.m : f.slabCount
   for (let k = 0; k < arena.slabs.length; k++) {
-    const c = (f.slabCount + k) % arena.slabs.length
+    const c = (first + k) % arena.slabs.length
     if (!f.slabs.some((s) => s.m === c)) {
       m = c
       break
     }
   }
   if (m < 0) return
+  if (shot && shot.side !== 0) f.cannon = shot.side > 0 ? 1 : 0
   const from = muzzle(f, f.cannon)
   let dx = f.aim.x - from.x
   let dy = f.aim.y - from.y
   const d = Math.hypot(dx, dy) || 1
   dx /= d
   dy /= d
+  if (shot && shot.side !== 0) {
+    const turn = (dx < 0 ? -1 : 1) * shot.side * SLAB.fan
+    const c = Math.cos(turn)
+    const n = Math.sin(turn)
+    const rx = dx * c - dy * n
+    dy = dx * n + dy * c
+    dx = rx
+  }
   let left = d + SLAB.overshoot
   const pad = 70
-  if (dx < 0) left = Math.min(left, (from.x - (ARENA.x0 + pad + arena.slabs[m]!.w / 2)) / -dx)
+  const half = arena.slabs[m]!.w / 2
+  if (dx < 0) left = Math.min(left, (from.x - (ARENA.x0 + pad + half)) / -dx)
   if (dx > 0) left = Math.min(left, (ARENA.x1 - pad - from.x) / dx)
   if (dy < 0) left = Math.min(left, (from.y - (ARENA.y0 + pad)) / -dy)
   if (dy > 0) left = Math.min(left, (ARENA.y1 - pad - from.y) / dy)
+  const keep = arena.keep
+  if (keep) {
+    const tall = SLAB_HALF / 2 + 20
+    for (let go = 0; go <= left; go += 8) {
+      const x = from.x + dx * go
+      const y = from.y + dy * go
+      if (x > keep.x - half - 16 && x < keep.x + keep.w + half + 16 && y > keep.y - tall && y < keep.y + keep.h + tall) {
+        left = go - 8
+        break
+      }
+    }
+  }
   const rot = (m % 2 === 0 ? -1 : 1) * (0.06 + 0.03 * (m % 3))
   f.slabs.push({ m, x: from.x, y: from.y, dx, dy, rot, left: Math.max(40, left), state: 0, t: 0 })
   f.slabCount = m + 1
   f.recoil[f.cannon] = 26
-  f.flashes.push({ n: f.slabCount, x: from.x, y: from.y, rot: Math.atan2(dy, dx), t: 0 })
+  f.flashes.push({ n: f.slabCount + f.attacks * 3, x: from.x, y: from.y, rot: Math.atan2(dy, dx), t: 0 })
   io.emit('slab-fire', from.x, from.y, false)
   f.cannon = f.cannon === 0 ? 1 : 0
 }
@@ -189,8 +225,19 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
     f.recoil[f.cannon] = -12 * Math.min(1, f.windup / SLAB.windup)
     if (f.windup >= SLAB.windup) {
       f.windup = -1
-      fire(f, io, arena)
-      f.nextSlab = SLAB.every[f.phase]!
+      const salvo = f.phase === 0 && f.attacks > 0
+      fire(f, io, arena, salvo ? SALVO[0]! : null)
+      f.burst = salvo ? SLAB.salvo - 1 : 0
+      f.burstDue = SLAB.salvoGap
+      f.attacks++
+      f.nextSlab = salvo ? SLAB.again : SLAB.every[f.phase]!
+    }
+  } else if (f.burst > 0) {
+    f.burstDue -= dt
+    if (f.burstDue <= 0) {
+      fire(f, io, arena, SALVO[SLAB.salvo - f.burst]!)
+      f.burst--
+      f.burstDue = SLAB.salvoGap
     }
   } else if (!quiet(f)) {
     f.nextSlab -= dt
@@ -252,7 +299,7 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
   f.popupDue -= dt
   if (f.popupDue <= 0) {
     const free = POPUP_ORDER.filter((slot) => !f.popups.some((p) => p.slot === slot))
-    const first = f.phase === 1 && f.popupCount < POPUP_ORDER.length && f.health > THRESHOLD[1] + DART.damage * DART.volley
+    const first = f.phase === 1 && f.popupCount < POPUP_ORDER.length && f.health > THRESHOLD[1] + DART.damage[1] * DART.volley
     const one = f.windup < 0 && !f.slabs.some((s) => s.state === 0)
     if (free.length && one && (first || f.phase === 2)) {
       const want = POPUP_ORDER[f.popupCount % POPUP_ORDER.length]!
@@ -320,7 +367,7 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
         d.y = py
       }
       const open = !(f.phase === 2 && f.expired < 0.8)
-      if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - DART.damage)
+      if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - DART.damage[f.phase]!)
       f.flash = 0.12
       spark(f, d.x, d.y, glass ? SHIELD.z : 0)
       io.emit('dart-hit', d.x, d.y, false)
@@ -342,6 +389,10 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
   f.phaseClock += dt
   if (f.safe > 0) f.safe -= dt
   if (f.flash > 0) f.flash -= dt
+  const at = cursorCentre(io.cursor)
+  const ease = 1 - Math.exp(-dt / MUZZLE.ease)
+  f.look.x += (at.x - f.look.x) * ease
+  f.look.y += (at.y - f.look.y) * ease
   if (f.dust >= 0) {
     f.dust -= dt
     if (f.dust < 0) io.cursor.react('dustOff')
@@ -378,6 +429,7 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
       f.popupDue = f.phase === 2 ? POPUP.late : POPUP.first
       f.nextSlab = f.phase === 2 ? SLAB.late : Math.max(f.nextSlab, 0.9)
       f.windup = -1
+      f.burst = 0
       for (const s of f.slabs) {
         if (s.state === 1) {
           s.state = 2

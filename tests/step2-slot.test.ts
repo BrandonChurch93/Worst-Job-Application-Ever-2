@@ -106,10 +106,11 @@ describe('the slot machine', () => {
     expect(Array.from(other.image.data as Uint8Array)).not.toEqual(Array.from(f.image.data as Uint8Array))
   })
 
-  it('keeps the drums and the line under the legends, and the glass over them', () => {
+  it('keeps the drums under the legends, the line as a wire over them, and the glass over all', () => {
     const legend = TOP + 14 - TRAY_Z
     expect(SLOT_LOOK.drum.crest).toBeLessThan(legend)
-    expect(SLOT_LOOK.line.z + SLOT_LOOK.line.r).toBeLessThan(legend)
+    expect(SLOT_LOOK.line.z - SLOT_LOOK.line.r).toBeGreaterThan(legend + 0.3)
+    expect(SLOT_LOOK.line.z + SLOT_LOOK.line.r).toBeLessThan(SLOT_LOOK.glass)
     expect(SLOT_LOOK.glass).toBeGreaterThan(legend)
     expect(SLOT_LOOK.top).toBeGreaterThan(SLOT_LOOK.glass)
   })

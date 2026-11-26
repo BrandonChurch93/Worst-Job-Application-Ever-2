@@ -120,7 +120,7 @@ function digitsOf(s: Shape): THREE.Object3D {
   glow.name = 'halo'
   const lit = new THREE.Mesh(runOf(s, said, 0), lamp())
   lit.name = 'lit'
-  for (const mesh of [glow, lit]) {
+  for (const mesh of [lit, glow]) {
     mesh.position.z = -BEZEL.sunk + 0.5
     mesh.castShadow = false
     mesh.receiveShadow = false

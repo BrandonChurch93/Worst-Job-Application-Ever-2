@@ -32,3 +32,21 @@ Branch `agent/careers`, from `origin/phase4-base`, with `origin/main` merged in.
 ## Textures
 
 None of my own so far. Every surface uses the shared pictures of `materials()`.
+
+## 01:23 UTC, the Builder's answers, and what followed
+
+- STATED by `/root`: the ticker is the glass strip of the approved image ("When words and an approved image disagree, the image wins", `kit/04-LOOK.md` line 10). Built: the cards' slab lying on the page with a corner radius of 16, hollow over a channel 2.4 deep that the tape and its words run in; the page hides the words past the channel's ends, the ground edge of the strip hides the channel's walls. No bezel, no sleeve, no light from inside.
+- The strip's corner radius is 16 and not the cards' 28: the strip is 58 high, and with 28 it would be round ended, which the approved strip is not.
+- The cards' corner radius goes from 22 to 28, measured on the approved image (about 27 px).
+- The turning card has a material of its own, because the colour of the face that is up follows the turn (`even()` in `perk-cards.ts`): a frosted slab is lit through its body, so its face must not flare when it tilts toward the light. Its shadow is thrown by the print in its middle.
+- The ground edge is laid in as light and shade of the glass itself (vertex colour), and the faces of the bevel lean very little (0.03), because with the key 21 degrees above the page a lean of 0.12 changed the bevel's light by a sixth and undid the shade.
+- A slab's shadow on the page is thrown by a foot 2.2 high inside the glass: the approved cards throw a short soft shadow, and the whole slab (12 high) threw one 30 px long.
+
+## 01:43 UTC, the Builder's second list
+
+- The cards' ground edge is set by numbers read off the approved image (mean of 40 px along each edge of card 0): on the light's side a dark band of about 145 against a face of 200, then a ramp of 14 px up to the face; on the far side the face rises by about 15 toward the edge and ends in a bright line of 221; the shadow on the page is darkest at 4 px (111 to 128) and gone at about 22 px. `GLASS` in `perk-cards.ts` holds them: shade 0.27, after 0.6, exit 1.4, rim 1.8, caster 4.2. MEASURED on my draft still: 152 on the light's side, 204 to 212 on the far side, face 191 against 187.
+- The gap between the cards goes from 40 to 34 and the cards are 531 wide, as approved.
+- The medal: 380 across (approved 382), centre at 1559, 350; a flat flange cut in 30 round lobes (`flange()` in `careers-solids.ts`) in place of the round rope; the face carries the two bright and two dull sectors of turned metal as vertex colour (`sheen()`), 0.45 deep; the wreath is 12 leaves a side in the face's darker metal. The measure M4 sets the limit: with the face at 0x7e8183 and a sheen of 0.55 the type on the medals read 4.0 against 4.5; at 0x8a8d8f and 0.45 the least contrast of the unit is 4.69.
+- The nav button stays the shell's button, 72 high. I made it 58 high as approved has it, and M9 failed ("nav-cta-cap: its height on the page: [58] against 72 within 2"), so I took it back. A smaller nav button needs a size of its own in `config/` and in the measure, which are the Builder's.
+- The fine print on the cards asks for `ink: 'soft'`.
+- The ticker's runs are cut 18 px in from the strip's ends (`TICKER.clip`), inside the hollow, so the 2 px box of a run that crosses an end lies where the words are seen; M4 read 1.17 for a run whose box lay under the ground edge.

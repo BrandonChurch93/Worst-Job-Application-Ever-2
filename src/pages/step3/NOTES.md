@@ -81,14 +81,14 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 Lengths in balls, page coordinates, z up from the page surface. `look(name, eye, target)` builds a pose; the lens is `cameras.<name>.fovDeg`.
 
 - `tier-3`, `tier-2`, `tier-1`: the home camera moved down the page to the tier, at home's distance from its floor, home's lens, sharp edge to edge. Not fitted. `tier-1` is 0.95 balls lower and 5% further so the apron edge is in the frame.
-- `table-wide`, lens 43: eye (MID + 0.35, APRON_Y + 12.4, 11.22), target (MID + 0.35, APRON_Y - 9.24, 0.85). Solved from the approved image: near frame corners in the bottom corners, far frame end 23% from the top, 25.6 degrees down. The 0.35 to the right takes in the launch lane and the feed tube, which make the machine wider on the right than the approved one.
-- `table-lobby`, lens 56: eye (MID + 2.65, Y0 + 6.43, -0.35), target (MID - 0.13, Y0 + 5.31, 0). 0.65 ball above the Corporate floor, from the right of the carpet. From the front the revolving door (on the carpet axis, in front of the doors hold) covers the ball.
+- `table-wide`, lens 35 (asked for in `pipeline/phase4/pinball-stage-NEEDS.patch`; 43 made the machine long and narrow): eye (MID, APRON_Y + 16.41, 12.61), target (MID, Y2 + 3.94, 1.96), 24.2 degrees down. Solved from three marks of the approved image: the near end of the frame 1.5% above the bottom edge with its rail corners 1% inside the sides, the top of the backbox 2.5% from the top. The far end of the frame then takes 32% of the width, as approved. The target is 26 balls from the eye: the engine's near plane is the distance to the target less 1500 px, and a farther target cut the apron away.
+- `table-lobby`, lens 56: eye (MID + 1.2, Y0 + 7.0, -0.25), target (MID + 0.14, Y0 + 4.23, 0.17). 0.75 ball above the Corporate floor, 2.3 balls from the ball, 31 degrees off the carpet's axis, the view turned 21 degrees so the name band runs nearly level: the revolving door at the left, the ball at 40% of the width, the right globe lamp at 70%. The revolving door stands on the carpet 0.98 ball in front of the doors hold with its wings on the diagonals. Worked out for every low eye in front (`out/work/lobbyfit.mjs`, not kept): under 30 degrees off the axis the post covers the ball, and at any angle up to 90 the north-east wing's edge lies inside the ball's outline. So one clear glass edge crosses the ball right of its middle.
 - `table-replyall`, lens 30: eye (MID, Y1 + 16.35, 15.4), target (MID, Y1 + 6.3, -2). The whole Office tier from the player's end, 30 degrees from straight down.
-- `table-fired`, lens 35: eye (8.56, Y2 + 7.8, 1.1), target (5.2, Y2 + 3.8, -2.3). Front right of the firehouse, 33 degrees down.
+- `table-fired`, lens 35: eye (7.25, Y2 + 7.68, 0.06), target (4.8, Y2 + 3.75, -2.3). Front right of the firehouse, 27 degrees down, 5.2 balls away. The approved image has the ball inside the garage mouth; in the build the scoop lies half a ball in front of the building, so the ball stands before the mouth.
 - `table-save`, lens 40: eye (MID, Y2 + 13.4, 6.05), target (MID, Y2 + 8.6, -2.26). Over the apron, 60 degrees down. Not flatter: the Street floor is 3 balls under the apron edge and a flatter view loses the flipper tips behind it.
-- `rail`, lens 40: 3.4 behind the ball along its rail, 2.85 above it, looking at a point 0.85 ahead at the ball's height. The heading is the chord of the rail from 1.6 behind the ball to 2.2 ahead. The point it follows is a smoothed copy of the rail (seven samples 0.4 apart, weights 1 2 3 4 3 2 1), never the raw path.
+- `rail`, lens 40: 1.9 behind the ball along its rail, 3.9 above it, looking at a point 1.0 ahead and 1.0 under the ball: 59 degrees down, so the floor fills the frame and the tier's side wall stays out of it (the highway runs across the tier, the wall is 6.5 balls ahead). The heading is the chord of the rail from 1.6 behind the ball to 2.2 ahead. The point it follows is a smoothed copy of the rail (seven samples 0.4 apart, weights 1 2 3 4 3 2 1), never the raw path.
 - `ride`: the rail camera's rule up the launch lane, 0.7 behind and 2.6 above at the plunger with a 76 degree lens, opening to 3.4 behind, 3.4 above and 40 degrees over the first 7 balls.
-- The lens: every close camera (`LENS`) carries `focus`, the distance in page px from the eye along the view axis to the centre of the cursor's ball on that frame (`table-wide`: to its target), and `aperture`, the width of the opening in page px. Blur circle on screen in px = aperture x |d - focus| / d x (H / 2 / tan(fov / 2)) / focus. Apertures: `table-wide` 8, `table-lobby` 7, `table-replyall` 12, `table-fired` 10, `table-save` 20, `rail` 16, `ride` 10. The tier cameras and `follow` carry none.
+- The lens: every close camera (`LENS`) carries `focus`, the distance in page px from the eye along the view axis to the centre of the cursor's ball on that frame (`table-wide`: to its target), and `aperture`, the width of the opening in page px. Blur circle on screen in px = aperture x |d - focus| / d x (H / 2 / tan(fov / 2)) / focus. Apertures, tuned on pictures with the engine's lens: `table-wide` 5, `table-lobby` 7, `table-replyall` 12, `table-fired` 10, `table-save` 9, `rail` 7, `ride` 7. The tier cameras and `follow` carry none.
 - Shake: the film camera's target is pushed sideways on a hard hit (`HARD`: bumper, sling, doors-slam, scoop-kick, plunger, ball-hit, drop-target, mom-save, ball-save). It reads the machine's own table of last events and its step count, so it is a pure function of the state. Size 0.6% of the frame's height for a hit of weight 1, 23 Hz, gone by half its size every 0.06 s, nothing after 0.5 s, never more than 0.9% of the height. Live mode has no shake: the visitor is aiming.
 - The film (`FILM`: time, camera, seconds of move). A close view is entered by a cut, never a blend: a blend was half way through its move on the hit. Two moves only: `ride` to `tier-3` (0.6 s, the ball arrives on the table) and `rail` to `follow` (0.6 s). No cut within 0.15 s of a hit: `tests/pinball-stage.test.ts`.
 
@@ -97,16 +97,16 @@ Lengths in balls, page coordinates, z up from the page surface. `look(name, eye,
 | 0 | follow | the seal and the tube, the view goes down the page with the ball |
 | 4.2 | `table-wide` | lights down at 4.0, power on at 5.2: the wake is seen whole |
 | 8.5 | `ride` | the ball is on the plunger from 8.3, launched at 9.4 |
-| 11.0 | `tier-3` | the ball comes onto the Corporate tier |
+| 10.6 | `tier-3` | the ball is in the top arc of the launch lane; the move (0.6 s) is over before the first `sling` (11.25) |
 | 13.0 | `table-lobby` | 0.3 s before `doors-slam` (13.31) |
 | 14.3 | follow | the doors have opened (14.1), the flippers are needed |
-| 19.5 | `table-replyall` | the ball is in the inbox, before the first `ball-drop` (20.0) |
+| 19.5 | `table-replyall` | the ball is in the inbox (`inbox-take` 19.0), before the first `ball-drop` (20.8) |
 | 22.2 | follow | the multiball is in play |
 | 27.2 | `table-fired` | the ball is in the firehouse, the `scoop-kick` is at 28.5 |
 | 28.8 | follow | after the kick |
-| 31.0 | `rail` | the ball is on the highway ramp |
-| 32.2 | follow | before the spiral |
-| 34.3 | `table-save` | the ball comes down to the flippers, `flipper-save` at 35.5 |
+| 31.15 | `rail` | the ball is on the highway wire from `ramp-roll` (31.05); a cut before it would jump when the ball takes the wire |
+| 32.3 | follow | a move of 0.6 s up to the home view, over before the spiral (32.7) |
+| 34.3 | `table-save` | the ball comes down to the flippers, `flipper-save` at 35.6 |
 | 36.6 | follow | the drain and the way out |
 
 - Live mode: the view is `follow`, the tier camera of the tier the ball is on, travelling in `live.pinball.tierTravelSeconds`. No close view in live mode yet.

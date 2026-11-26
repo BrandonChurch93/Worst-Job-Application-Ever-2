@@ -1,0 +1,21 @@
+diff --git a/src/app.ts b/src/app.ts
+index e58e41f..a48bcb3 100644
+--- a/src/app.ts
++++ b/src/app.ts
+@@ -219,6 +219,8 @@ export class App {
+     return c
+   }
+ 
++  private readonly behind = new THREE.Color()
++
+   put(frame: Frame, page: { width: number; height: number }, pose: CameraPose, size?: { width: number; height: number }): void {
+     this.view.apply(frame, size ?? { width: page.width, height: page.height })
+     this.fine()
+@@ -230,6 +232,7 @@ export class App {
+     const website = websiteLevel(frame.list)
+     this.rig.level = website
+     this.view.scene.environmentIntensity = look.envIntensity * website
++    this.engine.renderer.setClearColor(this.behind.setRGB(...look.background).multiplyScalar(0.12 + 0.88 * website), 1)
+     for (const s of this.view.standIns()) this.seen.add(s)
+   }
+ 

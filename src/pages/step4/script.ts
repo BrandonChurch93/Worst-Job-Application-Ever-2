@@ -10,9 +10,10 @@ export interface FilmScript { pointer(time: number): Pointer; reactions: { at: n
 // The film's cues, in seconds of the unit. Each idea has a wind-up, a move, a pose and a hold of 0.4 s or more.
 // The doubt: it comes to the box, flinches off it, stands and sweats, winds up and taps it.
 // The horror: a jump at the crack; the page itself cues the rear at the unfold and the cower under the cannons.
-// The anger: a snap out of the second slab's way two frames after it is fired.
-// The press: it gathers itself, climbs on and drops its whole weight on the button.
-export const ACT = { flinch: 2.72, windup: 3.36, tap: 3.72, take: 4.7, jump: 6.15, steel: 8.7, snap: 11.46, gather: 29.45, press: 30.42 } as const
+// The anger: a snap aside two frames after the first slab of the salvo is fired.
+// The collapse: it ducks two frames after the power goes, then walks to the fallen button and stands whole through the key.
+// The press: it sags once the wreck is still (the page's cue), gathers itself, drags itself on and drops its whole weight on the button.
+export const ACT = { flinch: 2.72, windup: 3.36, tap: 3.72, take: 4.7, jump: 6.15, steel: 8.7, snap: 11.78, duck: 27.31, gather: 29.45, press: 30.42 } as const
 
 export function makeScript(L: Step4Layout): FilmScript {
   const cb = L.checkbox
@@ -29,9 +30,8 @@ export function makeScript(L: Step4Layout): FilmScript {
   const burst = (from: number, to: number, every: number): void => {
     for (let t = from; t < to - 1e-6; t += every) clicks.push(Number(t.toFixed(3)))
   }
-  burst(9.9, 11.3, 0.66)
-  clicks.push(12.01, 12.37)
-  burst(13.2, 15.6, 0.66)
+  burst(9.82, 12.3, 0.34)
+  clicks.push(15.27)
   clicks.push(16.45, 16.85, 17.25, 17.55)
   clicks.push(18.0, 18.16, 18.32, 18.6, 18.8)
   clicks.push(19.05, 19.3, 19.52, 19.72, 19.9, 20.07)
@@ -73,6 +73,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     { at: ACT.jump, name: 'jump' },
     { at: ACT.steel, name: 'anticipate' },
     { at: ACT.snap, name: 'snap' },
+    { at: ACT.duck, name: 'duck' },
     { at: ACT.gather, name: 'anticipate' },
     { at: ACT.press, name: 'stamp' }
   ]

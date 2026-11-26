@@ -7,6 +7,7 @@ import { lit } from '../light'
 import { whole, type Zone } from '../zone'
 import { Floor } from './floor'
 import { INSERT_GLOW } from './inserts'
+import { levels } from '../lights/levels'
 import { setGlow, windowGeometry } from './windows'
 
 const TIER_NAMES = ['corporate', 'office', 'street'] as const
@@ -119,12 +120,13 @@ function build(z: Zone): THREE.Object3D {
   return o
 }
 
-function pose(o: THREE.Object3D, _z: Zone, ctx: RealContext): void {
+function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
+  const rest = INSERT_GLOW.off + (INSERT_GLOW.rest - INSERT_GLOW.off) * levels(ctx, z).general
   for (const c of o.children) {
     const ids = c.userData.inserts as string[] | undefined
     if (!ids) continue
     const spans = c.userData.spans as [number, number][]
-    ids.forEach((id, k) => setGlow((c as THREE.Mesh).geometry, spans[k]!, INSERT_GLOW.off + (INSERT_GLOW.on - INSERT_GLOW.off) * (ctx.byId.get(`insert.${id}`)?.v?.[0] ?? 0)))
+    ids.forEach((id, k) => setGlow((c as THREE.Mesh).geometry, spans[k]!, rest + (INSERT_GLOW.on - rest) * (ctx.byId.get(`insert.${id}`)?.v?.[0] ?? 0)))
   }
 }
 
