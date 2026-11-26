@@ -1,35 +1,35 @@
 {
   "folder": "office-models",
-  "pushed": "2026-11-26T04:25:47.645Z",
-  "commit": "ef524227e2d652742395520befabdf93076c511b",
+  "pushed": "2026-11-26T04:37:32.505Z",
+  "commit": "2c69a107c12b10d59a8beffce241bca020fe5866",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still key-reply-all-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:21:46.538Z",
+      "time": "2026-11-26T04:33:12.649Z",
       "by": "office-models",
       "from": "out/work/stills/key-reply-all-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-tier-office-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T04:22:28.672Z",
+      "time": "2026-11-26T04:33:54.293Z",
       "by": "office-models",
       "from": "out/work/stills/key-tier-office-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Cubicle farm in reply-all: approved image on the left, the build on the right, grey beige partitions under pale caps, shade at their feet",
-      "time": "2026-11-26T04:25:46.137Z",
+      "caption": "Left stapler at 751fd9cb: approved image, then the build in reply-all and from straight above, deeper red and a sharper highlight",
+      "time": "2026-11-26T04:37:30.900Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126042546-cub-approved-now.jpg"
+      "from": "out/work/looks/files/20261126043730-stap-approved-now-2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-office, draft, after the third push: staplers with their highlight, brushed top on the coffee machine, shade in the inbox",
-      "time": "2026-11-26T04:25:46.367Z",
+      "caption": "reply-all at the review tier, the Office models at ef524227",
+      "time": "2026-11-26T04:37:31.146Z",
       "by": "office-models",
-      "from": "out/work/looks/files/20261126042546-tier.jpg"
+      "from": "out/work/looks/files/20261126043731-reply-all-review.jpg"
     }
   ]
 }
