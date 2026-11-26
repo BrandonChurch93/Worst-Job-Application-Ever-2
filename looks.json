@@ -1,35 +1,35 @@
 {
   "folder": "boss-fight",
-  "pushed": "2026-11-26T01:15:22.888Z",
-  "commit": "d2a44d3d67c1a97c1420ddf620d48dc02da4ee9d",
+  "pushed": "2026-11-26T01:45:26.264Z",
+  "commit": "7b6699f8c90abe72552d6500c1cb721bcd9769c9",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-boss-fight-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:13:44.783Z",
+      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T01:45:24.108Z",
       "by": "boss-fight",
-      "from": "out/work/stills/key-boss-fight-hd-review.png"
+      "from": "out/work/compare/compare-boss-fight.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key boss-fight: approved on the left, this build on the right, review tier",
-      "time": "2026-11-26T01:15:21.150Z",
+      "caption": "The key boss-fight after the fit: approved left, build right. Three slabs in the air, health near 58 percent, stream of darts, spark on the glass",
+      "time": "2026-11-26T01:45:24.488Z",
       "by": "boss-fight",
       "from": "out/work/compare/compare-boss-fight.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Crop of the key boss-fight at review tier: darts with trails and shadows, the spark, the health tray and its fill",
-      "time": "2026-11-26T01:15:21.530Z",
+      "caption": "The beat boss.press, twelve frames: the spent cursor drags itself onto the fallen button and presses it",
+      "time": "2026-11-26T01:45:24.723Z",
       "by": "boss-fight",
-      "from": "out/work/boss-fight-crop-fight.jpg"
+      "from": "out/work/sheets/sheet-beat-boss_press-preview-draft.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key boss-fight at review tier beside the approved image, d2a44d3 (boss body still the stand-in on this branch)",
-      "time": "2026-11-26T01:15:21.772Z",
+      "caption": "Darts as hot glints with a hair tail and a warm pool on the paper, three slabs lobbed over the shield, the spark",
+      "time": "2026-11-26T01:45:24.959Z",
       "by": "boss-fight",
-      "from": "out/work/compare/compare-boss-fight.jpg"
+      "from": "out/work/looks/files/20261126014524-darts-slabs.jpg"
     }
   ]
 }
