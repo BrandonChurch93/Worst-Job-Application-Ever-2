@@ -5,7 +5,7 @@ import { localBalls, type Zone } from '../../zone'
 import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type V2, type V3 } from './kit'
 
 const C = {
-  red: hex(0xab2228),
+  red: hex(0xa01e24),
   plate: hex(0x7f191f),
   steel: hex(0x9aa1aa),
   chrome: hex(0xc9d0d8),
@@ -64,9 +64,9 @@ function plateOutline(f: Frame): V2[] {
 }
 
 const taper = (f: Frame, x: number): number => 21 - (5.5 * Math.max(0, Math.min(f.length, x))) / f.length
-const LIFT = 0.13
+const LIFT = 0.08
 // The long highlight of the enamel, baked along the two shoulders of the arm: how much of it each ring of the section takes.
-const SHEEN = [0, 0, 0, 0.12, 0.62, 0.3, 0.06, 0, 0]
+const SHEEN = [0, 0, 0, 0.08, 0.75, 0.25, 0.04, 0, 0]
 
 function body(k: Kit, f: Frame): void {
   const L = f.length
