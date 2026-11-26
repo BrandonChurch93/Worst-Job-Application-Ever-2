@@ -180,10 +180,12 @@ Built: `collar` adds every corner between the two sides. MEASURED after: the sam
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 37 | 40 |
+| shell | 44 | 40 |
 | type | 3 | 40 |
 | light-engine | 3 | 40 |
-| cursor-body | 10 | 40 |
+| cursor-body | 11 | 40 |
+
+Shell went 4 over its 40: 25 through item C, 9 to find the hairline of item H (four diagnostic views, one review shadow view and four stills), 10 for the tooth of item G (seven of `decision`, three of `marketing-top`). Said, not hidden.
 
 ## Measures, before and after
 
@@ -209,3 +211,18 @@ AFTER the first pass (A and B, on 3bb161c1, files in `out/work/shared-look/after
 | decision | pass | 0.0932 FAIL | 0.7527 FAIL | 4.62 | 0 px | 0 px | pass | 0 px |
 
 No measure that was green is red. No number moved by a tenth of its limit: M4's least contrast 4.63 to 4.62 (the orange's own colour, 4.627 to 4.61), M3 by 0.006 at most. The three that fail failed before by the same amounts: marketing M3 and decision M2 and M3 are items G and the decision page's own.
+
+AFTER the second pass (C, D, E, F, G, H; `npm run -s measure -- --unit <unit> --tier review` on 78e4cfd5, files in `out/work/shared-look/after5m/`; the pushed 22041d91 differs from it by the mend of the sealed arrow out on the page and by two merges of `main`, and was not measured again):
+
+| Unit | M1 | M2 soft share | M3 least ratio | M4 least contrast | M5 | M6 | M7 | M9 | exit, time |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| marketing | pass | 0.0001 | 0.7855 FAIL (red before, 0.6781) | 4.61 | 0 px | 0 px | pass | 0 px | 2, 179 s |
+| step1 | pass | 0.0132 | 0.9997 | 4.62 | 0 px | 0 px | pass | 0 px | 0, 301 s |
+| step2 | pass | 0.004 | 1.0175 | 4.62 | 0 px | 0 px | pass | 0 px | 0, 176 s |
+| boss | pass | 0.003 | 1.1529 | 4.62 | 0 px | 0 px | pass | 0 px | 0, 89 s |
+| decision | pass | 0 | 0.9272 | 4.62 | 0 px | 0 px | pass | 0 px | 0, 54 s |
+| pinball | not run: the run before took 2764 s, far over 15 minutes, and would end past the limit |
+
+No measure that was green before is red after. Numbers that moved by more than a tenth of their limit: M3 on every unit (marketing +0.107, step1 +0.043 is under a tenth, step2 +0.200, boss +0.210, decision +0.171, the tooth of item G); decision's M2 0.0932 to 0 (not mine: `main`'s mend of the decision page, merged). M4 moved 0.01 (4.63 to 4.62, the caps' numerals).
+
+Seen on the open page of `step2-rest` with the tooth: four tiles hold 1.0 to 2.0 of the approved energy (5597 against 2820, 7714 against 4024, 7815 against 3837, 6009 against 5927): the approved step 2 page is smoother than the approved marketing and decision pages, and one ceramic cannot be both. The tooth is set between them.
