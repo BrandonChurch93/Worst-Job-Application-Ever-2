@@ -1,0 +1,525 @@
+{
+  "role": "R1",
+  "round": 14,
+  "unit": "boss",
+  "commit": "cfd83123e325f189bf569f753c3e60edec66f4a7",
+  "tier": "final",
+  "engineHash": "4a32522105f508db",
+  "sharedHash": "0cdfd2c004bce5cf",
+  "pageHashes": {
+    "step1": "554fd748a7d0bf1f",
+    "step2": "504860ae9a1d7171",
+    "marketing": "f5cc2fcd805829ae",
+    "pinball": "541dc867512621cc",
+    "boss": "5d65ea59e9304a5b",
+    "decision": "740d3c0f81bae216"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "boss-fight"
+      },
+      "side": "a",
+      "image": "references/approved/boss-fight.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-01-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "boss-fight"
+      },
+      "side": "b",
+      "still": {
+        "page": "boss",
+        "beat": "boss.slabs",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "boss-fight"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:boss-plate",
+          "window": [
+            1315,
+            381,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-cannon-0",
+          "window": [
+            1334,
+            235,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-shield",
+          "window": [
+            1080,
+            386,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:fired-0",
+          "window": [
+            878,
+            281,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            139,
+            710,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rim-socket-open",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "checkbox",
+          "window": [
+            0,
+            324,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:health-track",
+          "window": [
+            797,
+            103,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            1277,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/boss-fight.png"
+    },
+    "set-A-02-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "boss-fight"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:boss-plate",
+          "window": [
+            1396,
+            368,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-cannon-0",
+          "window": [
+            1389,
+            247,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-shield",
+          "window": [
+            1099,
+            368,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:fired-0",
+          "window": [
+            922,
+            268,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            240,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rim-socket-open",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "checkbox",
+          "window": [
+            0,
+            312,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:health-track",
+          "window": [
+            786,
+            107,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            1268,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "boss",
+        "beat": "boss.slabs",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-03-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "boss-down"
+      },
+      "side": "a",
+      "image": "references/approved/boss-down.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-03-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "boss-down"
+      },
+      "side": "b",
+      "still": {
+        "page": "boss",
+        "beat": "boss.collapse",
+        "at": 1,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-04-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "boss-down"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:boss-cap",
+          "window": [
+            1114,
+            483,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1008,
+            629,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-plate",
+          "window": [
+            1056,
+            300,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-cannon-0",
+          "window": [
+            1272,
+            262,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-shield",
+          "window": [
+            1262,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-side-0",
+          "window": [
+            360,
+            656,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rim-socket-open",
+          "window": [
+            725,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:health-track",
+          "window": [
+            797,
+            103,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "checkbox",
+          "window": [
+            0,
+            324,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/boss-down.png"
+    },
+    "set-A-04-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "boss-down"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:boss-cap",
+          "window": [
+            1118,
+            471,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            920,
+            567,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-plate",
+          "window": [
+            1067,
+            276,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-cannon-0",
+          "window": [
+            1267,
+            228,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-shield",
+          "window": [
+            1253,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-side-0",
+          "window": [
+            356,
+            637,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rim-socket-open",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:health-track",
+          "window": [
+            786,
+            107,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "checkbox",
+          "window": [
+            0,
+            312,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "boss",
+        "beat": "boss.collapse",
+        "at": 1,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-05-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "boss-stages"
+      },
+      "side": "a",
+      "image": "references/approved/boss-stages.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-05-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "boss-stages"
+      },
+      "side": "b",
+      "still": {
+        "page": "boss",
+        "camera": "sheet",
+        "tier": "final",
+        "sheet": "boss-stages"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    }
+  }
+}
