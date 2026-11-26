@@ -113,14 +113,14 @@ function shadeOf(s: Shape): THREE.Mesh {
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
   g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
   g.setIndex(idx)
-  const mesh = solid(g, shade(), false)
+  const mesh = solid(g, shade().clone(), false)
   mesh.receiveShadow = false
   mesh.name = 'shade'
   return mesh
 }
 
 // The panel is the page's one glass card, with the line of light on its rim and a tinted shade under it.
-function panelOf(s: Shape, card: THREE.Object3D): THREE.Object3D {
+export function panelOf(s: Shape, card: THREE.Object3D): THREE.Object3D {
   const h = s.z1 - s.z0
   const foot = h - Math.min(h * 0.3, 3.6)
   const root = new THREE.Group()
@@ -169,6 +169,22 @@ function readoutOf(s: Shape): THREE.Object3D {
   return root
 }
 
+export function panelPose(o: THREE.Object3D, s: Shape): void {
+  const under = o.getObjectByName('shade')
+  if (!under) return
+  under.position.z = -s.z0
+  ;((under as THREE.Mesh).material as THREE.Material).opacity = Math.min(1, (s.z1 - s.z0) / SHADE.full)
+}
+
+export function panelDrop(o: THREE.Object3D): void {
+  o.traverse((c) => {
+    const m = c as THREE.Mesh
+    if (!m.isMesh || !m.userData.own) return
+    m.geometry.dispose()
+    if (m.name === 'shade') (m.material as THREE.Material).dispose()
+  })
+}
+
 export const metrics: PartMaker | null = {
   key(s, ctx) {
     if (s.kind === 'text') return null
@@ -181,15 +197,9 @@ export const metrics: PartMaker | null = {
     return readoutOf(s)
   },
   pose(o, s) {
-    const under = o.getObjectByName('shade')
-    if (!under) return
-    under.position.z = -s.z0
-    shade().opacity = Math.min(1, (s.z1 - s.z0) / SHADE.full)
+    panelPose(o, s)
   },
   drop(o) {
-    o.traverse((c) => {
-      const m = c as THREE.Mesh
-      if (m.isMesh && m.userData.own) m.geometry.dispose()
-    })
+    panelDrop(o)
   }
 }
