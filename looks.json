@@ -1,35 +1,35 @@
 {
   "folder": "machine-runner",
-  "pushed": "2026-11-26T09:19:27.501Z",
-  "commit": "9a71dee0ea4deeffc65cd2b80a03bfd1f4375870",
+  "pushed": "2026-11-26T09:33:08.302Z",
+  "commit": "ff19518700338a512e4167b8839434305af11d5d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
-      "time": "2026-11-26T09:17:01.789Z",
+      "caption": "Still nnr-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T09:26:26.320Z",
       "by": "machine-runner",
-      "from": "out/work/compare/compare-lobby-doors.jpg"
+      "from": "out/work/stills/nnr-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "lobby-doors, approved left, the build right at draft: the camera 12.4 degrees down, the arrow fitted by the view",
-      "time": "2026-11-26T09:19:25.840Z",
+      "caption": "Still nsr-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T09:27:29.547Z",
       "by": "machine-runner",
-      "from": "out/work/mr/look-lobby.jpg"
+      "from": "out/work/stills/nsr-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "the way in at 4.4, 4.7, 5.0 and 5.3 s: the tiers wake while the website's light goes down, darkest 0.58 of settled",
-      "time": "2026-11-26T09:19:26.079Z",
+      "caption": "the bumper hit of 16.51 s, film frames 5011 to 5016: 1.5, 3.4 and 6.2 film frames after the contact, one squash held, the arrow whole in the glass",
+      "time": "2026-11-26T09:33:06.754Z",
       "by": "machine-runner",
-      "from": "out/work/mr/wayin.jpg"
+      "from": "out/work/mr/hit.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "after merge 30 and the fitting view: youre-fired, rail-cam, last-save, table-wide at draft, true acting states in the glass",
-      "time": "2026-11-26T09:19:26.315Z",
+      "caption": "the close cameras at review: near-nest at 17.37 s, near-spent at 35.1 s",
+      "time": "2026-11-26T09:33:07.015Z",
       "by": "machine-runner",
-      "from": "out/work/mr/look-keys.jpg"
+      "from": "out/work/mr/near.jpg"
     }
   ]
 }
