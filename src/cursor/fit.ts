@@ -1,4 +1,7 @@
+import type { CursorPose } from './body'
 import { OUTLINE } from './contract'
+import { lookOf } from './look'
+import { Deform } from './model/deform'
 
 // The middle of the outline as it is drawn: the centre of the smallest circle that holds every corner, with its radius, in outline units.
 // The body is drawn `stretch` long and 1 / sqrt(stretch) wide.
@@ -41,4 +44,16 @@ export function middleOf(stretch: number): Middle {
   const got = smallest(OUTLINE.map(([x, y]) => [x * wide, y * long] as [number, number]))
   made.set(key, got)
   return got
+}
+
+const measure = new Deform()
+
+// What the view draws for a pose sealed in the ball, without a scene: the middle of the body as it is drawn, in page pixels in the body's own space (x right, y up, the tip at the origin), how far its outline reaches from that middle, and how much smaller the glass makes it be drawn (1 for a body that fits). A centred body has this middle on the ball's middle.
+export function sealedFit(c: CursorPose, time: number): { x: number; y: number; r: number; hold: number } {
+  const look = lookOf(c, time)
+  look.body.sealed = 1
+  measure.set(look.body)
+  measure.lean(-c.lean - c.spin)
+  measure.fit()
+  return { x: measure.mid.x, y: measure.mid.y, r: measure.mid.r, hold: measure.hold }
 }

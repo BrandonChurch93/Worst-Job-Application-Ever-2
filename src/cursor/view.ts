@@ -6,8 +6,9 @@ import { makeArms, type Arms } from './act/arms'
 import { damageLook } from './act/damage'
 import { makeTape, type Tape } from './act/tape'
 import type { CursorPose } from './body'
-import { restLook, SHOULDERS, UNIT, type BodyModel, type EffectsModel } from './contract'
+import { SHOULDERS, UNIT, type BodyModel, type EffectsModel } from './contract'
 import { middleOf } from './fit'
+import { lookOf } from './look'
 import { makeBody } from './model/body'
 import { drawnStretch } from './model/deform'
 import { makeEffects } from './model/effects'
@@ -51,25 +52,23 @@ export class CursorView {
   }
 
   apply(c: CursorPose, ctx: RealContext): void {
-    const look = restLook(ctx.time)
-    look.body.stretch = c.squash
-    actingLook?.(c, look)
-    damageLook?.(c, look)
-    if (c.inBall) {
-      // Nothing rises out of a sealed ball.
-      look.effects.smoke = []
-      look.effects.steam = 0
-      look.effects.dust = -1
-    }
-    look.body.sealed = c.inBall ? 1 : 0
-    look.arms.grip = [c.grip[0], c.grip[1]]
-    look.arms.strain = c.strain
+    const look = lookOf(c, ctx.time)
     const turn = -c.lean - c.spin
     this.at.quaternion.identity()
+    // The body is shaped first: where a sealed body stands comes from its outline as it is drawn.
+    if (this.body) {
+      this.body.root.rotation.set(0, 0, turn)
+      this.body.apply(look.body)
+    }
     if (c.inBall && c.centred) {
-      // The middle of the outline as it is drawn stands on the ball's middle, whatever its lean, its turn and its length.
-      const m = middleOf(drawnStretch(look.body.stretch, look.body.melt))
-      this.at.position.set(-m.x * UNIT, m.y * UNIT, 0).applyAxisAngle(UP, turn)
+      // The middle of the body as it is drawn stands on the ball's middle, whatever its lean, its turn, its length and its acting.
+      const drawn = this.body?.middle?.()
+      if (drawn) this.at.position.set(-drawn.x, -drawn.y, 0)
+      else {
+        const m = middleOf(drawnStretch(look.body.stretch, look.body.melt))
+        this.at.position.set(-m.x * UNIT, m.y * UNIT, 0)
+      }
+      this.at.position.multiplyScalar(c.scale).applyAxisAngle(UP, turn)
       if (c.face) {
         this.spot.set(c.face.x, c.face.y, c.face.z).normalize()
         this.at.quaternion.setFromUnitVectors(UP, this.spot)
@@ -88,10 +87,6 @@ export class CursorView {
     } else if (c.inBall) this.at.position.set(c.x - 960 - 4.2 * UNIT, 540 - c.y + 9.5 * UNIT, c.z + half + 1)
     else this.at.position.set(c.x - 960, 540 - c.y, c.z)
     this.at.scale.setScalar(c.scale)
-    if (this.body) {
-      this.body.root.rotation.set(0, 0, turn)
-      this.body.apply(look.body)
-    }
     if (this.effects && this.body) this.effects.apply(look.effects, this.body, turn)
     if (this.tape && this.body) {
       const back = c.wounds.find((w) => w.kind === 'reassembled')

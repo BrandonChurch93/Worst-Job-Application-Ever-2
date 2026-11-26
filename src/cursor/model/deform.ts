@@ -1,5 +1,7 @@
-import { UNIT, type BodyLook } from '../contract'
-import { AXIS, CENTRE, TOP, UNDER_TOP, inside } from './shape'
+import { config } from '../../config'
+import { OUTLINE, UNIT, type BodyLook } from '../contract'
+import { smallestRound } from './round'
+import { AXIS, CENTRE, TOP, UNDER_TOP, heightAt, inside } from './shape'
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 const smooth = (a: number, b: number, x: number): number => {
@@ -26,6 +28,29 @@ export const drawnStretch = (stretch: number, melt: number): number => {
   return s + (1 - s) * Math.min(1, MELT.back * Math.min(1, Math.max(0, melt)))
 }
 
+// A body sealed in the clear ball is held inside the glass. The ball's inner wall stands `wall` of the ball's radius from its middle. The body's foot stands `skin` pixels outside its outline, and a body that trembles moves up to `shake` pixels more. The outline is measured at `each` points of every edge, at the foot and at the top of the wall.
+export const BORE = { wall: 0.875, skin: 1, shake: 2.4, each: 4 }
+const BORE_PX = (config.table.ballPx / 2) * BORE.wall
+const RING = OUTLINE.length * BORE.each
+const RING_X = new Float64Array(RING)
+const RING_Y = new Float64Array(RING)
+const RING_Z = new Float64Array(RING)
+for (let i = 0; i < OUTLINE.length; i++) {
+  const a = OUTLINE[i]!
+  const b = OUTLINE[(i + 1) % OUTLINE.length]!
+  for (let k = 0; k < BORE.each; k++) {
+    const at = i * BORE.each + k
+    RING_X[at] = a[0] + ((b[0] - a[0]) * k) / BORE.each
+    RING_Y[at] = a[1] + ((b[1] - a[1]) * k) / BORE.each
+    RING_Z[at] = heightAt(RING_X[at]!, RING_Y[at]!)
+  }
+}
+const DRAWN_X = new Float64Array(RING * 2)
+const DRAWN_Y = new Float64Array(RING * 2)
+const DRAWN = { x: 0, y: 0, z: 0 }
+// The room a sealed body has round its middle, in page pixels, for how hard it trembles.
+export const boreRoom = (tremble: number): number => BORE_PX - BORE.skin - BORE.shake * Math.min(1, Math.max(0, tremble))
+
 // Turns a point of the body at rest, in outline units, into where it is now, in page pixels in the body's own space.
 export class Deform {
   stretch = 1
@@ -44,6 +69,11 @@ export class Deform {
   private shakeTurn = 0
   private slantX = -SLANT
   private slantY = -SLANT
+  private sealed = false
+  // For a sealed body, after `fit`: the middle of the smallest circle round the outline as it is drawn, in page pixels in the body's own space, and that circle's radius. All 0 for a body that is not sealed.
+  readonly mid = { x: 0, y: 0, r: 0 }
+  // How much smaller a sealed body is drawn in its own plane, about that middle, to stay inside the glass. 1 for a body that fits.
+  hold = 1
 
   // The slant keeps its direction on the page however the body is turned.
   lean(turn: number): void {
@@ -73,6 +103,11 @@ export class Deform {
     this.peel = clamp01(look.peel)
     this.gulp = look.gulp < 0 ? -1 : clamp01(look.gulp)
     this.time = look.time
+    this.sealed = (look.sealed ?? 0) > 0
+    this.hold = 1
+    this.mid.x = 0
+    this.mid.y = 0
+    this.mid.r = 0
     // A melting body slumps by its own running, not by being pressed short: most of the pose's squash is given back, or the arrow reads as a cap on a stalk.
     this.stretch += (1 - this.stretch) * Math.min(1, MELT.back * this.melt)
     // And it keeps the line of an arrow: a soft body curls less than a stiff one is asked to.
@@ -83,6 +118,29 @@ export class Deform {
     this.shakeX = k * (0.2 * Math.sin(t * 83.1) + 0.12 * Math.sin(t * 131.7 + 1.1))
     this.shakeY = k * (0.13 * Math.sin(t * 97.3 + 2.0) + 0.09 * Math.sin(t * 149.9 + 0.4))
     this.shakeTurn = k * 0.012 * Math.sin(t * 71.9 + 0.7)
+  }
+
+  // After set and lean. The glass holds a sealed body: its outline is measured as it is drawn, without its tremble, and where the smallest circle round it is wider than its room in the ball, the body is drawn that much smaller in its own plane. Its thickness stays. The measure is of this look alone.
+  fit(): void {
+    if (!this.sealed) return
+    const k = this.tremble
+    this.tremble = 0
+    this.hold = 1
+    for (let i = 0; i < RING; i++) {
+      this.point(RING_X[i]!, RING_Y[i]!, 0, 0, DRAWN)
+      DRAWN_X[i] = DRAWN.x
+      DRAWN_Y[i] = DRAWN.y
+      this.point(RING_X[i]!, RING_Y[i]!, RING_Z[i]!, 0, DRAWN)
+      DRAWN_X[RING + i] = DRAWN.x
+      DRAWN_Y[RING + i] = DRAWN.y
+    }
+    this.tremble = k
+    smallestRound(DRAWN_X, DRAWN_Y, RING * 2, this.mid)
+    const room = boreRoom(k)
+    if (this.mid.r > room) {
+      this.hold = room / this.mid.r
+      this.mid.r = room
+    }
   }
 
   // x, y, z at rest in outline units, with how far in from the outline the point lies. out gets page pixels: x right, y up, z off the page.
@@ -248,5 +306,9 @@ export class Deform {
     out.x = (x + this.slantX * z) * UNIT
     out.y = -(y + this.slantY * z) * UNIT
     out.z = z * UNIT
+    if (this.hold < 1) {
+      out.x = this.mid.x + (out.x - this.mid.x) * this.hold
+      out.y = this.mid.y + (out.y - this.mid.y) * this.hold
+    }
   }
 }
