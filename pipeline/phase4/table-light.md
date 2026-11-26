@@ -45,6 +45,10 @@ Branch `agent/table-light`, made from `origin/phase4-base` (f634ffb). Folders `s
 - A window of a waking tier is never dead: its lamp stands at `INSERT_REST` 0.3 of the general lighting and its glass at `INSERT_GLOW.rest` 0.6 until the score lights it (then 1 and 1.9). Insert lamp: power 1.1 over 3.0 balls (was 0.8 over 2.6).
 - The room round the machine is the renderer's clear colour (`look.background`, 29 of 255 in a still at any dusk). It is outside my folders: `pipeline/phase4/table-light-NEEDS.patch` makes it follow the website's light in `App.put` (`0.12 + 0.88 * website` of it), applied here as the commit `NEEDS: ...`. MEASURED in `table-wide`: the corner goes from (29, 29, 31) to (6, 6, 8); approved (4, 6, 8).
 
+- Corporate gold (the Builder's point 2): the leaf of the print throws a lamp's light back in every direction in its own colour (`LEAF` 0.6 in the hook, on flat floors only, so no steel changes); the two golds of the palette are lighter (`#e3bd62`, `#c4a252`), the sunburst stands at 0.36 and the fans have heavier lines.
+- The windows in the lanes are 38 by 25 px (were 29 by 18) with a larger arrow, in a brass bezel on Corporate: at the tier camera they read as lit windows, not dashes.
+- The brass rods across the red carpet (the Builder's point 4) are built in `src/table/real/models/corporate/hq.ts`, not in my folders. Told the Builder.
+
 ## Measured after (at the first full version)
 
 - `npm run build && npm run counts -- --key <key> --live low`, row `table-lights`, draw calls and triangles, before then after: tier-corporate 7 and 14902, then 6 and 14668; tier-office 7 and 18096, then 6 and 17862; tier-street 5 and 11614, then 4 and 11380; table-wide 11 and 21060, then 8 and 20358. Row `tier-art` is the same before and after: 3 and 172, 3 and 172, 2 and 170, 6 and 510. The "before" of the three tier keys was taken on a worktree of `origin/phase4-base`.
