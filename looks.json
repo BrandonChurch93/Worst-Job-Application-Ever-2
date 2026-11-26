@@ -1,35 +1,35 @@
 {
   "folder": "table-runner",
-  "pushed": "2026-11-26T06:25:49.526Z",
-  "commit": "bdaef0afb9bd29232557dad2c90a402e7bd2a4ab",
+  "pushed": "2026-11-26T06:32:52.907Z",
+  "commit": "c7e0da1a1b546bfa4b5227f3329e101c46f4d5c9",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key lobby-doors: approved on the left, this build on the right, review tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
-      "time": "2026-11-26T06:25:32.641Z",
-      "by": "table-runner",
-      "from": "out/work/compare/compare-lobby-doors.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "rail-cam review beside approved, the camera ahead of the ball looking back: firehouse and bank in the frame, tip up right (judged in round 12)",
-      "time": "2026-11-26T06:25:47.958Z",
-      "by": "table-runner",
-      "from": "out/work/report/table-runner-r11-rail-cam.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "lobby-doors review beside approved, the eye 1.8 balls over the floor: carpet and the ball's shadow in the picture (judged in round 12)",
-      "time": "2026-11-26T06:25:48.204Z",
-      "by": "table-runner",
-      "from": "out/work/report/table-runner-r11-lobby.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "the foot of table-wide, draft: the apron card on the left slab as the kit says, the drain's plate in the middle",
       "time": "2026-11-26T06:25:48.429Z",
       "by": "table-runner",
       "from": "out/work/report/r11-apron-left.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key last-save: approved on the left, this build on the right, draft tier, with crops of cursor, shape:flipper.street.flipper.left, shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3, apronCard, shape:model.street.mom, shape:model.street.firehouse, shape:rail.drain.1, apronSlab, shape:insert.street.insert.1",
+      "time": "2026-11-26T06:29:00.643Z",
+      "by": "table-runner",
+      "from": "out/work/compare/compare-last-save.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key last-save: approved on the left, this build on the right, draft tier, with crops of cursor, shape:flipper.street.flipper.left, shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3, apronCard, shape:model.street.mom, shape:model.street.firehouse, shape:rail.drain.1, apronSlab, shape:insert.street.insert.1",
+      "time": "2026-11-26T06:30:34.932Z",
+      "by": "table-runner",
+      "from": "out/work/compare/compare-last-save.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "last-save, draft beside approved, after the card moved to the left slab and the camera aims lower: the card's words are off the foot, the drain's plate is whole (judged in round 12)",
+      "time": "2026-11-26T06:32:51.621Z",
+      "by": "table-runner",
+      "from": "out/work/report/table-runner-r11-last-save.jpg"
     }
   ]
 }
