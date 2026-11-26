@@ -348,6 +348,7 @@ export class Engine {
   private still = new StillShadows()
   private keeps = false
   private rest = new RestBlend()
+  blendsRest = true
   private sampleBounds: SampleBounds | null = null
 
   constructor(canvas: HTMLCanvasElement, width: number, height: number, opts: { preserve: boolean; forceKind?: TargetKind; multisamples?: number }) {
@@ -443,7 +444,7 @@ export class Engine {
     if (restart) {
       this.acc.begin()
       this.rest.drop()
-    } else if (gathers && this.acc.samples === 1) this.rest.hold(this.renderer, this.acc.texture, this.acc.width, this.acc.height, this.kind)
+    } else if (gathers && this.blendsRest && this.acc.samples === 1) this.rest.hold(this.renderer, this.acc.texture, this.acc.width, this.acc.height, this.kind)
     this.sample(shot, own, view, restart, !gathers, mode === 'baked')
     const share = gathers && this.rest.held ? restShare(this.acc.samples, REST_FRAMES.accumulated) : 1
     this.present(frame, view, true, this.rest.blend(this.renderer, this.acc.texture, share))
