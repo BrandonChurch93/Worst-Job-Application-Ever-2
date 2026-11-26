@@ -28,7 +28,7 @@ const COAT = [
   { roughness: 0.95, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 1.6 },
   { roughness: 0.92, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 2.2 }
 ]
-const WINDOW = { lift: 0.35, bump: 2.2, segments: 56, inset: 0.975, room: 1 }
+const WINDOW = { lift: 0.35, bump: 2.2, segments: 56, inset: 0.975, room: 2.4, dome: 4.5 }
 
 let peel: THREE.DataTexture | null = null
 function peelMap(): THREE.DataTexture {
@@ -113,7 +113,7 @@ function windowsOf(z: Zone): THREE.Mesh {
 }
 
 function build(z: Zone): THREE.Object3D {
-  const o = new Floor(PLATE.w, PLATE.h, PLATE.z + WINDOW.lift)
+  const o = new Floor(PLATE.w, PLATE.h, PLATE.z + WINDOW.lift + WINDOW.dome)
   o.name = `tier-art.${z.id}`
   o.add(plate(z))
   o.add(windowsOf(z))
@@ -140,5 +140,5 @@ function drop(o: THREE.Object3D): void {
 }
 
 export const parts: Record<string, PartMaker | null> = {
-  'tier-art': whole('tier-art', { version: 'art-9', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
+  'tier-art': whole('tier-art', { version: 'art-10', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
 }

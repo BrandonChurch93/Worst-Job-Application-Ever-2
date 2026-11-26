@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { Zone } from '../zone'
 import { BALL, COLS, W } from '../../layout'
+import { FLASH } from './colours'
 import { CHANNELS, LAMP, LIT } from './groups'
 import { BODY, CORE } from './pictures'
 import { zoneLight, type ZoneLight } from './state'
@@ -107,7 +108,7 @@ const body = /* glsl */ `
 		if ( c.r + c.g + c.b <= 0.0 ) continue;
 		vec4 at = wjlAt[ i ];
 		if ( at.w > 2.5 ) {
-			wjlField += c * ( 0.34 + 0.5 * min( 1.6, wjlPhi[ 0 ] ) ) * wjlInside * wjlClear * ( 0.58 + 0.42 * wjlN.z );
+			wjlField += c * ( ${FLASH.flat.toFixed(3)} + ${FLASH.lamps.toFixed(3)} * min( 1.6, wjlPhi[ 0 ] ) ) * wjlInside * wjlClear * ( 0.58 + 0.42 * wjlN.z );
 			continue;
 		}
 		float amount = wjlPhi[ i ] * wjlInside * wjlClear;
