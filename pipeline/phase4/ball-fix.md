@@ -104,6 +104,14 @@ Mine by the Builder's list: R4-3 issue 1 (the capture reads as a swap), R4-2 iss
 - The rim (point 2, thickness), 08:46 to 08:50 UTC: concentric bright and dark streaks in the rim band that wander with the angle round the ball, two arcs of light and two of dark, and two more sets of lamp points mirrored off tilted walls. All in the front shell's fragment, no new draw. SEEN at `draft` beside approved in `rail-cam`, `lobby-doors`, `youre-fired`, `tier-street`.
 - After merge 30 (the shared look) SEEN 09:06 UTC at `draft` beside approved: `youre-fired`, `tier-office`, `lobby-doors`, `reply-all`. Nothing of mine reads wrong from it.
 
+## From 09:07 UTC to the end
+
+- The rim again (09:08 and 09:19 UTC): fine streaks of light and dark inside the rim from 0.6 of the radius outward, brighter and less blue; the picture bent through the rim is taken further toward grey. SEEN at `draft` beside approved in `rail-cam`, `youre-fired`, `lobby-doors`, `tier-street`. Still thinner than approved in `rail-cam`.
+- The press at its full is 0.4 for a hit the page tells of (`PRESS.hit`), 0.3 for a standing overlap (`PRESS.stood`). A bumper's own flash no longer presses the shell: the page's hit does, and the two together made the held ball of the sheet too flat. MEASURED 09:33 UTC on 49fac8a6 with main's page, `node assets-src/table/ball/hit.mjs --frame 5011 --count 5 --step 1 --tier draft --size 260`, ball 97 px: round at 5009 and 5010, pressed on the cap at 5011, 5012 and less at 5013.
+- The sheet, SEEN 09:25 UTC on my branch with main (`npm run still -- --sheet clear-ball --tier draft --format hd --force`, 41.7 s): three panels with gutters, the ball about 285 px wide in each, the third pressed toward the cup.
+- `lobby-doors` after the camera went to 12.4 degrees down (main ee84463c), SEEN 09:25 to 09:28 UTC: the ball stands over the carpet with the bright spot under it and NO dark shadow to be seen. Two tries (a floor of density at the doors, the decal higher over the pile) changed nothing in the picture and were taken out again. Cause UNKNOWN. This is the first of the three least real things left.
+- Counts, MEASURED 09:35 UTC on 49fac8a6 (`npm run build && npm run counts -- --key <key> --live low`): `table-wide` `clear-ball` 2 calls 18872 triangles, `displays` 8 calls 328, frame 201 calls 488464; `tier-office` `clear-ball` 3 calls 18874, `displays` 4 calls 164, frame 126 calls 320353. Mine are the same as at the start.
+
 ## Tuning looks, by part
 
 Critic round 1 (to 08:15 UTC):
@@ -111,7 +119,7 @@ Critic round 1 (to 08:15 UTC):
 - `displays`: 1 of 40 (`table-wide` at `draft`, the main display beside approved: six amber numerals in a lit window, in place; nothing changed).
 
 Critic round 2 (from 08:15 UTC):
-- `clear-ball`: 24 at 09:07 UTC, all `draft`. One sheet of 12 film frames round the bumper hit, 9 rows of film frames at the ball's real size (`hit.mjs`: 5010 twice, 4158, 4164, 6352, 6346, 5009, 5011, 5168), 11 key stills beside approved (`rail-cam` 3, `lobby-doors` 3, `youre-fired` 2, `tier-street`, `tier-office`, `reply-all`), 3 sheets of three panels.
+- `clear-ball`: 39 at 09:36 UTC, all `draft`. One sheet of 12 film frames round the bumper hit, 12 rows of film frames at the ball's real size (`hit.mjs`: 5010 twice, 4158, 4164, 6352, 6346, 5009, 5011 four times, 5168), 20 key stills beside approved (`rail-cam` 5, `lobby-doors` 8, `youre-fired` 3, `tier-street` 2, `tier-office`, `reply-all`), 6 sheets of three panels.
 - `displays`: 0.
 
 Time of one still on this VM, MEASURED by `assets-src/table/ball/diag.mjs` (it prints the seconds of each render): `draft` 17.7 to 47.6 s, `review` 56.3 to 84.0 s. One film frame at `draft` after the first: 16.6 to 17.4 s (`hit.mjs`).
