@@ -142,3 +142,31 @@ MEASURED:
 | soft texels after the fix | `npm run still -- --sheet boss-stages --format hd --tier review --diag texels`, own count | 4 soft of 91790 textured pixels |
 | melt at the key | trace of `stage.cursor.pose().feel` | 0.411 before, 0.198 after |
 | gate 11:54 | `npm test`, `npm run build`, `npm run bots` | 117 files, 1472 of 1472; build ok; bots all clear |
+
+## 12:00 to 12:30
+
+Looks, by part: acting-boss 20 + 11 (dodge-a, tip-a, dodge-b, shake-a, shake-b, hit-b, pop-b, bar-b, take-a, take-b, take-c, hit-c, turn-a: 13, so 33 of 40); boss-body 21 + 1 (key `boss-fight` at review); health-bar 5 + 1 (barflash-a).
+
+- A hit sets `shocked`, not `exhausted` (Builder agreed, 12:20): the melted arrow could not be read through the shake. `exhausted` is the sag at `boss-down` only.
+- The dust off comes 0.3 s after a hit in every phase (`DUST_AFTER` in `src/boss/fight.ts`); the page's own second dust off in the pop-up phase is gone (`SHAKE` is now only how long the page waits before the arrow is calm again, 1.2 s).
+- The double take (`LOOKS` in `src/pages/step4/index.ts`): the page aims the arrow at the bar from 0.56 to 0.9 s after the banner, at the boss to 1.12 s, at the bar again to 1.64 s with `doubleTake` at 1.02 s (its tall stretch falls in the second look), then the snap back with `angry` and `fume`. The arrow stands at (900,350), clear of the card (`BAR` in `script.ts`).
+- The press: at 29.88 s in my file (`PRESS`, `sunk`), the arrow stays on the button until 31.5 s. From 31.5 s the arrow leaves the button to the left and up (frames 8433 to 8454): that is the stage's turn, not this page.
+- M2 by the full measure at 12:00: 0.0027 against 0.02, 8 green.
+
+## End state (12:35)
+
+Looks, by part, this round: acting-boss 34 of 40 (dash-a added); boss-body 24 (two review compares of the keys on the pushed tree); boss-transform 16; boss-weapons 5; verify-card 2; health-bar 6.
+
+| Builder's item | state |
+| --- | --- |
+| arrow at `boss-down` | done, accepted 12:00 |
+| a hit leaves the arrow whole | done, accepted 12:20 |
+| double take under the bar | done, accepted 12:32 |
+| dust off sooner after the hit at 13.1 s | done, accepted 12:32 |
+| the press before the turn | the press at 29.88 s is the page's and was looked at; the arrow leaving at 31.55 s is the stage's turn, the Builder's |
+| red dash (item 6) | looked at frame by frame 22.2 to 22.5 s: the banner is first drawn at frame 7878 with its words on, full size by 7881; no dash |
+| M2 on `boss-stages` | green, 0.0027 against 0.02 |
+
+Not done: the face frame as a cast frame with a soft contact shadow (the build's is flat brushed plate with a dark outline); the boss stands wider than approved's and its cannons are smaller; R1-1 16 (the button resting and breaking loose); R3-1 3 (the trail); R3-1 1 wall thickness of the torn ends; the bead at the fill's end on a landing rides the end and is not a flash; the tall stretch in the second look is slight.
+
+Least real, in order: the boss's frame and side plates (flat grey, even light, a drawn outline where approved has cast steel with soft reflections and a deep contact shadow); the wreck's plates (all lie flat at like angles with soft shadows, approved's lie at varied angles with hard ones); the fallen cap (duller than approved, its word smaller, torn ends read as soot more than as torn metal).

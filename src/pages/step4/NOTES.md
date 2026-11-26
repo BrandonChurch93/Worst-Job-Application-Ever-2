@@ -98,9 +98,9 @@ The acting, beat by beat (the word a stranger should say, and what carries it):
 | --- | --- | --- |
 | `boss.verify` | doubt | comes in `nervous`, one move that stops short of the box (flinch 1.95 s), a held pull back, winds up 3.36 s, taps 3.72 s so the strike is the tick, struts off (`proud`), double take at the answer 4.62 s, held below the card |
 | `boss.unfold` | horror | stands at the button, thrown back on the crack (`recoil`, `shocked`), runs behind the left edge of the card (7.1 s) and cowers still there (`scared`), steels itself 8.75 s |
-| `boss.slabs` | fight | a bounce (`jump` 9.25 s), `rear` before the first slab, a move clear of it (10.42 to 10.75 s), fires from its tip through the key; the one hit of the phase at 13.1 s (`shocked`, thrown, dust off), a second move clear of a slab at 14.9 s |
+| `boss.slabs` | fight | a bounce (`jump` 9.25 s), `rear` before the first slab, a move clear of it (10.42 to 10.75 s), fires from its tip through the key; the one hit of the phase at 13.1 s (`shocked`, thrown, dust off 0.3 s after it), a second move clear of a slab at 14.9 s |
 | `boss.popups` | anger | `angry` from the phase change; shots stop on the first dialog, it goes round the second, `fume` at the later ones; the hit at 20.24 s: thrown, `shocked`, a shake held 0.9 s (`dustOff`) |
-| `boss.lastStand` | really | `startle` and `shocked` as the banner lands, `doubleTake` at the bar's jump with the arrow under the bar (22.86 to 24.15 s), then `fume` and `angry` and the rush |
+| `boss.lastStand` | really | `startle` and `shocked` as the banner lands, stopped under the bar (22.86 to 24.15 s) it turns to the bar, back to the boss and to the bar again (`LOOKS`), the second look with `doubleTake`, then `fume` and `angry` and the rush |
 | `boss.collapse` | spent | `plain`: ducks at 27.31 s, walks to the fallen button, sags (`exhausted`) from 28.93 s so that at the key (29.0 s) it is slumped with its outline whole |
 | `boss.press` | done | gathers itself 29.5 s, sets its point on the fallen button and presses 29.88 s (the button gives 12 px and springs back), then `proud` with `dustOff`, held to the turn |
 
