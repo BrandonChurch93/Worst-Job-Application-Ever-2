@@ -500,8 +500,10 @@ export const gridOf = (w: number, d: number): { cols: number; rows: number } => 
 export function cubicleScrews(z: Zone): [number, number, number][] {
   const b = boxOf(z, 'office.cubicles')
   const out: [number, number, number][] = []
-  for (const sx of [-1, 1]) for (const sy of [-1, 0, 1]) out.push([b.x + sx * (b.w / 2 - 12), b.y + sy * (b.d / 2 - 40), WALL.base])
-  for (const sy of [-1, 1]) out.push([b.x, b.y + sy * 60, WALL.base])
+  const hw = b.w / 2 - WALL.t / 2 - 1
+  const hd = b.d / 2 - WALL.t / 2 - 1
+  const { cols } = gridOf(b.w, b.d)
+  for (let i = 0; i <= cols; i++) for (const sy of [-1, 1]) out.push([b.x - hw + ((2 * hw) / cols) * i, b.y + sy * hd, WALL.base + WALL.h])
   return out
 }
 function foot(k: Kit, hw: number, hd: number): void {

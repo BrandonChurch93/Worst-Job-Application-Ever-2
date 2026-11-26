@@ -65,6 +65,8 @@ function plateOutline(f: Frame): V2[] {
 
 const taper = (f: Frame, x: number): number => 21 - (5.5 * Math.max(0, Math.min(f.length, x))) / f.length
 const LIFT = 0.08
+// Across the stapler, in px beyond its taper: the top arm, the steel base that shows on both sides of it, and the shade the two lay on the plate.
+const SIDE = { arm: -1, steel: 1.8, shade: 4.8 }
 // The long highlight of the enamel, baked along the two shoulders of the arm: how much of it each ring of the section takes.
 const SHEEN = [0, 0, 0, 0.08, 0.75, 0.25, 0.04, 0, 0]
 
@@ -83,14 +85,15 @@ function body(k: Kit, f: Frame): void {
     }
     return out
   }
-  k.poly(strip(3, L - 3, -2.2), 0, 1.6, C.rubber, SURF.rubber, 0.3)
-  k.poly(strip(0, L, -1.2), 1.4, 3.2, C.steel, SURF.brushed, 1.2)
+  k.poly(strip(2, L + 1, SIDE.shade), 0.05, 0.3, shade(C.plate, 0.5), SURF.enamel, 0)
+  k.poly(strip(3, L - 3, SIDE.steel - 1), 0, 1.6, C.rubber, SURF.rubber, 0.3)
+  k.poly(strip(0, L, SIDE.steel), 1.4, 3.2, C.steel, SURF.brushed, 1.2)
   k.poly(strip(18, L - 30, -5), 4.4, 0.7, shade(C.steel, 0.8), SURF.brushed, 0.4)
   k.box(L - 15, 0, 4.4, 20, 20, 1.1, C.chrome, SURF.chrome, 0.4)
   for (const y of [-3.2, 3.2]) k.box(L - 14, y, 5.5, 9, 2.4, 0.25, C.dark, SURF.steel, 0)
   k.cyl(L - 24.5, 0, 5.5, 1.6, 0.6, shade(C.chrome, 0.8), SURF.steel, 8, 0.3)
   for (const s of [-1, 1]) {
-    const y = s * (taper(f, PIN.x) - 0.2)
+    const y = s * (taper(f, PIN.x) + SIDE.arm + 0.6)
     k.poly([[0.5, y - 1.1], [19, y - 1.1], [19, y + 1.1], [0.5, y + 1.1]], 3.6, 12.6, C.steel, SURF.brushed, 0.7)
     k.at(PIN.x, y + s * 1.1, PIN.z, 0, s * -Math.PI * 0.5)
     k.cyl(0, 0, 0, 3.4, 1.6, C.chrome, SURF.chrome, 12, 0.7)
@@ -123,7 +126,7 @@ function body(k: Kit, f: Frame): void {
 function arm(k: Kit, f: Frame): void {
   const L = f.length - PIN.x - 1
   const section = (x: number, grow: number, wide: number, tall: number, skirt: number): V3[] => {
-    const w = (taper(f, x + PIN.x) + 2.2) * wide * (0.6 + 0.4 * grow)
+    const w = (taper(f, x + PIN.x) + SIDE.arm) * wide * (0.6 + 0.4 * grow)
     const h = 1 + (21 - (5 * Math.max(0, x)) / L) * tall * (0.45 + 0.55 * grow)
     const half: V2[] = [[w - 0.8, -skirt], [w, -skirt + 1], [w, h * 0.5], [w * 0.975, h * 0.7], [w * 0.91, h * 0.86], [w * 0.8, h * 0.95], [w * 0.62, h], [w * 0.36, h * 1.035], [w * 0.12, h * 1.05]]
     const out: V3[] = half.map((q) => [x, -q[0], q[1]] as V3)
@@ -147,7 +150,7 @@ function arm(k: Kit, f: Frame): void {
     const seam: V3[] = []
     for (let i = 0; i <= 8; i++) {
       const x = -4 + ((L - 2) * i) / 8
-      seam.push([x, s * (taper(f, x + PIN.x) + 1.35), -1.2])
+      seam.push([x, s * (taper(f, x + PIN.x) + SIDE.arm - 0.85), -1.2])
     }
     k.tube(seam, 0.7, shade(C.red, 0.55), SURF.enamel, 4)
   }

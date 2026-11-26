@@ -42,6 +42,11 @@ Folder: 18 calls, 31208 triangles. Whole frame: 207 draw calls against a limit o
 - The hop from straight above. A lift of 20 px changes the home camera's picture by less than one part in a hundred, so the two heaps also swell (`HOP.swell`), turn (`HOP.turn`) and slide a little as they hop. The test holds that they come back to rest exactly.
 - The chute keeps its slope when the tray grows taller (`CHUTE.tall`).
 - The top plate of the coffee machine is brushed mid steel, so the white cups stand out on it.
+- Lamps over my models. The lights owner put two high hidden lamps in (merge 22), one over the inbox and one over the cubicles, and widened the Office wide lamps. With them and my old lift the envelopes burnt out (MEASURED on a `draft` still of `tier-office`: the brightest tenth of the inbox at rgb(237,234,222)). All lift now passes through one number, `FILL = 0.45` in `kit.ts`. MEASURED after: the brightest tenth of the inbox at rgb(211,207,193) in `tier-office` and rgb(204,201,189) in `reply-all`; of the cubicles at rgb(188,183,166) and rgb(183,175,160). The lights owner has the numbers and needs no trim.
+- The tray follows its box. With the box at 1.15 balls high the body is tall, so it has a foot step all round (`TRAY.step`) and a steel card holder with a blank card on its front (`CARD`). The card carries no words: there are none for it in `content/copy.json`.
+- The furniture of a cubicle is drawn for a cell of 82.2 by 66 px and grows or shrinks with the cell of the layout between 0.85 and 1.3 (`FIT`), so a wider or narrower farm stays full.
+- The screws of the farm sit on the caps, where the partitions cross the long walls, not on the slab.
+- The stapler from straight above. The arm, the base and the plate were three reds that ran together. The arm is now 2.8 px narrower on each side than the steel base, so a steel edge shows on both sides of it, and the base lays a dark band on the plate (`SIDE`).
 
 ## Counts after (MEASURED on ef524227)
 
@@ -59,6 +64,8 @@ Folder: 16 calls, 28590 triangles. Whole frame: `table-wide` 192, `tier-office` 
 ## Answers
 
 - `/root/table_runner` (04:10 UTC by its clock): inbox box becomes [15.2, 3.6, 1.55, 1.45] h 1.15, not wider (the lane to the right inlane needs 1.25 balls); the hold stays at (14.6, 4.35), beside the tray. Cubicles box becomes [3.25, 2.25, 3.2, 1.85] h 0.7, drop bank at u 6.45. Free floor: the right lower corner (x 13.6 to 15.3, v 8.6 to 10.3), the left shoulder (u 4.7 to 6.4, v 8.6 to 10.3) and the strips between a wall and its lamp row. Everything between v 4.5 and 8 is ball path. These boxes reach me through `main`.
+- `/root/table_runner` (later): the cubicles box becomes [3.25, 2.25, 2.6, 1.85] with the drop bank at u 5.85, on its branch at 3b9bb50d. The farm is still three across there (the box is wider than deep). Not looked at until it is in `main`.
+- `/root/lamp_keeper` (04:36 UTC by its clock): two high lamps, power 0.75, follow the boxes of the inbox and the cubicles and the `general` group.
 - `/root` (04:14 UTC): the right lower corner of the Office floor is mine.
 - One mistake of mine, 04:05 UTC: I tried a local edit of `src/table/layout.ts` to preview the new boxes. The file is frozen for me; the attempt was stopped before it ran and nothing was changed. I do not preview boxes that are not in `main`.
 
