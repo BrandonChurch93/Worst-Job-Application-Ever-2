@@ -61,8 +61,10 @@ One draft still shows several parts; each still is counted once, under the part 
 | 05:08 to 05:10 | last-save, tier-corporate | wire | 2 |
 | 05:10 to 05:20 | last-save 5, tier-office 1, rail-cam 1 | wire: which term makes it pale | 7 |
 | 05:21 to 05:27 | loader-page 2, table-wide 2 | loader ring and bowl, rail ends, marquee | 4 |
+| 05:41 to 05:44 | tier-corporate at draft, last-save at review (78 s, looked at) | lift tube, a review still | 2 |
+| 05:50 to 05:58 | tier-corporate 2, tier-street 1, tier-office 1 | lift tube from above | 4 |
 
-Total at 05:27 UTC: 71 stills (the rows above summed). One still shows several parts, so the split by part is my reading of what each was rendered for, not a log: ramps about 24, frame about 19, loader 10, hardware 6, flippers 5, lift 5, marquee 3, bumpers 2, targets 1. No part is at 40.
+Total at 05:58 UTC: 77 stills (the rows above summed). One still shows several parts, so the split by part is my reading of what each was rendered for, not a log: ramps about 24, frame about 19, loader 10, hardware 6, flippers 5, lift 11, marquee 3, bumpers 2, targets 1. No part is at 40.
 
 ## Decisions
 
@@ -79,7 +81,7 @@ Total at 05:27 UTC: 71 stills (the rows above summed). One still shows several p
 - The bats' two screws are dull steel: polished domes read as white discs from above.
 
 - The chrome's ceiling is rings of lamp at two heights, not strips at fixed bearings: a straight wire shows either as one line, and a curved wire keeps its line where strips broke into dashes that read as a rope. The rings are narrower on a thin wire's energy (`keep`), so a wire a few pixels wide goes dark grey, not pale.
-- Clear tubes under the lamps (the lift's, the drain's, the feed's inside a tier) show the upper ring of lamp as one soft line down the wall that faces the eye. Two rings on both walls drew eight hard lines and read as ribbed glass. Not on the page, not on the flat covers.
+- Clear tubes under the lamps (the lift's, the drain's, the feed's inside a tier) show the upper ring of lamp as thin hard lines down the walls that face the eye, strong on one side and faint on the other; the broad halo and the share of its own light a tube takes as opacity are down (0.08, 0.13), so from above it is clear with streaks, where it read as a frosted sheet. Two soft rings on both walls read as ribbed glass. Not on the page, not on the flat covers.
 - The highway's wire stayed a pale tube at a low eye whatever the room did. MEASURED by turning terms off one at a time in `last-save`: not the lamps' direct shine, not the rows of lamps, not the floor field; it is `sky` (the polish rings) spread over a wire a few pixels wide. The rings now lose energy with the square of the thinning and play's steel runs `sky: 0.3`, `panel: 0.2`, `horizon: 0.4`.
 - The loader's tube lies in a bed that is the bowl's own tone inside the bowl and the ring's dark aluminium through the ring: it read as a dark box.
 - Frame aluminium's upright faces keep 0.06 of the room (`wall`), its screws mirror a ceiling near the lands' own, so a row of screws is not a row of black dots.
@@ -98,3 +100,9 @@ Total at 05:27 UTC: 71 stills (the rows above summed). One still shows several p
 1. The light on the bats and on the lift's elbow: a bat's top falls from (238,150,36) at the pivot to (126,79,29) at the tip where approved is even, and the elbow is (73,53,34) against (161,79,27). The lamps are lamp_keeper's; told at 04:34.
 2. The highway's wire from a low eye (`last-save`): still a pale grey tube at draft size, where approved is a dark mirror with thin white lines. The hoops and trestles are right.
 3. The frame's lands from straight above: pale sheets with fine stripes and a row of dark screws, where approved is one slow gradient. The south ends of the side rails stand as tall brushed posts in `table-wide` (their height is the layout's).
+
+## Draw calls, MEASURED 05:35 UTC at f66fec4d (`npm run build && npm run counts -- --key <key> --live low`)
+
+- `tier-corporate`, `tier-office`, `tier-street`: every row of mine has the draw calls of the first measure (hardware 13/16/19, frame 9/12/13, targets 7/11/8, flippers 5/7/6, bumpers 2/8/2, loader 4/3/2, lift 3/6/3, ramps -/3/5, marquee 4/1/-).
+- `table-wide`: loader 10 calls and 13966 triangles, was 8 and 9408. The same 10 comes out with the loader file of the push before (14004 triangles), so it is not this round's loader: main's 2a5a2c59 moved the wide camera to show the machine to its near end, and two more loader meshes are in view. Every other row of mine equal: hardware 21, frame 16, targets 15, flippers 12, bumpers 8, lift 8, ramps 5, marquee 4. Scene 201.
+- Triangles of my rows in `table-wide`: 187052 before, 189610 now (ramps fell with main's layout, loader rose with the camera).
