@@ -9,7 +9,7 @@ import { BREATH, TONE, aluOf, clearOf, hex, mesh } from './mats'
 export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22, collarOut: 58.5, ferrule: 9, ferruleOut: 56, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
 const RING = { height: 26, lip: 6, floor: 2.4, slot: 2, mouth: 6, dish: 34, cuts: 9, seat: 13, seatLong: 26, rim: 7 }
 // The shadow the tube lays on the page, toward the lower right.
-const SHADE = { dx: 56, dy: -38, wide: 1, dark: 0.5, up: 0.5, ease: 70 }
+const SHADE = { dx: 56, dy: -38, wide: 1, dark: 0.64, up: 0.5, ease: 70 }
 // The rim of light in the port: how dim and how bright it breathes, and how many seconds one breath takes.
 const GLOW = { low: 0.25, high: 0.95, seconds: 4.6 }
 const CUP: [number, number, number] = [0.03, 0.032, 0.036]
@@ -183,6 +183,22 @@ function port(A: Geo, G: Geo | null, z: Zone, c: { x: number; y: number; ring: n
   A.tint(first, (x, y, zz) => (zz < h - 8 ? 1 : 1.3 - 0.7 * side(x, y)))
   // Under the ring's lip a rim of light, then the plain dark bowl: lit from the upper left, so its lower right wall is the paler.
   if (G) G.lathe([[r + RING.lip, h - 3], bowl[0]!], p[0], p[1], 72, RIM)
+  if (G) {
+    // The ring's own soft shadow on the page, toward the lower right: drawn, so the port costs no drawing in the shadow pass.
+    const cx = p[0] + SHADE.dx * 0.5
+    const cy = p[1] + SHADE.dy * 0.5
+    const rings: [number, number][] = [[R - 34, 1], [R, 1], [R + 14, 0.45], [R + 34, 0]]
+    for (let k = 1; k < rings.length; k++) {
+      for (let i = 0; i < 48; i++) {
+        const a0 = (i / 48) * Math.PI * 2
+        const a1 = ((i + 1) / 48) * Math.PI * 2
+        const at = (rr: number, a: number): V3 => [cx + rr * Math.cos(a), cy + rr * Math.sin(a), SHADE.up]
+        const c0: [number, number, number] = [0, rings[k - 1]![1] * SHADE.dark * 0.9, 0]
+        const c1: [number, number, number] = [0, rings[k]![1] * SHADE.dark * 0.9, 0]
+        G.shaded([at(rings[k - 1]![0], a0), at(rings[k]![0], a0), at(rings[k]![0], a1), at(rings[k - 1]![0], a1)], [0, 0, 1], [c0, c1, c1, c0])
+      }
+    }
+  }
   const dark = A.vertices
   A.lathe([[r + RING.lip, h - 3], ...bowl], p[0], p[1], 72, CUP)
   A.lathe([[r - RING.dish, RING.floor], [BALL * 0.5, RING.floor - 1.2], [0, RING.floor - 1.6]], p[0], p[1], 72, CUP)
@@ -262,7 +278,7 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
       if (f) collar(A, f)
     }
   }
-  if (A.vertices > 0) o.add(mesh(A, aluOf(z), `loader.metal.${z.id}`, { cast: z.tier < 0 }))
+  if (A.vertices > 0) o.add(mesh(A, aluOf(z), `loader.metal.${z.id}`))
   if (G.vertices > 0) {
     const tube = mesh(G, clearOf(z, 'tube', TUBE.opacity), `loader.tube.${z.id}`)
     tube.renderOrder = 3

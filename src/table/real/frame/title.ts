@@ -10,7 +10,7 @@ import { zone } from '../zone'
 
 // The title on the marquee's picture: the type's own run of letters, as cream print on the lit picture. The print lets the panel's light through, so it glows with the picture behind it.
 const TITLE = 'marquee-title'
-const PRINT = { ink: 0xe9dfc8, tone: 0xe9dfc8, rest: 0.22, lit: 0.85 }
+const PRINT = { ink: 0xf1e8d2, tone: 0xf1e8d2, rest: 0.7, lit: 1.25 }
 const HOVER = 0.05
 const NEAR = `
 float wjtDepth = - ( modelViewMatrix * vec4( position, 1.0 ) ).z;
