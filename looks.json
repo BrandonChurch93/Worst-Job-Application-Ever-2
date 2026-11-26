@@ -1,35 +1,35 @@
 {
   "folder": "decision",
-  "pushed": "2026-11-26T02:54:57.428Z",
-  "commit": "2b7dbdd872c6acaa441a15c65b77fd362c09f0dd",
+  "pushed": "2026-11-26T03:04:54.012Z",
+  "commit": "e2264429e7eb5a5872725f775510b6183c0b5415",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still decision-decision_letter-0p92-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T02:51:48.879Z",
+      "caption": "Still key-decision-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T03:04:35.649Z",
       "by": "decision",
-      "from": "out/work/stills/decision-decision_letter-0p92-hd-draft.png"
+      "from": "out/work/stills/key-decision-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still decision-decision_letter-0p95-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T02:52:13.645Z",
+      "caption": "Key picture at e2264429: approved left, build right (review tier)",
+      "time": "2026-11-26T03:04:52.336Z",
       "by": "decision",
-      "from": "out/work/stills/decision-decision_letter-0p95-hd-draft.png"
+      "from": "out/work/report-cmp.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key picture at 2b7dbdd8: approved left, build right; cursor right of the stamp, numerals in the ink on glass",
-      "time": "2026-11-26T02:54:55.991Z",
+      "caption": "Stamp and cursor: approved left, build right",
+      "time": "2026-11-26T03:04:52.561Z",
       "by": "decision",
-      "from": "out/work/look-cmp.jpg"
+      "from": "out/work/report-stamp.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "The stamp carried and laid down; the flat cursor falls from its rubber to the right (5.2 s, 5.68 s, 5.8 s)",
-      "time": "2026-11-26T02:54:56.227Z",
+      "caption": "Metrics panel: approved above, build below",
+      "time": "2026-11-26T03:04:52.794Z",
       "by": "decision",
-      "from": "out/work/look-carry.jpg"
+      "from": "out/work/report-panel.jpg"
     }
   ]
 }
