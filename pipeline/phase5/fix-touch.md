@@ -29,3 +29,46 @@ Everything is HTML and CSS. Nothing is fetched for the look.
 7. The link: an inline block that may wrap to two lines on a very narrow phone (320 px wide) in place of running off the card.
 8. The falloff is a look of the page and not a lens vignette: `kit/04-LOOK.md` forbids a vignette on the pages, and the build's pages fall off toward the lower right only, under the key light from the upper left. The touch page does the same.
 9. The judged still `screen-touch` is drawn by `src/main.ts` with `mountTouchMessage`, without `message.ts`. It shows the same page.
+10. Second pass, asked by the Builder: the page is a notice. The title of the site and the rule stay at the top, the rule across the page inside the margins. The card stands centred from left to right, at most 25 em of its words wide (836 px at 1920 wide), and the room under the rule is shared 42 parts above the card to 58 below (`--above`, `--below`), with a least room of `--gap` under the rule. It is done with two empty flex boxes (`.page::before`, `.page::after`): no new element, no word, no motion.
+11. The card's shadows are stronger and its lower and right rim brighter and thicker, toward the perk card of the build. A fault of the first pass is mended with it: `max()` round a negative offset held the floor and dropped the scaled value, so those are `min()` now.
+
+## Measured (second pass, 26 November 2026, 20:59 UTC)
+
+Commands: `node out/work/fix-touch/shots.mjs after`, `node out/work/fix-touch/shots.mjs after-link --address https://example.com/work` (the address lives in the browser run only), `node out/work/fix-touch/contrast.mjs after`, `node out/work/fix-touch/contrast.mjs after-link`, `node out/work/fix-touch/rule.mjs out/work/fix-touch/after`. The scripts are in `out/work/`, which is not committed.
+
+| size (CSS px) | scroll width | content height | least type | card top to bottom | share of the room above the card |
+| --- | --- | --- | --- | --- | --- |
+| 390x844, ratio 2 and 3 | 390 of 390 | 844 of 844 | 18.33 px | 307.4 to 529.9 | 42.2 of 100 |
+| 390x844 with an address | 390 of 390 | 844 of 844 | 18.33 px | 268.4 to 583.7 | 42.2 of 100 |
+| 844x390, ratio 2 and 3 | 844 of 844 | 390 of 390 | 22 px | 140.8 to 303.4 | 44.5 of 100 |
+| 844x390 with an address | 844 of 844 | 390 of 390 | 22 px | 107.3 to 349.6 | 47.0 of 100 |
+| 820x1180, ratio 2 and 3 | 820 of 820 | 1180 of 1180 | 22 px | 473.5 to 665.2 | 42.1 of 100 |
+| 820x1180 with an address | 820 of 820 | 1180 of 1180 | 22 px | 432.5 to 721.9 | 42.1 of 100 |
+| 1180x820, ratio 2 | 1180 of 1180 | 820 of 820 | 22 px | 324.0 to 537.1 | not measured |
+| 320x568, ratio 2 | 320 of 320 | 568 of 568 | 18 px | 198.2 to 444.5 | 42.3 of 100 |
+| 1920x1080, ratio 1 | 1920 of 1920 | 1080 of 1080 | 28 px | 424.7 to 739.0 (x 542 to 1378) | 43.6 of 100 |
+
+The share is the room from the rule to the card's top, over that room and the room from the card's bottom to the window's bottom.
+
+Contrast, measured on the pictures: the words on the card 8.5 to 8.8 to 1, the title on the card 8.0 to 8.3 to 1, the title of the site on the ground 11.1 to 12.0 to 1, the least of any run without the link 7.92 to 1; the white words on the orange pill 4.77 to 4.83 to 1, least 4.68 to 1.
+
+Dark colour scheme: `cmp out/work/fix-touch/after/dark-390x844-dpr3.png out/work/fix-touch/after/phone-390x844-dpr3.png` says the two are byte equal.
+
+Requests on the source server: 22 before and 22 after, the same list (the page, the client of the dev server and its env, `boot.ts`, `device.ts`, `message.ts`, `copy.ts`, `glyphs.ts`, `touch.ts`, `metrics.ts`, `glyphs.module.css`, `outline.ts`, `copy.json`, `narration.json`, `config.ts`, `touch.module.css`, `words.ts`, `showcase.json`, four `fonts/inter-*.json`). On the built site 9: the page, the index script, the message script, the touch script, the touch sheet, four font files. No picture, no model, no sound, no page module.
+
+## Open
+
+- With no address the card holds two runs of words and the ground round it is bare: the copy holds no more words for this page.
+- At 320 wide the words of the pill wrap to two lines.
+- The lower rim of the build's perk card is still a little thicker than this card's at 1920 wide, and the rule is a little paler than the build's.
+- The judged still `screen-touch` is 1920x1080, a size no touch-only phone has: the kit's, left as it is.
+
+## Checks (second pass, on the merge d9d4cfc0, ended 21:08 UTC)
+
+- `npm run build`: exit 0.
+- `npm run still -- --key <key> --format hd --tier draft --force` for `step1-fire`, `table-wide`, `boss-fight`, each then `cmp` with the picture made on dc83c2d0 before any change: byte equal, all three.
+- `npm run still -- --id screen-touch --format hd --tier draft --force`: rendered, 1920x1080, the notice with the card centred.
+- `npm run determinism`: pass, 12 pictures identical across two fresh loads and two orders.
+- `npm run bots`: all clear.
+- `npm test`: 141 files, 1770 tests passed. `tests/site-controls-boot.test.ts` is green and unchanged.
+- `npx tsc --noEmit -p .`: exit 0, no output.
