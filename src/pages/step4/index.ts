@@ -104,6 +104,8 @@ export function makePage(): PageLogic {
       s.fight.flashes = []
     }
     io.emit('power-down', from.cap.x, from.cap.y, false)
+    io.cursor.heal()
+    io.cursor.hurt('scorched')
     io.cursor.act('plain')
     io.cursor.aim(null)
   }
@@ -353,7 +355,8 @@ export function makePage(): PageLogic {
       drawRig(list, loose, 'stage-1')
       drawSocket(list, x2, y + 8, 1, 'stage-2-socket')
       const half = fightRig(x2, y, null)
-      for (const l of half.legs) l.k = 0.5
+      for (const l of half.legs) l.k = 0.78
+      half.sides.forEach((side, i) => { side.y = y + (i === 0 ? -1 : 1) * 78 })
       for (const c of half.cannons) c.k = 0
       half.shield.k = 0
       drawRig(list, half, 'stage-2')
