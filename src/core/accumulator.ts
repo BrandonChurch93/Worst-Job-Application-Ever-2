@@ -53,7 +53,10 @@ function makeTarget(w: number, h: number, type: THREE.TextureDataType, depth: bo
 // Keeps the running mean of the samples of one picture, in linear light.
 export class Accumulator {
   readonly kind: TargetKind
-  readonly sample: THREE.WebGLRenderTarget
+  private plain: THREE.WebGLRenderTarget
+  private deep: THREE.WebGLRenderTarget | null = null
+  private deepOn = false
+  private sampleType: THREE.TextureDataType
   private means: [THREE.WebGLRenderTarget, THREE.WebGLRenderTarget]
   private stats: THREE.WebGLRenderTarget
   private current = 0
@@ -64,13 +67,14 @@ export class Accumulator {
   width: number
   height: number
 
-  constructor(private renderer: THREE.WebGLRenderer, width: number, height: number, forced?: TargetKind, multisamples = 0) {
+  constructor(private renderer: THREE.WebGLRenderer, width: number, height: number, forced?: TargetKind, private multisamples = 0) {
     this.kind = forced ?? targetKind(renderer)
     this.width = width
     this.height = height
     const sampleType = this.kind === 'byte' ? THREE.UnsignedByteType : THREE.HalfFloatType
     const meanType = this.kind === 'float' ? THREE.FloatType : sampleType
-    this.sample = makeTarget(width, height, sampleType, true, multisamples)
+    this.sampleType = sampleType
+    this.plain = makeTarget(width, height, sampleType, true, multisamples)
     this.means = [makeTarget(width, height, meanType, false), makeTarget(width, height, meanType, false)]
     this.stats = makeTarget(64, 36, this.kind === 'byte' ? THREE.UnsignedByteType : meanType, false)
     this.stats.texture.colorSpace = THREE.NoColorSpace
@@ -104,11 +108,33 @@ void main() {
     )
   }
 
+  // The target a sample is drawn into.
+  get sample(): THREE.WebGLRenderTarget {
+    return this.deepOn && this.deep ? this.deep : this.plain
+  }
+
+  // A picture seen through a lens keeps how far away each pixel of its last sample is. Every other picture is drawn as before.
+  keepDepth(on: boolean): void {
+    if (on && !this.deep) {
+      this.deep = makeTarget(this.width, this.height, this.sampleType, true, this.multisamples)
+      const d = new THREE.DepthTexture(this.width, this.height)
+      d.minFilter = THREE.NearestFilter
+      d.magFilter = THREE.NearestFilter
+      this.deep.depthTexture = d
+    }
+    this.deepOn = on
+  }
+
+  get depth(): THREE.DepthTexture | null {
+    return this.deepOn && this.deep ? this.deep.depthTexture : null
+  }
+
   setSize(width: number, height: number): void {
     if (width === this.width && height === this.height) return
     this.width = width
     this.height = height
-    this.sample.setSize(width, height)
+    this.plain.setSize(width, height)
+    this.deep?.setSize(width, height)
     this.means[0].setSize(width, height)
     this.means[1].setSize(width, height)
   }
@@ -161,7 +187,9 @@ void main() {
   }
 
   dispose(): void {
-    this.sample.dispose()
+    this.plain.dispose()
+    this.deep?.depthTexture?.dispose()
+    this.deep?.dispose()
     this.means[0].dispose()
     this.means[1].dispose()
     this.stats.dispose()

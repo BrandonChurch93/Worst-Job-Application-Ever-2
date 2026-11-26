@@ -44,3 +44,13 @@ Decisions taken without asking, in the order they were met.
 
 - None open. The cues of the ten events come with the table of the sound builder; the volume is given through `volume()`.
 - Open at 10:54 UTC, for the Builder. M9 is red on main fc06ef9 for step 2 and for step 1 alike. `src/capture/showcase.ts` now reports `height` as `s.z1 - (n.floor ?? 0)`, the top above the part's own floor. The kit (05-ARCHITECTURE) says it is the top above the page surface. The shell's own progress buttons and Continue cap fail by their socket depth, and so do the working parts of the three machines here, which sit on other parts. With `s.z1` in that line M9 is green for step 2. Nothing in this folder was changed for it.
+
+## Phase 4: the rows, the dial and the acting (agent step2-dial)
+
+- The numbers a shape hands its maker in `v`: `dial-wheel` `v: [turn]`, the wheel's turn in radians, clockwise on the page. `field-focus` `v: [glow]`, the ring's light. `slot-reel-0..2` `v: [position]`, the reel's place in legends, fractional while it spins.
+- The dial is one object carried by `dial-wheel` (part `dial`). `dial-centre`, `dial-stop` and `dial-hole-<k>` stay in the list for the logic and are drawn by that object. The numerals are `text` shapes on the plate under the wheel.
+- A tray is a pocket of role `machineTray`, part `rows`, whose height grows with the row's spring. The open field's ring is `field-focus`, its caret `field-caret`.
+- The dial lies in the tray's floor until the tray is open (`DIAL_BODY.rest`), then rises with its hub and its stop.
+- The acting of the five beats, its words, its poses and its times: `pipeline/phase4/step2-dial.md`, "Acting". The times of each idea are the consts `EASY`, `DREAD`, `PULL`, `TEMPER` and `THROWN` in `script.ts`.
+- The cursor's ground holds the Continue button's cap, so a flat cursor lies on the cap and not under it.
+

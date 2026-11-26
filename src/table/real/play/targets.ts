@@ -5,14 +5,14 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, ball, box, lathe, look, mat, prism, rod, wire, type Look, type V2, type V3 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const STEEL = look(0xd3d6d9, 0.3, 0.76, 0)
-const STEEL_BRIGHT = look(0xe9ecee, 0.16, 0.74, 0)
-const SPRING = look(0xc6cbd0, 0.22, 0.8, 0)
+const STEEL = look(0xd3d6d9, 0.3, 1, 0)
+const STEEL_BRIGHT = look(0xe9ecee, 0.16, 1, 0)
+const SPRING = look(0xc6cbd0, 0.22, 1, 0)
 const SLOT = look(0x161718, 0.9, 0, 0)
-const SCREW = look(0xd2d5d8, 0.26, 0.76, 0)
+const SCREW = look(0xd2d5d8, 0.26, 1, 0)
 const SCREW_SLOT = look(0x242526, 0.7, 1, 0)
 const RUBBER = look(0x1d1d1f, 0.9, 0, 0)
-const GOLD = look(0xd9b35f, 0.26, 0.8, 0)
+const GOLD = look(0xd9b35f, 0.26, 1, 0)
 const IVORY = look(0xe9e2cf, 0.4, 0, 0.6)
 const IVORY_EDGE = look(0xd8cfb8, 0.5, 0, 0.3)
 const MANILA = look(0xd9bf86, 0.62, 0, 0.15)

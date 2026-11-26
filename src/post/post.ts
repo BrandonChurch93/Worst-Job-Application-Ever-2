@@ -121,10 +121,144 @@ void main() {
   }
 }
 
-// Runs once, after the samples are averaged: glow, exposure, the tone curve, the grade, grain and dither.
+// What the engine knows of the camera's lens for one picture: how far away each pixel is, the planes the depth is
+// stored between, the distance that is sharp, and the radius in pixels of the circle a thing endlessly far away is spread over.
+// `quick` asks for the lighter pass the live site can afford on every frame.
+export interface LensView { depth: THREE.Texture; near: number; far: number; focus: number; reach: number; quick: boolean }
+
+// The lens: what stands nearer or farther than the focus is spread over a circle that grows with its distance from it.
+// It works on the mean of the samples, in linear light and before the glow, so a bright lamp out of focus becomes a disc.
+// The first pass gathers, each pixel with a turn of its own; the second closes the fine noise that turn leaves.
+const gatherPass = (taps: number, probes: number): THREE.RawShaderMaterial =>
+  fullscreen(
+    /* glsl */ `
+uniform sampler2D tMean;
+uniform sampler2D tDepth;
+uniform vec2 texel;
+uniform float near;
+uniform float far;
+uniform float focus;
+uniform float reach;
+uniform float most;
+uniform int frame;
+const int TAPS = ${taps};
+const int PROBES = ${probes};
+const float GOLDEN = 2.39996323;
+uint hash( uint x ) {
+  x ^= x >> 16; x *= 0x7feb352dU; x ^= x >> 15; x *= 0x846ca68bU; x ^= x >> 16;
+  return x;
+}
+float rnd( uvec3 p ) {
+  return float( hash( p.x + hash( p.y + hash( p.z ) ) ) >> 8 ) * ( 1.0 / 16777216.0 );
+}
+float depthAt( vec2 uv ) {
+  float d = texture( tDepth, uv ).r;
+  return near * far / ( far - d * ( far - near ) );
+}
+float circle( float depth ) {
+  return min( most, reach * abs( depth - focus ) / max( depth, 0.0001 ) );
+}
+vec3 light( vec2 uv ) {
+  vec3 c = texture( tMean, uv ).rgb;
+  return clamp( mix( c, vec3( 0.0 ), isnan( c ) ), 0.0, 64.0 );
+}
+void main() {
+  vec3 centre = texture( tMean, vUv ).rgb;
+  float here = depthAt( vUv );
+  float own = circle( here );
+  float turn = rnd( uvec3( uvec2( gl_FragCoord.xy ), uint( frame ) + 31337U ) ) * 6.2831853;
+  float need = own;
+  for ( int i = 0; i < PROBES; i ++ ) {
+    float r = sqrt( ( float( i ) + 0.5 ) / float( PROBES ) ) * most;
+    float a = float( i ) * GOLDEN + turn;
+    float c = circle( depthAt( vUv + vec2( cos( a ), sin( a ) ) * r * texel ) );
+    if ( c > r * 0.75 ) need = max( need, c );
+  }
+  if ( need < 0.5 ) {
+    outColor = vec4( centre, 0.0 );
+    return;
+  }
+  vec3 sum = light( vUv );
+  float total = 1.0;
+  float taken = 0.0;
+  for ( int i = 0; i < TAPS; i ++ ) {
+    float r = sqrt( ( float( i ) + 0.5 ) / float( TAPS ) ) * need;
+    float a = float( i ) * GOLDEN + turn;
+    vec2 uv = vUv + vec2( cos( a ), sin( a ) ) * r * texel;
+    float d = depthAt( uv );
+    float c = circle( d );
+    if ( d > here ) c = min( c, own * 2.0 );
+    float m = smoothstep( r - 0.5, r + 0.5, c );
+    sum += mix( sum / total, light( uv ), m );
+    total += 1.0;
+    taken += m;
+  }
+  outColor = vec4( sum / total, sqrt( taken / float( TAPS ) ) * need );
+}`,
+    { tMean: { value: null }, tDepth: { value: null }, texel: { value: new THREE.Vector2() }, near: { value: 1 }, far: { value: 2 }, focus: { value: 1 }, reach: { value: 0 }, most: { value: 0 }, frame: { value: 0 } }
+  )
+
+class Lens {
+  private quad = new Quad()
+  private gathered = linearTarget()
+  private closed = linearTarget()
+  private fine = gatherPass(look.lens.taps, look.lens.probes)
+  private quick: THREE.RawShaderMaterial | null = null
+  private close = fullscreen(
+    /* glsl */ `
+uniform sampler2D tLens;
+uniform vec2 texel;
+void main() {
+  vec4 c = texture( tLens, vUv );
+  if ( c.a < 1.0 ) {
+    outColor = vec4( c.rgb, 1.0 );
+    return;
+  }
+  float reach = clamp( c.a * 0.18, 0.75, 2.5 );
+  vec3 sum = c.rgb;
+  float total = 1.0;
+  for ( int y = -1; y <= 1; y ++ ) {
+    for ( int x = -1; x <= 1; x ++ ) {
+      if ( x == 0 && y == 0 ) continue;
+      vec4 s = texture( tLens, vUv + vec2( float( x ), float( y ) ) * reach * texel );
+      float w = smoothstep( 0.5, 1.5, s.a ) * ( x == 0 || y == 0 ? 1.0 : 0.7 );
+      sum += s.rgb * w;
+      total += w;
+    }
+  }
+  outColor = vec4( mix( c.rgb, sum / total, smoothstep( 1.0, 3.0, c.a ) ), 1.0 );
+}`,
+    { tLens: { value: null }, texel: { value: new THREE.Vector2() } }
+  )
+
+  draw(renderer: THREE.WebGLRenderer, mean: THREE.Texture, width: number, height: number, frame: number, lens: LensView): THREE.Texture {
+    this.gathered.setSize(width, height)
+    this.closed.setSize(width, height)
+    const gather = lens.quick ? (this.quick ??= gatherPass(look.lens.liveTaps, look.lens.liveProbes)) : this.fine
+    const g = gather.uniforms
+    g.tMean!.value = mean
+    g.tDepth!.value = lens.depth
+    ;(g.texel!.value as THREE.Vector2).set(1 / width, 1 / height)
+    g.near!.value = lens.near
+    g.far!.value = lens.far
+    g.focus!.value = lens.focus
+    g.reach!.value = lens.reach
+    g.most!.value = look.lens.most * height
+    g.frame!.value = frame
+    this.quad.draw(renderer, gather, this.gathered)
+    const c = this.close.uniforms
+    c.tLens!.value = this.gathered.texture
+    ;(c.texel!.value as THREE.Vector2).set(1 / width, 1 / height)
+    this.quad.draw(renderer, this.close, this.closed)
+    return this.closed.texture
+  }
+}
+
+// Runs once, after the samples are averaged: the lens, glow, exposure, the tone curve, the grade, grain and dither.
 export class Post {
   private quad = new Quad()
   private glow = new Glow()
+  private lens = new Lens()
   private material: THREE.RawShaderMaterial
 
   constructor() {
@@ -203,9 +337,10 @@ void main() {
     )
   }
 
-  draw(renderer: THREE.WebGLRenderer, mean: THREE.Texture, frame: number, flat: boolean, encoded: boolean): void {
+  draw(renderer: THREE.WebGLRenderer, sharp: THREE.Texture, frame: number, flat: boolean, encoded: boolean, lens: LensView | null = null): void {
     const u = this.material.uniforms
     const size = renderer.getDrawingBufferSize(new THREE.Vector2())
+    const mean = lens && !flat && !encoded ? this.lens.draw(renderer, sharp, size.x, size.y, frame, lens) : sharp
     const spread = flat || encoded ? null : this.glow.draw(renderer, mean, size.x, size.y)
     u.tGlow!.value = spread
     u.glow!.value = spread ? look.glow.strength : 0
