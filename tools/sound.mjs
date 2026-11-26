@@ -1118,6 +1118,8 @@ function status(P, c, M) {
   if (missing.length) console.log(`sound: not kept yet: ${missing.slice(0, 12).map((m) => m.id).join(', ')}${missing.length > 12 ? `, and ${missing.length - 12} more` : ''}`)
   const e = emittedEvents(M)
   console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)
+  const quiet = (M.cues.silentEvents ?? []).filter((name) => !M.cues.cueOfEvent(name))
+  if (quiet.length) console.log(`sound: with no sound of its own, on purpose: ${quiet.join(', ')}. The cut list carries each with no cue and the mix lays nothing for it`)
   console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --pack-check compares public/audio/ with the committed index, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
 }
 
@@ -1146,6 +1148,16 @@ async function main() {
     else if (a.loops) {
       const { loopsRun } = await import('./lib/sound-loops.mjs')
       loopsRun(P.pub, c, decodeFile, M.levels)
+    }
+    else if (a.levels) {
+      const { levelsRun } = await import('./lib/sound-levels.mjs')
+      const { logic } = await import('./lib/logic.mjs')
+      const site = await logic()
+      try {
+        await levelsRun(site.load, c, P.pub)
+      } finally {
+        await site.close()
+      }
     }
     else if (a.visit) {
       const { visitRun } = await import('./lib/sound-visit.mjs')

@@ -73,7 +73,7 @@ function fakeFetch(index) {
   }
 }
 
-export async function visit(load, c, bot, seed = c.seed) {
+export async function visit(load, c, bot, seed = c.seed, calls = null) {
   const index = JSON.parse(fs.readFileSync(at('public', 'audio', 'index.json'), 'utf8'))
   const heard = []
   const made = []
@@ -127,13 +127,18 @@ export async function visit(load, c, bot, seed = c.seed) {
       for (; sent < stage.events.length; sent++) {
         const e = stage.events[sent]
         events[e.name] = (events[e.name] ?? 0) + 1
+        calls?.push({ at: stage.time, event: { ...e } })
         sound.event(e, 'live')
       }
       const reached = stage.gagsReached
-      for (; gags < reached.length; gags++) sound.beat(reached[gags], 'live')
+      for (; gags < reached.length; gags++) {
+        calls?.push({ at: stage.time, gag: reached[gags] })
+        sound.beat(reached[gags], 'live')
+      }
       const v = stage.page.volume?.() ?? 1
       if (v !== volume) {
         volume = v
+        calls?.push({ at: stage.time, volume: v })
         sound.setVolume(v)
         steps.push({ at: Number(stage.time.toFixed(2)), page: stage.page.id, volume: Number(v.toFixed(3)), output: Number(ctx.gains[0].gain.value.toFixed(3)) })
         const last = volumes[volumes.length - 1]
