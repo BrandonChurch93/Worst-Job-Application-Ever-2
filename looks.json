@@ -1,35 +1,35 @@
 {
   "folder": "ball-displays",
-  "pushed": "2026-11-26T05:09:39.626Z",
-  "commit": "d67798f6a77b93f7ec949dad5b3edea6cff18477",
+  "pushed": "2026-11-26T05:15:35.132Z",
+  "commit": "ba5336407047588463e0b03fb1bc7c374e42497d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Displays: the main display of table-wide (top) beside the approved one (middle), and the Tier 3 display in the film at 10.85 s (bottom), each at three times real size",
-      "time": "2026-11-26T05:09:37.717Z",
-      "by": "ball-displays",
-      "from": "out/work/looks/files/20261126050937-r2-main.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Displays: the roll of a changed numeral, 0 and 1 frame after a forced score change, Office display at three times real size (before the score moved to the middle)",
-      "time": "2026-11-26T05:09:37.951Z",
-      "by": "ball-displays",
-      "from": "out/work/looks/files/20261126050937-r2-roll.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Displays: the sweep in four frames in a row of pinball.launch (10.80 to 10.88 s), its pace forced to 0.25 s, three times real size",
-      "time": "2026-11-26T05:09:38.191Z",
-      "by": "ball-displays",
-      "from": "out/work/looks/files/20261126050938-r2-sweep.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Displays: the last line enters at 35.7 s (left, 1.6 times) and runs at 38 s (right, 2.7 times), with the lamps as points in the pane",
       "time": "2026-11-26T05:09:38.413Z",
       "by": "ball-displays",
       "from": "out/work/looks/files/20261126050938-r2-scroll.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:11:16.745Z",
+      "by": "ball-displays",
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Displays: the main display of table-wide with orange dots and pale cores (top) beside the approved one (middle), three times real size; bottom the Street display of the try before",
+      "time": "2026-11-26T05:15:33.807Z",
+      "by": "ball-displays",
+      "from": "out/work/looks/files/20261126051533-r3-main.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Displays: the Street display in the film at 38 s, three tones of the dots: the lamps' amber (top), a try (middle), as pushed (bottom), 2.5 times real size",
+      "time": "2026-11-26T05:15:34.032Z",
+      "by": "ball-displays",
+      "from": "out/work/looks/files/20261126051534-r3-tier.jpg"
     }
   ]
 }
