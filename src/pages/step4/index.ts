@@ -361,8 +361,12 @@ export function makePage(): PageLogic {
       drawRig(list, loose, 'stage-1')
       drawSocket(list, x2, y + 8, 1, 'stage-2-socket')
       const half = fightRig(x2, y, null)
-      for (const l of half.legs) l.k = 0.78
-      half.sides.forEach((side, i) => { side.y = y + (i === 0 ? -1 : 1) * 78 })
+      for (const l of half.legs) {
+        l.k = 0.7
+        l.fx = l.hx + (l.fx - l.hx) * 0.62
+        l.fy = l.hy + (l.fy - l.hy) * 0.62
+      }
+      half.sides.forEach((side, i) => { side.y = y + (i === 0 ? -1 : 1) * 64 })
       for (const c of half.cannons) c.k = 0
       half.shield.k = 0
       drawRig(list, half, 'stage-2')

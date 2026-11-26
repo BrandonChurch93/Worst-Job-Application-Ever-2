@@ -23,7 +23,7 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 | Part | Looks |
 | --- | --- |
 | boss-body | 37 |
-| boss-transform | 16 |
+| boss-transform | 19 |
 | boss-weapons | 15 |
 | health-bar | 1 |
 | acting-boss | 5 |
@@ -72,3 +72,6 @@ MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the career
 29. The pit: the collar is wider (`PIT.collar` 15, was 12) and lighter (0xb6b8b8), with a rolled lip, and the wall under it is darker (0x5a5550, was 0x7a746d) and steeper, so the hole reads as approved's bright ring round a black pit and not as a grey bowl. Judged from one crop beside approved's.
 30. The plates darken as the boss falls: the plate material's colour eases from 0x7c8085 to 0x4a4d51 with the hull's `flat` (`PLATE_TONE` in `src/boss/real/body-kit.ts`, set in `poseFrame`). Lying flat under the room's light the live steel read as large pale sheets, and approved's wreck is dark pieces. One material is shared by the hull, the wings and the two side plates, and they all fall together, so one colour serves. Judged at `--key boss-down` beside approved and at `boss.collapse` 0.45 for the change in flight.
 31. The verification card is the careers page's slab of pale glass (`slabGeometry`, `glassOptions`, `SLAB`, `GLASS`, `cardGlass` imported from `src/pages/marketing/real/perk-cards.ts`), not the shell's grey card: round 10's cards on main (R1-1 issue 1, R3-1 issue 0) call the card opaque grey plastic, and approved's is pale sea-green ground glass with a lit bevel. Its picture is the block's finer clone, so M2 holds: MEASURED `npm run measure -- --unit boss --tier review`: M2 0.0028 of 709585 textured px, M3 0.9424, 8 green. The key of the card is its own (`verify-card:w:h:r:thick`), the geometry is made per size and dropped with the part. The box, tick and rule are untouched.
+32. The sheet's Unfolding state: the feet are drawn at 0.62 of their reach from the hips with the legs at 0.7 open, and the side plates 64 px from the middle (was 78), so the state reads as approved's compact plate with short bent legs and not as the whole boss without its guns (round 10, R1-1 issue 4). Only the sheet changes; the film's unfold is as it was.
+33. Not solved: in the sheet's Breaking loose state a dark hairline runs level across the tilted cap (round 10, R1-1 issue 15). MEASURED by two stills: it lies on the upper edge of the open hole's inner well and does not move when the cap is lifted further (`cap.lift` 0.5 and 0.64 give the same line), so it is not the cap cutting a surface of mine. UNKNOWN what draws it; the wells are cut by the shell's view. Left as it was.
+34. Not done: the bright bezel round the resting button (round 10, R1-1 issue 13). At rest the socket is the shell's pocket; a collar there needs a wider pocket and a new shape in a state three measures read (M5, M6, M9), and there was no time to prove it green.
