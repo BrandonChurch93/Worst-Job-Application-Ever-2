@@ -34,8 +34,8 @@ Seen on my own `youre-fired` and `tier-street` drafts at 11:15 UTC.
 
 | Part | Looks |
 | --- | --- |
-| model-firehouse (`youre-fired`) | 10 |
-| model-garage (`tier-street` 10, `table-wide` 10, `last-save` 2, `rail-cam` 1) | 23 |
+| model-firehouse (`youre-fired`) | 11 |
+| model-garage (`tier-street` 11, `table-wide` 10, `last-save` 2, `rail-cam` 1) | 23 |
 | model-moms (`last-save` 1, `tier-street` 1) | 2 |
 
 ## Decisions
@@ -78,6 +78,10 @@ Decisions of the second pass:
 - Mom's house: two lit roof windows on the back slope, the one the tier's camera sees past the board.
 - M4, MEASURED with `npm run measure -- --unit pinball --only M4 --tier draft` at 12:17 UTC: red, least contrast 1.68, every failing run is `copy:step3.table.title` (the marquee, not this folder). The measure took 15 s and does not see what stands before a sign, so the signs were also checked on my own stills.
 - M3: UNKNOWN from my side. One run was started and stopped, since it renders every still.
+
+- Firehouse parapet: in merge 36's final `youre-fired` the top quarter of the building was one pale stone band. The parapet's outer face is brick now, between a slim stone cornice and the stone coping, as approved's. Seen in my draft still at 12:42 UTC.
+- The pale round pad the ball rests on before the firehouse door is not drawn in this folder: `firehouse.ts` draws only the bay floor behind the mouth.
+- MEASURED at 12:43 UTC: `npm test` 119 files, 1479 of 1479; build exit 0; bots all clear; `npm run counts -- --key table-wide --live low` and the same at `--key tier-street`: 17 draw calls, 97824 triangles for this folder's parts (baseline 17, 71368; limit 17, 101368). One `review` still of `tier-street`: 73.9 s. One `draft` still: 36 to 52 s by key.
 
 ## Left for the next owner
 
