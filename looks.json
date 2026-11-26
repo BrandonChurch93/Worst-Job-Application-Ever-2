@@ -1,35 +1,35 @@
 {
   "folder": "corporate-finish",
-  "pushed": "2026-11-26T12:37:38.267Z",
-  "commit": "a3af73bb0bcb148eda574ed04dc4e87c673c0a34",
+  "pushed": "2026-11-26T12:45:42.552Z",
+  "commit": "02a5bd81842e7c22518e0e2b7e0fad3c40cdfeb9",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier, with crops of shape:model.corporate.hq, shape:model.corporate.beach, shape:model.corporate.boardroom, shape:hold.corporate.revolving, part:model-ladder, shape:flipper.corporate.flipper.left, shape:sling.corporate.sling.left.1+sling.corporate.sling.left.2+sling.corporate.sling.left.3, shape:insert.corporate.insert.1, shape:lift.elbow.corporate",
-      "time": "2026-11-26T12:31:03.573Z",
+      "caption": "Still key-tier-corporate-hd-final: final tier, hd, view beauty",
+      "time": "2026-11-26T12:41:16.886Z",
       "by": "corporate-finish",
-      "from": "out/work/compare/compare-tier-corporate.jpg"
+      "from": "out/work/stills/key-tier-corporate-hd-final.png"
     },
     {
       "file": "look-2.jpg",
       "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
-      "time": "2026-11-26T12:31:50.546Z",
+      "time": "2026-11-26T12:42:23.817Z",
       "by": "corporate-finish",
       "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-corporate at draft, 12:30Z: approved on the left, build on the right; woven border and sheen on the carpet, brighter atrium under the glass roof, lighter walnut table",
-      "time": "2026-11-26T12:37:36.869Z",
+      "caption": "tier-corporate at final on a3af73bb, 12:41Z: approved on the left, build on the right; fine detail 0.627 of approved's by M3's formula",
+      "time": "2026-11-26T12:45:41.095Z",
       "by": "corporate-finish",
-      "from": "out/work/report/tier-corporate-side4.jpg"
+      "from": "out/work/report/tier-corporate-final-side.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "lobby-doors at draft, 12:31Z: approved on the left, build on the right; carpet border and sheen toward the doors, heavier steel on the tower's front",
-      "time": "2026-11-26T12:37:37.143Z",
+      "caption": "lobby-doors at draft, 12:42Z: approved on the left, build on the right; warm glass in the door leaves and a brighter hall behind them",
+      "time": "2026-11-26T12:45:41.324Z",
       "by": "corporate-finish",
-      "from": "out/work/report/lobby-doors-side4.jpg"
+      "from": "out/work/report/lobby-doors-side5.jpg"
     }
   ]
 }
