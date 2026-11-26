@@ -122,3 +122,17 @@ Looks spent on `ticker`: 4 of 40.
 - The flat read was 10.7 frames with `stamp`, whose flat part is 0.35 s and locked. Decision: `duck` in its place (flat and laid over for 0.74 of 0.55 s, then a stretch out of it), called at 0.22 s, and the arrow let down by 0.25 s (was 0.30).
 - MEASURED by `tests/careers-fix-landing.test.ts`: flat 0.254 to 0.675 s, 0.421 s, 12.6 frames at 30 a second; stood 0.775 to 1.183, 0.408 s, 12.3 frames; leant 1.329 to 1.746, 0.417 s, 12.5 frames. The test now asks 0.4 s of each.
 - Looked at: four stills of the beat (shares 0.27, 0.36, 0.62, 0.9) and its sheet. Looks, part `acting-marketing`: 5 more, so 28 of 40.
+
+## The medal's ring (06:24 to 06:27 UTC)
+
+- Seen on the review key beside the approved image: my ring was a dark double band about 9 px wide, the approved ring is two thin lines.
+- Decision: both ridges of the ring narrower (1.2 and 1.0 px on top, were 2.0 and 1.8), the grooves shallower by 0.1, and the face wider to meet them (`MEDAL_LOOK.face` 130.5, was 127). One look; kept. Looks on the medal: 22 of 40.
+- MEASURED after, the review key with `out/work/h/m3-tmp.py`: ratio 0.6856 (was 0.6838).
+
+## State at the end (06:28 UTC)
+
+- MEASURED, `npm run -s measure -- --unit marketing --only M2,M3,M4 --tier review`: M2 pass 0.0001 (5 stills, 2629796 textured pixels); M3 red 0.6856 against 0.8; M4 pass 4.61 against 4.5 (759 runs).
+- MEASURED, one still each: `npm run still -- --key marketing-top --format hd --tier draft` 12.9 s, 606891 triangles, 197 draw calls; the same at `--tier review` 25.9 s, 606999, 198; `--id marketing-perks --tier review` 24.8 s, 801170, 241; `--id marketing-proof` 24.0 s, 723661, 260; `--id marketing-foot` 18.9 s, 519193, 155.
+- Textures of mine: the glass picture and the brushed picture, each 1024 by 1024 RGBA, 4.0 MB (5.3 MB with its smaller copies), by arithmetic.
+- Open: M3 (red); round 8 R9 issue 3 (built and measured, not judged); round 7's R4 and R9 points A to F (built and looked at in sheets, not judged); the walk from the third card to the lane crosses the card; the leaves' pressed outline and the scallops' bright lip on the medal; the glass rim; card 2's right side.
+- Looks in this round: `perk-cards` 5 of 40, the medal 22 of 40, `ticker` 4 of 40, `acting-marketing` 28 of 40.
