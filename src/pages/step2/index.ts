@@ -33,11 +33,13 @@ const COINS = 14
 // The dial runs home: it gathers speed, runs, and slows into its stop.
 const RETURN = { most: 42, gather: 300, least: 4, slow: 30 }
 // The crank draws back before it takes off.
+// The whip: the arrow hangs from the hole by its tip, its tail thrown outward and trailing the turn, drawn long by the speed. Flung, it goes end over end and lands the right way up.
+const WHIP = { tip: 1.965, follow: 30, long: 0.3, slow: 5, fast: 30, air: 0.72, tumble: 2 }
 const WIND = { long: 0.12, back: 1.6, out: 0.2 }
 
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean; falls: boolean; row: number; hops: number }
-interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'fly' | 'over'; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number; r: number }
+interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'fly' | 'over'; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number; r: number; turn: number; from: number; air: number }
 interface SlotState { p: number; pv: number; grab: boolean; phase: 'rest' | 'spin' | 'read' | 'pay' | 'over'; t: number; from: number[]; to: number[]; latch: number; coins: Coin[]; spawned: number; cool: number; rang: boolean }
 interface CrankState { b: number; set: boolean; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number; o: number }
 interface State {
@@ -78,7 +80,7 @@ const wrapPi = (a: number): number => a - TAU * Math.round(a / TAU)
 const mod = (a: number, m: number): number => ((a % m) + m) % m
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t
 
-const freshDial = (): DialState => ({ a: 0, k: 0, phase: 'rest', digits: '', w: 0, left: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, t: 0, r: 0 })
+const freshDial = (): DialState => ({ a: 0, k: 0, phase: 'rest', digits: '', w: 0, left: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, t: 0, r: 0, turn: 0, from: 0, air: 0 })
 const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t: 0, from: [0, 0, 0], to: [0, 0, 0], latch: 0, coins: [], spawned: 0, cool: 0, rang: false })
 const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0, o: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
@@ -168,7 +170,8 @@ export function makePage(): PageLogic {
       io.emit('dial-return', at.x, at.y, false)
       if (d.digits.length >= DIGITS) {
         d.phase = 'whip'
-        d.w = 5
+        d.w = WHIP.slow
+        d.turn = 0
         d.left = d.a + TAU + mod(DIAL.holeAngle(d.k) + Math.PI / 2, TAU)
         io.cursor.take('dial')
         if (s.mode === 'live') io.cursor.act('scared')
@@ -217,12 +220,16 @@ export function makePage(): PageLogic {
         d.k = 0
       }
     } else if (d.phase === 'whip') {
-      d.w = Math.min(30, d.w + 38 * dt)
+      d.w = Math.min(WHIP.fast, d.w + 38 * dt)
       const turn = Math.min(d.left, d.w * dt)
       d.a -= turn
       d.left -= turn
       const at = holePlace(d.k, d.a)
       io.cursor.place(at.x, at.y, TOP + 6)
+      const want = WHIP.tip + Math.PI + Math.atan2(at.y - DIAL.cy, at.x - DIAL.cx)
+      d.turn += wrapPi(want - d.turn) * Math.min(1, WHIP.follow * dt)
+      io.cursor.strike(wrapPi(d.turn), dt * 2)
+      io.cursor.press(1 + WHIP.long * clamp((d.w - WHIP.slow) / (WHIP.fast - WHIP.slow), 0, 1), dt * 2)
       if (d.left <= 1e-9) {
         io.emit('dial-fling', at.x, at.y, true)
         mark(io, 'fling', 'shocked')
@@ -230,7 +237,9 @@ export function makePage(): PageLogic {
         d.x = at.x
         d.y = at.y
         d.z = TOP + 6
-        const air = 0.72
+        const air = WHIP.air
+        d.from = wrapPi(d.turn) - (wrapPi(d.turn) > 0 ? TAU : 0)
+        d.air = 0
         d.vx = (LANDING.x - at.x) / air
         d.vy = (LANDING.y - at.y) / air
         d.vz = (hover - d.z) / air + (G * air) / 2
@@ -244,6 +253,8 @@ export function makePage(): PageLogic {
       d.y += d.vy * dt
       d.vz -= G * dt
       d.z += d.vz * dt
+      d.air = Math.min(1, d.air + dt / WHIP.air)
+      io.cursor.strike(wrapPi(d.from - (TAU * WHIP.tumble + d.from) * d.air), dt * 2)
       if (d.z <= hover && d.vz < 0) {
         io.cursor.place(d.x, d.y, hover)
         io.cursor.release()

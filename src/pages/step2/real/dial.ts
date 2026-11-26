@@ -266,6 +266,7 @@ let faceMaterial: THREE.MeshPhysicalMaterial | null = null
 let hubMaterial: THREE.MeshPhysicalMaterial | null = null
 let housingMaterial: THREE.MeshPhysicalMaterial | null = null
 let stopMaterial: THREE.MeshPhysicalMaterial | null = null
+let seatMaterial: THREE.MeshPhysicalMaterial | null = null
 let glintMaterial: THREE.MeshBasicMaterial | null = null
 
 // The housing and its base ring are the shared steel, a shade darker: the approved housing is a dark turned ring round a pale wheel.
@@ -378,7 +379,12 @@ const plainDial: PartMaker = {
     const g = geometries()
     const root = new THREE.Group()
     housingMaterial ??= darkSteel(m.steel)
-    const seat = mesh(g.seat, housingMaterial)
+    if (!seatMaterial) {
+      seatMaterial = darkSteel(m.steel)
+      seatMaterial.color.multiplyScalar(B.seatDark)
+      seatMaterial.name = 'dial-seat'
+    }
+    const seat = mesh(g.seat, seatMaterial)
     root.add(seat)
     root.add(mesh(g.gap, m.gap, false))
     root.add(mesh(g.foot, m.gap, false))
