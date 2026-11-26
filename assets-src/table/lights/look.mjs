@@ -1,4 +1,4 @@
-// node assets-src/table/lights/look.mjs [--keys a,b] [--tier draft] [--name x]: the keys of the machine in one session, each beside its approved image, in out/work/lights/.
+// node assets-src/table/lights/look.mjs [--keys a,b] [--tier draft] [--name x] [--beat b --at f,f --camera c]: the keys of the machine in one session, each beside its approved image, in out/work/lights/.
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
@@ -15,6 +15,17 @@ const contract = JSON.parse(fs.readFileSync(at('config', 'showcase.json'), 'utf8
 const session = await openSession({ format: 'hd', assets: arg('assets', 'full') })
 const pairs = []
 try {
+  // --beat pinball.replyAll --at 0.5,0.52857 --camera tier-2: moments of one beat with no approved image, for measuring a flash against the frame beside it.
+  if (arg('beat', null)) {
+    const unit = contract.film.beats.find((b) => b.id === arg('beat')).unit
+    for (const f of arg('at', '0.5').split(',')) {
+      const png = await renderJob(session, { spec: { page: unit, beat: arg('beat'), at: Number(f), camera: arg('camera', 'home'), tier } })
+      const file = path.join(dir, `${name}-${arg('camera', 'home')}-at-${f}.png`)
+      fs.writeFileSync(file, png)
+      console.log(path.relative(at(), file))
+    }
+    keys.length = 0
+  }
   for (const key of keys) {
     const k = contract.keys.find((x) => x.id === key)
     const started = Date.now()

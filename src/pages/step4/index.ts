@@ -43,7 +43,6 @@ const LIFT = 7
 const FILL_GAP = 4
 const FILL_TOP = 3.4
 // The body takes a sixth argument for the shield's flash and the cap's soot once the modeller's body is in; until then it is ignored.
-const rigOf = fightRig as unknown as (x: number, y: number, feet: { x: number; y: number; z: number }[] | null, recoil?: number[], bob?: number, more?: { aim?: { x: number; y: number }; flash?: number; hurt?: number }) => Rig
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
 const easeIn = (t: number): number => t * t
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
@@ -71,7 +70,7 @@ export function makePage(): PageLogic {
   const feetOf = (f: Fight): { x: number; y: number; z: number }[] => f.feet.map((foot) => ({ x: foot.x, y: foot.y, z: foot.t >= 0 ? Math.sin(Math.PI * Math.min(1, foot.t)) * 16 : 0 }))
   const rigNow = (): Rig | null => {
     if (s.stage === 'unfold') return unfoldRig(s.t)
-    if (s.stage === 'fight' && s.fight) return rigOf(s.fight.x, s.fight.y, feetOf(s.fight), s.fight.recoil, Math.sin(s.fight.clock * 7) * 1.6, { aim: s.fight.look, flash: Math.max(0, s.fight.flash) / 0.12, hurt: 1 - s.fight.shown / 100 })
+    if (s.stage === 'fight' && s.fight) return fightRig(s.fight.x, s.fight.y, feetOf(s.fight), s.fight.recoil, Math.sin(s.fight.clock * 7) * 1.6, { aim: s.fight.look, flash: Math.max(0, s.fight.flash) / 0.12, hurt: 1 - s.fight.shown / 100 })
     if (s.stage === 'collapse' && s.from) return collapseRig(s.from, s.t)
     if (s.stage === 'press' && s.from) return collapseRig(s.from, COLLAPSE_SECONDS)
     return null

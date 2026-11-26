@@ -21,7 +21,7 @@ export const COUNTER_TOP = heights.card + 6
 export const READOUT_TOP = heights.card + 4
 export const STAMP = { blockTop: heights.machineMinTop + 36, gripTop: heights.machineMinTop + 100, high: 150 }
 const SHOWN = ['decided', 'link', 'shared']
-export const MARK_ROT = -0.14
+export const MARK_ROT = -0.2
 // The sheet does not lie square on the page: it is turned a little, clockwise as seen, about its middle.
 export const SHEET_ROT = 0.012
 
@@ -109,10 +109,10 @@ export function markOf(): Mark {
   const said = block(T.mark.font, words('copy:step5.letter.stamp'), T.mark.px)
   const w = Math.round(said.width + 64)
   const h = Math.round(said.cap + 60)
-  const blockW = w + 124
+  const blockW = w + 56
   const blockH = h + 30
   const lift = Math.abs(Math.sin(MARK_ROT)) * (blockW / 2)
-  made = { cx: LEFT + COLUMN - 28 - blockW / 2, cy: BOTTOM - 36 - blockH / 2 - lift, w, h, bar: 7, blockW, blockH }
+  made = { cx: LEFT + COLUMN - 28 - blockW / 2, cy: BOTTOM - 36 - blockH / 2 - lift, w, h, bar: 9, blockW, blockH }
   return made
 }
 

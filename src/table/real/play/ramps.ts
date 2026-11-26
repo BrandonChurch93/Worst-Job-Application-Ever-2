@@ -5,7 +5,7 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, ball, box, DEG, lathe, look, mat, prism, rod, sweep, wire, type V2, type V3 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const WIRE = look(0xf4f6f8, 0.1, 1, 0)
+const WIRE = look(0xf4f6f8, 0.2, 1, 0)
 const PLATE = look(0xd3d6d9, 0.3, 1, 0)
 const SPRING = look(0xbfc4c9, 0.24, 1, 0)
 const WORN = look(0xf0f2f3, 0.1, 1, 0)
@@ -15,7 +15,7 @@ const BEAD = look(0xd6d9dc, 0.34, 1, 0)
 const CLEAR = look(0x8fa4ad, 0.05, 0, 1)
 const CLEAR_EDGE = look(0xd4e3ea, 0.04, 0, 1)
 
-export const TRACK = { wire: 2.6, under: 34.56, underUp: 11, side: 53.76, sideUp: 40, hoop: 2.2, hoopR: 55.4, centre: 48, every: 192, bead: 3.4 }
+export const TRACK = { wire: 4.2, under: 36, underUp: 10.2, side: 58.15, sideUp: 40, hoop: 3.4, hoopR: 59.8, centre: 48, every: 192, bead: 5 }
 // The clear width of the trough is the width of the layout's opening for the spiral's turn.
 const turnOf = table.openings.find((o) => o.id === 'street.spiral.turn')!
 export const CLEARANCE = Math.hypot(turnOf.b[0] - turnOf.a[0], turnOf.b[1] - turnOf.a[1]) * BALL
@@ -232,7 +232,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-15',
+  version: 'play-ramps-17',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`

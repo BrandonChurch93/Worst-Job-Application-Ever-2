@@ -163,6 +163,23 @@ describe('the dial on the page', () => {
     expect(seen).toBeGreaterThan(0)
   })
 
+  it('lacquers the hub and cuts the face finer under the shared studio rules, never with a material of another law', () => {
+    const list = listAt(3.2)
+    const wheel = list.find((s) => s.id === 'dial-wheel')!
+    const o = dial.make(wheel, context(list, 3.2))
+    const found = new Map<string, THREE.MeshPhysicalMaterial>()
+    o.traverse((c) => {
+      const m = (c as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
+      if (m && (m.name === 'dial-hub' || m.name === 'dial-face')) found.set(m.name, m)
+    })
+    expect([...found.keys()].sort()).toEqual(['dial-face', 'dial-hub'])
+    for (const m of found.values()) expect(m.customProgramCacheKey().startsWith('wja-studio'), m.name).toBe(true)
+    const hub = found.get('dial-hub')!
+    expect(hub.clearcoatRoughness).toBe(DIAL_BODY.hubCoat)
+    expect(hub.roughness).toBe(DIAL_BODY.hubRough)
+    expect(hub.ior).toBe(DIAL_BODY.hubIor)
+  })
+
   it('shows its numerals as words of the legends, never as shapes of its own', () => {
     const list = listAt(3.2)
     const numerals = list.filter((s) => s.id.startsWith('dial-numeral-'))
@@ -287,6 +304,19 @@ describe('the rows as they are built', () => {
       expect(helper.words).toBe(`copy:step2.rows.${name}.helper`)
       expect(title.x).toBe(helper.x)
     }
+  })
+
+  it('never leaves a reel\'s legend lying bare on the floor of a tray whose machine has sunk', () => {
+    let sunk = 0
+    for (let t = 13.2; t < 13.7; t += 0.02) {
+      const list = listAt(t)
+      const cabinet = list.find((s) => s.id === 'slot-cabinet')
+      const legends = list.filter((s) => s.id.startsWith('reel-'))
+      if (!cabinet || cabinet.z1 - cabinet.z0 > 2) continue
+      sunk++
+      expect(legends.length, `at ${t.toFixed(2)}`).toBe(0)
+    }
+    expect(sunk).toBeGreaterThan(0)
   })
 
   it('builds a tray on its way open for the height it has', () => {
