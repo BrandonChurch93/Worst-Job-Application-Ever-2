@@ -17,10 +17,10 @@ const SHIELD_OFF: [number, number] = [-252, 0]
 export const SIDE_OFF: [number, number][] = [[0, -112], [0, 112]]
 export const CANNON_FROM = [1, 2] as const
 export const BODY_Z = { side: 86, sideTop: 96, frame: 96, cap: 106, shield: 8, capTall: heights.button - heights.buttonSocket, hip: 118, cannonTall: 13, housing: 20 }
-export const LEG = { link: 108, wide: 36, foot: 58, knee: 52 }
+export const LEG = { link: 98, wide: 20, foot: 44, knee: 38 }
 export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 16 }
 export const SIDE = { w: 224, h: 100, lean: 36, tall: 12 }
-export const SHIELD = { w: 108, h: 236, tall: 12 }
+export const SHIELD = { w: 108, h: 250, tall: 22 }
 export const SHADE = { w: 560, h: 500, off: 46, soft: 74 }
 
 export interface Spot { x: number; y: number; rot: number; k: number; z: number; flat?: number; turn?: number; recoil?: number }
@@ -124,12 +124,13 @@ export function unfoldRig(u: number): Rig {
   return rig
 }
 
+export const WRECK = { x: 1296, y: 446, rot: 0.22 }
 const SCATTER = {
-  plate: { x: 1296, y: 446, rot: 0.22 },
-  sides: [{ x: 600, y: 850, rot: -0.32 }, { x: 1262, y: 862, rot: 0.2 }],
-  legs: [{ x: 1064, y: 452, rot: 0.5 }, { x: 1622, y: 440, rot: -0.45 }, { x: 330, y: 930, rot: -0.3 }, { x: 1584, y: 800, rot: 0.9 }],
-  cannons: [{ x: 1492, y: 408, rot: 2.9 }, { x: 870, y: 762, rot: 0.35 }],
-  shield: { x: 1500, y: 978, rot: 1.48 }
+  plate: WRECK,
+  sides: [{ x: 588, y: 806, rot: -0.32 }, { x: 1526, y: 842, rot: 0.2 }],
+  legs: [{ x: 1064, y: 452, rot: 0.5 }, { x: 1610, y: 436, rot: -0.45 }, { x: 330, y: 930, rot: -0.3 }, { x: 1690, y: 770, rot: 1.1 }],
+  cannons: [{ x: 1492, y: 400, rot: 2.9 }, { x: 880, y: 752, rot: 0.35 }],
+  shield: { x: 1480, y: 990, rot: 1.48 }
 }
 
 export function collapseRig(from: Rig, c: number): Rig {
@@ -222,15 +223,19 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
 }
 
 const HOLE = { lip: -5, floor: -150, inset: 6, strip: 3 }
-const CRACKS: { at: [number, number]; a: number; run: [number, number][]; fork?: [number, number, number] }[] = [
-  { at: [-146, -15], a: 3.52, run: [[22, 0], [17, 0.5], [12, -0.75]], fork: [0, -0.8, 13] },
-  { at: [-131, 34], a: 2.3, run: [[13, 0], [9, 0.55]] },
-  { at: [-64, -41], a: -1.85, run: [[18, 0], [24, 0.42], [13, -0.6]], fork: [1, -0.9, 15] },
-  { at: [22, -41], a: -1.4, run: [[11, 0], [7, -0.5]] },
-  { at: [118, -40], a: -0.86, run: [[20, 0], [15, -0.45], [19, 0.6]], fork: [1, 0.85, 11] },
-  { at: [147, 12], a: 0.3, run: [[14, 0], [10, 0.6]] },
-  { at: [70, 41], a: 1.2, run: [[16, 0], [21, -0.5], [9, 0.7]] },
-  { at: [-36, 41], a: 1.78, run: [[10, 0], [6, 0.6]] }
+const CRACKS: { at: [number, number]; a: number; run: [number, number][]; fork?: [number, number, number]; twig?: [number, number, number] }[] = [
+  { at: [-146, -14], a: 3.42, run: [[24, 0], [19, 0.42], [22, -0.6], [14, 0.35]], fork: [1, -0.85, 24], twig: [2, 0.8, 12] },
+  { at: [-148, 10], a: 2.95, run: [[27, 0], [21, 0.3], [17, -0.35]], fork: [0, 0.7, 16] },
+  { at: [-134, 32], a: 2.28, run: [[26, 0], [24, 0.2], [25, -0.25], [15, 0.4]] },
+  { at: [-92, -40], a: -1.92, run: [[22, 0], [26, 0.32], [20, -0.5], [17, 0.3]], fork: [1, 0.9, 18] },
+  { at: [-6, -41], a: -1.5, run: [[25, 0], [23, -0.3], [21, 0.45], [16, -0.35]], fork: [2, 0.95, 22] },
+  { at: [98, -41], a: -1.02, run: [[23, 0], [27, 0.3], [22, -0.42], [12, 0.3]], fork: [1, 0.8, 19], twig: [2, -0.9, 10] },
+  { at: [140, -24], a: -0.5, run: [[20, 0], [26, -0.3], [15, 0.5]], fork: [1, 0.75, 17] },
+  { at: [149, 4], a: 0.12, run: [[28, 0], [18, -0.5], [14, 0.6]], fork: [0, 0.6, 15] },
+  { at: [143, 26], a: 0.55, run: [[17, 0], [20, 0.4], [13, -0.5]] },
+  { at: [74, 41], a: 1.05, run: [[21, 0], [25, -0.35], [19, 0.55], [11, -0.3]], fork: [1, 0.9, 20] },
+  { at: [8, 41], a: 1.5, run: [[19, 0], [18, 0.4], [14, -0.55]] },
+  { at: [-88, 41], a: 1.9, run: [[18, 0], [22, -0.3], [16, 0.45]], fork: [1, -0.8, 13] }
 ]
 
 function hole(out: DrawList, id: string, cx: number, cy: number, w: number, h: number, z: number, tone: Tone): void {
@@ -278,6 +283,7 @@ export function drawSocket(out: DrawList, x: number, y: number, cracked: number,
       px += Math.cos(a) * l
       py += Math.sin(a) * l
       if (c.fork && c.fork[0] === j) piece('fork', px, py, a + c.fork[1], c.fork[2] * grow, 1.4)
+      if (c.twig && c.twig[0] === j) piece('twig', px, py, a + c.twig[1], c.twig[2] * grow, 1.1)
     })
   })
 }
@@ -301,7 +307,7 @@ export function crackRuns(): { x0: number; y0: number; x1: number; y1: number; w
       gone += len
       px = nx
       py = ny
-      if (c.fork && c.fork[0] === j) runs.push({ x0: px, y0: py, x1: px + Math.cos(a + c.fork[1]) * c.fork[2], y1: py + Math.sin(a + c.fork[1]) * c.fork[2], wide: 1.4, at: gone / total })
+      for (const f of [c.fork, c.twig]) if (f && f[0] === j) runs.push({ x0: px, y0: py, x1: px + Math.cos(a + f[1]) * f[2], y1: py + Math.sin(a + f[1]) * f[2], wide: f === c.fork ? 1.4 : 1.1, at: gone / total })
     })
   })
   return runs

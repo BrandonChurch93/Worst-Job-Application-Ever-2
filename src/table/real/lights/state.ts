@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { lightLaw } from '../../../post/studio'
 import type { Zone } from '../zone'
+import { DEEP } from './colours'
 import { CHANNELS, HIGHS, SPILLS } from './groups'
 import { picturesOf } from './pictures'
 
@@ -18,12 +19,14 @@ export interface ZoneLight {
     wjlFull: { value: THREE.Vector3[] }
     wjlSpill: { value: THREE.Vector4[] }
     wjlSpillCol: { value: THREE.Vector3[] }
+    wjlSpillComb: { value: THREE.Vector2[] }
     wjlHigh: { value: THREE.Vector4[] }
     wjlHighCol: { value: THREE.Vector3[] }
     wjlAt: { value: THREE.Vector4[] }
     wjlFill: { value: THREE.Vector3 }
     wjlHole: { value: THREE.Vector4[] }
     wjlEnv: { value: number }
+    wjlDeep: { value: THREE.Vector2 }
   }
 }
 
@@ -54,12 +57,14 @@ export function zoneLight(z: Zone): ZoneLight {
       wjlFull: { value: full },
       wjlSpill: { value: Array.from({ length: SPILLS }, () => new THREE.Vector4()) },
       wjlSpillCol: { value: Array.from({ length: SPILLS }, () => new THREE.Vector3()) },
+      wjlSpillComb: { value: Array.from({ length: SPILLS }, () => new THREE.Vector2()) },
       wjlHigh: { value: Array.from({ length: HIGHS }, () => new THREE.Vector4()) },
       wjlHighCol: { value: Array.from({ length: HIGHS }, () => new THREE.Vector3()) },
       wjlAt: { value: at },
       wjlFill: { value: new THREE.Vector3() },
       wjlHole: { value: [new THREE.Vector4(0, 0, 1, 0), new THREE.Vector4(0, 0, 1, 0)] },
-      wjlEnv: { value: 0 }
+      wjlEnv: { value: 0 },
+      wjlDeep: { value: new THREE.Vector2(...(DEEP[z.id] ?? [1, 1])) }
     }
   }
   made.set(z.id, s)
