@@ -23,9 +23,9 @@ export const TRAY_GAP = 12
 export const TRAY_H = 250
 export const TRAY_R = 18
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 6.5, lean: 1.25, rimShade: 0.8, wallShade: 0.5, wallShadeTop: 0.22, wallFoot: 0.36, wallFootTop: 0.05, cool: 0.12, soakOver: 0.5,
-  floor: { soak: 0.3, hold: 0.2, reach: 20, bounce: 0.12, bounceReach: 9, base: 1, side: 0.8 },
-  soak: { soak: 0.88, hold: 1, reach: 10, bounce: 0.16, bounceReach: 12, base: 0.76, side: 0.8, cool: 0.14 } }
+export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 7, lean: 1.1, rimShade: 0.55, wallShade: 0.26, wallShadeTop: 0.12, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
+  floor: { soak: 0.2, hold: 0.2, reach: 22, bounce: 0.05, bounceReach: 16, base: 1, side: 0.8 },
+  soak: { soak: 0.62, hold: 1, reach: 15, bounce: 0.05, bounceReach: 20, base: 0.93, side: 0.8, cool: 0.14 } }
 export const SHIFT = TRAY_H + TRAY_GAP
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
@@ -52,7 +52,8 @@ export const HUB_ORANGE_LIFT = 1.6
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.6, bezel: 10, bezelDrop: 0.8, bezelChamfer: 2, bezelSlope: 0.9, wheel: 88.4, thick: 5.2, chamfer: 1, holeRim: 0.8, holeChamfer: 2.6,
   hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.14, hubRough: 0.4, hubIor: 1.5, hubEnv: 0.3, hubFoot: 3, hubStep: 3.2, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.17, faceStretch: 1, faceLight: 1.45,
-  housingDark: 0.72, housingRough: 0.36, seat: 9, seatGap: 1.8, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
+  housingDark: 0.72, housingRough: 0.36, seat: 10, seatGap: 1.8, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 111, stopWide: 15, stopClear: 2.4, stopTall: 3.6, stopFoot: 12, stopDark: 0.42,
+  inner: 45, innerTall: 0.35, innerSeam: 1.9, footLine: 2.2,
   grooveOver: 0.15, grooveUnder: 3, fanAxis: 0.2, fanLow: 0.78, fanGain: 0.5, fanSharp: 1.6,
   glint: 0.5, glintLong: 13, glintWide: 10, glintOut: 9, glintUp: 17.3,
   shade: 0.6, shadeReach: 0.78, cast: 0.72, castIn: 8, castOut: 36, castAway: 34, castOver: 0.2
@@ -70,7 +71,7 @@ export const SLOT = {
   reelW: 92, reelH: 106, reelGap: 12,
   reelX: (r: number): number => sx + 18 + r * (92 + 12),
   reelY: sy + PAD + 22,
-  leverX: sx + 336 + 34, knobY: sy + PAD + 30, pull: 96, knob: 44, pivotY: sy + PAD + 58,
+  leverX: sx + 336 + 34, knobY: sy + PAD + 18, pull: 126, knob: 44, pivotY: sy + PAD + 58,
   payX: sx + 60, payY: sy + PAD + 150 + 8, payW: 216, payH: 22,
   strips: [Object.keys(legends.months).sort(), Object.keys(legends.days).sort(), Object.keys(legends.years).sort()] as string[][],
   names: ['months', 'days', 'years'] as const,
@@ -79,8 +80,22 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 73, hy: cy + 156, rest: -0.75, arm: 96, armW: 24, gripW: 84, gripH: 52, tip: 126, base: 110, hub: 44,
+  hx: FX + PAD + 73, hy: cy + 156, rest: -0.75, arm: 118, armW: 18, gripW: 80, gripH: 44, tip: 126, hold: 34, holdAside: 8, base: 110, hub: 44,
   segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 156 - 48
+}
+
+// The sheet of the machines: the page's header, and each machine under its label at the size the approved sheet shows it.
+export const SHEET = {
+  labelY: 355, labelX: [128, 739, 1384],
+  dial: { x: 373, y: 656, times: 2.2 }, slot: { x: 735, y: 510, times: 1.52 }, crank: { x: 1584, y: 669, times: 1.94, turn: 1.1 }, meter: { x: 1448, y: 432, times: 0.75, level: 0.4 },
+  cursor: { x: 613, y: 899 }
+}
+export function sheetScale(id: string): number {
+  if (!id.startsWith('sheet-')) return 1
+  if (id.includes('meter-')) return SHEET.meter.times
+  if (id.includes('dial-')) return SHEET.dial.times
+  if (id.includes('crank-')) return SHEET.crank.times
+  return SHEET.slot.times
 }
 
 export const ROW_TITLE = { font: 'inter-600', px: 26 }
@@ -102,7 +117,7 @@ function rowNodes(i: number, low: boolean): LayoutNode[] {
   const values: LayoutNode[] = []
   if (name === 'phone') values.push(value('typed', 'runtime:step2.phone', 'typing'), value('value', 'copy:step2.rows.phone.gaveUp', 'done'))
   if (name === 'birth') values.push(value('value', 'copy:step2.rows.birth.recorded', 'done'))
-  if (name === 'volume') values.push(value('value', 'copy:step2.rows.volume.done', 'done'))
+  if (name === 'volume') values.push(value('typed', 'runtime:step2.volume', 'typing'), value('value', 'copy:step2.rows.volume.done', 'done'))
   const chevron = node(`${id}-chevron`, 'chevron', [FX + FW - PAD - 28, y + (FH - 28) / 2, 28, 28], { part: 'rows', shape: 'none' })
   const extra = here ? { states: here } : {}
   return [

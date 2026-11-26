@@ -6,9 +6,10 @@ import { look } from '../../../post/look'
 import { materials } from '../../../shell/materials'
 import { roundedRect } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
+import { scaled } from './sheet'
 import type { LayoutNode } from '../../../copy'
 import { SLOT, buildLayout } from '../layout'
-import { clamp01, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, smooth, srgb, type LoftRing } from './slot-kit'
+import { clamp01, contact, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, smooth, srgb, type LoftRing } from './slot-kit'
 
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
@@ -22,7 +23,8 @@ export const SLOT_LOOK = {
   bevel: { colour: 0x7c8084, rough: 0.34 },
   glassEnv: 0.7,
   mouthFloor: 8.5,
-  glassOrder: 800000
+  glassOrder: 800000,
+  footLine: 2.2
 }
 const L = SLOT_LOOK
 
@@ -216,7 +218,8 @@ function cabinet(): THREE.Group {
   const sheen = mesh(shared('sheen', () => sheenGeometry(w - (inner + 0.6) * 2, h - (inner + 0.6) * 2, L.glass + 0.05)), o.sheen, false, false)
   sheen.userData.order = L.sheen.order
   sheen.renderOrder = L.sheen.order
-  root.add(mesh(body, o.frame), mesh(slope, o.bevel), mesh(well, o.well, false, false), mesh(drums, o.drum, false, true), mesh(line, o.line, false, false), mesh(pins, m.steel, false, true), glass, sheen)
+  const foot = shared('foot', () => contact(roundedRect(w + L.footLine * 2, h + L.footLine * 2, R + L.footLine, 10), L.footLine + 0.8))
+  root.add(mesh(foot, m.gap, false), mesh(body, o.frame), mesh(slope, o.bevel), mesh(well, o.well, false, false), mesh(drums, o.drum, false, true), mesh(line, o.line, false, false), mesh(pins, m.steel, false, true), glass, sheen)
   return root
 }
 
@@ -363,24 +366,9 @@ export function coinGeometry(): THREE.BufferGeometry {
 }
 
 function payout(): THREE.Group {
-  const m = materials()
   const o = own()
   const root = new THREE.Group()
   const body = new THREE.Group()
-  const w = SLOT.payW
-  const h = SLOT.payH
-  const H = L.page.payout
-  const bezel = shared('payout', () => {
-    const rings: LoftRing[] = [ring(w, h, 6, 0, 0, 1, 0), ring(w, h, 6, 0, H - 1.6, 1, 0)]
-    for (let i = 1; i <= 5; i++) {
-      const a = (i / 5) * (Math.PI / 2)
-      rings.push(ring(w, h, 6, 1.6 * (1 - Math.cos(a)), H - 1.6 + 1.6 * Math.sin(a), Math.cos(a), Math.sin(a)))
-    }
-    rings.push(ring(w, h, 6, 3.6, H, 0, 1), ring(w, h, 6, 3.6, H, -1, 0.35), ring(w, h, 6, 5, H - 2.6, -1, 0.35))
-    return loft(rings)
-  })
-  const mouth = shared('mouth', () => loft([ring(w, h, 6, 5, H - 2.6, -1, 0), ring(w, h, 6, 5, L.mouthFloor, -1, 0), ring(w, h, 6, 5, L.mouthFloor, 0, 1)], 1))
-  body.add(mesh(bezel, m.aluminiumSatin), mesh(mouth, o.mouth, false, false))
   const coins = new THREE.InstancedMesh(shared('coin', coinGeometry), o.gold, L.coin.most)
   coins.castShadow = true
   coins.receiveShadow = true
@@ -447,7 +435,7 @@ const kindOf = (s: Shape): Kind | '' | null => {
   return null
 }
 
-export const slot: PartMaker | null = {
+const plainSlot: PartMaker = {
   key(s) {
     if (s.kind === 'text') return null
     const kind = kindOf(s)
@@ -487,3 +475,5 @@ export const slot: PartMaker | null = {
     ferrule.position.set(0, run / 2 - (run / long) * back, L.lever.head - (climb / long) * back)
   }
 }
+
+export const slot: PartMaker | null = scaled(plainSlot)

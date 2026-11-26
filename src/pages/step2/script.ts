@@ -14,6 +14,8 @@ const dialC: P = { x: DIAL.cx, y: DIAL.cy }
 export const FILM_DIGITS = [10, 1, 5]
 const holeAt = (k: number, a = 0): P => ({ x: DIAL.cx + DIAL.ring * Math.cos(DIAL.holeAngle(k) + a), y: DIAL.cy + DIAL.ring * Math.sin(DIAL.holeAngle(k) + a) })
 const woundAt = (k: number): P => holeAt(k, DIAL.travel(k))
+// Between two numbers it rests its tip on the lower right shoulder of the cap.
+const shoulder: P = { x: DIAL.cx + 20, y: DIAL.cy + 24 }
 export const LANDING: P = { x: DIAL.cx - 600, y: DIAL.cy + 30 }
 const knob: P = { x: SLOT.leverX, y: SLOT.knobY }
 const pulled: P = { x: SLOT.leverX, y: SLOT.knobY + SLOT.pull + 6 }
@@ -26,7 +28,7 @@ const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
 export const BUTTON: P = { x: 1688, y: 1004 }
 
 const T = {
-  phone: 1.88, zero: 2.33, one: 2.99, third: 4.25,
+  phone: 1.88, zero: 2.33, one: 2.87, third: 4.25,
   birth: 8.2, lever: 9.15,
   volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.32, press: 20.3
 }
@@ -44,7 +46,7 @@ const PULL = { there: 8.98, back: 9.03, up: 9.11, rise: 12 }
 const TEMPER = { safe: 12.7, dust: 12.76, red: 13.36, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
 const THROWN = { see: T.runaway + 0.05, cower: T.runaway + 0.43, back: T.lean - 0.08 }
-const idle: P = { x: 1575, y: 395 }
+const idle: P = { x: 1575, y: 374 }
 const refuge: P = { x: 800, y: 700 }
 const hand: P = { x: HANDOFF.x, y: HANDOFF.y }
 
@@ -61,12 +63,13 @@ const path: Seg[] = [
   line(EASY.there, DREAD.phone.go, field(0), field(0)),
   line(DREAD.phone.go, T.zero - 0.04, field(0), holeAt(10)),
   line(T.zero - 0.04, T.zero, holeAt(10), holeAt(10)),
-  ...wind(T.zero, 10, 0.3),
-  line(T.zero + 0.32, T.one - 0.06, woundAt(10), holeAt(1)),
+  ...wind(T.zero, 10, 0.24),
+  line(T.zero + 0.26, T.one - 0.06, woundAt(10), holeAt(1)),
   line(T.one - 0.06, T.one, holeAt(1), holeAt(1)),
   ...wind(T.one, 1, 0.1),
-  line(T.one + 0.12, 3.5, woundAt(1), woundAt(1)),
-  line(3.5, T.third - 0.2, woundAt(1), holeAt(5)),
+  line(T.one + 0.12, T.one + 0.19, woundAt(1), shoulder),
+  line(T.one + 0.19, 3.5, shoulder, shoulder),
+  line(3.5, T.third - 0.2, shoulder, holeAt(5)),
   line(T.third - 0.2, T.third, holeAt(5), holeAt(5)),
   ...wind(T.third, 5, 0.55),
   line(T.third + 0.57, T.third + 0.9, woundAt(5), woundAt(5)),
@@ -101,7 +104,7 @@ const path: Seg[] = [
 
 const presses: [number, number][] = [
   [T.phone, T.phone + 0.1],
-  [T.zero, T.zero + 0.31], [T.one, T.one + 0.11], [T.third, T.third + 0.56],
+  [T.zero, T.zero + 0.25], [T.one, T.one + 0.11], [T.third, T.third + 0.56],
   [T.birth, T.birth + 0.12],
   [T.lever, T.lever + 0.36],
   [T.volume, T.volume + 0.1],
@@ -127,7 +130,7 @@ export type Mark = 'fling' | 'strike'
 export type Marks = Partial<Record<Mark, number>>
 
 const acts: [number | Mark, Acting][] = [
-  [0, 'confident'], [T.third + 0.56, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
+  [0, 'plain'], [EASY.stroll, 'confident'], [T.third + 0.56, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
   [THROWN.see, 'shocked'], [THROWN.back, 'angry'], [16.95, 'exhausted'], [20.28, 'plain']
 ]
 
