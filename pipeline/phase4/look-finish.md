@@ -41,12 +41,116 @@ Decisions:
 
 Looks used on A: shell 3 (two draft, one review), type 0 (the label was read in the same three), plus 2 state checks in draft counted to shell: 5.
 
+## B. The paper
+
+Measured first, on review stills at 1920 by 1080, approved against the build before any change (`node out/work/look-finish/med.cjs`, `grainsize.cjs`, `bands.cjs`, `hfe.mjs` on the PNG files).
+
+Tone, the median colour of the same bare patch:
+
+| Key and patch | Approved | Build before | Build after |
+| --- | --- | --- | --- |
+| step2-rest 700,880 200x120 | 218,215,209 | 216,213,207 | 217,213,208 |
+| step2-rest 1000,950 200x100 | 216,212,205 | 210,206,201 | not read again |
+| boss-fight 1300,180 300x60 | 220,216,210 | 214,211,205 | 215,211,206 |
+| decision 1300,180 300x60 | 218,215,208 | 214,211,205 | 215,211,206 |
+| marketing-top 700,880 200x120 | 214,210,203 | 213,210,204 | 214,211,205 |
+
+So the tone was never far off: 2 to 6 levels of 255, the build a little darker and a little less warm, most toward the lower right, which is the fall of the key light and not the paper. The paper's colour (0xf2f1ee) is also written in `src/pages/marketing/real/perk-cards.ts`, a file not lent, for the spill on the page, so the colour stays: a change here would show there as a patch. The tone is not changed.
+
+Grain size, the half-width of the autocorrelation of the bare patch after a high pass, in pixels: approved 0.56 to 0.70 across and 0.82 to 1.04 down; build before 0.54 to 0.55 across and 0.82 to 0.85 down. The size was the same: specks of one to two pixels in both.
+
+What did differ, the strength of the grain by band (rms of the difference of two blurs as a percent of the mean, sigma in px):
+
+| Patch | 0 to 0.6 | 0.6 to 1.2 | 1.2 to 2.4 | 2.4 to 4.8 |
+| --- | --- | --- | --- | --- |
+| approved, four keys | 1.95 to 2.91 | 1.77 to 2.51 | 0.95 to 1.26 | 0.52 to 1.12 |
+| build before, four keys | 2.81 to 3.14 | 2.10 to 2.29 | 1.26 to 1.41 | 0.47 to 0.69 |
+| build after, four keys | 2.38 to 2.66 | 1.65 to 1.81 | 0.68 to 0.75 | 0.28 to 0.52 |
+
+And the shape, seen in a crop at three times the size: the build had diagonal streaks a few pixels long (the `FIBRE` term of the grain shader, at 14), which is what read as pebbled and grey; the approved image has even specks with no direction.
+
+Built, three numbers of the grain shader in `src/shell/materials.ts` and nothing else (the grain picture and its bytes are the same, so no texture changed): `FIBRE` 14 to 2.5, `HOME_TOOTH` 0.6 to 1, `HOME_GAIN` 0.5 to 0.9. The streaks are gone, the finest specks stay, the bands from 1.2 px up are about half what they were. `HOME_GAIN` only acts from the home camera, so the paper near a close camera is as it was.
+
+M3. M3 is the mean square of the Laplacian of the whole picture against the approved image. The grain was about a third of it on step2-rest (not nearly all of it, as I wrote in the report of pass A: that was wrong). Read with `node out/work/look-finish/hfe.mjs`, the same function M3 calls:
+
+| Key | Before | After | Limit |
+| --- | --- | --- | --- |
+| step2-rest | 1.0534 | 0.9421 | 0.8 |
+| boss-fight | 1.0333 | 0.9342 | 0.8 |
+| decision | 0.9272 | 0.8667 | 0.8 |
+| marketing-top | 0.7854 | 0.7346 | 0.8 |
+
+marketing-top was red before and is further under after this item alone; the darker ink, next, is what brings it back. A first try with the grain flatter still (`HOME_GAIN` 0.82) left decision at 0.846, so the gain went up to 0.9 to keep a margin.
+
+Looks used on B: light-engine 0, shell 3 (review stills of step2-rest at three settings; the other keys were rendered once each for the pictures).
+
+## The ink (the Builder's item, taken between B and C at 11:34 UTC; it is also the helper text of G)
+
+Asked by `careers_finisher` and ordered by the Builder: the type's ink is lighter than the approved images, and M3 on marketing-top is red.
+
+MEASURED first (`node out/work/look-finish/dark3.cjs <png> x y w h`: the mean of the darkest 3 percent of a row of type, on review stills):
+
+| Row | Approved | Build before | Build after |
+| --- | --- | --- | --- |
+| step2-rest title | 29,30,29 | 47,45,42 | 36,35,33 |
+| step2-rest field label | 28,25,20 | 48,46,43 | 37,36,34 |
+| step2-rest subline | 45,42,36 | 93,87,81 | 59,54,49 |
+| step2-rest helper | 54,50,44 | 94,89,82 | 60,55,50 |
+| decision title | 33,33,33 | 47,45,42 | 36,35,33 |
+| marketing-top headline | 31,30,27 | 47,45,42 | 36,35,33 |
+| marketing-top nav links | 79,75,69 | 104,99,93 | 74,70,64 |
+
+Built, four numbers in `src/shell/real/type.ts`: `INK` 0x302e2b to 0x201f1d, `INK_SOFT` 0x67625c to 0x3e3933, `INK_ON_GLASS` 0x262827 to 0x1b1d1c, `INK_SOFT_ON_GLASS` 0x484b49 to 0x383b39. No surface is pure black. The ink on metal, on keycaps, on the frosted cap and the light ink are as they were. The soft ink stays a little lighter than the approved sublines so that the two voices of the page stay two.
+
+M3 after B and the ink together (`node out/work/look-finish/hfe.mjs`): marketing-top 0.8309 (0.7854 at the start, 0.7346 after B alone), decision 0.9172, step2-rest 1.0879. M4: a darker ink on a pale ground only raises the contrast; the full measures are run again before the last push.
+
+Looks used: type 1 (three keys at review, one setting).
+
+## The quiet ink (the Builder's finding of 11:46 UTC, ruled at 11:49 UTC)
+
+MEASURED with `dark3.cjs` on marketing-top: the row under the hero button reads 105,99,88 in approved, 94,88,82 before the ink and 60,55,49 after it; the hero subline 89,84,77, 92,87,81 and 59,54,48. On step 2 the approved soft rows are far darker (subline 45,42,36). One soft ink cannot fit both pages, so the page has a third voice: style `page:quiet`, 0x67625c (the soft ink of before), taken only by a run on the page in the regular weight that asks `ink: 'soft'` in its `TypeSpec`. `tests/shared-look-ink.test.ts` holds the three voices and their order. The two runs of the careers page ask for it in `src/pages/marketing/layout.ts` (not my file): `pipeline/phase4/look-finish-NEEDS.patch`, applied as the commit `NEEDS:` on the Builder's word.
+
+## C. The glass of the fields
+
+MEASURED first, the column of pixels down the middle of the first field of step2-rest (`node out/work/look-finish/prof.cjs <png> 1200 304 300 86`, mean colour of each row):
+
+| Place | Approved | Build before | Build after |
+| --- | --- | --- | --- |
+| under the top edge | 100,107,105 held for 10 px | 114,118,118 for 3 px | 105,111,107 to 130,134,132 over 8 px |
+| middle | 182,187,183 | 186,190,188 | 177,182,178 |
+| last 6 px above the lower lip | 195,199,194 rising to 208,213,209 | 200,205,203 flat | 195,201,197 rising to 206,211,208 |
+
+So the glass was nearly right in its middle and wrong at its two edges: no band of shade under the top wall and no light along the lower lip, which is why it read flat.
+
+Built: in `src/shell/real/controls.ts` `SOAK_HOLD` 2.5 to 5.5 and `SOAK_DEPTH` 0.32 to 0.4 (the top wall's shade is deeper and holds further in), `GLINT` 0.14 to 0.3 and its reach, now named `GLINT_REACH`, 1.6 to 7 (the lower lip is lit across about 6 px), `RIM` 2.2 to 3 (the satin frame is a third wider). In `src/shell/materials.ts` the sunk glass 0xd0d8d9 to 0xcdd6d5, a hair greener and less blue. A first try at 0xc9d6ce read olive and was thrown out.
+
+Not built: the cards (`glassCard`). Their bevel is drawn by the `slabbed` shader from some forty numbers set by the owner before me; the approved bevel is a paler, wider band, and moving it wants more looks than this pass had time for. The 'Human Verification' card of the boss page is not `glassCard`: it is built from `src/boss/real/glass`, not lent.
+
+Looks used on C: shell 2 (step2-rest at review, two settings).
+
+## D. The arrow's body
+
+The flattened arrow. MEASURED by looking (`npm run -s still -- --page step2 --beat step2.continue --at 0.6 --format hd --tier review`, and `--sheet cursor-damage`): on Continue the pressed arrow had a grey rim, no black contour and a lumpy grey face, where the approved sheet `cursor-damage` shows the flattened arrow with a thin black contour all the way round, a wavy outline and a crazed white face. Cause, read in `src/cursor/model/deform.ts`: `FLAT.over` 0.24 pushed the white face out over its own black rim, and `FLAT.cornerMost` 0.24 rounded the point away.
+
+Built: `FLAT.over` 0.24 to 0 (the face stays inside its rim, so the contour is black in every pressed pose), `FLAT.cornerMost` 0.24 to 0.1 (the point stays a point), `FLAT.wave` 0.14 to 0.1 and `FLAT.lump` 1.3 to 0.7 (the outline still waves and the face still lumps, as approved, but less, so at the film's size it reads as an arrow pressed thin and not as a lump). The crazing was already in the finish and is kept.
+
+The angry arrow (the Builder's item, 11:56Z): the bright yellow flecks in the hot part were the `vein` term of the heat block in `src/cursor/model/material.ts`, a thresholded noise added at 1.5. It is now added at 0.1, so the glow is the smooth run of red, orange and pale yellow the approved sheet has. The heat's reach, the laser's hole and its own `spark` and `fleck` are not touched.
+
+The exhausted arrow, a decision that goes against one approved panel, in its own commit so that it can be taken back alone. MEASURED by looking: the "crumpled white lump" on Continue is not the flattened body, it is the exhausted one (`npm run -s still -- --page step2 --beat step2.continue --at 0.2 --format hd --tier review`: a white drooping shape 40 px tall with no contour and no point; the change to `FLAT` above moved 16 pixels of that still). In `material.ts` the black of the edge was faded out wholly by a melt of 0.55, and the exhausted state asks for 0.6. The approved sheet `cursor-acting` shows its Exhausted arrow that way, melted white with no contour. The brief, the Builder and the finishers of step 2 and of the boss ask for a contour in every pose, and the brief says the approved pages win over the sheet. Built: the melt now fades the black by 0.12 at most, so the exhausted arrow keeps a dark contour and its point and still droops and runs. Cost, said plainly: the Exhausted panel of the sheet now differs from its approved panel, which has no contour.
+
+Not built, and why:
+
+- The thinner black side at low cameras (ball_finisher). The side's height is `TOP` 2.3 and `CROWN` 1.76 in `shape.ts`. A lower body moves the shadow of every page and the room the body has in the ball (`tests/cursor-fit.test.ts`), and wants a before and an after of `lobby-doors`, `youre-fired` and `rail-cam`. There was no time left for six review stills and a second round. UNKNOWN whether 2.3 to 1.9 would hold.
+- The outline's shimmer while still (film frames 6370 to 6392). Not looked at: it wants film frames, not stills.
+
+Looks used on D: cursor-body 8 (Continue at 0.6 at review twice, Continue at 0.2 at review twice, the sheet `cursor-damage` at review, `step2-crank` at review, the sheet `cursor-acting` at draft twice).
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 5 | 40 |
-| type | 0 | 40 |
+| shell | 10 | 40 |
+| type | 2 | 40 |
 | light-engine | 0 | 40 |
-| cursor-body | 0 | 40 |
+| cursor-body | 8 | 40 |
 
