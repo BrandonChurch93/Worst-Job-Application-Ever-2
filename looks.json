@@ -1,35 +1,35 @@
 {
   "folder": "step2-slot",
-  "pushed": "2026-11-26T01:31:52.932Z",
-  "commit": "8df0e8bf9cf9012b04bdf0c00b72188474a00d35",
+  "pushed": "2026-11-26T01:44:22.375Z",
+  "commit": "f340b44e197dca9c2f0dbe30880c361e3a6fc4a8",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step2-step2_slot-0p8-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:30:14.433Z",
+      "caption": "Still key-step2-crank-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T01:40:58.376Z",
       "by": "step2-slot",
-      "from": "out/work/stills/step2-step2_slot-0p8-hd-review.png"
+      "from": "out/work/stills/key-step2-crank-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Crank key at review tier, approved above, build below (dial maker's sizes laid over): unlit segments are tinted glass, lit core paler, pills lower",
-      "time": "2026-11-26T01:31:51.239Z",
+      "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T01:44:19.914Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126013151-crank-0145.jpg"
+      "from": "out/work/stills/sheet-machines-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Machines sheet at review tier, approved above, build below: pay line is a wire over the legends, window glass veils less",
-      "time": "2026-11-26T01:31:51.487Z",
+      "caption": "Crank key at review tier on the branch as pushed (main's layout), approved above, build below: forged arm with an eye, smaller cap, lower glass pills, cream core in the lit ones",
+      "time": "2026-11-26T01:44:20.874Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126013151-machines-0145.jpg"
+      "from": "out/work/looks/files/20261126014420-crank-0150.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 2 slot beat at 0.8, review tier: cabinet, drums, wire, lever, payout mouth, coins",
-      "time": "2026-11-26T01:31:51.745Z",
+      "caption": "Machines sheet at review tier, approved above, build below: arm tapers from its eye, unlit glass keeps a body on the white page",
+      "time": "2026-11-26T01:44:21.100Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126013151-slot-0145.jpg"
+      "from": "out/work/looks/files/20261126014421-machines-0150.jpg"
     }
   ]
 }
