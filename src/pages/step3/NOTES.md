@@ -55,6 +55,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 - `skip()` puts the ball on the drain rail and plays the ending. Without a press the result card moves on after `live.idleSeconds`.
 
 - After the doors open they stay open: the ball is flattened once.
+- Phase 4 (pinball-director): in the coffee beat a magnet under the board at (10.3, 6.3) of tier 1 (`NEST.key`) pulls from 17.1 to 17.5 s (`NEST.wait`, `PULL.key`), so the ball is near its approved place at the key `tier-office`. It cues nothing. The take from 17.5 s on was searched again (search 20, 20 of 25).
 
 ## The paths test
 
