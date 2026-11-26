@@ -1,0 +1,35 @@
+{
+  "folder": "look-finish",
+  "pushed": "2026-11-26T11:31:08.703Z",
+  "commit": "e613986e94a4866c2bd931cee10499484f02cb75",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-decision-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T11:26:38.297Z",
+      "by": "look-finish",
+      "from": "out/work/stills/key-decision-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "A: waiting Continue on step2-rest at review: approved, before, after",
+      "time": "2026-11-26T11:31:06.951Z",
+      "by": "look-finish",
+      "from": "out/work/look-finish/a/A-step2-rest-continue.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "A: waiting Continue on step2-dial at review: approved, before, after",
+      "time": "2026-11-26T11:31:07.228Z",
+      "by": "look-finish",
+      "from": "out/work/look-finish/a/A-step2-dial-continue.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "A: boss-fight, marketing-top, decision in draft after A: nothing else moved",
+      "time": "2026-11-26T11:31:07.504Z",
+      "by": "look-finish",
+      "from": "out/work/look-finish/a/drafts.jpg"
+    }
+  ]
+}
