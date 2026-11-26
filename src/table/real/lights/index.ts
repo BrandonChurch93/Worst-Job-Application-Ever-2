@@ -90,7 +90,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     u.wjlAt.value[i]!.set(g.at[0], g.at[1], g.mode === 0 ? FIELD_HEIGHT : g.at[2], g.name === 'flash' ? 3 : g.mode)
   }
   const fill = FILL[z.id]!
-  const soft = 0.05 * L.general + 0.05 * L.flash
+  const soft = 0.035 * L.general + 0.05 * L.flash
   u.wjlFill.value.set(fill[0] * soft, fill[1] * soft, fill[2] * soft)
   u.wjlEnv.value = soloed() !== null ? 0.5 : L.general * (1 + 0.5 * L.flash) + 0.2 * L.website
   if (!b) return

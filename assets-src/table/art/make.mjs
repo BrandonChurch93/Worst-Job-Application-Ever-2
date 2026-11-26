@@ -149,7 +149,7 @@ async function art(L, k, set) {
   layers.push({ input: await grain(id, 512, w > 4096 ? 2 : 1), tile: true, blend: 'soft-light' })
   layers.push({ input: Buffer.from(svg(w, h, d.defs, d.top)) })
   const base = has && PAINTED[id].as === 'base' ? await sharp(painted).resize(w, h, { fit: 'fill', kernel: 'lanczos3' }).modulate({ brightness: PAINTED[id].brightness, saturation: PAINTED[id].saturation }).removeAlpha().png({ compressionLevel: 1 }).toBuffer() : await ground(id, 1280, 720).resize(w, h, { kernel: 'cubic' }).png().toBuffer()
-  const out = await sharp(base, { limitInputPixels: false }).composite(layers).removeAlpha().toColourspace('srgb').linear(0.972, 4).png({ compressionLevel: 1 }).toBuffer()
+  const out = await sharp(base, { limitInputPixels: false }).composite(layers).removeAlpha().toColourspace('srgb').linear(0.96, 6).png({ compressionLevel: 1 }).toBuffer()
   fs.mkdirSync(S.dir, { recursive: true })
   await sharp(out, { limitInputPixels: false }).webp({ quality: S.quality, effort: 4, smartSubsample: true }).toFile(path.join(S.dir, `${id}.webp`))
   const mh = Math.round((MASK.width * 9) / 16)
