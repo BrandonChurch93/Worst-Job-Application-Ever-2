@@ -222,9 +222,9 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
     out.push({ id: `${id}-cannon-${i}`, part: body, kind: 'disc', role: 'bossCannon', x: c.x - d / 2, y: c.y - d / 2, w: d, h: d, z0, z1, tone: 'metal', rot: c.rot, v: [c.k, c.recoil ?? 0, flat] })
     out.push(label(`${id}-cannon-${i}-numeral`, body, `data:numerals.${CANNON_FROM[i]!}`, c.x, c.y, TYPE.numeral, z1, 'ink', c.rot))
   })
-  const z0 = (cap.down > 0 ? mix(BODY_Z.cap, 0, cap.down) : mix(heights.buttonSocket, BODY_Z.cap, cap.lift)) + (cap.lift > 0 && cap.down <= 0 ? rig.plate.z : 0) - pressed * 0.4
+  const z0 = (cap.down > 0 ? mix(BODY_Z.cap, 0, cap.down) : mix(heights.buttonSocket, BODY_Z.cap, cap.lift)) + (cap.lift > 0 && cap.down <= 0 ? rig.plate.z : 0) - (cap.down > 0 ? 0 : pressed * 0.4)
   const fell = cap.down * cap.down * (3 - 2 * cap.down)
-  const z1 = z0 + mix(BODY_Z.capTall, PILL_TALL, fell)
+  const z1 = z0 + mix(BODY_Z.capTall, PILL_TALL, fell) - (cap.down > 0 ? pressed : 0)
   const tilt = cap.down > 0 ? 0 : Math.sin(Math.PI * Math.min(1, cap.lift)) * 0.2
   const top: Shape = { id: `${id}-cap`, part: body, kind: 'capsule', role: 'bossCap', x: cap.x - CAP_W / 2, y: cap.y - CAP_H / 2, w: CAP_W, h: CAP_H, z0, z1, tone: 'accent', rot: cap.rot, v: [rig.hurt, pressed, tilt, cap.down] }
   const word = label(`${id}-cap-word`, body, 'copy:step4.submit', cap.x, cap.y, TYPE.button, z1, 'inkLight', cap.rot)
