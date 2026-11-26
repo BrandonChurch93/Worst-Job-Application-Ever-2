@@ -26,14 +26,15 @@ export const CASSETTE = {
 // The same in page pixels, for what meets the cassette on the page: the sheet, the strips.
 export const UNIT = { half: CASSETTE.half * K, deep: CASSETTE.deep * K, r: CASSETTE.roller.r * K }
 
-// The slot as the page draws it: the well, the lip and the housing. `jaw` is how far it is open, the rollers' turn, and the rate the sheet is fed at.
+// The slot as the page draws it: the well, the lip and the housing. `jaw` is how far it is open, the rollers' turn, and the rate the sheet is fed at. On a contact the page throws the housing down the page from `housingY`, by a few pixels, for a moment.
 export const HOUSING = 22
+export const housingY = SLOT.cy - SLOT.h / 2
 export function slotShapes(jaw: [number, number, number]): Shape[] {
   const w = SLOT.w
   return [
     { id: 'shredder-slot', part: 'shredder', kind: 'well', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: SLOT.h, z0: -WELL, z1: 0, tone: 'dark' },
     { id: 'shredder-jaw-0', part: 'shredder', kind: 'capsule', x: SLOT.cx - w / 2 - 2, y: SLOT.cy - SLOT.h / 2 - 5, w: w + 4, h: 4, z0: 0, z1: 2, tone: 'metal', v: jaw },
-    { id: 'shredder-jaw-1', part: 'shredder', kind: 'box', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: HOUSING, z0: 0, z1: TOP, r: 2, tone: 'metal', mechanism: true, v: jaw }
+    { id: 'shredder-jaw-1', part: 'shredder', kind: 'box', x: SLOT.cx - w / 2, y: housingY, w, h: HOUSING, z0: 0, z1: TOP, r: 2, tone: 'metal', mechanism: true, v: jaw }
   ]
 }
 

@@ -32,6 +32,15 @@ const SINGE = 0.2
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
 const TIDY = 0.3
+// The live takeover: the seconds the arms take to reach the bitten paper, then the seconds over which the paper's pull on the arrow comes on, and the most the held paper leans from upright, in radians, wherever the arrow stands.
+const TAKE = { reach: 0.16, pull: 0.42, lean: 0.6 }
+// The live loss: the last pull back in seconds and page pixels, the seconds of the skid to the slot, how much of the paper it wins back a second meanwhile, the arrow's stretch and its seconds on the frame its grip goes, then the seconds the hands ride the last of the paper into the mouth and how far that draws the arrow down after it.
+const LOSS = { pull: 0.22, back: 20, gain: 0.12, skid: 0.36, long: 1.28, kick: 0.07, feed: 0.16, sink: 26 }
+// The slot's answer to a contact: its seconds, and how far the cassette and the panel round it are thrown, in page pixels, at the bite, at the lost grip and where the arrow meets the slot.
+const JOLT = { seconds: 0.24, bite: 12, lost: 16, meet: 24, panel: 0.75 }
+// The live give-back: the seconds the whole arrow settles where it stands before the mouse has it again, how short it is pressed as it drops its pose, for how long, and the seconds over which the page lets it back to its length.
+const GIVE = { settle: 0.34, low: 0.78, press: 0.06, rise: 0.2 }
+const PANEL = ['resume-zone', 'resume-prompt', 'resume-browse', 'resume-browse-label', 'resume-received']
 const WIPE: FieldName[] = ['email', 'lastName', 'firstName']
 const SLAB_FALL = { seconds: 0.1, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6 }
 const SLAB_LAND = TIMES.slabHang + TIMES.slabFall
@@ -88,6 +97,11 @@ interface State {
   slot: number
   tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number }
   lost: number
+  last: number
+  lostFrom: { x: number; y: number; ux: number; uy: number }
+  jolt: number
+  joltAmp: number
+  give: number
   singe: number
   armed: boolean
   seat: number
@@ -158,7 +172,7 @@ export function makePage(): PageLogic {
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
     paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h },
-    lost: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, thudLean: { x: 0, y: 1 }, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
+    lost: -1, last: -1, lostFrom: { x: 0, y: 0, ux: 0, uy: -1 }, jolt: 9, joltAmp: 0, give: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, thudLean: { x: 0, y: 1 }, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
   let s = fresh('live', config.seed)
@@ -462,7 +476,9 @@ export function makePage(): PageLogic {
         enter('tug')
         s.tug = { t: 0, amount: tugCurve(0), most: 0, cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h }
         s.lost = -1
-        grip(io)
+        s.last = -1
+        jolt(JOLT.bite)
+        if (s.mode === 'film') grip(io)
         io.emit('shredder', SLOT.cx, SLOT.cy, false)
         io.emit('arms-out', io.cursor.x, io.cursor.y, false)
         act(io, 'angry')
@@ -499,6 +515,13 @@ export function makePage(): PageLogic {
     if ((!io.pointer.down && over) || (s.mode === 'live' && s.phaseTime >= live.skipLinkAfterSeconds * 2)) feed()
   }
 
+  const jolt = (amp: number): void => {
+    s.jolt = 0
+    s.joltAmp = amp
+  }
+  const joltNow = (): number => (s.jolt < JOLT.seconds ? s.joltAmp * (1 - s.jolt / JOLT.seconds) ** 2 : 0)
+  const holding = (): boolean => s.phase === 'tug' && (s.lost < 0 || (s.mode !== 'film' && s.lost < LOSS.skid + LOSS.feed))
+
   const grip = (io: StepIo): void => {
     const t = s.tug
     const sx = io.cursor.x + TUG.shoulder.x
@@ -513,38 +536,96 @@ export function makePage(): PageLogic {
 
   const stepTug = (io: StepIo): void => {
     const t = s.tug
+    const film = s.mode === 'film'
     t.t += io.dt
     const ox = t.gx
     const oy = t.gy
     grip(io)
+    const reach = film ? 1 : smooth(t.t / TAKE.reach)
+    const haul = film ? 1 : smooth((t.t - TAKE.reach) / TAKE.pull)
+    if (reach < 1) {
+      t.gx = lerp(SLOT.cx, t.gx, reach)
+      t.gy = lerp(SLOT.cy - PAPER.h, t.gy, reach)
+    }
+    const tx = t.gx - SLOT.cx
+    const ty = t.gy - SLOT.cy
+    const td = Math.hypot(tx, ty) || 1
+    if (!film) {
+      const lean = clamp(Math.atan2(tx, -ty), -TAKE.lean, TAKE.lean)
+      t.gx = SLOT.cx + Math.sin(lean) * td
+      t.gy = SLOT.cy - Math.cos(lean) * td
+    }
     t.vx = (t.gx - ox) / io.dt
     t.vy = (t.gy - oy) / io.dt
+    const dx = t.gx - SLOT.cx
+    const dy = t.gy - SLOT.cy
+    const d = Math.hypot(dx, dy) || 1
+    const hands = (hold: number): void => {
+      const px = -dy / d
+      const py = dx / d
+      const held = Math.min(d, hold)
+      t.hx = SLOT.cx + (dx / d) * held
+      t.hy = SLOT.cy + (dy / d) * held
+      const at: [{ x: number; y: number; z: number }, { x: number; y: number; z: number }] = [{ x: t.hx - px * TUG.hands, y: t.hy - py * TUG.hands, z: LIE + 6 }, { x: t.hx + px * TUG.hands, y: t.hy + py * TUG.hands, z: LIE + 6 }]
+      if (reach < 1) {
+        const sx = io.cursor.x + TUG.shoulder.x
+        const sy = io.cursor.y + TUG.shoulder.y
+        for (const h of at) {
+          h.x = lerp(sx, h.x, reach)
+          h.y = lerp(sy, h.y, reach)
+        }
+      }
+      io.cursor.setArms(true, at)
+    }
     if (s.lost >= 0) {
       s.lost += io.dt
-      t.pull = 0
       t.rate = 1 / TIMES.lost
       t.reach += (TUG.reach.min - t.reach) * Math.min(1, io.dt * 8)
-      t.amount = Math.min(1, t.amount + (io.dt / TIMES.lost) * 0.5)
-      if (s.lost >= (s.mode === 'film' ? TIMES.lostFilm : TIMES.lost)) {
+      if (film) {
+        t.pull = 0
+        t.amount = Math.min(1, t.amount + (io.dt / TIMES.lost) * 0.5)
+        if (s.lost >= TIMES.lostFilm) {
+          jolt(JOLT.meet)
+          s.shred = 0
+          enter('shredded')
+        }
+        return
+      }
+      const u = clamp(s.lost / LOSS.skid, 0, 1)
+      const e = u * (1.5 - 0.5 * u)
+      const f = s.lostFrom
+      const w = smooth((s.lost - LOSS.skid) / LOSS.feed)
+      io.cursor.drive(lerp(f.x + f.ux * LOSS.back, SLOT.cx - BODY.x, e), lerp(f.y + f.uy * LOSS.back, SLOT.cy - 70, e) + LOSS.sink * w, heights.card + 6)
+      t.pull = 1
+      t.amount = Math.min(1, t.amount + (io.dt / LOSS.skid) * 0.5)
+      hands(Math.max(TUG.least, PAPER.h * (1 - t.amount) - TUG.inside) * (1 - w))
+      if (s.lost >= LOSS.skid + LOSS.feed) {
+        io.cursor.setArms(false)
+        jolt(JOLT.meet)
         s.shred = 0
         enter('shredded')
       }
       return
     }
-    const dx = t.gx - SLOT.cx
-    const dy = t.gy - SLOT.cy
-    const d = Math.hypot(dx, dy) || 1
     const hold = Math.max(TUG.least, PAPER.h * (1 - t.amount) - TUG.inside)
     const strain = Math.max(0, d - hold)
-    if (strain > 0) {
-      const a = TUG.stiff * Math.min(strain, 320) * io.dt
-      io.cursor.knock((-dx / d) * a, (-dy / d) * a, 0)
+    if (strain > 0 && s.last < 0) {
+      const a = TUG.stiff * Math.min(strain, 320) * io.dt * haul
+      io.cursor.knock((-tx / td) * a, (-ty / td) * a, 0)
     }
-    const pull = Math.min(1, strain / TUG.strainPx)
+    const pull = Math.min(1, strain / TUG.strainPx) * haul
     t.pull = pull
     const was = t.amount
-    if (s.mode === 'film') t.amount = tugCurve(t.t)
-    else t.amount = clamp(t.amount + (0.11 - 0.2 * pull + Math.max(0, t.t - 5) * 0.2) * io.dt, 0.03, 1)
+    if (film) t.amount = tugCurve(t.t)
+    else if (s.last >= 0) {
+      s.last += io.dt
+      const u = clamp(s.last / LOSS.pull, 0, 1)
+      const e = 1 - (1 - u) ** 2
+      const f = s.lostFrom
+      io.cursor.drive(f.x + f.ux * LOSS.back * e, f.y + f.uy * LOSS.back * e, heights.card + 6)
+      t.pull = Math.max(pull, e)
+      t.amount = clamp(t.amount - LOSS.gain * io.dt, 0.03, 1)
+    } else t.amount = clamp(t.amount + (0.11 - 0.2 * pull + Math.max(0, t.t - 5) * 0.2) * io.dt, 0.03, 1)
     t.most = Math.max(t.most, t.amount)
     t.rate += ((t.amount - was) / io.dt - t.rate) * Math.min(1, io.dt / TUG.rateLag)
     t.reach = tugReach(t.rate)
@@ -552,23 +633,34 @@ export function makePage(): PageLogic {
     if (pull > 0.7 && t.cool <= 0) {
       t.cool = 0.9
       io.emit('paper-strain', t.gx, t.gy, false)
-      if (s.mode !== 'film') io.cursor.react('flinch')
+      if (!film && s.last < 0) io.cursor.react('flinch')
     }
-    const px = -dy / d
-    const py = dx / d
-    const held = Math.min(d, hold)
-    t.hx = SLOT.cx + (dx / d) * held
-    t.hy = SLOT.cy + (dy / d) * held
-    io.cursor.setArms(true, [{ x: t.hx - px * TUG.hands, y: t.hy - py * TUG.hands, z: LIE + 6 }, { x: t.hx + px * TUG.hands, y: t.hy + py * TUG.hands, z: LIE + 6 }])
-    if (s.mode !== 'film') act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.62 ? 'nervous' : 'angry')
-    const lost = s.mode === 'film' ? t.t >= TIMES.tugFilm : t.amount >= 0.9 || t.t >= 9
-    if (lost) {
-      io.cursor.setArms(false)
-      if (s.mode === 'live') io.emit('tug-lost', SLOT.cx, SLOT.cy, true)
+    hands(hold)
+    if (!film && s.last < 0) act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.62 ? 'nervous' : 'angry')
+    if (film) {
+      if (t.t >= TIMES.tugFilm) {
+        io.cursor.setArms(false)
+        io.cursor.take('shredder')
+        io.cursor.drive(SLOT.cx - BODY.x, SLOT.cy - 70, heights.card + 6)
+        act(io, 'scared')
+        jolt(JOLT.lost)
+        s.lost = 0
+      }
+      return
+    }
+    if (s.last < 0 && (t.amount >= 0.9 || t.t >= 9)) {
+      const bx = io.cursor.x + BODY.x - SLOT.cx
+      const by = io.cursor.y + BODY.y - SLOT.cy
+      const bd = Math.hypot(bx, by) || 1
+      s.last = 0
+      s.lostFrom = { x: io.cursor.x, y: io.cursor.y, ux: bx / bd, uy: by / bd }
       io.cursor.take('shredder')
-      io.cursor.drive(SLOT.cx - BODY.x, SLOT.cy - 70, heights.card + 6)
-      if (s.mode !== 'film') io.cursor.react('recoil')
+      io.cursor.drive(io.cursor.x, io.cursor.y, heights.card + 6)
       act(io, 'scared')
+    } else if (s.last >= LOSS.pull) {
+      io.emit('tug-lost', SLOT.cx, SLOT.cy, true)
+      io.cursor.press(LOSS.long, LOSS.kick)
+      jolt(JOLT.lost)
       s.lost = 0
     }
   }
@@ -580,7 +672,7 @@ export function makePage(): PageLogic {
     s.tug.amount = Math.min(1, s.tug.amount + io.dt / 0.25)
     if (s.shred < SHRED.gone) {
       const u = s.shred / SHRED.gone
-      io.cursor.drive(SLOT.cx - BODY.x, lerp(SLOT.cy - 70, SLOT.cy - 30, smooth(u / 0.7)), lerp(heights.card + 6, -60, smooth((u - 0.2) / 0.6)))
+      io.cursor.drive(SLOT.cx - BODY.x, lerp(SLOT.cy - 70 + (s.mode === 'film' ? 0 : LOSS.sink), SLOT.cy - 30, smooth(u / 0.7)), lerp(heights.card + 6, -60, smooth((u - 0.2) / 0.6)))
     }
     if (crossed(SHRED.gone)) io.cursor.setOnPage(false)
     if (crossed(SHRED.pile)) {
@@ -612,12 +704,25 @@ export function makePage(): PageLogic {
       act(io, 'exhausted')
     }
     if (crossed(SHRED.end)) {
-      io.cursor.release()
+      if (s.mode === 'film') io.cursor.release()
+      else {
+        s.give = 0
+        act(io, 'plain')
+        io.cursor.press(GIVE.low, GIVE.press)
+      }
       enter('received')
     }
   }
 
   const stepReceived = (io: StepIo): void => {
+    if (s.give >= 0) {
+      s.give += io.dt
+      if (s.give > GIVE.press && s.give < GIVE.rise) io.cursor.press(lerp(GIVE.low, 1, smooth((s.give - GIVE.press) / (GIVE.rise - GIVE.press))), io.dt)
+      if (s.give >= GIVE.settle) {
+        s.give = -1
+        io.cursor.release()
+      }
+    }
     if (s.pressed < 0) {
       const auto = s.mode === 'live' && s.phaseTime + SHRED.end >= live.skipLinkAfterSeconds
       if (s.board <= 0 && ((io.pressed && inside(go, io.pointer.x, io.pointer.y)) || auto)) {
@@ -680,7 +785,7 @@ export function makePage(): PageLogic {
     const startV = whole - shown
     const at = (v: number, across: number): { x: number; y: number } => ({ x: t.gx + ux * v - uy * across, y: t.gy + uy * v + ux * across })
     const c = at(startV + shown / 2, 0)
-    const armed = s.phase === 'tug' && s.lost < 0
+    const armed = holding()
     const reach = armed ? TUG.hands : 0
     const hx = armed ? t.hx : t.gx
     const hy = armed ? t.hy : t.gy
@@ -761,6 +866,7 @@ export function makePage(): PageLogic {
       s.sinceShuffle = Math.min(9, s.sinceShuffle + io.dt)
       s.caret = Math.min(9, s.caret + io.dt)
       s.glow = Math.min(9, s.glow + io.dt)
+      s.jolt = Math.min(9, s.jolt + io.dt)
       const eating = s.phase === 'tug' || (s.phase === 'shredded' && s.shred < SHRED.pile)
       s.spin += ((eating ? (s.phase === 'tug' && s.lost < 0 ? JAW.tug : JAW.shred) : 0) - s.spin) * Math.min(1, io.dt / JAW.lag)
       s.turn += s.spin * io.dt
@@ -907,6 +1013,8 @@ export function makePage(): PageLogic {
         })
       }
       for (const f of FIELDS) over[`${f}-value`] = { z0: 0.1, z1: 0.1 }
+      const thrown = joltNow() * JOLT.panel
+      if (thrown > 0) for (const id of PANEL) over[id] = { y: boxOf(layout, id).y + thrown, moved: true }
       if (s.received) {
         const top = heights.button - (s.pressed >= 0 ? TRAVEL : 0)
         over['continue-cap'] = { tone: 'accent', z1: top }
@@ -937,13 +1045,16 @@ export function makePage(): PageLogic {
           out.push({ id: 'field-caret', part: 'shell', kind: 'box', x: values[field].x + w + 4, y: p.y + 16 - jump, w: 3, h: p.h - 32, z0: 0.1, z1: 0.5, tone: 'ink', v: [jump] })
         }
       }
-      if (!s.received) for (const [i, g] of glyph.entries()) out.push({ id: `resume-glyph-${i}`, part: 'shell', kind: 'box', x: g.x, y: g.y, w: g.w, h: g.h, z0: heights.card, z1: heights.card + 0.4, r: 1.5, rot: g.rot, tone: 'ink' })
+      if (!s.received) for (const [i, g] of glyph.entries()) out.push({ id: `resume-glyph-${i}`, part: 'shell', kind: 'box', x: g.x, y: g.y + joltNow() * JOLT.panel, w: g.w, h: g.h, z0: heights.card, z1: heights.card + 0.4, r: 1.5, rot: g.rot, tone: 'ink' })
       if (s.board > 0) turrets.draw(out, off)
       if (s.board > 0 && s.thud < STRIKE.seconds && turrets.s.hits > 0) out.push({ id: `scorch-${STRIKE.id + turrets.s.hits}`, part: 'turrets', kind: 'disc', x: s.struckAt.x, y: s.struckAt.y, w: 0, h: 0, z0: STRIKE.z + off, z1: STRIKE.z + off, tone: 'dark', v: [1 - s.thud / TURRET.scorchSeconds, 1, STRIKE.z + off - strikeTop + STRIKE.over] })
       if (s.slot > 0) {
         const open = smooth(s.slot)
-        const jaw: [number, number, number] = [open, s.turn, s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0]
-        out.push(...slotShapes(jaw))
+        const rate = s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0
+        const thrown = joltNow()
+        const slot = slotShapes([open, s.turn, rate])
+        if (thrown > 0) for (const x of slot) if (x.mechanism) x.y += thrown
+        out.push(...slot)
       }
       if (s.phase === 'tug' || s.phase === 'shredded') tugPaper(out)
       strips(out)
@@ -1005,6 +1116,8 @@ export function makePage(): PageLogic {
       s.paper.on = false
       s.paper.held = false
       s.lost = -1
+      s.last = -1
+      s.give = -1
       s.kept = null
       s.accepted = false
       s.received = true
