@@ -1,0 +1,121 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-05.png",
+   "where": "every frame, the ball on the office playfield",
+   "what": "the arrow is a few pixels inside a ball seen from overhead. It shows no pose, no feeling and no reaction to any bumper hit for the whole sheet, so it reads as a plain pinball, not a character",
+   "fix": "cut in a close-up or punch-in on two or three of the hits so the arrow reacts (jolts, flinches, spins inside the ball), or scale the ball up and give the arrow a clear tilt or recoil on each hit"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-09.png",
+   "where": "every frame, overhead and angled table shots",
+   "what": "same as A-05: the arrow is too small to read and does not react to the flippers or the spinner. The beat plays as pinball footage with no acting in it",
+   "fix": "give at least one held reaction close-up (exhausted droop or dizzy wobble) and make the arrow's orientation in the ball change clearly on each impact"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "rows 1 and 4 overhead frames; row 2-3 ramp close-ups",
+   "what": "in the ramp and spinner close-ups the arrow stays upright and rigid in the same pose, sliding along like a pointer behind glass. There is no reaction to the Background Check scrutiny",
+   "fix": "in the spinner close-up, have the arrow spin or wobble with the ball and come out tilted and off-balance, then hold that dizzy pose for a few frames"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "row 1 frame 3 to row 2 frame 3, the plunger close-up",
+   "what": "there is no wind-up before the launch. The arrow holds the same neutral pose across four frames, then is gone. It does not brace, crouch or look up the lane",
+   "fix": "before the plunger fires, have it lean back and compress (a slight squash of the arrow inside the ball), then stretch along the lane direction as it shoots off"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "rows 2-4 close-up in the You're Fired kicker",
+   "what": "the dread is readable but the arrow stays rigid while caught and when it is kicked out. It does not squash on the hit or recoil when ejected, and the ejection frame is a blur with no reaction pose",
+   "fix": "add a squash or flinch the moment the kicker catches it, a small shiver while it is held, and a clear startled stretch on the kick-out"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "all impacts with bumpers and flippers (e.g. row 3 frame 2 on the flippers)",
+   "what": "there is no squash on landing or impact and no stretch at speed anywhere on the table sheets. Ball and arrow stay perfectly rigid",
+   "fix": "add a few frames of ball and arrow deformation on contact, or at least a sharp angle snap of the arrow inside the ball on each hit"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "whole sheet",
+   "what": "the arrow is not on screen for the whole beat, so the sheet carries no acting and no reaction to landing in the machine",
+   "fix": "include a beat of the ball landing at the plunger with the arrow reacting (looking around, shrinking back) as the table lights come on"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "rows 1-2, the multiball moment",
+   "what": "the arrow's reaction to the copies appearing is only a small orientation change at tiny size, and is not held long enough to read as surprise",
+   "fix": "punch in when the copies spawn and hold a clear startled pose (arrow stretched upward, jerked back) for several frames"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-10.png",
+   "where": "row 2 frame 3 (empty vent) to row 3 frame 1 (arrow on Continue)",
+   "what": "the arrow jumps from the vent to the Continue button with no in-between, so the weary walk to the button is lost",
+   "fix": "add frames of the arrow trudging from the vent to the button, slow and drooping, before the click"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "row 2 frames 1-3, the approach to the vent",
+   "what": "the pull toward the vent has only a faint tilt and no clear moment where it notices the danger and resists",
+   "fix": "add a held beat where it stops and leans away from the vent before it is yanked in, with a stretch toward the vent as it goes"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "calm, idle pointer drifting on the form page; it lifts, gets pulled toward the round vent, tips over as it is sucked in, is sealed in a clear ball and dropped down the tube toward a machine below; surprised and helpless"
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "no readable feeling, the arrow is not visible; the pinball table it was dropped into lights up around it, something is about to happen to it"
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "waiting in the plunger lane, then fired up the lane at speed and thrown around the table; passive, no clear feeling, just carried"
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "bounced around the Corporate HQ level, then hopeful as it rolls up to the HQ doors, then shut out and turned away, dropping down to the lower office level; disappointed"
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "knocked around between bumpers and flippers on the office level (Pizza Party in lieu of raises); no readable feeling, it is a small ball being battered"
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "Reply All: grey copies of the ball flood the table; the arrow seems startled and pushed around among them, then drains to the lower level"
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "drops into the Entry-Level table, hits the You're Fired target and is caught in the red kicker; dread while it sits trapped, then kicked out"
+  },
+  {
+   "file": "set-A-08.png",
+   "read": "Unpaid Overtime: flipped about, sent up a ramp and through the Background Check spinner; carried along, faintly uneasy, no clear reaction"
+  },
+  {
+   "file": "set-A-09.png",
+   "read": "Multiple Hats: worn out, bounced back and forth between flippers and the spinner with no clear reaction"
+  },
+  {
+   "file": "set-A-10.png",
+   "read": "drains off the table and is spat back out of the vent on the form page, tilted and dazed, then wearily clicks Continue; the zoom-out shows the page is part of another machine, so it is about to go round again"
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { arriveTurn, leaveSpeed, leaveTurn, rattleAt, seatedAt, SHIVER, shiverAt, shiverDelay, shiverSeconds, TURN } from '../src/stage/turn'
+import { arriveTurn, leaveSpeed, leaveTurn, rattleAt, seatedAt, SHIVER, shiverAt, shiverBase, shiverDelay, shiverSeconds, TURN } from '../src/stage/turn'
 import { blendFrames, TURN_HALF, type Frame } from '../src/stage/stage'
 import { restPose } from '../src/cursor/body'
 import { TURN_SEATS } from '../tools/lib/pack-look.mjs'
@@ -100,6 +100,26 @@ describe('the page turn', () => {
     expect(shiverDelay(0.5)).toBeCloseTo(SHIVER.spread / 2, 12)
     expect(shiverDelay(3)).toBe(SHIVER.spread)
     expect(shiverAt(shiverSeconds - SHIVER.spread)).toBe(0)
+  })
+
+  it('lets what stands on a card shiver with the card, so type set on glass never sinks into it', () => {
+    const card = { kind: 'box', x: 100, y: 300, w: 600, h: 240, z0: 0, z1: 6 }
+    const title = { kind: 'text', x: 130, y: 320, w: 300, h: 30, z0: 6, z1: 6 }
+    const body = { kind: 'text', x: 130, y: 380, w: 500, h: 26, z0: 6, z1: 6 }
+    const box = { kind: 'box', x: 130, y: 460, w: 44, h: 44, z0: 6, z1: 10 }
+    const label = { kind: 'text', x: 190, y: 470, w: 200, h: 26, z0: 6, z1: 6 }
+    const tick = { kind: 'text', x: 140, y: 470, w: 24, h: 24, z0: 10, z1: 10 }
+    const onPage = { kind: 'text', x: 100, y: 600, w: 300, h: 20, z0: 0, z1: 0.07 }
+    const button = { kind: 'capsule', x: 800, y: 900, w: 300, h: 80, z0: 0, z1: 14 }
+    const well = { kind: 'well', x: 0, y: 0, w: 1920, h: 1080, z0: 0, z1: 40 }
+    const sunk = { kind: 'box', x: 100, y: 300, w: 600, h: 240, z0: -4, z1: 6, pocket: true }
+    const list = [well, sunk, card, title, body, box, label, tick, onPage, button]
+    for (const s of [title, body, box, label, tick, card]) expect(shiverBase(list, s)).toBe(card)
+    expect(shiverBase(list, onPage)).toBe(onPage)
+    expect(shiverBase(list, button)).toBe(button)
+    const delay = (s: { y: number; h: number }): number => shiverDelay((s.y + s.h / 2) / 1080)
+    expect(delay(title)).not.toBeCloseTo(delay(label), 3)
+    expect(delay(shiverBase(list, title))).toBe(delay(shiverBase(list, label)))
   })
 
   it('blends the time since the knock between two steps and keeps it off a frame that has none', () => {
