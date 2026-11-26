@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import * as THREE from 'three'
-import { DROPS, ORDER, PART, RIN, dropPlaces, hold, parts, rollAt, setGrade, shellGeometry, stateOf, type Grade } from '../src/table/real/ball'
+import { DROPS, ORDER, PART, PARTING, RIN, dropPlaces, hold, parts, rollAt, setGrade, shellGeometry, stateOf, type Grade } from '../src/table/real/ball'
 import { LAMPS, fall, lightAt } from '../src/table/real/ball/lamps'
 import { anchorId, fixedShapes } from '../src/table/draw'
 import { table } from '../src/table/layout'
@@ -98,11 +98,22 @@ describe('the clear ball', () => {
     const front = meshesOf(o).find((m) => m.name === 'ball.front')!
     const u = (front.material as THREE.ShaderMaterial).uniforms
     maker.pose!(o, ball(1085, 3115, -192, [0.25, 0, 0.5]), ctx)
-    expect(u.uOpen!.value).toBeCloseTo(0.75)
+    expect(u.uOpen!.value).toBe(1)
+    expect(u.uGone!.value).toBeGreaterThan(0)
+    expect(front.parent!.position.z).toBeLessThan(48)
+    maker.pose!(o, ball(1085, 3115, -192, [0.65, 0, 0.5]), ctx)
+    expect(u.uOpen!.value).toBeCloseTo(0.5)
+    expect(u.uGone!.value).toBe(0)
+    expect(front.parent!.position.z).toBe(48)
+    maker.pose!(o, ball(1085, 3115, -192, [0, 0, 0.5]), ctx)
+    expect(u.uGone!.value).toBe(1)
+    expect(front.parent!.position.z).toBeCloseTo(48 - PARTING.deep * 48)
     expect(u.uSweat!.value).toBeCloseTo(0.5)
     expect(u.uPlugTurn!.value).toBeGreaterThan(1)
     maker.pose!(o, office, ctx)
     expect(u.uOpen!.value).toBe(0)
+    expect(u.uGone!.value).toBe(0)
+    expect(front.parent!.position.z).toBe(48)
     expect(u.uPlugTurn!.value).toBe(0)
     expect(meshesOf(o).find((m) => m.name === 'ball.sweat')!.visible).toBe(false)
   })

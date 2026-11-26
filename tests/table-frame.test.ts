@@ -228,7 +228,7 @@ describe('the body of the machine', () => {
     for (const m of meshesOf(b.o)) {
       if ((m as THREE.InstancedMesh).isInstancedMesh) continue
       const p = m.geometry.getAttribute('position')
-      for (let i = 0; i < p.count; i++) if (Math.abs(p.getX(i) - x) < 0.74 * BALL && p.getZ(i) > BALL * 1.5) deep = Math.max(deep, line - p.getY(i))
+      for (let i = 0; i < p.count; i++) if (Math.abs(p.getX(i) - x) < 0.74 * BALL && p.getZ(i) > BALL * 1.25) deep = Math.max(deep, line - p.getY(i))
     }
     expect(deep).toBeGreaterThanOrEqual(0.8 * BALL - 4)
     expect(deep).toBeGreaterThanOrEqual(LANE_RAMP.lift * BALL)

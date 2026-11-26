@@ -1,10 +1,12 @@
 import * as THREE from 'three'
 import type { PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
+import { scaled } from './sheet'
 import { look } from '../../../post/look'
 import { materials } from '../../../shell/materials'
 import { arc, circle, merge, profile, roundedRect, sweep, type ProfilePoint, type Ring } from '../../../shell/solids'
 import { DIAL, DIAL_BODY, dialPlate, HUB_ORANGE_LIFT } from '../layout'
+import { contact } from './slot-kit'
 
 const B = DIAL_BODY
 const H = B.tall
@@ -152,6 +154,14 @@ export function hubGeometry(): THREE.BufferGeometry {
 }
 
 // The floor of the seat the hub stands in: a dark ring a little under the wheel's face.
+// The pale disc in the middle of the wheel, a step proud of the turned face, and the dark seam round it.
+export function innerGeometry(): { disc: THREE.BufferGeometry; seam: THREE.BufferGeometry } {
+  const r = B.inner
+  const disc = sweep(circle(r, 96), profile([[0, H - 0.2, true], [0, H + B.innerTall - 0.6, true], [0.7, H + B.innerTall, true]]))
+  const seam = sweep(circle(r + B.innerSeam, 96), [flat(0, H + 0.06), flat(B.innerSeam + 0.6, H + 0.06)], false)
+  return { disc, seam }
+}
+
 export function hubRingGeometry(): THREE.BufferGeometry {
   return sweep(circle(B.hub + B.hubSeat - 0.8, 72), [flat(0, H - B.hubSeatDeep), flat(B.hubSeat + 0.4, H - B.hubSeatDeep)], false)
 }
@@ -255,6 +265,7 @@ let shadeMaterial: THREE.MeshBasicMaterial | null = null
 let faceMaterial: THREE.MeshPhysicalMaterial | null = null
 let hubMaterial: THREE.MeshPhysicalMaterial | null = null
 let housingMaterial: THREE.MeshPhysicalMaterial | null = null
+let stopMaterial: THREE.MeshPhysicalMaterial | null = null
 let glintMaterial: THREE.MeshBasicMaterial | null = null
 
 // The housing and its base ring are the shared steel, a shade darker: the approved housing is a dark turned ring round a pale wheel.
@@ -335,13 +346,14 @@ function lacquered(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMateri
   return m
 }
 
-interface Kit { seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; groove: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; holes: THREE.BufferGeometry; glint: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry; cast: THREE.BufferGeometry }
+interface Kit { inner: THREE.BufferGeometry; seam: THREE.BufferGeometry; foot: THREE.BufferGeometry; seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; groove: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; holes: THREE.BufferGeometry; glint: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry; cast: THREE.BufferGeometry }
 let kit: Kit | null = null
 
 function geometries(): Kit {
   if (!kit) {
     const seat = seatGeometry()
-    kit = { seat: seat.collar, gap: seat.gap, groove: grooveGeometry(), housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), holes: holesGeometry(), glint: glintGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry(), cast: castGeometry() }
+    const inner = innerGeometry()
+    kit = { inner: inner.disc, seam: inner.seam, foot: contact(circle(DIAL.r + B.seat + B.footLine, 120), B.footLine + 0.8), seat: seat.collar, gap: seat.gap, groove: grooveGeometry(), housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), holes: holesGeometry(), glint: glintGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry(), cast: castGeometry() }
   }
   return kit
 }
@@ -356,7 +368,7 @@ function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, cast = t
 interface Kept { body: THREE.Group; wheel: THREE.Group; face: THREE.Mesh; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh }
 const place = new THREE.Matrix4()
 
-export const dial: PartMaker = {
+const plainDial: PartMaker = {
   key(s: Shape): string | null {
     if (!OWN.test(s.id)) return null
     return WHEEL.test(s.id) ? 'dial' : ''
@@ -369,12 +381,18 @@ export const dial: PartMaker = {
     const seat = mesh(g.seat, housingMaterial)
     root.add(seat)
     root.add(mesh(g.gap, m.gap, false))
+    root.add(mesh(g.foot, m.gap, false))
     const body = new THREE.Group()
     body.add(mesh(g.housing, housingMaterial))
     const plate = mesh(g.plate, m.keycap, false)
     body.add(plate)
     plate.add(mesh(g.groove, m.gap, false))
-    const stop = mesh(g.stop, m.steel)
+    if (!stopMaterial) {
+      stopMaterial = darkSteel(m.steel)
+      stopMaterial.color.multiplyScalar(B.stopDark)
+      stopMaterial.name = 'dial-stop'
+    }
+    const stop = mesh(g.stop, stopMaterial)
     body.add(stop)
     const wheel = new THREE.Group()
     faceMaterial ??= turnedFine(m.aluminiumTurned)
@@ -382,7 +400,11 @@ export const dial: PartMaker = {
     wheel.add(face)
     wheel.add(mesh(g.edges, housingMaterial))
     wheel.add(mesh(g.holes, m.aluminiumSatin))
-    wheel.add(mesh(g.hubRing, m.gap, false))
+    wheel.add(mesh(g.inner, m.keycap, false))
+    wheel.add(mesh(g.seam, m.gap, false))
+    const hubRing = mesh(g.hubRing, m.gap, false)
+    hubRing.position.z = B.innerTall + B.hubSeatDeep - 0.1
+    wheel.add(hubRing)
     hubMaterial ??= lacquered(m.orange)
     const hub = mesh(g.hub, hubMaterial)
     wheel.add(hub)
@@ -441,3 +463,5 @@ export const dial: PartMaker = {
     kept.shades.instanceMatrix.needsUpdate = true
   }
 }
+
+export const dial: PartMaker = scaled(plainDial)

@@ -6,7 +6,7 @@ import { actingAt, pointerAt, reactions } from '../src/pages/step2/script'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 
 const KEYS = [1.0, 3.2, 15.2]
-const HELD: Record<string, [number, number]> = { tap: [0.02, 0.3], startle: [0.04, 0.14], rear: [0.06, 0.34], dustOff: [0, 0.7], stamp: [0, 0.3], cower: [0, 0.5], doubleTake: [0, 0.6], jump: [0, 0.2], anticipate: [0, 0.1] }
+const HELD: Record<string, [number, number]> = { tap: [0.02, 0.3], startle: [0.04, 0.14], rear: [0.06, 0.34], dustOff: [0, 0.7], stamp: [0, 0.3], cower: [0, 0.5], doubleTake: [0, 0.6], jump: [0, 0.2], anticipate: [0, 0.1], duck: [0, 0.36], dart: [0.34, 0.3], fume: [0, 0.2] }
 
 describe('the acting of step 2', () => {
   it('uses no reaction twice', () => {

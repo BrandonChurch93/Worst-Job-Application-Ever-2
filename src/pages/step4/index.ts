@@ -1,5 +1,5 @@
 import { config } from '../../config'
-import { collapseRig, drawRig, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
+import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
 import { clearSpot, newFight, SPARK_SECONDS, stepFight, threat, type Arena, type Fight } from '../../boss/fight'
 import { ARENA, COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawWeapons } from '../../boss/weapons'
@@ -12,6 +12,8 @@ import { makeScript } from './script'
 import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
+const CAP_CLEARS = 0.6
+const SAG_AFTER = 1.45
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -31,6 +33,9 @@ interface State {
   damaged: boolean
   done: boolean
   cue: number
+  busy: number
+  mad: number
+  last: number
   cx: number
   cy: number
 }
@@ -38,7 +43,13 @@ interface State {
 const heights = config.scale.heights
 const REALLY = [0.7, 1.5] as const
 const REALLY_TAKE = 0.04
-const HORROR = { rear: UNFOLD.open + 0.04, cower: UNFOLD.cannons[0] + 0.2, scared: 2.3 } as const
+const HORROR = { start: UNFOLD.open + 0.04, scared: UNFOLD.legs[0] } as const
+const PRIDE = 1.2
+const SQUARE_UP = 0.8
+const BUCKLE = 1.1
+const KICK = { shot: 240, popup: 200, gap: 0.6 } as const
+const RELIEF = { pose: 0.42, hold: 1.5 } as const
+const GAIN = { from: 25, glow: [1.0, 1.6] } as const
 const SEAT = 0.2
 const LIFT = 7
 const FILL_GAP = 4
@@ -46,11 +57,11 @@ const FILL_TOP = 3.4
 // The body takes a sixth argument for the shield's flash and the cap's soot once the modeller's body is in; until then it is ignored.
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t)
 const easeIn = (t: number): number => t * t
-const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863] } as const
+const STAGES = { w: 2240, h: 1260, y: 630, x: [235, 667, 1216, 1863], fold: 0.78, out: 8, reach: 104, seated: 0.001 } as const
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, skipping: false, damaged: false, done: false, cue: 0, cx: 700, cy: 820 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -112,7 +123,7 @@ export function makePage(): PageLogic {
   }
 
   const TIP_AT_REST = 1.965
-  const AIM_LIFT = 0.36
+  const AIM_LIFT = 0.72
 
   const page: PageLogic = {
     id: 'step4', unit: 'boss', width: 1920, height: SCREEN_H, layout: L.tree, gags, start: { x: 700, y: 820 }, control: 'pointer',
@@ -145,10 +156,11 @@ export function makePage(): PageLogic {
             s.ticked = 0
             s.selfTick = self
             io.emit('checkbox', L.checkbox.cx, L.checkbox.cy, false)
-            io.cursor.act(self ? 'plain' : 'confident')
+            io.cursor.act(self ? 'plain' : 'proud')
           } else io.cursor.act(Math.hypot(io.pointer.x - L.checkbox.cx, io.pointer.y - L.checkbox.cy) < 150 ? 'nervous' : 'plain')
         } else {
           s.ticked += dt
+          if (!s.selfTick && s.ticked >= PRIDE && s.ticked - dt < PRIDE) io.cursor.act('confident')
           const near = s.mode === 'live' && s.ticked >= WAKE_AFTER_TICK.near && (inBox(L.cap, io.pointer, 70) || inBox(L.cap, io.cursor, 70))
           if (s.ticked >= wake() || near) {
             s.stage = 'unfold'
@@ -167,8 +179,7 @@ export function makePage(): PageLogic {
           const at = bossPlaceAt(s.t)
           io.emit('unfold', at.x, at.y, false)
         }
-        if (s.t >= HORROR.rear && s.t - dt < HORROR.rear) io.cursor.react('rear')
-        if (s.t >= HORROR.cower && s.t - dt < HORROR.cower) io.cursor.react('cower')
+        if (s.t >= HORROR.start && s.t - dt < HORROR.start) io.cursor.react('startle')
         if (s.t >= HORROR.scared && s.t < UNFOLD.end) io.cursor.act('scared')
         if (s.t >= UNFOLD.end) {
           s.fight = newFight(HOME.x, HOME.y)
@@ -179,17 +190,55 @@ export function makePage(): PageLogic {
       } else if (s.stage === 'fight' && s.fight) {
         const f = s.fight
         const before = f.phase
+        const hits = f.hits
+        const ups = f.popupCount
         stepFight(f, io, arena)
+        s.busy = Math.max(0, s.busy - dt)
+        const calm = (): void => { io.cursor.act(f.phase === 0 ? 'confident' : 'angry') }
+        if (f.hits > hits) {
+          s.busy = BUCKLE
+          s.mad = -1
+          io.cursor.act('exhausted')
+        } else if (s.busy > 0 && s.busy - dt <= 0 && !(f.phase === 2 && f.expired < REALLY[1])) calm()
+        if (f.popupCount > ups && s.busy <= 0) {
+          const box = L.weapons.popups[f.popups[f.popups.length - 1]!.slot]!.box
+          const dx = io.cursor.x - box.cx
+          const dy = io.cursor.y - box.cy
+          const d = Math.hypot(dx, dy) || 1
+          io.cursor.knock((dx / d) * KICK.popup, (dy / d) * KICK.popup)
+          io.cursor.react('cower')
+          s.busy = 0.7
+        }
+        if (io.pressed && !f.over) {
+          const dx = f.x - io.cursor.x
+          const dy = f.y - io.cursor.y
+          const d = Math.hypot(dx, dy) || 1
+          io.cursor.knock((-dx / d) * KICK.shot, (-dy / d) * KICK.shot)
+          if (s.busy <= 0 && s.time - s.last > KICK.gap) io.cursor.react('flinch')
+          s.last = s.time
+        }
         const to = TIP_AT_REST - AIM_LIFT - Math.atan2(io.cursor.y - f.y, f.x - io.cursor.x)
         io.cursor.aim(Math.atan2(Math.sin(to), Math.cos(to)))
         if (f.phase !== before) {
           s.t = 0
-          io.cursor.act('angry')
+          s.busy = 0
+          if (f.phase === 1) {
+            s.mad = 0
+            io.cursor.act('proud')
+          }
+        }
+        if (s.mad >= 0) {
+          s.mad += dt
+          if (s.mad >= SQUARE_UP) {
+            s.mad = -1
+            io.cursor.act('angry')
+            io.cursor.react('fume')
+          }
         }
         if (f.phase === 2 && f.expired >= 0) {
           const was = f.expired - io.dt
           if (f.expired >= REALLY_TAKE && was < REALLY_TAKE) io.cursor.react('doubleTake')
-          if (f.expired >= REALLY[0] && was < REALLY[0]) io.cursor.act('exhausted')
+          if (f.expired >= REALLY_TAKE && was < REALLY_TAKE) io.cursor.act('shocked')
           if (f.expired >= REALLY[1] && was < REALLY[1]) {
             io.cursor.act('angry')
             io.cursor.react('fume')
@@ -197,6 +246,7 @@ export function makePage(): PageLogic {
         }
         if (f.over) toCollapse(io, rigNow()!)
       } else if (s.stage === 'collapse') {
+        if (s.t >= SAG_AFTER && s.t - dt < SAG_AFTER) io.cursor.act('exhausted')
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
           s.t = 0
@@ -213,10 +263,12 @@ export function makePage(): PageLogic {
           if ((io.pressed && inBox(target, io.pointer, 4)) || self) {
             s.pressed = 0
             io.emit('button-press', s.inSocket ? SOCKET.x : FALLEN.x, s.inSocket ? SOCKET.y : FALLEN.y, false)
+            io.cursor.react('stamp')
           }
         } else {
           s.pressed += dt
-          if (s.pressed >= 0.35 && (!s.damaged || s.mode === 'film')) s.done = true
+          if (s.pressed >= RELIEF.pose && s.pressed - dt < RELIEF.pose) io.cursor.act('proud')
+          if (s.pressed >= (s.mode === 'film' ? RELIEF.hold : 0.35) && (!s.damaged || s.mode === 'film')) s.done = true
         }
       }
       io.cursor.setGround(groundAt(io.cursor.x, io.cursor.y))
@@ -250,6 +302,10 @@ export function makePage(): PageLogic {
       const options: DrawOptions = { states, over }
       const first = out.length
       drawLayout(out, L.tree, options)
+      if (states.includes('fight')) {
+        const fine = out.findIndex((shape, i) => i >= first && shape.id === 'verify-fine-open')
+        if (fine >= 0) out.splice(fine, 1)
+      }
       const open = L.fold - shut()
       for (let i = first; i < out.length; i++) if (out[i]!.id === 'verify-rule') out[i]!.v = [L.rule.w]
       if (open > 0 && states[0] === 'rest') {
@@ -275,8 +331,14 @@ export function makePage(): PageLogic {
         const full = L.track.w - FILL_GAP * 2
         const w = s.fight ? Math.max(0, full * (s.fight.shown / 100)) : full
         if (w >= L.track.h - FILL_GAP * 2) out.push(fillAt(w))
+        const f = s.fight
+        if (f && s.stage === 'fight' && f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1]) {
+          const gained = Math.min(w, (full * Math.max(0, f.shown - GAIN.from)) / 100)
+          const h = L.track.h - FILL_GAP * 2
+          if (gained >= h) out.push({ ...fillAt(gained), id: 'health-gain', x: L.track.x + FILL_GAP + w - gained, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - prog(f.expired, GAIN.glow[0], GAIN.glow[1])] })
+        }
       }
-      if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open')
+      if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open', undefined, s.stage === 'unfold' && s.t < UNFOLD.lift + CAP_CLEARS ? 'dark' : 'ink')
       const rig = rigNow()
       if (rig) drawRig(out, rig, 'boss', s.pressed >= 0 ? heights.keyTravel : 0)
       if (s.stage === 'fight' && s.fight) drawWeapons(out, s.fight, L.weapons)
@@ -350,9 +412,9 @@ export function makePage(): PageLogic {
       const list: DrawList = []
       const [x0, x1, x2, x3] = STAGES.x
       const y = STAGES.y
-      drawSocket(list, x0, y, 0, 'stage-0-socket')
+      drawRim(list, x0, y, STAGES.seated, 'stage-0-socket')
       drawRig(list, restRig(x0, y), 'stage-0')
-      drawSocket(list, x1, y + 14, 1, 'stage-1-socket')
+      drawSocket(list, x1, y + 14, 1, 'stage-1-socket', undefined, 'dark')
       const loose = restRig(x1, y)
       loose.cap.lift = 0.5
       loose.cap.rot = -0.11
@@ -361,11 +423,11 @@ export function makePage(): PageLogic {
       drawRig(list, loose, 'stage-1')
       drawSocket(list, x2, y + 8, 1, 'stage-2-socket')
       const half = fightRig(x2, y, null)
-      for (const l of half.legs) {
-        l.k = 0.7
-        l.fx = l.hx + (l.fx - l.hx) * 0.62
-        l.fy = l.hy + (l.fy - l.hy) * 0.62
-      }
+      half.legs.forEach((l, i) => {
+        l.k = STAGES.fold
+        l.fx = l.hx + (i % 2 === 0 ? -1 : 1) * STAGES.out
+        l.fy = l.hy + (i < 2 ? -1 : 1) * STAGES.reach
+      })
       half.sides.forEach((side, i) => { side.y = y + (i === 0 ? -1 : 1) * 64 })
       for (const c of half.cannons) c.k = 0
       half.shield.k = 0

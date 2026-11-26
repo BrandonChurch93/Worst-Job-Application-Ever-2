@@ -66,9 +66,14 @@ export function lift(z: Zone): Lift {
     const from = G.vertices
     const o = TUBE.outer
     const rim = o + LIFT.cup
-    // The end the player sees is a pale satin cap; the ring round it is polished.
-    G.f(FIN.satin).lathe([[0, -9], [16, -9], [18, -7.5], [o - 22, -7.5], [o - 20, -6], [o - 20, -4], [o + 1, -4], [rim, 0]], 0, 0, 24, (i) => (i === 0 || i === 2 || i === 5 ? TONE.white : shade(TONE.white, 0.8)))
-    G.f(FIN.chrome).lathe([[rim, 0], [rim, 9], [rim - 2, 10.4], [rim - 2, 13.6], [rim, 15], [rim, 22], [rim - 2, 24], [o + 0.3, 24]], 0, 0, 24, TONE.chrome)
+    // The end the player sees is a clear dome; the foot round it is polished.
+    G.f(FIN.chrome).lathe([[o - 1, 2], [rim + 1.5, 2], [rim + 3, 3.5], [rim + 3, 8], [rim, 10], [rim, 16], [rim + 1.6, 17.4], [rim + 1.6, 20.6], [rim, 22], [rim - 2, 24], [o + 0.3, 24]], 0, 0, 28, TONE.chrome)
+    const dome = C.vertices
+    const cap: V2[] = []
+    for (let i = 0; i <= 7; i++) cap.push([o * Math.sin((i / 7) * (Math.PI / 2)), 2 - o * 0.62 * Math.cos((i / 7) * (Math.PI / 2))])
+    C.lathe(cap, 0, 0, 28, TONE.clear)
+    C.move(dome, new THREE.Matrix4().makeRotationX(-Math.PI / 2).setPosition(base[0], base[1] - 4, zc))
+    G.f(FIN.chrome).box(-rim - 7, rim + 7, rim * 0.42, zc - 0.4, 4, 20, TONE.chrome, { bevel: 2 })
     G.move(from, new THREE.Matrix4().makeRotationX(-Math.PI / 2).setPosition(base[0], base[1] - 4, zc))
     S.add(base[0], base[1] - 15, zc, 0.9, new THREE.Vector3(0, -1, 0))
     for (const side of [-1, 1]) {

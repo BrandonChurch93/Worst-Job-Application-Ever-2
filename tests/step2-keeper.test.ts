@@ -27,7 +27,7 @@ describe('the film of step 2 as its keeper left it', () => {
   it('keeps the pointer under the cursor at the hand-off place until the page has set it down', () => {
     for (const t of [0, 0.25, 0.5]) expect(pointerAt(t)).toMatchObject({ x: HANDOFF.x, y: HANDOFF.y, down: false })
     const rest = pointerAt(1)
-    expect(Math.hypot(rest.x - 1575, rest.y - 395)).toBeLessThan(1e-6)
+    expect(Math.hypot(rest.x - 1575, rest.y - 374)).toBeLessThan(1e-6)
   })
 
   it('is angry for the stamp and has a cool head at the crank', () => {

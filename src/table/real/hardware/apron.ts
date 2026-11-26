@@ -18,9 +18,9 @@ export function plunger(z: Zone): Geo {
   const turn = (at: number): THREE.Matrix4 => new THREE.Matrix4().makeRotationX(-Math.PI / 2).setPosition(x, at, zc)
 
   G.f(FIN.zinc).box(x - 30, x + 30, yh - 40, yh - 2, 0.4, 4, TONE.zinc, { bevel: 1 })
-  G.f(FIN.alu).box(x - 16, x + 16, yh - 34, yh - 6, 4, zc, TONE.alu)
+  G.f(FIN.spring).box(x - 16, x + 16, yh - 11, yh - 2, 4, zc, TONE.alu)
   let from = G.vertices
-  G.lathe([[7, 0], [16, 0], [17.5, 1.5], [17.5, 30], [16, 31.5], [13, 31.5], [13, 38], [11.5, 39.5], [7, 39.5]], 0, 0, 20, (i) => (i === 4 ? TONE.aluDark : TONE.alu))
+  G.lathe([[7, 24], [16, 24], [17.5, 25.5], [17.5, 30], [16, 31.5], [13, 31.5], [13, 38], [11.5, 39.5], [7, 39.5]], 0, 0, 20, (i) => (i === 4 ? TONE.aluDark : TONE.alu))
   G.move(from, turn(yh - 36))
   const face = yh - 36 + 39.5
   for (const sx of [-1, 1]) {
@@ -35,23 +35,30 @@ export function plunger(z: Zone): Geo {
   const moving = G.vertices
   const r = PLUNGE.knob
   from = G.vertices
-  G.f(FIN.gloss).lathe([[0, -r], [r * 0.34, -r * 0.94], [r * 0.64, -r * 0.77], [r * 0.87, -r * 0.5], [r * 0.98, -r * 0.2], [r, 0.08 * r], [r * 0.93, r * 0.36], [r * 0.74, r * 0.62], [r * 0.5, r * 0.8], [r * 0.5, r * 0.92], [r * 0.6, r * 0.97], [r * 0.6, r * 1.1], [r * 0.4, r * 1.2], [r * 0.36, r * 1.4]], 0, 0, 28, TONE.knob).round(from, 0, 0, 0, r, r * 0.045)
-  G.f(FIN.rubber).lathe([[r * 0.36, r * 1.4], [r * 0.48, r * 1.4], [r * 0.52, r * 1.47], [r * 0.52, r * 1.62], [r * 0.48, r * 1.7], [5.5, r * 1.7]], 0, 0, 16, TONE.rubberBlack)
+  G.f(FIN.gloss).lathe([[0, -r], [r * 0.34, -r * 0.94], [r * 0.64, -r * 0.77], [r * 0.87, -r * 0.5], [r * 0.98, -r * 0.2], [r, 0.08 * r], [r * 0.93, r * 0.36], [r * 0.74, r * 0.62], [r * 0.5, r * 0.8], [r * 0.5, r * 0.86], [r * 0.58, r * 0.9], [r * 0.58, r * 0.98], [5.5, r * 0.98]], 0, 0, 28, TONE.knob).round(from, 0, 0, 0, r, r * 0.045)
   G.move(from, turn(yk))
   const clip = face + PLUNGE.spring
   from = G.vertices
-  G.f(FIN.steel).lathe([[5.5, yk + r * 1.7 - yk], [5.5, clip + 12 - yk], [4, clip + 14 - yk], [0, clip + 14 - yk]], 0, 0, 12, TONE.steel)
+  G.f(FIN.steel).lathe([[5.5, r * 0.98], [5.5, clip + 12 - yk], [4, clip + 14 - yk], [0, clip + 14 - yk]], 0, 0, 12, TONE.steel)
   G.f(FIN.zinc).lathe([[5.5, clip - yk], [12.5, clip - yk], [12.5, clip + 3.4 - yk], [5.5, clip + 3.4 - yk]], 0, 0, 16, TONE.zinc)
   G.move(from, turn(yk))
   const rigid = G.vertices
   from = G.vertices
-  G.f(FIN.chrome)
-  coil(G, 10.4, 2.1, 6, PLUNGE.spring, TONE.chrome)
+  G.f(FIN.spring)
+  coil(G, 12.6, 2.9, 5, PLUNGE.spring, TONE.chrome)
   G.move(from, turn(face))
   const end = G.vertices
   G.morph(0, moving, rigid, () => [0, -PLUNGE.travel, 0])
   const squeeze = 1 - (PLUNGE.spring - PLUNGE.travel) / PLUNGE.spring
   G.morph(0, rigid, end, (_x, y) => [0, -(y - face) * squeeze, 0])
+  // The spring the player sees: round the rod between the knob and the housing. It is drawn out as the knob is pulled.
+  const s0 = yk + r * 0.98
+  const s1 = yh - 36 + 24
+  from = G.vertices
+  G.f(FIN.spring)
+  coil(G, 10.2, 2.5, 5, s1 - s0, TONE.chrome)
+  G.move(from, turn(s0))
+  G.morph(0, end, G.vertices, (_x, y) => [0, -PLUNGE.travel * Math.min(1, Math.max(0, (s1 - y) / (s1 - s0))), 0])
   return G
 }
 
