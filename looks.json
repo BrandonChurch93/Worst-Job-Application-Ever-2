@@ -1,35 +1,35 @@
 {
   "folder": "table-runner",
-  "pushed": "2026-11-26T04:58:00.111Z",
-  "commit": "6bcbb15698422054816f9f60444e15a9ae4fd03c",
+  "pushed": "2026-11-26T05:04:43.266Z",
+  "commit": "2a5a2c59dbead928fd036039e9b1fa40ce576820",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "last-save at review, approved left, this build right: the eye lower, the whole Street to the far wall, the ball on the right bat",
-      "time": "2026-11-26T04:57:56.501Z",
+      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T05:04:17.494Z",
       "by": "table-runner",
-      "from": "out/work/report/table-runner-last-save.jpg"
+      "from": "out/work/stills/key-tier-street-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "youre-fired at review, approved left, this build right: the house from its front right corner, the cursor upright to the lens; the bank stands before the left front",
-      "time": "2026-11-26T04:57:56.906Z",
+      "caption": "table-wide at draft, approved left, this build right: the whole machine to its near end, the near corners at the frame's corners",
+      "time": "2026-11-26T05:04:41.562Z",
       "by": "table-runner",
-      "from": "out/work/report/table-runner-youre-fired.jpg"
+      "from": "out/work/report/table-runner-table-wide-2.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "rail-cam at review, approved left, this build right: the eye ahead of the ball over the rail, the firehouse behind; the rail bends where approved runs straight",
-      "time": "2026-11-26T04:57:57.461Z",
+      "caption": "rail-cam at draft with the take of search 25, approved left, this build right: the rail runs from the ball down the centre toward the eye",
+      "time": "2026-11-26T05:04:41.826Z",
       "by": "table-runner",
-      "from": "out/work/report/table-runner-rail-cam.jpg"
+      "from": "out/work/report/table-runner-rail-cam-2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "table-wide at review, approved left, this build right: the machine fills the frame's width",
-      "time": "2026-11-26T04:57:57.990Z",
+      "caption": "tier-street at draft, approved left, this build right: the ball right of the firehouse door as approved; the camera is the home camera from above, not fitted",
+      "time": "2026-11-26T05:04:42.065Z",
       "by": "table-runner",
-      "from": "out/work/report/table-runner-table-wide.jpg"
+      "from": "out/work/report/table-runner-tier-street.jpg"
     }
   ]
 }
