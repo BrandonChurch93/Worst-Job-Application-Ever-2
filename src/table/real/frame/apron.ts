@@ -7,8 +7,10 @@ import { Screws, TONE, aluOf, clearOf, mesh, paintOf, screwOf, shade } from './m
 
 const SLAB = { height: 16, bevel: 3.2, corner: 10, inlay: 9, line: 1.5, grain: 0.03 }
 // The frame round the apron: the two rails run on from the street tier and a slim rail closes them in front. `low` is how high they stand where the apron lies at the page's own height.
-export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7, skin: 1.2, skirt: 1 }
+export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7, skin: 1.2, skirt: 1, panel: 10 }
 const WALL: [number, number, number] = [0.2, 0.208, 0.22]
+// The sunk panel of each side rail's south end, seen end on from the player's end: a quiet dark face.
+const SLOPE: [number, number, number] = [0.16, 0.166, 0.176]
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
 
 export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
@@ -50,15 +52,25 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   const y0 = yB + EDGE.near
   const heightAt = (y: number): number => Hn + ((H - Hn) * (y - y0)) / (yT - y0)
   const up: [number, number, number] = [0, -(H - Hn), yT - y0]
-  const wedge = (g: Geo, x0: number, x1: number, top: [number, number, number] | null, at0: [number, number, number] | null, at1: [number, number, number] | null): void => {
-    if (top) g.face([[x0, y0, Hn], [x1, y0, Hn], [x1, yT, H], [x0, yT, H]], up, [0, yT - y0, H - Hn], top)
-    if (at0) g.face([[x0, y0, 0], [x0, y0, Hn], [x0, yT, H], [x0, yT, 0]], [-1, 0, 0], [0, 1, 0], at0)
-    if (at1) g.face([[x1, y0, 0], [x1, y0, Hn], [x1, yT, H], [x1, yT, 0]], [1, 0, 0], [0, 1, 0], at1)
+  const run: [number, number, number] = [0, yT - y0, H - Hn]
+  const wedge = (g: Geo, x0: number, x1: number, d: number, top: [number, number, number] | null, at0: [number, number, number] | null, at1: [number, number, number] | null): void => {
+    const a = Hn - d
+    const b = H - d
+    if (top) g.face([[x0, y0, a], [x1, y0, a], [x1, yT, b], [x0, yT, b]], up, run, top)
+    if (at0) g.face([[x0, y0, 0], [x0, y0, a], [x0, yT, b], [x0, yT, 0]], [-1, 0, 0], [0, 1, 0], at0)
+    if (at1) g.face([[x1, y0, 0], [x1, y0, a], [x1, yT, b], [x1, yT, 0]], [1, 0, 0], [0, 1, 0], at1)
   }
+  // Each side rail comes down as a slim rail at the machine's edge, one with the near rail, and a dark sunk panel inside it.
   const side = (x0: number, x1: number, inner: 0 | 1): void => {
     if (sunk) {
-      wedge(A, x0, x1, TONE.aluBright, inner === 0 ? WALL : TONE.alu, inner === 1 ? WALL : TONE.alu)
-      for (const t of [0.3, 0.8]) screws.add((x0 + x1) / 2, y0 + (yT - y0) * t, heightAt(y0 + (yT - y0) * t), 0.9, x0 + t, new THREE.Vector3(...up))
+      const d = EDGE.panel
+      const xs = inner === 1 ? X(0) + EDGE.near : X(20) - EDGE.near
+      const [r0, r1, p0, p1] = inner === 1 ? [x0, xs, xs, x1] : [xs, x1, x0, xs]
+      wedge(A, r0, r1, 0, TONE.aluBright, null, null)
+      wedge(A, p0, p1, d, SLOPE, inner === 0 ? WALL : null, inner === 1 ? WALL : null)
+      A.face([[xs, y0, Hn - d], [xs, y0, Hn], [xs, yT, H], [xs, yT, H - d]], [inner === 1 ? 1 : -1, 0, 0], run, WALL)
+      A.face([[p0, yT, H - d], [p1, yT, H - d], [p1, yT, H], [p0, yT, H]], [0, -1, 0], [1, 0, 0], WALL)
+      for (const t of [0.3, 0.8]) screws.add((r0 + r1) / 2, y0 + (yT - y0) * t, heightAt(y0 + (yT - y0) * t), 0.7, x0 + t, new THREE.Vector3(...up))
       return
     }
     const o: V2[] = [[x0, 0], [x0, H - c], [x0 + c, H], [x1 - c, H], [x1, H - c], [x1, 0]]
@@ -66,11 +78,10 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     for (const t of [0.3, 0.8]) screws.add((x0 + x1) / 2, y0 + (yT - y0) * t, H, 0.9, x0 + t)
   }
   if (sunk) {
-    // Outside the rails the page goes on to its own edge, as beside the tiers, and comes down with them. The outside of the near end is one face of aluminium.
+    // Outside the rails the machine's edge comes down with them. The outside of the near end is one face of aluminium.
     const skin = yB + EDGE.skin
     for (const [x0, x1, out] of [[X(0), xb - EDGE.gap, 0], [xe + EDGE.gap, X(20), 1]] as [number, number, 0 | 1][]) {
-      wedge(C, x0, x1, TONE.ceramic, null, null)
-      wedge(A, x0, x1, null, out === 0 ? TONE.alu : null, out === 1 ? TONE.alu : null)
+      wedge(A, x0, x1, 0, TONE.aluBright, out === 0 ? TONE.alu : null, out === 1 ? TONE.alu : null)
       C.box(x0, x1, skin, y0, 0, Hn, TONE.ceramic, { along: [0, 1, 0] })
     }
     A.box(X(0), X(20), yB, skin, -EDGE.skirt * BALL, Hn, TONE.alu, { along: [1, 0, 0], top: TONE.aluBright })
@@ -130,7 +141,7 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     for (const sx of [-1, 1]) for (const sy of [-1, 1]) screws.add(p[0] + sx * (sw + b / 2), cy + sy * (sh + b / 2), 5, 0.5, sx + sy * 2)
   }
   if (C.vertices > 0) {
-    const plates = mesh(C, paintOf(z, 'slab', SLAB.grain), `table-frame.ceramic.${z.id}`, { cast: true })
+    const plates = mesh(C, paintOf(z, 'slab', SLAB.grain), `table-frame.ceramic.${z.id}`, { cast: z.floor >= 0 })
     // In the well the page's light does not reach the plates: the street's lamps do, through the lift of the pose.
     if (z.floor < 0) plates.receiveShadow = false
     o.add(plates)

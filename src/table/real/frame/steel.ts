@@ -27,6 +27,7 @@ uniform float wjsDirect;
 uniform float wjsKeep;
 uniform float wjsShow;
 uniform float wjsUnder;
+uniform float wjsSky;
 varying vec3 wjsAt;
 float wjsGlint( float across, float along, float up, float at, float rough ) {
 	float a = abs( across );
@@ -59,13 +60,20 @@ vec3 wjsRoom( vec3 R, float rough ) {
 	col = mix( col, wjsFloor * ( 0.16 + 0.3 * ( 0.5 + 0.5 * sin( az * 5.0 + 1.7 ) ) ) + mix( wjsLamp, vec3( 1.0 ), 0.55 ) * wjsUnder * ( 0.8 + 0.2 * sin( az * 5.0 + 1.7 ) ), low );
 	return col;
 }
+vec3 wjsPolish( vec3 R, float rough ) {
+	float on = smoothstep( 0.155, 0.125, rough ) * wjsSky;
+	float side = 0.1 + 0.9 * smoothstep( -0.3, 0.3, R.x * 1.6 + 0.3 * sin( wjsAt.y * 0.031 ) );
+	vec3 field = mix( wjsLamp, vec3( 1.0 ), 0.4 ) * ( 0.6 + 0.4 * sin( wjsAt.y * 0.047 + R.x * 3.0 ) ) * side;
+	field += vec3( 1.0, 0.22, 0.14 ) * 0.6 * pow( max( 0.0, sin( wjsAt.y * 0.021 + 1.0 + R.x ) ), 8.0 ) + vec3( 0.2, 0.45, 1.0 ) * 0.6 * pow( max( 0.0, sin( wjsAt.y * 0.017 + 4.0 - R.x ) ), 8.0 );
+	return on * ( vec3( 1.0, 0.99, 0.97 ) * ( 0.03 + 0.97 * smoothstep( 0.35, 0.92, R.z ) ) + field * smoothstep( 0.12, -0.3, R.z ) );
+}
 `
 
 const BODY = /* glsl */ `
 {
 	vec3 wjsR = normalize( ( wjaViewInverse * vec4( reflect( - geometryViewDir, geometryNormal ), 0.0 ) ).xyz );
 	reflectedLight.directSpecular *= wjsPanel.w > 0.0 ? wjsDirect : 1.0;
-	reflectedLight.indirectSpecular = reflectedLight.indirectSpecular * wjsKeep + mix( material.specularColor, material.specularColorBlended * wjsShow, metalnessFactor ) * ( wjsRoom( wjsR, material.roughness ) + wjsLamps( wjsR, material.roughness ) ) * wjsLevel;
+	reflectedLight.indirectSpecular = reflectedLight.indirectSpecular * wjsKeep + mix( material.specularColor, material.specularColorBlended * wjsShow, metalnessFactor ) * ( wjsRoom( wjsR, material.roughness ) + wjsLamps( wjsR, material.roughness ) ) * wjsLevel + material.specularColorBlended * metalnessFactor * wjsPolish( wjsR, roughnessFactor ) * wjsLevel;
 }
 `
 
@@ -85,6 +93,8 @@ export interface SteelLook {
   keep?: number
   // How much of the lit floor of its tier a satin wall gives back: a wall that stands beside the lamps is not a black mirror.
   under?: number
+  // How brightly polished chrome (a wire, a pin) shows the lit air over the table and the floor under it.
+  sky?: number
 }
 
 // `from` is the lit zone whose room a zone outside the lamps mirrors: the apron stands in the street's room.
@@ -109,9 +119,10 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, own: Zone, o: 
     shader.uniforms.wjsKeep = { value: o.keep ?? 0 }
     shader.uniforms.wjsShow = { value: SHOW }
     shader.uniforms.wjsUnder = { value: o.under ?? 0 }
+    shader.uniforms.wjsSky = { value: o.sky ?? 0 }
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs10`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs15`
   return m
 }

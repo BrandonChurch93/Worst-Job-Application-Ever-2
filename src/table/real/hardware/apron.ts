@@ -55,7 +55,7 @@ export function plunger(z: Zone): Geo {
   return G
 }
 
-export const PORT = { clear: 20, step: 4, gap: 3, land: 20, far: 46, thick: 2.4, cuts: 10 }
+export const PORT = { square: 0.3, clear: 20, step: 4, gap: 3, land: 20, far: 46, thick: 2.4, cuts: 10 }
 
 export interface Drain { G: Geo; C: Geo; S: Screws }
 
@@ -82,6 +82,9 @@ export function drain(z: Zone): Drain {
   }
   const f = frameAt(path, length - TUBE.collar / 2 - 0.5)
   if (f) collar(G, S, f)
+  // The end under the apron carries a slim ring.
+  const e = frameAt(path, TUBE.ferrule / 2 + 0.5)
+  if (e) collar(G, S, e, { screws: false })
 
   // Where the tube comes up through the page: a steel plate screwed to the page, a long dark slot in it that the tube rises out of.
   if (b > a && b < length) {
@@ -96,8 +99,12 @@ export function drain(z: Zone): Drain {
     const wide = TUBE.outer + PORT.land
     const g = frameAt(path, b)!
     const tl = Math.hypot(g.m.elements[8]!, g.m.elements[9]!) || 1
-    const tx = g.m.elements[8]! / tl
-    const ty = g.m.elements[9]! / tl
+    // The plate lies square to the page where the tube leaves it within a few degrees of the page's grid.
+    const lean = Math.atan2(g.m.elements[9]! / tl, g.m.elements[8]! / tl)
+    const near = Math.round(lean / (Math.PI / 2)) * (Math.PI / 2)
+    const way = Math.abs(lean - near) < PORT.square ? near : lean
+    const tx = Math.cos(way)
+    const ty = Math.sin(way)
     const corner = (along: number, side: number): V2 => [g.at.x + tx * along - ty * side * wide, g.at.y + ty * along + tx * side * wide]
     G.f(FIN.zinc).slab([corner(a - b - PORT.land, 1), corner(PORT.far, 1), corner(PORT.far, -1), corner(a - b - PORT.land, -1)], 0.2, PORT.thick, shade(TONE.zinc, 0.5), { bevel: 0.8 })
     const up: V2[] = []

@@ -105,7 +105,10 @@ export function makePage(): PageLogic {
     }
     io.emit('power-down', from.cap.x, from.cap.y, false)
     io.cursor.act('plain')
+    io.cursor.aim(null)
   }
+
+  const TIP_AT_REST = 1.965
 
   const page: PageLogic = {
     id: 'step4', unit: 'boss', width: 1920, height: SCREEN_H, layout: L.tree, gags, start: { x: 700, y: 820 }, control: 'pointer',
@@ -173,6 +176,8 @@ export function makePage(): PageLogic {
         const f = s.fight
         const before = f.phase
         stepFight(f, io, arena)
+        const to = TIP_AT_REST - Math.atan2(io.cursor.y - f.y, f.x - io.cursor.x)
+        io.cursor.aim(Math.atan2(Math.sin(to), Math.cos(to)))
         if (f.phase !== before) {
           s.t = 0
           io.cursor.act('angry')

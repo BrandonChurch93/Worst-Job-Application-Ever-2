@@ -3,10 +3,12 @@ import type { RealContext } from '../../../../real/types'
 import { Random } from '../../../../core/random'
 import { table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { Geo, type V2, type V3 } from './geo'
-import { FINISH, TONE, drop as free, fin, matsOf, mesh, mix, screw, shade, washer } from './mats'
+import { Geo, type RGB, type V2, type V3 } from './geo'
+import { FINISH, TONE, drop as free, fin, matsOf, mesh, mix, screw } from './mats'
 
 const SEED = 20261125
+const MARBLE: RGB = [0.26, 0.34, 0.54]
+const VEIN: RGB = [0.03, 0.045, 0.08]
 export const WEDGE = { under: 46, thick: 7, out: 6, bevel: 1.5 }
 
 const inside = (p: V2, t: V2[]): boolean => {
@@ -52,14 +54,14 @@ export function buildWedges(z: Zone, _ctx: RealContext): THREE.Object3D {
     const grain = rnd.range(0, Math.PI)
     const along: V3 = [Math.cos(grain), Math.sin(grain), 0]
     fin(S, FINISH.stone, () => {
-      S.slab(loop, WEDGE.under, top, TONE.marble, { bevel: WEDGE.bevel, bottom: true, along })
+      S.slab(loop, WEDGE.under, top, MARBLE, { bevel: WEDGE.bevel, bottom: true, along })
       const cx = (t[0]![0] + t[1]![0] + t[2]![0]) / 3
       const cy = (t[0]![1] + t[1]![1] + t[2]![1]) / 3
       const vein = (from: V2, turn: number, len: number, wide: number, dark: number, deep: number): void => {
         let p = from
         let a = turn
         let w = wide
-        const col = mix(TONE.marble, TONE.vein, dark)
+        const col = mix(MARBLE, VEIN, dark)
         const steps = Math.max(3, Math.round(len / 7))
         for (let k = 0; k < steps; k++) {
           a += rnd.range(-0.3, 0.3) + (turn - a) * 0.25
@@ -73,8 +75,8 @@ export function buildWedges(z: Zone, _ctx: RealContext): THREE.Object3D {
               S.face([[p[0] - nx * w * k0, p[1] - ny * w * k0, zz + lift], [q[0] - nx * w1 * k0, q[1] - ny * w1 * k0, zz + lift], [q[0] + nx * w1 * k1, q[1] + ny * w1 * k1, zz + lift], [p[0] + nx * w * k1, p[1] + ny * w * k1, zz + lift]], [0, 0, 1], along, c)
             }
             if (deep < 0.03) {
-              strip(5.5, 3.4, -0.02, mix(TONE.marble, TONE.vein, dark * 0.22))
-              strip(2.2, 3, -0.01, mix(TONE.marble, TONE.vein, dark * 0.5))
+              strip(5.5, 3.4, -0.02, mix(MARBLE, VEIN, dark * 0.22))
+              strip(2.2, 3, -0.01, mix(MARBLE, VEIN, dark * 0.5))
             }
             strip(1, 1, 0, col)
           }
@@ -86,18 +88,19 @@ export function buildWedges(z: Zone, _ctx: RealContext): THREE.Object3D {
       for (let k = 0; k < 4; k++) {
         const side = -60 + k * 40 + rnd.range(-12, 12)
         const start: V2 = [cx - Math.cos(grain) * 90 - Math.sin(grain) * side, cy - Math.sin(grain) * 90 + Math.cos(grain) * side]
-        vein(start, grain + rnd.range(-0.25, 0.25), 190, rnd.range(0.9, 1.7), rnd.range(0.5, 0.85), 0)
+        vein(start, grain + rnd.range(-0.25, 0.25), 190, rnd.range(0.9, 1.9), rnd.range(0.7, 1), 0)
       }
       for (let k = 0; k < 5; k++) {
         const side = rnd.range(-60, 60)
         const start: V2 = [cx - Math.cos(grain) * 90 - Math.sin(grain) * side, cy - Math.sin(grain) * 90 + Math.cos(grain) * side]
-        vein(start, grain + rnd.range(-0.5, 0.5), 190, rnd.range(3, 7), rnd.range(0.05, 0.12), 0.03)
+        vein(start, grain + rnd.range(-0.5, 0.5), 190, rnd.range(3, 7), rnd.range(0.08, 0.18), 0.03)
       }
     })
     for (const p of t) {
-      washer(S, p[0], p[1], top, 6.2, TONE.brass)
-      screw(S, p[0], p[1], top + 0.74, 4.1, TONE.gold)
-      fin(S, FINISH.brushed, () => S.lathe([[7.6, 0], [7.6, 3], [6.4, 3]], p[0], p[1], 12, shade(TONE.brass, 0.85), WEDGE.under - 3))
+      // The steel cap of the corner: a turned cup over the stone, a domed screw in it, and the collar of the post under.
+      fin(S, FINISH.brushed, () => S.lathe([[7.6, 0], [7.6, 1.1], [6.7, 2], [4.8, 2], [4.4, 1.2]], p[0], p[1], 16, (k) => (k === 2 ? TONE.steel : TONE.nickel), top))
+      screw(S, p[0], p[1], top + 1.1, 4.3, TONE.nickel)
+      fin(S, FINISH.brushed, () => S.lathe([[7.6, 0], [7.6, 3], [6.4, 3]], p[0], p[1], 12, TONE.steelDark, WEDGE.under - 3))
     }
   }
   o.add(mesh(S, mats.solid, `wedges.${z.id}`, { cast: true }))

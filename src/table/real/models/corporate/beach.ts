@@ -7,7 +7,10 @@ import { Geo, roundedLoop, type RGB, type V2, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, mix, moved, place, poseGlow, screw, shade, signBoard, textAt, washer } from './mats'
 
 const SEED = 20261125
-export const CASE = { base: 7, wall: 6, lid: 7, sun: 0.11, sky: 0.4, lamp: 1.5 }
+const SAND = hex(0xf0dcae)
+const GLASS: RGB = [0.3, 0.42, 0.42]
+const EDGE: RGB = [2.3, 2.6, 2.6]
+export const CASE = { base: 7, wall: 5, lid: 5, sun: 0.17, sky: 0.5, lamp: 0.9 }
 
 const both = (g: Geo, pts: V3[], n: V3, along: V3, col: RGB, under: RGB = shade(col, 0.72)): void => {
   g.face(pts, n, along, col)
@@ -64,18 +67,39 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
   })
 
   moved(C, place(cx, cy, 0), () => {
-    // Four walls and a lid of clear acrylic, thick, every edge polished.
-    C.box(-hw + 1, hw - 1, -hd + 1, -hd + 1 + CASE.wall, CASE.base, lid0, [1, 1, 1], { bevel: 1.2 })
-    C.box(-hw + 1, hw - 1, hd - 1 - CASE.wall, hd - 1, CASE.base, lid0, [1, 1, 1], { bevel: 1.2 })
-    C.box(-hw + 1, -hw + 1 + CASE.wall, -hd + 1 + CASE.wall, hd - 1 - CASE.wall, CASE.base, lid0, [1, 1, 1], { bevel: 1.2 })
-    C.box(hw - 1 - CASE.wall, hw - 1, -hd + 1 + CASE.wall, hd - 1 - CASE.wall, CASE.base, lid0, [1, 1, 1], { bevel: 1.2 })
-    C.slab(roundedLoop(-hw, hw, -hd, hd, 4, 3), lid0, H, [1, 1, 1], { bevel: 1.6, bottom: true })
+    // Four walls and a lid of clear glass, sealed: the faces are clear, every edge is polished and bright.
+    fin(C, FINISH.stone, () => {
+      C.box(-hw + 1, hw - 1, -hd + 1, -hd + 1 + CASE.wall, CASE.base, lid0, GLASS)
+      C.box(-hw + 1, hw - 1, hd - 1 - CASE.wall, hd - 1, CASE.base, lid0, GLASS)
+      C.box(-hw + 1, -hw + 1 + CASE.wall, -hd + 1 + CASE.wall, hd - 1 - CASE.wall, CASE.base, lid0, GLASS)
+      C.box(hw - 1 - CASE.wall, hw - 1, -hd + 1 + CASE.wall, hd - 1 - CASE.wall, CASE.base, lid0, GLASS)
+      C.slab(roundedLoop(-hw, hw, -hd, hd, 4, 3), lid0, H, GLASS, { bottom: true })
+    }, 2 * 0.045)
+    fin(C, FINISH.stone, () => {
+      const e = 1.5
+      const edge = (x0: number, x1: number, y0: number, y1: number, zz: number): void => {
+        C.face([[x0, y0, zz], [x1, y0, zz], [x1, y1, zz], [x0, y1, zz]], [0, 0, 1], [1, 0, 0], EDGE)
+      }
+      for (const [d, zz] of [[0, H + 0.1], [CASE.wall + 1, H + 0.05]] as V2[]) {
+        edge(-hw + d, hw - d, -hd + d, -hd + d + e, zz)
+        edge(-hw + d, hw - d, hd - d - e, hd - d, zz)
+        edge(-hw + d, -hw + d + e, -hd + d + e, hd - d - e, zz)
+        edge(hw - d - e, hw - d, -hd + d + e, hd - d - e, zz)
+      }
+      for (const sx of [-1, 1]) for (const sy of [-1, 1]) C.box(sx * (hw - 1) - 0.8, sx * (hw - 1) + 0.8, sy * (hd - 1) - 0.8, sy * (hd - 1) + 0.8, CASE.base, lid0, EDGE)
+    }, 2 * 0.7)
+    // What the lid mirrors: two soft streaks of the room's light across it.
+    fin(C, FINISH.stone, () => {
+      for (const [x, w] of [[-hw * 0.62, 16], [-hw * 0.4, 5], [hw * 0.2, 9]] as V2[]) {
+        C.face([[x, -hd + 4, H + 0.2], [x + w, -hd + 4, H + 0.2], [x + w + hd * 0.5, hd - 4, H + 0.2], [x + hd * 0.5, hd - 4, H + 0.2]], [0, 0, 1], [1, 0, 0], [1.6, 1.8, 1.85])
+      }
+    }, 2 * 0.035)
   })
 
   moved(G, place(cx, cy, 0), () => {
     // The lamp: a warm strip under the lid, all the way round.
     fin(G, FINISH.satin, () => {
-      const r = 3
+      const r = 1.3
       for (const s of [-1, 1]) {
         G.box(-iw, iw, s > 0 ? id - r : -id, s > 0 ? id : -id + r, lid0 - 2.2, lid0 - 0.2, [1, 0.93, 0.8], { bottom: true })
         G.box(s > 0 ? iw - r : -iw, s > 0 ? iw : -iw + r, -id + r, id - r, lid0 - 2.2, lid0 - 0.2, [1, 0.93, 0.8], { bottom: true })
@@ -125,10 +149,10 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
     }, CASE.sun)
     // The sand, raked by the wind.
     fin(G, FINISH.cloth, () => {
-      const nx = 44
-      const ny = 30
+      const nx = 56
+      const ny = 38
       const blob = (x: number, y: number, bx: number, by: number, r: number): number => Math.max(0, 1 - ((x - bx) ** 2 + (y - by) ** 2) / (r * r))
-      const shadow = (x: number, y: number): number => 0.3 * blob(x, y, -iw * 0.56 + 30, -id * 0.05 - 13, 38) * (0.6 + 0.4 * Math.sin(x * 0.5 + y * 0.3)) + 0.42 * blob(x, y, iw * 0.48 + 3, -id * 0.34 - 5, 17) + 0.4 * blob(x, y, iw * 0.74 + 7, -id * 0.02 - 9, 23)
+      const shadow = (x: number, y: number): number => 0.5 * blob(x, y, -iw * 0.56 + 34, -id * 0.05 - 18, 40) * (0.55 + 0.45 * Math.sin(Math.atan2(y + id * 0.05 + 18, x + iw * 0.56 - 34) * 9)) + 0.5 * blob(x, y, iw * 0.5 + 5, -id * 0.3 - 8, 27)
       const y1 = shore - 4
       for (let i = 0; i < nx; i++) {
         for (let j = 0; j < ny; j++) {
@@ -144,12 +168,12 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
             const gy = (ground(q[0], q[1] + 1.5) - ground(q[0], q[1] - 1.5)) / 3
             const wet = Math.max(0, Math.min(1, (q[1] - (shore - 16)) / 12))
             const grain = 0.012 * Math.sin(q[0] * 12.9898 + q[1] * 78.233)
-            return shade(mix(TONE.sand, hex(0xa3855a), wet), (1 + Math.max(-0.2, Math.min(0.16, gy * 1.1 + gx * 0.4)) + grain) * (1 - Math.min(0.5, shadow(q[0], q[1]))))
+            return shade(mix(SAND, hex(0xb89a6a), wet), (1 + Math.max(-0.2, Math.min(0.16, gy * 1.1 + gx * 0.4)) + grain) * (1 - Math.min(0.5, shadow(q[0], q[1]))))
           }
           G.blend(p, [-sx, -sy, 1], [1, 0, 0], [at(p[0]), at(p[1]), at(p[2]), at(p[3])])
         }
       }
-      G.box(-iw, iw, -id - 0.4, -id, CASE.base, ground(0, -id) + 0.2, shade(TONE.sand, 0.8))
+      G.box(-iw, iw, -id - 0.4, -id, CASE.base, ground(0, -id) + 0.2, shade(SAND, 0.8))
     }, CASE.sun)
     // The palm: a trunk of rings that leans, a crown of fronds that hang.
     const foot: V3 = [-iw * 0.56, -id * 0.05, 0]
@@ -173,11 +197,11 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
     }, CASE.sun)
     fin(G, FINISH.satin, () => {
       const head = spine(1)
-      const fronds = 13
+      const fronds = 17
       for (let f = 0; f < fronds; f++) {
         const upper = f % 3 === 2
         const turn = (f / fronds) * Math.PI * 2 + rnd.range(-0.16, 0.16)
-        const len = (upper ? rnd.range(30, 38) : rnd.range(44, 54)) * (Math.sin(turn) > 0.5 ? 0.74 : 1)
+        const len = (upper ? rnd.range(30, 40) : rnd.range(46, 60)) * (Math.sin(turn) > 0.5 ? 0.74 : 1)
         const rise = upper ? rnd.range(0.7, 0.95) : rnd.range(0.15, 0.55)
         const dx = Math.cos(turn)
         const dy = Math.sin(turn)
@@ -187,7 +211,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
         const path: V3[] = []
         for (let k = 0; k <= steps; k += 2) path.push(rib(k / steps))
         G.pipe(path, 0.6, 3, hex(0x8a9a3e))
-        const wide = (k: number): number => (k === 0 ? 0.6 : (upper ? 7.5 : 10) * Math.pow(Math.sin(Math.PI * Math.min(1, (k / steps) * 0.86 + 0.1)), 0.7) * (k % 2 ? 1 : 0.78))
+        const wide = (k: number): number => (k === 0 ? 0.6 : (upper ? 4.6 : 6) * Math.pow(Math.sin(Math.PI * Math.min(1, (k / steps) * 0.86 + 0.1)), 0.7) * (k % 2 ? 1 : 0.78))
         for (const s of [-1, 1]) {
           const edge = (k: number): V3 => {
             const q = rib(k / steps)
@@ -205,7 +229,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
       }
     }, CASE.sun)
     // The deck chair: a folding frame of wood and a sling of striped cloth.
-    moved(G, place(iw * 0.48, -id * 0.34, ground(iw * 0.48, -id * 0.34) - 0.6, 2.5), () => {
+    moved(G, place(iw * 0.5, -id * 0.3, ground(iw * 0.5, -id * 0.3) - 0.6, 2.5).multiply(new THREE.Matrix4().makeScale(1.55, 1.55, 1.55)), () => {
       const wood = hex(0xb98a55)
       const w = 10
       fin(G, FINISH.satin, () => {
@@ -216,35 +240,18 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
         }
         for (const p of [[15, 27], [-11, 17], [-14, 0], [9, 0]] as V2[]) G.pipe([[p[0], -w - 1, p[1]], [p[0], w + 1, p[1]]], 0.9, 5, shade(wood, 0.9))
       }, CASE.sun)
-      fin(G, FINISH.cloth, () => {
+      fin(G, FINISH.satin, () => {
         const n = 10
-        const sag = (u: number): V3 => [-11 + 26 * u, 0, 17 + 10 * u - 9.5 * Math.sin(u * Math.PI) * (1 - u * 0.35)]
+        const sag = (u: number): V3 => [-11 + 26 * u, 0, 17.6 + 10 * u - 5 * Math.sin(u * Math.PI) * (1 - u * 0.35)]
         const stripes = 5
         for (let k = 0; k < n; k++) {
-          const p = sag(k / n)
-          const q = sag((k + 1) / n)
+          const p = sag((k + 0.12) / n)
+          const q = sag((k + 0.88) / n)
           for (let s = 0; s < stripes; s++) {
             const y0 = -w + 1 + ((w * 2 - 2) * s) / stripes
             const y1 = -w + 1 + ((w * 2 - 2) * (s + 1)) / stripes
-            both(G, [[p[0], y0, p[2]], [q[0], y0, q[2]], [q[0], y1, q[2]], [p[0], y1, p[2]]], [-(q[2] - p[2]), 0, q[0] - p[0]], [1, 0, 0], s % 2 ? TONE.white : TONE.red)
+            both(G, [[p[0], y0, p[2]], [q[0], y0, q[2]], [q[0], y1, q[2]], [p[0], y1, p[2]]], [-(q[2] - p[2]), 0, q[0] - p[0]], [1, 0, 0], shade(wood, (k % 2 ? 1.12 : 0.96) * (s % 2 ? 1 : 0.94)))
           }
-        }
-      }, CASE.sun)
-    })
-    // The parasol: a pole in the sand and eight gores, every other one white.
-    moved(G, place(iw * 0.74, -id * 0.02, ground(iw * 0.74, -id * 0.02) - 1, 0, 0.14, -0.1), () => {
-      fin(G, FINISH.satin, () => {
-        G.lathe([[0.9, 0], [0.9, 50], [0, 52]], 0, 0, 6, TONE.white)
-        G.lathe([[1.5, 47.5], [0.6, 51.5], [0, 53]], 0, 0, 6, hex(0xb98a55))
-      }, CASE.sun)
-      fin(G, FINISH.cloth, () => {
-        for (let k = 0; k < 8; k++) {
-          const a0 = (k / 8) * Math.PI * 2
-          const a1 = ((k + 1) / 8) * Math.PI * 2
-          const col = k % 2 ? TONE.white : hex(0x2f8fc0)
-          const rim = (an: number, r: number, zz: number): V3 => [Math.cos(an) * r, Math.sin(an) * r, zz]
-          both(G, [[0, 0, 49.5], rim(a0, 12, 46.5), rim(a1, 12, 46.5)], [Math.cos((a0 + a1) / 2) * 0.3, Math.sin((a0 + a1) / 2) * 0.3, 1], [1, 0, 0], col)
-          both(G, [rim(a0, 12, 46.5), rim(a0, 22, 40), rim((a0 + a1) / 2, 20.5, 39.2), rim(a1, 22, 40), rim(a1, 12, 46.5)], [Math.cos((a0 + a1) / 2) * 0.6, Math.sin((a0 + a1) / 2) * 0.6, 1], [1, 0, 0], col)
         }
       }, CASE.sun)
     })
@@ -270,7 +277,7 @@ export function buildBeach(z: Zone, ctx: RealContext): THREE.Object3D {
 
   o.add(mesh(S, mats.solid, `beach.solid.${z.id}`, { cast: true }))
   o.add(mesh(G, mats.glow, `beach.scene.${z.id}`, { group: mats.group }))
-  o.add(mesh(C, mats.clear, `beach.case.${z.id}`, { order: 5 }))
+  o.add(mesh(C, mats.pane, `beach.case.${z.id}`, { order: 5 }))
   return o
 }
 

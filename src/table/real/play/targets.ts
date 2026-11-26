@@ -196,7 +196,7 @@ export const spinnerTurn = (since: number): number => {
 }
 
 export const targets = whole('targets', {
-  version: 'play-targets-3',
+  version: 'play-targets-4',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.targets.${z.id}`
@@ -222,7 +222,7 @@ export const targets = whole('targets', {
       fixed.add(box(7, 18, 3.4), STEEL, foot.clone().multiply(mat({ x: -t.n[0] * 1.5, z: 3.6 })))
       screw(fixed, p[0] - t.n[0] * 7, p[1] - 13, 2.2, 0.3, 0.7)
       screw(fixed, p[0] - t.n[0] * 7, p[1] + 13, 2.2, 1.4, 0.7)
-      const mesh = part(standupGeometry(), m.solid, `play.targets.standup.${t.id}`, { cast: true })
+      const mesh = part(standupGeometry(), m.solid, `play.targets.standup.${t.id}`)
       mesh.rotation.order = 'ZYX'
       mesh.rotation.z = Math.atan2(-t.n[1], t.n[0])
       mesh.position.set(p[0], p[1], STANDUP.hinge)
