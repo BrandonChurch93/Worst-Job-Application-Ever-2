@@ -16,6 +16,7 @@ const whole = makeBody !== null
 export const cursorReal = { body: whole, effects: makeEffects !== null, acting: whole && actingLook !== null, damage: whole && damageLook !== null, arms: whole && makeArms !== null }
 
 const half = config.table.ballPx / 2
+const UP = new THREE.Vector3(0, 0, 1)
 // A closed hand rides this far above where it holds, so that the fingers lie on what is held and not inside it.
 const HOLD = 1
 // An arm is rooted this share of the way in from the shoulder, so that it leaves from under the edge and never from beside it.
@@ -55,7 +56,15 @@ export class CursorView {
     look.arms.grip = [c.grip[0], c.grip[1]]
     look.arms.strain = c.strain
     const turn = -c.lean - c.spin
-    if (c.inBall) this.at.position.set(c.x - 960 - 4.2 * UNIT, 540 - c.y + 9.5 * UNIT, c.z + half + 1)
+    this.at.quaternion.identity()
+    if (c.inBall && c.face) {
+      this.spot.set(c.face.x, c.face.y, c.face.z).normalize()
+      this.at.quaternion.setFromUnitVectors(UP, this.spot)
+      this.at.position.set(-4.2 * UNIT, 9.5 * UNIT, 0).applyQuaternion(this.at.quaternion).addScaledVector(this.spot, -c.face.back)
+      this.at.position.x += c.x - 960
+      this.at.position.y += 540 - c.y
+      this.at.position.z += c.z + half + 1
+    } else if (c.inBall) this.at.position.set(c.x - 960 - 4.2 * UNIT, 540 - c.y + 9.5 * UNIT, c.z + half + 1)
     else this.at.position.set(c.x - 960, 540 - c.y, c.z)
     this.at.scale.setScalar(c.scale)
     if (this.body) {

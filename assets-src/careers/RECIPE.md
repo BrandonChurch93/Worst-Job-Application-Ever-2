@@ -28,7 +28,7 @@ No file is stored for the careers page. Every solid is built in code when the pa
 
 ## materials (no file)
 - Made by: `cardGlass()` in `real/perk-cards.ts`, `medalFace()`, `medalMetal()`, the print and tape materials in `real/careers-page.ts`, the tape and the clear top of the strip in `real/ticker.ts`
-- From: numbers only; `medalFace()` reads the shared turned aluminium's normal and anisotropy pictures of `materials()`
+- From: numbers only; `medalFace()` reads the shared turned aluminium's normal and anisotropy pictures of `materials()`; `cardGlass()` reads the shared page grain's normal picture of `materials()` at 0.024
 - Prompt or command: each is a `MeshPhysicalMaterial` passed through `studio()` of `src/post/studio.ts`
 - Takes: nothing measurable
 - Why this one: no texture of the careers page's own: 0 px, 0 MB

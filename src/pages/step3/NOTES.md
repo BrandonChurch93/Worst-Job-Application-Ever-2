@@ -47,6 +47,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 - The firehouse takes the ball in front of its door and the ball rolls into the doorway, where it rests until the kick at 28.5 s.
 - Stage events added: `carpet-roll` (once), `inbox-take`, `firehouse-take`.
 - The cursor: one acting state per situation (`mood`), set once a step. A hit presses it flat (bumper 0.5 s, kick 0.7 s, the doors 0.45 s) and it peels off the glass. It leans where the ball goes.
+- In a low view the cursor leans back against the ball's wall away from the lens and shows its face to it. A hit throws it against the wall the hit came from and it is back in 0.3 s. From above it lies flat as before.
 - Each tier's exit is closed until that tier's beats are over. A ball that reaches a closed exit is kicked back up the middle.
 - `bumper` is emitted for the applicant's ball during the Coffee beat only. Bumper hits at other times and hits by steel balls emit `flasher`.
 - `flipper-save` is emitted when a flipper is pressed with the ball over it during the Save beat. If nobody flips, the kick from the closed exit emits it once.

@@ -12,7 +12,7 @@ export interface Cue { at: number; act?: Acting; react?: Reaction }
 export const HIT = { windSeconds: 0.24, windRise: 30, windTilt: -0.13, fallPower: 2.6, over: 9, give: 1.5, giveSeconds: 0.06, rock: 0.03, rockSeconds: 0.11, rockRate: 50, landRock: 0.014, dustSeconds: 0.62, dustReach: 70 } as const
 
 // Set down, the stamp is laid on its side, grip away from the reader, a little off square: `turn` about its long axis, `rot` on the page.
-export const LIE = { turn: Math.PI / 2, rot: -0.08 } as const
+export const LIE = { turn: Math.PI / 2, rot: -0.17 } as const
 
 // The wait: the word is worried. It comes in with the page and stands, tiptoes right, reads the months and shrinks, tiptoes back further than it came, and stands again.
 export const PACE = { stand: 0.9, right: [0.9, 1.2], read: 1.24, left: [1.62, 1.92], far: 170, back: -70 } as const
