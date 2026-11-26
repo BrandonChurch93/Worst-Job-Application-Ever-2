@@ -1,35 +1,35 @@
 {
   "folder": "corporate-finish",
-  "pushed": "2026-11-26T11:37:51.184Z",
-  "commit": "7452e955e3dd9267527e47d56a9fc624267e95ce",
+  "pushed": "2026-11-26T12:08:52.695Z",
+  "commit": "65ca2758cf017a1ba28e531a68da6b03047a095d",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "lobby-doors, approved left, this build right (draft, after merge 33): pale plate under the name (letters 0.020 against 0.607, ratio 9.37), lit core walls behind the tower glass, plush carpet with the revolving door on it",
-      "time": "2026-11-26T11:36:52.470Z",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
+      "time": "2026-11-26T12:05:48.433Z",
       "by": "corporate-finish",
-      "from": "out/work/report/lobby-doors-side.jpg"
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "tier-corporate, approved left, this build right (draft, after merge 33): closed roof with plant, yellow notes and a loose fourth, walnut boardroom with brass lamps, white wedges with a warm lip, striped lounger and a brighter sea",
-      "time": "2026-11-26T11:36:52.703Z",
+      "caption": "tier-corporate at draft after the second pass, approved left, the build right: atrium roof, grey veined wedges, lit hall, steel plate, fuller tray",
+      "time": "2026-11-26T12:08:51.023Z",
       "by": "corporate-finish",
-      "from": "out/work/report/tier-corporate-side.jpg"
+      "from": "out/work/report/tier-corporate-side2.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key tier-office: approved on the left, this build on the right, draft tier, with crops of shape:model.office.cubicles, shape:bumper.office.bumper.3, shape:model.office.coffee, shape:model.office.inbox, shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3, shape:flipper.office.flipper.left, cursor, shape:insert.office.insert.1, shape:lift.elbow.office",
-      "time": "2026-11-26T11:37:38.390Z",
+      "caption": "lobby-doors at draft after the second pass, approved left, the build right: atrium roof, grey veined wedges, lit hall, steel plate, fuller tray",
+      "time": "2026-11-26T12:08:51.255Z",
       "by": "corporate-finish",
-      "from": "out/work/compare/compare-tier-office.jpg"
+      "from": "out/work/report/lobby-doors-side2.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-office, approved left, this build right (draft, after merge 33): bronze coffee machine with a cream plate, squared beige tray, red paddles on steel feet, grey brown cubicles with dark screens, fewer loose papers",
-      "time": "2026-11-26T11:37:50.090Z",
+      "caption": "tier-office at draft after the second pass, approved left, the build right: atrium roof, grey veined wedges, lit hall, steel plate, fuller tray",
+      "time": "2026-11-26T12:08:51.477Z",
       "by": "corporate-finish",
-      "from": "out/work/report/tier-office-side.jpg"
+      "from": "out/work/report/tier-office-side2.jpg"
     }
   ]
 }
