@@ -68,6 +68,9 @@ Not mine: R8-1 issue 7 and R8-2 issue 2 (the words on the display: `displays/`),
 24. Asked by the street finisher 11:17 UTC, agreed and done: `sign.street.firehouse` is tone `ink` (it was `inkLight`, white on the new cream board, measure M4 1.3). The firehouse was the one model with tone `danger`, so every model sign on the table is `ink` now.
 25. 'Background Check' clear of the spiral (R8-1 issue 6; supersedes decision 10, the street finisher's board follows the letters). New optional `signAt: [centre from the box's left, width]` on a model in `src/table/layout.ts`; the police sign is `[1.8, 1.4]`: two lines in the right 1.4 balls of the roof. The model's box and the highway rail are where they were. Looked at: `tier-street` compare, the rails pass left of the letters.
 26. The website's light on the way out (R4-1 issue 7, "a lamp switching on, fast, with a slight overshoot"): NOT done, the 0.3 s rise of decision 4 stays. Tried a lamp strike (0.9 in 0.09 s, dip to 0.6, full at 0.3 s): it broke the rule held in `tests/pinball.test.ts` that the website's light never steps more than 0.07 in 1/80 s (MEASURED 0.0956; a slower shape 0.0742). The 0.3 s rise already steps 0.059, so nothing faster fits the rule. The test is left as it was and the rule is put to the Builder in the end report. The page's own settle (5 px back over 0.12 s, `LEAVE.back`, `LEAVE.settle`) was there before.
+27. The wake as an event of its own (round 12 R9-1 issue 6, R4-2 issue 4). Before: lights down 4.0, wave 4.3 to 5.2, all of it while the `tube` camera was close on the ball, and the whole machine was first seen at 6.4 already lit. Now: the website's light goes down in the `tube` view, on the page behind the tube (4.1 to 5.2, `DIM` 1.1 s); hard cut at 5.2 to `table-wide` on the dark machine; the marquee at 5.6 (`T.wake`), then Corporate, Office, Street at 6.0, 6.4, 6.8 (`WAKE` 0.4 s, it was 0.3 with the marquee and the top tier together); `power-on` at 7.2; the whole machine held lit 1.45 s to the cut at 8.65. The beat's length and its event (`power-on` inside 4 to 8 s) are the kit's and hold. The key `table-wide` (8.0 s) has every lamp at full as before. Looked at: reveal sheet.
+28. The doors (R9-1 issue 7): the arrow stays flat on the glass 0.6 s after `doors-slam` (13.10), it was 0.45 (`ACT.doors`). Not longer: at the key `lobby-doors` (13.8) the approved image has the arrow whole. The slam is 0.35 s into the close view `table-lobby`. How the doors shut is the frame finisher's.
+29. The save (R9-1 issue 10): NOT done. Tried one more view, `near-spent`, close on the ball from 35.85 to 37.2. Looked at (save sheet): the ball is at the frame's edge or out of it and the highway wire crosses in front. Taken out again; the save stays in the one `table-save` view, where the ball is about 40 px across and the arrow in it is small. A close view that holds the ball needs a camera of its own and looks I did not have left for it.
 
 ## Looks spent (draft unless said), by part
 
@@ -89,6 +92,9 @@ Not mine: R8-1 issue 7 and R8-2 issue 2 (the words on the display: `displays/`),
 | Round 12: new take, highway, save, fired | 3 | beat sheets |
 | Round 12: way out, lamp strike | 1 | drain beat sheet |
 | Signs | 1 | `tier-street` compare |
+| Wake | 2 | reveal beat sheets |
+| Doors | 2 | lobby beat sheet, `lobby-doors` compare |
+| Save, close view | 1 | save beat sheet |
 
 Take searches: 25 of 31 used before this round, 1 spent in it (search 26, decision 21), 26 of 31 used now. The edit of one flip's end in `cut/TABLE-TAKE.json` was by hand and is not a search; the one layout change (the door post) left the events and the track the same, so the three searches it buys are unspent.
 

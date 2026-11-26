@@ -25,7 +25,7 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, wake: 4.3, powerOn: 5.2, atPlunger: 8.6, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.1, wake: 5.6, powerOn: 7.2, atPlunger: 8.6, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
   drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedBy: 27.2, scoopKick: 29.35, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
@@ -120,7 +120,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.1, 'tube', 0.5], [6.4, 'table-wide', 0], [8.65, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [18.95, 'near-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.6, 'follow', 0],
+  [0, 'follow', 0], [4.1, 'tube', 0.5], [5.2, 'table-wide', 0], [8.65, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [18.95, 'near-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.6, 'follow', 0],
   [30.75, 'rail', 0], [32.3, 'follow', 0.6], [34.3, 'table-save', 0], [37.2, 'follow', 0]
 ]
 const TUBE: { eye: [number, number, number]; at: [number, number, number]; wide: number } = { eye: [0.55, 2.7, 1.5], at: [-2.7, -1.2, 0.1], wide: 12 }
@@ -132,7 +132,8 @@ const NAME = 1
 const HINT = 8
 const TURN = 1.5707963267948966
 const SIGN = { turn: 0.5235987755982988, cos: 0.8660254037844387, sin: 0.5, inset: 8, lift: 6, back: ['corporate.beach'] }
-const WAKE = 0.3
+const WAKE = 0.4
+const DIM = 1.1
 const DUSK = config.table.pageDuskLevel
 const ASLEEP = 0.25
 const LOW = 2.4
@@ -152,7 +153,7 @@ const HIT = { least: 0.3, hold: 0.2, short: 0.66, big: 0.9, sway: [0.3, 8, 0.4] 
 const LOAD = { reach: 0.8, gain: 1.6, most: 0.8, rock: [0.1, 1.3] }
 const BEATS = { brace: [0.4, 0.68], catch: [0.12, 0.64], shiver: [0.35, 0.12, 11, 1.3], kick: [0.12, 0.7], alarm: [0.3, 0.36, 1, -0.5], lip: [0.35, 0.72, -0.6], dizzy: [[0, 0.25, 3, 0.5], [0.5, 0.5, 3, 0.5], [1, 0.8, 2.5, 1.3]] }
 const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
-const ACT = { wake: 0.3, doors: 0.45, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
+const ACT = { wake: 0.3, doors: 0.6, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
 
 export function makePage(): PageLogic {
   const layout = buildLayout()
@@ -197,12 +198,12 @@ export function makePage(): PageLogic {
     const b = ball()
     return b.mode === 'hold' && b.hold === 'plunger' && s.t < T.plunger ? Math.max(0, Math.min(1, (s.t - T.atPlunger) / (T.plunger - T.atPlunger - 0.15))) : 0
   }
-  const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.wake + k * WAKE)
-  // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain, as a lamp strikes: on, a dip, then full.
+  const glow = (): boolean[] => [0, 1, 2].map((k) => powered() && s.t >= T.wake + (k + 1) * WAKE)
+  // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain.
   const website = (): number => 1 - (1 - DUSK) * smooth(s.dim)
   // How bright each tier's general lighting is: a wave down the tiers when the machine wakes, and a slow dim once the ball has left by the drain.
-  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - k * WAKE) / WAKE) * (s.t > T.wake + 3 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))
-  const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + n.tier * WAKE && s.t < T.wake + n.tier * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
+  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - (k + 1) * WAKE) / WAKE) * (s.t > T.wake + 4 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))
+  const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + (n.tier + 1) * WAKE && s.t < T.wake + (n.tier + 1) * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
   const modeOf = (k: number): number | null => {
     let out: number | null = null
     if (s.phase === 'wait' || s.phase === 'pull') return null
@@ -782,7 +783,7 @@ export function makePage(): PageLogic {
       }
       const inside = s.phase === 'sealed' && s.t >= T.lightsDown && !(ball().mode === 'rail' && ball().rail === 'drain') && !(ball().mode === 'hold' && ball().hold === 'outlet')
       if (s.out[0]! < 0 && s.phase === 'sealed' && ball().mode === 'rail' && ball().rail === 'drain') s.out = [s.time, s.scroll, s.floor]
-      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt / (T.powerOn - T.lightsDown) : -dt / (s.out[0]! < 0 ? T.powerOn - T.lightsDown : LEAVE.up))))
+      s.dim = Math.max(0, Math.min(1, s.dim + (inside ? dt / DIM : -dt / (s.out[0]! < 0 ? DIM : LEAVE.up))))
       if (s.phase !== 'sealed') {
         const on = [port, outlet].some((c) => Math.hypot(io.cursor.x + 8 - c.x, io.cursor.y + 14 - c.y) < px(OUTLET.ring) / 2 + 12)
         io.cursor.setGround(on ? PORT_TOP : 0)

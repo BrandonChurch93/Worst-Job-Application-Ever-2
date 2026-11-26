@@ -103,27 +103,27 @@ Lengths in balls, page coordinates, z up from the page surface. `look(name, eye,
 - The last screen out of view: `table-wide` and `table-save` look in over the apron from south of it, through the place of the last screen. Their poses carry `omit`, a well over the whole last screen (`LAST_OUT`, from LAST_Y to the page's end, 40 balls deep). The app (`seenBy` in `src/app.ts`) then leaves out of the frame every shape that lies wholly inside that box and puts the well in its place. `draw` is untouched, `view()` and `follow` never carry it, so every other camera and the live views get the page whole. In the film it switches only on the frame of a hard cut: both cameras are cut to and cut from (`FILM` gives them no blend), and `cut` hands `omit` on through a blend only if a pose beside it carries one, so a later blend cannot drop it half way. `tests/pinball-stage-out.test.ts` holds all of this.
 - The lens: every close camera (`LENS`) carries `focus`, the distance in page px from the eye along the view axis to the centre of the cursor's ball on that frame (`table-wide`: to its target), and `aperture`, the width of the opening in page px. Blur circle on screen in px = aperture x |d - focus| / d x (H / 2 / tan(fov / 2)) / focus. Apertures, tuned on pictures with the engine's lens: `table-wide` 5, `table-lobby` 7, `table-replyall` 12, `table-fired` 10, `table-save` 12, `rail` 6, `ride` 7. The tier cameras and `follow` carry none.
 - Shake: the film camera's target is pushed sideways on a hard hit (`HARD`: bumper, sling, doors-slam, scoop-kick, plunger, ball-hit, drop-target, mom-save, ball-save). It reads the machine's own table of last events and its step count, so it is a pure function of the state. Size 0.6% of the frame's height for a hit of weight 1, 23 Hz, gone by half its size every 0.06 s, nothing after 0.5 s, never more than 0.9% of the height. Live mode has no shake: the visitor is aiming.
-- The film (`FILM`: time, camera, seconds of move). A close view is entered by a cut, never a blend: a blend was half way through its move on the hit. Two moves only: `ride` to `tier-3` (0.6 s, the ball arrives on the table) and `rail` to `follow` (0.6 s). No cut within 0.15 s of a hit: `tests/pinball-stage.test.ts`.
+- The film (`FILM`: time, camera, seconds of move). A close view is entered by a cut, never a blend: a blend was half way through its move on the hit. Two moves only: `follow` to `tube` (0.5 s, into the tube with the ball) and `rail` to `follow` (0.6 s). No cut within 0.15 s of a hit: `tests/pinball-stage.test.ts`. Event times are those of the take kept in `cut/TABLE-TAKE.json` (search 26).
 
 | At (s) | Camera | Why there |
 | --- | --- | --- |
-| 0 | follow | the seal and the tube, the view goes down the page with the ball |
-| 4.2 | `table-wide` | lights down at 4.0, power on at 5.2: the wake is seen whole |
-| 8.05 | `ride` | the ball comes to the plunger at 8.3, braces from 9.0, is launched at 9.4 |
-| 10.25 | `tier-3` | the ball is still on the launch wire; the move (0.6 s) ends as it leaves the wire (10.87) and well before the first `sling` (11.25). Started at 10.6 the ride camera lost its rail in the middle of the move and the picture jumped 0.4 balls |
-| 13.0 | `table-lobby` | 0.3 s before `doors-slam` (13.31) |
-| 14.3 | follow | the doors have opened (14.1), the flippers are needed |
-| 17.0 | `near-nest` | close on the ball in the bumper nest, the camera pans after it 0.25 s late and pushes in while the inbox holds it |
-| 20.95 | `table-replyall` | the copies pour (`ball-drop` 20.78 to 20.98), the alarm of the arrow is in the close view before it |
-| 22.2 | follow | the multiball is in play |
-| 26.9 | `table-fired` | the ball is seen coming into the cup (`firehouse-take` 27.07), the `scoop-kick` is at 29.01 |
-| 29.3 | follow | after the kick |
-| 31.15 | `rail` | the ball is on the highway wire from `ramp-roll` (31.05); a cut before it would jump when the ball takes the wire |
-| 32.3 | follow | a move of 0.6 s up to the home view, over before the spiral (32.7) |
-| 34.3 | `table-save` | the ball comes down to the flippers |
-| 34.8 | `near-spent` | 0.65 s on the worn out arrow as it rolls down the inlane |
-| 35.45 | `table-save` | back before the `flipper-save` at 35.72, the blade held up 0.2 s |
-| 36.6 | follow | the drain and the way out |
+| 0 | follow | the seal, the view goes down the page with the ball |
+| 4.1 | `tube` | beside the ball in the clear tube; the website's light goes down from 4.1 and is at dusk by 5.2 (`DIM` 1.1 s), seen on the page behind the tube |
+| 5.2 | `table-wide` | the whole machine, dark. The marquee comes on at 5.6 (`T.wake`), then the tiers from the top at 6.0, 6.4 and 6.8 (`WAKE` 0.4 s each), all on at 7.2 (`power-on`), held to 8.65 |
+| 8.65 | `ride` | the ball comes to the plunger at 8.6, braces, is launched at 10.45 |
+| 11.55 | `tier-3` | a hard cut while the ball is on the launch wire; the key `tier-corporate` is at 12.6 |
+| 12.75 | `table-lobby` | 0.35 s before `doors-slam` (13.10); the arrow is flat on the glass for 0.6 s (`ACT.doors`) and whole again by the key `lobby-doors` (13.8) |
+| 14.3 | follow | the doors have opened (14.1), the ball falls to the Office (14.46) |
+| 16.55 | `table-nest` | at the ball's height in the bumper nest |
+| 18.95 | `near-nest` | close on the ball as the inbox takes it (18.78) and holds it |
+| 20.5 | `table-replyall` | before the eject (20.72) and the copies (`ball-drop` 20.78 to 20.98) |
+| 22.2 | follow | the multiball is in play; the steel balls leave by the chute, seen |
+| 26.9 | `table-fired` | the ball in the firehouse door, the `scoop-kick` is at 29.36 |
+| 29.6 | follow | after the kick, the flip at 30.40 |
+| 30.75 | `rail` | the ball is on the highway wire from `ramp-roll` (30.62) |
+| 32.3 | follow | a move of 0.6 s up to the home view, over before the spiral (33.0) |
+| 34.3 | `table-save` | the ball comes down to the flippers, the `flipper-save` at 35.62 is in this one view |
+| 37.2 | follow | the drain (37.63) and the way out |
 
 - Live mode: the view is `follow`, the tier camera of the tier the ball is on, travelling in `live.pinball.tierTravelSeconds`. No close view in live mode yet.
 - The site sets a camera's near plane 1500 px in front of its target, so a fixed pose keeps its target within 1500 px of the nearest thing it must show.
