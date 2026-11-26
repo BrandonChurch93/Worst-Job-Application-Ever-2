@@ -1,35 +1,35 @@
 {
   "folder": "site-levels",
-  "pushed": "2026-11-26T17:48:24.102Z",
-  "commit": "c4695813bed479d363c43f7b0a92d4ed50bc03b2",
+  "pushed": "2026-11-26T18:51:00.916Z",
+  "commit": "36e9fc9073495e315e4df225f1c23d2ef07b51da",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Every page at rest at high, medium and low (left to right), live site, window 1920x1080, pixel ratio 1",
-      "time": "2026-11-26T17:48:22.458Z",
+      "caption": "The three levels of the live picture side by side, stills at a level (unchanged since 17:40Z)",
+      "time": "2026-11-26T18:48:02.852Z",
       "by": "site-levels",
-      "from": "out/work/looks/files/20261126174822-levels-overview.png"
+      "from": "out/work/looks/files/20261126184802-levels-overview.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Native crops per level (high, medium, low): shadow edge, glass edge, smallest type, of careers, step 1, step 2",
-      "time": "2026-11-26T17:48:22.692Z",
+      "caption": "The shadow under a card at low and medium, before and after the shadow map was laid square on the page; native crops",
+      "time": "2026-11-26T18:48:03.088Z",
       "by": "site-levels",
-      "from": "out/work/looks/files/20261126174822-crops-a.png"
+      "from": "out/work/looks/files/20261126184803-edge-low.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Native crops per level (high, medium, low): shadow edge, glass edge, smallest type, of step 3, step 4, step 5. At low the shadow edge under a card is ragged",
-      "time": "2026-11-26T17:48:22.943Z",
+      "caption": "The slot's coins in two frames of the running loop at high, stretch off above stretch on, native pixels 3x. This replaces the earlier picture called twelve live frames, which were stills, not frames of the loop",
+      "time": "2026-11-26T18:48:03.318Z",
       "by": "site-levels",
-      "from": "out/work/looks/files/20261126174822-crops-b.png"
+      "from": "out/work/looks/files/20261126184803-coin-pair2.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Twelve live frames of step 1 under fire and of the slot's coins at high; below, careers on the half float path and on the 8 bit path (far darker, metals black, not repaired)",
-      "time": "2026-11-26T17:48:23.175Z",
+      "caption": "A screen of pixel ratio 2, window 960 by 540 CSS px: medium (canvas 1440 by 810) above low (canvas 960 by 540), screen pixels 2x",
+      "time": "2026-11-26T18:48:03.544Z",
       "by": "site-levels",
-      "from": "out/work/looks/files/20261126174823-motion-bits.png"
+      "from": "out/work/looks/files/20261126184803-ratio2.png"
     }
   ]
 }
