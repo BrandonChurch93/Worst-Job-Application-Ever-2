@@ -1,35 +1,35 @@
 {
   "folder": "boss-closer",
-  "pushed": "2026-11-26T08:21:05.494Z",
-  "commit": "9f7c3d932f9d489e08e388dfbeafd68be749d8c1",
+  "pushed": "2026-11-26T09:04:52.781Z",
+  "commit": "c2eaff55b60fd6edc844dd5f8275dd0775699f34",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet boss-stages: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T08:19:05.578Z",
+      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
+      "time": "2026-11-26T09:00:27.339Z",
       "by": "boss-closer",
-      "from": "out/work/compare/compare-boss-stages.jpg"
+      "from": "out/work/compare/compare-boss-fight.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "boss-fight, approved left, build right: shield with a ground glass edge, darker brushed steel",
-      "time": "2026-11-26T08:21:03.833Z",
+      "caption": "Key boss-down: approved on the left, this build on the right, draft tier, with crops of shape:boss-cap, cursor, shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:boss-side-0, shape:rim-socket-open, shape:health-track, checkbox",
+      "time": "2026-11-26T09:00:43.927Z",
       "by": "boss-closer",
-      "from": "out/work/report/third-fight.jpg"
+      "from": "out/work/compare/compare-boss-down.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "boss-down, approved left, build right: steel lip on the socket, lying shield as a glass bar",
-      "time": "2026-11-26T08:21:04.072Z",
+      "caption": "boss-fight on the shared look, approved left, build right: slabs a deeper red with light on the upper bevel, cracks round the socket heavier",
+      "time": "2026-11-26T09:04:51.479Z",
       "by": "boss-closer",
-      "from": "out/work/report/third-down.jpg"
+      "from": "out/work/report/fourth-fight.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "boss-stages, approved left, build right: steel bezel at Resting, no seam on the lifted cap",
-      "time": "2026-11-26T08:21:04.309Z",
+      "caption": "boss-down on the shared look, approved left, build right: the arrow stands upright with its outline at the key and sags after it",
+      "time": "2026-11-26T09:04:51.718Z",
       "by": "boss-closer",
-      "from": "out/work/report/third-stages.jpg"
+      "from": "out/work/report/fourth-down.jpg"
     }
   ]
 }
