@@ -92,40 +92,53 @@
     "levelDb": -18,
     "gainDb": 9.01,
     "channels": 1,
-    "loop": null
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.29,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": 3.87,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 5.05,
+      "lufsBefore": -18,
+      "lufsAfter": -18.95
+    }
   },
   "measured": {
     "seconds": 2.962,
-    "start": 0.002,
-    "end": 2.938,
-    "peakDb": 3.76,
-    "rmsDb": -18.73,
-    "lufs": -18,
-    "truePeakDb": 3.86,
-    "low": 0.467,
-    "mid": 0.28,
-    "high": 0.254,
-    "tailDb": -25.6,
+    "start": 0,
+    "end": 2.946,
+    "peakDb": -1.29,
+    "rmsDb": -19.78,
+    "lufs": -18.95,
+    "truePeakDb": -1.06,
+    "low": 0.55,
+    "mid": 0.297,
+    "high": 0.153,
+    "tailDb": -20.9,
     "hits": 4,
     "hitsAt": [
       {
-        "start": 0.008,
-        "end": 0.574,
-        "peakDb": 3.76
+        "start": 0.006,
+        "end": 0.592,
+        "peakDb": -1.29
       },
       {
-        "start": 1.72,
-        "end": 1.864,
-        "peakDb": 2
+        "start": 1.708,
+        "end": 1.87,
+        "peakDb": -1.29
       },
       {
         "start": 2.01,
-        "end": 2.104,
+        "end": 2.118,
         "peakDb": -4.59
       },
       {
         "start": 2.188,
-        "end": 2.892,
+        "end": 2.91,
         "peakDb": -1.87
       }
     ]
@@ -177,5 +190,14 @@
   "fixture": false,
   "file": "line.pinball.replyAll.0.wav",
   "seconds": 2.962,
-  "sha256": "e20b6fff2c621c501a7175173fc11e0a88145adb632ebebb78ee4025de68abf6"
+  "sha256": "df3d5ab0dac903a1fcbb1d576cc46112125061ce024b746f0a03b3706ef4a44c",
+  "rekept": {
+    "when": "2026-11-26T17:46:32Z",
+    "why": "its levelled true peak was 3.87 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
+    "was": {
+      "sha256": "e20b6fff2c621c501a7175173fc11e0a88145adb632ebebb78ee4025de68abf6",
+      "truePeakDb": 3.86,
+      "lufs": -18
+    }
+  }
 }

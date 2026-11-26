@@ -81,30 +81,43 @@
     "levelDb": -18,
     "gainDb": 4.77,
     "channels": 1,
-    "loop": null
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.07,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": 1.73,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 2.8,
+      "lufsBefore": -18,
+      "lufsAfter": -18.15
+    }
   },
   "measured": {
     "seconds": 2.766,
     "start": 0.002,
     "end": 2.738,
-    "peakDb": 1.73,
-    "rmsDb": -18.76,
-    "lufs": -18,
-    "truePeakDb": 1.73,
-    "low": 0.653,
-    "mid": 0.318,
-    "high": 0.029,
-    "tailDb": -24.04,
+    "peakDb": -1.07,
+    "rmsDb": -19.01,
+    "lufs": -18.15,
+    "truePeakDb": -1.02,
+    "low": 0.664,
+    "mid": 0.306,
+    "high": 0.03,
+    "tailDb": -21.24,
     "hits": 2,
     "hitsAt": [
       {
         "start": 0.006,
-        "end": 0.768,
-        "peakDb": 1.73
+        "end": 0.774,
+        "peakDb": -1.07
       },
       {
-        "start": 1.952,
-        "end": 2.692,
+        "start": 1.95,
+        "end": 2.7,
         "peakDb": -5.61
       }
     ]
@@ -156,5 +169,14 @@
   "fixture": false,
   "file": "line.live.slowTyping.0.wav",
   "seconds": 2.766,
-  "sha256": "9a7d9c99b31a5a292162a4879eb870d441432e0b30c95a037594104c2abfa852"
+  "sha256": "fdf6d2f37b7c3096188615c01471506fb313550d7b5c3a8f242d373f44b1c096",
+  "rekept": {
+    "when": "2026-11-26T17:46:32Z",
+    "why": "its levelled true peak was 1.73 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
+    "was": {
+      "sha256": "9a7d9c99b31a5a292162a4879eb870d441432e0b30c95a037594104c2abfa852",
+      "truePeakDb": 1.73,
+      "lufs": -18
+    }
+  }
 }
