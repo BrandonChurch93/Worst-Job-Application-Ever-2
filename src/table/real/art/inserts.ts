@@ -21,7 +21,7 @@ export const insertColour = (n: Insert): THREE.Color => {
 }
 
 // How bright a window is: unlit it only catches the room, lit it glows from below, brightest in the middle.
-export const INSERT_GLOW = { off: 0.05, on: 1.55 }
+export const INSERT_GLOW = { off: 0.05, on: 2.6 }
 
 // The cell of the three by three atlases a window's picture lies in: its index in `table.inserts`.
 export const insertCell = (n: Insert): [number, number] => [n.index % 3, Math.floor(n.index / 3)]
