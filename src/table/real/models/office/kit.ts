@@ -476,6 +476,9 @@ const GRAIN_COLOUR = `
 	diffuseColor.rgb *= 1.0 + wjoSoft * 0.2 * wjoFine + 0.08 * wjoSmudge + vSurf.y * 0.14 * wjoStreak + wjoCloth * 0.05 * wjoWeave;
 `
 
+// How much of the lift the models take, all together: it comes down as the tier gets lamps of its own over them.
+export const FILL = 1
+
 const made = new Map<string, Mats>()
 
 // The materials of the office models, one set for a zone. One opaque material carries every finish: each vertex says how rough, how metal and how coated it is.
