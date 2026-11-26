@@ -105,23 +105,25 @@ export const lengthOf = (path: V3[]): number => {
 // The collar of the one clear tube, as the frame's owner wrote it down: turned aluminium with a groove and two screws on top.
 // A ring's flat faces are what the player's end of the table sees of it, under the side wall's shade: they carry more of the tone.
 const TUBE_FACE = 1.9
+// The chrome band round the clear tube: as wide as a fifth of the tube and proud of it, with a groove round its middle.
+const BAND = { long: 20, out: 1.6 }
 
 export function collar(G: Geo, S: Screws, f: { m: THREE.Matrix4 }, o: { long?: number; out?: number; tone?: RGB; fin?: number; screws?: boolean } = {}): void {
   const from = G.vertices
   const slim = o.long === undefined
-  const c = (o.long ?? TUBE.ferrule) / 2
-  const r = o.out ?? TUBE.ferruleOut
+  const c = (o.long ?? BAND.long) / 2
+  const r = o.out ?? TUBE.ferruleOut + BAND.out
   const tone = o.tone ?? (slim ? TONE.chrome : TONE.alu)
   const outline: V2[] = slim
-    ? [[TUBE.outer + 0.2, -c], [r - 1.2, -c], [r, -c + 1.2], [r, c - 1.2], [r - 1.2, c], [TUBE.outer + 0.2, c]]
+    ? [[TUBE.outer + 0.2, -c], [r - 1.8, -c], [r, -c + 1.8], [r, -2.2], [r - 1.3, -1.1], [r - 1.3, 1.1], [r, 2.2], [r, c - 1.8], [r - 1.8, c], [TUBE.outer + 0.2, c]]
     : [[TUBE.outer + 0.2, -c], [r - 2, -c], [r, -c + 2], [r, -3.4], [r - 1.6, -2.4], [r - 1.6, 2.4], [r, 3.4], [r, c - 2], [r - 2, c], [TUBE.outer + 0.2, c]]
-  G.f(o.fin ?? (slim ? FIN.chrome : FIN.alu)).lathe(outline, 0, 0, 20, (i) => (slim ? tone : i === 4 ? shade(tone, 0.72) : i === 0 || i === 8 ? shade(tone, TUBE_FACE) : tone))
+  G.f(o.fin ?? (slim ? FIN.chrome : FIN.alu)).lathe(outline, 0, 0, 20, (i) => (i === 4 ? shade(tone, 0.72) : slim ? tone : i === 0 || i === 8 ? shade(tone, TUBE_FACE) : tone))
   G.move(from, f.m)
   if (o.screws === false) return
   for (const side of [-1, 1]) {
     const a = Math.PI / 2 + side * 0.5
     const dir = new THREE.Vector3(Math.cos(a), Math.sin(a), 0)
-    const p = dir.clone().multiplyScalar(r).add(new THREE.Vector3(0, 0, slim ? 0 : side * 6.5)).applyMatrix4(f.m)
+    const p = dir.clone().multiplyScalar(r).add(new THREE.Vector3(0, 0, side * (slim ? 5.4 : 6.5))).applyMatrix4(f.m)
     S.add(p.x, p.y, p.z, slim ? 0.45 : 0.62, dir.transformDirection(f.m))
   }
 }

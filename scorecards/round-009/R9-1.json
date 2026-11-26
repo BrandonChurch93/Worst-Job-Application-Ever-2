@@ -9,7 +9,7 @@
    "severity": "major",
    "file": "set-A-01.png",
    "where": "row 2 onward, the arrow after the name snap-back and for most of the sheet",
-   "what": "the arrow keeps its normal pointer shape and glides at a steady clip; it did not read as alarmed or shocked by the form erasing its typing. No squash, no flinch, no recoil — it slides along like an ordinary cursor doing data entry. The single strongest beat of the sheet (its work being erased) gets no bodily reaction.",
+   "what": "the arrow keeps its normal pointer shape and glides at a steady clip; it did not read as alarmed or shocked by the form erasing its typing. No squash, no flinch, no recoil - it slides along like an ordinary cursor doing data entry. The single strongest beat of the sheet (its work being erased) gets no bodily reaction.",
    "fix": "on the snap frame give the arrow a sharp squash-and-rebound (flatten vertically, tip flung up), 2-3 frames of jittered hold over the erased text, then a slower, smaller retreat; make the body carry the shock the spark only hints at."
   },
   {
@@ -17,13 +17,13 @@
    "file": "set-A-02.png",
    "where": "the orange spark frames and the frames after them",
    "what": "the field visibly erupts with sparks and a broken border, but the arrow does not physically react: no recoil, no bracing lean-away, no trembling; it just hovers nearby in its stock pose and then drifts on. The event and the character read as two separate layers.",
-   "fix": "pair each spark burst with a recoil pose — arrow tilted away from the field, stretched backward with a motion smear, then a held wary hover at a distance before it dares to approach again."
+   "fix": "pair each spark burst with a recoil pose - arrow tilted away from the field, stretched backward with a motion smear, then a held wary hover at a distance before it dares to approach again."
   },
   {
    "severity": "major",
    "file": "set-A-03.png",
    "where": "whole sheet, rows 1-3",
-   "what": "twelve frames of near-identical stock pointer drifting down the page. The intended feeling reads only from the insult text in the fields; the arrow's body tells nothing. No change of tilt, droop, speed or hesitation — it slides along like a pointer being screenshotted, the exact failure the unit is meant to avoid.",
+   "what": "twelve frames of near-identical stock pointer drifting down the page. The intended feeling reads only from the insult text in the fields; the arrow's body tells nothing. No change of tilt, droop, speed or hesitation - it slides along like a pointer being screenshotted, the exact failure the unit is meant to avoid.",
    "fix": "give the drift a physical signature of discouragement: tip angled down, tail low, long holds with tiny sinking settles between moves, and a pause where it almost touches a field then pulls back."
   },
   {
@@ -39,6 +39,46 @@
    "where": "rows 0-1, the approach to the Continue button",
    "what": "the approach to the press is six frames of the same hover nudging closer; no anticipation before the press and no squash on contact, so the click reads as a plain UI hover rather than a decision the character commits to.",
    "fix": "add a one-frame pullback (wind-up) before the press and a small squash of the arrow against the button on the press frame, then release."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: the read names a name field and a line of text that are not in the sheet. The sheet shows the last two frames of the page turn, then the three closed rows with the arrow crossing them in its stock pose, then the first row opening. The easy look and the relaxing arrow are not in the read, and in the sheet the arrow does not relax: it wanders.",
+   "fix": "A sheet of this beat that begins when the turn has ended (the pack tool, the Builder's), and the arrow's relaxing as a held pose of its own before it goes to the first row.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the dial is not in the read: the arrow is read as reaching for a field that shoves it or shatters with sparks, and flinching. The number dragged round, the whip in a full circle and the fling are not read.",
+   "fix": "The drag round the dial, the whip and the fling each large enough in the sheet to be seen as what a dial does to the arrow.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: the arrow is read as discouraged, drifting down the page flat and slow and touching nothing. The pull of the lever, the reels and the coins spat at it are not in the read.",
+   "fix": "The pull as an action with a wind-up, and the arrow's answer to the coins, held.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the arrow is read as weary, then relieved and a little proud as the field accepts the volume. The crank taking off by itself and flattening it on the way round are not in the read.",
+   "fix": "The moment the crank tears itself from the arrow, and the flattening, each seen: the arrow left behind, then struck and flat.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the press is read; the peel up and the refill are not. The page turn is read as the screen collapsing and the arrow backing off into the dark.",
+   "fix": "The peel up from flat and the refill as actions of their own before the press; and a page turn that reads as a page turning (the stage's, the Builder's).",
+   "by": "builder"
   }
  ],
  "reads": [

@@ -106,3 +106,33 @@ Looks spent on `ticker`: 4 of 40.
 - Film only: a visitor who comes back rejected is let down the same way, but the cues (`stamp`, the half step, the lean) are the film's.
 - Seen and not mine to find in the time: in the sheet of `decision.reset` the frame at 2:31.70 shows the cards' glass without their type, and the frames 0.17 s before and after show it. MEASURED: the page's draw list holds the 20 texts of the cards at every step of that time and its states do not change, so it is not the page's logic. UNKNOWN whether the film has it or only a still that is rendered alone.
 - Looks, part `acting-marketing`: 14 of 40 (two sheets of `decision.reset`, three stills of it, one zoom).
+
+## Third pass on the medal and what M3 is made of (05:57 to 06:08 UTC)
+
+- MEASURED with the measure's own sum (mean square Laplacian of luminance, script `out/work/h/m3-tmp.py`, the review key at c13da904): mine 867, the approved image 1279, ratio 0.678. The gap is 411. By blocks of 120 px: the medal about 138, the headline and the line under it about 70, the cards' rows about 70, the ticker's row about 45, the bar's links and button about 36, and 1 to 2 for every empty block of paper. To pass, 156 of it must be closed.
+- MEASURED inside the medal: on plain face between the words and the wreath the approved image has 490 (dull sector) and 645 (bright lobe); mine had 31 and 997. Over the whole medal the approved image has 2226 and mine 1020. So most of the approved medal's fine detail is not the brushing; it is the edges: the words with a bright bevel, the leaves with a dark outline and a highlight, the two thin lines of the ring, the bright lip of the scallops.
+- Decision: the brushing is made visible as strokes all the same, because the approved face shows them: every ring of the brushed picture is cut into dashes 10 to 70 texels long (`BRUSHED.grain`, `BRUSHED.dash`), rings 3.2 texels wide. Plain face after: 36 in the dull sector (was 31; 64 to 178 with dashes that also darken).
+- Tried and taken back: dashes that darken as well as brighten. M4 went red at 4.12 (the line "The Synergy Foundation" and one more lost their median). With dashes that only brighten M4 is 4.61 again. Tried and taken back: the picture without its smaller copies (ratio 0.684 from 0.680, not worth the shimmer when the page scrolls).
+- MEASURED after, the review key: ratio 0.6838; M4 4.61 (`npm run -s measure -- --unit marketing --only M4 --tier review`, 54 s).
+- M3 stays red. What would close it and is not in my files: the type's edges (the shared type) and the paper's grain (the shared surface) are softer in every still than in the approved image, and they are about a third of the gap. What is in my files and not done: the medal's edges (bevel on the words is not mine; the leaves' outline, the ring's lines and the scallops' lip are).
+- Looks spent on the medal in this pass: 5, so 21 of 40. On `acting-marketing`: 9 more (sheets of perks, apply, ticker, the card-flip motion sheet, seven stills of the press), so 23 of 40.
+
+## The landing, second pass (06:18 to 06:22 UTC)
+
+- The flat read was 10.7 frames with `stamp`, whose flat part is 0.35 s and locked. Decision: `duck` in its place (flat and laid over for 0.74 of 0.55 s, then a stretch out of it), called at 0.22 s, and the arrow let down by 0.25 s (was 0.30).
+- MEASURED by `tests/careers-fix-landing.test.ts`: flat 0.254 to 0.675 s, 0.421 s, 12.6 frames at 30 a second; stood 0.775 to 1.183, 0.408 s, 12.3 frames; leant 1.329 to 1.746, 0.417 s, 12.5 frames. The test now asks 0.4 s of each.
+- Looked at: four stills of the beat (shares 0.27, 0.36, 0.62, 0.9) and its sheet. Looks, part `acting-marketing`: 5 more, so 28 of 40.
+
+## The medal's ring (06:24 to 06:27 UTC)
+
+- Seen on the review key beside the approved image: my ring was a dark double band about 9 px wide, the approved ring is two thin lines.
+- Decision: both ridges of the ring narrower (1.2 and 1.0 px on top, were 2.0 and 1.8), the grooves shallower by 0.1, and the face wider to meet them (`MEDAL_LOOK.face` 130.5, was 127). One look; kept. Looks on the medal: 22 of 40.
+- MEASURED after, the review key with `out/work/h/m3-tmp.py`: ratio 0.6856 (was 0.6838).
+
+## State at the end (06:28 UTC)
+
+- MEASURED, `npm run -s measure -- --unit marketing --only M2,M3,M4 --tier review`: M2 pass 0.0001 (5 stills, 2629796 textured pixels); M3 red 0.6856 against 0.8; M4 pass 4.61 against 4.5 (759 runs).
+- MEASURED, one still each: `npm run still -- --key marketing-top --format hd --tier draft` 12.9 s, 606891 triangles, 197 draw calls; the same at `--tier review` 25.9 s, 606999, 198; `--id marketing-perks --tier review` 24.8 s, 801170, 241; `--id marketing-proof` 24.0 s, 723661, 260; `--id marketing-foot` 18.9 s, 519193, 155.
+- Textures of mine: the glass picture and the brushed picture, each 1024 by 1024 RGBA, 4.0 MB (5.3 MB with its smaller copies), by arithmetic.
+- Open: M3 (red); round 8 R9 issue 3 (built and measured, not judged); round 7's R4 and R9 points A to F (built and looked at in sheets, not judged); the walk from the third card to the lane crosses the card; the leaves' pressed outline and the scallops' bright lip on the medal; the glass rim; card 2's right side.
+- Looks in this round: `perk-cards` 5 of 40, the medal 22 of 40, `ticker` 4 of 40, `acting-marketing` 28 of 40.

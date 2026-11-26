@@ -1,0 +1,72 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "C: tier 2 from above and Reply All beside the approved images, whole and in crops",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-C-01-b.png",
+   "where": "the whole playfield view",
+   "what": "-b is shot straight overhead, flattening everything into one plane; -a is a raked three-quarter view from the player's side, so the far rails, the bumpers' height and the page's depth all read differently",
+   "fix": "tilt the camera to the same raked three-quarter viewpoint as -a"
+  },
+  {
+   "severity": "severe",
+   "file": "set-C-03-b.png",
+   "where": "the light across the whole page",
+   "what": "-b is lit flat from above with even brightness and pools of lamp glow; -a has a warm oblique key light, so one side is lit and shadows fall long, dark and soft to the lower left, giving a muted, moody tone -b replaces with a bright toy-like one",
+   "fix": "move the key light high and to one side, warm it, and let the shadows run long and soft down-left; darken and desaturate the overall exposure toward -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "the 'a steel ball' crop (also the rolling balls in set-C-03-b.png)",
+   "what": "the balls are smoky translucent glass marbles with an internal swirl; -a has opaque mirror-chrome steel balls with sharp reflections of the playfield",
+   "fix": "make the balls solid polished steel with crisp environment reflections"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04-b.png",
+   "where": "the 'the arrow' crop",
+   "what": "the cursor inside the glass ball reads as a crumpled 3D shard, like a paper plane; -a holds a flat, crisp pointer arrow with a dark edge and a glossy face",
+   "fix": "rebuild the cursor as a flat white arrow lying flat in the ball, with a thin dark outline and a glossy top face"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "the 'the cubicles' crop, upper left of the playfield",
+   "what": "-b draws them as a solid beige block with the desks printed flat on its top face; -a has real open cubicle compartments with low walls, gaps between them, and tiny desks sitting inside",
+   "fix": "model open three-walled compartments with visible wall thickness and interior depth, desks recessed inside"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "the 'a bumper' crop",
+   "what": "-b's bumpers are dark glossy rings with a flat glowing dome; -a's bumpers are white ceramic caps on warm copper bodies with a bright metal skirt at the base, and the copper wrap is gone in -b",
+   "fix": "restore the white cap over a warm copper drum with a metal skirt ring"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01-b.png",
+   "where": "the page surface, everywhere",
+   "what": "-b's floor is a coarse, bright green carpet grain with tan felt strips; -a's floor is a smooth, muted slate-teal with a fine speckle, and -b also adds heavy clutter piles of papers and rings in the lower corners that -a does not have",
+   "fix": "darken and desaturate the floor toward slate teal, tighten the grain to a fine speckle, and thin the scattered clutter to the few paper clips and envelopes in -a"
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02-b.png",
+   "where": "the 'a slingshot' crop",
+   "what": "-b's slingshots are plain glossy red wedges; -a's are red office staplers with hinge line, chrome base plate and screws, and the stapler identity is lost in -b",
+   "fix": "give the slingshot the stapler body: hinge seam along the top, a metal base plate and fasteners"
+  },
+  {
+   "severity": "minor",
+   "file": "set-C-02-b.png",
+   "where": "the 'the bend of the tube' crop, upper left",
+   "what": "-b renders the elbow of the lift tube as orange-amber plastic; -a renders it as chromed metal like the rest of the tube",
+   "fix": "chrome the elbow to match the tube, keeping the orange only for the doors"
+  }
+ ]
+}

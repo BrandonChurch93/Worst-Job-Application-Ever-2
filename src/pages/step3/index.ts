@@ -68,12 +68,12 @@ function buildLayout(): LayoutNode {
   }
   const ay = px(APRON_Y)
   const sunk = { part: 'table-frame', tone: 'danger' as const, height: config.scale.heights.slab }
-  kids.push(node('apron-left', 'apronSlab', [312, ay + 24, 520, 144], sunk))
-  kids.push(node('apron-right', 'apronSlab', [1088, ay + 24, 520, 144], {
-    ...sunk, children: [node('apron-card', 'apronCard', [1128, ay + 56, 440, 80], {
-      part: 'table-frame', floor: 16, height: 17, tone: 'paper', children: [centred('apron-card-words', 'copy:step3.table.apronCard', { font: 'inter-500', px: 18 }, 1348, ay + 96, { part: 'type', on: 18 })]
+  kids.push(node('apron-left', 'apronSlab', [312, ay + 24, 520, 144], {
+    ...sunk, children: [node('apron-card', 'apronCard', [352, ay + 56, 440, 80], {
+      part: 'table-frame', floor: 16, height: 17, tone: 'paper', children: [centred('apron-card-words', 'copy:step3.table.apronCard', { font: 'inter-500', px: 18 }, 572, ay + 96, { part: 'type', on: 18 })]
     })]
   }))
+  kids.push(node('apron-right', 'apronSlab', [1088, ay + 24, 520, 144], sunk))
   kids.push(centred('drain-label', 'copy:step3.table.buildings.drain', { font: 'inter-600', px: 18 }, 960, ay + 48, { part: 'table-frame', on: 7, tone: 'ink' }))
   const ly = px(LAST_Y)
   kids.push(node('outlet-port', 'port', [px(OUTLET.x - OUTLET.ring / 2), px(OUTLET.y - OUTLET.ring / 2), px(OUTLET.ring), px(OUTLET.ring)], { part: 'loader', shape: 'none' }))
@@ -113,10 +113,10 @@ const LAST_OUT: Shape = { id: 'last.out', part: 'table-layout', kind: 'well', x:
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
   'table-wide': { ...look('table-wide', [MID, APRON_Y + 17.4, 8.4], [MID, Y2 + 0.45, -1.86]), omit: LAST_OUT },
-  'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9, -0.5], [MID - 0.55, Y0 + 5.02, 0.35]),
+  'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9.2, 0.8], [MID - 0.55, Y0 + 5.02, 0.36]),
   'table-replyall': look('table-replyall', [MID, Y1 + 15.34, 12], [MID, Y1 + 6.6, -2]),
   'table-fired': look('table-fired', [7.25, Y2 + 7.45, 0.95], [4.6, Y2 + 3.5, -2]),
-  'table-save': { ...look('table-save', [MID, Y2 + 16.7, 4.8], [MID + 0.15, Y2 + 10.71, -0.5]), omit: LAST_OUT }
+  'table-save': { ...look('table-save', [MID, Y2 + 16.7, 4.8], [MID + 0.15, Y2 + 10.25, -0.5]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
   [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [29.3, 'follow', 0],
@@ -137,7 +137,7 @@ const LOW = 2.4
 const PULL = { door: 12, scoop: 30, near: 2.2, gate: 40, key: 14 }
 const NEST = { sling: [3.3, 6.5], under: [0.5, 0.9], pour: [-10.6, 1.0, 0.3], key: [0.3, 1.2], wait: [0.45, 0.05] }
 const ROLL = { tip: 2.09, rail: 0.7 }
-const BACK = { off: 2.9, clear: 3.1, lift: 0, behind: 0.6, before: 2.2, aim: 1.8 }
+const BACK = { ahead: 3.2, clear: 3.6, behind: 0.6, before: 2.2, aim: 2 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 13, press: 20, hit: 0.3, lag: 0.1, wall: 0.8, lens: 0.6 }
@@ -280,7 +280,7 @@ export function makePage(): PageLogic {
     const f = soft(r, Math.min(railLength(r), b.s + BACK.before))
     const d = Math.hypot(f.x - a.x, f.y - a.y) || 1
     const u = [(f.x - a.x) / d, (f.y - a.y) / d]
-    return { eye: toWorld(px(c.x - u[0]! * BACK.off), px(c.y - u[1]! * BACK.off), px(c.z + BACK.clear)), target: toWorld(px(c.x + u[0]! * BACK.aim), px(c.y + u[1]! * BACK.aim), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
+    return { eye: toWorld(px(c.x + u[0]! * BACK.ahead), px(c.y + u[1]! * BACK.ahead), px(c.z + BACK.clear)), target: toWorld(px(c.x - u[0]! * BACK.aim), px(c.y - u[1]! * BACK.aim), px(c.z)), up: [0, 0, 1], fov: fov('rail') }
   }
   const follow = (): CameraPose => homePose(s.scroll, s.floor)
   const lens = (name: string, p: CameraPose | null): CameraPose | null => {

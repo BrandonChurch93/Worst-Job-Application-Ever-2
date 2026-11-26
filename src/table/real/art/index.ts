@@ -28,7 +28,7 @@ const COAT = [
   { roughness: 0.95, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.2, print: 1.35 },
   { roughness: 0.92, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.16, print: 1.2 }
 ]
-const WINDOW = { lift: 0.35, bump: 2.2, segments: 56, inset: 0.975, room: 2.4, dome: 4.5 }
+const WINDOW = { lift: 0.35, bump: 2.2, segments: 56, inset: 0.975, room: 2.4, dome: 1.6 }
 
 let peel: THREE.DataTexture | null = null
 function peelMap(): THREE.DataTexture {

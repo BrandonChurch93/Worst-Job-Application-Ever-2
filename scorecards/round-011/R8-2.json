@@ -1,0 +1,37 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "B: the last two keys and the native-size crops of the page's text and controls",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "lower-right quadrant, labeled \"the text with the least contrast\"",
+   "what": "the crop contains a repeat of the progress bar and a large empty background; no text of any kind is shown, so the page's least-contrast text is never actually presented for review and the label does not match its content",
+   "fix": "recrop this quadrant to the actual least-contrast string on the page at native size, and check each quadrant's label against what the crop shows"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "upper-left quadrant, labeled \"the title\"",
+   "what": "the heading is cut off mid-word at the right edge of the crop (\"The Worst Job Application Ev\"), so the full page title cannot be read",
+   "fix": "widen the crop or shrink the framing so the complete title line is visible at its real size"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03.png",
+   "where": "both right-hand quadrants showing the progress bar",
+   "what": "the same metal progress bar is shown twice, and the end buttons are trimmed in both crops (button 5 cut at the right edge both times, button 1 cut at the left in the lower crop), so the complete 1-5 bar never appears whole",
+   "fix": "show the bar once in a crop wide enough to include all five step buttons end to end"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-03.png",
+   "where": "upper-left quadrant, below \"Step 3: Skills Assessment\"",
+   "what": "the subtitle \"Toxicity Tolerance Assessment\" is clipped by the dark label band between rows, then the same heading block is repeated in full in the lower-left quadrant, making the upper instance dead weight",
+   "fix": "drop the duplicated heading from one quadrant or move the label band so it never covers the crop's own text"
+  }
+ ]
+}

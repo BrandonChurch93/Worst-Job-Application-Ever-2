@@ -2,24 +2,35 @@ import * as THREE from 'three'
 import { config } from '../../../config'
 import { Random } from '../../../core/random'
 
-export const BRUSHED = { size: 1024, level: 0.84, ring: 2.7, rings: 0.045, arcs: 900, arc: 0.15, dark: 0.45, wide: 2, long: [38, 300] as [number, number], stray: 190, fine: 0.05 }
+export const BRUSHED = { size: 1024, level: 0.84, ring: 3.2, rings: 0.045, arcs: 900, arc: 0.15, dark: 0.45, wide: 2, long: [38, 300] as [number, number], stray: 190, fine: 0.05, grain: 0.2, dash: [10, 70] as [number, number] }
 
 // A disc of metal brushed on a wheel, as what its colour is multiplied by: rings a hair wide, each of its own brightness,
-// and bright and dark strokes laid over them, each `wide` texels wide and `long` texels long, round a middle that strays from the disc's
-// own by up to `stray` texels: the single strokes of the brush that are seen one by one, and that cross.
+// each cut into dashes `dash` texels long that differ by `grain`, the scratches of the grit, and bright and dark strokes laid over them,
+// each `wide` texels wide and `long` texels long, round a middle that strays from the disc's own by up to `stray` texels:
+// the single strokes of the brush that are seen one by one, and that cross.
 export function brushedHeights(seed: number): Float32Array {
   const B = BRUSHED
   const rnd = new Random(seed, 'medal-picture')
   const n = B.size
   const half = n / 2
   const ring = new Float32Array(Math.ceil((half * Math.SQRT2) / B.ring) + 2)
-  for (let i = 0; i < ring.length; i++) ring[i] = rnd.next() - 0.5
+  const dashes: Float32Array[] = []
+  const pace = new Float32Array(ring.length)
+  for (let i = 0; i < ring.length; i++) {
+    ring[i] = rnd.next() - 0.5
+    pace[i] = B.dash[0] + (B.dash[1] - B.dash[0]) * rnd.next()
+    const row = new Float32Array(Math.ceil((Math.PI * 2 * (i + 1) * B.ring) / pace[i]!) + 1)
+    for (let j = 0; j < row.length; j++) row[j] = rnd.next() - 0.5
+    dashes.push(row)
+  }
   const out = new Float32Array(n * n)
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
     const r = Math.hypot(x + 0.5 - half, y + 0.5 - half) / B.ring
     const i = Math.floor(r)
     const f = r - i
-    out[y * n + x] = B.level + B.rings * 2 * (ring[i]! * (1 - f) + ring[i + 1]! * f) + B.fine * 2 * (rnd.next() - 0.5)
+    const turn = Math.atan2(y + 0.5 - half, x + 0.5 - half) + Math.PI
+    const dash = dashes[i]![Math.floor((turn * (i + 0.5) * B.ring) / pace[i]!)]!
+    out[y * n + x] = B.level + B.rings * 2 * (ring[i]! * (1 - f) + ring[i + 1]! * f) + B.grain * (dash + 0.5) + B.fine * 2 * (rnd.next() - 0.5)
   }
   for (let k = 0; k < B.arcs; k++) {
     const px = rnd.next() * n
