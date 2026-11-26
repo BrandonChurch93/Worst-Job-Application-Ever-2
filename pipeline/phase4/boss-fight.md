@@ -89,3 +89,39 @@ Beside the approved picture the bar was thin and its fill a flat strip with a wi
 - The muzzle flash sits on the mouth: its star was drawn 18 to 48 px ahead of the mouth and the barrel pulls back 20 px as it fires, so the flash hung in the air in front of the barrel. The star is now 2 to 28 px ahead.
 - A fired slab comes out of the mouth as long as the way it has gone: its tail stays at the mouth until the whole block is out (0.14 s at 880 px a second). Before, it grew in 0.1 s while it already flew, so at the firing frame it hung 35 px in front of the flash.
 - The shield's sparks have been at z 60 since round 2 (`SHIELD.z` in `src/boss/plan.ts`), as the body's owner asked.
+
+## Round 5 (the Builder's look of 02:58 UTC, and the end)
+
+The Builder looked at the firing frame beside the approved `boss-fight` and named three things.
+
+- The cursor stands upright and small where the approved one is turned with its tip to the boss. Not in this part's files: the shared cursor has a fixed scale of 1 and no call that sets a heading (`src/cursor/body.ts`); a page can only choose a state (a lean of 0.3 rad at most) or a short reaction. With one call on the cursor that feeds its `spin`, the page would turn it to the boss in the fight stage.
+- The hole is a flat dark pill with short cracks where the approved one has a sunk rim and long cracks. Not in this part's files: the pit, the lip and the crack runs are `HOLE` and `CRACKS` in `src/boss/body.ts`, their look is `rim()` and `crackStuff()` in `src/boss/real/transform.ts`. The page only calls `drawSocket` with the crack fully grown.
+- Three slabs in the air at the key: this part's, and there. The key at 12.5 s shows all three of the salvo fired at 11.72, 11.90 and 12.09 s; the firing frame is 11.76 s, the first shot, so it has one.
+
+For the next owner of the body, seen from this part:
+
+- At `boss-down` the body's `SCATTER` lays one leg under the long top plate and one leg and a plate at the lower right edge of the frame; the approved wreck is smaller pieces spread with air between them.
+- At stage 3 of the stage sheet (every leg at half) the left legs are spread and the right legs folded over the plate.
+- The fallen cap is flat dark at its two ends where the approved cap has char with broken, flaked edges; the smoke is there but thin.
+- The barrel turns to the aim point by at most 0.7 rad; only a turn of 0.13 rad has been seen in a picture (the firing frame at 11.76 s). UNKNOWN how a large turn looks.
+- The hole and its cracks, as above.
+- The shield is a pale plate with two cross lines and two rods; the approved shield is a thick glass block on a bracket that shows the page through it.
+
+Not done in this part:
+
+- The slabs are a clean deep red with a thin bright line at the lit edge; the approved slabs carry a broad soft gloss on the face.
+- The muzzle flash is a hard orange star for 0.16 s; no smoke ring, no light on the barrel beyond what `ctx.light` gives.
+- The health track's rim is a light line all round; the approved track has a dark upper edge and a light lower one.
+- The pop-ups have been checked in the beat sheet only, not beside an approved picture: there is none.
+
+## The cursor turned to the boss (a need, 03:08 UTC)
+
+`pipeline/phase4/boss-fight-NEEDS.patch` holds the change that turns the cursor's tip to the boss through the fight, as the approved `boss-fight` has it. It is not applied on this branch, because half of it is in the shared cursor.
+
+- `src/cursor/body.ts`: one call, `aim(turn | null)`, a turn of the whole body round its tip, clockwise on the page, that the page holds. The body's `spin` goes to it on the spring it already has; the state's own lean is taken off so that the two together are the turn asked for, and a reaction's swing counts for 0.3 while the turn is held.
+- `src/pages/step4/index.ts`: in the fight stage the page asks for the turn from the tip's direction at rest (1.965 rad from the x axis) to the line from the cursor to the boss; at the power-down it gives the turn back.
+- MEASURED with the patch applied at 03:06 UTC: `npm test` all passed, `npm run build` ok, `npm run bots` "all clear"; the film's events are the same to the hundredth of a second; the key at `draft` shows the arrow lying along the line of darts with its tip to the shield, and so does `boss.popups` at 0.5.
+
+## Seen at the end, not mended
+
+- At four times its size the health track shows two hairlines on the paper: one along its upper edge past the left end, one along its lower edge past the right end, each about 30 px long. UNKNOWN cause; my reading is the edge of the pocket the ground cuts for the track (`tone: 'pocket'` in `src/pages/step4/layout.ts`, cut by the shared ground), since the lines follow the track's box and not its round ends.
