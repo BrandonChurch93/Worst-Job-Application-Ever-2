@@ -51,6 +51,11 @@ One draft still shows several parts; each still is counted once, under the part 
 | 03:57 to 04:07 | rail-cam 1, last-save 2, tier-street 1, table-wide 1, loader-page 1 | chrome, bats, drain, loader | 6 |
 | 04:08 to 04:13 | youre-fired 2, table-wide 1, tier-corporate 1, loader-page 1, last-save 1, tier-office 1 | walls, loader | 7 |
 | 04:19 to 04:21 | youre-fired, loader-page, tier-office, table-wide | walls, loader, marquee | 4 |
+| 04:23 to 04:25 | youre-fired, table-wide, loader-page, tier-office | loader, marquee foot, tube | 4 |
+| 04:29 to 04:34 | last-save, rail-cam, tier-corporate, tier-street, table-wide at draft; last-save at review | all, and the time of a review still | 6 |
+| 04:34 to 04:36 | tier-corporate, last-save | bats, elbow | 2 |
+
+Total at 04:40 UTC: 35 stills over nine parts; the most any one part was rendered for is the frame, 14.
 
 ## Decisions
 
@@ -63,3 +68,17 @@ One draft still shows several parts; each still is counted once, under the part 
 - Point 8. Loader: the cup is near black, deep, and aluminium outside the lamps now loses its mirror where its paint is dark (`wjf-dim`), so the bowl no longer reads mid grey; ring toned to the approved brushed grey. Marquee: its size is the layout's `marquee.back`; the grey behind and under it was my foot (beam, braces, plate), now dark.
 - Rail-cam: the near wire lies inside the camera's blur, so its glints cannot show; told table_runner.
 - The clear tube's turned-away wall was 4.2 times bright over the table and read as a pale striped sheet at a low eye; now 1.8.
+- `steel()` has a third new term, `paint`: the share of the room that paint, plastic and rubber give back. Play and hardware run 0.4. MEASURED on the left bat's top in `tier-corporate` draft: blue channel 55, 50, 47 before and 36, 32, 29 after (approved 27 to 30); the orange itself is untouched.
+- The bats' two screws are dull steel: polished domes read as white discs from above.
+
+## MEASURED times (04:07 to 04:34 UTC, this VM)
+
+- One `draft` still, hd: 21 s (`loader-page`), 34 to 46 s (the table's keys). Command: `npm run still -- --key <key> --format hd --tier draft --force`.
+- One `review` still, hd: 84 s (`last-save`), same command with `--tier review`.
+- Asset sets: `public/assets/table/frame` 0.062 MB, `assets-full/table/frame` 0.136 MB, `assets-src/table/frame` 2.024 MB (`du -sb`); hardware and play have none.
+
+## Still least real at 04:40 UTC
+
+1. The light on the bats and on the lift's elbow: a bat's top falls from (238,150,36) at the pivot to (126,79,29) at the tip where approved is even, and the elbow is (73,53,34) against (161,79,27). The lamps are lamp_keeper's; told at 04:34.
+2. The highway's wire from a low eye (`last-save`): still a pale grey tube at draft size, where approved is a dark mirror with thin white lines. The hoops and trestles are right.
+3. The frame's lands from straight above: pale sheets with fine stripes and a row of dark screws, where approved is one slow gradient. The south ends of the side rails stand as tall brushed posts in `table-wide` (their height is the layout's).

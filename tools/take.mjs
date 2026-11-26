@@ -124,7 +124,7 @@ function play(driver) {
   out.beside = 0
   for (const e of stage.events) if (HITS.includes(e.name)) for (const t of cuts) if (Math.abs(t - e.step / hz) < 0.16) out.beside++
   out.reached = beats.every((b) => stage.gagsReached.includes(b.id))
-  out.score = out.inside * 1000 + (out.reached ? 500 : 0) + (out.flipSave ? 40 : 0) + (out.atKey ? 300 : 0) + Math.min(out.bumpers, 8) * 4 + out.placed.length * 150 - out.tows * 15 - out.beside * 400
+  out.score = out.inside * 1000 + (out.reached ? 500 : 0) + (out.flipSave ? 300 : 0) + (out.atKey ? 300 : 0) + Math.min(out.bumpers, 8) * 40 + out.placed.length * 150 - out.tows * 150 - out.beside * 250
   return out
 }
 

@@ -244,11 +244,9 @@ function poseCannon(o: THREE.Object3D, s: Shape): void {
 
 const GLASS_CRACKS: [number, number][][] = [
   [[-47, 104], [-30, 70], [-12, 42], [4, 6], [22, -34], [36, -72], [47, -112]],
-  [[49, 74], [30, 48], [4, 6], [-20, -22], [-48, -52]],
-  [[4, 6], [26, 2], [50, 14]],
+  [[49, 74], [30, 48], [4, 6]],
   [[-12, 42], [-4, 82], [10, 120]],
-  [[22, -34], [-6, -60], [-22, -96], [-46, -118]],
-  [[-30, 70], [-49, 64]]
+  [[22, -34], [-6, -60], [-22, -96]]
 ]
 
 function crackLines(lines: [number, number][][], wide: number, z: number, dx = 0, dy = 0): THREE.BufferGeometry {
@@ -291,10 +289,10 @@ function shield(): THREE.Object3D {
   const block = (): THREE.BufferGeometry => sweep(roundedRect(w, h, 18, 14), plateProfile(t, round, 0.4, 8), true)
   leaf.add(mesh(geo('glassDeep', () => sweep(roundedRect(w - 12, h - 12, 13, 12), [{ inset: 0, z: 1.1, out: 0, up: 1 }], true)), k.glassDeep, false, false))
   leaf.add(mesh(geo('glass', block), k.glass))
-  leaf.add(mesh(geo('glassEdge', () => sweep(roundedRect(w, h, 18, 14), [{ inset: 0, z: t - round - 5, out: 1, up: 0 }, ...plateProfile(t, round, 0.4, 8).slice(1), { inset: round + 2.5, z: t, out: 0, up: 1 }], false)), k.glassEdge, false, false))
+  leaf.add(mesh(geo('glassEdge', () => sweep(roundedRect(w, h, 18, 14), [{ inset: 0, z: t - round - 5, out: 1, up: 0 }, ...plateProfile(t, round, 0.4, 8).slice(1), { inset: round + 0.6, z: t, out: 0, up: 1 }], false)), k.glassEdge, false, false))
   const cracks = new THREE.Group()
   cracks.add(mesh(geo('glassCracksDeep', () => crackLines(GLASS_CRACKS, 1.1, 1.6, 3.2, -2.6)), k.bed, false, false))
-  cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 1.5, t + 0.12)), k.glassCrack, false, false))
+  cracks.add(mesh(geo('glassCracks', () => crackLines(GLASS_CRACKS, 1.15, t + 0.12)), k.glassCrack, false, false))
   leaf.add(cracks)
   const pin = mesh(geo('shieldPin', () => joined([-1, 1].map((e) => new THREE.BoxGeometry(11, 18, 9).translate(0, e * 34, 2)))), m.aluminiumSatin, false)
   const tubes = [-1, 1].map((sy) => {
@@ -382,14 +380,15 @@ function leg(): THREE.Object3D {
   const knee = knuckle()
   const rod = mesh(geo('legRod', () => lying([[0, 0], [4.4, 0], [4.4, 1], [0, 1]], 16).rotateZ(Math.PI)), k.pin, false)
   const fr = LEG.foot / 2
-  const foot = mesh(geo('foot', () => joined([
-    lathe([[fr - 1.2, 0], [fr, 1.6], [fr, 8], [fr - 2, 10.2], [fr - 6, 10.2], [fr - 6.8, 9.2], [fr - 7.8, 10.8], [12, 11.8], [11, 10.4], [10, 12], [0, 12.4]], 52),
-    new THREE.SphereGeometry(6.5, 24, 16).translate(0, 0, 11.5)
-  ])), m.aluminiumSatin)
-  root.add(upper, lower, hip, knee, foot, rod)
-  root.userData.l = { upper, lower, hip, knee, foot, rod }
+  const foot = mesh(geo('foot', () => lathe([[fr - 1.2, 0], [fr, 1.6], [fr, 8], [fr - 2, 10.2], [fr - 6, 10.2], [fr - 6.8, 9.2], [fr - 7.8, 10.8], [12, 11.8], [11, 10.4], [10, 12], [0, 12.4]], 52)), m.aluminiumSatin)
+  const stem = mesh(geo('ankleStem', () => lathe([[7.4, 0], [7.4, 0.06], [5.2, 0.12], [5.2, 1], [0, 1]], 24)), m.aluminiumSatin)
+  const ball = mesh(geo('ankleBall', () => new THREE.SphereGeometry(6.5, 24, 16)), m.aluminiumSatin)
+  root.add(upper, lower, hip, knee, foot, stem, ball, rod)
+  root.userData.l = { upper, lower, hip, knee, foot, stem, ball, rod }
   return root
 }
+
+export const ANKLE = 52
 
 const H = new THREE.Vector3()
 const A = new THREE.Vector3()
@@ -411,7 +410,7 @@ function aim(o: THREE.Object3D, from: THREE.Vector3, to: THREE.Vector3, pinAxis:
 }
 
 function poseLeg(o: THREE.Object3D, s: Shape): void {
-  const d = o.userData.l as { upper: THREE.Mesh; lower: THREE.Mesh; hip: THREE.Mesh; knee: THREE.Mesh; foot: THREE.Mesh; rod: THREE.Mesh }
+  const d = o.userData.l as { upper: THREE.Mesh; lower: THREE.Mesh; hip: THREE.Mesh; knee: THREE.Mesh; foot: THREE.Mesh; stem: THREE.Mesh; ball: THREE.Mesh; rod: THREE.Mesh }
   const v = s.v ?? []
   const k = v[3] ?? 1
   const sx = v[4] ?? 1
@@ -424,7 +423,8 @@ function poseLeg(o: THREE.Object3D, s: Shape): void {
   const fx = mix(-sx * 44, v[0] ?? 0, k)
   const fy = mix(sy * 4, -(v[1] ?? 0), k)
   const fz = mix(BODY_Z.frame - 14, 0, prog(k, 0.25, 1)) * (1 - flat) + lift
-  A.set(fx, fy, fz + 11)
+  const ankle = mix(11, ANKLE, prog(k, 0.5, 1) * (1 - flat))
+  A.set(fx, fy, fz + ankle)
   const far = H.distanceTo(A)
   const reach = Math.min(far, L * 2 - 1)
   U.copy(A).sub(H).normalize()
@@ -456,6 +456,10 @@ function poseLeg(o: THREE.Object3D, s: Shape): void {
   d.knee.position.copy(K)
   d.knee.quaternion.setFromUnitVectors(Z, P)
   d.foot.position.set(fx, fy, fz)
+  d.stem.position.set(fx, fy, fz + 10)
+  d.stem.scale.set(1, 1, Math.max(0.01, ankle - 10))
+  d.stem.visible = ankle > 13
+  d.ball.position.set(fx, fy, fz + ankle + 0.5)
 }
 
 const Z = new THREE.Vector3(0, 0, 1)

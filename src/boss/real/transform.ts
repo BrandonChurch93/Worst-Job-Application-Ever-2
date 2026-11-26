@@ -211,11 +211,20 @@ function chipPlaces(): Chip[] {
 
 let wallMaterial: THREE.MeshPhysicalMaterial | null = null
 let floorMaterial: THREE.MeshPhysicalMaterial | null = null
-const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial } => {
+let collarMaterial: THREE.MeshPhysicalMaterial | null = null
+const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial; collar: THREE.MeshPhysicalMaterial } => {
   const grain = materials().ceramic.normalMap
-  wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x3f3c39, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(0.7, 0.7) }))
+  wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x7a746d, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(1.3, 1.3) }))
   floorMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x0d0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.1 }))
-  return { wall: wallMaterial, floor: floorMaterial }
+  if (!collarMaterial) {
+    collarMaterial = materials().aluminiumSatin.clone()
+    collarMaterial.color.setHex(0x9a9c9c, THREE.SRGBColorSpace)
+    collarMaterial.roughness = 0.6
+    collarMaterial.metalness = 0.55
+    collarMaterial.envMapIntensity = 0.5
+    studio(collarMaterial)
+  }
+  return { wall: wallMaterial, floor: floorMaterial, collar: collarMaterial }
 }
 
 export const PIT = { collar: 12, wallTo: 27, deep: -58 }
@@ -225,9 +234,9 @@ function rim(): THREE.Object3D {
   const root = new THREE.Group()
   const line = roundedRect(HOLE_W, HOLE_H, HOLE_H / 2, 22)
   const ring = sweep(line, profile([[0.25, -4.9, true], [0.25, -1.6], [1.4, -0.9], [9.6, -1.5], [10.8, -2.6], [PIT.collar, -9.5, true]]), false)
-  root.add(mesh(ring, m.aluminiumEdge, false, true))
   const pit = pitStuff()
-  const wall = sweep(line, profile([[PIT.collar - 0.4, -9.5, true], [PIT.collar + 2.5, -13], [PIT.collar + 8, -34], [PIT.wallTo, PIT.deep, true]]), false)
+  root.add(mesh(ring, pit.collar, false, true))
+  const wall = sweep(line, profile([[PIT.collar - 0.4, -9.5, true], [PIT.collar + 4.5, -13], [PIT.collar + 11, -32], [PIT.wallTo, PIT.deep, true]]), false)
   root.add(mesh(wall, pit.wall, false, true))
   root.add(mesh(sweep(roundedRect(HOLE_W - PIT.wallTo * 2 + 2, HOLE_H - PIT.wallTo * 2 + 2, HOLE_H / 2 - PIT.wallTo + 1, 14), [{ inset: 0, z: PIT.deep, out: 0, up: 1 }], true), pit.floor, false, true))
   const cracks = mesh(crackGeometry(), crackStuff(), false, false)

@@ -68,6 +68,17 @@ export class Geo {
     return this.face([a, b, c, d], col, kind)
   }
 
+  // A flat quad whose colour runs between its four corners.
+  blend(q: V3[], cols: RGB[], normal: V3, kind = 0): this {
+    const nn = unit(normal)
+    const at = this.uv(nn)
+    for (const k of [0, 1, 2, 0, 2, 3]) {
+      const w = at(q[k]!)
+      this.push(q[k]!, nn, cols[k]!, w[0], w[1], kind)
+    }
+    return this
+  }
+
   // A smooth quad: each corner has its own normal.
   smooth(q: [V3, V3][], col: RGB, kind = 0, uvs?: V2[]): this {
     for (const k of [0, 1, 2, 0, 2, 3]) {

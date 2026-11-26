@@ -184,16 +184,26 @@ vec4 floorAt( vec3 from, vec3 dir ) {
 		float side = face > 1.5 ? 1.1 : ( face < 0.5 ? 0.78 : 1.0 ) * mix( 0.34, 1.0, bars * rows ) * mix( 0.5, 1.12, up ) * mix( 0.45, 1.0, foot );
 		float seenWall = 1.0 - smoothstep( uR * 12.0, uR * 24.0, best );
 		if ( uDoor.z > 0.5 && face > 0.5 && face < 1.5 && abs( p.y - uDoor.y ) < uR * 1.4 ) {
-			float dx = abs( p.x - uDoor.x );
+			float sx = p.x - uDoor.x;
+			float dx = abs( sx );
 			float hz = p.z - uDrop;
 			vec3 c = mix( vec3( 0.107, 0.117, 0.125 ), vec3( 0.065, 0.120, 0.125 ), smoothstep( 0.08, 0.12, abs( fract( p.x / 62.0 ) - 0.5 ) ) ) * uDoorLit;
 			if ( hz > 153.6 ) c = vec3( 0.202, 0.205, 0.209 ) * uDoorLit * ( hz < 206.4 ? 1.0 : 0.7 );
-			else if ( dx < 108.2 ) c = vec3( 0.250, 0.120, 0.018 ) * uDoorLit;
+			else if ( dx < 108.2 ) c = ( sx > 0.0 ? vec3( 0.188, 0.098, 0.019 ) : vec3( 0.220, 0.153, 0.070 ) ) * uDoorLit;
 			if ( dx < 91.2 && hz < 144.0 ) {
-				vec3 room = mix( vec3( 0.216, 0.178, 0.114 ), vec3( 0.445, 0.356, 0.205 ), smoothstep( 78.0, 104.0, hz ) );
+				vec3 room = vec3( 0.108, 0.089, 0.057 ) * ( hz < 35.0 ? 0.6 : ( hz < 70.0 ? 1.0 : 1.5 ) );
+				room = mix( room, vec3( 0.356, 0.285, 0.164 ), smoothstep( 90.0, 104.0, hz ) );
 				room = mix( room, vec3( 0.871, 0.831, 0.745 ), smoothstep( 104.0, 110.0, hz ) * step( abs( fract( dx / 26.0 ) - 0.5 ), 0.28 ) * step( abs( fract( hz / 12.0 ) - 0.5 ), 0.3 ) );
-				float brass = max( step( hz, 24.0 ), max( step( 137.0, hz ), max( step( dx, 3.0 ), step( 85.2, dx ) ) ) );
-				c = mix( room * 1.25, ( hz < 24.0 ? vec3( 0.347, 0.168, 0.024 ) : vec3( 0.381, 0.181, 0.026 ) ) * uDoorLit, brass );
+				c = room;
+				float open = 91.2 * ( 1.0 - uDoor.w );
+				if ( dx > open ) {
+					float l = ( dx - open ) / max( uDoor.w, 0.05 );
+					float q = fract( ( l + hz * 0.55 ) / 91.2 );
+					c += vec3( 0.07, 0.07, 0.065 ) * uDoorLit * ( 0.6 - 0.6 * smoothstep( 0.0, 0.03, abs( q - 0.3 ) ) + 0.4 - 0.4 * smoothstep( 0.0, 0.015, abs( q - 0.42 ) ) );
+					if ( l < 3.0 || l > 85.2 ) c = vec3( 0.503, 0.262, 0.058 ) * uDoorLit;
+					if ( hz >= 137.0 ) c = vec3( 0.296, 0.144, 0.022 ) * uDoorLit;
+					if ( hz < 24.0 ) c = vec3( 0.252, 0.122, 0.019 ) * uDoorLit;
+				}
 			}
 			return vec4( mix( surround( dir ), c, seenWall ), seenWall );
 		}
