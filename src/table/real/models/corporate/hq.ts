@@ -175,6 +175,14 @@ function leafGlass(): Geo {
   const W = ((DOORS.w - DOORS.seam) / 2) * BALL
   const H = (DOORS.h - 0.05) * BALL
   fin(g, FINISH.stone, () => g.face([[6, 0, 24], [W - 6, 0, 24], [W - 6, 0, H - 7], [6, 0, H - 7]], [0, -1, 0], [1, 0, 0], GLASS_PALE), 0.2)
+  // What the pane mirrors: two slanting streaks of the room's light.
+  const gw = W - 12
+  fin(g, FINISH.stone, () => {
+    for (const [at, w] of [[0.1, 0.2], [0.4, 0.05]] as V2[]) {
+      const x = 6 + gw * at
+      g.face([[x, -0.08, 24], [x + gw * w, -0.08, 24], [x + gw * (w + 0.34), -0.08, H - 7], [x + gw * 0.34, -0.08, H - 7]], [0, -1, 0], [1, 0, 0], [1.5, 1.75, 1.8])
+    }
+  }, 2 * 0.028)
   return g
 }
 

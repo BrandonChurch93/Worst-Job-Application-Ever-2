@@ -69,7 +69,12 @@ export function buildRevolving(z: Zone, _ctx: RealContext): THREE.Object3D {
         }
       }, 2 * 0.13)
     }
-    fin(C, FINISH.stone, () => C.prism(outer, [0, -t], [0, t], RIM, [false, false]), 2 * 0.42)
+    fin(C, FINISH.stone, () => C.prism(outer, [0, -t], [0, t], RIM, [false, false]), 2 * 0.34)
+    // What each slab mirrors: one slanting streak of the room's light.
+    fin(C, FINISH.stone, () => {
+      const x = r0 + 9
+      C.face([[x, t + 0.06, DOOR.foot + 3], [x + 11, t + 0.06, DOOR.foot + 3], [x + 27, t + 0.06, top - 3], [x + 16, t + 0.06, top - 3]], [0, 1, 0], [1, 0, 0], [1.4, 1.6, 1.6])
+    }, 2 * 0.05)
     C.move(from, m)
   }
   rotor.add(mesh(S, mats.solid, `revolving.rotor.${z.id}`, { cast: true }))
