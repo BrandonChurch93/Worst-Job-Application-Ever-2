@@ -65,6 +65,7 @@ async function start(): Promise<void> {
     assets: params.get('assets') ?? (capture ? 'full' : 'web'),
     capture,
     stepped: params.get('clock') === 'steps' || mode === 'probe',
+    whole: mode !== 'live' || params.has('step'),
     forceKind: (params.get('target') as TargetKind | null) ?? undefined
   })
   if (params.get('diag')) app.setDiagnostic(params.get('diag')!)
@@ -363,7 +364,9 @@ function play(first: PlayMode): void {
     canvas,
     step: stepNow,
     setStep(step) {
-      base = Math.min(5, Math.max(0, Math.round(step)))
+      const to = Math.min(5, Math.max(0, Math.round(step)))
+      if (!app.code(liveFlow()[to]!.page, () => api.setStep(to))) return
+      base = to
       stage = makeStage()
       sound?.stop()
       if (flowing()) sound?.start()
@@ -402,7 +405,7 @@ function play(first: PlayMode): void {
   }
   const picker = makeQualityPicker(qualityIds.map((id) => ({ id, minFps: quality(id).minFps })), levelIsFixed() ? { fixed: size.level() } : { start: size.level() })
 
-  listenToVisitor({ window, document, canvas, mouse, live: () => now === 'live', typing: () => api.typing!(), touched, flippers: () => stage.page.control === 'flippers' })
+  listenToVisitor({ window, document, canvas, mouse, live: () => now === 'live', touched, flippers: () => stage.page.control === 'flippers' })
 
   let still = 0
   let frame = 0
@@ -445,6 +448,11 @@ function play(first: PlayMode): void {
     last = t
     frameSeconds = Math.min(0.5, dt)
     const run = Math.min(0.1, dt)
+    if (now === 'film' && !app.code(null)) {
+      controls.update()
+      requestAnimationFrame(tick)
+      return
+    }
     if (now === 'live') {
       owed += run
       const steps = Math.floor(owed * stepHz)

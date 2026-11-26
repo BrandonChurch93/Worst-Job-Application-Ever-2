@@ -13,6 +13,8 @@ import { filesOf, firstLoad, ignoredFolders, megabytes, sentBytes, verdict } fro
 const a = args()
 const t0 = clock()
 const say = (line) => console.log(`hostcheck: ${line}`)
+// A software renderer can take 10 s for a frame and a page screenshot waits for frames, so the screenshot gets 240 s and not the browser driver's 30.
+const SHOT_MS = 240000
 const cfg = config()
 const work = at('out', 'work', 'hostcheck')
 const copy = path.join(work, 'clean')
@@ -88,7 +90,7 @@ try {
   page.on('response', (r) => r.status() >= 400 && failed.push(`${r.status()} ${r.url()}`))
   page.on('pageerror', (e) => problems.push(String(e && e.message ? e.message : e)))
   const tl = clock()
-  await page.goto(`${server.url}/`)
+  await page.goto(`${server.url}/`, { timeout: 120000 })
   const state = await page.evaluate(async () => {
     if (!window.showcase) return { ready: false, why: 'the page has no window.showcase' }
     try {
@@ -104,7 +106,7 @@ try {
   open = false
   const secondsToReady = seconds(tl)
   await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {})
-  const shot = await page.screenshot({ type: 'png' })
+  const shot = await page.screenshot({ type: 'png', timeout: SHOT_MS })
   fs.writeFileSync(path.join(work, 'first-picture.png'), shot)
   await browser.close()
   const size = new Map(files.map((f) => [f.file, f.bytes]))
@@ -152,7 +154,7 @@ if (!a['no-subpath']) {
     page.on('pageerror', (e) => problems.push(String(e && e.message ? e.message : e)))
     const ts = clock()
     await page.goto(`${under.url}${prefix}?bot=skipper&quality=low`, { timeout: 120000 })
-    const limit = Number(a['subpath-seconds'] ?? 300)
+    const limit = Number(a['subpath-seconds'] ?? 900)
     let show = ''
     let flags = []
     while (seconds(ts) < limit) {
@@ -172,7 +174,7 @@ if (!a['no-subpath']) {
       if (show === 'step1' || problems.length) break
       await new Promise((r) => setTimeout(r, 2000))
     }
-    fs.writeFileSync(path.join(work, 'sub-path.png'), await page.screenshot({ type: 'png' }))
+    fs.writeFileSync(path.join(work, 'sub-path.png'), await page.screenshot({ type: 'png', timeout: SHOT_MS }))
     await browser.close()
     sub = { prefix, reached: show, seconds: seconds(ts), flags, problems, failed: [...new Set(failed)], outside: [...new Set(outside)], ok: show === 'step1' && !problems.length && !failed.length && !outside.length && !flags.length }
   } finally {

@@ -97,3 +97,18 @@ These are names for a screen reader and labels of the probe. They are in code, n
 
 - `src/ui/names.ts`: sound "Sound", play "Play", position "Position in the film", back "Back to the application".
 - `src/probe/labels.ts`: title "Probe", running "Measuring", median "median fps", slowest "slowest 1% fps", frames "frames", card "Graphics card", screen "Screen", window "Window", browser "Browser", pick "The site would pick", unknown "not reported", failed "did not run", copy "Copy", copied "Copied", again "Run again".
+
+## Decisions, after 17:45 UTC
+
+17. Tab is always the browser's own (`src/ui/pointer.ts`). Before, Tab pressed on the page or the picture while a page takes typing was held back and handed to the page as a key. No page reads a key called Tab, so on steps 1 and 4 a keyboard visitor could not reach the film link or the skip link. Found by `node src/ui/hands.mjs skip`: four Tabs, focus on the body four times.
+18. The mode and the film bar are shown at the press of the film link and of the back control (`showMode`, `showFilm` in `src/ui/interface.ts`), not at the next drawn picture. On a machine that draws a picture in seconds the bar came seconds after the click and the position read 50, the default of a range input, until the first picture of the film.
+19. The row and the bar are placed again once every resize listener has run (`setTimeout(place, 0)`), because the picture gets its new size in a listener of `src/main.ts` that may run after the interface's.
+20. `src/ui/site.mjs` waits for what it wants to see with a limit of 180 s and never for a fixed time. Its step 1 run uses the device pixel ratio 0.5 and the level low, as decision 15.
+21. The touch page with no address in `links.portfolioWork` draws no link: the heading, "We're sorry." and the sentence. With an address it draws the link.
+22. The film bar stays 56 CSS px at every window size. At 3840 by 2160 and a device pixel ratio of 1 that is 2.6% of the height. Left so: the kit sets no other number, and `/root/site_levels` fits the picture to 56.
+
+## interface, MEASURED on the wired site (18:00 to 18:20 UTC)
+
+- `node src/ui/looks.mjs motion touch history`: 14 of 14 checks hold. Touch page: 22 requests on the dev server, 9 on the built site, none under `src/pages`, no asset, no sound, none from another host. Less motion: the film at 0, the back control leads to the live site, `?mode=live` gives the live site. History: film link, browser back, forward, back control, browser back: the mode and the address change together, the page is loaded once.
+- `node src/ui/looks.mjs keys bar ink`: Tab order on the careers page and in the bar, ring solid 2px rgb(196, 70, 15), Enter and Space on the film link and the back control. Bar 56 px at 1280 by 720 and at 3840 by 2160, below the picture, the same box after the film has ended. Ink at 1920 by 1080: page 6.01 and 6.02 to 1, pale capsule 8.23 and 8.00 to 1.
+- `node src/ui/hands.mjs skip`: a real click on the skip link at 1920 by 1080 CSS px reaches step 2.

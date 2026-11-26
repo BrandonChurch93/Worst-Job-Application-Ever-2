@@ -6,6 +6,7 @@
 // The last render is the visit as it is heard, with every line the narrator's rules let through.
 import fs from 'node:fs'
 import path from 'node:path'
+import { execFileSync } from 'node:child_process'
 import { at, readJson, writeJson } from './paths.mjs'
 
 export const MOMENTS = [
@@ -93,6 +94,7 @@ window.render = async (index, calls, seconds, spans, windowSeconds) => {
   }
   const peakDb = (first, from, to) => { const v = dsp.truePeakDb(cut(first, from, to)); return Number.isFinite(v) ? Number(v.toFixed(2)) : null }
   const sampleDb = (first, from, to) => { const v = Math.max(...cut(first, from, to).channels.map((c) => dsp.peak(c))); return v > 0 ? Number((20 * Math.log10(v)).toFixed(2)) : null }
+  window.kept = { rate, left: ch[4], right: ch[5] }
   return {
     state: sound.state(), backend: sound.backend(), seconds: buffer.duration, log: sound.log(),
     whole: { lufs: lufs(4, 0, seconds), truePeakDb: peakDb(4, 0, seconds) },
@@ -104,10 +106,61 @@ window.render = async (index, calls, seconds, spans, windowSeconds) => {
     }))
   }
 }
+window.take = (from, frames) => {
+  const k = window.kept
+  const n = Math.max(0, Math.min(frames, k.left.length - from))
+  const bytes = new Uint8Array(n * 4)
+  const view = new DataView(bytes.buffer)
+  const s16 = (v) => Math.max(-32768, Math.min(32767, Math.round(v * 32767)))
+  for (let i = 0; i < n; i += 1) {
+    view.setInt16(i * 4, s16(k.left[from + i]), true)
+    view.setInt16(i * 4 + 2, s16(k.right[from + i]), true)
+  }
+  let text = ''
+  for (let i = 0; i < bytes.length; i += 32768) text += String.fromCharCode.apply(null, bytes.subarray(i, i + 32768))
+  return { rate: k.rate, frames: n, total: k.left.length, data: btoa(text) }
+}
 window.ready = true
 </script>`
 
-export async function levelsRun(load, c, pub) {
+const KEEP_KBPS = 192
+
+async function keepRender(page, name, what, r) {
+  const dir = at('out', 'work', 'audio', 'heard')
+  fs.mkdirSync(dir, { recursive: true })
+  const parts = []
+  let rate = 0
+  let total = Infinity
+  for (let from = 0; from < total; from += 480000) {
+    const got = await page.evaluate(([f, n]) => window.take(f, n), [from, 480000])
+    rate = got.rate
+    total = got.total
+    parts.push(Buffer.from(got.data, 'base64'))
+  }
+  const data = Buffer.concat(parts)
+  const head = Buffer.alloc(44)
+  head.write('RIFF', 0)
+  head.writeUInt32LE(36 + data.length, 4)
+  head.write('WAVEfmt ', 8)
+  head.writeUInt32LE(16, 16)
+  head.writeUInt16LE(1, 20)
+  head.writeUInt16LE(2, 22)
+  head.writeUInt32LE(rate, 24)
+  head.writeUInt32LE(rate * 4, 28)
+  head.writeUInt16LE(4, 32)
+  head.writeUInt16LE(16, 34)
+  head.write('data', 36)
+  head.writeUInt32LE(data.length, 40)
+  const wav = path.join(dir, `${name}.wav`)
+  const file = path.join(dir, `${name}.mp3`)
+  fs.writeFileSync(wav, Buffer.concat([head, data]))
+  execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', wav, '-ac', '2', '-c:a', 'libmp3lame', '-b:a', `${KEEP_KBPS}k`, '-map_metadata', '-1', '-id3v2_version', '0', file])
+  fs.rmSync(wav)
+  const lines = r.log.filter((e) => e.what === 'spoken' && !r.log.some((x) => x.what === 'taken back' && x.line === e.line && x.start === e.start)).map((e) => ({ start: Number(e.start.toFixed(2)), seconds: e.seconds, line: e.line }))
+  return { what, file: path.relative(at(), file), seconds: Number((total / rate).toFixed(2)), bytes: fs.statSync(file).size, lines }
+}
+
+export async function levelsRun(load, c, pub, keep = false) {
   const { build } = await import('vite')
   const { serve } = await import('./serve.mjs')
   const { launch } = await import('./browser.mjs')
@@ -135,9 +188,11 @@ export async function levelsRun(load, c, pub) {
     await page.goto(`${site.url}/index.html`)
     await page.waitForFunction('window.ready === true')
     const peaks = []
-    const render = async (what, list, spans, windowSeconds, length = seconds) => {
+    const kept = []
+    const render = async (what, list, spans, windowSeconds, length = seconds, keepAs = '') => {
       const r = await page.evaluate(([i, l, s, sp, w]) => window.render(i, l, s, sp, w), [index, list, length, spans, windowSeconds])
       peaks.push({ what, lufs: r.whole.lufs, truePeakDb: r.whole.truePeakDb })
+      if (keep && keepAs) kept.push(await keepRender(page, keepAs, what, r))
       await page.reload()
       await page.waitForFunction('window.ready === true')
       return r
@@ -184,7 +239,7 @@ export async function levelsRun(load, c, pub) {
     })
     // Last render: the visit as the visitor hears it, every event live, the narrator saying what its rules let it say.
     const heardLines = heardOf(v.log)
-    const asHeard = await render('keen, as heard', liveOf(shifted), heardLines.map((e) => ({ line: e.line, at: e.start + PRE, from: e.start + PRE, to: e.start + PRE + e.seconds })), 0)
+    const asHeard = await render('keen, as heard', liveOf(shifted), heardLines.map((e) => ({ line: e.line, at: e.start + PRE, from: e.start + PRE, to: e.start + PRE + e.seconds })), 0, seconds, 'live-keen-as-heard')
     const heard = asHeard.spans.map((s) => ({
       line: s.line, page: v.turns.filter((t) => t.at <= s.at - PRE + 1e-9).pop()?.page ?? '', visitSeconds: Number((s.at - PRE).toFixed(2)), lineSeconds: Number((s.to - s.from).toFixed(3)),
       voiceLufs: s.voice, bedLufs: s.bed, marginDb: s.voice !== null && s.bed !== null ? Number((s.voice - s.bed).toFixed(2)) : null,
@@ -196,12 +251,13 @@ export async function levelsRun(load, c, pub) {
     const sk = await visit(load, c, 'skipper', c.seed, skipCalls)
     const skipped = skipCalls.map((x) => ({ ...x, at: x.at + PRE }))
     await render('skipper, no line', silentOf(skipped), [], 0, sk.seconds + PRE + 1)
-    const skipHeard = await render('skipper, as heard', liveOf(skipped), [], 0, sk.seconds + PRE + 1)
+    const skipHeard = await render('skipper, as heard', liveOf(skipped), [], 0, sk.seconds + PRE + 1, 'live-skipper-as-heard')
     const want = c.audio.duckDb
     const ceiling = c.audio.truePeakDb
     const worst = peaks.reduce((a, b) => (b.truePeakDb > a.truePeakDb ? b : a))
     const peakHolds = worst.truePeakDb <= ceiling
     const { LIVE } = await load('/src/audio/levels.ts')
+    const thin = [...rows.map((r) => ({ name: r.moment, line: r.line, db: r.marginAtLoudestMomentDb })), ...heard.map((r) => ({ name: 'as heard', line: r.line, db: r.marginAtLoudestMomentDb }))].filter((r) => r.db !== null).sort((x, y) => x.db - y.db)
     const record = {
       about: 'The keen visit, rendered offline through the engine of the site in a browser. Voice and bed are read before the master gain, in loudness units, over the span of the line.',
       browser: version, bot: 'keen', seed: c.seed, visitSeconds: v.seconds, events: shifted.filter((x) => x.event).length, backend: asHeard.backend, errors,
@@ -209,6 +265,7 @@ export async function levelsRun(load, c, pub) {
       headroomDb: LIVE.headroomDb, peakBoundDb: ceiling, peaks, largestTruePeakDb: worst.truePeakDb, largestIn: worst.what, peakHolds, skipperLinesHeard: heardOf(skipHeard.log).map((e) => e.line),
       heard, heardHolds: heard.every((r) => r.marginDb !== null && r.marginDb >= want), linesSpokenInTheBrowser: asHeard.log.filter((e) => e.what === 'spoken').length, linesSpokenOnTheStageClock: v.log.filter((e) => e.what === 'spoken').length,
       wholeVisit: { withoutLines: bare.whole, asHeard: asHeard.whole, skipperAsHeard: skipHeard.whole },
+      momentaryMargins: thin, keptForTheEar: kept,
       narratorLog: asHeard.log
     }
     writeJson(at('out', 'work', 'audio', 'levels.json'), record)
@@ -216,6 +273,8 @@ export async function levelsRun(load, c, pub) {
     for (const r of rows) console.log(`levels: ${r.moment}: ${r.line} by ${r.trigger} at ${r.visitSeconds} s (loudest of ${r.occurrences}), ${r.spokenAt === null ? 'NOT SPOKEN' : `spoken at ${r.spokenAt} s`} for ${r.lineSeconds} s. Voice ${r.voiceLufs} LUFS, bed ${r.bedLufs} LUFS, margin ${r.marginDb} dB. Bed with no line there ${r.bedWithoutLineLufs} LUFS, so the duck took ${r.duckDb} dB. Loudest 0.4 s of the bed ${r.bedLoudestMomentLufs} LUFS, margin there ${r.marginAtLoudestMomentDb} dB. Output ${r.outputLufs} LUFS, true peak ${r.outputTruePeakDb} dB; the voice alone peaks at ${r.voiceTruePeakDb} dB, its largest sample at ${r.voiceSamplePeakDb} dB. The page's busiest 3 s: ${r.pageBusiest3s ? `at ${r.pageBusiest3s.visitSeconds} s, ${r.pageBusiest3s.lufs} LUFS, ${r.pageBusiest3s.underTheLine ? 'under the line' : 'not under the line'}` : 'unknown'}`)
     for (const r of heard) console.log(`levels: as heard, ${r.page}: ${r.line} at ${r.visitSeconds} s for ${r.lineSeconds} s. Voice ${r.voiceLufs} LUFS, bed ${r.bedLufs} LUFS, margin ${r.marginDb} dB, at the bed's loudest 0.4 s ${r.marginAtLoudestMomentDb} dB. Output true peak ${r.outputTruePeakDb} dB, the voice alone ${r.voiceTruePeakDb} dB, its largest sample ${r.voiceSamplePeakDb} dB`)
     console.log(`levels: the whole visit at the output, after a headroom of ${LIVE.headroomDb} dB: keen ${bare.whole.lufs} LUFS with no line and ${asHeard.whole.lufs} LUFS as heard (${record.linesSpokenInTheBrowser} lines booked in the browser, ${record.linesSpokenOnTheStageClock} on the stage's clock), skipper ${skipHeard.whole.lufs} LUFS as heard with ${record.skipperLinesHeard.length} lines. ${errors.length ? `Page errors: ${errors.join('; ')}` : 'No page error'}`)
+    console.log(`levels: information, not judged: the voice against the bed's loudest 0.4 s under each line, smallest first: ${thin.map((r) => `${r.db} dB (${r.name}, ${r.line})`).join('; ')}. ${thin.filter((r) => r.db < want).length} of ${thin.length} are under ${want} dB`)
+    for (const k of kept) console.log(`levels: kept for the ear, ${k.what}: ${k.file}, ${k.seconds} s, ${k.bytes} bytes, stereo mp3 at ${KEEP_KBPS} kbit; the lines start at ${k.lines.map((l) => `${l.start} s ${l.line}`).join(', ')}`)
     console.log(`levels: true peak of the output in each render: ${peaks.map((p) => `${p.what} ${p.truePeakDb} dB`).join('; ')}`)
     console.log(`levels: peak ${peakHolds ? 'pass' : 'FAIL'}. The largest true peak of the live output is ${worst.truePeakDb} dB (${worst.what}); the bound is audio.truePeakDb, ${ceiling} dB. Written to out/work/audio/levels.json`)
     if (!peakHolds || !record.holds) process.exitCode = 1

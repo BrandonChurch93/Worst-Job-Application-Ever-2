@@ -12,7 +12,7 @@ Part `sound-engine`. Branch `agent/site-sound`. A fact here is MEASURED (the com
 6. The idle rule moved from `src/main.ts` into the engine: `quiet(seconds)`. `main.ts` passes the seconds since the last movement or click, the engine holds `live.idleSeconds`. This is what lets a test prove the rule at the engine's level.
 7. The volume is 1 on a page that sets none. Before this `main.ts` kept the last volume when a page had no `volume()`; step 2 always ends at 1, so nothing heard changes, but the rule is now in one place.
 8. The margin of the levels is `audio.duckDb` (8 dB): section 12 says "Effects duck under a line" and names no other number. The voice is called clear when its loudness is at least 8 dB over the ducked bed.
-10. One fixed headroom after everything, `LIVE.headroomDb` 2.5 dB in `src/audio/levels.ts`, by the Builder's ruling of 17:00Z: no compressor and no limiter. It is the smallest half dB that holds the live output at or under `audio.truePeakDb` (-1 dB) in every render of `npm run sound -- --levels`. The plain audio elements of the fallback have no sum of their own to hold, so the headroom is in the sound graph only.
+10. One fixed headroom after everything, `LIVE.headroomDb` 1.5 dB (2.5 until 18:14Z, on the 64 kbit pack) in `src/audio/levels.ts`, by the Builder's ruling of 17:00Z: no compressor and no limiter. It is the smallest half dB that holds the live output at or under `audio.truePeakDb` (-1 dB) in every render of `npm run sound -- --levels`. The plain audio elements of the fallback have no sum of their own to hold, so the headroom is in the sound graph only.
 11. The 30 s after which a loop that nothing stops ends by itself is `LIVE.loopMaxSeconds` in `src/audio/levels.ts`. It is the sound part's own number, there since the engine was first built (main at aafc241c), not the config's. What it guards: a loop whose stop never comes. `sizzle` and `shredder` are stopped by an event of their page, `hold-music` by the engine's own clock and `boss-loop` by `power-down`; if a page is left, a fight is abandoned or an event is lost before that stop, the loop would otherwise sound until the tab is closed. The page turn and the skip stop loops as well, so the 30 s is the last guard, for a visitor who stays on the page.
 9. Idle after a hidden tab is left as it was: the seconds since the last movement run on while the tab is hidden, and the engine holds its sound graph meanwhile, so the line is said when the visitor is back.
 
@@ -160,7 +160,7 @@ The real fall of the nine comes from the Builder's dry run on the takes. The fou
 
 Test: `tests/audio-peaks.test.ts`, 7 tests, with a made take (two tones with a 30 ms burst that passes the bound once levelled) and a calm one. It needs ffmpeg and is skipped where there is none.
 
-After the Builder has kept and packed them again: `npm run sound -- --levels` on the new pack, and `LIVE.headroomDb` is set to the smallest half dB that holds the bound.
+After the Builder kept and packed them again: see "The headroom on the 128 kbit pack" below.
 
 ### What holding the peak cost each line (the Builder's run on the takes, 17:46Z)
 
@@ -214,6 +214,30 @@ So `PACK.lineKbps` in `src/audio/levels.ts` is 128: the overshoot goes from abou
 
 On that 64 kbit pack `--levels` FAILS its peak line: +0.07 dB at the output in the keen visit as heard, at `line.boss.verify.0` (voice alone +0.62 dB, cut at full scale, over the bed's loudest moment), with the headroom at 2.5 dB. The keen visit is also not the one of 17:10Z: after merge 38 it has 839 events over 125.62 s and 14 lines booked (it was 124.05 s and 11).
 
+### The headroom on the 128 kbit pack (18:14Z)
+
+The pack is the Builder's of 18:09Z (main 38086db9; the tar is 7045120 bytes, sha256 9c4a1ac9...). All MEASURED here in Chromium 159.0.8154.6 with `npm run sound -- --levels`, three runs with only `LIVE.headroomDb` changed. The keen visit is the one after merge 38: 839 events, 125.62 s, 14 lines booked.
+
+| `LIVE.headroomDb` | largest true peak of the output | keen, no line | keen, as heard | skipper, as heard |
+|---|---|---|---|---|
+| 2.5 | -2.49 dB | -26.71 LUFS | -20.53 LUFS | -19.43 LUFS |
+| 2 | -1.99 dB | -26.21 LUFS | -20.03 LUFS | -18.93 LUFS |
+| 1.5 (set) | -1.49 dB | -25.71 LUFS | -19.53 LUFS | -18.43 LUFS |
+
+1.5 is the smallest half dB that holds `audio.truePeakDb` (-1 dB): at 1 dB the largest would be -0.99 dB, by the same sum, not run. The largest is always the keen visit as heard, at `line.boss.verify.0` (94.55 s, the voice alone at -1.29 dB over the bed's loudest moment). The other renders at 1.5: keen with no line -3.94 dB; step 1 under fire -2.82; the tug -2.73; the slot -2.96; the bumpers -2.99; the boss's hit -2.63; skipper with no line -4.42; skipper as heard -2.73.
+
+No line is cut by the decoder any more: the voice alone has its largest sample between -1.04 and -4.1 dB (7 of 11 were at exactly 0 dB on the 64 kbit pack). The margins do not move with the headroom, it is one gain after everything: the voice over the bed, whole line, fire 14.41 dB, tug 13.89, slot 17.81, bumpers 13.89, the boss's hit 14.3, and 13.59 to 24.28 dB in the lines as heard; all over `audio.duckDb` (8 dB). At the bed's loudest 0.4 s under a line the smallest are 7.28 dB (the bumpers), 7.52 (`decision.letter.0`) and 8.24 (`boss.verify.0`); `--levels` judges the whole line, not that moment.
+
+FINDING, MEASURED: the mp3 encoder turns a line down by about 0.45 dB at 128 kbit. `ffmpeg -af astats` on `line.boss.slabs.0`: kept WAV RMS -20.68 dB and -18.0 LUFS; packed at 128 kbit RMS -21.12 dB and -18.4 LUFS; the same at 96 to 160 kbit (-21.09 to -21.13), not at 64 (-20.78). `--pack` adds no gain, so it is the encoder's own. In the browser the lines come out 0.4 to 0.6 LU lower than on the 64 kbit pack (`step1.email.0` -14.98 to -15.52 at the voice track). Nothing is done about it: the margins hold, and a gain before the encoder would bring the peaks back up. The films do not use these files.
+
+`--pack-check` now fails when a packed line decodes over 0 dB, when it cannot be decoded, and when ffmpeg is missing (the line says so): `linesOverFullScale` in `tools/lib/sound-packcheck.mjs`, `tests/audio-packcheck.test.ts`. MEASURED on this pack: pass, 38 files, the largest sample of the 34 lines at -1.12 dB (`line.marketing.perks.0.mp3`).
+
+### The momentary margins, and two visits kept for the ear (18:30Z)
+
+`npm run sound -- --levels` prints one more line, marked "information, not judged": the voice against the bed's loudest 0.4 s under each line, smallest first, and how many are under `audio.duckDb`. MEASURED: 2 of 16 are under 8 dB, 7.28 dB (the bumpers, `line.pinball.coffee.0`) and 7.52 dB (as heard, `line.decision.letter.0`). What `--levels` judges is unchanged. The same list is in `out/work/audio/levels.json` as `momentaryMargins`.
+
+`npm run sound -- --levels --ear` also keeps the output of the two renders as heard, as stereo mp3 at 192 kbit in `out/work/audio/heard/` (never in the repo): the same render the numbers come from, 16 bit, nothing made new. MEASURED: `live-keen-as-heard.mp3` 127.12 s, 3052224 bytes, -19.8 LUFS and peak -1.8 dB by ffmpeg; `live-skipper-as-heard.mp3` 118.93 s, 2855808 bytes, -18.7 LUFS and peak -3.0 dB. Each starts 0.5 s before the visit and runs 1 s past it. The 3 lines of the keen visit that were booked and taken back (`step2.crank.0`, `pinball.drain.0`, `decision.metrics.0`) are not in it: their page was turned before they began.
+
 ## The crank (point 5)
 
 `src/pages/step2/index.ts` line 857: the page's volume is `max(0.1, level)` from the moment the Audio volume row opens until that row is done, and 1 otherwise; `level` is a tenth for each whole turn.
@@ -226,9 +250,24 @@ Tests in `tests/audio-rules.test.ts`: the mute over a line and a loop, the fallb
 
 A2. MEASURED on a quiet VM of 4 cores, `npm run sound -- --browser --site`: the control changed its state 2.17 s, 2.68 s and 3.01 s after the press, each time after exactly one drawn frame. With 8 busy loops beside it the page drew one frame in over 20 s and the control was not shown in that time. So it is the control and not the check's timing: `src/ui/interface.ts` writes the state and the icon only in the draw tick, and the engine mutes at the press. The file is `/root/site_controls`' and the fix is theirs (the state written at the press). The check now waits for the sounds to load before it reads "as found", and records how late each answer came and how many frames were drawn.
 
+## Step 3 of Phase 5, item by item (18:16Z, on main 38086db9 with this branch)
+
+| item of step 3 | state | measure |
+| --- | --- | --- |
+| `npm run sound -- --pack` | done, by the Builder (the sounds are not in the repo) | STATED by him: 6.66 MB of 14 MB, lines at 128 kbit. MEASURED here on his tar: `npm run sound -- --pack-check` pass, 38 files, the 34 lines decode under full scale, largest sample -1.12 dB |
+| the loops | done | MEASURED, `npm run sound -- --loops` on this pack: seam against the largest step inside, `boss-loop` -14.66 dB, `room-tone` -31.65 dB, `shredder` -17.44 dB; the hold music is cut dead at 2 s (+12.9 dB, the cut the kit asks for). A loop left running ends at `LIVE.loopMaxSeconds` 30 s |
+| the levels | done | MEASURED, `npm run sound -- --levels`: peak pass, largest true peak of the live output -1.49 dB with `LIVE.headroomDb` 1.5; voice over the bed 13.59 to 24.28 dB as heard, each over `audio.duckDb` 8 dB; keen -19.53 LUFS as heard, skipper -18.43 |
+| the narrator's rules for the live site | done | MEASURED, `npm run sound -- --visit all`: keen 125.62 s, 14 lines booked, 3 taken back or cut, 11 heard; clumsy 149.95 s, 12 heard; random 116.07 s, 4 skips, 6 heard; skipper 117.43 s, 5 skips, 4 of the film heard. Live lines asked for and heard: idle 5 and 3, skip 9 and 5, tugLost 2 and 1, hit 84 and 0, flipper 3 and 0, boss.verify 3 and 0, slowTyping 1 and 0; realKeyboard, boss.slow and watchFilm are never asked for by a bot. Tests: `tests/audio-live.test.ts`, `tests/audio-narrator.test.ts`, `tests/audio-visit.test.ts` |
+| the crank setting the volume | done | MEASURED, `npm run sound -- --visit keen`: volume 1 from 0.02 s, 0.1 at 43.92 s when the row opens, 0.2 at 44.95, 0.3 at 45.27, 0.4 at 45.6, 0.6 at 46.03, 0.9 at 46.52, 1 at 46.67 and after. The headroom is after it and does not move |
+| the sound checks | run, see the last report | `npm run sound -- --check` |
+
+Not heard by anyone: every number here is from a tool, none from an ear.
+
 ## What is not done, and what is not known
 
 - A6 and A9 wait for the mix; A10 is left as ruled.
-- The 9 kept lines with clipped peaks are not kept again.
+- `npm run sound -- --check` at 18:27Z on the 128 kbit pack, MEASURED: 8 pass (A1 to A5, A7, A8, A11), 1 fail (A10, `line.live.tugLost.0`), 2 not yet (A6, A9).
+- The lines with a peak over the bound were kept again by the Builder (24 of 34, main cc6329a6), not by me: the takes are not in this VM.
+- The packed lines are about 0.45 dB under their kept level (the encoder, see above).
 - `cut/CUTLIST.json` on main is older than the stage: 689 events against the 977 `npm run cut` gives now.
 - What a phone does with the sound is UNKNOWN: everything here is measured in Chromium on a desk.

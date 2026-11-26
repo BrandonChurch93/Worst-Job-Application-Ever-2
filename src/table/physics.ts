@@ -1,11 +1,14 @@
-import RAPIER from '@dimforge/rapier2d-deterministic-compat'
+import type { RigidBody, World } from '@dimforge/rapier2d-deterministic-compat'
 import { config } from '../config'
 import { COLS, COS25, FLIP, FLIP_REACH, GRAVITY, MID, MOUTH, OUTLANE, R, SIN25, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt, type V } from './layout'
 
+let RAPIER!: typeof import('@dimforge/rapier2d-deterministic-compat').default
 let ready = false
 export async function prepare(): Promise<void> {
   if (ready) return
-  await RAPIER.init()
+  const library = (await import('@dimforge/rapier2d-deterministic-compat')).default
+  await library.init()
+  RAPIER = library
   ready = true
 }
 
@@ -62,7 +65,7 @@ const newBall = (steel: boolean): BallState => ({ mode: 'none', steel, x: 0, y: 
 const banks = [...new Set(table.targets.filter((t) => t.kind === 'drop').map((t) => t.id.slice(0, t.id.lastIndexOf('.'))))]
 
 export class Machine {
-  private world!: RAPIER.World
+  private world!: World
   private ballHandles: number[] = []
   private flipHandles: number[] = []
   balls: BallState[] = []
@@ -183,7 +186,7 @@ export class Machine {
     this.events = []
   }
 
-  private body(i: number): RAPIER.RigidBody {
+  private body(i: number): RigidBody {
     return this.world.getRigidBody(this.ballHandles[i]!)
   }
 

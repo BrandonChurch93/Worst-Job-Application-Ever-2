@@ -8,6 +8,7 @@ import { EMITTER_BODY_PX, lightLaw, shadowFilter } from '../post/studio'
 import type { Emitter } from '../real/types'
 import { quality, type QualityId } from './quality'
 import { levelPlan, REST_FRAMES, restSample, type LevelPlan } from './levelPlan'
+import { SampleBounds } from './levelClamp'
 import { RestBlend, restShare } from './levelRest'
 import { StillShadows, type StillStats } from './levelShadows'
 
@@ -22,6 +23,12 @@ const QUALITY: { minKeyPx: number; pool: number; shadows: number }[] = [
 // The heights the shadow map is fitted to. Things outside them still throw and take shadows inside the page.
 const FIT_Z: [number, number] = [-40, 120]
 const MIN_DOME_SHADOW_PX = 1024
+
+// How far the map leans so that the page's upward axis, seen from the light through `m`, runs along the map's columns.
+export function squareLean(m: THREE.Matrix4): number {
+  const e = m.elements
+  return Math.abs(e[5]!) > 1e-9 ? -e[4]! / e[5]! : 0
+}
 
 export class LightRig {
   readonly key = new THREE.DirectionalLight()
@@ -39,6 +46,8 @@ export class LightRig {
   private m = new THREE.Matrix4()
   private v = new THREE.Vector3()
   private w = new THREE.Vector3()
+  private up = new THREE.Vector3()
+  private shear = new THREE.Matrix4()
   level = 1
   emitters: Emitter[] = []
 
@@ -159,7 +168,10 @@ export class LightRig {
 
   // Aims a lamp at the part of the page on show and fits its shadow map to it: square, so a texel is as wide as it is high.
   // `tan` is the tangent of half the angle of the piece of the light's area this sample stands for.
-  private aim(light: THREE.DirectionalLight, dx: number, dy: number, dz: number, tan: number, of: { biasPx: number; normalBiasPx: number; shadowMapPx: number }, s: Sample, alone: boolean): void {
+  // `square` turns and shears the map so that the page's two axes run along the map's rows and columns: the edge of a
+  // thing that lies square on the page then falls into one row of texels and its shadow has no steps. Only a live frame
+  // of a level that holds its light still asks for it; a computed picture never does.
+  private aim(light: THREE.DirectionalLight, dx: number, dy: number, dz: number, tan: number, of: { biasPx: number; normalBiasPx: number; shadowMapPx: number }, s: Sample, alone: boolean, square = false): void {
     const b = this.bounds
     const r = this.rect
     const cx = (r.minX + r.maxX) / 2
@@ -169,9 +181,14 @@ export class LightRig {
     const reach = Math.hypot(r.maxX - r.minX, r.maxY - r.minY) + above + 200
     light.target.position.set(cx, cy, 0)
     light.position.set(cx + dx * reach, cy + dy * reach, dz * reach)
+    if (square) this.up.set(0, dz, -dy).normalize()
+    else this.up.set(0, 1, 0)
+    light.up.copy(this.up)
+    light.shadow.camera.up.copy(this.up)
     light.target.updateMatrixWorld()
     light.updateMatrixWorld()
     this.m.lookAt(light.position, light.target.position, light.up).setPosition(light.position).invert()
+    const lean = square ? squareLean(this.m) : 0
     let minX = Infinity
     let maxX = -Infinity
     let minY = Infinity
@@ -181,6 +198,7 @@ export class LightRig {
     for (let i = 0; i < 8; i++) {
       const z = i & 4 ? Math.min(b.maxZ, FIT_Z[1]) : Math.max(b.minZ, FIT_Z[0])
       this.v.set(i & 1 ? r.maxX : r.minX, i & 2 ? r.maxY : r.minY, z).applyMatrix4(this.m)
+      this.v.x += lean * this.v.y
       minX = Math.min(minX, this.v.x)
       maxX = Math.max(maxX, this.v.x)
       minY = Math.min(minY, this.v.y)
@@ -202,6 +220,12 @@ export class LightRig {
     cam.near = Math.max(1, near - above - 4)
     cam.far = far - below + 4
     cam.updateProjectionMatrix()
+    if (lean !== 0) {
+      this.shear.identity()
+      this.shear.elements[4] = lean
+      cam.projectionMatrix.multiply(this.shear)
+      cam.projectionMatrixInverse.copy(cam.projectionMatrix).invert()
+    }
     const depth = cam.far - cam.near
     const coarse = Math.max(1, of.shadowMapPx / px)
     light.shadow.bias = (-of.biasPx * coarse) / depth
@@ -268,11 +292,11 @@ export class LightRig {
     this.seen(camera)
     this.key.color.setRGB(...look.key.colour)
     this.key.intensity = look.key.intensity * this.level
-    this.aim(this.key, dx, dy, dz, r * split.blur, look.key, s, alone)
+    this.aim(this.key, dx, dy, dz, r * split.blur, look.key, s, alone, hold)
     this.dome.color.setRGB(...look.dome.colour)
     const up = one ? 1 : s.dome[2]
     this.dome.intensity = (look.dome.intensity * this.level) / up
-    if (one) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome, s, alone)
+    if (one) this.aim(this.dome, 0, 0, 1, domeSpread(1), look.dome, s, alone, hold)
     else this.aim(this.dome, s.dome[0], s.dome[1], up, domeSpread(s.count), look.dome, s, alone)
     const cx = (this.rect.minX + this.rect.maxX) / 2
     const cy = (this.rect.minY + this.rect.maxY) / 2
@@ -324,6 +348,7 @@ export class Engine {
   private still = new StillShadows()
   private keeps = false
   private rest = new RestBlend()
+  private sampleBounds: SampleBounds | null = null
 
   constructor(canvas: HTMLCanvasElement, width: number, height: number, opts: { preserve: boolean; forceKind?: TargetKind; multisamples?: number }) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, depth: false, stencil: false, preserveDrawingBuffer: opts.preserve, powerPreference: 'high-performance' })
@@ -342,6 +367,7 @@ export class Engine {
     this.height = height
     this.acc = new Accumulator(this.renderer, width, height, opts.forceKind, opts.multisamples ?? 0)
     this.kind = this.acc.kind
+    if ((opts.multisamples ?? 0) > 0 && this.kind !== 'byte') this.sampleBounds = new SampleBounds()
   }
 
   setSize(width: number, height: number): void {
@@ -388,6 +414,7 @@ export class Engine {
     r.setRenderTarget(this.acc.sample)
     r.clear(true, true, false)
     r.render(shot.scene, shot.camera)
+    this.sampleBounds?.apply(r, this.acc.sample)
     if (restore) restore()
     shot.camera.clearViewOffset()
     this.acc.add()

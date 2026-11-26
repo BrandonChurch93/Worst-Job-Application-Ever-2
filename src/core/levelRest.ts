@@ -8,7 +8,7 @@ export function restShare(done: number, of: number): number {
   return Math.min(1, Math.max(0, (done - 1) / (of - 1)))
 }
 
-const TYPE: Record<TargetKind, THREE.TextureDataType> = { float: THREE.FloatType, half: THREE.HalfFloatType, byte: THREE.UnsignedByteType }
+const TYPE: Record<TargetKind, THREE.TextureDataType> = { float: THREE.HalfFloatType, half: THREE.HalfFloatType, byte: THREE.UnsignedByteType }
 
 // Holds the picture a page showed as it came to rest and gives the picture to show while the mean is gathered.
 export class RestBlend {
@@ -44,7 +44,11 @@ export class RestBlend {
   }
 
   blend(renderer: THREE.WebGLRenderer, mean: THREE.Texture, share: number): THREE.Texture {
-    if (!this.holds || !this.first || !this.shown || share >= 1) return mean
+    if (!this.holds || !this.first || !this.shown) return mean
+    if (share >= 1) {
+      this.free()
+      return mean
+    }
     this.mix.uniforms.tFirst!.value = this.first.texture
     this.mix.uniforms.tMean!.value = mean
     this.mix.uniforms.share!.value = share
@@ -52,13 +56,17 @@ export class RestBlend {
     return this.shown.texture
   }
 
-  dispose(): void {
+  private free(): void {
     this.first?.dispose()
     this.shown?.dispose()
-    this.copy.dispose()
-    this.mix.dispose()
     this.first = null
     this.shown = null
     this.holds = false
+  }
+
+  dispose(): void {
+    this.free()
+    this.copy.dispose()
+    this.mix.dispose()
   }
 }
