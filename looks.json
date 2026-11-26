@@ -1,35 +1,35 @@
 {
   "folder": "pinball-stage",
-  "pushed": "2026-11-26T01:22:05.992Z",
-  "commit": "480983ead9efa503f5d17fd63ac69156a9d8774a",
+  "pushed": "2026-11-26T01:53:02.891Z",
+  "commit": "87ac1ad55aa43f44ae10420897ceda86b6e3c078",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet table-map: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T01:20:35.954Z",
+      "caption": "table-wide refit at 35 degrees beside approved: near frame corners at the bottom corners, backbox top 2.5% from the top",
+      "time": "2026-11-26T01:53:01.085Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-table-map.jpg"
+      "from": "out/work/compare/compare-table-wide.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet clear-ball: approved on the left, agent/pinball-stage on the right, draft tier",
-      "time": "2026-11-26T01:22:04.479Z",
+      "caption": "lobby-doors refit beside approved: 31 degrees off the carpet axis (was 62), name band near level, one wing edge of the revolving door crosses the ball",
+      "time": "2026-11-26T01:53:01.361Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-clear-ball.jpg"
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Sheet table-map: approved on the left, agent/pinball-stage on the right, draft tier",
-      "time": "2026-11-26T01:22:04.706Z",
+      "caption": "rail-cam beside approved, aperture 7, steep so the tier wall stays out",
+      "time": "2026-11-26T01:53:01.604Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-table-map.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key loader-page: approved on the left, agent/pinball-stage on the right, draft tier",
-      "time": "2026-11-26T01:22:04.947Z",
+      "caption": "youre-fired beside approved, camera moved in to 5.2 balls",
+      "time": "2026-11-26T01:53:01.842Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-loader-page.jpg"
+      "from": "out/work/compare/compare-youre-fired.jpg"
     }
   ]
 }
