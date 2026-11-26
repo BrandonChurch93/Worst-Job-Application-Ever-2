@@ -39,6 +39,46 @@
    "where": "entry into the spiral, frames 6–10",
    "what": "The tight views have a legible arrow, but most of the change is rotation with the ball; the turn from directed travel to being pulled into the funnel has no distinct bracing pose.",
    "fix": "At the rail lip, counter-lean the tip against the turn for a beat, then widen it on the first hard change of direction before releasing into the spiral."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the travel from the tube into the machine is read; that the page's light goes down to dusk, the marquee lights and the three tiers light in a wave, lamp by lamp, until the whole machine stands in the frame is not: the read is of a ball carried along, with no feeling and no event.",
+   "fix": "The wave as an event of its own: the page's light going down, the marquee coming on first, then each tier's lamps in order from the top, and the pull back ending on the whole machine held long enough to be taken in.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the hope at the Corporate HQ doors is read; that the doors slam, that the ball hits them and that the arrow is pressed flat against the inside of the glass is not: the read goes from hopeful to being sent down to the next field.",
+   "fix": "The slam and the flattening seen close: the doors shutting in one or two frames, the ball on them, the arrow flat on the inside of the glass and held there before it slides back down the carpet.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the battering is read; that the three coffee bumpers rattle the ball between them and that the arrow is thrown flat on each hit is not: the read has flippers batting it and says that the single reactions are hard to read.",
+   "fix": "Each bumper hit answered by the arrow in the ball: thrown against the far wall and flat for a few frames, at a size in the picture at which it can be seen, with the three cups as what does it.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: that balls like it spill out is read; that it lands in the inbox, that the steel balls chase it and hit it and that the whole tier strobes is not: the read has it seat itself at the coffee station and spring away.",
+   "fix": "The inbox readable as an inbox where the ball lands, the steel balls seen to chase and to strike it, each strike answered inside the ball, and the strobe of the tier on those frames.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the whole sheet",
+   "what": "did not read: the read is of a woozy, battered arrow that crumples at the right flipper and is knocked across the field again. The fall toward the gap, the catch at the last instant and the sag of relief are not in the read.",
+   "fix": "The fall toward the gap as its own moment, the catch at the last instant, and the sag of relief held inside the ball in the slow motion the beat has.",
+   "by": "builder"
   }
  ],
  "reads": [

@@ -46,6 +46,46 @@
    "where": "bottom row, arrow in the glass pipe",
    "what": "the tumbled pose is readable but small; at delivery size the arrow inside the reflective ball and pipe gets lost against the metal highlights for a beat",
    "fix": "thicken the arrow's black outline and rim-light the ball so the silhouette stays readable in the pipe"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: nervous reads as frightened and overwhelmed by what the port does to it. Beads of sweat, the small tremble and the gulp are not in the read.",
+   "fix": "Nervous as the kit has it, seen before the port takes it and in the ball: sweat that forms and rolls off, a tremble, a gulp down the body, at a size at which they show.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as calm and passive, riding upright and reacting to nothing. Pale and stony, the lean back and the hiding are not in the read.",
+   "fix": "Scared as the kit has it, seen in the ball on the way up the lane: the arrow gone pale and stiff and leaning back from where the ball is going.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as panicked and jostled, which is what the bumpers and the stapler do to the ball. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked as a held pose after a hit: the stretch tall, then the snap back, clear of the next hit.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as tense but mostly passive. Upright with a slight bounce and a strut is not in the read.",
+   "fix": "Confidence in the body on the rail: upright in the glass, a bounce with the ride, held where the camera is close.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: exhausted reads as dazed and batted around. The sag, the melt at the edges and the slump are not in the read.",
+   "fix": "Exhausted as the kit has it: the arrow sagging and slumped against the inside of the glass, held after the last hits.",
+   "by": "builder"
   }
  ],
  "reads": [
