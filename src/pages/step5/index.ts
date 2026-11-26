@@ -279,8 +279,8 @@ export function makePage(): PageLogic {
           s.landed = true
           io.emit('letter-drop', places.letter.cx, places.letter.cy, false)
           io.emit('paper-slide', places.letter.cx, places.letter.cy, false)
-          cursor.act('nervous')
-          cursor.react('recoil')
+          cursor.act('proud')
+          cursor.react('jump')
         }
         if (!s.stamped && !s.held && p >= AT.swoop[0] && !underStamp(cursor)) hold(io, spot.x, spot.y)
         if (!s.loomed && p >= AT.loom) {
