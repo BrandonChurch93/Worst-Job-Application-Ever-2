@@ -27,7 +27,12 @@ const attrs = (o) =>
 
 export const el = (tag, o, inner) => (inner === undefined ? `<${tag} ${attrs(o)}/>` : `<${tag} ${attrs(o)}>${inner}</${tag}>`)
 export const g = (o, items) => el('g', o, items.flat(9).join(''))
-export const stroke = (col, w, extra = {}) => ({ fill: 'none', stroke: col, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', ...extra })
+// Fine lines of a floor can be drawn heavier as a whole: leaf laid in lacquer is wider than a pen line.
+let weight = 1
+export const lineWeight = (w) => {
+  weight = w
+}
+export const stroke = (col, w, extra = {}) => ({ fill: 'none', stroke: col, 'stroke-width': w < 0.06 ? w * weight : w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', ...extra })
 export const line = (a, b, col, w, extra) => el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], ...stroke(col, w, extra) })
 export const poly = (pts, col, w, extra) => el('polyline', { points: pts.map((p) => `${f(p[0])},${f(p[1])}`).join(' '), ...stroke(col, w, extra) })
 export const shape = (pts, fill, extra = {}) => el('polygon', { points: pts.map((p) => `${f(p[0])},${f(p[1])}`).join(' '), fill, ...extra })

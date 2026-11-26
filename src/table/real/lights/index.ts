@@ -4,7 +4,7 @@ import { zoneAt } from '../../draw'
 import { BALL } from '../../layout'
 import { whole, type Zone } from '../zone'
 import { FILL, FLASH } from './colours'
-import { groupsOf, LIT, type Group } from './groups'
+import { groupsOf, LIT, spillsOf, type Group } from './groups'
 import { buildLamps, type Lamps } from './lamps'
 import { levels, solo, soloed } from './levels'
 import { zoneLight } from './state'
@@ -83,12 +83,19 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     const g = groups[i]
     if (!g) {
       u.wjlCol.value[i]!.set(0, 0, 0)
+      u.wjlFull.value[i]!.set(0, 0, 0)
       continue
     }
     const level = L.groups[i]! * (1 - share[i]!)
     u.wjlCol.value[i]!.set(g.colour[0] * level, g.colour[1] * level, g.colour[2] * level)
+    u.wjlFull.value[i]!.set(g.colour[0] * L.groups[i]!, g.colour[1] * L.groups[i]!, g.colour[2] * L.groups[i]!)
     u.wjlAt.value[i]!.set(g.at[0], g.at[1], g.mode === 0 ? FIELD_HEIGHT : g.at[2], g.name === 'flash' ? 3 : g.mode)
   }
+  spillsOf(z).forEach((p, i) => {
+    const level = (L.byName[p.follows] ?? 0) * p.power
+    u.wjlSpill.value[i]!.set(p.x, p.y, p.half, p.high)
+    u.wjlSpillCol.value[i]!.set(p.colour[0] * level, p.colour[1] * level, p.colour[2] * level)
+  })
   const fill = FILL[z.id]!
   const soft = 0.028 * L.general + FLASH.fill * L.flash
   u.wjlFill.value.set(fill[0] * soft, fill[1] * soft, fill[2] * soft)

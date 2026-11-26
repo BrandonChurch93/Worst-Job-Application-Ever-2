@@ -1,13 +1,52 @@
-diff --git a/config/showcase.json b/config/showcase.json
-index 77524f0..c9a805d 100644
---- a/config/showcase.json
-+++ b/config/showcase.json
-@@ -158,7 +158,7 @@
-       "note": "the page, straight on, filling the frame; moved once at the look lock from 12 to 20, the wide end of its limits, to bring the lean of standing parts toward the approved keyboard picture"
-     },
-     "sheet": { "fovDeg": 12, "note": "straight on and close, for the cursor and boss sheets" },
--    "table-wide": { "fovDeg": 43, "note": "the whole machine from the player's end, fitted to its approved image" },
-+    "table-wide": { "fovDeg": 35, "note": "the whole machine from the player's end, fitted to its approved image" },
-     "table-map": { "fovDeg": 12, "note": "the whole machine from straight above, rendered 1080 wide by 1920 tall" },
-     "tier-3": {
-       "like": "home",
+diff --git a/src/app.ts b/src/app.ts
+index a48bcb3..370027b 100644
+--- a/src/app.ts
++++ b/src/app.ts
+@@ -35,6 +35,14 @@ export const unitOfPart = (name: string): string => register.parts.find((p) => p
+ const hd = formatById('hd')
+ const LIVE_MULTISAMPLES = 4
+ 
++// The frame as its camera sees it: where the camera leaves a box of the page out, the shapes wholly inside it go and its well comes in their place.
++const seenBy = (frame: Frame, pose: CameraPose): Frame => {
++  const o = pose.omit
++  if (!o) return frame
++  const inside = (s: Shape): boolean => s.x >= o.x - 1 && s.x + s.w <= o.x + o.w + 1 && s.y >= o.y - 1 && s.y + s.h <= o.y + o.h + 1
++  return { ...frame, list: [...frame.list.filter((s) => !inside(s)), o] }
++}
++
+ export class App {
+   engine!: Engine
+   environment!: THREE.Texture
+@@ -191,7 +199,8 @@ export class App {
+     const down = !spec.beat && spec.scroll && spec.camera === 'home' ? spec.scroll * Math.max(0, page.height - hd.height) : 0
+     const lower = (c: CursorPose): CursorPose => ({ ...c, y: c.y + down })
+     const frame: Frame = down ? { ...at, cursor: lower(at.cursor), cursors: at.cursors?.map(lower) } : at
+-    return { frame, page, pose: this.poseFor(spec.camera, page, frame, time, spec.scroll) }
++    const pose = this.poseFor(spec.camera, page, frame, time, spec.scroll)
++    return { frame: seenBy(frame, pose), page, pose }
+   }
+ 
+   poseFor(name: string, page: PageLogic, frame: Frame, time: number, scroll?: number): CameraPose {
+@@ -305,7 +314,8 @@ export class App {
+     const stage = this.film(unit)
+     const frame = stage.frameAt(time)
+     const page = stage.page
+-    return { frame, page, pose: this.poseFor('film', page, frame, stage.pageTimeAt(time)) }
++    const pose = this.poseFor('film', page, frame, stage.pageTimeAt(time))
++    return { frame: seenBy(frame, pose), page, pose }
+   }
+ 
+   async renderFilmFrame(frameIndex: number, tier: string): Promise<void> {
+diff --git a/src/stage/types.ts b/src/stage/types.ts
+index 0d68acd..723294d 100644
+--- a/src/stage/types.ts
++++ b/src/stage/types.ts
+@@ -87,6 +87,8 @@ export interface CameraPose {
+   fov: number
+   focus?: number
+   aperture?: number
++  // A well this camera sees in place of a box of the page: the shapes that lie wholly inside the box are left out of its frame.
++  omit?: Shape
+ }
+ 
+ export interface Applicant { firstName: string; lastName: string; email: string }
