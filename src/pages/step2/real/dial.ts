@@ -188,6 +188,7 @@ export function holeShadeGeometry(): THREE.BufferGeometry {
 
 let shadeMaterial: THREE.MeshBasicMaterial | null = null
 let faceMaterial: THREE.MeshPhysicalMaterial | null = null
+let hubMaterial: THREE.MeshPhysicalMaterial | null = null
 
 // The wheel's face is the page's turned aluminium with a finer cut: at this size the shared cut reads as rings, and the approved face is fans of light.
 // It keeps the shared material's shader rules, so it stands under the same studio as everything else.
@@ -200,6 +201,21 @@ function turnedFine(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMater
   m.anisotropy = B.faceStretch
   m.color.multiplyScalar(B.faceLight)
   m.name = 'dial-face'
+  return m
+}
+
+// The hub is the shared orange under a harder lacquer: a turned knob this small is polished, and the approved hub holds one clear point of light.
+function lacquered(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMaterial {
+  const m = shared.clone()
+  m.onBeforeCompile = shared.onBeforeCompile
+  m.customProgramCacheKey = shared.customProgramCacheKey
+  m.clearcoat = 1
+  m.clearcoatRoughness = B.hubCoat
+  m.roughness = B.hubRough
+  m.ior = B.hubIor
+  m.specularIntensity = 1
+  m.specularColor.setScalar(1)
+  m.name = 'dial-hub'
   return m
 }
 
@@ -246,7 +262,8 @@ export const dial: PartMaker = {
     wheel.add(mesh(g.face, faceMaterial))
     wheel.add(mesh(g.edges, m.chrome))
     wheel.add(mesh(g.hubRing, m.gap, false))
-    const hub = mesh(g.hub, m.orange)
+    hubMaterial ??= lacquered(m.orange)
+    const hub = mesh(g.hub, hubMaterial)
     wheel.add(hub)
     body.add(wheel)
     shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false })

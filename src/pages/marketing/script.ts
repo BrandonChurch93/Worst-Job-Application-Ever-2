@@ -16,20 +16,25 @@ interface Key { t: number; x: number; y: number }
 export const PRESS_AT = 11.86
 export const PRESS_FOR = 0.15
 
+export const TAKE = { back: { x: 42, y: 34 }, from: 2.62, there: 2.76, till: 3.4, home: 3.56 }
+
 export function path(m: Marks): Key[] {
   const [a, b, c] = m.cards as [Key, Key, Key]
+  const taken = { x: a.x + TAKE.back.x, y: a.y + TAKE.back.y }
   const admire = { x: c.x, y: m.off.y + 90 }
   const back = { x: m.stand.x + 150, y: m.stand.y + 20 }
   return [
     { t: 0, ...m.start }, { t: 0.25, ...m.start },
     { t: 1.85, ...m.lane },
-    { t: 2.5, x: a.x, y: a.y }, { t: 4, x: a.x, y: a.y },
+    { t: 2.5, x: a.x, y: a.y }, { t: TAKE.from, x: a.x, y: a.y },
+    { t: TAKE.there, ...taken }, { t: TAKE.till, ...taken },
+    { t: TAKE.home, x: a.x, y: a.y }, { t: 4, x: a.x, y: a.y },
     { t: 4.85, x: b.x, y: b.y }, { t: 6.05, x: b.x, y: b.y },
-    { t: 6.85, x: c.x, y: c.y }, { t: 7.8, x: c.x, y: c.y },
-    { t: 8.2, ...admire }, { t: 8.7, ...admire },
-    { t: 9.15, ...m.off },
-    { t: 10.9, ...m.stand }, { t: 11.2, ...m.stand },
-    { t: 11.6, ...back }, { t: PRESS_AT - 0.06, ...back },
+    { t: 6.85, x: c.x, y: c.y }, { t: 7.6, x: c.x, y: c.y },
+    { t: 8, ...admire }, { t: 8.95, ...admire },
+    { t: 9.25, ...m.off },
+    { t: 10.4, ...m.stand }, { t: 11.4, ...m.stand },
+    { t: 11.74, ...back }, { t: PRESS_AT - 0.06, ...back },
     { t: PRESS_AT, ...m.press }
   ]
 }
@@ -63,11 +68,13 @@ export interface Cue { at: number; act?: Acting; react?: Reaction }
 
 export const CUES: Cue[] = [
   { at: 0, act: 'confident' },
-  { at: 7.8, act: 'proud' },
-  { at: 8.2, react: 'dustOff' },
-  { at: 8.9, act: 'confident' },
-  { at: 11, react: 'anticipate' },
-  { at: 11.2, react: 'jump' }
+  { at: 3.45, act: 'proud' },
+  { at: 4, act: 'confident' },
+  { at: 7.6, act: 'proud' },
+  { at: 8.02, react: 'dustOff' },
+  { at: 8.95, act: 'confident' },
+  { at: 11.02, react: 'anticipate' },
+  { at: 11.38, react: 'jump' }
 ]
 
 export const REJECTED_CUES: Cue[] = [{ at: 0, act: 'exhausted' }]
