@@ -1,7 +1,8 @@
 # Status pictures
 
-Time: 2026-11-26T20:12Z. Phase 5, status 114.
+Time: 2026-11-26T20:38Z. Phase 5, status 115.
 
-1. `01-the-page-turn-into-step-1-the-live-site-as-the-m.jpg`: Top: sheet 3 of 3 of the page turn in round 20's motion pack, twelve frames in a row of a visitor's run of the live site on e17eb5f8. Bottom: the first sixteen frames of step 1's piece of Preview 03 (the film path, draft tier, 960 by 540). The dark triangles lie across the resume tray in both; put together and looked at by the Builder.
-2. `02-the-lost-tug-of-war-the-live-site-in-twelve-fram.jpg`: Top: the sheet of round 20's motion pack round the loss, the part of the picture round the arrow at its real size, 0:33.13 to 0:33.50 of the visit. Bottom: the same beat in the film, from Preview 03's step 1 piece. The live site shows the loss in one frame; the film shows the arrow drawn to the slot.
-3. `03-two-screens-the-look-critic-marked-the-touch-pag.jpg`: Top: the page a touch-only device gets, from round 20's pack for the story and look critic. Bottom: the result screen of step 3 from Preview 03's film frames, enlarged from 960 by 540 (so its softness is the enlargement's).
+1. `01-preview-03-the-careers-page-step-1-and-step-2-in.jpg`: Every 4.3 s from 0:01.5 to 1:06 of the rough draft film (draft tier, 960 by 540, the build of e17eb5f8): the careers page, the keyboard under fire, the tug of war with the shredder, the dial, the date wheels and the crank. Put together and looked at by the Builder.
+2. `02-preview-03-the-pinball-machine-in-sixteen-frames.jpg`: Every 2.4 s from 1:11 to 1:47 of the rough draft film: the feed tube, the whole machine, the rail, Corporate HQ's doors, the Office tier with Reply All, the Street tier with You're Fired, and the result screen with the plate and cone that the fix pass removes.
+3. `03-preview-03-the-boss-fight-and-decision-in-twelve.jpg`: Every 2.9 s from 1:53.5 to 2:25.4 of the rough draft film: Submit grows legs and arms, throws its notices, fires, is beaten and falls apart, then step 5's wait and the letter.
+4. `04-a-bolt-hits-the-arrow-the-mended-motion-pack-s-s.jpg`: Twelve frames in a row of the live site on step 1, from the motion pack built for round 21 by the pack agent (the contact is the fourth frame). In round 20 this sheet showed no hit at all. What is still wrong, and sent back: the arrow stands at the turret's muzzle, so the bolt has no flight; the pack's visitor will walk to the middle of the keyboard first.
