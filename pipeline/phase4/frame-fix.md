@@ -133,7 +133,7 @@ All at 1e39deca unless said. Commands as written.
 - Counts at f4fc2f8d, 08:43 to 08:45 UTC, same command. table-wide scene 201; loader 10 calls 15686 triangles; ramps 5 calls 20920; all other rows as in the table above. tier-corporate 110. tier-office 126. tier-street 108. loader-page 63, loader 3 calls 7070. last-save 189: its camera now shows the whole lower machine, so it is not the 122 of the baseline; each of my parts there has as many calls as in table-wide or fewer (hardware 20, frame 16, targets 15, flippers 12, loader 9, bumpers 8, lift 8, ramps 5, marquee 3).
 - Triangles of my folders in table-wide at f4fc2f8d: 181060, so 10310 fewer than the 191370 of the baseline.
 
-### After ab79cbfd, at the last commit of this round
+### At 5030f2cb, the last code commit of this round
 
 - `npm test` (09:29 to 09:31 UTC): 115 files, 1461 of 1461 passed. `npm run build`: built. `npm run bots`: "bots: all clear".
 - The five means by the lamps' tool, `cp out/work/stills/key-<key>-hd-draft.png out/work/lights/fg-<key>.png; node assets-src/table/lights/means2.mjs fg table-wide,tier-corporate,tier-office,tier-street,reply-all` (09:29 UTC): table-wide 0.99, tier-corporate 1.05, tier-office 1.04, tier-street 1.06, reply-all 1.00. Before the riser change table-wide was 1.15 by the same tool.
