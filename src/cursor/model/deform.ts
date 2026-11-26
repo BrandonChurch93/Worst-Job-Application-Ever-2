@@ -20,7 +20,7 @@ const PEEL_TURN = 1.0
 export const SLANT = 0.24
 // A melting body: how much of the pose's squash it gives back, how its section rounds, how its stem runs, sways and hooks, how its tip bows, how its wings hang and how its folds stand.
 // A flattened body: how much wider it lies, how its stem spreads, how its outline waves, how its corners round, how its rim sinks and how its face lumps.
-const FLAT = { wide: 0.2, stem: 0.3, wave: 0.14, corner: 3.2, cornerMost: 0.24, cornerWide: 0.5, sink: 0.5, lump: 1.3, valley: 0.3, roll: 0.8, over: 0.24, overAt: 0.56, overTo: 1.6 }
+const FLAT = { wide: 0.2, stem: 0.3, wave: 0.1, corner: 3.2, cornerMost: 0.1, cornerWide: 0.5, sink: 0.5, lump: 0.7, valley: 0.3, roll: 0.8, over: 0, overAt: 0.56, overTo: 1.6 }
 const MELT = { back: 1.7, wide: 0.55, foot: 0.32, run: 3.6, pull: 1.6, sway: 0.9, hook: 0.9, lift: 0.25, bowAlong: 0.4, bowAcross: 0.8, hang: 1.1, straight: 0.5, lobe: 0.6, dull: 0.18, tip: 0.07, dullWide: 3.2, wave: 2.1, thin: 0.08, fold: 1.05, valley: 0.3 }
 // The length the body is drawn at for the stretch and the melt a look asks for: what `set` below arrives at.
 export const drawnStretch = (stretch: number, melt: number): number => {
