@@ -1,0 +1,58 @@
+{
+ "critic": "R3",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the three keys, the sheet `machines` and the page at rest, whole, and native crops of each",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the three select fields, right column (also set-A-05, set-A-06 'a field', set-A-09 'a field')",
+   "what": "the field wells are a flat, evenly graded grey-blue panel; nothing shows through, no glass depth, no reflection or highlight band, no texture. At native size they read as a CSS inset box with an inner shadow, not glass or a sunk slab",
+   "fix": "give the well floor real material: a faint reflection or highlight band across the top third, slight tint variation, a visible thickness at the edge with a bright chamfer line, and either something under the glass or a matte milled floor with grain"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the tray floor behind the crank and meter (also set-A-02 behind the dial, set-A-07 'the tray the machine sits in', set-A-08)",
+   "what": "the tray floor is one smooth, even grey-green fill. The lit meter segments throw almost no light onto it (only a thin orange line at the tray's bottom lip), so the glow looks pasted on and does not light the surface it sits on",
+   "fix": "add a warm pool of spill light on the tray floor and the inner walls under and beside the lit segments, falling off with distance, and give the floor a slight grain or brushed finish"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the crank on the parts sheet, right; the slot machine lever; the dial base",
+   "what": "the parts stand on the page and are not set into it. Each has one soft, offset drop blur, with no dark contact line where the plate meets the paper and no socket or recess. The crank plate in particular looks like a flat disc laid on top",
+   "fix": "add a tight dark contact shadow at each base edge beneath the soft one, and seat the plates in a shallow milled recess or on a visible bezel, with a gap line all round"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the rotary dial, left",
+   "what": "the dial has no small hardware: no centre screw or retaining clip and no screws on the base ring. The finger wheel and the base are not clearly two parts with a gap between them, so it reads a little toy-like when zoomed",
+   "fix": "add a fine dark gap between the finger wheel and the base ring, plus two or three tiny screws, and a faint engraved index mark"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the slot machine reels, centre",
+   "what": "the reel digits are flat print with no curvature distortion as they wrap the drum, and the red payline sits over the digits like a drawn line rather than a wire or a mark on the glass",
+   "fix": "compress the digits slightly toward the top and bottom of each drum, and give the payline a tiny shadow or reflection so it sits on the front glass"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "the arrow over the dial's finger stop, and the arrow over the crank grip in set-A-03",
+   "what": "the arrow's shadow lands at the same soft offset whether it sits over the deep tray or the raised dial, so it does not separate according to height",
+   "fix": "scale the arrow's shadow offset and blur by the height of the surface under it: tighter over the raised dial and grip, wider over the tray floor"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "the lower half of the page, below the Audio volume field",
+   "what": "a large stretch of bare page with only the paper texture, so the eye reads the surface as perfectly even",
+   "fix": "add a faint large-scale light falloff or vignette across the page so the empty area has some tonal variation"
+  }
+ ]
+}

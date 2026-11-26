@@ -1,0 +1,74 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "B: one sheet of each acting state the page uses, plain, nervous, shocked, scared, confident, angry and exhausted, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "first orange flash through the following two rows",
+   "what": "The tip changes color and smokes, but the held arrow silhouette barely changes. The effect is legible; a shock, pain, or decision to press on is not.",
+   "fix": "Compress the point and pull the body back on the flash, hold a visibly buckled pose, then let it recover its aim while still smoking."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "last five frames as it reaches the burnt button",
+   "what": "The limp shape sells damage, but contact is mostly a glide into overlap. There is no clear loaded push or release to tell a deliberate press from drifting against the edge.",
+   "fix": "Set the point visibly on the edge, bow the tail against the resistance, and release the bend after the push."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "rows two and three, during the subdued hold",
+   "what": "The collapsed silhouette is visible early, but most of the hold is a near-neutral arrow with little change in stance, so the feeling fades into idle hovering.",
+   "fix": "Hold the low, curled silhouette longer and make the lift into the final upright pose one distinct recovery."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "rightward aim from the end of row one to the end of the sheet",
+   "what": "The turn and aim are clear, but the bright releases mostly animate without the body. The sustained pose reads as a fixed pointer while the flashes do the work.",
+   "fix": "Draw back into a loaded point just before the first release and punctuate the streaks with a small recoil and re-aim."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "first two rows after the opening flash",
+   "what": "The arrow holds a nearly ordinary pointer silhouette for several frames. The shadow change suggests motion, but the body gives little away about its reaction or intent until the dart.",
+   "fix": "Give the arrival a visible settling bend, then hold a tentative lean toward the panel before releasing into the dart."
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "Wary curiosity: it emerges from a flash, hovers, then perks up and darts toward the verification panel."
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "Tempted but nervous: it noses toward the empty ‘I am not a robot’ checkbox, flinches away, and leaves it unchecked."
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "Startled and rattled: the Submit button tears loose amid cracks and debris, and the arrow jerks back and wobbles."
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "Deflated and uncertain: it hangs back, slumps flat for a moment, then slowly pulls itself upright."
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "Suddenly focused and defiant: it whips around, takes aim to the right, and appears to fire little bright streaks from its point."
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "Rigid and intent, almost unfazed: its tip flashes orange and starts smoking, but it keeps facing right as more bright streaks pass along the same line."
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "Battered and reluctant but trying anyway: its blackened tip droops, then it edges back in and leans into the scorched Submit button."
+  }
+ ]
+}

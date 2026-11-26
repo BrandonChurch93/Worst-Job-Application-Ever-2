@@ -1,0 +1,142 @@
+{
+ "critic": "R1",
+ "score": 4,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the keys `boss-fight` and `boss-down` and the sheet `boss-stages`, whole and in native crops, each beside the approved image",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "the arrow, lower left",
+   "what": "the cursor points flat to the right and is a small grey metallic arrow with almost no dark edge; the target is a white glossy arrow with a thick black outline pointing up-left along the shot line",
+   "fix": "turn it to point up-left toward the machine, make the body white gloss with a heavy black edge and a soft shadow to the lower right"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "the Human Verification card, left",
+   "what": "the card is opaque flat grey plastic; the target is translucent pale sea-green frosted glass with a bright bevelled edge",
+   "fix": "make it frosted translucent glass with a cool green-grey tint, the page faintly visible through it, and a lit bevel"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-01-b.png",
+   "where": "the shield, left of the machine",
+   "what": "the shield is a solid mint-green slab in a thick white plastic frame; the target is clear frosted glass with a thin bright edge",
+   "fix": "make it clear, slightly frosted glass with a thin bright rim and see-through to the page and arm behind"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-03-b.png",
+   "where": "the arrow, centre right",
+   "what": "the arrow is a small clean grey cursor; the target's arrow is battered: white body, thick black edge, chipped jagged outline, scorch flecks",
+   "fix": "use the white gloss body with heavy black edge and add the chips, nicks along the edge and scorch spots"
+  },
+  {
+   "severity": "severe",
+   "file": "set-A-05-b.png",
+   "where": "the Unfolding state, third from left",
+   "what": "the plate is already the full wide boss plate with long extended legs; in the target it is a compact plate barely larger than the button with short legs just folding out",
+   "fix": "shrink the plate to hug the button and draw the legs short and bent close to the body"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "all orange parts: Submit button, progress fill, step 4 button",
+   "what": "the orange is a dull dark brick red-orange with weak highlight; the target is a bright saturated glossy orange with a strong top highlight",
+   "fix": "lift to a brighter, warmer orange and add a crisp glossy highlight along the top"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the error tags Required field, Invalid input, Session expired",
+   "what": "the tags are a muted brick red, matte and flat-topped; the target tags are a deeper glossy crimson with a lit top edge",
+   "fix": "move to a richer crimson with gloss and a bright bevel on the top edge"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02-b.png",
+   "where": "the front plate and cannons of the machine",
+   "what": "the metal is light, matte, uniformly grey with rivets; the target is darker polished steel with strong reflections and dark contrast in the hollows",
+   "fix": "darken the steel, add polished reflections and deeper contrast; make the cannon barrels sit on round domed housings as in the target"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the progress row, top right",
+   "what": "buttons 1 and 2 are missing from the row (only 3, 4, 5 on a bare rail), and the numbers 1 and 2 appear on the cannon discs instead",
+   "fix": "if not intended for this pair, restore 1 and 2 to the row with even spacing; at least balance the rail so the left end is not an empty stretch"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01-b.png",
+   "where": "the error tags and the shot line, middle",
+   "what": "the tags are scattered differently: Session expired sits over the socket, Invalid input low and left, the shot passes below them; the target stacks them in a loose column between the card and the machine with the shot running through the gap",
+   "fix": "place the tags in a column right of centre, clear of the socket, with the shot running between them"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the scorched Submit cap",
+   "what": "the cap is a flat thin plank with flat ends and a dark rusty texture; the target is a plump rounded capsule with domed ends and burnt black blisters",
+   "fix": "round the cap into a thick capsule with domed ends and make the burns glossy black charred blisters, not a flat rust texture"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the broken shield, lower right",
+   "what": "the shard is opaque green with a white plastic frame and white painted crack lines; the target is clear glass with fine bright cracks",
+   "fix": "make it clear pale glass with thin refractive crack lines and no white frame"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04-b.png",
+   "where": "the scattered side pieces and plates",
+   "what": "the pieces are light flat grey with rivets and folded edges; the target pieces are darker brushed steel slabs with visible grain and harder shadows",
+   "fix": "darken them to brushed steel with horizontal grain and a firmer shadow to the lower right"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the Resting state, far left",
+   "what": "the button sits in a black rim; the target sits in a bright polished silver bezel",
+   "fix": "replace the black rim with a lit chrome bezel"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "below each state",
+   "what": "the state captions under the four states are missing",
+   "fix": "set a small dark grey caption centred under each state on one baseline"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05-b.png",
+   "where": "the Breaking loose state",
+   "what": "a horizontal seam line runs across the tilted cap through the word",
+   "fix": "remove the seam so the cap face is one smooth glossy surface"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02-b.png",
+   "where": "the open socket in the rim",
+   "what": "the inside is a flat smooth black; the target shows a dark rough grey floor with depth and a thicker steel rim",
+   "fix": "add a rough dark floor with a gradient into depth and thicken the rim slightly"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01-b.png",
+   "where": "under the verification card",
+   "what": "an extra two-line grey note sits under the card that the target does not have",
+   "fix": "remove it or confirm it belongs in this state"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-03-b.png",
+   "where": "the smoke over the cap",
+   "what": "the smoke rises from the middle of the cap in thin even strands; the target's wisps rise from the burnt ends and curl",
+   "fix": "start the wisps at the burnt ends and let them curl and fade"
+  }
+ ]
+}
