@@ -1,33 +1,33 @@
 {
   "folder": "street-models",
-  "pushed": "2026-11-26T03:56:09.421Z",
-  "commit": "ac06044d9b7eaad584845ae39d1f8cb7f1718a6c",
+  "pushed": "2026-11-26T04:17:29.313Z",
+  "commit": "167eb813edba83727fa0b68304d741916c9559b7",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Key last-save: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T03:55:59.499Z",
+      "time": "2026-11-26T04:17:20.143Z",
       "by": "street-models",
       "from": "out/work/compare/compare-last-save.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "youre-fired beside approved at ac06044: the stager's lens takes the whole house, felt roof, deeper lens",
-      "time": "2026-11-26T03:56:07.716Z",
+      "caption": "youre-fired beside approved at 167eb81: brick without sheen on the side wall, felt roof, amber windows",
+      "time": "2026-11-26T04:17:27.824Z",
       "by": "street-models",
       "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-street beside approved at ac06044: felt roofs with pale caps, the garage under its seven lamps",
-      "time": "2026-11-26T03:56:07.940Z",
+      "caption": "tier-street beside approved at 167eb81: blue felt on the police station, pale caps",
+      "time": "2026-11-26T04:17:28.052Z",
       "by": "street-models",
       "from": "out/work/compare/compare-tier-street.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "last-save beside approved at ac06044: the garage lit, on main",
-      "time": "2026-11-26T03:56:08.168Z",
+      "caption": "last-save beside approved at 167eb81",
+      "time": "2026-11-26T04:17:28.290Z",
       "by": "street-models",
       "from": "out/work/compare/compare-last-save.jpg"
     }
