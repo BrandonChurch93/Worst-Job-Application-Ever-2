@@ -116,7 +116,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9.2, 0.8], [MID - 0.55, Y0 + 5.02, 0.36]),
   'table-replyall': look('table-replyall', [MID, Y1 + 15.34, 12], [MID, Y1 + 6.6, -2]),
   'table-fired': look('table-fired', [7.25, Y2 + 7.45, 0.95], [4.6, Y2 + 3.5, -2]),
-  'table-save': { ...look('table-save', [MID, Y2 + 16.7, 4.8], [MID + 0.15, Y2 + 10.71, -0.5]), omit: LAST_OUT }
+  'table-save': { ...look('table-save', [MID, Y2 + 16.7, 4.8], [MID + 0.15, Y2 + 10.25, -0.5]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
   [0, 'follow', 0], [4.2, 'table-wide', 0], [8.5, 'ride', 0], [10.25, 'tier-3', 0.6], [13.0, 'table-lobby', 0], [14.3, 'follow', 0], [19.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.2, 'table-fired', 0], [29.3, 'follow', 0],
