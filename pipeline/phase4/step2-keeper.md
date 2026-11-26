@@ -36,14 +36,15 @@ Branch `agent/step2-keeper`. Parts: `rows`, `dial`, `slot`, `crank`, `acting-ste
 22. The dial's face carries its bow tie as vertex colour laid in for the wheel's angle (`fanFace`, `DIAL_BODY.fanAxis`, `fanLow`, `fanGain`, `fanSharp`), so the bright fans stay with the light while the wheel turns under them. MEASURED on a ring of 40 px round the hub, sixteen places counter-clockwise from the right, green channel: approved 121 96 81 81 98 169 225 233 197 135 99 100 (then the cursor), build 133 95 89 98 113 167 209 223 166 103 83 89 (before: 139 110 102 106 114 162 193 204 172 120 93 96).
 23. The cursor no longer jumps to a grip or onto a machine in one step. `grip()` in `index.ts` closes the hand over `REACH` 0.09 s from where the body is, and `ground()` looks `CLIMB.ahead` 44 px toward the pointer and lets the ground rise at most `CLIMB.rise` 900 px a second. MEASURED with a scan of `Stage.advance(1)` over the film (240 steps a second): before, 66.7 px across in one step at 2.3375 s, 34.4 px at 14.4542 s, and up to 69.7 px in height at 8.9375 s; after, the largest step before the walk to Continue is 8.6 px across and 9.7 px in height. The cursor at the three keys is the same to two decimals (1.0 s 1582.84, 393.15, 4.00; 3.2 s 1217.16, 534.00, 37.00; 15.2 s 1162.23, 749.56, 62.83). A keeper test holds both limits.
 24. The slot's window has rounded corners (`SLOT_LOOK.window` 13, the rings inside the band shrink from it), the frame's own corner is 16, the drums are 97 px wide so the dark between them is a narrow gap as in the approved sheet, and a drum's tone holds a bright plateau and falls to dark only near the window's upper and lower edge (`drum.dark` 0.62, `drum.full` 0.88, in place of a power of the normal). The payline is 1.7 px thick (0.85 radius, the most the room between the legends and the glass allows). MEASURED down the middle drum of the sheet `machines`: approved 188 227 221 208 on the plateau; build before 166 203 214 200.
+25. The meter's segments have a corner of 12 on a width of 28 (the approved top is nearly a half circle), and a lit segment's core is less yellow. MEASURED across a lit segment of the crank key, the core: approved 255 214 150, build before 255 237 168, build now 255 218 137.
 
 ## Looks counted (at most 40 a part)
 
 | Part | Looks |
 | --- | --- |
 | `dial` | 21 |
-| `rows` | 4 |
-| `crank` | 9 |
+| `rows` | 5 |
+| `crank` | 12 |
 | `slot` | 19 |
 | `acting-step2` | 33 |
 
