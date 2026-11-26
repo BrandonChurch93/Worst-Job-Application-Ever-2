@@ -645,6 +645,11 @@ const audioChunks = (dir) => {
 
 // The built site in a real browser: what it makes and asks for before the first click, the sound control by pointer and by keyboard,
 // the site with its sound files taken away, and one judged still in capture mode with the audio code there and with it gone.
+// The times of the check of the sound control on the built site. answerSeconds: how long the control may take to show its new state after a press.
+// measureSeconds: how long the check goes on waiting to measure a late answer. loadSeconds: how long the sounds may take to load before the control is read.
+// A state that sounds is listened for up to heardTries times, a silent one silentTries times, 60 ms apart.
+const SITE_CHECK = { answerSeconds: 4, measureSeconds: 20, loadSeconds: 30, heardTries: 80, silentTries: 12 }
+
 export async function siteInBrowser(dir = at('dist'), o = {}) {
   const { serve } = await import('./lib/serve.mjs')
   const { launch } = await import('./lib/browser.mjs')
@@ -759,29 +764,52 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
         b.setAttribute('data-sound-check', '1')
         return { name: b.getAttribute('aria-label'), pressed: b.getAttribute('aria-pressed'), picture: b.innerHTML, x: r.left + r.width / 2, y: r.top + r.height / 2, width: Math.round(r.width), height: Math.round(r.height), focused: document.activeElement === b }
       })
-      const loud = async () => {
+      // What is heard is read over a window: a state that sounds may take a moment to be heard, a state that is silent must be silent all through.
+      const loud = async (sounding) => {
         let top = 0
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < (sounding ? SITE_CHECK.heardTries : SITE_CHECK.silentTries) && !(sounding && top > 0); i++) {
           top = Math.max(top, await page.evaluate(() => window.__level()))
           await page.waitForTimeout(60)
         }
         return top
       }
+      const frames = () => page.evaluate(() => window.__sound.frames)
+      // The verdict is the state the control shows SITE_CHECK.answerSeconds after the press. Past that the wait goes on only to measure how late the answer came.
       const changed = async (from) => {
+        const t0 = Date.now()
+        const f0 = await frames()
         let m = await mark()
-        for (let i = 0; i < 40 && m.pressed === from.pressed; i++) {
-          await page.waitForTimeout(100)
+        while (m.pressed === from.pressed && Date.now() - t0 < SITE_CHECK.answerSeconds * 1000) {
+          await page.waitForTimeout(50)
           m = await mark()
         }
+        let late = m
+        while (late.pressed === from.pressed && Date.now() - t0 < SITE_CHECK.measureSeconds * 1000) {
+          await page.waitForTimeout(100)
+          late = await mark()
+        }
+        const answerSeconds = late.pressed === from.pressed ? null : Number(((Date.now() - t0) / 1000).toFixed(2))
+        const framesDrawn = (await frames()) - f0
         await page.waitForTimeout(150)
-        return m
+        return { ...m, answerSeconds, framesDrawn }
       }
+      const step = async (how, m) => ({ how, pressed: m.pressed, level: await loud(m.pressed === 'true'), ...(m.answerSeconds !== undefined ? { answerSeconds: m.answerSeconds, framesDrawn: m.framesDrawn } : {}) })
       const steps = []
+      const loadT0 = Date.now()
+      let loadedAfter = null
+      while (Date.now() - loadT0 < SITE_CHECK.loadSeconds * 1000) {
+        const l = await page.evaluate(() => ({ decodes: window.__sound.decodes, done: window.__sound.decoded + window.__sound.undecoded, sources: window.__sound.log.length }))
+        if (l.decodes > 0 && l.done === l.decodes && l.sources > 0) {
+          loadedAfter = Number(((Date.now() - loadT0) / 1000).toFixed(2))
+          break
+        }
+        await page.waitForTimeout(200)
+      }
       const first = await mark()
-      steps.push({ how: 'as found', pressed: first.pressed, level: await loud() })
+      steps.push(await step('as found', first))
       await page.mouse.click(first.x, first.y)
       const second = await changed(first)
-      steps.push({ how: 'pointer click', pressed: second.pressed, level: await loud() })
+      steps.push(await step('pointer click', second))
       let tabs = 0
       let reached = false
       await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur() })
@@ -792,12 +820,12 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
       if (!reached) await page.focus('[data-sound-check]')
       await page.keyboard.press('Enter')
       const third = await changed(second)
-      steps.push({ how: 'Enter key', pressed: third.pressed, level: await loud() })
+      steps.push(await step('Enter key', third))
       await page.keyboard.press('Space')
       const fourth = await changed(third)
-      steps.push({ how: 'Space key', pressed: fourth.pressed, level: await loud() })
+      steps.push(await step('Space key', fourth))
       out.control = {
-        name: first.name, width: first.width, height: first.height, reachedByTab: reached, tabs: reached ? tabs : null, steps,
+        name: first.name, width: first.width, height: first.height, reachedByTab: reached, tabs: reached ? tabs : null, steps, soundsLoadedAfterSeconds: loadedAfter,
         pictureChanges: first.picture !== second.picture && second.picture !== third.picture && third.picture !== fourth.picture,
         errors: live.errors.length
       }
@@ -1090,6 +1118,8 @@ function status(P, c, M) {
   if (missing.length) console.log(`sound: not kept yet: ${missing.slice(0, 12).map((m) => m.id).join(', ')}${missing.length > 12 ? `, and ${missing.length - 12} more` : ''}`)
   const e = emittedEvents(M)
   console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)
+  const quiet = (M.cues.silentEvents ?? []).filter((name) => !M.cues.cueOfEvent(name))
+  if (quiet.length) console.log(`sound: with no sound of its own, on purpose: ${quiet.join(', ')}. The cut list carries each with no cue and the mix lays nothing for it`)
   console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --pack-check compares public/audio/ with the committed index, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
 }
 
@@ -1113,6 +1143,30 @@ async function main() {
         const s = await siteInBrowser(await siteBuild(P))
         writeJson(at('out', 'work', 'audio', P.scratch ? 'site-fixtures.json' : 'site.json'), s)
         console.log(`site: ${JSON.stringify(s)}`)
+      }
+    }
+    else if (a.loops) {
+      const { loopsRun } = await import('./lib/sound-loops.mjs')
+      loopsRun(P.pub, c, decodeFile, M.levels)
+    }
+    else if (a.levels) {
+      const { levelsRun } = await import('./lib/sound-levels.mjs')
+      const { logic } = await import('./lib/logic.mjs')
+      const site = await logic()
+      try {
+        await levelsRun(site.load, c, P.pub)
+      } finally {
+        await site.close()
+      }
+    }
+    else if (a.visit) {
+      const { visitRun } = await import('./lib/sound-visit.mjs')
+      const { logic } = await import('./lib/logic.mjs')
+      const site = await logic()
+      try {
+        await visitRun(site.load, c, a)
+      } finally {
+        await site.close()
       }
     }
     else if (a.check) {

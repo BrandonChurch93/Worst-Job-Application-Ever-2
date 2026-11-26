@@ -36,6 +36,8 @@ const DART = { fall: 9000 }
 const REAR = { settle: 0.36 }
 // The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it, and stands a body's width along the blow, clear of the flash.
 const HIT = { squash: 0.58, bend: 0.5, shove: 60, lift: 0.7, hold: 0.07, back: 0.1 }
+// The live site's hand: how the body follows a visitor's mouse, whatever it is acting. A 600 px move is 90% done in 100 ms, goes 2.6% past and is at rest in 271 ms. The film keeps each gait's own numbers.
+export const HAND = { stiff: 760, damp: 40, top: 7500 }
 const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
 const TUMBLE = { far: 0.6, share: 0.08, out: { k: 900, c: 60 }, back: { k: 900, c: 58 } }
@@ -185,6 +187,8 @@ const fresh = (x: number, y: number): State => ({
 
 export class CursorBody {
   private s: State = fresh(HANDOFF.x, HANDOFF.y)
+  // True on the live site, where a visitor's hand moves the body. Not part of the saved state: it never changes in a run.
+  hand = false
 
   reset(x: number, y: number, air = false): void {
     const seed = this.s.seed
@@ -448,15 +452,21 @@ export class CursorBody {
       const k = u * u * (3 - 2 * u)
       s.vx = (s.shove.x + (tx - s.shove.x) * k - s.x) / dt
       s.vy = (s.shove.y + (ty - s.shove.y) * k - s.y) / dt
+      const speed = Math.hypot(s.vx, s.vy)
+      if (this.hand && speed > HAND.top) {
+        s.vx *= HAND.top / speed
+        s.vy *= HAND.top / speed
+      }
       if (u >= 1) s.shove = null
     } else {
       s.shove = null
-      s.vx += (gait.stiff * (tx - s.x) - gait.damp * s.vx) * dt
-      s.vy += (gait.stiff * (ty - s.y) - gait.damp * s.vy) * dt
+      const follow = this.hand && !s.air && s.taken === null && !s.inBall ? HAND : gait
+      s.vx += (follow.stiff * (tx - s.x) - follow.damp * s.vx) * dt
+      s.vy += (follow.stiff * (ty - s.y) - follow.damp * s.vy) * dt
       const speed = Math.hypot(s.vx, s.vy)
-      if (speed > gait.top) {
-        s.vx *= gait.top / speed
-        s.vy *= gait.top / speed
+      if (speed > follow.top) {
+        s.vx *= follow.top / speed
+        s.vy *= follow.top / speed
       }
     }
     s.x += s.vx * dt

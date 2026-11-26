@@ -11,8 +11,9 @@ import { words } from './shell/words'
 import { BotDriver, type BotName } from './stage/bots'
 import { liveFlow, liveView, MouseDriver, Stage, type Frame } from './stage/stage'
 import type { CameraPose, Driver, Hint } from './stage/types'
-import { lessMotion, makeQualityPicker, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
+import { lessMotion, makeQualityPicker, messagesOf, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
 import { wallSeconds } from './ui/clock'
+import { listenToVisitor } from './ui/pointer'
 import { fitPicture } from './core/levelFit'
 import { levelIsFixedOf, startLevelOf } from './core/levelStart'
 
@@ -208,7 +209,6 @@ function play(first: PlayMode): void {
   let shown: Frame | null = null
   let volume = -1
   let lastInput = wallSeconds()
-  let idleSaid = false
 
   const stepNow = (): number => {
     const i = base + stage.entryIndex
@@ -306,19 +306,15 @@ function play(first: PlayMode): void {
     for (; sent < stage.events.length; sent++) sound.event(stage.events[sent]!, 'live')
     const reached = stage.gagsReached
     for (; gags < reached.length; gags++) sound.beat(reached[gags]!, 'live')
-    const v = stage.page.volume?.()
-    if (v !== undefined && v !== volume) {
+    const v = stage.page.volume?.() ?? 1
+    if (v !== volume) {
       volume = v
       sound.setVolume(v)
     }
-    if (!idleSaid && wallSeconds() - lastInput >= config.live.idleSeconds) {
-      idleSaid = true
-      sound.trigger('idle')
-    }
+    sound.quiet(wallSeconds() - lastInput)
   }
   const touched = () => {
     lastInput = wallSeconds()
-    idleSaid = false
   }
 
   const setMode = (next: PlayMode, record = true) => {
@@ -377,16 +373,7 @@ function play(first: PlayMode): void {
       before = ''
     },
     heading: () => headings[stepNow()]!,
-    messages() {
-      const out: string[] = []
-      if (!shown || now !== 'live') return out
-      for (const s of shown.list) {
-        if (s.kind !== 'text' || !s.words || !s.words.startsWith('copy:') || atRest.has(s.words)) continue
-        const text = words(s.words, s.text)
-        if (text && !out.includes(text)) out.push(text)
-      }
-      return out
-    },
+    messages: () => (shown && now === 'live' ? messagesOf(shown.list, atRest, words) : []),
     skipOffered: () => now === 'live' && stage.skipOffered,
     skip: () => mouse.pulse({ skip: true }),
     watchFilm() {
@@ -415,69 +402,7 @@ function play(first: PlayMode): void {
   }
   const picker = makeQualityPicker(qualityIds.map((id) => ({ id, minFps: quality(id).minFps })), levelIsFixed() ? { fixed: size.level() } : { start: size.level() })
 
-  const toPage = (e: PointerEvent) => {
-    const r = canvas.getBoundingClientRect()
-    mouse.pointer = { ...mouse.pointer, x: ((e.clientX - r.left) / r.width) * 1920, y: ((e.clientY - r.top) / r.height) * 1080 }
-    touched()
-  }
-  window.addEventListener('pointermove', toPage)
-  canvas.addEventListener('contextmenu', (e) => e.preventDefault())
-  canvas.addEventListener('pointerdown', (e) => {
-    toPage(e)
-    if (now !== 'live') return
-    if (e.button === 2) {
-      mouse.pointer = { ...mouse.pointer, flipRight: true }
-      mouse.pulse({ flipRight: true })
-    } else {
-      mouse.pointer = { ...mouse.pointer, down: true, flipLeft: true }
-      mouse.pulse({ down: true, flipLeft: true })
-    }
-  })
-  window.addEventListener('pointerup', (e) => {
-    if (e.button === 2) mouse.pointer = { ...mouse.pointer, flipRight: false }
-    else mouse.pointer = { ...mouse.pointer, down: false, flipLeft: false }
-  })
-  let tabbed = false
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Tab') tabbed = true
-  }, true)
-  window.addEventListener('pointerdown', () => {
-    tabbed = false
-    canvas.dataset.ring = 'false'
-  }, true)
-  canvas.addEventListener('focus', () => {
-    canvas.dataset.ring = String(tabbed)
-  })
-  canvas.addEventListener('blur', () => {
-    canvas.dataset.ring = 'false'
-  })
-  const onControl = (e: KeyboardEvent): boolean => {
-    const t = e.target
-    return t instanceof HTMLElement && t !== canvas && t !== document.body && t !== document.documentElement
-  }
-  window.addEventListener('keydown', (e) => {
-    touched()
-    if (now !== 'live' || e.ctrlKey || e.metaKey || e.altKey || onControl(e)) return
-    if (e.code === 'ShiftLeft') mouse.pointer = { ...mouse.pointer, flipLeft: true }
-    else if (e.code === 'ShiftRight') mouse.pointer = { ...mouse.pointer, flipRight: true }
-    else if (e.key === 'Tab') {
-      if (e.shiftKey || !api.typing!()) return
-      mouse.pulse({ key: 'Tab' })
-      e.preventDefault()
-    } else if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') {
-      mouse.pulse({ key: e.key })
-      if (e.key === ' ' || e.key === 'Backspace') e.preventDefault()
-    }
-  })
-  window.addEventListener('keyup', (e) => {
-    if (e.code === 'ShiftLeft') mouse.pointer = { ...mouse.pointer, flipLeft: false }
-    else if (e.code === 'ShiftRight') mouse.pointer = { ...mouse.pointer, flipRight: false }
-  })
-  canvas.addEventListener('wheel', (e) => {
-    e.preventDefault()
-    touched()
-    if (now === 'live') mouse.pulse({ wheel: e.deltaY })
-  }, { passive: false })
+  listenToVisitor({ window, document, canvas, mouse, live: () => now === 'live', typing: () => api.typing!(), touched })
 
   let still = 0
   let frame = 0

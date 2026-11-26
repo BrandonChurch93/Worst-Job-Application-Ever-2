@@ -30,6 +30,16 @@ describe('what is measured', () => {
     expect(mine).not.toContain('src')
     expect(mine).not.toContain('public')
   })
+  it('keeps every folder of .vercelignore at the root of the repo, so the sound of public/audio/ is shipped', () => {
+    const lines = fs.readFileSync(path.join(root, '.vercelignore'), 'utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'))
+    expect(lines.sort()).toEqual(['/assets-full/', '/audio/', '/out/', '/pipeline/', '/references/', '/scorecards/'])
+    for (const l of lines) expect(l.startsWith('/'), l).toBe(true)
+    const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'))
+    expect(vercel.buildCommand).toBe('npm run build')
+    expect(vercel.outputDirectory).toBe('dist')
+    const long = vercel.headers.find((h: { source: string }) => h.source === '/bundle/(.*)')
+    expect(long.headers[0].value).toContain('immutable')
+  })
   it('names the file a URL of the site asks for', () => {
     expect(fileOfUrl('http://127.0.0.1:5000/', 'http://127.0.0.1:5000')).toBe('index.html')
     expect(fileOfUrl('http://127.0.0.1:5000/bundle/a%20b.js?v=2', 'http://127.0.0.1:5000')).toBe('bundle/a b.js')

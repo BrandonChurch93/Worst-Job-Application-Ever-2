@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { gate } from '../../core/load'
 import type { PartMaker, RealContext } from '../../real/types'
 import type { Shape } from '../../stage/types'
 import { ZONES, zoneAt } from '../draw'
@@ -48,7 +49,7 @@ export interface Whole {
   // Called for every sample of every frame. It moves what moves and builds nothing.
   pose?(o: THREE.Object3D, z: Zone, ctx: RealContext): void
   drop?(o: THREE.Object3D): void
-  // False while a picture the part is built from is not loaded: the part is drawn by its stand-ins until it answers true.
+  // False while a picture the part is built from is not loaded: the part is not drawn until it answers true.
   ready?(): boolean
   // True when the object draws the part's words itself, as a display draws its dots. Otherwise every `text` shape of the part is set by the owner of the type, on whatever the part has built under it.
   words?: boolean
@@ -56,6 +57,7 @@ export interface Whole {
 
 // The maker of a part that is built whole, zone by zone, on its anchors. Its single shapes are drawn by the anchor's object.
 export function whole(part: string, w: Whole): PartMaker {
+  if (w.ready) gate(part, 'step3', w.ready)
   return {
     key: (s) => (w.ready && !w.ready() ? null : s.kind === 'anchor' ? `${w.version}|${s.id}` : s.kind === 'text' && !w.words ? null : ''),
     make(s, ctx) {

@@ -306,6 +306,7 @@ export function makePage(): PageLogic {
         }
       } else if (s.phase === 'letter') {
         const p = seconds()
+        if (s.n - s.at === Math.ceil(AT.panel[1] * stepHz)) io.emit('metrics-card', nodes.metrics.box[0]! + nodes.metrics.box[2]! / 2, nodes.metrics.box[1]! + nodes.metrics.box[3]! / 2, false)
         if (s.acted < 1 && p >= AT.drop[0]) {
           s.acted = 1
           cursor.act('shocked')
@@ -367,6 +368,7 @@ export function makePage(): PageLogic {
         }
       } else if (s.phase === 'metrics') {
         const p = seconds()
+        if (s.n - s.at === Math.ceil(AT.count[0] * stepHz)) io.emit('count-run', nodes.metrics.box[0]! + nodes.metrics.box[2]! / 2, nodes.metrics.box[1]! + nodes.metrics.box[3]! / 2, false)
         if (io.pressed && buttonShown() && !s.shared && (inRect(io.pointer, places.share, 10) || inRect(cursor, places.share, 10))) {
           s.shared = true
           io.emit('share', places.share.cx, places.share.cy, false)
