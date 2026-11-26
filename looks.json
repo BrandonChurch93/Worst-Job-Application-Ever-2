@@ -1,0 +1,35 @@
+{
+  "folder": "boss-fight",
+  "pushed": "2026-11-26T01:06:00.711Z",
+  "commit": "56185efe82b64e56fe5a377e03934f8ad93d94d3",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-boss-fight-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T01:05:42.341Z",
+      "by": "boss-fight",
+      "from": "out/work/stills/key-boss-fight-hd-review.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key boss-fight: approved on the left, this build on the right, review tier",
+      "time": "2026-11-26T01:05:58.638Z",
+      "by": "boss-fight",
+      "from": "out/work/compare/compare-boss-fight.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key boss-fight at review tier beside the approved image: volley of darts with trails and shadows, spark on the shield plane, slab in flight, health tray, verify card. Boss body is still the stand-in on this branch.",
+      "time": "2026-11-26T01:05:59.038Z",
+      "by": "boss-fight",
+      "from": "out/work/compare/compare-boss-fight.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Beat boss.verify, nine frames: doubt, flinch, tap, tick drawn, answer under the rule",
+      "time": "2026-11-26T01:05:59.529Z",
+      "by": "boss-fight",
+      "from": "out/work/sheets/sheet-beat-boss_verify-preview-draft.jpg"
+    }
+  ]
+}
