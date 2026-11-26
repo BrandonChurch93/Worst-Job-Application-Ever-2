@@ -46,6 +46,46 @@
    "where": "the settle in row 3 and the intake approach in row 4",
    "what": "The turn and closing shadow suggest a touchdown, but there is no distinct held squash or recovery. As the intake enters, the arrow is already upright and slides toward it with little visible hesitation or reaction.",
    "fix": "Compress the arrow briefly against the surface, let it rebound and settle, then use a small lean away from the intake before it gets drawn in."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: nervous reads as stunned and frozen while the port seals it. Beads of sweat, the small tremble and the gulp are not in the read.",
+   "fix": "Nervous as the kit has it, seen in the ball: sweat that forms and rolls off, a tremble, a gulp down the body, at a size at which they show.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as frantic and disoriented, which is what the bumpers do to the ball. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked as a held pose after a hit: the stretch tall, then the snap back, clear of the next hit.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as calm and focused on the ride ahead. Upright with a slight bounce and a strut is not in the read.",
+   "fix": "Confidence in the body on the rail: upright in the glass, a bounce with the ride, held where the camera is close.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as dizzy, from the ball's circles in the spiral. Pale and stony, the lean back and the hiding are not in the read.",
+   "fix": "Scared as the kit has it, seen in the ball: the arrow gone pale and stiff and leaning back from where the ball is going.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: exhausted reads as rattled and carried by its momentum. The sag, the melt at the edges and the slump are not in the read.",
+   "fix": "Exhausted as the kit has it: the arrow sagging and slumped against the inside of the glass, held after the last hits.",
+   "by": "builder"
   }
  ],
  "reads": [

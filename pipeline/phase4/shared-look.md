@@ -176,6 +176,34 @@ The cause, found by two trials in the measuring tree (the collar left out: the r
 
 Built: `collar` adds every corner between the two sides. MEASURED after: the same row reads 224 to 236. `tests/shared-look-collar.test.ts` holds that the collar's area is the tile's less the hole's for a long capsule, a tall one, a field and a disc (the long capsule was 724 square px short before). `ground.ts` is not changed.
 
+## The last task (08:42 to 09:10 UTC): the arrow's dimple and its black edge
+
+Rulings of the Builder at 08:42 UTC, written down: no tilt of the page camera and no painted sidewall on the arrow (closed); `shadowHeights.keep` stays 0.2 and the orange cap's short shadow goes to "For Brandon to decide"; the darker contact core beside a control is an open item of the light, not started; 44 of 40 looks on the shell is logged as a limit passed.
+
+(a) The grey dimple where the stem meets the wings: removed (commit `D: the arrow's face no longer dips where the stem meets the wings`).
+
+- The cause. Round an inward corner of the outline the rings turn about a point outside the outline (`ring` in `shape.ts`: radius `r + t` about `miter(i, -r - GROW)`), so a ring cuts the corner closer than its own distance says. The dome was built on the true distance to the corner. MEASURED (a probe test, the ring at 1.41 round the corner at 3.9, 12.6): the ring's own distance 1.41, the true distance at the middle of the turn 1.008, and the dome counted the two edges that meet there twice, which took another 0.13 of it. The face stood 0.298 of an outline unit lower in the turn than on the ring beside it (1.1 px on the page, 6.6 px on the acting sheet): a dimple at each side of the stem, drawn grey by the lamps.
+- The mend, in `src/cursor/model/shape.ts` only: `grown` gives the distance in as the rings count it (within the turn of an inward corner, the distance from the turn's centre less its radius); the dome's smoothed distance gives the two edges of an inward corner one say between them. `heightAt`, `domeInside` and the points of the face use it.
+- MEASURED: `tests/shared-look-arrow.test.ts` (new): the face's height along the rings at 1.1 and 1.41 within 1.9 units of either inward corner differs by less than 0.03; before the mend 0.298 (the test fails on the old `shape.ts`, run with the file stashed). `tests/cursor-model.test.ts` 28 of 28, no number of it changed. Triangles of the acting sheet 832186 to 837406, draw calls 140 and 140, 7.6 s at draft.
+- Looked at: the sheet `cursor-acting` at draft (all six states; the dimple is gone on the five that are whole, the melted one is as it was), `step2-dial`, `loader-page` and `reply-all` at draft (the arrow on the dial, the sealed arrow on the page and in the machine: whole, lit, edged, no dimple).
+
+(b) The black edge to the approved width: NOT changed. What was found:
+
+MEASURED on the sheets, the same rows through the "Shocked" arrow of `references/approved/cursor-acting.png` and of the build's sheet (`/tmp/runs.py <png> <row> <x0> <x1>`: the runs of pixels darker than 70 of 255, three rows each, the width across the edge):
+
+| | arrow's height | edge on the lit side (left) | edge on the far side (right) |
+| --- | --- | --- | --- |
+| approved sheet | about 447 px | 7 px (0.016 of the height) | 8 px along the row, 6 px across (0.013) |
+| build's sheet | 430 px | 10 px (0.023) | 25 to 26 px along the row, 21 px across (0.048) |
+
+On the sheets the build's edge is not thinner than the approved one: it is 1.4 times as wide on the lit side and about 3.5 times on the far side, where the sheet's tilted view shows the wall of the band.
+
+Seen, not measured the same way, on the page (`step2-dial`, a 6x crop of both): the approved edge is about 3.3 px on an arrow about 62 px tall (0.05), the build's about 2 px on 70 px (0.03). So the two approved pictures do not agree with each other (0.016 on the sheet, 0.05 on the page) and the build stands between them. My point 1 of the second report ("edge thinner than approved") was read from the page crop alone; by the sheets it is the other way round.
+
+Decision: no change to the band in this push. Narrowing it to the sheet (0.9 to about 0.63 of a unit) would leave about 1.4 px on the page, further from the approved pages; widening it to the page would take it further from the sheet. The far side's 21 px on the sheet is the band's wall (0.62 to 1.76 units tall), and lowering the body moves every shadow and every pose of the arrow: not a change for the last ten minutes. For a ruling: which picture holds the edge's width, the sheet or the pages.
+
+MEASURED after the mend, on 1bd2fda8: `npm run -s measure -- --unit step1 --tier review`: 8 green, 0 red, exit 0, 239 s; M2 0.0132 (as before), M3 0.9992 (0.9997 before), M4 4.62, M5, M6 and M9 0 px, M7 0 of 3. The whole checks on 1bd2fda8: `npx vitest run` 113 files, 1443 of 1443; `npm run build` 0; `npm run bots` all clear; `npm run paths` all clear; `npx tsc --noEmit` 0. The other units were not measured again after this commit; the pinball measure was not run after any of my work (the run before took 2764 s).
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
@@ -183,7 +211,7 @@ Built: `collar` adds every corner between the two sides. MEASURED after: the sam
 | shell | 44 | 40 |
 | type | 3 | 40 |
 | light-engine | 3 | 40 |
-| cursor-body | 11 | 40 |
+| cursor-body | 18 | 40 |
 
 Shell went 4 over its 40: 25 through item C, 9 to find the hairline of item H (four diagnostic views, one review shadow view and four stills), 10 for the tooth of item G (seven of `decision`, three of `marketing-top`). Said, not hidden.
 
