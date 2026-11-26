@@ -1,35 +1,35 @@
 {
   "folder": "boss-finish",
-  "pushed": "2026-11-26T10:50:21.587Z",
-  "commit": "b0d68e6d0e1f310b75e33ab24e43bfb19c3460bc",
+  "pushed": "2026-11-26T11:45:26.381Z",
+  "commit": "d072c9f2e67ea728d55f3e51b2d77ce4ec9b9b5c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key boss-down: approved on the left, this build on the right, draft tier, with crops of shape:boss-cap, cursor, shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:boss-side-0, shape:rim-socket-open, shape:health-track, checkbox",
-      "time": "2026-11-26T10:44:52.884Z",
+      "caption": "boss.popups 15.95 to 20.0 s every 9 frames: shots stop on the first dialog, the arrow goes round the second, then fires through; a slab strikes it at 20.2 s",
+      "time": "2026-11-26T11:45:24.641Z",
       "by": "boss-finish",
-      "from": "out/work/compare/compare-boss-down.jpg"
+      "from": "out/work/looks/files/20261126114524-rep-pop.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key boss-down: approved on the left, this build on the right, draft tier, with crops of shape:boss-cap, cursor, shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:boss-side-0, shape:rim-socket-open, shape:health-track, checkbox",
-      "time": "2026-11-26T10:47:39.134Z",
+      "caption": "boss.lastStand 22.2 to 24.2 s: after the hit and shake the arrow goes to the bar as it fills back and stands at the regained piece",
+      "time": "2026-11-26T11:45:24.872Z",
       "by": "boss-finish",
-      "from": "out/work/compare/compare-boss-down.jpg"
+      "from": "out/work/looks/files/20261126114524-rep-bar.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "boss-down, approved left, build right: toothed plates, burst cap ends, smoke, tinted lying shield",
-      "time": "2026-11-26T10:50:20.434Z",
+      "caption": "boss.press 29.80 to 30.05 s frame by frame: the arrow reaches the fallen button, the button gives at 29.90 and springs back",
+      "time": "2026-11-26T11:45:25.115Z",
       "by": "boss-finish",
-      "from": "out/work/looks/files/20261126105020-look-down.jpg"
+      "from": "out/work/looks/files/20261126114525-press-c.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "boss-fight, approved left, build right: straight steel legs, heavier barrels, shield hit on its outward face",
-      "time": "2026-11-26T10:50:20.656Z",
+      "caption": "boss.unfold: thrown back at the crack, held, run to cover, then the first slab",
+      "time": "2026-11-26T11:45:25.352Z",
       "by": "boss-finish",
-      "from": "out/work/looks/files/20261126105020-look-boss.jpg"
+      "from": "out/work/looks/files/20261126114525-rep-unfold.jpg"
     }
   ]
 }
