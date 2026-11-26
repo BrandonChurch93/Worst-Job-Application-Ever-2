@@ -85,8 +85,8 @@ export function faceGeometry(): THREE.BufferGeometry {
   const p = g.getAttribute('position')
   const uv = new Float32Array(p.count * 2)
   for (let i = 0; i < p.count; i++) {
-    uv[i * 2] = p.getX(i) / (B.wheel * 2) + 0.5
-    uv[i * 2 + 1] = p.getY(i) / (B.wheel * 2) + 0.5
+    uv[i * 2] = p.getX(i) / B.turned + 0.5
+    uv[i * 2 + 1] = p.getY(i) / B.turned + 0.5
   }
   g.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
   return g
@@ -105,22 +105,22 @@ export function edgesGeometry(): THREE.BufferGeometry {
   return merge(parts)
 }
 
-// The hub: a moulded dome on a short straight foot.
+// The hub: a moulded dome on a short straight foot, round all the way over so the light runs off it.
 export function hubGeometry(): THREE.BufferGeometry {
   const r = B.hub
-  const tall = B.hubTall
-  const foot = 2.4
-  const wide = 9
-  const crown = 2.6
-  const points: ProfilePoint[] = [
-    [0, H - 0.4, true], [0, H + foot], ...arc(0, H + foot, wide, tall - foot - crown, 12).slice(1),
-    ...[0.8, 0.6, 0.4, 0.22, 0.08].map((t): ProfilePoint => [r - (r - wide) * t, H + tall - crown * t * t])
-  ]
+  const foot = 1.6
+  const dome = B.hubTall - foot
+  const n = 16
+  const points: ProfilePoint[] = [[0, H - 0.4, true], [0, H + foot]]
+  for (let i = 1; i <= n; i++) {
+    const a = (i / n) * (Math.PI / 2)
+    points.push([Math.min(r - 0.01, r * (1 - Math.pow(Math.cos(a), 0.9))), H + foot + dome * Math.pow(Math.sin(a), 0.8)])
+  }
   return sweep(circle(r, 72), profile(points))
 }
 
 export function hubRingGeometry(): THREE.BufferGeometry {
-  return sweep(circle(B.hub + 2.2, 72), [flat(0, H + 0.06), flat(3.4, H + 0.06)], false)
+  return sweep(circle(B.hub + 0.7, 72), [flat(0, H + 0.06), flat(1.2, H + 0.06)], false)
 }
 
 // The finger stop: a bar that stands on the bezel's edge and reaches in over the wheel.
@@ -187,6 +187,21 @@ export function holeShadeGeometry(): THREE.BufferGeometry {
 }
 
 let shadeMaterial: THREE.MeshBasicMaterial | null = null
+let faceMaterial: THREE.MeshPhysicalMaterial | null = null
+
+// The wheel's face is the page's turned aluminium with a finer cut: at this size the shared cut reads as rings, and the approved face is fans of light.
+// It keeps the shared material's shader rules, so it stands under the same studio as everything else.
+function turnedFine(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMaterial {
+  const m = shared.clone()
+  m.onBeforeCompile = shared.onBeforeCompile
+  m.customProgramCacheKey = shared.customProgramCacheKey
+  m.normalScale.set(B.cut, B.cut)
+  m.roughness = B.faceRough
+  m.anisotropy = B.faceStretch
+  m.color.multiplyScalar(B.faceLight)
+  m.name = 'dial-face'
+  return m
+}
 
 interface Kit { seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry }
 let kit: Kit | null = null
@@ -221,14 +236,15 @@ export const dial: PartMaker = {
     root.add(mesh(g.seat, m.aluminiumSatin, false))
     root.add(mesh(g.gap, m.gap, false))
     const body = new THREE.Group()
-    body.add(mesh(g.housing, m.aluminiumEdge))
+    body.add(mesh(g.housing, m.aluminiumSatin))
     const plate = mesh(g.plate, m.keycap, false)
     body.add(plate)
-    const stop = mesh(g.stop, m.aluminium)
+    const stop = mesh(g.stop, m.steel)
     body.add(stop)
     const wheel = new THREE.Group()
-    wheel.add(mesh(g.face, m.aluminiumTurned))
-    wheel.add(mesh(g.edges, m.aluminiumEdge))
+    faceMaterial ??= turnedFine(m.aluminiumTurned)
+    wheel.add(mesh(g.face, faceMaterial))
+    wheel.add(mesh(g.edges, m.chrome))
     wheel.add(mesh(g.hubRing, m.gap, false))
     const hub = mesh(g.hub, m.orange)
     wheel.add(hub)
@@ -250,7 +266,9 @@ export const dial: PartMaker = {
     const up = dialPlate(top) - (top - B.plate)
     kept.plate.position.z = up
     kept.shades.position.z = H - B.plate + 0.12 + up
-    kept.hub.position.z = -B.hubTall * low
+    const swell = B.hubFlat + (1 - B.hubFlat) * (1 - low)
+    kept.hub.scale.z = swell
+    kept.hub.position.z = H * (1 - swell)
     kept.stop.position.z = -(B.stopClear + B.stopTall + 0.5) * low
     const turn = s.v?.[0] ?? 0
     kept.wheel.rotation.z = -turn

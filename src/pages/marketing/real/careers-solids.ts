@@ -102,3 +102,46 @@ export function mirrored(g: THREE.BufferGeometry): THREE.BufferGeometry {
   c.rotateX(Math.PI)
   return c
 }
+
+// A medal's flange: a flat band whose outer edge is cut in round lobes and whose inner edge is a circle.
+// `rings` run from the foot of the outer wall to the inner circle: `d` is how far in from the lobed edge, or, with `t`, how far along to the circle.
+export function flange(r: number, lobes: number, deep: number, inner: number, rings: { d?: number; t?: number; z: number }[]): THREE.BufferGeometry {
+  const n = lobes * 20
+  const pos: number[] = []
+  const idx: number[] = []
+  for (const ring of rings) {
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2
+      const lobe = 0.5 - 0.5 * Math.cos(a * lobes)
+      const edge = r - deep * (1 - Math.pow(lobe, 0.8))
+      const at = ring.t !== undefined ? edge + (inner - edge) * ring.t : edge - (ring.d ?? 0)
+      pos.push(Math.cos(a) * at, Math.sin(a) * at, ring.z)
+    }
+  }
+  for (let k = 0; k < rings.length - 1; k++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(k * n + i, k * n + j, (k + 1) * n + i, k * n + j, (k + 1) * n + j, (k + 1) * n + i)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
+  g.setIndex(idx)
+  g.computeVertexNormals()
+  return g
+}
+
+// The light a turned face gives back: two bright sectors along `axis` and two dull ones across it, laid into the disc as vertex colour.
+export function sheen(g: THREE.BufferGeometry, axis: number, depth: number): THREE.BufferGeometry {
+  const p = g.getAttribute('position')
+  const col = new Float32Array(p.count * 3)
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i)
+    const y = p.getY(i)
+    const v = Math.hypot(x, y) < 0.5 ? 1 : 1 + depth * Math.cos(2 * (Math.atan2(y, x) - axis))
+    col.set([v, v, v], i * 3)
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3))
+  return g
+}

@@ -45,8 +45,8 @@ export function plunger(z: Zone): Geo {
   G.move(from, turn(yk))
   const rigid = G.vertices
   from = G.vertices
-  G.f(FIN.dark)
-  coil(G, 10.4, 2.1, 6, PLUNGE.spring, shade(TONE.steelDim, 0.6))
+  G.f(FIN.chrome)
+  coil(G, 10.4, 2.1, 6, PLUNGE.spring, TONE.chrome)
   G.move(from, turn(face))
   const end = G.vertices
   G.morph(0, moving, rigid, () => [0, -PLUNGE.travel, 0])
