@@ -1,7 +1,7 @@
 {
   "version": 1,
   "lastMark": {
-    "at": 1795686569011,
+    "at": 1795687728782,
     "boot": "df551acd-542a-4cfe-8bc6-11afd76c75c3"
   },
   "epochs": [
@@ -17,13 +17,13 @@
         "4": 14,
         "5": 4
       },
-      "seconds": 101815.011,
+      "seconds": 102974.782,
       "phaseSeconds": {
         "0": 6207.739,
         "1": 1349.032,
         "2": 18875.037,
         "3": 43904.471000000005,
-        "4": 31478.731999999993
+        "4": 32638.502999999993
       }
     }
   ],
@@ -42,20 +42,20 @@
       "3": true
     }
   },
-  "lastStatusAt": 1795686569011,
-  "ticks": 154,
+  "lastStatusAt": 1795687728782,
+  "ticks": 156,
   "phaseSeconds": {
     "0": 6207.739,
     "1": 1349.032,
     "2": 18875.037,
     "3": 43904.471000000005,
-    "4": 31478.731999999993
+    "4": 32638.502999999993
   },
   "lastPrint": [
-    "clock: phase 4, tick 154 at 2026-11-26T09:49:29Z, allowance: build",
-    "time used in this phase: 8.74 h of its box of 14.00 h",
-    "time used under the allowance in force: 28.28 h of 36.00 h allowed",
-    "time used: 28.28 of 36.00 hours before the review",
+    "clock: phase 4, tick 156 at 2026-11-26T10:08:48Z, allowance: build",
+    "time used in this phase: 9.07 h of its box of 14.00 h",
+    "time used under the allowance in force: 28.60 h of 36.00 h allowed",
+    "time used: 28.60 of 36.00 hours before the review",
     "extra rounds: yes",
     "half point: reached",
     "box end: not reached",
