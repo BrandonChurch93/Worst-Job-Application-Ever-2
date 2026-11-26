@@ -170,8 +170,10 @@ export function spillsOf(z: Zone): Spill[] {
 // A lamp that stands high on a model, over the reach of the floor's pictures: it lights the walls and roofs near it straight from its own place.
 export interface High { x: number; y: number; z: number; reach: number; colour: RGB; follows: string; power: number }
 
-export const HIGHS = 7
+export const HIGHS = 9
 export const HIGH_BODY = 60
+// The beacon's lamp over its roof, in pixels and balls: low and near, so its colour lies on the roof and not on the street.
+const BEACON = { z: 20, reach: 1.5, power: 0.8 }
 const NOTES = { out: 0.75, z: 70, reach: 2, power: 0.2 }
 
 export function highOf(z: Zone): High[] {
@@ -210,7 +212,13 @@ export function highOf(z: Zone): High[] {
   const upper: [number, number][] = [[x1, y0], [x0, y1], [x1, y1]]
   // With the spiral of two turns the ball's tube passes the lower fitting at the left of the garage's foot, and the owner of the model left that one out.
   const lower: [number, number][] = g.h < 3.6 ? [[x1, y0], [x0, y0], [x1, y1]] : [[x1, y0], [x0, y0], [x0, y1], [x1, y1]]
-  return [...upper.map(([u, v]) => lamp(u, v, (base + g.h) * BALL - 22, 0.45, 2.8)), ...lower.map(([u, v]) => lamp(u, v, (base + 0.4 * g.h) * BALL, 0.55, 3.2))]
+  // The beacons stand over the reach of the floor's pictures: each throws its colour on the roof round it from its own place.
+  const beacon = (id: string, colour: RGB, follows: string): High => {
+    const m = model(id)
+    const p = localBalls(z, centre(m)[0], m.box[1] + m.box[3] * 0.3)
+    return { x: p[0], y: p[1], z: ((m.base ?? 0) + m.h) * BALL + BEACON.z, reach: BEACON.reach * BALL, colour, follows, power: BEACON.power }
+  }
+  return [...upper.map(([u, v]) => lamp(u, v, (base + g.h) * BALL - 22, 0.45, 2.8)), ...lower.map(([u, v]) => lamp(u, v, (base + 0.4 * g.h) * BALL, 0.55, 3.2)), beacon('street.firehouse', C.STREET_RED, 'red'), beacon('street.police', C.STREET_BLUE, 'blue')]
 }
 
 export function groupsOf(z: Zone | string): Group[] {

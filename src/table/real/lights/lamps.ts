@@ -182,7 +182,7 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     if (n.tier !== z.tier) continue
     const p = localBalls(z, n.c[0], n.c[1])
     const r = n.r * BALL
-    metals.push(put(paint(lathe([[r + 3.4, 0.3], [r + 3.4, 0.75], [r + 2.8, 1.2], [r + 0.9, 1.2], [r + 0.2, 0.7]], 48), () => SEAT), p[0], p[1], 0))
+    metals.push(put(paint(lathe([[r + 6.2, 0.3], [r + 6.2, 0.9], [r + 5.4, 1.4], [r + 1.2, 1.4], [r + 0.2, 0.7]], 48), () => SEAT), p[0], p[1], 0))
   }
   const globes = table.posts.filter((q) => q.tier === z.tier && q.lamp)
   for (const q of globes) {

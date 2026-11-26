@@ -69,6 +69,10 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 07:23 | art | 4 | a1, new Office and Street floors: reply-all, tier-office, tier-street, last-save | 18, 7 |
 | 07:29 | art | 4 | a2, flush inserts, warm lane lamps, no printed halos: tier-office, tier-street, tier-corporate, last-save | 18, 11 |
 | 07:33 | lights | 4 | a3, head lamps down a step: tier-corporate, tier-office, tier-street, reply-all | 22, 11 |
+| 07:39 | lights | 2 | e1, every lamp of mine off, to see what the page alone gives: tier-street, tier-office | 24, 11 |
+| 07:41 | lights | 4 | p1, pools down, head lamps up: tier-street, tier-corporate, tier-office, reply-all | 28, 11 |
+| 07:44 | art | 4 | p2, head lamps fall off across the tier, darker lens, wider seat: tier-street, tier-corporate, tier-office, reply-all | 28, 15 |
+| 07:49 | lights | 4 | p3, beacon light on the roofs, bluer Street: tier-street, youre-fired, rail-cam, table-wide | 32, 15 |
 
 ## Decisions
 
@@ -80,6 +84,13 @@ Counted from the first still, by part. Limit 40 a part in this round.
 6. Point 5, the inserts. No printed ring and no trim ring: a frosted milky lens with a finer line (9 px in the atlas), the glow brightest in the middle, the lens 0.35 px over the floor with a low dome, and one slim seat of warm metal round it in `lamps.ts` (vertex colour in the mesh that was there, no new draw call).
 7. Point 6, the lane lamps. Warm lens, wider than long, in a frame of dark metal; the printed round halos under every lamp are gone from the floors. AGREED with `/root/frame_fixer` at 07:29 UTC: I draw the seat of every lane lamp, they draw none and keep only the edge strips of the lane.
 8. Nothing is printed round a lamp or a window on any floor any more: what is round a lamp is metal in `lamps.ts`, what is in a window is the atlas.
-9. Brightness after a3, MEASURED with `node assets-src/table/lights/means2.mjs a3`: tier-corporate 1.14, tier-office 1.08, reply-all 1.11, tier-street 1.15 of the approved means. Halving the head lamp of the Street moved its key by 0.01, so what is too bright there is the floor under its own lamps, not the head lamp.
+9. Brightness after a3, MEASURED with `node assets-src/table/lights/means2.mjs a3`: tier-corporate 1.14, tier-office 1.08, reply-all 1.11, tier-street 1.15 of the approved means. Taking the head lamp of the Street from 1.1 to 0.9 moved its key by 0.01, so what is too bright there is the floor under its own lamps, not the head lamp.
+10. MEASURED with every lamp of mine off (`e1`, a line in `pose` that set every colour to nothing, taken out again): tier-street stands at 0.59 and tier-office at 0.47 of the approved mean, and the floors are black. So all the light on a floor is mine, and the brightness of a tier is what the head lamps and the pools add up to.
+11. The pools of every lamp are now a share of what they were beside the head lamps (`POOL` in `colours.ts`: Corporate 0.55, Office 0.6, Street 0.5; the flash keeps its whole), and the head lamps fall off across the tier from the corner they stand in to the far corner (`SHADOW.near` 1.5 to `SHADOW.far` 0.22 in `hook.ts`). One side of a tier is lit and the other is dim, which is what the approved tiers show. This is not a general fill: it takes light away.
+12. Inserts, second step: the lens is darker toward its rim and the glow falls off faster, so the middle is the bright part; the seat is 6 px wide so it is seen from the tier cameras; a window at rest glows at 0.3 instead of 0.42.
+13. Point 8, the beacons. The cover and the bulb in it are meshes of the Street's models (`src/table/real/models/street/index.ts`, `beaconLens`, `beaconReflector`). My half: each beacon has a lamp of its own 20 px over its roof (`BEACON` in `groups.ts`, with the high lamps, which went from 7 to 9), so its red or blue lies on the roof and the sign round it and follows the group `red` or `blue`. No mesh of mine is in the beacon, so no draw call is added. What the owner of the models must do is in Needs.
+14. The Street's ground is bluer (`#0a1c30`, `#12304a`) and its head lamps less orange, so the floor stays navy under them instead of going teal.
 
 ## Needs
+
+1. For the owner of the Street's models (none until about 07:45 UTC, so said to the Builder): the beacon's cover should be clear ribbed plastic that shows a small bulb, not an evenly glowing dome. In `src/table/real/models/street/mats.ts` the lens could go to a low emissive (about 0.25 of the group's level) with `transmission` or a low opacity and its flutes kept, and the bulb in `beaconReflector` to about 4 times the group's level (`LENS.on` in `src/table/real/lights/colours.ts` is 4.2), taken from `levels(ctx, zone).byName.red` and `.blue` as now. The light on the roof round it is done on my side.

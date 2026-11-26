@@ -7,7 +7,7 @@ const arrow = () => ''
 export const PAL = {
   corporate: { base: '#081229', base2: '#0f2147', key: '#e3bd62', fine: '#c4a252', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#060e22', accent: '#27468a', soft: '#1b3466' },
   office: { base: '#3e5258', base2: '#33464c', key: '#8a9c9a', fine: '#6c8084', pale: '#b4bcb2', under: '#26373c', dark: '#162226', lane: '#26373c', accent: '#4d6268', soft: '#435860' },
-  street: { base: '#0b202f', base2: '#14384a', key: '#c3ccc9', fine: '#5f858e', pale: '#dcdfd6', under: '#07182a', dark: '#040d17', lane: '#081b2c', accent: '#b89a38', soft: '#19425a', fan: '#4f757d', fan2: '#33575f' }
+  street: { base: '#0a1c30', base2: '#12304a', key: '#c3ccc9', fine: '#5f858e', pale: '#dcdfd6', under: '#07182a', dark: '#040d17', lane: '#081b2c', accent: '#b89a38', soft: '#19425a', fan: '#4f757d', fan2: '#33575f' }
 }
 
 // One tier of the layout in its own frame: u across, v down from the top of the tier, in balls.

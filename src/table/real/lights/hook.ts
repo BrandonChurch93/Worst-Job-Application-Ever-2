@@ -62,7 +62,7 @@ const SPILL = 1.6
 const GLINT = { level: 5.0, body: 13, low: 30 }
 
 // The shadows of the head lamps. A wall is asked a little outside its own foot, and a thing that stands is taken a little higher than it is, so nothing lies in its own shadow; `soft` is how many pixels of height the tip of a shadow fades over, `edge` how much of its depth its side does.
-export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0.9, spotAt: 0.1, gloss: 0.6 }
+export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0.9, spotAt: 0.1, gloss: 0.6, far: 0.22, near: 1.5 }
 
 // For each group: its picture at the fragment's place, a term for the fragment's height and for the way its surface faces the lamps, the group's colour and level.
 const body = /* glsl */ `
@@ -237,6 +237,8 @@ const body = /* glsl */ `
 			wjlOpen *= 1.0 - ${SHADOW.steel.toFixed(2)} * ( 1.0 - smoothstep( - 3.0, 7.0, least ) ) * ( 1.0 - onIt );
 		}
 		wjlLight.direction = normalize( ( viewMatrix * vec4( wjlKeyDir, 0.0 ) ).xyz );
+		float wjlNear = dot( wjlP.xy, normalize( wjlKeyDir.xy ) ) / ( 0.5 * length( wjlSize ) );
+		wjlOpen *= mix( ${SHADOW.far.toFixed(2)}, ${SHADOW.near.toFixed(2)}, smoothstep( - 0.75, 0.85, wjlNear ) );
 		wjlLight.color = wjlKeyCol * wjlOpen * wjlInside * wjlClear * PI;
 		vec3 wjlGloss = reflectedLight.directSpecular;
 		#ifdef USE_CLEARCOAT

@@ -3,7 +3,7 @@ import type { PartMaker, RealContext } from '../../../real/types'
 import { zoneAt } from '../../draw'
 import { BALL, FLIP_REACH, table } from '../../layout'
 import { localBalls, whole, type Zone } from '../zone'
-import { FILL, FLASH, SOFT } from './colours'
+import { FILL, FLASH, POOL, SOFT } from './colours'
 import { groupsOf, highOf, LIT, spillsOf, type Group } from './groups'
 import { BALLS, keyOf } from './key'
 import { buildLamps, type Lamps } from './lamps'
@@ -80,6 +80,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
       ctx.light({ x: src.x + 960, y: z.top + z.height / 2 - src.y, z: src.z + z.floor, colour: n.g.colour, power: src.power * L.general * part * TRUE.cut, reach: src.reach, shadow })
     })
   }
+  const pool = POOL[z.id] ?? 1
   for (let i = 0; i < u.wjlCol.value.length; i++) {
     const g = groups[i]
     if (!g) {
@@ -87,7 +88,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
       u.wjlFull.value[i]!.set(0, 0, 0)
       continue
     }
-    const level = L.groups[i]! * (1 - share[i]!)
+    const level = L.groups[i]! * (1 - share[i]!) * (g.name === 'flash' ? 1 : pool)
     u.wjlCol.value[i]!.set(g.colour[0] * level, g.colour[1] * level, g.colour[2] * level)
     u.wjlFull.value[i]!.set(g.colour[0] * L.groups[i]!, g.colour[1] * L.groups[i]!, g.colour[2] * L.groups[i]!)
     u.wjlAt.value[i]!.set(g.at[0], g.at[1], g.mode === 0 ? FIELD_HEIGHT : g.at[2], g.name === 'flash' ? 3 : g.mode)
