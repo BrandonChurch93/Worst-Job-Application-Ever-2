@@ -72,3 +72,9 @@ None of my own so far. Every surface uses the shared pictures of `materials()`.
 - The ticker's words, nearer approved. MEASURED on the review key still against `references/approved/marketing-top.png` (darkest 3 percent of the strip's row, 0 to 255): approved 40, mine 86 under a pane of 0.1; with the pane at 0.04 (`TICKER_LOOK.clear`) mine reads 61. The items stand 30 apart (`TICKER.gap`, was 40), as the approved strip sets them.
 - The nav button stays the shared button, 72 high (ruled by the Builder at 02:39Z from "One scale" in `kit/02-SUBJECT.md`).
 - M2 reads "not yet" on this page because the `texels` view counts a material's colour picture only (`paintTexels()` in `src/diagnostics/views.ts` reads `material.map`), and no surface of the page has one: the page, the glass, the medal and the orange carry their detail as geometry, vertex colour and normal pictures.
+
+## 02:55 UTC, the first screen at the final tier
+
+- MEASURED: `npm run still -- --key marketing-top --format hd --tier final` takes 53.28 s (triangles 582338, draw calls 196). Seen at native size beside approved.
+- The medal's turned face: the dull sectors are deeper (`MEDAL_LOOK.sheen` 0.58), the side toward the light is brighter than the far one (`lean` 0.14) and the rim of the face is a little darker than its middle (`rim` 0.94). MEASURED on approved at 100 px from the centre, round the face: 78 to 186 of 255; mine was 123 to 189 and is now nearer. With `rim` 0.84 and `sheen` 0.6 M4 failed ("copy:marketing.awards.items.1.from", 4.49 of 4.5), so those are the limit.
+- The slab's shadow stays thrown by a foot 4.2 high. Tried 6.4: the shadow became a dark bar 12 px wide (MEASURED 95 to 104 of 255 over 10 px), where approved has a core of about 6 px and a soft tail. Taken back.

@@ -8,7 +8,7 @@ import type { Shape } from '../../../stage/types'
 import { dims, flange, leaf, mesh, q, scattered, shared, sheen, srgb } from './careers-solids'
 import { engraved, restingSlab, slabKey } from './perk-cards'
 
-export const MEDAL_LOOK = { lobes: 30, deep: 12, band: 141, ring: 138, face: 127, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.45, axis: 2.2 }
+export const MEDAL_LOOK = { lobes: 30, deep: 12, band: 141, ring: 138, face: 127, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.58, axis: 2.2, rim: 0.94, lean: 0.14 }
 
 let faceMade: THREE.MeshPhysicalMaterial | null = null
 
@@ -63,7 +63,7 @@ function medallion(s: Shape): THREE.Object3D {
     [b(ring - 5.1), h - 0.9, true], [b(ring - 5.6), h + 0.2], [b(ring - 6.2), h + 0.9], [b(ring - 8.0), h + 0.9], [b(ring - 8.7), h + 0.3], [b(face + 1.4), h - 0.7, true], [b(face + 0.5), h - 0.7, true], [b(face), h, true]
   ]
   root.add(mesh(shared(`medalBody:${q(s.w)}:${q(h)}`, () => sweep(circle(band, 144), profile(body), false)), medalMetal()))
-  root.add(mesh(shared(`medalFace:${q(s.w)}:${q(h)}`, () => sheen(discUv(sweep(circle(face + 0.2, 144), [{ inset: 0, z: h, out: 0, up: 1 }]), face * 2), L.axis, L.sheen)), medalFace(), false))
+  root.add(mesh(shared(`medalFace:${q(s.w)}:${q(h)}`, () => sheen(discUv(sweep(circle(face + 0.2, 144), [{ inset: 0, z: h, out: 0, up: 1 }]), face * 2), L.axis, L.sheen, L.rim, L.lean)), medalFace(), false))
   const wreath = shared(`medalWreath:${q(s.w)}:${q(h)}`, () => {
     const one = leaf(L.leaf[0] * k, L.leaf[1] * k, L.leaf[2])
     const places: { x: number; y: number; z: number; turn: number }[] = []
