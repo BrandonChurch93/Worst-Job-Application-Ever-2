@@ -16,7 +16,7 @@ const MAIN = { w: 472, h: 68, up: 88, floor: 0.9, proud: 6, glassUnder: 1.6, mas
 const GLASS = { smoke: [0.0, 0.0, 0.0] as const, dust: [0.05, 0.047, 0.042] as const, clear: 0.36, dusty: 0.6, edge: 2.4, corner: 7, haze: 0.07 }
 const LINER = { thick: 0.3, tone: [0.014, 0.013, 0.012] as const }
 const SWEEP = { every: 9, takes: 2.6 }
-const MIRROR = { spots: 8, away: 250, near: 300, deep: 26, gain: 0.1, size: 3, grows: 2.5 }
+const MIRROR = { spots: 8, away: 250, near: 300, deep: 26, gain: 0.2, size: 2.6, grows: 1.6 }
 
 interface Seat { matrix: THREE.Matrix4; w: number; h: number; glass: number; mask: number; dotsUnder: number; pitch: number }
 
@@ -160,8 +160,8 @@ const body = /* glsl */ `
 		wjdWide += wjdField( wjdG + d * 1.6 );
 		wjdWider += wjdField( wjdG + vec2( d.x * 0.9239 - d.y * 0.3827, d.x * 0.3827 + d.y * 0.9239 ) * 3.3 );
 	}
-	vec3 wjdHalo = ( wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + 0.011 * wjdWider ) + wjdAmber * vec3( 1.0, 0.72, 0.5 ) * 0.32 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x * ( 1.0 + 0.9 * wjdPass );
-	vec3 wjdCoarse = ( wjdAmber * 1.05 + wjdHot * 0.3 ) * 0.8 * wjdField( wjdQ ) * wjdLight.x * wjdSweep + wjdAmber * 0.006 * wjdLight.y * wjdRows;
+	vec3 wjdHalo = ( wjdAmber * ( 0.1 * wjdTight + 0.015 * wjdWide + 0.011 * wjdWider ) + wjdAmber * vec3( 1.0, 0.6, 0.38 ) * 0.4 * wjdGlow( wjdG ) * wjdRows ) * wjdLight.x * ( 1.0 + 0.9 * wjdPass );
+	vec3 wjdCoarse = ( wjdAmber * 1.3 + wjdHot * 1.1 ) * wjdField( wjdQ ) * wjdLight.x * wjdSweep + wjdAmber * 0.006 * wjdLight.y * wjdRows;
 	totalEmissiveRadiance = mix( wjdNear, wjdCoarse, wjdFar ) + wjdHalo;
 }
 `
@@ -252,7 +252,7 @@ function housingMaterial(z: Zone, mirror: Mirror): THREE.MeshPhysicalMaterial {
 	for ( int i = 0; i < ${MIRROR.spots}; i ++ ) {
 		vec2 d = ( wjgP - wjgSpots[ i ].xy ) / wjgSpots[ i ].z;
 		float r = dot( d, d );
-		wjgSum += wjgSpots[ i ].w * ( exp( - r ) + 0.3 * exp( - r / 7.0 ) );
+		wjgSum += wjgSpots[ i ].w * ( 0.28 * ( 1.0 - smoothstep( 0.55, 1.0, r ) ) + 1.7 * exp( - r * 9.0 ) + 0.06 * exp( - r / 5.0 ) );
 	}
 	reflectedLight.indirectSpecular += wjgColour * wjgSum * step( roughnessFactor, 0.5 );
 }`
