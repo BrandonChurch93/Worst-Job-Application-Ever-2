@@ -93,7 +93,7 @@ function wing(flip: boolean): THREE.Group {
     ...WING_SCREWS.map(([x, y], i) => moved(screw(4.6, 1.8, i + (flip ? 9 : 0)), x, y, FRAME.tall).rotateZ(turnZ)),
     ...(flip ? [] : [-1, 1].flatMap((e) => [0, 1, 2].map((i) => moved(lying([[0, 0], [4.6, 0], [4.6, 9], [0, 9]], 20), e * 168 + 15 - i * 10.5, 0, FRAME.tall - 0.5))))
   ])), m.aluminiumEdge, false))
-  const tail = mesh(geo(`tail:${flip}`, () => cutPlate(flip ? [[0, -34], [28, -20], [28, -0.3], [0, -0.3]] : [[0, 0.3], [28, 0.3], [28, 20], [0, 34]], 5, 1.1).translate(0, 0, 0.5)), k.plate)
+  const tail = mesh(geo(`tail:${flip}`, () => cutPlate(flip ? [[0, -34], [28, -20], [28, -0.3], [0, -0.3]] : [[0, 0.3], [28, 0.3], [28, 20], [0, 34]], 5, 1.1).translate(0, 0, 0.5)), k.plate, false)
   g.add(tail)
   g.userData.tail = tail
   return g
@@ -145,7 +145,7 @@ function cannon(s: Shape, ctx: RealContext): THREE.Object3D {
   const k = bossKit()
   const root = new THREE.Group()
   const base = mesh(geo('cannonBase', () => lathe([[46, 0], [46, 3], [44.4, 4.6], [42.6, 4.6], [41.8, 2.8], [0, 2.8]], 72)), m.aluminiumTurned)
-  const housing = mesh(geo('cannonHousing', () => lathe([[41.5, 0], [41.5, 0.8], [40, 0.9], [39, 0.9], [39, 1], [0, 1]], 72)), k.housing)
+  const housing = mesh(geo('cannonHousing', () => lathe([[41.5, 0], [41.5, 0.8], [40, 0.9], [39, 0.9], [39, 1], [0, 1]], 72)), k.housing, false)
   const button = controls.make({ ...s, id: 'boss-cannon-button', part: 'shell', kind: 'disc', role: 'progressButton', tone: 'metal', z0: heights.progressRail, z1: heights.progressButton, rot: 0, v: undefined }, ctx)
   const barrel = new THREE.Group()
   const L = BARREL.long
@@ -217,7 +217,7 @@ function shield(): THREE.Object3D {
     return g.translate(0, 0, SHIELD.tall + 0.12)
   }), k.bore, false)
   leaf.add(cracks)
-  const pin = mesh(geo('shieldPin', () => lying([[0, 0], [3.4, 0], [3.4, 170], [0, 170]], 20).rotateZ(Math.PI / 2).translate(0, 85, 0)), k.pin)
+  const pin = mesh(geo('shieldPin', () => lying([[0, 0], [3.4, 0], [3.4, 170], [0, 170]], 20).rotateZ(Math.PI / 2).translate(0, 85, 0)), k.pin, false)
   const tubes = [-1, 1].map((sy) => {
     const g = new THREE.Group()
     g.add(mesh(geo('armTube', () => lying([[0, 0], [5, 0], [5, 50], [3.2, 50]], 20).rotateZ(Math.PI)), m.aluminiumSatin))
@@ -226,8 +226,7 @@ function shield(): THREE.Object3D {
   })
   const rods = [-1, 1].map((sy) => {
     const g = new THREE.Group()
-    g.add(mesh(geo('armRod', () => lying([[0, 0], [3.1, 0], [3.1, 52], [0, 52]], 16).rotateZ(Math.PI)), k.pin))
-    g.add(mesh(geo('armEye', () => lathe([[6.5, -3], [6.5, 3], [0, 3]], 24).rotateX(Math.PI / 2)), m.aluminiumSatin))
+    g.add(mesh(geo('armRod', () => joined([lying([[0, 0], [3.1, 0], [3.1, 52], [0, 52]], 16).rotateZ(Math.PI), lathe([[6.5, -3], [6.5, 3], [0, 3]], 24).rotateX(Math.PI / 2)])), k.pin, false))
     g.userData.sy = sy
     return g
   })
@@ -248,7 +247,7 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   const hurt = s.v?.[5] ?? 0
   const stand = prog(k, 0.55, 1) * (1 - flat)
   const swing = (1 - prog(k, 0.1, 0.6)) * (Math.PI / 2)
-  const lean = stand * 0.62
+  const lean = stand * (0.62 + 0.07 * clamp(s.v?.[2] ?? 0))
   const half = SHIELD.w / 2
   const low = 4 + stand * 6
   d.leaf.rotation.set(0, 0, 0)
