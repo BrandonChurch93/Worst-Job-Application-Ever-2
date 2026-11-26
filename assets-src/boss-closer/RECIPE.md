@@ -64,3 +64,48 @@ Every texture and built asset of the boss that this owner changed or added. All 
 - Takes: 2
 - Why this one: against the page a clear pane was lost; this reads as green glass with its cracks. It is still a thin sheet where `boss-down.png` shows a thick bar. 0 MB of its own.
 - Date: 2026-11-26
+
+## ground edge of the shield (geometry and material, no texture)
+
+- Made by: `rimGeometry()` with `RIM.shield` 12 and the material `edge` of `glassKit()` in `src/boss/real/glass.ts`
+- From: nothing but numbers: `CLEAR_GLASS.edge` `0x727d7a`, `bead` `0xc9dad4`, `metal` 0.7, `up` 0.8
+- Prompt or command: none
+- Takes: 4 (5 px pale bead, a thin white line; 9 px `0x87938f`; 12 px `0x727d7a`; then the pale bead for the lying pane, since the steel edge read as a picture frame in the wreck)
+- Why this one: beside `boss-fight.png` the pane stands in a ground edge that takes the light; beside `boss-down.png` it lies as a glass bar. 0 MB of its own.
+- Date: 2026-11-26
+
+## dust of a landing slab (geometry, no texture)
+
+- Made by: `dustGeometry()` in `src/pages/step4/real/boss-weapons.ts`
+- From: nothing but numbers: `LAND_DUST` (discs of 18 to 31 px every 20 px round the slab, alpha 1 at the middle and 0 at the rim, colour `0xc6bfb3`, 0.5 s, most 0.6), places and sizes from `hash01` of `src/core/random.ts`
+- Prompt or command: none
+- Takes: 2 (`0xa9a195` every 34 px read as a row of dark smudges; then this one)
+- Why this one: a faint warm haze that spreads and is gone in half a second. 0 MB of its own.
+- Date: 2026-11-26
+
+## soot of the fallen cap (data texture, 512 x 128, kept, ash darker)
+
+- Made by: `sootPixels()` in `src/boss/real/transform.ts`, unchanged in size
+- From: nothing but numbers, as the earlier recipe says
+- Prompt or command: `grey` of the ash 74 + 70 x fine to 40 + 34 x fine
+- Takes: 1
+- Why this one: the pale specks inside the burns read as a print at film size. 512 x 128 x 4 bytes = 0.25 MB, 0.33 MB with its mip chain, unchanged.
+- Date: 2026-11-26
+
+## slab lacquer, deeper red (numbers, no texture)
+
+- Made by: code, `lacquer()` in `src/pages/step4/real/boss-weapons.ts`, passed through `studio()`.
+- From: nothing but numbers: `LACQUER` colour `0xba0a0b` (was `0xa00d0b`), base roughness 0.42 (was 0.46), base specular 0.35 (was 0.4), clear coat roughness 0.15 (was 0.09), reflection of the room 0.7 (was 1.05). The grain normal map on the coat is the shell's (256 px, seed 71 past the site's seed), as before. No file, 0 MB added.
+- Command: none.
+- Takes: fourth of this pass (`0x8f0707` with the room at 0.62 was dark and dull; `0xc20b0c` with the coat at 0.07 had no light on the edge; the coat at 0.26 washed the face pink).
+- Why this one: the room's reflection at 1.05 laid a pale haze over the face, so the slab read rose and matte. With less of the room and a wider coat the face is a deep red and the upper bevel carries a thin line of light, as the approved `boss-fight` shows it.
+- Date: 2026-11-26.
+
+## cracks round the socket, heavier (geometry, no texture)
+
+- Made by: code, `crackGeometry()` and `crackStuff()` in `src/boss/real/transform.ts`, the material passed through `studio()`.
+- From: nothing but numbers: the runs of `crackRuns()` in `src/boss/body.ts` (not changed), drawn 2.5 times their plan width (was 1.7), never thinner than 0.6 px (was 0.45), colour `0x33231b` (was `0x3b2a20`). No file, 0 MB, no triangle added.
+- Command: none.
+- Takes: second (`0x2b1e17` read black beside the approved brown; `0x33231b` lies between the two that were looked at and was not looked at by itself).
+- Why this one: at the size of the key the cracks were hairlines of 1 to 2 px; the approved `boss-fight` shows them 3 to 4 px at the root and tapering.
+- Date: 2026-11-26.

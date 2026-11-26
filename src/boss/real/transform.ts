@@ -73,7 +73,7 @@ export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
       const bare = inside * seam * smooth((big - 0.5) / 0.2) * 0.45
       const i = (y * w + x) * 4
       const tone = 9 + Math.round(9 * fine)
-      const grey = 74 + Math.round(70 * fine)
+      const grey = 40 + Math.round(34 * fine)
       data[i] = Math.round(mix(tone + 4, grey, ash))
       data[i + 1] = Math.round(mix(tone + 2, grey - 2, ash))
       data[i + 2] = Math.round(mix(tone, grey - 5, ash))
@@ -151,7 +151,7 @@ const chipStuff = (): THREE.MeshPhysicalMaterial => {
 
 let crackMaterial: THREE.MeshPhysicalMaterial | null = null
 const crackStuff = (): THREE.MeshPhysicalMaterial => {
-  crackMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x3b2a20, THREE.SRGBColorSpace), roughness: 0.9, metalness: 0, specularIntensity: 0.1, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
+  crackMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x33231b, THREE.SRGBColorSpace), roughness: 0.9, metalness: 0, specularIntensity: 0.1, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }))
   return crackMaterial
 }
 
@@ -169,13 +169,13 @@ export function crackGeometry(): THREE.BufferGeometry {
     const parts = Math.max(2, Math.round(len / 5))
     let px = r.x0
     let py = r.y0
-    let pw = r.wide * 1.7 * (1 - r.at * 0.5)
+    let pw = r.wide * 2.5 * (1 - r.at * 0.5)
     for (let k = 1; k <= parts; k++) {
       const t = k / parts
       const j = k === parts ? 0 : (hash01(r.i, k, 31) - 0.5) * 2.4
       const qx = r.x0 + dx * t + nx * j
       const qy = r.y0 + dy * t + ny * j
-      const qw = Math.max(0.45, r.wide * 1.7 * (1 - (r.at + (1 - r.at) * t * 0.5) * 0.82) * (0.7 + 0.6 * hash01(r.i, k, 37)))
+      const qw = Math.max(0.6, r.wide * 2.5 * (1 - (r.at + (1 - r.at) * t * 0.5) * 0.82) * (0.7 + 0.6 * hash01(r.i, k, 37)))
       const ax = px - nx * pw * 0.5
       const ay = py - ny * pw * 0.5
       const bx = px + nx * pw * 0.5

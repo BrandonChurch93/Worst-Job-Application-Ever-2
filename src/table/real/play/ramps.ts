@@ -137,7 +137,7 @@ function highway(z: Zone, b: Bag, fine: Bag): Frame[] {
       const a = -open + (i / 14) * open * 2
       arc.push(put(f, Math.sin(a) * TRACK.hoopR, TRACK.centre - Math.cos(a) * TRACK.hoopR))
     }
-    b.add(wire(arc, TRACK.hoop, 8, 1), WIRE)
+    b.add(wire(arc, TRACK.hoop, 8, 2), WIRE)
     for (const side of [-1, 1]) {
       for (const [across, up] of [[TRACK.under, TRACK.underUp], [TRACK.side, TRACK.sideUp]] as const) {
         const d = put(f, side * across * 1.035, up + (up - TRACK.centre) * 0.035)
@@ -232,7 +232,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-28',
+  version: 'play-ramps-31',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`
