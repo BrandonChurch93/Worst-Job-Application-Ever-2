@@ -113,3 +113,11 @@ Not done in this part:
 - The muzzle flash is a hard orange star for 0.16 s; no smoke ring, no light on the barrel beyond what `ctx.light` gives.
 - The health track's rim is a light line all round; the approved track has a dark upper edge and a light lower one.
 - The pop-ups have been checked in the beat sheet only, not beside an approved picture: there is none.
+
+## The cursor turned to the boss (a need, 03:08 UTC)
+
+`pipeline/phase4/boss-fight-NEEDS.patch` holds the change that turns the cursor's tip to the boss through the fight, as the approved `boss-fight` has it. It is not applied on this branch, because half of it is in the shared cursor.
+
+- `src/cursor/body.ts`: one call, `aim(turn | null)`, a turn of the whole body round its tip, clockwise on the page, that the page holds. The body's `spin` goes to it on the spring it already has; the state's own lean is taken off so that the two together are the turn asked for, and a reaction's swing counts for 0.3 while the turn is held.
+- `src/pages/step4/index.ts`: in the fight stage the page asks for the turn from the tip's direction at rest (1.965 rad from the x axis) to the line from the cursor to the boss; at the power-down it gives the turn back.
+- MEASURED with the patch applied at 03:06 UTC: `npm test` all passed, `npm run build` ok, `npm run bots` "all clear"; the film's events are the same to the hundredth of a second; the key at `draft` shows the arrow lying along the line of darts with its tip to the shield, and so does `boss.popups` at 0.5.
