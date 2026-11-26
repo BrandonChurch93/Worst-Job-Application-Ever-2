@@ -245,11 +245,12 @@ export class Machine {
     b.hold = id
     b.wait = wait
     b.age = soft ? 0 : SETTLE.seconds
-    b.fx = soft ? b.x - h.c[0] : 0
-    b.fy = soft ? b.y - h.c[1] : 0
+    const c = h.stand ?? h.c
+    b.fx = soft ? b.x - c[0] : 0
+    b.fy = soft ? b.y - c[1] : 0
     if (!soft) {
-      b.x = h.c[0]
-      b.y = h.c[1]
+      b.x = c[0]
+      b.y = c[1]
     }
     b.vx = 0
     b.vy = 0
@@ -368,10 +369,10 @@ export class Machine {
       this.ride(i, 'launch')
       this.say('plunger', i, id)
     } else if (id === 'corporate.revolving') {
-      this.toPlane(i, b.x, b.y, 0, -14)
+      this.toPlane(i, b.x, b.y, -0.4, -14)
       this.say('spinner', i, id)
     } else if (id === 'corporate.doors') {
-      this.toPlane(i, b.x, b.y, 0.3, 6)
+      this.toPlane(i, b.x, b.y, 1.0, 6)
       this.say('doors-open', i, id)
     } else if (id === 'office.inbox') {
       this.toPlane(i, b.x, b.y, -10.8, 1.2)
@@ -481,7 +482,8 @@ export class Machine {
     if (b.cool > 0) return
     for (const h of table.holds) {
       if (h.tier !== k || !this.on[h.id] || h.id === 'corporate.doors' || (h.kind !== 'scoop' && h.kind !== 'kicker')) continue
-      if (Math.hypot(b.x - h.c[0], b.y - h.c[1]) > (h.kind === 'kicker' ? 0.6 : 0.45)) continue
+      const c = h.stand ?? h.c
+      if (Math.hypot(b.x - c[0], b.y - c[1]) > (h.kind === 'kicker' ? 0.6 : 0.45)) continue
       this.hold(i, h.id, h.kind === 'kicker' ? 0.35 : 1)
       this.say(h.kind === 'kicker' ? 'kicker-in' : 'scoop-in', i, h.id)
       return
@@ -572,8 +574,9 @@ export class Machine {
           const u = b.age / SETTLE.seconds
           const left = (1 - u) * (1 - u)
           const hop = u < SETTLE.land ? 0 : 4 * ((u - SETTLE.land) / (1 - SETTLE.land)) * (1 - (u - SETTLE.land) / (1 - SETTLE.land))
-          b.x = h.c[0] + b.fx * left
-          b.y = h.c[1] + b.fy * left
+          const c = h.stand ?? h.c
+          b.x = c[0] + b.fx * left
+          b.y = c[1] + b.fy * left
           if (h.tier >= 0 && h.tier < 3) b.z = floorZ(h.tier) - (h.kind === 'scoop' ? SETTLE.sink * Math.min(1, u / SETTLE.land) : 0) + SETTLE.hop * hop
         }
         b.wait -= DT

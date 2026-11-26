@@ -46,7 +46,7 @@ export interface Sling { id: string; tier: number; side: 'left' | 'right'; a: V;
 export interface Target { id: string; tier: number; kind: 'drop' | 'standup' | 'spinner'; box: [number, number, number, number]; n: V; index: number }
 export interface Insert { id: string; tier: number; c: V; r: number; mode: number; picture: string; index: number }
 export interface Flipper { id: string; tier: number; side: 'left' | 'right'; pivot: V; index: number }
-export interface Hold { id: string; tier: number; kind: 'gate' | 'scoop' | 'hatch' | 'kicker' | 'port' | 'plunger'; c: V; r: number; releases: boolean }
+export interface Hold { id: string; tier: number; kind: 'gate' | 'scoop' | 'hatch' | 'kicker' | 'port' | 'plunger'; c: V; r: number; releases: boolean; stand?: V }
 export interface Rail { id: string; from: string; to: string; points: P3[]; speed: number; out: V; hidden?: boolean }
 export interface Opening { id: string; tier: number; a: V; b: V }
 export interface Display { id: string; tier: number; box: [number, number, number, number] }
@@ -195,8 +195,8 @@ for (let k = 0; k < 3; k++) {
   model(k, 'hq', 'model-hq', [8.3, 2.2, 3.4, 2.3], 4, 'glass', { sign: 'copy:step3.table.buildings.hq' })
   model(k, 'beach', 'model-beach', [14.2, 2.5, 2.55, 1.9], 1.4, 'light', { sign: 'copy:step3.table.buildings.beach' })
   posts.push({ id: 'corporate.globe.left', tier: k, c: at(k, 8.8, 4.85), r: 0.22, lamp: true }, { id: 'corporate.globe.right', tier: k, c: at(k, 11.2, 4.85), r: 0.22, lamp: true })
-  flats.push({ id: 'corporate.carpet', tier: k, part: 'model-hq', box: [9.2, TIER_Y[k]! + 4.7, 1.6, 2.2], tone: 'danger' })
-  holds.push({ id: 'corporate.revolving', tier: k, kind: 'kicker', c: at(k, MID, 6.0), r: 0.75, releases: true })
+  flats.push({ id: 'corporate.carpet', tier: k, part: 'model-hq', box: [9.2, TIER_Y[k]! + 4.7, 1.6, 2.6], tone: 'danger' })
+  holds.push({ id: 'corporate.revolving', tier: k, kind: 'kicker', c: at(k, 9.2, 6.1), r: 0.75, releases: true, stand: at(k, 10.25, 7.0) })
   holds.push({ id: 'corporate.doors', tier: k, kind: 'kicker', c: at(k, MID, 5.02), r: 0.5, releases: true })
   open(k, 'lobby', [9.02, 4.85], [10.98, 4.85])
   open(k, 'top.exit.left', [4.65, 2.5], [6.0, 2.15])

@@ -23,7 +23,7 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.2, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 17.9, inboxBy: 19.1,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.0, powerOn: 5.2, atPlunger: 8.3, plunger: 9.4, onTable: 10.85, doorKick: 13.1, doorOpen: 14.1, lobbyEnd: 14.9, inboxOn: 17.9, inboxBy: 19.1,
   drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.6, officeBy: 25.2, firedBy: 27.2, scoopKick: 28.5, flapOn: 29.6, flapBy: 30.8, highwayEnd: 32.7, spiralEnd: 34.6, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
@@ -408,9 +408,9 @@ export function makePage(): PageLogic {
     const on = mc.on
     const towTo = (hold: string, speed = 16): void => {
       if (b.mode !== 'plane') return
-      const h = holdOf(hold)
+      const c = holdOf(hold).stand ?? holdOf(hold).c
       s.tows++
-      mc.tow(0, h.c[0], h.c[1], speed, `hold:${hold}`)
+      mc.tow(0, c[0], c[1], speed, `hold:${hold}`)
     }
     const towGate = (k: number): void => {
       if (b.mode !== 'plane' || b.tier !== k) return
@@ -450,7 +450,7 @@ export function makePage(): PageLogic {
     if (b.tier === 0 && b.mode === 'plane') {
       if (t >= T.doorKick - 0.3 && t < T.doorKick) towTo('corporate.revolving', 18)
       else if (t >= T.lobbyEnd) towGate(0)
-      else if (t < T.doorKick) shoot(MID, Y0 + 6.0, SHOT.door, PULL.door)
+      else if (t < T.doorKick) shoot(holdOf('corporate.revolving').stand![0], holdOf('corporate.revolving').stand![1], SHOT.door, PULL.door)
       else if (t >= T.doorOpen) mc.magnet = [MID, Y0 + 11.2, PULL.gate]
     }
     on['office.inbox'] = t >= T.inboxOn && t < T.eject
