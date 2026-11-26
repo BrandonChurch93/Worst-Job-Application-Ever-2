@@ -60,3 +60,7 @@ One word for each beat, and the poses that carry it. Times are seconds of the un
 
 - After the merge of `origin/main` at 8d230d7, `tests/glass3.test.ts` fails: "orange: expected 4.570085953127007 to be greater than or equal to 4.6". MEASURED on a clean checkout of `origin/main` 8d230d7 with `npx vitest run tests/glass3.test.ts`: the same failure, so it is main's own (the shared orange and the light type changed there). It is not a file of this part. The commit before the merge, ab2fe46, was green (92 files, 1329 tests). Pushed with the merge and reported to the Builder at once.
 
+## Tray rim and walls at 02:35 UTC
+
+- The tray's wall is the shared `cardSeal` (matt grey), no longer the satin aluminium: under the key the metal burnt white on the right wall and went dark grey on the lower one, where the approved image has both near the floor's tone. The upper and left walls keep their painted shade (`TRAY.wallShade` 0.55, `TRAY.wallLit` 1).
+- The rim is 8 px wide (was 5.6) and the joint outside it 0.6 px (was 0.9): the approved rim is a wide soft band and has no black hairline round it.
