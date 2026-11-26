@@ -5,13 +5,13 @@ import { localBalls, whole, type Zone } from '../zone'
 import { Bag, ball, box, DEG, lathe, look, mat, prism, rod, sweep, wire, type V2, type V3 } from './g'
 import { drop, matsOf, part } from './mats'
 
-const WIRE = look(0xf4f6f8, 0.1, 0.9, 0)
-const PLATE = look(0xd3d6d9, 0.3, 0.76, 0)
-const SPRING = look(0xbfc4c9, 0.24, 0.8, 0)
-const WORN = look(0xf0f2f3, 0.1, 0.72, 0)
-const SCREW = look(0xd2d5d8, 0.26, 0.76, 0)
+const WIRE = look(0xf4f6f8, 0.1, 1, 0)
+const PLATE = look(0xd3d6d9, 0.3, 1, 0)
+const SPRING = look(0xbfc4c9, 0.24, 1, 0)
+const WORN = look(0xf0f2f3, 0.1, 1, 0)
+const SCREW = look(0xd2d5d8, 0.26, 1, 0)
 const SCREW_SLOT = look(0x242526, 0.7, 1, 0)
-const BEAD = look(0xd6d9dc, 0.34, 0.74, 0)
+const BEAD = look(0xd6d9dc, 0.34, 1, 0)
 const CLEAR = look(0x8fa4ad, 0.05, 0, 1)
 const CLEAR_EDGE = look(0xd4e3ea, 0.04, 0, 1)
 
