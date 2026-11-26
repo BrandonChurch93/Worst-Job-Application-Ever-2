@@ -77,7 +77,8 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 12:01 | art | 2 | d1, windows with a brass seat band inside their rim: tier-street (1.02), tier-corporate (1.00) | 40, 34 |
 | 12:02 | art | 1 | d2, the same windows from a low eye: reply-all (0.92) | 40, 35 |
 | 12:04 | art | 2 | d3, Office walkway cooler: tier-office (1.01), reply-all (0.92) | 40, 37 |
-| 12:06 | art | 1 | d4, the whole after the windows and the walkway: table-wide | 40, 38 |
+| 12:06 | art | 1 | d4, the whole after the windows and the walkway: table-wide (1.04 at draft, the rise is the frame's pale front posts and apron) | 40, 38 |
+| 12:12 | art | 1 | e1, review still of tier-street beside the approved, for the end report and its time (76.3 s) | 40, 39 |
 
 ## Decisions
 
@@ -121,3 +122,4 @@ Counted from the first still, by part. Limit 40 a part in this round.
 - 12:00 /root MEASURED merge 34 `table-wide` at the final tier: 1.032 of the approved, and asks that the whole is not raised further. Office bumper caps dark from that eye: their inner light is the glow mesh in `src/table/real/play/bumpers.ts` at my `BUMPER.rest` 0.36. NOT DONE: it is a lamp's value and the lights part is closed. I would have set `BUMPER.rest` to about 0.6. Told /root.
 - 12:01 Windows (R1-3 issues 21 and 22, concentric bezels): the lens picture carries a brass seat band from 0.89 of its radius to the rim, with a dark groove where the glass meets it; the band does not glow (`glow` is dark there) and stands up in `relief`. The glass and its picture are 8 percent smaller inside the same hole; the hole's place and size are the layout's and did not change. SEEN in d1 and d2: from above and from a low eye the window reads as a lens in a turned seat.
 - 12:04 Office walkway `#a7aba4` (cooler than `#a1a493`): from the low eye of `reply-all` it read tan beside the approved cream. SEEN in d3: little change, the warmth is the key light's. `reply-all` now measures 0.92 of the approved with the navy walls in (was 1.11 before them); the floor is not the dark part, the walls and the far tier are.
+- 12:13 End state. Lights 40 of 40 looks, art 39 of 40. MEASURED on 14ec4cc1: `npm test` 1472 of 1472, build, bots all clear (run on 7eb8be7e; the merge after it brought documents only). Counts (`npm run counts -- --key <k> --live low`): `table-wide` table-lights 8 calls 22662 triangles, tier-art 6 calls 3534, 198 draw calls; `tier-office` 6/20166 and 3/1180, 128; `tier-corporate` 6/16204 and 3/1180, 110; `tier-street` 4/12916 and 2/1178, 107. The numbers of my two folders are those of the start. Asset sets (`du -sb`): web 8193541 bytes (7.81 MiB, limit 9 MB), full 26175882 bytes. Stills of `tier-street` at hd: review 76.3 s, draft 40.0 s as the first of a session and 21 s after.
