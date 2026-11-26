@@ -1,35 +1,35 @@
 {
   "folder": "corporate-finish",
-  "pushed": "2026-11-26T12:20:53.677Z",
-  "commit": "491ee42b0193a838832a98c870c5029f7038d188",
+  "pushed": "2026-11-26T12:37:38.267Z",
+  "commit": "a3af73bb0bcb148eda574ed04dc4e87c673c0a34",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Key tier-corporate: approved on the left, this build on the right, draft tier, with crops of shape:model.corporate.hq, shape:model.corporate.beach, shape:model.corporate.boardroom, shape:hold.corporate.revolving, part:model-ladder, shape:flipper.corporate.flipper.left, shape:sling.corporate.sling.left.1+sling.corporate.sling.left.2+sling.corporate.sling.left.3, shape:insert.corporate.insert.1, shape:lift.elbow.corporate",
-      "time": "2026-11-26T12:16:49.922Z",
+      "time": "2026-11-26T12:31:03.573Z",
       "by": "corporate-finish",
       "from": "out/work/compare/compare-tier-corporate.jpg"
     },
     {
       "file": "look-2.jpg",
       "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
-      "time": "2026-11-26T12:17:36.841Z",
+      "time": "2026-11-26T12:31:50.546Z",
       "by": "corporate-finish",
       "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tier-corporate at draft, approved left, the build right: grey marble with crisp dark veins, plush carpet, wider atrium roof",
-      "time": "2026-11-26T12:20:52.259Z",
+      "caption": "tier-corporate at draft, 12:30Z: approved on the left, build on the right; woven border and sheen on the carpet, brighter atrium under the glass roof, lighter walnut table",
+      "time": "2026-11-26T12:37:36.869Z",
       "by": "corporate-finish",
-      "from": "out/work/report/tier-corporate-side3.jpg"
+      "from": "out/work/report/tier-corporate-side4.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-office at draft, approved left, the build right: staplers with a red base under the arm, a fuller letter tray",
-      "time": "2026-11-26T12:20:52.499Z",
+      "caption": "lobby-doors at draft, 12:31Z: approved on the left, build on the right; carpet border and sheen toward the doors, heavier steel on the tower's front",
+      "time": "2026-11-26T12:37:37.143Z",
       "by": "corporate-finish",
-      "from": "out/work/report/tier-office-side3.jpg"
+      "from": "out/work/report/lobby-doors-side4.jpg"
     }
   ]
 }
