@@ -300,52 +300,73 @@
     {
       "name": "careers-page",
       "unit": "marketing",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/marketing/layout.ts"
+        "src/pages/marketing/layout.ts",
+        "src/pages/marketing/real/careers-page.ts",
+        "src/pages/marketing/real/careers-solids.ts",
+        "src/pages/marketing/real/index.ts"
       ],
-      "standInHash": "5a85c32a9de3ec2a6efb0649a4470c9e3726ed359fc1acb9561fcc15a5430fcf",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "4d3f408e89f99f38e848cf016367a8f305caac89e164c102ddd10a1234f0df0f",
+      "commit": "049ce3f3aefd2c02766544c18864002be44171ae",
+      "hashAt": {
+        "src/pages/marketing/layout.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f",
+        "src/pages/marketing/real/careers-page.ts": "absent",
+        "src/pages/marketing/real/careers-solids.ts": "absent",
+        "src/pages/marketing/real/index.ts": "absent"
+      }
     },
     {
       "name": "perk-cards",
       "unit": "marketing",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/marketing/index.ts",
-        "src/pages/marketing/layout.ts"
+        "src/pages/marketing/real/perk-cards.ts"
       ],
-      "standInHash": "50f5ee619525f9edc014782f0a6200c9b2cd4f18fe4ce8d6b945339715afbaca",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "b1c46095ff5bdb488b0fa1ba7413edcdc059d7a572c43044220c2ddacee5b380",
+      "commit": "049ce3f3aefd2c02766544c18864002be44171ae",
+      "hashAt": {
+        "src/pages/marketing/real/perk-cards.ts": "absent"
+      }
     },
     {
       "name": "ticker",
       "unit": "marketing",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/marketing/index.ts",
-        "src/pages/marketing/layout.ts"
+        "src/pages/marketing/real/ticker.ts"
       ],
-      "standInHash": "50f5ee619525f9edc014782f0a6200c9b2cd4f18fe4ce8d6b945339715afbaca",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "65a0e7e9c9312b376a11531e9b31a6c2e5a6547144ba09f75c3450ba24e7cc24",
+      "commit": "049ce3f3aefd2c02766544c18864002be44171ae",
+      "hashAt": {
+        "src/pages/marketing/real/ticker.ts": "absent"
+      }
     },
     {
       "name": "apply-button",
       "unit": "marketing",
-      "state": "stand-in",
+      "state": "finished",
       "files": [
-        "src/pages/marketing/layout.ts"
+        "src/pages/marketing/real/apply-button.ts"
       ],
-      "standInHash": "5a85c32a9de3ec2a6efb0649a4470c9e3726ed359fc1acb9561fcc15a5430fcf",
-      "commit": "60e07d877afc3fc816c370d3e69805cf388e3d2e"
+      "standInHash": "cffc26d2eb9b34b9cc9df245dd4518acbc96cbbe89f789f4f53992391d4e8d07",
+      "commit": "049ce3f3aefd2c02766544c18864002be44171ae",
+      "hashAt": {
+        "src/pages/marketing/real/apply-button.ts": "absent"
+      }
     },
     {
       "name": "acting-marketing",
       "unit": "marketing",
-      "state": "stand-in",
-      "files": [],
-      "standInHash": "",
-      "commit": ""
+      "state": "finished",
+      "files": [
+        "src/pages/marketing/script.ts"
+      ],
+      "standInHash": "2e18e0f51386ba22d1545443e3208f4020710a65b4c7dd7b461b298e7c9400fd",
+      "commit": "049ce3f3aefd2c02766544c18864002be44171ae",
+      "hashAt": {
+        "src/pages/marketing/script.ts": "729ee568a01a9cf67a8e72e9d6b9d0484d32519f"
+      }
     },
     {
       "name": "table-layout",
