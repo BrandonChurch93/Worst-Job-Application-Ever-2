@@ -24,9 +24,9 @@ const PLATE = { w: 1920, h: 1080, z: 0.5 }
 // The ink has no shine of its own: its face meets the lacquer, not the air, so only the coat and the leaf reflect.
 // What the print lies under: a hard clear coat, a little rougher where the coat map says the ball has run, with the orange peel of a sprayed lacquer. Where the coat map says leaf, the print is metal.
 const COAT = [
-  { roughness: 0.4, leaf: true, coat: 1, peel: 0.045, specular: 0, room: 0.16, print: 1.15 },
+  { roughness: 0.4, leaf: true, coat: 1, peel: 0.045, specular: 0, room: 0.16, print: 1.3 },
   { roughness: 0.95, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.2, print: 1.7 },
-  { roughness: 0.92, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.16, print: 1 }
+  { roughness: 0.92, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.16, print: 1.35 }
 ]
 const WINDOW = { lift: 0.35, bump: 2.2, segments: 56, inset: 0.975, room: 2.4, dome: 4.5 }
 

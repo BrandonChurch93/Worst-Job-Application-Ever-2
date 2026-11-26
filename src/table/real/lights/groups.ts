@@ -1,4 +1,4 @@
-import { BALL, COLS, MARQUEE_H, MARQUEE_Y, TIER_Y, TIERS, table, type Insert, type Model } from '../../layout'
+import { BALL, COLS, FLIP, MARQUEE_H, MARQUEE_Y, TIER_Y, TIERS, table, type Insert, type Model } from '../../layout'
 import { insertColour } from '../art/inserts'
 import { localBalls, zone as zoneNamed, zones, type Zone } from '../zone'
 import * as C from './colours'
@@ -76,13 +76,17 @@ function build(z: Zone): Group[] {
   const inserts = table.inserts.filter((n) => n.tier === k)
   // Under each sling plastic stands a lamp that lights the floor round it and the flipper before it.
   const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.95, 2.4, `sling.${s.id}`))
-  // A lamp over each bat, in the warm white of the tier's windows, so the flippers are the brightest things at the foot of a tier and keep their own colour.
-  const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 0.85 : -0.85), f.pivot[1] + 0.25, 64, 0.9, 3))
+  // A lamp high over the middle of each bat, in the warm white of the tier's windows, so a flipper is lit evenly from pivot to tip and keeps its own colour.
+  const bats: Source[] = table.flippers.filter((f) => f.tier === k).map((f) => at(f.pivot[0] + (f.side === 'left' ? 1 : -1) * FLIP.length * 0.46, f.pivot[1] + FLIP.length * 0.2, 150, 2.1, 3.6))
+  // The shoulders under the bats lie behind the guide walls, in the shadow of every lamp of the lanes: one lamp high over each, so the print runs on lit to the foot of the tier.
+  const shoulders: Source[] = [5.3, 14.7].map((u) => at(u, TIER_Y[k]! + FLIP.pivotV + 1.35, 130, 1.15, 3))
   const insert = (n: Insert, i: number): void => add(`insert.${i + 1}`, 1, linear(insertColour(n)), [at(n.c[0], n.c[1], 28, 1.1, 3.0)], true)
+  // The elbow at the head of the lift stands two balls from the nearest lamp of its column: one more lamp there, under the cross rail.
+  const elbow: Source[] = k < 2 ? [at(COLS.lift, TIER_Y[k]! + 1.05, 70, 1.6, 2.6)] : []
   const d = table.displays[k]!
   const display = (): void => add('display', 0, C.DISPLAY_AMBER, [0.2, 0.5, 0.8].map((f) => at(d.box[0] + d.box[2] * f, d.box[1] + d.box[3] * 0.4, 34, 0.22, 2.4)))
   if (z.id === 'corporate') {
-    add('general', 2, C.CORPORATE_WHITE, both(rail, 1.45))
+    add('general', 2, C.CORPORATE_WHITE, [...both(rail, 1.45), ...elbow])
     add('lanes', 2, C.CORPORATE_GOLD, [...both(lane, 1.4), ...slings])
     inserts.forEach(insert)
     for (const p of table.posts) if (p.tier === k && p.lamp) add(p.id.slice(p.id.indexOf('.') + 1), 1, C.CORPORATE_GLOBE, [at(p.c[0], p.c[1], 46, 1.5, 5.2, `post.${p.id}`)], true)
@@ -93,21 +97,21 @@ function build(z: Zone): Group[] {
       at(hq.box[0] + 0.5, front, 150, 0.5, 5, hq.id), at(hq.box[0] + hq.box[2] - 0.5, front, 150, 0.5, 5, hq.id), at(centre(hq)[0], front + 0.1, 46, 0.85, 4.2, hq.id),
       at(hq.box[0] - 0.15, centre(hq)[1], 170, 0.4, 4.5, hq.id), at(hq.box[0] + hq.box[2] + 0.15, centre(hq)[1], 170, 0.4, 4.5, hq.id),
       at(centre(beach)[0], centre(beach)[1], 150, 0.9, 4.4, beach.id), at(beach.box[0] - 0.1, centre(beach)[1], 60, 0.5, 3, beach.id), at(centre(beach)[0], beach.box[1] + beach.box[3] + 0.1, 60, 0.5, 3, beach.id),
-      ...bats
+      ...bats, ...shoulders
     ])
     display()
     add('flash', 0, C.CORPORATE_FLASH, [])
   } else if (z.id === 'office') {
     // The Office is a lit room: its lamps throw wide, so the floor between them is never dark.
-    add('general', 2, C.OFFICE_FLUORESCENT, both(rail, 0.8).map((s) => (s.z > 100 ? { ...s, power: s.power * 2.4 } : s)))
+    add('general', 2, C.OFFICE_FLUORESCENT, [...both(rail, 0.8).map((s) => (s.z > 100 ? { ...s, power: s.power * 1.9 } : s)), ...elbow])
     inserts.forEach(insert)
     table.bumpers.filter((b) => b.tier === k).forEach((b, i) => add(`bumper.${i + 1}`, 1, C.OFFICE_BUMPER, [at(b.c[0], b.c[1], 58, 1.1, 4.2, `bumper.${b.id}`)], true))
     const coffee = model('office.coffee')
-    add('windows', 0, C.OFFICE_COFFEE, [...lane.map((l) => at(l.c[0], l.c[1], LAMP.z, LAMP.power * 0.8, LAMP.reach / BALL)), ...slings, ...bats, at(centre(coffee)[0], coffee.box[1] + coffee.box[3] + 0.12, 90, 0.9, 3.6, coffee.id), at(coffee.box[0] - 0.12, centre(coffee)[1], 90, 0.7, 3.2, coffee.id)])
+    add('windows', 0, C.OFFICE_COFFEE, [...lane.map((l) => at(l.c[0], l.c[1], LAMP.z, LAMP.power * 0.8, LAMP.reach / BALL)), ...slings, ...bats, ...shoulders, at(centre(coffee)[0], coffee.box[1] + coffee.box[3] + 0.12, 90, 0.9, 3.6, coffee.id), at(coffee.box[0] - 0.12, centre(coffee)[1], 90, 0.7, 3.2, coffee.id)])
     display()
     add('flash', 0, C.OFFICE_FLASH, [])
   } else {
-    add('general', 2, C.STREET_DUSK, both(rail, 1.45))
+    add('general', 2, C.STREET_DUSK, both(rail, 1.2))
     add('lanes', 2, C.STREET_SODIUM, [...both(lane, 1.4), ...slings])
     inserts.forEach(insert)
     const fire = model('street.firehouse')
@@ -128,7 +132,7 @@ function build(z: Zone): Group[] {
     for (const [u, v] of [[5.86, 9.06], [7.31, 10.59], [13.77, 9.0], [15.18, 10.15]] as [number, number][]) windows.push(at(u, TIER_Y[k]! + v, 60, 0.5, 2.5))
     const garage = model('street.garage')
     windows.push(at(centre(garage)[0], centre(garage)[1], 110, 0.9, 3.2, garage.id))
-    windows.push(...bats)
+    windows.push(...bats, ...shoulders)
     add('windows', 0, C.STREET_WINDOW, windows)
     display()
     add('flash', 0, C.STREET_FLASH, [])
@@ -176,15 +180,16 @@ export function highOf(z: Zone): High[] {
     return { x: p[0], y: p[1], z: (m.h + lift) * BALL, reach: reachBalls * BALL, colour, follows: 'general', power }
   }
   // A hidden lamp over each low model that stands far from every lamp of its tier, so its top is lit from above as the approved tiers have it.
-  if (z.id === 'office') return [over('office.inbox', C.OFFICE_BUMPER, 0.75, 2.6), over('office.cubicles', C.OFFICE_BUMPER, 0.75, 3.2, 1.6)]
+  if (z.id === 'office') return [over('office.inbox', C.OFFICE_BUMPER, 0.75, 2.6), over('office.cubicles', C.OFFICE_BUMPER, 0.9, 3.2, 1.6)]
   if (z.id === 'corporate') return [over('corporate.boardroom', C.CORPORATE_WHITE, 0.7, 2.6)]
   if (z.id !== 'street') return []
   // The fittings of the garage, by the rule of the owner of the street's models: arms half a ball outside its wall on the diagonals, three 22 px under the rim and the rest at four tenths of its height.
   const g = model('street.garage')
-  const x0 = g.box[0] - 0.5
-  const x1 = g.box[0] + g.box[2] + 0.5
-  const y0 = g.box[1] - 0.5
-  const y1 = g.box[1] + g.box[3] + 0.5
+  const out = (g.box[2] / 2 + 0.5) * Math.SQRT1_2
+  const x0 = g.box[0] + g.box[2] / 2 - out
+  const x1 = g.box[0] + g.box[2] / 2 + out
+  const y0 = g.box[1] + g.box[3] / 2 - out
+  const y1 = g.box[1] + g.box[3] / 2 + out
   const base = g.base ?? 0
   const lamp = (u: number, v: number, zPx: number, power: number, reachBalls: number): High => {
     const p = localBalls(z, u, v)

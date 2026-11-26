@@ -6,8 +6,8 @@ Nothing here is a file. Every texture and every solid of step 2 is made in code 
 Made by: `picture()` in `src/pages/step2/real/slot-kit.ts`, called in `own()` of `src/pages/step2/real/crank.ts`
 From: `CRANK_LOOK.picture` and `inPill()` in `src/pages/step2/real/crank.ts`, `CRANK.segW` and `CRANK.segH` in `src/pages/step2/layout.ts`
 Prompt or command: `npm run still -- --key step2-crank --format hd --tier review`
-Takes: 2 sizes, 64 by 256 px (0.06 MB, 0.08 MB with its mips) and 128 by 512 px (0.25 MB, 0.33 MB with its mips); the second was kept
-Why this one: the first gave 2.3 texels to the page pixel and failed M2 on the sheet `machines`; the second gives 4.6
+Takes: 2 sizes, 64 by 256 px (0.06 MB, 0.08 MB with its mips) and 128 by 512 px (0.25 MB, 0.33 MB with its mips); the second was kept. 2 paintings at that size: a grey green core hiding 0.72 of the floor, and a clearer core hiding 0.56 that runs from dark on the light's side to pale on the far side (`CRANK_LOOK.clear`), in a rounded rectangle with corners of 10 px (`pillCorner`); the second was kept
+Why this one: the first size gave 2.3 texels to the page pixel and failed M2 on the sheet `machines`; the second gives 4.6. The clearer painting is nearer the glass of `references/approved/step2-crank.png`
 Date: 2026-11-26
 
 ## The meter segment's solids (geometry in memory, no file)
@@ -40,4 +40,12 @@ From: `SLOT.pivotY` in `src/pages/step2/layout.ts`, `SLOT_LOOK.lever` in `src/pa
 Prompt or command: `npm run still -- --sheet machines --format hd --tier review`
 Takes: 2 places of the bracket, 62 and 58 px under the cabinet's top; 58 was kept
 Why this one: the pulled lever hangs from a bracket at the cabinet's side as on the approved sheet, and the knob's travel is unchanged
+Date: 2026-11-26
+
+## The slot cabinet's stepped frame (geometry in memory, no file)
+Made by: `cabinet()` in `src/pages/step2/real/slot.ts`, with `loft()` of `src/pages/step2/real/slot-kit.ts`
+From: `SLOT_LOOK.band`, `step`, `ledge`, `chamfer`, `chamferDrop`, `gasket`, `bevel`, `glassEnv` in `src/pages/step2/real/slot.ts`
+Prompt or command: `npm run still -- --sheet machines --format hd --tier review`
+Takes: 3, the first owner's band of 10.4 px with one chrome slope; a band of 12.4 px with a step, a shelf and a slope in chrome; the same in a plain copy of the shared aluminium with the glass taking less of the room; the third was kept
+Why this one: the approved sheet's frame is about 6 percent of the cabinet's width with a step toward the glass; chrome on the step read white where the approved step is mid grey
 Date: 2026-11-26

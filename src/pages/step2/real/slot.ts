@@ -11,12 +11,14 @@ import { clamp01, fuse, lathe, loft, mesh, moved, noise, normalsFrom, rise, smoo
 
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
-  top: 58, corner: 12, roundOver: 3, band: 10.4, chamfer: 5, chamferDrop: 4.2, gasket: 2.2, glass: 54.2, floor: 18,
+  top: 58, corner: 12, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
   drum: { r: 62, crest: 50, w: 88, lip: 2.2, flat: 0.4, fall: 4.4 },
   line: { z: 53.1, r: 0.6, pin: 1.9, glow: 0.06 },
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
   lever: { rod: 5.6, pivotX: 11, pivotZ: 28, barrel: 9, barrelW: 19, collar: 4, foot: -2, head: 22, ferrule: 7, ferruleAt: 27 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
+  bevel: { colour: 0x7c8084, rough: 0.34 },
+  glassEnv: 0.7,
   mouthFloor: 8.5,
   glassOrder: 800000
 }
@@ -46,6 +48,7 @@ interface Own {
   gold: THREE.MeshPhysicalMaterial
   rod: THREE.MeshPhysicalMaterial
   frame: THREE.MeshPhysicalMaterial
+  bevel: THREE.MeshPhysicalMaterial
   mouth: THREE.MeshPhysicalMaterial
   sheen: THREE.MeshBasicMaterial
   line: THREE.MeshPhysicalMaterial
@@ -86,7 +89,7 @@ function own(): Own {
   const face = normalsFrom(256, 1.7, (u, v) => coinHeight(u, v, config.seed + 211))
   const m = materials()
   const drum = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6de), roughness: 0.5, metalness: 0, clearcoat: 0.15, clearcoatRoughness: 0.3, specularIntensity: 0.3, vertexColors: true }))
-  const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x10161b), roughness: 0.05, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.5, transparent: true, opacity: 0.12, depthWrite: false }))
+  const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x10161b), roughness: 0.05, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: L.glassEnv, transparent: true, opacity: 0.12, depthWrite: false }))
   const well = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121211), roughness: 0.85, metalness: 0, specularIntensity: 0.3 }))
   const gold = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd4a543), roughness: 0.6, metalness: 1, envMapIntensity: 1.1, normalMap: face, normalScale: new THREE.Vector2(2, 2) }))
   const rod = studio(new THREE.MeshPhysicalMaterial({ color: m.chrome.color, roughness: 0.14, metalness: 1 }))
@@ -97,13 +100,17 @@ function own(): Own {
   brushing.repeat.set(1 / 300, 1 / 150)
   brushing.needsUpdate = true
   frame.normalMap = brushing
+  const bevel = studio(m.aluminium.clone())
+  bevel.color = srgb(L.bevel.colour)
+  bevel.roughness = L.bevel.rough
+  bevel.normalMap = null
   frame.normalScale = new THREE.Vector2(0.15, 0.15)
   const mouth = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x0e0e0d), roughness: 0.9, metalness: 0, specularIntensity: 0.2 }))
   const sheen = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
   const line = studio(m.orange.clone())
   line.emissive = m.orange.color.clone()
   line.emissiveIntensity = L.line.glow
-  made = { drum, glass, well, gold, rod, frame, mouth, sheen, line, textures: [face] }
+  made = { drum, glass, well, gold, rod, frame, bevel, mouth, sheen, line, textures: [face] }
   return made
 }
 
@@ -126,13 +133,19 @@ function cabinet(): THREE.Group {
     rings.push(ring(w, h, R, L.band, T, 0, 1))
     return loft(rings)
   })
-  const inner = L.band + L.chamfer
-  const low = T - L.chamferDrop
+  const lip = L.band + 0.6
+  const shelf = lip + L.ledge
+  const inner = shelf + L.chamfer
+  const low = T - L.step - L.chamferDrop
   const slope = shared('chamfer', () =>
     loft([
       ring(w, h, R, L.band, T, 0, 1),
-      ring(w, h, R, L.band + 0.5, T - 0.12, -0.35, 0.94),
-      ring(w, h, R, L.band + 1, T - 0.5, -L.chamferDrop, L.chamfer),
+      ring(w, h, R, L.band + 0.3, T - 0.1, -0.5, 0.86),
+      ring(w, h, R, lip, T - 0.4, -1, 0),
+      ring(w, h, R, lip, T - L.step, -1, 0),
+      ring(w, h, R, lip, T - L.step, 0, 1),
+      ring(w, h, R, shelf, T - L.step, 0, 1),
+      ring(w, h, R, shelf + 0.5, T - L.step - 0.2, -L.chamferDrop, L.chamfer),
       ring(w, h, R, inner, low, -L.chamferDrop, L.chamfer)
     ]))
   const edge = inner + L.gasket
@@ -182,7 +195,7 @@ function cabinet(): THREE.Group {
   const sheen = mesh(shared('sheen', () => sheenGeometry(w - (inner + 0.6) * 2, h - (inner + 0.6) * 2, L.glass + 0.05)), o.sheen, false, false)
   sheen.userData.order = L.sheen.order
   sheen.renderOrder = L.sheen.order
-  root.add(mesh(body, o.frame), mesh(slope, m.chrome), mesh(well, o.well, false, false), mesh(drums, o.drum, false, true), mesh(line, o.line, false, false), mesh(pins, m.steel, false, true), glass, sheen)
+  root.add(mesh(body, o.frame), mesh(slope, o.bevel), mesh(well, o.well, false, false), mesh(drums, o.drum, false, true), mesh(line, o.line, false, false), mesh(pins, m.steel, false, true), glass, sheen)
   return root
 }
 
