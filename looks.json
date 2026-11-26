@@ -1,35 +1,35 @@
 {
   "folder": "careers-fix",
-  "pushed": "2026-11-26T06:23:36.664Z",
-  "commit": "f9332af8dd24cbaafde93d41194727913f36c499",
+  "pushed": "2026-11-26T06:28:09.423Z",
+  "commit": "ab19f0b6bac98fe18cb4f2975ea80a834f79d4ca",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet of decision.reset at f9332af8: flat on landing, stood, leant at Apply for a Job, three frames of the sheet each",
-      "time": "2026-11-26T06:23:32.774Z",
-      "by": "careers-fix",
-      "from": "out/work/looks/files/20261126062332-final-decision_reset.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Review key at f9332af8: approved above, careers page below",
-      "time": "2026-11-26T06:23:33.033Z",
-      "by": "careers-fix",
-      "from": "out/work/looks/files/20261126062333-final-compare2.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "Sheet of the perks beat at a4c7142f",
-      "time": "2026-11-26T06:23:33.334Z",
-      "by": "careers-fix",
-      "from": "out/work/looks/files/20261126062333-final-marketing_perks.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "Sheet of the apply beat at a4c7142f",
       "time": "2026-11-26T06:23:35.467Z",
       "by": "careers-fix",
       "from": "out/work/looks/files/20261126062333-final-marketing_apply.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-marketing-top-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T06:24:35.374Z",
+      "by": "careers-fix",
+      "from": "out/work/stills/key-marketing-top-hd-review.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Medal on the review key at ab19f0b6: approved left, careers page right, the ring as two thin lines",
+      "time": "2026-11-26T06:28:07.932Z",
+      "by": "careers-fix",
+      "from": "out/work/looks/files/20261126062807-final-medal.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Review key at ab19f0b6: approved above, careers page below",
+      "time": "2026-11-26T06:28:08.197Z",
+      "by": "careers-fix",
+      "from": "out/work/looks/files/20261126062808-final-compare2.jpg"
     }
   ]
 }
