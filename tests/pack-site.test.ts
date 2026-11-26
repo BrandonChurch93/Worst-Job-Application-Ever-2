@@ -102,16 +102,20 @@ describe('the packs of the unit site', () => {
 
   it('R4: the moments of the visit, each a run of consecutive frames, in the order they happen', () => {
     const files = filesOf(planOf('R4'))
-    expect(files.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'hit', 'taken', 'given-back', 'flippers', 'flip'])
+    expect(files.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'hit', 'taken', 'given-back', 'flippers', 'flippers', 'flip', 'flip'])
+    expect(files.length).toBeLessThanOrEqual(most)
     for (const f of files) {
       expect(f.steps!.length).toBe(count)
       for (let i = 1; i < f.steps!.length; i++) expect(f.steps![i]! - f.steps![i - 1]!).toBe(2)
-      if (f.at !== undefined) expect(f.steps).toContain(f.at)
+      // The moment itself is the fourth picture of its run: three pictures lead up to it.
+      if (f.at !== undefined) expect(f.steps![3]).toBe(f.at)
       expect(f.kind).toBe(f.moment === 'walk' || f.moment === 'turn' ? 'site-run-sheet' : 'site-hit-sheet')
     }
+    // The turn's run ends 16 steps after the turning ends, and is two sheets long: its second sheet holds the seat and what follows it.
     const turn = files.filter((f) => f.moment === 'turn').flatMap((f) => f.steps!)
-    expect(turn[0]).toBeLessThanOrEqual(290)
-    expect(turn[turn.length - 1]).toBeGreaterThanOrEqual(309)
+    expect(turn.length).toBe(count * 2)
+    expect(turn[turn.length - 1]).toBe(309 + 16)
+    expect(turn[0]).toBe(309 + 16 - (count * 2 - 1) * 2)
     const walk = files[0]!.steps!
     expect(walk[0]).toBeGreaterThanOrEqual(40)
     expect(walk[count - 1]).toBeLessThanOrEqual(99)

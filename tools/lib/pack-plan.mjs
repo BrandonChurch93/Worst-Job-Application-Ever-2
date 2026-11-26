@@ -153,12 +153,24 @@ export function briefFor(plan, set, text = fs.readFileSync(at('kit', '07-QUALITY
   if (plan.critic === 'R2') return lines.find((l) => l.startsWith('> You will see one image.')).slice(2)
   const settled = s.files.filter((f) => f.side === 'a' && f.settled).map((f) => ['Settled', `${f.name} and ${f.name.replace('-a.', '-b.')}`, ...f.settled.map((l) => `- ${l}`)].join('\n'))
   const part = plan.sets.length > 1 ? `Your ${s.files.length} files, ${s.files[0].name} to ${s.files[s.files.length - 1].name}, are one part of the pack. Judge what your files show.` : `Your ${s.files.length} files are ${s.files[0].name} to ${s.files[s.files.length - 1].name}.`
+  // A run of consecutive frames that lies on two files: said in plain words, so the two are read as one sheet.
+  const runs = s.files.filter((f) => f.part && f.part[0] === 1).map((f) => {
+    const rest = s.files.filter((g) => g.moment === f.moment && g.part && g.part[0] > 1)
+    return rest.length ? `- ${[f, ...rest].map((g) => g.name).join(' and ')} are one run of ${f.run.length} consecutive frames, cut only because a sheet holds ${f.steps.length}: ${rest[0].name} goes on from the frame after the last frame of ${f.name}. Read them as one sheet.` : null
+  }).filter(Boolean)
+  // A moment shown as two runs: said too, with the time that lies between them.
+  const twice = s.files.filter((f) => f.apart).map((f) => {
+    const first = s.files.find((g) => g.moment === f.moment)
+    return `- ${first.name} and ${f.name} are two runs of one event, in order. The ${f.apart.toFixed(2)} s between the last frame of ${first.name} and the first frame of ${f.name} are not shown: the ball lies in its place in them.`
+  })
+  const together = [...(runs.length ? [['One run on two sheets', ...runs].join('\n')] : []), ...(twice.length ? [['One event on two sheets', ...twice].join('\n')] : [])]
   const section = sectionOf(text, plan.section)
   return [
     plan.unit === SITE ? siteLines(section) : section,
     sectionOf(text, 'The severity scale'),
     ['### The return format', '', `Return one JSON object, with "critic" set to "${plan.critic}".`, '', format, '', rule].join('\n'),
     ...settled,
+    ...together,
     [part, 'Send that JSON object, and nothing else, as a message to /root.'].join('\n')
   ].join('\n\n')
 }
