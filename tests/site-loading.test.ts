@@ -1,9 +1,11 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type * as THREE from 'three'
 import { config, stepHz } from '../src/config'
 import { filesOf } from '../src/core/assets'
 import { loadPage, loadState, pageReady, picturesOf, releasePage, resetLoading, showPage, stageLoading, waitsFor, wanted } from '../src/core/load'
-import { pages } from '../src/pages'
+import { pagePrepared, pages, preparePage, preparePages } from '../src/pages'
 import { PageView, standInsOf, waitingOf } from '../src/shell/view'
 import { BotDriver } from '../src/stage/bots'
 import { liveFlow, Stage } from '../src/stage/stage'
@@ -262,5 +264,54 @@ describe('the wait before a page turn', () => {
     const plain = run()
     setTurnWait({ ready: () => false, steps: waitSteps, every })
     expect(run()).toBe(plain)
+  })
+
+  it('holds a turn for as long as the code of the next page has not arrived, with the tip tapping, and goes once it has', () => {
+    const arrives = 3 * waitSteps
+    const stage = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: new BotDriver('skipper', 1), seed: 1 })
+    let asked = 0
+    let free = -1
+    const taps: number[] = []
+    setTurnWait({
+      ready: () => true,
+      code: (page) => {
+        if (page !== 'step3') return true
+        if (free < 0) free = stage.step
+        asked++
+        return stage.step - free >= arrives
+      },
+      steps: waitSteps,
+      every
+    })
+    const react = stage.cursor.react.bind(stage.cursor)
+    stage.cursor.react = (name) => {
+      if (name === 'tap' && stage.page.id === 'step2' && stage.page.done()) taps.push(stage.step - free)
+      react(name)
+    }
+    while (stage.page.id !== 'step3' && stage.time < 400) stage.advance(1)
+    expect(stage.page.id).toBe('step3')
+    expect(asked).toBeGreaterThan(arrives)
+    expect(taps.length).toBe(Math.ceil(arrives / every))
+    expect(taps.at(-1)!).toBeGreaterThan(waitSteps)
+    expect(taps.every((t, i) => t === i * every)).toBe(true)
+  })
+})
+
+describe('the code the first load carries', () => {
+  const root = path.resolve(__dirname, '..')
+
+  it('leaves the physics library to a later fetch: nothing imports it at the top of a module', () => {
+    const files = fs.readdirSync(path.join(root, 'src'), { recursive: true, encoding: 'utf8' }).filter((f) => f.endsWith('.ts'))
+    const top = files.filter((f) => /^import\s+(?!type\b)[^'"]*['"]@dimforge\//m.test(fs.readFileSync(path.join(root, 'src', f), 'utf8')))
+    expect(top).toEqual([])
+    expect(fs.readFileSync(path.join(root, 'src/table/physics.ts'), 'utf8')).toMatch(/await import\('@dimforge\/rapier2d-deterministic-compat'\)/)
+  })
+
+  it('knows which pages start with code of their own, and starts each once', async () => {
+    expect(Object.keys(pages).filter((id) => !pagePrepared(id))).toEqual([])
+    await preparePages(['marketing'])
+    await preparePage('step3')
+    expect(pagePrepared('step3')).toBe(true)
+    expect(pagePrepared('marketing')).toBe(true)
   })
 })
