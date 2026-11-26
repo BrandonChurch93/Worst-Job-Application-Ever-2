@@ -51,7 +51,7 @@ Every texture and built asset of the boss that this owner changed or added. All 
 
 - Made by: `cutPlate()` and `bossKit()` in `src/boss/real/body-kit.ts`; `crown()`, `wingParts()`, `side()` in `src/boss/real/body.ts`
 - From: `THREE.ExtrudeGeometry` over outlines given as numbers
-- Prompt or command: none; made on first use and shared by name. Each plate is two solids: the plate itself (`plate`, 0x7c8085, roughness 0.4, full metal, the brushing as its map, anisotropy 0.55) with a chamfer of 2.4 px in two facets, and under it a darker solid (`plateSide`, 0x35373a) that stands 3 px out and ends 3.4 px lower (`EDGE`). `crown()` leans the normals of the top face by a hair (`CROWN`), so the light fades across a plate
+- Prompt or command: none; made on first use and shared by name. Each plate is two solids: the plate itself (`plate`, 0x7c8085 while the boss lives and 0x4a4d51 once it lies as wreck, eased by the plate's `flat` in `poseFrame`, roughness 0.4, full metal, the brushing as its map, anisotropy 0.55) with a chamfer of 2.4 px in two facets, and under it a darker solid (`plateSide`, 0x35373a) that stands 3 px out and ends 3.4 px lower (`EDGE`). `crown()` leans the normals of the top face by a hair (`CROWN`), so the light fades across a plate
 - Takes: 6 on the tone (0xb2b6ba, 0x6f7378, 0x62666c, 0x7b7f84, 0x898d92, 0x7c8085), 2 on the edge (one rounded chamfer 5.5 px wide, then the narrow chamfer over the dark step)
 - Why this one: each piece reads as a thick cut plate: a bright line at the top edge, a dark side below it, a sheen that fades across the face. 0 MB beyond the brushing.
 - Date: 2026-11-26

@@ -22,7 +22,7 @@ Counted by part, 40 each for this round. A look is one still rendered and looked
 
 | Part | Looks |
 | --- | --- |
-| boss-body | 35 |
+| boss-body | 37 |
 | boss-transform | 16 |
 | boss-weapons | 15 |
 | health-bar | 1 |
@@ -70,3 +70,4 @@ MEASURED at 05:22 UTC on the tree of the second pass (brushed plates, the career
 27. The links of the legs are 0x9a9ea3 (were 0xc2c6c9): beside the darker hull the pale links read as another metal. The glass is 0x8c9895, 0.82 opaque. The smoke ring fades slower (`(1 - u)^0.8` at full strength).
 28. The plates' roughness is 0.4 (was 0.34): while the plates fly in `boss.unfold` the tighter highlight filled whole plates with near white (share of pixels at 250 or more on every channel 0.051 before, 0.005 after, one still of the unfold at 0.5). The hull in the two keys keeps its sheen.
 29. The pit: the collar is wider (`PIT.collar` 15, was 12) and lighter (0xb6b8b8), with a rolled lip, and the wall under it is darker (0x5a5550, was 0x7a746d) and steeper, so the hole reads as approved's bright ring round a black pit and not as a grey bowl. Judged from one crop beside approved's.
+30. The plates darken as the boss falls: the plate material's colour eases from 0x7c8085 to 0x4a4d51 with the hull's `flat` (`PLATE_TONE` in `src/boss/real/body-kit.ts`, set in `poseFrame`). Lying flat under the room's light the live steel read as large pale sheets, and approved's wreck is dark pieces. One material is shared by the hull, the wings and the two side plates, and they all fall together, so one colour serves. Judged at `--key boss-down` beside approved and at `boss.collapse` 0.45 for the change in flight.

@@ -7,7 +7,7 @@ import { roundedRect, sweep, plateProfile } from '../../shell/solids'
 import { config } from '../../config'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
 import { SLAB, slabGeometry } from '../../pages/marketing/real/perk-cards'
-import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw } from './body-kit'
+import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, PLATE_TONE } from './body-kit'
 
 const heights = config.scale.heights
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
@@ -184,6 +184,7 @@ function poseFrame(o: THREE.Object3D, s: Shape): void {
   const k = s.v?.[0] ?? 1
   const split = s.v?.[2] ?? 0
   const [a, b] = o.userData.wings as THREE.Group[]
+  bossKit().plate.color.copy(PLATE_TONE.live).lerp(PLATE_TONE.dead, prog(s.v?.[1] ?? 0, 0.3, 1))
   const fold = (1 - k) * (Math.PI / 2)
   a!.rotation.set(-fold, 0, 0)
   b!.rotation.set(fold, 0, 0)
