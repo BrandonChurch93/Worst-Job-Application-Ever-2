@@ -31,3 +31,13 @@ Every texture here is made in code at start, from `config.seed`. No file is down
 - Why this one: a rubber stamp never prints flat. The cover falls where the block rocked off the sheet (lower left, upper right), in slow clouds of pressure, in the paper's hollows and in pin holes. It lies once over the whole mark and does not tile, 2 texels a page pixel. The word and the border are geometry cut from the font and the layout: the picture holds no letter
 - Size: 1024 by 256 px, 1.33 MB
 - Date: 2026-11-26
+
+## wait display lamp cell (alpha picture, in memory only)
+
+- Made by: `matrix()` in `src/pages/step5/real/waitMatrix.ts`, from `dotCover(u, v)`
+- From: nothing but its own numbers in `MATRIX`: no seed, no clock
+- Prompt or command: none; built when the display is first made
+- Takes: under 0.01 s
+- Why this one: a display that shows words behind smoked glass is a grid of round lamps. One cell holds one lamp with a soft edge and repeats every 4.5 page px, with mip levels so that a small frame shows an even glow and no moire. The lit letters are the page's own text cut from the font and seen through this grid; the unlit lamps are the same grid at 5.5 percent over the whole glass. The picture holds no letter
+- Size: 32 by 32 px, 0.005 MB
+- Date: 2026-11-26

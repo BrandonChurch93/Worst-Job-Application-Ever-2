@@ -8,16 +8,18 @@ import { setRun, type Style } from '../../../shell/real/type'
 import { outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
 import { words } from '../../../shell/words'
 import type { Shape } from '../../../stage/types'
+import { gridUv, matrix, MATRIX } from './waitMatrix'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 const WHITE: [number, number, number] = [1, 1, 1]
 const LIT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 0.5, a: 0.8, c: WHITE }] }
 const BEZEL = { wide: 6, sunk: 1.6 }
-const LAMP = { colour: [2.3, 0.86, 0.2] as [number, number, number], halo: 0.16, reach: 420, power: 0.5 }
+const LAMP = { colour: [2.3, 0.86, 0.2] as [number, number, number], gain: 2.1, halo: 0.11, reach: 420, power: 0.5, dark: 0.055 }
 
 let faceMade: THREE.MeshPhysicalMaterial | null = null
 let lampMade: THREE.MeshBasicMaterial | null = null
 let haloMade: THREE.MeshBasicMaterial | null = null
+let unlitMade: THREE.MeshBasicMaterial | null = null
 
 function face(): THREE.MeshPhysicalMaterial {
   faceMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x14171a, THREE.SRGBColorSpace), roughness: 0.3, metalness: 0, specularIntensity: 0.9, clearcoat: 1, clearcoatRoughness: 0.04 }))
@@ -27,7 +29,7 @@ function face(): THREE.MeshPhysicalMaterial {
 
 function lamp(): THREE.MeshBasicMaterial {
   if (!lampMade) {
-    lampMade = new THREE.MeshBasicMaterial({ color: new THREE.Color(...LAMP.colour), vertexColors: true, transparent: true, depthWrite: false, toneMapped: false })
+    lampMade = new THREE.MeshBasicMaterial({ color: new THREE.Color(LAMP.colour[0] * LAMP.gain, LAMP.colour[1] * LAMP.gain, LAMP.colour[2] * LAMP.gain), alphaMap: matrix(), vertexColors: true, transparent: true, depthWrite: false, toneMapped: false })
     lampMade.name = 'wait-lamp'
     lampMade.polygonOffset = true
     lampMade.polygonOffsetFactor = -2
@@ -45,6 +47,14 @@ function halo(): THREE.MeshBasicMaterial {
     haloMade.polygonOffsetUnits = -2
   }
   return haloMade
+}
+
+function unlit(): THREE.MeshBasicMaterial {
+  if (!unlitMade) {
+    unlitMade = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.9, 0.62, 0.42), alphaMap: matrix(), transparent: true, opacity: LAMP.dark, depthWrite: false })
+    unlitMade.name = 'wait-unlit'
+  }
+  return unlitMade
 }
 
 function solid(g: THREE.BufferGeometry, m: THREE.Material, cast = true): THREE.Mesh {
@@ -68,9 +78,21 @@ function counterOf(s: Shape): THREE.Object3D {
   const top = h - BEZEL.sunk
   const glass: ProfilePoint[] = [[w + 1.2, top - 1.4, true], [w + 1.5, top - 0.5], [w + 2.6, top - 0.1], ...[0.9, 0.6, 0.3, 0.05].map((t): ProfilePoint => [half - (half - w - 4) * t, top + 0.5 * (1 - t * t)])]
   root.add(solid(sweep(outlineOf(s, 0, 14), profile(glass)), face(), false))
+  const iw = s.w - (w + 5) * 2
+  const ih = s.h - (w + 5) * 2
+  const plane = new THREE.PlaneGeometry(iw, ih)
+  const at = plane.getAttribute('position')
+  plane.setAttribute('uv', new THREE.BufferAttribute(gridUv(at.array as Float32Array, snap(s.x + s.w / 2), snap(s.y + s.h / 2)), 2))
+  const dots = new THREE.Mesh(plane, unlit())
+  dots.position.z = top + 0.6
+  dots.castShadow = false
+  dots.receiveShadow = false
+  root.add(dots)
   root.userData.own = true
   return root
 }
+
+const snap = (v: number): number => v - Math.round(v / MATRIX.pitch) * MATRIX.pitch
 
 interface Held { said: string }
 
@@ -86,6 +108,7 @@ function runOf(s: Shape, said: string, grow: number): THREE.BufferGeometry {
   const g = new THREE.BufferGeometry()
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
   g.setAttribute('color', new THREE.BufferAttribute(Float32Array.from(data.colour), 4))
+  g.setAttribute('uv', new THREE.BufferAttribute(gridUv(pos, snap(s.x + s.w / 2), snap(s.y + s.h / 2)), 2))
   g.setIndex(Array.from(data.index))
   return g
 }
