@@ -17,6 +17,8 @@ export interface Levels {
 
 // A window of a waking tier is never dead: its lamp stands at this share of the general lighting until the score lights it.
 export const INSERT_REST = 0.3
+// A window the score has lit stands at this share, so a ball that rolls over it still raises it.
+export const INSERT_LIT = 0.72
 
 let alone: string | null = null
 
@@ -36,6 +38,26 @@ if (typeof window !== 'undefined') {
   })
 }
 
+// How a lamp answers a ball. A window in the floor rises as a ball rolls onto it and stands full when the ball is over its middle; a globe rests below full and flares when a ball strikes its post; the firehouse holds its red below full with a ball in the bay and throws it full on the frame of the catch and of the kick; the scoop of the letter tray flashes the Office on the same two frames.
+export const ANSWER = { reach: 0.55, globeRest: 0.62, globeReach: 1.1, heldRed: 0.6, catchSeconds: 0.3, kickSeconds: 1.2, scoopSeconds: 0.25, scoopFlash: 0.8 }
+
+// How near the nearest ball is to a round thing, 1 when they touch (or, with `deep`, when the ball lies that many balls inside), 0 when the gap between them is `reach` balls or more.
+export function near(ctx: RealContext, id: string, reach: number, deep = 0): number {
+  const s = ctx.byId.get(id)
+  if (!s) return 0
+  const cx = s.x + s.w / 2
+  const cy = s.y + s.h / 2
+  let best = 0
+  for (const [name, b] of ctx.byId) {
+    if (!name.startsWith('ball.')) continue
+    if (Math.abs(b.z0 - s.z0) > 0.6 * b.w) continue
+    const gap = (Math.hypot(b.x + b.w / 2 - cx, b.y + b.h / 2 - cy) - s.w / 2 - b.w / 2) / b.w
+    const t = deep > 0 ? Math.max(0, Math.min(1, -gap / deep)) * 0.5 + Math.max(0, Math.min(1, 1 - gap / reach)) * 0.5 : Math.max(0, Math.min(1, 1 - gap / reach))
+    best = Math.max(best, t * t * (3 - 2 * t))
+  }
+  return best
+}
+
 const first = (ctx: RealContext, id: string, i: number, otherwise: number): number => {
   const v = ctx.byId.get(id)?.v
   return v !== undefined && v.length > i ? v[i]! : otherwise
@@ -47,7 +69,8 @@ export function levels(ctx: RealContext, z: Zone): Levels {
   const id = anchorId('table-lights', z.id)
   const general = first(ctx, id, 0, 0)
   const website = first(ctx, id, 1, 1)
-  const flash = first(ctx, id, 2, 0)
+  const scoop = z.id === 'office' ? Math.min(first(ctx, 'model.office.inbox', 1, 9), first(ctx, 'model.office.inbox', 2, 9)) : 9
+  const flash = Math.max(first(ctx, id, 2, 0), general * ANSWER.scoopFlash * Math.max(0, 1 - scoop / ANSWER.scoopSeconds))
   const inserts = table.inserts.filter((n) => n.tier === z.tier)
   const bumpers = table.bumpers.filter((b) => b.tier === z.tier)
   const out: number[] = []
@@ -55,11 +78,22 @@ export function levels(ctx: RealContext, z: Zone): Levels {
   for (const g of groups) {
     let level = general
     if (g.name === 'flash') level = flash
-    else if (g.name === 'red') level = first(ctx, id, 3, 0)
+    else if (g.name === 'red') {
+      const full = first(ctx, id, 3, 0)
+      const held = first(ctx, 'model.street.firehouse', 0, 0) > 0
+      const caught = Math.max(0, 1 - first(ctx, 'model.street.firehouse', 1, 9) / ANSWER.catchSeconds)
+      const kicked = Math.max(0, 1 - first(ctx, 'model.street.firehouse', 2, 9) / ANSWER.kickSeconds)
+      const idle = general * 0.35
+      if (held) level = full * (ANSWER.heldRed + (1 - ANSWER.heldRed) * caught * caught)
+      else if (kicked > 0) level = Math.max(Math.min(full, idle), idle + (full - idle) * kicked * kicked)
+      else level = full
+    }
     else if (g.name === 'blue') level = first(ctx, id, 4, 0)
     else if (g.name.startsWith('insert.')) {
       const n = inserts[Number(g.name.slice(7)) - 1]
-      level = n ? Math.max(first(ctx, `insert.${n.id}`, 0, 0), INSERT_REST * general) : 0
+      level = n ? Math.max(first(ctx, `insert.${n.id}`, 0, 0) * INSERT_LIT, INSERT_REST * general, general * near(ctx, `insert.${n.id}`, ANSWER.reach, 0.8)) : 0
+    } else if (g.name.startsWith('globe.')) {
+      level = general * (ANSWER.globeRest + (1 - ANSWER.globeRest) * near(ctx, `post.corporate.${g.name}`, ANSWER.globeReach))
     } else if (g.name.startsWith('bumper.')) {
       const b = bumpers[Number(g.name.slice(7)) - 1]
       const since = b ? first(ctx, `bumper.${b.id}`, 0, 9) : 9
