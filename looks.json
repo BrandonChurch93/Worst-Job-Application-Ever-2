@@ -1,35 +1,35 @@
 {
   "folder": "machine-runner",
-  "pushed": "2026-11-26T08:08:17.216Z",
-  "commit": "69be639aa3fa32049098263af140373c8fe79f7b",
+  "pushed": "2026-11-26T08:57:14.980Z",
+  "commit": "df109cb5cedf8ecb857cbacc98852e36a53cbac7",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "rail-cam at the new key (32.0 s): approved left, build right, draft. The eye is behind and above the ball looking ahead along the wire; the police station passes left, the garage's spiral right",
-      "time": "2026-11-26T08:08:15.448Z",
+      "caption": "Sheet clear-ball: approved above, the build below as three panels (draft): on the Street flipper with sweat, in flight, pressed at the Office cup",
+      "time": "2026-11-26T08:57:11.184Z",
       "by": "machine-runner",
-      "from": "out/work/mr/looks/compare-rail-cam.jpg"
+      "from": "out/work/mr/look-clear-ball.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "youre-fired refitted: approved left, build right, draft. A closer portrait of the firehouse, arrow tip up left; the bank stands before the left of the front (layout)",
-      "time": "2026-11-26T08:08:15.686Z",
+      "caption": "20.5 s, draft: the close camera has pushed in on the ball held in the inbox, the arrow alarmed and held before the copies pour",
+      "time": "2026-11-26T08:57:11.681Z",
       "by": "machine-runner",
-      "from": "out/work/mr/looks/compare-youre-fired.jpg"
+      "from": "out/work/mr/a.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "last-save refitted: approved left, build right, draft. 27 degrees down, the apron with plaque and throat at the bottom, card and display whole; the ramp is a rising line, the Office tier shows behind",
-      "time": "2026-11-26T08:08:15.920Z",
+      "caption": "17.35 s before (left) and 17.37 s after the acting on hits (right), draft: the arrow is struck across the hit axis and pressed short after the bumper",
+      "time": "2026-11-26T08:57:12.242Z",
       "by": "machine-runner",
-      "from": "out/work/mr/looks/compare-last-save.jpg"
+      "from": "out/work/mr/look-nest.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "rail-cam at review tier, 1200 px: the arrow whole inside the glass, face on to the lens",
-      "time": "2026-11-26T08:08:16.158Z",
+      "caption": "2.76 s, draft: the arrow caught in the loader's shell, flinch held as the shell closes",
+      "time": "2026-11-26T08:57:12.660Z",
       "by": "machine-runner",
-      "from": "out/work/mr/rv-rail.jpg"
+      "from": "out/work/mr/l.jpg"
     }
   ]
 }
