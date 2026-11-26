@@ -70,7 +70,7 @@ export function batGeometry(): THREE.BufferGeometry {
 const flippersOf = (z: Zone) => table.flippers.filter((f) => f.tier === z.tier)
 
 export const flippers = whole('flippers', {
-  version: 'play-flippers-14',
+  version: 'play-flippers-15',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.flippers.${z.id}`

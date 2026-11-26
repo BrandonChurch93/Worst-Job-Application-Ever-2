@@ -160,7 +160,7 @@ export const ringDown = (t: number): number => (t < 0.03 ? t / 0.03 : 1 - ease(0
 export const lidJump = (t: number): number => (t > 0.7 ? 0 : 4.5 * Math.exp(-7 * t) * Math.abs(Math.sin((Math.PI * t) / 0.14)))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-17',
+  version: 'play-bumpers-18',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
