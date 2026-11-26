@@ -65,7 +65,7 @@ vec4 wsSurface( vec3 face ) {
 		if ( kind == 1.0 ) {
 			float lip = smoothstep( 0.52, 0.86, wsIn.y ) * ( 1.0 - c.x ) * wsFade;
 			float foot = smoothstep( 0.42, 0.1, wsIn.y ) * wsFade;
-			tone = vec3( 0.74 + 0.44 * c.y ) * vec3( 1.0, 0.9 + 0.16 * wsHash( vec2( c.y * 91.0, 3.0 ) ), 0.88 ) * ( 1.0 - 0.45 * burnt ) * ( 0.88 + 0.22 * grain ) * ( 1.0 + 0.5 * lip - 0.22 * foot );
+			tone = vec3( 0.74 + 0.44 * c.y ) * vec3( 1.0, 0.9 + 0.16 * wsHash( vec2( c.y * 91.0, 3.0 ) ), 0.88 ) * ( 1.0 - 0.45 * burnt ) * ( 0.88 + 0.22 * grain ) * ( 1.0 + 0.38 * lip - 0.22 * foot );
 			wsOver = vec4( vec3( 0.05, 0.036, 0.03 ) * ( 0.7 + 0.6 * grain ), c.x * 0.86 );
 		} else {
 			tone = vec3( 0.9 + 0.18 * c.y ) * ( 1.0 - 0.3 * c.x ) * ( 0.92 + 0.14 * grain );
@@ -92,8 +92,8 @@ vec4 wsSurface( vec3 face ) {
 		tone = vec3( 0.9 + 0.1 * grain ) * ( 1.0 - 0.36 * line ) * ( 0.9 + 0.14 * lap );
 		h = lap * 0.9;
 	} else if ( kind == 6.0 ) {
-		tone = vec3( 0.9 + 0.16 * wsNoise( uv * 2.1 ) );
-		h = wsNoise( uv * 2.1 ) * 0.5;
+		tone = vec3( 0.93 + 0.1 * wsNoise( uv * 0.6 ) );
+		h = wsNoise( uv * 0.9 ) * 0.16;
 	} else if ( kind == 7.0 ) {
 		wsGloss = 0.42;
 	} else if ( kind == 8.0 ) {
@@ -126,7 +126,7 @@ vec4 wsSurface( vec3 face ) {
 // The moulded and painted plastic of the models: one material for the zone, a colour for each vertex and a kind of surface for each face.
 export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.6, metalness: 0, specularIntensity: 0.5, clearcoat: 0.22, clearcoatRoughness: 0.38 }))
-  over(m, 'wja-studio-street-paint-13', (shader) => {
+  over(m, 'wja-studio-street-paint-14', (shader) => {
     shader.vertexShader = 'attribute vec3 face;\nvarying vec3 vWsFace;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsFace = face;')
     shader.fragmentShader =
       'varying vec3 vWsFace;\n' +
@@ -136,7 +136,7 @@ export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
         .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n\troughnessFactor = clamp( roughnessFactor - wsGloss, 0.05, 1.0 );')
         .replace(
           '#include <normal_fragment_maps>',
-          '#include <normal_fragment_maps>\n\t{\n\t\tvec2 wsD = vec2( dFdx( wsS.w ), dFdy( wsS.w ) );\n\t\tvec3 wsX = dFdx( - vViewPosition );\n\t\tvec3 wsY = dFdy( - vViewPosition );\n\t\tvec3 wsR1 = cross( wsY, normal );\n\t\tvec3 wsR2 = cross( normal, wsX );\n\t\tfloat wsDet = dot( wsX, wsR1 );\n\t\tvec3 wsGrad = sign( wsDet ) * ( wsD.x * wsR1 + wsD.y * wsR2 );\n\t\tnormal = normalize( abs( wsDet ) * normal - 1.1 * wsGrad );\n\t}'
+          '#include <normal_fragment_maps>\n\t{\n\t\tvec2 wsD = vec2( dFdx( wsS.w ), dFdy( wsS.w ) );\n\t\tvec3 wsX = dFdx( - vViewPosition );\n\t\tvec3 wsY = dFdy( - vViewPosition );\n\t\tvec3 wsR1 = cross( wsY, normal );\n\t\tvec3 wsR2 = cross( normal, wsX );\n\t\tfloat wsDet = dot( wsX, wsR1 );\n\t\tvec3 wsGrad = sign( wsDet ) * ( wsD.x * wsR1 + wsD.y * wsR2 );\n\t\tfloat wsSee = smoothstep( 0.12, 0.55, abs( dot( normal, normalize( vViewPosition ) ) ) );\n\t\tnormal = normalize( abs( wsDet ) * normal - 1.1 * wsSee * wsGrad );\n\t}'
         )
   })
   return named(lit(m, z), `street.paint.${z.id}`)
