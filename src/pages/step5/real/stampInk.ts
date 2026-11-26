@@ -6,7 +6,7 @@ import { fibreHeights } from './letterStock'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
-export const INK = { seed: config.seed + 5303, w: 1024, h: 256, colour: 0xa61a17, pad: 14 }
+export const INK = { seed: config.seed + 5303, w: 1024, h: 256, colour: 0xc4211b, pad: 14 }
 
 // How much ink the rubber left at each place of the mark: less where the block rocked off the sheet, none in the paper's hollows.
 export function inkCover(w: number, h: number, seed: number): Float32Array {
@@ -54,8 +54,7 @@ export function ink(): Ink {
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const i = y * w + x
-      const soft = (a[i]! * 2 + a[y * w + Math.min(w - 1, x + 1)]! + a[Math.min(h - 1, y + 1) * w + x]!) / 4
-      const c = Math.round(soft * 255)
+      const c = Math.round(a[i]! * 255)
       data[i * 4] = c
       data[i * 4 + 1] = c
       data[i * 4 + 2] = c
