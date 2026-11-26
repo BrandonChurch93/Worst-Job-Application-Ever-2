@@ -45,25 +45,27 @@ function soundButton(api: InterfaceApi, parent: HTMLElement): { button: HTMLButt
   button.setAttribute('aria-label', names.sound)
   const svg = icon('soundOff')
   button.append(svg)
-  press(button, () => api.sound.setMuted(!api.sound.muted()))
   let shown: boolean | null = null
   let on: boolean | null = null
-  return {
-    button,
-    update() {
-      const available = api.sound.available()
-      if (available !== shown) {
-        shown = available
-        button.hidden = !available
-      }
-      const sounding = !api.sound.muted()
-      if (sounding !== on) {
-        on = sounding
-        button.setAttribute('aria-pressed', String(sounding))
-        setIcon(svg, sounding ? 'soundOn' : 'soundOff')
-      }
+  const update = () => {
+    const available = api.sound.available()
+    if (available !== shown) {
+      shown = available
+      button.hidden = !available
+    }
+    const sounding = !api.sound.muted()
+    if (sounding !== on) {
+      on = sounding
+      button.setAttribute('aria-pressed', String(sounding))
+      setIcon(svg, sounding ? 'soundOn' : 'soundOff')
     }
   }
+  // The control shows its new state at the press itself, not at the next drawn frame: a frame may be seconds away on a loaded machine.
+  press(button, () => {
+    api.sound.setMuted(!api.sound.muted())
+    update()
+  })
+  return { button, update }
 }
 
 export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
@@ -134,6 +136,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
     if (!f) return
     if (f.playing()) f.pause()
     else f.play()
+    showPlaying(f.playing())
   }
   press(play, toggle)
   press(back, () => api.backToSite())
@@ -214,6 +217,15 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   let shownTime = ''
   let shownValue = -1
   const heard = new Set<string>()
+  // Called at the press as well as once a frame, so the control answers a press before the next frame is drawn.
+  function showPlaying(now: boolean): void {
+    if (now === playing) return
+    playing = now
+    play.setAttribute('aria-pressed', String(now))
+    setIcon(playIcon, now ? 'pause' : 'play')
+    root.dataset.playing = String(now)
+    wake()
+  }
 
   return {
     update() {
@@ -258,13 +270,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
         barSound.update()
         if (f) {
           const now = f.playing()
-          if (now !== playing) {
-            playing = now
-            play.setAttribute('aria-pressed', String(now))
-            setIcon(playIcon, now ? 'pause' : 'play')
-            root.dataset.playing = String(now)
-            wake()
-          }
+          showPlaying(now)
           const t = f.time()
           const begun = now || t > 0
           if (begun !== started) {
