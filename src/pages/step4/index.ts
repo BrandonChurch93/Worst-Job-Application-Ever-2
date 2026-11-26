@@ -49,7 +49,7 @@ const SQUARE_UP = 0.8
 const BUCKLE = 1.1
 const KICK = { shot: 150, popup: 200 } as const
 const RELIEF = { pose: 0.42, hold: 1.5 } as const
-const PRESS = { down: 0.03, deep: 7, hold: 0.05, back: 0.06, over: 0.3, ring: 0.5, stand: 16 } as const
+const PRESS = { down: 0.03, deep: 12, hold: 0.06, back: 0.07, over: 0.4, ring: 0.5, stand: 16, shove: [7, -10], rock: -0.07 } as const
 const GAIN = { from: 25, glow: [1.0, 1.6] } as const
 const SEAT = 0.2
 const LIFT = 7
@@ -351,7 +351,8 @@ export function makePage(): PageLogic {
       }
       if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open', undefined, s.stage === 'unfold' && s.t < UNFOLD.lift + CAP_CLEARS ? 'dark' : 'ink')
       const rig = rigNow()
-      if (rig) drawRig(out, rig, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * sunk())
+      const give = s.inSocket || s.stage !== 'press' ? 0 : sunk()
+      if (rig) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
       if (s.stage === 'fight' && s.fight) drawWeapons(out, s.fight, L.weapons)
       if (s.stage === 'collapse' && s.from) {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)

@@ -22,6 +22,7 @@ const ANSWER = { x: 64, y: 172 } as const
 const SHOCK = { x: 610, y: 800 } as const
 const COVER = { x: 470, y: 800 } as const
 const THROWN = { at: 13.1, x: 368, y: 922 } as const
+const PRESS_AT = { x: 88, y: 20 } as const
 const STRUCK = { at: 20.3, x: 438, y: 916 } as const
 
 export function makeScript(L: Step4Layout): FilmScript {
@@ -36,7 +37,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     [4.34, answer.x, answer.y, 'out'], [5.3, answer.x, answer.y], [6.04, 820, 890], [6.1, 822, 892], [6.25, SHOCK.x, SHOCK.y, 'out'], [7.18, SHOCK.x, SHOCK.y], [7.5, COVER.x, COVER.y, 'out'], [8.7, COVER.x, COVER.y], [9.2, 430, 850],
     [9.45, 430, 880], [10.42, 430, 880], [10.75, 420, 700, 'out'], [11.66, 420, 700], [12.11, 450, 900], [THROWN.at, 450, 900], [THROWN.at + 0.16, THROWN.x, THROWN.y, 'out'], [14.9, THROWN.x, THROWN.y], [15.3, 400, 720], [17.35, 400, 720],
     [17.8, 520, 900], [STRUCK.at, 520, 900], [STRUCK.at + 0.16, STRUCK.x, STRUCK.y, 'out'], [24.1, STRUCK.x, STRUCK.y], [25.4, 960, 770], [26.6, 1262, 804], [27.1, 1296, 884],
-    [27.4, 1380, 934], [28.0, 1380, 934], [28.6, FALLEN.x - 150, FALLEN.y + 74], [29.5, FALLEN.x - 150, FALLEN.y + 74], [29.86, FALLEN.x - 122, FALLEN.y - 28], [32, FALLEN.x - 122, FALLEN.y - 28]
+    [27.4, 1380, 934], [28.0, 1380, 934], [28.6, FALLEN.x - 150, FALLEN.y + 74], [29.5, FALLEN.x - 150, FALLEN.y + 74], [29.76, FALLEN.x - PRESS_AT.x, FALLEN.y - PRESS_AT.y, 'in'], [32, FALLEN.x - PRESS_AT.x, FALLEN.y - PRESS_AT.y]
   ]
   const clicks: number[] = [tickAt]
   const burst = (from: number, to: number, every: number): void => {
