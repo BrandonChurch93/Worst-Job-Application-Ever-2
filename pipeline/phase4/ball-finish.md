@@ -101,6 +101,30 @@ CHANGED WITHOUT HAVING SEEN IT (for the pictures of the next merge):
 
 CHANGED WITHOUT HAVING SEEN IT (for the pictures of the 12:05 UTC merge): everything in 18, on every key. Look for: three separate reflections in the wall with clear glass between them, and one small warm spot inside the ball on the side away from the head lamps (lower left from above, at the foot at `lobby-doors`).
 
+## Decisions (fifth pass, 11:55 to 12:10 UTC, times from `date -u`)
+
+21. The shadow and the thrown light under the ball (`/root`, 11:54 and 11:57 UTC: the first thing a viewer misses). MEASURED on the crop of merge 34 at `lobby-doors`: the shadow was there (carpet 83 against 155 sRGB) but lay well away from the foot as a broad soft gradient, so it did not read as the ball's. Changes in `decalFragment` (`glsl.ts`) and in `index.ts`:
+   - the shadow's middle is 0.55 of a radius times the slant from the foot (was 0.9), it is 1.0 by 1.08 radii (was 1.25 by 1.2) and its edge is firmer (`smoothstep(0.3, 1.0, e)`, was 0.12);
+   - the dark at the point of contact is 0.6 deep over 0.4 of a radius (was 0.4 over 0.55);
+   - the thrown light is one patch at 0.8 of a radius from the foot, inside the shadow, about 0.2 by 0.13 of a radius with a faint halo, in the head lamps' colour turned a little warmer (`(1, 0.9, 0.72)`, times 2.2);
+   - a ball off the floor: its shadow moves out by the true angle of the head lamps (0.58 of the slant the decal draws at rest) and fades more slowly (`1 / (1 + lift / (4 r))`, was 2.5 r); a ball under its zone's floor no longer makes the numbers run away (`lift` is never below 0; MEASURED in a test print: a weight of 4 where 0.8 is the most).
+   SEEN in the one look left (sheet, 11:58 UTC, drawn with the first three lines above): a dark pocket at the foot of the ball in panel 1 (MEASURED 15 to 25 against 50 sRGB on the floor beside it). NOT SEEN: the long shadow and the thrown light. MEASURED by the sheet's own numbers (`SHEET.from` in `src/pages/step3/index.ts`) and a test print of the decal's uniforms: the head lamps of every tier throw the shadow down the page and a little left, which in the sheet's first panel and at `last-save` is onto the flipper in front of the ball. The decal lies on the floor, so there the flipper hides it. Approved shows the patch of light on top of that flipper. Drawing it there needs the decal lifted to the flipper's top where the shadow crosses one; that is not built.
+22. The middle panel of the sheet: the page sets that ball 0.6 of a ball above the floor (`SHEET.fly`, `src/pages/step3/NOTES.md`: "in flight"), so it does float, and its shadow lies to the side. Approved shows it standing on the floor. The page is not mine; I say so in my report.
+23. The sandbox lost its sign-in to GitHub at 11:51 UTC (`git push`: "could not read Username"). Fetch still works. Each further commit goes to `/root` as a bundle (`git bundle create ... agent/ball-finish ^origin/main ^<last commit on origin>`), and looks go as files.
+
+CHANGED WITHOUT HAVING SEEN IT (for the pictures of merge 35): the thrown light on the floor (never in view in any still of mine); the last line of 21 (a ball off the floor); the warmer colour of the patch. Look for: at `lobby-doors`, a dense shadow that starts at the foot of the ball and one warm patch of light inside it close to the foot; in the sheet's middle panel, a shadow nearer the ball than before.
+
+## Counts (MEASURED 11:39 UTC on a0e5bc10, and on cfd83123 in a second work tree at 11:15 UTC)
+
+`npm run counts -- --key <key> --live low`, the rows `clear-ball` and `displays`:
+
+| key | part | calls before | calls after | triangles before | triangles after |
+|---|---|---|---|---|---|
+| tier-corporate, tier-office, tier-street | clear-ball | 3 | 3 | 18874 | 18874 |
+| tier-corporate, tier-office, tier-street | displays | 4 | 4 | 164 | 164 |
+| table-wide | clear-ball | 2 | 2 | 18872 | 18872 |
+| table-wide | displays | 8 | 8 | 328 | 328 |
+
 ## Tuning looks, by part
 
-Counted strictly, one for each still or row of film frames, all `draft` but one `review`. `clear-ball`: 20 by 10:46 UTC (first pass, as reported); 22 (sheet, `youre-fired`); 25 (sheet, `last-save`, `lobby-doors`); 28 (the same three); 29 (film frames 5121 to 5125); 31, 33, 35, 37 (sheet and `lobby-doors`, four runs). 37; 38 (`lobby-doors`, 11:22 UTC); 39 (sheet, 11:33 UTC). 39 of 40. `displays`: 2 by 10:46 UTC; 3 (`tier-corporate`); 5 (`table-wide`, `last-save`); 7 (`last-save` twice, the display alone studied); 8 (`table-wide`, 11:31 UTC, the two displays alone studied). 8 of 40.
+Counted strictly, one for each still or row of film frames, all `draft` but one `review`. `clear-ball`: 20 by 10:46 UTC (first pass, as reported); 22 (sheet, `youre-fired`); 25 (sheet, `last-save`, `lobby-doors`); 28 (the same three); 29 (film frames 5121 to 5125); 31, 33, 35, 37 (sheet and `lobby-doors`, four runs). 37; 38 (`lobby-doors`, 11:22 UTC); 39 (sheet, 11:33 UTC). 39 of 40; 40 (sheet, 11:58 UTC, decision 21). 40 of 40: the part's looks are spent, and every change to the ball after 11:58 UTC is unseen. `displays`: 2 by 10:46 UTC; 3 (`tier-corporate`); 5 (`table-wide`, `last-save`); 7 (`last-save` twice, the display alone studied); 8 (`table-wide`, 11:31 UTC, the two displays alone studied); 10 (`tier-office`, `tier-street`, 11:41 UTC: SEEN a page of whole words on each, "(In Lieu of" and "Entry-Level", lit behind the dark bezel). 10 of 40.

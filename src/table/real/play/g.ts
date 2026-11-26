@@ -105,7 +105,7 @@ export class Bag {
   constructor(alpha = false) {
     this.alpha = alpha
   }
-  add(g: THREE.BufferGeometry, l: Look, m?: THREE.Matrix4, a = 1): this {
+  add(g: THREE.BufferGeometry, l: Look, m?: THREE.Matrix4, a = 1, by?: (nx: number, ny: number, nz: number) => number): this {
     if (g.index) {
       const flat = g.toNonIndexed()
       g.dispose()
@@ -131,10 +131,12 @@ export class Bag {
     const size = this.alpha ? 4 : 3
     const c = new Float32Array(n * size)
     const f = new Float32Array(n * 3)
+    const nor = by ? g.getAttribute('normal') : null
     for (let i = 0; i < n; i++) {
-      c[i * size] = l.col[0]
-      c[i * size + 1] = l.col[1]
-      c[i * size + 2] = l.col[2]
+      const k = by && nor ? by(nor.getX(i), nor.getY(i), nor.getZ(i)) : 1
+      c[i * size] = l.col[0] * k
+      c[i * size + 1] = l.col[1] * k
+      c[i * size + 2] = l.col[2] * k
       if (this.alpha) c[i * size + 3] = a
       f[i * 3] = l.fin[0]
       f[i * 3 + 1] = l.fin[1]

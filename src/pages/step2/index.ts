@@ -9,7 +9,7 @@ import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
 import { buildLayout, COIN, CRANK, DIAL, dialPlate, dialTop, FH, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
-import { actingAt, LANDING, PEEL_AT, pointerAt, poses, reactions, type Mark, type Marks } from './script'
+import { actingAt, AWAY, LANDING, PEEL_AT, TOSS, pointerAt, poses, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
 const LIMIT = config.live.skipLinkAfterSeconds
@@ -37,7 +37,9 @@ const COINS = 14
 const RETURN = { most: 42, gather: 300, least: 4, slow: 30 }
 // The crank draws back before it takes off.
 // The whip: the arrow hangs from the hole by its tip, its tail thrown outward and trailing the turn, drawn long by the speed. Flung, it goes end over end and lands the right way up.
-const WHIP = { tip: 1.965, follow: 30, long: 0.3, slow: 5, fast: 30, air: 0.72, tumble: 2 }
+const WHIP = { tip: 1.965, follow: 30, long: 0.3, slow: 5, fast: 36, gain: 8.5, rise: 4, air: 0.6, tumble: 2, thrown: 1.24 }
+const FLUNG = { short: 64, lie: 1.35, tumble: 1.5, high: 150, long: 1.25, low: 0.7 }
+const SKID = { short: 96, long: 0.26, lie: -1.3, low: 0.8 }
 const SNAG = { held: 0.05, long: 1.62, amp: 0.085, die: 13, hz: 46 }
 const dialShown = (d: DialState): number => d.a + (d.home >= 0 ? SNAG.amp * Math.exp(-SNAG.die * d.home) * Math.sin(SNAG.hz * d.home) : 0)
 const WIND = { long: 0.12, back: 1.6, out: 0.2 }
@@ -45,9 +47,9 @@ const BLOW = { load: 0.2, kick: 1170, out: 0.15, drag: 9, stuck: 0.45, dip: 0.07
 
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean; falls: boolean; row: number; hops: number }
-interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'snag' | 'fly' | 'over'; home: number; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number; r: number; turn: number; from: number; air: number }
+interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'snag' | 'fly' | 'skid' | 'over'; home: number; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number; r: number; turn: number; from: number; air: number }
 interface SlotState { p: number; pv: number; grab: boolean; phase: 'rest' | 'spin' | 'read' | 'pay' | 'over'; t: number; from: number[]; to: number[]; latch: number; coins: Coin[]; spawned: number; cool: number; rang: boolean }
-interface CrankState { b: number; set: boolean; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number; kx: number; ky: number; o: number }
+interface CrankState { b: number; set: boolean; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number; kx: number; ky: number; o: number; toss: number; ox: number; oy: number; oz: number }
 interface State {
   mode: 'live' | 'film'
   time: number
@@ -88,7 +90,7 @@ const mix = (a: number, b: number, t: number): number => a + (b - a) * t
 
 const freshDial = (): DialState => ({ a: 0, k: 0, phase: 'rest', home: -1, digits: '', w: 0, left: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, t: 0, r: 0, turn: 0, from: 0, air: 0 })
 const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t: 0, from: [0, 0, 0], to: [0, 0, 0], latch: 0, coins: [], spawned: 0, cool: 0, rang: false })
-const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0, kx: 0, ky: 0, o: 0 })
+const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0, kx: 0, ky: 0, o: 0, toss: -1, ox: 0, oy: 0, oz: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
   mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], px: 0, py: 0,
   dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, reach: { x: 0, y: 0, z: 0, t: 1 }, swing: null, climb: 0, marks: {}, rng: []
@@ -178,6 +180,7 @@ export function makePage(): PageLogic {
         d.phase = 'whip'
         d.w = WHIP.slow
         d.turn = 0
+        d.t = 0
         d.left = d.a + TAU + mod(DIAL.holeAngle(d.k) + Math.PI / 2, TAU)
         io.cursor.take('dial')
         if (s.mode === 'live') io.cursor.act('scared')
@@ -226,7 +229,8 @@ export function makePage(): PageLogic {
         d.k = 0
       }
     } else if (d.phase === 'whip') {
-      d.w = Math.min(WHIP.fast, d.w + 38 * dt)
+      d.t += dt
+      d.w = Math.min(WHIP.fast, WHIP.slow + WHIP.gain * Math.pow(d.t, WHIP.rise))
       const turn = Math.min(d.left, d.w * dt)
       d.a -= turn
       d.left -= turn
@@ -256,8 +260,9 @@ export function makePage(): PageLogic {
         const air = WHIP.air - SNAG.held
         d.from = wrapPi(d.turn) - (wrapPi(d.turn) > 0 ? TAU : 0)
         d.air = 0
-        d.vx = (LANDING.x - d.x) / air
-        d.vy = (LANDING.y - d.y) / air
+        const far = Math.hypot(LANDING.x - d.x, LANDING.y - d.y)
+        d.vx = ((LANDING.x - d.x) * (1 - SKID.short / far)) / air
+        d.vy = ((LANDING.y - d.y) * (1 - SKID.short / far)) / air
         d.vz = (hover - d.z) / air + (G * air) / 2
         s.done[0] = true
         d.t = 0
@@ -269,14 +274,28 @@ export function makePage(): PageLogic {
       d.vz -= G * dt
       d.z += d.vz * dt
       d.air = Math.min(1, d.air + dt / (WHIP.air - SNAG.held))
-      io.cursor.strike(wrapPi(d.from - (TAU * WHIP.tumble + d.from) * d.air), dt * 2)
+      io.cursor.strike(wrapPi(d.from + (SKID.lie - TAU * WHIP.tumble - d.from) * d.air), dt * 2)
+      io.cursor.press(WHIP.thrown, dt * 2)
       if (d.z <= hover && d.vz < 0) {
         io.cursor.place(d.x, d.y, hover)
-        io.cursor.release()
         io.cursor.react('recoil')
+        d.phase = 'skid'
+        d.air = 0
+        d.vx = LANDING.x - d.x
+        d.vy = LANDING.y - d.y
+      } else io.cursor.place(d.x, d.y, Math.max(hover, d.z))
+    } else if (d.phase === 'skid') {
+      unwind(d)
+      d.air = Math.min(1, d.air + dt / SKID.long)
+      const u = 1 - (1 - d.air) * (1 - d.air)
+      io.cursor.place(d.x + d.vx * u, d.y + d.vy * u, hover)
+      io.cursor.strike(SKID.lie, dt * 2)
+      io.cursor.press(SKID.low, dt * 2)
+      if (d.air >= 1) {
+        io.cursor.release()
         if (s.mode === 'live') io.cursor.act('nervous')
         d.phase = 'return'
-      } else io.cursor.place(d.x, d.y, Math.max(hover, d.z))
+      }
     }
     if (s.done[0]) {
       d.t += dt
@@ -511,6 +530,24 @@ export function makePage(): PageLogic {
         c.w = 0
       }
       const cur = io.cursor
+      if (s.mode === 'film' && c.toss < 0 && !c.hit && !cur.taken && c.t >= TOSS.at && c.phase === 'runaway') {
+        c.toss = 0
+        c.ox = cur.x
+        c.oy = cur.y
+        c.oz = cur.z
+        cur.take('crank')
+      }
+      if (c.toss >= 0 && c.toss < TOSS.air + TOSS.skid) {
+        c.toss += dt
+        const reach = 1 - FLUNG.short / Math.max(FLUNG.short + 1, Math.hypot(AWAY.x - c.ox, AWAY.y - c.oy))
+        const u = Math.min(1, c.toss / TOSS.air)
+        const v = clamp((c.toss - TOSS.air) / TOSS.skid, 0, 1)
+        const k = u < 1 ? reach * u : reach + (1 - reach) * (1 - (1 - v) * (1 - v))
+        cur.place(c.ox + (AWAY.x - c.ox) * k, c.oy + (AWAY.y - c.oy) * k, hover + (c.oz - hover) * (1 - u) + FLUNG.high * 4 * u * (1 - u))
+        cur.strike(wrapPi(FLUNG.lie - TAU * FLUNG.tumble * (1 - u)), dt * 2)
+        cur.press(u < 1 ? FLUNG.long : FLUNG.low, dt * 2)
+        if (v >= 1) cur.release()
+      }
       if (!c.hit && c.t >= 0.2 && c.w > 6 && cur.z < 70 && !cur.taken) {
         const tip = gripPlace(c.b, CRANK.tip)
         const mx = cur.x + 10 - CRANK.hx
@@ -641,7 +678,7 @@ export function makePage(): PageLogic {
       s.gripped = false
       if (s.swing) io.cursor.place(io.cursor.x, io.cursor.y, io.cursor.z)
       s.swing = null
-      if (s.dial.phase !== 'whip' && s.dial.phase !== 'snag' && s.dial.phase !== 'fly') io.cursor.release()
+      if (s.dial.phase !== 'whip' && s.dial.phase !== 'snag' && s.dial.phase !== 'fly' && s.dial.phase !== 'skid') io.cursor.release()
     }
   }
 

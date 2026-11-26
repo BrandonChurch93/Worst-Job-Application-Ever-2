@@ -13,7 +13,7 @@ import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
 const CAP_CLEARS = 0.6
-const SAG_AT = 1.57
+const SAG_AT = 1.7
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
@@ -29,6 +29,8 @@ interface State {
   from: Rig | null
   inSocket: boolean
   pressed: number
+  shake: number
+  struck: number
   skipping: boolean
   damaged: boolean
   done: boolean
@@ -41,15 +43,17 @@ interface State {
 }
 
 const heights = config.scale.heights
-const REALLY = [0.7, 1.5] as const
+const REALLY = [0.56, 1.64] as const
 const REALLY_TAKE = 0.04
 const HORROR = { thrown: UNFOLD.crack + 0.06, start: UNFOLD.open + 0.04, scared: UNFOLD.legs[0] } as const
 const PRIDE = 1.2
 const SQUARE_UP = 0.8
 const BUCKLE = 1.1
+const SHAKE = { at: 0.3, hold: 0.9 } as const
 const KICK = { shot: 150, popup: 200 } as const
 const RELIEF = { pose: 0.42, hold: 1.5 } as const
 const PRESS = { down: 0.03, deep: 12, hold: 0.06, back: 0.07, over: 0.4, ring: 0.5, stand: 16, shove: [7, -10], rock: -0.07 } as const
+const STRUCK_GLOW = 0.14
 const GAIN = { from: 25, glow: [1.0, 1.6] } as const
 const SEAT = 0.2
 const LIFT = 7
@@ -62,7 +66,7 @@ const STAGES = { w: 1920, h: 1080, y: 505, x: [232, 600, 1012, 1580], tuck: 30, 
 const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, shake: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -201,23 +205,24 @@ export function makePage(): PageLogic {
         const before = f.phase
         const hits = f.hits
         const ups = f.popupCount
+        const health = f.health
         stepFight(f, io, arena)
+        if (f.health < health) s.struck = 0
+        else if (s.struck >= 0) s.struck += dt
         s.busy = Math.max(0, s.busy - dt)
         const calm = (): void => { io.cursor.act(f.phase === 0 ? 'confident' : 'angry') }
         if (f.hits > hits) {
-          s.busy = BUCKLE
+          s.busy = f.phase === 1 ? SHAKE.at + SHAKE.hold : BUCKLE
+          s.shake = f.phase === 1 ? SHAKE.at : -1
           s.mad = -1
-          io.cursor.act('exhausted')
+          io.cursor.act('shocked')
         } else if (s.busy > 0 && s.busy - dt <= 0 && !(f.phase === 2 && f.expired < REALLY[1])) calm()
+        if (s.shake > 0) {
+          s.shake -= dt
+          if (s.shake <= 0) io.cursor.react('dustOff')
+        }
         if (f.popupCount > ups && s.busy <= 0) {
-          const box = L.weapons.popups[f.popups[f.popups.length - 1]!.slot]!.box
-          const dx = io.cursor.x - box.cx
-          const dy = io.cursor.y - box.cy
-          const d = Math.hypot(dx, dy) || 1
-          if (f.popupCount === 1) {
-            io.cursor.knock((dx / d) * KICK.popup, (dy / d) * KICK.popup)
-            io.cursor.react('cower')
-          } else io.cursor.react('fume')
+          io.cursor.react(f.popupCount === 1 ? 'flinch' : 'fume')
           s.busy = 0.7
         }
         if (io.pressed && !f.over) {
@@ -248,7 +253,7 @@ export function makePage(): PageLogic {
         if (f.phase === 2 && f.expired >= 0) {
           const was = f.expired - io.dt
           if (f.expired >= REALLY_TAKE && was < REALLY_TAKE) {
-            io.cursor.react('rear')
+            io.cursor.react('startle')
             io.cursor.act('shocked')
           }
           if (f.expired >= REALLY[0] && was < REALLY[0]) io.cursor.react('doubleTake')
@@ -278,7 +283,10 @@ export function makePage(): PageLogic {
           }
         } else {
           s.pressed += dt
-          if (s.pressed >= RELIEF.pose && s.pressed - dt < RELIEF.pose) io.cursor.act('proud')
+          if (s.pressed >= RELIEF.pose && s.pressed - dt < RELIEF.pose) {
+            io.cursor.act('proud')
+            io.cursor.react('dustOff')
+          }
           if (s.pressed >= (s.mode === 'film' ? RELIEF.hold : 0.35) && (!s.damaged || s.mode === 'film')) s.done = true
         }
       }
@@ -343,6 +351,8 @@ export function makePage(): PageLogic {
         const w = s.fight ? Math.max(0, full * (s.fight.shown / 100)) : full
         if (w >= L.track.h - FILL_GAP * 2) out.push(fillAt(w))
         const f = s.fight
+        const h0 = L.track.h - FILL_GAP * 2
+        if (f && s.stage === 'fight' && s.struck >= 0 && s.struck < STRUCK_GLOW && w >= h0 && !(f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1])) out.push({ ...fillAt(h0), id: 'health-gain', x: L.track.x + FILL_GAP + w - h0 * 0.5, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - s.struck / STRUCK_GLOW] })
         if (f && s.stage === 'fight' && f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1]) {
           const gained = Math.min(w, (full * Math.max(0, f.shown - GAIN.from)) / 100)
           const h = L.track.h - FILL_GAP * 2

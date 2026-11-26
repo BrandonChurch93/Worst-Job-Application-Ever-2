@@ -2,7 +2,7 @@ import type { RealContext } from '../../../../real/types'
 import type { Zone } from '../../zone'
 import type { Buckets, V3 } from './geo'
 import { quoins, walls } from './firehouse'
-import { KIND, TONE, band, mix, beaconBase, board, parapet, reveal, roofDeck, roofHatch, shade, site, wallFace, windowAt, type Hole, type WindowLook } from './kit'
+import { KIND, TONE, band, mix, beaconBase, board, parapet, reveal, roofDeck, roofHatch, roofWorks, shade, site, wallFace, windowAt, type Hole, type WindowLook } from './kit'
 
 export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   const S = site(z, 'street.police')
@@ -13,7 +13,7 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   const yf = S.yf + i
   const yb = S.yb - i
   const top = S.h
-  const deck = top - 10
+  const deck = top - 18
   const k0 = top / 144
   const plinth = 15
   const storey = 66 * k0
@@ -87,6 +87,7 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
 
   roofDeck(g, x0 + 5, x1 - 5, yf + 5, yb - 5, deck, mix(TONE.deck, TONE.blue, 0.4))
   parapet(g, x0, x1, yf, yb, deck, top, 6, TONE.blue, mix(TONE.cap, TONE.blueTrim, 0.5), KIND.brick)
+  roofWorks(b, x0, x1, yf, yb, deck, top, 6, mix(TONE.deck, TONE.blue, 0.4), 1)
 
   // On the roof: a stair house with a door, a radio mast, a cooling unit and two vents.
   const sx0 = x0 + 12
@@ -107,8 +108,9 @@ export function police(b: Buckets, z: Zone, ctx: RealContext): { beacon: V3 } {
   for (const [px, py] of [[x0 + 9, yf + 9], [x1 - 9, yf + 9], [x1 - 9, yb - 9]] as const) b.screws.push([px, py, deck, 1.6])
 
   roofHatch(b, x1 - 76, x1 - 48, yf + 34, yf + 56, deck, TONE.stoneDark)
-  const beacon: V3 = [S.cx, S.yb - S.d * 0.3, deck]
-  beaconBase(b, beacon[0], beacon[1], deck)
+  const beacon: V3 = [S.cx, S.yb - S.d * 0.3, deck + 9]
+  g.lathe([[39, 0], [39, 7.6], [37.4, 9], [0, 9]], beacon[0], beacon[1], 40, TONE.stoneDark, { base: deck, kind: KIND.stucco })
+  beaconBase(b, beacon[0], beacon[1], deck + 9)
   board(b, z, ctx, 'street.police', deck)
   return { beacon }
 }

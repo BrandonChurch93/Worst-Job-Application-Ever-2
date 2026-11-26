@@ -10,7 +10,7 @@ import { LIFT, lift } from './lift'
 import { FIN, TONE, ballOf, drop, mesh, metalOf, tubeOf as clearTube } from './mats'
 import { GATE, SLING, kickOf, tier } from './tier'
 
-export const VERSION = 'hardware-25'
+export const VERSION = 'hardware-28'
 const STEEL_BALLS = 8
 const TURN = 0.34
 // The lift's rings stand upright and are seen on their flat faces from the player's end, so they keep more of their tone.

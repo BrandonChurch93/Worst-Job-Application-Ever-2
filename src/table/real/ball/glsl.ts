@@ -601,17 +601,17 @@ void main() {
 		vec2 d = uShade[ i ].xy;
 		float k = uShade[ i ].z;
 		vec2 side = vec2( - d.y, d.x );
-		vec2 q = vXY - d * ( uR * 0.9 * k + uLift * k );
-		float along = dot( q, d ) / ( uR * 1.25 * sqrt( 1.0 + k * k ) );
-		float across = dot( q, side ) / ( uR * 1.2 );
+		vec2 q = vXY - d * ( uR * 0.55 * k + uLift * k * 0.58 );
+		float along = dot( q, d ) / ( uR * 1.0 * sqrt( 1.0 + k * k ) );
+		float across = dot( q, side ) / ( uR * 1.08 );
 		float e = along * along + across * across;
-		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.12, 1.0, e ) ) * ( 1.0 - 0.4 * smoothstep( - 0.2, 1.0, along ) );
-		vec2 s = vXY - d * ( uR * ( 0.3 + 0.75 * min( k, 1.2 ) ) + uLift * k );
+		keep *= 1.0 - uShade[ i ].w * ( 1.0 - smoothstep( 0.3, 1.0, e ) ) * ( 1.0 - 0.4 * smoothstep( - 0.2, 1.0, along ) );
+		vec2 s = vXY - d * ( uR * 0.8 + uLift * k * 0.58 );
 		float sa = dot( s, d ) / uR;
 		float sc = dot( s, side ) / uR;
-		c += uSpot[ i ] * ( 0.9 * exp( - ( sa * sa / 0.016 + sc * sc / 0.007 ) ) + 0.06 * exp( - ( sa * sa / 0.12 + sc * sc / 0.05 ) ) );
+		c += uSpot[ i ] * ( 0.9 * exp( - ( sa * sa / 0.04 + sc * sc / 0.018 ) ) + 0.14 * exp( - ( sa * sa / 0.2 + sc * sc / 0.09 ) ) );
 	}
-	keep *= 1.0 - 0.4 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.3 ) );
+	keep *= 1.0 - 0.6 * uNear * exp( - dot( vXY, vXY ) / ( uR * uR * 0.16 ) );
 	float fade = 1.0 - smoothstep( 0.8, 1.0, length( vXY ) / ( uR * 5.2 ) );
 	gl_FragColor = vec4( c * fade, ( 1.0 - keep ) * fade );
 	if ( uLoud > 0.5 ) gl_FragColor = vec4( 1.0 - keep, 0.2, keep, 1.0 ) * 0.8;
