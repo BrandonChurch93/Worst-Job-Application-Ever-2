@@ -1,35 +1,35 @@
 {
   "folder": "decision",
-  "pushed": "2026-11-26T02:38:46.743Z",
-  "commit": "819751b4561637fd7d1a587c54ea22bbf580a105",
+  "pushed": "2026-11-26T02:54:57.428Z",
+  "commit": "2b7dbdd872c6acaa441a15c65b77fd362c09f0dd",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Contact sheet, the beat decision.letter: 12 frames from 2:23.00 to 2:26.97, draft tier, preview",
-      "time": "2026-11-26T02:34:14.071Z",
+      "caption": "Still decision-decision_letter-0p92-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:51:48.879Z",
       "by": "decision",
-      "from": "out/work/sheets/sheet-beat-decision_letter-preview-draft.jpg"
+      "from": "out/work/stills/decision-decision_letter-0p92-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-decision-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T02:36:26.200Z",
+      "caption": "Still decision-decision_letter-0p95-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T02:52:13.645Z",
       "by": "decision",
-      "from": "out/work/stills/key-decision-hd-review.png"
+      "from": "out/work/stills/decision-decision_letter-0p95-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key picture at 819751b4: approved left, build right (review tier)",
-      "time": "2026-11-26T02:38:45.440Z",
+      "caption": "Key picture at 2b7dbdd8: approved left, build right; cursor right of the stamp, numerals in the ink on glass",
+      "time": "2026-11-26T02:54:55.991Z",
       "by": "decision",
       "from": "out/work/look-cmp.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Stamp at rest in profile: approved left, build right",
-      "time": "2026-11-26T02:38:45.665Z",
+      "caption": "The stamp carried and laid down; the flat cursor falls from its rubber to the right (5.2 s, 5.68 s, 5.8 s)",
+      "time": "2026-11-26T02:54:56.227Z",
       "by": "decision",
-      "from": "out/work/look-stamp.jpg"
+      "from": "out/work/look-carry.jpg"
     }
   ]
 }
