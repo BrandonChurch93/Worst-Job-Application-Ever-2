@@ -11,8 +11,11 @@ import { words } from './shell/words'
 import { BotDriver, type BotName } from './stage/bots'
 import { liveFlow, liveView, MouseDriver, Stage, type Frame } from './stage/stage'
 import type { CameraPose, Driver, Hint } from './stage/types'
-import { lessMotion, makeQualityPicker, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
+import { lessMotion, makeQualityPicker, messagesOf, mountInterface, mountProbe, mountTouchMessage, ready as controlsReady, touchOnly, type InterfaceApi, type Mounted, type ProbeRunner } from './ui/api'
 import { wallSeconds } from './ui/clock'
+import { listenToVisitor } from './ui/pointer'
+import { fitPicture } from './core/levelFit'
+import { levelIsFixedOf, startLevelOf } from './core/levelStart'
 
 declare global {
   interface Window { showcase: Showcase; liveRun?: { state(): LiveShot; advance(seconds: number, quiet?: boolean): LiveShot; told(): LiveTold } }
@@ -45,12 +48,8 @@ function stop(error: unknown): void {
   canvas.hidden = true
 }
 
-const startLevel = (): string => {
-  const asked = params.get('quality')
-  if (asked) return quality(asked) && asked
-  return config.live.defaultQuality === 'auto' ? qualityIds[0]! : config.live.defaultQuality
-}
-const levelIsFixed = (): boolean => params.get('quality') !== null || config.live.defaultQuality !== 'auto'
+const startLevel = (): string => startLevelOf(params.get('quality'), config.live.defaultQuality)
+const levelIsFixed = (): boolean => levelIsFixedOf(params.get('quality'), config.live.defaultQuality)
 
 async function start(): Promise<void> {
   if (!MODES.includes(mode)) throw new Error(`No mode called "${mode}"`)
@@ -80,17 +79,17 @@ async function start(): Promise<void> {
 }
 
 // The picture's size on the screen and in pixels, at one level of live.quality.
-function sizer(): { level(): string; set(level: string): void; fit(): void; changed(): boolean } {
+// `film` says whether the film's bar stands under the picture, which is then shown that much shorter.
+function sizer(film: () => boolean = () => false): { level(): string; set(level: string): void; fit(): void; changed(): boolean } {
   let level = startLevel()
   let dirty = true
+  let barred = false
   const fit = () => {
-    const ratio = Math.min(window.devicePixelRatio || 1, quality(level).pixelRatioCap)
-    const w = Math.min(window.innerWidth, (window.innerHeight * 16) / 9)
-    const h = (w * 9) / 16
-    canvas.style.width = `${w}px`
-    canvas.style.height = `${h}px`
-    const pw = Math.max(320, Math.min(1920, Math.round(w * ratio)))
-    app.engine.setSize(pw, Math.round((pw * 9) / 16))
+    barred = film()
+    const f = fitPicture(window.innerWidth, window.innerHeight, window.devicePixelRatio, quality(level).pixelRatioCap, barred)
+    canvas.style.width = `${f.cssWidth}px`
+    canvas.style.height = `${f.cssHeight}px`
+    app.engine.setSize(f.width, f.height)
     app.format = { id: 'live', width: app.engine.width, height: app.engine.height }
     dirty = true
   }
@@ -109,6 +108,7 @@ function sizer(): { level(): string; set(level: string): void; fit(): void; chan
     },
     fit,
     changed() {
+      if (film() !== barred) fit()
       const was = dirty
       dirty = false
       return was
@@ -172,7 +172,7 @@ function probe(): void {
 
 function play(first: PlayMode): void {
   let now: PlayMode = first
-  const size = sizer()
+  const size = sizer(() => now === 'film')
   const mouse = new MouseDriver()
   const rest = samples(64)
   const stepped = params.get('clock') === 'steps'
@@ -373,16 +373,7 @@ function play(first: PlayMode): void {
       before = ''
     },
     heading: () => headings[stepNow()]!,
-    messages() {
-      const out: string[] = []
-      if (!shown || now !== 'live') return out
-      for (const s of shown.list) {
-        if (s.kind !== 'text' || !s.words || !s.words.startsWith('copy:') || atRest.has(s.words)) continue
-        const text = words(s.words, s.text)
-        if (text && !out.includes(text)) out.push(text)
-      }
-      return out
-    },
+    messages: () => (shown && now === 'live' ? messagesOf(shown.list, atRest, words) : []),
     skipOffered: () => now === 'live' && stage.skipOffered,
     skip: () => mouse.pulse({ skip: true }),
     watchFilm() {
@@ -411,69 +402,7 @@ function play(first: PlayMode): void {
   }
   const picker = makeQualityPicker(qualityIds.map((id) => ({ id, minFps: quality(id).minFps })), levelIsFixed() ? { fixed: size.level() } : { start: size.level() })
 
-  const toPage = (e: PointerEvent) => {
-    const r = canvas.getBoundingClientRect()
-    mouse.pointer = { ...mouse.pointer, x: ((e.clientX - r.left) / r.width) * 1920, y: ((e.clientY - r.top) / r.height) * 1080 }
-    touched()
-  }
-  window.addEventListener('pointermove', toPage)
-  canvas.addEventListener('contextmenu', (e) => e.preventDefault())
-  canvas.addEventListener('pointerdown', (e) => {
-    toPage(e)
-    if (now !== 'live') return
-    if (e.button === 2) {
-      mouse.pointer = { ...mouse.pointer, flipRight: true }
-      mouse.pulse({ flipRight: true })
-    } else {
-      mouse.pointer = { ...mouse.pointer, down: true, flipLeft: true }
-      mouse.pulse({ down: true, flipLeft: true })
-    }
-  })
-  window.addEventListener('pointerup', (e) => {
-    if (e.button === 2) mouse.pointer = { ...mouse.pointer, flipRight: false }
-    else mouse.pointer = { ...mouse.pointer, down: false, flipLeft: false }
-  })
-  let tabbed = false
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Tab') tabbed = true
-  }, true)
-  window.addEventListener('pointerdown', () => {
-    tabbed = false
-    canvas.dataset.ring = 'false'
-  }, true)
-  canvas.addEventListener('focus', () => {
-    canvas.dataset.ring = String(tabbed)
-  })
-  canvas.addEventListener('blur', () => {
-    canvas.dataset.ring = 'false'
-  })
-  const onControl = (e: KeyboardEvent): boolean => {
-    const t = e.target
-    return t instanceof HTMLElement && t !== canvas && t !== document.body && t !== document.documentElement
-  }
-  window.addEventListener('keydown', (e) => {
-    touched()
-    if (now !== 'live' || e.ctrlKey || e.metaKey || e.altKey || onControl(e)) return
-    if (e.code === 'ShiftLeft') mouse.pointer = { ...mouse.pointer, flipLeft: true }
-    else if (e.code === 'ShiftRight') mouse.pointer = { ...mouse.pointer, flipRight: true }
-    else if (e.key === 'Tab') {
-      if (e.shiftKey || !api.typing!()) return
-      mouse.pulse({ key: 'Tab' })
-      e.preventDefault()
-    } else if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') {
-      mouse.pulse({ key: e.key })
-      if (e.key === ' ' || e.key === 'Backspace') e.preventDefault()
-    }
-  })
-  window.addEventListener('keyup', (e) => {
-    if (e.code === 'ShiftLeft') mouse.pointer = { ...mouse.pointer, flipLeft: false }
-    else if (e.code === 'ShiftRight') mouse.pointer = { ...mouse.pointer, flipRight: false }
-  })
-  canvas.addEventListener('wheel', (e) => {
-    e.preventDefault()
-    touched()
-    if (now === 'live') mouse.pulse({ wheel: e.deltaY })
-  }, { passive: false })
+  listenToVisitor({ window, document, canvas, mouse, live: () => now === 'live', typing: () => api.typing!(), touched })
 
   let still = 0
   let frame = 0

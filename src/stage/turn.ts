@@ -80,3 +80,33 @@ export function shiverBase<T extends { kind: string; x: number; y: number; w: nu
   }
   return base
 }
+
+// The wait before a page turn of the live site: a turn that is free to start is held while the next page is not ready, for at most `steps` steps, and the cursor taps its tip every `every` steps. Nobody sets it for a film, a still, a stepped run or a bot in the harness, so nothing waits there.
+export interface TurnWait {
+  ready(page: string): boolean
+  steps: number
+  every: number
+}
+
+// Seconds from one tap of the tip to the next: the tap itself lasts 0.42 s.
+export const WAIT_TAP_SECONDS = 0.6
+
+let wait: TurnWait | null = null
+const waited = new WeakMap<object, number>()
+
+export function setTurnWait(w: TurnWait | null): void {
+  wait = w
+}
+
+// Asked on every step a turn could start. True holds the turn for this step. `stage` names whose wait it is.
+export function holdsTurn(stage: object, next: string | undefined, tap: () => void): boolean {
+  if (!wait || next === undefined) return false
+  const n = waited.get(stage) ?? 0
+  if (n >= wait.steps || wait.ready(next)) {
+    waited.delete(stage)
+    return false
+  }
+  if (n % wait.every === 0) tap()
+  waited.set(stage, n + 1)
+  return true
+}

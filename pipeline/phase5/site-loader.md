@@ -1,0 +1,42 @@
+# site-loader: notes and decisions
+
+Branch `agent/site-loader`. A fact is MEASURED (the command and the number), STATED (read) or UNKNOWN.
+
+## What loaded on origin/main a5724fb9 (point 1)
+
+- MEASURED `npm run hostcheck`: dist 14.125 MB in 26 files; largest `bundle/index-*.js` 5.097 MB; first picture after 10 files, 6.218 MB stored, 2.089 MB sent with text compressed; build 2.4 s, 4.5 s with the install.
+- MEASURED `node pipeline/phase5/site-loader-measure.mjs --mbit 10` and `--mbit 1.5` (960x540): the first complete picture of the careers page after 6.64 s and 16.55 s. The first frame alone costs about 4.4 s: this VM draws in software.
+- MEASURED `node pipeline/phase5/site-loader-measure.mjs --mbit 1.5 --scale 8 --bot skipper --quality low --view 640x360 --until step3 --after 150 --name base-skipper-1.5`: after the first picture the only fetches of the visit are the pictures of the table (13 seen, 7.876 MB), all asked for at once when the careers page is left. Longest frame (median): careers 3.17 s (1.03), step 1 2.50 s (0.67), step 2 3.97 s (0.78), step 3 8.50 s (0.75).
+- The line is divided by 8 after the first picture (`--scale 8`) because software frames make a visit 8 to 14 times longer than a visitor's: megabytes per second of play stay those of the line named.
+- No page but step 3 fetches pictures. The six pages' code is one bundle (5.35 MB, 1.93 MB gzip).
+
+## Decisions
+
+1. `src/core/load.ts` is the loader. A picture belongs to a page (`picture(page, folder, file, ...)`). `src/table/real/assets.ts` keeps its three exports and hands every picture to it as a picture of `step3` (NEEDS patch).
+2. Live order: `showPage(flow, page, set)` is called from `App.loadLater()` with the page on show. It loads the page on show, the next one, and a page named in `EARLY` that many pages ahead (`step3: 2`, so the table starts on step 1). Every other page that was started is released.
+3. On the live site a picture is `ready()` only once it is on the graphics card. Pictures are decoded one at a time and put on the card one at a time with `renderer.initTexture`, each after an animation frame of its own, so no drawn frame carries a decode result or an upload, and no two uploads share a frame. The `ImageBitmap` is closed right after the upload.
+4. A capture, a still, a film frame and a stepped run load as before: `loadTable` before the first frame, all at once, kept, never released, `ready()` true once decoded. The texture is made with the same settings as before.
+5. Release: `texture.dispose()`, the entry back to idle. If the page is shown again (film mode of the site), it is fetched again, from the browser's cache.
+6. The limit I hold for a stall: no step of the loader may hold the main thread longer than 50 ms on a visitor's machine, three frames at 60 a second. The loader measures its own longest upload (`info().loading.longestUploadMs`).
+7. The view draws nothing of its own. A shape whose maker answers null is not drawn. Its part is `waiting` while its pictures are on their way (`waitsFor`), and on the list of stand-ins when nobody makes it or its pictures can no longer arrive (failed, or not in the asset set). A part whose pictures were never asked for (a unit test with no loading) is on the list too, as before.
+8. The cursor: all five makers are used without a null branch. A missing one throws with the part's name when the cursor is built, and `cursorUnmade()` names it in `standIns`.
+9. The wait: `holdsTurn` in `src/stage/turn.ts`, asked by one line in `Stage.advancePhase`. Only `App.start` sets it (`setTurnWait`), and only when the app is neither a capture nor stepped, so films, stills, stepped runs and the bots step exactly as before. The tap is the cursor's own reaction `tap` (0.42 s), every 0.6 s. A forced turn (film) is never held.
+10. The wait does not go through `StageOptions`, so `src/main.ts` is not touched for it. `main.ts` is not changed at all: its one loading line calls `app.loadLater()` as before.
+11. `.vercelignore`: each folder now starts with a slash. STATED (https://vercel.com/docs/deployments/vercel-ignore: it works like `.gitignore`): a line `audio/` with no leading slash matches a folder of that name at any depth, so it would have kept `public/audio/`, the site's sound, from the host.
+12. `tools/hostcheck.mjs`: "opens the careers page in live mode" asked for the flag `careers-page` to be reported, which a finished page never does. It now asks for no flag at all. It also serves the build from `/some/folder/` and lets the skipper play to step 1, says what the sound files weigh, and exits 2 when either fails.
+13. `tests/harness-parts.test.ts`: `cursor-body` left the list of flags the scan must find, because the only place that carried it as a flag was the stand-in path of the view that is gone. The test now holds that no file carries it.
+14. `HUB_ORANGE_LIFT` is removed (point 2d). MEASURED on `step2-dial`, hd draft, the median of a box of 30 by 30 px on the lit side of the hub (8 px left of and above its middle): approved (235, 123, 41); with the constant at 1.6 (248, 144, 102); without it (230, 136, 105). The shared orange is lifted in `src/shell/materials.ts` since Phase 4 (`ORANGE_LIFT`), so the hub was lifted twice. Without the constant the hub is as light as approved. With or without it the hub is paler than approved (blue 105 against 41): that is not the lift's to mend, and I do not touch the hub's other numbers. `src/pages/step2/NOTES.md` line 69 still names the constant: that file is not mine.
+15. `tools/hostcheck.mjs` reads `dist/audio/index.json` and says what the sound files it names weigh and what `dist/` weighs with all of them, so the limits can be read for the tree that is published (rule 11 of `src/audio/WIRING.md`: the files are copied in there).
+
+## Not done, and why
+
+- The code of the six pages is still one bundle fetched before the first picture (1.93 MB sent). Splitting it by page means dynamic imports in `src/pages/index.ts` and in everything that reads `pages` at start (`App.check`, the films), which is frozen for me.
+- What a page's makers put on the card besides fetched pictures (geometry, drawn textures) is released by the makers' own `drop`. I do not change them.
+- Warm-up of the next page's own objects (programs, geometry) before the turn. MEASURED in software: the longest frame of step 3 is 4.5 s against a median of 0.5 s (8.5 s on main, where the pictures were put on the card in the same frames). It is the first drawing of the table's objects, not a file.
+- One upload on a real graphics card: UNKNOWN. This VM has none.
+
+## What loads now (points 3 and 4), measured on 3c28d6f6
+
+- MEASURED `node pipeline/phase5/site-loader-measure.mjs --mbit 1.5 --scale 8 --bot skipper --quality low --view 640x360 --every 5 --seconds 1100 --until step3 --after 60 --around step3 --before 10 --behind 4 --name wait-skipper-1.5`: first picture 15.63 s, 10 files, 2.088 MB sent, no picture of the table among them. Careers page: 0 files fetched. The table is asked for when step 1 is on show. When the skipper is through step 2, 11 of 13 pictures are on the card: the turn is held (about 31 s of the VM, 4 s of play), the cursor taps, then step 3 is shown without its floor art, which comes in 25 s of the VM later (13 of 13). Longest frame (median): careers 2.98 s (1.02), step 1 1.93 s (0.68), step 2 2.37 s (0.67), step 3 4.50 s (0.50). `info().loading` at the end: 13 loaded, 13 on the card, 0 decoded sources kept, longest upload 1378 ms (software), longest decode 256 ms (off the main thread).
+- MEASURED clean clone: `git clone --branch agent/site-loader` into `/tmp/clean`, `npm ci` exit 0, `npm run build` exit 0, `dist/` 26 files, 14.807 MB of 10^6 bytes (14.119 MB as hostcheck counts, 2^20), `dist/audio/` only `index.json`.
+- MEASURED `npm run hostcheck` on 3c28d6f6: exit 0; dist 14.119 MB in 26 files; largest 5.092 MB; first picture after 10 files, 6.213 MB stored, 2.087 MB compressed; build 5.1 s with the install; opens the careers page in live mode with no flag; served from `/some/folder/` the skipper played to step 1 in 1.9 min; no sound file in `dist/audio/`.
