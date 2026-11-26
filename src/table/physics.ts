@@ -29,6 +29,7 @@ const LIFT_SHUT = 0.4
 const FOREVER = 1e9
 const BAT = { bounce: 0.3, grip: 0.4 }
 const KICK = { bumper: 18, sling: 12, face: 0.3 }
+const TAKES = 0.6
 export const EJECT = { firehouse: [1.4, 4] as V }
 const PULSE = { gap: Math.round(0.34 / DT), swell: Math.round(0.4 / DT), rest: Math.round(0.5 / DT), lead: Math.round(0.12 / DT) }
 const FLASHERS = new Set([...table.bumpers, ...table.slings, ...table.targets].map((x) => x.id))
@@ -499,7 +500,7 @@ export class Machine {
     for (const h of table.holds) {
       if (h.tier !== k || !this.on[h.id] || h.id === 'corporate.doors' || (h.kind !== 'scoop' && h.kind !== 'kicker')) continue
       const c = h.mouth ?? h.stand ?? h.c
-      if (Math.hypot(b.x - c[0], b.y - c[1]) > (h.kind === 'kicker' ? 0.6 : 0.45)) continue
+      if (Math.hypot(b.x - c[0], b.y - c[1]) > TAKES) continue
       this.hold(i, h.id, h.kind === 'kicker' ? 0.35 : 1)
       this.say(h.kind === 'kicker' ? 'kicker-in' : 'scoop-in', i, h.id)
       return

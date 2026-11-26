@@ -95,3 +95,13 @@ Tuning looks of this round (40 per part): counted below as they are spent. Take 
 
 - Take searches: 23 of 28.
 - Tuning looks, `table-cameras`: 12 first compares, 10 draft stills (rail-cam 4, last-save 2, youre-fired 2, table-wide 1, lobby-doors 1, reply-all 1; one more of each is the review still): 22 of 40. `table-layout` 0, `table-physics` 0, `director` 0, `acting-pinball` 0 beyond those.
+
+## Third push (about 04:52 UTC)
+
+- Physics: a scoop takes a ball whose centre is within 0.6 of its mouth (`TAKES`, was 0.45 for a scoop and 0.6 for a kicker). Why: the firehouse door is 1.3 balls wide between the bank's targets and the house's corner and a ball is 1.0; MEASURED by `out/work/trace.mjs` the shot from the right bat passed 0.35 to 0.7 beside the mouth's centre and bounced off the corner at (5.75, 3.8) or the bank's lowest target. This change of the physics buys three searches: 31 allowed.
+- Search 24 (`npm run take -- --allow 31 --from 15 --runs 80`, run in a second work tree while the stills rendered) kept run 40. The score of a run now takes 150 for each time the director brings the ball in and 250 for each hit beside a cut (were 60 and 400).
+- MEASURED `npm run take -- --check`: 10 of 10 events inside their beats; the director brought the ball in 0 times; 6 bumper hits in the Coffee beat (16.51 to 18.92 s); the inbox taken by a shot at 19.03 s; the firehouse by a shot at 27.07 s; ramp-roll 30.30 s by a flip; the save a flip at 35.74 s; the ball on a flipper at `last-save`; placed at 2 of 3 other keys (`tier-office`, `reply-all`; at `tier-street` the ball is at (5.3, 7.3) on its way up to the door, approved has it at (6.2, 4.2)); 0 hits within 0.15 s of a cut.
+- MEASURED in the whole `npm test`: Coffee 6 flashes in 4 s, most in one second 3, shortest gap 0.433 s; Reply All 8 in 7 s, most in one second 3, gap 0.400 s.
+- `ACT.lead` 0.3 to 0.1 (ball_keeper asked: the cursor's tail swung out through the ball's rim in the tier views).
+- Every key rendered once at `review`, hd (MEASURED, seconds of the whole command): table-wide 117, rail-cam 75, last-save 79, youre-fired 82, lobby-doors 76, reply-all 83, tier-corporate 86, tier-office 87, tier-street 75, loader-page 29. A draft still: 38 to 49 s.
+- Take searches: 24 of 31. Tuning looks, `table-cameras`: 32 of 40 (12 first compares, 10 draft stills, 10 review stills).
