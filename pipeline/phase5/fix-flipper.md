@@ -124,3 +124,10 @@ MEASURED, `node pipeline/phase5/fix-flipper-live.mjs --phase 3 --after 170 --jso
 - The window is lit for two reasons, both in the drawing and neither a touch: its mode is on since 15 s of the page (`MODES`, mode 0), and a window answers the ball's nearness (`near()` in `src/table/real/lights/levels.ts`, line 94: the level rises as the ball's edge comes within 0.55 balls of the window and is full with the ball deep over it).
 
 Reading: honest physics. What may read as a ball stuck to a bumper is a ball rolling over a flat lit window after a slow bounce off a slingshot post.
+
+## Checks before the last push (MEASURED, after merging main at 21:24)
+
+- The three stills with `--force`, then `cmp` against the ones of `origin/main` made before any work: byte equal, all three.
+- `npm run bots`: "bots: all clear". `npm test`: 140 files, 1764 tests passed.
+- `npm run determinism` and `npx tsc --noEmit -p .`: run last, their lines are in the last report.
+- Not run: `npm run take -- --check`, `npm run paths`, G12. Nothing under `src/` is changed on this branch.
