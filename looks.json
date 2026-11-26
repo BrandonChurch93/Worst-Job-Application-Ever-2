@@ -1,7 +1,7 @@
 {
   "folder": "lamp-fix",
-  "pushed": "2026-11-26T07:16:57.761Z",
-  "commit": "feeb20382cf99d267cba2b4422a2327ff2fb698a",
+  "pushed": "2026-11-26T07:37:48.341Z",
+  "commit": "ede2e252deef9a51f7251fa5db5fef9be5452e7d",
   "looks": [
     {
       "file": "look-1.jpg",
@@ -9,6 +9,20 @@
       "time": "2026-11-26T07:16:56.944Z",
       "by": "lamp-fix",
       "from": "out/work/looks/files/20261126071656-k3-reply-all-pair.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "tier-street, approved left, build right: roads forward, no grid, short lamp reflections, warm lane lamps in dark seats",
+      "time": "2026-11-26T07:37:47.174Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-a3-tier-street.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-office, approved left, build right: slate floor, fine grain, thinned clutter, flush frosted inserts",
+      "time": "2026-11-26T07:37:47.401Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-a3-tier-office.jpg"
     }
   ]
 }
