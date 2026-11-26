@@ -17,7 +17,7 @@ const UP = new THREE.Vector3(0, 0, 1)
 const ONE = new THREE.Vector3(1, 1, 1)
 const P = new THREE.Vector3()
 
-const PAPER: RGB = [0.8, 0.6, 0.1]
+const PAPER: RGB = [0.95, 0.8, 0.24]
 // The sheet: stuck along its top edge, hanging a hair off the steel, and one lower corner curled up off it.
 const paperAt = (u: number, v: number): V3 => {
   const hang = Math.max(0, v - 0.3) / 0.7
