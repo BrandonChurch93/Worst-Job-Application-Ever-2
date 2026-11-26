@@ -34,7 +34,7 @@ export function house(b: Buckets, x0: number, x1: number, yf: number, yb: number
   const o = 2.4
   const mx = (x0 + x1) / 2
   const my = (yf + yb) / 2
-  const glow = L.glow ?? [1, 0.7, 0.9, 0.55]
+  const glow = L.glow ?? [1.9, 1.2, 1.6, 1]
   let n = 0
   const look = { frame: L.trim, wall: L.wall, sill: L.trim, bars: [2, 2] as [number, number], depth: front.depth ?? 2 }
   walls(b, x0, x1, yf, yb, base, (side, width) => {
