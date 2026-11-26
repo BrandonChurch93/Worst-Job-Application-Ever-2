@@ -1,35 +1,35 @@
 {
   "folder": "careers-finish",
-  "pushed": "2026-11-26T12:12:23.718Z",
-  "commit": "e56b61fc290360f3ed391607c6464e0dd3af57f0",
+  "pushed": "2026-11-26T12:42:19.736Z",
+  "commit": "770c80a0c88ee2e068866133075629535bd05bce",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key marketing-top: approved on the left, this build on the right, review tier, with crops of cursor, medallion, heroButton, button, card.corner, card.glass, cardRule, tickerWindow, header",
-      "time": "2026-11-26T12:12:20.629Z",
+      "caption": "Still key-marketing-top-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T12:36:33.109Z",
       "by": "careers-finish",
-      "from": "out/work/compare/compare-marketing-top.jpg"
+      "from": "out/work/stills/key-marketing-top-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key marketing-top after the bow and the cards' fall: approved on the left, this build on the right, review tier",
-      "time": "2026-11-26T12:12:22.086Z",
+      "caption": "marketing-top at review on 770c80a0: approved above, mine below",
+      "time": "2026-11-26T12:42:17.917Z",
       "by": "careers-finish",
-      "from": "out/work/compare/compare-marketing-top.jpg"
+      "from": "out/work/h/final-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The row of cards and the ticker: approved above, this build below; the cards darken toward the right as approved",
-      "time": "2026-11-26T12:12:22.343Z",
+      "caption": "The medal: approved, at the start, now (flange in mid grey with a thin lip, far side of the face duller)",
+      "time": "2026-11-26T12:42:18.154Z",
       "by": "careers-finish",
-      "from": "out/work/h/pair-row.jpg"
+      "from": "out/work/h/pair-medal.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Medal: approved, before (9334a125), after: the bow of light fades with no hard edge",
-      "time": "2026-11-26T12:12:22.578Z",
+      "caption": "Far corners of the three cards at 4 times: approved left, mine right (wider far rim, the bow of light in the corner)",
+      "time": "2026-11-26T12:42:18.448Z",
       "by": "careers-finish",
-      "from": "out/work/h/pair-medal.jpg"
+      "from": "out/work/h/far-edges.jpg"
     }
   ]
 }
