@@ -15,7 +15,7 @@ import { INK, ink } from './stampInk'
 
 const q = (v: number): number => Math.round(v * 4) / 4
 const WHITE: [number, number, number] = [1, 1, 1]
-const PRINT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 0.9, a: 1, c: WHITE }, { d: 1.7, a: 0.5, c: WHITE }] }
+const PRINT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 1.7, a: 1, c: WHITE }, { d: 2.4, a: 0.5, c: WHITE }] }
 const FRAME = { r: 12, inner: 12, thin: 2.6, feather: 0.7 }
 const PAD = { in: 2.2, foam: 1, tall: 11, gap: 3.4 }
 
@@ -119,7 +119,7 @@ function inked(position: ArrayLike<number>, colour: ArrayLike<number>, index: Ar
   return g
 }
 
-const TWICE = { dx: 1.7, dy: -1.1, ink: 0.2 }
+const TWICE = { dx: 1.9, dy: -1.2, ink: 0.26 }
 let faintMade: THREE.Material | null = null
 
 // The block rocked as it left, so the mark is printed twice: once full, and once faint a little to one side.

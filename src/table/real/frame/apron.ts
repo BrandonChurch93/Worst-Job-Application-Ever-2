@@ -7,7 +7,7 @@ import { Screws, TONE, aluOf, clearOf, mesh, paintOf, screwOf, shade } from './m
 
 const SLAB = { height: 16, bevel: 3.2, corner: 10, inlay: 9, line: 1.5, grain: 0.03 }
 // The frame round the apron: the two rails run on from the street tier and a slim rail closes them in front. `low` is how high they stand where the apron lies at the page's own height.
-const EDGE = { near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7 }
+const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7 }
 const WALL: [number, number, number] = [0.2, 0.208, 0.22]
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
 
@@ -19,12 +19,14 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   const screws = new Screws()
   const o = new THREE.Group()
   o.name = `table-frame.${z.id}`
+  // The page's fields of the apron are laid on its plate, whether the page gives their height from its own surface or from the apron's floor.
+  const laid = (v: number): number => (z.floor < 0 && v >= -z.floor - 0.01 ? v + z.floor : v)
   const boxOf = (id: string): { x0: number; x1: number; y0: number; y1: number; z0: number; z1: number } | null => {
     const s = ctx.byId.get(id)
     if (!s) return null
     const a = local(z, s.x, s.y + s.h, s.z0)
     const b = local(z, s.x + s.w, s.y, s.z1)
-    return { x0: a[0], x1: b[0], y0: a[1], y1: b[1], z0: a[2], z1: b[2] }
+    return { x0: a[0], x1: b[0], y0: a[1], y1: b[1], z0: laid(a[2]), z1: laid(b[2]) }
   }
   const card = boxOf('apron-card')
   // The apron lies in the well: the page stands `H` over it. The rails keep their land at the page's height.
@@ -46,6 +48,11 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     const o: V2[] = [[x0, 0], [x0, H - c], [x0 + c, H], [x1 - c, H], [x1, H - c], [x1, 0]]
     A.prism(o, [0, yB + EDGE.near], [0, yT], tone(o))
     for (const t of [0.3, 0.8]) screws.add((x0 + x1) / 2, yB + EDGE.near + (yT - yB - EDGE.near) * t, H, 0.9, x0 + t)
+  }
+  if (z.floor < 0) {
+    // Outside the rails the page goes on to its own edge, as beside the tiers.
+    C.box(X(0), xb - EDGE.gap, yB, yT, 0, H, TONE.ceramic, { along: [0, 1, 0] })
+    C.box(xe + EDGE.gap, X(20), yB, yT, 0, H, TONE.ceramic, { along: [0, 1, 0] })
   }
   side(xb, xa)
   side(xc, xe)
@@ -81,7 +88,7 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     const h = plate.h / 2
     const t = plate.z1 - plate.z0
     A.slab(roundedLoop(p[0] - w - 3, p[0] + w + 3, p[1] - h - 3, p[1] + h + 3, 7, 4), 0, t - 1.2, TONE.brass, { bevel: 1 })
-    P.slab(roundedLoop(p[0] - w, p[0] + w, p[1] - h, p[1] + h, 5, 4), 0, t, TONE.enamel, { bevel: 1.2 })
+    P.slab(roundedLoop(p[0] - w, p[0] + w, p[1] - h, p[1] + h, 5, 4), 0, t, TONE.paper, { bevel: 1.2 })
     // Two grey blocks carry the plate either side of the drain's mouth, each with a screw.
     for (const side of [-1, 1]) {
       const bx = p[0] + side * (w - 13)
@@ -101,7 +108,10 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     for (const sx of [-1, 1]) for (const sy of [-1, 1]) screws.add(p[0] + sx * (sw + b / 2), cy + sy * (sh + b / 2), 5, 0.5, sx + sy * 2)
   }
   if (C.vertices > 0) {
-    o.add(mesh(C, paintOf(z, 'slab', SLAB.grain), `table-frame.ceramic.${z.id}`, { cast: true }))
+    const plates = mesh(C, paintOf(z, 'slab', SLAB.grain), `table-frame.ceramic.${z.id}`, { cast: true })
+    // In the well the page's light does not reach the plates: the street's lamps do, through the lift of the pose.
+    if (z.floor < 0) plates.receiveShadow = false
+    o.add(plates)
   }
   if (A.vertices > 0) o.add(mesh(A, aluOf(z), `table-frame.metal.${z.id}`))
   if (P.vertices > 0) o.add(mesh(P, paintOf(z), `table-frame.paint.${z.id}`))
