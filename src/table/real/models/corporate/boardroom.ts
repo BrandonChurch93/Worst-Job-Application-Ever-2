@@ -4,6 +4,7 @@ import { Random } from '../../../../core/random'
 import { table } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
 import { Geo, roundedLoop, type RGB, type V2 } from './geo'
+import { NOTE } from './notes'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, shade } from './mats'
 
 const SEED = 20261125
@@ -13,7 +14,7 @@ const HIDE = hex(0x0d0c0b)
 const flatStreak = (g: Geo, x0: number, x1: number, y0: number, y1: number, zz: number, col: RGB): void => {
   g.face([[x0, y0, zz], [x1, y0, zz], [x1, y1, zz], [x0, y1, zz]], [0, 0, 1], [0, 1, 0], col)
 }
-export const ROOM = { top: 50, slab: 4.5, seat: 31, back: 84, chair: 23, places: 6 }
+export const ROOM = { top: 50, slab: 4.5, seat: 31, back: 84, chair: 23, pitch: 24, most: 8 }
 
 // One chair, facing +x, its post on the origin.
 function chair(): Geo {
@@ -59,8 +60,18 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
   const cy = (a[1] + b[1]) / 2
   const hw = (b[0] - a[0]) / 2
   const hd = (b[1] - a[1]) / 2
-  const tw = hw - ROOM.chair - 7
-  const tl = hd - 7
+  // The notes stand at the foot of the room and lean back into it: the table ends short of them.
+  const reach = NOTE.leaf * Math.sin(NOTE.rest + 0.1) + 4
+  const lean = table.targets.filter((t) => t.tier === z.tier && t.id.startsWith('corporate.note')).map((t) => localBalls(z, t.box[0] + t.box[2] / 2, t.box[1] + t.box[3] / 2)).filter((p) => p[0] > a[0] - 10 && p[0] < b[0] + 10 && p[1] < cy)
+  const south = Math.max(-hd + 7, ...lean.map((p) => p[1] - cy + reach))
+  const ex = hw
+  const ey = (hd - south + 7) / 2
+  const ty = (hd + south - 7) / 2
+  // The table lies along the longer way of the room, and the chairs follow it.
+  const rot = ex > ey ? Math.PI / 2 : 0
+  const tl = Math.max(ex, ey) - 7
+  const tw = Math.min(ex, ey) - ROOM.chair - 7
+  const places = Math.max(2, Math.min(ROOM.most, Math.floor((tl * 2 - 22) / ROOM.pitch)))
   moved(S, place(cx, cy, 0), () => {
     // The floor of the room: a dark carpet in a brass edge.
     fin(S, FINISH.brushed, () => S.slab(roundedLoop(-hw, hw, -hd, hd, 5, 3), 0, 2.2, TONE.brassDark, { bevel: 0.7 }))
@@ -71,6 +82,8 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
         S.box(-hw + 6, hw - 6, y - 0.5, y + 0.5, 2.9, 2.98, hex(0x0c1422))
       }
     })
+  })
+  moved(S, place(cx, cy + ty, 0, rot), () => {
     // The table: two pedestals, an apron and a top of dark wood with a light line let into it.
     fin(S, FINISH.satin, () => {
       for (const s of [-1, 1]) {
@@ -107,7 +120,7 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
       }
     })
   })
-  moved(D, place(cx, cy, 0), () => {
+  moved(D, place(cx, cy + ty, 0, rot), () => {
     const T = ROOM.top + 0.14
     // The speaker phone: three arms round a dark dome with a ring of holes.
     moved(D, place(0, 0, T, 0.35), () => {
@@ -127,19 +140,21 @@ export function buildBoardroom(z: Zone, _ctx: RealContext): THREE.Object3D {
   })
   o.add(mesh(D, mats.solid, `boardroom.places.${z.id}`, { fine: true }))
   o.add(mesh(S, mats.solid, `boardroom.${z.id}`, { cast: true }))
-  // Twelve empty chairs, six a side, no two quite in line.
-  const chairs = new THREE.InstancedMesh(chair().done(), mats.solid, ROOM.places * 2)
+  // Empty chairs down both long sides, no two quite in line.
+  const chairs = new THREE.InstancedMesh(chair().done(), mats.solid, places * 2)
   chairs.name = `boardroom.chairs.${z.id}`
   chairs.castShadow = true
   chairs.receiveShadow = true
-  const pitch = (tl * 2 - 22) / ROOM.places
+  const pitch = (tl * 2 - 22) / places
+  const cr = Math.cos(rot)
+  const sr = Math.sin(rot)
   const M = new THREE.Matrix4()
   let i = 0
   for (const s of [-1, 1]) {
-    for (let k = 0; k < ROOM.places; k++) {
-      const y = cy - tl + 13 + pitch * (k + 0.5) + rnd.range(-2, 2)
-      const x = cx + s * (tw + 9.5 + rnd.range(-2, 1))
-      chairs.setMatrixAt(i++, M.copy(place(x, y, 2.9, (s > 0 ? Math.PI : 0) + rnd.range(-0.3, 0.3))).scale(SCALE))
+    for (let k = 0; k < places; k++) {
+      const ly = -tl + 11 + pitch * (k + 0.5) + rnd.range(-1.2, 1.2)
+      const lx = s * (tw + 9.5 + rnd.range(-2, 1))
+      chairs.setMatrixAt(i++, M.copy(place(cx + lx * cr - ly * sr, cy + ty + lx * sr + ly * cr, 2.9, rot + (s > 0 ? Math.PI : 0) + rnd.range(-0.3, 0.3))).scale(SCALE))
     }
   }
   chairs.instanceMatrix.needsUpdate = true

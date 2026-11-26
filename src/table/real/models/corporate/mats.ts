@@ -90,7 +90,7 @@ const made = new Map<string, Mats>()
 export function matsOf(z: Zone): Mats {
   const have = made.get(z.id)
   if (have) return have
-  const solid = lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes(), specularIntensityMap: finishes() })), z, { panel: 0.3, horizon: 2.2, lamps: 2.2 }), z)
+  const solid = lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes(), specularIntensityMap: finishes() })), z, { panel: 0.3, horizon: 2.2, lamps: 2.2, sky: 0.6 }), z)
   solid.name = `corporate.solid.${z.id}`
   // What gives light: its own colour, vertex by vertex, is the light it gives, at the level of its light group.
   const glow = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes(), emissive: new THREE.Color(...colours.CORPORATE_WINDOW), emissiveIntensity: 0 }))

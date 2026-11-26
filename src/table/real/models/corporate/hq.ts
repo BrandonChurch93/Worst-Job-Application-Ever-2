@@ -251,18 +251,28 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
         S.box(c, c + 6, F - 3, F + 6, 0, pz0, shade(PORTAL, 0.8), { bevel: 0.8 })
       }
       S.box(-dw, dw, F - 6, F + 6, dh - 4.6, pz0, PORTAL, { bottom: true })
+      // What polished brass mirrors: upright streaks of the room, no two of one tone.
+      const gleam = new Random(SEED, 'corporate.hq.brass')
+      for (const s of [-1, 1]) {
+        const a = s > 0 ? dw : -dw - 11
+        for (let x = a + 1.2; x < a + 9.4;) {
+          const w = gleam.range(0.5, 2.2)
+          S.face([[x, F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, 2.4], [Math.min(a + 9.8, x + w), F + 6.12, pz0 - 0.5], [x, F + 6.12, pz0 - 0.5]], [0, 1, 0], [0, 0, 1], shade(PORTAL, gleam.next() < 0.3 ? gleam.range(1.5, 2.3) : gleam.range(0.35, 0.9)))
+          x += w + gleam.range(0, 1.4)
+        }
+      }
       S.box(-dw - 1, dw + 1, F - 14, F + 6, 0, 2, PORTAL, { bevel: 0.6 })
     })
     fin(S, FINISH.matte, () => S.box(-3, 3, F - 9, F - 5, 2, 5, TONE.rubber, { bevel: 1 }))
 
     // The hall: a pale stone floor with a dark border and a brass round under the open middle, a runner in from the doors, columns, a desk and three lifts in the back wall.
     fin(G, FINISH.stone, () => {
-      flat(G, room, 6.2, 1, warm(0.4))
+      flat(G, room, 6.2, 1, warm(0.3))
       level(G, inset(room, 7), inset(room, 9.5), 6.3, 1, warm(0.16))
       G.lathe([[30, 0], [30, 0.3], [0, 0.3]], mid[0], mid[1], 28, (k) => (k === 0 ? warm(0.2) : warm(0.62)), 6.2)
       G.lathe([[23, 0], [23, 0.2], [0, 0.2]], mid[0], mid[1], 28, [COOL[0] * 0.5, COOL[1] * 0.36, COOL[2] * 0.16], 6.5)
       G.lathe([[17, 0], [17, 0.2], [0, 0.2]], mid[0], mid[1], 28, warm(0.7), 6.7)
-      G.face([[room.x0, room.y1, 6], [room.x1, room.y1, 6], [room.x1, room.y1, pz0], [room.x0, room.y1, pz0]], [0, -1, 0], [1, 0, 0], warm(0.36))
+      G.face([[room.x0, room.y1, 6], [room.x1, room.y1, 6], [room.x1, room.y1, pz0], [room.x0, room.y1, pz0]], [0, -1, 0], [1, 0, 0], warm(0.24))
       for (const s of [-1, 0, 1]) {
         const x = s * 46
         G.face([[x - 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 104], [x - 15, room.y1 - 0.4, 104]], [0, -1, 0], [1, 0, 0], [0.26, 0.19, 0.09])

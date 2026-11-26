@@ -5,7 +5,7 @@ import { localBalls, type Zone } from '../../zone'
 import { Geo, type RGB, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, screw, shade } from './mats'
 
-export const NOTE = { leaf: 42, wide: 26, paper: 34, hinge: 4, lean: 0.3, rest: 1.05 }
+export const NOTE = { leaf: 42, wide: 26, paper: 34, hinge: 4, lean: 0.3, rest: 1.12 }
 
 interface Built { leaves: THREE.InstancedMesh; tick: THREE.Mesh; at: { id: string; p: V3; turn: number }[] }
 const built = new WeakMap<THREE.Object3D, Built>()
@@ -17,7 +17,7 @@ const UP = new THREE.Vector3(0, 0, 1)
 const ONE = new THREE.Vector3(1, 1, 1)
 const P = new THREE.Vector3()
 
-const PAPER: RGB = [0.95, 0.8, 0.24]
+const PAPER: RGB = [2.5, 2.25, 1.1]
 // The sheet: stuck along its top edge, hanging a hair off the steel, and one lower corner curled up off it.
 const paperAt = (u: number, v: number): V3 => {
   const hang = Math.max(0, v - 0.3) / 0.7
@@ -65,7 +65,6 @@ export function buildNotes(z: Zone, _ctx: RealContext): THREE.Object3D {
   })
   const leaves = new THREE.InstancedMesh(leaf().done(), mats.solid, Math.max(1, at.length))
   leaves.name = `notes.leaves.${z.id}`
-  leaves.castShadow = true
   leaves.receiveShadow = true
   leaves.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
   leaves.count = at.length
