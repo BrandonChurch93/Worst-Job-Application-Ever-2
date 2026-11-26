@@ -30,6 +30,7 @@ interface State {
   ty: number
   lx: number
   ly: number
+  air: [number, number, number] | null
   flat: boolean
   peeled: boolean
   jolt: number
@@ -59,7 +60,7 @@ export const secondsOf = (value: string): number => {
 export const spun = (value: string, u: number): string => value.replace(/\d/g, (d) => String(Math.ceil(Number(d) * (1 - clamp(u)))))
 
 const fresh = (mode: Mode): State => ({
-  n: 0, phase: 'wait', at: 0, lt: -1, acted: 0, mode, music: false, landed: false, loomed: false, stamped: false, held: false, pull: -1, fx: 0, fy: 0, tx: 0, ty: 0, lx: 0, ly: 0, flat: false, peeled: false, jolt: -1, your: 0, self: -1, shared: false, done: false, cue: 0, skip: false
+  n: 0, phase: 'wait', at: 0, lt: -1, acted: 0, mode, music: false, landed: false, loomed: false, stamped: false, held: false, pull: -1, fx: 0, fy: 0, tx: 0, ty: 0, lx: 0, ly: 0, air: null, flat: false, peeled: false, jolt: -1, your: 0, self: -1, shared: false, done: false, cue: 0, skip: false
 })
 
 function carry(over: Over, root: LayoutNode, m: Move): void {
@@ -152,10 +153,9 @@ export function makePage(): PageLogic {
 
   const yourTime = (io: StepIo): number => (s.mode === 'film' ? filmSeconds() : (io.elapsed ?? io.time))
 
-  function stampPose(): { cx: number; cy: number; z: number; rot: number; tilt?: number; lay?: number } | null {
+  function stampPose(p: number = since()): { cx: number; cy: number; z: number; rot: number; tilt?: number; lay?: number } | null {
     if (s.phase === 'wait') return null
     const rest = { cx: places.rest.cx, cy: places.rest.cy, z: 0, rot: LIE.rot, lay: 1 }
-    const p = since()
     const high = STAMP.high
     const carryZ = HIT.carry
     const on = heights.paper
@@ -182,7 +182,9 @@ export function makePage(): PageLogic {
     }
     if (p < AT.lower[1]) {
       const u = span(p, AT.lower)
-      return { ...rest, z: carryZ * (1 - u * u), lay: 0.35 + 0.65 * smooth(u) }
+      const v = span(p, AT.shake)
+      const w = v < 1 ? Math.sin(3 * Math.PI * v) * (1 - v) : 0
+      return { ...rest, cx: rest.cx + STUCK.shakeX * w, rot: LIE.rot + STUCK.shakeRot * w, z: carryZ * (1 - u * u), lay: 0.35 + 0.65 * smooth(u) }
     }
     return rest
   }
@@ -236,6 +238,13 @@ export function makePage(): PageLogic {
         const reach = HIT.dustReach
         bars.push({ id: 'stamp-dust', part: 'stamp', kind: 'box', role: 'dust', x: mark.cx - mark.blockW / 2 - reach, y: mark.cy - mark.blockH / 2 - reach, w: mark.blockW + reach * 2, h: mark.blockH + reach * 2, z0: heights.paper, z1: heights.paper + 0.05, tone: 'paper', rot: MARK_ROT, v: [age] })
       }
+    }
+    if (s.air && s.air[2] > 1) {
+      const z = s.air[2]
+      const r = STUCK.shade + z * 0.16
+      const cx = s.air[0] + 20 + z * 0.44
+      const cy = s.air[1] + 34 + z * 0.4
+      bars.push({ id: 'cursor-fall-shade', part: 'stamp', kind: 'box', role: 'fallShade', x: cx - r, y: cy - r, w: r * 2, h: r * 2, z0: 1, z1: 1.05, tone: 'paper', rot: 0, v: [STUCK.shadeDark * Math.min(1, z / 14) * (1 - 0.45 * Math.min(1, z / 160))] })
     }
     if (s.stamped) {
       states.push('stamped')
@@ -382,6 +391,7 @@ export function makePage(): PageLogic {
       if (s.held && s.stamped && s.phase !== 'reset') {
         const p = since()
         const pose = stampPose()
+        s.air = null
         if (p >= AT.fling[1] || !pose) {
           s.held = false
           cursor.place(drop.x, drop.y, 0)
@@ -389,11 +399,22 @@ export function makePage(): PageLogic {
           cursor.release()
         } else if (p < AT.lift[0]) cursor.place(s.tx, s.ty, heights.paper)
         else {
-          const k = grown(pose.z - heights.paper)
-          const at = turned({ cx: pose.cx, cy: pose.cy }, s.lx * k, s.ly * k + STUCK.hang * (pose.lay ?? 0), pose.rot)
+          const from = p < AT.fling[0] ? pose : (stampPose(AT.fling[0]) ?? pose)
+          const k = grown(from.z - heights.paper)
+          const at = turned({ cx: from.cx, cy: from.cy }, s.lx * k, s.ly * k + STUCK.hang * (from.lay ?? 0), from.rot)
           const u = span(p, AT.fling)
-          const e = u * (2 - u)
-          cursor.place(at.x + (drop.x - at.x) * e, at.y + (drop.y - at.y) * e, pose.z * (1 - u * u) + STUCK.toss * 4 * u * (1 - u))
+          const off = out3(Math.min(1, u / STUCK.off))
+          const fall = Math.min(1, Math.max(0, (u - STUCK.off) / (STUCK.fall - STUCK.off)))
+          const skid = smooth(Math.max(0, (u - STUCK.fall) / (1 - STUCK.fall)))
+          const swing = Math.sin(2 * Math.PI * STUCK.swings * fall) * (1 - 0.6 * fall)
+          const short = { x: drop.x - STUCK.skid, y: drop.y - STUCK.skid * 0.3 }
+          const to: [number, number, number] = [
+            at.x + (short.x - at.x) * off + STUCK.sway * swing + STUCK.skid * skid,
+            at.y + (short.y - at.y) * off - STUCK.sway * 0.3 * Math.abs(swing) + STUCK.skid * 0.3 * skid,
+            (from.z + STUCK.up * off) * (1 - fall) + STUCK.float * Math.abs(swing) * (1 - fall)
+          ]
+          cursor.place(to[0], to[1], to[2])
+          if (p >= AT.fling[0]) s.air = to
         }
       }
       if (s.flat) {

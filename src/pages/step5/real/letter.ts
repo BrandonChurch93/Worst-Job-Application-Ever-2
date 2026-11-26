@@ -15,7 +15,7 @@ const CURL: [number, number, number, number][] = [[1, 1, 5.6, 104], [1, 0, 1.8, 
 const SHADE = { rings: [[-14, 0.5], [0, 0.5], [1.4, 0.38], [3.6, 0.27], [7, 0.17], [12, 0.1], [18, 0.05], [26, 0.022], [36, 0]] as [number, number][], round: [[-10, 0.1], [0, 0.1], [1.2, 0.055], [3, 0.02], [5.5, 0]] as [number, number][], dx: 6.5, dy: -8, colour: 0x33261a }
 const AIR = { glow: 0.16, full: 140, rest: 0.04 }
 // Struck in its lower right corner, the sheet kicks: the three far corners leave the page for a frame.
-const KICK: [number, number, number, number][] = [[0, 0, 8, 92], [1, 0, 7, 100], [0, 1, 7, 100]]
+const KICK: [number, number, number, number][] = [[0, 0, 15, 124], [1, 0, 13, 130], [0, 1, 13, 130]]
 
 export function kickAt(u: number, v: number, w: number, h: number): number {
   let z = 0

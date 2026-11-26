@@ -13,7 +13,7 @@ export interface Cue { at: number; act?: Acting; react?: Reaction; aim?: number 
 // Seen from straight above a fall has no travel across the picture, so the block is drawn larger the higher it is: `grow` more at `growOver` px over the sheet.
 export const HIT = {
   windSeconds: 0.24, windRise: 30, windTilt: -0.13, fallPower: 1.6, over: 9, give: 2.4, giveSeconds: 0.05, bulge: 5, rock: 0.022, rockSeconds: 0.07, rockRate: 60, landRock: 0.03, dustSeconds: 0.5, dustReach: 90,
-  grow: 0.38, growOver: 150, pinch: 0.02, back: { x: -40, y: -66 }, rebound: 9, reboundAt: 0.012, reboundSeconds: 0.05, sheetHop: 5, sheetSeconds: 0.066, carry: 124, shake: 13
+  grow: 0.38, growOver: 150, pinch: 0.02, back: { x: -40, y: -66 }, rebound: 20, reboundAt: 0.03, reboundSeconds: 0.1, sheetHop: 5, sheetSeconds: 0.14, carry: 124, shake: 13
 } as const
 
 export const grown = (over: number): number => 1 + HIT.grow * Math.min(1.2, Math.max(0, over / HIT.growOver))
@@ -22,7 +22,7 @@ export const hopAt = (age: number): number => (age <= 0 || age >= HIT.sheetSecon
 
 // Struck flat, the cursor sticks to the rubber with its tail out from under the block's edge, rises with the block and is carried off with it.
 // As the block slows to be set down the cursor comes off the rubber and flies on, and lands flat right of the block: `right` of the block's edge and `down` from its middle, with a `toss` on the way. `heal` is the seconds it then lies flat, peels and fills.
-export const STUCK = { right: 118, down: 44, toss: 64, heal: 1.27, hang: 110 } as const
+export const STUCK = { right: 79, down: 36, heal: 0.78, hang: 110, fall: 0.86, off: 0.18, up: 26, sway: 38, swings: 2.5, float: 10, skid: 18, shakeRot: 0.17, shakeX: 30, shade: 30, shadeDark: 0.62 } as const
 
 // Set down, the stamp is laid on its side, grip away from the reader, a little off square: `turn` about its long axis, `rot` on the page.
 export const LIE = { turn: Math.PI / 2, rot: -0.17 } as const
@@ -32,7 +32,7 @@ export const ARRIVE = { look: 0.52, there: 0.86 } as const
 // The letter: shocked, then proud, then scared. It starts as the counter spins, does its double take as the sheet lands and holds a tilt toward it; puffs up and holds; dusts itself off; struts to the sheet's corner; and the shadow is on it.
 export const HOPE = { spin: 2.03, tilt: 3.06, lean: -0.36, proud: 3.5, dust: 3.94, walk: [4.44, 4.8] } as const
 // The button: the word is beaten. Whole again it looks at the one button there is, drags itself there, leans back from it for 0.3 s, rises and drives its tip into it.
-export const GIVE = { look: 7.86, walk: [8.28, 8.9], strike: 9.2 } as const
+export const GIVE = { look: 7.88, walk: [8.29, 8.9], strike: 9.2 } as const
 
 export const CUES: Cue[] = [
   { at: HOPE.spin, react: 'flinch' },

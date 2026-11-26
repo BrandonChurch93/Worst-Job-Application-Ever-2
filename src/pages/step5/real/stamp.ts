@@ -271,6 +271,31 @@ function blow(mesh: THREE.Mesh, age: number): void {
   ;(mesh.material as THREE.MeshBasicMaterial).opacity = left * left * Math.min(1, age / 0.02)
 }
 
+const FALL = { colour: 0x2e231a, fan: 28, core: 0.45 }
+
+function fallShadeOf(): THREE.Mesh {
+  const pos: number[] = [0, 0, 0]
+  const col: number[] = [1, 1, 1, 1]
+  const idx: number[] = []
+  for (let k = 0; k < FALL.fan; k++) {
+    const a = (k / FALL.fan) * Math.PI * 2
+    pos.push(Math.cos(a) * FALL.core, Math.sin(a) * FALL.core * 1.25, 0, Math.cos(a), Math.sin(a) * 1.25, 0)
+    col.push(1, 1, 1, 0.8, 1, 1, 1, 0)
+    const i = 1 + k * 2
+    const j = 1 + ((k + 1) % FALL.fan) * 2
+    idx.push(0, i, j, i, i + 1, j, j, i + 1, j + 1)
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  g.setIndex(idx)
+  const mesh = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: new THREE.Color().setHex(FALL.colour, THREE.SRGBColorSpace), vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -3 }))
+  mesh.castShadow = false
+  mesh.frustumCulled = false
+  mesh.userData.motes = []
+  return mesh
+}
+
 export const stamp: PartMaker | null = {
   key(s) {
     if (s.id === 'letter-stamp') return `word:${s.type!.font}:${s.type!.px}:${q(s.w)}:${q(s.h)}:${words(s.words!, s.text)}`
@@ -278,6 +303,7 @@ export const stamp: PartMaker | null = {
     if (s.id === 'letter-mark-top') return `frame:${q(s.w)}:${q(s.h)}`
     if (s.id.startsWith('letter-mark-')) return ''
     if (s.role === 'dust') return 'dust'
+    if (s.role === 'fallShade') return 'fallShade'
     if (s.role === 'stampBlock') return `block:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
     if (s.role === 'stampGrip') return `grip:${q(s.w)}:${q(s.h)}:${q(s.z1 - s.z0)}`
     return null
@@ -286,12 +312,18 @@ export const stamp: PartMaker | null = {
     if (s.id === 'letter-stamp') return wordOf(s)
     if (s.id === 'letter-mark-top') return frameOf()
     if (s.role === 'dust') return dustOf()
+    if (s.role === 'fallShade') return fallShadeOf()
     if (s.role === 'stampGrip') return gripOf(s)
     return blockOf(s)
   },
   pose(o, s, ctx) {
     if (s.role === 'dust') {
       blow(o as THREE.Mesh, s.v?.[0] ?? 0)
+      return
+    }
+    if (s.role === 'fallShade') {
+      o.scale.set(s.w / 2, s.w / 2, 1)
+      ;((o as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = s.v?.[0] ?? 0
       return
     }
     if (s.role !== 'stampBlock' && s.role !== 'stampGrip') return

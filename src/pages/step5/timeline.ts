@@ -20,10 +20,12 @@ export const AT = {
   loom: f(88),
   pullSeconds: 0.3,
   lift: [f(111), f(119)],
-  carry: [f(119), f(132)],
-  lower: [f(132), f(139)],
-  // The flat cursor leaves the rubber as the block slows, and lands beside where the block is set down.
-  fling: [f(126), f(137)],
+  carry: [f(119), f(128)],
+  // Over its place the block gives one sharp shake.
+  shake: [f(128), f(133)],
+  lower: [f(133), f(140)],
+  // In the middle of the shake the flat cursor is thrown off the rubber, clear of the block. The block is set down; the cursor comes down after it, swaying as a thin flat thing does, and ends with a short skid.
+  fling: [f(130), f(152)],
   // The cursor's pride in the letter: the seconds of the letter's phase at which it puffs up.
   proud: 1.5,
   letterSeconds: 4,

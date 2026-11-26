@@ -25,9 +25,9 @@ const SHOWN = ['decided', 'link', 'shared']
 export const WAIT = { top: TOP + 52, h: 528 }
 export const PANEL_H = 322
 // The mark lies just inside the lower right corner of the sheet: the insets of its turned outline from the sheet's right and lower edges.
-export const MARK_AT = { right: 39, bottom: 30 }
+export const MARK_AT = { right: 46, bottom: 42 }
 // Where the stamp lies at rest: the middle of its block from the right column's left edge and from the columns' lower line.
-export const REST_AT = { x: 196, up: 138 }
+export const REST_AT = { x: 200, up: 122 }
 export const MARK_ROT = -0.27
 // The sheet lies square on the page, so its top edge is on the panel's line and its paragraphs share one left edge.
 export const SHEET_ROT = 0
@@ -37,7 +37,7 @@ const T = {
   waitValue: { font: 'inter-display-600', px: 112, align: 'centre' },
   letterTitle: { font: 'inter-display-600', px: 40 },
   letterBody: { font: 'inter-400', px: 24, wrap: COLUMN - 152, lead: 38 },
-  mark: { font: 'inter-display-600', px: 62, align: 'centre' },
+  mark: { font: 'inter-display-600', px: 68, align: 'centre' },
   panelTitle: { font: 'inter-600', px: 28 },
   readout: { font: 'inter-display-600', px: 58 },
   caption: { font: 'inter-400', px: 20 },
@@ -122,8 +122,8 @@ export function markOf(): Mark {
   const said = block(T.mark.font, words('copy:step5.letter.stamp'), T.mark.px)
   const w = Math.round(said.width + 48)
   const h = Math.round(said.cap + 52)
-  const blockW = w + 12
-  const blockH = h + 100
+  const blockW = w + 4
+  const blockH = h + 64
   const c = Math.abs(Math.cos(MARK_ROT))
   const t = Math.abs(Math.sin(MARK_ROT))
   made = { cx: LEFT + COLUMN - MARK_AT.right - (w / 2) * c - (h / 2) * t, cy: BOTTOM - MARK_AT.bottom - (w / 2) * t - (h / 2) * c, w, h, bar: 10, blockW, blockH }
