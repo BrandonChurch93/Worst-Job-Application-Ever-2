@@ -108,16 +108,16 @@ export function makeLayout(): Step4Layout {
   )
 
   const titleType = TYPE.label
-  const titleW = Math.max(...POPUPS.map((p) => block(titleType.font, words(p.title), titleType.px).width))
-  const popW = Math.round(titleW + 56)
+  const popWs = POPUPS.map((p) => Math.round(block(titleType.font, words(p.title), titleType.px).width + 56))
   const popPad = 24
   const titleCap = block(titleType.font, 'X', titleType.px).cap
   const popH = popPad + titleCap + 22 + sizes.button + 10 + popPad - 6
   const right = HOME.x - 260
   const tops = [CONTENT_Y, CONTENT_Y + popH + 16, CONTENT_Y + (popH + 16) * 2]
-  const insets = [0, 0, 0]
+  const insets = [0, 100, 100]
   const popupPlans: PopupPlan[] = []
   const popupNodes = POPUPS.map((p, i) => {
+    const popW = popWs[i]!
     const x = right - popW - insets[i]!
     const y = tops[i]!
     const title = text(`popup-${i}-title`, p.title, titleType, x + popPad, y + popPad, { part: 'boss-weapons', on: heights.card })

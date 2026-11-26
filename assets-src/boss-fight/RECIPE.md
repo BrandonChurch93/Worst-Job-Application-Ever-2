@@ -37,3 +37,12 @@ Everything in this part is made in code when the page starts. No file is stored.
 - Takes: first try.
 - Why this one: the approved image shows an orange cap in a pale frame with a white tick.
 - Date: 2026-11-26.
+
+## Slab lacquer
+
+- Made by: code, `lacquer()` in `src/pages/step4/real/boss-weapons.ts`.
+- From: numbers (`LACQUER`), and the shell's grain normal map (256 px, seed 71 past the site's seed) on the clear coat, as step 1's red has it. No file.
+- Command: none.
+- Takes: third try of three (the second was a rougher base with full specular, dropped).
+- Why this one: its face is the nearest to the approved image's red, measured in the key's still.
+- Date: 2026-11-26.

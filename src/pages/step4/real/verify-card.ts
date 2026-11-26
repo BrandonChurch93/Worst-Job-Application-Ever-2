@@ -9,7 +9,7 @@ import type { Shape } from '../../../stage/types'
 const heights = config.scale.heights
 const q = (v: number): number => Math.round(v * 4) / 4
 
-export const VERIFY = { step: 4, bezel: 3, bezelHigh: 2.6, capHigh: 4, capLow: 1.9, stroke: 5.6, ink: 0.7, dip: 1.6 }
+export const VERIFY = { step: 4, bezel: 1.8, bezelHigh: 2, capHigh: 4, capLow: 1.9, stroke: 5.6, ink: 0.7, dip: 1.6 }
 export const TICK: [number, number][] = [[10.5, 23], [18.5, 31], [33.5, 13.5]]
 
 const stepped = (h: number): number => Math.ceil(h / VERIFY.step) * VERIFY.step
