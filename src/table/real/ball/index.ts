@@ -26,8 +26,8 @@ const FLATS: Record<string, number> = { 'corporate.carpet': 0xa3161c }
 const INSET = 0.45
 const DOOR = { part: 'model-hq', x: 10.0, y: TIER_Y[0]! + 4.5, leaf: 'hq.door.left', swing: 0.35 }
 const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [0.5, 0.52, 0.54], danger: [0.5, 0.17, 0.12], paper: [0.7, 0.68, 0.62], light: [0.7, 0.68, 0.6], raised: [0.42, 0.42, 0.44], metal: [0.5, 0.5, 0.52] }
-// How the ball gives where it strikes: the most it is squashed, the squash of a full hit, how near a thing must be to press it, the seconds in which the squash of a hit dies, the squash for each radius it stands inside a thing, and the change of speed in page pixels a second that counts as a hit, as a full hit, and as a jump of the page that is no hit.
-export const PRESS = { most: 0.3, hit: 0.3, near: 0.35, dies: 0.05, stand: 3, least: 350, full: 1400, fastest: 5000 }
+// How the ball gives where it strikes: the most it is squashed, the squash of a full hit, how near a thing must be to press it, the seconds in which the squash of a hit dies, and the squash for each radius it stands inside a thing.
+export const PRESS = { most: 0.3, hit: 0.3, near: 0.35, dies: 0.05, stand: 3 }
 // How the shell opens, as shares of the way open: the halves have swung apart by `swung`, they sink from `sinks` on, by `deep` radii, and they are gone from sight between `fades` and 1.
 export const PARTING = { swung: 0.7, sinks: 0.45, deep: 1.9, fades: 0.7 }
 const INSIDE = { key: 2.6, fill: 0.5, lamps: 0.12, face: 1.0, least: 0.5, most: 0.6 }
@@ -169,7 +169,6 @@ interface Own {
   front: THREE.Mesh
   u: Record<string, THREE.IUniform>
   d: Record<string, THREE.IUniform>
-  struck: Struck
 }
 
 const lightUniforms = (): Record<string, THREE.IUniform> => ({
@@ -255,44 +254,13 @@ export function pressAt(cx: number, cy: number, r: number, z0: number, ctx: Real
   return out
 }
 
-// What the ball remembers of its own way, to know a hit by the turn of its speed: where it was and when, how fast, and the last hit.
-export interface Struck { x: number; y: number; t: number; vx: number; vy: number; seen: boolean; moving: boolean; hx: number; hy: number; amount: number; at: number }
-export const unstruck = (): Struck => ({ x: 0, y: 0, t: 0, vx: 0, vy: 0, seen: false, moving: false, hx: 1, hy: 0, amount: 0, at: -9 })
-export function strike(k: Struck, x: number, y: number, t: number): { x: number; y: number; amount: number } {
-  const dt = t - k.t
-  if (!k.seen || dt < 0 || dt > 0.12) {
-    k.moving = false
-    if (dt < 0) k.amount = 0
-  } else if (dt > 1e-4) {
-    const vx = (x - k.x) / dt
-    const vy = (y - k.y) / dt
-    if (k.moving) {
-      const was = Math.hypot(k.vx, k.vy)
-      const now = Math.hypot(vx, vy)
-      const dv = Math.hypot(vx - k.vx, vy - k.vy)
-      const turn = was > 1 && now > 1 ? 1 - (vx * k.vx + vy * k.vy) / (was * now) : 1
-      if (dv > PRESS.least && was < PRESS.fastest && now < PRESS.fastest && (turn > 0.2 || now < was * 0.6)) {
-        const amount = Math.min(PRESS.most, PRESS.hit * clamp01(dv / PRESS.full))
-        if (amount > k.amount * Math.exp(-(t - k.at) / PRESS.dies)) {
-          k.hx = (k.vx - vx) / dv
-          k.hy = (k.vy - vy) / dv
-          k.amount = amount
-          k.at = t
-        }
-      }
-    }
-    k.vx = vx
-    k.vy = vy
-    k.moving = true
-  }
-  if (!k.seen || dt < 0 || dt > 1e-4) {
-    k.x = x
-    k.y = y
-    k.t = t
-    k.seen = true
-  }
-  const amount = k.amount * Math.exp(-Math.max(0, t - k.at) / PRESS.dies)
-  return { x: k.hx, y: k.hy, amount: amount < 0.004 ? 0 : amount }
+// The hit the page tells of, on the shape's `v` after the first three: its strength 0..1, the way to the thing struck as an angle on the page (0 is page right, a quarter turn is page down, in radians), the seconds since it. Without them the ball is round.
+export function hitOf(s: Shape): { x: number; y: number; amount: number } {
+  const strength = clamp01(s.v?.[3] ?? 0)
+  const angle = s.v?.[4] ?? 0
+  const since = Math.max(0, s.v?.[5] ?? 9)
+  const amount = Math.min(PRESS.most, PRESS.hit * strength * Math.exp(-since / PRESS.dies))
+  return { x: Math.cos(angle), y: Math.sin(angle), amount: amount < 0.004 ? 0 : amount }
 }
 
 function build(s: Shape): THREE.Group {
@@ -376,7 +344,7 @@ function build(s: Shape): THREE.Group {
     ;(u.uEye!.value as THREE.Vector3).copy(eye)
   }
   back.onBeforeRender = front.onBeforeRender
-  const own: Own = { roll, decal, back, sweat, core, front, u, d, struck: unstruck() }
+  const own: Own = { roll, decal, back, sweat, core, front, u, d }
   root.userData.ball = own
   return root
 }
@@ -396,8 +364,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   if (open > 0) own.roll.quaternion.slerp(OPEN, smooth(open * 4))
 
   const stood = pressAt(cx, cy, r, s.z0, ctx)
-  if (L.drop < -r * 0.3 || open > 0) own.struck.seen = false
-  const hit = strike(own.struck, cx, cy, ctx.time)
+  const hit = hitOf(s)
   const pressed = debug.press ? { x: debug.press[0] ?? 1, y: debug.press[1] ?? 0, amount: debug.press[2] ?? 0 } : hit.amount > stood.amount ? hit : stood
   const gone = smooth((open - PARTING.fades) / (1 - PARTING.fades))
   own.roll.position.z = r - smooth((open - PARTING.sinks) / (1 - PARTING.sinks)) * PARTING.deep * r

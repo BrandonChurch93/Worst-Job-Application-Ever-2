@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { PRESS, pressAt, strike, unstruck } from '../src/table/real/ball'
+import { PRESS, hitOf, pressAt } from '../src/table/real/ball'
 import { table } from '../src/table/layout'
 import { config } from '../src/config'
 import type { Shape } from '../src/stage/types'
@@ -57,44 +57,32 @@ describe('the clear ball pressed where it strikes', () => {
   })
 })
 
-describe('the clear ball knows a hit by the turn of its own speed', () => {
-  const run = (path: (i: number) => [number, number], frames: number, dt = 1 / 30): { x: number; y: number; amount: number }[] => {
-    const k = unstruck()
-    const out = []
-    for (let i = 0; i < frames; i++) out.push({ ...strike(k, ...path(i), i * dt) })
-    return out
-  }
+describe('the clear ball squashed by the hit the page tells of', () => {
+  const ball = (v?: number[]): Shape => ({ id: 'ball.clear', part: 'clear-ball', kind: 'ball', x: 0, y: 0, w: B, h: B, z0: floor, z1: floor + B, tone: 'glass', ...(v ? { v } : {}) })
 
-  test('a straight roll and a wide bend of a rail press nothing', () => {
-    expect(run((i) => [100 + i * 30, 500], 12).every((p) => p.amount === 0)).toBe(true)
-    const bend = run((i) => [500 + 190 * Math.cos(i * 0.2), 500 + 190 * Math.sin(i * 0.2)], 20)
-    expect(bend.every((p) => p.amount === 0)).toBe(true)
+  test('with nothing given, or the first three numbers alone, it is round', () => {
+    expect(hitOf(ball()).amount).toBe(0)
+    expect(hitOf(ball([1, 9, 0])).amount).toBe(0)
   })
 
-  test('a bounce off a wall on its right squashes it toward that wall for a few frames', () => {
-    const out = run((i) => [i <= 5 ? 100 + i * 30 : 250 - (i - 5) * 24, 500], 14)
-    expect(out[5]!.amount).toBe(0)
-    expect(out[6]!.amount).toBeCloseTo(PRESS.most, 5)
-    expect(out[6]!.x).toBeCloseTo(1, 5)
-    expect(out[6]!.y).toBeCloseTo(0, 5)
-    expect(out[7]!.amount).toBeLessThan(out[6]!.amount)
-    expect(out[8]!.amount).toBeGreaterThan(0.03)
-    expect(out[13]!.amount).toBe(0)
+  test('a full hit squashes it by the most at once, toward the thing struck, and dies in a few frames', () => {
+    const at = (since: number): number => hitOf(ball([1, 9, 0, 1, 0, since])).amount
+    expect(at(0)).toBeCloseTo(PRESS.hit, 5)
+    expect(at(1 / 30)).toBeGreaterThan(0.12)
+    expect(at(2 / 30)).toBeGreaterThan(0.06)
+    expect(at(2 / 30)).toBeLessThan(at(1 / 30))
+    expect(at(0.3)).toBe(0)
+    const down = hitOf(ball([1, 9, 0, 1, Math.PI / 2, 0]))
+    expect(down.x).toBeCloseTo(0, 5)
+    expect(down.y).toBeCloseTo(1, 5)
+    const right = hitOf(ball([1, 9, 0, 1, 0, 0]))
+    expect(right.x).toBeCloseTo(1, 5)
+    expect(right.y).toBeCloseTo(0, 5)
   })
 
-  test('a bat that throws it from rest squashes it toward the bat', () => {
-    const out = run((i) => [500, i <= 4 ? 800 : 800 - (i - 4) * 40], 8)
-    expect(out[5]!.amount).toBeGreaterThan(0.2)
-    expect(out[5]!.y).toBeCloseTo(1, 5)
-  })
-
-  test('a jump of the page, a gap in time and the same frame twice are no hit', () => {
-    expect(run((i) => [i < 5 ? 100 + i * 10 : 4000 + i * 10, 500], 10).every((p) => p.amount === 0)).toBe(true)
-    const k = unstruck()
-    strike(k, 100, 500, 0)
-    strike(k, 130, 500, 1 / 30)
-    expect(strike(k, 130, 500, 1 / 30).amount).toBe(0)
-    expect(strike(k, 60, 500, 2).amount).toBe(0)
-    expect(strike(k, 90, 500, 2 + 1 / 30).amount).toBe(0)
+  test('a weak hit squashes it less, and the strength is held inside 0 to 1', () => {
+    expect(hitOf(ball([1, 9, 0, 0.5, 0, 0])).amount).toBeCloseTo(PRESS.hit / 2, 5)
+    expect(hitOf(ball([1, 9, 0, 7, 0, 0])).amount).toBe(PRESS.most)
+    expect(hitOf(ball([1, 9, 0, -1, 0, 0])).amount).toBe(0)
   })
 })
