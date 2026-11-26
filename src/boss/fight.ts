@@ -1,13 +1,13 @@
 import type { StepIo } from '../stage/types'
 import { FOOT_OFF, muzzleAt, smooth } from './body'
-import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, LOOK_EASE, POPUP, RAMP, SHIELD, SLAB, SLOW_SECONDS, THRESHOLD } from './plan'
+import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, LOOK_EASE, POPUP, RAMP, SHIELD, SLAB, SOCKET, SLOW_SECONDS, THRESHOLD } from './plan'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
 export interface Arena { slabs: SlabSize[]; popups: { box: Rect; buttons: Rect[] }[]; keep?: Rect }
 
-export interface Slab { m: number; x: number; y: number; dx: number; dy: number; rot: number; left: number; state: 0 | 1 | 2; t: number }
-export interface Popup { slot: number; hp: number; t: number; closing: number }
+export interface Slab { m: number; x: number; y: number; dx: number; dy: number; rot: number; left: number; state: 0 | 1 | 2; t: number; push?: number; skid?: number }
+export interface Popup { slot: number; hp: number; t: number; closing: number; off: number; vel: number; dx: number; dy: number; shot: boolean }
 export interface Dart { n: number; x: number; y: number; dx: number; dy: number; t: number; p: number }
 export interface Flash { n: number; x: number; y: number; rot: number; t: number }
 export interface Spark { n: number; x: number; y: number; t: number; z?: number }
@@ -53,6 +53,7 @@ export interface Fight {
 const START = [HEALTH, THRESHOLD[0], THRESHOLD[1] + EXPIRED_GAIN] as const
 const POPUP_ORDER = [1, 2, 0] as const
 const SLAB_HALF = 56
+const SOCKET_CLEAR = { x: 168, y: 78 }
 export const SPARK_SECONDS = 0.3
 export const FLASH_SECONDS = 0.16
 
@@ -203,6 +204,14 @@ function fire(f: Fight, io: StepIo, arena: Arena, shot: { m: number; side: numbe
       }
     }
   }
+  const over = (go: number): boolean => Math.abs(from.x + dx * go - SOCKET.x) < half + SOCKET_CLEAR.x && Math.abs(from.y + dy * go - SOCKET.y) < SOCKET_CLEAR.y
+  if (over(left)) {
+    let short = left
+    while (short > 40 && over(short)) short -= 8
+    let long = left
+    while (long < left + 160 && over(long)) long += 8
+    left = short > 120 || over(long) ? short : long
+  }
   const rot = (m % 2 === 0 ? -1 : 1) * (0.06 + 0.03 * (m % 3))
   f.slabs.push({ m, x: from.x, y: from.y, dx, dy, rot, left: Math.max(40, left), state: 0, t: 0 })
   f.slabCount = m + 1
@@ -264,11 +273,23 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
         io.emit('slab-drop', c.x, c.y, true)
         s.state = 1
         s.t = 0
+        s.push = Math.min(SLAB.through, Math.max(0, s.left))
       } else if (s.left <= 0) {
         io.emit('slab-drop', s.x, s.y, false)
         s.state = 1
         s.t = 0
+        s.skid = SLAB.skid
       }
+    } else if (s.state === 1 && (s.push ?? 0) > 0) {
+      const go = Math.min(s.push!, SLAB.drive * dt)
+      s.x += s.dx * go
+      s.y += s.dy * go
+      s.push = s.push! - go
+    } else if (s.state === 1 && (s.skid ?? 0) > 0.2) {
+      const go = s.skid! * Math.min(1, SLAB.grip * dt)
+      s.x += s.dx * go
+      s.y += s.dy * go
+      s.skid = s.skid! - go
     } else if (s.state === 1 && s.t >= (f.phase === 0 ? SLAB.rest : SLAB.restLate)) {
       s.state = 2
       s.t = 0
@@ -282,14 +303,17 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
   let used = false
   for (const p of f.popups) {
     p.t += dt
+    const rest = p.shot && p.closing >= 0 ? POPUP.lean : 0
+    p.vel += (POPUP.spring * (rest - p.off) - POPUP.damp * p.vel) * dt
+    p.off += p.vel * dt
     if (p.closing >= 0) p.closing += dt
     else if (io.pressed && !used && arena.popups[p.slot]!.buttons.some((b) => inside(b, io.pointer.x, io.pointer.y, 4))) {
-      p.closing = 0
+      p.closing = POPUP.hold
       used = true
       io.emit('popup-close', io.pointer.x, io.pointer.y, false)
     }
   }
-  f.popups = f.popups.filter((p) => p.closing < POPUP.close)
+  f.popups = f.popups.filter((p) => p.closing < POPUP.hold + POPUP.close)
   if (f.phase === 0 || quiet(f)) return used
   f.popupDue -= dt
   if (f.popupDue <= 0) {
@@ -300,7 +324,7 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
       const want = POPUP_ORDER[f.popupCount % POPUP_ORDER.length]!
       const slot = free.includes(want) ? want : free[0]!
       const box = arena.popups[slot]!.box
-      f.popups.push({ slot, hp: POPUP.hp, t: 0, closing: -1 })
+      f.popups.push({ slot, hp: POPUP.hp, t: 0, closing: -1, off: 0, vel: 0, dx: 1, dy: 0, shot: false })
       for (const s of f.slabs) {
         if (s.state === 1) {
           s.state = 2
@@ -343,8 +367,15 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
     d.y += d.dy * DART.speed * dt
     const wall = f.popups.find((p) => p.closing < 0 && p.t > 0.12 && inside(arena.popups[p.slot]!.box, d.x, d.y))
     if (wall) {
+      const fresh = wall.hp === POPUP.hp
       wall.hp--
-      if (wall.hp <= 0) wall.closing = 0
+      wall.dx = d.dx
+      wall.dy = d.dy
+      wall.vel += POPUP.kick[wall.hp <= 0 ? 2 : fresh ? 0 : 1]
+      if (wall.hp <= 0) {
+        wall.closing = 0
+        wall.shot = true
+      }
       spark(f, d.x, d.y)
       io.emit('dart-hit', d.x, d.y, false)
       continue
