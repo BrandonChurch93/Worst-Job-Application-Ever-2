@@ -4,11 +4,11 @@ import type { RealContext } from '../../../real/types'
 import { studio } from '../../../post/studio'
 import { BALL, table } from '../../layout'
 import { lit } from '../light'
-import { localBalls, localOf, shapesIn, type Zone } from '../zone'
+import { localBalls, type Zone } from '../zone'
 import { LENS, type RGB } from './colours'
 import { groupsOf } from './groups'
 
-// The lamps as things: the lenses of the general lighting in their sockets, the globes, the bezels of the inserts and the plates under their labels.
+// The lamps as things: the lenses of the general lighting in their sockets, the globes, and the bezels of the inserts. No plate lies under an insert: the kit puts no word there.
 const SIZE = { dome: 13, domeHigh: 6, ring: 20, screw: 3.1, window: [29, 18] as [number, number], globe: 21, core: 19 }
 const STEEL: RGB = [0.74, 0.76, 0.79]
 const BRASS: RGB = [0.83, 0.6, 0.27]
@@ -175,13 +175,6 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     const p = localBalls(z, q.c[0], q.c[1])
     metals.push(put(globeStem(metal), p[0], p[1], 0))
   }
-  const plates: THREE.BufferGeometry[] = []
-  for (const s of shapesIn(ctx, 'table-lights', z)) {
-    if (!s.id.startsWith('insert-plate.')) continue
-    const p = localOf(z, s)
-    plates.push(put(tablet(roundedLoop(s.w, s.h, 3.5), roundedLoop(s.w - 1, s.h - 1, 3), 0.5, 3.0, 0.5), p[0], p[1], 0))
-    screws.push([p[0] - s.w / 2 + 5.5, p[1], 3.0], [p[0] + s.w / 2 - 5.5, p[1], 3.0])
-  }
   if (lenses.length > 0) {
     out.lens = new THREE.Vector2(0, 0)
     const mesh = new THREE.Mesh(mergeGeometries(lenses), lensMaterial(z, out.lens))
@@ -194,18 +187,6 @@ export function buildLamps(z: Zone, ctx: RealContext): Lamps {
     const m = lit(studio(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, metalness: 1, roughness: 0.3, envMapIntensity: 1 })), z)
     const mesh = new THREE.Mesh(mergeGeometries(metals), m)
     mesh.name = 'sockets'
-    mesh.receiveShadow = true
-    group.add(mesh)
-  }
-  if (plates.length > 0) {
-    const m =
-      z.id === 'corporate'
-        ? new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.86, 0.66, 0.34), metalness: 1, roughness: 0.36 })
-        : z.id === 'office'
-          ? new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.86, 0.85, 0.79), metalness: 0, roughness: 0.85, clearcoat: 1, clearcoatRoughness: 0.07 })
-          : new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.88, 0.87, 0.82), metalness: 0, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12 })
-    const mesh = new THREE.Mesh(mergeGeometries(plates), lit(studio(m), z))
-    mesh.name = 'plates'
     mesh.receiveShadow = true
     group.add(mesh)
   }

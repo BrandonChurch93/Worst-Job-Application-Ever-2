@@ -17,6 +17,7 @@ export const TEXEL = 6
 // The body of every lamp, as the renderer's true lights have it, so a lamp may change from a picture to a true light and back unseen.
 export const BODY = 20
 export const LEAN = CHANNELS - 1
+const SLING_TOP = 0.22
 
 interface Blocker { kind: 0 | 1 | 2; id: string; a: number; b: number; c: number; d: number; h: number }
 
@@ -150,6 +151,22 @@ function addSource(z: Zone, s: Source, plane: Float32Array, dir: Float32Array[] 
     return Math.hypot(cx - s.x, cy - s.y) < s.reach + r
   })
   const soft = Math.min(14, s.z * 0.5 + 4)
+  // A sling's lamp stands under its plastic: the top of the plastic takes a little of it, the floor round its foot the most.
+  const own = s.on !== undefined && s.on.startsWith('sling.') ? table.slings.find((q) => `sling.${q.id}` === s.on) : undefined
+  const tri = own ? [own.a, own.b, own.c].map((q) => localBalls(z, q[0], q[1])) : null
+  const under = (x: number, y: number): boolean => {
+    if (!tri) return false
+    let pos = 0
+    let neg = 0
+    for (let n = 0; n < 3; n++) {
+      const a = tri[n]!
+      const b = tri[(n + 1) % 3]!
+      const c = (b[0] - a[0]) * (y - a[1]) - (b[1] - a[1]) * (x - a[0])
+      if (c > 0) pos++
+      else neg++
+    }
+    return pos === 0 || neg === 0
+  }
   for (let j = y0; j <= y1; j++) {
     const y = (j + 0.5) * TEXEL - z.height / 2
     for (let i = x0; i <= x1; i++) {
@@ -157,7 +174,7 @@ function addSource(z: Zone, s: Source, plane: Float32Array, dir: Float32Array[] 
       const dx = s.x - x
       const dy = s.y - y
       const flat = dx * dx + dy * dy
-      const f = fall(flat + s.z * s.z, s.reach) * s.power
+      const f = fall(flat + s.z * s.z, s.reach) * s.power * (under(x, y) ? SLING_TOP : 1)
       if (f <= 0) continue
       const len = Math.sqrt(flat) || 1
       const nx = (-dy / len) * soft

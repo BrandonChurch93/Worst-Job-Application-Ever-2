@@ -8,6 +8,8 @@ const W = 256
 const H = 128
 const EYE = 20
 const FAR = 420
+// The soft glow the lit tier leaves over itself, in the tier's own tone: what steel that faces up mirrors, and the sheen of the lacquer.
+const SKY = { x: -0.15, y: 0.2, z: 0.968, level: 0.3, wide: 0.55 }
 const made = new Map<string, THREE.DataTexture>()
 
 export function surroundPixels(z: Zone): Float32Array {
@@ -25,7 +27,7 @@ export function surroundPixels(z: Zone): Float32Array {
       const dz = s.z - EYE
       const d = Math.hypot(far, dz)
       const size = Math.max(0.03, Math.min(0.045, 18 / d))
-      dirs.push({ x: (s.x / flat) * (far / d), y: (s.y / flat) * (far / d), z: dz / d, c: g.colour, size, gain: Math.min(3, s.power * 2.4) })
+      dirs.push({ x: (s.x / flat) * (far / d), y: (s.y / flat) * (far / d), z: dz / d, c: g.colour, size, gain: Math.min(8, s.power * 8) })
     }
   }
   for (let j = 0; j < H; j++) {
@@ -41,9 +43,11 @@ export function surroundPixels(z: Zone): Float32Array {
       const zz = ez
       const haze = Math.exp(-Math.abs(zz) * 5.5)
       const below = zz < 0 ? 0.08 + 0.12 * Math.min(1, -zz * 3) : 0
-      let r = 0.004 + fill[0] * (0.02 * haze + below)
-      let g = 0.004 + fill[1] * (0.02 * haze + below)
-      let b = 0.005 + fill[2] * (0.02 * haze + below)
+      const over = x * SKY.x + y * SKY.y + zz * SKY.z
+      const sky = over > 0 ? SKY.level * Math.exp(-Math.pow(Math.acos(Math.min(1, over)) / SKY.wide, 2)) : 0
+      let r = 0.004 + fill[0] * (0.02 * haze + below + sky)
+      let g = 0.004 + fill[1] * (0.02 * haze + below + sky)
+      let b = 0.005 + fill[2] * (0.02 * haze + below + sky)
       for (const d of dirs) {
         const dot = x * d.x + y * d.y + zz * d.z
         if (dot < 0.97) continue
