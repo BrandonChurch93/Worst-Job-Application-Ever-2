@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { config } from '../src/config'
-import { makeLayout, markOf } from '../src/pages/step5/layout'
+import { makeLayout, markOf, STAMP } from '../src/pages/step5/layout'
 import { liftAt } from '../src/pages/step5/real/letter'
 import { fibreHeights, STOCK } from '../src/pages/step5/real/letterStock'
 import { INK, inkCover } from '../src/pages/step5/real/stampInk'
@@ -61,6 +61,6 @@ describe('the hit of the stamp', () => {
     expect(HIT.windSeconds).toBeLessThan(AT.swoop[1] - AT.swoop[0])
     expect(HIT.dustSeconds).toBeLessThanOrEqual(AT.lift[1] - AT.slam[1])
     expect(HIT.rock * Math.exp(-(AT.lift[0] - AT.slam[1]) / HIT.rockSeconds)).toBeLessThan(0.002)
-    expect(200 + HIT.windRise + config.scale.heights.machineMinTop + 54).toBeLessThan(320)
+    expect(STAMP.high + HIT.windRise + STAMP.gripTop).toBeLessThan(320)
   })
 })

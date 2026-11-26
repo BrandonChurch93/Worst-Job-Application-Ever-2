@@ -4,8 +4,8 @@ import { drawLayout, find, shapeOf, walk } from '../../shell/layout'
 import { words } from '../../shell/words'
 import { homePose } from '../../stage/camera'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
-import { KEYS, makeLayout, MARK_ROT, markOf, placesOf, spotOf, turned } from './layout'
-import { CUES, HIT, pointerAt, type Marks } from './script'
+import { KEYS, makeLayout, MARK_ROT, markOf, SHEET_ROT, STAMP, placesOf, spotOf, turned } from './layout'
+import { CUES, HIT, LIE, pointerAt, type Marks } from './script'
 import { AT } from './timeline'
 
 type Phase = 'wait' | 'letter' | 'metrics' | 'reset'
@@ -139,12 +139,12 @@ export function makePage(): PageLogic {
 
   const yourTime = (io: StepIo): number => (s.mode === 'film' ? filmSeconds() : (io.elapsed ?? io.time))
 
-  function stampPose(): { cx: number; cy: number; z: number; rot: number; tilt?: number } | null {
+  function stampPose(): { cx: number; cy: number; z: number; rot: number; tilt?: number; lay?: number } | null {
     if (s.phase === 'wait') return null
-    const rest = { cx: places.rest.cx, cy: places.rest.cy, z: 0, rot: 0 }
+    const rest = { cx: places.rest.cx, cy: places.rest.cy, z: 0, rot: LIE.rot, lay: 1 }
     if (s.phase !== 'letter') return rest
     const p = seconds()
-    const high = 200
+    const high = STAMP.high
     const carryZ = 120
     const on = heights.paper
     if (p < AT.swoop[0]) return null
@@ -161,11 +161,11 @@ export function makePage(): PageLogic {
     if (p < AT.lift[1]) return { cx: mark.cx, cy: mark.cy, z: on + (carryZ - on) * smooth(span(p, AT.lift)), rot: MARK_ROT }
     if (p < AT.carry[1]) {
       const u = smooth(span(p, AT.carry))
-      return { cx: mark.cx + (rest.cx - mark.cx) * u, cy: mark.cy + (rest.cy - mark.cy) * u, z: carryZ, rot: MARK_ROT * (1 - u) }
+      return { cx: mark.cx + (rest.cx - mark.cx) * u, cy: mark.cy + (rest.cy - mark.cy) * u, z: carryZ, rot: MARK_ROT + (LIE.rot - MARK_ROT) * u, lay: 0.35 * u }
     }
     if (p < AT.lower[1]) {
       const u = span(p, AT.lower)
-      return { ...rest, z: carryZ * (1 - u * u) }
+      return { ...rest, z: carryZ * (1 - u * u), lay: 0.35 + 0.65 * smooth(u) }
     }
     return rest
   }
@@ -194,21 +194,22 @@ export function makePage(): PageLogic {
     }
     if (!decided) return { states, over, runtime, bars }
     states.push('decided', counting ? 'counting' : 'counted')
+    const b = nodes.letter.box
+    const mid = { cx: b[0]! + b[2]! / 2, cy: b[1]! + b[3]! / 2 }
     if (lettering && p < AT.slide[1]) {
       const fall = span(p, AT.drop)
       const k = 1 - out3(span(p, AT.slide))
-      const b = nodes.letter.box
-      carry(over, nodes.letter, { dx: -56 * k, dy: 0, dz: 220 * (1 - fall * fall), rot: 0.04 * k, px: b[0]! + b[2]! / 2, py: b[1]! + b[3]! / 2 })
-    }
+      carry(over, nodes.letter, { dx: -56 * k, dy: 0, dz: 220 * (1 - fall * fall), rot: SHEET_ROT + 0.04 * k, px: mid.cx, py: mid.cy })
+    } else carry(over, nodes.letter, { dx: 0, dy: 0, dz: 0, rot: SHEET_ROT, px: mid.cx, py: mid.cy })
     if (lettering && p < AT.panel[0]) over[nodes.metrics.id] = null
     else if (lettering && p < AT.panel[1]) carry(over, nodes.metrics, { dx: 0, dy: 0, dz: -(heights.card + 4) * (1 - smooth(span(p, AT.panel))), rot: 0, px: 0, py: 0 })
     const pose = stampPose()
     if (!pose) over[nodes.stamp.id] = null
     else {
-      if (pose.z !== 0 || pose.rot !== 0 || pose.cx !== places.rest.cx) carry(over, nodes.stamp, { dx: pose.cx - places.rest.cx, dy: pose.cy - places.rest.cy, dz: pose.z, rot: pose.rot, px: places.rest.cx, py: places.rest.cy })
+      carry(over, nodes.stamp, { dx: pose.cx - places.rest.cx, dy: pose.cy - places.rest.cy, dz: pose.z, rot: pose.rot, px: places.rest.cx, py: places.rest.cy })
       const age = lettering && s.jolt >= 0 ? (s.n - s.jolt) / stepHz : HIT.over
       const down = lettering && p >= AT.lower[1] ? p - AT.lower[1] : HIT.over
-      const v = [Math.min(HIT.over, age), Math.min(HIT.over, down), pose.tilt ?? 0]
+      const v = [Math.min(HIT.over, age), Math.min(HIT.over, down), pose.tilt ?? 0, pose.lay ?? 0]
       over['stamp-block'] = { ...(over['stamp-block'] ?? {}), v }
       over['stamp-grip'] = { ...(over['stamp-grip'] ?? {}), v }
       if (age < HIT.dustSeconds) {
@@ -218,11 +219,12 @@ export function makePage(): PageLogic {
     }
     if (s.stamped) {
       states.push('stamped')
-      over['letter-stamp'] = { ...(over['letter-stamp'] ?? {}), rot: MARK_ROT }
+      over['letter-stamp'] = { ...(over['letter-stamp'] ?? {}), rot: MARK_ROT + SHEET_ROT }
       const z = heights.paper
       const bar = (id: string, lx: number, ly: number, w: number, h: number): void => {
-        const c = turned(mark, lx, ly)
-        bars.push({ id, part: 'stamp', kind: 'box', x: c.x - w / 2, y: c.y - h / 2, w, h, z0: z, z1: z + 0.06, tone: 'dark', rot: MARK_ROT })
+        const flat = turned(mark, lx, ly)
+        const c = turned(mid, flat.x - mid.cx, flat.y - mid.cy, SHEET_ROT)
+        bars.push({ id, part: 'stamp', kind: 'box', x: c.x - w / 2, y: c.y - h / 2, w, h, z0: z, z1: z + 0.06, tone: 'dark', rot: MARK_ROT + SHEET_ROT })
       }
       bar('letter-mark-top', 0, -(mark.h - mark.bar) / 2, mark.w, mark.bar)
       bar('letter-mark-bottom', 0, (mark.h - mark.bar) / 2, mark.w, mark.bar)

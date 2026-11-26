@@ -8,7 +8,7 @@ import { words } from '../../../shell/words'
 import type { Shape } from '../../../stage/types'
 import { hash01 } from '../../../core/random'
 import { markOf } from '../layout'
-import { HIT } from '../script'
+import { HIT, LIE } from '../script'
 import { studio } from '../../../post/studio'
 import { INK, ink } from './stampInk'
 
@@ -25,6 +25,13 @@ function lacquer(): THREE.MeshPhysicalMaterial {
   return lacquerMade
 }
 
+let dieMade: THREE.MeshPhysicalMaterial | null = null
+function die(): THREE.MeshPhysicalMaterial {
+  dieMade ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x6e1712, THREE.SRGBColorSpace), roughness: 0.86, metalness: 0, specularIntensity: 0.3 }))
+  dieMade.name = 'stamp-die'
+  return dieMade
+}
+
 function solid(g: THREE.BufferGeometry, m: THREE.Material): THREE.Mesh {
   const mesh = new THREE.Mesh(g, m)
   mesh.castShadow = true
@@ -39,7 +46,8 @@ function blockOf(s: Shape): THREE.Object3D {
   const root = new THREE.Group()
   const half = Math.min(s.w, s.h) / 2
   const pad: ProfilePoint[] = [[-PAD.out + 0.8, 0.2, true], [-PAD.out, 1], [-PAD.out, PAD.tall - 1], [-PAD.out + 1, PAD.tall], [2.4, PAD.tall, true], [2.4, PAD.tall + PAD.gap, true]]
-  root.add(solid(sweep(outlineOf(s, 0, 12), profile(pad), false), m.rubber))
+  root.add(solid(sweep(outlineOf(s, 0, 12), profile(pad)), die()))
+  root.add(solid(sweep(outlineOf(s, 0, 12), profile([[0.6, PAD.tall - 0.2, true], [0.6, PAD.tall + PAD.gap + 0.2, true]]), false), m.rubber))
   const round = 12
   const top = h - 0.7
   const body: ProfilePoint[] = [[1.6, PAD.tall + PAD.gap - 0.4, true], [0.2, PAD.tall + PAD.gap + 1.2], [0, PAD.tall + PAD.gap + 3], [0, top - round], ...arc(0, top - round, round, round, 12).slice(1)]
@@ -50,17 +58,21 @@ function blockOf(s: Shape): THREE.Object3D {
 function gripOf(s: Shape): THREE.Object3D {
   const h = s.z1 - s.z0
   const half = Math.min(s.w, s.h) / 2
-  const neck = Math.min(9, half * 0.3)
+  const neck = Math.min(12, half * 0.45)
   const dome = Math.min(13, half - 3)
   const top = h - 3
   const r = half * 0.86
   const end = r - 2
   const points: ProfilePoint[] = [
-    [-2.5, 0, true], [-2.5, 2.2], [-1.2, 3.6], [neck * 0.55, 5.5], [neck, 10], [neck, h * 0.42], [neck * 0.5, h * 0.55], [1.5, h * 0.64], [1, top - dome],
+    [0.4, 3.6, true], [neck * 0.55, 5.5], [neck, 10], [neck, h * 0.42], [neck * 0.5, h * 0.55], [1.5, h * 0.64], [1, top - dome],
     ...arc(1, top - dome, dome, dome, 12).slice(1),
     ...[0.8, 0.6, 0.4, 0.2, 0].map((t): ProfilePoint => [end - (end - dome - 1) * t, top + 3 * (1 - t * t)])
   ]
-  return solid(sweep(outlineOf({ ...s, kind: 'box', r }, 0, 20), profile(points)), lacquer())
+  const root = new THREE.Group()
+  const outline = outlineOf({ ...s, kind: 'box', r }, 0, 20)
+  root.add(solid(sweep(outline, profile([[-3, 0, true], [-3, 3], [-2.2, 3.9], [1.2, 3.9, true]]), false), materials().chrome))
+  root.add(solid(sweep(outline, profile(points)), lacquer()))
+  return root
 }
 
 function inked(position: ArrayLike<number>, colour: ArrayLike<number>, index: ArrayLike<number>, w: number, h: number, ox: number, oy: number): THREE.BufferGeometry {
@@ -81,16 +93,32 @@ function inked(position: ArrayLike<number>, colour: ArrayLike<number>, index: Ar
   return g
 }
 
-function print(g: THREE.BufferGeometry): THREE.Mesh {
-  const mesh = new THREE.Mesh(g, ink().material)
-  mesh.position.z = 0.07
-  mesh.receiveShadow = true
-  mesh.castShadow = false
-  return mesh
+const TWICE = { dx: 1.7, dy: -1.1, ink: 0.2 }
+let faintMade: THREE.Material | null = null
+
+// The block rocked as it left, so the mark is printed twice: once full, and once faint a little to one side.
+function print(g: THREE.BufferGeometry): THREE.Object3D {
+  const root = new THREE.Group()
+  if (!faintMade) {
+    const twin = studio(ink().material.clone())
+    twin.opacity = TWICE.ink
+    twin.name = 'stamp-ink-faint'
+    faintMade = twin
+  }
+  const faint = new THREE.Mesh(g, faintMade)
+  faint.position.set(TWICE.dx, TWICE.dy, 0.06)
+  const full = new THREE.Mesh(g, ink().material)
+  full.position.z = 0.07
+  for (const mesh of [faint, full]) {
+    mesh.receiveShadow = true
+    mesh.castShadow = false
+    root.add(mesh)
+  }
+  return root
 }
 
 // The border the rubber leaves: a heavy line and a fine one inside it, both with soft edges.
-function frameOf(): THREE.Mesh {
+function frameOf(): THREE.Object3D {
   const m = markOf()
   const per = 8
   const n = (per + 1) * 4
@@ -122,7 +150,7 @@ function frameOf(): THREE.Mesh {
   return print(g)
 }
 
-function wordOf(s: Shape): THREE.Mesh {
+function wordOf(s: Shape): THREE.Object3D {
   const m = markOf()
   const t = s.type!
   const said = words(s.words!, s.text)
@@ -237,10 +265,18 @@ export const stamp: PartMaker | null = {
     const base = ctx.byId.get('stamp-block')
     const up = base ? s.z0 - base.z0 : 0
     const tall = base ? base.h / 2 : s.h / 2
-    const a = lean + rock
+    const grip = ctx.byId.get('stamp-grip')
+    const whole = base && grip ? grip.z1 - base.z0 : s.z1 - s.z0
+    const roll = -LIE.turn * (s.v?.[3] ?? 1)
+    const a = lean + rock + roll
+    const flat = Math.abs(Math.sin(roll))
+    const along = -up * Math.sin(a) - (whole / 2) * flat
+    const turn = o.rotation.z
+    o.rotation.order = 'ZYX'
     o.rotation.x += a
-    o.position.y -= up * Math.sin(a)
-    o.position.z += up * (Math.cos(a) - 1) - give + Math.abs(Math.sin(rock)) * tall
+    o.position.x -= along * Math.sin(turn)
+    o.position.y += along * Math.cos(turn)
+    o.position.z += up * (Math.cos(a) - 1) - give + (Math.abs(Math.sin(rock)) + flat) * tall
   },
   drop(o) {
     o.traverse((c) => {

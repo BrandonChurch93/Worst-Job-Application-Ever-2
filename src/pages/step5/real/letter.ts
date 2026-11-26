@@ -11,8 +11,8 @@ const ease = (t: number): number => {
 }
 
 const GRID = { nx: 72, ny: 48 }
-const CURL: [number, number, number, number][] = [[1, 1, 3.4, 96], [1, 0, 1.3, 60], [0, 1, 1.1, 54], [0, 0, 0.5, 44]]
-const SHADE = { rings: [[-14, 0.62], [0, 0.62], [1.4, 0.48], [3.6, 0.35], [7, 0.24], [12, 0.15], [18, 0.085], [26, 0.04], [38, 0]] as [number, number][], dx: 7, dy: -8.5, colour: 0x1b1815 }
+const CURL: [number, number, number, number][] = [[1, 1, 5.6, 104], [1, 0, 1.8, 64], [0, 1, 1.5, 58], [0, 0, 0.7, 44]]
+const SHADE = { rings: [[-14, 0.62], [0, 0.62], [1.4, 0.48], [3.6, 0.35], [7, 0.24], [12, 0.15], [18, 0.085], [26, 0.04], [38, 0]] as [number, number][], round: [[-10, 0.26], [0, 0.26], [1.5, 0.17], [4, 0.1], [8, 0.045], [14, 0]] as [number, number][], dx: 7, dy: -8.5, colour: 0x1b1815 }
 const AIR = { glow: 0.16, full: 140 }
 
 export function liftAt(u: number, v: number, w: number, h: number): number {
@@ -20,7 +20,7 @@ export function liftAt(u: number, v: number, w: number, h: number): number {
   for (const [cu, cv, tall, reach] of CURL) {
     const d = Math.hypot((u - cu) * w, (v - cv) * h)
     const k = ease(1 - d / reach)
-    z += tall * k * k
+    z += tall * k * k * k
   }
   return z
 }
@@ -76,20 +76,20 @@ function sheetGeometry(w: number, h: number, thick: number): THREE.BufferGeometr
   return g
 }
 
-function shadeGeometry(w: number, h: number): THREE.BufferGeometry {
+function shadeGeometry(w: number, h: number, rings: [number, number][]): THREE.BufferGeometry {
   const per = 8
   const n = (per + 1) * 4
   const pos: number[] = []
   const col: number[] = []
   const idx: number[] = []
-  for (const [d, a] of SHADE.rings) {
+  for (const [d, a] of rings) {
     const o = roundedRect(w + 2 * d, h + 2 * d, Math.max(0.5, 1 + d), per)
     for (let i = 0; i < n; i++) {
       pos.push(o.x[i]!, o.y[i]!, 0)
       col.push(1, 1, 1, a)
     }
   }
-  for (let k = 0; k < SHADE.rings.length - 1; k++) {
+  for (let k = 0; k < rings.length - 1; k++) {
     for (let i = 0; i < n; i++) {
       const j = (i + 1) % n
       idx.push(k * n + i, k * n + j, (k + 1) * n + i, k * n + j, (k + 1) * n + j, (k + 1) * n + i)
@@ -113,10 +113,13 @@ export const letter: PartMaker | null = {
     sheet.castShadow = true
     sheet.receiveShadow = true
     sheet.frustumCulled = false
-    const shade = new THREE.Mesh(shadeGeometry(s.w, s.h), new THREE.MeshBasicMaterial({ color: new THREE.Color().setHex(SHADE.colour, THREE.SRGBColorSpace), vertexColors: true, transparent: true, depthWrite: false }))
+    const shade = new THREE.Mesh(shadeGeometry(s.w, s.h, SHADE.rings), new THREE.MeshBasicMaterial({ color: new THREE.Color().setHex(SHADE.colour, THREE.SRGBColorSpace), vertexColors: true, transparent: true, depthWrite: false }))
     shade.name = 'shade'
     shade.frustumCulled = false
-    root.add(shade, sheet)
+    const round = new THREE.Mesh(shadeGeometry(s.w, s.h, SHADE.round), shade.material)
+    round.name = 'round'
+    round.frustumCulled = false
+    root.add(round, shade, sheet)
     return root
   },
   pose(o, s) {
@@ -125,6 +128,9 @@ export const letter: PartMaker | null = {
     const k = 1 / (1 + (up / 5) * (up / 5))
     shade.visible = k > 0.02
     shade.position.set(SHADE.dx + up * 0.6, SHADE.dy - up * 0.6, 0.06 - up)
+    const round = o.getObjectByName('round') as THREE.Mesh
+    round.visible = shade.visible
+    round.position.set(0, 0, 0.05 - up)
     ;(shade.material as THREE.MeshBasicMaterial).opacity = k
     stock().sheet.emissive.setScalar(AIR.glow * Math.min(1, up / AIR.full))
   },

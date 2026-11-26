@@ -19,9 +19,11 @@ export const CENTRE = (LEFT + RIGHT) / 2
 
 export const COUNTER_TOP = heights.card + 6
 export const READOUT_TOP = heights.card + 4
-export const STAMP = { blockTop: heights.machineMinTop + 16, gripTop: heights.machineMinTop + 54 }
+export const STAMP = { blockTop: heights.machineMinTop + 22, gripTop: heights.machineMinTop + 74, high: 180 }
 const SHOWN = ['decided', 'link', 'shared']
 export const MARK_ROT = -0.14
+// The sheet does not lie square on the page: it is turned a little, clockwise as seen, about its middle.
+export const SHEET_ROT = 0.012
 
 const T = {
   waitTitle: { font: 'inter-display-600', px: 44 },
