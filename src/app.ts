@@ -92,13 +92,22 @@ export class App {
     if (this.staged && this.code(null) && this.shown) showPage(liveFlow().map((e) => e.page), this.shown.frame.page, this.assets, this.shown.frame.turn !== 0)
   }
 
-  // Whether the code a page starts with has arrived (null asks for every page). It is asked for when it has not: the live site starts without the code of a later page.
-  code(page: string | null): boolean {
+  // Whether the code a page starts with has arrived (null asks for every page). It is asked for when it has not: the live site starts without the code of a later page. `then` is what the caller wanted to do: the last one given runs once when that code is in, and a later call with a `then` takes its place.
+  code(page: string | null, then?: () => void): boolean {
     const ids = page === null ? Object.keys(pages) : [page]
+    if (then) this.asked = null
     if (ids.every(pagePrepared)) return true
-    preparePages(ids).catch(() => undefined)
+    if (then) this.asked = { ids, then }
+    preparePages(ids).then(() => {
+      const a = this.asked
+      if (!a || !a.ids.every(pagePrepared)) return
+      this.asked = null
+      a.then()
+    }, () => undefined)
     return false
   }
+
+  private asked: { ids: string[]; then: () => void } | null = null
 
   private staged = false
 
