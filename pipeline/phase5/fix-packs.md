@@ -91,3 +91,13 @@ What the sheets show, looked at one by one:
 - The site tells the place of the ball at a touch and not the place of the part, and does not tell where a bat is. The window is therefore set by what the part and the bat can at most reach from the ball. It is larger than the smallest window that would do.
 - The sheet of the hit: the window holds the arrow's way and the muzzle of the turret that fired. Which fired is read from the arrow's throw at the hit, which points away from it; with no throw to read, both muzzles are held.
 - Every other close sheet has the window it had.
+
+## The R4 pack of round 21 built with both mends (commit 07f445cd)
+
+- MEASURED, `npm run -s pack -- --phase 5 --round 21 --unit site --role R4`: exit 0, 10 files, 23.2 MB, 430 s.
+- MEASURED, the run's file `site-run.json`: finished, 10328 steps, 172.13 s, 37 gags, no problems. The visitor stood at the key `g` (985.4, 892) for 137 steps of at most 900; the cap was not reached. Three `bolt-hit-cursor`: step 899 at (999.4, 918), step 966 at (1251, 852.8), step 1055 at (844, 854.9). The sheet took the first, at step 899, 609 px from the nearer muzzle, where 421 px is wanted.
+- Sheet 04, looked at in its real size: shown at 100%. Frames 1 to 3 hold the bolt's streak from the left barrel across the keys D and F to the arrow at G; frame 4 holds the spark with the arrow thrown to the right; frames 5 to 12 hold the arrow coming back and a scorch on the key. The left barrel's tip is at the window's left edge in every frame.
+- Sheets 09 and 10, looked at in their real size: shown at 82%, steps 6705 to 6751, the blow at step 6711 as frame 4. The pressed right bat and the three round bumpers are whole in all 24 frames.
+- Open: the run's events hold one `bumper` inside those steps (step 6717). In sheet 10 the ball lies against the left round bumper from 1:52.18 to 1:52.38 and that bumper is brighter; the run's events hold no touch there. The bumper is whole in the window because the window is wide, not because the rule named it. Why the site tells no event there is UNKNOWN.
+- MEASURED, `npx vitest run --maxWorkers=2`: 141 files, 1788 tests passed. `npx tsc --noEmit -p .`: exit 0.
+- An R8 pack was built at 1d538068 before the order not to build one came: exit 0, 9 files, 12.8 MB, 137 s. The R5 pack built at 7a0ae9b7: exit 0, 9 files, 15.2 MB, 488 s.
