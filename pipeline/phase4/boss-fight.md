@@ -68,3 +68,8 @@ The approved key shows a whole arrow with its black edge, lower left of the fall
 ## The health bar (round 2)
 
 Beside the approved picture the bar was thin and its fill a flat strip with a wide white band. The track is 30 px tall (was 26), the fill is 22 px (was 16) and is one round back from edge to crest, 6.4 px high, so the light lies on it as a narrow band and its lower side goes dark; the track's floor is a stop darker. The label is set in the 600 weight at 23 px, as the approved label is heavier than the page's field labels.
+
+## Round 3 (after 01:55 UTC)
+
+- A fired slab grows out of the mouth: for the first 0.1 s its tail end sits at the mouth and the block slides out along its line of flight, then its centre falls back onto the flight path by 0.4 s. Before this it grew from its centre and stood across the barrel.
+- The fired slabs and the banner wear the part's own red lacquer (`LACQUER` in `src/pages/step4/real/boss-weapons.ts`), made through `studio()`: colour 0x9a0808, clear coat roughness 0.07, environment 0.4. Step 1's red (environment 1.05) put a grey veil on the face in this page's stills: MEASURED median of the slab faces at the key (the approved image has 118, 13, 13; step 1's red gave 135, 45, 44; the lacquer gives 120, 26, 25). The geometry is still step 1's `makeSlab`. Tried and dropped: a rougher base with full specular, which showed the crown's facets as creases to the corners.
