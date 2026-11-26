@@ -1,35 +1,35 @@
 {
   "folder": "frame-finish",
-  "pushed": "2026-11-26T11:27:22.040Z",
-  "commit": "1df0e030850a4a5fa9797c19dea3e52bca8415a9",
+  "pushed": "2026-11-26T11:45:12.143Z",
+  "commit": "4efbcfc729268fddcba70380e9131e30ae04a61b",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key table-wide: approved on the left, this build on the right, draft tier, with crops of shape:marquee.back, shape:model.corporate.hq, shape:bumper.office.bumper.3, shape:model.street.firehouse, shape:model.street.garage, shape:flipper.street.flipper.left, apronCard, cursor, shape:plunger.knob",
-      "time": "2026-11-26T11:23:28.103Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.bank, shape:model.street.firehouse",
+      "time": "2026-11-26T11:43:20.779Z",
       "by": "frame-finish",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key table-wide: approved on the left, this build on the right, draft tier, with crops of shape:marquee.back, shape:model.corporate.hq, shape:bumper.office.bumper.3, shape:model.street.firehouse, shape:model.street.garage, shape:flipper.street.flipper.left, apronCard, cursor, shape:plunger.knob",
-      "time": "2026-11-26T11:25:37.569Z",
+      "caption": "Key loader-page: approved on the left, this build on the right, draft tier, with crops of shape:loader.ring, shape:rail.feed.2, progressButtonCurrent, header",
+      "time": "2026-11-26T11:44:00.311Z",
       "by": "frame-finish",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/compare/compare-loader-page.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "table-wide 11:25: approved left, build right. Cream rail lands and wedges over polished navy walls with lamp glints, amber knob, mean 0.995 of approved",
-      "time": "2026-11-26T11:27:20.725Z",
+      "caption": "loader-page, ring and tube: approved left, build right (darker ring and bowl, flange collar, tube shadow)",
+      "time": "2026-11-26T11:45:10.644Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/second-table-wide.jpg"
+      "from": "out/work/frame-finish/third-loader.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "youre-fired 11:23: approved left, build right. Dark walls, street drop targets now navy enamel with brass edge",
-      "time": "2026-11-26T11:27:20.975Z",
+      "caption": "rail-cam: approved left, build right (wire sheen, navy walls, cream rail)",
+      "time": "2026-11-26T11:45:10.882Z",
       "by": "frame-finish",
-      "from": "out/work/frame-finish/second-youre-fired.jpg"
+      "from": "out/work/frame-finish/third-rail-cam.jpg"
     }
   ]
 }
