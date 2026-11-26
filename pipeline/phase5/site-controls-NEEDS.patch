@@ -1,0 +1,56 @@
+diff --git a/index.html b/index.html
+index 10344638..2fd86c4e 100644
+--- a/index.html
++++ b/index.html
+@@ -18,6 +18,6 @@
+     <div id="controls"></div>
+     <canvas id="stage" tabindex="0"></canvas>
+     <pre id="fail" hidden></pre>
+-    <script type="module" src="/src/main.ts"></script>
++    <script type="module" src="/src/ui/boot.ts"></script>
+   </body>
+ </html>
+diff --git a/src/shell/metrics.ts b/src/shell/metrics.ts
+index fae39d2d..a20fd5ff 100644
+--- a/src/shell/metrics.ts
++++ b/src/shell/metrics.ts
+@@ -29,6 +29,14 @@ export function registerFont(name: string, data: BakedFont): void {
+ 
+ export const hasFont = (name: string): boolean => fonts.has(name)
+ 
++export async function loadFont(name: string): Promise<BakedFont> {
++  const res = await fetch(`./fonts/${name}.json`)
++  if (!res.ok) throw new Error(`The font file "${name}.json" did not load`)
++  const data = (await res.json()) as BakedFont
++  registerFont(name, data)
++  return data
++}
++
+ export function font(name: string): BakedFont {
+   const f = fonts.get(name)
+   if (!f) throw new Error(`The font "${name}" is not loaded`)
+diff --git a/src/shell/type.ts b/src/shell/type.ts
+index 9e35976a..bb89187b 100644
+--- a/src/shell/type.ts
++++ b/src/shell/type.ts
+@@ -1,18 +1,10 @@
+ import * as THREE from 'three'
+-import { font, measure, registerFont, type BakedFont } from './metrics'
++import { font, loadFont, measure, type BakedFont } from './metrics'
+ import { madeOf, words, type Made } from './words'
+ 
+-export { font, measure, words }
++export { font, loadFont, measure, words }
+ export type { BakedFont, Made }
+ 
+-export async function loadFont(name: string): Promise<BakedFont> {
+-  const res = await fetch(`./fonts/${name}.json`)
+-  if (!res.ok) throw new Error(`The font file "${name}.json" did not load`)
+-  const data = (await res.json()) as BakedFont
+-  registerFont(name, data)
+-  return data
+-}
+-
+ const glyphCache = new Map<string, { position: Float32Array; index: Uint32Array }>()
+ 
+ function glyphGeometry(name: string, code: number, segments: number): { position: Float32Array; index: Uint32Array } {
