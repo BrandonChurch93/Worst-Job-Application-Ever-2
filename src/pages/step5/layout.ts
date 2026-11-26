@@ -19,7 +19,7 @@ export const CENTRE = (LEFT + RIGHT) / 2
 
 export const COUNTER_TOP = heights.card + 6
 export const READOUT_TOP = heights.card + 4
-export const STAMP = { blockTop: heights.machineMinTop + 36, gripTop: heights.machineMinTop + 100, high: 150 }
+export const STAMP = { blockTop: heights.machineMinTop + 58, gripTop: heights.machineMinTop + 134, high: 120 }
 const SHOWN = ['decided', 'link', 'shared']
 // The stamp at rest lies a little under the line the columns end on, so the panel above it keeps its room.
 export const REST_LOW = 24
