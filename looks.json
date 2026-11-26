@@ -1,0 +1,35 @@
+{
+  "folder": "ball-displays",
+  "pushed": "2026-11-26T04:44:42.335Z",
+  "commit": "ed300fc5ea02604212fba45229d268fa2cb45269",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still sheet-clear-ball-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T04:44:26.153Z",
+      "by": "ball-displays",
+      "from": "out/work/stills/sheet-clear-ball-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Ball in the five close keys, each beside the approved image (left ours, right approved), draft, 04:43 UTC",
+      "time": "2026-11-26T04:44:40.746Z",
+      "by": "ball-displays",
+      "from": "out/work/looks/files/20261126044440-r-close.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Ball in table-wide and the three tier keys, each beside the approved image (left ours, right approved), draft, 04:43 UTC",
+      "time": "2026-11-26T04:44:40.985Z",
+      "by": "ball-displays",
+      "from": "out/work/looks/files/20261126044440-r-tiers.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Sheet clear-ball (top) over the approved sheet (bottom), draft, 04:44 UTC",
+      "time": "2026-11-26T04:44:41.234Z",
+      "by": "ball-displays",
+      "from": "out/work/looks/files/20261126044441-r-sheet.jpg"
+    }
+  ]
+}
