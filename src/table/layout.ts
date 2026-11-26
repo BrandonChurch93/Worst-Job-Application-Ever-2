@@ -40,13 +40,13 @@ export const INSERTS = { spots: [[8.3, 7.1], [MID, 8.0], [11.7, 7.1]] as V[], r:
 
 export interface Seg { id: string; tier: number; a: V; b: V; kind: 'wall' | 'guide' | 'rubber' }
 export interface Post { id: string; tier: number; c: V; r: number; lamp?: boolean }
-export interface Model { id: string; tier: number; part: string; box: [number, number, number, number]; h: number; tone: string; solid: boolean; standing: boolean; round?: boolean; base?: number; sign?: string; signPx?: number }
+export interface Model { id: string; tier: number; part: string; box: [number, number, number, number]; h: number; tone: string; solid: boolean; standing: boolean; round?: boolean; base?: number; sign?: string; signPx?: number; bay?: [number, number, number] }
 export interface Bumper { id: string; tier: number; c: V; r: number }
 export interface Sling { id: string; tier: number; side: 'left' | 'right'; a: V; b: V; c: V }
 export interface Target { id: string; tier: number; kind: 'drop' | 'standup' | 'spinner'; box: [number, number, number, number]; n: V; index: number }
 export interface Insert { id: string; tier: number; c: V; r: number; mode: number; picture: string; index: number }
 export interface Flipper { id: string; tier: number; side: 'left' | 'right'; pivot: V; index: number }
-export interface Hold { id: string; tier: number; kind: 'gate' | 'scoop' | 'hatch' | 'kicker' | 'port' | 'plunger'; c: V; r: number; releases: boolean }
+export interface Hold { id: string; tier: number; kind: 'gate' | 'scoop' | 'hatch' | 'kicker' | 'port' | 'plunger'; c: V; r: number; releases: boolean; stand?: V; mouth?: V }
 export interface Rail { id: string; from: string; to: string; points: P3[]; speed: number; out: V; hidden?: boolean }
 export interface Opening { id: string; tier: number; a: V; b: V }
 export interface Display { id: string; tier: number; box: [number, number, number, number] }
@@ -195,8 +195,8 @@ for (let k = 0; k < 3; k++) {
   model(k, 'hq', 'model-hq', [8.3, 2.2, 3.4, 2.3], 4, 'glass', { sign: 'copy:step3.table.buildings.hq' })
   model(k, 'beach', 'model-beach', [14.2, 2.5, 2.55, 1.9], 1.4, 'light', { sign: 'copy:step3.table.buildings.beach' })
   posts.push({ id: 'corporate.globe.left', tier: k, c: at(k, 8.8, 4.85), r: 0.22, lamp: true }, { id: 'corporate.globe.right', tier: k, c: at(k, 11.2, 4.85), r: 0.22, lamp: true })
-  flats.push({ id: 'corporate.carpet', tier: k, part: 'model-hq', box: [9.2, TIER_Y[k]! + 4.7, 1.6, 2.2], tone: 'danger' })
-  holds.push({ id: 'corporate.revolving', tier: k, kind: 'kicker', c: at(k, MID, 6.0), r: 0.75, releases: true })
+  flats.push({ id: 'corporate.carpet', tier: k, part: 'model-hq', box: [9.2, TIER_Y[k]! + 4.7, 1.6, 2.6], tone: 'danger' })
+  holds.push({ id: 'corporate.revolving', tier: k, kind: 'kicker', c: at(k, 9.2, 6.1), r: 0.75, releases: true, stand: at(k, 10.25, 7.0) })
   holds.push({ id: 'corporate.doors', tier: k, kind: 'kicker', c: at(k, MID, 5.02), r: 0.5, releases: true })
   open(k, 'lobby', [9.02, 4.85], [10.98, 4.85])
   open(k, 'top.exit.left', [4.65, 2.5], [6.0, 2.15])
@@ -228,13 +228,13 @@ for (let k = 0; k < 3; k++) {
   const k = 2
   seg(k, 'firehouse.roof', [COLS.left, 1.75], [5.75, 2.3], 'guide')
   seg(k, 'police.roof', [COLS.right, 1.75], [14.25, 2.3], 'guide')
-  model(k, 'firehouse', 'model-firehouse', [COLS.left, 2.3, 2.5, 1.5], 1.5, 'danger', { sign: 'copy:step3.table.buildings.firehouse' })
+  model(k, 'firehouse', 'model-firehouse', [COLS.left, 2.3, 2.5, 1.5], 2.0, 'danger', { sign: 'copy:step3.table.buildings.firehouse', bay: [4.4, 5.7, 0.55] })
   model(k, 'bank', 'model-bank', [COLS.left, 3.8, 1.0, 1.1], 1.2, 'raised', { sign: 'copy:step3.table.buildings.bank', signPx: 16 })
   dropBank(k, 'bank.drop', 4.25, 3.8, 4.9)
-  model(k, 'police', 'model-police', [14.25, 2.3, 2.5, 1.5], 1.5, 'glass', { sign: 'copy:step3.table.buildings.police' })
+  model(k, 'police', 'model-police', [14.25, 2.3, 2.5, 1.5], 2.0, 'glass', { sign: 'copy:step3.table.buildings.police' })
   targets.push({ id: 'street.spinner', tier: k, kind: 'spinner', box: [13.2, TIER_Y[k]! + 2.95, 0.9, 0.1], n: [0, 1], index: targets.length })
   model(k, 'garage', 'model-garage', [GARAGE[0] - SPIRAL.frame, GARAGE[1] - SPIRAL.frame, 2 * SPIRAL.frame, 2 * SPIRAL.frame], SPIRAL_TOP + 0.2 - SPIRAL.under, 'raised', { solid: false, round: true, base: SPIRAL.under })
-  holds.push({ id: 'street.firehouse', tier: k, kind: 'scoop', c: at(k, 5.05, 4.35), r: 0.5, releases: true })
+  holds.push({ id: 'street.firehouse', tier: k, kind: 'scoop', c: at(k, 5.05, 3.9), r: 0.5, releases: true, mouth: at(k, 5.05, 4.35) })
   holds.push({ id: 'street.mom', tier: k, kind: 'hatch', c: at(k, 3.95, 9.3), r: 0.5, releases: true })
   model(k, 'mom', 'model-moms', [4.8, 9.25, 1.0, 0.8], 0.8, 'raised', { solid: false, sign: 'copy:step3.table.buildings.outlane', signPx: 16 })
   for (let i = 0; i < 3; i++) {
@@ -245,6 +245,7 @@ for (let k = 0; k < 3; k++) {
   rails.push({ id: 'highway', from: 'street.highway.track', to: 'spiral', points: HIGHWAY.map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 6, out: [0, 0] })
   rails.push({ id: 'spiral', from: 'highway', to: 'street.inlane.right', points: spiral().map((p) => [p[0], TIER_Y[k]! + p[1], p[2] + floorZ(k)] as P3), speed: 8, out: [0, 3] })
   open(k, 'firehouse.foot', [4.45, 4.9], [OUTLANE.inner, 6.2])
+  open(k, 'firehouse.door', [4.4, 3.8], [5.7, 3.8])
   open(k, 'police.foot', [14.25, 3.8], [13.95, 5.4])
   open(k, 'highway.track', [6.9, 4.275], [6.9, 5.525])
   open(k, 'spiral.turn', [GARAGE[0] - SPIRAL.r - t.minClearanceBalls / 2, GARAGE[1]], [GARAGE[0] - SPIRAL.r + t.minClearanceBalls / 2, GARAGE[1]])
@@ -336,4 +337,11 @@ export function railAt(r: Rail, s: number): { x: number; y: number; z: number; d
   }
   const p = r.points[r.points.length - 1]!
   return { x: p[0], y: p[1], z: p[2], dx: 0, dy: 1, end: true }
+}
+
+export const solids = (m: Model): [number, number, number, number][] => {
+  const [x, y, w, h] = m.box
+  if (!m.bay) return [[x, y, w, h]]
+  const [a, b, deep] = m.bay
+  return [[x, y, a - x, h], [b, y, x + w - b, h], [a, y, b - a, h - deep]]
 }

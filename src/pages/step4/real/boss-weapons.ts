@@ -1,7 +1,9 @@
 import * as THREE from 'three'
 import { config } from '../../../config'
 import { hash01 } from '../../../core/random'
+import { studio } from '../../../post/studio'
 import type { PartMaker, RealContext } from '../../../real/types'
+import { grainNormalMap } from '../../../shell/materials'
 import { controls } from '../../../shell/real/controls'
 import type { Shape } from '../../../stage/types'
 import { makeSlab } from '../../step1/real/slabs'
@@ -12,17 +14,42 @@ const q = (v: number): number => Math.round(v * 4) / 4
 const seed = config.seed + 4409
 
 export const WEAPON_GLOW = {
-  dart: [3.4, 3.3, 3.1] as [number, number, number],
+  dart: [1.2, 1.17, 1.1] as [number, number, number],
   dartRim: [1.5, 1.05, 0.55] as [number, number, number],
-  trail: [1.7, 1.45, 1.1] as [number, number, number],
+  trail: [1.05, 0.9, 0.68] as [number, number, number],
   streak: [0.4, 0.34, 0.26] as [number, number, number],
   halo: [0.34, 0.24, 0.13] as [number, number, number],
-  glint: [2.6, 2.2, 1.6] as [number, number, number],
-  pool: [0.01, 0.07, 0.18] as [number, number, number],
-  shade: [0.2, 0.2, 0.21] as [number, number, number],
+  glint: [1.25, 1.02, 0.7] as [number, number, number],
+  pool: [0.02, 0.11, 0.3] as [number, number, number],
+  shade: [0.3, 0.3, 0.31] as [number, number, number],
   spark: [6, 5.2, 4] as [number, number, number],
   fleck: [5, 3.9, 2.4] as [number, number, number],
   muzzle: [9, 2.6, 0.7] as [number, number, number]
+}
+
+export const LACQUER = { colour: 0x900808, rough: 0.6, spec: 0, coat: 0.08, env: 1 }
+
+let lacquerMade: THREE.MeshPhysicalMaterial | null = null
+
+function lacquer(): THREE.MeshPhysicalMaterial {
+  if (!lacquerMade) {
+    const grain = grainNormalMap(256, config.seed + 71, 1.6)
+    grain.repeat.set(1 / 90, 1 / 90)
+    lacquerMade = studio(
+      new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color().setHex(LACQUER.colour, THREE.SRGBColorSpace),
+        roughness: LACQUER.rough,
+        metalness: 0,
+        specularIntensity: LACQUER.spec,
+        clearcoat: 1,
+        clearcoatRoughness: LACQUER.coat,
+        clearcoatNormalMap: grain,
+        clearcoatNormalScale: new THREE.Vector2(0.035, 0.035),
+        envMapIntensity: LACQUER.env
+      })
+    )
+  }
+  return lacquerMade
 }
 
 export const WEAPON_EMIT = {
@@ -62,10 +89,10 @@ function arrow(grow: number, depth: number): THREE.BufferGeometry {
 }
 
 // Where a dart's light and its shadow fall on the paper beside it, in px of the page.
-const POOL = { x: 6, y: 7, wide: 104 }
-const SHADE = { x: 11, y: 12, wide: 30 }
+const POOL = { x: 9, y: 10, wide: 96 }
+const SHADE = { x: 16, y: 18, wide: 34 }
 const TAIL = { streak: 520, trail: 140 }
-const FLECKS = 14
+const FLECKS = 22
 const NEEDLE: [number, number][] = [[0, 0.5], [0, -0.5], [-1, 0], [0.35, 0]]
 
 // The flecks of hot metal of one spark, one mesh: each a thin needle, brightest at its head.
@@ -106,7 +133,7 @@ function head(): THREE.BufferGeometry {
 
 // Both tails of a dart, one mesh: a short bright one and a long thin one, each fading to nothing behind the head.
 function tails(source: THREE.BufferGeometry): THREE.BufferGeometry {
-  const parts: [number, number, number, [number, number, number]][] = [[TAIL.streak, 0.8, -12, WEAPON_GLOW.streak], [TAIL.trail, 1.3, -10, WEAPON_GLOW.trail]]
+  const parts: [number, number, number, [number, number, number]][] = [[TAIL.streak, 0.8, -12, WEAPON_GLOW.streak], [TAIL.trail, 1, -10, WEAPON_GLOW.trail]]
   const p = source.getAttribute('position')
   const c = source.getAttribute('color')
   const at = source.index!
@@ -309,6 +336,7 @@ export const bossWeapons: PartMaker | null = {
       case 'scorch': return makeScorch(s)
       case 'slab': {
         const slab = makeSlab(s.w, s.h, s.r ?? 8, heights.slab)
+        ;(slab.children[0] as THREE.Mesh).material = lacquer()
         slab.children[1]!.castShadow = false
         return slab
       }
@@ -340,22 +368,22 @@ export const bossWeapons: PartMaker | null = {
         const n = Math.round(v[1] ?? 0)
         const hot = (1 - u) * (1 - u)
         const star = o.getObjectByName('star')!
-        const size = (40 + 80 * Math.sqrt(u)) * Math.pow(1 - u, 1.4) + 56 * Math.max(0, 1 - u / 0.08)
+        const size = (44 + 50 * Math.sqrt(u)) * Math.pow(1 - u, 1.4) + 56 * Math.max(0, 1 - u / 0.08)
         star.scale.set(size, size, 1)
         star.rotation.z = hash01(n, 3, seed) * Math.PI * 2
         star.visible = size > 1
         star.position.z = 2
         const halo = o.getObjectByName('halo')!
-        halo.scale.set(84 * hot + 4, 84 * hot + 4, 1)
+        halo.scale.set(58 * hot + 4, 58 * hot + 4, 1)
         const at = (o.getObjectByName('flecks') as THREE.Mesh).geometry.getAttribute('position') as THREE.BufferAttribute
         for (let i = 0; i < FLECKS; i++) {
           const a = hash01(n, i, seed + 1) * Math.PI * 2
-          const speed = 46 + 130 * hash01(n, i, seed + 2)
+          const speed = 22 + 78 * hash01(n, i, seed + 2)
           const life = 0.55 + 0.45 * hash01(n, i, seed + 3)
           const t = u / life
           const r = 8 + speed * (1 - Math.pow(1 - Math.min(1, t), 2))
-          const long = t < 1 ? (12 + 30 * hash01(n, i, seed + 4)) * (1 - t * 0.7) : 0
-          const wide = t < 1 ? 1.3 * (1 - t * 0.5) : 0
+          const long = t < 1 ? (5 + 19 * hash01(n, i, seed + 4)) * (1 - t * 0.7) : 0
+          const wide = t < 1 ? 0.95 * (1 - t * 0.5) : 0
           const c = Math.cos(a)
           const d = Math.sin(a)
           NEEDLE.forEach(([x, y], j) => at.setXYZ(i * 4 + j, c * (r + x * long) - d * y * wide, d * (r + x * long) + c * y * wide, 0))

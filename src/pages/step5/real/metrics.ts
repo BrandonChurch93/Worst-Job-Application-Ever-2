@@ -1,134 +1,120 @@
 import * as THREE from 'three'
-import { look } from '../../../post/look'
-import { studio } from '../../../post/studio'
 import type { PartMaker } from '../../../real/types'
-import { controls } from '../../../shell/real/controls'
-import { arc, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
+import { outlineOf, profile, sweep } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
+import { look } from '../../../post/look'
+import { cardGlass, GLASS, groundEdge, SLAB, slabGeometry } from '../../marketing/real/perk-cards'
 
 const q = (v: number): number => Math.round(v * 4) / 4
-const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
-const RIM = { inset: 2.9, wide: 1.5, tall: 0.7 }
-const PILLOW = { shoulder: 8, turn: 1.25 }
-const SHADE = { rings: [[-8, 0.2], [0, 0.2], [2, 0.13], [5, 0.07], [10, 0.03], [17, 0]] as [number, number][], dx: 4, dy: -5, colour: 0x2c3a36, full: 8 }
+const INSET = { thick: 12, face: 1.07, lit: 0.9, away: 1.04, small: 0.55 }
 
-let lineMade: THREE.MeshPhysicalMaterial | null = null
-let pillowMade: THREE.MeshPhysicalMaterial | null = null
-let shadeMade: THREE.MeshBasicMaterial | null = null
-
-// The polished edge of the glass: the line of light that runs all the way round a slab.
-function line(): THREE.MeshPhysicalMaterial {
-  lineMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe6ece7), emissive: srgb(0xdfe6e1), emissiveIntensity: 0.42, roughness: 0.18, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05 }))
-  lineMade.name = 'metrics-line'
-  return lineMade
-}
-
-function pillow(): THREE.MeshPhysicalMaterial {
-  pillowMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc3cdca), roughness: 0.3, metalness: 0, specularIntensity: 0.8, clearcoat: 0.8, clearcoatRoughness: 0.2, vertexColors: true }))
-  pillowMade.name = 'metrics-pillow'
-  return pillowMade
-}
-
-function shade(): THREE.MeshBasicMaterial {
-  shadeMade ??= new THREE.MeshBasicMaterial({ color: srgb(SHADE.colour), vertexColors: true, transparent: true, depthWrite: false })
-  shadeMade.name = 'metrics-shade'
-  return shadeMade
-}
-
-function solid(g: THREE.BufferGeometry, m: THREE.Material, cast: boolean): THREE.Mesh {
-  const mesh = new THREE.Mesh(g, m)
+function solid(g: THREE.BufferGeometry, cast: boolean): THREE.Mesh {
+  const mesh = new THREE.Mesh(g, cardGlass())
   mesh.castShadow = cast
   mesh.receiveShadow = true
   mesh.userData.own = true
   return mesh
 }
 
-function shadeOf(s: Shape): THREE.Mesh {
-  const first = outlineOf(s, 0, 8)
-  const n = first.count
-  const pos: number[] = []
-  const col: number[] = []
-  const idx: number[] = []
-  for (const [d, a] of SHADE.rings) {
-    const o = outlineOf({ ...s, w: s.w + d * 2, h: s.h + d * 2, r: Math.max(0.6, (s.r ?? 0) + d) }, 0, 8)
-    for (let i = 0; i < n; i++) {
-      pos.push(o.x[i]! + SHADE.dx, o.y[i]! + SHADE.dy, 0.05)
-      col.push(1, 1, 1, a)
-    }
-  }
-  for (let k = 0; k < SHADE.rings.length - 1; k++) {
-    for (let i = 0; i < n; i++) {
-      const j = (i + 1) % n
-      idx.push(k * n + i, k * n + j, (k + 1) * n + i, k * n + j, (k + 1) * n + j, (k + 1) * n + i)
-    }
-  }
-  const g = new THREE.BufferGeometry()
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
-  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
-  g.setIndex(idx)
-  const mesh = solid(g, shade(), false)
-  mesh.receiveShadow = false
-  mesh.name = 'shade'
-  return mesh
-}
-
-// The panel is the page's one glass card, with the line of light on its rim and a tinted shade under it.
-function panelOf(s: Shape, card: THREE.Object3D): THREE.Object3D {
-  const h = s.z1 - s.z0
-  const foot = h - Math.min(h * 0.3, 3.6)
+// The panel is the careers page's slab of pale glass, lying on the page: the light and shade of its ground edge are in the slab,
+// and the shadow on the page is thrown by the printed foot inside it alone.
+export function panelOf(s: Shape): THREE.Object3D {
+  const thick = s.z1 - s.z0
   const root = new THREE.Group()
-  const bead: ProfilePoint[] = [[RIM.inset, foot - 0.4, true], [RIM.inset + 0.15, foot + RIM.tall * 0.7], [RIM.inset + RIM.wide / 2, foot + RIM.tall], [RIM.inset + RIM.wide - 0.15, foot + RIM.tall * 0.7], [RIM.inset + RIM.wide, foot - 0.2, true]]
-  root.add(shadeOf(s), card, solid(sweep(outlineOf(s, 0, 14), profile(bead), false), line(), false))
+  const glass = solid(slabGeometry(s, thick), false)
+  glass.position.z = thick / 2
+  const foot = solid(sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, 0, true], [0, Math.min(GLASS.caster, thick * 0.4), true]])), true)
+  foot.name = 'foot'
+  root.add(glass, foot)
   return root
 }
 
-// Glass turns the light round: the shoulder that faces the lamp shows the dark under it, the far shoulder gathers the light.
-function refracted(g: THREE.BufferGeometry): THREE.BufferGeometry {
-  const nor = g.getAttribute('normal')
-  const [lx, ly] = look.key.direction
-  const col = new Float32Array(nor.count * 3)
-  for (let i = 0; i < nor.count; i++) {
-    const l = Math.hypot(nor.getX(i), nor.getY(i), nor.getZ(i)) || 1
-    const tone = Math.max(0.3, 1 - PILLOW.turn * ((nor.getX(i) * lx + nor.getY(i) * ly) / l))
-    col.set([tone, tone, tone], i * 3)
+export const panelKey = (s: Shape): string => `panel:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
+
+export function panelDrop(o: THREE.Object3D): void {
+  o.traverse((c) => {
+    const m = c as THREE.Mesh
+    if (m.isMesh && m.userData.own) m.geometry.dispose()
+  })
+}
+
+// The flat face inside a slab's ground edge, a little lighter than the panel under it: two thicknesses of glass gather more light than one.
+function faceOf(s: Shape, z: number): THREE.BufferGeometry {
+  const o = outlineOf(s, SLAB.frame, 14)
+  const d = groundEdge(s) - SLAB.frame
+  const n = o.count
+  const [kx, ky] = look.key.direction
+  const flat = Math.hypot(kx, ky) || 1
+  let wide = 0
+  let tall = 0
+  for (let i = 0; i < n; i++) {
+    wide = Math.max(wide, o.x[i]!)
+    tall = Math.max(tall, o.y[i]!)
   }
-  g.setAttribute('color', new THREE.BufferAttribute(col, 3))
+  const pos: number[] = []
+  const nor: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  const reach = Math.min(wide, tall) - d - 1
+  const rings: [number, number][] = [[0, 0], [Math.min(6, reach * 0.5), 1], [reach, 1]]
+  for (const [more, t] of rings) {
+    for (let i = 0; i < n; i++) {
+      const side = (o.nx[i]! * kx + o.ny[i]! * ky) / flat
+      const edge = side > 0 ? 1 + side * (INSET.lit - 1) : 1 - side * (INSET.away - 1)
+      const v = edge + (INSET.face - edge) * t
+      const at = d + more
+      pos.push(Math.max(-(wide - at), Math.min(wide - at, o.x[i]! - at * o.nx[i]!)), Math.max(-(tall - at), Math.min(tall - at, o.y[i]! - at * o.ny[i]!)), z)
+      nor.push(0, 0, 1)
+      col.push(v, v, v)
+    }
+  }
+  for (let r = 0; r < rings.length - 1; r++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      idx.push(r * n + i, r * n + j, (r + 1) * n + i, r * n + j, (r + 1) * n + j, (r + 1) * n + i)
+    }
+  }
+  const last = (rings.length - 1) * n
+  pos.push(0, 0, z)
+  nor.push(0, 0, 1)
+  col.push(INSET.face, INSET.face, INSET.face)
+  for (let i = 0; i < n; i++) idx.push(rings.length * n, last + i, last + ((i + 1) % n))
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setIndex(idx)
   return g
 }
 
-// A readout is a pillow of the same glass standing on the panel, lighter than it, with a broad round shoulder and its own line of light.
+// A readout is a smaller slab of the same glass let into the panel, standing a little proud of its face.
+// It is cut at a larger size and set down smaller, so its ground edge is as narrow as a small piece of glass has it.
 function readoutOf(s: Shape): THREE.Object3D {
-  const h = s.z1 - s.z0
-  const half = Math.min(s.w, s.h) / 2
-  const wide = Math.min(PILLOW.shoulder, half - 2)
   const root = new THREE.Group()
-  const top = h - 0.3
-  const body: ProfilePoint[] = [[0, 0, true], [0, 0.5], ...arc(0, 0.5, wide, top - 0.5, 9).slice(1), [Math.min(half - 1, wide + 10), top]]
-  root.add(solid(refracted(sweep(outlineOf(s, 0, 14), profile(body))), pillow(), false))
+  const top = s.z1 - s.z0
+  const k = INSET.small
+  const cut: Shape = { ...s, w: s.w / k, h: s.h / k, r: (s.r ?? 0) / k }
+  const glass = solid(slabGeometry(cut, INSET.thick, true), false)
+  glass.position.z = top - INSET.thick / 2
+  const small = new THREE.Group()
+  small.add(glass, solid(faceOf(cut, top), false))
+  small.scale.set(k, k, 1)
+  root.add(small)
   return root
 }
 
 export const metrics: PartMaker | null = {
-  key(s, ctx) {
+  key(s) {
     if (s.kind === 'text') return null
-    if (s.role === 'card') return `panel:${controls.key(s, ctx)}`
+    if (s.role === 'card') return panelKey(s)
     if (s.role === 'readout') return `readout:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
     return null
   },
-  make(s, ctx) {
-    if (s.role === 'card') return panelOf(s, controls.make(s, ctx))
+  make(s) {
+    if (s.role === 'card') return panelOf(s)
     return readoutOf(s)
   },
-  pose(o, s) {
-    const under = o.getObjectByName('shade')
-    if (!under) return
-    under.position.z = -s.z0
-    shade().opacity = Math.min(1, (s.z1 - s.z0) / SHADE.full)
-  },
   drop(o) {
-    o.traverse((c) => {
-      const m = c as THREE.Mesh
-      if (m.isMesh && m.userData.own) m.geometry.dispose()
-    })
+    panelDrop(o)
   }
 }

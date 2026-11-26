@@ -3,12 +3,13 @@ import type { RealContext } from '../../../real/types'
 import { BALL, FLIP, table } from '../../layout'
 import { localBalls, whole, type Zone } from '../zone'
 import { Bag, DEG, lathe, look, mat, prism, type V2 } from './g'
+import { MACHINE_ORANGE } from '../frame/mats'
 import { drop, matsOf, part } from './mats'
 
-// The orange of the approved bats: the site's accent, as the lamps of a tier show it on a moulded top.
-export const ORANGE = look(0xff9838, 0.5, 0, 0.3)
-const ORANGE_TOP = look(0xffa040, 0.48, 0, 0.3)
-const ORANGE_LOW = look(0xd86a14, 0.45, 0, 0.4)
+const deep = (h: number, k: number): number => new THREE.Color(h).multiplyScalar(k).getHex()
+export const ORANGE = look(MACHINE_ORANGE, 0.5, 0, 0.3)
+const ORANGE_TOP = look(MACHINE_ORANGE, 0.48, 0, 0.3)
+const ORANGE_LOW = look(deep(MACHINE_ORANGE, 0.68), 0.45, 0, 0.4)
 const RUBBER = look(0x161617, 0.86, 0, 0)
 const RUBBER_LINE = look(0x2c2c2e, 0.7, 0, 0)
 const NYLON = look(0xe4e0d6, 0.5, 0, 0.2)
@@ -17,12 +18,9 @@ const SOCKET = look(0x2a2b2d, 0.6, 1, 0)
 const SHAFT = look(0xc9cdd1, 0.25, 1, 0)
 
 // The bat stands on its shaft: a low orange foot, the rubber round its waist, and the moulded top above it.
-const BAT = { floor: 9, waist: 20, band: 15, top: 56, lip: 5.2, crown: 5 }
-const F = FLIP as { length: number; radius: number; tip?: number }
+const BAT = { floor: 9, waist: 20, band: 15, top: 56, lip: 5.2, crown: 9 }
 // The rubber's outer line is the line the ball meets: a round at the pivot, a round at the tip, the two flanks between.
-// Until the layout carries the tip's round, the bat takes the size the director gave for it.
-const SIZE = F.tip === undefined ? { radius: 0.4, tip: 0.26 } : { radius: F.radius, tip: F.tip }
-export const BAT_LINE = { pivot: SIZE.radius * BALL, tip: SIZE.tip * BALL, reach: (F.length - SIZE.tip) * BALL }
+export const BAT_LINE = { pivot: FLIP.radius * BALL, tip: FLIP.tip * BALL, reach: (FLIP.length - FLIP.tip) * BALL }
 
 // The outline of a bat that lies along x from its pivot: two rounds and the two lines that touch both.
 export function batOutline(ra: number, rb: number, len: number, steps = 12): V2[] {
@@ -56,7 +54,7 @@ export function batGeometry(): THREE.BufferGeometry {
   b.add(prism(line(BAT.lip + 1.2), BAT.floor, BAT.waist + 1, 2.2, 3), ORANGE_LOW)
   b.add(prism(line(0), BAT.waist, BAT.waist + BAT.band, 2.4, 3), RUBBER)
   b.add(prism(batOutline(ra + 0.35, rb + 0.35, len, 12), BAT.waist + BAT.band / 2 - 0.5, BAT.waist + BAT.band / 2 + 0.5, 0), RUBBER_LINE)
-  b.add(prism(line(BAT.lip), BAT.waist + BAT.band - 1, BAT.top, BAT.crown, 4), ORANGE)
+  b.add(prism(line(BAT.lip), BAT.waist + BAT.band - 1, BAT.top, BAT.crown, 6), ORANGE)
   b.add(prism(line(BAT.lip + BAT.crown + 2.4), BAT.top - 0.6, BAT.top + 1.1, 0.9, 2), ORANGE_TOP)
   const boss = Math.max(8, ra * 0.33)
   b.add(lathe([[boss + 2.2, BAT.top + 0.6], [boss + 2.2, BAT.top + 1.6], [boss + 1, BAT.top + 2.6], [boss - 0.4, BAT.top + 2.6]], 24), ORANGE_TOP)
@@ -72,7 +70,7 @@ export function batGeometry(): THREE.BufferGeometry {
 const flippersOf = (z: Zone) => table.flippers.filter((f) => f.tier === z.tier)
 
 export const flippers = whole('flippers', {
-  version: 'play-flippers-8',
+  version: 'play-flippers-12',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.flippers.${z.id}`

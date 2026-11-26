@@ -203,7 +203,7 @@ describe('the pinball page', () => {
     expect(high.inbox).toBe(1)
     expect([low.gate2, high.gate2]).toEqual([0, 1])
     for (const k of [0, 1, 2]) expect([low[`general${k}`], high[`general${k}`]]).toEqual([0, 1])
-    expect(high.flash1).toBe(1)
+    expect(high.flash1).toBeGreaterThan(0.99)
     expect(high.red).toBe(1)
     expect(low.red).toBe(0)
     expect(last.map((l) => l[0]!.toFixed(2))).toEqual(['0.25', '0.25', '0.25'])

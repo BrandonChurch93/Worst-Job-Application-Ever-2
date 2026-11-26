@@ -8,7 +8,7 @@ import type { Shape } from '../../../stage/types'
 import { dims, flange, leaf, mesh, q, scattered, shared, sheen, srgb } from './careers-solids'
 import { engraved, restingSlab, slabKey } from './perk-cards'
 
-export const MEDAL_LOOK = { lobes: 30, deep: 8.5, band: 141, ring: 138, face: 127, wreath: 110, leaves: 12, leaf: [31, 13, 1.5] as const, sheen: 0.45, axis: 2.2 }
+export const MEDAL_LOOK = { lobes: 30, deep: 12, band: 141, ring: 138, face: 127, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.45, axis: 2.2 }
 
 let faceMade: THREE.MeshPhysicalMaterial | null = null
 
@@ -39,7 +39,7 @@ function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
 let leafMade: THREE.MeshPhysicalMaterial | null = null
 
 // The wreath: pressed into the face, so it is the face's own darker metal.
-const leafMetal = (): THREE.MeshPhysicalMaterial => (leafMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6e7173), roughness: 0.5, metalness: 0.88 })))
+const leafMetal = (): THREE.MeshPhysicalMaterial => (leafMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x7e8183), roughness: 0.4, metalness: 0.9 })))
 
 // A medal struck from aluminium: a scalloped rim, a band, a ring cut with two grooves, a turned face and a wreath pressed into it.
 // Its face lies at the shape's height, where the type is laid. The rim and the ring stand a little above it.
@@ -89,7 +89,7 @@ let blackMade: THREE.MeshPhysicalMaterial | null = null
 let tapeMade: THREE.MeshPhysicalMaterial | null = null
 
 const print = (): THREE.MeshPhysicalMaterial => (printMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6df), roughness: 0.5, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.2 })))
-const black = (): THREE.MeshPhysicalMaterial => (blackMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x202124), roughness: 0.78, metalness: 0, clearcoat: 0.12, clearcoatRoughness: 0.5, specularIntensity: 0.3 })))
+const black = (): THREE.MeshPhysicalMaterial => (blackMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x232527), roughness: 0.66, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.34, specularIntensity: 0.4 })))
 const marker = (): THREE.MeshPhysicalMaterial => (tapeMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1d1d1e), roughness: 0.82, metalness: 0, specularIntensity: 0.35 })))
 
 // A photograph for a staff badge: a print with a white border, its picture blacked out.

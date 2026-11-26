@@ -188,6 +188,7 @@ export function holeShadeGeometry(): THREE.BufferGeometry {
 
 let shadeMaterial: THREE.MeshBasicMaterial | null = null
 let faceMaterial: THREE.MeshPhysicalMaterial | null = null
+let hubMaterial: THREE.MeshPhysicalMaterial | null = null
 
 // The wheel's face is the page's turned aluminium with a finer cut: at this size the shared cut reads as rings, and the approved face is fans of light.
 // It keeps the shared material's shader rules, so it stands under the same studio as everything else.
@@ -203,13 +204,63 @@ function turnedFine(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMater
   return m
 }
 
-interface Kit { seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry }
+// The soft shade the risen dial lays on the tray's floor on the side away from the key: the sunk glass is filled with light and holds little of a lamp's shadow.
+export function castGeometry(): THREE.BufferGeometry {
+  const from = DIAL.r + B.bezel - B.castIn
+  const to = DIAL.r + B.bezel + B.castOut
+  const rings = 10
+  const n = 64
+  const pos: number[] = [0, 0, 0]
+  const col: number[] = [1 - B.cast, 1 - B.cast, 1 - B.cast]
+  const idx: number[] = []
+  for (let k = 0; k <= rings; k++) {
+    const t = k / rings
+    const r = from + (to - from) * t
+    const v = 1 - B.cast * (1 - t * t * (3 - 2 * t))
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2
+      pos.push(r * Math.cos(a), r * Math.sin(a), 0)
+      col.push(v, v, v)
+    }
+  }
+  for (let i = 0; i < n; i++) idx.push(0, 1 + i, 1 + ((i + 1) % n))
+  for (let k = 0; k < rings; k++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      const a = 1 + k * n
+      const b = a + n
+      idx.push(a + i, b + i, a + j, a + j, b + i, b + j)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setIndex(idx)
+  return g
+}
+
+// The hub is the shared orange under a harder lacquer: a turned knob this small is polished, and the approved hub holds one clear point of light.
+function lacquered(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMaterial {
+  const m = shared.clone()
+  m.onBeforeCompile = shared.onBeforeCompile
+  m.customProgramCacheKey = shared.customProgramCacheKey
+  m.clearcoat = 1
+  m.clearcoatRoughness = B.hubCoat
+  m.roughness = B.hubRough
+  m.ior = B.hubIor
+  m.specularIntensity = 1
+  m.specularColor.setScalar(1)
+  m.name = 'dial-hub'
+  return m
+}
+
+interface Kit { seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry; cast: THREE.BufferGeometry }
 let kit: Kit | null = null
 
 function geometries(): Kit {
   if (!kit) {
     const seat = seatGeometry()
-    kit = { seat: seat.collar, gap: seat.gap, housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry() }
+    kit = { seat: seat.collar, gap: seat.gap, housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry(), cast: castGeometry() }
   }
   return kit
 }
@@ -221,7 +272,7 @@ function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, cast = t
   return m
 }
 
-interface Kept { body: THREE.Group; wheel: THREE.Group; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh }
+interface Kept { body: THREE.Group; wheel: THREE.Group; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh }
 const place = new THREE.Matrix4()
 
 export const dial: PartMaker = {
@@ -246,7 +297,8 @@ export const dial: PartMaker = {
     wheel.add(mesh(g.face, faceMaterial))
     wheel.add(mesh(g.edges, m.chrome))
     wheel.add(mesh(g.hubRing, m.gap, false))
-    const hub = mesh(g.hub, m.orange)
+    hubMaterial ??= lacquered(m.orange)
+    const hub = mesh(g.hub, hubMaterial)
     wheel.add(hub)
     body.add(wheel)
     shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false })
@@ -255,7 +307,11 @@ export const dial: PartMaker = {
     shades.frustumCulled = false
     body.add(shades)
     root.add(body)
-    root.userData.dial = { body, wheel, shades, hub, stop, plate } satisfies Kept
+    const cast = mesh(g.cast, shadeMaterial, false)
+    cast.receiveShadow = false
+    cast.position.z = B.castOver
+    root.add(cast)
+    root.userData.dial = { body, wheel, shades, hub, stop, plate, cast } satisfies Kept
     return root
   },
   pose(o: THREE.Object3D, s: Shape, _ctx: RealContext): void {
@@ -270,6 +326,13 @@ export const dial: PartMaker = {
     kept.hub.scale.z = swell
     kept.hub.position.z = H * (1 - swell)
     kept.stop.position.z = -(B.stopClear + B.stopTall + 0.5) * low
+    const [lx, ly] = look.key.direction
+    const l = Math.hypot(lx, ly) || 1
+    const risen = 1 - low
+    const small = (DIAL.r - B.castIn) / (DIAL.r + B.bezel + B.castOut)
+    kept.cast.position.x = (-lx / l) * B.castAway * risen
+    kept.cast.position.y = (-ly / l) * B.castAway * risen
+    kept.cast.scale.setScalar(small + (1 - small) * risen)
     const turn = s.v?.[0] ?? 0
     kept.wheel.rotation.z = -turn
     for (let k = 1; k <= 10; k++) {

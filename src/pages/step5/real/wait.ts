@@ -8,6 +8,7 @@ import { setRun, type Style } from '../../../shell/real/type'
 import { outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
 import { words } from '../../../shell/words'
 import type { Shape } from '../../../stage/types'
+import { panelDrop, panelKey, panelOf } from './metrics'
 import { gridUv, matrix, MATRIX } from './waitMatrix'
 
 const q = (v: number): number => Math.round(v * 4) / 4
@@ -138,13 +139,13 @@ export const wait: PartMaker | null = {
       if (s.id !== 'wait-value' && s.id !== 'wait-count') return null
       return `lamp:${s.type!.font}:${s.type!.px}:${q(s.w)}:${q(s.h)}:${s.words}`
     }
-    if (s.role === 'card') return controls.key(s, ctx)
+    if (s.role === 'card') return panelKey(s)
     if (s.role === 'counter') return `counter:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
     return null
   },
   make(s, ctx) {
     if (s.kind === 'text') return digitsOf(s)
-    if (s.role === 'card') return controls.make(s, ctx)
+    if (s.role === 'card') return panelOf(s)
     return counterOf(s)
   },
   pose(o, s, ctx) {
@@ -163,6 +164,7 @@ export const wait: PartMaker | null = {
     ctx.light({ x: s.x + s.w / 2, y: s.y + s.h / 2, z: s.z1 + 30, colour: LAMP.colour, power: LAMP.power, reach: LAMP.reach })
   },
   drop(o) {
+    if (o.getObjectByName('foot')) panelDrop(o)
     if (!o.userData.own) return
     o.traverse((c) => {
       const m = c as THREE.Mesh

@@ -104,7 +104,7 @@ const RINGS = [0, 1.5, 3, 5, 7.5, 10.5, 14, 18, 23, 29, 36, 45, 56, 70]
 
 // The floor: frosted glass lying in the shade of the wall on the light's side. The shade is laid into the face as vertex colour, from the key's
 // direction and the tray's depth, the way a field's is, but deeper and longer: a tray is the deepest opening of the page.
-export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: number; bounce: number; bounceReach: number; base: number } = TRAY.floor): THREE.BufferGeometry {
+export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: number; bounce: number; bounceReach: number; base: number; side?: number } = TRAY.floor): THREE.BufferGeometry {
   const depth = -s.z0
   const inset = trayFoot(depth) - 0.5
   const w = Math.max(1, s.w - inset * 2)
@@ -136,8 +136,11 @@ export function trayFloor(s: Shape, paint: { soak: number; hold: number; reach: 
     }
     return near
   }
+  const side = paint.side ?? 0
+  const under = (x: number, y: number): number =>
+    side > 0 ? Math.min(reach(x, y, 1), (w / 2 - x * Math.sign(dx)) / side, (h / 2 - y * Math.sign(dy)) / side) : reach(x, y, 1)
   const shade = (x: number, y: number): number =>
-    paint.base * (1 - paint.soak * Math.exp(-Math.max(0, reach(x, y, 1) * slope - depth * paint.hold) / paint.reach)) + paint.bounce * Math.exp(-(reach(x, y, -1) * slope) / paint.bounceReach)
+    paint.base * (1 - paint.soak * Math.exp(-Math.max(0, under(x, y) * slope - depth * paint.hold) / paint.reach)) + paint.bounce * Math.exp(-(reach(x, y, -1) * slope) / paint.bounceReach)
   const pos: number[] = []
   const col: number[] = []
   const idx: number[] = []
@@ -191,7 +194,7 @@ function tray(s: Shape): THREE.Object3D {
   }
   add(kit.joint, m.gap, false, true)
   add(kit.rim, m.chrome, true, true)
-  add(kit.liner, m.aluminiumSatin, true, true)
+  add(kit.liner, m.cardSeal, true, true)
   add(kit.floor, m.glassSunk, false, true)
   shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })
   add(kit.shade, shadeMaterial, false, false)

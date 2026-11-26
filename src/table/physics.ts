@@ -1,6 +1,6 @@
 import RAPIER from '@dimforge/rapier2d-deterministic-compat'
 import { config } from '../config'
-import { COLS, COS25, FLIP, FLIP_REACH, GRAVITY, MID, MOUTH, OUTLANE, R, SIN25, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt, type V } from './layout'
+import { COLS, COS25, FLIP, FLIP_REACH, GRAVITY, MID, MOUTH, OUTLANE, R, SIN25, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt, type V } from './layout'
 
 let ready = false
 export async function prepare(): Promise<void> {
@@ -29,6 +29,8 @@ const LIFT_SHUT = 0.4
 const FOREVER = 1e9
 const BAT = { bounce: 0.3, grip: 0.4 }
 const KICK = { bumper: 18, sling: 12, face: 0.3 }
+const PULSE = { gap: Math.round(0.34 / DT), swell: Math.round(0.4 / DT), rest: Math.round(0.5 / DT), lead: Math.round(0.12 / DT) }
+const FLASHERS = new Set([...table.bumpers, ...table.slings, ...table.targets].map((x) => x.id))
 const SETTLE = { seconds: 0.28, land: 0.45, sink: 0, hop: 0.07 }
 const CARPET = table.flats.find((f) => f.id === 'corporate.carpet')!.box
 
@@ -96,7 +98,7 @@ export class Machine {
     for (const b of table.bumpers) world.createCollider(RAPIER.ColliderDesc.ball(b.r).setTranslation(b.c[0], b.c[1]).setRestitution(0.7).setFriction(0.05), fixed)
     for (const m of table.models) {
       if (!m.solid) continue
-      world.createCollider(RAPIER.ColliderDesc.cuboid(m.box[2] / 2, m.box[3] / 2).setTranslation(m.box[0] + m.box[2] / 2, m.box[1] + m.box[3] / 2).setRestitution(0.3).setFriction(0.1), fixed)
+      for (const [x, y, w, h] of solids(m)) world.createCollider(RAPIER.ColliderDesc.cuboid(w / 2, h / 2).setTranslation(x + w / 2, y + h / 2).setRestitution(0.3).setFriction(0.1), fixed)
     }
     for (const s of table.slings) {
       for (const [a, b, r] of [[s.a, s.b, 0.3], [s.b, s.c, 0.3], [s.a, s.c, 0.65]] as [V, V, number][]) world.createCollider(RAPIER.ColliderDesc.segment({ x: a[0], y: a[1] }, { x: b[0], y: b[1] }).setRestitution(r).setFriction(0.1), fixed)
@@ -188,6 +190,19 @@ export class Machine {
     this.events.push({ name, ball, id, x: b.x, y: b.y })
     this.last[id] = this.steps
     this.last[`${name}:${id}`] = this.steps
+    if (!FLASHERS.has(id)) return
+    const k = (TIERS as string[]).indexOf(id.slice(0, id.indexOf('.')))
+    if (this.steps - (this.last[`rise.${k}`] ?? -PULSE.gap) < PULSE.gap) return
+    this.last[`rise.${k}`] = this.steps
+    this.last[`flash.${k}`] = this.steps
+  }
+
+  private swell(): void {
+    if (!this.balls.some((b) => b.steel && b.mode !== 'none')) return
+    if (this.steps - (this.last['swell.1'] ?? -PULSE.swell) < PULSE.swell || this.steps - (this.last['flash.1'] ?? -PULSE.rest) < PULSE.rest) return
+    if (this.steps + PULSE.lead - (this.last['rise.1'] ?? -PULSE.gap) < PULSE.gap) return
+    this.last['swell.1'] = this.steps
+    this.last['rise.1'] = this.steps + PULSE.lead
   }
 
   // Seconds since a thing was last named in an event (`office.bumper.1`), or since one kind of event at it (`scoop-kick:street.firehouse`): 9 when that never was, or was longer ago.
@@ -245,11 +260,12 @@ export class Machine {
     b.hold = id
     b.wait = wait
     b.age = soft ? 0 : SETTLE.seconds
-    b.fx = soft ? b.x - h.c[0] : 0
-    b.fy = soft ? b.y - h.c[1] : 0
+    const c = h.stand ?? h.c
+    b.fx = soft ? b.x - c[0] : 0
+    b.fy = soft ? b.y - c[1] : 0
     if (!soft) {
-      b.x = h.c[0]
-      b.y = h.c[1]
+      b.x = c[0]
+      b.y = c[1]
     }
     b.vx = 0
     b.vy = 0
@@ -368,16 +384,16 @@ export class Machine {
       this.ride(i, 'launch')
       this.say('plunger', i, id)
     } else if (id === 'corporate.revolving') {
-      this.toPlane(i, b.x, b.y, 0, -14)
+      this.toPlane(i, b.x, b.y, -0.4, -14)
       this.say('spinner', i, id)
     } else if (id === 'corporate.doors') {
-      this.toPlane(i, b.x, b.y, 0.3, 6)
+      this.toPlane(i, b.x, b.y, 1.0, 6)
       this.say('doors-open', i, id)
     } else if (id === 'office.inbox') {
       this.toPlane(i, b.x, b.y, -10.8, 1.2)
       this.say('eject', i, id)
     } else if (id === 'street.firehouse') {
-      this.toPlane(i, b.x, b.y, 8.5, -2.5)
+      this.toPlane(i, b.x, b.y, 10.5, 9)
       this.say('scoop-kick', i, id)
     } else if (id === 'street.mom') {
       this.toPlane(i, b.x, b.y, 0, -22)
@@ -481,7 +497,8 @@ export class Machine {
     if (b.cool > 0) return
     for (const h of table.holds) {
       if (h.tier !== k || !this.on[h.id] || h.id === 'corporate.doors' || (h.kind !== 'scoop' && h.kind !== 'kicker')) continue
-      if (Math.hypot(b.x - h.c[0], b.y - h.c[1]) > (h.kind === 'kicker' ? 0.6 : 0.45)) continue
+      const c = h.mouth ?? h.stand ?? h.c
+      if (Math.hypot(b.x - c[0], b.y - c[1]) > (h.kind === 'kicker' ? 0.6 : 0.45)) continue
       this.hold(i, h.id, h.kind === 'kicker' ? 0.35 : 1)
       this.say(h.kind === 'kicker' ? 'kicker-in' : 'scoop-in', i, h.id)
       return
@@ -504,6 +521,7 @@ export class Machine {
 
   step(left: boolean, right: boolean): TableEvent[] {
     this.events = []
+    this.swell()
     const want: [boolean, boolean] = [left, right]
     let done = -1
     for (let s = 0; s < 2; s++) {
@@ -572,8 +590,9 @@ export class Machine {
           const u = b.age / SETTLE.seconds
           const left = (1 - u) * (1 - u)
           const hop = u < SETTLE.land ? 0 : 4 * ((u - SETTLE.land) / (1 - SETTLE.land)) * (1 - (u - SETTLE.land) / (1 - SETTLE.land))
-          b.x = h.c[0] + b.fx * left
-          b.y = h.c[1] + b.fy * left
+          const c = h.stand ?? h.c
+          b.x = c[0] + b.fx * left
+          b.y = c[1] + b.fy * left
           if (h.tier >= 0 && h.tier < 3) b.z = floorZ(h.tier) - (h.kind === 'scoop' ? SETTLE.sink * Math.min(1, u / SETTLE.land) : 0) + SETTLE.hop * hop
         }
         b.wait -= DT

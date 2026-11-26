@@ -4,7 +4,7 @@ import { studio } from '../../../post/studio'
 import { lit } from '../light'
 import { LIT } from '../lights/groups'
 import type { Zone } from '../zone'
-import { liftOf, roomOf } from '../frame/mats'
+import { MACHINE_ORANGE, liftOf, roomOf } from '../frame/mats'
 import { steel } from '../frame/steel'
 import { Geo, type RGB } from './geo'
 
@@ -40,9 +40,9 @@ export const TONE = {
   rubberLine: hex(0xeeeae0),
   rubberWorn: hex(0xbdb8aa),
   rubberBlack: hex(0x222223),
-  orange: hex(0xf07a1c),
-  knob: hex(0xf07a1c),
-  orangeSeam: hex(0xc85e10),
+  orange: hex(MACHINE_ORANGE),
+  knob: hex(MACHINE_ORANGE),
+  orangeSeam: shade(hex(MACHINE_ORANGE), 0.68),
   grey: hex(0x8e9398),
   greyDark: hex(0x5c6066),
   yellow: hex(0xd9b21c),

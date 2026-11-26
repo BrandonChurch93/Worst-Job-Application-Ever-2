@@ -163,6 +163,43 @@ describe('the dial on the page', () => {
     expect(seen).toBeGreaterThan(0)
   })
 
+  it('lacquers the hub and cuts the face finer under the shared studio rules, never with a material of another law', () => {
+    const list = listAt(3.2)
+    const wheel = list.find((s) => s.id === 'dial-wheel')!
+    const o = dial.make(wheel, context(list, 3.2))
+    const found = new Map<string, THREE.MeshPhysicalMaterial>()
+    o.traverse((c) => {
+      const m = (c as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
+      if (m && (m.name === 'dial-hub' || m.name === 'dial-face')) found.set(m.name, m)
+    })
+    expect([...found.keys()].sort()).toEqual(['dial-face', 'dial-hub'])
+    for (const m of found.values()) expect(m.customProgramCacheKey().startsWith('wja-studio'), m.name).toBe(true)
+    const hub = found.get('dial-hub')!
+    expect(hub.clearcoatRoughness).toBe(DIAL_BODY.hubCoat)
+    expect(hub.roughness).toBe(DIAL_BODY.hubRough)
+    expect(hub.ior).toBe(DIAL_BODY.hubIor)
+  })
+
+  it('lays its soft shade on the floor away from the key only when it has risen, and keeps it under the plate', () => {
+    const at = (t: number): { cast: THREE.Mesh; wheel: Shape } => {
+      const list = listAt(t)
+      const wheel = list.find((s) => s.id === 'dial-wheel')!
+      const ctx = context(list, t)
+      const o = dial.make(wheel, ctx)
+      dial.pose!(o, wheel, ctx)
+      return { cast: (o.userData.dial as { cast: THREE.Mesh }).cast, wheel }
+    }
+    const risen = at(3.2).cast
+    expect(risen.scale.x).toBeCloseTo(1, 6)
+    expect(Math.hypot(risen.position.x, risen.position.y)).toBeCloseTo(DIAL_BODY.castAway, 6)
+    expect(risen.position.z).toBeLessThan(DIAL_BODY.plateLeast)
+    expect(risen.castShadow).toBe(false)
+    const low = at(1.9)
+    expect(low.wheel.z1 - low.wheel.z0).toBeLessThanOrEqual(DIAL_BODY.rest)
+    expect(low.cast.scale.x * (DIAL.r + DIAL_BODY.bezel + DIAL_BODY.castOut)).toBeLessThan(DIAL.r)
+    expect(Math.hypot(low.cast.position.x, low.cast.position.y)).toBeCloseTo(0, 6)
+  })
+
   it('shows its numerals as words of the legends, never as shapes of its own', () => {
     const list = listAt(3.2)
     const numerals = list.filter((s) => s.id.startsWith('dial-numeral-'))
@@ -287,6 +324,19 @@ describe('the rows as they are built', () => {
       expect(helper.words).toBe(`copy:step2.rows.${name}.helper`)
       expect(title.x).toBe(helper.x)
     }
+  })
+
+  it('never leaves a reel\'s legend lying bare on the floor of a tray whose machine has sunk', () => {
+    let sunk = 0
+    for (let t = 13.2; t < 13.7; t += 0.02) {
+      const list = listAt(t)
+      const cabinet = list.find((s) => s.id === 'slot-cabinet')
+      const legends = list.filter((s) => s.id.startsWith('reel-'))
+      if (!cabinet || cabinet.z1 - cabinet.z0 > 2) continue
+      sunk++
+      expect(legends.length, `at ${t.toFixed(2)}`).toBe(0)
+    }
+    expect(sunk).toBeGreaterThan(0)
   })
 
   it('builds a tray on its way open for the height it has', () => {
