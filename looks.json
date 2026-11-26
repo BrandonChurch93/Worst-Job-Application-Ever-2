@@ -1,35 +1,35 @@
 {
   "folder": "step2-slot",
-  "pushed": "2026-11-26T01:07:00.194Z",
-  "commit": "ffc24635cf0935ccab237a5fc11090ad7525f103",
+  "pushed": "2026-11-26T01:18:56.121Z",
+  "commit": "5802bee9802c01b470cb966be8ee25f6a4248c97",
   "looks": [
     {
       "file": "look-1.jpg",
       "caption": "Still sheet-machines-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T01:06:32.102Z",
+      "time": "2026-11-26T01:16:48.799Z",
       "by": "step2-slot",
       "from": "out/work/stills/sheet-machines-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Crank key, review tier: approved image above, the build below. Glass meter segments, three lit, bezel, hub, arm, grip",
-      "time": "2026-11-26T01:06:58.627Z",
+      "caption": "Still step2-step2_slot-0p8-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T01:17:14.618Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126010658-cmp-crank.jpg"
+      "from": "out/work/stills/step2-step2_slot-0p8-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Machines sheet, review tier: approved image above, the build below. Slot machine with lever down, crank, meter with four lit",
-      "time": "2026-11-26T01:06:58.857Z",
+      "caption": "Crank key, review tier, with the dial maker's branch laid over (grip 84 by 40, arm 24): approved above, the build below. Bar grip with collar and seam, bow tie on the turned faces, clear glass segments",
+      "time": "2026-11-26T01:18:54.525Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126010658-cmp-machines.jpg"
+      "from": "out/work/looks/files/20261126011854-crank-with-dial-sizes.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Step 2 at step2.slot 0.8, review tier: cabinet, drums behind glass, lever, payout mouth, sixteen coins as one instanced mesh",
-      "time": "2026-11-26T01:06:59.084Z",
+      "caption": "Machines sheet, review tier, with the dial maker's branch laid over: approved above, the build below. Darker frame, deeper drums, payout mouth, lever mount, thick arm and bar grip",
+      "time": "2026-11-26T01:18:54.783Z",
       "by": "step2-slot",
-      "from": "out/work/looks/files/20261126010659-look-slot.jpg"
+      "from": "out/work/looks/files/20261126011854-machines-with-dial-sizes.jpg"
     }
   ]
 }
