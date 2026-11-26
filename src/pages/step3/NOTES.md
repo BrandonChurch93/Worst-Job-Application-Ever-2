@@ -21,7 +21,9 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 ## The tier
 
 - Columns in balls: left rail 0 to 1.55, lift tube 1.55 to 3.05, playfield 3.25 to 16.75, launch lane 16.95 to 18.45, right rail with the feed tube 18.45 to 20.
-- Flippers 3 balls long, tips 1.5 balls apart. Outlanes 1.4 balls wide. Every listed opening clears `table.minClearanceBalls`.
+- Flippers 3 balls long, capsules 0.4 of a ball in radius at the pivot and 0.26 at the tip, pivots at v 8.95, tips 1.5 balls apart. Outlanes 1.4 balls wide. Every listed opening clears `table.minClearanceBalls`.
+- Slingshots (6.05, 5.55), (6.05, 7.05), (7.35, 7.45) and mirrored. Inserts at (8.3, 7.1), (10, 8.0), (11.7, 7.1), radius 0.62.
+- The mouth between the flippers is sensed at v 10.35 for a ball moving down, and the ball rolls from there into the hole at v 11.05.
 - The lower corners are solid shoulders. They carry the display on the right and the houses.
 - The garage, the ladder and the highway stand on supports and are not obstacles on the floor.
 
@@ -29,12 +31,19 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 
 - On a floor it is a body in the physics world. On a rail, in a hold or towed it is moved by the machine and its body is switched off.
 - Speed on a floor is capped at 30 balls a second.
+- A bumper throws at 18 balls a second or nine tenths of the ball's speed, the greater. A slingshot adds 12. A bat is a capsule with bounce 0.3 and grip 0.4.
+- `aim`: a place the director names. A bumper or a slingshot throws the clear ball in the arc that lands there when that arc leaves the face inside its cone. `shot`: the same for a flip: a bat that began its stroke under the ball ends it by sending the ball there.
+- A ball that enters a scoop or a kicker settles in 0.28 s with one small hop.
+- `on.lifts` false shuts both lifts: a ball at a lift door is turned back.
 - A ball that leaves a tier any other way than its exit is put into that tier's exit and the machine reports `escape`. `npm run paths` counts those.
 
 ## The director
 
 - One clock for film and live. In the film it equals the unit's time. In live it waits at 2.4 s until the ball is sealed, then runs the same script.
-- Each beat has a place the ball must reach, a pull towards it and a last moment. At the last moment the ball is towed there. So every beat event falls in its beat whatever the flippers do.
+- Each beat has a place the ball must reach and a last moment. The director names the place to the machine (`aim`, `shot`) and adds a weak pull within 2.2 balls of it. At the last moment the ball is towed there. So every beat event falls in its beat whatever the flippers do.
+- Lobby: the launched ball lands on the left slingshot and is thrown to the revolving door. Coffee: each bumper throws to the next. From 17.9 s every throw and flip goes to the inbox. Fired: every flip goes to the firehouse, a lob when the ball is on the left bat. Highway: flips go to the flap from 29.3 s. Save: flips are asked for from 35.6 s. One second before a tier's exit opens no flip is asked for and throws go to the mouth.
+- Stage events added: `carpet-roll` (once), `inbox-take`, `firehouse-take`.
+- The cursor: one acting state per situation (`mood`), set once a step. A hit presses it flat (bumper 0.5 s, kick 0.7 s, the doors 1.6 s) and it peels off the glass. It leans where the ball goes.
 - Each tier's exit is closed until that tier's beats are over. A ball that reaches a closed exit is kicked back up the middle.
 - `bumper` is emitted for the applicant's ball during the Coffee beat only. Bumper hits at other times and hits by steel balls emit `flasher`.
 - `flipper-save` is emitted when a flipper is pressed with the ball over it during the Save beat. If nobody flips, the kick from the closed exit emits it once.
@@ -59,6 +68,7 @@ Phase 2, engine and blockout. Everything here is a stand-in shape with working l
 - Search 4 was allowed by the Builder (10:03 UTC) for one thing: the key `last-save` at 35.5 s must show the ball caught by a flipper. `npm run take -- --allow 4 --from 34` keeps the eight flips before 34 s as they were and searches only the flips after. A run earns more when the ball is on a flipper at 35.5 s. Kept: run 5, 9 flips, the last one the right flipper at 35.53 s.
 - For this the ball leaves the spiral 0.4 s later (`T.spiralEnd` 34.2 to 34.6). What moved: `flipper-save` 35.12 s to 35.53 s, `drain` 38.52 s to 37.88 s. The other eight events did not move. All ten are inside their beats.
 - `npm run take -- --check` also says whether the ball is on a flipper at the key.
+- Phase 4 (pinball-director): the replay stops on the exact step of the key, so the check sees 35.59 s. Searches 5 to 12 were bought by the layout and physics changes, three each (see `pipeline/phase4/pinball-director.md`). Kept: search 12, run 21, 5 flips, 1 tow.
 
 ## Needs
 

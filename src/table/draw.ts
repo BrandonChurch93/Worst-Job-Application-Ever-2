@@ -1,5 +1,5 @@
 import type { Shape, Tone } from '../stage/types'
-import { APRON_H, APRON_Y, BALL, COLS, FLIP, LAST_Y, MARQUEE_H, MARQUEE_Y, MID, OUTLET, PLUNGER, PORT, SCREEN, TH, TIERS, TIER_Y, floorZ, table, type P3, type V } from './layout'
+import { APRON_H, APRON_Y, BALL, COLS, FLIP, FLIP_REACH, LAST_Y, MARQUEE_H, MARQUEE_Y, MID, OUTLET, PLUNGER, PORT, SCREEN, TH, TIERS, TIER_Y, floorZ, table, type P3, type V } from './layout'
 import type { Machine } from './physics'
 
 const px = (v: number): number => v * BALL
@@ -217,8 +217,8 @@ export function movingShapes(m: Machine, lit: boolean[], hide: boolean, glow: (b
     const z = px(floorZ(f.tier))
     const a = m.flipperAngle(f.side) * DEG
     const dir = f.side === 'left' ? 1 : -1
-    const tip: V = [f.pivot[0] + dir * FLIP.length * Math.cos(a), f.pivot[1] + FLIP.length * Math.sin(a)]
-    out.push({ ...bar(`flipper.${f.id}`, 'flippers', f.pivot, tip, FLIP.radius * 2, z, z + 44, 'accent', 'capsule'), v: [a] })
+    const tip: V = [f.pivot[0] + dir * FLIP_REACH * Math.cos(a), f.pivot[1] + FLIP_REACH * Math.sin(a)]
+    out.push({ ...bar(`flipper.${f.id}`, 'flippers', f.pivot, tip, FLIP.radius + FLIP.tip, z, z + 44, 'accent', 'capsule'), v: [a] })
   }
   for (const t of table.targets) {
     const z = px(floorZ(t.tier))

@@ -1,29 +1,25 @@
 {
   "about": "The kept run of the table: when each flipper is held, in seconds of the unit. Written by npm run take.",
-  "searches": 4,
-  "allowed": 4,
+  "searches": 12,
+  "allowed": 13,
   "kept": {
-    "search": 4,
-    "run": 5,
+    "search": 12,
+    "run": 21,
     "seed": 20261124,
     "policy": {
-      "hold": 32,
+      "hold": 30,
       "delay": 7,
-      "rest": 70,
-      "skip": 0.49218310648575425
+      "rest": 33,
+      "skip": 0.1983691668137908
     },
-    "score": 10823,
-    "keptFlipsBefore": 34
+    "score": 10857,
+    "keptFlipsBefore": 0
   },
   "flips": [
-    ["R",11.8396,12.1271],
-    ["L",14.7438,15.0313],
-    ["L",17.4396,17.7271],
-    ["R",17.6229,17.9104],
-    ["R",18.1438,18.4312],
-    ["L",22.8188,23.1062],
-    ["R",23.0021,23.2896],
-    ["L",24.3104,24.5979],
-    ["R",35.5271,35.6604]
+    ["L",18.0313,18.1563],
+    ["L",22.4604,22.5854],
+    ["R",25.8938,26.0188],
+    ["R",30.7104,30.8354],
+    ["R",35.6271,35.7521]
   ]
 }

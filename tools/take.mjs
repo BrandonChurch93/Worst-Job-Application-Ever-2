@@ -75,7 +75,8 @@ function play(driver) {
   let atKey = false
   while (!stage.finished && stage.time < unitSeconds + 1) {
     if (stage.page.id === 'step3') tows = stage.page.save().s.tows
-    stage.advance(hz / 4)
+    const toKey = Math.round((keyTime - stage.time) * hz)
+    stage.advance(toKey > 0 && toKey < hz / 4 ? toKey : hz / 4)
     if (stage.page.id === 'step3' && Math.abs(stage.time - keyTime) < 0.5 / hz) atKey = caught(stage.page.save().m.balls[0])
   }
   const out = { beats: [], inside: 0, wanted: 0, tows, bumpers: 0, flipSave: false, atKey, finished: stage.finished }

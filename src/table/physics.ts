@@ -1,6 +1,6 @@
 import RAPIER from '@dimforge/rapier2d-deterministic-compat'
 import { config } from '../config'
-import { COLS, FLIP, GRAVITY, MID, MOUTH, OUTLANE, R, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt, type V } from './layout'
+import { COLS, COS25, FLIP, FLIP_REACH, GRAVITY, MID, MOUTH, OUTLANE, R, SIN25, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, table, tierAt, type V } from './layout'
 
 let ready = false
 export async function prepare(): Promise<void> {
@@ -12,12 +12,12 @@ export async function prepare(): Promise<void> {
 export type BallMode = 'none' | 'plane' | 'rail' | 'hold' | 'tow'
 export interface BallState {
   mode: BallMode; steel: boolean; x: number; y: number; z: number; vx: number; vy: number; tier: number
-  rail: string; s: number; speed: number; hold: string; wait: number; tx: number; ty: number; then: string; cool: number
+  rail: string; s: number; speed: number; hold: string; wait: number; tx: number; ty: number; then: string; cool: number; age: number; fx: number; fy: number
 }
 export interface TableEvent { name: string; ball: number; id: string; x: number; y: number }
 export interface MachineState {
   snap: string; balls: BallState[]; flip: [number, number]; held: [boolean, boolean]; down: boolean[]; bank: number[]; cool: number[]; gate: boolean[]; on: Record<string, boolean>
-  mom: boolean; saves: number; magnet: [number, number, number] | null; score: number; steps: number; last: Record<string, number>
+  mom: boolean; carpet?: boolean; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
 }
 
 const DEG = 0.017453292519943295
@@ -25,7 +25,12 @@ const BALLS = 1 + config.live.pinball.extraBallsInReplyAll
 const HZ = config.sim.stepHz
 const DT = 1 / HZ
 const MAX_SPEED = 30
+const LIFT_SHUT = 0.4
 const FOREVER = 1e9
+const BAT = { bounce: 0.3, grip: 0.4 }
+const KICK = { bumper: 18, sling: 12, face: 0.3 }
+const SETTLE = { seconds: 0.28, land: 0.45, sink: 0, hop: 0.07 }
+const CARPET = table.flats.find((f) => f.id === 'corporate.carpet')!.box
 
 const toBase64 = (bytes: Uint8Array): string => {
   let s = ''
@@ -49,7 +54,7 @@ const distSeg = (px: number, py: number, a: V, b: V): { d: number; nx: number; n
   return { d, nx: d > 0 ? qx / d : 0, ny: d > 0 ? qy / d : -1 }
 }
 const distBox = (px: number, py: number, b: [number, number, number, number]): number => Math.hypot(Math.max(b[0] - px, 0, px - b[0] - b[2]), Math.max(b[1] - py, 0, py - b[1] - b[3]))
-const newBall = (steel: boolean): BallState => ({ mode: 'none', steel, x: 0, y: 0, z: 0, vx: 0, vy: 0, tier: 0, rail: '', s: 0, speed: 0, hold: '', wait: 0, tx: 0, ty: 0, then: '', cool: 0 })
+const newBall = (steel: boolean): BallState => ({ mode: 'none', steel, x: 0, y: 0, z: 0, vx: 0, vy: 0, tier: 0, rail: '', s: 0, speed: 0, hold: '', wait: 0, tx: 0, ty: 0, then: '', cool: 0, age: 0, fx: 0, fy: 0 })
 const banks = [...new Set(table.targets.filter((t) => t.kind === 'drop').map((t) => t.id.slice(0, t.id.lastIndexOf('.'))))]
 
 export class Machine {
@@ -65,8 +70,12 @@ export class Machine {
   gate: boolean[] = [true, true, true]
   on: Record<string, boolean> = {}
   mom = false
+  carpet = false
   saves = 0
-  magnet: [number, number, number] | null = null
+  magnet: number[] | null = null
+  aim: [number, number, number] | null = null
+  shot: [number, number, number] | null = null
+  armed: [boolean, boolean] = [false, false]
   score = 0
   steps = 0
   last: Record<string, number> = {}
@@ -94,8 +103,9 @@ export class Machine {
     }
     this.flipHandles = table.flippers.map((f) => {
       const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(f.pivot[0], f.pivot[1]).setRotation((f.side === 'left' ? FLIP.rest : -FLIP.rest) * DEG))
-      const half = FLIP.length / 2
-      world.createCollider(RAPIER.ColliderDesc.cuboid(half, FLIP.radius).setTranslation(f.side === 'left' ? half : -half, 0).setRestitution(0.3).setFriction(0.4), body)
+      const far = f.side === 'left' ? FLIP_REACH : -FLIP_REACH
+      const flank = RAPIER.ColliderDesc.convexHull(new Float32Array([0, -FLIP.radius, far, -FLIP.tip, far, FLIP.tip, 0, FLIP.radius]))!
+      for (const c of [RAPIER.ColliderDesc.ball(FLIP.radius), RAPIER.ColliderDesc.ball(FLIP.tip).setTranslation(far, 0), flank]) world.createCollider(c.setRestitution(BAT.bounce).setFriction(BAT.grip), body)
       return body.handle
     })
     this.balls = []
@@ -116,8 +126,12 @@ export class Machine {
     this.gate = [true, true, true]
     this.on = Object.fromEntries(table.holds.map((h) => [h.id, true]))
     this.mom = false
+    this.carpet = false
     this.saves = 0
     this.magnet = null
+    this.aim = null
+    this.shot = null
+    this.armed = [false, false]
     this.score = 0
     this.steps = 0
     this.last = {}
@@ -136,7 +150,7 @@ export class Machine {
   save(): MachineState {
     return {
       snap: toBase64(this.world.takeSnapshot()), balls: this.balls.map((b) => ({ ...b })), flip: [...this.flip], held: [...this.held], down: [...this.down], bank: [...this.bank], cool: [...this.cool], gate: [...this.gate],
-      on: { ...this.on }, mom: this.mom, saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, score: this.score, steps: this.steps, last: { ...this.last }
+      on: { ...this.on }, mom: this.mom, carpet: this.carpet, saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
     }
   }
 
@@ -153,8 +167,12 @@ export class Machine {
     this.gate = [...s.gate]
     this.on = { ...s.on }
     this.mom = s.mom
+    this.carpet = s.carpet === true
     this.saves = s.saves
     this.magnet = s.magnet ? [...s.magnet] : null
+    this.aim = s.aim ? [...s.aim] : null
+    this.shot = s.shot ? [...s.shot] : null
+    this.armed = [!!s.armed?.[0], !!s.armed?.[1]]
     this.score = s.score
     this.steps = s.steps
     this.last = { ...(s.last ?? {}) }
@@ -222,11 +240,17 @@ export class Machine {
     const b = this.balls[i]!
     const h = holdOf(id)
     this.offPlane(i)
+    const soft = (h.kind === 'scoop' || h.kind === 'kicker') && b.mode === 'plane'
     b.mode = 'hold'
     b.hold = id
     b.wait = wait
-    b.x = h.c[0]
-    b.y = h.c[1]
+    b.age = soft ? 0 : SETTLE.seconds
+    b.fx = soft ? b.x - h.c[0] : 0
+    b.fy = soft ? b.y - h.c[1] : 0
+    if (!soft) {
+      b.x = h.c[0]
+      b.y = h.c[1]
+    }
     b.vx = 0
     b.vy = 0
     if (h.tier >= 0 && h.tier < 3) b.z = floorZ(h.tier)
@@ -260,10 +284,31 @@ export class Machine {
     b.vy = vy
   }
 
+  // Where a bumper or a slingshot throws the clear ball when the director has named a place: the arc that lands there at this speed, when that leaves the face within its cone. Otherwise nothing, and the face throws straight.
+  private aimed(i: number, nx: number, ny: number, speed: number): V | null {
+    const a = this.aim
+    const b = this.balls[i]!
+    if (!a || i !== 0) return null
+    const dx = a[0] - b.x
+    const dy = a[1] - b.y
+    const d2 = dx * dx + dy * dy
+    if (d2 < 0.25) return null
+    const k = speed * speed + dy * GRAVITY
+    const under = k * k - GRAVITY * GRAVITY * d2
+    if (under < 0) return null
+    const time = Math.sqrt((k - Math.sqrt(under)) / (GRAVITY * GRAVITY * 0.5))
+    const vx = dx / time
+    const vy = dy / time - GRAVITY * time * 0.5
+    return (vx * nx + vy * ny) / speed < a[2] ? null : [vx, vy]
+  }
+
   private then(i: number, what: string): void {
     const [kind, id] = what.split(':') as [string, string]
-    if (kind === 'hold') this.hold(i, id, FOREVER)
-    else if (kind === 'rail') {
+    if (kind === 'hold') {
+      this.hold(i, id, FOREVER)
+      const h = holdOf(id)
+      if (h.kind === 'scoop' || h.kind === 'kicker') this.say(h.kind === 'kicker' ? 'kicker-in' : 'scoop-in', i, id)
+    } else if (kind === 'rail') {
       this.ride(i, id)
       if (id === 'highway' || id === 'ladder') this.say('ramp-roll', i, id)
     }
@@ -326,13 +371,13 @@ export class Machine {
       this.toPlane(i, b.x, b.y, 0, -14)
       this.say('spinner', i, id)
     } else if (id === 'corporate.doors') {
-      this.toPlane(i, b.x, b.y, 2.5, 6)
+      this.toPlane(i, b.x, b.y, 0.3, 6)
       this.say('doors-open', i, id)
     } else if (id === 'office.inbox') {
       this.toPlane(i, b.x, b.y, -7, 3)
       this.say('eject', i, id)
     } else if (id === 'street.firehouse') {
-      this.toPlane(i, b.x, b.y, 5, 6)
+      this.toPlane(i, b.x, b.y, 8.5, -2.5)
       this.say('scoop-kick', i, id)
     } else if (id === 'street.mom') {
       this.toPlane(i, b.x, b.y, 0, -22)
@@ -354,8 +399,8 @@ export class Machine {
       this.atGate(i, k)
       return
     }
-    if (v > MOUTH.v && Math.abs(b.x - MID) < MOUTH.half) {
-      this.atGate(i, k)
+    if (v > MOUTH.v && b.vy > 0 && Math.abs(b.x - MID) < MOUTH.half) {
+      this.tow(i, MID, y0 + MOUTH.hole, Math.max(12, Math.hypot(b.vx, b.vy)), `gate:${k}`)
       return
     }
     if (v > OUTLANE.v && (b.x < OUTLANE.inner || b.x > 20 - OUTLANE.inner)) {
@@ -368,6 +413,10 @@ export class Machine {
       this.mom = true
       this.hold(i, 'street.mom', 0.5)
       this.say('mom-hatch', i, 'street.mom')
+      return
+    }
+    if (this.on['lifts'] === false && b.x < COLS.left + 0.05 && ((k === 1 && v > 4.5 && v < 5.9) || (k === 2 && v > 0.35 && v < 1.7))) {
+      if (b.vx < 0) this.kick(i, -b.vx * LIFT_SHUT, b.vy)
       return
     }
     if (k === 1 && b.x < COLS.left + 0.05 && v > 4.5 && v < 5.9) {
@@ -389,8 +438,9 @@ export class Machine {
       const dy = b.y - m.c[1]
       const d = Math.hypot(dx, dy)
       if (d > m.r + R + 0.05 || d === 0) continue
-      const out = Math.max(15, speed * 0.9)
-      this.kick(i, (dx / d) * out, (dy / d) * out)
+      const out = Math.max(KICK.bumper, speed * 0.9)
+      const to = this.aimed(i, dx / d, dy / d, out)
+      this.kick(i, to ? to[0] : (dx / d) * out, to ? to[1] : (dy / d) * out)
       this.cool[c] = 0.08
       this.score += 1000
       this.say('bumper', i, m.id)
@@ -401,7 +451,8 @@ export class Machine {
       const q = distSeg(b.x, b.y, s.a, s.c)
       const inward = s.side === 'left' ? 1 : -1
       if (q.d > R + 0.06 || q.nx * inward <= 0 || b.vx * q.nx + b.vy * q.ny > 1) continue
-      this.kick(i, b.vx + q.nx * 11, b.vy + q.ny * 11)
+      const to = this.aimed(i, q.nx, q.ny, KICK.sling)
+      this.kick(i, to ? to[0] : b.vx + q.nx * KICK.sling, to ? to[1] : b.vy + q.ny * KICK.sling)
       this.cool[c] = 0.15
       this.score += 500
       this.say('sling', i, s.id)
@@ -454,12 +505,20 @@ export class Machine {
   step(left: boolean, right: boolean): TableEvent[] {
     this.events = []
     const want: [boolean, boolean] = [left, right]
+    let done = -1
     for (let s = 0; s < 2; s++) {
-      if (want[s] && !this.held[s]) this.events.push({ name: 'flipper', ball: -1, id: s === 0 ? 'left' : 'right', x: s === 0 ? FLIP.pivotU : 20 - FLIP.pivotU, y: 0 })
+      if (want[s] && !this.held[s]) {
+        this.events.push({ name: 'flipper', ball: -1, id: s === 0 ? 'left' : 'right', x: s === 0 ? FLIP.pivotU : 20 - FLIP.pivotU, y: 0 })
+        const o = this.over(s)
+        this.armed[s] = !!o && o.along > 0.2 && o.along < FLIP_REACH + 0.15 && o.above > 0 && o.above < FLIP.radius + R + 0.2
+      }
       this.held[s] = want[s]!
       const to = want[s] ? 1 : 0
       const d = DT / FLIP.seconds
-      this.flip[s] = to > this.flip[s]! ? Math.min(to, this.flip[s]! + d) : Math.max(to, this.flip[s]! - d)
+      const was = this.flip[s]!
+      this.flip[s] = to > was ? Math.min(to, was + d) : Math.max(to, was - d)
+      if (!want[s]) this.armed[s] = false
+      else if (this.armed[s] && was < 1 && this.flip[s] === 1) done = s
     }
     for (const f of table.flippers) {
       const pos = this.flip[f.side === 'left' ? 0 : 1]!
@@ -469,12 +528,13 @@ export class Machine {
     const m = this.magnet
     if (m && this.balls[0]!.mode === 'plane') {
       const b = this.balls[0]!
-      const dx = m[0] - b.x
-      const dy = m[1] - b.y
+      const dx = m[0]! - b.x
+      const dy = m[1]! - b.y
       const d = Math.hypot(dx, dy)
-      if (d > 0.05) this.kick(0, b.vx + (dx / d) * m[2] * DT, b.vy + (dy / d) * m[2] * DT)
+      if (d > 0.05 && (m[3] === undefined || d < m[3]!)) this.kick(0, b.vx + (dx / d) * m[2]! * DT, b.vy + (dy / d) * m[2]! * DT)
     }
     this.world.step()
+    if (done >= 0) this.strike(done)
     for (let c = 0; c < this.cool.length; c++) if (this.cool[c]! > 0) this.cool[c] = this.cool[c]! - DT
     for (let k = 0; k < this.bank.length; k++) {
       if (this.bank[k]! <= 0) continue
@@ -506,6 +566,16 @@ export class Machine {
         b.vy = p.dy * b.speed
         if (b.s >= railLength(r)) this.railEnd(i)
       } else if (b.mode === 'hold') {
+        if (b.age < SETTLE.seconds) {
+          const h = holdOf(b.hold)
+          b.age = Math.min(SETTLE.seconds, b.age + DT)
+          const u = b.age / SETTLE.seconds
+          const left = (1 - u) * (1 - u)
+          const hop = u < SETTLE.land ? 0 : 4 * ((u - SETTLE.land) / (1 - SETTLE.land)) * (1 - (u - SETTLE.land) / (1 - SETTLE.land))
+          b.x = h.c[0] + b.fx * left
+          b.y = h.c[1] + b.fy * left
+          if (h.tier >= 0 && h.tier < 3) b.z = floorZ(h.tier) - (h.kind === 'scoop' ? SETTLE.sink * Math.min(1, u / SETTLE.land) : 0) + SETTLE.hop * hop
+        }
         b.wait -= DT
         if (b.wait <= 0) this.holdEnd(i)
       } else if (b.mode === 'tow') {
@@ -525,6 +595,11 @@ export class Machine {
         }
       }
     }
+    const lead = this.balls[0]!
+    const rolling = lead.mode === 'plane' || lead.mode === 'tow'
+    const over = rolling && lead.x > CARPET[0] && lead.x < CARPET[0] + CARPET[2] && lead.y > CARPET[1] && lead.y < CARPET[1] + CARPET[3]
+    if (over && !this.carpet) this.say('carpet-roll', 0, 'corporate.carpet')
+    if (rolling) this.carpet = over
     for (let i = 1; i < this.balls.length; i++) {
       const a = this.balls[0]!
       const b = this.balls[i]!
@@ -543,22 +618,38 @@ export class Machine {
     return FLIP.rest + (FLIP.up - FLIP.rest) * pos
   }
 
-  wants(from = 1.2, rising = -3): [boolean, boolean] {
+  // Where the clear ball is over a bat at rest: how far along it from the pivot and how far above its middle line.
+  private over(s: number): { along: number; above: number } | null {
     const b = this.balls[0]!
+    if (b.mode !== 'plane') return null
+    const px = s === 0 ? FLIP.pivotU : 20 - FLIP.pivotU
+    const dir = s === 0 ? 1 : -1
+    const rx = b.x - px
+    const ry = b.y - (TIER_Y[b.tier]! + FLIP.pivotV)
+    return { along: rx * COS25 * dir + ry * SIN25, above: rx * SIN25 * dir - ry * COS25 }
+  }
+
+  wants(from = 1.2, rising = -3): [boolean, boolean] {
     const out: [boolean, boolean] = [false, false]
-    if (b.mode !== 'plane') return out
-    const y0 = TIER_Y[b.tier]!
     for (let s = 0; s < 2; s++) {
-      const px = s === 0 ? FLIP.pivotU : 20 - FLIP.pivotU
-      const dir = s === 0 ? 1 : -1
-      const ax = 0.9063077870366499 * dir
-      const ay = 0.42261826174069944
-      const rx = b.x - px
-      const ry = b.y - (y0 + FLIP.pivotV)
-      const along = rx * ax + ry * ay
-      const above = rx * ay * dir - ry * 0.9063077870366499
-      out[s] = along > from && along < FLIP.length + 0.3 && above > 0 && above < 1.0 && b.vy > rising
+      const o = this.over(s)
+      out[s] = !!o && o.along > from && o.along < FLIP.length + 0.3 && o.above > 0 && o.above < FLIP.radius + R + 0.3 && this.balls[0]!.vy > rising
     }
     return out
+  }
+
+  // A bat that began its stroke under the ball ends it by sending the ball where the director asked, in the arc that gets it there.
+  private strike(s: number): void {
+    this.armed[s] = false
+    const sh = this.shot
+    const b = this.balls[0]!
+    if (!sh || b.mode !== 'plane') return
+    const dx = sh[0] - b.x
+    const dy = sh[1] - b.y
+    const d = Math.hypot(dx, dy)
+    if (d < 1) return
+    const time = d / sh[2]
+    this.kick(0, dx / time, dy / time - 0.5 * GRAVITY * time)
+    this.say('shot', 0, s === 0 ? 'left' : 'right')
   }
 }
