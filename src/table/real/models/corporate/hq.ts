@@ -26,7 +26,7 @@ const GLASS: RGB = [0.016, 0.085, 0.1]
 const CARPET: RGB = [0.028, 0.05, 0.075]
 const CEILING: RGB = [COOL[0] * 0.004, COOL[1] * 0.008, COOL[2] * 0.01]
 const RISE: [number, number][] = [[0, 0.3], [0.22, 0.55], [0.58, 1.5], [0.8, 1.1], [1, 0.35]]
-const PILE = { step: 3.4, lean: 0.07 }
+const PILE = { step: 4.3, lean: 0.07 }
 const CRIMSON: RGB = [0.21, 0.012, 0.022]
 const DESK: RGB = [0.5, 0.38, 0.24]
 const GLASS_PALE: RGB = [0.02, 0.085, 0.1]
@@ -330,14 +330,14 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
 
     // The hall: a pale stone floor with a dark border and a brass round under the open middle, a runner in from the doors, columns, a desk and three lifts in the back wall.
     fin(G, FINISH.stone, () => {
-      flat(G, room, 6.2, 1, warm(0.15))
+      flat(G, room, 6.2, 1, warm(0.3))
       level(G, inset(room, 7), inset(room, 9.5), 6.3, 1, warm(0.16))
       G.lathe([[30, 0], [30, 0.3], [0, 0.3]], mid[0], mid[1], 28, (k) => (k === 0 ? warm(0.2) : warm(0.62)), 6.2)
       G.lathe([[23, 0], [23, 0.2], [0, 0.2]], mid[0], mid[1], 28, [COOL[0] * 0.5, COOL[1] * 0.36, COOL[2] * 0.16], 6.5)
       G.lathe([[17, 0], [17, 0.2], [0, 0.2]], mid[0], mid[1], 28, warm(0.7), 6.7)
       // The back wall: dim at the floor, lit under the ceiling.
       const rise = [6, 6 + (pz0 - 6) * 0.45, 6 + (pz0 - 6) * 0.8, pz0]
-      ;[0.05, 0.1, 0.19].forEach((k, i) => G.face([[room.x0, room.y1, rise[i]!], [room.x1, room.y1, rise[i]!], [room.x1, room.y1, rise[i + 1]!], [room.x0, room.y1, rise[i + 1]!]], [0, -1, 0], [1, 0, 0], warm(k)))
+      ;[0.2, 0.38, 0.62].forEach((k, i) => G.face([[room.x0, room.y1, rise[i]!], [room.x1, room.y1, rise[i]!], [room.x1, room.y1, rise[i + 1]!], [room.x0, room.y1, rise[i + 1]!]], [0, -1, 0], [1, 0, 0], warm(k)))
       for (const s of [-1, 0, 1]) {
         const x = s * 46
         G.face([[x - 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 104], [x - 15, room.y1 - 0.4, 104]], [0, -1, 0], [1, 0, 0], [0.26, 0.19, 0.09])
@@ -481,13 +481,13 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
     })
     // The deck: pavers, no two of one grey, with dark joints between.
     fin(S, FINISH.brushed, () => {
-      flat(S, deck, roof + 1.6, 1, shade(STEEL_DARK, 0.16))
-      const nx = cols * 2
+      flat(S, deck, roof + 1.6, 1, shade(STEEL_DARK, 0.14))
+      const nx = cols * 3
       const ny = Math.max(4, Math.round((deck.y1 - deck.y0) / ((deck.x1 - deck.x0) / nx)))
       for (let i = 0; i < nx; i++) {
         for (let j = 0; j < ny; j++) {
-          const r: Rect = { x0: deck.x0 + ((deck.x1 - deck.x0) * i) / nx + 0.7, x1: deck.x0 + ((deck.x1 - deck.x0) * (i + 1)) / nx - 0.7, y0: deck.y0 + ((deck.y1 - deck.y0) * j) / ny + 0.7, y1: deck.y0 + ((deck.y1 - deck.y0) * (j + 1)) / ny - 0.7 }
-          flat(S, r, roof + 2, 1, shade(STEEL, slab.range(0.66, 0.94)))
+          const r: Rect = { x0: deck.x0 + ((deck.x1 - deck.x0) * i) / nx + 0.8, x1: deck.x0 + ((deck.x1 - deck.x0) * (i + 1)) / nx - 0.8, y0: deck.y0 + ((deck.y1 - deck.y0) * j) / ny + 0.8, y1: deck.y0 + ((deck.y1 - deck.y0) * (j + 1)) / ny - 0.8 }
+          flat(S, r, roof + 2, 1, shade(STEEL, slab.range(0.74, 1.08)))
         }
       }
     })
@@ -536,6 +536,44 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
         flat(G, { x0: x - 8.6, x1: x - 0.5, y0: y - 5.6, y1: y + 5.6 }, roof + 5.7, 1, warm(0.5 * on))
         flat(G, { x0: x + 0.5, x1: x + 8.6, y0: y - 5.6, y1: y + 5.6 }, roof + 5.7, 1, warm(0.42 * on))
       }, 1)
+    }
+    // The glass roof of the atrium: through it the lit galleries of the floors below and the hall at the foot of the well.
+    const sky: Rect = { x0: -62, x1: 62, y0: cy - dd * 0.2 + 3, y1: cy - dd * 0.03 }
+    fin(S, FINISH.brushed, () => {
+      S.box(sky.x0 - 3, sky.x1 + 3, sky.y0 - 3, sky.y0, roof + 2, roof + 7, STEEL, { bevel: 0.8 })
+      S.box(sky.x0 - 3, sky.x1 + 3, sky.y1, sky.y1 + 3, roof + 2, roof + 7, STEEL, { bevel: 0.8 })
+      S.box(sky.x0 - 3, sky.x0, sky.y0, sky.y1, roof + 2, roof + 7, STEEL, { bevel: 0.8 })
+      S.box(sky.x1, sky.x1 + 3, sky.y0, sky.y1, roof + 2, roof + 7, STEEL, { bevel: 0.8 })
+    })
+    fin(G, FINISH.gloss, () => {
+      const well = inset(sky, 9)
+      const foot = inset(sky, 15)
+      level(G, sky, well, roof + 3, 1, warm(0.42))
+      level(G, well, foot, roof + 2.9, 1, warm(0.2))
+      flat(G, foot, roof + 2.8, 1, warm(0.07))
+      flat(G, { x0: -9, x1: 9, y0: (foot.y0 + foot.y1) / 2 - 4, y1: (foot.y0 + foot.y1) / 2 + 4 }, roof + 2.85, 1, warm(0.5))
+      for (let k = 0; k < 9; k++) {
+        const x = sky.x0 + 6 + (k * (sky.x1 - sky.x0 - 12)) / 8
+        for (const y of [sky.y0 + 4.5, sky.y1 - 4.5]) flat(G, { x0: x - 2.2, x1: x + 2.2, y0: y - 1.5, y1: y + 1.5 }, roof + 3.1, 1, lamp(slab.next() < 0.2 ? 0.2 : slab.range(0.6, 0.95)))
+      }
+    }, 1)
+    fin(S, FINISH.satin, () => {
+      for (let k = 1; k < 8; k++) {
+        const x = sky.x0 + (k * (sky.x1 - sky.x0)) / 8
+        flat(S, { x0: x - 0.8, x1: x + 0.8, y0: sky.y0, y1: sky.y1 }, roof + 6.4, 1, shade(STEEL_DARK, 0.5))
+      }
+      for (let k = 1; k < 3; k++) {
+        const y = sky.y0 + (k * (sky.y1 - sky.y0)) / 3
+        flat(S, { x0: sky.x0, x1: sky.x1, y0: y - 0.8, y1: y + 0.8 }, roof + 6.5, 1, shade(STEEL_DARK, 0.5))
+      }
+    })
+    // A second row of roof lights behind the plant.
+    for (const ax of [50, 80, 110, 140]) for (const sx of [-1, 1]) {
+      const x = sx * ax
+      const y = cy + dd * 0.35
+      const on = slab.next() < 0.25 ? 0.12 : slab.range(0.55, 1)
+      fin(S, FINISH.brushed, () => S.box(x - 8, x + 8, y - 5.5, y + 5.5, roof + 2, roof + 5, STEEL))
+      fin(G, FINISH.gloss, () => flat(G, { x0: x - 6.2, x1: x + 6.2, y0: y - 3.8, y1: y + 3.8 }, roof + 5.1, 1, warm(0.46 * on)), 1)
     }
     // Pipes, a row of vents and the cable tray that ties them.
     fin(S, FINISH.polished, () => {

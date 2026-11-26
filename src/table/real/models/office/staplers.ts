@@ -6,7 +6,7 @@ import { hex, Kit, matsOf, meshOf, mix, shade, SURF, type RGB, type Surf, type V
 
 const C = {
   red: hex(0x98161b),
-  plate: hex(0x7c1318),
+  plate: hex(0x6a727b),
   foot: hex(0xc4cbd3),
   under: [1, 0.6, 0.26] as RGB,
   steel: hex(0x9aa1aa),
@@ -91,7 +91,7 @@ function body(k: Kit, f: Frame): void {
     }
     return out
   }
-  k.poly(strip(2, L + 1, SIDE.shade), 0.05, 0.3, shade(C.plate, 0.5), SURF.enamel, 0)
+  k.poly(strip(2, L + 1, SIDE.shade), 0.05, 0.3, shade(C.plate, 0.36), SURF.brushed, 0)
   k.poly(strip(3, L - 3, SIDE.steel - 1), 0, 1.6, C.rubber, SURF.rubber, 0.3)
   k.poly(strip(0, L, SIDE.steel), 1.4, 3.2, C.dark, SURF.brushed, 1.2)
   k.poly(strip(4, L - 4, SIDE.steel - 2.6), 4.4, 0.5, C.chrome, SURF.chrome, 0.3)
@@ -188,8 +188,8 @@ function bases(z: Zone): Kit {
       return [q[0] - ((q[0] - cx) / l) * FOOT.show, q[1] - ((q[1] - cy) / l) * FOOT.show] as V2
     })
     k.poly(outline, PLATE.z, FOOT.thick, C.foot, SURF.chrome, 0.8, C.foot)
-    k.poly(inner, PLATE.z + FOOT.thick, PLATE.thick - FOOT.thick, C.plate, SURF.enamel, 1.8, shade(C.plate, 1.08))
-    k.tube(inner.map((q) => [q[0], q[1], PLATE.z + PLATE.thick - 0.2] as V3), 1.1, shade(C.plate, 1.2), SURF.enamel, 5, true)
+    k.poly(inner, PLATE.z + FOOT.thick, PLATE.thick - FOOT.thick, shade(C.plate, 0.85), SURF.brushed, 1.8, C.plate)
+    k.tube(inner.map((q) => [q[0], q[1], PLATE.z + PLATE.thick - 0.2] as V3), 1.1, C.chrome, SURF.chrome, 5, true)
     for (const q of [f.a, f.b, f.c]) k.cyl(q[0], q[1], PLATE.z + PLATE.thick, 5.8, 0.8, C.chrome, SURF.steel, 16, 0.3)
     k.at(f.s[0], f.s[1], PLATE.z + PLATE.thick, f.turn)
     body(k, f)

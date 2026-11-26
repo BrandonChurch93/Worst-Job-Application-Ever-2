@@ -7,7 +7,7 @@ import { Geo, type RGB, type V2, type V3 } from './geo'
 import { FINISH, TONE, drop as free, fin, matsOf, mesh, mix, screw } from './mats'
 
 const SEED = 20261125
-const MARBLE: RGB = [0.11, 0.13, 0.19]
+const MARBLE: RGB = [0.14, 0.165, 0.245]
 const VEIN: RGB = [0.016, 0.021, 0.036]
 const RIM = { tone: [1, 0.7, 0.36] as RGB, glow: 1.1, low: 2.2 }
 export const WEDGE = { under: 46, thick: 7, out: 6, bevel: 1.5 }
@@ -120,10 +120,10 @@ export function buildWedges(z: Zone, _ctx: RealContext): THREE.Object3D {
         const start: V2 = [cx - Math.cos(grain) * 140 - Math.sin(grain) * side, cy - Math.sin(grain) * 140 + Math.cos(grain) * side]
         vein(start, grain + rnd.range(-0.5, 0.5), 290, rnd.range(3, 7), rnd.range(0.07, 0.14), 0.03)
       }
-      for (let k = 0; k < 10; k++) {
+      for (let k = 0; k < 16; k++) {
         const side = rnd.range(-110, 110)
         const start: V2 = [cx - Math.cos(grain) * 140 - Math.sin(grain) * side, cy - Math.sin(grain) * 140 + Math.cos(grain) * side]
-        vein(start, grain + rnd.range(-0.7, 0.7), 290, rnd.range(0.45, 0.8), rnd.range(0.4, 0.7), 0.04)
+        vein(start, grain + rnd.range(-0.7, 0.7), 290, rnd.range(0.6, 0.85), rnd.range(0.55, 0.95), 0.04)
       }
     })
     for (const p of t) {
