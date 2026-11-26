@@ -25,22 +25,21 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 109, 2026-11-26T18:54Z, Phase 5.
+Status 110, 2026-11-26T19:08Z, Phase 5.
 
-1. `out/stills/status/01-what-a-visitor-hears-on-the-live-site-two-whole-.jpg`: Made by the sound agent's tool (`npm run sound -- --levels --ear`), drawn by the Builder. Above: a keen visitor, 2:07, eleven of the narrator's lines. Below: a visitor who takes every skip link, 1:59, with the lines for idling and for skipping. The marks are the lines' start times as the engine logged them. The two sound files are attached beside this status. Nobody has listened by ear.
-2. `out/stills/status/02-the-lost-press-a-real-mouse-presses-apply-for-a-.jpg`: MEASURED by the Builder on main at 18:38Z with real mouse events. In picture 3 the press is made while the arrow is still travelling; in pictures 4 and 5 the arrow has arrived and the page has not turned. The mend is on the controls agent's branch and comes with the next merge.
-3. `out/stills/status/03-step-2-s-coins-in-the-running-site-at-the-high-l.jpg`: Made by the levels agent from two frames of the running loop (frames 490 and 496), three times the size, looked at by the Builder. Rows 1 and 3: stretch off. Rows 2 and 4: stretch on. The coins that fly are drawn longer along their path; the ones that lie still are unchanged.
-4. `out/stills/status/04-the-careers-page-s-button-on-a-screen-of-pixel-r.jpg`: Made by the levels agent in a window of 960 by 540 CSS pixels, shown at screen pixels times two. Medium draws 1440 by 810 and low draws 960 by 540 for the same window, as the kit's pixel ratio caps say. At low the small type is soft and speckled. This is for Brandon to judge. The high level gave no picture at this size on the agent's machine.
+1. `out/stills/status/01-preview-02-twelve-frames-across-the-whole-film-a.jpg`: Taken by the Builder from the preview video attached to this status (2:33, 960 by 540, with sound, 15.7 MB; a lighter copy of rough draft film 2). One frame every 12.6 s, from 0:06 to 2:24.6. It is the build of 15:41Z at the draft tier, before the loader, the controls, the levels and the sound were wired. Preview 03 follows from round 20's commit.
+2. `out/stills/status/02-the-host-check-on-merge-40-the-first-complete-pi.jpg`: MEASURED by the Builder on this machine, 18:51Z to 18:56Z, with `npm run hostcheck`. The picture is the check's own, 1920 by 1080 at the high level. The line of 1.5 Mbit is the loading agent's measure on its machine at the low level.
+3. `out/stills/status/03-the-lost-press-mended-a-real-mouse-presses-apply.jpg`: Made by the controls agent in a browser at 18:47Z on its branch, looked at by the Builder. The picture is taken at the release, with the arrow 1036 px from the mouse when the press was made; the press waits for the arrow and the page then turns (its run, and 13 of 13 pointer tests). In merge 41; my own five walks with a real mouse are run again on the merged build.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 199 at 2026-11-26T18:54:03Z, allowance: continuation 1
-time used in this phase: 1.18 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 1.18 h of 12.00 h allowed
-time used: 37.20 of 48.00 hours before the review
+clock: phase 5, tick 200 at 2026-11-26T19:08:31Z, allowance: continuation 1
+time used in this phase: 1.43 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 1.43 h of 12.00 h allowed
+time used: 37.44 of 48.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: not reached
