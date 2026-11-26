@@ -35,7 +35,7 @@ const grip: P = { x: CRANK.hx + CRANK.arm * Math.cos(CRANK.rest), y: CRANK.hy + 
 const TURNS = 3.03
 const away: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
 const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
-const thrown: P = { x: caught.x + 104, y: caught.y - 34 }
+const thrown: P = { x: caught.x + 127, y: caught.y + 27 }
 export const BUTTON: P = { x: 1688, y: 1004 }
 const beside: P = { x: BUTTON.x - 160, y: BUTTON.y - 30 }
 const coiled: P = { x: beside.x - 18, y: beside.y - 9 }
@@ -174,7 +174,7 @@ export const reactions: [number, Reaction][] = [
 ]
 
 // What the body is told outright, where a state and a reaction do not say enough: a turn of the whole arrow that is kept, a length that is held, and the flat body laid down again so that it peels where it is seen.
-export type Pose = [number, 'aim', number | null] | [number, 'press', number, number] | [number, 'flat', number] | [number, 'hold', number]
+export type Pose = [number, 'aim', number | null] | [number, 'press', number, number] | [number, 'flat', number] | [number, 'hold', number] | [number, 'wobble', number, number, number]
 export const poses: Pose[] = [
   [EASY.eye, 'aim', -0.5], [EASY.load, 'press', 0.7, EASY.stroll - EASY.load], [EASY.stroll, 'aim', null], [EASY.stroll, 'press', 1.32, 0.1],
   [DREAD.phone.go - 0.05, 'press', 0.7, 0.06], [DREAD.phone.go + 0.01, 'press', 1.32, 0.1],
@@ -188,6 +188,7 @@ export const poses: Pose[] = [
   [STRUCK.brace, 'press', 0.74, STRUCK.read - STRUCK.brace],
   [STRUCK.read, 'aim', 0.34], [STRUCK.read, 'press', 1.3, 0.5],
   [STRUCK.near, 'aim', null], [STRUCK.duck + 0.3, 'hold', 0.2],
+  [TEMPER.safe, 'wobble', 0.5, 9, 0.5], [TEMPER.safe, 'aim', -1], [TEMPER.safe + 0.04, 'press', 0.66, TEMPER.fume - TEMPER.safe - 0.04], [TEMPER.fume, 'aim', null], [TEMPER.fume, 'press', 1.3, 0.12],
   [17.3, 'aim', -1.1], [17.88, 'aim', null],
   [RISE.heave, 'flat', RISE.heaved], [RISE.flop, 'flat', RISE.life],
   [RISE.back, 'press', 0.78, RISE.coiled - RISE.back],

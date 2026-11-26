@@ -16,6 +16,7 @@ import { clamp01, contact, fuse, lathe, loft, mesh, moved, noise, normalsFrom, r
 
 export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
+  pay: { r: 6, lip: 3.4, top: 14, floor: 3.2, foot: 1.2 },
   top: 58, corner: 16, window: 13, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
   drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.5, full: 0.985 },
   line: { z: 53.3, r: 0.85, pin: 1.9, glow: 0.1 },
@@ -452,6 +453,12 @@ function payout(): THREE.Group {
   coins.receiveShadow = true
   coins.frustumCulled = false
   coins.count = 0
+  const P = L.pay
+  const at = (inset: number, z: number, out: number, up: number): LoftRing => ({ o: roundedRect(SLOT.payW - inset * 2, SLOT.payH - inset * 2, Math.max(0.8, P.r - inset), 10), z, out, up })
+  const lip = shared('payLip', () => loft([at(0, 0, 1, 0), at(0, P.top - 1.2, 1, 0), at(0.35, P.top - 0.35, 0.7, 0.7), at(1.2, P.top, 0, 1), at(P.lip - 0.9, P.top, 0, 1), at(P.lip - 0.25, P.top - 0.5, -0.7, 0.7), at(P.lip, P.top - 1.4, -1, 0), at(P.lip, P.floor, -1, 0)]))
+  const bed = shared('payBed', () => loft([at(P.lip, P.floor, 0, 1)], 1))
+  const foot = shared('payFoot', () => contact(roundedRect(SLOT.payW + P.foot * 2, SLOT.payH + P.foot * 2, P.r + P.foot, 10), P.foot + 0.6))
+  body.add(mesh(foot, materials().gap, false), mesh(lip, o.frame), mesh(bed, o.mouth, false, true))
   root.add(body, coins)
   root.userData.body = body
   root.userData.coins = coins

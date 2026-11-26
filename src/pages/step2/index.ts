@@ -26,7 +26,9 @@ const heights = config.scale.heights
 const G = 2400
 const TAU = Math.PI * 2
 const STOPS = [0.8, 1.15, 1.5]
-const REEL = { gather: 0.3, jolt: 0.2, die: 13, ring: 24, read: 0.388 }
+const REEL = { gather: 0.3, jolt: 0.2, die: 13, ring: 24, read: 0.688 }
+const SPIT = { first: 3, air: [0.15, 0.19], aim: 0.3, far: 7, die: 14, ring: 50, every: 0.035, long: 0.9 }
+const kickOf = (slot: SlotState): number => (slot.phase === 'pay' ? -SPIT.far * Math.exp(-SPIT.die * slot.t) * Math.sin(Math.min(Math.PI * 3, SPIT.ring * slot.t)) : 0)
 const LEVER = { rise: 0.1, give: 0.045, drive: 5.5, hold: 0.42, spring: 230, damp: 12, over: 0.075 }
 const REEL_PITCH = 62
 const REEL_SEEN = 58
@@ -37,7 +39,7 @@ const RETURN = { most: 42, gather: 300, least: 4, slow: 30 }
 // The whip: the arrow hangs from the hole by its tip, its tail thrown outward and trailing the turn, drawn long by the speed. Flung, it goes end over end and lands the right way up.
 const WHIP = { tip: 1.965, follow: 30, long: 0.3, slow: 5, fast: 30, air: 0.72, tumble: 2 }
 const WIND = { long: 0.12, back: 1.6, out: 0.2 }
-const BLOW = { load: 0.45, kick: 990, out: 0.8, drag: 9 }
+const BLOW = { load: 0.2, kick: 1170, out: 0.15, drag: 9 }
 
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean; falls: boolean; row: number; hops: number }
@@ -409,22 +411,24 @@ export function makePage(): PageLogic {
       }
     } else if (sl.phase === 'pay') {
       sl.t += dt
-      while (sl.spawned < COINS && sl.t >= sl.spawned * 0.05) {
+      while (sl.spawned < COINS && sl.t >= sl.spawned * SPIT.every) {
         const x = SLOT.payX + SLOT.payW / 2 + rng.range(-70, 70)
-        const y = SLOT.y + SLOT.h - 4
-        let dx = io.cursor.x + 14 + rng.range(-30, 30) - x
-        let dy = io.cursor.y + 28 + rng.range(-30, 30) - y
+        const y = SLOT.payY + SLOT.payH / 2
+        const sure = sl.spawned < SPIT.first ? SPIT.aim : 1
+        let dx = io.cursor.x + 14 + rng.range(-30, 30) * sure - x
+        let dy = io.cursor.y + 28 + rng.range(-30, 30) * sure - y
         const far = Math.hypot(dx, dy)
         if (far > 430) {
           dx *= 430 / far
           dy *= 430 / far
         }
         if (far < 60) dy += 90
-        const air = rng.range(0.4, 0.52)
+        const slow = rng.range(0.4, 0.52)
+        const air = sl.spawned < SPIT.first ? mix(SPIT.air[0]!, SPIT.air[1]!, (slow - 0.4) / 0.12) : slow
         sl.coins.push({ n: sl.spawned, x, y, z: 6, vx: dx / air, vy: dy / air, vz: (16 - 6) / air + (G * air) / 2, rot: 0, hit: false, still: false, falls: false, row: 0, hops: 0 })
         sl.spawned++
       }
-      if (sl.t >= 1.2) {
+      if (sl.t >= SPIT.long) {
         sl.phase = 'over'
         if (s.mode === 'live') io.cursor.act('plain')
       }
@@ -655,11 +659,12 @@ export function makePage(): PageLogic {
       if (s.mode === 'film') {
         io.cursor.act(actingAt(io.time, s.marks))
         for (const [at, name] of reactions) if (io.step === Math.round(at * stepHz)) io.cursor.react(name)
-        for (const [at, kind, a, b] of poses) {
+        for (const [at, kind, a, b, c] of poses) {
           if (io.step !== Math.round(at * stepHz)) continue
           if (kind === 'aim') io.cursor.aim(a)
           else if (kind === 'press') io.cursor.press(a, b)
           else if (kind === 'hold') io.cursor.hold(a)
+          else if (kind === 'wobble') io.cursor.wobble(a, b, c)
           else if (io.cursor.damaged) io.cursor.hurt('flattened', a)
         }
       }
@@ -823,8 +828,8 @@ export function makePage(): PageLogic {
       const sy = DIAL.cy + (DIAL.ring + 20) * Math.sin(DIAL.stop)
       out.push({ id: `${tag}dial-stop`, part: 'dial', kind: 'capsule', x: sx - 20 + dx, y: sy - 5 + dy, w: 40, h: 10, z0: z(TOP + 2), z1: z(TOP + 12), tone: 'dark', rot: DIAL.stop, mechanism: true })
     } else if (i === 1) {
-      const ky = knobY(m.slot.p)
-      const pivot = SLOT.pivotY
+      const ky = knobY(m.slot.p) + kickOf(m.slot)
+      const pivot = SLOT.pivotY + kickOf(m.slot)
       out.push({ id: `${tag}slot-mount`, part: 'slot', kind: 'box', x: SLOT.x + SLOT.w - 2 + dx, y: pivot - 10 + dy, w: 50, h: 20, z0: z(0), z1: z(TOP), tone: 'metal', r: 4 })
       out.push({ id: `${tag}slot-arm`, part: 'slot', kind: 'capsule', x: SLOT.leverX - 6 + dx, y: Math.min(ky, pivot) + dy, w: 12, h: Math.max(1, Math.abs(pivot - ky)), z0: z(TOP), z1: z(TOP + 12), tone: 'raised', v: [ky <= pivot ? 1 : -1], mechanism: true })
       for (let r = 0; r < 3; r++) {
@@ -855,7 +860,13 @@ export function makePage(): PageLogic {
     if (i === 1) {
       const knob = boxOf(layout, 'slot-knob')
       const p = clamp(m.slot.p, -LEVER.rise, 1 + LEVER.give)
-      Object.assign(over['slot-knob']!, { y: knob.y + SLOT.pull * p, ...(Math.abs(p) > 0.002 ? { moved: true } : {}) })
+      const kick = kickOf(m.slot)
+      Object.assign(over['slot-knob']!, { y: knob.y + SLOT.pull * p + kick, ...(Math.abs(p) > 0.002 || Math.abs(kick) > 0.002 ? { moved: true } : {}) })
+      if (Math.abs(kick) > 0.002) {
+        Object.assign(over['slot-cabinet']!, { y: SLOT.y + kick, moved: true })
+        for (let r = 0; r < 3; r++) Object.assign(over[`slot-reel-${r}`]!, { y: boxOf(layout, `slot-reel-${r}`).y + kick, moved: true })
+        for (const part of parts[1]!) if (part.text && part.id !== 'slot-prompt' && over[part.id]) Object.assign(over[part.id]!, { y: boxOf(layout, part.id).y + kick })
+      }
       for (let r = 0; r < 3; r++) Object.assign(over[`slot-reel-${r}`]!, { v: [reelPos(m.slot, r)] })
       if (L < SUNK) for (const part of parts[1]!) if (part.text) over[part.id] = null
     }

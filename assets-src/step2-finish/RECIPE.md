@@ -33,3 +33,10 @@ Prompt or command: `npm run compare -- --key step2-dial --tier draft --format hd
 Takes: 1 draft still of the key and 1 of the sheet
 Why this one: the middle is a pale matt disc inside a raised satin ring, the stop is a flat wedge broad at the bezel, the cap is lower and satin, and the dark lines round the base are thinner
 Date: 2026-11-26
+
+## The payout mouth of the slot machine
+
+- What: a trough under the cabinet that the coins leave from.
+- Made by: `payout()` in `src/pages/step2/real/slot.ts`, in code, from the numbers `SLOT_LOOK.pay`. A rounded bar of the cabinet's frame steel through `studio()`, a dark bed of the window's mouth material, one contact line of the shared gap material.
+- Texture: none of its own. 0 px, 0 MB.
+

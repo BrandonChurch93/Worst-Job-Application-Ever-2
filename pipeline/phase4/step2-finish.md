@@ -41,13 +41,13 @@ Closed since the judged commit, seen in the pictures:
 ## Looks, counted by part
 
 
-One look is one draft still, comparison or sheet. Counted to 10:27 UTC.
+One look is one draft still, comparison or sheet. Counted to 11:02 UTC.
 
 - rows: 1 (`compare --key step2-rest`).
 - dial: 3 (`compare --key step2-dial` twice, the sheet `machines` once for the stop and the middle).
-- slot: 4 (the sheet `machines` three times, `still --page step2 --beat step2.slot --at 0.35` once).
-- crank: 3 (`compare --key step2-crank` three times).
-- acting: 0.
+- slot: 5 (the sheet `machines` three times, `still --page step2 --beat step2.slot --at 0.35` twice).
+- crank: 4 (`compare --key step2-crank` four times).
+- acting: 9 (the sheets of `step2.slot` and `step2.continue`, one still of the peel, six sheets of film frames cut round the arrow: the lever, the poses of the open and the dial, the landing and the blow, the press of Continue, the last reel with the first coin, the blow of the crank with the recovery after the coins).
 
 ## Decisions
 
@@ -57,3 +57,11 @@ One look is one draft still, comparison or sheet. Counted to 10:27 UTC.
 4. The crank's bar is darker (`0x767a80`) and slimmer inside its shape (0.68 of the shape's half width, was 0.8). The shape itself and the grip keep their sizes.
 5. The dial: the middle of the wheel is a pale matt disc in a raised satin ring. The last owner's decision 17 kept steel to the cap because the key shows steel; round 13's R1-1 issue 9 asks for the cream disc of the sheet. The disc is pale and matt, not cream and not turned steel, so that it reads as a disc in a ring on both. The stop is a flat wedge, 19 px broad at the bezel and 7 px at its tip. The cap is 14 px tall (was 17) with a flatter crown and a satin coat. The housing is lighter and rougher, the gap round the base 0.6 px (was 1.2), the contact line 0.7 px (was 1.5).
 6. Round 13's R1-2 issue 1, as the Builder ruled: a done, closed row has its chevron again. The kit says each row has "a plain glass input with a small chevron" and nothing about a done row losing it. It was taken off for round 9's R8-1 issue 3. The value of a done row is set in the type's own softer ink on glass (`glass:soft`).
+7. Round 13's film issues, R9-1 and R9-2: the arrow's body is told outright where the page's cues left it neutral. `script.ts` has a table `poses` beside `reactions`, read in the film only: a turn of the body toward a thing, a squash or a stretch for a time, a hold. The body, its size and its material stay the cursor's. No pose stands in the half second before a key, so the three approved moments keep the arrow they had.
+8. The lever is held down 0.42 s (was 0.1) with the arrow on the knob, and the knob is drawn up a little before the pull. The reels, the event `lever-pull` and the beat's length stay.
+9. The peel after the crank falls inside its beat. The flat body is laid down again twice while the arrow is dragged to Continue, so the cursor's own peel and refill run from 19.95 s to 20.25 s and the press at 20.3 s is made by a whole arrow. The event `peel-up` moved from 19.8 s to 19.95 s and the test that holds it moved with it.
+10. The blow of the crank, R4-1 issue 2 and R9-2 issue 5. The kit names the cause: the crank "flattens it on the way round". At the frame the handle meets the arrow the crank loses four fifths of its speed and the flat arrow is kicked along the handle's path, away from the hub, and slides to a stop in about 0.2 s. The lamps do not answer on that frame yet.
+11. After the coins the arrow darts to the right margin beside the row (was a long glide to the page's foot), shudders, stays squashed and turned toward the machine, and stands up when the anger starts. R9-2 issue 4.
+12. The coins, R4-1 issue 1. The last reel reads 0.69 s after the lever (was 0.39 s), so the stop is one beat and the pay the next. At the stop the housing kicks down 3 px and comes back; the first three coins leave the payout mouth fast and aimed at the arrow, the rest burst as before. The event `coins` is the first coin on the arrow and stays at 11.96 s.
+13. The payout mouth is built: a satin steel trough with a dark bed under the cabinet, where the kit says the coins burst from the tray. The approved sheet shows no mouth; the kit's words are followed and the mouth is kept as small as a coin needs.
+14. Not mine and told to the Builder: the arrow's flight to the hand-off place while the page folds is the stage's lift, and the crazed flat body is the cursor's own look.
