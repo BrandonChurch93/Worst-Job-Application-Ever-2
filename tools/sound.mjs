@@ -666,7 +666,14 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     page.on('pageerror', (e) => errors.push(String(e.message)))
     if (block) await page.route(block, (route) => route.fulfill({ status: 404, body: 'not found' }))
     await page.addInitScript(() => {
-      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [], shots: 0, log: [] }
+      window.__sound = { contexts: 0, plays: 0, taps: [], running: new Set(), made: [], shots: 0, log: [], decodes: 0, decoded: 0, undecoded: 0, frames: 0 }
+      const tick = () => { window.__sound.frames++; requestAnimationFrame(tick) }
+      requestAnimationFrame(tick)
+      const decode = BaseAudioContext.prototype.decodeAudioData
+      BaseAudioContext.prototype.decodeAudioData = function (bytes, ok, no) {
+        window.__sound.decodes++
+        return decode.call(this, bytes, (x) => { window.__sound.decoded++; if (ok) ok(x) }, (e) => { window.__sound.undecoded++; if (no) no(e) })
+      }
       const startSource = AudioBufferSourceNode.prototype.start
       AudioBufferSourceNode.prototype.start = function (...r) {
         const node = this
@@ -720,6 +727,8 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     const look = async () => ({
       ...(await page.evaluate(() => ({
         contexts: window.__sound.contexts, plays: window.__sound.plays,
+        context: window.__sound.made[0]?.state ?? 'none', decodes: window.__sound.decodes, decoded: window.__sound.decoded, undecoded: window.__sound.undecoded, sources: window.__sound.log.length, frames: window.__sound.frames,
+        soundButtons: [...document.querySelectorAll('button[aria-label]')].filter((b) => /sound/i.test(b.getAttribute('aria-label'))).map((b) => ({ hidden: b.hidden, boxes: b.getClientRects().length })),
         failShown: Boolean(document.getElementById('fail')) && !document.getElementById('fail').hidden,
         control: [...document.querySelectorAll('button[aria-label]')].filter((b) => b.querySelector('svg') && /sound/i.test(b.getAttribute('aria-label')) && b.getClientRects().length > 0 && getComputedStyle(b).visibility !== 'hidden').length
       }))),
@@ -733,8 +742,14 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     const before = await live.look()
     await live.page.mouse.click(640, 360)
     await live.page.waitForTimeout(3500)
-    const after = await live.look()
-    out.live = { started: live.started, soundRequestsAtFirstPicture: live.atFirstPicture, before, after, console: live.consoleLines, errors: live.errors }
+    let after = await live.look()
+    let controlWait = 3.5
+    while (after.control === 0 && controlWait < 20) {
+      await live.page.waitForTimeout(500)
+      controlWait += 0.5
+      after = await live.look()
+    }
+    out.live = { started: live.started, soundRequestsAtFirstPicture: live.atFirstPicture, before, after, controlWaitSeconds: controlWait, console: live.consoleLines, errors: live.errors }
 
     if (after.control > 0) {
       const page = live.page
@@ -796,7 +811,7 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
     out.removed = { started: gone.started, before: goneBefore, after: await gone.look(), console: gone.consoleLines, errors: gone.errors }
     await gone.context.close()
 
-    if (after.control > 0) {
+    if (after.control > 0) try {
       const film = await visit('mode=film', { wait: 1200 })
       const page = film.page
       const read = async (what) => ({ what, ...(await page.evaluate(() => ({ level: window.__sound.made[0]?.state === 'running' ? window.__level() : null, sources: window.__sound.running.size, toneLoops: [...window.__sound.running].filter((n) => n.loop).length, context: window.__sound.made[0]?.state ?? 'none' }))) })
@@ -934,7 +949,7 @@ export async function siteInBrowser(dir = at('dist'), o = {}) {
       }
       out.filmA = opening
       await a.context.close()
-    }
+    } catch (e) { out.filmError = String(e.message).split("\n")[0] }
 
     if (o.still !== false && c.stills.length) {
       const { readCanvas, stillFrom } = await import('./lib/capture.mjs')

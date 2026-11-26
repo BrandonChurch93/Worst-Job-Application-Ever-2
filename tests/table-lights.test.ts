@@ -226,7 +226,8 @@ describe('the lamps as things', () => {
         if (mat.emissive && mat.emissive.r + mat.emissive.g + mat.emissive.b > 0) expect(names).toContain(m.userData.lightGroup)
         if (m.name === 'screws') expect(m.userData.fine).toBe(true)
       }
-      expect(c.meshes.map((m) => m.name)).toEqual(expect.arrayContaining(['lenses', 'sockets', 'plates', 'screws']))
+      expect(c.meshes.map((m) => m.name)).toEqual(expect.arrayContaining(['lenses', 'sockets', 'screws']))
+      expect(c.meshes.map((m) => m.name)).not.toContain('plates')
     }
     expect(count(buildLamps(zone('corporate'), context(plates('corporate'))).group).meshes.map((m) => m.name)).toEqual(expect.arrayContaining(['globes', 'globe-glass']))
   })

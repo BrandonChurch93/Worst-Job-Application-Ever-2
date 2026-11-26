@@ -19,9 +19,11 @@ export const CENTRE = (LEFT + RIGHT) / 2
 
 export const COUNTER_TOP = heights.card + 6
 export const READOUT_TOP = heights.card + 4
-export const STAMP = { blockTop: heights.machineMinTop + 16, gripTop: heights.machineMinTop + 54 }
+export const STAMP = { blockTop: heights.machineMinTop + 22, gripTop: heights.machineMinTop + 74, high: 180 }
 const SHOWN = ['decided', 'link', 'shared']
 export const MARK_ROT = -0.14
+// The sheet does not lie square on the page: it is turned a little, clockwise as seen, about its middle.
+export const SHEET_ROT = 0.012
 
 const T = {
   waitTitle: { font: 'inter-display-600', px: 44 },
@@ -62,8 +64,8 @@ function waitPanel(): LayoutNode {
   const counter = node('wait-counter', 'counter', [x, counterY, RIGHT - LEFT - pad * 2, counterH], {
     part: 'wait', height: COUNTER_TOP, floor: on, tone: 'dark', r: 18,
     children: [
-      text('wait-value', KEYS.waitValue, T.waitValue, CENTRE, valueY, { part: 'type', on: COUNTER_TOP, tone: 'inkLight', states: ['waiting'] }),
-      text('wait-count', KEYS.waitCount, T.waitValue, CENTRE, valueY, { part: 'type', on: COUNTER_TOP, tone: 'inkLight', states: ['spinning'], runtime: value })
+      text('wait-value', KEYS.waitValue, T.waitValue, CENTRE, valueY, { part: 'wait', on: COUNTER_TOP, tone: 'inkLight', states: ['waiting'] }),
+      text('wait-count', KEYS.waitCount, T.waitValue, CENTRE, valueY, { part: 'wait', on: COUNTER_TOP, tone: 'inkLight', states: ['spinning'], runtime: value })
     ]
   })
   return node('wait-panel', 'card', [LEFT, TOP, RIGHT - LEFT, CONTENT_H], {
@@ -86,7 +88,7 @@ function letter(): LayoutNode {
   const body = text('letter-body', 'copy:step5.letter.body', T.letterBody, x, bodyY, { part: 'type', on })
   const closingY = bodyY + body.box[3]! + T.letterBody.lead
   const mark = markOf()
-  const stamp = text('letter-stamp', 'copy:step5.letter.stamp', T.mark, mark.cx, mark.cy - cap(T.mark) / 2, { part: 'type', on, tone: 'dark' })
+  const stamp = text('letter-stamp', 'copy:step5.letter.stamp', T.mark, mark.cx, mark.cy - cap(T.mark) / 2, { part: 'stamp', on, tone: 'dark' })
   return node('letter', 'paper', [LEFT, TOP, COLUMN, CONTENT_H], {
     part: 'letter', states: SHOWN,
     children: [
@@ -172,8 +174,8 @@ function stampAtRest(): LayoutNode {
   const BLOCK = { w: m.blockW, h: m.blockH }
   const x = RIGHT_X
   const y = BOTTOM - BLOCK.h
-  const gripW = Math.round(BLOCK.w * 0.56)
-  const gripH = Math.round(BLOCK.h * 0.46)
+  const gripW = Math.round(BLOCK.w * 0.54)
+  const gripH = Math.round(BLOCK.h * 0.6)
   return node('stamp', 'stamp', [x, y, BLOCK.w, BLOCK.h], {
     part: 'stamp', shape: 'none', states: SHOWN,
     children: [

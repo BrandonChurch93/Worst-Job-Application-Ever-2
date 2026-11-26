@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import type { Zone } from '../zone'
+import { BALL, COLS, W } from '../../layout'
 import { CHANNELS, LIT } from './groups'
 import { BODY } from './pictures'
 import { zoneLight, type ZoneLight } from './state'
@@ -18,6 +19,12 @@ uniform vec3 wjlFill;
 uniform vec4 wjlHole[ 2 ];
 uniform float wjlEnv;
 `
+
+// The deck of the frame outside a tier's pit stands at the page's surface, over every lamp of the tier: no lamp reaches its top.
+const EDGE = (COLS.launchB - W / 2) * BALL
+
+// A lacquered floor is never a clean mirror: the fine scratches of play spread each lamp near it into a soft pool in the lamp's own colour, whatever the colour of the print under the lacquer.
+const HAZE = 0.05
 
 // For each group: its picture at the fragment's place, a term for the fragment's height and for the way its surface faces the lamps, the group's colour and level.
 const body = /* glsl */ `
@@ -51,10 +58,14 @@ const body = /* glsl */ `
 	#endif
 	float wjlWall = 1.0 - smoothstep( 0.3, 0.9, wjlN.z );
 	float wjlTop = 1.0 - wjlWall;
+	float wjlRim = wjlFrame.z < - 1.0 ? - wjlFrame.z : 1.0e6;
+	float wjlPit = 1.0 - wjlTop * smoothstep( wjlRim - 24.0, wjlRim - 4.0, wjlUp ) * smoothstep( ${EDGE.toFixed(1)}, ${(EDGE + 36).toFixed(1)}, abs( wjlP.x ) );
+	wjlInside *= wjlPit;
 	float wjlShine = 1.0 - smoothstep( 0.9, 0.995, wjlN.z ) * ( 1.0 - smoothstep( 4.0, 16.0, wjlUp ) );
 	IncidentLight wjlLight;
 	wjlLight.visible = true;
 	vec3 wjlField = vec3( 0.0 );
+	vec3 wjlHaze = vec3( 0.0 );
 	for ( int i = 0; i < ${CHANNELS}; i ++ ) {
 		vec3 c = wjlCol[ i ];
 		if ( c.r + c.g + c.b <= 0.0 ) continue;
@@ -66,6 +77,7 @@ const body = /* glsl */ `
 		float amount = wjlPhi[ i ] * wjlInside * wjlClear;
 		if ( at.w < 0.5 ) {
 			wjlField += c * amount * ( 0.34 + 0.66 * max( wjlN.z, 0.0 ) ) / ( 1.0 + wjlUp * wjlUp * at.z );
+			wjlHaze += c * amount * smoothstep( 0.5, 2.4, amount );
 			continue;
 		}
 		vec3 from = at.xyz;
@@ -73,6 +85,7 @@ const body = /* glsl */ `
 			from = vec3( wjlP.xy + wjlToward * at.z * wjlRun, at.z + wjlUp * wjlTop );
 			amount *= wjlCut / ( 1.0 + wjlTop * wjlUp * wjlUp * ${(1 / (170 * 170)).toExponential(4)} );
 			amount = mix( amount, 0.6 * amount / ( 1.0 + 1.5 * amount ), max( wjlWall, smoothstep( 40.0, 100.0, wjlUp ) ) );
+			wjlHaze += c * amount * smoothstep( 0.5, 2.4, amount );
 		}
 		vec3 low = vec3( from.xy - wjlP.xy, at.z );
 		vec3 to = from - wjlP;
@@ -91,8 +104,11 @@ const body = /* glsl */ `
 			#endif
 		}
 	}
-	wjlField += wjlFill * ( 0.5 + 0.5 * wjlN.z ) * ( 1.0 + 1.6 * wjlTop * smoothstep( 20.0, 130.0, wjlUp ) );
+	wjlField += wjlFill * ( 0.5 + 0.5 * wjlN.z ) * ( 1.0 + 1.6 * wjlTop * smoothstep( 20.0, 130.0, wjlUp ) ) * wjlPit;
 	reflectedLight.directDiffuse += wjlField * material.diffuseColor;
+	#ifdef USE_CLEARCOAT
+	clearcoatSpecularDirect += wjlHaze * ${HAZE.toFixed(3)} * ( 1.0 - wjlShine ) / ( 1.0 + 0.25 * ( wjlHaze.r + wjlHaze.g + wjlHaze.b ) );
+	#endif
 	#ifdef STANDARD
 	reflectedLight.directSpecular += wjlField * material.specularColor * 0.12;
 	#endif
