@@ -1,0 +1,35 @@
+{
+  "folder": "boss-finish",
+  "pushed": "2026-11-26T10:21:13.909Z",
+  "commit": "b37d019a163b411dce48e37b23e2a3dea0da952d",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "Still key-boss-fight-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T10:13:06.046Z",
+      "by": "boss-finish",
+      "from": "out/work/stills/key-boss-fight-hd-draft.png"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
+      "time": "2026-11-26T10:15:59.839Z",
+      "by": "boss-finish",
+      "from": "out/work/compare/compare-boss-fight.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier, with crops of shape:boss-plate, shape:boss-cannon-0, shape:boss-shield, shape:fired-0, cursor, shape:rim-socket-open, checkbox, shape:health-track, progressButton",
+      "time": "2026-11-26T10:18:09.775Z",
+      "by": "boss-finish",
+      "from": "out/work/compare/compare-boss-fight.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "boss-fight at draft, approved left, build right: glass shield with thin rim, slabs in a column",
+      "time": "2026-11-26T10:21:12.689Z",
+      "by": "boss-finish",
+      "from": "out/work/looks/files/20261126102112-look-fight-1.jpg"
+    }
+  ]
+}
