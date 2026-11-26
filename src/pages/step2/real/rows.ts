@@ -194,7 +194,7 @@ function tray(s: Shape): THREE.Object3D {
   }
   add(kit.joint, m.gap, false, true)
   add(kit.rim, m.chrome, true, true)
-  add(kit.liner, m.aluminiumSatin, true, true)
+  add(kit.liner, m.cardSeal, true, true)
   add(kit.floor, m.glassSunk, false, true)
   shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })
   add(kit.shade, shadeMaterial, false, false)

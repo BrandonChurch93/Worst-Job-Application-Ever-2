@@ -228,10 +228,10 @@ for (let k = 0; k < 3; k++) {
   const k = 2
   seg(k, 'firehouse.roof', [COLS.left, 1.75], [5.75, 2.3], 'guide')
   seg(k, 'police.roof', [COLS.right, 1.75], [14.25, 2.3], 'guide')
-  model(k, 'firehouse', 'model-firehouse', [COLS.left, 2.3, 2.5, 1.5], 1.5, 'danger', { sign: 'copy:step3.table.buildings.firehouse', bay: [4.4, 5.7, 0.55] })
+  model(k, 'firehouse', 'model-firehouse', [COLS.left, 2.3, 2.5, 1.5], 2.0, 'danger', { sign: 'copy:step3.table.buildings.firehouse', bay: [4.4, 5.7, 0.55] })
   model(k, 'bank', 'model-bank', [COLS.left, 3.8, 1.0, 1.1], 1.2, 'raised', { sign: 'copy:step3.table.buildings.bank', signPx: 16 })
   dropBank(k, 'bank.drop', 4.25, 3.8, 4.9)
-  model(k, 'police', 'model-police', [14.25, 2.3, 2.5, 1.5], 1.5, 'glass', { sign: 'copy:step3.table.buildings.police' })
+  model(k, 'police', 'model-police', [14.25, 2.3, 2.5, 1.5], 2.0, 'glass', { sign: 'copy:step3.table.buildings.police' })
   targets.push({ id: 'street.spinner', tier: k, kind: 'spinner', box: [13.2, TIER_Y[k]! + 2.95, 0.9, 0.1], n: [0, 1], index: targets.length })
   model(k, 'garage', 'model-garage', [GARAGE[0] - SPIRAL.frame, GARAGE[1] - SPIRAL.frame, 2 * SPIRAL.frame, 2 * SPIRAL.frame], SPIRAL_TOP + 0.2 - SPIRAL.under, 'raised', { solid: false, round: true, base: SPIRAL.under })
   holds.push({ id: 'street.firehouse', tier: k, kind: 'scoop', c: at(k, 5.05, 3.9), r: 0.5, releases: true, mouth: at(k, 5.05, 4.35) })
