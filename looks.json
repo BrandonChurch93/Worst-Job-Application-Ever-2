@@ -1,0 +1,35 @@
+{
+  "folder": "boss-body",
+  "pushed": "2026-11-26T01:27:42.596Z",
+  "commit": "07638108608e4f6771a5f4c2d13095e00127e487",
+  "looks": [
+    {
+      "file": "look-1.jpg",
+      "caption": "The boss in the fight, approved image left, this build right (review tier, commit e57ef02)",
+      "time": "2026-11-26T01:27:40.665Z",
+      "by": "boss-body",
+      "from": "out/work/looks/files/20261126012740-fight-boss-beside-approved.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "The fallen button, the pieces and the empty socket, approved image left, this build right (draft tier)",
+      "time": "2026-11-26T01:27:40.976Z",
+      "by": "boss-body",
+      "from": "out/work/looks/files/20261126012740-down-beside-approved.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "The four stages of the transformation as one sheet (draft tier)",
+      "time": "2026-11-26T01:27:41.261Z",
+      "by": "boss-body",
+      "from": "out/work/looks/files/20261126012741-stages.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "Twelve frames across the unfolding, before the last restyle of barrels and shield",
+      "time": "2026-11-26T01:27:41.560Z",
+      "by": "boss-body",
+      "from": "out/work/sheets/sheet-beat-boss_unfold-preview-draft.jpg"
+    }
+  ]
+}
