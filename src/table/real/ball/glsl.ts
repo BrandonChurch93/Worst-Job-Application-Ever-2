@@ -46,6 +46,19 @@ vec3 lampsIn( vec3 r, vec3 p, float wide ) {
 	}
 	return c;
 }
+vec3 lampsBack( vec3 r, vec3 p ) {
+	vec3 c = vec3( 0.0 );
+	for ( int i = 0; i < LAMPS; i ++ ) {
+		vec3 to = uLampPos[ i ] - p;
+		float dist = length( to );
+		float near = clamp( 15.0 / dist, 0.045, 0.15 );
+		float size = near * 1.4;
+		float k = 2.0 * ( 1.0 - dot( r, to / dist ) );
+		float spread = min( 1.0, 0.0049 / ( near * near ) );
+		c += uLampCol[ i ].rgb * ( 1.0 - uLampCol[ i ].w ) * exp( - k / ( size * size ) ) * spread;
+	}
+	return c;
+}
 `
 
 export const shellVertex = /* glsl */ `
@@ -342,7 +355,7 @@ void main() {
 	float F = 0.04 + 0.96 * pow( 1.0 - nb, 5.0 );
 	vec3 R = reflect( - V, N );
 	vec3 col = softbox( R, 0.1 ) * SOFT * ( 0.008 + 0.06 * pow( 1.0 - nb, 2.5 ) );
-	col += lampsIn( R, vP, 1.4 ) * ( 0.03 + 0.4 * F );
+	col += lampsBack( R, vP ) * ( 0.03 + 0.4 * F );
 	col += surround( R ) * F * 0.5;
 	float alpha = F * 0.25;
 	float glint;
