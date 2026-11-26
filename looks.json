@@ -1,35 +1,35 @@
 {
   "folder": "lamp-fix",
-  "pushed": "2026-11-26T07:53:26.946Z",
-  "commit": "0a2937d142f4b631b86f2322512ae79966ef048c",
+  "pushed": "2026-11-26T08:06:48.822Z",
+  "commit": "7e3ea0805f3f00379d25ec294b9afa403e4627eb",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "tier-office, approved left, build right: slate floor, fine grain, thinned clutter, flush frosted inserts",
-      "time": "2026-11-26T07:37:47.401Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-a3-tier-office.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "reply-all, approved left, build right: head lamps from the upper right fall off across the tier, pools down, slate floor",
-      "time": "2026-11-26T07:53:25.554Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-p2-reply-all.jpg"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "tier-corporate, approved left, build right: shadows of the models to the lower left, inserts with a warm seat",
-      "time": "2026-11-26T07:53:25.808Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-p2-tier-corporate.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "youre-fired, approved left, build right: the beacon's red now lies on the roof round it",
       "time": "2026-11-26T07:53:26.046Z",
       "by": "lamp-fix",
       "from": "out/work/lights/look-p3-youre-fired.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "Still key-reply-all-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T08:01:28.639Z",
+      "by": "lamp-fix",
+      "from": "out/work/stills/key-reply-all-hd-review.png"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "youre-fired, approved left, build right: lit fronts stand in the lacquer under their walls, red on the roof",
+      "time": "2026-11-26T08:06:47.367Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-m3-youre-fired.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "table-wide, approved left, build right: riser faces between the tiers take light from the head lamps",
+      "time": "2026-11-26T08:06:47.602Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-m3-table-wide.jpg"
     }
   ]
 }
