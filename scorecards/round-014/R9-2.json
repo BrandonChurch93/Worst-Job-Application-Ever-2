@@ -60,6 +60,46 @@
    "where": "Coil and takeoff, final four panels",
    "what": "The pause reads, but the wind-up is mostly a tiny outline ripple and the departure relies more on translation than on stretch.",
    "fix": "Make the pullback one notch wider and lower, then lengthen the cursor briefly along the path toward the checkbox."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as tentatively relieved, or simply waiting, frozen at the panel's left edge. Pale and stony, the lean back and the hiding are not in the read.",
+   "fix": "Scared as the kit has it while the button tears loose: the arrow gone pale and stiff, leaning back, and behind the nearest field.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as alert and uncertain, and the reader cannot tell whether the arrow is firing or being fired at. Upright with a slight bounce and a strut is not in the read.",
+   "fix": "Confidence in the body as the fight starts: upright, a bounce, and shots that are seen to leave the arrow's own tip.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as alarmed and hurt, with a point that flares orange and smokes. A tip that glows red and steam vented in anger are not in the read.",
+   "fix": "Anger as the arrow's own: the tip glowing red from inside and steam in bursts with the body squared at the boss, so that it is not taken for an arrow that has been hit.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as shaken but recovering: the point cools, the arrow straightens and stays still. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked as a held pose when the health jumps back: a look, a second look, the stretch tall, then the snap back.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-08.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as strained and determined, then startled. Puffing up and dusting itself off are not in the read.",
+   "fix": "Proud as the kit has it after the press: the arrow puffed up and dusting itself off, held before the page turns.",
+   "by": "builder"
   }
  ],
  "reads": [

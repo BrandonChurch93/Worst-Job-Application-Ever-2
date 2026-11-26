@@ -39,6 +39,30 @@
    "where": "Frames 9–12, crossing the orange crank handle",
    "what": "The handle partly covers the arrow, but its body does not clearly dodge, squash or snap back through the crossing. The flame reads immediately; the arrow's response to the moving handle does not.",
    "fix": "Stage a clear recoil or compression on one side of the handle, with a readable arrow silhouette and a brief aftermath pose."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as curious and tentative. Upright with a slight bounce and a strut is not in the read.",
+   "fix": "Confidence in the body on the way to the first field: upright, a bounce in the walk, a strut held long enough to be read before the field opens.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as a drooping, frustrated crouch when the gauge drains. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked as a held pose where the gauge drains: a look, a second look, the stretch tall, then the snap back.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as alarmed and urgent because its tip has caught fire. A tip that glows red and steam that it vents in anger are not in the read.",
+   "fix": "Anger as the arrow's own: the tip glowing red from inside, steam vented in bursts with the body squared at the crank, so that it is not taken for an arrow that is on fire.",
+   "by": "builder"
   }
  ],
  "reads": [

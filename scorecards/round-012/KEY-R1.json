@@ -1,0 +1,2092 @@
+{
+  "role": "R1",
+  "round": 12,
+  "unit": "pinball",
+  "commit": "7e7ddb051845adaccd63e6d8b10f11fa163f3c13",
+  "tier": "final",
+  "engineHash": "4a32522105f508db",
+  "sharedHash": "0cdfd2c004bce5cf",
+  "pageHashes": {
+    "step1": "554fd748a7d0bf1f",
+    "step2": "0679d16320166a1e",
+    "marketing": "f5cc2fcd805829ae",
+    "pinball": "fb4bd6d441f28f93",
+    "boss": "8d76a0fff103c15a",
+    "decision": "740d3c0f81bae216"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "loader-page"
+      },
+      "side": "a",
+      "image": "references/approved/loader-page.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-01-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "loader-page"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.seal",
+        "at": 0.7,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "loader-page"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:loader.ring",
+          "window": [
+            1454,
+            327,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.feed.2",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButtonCurrent",
+          "window": [
+            1306,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            125,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/loader-page.png"
+    },
+    "set-A-02-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "loader-page"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:loader.ring",
+          "window": [
+            1402,
+            350,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.feed.2",
+          "window": [
+            1397,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButtonCurrent",
+          "window": [
+            1182,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            197,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.seal",
+        "at": 0.7,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-03-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "table-wide"
+      },
+      "side": "a",
+      "image": "references/approved/table-wide.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-03-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "table-wide"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.reveal",
+        "at": 1,
+        "camera": "table-wide",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-04-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "table-wide"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:marquee.back",
+          "window": [
+            725,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            720,
+            122,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            710,
+            257,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            384,
+            446,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.garage",
+          "window": [
+            1075,
+            532,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            538,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronCard",
+          "window": [
+            720,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1373,
+            705,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:plunger.knob",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/table-wide.png"
+    },
+    "set-A-04-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "table-wide"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:marquee.back",
+          "window": [
+            730,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            730,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            730,
+            232,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            382,
+            375,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.garage",
+          "window": [
+            1105,
+            283,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            552,
+            666,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronCard",
+          "window": [
+            366,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1459,
+            450,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:plunger.knob",
+          "window": [
+            1413,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.reveal",
+        "at": 1,
+        "camera": "table-wide",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-05-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "clear-ball"
+      },
+      "side": "a",
+      "image": "references/approved/clear-ball.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-05-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "clear-ball"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "camera": "sheet",
+        "tier": "final",
+        "sheet": "clear-ball"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-01-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "tier-corporate"
+      },
+      "side": "a",
+      "image": "references/approved/tier-corporate.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-01-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "tier-corporate"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.25,
+        "camera": "tier-3",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-02-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "tier-corporate"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            730,
+            73,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.beach",
+          "window": [
+            1344,
+            78,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.boardroom",
+          "window": [
+            192,
+            122,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hold.corporate.revolving",
+          "window": [
+            730,
+            408,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "part:model-ladder",
+          "window": [
+            1219,
+            370,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.corporate.flipper.left",
+          "window": [
+            509,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.corporate.sling.left.1+sling.corporate.sling.left.2+sling.corporate.sling.left.3",
+          "window": [
+            269,
+            575,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.corporate.insert.1",
+          "window": [
+            480,
+            554,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.corporate",
+          "window": [
+            0,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/tier-corporate.png"
+    },
+    "set-B-02-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "tier-corporate"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            730,
+            120,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.beach",
+          "window": [
+            1279,
+            152,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.boardroom",
+          "window": [
+            122,
+            155,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hold.corporate.revolving",
+          "window": [
+            651,
+            417,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "part:model-ladder",
+          "window": [
+            1174,
+            351,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.corporate.flipper.left",
+          "window": [
+            512,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.corporate.sling.left.1+sling.corporate.sling.left.2+sling.corporate.sling.left.3",
+          "window": [
+            396,
+            482,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.corporate.insert.1",
+          "window": [
+            566,
+            512,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.corporate",
+          "window": [
+            0,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.25,
+        "camera": "tier-3",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-B-03-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "lobby-doors"
+      },
+      "side": "a",
+      "image": "references/approved/lobby-doors.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-03-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "lobby-doors"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.7,
+        "camera": "table-lobby",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-04-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "lobby-doors"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:hq.plate",
+          "window": [
+            806,
+            132,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hq.doorway",
+          "window": [
+            778,
+            311,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            845,
+            543,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hold.corporate.revolving.post",
+          "window": [
+            307,
+            251,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:post.corporate.globe.right",
+          "window": [
+            1229,
+            505,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            826,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flat.corporate.carpet",
+          "window": [
+            883,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/lobby-doors.png"
+    },
+    "set-B-04-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "lobby-doors"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:hq.plate",
+          "window": [
+            885,
+            181,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hq.doorway",
+          "window": [
+            876,
+            324,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            852,
+            570,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:hold.corporate.revolving.post",
+          "window": [
+            589,
+            496,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:post.corporate.globe.right",
+          "window": [
+            1144,
+            527,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.corporate.hq",
+          "window": [
+            921,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flat.corporate.carpet",
+          "window": [
+            778,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.lobby",
+        "at": 0.7,
+        "camera": "table-lobby",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-B-05-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "table-map"
+      },
+      "side": "a",
+      "image": "references/approved/table-map.png",
+      "size": [
+        788,
+        1400
+      ]
+    },
+    "set-B-05-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "table-map"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "camera": "table-map",
+        "tier": "final",
+        "sheet": "table-map"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        788,
+        1400
+      ]
+    },
+    "set-C-01-a.png": {
+      "set": "C",
+      "critic": "R1-3",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "tier-office"
+      },
+      "side": "a",
+      "image": "references/approved/tier-office.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-01-b.png": {
+      "set": "C",
+      "critic": "R1-3",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "tier-office"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.coffee",
+        "at": 0.6,
+        "camera": "tier-2",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-02-a.png": {
+      "set": "C",
+      "critic": "R1-3",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "tier-office"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:model.office.cubicles",
+          "window": [
+            216,
+            132,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            730,
+            273,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.coffee",
+          "window": [
+            1114,
+            3,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.inbox",
+          "window": [
+            1315,
+            278,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3",
+          "window": [
+            274,
+            575,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.office.flipper.left",
+          "window": [
+            504,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            768,
+            446,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.office.insert.1",
+          "window": [
+            490,
+            564,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.office",
+          "window": [
+            58,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/tier-office.png"
+    },
+    "set-C-02-b.png": {
+      "set": "C",
+      "critic": "R1-3",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "tier-office"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:model.office.cubicles",
+          "window": [
+            195,
+            130,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            730,
+            318,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.coffee",
+          "window": [
+            1288,
+            97,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.inbox",
+          "window": [
+            1325,
+            241,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3",
+          "window": [
+            396,
+            482,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.office.flipper.left",
+          "window": [
+            512,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            674,
+            561,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.office.insert.1",
+          "window": [
+            566,
+            512,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.office",
+          "window": [
+            0,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.coffee",
+        "at": 0.6,
+        "camera": "tier-2",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-C-03-a.png": {
+      "set": "C",
+      "critic": "R1-3",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "reply-all"
+      },
+      "side": "a",
+      "image": "references/approved/reply-all.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-03-b.png": {
+      "set": "C",
+      "critic": "R1-3",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "reply-all"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.replyAll",
+        "at": 0.3,
+        "camera": "table-replyall",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-C-04-a.png": {
+      "set": "C",
+      "critic": "R1-3",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "reply-all"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:ball.steel.2",
+          "window": [
+            989,
+            354,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            768,
+            424,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.inbox",
+          "window": [
+            1219,
+            246,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            730,
+            235,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.cubicles",
+          "window": [
+            259,
+            138,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.coffee",
+          "window": [
+            1109,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3",
+          "window": [
+            269,
+            559,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.office.flipper.left",
+          "window": [
+            504,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.office",
+          "window": [
+            134,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/reply-all.png"
+    },
+    "set-C-04-b.png": {
+      "set": "C",
+      "critic": "R1-3",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "reply-all"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:ball.steel.2",
+          "window": [
+            1024,
+            156,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            785,
+            374,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.inbox",
+          "window": [
+            1452,
+            66,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:bumper.office.bumper.3",
+          "window": [
+            730,
+            164,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.cubicles",
+          "window": [
+            105,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.office.coffee",
+          "window": [
+            1384,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.office.sling.left.1+sling.office.sling.left.2+sling.office.sling.left.3",
+          "window": [
+            304,
+            359,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.office.flipper.left",
+          "window": [
+            419,
+            681,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:lift.elbow.office",
+          "window": [
+            0,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.replyAll",
+        "at": 0.3,
+        "camera": "table-replyall",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-D-01-a.png": {
+      "set": "D",
+      "critic": "R1-4",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "tier-street"
+      },
+      "side": "a",
+      "image": "references/approved/tier-street.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-D-01-b.png": {
+      "set": "D",
+      "critic": "R1-4",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "tier-street"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.15,
+        "camera": "tier-1",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-D-02-a.png": {
+      "set": "D",
+      "critic": "R1-4",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "tier-street"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            154,
+            68,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.police",
+          "window": [
+            1291,
+            46,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.garage",
+          "window": [
+            1334,
+            305,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.bank",
+          "window": [
+            101,
+            370,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            350,
+            159,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.mom",
+          "window": [
+            29,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3",
+          "window": [
+            293,
+            591,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            509,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.highway.a.4",
+          "window": [
+            730,
+            143,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/tier-street.png"
+    },
+    "set-D-02-b.png": {
+      "set": "D",
+      "critic": "R1-4",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "tier-street"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            195,
+            27,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.police",
+          "window": [
+            1264,
+            27,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.garage",
+          "window": [
+            1275,
+            252,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.bank",
+          "window": [
+            137,
+            159,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            516,
+            141,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.mom",
+          "window": [
+            289,
+            658,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3",
+          "window": [
+            412,
+            389,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            523,
+            644,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.highway.a.4",
+          "window": [
+            868,
+            101,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.15,
+        "camera": "tier-1",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-D-03-a.png": {
+      "set": "D",
+      "critic": "R1-4",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "youre-fired"
+      },
+      "side": "a",
+      "image": "references/approved/youre-fired.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-D-03-b.png": {
+      "set": "D",
+      "critic": "R1-4",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "youre-fired"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.5,
+        "camera": "table-fired",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-D-04-a.png": {
+      "set": "D",
+      "critic": "R1-4",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "youre-fired"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            960,
+            68,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            643,
+            667,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:seg.street.firehouse.roof",
+          "window": [
+            1018,
+            370,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/youre-fired.png"
+    },
+    "set-D-04-b.png": {
+      "set": "D",
+      "critic": "R1-4",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "youre-fired"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            983,
+            54,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            814,
+            640,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:seg.street.firehouse.roof",
+          "window": [
+            1161,
+            430,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.fired",
+        "at": 0.5,
+        "camera": "table-fired",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-E-01-a.png": {
+      "set": "E",
+      "critic": "R1-5",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "rail-cam"
+      },
+      "side": "a",
+      "image": "references/approved/rail-cam.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-E-01-b.png": {
+      "set": "E",
+      "critic": "R1-5",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "rail-cam"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.highway",
+        "at": 0.556,
+        "camera": "rail",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-E-02-a.png": {
+      "set": "E",
+      "critic": "R1-5",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "rail-cam"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            734,
+            559,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.bank",
+          "window": [
+            211,
+            240,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            1248,
+            176,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/rail-cam.png"
+    },
+    "set-E-02-b.png": {
+      "set": "E",
+      "critic": "R1-5",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "rail-cam"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            723,
+            577,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.bank",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            827,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.highway",
+        "at": 0.556,
+        "camera": "rail",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-E-03-a.png": {
+      "set": "E",
+      "critic": "R1-5",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "last-save"
+      },
+      "side": "a",
+      "image": "references/approved/last-save.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-E-03-b.png": {
+      "set": "E",
+      "critic": "R1-5",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "last-save"
+      },
+      "side": "b",
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.save",
+        "at": 0.53,
+        "camera": "table-save",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-E-04-a.png": {
+      "set": "E",
+      "critic": "R1-5",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "last-save"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            878,
+            451,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            470,
+            554,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3",
+          "window": [
+            230,
+            370,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronCard",
+          "window": [
+            730,
+            713,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.mom",
+          "window": [
+            0,
+            548,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            278,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.drain.1",
+          "window": [
+            720,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronSlab",
+          "window": [
+            0,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.street.insert.1",
+          "window": [
+            480,
+            375,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/last-save.png"
+    },
+    "set-E-04-b.png": {
+      "set": "E",
+      "critic": "R1-5",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "last-save"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            924,
+            426,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:flipper.street.flipper.left",
+          "window": [
+            442,
+            472,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3",
+          "window": [
+            373,
+            321,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronCard",
+          "window": [
+            76,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.mom",
+          "window": [
+            112,
+            444,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:model.street.firehouse",
+          "window": [
+            226,
+            55,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rail.drain.1",
+          "window": [
+            738,
+            702,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "apronSlab",
+          "window": [
+            57,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:insert.street.insert.1",
+          "window": [
+            544,
+            376,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "pinball",
+        "beat": "pinball.save",
+        "at": 0.53,
+        "camera": "table-save",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}
