@@ -22,7 +22,7 @@ const MOULD: Surf = [0.56, 0, 0.12]
 // The tray: how thick its wall is, how round its corners and its lip, and where the bed of the heap lies as a share of its height.
 const TRAY = { wall: 14, round: 16, lip: 4.5, bed: 0.6 }
 // The chute on the side of the hold: how far it stands out, how wide its mouth is, and its steel frame.
-const CHUTE = { deep: 40, wide: 88, drop: 8, bar: 6, proud: 2.4, side: 8 }
+const CHUTE = { deep: 40, wide: 88, drop: 8, tall: 84, bar: 6, proud: 2.4, side: 8 }
 const LIFT = { mould: 0.42, paper: 0.52 }
 // The shade one envelope lays on what is under it: how far it reaches, and its colour.
 const SHADE = { x: 2.2, y: 3, col: [0.42, 0.39, 0.35] as RGB }
@@ -127,7 +127,7 @@ function shell(k: Kit, p: Plan): void {
 }
 
 function chute(k: Kit, p: Plan): void {
-  const Hc = p.h - CHUTE.drop
+  const Hc = Math.min(p.h - CHUTE.drop, CHUTE.tall)
   const D = CHUTE.deep
   const len = Math.hypot(D, Hc)
   const tilt = -Math.atan2(Hc, D)
