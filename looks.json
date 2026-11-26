@@ -1,35 +1,35 @@
 {
   "folder": "street-finish",
-  "pushed": "2026-11-26T12:36:03.002Z",
-  "commit": "76fe15a1645ebc0bde8c98106aafdd2ac45f6b55",
+  "pushed": "2026-11-26T12:44:09.299Z",
+  "commit": "36d491c5fbaf9ea8d60ea3775af890fc1004bf39",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-tier-street-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T12:32:54.207Z",
+      "caption": "Still key-tier-street-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T12:40:11.677Z",
       "by": "street-finish",
-      "from": "out/work/stills/key-tier-street-hd-draft.png"
+      "from": "out/work/stills/key-tier-street-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key tier-street: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, shape:model.street.police, shape:model.street.garage, shape:model.street.bank, cursor, shape:model.street.mom, shape:sling.street.sling.left.1+sling.street.sling.left.2+sling.street.sling.left.3, shape:flipper.street.flipper.left, shape:rail.highway.a.4",
-      "time": "2026-11-26T12:36:01.319Z",
+      "caption": "Still key-youre-fired-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T12:41:54.120Z",
       "by": "street-finish",
-      "from": "out/work/compare/compare-tier-street.jpg"
+      "from": "out/work/stills/key-youre-fired-hd-draft.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "table-wide draft, garage: approved left, build right: five cast decks, the one under the rim open before the police sign",
-      "time": "2026-11-26T12:36:01.713Z",
+      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, cursor, shape:seg.street.firehouse.roof",
+      "time": "2026-11-26T12:44:07.642Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/garage-side-5.jpg"
+      "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "tier-street draft beside approved: concrete deck round the garage, lit roof windows on Mom's house",
-      "time": "2026-11-26T12:36:01.941Z",
+      "caption": "youre-fired draft beside approved: brick parapet between cornice and coping, rooms lit unlike their neighbours",
+      "time": "2026-11-26T12:44:07.987Z",
       "by": "street-finish",
-      "from": "out/work/street-finish/compare-tier-street-5.jpg"
+      "from": "out/work/street-finish/compare-youre-fired-6.jpg"
     }
   ]
 }
