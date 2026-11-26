@@ -119,4 +119,20 @@ describe('the parts of step 2 as their keeper left them', () => {
     expect(high).toBeLessThanOrEqual(DIAL_BODY.fanLow + DIAL_BODY.fanGain + 1e-6)
     expect(high - low).toBeGreaterThan(DIAL_BODY.fanGain * 0.9)
   })
+
+  it('never moves the cursor to a grip or onto a machine in one step', () => {
+    const s = film()
+    let was = s.cursor.pose()
+    let across = 0
+    let up = 0
+    for (let i = 1; i <= Math.round(20.4 * stepHz); i++) {
+      s.advance(1)
+      const now = s.cursor.pose()
+      across = Math.max(across, Math.hypot(now.x - was.x, now.y - was.y))
+      up = Math.max(up, Math.abs(now.z - was.z))
+      was = now
+    }
+    expect(across).toBeLessThan(24)
+    expect(up).toBeLessThan(12)
+  })
 })
