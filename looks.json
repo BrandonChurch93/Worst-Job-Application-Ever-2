@@ -1,35 +1,35 @@
 {
   "folder": "boss-closer",
-  "pushed": "2026-11-26T07:14:37.398Z",
-  "commit": "9a03082071033764b1134af4775cc07c23699bd2",
+  "pushed": "2026-11-26T07:39:14.028Z",
+  "commit": "16a0399517f29dceae07142217504abb658e0566",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Sheet boss-stages: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T07:11:35.934Z",
+      "caption": "Still key-boss-fight-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T07:35:51.878Z",
       "by": "boss-closer",
-      "from": "out/work/compare/compare-boss-stages.jpg"
+      "from": "out/work/stills/key-boss-fight-hd-review.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Sheet boss-stages: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T07:12:08.751Z",
+      "caption": "boss-fight at draft after the first pass, approved left, build right: brushed plates, glass card and shield, the arrow along the shot",
+      "time": "2026-11-26T07:39:12.323Z",
       "by": "boss-closer",
-      "from": "out/work/compare/compare-boss-stages.jpg"
+      "from": "out/work/report/first-fight.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "boss-fight at draft, approved left, build right: glass card and shield with a polished rim, arrow turned along the shot, no fine print under the card",
-      "time": "2026-11-26T07:14:36.198Z",
+      "caption": "boss-down at draft after the first pass, approved left, build right: the fallen cap a plump capsule, brushed wreck plates, the arrow sagging",
+      "time": "2026-11-26T07:39:12.556Z",
       "by": "boss-closer",
-      "from": "out/work/compare/compare-boss-fight.jpg"
+      "from": "out/work/report/first-down.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "sheet boss-stages at draft, approved left, build right: the Unfolding state is a compact plate with short legs folding out",
-      "time": "2026-11-26T07:14:36.423Z",
+      "caption": "nine moments of the arrow's acting on step 4 at draft: hover, stamp on the box, pride; shock, pale behind the card, disbelief; sag, stamp on the button, relief",
+      "time": "2026-11-26T07:39:12.786Z",
       "by": "boss-closer",
-      "from": "out/work/compare/compare-boss-stages.jpg"
+      "from": "out/work/report/first-acting.jpg"
     }
   ]
 }
