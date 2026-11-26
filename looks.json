@@ -1,35 +1,35 @@
 {
   "folder": "pinball-stage",
-  "pushed": "2026-11-26T01:01:30.473Z",
-  "commit": "67839de1ea49f6ec32e1e24023943fe214408dd7",
+  "pushed": "2026-11-26T01:22:05.992Z",
+  "commit": "480983ead9efa503f5d17fd63ac69156a9d8774a",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key table-wide: approved on the left, agent/pinball-stage f989e5a on the right, draft tier, camera fitted (pass 2)",
-      "time": "2026-11-26T01:01:28.670Z",
+      "caption": "Sheet table-map: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T01:20:35.954Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/compare/compare-table-map.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key lobby-doors: approved on the left, agent/pinball-stage f989e5a on the right, draft tier, camera fitted (pass 2)",
-      "time": "2026-11-26T01:01:28.896Z",
+      "caption": "Sheet clear-ball: approved on the left, agent/pinball-stage on the right, draft tier",
+      "time": "2026-11-26T01:22:04.479Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-lobby-doors.jpg"
+      "from": "out/work/compare/compare-clear-ball.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key reply-all: approved on the left, agent/pinball-stage f989e5a on the right, draft tier, camera fitted (pass 2)",
-      "time": "2026-11-26T01:01:29.140Z",
+      "caption": "Sheet table-map: approved on the left, agent/pinball-stage on the right, draft tier",
+      "time": "2026-11-26T01:22:04.706Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-reply-all.jpg"
+      "from": "out/work/compare/compare-table-map.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Key last-save: approved on the left, agent/pinball-stage f989e5a on the right, draft tier, camera fitted (pass 2)",
-      "time": "2026-11-26T01:01:29.372Z",
+      "caption": "Key loader-page: approved on the left, agent/pinball-stage on the right, draft tier",
+      "time": "2026-11-26T01:22:04.947Z",
       "by": "pinball-stage",
-      "from": "out/work/compare/compare-last-save.jpg"
+      "from": "out/work/compare/compare-loader-page.jpg"
     }
   ]
 }
