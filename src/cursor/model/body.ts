@@ -98,6 +98,7 @@ export class Body implements BodyModel {
     this.last = key
     this.deform.set(look)
     this.deform.lean(turn)
+    this.deform.fit()
     const u = this.uniforms
     u.uState.value.set(clamp01(look.pale), clamp01(look.heat), clamp01(look.char), clamp01(look.melt))
     u.uShape.value.set(clamp01(look.flat), clamp01(look.sealed ?? 0), 0, 0)
@@ -293,6 +294,10 @@ export class Body implements BodyModel {
     pos.needsUpdate = true
     col.needsUpdate = true
     g.computeVertexNormals()
+  }
+
+  middle(): { x: number; y: number; r: number } {
+    return this.deform.mid
   }
 
   anchor(x: number, y: number, out: THREE.Vector3): THREE.Vector3 {
