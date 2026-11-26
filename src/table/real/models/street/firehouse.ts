@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import type { RealContext } from '../../../../real/types'
-import { holdOf } from '../../../layout'
+import { BALL } from '../../../layout'
 import { localBalls, type Zone } from '../../zone'
-import { Geo, type Buckets, type V3 } from './geo'
-import { KIND, TONE, band, beaconBase, board, framed, parapet, reveal, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
+import { Geo, type Buckets, type RGB, type V3 } from './geo'
+import { KIND, TONE, band, beaconBase, board, framed, mix, parapet, reveal, rgb, shade, site, wallFace, windowAt, type Hole, type Site, type WindowLook } from './kit'
 
 export type Side = 'front' | 'right' | 'back' | 'left'
 
@@ -15,53 +15,67 @@ export function walls(b: Buckets, x0: number, x1: number, yf: number, yb: number
   framed(b, x0, yb, base, -Math.PI / 2, () => fn('left', yb - yf))
 }
 
-// Stone blocks up a corner of a wall face, long and short in turn.
-export function quoins(b: Buckets, width: number, z0: number, z1: number, col: typeof TONE.stone): void {
+// Stone blocks up a corner of a wall face, long and short in turn. The right corner starts at `rightFrom` where something else stands under it.
+export function quoins(b: Buckets, width: number, z0: number, z1: number, col: typeof TONE.stone, rightFrom = z0): void {
   const step = 8
   let k = 0
   for (let zz = z0; zz + step <= z1 + 0.01; zz += step) {
-    const long = k % 2 === 0 ? 8 : 5
-    b.paint.box(-1, long, -1.1, 0, zz + 0.5, zz + step - 0.5, col, { skip: 'b', under: true, bevel: 0.4 })
-    b.paint.box(width - long, width + 1, -1.1, 0, zz + 0.5, zz + step - 0.5, col, { skip: 'b', under: true, bevel: 0.4 })
+    const long = k % 2 === 0 ? 9 : 5.5
+    b.paint.box(-1.2, long, -1.5, 0, zz + 0.45, zz + step - 0.45, col, { skip: 'b', under: true, bevel: 0.7, kind: KIND.stucco })
+    if (zz >= rightFrom - 0.01) b.paint.box(width - long, width + 1.2, -1.5, 0, zz + 0.45, zz + step - 0.45, col, { skip: 'b', under: true, bevel: 0.7, kind: KIND.stucco })
     k++
   }
 }
 
 export interface Firehouse {
   door: Geo
-  frame: Geo
+  // The red light inside the engine bay: the lamp under its head and what that lamp lights.
+  bay: Geo
   // Where the door stands when shut: the foot of its middle, and how far it travels when fully raised.
   doorAt: V3
   travel: number
   beacon: V3
 }
 
-// The paint of the engine bay behind the door: a deep oxide red.
-const BAY: [number, number, number] = [0.085, 0.017, 0.015]
+// The mouth the ball is held in: as wide as the bay of the layout, a ball and a little high, with round upper corners in a stone frame.
+export const MOUTH = { h: 103, round: 16, jamb: 10, head: 10, reveal: 7 }
+// The door hangs in the head of the mouth: at rest its foot shows under the stone, on a held ball it is gone.
+export const DOOR = { h: 24, depth: 8.5, travel: 114 }
 
-export const DOOR = { w: 104, h: 55, depth: 4 }
+// The floor of the engine bay: a deep oxide red.
+const BAY: RGB = [0.085, 0.017, 0.015]
+const STONE = rgb(0x959da5)
+const DECK = TONE.deck
 
 export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   const S: Site = site(z, 'street.firehouse')
   const g = b.paint
-  const i = 3
-  const x0 = S.x0 + i
-  const x1 = S.x1 - i
-  const yf = S.yf + i
-  const yb = S.yb - i
+  const x0 = S.x0 + 3
+  const x1 = S.x1 - 0.6
+  const yf = S.yf + 3
+  const yb = S.yb - 3
   const top = S.h
-  const deck = top - 10
-  const storey = 60
-  const hold = holdOf('street.firehouse')
-  const dx = localBalls(z, hold.c[0], hold.c[1])[0] - x0
-  const doorHole: Hole = { x: dx - DOOR.w / 2, z: 3, w: DOOR.w, h: DOOR.h }
+  const deck = top - 12
+  const span = S.m.bay ?? [S.m.box[0] + S.m.box[2] * 0.46, S.m.box[0] + S.m.box[2] * 0.98, 0.55]
+  const bl = localBalls(z, span[0], S.m.box[1])[0] - x0
+  const br = localBalls(z, span[1], S.m.box[1])[0] - x0
+  const deep = span[2] * BALL - (yf - S.yf)
+  const mouth: Hole = { x: bl, z: 0, w: br - bl, h: MOUTH.h }
+  const head = MOUTH.h + MOUTH.head
+  const course = 13
+  const cornice = deck - 10
+  const string = head + 5
+  const upZ = string + 8
+  const upH = Math.min(34, cornice - upZ - 7)
+  const storeys = upH >= 22
 
-  g.box(S.x0, S.x1, S.yf, S.yb, 0, 3, TONE.stoneDark, { bevel: 1 })
-  for (const sx of [S.x0 + 1.6, S.x1 - 1.6]) b.screws.push([sx, S.yf + 1.6, 3, 1.1])
+  g.box(S.x0, x0 + 1, S.yf + 1.5, S.yb, 0, 3, TONE.stoneDark, { bevel: 1, kind: KIND.stucco })
+  g.box(x0 + 1, S.x1, yb - 1, S.yb, 0, 3, TONE.stoneDark, { bevel: 1, kind: KIND.stucco, skip: 'l' })
+  b.screws.push([S.x0 + 1.6, S.yf + 4, 3, 1.1])
 
   const trim = shade(TONE.stoneDark, 0.72)
-  const up: WindowLook = { frame: trim, wall: TONE.brick, sill: TONE.stone, lintel: TONE.stone, surround: TONE.stone, bars: [2, 3] }
-  const down: WindowLook = { frame: trim, wall: TONE.brick, sill: TONE.stone, lintel: TONE.stone, surround: TONE.stone, bars: [2, 2], warm: 0.35 }
+  const up: WindowLook = { frame: trim, wall: TONE.brick, sill: STONE, lintel: STONE, surround: STONE, bars: [2, 3] }
+  const down: WindowLook = { frame: trim, wall: TONE.brick, sill: STONE, lintel: STONE, surround: STONE, bars: [2, 2], warm: 0.35 }
   let n = 0
   const lum = (): number => [1, 0.72, 0.9, 0.5, 1, 0.8, 0.62, 0.95][n++ % 8]!
 
@@ -69,48 +83,120 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
     const upper: Hole[] = []
     const lower: Hole[] = []
     if (side === 'front') {
-      for (let k = 0; k < 5; k++) upper.push({ x: 21 + k * 44, z: 80, w: 16, h: 30 })
-      lower.push(doorHole, { x: 28, z: 22, w: 14, h: 22 }, { x: 72, z: 22, w: 14, h: 22 })
+      if (storeys) for (let k = 0; k < 5; k++) upper.push({ x: 20 + k * ((W - 56) / 4), z: upZ, w: 16, h: upH })
+      const room = bl - MOUTH.jamb
+      if (room > 60) lower.push({ x: room * 0.3 - 8, z: 30, w: 16, h: 34 }, { x: room * 0.7 - 8, z: 30, w: 16, h: 34 })
     } else if (side === 'right') {
       for (let k = 0; k < 3; k++) {
-        upper.push({ x: 18 + k * 43, z: 80, w: 16, h: 30 })
-        lower.push({ x: 19 + k * 43, z: 22, w: 14, h: 22 })
+        if (storeys) upper.push({ x: 18 + k * ((W - 52) / 2), z: upZ, w: 16, h: upH })
+        if (18 + k * ((W - 52) / 2) > deep + 8) lower.push({ x: 18 + k * ((W - 52) / 2), z: 30, w: 16, h: 34 })
       }
     }
-    wallFace(g, 0, W, 3, storey, lower, TONE.brick, KIND.brick)
-    wallFace(g, 0, W, storey, deck - 4, upper, TONE.brick, KIND.brick)
-    band(g, -1.4, W + 1.4, 3, 8, 1.4, TONE.stoneDark, KIND.stucco)
-    band(g, -1, W + 1, storey - 1.6, storey + 1.4, 1.3, TONE.stone, KIND.stucco)
-    band(g, -3.4, W + 3.4, deck - 10, deck - 4, 3.4, TONE.stone, KIND.stucco)
-    band(g, -1.6, W + 1.6, deck - 4, top - 3, 1.6, TONE.stone, KIND.stucco)
-    quoins(b, W, 8.5, deck - 11, TONE.stone)
+    wallFace(g, 0, W, 0, deck - 4, side === 'front' ? [mouth, ...lower, ...upper] : [...lower, ...upper], TONE.brick, KIND.brick)
+    band(g, -1.6, side === 'front' ? bl - MOUTH.jamb + 0.5 : W + 1.6, 0, course, 1.8, TONE.stoneDark, KIND.block)
+    if (cornice - string > 12) band(g, -1, W + 1, string, string + 3, 1.3, STONE, KIND.stucco)
+    band(g, -3.6, W + 3.6, cornice, deck - 4, 3.6, STONE, KIND.stucco)
+    band(g, -2.2, W + 2.2, cornice - 2.4, cornice, 2.2, shade(STONE, 0.86), KIND.stucco)
+    band(g, -1.6, W + 1.6, deck - 4, top - 3, 1.6, STONE, KIND.stucco)
+    quoins(b, W, course + 0.5, cornice - 3, STONE, side === 'front' ? head + 2 : course)
     upper.forEach((h, k) => {
-      const pole = side === 'front' && k === 1
-      windowAt(b, h, pole ? { ...up, depth: 15, bars: [1, 1], glow: 1 } : { ...up, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
-      if (pole) b.metal.rod([h.x + h.w * 0.42, 8, h.z - 2], [h.x + h.w * 0.42, 8, h.z + h.h + 2], 1.3, 10, TONE.brass, 0, false)
+      windowAt(b, h, { ...up, glow: lum(), blind: [0.3, 0, 0.45, 0.2, 0.55][(n + k) % 5]! })
     })
-    lower.forEach((h) => {
-      if (h !== doorHole) windowAt(b, h, { ...down, glow: lum() })
-    })
-    if (side === 'front') {
-      reveal(g, doorHole, DOOR.depth + 3, shade(TONE.stone, 0.7))
-      const a = doorHole.x
-      const c = doorHole.x + doorHole.w
-      const d0 = DOOR.depth + 3
-      const d1 = 52
-      const zc = doorHole.z + doorHole.h
-      g.quad([a, d0, 3], [a, d1, 3], [a, d1, zc], [a, d0, zc], BAY)
-      g.quad([c, d1, 3], [c, d0, 3], [c, d0, zc], [c, d1, zc], BAY)
-      g.quad([a, d1, 3], [c, d1, 3], [c, d1, zc], [a, d1, zc], shade(BAY, 0.7))
-      g.quad([a, d1, zc], [c, d1, zc], [c, d0, zc], [a, d0, zc], shade(BAY, 0.5))
-      g.quad([a, d0, 3.15], [c, d0, 3.15], [c, d1, 3.15], [a, d1, 3.15], shade(BAY, 0.45))
-      // Hose racks on the back wall of the bay: three red bars.
-      for (let k = 0; k < 3; k++) g.box(a + 14 + k * 28, a + 34 + k * 28, d1 - 2, d1, 26, 30, TONE.red, { skip: 'b', under: true, kind: KIND.gloss })
+    lower.forEach((h) => windowAt(b, h, { ...down, glow: lum() }))
+    if (side !== 'front') return
+
+    // The stone frame of the mouth: two jambs and a head with round inner corners, proud of the brick and as deep as the wall. Its right jamb is the corner of the building.
+    const fl = bl
+    const fr = br
+    const ft = MOUTH.h
+    const xr = W + 1.5
+    const arch: [number, number][] = []
+    const bend = (cx: number, cz: number, r: number, a0: number, a1: number): void => {
+      for (let k = 0; k <= 7; k++) {
+        const a = a0 + ((a1 - a0) * k) / 7
+        arch.push([cx + r * Math.cos(a), cz + r * Math.sin(a)])
+      }
     }
+    const ri = MOUTH.round
+    arch.push([fl - MOUTH.jamb, 0], [fl, 0])
+    bend(fl + ri, ft - ri, ri, Math.PI, Math.PI / 2)
+    bend(fr - ri, ft - ri, ri, Math.PI / 2, 0)
+    arch.push([fr, 0], [xr, 0])
+    bend(xr - 2.5, head - 2.5, 2.5, 0, Math.PI / 2)
+    bend(fl - MOUTH.jamb + 6, head - 6, 6, Math.PI / 2, Math.PI)
+    const fm = g.mark()
+    g.slab(arch, -MOUTH.reveal, 3.4, STONE, { kind: KIND.stucco })
+    // A bead round the opening and the joints of its stones.
+    const bead: [number, number][] = []
+    const inner: [number, number][] = []
+    const ring = (o: number, out: [number, number][]): void => {
+      out.push([fl - o, 0])
+      for (let k = 0; k <= 7; k++) {
+        const a = Math.PI - (Math.PI / 2) * (k / 7)
+        out.push([fl + ri + (ri + o) * Math.cos(a), ft - ri + (ri + o) * Math.sin(a)])
+      }
+      for (let k = 0; k <= 7; k++) {
+        const a = Math.PI / 2 - (Math.PI / 2) * (k / 7)
+        out.push([fr - ri + (ri + o) * Math.cos(a), ft - ri + (ri + o) * Math.sin(a)])
+      }
+      out.push([fr + o, 0])
+    }
+    ring(0, inner)
+    ring(2.6, bead)
+    for (let k = 0; k < inner.length - 1; k++) {
+      const p = inner[k]!
+      const q = inner[k + 1]!
+      const P = bead[k]!
+      const Q = bead[k + 1]!
+      if (P[0] > xr || Q[0] > xr) continue
+      g.face([[p[0], p[1], 4.6], [q[0], q[1], 4.6], [Q[0], Q[1], 4.6], [P[0], P[1], 4.6]], shade(STONE, 1.08), KIND.stucco, [0, 0, 1])
+      g.face([[P[0], P[1], 4.6], [Q[0], Q[1], 4.6], [Q[0], Q[1], 3.4], [P[0], P[1], 3.4]], shade(STONE, 0.8), KIND.stucco)
+      g.face([[q[0], q[1], 4.6], [p[0], p[1], 4.6], [p[0], p[1], 3.4], [q[0], q[1], 3.4]], shade(STONE, 0.9), KIND.stucco)
+    }
+    g.move(fm, new THREE.Matrix4().makeRotationX(Math.PI / 2))
+    const jz = 3.44
+    for (let zz = 17; zz < ft - ri; zz += 17) {
+      g.quad([fl - MOUTH.jamb, -jz, zz], [fl - 2.6, -jz, zz], [fl - 2.6, -jz, zz + 0.9], [fl - MOUTH.jamb, -jz, zz + 0.9], shade(STONE, 0.42))
+      g.quad([fr + 2.6, -jz, zz], [xr, -jz, zz], [xr, -jz, zz + 0.9], [fr + 2.6, -jz, zz + 0.9], shade(STONE, 0.42))
+    }
+    const mid = (fl + fr) / 2
+    for (const dx of [-44, -22, 22, 44]) g.quad([mid + dx - 0.45, -jz, ft + 2.6], [mid + dx + 0.45, -jz, ft + 2.6], [mid + dx + 0.45, -jz, head], [mid + dx - 0.45, -jz, head], shade(STONE, 0.42))
+    g.box(mid - 7, mid + 7, -5.6, 0, ft - 1.5, head + 3.5, shade(STONE, 1.05), { skip: 'b', under: true, bevel: 1.2, kind: KIND.stucco })
+    for (const fx of [fl - MOUTH.jamb - 1, fr - 0.5]) g.box(fx, fx + 4.5, -7, -3.4, 0, 12, TONE.yellow, { skip: 'b', bevel: 0.9, kind: KIND.gloss })
+
+    // The bay behind the mouth: a dark floor let in level with the street, and the slot the door runs up in.
+    g.quad([fl, -3.4, 0.22], [fr, -3.4, 0.22], [fr, deep, 0.22], [fl, deep, 0.22], shade(BAY, 0.5), KIND.gloss)
   })
 
-  g.quad([x0 + 7, yf + 7, deck], [x1 - 7, yf + 7, deck], [x1 - 7, yb - 7, deck], [x0 + 7, yb - 7, deck], TONE.roof, KIND.tar)
-  parapet(g, x0, x1, yf, yb, deck, top, 8, TONE.stone, TONE.stonePale, KIND.stucco)
+  // What the red lamp of the bay lights: its walls, its back and its ceiling, brightest under the head where the lamp hangs.
+  const bay = new Geo()
+  {
+    const a = bl
+    const c = br
+    const d0 = MOUTH.reveal
+    const d1 = deep
+    const zc = MOUTH.h
+    const steps = 9
+    const red = (k: number): RGB => [k, k * 0.7, k * 0.6]
+    for (let k = 0; k < steps; k++) {
+      const z0 = (zc * k) / steps
+      const z1 = (zc * (k + 1)) / steps
+      const lv = 0.0012 + 0.04 * Math.pow((k + 0.5) / steps, 3.2)
+      bay.quad([a, d0, z0], [a, d1, z0], [a, d1, z1], [a, d0, z1], red(lv))
+      bay.quad([c, d1, z0], [c, d0, z0], [c, d0, z1], [c, d1, z1], red(lv))
+      bay.quad([a, d1, z0], [c, d1, z0], [c, d1, z1], [a, d1, z1], red(lv * 0.3))
+    }
+    bay.quad([a, d1, zc], [c, d1, zc], [c, d0 + 4, zc], [a, d0 + 4, zc], red(0.02))
+    // Racks on the back wall, dark against it.
+    for (let k = 0; k < 3; k++) bay.box(a + 16 + k * 34, a + 40 + k * 34, d1 - 2.4, d1 - 0.2, 70, 75, red(0.0006), { skip: 'b', under: true })
+    bay.box(a + 22, c - 22, d0 + 8, d0 + 12, zc - 3.2, zc - 0.4, [0.5, 0.36, 0.3], { under: true, skip: 't' })
+    bay.place(0, x0, yf, 0, 0)
+  }
+
+  g.quad([x0 + 7, yf + 7, deck], [x1 - 7, yf + 7, deck], [x1 - 7, yb - 7, deck], [x0 + 7, yb - 7, deck], DECK, KIND.concrete)
+  // A gutter round the deck, a shade darker, and two drains.
+  for (const [ax, bx, ay, by] of [[x0 + 8, x1 - 8, yf + 8, yf + 10.5], [x0 + 8, x1 - 8, yb - 10.5, yb - 8], [x0 + 8, x0 + 10.5, yf + 10.5, yb - 10.5], [x1 - 10.5, x1 - 8, yf + 10.5, yb - 10.5]] as const) g.quad([ax, ay, deck + 0.08], [bx, ay, deck + 0.08], [bx, by, deck + 0.08], [ax, by, deck + 0.08], TONE.deckDark)
+  parapet(g, x0, x1, yf, yb, deck, top, 8, STONE, mix(TONE.stonePale, TONE.white, 0.3), KIND.stucco)
 
   // The stair head at the back left corner: a low rendered box with a louvre and a capped flat roof, as the small units on the approved roof are.
   const tx0 = x0 + 10
@@ -149,52 +235,20 @@ export function firehouse(b: Buckets, z: Zone, ctx: RealContext): Firehouse {
   beaconBase(b, beacon[0], beacon[1], deck)
   board(b, z, ctx, 'street.firehouse', deck)
 
-  // The door: four white panels, a row of small windows in the third, a rubber seal at its foot.
+  // The door: two white panels with a rubber seal at the foot. Only its foot shows, in the head of the mouth.
   const door = new Geo()
-  const hw = DOOR.w / 2
-  const ph = DOOR.h / 4
-  for (let k = 0; k < 4; k++) {
-    door.box(-hw, hw, 0, 2.2, k * ph + 0.35, (k + 1) * ph - 0.35, TONE.door, { kind: KIND.gloss, under: true })
-    for (let j = 0; j < 4; j++) {
-      const a = -hw + 3 + j * ((DOOR.w - 6) / 4)
-      const c = a + (DOOR.w - 6) / 4 - 2.5
-      if (k === 2) {
-        door.box(a + 3, c - 3, -0.5, 0, k * ph + 3, (k + 1) * ph - 3, TONE.white, { skip: 'b', under: true, kind: KIND.gloss })
-        door.quad([a + 4.2, -0.55, k * ph + 4.2], [c - 4.2, -0.55, k * ph + 4.2], [c - 4.2, -0.55, (k + 1) * ph - 4.2], [a + 4.2, -0.55, (k + 1) * ph - 4.2], [0.03, 0.045, 0.07], KIND.gloss)
-      } else door.box(a, c, -0.55, 0, k * ph + 2.4, (k + 1) * ph - 2.4, shade(TONE.door, 1.06), { skip: 'b', under: true, kind: KIND.gloss, bevel: 0.5 })
+  const hw = (br - bl) / 2 - 0.6
+  const ph = DOOR.h / 2
+  for (let k = 0; k < 2; k++) {
+    door.box(-hw, hw, 0, 2.2, k * ph + 0.3, (k + 1) * ph - 0.3, TONE.door, { kind: KIND.gloss, under: true })
+    for (let j = 0; j < 5; j++) {
+      const a = -hw + 3 + j * ((hw * 2 - 6) / 5)
+      const c = a + (hw * 2 - 6) / 5 - 2.5
+      door.box(a, c, -0.55, 0, k * ph + 2.2, (k + 1) * ph - 2.2, shade(TONE.door, 1.06), { skip: 'b', under: true, kind: KIND.gloss, bevel: 0.5 })
     }
   }
-  door.box(-hw, hw, -0.3, 2.4, -0.2, 1.2, TONE.black, { under: true })
-  door.box(-9, 9, -1.6, 0, 5.2, 7, TONE.iron, { skip: 'b', under: true, kind: KIND.gloss })
+  door.box(-hw, hw, -0.4, 2.5, -1.6, 0.3, TONE.black, { under: true })
+  door.box(-9, 9, -1.6, 0, 3.4, 5.2, TONE.iron, { skip: 'b', under: true, kind: KIND.gloss })
 
-  // The frame round the door: two jambs, a lintel and a keystone, a mesh of its own so that it can shake.
-  const frame = new Geo()
-  const fl = doorHole.x
-  const fr = doorHole.x + doorHole.w
-  const ft = doorHole.z + doorHole.h
-  const arch: [number, number][] = []
-  const bend = (cx: number, cz: number, r: number, a0: number, a1: number): void => {
-    for (let k = 0; k <= 6; k++) {
-      const a = a0 + ((a1 - a0) * k) / 6
-      arch.push([cx + r * Math.cos(a), cz + r * Math.sin(a)])
-    }
-  }
-  const ri = 10
-  const ro = 7
-  const jw = 8
-  const fo = ft + 9
-  arch.push([fl - jw, 3], [fl, 3])
-  bend(fl + ri, ft - ri, ri, Math.PI, Math.PI / 2)
-  bend(fr - ri, ft - ri, ri, Math.PI / 2, 0)
-  arch.push([fr, 3], [fr + jw, 3])
-  bend(fr + jw - ro, fo - ro, ro, 0, Math.PI / 2)
-  bend(fl - jw + ro, fo - ro, ro, Math.PI / 2, Math.PI)
-  const fm = frame.mark()
-  frame.slab(arch, 0, 3.6, TONE.stone, { kind: KIND.stucco })
-  frame.move(fm, new THREE.Matrix4().makeRotationX(Math.PI / 2))
-  frame.box((fl + fr) / 2 - 6, (fl + fr) / 2 + 6, -5, 0, ft - 1, ft + 10.5, TONE.stone, { skip: 'b', under: true, bevel: 1, kind: KIND.stucco })
-  for (const fx of [fl - 7, fr + 3]) frame.box(fx, fx + 4, -6, 0, 3, 13, TONE.yellow, { skip: 'b', bevel: 0.8, kind: KIND.gloss })
-  frame.place(0, x0, yf, 0, 0)
-
-  return { door, frame, doorAt: [x0 + dx, yf + DOOR.depth, 3], travel: DOOR.h, beacon }
+  return { door, bay, doorAt: [x0 + (bl + br) / 2, yf + DOOR.depth, 0], travel: DOOR.travel, beacon }
 }

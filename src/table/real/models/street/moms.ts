@@ -23,7 +23,7 @@ export function moms(b: Buckets, z: Zone, ctx: RealContext): Moms {
   const g = b.paint
   const wall = rgb(0xece3cd)
   const trim = TONE.white
-  const roof = rgb(0x6e2723)
+  const roof = rgb(0x5b3026)
 
   g.box(S.x0, S.x1, S.yf, S.yb, 0, 2.6, TONE.stoneDark, { bevel: 0.8, top: rgb(0x34472c), topKind: KIND.stucco })
   b.screws.push([S.x0 + 1.5, S.yf + 1.5, 2.6, 1.1], [S.x1 - 1.5, S.yf + 1.5, 2.6, 1.1], [S.x1 - 1.5, S.yb - 1.5, 2.6, 1.1])

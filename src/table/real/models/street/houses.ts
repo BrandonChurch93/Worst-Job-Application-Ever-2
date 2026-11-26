@@ -102,15 +102,15 @@ export function mailbox(b: Buckets, x: number, y: number, z: number, col: RGB): 
 }
 
 const LOOKS: HouseLook[] = [
-  { wall: rgb(0xd8cfb8), kind: KIND.stucco, roof: rgb(0x7a3028), ridge: 'y', door: rgb(0x2f5d50), trim: TONE.white, eave: 22, chimney: 1 },
-  { wall: rgb(0x8a4534), kind: KIND.brick, roof: rgb(0x3d4a5c), ridge: 'y', door: rgb(0xd9d2bf), trim: TONE.stonePale, eave: 25, chimney: -1 },
-  { wall: rgb(0xc9ba94), kind: KIND.stucco, roof: rgb(0x6a3a2c), ridge: 'x', door: rgb(0x7a2a26), trim: rgb(0xe0dacc), eave: 24, chimney: 1 },
-  { wall: rgb(0x8c979c), kind: KIND.stucco, roof: rgb(0x6e2c26), ridge: 'y', door: rgb(0xe0dacc), trim: TONE.white, eave: 24, chimney: 1 },
-  { wall: rgb(0xd5cfc2), kind: KIND.stucco, roof: rgb(0x40444a), ridge: 'x', door: rgb(0x33486b), trim: rgb(0x6c7479), eave: 22, chimney: -1 },
-  { wall: rgb(0xc4b596), kind: KIND.stucco, roof: rgb(0x4a4038), ridge: 'x', door: rgb(0x5a2f22), trim: rgb(0xdfd8c6), eave: 25, chimney: -1 }
+  { wall: rgb(0xcbc2ac), kind: KIND.stucco, roof: rgb(0x4d3226), ridge: 'y', door: rgb(0x2c3f38), trim: rgb(0xd9d5c9), eave: 22, chimney: 1 },
+  { wall: rgb(0x6b3a2d), kind: KIND.brick, roof: rgb(0x363d46), ridge: 'y', door: rgb(0xc9c2b0), trim: TONE.stonePale, eave: 25, chimney: -1 },
+  { wall: rgb(0xb9ad8e), kind: KIND.stucco, roof: rgb(0x522b24), ridge: 'x', door: rgb(0x4a2a22), trim: rgb(0xd6d0c2), eave: 24, chimney: 1 },
+  { wall: rgb(0x8f9596), kind: KIND.stucco, roof: rgb(0x4a2c25), ridge: 'y', door: rgb(0xd6d0c2), trim: rgb(0xd9d5c9), eave: 24, chimney: 1 },
+  { wall: rgb(0xc9c3b6), kind: KIND.stucco, roof: rgb(0x34383e), ridge: 'x', door: rgb(0x2f3d52), trim: rgb(0x6c7479), eave: 22, chimney: -1 },
+  { wall: rgb(0xb5a88c), kind: KIND.stucco, roof: rgb(0x46392e), ridge: 'x', door: rgb(0x4d2c20), trim: rgb(0xd5cebd), eave: 25, chimney: -1 }
 ]
 
-const GRASS = rgb(0x34472c)
+const GRASS = rgb(0x2b3a27)
 
 // The six small houses, three in a row on each side, each row on a kerbed strip of its own.
 export function houses(b: Buckets, z: Zone): void {
@@ -141,7 +141,7 @@ export function houses(b: Buckets, z: Zone): void {
       // The step, the path and the mailbox.
       g.box(x0 + dx - 5, x0 + dx + 5, y0 - 3, y0, 2.2, 3.8, TONE.stonePale, { skip: 'b', bevel: 0.4 })
       g.box(x0 + dx - 3, x0 + dx + 3, S.yf - 2.6, y0 - 3, 2.2, 2.6, TONE.stoneDark, { skip: 'b', kind: KIND.block })
-      mailbox(b, x0 + dx + (i % 2 === 0 ? 9 : -9), S.yf + 0.5, 2.2, [TONE.iron, TONE.red, TONE.blueDark][i % 3]!)
+      mailbox(b, x0 + dx + (i % 2 === 0 ? 9 : -9), S.yf + 0.5, 2.2, [TONE.iron, rgb(0x5a2a24), TONE.blueDark][i % 3]!)
       // A hedge along one side.
       const hx = i % 2 === 0 ? S.x0 + 0.4 : S.x1 - 2.6
       g.box(hx, hx + 2.2, y0 + 2, y1 - 2, 2.2, 6.5, rgb(0x263a22), { bevel: 0.9, kind: KIND.stucco })

@@ -41,7 +41,7 @@ describe('the models of the corporate tier', () => {
     }
   })
 
-  test('the seven together are drawn in fourteen calls at most, and share three materials', () => {
+  test('the seven together are drawn in fourteen calls at most, and share four materials', () => {
     let calls = 0
     const mats = new Set<THREE.Material>()
     for (const n of NAMES) {
@@ -52,7 +52,7 @@ describe('the models of the corporate tier', () => {
     }
     expect(calls).toBeLessThanOrEqual(14)
     const mine = matsOf(z)
-    expect([...mats].every((m) => m === mine.solid || m === mine.glow || m === mine.clear)).toBe(true)
+    expect([...mats].every((m) => m === mine.solid || m === mine.glow || m === mine.clear || m === mine.pane)).toBe(true)
   })
 
   test('the triangles stay inside the share of one tier', () => {
