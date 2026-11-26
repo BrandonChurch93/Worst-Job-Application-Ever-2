@@ -75,17 +75,24 @@ function ringGeometry(): THREE.BufferGeometry {
   return b.done()
 }
 
-// The cap: a white dome with a rolled rim.
-const lidProfile = (): V2[] => {
+// The cap, read from straight above: a rolled rim, a groove inside it, and a raised deck that domes a little. Each point carries how much of the lamp shows through it there.
+const lidPoints = (): [number, number, number][] => {
   const r = CUP.lidR
   const z = CUP.lidZ
-  const out: V2[] = [[r - 3, z - 1], [r - 0.8, z - 0.4], [r, z + 1.4], [r, z + 4.6], [r - 1.2, z + 6.4], [r - 4, z + 8.2]]
-  for (let i = 1; i <= 9; i++) {
-    const a = (i / 9) * (Math.PI / 2)
-    out.push([(r - 4) * Math.cos(a), z + 8.2 + (CUP.top + 5 - z - 8.2) * Math.sin(a)])
+  const out: [number, number, number][] = [
+    [r - 3, z - 1, 0.36], [r - 0.8, z - 0.4, 0.36], [r, z + 1.4, 0.38], [r, z + 4.6, 0.42], [r - 1.2, z + 6.4, 0.5],
+    [r - 4, z + 8.6, 0.6], [r - 8, z + 9.4, 0.62], [r - 11.5, z + 8.4, 0.5],
+    [r - 13.5, z + 5.2, 0.26], [r - 16, z + 4.4, 0.2], [r - 19, z + 5.2, 0.26],
+    [r - 22, z + 10, 0.44], [r - 25, z + 12.6, 0.54]
+  ]
+  const deck = r - 25
+  for (let i = 1; i <= 5; i++) {
+    const a = (i / 5) * (Math.PI / 2)
+    out.push([deck * Math.cos(a), z + 12.6 + 4.4 * Math.sin(a), 0.54 + 0.3 * Math.pow(1 - Math.cos(a), 1.3)])
   }
   return out
 }
+const lidProfile = (): V2[] => lidPoints().map((q) => [q[0], q[1]])
 
 function lidGeometry(): THREE.BufferGeometry {
   const b = new Bag()
@@ -100,14 +107,8 @@ function glowGeometry(): THREE.BufferGeometry {
   const p: number[] = []
   const c: number[] = []
   const n = 64
-  const lid = lidProfile().map((q) => [q[0] + 0.5, q[1] + 0.6] as V2)
-  const deckR = CUP.lidR - 24
-  const shine = (r: number, z: number): number => {
-    if (z < CUP.lidZ + 5.4) return 0.4
-    if (z < CUP.lidZ + 8) return 0.5
-    if (r > deckR + 0.6) return z > CUP.top ? 0.56 : 0.52
-    return 0.56 + 0.3 * Math.pow(Math.max(0, 1 - r / deckR), 1.3)
-  }
+  const lid = lidPoints().map((q, i) => [q[0] + (i < 5 ? 0.5 : 0), q[1] + (i < 5 ? 0.6 : 0.9), q[2]] as [number, number, number])
+  const deckR = CUP.lidR - 25
   const band = (r0: number, z0: number, v0: number, r1: number, z1: number, v1: number, tint: [number, number, number] = [1, 1, 1]): void => {
     for (let i = 0; i < n; i++) {
       const a0 = (i / n) * Math.PI * 2
@@ -120,7 +121,7 @@ function glowGeometry(): THREE.BufferGeometry {
   for (let k = 1; k < lid.length; k++) {
     const a = lid[k - 1]!
     const b = lid[k]!
-    band(a[0], a[1], shine(a[0], a[1]), b[0], b[1], shine(b[0], b[1]), b[0] < deckR + 0.6 ? WELL : [1, 1, 1])
+    band(a[0], a[1], a[2], b[0], b[1], b[2], b[0] < deckR + 0.6 ? WELL : [1, 1, 1])
   }
   band(wallR(CUP.sleeve1) + 1, CUP.sleeve1 + 0.6, 0.55, wallR(CUP.lidZ) + 4, CUP.lidZ - 1, 1, [1, 0.86, 0.62])
   band(wallR(CUP.sleeve0) + 3.2, CUP.sleeve0, 0.02, wallR(CUP.sleeve1) + 3.2, CUP.sleeve1, 0.3, [1, 0.74, 0.46])
@@ -142,7 +143,7 @@ export const ringDown = (t: number): number => (t < 0.03 ? t / 0.03 : 1 - ease(0
 export const lidJump = (t: number): number => (t > 0.7 ? 0 : 4.5 * Math.exp(-7 * t) * Math.abs(Math.sin((Math.PI * t) / 0.14)))
 
 export const bumpers = whole('bumpers', {
-  version: 'play-bumpers-20',
+  version: 'play-bumpers-22',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.bumpers.${z.id}`
