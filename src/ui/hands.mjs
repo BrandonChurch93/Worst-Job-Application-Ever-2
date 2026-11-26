@@ -21,8 +21,8 @@ const check = (name, ok, detail = '') => {
   results.push({ name, ok: !!ok, detail })
   console.log(`${ok ? 'pass' : 'FAIL'}  ${name}${detail ? `: ${detail}` : ''}`)
 }
-const open = async (q, size, ready) => {
-  const ctx = await browser.newContext({ viewport: size })
+const open = async (q, size, ready, more = {}) => {
+  const ctx = await browser.newContext({ viewport: size, ...more })
   const page = await ctx.newPage()
   page.errors = []
   page.on('pageerror', (e) => page.errors.push(String(e)))
@@ -177,7 +177,8 @@ if (wants('band')) {
 }
 
 if (wants('skip')) {
-  const page = await open('?step=1&quality=low', { width: 1920, height: 1080 }, wired)
+  // The window is 1920 by 1080 CSS px. The software renderer of a test machine draws it too slowly at full size, so the device pixel ratio is 0.5 and the level is low: the layout and the mouse are the same.
+  const page = await open('?step=1&quality=low', { width: 1920, height: 1080 }, wired, { deviceScaleFactor: 0.5 })
   const said = () => page.evaluate(() => document.querySelector('#controls [role="status"]')?.textContent ?? '')
   const link = () => page.evaluate(() => {
     const e = [...document.querySelectorAll('#controls button')].find((b) => !b.hidden && (b.getAttribute('aria-label') ?? b.textContent ?? '').startsWith('Skip'))
@@ -194,6 +195,24 @@ if (wants('skip')) {
   const waited = (Date.now() - t0) / 1000
   check('step 1 at 1920 by 1080: the skip link is offered', !!l, l ? `"${l.what}" at ${l.box.join(', ')} after ${waited.toFixed(1)} s` : `not offered in ${waited.toFixed(0)} s`)
   if (l) {
+    const order = []
+    for (let i = 0; i < 4; i++) {
+      await page.keyboard.press('Tab')
+      order.push(await page.evaluate(() => {
+        const a = document.activeElement
+        return a === document.body ? 'body' : `${a.tagName.toLowerCase()}:${a.getAttribute('aria-label') ?? a.textContent}`
+      }))
+      if (order.at(-1).startsWith('button:Skip')) {
+        const ring = await page.evaluate(() => {
+          const c = getComputedStyle(document.activeElement)
+          return `${c.outlineStyle} ${c.outlineWidth}`
+        })
+        await page.screenshot({ path: path.join(out, 'hands-skip-ring.png') })
+        check('step 1 at 1920 by 1080: the skip link has a 2 px ring under the keyboard', ring === 'solid 2px', ring)
+      }
+    }
+    check('step 1 at 1920 by 1080: Tab goes sound, film link, skip link, picture', order.length === 4 && order[0] === 'button:Sound' && order[1].startsWith('a:Watch') && order[2].startsWith('button:Skip') && order[3] === 'canvas:', order.join(' | '))
+    await page.evaluate(() => document.activeElement.blur())
     const before = await said()
     await page.screenshot({ path: path.join(out, 'hands-skip-before.png') })
     const x = (l.box[0] + l.box[2]) / 2

@@ -131,21 +131,6 @@ if (wants('keys')) {
   check('keys, step 3: over the dark table the first control has a 2 px ring', (await state(table)).backing === 'dark' && dark.startsWith('solid 2px'), `${first[0]} ${dark} ${JSON.stringify(await state(table))}`)
   await table.context().close()
 
-  const step = await open('?step=1')
-  const t = process.hrtime.bigint()
-  await step.waitForFunction(() => [...document.querySelectorAll('#controls button')].some((b) => b.offsetParent && b.textContent.startsWith('Skip')), null, { timeout: 240000 }).catch(() => {})
-  const waited = Number((process.hrtime.bigint() - t) / 1000000000n)
-  const withSkip = await shown(step)
-  const order1 = await tabs(step, withSkip.length + 1)
-  check('keys, step 1: the order is sound, film link, skip link, picture', order1.slice(0, -1).join('|') === withSkip.join('|') && order1.at(-1) === 'canvas:' && order1.at(-2).startsWith('button:Skip') && order1.at(-3).startsWith('a:Watch'), `${order1.join(' | ')} after ${waited} s`)
-  await step.keyboard.press('Shift+Tab')
-  await step.screenshot({ path: path.join(out, 'looks-ring-skip.png') })
-  await step.keyboard.press('Space')
-  await step.waitForFunction(() => document.querySelector('#controls [role="status"]')?.textContent.includes('Step 2'), null, { timeout: 120000 }).catch(() => {})
-  const said = await step.evaluate(() => document.querySelector('#controls [role="status"]')?.textContent ?? '')
-  check('keys, step 1: Space on the skip link ends the step and the live region says the next heading', said.includes('Step 2'), said.slice(0, 120))
-  check('keys, step 1: no error on the page', step.errors.length === 0, step.errors.slice(0, 3).join(' | '))
-  await step.context().close()
 }
 
 if (wants('bar')) {
