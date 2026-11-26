@@ -61,7 +61,7 @@ const TEMPER = { safe: 12.7, dust: 12.76, fume: 13.3, red: 13.5, march: 13.52, t
 // Flat, it drags itself to the button and stops short of it. There it peels up and fills out, standing still, and only then steps on to press.
 const RISE = { there: 19.4, go: 20.04 }
 const THROWN = { see: T.runaway + 0.05, cower: T.runaway + 0.43, back: T.lean - 0.08 }
-const idle: P = { x: 1575, y: 374 }
+const idle: P = { x: 1575, y: 392 }
 const refuge: P = { x: 800, y: 700 }
 const hand: P = { x: HANDOFF.x, y: HANDOFF.y }
 

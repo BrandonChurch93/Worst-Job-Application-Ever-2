@@ -17,8 +17,8 @@ export type RowName = (typeof ROWS)[number]
 export const FX = 1000
 export const FW = RIGHT - FX
 export const FH = sizes.field
-export const ROW_Y = HEADER.contentY
-export const PITCH = 144
+export const ROW_Y = HEADER.contentY + 12
+export const PITCH = 149
 export const TRAY_GAP = 12
 export const TRAY_H = 250
 export const TRAY_R = 18
@@ -82,7 +82,7 @@ export const SLOT = {
 const cy = trayY(2)
 export const CRANK = {
   hx: FX + PAD + 73, hy: cy + 156, rest: -0.75, arm: 118, armW: 18, gripW: 80, gripH: 44, tip: 126, hold: 34, holdAside: 8, base: 110, hub: 44,
-  segW: 28, segH: 96, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 156 - 48
+  segW: 28, segH: 116, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 156 - 58
 }
 
 // The sheet of the machines: the page's header, and each machine under its label at the size the approved sheet shows it.
