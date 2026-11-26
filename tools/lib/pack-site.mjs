@@ -201,18 +201,30 @@ export async function siteFacts(cfg, cache = null, log = () => {}) {
 
 // Draws the pictures of the steps asked for by giving the browser the run's own events again. Every step is held against the run file:
 // a step that differs stops the build, so a sheet never shows a second, different visit.
-export async function replay(cfg, run, steps, { cache = null, log = () => {} } = {}) {
+// The live path seeds the grain of a picture with the count of the pictures it has drawn (src/main.ts, `frame++` in `draw`), so a
+// picture's bytes follow from its step AND from how many were drawn before it. `plan` is every step of the whole pack: a picture is
+// always drawn as the same one of that list, whatever a slice asks for and whatever the cache holds, and it is kept under both numbers.
+export function drawOrder(plan, steps, have = (_step, _nth) => false) {
   const wanted = [...new Set(steps)].sort((a, b) => a - b)
+  const all = [...new Set([...plan, ...steps])].sort((a, b) => a - b)
+  const nth = new Map(all.map((s, n) => [s, n]))
+  const missing = wanted.filter((i) => !have(i, nth.get(i)))
+  return { wanted, nth, draw: missing.length ? all.filter((i) => i <= missing[missing.length - 1]) : [] }
+}
+
+export async function replay(cfg, run, steps, { plan = steps, cache = null, log = () => {} } = {}) {
+  const nameOf = (i, n) => path.join(cache || '', `site-run-${run.format}-${String(i).padStart(6, '0')}-${String(n).padStart(4, '0')}.png`)
+  const { wanted, nth, draw } = drawOrder(plan, steps, (i, n) => Boolean(cache) && fs.existsSync(nameOf(i, n)))
+  const fileOf = (i) => (cache ? nameOf(i, nth.get(i)) : null)
   const got = new Map()
-  const fileOf = (i) => (cache ? path.join(cache, `site-run-${run.format}-${String(i).padStart(6, '0')}.png`) : null)
   for (const i of wanted) if (fileOf(i) && fs.existsSync(fileOf(i))) got.set(i, fs.readFileSync(fileOf(i)))
-  const missing = wanted.filter((i) => !got.has(i))
-  if (!missing.length) return got
+  if (!draw.length) return got
   if (cache) fs.mkdirSync(cache, { recursive: true })
   const session = await openRun(cfg)
   try {
-    const want = new Set(missing)
-    const last = missing[missing.length - 1]
+    const last = draw[draw.length - 1]
+    const want = new Set(draw)
+    let drawn = 0
     let t = await tell(session.page, 0)
     for (let i = 0; i <= last; i++) {
       const row = run.rows[i]
@@ -222,9 +234,9 @@ export async function replay(cfg, run, steps, { cache = null, log = () => {} } =
       if (want.has(i)) {
         const shot = await session.page.evaluate(() => window.liveRun.state().png)
         const png = Buffer.from(shot.split(',')[1], 'base64')
-        got.set(i, png)
+        if (wanted.includes(i)) got.set(i, png)
         if (cache) fs.writeFileSync(fileOf(i), png)
-        if (got.size % 12 === 0) log(`pictures of the run: ${got.size} of ${wanted.length}`)
+        if (++drawn % 12 === 0) log(`pictures of the run: ${drawn} of ${want.size}`)
       }
       if (i === last) break
       for (const a of run.acts[i] || []) await send(session.page, a)
@@ -469,7 +481,7 @@ export async function juryPicture(png, edge) {
 }
 
 // Draws the pictures of a site pack into `built`, with what the key file says of each in `about`.
-export async function buildSite({ cfg, session, files, built, about, log, cache, facts }) {
+export async function buildSite({ cfg, session, files, built, about, log, cache, facts, whole = null }) {
   const edge = cfg.critics.maxImageLongEdgePx
   const hd = cfg.formats.hd
   const units = unitsOf(cfg)
@@ -597,7 +609,7 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
   const run = needRun(facts, 'R4 or R5')
   const rf = cfg.formats[RUN.format]
   const k = rf.width / hd.width
-  const frames = await replay(cfg, run, sheets.flatMap((f) => f.steps), { cache, log })
+  const frames = await replay(cfg, run, sheets.flatMap((f) => f.steps), { plan: (whole || files).flatMap((f) => f.steps || []), cache, log })
   const columns = 3
   const tileW = Math.floor((edge - GAP * (columns - 1)) / columns)
   for (const f of sheets.filter((x) => x.kind === 'site-run-sheet')) {

@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { BANNED, briefFor, neutral, packPlan, rolesOf } from '../tools/lib/pack-plan.mjs'
-import { COL, SITE, SITE_KINDS, VISITOR, aroundStep, makeVisitor, momentsOf, siteLines, spreadSteps } from '../tools/lib/pack-site.mjs'
+import { COL, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, makeVisitor, momentsOf, siteLines, spreadSteps } from '../tools/lib/pack-site.mjs'
 
 const root = path.resolve(__dirname, '..')
 const cfg = JSON.parse(fs.readFileSync(path.join(root, 'config/showcase.json'), 'utf8'))
@@ -246,5 +246,18 @@ describe('the steps of a sheet', () => {
   it('keeps the columns of a step where the plan reads them', () => {
     expect(Object.keys(COL).length).toBe(14)
     expect(new Set(Object.values(COL)).size).toBe(14)
+  })
+
+  it('draws a picture as the same one of the whole pack, whatever is asked for and whatever is kept', () => {
+    const plan = [10, 20, 30, 40, 50]
+    const whole = drawOrder(plan, plan)
+    expect(whole.draw).toEqual(plan)
+    const part = drawOrder(plan, [40, 20])
+    expect(part.wanted).toEqual([20, 40])
+    expect(part.draw).toEqual([10, 20, 30, 40])
+    expect(part.nth.get(40)).toBe(whole.nth.get(40))
+    const half = drawOrder(plan, plan, (step: number) => step !== 30)
+    expect(half.draw).toEqual([10, 20, 30])
+    expect(drawOrder(plan, plan, () => true).draw).toEqual([])
   })
 })

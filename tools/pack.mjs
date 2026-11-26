@@ -54,6 +54,7 @@ const cache = dirty ? null : at('out', 'work', 'packs', 'cache', commit.slice(0,
 const said = (line) => console.log(`pack: ${line}`)
 const facts = !mine.facts ? null : site ? await (await import('./lib/pack-site.mjs')).siteFacts(cfg, cache, said) : await (await import('./lib/pack-look.mjs')).lookFacts(cfg, unit, cache)
 const plan = packPlan(cfg, { role, round, unit, facts })
+const everyFile = plan.sets.flatMap((s) => s.files)
 if (slice) {
   let n = 0
   for (const s of plan.sets) s.files = s.files.filter(() => n++ % slice[1] === slice[0])
@@ -77,7 +78,7 @@ const { buildPack } = await import('./lib/pack-build.mjs')
 const t0 = process.hrtime.bigint()
 fs.rmSync(dir, { recursive: true, force: true })
 fs.mkdirSync(dir, { recursive: true })
-const built = await buildPack(cfg, plan, { tier, cache, facts, log: said })
+const built = await buildPack(cfg, plan, { tier, cache, facts, whole: everyFile, log: said })
 const edge = cfg.critics.maxImageLongEdgePx
 const key = { ...stamp, browser: built.browser, files: {} }
 const manifest = { stamp, format: FORMAT, longEdgeMostPx: edge, filesMostPerCritic: cfg.critics.maxFilesPerMessage, sets: [] }

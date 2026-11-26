@@ -158,7 +158,7 @@ export function controlWindows(boxes, w, h, width, height, pad = 40) {
 }
 
 // Builds every file of a plan. Gives back, for each file, its PNG bytes and what the key file says of it.
-export async function buildPack(cfg, plan, { tier = 'draft', log = () => {}, cache = null, facts = null } = {}) {
+export async function buildPack(cfg, plan, { tier = 'draft', log = () => {}, cache = null, facts = null, whole = null } = {}) {
   const edge = cfg.critics.maxImageLongEdgePx
   const fps = cfg.film.fps
   const hd = cfg.formats.hd
@@ -283,7 +283,7 @@ export async function buildPack(cfg, plan, { tier = 'draft', log = () => {}, cac
     if (files.some((x) => LOOK_KINDS.includes(x.kind))) await buildLook({ cfg, session, files, built, about, tier, log, cache })
 
     const { SITE_KINDS, buildSite } = await import('./pack-site.mjs')
-    if (files.some((x) => SITE_KINDS.includes(x.kind))) await buildSite({ cfg, session, files, built, about, log, cache, facts })
+    if (files.some((x) => SITE_KINDS.includes(x.kind))) await buildSite({ cfg, session, files, built, about, log, cache, facts, whole })
 
     const sheets = files.filter((x) => x.kind === 'film-sheet' || x.kind === 'beat-sheet')
     if (sheets.length) {
