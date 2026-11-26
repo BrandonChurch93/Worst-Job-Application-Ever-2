@@ -1,35 +1,35 @@
 {
   "folder": "table-runner",
-  "pushed": "2026-11-26T05:55:33.663Z",
-  "commit": "d27c4c49b4b5a4c56445b6cbf9e4b753646ef822",
+  "pushed": "2026-11-26T06:04:03.183Z",
+  "commit": "63fde4c76112e03ccbce5b876eb63e706bc79d5c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "rail-cam draft beside approved, round 11 look 2: eye above and behind the ball, cursor rolled so the tip stands up right",
-      "time": "2026-11-26T05:47:50.651Z",
+      "caption": "Key rail-cam: approved on the left, this build on the right, draft tier, with crops of cursor, shape:model.street.firehouse",
+      "time": "2026-11-26T05:59:04.962Z",
       "by": "table-runner",
-      "from": "out/work/report/r11-rail-cam-look2.jpg"
+      "from": "out/work/compare/compare-rail-cam.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Key table-wide: approved on the left, this build on the right, draft tier, with crops of shape:marquee.back, shape:model.corporate.hq, shape:bumper.office.bumper.3, shape:model.street.firehouse, shape:model.street.garage, shape:flipper.street.flipper.left, apronCard, cursor, shape:plunger.knob",
-      "time": "2026-11-26T05:48:40.609Z",
+      "caption": "Key lobby-doors: approved on the left, this build on the right, draft tier, with crops of shape:hq.plate, shape:hq.doorway, cursor, shape:hold.corporate.revolving.post, shape:post.corporate.globe.right, shape:model.corporate.hq, shape:flat.corporate.carpet",
+      "time": "2026-11-26T05:59:57.842Z",
       "by": "table-runner",
-      "from": "out/work/compare/compare-table-wide.jpg"
+      "from": "out/work/compare/compare-lobby-doors.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Contact sheet, the beat pinball.highway: 12 frames from 1:36.50 to 1:40.97, draft tier, preview",
-      "time": "2026-11-26T05:51:33.995Z",
+      "caption": "Key youre-fired: approved on the left, this build on the right, draft tier, with crops of shape:model.street.firehouse, cursor, shape:seg.street.firehouse.roof",
+      "time": "2026-11-26T06:01:49.139Z",
       "by": "table-runner",
-      "from": "out/work/sheets/sheet-beat-pinball_highway-preview-draft.jpg"
+      "from": "out/work/compare/compare-youre-fired.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "the highway beat in twelve frames, draft, round 11: the rail shot from above and behind the ball, the cursor's tip up right in all three of its frames",
-      "time": "2026-11-26T05:55:32.564Z",
+      "caption": "rail-cam draft beside approved, round 11 look 6: aimed further ahead so the ball sits at 72% of the height as approved, lens less open so the police station reads",
+      "time": "2026-11-26T06:04:01.867Z",
       "by": "table-runner",
-      "from": "out/work/report/r11-highway-sheet.jpg"
+      "from": "out/work/report/r11-rail-cam-look6.jpg"
     }
   ]
 }
