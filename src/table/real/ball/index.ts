@@ -467,14 +467,14 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   own.sweat.visible = wet > 0.01
   own.core.visible = debug.grade === 'true' && open < 0.01
 
-  const lift = -L.drop
+  const lift = Math.max(0, -L.drop)
   own.decal.visible = L.tier && lift < r * 6
   const rug = u.uFlat!.value as THREE.Vector4
   own.decal.position.set(0, 0, L.drop + (rug.z > 0 && Math.abs(rug.x) < rug.z + r * 3 && Math.abs(rug.y) < rug.w + r * 3 ? 5.6 : 3.4))
   const shade = d.uShade!.value as THREE.Vector4[]
   const spot = d.uSpot!.value as THREE.Vector3[]
   const lum = (c: number[]): number => 0.25 * c[0]! + 0.6 * c[1]! + 0.15 * c[2]!
-  const high = (1 - gone) / (1 + lift / (r * 2.5))
+  const high = (1 - gone) / (1 + lift / (r * 4))
   const dim = 1 - 0.7 * open
   const key = Math.min(1, Math.max(lum(L.soft) * 2.2, lum(L.floor) * 0.7))
   const flatKey = head ? Math.hypot(head.toward[0], head.toward[1]) : 1
@@ -484,7 +484,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   shade[0]!.set(kx, ky, slant, Math.min(0.8, 0.56 + 0.5 * key) * Math.min(1, key * 8) * high)
   const warm = head ? head.colour : ([1, 0.86, 0.66] as RGB)
   const gathered = Math.max(lum(L.soft), lum(L.floor) * 0.3)
-  spot[0]!.set(warm[0] * gathered * 1.6 * high * dim, warm[1] * gathered * 1.6 * high * dim, warm[2] * gathered * 1.6 * high * dim)
+  spot[0]!.set(warm[0] * gathered * 2.2 * high * dim, warm[1] * 0.9 * gathered * 2.2 * high * dim, warm[2] * 0.72 * gathered * 2.2 * high * dim)
   const low = L.lamps.filter((l) => !l.window && l.z - L.drop > 16 && l.amount > 0.03 && Math.hypot(l.x, l.y) > r * 0.8)
   for (let i = 1; i < 3; i++) {
     const l = low[i - 1]
