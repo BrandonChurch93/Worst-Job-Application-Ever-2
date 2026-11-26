@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { briefFor, packPlan } from '../tools/lib/pack-plan.mjs'
-import { BACK, BLOCK, SITE, STANDS, STROKE, TAKES, VISITOR, fromMuzzle, hitTaken, keyBlock, makeVisitor, momentsOf, runWindow } from '../tools/lib/pack-site.mjs'
+import { BACK, BLOCK, COL, HOLDS, SITE, STANDS, STROKE, TAKES, VISITOR, fromMuzzle, hitTaken, holdsOf, keyBlock, makeVisitor, momentsOf, runWindow } from '../tools/lib/pack-site.mjs'
 import { DECK, KEYS, hatchCentre, seats } from '../src/pages/step1/keyboard'
 import { TURRET } from '../src/pages/step1/turrets'
 
@@ -367,5 +367,83 @@ describe('the place the visitor stands at while the turrets fire', () => {
     const m = momentsOf(cfg, run).moments
     expect(m.hit).toBe(560)
     expect(m.struck).toBe(STANDS.hit)
+  })
+})
+
+describe('what the window of a close sheet holds besides the arrow', () => {
+  const ball: number = cfg.table.ballPx
+  const k: number = cfg.formats.preview.width / cfg.formats.hd.width
+  const every = (from: number, n: number) => Array.from({ length: n }, (_, i) => from + i * 2)
+  const inside = (w: number[], b: number[]) => b[0]! * k >= w[0]! - 1 && b[1]! * k >= w[1]! - 1 && b[2]! * k <= w[0]! + w[2]! + 1 && b[3]! * k <= w[1]! + w[3]! + 1
+
+  it('holds, on the sheets of the flippers, the pressed bat and the part the ball touched, with half a ball round them, and says the percent when that is more than a tile', () => {
+    const made = madeRun()
+    const base = momentsOf(cfg, made)
+    const blow = (base.moments.met ?? base.moments.flip) as number
+    const steps = every(blow - 6, count * 2)
+    const at = base.rows[blow]!
+    const touch = { name: 'bumper', step: blow + 8, page: at[COL.page] as string, x: (at[COL.heroX] as number) - 60, y: (at[COL.heroY] as number) - 240 }
+    made.hits.push(touch, { ...touch, step: steps[steps.length - 1]! + 40, x: 100, y: 100 })
+    const run = momentsOf(cfg, made)
+    const holds = holdsOf(cfg, run, steps, 'flip') as number[][]
+    expect(holds).toHaveLength(2)
+    const pad = HOLDS.margin * ball
+    const x = at[COL.heroX] as number
+    const y = (at[COL.heroY] as number) - (at[COL.scroll] as number)
+    const shut = (b: number[]) => [Math.max(0, b[0]!), Math.max(0, b[1]!), Math.min(cfg.formats.hd.width, b[2]!), Math.min(cfg.formats.hd.height, b[3]!)]
+    expect(holds[0]).toEqual(shut([touch.x - HOLDS.touch * ball - pad, touch.y - HOLDS.touch * ball - pad, touch.x + HOLDS.touch * ball + pad, touch.y + HOLDS.touch * ball + pad]))
+    expect(holds[1]).toEqual(shut([x - HOLDS.batAcross * ball - pad, y - HOLDS.batAbove * ball - pad, x + HOLDS.batAcross * ball + pad, y + HOLDS.batBelow * ball + pad]))
+    expect(HOLDS.batAcross).toBeGreaterThanOrEqual(cfg.table.flipperBalls)
+    const w = runWindow(cfg, run, steps, 'flip')
+    for (const b of holds) expect(inside(w.window, b)).toBe(true)
+    for (const i of steps) {
+      const r = run.rows[i]!
+      const p = [r[COL.heroX] as number, Math.min(cfg.formats.hd.height, (r[COL.heroY] as number) - (r[COL.scroll] as number))]
+      expect(inside(w.window, [p[0]!, p[1]!, p[0]!, p[1]!])).toBe(true)
+    }
+    expect(w.shown).toBeLessThan(100)
+    expect(w.window[2] / w.window[3]).toBeCloseTo(w.tileW / w.tileH, 1)
+    const flips = planOf(made).sets[0]!.files.filter((f) => f.moment === 'flip')
+    expect(flips).toHaveLength(2)
+    for (const f of flips) expect(f.heading).toContain(`at ${w.shown}% of its size`)
+  })
+
+  it('holds, on the sheet of the hit, the muzzle of the turret that fired, read from the way the arrow is thrown, and both when it is not thrown', () => {
+    const block = keyBlock(cfg)
+    const made = madeRun()
+    for (const h of made.hits) Object.assign(h, { x: block.place.x, y: block.place.y })
+    const hit = momentsOf(cfg, made).moments.hit as number
+    for (let i = 0; i < made.rows.length; i++) {
+      if (made.rows[i]![COL.page] !== STANDS.page) continue
+      made.rows[i]![COL.pointerX] = block.place.x
+      made.rows[i]![COL.pointerY] = block.place.y
+      made.rows[i]![COL.heroX] = block.place.x + (i >= hit && i < hit + 6 ? 60 : 0)
+      made.rows[i]![COL.heroY] = block.place.y
+    }
+    const steps = every(hit - 6, count)
+    const pad = HOLDS.margin * ball
+    const right = holdsOf(cfg, momentsOf(cfg, made), steps, 'hit') as number[][]
+    expect(right).toHaveLength(1)
+    expect(right[0]![0]).toBeCloseTo(block.turrets[0]!.x + BLOCK.barrel - pad, 6)
+    const w = runWindow(cfg, momentsOf(cfg, made), steps, 'hit')
+    expect(inside(w.window, right[0]!)).toBe(true)
+    expect(w.shown).toBe(100)
+    for (let i = hit; i < hit + 6; i++) made.rows[i]![COL.heroX] = block.place.x - 60
+    const left = holdsOf(cfg, momentsOf(cfg, made), steps, 'hit') as number[][]
+    expect(left).toHaveLength(1)
+    expect(left[0]![2]).toBeCloseTo(block.turrets[1]!.x - BLOCK.barrel + pad, 6)
+    for (let i = hit; i < hit + 6; i++) made.rows[i]![COL.heroX] = block.place.x
+    const both = holdsOf(cfg, momentsOf(cfg, made), steps, 'hit') as number[][]
+    expect(both).toHaveLength(2)
+    const wide = runWindow(cfg, momentsOf(cfg, made), steps, 'hit')
+    for (const b of both) expect(inside(wide.window, b)).toBe(true)
+    expect(wide.shown).toBeLessThan(100)
+  })
+
+  it('leaves the window of every other close sheet as it was', () => {
+    const run = momentsOf(cfg, madeRun())
+    const steps = every((run.moments.taken as number) - 6, count)
+    expect(holdsOf(cfg, run, steps, 'taken')).toEqual([])
+    expect(runWindow(cfg, run, steps, 'taken')).toEqual(runWindow(cfg, run, steps))
   })
 })

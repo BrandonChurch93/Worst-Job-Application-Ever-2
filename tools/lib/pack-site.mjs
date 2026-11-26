@@ -492,7 +492,57 @@ export function momentsOf(cfg, run) {
 
 // The window of a close sheet: one fixed window for the whole run, set on the arrow's places over it. It is the tile itself, uncut and unscaled,
 // while the arrow's way fits in it with ROOM round it, and a wider one in the tile's proportions, shown smaller, when it does not.
-export function runWindow(cfg, run, steps) {
+// What a close sheet holds in every picture besides the arrow, in widths of the ball (table.ballPx): `margin` round each of these;
+// a part the ball touched lies within `touch` of where the site says it was touched (half the ball and the width of a bumper);
+// the pressed bat lies within `batAcross` to either side of the ball at the blow, `batAbove` above it and `batBelow` below it, at rest and raised
+// (table.flipperBalls long, 25 degrees either way). `knock` is how many steps after a bolt's hit the arrow's throw is read, from the step before the hit: it points away from the turret that fired.
+export const HOLDS = { margin: 0.5, touch: 2, batAcross: 3.25, batAbove: 1, batBelow: 3.5, knock: 1 }
+// The places of those things in the window's own picture, as boxes [left, top, right, bottom] in px of the hd page as the visitor sees it.
+export function holdsOf(cfg, run, steps, what) {
+  const ball = cfg.table.ballPx
+  const m = run.moments || {}
+  const first = steps[0]
+  const last = steps[steps.length - 1]
+  const row = (i) => run.rows[Math.max(0, Math.min(run.rows.length - 1, i))]
+  const out = []
+  if (what === 'flip') {
+    const page = row(first)[COL.page]
+    for (const h of run.hits || []) {
+      if (h.page !== page || h.step < first || h.step > last) continue
+      const y = h.y - row(h.step)[COL.scroll]
+      out.push([h.x - HOLDS.touch * ball, y - HOLDS.touch * ball, h.x + HOLDS.touch * ball, y + HOLDS.touch * ball])
+    }
+    const blow = m.met ?? m.flip
+    if (blow !== null && blow !== undefined && blow >= first && blow <= last) {
+      const r = row(blow)
+      const y = r[COL.heroY] - r[COL.scroll]
+      out.push([r[COL.heroX] - HOLDS.batAcross * ball, y - HOLDS.batAbove * ball, r[COL.heroX] + HOLDS.batAcross * ball, y + HOLDS.batBelow * ball])
+    }
+  }
+  if (what === 'hit' && m.struck === STANDS.hit && m.hit >= first && m.hit <= last) {
+    const block = keyBlock(cfg)
+    const at = row(m.hit)
+    const after = row(m.hit + HOLDS.knock)
+    const scroll = at[COL.scroll]
+    const stood = { x: at[COL.pointerX], y: at[COL.pointerY] + scroll }
+    const before = row(m.hit - 1)
+    const thrown = { x: after[COL.heroX] - before[COL.heroX], y: after[COL.heroY] - before[COL.heroY] }
+    const fired = block.turrets.filter((c) => (stood.x - c.x) * thrown.x + (stood.y - c.y) * thrown.y > 0)
+    for (const c of fired.length === 1 ? fired : block.turrets) {
+      const d = Math.hypot(stood.x - c.x, stood.y - c.y) || 1
+      const x = c.x + ((stood.x - c.x) / d) * BLOCK.barrel
+      const y = c.y + ((stood.y - c.y) / d) * BLOCK.barrel - scroll
+      out.push([x, y, x, y])
+    }
+  }
+  const w = cfg.formats.hd.width
+  const h = cfg.formats.hd.height
+  const pad = HOLDS.margin * ball
+  return out.map((b) => [Math.max(0, b[0] - pad), Math.max(0, b[1] - pad), Math.min(w, b[2] + pad), Math.min(h, b[3] + pad)]).filter((b) => b[2] > b[0] && b[3] > b[1])
+}
+
+/** @param {any} cfg @param {any} run @param {number[]} steps @param {string | null} [what] */
+export function runWindow(cfg, run, steps, what = null) {
   const edge = cfg.critics.maxImageLongEdgePx
   const rf = cfg.formats[run.format || RUN.format]
   const k = rf.width / cfg.formats.hd.width
@@ -500,8 +550,13 @@ export function runWindow(cfg, run, steps) {
   const tileH = hitTileHeight(edge, Math.min(steps.length, cfg.critics.contactSheetFrames))
   const xs = steps.map((i) => run.rows[i][COL.heroX] * k)
   const ys = steps.map((i) => (run.rows[i][COL.heroY] - run.rows[i][COL.scroll]) * k)
-  const box = [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)]
-  const zoom = Math.min(Math.max(1, (box[2] + ROOM * 2) / tileW, (box[3] + ROOM * 2) / tileH), rf.width / tileW, rf.height / tileH)
+  const holds = what ? holdsOf(cfg, run, steps, what).map((b) => b.map((v) => v * k)) : []
+  const x0 = Math.min(Math.min(...xs) - ROOM, ...holds.map((b) => b[0]))
+  const y0 = Math.min(Math.min(...ys) - ROOM, ...holds.map((b) => b[1]))
+  const x1 = Math.max(Math.max(...xs) + ROOM, ...holds.map((b) => b[2]))
+  const y1 = Math.max(Math.max(...ys) + ROOM, ...holds.map((b) => b[3]))
+  const box = [x0, y0, x1 - x0, y1 - y0]
+  const zoom = Math.min(Math.max(1, box[2] / tileW, box[3] / tileH), rf.width / tileW, rf.height / tileH)
   const w = Math.round(tileW * zoom)
   const h = Math.round(tileH * zoom)
   return { window: windowRound(box, w, h, rf.width, rf.height), tileW, tileH, shown: Math.round((tileW / w) * 100) }
@@ -611,7 +666,7 @@ function motionGroups(cfg, unit, facts) {
     const first = runs.find((x) => x.what === r.what)
     // The second run of a moment: how long after the first run's last picture its first picture is.
     const apart = first !== r ? Math.round(((r.steps[0] - first.steps[first.steps.length - 1]) / VISITOR.hz) * 100) / 100 : null
-    const win = r.kind === 'site-hit-sheet' ? runWindow(cfg, run, r.steps) : null
+    const win = r.kind === 'site-hit-sheet' ? runWindow(cfg, run, r.steps, r.what) : null
     const size = !win ? '' : win.shown === 100 ? ', the part of the picture round the arrow at its real size' : `, the part of the picture round the arrow's way at ${win.shown}% of its size`
     for (let j = 0; j < sheets; j++) {
       const steps = r.steps.slice(j * count, (j + 1) * count)
@@ -789,7 +844,7 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
   }
   // A moment is a small thing in a whole picture: its sheet is the part of the picture round the arrow, uncut and unscaled, in one fixed window.
   for (const f of sheets.filter((x) => x.kind === 'site-hit-sheet')) {
-    const { window: win, tileH, shown } = runWindow(cfg, run, f.run || f.steps)
+    const { window: win, tileH, shown } = runWindow(cfg, run, f.run || f.steps, f.moment)
     const tiles = []
     for (const i of f.steps) {
       const part = await cut(frames.get(i), win)

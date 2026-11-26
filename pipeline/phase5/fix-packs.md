@@ -84,3 +84,10 @@ What the sheets show, looked at one by one:
 - The shiver after the seat of the page turn is inside the run by its steps and was not seen by eye at the size of a whole-page tile.
 - The end of the arrow's ease after the give-back is after the one sheet that moment keeps.
 - The leaving half of the page turn is not in the motion pack.
+
+## What a close sheet's window holds (asked by the Builder, second mend)
+
+- The sheets of the flippers: the window holds, in every picture, the ball's whole way, every part the ball touched inside the run and the pressed bat, each with half a ball round it (`HOLDS`, `holdsOf`). A touched part is taken from the run's events between the run's first and last step (`told().hits`: the name and the place of the ball at the touch); the part lies within two balls of that place. The bat lies within 3.25 balls to either side of the ball at the blow, 1 ball above and 3.5 below, at rest and raised. Where the window is then more than a tile it is shown smaller and the heading says the percent.
+- The site tells the place of the ball at a touch and not the place of the part, and does not tell where a bat is. The window is therefore set by what the part and the bat can at most reach from the ball. It is larger than the smallest window that would do.
+- The sheet of the hit: the window holds the arrow's way and the muzzle of the turret that fired. Which fired is read from the arrow's throw at the hit, which points away from it; with no throw to read, both muzzles are held.
+- Every other close sheet has the window it had.
