@@ -68,6 +68,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
 | 11:19 | lights | 4 | a14, sheen along the floor, head lamps of Office and Street lower: table-wide, tier-office, youre-fired, reply-all | 32, 21 |
 | 11:22 | lights | 6 | h1, film frames before and after a hit: three round the first bumper hit (16.51 s, camera tier-2), three round the firehouse kick (29.01 s, camera tier-1) | 38, 21 |
 | 11:25 | art | 1 | a15, Office tiles greener: tier-office (taken back, see decisions) | 38, 22 |
+| 11:33 | lights | 2 | a16, on main 37c2e908 with the frame's navy walls: table-wide (0.99 of the approved), youre-fired (1.18) | 40, 22 |
+| 11:40 | art | 3 | b1, Street paving plainer to see, print 1.12: tier-street (1.00 of the approved), youre-fired (1.17), table-wide (0.99) | 40, 25 |
+| 11:43 | art | 2 | b2, Corporate print 0.92: tier-corporate (1.02), lobby-doors (1.00) | 40, 27 |
 
 ## Decisions
 
@@ -101,4 +104,9 @@ Counted from the first still, by part. Limit 40 a part in this round.
 - 11:24 `SPILL` 2.2 (was 1.5) and `SHEEN.pools` 0.8 (was 0): what a lit opening throws on the lacquer is stronger, and the haze round a lamp is brighter from a low eye than from above (R1-4 issue 4, R3-1 issue 4, R3-3 issue 5).
 - 11:26 Office tiles: a greener, deeper pair (`#3e6664`, `#365a59`) read more saturated than the approved (build 66,97,85 against approved 62,79,74 on a tile); taken back to `#496268`, `#40575d`, whose hue matches (76,93,89) and which is 18 percent brighter. I leave it brighter: the Office floor in `table-wide` is already darker than the approved, and the mean of `table-wide` is ruled.
 - Looks: lights stand at 38 of 40 at 11:26. The last two are kept for `table-wide` and one close key after the frame's navy walls are in main.
+- 11:37 /root: no more looks for the lights part; it goes forward as it is and nothing in it changes that needs a look. A look counts against the part whose files changed since the look before. So from here only `src/table/real/art/` and `assets-src/table/art/` change.
+- 11:33 SEEN in a16 (the last lights look): the stronger red before the bay does not show in `youre-fired`, the ball and the seat cover that floor from this camera. NOT DONE (R1-4 issue 4): the red and the lit windows mirrored in the floor before the firehouse. What I would have changed: `MIRROR` and `SPILL` in `lights/hook.ts` (a longer, brighter image of a lit front from a low eye) and a `front()` for the bay itself in `lights/groups.ts`. Both are the lights part.
+- 11:38 Street: the paving slabs are plain to see (`plots` at 0.26, were 0.1) and the print is darker (`COAT` street print 1.12, was 1.2): the approved floor is dark slabs, not one field with fine lines. MEASURED b1: `tier-street` 1.00 of the approved, dark share 18 percent against 20 (was 8).
+- 11:42 Corporate print 0.92 (was 1.0). MEASURED b2: `tier-corporate` 1.02 (was 1.10), dark share 33 percent against 36; `lobby-doors` 1.00.
+- `youre-fired` stays at 1.17: by blocks (`cells.mjs b1 youre-fired`) the bright blocks are the cream bank beside the firehouse and the ball (85 to 122 against 48 to 72), not the floor (44 against 54 and 32). The camera of this key and the models are not mine.
 

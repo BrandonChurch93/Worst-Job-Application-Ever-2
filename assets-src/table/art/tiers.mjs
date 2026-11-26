@@ -616,7 +616,7 @@ export function street(D, seed) {
   const stones = grit.map((q) => path(q.d, stroke(q.col, q.w, { opacity: q.o, 'stroke-linecap': 'round' })))
   const clipId = 'field-street'
   defs.push(el('clipPath', { id: clipId }, rect(C.left, 0.3, C.right - C.left, D.H - 0.3, { fill: '#000' })))
-  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.1 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, stones, lots, holes, wear(D, seed + 9, '#a9c6cc', 150)]), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.26 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, stones, lots, holes, wear(D, seed + 9, '#a9c6cc', 150)]), local, answers, insertsPrint(D, pal)] }
 }
 
 // The guide: the tier from straight above with every lane, wall, post, footprint, insert and flipper as plain lines.
