@@ -123,11 +123,6 @@ export function hubRingGeometry(): THREE.BufferGeometry {
   return sweep(circle(B.hub + 0.7, 72), [flat(0, H + 0.06), flat(1.2, H + 0.06)], false)
 }
 
-// What is seen down the wheel's middle hole when the hub has not come up yet: the dark of the works, not the plate.
-export function hubWellGeometry(): THREE.BufferGeometry {
-  return sweep(circle(B.hub + 0.6, 48), [flat(0, H - B.thick + 0.3)])
-}
-
 // The finger stop: a bar that stands on the bezel's edge and reaches in over the wheel.
 export function stopGeometry(): THREE.BufferGeometry {
   const long = B.stopOut - B.stopIn
@@ -208,13 +203,13 @@ function turnedFine(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMater
   return m
 }
 
-interface Kit { seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; hubWell: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry }
+interface Kit { seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry }
 let kit: Kit | null = null
 
 function geometries(): Kit {
   if (!kit) {
     const seat = seatGeometry()
-    kit = { seat: seat.collar, gap: seat.gap, housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), hubWell: hubWellGeometry(), stop: stopGeometry(), shade: holeShadeGeometry() }
+    kit = { seat: seat.collar, gap: seat.gap, housing: housingGeometry(), plate: plateGeometry(), face: faceGeometry(), edges: edgesGeometry(), hub: hubGeometry(), hubRing: hubRingGeometry(), stop: stopGeometry(), shade: holeShadeGeometry() }
   }
   return kit
 }
@@ -251,7 +246,6 @@ export const dial: PartMaker = {
     wheel.add(mesh(g.face, faceMaterial))
     wheel.add(mesh(g.edges, m.chrome))
     wheel.add(mesh(g.hubRing, m.gap, false))
-    wheel.add(mesh(g.hubWell, m.gap, false))
     const hub = mesh(g.hub, m.orange)
     wheel.add(hub)
     body.add(wheel)
@@ -272,7 +266,9 @@ export const dial: PartMaker = {
     const up = dialPlate(top) - (top - B.plate)
     kept.plate.position.z = up
     kept.shades.position.z = H - B.plate + 0.12 + up
-    kept.hub.position.z = -B.hubTall * low
+    const swell = B.hubFlat + (1 - B.hubFlat) * (1 - low)
+    kept.hub.scale.z = swell
+    kept.hub.position.z = H * (1 - swell)
     kept.stop.position.z = -(B.stopClear + B.stopTall + 0.5) * low
     const turn = s.v?.[0] ?? 0
     kept.wheel.rotation.z = -turn
