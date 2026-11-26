@@ -70,16 +70,17 @@ vec3 wjsPolish( vec3 R, float rough ) {
 	float thin = min( 0.9, length( fwidth( R ) ) * 0.6 );
 	float w = 0.02 + rough * 0.25 + thin;
 	float keep = ( 0.02 + rough * 0.25 ) / w;
+	float line = wjsThin * smoothstep( 0.075, 0.06, rough );
 	float turn = atan( R.y, R.x );
 	float rings = exp( - ( R.z - 0.84 ) * ( R.z - 0.84 ) / ( w * w ) ) + 0.5 * exp( - ( R.z - 0.42 ) * ( R.z - 0.42 ) / ( w * w * 0.5 ) );
-	vec3 above = mix( wjsLamp, vec3( 1.0 ), 0.5 ) * ( 0.02 + ( rings * ( 0.6 + 0.4 * cos( turn * 2.0 + 0.6 ) ) * keep * keep + wjsThin * smoothstep( 0.44, 0.64, R.z ) ) * 2.6 / ( 1.0 + rough * 6.0 ) ) * smoothstep( -0.02, 0.1, R.z );
+	vec3 above = mix( wjsLamp, vec3( 1.0 ), 0.5 ) * ( 0.02 + ( rings * ( 0.6 + 0.4 * cos( turn * 2.0 + 0.6 ) ) * keep * keep + line * smoothstep( 0.44, 0.64, R.z ) ) * 2.6 / ( 1.0 + rough * 6.0 ) ) * smoothstep( -0.02, 0.1, R.z );
 	float side = 0.1 + 0.9 * smoothstep( -0.3, 0.3, R.x * 1.6 + 0.3 * sin( wjsAt.y * 0.031 ) );
 	vec3 field = mix( wjsLamp, vec3( 1.0 ), 0.4 ) * ( 0.08 + 0.07 * sin( wjsAt.y * 0.047 + R.x * 3.0 ) ) * side;
 	float az = atan( R.y, R.x );
 	float low = exp( - ( R.z + 0.34 ) * ( R.z + 0.34 ) / 0.006 );
 	field += ( vec3( 1.0, 0.22, 0.14 ) * pow( 0.5 + 0.5 * cos( az - 0.9 - wjsAt.y * 0.004 ), 40.0 ) + vec3( 0.2, 0.45, 1.0 ) * pow( 0.5 + 0.5 * cos( az + 2.1 + wjsAt.y * 0.003 ), 40.0 ) ) * 1.6 * low * keep * wjsSpark;
 	field += wjsLamp * 2.4 * pow( 0.5 + 0.5 * cos( az * 7.0 + wjsAt.y * 0.013 ), 24.0 ) * exp( - ( R.z + 0.22 ) * ( R.z + 0.22 ) / 0.012 ) * keep * wjsSpark;
-	field += mix( wjsLamp, vec3( 1.0 ), 0.6 ) * wjsThin * 2.0 * exp( - ( R.z + 0.26 ) * ( R.z + 0.26 ) / 0.004 ) * ( 0.55 + 0.45 * cos( az * 3.0 + 0.7 ) );
+	field += mix( wjsLamp, vec3( 1.0 ), 0.6 ) * line * 2.0 * exp( - ( R.z + 0.26 ) * ( R.z + 0.26 ) / 0.004 ) * ( 0.55 + 0.45 * cos( az * 3.0 + 0.7 ) );
 	return on * ( above + field * smoothstep( 0.12, -0.3, R.z ) );
 }
 `
@@ -152,6 +153,6 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, own: Zone, o: 
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs33`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs34`
   return m
 }
