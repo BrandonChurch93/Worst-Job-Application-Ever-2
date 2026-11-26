@@ -1,35 +1,35 @@
 {
   "folder": "look-finish",
-  "pushed": "2026-11-26T11:53:55.711Z",
+  "pushed": "2026-11-26T11:55:10.537Z",
   "commit": "979389dd049d0fb248c20e7072116065b0a0ac25",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-decision-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T11:50:06.990Z",
+      "caption": "Quiet ink: marketing-top hero subline and the row under the button: approved, after the ink pass, now",
+      "time": "2026-11-26T11:53:54.479Z",
       "by": "look-finish",
-      "from": "out/work/stills/key-decision-hd-review.png"
+      "from": "out/work/look-finish/c/Q-marketing-rows.jpg"
     },
     {
       "file": "look-2.jpg",
       "caption": "Still key-marketing-top-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T11:51:03.214Z",
+      "time": "2026-11-26T11:54:33.951Z",
       "by": "look-finish",
       "from": "out/work/stills/key-marketing-top-hd-review.png"
     },
     {
       "file": "look-3.jpg",
-      "caption": "C: field glass on step2-rest (left end, right end), step2-dial, and the boss card (not shared glass, unchanged) at review: approved, before, after",
-      "time": "2026-11-26T11:53:54.238Z",
+      "caption": "Quiet ink (rendered again at 979389dd): marketing-top hero subline dark, the row under the button quiet: approved, after the ink pass, now",
+      "time": "2026-11-26T11:54:41.600Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/c/C-all.jpg"
+      "from": "out/work/look-finish/c/Q-marketing-rows.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Quiet ink: marketing-top hero subline and the row under the button: approved, after the ink pass, now",
-      "time": "2026-11-26T11:53:54.479Z",
+      "caption": "Still step2-step2_continue-0p6-hd-review: review tier, hd, view beauty",
+      "time": "2026-11-26T11:55:06.371Z",
       "by": "look-finish",
-      "from": "out/work/look-finish/c/Q-marketing-rows.jpg"
+      "from": "out/work/stills/step2-step2_continue-0p6-hd-review.png"
     }
   ]
 }
