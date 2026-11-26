@@ -187,3 +187,19 @@ From the Builder's comparison at 12:30 of the `final` still of bf173faf.
 - MEASURED 12:32 to 12:34 UTC on the tree with main merged in (e7e68fbe) and these changes: `npm test` 119 files, 1479 of 1479; build built; bots all clear, keen reached every one of the 37 gags on every seed. Counts: Corporate 21 calls and 75541 triangles, Office 16 and 32068, together 37 and 107609 against 37 and 110600; frame 198 of 300.
 - MEASURED fine detail by M3's formula at `draft`: `tier-corporate` 0.855, `lobby-doors` 0.867; band letters 0.0118 on a plate of 0.4480, ratio 8.05.
 
+## Sixth pass (12:37 to 12:50 UTC)
+
+- Pushed a3af73bb at 12:37 after the whole chain ran again on the tree with main merged in (MEASURED 12:35 to 12:37: `npm test` 119 files, 1479 of 1479; build built; bots all clear; Corporate 21 calls and 75541 triangles, Office 16 and 32068; frame 198 of 300).
+- MEASURED at `final` on a3af73bb (12:41, 191.6 s, 464 calls, 586738 triangles): fine detail by M3's formula 0.627 of approved's on `tier-corporate` (0.587 on 491ee42b). By area, build against approved: roof 0.00188 against 0.00155, left wedge 0.00045 against 0.00068, right wedge 0.00058 against 0.00091, carpet 0.00029 against 0.00089, beach 0.00072 against 0.00083, boardroom 0.00025 against 0.00014.
+- From the Builder's comparison of `lobby-doors` at 12:38. The two globe lamps are posts of the lights, not in my folders: not touched, listed. The doorway: the glass of the two door leaves is a warm clear tint in place of the blue green of the lobby glass, the leaves' brass is darker so that the bright bead at the glass reads, the back wall of the hall is brighter (0.3, 0.55, 0.85) and the lift fronts a paler wood, so that a warm lit room shows through the doors.
+- Look: 12:42 `lobby-doors` (doorway). Count: hq 23.
+- MEASURED at `draft` after it: `lobby-doors` 0.887 by M3's formula (0.867 before), band ratio 8.05.
+
+- MEASURED 12:42 to 12:45 UTC on this tree: `npm test` 119 files, 1479 of 1479; build built; bots all clear, keen reached every one of the 37 gags on every seed. Counts: Corporate 21 calls and 75541 triangles, Office 16 and 32068, together 37 and 107609 against 37 and 110600; frame 198 of 300.
+
+## What still looks least real (end of the round)
+
+1. The doorway and its two globe lamps close up: the globes are small white balls on thin brass stems where approved's are large frosted globes on chrome bases (they are posts of the lights, outside my folders); the door leaves are plain brass frames round flat glass, without approved's reflections and depth.
+2. The tower's front close up: a grid of mullions over box desks and lit strips, where approved's is blue glass between bright mullions that mirrors the room. The band's letters are flat dark print on a steel plate where approved's are raised metal (the Builder's ruling for this round).
+3. From above: the carpet has a third of approved's fine detail at `final`, the boardroom is small beside approved's long table with a row of chairs (its size comes from the layout), and the stapler arm is a plain red paddle without approved's chrome jaw and hinge.
+

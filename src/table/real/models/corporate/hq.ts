@@ -146,7 +146,7 @@ function leaf(): Geo {
   const st = 6
   const kick = 24
   fin(g, FINISH.brushed, () => {
-    const deep = shade(TONE.brass, 0.58)
+    const deep = shade(TONE.brass, 0.42)
     g.box(0, st, -t, t, z0, H, deep, { bottom: true, bevel: 0.6 })
     g.box(W - st, W, -t, t, z0, H, deep, { bottom: true, bevel: 0.6 })
     g.box(st, W - st, -t, t, H - 7, H, deep, { bottom: true })
@@ -182,13 +182,13 @@ function leafGlass(): Geo {
   const g = new Geo()
   const W = ((DOORS.w - DOORS.seam) / 2) * BALL
   const H = (DOORS.h - 0.05) * BALL
-  fin(g, FINISH.stone, () => g.face([[6, 0, 24], [W - 6, 0, 24], [W - 6, 0, H - 7], [6, 0, H - 7]], [0, -1, 0], [1, 0, 0], GLASS_PALE), 0.2)
+  fin(g, FINISH.stone, () => g.face([[6, 0, 24], [W - 6, 0, 24], [W - 6, 0, H - 7], [6, 0, H - 7]], [0, -1, 0], [1, 0, 0], [0.085, 0.07, 0.045]), 0.2)
   // What the pane mirrors: two slanting streaks of the room's light.
   const gw = W - 12
   fin(g, FINISH.stone, () => {
     for (const [at, w] of [[0.16, 0.07], [0.4, 0.03]] as V2[]) {
       const x = 6 + gw * at
-      g.face([[x, -0.08, 24], [x + gw * w, -0.08, 24], [x + gw * (w + 0.34), -0.08, H - 7], [x + gw * 0.34, -0.08, H - 7]], [0, -1, 0], [1, 0, 0], [0.5, 0.6, 0.62])
+      g.face([[x, -0.08, 24], [x + gw * w, -0.08, 24], [x + gw * (w + 0.34), -0.08, H - 7], [x + gw * 0.34, -0.08, H - 7]], [0, -1, 0], [1, 0, 0], [0.62, 0.6, 0.52])
     }
   }, 0.03)
   return g
@@ -338,10 +338,10 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
       G.lathe([[17, 0], [17, 0.2], [0, 0.2]], mid[0], mid[1], 28, warm(0.7), 6.7)
       // The back wall: dim at the floor, lit under the ceiling.
       const rise = [6, 6 + (pz0 - 6) * 0.45, 6 + (pz0 - 6) * 0.8, pz0]
-      ;[0.2, 0.38, 0.62].forEach((k, i) => G.face([[room.x0, room.y1, rise[i]!], [room.x1, room.y1, rise[i]!], [room.x1, room.y1, rise[i + 1]!], [room.x0, room.y1, rise[i + 1]!]], [0, -1, 0], [1, 0, 0], warm(k)))
+      ;[0.3, 0.55, 0.85].forEach((k, i) => G.face([[room.x0, room.y1, rise[i]!], [room.x1, room.y1, rise[i]!], [room.x1, room.y1, rise[i + 1]!], [room.x0, room.y1, rise[i + 1]!]], [0, -1, 0], [1, 0, 0], warm(k)))
       for (const s of [-1, 0, 1]) {
         const x = s * 46
-        G.face([[x - 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 104], [x - 15, room.y1 - 0.4, 104]], [0, -1, 0], [1, 0, 0], [0.26, 0.19, 0.09])
+        G.face([[x - 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 6], [x + 15, room.y1 - 0.4, 104], [x - 15, room.y1 - 0.4, 104]], [0, -1, 0], [1, 0, 0], [0.36, 0.27, 0.14])
         G.face([[x - 0.6, room.y1 - 0.8, 6], [x + 0.6, room.y1 - 0.8, 6], [x + 0.6, room.y1 - 0.8, 104], [x - 0.6, room.y1 - 0.8, 104]], [0, -1, 0], [1, 0, 0], [0.03, 0.03, 0.03])
         G.face([[x - 6, room.y1 - 0.8, 109], [x + 6, room.y1 - 0.8, 109], [x + 6, room.y1 - 0.8, 114], [x - 6, room.y1 - 0.8, 114]], [0, -1, 0], [1, 0, 0], lamp(1.3))
       }
