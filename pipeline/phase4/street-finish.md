@@ -34,8 +34,8 @@ Seen on my own `youre-fired` and `tier-street` drafts at 11:15 UTC.
 
 | Part | Looks |
 | --- | --- |
-| model-firehouse (`youre-fired`) | 6 |
-| shared tier (`tier-street`), counted against model-garage | 6 |
+| model-firehouse (`youre-fired`) | 8 |
+| shared tier (`tier-street`), counted against model-garage | 7 |
 
 ## Decisions
 
@@ -53,3 +53,17 @@ Seen on my own `youre-fired` and `tier-street` drafts at 11:15 UTC.
 - `npm run build && npm run counts -- --key table-wide --live low`, my rows (draw calls, triangles): model-firehouse 5, 47536; model-road-signs 4, 3076; model-moms 3, 2982; model-garage 2, 10672; model-police 2, 8640; model-bank 1, 10340; model-houses 0, 0. Folder: 17 draw calls (17 before), 83246 triangles (71368 before, 11878 more of the 30000 allowed).
 - Sign contrast on my own still, `python3 signlum.py out/work/stills/key-youre-fired-hd-draft.png 1030 188 1140 235` (a crop inside the firehouse board round the word; Otsu split, edge pixels dropped; relative luminance from sRGB): letters 0.0342, board 0.5269, ratio (board + 0.05) / (letters + 0.05) = 6.85.
 - `npm run still -- --key youre-fired --format hd --tier draft`: 38.7 s. No asset file: 0 MB in `public/assets/table/street/`, `assets-full/table/street/`, `assets-src/table/street/`.
+
+## Second pass, MEASURED at 11:49 UTC
+
+- `npm test`: 116 files, 1466 of 1466. `npm run build`: exit 0. `npm run bots`: all clear.
+- `npm run build && npm run counts -- --key table-wide --live low`, my rows (draw calls, triangles): model-firehouse 5, 50538; model-road-signs 4, 3076; model-moms 3, 2982; model-garage 2, 10692; model-police 2, 8640; model-bank 1, 10780; model-houses 0, 0. Folder: 17 draw calls, 86708 triangles (15340 more of the 30000 allowed).
+- Sign contrast, same crop of my `youre-fired` draft still: letters 0.0319, board 0.4792, ratio 6.46.
+
+Decisions of the second pass:
+
+- Roofs, as the Builder asked after the first pass: the decks of the firehouse and the police station lie 20 and 18 px under the parapet top (12 and 10 before) and the inner face of the parapet is darker. `roofWorks()` in `kit.ts` adds cross laps and patches in the felt, a lead upstand, joints in the cap, two drains, a pipe on blocks and a conduit. The felt paint has stains and dust in the shader. Each beacon stands on a round kerb 9 px high, so it keeps its height over the parapet.
+- Windows: the frame and the glazing bars stand in front of the pane with a gap behind them, the reveals are deeper (5.5 px by default, 6 on the firehouse front) and darker, the bars heavier.
+- Chrome ring: the bands a polished ring shows (dark under the bead, a dark line at the horizon, bright over it) are in its vertex colours, since the one metal material of the folder is too rough to mirror the room and a second material would cost a draw call.
+- Bank: a plain pediment on the cornice over the columns, three lamps in the porch ceiling, brighter tall windows.
+- The board's own light is 0.14 of its colour (0.2 in the first pass), since the police board read too white in `tier-street`.

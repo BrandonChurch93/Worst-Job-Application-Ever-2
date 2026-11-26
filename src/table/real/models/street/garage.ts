@@ -9,6 +9,9 @@ export type V4 = [number, number, number, number]
 // The wires of the highway stand wider than the ball: this much more room is left round its path.
 const WIRES = 10
 
+// How far a parking deck stands out from the ring, where nothing is in its way.
+const DECK = 24
+
 // The tube the ball sweeps on the highway and down the spiral, in the zone's frame: points along both rails, a ball apart at most by a twelfth.
 export function tube(z: Zone): V4[] {
   const out: V4[] = []
@@ -206,6 +209,73 @@ export function garage(b: Buckets, z: Zone): void {
       b.glow.place(m, cx, cy, 0, a)
     }
   }
+
+  // The parking decks: a slab of grey concrete round each ring with a kerb at its edge and the bays marked on it. Each is as wide as its place allows: short of the stanchions on the right wall and, below the roof of the police station, short of that station's wall.
+  const deckCol = rgb(0x858b8f)
+  const mark: [number, number, number] = [0.8, 0.79, 0.74]
+  const reachX = (localBalls(z, COLS.right, 0)[0] + localBalls(z, COLS.launchA, 0)[0]) / 2 + 1
+  const outer = (a: number, z0: number): number => {
+    let r = Ro + DECK
+    const c = Math.cos(a)
+    const sn = Math.sin(a)
+    if (c > 0.05) r = Math.min(r, (reachX - cx) / c)
+    if (sn > 0.05 && z0 < P.h + 4) r = Math.min(r, (P.yf - 3 - cy) / sn)
+    return r
+  }
+  const put = (q: V3[], n: V3, col: [number, number, number], kind = KIND.concrete): void => {
+    const [a, c, d] = [q[0]!, q[1]!, q[2]!]
+    const ux = c[0] - a[0]
+    const uy = c[1] - a[1]
+    const uz = c[2] - a[2]
+    const vx = d[0] - a[0]
+    const vy = d[1] - a[1]
+    const vz = d[2] - a[2]
+    const dot = (uy * vz - uz * vy) * n[0] + (uz * vx - ux * vz) * n[1] + (ux * vy - uy * vx) * n[2]
+    g.face(dot < 0 ? [...q].reverse() : q, col, kind, n)
+  }
+  levels.forEach(([lz0, lz1], li) => {
+    const zt = lz1
+    const zb = lz1 - 6
+    const zk = Math.min(top - 0.4, lz1 + 3.6)
+    const rin = Ro + 0.3
+    const ok = Array.from({ length: N }, (_, i) => {
+      if (!has[li]![i] || !runs.some((r) => r.held && r.li === li && ((i - r.i + N * 2) % N) < r.n)) return false
+      for (const a of [i * step, (i + 0.5) * step, (i + 1) * step]) {
+        // No slab stands before the sign on the police station's roof.
+        if (zk > P.h - 2 && faces(a)) return false
+        const ro = outer(a, lz0)
+        if (ro - Ro < 5) return false
+        for (const r of [ro, (ro + Ro) / 2]) if (inTube(pts, cx + Math.cos(a) * r, cy + Math.sin(a) * r, zb, zk, margin)) return false
+      }
+      return true
+    })
+    for (let i = 0; i < N; i++) {
+      if (!ok[i]) continue
+      const a0 = i * step
+      const a1 = (i + 1) * step
+      const at = (a: number, r: number, zz: number): V3 => [cx + Math.cos(a) * r, cy + Math.sin(a) * r, zz]
+      const r0 = outer(a0, lz0)
+      const r1 = outer(a1, lz0)
+      const am = (a0 + a1) / 2
+      const out: V3 = [Math.cos(am), Math.sin(am), 0]
+      const inn: V3 = [-out[0], -out[1], 0]
+      put([at(a0, rin, zt), at(a0, r0 - 2, zt), at(a1, r1 - 2, zt), at(a1, rin, zt)], [0, 0, 1], deckCol)
+      put([at(a0, r0 - 2, zk), at(a0, r0, zk), at(a1, r1, zk), at(a1, r1 - 2, zk)], [0, 0, 1], shade(deckCol, 1.14))
+      put([at(a0, r0 - 2, zt), at(a0, r0 - 2, zk), at(a1, r1 - 2, zk), at(a1, r1 - 2, zt)], inn, shade(deckCol, 0.78))
+      put([at(a0, r0, zb), at(a0, r0, zk), at(a1, r1, zk), at(a1, r1, zb)], out, shade(deckCol, 0.92))
+      put([at(a0, rin, zb), at(a0, r0, zb), at(a1, r1, zb), at(a1, rin, zb)], [0, 0, -1], shade(deckCol, 0.5))
+      for (const [a, r, on, sg] of [[a0, r0, ok[(i + N - 1) % N], -1], [a1, r1, ok[(i + 1) % N], 1]] as const) {
+        if (on) continue
+        const n: V3 = [-Math.sin(a) * sg, Math.cos(a) * sg, 0]
+        put([at(a, rin, zb), at(a, r, zb), at(a, r, zt), at(a, rin, zt)], n, shade(deckCol, 0.85))
+        put([at(a, r - 2, zt), at(a, r, zt), at(a, r, zk), at(a, r - 2, zk)], n, shade(deckCol, 0.85))
+      }
+      if (i % 2 === 0 && ok[(i + N - 1) % N] && r0 - Ro > 9) {
+        const w = 0.6 / ((Ro + r0) / 2)
+        put([at(a0 - w, rin + 3, zt + 0.3), at(a0 - w, r0 - 3.4, zt + 0.3), at(a0 + w, r0 - 3.4, zt + 0.3), at(a0 + w, rin + 3, zt + 0.3)], [0, 0, 1], mark, KIND.plain)
+      }
+    }
+  })
 
   // The posts: grey painted steel outside the decks, a bolted clip at every deck and a cap where one reaches the rim.
   for (const p of piers) {

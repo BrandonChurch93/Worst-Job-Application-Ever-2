@@ -115,12 +115,13 @@ vec4 wsSurface( vec3 face ) {
 	} else if ( kind == 9.0 ) {
 		float speck = wsNoise( uv * 1.1 );
 		tone = vec3( 0.86 + 0.12 * speck * speck ) * ( 0.74 + 0.4 * wsNoise( uv * 0.06 ) ) * ( 0.9 + 0.2 * wsNoise( uv * 0.4 ) );
+		tone *= ( 1.0 - 0.34 * smoothstep( 0.5, 0.76, wsNoise( uv * 0.032 + 7.3 ) ) ) * ( 1.0 + 0.2 * smoothstep( 0.6, 0.9, wsNoise( uv * 0.085 + 2.1 ) ) );
 		h = speck * 0.1;
 	} else if ( kind == 11.0 ) {
 		tone = vec3( 1.0 );
 		wsGloss = -0.34;
 		wsCoat = 0.0;
-		wsSelf = 0.2;
+		wsSelf = 0.14;
 	} else {
 		tone = vec3( 0.95 + 0.08 * grain );
 	}
@@ -144,7 +145,7 @@ vec4 wsSurface( vec3 face ) {
 // The moulded and painted plastic of the models: one material for the zone, a colour for each vertex and a kind of surface for each face.
 export function paintOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.6, metalness: 0, specularIntensity: 0.5, clearcoat: 0.22, clearcoatRoughness: 0.38 }))
-  over(m, 'wja-studio-street-paint-18', (shader) => {
+  over(m, 'wja-studio-street-paint-20', (shader) => {
     shader.vertexShader = 'attribute vec3 face;\nvarying vec3 vWsFace;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvWsFace = face;')
     shader.fragmentShader =
       'varying vec3 vWsFace;\n' +
@@ -206,10 +207,10 @@ export function lensOf(z: Zone, name: string, colour: [number, number, number]):
 // Clear plastic, moulded thick: the decks of the garage. Thin where it is seen straight through, bright where it turns away from the eye and wherever a lamp lies on it, with the dark line a clear wall shows just inside its edge.
 export function plasticOf(z: Zone): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: 0x9aa7ad, vertexColors: true, roughness: 0.07, metalness: 0, transparent: true, opacity: 0.2, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.05, specularIntensity: 1 }))
-  over(m, 'wja-studio-street-plastic-1', (shader) => {
+  over(m, 'wja-studio-street-plastic-3', (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <tonemapping_fragment>',
-      'float wsTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wsEdge = pow( wsTurn, 1.7 );\nfloat wsDark = smoothstep( 0.6, 0.78, wsTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wsTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.6 * wsDark;\ngl_FragColor.a = clamp( diffuseColor.a * vColor.r + wsEdge * 0.5 + wsDark * 0.2 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.5, 0.0, 1.0 );\n#include <tonemapping_fragment>'
+      'float wsTurn = 1.0 - abs( dot( normalize( vViewPosition ), normalize( normal ) ) );\nfloat wsEdge = pow( wsTurn, 1.4 );\nfloat wsDark = smoothstep( 0.6, 0.78, wsTurn ) * ( 1.0 - smoothstep( 0.86, 0.96, wsTurn ) );\ngl_FragColor.rgb *= 1.0 - 0.6 * wsDark;\ngl_FragColor.rgb += vec3( 0.14, 0.16, 0.18 ) * wsEdge;\ngl_FragColor.a = clamp( diffuseColor.a * vColor.r + wsEdge * 0.8 + wsDark * 0.2 + dot( outgoingLight, vec3( 0.3333 ) ) * 0.5, 0.0, 1.0 );\n#include <tonemapping_fragment>'
     )
   })
   return named(lit(m, z), `street.plastic.${z.id}`)
