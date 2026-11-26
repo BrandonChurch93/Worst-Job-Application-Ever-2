@@ -76,8 +76,9 @@ The times in the table from 05:01 on are read back from the pushes (05:20, 05:28
 | 05:48 to 05:53 | youre-fired 2, reply-all 1, tier-office 1 | table-frame: walls | 4 |
 | 05:53 to 05:55 | table-wide, tier-street, last-save | marquee, table-frame, ramps | 3 |
 | 06:00 to 06:06 | table-wide 3 | marquee: the title | 3 |
+| 06:08 | tier-corporate | lift: the tube's bands | 1 |
 
-Total in round 11 at 06:06 UTC: 11 (loader 1, table-frame 5, marquee 4, ramps 1).
+Total in round 11 at 06:12 UTC: 12 (loader 1, table-frame 5, marquee 4, ramps 1, lift 1).
 
 ## Decisions
 
@@ -103,6 +104,7 @@ Total in round 11 at 06:06 UTC: 11 (loader 1, table-frame 5, marquee 4, ramps 1)
 - The sunk panels of the side rails' south ends are near black (`SLOPE`): from the player's end they read as two grey planks. MEASURED in `table-wide` draft: (34,33,31).
 - Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens). The marquee's title draws heavy and black across the whole picture in `table-wide` (table_runner, 05:25).
 - The marquee's title (06:05 UTC, 73124fdf). `frame/title.ts`: my marquee maker answers `key` for the one shape `marquee-title` and makes it from the type's own `dataOf` and `geometryOf` (words through `words()` from copy.json; font, size and place are the shape's, set by table_runner), on one material through `lit(studio(m), zone('marquee'))` whose emissive follows the `panel` level in `pose`. It is not drawn twice: `realKey` in `src/shell/view.ts` asks the part's maker first and the shell's type only when that says null. The tone: lamp_keeper and table_runner both said approved has a pale word, and /root asked for letters that glow. MEASURED on approved `table-wide`: the letters are dark warm print, (91,56,39) on a sky of (194,153,120). So the title is dark warm print that lets a little of the panel's light through. MEASURED on the draft at 06:06 UTC: letters (76,48,35) on sky (224,131,67); before it was near black. Counts in `table-wide` the same: scene 201, marquee 4 / 2168 (the run is counted in the row of the type).
+- The clear tube's chrome bands (06:12 UTC, 46f2e454): 20 px long and 1.6 proud of the old ring, with a groove round the middle (`BAND` in `hardware/kit.ts`); the loader's own ring keeps `TUBE.ferrule`. Approved has bands near a third of the tube's width; these are a fifth, so the straps between them still fit. Looked at in `tier-corporate` beside approved: they read as bands, darker than approved's.
 - The side rails' near ends stand tall in `table-wide` because the street floor is 288 below the page: that height is the layout's and stays.
 
 ## MEASURED times (04:07 to 04:34 UTC, this VM)
@@ -126,3 +128,16 @@ Total in round 11 at 06:06 UTC: 11 (loader 1, table-frame 5, marquee 4, ramps 1)
 ## Needs outside my folder
 
 - `pipeline/phase4/frame-keeper-NEEDS.patch` (05:55 UTC): `export` on `dataOf` and `geometryOf` in `src/shell/real/type.ts`. The marquee's title (`marquee-title`, part `marquee`) is set by the shell's type on a material that never passes `lit()`, so it is near black in the marquee zone (I wrote here that approved has pale letters: that was said to me and was wrong, see the decision on the title). With the two exports my marquee maker can answer for that one run (the contract's line on `text` shapes) with the type's own letters from `content/copy.json` on a material of mine that glows with the `panel` group as the picture does. The patch went into main at daf0748f (05:58 UTC) and the title is built on it (73124fdf, 06:05 UTC).
+
+## Draw calls and triangles, MEASURED 06:12 UTC at 46f2e454 (`npm run build && npm run counts -- --key <key> --live low`)
+
+| key | hardware | frame | targets | flippers | bumpers | loader | lift | ramps | marquee | scene |
+|---|---|---|---|---|---|---|---|---|---|---|
+| table-wide | 21 / 30368 | 16 / 11732 | 15 / 23180 | 12 / 33216 | 8 / 48192 | 10 / 13966 | 8 / 9868 | 5 / 18680 | 4 / 2168 | 201 |
+| tier-corporate | 13 / 19488 | 9 / 8375 | 7 / 11420 | 5 / 13840 | 2 / 17556 | 4 / 3696 | 3 / 2896 | none | 4 / 2168 | 111 |
+| tier-office | 16 / 26252 | 12 / 10766 | 11 / 18208 | 7 / 19376 | 8 / 48192 | 3 / 4432 | 6 / 7172 | 3 / 15084 | 1 / 806 | 126 |
+| tier-street | 19 / 28432 | 13 / 9666 | 8 / 12060 | 6 / 16608 | 2 / 17556 | 2 / 4352 | 3 / 2822 | 5 / 18680 | none | 108 |
+| loader-page | 7 / 3510 | 5 / 4857 | none | none | none | 4 / 6798 | none | none | 4 / 2168 | 64 |
+| reply-all | 16 / 40076 | 12 / 10766 | 11 / 18208 | 7 / 19376 | 8 / 48192 | 3 / 4432 | 6 / 7238 | 3 / 15084 | 1 / 806 | 129 |
+
+Against the rows before any change: every row of mine in the three tier keys has the same draw calls. `table-wide` has the loader at 10 against 8, which comes with main's wide camera (the same 10 with the loader file of the push before the camera's change). The title's run is counted in the row of the type (10 calls in `table-wide`, scene 201 before and after it). Triangles of my rows in `table-wide`: 187052 before, 191370 now. `loader-page` and `reply-all` have no row from before: UNKNOWN whether they changed.
