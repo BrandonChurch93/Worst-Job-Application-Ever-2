@@ -1,5 +1,5 @@
 // The drawn layer of the three floors, exactly on the layout. Everything is read from src/table/layout.ts; nothing here types a place of a part in.
-import { along, arc, beside, dirDeg, dist, dot, el, f, footprint, g, lerp, line, path, polar, poly, rays, rect, ring, rng, shape, star, stroke } from './lib.mjs'
+import { along, arc, beside, dirDeg, dist, dot, el, f, footprint, g, lerp, line, lineWeight, path, polar, poly, rays, rect, ring, rng, shape, star, stroke } from './lib.mjs'
 
 const chevron = () => ''
 const arrow = () => ''
@@ -7,7 +7,7 @@ const arrow = () => ''
 export const PAL = {
   corporate: { base: '#081229', base2: '#0f2147', key: '#e3bd62', fine: '#c4a252', pale: '#ecd797', under: '#070f27', dark: '#040a1a', lane: '#060e22', accent: '#27468a', soft: '#1b3466' },
   office: { base: '#4f625b', base2: '#41534d', key: '#8fa39a', fine: '#73887f', pale: '#b9c2b4', under: '#2c3f3f', dark: '#182626', lane: '#2c3f3f', accent: '#667f78', soft: '#566d66' },
-  street: { base: '#0e2130', base2: '#17384a', key: '#c3ccc9', fine: '#5f858e', pale: '#dcdfd6', under: '#091824', dark: '#050e15', lane: '#0a1a26', accent: '#b89a38', soft: '#1d404e', fan: '#4f757d', fan2: '#33575f' }
+  street: { base: '#0b2238', base2: '#133a55', key: '#c3ccc9', fine: '#5f858e', pale: '#dcdfd6', under: '#07182a', dark: '#040d17', lane: '#081b2c', accent: '#b89a38', soft: '#19425a', fan: '#4f757d', fan2: '#33575f' }
 }
 
 // One tier of the layout in its own frame: u across, v down from the top of the tier, in balls.
@@ -271,6 +271,7 @@ function underRamp(D, pal, id, col) {
 
 export function corporate(D) {
   const pal = PAL.corporate
+  lineWeight(1.55)
   const defs = []
   const filler = []
   const local = []
@@ -327,7 +328,9 @@ export function corporate(D) {
     local.push(rays(c, 0.25, 1.15, a0, a1, 13, pal.key, 0.02), arc(c, 1.15, Math.min(a0, a1), Math.max(a0, a1), pal.key, 0.03), arc(c, 1.22, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.008), arc(c, 0.25, Math.min(a0, a1), Math.max(a0, a1), pal.fine, 0.012), dot(c, 0.05, pal.pale))
   }
   const { lanes, answers } = common(D, pal)
-  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.36 }, filler), local, answers, insertsPrint(D, pal)] }
+  const prints = insertsPrint(D, pal)
+  lineWeight(1)
+  return { pal, defs, ground: [], top: [lanes, g({ mask: 'url(#keep-corporate)', opacity: 0.36 }, filler), local, answers, prints] }
 }
 
 export function office(D, seed) {

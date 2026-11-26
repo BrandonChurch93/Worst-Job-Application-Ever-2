@@ -23,7 +23,7 @@ export const TRAY_GAP = 12
 export const TRAY_H = 250
 export const TRAY_R = 14
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.9, jointDeep: 1.1, rim: 5.6, lean: 1.3, wallShade: 0.1, wallLit: 0.62, soakOver: 0.5,
+export const TRAY = { sink: 0.5, joint: 0.6, jointDeep: 1.1, rim: 8, lean: 1.3, wallShade: 0.55, wallLit: 1, soakOver: 0.5,
   floor: { soak: 0.3, hold: 0.2, reach: 20, bounce: 0.12, bounceReach: 9, base: 1, side: 0.8 },
   soak: { soak: 0.85, hold: 0.8, reach: 8, bounce: 0.16, bounceReach: 12, base: 0.76, side: 0.8 } }
 export const SHIFT = TRAY_H + TRAY_GAP
@@ -49,7 +49,7 @@ export const DIAL = {
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.2, bezel: 9, bezelDrop: 2, wheel: 89.2, thick: 4.8, chamfer: 1, holeRim: 0.4, holeChamfer: 2,
   hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.03, hubRough: 0.1, hubIor: 1.9, turned: 256, cut: 0.012, faceRough: 0.2, faceStretch: 1, faceLight: 1.5, seat: 5, seatGap: 1.8, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
-  shade: 0.46, shadeReach: 0.78
+  shade: 0.46, shadeReach: 0.78, cast: 0.62, castIn: 8, castOut: 44, castAway: 22, castOver: 0.2
 }
 
 // How far the top of the dial's wheel stands above the tray's floor when the machine has risen by `lift` (0 to 1). Before it rises it lies in the tray's floor, its wheel under the floor of a field, its hub and its stop drawn down into it.
@@ -80,7 +80,7 @@ export const CRANK = {
 export const ROW_TITLE = { font: 'inter-600', px: 26 }
 export const ROW_HELPER = { font: 'inter-400', px: 20 }
 export const REEL_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
-export const DIAL_TYPE = { font: 'inter-600', px: 20, align: 'centre' as const }
+export const DIAL_TYPE = { font: 'inter-600', px: 22, align: 'centre' as const }
 
 export const reelId = (r: number, legend: string): string => `reel-${r}-${legend}`
 
@@ -169,7 +169,7 @@ export function buildLayout(): LayoutNode {
   const by = SCREEN_H - 40 - sizes.button
   const go = button('continue', RIGHT - w, by, w, 'copy:step2.continue', { part: 'shell', tone: 'metal' })
   find(go, 'continue-label').tone = 'ink'
-  const note = text('note', 'copy:step2.note', TYPE.helper, LEFT, by + (sizes.button - block(TYPE.helper.font, 'X', TYPE.helper.px).cap) / 2, { part: 'type' })
+  const note = text('note', 'copy:step2.note', ROW_HELPER, LEFT, by + (sizes.button - block(ROW_HELPER.font, 'X', ROW_HELPER.px).cap) / 2, { part: 'type' })
   return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...trays, note, go])
 }
 

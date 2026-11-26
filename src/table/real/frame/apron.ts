@@ -1,13 +1,13 @@
 import * as THREE from 'three'
 import type { RealContext } from '../../../real/types'
-import { APRON_Y, COLS } from '../../layout'
+import { APRON_Y, BALL, COLS } from '../../layout'
 import { local, localBalls, localOf, shapesIn, type Zone } from '../zone'
 import { Geo, roundedLoop, type V2 } from './geo'
 import { Screws, TONE, aluOf, clearOf, mesh, paintOf, screwOf, shade } from './mats'
 
 const SLAB = { height: 16, bevel: 3.2, corner: 10, inlay: 9, line: 1.5, grain: 0.03 }
 // The frame round the apron: the two rails run on from the street tier and a slim rail closes them in front. `low` is how high they stand where the apron lies at the page's own height.
-const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7 }
+export const EDGE = { gap: 1.6, near: 44, low: 7, chamfer: 3, deck: 3, slot: [86, 40] as V2, bezel: 7, skin: 1.2, skirt: 1 }
 const WALL: [number, number, number] = [0.2, 0.208, 0.22]
 const CARD = { cover: 12, thick: 2.6, lift: 1.4 }
 
@@ -39,26 +39,48 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
   const xe = X(COLS.railB)
   const xa = X(COLS.liftA)
   const xc = X(COLS.launchB)
-  const tone = (outline: V2[]) => (edge: number): [number, number, number] => {
+  // In the well the near rail stands no taller than the slabs, and the two side rails come down to it from the street's height over the apron's length.
+  const sunk = z.floor < 0
+  const Hn = sunk ? SLAB.height : H
+  const tone = (outline: V2[], top: number) => (edge: number): [number, number, number] => {
     const p = outline[edge]!
     const q = outline[(edge + 1) % outline.length]!
-    return p[1] >= H - c - 0.01 && q[1] >= H - c - 0.01 ? TONE.aluBright : H > 30 ? WALL : TONE.alu
+    return p[1] >= top - c - 0.01 && q[1] >= top - c - 0.01 ? TONE.aluBright : top > 30 ? WALL : TONE.alu
   }
-  const side = (x0: number, x1: number): void => {
+  const y0 = yB + EDGE.near
+  const heightAt = (y: number): number => Hn + ((H - Hn) * (y - y0)) / (yT - y0)
+  const up: [number, number, number] = [0, -(H - Hn), yT - y0]
+  const wedge = (g: Geo, x0: number, x1: number, top: [number, number, number] | null, at0: [number, number, number] | null, at1: [number, number, number] | null): void => {
+    if (top) g.face([[x0, y0, Hn], [x1, y0, Hn], [x1, yT, H], [x0, yT, H]], up, [0, yT - y0, H - Hn], top)
+    if (at0) g.face([[x0, y0, 0], [x0, y0, Hn], [x0, yT, H], [x0, yT, 0]], [-1, 0, 0], [0, 1, 0], at0)
+    if (at1) g.face([[x1, y0, 0], [x1, y0, Hn], [x1, yT, H], [x1, yT, 0]], [1, 0, 0], [0, 1, 0], at1)
+  }
+  const side = (x0: number, x1: number, inner: 0 | 1): void => {
+    if (sunk) {
+      wedge(A, x0, x1, TONE.aluBright, inner === 0 ? WALL : TONE.alu, inner === 1 ? WALL : TONE.alu)
+      for (const t of [0.3, 0.8]) screws.add((x0 + x1) / 2, y0 + (yT - y0) * t, heightAt(y0 + (yT - y0) * t), 0.9, x0 + t, new THREE.Vector3(...up))
+      return
+    }
     const o: V2[] = [[x0, 0], [x0, H - c], [x0 + c, H], [x1 - c, H], [x1, H - c], [x1, 0]]
-    A.prism(o, [0, yB + EDGE.near], [0, yT], tone(o))
-    for (const t of [0.3, 0.8]) screws.add((x0 + x1) / 2, yB + EDGE.near + (yT - yB - EDGE.near) * t, H, 0.9, x0 + t)
+    A.prism(o, [0, y0], [0, yT], tone(o, H))
+    for (const t of [0.3, 0.8]) screws.add((x0 + x1) / 2, y0 + (yT - y0) * t, H, 0.9, x0 + t)
   }
-  if (z.floor < 0) {
-    // Outside the rails the page goes on to its own edge, as beside the tiers.
-    C.box(X(0), xb - EDGE.gap, yB, yT, 0, H, TONE.ceramic, { along: [0, 1, 0] })
-    C.box(xe + EDGE.gap, X(20), yB, yT, 0, H, TONE.ceramic, { along: [0, 1, 0] })
+  if (sunk) {
+    // Outside the rails the page goes on to its own edge, as beside the tiers, and comes down with them. The outside of the near end is one face of aluminium.
+    const skin = yB + EDGE.skin
+    for (const [x0, x1, out] of [[X(0), xb - EDGE.gap, 0], [xe + EDGE.gap, X(20), 1]] as [number, number, 0 | 1][]) {
+      wedge(C, x0, x1, TONE.ceramic, null, null)
+      wedge(A, x0, x1, null, out === 0 ? TONE.alu : null, out === 1 ? TONE.alu : null)
+      C.box(x0, x1, skin, y0, 0, Hn, TONE.ceramic, { along: [0, 1, 0] })
+    }
+    A.box(X(0), X(20), yB, skin, -EDGE.skirt * BALL, Hn, TONE.alu, { along: [1, 0, 0], top: TONE.aluBright })
   }
-  side(xb, xa)
-  side(xc, xe)
-  const near: V2[] = [[0, 0], [0, H - c], [c, H], [EDGE.near - c, H], [EDGE.near, H - c], [EDGE.near, 0]]
-  A.prism(near, [xe, yB], [xb, yB], tone(near))
-  for (let i = 0; i < 9; i++) screws.add(xb + 60 + ((xe - xb - 120) * i) / 8, yB + EDGE.near / 2, H, 0.9, i * 1.7)
+  side(xb, xa, 1)
+  side(xc, xe, 0)
+  const front = sunk ? yB + EDGE.skin : yB
+  const near: V2[] = [[0, 0], [0, Hn - c], [c, Hn], [y0 - front - c, Hn], [y0 - front, Hn - c], [y0 - front, 0]]
+  A.prism(near, [xe, front], [xb, front], tone(near, Hn))
+  for (let i = 0; i < 9; i++) screws.add(xb + 60 + ((xe - xb - 120) * i) / 8, yB + EDGE.near / 2, Hn, 0.9, i * 1.7)
   // The cast plate the two fields lie on, from rail to rail.
   C.box(xa, xc, yB + EDGE.near, yT, 0, EDGE.deck, shade(TONE.ceramic, 0.82), { bevel: 0.8 })
   for (const id of ['apron-left', 'apron-right']) {
