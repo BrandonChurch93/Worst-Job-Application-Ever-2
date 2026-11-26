@@ -1,0 +1,39 @@
+{
+  "what": {
+    "still": {
+      "page": "step1",
+      "beat": "step1.firstName",
+      "at": 0.5,
+      "camera": "home",
+      "tier": "final"
+    }
+  },
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
+  "pageHashes": {
+    "step1": "263044f80dcca6af"
+  },
+  "format": "hd",
+  "tier": "final",
+  "assets": "full",
+  "diagnostic": "beauty",
+  "browser": "147.0.7727.15",
+  "machine": {
+    "host": "space-sandbox",
+    "cores": 2,
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.90GHz",
+    "memoryMb": 7958,
+    "platform": "linux 6.1.155",
+    "node": "v20.20.2"
+  },
+  "seconds": 115.608,
+  "invalidValues": 0,
+  "standIns": [],
+  "counts": {
+    "triangles": 470467,
+    "drawCalls": 282
+  },
+  "problems": [],
+  "sha256": "5e252c1790c8dadf6796ee134b0d0dc637b7742845e3c265be6a5be7e300fad9",
+  "keptFrom": "out/work/stills/key-step1-fire-hd-final.png"
+}

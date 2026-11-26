@@ -3,16 +3,17 @@
     "still": {
       "page": "step1",
       "camera": "sheet",
-      "tier": "review",
+      "tier": "final",
       "sheet": "page-look"
     }
   },
-  "engineHash": "ff323a6eb56953a5",
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
   "pageHashes": {
-    "step1": "d92e95918a4bd086"
+    "step1": "263044f80dcca6af"
   },
   "format": "hd",
-  "tier": "review",
+  "tier": "final",
   "assets": "full",
   "diagnostic": "beauty",
   "browser": "147.0.7727.15",
@@ -24,26 +25,21 @@
     "platform": "linux 6.1.155",
     "node": "v20.20.2"
   },
-  "seconds": 21.339,
+  "seconds": 96.183,
   "invalidValues": 0,
-  "standIns": [
-    {
-      "name": "spike-scene",
-      "unit": "step1"
-    }
-  ],
+  "standIns": [],
   "counts": {
-    "triangles": 38862,
-    "drawCalls": 60
+    "triangles": 395415,
+    "drawCalls": 212
   },
   "problems": [],
   "compare": {
     "id": "page-look",
     "approved": "references/approved/page-look.png",
-    "still": "out/work/stills/sheet-page-look-hd-review.png",
+    "still": "out/work/stills/sheet-page-look-hd-final.png",
     "crops": [
       "button",
-      "field",
+      "field.start",
       "progressButton",
       "type",
       "cursor"
