@@ -1,0 +1,44 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: one sheet across each beat of the careers page, one of the page turn that ends it and one of the turned slab seating",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "résumé upload recess on the incoming slab, 0:14.17",
+   "what": "A black V-shaped patch cuts across the recess during the turn and disappears by 0:14.30. It looks like a surface breaking through the form rather than the inset rotating with the slab.",
+   "fix": "Check the recess geometry and shadow at the shallow turn angles. Keep the inset, its bevel and its shadow attached to the incoming slab without intersecting its face."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "large Apply for a Job button, 0:12.63–0:13.70",
+   "what": "The arrow sits over the button and then moves away before the slab turns. In the supplied frames the button profile looks essentially unchanged, so it is unclear whether the arrow pressed it or the page turned on its own.",
+   "fix": "Show the arrow stop against the button, the cap drop into its socket and rebound, and the slab start moving in response. Add a consecutive-frame sheet centered on the press."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the three benefit cards, around 0:02.53, 0:04.70 and 0:06.87",
+   "what": "The sheet shows the cards tilted and their copy revealed, but skips the frames that would show what the arrow struck, how it rebounded and how each card stopped. The reveals read; the physical cause is unclear.",
+   "fix": "Add a consecutive-frame sheet for each card hit, including approach, contact and settle. Make the arrow recoil and the card move on the same frame, then let the card seat before the next move."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "arrow crossing from Flexible Hours toward the large Apply button, 0:09.33–0:10.70",
+   "what": "The arrow leaves the card and slides across open space with no clear push-off or braking contact. It reads as a guided glide rather than a planted walk.",
+   "fix": "Make the departure and arrival distinct weight transfers, with short planted poses and changes of speed rather than a single sliding arc."
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-06.png",
+   "where": "thin horizontal divider beneath steps 3 and 4, 0:14.30–0:14.40",
+   "what": "The divider briefly softens into a second edge as the slab seats, even though the numbered caps are nearly still. The line firms up again during the hold.",
+   "fix": "Check the seat frames for residual motion blur or subpixel movement on the divider and lock its final edge once the slab stops."
+  }
+ ]
+}
