@@ -32,6 +32,9 @@ const cloud = (x: number, y: number, cell: number, seed: number): number => {
   return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy
 }
 
+const mix = (a: number, b: number, t: number): number => a + (b - a) * t
+const BURNS: [number, number, number][] = [[-58, 12, 9], [30, -14, 7], [64, 16, 5], [-20, -20, 4]]
+
 export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
   const data = new Uint8Array(w * h * 4)
   const k = w / 256
@@ -42,16 +45,24 @@ export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
       const big = cloud(x, y, 22 * k, 5)
       const mid = cloud(x, y, 8 * k, 7)
       const fine = cloud(x, y, 2.5 * k, 11)
-      const edge = (px > 0 ? 92 : 84) + (big - 0.5) * 44 + (mid - 0.5) * 16 + 6 * Math.sin(py * 0.2 + (px > 0 ? 1.1 : 2.6))
-      let d = smooth((Math.abs(px) - edge) / 22)
-      const reach = smooth((Math.abs(px) - edge + 46) / 46)
-      d = Math.max(d, reach * smooth((fine * 0.6 + mid * 0.4 - 0.52) / 0.12) * 0.75)
+      const edge = (px > 0 ? 88 : 78) + (big - 0.5) * 44 + (mid - 0.5) * 16 + 6 * Math.sin(py * 0.2 + (px > 0 ? 1.1 : 2.6))
+      let d = smooth((Math.abs(px) - edge) / 18)
+      const reach = smooth((Math.abs(px) - edge + 40) / 40)
+      d = Math.max(d, reach * smooth((fine * 0.6 + mid * 0.4 - 0.52) / 0.12) * 0.8)
+      let ash = smooth(1 - Math.abs(Math.abs(px) - edge + 4) / 9) * smooth((fine - 0.5) / 0.2)
+      for (const [hx, hy, hr] of BURNS) {
+        const far = Math.hypot(px - hx, py - hy) + (mid - 0.5) * 7
+        d = Math.max(d, 1 - smooth((far - hr * 0.7) / (hr * 0.5)))
+        ash = Math.max(ash, smooth(1 - Math.abs(far - hr * 1.15) / 3.5) * smooth((fine - 0.35) / 0.3))
+      }
       const i = (y * w + x) * 4
-      const tone = 9 + Math.round(22 * (1 - clamp(d)) + 8 * fine)
-      data[i] = tone + 6
-      data[i + 1] = tone + 2
-      data[i + 2] = tone
-      data[i + 3] = Math.round(255 * clamp(d) * 0.97)
+      const tone = 7 + Math.round(10 * (1 - clamp(d)) + 7 * fine)
+      const grey = 96 + Math.round(60 * fine)
+      const k2 = clamp(ash) * 0.85
+      data[i] = Math.round(mix(tone + 5, grey, k2))
+      data[i + 1] = Math.round(mix(tone + 2, grey - 2, k2))
+      data[i + 2] = Math.round(mix(tone, grey - 6, k2))
+      data[i + 3] = Math.round(255 * Math.max(clamp(d) * 0.98, k2 * 0.8))
     }
   }
   return data
@@ -242,7 +253,7 @@ let wispMaterial: THREE.MeshBasicMaterial | null = null
 
 export function wispPoint(u: number, t: number, w: number): [number, number, number, number] {
   const sway = Math.sin(u * 5.1 + w * 2.3 - t * 1.1) * 18 * u + Math.sin(u * 11 + w - t * 1.9) * 4 * u
-  return [sway + u * 30, Math.pow(u, 1.4) * 180, u * 110, 7 + 34 * Math.pow(u, 0.8)]
+  return [sway + u * 30, Math.pow(u, 1.4) * 190, u * 110, 13 + 44 * Math.pow(u, 0.8)]
 }
 
 function smoke(): THREE.Object3D {
@@ -250,7 +261,7 @@ function smoke(): THREE.Object3D {
     puffMade = texture(puffPixels(), PUFF_PX, PUFF_PX, false)
     puffMade.wrapT = THREE.RepeatWrapping
   }
-  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.14, 0.14, 0.145), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
+  wispMaterial ??= new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.2, 0.205), alphaMap: puffMade, vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
   const across = WISP_ACROSS.length
   const count = (WISP_N + 1) * across
   const g = new THREE.BufferGeometry()
@@ -260,7 +271,7 @@ function smoke(): THREE.Object3D {
   const index: number[] = []
   for (let i = 0; i <= WISP_N; i++) {
     const u = i / WISP_N
-    const along = 0.85 * smooth(u / 0.08) * Math.pow(1 - u, 1.1)
+    const along = smooth(u / 0.06) * Math.pow(1 - u, 0.9)
     for (let j = 0; j < across; j++) {
       const n = (i * across + j) * 4
       colour[n] = 1

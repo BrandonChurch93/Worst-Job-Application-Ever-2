@@ -14,6 +14,9 @@ export interface Levels {
   flash: number
 }
 
+// A window of a waking tier is never dead: its lamp stands at this share of the general lighting until the score lights it.
+export const INSERT_REST = 0.3
+
 let alone: string | null = null
 
 // Shows one group alone: its level is 1 and every other group of every zone is 0. Null shows the frame as it is.
@@ -54,7 +57,7 @@ export function levels(ctx: RealContext, z: Zone): Levels {
     else if (g.name === 'blue') level = first(ctx, id, 4, 0)
     else if (g.name.startsWith('insert.')) {
       const n = inserts[Number(g.name.slice(7)) - 1]
-      level = n ? first(ctx, `insert.${n.id}`, 0, 0) : 0
+      level = n ? Math.max(first(ctx, `insert.${n.id}`, 0, 0), INSERT_REST * general) : 0
     } else if (g.name.startsWith('bumper.')) {
       const b = bumpers[Number(g.name.slice(7)) - 1]
       const since = b ? first(ctx, `bumper.${b.id}`, 0, 9) : 9
