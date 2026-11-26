@@ -111,10 +111,13 @@ describe('step 4, the boss', () => {
     }
   })
 
-  it('leaves the cursor whole from the collapse on and when the film turns the page', () => {
+  it('holds the scorch from the power-down to the end of the film unit, with nothing more hitting the cursor', () => {
     const stage = film()
-    stage.advance(Math.round((unit.seconds - 0.5) * stepHz))
-    expect(stage.cursor.damaged).toBe(false)
+    const key = beats.find((b) => b.id === 'boss.collapse')!.to
+    stage.advance(Math.round(key * stepHz))
+    expect(stage.cursor.damaged).toBe(true)
+    stage.advance(Math.round((unit.seconds - 0.5 - key) * stepHz))
+    expect(stage.cursor.damaged).toBe(true)
     expect(stage.page.done()).toBe(true)
     const down = stage.events.find((e) => e.name === 'power-down')!
     expect(stage.events.filter((e) => e.hitsCursor && e.step >= down.step)).toEqual([])

@@ -275,12 +275,26 @@ export function loose(tier = 1): Loose[] {
   ]
 }
 
+// What has slid off the cabinet in the left lower corner, in balls: each is placed from the lower post of the left stapler's plate.
+export function spill(tier = 1): Loose[] {
+  const sling = table.slings.find((s) => s.tier === tier && s.side === 'left')!
+  const [sx, sy] = sling.b
+  return [
+    { id: 'sheet.d', kind: 'sheet', at: [sx - 0.85, sy + 1.67], r: 0.3, turn: -0.45 },
+    { id: 'sheet.e', kind: 'sheet', at: [sx - 0.2, sy + 1.9], r: 0.3, turn: 0.8 },
+    { id: 'folder.b', kind: 'folder', at: [sx - 0.07, sy + 2.47], r: 0.31, turn: -0.35 },
+    { id: 'envelope.c', kind: 'envelope', at: [sx - 0.39, sy + 3.11], r: 0.3, turn: 0.55 },
+    { id: 'clip.c', kind: 'clip', at: [sx - 1.1, sy + 2.2], r: 0.1, turn: -0.6 },
+    { id: 'clip.d', kind: 'clip', at: [sx + 0.15, sy + 1.75], r: 0.1, turn: 0.3 }
+  ]
+}
+
 function scattered(k: Kit, f: Kit, z: Zone, r: Random): void {
   const lift = k.lift
   k.lift = LIFT.paper
-  loose(z.tier).forEach((t, i) => {
+  for (const list of [loose(z.tier), spill(z.tier)]) list.forEach((t, i) => {
     const [x, y] = localBalls(z, t.at[0], t.at[1])
-    const zz = 0.2 + i * 0.45
+    const zz = 0.7 + i * 0.45
     if (t.kind === 'sheet') {
       k.at(x, y, zz, t.turn, r.range(-0.02, 0.02), r.range(-0.02, 0.02))
       k.box(0, 0, 0, 32, 44, 0.35, shade(C.paper, r.range(0.95, 1)), SURF.paper, 0.1)
