@@ -1,35 +1,35 @@
 {
   "folder": "step2-dial",
-  "pushed": "2026-11-26T01:22:00.456Z",
-  "commit": "6dd53604a983b6cfcc01660c28a7f84aedbda93f",
+  "pushed": "2026-11-26T01:42:07.235Z",
+  "commit": "a7ae0cb182067edbacfc7f4238da549a53c2c586",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "key step2-dial beside approved, review tier, commit 6dd5360",
-      "time": "2026-11-26T01:21:58.681Z",
+      "caption": "key step2-dial beside approved, review tier, commit a7ae0cb: deep tray, chrome rim, semi-bold row titles",
+      "time": "2026-11-26T01:42:05.496Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126012158-1-compare-step2-dial.jpg"
+      "from": "out/work/looks/files/20261126014205-compare-step2-dial.jpg"
     },
     {
       "file": "look-2.jpg",
       "caption": "dial and tray close, approved above, build below",
-      "time": "2026-11-26T01:21:58.957Z",
+      "time": "2026-11-26T01:42:05.720Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126012158-2-dial-close.jpg"
+      "from": "out/work/looks/files/20261126014205-dial-close.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "tray opening and the dial rising, four frames",
-      "time": "2026-11-26T01:21:59.180Z",
+      "caption": "key step2-crank beside approved, review tier, with the slot maker's crank merged",
+      "time": "2026-11-26T01:42:05.950Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126012159-3-tray-opens-dial-rises.jpg"
+      "from": "out/work/looks/files/20261126014205-compare-step2-crank.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "nine acting poses of step 2",
-      "time": "2026-11-26T01:21:59.417Z",
+      "caption": "motion sheet of the dial's whip, 12 frames round the event dial-fling",
+      "time": "2026-11-26T01:42:06.180Z",
       "by": "step2-dial",
-      "from": "out/work/looks/files/20261126012159-4-acting-poses.jpg"
+      "from": "out/work/looks/files/20261126014206-motion-dial-fling.jpg"
     }
   ]
 }
