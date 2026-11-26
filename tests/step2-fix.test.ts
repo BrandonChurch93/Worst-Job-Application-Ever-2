@@ -62,9 +62,11 @@ describe('step 2 after its fixer', () => {
 
   it('stands the tip on the lower right shoulder of the cap at the dial key', () => {
     const s = film()
-    to(s, 3.2)
-    const c = s.cursor.pose()
-    expect(Math.hypot(c.x - (DIAL.cx + 25), c.y - (DIAL.cy + 21))).toBeLessThan(10)
+    for (const t of [3.2, 3.3, 3.45]) {
+      to(s, t)
+      const c = s.cursor.pose()
+      expect(Math.hypot(c.x - (DIAL.cx + 15), c.y - (DIAL.cy + 14)), `at ${t}`).toBeLessThan(6)
+    }
   })
 
   it('shows the level as a whole percent', () => {

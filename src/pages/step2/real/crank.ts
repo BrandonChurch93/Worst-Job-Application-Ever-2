@@ -13,7 +13,7 @@ export const CRANK_LOOK = {
   plate: 8, rim: 3.6, screwAt: 38, screw: 4.8, washer: 25.5, neck: 20, eye: 3.4, bar: 0.8, end: 0.5, fillet: 9, cap: 16.5,
   grip: { cap: 0.95, round: 2.5, square: 2.5, taper: 0.9, seamAt: 9, seam: 0.07, collar: 0.05 },
   tie: { low: 0.82, gain: 1.7, second: 0.3, sharp: 3, axis: 2.5, capAxis: 2.2 },
-  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.8, reach: 130, lift: 10, most: 4 }
+  lamp: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.9, reach: 84, lift: 10, most: 4 }
 }
 const L = CRANK_LOOK
 
@@ -58,9 +58,9 @@ function own(): NonNullable<typeof made> {
   // The lit segment: a pale orange core, a deeper orange ring, and a bright line at the rim.
   const glow = picture(64, 256, true, (u, v) => {
     const p = inPill(u, v)
-    const t = Math.pow(smooth((p.depth - 2.5) / 8), 1.1) * (1 - 0.25 * smooth((Math.abs(p.y) - 26) / 18))
+    const t = smooth((p.depth - 2.2) / 5) * (1 - 0.25 * smooth((Math.abs(p.y) - 26) / 18))
     const rim = smooth((p.depth - 0.4) / 0.8) * (1 - smooth((p.depth - 1.8) / 1.2))
-    return [1, 0.28 + 0.5 * t + 0.16 * rim, 0.02 + 0.4 * Math.pow(t, 1.7) + 0.04 * rim, 1]
+    return [1, 0.3 + 0.56 * t + 0.14 * rim, 0.03 + 0.55 * Math.pow(t, 1.5) + 0.04 * rim, 1]
   })
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7), map: off, roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6, transparent: true }))
   const wall = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xf4f7f7).multiply(new THREE.Color().setRGB(L.rimTone * 0.955, L.rimTone * 0.995, L.rimTone * 0.975, THREE.SRGBColorSpace)), roughness: 0.06, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, specularIntensity: 1, envMapIntensity: 1.6 }))
