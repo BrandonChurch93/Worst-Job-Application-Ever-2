@@ -1,35 +1,35 @@
 {
   "folder": "lamp-fix",
-  "pushed": "2026-11-26T08:06:48.822Z",
-  "commit": "7e3ea0805f3f00379d25ec294b9afa403e4627eb",
+  "pushed": "2026-11-26T08:37:11.667Z",
+  "commit": "1c0b34fa1cb00d6c4478a2392e5e688c5b16d6ca",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "youre-fired, approved left, build right: the beacon's red now lies on the roof round it",
-      "time": "2026-11-26T07:53:26.046Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-p3-youre-fired.jpg"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still key-reply-all-hd-review: review tier, hd, view beauty",
-      "time": "2026-11-26T08:01:28.639Z",
-      "by": "lamp-fix",
-      "from": "out/work/stills/key-reply-all-hd-review.png"
-    },
-    {
-      "file": "look-3.jpg",
-      "caption": "youre-fired, approved left, build right: lit fronts stand in the lacquer under their walls, red on the roof",
-      "time": "2026-11-26T08:06:47.367Z",
-      "by": "lamp-fix",
-      "from": "out/work/lights/look-m3-youre-fired.jpg"
-    },
-    {
-      "file": "look-4.jpg",
       "caption": "table-wide, approved left, build right: riser faces between the tiers take light from the head lamps",
       "time": "2026-11-26T08:06:47.602Z",
       "by": "lamp-fix",
       "from": "out/work/lights/look-m3-table-wide.jpg"
+    },
+    {
+      "file": "look-2.jpg",
+      "caption": "tier-office, approved left, build right: small contact marks under cups and posts, darker slate, head lamps from the upper right",
+      "time": "2026-11-26T08:37:10.117Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-u1-tier-office.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "tier-street, approved left, build right: navy floor with roads forward, roofs out of the head lamps, beacon light on its roof",
+      "time": "2026-11-26T08:37:10.362Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-u1-tier-street.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "rail-cam, approved left, build right: worn patches in the lacquer, the floor keeps its print along the floor",
+      "time": "2026-11-26T08:37:10.644Z",
+      "by": "lamp-fix",
+      "from": "out/work/lights/look-w3-rail-cam.jpg"
     }
   ]
 }
