@@ -102,3 +102,35 @@ The camera of `table-wide` changed on main between the two columns.
 Orange, medians of the orange pixels over the left bat's top face (R, G, B), draft hd: tier-street approved 206,126,47, ours 204,125,52 (214,91,52 with `0xc74c00`); tier-office approved 204,131,56, ours 209,126,53 (220,92,53).
 
 Draft still of `table-wide` at 05948a4: 40.0 s, 583 draw calls (638 at 02:24). Assets: `assets-src/table/frame` 2080 KB, `public/assets/table/frame` 64 KB, `assets-full/table/frame` 140 KB.
+
+## The ramp wire as polished steel (03:17 UTC)
+
+- `steel()` has a new term `sky`, for polished metal only (a finish under 0.14 rough, read before the renderer's own smoothing of thin parts): the wire shows the lit air over the table on its top and the lit playfield with its lamps' colours on its flanks. Only `play/mats.ts` sets it (0.7), so the ramp wires, the worn wire and the bats' pins take it. The frame and the hardware are unchanged.
+- Reason, MEASURED in `rail-cam`: a wire seen along its length mirrors what lies ahead and below, which was the dark floor term, so it read as a dark grey cable.
+
+## Counts at 463d2105 (`--live low`)
+
+| key | part | calls / triangles |
+|---|---|---|
+| table-wide | table-hardware | 21 / 30368 |
+| table-wide | table-frame | 16 / 11732 |
+| table-wide | targets | 15 / 23180 |
+| table-wide | flippers | 12 / 33360 |
+| table-wide | bumpers | 8 / 48192 |
+| table-wide | loader | 8 / 9408 |
+| table-wide | lift | 8 / 8108 |
+| table-wide | ramps | 5 / 20536 |
+| table-wide | marquee | 4 / 2168 |
+| table-wide | sum of my parts | 97 / 187052 (before 119 / 215796) |
+| table-wide | scene | 194 / 448986 |
+| tier-street | table-hardware | 19 / 27952 |
+| tier-street | table-frame | 13 / 9666 |
+| tier-street | targets | 8 / 12060 |
+| tier-street | flippers | 6 / 16680 |
+| tier-street | ramps | 5 / 20536 |
+| tier-street | lift | 3 / 2342 |
+| tier-street | bumpers | 2 / 17556 |
+| tier-street | loader | 2 / 4352 |
+| tier-street | scene | 106 / 265364 |
+
+Draft stills hd at ba5aa10: table-wide 40.5 s, 583 calls; last-save 41.8 s, 523; tier-street 34.1 s, 476; rail-cam 32.6 s, 422.

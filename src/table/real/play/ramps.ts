@@ -232,7 +232,7 @@ interface Built { flap: THREE.Mesh | null; down: number }
 export const flapLift = (open: number): number => (1 - Math.max(0, Math.min(1, open))) * FLAP.lift
 
 export const ramps = whole('ramps', {
-  version: 'play-ramps-18',
+  version: 'play-ramps-23',
   build(z) {
     const g = new THREE.Group()
     g.name = `play.ramps.${z.id}`
