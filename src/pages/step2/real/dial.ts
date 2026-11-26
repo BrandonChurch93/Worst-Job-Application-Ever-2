@@ -4,7 +4,7 @@ import type { Shape } from '../../../stage/types'
 import { look } from '../../../post/look'
 import { materials } from '../../../shell/materials'
 import { arc, circle, merge, profile, roundedRect, sweep, type ProfilePoint, type Ring } from '../../../shell/solids'
-import { DIAL, DIAL_BODY, dialPlate } from '../layout'
+import { DIAL, DIAL_BODY, dialPlate, HUB_ORANGE_LIFT } from '../layout'
 
 const B = DIAL_BODY
 const H = B.tall
@@ -307,7 +307,7 @@ function lacquered(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMateri
   m.specularIntensity = 1
   m.specularColor.setScalar(1)
   m.envMapIntensity = B.hubEnv
-  m.color.multiplyScalar(B.hubLift)
+  m.color.multiplyScalar(HUB_ORANGE_LIFT)
   m.name = 'dial-hub'
   return m
 }

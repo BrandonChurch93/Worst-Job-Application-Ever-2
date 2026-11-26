@@ -46,12 +46,15 @@ export const DIAL = {
 }
 
 // The dial's body, in page pixels: how tall it stands on the tray's floor, how much of it shows before it has risen, and its turned steps.
+// A stand-in for a fault of the shared orange, which renders too dark on the hub. It goes, and the hub takes the shared colour unchanged, as soon as the shared orange is right.
+export const HUB_ORANGE_LIFT = 1.6
+
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.6, bezel: 10, bezelDrop: 0.8, bezelChamfer: 2, bezelSlope: 0.9, wheel: 88.4, thick: 5.2, chamfer: 1, holeRim: 0.8, holeChamfer: 2.6,
-  hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.14, hubRough: 0.4, hubIor: 1.5, hubEnv: 0.3, hubLift: 1.6, hubFoot: 3, hubStep: 3.2, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.17, faceStretch: 1, faceLight: 1.45,
-  housingDark: 0.86, housingRough: 0.22, seat: 9, seatGap: 1.8, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
+  hub: 30, hubTall: 17, hubFlat: 0.02, hubCoat: 0.14, hubRough: 0.4, hubIor: 1.5, hubEnv: 0.3, hubFoot: 3, hubStep: 3.2, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.17, faceStretch: 1, faceLight: 1.45,
+  housingDark: 0.8, housingRough: 0.3, seat: 9, seatGap: 1.8, seatTall: 10, seatSlope: 1, stopIn: 71, stopOut: 109, stopWide: 12, stopClear: 3, stopTall: 8, stopFoot: 12,
   glint: 0.5, glintLong: 13, glintWide: 10, glintOut: 9, glintUp: 17.3,
-  shade: 0.6, shadeReach: 0.78, cast: 0.78, castIn: 8, castOut: 40, castAway: 26, castOver: 0.2
+  shade: 0.6, shadeReach: 0.78, cast: 0.72, castIn: 8, castOut: 36, castAway: 34, castOver: 0.2
 }
 
 // How far the top of the dial's wheel stands above the tray's floor when the machine has risen by `lift` (0 to 1). Before it rises it lies in the tray's floor, its wheel under the floor of a field, its hub and its stop drawn down into it.
