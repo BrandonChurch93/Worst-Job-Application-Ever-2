@@ -14,14 +14,14 @@ const q = (v: number): number => Math.round(v * 4) / 4
 const seed = config.seed + 4409
 
 export const WEAPON_GLOW = {
-  dart: [3.4, 3.3, 3.1] as [number, number, number],
+  dart: [1.2, 1.17, 1.1] as [number, number, number],
   dartRim: [1.5, 1.05, 0.55] as [number, number, number],
-  trail: [1.7, 1.45, 1.1] as [number, number, number],
+  trail: [1.05, 0.9, 0.68] as [number, number, number],
   streak: [0.4, 0.34, 0.26] as [number, number, number],
   halo: [0.34, 0.24, 0.13] as [number, number, number],
-  glint: [2.6, 2.2, 1.6] as [number, number, number],
-  pool: [0.01, 0.07, 0.18] as [number, number, number],
-  shade: [0.2, 0.2, 0.21] as [number, number, number],
+  glint: [1.25, 1.02, 0.7] as [number, number, number],
+  pool: [0.02, 0.11, 0.3] as [number, number, number],
+  shade: [0.3, 0.3, 0.31] as [number, number, number],
   spark: [6, 5.2, 4] as [number, number, number],
   fleck: [5, 3.9, 2.4] as [number, number, number],
   muzzle: [9, 2.6, 0.7] as [number, number, number]
@@ -89,8 +89,8 @@ function arrow(grow: number, depth: number): THREE.BufferGeometry {
 }
 
 // Where a dart's light and its shadow fall on the paper beside it, in px of the page.
-const POOL = { x: 6, y: 7, wide: 104 }
-const SHADE = { x: 11, y: 12, wide: 30 }
+const POOL = { x: 9, y: 10, wide: 96 }
+const SHADE = { x: 16, y: 18, wide: 34 }
 const TAIL = { streak: 520, trail: 140 }
 const FLECKS = 14
 const NEEDLE: [number, number][] = [[0, 0.5], [0, -0.5], [-1, 0], [0.35, 0]]
@@ -133,7 +133,7 @@ function head(): THREE.BufferGeometry {
 
 // Both tails of a dart, one mesh: a short bright one and a long thin one, each fading to nothing behind the head.
 function tails(source: THREE.BufferGeometry): THREE.BufferGeometry {
-  const parts: [number, number, number, [number, number, number]][] = [[TAIL.streak, 0.8, -12, WEAPON_GLOW.streak], [TAIL.trail, 1.3, -10, WEAPON_GLOW.trail]]
+  const parts: [number, number, number, [number, number, number]][] = [[TAIL.streak, 0.8, -12, WEAPON_GLOW.streak], [TAIL.trail, 1, -10, WEAPON_GLOW.trail]]
   const p = source.getAttribute('position')
   const c = source.getAttribute('color')
   const at = source.index!
