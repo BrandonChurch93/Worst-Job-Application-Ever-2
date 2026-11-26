@@ -184,7 +184,7 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
     const p = rig.plate
     const flat = p.flat ?? 0
     const z0 = mix(BODY_Z.frame, 0, flat) + p.z
-    const lit = p.k * (1 - flat)
+    const lit = p.k * (1 - flat) * Math.min(...rig.sides.map((q) => q.k * (1 - (q.flat ?? 0))))
     if (lit > 0.01) out.push({ id: `${id}-shade`, part: body, kind: 'box', role: 'bossShade', x: p.x + SHADE.off - SHADE.w / 2, y: p.y + SHADE.off - SHADE.h / 2, w: SHADE.w, h: SHADE.h, z0: 1, z1: 1.3, tone: 'dark', rot: p.rot, v: [lit] })
     out.push({ id: `${id}-plate`, part: body, kind: 'box', role: 'bossFrame', x: p.x - FRAME.w / 2, y: p.y - FRAME.h / 2, w: FRAME.w, h: FRAME.h, z0, z1: z0 + FRAME.tall, tone: 'metal', rot: p.rot, r: 22, v: [p.k, flat, rig.split ?? 0] })
   }

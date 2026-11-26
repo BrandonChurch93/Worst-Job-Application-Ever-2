@@ -19,9 +19,11 @@ export const CENTRE = (LEFT + RIGHT) / 2
 
 export const COUNTER_TOP = heights.card + 6
 export const READOUT_TOP = heights.card + 4
-export const STAMP = { blockTop: heights.machineMinTop + 36, gripTop: heights.machineMinTop + 100, high: 150 }
+export const STAMP = { blockTop: heights.machineMinTop + 58, gripTop: heights.machineMinTop + 134, high: 120 }
 const SHOWN = ['decided', 'link', 'shared']
-export const MARK_ROT = -0.2
+// The stamp at rest lies a little under the line the columns end on, so the panel above it keeps its room.
+export const REST_LOW = 24
+export const MARK_ROT = -0.27
 // The sheet does not lie square on the page: it is turned a little, clockwise as seen, about its middle.
 export const SHEET_ROT = 0.012
 
@@ -30,7 +32,7 @@ const T = {
   waitValue: { font: 'inter-display-600', px: 112, align: 'centre' },
   letterTitle: { font: 'inter-display-600', px: 40 },
   letterBody: { font: 'inter-400', px: 24, wrap: COLUMN - 128, lead: 38 },
-  mark: { font: 'inter-display-600', px: 68, align: 'centre' },
+  mark: { font: 'inter-display-600', px: 62, align: 'centre' },
   panelTitle: { font: 'inter-600', px: 28 },
   readout: { font: 'inter-display-600', px: 56 },
   link: { font: 'inter-500', px: 20, align: 'centre' }
@@ -107,12 +109,12 @@ let made: Mark | null = null
 export function markOf(): Mark {
   if (made) return made
   const said = block(T.mark.font, words('copy:step5.letter.stamp'), T.mark.px)
-  const w = Math.round(said.width + 64)
-  const h = Math.round(said.cap + 60)
-  const blockW = w + 56
-  const blockH = h + 30
+  const w = Math.round(said.width + 48)
+  const h = Math.round(said.cap + 52)
+  const blockW = w + 12
+  const blockH = h + 100
   const lift = Math.abs(Math.sin(MARK_ROT)) * (blockW / 2)
-  made = { cx: LEFT + COLUMN - 28 - blockW / 2, cy: BOTTOM - 36 - blockH / 2 - lift, w, h, bar: 9, blockW, blockH }
+  made = { cx: LEFT + COLUMN - 28 - blockW / 2, cy: BOTTOM - 36 - blockH / 2 - lift, w, h, bar: 10, blockW, blockH }
   return made
 }
 
@@ -124,7 +126,7 @@ export function turned(m: { cx: number; cy: number }, lx: number, ly: number, ro
 
 export const spotOf = (): { x: number; y: number } => {
   const m = markOf()
-  return turned(m, m.w / 2 + 24, -36)
+  return turned(m, m.w / 2 - 150, m.h / 2 - 16)
 }
 
 function metrics(): LayoutNode {
@@ -140,12 +142,12 @@ function metrics(): LayoutNode {
   const valueY = labelY + cap(TYPE.label) + 22
   const tileH = Math.round(valueY + cap(T.readout) + inner + 2 - tilesY)
   const applicantY = tilesY + tileH + 36
-  const height = CONTENT_H - GUTTER - markOf().blockH
+  const height = CONTENT_H - GUTTER - markOf().blockH + REST_LOW
   const tile = (i: number, id: string, label: string, values: LayoutNode[]): LayoutNode => {
     const tx = x + i * (tileW + gap)
     for (const v of values) v.box[0] = tx + inner
     return node(`metrics-${id}`, 'readout', [tx, tilesY, tileW, tileH], {
-      part: 'metrics', height: READOUT_TOP, floor: on, tone: 'light', r: 14,
+      part: 'metrics', height: READOUT_TOP, floor: on, tone: 'glass', r: 14,
       children: [text(`metrics-${id}-label`, label, TYPE.label, tx + inner, labelY, { part: 'type', on: READOUT_TOP }), ...values]
     })
   }
@@ -173,7 +175,7 @@ function stampAtRest(): LayoutNode {
   const m = markOf()
   const BLOCK = { w: m.blockW, h: m.blockH }
   const x = RIGHT_X + Math.round((COLUMN - BLOCK.w) * 0.62)
-  const y = BOTTOM - BLOCK.h
+  const y = BOTTOM - BLOCK.h + REST_LOW
   const gripW = Math.round(BLOCK.w * 0.5)
   const gripH = Math.round(BLOCK.h * 0.6)
   return node('stamp', 'stamp', [x, y, BLOCK.w, BLOCK.h], {
