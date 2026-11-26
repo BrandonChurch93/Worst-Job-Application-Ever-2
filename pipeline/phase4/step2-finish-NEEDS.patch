@@ -1,0 +1,13 @@
+diff --git a/src/cursor/act/feel.ts b/src/cursor/act/feel.ts
+index fbcbafa8..395a1ac3 100644
+--- a/src/cursor/act/feel.ts
++++ b/src/cursor/act/feel.ts
+@@ -12,7 +12,7 @@ export const FEEL: Record<Acting, Feel> = {
+   confident: feel({ stretch: 1.12, lean: 0.22, puff: 0.3, bounce: 0.1 }),
+   nervous: feel({ stretch: 0.92, lean: -0.12, tremble: 0.5, sweat: 1 }),
+   shocked: feel({ stretch: 1.2, lean: -0.08, tremble: 0.15 }),
+-  angry: feel({ stretch: 1.03, lean: 0.17, puff: 0.35, tremble: 0.3, heat: 1, steam: 1 }),
++  angry: feel({ stretch: 1.03, lean: 0.17, puff: 0.35, tremble: 0.3, heat: 0.6, steam: 1 }),
+   scared: feel({ stretch: 0.86, lean: -0.44, bend: -0.3, pale: 1, tremble: 0.7 }),
+   proud: feel({ stretch: 1.18, lean: 0.3, puff: 0.9, bounce: 0.04 }),
+   exhausted: feel({ stretch: 0.8, lean: -0.3, bend: 0.4, melt: 0.6 })

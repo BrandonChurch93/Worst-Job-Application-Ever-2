@@ -17,6 +17,14 @@ const strides = (from: number, to: number, a: P, b: P, n: number, rest: number):
     return [line(t0, t1 - rest, at(i), at(i + 1)), line(t1 - rest, t1, at(i + 1), at(i + 1))]
   }).flat()
 
+// A strut: each stride is a hop, up off the line of the walk and down on it again.
+const strut = (from: number, to: number, a: P, b: P, n: number, hop: number): Seg[] =>
+  Array.from({ length: n }, (_, i) => {
+    const t0 = from + ((to - from) * i) / n
+    const t1 = from + ((to - from) * (i + 1)) / n
+    return { from: t0, to: t1, at: (u: number) => ({ x: a.x + ((b.x - a.x) * (i + ease(u))) / n, y: a.y + ((b.y - a.y) * (i + ease(u))) / n - hop * Math.sin(Math.PI * u) }) }
+  })
+
 const field = (i: number): P => ({ x: FX + FW * 0.5, y: rowY(i) + FH / 2 })
 const dialC: P = { x: DIAL.cx, y: DIAL.cy }
 export const FILM_DIGITS = [10, 1, 5]
@@ -33,7 +41,8 @@ const peer: P = { x: watch.x - 14, y: watch.y + 4 }
 const hub: P = { x: CRANK.hx, y: CRANK.hy }
 const grip: P = { x: CRANK.hx + CRANK.arm * Math.cos(CRANK.rest), y: CRANK.hy + CRANK.arm * Math.sin(CRANK.rest) }
 const TURNS = 3.03
-const away: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
+export const AWAY: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
+const away = AWAY
 const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
 const thrown: P = { x: caught.x + 127, y: caught.y + 27 }
 const shrunk: P = { x: thrown.x - 12, y: thrown.y + 26 }
@@ -44,16 +53,17 @@ const halfway: P = { x: shrunk.x + (beside.x - shrunk.x) * 0.42, y: shrunk.y + (
 const coiled: P = { x: beside.x - 18, y: beside.y - 9 }
 
 const T = {
-  phone: 1.88, zero: 2.31, one: 2.83, third: 4.25,
+  phone: 1.88, zero: 2.31, one: 2.83, third: 3.8,
   birth: 8.2, lever: 9.15,
-  volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.32, press: 20.3
+  volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.32, press: 20.42
 }
 
 // Each idea of the acting has its own times: the wind-up, the move, the pose and how long it is held.
 // It looks easy: it stands between the rows, strolls to the first field and taps it as if it owned the page.
 // The page arrives with the cursor in the air at the hand-off place and sets it down there at 0.5 s. The pointer waits under it and then walks to where it stands at rest, so the cursor does not dash across the page after a pointer that stood somewhere else.
 const ARRIVE = { look: 0.52, there: 0.8 }
-const EASY = { eye: 1.02, load: 1.13, stroll: 1.24, there: 1.62, tap: T.phone - 0.14 }
+const HAUL = 0.42
+const EASY = { eye: 1.02, load: 1.03, stroll: 1.12, there: 1.66, tap: T.phone - 0.14, steps: 3, hop: 14, tall: 1.26, low: 0.9, land: 0.05, chest: 0.14 }
 // A row opens under it. The first time it only starts, the second time it rears, the third time it has lost its temper and stamps the field open.
 const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: T.birth + 0.08, go: T.birth + 0.5 } }
 // The lever: it has learnt to be careful, so it draws the knob up a little before it pulls.
@@ -64,9 +74,10 @@ const STRUCK = { tight: T.lever + 0.9, brace: 10.55, read: 10.9, near: 11.9, duc
 const TEMPER = { safe: 12.74, dust: 12.78, fume: 13.3, red: 13.5, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
 // Flat, it drags itself to the button and stops short of it. Half way it heaves and falls flat again. There it peels up and fills out, standing still, draws back, and throws itself at the button.
-const RISE = { heave: 18.45, heaved: 2.35, there: 19.6, flop: 19.65, life: 0.6, back: 20.14, coiled: 20.2, on: 20.28 }
+const RISE = { heave: 18.45, heaved: 2.35, there: 19.6, flop: 19.77, life: 0.6, back: 20.37, coiled: 20.385, on: 20.41 }
 export const PEEL_AT = RISE.flop + RISE.life * 0.5
-const THROWN = { see: T.runaway + 0.05, cower: T.runaway + 0.43, back: T.lean - 0.08 }
+export const TOSS = { at: 0.05, air: 0.28, skid: 0.1 }
+const THROWN = { see: T.runaway + TOSS.at, off: T.runaway + TOSS.at + 0.12, look: T.runaway + TOSS.at + TOSS.air + TOSS.skid + 0.02, tall: 0.37, snap: 0.59, back: T.lean - 0.08, turn: -0.9, off2: 0.45, again: -1.15, square: -2.3 }
 const idle: P = { x: 1575, y: 392 }
 const refuge: P = { x: 1796, y: 704 }
 const hand: P = { x: HANDOFF.x, y: HANDOFF.y }
@@ -80,7 +91,7 @@ const path: Seg[] = [
   line(0, ARRIVE.look, hand, hand),
   line(ARRIVE.look, ARRIVE.there, hand, idle),
   line(ARRIVE.there, EASY.stroll, idle, idle),
-  ...strides(EASY.stroll, EASY.there, idle, field(0), 2, 0.05),
+  ...strut(EASY.stroll, EASY.there, idle, field(0), EASY.steps, EASY.hop),
   line(EASY.there, DREAD.phone.go, field(0), field(0)),
   line(DREAD.phone.go, T.zero - 0.04, field(0), holeAt(10)),
   line(T.zero - 0.04, T.zero, holeAt(10), holeAt(10)),
@@ -94,8 +105,8 @@ const path: Seg[] = [
   line(3.2, 3.5, shoulder, shoulder),
   line(3.5, T.third - 0.2, shoulder, holeAt(5)),
   line(T.third - 0.2, T.third, holeAt(5), holeAt(5)),
-  ...wind(T.third, 5, 0.55),
-  line(T.third + 0.57, T.third + 0.9, woundAt(5), woundAt(5)),
+  ...wind(T.third, 5, HAUL - 0.01),
+  line(T.third + HAUL + 0.01, T.third + 0.9, woundAt(5), woundAt(5)),
   line(T.third + 0.9, T.third + 1.2, woundAt(5), LANDING),
   line(T.third + 1.2, 7.55, LANDING, LANDING),
   line(7.55, T.birth - 0.06, LANDING, field(1)),
@@ -116,8 +127,9 @@ const path: Seg[] = [
   line(TEMPER.go, T.crank - 0.05, field(2), grip),
   line(T.crank - 0.05, T.crank, grip, grip),
   arc(T.crank, T.runaway + 0.01, hub, CRANK.arm, CRANK.rest, CRANK.rest + TURNS * 2 * Math.PI, (u) => u * (1.25 - 0.25 * u)),
-  line(T.runaway + 0.01, T.runaway + 0.36, grip, away),
-  line(T.runaway + 0.36, T.lean, away, away),
+  line(T.runaway + 0.01, THROWN.see, grip, grip),
+  line(THROWN.see, THROWN.off, grip, away),
+  line(THROWN.off, T.lean, away, away),
   line(T.lean, T.lean + 0.3, away, caught),
   line(T.lean + 0.3, 16.85, caught, caught),
   line(16.85, 17.0, caught, thrown),
@@ -135,7 +147,7 @@ const path: Seg[] = [
 
 const presses: [number, number][] = [
   [T.phone, T.phone + 0.1],
-  [T.zero, T.zero + 0.25], [T.one, T.one + 0.11], [T.third, T.third + 0.56],
+  [T.zero, T.zero + 0.25], [T.one, T.one + 0.11], [T.third, T.third + HAUL],
   [T.birth, T.birth + 0.12],
   [PULL.back, T.lever + 0.6],
   [T.volume, T.volume + 0.1],
@@ -161,7 +173,7 @@ export type Mark = 'fling' | 'strike'
 export type Marks = Partial<Record<Mark, number>>
 
 const acts: [number | Mark, Acting][] = [
-  [0, 'plain'], [EASY.eye, 'confident'], [T.third + 0.56, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [STRUCK.tight, 'nervous'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
+  [0, 'plain'], [EASY.eye, 'confident'], [T.third + HAUL, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [STRUCK.tight, 'nervous'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
   [THROWN.see, 'shocked'], [THROWN.back, 'angry'], [16.95, 'exhausted'], [RISE.flop + RISE.life * 0.78, 'plain']
 ]
 
@@ -176,18 +188,23 @@ export function actingAt(time: number, marks: Marks = {}): Acting {
 
 // One reaction for one cause, and no reaction twice: the page itself adds a recoil where the dial throws it down and a flinch under the coins.
 export const reactions: [number, Reaction][] = [
-  [EASY.tap, 'tap'], [DREAD.phone.start, 'startle'], [3.3, 'jump'], [T.third - 0.12, 'anticipate'], [6.6, 'doubleTake'], [DREAD.birth.rear, 'rear'], [STRUCK.duck, 'duck'], [STRUCK.flee, 'dart'], [TEMPER.dust, 'dustOff'], [TEMPER.fume, 'fume'],
-  [TEMPER.stamp, 'stamp'], [THROWN.cower, 'cower'], [T.press + 0.2, 'snap']
+  [EASY.tap, 'tap'], [DREAD.phone.start, 'startle'], [3.3, 'jump'], [T.third - 0.12, 'anticipate'], [DREAD.birth.rear, 'rear'], [STRUCK.duck, 'duck'], [STRUCK.flee, 'dart'], [TEMPER.dust, 'dustOff'], [TEMPER.fume, 'fume'],
+  [TEMPER.stamp, 'stamp'], [THROWN.look, 'doubleTake'], [T.press + 0.2, 'snap']
 ]
 
 // What the body is told outright, where a state and a reaction do not say enough: a turn of the whole arrow that is kept, a length that is held, and the flat body laid down again so that it peels where it is seen.
 export type Pose = [number, 'aim', number | null] | [number, 'press', number, number] | [number, 'flat', number] | [number, 'hold', number] | [number, 'wobble', number, number, number]
 export const poses: Pose[] = [
-  [EASY.eye, 'aim', -0.5], [EASY.load, 'press', 0.7, EASY.stroll - EASY.load], [EASY.stroll, 'aim', null], [EASY.stroll, 'press', 1.32, 0.1],
+  [EASY.eye, 'aim', EASY.chest], [EASY.load, 'press', EASY.tall, EASY.stroll - EASY.load],
+  ...Array.from({ length: EASY.steps }, (_, i): Pose[] => {
+    const long = (EASY.there - EASY.stroll) / EASY.steps
+    return [[EASY.stroll + i * long, 'press', EASY.tall, long - EASY.land], [EASY.stroll + (i + 1) * long - EASY.land, 'press', EASY.low, EASY.land]]
+  }).flat(),
+  [EASY.there, 'press', EASY.tall, 0.05], [EASY.there + 0.04, 'aim', null],
   [DREAD.phone.go - 0.05, 'press', 0.7, 0.06], [DREAD.phone.go + 0.01, 'press', 1.32, 0.1],
   [T.zero, 'aim', 0.5], [T.zero, 'press', 1.26, 0.22], [T.zero + 0.24, 'press', 0.66, 0.1], [T.zero + 0.26, 'aim', null],
-  [T.third, 'aim', 0.85], [T.third, 'press', 1.36, 0.5], [T.third + 0.5, 'press', 0.62, 0.06], [T.third + 0.55, 'aim', null],
-  [6.05, 'aim', 0.9], [6.05, 'press', 0.7, 0.5], [7.5, 'aim', null],
+  [T.third, 'aim', 0.85], [T.third, 'press', 1.36, HAUL - 0.06], [T.third + HAUL - 0.06, 'press', 0.62, 0.06], [T.third + HAUL - 0.01, 'aim', null],
+  [6.5, 'aim', 0.9], [6.5, 'press', 0.7, 0.5], [7.5, 'aim', null],
   [PULL.back, 'aim', 0.5], [PULL.back, 'press', 0.78, PULL.up - PULL.back], [T.lever, 'aim', null],
   [T.lever + 0.02, 'press', 1.38, 0.2],
   [T.lever + 0.3, 'press', 0.72, 0.3],
@@ -196,6 +213,8 @@ export const poses: Pose[] = [
   [STRUCK.read, 'aim', 0.34], [STRUCK.read, 'press', 1.3, 0.5],
   [STRUCK.near, 'aim', null], [STRUCK.duck + 0.3, 'hold', 0.2],
   [TEMPER.safe, 'wobble', 0.5, 9, 0.5], [TEMPER.safe, 'aim', -1], [TEMPER.safe + 0.04, 'press', 0.66, TEMPER.fume - TEMPER.safe - 0.04], [TEMPER.fume, 'aim', null], [TEMPER.fume, 'press', 1.3, 0.12],
+  [THROWN.look + 0.02, 'aim', THROWN.turn], [THROWN.look + 0.13, 'aim', THROWN.off2], [THROWN.look + 0.25, 'aim', THROWN.again], [THROWN.look + THROWN.tall, 'press', 1.42, THROWN.snap - THROWN.tall], [THROWN.look + THROWN.snap, 'press', 0.7, 0.06],
+  [T.lean, 'aim', THROWN.square], [T.lean + 0.3, 'press', 1.22, 0.16],
   [WARNED.see, 'aim', -1.1], [WARNED.see + 0.02, 'wobble', 0.6, 11, 0.4], [WARNED.held - 0.04, 'aim', null], [WARNED.half, 'aim', -0.7], [WARNED.stall, 'aim', null],
   [RISE.heave, 'flat', RISE.heaved], [RISE.flop, 'flat', RISE.life],
   [RISE.back, 'press', 0.78, RISE.coiled - RISE.back],
