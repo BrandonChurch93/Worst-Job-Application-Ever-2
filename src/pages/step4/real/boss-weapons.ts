@@ -31,9 +31,7 @@ export const WEAPON_EMIT = {
 
 interface Kit {
   dart: THREE.BufferGeometry
-  rim: THREE.BufferGeometry
   dartMaterial: THREE.MeshBasicMaterial
-  rimMaterial: THREE.MeshBasicMaterial
   trailMaterial: THREE.MeshBasicMaterial
   streakMaterial: THREE.MeshBasicMaterial
   haloMaterial: THREE.MeshBasicMaterial
@@ -42,7 +40,6 @@ interface Kit {
   fleckMaterial: THREE.MeshBasicMaterial
   muzzleMaterial: THREE.MeshBasicMaterial
   smokeMaterial: THREE.MeshBasicMaterial
-  fleck: THREE.BufferGeometry
 }
 
 // The dart is the head of the cursor's own arrow, small: a point, two barbs and a notch, pointing along its flight.
@@ -60,13 +57,43 @@ function arrow(grow: number, depth: number): THREE.BufferGeometry {
   return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.7, bevelSize: 0.7, bevelSegments: 2, curveSegments: 2 })
 }
 
-// A fleck of hot metal: a thin needle, brightest at its head.
-function needle(): THREE.BufferGeometry {
+const FLECKS = 14
+const NEEDLE: [number, number][] = [[0, 0.5], [0, -0.5], [-1, 0], [0.35, 0]]
+
+// The flecks of hot metal of one spark, one mesh: each a thin needle, brightest at its head.
+function needles(): THREE.BufferGeometry {
   const g = new THREE.BufferGeometry()
-  g.setAttribute('position', new THREE.Float32BufferAttribute([0, 0.5, 0, 0, -0.5, 0, -1, 0, 0, 0.35, 0, 0], 3))
-  g.setAttribute('color', new THREE.Float32BufferAttribute([1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1], 3))
-  g.setIndex([0, 2, 1, 0, 1, 3])
+  const colour: number[] = []
+  const index: number[] = []
+  for (let i = 0; i < FLECKS; i++) {
+    colour.push(1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1)
+    index.push(i * 4, i * 4 + 2, i * 4 + 1, i * 4, i * 4 + 1, i * 4 + 3)
+  }
+  g.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(FLECKS * 12), 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(colour, 3))
+  g.setIndex(index)
   return g
+}
+
+// The dart and the warm rim around it, one mesh: the rim lies under the white head.
+function head(): THREE.BufferGeometry {
+  const parts: [THREE.BufferGeometry, [number, number, number], number][] = [[arrow(1.1, 1), WEAPON_GLOW.dartRim, 0.4], [arrow(0, 3), WEAPON_GLOW.dart, 1]]
+  const position: number[] = []
+  const colour: number[] = []
+  for (const [g, c, z] of parts) {
+    const flat = g.index ? g.toNonIndexed() : g
+    const p = flat.getAttribute('position')
+    for (let i = 0; i < p.count; i++) {
+      position.push(p.getX(i), p.getY(i), p.getZ(i) + z)
+      colour.push(...c)
+    }
+    if (flat !== g) flat.dispose()
+    g.dispose()
+  }
+  const out = new THREE.BufferGeometry()
+  out.setAttribute('position', new THREE.Float32BufferAttribute(position, 3))
+  out.setAttribute('color', new THREE.Float32BufferAttribute(colour, 3))
+  return out
 }
 
 let made: Kit | null = null
@@ -76,19 +103,16 @@ function kit(): Kit {
   const f = fx()
   const add = { blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, toneMapped: false, fog: false }
   made = {
-    dart: arrow(0, 3),
-    rim: arrow(1.1, 1),
-    dartMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.dart), toneMapped: false }),
-    rimMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.dartRim), toneMapped: false }),
+    dart: head(),
+    dartMaterial: new THREE.MeshBasicMaterial({ vertexColors: true, toneMapped: false }),
     trailMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.trail), vertexColors: true, ...add }),
     streakMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.streak), vertexColors: true, ...add }),
     haloMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.halo), map: f.halo, ...add }),
     spillMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.spill), map: f.halo, ...add }),
     sparkMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.spark), map: f.star, ...add }),
-    fleckMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.fleck), vertexColors: true, side: THREE.DoubleSide, ...add }),
+    fleckMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.fleck), vertexColors: true, ...add }),
     muzzleMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.muzzle), map: f.star, ...add }),
-    smokeMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.5, 0.48, 0.46), alphaMap: f.puff, transparent: true, depthWrite: false, toneMapped: false, opacity: 0.5 }),
-    fleck: needle()
+    smokeMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.5, 0.48, 0.46), alphaMap: f.puff, transparent: true, depthWrite: false, toneMapped: false, opacity: 0.5 })
   }
   return made
 }
@@ -118,16 +142,11 @@ function makeDart(): THREE.Object3D {
   const trail = overlay(new THREE.Mesh(f.tail, k.trailMaterial), 3)
   trail.name = 'trail'
   trail.position.set(-10, 0, 2)
-  const rim = plain(new THREE.Mesh(k.rim, k.rimMaterial))
-  rim.position.z = 0.4
   const body = plain(new THREE.Mesh(k.dart, k.dartMaterial))
-  body.position.z = 1
   body.castShadow = true
-  root.add(spill, halo, streak, trail, rim, body)
+  root.add(spill, halo, streak, trail, body)
   return root
 }
-
-const FLECKS = 14
 
 function makeSpark(): THREE.Object3D {
   const k = kit()
@@ -138,11 +157,11 @@ function makeSpark(): THREE.Object3D {
   const halo = overlay(new THREE.Mesh(f.quad, k.haloMaterial), 4)
   halo.name = 'halo'
   root.add(halo, star)
-  for (let i = 0; i < FLECKS; i++) {
-    const fleck = overlay(new THREE.Mesh(k.fleck, k.fleckMaterial), 6)
-    fleck.name = `fleck-${i}`
-    root.add(fleck)
-  }
+  const flecks = overlay(new THREE.Mesh(needles(), k.fleckMaterial), 6)
+  flecks.name = 'flecks'
+  flecks.frustumCulled = false
+  flecks.position.z = 3
+  root.add(flecks)
   return root
 }
 
@@ -244,18 +263,20 @@ export const bossWeapons: PartMaker | null = {
         star.position.z = 2
         const halo = o.getObjectByName('halo')!
         halo.scale.set(84 * hot + 4, 84 * hot + 4, 1)
+        const at = (o.getObjectByName('flecks') as THREE.Mesh).geometry.getAttribute('position') as THREE.BufferAttribute
         for (let i = 0; i < FLECKS; i++) {
-          const fleck = o.getObjectByName(`fleck-${i}`)!
           const a = hash01(n, i, seed + 1) * Math.PI * 2
           const speed = 46 + 130 * hash01(n, i, seed + 2)
           const life = 0.55 + 0.45 * hash01(n, i, seed + 3)
           const t = u / life
           const r = 8 + speed * (1 - Math.pow(1 - Math.min(1, t), 2))
-          fleck.visible = t < 1
-          fleck.position.set(Math.cos(a) * r, Math.sin(a) * r, 3)
-          fleck.rotation.z = a
-          fleck.scale.set((12 + 30 * hash01(n, i, seed + 4)) * (1 - t * 0.7), 1.3 * (1 - t * 0.5), 1)
+          const long = t < 1 ? (12 + 30 * hash01(n, i, seed + 4)) * (1 - t * 0.7) : 0
+          const wide = t < 1 ? 1.3 * (1 - t * 0.5) : 0
+          const c = Math.cos(a)
+          const d = Math.sin(a)
+          NEEDLE.forEach(([x, y], j) => at.setXYZ(i * 4 + j, c * (r + x * long) - d * y * wide, d * (r + x * long) + c * y * wide, 0))
         }
+        at.needsUpdate = true
         // The star and the flecks share materials, so the burst dims by shrinking, and by the light it gives off.
         ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.spark.colour, power: WEAPON_EMIT.spark.power * hot, reach: WEAPON_EMIT.spark.reach })
         break
@@ -315,5 +336,9 @@ export const bossWeapons: PartMaker | null = {
       default:
         break
     }
+  },
+  drop(o: THREE.Object3D): void {
+    const flecks = o.getObjectByName('flecks') as THREE.Mesh | undefined
+    if (flecks) flecks.geometry.dispose()
   }
 }
