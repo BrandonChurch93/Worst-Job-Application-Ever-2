@@ -1,35 +1,35 @@
 {
   "folder": "step2-fix",
-  "pushed": "2026-11-26T08:10:29.682Z",
-  "commit": "6e28197fc21e2f5c0168c29e1f389491e52c778b",
+  "pushed": "2026-11-26T08:15:47.999Z",
+  "commit": "a6776a4133f39d94fd8670f0181549a6703bd020",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still step2-step2_slot-0p89667-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T08:08:10.767Z",
+      "caption": "Key step2-crank: approved on the left, this build on the right, draft tier, with crops of crankBase, crankGrip, meterSegment, cursor, progressButton, button",
+      "time": "2026-11-26T08:11:48.287Z",
       "by": "step2-fix",
-      "from": "out/work/stills/step2-step2_slot-0p89667-hd-draft.png"
+      "from": "out/work/compare/compare-step2-crank.jpg"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still step2-step2_slot-0p91-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T08:08:22.985Z",
+      "caption": "Key step2-dial: approved on the left, this build on the right, draft tier, with crops of dialWheel, machineTray, cursor, field.start, progressButton, button",
+      "time": "2026-11-26T08:13:51.505Z",
       "by": "step2-fix",
-      "from": "out/work/stills/step2-step2_slot-0p91-hd-draft.png"
+      "from": "out/work/compare/compare-step2-dial.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "sheet machines: approved above, 6e28197f below: lighter dial housing, rounder reels, the crank at the approved angle",
-      "time": "2026-11-26T08:10:28.060Z",
+      "caption": "step2-dial: approved above, the branch below: the tray's wall in the floor's glass, the tip on the cap's lower right shoulder",
+      "time": "2026-11-26T08:15:46.733Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126081028-cmp-machines-2.png"
+      "from": "out/work/looks/files/20261126081546-cmp-dial-3.png"
     },
     {
       "file": "look-4.jpg",
-      "caption": "step2.slot at 13.30, 13.38, 13.46 s: the shutting tray covers the coins, none lies over the next field",
-      "time": "2026-11-26T08:10:28.286Z",
+      "caption": "step2-crank: approved above, the branch below: the tray's wall in the floor's glass",
+      "time": "2026-11-26T08:15:46.963Z",
       "by": "step2-fix",
-      "from": "out/work/looks/files/20261126081028-slot-close2.png"
+      "from": "out/work/looks/files/20261126081546-cmp-crank-3.png"
     }
   ]
 }
