@@ -23,3 +23,54 @@ Looked at: `npm run compare -- --key marketing-top --tier review --format hd` an
 - Major, R1-1 issue 8 (shadows): closed for cards and ticker, still true for the buttons and the medal.
 - Minor, issues 9 and 10 (nav links, header rule). Shared.
 - Closed by what main holds: issues 6, 7 and 16.
+
+## Point 2: M3 on `marketing-top`
+
+Command: `npm run -s measure -- --unit marketing --only M3 --tier review`. MEASURED before any change (9334a125): 0.7854. After the medal and the glass, MEASURED at 11:45 UTC with `npm run -s measure -- --unit marketing --only M2,M3,M4 --tier review`: M3 0.8011 (least allowed 0.8), M2 largest soft share 0.0001, M4 least contrast 4.61 (least 4.5). There is no margin in M3 from my parts alone; `/root/look_finisher` reports 0.8309 for the darker ink on its own branch (STATED).
+
+Where the gap was, by region of the picture (my own script on the same measure, the mean square Laplacian of luminance against the approved image; whole picture: approved 19614, mine 15405 at the start): the type is about two thirds of it (headline, the nav, the ticker's words, the cards' titles and promises, the medal's words), the medal's leaves and its lip most of the rest, the cards' edges a little. The type's ink is a shared look, not mine: I sent the numbers to `/root/look_finisher` and did not touch it.
+
+What was added, each a thing the approved image holds:
+
+- Medal, the leaves: each leaf is pressed with a dark groove all round it and a rib along it (`leaf()` and `pressed()` of `careers-solids.ts`, `MEDAL_LOOK.pressed`).
+- Medal, the lobes: a polished lip along the outer edge of every lobe, bright on the far side too (`MEDAL_LOOK.lip`), and the ring round the face has its ridge and its groove (`ridge`, `groove`).
+- Medal, the face: the bow of light is narrower (`axis`, `narrow`), so the dull sectors are darker than the band round them. The face under the words stays where M4 needs it (`rim: 1.02, cap: 0.26, capFrom: 0.6`): with `rim: 0.94, cap: 0.3` M4 fell to 4.44 on `copy:marketing.awards.items.1.from` and I put it back.
+- Glass, the top edge: its own table (`NEAR_TOP`): a dark line 5 px wide, a pale line, then a light shade, where the left edge keeps its wide dark band. `edgeLight` took a fourth argument for it.
+- Glass, the far edges: the wall on the far side is lit and turned up (`GLASS.wall`, `wallUp`), so the hard dark line is gone; the gap under them is lighter and fades further (`SPILL.rings`). This cost M3 about 0.007 and is kept because it is what the approved image shows.
+
+Not done to raise the number: nothing was added that the approved image does not hold. No noise, no sharpening, no grain.
+
+## Point 3: the issues of R1 still true, mine
+
+- R1-1 issues 4 and 14 (medal): leaves flat, scallops without a lip, dull sectors too bright: worked, crops `pair-medal.jpg` (approved, before, after) in the looks branch. Still true after: the bow's two edges are harder than the approved image's; my leaves are a little larger and darker in outline than the approved ones; the shadow's length is the kit's and stays.
+- R1-1 issues 2 and 12 (glass): heavy top bevel, hard dark line under the far edges: worked, crop `pair-glass.jpg`. Edge profiles of the first card against the approved image (luminance, 1 px steps, outward): top edge mine 236,182,151,144,136,139,162,177,184,174,166 against 226,170,151,150,135,149,182,183,175,171,166. Still true after: the approved image has a brighter thin rim along the left edge than mine.
+- Cards 1 and 2 a little bright against the approved: not worked.
+
+## Point 4: the acting, read from the four sheets as a stranger would (draft tier, 11:30 UTC)
+
+- `marketing.stroll`: "an arrow comes down the left margin and walks along under the first card". Reads as a walk in; fine.
+- `marketing.perks`: "the arrow stands under each card, the card turns over, at the first it leans away, then it goes on". Reads as the kit says.
+- `marketing.ticker`: "the arrow stands under the third card, then runs up across that card to the button". The least like the kit: it crossed the open card. Fixed.
+- `marketing.apply`: "the arrow stands by the button, hops on it, the button goes down, the page tips over". Reads as the kit says.
+
+The fix: from under the third card it goes round it (`ROUND` of `script.ts`, `marks.round` of `index.ts`): a step aside to the right margin, up the margin, along above the cards to the lane, then to the stand as before. `VISITS[2].leave` went from 8.9 to 8.86 and the stand by the button from 10.4 to 10.44, both inside what `tests/careers-acting.test.ts` holds (I added `round` to that test's marks, nothing else). `tests/careers-finish.test.ts` holds that the tip is never inside a card nor on the medal on that walk. MEASURED in that test: the tip's least distance from the third card is 22 px beside it (with `round` 40 px out; it is now 50) and 41 px above it. No event of the film moved: card-flip 498, 1180, 1684, button-press 3007.
+
+## Point 5: the cards' glass without its type at 2:31.70
+
+Not reproduced. MEASURED on this branch at 11:36 and 11:45 UTC: `npm run sheet -- --beat decision.reset --tier draft` shows the titles and promises on the three cards in the frame at 2:31.70 (frame 9102) and in the frames on each side; and a run of every frame from 9084 to 9116 in one session (`window.showcase.renderFilmFrame`, draft tier, my script) counts the dark pixels of the first and second cards' titles in each frame: from 9086 on never under 324 and 501, so no frame of that run lacks them. The page's draw list holds the texts at every step (STATED by the owner before me, and `states()` of `index.ts` gives `shut` or `open` for every card that is not turning). So the cause is not in my files as far as I can find; whether it was a thing of the build before, or comes only now and then when a frame is rendered after a jump, is UNKNOWN.
+
+## Decisions
+
+- The ink of the type, the weight of the type and the header's rule are left to the shared look; numbers sent to `/root/look_finisher`.
+- The far wall of the glass was made lighter though it cost M3: the approved image comes first.
+- The walk round the card takes the right margin, since the gap between two cards (34 px) is narrower than the arrow.
+- No new texture: `assets-src/careers-finish/RECIPE.md` says so.
+- One merge commit of mine, 767f46bb, was made without the trailer by mistake (a plain `git merge origin/main`) and was pushed before I saw it. It is not rewritten. Every commit after it carries the trailer.
+
+## Looks, counted by part
+
+- `careers-page` (medal): 3 draft stills, 5 review stills.
+- `perk-cards` (glass): 4 review stills.
+- `acting-marketing`: 5 sheets (the four beats, and the ticker again after the fix).
+- `ticker`: 0.
+- Not of a part: 1 compare before, 1 compare after, 1 sheet of `decision.reset`, 1 run of 33 film frames for point 5.
