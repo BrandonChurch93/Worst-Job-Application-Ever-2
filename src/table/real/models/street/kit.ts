@@ -13,7 +13,7 @@ export const TONE = {
   concrete: rgb(0x868c92),
   concreteDark: rgb(0x696d70),
   roof: rgb(0x66696b),
-  deck: rgb(0x77828d),
+  deck: rgb(0x848e98),
   deckDark: rgb(0x59626b),
   cap: rgb(0xc3c9cf),
   lime: rgb(0xd2cbb8),
