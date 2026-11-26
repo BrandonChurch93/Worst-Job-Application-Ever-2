@@ -83,6 +83,7 @@ function faceOf(s: Shape, z: number): THREE.BufferGeometry {
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
   g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
   g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(pos.filter((_, i) => i % 3 !== 2), 2))
   g.setIndex(idx)
   return g
 }
