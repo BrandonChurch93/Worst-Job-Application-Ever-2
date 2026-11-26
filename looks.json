@@ -1,35 +1,35 @@
 {
   "folder": "lamp-keeper",
-  "pushed": "2026-11-26T06:05:56.253Z",
-  "commit": "d1af448cc174db444cdfab53189d8954c865a1e8",
+  "pushed": "2026-11-26T06:20:49.483Z",
+  "commit": "ecc7077d2a0e61bdb602914e24b0cf7da1bd4fee",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "table-wide at draft, approved left, build right, whole frame 0.86 of approved",
-      "time": "2026-11-26T05:54:12.138Z",
-      "by": "lamp-keeper",
-      "from": "out/work/lights/send/q3-table-wide-pair.jpg"
-    },
-    {
-      "file": "look-2.jpg",
       "caption": "Still key-table-wide-hd-review: review tier, hd, view beauty",
       "time": "2026-11-26T05:57:43.583Z",
       "by": "lamp-keeper",
       "from": "out/work/stills/key-table-wide-hd-review.png"
     },
     {
-      "file": "look-3.jpg",
+      "file": "look-2.jpg",
       "caption": "boardroom notes from above at draft: left paper (2.4, 2.0, 0.62) with no lamp, right paper (0.98, 0.82, 0.25) under the new low lamp",
       "time": "2026-11-26T06:05:54.852Z",
       "by": "lamp-keeper",
       "from": "out/work/lights/send/q9-notes.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-3.jpg",
       "caption": "table-wide at review, approved above, build below at ac3f758e, whole frame 0.87 of approved",
       "time": "2026-11-26T06:05:55.075Z",
       "by": "lamp-keeper",
       "from": "out/work/lights/send/table-wide-review-pair.jpg"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "the ball over the green Office insert from above at draft: left the dome at 4.5 hides its shadow, right at 1.6 the shade lies on the glass",
+      "time": "2026-11-26T06:20:48.402Z",
+      "by": "lamp-keeper",
+      "from": "out/work/lights/send/q14-ball.jpg"
     }
   ]
 }
