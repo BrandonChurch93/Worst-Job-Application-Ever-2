@@ -291,7 +291,8 @@ export function finder(state, width, height) {
     'keyboardDeck.front': () => (box('keyboardDeck') ? point(box('keyboardDeck')[0] + box('keyboardDeck')[2] / 2, box('keyboardDeck')[1] + box('keyboardDeck')[3] - 40) : null),
     'hatch.other': () => box('hatch', 1),
     enter: () => run((t) => /keys\.enter$/.test(t.key)),
-    'paper.below': () => (box('paper') ? point(box('paper')[0] + box('paper')[2] / 2, box('paper')[1] + box('paper')[3] + 70) : null),
+    // Only where a machine takes the paper: on a page with no shredder the place under the paper is bare page.
+    'paper.below': () => (box('paper') && (state.shapes || []).some((x) => x.part === 'shredder') ? point(box('paper')[0] + box('paper')[2] / 2, box('paper')[1] + box('paper')[3] + 70) : null),
     surface: () => (box('rule') && box('field') ? point(box('field')[0] + box('field')[2] * 0.72, (box('rule')[1] + box('field')[1]) / 2) : null),
     'surface.low': () => (box('card') ? point(box('card')[0] + 200, Math.min(height - 150, box('card')[1] + box('card')[3] + 180)) : null),
     header: () => (box('rule') ? [box('rule')[0], box('rule')[1] - 110, 600, 120] : null),
@@ -346,6 +347,15 @@ const SURFACES = {
     ['field', 'a field', true],
     ['surface.low', 'the page surface']
   ]
+}
+
+// The crops of a moment. Where the moment is a key whose approved image has its parts written down with labels in
+// tools/assets/approved-boxes.json, those parts come first, so every object the key shows gets a crop under its own name;
+// the general list fills what is left. A key with no labelled parts gets the general list alone.
+export function momentPicks(entry) {
+  const own = Object.entries(entry || {}).filter(([, v]) => v && !Array.isArray(v) && v.label).map(([name, v]) => [name, v.label])
+  const taken = new Set(own.map(([name]) => name))
+  return [...own, ...SURFACES.moment.filter(([name]) => !taken.has(name))]
 }
 
 const TEXTS = [
@@ -465,7 +475,7 @@ export async function buildLook({ cfg, session, files, built, about, tier, log, 
     const shape = text ? TEXT : CROP
     const tileW = tileWidth(edge, shape.columns)
     const find = finder(s.state, s.width, s.height)
-    const picks = text ? TEXTS : f.from.id ? SURFACES.rest : SURFACES.moment
+    const picks = text ? TEXTS : f.from.id ? SURFACES.rest : momentPicks(boxes[f.from.key])
     const tiles = []
     const crops = []
     const most = text ? 8 : 9
