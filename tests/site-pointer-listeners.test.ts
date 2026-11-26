@@ -44,7 +44,7 @@ function fire(target: Thing, type: string, init: Record<string, unknown> = {}): 
   return e
 }
 
-interface Page { window: Thing; document: Thing; canvas: Thing; control: Thing; mouse: MouseDriver; visitor: Visitor; live: { on: boolean }; touched: { n: number } }
+interface Page { window: Thing; document: Thing; body: Thing; html: Thing; canvas: Thing; control: Thing; mouse: MouseDriver; visitor: Visitor; live: { on: boolean }; touched: { n: number }; table: { on: boolean } }
 
 function page(): Page {
   const window = new Thing(null)
@@ -62,8 +62,9 @@ function page(): Page {
   const mouse = new MouseDriver()
   const live = { on: true }
   const touched = { n: 0 }
-  const visitor = listenToVisitor({ window, document, canvas, mouse, live: () => live.on, typing: () => false, touched: () => { touched.n++ } })
-  return { window, document, canvas, control, mouse, visitor, live, touched }
+  const table = { on: true }
+  const visitor = listenToVisitor({ window, document, canvas, mouse, live: () => live.on, typing: () => false, touched: () => { touched.n++ }, flippers: () => table.on })
+  return { window, document, body, html, canvas, control, mouse, visitor, live, touched, table }
 }
 
 const none = { left: false, right: false, shiftLeft: false, shiftRight: false }
@@ -325,6 +326,86 @@ describe('site pointer listeners: the flippers of step 3', () => {
     fire(p.window, 'blur')
     s.advance(stepHz / 4)
     expect(table(s).flip).toEqual([0, 0])
+  })
+
+  it('a button pressed in the dark band beside the picture moves its flipper and is never a press', () => {
+    const { p, s } = sealed()
+    for (const band of [p.body, p.html]) {
+      fire(band, 'pointerdown', { button: 0, buttons: 1 })
+      expect(shown(p)).toEqual({ down: false, flipLeft: true, flipRight: false })
+      s.advance(stepHz / 4)
+      expect(table(s).flip).toEqual([1, 0])
+      fire(band, 'pointermove', { button: 2, buttons: 3 })
+      expect(shown(p)).toEqual({ down: false, flipLeft: true, flipRight: true })
+      s.advance(stepHz / 4)
+      expect(table(s).flip).toEqual([1, 1])
+      fire(band, 'pointermove', { button: 0, buttons: 2 })
+      s.advance(stepHz / 4)
+      expect(table(s).flip).toEqual([0, 1])
+      fire(band, 'pointerup', { button: 2, buttons: 0 })
+      expect(shown(p)).toEqual(nothing)
+      expect(p.visitor.held()).toEqual(none)
+      s.advance(stepHz / 4)
+      expect(table(s).flip).toEqual([0, 0])
+      fire(band, 'pointerdown', { button: 2, buttons: 2 })
+      fire(band, 'pointerup', { button: 2, buttons: 0 })
+      s.advance(1)
+      expect(table(s).flip[1], 'a tap in the band').toBeGreaterThan(0)
+      s.advance(stepHz / 4)
+      expect(table(s).flip).toEqual([0, 0])
+    }
+    fire(p.body, 'pointerdown', { button: 0, buttons: 1 })
+    fire(p.window, 'blur')
+    s.advance(stepHz / 4)
+    expect(table(s).flip).toEqual([0, 0])
+    fire(p.body, 'pointerdown', { button: 1, buttons: 4 })
+    expect(shown(p)).toEqual(nothing)
+  })
+
+  it('a button pressed on a control of the page stays the control\'s own and moves no flipper', () => {
+    const { p, s } = sealed()
+    fire(p.control, 'pointerdown', { button: 0, buttons: 1 })
+    fire(p.control, 'pointermove', { button: 2, buttons: 3 })
+    expect(shown(p)).toEqual(nothing)
+    s.advance(stepHz / 4)
+    expect(table(s).flip).toEqual([0, 0])
+    expect(table(s).held).toEqual([false, false])
+    fire(p.control, 'pointerup', { button: 0, buttons: 2 })
+    fire(p.control, 'pointerup', { button: 2, buttons: 0 })
+    s.advance(stepHz / 4)
+    expect(table(s).flip).toEqual([0, 0])
+    expect(p.visitor.held()).toEqual(none)
+  })
+
+  it('on every other page a button pressed in the band is nothing: the page and the hero go on exactly as without it', () => {
+    const flow = liveFlow()
+    const others = flow.map((f, i) => ({ id: f.page, i })).filter((f) => f.id !== 'step3')
+    expect(others.length).toBe(flow.length - 1)
+    for (const { id, i } of others) {
+      const run = (press: boolean) => {
+        const p = page()
+        const s = new Stage({ mode: 'live', flow: flow.slice(i), pages, driver: p.mouse })
+        s.advance(stepHz * 2)
+        expect(s.page.control).toBe('pointer')
+        p.table.on = false
+        if (press) {
+          const e = fire(p.body, 'pointerdown', { button: 0, buttons: 1 })
+          fire(p.body, 'pointermove', { button: 2, buttons: 3 })
+          expect(shown(p)).toEqual(nothing)
+          expect(p.visitor.held()).toEqual(none)
+          expect(e.type).toBe('pointerdown')
+        }
+        s.advance(stepHz * 3)
+        if (press) {
+          fire(p.body, 'pointerup', { button: 0, buttons: 2 })
+          fire(p.body, 'pointerup', { button: 2, buttons: 0 })
+        }
+        s.advance(stepHz)
+        expect(s.page.id).toBe(id)
+        return JSON.stringify([s.page.save(), s.cursor.pose(), s.events.length, s.frameAt(s.time).list.length])
+      }
+      expect(run(true), id).toBe(run(false))
+    }
   })
 
   it('through a whole table, from the seal to the page turn, the flippers are what the hand asks in the same step: never taken, 0 steps ignored', () => {

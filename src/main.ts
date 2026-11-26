@@ -408,7 +408,7 @@ function play(first: PlayMode): void {
   }
   const picker = makeQualityPicker(qualityIds.map((id) => ({ id, minFps: quality(id).minFps })), levelIsFixed() ? { fixed: size.level() } : { start: size.level() })
 
-  listenToVisitor({ window, document, canvas, mouse, live: () => now === 'live', typing: () => api.typing!(), touched })
+  listenToVisitor({ window, document, canvas, mouse, live: () => now === 'live', typing: () => api.typing!(), touched, flippers: () => stage.page.control === 'flippers' })
 
   let still = 0
   let frame = 0

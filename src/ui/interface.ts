@@ -44,6 +44,12 @@ function press(control: HTMLElement, act: () => void): void {
     act()
     if (e.detail > 0) control.blur()
   })
+  // A link takes Enter by itself. Space it does not, so it is given here: every control answers both.
+  if (control.tagName === 'A') control.addEventListener('keydown', (e) => {
+    if (e.key !== ' ') return
+    e.preventDefault()
+    act()
+  })
   keep(control)
 }
 

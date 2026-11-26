@@ -30,6 +30,8 @@ export interface VisitorHost {
   typing(): boolean
   // Called at every sign of life, for the idle line.
   touched(): void
+  // True while the page is played with the flippers. Left out, it is true.
+  flippers?(): boolean
 }
 
 export interface Visitor {
@@ -41,6 +43,7 @@ export interface Visitor {
 }
 
 // The bits of `buttons` on a pointer event. The left button presses and is the left flipper, the right button is the right flipper. No other button does anything.
+// A button pressed beside the picture, in the band the window leaves around it, is its flipper and never a press: a flipper is not a pointing act.
 export const LEFT = 1
 export const RIGHT = 2
 const PAGE = { width: 1920, height: 1080 }
@@ -53,12 +56,14 @@ export function listenToVisitor(o: VisitorHost): Visitor {
     off.push(() => target.removeEventListener(type, fn, options))
   }
   let held = 0
+  let beside = 0
   let seen = 0
   let shiftLeft = false
   let shiftRight = false
 
   const show = () => {
-    mouse.pointer = { ...mouse.pointer, down: (held & LEFT) !== 0, flipLeft: (held & LEFT) !== 0 || shiftLeft, flipRight: (held & RIGHT) !== 0 || shiftRight }
+    const up = held | beside
+    mouse.pointer = { ...mouse.pointer, down: (held & LEFT) !== 0, flipLeft: (up & LEFT) !== 0 || shiftLeft, flipRight: (up & RIGHT) !== 0 || shiftRight }
   }
   // A press shorter than one step of the stage is still seen: the pulse lasts one step.
   const hold = (next: number) => {
@@ -68,9 +73,18 @@ export function listenToVisitor(o: VisitorHost): Visitor {
     if (fresh & LEFT) mouse.pulse({ down: true, flipLeft: true })
     if (fresh & RIGHT) mouse.pulse({ flipRight: true })
   }
+  const holdBeside = (next: number) => {
+    const fresh = next & ~beside & ~held
+    beside = next & (LEFT | RIGHT)
+    show()
+    if (fresh & LEFT) mouse.pulse({ flipLeft: true })
+    if (fresh & RIGHT) mouse.pulse({ flipRight: true })
+  }
+  const inBand = (e: { target?: unknown }): boolean => (e.target === o.document.body || e.target === o.document.documentElement) && (o.flippers?.() ?? true)
   // What is let go here stays let go until it is pressed again: a button still down when the visitor comes back is not a press.
   const release = () => {
     held = 0
+    beside = 0
     shiftLeft = false
     shiftRight = false
     show()
@@ -84,7 +98,10 @@ export function listenToVisitor(o: VisitorHost): Visitor {
   // Every pointer event says which buttons are down now. What it does not name is let go, whatever event was missed.
   const settle = (e: { buttons?: number }) => {
     if (typeof e.buttons !== 'number') return
-    if (held & ~e.buttons) hold(held & e.buttons)
+    if ((held | beside) & ~e.buttons) {
+      beside &= e.buttons
+      hold(held & e.buttons)
+    }
   }
 
   // Seen before any control can stop it, so the buttons known here are the buttons that are down.
@@ -98,10 +115,19 @@ export function listenToVisitor(o: VisitorHost): Visitor {
     // A second button pressed while one is held comes as a move, not as a press.
     const fresh = e.buttons & ~seen & (LEFT | RIGHT)
     seen = e.buttons
-    if (fresh && e.target === canvas && o.live()) hold(held | fresh)
+    if (!fresh || !o.live()) return
+    if (e.target === canvas) hold(held | fresh)
+    else if (inBand(e)) holdBeside(beside | fresh)
+  })
+  // In the bubble phase: a press on a control never comes this far, the interface stops it.
+  on(o.window, 'pointerdown', (e) => {
+    if (o.live() && inBand(e)) holdBeside((beside | bit(e.button)) & (typeof e.buttons === 'number' ? e.buttons | bit(e.button) : ~0))
   })
   on(o.window, 'pointerover', settle, true)
   on(canvas, 'contextmenu', (e) => e.preventDefault())
+  on(o.window, 'contextmenu', (e) => {
+    if (o.live() && inBand(e)) e.preventDefault()
+  })
   on(canvas, 'pointerdown', (e) => {
     toPage(e)
     if (!o.live()) return
@@ -111,6 +137,7 @@ export function listenToVisitor(o: VisitorHost): Visitor {
   const up = (e: { button?: number; buttons?: number }) => {
     const left = typeof e.buttons === 'number' ? e.buttons : 0
     seen = left
+    beside &= left & ~bit(e.button ?? -1)
     hold(held & left & ~bit(e.button ?? -1))
   }
   on(o.window, 'pointerup', up, true)
@@ -118,7 +145,9 @@ export function listenToVisitor(o: VisitorHost): Visitor {
   on(o.window, 'blur', release)
   // The mouse left the window: a button let go out there sends nothing, so nothing is held from here on.
   on(o.window, 'mouseout', (e) => {
-    if (e.relatedTarget === null || e.relatedTarget === undefined) hold(0)
+    if (e.relatedTarget !== null && e.relatedTarget !== undefined) return
+    beside = 0
+    hold(0)
   }, true)
   on(o.document, 'visibilitychange', () => {
     if (o.document.hidden) release()
@@ -176,7 +205,7 @@ export function listenToVisitor(o: VisitorHost): Visitor {
   }, { passive: false })
 
   return {
-    held: () => ({ left: (held & LEFT) !== 0, right: (held & RIGHT) !== 0, shiftLeft, shiftRight }),
+    held: () => ({ left: ((held | beside) & LEFT) !== 0, right: ((held | beside) & RIGHT) !== 0, shiftLeft, shiftRight }),
     release,
     destroy() {
       for (const fn of off) fn()
