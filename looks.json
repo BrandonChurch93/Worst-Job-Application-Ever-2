@@ -1,35 +1,35 @@
 {
   "folder": "careers",
-  "pushed": "2026-11-26T00:58:10.774Z",
-  "commit": "abc75c64c91a5e92cbe1a4c3d76be3178b9354d2",
+  "pushed": "2026-11-26T01:20:47.530Z",
+  "commit": "4dbcf1448a0eb25b07c14354d21bb9135557bd9c",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-marketing-top-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T00:54:50.733Z",
+      "caption": "Still marketing-rest-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T01:20:24.709Z",
       "by": "careers",
-      "from": "out/work/stills/key-marketing-top-hd-draft.png"
+      "from": "out/work/stills/marketing-rest-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "Still key-marketing-top-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T00:55:24.776Z",
+      "caption": "Careers first screen beside the approved image, draft tier, commit 4dbcf14",
+      "time": "2026-11-26T01:20:46.006Z",
       "by": "careers",
-      "from": "out/work/stills/key-marketing-top-hd-draft.png"
+      "from": "out/work/looks/files/20261126012046-r1-compare.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "Key marketing-top: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T00:58:09.315Z",
+      "caption": "The first perk card turning over in its well: one slab with a real under side, at 2.36 s and 2.53 s",
+      "time": "2026-11-26T01:20:46.241Z",
       "by": "careers",
-      "from": "out/work/compare/compare-marketing-top.jpg"
+      "from": "out/work/looks/files/20261126012046-r3-turn.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Careers first screen beside the approved image, draft tier, commit abc75c6",
-      "time": "2026-11-26T00:58:09.583Z",
+      "caption": "Careers page at scroll 0.25 and 0.5: medals, staff badges, the table, all real",
+      "time": "2026-11-26T01:20:46.469Z",
       "by": "careers",
-      "from": "out/work/compare/compare-marketing-top.jpg"
+      "from": "out/work/looks/files/20261126012046-r4-lower.jpg"
     }
   ]
 }
