@@ -72,8 +72,9 @@ The times in the table from 05:01 on are read back from the pushes (05:20, 05:28
 
 | time UTC | key | for | count |
 | --- | --- | --- | --- |
+| 05:46 | loader-page | loader: ring's gradient | 1 |
 
-Total in round 11: 0.
+Total in round 11: 1 (loader 1).
 
 ## Decisions
 
@@ -94,7 +95,7 @@ Total in round 11: 0.
 - The highway's wire stayed a pale tube at a low eye whatever the room did. MEASURED by turning terms off one at a time in `last-save`: not the lamps' direct shine, not the rows of lamps, not the floor field; it is `sky` (the polish rings) spread over a wire a few pixels wide. The rings now lose energy with the square of the thinning and play's steel runs `sky: 0.3`, `panel: 0.2`, `horizon: 0.4`.
 - The loader's tube lies in a bed that is the bowl's own tone inside the bowl and the ring's dark aluminium through the ring: it read as a dark box.
 - Frame aluminium's upright faces keep 0.06 of the room (`wall`), its screws mirror a ceiling near the lands' own, so a row of screws is not a row of black dots.
-- The loader's bowl is turned whole and the tube's mouth stands out of its wall; only the ring is slotted. The slot's bed inside the bowl read as a dark box whatever its tone. The ring's face is a mid grey of its own (`FACE`, `EDGE`), darker than the collars.
+- The loader's bowl is turned whole and the tube's mouth stands out of its wall; only the ring is slotted. The slot's bed inside the bowl read as a dark box whatever its tone. The ring's face is a mid grey of its own (`FACE`, `EDGE`), darker than the collars. The ring's top is shaded round its turn (`Geo.tint`): dark toward the top of the page, light toward its lower right, as approved (54 at the top, 113 left, 171 lower right there).
 - The sunk panels of the side rails' south ends are near black (`SLOPE`): from the player's end they read as two grey planks. MEASURED in `table-wide` draft: (34,33,31).
 - Seen, not mine, told to their owners: the floor inside the lower shoulders is black in `tier-office` and `tier-street` (lamp_keeper); `rail-cam` near wire inside the lens's blur (table_runner, who lowered the camera and closed the lens). The marquee's title draws heavy and black across the whole picture in `table-wide` (table_runner, 05:25).
 
