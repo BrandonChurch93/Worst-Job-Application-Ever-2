@@ -56,7 +56,9 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 - 08:46 UTC, the way in: MEASURED `node out/work/mr/proj.mjs 4.2,4.37,5.4,8 none`: the film camera's eye is the same at every step from 4.2 to 8.05 s, so it is one cut and a hold already. Two draft stills at 4.4 and 5.4 s show what changes: the lights go down and the tiers power on. Nothing changed.
 - 08:47 UTC, the way out: from the step the ball enters the drain wire the page makes one move of 0.55 s to its last scroll (eased in, firm stop, 5 px back over 0.12 s), and the lights come up over 0.3 s after it has landed. MEASURED `node out/work/mr/proj.mjs`: the eye is still from 38.47 s, the ball reaches the seal at 38.75 s, `ball-open` 38.94 s; events identical.
 - 08:47 UTC, the loader: a squash held 0.1 s at touchdown, a lean away from the vent held 0.32 s, a pull in, the arrow struck and pressed as the shell closes, then a flinch held 0.45 s. The wait is counted on the page's clock: `s.t` stops at 2.4 s until the seal, which left the live page waiting for ever (caught by `tests/pinball.test.ts`, fixed before any push).
-- 08:48 UTC, sheet `clear-ball`: three panels, gutter 21. The first two balls stand on the Street tier (on the left flipper with sweat 1, and in flight). The third stands at the Office tier's lowest white cup, at `cup.r + 0.40`, pressed with strength 1: the white cups are on the Office tier only, and the Builder said the part touched matters more than the floor.
+- 08:48 UTC, sheet `clear-ball`: three panels, gutter 21. The first two balls stand on the Street tier (on the left flipper with sweat 1, and in flight). The third stands at the Office tier's lowest white cup, at `cup.r + 0.5` (touching, as ball_fixer asked at 08:54), pressed with strength 1: the white cups are on the Office tier only, and the Builder said the part touched matters more than the floor.
+- 08:55 UTC, `step3-result`: the paragraph's measure 1040 to 720 px, two even lines; seen in a draft still at 41.5 s.
+- 08:56 UTC, `table-lobby` (key `lobby-doors`): eye height 0.8 to 1.3 balls, so it looks 12.4 degrees down (was 5.9) and the carpet with the ball's shadow is in the picture, as ball_fixer asked. Seen in a draft compare. The tower is still small beside approved: the model is a narrow box, the camera's distance and lens are unchanged.
 
 ## Moves of things a model stands on
 
@@ -67,12 +69,13 @@ Branch `agent/machine-runner`, from `origin/main` 997de9fb. Looks branch `agent/
 
 | Part | Looks | What |
 | --- | --- | --- |
-| table-cameras | 31 | 6 baseline compares, 1 tier view by mistake, 5 rail stills looking back, 2 youre-fired compares, 1 last-save compare, 1 rail compare looking ahead, 1 rail still at 32.0 s, 1 rail compare at the new key, 3 `review` stills (rail-cam, youre-fired, last-save), 1 youre-fired compare, 3 last-save compares, near-nest at 17.35 s, near-spent at 36.85 and 35.1 s, doors-swing at 13.23 s, last-save again |
-| clear-ball sheet | 1 | three panels, first draft |
+| table-cameras | 32 | 6 baseline compares, 1 tier view by mistake, 5 rail stills looking back, 2 youre-fired compares, 1 last-save compare, 1 rail compare looking ahead, 1 rail still at 32.0 s, 1 rail compare at the new key, 3 `review` stills (rail-cam, youre-fired, last-save), 1 youre-fired compare, 3 last-save compares, near-nest at 17.35 s, near-spent at 36.85 and 35.1 s, doors-swing at 13.23 s, last-save again, lobby-doors compare at 12.4 degrees down |
+| clear-ball sheet | 2 | three panels, first draft; third ball at `cup.r + 0.5` |
+| page | 2 | loader-caught at 2.76 s, result at 41.5 s |
 | table-layout | 0 | |
 | table-physics | 0 | |
 | director | 3 | ride-brace at 9.2 s, wayin at 4.4 and 5.4 s |
-| acting-pinball | 2 | near-nest struck pose at 17.37 s, loader-caught at 2.76 s |
+| acting-pinball | 2 | near-nest struck pose at 17.37 s, alarm in the inbox at 20.5 s |
 
 ## Take searches
 

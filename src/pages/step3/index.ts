@@ -81,7 +81,7 @@ function buildLayout(): LayoutNode {
   kids.push(node('result', 'card', [560, ly + 255, RIGHT - 560, 236], {
     part: 'shell', states: ['result'], children: [
       text('result-title', 'copy:step3.result.title', TYPE.heading, 608, ly + 295, { part: 'type', on: 12 }),
-      text('result-body', 'copy:step3.result.body', { ...TYPE.body, wrap: 1040, lead: 34 }, 608, ly + 385, { part: 'type', on: 12 })
+      text('result-body', 'copy:step3.result.body', { ...TYPE.body, wrap: 720, lead: 34 }, 608, ly + 385, { part: 'type', on: 12 })
     ]
   }))
   kids.push(button('go', 560, ly + 255 + 236 + 32, buttonWidth('copy:step2.continue'), 'copy:step2.continue', { part: 'shell', states: ['result'] }))
@@ -114,7 +114,7 @@ const LAST_OUT: Shape = { id: 'last.out', part: 'table-layout', kind: 'well', x:
 const NAMED: Record<string, CameraPose> = {
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
   'table-wide': { ...look('table-wide', [MID, APRON_Y + 17.4, 8.4], [MID, Y2 + 0.45, -1.86]), omit: LAST_OUT },
-  'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9.2, 0.8], [MID - 0.55, Y0 + 5.02, 0.36]),
+  'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9.2, 1.3], [MID - 0.55, Y0 + 5.02, 0.36]),
   'table-replyall': look('table-replyall', [MID, Y1 + 15.34, 12], [MID, Y1 + 6.6, -2]),
   'table-fired': look('table-fired', [8.1, Y2 + 6.45, 0.25], [4.45, Y2 + 3.75, -1.95]),
   'table-save': { ...look('table-save', [MID - 0.15, Y2 + 19.5, 3.5], [MID, Y2 + 8.5, -2.2]), omit: LAST_OUT }
@@ -145,7 +145,7 @@ const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
 const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1 }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHORT: Record<Acting, Acting> = { plain: 'plain', confident: 'plain', nervous: 'nervous', shocked: 'scared', angry: 'nervous', scared: 'scared', proud: 'plain', exhausted: 'exhausted' }
-const SHEET = { along: 0.9, gap: 0.4, side: 2.6, fly: [0.4, 7.4, 0.6], from: [0.18, 0.76, 0.624], far: 10.2, open: 15 }
+const SHEET = { along: 0.9, gap: 0.5, side: 2.6, fly: [0.4, 7.4, 0.6], from: [0.18, 0.76, 0.624], far: 10.2, open: 15 }
 const LEAVE = { seconds: 0.55, in: 1.7, firm: 0.25, back: 5, settle: 0.12, up: 0.3 }
 const LOADER = { land: [0.66, 0.1], away: [-0.5, 0.84, 0.32], go: [1.25, 0.2], short: 0.72, by: 1.8, low: 16, shut: [-0.6, 0.78], alarm: [0.55, 0.45, 0.8] }
 const HIT = { least: 0.3, hold: 0.1, short: 0.66, big: 0.9, sway: [0.3, 8, 0.4] }
