@@ -55,18 +55,18 @@ Folder: 18 calls, 31208 triangles. Whole frame: 207 draw calls against a limit o
 - The farm in the runner's box of 2.6 by 1.85 balls (in `main` since merge 23) is three across and two deep with the furniture at its drawn size (`fit` 1.0 by the numbers of the box).
 - The arm of the stapler has a higher crown and a smoother enamel than the plate (`ARM`), so the lamps draw a narrower highlight on it. Looked at in a `draft` still: a small gain, kept.
 
-## Counts after (MEASURED on d27f182b, with main at b62bc72b)
+## Counts after (MEASURED on 37a53b8a, with main at merge 24)
 
 `npm run build && npm run counts -- --key table-wide --live low` (the rows are the same for `tier-office` and `reply-all`)
 
 | part | meshes | colour | shadow | calls | triangles |
 | --- | --- | --- | --- | --- | --- |
 | model-staplers | 3 | 3 | 3 | 6 | 7356 |
-| model-inbox | 3 | 3 | 2 | 5 | 3313 |
+| model-inbox | 3 | 3 | 2 | 5 | 4364 |
 | model-coffee-machine | 1 | 1 | 1 | 2 | 6628 |
-| model-cubicles | 3 | 3 | 0 | 3 | 12297 |
+| model-cubicles | 3 | 3 | 0 | 3 | 12355 |
 
-Folder: 16 calls (18 before), 29594 triangles (31208 before). Whole frame: `table-wide` 192, `tier-office` 126, `reply-all` 140 draw calls against a limit of 300 (207, 144, 158 before).
+Folder: 16 calls (18 before), 30703 triangles (31208 before). Whole frame, with every other part's changes of the same hours in it: `table-wide` 201, `tier-office` 126, `reply-all` 129 draw calls against a limit of 300 (207, 144, 158 before).
 
 ## Answers
 
