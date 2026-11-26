@@ -6,7 +6,7 @@ import { controls } from '../../../shell/real/controls'
 import { arc, circle, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { dims, leaf, mesh, q, scalloped, scattered, shared, srgb } from './careers-solids'
-import { engraved } from './perk-cards'
+import { engraved, restingSlab, slabKey } from './perk-cards'
 
 export const MEDAL_LOOK = { lobes: 28, deep: 10, rim: 9.2, band: 150, ring: 145, face: 134, wreath: 119, leaves: 11, leaf: [30, 11, 1.6] as const }
 
@@ -84,7 +84,7 @@ let blackMade: THREE.MeshPhysicalMaterial | null = null
 let tapeMade: THREE.MeshPhysicalMaterial | null = null
 
 const print = (): THREE.MeshPhysicalMaterial => (printMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6df), roughness: 0.5, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.2 })))
-const black = (): THREE.MeshPhysicalMaterial => (blackMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x191a1c), roughness: 0.34, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, specularIntensity: 0.6 })))
+const black = (): THREE.MeshPhysicalMaterial => (blackMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x202124), roughness: 0.78, metalness: 0, clearcoat: 0.12, clearcoatRoughness: 0.5, specularIntensity: 0.3 })))
 const marker = (): THREE.MeshPhysicalMaterial => (tapeMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1d1d1e), roughness: 0.82, metalness: 0, specularIntensity: 0.35 })))
 
 // A photograph for a staff badge: a print with a white border, its picture blacked out.
@@ -111,6 +111,7 @@ export const careersPage: PartMaker | null = {
     if (s.role === 'badgePhoto') return `photo:${dims(s)}`
     if (s.role === 'redaction') return `redact:${dims(s)}`
     if (s.role === 'cardRule') return `tableRule:${q(s.w)}x${q(s.h)}`
+    if (s.role === 'card') return slabKey(s)
     return controls.key(s, ctx)
   },
   make(s, ctx) {
@@ -118,6 +119,7 @@ export const careersPage: PartMaker | null = {
     if (s.role === 'badgePhoto') return photo(s)
     if (s.role === 'redaction') return redaction(s)
     if (s.role === 'cardRule') return engraved(s)
+    if (s.role === 'card') return restingSlab(s)
     return controls.make(s, ctx)
   }
 }

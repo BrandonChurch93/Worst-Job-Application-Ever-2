@@ -16,7 +16,7 @@ export const CENTRE = (LEFT + RIGHT) / 2
 export const GAP = 40
 export const CARD_W = (WIDTH - GAP * 2) / 3
 export const CARD_H = 248
-export const CARD_R = 18
+export const CARD_R = 22
 export const MEDAL = 356
 export const MEDAL_H = 10
 export const HERO_W = 460
@@ -90,7 +90,7 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
 function medallion(i: number, cx: number, y: number): LayoutNode[] {
   const k = `copy:marketing.awards.items.${i}`
   const title = { ...T.medalTitle, align: 'centre' as const, wrap: 190 }
-  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 214 }
+  const from = { ...T.medalFrom, align: 'centre' as const, wrap: 184 }
   const th = tall(title, `${k}.title`, title.wrap)
   const fh = tall(from, `${k}.from`, from.wrap)
   const top = y + (MEDAL - (th + 22 + fh)) / 2

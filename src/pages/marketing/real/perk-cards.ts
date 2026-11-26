@@ -3,7 +3,7 @@ import { studio } from '../../../post/studio'
 import type { PartMaker } from '../../../real/types'
 import { materials } from '../../../shell/materials'
 import { look } from '../../../post/look'
-import { merge, outlineOf } from '../../../shell/solids'
+import { merge, outlineOf, profile, sweep } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { dims, mesh, q, shared, srgb } from './careers-solids'
 
@@ -35,12 +35,12 @@ let glassMade: THREE.MeshPhysicalMaterial | null = null
 // The perk cards' own glass: paler and greener than the form's cards, frosted, with the light and shade of its ground edge laid into the slab itself.
 export function cardGlass(): THREE.MeshPhysicalMaterial {
   if (!glassMade) {
-    glassMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(GLASS.colour), roughness: 0.34, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, vertexColors: true }))
+    glassMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(GLASS.colour), roughness: 0.34, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.22, specularIntensity: 0.6, vertexColors: true, shadowSide: THREE.BackSide }))
   }
   return glassMade
 }
 
-export const GLASS = { colour: 0xe6f0e9, shade: 0.72, exit: 1.1, rim: 1.3, glint: 1.16, line: 1.12, wash: 0.045, lean: 0.3 }
+export const GLASS = { colour: 0xcbd5d2, shade: 0.83, exit: 1.07, rim: 1.3, glint: 0.7, line: 1.09, wash: 0.045, lean: 0.12, caster: 4.5 }
 
 const keyFlat = Math.hypot(look.key.direction[0], look.key.direction[1]) || 1
 const KX = look.key.direction[0] / keyFlat
@@ -56,15 +56,15 @@ function face(s: Shape, half: number, flip: number): THREE.BufferGeometry {
   const foot = half - SLAB.rise
   const G = GLASS
   const rings: { d: number; z: number; lit: number; away: number; lean: number }[] = [
-    { d: 0, z: 0, lit: 0.9, away: 0.9, lean: 1 },
-    { d: 0, z: foot - SLAB.round, lit: 0.95, away: 1, lean: 1 },
-    { d: 0.5, z: foot - 0.5, lit: G.glint, away: G.rim, lean: 0.8 },
-    { d: SLAB.round, z: foot, lit: G.shade + 0.1, away: G.rim, lean: 0.5 },
+    { d: 0, z: 0, lit: G.glint, away: 0.9, lean: 1 },
+    { d: 0, z: foot - SLAB.round, lit: G.glint, away: 1, lean: 1 },
+    { d: 0.5, z: foot - 0.5, lit: G.glint, away: G.rim, lean: 0.5 },
+    { d: SLAB.round, z: foot, lit: G.glint + 0.03, away: G.rim, lean: G.lean * 2 },
     { d: SLAB.round + 1.2, z: foot + SLAB.rise * 0.2, lit: G.shade, away: G.exit, lean: G.lean },
-    { d: SLAB.round + bevel * 0.5, z: foot + SLAB.rise * 0.72, lit: G.shade + 0.03, away: G.exit - 0.02, lean: G.lean },
-    { d: SLAB.round + bevel - 1.6, z: foot + SLAB.rise * 0.97, lit: G.shade + 0.08, away: G.exit - 0.04, lean: G.lean },
-    { d: SLAB.round + bevel - 0.6, z: half, lit: G.line, away: 0.95, lean: 0.1 },
-    { d: SLAB.round + bevel + 0.7, z: half, lit: G.line, away: 0.96, lean: 0 },
+    { d: SLAB.round + bevel * 0.5, z: foot + SLAB.rise * 0.72, lit: G.shade + 0.02, away: G.exit - 0.01, lean: G.lean },
+    { d: SLAB.round + bevel - 1.6, z: foot + SLAB.rise * 0.97, lit: G.shade + 0.04, away: G.exit - 0.02, lean: G.lean },
+    { d: SLAB.round + bevel - 0.6, z: half, lit: G.line, away: 0.97, lean: 0.05 },
+    { d: SLAB.round + bevel + 0.7, z: half, lit: G.line, away: 0.98, lean: 0 },
     { d: SLAB.round + bevel + 2.2, z: half, lit: 1, away: 1, lean: 0 }
   ]
   const lowest = Math.min(s.w, s.h) / 2
@@ -183,22 +183,34 @@ function glassSlab(s: Shape, thick: number): THREE.Object3D {
   return root
 }
 
+export const slabKey = (s: Shape): string => `restSlab:${dims(s)}:${q(s.z1 - s.z0)}`
+
+// A card at rest on the page: the same slab, lying with its under side on the surface. Glass lets most of the light through, so the shadow on the
+// page is thrown by the printed foot of the slab alone, which lies inside the glass and is never seen.
+export function restingSlab(s: Shape): THREE.Object3D {
+  const thick = s.z1 - s.z0
+  const glass = mesh(shared(`perkSlab:${dims(s)}:${q(thick)}`, () => slabGeometry(s, thick)), cardGlass(), false)
+  glass.name = 'glass'
+  glass.position.z = thick / 2
+  const root = new THREE.Group()
+  root.add(glass)
+  const foot = mesh(shared(`perkFoot:${dims(s)}`, () => sweep(outlineOf(s, SLAB.frame + 0.6, 8), profile([[0, 0, true], [0, GLASS.caster, true]]))), cardGlass(), true, false)
+  foot.name = 'foot'
+  root.add(foot)
+  return root
+}
+
 export const perkCards: PartMaker | null = {
   key(s) {
     if (s.kind === 'text' || s.kind === 'well') return null
     if (s.id.endsWith('-slab')) return `perkSlab:${dims(s)}:${q(s.v?.[0] ?? 12)}`
     if (s.role === 'cardRule') return `perkRule:${q(s.w)}x${q(s.h)}`
-    if (s.role === 'card') return `perkSlab:${dims(s)}:${q(s.z1 - s.z0)}`
+    if (s.role === 'card') return slabKey(s)
     return null
   },
   make(s) {
     if (s.id.endsWith('-slab')) return glassSlab(s, s.v?.[0] ?? 12)
-    if (s.role === 'card') {
-      const root = glassSlab(s, s.z1 - s.z0)
-      root.getObjectByName('glass')!.position.z = (s.z1 - s.z0) / 2
-      root.remove(root.getObjectByName('seal')!)
-      return root
-    }
+    if (s.role === 'card') return restingSlab(s)
     return engraved(s)
   },
   pose(o, s) {
