@@ -18,7 +18,8 @@ export const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t
 // The finishes of one material: a row of a small picture holds how rough and how metallic each is, and a mesh picks its finish by its coordinates.
 export const FINISH = { polished: 0, brushed: 1, gloss: 2, matte: 3, stone: 4, satin: 5, leather: 6, cloth: 7 } as const
 export type Finish = (typeof FINISH)[keyof typeof FINISH]
-const ROUGH_METAL: [number, number][] = [[0.13, 1], [0.34, 1], [0.2, 0], [0.82, 0], [0.09, 0], [0.48, 0], [0.56, 0], [0.96, 0]]
+// How rough, how metallic, and how much of the room a finish that is no metal gives back.
+const ROUGH_METAL: [number, number, number][] = [[0.13, 1, 1], [0.34, 1, 1], [0.2, 0, 1], [0.82, 0, 0.2], [0.09, 0, 1], [0.48, 0, 0.6], [0.56, 0, 0.35], [0.96, 0, 0.08]]
 const uvOf = (f: Finish): V2 => [(f + 0.5) / ROUGH_METAL.length, 0.5]
 
 export const TONE = {
@@ -63,7 +64,7 @@ function finishes(): THREE.DataTexture {
     data[i * 4] = 255
     data[i * 4 + 1] = Math.round(f[0] * 255)
     data[i * 4 + 2] = Math.round(f[1] * 255)
-    data[i * 4 + 3] = 255
+    data[i * 4 + 3] = Math.round(f[2] * 255)
   })
   palette = new THREE.DataTexture(data, n, 1, THREE.RGBAFormat)
   palette.colorSpace = THREE.NoColorSpace
@@ -89,7 +90,7 @@ const made = new Map<string, Mats>()
 export function matsOf(z: Zone): Mats {
   const have = made.get(z.id)
   if (have) return have
-  const solid = lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes() })), z, { panel: 0.6, horizon: 2.2, lamps: 2.2 }), z)
+  const solid = lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes(), specularIntensityMap: finishes() })), z, { panel: 0.3, horizon: 2.2, lamps: 2.2, sky: 0.6 }), z)
   solid.name = `corporate.solid.${z.id}`
   // What gives light: its own colour, vertex by vertex, is the light it gives, at the level of its light group.
   const glow = studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: 1, metalness: 1, roughnessMap: finishes(), metalnessMap: finishes(), emissive: new THREE.Color(...colours.CORPORATE_WINDOW), emissiveIntensity: 0 }))
