@@ -38,7 +38,7 @@ export const T = {
   quote: { font: 'inter-400', px: 20, lead: 30 },
   role: { font: 'inter-600', px: 20 },
   answer: { font: 'inter-400', px: 20, lead: 30 },
-  tape: { font: 'inter-400', px: 20 }
+  tape: { font: 'inter-500', px: 20 }
 } satisfies Record<string, TypeSpec>
 
 const cap = (t: TypeSpec): number => block(t.font, 'X', t.px).cap
@@ -74,12 +74,12 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
   const bCap = cap(TYPE.body)
   const promiseY = y + 46 + tCap + 30
   const ruleY = promiseY + bCap + 26
-  const faceTop = y + (CARD_H - (tCap + 22 + bCap)) / 2
   return node(`perk-${i}`, 'card', [x, y, CARD_W, CARD_H], {
     part: 'perk-cards', r: CARD_R,
     children: [
-      text(`perk-${i}-title`, `${k}.title`, T.cardTitle, x + pad, faceTop, { ...onCard, states: [st.shut] }),
-      text(`perk-${i}-promise`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, faceTop + tCap + 22, { ...onCard, states: [st.shut] }),
+      text(`perk-${i}-title`, `${k}.title`, T.cardTitle, x + pad, y + 46, { ...onCard, states: [st.shut] }),
+      text(`perk-${i}-promise`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, promiseY, { ...onCard, states: [st.shut] }),
+      node(`perk-${i}-rule-shut`, 'cardRule', [x + pad, ruleY, wrap, 2], { part: 'perk-cards', floor: heights.card, height: heights.card + 1, tone: 'metal', states: [st.shut] }),
       text(`perk-${i}-title-open`, `${k}.title`, T.cardTitle, x + pad, y + 46, { ...onCard, states: [st.open] }),
       text(`perk-${i}-promise-open`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, promiseY, { ...onCard, states: [st.open] }),
       node(`perk-${i}-rule`, 'cardRule', [x + pad, ruleY, wrap, 2], { part: 'perk-cards', floor: heights.card, height: heights.card + 1, tone: 'metal', states: [st.open] }),
