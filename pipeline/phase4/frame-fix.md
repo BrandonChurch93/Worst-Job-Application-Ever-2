@@ -36,19 +36,19 @@ Not mine, left: R1-1 issue 2 (light), 6, 7, 18 (models), 9 (crop), R3-1 issue 5 
 
 ## Looks, by part, from the first still
 
-Counted at 07:55 UTC. One still that shows several parts is counted on the part it was rendered for.
+Counted at 08:52 UTC. One still that shows several parts is counted on the part it was rendered for. The limit is 40 a part.
 
 | part | looks | what |
 | --- | --- | --- |
-| table-frame | 9 | 2 baseline compares, 7 table-wide stills (rail ends, risers, marquee, title) |
+| table-frame | 12 | 2 baseline compares, 8 table-wide stills (rail ends, risers, marquee, title), 2 last-save stills for the shoulder blades |
 | marquee | 0 | seen in the table-wide stills, counted there |
-| table-hardware | 3 | table-wide stills for the spring, the tier block and the pocket |
+| table-hardware | 4 | table-wide stills for the spring, the tier block, the pocket and the lane guides |
 | lift | 0 | seen in the table-wide stills, counted there |
-| loader | 13 | 1 baseline compare, 11 loader-page draft stills, 1 review still |
-| flippers | 3 | last-save stills |
-| bumpers | 1 | table-wide crop |
+| loader | 23 | 1 baseline compare, 17 loader-page draft stills, 1 review still, 4 page stills of the port's answer at 0.57 to 0.63 of pinball.seal |
+| flippers | 8 | last-save stills, tier-office (2) and tier-corporate after the wire change |
+| bumpers | 2 | table-wide crops |
 | targets | 0 | |
-| ramps | 1 | compare rail-cam (baseline) |
+| ramps | 12 | 1 baseline compare, 10 rail-cam stills for the wires, 1 table-wide |
 
 ## Decisions
 
@@ -66,6 +66,16 @@ Counted at 07:55 UTC. One still that shows several parts is counted on the part 
 12. Sling plates (yellow printed face, chrome shoe, bolt heads) are in the model folders: left, told to /root.
 13. The last-save camera ends just under the plaque, so the new drain throat is not in that picture. The camera is `/root/machine_runner`'s: told to /root.
 14. Push b644545b went out before the whole test had run on that merge (the merge brought `src/pages/step5/*` and `tests/decision-fix.test.ts`). The whole test right after it was green, 1393 of 1393. Since then the whole test runs after the merge and before the push.
+
+15. The port's answer (R4-3 issue 1) and the outlet's (R4-2 issue 2) are agreed with `/root/machine_runner`: `loader.ring` and `outlet.ring` carry `v: [seconds since the contact]`, 9 before it and capped at 9. The frame reads it in `loaderPose`: the ring is drawn in by 3.4 percent for two frames and rings out over about 0.3 s (`dipOf`), the rim of light flashes and fades in 0.075 s (`flashOf`). No z move: a dip in z sank the bowl under the page. `tests/table-frame-answer.test.ts` holds it.
+16. The outlet in zone `last` has a rim of light of its own (mesh `loader.light.last`), at rest at the low level and not breathing: only the page's port breathes.
+17. On the page the tube carries three collars to a step by the port, as approved does; lower down the step stays as it was.
+18. Lane guide wires are 3.1 px in radius (were 4.8) and the roof wires 2.7 (were 3.8). Ramp wires are 3.1.
+19. Ramp wires read as chrome through two new options of `frame/steel.ts`: `thin`, one long white line on mirror wire (roughness under 0.075 only, so a flat chrome screw is not a white disc), and `spark`, how much of the coloured lane sparks stay. The rows of lamps fade where they are closer than about two pixels on screen: that was the banding on the hoops. That fade is in every material that uses the steel, the corporate models' too; it removes only what could not be resolved.
+20. Flippers: `MACHINE_ORANGE` (0xc48004) above and below a 10 px rubber band, as approved shows; one chrome pivot screw, no tip stud. The orange reads darker than approved's in the tier stills: the colour is fixed and the light is `/root/lamp_fixer`'s, so it is left.
+21. The shoulder guides beside the bats are thin steel blades (4.8 px, were 11.5) on slim posts: a real machine's lane guide is a strip on edge, and the thick bars read as square section.
+22. The wire gate across each tier's exit stays: it is the page's `gate.<tier>` and it moves. R1-5 issue 18 names it; whether it should show in last-save is `/root/machine_runner`'s camera and `/root`'s call.
+23. The lift's elbows and the plunger's knob stay `MACHINE_ORANGE`; they read dull amber under the tier's light. Left for the same reason as 20.
 
 ## Measured
 
@@ -107,3 +117,11 @@ All at 1e39deca unless said. Commands as written.
   All six keys counted again at 1e39deca, 07:54 to 07:56 UTC. Triangles of my folders in table-wide: 191370 to 178540, so 12830 fewer. No key has more draw calls than before, in the scene or in any of my parts.
 - Riser luminance in the table-wide draft (PIL, mean of the grey crop): street to office riser face 111.0 and 121.3, office to corporate riser 105.9, left side rail's inner face 89.3, right side rail's inner face 96.0, near wedges 128.5 and 126.8, front rim 94.5. The riser is not the darkest large shape.
 - Asset sets, `du -sb`: `public/assets/table/frame` 65310 bytes (0.062 MB), `assets-full/table/frame` 142746 bytes (0.136 MB). There is no `table/hardware` or `table/play` set. No asset was changed.
+
+### After 1e39deca
+
+- `npm test` at f4fc2f8d (08:39 UTC): 111 files, 1438 of 1438 passed. Build built, bots all clear.
+- Draft stills: rail-cam 44.1 to 45.8 s, table-wide 43.8 to 44.8 s, tier-corporate 42.9 s, tier-office 40.5 to 41.4 s, last-save 51.4 to 54.1 s (its camera stands further back since main ed3c50c4 and later), page stills of pinball.seal about 20 s.
+- The port's answer live: four page stills at 0.57, 0.6, 0.61, 0.63 of pinball.seal. At 0.6 the rim carries a halo and the ring is drawn in; at 0.61 it is back.
+- Counts at f4fc2f8d, 08:43 to 08:45 UTC, same command. table-wide scene 201; loader 10 calls 15686 triangles; ramps 5 calls 20920; all other rows as in the table above. tier-corporate 110. tier-office 126. tier-street 108. loader-page 63, loader 3 calls 7070. last-save 189: its camera now shows the whole lower machine, so it is not the 122 of the baseline; each of my parts there has as many calls as in table-wide or fewer (hardware 20, frame 16, targets 15, flippers 12, loader 9, bumpers 8, lift 8, ramps 5, marquee 3).
+- Triangles of my folders in table-wide at f4fc2f8d: 181060, so 10310 fewer than the 191370 of the baseline.

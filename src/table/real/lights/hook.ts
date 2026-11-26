@@ -41,7 +41,7 @@ const EDGE = (COLS.launchB - W / 2) * BALL
 const HAZE = 0.042
 
 // Lacquer seen along the floor sends back more of the light on it than lacquer seen from above: the sheen of a waxed floor from across the room. Nothing is added straight down.
-const SHEEN = { coat: 0.03, pools: 0.0 }
+const SHEEN = { coat: 0.03, pools: 0.0, worn: 0.2, from: 0.07, to: 0.24, veil: 0.4 }
 
 // Metal leaf laid in a floor is not a mirror: it is beaten thin over the grain of the print and throws a lamp's light back in every direction, in its own colour.
 const LEAF = 1.1
@@ -65,7 +65,7 @@ const MIRROR = { sharp: 3, blur: 0.2, sill: 0.14 }
 const GLINT = { level: 5.0, body: 13, low: 30 }
 
 // The shadows of the head lamps. A wall is asked a little outside its own foot, and a thing that stands is taken a little higher than it is, so nothing lies in its own shadow; `soft` is how many pixels of height the tip of a shadow fades over, `edge` how much of its depth its side does.
-export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0.9, spotAt: 0.1, gloss: 0.6, far: 0.22, near: 1.5, riser: 0.06, riserReach: 150 }
+export const SHADOW = { out: 12, slack: 6, lean: 0.35, soft: 10, edge: 0.5, ball: 0.07, steel: 0.92, clear: 0.4, spot: 0.9, spotAt: 0.1, gloss: 0.6, far: 0.22, near: 1.5, riser: 0.015, riserReach: 150, roof: 0.75, roofFrom: 60, roofTo: 100 }
 
 // For each group: its picture at the fragment's place, a term for the fragment's height and for the way its surface faces the lamps, the group's colour and level.
 const body = /* glsl */ `
@@ -205,6 +205,7 @@ const body = /* glsl */ `
 			#endif
 		}
 	}
+	vec3 wjlKeyLit = vec3( 0.0 );
 	if ( wjlKeyCol.r + wjlKeyCol.g + wjlKeyCol.b > 0.0 ) {
 		float wjlOff = smoothstep( 2.0, 10.0, wjlUp );
 		vec4 wjlUnder = texture2D( wjlKey, ( wjlP.xy + wjlN.xy * ${SHADOW.out.toFixed(1)} * wjlOff ) / wjlSize + 0.5 );
@@ -248,7 +249,9 @@ const body = /* glsl */ `
 		wjlLight.direction = normalize( ( viewMatrix * vec4( wjlKeyDir, 0.0 ) ).xyz );
 		float wjlNear = dot( wjlP.xy, normalize( wjlKeyDir.xy ) ) / ( 0.5 * length( wjlSize ) );
 		wjlOpen *= mix( ${SHADOW.far.toFixed(2)}, ${SHADOW.near.toFixed(2)}, smoothstep( - 0.75, 0.85, wjlNear ) );
+		wjlOpen *= 1.0 - ${SHADOW.roof.toFixed(2)} * wjlTop * smoothstep( ${SHADOW.roofFrom.toFixed(1)}, ${SHADOW.roofTo.toFixed(1)}, wjlUp );
 		wjlLight.color = wjlKeyCol * wjlOpen * wjlInside * wjlClear * PI;
+		wjlKeyLit = wjlKeyCol * wjlOpen * wjlInside * wjlClear * max( wjlKeyDir.z, 0.0 );
 		vec3 wjlGloss = reflectedLight.directSpecular;
 		#ifdef USE_CLEARCOAT
 		vec3 wjlCoat = clearcoatSpecularDirect;
@@ -278,9 +281,10 @@ const body = /* glsl */ `
 	reflectedLight.directDiffuse = wjlDiff0 + wjlOwn * mix( 1.0, wjlKept + ( 1.0 - wjlKept ) * smoothstep( ${DEEP.from.toFixed(2)}, ${DEEP.to.toFixed(2)}, wjlGot ), wjlFlat );
 	#ifdef USE_CLEARCOAT
 	clearcoatSpecularDirect += wjlHaze * ${HAZE.toFixed(3)} * ( 1.0 + ${SHEEN.pools.toFixed(2)} * wjlFace * wjlFace ) * ( 1.0 - wjlShine ) / ( 1.0 + 0.25 * ( wjlHaze.r + wjlHaze.g + wjlHaze.b ) );
-	clearcoatSpecularDirect += wjlField * ${SHEEN.coat.toFixed(3)} * wjlFlat * wjlFace * wjlFace;
-	clearcoatSpecularDirect += wjlSeen * ${GLINT.level.toFixed(2)} * wjlMirror * wjlClear;
-	clearcoatSpecularDirect += wjlSpilt * ${SPILL.toFixed(2)} * wjlClear;
+	float wjlWorn = smoothstep( ${SHEEN.from.toFixed(2)}, ${SHEEN.to.toFixed(2)}, material.clearcoatRoughness );
+	clearcoatSpecularDirect += ( wjlField + wjlKeyLit ) * ( ${SHEEN.coat.toFixed(3)} + ${SHEEN.worn.toFixed(3)} * wjlWorn ) * wjlFlat * wjlFace * wjlFace;
+	clearcoatSpecularDirect += wjlSeen * ${GLINT.level.toFixed(2)} * wjlMirror * wjlClear * ( 1.0 - ${SHEEN.veil.toFixed(2)} * wjlWorn );
+	clearcoatSpecularDirect += wjlSpilt * ${SPILL.toFixed(2)} * wjlClear * ( 1.0 - ${SHEEN.veil.toFixed(2)} * wjlWorn );
 	#endif
 	#ifdef STANDARD
 	reflectedLight.directSpecular += wjlField * material.specularColor * ( 0.12 + ${LEAF.toFixed(2)} * wjlFlat );
