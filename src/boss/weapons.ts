@@ -29,6 +29,8 @@ export const DART_Z = 17
 export const SPARK_Z = 30
 export const MUZZLE_Z = MUZZLE.z
 export const BANNER_Z = 64
+const BANNER_LEAST = 0.3
+const SLAB_LEAST = 0.12
 
 export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
   for (const p of f.popups) {
@@ -66,7 +68,7 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
   for (const s of f.slabs) {
     const made = plan.slabs[s.m]!
     const k = s.state === 0 ? Math.min(1, (2 * SLAB.speed[f.phase]! * s.t) / made.w) : 1
-    if (k <= 0.02) continue
+    if (k < SLAB_LEAST) continue
     const struck = s.push !== undefined
     const fell = s.state === 0 ? 0 : flightHeight(s.air ?? 9, struck ? s.left : 0)
     const hop = s.state === 1 && !struck ? FLY.hop * Math.sin(Math.PI * prog(s.t, FLY.hopFrom, FLY.hopTo)) : 0
@@ -78,8 +80,9 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     const type = k >= 1 ? plan.slabType : { ...plan.slabType, px: plan.slabType.px * k }
     if (k >= 0.25) out.push(label(`fired-${s.m}-words`, part, made.key, sx, sy, type, Math.max(0.3, z0 + heights.slab) + (s.state === 1 && s.t < 0.6 ? 1.2 : 0), 'inkLight', s.rot))
   }
-  if (bannerUp(f)) {
-    const k = Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5))
+  const banner = bannerUp(f) ? Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5)) : 0
+  if (banner >= BANNER_LEAST) {
+    const k = banner
     const w = plan.banner.w
     const h = plan.banner.h
     const y = Math.max(ARENA.y0 + 6 + h / 2, f.y - 208 - h / 2) + (1 - k) * 22

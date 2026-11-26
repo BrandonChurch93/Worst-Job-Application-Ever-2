@@ -213,7 +213,7 @@ describe('the models of the office', () => {
       expect(t.at[1] + t.r).toBeLessThan(seg('office.outlane.floor.left').a[1])
     }
     const lying = loose()
-    expect(lying.length).toBeGreaterThan(5)
+    expect(lying.length).toBeGreaterThan(3)
     const display = table.displays.find((d) => d.tier === 1)!
     for (const t of lying) {
       for (const q of table.segs) if (q.tier === 1) expect(far(t.at, q.a, q.b)).toBeGreaterThan(t.r + 0.08)

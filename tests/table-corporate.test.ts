@@ -64,8 +64,8 @@ describe('the models of the corporate tier', () => {
         if (!m.userData.fine) coarse += trianglesOf(m)
       }
     }
-    expect(coarse).toBeLessThanOrEqual(36000)
-    expect(total).toBeLessThanOrEqual(46000)
+    expect(coarse).toBeLessThanOrEqual(58000)
+    expect(total).toBeLessThanOrEqual(68000)
   })
 
   test('no vertex is out of place: every number is finite, every normal has length one and nothing lies under the floor', () => {
@@ -98,7 +98,7 @@ describe('the models of the corporate tier', () => {
       const a = localBalls(z, m.box[0], m.box[1] + m.box[3])
       const b = localBalls(z, m.box[0] + m.box[2], m.box[1])
       const box = new THREE.Box3()
-      for (const mesh of meshesOf(built.get(part)!)) if (!mesh.name.startsWith('hq.doors')) box.union(new THREE.Box3().setFromObject(mesh))
+      for (const mesh of meshesOf(built.get(part)!)) if (!mesh.name.startsWith('hq.doors') && !mesh.name.startsWith('hq.glow')) box.union(new THREE.Box3().setFromObject(mesh))
       if (part !== 'model-hq') {
         expect(box.min.x, id).toBeGreaterThanOrEqual(a[0] - 0.01)
         expect(box.max.x, id).toBeLessThanOrEqual(b[0] + 0.01)

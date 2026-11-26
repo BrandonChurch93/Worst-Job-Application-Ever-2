@@ -23,8 +23,8 @@ export const TRAY_GAP = 12
 export const TRAY_H = 250
 export const TRAY_R = 18
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 3.4, lean: 0.3, cove: 2, rimShade: 0.55, wallShade: 0.26, wallShadeTop: 0.12, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
-  floor: { soak: 0.2, hold: 0.2, reach: 22, bounce: 0.05, bounceReach: 16, base: 1.12, side: 0.8 },
+export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 3.4, lean: 0.3, cove: 2, rimShade: 0.66, wallShade: 0.36, wallShadeTop: 0.2, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
+  floor: { soak: 0.25, hold: 0.2, reach: 22, bounce: 0.09, bounceReach: 16, base: 1.16, side: 0.8 },
   soak: { soak: 0.62, hold: 1, reach: 15, bounce: 0.05, bounceReach: 20, base: 0.94, side: 0.8, cool: 0.14 } }
 export const COIN = { r: 13, wall: 14, clear: 0.3, fall: 2600, spring: 0.38, least: 150, hops: 2, rows: 2, roll: 150, pitch: 23, stack: 1.4 }
 export const SHIFT = TRAY_H + TRAY_GAP
@@ -52,12 +52,12 @@ export const HUB_ORANGE_LIFT = 1.6
 
 export const DIAL_BODY = {
   tall: TOP + 2 - TRAY_Z, rest: 1.6, plateLeast: 0.4, below: 2, plate: 6.6, bezel: 5.5, bezelDrop: 0.8, bezelChamfer: 2, bezelSlope: 0.9, wheel: 92.9, thick: 5.2, chamfer: 1, holeRim: 0.8, holeChamfer: 2.6,
-  hub: 30, hubTall: 14, hubFlat: 0.02, hubCoat: 0.22, hubRough: 0.42, hubIor: 1.5, hubEnv: 0.4, hubFoot: 3.4, hubStep: 3.2, hubShoulder: 0.5, hubCrown: 0.55, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.27, faceStretch: 1, faceLight: 1.5,
-  housingDark: 1.18, housingRough: 0.46, seat: 10, seatDark: 0.92, seatGap: 0.6, seatTall: 10, seatSlope: 1, stopIn: 69, stopOut: 112, stopWide: 19, stopTip: 7, stopClear: 2.4, stopTall: 3, stopFoot: 12, stopDark: 0.62,
-  inner: 49, innerTall: 0.35, innerSeam: 0.5, innerRing: 2.4, innerRingTall: 1.1, innerTone: 0xdcdad3, innerRough: 0.55, footLine: 0.7,
+  hub: 30, hubTall: 14, hubFlat: 0.02, hubCoat: 0.13, hubRough: 0.42, hubIor: 1.5, hubEnv: 0.75, hubGrain: 0.25, hubFoot: 3.4, hubStep: 3.2, hubShoulder: 0.5, hubCrown: 0.55, hubSeat: 3, hubSeatDeep: 1.8, turned: 256, cut: 0.012, faceRough: 0.27, faceStretch: 1, faceLight: 1.5,
+  housingDark: 1.18, housingRough: 0.46, seat: 10, seatDark: 0.92, seatGap: 0.7, seatTall: 10, seatSlope: 1, stopIn: 69, stopOut: 112, stopWide: 19, stopTip: 7, stopClear: 2.4, stopTall: 3, stopFoot: 12, stopDark: 0.62,
+  inner: 49, innerTall: 0.35, innerSeam: 0.5, innerRing: 2.4, innerRingTall: 1.1, innerTone: 0xdcdad3, innerRough: 0.55, footLine: 0.5,
   grooveOver: 0.15, grooveUnder: 4.2, fanAxis: 0.2, fanLow: 0.78, fanGain: 0.5, fanSharp: 1.6,
   glint: 0.5, glintLong: 13, glintWide: 10, glintOut: 9, glintUp: 17.3,
-  shade: 0.6, shadeReach: 0.78, cast: 0.72, castIn: 8, castOut: 36, castAway: 34, castOver: 0.2
+  shade: 0.6, shadeReach: 0.78, cast: 0.8, castIn: 8, castOut: 46, castAway: 42, castOver: 0.2
 }
 
 // How far the top of the dial's wheel stands above the tray's floor when the machine has risen by `lift` (0 to 1). Before it rises it lies in the tray's floor, its wheel under the floor of a field, its hub and its stop drawn down into it.
@@ -167,7 +167,7 @@ function slotNodes(): LayoutNode[] {
 
 function crankNodes(): LayoutNode[] {
   const c = CRANK
-  const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD + 12, cy + PAD + 22, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
+  const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD + 10, cy + PAD + 15, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
   const base = node('crank-base', 'crankBase', [c.hx - c.base / 2, c.hy - c.base / 2, c.base, c.base], { part: 'crank', shape: 'disc', height: 18, floor: TRAY_Z, tone: 'metal' })
   const ax = c.hx + (c.arm / 2) * Math.cos(c.rest)
   const ay = c.hy + (c.arm / 2) * Math.sin(c.rest)

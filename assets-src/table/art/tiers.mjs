@@ -605,9 +605,18 @@ export function street(D, seed) {
     const e = sp.pts[sp.pts.length - 1]
     local.push(chevron([e[0], e[1] - 0.5], 90, 0.3, pal.key, 0.045))
   }
+  // The grit of the asphalt: stones of the aggregate, pale and dark, over roads and paving alike.
+  const gritRand = rng(seed + 41)
+  const grit = ['#2c5a66', '#3a6f7e', '#a9c6cc', pal.dark, '#07182a'].map((col, i) => ({ col, d: '', w: [0.016, 0.011, 0.007, 0.014, 0.02][i], o: [0.6, 0.6, 0.5, 0.7, 0.5][i] }))
+  for (let i = 0; i < 60000; i++) {
+    const q = [C.left + gritRand() * (C.right - C.left), 0.3 + gritRand() * (D.H - 0.3)]
+    const k = [0, 0, 0, 1, 1, 2, 3, 3, 4, 4][Math.floor(gritRand() * 10)]
+    grit[k].d += `M${f(q[0])} ${f(q[1])}h0.002`
+  }
+  const stones = grit.map((q) => path(q.d, stroke(q.col, q.w, { opacity: q.o, 'stroke-linecap': 'round' })))
   const clipId = 'field-street'
   defs.push(el('clipPath', { id: clipId }, rect(C.left, 0.3, C.right - C.left, D.H - 0.3, { fill: '#000' })))
-  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.1 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, lots, holes, wear(D, seed + 9, '#a9c6cc', 150)]), local, answers, insertsPrint(D, pal)] }
+  return { pal, defs, ground: [g({ mask: 'url(#keep-street)', opacity: 0.1 }, plots)], top: [lanes, g({ 'clip-path': `url(#${clipId})` }, [roads, stones, lots, holes, wear(D, seed + 9, '#a9c6cc', 150)]), local, answers, insertsPrint(D, pal)] }
 }
 
 // The guide: the tier from straight above with every lane, wall, post, footprint, insert and flipper as plain lines.
