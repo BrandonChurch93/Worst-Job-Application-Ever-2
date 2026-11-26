@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "gpt_6_2_sol",
- "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "set": "A: the key `marketing-top`, whole and in native crops, beside the approved image",
  "issues": [
   {
    "severity": "severe",

@@ -3,7 +3,7 @@
  "score": 8,
  "pass": false,
  "model": "gpt_6_2_sol",
- "set": "B: the last two keys and the native-size crops of the page's text and controls",
+ "set": "B: the page as a web page: the keys `rail-cam` and `last-save`, and the text and controls at their real size",
  "issues": [
   {
    "severity": "major",

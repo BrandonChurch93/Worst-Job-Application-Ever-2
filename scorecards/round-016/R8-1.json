@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "claude_opus_5_5",
- "set": "A: the page at rest, its result, and eight of the keys, as a web page",
+ "set": "A: the page as a web page: at rest and in the three keys, and the text and controls at their real size",
  "issues": [
   {
    "severity": "major",

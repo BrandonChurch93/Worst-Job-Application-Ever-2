@@ -1,0 +1,376 @@
+{
+  "role": "R3",
+  "round": 17,
+  "unit": "boss",
+  "commit": "b4494f0d7ac425926ff347112587c74ef5006d8d",
+  "tier": "final",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "step1": "85340d921cd74c57",
+    "step2": "63f851bcd2cd65cf",
+    "marketing": "3645cc7fb7a95417",
+    "pinball": "5a5c711506d19c82",
+    "boss": "523f6a7695ccd263",
+    "decision": "740d3c0f81bae216"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 1 of 4. The page at one moment",
+      "still": {
+        "page": "boss",
+        "beat": "boss.slabs",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "boss-fight"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 2 of 4. The page at one moment",
+      "still": {
+        "page": "boss",
+        "beat": "boss.collapse",
+        "at": 1,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "boss-down"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 3 of 4. A sheet of parts: the Submit button becoming the boss, in four stages",
+      "still": {
+        "page": "boss",
+        "camera": "sheet",
+        "tier": "final",
+        "sheet": "boss-stages"
+      },
+      "from": {
+        "sheet": "boss-stages"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 4 of 4. The page at rest",
+      "still": {
+        "page": "boss",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step4"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "boss",
+        "beat": "boss.slabs",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "boss-fight"
+      },
+      "crops": [
+        {
+          "part": "shape:boss-plate",
+          "window": [
+            1396,
+            368,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-cannon-0",
+          "window": [
+            1389,
+            247,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-shield",
+          "window": [
+            1130,
+            368,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:fired-0",
+          "window": [
+            941,
+            305,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            240,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rim-socket-open",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "checkbox",
+          "window": [
+            0,
+            312,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:health-track",
+          "window": [
+            803,
+            107,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            1268,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "boss",
+        "beat": "boss.collapse",
+        "at": 1,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "boss-down"
+      },
+      "crops": [
+        {
+          "part": "shape:boss-cap",
+          "window": [
+            1118,
+            471,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            985,
+            579,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-plate",
+          "window": [
+            1067,
+            276,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-cannon-0",
+          "window": [
+            1267,
+            228,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-shield",
+          "window": [
+            1264,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:boss-side-0",
+          "window": [
+            338,
+            623,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:rim-socket-open",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:health-track",
+          "window": [
+            803,
+            107,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "checkbox",
+          "window": [
+            0,
+            312,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-07.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest",
+      "still": {
+        "page": "boss",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step4"
+      },
+      "crops": [
+        {
+          "part": "card.glass",
+          "window": [
+            577,
+            366,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            1096,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            729,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            104,
+            405,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            490,
+            685,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.contact",
+          "window": [
+            0,
+            366,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            103,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

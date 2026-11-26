@@ -1,0 +1,44 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "B: motion, the way in, the way out, four sheets of consecutive frames at hits on the arrow (1:33.25 to 1:46.32), two at moments of the ball (1:39.00 and 1:42.62), the page turn that ends the page and the slab seating",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the round black seal/button, all twelve frames (1:45.67 to 1:46.03)",
+   "what": "the cursor drops into the seal and rocks to a stop with a nicely decaying oscillation, but the seal itself never answers: the black face does not depress, flash, ring or ripple on the frame the cursor lands in it, and the chrome bezel stays frozen. Only the moving thing reacts; the struck thing and the page around it stay mute, so the catch reads half-finished.",
+   "fix": "on the landing frame, give the button a press: the black face dips 1-2 px and springs back, or a ring flash/ripple in the bezel, timed with the first frame of the cursor's rock"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "the top of the orange rail, 1:42.67 to 1:42.73",
+   "what": "the ball rolls along the orange rail at a moderate even pace, then between 1:42.67 and 1:42.70 it is suddenly at full flight speed crossing the whole frame in two frames, with nothing visibly causing it: the rail end does not kick, flash or deflect, and there is no hit frame like the red ring flash in set-B-03. The unmotivated jump in speed is the one moment in these sheets that reads as moved by hand rather than loose in a machine.",
+   "fix": "add a cause on the launch frame: the rail end flicks or a kicker lamp flashes as the ball leaves, matching the contact reactions used at the other hits"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-08.png",
+   "where": "left and above the ball, 1:38.87 to 1:39.00",
+   "what": "the ball's trail renders as two or three discrete semi-transparent duplicate balls instead of continuous motion blur; on a still it reads as ghosting/doubling round the ball while the pace along the wire rail is otherwise even and a touch gliding.",
+   "fix": "render the trail as continuous blur or a single smeared streak, and check the ball's speed along the rail against a steel ball on that slope"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-09.png",
+   "where": "the turn itself, 1:48.67 to 1:49.03",
+   "what": "the slab rotates roughly 90 degrees in about a quarter of a second, which is a little fast and light for a heavy slab; the wind-up (button press at 1:48.40) and the long hold after (settle through 1:49.80, with the seating jiggle visible in set-B-10) carry most of the weight, so the mid-flight lightness is only just noticeable.",
+   "fix": "steal 2-3 frames from the hold after the turn and give them to the rotation, easing out of the flip so the slab's mass reads during the turn, not only at landing"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01.png",
+   "where": "the frame at 1:10.33",
+   "what": "mid-way-in there is a beat where a translucent rectangular panel floats over the dark machine with the blue backglass grid behind it; read left to right it is the one frame in the way-in where you cannot quite tell what you are passing through without the caption.",
+   "fix": "clarify the transition through the glass: fade the UI panel out fully before the machine interior appears, or hold the dive continuous so no floating semi-transparent panel state is shown"
+  }
+ ]
+}

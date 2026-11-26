@@ -3,7 +3,7 @@
  "score": 6,
  "pass": false,
  "model": "claude_opus_5_5",
- "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "set": "A: motion, one sheet of frames across each of the four beats, the page turn and the slab seating",
  "issues": [
   {
    "severity": "major",

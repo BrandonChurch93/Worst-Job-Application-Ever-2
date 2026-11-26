@@ -1,0 +1,615 @@
+{
+  "role": "R1",
+  "round": 16,
+  "unit": "step2",
+  "commit": "b4494f0d7ac425926ff347112587c74ef5006d8d",
+  "tier": "final",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "step1": "85340d921cd74c57",
+    "step2": "63f851bcd2cd65cf",
+    "marketing": "3645cc7fb7a95417",
+    "pinball": "5a5c711506d19c82",
+    "boss": "523f6a7695ccd263",
+    "decision": "740d3c0f81bae216"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step2-rest"
+      },
+      "side": "a",
+      "image": "references/approved/step2-rest.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-01-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step2-rest"
+      },
+      "side": "b",
+      "still": {
+        "page": "step2",
+        "beat": "step2.open",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step2-rest"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            1358,
+            281,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field.start",
+          "window": [
+            950,
+            176,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            941,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1450,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            250,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "surface",
+          "window": [
+            1267,
+            57,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            96,
+            213,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/step2-rest.png"
+    },
+    "set-A-02-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step2-rest"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            1371,
+            256,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field.start",
+          "window": [
+            969,
+            180,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            923,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            197,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "surface",
+          "window": [
+            1339,
+            69,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            94,
+            197,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "step2",
+        "beat": "step2.open",
+        "at": 0.5,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-03-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step2-dial"
+      },
+      "side": "a",
+      "image": "references/approved/step2-dial.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-03-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step2-dial"
+      },
+      "side": "b",
+      "still": {
+        "page": "step2",
+        "beat": "step2.dial",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-04-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step2-dial"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "dialWheel",
+          "window": [
+            936,
+            338,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "machineTray",
+          "window": [
+            1162,
+            343,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            970,
+            394,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field.start",
+          "window": [
+            950,
+            181,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            941,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1450,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/step2-dial.png"
+    },
+    "set-A-04-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step2-dial"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "dialWheel",
+          "window": [
+            932,
+            349,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "machineTray",
+          "window": [
+            1164,
+            349,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            974,
+            400,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "field.start",
+          "window": [
+            969,
+            180,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            923,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "step2",
+        "beat": "step2.dial",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-05-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "machines"
+      },
+      "side": "a",
+      "image": "references/approved/machines.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-05-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "sheet": "machines"
+      },
+      "side": "b",
+      "still": {
+        "page": "step2",
+        "camera": "sheet",
+        "tier": "final",
+        "sheet": "machines"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-01-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step2-crank"
+      },
+      "side": "a",
+      "image": "references/approved/step2-crank.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-01-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "step2-crank"
+      },
+      "side": "b",
+      "still": {
+        "page": "step2",
+        "beat": "step2.crank",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-B-02-a.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step2-crank"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "crankBase",
+          "window": [
+            869,
+            699,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "crankGrip",
+          "window": [
+            1008,
+            662,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "meterSegment",
+          "window": [
+            1114,
+            691,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1032,
+            705,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            941,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1450,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/step2-crank.png"
+    },
+    "set-B-02-b.png": {
+      "set": "B",
+      "critic": "R1-2",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "step2-crank"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "crankBase",
+          "window": [
+            867,
+            698,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "crankGrip",
+          "window": [
+            987,
+            647,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "meterSegment",
+          "window": [
+            1110,
+            689,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1019,
+            685,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            923,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1459,
+            740,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "step2",
+        "beat": "step2.crank",
+        "at": 0.2,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

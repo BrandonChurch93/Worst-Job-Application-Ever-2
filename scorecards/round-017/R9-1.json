@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "pplx_computer_glm_5_3_1009",
- "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "set": "A: acting, one sheet across each of the seven beats, with no time and no word on it",
  "issues": [
   {
    "severity": "major",
@@ -39,6 +39,38 @@
    "where": "row 2 columns 2 and 3, arrow at the left end of the orange button",
    "what": "The cursor tip briefly merges with the button’s dark end, making the beginning of the press harder to separate from the debris.",
    "fix": "Keep a sliver of light around the tip until the contact frame, then use a short tip-first compression for the click."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: that red error labels fly at the arrow and that it fires back is read; that it dodges them and that the bar starts to drop is not: the read has the machine's shield catch the shots.",
+   "fix": "The dodge as a readable move clear of each slab, and the arrow's shots seen to land on the boss past the shield, with the bar answering each landing.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the dialogs are read as prompts that crowd the lane while the arrow keeps firing at the shield; that the boss raises them as shields, that the arrow shoots them down or goes round them, and that it takes a hit and shakes it off is not in the read.",
+   "fix": "The dialogs standing between the arrow and the boss as cover, the arrow's shots breaking one, its path round another, and one clear hit on the arrow followed by a shake held long enough to be read.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the session expiring and the arrow closing in to fire are read; that the boss's health jumps back up and that the arrow's whole body says 'really' is not: the read has it urgent and improvising, darting high and diving.",
+   "fix": "The bar seen to fill back up as the event of the beat, with the arrow stopped by it: a held pose of disbelief turned to the bar before it goes back to work.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: the press on the battered button is read; that the arrow drags itself over, exhausted, is not: the read has it wary but resolved, hanging below the prompt and nosing up.",
+   "fix": "The drag as the beat's acting: the arrow sagging, pulling itself along the page in stages and slumping onto the button, held before the press.",
+   "by": "builder"
   }
  ],
  "reads": [

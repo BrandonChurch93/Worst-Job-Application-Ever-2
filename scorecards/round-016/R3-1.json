@@ -3,7 +3,7 @@
  "score": 6,
  "pass": false,
  "model": "pplx_computer_glm_5_3_1009",
- "set": "A: surface and detail, the ten keys whole",
+ "set": "A: surface and detail, the three keys, the sheet `machines` and the page at rest, whole, and native crops of the keys and of the page at rest",
  "issues": [
   {
    "severity": "major",

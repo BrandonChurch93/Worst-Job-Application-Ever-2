@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "gpt_6_2_sol",
- "set": "B: tier 3 from above, the lobby doors and the table map beside the approved images, whole and in crops",
+ "set": "B: the key `step2-crank`, whole and in native crops, beside the approved image",
  "issues": [
   {
    "severity": "severe",

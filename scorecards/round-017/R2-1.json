@@ -1,0 +1,286 @@
+{
+ "critic": "R2",
+ "pass": true,
+ "jurors": 5,
+ "judged": [
+  {
+   "file": "set-A-01.png",
+   "what": {
+    "still": {
+     "page": "boss",
+     "beat": "boss.slabs",
+     "at": 0.5,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r17_juror_01",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 78,
+     "why": "The polished skeuomorphic UI/robot rendering and explicit infographic-like layout look like a deliberate stock/concept 3D render rather than a cinematic frame or real photograph.",
+     "at": "13:49Z"
+    },
+    {
+     "juror": "r17_juror_02",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 84,
+     "why": "The uniform studio-style lighting across the beveled interface makes it look like a static 3D mockup.",
+     "at": "13:49Z"
+    },
+    {
+     "juror": "r17_juror_03",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "The biggest factor: this is a skeuomorphic web UI (\"The Worst Job Application Ever\" form with a Submit button, cursor and progress steps) with a stylized 3D look, which reads like a web or app demo rather than a photo, film frame or product render. The fine materials and lighting made (c) the runner-up.",
+     "at": "13:49Z"
+    },
+    {
+     "juror": "r17_juror_04",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 86,
+     "why": "the interactive job-application screen is itself the scene, with the 3D elements functioning as UI controls and game-like obstacles.",
+     "at": "13:49Z"
+    },
+    {
+     "juror": "r17_juror_05",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 75,
+     "why": "it's a polished but generic skeuomorphic 3D concept illustration (physical UI buttons, robot, progress bars) of the kind typical of stock/editorial 3D renders - too stylized and static for a film/game cinematic, and too rendered and composed to be a photo or an actual app/game screenshot.",
+     "at": "13:50Z"
+    }
+   ],
+   "letters": "c c d d c"
+  },
+  {
+   "file": "set-A-02.png",
+   "what": {
+    "still": {
+     "page": "boss",
+     "beat": "boss.collapse",
+     "at": 1,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r17_juror_06",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "The on-screen cursor aimed at the 3D Submit button makes the scene read as an interactive web experience.",
+     "at": "13:50Z"
+    },
+    {
+     "juror": "r17_juror_07",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "It's a web-app UI screen (\"The Worst Job Application Ever\" form with a checkbox, a progress stepper and a cursor) with skeuomorphic metal parts scattered around. That reads like a browser game or web demo, not a film frame, a photo or a stock product render.",
+     "at": "13:50Z"
+    },
+    {
+     "juror": "r17_juror_08",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 91,
+     "why": "the composition is an interactive game-like application screen, with the 3D pieces acting as interface controls around a visible cursor.",
+     "at": "13:50Z"
+    },
+    {
+     "juror": "r17_juror_10",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The full-screen job-application interface, including a visible cursor and a rendered Submit control, most strongly suggests an interactive web 3D demo.",
+     "at": "13:50Z"
+    }
+   ],
+   "letters": "d d d d",
+   "noAnswer": [
+    {
+     "juror": "r17_juror_09",
+     "model": "kimi_k3"
+    }
+   ],
+   "answers": 4
+  },
+  {
+   "file": "set-A-03.png",
+   "what": {
+    "still": {
+     "page": "boss",
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r17_juror_11",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 75,
+     "why": "It looks like a skeuomorphic web-app UI (a joke \"Worst Job Application Ever\" form with an \"I am not a robot\" checkbox and stepper buttons), so a low-budget web/app screen fits best. The polished rendering of the metallic and orange buttons gave c some weight.",
+     "at": "13:50Z"
+    },
+    {
+     "juror": "r17_juror_12",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "The numbered, clickable-looking form controls make it read as a stylized web/app interface.",
+     "at": "13:50Z"
+    },
+    {
+     "juror": "r17_juror_13",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 92,
+     "why": "it is a flat software UI screenshot with typed labels, a cursor, and skeuomorphic low-budget app/web widgets rather than a photographed object or cinematic scene.",
+     "at": "13:50Z"
+    },
+    {
+     "juror": "r17_juror_14",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The image is composed entirely as a functional app interface, with a cursor over a stylized form rather than a scene or isolated product.",
+     "at": "13:50Z"
+    },
+    {
+     "juror": "r17_juror_15",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "It's a flat web UI screen (a joke job-application form with a fake CAPTCHA) styled with skeuomorphic 3D-looking buttons and a paper texture. That reads as a web demo or low-budget app, not a photo or a cinematic render.",
+     "at": "13:50Z"
+    }
+   ],
+   "letters": "d d d d d"
+  }
+ ],
+ "controls": [
+  {
+   "file": "set-A-04.png",
+   "what": {
+    "control": "boss-fight",
+    "image": "references/approved/boss-fight.png"
+   },
+   "votes": [
+    {
+     "juror": "r10_juror_16",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 86,
+     "why": "The strongest clue is the staged, straight-on layout of a web form rendered as raised metal-and-glass hardware, like a standalone 3D illustration.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_17",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 83,
+     "why": "The tightly controlled studio lighting, uniform synthetic materials, and illustrative UI-object composition look like a polished but conventional 3D render rather than a cinematic frame.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_18",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 88,
+     "why": "the perfectly front-on arrangement of sculpted UI controls reads like a standalone 3D illustration rather than a cinematic frame.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_19",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 60,
+     "why": "it's a clean, evenly lit studio-style still on a seamless paper background. The skeuomorphic UI elements (metal Submit mechanism, glossy error tags, cracked hole) look like a polished conceptual or stock illustration render. It's not a photo of a real object, and it doesn't look like a cinematic film or game frame. It's too detailed and realistically shaded for a low-budget web or mobile 3D demo. It also looks AI-generated rather than hand-modeled.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_20",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 88,
+     "why": "The straight-on, product-mockup arrangement of the beveled 3D interface controls was the strongest cue.",
+     "at": "05:52Z"
+    }
+   ],
+   "letters": "c c c c c",
+   "reusedFrom": "scorecards/round-010/R2-1.json"
+  },
+  {
+   "file": "set-A-05.png",
+   "what": {
+    "control": "boss-down",
+    "image": "references/approved/boss-down.png"
+   },
+   "votes": [
+    {
+     "juror": "r10_juror_21",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 75,
+     "why": "the image is a stylized conceptual 3D composition: flat \"UI element as physical object\" props (submit pill, progress beads, cursor icon) arranged on a plain paper-like backdrop with clean, even studio lighting and smooth untextured surfaces, exactly the look of a high-end stock/concept 3D render. It lacks the environmental storytelling, characters, and cinematic framing of a film/game cinematic (b), and the physical impossibilities (floating smoke, cracked \"button hole,\" typo \"I am not a rabot\") plus overly perfect materials rule out a real photograph (a). It's too polished for a low-budget app (d).",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 72,
+     "why": "the straight-on, evenly sharp arrangement reads like a staged 3D mockup of a job application rather than a cinematic shot.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 60,
+     "why": "It is a polished, stylized 3D-looking UI concept: brushed-metal pieces, a frosted glass card, and a burnt \"Submit\" pill, all under clean studio lighting. That makes it look like an ordinary render or illustration, not a real photo or a film frame. Typos like \"rabot\" also hint that it may be AI-generated.",
+     "at": "05:52Z"
+    },
+    {
+     "juror": "r10_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 79,
+     "why": "The app interface is staged as a static 3D product-style flat lay, with its buttons and cursor rendered as physical props.",
+     "at": "05:53Z"
+    },
+    {
+     "juror": "r10_juror_25",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 82,
+     "why": "The polished but generic studio-lit CGI materials and static conceptual-product composition look most like an ordinary high-end 3D render rather than a photograph or cinematic frame.",
+     "at": "05:53Z"
+    }
+   ],
+   "letters": "c c c c c",
+   "reusedFrom": "scorecards/round-010/R2-1.json"
+  }
+ ],
+ "judgedShare": {
+  "votes": 14,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "controlShare": {
+  "votes": 10,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "rule": "R2 passes when the judged share is no lower than the control share minus quality.jury.maxShareGap (0.2)",
+ "note": "It passes by the rule: 0 of 14 on the judged pictures against 0 of 10 on the control, and the judged share is no lower than the control share less 0.2. The controls' votes are those of round 10 (kit/07: a control's votes are collected once and reused in later rounds). One juror (number 9, Kimi) gave no answer in 10 minutes, was interrupted and replaced once by a fresh juror of the same model, which gave no answer in 10 minutes either and was interrupted. By kit/07 a juror that does not answer is replaced once: set-A-02.png stands with 4 answers, which is not fewer than the jurors less one, so R2 is not missing for this round.",
+ "replaced": 1
+}

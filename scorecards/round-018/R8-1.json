@@ -3,7 +3,7 @@
  "score": 8,
  "pass": true,
  "model": "pplx_computer_glm_5_3_1009",
- "set": "A: the page at rest, its result, and eight of the keys, as a web page",
+ "set": "A: the page as a web page: at rest, the perks, the proof, the foot and the key `marketing-top`, and the text and controls at their real size",
  "issues": [
   {
    "severity": "major",

@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "kimi_k3",
- "set": "A: surface and detail, the ten keys whole",
+ "set": "A: surface and detail, the key `decision` and the page at rest, whole and in native crops",
  "issues": [
   {
    "severity": "major",

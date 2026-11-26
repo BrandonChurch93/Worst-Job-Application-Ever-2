@@ -1,0 +1,340 @@
+{
+ "critic": "R2",
+ "pass": true,
+ "jurors": 5,
+ "judged": [
+  {
+   "file": "set-A-01.png",
+   "what": {
+    "still": {
+     "page": "step2",
+     "beat": "step2.open",
+     "at": 0.5,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r16_juror_01",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 90,
+     "why": "it's a flat app UI screen - satirical form copy (\"The Worst Job Application Ever\"), dropdown fields, a \"Continue\" button and a visible mouse cursor - with only simple skeuomorphic 3D buttons, which fits a web demo / low-budget app rather than a photo, cinematic, or polished product render.",
+     "at": "13:49Z"
+    },
+    {
+     "juror": "r16_juror_02",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the full-screen interactive form layout, with skeuomorphic dropdowns and a visible cursor.",
+     "at": "13:47Z"
+    },
+    {
+     "juror": "r16_juror_03",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 80,
+     "why": "It is a flat UI screen from a web app (a joke job-application form) with skeuomorphic chrome buttons and inset fields. That makes it a web or app interface, not a photo, a film frame, or a product render.",
+     "at": "13:47Z"
+    },
+    {
+     "juror": "r16_juror_04",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The image is dominated by an interactive form layout with dropdowns, a step indicator, and a Continue button, identifying it as a web/app screen.",
+     "at": "13:47Z"
+    },
+    {
+     "juror": "r16_juror_05",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 95,
+     "why": "the full-screen 3D-styled application form with UI text, dropdowns, and cursor most strongly indicates a web demo or low-budget app.",
+     "at": "13:47Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-02.png",
+   "what": {
+    "still": {
+     "page": "step2",
+     "beat": "step2.dial",
+     "at": 0.2,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r16_juror_06",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The focused input and on-screen rotary dial are visibly embedded in an interactive web-app form.",
+     "at": "13:47Z"
+    },
+    {
+     "juror": "r16_juror_07",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "It's clearly a screenshot of a web app UI (a joke \"Worst Job Application Ever\" form with a skeuomorphic rotary dial and a mouse cursor), which makes it a web/low-budget app picture, not a photo, a film frame, or a stock render.",
+     "at": "13:48Z"
+    },
+    {
+     "juror": "r16_juror_08",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The decisive cue is the rotary dial embedded as an interactive control in a web-style form.",
+     "at": "13:48Z"
+    },
+    {
+     "juror": "r16_juror_09",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 95,
+     "why": "the stylized web-app form, editable input field, cursor, and skeuomorphic rotary dial make it clearest as a web 3D demo or low-budget app interface.",
+     "at": "13:48Z"
+    },
+    {
+     "juror": "r16_juror_10",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The most decisive cue is the skeuomorphic rotary dial embedded as an interactive field in an on-screen job application form.",
+     "at": "13:49Z"
+    }
+   ],
+   "letters": "d d d d d"
+  },
+  {
+   "file": "set-A-03.png",
+   "what": {
+    "still": {
+     "page": "step2",
+     "beat": "step2.crank",
+     "at": 0.2,
+     "camera": "home",
+     "tier": "final"
+    }
+   },
+   "votes": [
+    {
+     "juror": "r16_juror_11",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "It's a web app UI screen, a joke job-application form with skeuomorphic 3D-styled controls and a mouse cursor, so it reads as a browser or web demo, not a photo, film frame or product render.",
+     "at": "13:49Z"
+    },
+    {
+     "juror": "r16_juror_12",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 99,
+     "why": "the on-screen cursor over the interactive volume crank embedded in a step-by-step web form.",
+     "at": "13:49Z"
+    },
+    {
+     "juror": "r16_juror_13",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 78,
+     "why": "it reads as a polished but joke web/app UI screenshot (stepper, dropdowns, crank widget, cursor), not a physical product photo or cinematic scene.",
+     "at": "14:00Z"
+    },
+    {
+     "juror": "r16_juror_14",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 99,
+     "why": "The strongest cue is the interactive job-application UI, with a mouse cursor on its skeuomorphic volume crank.",
+     "at": "13:49Z"
+    },
+    {
+     "juror": "r16_juror_15",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 85,
+     "why": "It's a flat web UI with skeuomorphic 3D-styled controls and a mouse cursor, so it looks like a screenshot of a web app or demo, not a photo, a film frame or a product render.",
+     "at": "13:49Z"
+    }
+   ],
+   "letters": "d d d d d"
+  }
+ ],
+ "controls": [
+  {
+   "file": "set-A-04.png",
+   "what": {
+    "control": "step2-rest",
+    "image": "references/approved/step2-rest.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_16",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 88,
+     "why": "The cursor hovering over a satirical dropdown form makes it look like an interactive web demo.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_17",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 55,
+     "why": "The image is a full-screen flat UI form (\"The Worst Job Application Ever\" with step indicator, dropdown fields, and a cursor): it looks like a screen capture or mockup of a web app/joke demo rather than a photograph, big-budget cinematic, or stock product render. Its skeuomorphic-glassy styling and slightly warped details (e.g., the cursor shape) suggest an AI-generated or low-budget app-style demo rather than professional 3D product work.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_18",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 96,
+     "why": "the on-screen cursor hovering over a dropdown in an interactive form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_19",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "it's a web app/form UI (a joke \"worst job application\" page with step indicators, dropdowns, a mouse cursor and a Continue button). That makes it a browser/app screen, even though it has fairly polished skeuomorphic paper and metal textures.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_20",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 98,
+     "why": "The on-screen cursor among the dropdown controls makes it read as a screenshot of an interactive web app.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d",
+   "reusedFrom": "scorecards/round-009/R2-1.json"
+  },
+  {
+   "file": "set-A-05.png",
+   "what": {
+    "control": "step2-dial",
+    "image": "references/approved/step2-dial.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_21",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 85,
+     "why": "the stylized skeuomorphic application-form UI, including joke text and interactive-looking rotary dial, most strongly suggests a web 3D demo or low-budget app rather than a photograph, film frame, or generic stock render.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "The cursor poised over a rotary dial inside an open form field makes it read as an interactive web-app/game screen.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 70,
+     "why": "it's a flat app/web UI screen (a joke job-application form with skeuomorphic buttons and a rotary dial widget, plus a mouse cursor), so it looks like a web or low-budget app, not a photo, film frame or product render. The dial's numbers are jumbled and repeated (two 6s), which points to AI-generated or low-fidelity rendering.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "The active form field and visible mouse cursor make it look like an interactive web demo.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_25",
+     "model": "kimi_k3",
+     "answer": "d",
+     "confidence": 88,
+     "why": "It shows a humorous skeuomorphic web form titled \"The Worst Job Application Ever\" with a rotary-dial phone input, step indicator, and dropdown fields. The most influential factor: it's clearly a novelty/joke interactive web UI demo: flat 2D typography combined with moderately rendered 3D skeuomorphic controls (plastic buttons, drop shadows) of the type found in web demos or low-budget app concepts, not a photo, film frame, or polished stock product render.",
+     "at": "05:50Z"
+    }
+   ],
+   "letters": "d d d d d",
+   "reusedFrom": "scorecards/round-009/R2-1.json"
+  },
+  {
+   "file": "set-A-06.png",
+   "what": {
+    "control": "step2-crank",
+    "image": "references/approved/step2-crank.png"
+   },
+   "votes": [
+    {
+     "juror": "r9_juror_26",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "The mouse cursor on the volume crank makes it look like an interactive web form.",
+     "at": "05:50Z"
+    },
+    {
+     "juror": "r9_juror_27",
+     "model": "claude_opus_5_5",
+     "answer": "d",
+     "confidence": 65,
+     "why": "It's a skeuomorphic web-app UI screen (a joke job application form with a cursor and form fields), so it reads as a picture from a web or low-budget app rather than a photo, a film frame or a product render. That said, the photoreal materials suggest it was AI-generated.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_28",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 96,
+     "why": "The on-screen cursor operating a crank embedded in a step-by-step web form is the strongest clue that this is an interactive web 3D demo.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_29",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 78,
+     "why": "The image is a polished skeuomorphic 3D render of a satirical job-application UI (\"The Worst Job Application Ever\"): cleanly staged typography and retro knobs/dropdowns rendered like a stock-style concept mockup. The single most influential factor: it reads as a static, product-mockup-style 3D composition (flat layout, presentation typography, game-like crank widget rendered as illustration) rather than a cinematic film/game frame or a photo, and its quality is above a cheap low-budget app demo.",
+     "at": "05:51Z"
+    },
+    {
+     "juror": "r9_juror_30",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 94,
+     "why": "the mouse cursor poised over a crank that functions as a volume control in an interactive form.",
+     "at": "05:51Z"
+    }
+   ],
+   "letters": "d d d c d",
+   "reusedFrom": "scorecards/round-009/R2-1.json"
+  }
+ ],
+ "judgedShare": {
+  "votes": 15,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "controlShare": {
+  "votes": 15,
+  "aOrB": 0,
+  "share": 0.0
+ },
+ "rule": "R2 passes when the judged share is no lower than the control share minus quality.jury.maxShareGap (0.2)",
+ "note": "It passes by the rule: 0 of 15 on the judged pictures against 0 of 15 on the control, and the judged share is no lower than the control share less 0.2. The controls' votes are those of round 9 (kit/07: a control's votes are collected once and reused in later rounds). One juror (number 13, Kimi) gave no answer in 10 minutes, was interrupted and replaced once by a fresh juror of the same model; the replacement's answer is the one recorded.",
+ "replaced": 1
+}

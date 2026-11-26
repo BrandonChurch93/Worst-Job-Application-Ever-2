@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "gpt_6_2_sol",
- "set": "B: surface and detail, the clear ball sheet, the table map, the page at rest and its result, with crops",
+ "set": "B: surface and detail, the sheets `clear-ball` and `table-map`, the page at rest and its result, whole, and native crops of the page at rest and its result",
  "issues": [
   {
    "severity": "major",

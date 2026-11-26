@@ -3,7 +3,7 @@
  "score": 5,
  "pass": false,
  "model": "kimi_k3",
- "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "set": "A: acting, one sheet across each of the four beats and one sheet of each of the five states the page uses (nervous, shocked, proud, scared, exhausted), with no time and no word on it",
  "issues": [
   {
    "severity": "major",
@@ -60,6 +60,38 @@
    "where": "the bottom-row fast-move frames",
    "what": "the streak frames turn the arrow into a flat side-on smear whose stretch does not track the travel arc, so the fast move reads as artefact rather than speed",
    "fix": "stretch along the actual motion path while keeping the point readable"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the letter is read; that the red stamp slams down on the letter and on the arrow and lifts to show REJECTED and one flattened arrow is not: the read ends with the stamp about to slam down.",
+   "fix": "The slam and what it leaves inside the beat's sheet: the stamp on the letter and the arrow, the lift, the word REJECTED and the flat arrow held under it long enough to be read.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: the stamped letter and the button are read; that the arrow peels itself up and that the metrics panel fills in are not, and the press on Accept Rejection reads as about to happen.",
+   "fix": "The peel as a held pose from one corner, the numbers of the panel seen to count up, and the press seen to land with the button's travel.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as panicked, then crushed: the stamp slams down and the arrow is flattened, dragged and pinned. Puffing up and dusting itself off are not in the read.",
+   "fix": "Proud as the kit has it, at a time when the arrow can be seen: puffed up and dusting itself off, held before the stamp.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as battered and dazed, crumpled and staggering toward the button. Pale and stony, the lean back and the hiding are not in the read.",
+   "fix": "Scared as the kit has it while the stamp comes: the arrow gone pale and stiff, leaning back, and behind the nearest thing on the page.",
+   "by": "builder"
   }
  ],
  "reads": [

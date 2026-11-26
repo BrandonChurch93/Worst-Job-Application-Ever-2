@@ -3,7 +3,7 @@
  "score": 4,
  "pass": false,
  "model": "gpt_6_2_sol",
- "set": "D: tier 1 from above and You're Fired beside the approved images, whole and in crops",
+ "set": "D: the keys `tier-street` and `youre-fired`, whole and in native crops, each beside the approved image",
  "issues": [
   {
    "severity": "severe",

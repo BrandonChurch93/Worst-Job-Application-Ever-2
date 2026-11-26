@@ -1,0 +1,254 @@
+{
+  "role": "R1",
+  "round": 18,
+  "unit": "marketing",
+  "commit": "b4494f0d7ac425926ff347112587c74ef5006d8d",
+  "tier": "final",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "step1": "85340d921cd74c57",
+    "step2": "63f851bcd2cd65cf",
+    "marketing": "3645cc7fb7a95417",
+    "pinball": "5a5c711506d19c82",
+    "boss": "523f6a7695ccd263",
+    "decision": "740d3c0f81bae216"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "marketing-top"
+      },
+      "side": "a",
+      "image": "references/approved/marketing-top.png",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-01-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair",
+      "heading": "",
+      "pair": {
+        "key": "marketing-top"
+      },
+      "side": "b",
+      "still": {
+        "page": "marketing",
+        "beat": "marketing.apply",
+        "at": 0,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final",
+      "size": [
+        1400,
+        788
+      ]
+    },
+    "set-A-02-a.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "marketing-top"
+      },
+      "side": "a",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            495,
+            344,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "medallion",
+          "window": [
+            1330,
+            184,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "heroButton",
+          "window": [
+            135,
+            307,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1451,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.corner",
+          "window": [
+            0,
+            477,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            436,
+            727,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cardRule",
+          "window": [
+            167,
+            614,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "tickerWindow",
+          "window": [
+            731,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            315,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "image": "references/approved/marketing-top.png"
+    },
+    "set-A-02-b.png": {
+      "set": "A",
+      "critic": "R1-1",
+      "kind": "pair-crops",
+      "heading": "Parts of the picture before this one, each at its real size",
+      "pair": {
+        "key": "marketing-top"
+      },
+      "side": "b",
+      "crops": [
+        {
+          "part": "cursor",
+          "window": [
+            470,
+            335,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "medallion",
+          "window": [
+            1329,
+            186,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "heroButton",
+          "window": [
+            125,
+            302,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "button",
+          "window": [
+            1425,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.corner",
+          "window": [
+            0,
+            470,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            428,
+            719,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cardRule",
+          "window": [
+            161,
+            612,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "tickerWindow",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            197,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "still": {
+        "page": "marketing",
+        "beat": "marketing.apply",
+        "at": 0,
+        "camera": "home",
+        "tier": "final"
+      },
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

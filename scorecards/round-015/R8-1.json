@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "kimi_k3",
- "set": "A: the page at rest, its result, and eight of the keys, as a web page",
+ "set": "A: the page as a web page: at rest, its result, and eight of the ten keys",
  "issues": [
   {
    "severity": "major",

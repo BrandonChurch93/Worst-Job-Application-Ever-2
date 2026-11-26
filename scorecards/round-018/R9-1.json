@@ -3,7 +3,7 @@
  "score": 4,
  "pass": false,
  "model": "kimi_k3",
- "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "set": "A: acting, one sheet across each of the four beats and one sheet of each of the three states the page uses (shocked, proud, confident), with no time and no word on it",
  "issues": [
   {
    "severity": "major",
@@ -53,6 +53,62 @@
    "where": "all 12 frames",
    "what": "the wobble tilts vary in size and direction with no pattern, so it reads as cursor jitter more than as a character trembling or glancing around nervously; the pose changes do not accumulate into a feeling",
    "fix": "organize the wobble: 2-3 consistently larger lean cycles (tremble), interleave one clear look-left and look-right tilt as glances at the ticker, keep the rest near neutral"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as curious and unhurried, and the stroll reads as a drift down the left edge and along the bottom while it sizes the page up.",
+   "fix": "The stroll as a walk with weight: upright, a bounce in each step, a strut across the page toward the cards, with the gloss and the shadow seen under it.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the visits to the perk cards are read and so is unbothered; that each card it touches flips or slides to show its fine print is not (one card reads as darkening), and the double take at Unlimited PTO is not: the arrow reads as showing no reaction.",
+   "fix": "Each card's answer to the touch as a flip or a slide that is seen to happen, with the fine print readable, and the double take at Unlimited PTO as a look, a second look and a shrug held before it moves on.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: the ticker and the arrow that does not look down at it are not in the read: the beat reads as still browsing, drifting right and eyeing the Flexible Hours card and the seal.",
+   "fix": "The ticker as the event of the beat: its line seen to run under the arrow, and the arrow's head held up and turned away from it in a way a glance reads as not looking.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the press on the orange button is read; the bound, the wind-up and the jump read as homing in, committed and deliberate; the button's travel is not in the read; and the page turning over reads as the whole page collapsing into a dark glitch strip.",
+   "fix": "The bound as a leap, a wind-up held before the jump, the button seen to sink under the landing, and the page turn readable as a page turning, with its edge and its back seen.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as uneasy and fidgeting, wobbling and leaning, rattled by the ticker's claim. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked as a held pose: a look, a second look, the stretch tall, then the snap back.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: proud reads as wary and frozen, holding stock-still and holding its nerve. Puffing up and dusting itself off are not in the read.",
+   "fix": "Proud as the kit has it: the arrow puffed up and dusting itself off, held long enough to be read.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as determined and quick, darting up past the seal and diving at the button in a rush. Upright with a slight bounce and a strut is not in the read.",
+   "fix": "Confidence in the body on the way to the button: upright, a bounce, a strut, so that the approach is not taken for a rush.",
+   "by": "builder"
   }
  ],
  "reads": [

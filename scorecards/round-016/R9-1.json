@@ -3,7 +3,7 @@
  "score": 6,
  "pass": false,
  "model": "gpt_6_2_sol",
- "set": "A: one sheet across each of the ten beats, with no time and no word on it",
+ "set": "A: acting, one sheet across each of the five beats, with no time and no word on it",
  "issues": [
   {
    "severity": "major",
@@ -39,6 +39,38 @@
    "where": "left edge of Continue through the retreat, rows one through three",
    "what": "The contact pose is held, but the tip and shadow merge into the edge of the button, and several repeats read as hover rather than hesitation. The blurred departure is clearer than the decision or the exit reaction.",
    "fix": "Keep a sliver of separation on a pulled-back wind-up, then give the button press its own compact, identifiable arrow silhouette before stretching away and counter-tilting against the departing form."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: the three closed rows are read; that the page looks easy and the arrow relaxes is not: the read has it tentatively curious, darting across the fields and hesitating.",
+   "fix": "Ease in the body before the first click: the arrow slowing, settling and loosening in front of three plain rows, held long enough to be read as relief.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: the dialing and the form giving up are read; that on the return the dial whips the arrow in a full circle and flings it is not: the read has it startled, springing back and steadying itself.",
+   "fix": "The whip as the event of the beat: the arrow carried the whole way round by the returning dial, seen on the dial through the turn, then thrown clear along the line of the throw and landing where the throw sends it.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the cranking and the meter filling to 100% are read; that the crank takes off by itself, spins to full and flattens the arrow on the way round is not: the read has it trying hard, then rattled or worn out, wobbling away.",
+   "fix": "The moment the crank leaves the arrow's hold as its own beat: the arrow thrown off and left behind, the handle seen to speed up alone, then the handle striking the arrow and the arrow flat on the page.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: the press on Continue is read as a nudge; that the arrow lies flat as paper, peels itself up and refills is not: the read has it hesitant, lingering at Continue.",
+   "fix": "The flat arrow held on the page long enough to be seen as flat, the peel from one corner, the refill as a swelling back to its body, each a held pose before it goes to Continue.",
+   "by": "builder"
   }
  ],
  "reads": [

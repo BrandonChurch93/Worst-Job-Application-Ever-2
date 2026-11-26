@@ -3,7 +3,7 @@
  "score": 3,
  "pass": false,
  "model": "claude_opus_5_5",
- "set": "E: the rail camera and the last save beside the approved images, whole and in crops",
+ "set": "E: the keys `rail-cam` and `last-save`, whole and in native crops, each beside the approved image",
  "issues": [
   {
    "severity": "severe",

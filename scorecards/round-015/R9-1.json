@@ -1,0 +1,123 @@
+{
+ "critic": "R9",
+ "score": 6,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: acting, one sheet across each of the ten beats, with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "The cursor at the port, especially frames 7–10",
+   "what": "The turn at the rim suggests hesitation, but the ball closes around a nearly standard cursor. The capture reads mechanically, with no distinct inward squash or recoil held long enough to register as the arrow's reaction.",
+   "fix": "Pull the tip away at the rim, then stretch into the intake and hold a clear compressed, off-axis recoil inside the newly closed ball before it drops."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "Close views of the ball in frames 3–4 and the reveal that follows",
+   "what": "The arrow keeps almost the same stock-pointer silhouette through the travel. The machine has a clear reveal, but the arrow gives no matching change in attitude and is soon too small to carry one.",
+   "fix": "Use the close view for a readable brace against the glass, then a separate lifted or recoiling pose timed to its first view of the machine, before cutting wide."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "The shooter-lane hold and launch, frames 4–12",
+   "what": "The pause creates anticipation, but the spring and ball motion carry nearly all of the launch. The arrow changes angle slightly and then blurs rather than showing a strong pre-launch load and directional stretch.",
+   "fix": "Compress the arrow back against the glass as the plunger loads, hold briefly, then elongate the tip and narrow the body in the shooting direction on release."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "The ball at the Corporate HQ entrance, frames 6–10",
+   "what": "The stopped ball is clear, but the arrow's same up-right pose across the hold does not distinguish an expectant approach from the reaction to being turned back.",
+   "fix": "Hold an upward forward lean at the door, then sharply reverse and compress the silhouette before the ball backs away."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "The close flipper and bumper sequence, frames 6–11",
+   "what": "The ricochets read from the travel path, rotation and blur, but the arrow rarely shows a separate squash on contact or lag and recovery afterward. The ball is doing most of the acting.",
+   "fix": "Pick a close, unobscured contact and show the arrow lagging into the struck side, flattening there, then unfolding and stretching in the rebound direction."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "The 'You're Fired' socket, frames 4–12",
+   "what": "There is a readable momentary squash, but it returns to a near-default cursor for most of the reaction hold. The warning lamp and sign deliver more of the shock than the character does.",
+   "fix": "After the initial jolt, settle into and hold a distinct drooped, shortened silhouette, then add a separate spring-back on ejection."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "The elevated rail into Background Check, frames 5–8",
+   "what": "The foreground close-ups show mostly a rigid pointer turning with the ball. The climb and sudden turn are evident but do not visibly pull the arrow off balance or give it a held response.",
+   "fix": "Let the tip lead or lag relative to the ball on the climb, then snap the arrow off-axis as the spiral catches it and hold that displaced silhouette through the cut."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-10.png",
+   "where": "The return port and Continue button, frames 5–11",
+   "what": "The arrow briefly changes shape in the port, but once free it moves to Continue like a regular pointer. There is no distinct held pose separating escape and assessment completion from the next click.",
+   "fix": "Show a compressed landing, then hold a visibly sagged recovery or an upright release before a deliberate wind-up into the click."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: the roll up to the lit Corporate HQ doors and the roll back are read; that the doors slam, that the ball hits them and that the arrow is pressed flat against the inside of the glass is not: the read has it tentatively interested, pausing at the entrance.",
+   "fix": "The slam as the event of the beat: the doors seen to shut in front of the ball, the ball's hit on them, and the arrow held flat against the inside of the glass before the slide back down the carpet.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the whole sheet",
+   "what": "did not read: the read is of a dazed arrow that comes out of the spiral and is knocked back and forth across the lower flippers. The fall toward the gap, the catch at the last instant and the sag of relief are not in the read.",
+   "fix": "The fall as a fall that is seen to head for the gap, one flipper's catch at the last instant as a single clear event, and the sag of relief inside the ball held long enough to be read.",
+   "by": "builder"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-A-01.png",
+   "read": "Wary and hesitant; it approaches the port, pulls back at the rim, then gets drawn inside, sealed in a ball and carried down the tube."
+  },
+  {
+   "file": "set-A-02.png",
+   "read": "Carried along and seemingly at the mercy of the machine; the trapped arrow rolls down the feeder toward the pinball table as the lights come on, without a distinct reaction to the reveal."
+  },
+  {
+   "file": "set-A-03.png",
+   "read": "Tense and waiting; it comes to rest over the spring at the foot of the shooter lane, holds there, then shoots up the lane."
+  },
+  {
+   "file": "set-A-04.png",
+   "read": "Tentatively interested; it rolls up to the lit Corporate HQ doors, pauses at the entrance, then rolls back and drops into the next section."
+  },
+  {
+   "file": "set-A-05.png",
+   "read": "Startled and out of control; it ricochets among the office bumpers and flippers, then ends up caught in a recess beside the coffee machine."
+  },
+  {
+   "file": "set-A-06.png",
+   "read": "Fidgety while stuck by Coffee, then flustered; more balls spill out beside it, it is swept into the scramble and drops to the next playfield."
+  },
+  {
+   "file": "set-A-07.png",
+   "read": "Briefly shocked, then stunned; it bunches up in the lit 'You're Fired' socket, sits there for a moment, then gets ejected."
+  },
+  {
+   "file": "set-A-08.png",
+   "read": "Hurried but otherwise impassive; it rebounds onto the elevated rail and gets carried into the Background Check spiral."
+  },
+  {
+   "file": "set-A-09.png",
+   "read": "Dazed and off balance; it comes out of the spiral and gets knocked back and forth across the lower flippers."
+  },
+  {
+   "file": "set-A-10.png",
+   "read": "Spent but ready to move on; it falls between the flippers, comes out of the return port without the ball, then clicks Continue, with little visible relief or celebration."
+  }
+ ]
+}

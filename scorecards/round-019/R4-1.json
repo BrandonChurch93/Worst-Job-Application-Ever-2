@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "pplx_computer_glm_5_3_1009",
- "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "set": "A: motion, one sheet of frames across each of the four beats, consecutive frames at the letter's drop and at a hit on the arrow, the page turn and the slab seating",
  "issues": [
   {
    "severity": "major",

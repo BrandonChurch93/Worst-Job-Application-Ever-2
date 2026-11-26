@@ -3,7 +3,7 @@
  "score": 6,
  "pass": false,
  "model": "kimi_k3",
- "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "set": "A: the keys `step2-rest` and `step2-dial`, whole and in native crops, and the sheet `machines`, each beside the approved image",
  "issues": [
   {
    "severity": "major",

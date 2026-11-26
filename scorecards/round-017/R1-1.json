@@ -3,7 +3,7 @@
  "score": 5,
  "pass": false,
  "model": "pplx_computer_glm_5_3_1009",
- "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "set": "A: the keys `boss-fight` and `boss-down`, whole and in native crops, and the sheet `boss-stages`, each beside the approved image",
  "issues": [
   {
    "severity": "severe",

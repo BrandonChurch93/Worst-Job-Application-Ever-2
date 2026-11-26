@@ -3,7 +3,7 @@
  "score": 8,
  "pass": true,
  "model": "gpt_6_2_sol",
- "set": "A: the page at rest, its result, and eight of the keys, as a web page",
+ "set": "A: the page as a web page: at rest and in the key `decision`, and the text and controls at their real size",
  "issues": [
   {
    "severity": "major",

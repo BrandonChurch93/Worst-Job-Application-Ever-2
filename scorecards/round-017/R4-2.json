@@ -3,7 +3,7 @@
  "score": 6,
  "pass": false,
  "model": "gpt_6_2_sol",
- "set": "B: the way in, the way out, the last two hits, the flipper save, the rail ride and the page turn that ends the page",
+ "set": "B: motion, eight sheets of consecutive frames: six at slabs that land and two at hits on the arrow",
  "issues": [
   {
    "severity": "major",

@@ -1,0 +1,72 @@
+{
+ "critic": "R4",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "D: motion, ten sheets of consecutive frames, nine at hits on the arrow and one at the ball's drop, 1:25.77 to 1:30.08",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-D-05.png, set-D-06.png, set-D-07.png",
+   "where": "the clear ball between the left slingshot and the coffee-cup bumper, 1:28.23 to 1:29.00",
+   "what": "the ball runs the same path over and over. The frames at 1:28.50 (D-05, D-06) and 1:28.77 (D-07) are almost identical: up-right to the cup, a kick back down-left, then the same arc again, about every 0.27 s. It looks scripted, like a ball being moved by hand rather than a ball loose in a machine",
+   "fix": "drive the ball from physics and add small random changes to each bounce (angle, speed, spin), so no two rebounds follow the same path. Let it lose energy and leave the trap after one or two hits"
+  },
+  {
+   "severity": "severe",
+   "file": "set-D-09.png, set-D-10.png",
+   "where": "the clear ball between the right red slingshot and the cup/blue bumper, 1:29.67 to 1:30.10",
+   "what": "the same repeating ping-pong. 1:29.70 to 1:29.83 (D-09) and 1:29.97 to 1:30.10 (D-10) trace the same diagonal at the same speed with the same rebound, so it reads as a loop",
+   "fix": "as above. Vary each rebound and let the slingshot kick add energy that is not the same each time"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-04.png",
+   "where": "the steel balls on the green envelope bumper, 1:28.20 to 1:28.47",
+   "what": "the steel balls are drawn on top of the bumper cap and roll over and through it instead of bouncing off its skirt. A steel ball sits centred on the cap at 1:28.33 and 1:28.37",
+   "fix": "collide the balls with the bumper's body so they deflect off the side in a frame or two, with the bumper firing (lamp flash and a skirt kick) on contact"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-10.png",
+   "where": "the clear ball over the blue bumper, 1:30.13 to 1:30.27",
+   "what": "the clear ball moves across the face of the blue bumper as if it were a flat decal, and the bumper does not answer",
+   "fix": "make it a hit: deflect the ball off the bumper's edge, flash the lamp and kick the ring"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-02.png, set-D-03.png",
+   "where": "the saucer where the steel balls come out, 1:27.77 to 1:27.87",
+   "what": "the first steel ball appears full size, overlapping the clear ball, and the two balls interpenetrate before they separate. They are never shown making contact",
+   "fix": "eject the steel balls one at a time from the hole with a visible kick, and resolve the contact with the clear ball on the frame they touch, both balls changing direction"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01.png",
+   "where": "the red flag/switch target, 1:25.80 to 1:25.97",
+   "what": "the ball reaches the red target and neither the target nor the page reacts. Then 1:25.97 hard-cuts to a different shot before the hit resolves, so the sheet cannot be read without a caption",
+   "fix": "on contact, flick the target back and spring it home and kick the ball off. Hold 6 to 8 frames after the hit before any cut"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-08.png, set-D-09.png, set-D-10.png",
+   "where": "the rim of the coffee-cup bumper, upper left (e.g. 1:29.57, 1:29.67, 1:29.73, 1:30.20)",
+   "what": "the chrome rim shows a dashed, stippled fringe and doubled outline that changes from frame to frame, so it will shimmer. The felt next to it also streaks and crawls",
+   "fix": "increase samples or temporal antialiasing on the thin chrome edges. If the doubling is the bumper kick, motion-blur it smoothly instead of ghosting it"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-03.png",
+   "where": "the 'Coffee' sign, 1:27.80",
+   "what": "the lettering thickens and doubles for one frame, a small flicker",
+   "fix": "stabilise the text's sampling so it does not change from frame to frame"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-08.png, set-D-09.png",
+   "where": "the arrow inside the clear ball",
+   "what": "the arrow snaps to unrelated orientations from frame to frame and smears into a starburst (1:29.83, 1:29.93), so it reads as glitching rather than rolling",
+   "fix": "tie the arrow's rotation to the ball's actual roll so it turns continuously"
+  }
+ ]
+}

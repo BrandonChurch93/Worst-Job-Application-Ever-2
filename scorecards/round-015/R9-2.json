@@ -1,0 +1,136 @@
+{
+ "critic": "R9",
+ "score": 5,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "B: acting, one sheet of each of the seven states the page uses (plain, nervous, shocked, scared, angry, confident, exhausted), with no time and no word on it",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "all 12 frames, the ball in the tube",
+   "what": "the arrow holds one pose and just slides down the tube like a pointer; it does not react to the drop, the speed or the world lighting up around it, and it is small and dim against the dark",
+   "fix": "give it a reaction: a lean back or brace on entering, a turn to look at the lights as they come on, and lift its value so it reads against the black"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "frames 3 to 12, the arrow on the wire rail",
+   "what": "the same forward-pointing pose is held for ten frames with no change through curves and the climb, so it reads as a cursor on a path rather than a rider feeling the ride",
+   "fix": "lean the arrow into each curve, tilt back on the climb, and add one beat of delight or fear at the top of the spiral"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "the flipper hit and bumper bounces, frames 1, 8, 10",
+   "what": "the ball never squashes on impact and the arrow shows no recoil or hold after a hit; the hits read only through motion blur and the feeling is not held long enough to see",
+   "fix": "squash the ball on each contact, snap the arrow back against the wall of the ball, and hold a dazed beat of two or three frames after the biggest hit"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "frames 2 to 6 against frames 7 to 12, and set-B-04 onward",
+   "what": "the character changes look: a flat cursor with a black outline in the early frames becomes a soft 3D white arrow with no outline in the ball, so it is not clearly the same character from sheet to sheet",
+   "fix": "keep one arrow design, either keep a thin dark rim on the 3D arrow or bring the flat arrow toward the 3D look before it is sealed"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "frames 1 to 11 on the launcher, then frame 12",
+   "what": "the wait is long but the arrow only turns a few degrees, and there is no squash of the spring or ball before launch and no stretch on launch, so the wind-up and the release are weak",
+   "fix": "compress the spring and squash the ball as the arrow crouches back, then stretch it on the launch frame"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-05.png",
+   "where": "frames 4 to 10, the arrow tip",
+   "what": "an orange-red tint appears on the arrow tip with no clear cause, which reads oddly as a mark or wound",
+   "fix": "remove the tint or motivate it with a clear light source"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-01.png",
+   "where": "frames 8 to 11, the arrow edge",
+   "what": "the outline breaks into a dotted, jagged edge as it shrinks",
+   "fix": "keep a clean continuous edge at small scale"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "the whole sheet",
+   "what": "did not read: nervous reads as alarmed, twisting and struggling inside the ball that forms round it, then resigned. Beads of sweat, the small tremble and the gulp are not in the read.",
+   "fix": "Nervous as the kit has it, before the ball closes: beads of sweat, a small tremble and a gulp, held long enough to be read apart from what the port does to the arrow.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as passive and almost blank, with no clear feeling, while the machine lights up round the ball. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked at the first sight of the machine: a look, a second look, the stretch tall, then the snap back, at a size and a brightness at which the arrow can be seen.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: scared reads as tense and waiting, turning a little as if bracing on the spring. Pale and stony, the lean back and the hiding are not in the read.",
+   "fix": "Scared as the kit has it while the plunger draws back: the arrow gone pale and stiff, leaning back against the far wall of the ball.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as dizzy and rattled, tumbling, then righting itself, and the red at the tip reads as a mark or a wound with no cause. A tip that glows red and steam vented in anger are not in the read.",
+   "fix": "Anger as the arrow's own: the tip glowing red from inside and steam vented in bursts with the body squared at what hit it, so that the red is not taken for a mark.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as determined or eager, pointing forward the whole way along the rail in one held pose. Upright with a slight bounce and a strut is not in the read.",
+   "fix": "Confidence in the body on the rail: upright, a bounce with the ride, a lean into each curve that reads as a strut, so that the pose is not taken for a pointer on a path.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-07.png",
+   "where": "the whole sheet",
+   "what": "did not read: exhausted reads as knocked about and dazed, tumbling and blurred between a flipper and the bumpers. The sag, the melt at the edges and the slump are not in the read.",
+   "fix": "Exhausted as the kit has it, in a held beat after the save: the arrow sagging, its edges melting, slumped against the wall of the ball.",
+   "by": "builder"
+  }
+ ],
+ "reads": [
+  {
+   "file": "set-B-01.png",
+   "read": "curious and calm, it appears, looks about, then flinches and shrinks back, and is pulled sideways toward a round metal port that has slid in"
+  },
+  {
+   "file": "set-B-02.png",
+   "read": "alarmed, a clear ball forms around it in the port, it twists and struggles inside, then gets dropped into a glass tube and carried off, resigned"
+  },
+  {
+   "file": "set-B-03.png",
+   "read": "passive, almost blank, it rolls down a dark tube in its ball while the lights of a machine world come on around it; no clear feeling"
+  },
+  {
+   "file": "set-B-04.png",
+   "read": "tense and waiting, it sits on a spring launcher, turning a little as if bracing, then is fired off up the lane"
+  },
+  {
+   "file": "set-B-05.png",
+   "read": "dizzy and rattled, it tumbles near a flipper, spinning inside the ball, then rights itself and points up, gathering itself"
+  },
+  {
+   "file": "set-B-06.png",
+   "read": "determined or eager, it rides a wire rail through the machine, pointing forward the whole way"
+  },
+  {
+   "file": "set-B-07.png",
+   "read": "knocked about and dazed, it is hit by a flipper and bounces between bumpers, tumbling and blurred"
+  }
+ ]
+}

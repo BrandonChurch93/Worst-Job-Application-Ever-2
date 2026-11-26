@@ -1,0 +1,237 @@
+{
+  "unit": "pinball",
+  "tier": "final",
+  "judgedTier": "final",
+  "format": "hd",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "pinball": "5a5c711506d19c82"
+  },
+  "only": null,
+  "stills": [
+    "key:loader-page",
+    "key:table-wide",
+    "key:tier-corporate",
+    "key:lobby-doors",
+    "key:tier-office",
+    "key:reply-all",
+    "key:tier-street",
+    "key:youre-fired",
+    "key:rail-cam",
+    "key:last-save",
+    "still:rest-step3",
+    "still:step3-result",
+    "sheet:clear-ball",
+    "sheet:table-map"
+  ],
+  "exit": 2,
+  "green": [
+    "M1",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+    "M9",
+    "M10"
+  ],
+  "red": [
+    "M2",
+    "M3"
+  ],
+  "notYet": [],
+  "measures": [
+    {
+      "id": "M1",
+      "status": "pass",
+      "summary": "14 stills: 0 invalid values; 0 bare of 17988 edge pixels in 3 stills from home; the cursor outside the frame in 0",
+      "numbers": {
+        "stills": 14,
+        "invalidValues": 0,
+        "edgePixels": 17988,
+        "bareEdgePixels": 0,
+        "stillsFromHome": 3,
+        "cursorOutside": 0
+      },
+      "failing": []
+    },
+    {
+      "id": "M2",
+      "status": "fail",
+      "summary": "14 stills, 5923086 textured pixels: the largest soft share 1, the most allowed 0.02",
+      "numbers": {
+        "stills": 14,
+        "texturedPixels": 5923086,
+        "worstSoftShare": 1,
+        "limit": 0.02
+      },
+      "failing": [
+        {
+          "still": "key:youre-fired",
+          "what": "textured pixels with fewer than detail.minTexelsPerPixel (1) texels per screen pixel",
+          "value": 1,
+          "limit": 0.02,
+          "of": 1
+        }
+      ]
+    },
+    {
+      "id": "M3",
+      "status": "fail",
+      "summary": "10 keys: the least ratio of fine detail to the approved image 0.5365, the least allowed 0.8",
+      "numbers": {
+        "keys": 10,
+        "leastRatio": 0.5365,
+        "limit": 0.8
+      },
+      "failing": [
+        {
+          "still": "key:rail-cam",
+          "what": "fine detail against the approved image at the same size",
+          "value": 0.5365,
+          "limit": 0.8,
+          "energy": [
+            0.0018,
+            0.0034
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M4",
+      "status": "pass",
+      "summary": "257 runs of type in 11 stills: the smallest 16 px (least 14), the least contrast 4.62 (least 4.5)",
+      "numbers": {
+        "stills": 11,
+        "runs": 257,
+        "leastPx": 16,
+        "leastContrast": 4.62,
+        "minTextPx": 14,
+        "minTextContrast": 4.5
+      },
+      "failing": []
+    },
+    {
+      "id": "M5",
+      "status": "pass",
+      "summary": "110 parts in 11 stills: the furthest 0 px from the layout tree, the most allowed 2; 0 left out as moved by a gag",
+      "numbers": {
+        "stills": 11,
+        "parts": 110,
+        "worstPx": 0,
+        "limit": 2,
+        "leftOutAsMoved": []
+      },
+      "failing": []
+    },
+    {
+      "id": "M6",
+      "status": "pass",
+      "summary": "2 stills from home with the cursor at rest and 3 from a tier camera: the furthest 3.43 px from its size, the most allowed 6",
+      "numbers": {
+        "fromHome": 2,
+        "fromTierCamera": 3,
+        "worstPx": 3.43,
+        "heightPx": 70,
+        "ballPx": 96,
+        "cursorInBallPx": 70.08,
+        "tolerancePx": 6
+      },
+      "failing": []
+    },
+    {
+      "id": "M7",
+      "status": "pass",
+      "summary": "2520 frames read, 24 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next",
+      "numbers": {
+        "frames": 2520,
+        "hits": 24,
+        "tooFar": 0,
+        "noChange": 0,
+        "worstOverPx": 0,
+        "beats": 10,
+        "firstFrame": 4020,
+        "lastFrame": 6539
+      },
+      "failing": []
+    },
+    {
+      "id": "M8",
+      "status": "pass",
+      "summary": "corporate 27 parts, 0.0156 bare; office 26 parts, 0.015 bare; street 31 parts, 0.0014 bare (at least 24 parts, at most 0.08 bare)",
+      "numbers": {
+        "tiers": {
+          "corporate": {
+            "standingParts": 27,
+            "bareShare": 0.0156,
+            "floorPixels": 1977988,
+            "floorPixelsInSight": 421879,
+            "barePixels": 30806,
+            "radiusPx": 39.01
+          },
+          "office": {
+            "standingParts": 26,
+            "bareShare": 0.015,
+            "floorPixels": 2019444,
+            "floorPixelsInSight": 691997,
+            "barePixels": 30290,
+            "radiusPx": 39
+          },
+          "street": {
+            "standingParts": 31,
+            "bareShare": 0.0014,
+            "floorPixels": 1958866,
+            "floorPixelsInSight": 377388,
+            "barePixels": 2656,
+            "radiusPx": 37.11
+          }
+        },
+        "minStandingParts": 24,
+        "maxBareFraction": 0.08
+      },
+      "failing": []
+    },
+    {
+      "id": "M9",
+      "status": "pass",
+      "summary": "14 of 20 parts checked in 2 stills from home: the furthest 0 px from its size or height, the most allowed 2",
+      "numbers": {
+        "stills": 2,
+        "parts": 20,
+        "checked": 14,
+        "worstPx": 0,
+        "tolerancePx": 2
+      },
+      "failing": []
+    },
+    {
+      "id": "M10",
+      "status": "pass",
+      "summary": "63 openings, the narrowest 1.25 balls (least 1.25); 16 rails; 17 holds; the lift has 2 doors and 2 elbows; display characters 15.23 px in the tier stills (least 14); npm run paths ended with code 0: paths: all clear",
+      "numbers": {
+        "openings": 63,
+        "narrowestBalls": 1.25,
+        "minClearanceBalls": 1.25,
+        "rails": 16,
+        "holds": 17,
+        "liftDoors": 2,
+        "liftElbows": 2,
+        "sealed": [
+          "corporate.beach"
+        ],
+        "leastDisplayCharPx": 15.23,
+        "paths": {
+          "status": 0,
+          "last": "paths: all clear"
+        },
+        "displayScale": {
+          "corporate": 0.999962490769838,
+          "office": 0.9996735751422242,
+          "street": 0.9520848708101441
+        }
+      },
+      "failing": []
+    }
+  ]
+}

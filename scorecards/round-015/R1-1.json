@@ -3,7 +3,7 @@
  "score": 4,
  "pass": false,
  "model": "kimi_k3",
- "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "set": "A: the keys `loader-page` and `table-wide`, whole and in native crops, and the sheet `clear-ball`, each beside the approved image",
  "issues": [
   {
    "severity": "severe",

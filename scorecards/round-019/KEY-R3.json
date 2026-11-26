@@ -1,0 +1,229 @@
+{
+  "role": "R3",
+  "round": 19,
+  "unit": "decision",
+  "commit": "b4494f0d7ac425926ff347112587c74ef5006d8d",
+  "tier": "final",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "step1": "85340d921cd74c57",
+    "step2": "63f851bcd2cd65cf",
+    "marketing": "3645cc7fb7a95417",
+    "pinball": "5a5c711506d19c82",
+    "boss": "523f6a7695ccd263",
+    "decision": "740d3c0f81bae216"
+  },
+  "browser": "147.0.7727.15",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 1 of 2. The page at one moment",
+      "still": {
+        "page": "decision",
+        "beat": "decision.metrics",
+        "at": 0.3,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "decision"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "judged",
+      "heading": "Picture 2 of 2. The page at rest",
+      "still": {
+        "page": "decision",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step5"
+      },
+      "format": "hd",
+      "tier": "final",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at one moment",
+      "still": {
+        "page": "decision",
+        "beat": "decision.metrics",
+        "at": 0.3,
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "key": "decision"
+      },
+      "crops": [
+        {
+          "part": "paper",
+          "window": [
+            301,
+            406,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "shape:letter-mark-top+letter-mark-bottom+letter-mark-left+letter-mark-right",
+          "window": [
+            458,
+            543,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "stampBlock",
+          "window": [
+            960,
+            569,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "readout",
+          "window": [
+            913,
+            286,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.glass",
+          "window": [
+            1459,
+            448,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "heroButton",
+          "window": [
+            730,
+            740,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            1251,
+            635,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButtonCurrent",
+          "window": [
+            1459,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            197,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R3-1",
+      "kind": "surface-crops",
+      "heading": "Surfaces and objects at their real size, cut from a picture of this set: the page at rest",
+      "still": {
+        "page": "decision",
+        "camera": "home",
+        "tier": "final"
+      },
+      "from": {
+        "id": "rest-step5"
+      },
+      "crops": [
+        {
+          "part": "card.glass",
+          "window": [
+            1459,
+            707,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "progressButton",
+          "window": [
+            1182,
+            0,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "type",
+          "window": [
+            165,
+            625,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "cursor",
+          "window": [
+            751,
+            405,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "card.contact",
+          "window": [
+            0,
+            707,
+            461,
+            340
+          ]
+        },
+        {
+          "part": "header",
+          "window": [
+            103,
+            0,
+            461,
+            340
+          ]
+        }
+      ],
+      "format": "hd",
+      "tier": "final"
+    }
+  }
+}

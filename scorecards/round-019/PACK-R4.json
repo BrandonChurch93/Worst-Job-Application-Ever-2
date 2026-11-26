@@ -1,0 +1,86 @@
+{
+  "stamp": {
+    "role": "R4",
+    "round": 19,
+    "unit": "decision",
+    "commit": "b4494f0d7ac425926ff347112587c74ef5006d8d",
+    "tier": "final",
+    "engineHash": "37a0ae9550ae4e93",
+    "sharedHash": "b3f0d5b3590f8fda",
+    "pageHashes": {
+      "step1": "85340d921cd74c57",
+      "step2": "63f851bcd2cd65cf",
+      "marketing": "3645cc7fb7a95417",
+      "pinball": "5a5c711506d19c82",
+      "boss": "523f6a7695ccd263",
+      "decision": "740d3c0f81bae216"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R4-1",
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1665805,
+          "sha256": "f6d0ca4ee819d848f8378364df9e13e4bddc5ed1bffc3501c360af1d0271afcd"
+        },
+        {
+          "name": "set-A-02.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1769602,
+          "sha256": "0f1317f3192a8f5d8a06deabbb982da2691a080fb435272169047fe0c17dba0d"
+        },
+        {
+          "name": "set-A-03.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1907875,
+          "sha256": "1f77b5f48b9bc4c5b13e4fba94fb3e51c87d591cdf7574f91c6ead13cb3b1043"
+        },
+        {
+          "name": "set-A-04.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1833078,
+          "sha256": "f40b5fd8aad0b79c51d94f0103496f4951a8ff03d2c5bf9b9b2d1b5c7277f84c"
+        },
+        {
+          "name": "set-A-05.png",
+          "width": 1399,
+          "height": 1342,
+          "bytes": 2162294,
+          "sha256": "34b48267184fd2cb463acb9c5275bcaf202dd9861c1ea531ee7cd1d47b63daa6"
+        },
+        {
+          "name": "set-A-06.png",
+          "width": 1399,
+          "height": 1342,
+          "bytes": 2824509,
+          "sha256": "b8c2310e7cd1d0e4a1968f9c436737ab1488bf1a293f762c5df0c292fbc7b0f7"
+        },
+        {
+          "name": "set-A-07.png",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1853687,
+          "sha256": "94a7f34c6b72f5df5bf38b5cbbe824f9495f1d10376208d50c63979d1e0351d6"
+        },
+        {
+          "name": "set-A-08.png",
+          "width": 1399,
+          "height": 1342,
+          "bytes": 2373787,
+          "sha256": "bfe783097b985b88dbf5a0ed3a3f1c244a43e9538442d9a5483f6ea49fd21172"
+        }
+      ]
+    }
+  ]
+}

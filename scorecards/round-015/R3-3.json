@@ -3,7 +3,7 @@
  "score": 7,
  "pass": false,
  "model": "kimi_k3",
- "set": "C: surface and detail, native-size crops of the ten keys",
+ "set": "C: surface and detail, native crops of the ten keys",
  "issues": [
   {
    "severity": "major",

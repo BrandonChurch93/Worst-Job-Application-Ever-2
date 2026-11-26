@@ -3,7 +3,7 @@
  "score": 6,
  "pass": false,
  "model": "claude_opus_5_5",
- "set": "A: the page with the loader, the whole machine and the clear ball sheet beside the approved images, whole and in crops",
+ "set": "A: the key `decision`, whole and in native crops, beside the approved image",
  "issues": [
   {
    "severity": "major",

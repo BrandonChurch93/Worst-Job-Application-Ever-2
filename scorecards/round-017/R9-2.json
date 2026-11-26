@@ -3,7 +3,7 @@
  "score": 5,
  "pass": false,
  "model": "claude_opus_5_5",
- "set": "B: one sheet of each acting state the page uses, plain, nervous, shocked, confident, scared and exhausted, with no time and no word on it",
+ "set": "B: acting, one sheet of each of the eight states the page uses (nervous, scared, confident, angry, shocked, plain, exhausted, proud), with no time and no word on it",
  "issues": [
   {
    "severity": "severe",
@@ -60,6 +60,22 @@
    "where": "the press, frames 9 to 10",
    "what": "the press is a motion blur with no squash on contact with the button",
    "fix": "squash the arrow on the button for one frame before it springs back up"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as stunned and smoking after a beam hits its tip and burns it. A tip that glows red and steam vented in anger are not in the read.",
+   "fix": "Anger as the arrow's own: the tip glowing red from inside and steam in bursts with the body squared at the boss, so that it is not taken for an arrow that has been hit.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as singed and recovering, then nervous and impatient, glancing about while a timer bar drains. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked as a held pose when the health jumps back: a look, a second look, the stretch tall, then the snap back.",
+   "by": "builder"
   }
  ],
  "reads": [

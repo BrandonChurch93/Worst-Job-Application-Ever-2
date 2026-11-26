@@ -3,7 +3,7 @@
  "score": 6,
  "pass": false,
  "model": "claude_opus_5_5",
- "set": "B: one sheet of each acting state the page uses, plain, nervous, shocked, confident, scared and exhausted, with no time and no word on it",
+ "set": "B: acting, one sheet of each of the seven states the page uses (confident, nervous, scared, plain, shocked, angry, exhausted), with no time and no word on it",
  "issues": [
   {
    "severity": "major",
@@ -53,6 +53,30 @@
    "where": "frames 3 to 12, the melted arrow",
    "what": "strong and readable, but the melted lump changes shape a lot from frame to frame, so it reads as a different object in places",
    "fix": "keep a consistent melted silhouette, the bent tip and droopy tail, and animate the limp through squash and stretch on that shape"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the whole sheet",
+   "what": "did not read: confident reads as cautious and curious, then uneasy but going along. Upright with a slight bounce and a strut is not in the read.",
+   "fix": "Confidence in the body on the way to the first field: upright, a bounce in the walk, a strut held long enough to be read before the field opens.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "the whole sheet",
+   "what": "did not read: shocked reads as tired and impatient, turning back and forth as if wondering whether it is done yet. The double take, the stretch tall and the snap back are not in the read.",
+   "fix": "The double take of Shocked as a held pose at the meter: a look, a second look, the stretch tall, then the snap back, so that the turning is not taken for waiting.",
+   "by": "builder"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-06.png",
+   "where": "the whole sheet",
+   "what": "did not read: angry reads as hurt and alarmed, with a tip that catches fire and smokes as it brushes the meter. A tip that glows red and steam vented in anger are not in the read.",
+   "fix": "Anger as the arrow's own: the tip glowing red from inside, steam vented in bursts with the body squared at the crank, so that it is not taken for an arrow that is on fire.",
+   "by": "builder"
   }
  ],
  "reads": [

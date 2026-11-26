@@ -1,0 +1,139 @@
+{
+  "unit": "decision",
+  "tier": "final",
+  "judgedTier": "final",
+  "format": "hd",
+  "engineHash": "37a0ae9550ae4e93",
+  "sharedHash": "b3f0d5b3590f8fda",
+  "pageHashes": {
+    "decision": "740d3c0f81bae216"
+  },
+  "only": null,
+  "stills": [
+    "key:decision",
+    "still:rest-step5"
+  ],
+  "exit": 0,
+  "green": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M9"
+  ],
+  "red": [],
+  "notYet": [],
+  "measures": [
+    {
+      "id": "M1",
+      "status": "pass",
+      "summary": "2 stills: 0 invalid values; 0 bare of 11992 edge pixels in 2 stills from home; the cursor outside the frame in 0",
+      "numbers": {
+        "stills": 2,
+        "invalidValues": 0,
+        "edgePixels": 11992,
+        "bareEdgePixels": 0,
+        "stillsFromHome": 2,
+        "cursorOutside": 0
+      },
+      "failing": []
+    },
+    {
+      "id": "M2",
+      "status": "pass",
+      "summary": "2 stills, 1004308 textured pixels: the largest soft share 0, the most allowed 0.02",
+      "numbers": {
+        "stills": 2,
+        "texturedPixels": 1004308,
+        "worstSoftShare": 0,
+        "limit": 0.02
+      },
+      "failing": []
+    },
+    {
+      "id": "M3",
+      "status": "pass",
+      "summary": "1 keys: the least ratio of fine detail to the approved image 1.3223, the least allowed 0.8",
+      "numbers": {
+        "keys": 1,
+        "leastRatio": 1.3223,
+        "limit": 0.8
+      },
+      "failing": []
+    },
+    {
+      "id": "M4",
+      "status": "pass",
+      "summary": "32 runs of type in 2 stills: the smallest 20 px (least 14), the least contrast 4.62 (least 4.5)",
+      "numbers": {
+        "stills": 2,
+        "runs": 32,
+        "leastPx": 20,
+        "leastContrast": 4.62,
+        "minTextPx": 14,
+        "minTextContrast": 4.5
+      },
+      "failing": []
+    },
+    {
+      "id": "M5",
+      "status": "pass",
+      "summary": "26 parts in 2 stills: the furthest 0 px from the layout tree, the most allowed 2; 0 left out as moved by a gag",
+      "numbers": {
+        "stills": 2,
+        "parts": 26,
+        "worstPx": 0,
+        "limit": 2,
+        "leftOutAsMoved": []
+      },
+      "failing": []
+    },
+    {
+      "id": "M6",
+      "status": "pass",
+      "summary": "2 stills from home with the cursor at rest and 0 from a tier camera: the furthest 0 px from its size, the most allowed 6",
+      "numbers": {
+        "fromHome": 2,
+        "fromTierCamera": 0,
+        "worstPx": 0,
+        "heightPx": 70,
+        "ballPx": 96,
+        "cursorInBallPx": 70.08,
+        "tolerancePx": 6
+      },
+      "failing": []
+    },
+    {
+      "id": "M7",
+      "status": "pass",
+      "summary": "720 frames read, 2 events strike the cursor: 0 further from it than its own height in the picture, 0 with no change of damage or acting and no reaction starting on that frame or the next",
+      "numbers": {
+        "frames": 720,
+        "hits": 2,
+        "tooFar": 0,
+        "noChange": 0,
+        "worstOverPx": 0,
+        "beats": 4,
+        "firstFrame": 8460,
+        "lastFrame": 9179
+      },
+      "failing": []
+    },
+    {
+      "id": "M9",
+      "status": "pass",
+      "summary": "21 of 26 parts checked in 2 stills from home: the furthest 0 px from its size or height, the most allowed 2",
+      "numbers": {
+        "stills": 2,
+        "parts": 26,
+        "checked": 21,
+        "worstPx": 0,
+        "tolerancePx": 2
+      },
+      "failing": []
+    }
+  ]
+}

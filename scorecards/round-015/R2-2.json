@@ -1,0 +1,523 @@
+{
+ "critic": "R2",
+ "set": "B",
+ "jurors": 5,
+ "controls": [
+  {
+   "file": "set-B-01.png",
+   "what": {
+    "control": "loader-page",
+    "image": "references/approved/loader-page.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_21",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 72,
+     "why": "most influenced by the polished studio-CGI look: realistic metal/glass/paper materials and soft shadows, but it reads like a conceptual stock/product illustration rather than a real photograph or a narrative film/game cinematic.",
+     "at": "07:03Z"
+    },
+    {
+     "juror": "r11_juror_22",
+     "model": "gpt_6_2_sol",
+     "answer": "d",
+     "confidence": 89,
+     "why": "The numbered progress indicator is built into the 3D scene itself, making the image read as an interactive web interface.",
+     "at": "07:03Z"
+    },
+    {
+     "juror": "r11_juror_23",
+     "model": "claude_opus_5_5",
+     "answer": "c",
+     "confidence": 50,
+     "why": "the photoreal material detail: fine paper grain, brushed-metal rings, clear acrylic tube and soft contact shadows. That looks like a polished offline still render of a stylized UI mockup. A real-time web or mobile scene would usually look simpler, and it isn't a physical object or a film frame.",
+     "at": "07:04Z"
+    },
+    {
+     "juror": "r11_juror_24",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "d",
+     "confidence": 76,
+     "why": "The numbered stepper with step 3 visibly active makes it look like an interactive web demo rather than a standalone product render.",
+     "at": "07:04Z"
+    },
+    {
+     "juror": "r11_juror_25",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 75,
+     "why": "the clean, studio-lit illustrative style - a 3D-rendered \"physical\" UI layout with a title, placeholder text bars, and a glossy whistle/button object - which matches the aesthetic of a stock/banner 3D illustration rather than a photographic scene or a cinematic film frame.",
+     "at": "07:06Z"
+    }
+   ],
+   "letters": "c d c d c",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-02.png",
+   "what": {
+    "control": "table-wide",
+    "image": "references/approved/table-wide.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_26",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 76,
+     "why": "The mouse-pointer icon encased in a clear sphere and integrated into the plunger reads like a designed 3D concept prop.",
+     "at": "07:06Z"
+    },
+    {
+     "juror": "r11_juror_27",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 55,
+     "why": "the photographic look, with shallow depth of field, real bokeh on the lamps, and worn metal textures, like a studio product shot of a physical model. The odd details (a cursor ball, \"Unemployment Office\") point to a custom-built prop, or possibly an AI image, rather than a game.",
+     "at": "07:08Z"
+    },
+    {
+     "juror": "r11_juror_28",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 78,
+     "why": "The centered, isolated packshot composition makes the stylized pinball cabinet read as a standalone product render.",
+     "at": "07:08Z"
+    },
+    {
+     "juror": "r11_juror_29",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 82,
+     "why": "The isolated, highly polished product-shot presentation on a black background most suggests an ordinary 3D render rather than a photograph or cinematic frame.",
+     "at": "07:08Z"
+    },
+    {
+     "juror": "r11_juror_30",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 77,
+     "why": "The elaborate miniature playfield reads like a deliberately stylized cinematic prop despite the highly realistic lighting and materials.",
+     "at": "07:09Z"
+    }
+   ],
+   "letters": "c a c c b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-03.png",
+   "what": {
+    "control": "tier-corporate",
+    "image": "references/approved/tier-corporate.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_31",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 55,
+     "why": "The biggest factor was the photographic look: real-world materials (marble, brushed steel, glass reflections), shallow depth of field, and warm practical lighting that looks like a macro product shoot. The concept is whimsical, though, with a \"Corporate HQ\" sign and a \"Retirement\" beach diorama, so it could just as easily be a high-end or AI-generated render. That is why my confidence is modest.",
+     "at": "07:09Z"
+    },
+    {
+     "juror": "r11_juror_32",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "c",
+     "confidence": 82,
+     "why": "The mouse pointer appears embedded in a reflective pinball, a stylized detail that makes it look like a conceptual 3D product illustration.",
+     "at": "07:09Z"
+    },
+    {
+     "juror": "r11_juror_33",
+     "model": "kimi_k3",
+     "answer": "a",
+     "confidence": 82,
+     "why": "The convincing physical reflections, lens focus, subtle wear, and complex coherent miniature construction most strongly suggest a professionally photographed real object.",
+     "at": "07:09Z"
+    },
+    {
+     "juror": "r11_juror_34",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 81,
+     "why": "The unusually rich, coherent reflections across the glass and chrome make the stylized pinball scene look cinematic.",
+     "at": "07:09Z"
+    },
+    {
+     "juror": "r11_juror_35",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 50,
+     "why": "it looks like a real photo, with natural depth-of-field falloff, realistic specular highlights on the brushed metal and glass, and fine wear and scratches on the playfield. The whimsical miniature theme (\"Corporate HQ\", a \"Retirement\" beach diorama, a cursor ball) does make (b) possible.",
+     "at": "07:09Z"
+    }
+   ],
+   "letters": "a c a b a",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-04.png",
+   "what": {
+    "control": "lobby-doors",
+    "image": "references/approved/lobby-doors.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_36",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 91,
+     "why": "the stylized cursor orb's unusually elaborate, cinematic glass refraction and caustic lighting.",
+     "at": "07:09Z"
+    },
+    {
+     "juror": "r11_juror_37",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 78,
+     "why": "the polished but generic stock-concept composition, especially the symbolic cursor-in-glass-sphere prop, made it feel like an ordinary high-quality 3D render rather than a cinematic film frame or real photograph.",
+     "at": "07:09Z"
+    },
+    {
+     "juror": "r11_juror_38",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 92,
+     "why": "The cinematic lighting on the stylized glass cursor orb, especially its convincing refraction and glow on the red carpet, most influenced my answer.",
+     "at": "07:09Z"
+    },
+    {
+     "juror": "r11_juror_39",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 50,
+     "why": "the scene looks like a professionally lit tabletop miniature photo. The fuzzy carpet fibers, dust and flaws inside the glass sphere, real shallow depth of field and lens bokeh, and the scale cues of a miniature set all point to a camera, not a render. The next most likely answer is (b), a high-end CGI frame.",
+     "at": "07:10Z"
+    },
+    {
+     "juror": "r11_juror_40",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 92,
+     "why": "The intricate, dramatically lit glass refraction around the stylized cursor orb looks like a high-end cinematic effect.",
+     "at": "07:10Z"
+    }
+   ],
+   "letters": "b c b a b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-05.png",
+   "what": {
+    "control": "tier-office",
+    "image": "references/approved/tier-office.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_41",
+     "model": "kimi_k3",
+     "answer": "b",
+     "confidence": 82,
+     "why": "The hyper-polished cinematic lighting and materials make it look like a premium CGI frame rather than an ordinary or low-budget render.",
+     "at": "07:10Z"
+    },
+    {
+     "juror": "r11_juror_42",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 80,
+     "why": "the finely art-directed material detail (especially the worn, convincingly reflective pinball rails) makes the fantastical office-themed set look cinematic.",
+     "at": "07:10Z"
+    },
+    {
+     "juror": "r11_juror_43",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 55,
+     "why": "The biggest factor was the photographic lighting and materials: worn brushed metal, true depth-of-field falloff, glowing insert lights and realistic dust or grime on the playfield. Together these read as a professional macro photo of a custom-themed pinball table, not a CG render. The surreal office theme (coffee-cup bumpers, stapler slingshots, cursor ball) is what keeps (b) in play.",
+     "at": "07:10Z"
+    },
+    {
+     "juror": "r11_juror_44",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 80,
+     "why": "The elaborate miniature office built into the pinball table has the bespoke art direction of a cinematic set.",
+     "at": "07:10Z"
+    },
+    {
+     "juror": "r11_juror_45",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 88,
+     "why": "The clean studio-product presentation and polished but functionally whimsical geometry make it look most like an ordinary high-detail 3D concept/product render rather than a cinematic frame or a real object.",
+     "at": "07:11Z"
+    }
+   ],
+   "letters": "b b a b c",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-06.png",
+   "what": {
+    "control": "reply-all",
+    "image": "references/approved/reply-all.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_46",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 84,
+     "why": "the chrome balls' richly detailed, softly lit reflections make the stylized pinball scene look like a cinematic-quality render.",
+     "at": "07:11Z"
+    },
+    {
+     "juror": "r11_juror_47",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 60,
+     "why": "it looks like a real photograph. The lighting, shallow depth of field, film-like grain, and the wear and reflections on the steel all look photographic. The playfield's office theme (cubicles, coffee-cup bumpers, a cursor ball) seems staged, which makes me think it could be a generated image. But of the four options, it fits a professional photo better than a CG render.",
+     "at": "07:11Z"
+    },
+    {
+     "juror": "r11_juror_48",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 89,
+     "why": "The convincingly lit, refractive glass pinball enclosing a stylized mouse cursor is the strongest cue for a polished cinematic render.",
+     "at": "07:11Z"
+    },
+    {
+     "juror": "r11_juror_49",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 70,
+     "why": "The image shows an office-themed pinball playfield (coffee cups as bumpers, staplers as flippers, a coffee machine, a cursor-branded ball). Most influential factor: it depicts an impossible, concept-style single object staged with clean studio-style lighting, shallow depth of field, and perfectly polished materials - the hallmark of a standalone CG product/concept render rather than a real photograph, and it lacks the cinematic characters/narrative framing of a film or game cinematic.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_50",
+     "model": "gpt_6_2_sol",
+     "answer": "c",
+     "confidence": 76,
+     "why": "The perfectly staged, product-shot composition of a whimsical pinball machine reads more like standalone CGI than a frame from a cinematic.",
+     "at": "07:12Z"
+    }
+   ],
+   "letters": "b a b c c",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-07.png",
+   "what": {
+    "control": "tier-street",
+    "image": "references/approved/tier-street.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_51",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 60,
+     "why": "The main factor was the photographic look: shallow depth of field, realistic glare and reflections on the metal rails and plastics, warm practical lighting, and worn surface textures, which reads like a professional macro shot of a pinball playfield. Two things lowered my confidence: the arrow cursor inside the ball, and the odd, joke-like layout (\"Mom's Basement\", \"Unemployment Office\"). Both suggest the image is staged or synthetic rather than a real machine.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_52",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 77,
+     "why": "The transparent pinball containing a crisp mouse-pointer icon is the strongest clue that this photoreal scene is a digitally staged cinematic.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_53",
+     "model": "kimi_k3",
+     "answer": "a",
+     "confidence": 78,
+     "why": "the natural optical depth of field and irregular wear, dust, and reflections across the physical glass, railings, and metal.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_54",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 83,
+     "why": "The most influential cue was the cinematic lighting on the miniature pinball set, especially the realistic reflections cast by its tiny practical lights.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_55",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 60,
+     "why": "it looks like a photograph, with shallow depth of field, real-looking reflections on the metal and glass, warm light glow from the bulbs, and worn surfaces on the playfield. Caveat: the joke labels and the mouse cursor inside the ball suggest it may be AI-generated or staged and not a real machine.",
+     "at": "07:12Z"
+    }
+   ],
+   "letters": "a b a b a",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-08.png",
+   "what": {
+    "control": "youre-fired",
+    "image": "references/approved/youre-fired.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_56",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 81,
+     "why": "the complex red beacon reflections across the glass cursor ball and glossy playfield give the stylized scene a cinematic-render finish.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_57",
+     "model": "kimi_k3",
+     "answer": "b",
+     "confidence": 65,
+     "why": "the highly polished cinematic lighting, shallow depth of field, and physically impossible subject (a mouse cursor sealed inside a glass sphere, \"You're Fired\" miniature building with glowing siren) - the realism is too perfect and stylized for a stock render or low-budget app, pointing to high-end CGI/cinematic-grade rendering rather than a real photograph or ordinary 3D asset.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_58",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 83,
+     "why": "The cursor suspended inside the glass ball is integrated into the cinematic red lighting and reflections, making the surreal prop feel like part of a polished animated scene.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_59",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 55,
+     "why": "it looks like a real macro photo, with a shallow depth of field, bokeh, realistic glow from the red beacon and believable reflections on the glossy pinball playfield. That reads as a professional product or miniature photo, though the surreal subject (a cursor inside a glass ball) means it could also be a high-end render.",
+     "at": "07:12Z"
+    },
+    {
+     "juror": "r11_juror_60",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 74,
+     "why": "The most influential cue is the intricately lit glass ball containing a stylized computer cursor, which reads like a cinematic CG prop.",
+     "at": "07:13Z"
+    }
+   ],
+   "letters": "b b b a b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-09.png",
+   "what": {
+    "control": "rail-cam",
+    "image": "references/approved/rail-cam.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_61",
+     "model": "kimi_k3",
+     "answer": "c",
+     "confidence": 75,
+     "why": "the polished but stock-concept-like CGI composition - especially the glossy materials and impossible cursor-in-glass centerpiece - made it read more like a high-quality ordinary 3D render than a recognizable film or game cinematic.",
+     "at": "07:13Z"
+    },
+    {
+     "juror": "r11_juror_62",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 88,
+     "why": "The strongest cue is the cinematic treatment of the glass cursor marble, with intricate reflections and refraction against a selectively blurred miniature pinball set.",
+     "at": "07:13Z"
+    },
+    {
+     "juror": "r11_juror_63",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 60,
+     "why": "photographic macro-style shallow depth of field, real-looking bokeh and complex reflections in the glass sphere and chrome rails. It looks like a professional tabletop or pinball photo, though the cursor-in-ball concept means it could be a high-end render.",
+     "at": "07:13Z"
+    },
+    {
+     "juror": "r11_juror_64",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 86,
+     "why": "the cinematic, physically rich lighting on the stylized glass ball, with complex reflections and refraction from the miniature pinball set.",
+     "at": "07:13Z"
+    },
+    {
+     "juror": "r11_juror_65",
+     "model": "kimi_k3",
+     "answer": "b",
+     "confidence": 78,
+     "why": "the cinematic shallow depth of field, polished volumetric lighting, and high-end glass/metal detail make it look most like a top-budget animated/game cinematic frame rather than a stock render or photo.",
+     "at": "07:14Z"
+    }
+   ],
+   "letters": "c b a b b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  },
+  {
+   "file": "set-B-10.png",
+   "what": {
+    "control": "last-save",
+    "image": "references/approved/last-save.png"
+   },
+   "votes": [
+    {
+     "juror": "r11_juror_66",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 88,
+     "why": "The sharply staged cursor inside the reflective glass pinball looks like a deliberately composited cinematic effect rather than part of a photographed machine.",
+     "at": "07:14Z"
+    },
+    {
+     "juror": "r11_juror_67",
+     "model": "claude_opus_5_5",
+     "answer": "a",
+     "confidence": 60,
+     "why": "the image looks like a photo, with real camera depth of field, warm practical bokeh, film-like grain and physically convincing glass and metal reflections. It's surreal, though (a cursor inside the ball, \"Unemployment Office\" signage), so it could be AI-generated photoreal imagery. Of the four options, a professional photo of a real object fits best.",
+     "at": "07:14Z"
+    },
+    {
+     "juror": "r11_juror_68",
+     "model": "pplx_computer_glm_5_3_1009",
+     "answer": "b",
+     "confidence": 85,
+     "why": "The glass pinball containing a crisp mouse cursor looks like a deliberately stylized cinematic CG prop.",
+     "at": "07:14Z"
+    },
+    {
+     "juror": "r11_juror_69",
+     "model": "kimi_k3",
+     "answer": "a",
+     "confidence": 80,
+     "why": "The convincing physical wear, dust, miniature-scale depth of field, and natural practical-light reflections make it look most like a professionally photographed real pinball-table model.",
+     "at": "07:14Z"
+    },
+    {
+     "juror": "r11_juror_70",
+     "model": "gpt_6_2_sol",
+     "answer": "b",
+     "confidence": 81,
+     "why": "The computer cursor appearing as a solid object inside the refracting glass pinball was the strongest clue.",
+     "at": "07:14Z"
+    }
+   ],
+   "letters": "b a b a b",
+   "reusedFrom": "scorecards/round-011/R2-1.json"
+  }
+ ],
+ "controlShare": {
+  "votes": 50,
+  "aOrB": 36,
+  "share": 0.72
+ },
+ "note": "No juror was asked in round 15 for this set. The ten controls of round 15 are the same ten approved images as in round 11 (MEASURED: the git blob of each of the ten files under references/approved is the same in round 11's commit 8fdbc4b7 and in this round's commit b4494f0d), so by kit/07-QUALITY-BAR.md their votes are those collected in round 11 and are used again here; every vote below names its round 11 juror. The result of the round by the rule is in R2-1.json, which holds the judged pictures and these controls together."
+}

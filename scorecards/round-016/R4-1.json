@@ -3,7 +3,7 @@
  "score": 5,
  "pass": false,
  "model": "kimi_k3",
- "set": "A: motion, one sheet of frames spread across each of the page's ten beats",
+ "set": "A: motion, one sheet of frames across each of the five beats, three sheets of consecutive frames at hits on the arrow, the page turn and the slab seating",
  "issues": [
   {
    "severity": "severe",

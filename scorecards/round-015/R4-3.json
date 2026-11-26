@@ -1,0 +1,44 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "C: motion, ten sheets of consecutive frames at hits on the arrow, 1:09.30 to 1:25.40",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-C-02.png",
+   "where": "clear ball and gold doors, 1:20.03–1:20.30",
+   "what": "The doors close while the ball eases to a standstill on the carpet. There is no readable contact, deflection, or arresting mechanism, so this looks more like a ball gliding to a mark than a ball being stopped by a machine.",
+   "fix": "Show what arrests the ball. If a gate catches it, carry speed right up to the gate, then give the ball a short rebound and make the gate react on the same frame."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01.png",
+   "where": "arrow inside the round recess, 1:09.27–1:09.50",
+   "what": "The arrow holds almost perfectly still, snaps into a skewed pose in one blurred frame, and then the two clear arcs enter separately. Without the caption, it is not clear what struck the arrow or what starts the shell closing.",
+   "fix": "Give the arrow or latch a readable wind-up, keep the contact silhouette clear for one frame, and time the socket's response and shell release to that contact."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-03.png",
+   "where": "gap between the white bumpers, 1:21.90–1:22.00",
+   "what": "The ball reverses sharply, but the two bumper faces and nearby lamps look nearly unchanged. The viewer can follow the rebound but has to infer which bumper fired.",
+   "fix": "On the first frame of deflection, give only the struck bumper a visible skirt stroke and a brief local light response."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-08.png",
+   "where": "right edge during the return, 1:24.50–1:24.63 and 1:24.77–1:24.87; also visible in set-C-07.png and set-C-09.png",
+   "what": "The cup's recoil reads, but the ball goes off the right edge and comes straight back. The rails or other contact that send it back are not readable in the crop, so the repeated returns are hard to distinguish from a hand-driven reversal.",
+   "fix": "Widen the hit sheet to keep the right-hand return mechanism and the ball in view through the reversal. Keep the sharp cup recoil."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-10.png",
+   "where": "left flipper to front cup, 1:25.27–1:25.43",
+   "what": "The ball is clipped at the save, then heavy blur and changing focus break up its silhouette as it crosses the cup base. The flipper-to-ball contact is difficult to read without stepping through the timestamps.",
+   "fix": "Frame the whole flipper tip and approach, hold focus through the save, and shorten the blur at the contact frame so the launch direction reads."
+  }
+ ]
+}

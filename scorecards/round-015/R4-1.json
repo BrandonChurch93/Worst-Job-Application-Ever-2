@@ -1,0 +1,44 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: motion, one sheet of frames spread across each of the ten beats",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "You're Fired close-up, 1:33.93–1:36.47",
+   "what": "The ball sits in the same spot for more than two seconds with no readable buildup at the mechanism, then leaves as the front opens. The held pose reads as a pause rather than a loaded ejector.",
+   "fix": "Keep a short hold for the sign, then show the ejector draw back or load before it snaps the ball out. Let the mechanism settle after release."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "Corporate HQ doors, 1:19.80–1:21.60",
+   "what": "The ball arrives at the glass door, holds, then retreats. The door's response and what turns the ball around are not clear in this view, and the cut to overhead obscures how it exits the encounter.",
+   "fix": "Give the first touch a readable mechanical response and carry the ball's outgoing direction across the cut. Frame the door edge and ball together through the rebound."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "Shooter-lane close-up, 1:15.80–1:17.97",
+   "what": "The ball holds in the pocket for over a second and a half without a clearly visible plunger wind-up, then stays near the same foreground position as the lane starts moving around it. The release reads more as a camera move than a spring strike.",
+   "fix": "Keep the spring or plunger head in view, show it compressing, and hold the camera through the first part of the release so the ball visibly accelerates away before tracking begins."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "Low-angle flipper save, 1:24.17–1:25.60",
+   "what": "The raised flipper and outgoing ball are visible, but the camera angle and beat sampling do not make it clear where the paddle actually connects. The sheet reads as two simultaneous moves rather than a cause and effect.",
+   "fix": "Frame the paddle tip against the ball's approach and provide a consecutive-frame inset through the strike. Make the direction change immediately follow the visible contact."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "Rail close-up, 1:38.13–1:39.33",
+   "what": "The camera keeps the ball nearly fixed in the foreground while the rail turns and the scenery sweeps past, masking the ball's progress relative to the track. Its speed and the handoff into the spiral are harder to read than in the wide view.",
+   "fix": "Let the ball travel visibly between fixed rail supports before tracking it, and carry its movement in the same direction into the wide spiral shot."
+  }
+ ]
+}
