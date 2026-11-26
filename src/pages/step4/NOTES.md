@@ -107,3 +107,5 @@ The acting, beat by beat (the word a stranger should say, and what carries it):
 The cues the page gives itself (`rear`, `cower`, the double take and the `fume` at the banner, `plain` at the power-down and `exhausted` 2 s after it) play in the live site too. The others are the film's, in `ACT` of `script.ts`.
 
 The fight after the key was fitted (numbers in `src/boss/plan.ts`): phases end at 51, 25 and 0 percent; a dart does 1.9, 0.56, 0.53 by phase; the first attack is one slab, later attacks of the first phase are salvos of three (0.18 s apart, fanned 0.3 rad); slabs stop before the verify card; the barrels aim at `fight.look`, the cursor's centre eased over 0.25 s, and slabs and flash leave from the mouth `muzzle()` gives. The film's events and the key are in `pipeline/phase4/boss-fight.md`.
+
+The sheet `boss-stages` (`sheet()` in `index.ts`): four stages in a row, the button at rest, breaking loose, half unfolded and the whole boss, in a space of 2240 by 1260 px seen whole (`STAGES`), so every stage is whole and none touches the next. It shows no words: the approved sheet's four are not in `content/copy.json`.
