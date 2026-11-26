@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 5,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: seven sheets of consecutive frames at the slabs' drops and one at the hit on the arrow",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-B-01.png",
+   "where": "‘Field cannot be blank,’ 2:00.13 to 2:00.50; the same motion recurs on ‘Invalid input’ in set-B-04.png and set-B-07.png",
+   "what": "The blocks travel diagonally in near-equal steps and stop in open space. The arrow, slot and surrounding page give no cue for what stopped them, so the supposed hits read as slides rather than impacts.",
+   "fix": "Give the blocks a short acceleration into a visible stop. On the contact frame, arrest the block, kick the struck part and carry a brief reaction into the page before holding."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-08.png",
+   "where": "Arrow tip and left edge of ‘Invalid input,’ 2:09.20 to 2:09.37",
+   "what": "This is the strongest approach and reaction, but the arrow starts to twist away before the block reaches its nearest point. A gap remains as the block stops, and the glowing streak continues along the same line, so it is unclear what hit the arrow.",
+   "fix": "Make the intended striker visibly meet the arrow on a single frame. Tie the arrow’s recoil, the striker’s stop or deflection, and the local flash to that contact, then hold the aftermath."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "‘Required field’ approaching the left glass panel around 2:01.77; repeated in set-B-06.png around 2:04.23",
+   "what": "The block eases to rest just short of the panel with no matching reaction. The bright effect or movement at the far-right linkage does not read as an answer to that near-contact.",
+   "fix": "Show the block make contact with the glass frame and stop over a frame or two. Give that frame or its mounting a small, immediate jolt; cue any linkage action from the same hit if it is meant to be connected."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-02.png",
+   "where": "‘Session expired’ landing on the cracked slot around 2:01.60; repeated in set-B-05.png around 2:03.83",
+   "what": "The dust makes this landing readable, but the rim and cracked face remain visually locked when the block seats. The impacted side gives little sense of taking the load.",
+   "fix": "Keep the dust, add a tight contact shadow and a one-frame jolt to the slot lip or nearby debris, then let the rim settle while the block holds."
+  }
+ ]
+}

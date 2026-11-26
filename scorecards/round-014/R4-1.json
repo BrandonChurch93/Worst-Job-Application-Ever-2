@@ -1,0 +1,51 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: motion, the boss's beats and hits in sheets of consecutive frames",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "the charred Submit button, 2:20.40 to 2:20.67, just before the page turn",
+   "what": "the cursor clicks the burnt button and the page turns, but the button never goes down or springs back. The cursor vanishes or fades at 2:20.53 and turns up away from the button, up and to the right, at 2:20.67, so the click that ends the page has no contact frame",
+   "fix": "give the click 2 to 3 frames: the button presses into its body with a darker shadow, the cursor holds on it, then the button springs back, and the slab wind-up starts on the release frame. Keep the cursor on the button until the turn begins"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the cursor around the checkbox, 1:49.90 to 1:52.60",
+   "what": "for about 3 seconds the cursor drifts slowly and evenly around the caption under the checkbox and never settles on a target. It looks floaty, with no intent, and nothing happens on the page until the click at 1:53.07",
+   "fix": "cut the hover to under a second. Make one eased move with a quick start and a slow settle onto the checkbox, a short hold, then the click"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the red error tags on the floor, 2:01.80 to 2:03.07",
+   "what": "'Invalid input' and 'Session expired' are lying on the page at 2:01.80 and 2:02.43, and by 2:03.07 every tag has gone with no sign of how. They don't fall, slide or get swept off, so they read as weightless pop-outs. At 2:02.43 one tag, top centre, also shows as a blank red slab with no text",
+   "fix": "make the tags leave physically, by sliding off the page edge, dropping into the hole or being knocked away, or keep them on the floor as debris. Keep the text readable, or add proper motion blur along the tag's path, on the frames where it tumbles"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "above the robot, where the 'Session expired' banner was, 2:12.80",
+   "what": "a small stray red dash is left behind after the banner goes",
+   "fix": "clear the banner's last frame fully, or animate it out in one clean motion"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-09.png",
+   "where": "the hairline rule under the step rail, 2:21.30 to 2:21.57",
+   "what": "the slab is seated, but the hairline changes between frames, thin and single on 2:21.30, 2:21.40 and 2:21.50 and slightly thicker or doubled on the others. That suggests the hairline shimmers at subpixel level after the settle",
+   "fix": "snap the seated slab to whole pixels, or give the hairline a minimum 1px width with stable antialiasing once it lands"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-08.png",
+   "where": "the slab seating, 2:21.17 to 2:21.30",
+   "what": "the new page arrives fast and stops dead on 2:21.30, as a heavy slab should, but nothing on the page answers the landing. No lamp, knob or shadow reacts, so the settle reads as a stop rather than an impact",
+   "fix": "on the landing frame add a 1 to 2 frame response: the step knobs give a small jolt, or the contact shadow tightens. Keep the slab itself dead still"
+  }
+ ]
+}
