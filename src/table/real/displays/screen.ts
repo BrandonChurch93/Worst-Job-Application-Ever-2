@@ -103,6 +103,13 @@ export function nameLines(name: string): { big: boolean; lines: string[] } {
   return { big: false, lines: wrap(name, COLS - 4).slice(0, most) }
 }
 
+// A word too long for twice the size keeps its width and is drawn twice as tall, so it fills the display from top to foot and is as bright as the pages beside it.
+export function tall(a: Strip): Strip {
+  const b = strip(a.w, a.h * 2)
+  for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) if (a.at[y * a.w + x]! > 0) b.at[y * 2 * b.w + x] = b.at[(y * 2 + 1) * b.w + x] = 255
+  return b
+}
+
 const memo = new Map<string, Strip>()
 const big = (words: string): Strip => {
   let s = memo.get(words)
@@ -114,7 +121,7 @@ const big = (words: string): Strip => {
   return s
 }
 
-// The pages of a line: each holds whole words alone. A page is one line at twice the size where its words fit, and a word too long for that stands on a page of its own at its own size.
+// The pages of a line: each holds whole words alone. A page is one line at twice the size where its words fit, and a word too long for that stands on a page of its own, as wide as it is set and twice as tall.
 export interface Page { big: boolean; words: string }
 const pages = new Map<string, Page[]>()
 export function pagesOf(line: string): Page[] {
@@ -188,17 +195,18 @@ function drawScore(out: Uint8Array, digits: string, since: number, before: strin
 function drawMode(out: Uint8Array, name: string, line: string, t: number): void {
   if (t < PACE.hold) {
     const set = nameLines(name)
-    const strips = set.lines.map((l) => (set.big ? big(l) : setLine(l)))
+    const alone = !set.big && set.lines.length === 1
+    const strips = set.lines.map((l) => (set.big ? big(l) : alone ? tall(setLine(l)) : setLine(l)))
     const lead = set.big ? 0 : TEXT_UP + TEXT_DOWN + 1
-    const inked = set.big ? TEXT_UP * 2 : (strips.length - 1) * lead + TEXT_UP
+    const inked = set.big || alone ? TEXT_UP * 2 : (strips.length - 1) * lead + TEXT_UP
     const y0 = Math.max(0, Math.floor((ROWS - inked) / 2))
     strips.forEach((s, i) => blit(out, s, Math.floor((COLS - s.w) / 2), y0 + i * lead))
     return
   }
   const page = pagesOf(line)[pageAt(line, t)]
   if (!page) return
-  const s = page.big ? big(page.words) : setLine(page.words)
-  blit(out, s, Math.floor((COLS - s.w) / 2), Math.floor((ROWS - TEXT_UP * (page.big ? 2 : 1)) / 2))
+  const s = page.big ? big(page.words) : tall(setLine(page.words))
+  blit(out, s, Math.floor((COLS - s.w) / 2), Math.floor((ROWS - TEXT_UP * 2) / 2))
 }
 
 // The hint: a computer mouse seen from above, between the two flippers it works, each button and its flipper lit in turn.

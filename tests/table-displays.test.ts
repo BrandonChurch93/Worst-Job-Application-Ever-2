@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { describe, expect, test } from 'vitest'
 import copy from '../content/copy.json'
 import { SCORE_H, SCORE_W, TEXT_DOWN, TEXT_UP, dot, glyph, hasGlyph, score, text } from '../src/table/real/displays/font'
-import { COLS, PACE, ROWS, ascii, compose, keyOf, modeSeconds, nameLines, pageAt, pagesOf, scoreLeft, setLine, twice, widthOf, type Show } from '../src/table/real/displays/screen'
+import { COLS, PACE, ROWS, ascii, compose, keyOf, modeSeconds, nameLines, pageAt, pagesOf, scoreLeft, setLine, tall, twice, widthOf, type Show } from '../src/table/real/displays/screen'
 
 const modes = (copy as unknown as { step3: { table: { modes: { insert: string; display: string }[] } } }).step3.table.modes
 const grid = (show: Show): Uint8Array => {
@@ -84,7 +84,7 @@ describe('a mode', () => {
       for (const l of set.lines) expect(widthOf(l) * (set.big ? 2 : 1)).toBeLessThanOrEqual(COLS - 4)
       expect(set.lines.join(' ')).toBe(m.insert)
       const d = grid({ kind: 'mode', name: m.insert, line: m.display, t: 0 })
-      const want = set.lines.reduce((n, l) => n + lit(Uint8Array.from((set.big ? twice(setLine(l)) : setLine(l)).at)), 0)
+      const want = set.lines.reduce((n, l) => n + lit(Uint8Array.from((set.big ? twice(setLine(l)) : set.lines.length === 1 ? tall(setLine(l)) : setLine(l)).at)), 0)
       expect(lit(d)).toBe(want)
       expect(keyOf({ kind: 'mode', name: m.insert, line: m.display, t: 0 })).toBe(keyOf({ kind: 'mode', name: m.insert, line: m.display, t: PACE.hold - 0.01 }))
     }
@@ -101,7 +101,7 @@ describe('a mode', () => {
         const t = PACE.hold + (i + 0.5) * PACE.page
         expect(pageAt(m.display, t)).toBe(i)
         const d = grid({ kind: 'mode', name: m.insert, line: m.display, t })
-        expect(lit(d)).toBe(lit(Uint8Array.from((p.big ? twice(setLine(p.words)) : setLine(p.words)).at)))
+        expect(lit(d)).toBe(lit(Uint8Array.from((p.big ? twice(setLine(p.words)) : tall(setLine(p.words))).at)))
         const cols = columns(d)
         expect(cols[0]).toBeGreaterThanOrEqual(2)
         expect(cols[cols.length - 1]).toBeLessThanOrEqual(COLS - 3)
