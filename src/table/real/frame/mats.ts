@@ -61,7 +61,17 @@ export const roomOf = (z: Zone): Zone | undefined => (LIT.includes(z.id) ? z : z
 export const aluOf = (z: Zone, name = 'alu'): THREE.MeshPhysicalMaterial => {
   const src = materials().aluminium
   const on = roomOf(z) !== undefined
-  return own(lit(steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 3.6, panel: 1.2, wide: 0.4, horizon: 2, direct: 0.5, under: 1.8 }, roomOf(z)), z), `frame.${name}.${z.id}`)
+  const m = steel(studio(new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: on ? 0.27 : 0.4, metalness: on ? 1 : 0.4, normalMap: src.normalMap ? fine(src.normalMap) : null, normalScale: new THREE.Vector2(on ? 0.24 : 0.15, on ? 0.24 : 0.15), anisotropy: 0.72, anisotropyRotation: Math.PI / 2 })), z, { ceiling: 1, panel: 1.3, wide: 0.3, horizon: 1.3, direct: 0.3, under: 0.5, wall: 0.12 }, roomOf(z))
+  if (!on) {
+    const room = m.onBeforeCompile
+    const key = m.customProgramCacheKey
+    m.onBeforeCompile = (shader, renderer) => {
+      room.call(m, shader, renderer)
+      shader.fragmentShader = shader.fragmentShader.replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\nfloat wjfDim = clamp( dot( vColor.rgb, vec3( 0.3333 ) ) * 9.0, 0.1, 1.0 );\nmaterial.specularColor *= wjfDim;\nmaterial.specularF90 *= wjfDim;')
+    }
+    m.customProgramCacheKey = () => `${key.call(m)}|wjf-dim`
+  }
+  return own(lit(m, z), `frame.${name}.${z.id}`)
 }
 
 // A zone the lamps do not reach keeps its pale parts pale when the website's light goes down: its paint is lifted by the share of that light that is off.

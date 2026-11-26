@@ -9,7 +9,7 @@ import { FINISH, TONE, drop as free, fin, hex, matsOf, mesh, moved, place, shade
 
 const SEED = 20261125
 const SCALE = new THREE.Vector3(0.9, 0.9, 0.93)
-const WALNUT: RGB = [0.56, 0.17, 0.05]
+const WALNUT: RGB = [1.15, 0.36, 0.11]
 const HIDE = hex(0x0d0c0b)
 const flatStreak = (g: Geo, x0: number, x1: number, y0: number, y1: number, zz: number, col: RGB): void => {
   g.face([[x0, y0, zz], [x1, y0, zz], [x1, y1, zz], [x0, y1, zz]], [0, 0, 1], [0, 1, 0], col)

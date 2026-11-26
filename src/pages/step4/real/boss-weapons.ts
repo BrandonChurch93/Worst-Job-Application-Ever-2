@@ -27,7 +27,7 @@ export const WEAPON_GLOW = {
   muzzle: [9, 2.6, 0.7] as [number, number, number]
 }
 
-export const LACQUER = { colour: 0x900808, rough: 0.6, spec: 0, coat: 0.08, env: 1 }
+export const LACQUER = { colour: 0xa00d0b, rough: 0.46, spec: 0.4, coat: 0.09, env: 1.05 }
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 
@@ -63,6 +63,7 @@ interface Kit {
   dartMaterial: THREE.MeshBasicMaterial
   tails: THREE.BufferGeometry
   under: THREE.BufferGeometry
+  halo: THREE.BufferGeometry
   tailMaterial: THREE.MeshBasicMaterial
   haloMaterial: THREE.MeshBasicMaterial
   glintMaterial: THREE.MeshBasicMaterial
@@ -156,22 +157,41 @@ function tails(source: THREE.BufferGeometry): THREE.BufferGeometry {
 
 // What a dart leaves on the paper under it, one mesh that filters what it lies on: a wide warm pool and a small soft shadow.
 function under(): THREE.BufferGeometry {
-  const parts: [number, number, number, [number, number, number]][] = [[POOL.wide, POOL.x, POOL.y, WEAPON_GLOW.pool], [SHADE.wide, SHADE.x, SHADE.y, WEAPON_GLOW.shade]]
+  return glow([[POOL.wide, POOL.x, -POOL.y, 0, WEAPON_GLOW.pool], [SHADE.wide, SHADE.x, -SHADE.y, 0.1, WEAPON_GLOW.shade]])
+}
+
+export const GLOW_RINGS = [0, 0.08, 0.16, 0.25, 0.34, 0.44, 0.54, 0.64, 0.74, 0.84, 0.93, 1]
+const GLOW_PARTS = 40
+const fall = (r: number): number => {
+  const edge = Math.min(1, Math.max(0, (1 - r) / 0.3))
+  return Math.exp(-(r * r) / 0.09) * edge * edge * (3 - 2 * edge)
+}
+
+// A soft round glow as a fan of rings with its light in the corners of its faces: no picture is stretched over it.
+export function glow(parts: [number, number, number, number, [number, number, number]][]): THREE.BufferGeometry {
   const position: number[] = []
-  const uv: number[] = []
   const colour: number[] = []
   const index: number[] = []
-  parts.forEach(([wide, x, y, tint], n) => {
-    for (const [u, w] of [[0, 0], [1, 0], [1, 1], [0, 1]] as [number, number][]) {
-      position.push(x + (u - 0.5) * wide, -y + (w - 0.5) * wide, n * 0.1)
-      uv.push(u, w)
-      colour.push(...tint)
-    }
-    index.push(n * 4, n * 4 + 1, n * 4 + 2, n * 4, n * 4 + 2, n * 4 + 3)
-  })
+  let start = 0
+  for (const [wide, x, y, z, tint] of parts) {
+    GLOW_RINGS.forEach((r, j) => {
+      for (let i = 0; i < GLOW_PARTS; i++) {
+        const a = (i / GLOW_PARTS) * Math.PI * 2
+        position.push(x + Math.cos(a) * r * wide * 0.5, y + Math.sin(a) * r * wide * 0.5, z)
+        const g = fall(r)
+        colour.push(tint[0] * g, tint[1] * g, tint[2] * g)
+        if (j > 0) {
+          const now = start + j * GLOW_PARTS + i
+          const next = start + j * GLOW_PARTS + ((i + 1) % GLOW_PARTS)
+          index.push(now - GLOW_PARTS, now, next - GLOW_PARTS, next - GLOW_PARTS, now, next)
+        }
+      }
+    })
+    start += GLOW_RINGS.length * GLOW_PARTS
+  }
   const out = new THREE.BufferGeometry()
   out.setAttribute('position', new THREE.Float32BufferAttribute(position, 3))
-  out.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  out.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array((position.length / 3) * 2), 2))
   out.setAttribute('color', new THREE.Float32BufferAttribute(colour, 3))
   out.setIndex(index)
   return out
@@ -221,15 +241,16 @@ function kit(): Kit {
     dartMaterial: new THREE.MeshBasicMaterial({ vertexColors: true, toneMapped: false }),
     tails: tails(f.tail),
     under: under(),
+    halo: glow([[1, 0, 0, 0, [1, 1, 1]]]),
     tailMaterial: new THREE.MeshBasicMaterial({ vertexColors: true, ...add }),
-    haloMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.halo), map: f.halo, ...add }),
+    haloMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.halo), vertexColors: true, ...add }),
     glintMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.glint), map: f.star, ...add }),
     // The pool under a dart takes blue and a little green out of what lies under it: light on white paper can only warm it.
-    poolMaterial: new THREE.MeshBasicMaterial({ vertexColors: true, map: f.halo, ...add, blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.ZeroFactor, blendDst: THREE.OneMinusSrcColorFactor, blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor }),
+    poolMaterial: new THREE.MeshBasicMaterial({ vertexColors: true, ...add, blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.ZeroFactor, blendDst: THREE.OneMinusSrcColorFactor, blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor }),
     sparkMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.spark), map: f.star, ...add }),
     fleckMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.fleck), vertexColors: true, ...add }),
     muzzleMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...WEAPON_GLOW.muzzle), map: f.star, ...add }),
-    smokeMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.5, 0.48, 0.46), alphaMap: f.puff, transparent: true, depthWrite: false, toneMapped: false, opacity: 0.5 })
+    smokeMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.27, 0.26, 0.25), alphaMap: f.puff, transparent: true, depthWrite: false, toneMapped: false, opacity: 0.42 })
   }
   return made
 }
@@ -265,7 +286,7 @@ function makeSpark(): THREE.Object3D {
   const root = new THREE.Group()
   const star = overlay(new THREE.Mesh(f.quad, k.sparkMaterial), 5)
   star.name = 'star'
-  const halo = overlay(new THREE.Mesh(f.quad, k.haloMaterial), 4)
+  const halo = overlay(new THREE.Mesh(k.halo, k.haloMaterial), 4)
   halo.name = 'halo'
   root.add(halo, star)
   const flecks = overlay(new THREE.Mesh(needles(), k.fleckMaterial), 6)
@@ -282,12 +303,48 @@ function makeMuzzle(): THREE.Object3D {
   const root = new THREE.Group()
   const star = overlay(new THREE.Mesh(f.quad, k.muzzleMaterial), 5)
   star.name = 'star'
-  const halo = overlay(new THREE.Mesh(f.quad, k.haloMaterial), 4)
+  const halo = overlay(new THREE.Mesh(k.halo, k.haloMaterial), 4)
   halo.name = 'halo'
   const smoke = overlay(new THREE.Mesh(f.quad, k.smokeMaterial), 3)
   smoke.name = 'smoke'
-  root.add(smoke, halo, star)
+  const ring = overlay(new THREE.Mesh(ringGeometry(), new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.19, 0.185), vertexColors: true, transparent: true, depthWrite: false, toneMapped: false, opacity: 0 })), 3)
+  ring.name = 'ring'
+  root.add(smoke, ring, halo, star)
   return root
+}
+
+export const RING = { parts: 48, from: 24, to: 60, flat: 0.44, ahead: 44, z: 34 }
+let ringMade: THREE.BufferGeometry | null = null
+
+function ringGeometry(): THREE.BufferGeometry {
+  if (ringMade) return ringMade
+  const radii = [0.56, 0.74, 0.9, 1.04]
+  const alpha = [0, 0.85, 0.7, 0]
+  const pos: number[] = []
+  const uv: number[] = []
+  const colour: number[] = []
+  const index: number[] = []
+  for (let i = 0; i <= RING.parts; i++) {
+    const a = (i / RING.parts) * Math.PI * 2
+    const n = i % RING.parts
+    const wave = 1 + 0.07 * (hash01(n, 7, seed) - 0.5) + 0.05 * Math.sin(a * 3 + 1.3)
+    radii.forEach((r, j) => {
+      pos.push(Math.cos(a) * r * wave, Math.sin(a) * r * wave, 0)
+      uv.push((i / RING.parts) * 3, j / (radii.length - 1))
+      const thin = 0.55 + 0.45 * hash01(n, 9 + j, seed)
+      colour.push(1, 1, 1, alpha[j]! * thin)
+      if (i < RING.parts && j < radii.length - 1) {
+        const at = i * radii.length + j
+        index.push(at, at + radii.length, at + 1, at + 1, at + radii.length, at + radii.length + 1)
+      }
+    })
+  }
+  ringMade = new THREE.BufferGeometry()
+  ringMade.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  ringMade.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  ringMade.setAttribute('color', new THREE.Float32BufferAttribute(colour, 4))
+  ringMade.setIndex(index)
+  return ringMade
 }
 
 function makeScorch(s: Shape): THREE.Object3D {
@@ -399,7 +456,7 @@ export const bossWeapons: PartMaker | null = {
         const n = Math.round(v[1] ?? 0)
         const hot = (1 - u) * (1 - u)
         const star = o.getObjectByName('star')!
-        const size = (70 + 150 * Math.sqrt(u)) * Math.pow(1 - u, 1.2)
+        const size = (60 + 110 * Math.sqrt(u)) * Math.pow(1 - u, 1.5)
         star.scale.set(size, size * 0.62, 1)
         star.position.set(2 + 26 * u, 0, 2)
         star.rotation.z = (hash01(n, 5, seed) - 0.5) * 0.5
@@ -411,7 +468,14 @@ export const bossWeapons: PartMaker | null = {
         smoke.scale.set(40 + 70 * u, 40 + 70 * u, 1)
         smoke.position.set(26 * u, 0, 1.5)
         smoke.rotation.z = hash01(n, 6, seed) * 6
-        smoke.visible = u > 0.25
+        smoke.visible = u > 0.1
+        const ring = o.getObjectByName('ring') as THREE.Mesh
+        const wide = RING.from + (RING.to - RING.from) * Math.sqrt(u)
+        ring.scale.set(wide * RING.flat, wide, 1)
+        ring.position.set(8 + RING.ahead * Math.sqrt(u), 0, RING.z)
+        const ringStuff = ring.material as THREE.MeshBasicMaterial
+        ringStuff.opacity = 0.7 * Math.min(1, u / 0.12) * Math.pow(1 - u, 1.1)
+        ring.visible = u > 0.04 && u < 0.98
         ctx.light({ x: cx, y: cy, z: s.z1 + 6, colour: WEAPON_EMIT.muzzle.colour, power: WEAPON_EMIT.muzzle.power * hot, reach: WEAPON_EMIT.muzzle.reach })
         break
       }
@@ -451,5 +515,7 @@ export const bossWeapons: PartMaker | null = {
   drop(o: THREE.Object3D): void {
     const flecks = o.getObjectByName('flecks') as THREE.Mesh | undefined
     if (flecks) flecks.geometry.dispose()
+    const ring = o.getObjectByName('ring') as THREE.Mesh | undefined
+    if (ring) (ring.material as THREE.Material).dispose()
   }
 }

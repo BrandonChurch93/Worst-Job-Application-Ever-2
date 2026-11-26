@@ -8,10 +8,12 @@ import { TUBE } from './loader'
 import { Screws, TONE, aluOf, mesh, paintOf, screwOf, steelOf } from './mats'
 
 // What the walls of a tier are made to, in page pixels.
-const WALL = { height: 60, seg: 56, chamfer: 4.5, strip: [30, 54] as V2, stripOut: 0.9 }
+const WALL = { height: 60, seg: 56, rim: 30, chamfer: 4.5, strip: [30, 54] as V2, stripOut: 0.9 }
 const METAL: [number, number, number] = [0.26, 0.268, 0.284]
 const RAIL = { reveal: 30, revealWide: 4.5, revealDeep: 2, chamfer: 3, channel: 17, channelDepth: 3, ledge: 15, land: 84, step: 5, lip: 3, slope: 0.84, bank: 11, cuts: 10, tilt: [20, 58] as V2, gap: 1.2, joint: 1.4, screwStep: 1.5, cradle: 62.5, tubeUp: 48 }
-const CROSS = { lower: 0.3, upper: 0.12, throat: 0.75, mouth: 1.2, tunnel: 122 }
+const exitOf = table.openings.find((o) => o.id.endsWith('.exit'))!
+const chuteOf = table.openings.find((o) => o.id.endsWith('.chute.mouth'))!
+const CROSS = { lower: chuteOf.a[1] - TIER_Y[chuteOf.tier]!, upper: 0.12, throat: Math.abs(chuteOf.b[0] - chuteOf.a[0]) / 2, mouth: Math.abs(exitOf.b[0] - exitOf.a[0]) / 2, tunnel: 122 }
 const STEP = { back: 11, rise: 3, groove: 64, grooveWide: 4.5, grooveDeep: 2 }
 const LANE = { strip: 0.24, stripWide: 3.2, clear: 0.6, lip: 9, lipTall: 1.6, line: 1.6, house: 0.8, elbowClear: 0.14, flange: 10 }
 const PLAQUE = { wide: 1.1, tall: 0.42, inset: 0.55, foot: 0.21 }
@@ -111,7 +113,7 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     right.push([xf + RAIL.cradle * Math.sin(t), H + RAIL.tubeUp - RAIL.cradle * Math.cos(t)])
   }
   right.push([xf + half, H], [xe - c, H], [xe, H - c], [xe, 0])
-  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], landed(right, grooved(right, [xc + RAIL.revealDeep], METAL, TONE.gap), Math.max(RAIL.bank * RAIL.slope, RAIL.cradle - RAIL.tubeUp)))
+  for (const [y0, y1] of lengths(0, dive, 5.6)) A.prism(right, [0, y0], [0, y1], landed(right, grooved(right, [xc + RAIL.revealDeep], METAL, TONE.gap), RAIL.bank * RAIL.slope))
   P.box(xc, xe, Y(5.6) - RAIL.joint / 2, Y(5.6) + RAIL.joint / 2, 0, H - 4, TONE.gap, { along: [0, 1, 0] })
   for (let v = RAIL.screwStep / 2; v < dive - 0.2; v += RAIL.screwStep) {
     screws.add((xc + c + xf - half) / 2, Y(v), H, 0.9, turnOf(xc, v))
@@ -309,19 +311,19 @@ export function tier(z: Zone, _ctx: RealContext): THREE.Object3D {
     const b = at(s.b[0], s.b[1] - TIER_Y[k]!)
     const w = 5.76
     const w2 = WALL.chamfer
-    A.prism([[-w, 0], [-w, WALL.seg - w2], [-w + w2, WALL.seg], [w - w2, WALL.seg], [w, WALL.seg - w2], [w, 0]], a, b, METAL, [false, false])
+    A.prism([[-w, 0], [-w, WALL.rim - w2], [-w + w2, WALL.rim], [w - w2, WALL.rim], [w, WALL.rim - w2], [w, 0]], a, b, METAL, [false, false])
     if (k === 0 && s.id.includes('shoulder.edge')) {
       const d = Math.hypot(b[0] - a[0], b[1] - a[1])
       const from = A.vertices
-      A.box(8, d - 8, -1.2, 1.2, WALL.seg - 0.4, WALL.seg + 0.35, TONE.brass)
+      A.box(8, d - 8, -1.2, 1.2, WALL.rim - 0.4, WALL.rim + 0.35, TONE.brass)
       A.move(from, new THREE.Matrix4().makeTranslation(a[0], a[1], 0).multiply(new THREE.Matrix4().makeRotationZ(Math.atan2(b[1] - a[1], b[0] - a[0]))))
     }
     posts.set(`${a[0].toFixed(1)},${a[1].toFixed(1)}`, a)
     if (b[1] > yB + 2) posts.set(`${b[0].toFixed(1)},${b[1].toFixed(1)}`, b)
   }
   for (const p of posts.values()) {
-    A.lathe([[7.4, 0], [7.4, WALL.seg], [6.2, WALL.seg + 2.2], [2.6, WALL.seg + 2.2]], p[0], p[1], 14, METAL)
-    screws.add(p[0], p[1], WALL.seg + 2.2, 0.58, turnOf(p[0], p[1]))
+    A.lathe([[7.4, 0], [7.4, WALL.rim], [6.2, WALL.rim + 2.2], [2.6, WALL.rim + 2.2]], p[0], p[1], 14, METAL)
+    screws.add(p[0], p[1], WALL.rim + 2.2, 0.58, turnOf(p[0], p[1]))
   }
 
   // The right shoulder holds the display: a dark seat round its pocket.

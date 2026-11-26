@@ -122,17 +122,16 @@ export function apron(z: Zone, ctx: RealContext): THREE.Object3D {
     const t = plate.z1 - plate.z0
     A.slab(roundedLoop(p[0] - w - 3, p[0] + w + 3, p[1] - h - 3, p[1] + h + 3, 7, 4), 0, t - 1.2, TONE.brass, { bevel: 1 })
     P.slab(roundedLoop(p[0] - w, p[0] + w, p[1] - h, p[1] + h, 5, 4), 0, t, TONE.paper, { bevel: 1.2 })
-    // Two grey blocks carry the plate either side of the drain's mouth, each with a screw.
+    // The drain's mouth under the plate is a square slot in a bezel of aluminium, as wide as the two grey blocks that carry the plate stand apart: the screws of the blocks and of the bezel share their columns.
+    const b = EDGE.bezel
+    const sw = Math.max(EDGE.slot[0] / 2, w - 13 - b / 2)
+    const sh = EDGE.slot[1] / 2
     for (const side of [-1, 1]) {
-      const bx = p[0] + side * (w - 13)
+      const bx = p[0] + side * (sw + b / 2)
       A.box(bx - 13, bx + 13, p[1] - h - 30, p[1] - h - 3, 0, t - 1.6, TONE.aluDark, { bevel: 1.4, along: [0, 1, 0] })
       screws.add(bx, p[1] - h - 16, t - 1.6, 0.8, side * 0.9)
     }
-    // The drain's mouth under the plate: a square slot in a bezel of aluminium.
-    const cy = p[1] - h - 34 - EDGE.slot[1] / 2
-    const sw = EDGE.slot[0] / 2
-    const sh = EDGE.slot[1] / 2
-    const b = EDGE.bezel
+    const cy = p[1] - h - 34 - sh
     A.box(p[0] - sw - b, p[0] + sw + b, cy + sh, cy + sh + b, 0, 5, TONE.alu, { bevel: 1.2, along: [1, 0, 0] })
     A.box(p[0] - sw - b, p[0] + sw + b, cy - sh - b, cy - sh, 0, 5, TONE.alu, { bevel: 1.2, along: [1, 0, 0] })
     A.box(p[0] - sw - b, p[0] - sw, cy - sh, cy + sh, 0, 5, TONE.alu, { bevel: 1.2, along: [0, 1, 0] })

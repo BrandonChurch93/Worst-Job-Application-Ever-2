@@ -70,7 +70,9 @@ function build(z: Zone): Group[] {
   const lampAt = (l: { c: [number, number] }, wide: boolean): Source => at(l.c[0], l.c[1], wide ? LAMP.wideZ : LAMP.z, wide ? LAMP.widePower : LAMP.power, (wide ? LAMP.wideReach : LAMP.reach) / BALL)
   const rail = lamps.filter((l) => l.arrow)
   const lane = lamps.filter((l) => !l.arrow)
-  const both = (list: typeof lamps, gain = 1): Source[] => [...list.map((l) => lampAt(l, false)), ...list.map((l) => lampAt(l, true))].map((s) => ({ ...s, power: s.power * gain }))
+  // A lamp throws as much as its window is large: the row over the top lane least, the launch lane's most.
+  const place = (l: { id: string }): number => (l.id.includes('.top.') ? 0.8 : l.id.includes('.launch.') ? 1.2 : 1)
+  const both = (list: typeof lamps, gain = 1): Source[] => [...list.map((l) => ({ ...lampAt(l, false), power: LAMP.power * place(l) })), ...list.map((l) => lampAt(l, true))].map((s) => ({ ...s, power: s.power * gain }))
   const inserts = table.inserts.filter((n) => n.tier === k)
   // Under each sling plastic stands a lamp that lights the floor round it and the flipper before it.
   const slings: Source[] = table.slings.filter((s) => s.tier === k).map((s) => at((s.a[0] + s.b[0] + s.c[0]) / 3, (s.a[1] + s.b[1] + s.c[1]) / 3, 30, 0.95, 2.4, `sling.${s.id}`))
@@ -96,7 +98,8 @@ function build(z: Zone): Group[] {
     display()
     add('flash', 0, C.CORPORATE_FLASH, [])
   } else if (z.id === 'office') {
-    add('general', 2, C.OFFICE_FLUORESCENT, both(rail, 0.8))
+    // The Office is a lit room: its lamps throw wide, so the floor between them is never dark.
+    add('general', 2, C.OFFICE_FLUORESCENT, both(rail, 0.8).map((s) => (s.z > 100 ? { ...s, power: s.power * 2.4 } : s)))
     inserts.forEach(insert)
     table.bumpers.filter((b) => b.tier === k).forEach((b, i) => add(`bumper.${i + 1}`, 1, C.OFFICE_BUMPER, [at(b.c[0], b.c[1], 58, 1.1, 4.2, `bumper.${b.id}`)], true))
     const coffee = model('office.coffee')
@@ -109,7 +112,7 @@ function build(z: Zone): Group[] {
     inserts.forEach(insert)
     const fire = model('street.firehouse')
     const police = model('street.police')
-    const beacon = (m: Model): Source => at(centre(m)[0], m.box[1] + m.box[3] * 0.3, m.h * BALL + 24, 0.8, 5.2, m.id)
+    const beacon = (m: Model): Source => at(centre(m)[0], m.box[1] + m.box[3] * 0.3, m.h * BALL + 24, 0.8, 2.6, m.id)
     // The lit bay of the firehouse throws its red on the floor before its mouth, with the beacon.
     add('red', 1, C.STREET_RED, [beacon(fire), at(centre(fire)[0] + 0.55, fire.box[1] + fire.box[3] + 0.45, 24, 1.7, 2.6, fire.id)], true)
     add('blue', 1, C.STREET_BLUE, [beacon(police)], true)
@@ -136,26 +139,27 @@ function build(z: Zone): Group[] {
 const made = new Map<string, Group[]>()
 
 // The light groups of a zone, in the order of their channels. A zone without lamps has none.
-// A lit opening at the foot of a model, and what it throws on the wet floor before it: where it stands, half its width and its height in pixels, its colour, and the group whose level it follows.
-export interface Spill { x: number; y: number; half: number; high: number; colour: RGB; follows: string; power: number }
+// A lit front at the foot of a model, and its image in the wet floor before it: where it stands, half its width and its height in pixels, its colour, and the group whose level it follows. A front with a row of windows is mirrored as a row of bars, `pitch` pixels apart.
+export interface Spill { x: number; y: number; half: number; high: number; colour: RGB; follows: string; power: number; pitch: number; phase: number }
 
 export const SPILLS = 4
 
 export function spillsOf(z: Zone): Spill[] {
-  const front = (id: string, off: number, half: number, high: number, colour: RGB, follows: string, power: number): Spill => {
+  const front = (id: string, off: number, half: number, high: number, colour: RGB, follows: string, power: number, pitch = 0, phase = 0): Spill => {
     const m = model(id)
     const p = localBalls(z, centre(m)[0] + off, m.box[1] + m.box[3] + 0.05)
-    return { x: p[0], y: p[1], half: half * BALL, high: high * BALL, colour, follows, power }
+    return { x: p[0], y: p[1], half: half * BALL, high: high * BALL, colour, follows, power, pitch: pitch * BALL, phase }
   }
   if (z.id === 'street') {
     return [
-      front('street.firehouse', 0.55, 0.65, 0.6, C.STREET_RED, 'red', 1),
-      front('street.firehouse', -0.6, 0.55, 0.9, C.STREET_WINDOW, 'windows', 0.4),
-      front('street.police', 0, 0.9, 0.9, C.STREET_WINDOW, 'windows', 0.4),
-      front('street.bank', 0, 0.6, 0.8, C.STREET_WINDOW, 'windows', 0.35)
+      front('street.firehouse', 0.55, 0.42, 1.5, C.STREET_RED, 'red', 1.6),
+      front('street.firehouse', -0.62, 0.6, 1.1, C.STREET_WINDOW, 'windows', 0.55, 0.42),
+      front('street.police', 0, 1.05, 1.1, C.STREET_WINDOW, 'windows', 0.55, 0.42),
+      front('street.bank', 0, 0.42, 0.9, C.STREET_WINDOW, 'windows', 0.5, 0.21)
     ]
   }
-  if (z.id === 'corporate') return [front('corporate.hq', 0, 0.75, 1.0, C.CORPORATE_WINDOW, 'windows', 0.6)]
+  if (z.id === 'corporate') return [front('corporate.hq', 0, 0.55, 1.6, C.CORPORATE_WINDOW, 'windows', 0.9), front('corporate.hq', 0, 1.6, 1.3, C.CORPORATE_WINDOW, 'windows', 0.35, 0.28, 0.5)]
+  if (z.id === 'office') return [front('office.coffee', 0, 1.0, 0.9, C.OFFICE_COFFEE, 'windows', 0.5, 0.5)]
   return []
 }
 
@@ -166,16 +170,30 @@ export const HIGHS = 7
 export const HIGH_BODY = 60
 
 export function highOf(z: Zone): High[] {
+  const over = (id: string, colour: RGB, power: number, reachBalls: number, lift = 1.3): High => {
+    const m = model(id)
+    const p = localBalls(z, centre(m)[0], centre(m)[1])
+    return { x: p[0], y: p[1], z: (m.h + lift) * BALL, reach: reachBalls * BALL, colour, follows: 'general', power }
+  }
+  // A hidden lamp over each low model that stands far from every lamp of its tier, so its top is lit from above as the approved tiers have it.
+  if (z.id === 'office') return [over('office.inbox', C.OFFICE_BUMPER, 0.75, 2.6), over('office.cubicles', C.OFFICE_BUMPER, 0.75, 3.2, 1.6)]
+  if (z.id === 'corporate') return [over('corporate.boardroom', C.CORPORATE_WHITE, 0.7, 2.6)]
   if (z.id !== 'street') return []
-  const top = TIER_Y[z.tier]!
+  // The fittings of the garage, by the rule of the owner of the street's models: arms half a ball outside its wall on the diagonals, three 22 px under the rim and the rest at four tenths of its height.
+  const g = model('street.garage')
+  const x0 = g.box[0] - 0.5
+  const x1 = g.box[0] + g.box[2] + 0.5
+  const y0 = g.box[1] - 0.5
+  const y1 = g.box[1] + g.box[3] + 0.5
+  const base = g.base ?? 0
   const lamp = (u: number, v: number, zPx: number, power: number, reachBalls: number): High => {
-    const p = localBalls(z, u, top + v)
+    const p = localBalls(z, u, v)
     return { x: p[0], y: p[1], z: zPx, reach: reachBalls * BALL, colour: C.STREET_WINDOW, follows: 'windows', power }
   }
-  // The seven fittings of the garage, where the owner of the street's models built them: arms half a ball outside its wall, three under the rim and four lower.
-  const upper: [number, number][] = [[16.63, 4.02], [13.77, 6.88], [16.63, 6.88]]
-  const lower: [number, number][] = [[16.63, 4.02], [13.77, 4.02], [13.77, 6.88], [16.63, 6.88]]
-  return [...upper.map(([u, v]) => lamp(u, v, 516, 0.45, 2.8)), ...lower.map(([u, v]) => lamp(u, v, 290, 0.55, 3.2))]
+  const upper: [number, number][] = [[x1, y0], [x0, y1], [x1, y1]]
+  // With the spiral of two turns the ball's tube passes the lower fitting at the left of the garage's foot, and the owner of the model left that one out.
+  const lower: [number, number][] = g.h < 3.6 ? [[x1, y0], [x0, y0], [x1, y1]] : [[x1, y0], [x0, y0], [x0, y1], [x1, y1]]
+  return [...upper.map(([u, v]) => lamp(u, v, (base + g.h) * BALL - 22, 0.45, 2.8)), ...lower.map(([u, v]) => lamp(u, v, (base + 0.4 * g.h) * BALL, 0.55, 3.2))]
 }
 
 export function groupsOf(z: Zone | string): Group[] {
