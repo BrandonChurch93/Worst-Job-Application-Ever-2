@@ -18,11 +18,11 @@ export const SLOT_LOOK = {
   page: { cabinet: 46, knob: 28, payout: 14, mount: 30, arm: 12 },
   pay: { r: 6, lip: 4, top: 14, floor: 8.5, foot: 1, bed: 0x8d9093, rough: 0.55 },
   top: 58, corner: 16, window: 13, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
-  drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.5, full: 0.985 },
+  drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.6, full: 0.985 },
   line: { z: 53.3, r: 0.85, pin: 1.9, glow: 0.1 },
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
   lever: { rod: 7.4, pivotX: 11, pivotZ: 28, foot: -2, head: 22, ferrule: 7, ferruleAt: 25, bend: 15, stub: 26, socket: 14.5, socketIn: 3, socketOut: 10, ring: 12.2, ringW: 3.4, rodRough: 0.3 },
-  legend: { fit: 72, tall: 1.16, lift: 0.14, order: 799990, style: 'paper:ink' },
+  legend: { fit: 72, tall: 1.16, lift: 0.14, order: 799990, style: 'paper:ink', narrow: 0.9, high: 1.1, heavy: 0.014 },
   coin: { r: 13, t: 4, teeth: 64, most: 16, flight: 14, tilt: 1.05 },
   frame: { colour: 0x7e8286, rough: 0.37, grain: 0.08, grainLong: 1200, grainWide: 150, fan: 0.34, fanAcross: 0.6, fanUp: 2.2 },
   bevel: { colour: 0x7c8084, rough: 0.34 },
@@ -372,8 +372,8 @@ function legend(s: Shape): THREE.Group {
   const type = { ...s.type!, px: s.type!.px / sheetScale(s.id) }
   const g = geometryOf(dataOf({ ...s, type }, said, styles()[L.legend.style]!))
   const wide = measure(type.font, said, type.px).width
-  if (wide > L.legend.fit) g.scale(1, L.legend.tall, 1)
-  const run = mesh(g, o.ink, false, false)
+  g.scale(L.legend.narrow, wide > L.legend.fit ? L.legend.tall * L.legend.high : L.legend.high, 1)
+  const run = mesh(fuse([moved(g, -L.legend.heavy * type.px, 0, 0), g, moved(g, L.legend.heavy * type.px, 0, 0)]), o.ink, false, false)
   run.userData.order = L.legend.order
   run.renderOrder = L.legend.order
   const root = new THREE.Group()
