@@ -109,8 +109,9 @@ function glazing(g: Geo, a: V2, b: V2, z0: number, z1: number, cols: number, row
 }
 
 // The steel that holds a run of glass: a mullion at every bay, a rail at every floor, a slim transom between.
-function framing(S: Geo, W: Geo, a: V2, b: V2, z0: number, z1: number, cols: number, floors: number, o: { fin?: number; wide?: number; transom?: number; ends?: boolean } = {}): void {
+function framing(S: Geo, W: Geo, a: V2, b: V2, z0: number, z1: number, cols: number, floors: number, o: { fin?: number; wide?: number; transom?: number; ends?: boolean; rail?: number } = {}): void {
   const len = Math.hypot(b[0] - a[0], b[1] - a[1])
+  const rail = o.rail ?? 2.4
   const deep = o.fin ?? 3
   const w = (o.wide ?? 1.7) / 2
   moved(S, place(a[0], a[1], 0, Math.atan2(b[1] - a[1], b[0] - a[0])), () => {
@@ -121,7 +122,7 @@ function framing(S: Geo, W: Geo, a: V2, b: V2, z0: number, z1: number, cols: num
       }
       for (let j = 0; j <= floors; j++) {
         const f = z0 + ((z1 - z0) * j) / floors
-        S.box(0, len, -deep * 0.6, 0.5, f - 2.4, f + 2.4, shade(STEEL_DARK, 0.86), { bottom: true })
+        S.box(0, len, -deep * 0.6, 0.5, f - rail, f + rail, shade(STEEL_DARK, 0.86), { bottom: true })
       }
     })
   })
@@ -381,7 +382,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
           const b = along ? 2.6 : 5
           const k = lot(x, y)
           G.box(x - a, x + a, y - b, y + b, z0 + 0.5, z0 + 5, shade(DESK, 0.5 * k * dark.range(0.8, 1.15)))
-          G.box(x - 1.2, x + 1.2, y - 1.2, y + 1.2, z0 + 5, z0 + 8.5, lamp(dark.range(0.3, 0.8) * k))
+          G.box(x - 1.2, x + 1.2, y - 1.2, y + 1.2, z0 + 5, z0 + 8.5, lamp(dark.range(0.45, 1.1) * k))
         }
         for (let k = 0; k <= nx; k++) for (const y of [row.y0, row.y1]) desk(row.x0 + ((row.x1 - row.x0) * k) / nx, y, true)
         for (let k = 1; k < ny; k++) for (const x of [row.x0, row.x1]) desk(x, row.y0 + ((row.y1 - row.y0) * k) / ny, false)
@@ -431,7 +432,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
         run([core.x1, core.y1], [core.x0, core.y1], cols)
         run([core.x0, core.y1], [core.x0, core.y0], rows)
         level(G, shaft, core, z1, -1, CEILING)
-        panels(G, shaft, core, z1 - 0.5, (x, y) => 0.85 * lot(x, y), warm)
+        panels(G, shaft, core, z1 - 0.5, (x, y) => 1.2 * lot(x, y), warm)
       }, 1)
     }
     // A lit sill outside the front glass at every rail and transom: from above, the leaning front shows as rows of lit panes between the fins.
@@ -452,7 +453,7 @@ export function buildHq(z: Zone, ctx: RealContext): THREE.Object3D {
   here(() => {
     sides.forEach(([a, b, n], k) => {
       glazing(C, a, b, pz1, roof, k === 2 ? 1 : n, k === 2 ? 1 : FLOORS * 2, rnd, GLASS, k === 2 ? 0.8 : k === 0 ? TOWER.front : TOWER.side)
-      framing(S, W, a, b, pz1, roof, n, FLOORS, { transom: 0.5, fin: k === 0 ? 5 : 3.6, wide: k === 0 ? 3 : 2.2 })
+      framing(S, W, a, b, pz1, roof, n, FLOORS, { transom: 0.5, fin: k === 0 ? 6 : 3.6, wide: k === 0 ? 4.4 : 2.6, rail: 3.2 })
     })
     fin(S, FINISH.polished, () => {
       for (const sx of [-1, 1]) for (const y of [shaft.y0, shaft.y1]) S.box(sx * shaft.x1 - 2.6, sx * shaft.x1 + 2.6, y - 2.6, y + 2.6, pz1, roof + 2, BRIGHT)

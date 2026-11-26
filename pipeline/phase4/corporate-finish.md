@@ -167,3 +167,12 @@ After the second pass (MEASURED 12:05 to 12:08 UTC on the tree with merge 34 in 
 - What `final` takes away, from a `draft` and a `final` still of nearly the same tree (`node out/work/tmp/bands.mjs`): strong edges lose 44 percent of their energy, weak edges and texture 5 percent; pixels beside something bright lose 48 percent, beside mid tones 25 percent, in the dark 11 percent. By area the loss is even. So it is the hard edges of lit and bright things that the `final` tier softens. Told to the Builder at 12:15.
 - By area at `final` on 65ca2758 (`node out/work/tmp/region.mjs`), build against approved: roof 0.00148 against 0.00155, wedges 0.00101 against 0.00159, carpet 0.00028 against 0.00089, beach 0.00071 against 0.00083; outside my folders, frame left 0.00110 against 0.00223, frame right 0.00105 against 0.00335, top strip 0.00059 against 0.00188, bottom 0.00254 against 0.00435.
 
+## Fourth pass (12:21 to 12:30 UTC)
+
+- Tower front against the approved crop: heavier steel (mullions 4.4 px wide and 6 deep on the front, 2.6 on the sides, floor bands 6.4 high), brighter ceiling lamps (1.2 from 0.85) and desk lamps, so that the floors read as lit rooms behind a steel frame.
+- Revolving door: the clamps that hold the glass at the post are slimmer (3.8 high, 4.6 out from the post) with smaller screws; close to the doors they read as cubes before.
+- Looks: 12:24 and 12:25 `lobby-doors` (tower, door), 12:26 `tier-corporate` (tower), 12:21 `tier-corporate` at `final`. Counts by part now: hq 20, revolving door 2, wedges 12.
+- MEASURED 12:26 to 12:29 UTC: `npm test` 117 files, 1472 of 1472; build built; bots all clear. Counts: Corporate 21 calls and 75541 triangles, Office 16 and 32068, together 37 and 107609 against 37 and 110600; frame 198 of 300.
+- MEASURED fine detail by M3's formula at `draft`: `lobby-doors` 0.869, `tier-corporate` 0.862; band ratio 7.84. At `final` on 491ee42b (12:24): `tier-corporate` 0.587.
+- The Builder's word at 12:25: the `final` number is not to be chased with stronger grain; a mild sharpening of the finished picture is with `look_finisher`.
+
