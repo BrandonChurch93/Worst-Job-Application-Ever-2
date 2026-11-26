@@ -1,35 +1,35 @@
 {
   "folder": "boss-fight",
-  "pushed": "2026-11-26T01:45:26.264Z",
-  "commit": "7b6699f8c90abe72552d6500c1cb721bcd9769c9",
+  "pushed": "2026-11-26T01:54:28.808Z",
+  "commit": "46ac15d63866b372f8842db86c0652cd4eeb53be",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Key boss-fight: approved on the left, this build on the right, draft tier",
-      "time": "2026-11-26T01:45:24.108Z",
+      "caption": "Still boss-boss_press-0p53-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T01:52:22.885Z",
       "by": "boss-fight",
-      "from": "out/work/compare/compare-boss-fight.jpg"
+      "from": "out/work/stills/boss-boss_press-0p53-hd-draft.png"
     },
     {
       "file": "look-2.jpg",
-      "caption": "The key boss-fight after the fit: approved left, build right. Three slabs in the air, health near 58 percent, stream of darts, spark on the glass",
-      "time": "2026-11-26T01:45:24.488Z",
+      "caption": "Key boss-down: approved on the left, this build on the right, draft tier",
+      "time": "2026-11-26T01:54:27.116Z",
       "by": "boss-fight",
-      "from": "out/work/compare/compare-boss-fight.jpg"
+      "from": "out/work/compare/compare-boss-down.jpg"
     },
     {
       "file": "look-3.jpg",
-      "caption": "The beat boss.press, twelve frames: the spent cursor drags itself onto the fallen button and presses it",
-      "time": "2026-11-26T01:45:24.723Z",
+      "caption": "boss.press in six frames around the cursor: stands whole at the key, sags, drags itself on, presses the fallen button",
+      "time": "2026-11-26T01:54:27.381Z",
       "by": "boss-fight",
-      "from": "out/work/sheets/sheet-beat-boss_press-preview-draft.jpg"
+      "from": "out/work/looks/files/20261126015427-press-acting.jpg"
     },
     {
       "file": "look-4.jpg",
-      "caption": "Darts as hot glints with a hair tail and a warm pool on the paper, three slabs lobbed over the shield, the spark",
-      "time": "2026-11-26T01:45:24.959Z",
+      "caption": "The key boss-down: approved left, build right. The cursor is whole with its black edge, lower left of the fallen button",
+      "time": "2026-11-26T01:54:27.612Z",
       "by": "boss-fight",
-      "from": "out/work/looks/files/20261126014524-darts-slabs.jpg"
+      "from": "out/work/compare/compare-boss-down.jpg"
     }
   ]
 }
