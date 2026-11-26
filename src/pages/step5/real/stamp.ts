@@ -16,7 +16,7 @@ import { INK, ink } from './stampInk'
 const q = (v: number): number => Math.round(v * 4) / 4
 const WHITE: [number, number, number] = [1, 1, 1]
 const PRINT: Style = { setting: 'flat', fill: WHITE, lean: 0, rings: [{ d: 1.7, a: 1, c: WHITE }, { d: 2.4, a: 0.5, c: WHITE }] }
-const FRAME = { r: 12, inner: 14, thin: 3.4, feather: 0.7 }
+const FRAME = { r: 12, inner: 12, thin: 2.6, feather: 0.5 }
 const PAD = { in: 2.2, foam: 1, tall: 16, gap: 5 }
 
 const GRAIN = { die: 22, coat: 46 }

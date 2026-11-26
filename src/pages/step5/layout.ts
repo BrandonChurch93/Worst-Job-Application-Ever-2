@@ -126,7 +126,7 @@ export function markOf(): Mark {
   const blockH = h + 64
   const c = Math.abs(Math.cos(MARK_ROT))
   const t = Math.abs(Math.sin(MARK_ROT))
-  made = { cx: LEFT + COLUMN - MARK_AT.right - (w / 2) * c - (h / 2) * t, cy: BOTTOM - MARK_AT.bottom - (w / 2) * t - (h / 2) * c, w, h, bar: 10, blockW, blockH }
+  made = { cx: LEFT + COLUMN - MARK_AT.right - (w / 2) * c - (h / 2) * t, cy: BOTTOM - MARK_AT.bottom - (w / 2) * t - (h / 2) * c, w, h, bar: 8, blockW, blockH }
   return made
 }
 
