@@ -150,7 +150,7 @@ const SHEET = { along: 0.9, gap: 0.5, press: 0.6, side: 2.6, fly: [0.4, 7.4, 0.6
 const LEAVE = { seconds: 0.55, in: 1.7, firm: 0.25, back: 5, settle: 0.12, up: 0.3 }
 const LOADER = { land: [0.66, 0.1], away: [-0.5, 0.84, 0.32], go: [1.25, 0.2], short: 0.72, by: 1.8, low: 16, shut: [-0.6, 0.78], alarm: [0.55, 0.45, 0.8] }
 const HIT = { least: 0.3, hold: 0.2, short: 0.66, big: 0.9, sway: [0.3, 8, 0.4] }
-const LOAD = { reach: 0.8, gain: 1.6, most: 0.8, rock: [0.1, 1.3] }
+const LOAD = { reach: 0.8, gain: 1.6, most: 0.8, rock: [0.1, 1.3], hop: [0.385, 0.9, 0.05] }
 const BEATS = { brace: [0.4, 0.68], catch: [0.12, 0.64], shiver: [0.35, 0.12, 11, 1.3], kick: [0.12, 0.7], alarm: [0.3, 0.36, 1, -0.5], lip: [0.35, 0.72, -0.6], dizzy: [[0, 0.25, 3, 0.5], [0.5, 0.5, 3, 0.5], [1, 0.8, 2.5, 1.3]] }
 const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
 const ACT = { wake: 0.3, doors: 0.6, shock: 0.45, realise: 0.45, slow: 7, lead: 0.1, tall: 1.01, ease: 0.06 }
@@ -592,6 +592,7 @@ export function makePage(): PageLogic {
       snap(BEATS.alarm[2]!, BEATS.alarm[1]!, BEATS.alarm[3]!)
     }
     if (b.mode === 'hold' && b.hold === 'street.firehouse' && t >= T.firedBy + BEATS.shiver[0]! && once('act.shiver')) io.cursor.wobble(BEATS.shiver[1]!, BEATS.shiver[2]!, BEATS.shiver[3]!)
+    if (b.mode === 'rail' && b.rail === 'highway' && t < T.highwayEnd - BEATS.lip[0]! - LOAD.hop[0]! && Math.floor(t / LOAD.hop[0]!) !== Math.floor((t - dt) / LOAD.hop[0]!)) io.cursor.press(LOAD.hop[1]!, LOAD.hop[2]!)
     if (b.mode === 'rail' && b.rail === 'highway' && t >= T.highwayEnd - BEATS.lip[0]! && once('act.lip')) snap(BEATS.lip[1]!, BEATS.lip[0]!, BEATS.lip[2]!)
     if (b.mode === 'rail' && b.rail === 'spiral') for (const d of BEATS.dizzy) if (t >= T.highwayEnd + d[0]! * (T.spiralEnd - T.highwayEnd) && once(`act.dizzy.${d[0]}`)) io.cursor.wobble(d[1]!, d[2]!, d[3]!)
   }
