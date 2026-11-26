@@ -354,8 +354,10 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
     }
     if (was < 0 || (was === 0 && d.dx === 0 && d.dy === 0)) {
       const tip = { x: io.cursor.x, y: io.cursor.y }
-      const dx = f.x - tip.x
-      const dy = f.y - tip.y
+      const face = f.x + SHIELD.x
+      const lead = tip.x < face - SHIELD.clear
+      const dx = (lead ? face : f.x) - tip.x
+      const dy = f.y + (lead ? Math.max(-SHIELD.spread, Math.min(SHIELD.spread, (tip.y - f.y) * SHIELD.drift)) : 0) - tip.y
       const len = Math.hypot(dx, dy) || 1
       d.x = tip.x
       d.y = tip.y

@@ -203,7 +203,7 @@ export function bandGeometry(s: Shape, z: number): THREE.BufferGeometry {
 }
 
 export const CARD_GLASS = { colour: 0x9fb1ae, through: 0.86, perPx: 2.4 }
-export const CLEAR_GLASS = { colour: 0x8ea096, through: 0.74, up: 0.74, lying: 0.5, deep: 0x5f8376, edge: 0xc2cdc9, bead: 0xc9dad4, metal: 0.3 }
+export const CLEAR_GLASS = { colour: 0x8ea096, through: 0.74, up: 0.74, lying: 0.32, deep: 0xc0d0ca, edge: 0xc2cdc9, bead: 0xc9dad4, metal: 0.3 }
 
 let picture: THREE.Texture | null = null
 

@@ -14,18 +14,18 @@ export const PILL_TALL = 33
 export const FOOT_OFF: [number, number][] = [[-250, -205], [250, -205], [-250, 205], [250, 205]]
 export const HIP_OFF: [number, number][] = [[-168, -50], [168, -50], [-168, 50], [168, 50]]
 export const CANNON_OFF: [number, number][] = [[-10, -116], [-10, 116]]
-const SHIELD_OFF: [number, number] = [-276, 0]
+const SHIELD_OFF: [number, number] = [-246, 0]
 export const SIDE_OFF: [number, number][] = [[0, -112], [0, 112]]
 export const CANNON_FROM = [1, 2] as const
-export const BODY_Z = { side: 86, sideTop: 96, frame: 96, cap: 106, shield: 8, capTall: heights.button - heights.buttonSocket, hip: 118, cannonTall: 13, housing: 20 }
+export const BODY_Z = { side: 86, sideTop: 96, frame: 96, cap: 106, shield: 8, capTall: heights.button - heights.buttonSocket, hip: 83, cannonTall: 13, housing: 20 }
 export const LEG = { link: 90, wide: 20, foot: 44, knee: 38 }
 export const FRAME = { w: 372, h: 136, cut: 26, bedW: 300, bedH: 84, tall: 16 }
 export const SIDE = { w: 224, h: 100, lean: 36, tall: 12 }
-export const SHIELD = { w: 108, h: 216, tall: 22 }
+export const SHIELD = { w: 92, h: 244, tall: 24 }
 export const SHADE = { w: 560, h: 500, off: 46, soft: 74 }
 
 export interface Spot { x: number; y: number; rot: number; k: number; z: number; flat?: number; turn?: number; recoil?: number }
-export interface Leg { hx: number; hy: number; fx: number; fy: number; k: number; z: number; flat?: number }
+export interface Leg { hx: number; hy: number; fx: number; fy: number; k: number; z: number; flat?: number; crouch?: number }
 export interface Rig { cap: { x: number; y: number; rot: number; lift: number; down: number }; plate: Spot; sides: Spot[]; legs: Leg[]; cannons: Spot[]; shield: Spot; hurt: number; flash?: number; split?: number }
 export interface More { aim?: { x: number; y: number }; flash?: number; hurt?: number }
 
@@ -43,7 +43,7 @@ export function label(id: string, part: string, key: string, cx: number, cy: num
   return s
 }
 
-export const MUZZLE = { reach: 92, z: BODY_Z.sideTop + 12.5, turn: 0.7 }
+export const MUZZLE = { reach: 106, z: BODY_Z.sideTop + 14, turn: 0.7 }
 
 export function muzzleAt(x: number, y: number, i: number, aim?: { x: number; y: number }): { x: number; y: number; z: number; rot: number } {
   const cx = x + CANNON_OFF[i]![0]
@@ -128,10 +128,10 @@ export function unfoldRig(u: number): Rig {
 export const WRECK = { x: 1296, y: 446, rot: 0.22 }
 const SCATTER = {
   plate: WRECK,
-  sides: [{ x: 588, y: 806, rot: -0.32 }, { x: 1526, y: 842, rot: 0.2 }],
-  legs: [{ x: 1064, y: 452, rot: 0.5 }, { x: 1610, y: 436, rot: -0.45 }, { x: 330, y: 930, rot: -0.3 }, { x: 1690, y: 770, rot: 1.1 }],
+  sides: [{ x: 570, y: 792, rot: -0.32 }, { x: 1526, y: 842, rot: 0.2 }],
+  legs: [{ x: 1064, y: 452, rot: 0.5 }, { x: 1610, y: 436, rot: -0.45 }, { x: 336, y: 892, rot: -0.3 }, { x: 1690, y: 770, rot: 1.1 }],
   cannons: [{ x: 1492, y: 400, rot: 2.9 }, { x: 880, y: 752, rot: 0.35 }],
-  shield: { x: 1480, y: 990, rot: 1.48 }
+  shield: { x: 1490, y: 992, rot: 1.5 }
 }
 
 const LANDS = { from: 0.6, plate: 1.08, sides: [1.13, 1.18], cannons: [1.26, 1.32], legs: [1.3, 1.36, 1.41, 1.34], shield: 1.4, skid: 0.3, short: 0.86, hop: 0.4 } as const
@@ -188,7 +188,7 @@ export function drawRig(out: DrawList, rig: Rig, id = 'boss', pressed = 0): void
   rig.legs.forEach((l, i) => {
     if (l.k <= 0.01) return
     const flat = l.flat ?? 0
-    out.push({ id: `${id}-leg-${i}`, part: body, kind: 'box', role: 'bossLeg', x: l.hx - 8, y: l.hy - 8, w: 16, h: 16, z0: 0, z1: BODY_Z.hip, tone: 'raised', v: [l.fx - l.hx, l.fy - l.hy, l.z, l.k, i % 2 === 0 ? -1 : 1, flat, i < 2 ? -1 : 1] })
+    out.push({ id: `${id}-leg-${i}`, part: body, kind: 'box', role: 'bossLeg', x: l.hx - 8, y: l.hy - 8, w: 16, h: 16, z0: 0, z1: BODY_Z.hip, tone: 'raised', v: [l.fx - l.hx, l.fy - l.hy, l.z, l.k, i % 2 === 0 ? -1 : 1, flat, i < 2 ? -1 : 1, l.crouch ?? 0] })
   })
   rig.sides.forEach((s, i) => {
     if (s.k <= 0.01) return

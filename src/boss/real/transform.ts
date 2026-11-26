@@ -9,7 +9,7 @@ import { BODY_Z, CAP_H, CAP_W, HOLE_H, HOLE_W, crackRuns } from '../body'
 import { controls } from '../../shell/real/controls'
 import type { RealContext } from '../../real/types'
 import { mesh } from './body-kit'
-import { pillGeometry, PILL } from './pill'
+import { holeAt, pillGeometry, LIP, PILL } from './pill'
 
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
 const smooth = (t: number): number => { const u = clamp(t); return u * u * (3 - 2 * u) }
@@ -74,10 +74,13 @@ export function sootPixels(w = SOOT_W, h = SOOT_H): Uint8Array {
       const i = (y * w + x) * 4
       const tone = 9 + Math.round(9 * fine)
       const grey = 40 + Math.round(34 * fine)
-      data[i] = Math.round(mix(tone + 4, grey, ash))
-      data[i + 1] = Math.round(mix(tone + 2, grey - 2, ash))
-      data[i + 2] = Math.round(mix(tone, grey - 5, ash))
-      data[i + 3] = Math.round(255 * Math.max(clamp(d) * 0.985 * (1 - bare), halo))
+      const hole = holeAt(px, -py).d
+      const pit = 1 - smooth((hole - 0.86) / 0.1)
+      const torn = hole < LIP.out ? smooth((hole - 0.9) / 0.1) * (1 - smooth((hole - 1.12) / (LIP.out - 1.12))) * (0.55 + 0.45 * smooth((fine - 0.35) / 0.3)) * smooth(((CAP_W / 2 - 21.5 - Math.abs(px)) / 14 + 0.9) / 0.8) : 0
+      data[i] = Math.round(mix(mix(tone + 4, grey, ash), 5, pit))
+      data[i + 1] = Math.round(mix(mix(tone + 2, grey - 2, ash), 4, pit))
+      data[i + 2] = Math.round(mix(mix(tone, grey - 5, ash), 4, pit))
+      data[i + 3] = Math.round(255 * Math.max(pit, Math.max(clamp(d) * 0.985 * (1 - bare), halo) * (1 - 0.9 * torn)))
     }
   }
   return data
@@ -226,10 +229,10 @@ const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysic
   floorMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x0d0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.1 }))
   if (!collarMaterial) {
     collarMaterial = materials().aluminiumSatin.clone()
-    collarMaterial.color.setHex(0xb6b8b8, THREE.SRGBColorSpace)
-    collarMaterial.roughness = 0.6
-    collarMaterial.metalness = 0.55
-    collarMaterial.envMapIntensity = 0.5
+    collarMaterial.color.setHex(0xc2c5c7, THREE.SRGBColorSpace)
+    collarMaterial.roughness = 0.4
+    collarMaterial.metalness = 0.8
+    collarMaterial.envMapIntensity = 0.8
     collarMaterial.normalMap = null
     collarMaterial.roughnessMap = null
     studio(collarMaterial)
@@ -243,7 +246,7 @@ function rim(): THREE.Object3D {
   const m = materials()
   const root = new THREE.Group()
   const line = roundedRect(HOLE_W, HOLE_H, HOLE_H / 2, 22)
-  const ring = sweep(line, profile([[-2.4, 0, true], [-2.4, 0.35], [-1.7, 0.6], [3.4, 0.6], [4.4, 0.15], [7.2, -6.4], [8.6, -9.6], [PIT.collar, -12, true]]), false)
+  const ring = sweep(line, profile([[-6.2, 0, true], [-6.2, 0.5], [-5.6, 1.1], [-4.4, 1.7], [-2.6, 2.1], [0.4, 2.2], [2.6, 1.9], [3.8, 1.2], [4.6, 0.1], [7.2, -6.4], [8.6, -9.6], [PIT.collar, -12, true]]), false)
   const pit = pitStuff()
   root.add(mesh(ring, pit.collar, false, true))
   const wall = sweep(line, profile([[PIT.collar - 0.4, -12, true], [PIT.collar + 3, -17], [PIT.collar + 7, -36], [PIT.wallTo, PIT.deep, true]]), false)

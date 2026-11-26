@@ -80,7 +80,7 @@ function lipOutline(): [number, number][] {
     pts.push([cx + r, 0.4])
     return pts
   }
-  return [...arc(FRAME.bedH / 2 + 6.5), ...arc(FRAME.bedH / 2 - 0.2).reverse()]
+  return [...arc(FRAME.bedH / 2 + 4.2), ...arc(FRAME.bedH / 2 - 0.2).reverse()]
 }
 
 const BREAK: [number, number, number, number] = [-12, 0, 16, 70]
@@ -121,7 +121,7 @@ function crown(g: THREE.BufferGeometry, lean: number): THREE.BufferGeometry {
 }
 
 const HALF_AT: [number, number][] = [[-96, 40], [96, 40]]
-const HALF_TO: [number, number, number, number][][] = [[[1290, 432, 0.16, 1], [1254, 462, -0.34, 0]], [[1752, 590, 1.42, 1], [1728, 632, 0.98, 0]]]
+const HALF_TO: [number, number, number, number][][] = [[[1290, 432, 0.16, 0], [972, 604, -0.42, 0]], [[1752, 590, 1.42, 0], [1790, 948, 0.86, 0]]]
 
 function wingParts(flip: boolean, half: -1 | 0 | 1): THREE.Group {
   const m = materials()
@@ -137,9 +137,9 @@ function wingParts(flip: boolean, half: -1 | 0 | 1): THREE.Group {
   g.add(mesh(geo(`wingBed:${name}`, () => put(cutPlate(shape(bedOutline()), 9, 0.5))), half === 0 ? k.pocket : k.plate, false))
   g.add(mesh(geo(`wingBright:${name}`, () => put(joined([
     ...(half === 0 ? [cutPlate(shape(lipOutline()), 3, 1.1).translate(0, 0, FRAME.tall - 0.4)] : []),
-    ...WING_SCREWS.filter(([x]) => mine(x)).map(([x, y], i) => moved(screw(4.6, 1.8, i + (flip ? 9 : 0) + (half > 0 ? 3 : 0)), x, y, FRAME.tall)),
+    ...WING_SCREWS.filter(([x]) => mine(x)).map(([x, y], i) => moved(screw(3.8, 1.5, i + (flip ? 9 : 0) + (half > 0 ? 3 : 0)), x, y, FRAME.tall)),
     ...(flip ? [] : [-1, 1].filter(mine).flatMap((e) => [0, 1, 2].map((i) => moved(lying([[0, 0], [4.6, 0], [4.6, 9], [0, 9]], 20), e * 168 + 15 - i * 10.5, 0, FRAME.tall - 0.5))))
-  ]))), m.aluminiumEdge, false))
+  ]))), k.trim, false))
   g.position.set(ox, oy, 0)
   return g
 }
@@ -226,12 +226,12 @@ function side(i: number): THREE.Object3D {
   root.add(mesh(geo(`side:${i}`, () => crown(cutPlate(outline, SIDE.tall, EDGE.bevel, 0, 2).rotateZ(turnZ), CROWN.side)), k.plate))
   root.add(mesh(geo(`sideSide:${i}`, () => cutPlate(outline, SIDE.tall - EDGE.step, 1, EDGE.out, 1).rotateZ(turnZ)), k.plateSide))
   root.add(mesh(geo(`sideParts:${i}`, () => joined([
-    ...[[-98, -36], [98, -36], [-70, 38], [70, 38]].map(([x, y], n) => moved(screw(4.2, 1.6, 20 + n + i * 5), x!, y! * sign, SIDE.tall))
-  ])), m.aluminiumEdge, false))
+    ...[[-98, -36], [98, -36], [-70, 38], [70, 38]].map(([x, y], n) => moved(screw(3.6, 1.4, 20 + n + i * 5), x!, y! * sign, SIDE.tall))
+  ])), k.trim, false))
   return root
 }
 
-const BARREL = { long: 84, r: 13, z: 12.5, out: -8, home: 33 }
+const BARREL = { long: 98, r: 15, z: 14, out: -8, home: 33, bore: 3.4 }
 
 function cannon(s: Shape, ctx: RealContext): THREE.Object3D {
   const m = materials()
@@ -244,10 +244,10 @@ function cannon(s: Shape, ctx: RealContext): THREE.Object3D {
   const L = BARREL.long
   const r = BARREL.r
   barrel.add(mesh(geo('barrel', () => joined([
-    lying([[0, 0], [r, 0], [r, 40], [r + 2.6, 41], [r + 2.6, 50], [r, 51], [r - 2.4, 53], [r - 2.4, L - 23], [r, L - 21], [r, L - 12], [r + 3, L - 11], [r + 3, L - 1.5], [r + 1.8, L], [r - 4, L], [r - 5, L - 2]], 40),
+    lying([[0, 0], [r, 0], [r, 40], [r + 2.6, 41], [r + 2.6, 50], [r, 51], [r - 2.4, 53], [r - 2.4, L - 23], [r, L - 21], [r, L - 12], [r + 3, L - 11], [r + 3, L - 1.5], [r + 1.8, L], [r - BARREL.bore + 1, L], [r - BARREL.bore, L - 2]], 40),
     lying([[r - 2.2, 58], [r - 1.6, 58.6], [r - 1.6, 62], [r - 2.2, 62.6]], 40)
-  ])), m.aluminiumSatin))
-  barrel.add(mesh(geo('bore', () => lying([[r - 5, L - 2], [r - 5, L - 22], [0, L - 22]], 28)), k.bore, false))
+  ])), k.joint))
+  barrel.add(mesh(geo('bore', () => lying([[r - BARREL.bore, L - 2], [r - BARREL.bore, L - 26], [0, L - 26]], 28)), k.bore, false))
   root.add(base, housing, button, barrel)
   root.userData.c = { housing, button, barrel }
   return root
@@ -269,10 +269,11 @@ function poseCannon(o: THREE.Object3D, s: Shape): void {
 }
 
 const GLASS_CRACKS: [number, number][][] = [
-  [[-47, 90], [-30, 60], [-12, 36], [4, 5], [22, -29], [36, -62], [47, -97]],
-  [[49, 64], [30, 41], [4, 5]],
-  [[-12, 36], [-4, 71], [10, 103]],
-  [[22, -29], [-6, -52], [-22, -83]]
+  [[-40, 102], [-26, 68], [-10, 41], [3, 6], [19, -33], [31, -70], [40, -110]],
+  [[42, 72], [26, 46], [3, 6]],
+  [[-10, 41], [-3, 80], [9, 116]],
+  [[19, -33], [-5, -59], [-19, -94]],
+  [[3, 6], [-22, -4], [-41, -22]]
 ]
 
 let brokenMade: ReturnType<typeof fracture> | null = null
@@ -414,7 +415,7 @@ function leg(): THREE.Object3D {
   const upper = link()
   const lower = link()
   const kr = LEG.knee / 2
-  const knuckle = (): THREE.Mesh => mesh(geo('knee', () => lathe([[kr, -9], [kr, 7.8], [kr - 1.8, 9.6], [kr - 5.4, 9.6], [kr - 6.4, 8.2], [8, 8.2], [8, 10.8], [6, 12], [0, 12]], 48)), m.aluminiumSatin)
+  const knuckle = (): THREE.Mesh => mesh(geo('knee', () => lathe([[kr, -9], [kr, 7.8], [kr - 1.8, 9.6], [kr - 5.4, 9.6], [kr - 6.4, 8.2], [8, 8.2], [8, 10.8], [6, 12], [0, 12]], 48)), k.joint)
   const hip = knuckle()
   const knee = knuckle()
   const rod = mesh(geo('legRod', () => lying([[0, 0], [4.4, 0], [4.4, 1], [0, 1]], 16).rotateZ(Math.PI)), k.pin, false)
@@ -475,6 +476,8 @@ function poseLeg(o: THREE.Object3D, s: Shape): void {
   if (N.x * sx < 0) N.negate()
   N.multiplyScalar(mix(-1, 1, open))
   N.z += 0.16 * open * (1 - flat)
+  const crouch = v[7] ?? 0
+  if (crouch > 0) N.multiplyScalar(Math.cos(crouch)).setZ(Math.sin(crouch))
   N.addScaledVector(U, -N.dot(U)).normalize()
   K.copy(H).addScaledVector(U, reach / 2).addScaledVector(N, out)
   P.copy(U).cross(N).normalize()
@@ -544,7 +547,7 @@ function cap(s: Shape, ctx: RealContext): THREE.Object3D {
   root.userData.cracks = cracks
   const flat = controls.make({ ...s, id: 'boss-cap-button', part: 'shell', kind: 'capsule', role: 'button', tone: 'accent', w: CAP_W, h: CAP_H, z0: 0, z1: BODY_Z.capTall, rot: 0, v: undefined }, ctx)
   root.add(flat)
-  const pill = mesh(pillGeometry(), materials().orange)
+  const pill = mesh(pillGeometry(), bossKit().lacquer)
   pill.visible = false
   root.add(pill)
   root.userData.flat = flat

@@ -11,7 +11,7 @@ export interface FilmScript { pointer(time: number): Pointer; reactions: { at: n
 // The doubt: it comes to the box and hangs back from it, creeps in, flinches off, stands and sweats, winds up and drops its weight on the box.
 // The horror: a jump at the crack, a tall shocked hold while it backs off, a dart to the far edge of the card, and pale and stiff there while the machine builds.
 // The anger: a loaded point before the first shot, a snap aside two frames after the first slab of the salvo is fired.
-// The collapse: it ducks two frames after the power goes, then walks to the fallen button and stands scorched at the key; it sags just after it.
+// The collapse: it ducks two frames after the power goes, then walks to the fallen button and sags as it gets there, so it is scorched and sagging at the key.
 // The press: it gathers itself, sets its point on the button's edge and drops its whole weight on it (the page cues the stamp and the relief that is held after it).
 export const ACT = { flinch: 2.72, windup: 3.36, tap: 3.72, take: 4.7, jump: 6.15, hide: 6.95, steel: 8.75, load: 9.45, snap: 11.94, charge: 24.2, ram: 26.9, duck: 27.31, gather: 29.5, press: 29.88 } as const
 
@@ -26,7 +26,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     [4.4, cb.cx + 430, cb.cy + 44], [5.3, cb.cx + 430, cb.cy + 44], [6.0, 820, 890], [6.12, 824, 894], [6.5, 600, 800], [6.95, 580, 790], [7.45, L.card.x - 36, L.card.y + 150], [8.7, L.card.x - 36, L.card.y + 150], [9.2, 430, 850],
     [9.45, 430, 880], [10.3, 430, 880], [10.75, 420, 700], [11.66, 420, 700], [12.11, 450, 900], [14.9, 450, 900], [15.3, 400, 720], [17.35, 400, 720],
     [17.8, 520, 900], [24.1, 520, 900], [25.4, 960, 770], [26.6, 1300, 800], [27.1, 1330, 880],
-    [27.4, 1380, 934], [28.0, 1380, 934], [28.6, FALLEN.x - 215, FALLEN.y + 62], [29.5, FALLEN.x - 215, FALLEN.y + 62], [29.86, FALLEN.x - 122, FALLEN.y - 28], [32, FALLEN.x - 122, FALLEN.y - 28]
+    [27.4, 1380, 934], [28.0, 1380, 934], [28.6, FALLEN.x - 150, FALLEN.y + 74], [29.5, FALLEN.x - 150, FALLEN.y + 74], [29.86, FALLEN.x - 122, FALLEN.y - 28], [32, FALLEN.x - 122, FALLEN.y - 28]
   ]
   const clicks: number[] = [tickAt]
   const burst = (from: number, to: number, every: number): void => {
