@@ -145,11 +145,43 @@ Not built, and why:
 
 Looks used on D: cursor-body 8 (Continue at 0.6 at review twice, Continue at 0.2 at review twice, the sheet `cursor-damage` at review, `step2-crank` at review, the sheet `cursor-acting` at draft twice).
 
+The Builder's ruling on D, 12:12Z: the flattened arrow and the angry arrow are accepted; the exhausted arrow's contour (fa1ae36c) is ruled for the sheet (`kit/02-SUBJECT.md` names the sheet `cursor-acting` as the reference for Exhausted) and the Builder takes that commit back alone at merge 35. I push no revert of my own.
+
+## G. The focus ring
+
+MEASURED first, the column of pixels down through the top edge of the field in focus (`node out/work/look-finish/prof.cjs <png> 1200 596 300 30`, `step2-crank`, approved against the build; the ring's line is at row 612 to 615 in approved and 615 to 617 in the build):
+
+| Place | Approved | Build before | Build after |
+| --- | --- | --- | --- |
+| 6 px outside the line | 223,212,202 | 233,212,202 | 232,202,187 |
+| 3 px outside | 234,204,181 | 246,217,201 | 245,195,168 |
+| 1 px outside | 225,160,111 | 252,212,187 | 252,178,128 |
+| 2 px inside | 245,212,169 | 202,133,110 | 216,173,131 |
+| 6 px inside | 219,173,137 | 155,128,119 | 170,149,128 |
+
+So the halo was as wide as approved's already (about 13 px) but pale: light added to a pale page only makes it paler, never more orange. And inside the well the build was dark red where approved is warm and light.
+
+Built in `src/shell/real/controls.ts`, `focusRing`: a second surface under the glow that multiplies what lies behind it (`HALO_TINT`, 13 px out and 9 px in, strongest at the line), so the paper round the ring is stained orange and not bleached; and the glow that falls inside the well is now a warm cream (`HALO_WELL`) at 0.9, 0.45, 0.18 where it was the ring's own red at 0.5, 0.2, 0.07. The ring's line, its width and the caret are not touched. No texture.
+
+Still short of approved: the well 6 px inside is 170,149,128 against 219,173,137.
+
+Looks used on G: shell 3 (`step2-crank` at review twice, `step2-dial` at review).
+
+## E. The progress row: measured, not built
+
+MEASURED (`prof.cjs <png> 600 150 300 26` on step2-rest; the same on decision and marketing-top by rows darker than 200): the header rule is as thick in the build as in approved (step2-rest: 9 rows against 10; marketing-top: 6 against 5). Its body matches (162 to 173 against 151 to 169). What differs is the dark line along its lower edge: one hard row at 59 to 64 in the build, three soft rows at 86 to 122 in approved. One try: the rule in the satin rail metal (`railSatin`). The body went up to 204 to 211 and the top to 240, both away from approved, and the dark row stayed at 57, so it was taken back. The dark row is the shadow at the rule's foot, not its metal; changing it means changing the shadow of every page, which I did not do at this hour. The buttons, the numerals, the puck and the empty seat of the boss page were not looked at.
+
+Looks used on E: shell 1.
+
+## F. The shell that seals the arrow at the port
+
+Not started. UNKNOWN.
+
 ## Looks counted (tuning looks; baseline and three-panel pictures not counted)
 
 | Part | Used | Of |
 | --- | --- | --- |
-| shell | 10 | 40 |
+| shell | 14 | 40 |
 | type | 2 | 40 |
 | light-engine | 0 | 40 |
 | cursor-body | 8 | 40 |

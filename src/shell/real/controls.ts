@@ -436,6 +436,9 @@ function card(s: Shape): THREE.Object3D {
 
 let glowMaterial: THREE.MeshBasicMaterial | null = null
 let coreMaterial: THREE.MeshBasicMaterial | null = null
+let tintMaterial: THREE.MeshBasicMaterial | null = null
+const HALO_TINT: [number, number, number] = [0.08, 0.6, 0.85]
+const HALO_WELL: [number, number, number] = [0.5, 0.27, 0.09]
 
 // The ring of light round a field in focus: a thin bright line on the rim and its spill on the page and on the glass.
 function focusRing(f: Shape): THREE.Object3D {
@@ -447,16 +450,32 @@ function focusRing(f: Shape): THREE.Object3D {
   core.receiveShadow = false
   root.add(core)
   const spill = shared(`focusGlow:${dims(f)}`, () => {
-    const steps: [number, number, number][] = [[-17, 0.25, 0], [-10, 0.25, 0.07], [-5.5, 0.25, 0.2], [-2.6, 0.25, 0.5], [-0.7, 0.3, 1], [1.7, 0.3, 1], [RIM + 0.2, f.z0 + 0.4, 0.5], [6, f.z0 + 0.4, 0.2], [10, f.z0 + 0.4, 0.07], [15, f.z0 + 0.4, 0]]
+    const steps: [number, number, number][] = [[-17, 0.25, 0], [-10, 0.25, 0.07], [-5.5, 0.25, 0.2], [-2.6, 0.25, 0.5], [-0.7, 0.3, 1], [1.7, 0.3, 1], [RIM + 0.2, f.z0 + 0.4, 0.9], [6, f.z0 + 0.4, 0.45], [10, f.z0 + 0.4, 0.18], [15, f.z0 + 0.4, 0]]
     const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
     const n = outline.count
     const colour = new Float32Array(steps.length * n * 3)
-    steps.forEach(([, , a], k) => {
-      for (let i = 0; i < n; i++) colour.set([0.74 * a, 0.15 * a, 0.015 * a], (k * n + i) * 3)
+    steps.forEach(([inset, , a], k) => {
+      const c = inset > RIM ? HALO_WELL : [0.74, 0.15, 0.015]
+      for (let i = 0; i < n; i++) colour.set([c[0]! * a, c[1]! * a, c[2]! * a], (k * n + i) * 3)
     })
     g.setAttribute('color', new THREE.BufferAttribute(colour, 3))
     return g
   })
+  tintMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.ZeroFactor, blendDst: THREE.SrcColorFactor, blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor, depthWrite: false, toneMapped: false })
+  const stain = shared(`focusTint:${dims(f)}`, () => {
+    const steps: [number, number, number][] = [[-13, 0.2, 0], [-8, 0.2, 0.3], [-3.5, 0.2, 0.62], [-0.7, 0.25, 0.9], [1.7, 0.25, 0.9], [RIM + 0.2, f.z0 + 0.35, 0.3], [9, f.z0 + 0.35, 0]]
+    const g = sweep(outline, steps.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
+    const n = outline.count
+    const colour = new Float32Array(steps.length * n * 3)
+    steps.forEach(([, , a], k) => {
+      for (let i = 0; i < n; i++) colour.set([1 - HALO_TINT[0] * a * a, 1 - HALO_TINT[1] * a * a, 1 - HALO_TINT[2] * a * a], (k * n + i) * 3)
+    })
+    g.setAttribute('color', new THREE.BufferAttribute(colour, 3))
+    return g
+  })
+  const tint = mesh(stain, tintMaterial, false)
+  tint.receiveShadow = false
+  root.add(tint)
   const glow = mesh(spill, glowMaterial, false)
   glow.receiveShadow = false
   root.add(glow)
