@@ -100,3 +100,12 @@ Every texture and built asset of the boss that this owner changed or added. All 
 - Takes: fourth of this pass (`0x8f0707` with the room at 0.62 was dark and dull; `0xc20b0c` with the coat at 0.07 had no light on the edge; the coat at 0.26 washed the face pink).
 - Why this one: the room's reflection at 1.05 laid a pale haze over the face, so the slab read rose and matte. With less of the room and a wider coat the face is a deep red and the upper bevel carries a thin line of light, as the approved `boss-fight` shows it.
 - Date: 2026-11-26.
+
+## cracks round the socket, heavier (geometry, no texture)
+
+- Made by: code, `crackGeometry()` and `crackStuff()` in `src/boss/real/transform.ts`, the material passed through `studio()`.
+- From: nothing but numbers: the runs of `crackRuns()` in `src/boss/body.ts` (not changed), drawn 2.5 times their plan width (was 1.7), never thinner than 0.6 px (was 0.45), colour `0x33231b` (was `0x3b2a20`). No file, 0 MB, no triangle added.
+- Command: none.
+- Takes: second (`0x2b1e17` read black beside the approved brown; `0x33231b` lies between the two that were looked at and was not looked at by itself).
+- Why this one: at the size of the key the cracks were hairlines of 1 to 2 px; the approved `boss-fight` shows them 3 to 4 px at the root and tapering.
+- Date: 2026-11-26.
