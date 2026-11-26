@@ -13,7 +13,7 @@ import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
 const CAP_CLEARS = 0.6
-const SAG_AT = 1.57
+const SAG_AT = 1.7
 type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
 
 interface State {
