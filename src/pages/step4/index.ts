@@ -8,7 +8,7 @@ import { drawLayout, type DrawOptions } from '../../shell/layout'
 import { SCREEN_H } from '../../shell/parts'
 import type { DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
 import { makeLayout } from './layout'
-import { makeScript } from './script'
+import { makeScript, STAND } from './script'
 import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
@@ -157,7 +157,7 @@ export function makePage(): PageLogic {
             s.selfTick = self
             io.emit('checkbox', L.checkbox.cx, L.checkbox.cy, false)
             io.cursor.act(self ? 'plain' : 'proud')
-          } else io.cursor.act(Math.hypot(io.pointer.x - L.checkbox.cx, io.pointer.y - L.checkbox.cy) < 150 ? 'nervous' : 'plain')
+          } else io.cursor.act(Math.hypot(io.pointer.x - L.checkbox.cx, io.pointer.y - L.checkbox.cy) < STAND.near ? 'nervous' : 'plain')
         } else {
           s.ticked += dt
           if (!s.selfTick && s.ticked >= PRIDE && s.ticked - dt < PRIDE) io.cursor.act('confident')

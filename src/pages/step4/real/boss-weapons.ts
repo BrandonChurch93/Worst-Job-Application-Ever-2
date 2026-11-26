@@ -31,6 +31,35 @@ export const LACQUER = { colour: 0xa00d0b, rough: 0.46, spec: 0.4, coat: 0.09, e
 
 let lacquerMade: THREE.MeshPhysicalMaterial | null = null
 
+export const LAND_DUST = { seconds: 0.5, colour: 0xc6bfb3, most: 0.6, every: 20, out: 6, r: [18, 31], grow: [0.14, 0.42], lift: 0.7 } as const
+
+function dustGeometry(w: number, h: number): THREE.BufferGeometry {
+  const at: number[] = []
+  const tint: number[] = []
+  const puff = (x: number, y: number, r: number): void => {
+    const n = 12
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2
+      const b = ((i + 1) / n) * Math.PI * 2
+      at.push(x, y, 0, x + Math.cos(a) * r, y + Math.sin(a) * r, 0, x + Math.cos(b) * r, y + Math.sin(b) * r, 0)
+      tint.push(1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0)
+    }
+  }
+  const along = Math.max(2, Math.round(w / LAND_DUST.every))
+  let n = 0
+  const size = (): number => LAND_DUST.r[0] + (LAND_DUST.r[1] - LAND_DUST.r[0]) * hash01(n++, Math.round(w), seed + 13)
+  for (let i = 0; i <= along; i++) {
+    const x = -w / 2 + (w * i) / along
+    for (const side of [-1, 1]) puff(x + (hash01(i, side + 3, seed + 17) - 0.5) * 14, side * (h / 2 + LAND_DUST.out), size())
+  }
+  for (const side of [-1, 1]) puff(side * (w / 2 + LAND_DUST.out), 0, size())
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(at, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(tint, 4))
+  g.computeVertexNormals()
+  return g
+}
+
 function lacquer(): THREE.MeshPhysicalMaterial {
   if (!lacquerMade) {
     const grain = grainNormalMap(256, config.seed + 71, 1.6)
@@ -395,6 +424,13 @@ export const bossWeapons: PartMaker | null = {
         const slab = makeSlab(s.w, s.h, s.r ?? 8, heights.slab)
         ;(slab.children[0] as THREE.Mesh).material = lacquer()
         slab.children[1]!.castShadow = false
+        if (s.id !== 'banner-up') {
+          const dust = new THREE.Mesh(dustGeometry(s.w, s.h), studio(new THREE.MeshStandardMaterial({ color: new THREE.Color().setHex(LAND_DUST.colour, THREE.SRGBColorSpace), roughness: 1, metalness: 0, vertexColors: true, transparent: true, depthWrite: false, opacity: 0 })))
+          dust.name = 'dust'
+          dust.visible = false
+          dust.renderOrder = 1
+          slab.add(dust)
+        }
         return slab
       }
       case 'button': return controls.make(full(s, heights.button, 'button'), ctx)
@@ -498,6 +534,17 @@ export const bossWeapons: PartMaker | null = {
         o.rotation.x += rx
         o.rotation.y += ry
         o.position.z -= Math.abs(Math.sin(rx)) * (s.h / 2) + Math.abs(Math.sin(ry)) * (s.w / 2)
+        const dust = o.getObjectByName('dust') as THREE.Mesh | undefined
+        if (dust) {
+          const u = t / LAND_DUST.seconds
+          dust.visible = u > 0 && u < 1
+          if (dust.visible) {
+            const e = 1 - (1 - u) * (1 - u)
+            dust.scale.set(1 + LAND_DUST.grow[0] * e, 1 + LAND_DUST.grow[1] * e, 1)
+            dust.position.z = LAND_DUST.lift - o.position.z
+            ;(dust.material as THREE.MeshStandardMaterial).opacity = LAND_DUST.most * Math.min(1, u * 10) * Math.pow(1 - u, 1.3)
+          }
+        }
         break
       }
       case 'button': {
@@ -517,6 +564,11 @@ export const bossWeapons: PartMaker | null = {
   drop(o: THREE.Object3D): void {
     const flecks = o.getObjectByName('flecks') as THREE.Mesh | undefined
     if (flecks) flecks.geometry.dispose()
+    const dust = o.getObjectByName('dust') as THREE.Mesh | undefined
+    if (dust) {
+      dust.geometry.dispose()
+      ;(dust.material as THREE.Material).dispose()
+    }
     const ring = o.getObjectByName('ring') as THREE.Mesh | undefined
     if (ring) (ring.material as THREE.Material).dispose()
   }
