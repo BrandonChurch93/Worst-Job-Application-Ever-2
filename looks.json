@@ -1,35 +1,35 @@
 {
   "folder": "ball-finish",
-  "pushed": "2026-11-26T11:31:02.620Z",
-  "commit": "2579690c6df085bef9062ac1ac1a04a399173d7d",
+  "pushed": "2026-11-26T11:37:00.880Z",
+  "commit": "a0e5bc109ed1a8fbbe3127306f27c6939fa7fbc3",
   "looks": [
     {
       "file": "look-1.jpg",
-      "caption": "Still key-last-save-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T11:24:26.623Z",
-      "by": "ball-finish",
-      "from": "out/work/stills/key-last-save-hd-draft.png"
-    },
-    {
-      "file": "look-2.jpg",
-      "caption": "Still key-last-save-hd-draft: draft tier, hd, view beauty",
-      "time": "2026-11-26T11:25:58.174Z",
-      "by": "ball-finish",
-      "from": "out/work/stills/key-last-save-hd-draft.png"
-    },
-    {
-      "file": "look-3.jpg",
       "caption": "lobby-doors at 11:22 UTC on main's old key: build left, approved right. The glass is clearer and its rim darker; the shadow still falls lower left, before the new key",
       "time": "2026-11-26T11:31:00.844Z",
       "by": "ball-finish",
       "from": "out/work/looks/ball-lobby.jpg"
     },
     {
-      "file": "look-4.jpg",
+      "file": "look-2.jpg",
       "caption": "last-save, the display from the side: before above, after below. The dots no longer hide behind the mask",
       "time": "2026-11-26T11:31:01.071Z",
       "by": "ball-finish",
       "from": "out/work/looks/display-side.jpg"
+    },
+    {
+      "file": "look-3.jpg",
+      "caption": "Still key-table-wide-hd-draft: draft tier, hd, view beauty",
+      "time": "2026-11-26T11:32:04.183Z",
+      "by": "ball-finish",
+      "from": "out/work/stills/key-table-wide-hd-draft.png"
+    },
+    {
+      "file": "look-4.jpg",
+      "caption": "sheet clear-ball at 11:33 UTC (2579690c): the two build balls left, the two approved balls right. Lit from the head lamps; the grey band and the tan smear seen here are what a0e5bc10 changes, not yet seen",
+      "time": "2026-11-26T11:36:59.814Z",
+      "by": "ball-finish",
+      "from": "out/work/looks/ball-sheet-3.jpg"
     }
   ]
 }
