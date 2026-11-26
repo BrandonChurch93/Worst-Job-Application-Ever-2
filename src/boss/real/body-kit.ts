@@ -1,0 +1,123 @@
+import * as THREE from 'three'
+import { studio } from '../../post/studio'
+import { hash01 } from '../../core/random'
+
+const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
+
+export function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, cast = true, receive = true): THREE.Mesh {
+  const m = new THREE.Mesh(geometry, material)
+  m.castShadow = cast
+  m.receiveShadow = receive
+  return m
+}
+
+// A turned solid: (radius, height) points from the foot up the outside and in over the top, round the z axis.
+export function lathe(points: [number, number][], segments = 48): THREE.BufferGeometry {
+  const pos: number[] = []
+  const nor: number[] = []
+  const uv: number[] = []
+  const idx: number[] = []
+  let top = 1
+  for (const p of points) top = Math.max(top, p[0])
+  for (let k = 0; k < points.length - 1; k++) {
+    const [r0, z0] = points[k]!
+    const [r1, z1] = points[k + 1]!
+    const dr = r1 - r0
+    const dz = z1 - z0
+    const len = Math.hypot(dr, dz)
+    if (len < 1e-6) continue
+    const nr = dz / len
+    const nz = -dr / len
+    const start = pos.length / 3
+    for (const [r, z] of [[r0, z0], [r1, z1]] as [number, number][]) {
+      for (let i = 0; i <= segments; i++) {
+        const a = (i / segments) * Math.PI * 2
+        const c = Math.cos(a)
+        const s = Math.sin(a)
+        pos.push(r * c, r * s, z)
+        nor.push(nr * c, nr * s, nz)
+        uv.push(0.5 + (r / top) * 0.5 * c, 0.5 + (r / top) * 0.5 * s)
+      }
+    }
+    for (let i = 0; i < segments; i++) {
+      const a = start + i
+      const b = start + segments + 1 + i
+      idx.push(a, a + 1, b, a + 1, b + 1, b)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  g.setIndex(idx)
+  return g
+}
+
+// A flat plate cut from a closed line of points (counter clockwise seen from above), with a chamfer round its upper edge.
+export function cutPlate(points: [number, number][], tall: number, bevel: number): THREE.BufferGeometry {
+  const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y)))
+  const g = new THREE.ExtrudeGeometry(shape, { depth: tall - bevel, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelOffset: -bevel, bevelSegments: 3, steps: 1, curveSegments: 1 })
+  g.translate(0, 0, 0)
+  const p = g.getAttribute('position')
+  let low = Infinity
+  for (let i = 0; i < p.count; i++) low = Math.min(low, p.getZ(i))
+  g.translate(0, 0, -low)
+  const pos = g.getAttribute('position')
+  for (let i = 0; i < pos.count; i++) if (pos.getZ(i) < bevel * 0.999) pos.setZ(i, Math.max(0, pos.getZ(i)))
+  return g
+}
+
+export function joined(parts: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  const pos: number[] = []
+  const nor: number[] = []
+  const uv: number[] = []
+  for (const part of parts) {
+    const g = part.index ? part.toNonIndexed() : part
+    const p = g.getAttribute('position')
+    const n = g.getAttribute('normal')
+    const u = g.getAttribute('uv')
+    for (let i = 0; i < p.count; i++) {
+      pos.push(p.getX(i), p.getY(i), p.getZ(i))
+      nor.push(n.getX(i), n.getY(i), n.getZ(i))
+      uv.push(u ? u.getX(i) : 0, u ? u.getY(i) : 0)
+    }
+  }
+  const out = new THREE.BufferGeometry()
+  out.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  out.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3))
+  out.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
+  return out
+}
+
+export const moved = (g: THREE.BufferGeometry, x: number, y: number, z: number): THREE.BufferGeometry => g.clone().translate(x, y, z)
+
+// A screw head: a low dome with a hex pocket, turned to its own angle.
+export function screw(r: number, tall: number, seed: number): THREE.BufferGeometry {
+  const head = lathe([[r, 0], [r, tall * 0.55], [r * 0.82, tall], [r * 0.52, tall], [r * 0.46, tall * 0.25], [0, tall * 0.25]], 6 * 4)
+  head.rotateZ(hash01(seed, 3, 9) * Math.PI)
+  return head
+}
+
+// A cylinder lying along x from 0 toward minus x, drawn as (radius, distance) points.
+export function lying(points: [number, number][], segments = 32): THREE.BufferGeometry {
+  return lathe(points, segments).rotateY(-Math.PI / 2)
+}
+
+export interface BossKit {
+  housing: THREE.MeshPhysicalMaterial
+  bore: THREE.MeshPhysicalMaterial
+  bed: THREE.MeshPhysicalMaterial
+  pin: THREE.MeshPhysicalMaterial
+}
+
+let made: BossKit | null = null
+
+export function bossKit(): BossKit {
+  made ??= {
+    housing: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6d7074), roughness: 0.36, metalness: 0.9 })),
+    bore: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x121212), roughness: 0.8, metalness: 0.2, specularIntensity: 0.3 })),
+    bed: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2a2b2d), roughness: 0.62, metalness: 0.55, specularIntensity: 0.5 })),
+    pin: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc9ccd0), roughness: 0.2, metalness: 1 }))
+  }
+  return made
+}
