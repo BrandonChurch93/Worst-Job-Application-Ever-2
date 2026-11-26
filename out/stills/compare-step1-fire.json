@@ -5,16 +5,16 @@
       "beat": "step1.firstName",
       "at": 0.5,
       "camera": "home",
-      "tier": "draft"
+      "tier": "final"
     }
   },
-  "engineHash": "e6f9508050543b35",
-  "sharedHash": "a365b739db2b651c",
+  "engineHash": "f53260b07e37d041",
+  "sharedHash": "dd95c22f49f6a5b3",
   "pageHashes": {
-    "step1": "143605278a5b331a"
+    "step1": "263044f80dcca6af"
   },
   "format": "hd",
-  "tier": "draft",
+  "tier": "final",
   "assets": "full",
   "diagnostic": "beauty",
   "browser": "147.0.7727.15",
@@ -26,48 +26,31 @@
     "platform": "linux 6.1.155",
     "node": "v20.20.2"
   },
-  "seconds": 6.256,
+  "seconds": 115.608,
   "invalidValues": 0,
-  "standIns": [
-    {
-      "name": "cursor-acting",
-      "unit": "step1"
-    },
-    {
-      "name": "cursor-body",
-      "unit": "step1"
-    },
-    {
-      "name": "keyboard",
-      "unit": "step1"
-    },
-    {
-      "name": "shell",
-      "unit": "step1"
-    },
-    {
-      "name": "turrets",
-      "unit": "step1"
-    },
-    {
-      "name": "type",
-      "unit": "step1"
-    }
-  ],
+  "standIns": [],
   "counts": {
-    "triangles": 84708,
-    "drawCalls": 303
+    "triangles": 470467,
+    "drawCalls": 282
   },
-  "problems": [
-    "warning: [.WebGL-0x389c00104800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
-  ],
+  "problems": [],
   "compare": {
     "id": "step1-fire",
     "approved": "references/approved/step1-fire.png",
-    "still": "out/work/stills/key-step1-fire-hd-draft.png",
-    "crops": [],
+    "still": "out/work/stills/key-step1-fire-hd-final.png",
+    "crops": [
+      "cursor",
+      "keys",
+      "hatch",
+      "keyboardDeck.corner",
+      "field.start",
+      "type",
+      "progressButton",
+      "chip",
+      "card.corner"
+    ],
     "width": 1400,
-    "height": 426
+    "height": 1391
   },
   "keptFrom": "out/work/compare/compare-step1-fire.jpg"
 }
