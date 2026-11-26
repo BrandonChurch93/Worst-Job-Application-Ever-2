@@ -8,7 +8,7 @@ import { config } from '../../config'
 import { BODY_Z, FRAME, LEG, SHADE, SHIELD, SIDE, SIDE_OFF, CAP_W, CAP_H, WRECK } from '../body'
 import { bossKit, cutPlate, joined, lathe, lying, mesh, moved, screw, PLATE_TONE } from './body-kit'
 import { pillGeometry, PILL } from './pill'
-import { clearTone, fracture, glassKit, paneGeometry, rimGeometry, CLEAR_GLASS, RIM, SHIELD_PANE } from './glass'
+import { clearTone, deepTone, fracture, glassKit, paneGeometry, rimGeometry, CLEAR_GLASS, RIM, SHIELD_PANE } from './glass'
 
 const heights = config.scale.heights
 const clamp = (t: number): number => Math.min(1, Math.max(0, t))
@@ -134,7 +134,7 @@ function wingParts(flip: boolean, half: -1 | 0 | 1): THREE.Group {
   const put = (geometry: THREE.BufferGeometry): THREE.BufferGeometry => geometry.translate(-ox, -oy, 0)
   g.add(mesh(geo(`wing:${name}`, () => put(crown(cutPlate(shape(wingOutline()), FRAME.tall, EDGE.bevel, 0, 2), CROWN.wing))), k.plate))
   g.add(mesh(geo(`wingSide:${name}`, () => put(cutPlate(shape(wingOutline()), FRAME.tall - EDGE.step, 1, EDGE.out, 1))), k.plateSide))
-  g.add(mesh(geo(`wingBed:${name}`, () => put(cutPlate(shape(bedOutline()), 9, 0.5))), half === 0 ? k.pocket : k.plateSide, false))
+  g.add(mesh(geo(`wingBed:${name}`, () => put(cutPlate(shape(bedOutline()), 9, 0.5))), half === 0 ? k.pocket : k.plate, false))
   g.add(mesh(geo(`wingBright:${name}`, () => put(joined([
     ...(half === 0 ? [cutPlate(shape(lipOutline()), 3, 1.1).translate(0, 0, FRAME.tall - 0.4)] : []),
     ...WING_SCREWS.filter(([x]) => mine(x)).map(([x, y], i) => moved(screw(4.6, 1.8, i + (flip ? 9 : 0) + (half > 0 ? 3 : 0)), x, y, FRAME.tall)),
@@ -337,6 +337,8 @@ const va = new THREE.Vector3()
 const vb = new THREE.Vector3()
 const vc = new THREE.Vector3()
 
+const TORN = 0.9
+
 function poseShield(o: THREE.Object3D, s: Shape): void {
   const d = o.userData.s as { leaf: THREE.Group; pin: THREE.Mesh; tubes: THREE.Group[]; rods: THREE.Group[]; cracks: THREE.Group }
   const k = s.v?.[0] ?? 1
@@ -344,6 +346,8 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
   const hurt = s.v?.[5] ?? 0
   const stand = prog(k, 0.55, 1) * (1 - flat)
   glassKit().clear.color.copy(clearTone()).multiplyScalar(1 - (1 - CLEAR_GLASS.up) * stand)
+  if (flat > 0) glassKit().clear.color.lerp(deepTone(), flat)
+  glassKit().clear.opacity = mix(CLEAR_GLASS.through, CLEAR_GLASS.lying, flat)
   const swing = (1 - prog(k, 0.1, 0.6)) * (Math.PI / 2)
   const lean = stand * (0.62 + 0.07 * clamp(s.v?.[2] ?? 0))
   const half = SHIELD.w / 2
@@ -377,8 +381,10 @@ function poseShield(o: THREE.Object3D, s: Shape): void {
     tube.scale.x = mix(1, 0.3, flat)
     tube.position.copy(vb)
     tube.quaternion.setFromUnitVectors(X, vc.negate())
-    tube.visible = len > 20
+    tube.visible = len > 20 && flat < TORN
+    rod.visible = flat < TORN
   }
+  d.pin.visible = flat < TORN
 }
 
 function leg(): THREE.Object3D {

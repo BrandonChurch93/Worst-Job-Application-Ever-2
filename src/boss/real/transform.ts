@@ -222,7 +222,7 @@ let floorMaterial: THREE.MeshPhysicalMaterial | null = null
 let collarMaterial: THREE.MeshPhysicalMaterial | null = null
 const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysicalMaterial; collar: THREE.MeshPhysicalMaterial } => {
   const grain = materials().ceramic.normalMap
-  wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x5a5550, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(0.9, 0.9) }))
+  wallMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x34312e, THREE.SRGBColorSpace), roughness: 0.96, metalness: 0, specularIntensity: 0.2, normalMap: grain, normalScale: new THREE.Vector2(0.3, 0.3) }))
   floorMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHex(0x0d0c0c, THREE.SRGBColorSpace), roughness: 0.95, metalness: 0, specularIntensity: 0.1 }))
   if (!collarMaterial) {
     collarMaterial = materials().aluminiumSatin.clone()
@@ -230,6 +230,8 @@ const pitStuff = (): { wall: THREE.MeshPhysicalMaterial; floor: THREE.MeshPhysic
     collarMaterial.roughness = 0.6
     collarMaterial.metalness = 0.55
     collarMaterial.envMapIntensity = 0.5
+    collarMaterial.normalMap = null
+    collarMaterial.roughnessMap = null
     studio(collarMaterial)
   }
   return { wall: wallMaterial, floor: floorMaterial, collar: collarMaterial }

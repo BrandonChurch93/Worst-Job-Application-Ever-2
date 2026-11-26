@@ -161,7 +161,7 @@ export function rimGeometry(s: Shape, thick: number, wide: number, inset: number
 }
 
 export const CARD_GLASS = { colour: 0x9fb1ae, through: 0.86, perPx: 2.4 }
-export const CLEAR_GLASS = { colour: 0x93a099, through: 0.8, up: 0.92 }
+export const CLEAR_GLASS = { colour: 0x93a099, through: 0.8, up: 0.92, lying: 0.62, deep: 0x5f8376 }
 
 let picture: THREE.Texture | null = null
 
@@ -184,6 +184,8 @@ export interface GlassKit {
 }
 
 let kit: GlassKit | null = null
+
+export const deepTone = (): THREE.Color => new THREE.Color().setHex(CLEAR_GLASS.deep, THREE.SRGBColorSpace).multiplyScalar(1 / PICTURE.level)
 
 export const clearTone = (): THREE.Color => new THREE.Color().setHex(CLEAR_GLASS.colour, THREE.SRGBColorSpace).multiplyScalar(1 / PICTURE.level)
 

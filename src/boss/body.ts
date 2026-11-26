@@ -134,22 +134,27 @@ const SCATTER = {
   shield: { x: 1480, y: 990, rot: 1.48 }
 }
 
-const LANDS = { plate: 0.9, sides: [0.96, 1.01], cannons: [1.1, 1.17], legs: [1.14, 1.21, 1.26, 1.18], shield: 1.24, skid: 0.3, short: 0.86 } as const
+const LANDS = { from: 0.6, plate: 1.08, sides: [1.13, 1.18], cannons: [1.26, 1.32], legs: [1.3, 1.36, 1.41, 1.34], shield: 1.4, skid: 0.3, short: 0.86, hop: 0.4 } as const
+const FOLD = { seconds: 0.6, sag: 26, legs: 0.42, pull: 0.3, tip: 0.2 } as const
 
 function fall(c: number, lands: number, light: boolean): { e: number; hop: number } {
-  const t = prog(c, 0.35, lands)
-  const go = 1 - Math.pow(1 - t, 1.5)
-  if (!light) return { e: go, hop: Math.sin(Math.PI * t) }
+  const t = prog(c, LANDS.from, lands)
+  const go = t * t * (3 - 2 * t)
+  if (!light) return { e: go, hop: Math.sin(Math.PI * t) * LANDS.hop }
   const after = prog(c, lands, lands + LANDS.skid)
-  return { e: LANDS.short * go + (1 - LANDS.short) * (1 - (1 - after) * (1 - after)), hop: Math.sin(Math.PI * t) + 0.22 * Math.sin(Math.PI * after) }
+  return { e: LANDS.short * go + (1 - LANDS.short) * (1 - (1 - after) * (1 - after)), hop: (Math.sin(Math.PI * t) + 0.3 * Math.sin(Math.PI * after)) * LANDS.hop }
 }
 
 export function collapseRig(from: Rig, c: number): Rig {
-  const fold = prog(c, 0, 0.35)
-  const spot = (s: Spot, to: { x: number; y: number; rot: number }, lands: number, light: boolean): Spot => {
+  const f = prog(c, 0, FOLD.seconds)
+  const fold = f * f * (3 - 2 * f)
+  const home = from.plate
+  const spot = (s: Spot, to: { x: number; y: number; rot: number }, lands: number, light: boolean, pull = 0): Spot => {
     const { e, hop } = fall(c, lands, light)
-    const sag = fold * (1 - e) * 20
-    return { ...s, x: mix(s.x, to.x, e), y: mix(s.y, to.y, e) - hop * 50, rot: mix(s.rot, to.rot, e), k: s.k, z: mix(s.z - sag, 0, e) + hop * 70, flat: e, recoil: 0 }
+    const in0 = fold * pull
+    const x0 = mix(s.x, home.x, in0)
+    const y0 = mix(s.y, home.y, in0)
+    return { ...s, x: mix(x0, to.x, e), y: mix(y0, to.y, e) - hop * 50, rot: mix(s.rot + fold * FOLD.tip * (s.x < home.x ? -1 : 1) * (pull > 0 ? 1 : 0), to.rot, e), k: s.k, z: mix(s.z - fold * FOLD.sag, 0, e) + hop * 70, flat: e, recoil: 0 }
   }
   const capE = prog(c, 0.3, 1.35)
   const bounce = c > 1.35 ? Math.max(0, Math.sin((c - 1.35) * 14)) * Math.exp(-(c - 1.35) * 6) * 14 : 0
@@ -161,14 +166,14 @@ export function collapseRig(from: Rig, c: number): Rig {
       const to = SCATTER.legs[i]!
       const half = 58
       const { e, hop } = fall(c, LANDS.legs[i]!, true)
-      const cx = mix((l.hx + l.fx) / 2, to.x, e)
-      const cy = mix((l.hy + l.fy) / 2, to.y, e) - hop * 40
+      const cx = mix(mix((l.hx + l.fx) / 2, home.x, fold * FOLD.pull), to.x, e)
+      const cy = mix(mix((l.hy + l.fy) / 2, home.y, fold * FOLD.pull), to.y, e) - hop * 40
       const a = mix(Math.atan2(l.fy - l.hy, l.fx - l.hx), to.rot, e)
-      const len = mix(Math.hypot(l.fx - l.hx, l.fy - l.hy) / 2, half, e) * (1 - 0.18 * fold * (1 - e))
+      const len = mix(Math.hypot(l.fx - l.hx, l.fy - l.hy) / 2, half, e) * (1 - FOLD.legs * fold * (1 - e))
       return { hx: cx - Math.cos(a) * len, hy: cy - Math.sin(a) * len, fx: cx + Math.cos(a) * len, fy: cy + Math.sin(a) * len, k: 1, z: hop * 50, flat: e }
     }),
     cannons: from.cannons.map((s, i) => spot(s, SCATTER.cannons[i]!, LANDS.cannons[i]!, true)),
-    shield: spot(from.shield, SCATTER.shield, LANDS.shield, true),
+    shield: spot(from.shield, SCATTER.shield, LANDS.shield, true, FOLD.pull),
     hurt: mix(from.hurt, 1, prog(c, 0, 0.5)),
     flash: 0,
     split: fall(c, LANDS.plate, false).e

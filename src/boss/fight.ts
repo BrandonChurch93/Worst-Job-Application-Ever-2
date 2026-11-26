@@ -6,7 +6,7 @@ export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
 export interface Arena { slabs: SlabSize[]; popups: { box: Rect; buttons: Rect[] }[]; keep?: Rect }
 
-export interface Slab { m: number; x: number; y: number; dx: number; dy: number; rot: number; left: number; state: 0 | 1 | 2; t: number; push?: number }
+export interface Slab { m: number; x: number; y: number; dx: number; dy: number; rot: number; left: number; state: 0 | 1 | 2; t: number; push?: number; skid?: number }
 export interface Popup { slot: number; hp: number; t: number; closing: number; off: number; vel: number; dx: number; dy: number; shot: boolean }
 export interface Dart { n: number; x: number; y: number; dx: number; dy: number; t: number; p: number }
 export interface Flash { n: number; x: number; y: number; rot: number; t: number }
@@ -278,12 +278,18 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
         io.emit('slab-drop', s.x, s.y, false)
         s.state = 1
         s.t = 0
+        s.skid = SLAB.skid
       }
     } else if (s.state === 1 && (s.push ?? 0) > 0) {
       const go = Math.min(s.push!, SLAB.drive * dt)
       s.x += s.dx * go
       s.y += s.dy * go
       s.push = s.push! - go
+    } else if (s.state === 1 && (s.skid ?? 0) > 0.2) {
+      const go = s.skid! * Math.min(1, SLAB.grip * dt)
+      s.x += s.dx * go
+      s.y += s.dy * go
+      s.skid = s.skid! - go
     } else if (s.state === 1 && s.t >= (f.phase === 0 ? SLAB.rest : SLAB.restLate)) {
       s.state = 2
       s.t = 0
