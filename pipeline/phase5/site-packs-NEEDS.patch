@@ -1,0 +1,22 @@
+diff --git a/src/main.ts b/src/main.ts
+index 6243d507..066d8940 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -23,7 +23,7 @@ declare global {
+ 
+ interface LiveShot { time: number; page: string; gag: string | null; finished: boolean; png: string }
+ // What a walk tool needs to act as a visitor would with real mouse and key events: where the page wants the pointer, and where the hero is.
+-interface LiveTold { time: number; pageTime: number; page: string; gag: string | null; gags: string[]; finished: boolean; turning: boolean; skipOffered: boolean; scroll: number; hint: Hint | null; hero: { x: number; y: number } }
++interface LiveTold { time: number; pageTime: number; page: string; gag: string | null; gags: string[]; finished: boolean; turning: boolean; skipOffered: boolean; scroll: number; hint: Hint | null; hero: { x: number; y: number }; hits: { name: string; time: number; page: string; x: number; y: number }[]; control: string | null }
+ interface Size { width: number; height: number }
+ interface Picture { key: string; frame: Frame; size: Size; pose: CameraPose }
+ type PlayMode = 'live' | 'film' | 'loop'
+@@ -430,7 +430,7 @@ function play(first: PlayMode): void {
+     const quietShot = (): LiveShot => ({ time: stage.time, page: stage.page.id, gag: stage.gagsReached.at(-1) ?? null, finished: stage.finished, png: '' })
+     const told = (): LiveTold => {
+       const pose = stage.cursor.pose()
+-      return { time: stage.time, pageTime: stage.pageTime, page: stage.page.id, gag: stage.gagsReached.at(-1) ?? null, gags: stage.gagsReached, finished: stage.finished, turning: stage.turning, skipOffered: stage.skipOffered, scroll: stage.page.scroll(), hint: stage.page.hint(), hero: { x: pose.x, y: pose.y } }
++      return { time: stage.time, pageTime: stage.pageTime, page: stage.page.id, gag: stage.gagsReached.at(-1) ?? null, gags: stage.gagsReached, finished: stage.finished, turning: stage.turning, skipOffered: stage.skipOffered, scroll: stage.page.scroll(), hint: stage.page.hint(), hero: { x: pose.x, y: pose.y }, hits: stage.events.filter((e) => e.hitsCursor).map((e) => ({ name: e.name, time: e.step / stepHz, page: e.page, x: e.x, y: e.y })), control: stage.page.control ?? null }
+     }
+     window.liveRun = { state: shot, advance: (seconds, quiet) => { stage.advance(Math.round(seconds * stepHz)); return quiet ? quietShot() : shot() }, told }
+     return
