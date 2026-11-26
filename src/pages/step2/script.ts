@@ -74,7 +74,7 @@ const STRUCK = { tight: T.lever + 0.9, brace: 10.55, read: 10.9, near: 11.9, duc
 const TEMPER = { safe: 12.74, dust: 12.78, fume: 13.3, red: 13.5, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
 // Flat, it drags itself to the button and stops short of it. Half way it heaves and falls flat again. There it peels up and fills out, standing still, draws back, and throws itself at the button.
-const RISE = { heave: 18.45, heaved: 2.35, there: 19.6, flop: 19.77, life: 0.6, back: 20.37, coiled: 20.385, on: 20.41 }
+const RISE = { heave: 18.45, heaved: 2.35, there: 19.6, flop: 19.73, life: 0.6, back: 20.33, coiled: 20.385, on: 20.41 }
 export const PEEL_AT = RISE.flop + RISE.life * 0.5
 export const TOSS = { at: 0.05, air: 0.28, skid: 0.1 }
 const THROWN = { see: T.runaway + TOSS.at, off: T.runaway + TOSS.at + 0.12, look: T.runaway + TOSS.at + TOSS.air + TOSS.skid + 0.02, tall: 0.37, snap: 0.59, back: T.lean - 0.08, turn: -0.9, off2: 0.45, again: -1.15, square: -2.3 }

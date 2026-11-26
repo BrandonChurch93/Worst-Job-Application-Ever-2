@@ -57,7 +57,7 @@ describe('the acting of step 2', () => {
     expect(at('coins')).toEqual([11.96])
     expect(at('crank-runaway')).toEqual([15.17])
     expect(at('flatten')).toEqual([16.8])
-    expect(at('peel-up')).toEqual([20.07])
+    expect(at('peel-up')).toEqual([20.03])
     expect(at('button-press')).toEqual([20.42])
   })
 })
