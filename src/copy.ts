@@ -1,12 +1,16 @@
 // The one typed copy of the two files in content/, checked at startup.
 // Every word a visitor reads and every line the narrator speaks comes through here.
 import rawCopy from '../content/copy.json'
+import rawDrafts from '../content/copy-drafts.json'
 import rawNarration from '../content/narration.json'
 import type { Config } from './config'
 
 export type Copy = typeof rawCopy
+export type Drafts = typeof rawDrafts.words
 export type Narration = typeof rawNarration
-export const copy: Copy = rawCopy
+// The words change note 002 asked for are drafts until Brandon approves them. They ride beside the locked copy
+// under "drafts", so a layout names one as "copy:drafts.step1.resume.shredderLabel" and the locked file is untouched.
+export const copy: Copy & { drafts: Drafts } = { ...rawCopy, drafts: rawDrafts.words }
 export const narration: Narration = rawNarration
 
 export interface FilmLine { at: number; text: string }

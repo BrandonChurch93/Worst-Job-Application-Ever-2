@@ -12,6 +12,8 @@ const few = (list, n = 12) => (list.length > n ? [...list.slice(0, n), `and ${li
 export async function wordsCheck(s) {
   const c = config()
   const copy = readJson(at('content', 'copy.json'))
+  // The drafted words of change note 002 ride beside the locked copy under "drafts", as src/copy.ts carries them.
+  copy.drafts = readJson(at('content', 'copy-drafts.json')).words
   const { showcase, app, load } = s
   const { words, hasWords } = await load('/src/shell/words.ts')
   const { pages } = await load('/src/pages/index.ts')
