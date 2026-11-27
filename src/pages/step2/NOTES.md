@@ -56,7 +56,8 @@ Decisions taken without asking, in the order they were met.
 - An open tray is `TRAY_H` 250 px high, as in the approved images. Its rim is 8 px of shared satin aluminium, its wall the shared matt grey `cardSeal`, its floor the sunk glass; the shade under the upper and left walls is painted (`TRAY.floor`, `TRAY.soak`, `TRAY.wallShade`).
 - The slot stands 12 px in from the tray's padding and 9 px under its top (`SLOT`), the crank's hub at `CRANK.hx` (padding plus 73), its grip 84 by 52.
 - The dial's hub is a lacquered copy of the shared orange (`DIAL_BODY.hubCoat`, `hubRough`, `hubIor`); the risen dial lays a painted shade on the floor (`DIAL_BODY.cast`), away from the key.
-- While the slot is sunk in the floor (`SUNK`, under 0.05 of its rise) its reel legends are not drawn.
+- The slot and the crank lie housed in the floor of their trays (`HOUSED`, 0.022 of their height) while the tray opens over them and while it shuts, as the dial does, and rise from there. The reel legends are drawn on the housed reels, so `SUNK` is gone. Why and what was measured: `pipeline/phase5/polish-date.md`.
+- On the live site a full crank coasts to rest with arm and grip inside its tray (`CRANK_HOME`, `homeward`), in the same number of steps as before, so that it can go down into the tray; it is steered only on steps on which it cannot strike the cursor (`BLOW_REACH`). The film's run is untouched and ends inside the arc. Why and what was measured: `pipeline/phase5/polish-date.md`.
 
 ## Phase 4: the keeper (agent step2-keeper)
 
