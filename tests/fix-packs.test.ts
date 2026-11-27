@@ -208,8 +208,8 @@ describe('the moments of the visit, as the sheets need them', () => {
     expect(first('given-back')).toBe(700 - 6)
     expect(first('flippers')).toBe(1300 - 6)
     expect(first('flip')).toBe(1501 - 6)
-    // The give back and the close sheet of the blow are drawn at every step, all other moments at every second.
-    for (const f of files) for (let i = 1; i < f.steps.length; i++) expect(f.steps[i]! - f.steps[i - 1]!).toBe(f.moment === 'given-back' || f.moment === 'flip-close' ? 1 : 2)
+    // The close sheets are drawn at every step: the seat, the take, the give back, the ball's drop and the blow once more. All other moments at every second.
+    for (const f of files) for (let i = 1; i < f.steps.length; i++) expect(f.steps[i]! - f.steps[i - 1]!).toBe(['seat', 'taken', 'given-back', 'drop', 'flip-close'].includes(f.moment) ? 1 : 2)
   })
 
   it('holds the stroke after the release in the sheet of the give-back', () => {
@@ -277,20 +277,26 @@ describe('the moments of the visit, as the sheets need them', () => {
 
   // The rule changed by the Builder's word of 2026-11-27, round 24: the limit of files takes no sheet away. Where one message cannot hold the sheets the plan makes a second set.
   it('stays inside the limit of files in every set and takes no sheet away, whatever the limit', () => {
-    expect(plan10().length).toBe(13)
+    expect(plan10().length).toBe(23)
     expect(most).toBeGreaterThanOrEqual(10)
-    const moments = ['walk', 'turn', 'hit', 'taken', 'given-back', 'flippers', 'flip', 'flip-close']
+    const moments = ['walk', 'turn', 'seat', 'hit', 'taken', 'given-back', 'flippers', 'drop', 'flip', 'flip-close']
     const at = (n: number) => {
       const c = { ...cfg, critics: { ...cfg.critics, maxFilesPerMessage: n } }
       const plan = planOf(madeRun(), c)
-      for (const x of plan.sets) expect(x.files.length).toBeLessThanOrEqual(n)
+      for (const x of plan.sets) {
+        expect(x.files.length).toBeLessThanOrEqual(n)
+        // No run is cut by the end of a set, whatever the limit: its sheets lie side by side in one set.
+        for (const f of x.files) expect(x.files.filter((g) => g.moment === f.moment && g.run[0] === f.run[0]).flatMap((g) => g.steps)).toEqual(f.run)
+      }
       const files = plan.sets.flatMap((x) => x.files)
       return { sets: plan.sets.length, ...Object.fromEntries(moments.map((moment) => [moment, files.filter((f) => f.moment === moment).length])) }
     }
-    const held = { walk: 1, turn: 3, hit: 1, taken: 1, 'given-back': 2, flippers: 2, flip: 2, 'flip-close': 1 }
-    for (const n of [10, 9, 8]) expect(at(n)).toEqual({ sets: 2, ...held })
-    expect(at(7)).toEqual({ sets: 3, ...held })
-    expect(at(13)).toEqual({ sets: 1, ...held })
+    const held = { walk: 1, turn: 3, seat: 4, hit: 1, taken: 2, 'given-back': 2, flippers: 2, drop: 4, flip: 2, 'flip-close': 2 }
+    for (const n of [10, 9]) expect(at(n)).toEqual({ sets: 3, ...held })
+    expect(at(8)).toEqual({ sets: 4, ...held })
+    expect(at(7)).toEqual({ sets: 5, ...held })
+    expect(at(13)).toEqual({ sets: 2, ...held })
+    expect(at(23)).toEqual({ sets: 1, ...held })
     // The turn is whole: its three sheets are one run, and each says which it is.
     const turn = filesOf(madeRun()).filter((f) => f.moment === 'turn')
     turn.forEach((f, j) => expect(f.heading).toContain(`sheet ${j + 1} of 3 of one run`))
@@ -438,7 +444,8 @@ describe('what the window of a close sheet holds besides the arrow', () => {
     expect(w.window[2] / w.window[3]).toBeCloseTo(w.tileW / w.tileH, 1)
     const flips = planOf(made).sets.flatMap((x) => x.files).filter((f) => f.moment === 'flip')
     expect(flips).toHaveLength(2)
-    for (const f of flips) expect(f.heading).toContain(`at ${w.shown}% of its size`)
+    // The sheet says its true size: the run's pictures are half the page's size, so a window shown at 94% of them is 47% of the page.
+    for (const f of flips) expect(f.heading).toContain(`at ${Math.round(w.shown * (cfg.formats.preview.width / cfg.formats.hd.width))}% of the page's size`)
   })
 
   it('holds, on the sheet of the hit, the muzzle of the turret that fired, read from the way the arrow is thrown, and both when it is not thrown', () => {
