@@ -38,7 +38,7 @@ const REAR = { settle: 0.36 }
 const HIT = { squash: 0.58, bend: 0.5, shove: 60, lift: 0.7, hold: 0.07, back: 0.1 }
 // The live site's hand: how the body follows a visitor's mouse, whatever it is acting. A 600 px move is 90% done in 100 ms, goes 2.6% past and is at rest in 271 ms. The film keeps each gait's own numbers.
 export const HAND = { stiff: 760, damp: 40, top: 7500 }
-const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
+const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
 const TUMBLE = { far: 0.6, share: 0.08, out: { k: 900, c: 60 }, back: { k: 900, c: 58 } }
 // Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
