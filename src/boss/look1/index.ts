@@ -6,10 +6,13 @@ import { CANNON, GUN, HATCH, SHIELD, WING, HULL } from './numbers'
 import { DEFAULTS, K, poseOf, type LookOptions, type Pose } from './pose'
 import { setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
+import { poseGun } from './gun'
 
 export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FORM, TURRET, TIMES, DEFAULTS } from './pose'
 export type { LookOptions, Pose } from './pose'
 export { EVENTS } from './events'
+export { makeGun, poseGun } from './gun'
+export type { Gun, GunState } from './gun'
 
 export interface BossLookContext extends Partial<LookOptions> {
   // The live site's level, or null for a computed picture with everything on.
@@ -19,6 +22,7 @@ export interface BossLookContext extends Partial<LookOptions> {
 export interface BossLook {
   object: THREE.Object3D
   pose(view: BossView, dt: number, light?: (e: Emitter) => void): void
+  setLevel(level: 'low' | 'medium' | 'high' | null): void
   dispose(): void
 }
 
@@ -65,13 +69,8 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     const side = i === 0 ? 1 : -1
     const out = p.wings[i]!
     g.root.visible = p.hull.show && q.rise > 0.001
-    g.root.position.set(GUN.x + p.hull.x, side * GUN.y + p.hull.y - side * (1 - out) * (WING.reach + 6), GUN.z - 3 + p.hull.z - (1 - q.rise) * 46)
-    g.root.rotation.z = q.yaw
-    g.barrels.position.x = -q.recoil
-    g.barrels.rotation.x = q.spin
-    setGlow(g.lamp, q.lamp)
-    g.flash.visible = q.flash > 0
-    g.flash.scale.setScalar(0.6 + 0.6 * q.flash)
+    g.root.position.set(GUN.x + p.hull.x, side * GUN.y + p.hull.y - side * (1 - out) * (WING.reach + 6), GUN.z - 3 + p.hull.z - (1 - q.rise) * 70)
+    poseGun(g, q)
   })
 
   p.legs.forEach((l, i) => {
@@ -84,7 +83,7 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     g.upper.position.set(...l.hip)
     g.upper.rotation.set(0, -l.up, l.yaw)
     g.lower.position.set(...l.knee)
-    g.lower.rotation.set(0, -l.down, l.yaw)
+    g.lower.rotation.set(0, -l.down, l.yaw2)
     g.foot.position.set(...l.foot)
     g.foot.rotation.set(0, 0, l.footYaw)
   })
@@ -106,13 +105,16 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     setGlow(c.heat, 1 + 3 * p.cannon.heat)
   }
   setGlow(m.weak, p.weak)
+  m.damage[0].visible = p.damage >= 1
+  m.damage[1].visible = p.damage >= 2
+  m.damage[2].visible = p.damage >= 3
   void CANNON
   void HATCH
   void HULL
 }
 
 export function makeBoss(ctx: BossLookContext = {}): BossLook {
-  const o: LookOptions = { seed: ctx.seed ?? DEFAULTS.seed, socket: ctx.socket ?? DEFAULTS.socket, home: ctx.home ?? DEFAULTS.home }
+  const o: LookOptions = { seed: ctx.seed ?? DEFAULTS.seed, socket: ctx.socket ?? DEFAULTS.socket, home: ctx.home ?? DEFAULTS.home, ground: ctx.ground ?? DEFAULTS.ground, pit: ctx.pit ?? DEFAULTS.pit }
   const object = new THREE.Group()
   object.name = 'boss-look1'
   const figure = new THREE.Group()
@@ -133,6 +135,7 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
   const dispose = (): void => {
     fx.dispose()
     for (const mat of model.own) mat.dispose()
+    for (const g of model.guns) g.dispose()
   }
-  return { object, pose, dispose }
+  return { object, pose, setLevel: (l) => fx.setLevel(l), dispose }
 }

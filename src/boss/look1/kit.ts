@@ -254,6 +254,10 @@ export interface LookKit {
   plate: THREE.MeshPhysicalMaterial
   plateLight: THREE.MeshPhysicalMaterial
   limb: THREE.MeshPhysicalMaterial
+  hull: THREE.MeshPhysicalMaterial
+  wing: THREE.MeshPhysicalMaterial
+  hatch: THREE.MeshPhysicalMaterial
+  bezel: THREE.MeshPhysicalMaterial
   dark: THREE.MeshPhysicalMaterial
   housing: THREE.MeshPhysicalMaterial
   joint: THREE.MeshPhysicalMaterial
@@ -276,7 +280,12 @@ export function lookKit(): LookKit {
   const b = bossKit()
   const m = materials()
   const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x7f8388), roughness: 0.6, metalness: 0.4, specularIntensity: 0.5 })
+  const brushed = (hex: number): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); return studio(c) }
   look = {
+    hull: brushed(0x777b80),
+    wing: brushed(0x5f6368),
+    hatch: brushed(0x8e9297),
+    bezel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc6cacf), roughness: 0.24, metalness: 0.95 })),
     plate: b.plate,
     plateLight: studio(plateLight),
     limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
@@ -307,3 +316,48 @@ export const glowMaterial = (hex: number, gain = 1): THREE.MeshBasicMaterial => 
   setGlow(m, gain)
   return m
 }
+
+// A star of cracks lying on the ground: arms that wander outward and thin to nothing, each with a branch.
+export function crackStar(seed: number, arms: number, r0: (a: number) => [number, number], reach: number, wide: number): THREE.BufferGeometry {
+  const pos: number[] = []
+  const h = (i: number, j: number): number => hash01(i, j, seed)
+  const strip = (x: number, y: number, a: number, len: number, w: number, id: number, depth: number): void => {
+    const steps = 5
+    let px = x
+    let py = y
+    let ang = a
+    for (let s = 0; s < steps; s++) {
+      const w0 = w * (1 - s / steps)
+      const w1 = w * (1 - (s + 1) / steps)
+      const na = ang + (h(id * 13 + s, 3 + depth) - 0.5) * 1.1
+      const l = (len / steps) * (0.7 + 0.6 * h(id * 17 + s, 5 + depth))
+      const qx = px + Math.cos(na) * l
+      const qy = py + Math.sin(na) * l
+      const nx = -Math.sin(na)
+      const ny = Math.cos(na)
+      pos.push(px + nx * w0, py + ny * w0, 0, px - nx * w0, py - ny * w0, 0, qx + nx * w1, qy + ny * w1, 0)
+      pos.push(px - nx * w0, py - ny * w0, 0, qx - nx * w1, qy - ny * w1, 0, qx + nx * w1, qy + ny * w1, 0)
+      if (depth === 0 && s === 1 + (id % 2)) strip(qx, qy, na + (h(id, 9) > 0.5 ? 0.8 : -0.8), len * 0.45, w1 * 0.8, id + 100, 1)
+      px = qx
+      py = qy
+      ang = na
+    }
+  }
+  for (let i = 0; i < arms; i++) {
+    const a = ((i + 0.5 * h(i, 1)) / arms) * Math.PI * 2
+    const [x, y] = r0(a)
+    strip(x, y, a, reach * (0.55 + 0.45 * h(i, 2)), wide * (0.6 + 0.4 * h(i, 4)), i, 0)
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(new Float32Array(pos.length).map((_, i) => (i % 3 === 2 ? 1 : 0)), 3))
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
+  return g
+}
+
+// A flat blot with a ragged edge, lying at z = 0: soot or a scorch.
+export function blot(seed: number, r: number, n = 14): THREE.BufferGeometry {
+  const shape = new THREE.Shape(Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; const k = r * (0.62 + 0.5 * hash01(i, 7, seed)); return new THREE.Vector2(Math.cos(a) * k, Math.sin(a) * k) }))
+  return new THREE.ShapeGeometry(shape)
+}
+

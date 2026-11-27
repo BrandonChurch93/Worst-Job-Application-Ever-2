@@ -36,7 +36,31 @@ export async function sheet(sharp, file, cells, cols, cellW) {
 // The targets live on main; a branch made before them reads them from there.
 const target = (at, name, folder = 'references/approved-002') => (fs.existsSync(at(folder, name)) ? fs.readFileSync(at(folder, name)) : execFileSync('git', ['show', `origin/main:${folder}/${name}`], { cwd: at(), maxBuffer: 1 << 28 }))
 
+const SOCKET = { x: 960, y: 960 }
+const ease = (t) => { const u = Math.min(1, Math.max(0, t)); return u * u * (3 - 2 * u) }
+// The boss on his way from the socket to the slab, as b_boss_builder's rules move him: there by the time he lands (form 0.34).
+const forming = (f) => {
+  const u = ease((f - 0.06) / (0.34 - 0.06))
+  return viewOf({ time: f * 2.9, phase: 'form' }, { form: f, x: SOCKET.x + (CENTRE.x - SOCKET.x) * u, y: SOCKET.y + (CENTRE.y - SOCKET.y) * u })
+}
+const turret = (t) => viewOf({ time: 3.05 + t * 1.6, phase: t >= 1 ? 'fight' : 'turret' }, { turret: t, locked: t >= 1 })
+
+// A row of moments: each view rendered with one camera, laid in a grid.
+async function moments({ look, sharp, outDir, workDir, tier }, name, items, cam, cols, size = [960, 540]) {
+  const cells = []
+  for (const [caption, view, own] of items) {
+    const r = await look.render({ view, ...cam, ...(own || {}), width: size[0], height: size[1], tier })
+    fs.writeFileSync(path.join(workDir, `${name}-${cells.length}.png`), r.png)
+    cells.push({ png: r.png, caption })
+  }
+  return sheet(sharp, path.join(outDir, `${name}.jpg`), cells, cols, Math.floor(1400 / cols))
+}
+
 export const SETS = {
+  forming: (c) => moments(c, 'forming', [0.04, 0.1, 0.2, 0.36, 0.5, 0.64, 0.8, 1].map((f) => [`form ${f.toFixed(2)} (${(f * 2.9).toFixed(2)} s)`, forming(f)]), { cx: 960, cy: 730, zoom: 1.5, options: { pit: true } }, 4, [720, 720]),
+  turret: (c) => moments(c, 'turret', [0, 0.1, 0.3, 0.5, 0.66, 0.78, 0.84, 1].map((t) => [`turret ${t.toFixed(2)} (${(t * 1.6).toFixed(2)} s)`, turret(t)]), { cx: 940, cy: 548, zoom: 2.3 }, 4),
+  walking: (c) => moments(c, 'walking', [0, 1, 2, 3, 4, 5, 6, 7].map((i) => [`walked ${i * 10} px`, viewOf({ time: 10 + i / 6 }, { turret: 1, locked: true, x: 960 - i * 10, vx: -60, walked: i * 10 })]), { cx: 925, cy: 548, zoom: 2.3 }, 4),
+
   async states({ look, sharp, at, outDir, workDir, tier }) {
     const inside = await look.render({ view: viewOf(), ...sheetCam, width: 1920, height: 1080, tier })
     const out = await look.render({ view: viewOf({}, { turret: 1, locked: true }), ...sheetCam, width: 1920, height: 1080, tier })

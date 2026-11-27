@@ -26,9 +26,13 @@ export interface LookOptions {
   socket: ViewPoint
   // Where he stands when formed and which way he faces there: the footholds are laid so that his feet stand exactly as in the target there.
   home: { x: number; y: number; heading: number }
+  // The cracks under his feet and hull where he lands.
+  ground: boolean
+  // The broken socket itself. Off in the site, where the arena draws the collar, the pit and its cracks; on for a picture of the boss alone.
+  pit: boolean
 }
 
-export const DEFAULTS: LookOptions = { seed: 20261127, socket: { x: 960, y: 960 }, home: { x: 960, y: 548, heading: Math.PI } }
+export const DEFAULTS: LookOptions = { seed: 20261127, socket: { x: 960, y: 960 }, home: { x: 960, y: 548, heading: Math.PI }, ground: true, pit: false }
 
 // The stages of the forming, as shares of boss.form.
 export const FORM = {
@@ -40,9 +44,9 @@ export const FORM = {
 export const TURRET = { hatch: [0.02, 0.16], rise: [0.14, 0.44], swing: [0.46, 0.8], lock: 0.8, kick: [0.8, 0.9], glow: [0.84, 1] } as const
 
 export const WALK = { pitch: 40, band: 0.24, lift: 46, bob: 5 }
-export const TIMES = { gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
+export const TIMES = { form: 2.9, turret: 1.6, beaten: 2, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
 
-export interface LegPose { hip: [number, number, number]; knee: [number, number, number]; foot: [number, number, number]; yaw: number; up: number; down: number; footYaw: number; lift: number; show: number; planted: [number, number] }
+export interface LegPose { hip: [number, number, number]; knee: [number, number, number]; foot: [number, number, number]; yaw: number; up: number; yaw2: number; down: number; footYaw: number; lift: number; show: number; planted: [number, number] }
 export interface GunPose { yaw: number; recoil: number; spin: number; lamp: number; flash: number; rise: number }
 export interface Pose {
   // The boss's centre in world px (x right, y up the page) and the scale of the whole figure.
@@ -59,6 +63,8 @@ export interface Pose {
   legs: LegPose[]
   cannon: { show: boolean; x: number; z: number; elev: number; yaw: number; ribs: number; sleeve: number; barrel: number; window: number; bore: number; slits: number; heat: number; off: number }
   weak: number
+  // 0 whole, 1 and 2 the stages of the fight, 3 beaten.
+  damage: number
   hurt: number
   heal: number
   sag: number
@@ -92,20 +98,36 @@ export function footAt(i: number, x: number, y: number, yaw: number, o: LookOpti
   return { x: a.at, y: b.at, lift: Math.max(a.lift, b.lift) }
 }
 
-function legIk(hip: [number, number, number], foot: [number, number, number]): { knee: [number, number, number]; yaw: number; up: number; down: number } {
-  const dx = foot[0] - hip[0]
-  const dy = foot[1] - hip[1]
+// Two links from the hip to the ankle. The knee is found in the upright plane through both and then leaned to one side about the line between them, so the leg reads bent from above.
+function legIk(hip: [number, number, number], foot: [number, number, number], lean: number): { knee: [number, number, number]; yaw: number; up: number; yaw2: number; down: number } {
+  const ankle: [number, number, number] = [foot[0], foot[1], foot[2] + LEG.ankle]
+  const dx = ankle[0] - hip[0]
+  const dy = ankle[1] - hip[1]
+  const dz = ankle[2] - hip[2]
   const d = Math.max(1, Math.hypot(dx, dy))
-  const h = foot[2] + LEG.ankle - hip[2]
-  const D = Math.min(LEG.a + LEG.b - 2, Math.max(Math.abs(LEG.a - LEG.b) + 2, Math.hypot(d, h)))
-  const base = Math.atan2(h, d)
+  const full = Math.max(1, Math.hypot(d, dz))
+  const D = Math.min(LEG.a + LEG.b - 2, Math.max(Math.abs(LEG.a - LEG.b) + 2, full))
+  const ax: [number, number, number] = [dx / full, dy / full, dz / full]
   const inner = Math.acos(Math.min(1, Math.max(-1, (LEG.a * LEG.a + D * D - LEG.b * LEG.b) / (2 * LEG.a * D))))
-  const up = base + inner
-  const yaw = Math.atan2(dy, dx)
-  const kr = LEG.a * Math.cos(up)
-  const knee: [number, number, number] = [hip[0] + Math.cos(yaw) * kr, hip[1] + Math.sin(yaw) * kr, hip[2] + LEG.a * Math.sin(up)]
-  const down = Math.atan2(foot[2] + LEG.ankle - knee[2], Math.max(1e-3, (d * Math.min(1, D / Math.hypot(d, h))) - kr))
-  return { knee, yaw, up, down }
+  // The upright direction square to the line, and the level one square to both.
+  const hx = dx / d
+  const hy = dy / d
+  const up0: [number, number, number] = [-hx * ax[2], -hy * ax[2], d / full]
+  const side: [number, number, number] = [ax[1] * up0[2] - ax[2] * up0[1], ax[2] * up0[0] - ax[0] * up0[2], ax[0] * up0[1] - ax[1] * up0[0]]
+  const along = LEG.a * Math.cos(inner)
+  const off = LEG.a * Math.sin(inner)
+  const c = Math.cos(lean)
+  const sn = Math.sin(lean)
+  const knee: [number, number, number] = [
+    hip[0] + ax[0] * along + (up0[0] * c + side[0] * sn) * off,
+    hip[1] + ax[1] * along + (up0[1] * c + side[1] * sn) * off,
+    hip[2] + ax[2] * along + (up0[2] * c + side[2] * sn) * off
+  ]
+  const ux = knee[0] - hip[0]
+  const uy = knee[1] - hip[1]
+  const lx = ankle[0] - knee[0]
+  const ly = ankle[1] - knee[1]
+  return { knee, yaw: Math.atan2(uy, ux), up: Math.atan2(knee[2] - hip[2], Math.hypot(ux, uy)), yaw2: Math.atan2(ly, lx), down: Math.atan2(ankle[2] - knee[2], Math.hypot(lx, ly)) }
 }
 
 export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
@@ -142,7 +164,8 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const clamp = outCubic(lin(f, FORM.clamp[0], FORM.clamp[1]))
   const toSocket: [number, number] = rot((o.socket.x - b.x) / K, -(o.socket.y - b.y) / K, -yaw)
   const hull = { x: toSocket[0] * (1 - clamp), y: toSocket[1] * (1 - clamp), z: -(bodyZ + HULL.top + 40) * (1 - clamp), show: f >= FORM.clamp[0] }
-  const flightPitch = flying ? -0.22 * Math.sin(Math.PI * u) * (1 - 2 * u) : 0
+  const flightPitch = 0
+  void flying
   const wingA = f >= 1 ? 1 : outBack(lin(f, FORM.wingA[0], FORM.wingA[1]), 2.4)
   const wingB = f >= 1 ? 1 : outBack(lin(f, FORM.wingB[0], FORM.wingB[1]), 2.4)
   const gunsUp = f >= 1 ? 1 : outBack(lin(f, FORM.guns[0], FORM.guns[1]), 2)
@@ -177,7 +200,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const tremble = charge > 0 && !beamOn && blastAge < 0 ? charge * charge * 2.2 : 0
   const tj = (k: number): number => tremble * (hash01(Math.floor(now * 60), k, o.seed + 9) - 0.5)
   const walkBob = WALK.bob * Math.sin((b.walked / WALK.pitch) * Math.PI) * Math.sin((b.walked / WALK.pitch) * Math.PI)
-  const recoilBack = 38 * blast
+  const recoilBack = 64 * blast
   const hurtShove = 9 * hurt
 
   const formed = f >= 1
@@ -204,8 +227,8 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
       foot = [mix(tx, foot[0], reach), mix(ty, foot[1], reach), mix(60 + body.z + 40, 0, 0) + (1 - drop * drop) * (150 + 120 * Math.sin(Math.PI * lin(out, 0, 0.7)))]
     }
     if (sagPart > 0) foot = [foot[0] * (1 + 0.1 * sagPart), foot[1] * (1 + 0.1 * sagPart), foot[2]]
-    const ik = legIk(hip, foot)
-    return { hip, knee: ik.knee, foot, yaw: ik.yaw, up: ik.up, down: ik.down, footYaw: ik.yaw, lift: p.lift, show, planted }
+    const ik = legIk(hip, foot, (hx * hy > 0 ? 1 : -1) * LEG.lean)
+    return { hip, knee: ik.knee, foot, yaw: ik.yaw, up: ik.up, yaw2: ik.yaw2, down: ik.down, footYaw: Math.atan2(foot[1] - hip[1], foot[0] - hip[0]), lift: p.lift, show, planted }
   })
 
   const guns = b.guns.map((g, i) => {
@@ -222,8 +245,8 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const cannon = {
     show: t > TURRET.rise[0] && off < 1, x: mix(CANNON.bayX, CANNON.pivotX, smooth(sw)), z: cannonZ, elev, yaw: 0,
     ribs: -225 * (1 - prog(t, 0.44, 0.6)), sleeve: -295 * (1 - prog(t, 0.5, 0.68)), barrel: -640 * (1 - (t >= 1 ? 1 : outBack(lin(t, 0.56, 0.84), 1.2))) - 46 * blast - 20 * charge,
-    window: 0.25 + 2.6 * glowUp + 3.5 * charge + (beamOn ? 6 : 0) + 1.5 * kick(blastAge, TIMES.after), bore: 0.05 + 1.2 * bump(t, 0.9, 1.0) + 0.5 * glowUp + 7 * charge * charge + (beamOn ? 14 : 0),
-    slits: 0.2 + 2.2 * prog(t, 0.86, 0.96) + 2 * charge, heat: clamp01(kick(blastAge, TIMES.after) * 1.4), off
+    window: 0.2 + 1.15 * glowUp + 2.2 * charge + (beamOn ? 5 : 0) + 1.5 * kick(blastAge, TIMES.after), bore: 0.05 + 1.2 * bump(t, 0.9, 1.0) + 0.5 * glowUp + 7 * charge * charge + (beamOn ? 14 : 0),
+    slits: 0.2 + 1.3 * prog(t, 0.86, 0.96) + 2 * charge, heat: clamp01(kick(blastAge, TIMES.after) * 1.4), off
   }
 
   const cw = Math.cos(yaw)
@@ -243,7 +266,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
     shield: { rise: shieldUp, slide: shieldOut, flash: kick(since(now, b.shield.glancedAt), TIMES.glance), broken: lin(beaten, 0.05, 0.3), show: f >= FORM.shield[0] },
     guns, legs, cannon,
     weak: b.weak ? (b.weak.shownAt === null ? 0 : 0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16)) * 4 : 0,
-    hurt, heal: healNow, sag: sagPart, word
+    damage: f < 1 ? 0 : beaten > 0.02 ? 3 : b.stage, hurt, heal: healNow, sag: sagPart, word
   }
 }
 
@@ -253,7 +276,7 @@ export function muzzleOf(view: BossView, i: 0 | 1): { x: number; y: number; z: n
   const side = i === 0 ? 1 : -1
   const [gx, gy] = rot(GUN.x * K, side * GUN.y * K, -b.heading)
   const aim = b.guns[i]!.aim
-  return { x: b.x + gx + Math.cos(aim) * GUN.reach * K, y: b.y - gy + Math.sin(aim) * GUN.reach * K, z: (GUN.z + GUN.axis) * K, aim }
+  return { x: b.x + gx + Math.cos(aim) * GUN.reach * K, y: b.y - gy + Math.sin(aim) * GUN.reach * K, z: (GUN.z - 3 + GUN.axis) * K, aim }
 }
 
 // Where the mouth of the big cannon is when locked, page px.

@@ -1,13 +1,13 @@
 import * as THREE from 'three'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
-import { across, along, boxAt, cutPlate, discAt, glowMaterial, hose, joined, lathe, lookKit, mesh, oct, pillOutline, plateAt, ringPlate, rod, screw, turnedAt, type V3 } from './kit'
+import { across, along, blot, boxAt, crackStar, cutPlate, discAt, glowMaterial, hose, joined, lathe, lookKit, mesh, oct, pillOutline, plateAt, ringPlate, rod, screw, turnedAt, type V3 } from './kit'
 
 // Everything here is in the units of the target sheets (px of the 1920 wide pictures), forward along +x, z up from the ground, the hull's centre over the origin.
 
+import { makeGun, type Gun } from './gun'
 import { BTN, CANNON, GUN, HATCH, HIPS, HULL, LEG, SHIELD, WING } from './numbers'
 
 export interface LegParts { upper: THREE.Group; lower: THREE.Group; foot: THREE.Group }
-export interface GunParts { root: THREE.Group; barrels: THREE.Group; lamp: THREE.MeshBasicMaterial; flash: THREE.Mesh }
 export interface CannonParts { carriage: THREE.Group; root: THREE.Group; ribs: THREE.Group; sleeve: THREE.Group; barrel: THREE.Group; window: THREE.MeshBasicMaterial; bore: THREE.MeshBasicMaterial; slits: THREE.MeshBasicMaterial; heat: THREE.MeshBasicMaterial }
 export interface Model {
   body: THREE.Group
@@ -21,7 +21,8 @@ export interface Model {
   shieldGlass: THREE.Mesh
   shieldEdge: THREE.Mesh
   own: THREE.Material[]
-  guns: [GunParts, GunParts]
+  damage: [THREE.Group, THREE.Group, THREE.Group]
+  guns: [Gun, Gun]
   legs: LegParts[]
   cannon: CannonParts
   weak: THREE.MeshBasicMaterial
@@ -79,30 +80,6 @@ function wingGeo(side: number): { plate: THREE.BufferGeometry; dark: THREE.Buffe
   return { plate, dark, pins, base }
 }
 
-function gunGeo(): { housing: THREE.BufferGeometry; dark: THREE.BufferGeometry; pin: THREE.BufferGeometry; barrels: THREE.BufferGeometry; barrelDark: THREE.BufferGeometry } {
-  const a = GUN.axis
-  const housing = joined([
-    turnedAt([[0, 0], [45, 0], [45, 6], [40, 10], [0, 10]], 0, 0, 0, 40),
-    boxAt(-52, -24, 8, 46, 24, a + 15, 4),
-    boxAt(-64, -15, 12, -50, 15, a + 9, 2),
-    boxAt(-30, 24, 10, 26, 40, a + 6, 2.5),
-    boxAt(-20, -36, 12, 12, -24, a + 2, 2),
-    along([[0, 44], [22, 44], [24, 48], [24, 58], [19, 62], [0, 62]], 24).translate(0, 0, a)
-  ])
-  const dark = joined([boxAt(-40, -17, a + 14.5, 30, 17, a + 19, 1.5), boxAt(-26, 26, a + 5.5, 22, 38, a + 9, 1)])
-  const pin = joined([across(6, 28, 1.5, 12).translate(-36, 0, a + 4), screwsAt([[-44, -17], [-44, 17], [36, -17], [36, 17]], a + 19, 3, 11)])
-  const bs: THREE.BufferGeometry[] = []
-  for (let i = 0; i < 6; i++) {
-    const an = (i / 6) * Math.PI * 2
-    bs.push(along([[0, 56], [4.6, 56], [4.6, 168], [0, 168]], 8).translate(0, Math.cos(an) * 11, Math.sin(an) * 11))
-  }
-  bs.push(along([[5, 84], [18, 84], [18, 91], [5, 91]], 20), along([[5, 128], [18, 128], [18, 135], [5, 135]], 20))
-  bs.push(along([[0, 150], [17, 150], [20.5, 156], [20.5, GUN.reach - 4], [18, GUN.reach], [13, GUN.reach], [13, GUN.reach - 14]], 24))
-  const barrels = joined(bs).scale(1, 1.3, 1.3)
-  const barrelDark = along([[0, GUN.reach - 15], [13.2, GUN.reach - 15]], 20).scale(1, 1.3, 1.3)
-  return { housing: housing.scale(1.12, 1.25, 1.15), dark: dark.scale(1.12, 1.25, 1.15), pin: pin.scale(1.12, 1.25, 1.15), barrels, barrelDark }
-}
-
 function shieldArc(rIn: number, rOut: number, half: number, n = 22): [number, number][] {
   const cx = SHIELD.mid - SHIELD.r
   const phi = Math.asin(half / SHIELD.r)
@@ -133,22 +110,24 @@ function legGeo(): { upper: Record<string, THREE.BufferGeometry>; lower: Record<
     }
   }
   const upper = {
-    ...link(A, 43, 38, 23),
+    ...link(A, 54, 44, 27),
     orange: joined([hose([[14, -9, 10], [A * 0.3, -13, 17], [A * 0.62, 12, 16], [A - 16, 9, 9]], 4.4, 20, 7), hose([[18, 10, 6], [A * 0.3, 13, 12], [A * 0.55, -12, 12], [A - 20, -10, 6]], 3.6, 20, 7)])
   }
   const lower = {
-    ...link(B, 36, 32, 20),
+    ...link(B, 46, 38, 23),
     orange: joined([hose([[14, 7, 8], [B * 0.3, 10, 14], [B * 0.6, -9, 13], [B - 22, -6, 8]], 3.8, 20, 7)])
   }
-  const toe = (ang: number, len: number, w: number, tall: number): THREE.BufferGeometry => {
-    const pts: [number, number][] = [[4, -w / 2], [len * 0.62, -w / 2], [len, -w * 0.14], [len, w * 0.14], [len * 0.62, w / 2], [4, w / 2]]
-    return cutPlate(pts, tall, 3.5).rotateZ(ang)
-  }
+  // A claw of three fingers and a spur: each finger a thick root with a knuckle and a wedge that digs in.
+  const finger = (ang: number, len: number, w: number): THREE.BufferGeometry[] => [
+    boxAt(6, -w / 2, 5, len * 0.58, w / 2, 40, 5).rotateZ(ang),
+    cutPlate([[len * 0.5, -w * 0.46], [len * 0.84, -w * 0.3], [len, -w * 0.08], [len, w * 0.08], [len * 0.84, w * 0.3], [len * 0.5, w * 0.46]], 30, 4).rotateZ(ang)
+  ]
+  const knuckle = (ang: number, len: number, w: number): THREE.BufferGeometry => across(15, w / 2 + 3, 2, 14).translate(len * 0.56, 0, 30).rotateZ(ang)
   const foot = {
-    plate: joined([toe(0.46, 98, 44, 30), toe(-0.46, 98, 44, 30), toe(Math.PI, 60, 48, 24), boxAt(-30, -36, 4, 36, 36, 32, 5)]),
-    joint: joined([across(27, 25, 3, 20).translate(0, 0, LEG.ankle), discAt(26, 0, 0, 30, 39, 2, 20)]),
-    pin: joined([across(9, 29, 1.5, 12).translate(0, 0, LEG.ankle), screwsAt([[60, 28], [60, -28], [-40, 0]], 30, 5, 21)]),
-    dark: joined([boxAt(36, -4, 8, 70, 4, 24, 1)])
+    plate: joined([...finger(0, 112, 40), ...finger(0.66, 104, 38), ...finger(-0.66, 104, 38), ...finger(Math.PI, 62, 44)]),
+    joint: joined([discAt(40, 0, 0, 4, 46, 5, 24), knuckle(0, 112, 40), knuckle(0.66, 104, 38), knuckle(-0.66, 104, 38)]),
+    pin: joined([discAt(17, 0, 0, 45, 53, 2, 16), screwsAt([[26, 0], [-13, 22.5], [-13, -22.5]], 46, 4.5, 21)]),
+    dark: joined([boxAt(70, -3.5, 12, 100, 3.5, 31, 1), boxAt(66, -3.5, 12, 94, 3.5, 31, 1).rotateZ(0.66), boxAt(66, -3.5, 12, 94, 3.5, 31, 1).rotateZ(-0.66)])
   }
   return { upper, lower, foot }
 }
@@ -159,16 +138,16 @@ function cannonGeo(): Record<string, THREE.BufferGeometry> {
   const [b0, b1] = C.breech
   const breech = joined([
     along([[0, b0 - 6], [r.breech - 14, b0 - 6], [r.breech - 6, b0 + 4], [r.breech - 6, b0 + 30], [r.breech, b0 + 36], [r.breech, b1 - 46], [r.breech - 5, b1 - 40], [r.breech - 5, b1 - 14], [r.breech, b1 - 10], [r.breech, b1], [r.ribs - 2, b1 + 3], [0, b1 + 3]], 40),
-    boxAt(b0 + 92, -62, 40, b0 + 222, 62, r.breech + 9, 5),
+    boxAt(b0 + 104, -56, 40, b0 + 214, 56, r.breech + 9, 5),
     boxAt(b0 - 20, -30, -30, b0 + 6, 30, 30, 4),
     boxAt(-30, -26, -22, b0 - 4, 26, 22, 5)
   ])
   const breechDark = joined([
-    ringPlate([[b0 + 100, -54], [b0 + 214, -54], [b0 + 214, 54], [b0 + 100, 54]], [[b0 + 112, -42], [b0 + 202, -42], [b0 + 202, 42], [b0 + 112, 42]], 5, 1).translate(0, 0, r.breech + 8),
+    ringPlate([[b0 + 109, -51], [b0 + 209, -51], [b0 + 209, 51], [b0 + 109, 51]], [[b0 + 123, -37], [b0 + 195, -37], [b0 + 195, 37], [b0 + 123, 37]], 5, 1).translate(0, 0, r.breech + 8),
     along([[r.breech + 0.6, b0 + 38], [r.breech + 2.5, b0 + 40], [r.breech + 2.5, b0 + 50], [r.breech + 0.6, b0 + 52]], 40),
     along([[r.breech + 0.6, b1 - 64], [r.breech + 2.5, b1 - 62], [r.breech + 2.5, b1 - 52], [r.breech + 0.6, b1 - 50]], 40)
   ])
-  const window = boxAt(b0 + 113, -41, r.breech + 7, b0 + 201, 41, r.breech + 11, 0.5)
+  const window = boxAt(b0 + 124, -36, r.breech + 7, b0 + 194, 36, r.breech + 11, 0.5)
   const slit = joined([-1, 1].flatMap((s) => [0, 1, 2].map((i) => boxAt(b1 - 38, -8, r.breech - 4.2, b1 - 18, 8, r.breech + 0.8, 0.4).rotateX(s * (0.5 + i * 0.36)))))
   const yoke = joined([across(38, 58, 4), across(20, 66, 3, 20)])
   const hoses = joined([-1, 1].flatMap((s) => [
@@ -186,10 +165,10 @@ function cannonGeo(): Record<string, THREE.BufferGeometry> {
   const sleeve = along([[0, s0 - 220], [r.sleeve, s0 - 220], [r.sleeve, s1 - 22], [r.sleeve + 5, s1 - 18], [r.sleeve + 5, s1 - 6], [r.sleeve - 3, s1], [0, s1]], 36)
   const [a0, a1] = C.barrel
   const [k0, k1] = C.brake
-  const barrel = along([[0, a0 - 380], [r.barrel, a0 - 380], [r.barrel, k0 - 8], [r.brake - 3, k0], [r.brake, k0 + 6], [r.brake, k1 - 30], [r.brake + 5, k1 - 6], [r.brake + 3, k1], [r.barrel - 4, k1], [r.barrel - 4, k1 - 60]], 40)
+  const barrel = along([[0, a0 - 380], [r.barrel, a0 - 380], [r.barrel, k0 - 6], [r.barrel + 6, k0], [r.barrel + 6, k0 + 10], [r.brake - 3, k1 - 34], [r.brake, k1 - 28], [r.brake, k1 - 6], [r.brake - 3, k1], [r.barrel - 5, k1], [r.barrel - 5, k1 - 60]], 40)
   void a1
-  const bore = along([[0, k1 - 58], [r.barrel - 3.8, k1 - 58]], 32)
-  const glow = along([[0, k1 - 40], [r.barrel - 6, k1 - 40]], 32)
+  const bore = along([[0, k1 - 58], [r.barrel - 4.8, k1 - 58]], 32)
+  const glow = along([[0, k1 - 40], [r.barrel - 6.5, k1 - 40]], 32)
   const heat = along([[r.barrel + 0.5, k0 - 120], [r.barrel + 0.5, k0 - 8]], 32)
   return { breech, breechDark, window, slit, yoke, hoses, ribCore, ribs: joined(ribs), sleeve, barrel, bore, glow, heat }
 }
@@ -199,14 +178,14 @@ export function buildModel(): Model {
   const body = new THREE.Group()
   const hull = new THREE.Group()
   const hg = geo('hull', () => { const h = hullGeo(); shared.set('hull.dark', h.dark); shared.set('hull.trim', h.trim); shared.set('hull.bed', h.bed); shared.set('hull.pins', h.pins); shared.set('hull.joints', h.joints); return h.plate })
-  hull.add(mesh(hg, kit.plate), mesh(shared.get('hull.dark')!, kit.dark), mesh(shared.get('hull.trim')!, kit.housing), mesh(shared.get('hull.bed')!, kit.bed), mesh(shared.get('hull.pins')!, kit.pin), mesh(shared.get('hull.joints')!, kit.joint))
+  hull.add(mesh(hg, kit.hull), mesh(shared.get('hull.dark')!, kit.dark), mesh(shared.get('hull.trim')!, kit.bezel), mesh(shared.get('hull.bed')!, kit.bed), mesh(shared.get('hull.pins')!, kit.pin), mesh(shared.get('hull.joints')!, kit.joint))
   body.add(hull)
 
   const wings = [1, -1].map((side) => {
     const g = new THREE.Group()
     const name = `wing${side}`
     const p = geo(name, () => { const w = wingGeo(side); shared.set(`${name}.dark`, w.dark); shared.set(`${name}.pins`, w.pins); shared.set(`${name}.base`, w.base); return w.plate })
-    g.add(mesh(p, kit.plate), mesh(shared.get(`${name}.dark`)!, kit.dark), mesh(shared.get(`${name}.pins`)!, kit.pin), mesh(shared.get(`${name}.base`)!, kit.joint))
+    g.add(mesh(p, kit.wing), mesh(shared.get(`${name}.dark`)!, kit.dark), mesh(shared.get(`${name}.pins`)!, kit.pin), mesh(shared.get(`${name}.base`)!, kit.joint))
     body.add(g)
     return g
   }) as [THREE.Group, THREE.Group]
@@ -230,7 +209,7 @@ export function buildModel(): Model {
   const seam = glowMaterial(0xff7a1e, 1.6)
   const ho = oct(HATCH.hx - 3, HATCH.hy - 3, HATCH.c - 2)
   hatch.add(
-    mesh(geo('hatch.plate', () => joined([plateAt(ho, -14, -4, 3), ringPlate(oct(HATCH.hx - 12, HATCH.hy - 12, HATCH.c - 6), oct(HATCH.hx - 19, HATCH.hy - 19, HATCH.c - 9), 3, 0.8).translate(0, 0, -4.4), plateAt(oct(HATCH.hx - 20, 58, 14, 0, -64), -5, 0, 2), plateAt(oct(HATCH.hx - 20, 58, 14, 0, 64), -5, 0, 2)])), kit.plateLight),
+    mesh(geo('hatch.plate', () => joined([plateAt(ho, -14, -4, 3), ringPlate(oct(HATCH.hx - 12, HATCH.hy - 12, HATCH.c - 6), oct(HATCH.hx - 19, HATCH.hy - 19, HATCH.c - 9), 3, 0.8).translate(0, 0, -4.4), plateAt(oct(HATCH.hx - 20, 58, 14, 0, -64), -5, 0, 2), plateAt(oct(HATCH.hx - 20, 58, 14, 0, 64), -5, 0, 2)])), kit.hatch),
     mesh(geo('hatch.seam', () => joined([boxAt(-HATCH.hx + 22, -2.6, -4.6, -24, 2.6, -2.4, 0.3), boxAt(-24, -2.6, -4.6, -19, 12, -2.4, 0.3), boxAt(-24, 7, -4.6, 44, 12, -2.4, 0.3), boxAt(40, -2.6, -4.6, 45, 12, -2.4, 0.3), boxAt(40, -2.6, -4.6, HATCH.hx - 22, 2.6, -2.4, 0.3)])), seam, false, false),
     mesh(geo('hatch.pins', () => screwsAt([[-80, -100], [80, -100], [-80, 100], [80, 100]], 0, 5, 7)), kit.pin)
   )
@@ -252,21 +231,12 @@ export function buildModel(): Model {
   )
   body.add(shield)
 
-  const gg = geo('gun', () => { const g = gunGeo(); shared.set('gun.dark', g.dark); shared.set('gun.pin', g.pin); shared.set('gun.barrels', g.barrels); shared.set('gun.bore', g.barrelDark); return g.housing })
   const guns = [1, -1].map((side) => {
-    const root = new THREE.Group()
-    const lamp = glowMaterial(0xff5a14, 0.2)
-    const barrels = new THREE.Group()
-    barrels.add(mesh(shared.get('gun.barrels')!, kit.joint), mesh(shared.get('gun.bore')!, kit.bore, false, false))
-    barrels.position.z = GUN.axis
-    const flash = mesh(geo('gun.flash', () => joined([along([[0, 0], [16, 6], [30, 40], [14, 110], [0, 150]], 12), along([[0, -4], [44, 8], [0, 22]], 12)])), glowMaterial(0xffb060, 5), false, false)
-    flash.position.set(GUN.reach, 0, GUN.axis)
-    flash.visible = false
-    root.add(mesh(gg, kit.housing), mesh(shared.get('gun.dark')!, kit.bed), mesh(shared.get('gun.pin')!, kit.pin), barrels, flash, mesh(geo('gun.lamp', () => discAt(5.5, -22, 0, GUN.axis + 18.5, GUN.axis + 21.5, 0.8, 14)), lamp, false, false))
-    root.position.set(GUN.x, side * GUN.y, GUN.z - 3)
-    body.add(root)
-    return { root, barrels, lamp, flash }
-  }) as [GunParts, GunParts]
+    const g = makeGun()
+    g.root.position.set(GUN.x, side * GUN.y, GUN.z - 3)
+    body.add(g.root)
+    return g
+  }) as [Gun, Gun]
 
   const lg = geo('leg', () => {
     const l = legGeo()
@@ -274,6 +244,7 @@ export function buildModel(): Model {
     return l.upper.plate!
   })
   void lg
+
   const legs: LegParts[] = HIPS.map(() => {
     const part = (name: string): THREE.Group => {
       const g = new THREE.Group()
@@ -313,10 +284,32 @@ export function buildModel(): Model {
   carriage.add(root)
   body.add(carriage)
 
+  // What the fight leaves on him: soot and cracks from the first stage, torn plates and loose hoses from the second, char when he is beaten.
+  const at = (g: THREE.BufferGeometry, x: number, y: number, z: number, turn = 0): THREE.BufferGeometry => g.rotateZ(turn).translate(x, y, z)
+  const d1 = new THREE.Group()
+  d1.add(
+    mesh(geo('dmg1.soot', () => joined([at(blot(1, 58), -205, 72, HULL.top + 0.5), at(blot(2, 44), 70, 212, WING.top + 0.5), at(blot(3, 36), 196, -70, HULL.top + 0.5)])), kit.soot, false, false),
+    mesh(geo('dmg1.crack', () => joined([at(crackStar(31, 6, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 70, 2.2), -212, 78, HULL.top + 0.8), at(crackStar(32, 5, (a) => [Math.cos(a) * 4, Math.sin(a) * 4], 54, 1.8), 72, 214, WING.top + 0.8)])), kit.crack, false, false)
+  )
+  const d2 = new THREE.Group()
+  d2.add(
+    mesh(geo('dmg2.soot', () => joined([at(blot(4, 72), 150, -84, HULL.top + 0.55), at(blot(5, 60), -120, -196, WING.top + 0.5), at(blot(6, 52), -40, 104, HULL.top + 0.55), at(blot(7, 46), HATCH.cx + 30, -60, HATCH.top + 0.5)])), kit.soot, false, false),
+    mesh(geo('dmg2.crack', () => joined([at(crackStar(33, 7, (a) => [Math.cos(a) * 6, Math.sin(a) * 6], 86, 2.4), 156, -88, HULL.top + 0.85), at(crackStar(34, 6, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 64, 2), -118, -200, WING.top + 0.8), at(crackStar(35, 5, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 60, 2), HATCH.cx + 24, -56, HATCH.top + 0.8)])), kit.crack, false, false),
+    mesh(geo('dmg2.hole', () => joined([at(blot(8, 30, 9), 232, 84, HULL.top + 0.9), at(blot(9, 24, 9), -150, 196, WING.top + 0.9)])), kit.bore, false, false),
+    mesh(geo('dmg2.plate', () => joined([boxAt(-30, -24, 0, 30, 24, 5, 1.5).rotateY(-0.5).rotateZ(0.4).translate(252, 104, HULL.top + 12), boxAt(-24, -18, 0, 24, 18, 4, 1.2).rotateX(0.6).rotateZ(-0.3).translate(-150, 222, WING.top + 10)])), kit.plate),
+    mesh(geo('dmg2.hose', () => joined([hose([[226, 80, HULL.top - 4], [250, 60, HULL.top + 30], [286, 84, HULL.top + 22], [300, 116, HULL.top - 30]], 5, 16, 7), hose([[-150, 190, WING.top - 4], [-176, 204, WING.top + 22], [-196, 236, WING.top - 20]], 4.2, 12, 7)])), kit.orange)
+  )
+  const d3 = new THREE.Group()
+  d3.add(mesh(geo('dmg3.soot', () => joined([at(blot(10, 130, 18), HATCH.cx + 20, 10, HATCH.top + 1.1), at(blot(11, 90, 16), -240, -30, HULL.top + 0.7), at(blot(12, 84, 16), 250, 20, HULL.top + 0.65), at(blot(13, 70), 30, -210, WING.top + 0.6), at(blot(14, 66), -30, 206, WING.top + 0.6)])), kit.soot, false, false))
+  d1.visible = false
+  d2.visible = false
+  d3.visible = false
+  body.add(d1, d2, d3)
+
   const weak = glowMaterial(0xff3a1a, 0)
   const weakLamp = mesh(geo('weak', () => joined([discAt(11, HATCH.cx - HATCH.hx - 2, 0, 128, 140, 2, 18).rotateY(0), boxAt(HATCH.cx - HATCH.hx - 9, -34, 120, HATCH.cx - HATCH.hx - 4, 34, 146, 1.5)])), weak, false, false)
   bay.add(weakLamp)
 
-  return { body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, own: [seam, window, bore, slits, heat, weak, ...guns.map((g) => g.lamp)], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
+  return { body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, damage: [d1, d2, d3], own: [seam, window, bore, slits, heat, weak], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
 }
 
