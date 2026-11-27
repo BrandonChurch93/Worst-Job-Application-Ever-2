@@ -43,7 +43,7 @@ describe('the motion pack of a recorded visit', () => {
     expect(plan.items.length).toBe(rec.sheets)
     expect(plan.groups.map((g) => [g.id, g.items.length])).toEqual([['pages', 9], ['arrow', 9], ['port', 6], ['bats', 7]])
     expect(plan.groups.map((g) => [...new Set(g.items.map((f) => f.moment))])).toEqual([['walk', 'turn', 'seat', 'hit'], ['type', 'taken', 'given-back'], ['flippers', 'drop'], ['save', 'flip', 'flip-close']])
-    const sets = (packPlan(cfg, { role: 'R4', round: 25, unit: SITE, facts: run }) as { sets: { set: string; groups: string[]; files: Sheet[] }[] }).sets
+    const sets = (packPlan(cfg, { role: 'R4', round: 25, unit: SITE, facts: run as never }) as { sets: { set: string; groups: string[]; files: Sheet[] }[] }).sets
     expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual([['A', 'pages', 9], ['B', 'arrow', 9], ['C', 'port', 6], ['D', 'bats', 7]])
     for (const s of sets) {
       expect(s.files.length).toBeLessThanOrEqual(most)
@@ -191,7 +191,7 @@ describe('the motion pack of a recorded visit', () => {
 
   it('the visitor rests the named steps after it lets a key go, and only then walks on', () => {
     // A made-up page: the page's hint stands on one key with the button wanted, then on a key 300 px to the right. The visitor lets go where it is, and KEYS.rest steps pass before its first move.
-    const block = keyBlock(cfg) as { x: number; y: number; w: number; h: number }
+    const block = keyBlock(cfg)
     const v = makeVisitor(1, VISITOR, block) as { act(told: unknown): Record<string, unknown>[]; pointer(): { x: number; y: number } }
     const one = { x: block.x + 200, y: block.y + block.h / 2 }
     const two = { x: one.x + 300, y: one.y }
