@@ -4,17 +4,18 @@ import type { CameraPose } from '../../../stage/types'
 import { config } from '../../../config'
 import { browseBox, HALF_X, landing, PAPER, PAPER_REST, SLOT, TILE } from './layout'
 
-// How much later than before change note 002 the film's bite and all that follows it come, in seconds: the room the new beats before the bite take. The tug, the loss and the strips keep their shape and their length.
-export const LATE = 1.5
+// `EARLY`: how many seconds sooner than 19.81 s of the unit the page hands the stage over in the film. `LATE`: how much later than before change note 002 the film's bite and all that follows it come, in seconds: the room the new beats before the bite take, less `EARLY`. The tug, the loss and the strips keep their shape and their length.
+export const EARLY = 0
+export const LATE = 1.4 - EARLY
 const UNIT_END = config.film.units.find((u) => u.id === 'step1')!.seconds
 
 // Seconds of the stage: the sheet's slide in, the bite, the tug in the film, and how long the arrow stays lost, live and in the film.
 export const RESUME_TIMES = { paperSlide: 0.42, bite: 0.4, tugFilm: 4.52, lost: 0.3, lostFilm: 0.84 }
 // The beats before the bite, in seconds, in the film and on the live site, where the visitor sets the pace and each beat takes the room it needs: how long Browse stays down, the folder's way up and down, the file lit before the sheet leaves, the sheet's flight to the drop zone, how long it lies there, and the wind. The machine and its plate are up `machine` into the wind. `wait` is how long an idle visitor's folder stands open before the page picks the file itself.
 export const FLOW = {
-  film: { press: 0.1, pop: 0.25, shut: 0.25, lit: 0.12, fly: 0.45, lie: 0.25, wind: 0.8 },
+  film: { press: 0.1, pop: 0.25, shut: 0.25, lit: 0.12, fly: 0.42, lie: 0.24, wind: 0.8 },
   live: { press: 0.12, pop: 0.3, shut: 0.3, lit: 0.22, fly: 0.55, lie: 0.5, wind: 0.95 },
-  machine: 0.25, wait: 1.2
+  machine: 0.25, wait: 0.5
 }
 // The wind: the sheet leaves the drop zone on a rising bend (`bend` px to the side of the straight line, `high` px over the card at the most), swinging `swing` radians `turns` times and coming to rest upright over the slot; `off` is the share of the wind that has blown before it lifts. The streaks: how many, how long each lives, how far apart they start, their speed in px a second and their heading in radians down from level.
 export const WIND = { off: 0.16, bend: 70, high: 64, swing: 0.75, turns: 1.6, streaks: 10, life: 0.36, every: 0.065, speed: 1800, heading: 0.52, long: [264, 168, 312], wide: 6, z: 30, spread: 250 }
@@ -29,10 +30,10 @@ export const TRUDGE = { x: 96, y: 84, first: [0.42, 0.62] as [number, number], s
 export const END = { sag: 0.03 }
 // The film before the bite, every time a second of the unit: a wind-up where it stands, a strut to Browse files, a look at the ordinary field, the press; a start at the folder, a walk to the file, the pick; proud, it struts back to stand by its sheet in the drop zone and dusts itself off; the wind makes it start and it runs after the sheet. `drop` is the second the wind lets the sheet go over the slot.
 export const RESUME = {
-  leave: 19.9, walk: [20.1, 20.6] as [number, number], on: { x: 12, y: 6 }, press: 20.85,
-  see: 20.97, toFile: [21.06, 21.36] as [number, number], file: { x: 8, y: 14 }, pick: 21.5,
-  proud: 21.66, back: [21.76, 22.16] as [number, number], beside: { x: 58, y: 66 }, dust: 22.2,
-  gust: 22.36, chase: [22.58, 23.02] as [number, number], near: { x: -96, y: -176 },
+  leave: 19.9 - EARLY, walk: [20.1 - EARLY, 20.6 - EARLY] as [number, number], on: { x: 12, y: 6 }, press: 20.85 - EARLY,
+  see: 20.97 - EARLY, toFile: [21.04 - EARLY, 21.32 - EARLY] as [number, number], file: { x: 8, y: 14 }, pick: 21.44 - EARLY,
+  proud: 21.6 - EARLY, back: [21.68 - EARLY, 22.06 - EARLY] as [number, number], beside: { x: 58, y: 66 }, dust: 22.08 - EARLY,
+  gust: 22.26 - EARLY, chase: [22.46 - EARLY, 22.9 - EARLY] as [number, number], near: { x: -96, y: -176 },
   raise: 0, high: 0, drop: 21.62 + LATE
 }
 // The temper of the tug: a stamp as the sheet is caught, a wind-up before each haul, a second stamp, and nothing in the half second before the key picture. Then the big bite: a start, and it stands scared and still, pulled thin, until the sheet goes.
@@ -57,7 +58,7 @@ export const tugCurve = (t: number): number => tugAt(t, 1)
 
 export const tugReach = (rate: number): number => Math.min(TUG.reach.max, Math.max(TUG.reach.min, TUG.reach.rest + rate * (rate > 0 ? TUG.reach.bite : TUG.reach.haul)))
 
-function tugPoint(tau: number): { x: number; y: number } {
+export function tugPoint(tau: number): { x: number; y: number } {
   const amount = tugCurve(tau)
   const reach = tugReach((tugCurve(tau + 0.03) - tugCurve(tau - 0.03)) / 0.06)
   const lean = tugAt(tau, 2)
@@ -137,7 +138,7 @@ const TUG_EDGE = HALF_X - 16
 const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 205 }
 const tugFrame = (): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - TUG_FRAME.w, TUG_FRAME.mid - TUG_FRAME.w / 2), y: TUG_FRAME.top, w: TUG_FRAME.w, h: (TUG_FRAME.w * 9) / 16 })
 // It starts in as the wind starts and stands before the bite; `key` is the second of the kit's still and is not moved.
-export const CAMERA = { in: [22.38, 23.3] as [number, number], key: 25.125, out: [28.3 + LATE, 28.9 + LATE] as [number, number] }
+export const CAMERA = { in: [20.88 + LATE, 21.8 + LATE] as [number, number], key: 25.125, out: [28.3 + LATE, 28.9 + LATE] as [number, number] }
 const glide = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * u * (u * (u * 6 - 15) + 10)
