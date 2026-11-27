@@ -95,12 +95,63 @@ export const extraCues: { id: string; seconds: number; event: string }[] = [
   { id: 'skip', seconds: 0.3, event: 'skip' }
 ]
 
-export const cueOfEvent = (name: string): string | undefined => eventCues[name] ?? extraCues.find((x) => x.event === name)?.id
+export function cueOfEvent(name: string): string | undefined {
+  const known = eventCues[name] ?? extraCues.find((x) => x.event === name)?.id ?? newEventCues[name]
+  if (known !== undefined) return known
+  for (const p of prefixCues) if (name.startsWith(p.prefix)) return p.cue(name.slice(p.prefix.length))
+  return undefined
+}
+
+// The one page with no sound effect but the press of its button: the careers page. Change note 002, item 10.
+// A turn to it or away from it is silent, and the room tone is not played on it.
+export const quietPage = 'marketing'
+export const quietPageCues: string[] = ['button-press']
+// The page a turn of the live site leads to, by the page it leaves: the order of liveFlow in src/stage/stage.ts.
+export const pageAfter: Record<string, string> = { 'marketing': 'step1', 'step1': 'step2', 'step2': 'step3', 'step3': 'step4', 'step4': 'step5', 'step5': 'marketing' }
 
 // Every cue with its length and its variants: the rows of audio.sfx, and the added cues that audio.sfx does not hold yet.
 export function allCues<T extends { id: string; seconds: number }>(sfx: T[]): (T | { id: string; seconds: number; variants?: number })[] {
   return [...sfx, ...extraCues.filter((x) => !sfx.some((s) => s.id === x.id)).map((x) => ({ id: x.id, seconds: x.seconds }))]
 }
+
+// The events the units of change 002 added, each on the nearest cue that is kept until its own sound is made. To give one its own sound,
+// add the cue to audio.sfx and write its id in place of the stand-in here. A name in newSilent plays nothing.
+// file to come: the sound the Builder named for it, with its length in seconds.
+export const newEventCues: Record<string, string> = {
+  // boss
+  'shield-glance': 'bolt-hit',          // file to come: shield-glance, a dull glassy tick, 0.2
+  'shot-round': 'dart-hit',
+  'cannon-fire': 'slab-fire',           // file to come: cannon-fire, a low heavy thump, 0.5
+  'boss-heal': 'power-on',              // file to come: boss-heal, a short rising power-up, 0.6
+  // step 2
+  'date-key': 'key-press',
+  'reel-stop': 'drop-target',           // file to come: reel-stop, 0.3
+  'date-hit': 'checkbox',               // file to come: stop-press, 0.15
+  'date-miss': 'popup-close',           // file to come: date-miss, 0.6
+  'crank-full': 'crank-runaway',
+  'field-done': 'checkbox',
+  // pinball
+  'vacuum-slip': 'ball-drop',           // file to come: vacuum-slip, 0.35
+  'vacuum-lose': 'scoop-kick',          // file to come: vacuum-gulp, 0.5
+  'frenzy-on': 'flasher',               // file to come: pin-frenzy, 2.4
+  'loot': 'coins'                       // file to come: pin-coins, 0.9
+}
+
+export const newSilent: string[] = [
+  'boss-move',
+  'cannon-tell',                        // file to come: cannon-tell, a rising charge whine, 0.8
+  'volume-sign',                        // file to come: volume-sign, 0.5
+  'field-next',
+  'vacuum-on',                          // file to come: vacuum-roar, 3.0, can loop
+  'frenzy-off'
+]
+
+// Events named by a prefix: strike:<layout id>:<n> beside every strike of the pinball table, n 1 soft, 2 hard, 3 frenzy.
+// The old event of the same strike keeps its old cue, so the prefix plays nothing until its own sounds are made; then write the cue for each n.
+// files to come: pin-bumper 0.25, pin-sling 0.2, pin-target 0.25, pin-bell 0.4, pin-kick 0.3.
+export const prefixCues: { prefix: string; cue: (rest: string) => string | undefined }[] = [
+  { prefix: 'strike:', cue: () => undefined }
+]
 
 // Events that are left without a sound on purpose. count-run has no cue made yet: it carries a line of the narrator.
 export const silentEvents: string[] = ['count-run']
@@ -125,6 +176,8 @@ export const alsoStarts: Record<string, string[]> = {
 export const loopCues: string[] = ['room-tone', 'shredder', 'boss-loop']
 
 // What sets each live line of the narrator off. The keys are the keys of liveOnly in content/narration.json.
+// call: the site asks for the line by name, when a control of the site is pressed.
+// idle is a call the site no longer makes: only a clock could set it off, and no line is set off by a clock (change note 002, item 1).
 export type LiveTrigger =
   | { on: 'hit' }
   | { on: 'event'; event: string; once?: boolean }
@@ -147,9 +200,9 @@ export const liveTriggers: Record<string, LiveTrigger> = {
 export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'step1': 'step1', 'step2': 'step2', 'pinball': 'step3', 'boss': 'step4', 'decision': 'step5' }
 
 // What sets each line of the film off on the live site, by beat and by the line's place in the beat.
-// event: the first event of that name on the line's page. gag: the stage reporting that the line's own beat is reached.
+// event: an event of that name on the line's page, or one of the names in or. gag: the stage reporting that the line's own beat is reached; no line uses it now.
 export type FilmLive =
-  | { on: 'event'; event: string }
+  | { on: 'event'; event: string; or?: string[] }
   | { on: 'gag' }
 
 export const filmLive: Record<string, FilmLive> = {
@@ -159,8 +212,8 @@ export const filmLive: Record<string, FilmLive> = {
   'step1.firstName.1': { on: 'event', event: 'bolt-hit-cursor' },
   'step1.email.0': { on: 'event', event: 'slab-drop' },
   'step1.tug.0': { on: 'event', event: 'arms-out' },
-  'step2.dial.0': { on: 'gag' },
-  'step2.crank.0': { on: 'gag' },
+  'step2.dial.0': { on: 'event', event: 'dial-wind' },
+  'step2.crank.0': { on: 'event', event: 'volume-sign', or: ['crank-turn'] },
   'pinball.seal.0': { on: 'event', event: 'ball-seal' },
   'pinball.launch.0': { on: 'event', event: 'plunger' },
   'pinball.lobby.0': { on: 'event', event: 'carpet-roll' },
@@ -181,7 +234,7 @@ export const filmLiveKey = (beat: string, index: number): string => `${beat}.${i
 export function filmKeysForEvent(name: string, page: string, unitOfBeat: (beat: string) => string | undefined): string[] {
   const out: string[] = []
   for (const [key, t] of Object.entries(filmLive)) {
-    if (t.on !== 'event' || t.event !== name) continue
+    if (t.on !== 'event' || (t.event !== name && !t.or?.includes(name))) continue
     const unit = unitOfBeat(key.slice(0, key.lastIndexOf('.')))
     if (unit !== undefined && unitPage[unit] === page) out.push(key)
   }

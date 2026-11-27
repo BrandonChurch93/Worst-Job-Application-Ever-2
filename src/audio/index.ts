@@ -5,8 +5,10 @@ import { config } from '../config'
 import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
-import { allCues, alsoStarts, cueOfEvent, eventCues, filmKeysForEvent, filmKeysForGag, filmLive, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pagelessLive, pickVariant, stopEvents, unitPage } from './cues'
-import { DUCK, LIVE, db } from './levels'
+import { makeCaption, sayable, type Caption } from '../ui/said'
+import { allCues, alsoStarts, cueOfEvent, eventCues, filmKeysForEvent, filmKeysForGag, filmLive, filmLineId, liveKeysFor, liveLineId, loopCues, openingEvents, pageAfter, pagelessLive, pickVariant, quietPage, quietPageCues, stopEvents, unitPage } from './cues'
+import { dehum } from './dsp'
+import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
 import shipped from '../../public/audio/index.json'
 
@@ -24,6 +26,11 @@ export interface SoundApi {
   beat(id: string, mode: SoundMode, into?: number): void
   trigger(name: string): void
   quiet(seconds: number): void
+  // The page on screen, told by the site when it knows it: at a jump to a step and at each frame of the live site.
+  // caption: where that page wants the spoken words, the y of the lower edge of their panel in pixels of the 1920 by 1080 page.
+  page(id: string, caption?: number): void
+  // The lines that are booked or being spoken, each with its words and its start and end on the sound's clock, and that clock's time now.
+  said(): { now: number; lines: SaidLine[] }
   opening(from: number, to: number): void
   start(): void
   stop(): void
@@ -35,6 +42,8 @@ export interface SoundApi {
 
 // What the narrator did with a line: the time on the sound's own clock, the line, what set it off, and why when it was not spoken whole.
 export interface SoundLogEntry { at: number; line: string; trigger: string; what: 'spoken' | 'dropped' | 'taken back' | 'cut'; start?: number; seconds?: number; why?: string }
+
+export interface SaidLine { id: string; words: string; start: number; end: number }
 
 export interface SoundIndex {
   version: number
@@ -52,7 +61,7 @@ interface Backend {
   now(): number
   resume(): void
   hold(on: boolean): boolean
-  add(id: string, bytes: ArrayBuffer, mime: string): Promise<boolean>
+  add(id: string, bytes: ArrayBuffer, mime: string, mend?: (channel: Float32Array, sampleRate: number) => Float32Array): Promise<boolean>
   play(id: string, o: PlayOptions): Voice | null
   duck(spans: { from: number; to: number }[], low: number): void
   master(v: number): void
@@ -85,8 +94,9 @@ function graphBackend(Maker: ContextMaker): Backend {
       void (on ? ctx.suspend() : ctx.resume()).catch(() => undefined)
       return true
     },
-    add: (id, bytes) => new Promise<boolean>((done) => {
+    add: (id, bytes, _mime, mend) => new Promise<boolean>((done) => {
       const ok = (b: AudioBuffer) => {
+        if (mend && typeof b.getChannelData === 'function') for (let c = 0; c < b.numberOfChannels; c++) b.getChannelData(c).set(mend(b.getChannelData(c), b.sampleRate))
         buffers.set(id, b)
         done(true)
       }
@@ -291,7 +301,13 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
   let isMuted = false
   let level = 1
   let tone: Voice | null = null
-  let idleSaid = false
+  let here: string | null = null
+  let leaving: string | null = null
+  let toQuiet = false
+  const owed = new Set<string>()
+  const words = new Map<string, string>()
+  let caption: Caption | null = null
+  let captionAt: number | undefined
   let flowing = true
   let lead = false
   let filmAt = 0
@@ -345,19 +361,59 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     const jobs = [...index.loops, ...index.lines].map(async (f) => {
       const file = await fetch(`${base}${f.file}`)
       if (!file.ok) return
-      await b.add(f.id, await file.arrayBuffer(), f.mime).then(keep(f.id, f.seconds))
+      const mend = f.id === 'room-tone' && TONE.dehum ? (x: Float32Array, rate: number) => dehum(x, rate, TONE) : undefined
+      await b.add(f.id, await file.arrayBuffer(), f.mime, mend).then(keep(f.id, f.seconds))
     })
     await Promise.allSettled(jobs)
   }
 
-  const startTone = () => {
-    if (state !== 'ready' || !backend || tone || !flowing || lead || !loaded.has('room-tone')) return
-    tone = backend.play('room-tone', { bus: 'tone', when: backend.now(), cents: 0, pan: 0, loop: true, fadeIn: LIVE.toneFadeInSeconds })
+  const startTone = (after = 0) => {
+    if (state !== 'ready' || !backend || tone || !flowing || lead || here === quietPage || toQuiet || !loaded.has('room-tone')) return
+    tone = backend.play('room-tone', { bus: 'tone', when: backend.now() + after, cents: 0, pan: 0, loop: true, fadeIn: LIVE.toneFadeInSeconds })
+  }
+
+  const stopTone = (fade: number) => {
+    tone?.stop(fade)
+    tone = null
   }
 
   const stopCue = (cue: string) => {
     for (const v of running.get(cue) ?? []) v.stop(LIVE.loopFadeSeconds)
     running.delete(cue)
+  }
+
+  // The page on screen. On the careers page nothing sounds but the press of its button: what still rings is stopped, and the room tone with it.
+  const atPage = (page: string) => {
+    if (page === leaving) return
+    leaving = null
+    if (page === here) return
+    here = page
+    if (page !== quietPage) {
+      toQuiet = false
+      startTone()
+      return
+    }
+    stopTone(LIVE.loopFadeSeconds)
+    for (const cue of [...running.keys()]) if (!quietPageCues.includes(cue)) stopCue(cue)
+  }
+
+  // A turn has begun on this page. A turn to the careers page takes the room tone out before the page is on screen; a turn away from it brings the tone in after it has gone.
+  const turnFrom = (page: string, mode: SoundMode) => {
+    leaving = page
+    const next = mode === 'live' ? pageAfter[page] : undefined
+    if (next === quietPage) {
+      toQuiet = true
+      stopTone(LIVE.quietTurnSeconds)
+    } else if (page === quietPage && next !== undefined) {
+      here = next
+      startTone(LIVE.quietTurnSeconds)
+    }
+  }
+
+  const hushed = (e: { name: string; page?: string }, mode: SoundMode, cue: string): boolean => {
+    const page = e.page ?? here
+    if (page === quietPage) return !quietPageCues.includes(cue)
+    return e.name === 'page-turn' && mode === 'live' && page !== null && pageAfter[page] === quietPage
   }
 
   const playCue = (cue: string, x: number, when?: number) => {
@@ -408,7 +464,19 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
 
   const speak = (booking: Booking) => {
     const voice = backend!.play(booking.id, { bus: 'voice', when: booking.start, cents: 0, pan: 0, loop: false })
-    if (voice) speaking.set(booking, voice)
+    if (!voice) return
+    speaking.set(booking, voice)
+    if (!caption) caption = makeCaption(() => api.said())
+    caption?.place(captionAt)
+    caption?.wake()
+  }
+
+  const wordsOf = (id: string): string => {
+    if (!words.size) {
+      for (const [beat, lines] of Object.entries(film)) lines.forEach((l, i) => words.set(filmLineId(beat, i), sayable(l.text, narration.pauseMark)))
+      for (const [key, list] of Object.entries(live)) if (Array.isArray(list)) list.forEach((text, i) => words.set(liveLineId(key, i), sayable(String(text), narration.pauseMark)))
+    }
+    return words.get(id) ?? ''
   }
 
   const takeBack = (list: Booking[], why: string) => {
@@ -428,9 +496,11 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     const now = backend!.now()
     const booking = desk.ask(now, { id, group: beat, seconds: lengths.get(id) ?? 0, wait: loaded.has(id) ? (LIVE.waitSeconds['film'] ?? LIVE.liveLateSeconds) : -1, page: pageOfBeat(beat), once: true })
     if (!booking) {
-      note({ at: round(now), line: id, trigger, what: 'dropped', why: loaded.has(id) ? narrator.why ?? '' : 'its sound is not loaded' })
+      if (!owed.has(id)) note({ at: round(now), line: id, trigger, what: 'dropped', why: loaded.has(id) ? `${narrator.why ?? ''}; it is owed until its event comes again or its page is left` : 'its sound is not loaded' })
+      owed.add(id)
       return
     }
+    owed.delete(id)
     note({ at: round(now), line: id, trigger, what: 'spoken', start: round(booking.start), seconds: round(booking.end - booking.start) })
     speak(booking)
     reduck()
@@ -482,7 +552,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
         }
         setState(ok ? 'ready' : 'silent')
         if (ok) watchPage()
-        startTone()
+        if (here !== null) startTone()
       })()
       return unlocking
     },
@@ -497,15 +567,20 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
     },
     volume: () => level,
     event(e, mode) {
-      if (state !== 'ready' || !backend) return
+      if (e.page !== undefined) atPage(e.page)
+      if (state !== 'ready' || !backend) {
+        if (e.name === 'page-turn' && e.page !== undefined) turnFrom(e.page, mode)
+        return
+      }
       backend.resume()
       flowing = true
       startTone()
       for (const cue of stopEvents[e.name] ?? []) stopCue(cue)
       if (e.name === 'page-turn' || e.name === 'skip') for (const cue of loopCues) if (cue !== 'room-tone') stopCue(cue)
       const cue = cueOfEvent(e.name)
-      if (cue && cue !== 'room-tone') playCue(cue, e.x)
-      for (const more of alsoStarts[e.name] ?? []) playCue(more, e.x)
+      if (cue && cue !== 'room-tone' && !hushed(e, mode, cue)) playCue(cue, e.x)
+      for (const more of alsoStarts[e.name] ?? []) if (!hushed(e, mode, more)) playCue(more, e.x)
+      if (e.name === 'page-turn' && e.page !== undefined) turnFrom(e.page, mode)
       if (mode !== 'live') return
       const page = e.page ?? desk.page
       if (page !== null) {
@@ -517,6 +592,8 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       for (const key of liveKeysFor(e, seenOnce)) sayLive(key, page, `${key === 'hit' ? 'hit by' : 'event'} ${e.name}`)
     },
     beat(id, _mode, into = 0) {
+      const on = pageOfBeat(id)
+      if (on !== null) atPage(on)
       if (state !== 'ready' || !backend) return
       flowing = true
       startTone()
@@ -550,12 +627,23 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       if (name === 'watchFilm') sayLive(name, null, `call ${name}`, lead ? openingFrames() / config.film.fps - filmAt : 0)
       else sayLive(name, desk.page, `call ${name}`)
     },
-    quiet(seconds) {
-      if (seconds < config.live.idleSeconds) idleSaid = false
-      else if (!idleSaid) {
-        idleSaid = true
-        api.trigger('idle')
+    // The site still says how long the visitor has been still. No line hangs on it: a line is set off by an event, never by a clock.
+    quiet() {
+      return
+    },
+    page(id, at) {
+      atPage(id)
+      captionAt = at
+      caption?.place(at)
+    },
+    said() {
+      const now = backend ? backend.now() : 0
+      const lines: SaidLine[] = []
+      for (const b of speaking.keys()) {
+        if (b.end <= now) speaking.delete(b)
+        else lines.push({ id: b.id, words: wordsOf(b.id), start: b.start, end: b.end })
       }
+      return { now, lines: lines.sort((a, b) => a.start - b.start) }
     },
     opening(from, to) {
       lead = to < openingFrames() / config.film.fps
@@ -591,6 +679,9 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       speaking.clear()
       running.clear()
       tone = null
+      leaving = null
+      toQuiet = false
+      caption?.wake()
       if (!backend) return
       backend.stopAll()
       backend.duck([], 1)

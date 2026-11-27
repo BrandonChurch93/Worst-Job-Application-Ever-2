@@ -67,10 +67,9 @@ export const LIVE = {
   beatLateSeconds: 1.5,
   // A live line is about what happened just now, so it may wait this long and no longer.
   liveLateSeconds: 0.4,
-  // How long a line of the live site may wait for its turn, in seconds, by what set it off. When its start would be later than this after
-  // its trigger, its moment has passed and it is dropped. A line whose key is not here waits liveLateSeconds.
+  // Every line of the live site starts at its event or not at all: it may start this long after it and no later, by what set it off. No line waits for a clock.
   // film: a line of the film, said once in a visit at its own trigger. The others are the keys of liveOnly in content/narration.json.
-  waitSeconds: { 'film': 10, 'hit': 0.4, 'idle': 4, 'slowTyping': 2, 'realKeyboard': 4, 'tugLost': 3, 'pinball.flipper': 4, 'boss.verify': 4, 'boss.slow': 6, 'skip': 4, 'watchFilm': 3 } as Record<string, number>,
+  waitSeconds: { 'film': 0.4, 'hit': 0.4, 'idle': 0.4, 'slowTyping': 0.4, 'realKeyboard': 0.4, 'tugLost': 0.4, 'pinball.flipper': 0.4, 'boss.verify': 0.4, 'boss.slow': 0.4, 'skip': 0.4, 'watchFilm': 0.4 } as Record<string, number>,
   // The same cue set off twice within this time sounds once.
   sameCueSeconds: 0.012,
   // A loop that nothing stops ends by itself after this long.
@@ -78,6 +77,9 @@ export const LIVE = {
   // A loop comes in and goes out over this long, so it neither starts nor stops on a step. The room tone comes in slower.
   loopFadeSeconds: 0.03,
   toneFadeInSeconds: 0.4,
+  // The careers page stays on screen this long after the turn away from it begins, and comes on screen this long after the turn to it begins: half a turn.
+  // The room tone is out by then on the way in, and starts then on the way out.
+  quietTurnSeconds: 0.5,
   volumeRampSeconds: 0.03,
   // One fixed gain after everything, in dB down, so the sum of a line and the effects stays at or under audio.truePeakDb. npm run sound -- --levels measures it.
   headroomDb: 1.5,
@@ -90,6 +92,17 @@ export const LIVE = {
   panWidth: 0.35,
   // Some browsers start sound only at the end of a touch or a click. The sound graph is asked to run again at each of these.
   wakeEvents: ['pointerup', 'touchend', 'click', 'keydown']
+}
+
+// The room tone as it was made holds a buzz: a 50 Hz cycle with a harmonic at every 50 Hz up to 8 kHz, and a 100 Hz tone that drifts.
+// One switch: with dehum on, the engine and the film's mix play the tone with the buzz taken out; with it off they play the file as it is.
+export const TONE = {
+  dehum: true,
+  // The cycle of the buzz, and how much of the comb's memory is kept from one cycle to the next: nearer 1 is a narrower notch at each harmonic.
+  humHz: 50,
+  combKeep: 0.9,
+  // The tones that drift and so pass the comb, each with its own notch.
+  notches: [{ hz: 100, q: 6 }, { hz: 200, q: 12 }]
 }
 
 export const PACK = {

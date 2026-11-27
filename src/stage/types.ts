@@ -162,7 +162,8 @@ export interface SheetFrame {
 export interface FieldProgress { done: number; total: number }
 
 // How far the header and its step rail are in: 1 in place, 0 off the top of the screen.
-export interface Chrome { header: number }
+// caption: where the page wants the panel of the spoken words, as the y of its lower edge in pixels of the 1920 by 1080 page. Absent: near the bottom.
+export interface Chrome { header: number; caption?: number }
 
 export interface PageLogic {
   readonly id: string

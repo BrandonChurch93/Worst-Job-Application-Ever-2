@@ -117,23 +117,17 @@ const sounding = (ctx: FakeContext, t: number, seconds: (id: string) => number) 
 const lengthOf = (id: string) => (id.startsWith('line.') ? LINE : id === 'room-tone' || id === 'shredder' || id === 'boss-loop' ? 8 : 0.2)
 
 describe('the rules of the narrator on the live site, each at the level of the engine', () => {
-  it('speaks the film lines of a beat when the gag of that beat starts, and not before', async () => {
+  it('speaks no line because the stage reports a beat: every line of the film hangs on an event of its page', async () => {
     const { s, ctx } = await ready()
-    const gags = [...new Set(Object.keys(filmLive).filter((k) => filmLive[k]!.on === 'gag').map(beatOf))]
-    expect(gags.length).toBeGreaterThan(0)
+    expect(Object.keys(filmLive).filter((k) => filmLive[k]!.on === 'gag')).toEqual([])
     let now = 10
-    for (const gag of gags) {
-      const ids = filmKeysForGag(gag).map(idOf)
+    for (const beat of [...new Set(Object.keys(filmLive).map(beatOf))]) {
       ctx.currentTime = now
-      s.event(ev('step', pageOf(`${gag}.0`)), 'live')
-      for (const id of ids) expect(starts(ctx, id)).toEqual([])
-      now += far
-      ctx.currentTime = now
-      s.beat(gag, 'live')
-      expect(starts(ctx, ids[0]!)).toEqual([now])
-      expect(s.log().filter((e) => e.line === ids[0])).toEqual([{ at: now, line: ids[0], trigger: `gag ${gag}`, what: 'spoken', start: now, seconds: LINE }])
+      s.beat(beat, 'live')
+      expect(filmKeysForGag(beat)).toEqual([])
       now += far
     }
+    expect(lines(ctx)).toEqual([])
   })
 
   it('speaks a line only the live site has when its trigger happens: each key of liveOnly by its own event, hit or call', async () => {
@@ -155,25 +149,22 @@ describe('the rules of the narrator on the live site, each at the level of the e
     }
   })
 
-  it('says the idle line once the visitor has neither moved nor clicked for live.idleSeconds, once, and again only after the next movement', async () => {
+  it('says no line because the visitor has been still: no line is set off by a clock', async () => {
     const { s, ctx } = await ready()
-    const idle = (i: number) => starts(ctx, liveLineId('idle', i))
     ctx.currentTime = 20
     s.quiet(cfg.live.idleSeconds - 0.01)
-    expect(lines(ctx)).toEqual([])
     ctx.currentTime = 20.02
     s.quiet(cfg.live.idleSeconds + 0.01)
-    expect(idle(0)).toEqual([20.02])
     ctx.currentTime = 20.02 + far
     s.quiet(cfg.live.idleSeconds + 0.01 + far)
-    ctx.currentTime += far
-    s.quiet(cfg.live.idleSeconds + 0.01 + 2 * far)
-    expect(lines(ctx).length).toBe(1)
     s.quiet(0)
     ctx.currentTime += cfg.live.idleSeconds
     s.quiet(cfg.live.idleSeconds)
-    expect(idle(1)).toEqual([ctx.currentTime])
-    expect(lines(ctx).length).toBe(2)
+    expect(lines(ctx)).toEqual([])
+    expect(s.log()).toEqual([])
+    const index = readFileSync(path.join(process.cwd(), 'src', 'audio', 'index.ts'), 'utf8')
+    expect(index.includes("api.trigger('idle')")).toBe(false)
+    expect(/setInterval|setTimeout\([^)]*trigger/.test(index)).toBe(false)
   })
 
   it('says the slow typing line at the event the page sends after live.slowTypingSeconds between two letters, and the page sends it by that number', async () => {
@@ -224,9 +215,13 @@ describe('the rules of the narrator on the live site, each at the level of the e
     s.event(ev('keyboard-rise', 'step1'), 'live')
     ctx.currentTime = 11
     s.event(ev('slab-drop', 'step1'), 'live')
+    expect(starts(ctx, idOf('step1.email.0'))).toEqual([])
+    ctx.currentTime = 10 + LINE + gap - LIVE.liveLateSeconds / 2
+    s.event(ev('slab-drop', 'step1'), 'live')
     expect(starts(ctx, idOf('step1.email.0'))[0]!).toBeCloseTo(10 + LINE + gap, 9)
-    ctx.currentTime = 10 + LINE + gap - 0.5
+    ctx.currentTime = 10 + LINE + gap + 1
     s.trigger('idle')
+    expect(lines(ctx).filter((x) => x.stopped === null).length).toBe(2)
     const booked = lines(ctx).filter((x) => x.stopped === null).map((x) => x.started!).sort((a, b) => a - b)
     for (let i = 1; i < booked.length; i++) expect(booked[i]! - (booked[i - 1]! + LINE)).toBeGreaterThanOrEqual(gap - 1e-9)
   })
@@ -335,7 +330,7 @@ describe('the fallback: plain audio elements, one for each sound', () => {
     const { s } = await forced(undefined)
     expect(s.backend()).toBe('elements')
     const playing = () => El.all.filter((e) => !e.paused).length
-    s.event(ev('button-press', 'marketing'), 'live')
+    s.event(ev('button-press', 'step1'), 'live')
     s.trigger('idle')
     expect(playing()).toBe(3)
     s.setMuted(true)
@@ -379,7 +374,7 @@ describe('the edges: nothing is left hanging and nothing is doubled', () => {
     s.event(ev('checkbox', 'step4'), 'live')
     ctx.currentTime = 10.4
     s.event(ev('slab-fire', 'step4'), 'live')
-    expect(starts(ctx, idOf('boss.slabs.0'))).toEqual([10 + LINE + gap])
+    expect(starts(ctx, idOf('boss.slabs.0'))).toEqual([])
     ctx.currentTime = 11
     s.event(ev('skip', 'step4'), 'live')
     const spoken = lines(ctx).filter((x) => x.buffer!.id === idOf('boss.verify.0'))

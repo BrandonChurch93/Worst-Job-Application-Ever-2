@@ -222,9 +222,11 @@ describe('with sound', () => {
     return { s, ctx: made[0]! }
   }
 
-  it('loads once, on the unlock, and loops the room tone under everything', async () => {
+  it('loads once, on the unlock, and loops the room tone under everything once the page on screen is known and is not the careers page', async () => {
     const { s, ctx } = await ready()
     await s.unlock()
+    expect(playsOf(ctx, 'room-tone').length).toBe(0)
+    s.page('step1')
     expect(made.length).toBe(1)
     expect(fetched.filter((u) => u.endsWith('index.json')).length).toBe(0)
     expect(fetched.filter((u) => u.endsWith('sfx.bin')).length).toBe(1)
@@ -280,6 +282,7 @@ describe('with sound', () => {
 
   it('plays nothing and throws nothing on an event with no cue, and on an added cue whose sound is not loaded', async () => {
     const { s, ctx } = await ready()
+    s.page('step1')
     const before = ctx.sources.length
     ctx.currentTime = 2
     for (const mode of ['film', 'live'] as const) {
@@ -454,6 +457,7 @@ describe('with sound', () => {
 
   it('is fully silent after stop() and has the room tone back at once at start()', async () => {
     const { s, ctx } = await ready()
+    s.page('step1')
     ctx.currentTime = 10
     s.stop()
     expect(playsOf(ctx, 'room-tone')[0]!.stopped).not.toBeNull()
@@ -644,6 +648,7 @@ describe('the opening of film A on the site', () => {
   it('cuts a running tone when the film is sent back into the opening, and stays out of it through a pause', async () => {
     const { s, unlock } = await ready()
     const ctx = await unlock()
+    s.page('step1')
     expect(playsOf(ctx, 'room-tone').length).toBe(1)
     s.stop()
     s.opening(2, 2)

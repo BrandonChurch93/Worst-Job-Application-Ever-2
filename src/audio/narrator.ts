@@ -1,6 +1,6 @@
 // The narrator's rules as plain arithmetic on times, so the site and the tests share them.
-// A line never interrupts another. A live line keeps its distance from every other line. A line that would be late is dropped.
-// On the live site a line of the film is said once in a visit, the first time its trigger happens.
+// A line never interrupts another. A live line keeps its distance from every other line. A line that would be late is not said.
+// On the live site every line starts at its event or not at all, and a line of the film is said once in a visit.
 export interface Booking { id: string; kind: 'beat' | 'live'; group: string; start: number; end: number }
 
 export interface NarratorRules { minGap: number; lineGap: number; beatLate: number; liveLate: number }
@@ -88,8 +88,9 @@ export class Narrator {
 
 export interface LiveAsk { id: string; group: string; seconds: number; wait: number; page: string | null; once: boolean }
 
-// The lines of a visit to the live site. A line of the film is asked for once in a visit, at the first time its trigger happens,
-// whether it is then spoken or dropped. A line that waits belongs to the page it was set off on, and is given up when that page is left.
+// The lines of a visit to the live site. A line of the film is said once in a visit. When its trigger happens while the narrator may not speak,
+// it is not said then and stays owed: it is asked for again each time its trigger happens, until it is said or its page is left.
+// A line that is booked belongs to the page it was set off on, and is given up when that page is left before it began.
 export class LiveDesk {
   private spent = new Set<string>()
   private waiting = new Map<Booking, string>()
@@ -102,11 +103,9 @@ export class LiveDesk {
   isSpent(id: string): boolean { return this.spent.has(id) }
 
   ask(now: number, a: LiveAsk): Booking | null {
-    if (a.once) {
-      if (this.spent.has(a.id)) return null
-      this.spent.add(a.id)
-    }
+    if (a.once && this.spent.has(a.id)) return null
     const b = this.narrator.live(now, a.id, a.group, a.seconds, a.wait)
+    if (b && a.once) this.spent.add(a.id)
     if (b && a.page !== null) this.waiting.set(b, a.page)
     return b
   }

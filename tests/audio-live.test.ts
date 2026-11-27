@@ -52,7 +52,7 @@ describe('the table of what sets each line of the film off on the live site', ()
     for (const [key, t] of Object.entries(filmLive)) {
       expect(unitOf(beatOf(key)), key).toBeDefined()
       expect(unitPage[unitOf(beatOf(key))!], key).toBeDefined()
-      if (t.on === 'event') expect(new RegExp(`(emit|say)\\(\\s*'${t.event}'`).test(all) || new RegExp(`'${t.event}'`).test(all), `${key}: ${t.event}`).toBe(true)
+      if (t.on === 'event') expect([t.event, ...(t.or ?? [])].some((name) => new RegExp(`'${name}'`).test(all)), `${key}: ${t.event}`).toBe(true)
     }
     for (const [unit, page] of Object.entries(unitPage)) {
       const file = path.join(root, 'src', 'pages', page, 'index.ts')
@@ -66,7 +66,10 @@ describe('the table of what sets each line of the film off on the live site', ()
     expect(filmKeysForEvent('slab-drop', 'step4', unitOf)).toEqual([])
     expect(filmKeysForEvent('step', 'marketing', unitOf)).toEqual(['marketing.stroll.0'])
     expect(filmKeysForEvent('step', 'step2', unitOf)).toEqual([])
-    expect(filmKeysForGag('step2.dial')).toEqual(['step2.dial.0'])
+    expect(filmKeysForEvent('dial-wind', 'step2', unitOf)).toEqual(['step2.dial.0'])
+    expect(filmKeysForEvent('volume-sign', 'step2', unitOf)).toEqual(['step2.crank.0'])
+    expect(filmKeysForEvent('crank-turn', 'step2', unitOf)).toEqual(['step2.crank.0'])
+    expect(filmKeysForGag('step2.dial')).toEqual([])
     expect(filmKeysForGag('step1.email')).toEqual([])
   })
 
@@ -77,18 +80,21 @@ describe('the table of what sets each line of the film off on the live site', ()
     expect(filmLive['pinball.replyAll.0']).toEqual({ on: 'event', event: 'inbox-take' })
     expect(filmLive['pinball.fired.0']).toEqual({ on: 'event', event: 'firehouse-take' })
     expect(filmLive['decision.metrics.0']).toEqual({ on: 'event', event: 'count-run' })
-    expect(Object.entries(filmLive).filter(([, t]) => t.on === 'gag').map(([key]) => key)).toEqual(['step2.dial.0', 'step2.crank.0'])
+    expect(Object.entries(filmLive).filter(([, t]) => t.on === 'gag').map(([key]) => key)).toEqual([])
+    expect(filmLive['step2.dial.0']).toEqual({ on: 'event', event: 'dial-wind' })
+    expect(filmLive['step2.crank.0']).toEqual({ on: 'event', event: 'volume-sign', or: ['crank-turn'] })
     for (const name of ['carpet-roll', 'inbox-take', 'firehouse-take']) expect(page('step3').includes(`'${name}'`), name).toBe(true)
     for (const name of ['metrics-card', 'count-run']) expect(page('step5').split(`io.emit('${name}'`).length - 1, name).toBe(1)
     expect(readFileSync(path.join(root, 'src', 'boss', 'fight.ts'), 'utf8').split("io.emit('boss-slow'").length - 1).toBe(1)
   })
 
-  it('says by number how long each kind of line may wait', () => {
+  it('lets every kind of line start at most liveLateSeconds after its event, and no later', () => {
     const keys = Object.keys(narration.liveOnly).filter((k) => Array.isArray(narration.liveOnly[k]))
     expect(Object.keys(liveTriggers).sort()).toEqual(keys.slice().sort())
     for (const k of [...keys, 'film']) {
       expect(typeof LIVE.waitSeconds[k], k).toBe('number')
       expect(LIVE.waitSeconds[k]!, k).toBeGreaterThanOrEqual(0)
+      expect(LIVE.waitSeconds[k]!, k).toBeLessThanOrEqual(LIVE.liveLateSeconds)
     }
     for (const k of pagelessLive) expect(keys).toContain(k)
   })
@@ -103,27 +109,37 @@ describe('the rules of the live narrator, on a clock of plain numbers', () => {
     expect(d.ask(1000, film('marketing.perks.0'))).toBeNull()
   })
 
-  it('gives a line one chance: dropped at its first trigger, it is not said at a later one', () => {
+  it('keeps a line that was turned away owed: it is said when its trigger comes again, and never after its page is left', () => {
     const d = desk()
     d.ask(0, film('step1.firstName.0', 20))
     expect(d.ask(1, film('step1.firstName.1'))).toBeNull()
+    expect(d.isSpent(idOf('step1.firstName.1'))).toBe(false)
+    expect(d.ask(500, film('step1.firstName.1'))).toMatchObject({ start: 500 })
     expect(d.isSpent(idOf('step1.firstName.1'))).toBe(true)
-    expect(d.ask(500, film('step1.firstName.1'))).toBeNull()
+    expect(d.ask(900, film('step1.firstName.1'))).toBeNull()
+    const left = desk()
+    left.ask(0, film('step1.firstName.0', 20))
+    expect(left.ask(1, film('step1.tug.0'))).toBeNull()
+    left.leave(30, 'step1')
+    expect(left.ask(500, film('step1.tug.0'))).toBeNull()
   })
 
-  it('makes a trigger during a line wait for the end of the line and the gap', () => {
+  it('turns a trigger during a line away, and one in the last of the gap starts at the end of the gap', () => {
     const d = desk()
     const a = d.ask(0, film('step1.firstName.0', 2))!
-    const b = d.ask(1, film('step1.firstName.1', 2))!
     expect(a).toMatchObject({ start: 0, end: 2 })
+    expect(d.ask(1, film('step1.firstName.1', 2))).toBeNull()
+    const b = d.ask(2 + gap - filmWait + 0.01, film('step1.firstName.1', 2))!
     expect(b.start).toBeCloseTo(2 + gap, 9)
     expect(b.start - a.end).toBeGreaterThanOrEqual(gap)
   })
 
-  it('makes a trigger inside the gap wait for the rest of the gap', () => {
+  it('turns a trigger inside the gap away until the gap has liveLateSeconds left', () => {
     const d = desk()
     d.ask(0, film('step1.firstName.0', 2))
-    const b = d.ask(2 + gap / 2, film('step1.firstName.1', 2))!
+    expect(d.ask(2 + gap / 2, film('step1.firstName.1', 2))).toBeNull()
+    expect(d.ask(2 + gap - filmWait - 0.01, film('step1.firstName.1', 2))).toBeNull()
+    const b = d.ask(2 + gap - filmWait / 2, film('step1.firstName.1', 2))!
     expect(b.start).toBeCloseTo(2 + gap, 9)
   })
 
@@ -161,12 +177,17 @@ describe('the rules of the live narrator, on a clock of plain numbers', () => {
   it('takes a waiting line back when its page is left, and lets a line that has begun run to its end', () => {
     const d = desk()
     const a = d.ask(0, film('step1.firstName.0', 3))!
-    const b = d.ask(1, film('step1.firstName.1', 3))!
-    expect(b.start).toBeGreaterThan(2)
-    const back = d.leave(2, 'step1')
-    expect(back).toEqual([b])
-    expect(d.narrator.bookings(2).map((x) => x.id)).toEqual([a.id])
+    expect(d.leave(2, 'marketing')).toEqual([])
     expect(d.narrator.speaking(2)!.id).toBe(a.id)
+    const b = d.ask(3 + gap - filmWait / 2, film('step1.firstName.1', 3))!
+    expect(b.start).toBeCloseTo(3 + gap, 9)
+    const back = d.leave(3 + gap - filmWait / 4, 'step1')
+    expect(back).toEqual([b])
+    expect(d.narrator.bookings(3 + gap - filmWait / 4).map((x) => x.id)).not.toContain(b.id)
+    const e = desk()
+    const c = e.ask(0, film('step1.firstName.0', 3))!
+    expect(e.leave(2, 'step1')).toEqual([])
+    expect(e.narrator.speaking(2)!.id).toBe(c.id)
   })
 
   it('never says the lines of a page that was left, by a skip or by its end', () => {
@@ -181,9 +202,10 @@ describe('the rules of the live narrator, on a clock of plain numbers', () => {
     const d = desk()
     d.at(0, 'marketing')
     d.ask(0, film('marketing.stroll.0', 3))
-    const waiting = d.ask(1, film('marketing.perks.0', 3))!
-    expect(d.at(2, 'marketing')).toEqual([])
-    expect(d.at(2.5, 'step1')).toEqual([waiting])
+    const asked = 3 + gap - filmWait / 2
+    const waiting = d.ask(asked, film('marketing.perks.0', 3))!
+    expect(d.at(asked + 0.01, 'marketing')).toEqual([])
+    expect(d.at(asked + 0.02, 'step1')).toEqual([waiting])
     expect(d.page).toBe('step1')
   })
 
@@ -191,11 +213,11 @@ describe('the rules of the live narrator, on a clock of plain numbers', () => {
     const d = desk()
     d.at(0, 'step1')
     d.ask(0, film('step1.firstName.0', 2))
-    const asked = 2 + gap - LIVE.waitSeconds['skip']! + 0.5
+    const asked = 2 + gap - LIVE.waitSeconds['skip']! / 2
     const skip = d.ask(asked, only('skip', 0, 'step1'))!
     expect(skip.start).toBeCloseTo(2 + gap, 9)
-    expect(d.leave(asked + 0.1, 'step1')).toEqual([])
-    expect(d.narrator.bookings(asked + 0.1).map((x) => x.id)).toContain(skip.id)
+    expect(d.leave(asked + 0.01, 'step1')).toEqual([])
+    expect(d.narrator.bookings(asked + 0.01).map((x) => x.id)).toContain(skip.id)
   })
 
   it('never lets two lines overlap or come closer than the gap, whatever is asked and whenever', () => {
@@ -329,19 +351,30 @@ describe('the live narrator inside the sound engine, on a fake clock', () => {
     expect(said(ctx)).toEqual(['line.marketing.stroll.0', 'line.marketing.perks.0'])
   })
 
-  it('says the line of a row of step 2 when the stage reports its beat, and the others only at their events', async () => {
+  it('says the lines of the rows of step 2 at the events of the page and never at a beat the stage reports', async () => {
     const { s, ctx } = await ready()
     ctx.currentTime = 10
     s.event(ev('row-open', 'step2'), 'live')
-    expect(said(ctx)).toEqual([])
     s.beat('step2.dial', 'live')
+    s.beat('step2.crank', 'live')
+    expect(said(ctx)).toEqual([])
+    s.event(ev('dial-wind', 'step2'), 'live')
     expect(said(ctx)).toEqual(['line.step2.dial.0'])
     ctx.currentTime += far
     s.beat('step2.dial', 'live')
     s.beat('step2.slot', 'live')
-    expect(said(ctx)).toEqual(['line.step2.dial.0'])
     s.beat('step2.crank', 'live')
+    expect(said(ctx)).toEqual(['line.step2.dial.0'])
+    s.event(ev('volume-sign', 'step2'), 'live')
     expect(said(ctx)).toEqual(['line.step2.dial.0', 'line.step2.crank.0'])
+    ctx.currentTime += far
+    s.event(ev('crank-turn', 'step2'), 'live')
+    expect(said(ctx)).toEqual(['line.step2.dial.0', 'line.step2.crank.0'])
+    made = []
+    const other = await ready()
+    other.ctx.currentTime = 10
+    other.s.event(ev('crank-turn', 'step2'), 'live')
+    expect(said(other.ctx)).toEqual(['line.step2.crank.0'])
   })
 
   it('goes through all twenty lines of the film in a visit that sets every trigger off, each once', async () => {
@@ -357,13 +390,16 @@ describe('the live narrator inside the sound engine, on a fake clock', () => {
     }
   })
 
-  it('makes a line whose trigger comes during another line start after it and the gap, on the sound clock', async () => {
+  it('does not say a line whose trigger comes during another line, and says it when its trigger comes again after the gap, on the sound clock', async () => {
     const { s, ctx } = await ready()
     ctx.currentTime = 20
     s.event(ev('keyboard-rise', 'step1'), 'live')
     ctx.currentTime = 21
     s.event(ev('arms-out', 'step1'), 'live')
     expect(source(ctx, 'line.step1.firstName.0')[0]!.started).toBe(20)
+    expect(source(ctx, 'line.step1.tug.0').length).toBe(0)
+    ctx.currentTime = 20 + LINE + gap - filmWait / 2
+    s.event(ev('arms-out', 'step1'), 'live')
     expect(source(ctx, 'line.step1.tug.0')[0]!.started).toBeCloseTo(20 + LINE + gap, 9)
     expect(source(ctx, 'line.step1.firstName.0')[0]!.stopped).toBeNull()
   })
@@ -372,9 +408,9 @@ describe('the live narrator inside the sound engine, on a fake clock', () => {
     const { s, ctx } = await ready()
     ctx.currentTime = 20
     s.event(ev('keyboard-rise', 'step1'), 'live')
-    ctx.currentTime = 21
+    ctx.currentTime = 20 + LINE + gap - filmWait / 2
     s.event(ev('arms-out', 'step1'), 'live')
-    ctx.currentTime = 20 + LINE + gap - LIVE.waitSeconds['skip']! + 0.5
+    ctx.currentTime = 20 + LINE + gap - filmWait / 4
     s.event(ev('skip', 'step1'), 'live')
     expect(source(ctx, 'line.step1.tug.0')[0]!.stopped).not.toBeNull()
     expect(source(ctx, 'line.step1.firstName.0')[0]!.stopped).toBeNull()
@@ -393,16 +429,16 @@ describe('the live narrator inside the sound engine, on a fake clock', () => {
     const { s, ctx } = await ready()
     ctx.currentTime = 20
     s.event(ev('ball-seal', 'step3'), 'live')
-    ctx.currentTime = 21
+    ctx.currentTime = 20 + LINE + gap - filmWait / 2
     s.event(ev('plunger', 'step3'), 'live')
     expect(source(ctx, 'line.pinball.launch.0')[0]!.stopped).toBeNull()
-    ctx.currentTime = 22
+    ctx.currentTime = 20 + LINE + gap - filmWait / 4
     s.event(ev('checkbox', 'step4'), 'live')
     expect(source(ctx, 'line.pinball.launch.0')[0]!.stopped).not.toBeNull()
     expect(source(ctx, 'line.boss.verify.0')[0]!.started).toBeCloseTo(20 + LINE + gap, 9)
   })
 
-  it('drops the line whose start would be later than its wait', async () => {
+  it('does not say the line whose start would be later than its wait, and says a line of the film when its event comes again', async () => {
     const { s, ctx } = await ready()
     ctx.currentTime = 20
     s.event(ev('keyboard-rise', 'step1'), 'live')
@@ -410,13 +446,14 @@ describe('the live narrator inside the sound engine, on a fake clock', () => {
     s.event(ev('bolt-hit-cursor', 'step1', true), 'live')
     ctx.currentTime = 21
     s.event(ev('slab-drop', 'step1'), 'live')
-    expect(source(ctx, 'line.step1.firstName.1')[0]!.started).toBeCloseTo(20 + LINE + gap, 9)
-    expect(20 + LINE + gap + LINE + gap - 21).toBeGreaterThan(filmWait)
+    expect(20 + LINE + gap - 21).toBeGreaterThan(filmWait)
+    expect(source(ctx, 'line.step1.firstName.1').length).toBe(0)
     expect(source(ctx, 'line.step1.email.0').length).toBe(0)
     expect(source(ctx, 'line.live.hit.0').length).toBe(0)
     ctx.currentTime = 200
     s.event(ev('slab-drop', 'step1'), 'live')
-    expect(source(ctx, 'line.step1.email.0').length).toBe(0)
+    expect(source(ctx, 'line.step1.email.0')[0]!.started).toBe(200)
+    expect(s.log().filter((e) => e.line === 'line.step1.email.0').map((e) => e.what)).toEqual(['dropped', 'spoken'])
   })
 
   it('says the lines only the live site has in the order of the file, round and round', async () => {

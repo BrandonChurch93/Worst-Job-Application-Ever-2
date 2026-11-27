@@ -50,7 +50,7 @@ describe('a whole visit of the live site through the stage and the sound engine'
     expect(v.events['boss-loop']).toBeUndefined()
   })
 
-  it('runs the fight music from the unfolding of the boss to its power down, the shredder inside step 1, and the room tone all through', async () => {
+  it('runs the fight music from the unfolding of the boss to its power down, the shredder inside step 1, and the room tone from the turn away from the careers page to the turn back to it', async () => {
     const v = await run('keen')
     const boss = v.loops.filter((l) => l.id === 'boss-loop')
     expect(boss.length).toBe(1)
@@ -61,7 +61,15 @@ describe('a whole visit of the live site through the stage and the sound engine'
       expect(l.page).toBe('step1')
       expect(l.stop!).toBeLessThanOrEqual(leftAt(v, l.start) + 0.1)
     }
-    expect(v.loops.filter((l) => l.id === 'room-tone')).toEqual([{ id: 'room-tone', page: 'marketing', start: 0, stop: null }])
+    const tone = v.loops.filter((l) => l.id === 'room-tone')
+    expect(tone.length).toBe(1)
+    const out = v.turns.find((t) => t.page === 'step1')!
+    const back = v.turns.filter((t) => t.page === 'marketing').pop()!
+    expect(back.at).toBeGreaterThan(out.at)
+    expect(Math.abs(tone[0]!.start - out.at)).toBeLessThanOrEqual(0.1)
+    expect(tone[0]!.stop).not.toBeNull()
+    expect(tone[0]!.stop!).toBeLessThanOrEqual(back.at + 0.1)
+    expect(tone[0]!.stop!).toBeGreaterThan(v.turns.find((t) => t.page === 'step5')!.at)
   })
 
   it('never lets the visitor who skips every step hear a line about a gag he did not see', async () => {
