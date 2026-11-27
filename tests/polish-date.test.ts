@@ -31,12 +31,6 @@ describe('polish date: a row of step 2 is never shown open and empty', () => {
       for (const r of open) expect(r.least, `step ${r.step}, row ${r.open + 1}, ${r.phase}`).toBeGreaterThan(DRAWN)
     })
 
-    it(`${name}: the reels show their legends on every step the tray of the date is seen and the reels do not spin`, () => {
-      const slot = rows.filter((r) => r.open === 1 && (r.phase === 'opening' || r.phase === 'closing'))
-      expect(slot.length).toBeGreaterThan(150)
-      for (const r of slot) expect(r.legends, `step ${r.step}, ${r.phase}`).toBe(3)
-    })
-
     it(`${name}: a machine lies under the floor of the fields, which pass over it, until its rise starts and again once it has sunk`, () => {
       const under = rows.filter((r) => r.open >= 0 && r.lift === 0)
       expect(under.length).toBeGreaterThan(150)

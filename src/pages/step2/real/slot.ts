@@ -402,7 +402,7 @@ function poseLegend(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const crest = cab.z0 + (cab.z1 - cab.z0) * ((L.drum.crest - R * (1 - Math.cos(a))) / L.top)
   run.position.set(0, off - R * Math.sin(a), (crest - s.z0) / k + L.legend.lift)
   run.rotation.x = a
-  run.visible = up > 0.02
+  run.visible = up > 0.05
 }
 
 export function coinGeometry(): THREE.BufferGeometry {

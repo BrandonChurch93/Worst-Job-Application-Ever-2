@@ -121,6 +121,8 @@ function rowParts(tree: LayoutNode, prefix: string): RowIds {
   return { ids }
 }
 
+// Under this share of its rise the slot is in the floor, and what is printed on its reels is not drawn.
+const SUNK = 0.05
 // A machine that has sunk under the page is covered by its tray as the tray shuts: the tray starts to shut at this share of the lift, not after the machine has gone.
 const COVER = 0.25
 // The slot and the crank are housed in the floor of their trays, as the dial is: they lie there at this share of their height while the tray opens over them and while it shuts over them, and rise from it. Their makers draw a part above 0.02 of its height, and at 0.0256 the slot's knob would reach the floor of the field below (`scale.heights.field`), whose pocket passes over the machine as the tray opens.
@@ -922,6 +924,7 @@ export function makePage(): PageLogic {
         for (const part of parts[1]!) if (part.text && part.id !== 'slot-prompt' && over[part.id]) Object.assign(over[part.id]!, { y: boxOf(layout, part.id).y + kick })
       }
       for (let r = 0; r < 3; r++) Object.assign(over[`slot-reel-${r}`]!, { v: [reelPos(m.slot, r)] })
+      if (L < SUNK) for (const part of parts[1]!) if (part.text) over[part.id] = null
     }
     if (i === 2) {
       const b = m.crank.b
