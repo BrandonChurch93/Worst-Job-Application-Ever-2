@@ -18,8 +18,13 @@ import { ANSWER } from '../../table/real/lights/levels'
 import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
+import { videoFresh, videoFrom, videoOn, videoStep, type VideoState } from './video/phase'
+import { mountVideo } from './video/player'
 
-export const prepare = (): Promise<void> => startPhysics()
+export const prepare = (): Promise<void> => {
+  mountVideo()
+  return startPhysics()
+}
 
 const beats = config.film.beats.filter((b) => b.unit === 'pinball')
 const seconds = config.film.units.find((u) => u.id === 'pinball')!.seconds
@@ -869,16 +874,36 @@ export function makePage(): PageLogic {
     io.cursor.place(px(lies.x), px(lies.y), px(lies.z) - 1)
   }
 
+  let vid = videoFresh()
+  const rideOut = (): void => {
+    const mc = machine()
+    for (let i = 1; i < mc.balls.length; i++) mc.remove(i)
+    s.t = Math.max(s.t, T.streetBy)
+    mc.gate = [true, true, true]
+    mc.ride(0, 'drain')
+  }
+
   const logic: PageLogic = {
     id: 'step3', unit: 'pinball', width: 1920, height: PAGE_H, layout, gags, start,
-    get control(): 'pointer' | 'flippers' { return s.phase === 'sealed' ? 'flippers' : 'pointer' },
+    get control(): 'pointer' | 'flippers' | 'film' { return videoOn(vid) ? 'film' : s.phase === 'sealed' ? 'flippers' : 'pointer' },
     reset(ctx: PageContext) {
       s = fresh()
       s.mode = ctx.mode
+      vid = videoFresh()
       if (m) m.reset()
     },
     step(io: StepIo) {
       const mc = machine()
+      if (s.mode === 'live' && !(s.skipped && vid.phase === 'before')) {
+        const act = videoStep(vid, io, s.phase === 'sealed' && s.t >= videoFrom)
+        if (act === 'ride') rideOut()
+        else if (act !== null && act !== 'hold') {
+          logic.load({ ...(act.load as object), v: vid })
+          s.mode = 'live'
+        }
+        if (vid.leave && vid.phase === 'after') s.skipped = true
+        if (act === 'hold' || videoOn(vid)) return
+      }
       s.time = io.time
       if (s.skipped && (s.phase === 'wait' || s.phase === 'pull')) {
         sealNow(io)
@@ -1081,11 +1106,12 @@ export function makePage(): PageLogic {
       }
     },
     save() {
-      return { s: { ...s, said: [...s.said] }, m: machine().save() }
+      return { s: { ...s, said: [...s.said] }, m: machine().save(), ...(s.mode === 'live' ? { v: { ...vid } } : {}) }
     },
     load(state) {
-      const x = state as { s: State; m: MachineState }
+      const x = state as { s: State; m: MachineState; v?: VideoState }
       s = { ...x.s, said: [...x.s.said] }
+      vid = x.v ? { ...x.v } : videoFresh()
       machine().load(x.m)
     },
     draw(out: DrawList) {
@@ -1160,17 +1186,15 @@ export function makePage(): PageLogic {
     },
     skip() {
       if (s.skipped) return
-      s.skipped = true
-      if (s.phase === 'sealed') {
-        const mc = machine()
-        for (let i = 1; i < mc.balls.length; i++) mc.remove(i)
-        s.t = Math.max(s.t, T.streetBy)
-        mc.gate = [true, true, true]
-        mc.ride(0, 'drain')
+      if (videoOn(vid)) {
+        vid.leave = true
+        return
       }
+      s.skipped = true
+      if (s.phase === 'sealed') rideOut()
     },
     done: () => s.done,
-    gag: () => gagAt(s.t),
+    gag: () => gagAt(videoOn(vid) ? videoFrom + vid.clock : s.t),
     ignoring: () => machine().cut || machine().own.some((n) => n > 0),
     states: () => activeStates(),
     tableState(): TableState {
