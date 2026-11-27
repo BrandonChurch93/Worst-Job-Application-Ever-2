@@ -117,9 +117,9 @@ At the full level the engine counts 99,842 triangles and 219 draw calls for the 
 
 Built geometry, counted in node: 34,313 triangles in 96 meshes, of which the four guns 12,544, the ground 11,324, the wreck's pools 4,426 (mostly not drawn until something breaks), the bar 3,487, the pillars 2,208, the panes 324.
 
-Painting the wound of one blast: about 200 ms at once (node, this machine). To keep it off the frame of the blast it is painted ahead while the cannon aims, a slice a frame over 36 frames (about 5.5 ms a frame), once the line has lain still from one frame to the next; what is left is done on the frame of the blast. The picture is the same either way (MEASURED: `tests/arena-breaks.test.ts`, slices equal the whole).
+Painting the wound of one blast: 56 to 115 ms at once for three different lines (node, this machine, while it was also drawing pictures). To keep it off the frame of the blast it is painted ahead while the cannon aims, a slice a frame over 36 frames (about 3 ms a frame), once the line has lain still from one frame to the next; what is left is done on the frame of the blast. The picture is the same either way (MEASURED: `tests/arena-breaks.test.ts`, slices equal the whole).
 
-Tests: `tests/arena-solids.test.ts`, `tests/arena-layout.test.ts`, `tests/arena-breaks.test.ts`, 22 tests, all pass. Whole suite at 23:25Z on the tree with agent/b-bosslook merged: 182 files pass, 13 skipped, 1 fails, `tests/cut-of-build.test.ts` (2 tests), which is red on branches until the Builder runs the cut.
+Tests: `tests/arena-solids.test.ts`, `tests/arena-layout.test.ts`, `tests/arena-breaks.test.ts`, 22 tests, all pass. Whole suite at 23:44Z on 93d14a1e (agent/b-bosslook merged in): 182 files pass (2,238 tests), 13 skipped, 1 fails, `tests/cut-of-build.test.ts` (2 tests), which is red on branches until the Builder runs the cut.
 
 ## What differs from the two pictures, and why
 
@@ -146,7 +146,7 @@ Picture two (after the cannon):
 - The dust of the split is faint on the white ceramic.
 - Draw calls are high for what is drawn (96 meshes); pillars, feet and guns could be joined or instanced.
 - The frame time is known only in software GL.
-- If a blast arrives with no tell before it (a film jumped to a time), its wound is painted at once, about 200 ms.
+- If a blast arrives with no tell before it (a film jumped to a time), its wound is painted at once, about 0.1 s.
 
 ## Proof
 
