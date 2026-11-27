@@ -57,6 +57,8 @@ const MOVE = { off: 60, pull: 3, tip: 2.6, long: 0.3, per: 5200, land: 4.8 }
 const ARM = { rest: 40, strain: 13, shed: 0.3, snap: 0.035, lean: 0.35, back: 0.45, grow: { k: 1300, c: 47 }, toward: 0.3, closed: 0.999 }
 // The seconds over which the arrow is eased from where a page left it to the pointer, unless the page that gives it back names its own.
 const HANDBACK = 0.35
+// Laid flat: `lie` is its height over the ground while it lies, `back` the spring its size comes back on (it goes once past its size), `most` the largest it is drawn.
+const SPREAD = { lie: 0.6, back: { k: 420, c: 16 }, most: 1.6 }
 // What the body can be drawn at: the springs may ask for more, the pose never does.
 // Leaning right is held short of 0.42, where the arrow would stand upright on its tail and stop reading as a cursor.
 const LIMIT = { short: 0.55, long: 1.4, left: 0.6, right: 0.34 }
@@ -187,6 +189,10 @@ interface State {
   // What the page asks of the body over its springs: an angle struck and held, a length pressed and held, a reaction held at its phase, a swing that dies away.
   struck: { turn: number; left: number } | null
   pressed: { squash: number; left: number } | null
+  // Laid flat on the ground: its size as drawn, the spring that takes it back, and what holds it there.
+  size?: number
+  sizeV?: number
+  spread?: { to: number; left: number } | null
   held: number
   sway: { amount: number; hz: number; whole: number; t: number } | null
   swing: number
@@ -400,6 +406,14 @@ export class CursorBody {
     s.squashV = 0
   }
 
+  // Laid flat on the ground for `seconds`: the outline is drawn `scale` times its size in both directions and lies on the ground with no height under it. Then it springs back, once past its size.
+  spread(scale: number, seconds: number): void {
+    const s = this.s
+    s.spread = { to: Math.min(SPREAD.most, Math.max(1, scale)), left: Math.max(dt, seconds) }
+    s.size = s.spread.to
+    s.sizeV = 0
+  }
+
   // The running reaction stops at the phase it has reached and stays there for `seconds`: a held pose. A new reaction ends the hold.
   hold(seconds: number): void {
     if (this.s.reaction !== null) this.s.held = Math.max(0, seconds)
@@ -565,6 +579,21 @@ export class CursorBody {
       s.z = floor
       s.vz = Math.max(0, s.vz)
     }
+    if (s.spread) {
+      s.size = s.spread.to
+      s.sizeV = 0
+      s.z = s.ground + SPREAD.lie
+      s.vz = 0
+      s.spread.left -= dt
+      if (s.spread.left <= dt / 2) s.spread = null
+    } else if (s.size !== undefined && (s.size !== 1 || s.sizeV)) {
+      s.sizeV = (s.sizeV ?? 0) + (SPREAD.back.k * (1 - s.size) - SPREAD.back.c * (s.sizeV ?? 0)) * dt
+      s.size += s.sizeV * dt
+      if (Math.abs(s.size - 1) < 0.002 && Math.abs(s.sizeV) < 0.02) {
+        s.size = 1
+        s.sizeV = 0
+      }
+    }
     for (const key of FEEL_KEYS) s.feel[key] += (FEEL[s.acting][key] - s.feel[key]) * Math.min(1, (dt * 3) / FEEL_EASE[key])
     const pose = s.reaction ? reactionPose(s.reaction, 1 - s.reactionLeft / REACTION_SECONDS[s.reaction], s.dir) : null
     const dragging = s.acting === 'exhausted' && !s.air && s.taken === null && !s.inBall && now > 30
@@ -700,7 +729,7 @@ export class CursorBody {
     return {
       ...(this.hand && s.air ? { rides: true } : {}), x: s.x, y: s.y, z: s.z, squash: softSquash(s.squash), lean: softLean(s.lean), spin: this.hand && s.drawn !== undefined ? s.drawn - softLean(s.lean) : s.spin + s.swing, acting: s.acting, reaction: s.reaction,
       reactionAt: s.reaction ? 1 - s.reactionLeft / REACTION_SECONDS[s.reaction] : 0,
-      damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, centred: s.inBall && s.centred, taken: s.taken !== null, scale: 1,
+      damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, centred: s.inBall && s.centred, taken: s.taken !== null, scale: s.size ?? 1,
       bend: s.bend, feel: { ...s.feel }, gulp: s.gulp,
       wounds: s.damage.map((d) => ({ kind: d.kind, at: Math.min(1, Math.max(0, 1 - d.left / Math.max(d.whole, dt))), x: d.x, y: d.y })),
       strips: s.strips ? s.strips.map(emerged) : null,
