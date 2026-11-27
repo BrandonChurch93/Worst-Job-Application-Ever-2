@@ -176,6 +176,59 @@ const GROOVE = 1.5
 
 const currentOf = (ctx: RealContext): Shape | null => ctx.list.find((o) => o.role === 'progressButtonCurrent') ?? null
 
+// The fill starts at the first button: the steps behind the one in hand read as done.
+const FILL_FROM_FIRST = true
+// How far the fill stands over the rail, how far its ends go under the collar and under the next cap, and the round of its corners.
+const FILL_PROUD = 0.25
+const FILL_UNDER_COLLAR = 1.2
+const FILL_UNDER_CAP = 6
+const FILL_ROUND = 3
+// The notch at each field's boundary: its width along the rail and how far it stands over the fill.
+const NOTCH_WIDE = 2.5
+const NOTCH_OVER = 0.06
+
+// What the rail counts: the fields the page reports, or 0 of 1 when it reports none, so the steps behind stay filled on every page.
+const isStepRail = (s: Shape): boolean => s.id === 'progress-rail'
+
+const railCount = (s: Shape): { done: number; total: number } => {
+  const total = s.v?.[1] ?? 0
+  return total > 0 ? { done: s.v?.[0] ?? 0, total } : { done: 0, total: 1 }
+}
+
+// The stretch the fields of the step in hand are counted on, from the rail's left end: the collar of the step in hand to the edge of the next cap.
+function railSpan(s: Shape, ctx: RealContext): { c: number; edge: number; from: number; to: number } | null {
+  const cur = currentOf(ctx)
+  if (!cur || !isStepRail(s)) return null
+  const c = cur.x + cur.w / 2 - s.x
+  const edge = cur.w / 2 + CLEARANCE + COLLAR - FILL_UNDER_COLLAR
+  let next: Shape | null = null
+  for (const o of ctx.list) if (o.role === 'progressButton' && o.x > cur.x && (!next || o.x < next.x)) next = o
+  return { c, edge, from: c + edge, to: next ? next.x - s.x : c + edge }
+}
+
+// The lengths of rail that are filled, from the rail's left end: the steps behind, then from the collar of the step in hand toward the next button by the fields done.
+export function railFill(s: Shape, ctx: RealContext): [number, number][] {
+  const span = railSpan(s, ctx)
+  if (!span) return []
+  const { done, total } = railCount(s)
+  const part = Math.min(1, Math.max(0, done / total))
+  const out: [number, number][] = []
+  if (FILL_FROM_FIRST && span.c - span.edge > 0.5) out.push([0, q(span.c - span.edge)])
+  const lead = q(span.from + (span.to - span.from) * part + (part >= 1 ? FILL_UNDER_CAP : 0))
+  if (span.to > span.from && lead - span.from > 0.5) out.push([q(span.from), lead])
+  return out
+}
+
+// Where the notches sit, from the rail's left end: one at each boundary between two fields of the step in hand.
+export function railNotches(s: Shape, ctx: RealContext): number[] {
+  const span = railSpan(s, ctx)
+  const { total } = railCount(s)
+  if (!span || !(span.to > span.from)) return []
+  const out: number[] = []
+  for (let i = 1; i < total; i++) out.push(q(span.from + ((span.to - span.from) * i) / total))
+  return out
+}
+
 // The rail, and round the current step's cap a thin collar that stays where it is: the cap stands in it with a dark clearance between.
 function rail(s: Shape, ctx: RealContext): THREE.Object3D {
   const under = pocketCut(s).under
@@ -186,6 +239,19 @@ function rail(s: Shape, ctx: RealContext): THREE.Object3D {
   if (!cur) return bar
   const root = new THREE.Group()
   root.add(bar)
+  for (const [from, to] of railFill(s, ctx)) {
+    const plan = { kind: 'box', w: to - from, h: s.h, r: Math.min(FILL_ROUND, (to - from) / 2) }
+    const lit = mesh(shared(`railFill:${q(plan.w)}x${q(plan.h)}`, () => sweep(outlineOf(plan, 0.15, 6), profile([[0, -0.2, true], [0, 0.1, true], [RAIL_BEVEL, top + FILL_PROUD, true], [s.h / 2, top + FILL_PROUD + CROWN_RAIL]]))), m.orange, false)
+    lit.name = 'rail-fill'
+    lit.position.set((from + to) / 2 - s.w / 2, 0, 0)
+    root.add(lit)
+  }
+  for (const x of railNotches(s, ctx)) {
+    const cut = mesh(shared(`railNotch:${q(s.h)}`, () => sweep(outlineOf({ kind: 'box', w: NOTCH_WIDE, h: s.h - 0.6, r: 0.3 }, 0.15, 4), [{ inset: 0, z: top + FILL_PROUD + CROWN_RAIL + NOTCH_OVER, out: 0, up: 1 }])), m.gap, false)
+    cut.name = 'rail-notch'
+    cut.position.set(x - s.w / 2, 0, 0)
+    root.add(cut)
+  }
   const r = cur.w / 2 + CLEARANCE + COLLAR
   const lip = top + COLLAR_PROUD
   const ring = mesh(shared(`collar:${q(cur.w)}`, () => sweep(circle(r, 72), profile([[0, -0.2, true], [0, lip - 0.4], ...arc(0, lip - 0.4, 0.4, 0.4, 3).slice(1), [COLLAR, lip, true], [COLLAR + 0.1, top, true]]), false)), m.capRim, false)
@@ -508,7 +574,10 @@ export const controls: PartMaker = {
     const base = `${s.role ?? 'plate'}:${dims(s)}:${s.tone}:${s.pocket ? 1 : 0}:${s.id.endsWith('-zone') ? 1 : 0}${waits ? ':waits' : ''}`
     if (s.role !== 'progressRail') return base
     const cur = currentOf(ctx)
-    return cur ? `${base}:${q(cur.x - s.x)}:${q(cur.y - s.y)}:${q(cur.w)}` : base
+    if (!cur) return base
+    const fill = railFill(s, ctx).map(([from, to]) => `:${from}-${to}`).join('')
+    const notches = railNotches(s, ctx).map((x) => `:n${x}`).join('')
+    return `${base}:${q(cur.x - s.x)}:${q(cur.y - s.y)}:${q(cur.w)}${fill}${notches}`
   },
   make(s: Shape, ctx: RealContext): THREE.Object3D {
     if (s.id === 'field-focus') {
