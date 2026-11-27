@@ -20,6 +20,8 @@ const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.3 * burnt) * (0.
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 // A strip out of its place by more than a few pixels is a loose sliver, and lies thinner. It stays the piece of the arrow it was cut from: its ends keep the outline's slant and the dark edge. Each lies its own way: rolled a little about its length, one end up off the pile.
 const LOOSE = { thin: 0.5, ribbon: 0, from: 12, to: 64, arm: 40, roll: 0.16, pitch: 0.1, seed: 23 }
+// A strip that comes out under a line across the page: the share of its length out at the first, the share of its coming out at which it is whole and let go, how steeply down the page it must run, as a share of its length, to be drawn back along itself to the line and not pressed straight down, and how far it stands off the page for each pixel it is held up the page from where it falls.
+const LIP = { first: 0.12, whole: 0.55, least: 0.2, lift: 0.5 }
 
 export class Body implements BodyModel {
   readonly root = new THREE.Group()
@@ -140,6 +142,34 @@ export class Body implements BodyModel {
     g.computeVertexNormals()
   }
 
+  private underLip(strips: StripPose[], of: ArrayLike<number>, a: Float32Array, turn: THREE.Quaternion[], foot: Float64Array, top: Float64Array, upX: number, upY: number): void {
+    const rise = strips.map((pose, k) => {
+      if (pose.below === undefined) return 0
+      const shown = clamp01(pose.shown ?? 1)
+      const out = Math.min(1, LIP.first + ((1 - LIP.first) * shown) / LIP.whole)
+      const held = pose.below - out * (top[k]! - foot[k]!)
+      const free = clamp01((shown - LIP.whole) / (1 - LIP.whole))
+      return Math.max(0, held - foot[k]!) * (1 - free * free)
+    })
+    const v = this.v
+    for (let i = 0; i < of.length; i++) {
+      const k = of[i]!
+      const pose = strips[k]!
+      if (pose.below === undefined) continue
+      a[i * 3] += upX * rise[k]!
+      a[i * 3 + 1] += upY * rise[k]!
+      a[i * 3 + 2] += LIP.lift * rise[k]!
+      const high = a[i * 3]! * upX + a[i * 3 + 1]! * upY - pose.below
+      if (high <= 0) continue
+      v.copy(this.long).applyQuaternion(turn[k]!)
+      const down = -(v.x * upX + v.y * upY)
+      const back = down > LIP.least ? high / down : 0
+      a[i * 3] += back > 0 ? v.x * back : -upX * high
+      a[i * 3 + 1] += back > 0 ? v.y * back : -upY * high
+      a[i * 3 + 2] += v.z * back
+    }
+  }
+
   private applyStrips(strips: StripPose[], ribbon: number): void {
     const set = stripSet(strips.length)
     const g = this.cut.geometry
@@ -214,6 +244,10 @@ export class Body implements BodyModel {
       lift[k] = Math.abs(Math.sin(pitch)) * Math.max(0, span[k * 2 + 1]! - span[k * 2]!) * 0.5
     }
     const v = this.v
+    const upX = Math.sin(this.root.rotation.z)
+    const upY = Math.cos(this.root.rotation.z)
+    const foot = new Float64Array(count).fill(Infinity)
+    const top = new Float64Array(count).fill(-Infinity)
     for (let i = 0; i < n; i++) {
       const k = set.strip[i]!
       const pose = strips[k]!
@@ -225,6 +259,11 @@ export class Body implements BodyModel {
       a[i * 3] = v.x + cx + pose.x
       a[i * 3 + 1] = v.y + cy + pose.y
       a[i * 3 + 2] = v.z + cz + pose.z + lift[k]!
+      if (pose.below !== undefined) {
+        const h = a[i * 3]! * upX + a[i * 3 + 1]! * upY
+        foot[k] = Math.min(foot[k]!, h)
+        top[k] = Math.max(top[k]!, h)
+      }
       const l = loose[k]! * LOOSE.ribbon
       const flat = set.ribbonNormal
       v.set(set.normal[i * 3]! + (flat[i * 3]! - set.normal[i * 3]!) * l, set.normal[i * 3 + 1]! + (flat[i * 3 + 1]! - set.normal[i * 3 + 1]!) * l, set.normal[i * 3 + 2]! + (flat[i * 3 + 2]! - set.normal[i * 3 + 2]!) * l).normalize().applyQuaternion(turn[k]!)
@@ -232,6 +271,7 @@ export class Body implements BodyModel {
       b[i * 3 + 1] = v.y
       b[i * 3 + 2] = v.z
     }
+    if (strips.some((pose) => pose.below !== undefined)) this.underLip(strips, set.strip, a, turn, foot, top, upX, upY)
     pos.needsUpdate = true
     nor.needsUpdate = true
     insetAt.needsUpdate = true

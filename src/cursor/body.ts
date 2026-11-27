@@ -74,7 +74,7 @@ export const STRIPS = 15
 export const STRIKE = { x: 4.3, y: 9.4, reach: 2.1 }
 const UNIT_PX = config.cursor.heightPxAt1080 / 19
 
-export interface Strip { x: number; y: number; z: number; rot: number; tilt: number }
+export interface Strip { x: number; y: number; z: number; rot: number; tilt: number; below?: number; shown?: number }
 interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number; out: number; slow: number }
 export interface Wound { kind: Damage; at: number; x: number; y: number }
 
@@ -701,12 +701,13 @@ function lie(i: number, seed: number): Strip {
   return { x: FAN.away[0]! + toX + dx * cut.half - cut.x, y: FAN.away[1]! + toY + dy * cut.half - cut.y, z: layer(i), rot, tilt: 0 }
 }
 
-// How the strips come out of the shredder's mouth: the least and the most seconds a strip takes, and how far up under the hood it starts, in page pixels, lying low until it is out.
-const EMERGE = { least: 0.05, most: 0.12, under: 18 }
+// How the strips come out of the shredder's mouth: the least and the most seconds a strip takes to be out and falling free, and the height of the mouth's lower lip over the pile's place, in page pixels, above which nothing of a strip is drawn until then.
+const EMERGE = { least: 0.16, most: 0.19, lip: 43 }
 
 function emerged(p: LooseStrip): Strip {
-  const e = Math.min(1, Math.max(0, p.out))
-  return { x: p.x, y: p.y + (1 - e) * EMERGE.under, z: p.z * e * e, rot: p.rot, tilt: p.tilt * e }
+  if (p.out >= 1) return bare(p)
+  const e = Math.max(0, p.out)
+  return { x: p.x, y: p.y, z: p.z * e * e, rot: p.rot, tilt: p.tilt * e, below: EMERGE.lip, shown: e }
 }
 
 // The strips as they leave the shredder: thrown down the page from above their places, each with its own spin, each bound for its place in the fan.
@@ -870,7 +871,8 @@ export function blendPose(a: CursorPose, b: CursorPose, t: number): CursorPose {
   const strips = a.strips && b.strips && a.strips.length === b.strips.length
     ? b.strips.map((q, i) => {
         const p = a.strips![i]!
-        return { x: mix(p.x, q.x), y: mix(p.y, q.y), z: mix(p.z, q.z), rot: mix(p.rot, q.rot), tilt: mix(p.tilt, q.tilt) }
+        const at = { x: mix(p.x, q.x), y: mix(p.y, q.y), z: mix(p.z, q.z), rot: mix(p.rot, q.rot), tilt: mix(p.tilt, q.tilt) }
+        return q.below === undefined ? at : { ...at, below: q.below, shown: mix(p.shown ?? 0, q.shown ?? 1) }
       })
     : b.strips
   const face = a.face && b.face ? { x: mix(a.face.x, b.face.x), y: mix(a.face.y, b.face.y), z: mix(a.face.z, b.face.z), back: mix(a.face.back, b.face.back) } : b.face ?? null

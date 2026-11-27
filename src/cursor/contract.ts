@@ -20,7 +20,8 @@ export interface Hole { x: number; y: number; r: number; glow: number; burnt?: n
 // Where one strip of a shredded body lies: page pixels away from its place in the whole body, and its turns in radians.
 // x runs right and y runs up the page, in the body root's own space, and z is off the page. rot turns the strip about z round its own centre. tilt rolls it about its own long axis.
 // The cuts run parallel to the tail, STRIP_AXIS, so that every strip is one piece. Strip 0 is the leftmost. All zeros is the cut body standing whole.
-export interface StripPose { x: number; y: number; z: number; rot: number; tilt: number }
+// below, where it is given, is a line across the page over the body's place, in the body's own pixels up the page: nothing of the strip is drawn above it, and shown, 0 to 1, is how far the strip has come out from under it. The strip grows down from the line, is whole a while before 1, and is where its numbers put it at 1.
+export interface StripPose { x: number; y: number; z: number; rot: number; tilt: number; below?: number; shown?: number }
 
 // Everything the body can be asked to look like. Each number is 0 at rest unless it says otherwise.
 export interface BodyLook {
