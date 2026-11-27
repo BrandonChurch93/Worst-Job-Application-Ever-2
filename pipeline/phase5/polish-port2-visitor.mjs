@@ -1,6 +1,7 @@
 // The pack's own visitor at the port of step 3: walks the site once as tools/lib/pack-site.mjs does (or reads a kept walk), then draws every step
-// from `before` steps before the ball leaves the port to `after` steps after, at two px to a px of the run, so one px is one px of the 1920 page.
-// node pipeline/phase5/polish-port2-visitor.mjs --keep <folder> [--before 66] [--after 76]
+// of the windows asked for, at two px to a px of the run, so one px is one px of the 1920 page. A window is given in steps from the step the visitor
+// gets the flippers (f, the seal) or from the step the ball leaves the port (l).
+// node pipeline/phase5/polish-port2-visitor.mjs --keep <folder> [--windows f-8:22,l-2:66]
 import fs from 'node:fs'
 import path from 'node:path'
 import { args, config } from '../../tools/lib/paths.mjs'
@@ -20,7 +21,11 @@ if (!run) {
 const m = momentsOf(cfg, run).moments
 say(`the walk has ${run.rows.length} steps; the flippers at step ${m.flippers}, the ball leaves at step ${m.leaves}`)
 const steps = []
-for (let i = m.leaves - Number(a.before ?? 66); i <= m.leaves + Number(a.after ?? 76); i++) steps.push(i)
+for (const part of String(a.windows ?? 'f-8:22,l-2:66').split(',')) {
+  const [from, to] = part.slice(1).split(':').map(Number)
+  const zero = part[0] === 'f' ? m.flippers : m.leaves
+  for (let i = zero + from; i <= zero + to; i++) if (!steps.includes(i)) steps.push(i)
+}
 const got = await replay(cfg, run, steps, { cache: path.join(keep, 'cache'), log: say, px: 2 })
 const list = []
 for (const i of steps) {
