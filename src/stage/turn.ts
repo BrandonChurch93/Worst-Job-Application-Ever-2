@@ -37,8 +37,11 @@ export function leaveTurn(u: number): number {
 }
 
 // How far the lights go round a slab whose face is turning from the key, for the slab's angle. In full the key, which stands 22 degrees over the page, would leave the face at 31 degrees,
-// when the tilt can hardly be read yet. So they go round by the share of the quarter turn the slab has made: next to nothing while it starts, the whole angle when it stands on its edge.
-export const leaveLight = (angle: number): number => (angle <= 0 ? angle : angle >= QUARTER ? angle : (angle * angle) / QUARTER)
+// when the tilt can hardly be read yet. So they go round by next to nothing while the slab starts, never by more than the slab has turned, and by `most` at the end:
+// the face keeps its light while it tips, loses it evenly as it swings, and is out of the key at 56 degrees.
+export const LIGHT = { most: 36 * DEG, over: 40 * DEG } as const
+
+export const leaveLight = (angle: number): number => (angle <= 0 ? angle : LIGHT.most * (1 - Math.exp(-((angle / LIGHT.over) ** 2))))
 
 export function leaveSpeed(): number {
   return (QUARTER * TURN.power) / (1 - TURN.windUp)
