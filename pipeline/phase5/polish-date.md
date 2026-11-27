@@ -46,3 +46,28 @@ Why 0.022 and not more. The first try was 0.07. The picture showed the reels thr
 4. The dial is left as it is (Builder: yes).
 5. The cursor's ground (`ground()`) still reads `smooth(lift)`: changing it would move the cursor's height in the film. During the rise the ground is at most 0.022 of a part's height under the drawn top (1.7 px at the knob).
 6. The hint line of a tray is printed when the tray is nine tenths open (`panel` in `states()`), as on the dial's row. Not changed.
+
+## Measured after the change (variant A, 50e21f01)
+
+- MEASURED, stepped, `POLISH_DATE_TABLE=/tmp/date-after.txt npx vitest run tests/polish-date-measure.test.ts`: every row, in the orders 1, 2, 3 and 3, 2, 1, the rows that open themselves and the film's stage: tray past a tenth +6, tray full +53, first machine part drawn +0, machine whole +97, row takes the hand +99; open by more than a tenth with a part not drawn on 0 steps. The visits are 3302 and 3301 steps long, as before.
+- MEASURED, the pack's own visitor, stepped (`POLISH_DATE_PACK=/tmp/pack-after.txt npx vitest run tests/polish-date-pack-measure.test.ts`): 0 pictures with a tray open and its machine not drawn (before: 10 opening and 8 shutting on row 2, 10 and 7 on row 3). At 1:02.93 the tray is 197 px open and the slot lies at 0.022 of its height. The machine is whole at 63.20 s, as before.
+- MEASURED in pictures, `node pipeline/phase5/polish-date-live.mjs walk after-2 2 high`: the slot's cabinet is uncovered by the field from 0.033 s after the press and rises from 0.167 s; nothing shows through the pocket of the field that slides over it. In A the reels are blank until 0.167 s and carry their digits from 0.183 s.
+- MEASURED, the three draft stills `step2-dial`, `step2-crank`, `table-wide` at hd: byte equal by `cmp` to the ones made before the change.
+
+## The film
+
+MEASURED with `pipeline/phase5/polish-date-filmdiff.ts.txt`, copied as `tests/polish-date-filmdiff.test.ts` into the branch and into a worktree of b3e4f902, run with `FILMDIFF=<file> npx vitest run tests/polish-date-filmdiff.test.ts`, the copies removed after. One line for each of the 9180 film frames of the six units (page, gag, a hash of the draw list, a hash of the cursor's pose) and one line for each event.
+
+- Events: byte equal by `cmp`, 977 lines, base, A and B.
+- Cursor pose: equal on 9180 frames. Gag and page: equal on 9180 frames.
+- Draw list, base to A: 96 frames differ, all of step 2: 3253 to 3276 (row 2 opens), 3548 to 3571 (row 2 shuts), 3601 to 3624 (row 3 opens), 3814 to 3837 (row 3 shuts). No frame of another page differs.
+- Draw list, A to B: 22 frames differ, 3253 to 3263 and 3561 to 3571. B changes no frame beyond A's 96.
+
+## The two variants
+
+- A (the branch): the test of 48ae1fb4 in `tests/step2-dial.test.ts` stands as written, so no legend is in the draw list while the cabinet is 2 px tall or less. The reels are blank while the slot lies housed; the digits come on in one frame once the rise has begun and go off in one frame as the slot settles.
+- B (`pipeline/phase5/polish-date-NEEDS.patch`): the legends are drawn on the housed reels. The premise of that test changed by the Builder's decision of 07:49 UTC (the slot lies housed in the tray's floor, it does not sink out of sight). The rewritten test keeps the guard in two parts: a legend is in the draw list only while its own reel and the cabinet are drawn by their makers; the legend lies inside its reel's face and on its top. The old window, 13.2 to 13.7 s, is the shutting of row 2 in the film; the opening, 8.1 to 8.7 s, is added.
+
+## The boss tag (a measure, nothing changed)
+
+MEASURED, stepped, the pack's visitor (`POLISH_DATE_BOSS=/tmp/boss.txt npx vitest run tests/polish-date-boss-measure.test.ts`): the visit ends at 174.12 s. The slab "Field cannot be blank" is cut by the lower edge on 5 pictures, 147.10 to 147.17 s (ticks 8826 to 8830): it is a spent slab leaving downward (state 2), 2.5, 24.6, 48.7, 74.9 and 103.2 px under the edge, centre x 406.9. No slab is cut while flying or lying. A slab "Invalid input" leaves by the left edge from tick 9254.
