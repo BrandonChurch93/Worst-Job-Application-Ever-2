@@ -36,7 +36,9 @@ const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36, own: 12 }
 // The save as it was before the load was made to read, kept as a second place of the ball beside the one that is drawn (the ball's `s` and `speed`, which a ball on the wire has no other use for): when the gate opens under a ball on the wire,
 // the ball goes down the hole in the steps it took from that place, so the play after it is the play it was.
 const WAS = { land: 24, wind: 28, still: 10, back: 0.22, drive: 4 }
-export const SAVE = { rest: 10.55, wire: 60, funnel: 50, mouth: 52, land: 8, wind: 42, still: 26, back: 0.27, drive: 6, kick: 24, reach: 1 }
+// The landing, from the touch: the wire lets the ball keep at most `hit` (balls/s) of its speed down the table, and the ball swings on the wire about a place `sag` balls under the wire's own (the wire bent by the ball's weight), `swing` (1/s) stiff and dying by `damp` (1/s):
+// it rides the wire down, comes up again and settles inside `land` steps. Then the load: `wind` steps, of which the last `still` stand dead still.
+export const SAVE = { rest: 10.55, wire: 60, funnel: 50, mouth: 52, land: 30, wind: 20, still: 8, back: 0.27, drive: 6, kick: 24, reach: 1, sag: 0.1, swing: 67.3, damp: 24.1, hit: 12 }
 // Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
 const MET = 3
 const LIFT_SHUT = 0.4
@@ -464,12 +466,13 @@ export class Machine {
     }
     if (this.taken === 0 && b.y < b.ty) {
       b.vy += GRAVITY * DT
-      b.y += b.vy * DT
+      b.y = Math.min(b.ty, b.y + b.vy * DT)
       return
     }
     const n = ++this.taken - SAVE.land
     if (n <= 0) {
-      b.vy += (-SAVE.wire * SAVE.wire * (b.y - b.ty) - 2 * SAVE.wire * b.vy) * DT
+      if (this.taken === 1) b.vy = Math.min(b.vy, SAVE.hit)
+      b.vy += (-SAVE.swing * SAVE.swing * (b.y - b.ty - SAVE.sag) - 2 * SAVE.damp * b.vy) * DT
       b.y += b.vy * DT
       if (n === 0) {
         b.fy = b.y
