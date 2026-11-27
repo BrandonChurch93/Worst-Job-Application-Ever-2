@@ -11,8 +11,8 @@ The Builder's memory. Read it at the start of every task and after every compact
 - Review round step: none
 - Review rounds: 0
 - After review step: none
-- Budget: reported
-- Continuations: 2
+- Budget: running
+- Continuations: 3
 - Extensions: 0
 - Extension step: none
 - Site URL: https://www.perplexity.ai/computer/a/the-worst-job-application-ever-PX4JqBxjQQOurzN2dfCrOg
@@ -37,15 +37,15 @@ Status 167, 2026-11-27T17:49Z, Phase 5.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 313 at 2026-11-27T17:49:10Z, allowance: continuation 2
-time used in this phase: 12.03 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 12.03 h of 12.00 h allowed
-time used: 60.06 of 60.00 hours before the review
-extra rounds: no
+clock: phase 5, tick 314 at 2026-11-27T17:52:56Z, allowance: continuation 3
+time used in this phase: 0.00 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 0.00 h of 12.00 h allowed
+time used: 60.06 of 72.00 hours before the review
+extra rounds: yes
 half point: reached
 box end: reached
-budget report: due
-minutes since the last status: 0
+budget report: not due
+minutes since the last status: 3
 ```
 
 ## Phases
@@ -1649,6 +1649,8 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-27T17:50Z, Preview 10, every piece is in (MEASURED by the Builder for each file: the sha256 of the file held equals the one in its .json, the engine hash is 7cd3b37117ec03b3, the .json lists no problem and no stand-in; `wja-scratch/p10/take.sh`, the mails kept as `p10/in/rN/mail.txt`). Since the entry of 17:38Z: `p10_renderer_7` at 17:40Z, pinball 4740 to 5026 (144 frames) and 5028 to 5098 (36); `p10_renderer_9` at 17:41Z, pinball 5460 to 5530 (36) and 5532 to 5818 (144); `p10_renderer_8` at 17:42Z, pinball 5100 to 5458 (180); `p10_renderer_12` at 17:47Z, boss 6540 to 7018 (240), 7020 to 7498 (240) and 7500 to 7858 (180); `p10_renderer_13` at 17:47Z, boss 7860 to 7978 (60) and 7980 to 8458 (240) and Decision whole (360 frames from two pieces). Each helper was answered with the files' state and told its work is done. In `wja-scratch/p10/chunks` now: two whole pages (the careers page 420 frames, Decision 360) and 26 loose pieces (step1 six, step2 four, pinball eleven, boss five); the 28 records add up to 4590 preview frames, the whole film at every second frame. STATED by the helpers: one render process each, no restart; seconds a frame at the review tier and 960 by 540: 18.76, 19.44 and 19.15 on the machine's middle (renderers 7, 8, 9), 5.74 on the boss fight (renderer 12, rising from 4.04 to 6.62 in the run), 5.95 and 5.58 on the boss's end and Decision (renderer 13); the last render ended at 17:46:57Z, 64 minutes after the first clone. Not joined: the line `budget report: due` came in the same minute (the next entry), so the join is the first work after it. The merge tree `wja-merge` stands detached at f20288e1, the pieces' own commit, clean, and built for the join (`npm run -s build` EXIT 0 at 17:38Z, `wja-scratch/p10/merge-build.log`).
 - 2026-11-27T17:50Z, the pictures of Status 162, made before the line `budget report: due` from pictures that existed, nothing rendered for them (`wja-scratch/s162/pics.py`, composed 17:43Z to 17:45Z). (1) `six.png`, 1952 by 848: the six pages at rest, the six `still-<page>.png` of set a of merge 54's same picture twice step (`wja-merge/out/work/determinism/a/`, the live picture at camera home, hd, tier draft, drawn 17:16Z to 17:19Z in the chain), each at 640 by 360 under its name. (2) to (4) `pair-marketing.png`, `pair-step2.png`, `pair-step3.png`, each 1842 by 602: the approved image left (`references/approved/marketing-top.png`, `step2-rest.png`, `loader-page.png`) and the same merge 54 still right, each at 900 by 506. All seen by the Builder with notes written at each view (`wja-scratch/s162/NOTES.txt`): `six-top.png` and `six-bottom.png` (the sheet's two rows) and the three pairs whole. Seen: no black or torn tile and no fault in the build's pictures at that size; fine detail is not judged at that size. The differences against the approved images are written in the notes and in the status's captions; none is new: the perk cards' empty lower half at rest (design point 1), step 2's cap 2 and wells, the waiting Continue, step 3's later moment in the approved image, its thinner header and its narrower tube (106 px against about 85 to 92, open).
 - 2026-11-27T17:50Z, THE BUDGET REPORT (the third). The clock printed `budget report: due` at 17:47:41Z (tick 312): 60.03 of 60.00 hours before the review; the line follows the allowance in force, 12.00 h of 12.00 h under continuation 2, so ticks 310 and 311 (the later at 17:45:05Z) read 59.94 and 59.99 h with `not due`. The tick of the report's status at 17:49:10Z (tick 313) reads 60.06 h, Phase 5 at 12.03 h of its box of 12.00 h, `extra rounds: no`, `box end: reached`. This is stop condition 2 of `AGENTS.md`. What was done, in its order: (1) nothing new was started after the line: no round, no numbered step, no agent, no job. The last two renderers of Preview 10 delivered in the same minute and their files were taken in (the entry above), which collects what running jobs made and starts nothing; the join of Preview 10 was not started. (2) The code builds: main is 76a9d06b, `npm run build` exit 0 at 17:48Z (`wja-scratch/s162/build.log`). (3) What the agents had pushed is collected by `git fetch` at 17:48Z: origin/main is 76a9d06b and nothing new stands on it; the renderers push nothing, their 28 files came by mail and all are held. (4) No agent is at work, so none had to be stopped: the thirteen renderers are done and answered, `r25_fix_save` and `r25_fix_turn` are done, `r25_fix_pack` is idle with no job. (5) Units and phases keep their state: `site` in progress, 6 rounds run, none passed; Phase 5 in progress. (6) `npm run status -- --phase 5 --spec out/work/status/spec-162.json --no-render` at 17:49:10Z, the tool's record 167, Status 162 of the thread, with the four pictures the block's rule names: the six pages at rest on one sheet and the three newest comparison images (the entry above). (7) "Budget" says `reported` and "Last report block" holds the block, word for word. One difference between record 167 and the delivered message: the record's line on what is open says the whole film is being drawn now; every piece was in at 17:47Z, and the delivered message says so.
+- 2026-11-27T17:53Z, published at the budget report (MEASURED). The commit of the report, 94358ca1, was pushed at 17:51Z. At 17:51Z `npm run -s review` exited 0 (`dist/review/` 218 files, 205.4 MB; `dist/` 288 files, 226.4 MB in all; `wja-scratch/s162/review.log`) and at about 17:52Z the site (`dist`, built at 17:48Z from 76a9d06b, whose code is that of main with merge 54) and the review page (`out/work/publish/review`, entry `review.html`) went up to their two addresses, the same as before; both answers read `uploaded`.
+- 2026-11-27T17:53Z, Continuation 3. The budget report was filed at 17:49Z and is shown in the thread with Status 162. No task starts with the line `Continue past the budget.`; what stands in its place, as at continuations 1 and 2, is Brandon's message of 2026-11-26T02:26Z in the thread ("You have my permission to keep working until you’re completely finished with this project. No need to stop. Just keep updating me with your progress along the way"). So at 17:52:56Z `npm run clock -- --continue 3` ran: 12.00 h added (`budget.continueHours`), a new box of 12.00 h for Phase 5, the one phase before the review that is not done; the first tick after it (tick 314, 17:52:56Z) reads 0.00 h of the new box, 60.06 of 72.00 hours before the review, `extra rounds: yes`, `budget report: not due`. "Budget" says `running` and "Continuations" says 3. The work goes on exactly where it stopped: Preview 10's join with the review mix in the merge tree at the pieces' own commit, its check on every frame, three joins looked at on frames in a row, and its sending; round 25's record; the pack for round 26; the Builder's run of the measures on main. Said to Brandon in Status 162: if he would rather the build stopped at the report, his word stops it.
 
 ## Notes from Brandon
 
