@@ -2,16 +2,37 @@
 
 Branch `agent/b-pinball`. Owner of this file: the pinball helper.
 
-## For the video unit: where the live fight ends and the film joins
+## Second pass (orders of 22:45Z and 22:50Z): read this first
 
-- Event `ball-seal`: the arrow is gone into the port and the two half shells shut. In the film it falls at 3.3 s of step 3 (3.4 s is the scene's own clock `T.seal`, minus the 0.1 s the shut takes). On the live site it falls when the visitor's arrow has lost the fight, whenever that is.
-- Before it, the live fight says `vacuum-on` (the pull starts), `vacuum-slip` (each slip toward the port) and `vacuum-lose` (the arrow lets go, 0.41 s before `ball-seal` in the film).
+Where a line below this section names a time of the first pass, the time here is the one that holds. Film seconds are seconds of step 3, MEASURED with `node pipeline/change002/pinball-run.mjs --all` and `npm run take -- --check`.
+
+### For the video unit: where the live fight ends and the film joins
+
+- Event `ball-seal`: the arrow is gone into the port and the two half shells shut. Film: 6.900 s. Live: 3.2 s for a hand that holds still at mid page, 6.96 s at the latest for a hand that pulls away the whole time.
+- Before it the fight says `vacuum-on` (once, the port takes the arrow), `vacuum-slip` (four times in the film, one at each slip toward the port) and `vacuum-lose` (the arrow lets go of the rim).
 - After `ball-seal` nothing of the scene depends on the visitor until the result card.
+- Film seconds after the seal: `power-on` 10.900, `plunger` 13.150, `doors-slam` 15.804, the office frenzy `frenzy-on` 20.204 to `frenzy-off` 22.504, `ball-drop` 23.48, `tier-fall` 26.45, the street frenzy `frenzy-on` 26.74 to `frenzy-off` 29.00, `firehouse-take` 28.80, `scoop-kick` 29.36, `ramp-roll` 30.62, `spiral` 33.00, `flipper-save` 35.62, `drain` 37.61, `ball-open` 38.80, `peel-up` 39.30, `button-press` 41.0, `page-turn` 41.5.
 
-## For the shell unit: narrator line 5 (change note 003)
+### For the shell unit: narrator line 5 (change note 003)
 
-- The moment the vacuum takes hold of the arrow is the event `vacuum-on`. It fires once in a run. Film: 0.700 s of step 3. Live: when the port's reach meets the visitor's arrow, 1.2 s at the earliest.
-- The moment is off screen after `ball-seal` (film 3.300 s). From `vacuum-on` to `ball-seal` is 2.6 s in the film; a line of 6.3 s ends 3.7 s after the arrow is gone, 0.3 s before `power-on` (7.300 s). The clock is not changed for the line.
+- The port takes hold of the arrow at the event `vacuum-on`, once in a run. Film: 0.700 s. Live: when the port's reach meets the visitor's arrow, 1.2 s at the earliest.
+- The fight is on screen from `vacuum-on` to `ball-seal` (film 0.700 to 6.900 s, 6.2 s). The hardest pull is the first slip, film 1.9 to 2.3 s.
+- `vacuum-slip` fires four times in the film; `vacuum-roar` is asked at 6.2 s.
+
+### Decisions of the second pass
+
+1. D-Q1. The scene's clock and the film's clock are two clocks (`src/pages/step3/clock.ts`, `CLOCK`, `sceneOf`, `filmOf`). The film stops the scene's clock at 3.3 s for the long fight and lets the arrow go at 6.9 s (3.6 s more), and pays the 3.6 s back in three whole pieces where nothing is on screen to miss: 0.9 s of the wait in the plunger (scene 9.45), 1.3 s of the hold in the inbox before the fall to the street (scene 23.4), 1.4 s of the hold in the firehouse (scene 27.95). Step 3 stays 42 s. No piece is taken from the end: a skip there shows as a jerk of the ball in the drain. Cameras and the take's flips run on the scene's clock, gags and beats on the film's.
+2. D-Q2. The beats of step 3 in `config/showcase.json` move with the clock (`pipeline/change002/pinball-NEEDS.patch`, two commits `NEEDS:`): seal 0 to 7.6, reveal 7.6 to 11.2, launch 11.2 to 14, lobby 14 to 17.5, coffee 17.5 to 21.7, replyAll 21.7 to 26; fired, highway, save and drain as they were; keys at 0.37 (loader-page, tier-corporate), 0.72 (lobby-doors), 0.62 (tier-office), 0.51 (reply-all), 0.4 (tier-street), 0.91 (youre-fired). `plannedSeconds` and `maxSeconds` untouched. The launch beat is 2.8 s and not 2.5 s because the site would not start with the shorter one while the old narration of this branch lay over it.
+3. D-Q3. The fight is 5.8 s of acting in ten parts (`VAC.keys`, `VAC.kinds`): dragged, digs in, then four times a slip and a claw back, the last claw on the rim for 0.5 s. Moods by part (`MOOD`): shocked, nervous while it claws back, angry (heat) only at the slips, scared on the rim. No arms. At each slip the body shakes, harder each time (`VAC.slip`, `VAC.slipMore`), and on the rim the pull draws the body out longest (`VAC.long[5]` 1.72). The camera pushes in nearer (`PUSH`).
+4. D-Q4. The page's own words tear loose past the arrow: twelve copies of every second word of `copy:transitions.step3` leave their line, bend toward the port, grow and go in (`LOOSE`, `looseOf`). No word is typed in code.
+5. D-Q5. Live fight, ruled by the Builder: `live.pinball.sceneSeconds` stays 64. The same fight at the film's length made the live scene 65.5 s and 66.4 s against 64 (MEASURED, `tests/pinball.test.ts` and `tests/polish-ball.test.ts`). So live the parts run 1.8125 times as fast (`VAC.quick`): a still hand loses in 3.2 s; a hand that pulls away slows the parts to 0.46 of their pace at the most (`VAC.stall` 0.54), 6.96 s at the latest. The live site also skips the 0.9 s of the plunger's wait.
+6. D-Q6. A second frenzy on the street tier (`RIOT`, `riotAim`, dead wall `street.rail`): from the fall to the street until the firehouse takes the ball, film 26.74 to 29.00 s, 14 strikes; the bank's targets fall in it. `T.firedOn` 27.4, `T.firedTow` 27.45; the film cuts to `table-fired` at scene 27.5. `frenzy-on` and `frenzy-off` fire twice each.
+7. D-Q7. The ball stays readable in a frenzy (`src/table/real/lights/fx.ts`, shape `fx.hero`): while a frenzy runs a dark disc lies behind the ball and a ring of light around it, and sparks and their cores are moved off the ball as the camera sees it (`FX.berth`). No spark is taken away. SEEN in 9 frames in a row, film 20.7 to 21.1 s: the ball is findable in all 9.
+8. D-Q8. Sweat (`nervous`) is acted but its beads do not read at the film's size; the beads are the cursor unit's. Told to the Builder; his ruling: leave them, show the strain in the body's shake and stretch (D-Q3).
+9. D-Q9. Signs. No size changed in the second pass. Read at 1920 by 1080, one frame each: Coffee at film 18.5 s (the top view of the office tier), Mom's Basement at 36.2 s and 37.5 s, Unemployment Office at 37.5 s (the top view at the drain; at 36.2 s it is in the near blur of `table-save`).
+10. D-Q10. The kept take `cut/TABLE-TAKE.json` is not searched again: replayed with the new scene every one of the 10 beat events falls inside its beat, no hit is within 0.15 s of a cut, 8 flips, the director brings the ball in 2 times.
+11. D-Q12. From 23 s on (order 4): while the clear ball rides the highway and its spiral the rail pays out coins under it every 0.4 s (`RUN` in `src/pages/step3/strikes.ts`, film only), each a soft strike `strike:street.highway:1` or `strike:street.garage:1` with `loot`. A strike now keeps its height over the floor (`STRIKE.each` 6 to 7), so the coins leave the rail and not the floor under it. MEASURED strikes in each film second: 22:2 23:2 24:3 25:1 26:2 27:5 28:9 29:1 30:2 31:2 32:3 33:2 34:2 36:1; second 35 has the bat's save and its flash at 35.62. No hold was cut in this pass after the three of D-Q1; the ride on the rail is as slow as it was (about 4 balls a second).
+12. D-Q11. Not started: the buildings against `references/approved/` (the brief's last and lowest item).
 
 ## Events
 
@@ -20,14 +41,14 @@ Kept as they were: `ball-seal`, `tube-run`, `lights-down`, `power-on`, `plunger`
 New:
 - `strike:<id>:<n>`: the clear ball struck the thing `<id>` of the layout (`office.bumper.3`, `office.sling.left`, `street.bank.drop.2`, `office.rail` for a dead wall in the frenzy). `<n>` is how hard: 1 soft, 2 hard, 3 in the frenzy. One for every strike, beside the old event of the same strike.
 - `loot`: a strike threw coins or paper out.
-- `frenzy-on`, `frenzy-off`: the frenzy starts and ends (17.5 s and 19.8 s of step 3 in the film).
+- `frenzy-on`, `frenzy-off`: a frenzy starts and ends; twice each in the film (office 20.204 to 22.504 s, street 26.74 to 29.00 s).
 - `vacuum-on`, `vacuum-slip`, `vacuum-lose`: see above.
 
 ## Sounds asked of the Builder
 
 | name | what | seconds |
 | --- | --- | --- |
-| `vacuum-roar` | the port drawing: a heavy shop vacuum winding up and holding | 3.0 |
+| `vacuum-roar` | the port drawing: a heavy shop vacuum winding up and holding | 6.2 |
 | `vacuum-slip` | a short squeal of a thing dragged over a desk | 0.35 |
 | `vacuum-gulp` | the arrow goes in: a wet thump and the tone of the motor dropping | 0.5 |
 | `pin-bumper` | a pop bumper: solenoid crack and bell | 0.25 |
@@ -38,7 +59,7 @@ New:
 | `pin-frenzy` | the frenzy as one bed: bells and pops too fast to count, rising | 2.4 |
 | `pin-kick` | a scoop throwing the ball out (stand-in: `scoop-kick`) | 0.3 |
 
-## Decisions
+## Decisions of the first pass
 
 1. D-P1. The frenzy is film only and lives on the office tier between 17.5 s and 19.8 s: every cup and slingshot throws the clear ball at 36 balls a second (the table's other throws are 12 and 18), each throw aimed at the next place of a fixed round, and a ball that comes off a dead wall slower than 0.8 of that is thrown again. Numbers in `src/pages/step3/strikes.ts` (`FRENZY`).
 2. D-P2. A strike does not raise the flash of the whole tier. The tier's flash is already held shallow because it can rise five times a second (`tests/table-lights-strobe.test.ts`); the frenzy strikes 13 times a second, so its light is a small warm light at the strike, sparks, a ring on the floor and the cup's own lamp, not a flash of the picture.

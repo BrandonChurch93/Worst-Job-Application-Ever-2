@@ -5,8 +5,10 @@ import type { TableEvent } from '../../table/physics'
 // A strike on the table: what was hit, how hard (1 soft, 2 hard, 3 in the frenzy) and what bursts out of it (0 sparks alone, 1 coins, 2 paper).
 export interface Strike { id: string; hard: number; loot: number }
 
-// `ring`: how many strikes the page keeps and draws at once. `seconds`: how long one is drawn. `each`: the numbers one strike takes in the ring (serial, second, x and y in balls, hard, loot). `gap`: the least seconds between two strikes on the same thing.
-export const STRIKE = { ring: 14, seconds: 1.7, each: 6, gap: 0.05 }
+// `ring`: how many strikes the page keeps and draws at once. `seconds`: how long one is drawn. `each`: the numbers one strike takes in the ring (serial, second, x and y in balls, hard, loot, balls above the tier's floor). `gap`: the least seconds between two strikes on the same thing.
+export const STRIKE = { ring: 14, seconds: 1.7, each: 7, gap: 0.05 }
+// The ride on the highway and down its spiral, in the film: the rail pays out coins under the clear ball every `every` seconds; `ids` is the thing the strike names, by rail.
+export const RUN = { every: 0.4, ids: { highway: 'street.highway', spiral: 'street.garage' } as Record<string, string>, name: 'rail-pay' }
 // The camera's jolt for a strike by how hard it is, in the units of the page's shake, and how long a jolt lasts.
 export const JOLT = { by: [0, 0, 0.5, 2.2], most: 2.6, decay: 0.07, hz: 27, last: 0.4 }
 // The frenzy: from and to, in seconds of the scene; the speed of every throw in balls a second; the round of places the ball is sent to, one after each strike, in balls from the middle and down the tier (the low cup, a slingshot, an upper cup, the other slingshot and so on); `slow`: the share of that speed under which the ball has come off a dead wall and is thrown again; `gap`: the least seconds between two such throws; `cone`: the least share of a throw that must leave a face.
@@ -27,7 +29,7 @@ export function riotAim(x: number, y: number, vy: number, t: number): number[] {
 }
 
 const HARD: Record<string, [number, number]> = {
-  bumper: [2, 1], sling: [1, 0], 'drop-target': [2, 1], standup: [1, 2], 'ball-hit': [2, 0], 'scoop-kick': [2, 0], 'doors-slam': [2, 0], spinner: [1, 1], 'mom-save': [2, 0], 'ball-save': [1, 0], plunger: [2, 0], rebound: [3, 0]
+  bumper: [2, 1], sling: [1, 0], 'drop-target': [2, 1], standup: [1, 2], 'ball-hit': [2, 0], 'scoop-kick': [2, 0], 'doors-slam': [2, 0], spinner: [1, 1], 'mom-save': [2, 0], 'ball-save': [1, 0], plunger: [2, 0], rebound: [3, 0], 'rail-pay': [1, 1]
 }
 const PAPER = ['office.cubicles', 'corporate.boardroom', 'corporate.note', 'office.inbox']
 
@@ -40,11 +42,11 @@ export function strikeOf(e: TableEvent, frenzy: boolean): Strike | null {
   return { id: e.id, hard: steel ? 1 : frenzy && (e.name === 'bumper' || e.name === 'sling') ? 3 : h[0], loot }
 }
 
-export function noted(ring: number[] | undefined, t: number, e: TableEvent, k: Strike): number[] {
+export function noted(ring: number[] | undefined, t: number, e: TableEvent, k: Strike, lift = 0): number[] {
   const was = ring ?? []
   const serial = was.length > 0 ? was[was.length - STRIKE.each]! + 1 : 1
   const kept = was.slice(Math.max(0, was.length - (STRIKE.ring - 1) * STRIKE.each))
-  return [...kept, serial, t, e.x, e.y, k.hard, k.loot]
+  return [...kept, serial, t, e.x, e.y, k.hard, k.loot, lift]
 }
 
 export function strikeShapes(ring: number[] | undefined, t: number): Shape[] {
@@ -54,7 +56,7 @@ export function strikeShapes(ring: number[] | undefined, t: number): Shape[] {
     const age = t - ring[i + 1]!
     if (age < 0 || age > STRIKE.seconds) continue
     const y = Math.max(TIER_Y[0]!, Math.min(APRON_Y - 0.01, ring[i + 3]!))
-    const z = floorZ(tierAt(y)) * BALL
+    const z = (floorZ(tierAt(y)) + ring[i + 6]!) * BALL
     out.push({ id: `fx.${ring[i]!}`, part: 'table-lights', kind: 'box', x: ring[i + 2]! * BALL, y: y * BALL, w: 0, h: 0, z0: z, z1: z, tone: 'light', v: [age, ring[i + 4]!, ring[i + 5]!, ring[i]!] })
   }
   return out

@@ -13,11 +13,14 @@ export const VAC = {
   stall: 0.54,
   hard: 260,
   // The arrow's length as drawn in each kind of part, the lunges a second while it claws back and how deep they are, and its shake when it digs in and on the rim (radians, swings a second, seconds).
-  long: [1.12, 0.8, 1.42, 0.98, 1, 1.46],
+  long: [1.12, 0.8, 1.42, 0.98, 1, 1.72],
   lunges: 3.4,
   lunge: 0.2,
   dig: [0.07, 15, 0.5],
   rim: [0.2, 17, 0.5],
+  // The shake of the arrow's body at a slip (radians, swings a second, seconds), and how much wider it is at each slip after the first.
+  slip: [0.1, 19, 0.32],
+  slipMore: 0.05,
   // The film's hand: how far of the way from where the arrow comes on to the port it is at each key of the fight. It pulls back in `jerks` jerks while the arrow claws back.
   hand: [0.2, 0.2, 0.2, 0.25, 0.06, 0.14, 0.03, 0.17, 0.1, 0.2, 0.26],
   jerks: 3

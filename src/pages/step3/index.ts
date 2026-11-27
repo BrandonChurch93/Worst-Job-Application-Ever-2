@@ -19,7 +19,7 @@ import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
 import { CLOCK, filmOf, sceneOf } from './clock'
 import { fight, filmHand, LEAN, leanOf, LOOSE, looseOf, VAC, windOf } from './vacuum'
-import { FRENZY, noted, RIOT, riotAim, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
+import { FRENZY, noted, RIOT, riotAim, RUN, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -507,7 +507,7 @@ export function makePage(): PageLogic {
     const say = (name: string, hits = false) => io.emit(name, x, y, hits)
     const struck = strikeOf(e, machine().frenzy > 0)
     if (struck) {
-      s.fx = noted(s.fx, s.t, e, struck)
+      s.fx = noted(s.fx, s.t, e, struck, e.name === RUN.name && from ? Math.max(0, from.z - floorZ(from.tier)) : 0)
       if (e.ball === 0) io.emit(`strike:${struck.id}:${struck.hard}`, x, y, false)
       if (e.ball === 0 && struck.loot > 0) io.emit('loot', x, y, false)
     }
@@ -737,6 +737,7 @@ export function makePage(): PageLogic {
         emitTable(io, { name: 'rebound', ball: 0, id, x: b.x, y: b.y })
       }
     }
+    if (!live && b.mode === 'rail' && RUN.ids[b.rail] && once(`pay.${Math.floor(t / RUN.every)}`)) emitTable(io, { name: RUN.name, ball: 0, id: RUN.ids[b.rail]!, x: b.x, y: b.y })
     if (riot && once('riot-on')) io.emit('frenzy-on', px(MID), px(Y2 + RIOT.low[1]!), false)
     if (!riot && t >= RIOT.to && s.said.includes('riot-on') && once('riot-off')) io.emit('frenzy-off', px(MID), px(Y2 + RIOT.low[1]!), false)
     if (wild && once('frenzy-on')) io.emit('frenzy-on', px(MID), px(Y1 + FRENZY.low[1]!), false)
@@ -960,6 +961,7 @@ export function makePage(): PageLogic {
           if (f.began && f.kind === 1) io.cursor.wobble(VAC.dig[0]!, VAC.dig[1]!, VAC.dig[2]!)
           if (f.began && f.kind === 5) io.cursor.wobble(VAC.rim[0]!, VAC.rim[1]!, VAC.rim[2]!)
           if (f.began && f.kind === 2) {
+            io.cursor.wobble(VAC.slip[0]! + VAC.slipMore * VAC.kinds.slice(0, f.part).filter((k) => k === 2).length, VAC.slip[1]!, VAC.slip[2]!)
             io.cursor.react('startle')
             io.emit('vacuum-slip', f.x, f.y, false)
           }
