@@ -1,0 +1,36 @@
+import { it } from 'vitest'
+import { config, stepHz } from '../src/config'
+import { pages } from '../src/pages'
+import { ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
+import type { DrawList } from '../src/stage/types'
+
+it('counts the frames of the film whose draw list holds a cut run', () => {
+  const s = new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver(), film: { arrive: false, leave: false } })
+  const per = stepHz / config.film.fps
+  const total = config.film.units.reduce((sum, u) => sum + u.seconds, 0) * config.film.fps
+  const shown: number[] = []
+  const cut: number[] = []
+  const none: number[] = []
+  let heads = 0
+  let tails = 0
+  for (let f = 0; f < total; f++) {
+    const fr = s.frameAt((f * per) / stepHz)
+    if (fr.page !== 'marketing') continue
+    shown.push(f)
+    const runs = (fr.list as DrawList).filter((d) => d.kind === 'text' && /^ticker-.*-run$/.test(d.id))
+    const c = runs.filter((d) => d.type?.cut === true)
+    heads += c.filter((d) => d.type?.align !== 'right').length
+    tails += c.filter((d) => d.type?.align === 'right').length
+    if (c.length) cut.push(f)
+    else none.push(f)
+  }
+  const spans = (a: number[]): string => {
+    const out: string[] = []
+    let from = a[0]!
+    for (let i = 1; i <= a.length; i++) if (i === a.length || a[i] !== a[i - 1]! + 1) { out.push(from === a[i - 1] ? `${from}` : `${from}..${a[i - 1]}`); from = a[i]! }
+    return out.join(' ')
+  }
+  console.log(`frames of the film ${total}; the careers page is drawn on ${shown.length}: ${spans(shown)}`)
+  console.log(`with a cut run ${cut.length}; heads ${heads}, tails ${tails}`)
+  console.log(`with no cut run ${none.length}: ${spans(none)}`)
+}, 240000)

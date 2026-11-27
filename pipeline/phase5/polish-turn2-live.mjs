@@ -1,6 +1,6 @@
 // node pipeline/phase5/polish-turn2-live.mjs OUT_DIR NTH BEFORE AFTER [LEVEL]: the pack's visitor walks the built live site, stepped, at 2 device pixels to a pixel of the
 // 960 by 540 window (a picture of 1920 by 1080). It walks twice: once without drawing, to find the step at which the NTH page turn starts (1 is the turn into step 1),
-// and once more to keep the picture of every step from BEFORE steps before that step to AFTER steps after it. rows.json holds the steps and the step of the start.
+// and once more to keep the picture of every step from BEFORE steps before that step to AFTER steps after it. With BEFORE at 0 or under it walks once and keeps the pictures as it goes. rows.json holds the steps and the step of the start.
 import fs from 'node:fs'
 import path from 'node:path'
 import { at, config } from '../../tools/lib/paths.mjs'
@@ -61,19 +61,31 @@ try {
   let turns = 0
   let was = false
   let start = -1
-  await visit(async (i, t) => {
+  const count = (i, t) => {
     if (t.turning && !was) turns++
     was = t.turning
-    if (turns === nth) start = i
-    return start >= 0
-  })
-  if (start < 0) throw new Error(`the visit has no turn ${nth}`)
-  await visit(async (i, t, page) => {
+    if (start < 0 && turns === nth) start = i
+  }
+  const keep = async (i, t, page) => {
     if (i < start - before) return false
     fs.writeFileSync(path.join(out, `step-${String(i).padStart(6, '0')}.png`), await shot(page))
     rows.push({ step: i, page: t.page, turning: t.turning, hero: t.hero })
     return i >= start + after
-  })
+  }
+  if (before <= 0) {
+    await visit(async (i, t, page) => {
+      count(i, t)
+      return start >= 0 && (await keep(i, t, page))
+    })
+    if (start < 0) throw new Error(`the visit has no turn ${nth}`)
+  } else {
+    await visit(async (i, t) => {
+      count(i, t)
+      return start >= 0
+    })
+    if (start < 0) throw new Error(`the visit has no turn ${nth}`)
+    await visit(keep)
+  }
   fs.writeFileSync(path.join(out, 'rows.json'), JSON.stringify({ nth, start, level, rows, problems }, null, 1) + '\n')
   console.log(`live: turn ${nth} starts at step ${start}; ${rows.length} pictures in ${out}; problems ${problems.length}`)
 } finally {

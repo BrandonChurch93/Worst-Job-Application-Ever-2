@@ -325,6 +325,23 @@ export function makePage(): PageLogic {
     return u * u * (3 - 2 * u)
   }
 
+  // A run that crosses an end of the window is set in whole glyphs as far as it lies inside: from its head as it comes in, from its tail as it leaves. `cutOf` is how wide that is, and `CUT_INK` the room kept for the ink that stands outside a letter's own width.
+  const CUT_INK = 3
+  const CUT_HEAD = { ...T.tape, cut: true } as const
+  const CUT_TAIL = { ...T.tape, cut: true, align: 'right' } as const
+  const cuts = new Map<string, { head: number[]; tail: number[] }>()
+  const cutOf = (key: string, room: number, leaving: boolean): number => {
+    let c = cuts.get(key)
+    if (!c) {
+      const chars = Array.from(words(key))
+      const wide = (t: string[]): number => block(T.tape.font, t.join(''), T.tape.px).width
+      cuts.set(key, (c = { head: chars.map((_, k) => wide(chars.slice(0, k + 1))), tail: chars.map((_, k) => wide(chars.slice(chars.length - k - 1))) }))
+    }
+    let w = 0
+    for (const v of leaving ? c.tail : c.head) if (v <= room) w = v
+    return w
+  }
+
   function ticker(out: DrawList): void {
     const left = TICKER.x + TICKER.clip
     const right = TICKER.x + TICKER.w - TICKER.clip
@@ -343,9 +360,12 @@ export function makePage(): PageLogic {
       const x = left + lead + rel
       if (x + item.w > left + 2 && x < right - 2) {
         const run = { id: `${item.id}-run`, part: 'type', kind: 'text', y: tapeY, h: tapeH, z0: TICKER.tape, z1: TICKER.tape, tone: 'ink', words: item.key } as const
-        if (x >= left && x + item.w <= right) out.push({ ...run, x, w: item.w, type: T.tape })
-        else if (x >= left) out.push({ ...run, x, w: 2, type: T.tape })
-        else out.push({ ...run, x: x + item.w - 2, w: 2, type: { ...T.tape, align: 'right' } })
+        if (x >= left + CUT_INK && x + item.w <= right - CUT_INK) out.push({ ...run, x, w: item.w, type: T.tape })
+        else {
+          const leaving = x < left + CUT_INK
+          const w = cutOf(item.key, (leaving ? x + item.w - left : right - x) - CUT_INK, leaving)
+          if (w > 0) out.push({ ...run, x: leaving ? x + item.w - w : x, w, type: leaving ? CUT_TAIL : CUT_HEAD })
+        }
       }
       const dot = x + item.w + TICKER.gap / 2
       const d = Math.round(Math.max(0, Math.min(1, (Math.min(dot - TICKER.x, TICKER.x + TICKER.w - dot) - clear) / DOT_GROWS)) * 8) / 2

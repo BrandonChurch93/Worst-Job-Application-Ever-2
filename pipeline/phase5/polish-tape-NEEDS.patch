@@ -1,0 +1,49 @@
+diff --git a/src/shell/real/type.ts b/src/shell/real/type.ts
+index 035a5675..096e4a3a 100644
+--- a/src/shell/real/type.ts
++++ b/src/shell/real/type.ts
+@@ -418,12 +418,21 @@ const q = (v: number): number => Math.round(v * 4) / 4
+ const HOVER = 0.05
+ const UNSEEN = 31
+ 
++function cutLine(name: string, line: string, px: number, w: number, fromEnd: boolean): string {
++  const chars = Array.from(line)
++  let n = chars.length
++  const part = (): string => (fromEnd ? chars.slice(chars.length - n) : chars.slice(0, n)).join('')
++  while (n > 0 && measure(name, part(), px).width > w + 0.01) n--
++  return part()
++}
++
+ export function dataOf(s: Shape, said: string, style: Style): RunData {
+   const t = s.type!
+   const b = block(t.font, said, t.px, t.wrap, t.lead)
+   const align = t.align ?? 'left'
+   const x = align === 'centre' ? 0 : align === 'right' ? s.w / 2 : -s.w / 2
+-  const data = setRun({ font: t.font, px: t.px, lines: b.lines, align, x, y: s.h / 2 - b.cap, lead: b.lead, style })
++  const lines = t.cut ? b.lines.map((line) => cutLine(t.font, line, t.px, s.w, align === 'right')) : b.lines
++  const data = setRun({ font: t.font, px: t.px, lines, align, x, y: s.h / 2 - b.cap, lead: b.lead, style })
+   const tint = data.colour
+   for (let i = 0; i < tint.length; i += 4) {
+     tint[i] = tint[i]! / style.fill[0]
+@@ -646,7 +655,7 @@ export const type: PartMaker = {
+     const t = s.type
+     const name = styleName(groundOf(s, ctx), s.tone, t.font, t.ink)
+     const said = s.words.startsWith('runtime:') ? '' : words(s.words)
+-    return `${name}|${t.font}|${t.px}|${t.wrap ?? ''}|${t.align ?? ''}|${t.lead ?? ''}|${q(s.w)}|${q(s.h)}|${s.words}|${said}`
++    return `${name}|${t.font}|${t.px}|${t.wrap ?? ''}|${t.align ?? ''}${t.cut ? ' cut' : ''}|${t.lead ?? ''}|${q(s.w)}|${q(s.h)}|${s.words}|${said}`
+   },
+   make(s, ctx) {
+     const ground = groundOf(s, ctx)
+diff --git a/src/stage/types.ts b/src/stage/types.ts
+index 5115c85c..cfd2592e 100644
+--- a/src/stage/types.ts
++++ b/src/stage/types.ts
+@@ -48,6 +48,8 @@ export interface TypeSpec {
+   lead?: number
+   // Asks for the quieter ink where the ground has one: the fine print on a card of glass.
+   ink?: 'soft'
++  // The run is set only as far as its box is wide, in whole glyphs from the end it is aligned to.
++  cut?: boolean
+ }
+ 
+ export interface Shape {

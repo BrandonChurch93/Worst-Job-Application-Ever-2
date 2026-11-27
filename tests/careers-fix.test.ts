@@ -26,7 +26,7 @@ describe('the careers page after critic round 7', () => {
       const strip = list.find((d) => d.id === 'ticker-glass')!
       const clearFrom = strip.x + strip.v![0]! + strip.v![1]!
       const clearTo = strip.x + strip.w - strip.v![0]! - strip.v![1]!
-      const runs = list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-') && d.w > 2)
+      const runs = list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-') && d.type?.cut !== true)
       const inside = runs.filter((r) => r.x >= clearFrom - 0.01 && r.x + r.w <= clearTo + 0.01)
       expect(inside.length, `whole items at ${at} s`).toBeGreaterThanOrEqual(3)
       expect(inside.length, `every run in sight at ${at} s is whole`).toBe(runs.length)
@@ -35,7 +35,7 @@ describe('the careers page after critic round 7', () => {
       expect(Math.abs(first - strip.x - (strip.x + strip.w - last)), `centred at ${at} s`).toBeLessThan(1)
       const solidFrom = strip.x + strip.v![0]!
       const solidTo = strip.x + strip.w - strip.v![0]!
-      for (const r of list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-') && d.w === 2)) {
+      for (const r of list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-') && d.type?.cut === true)) {
         expect(r.x < solidFrom || r.x > solidTo, `${r.id} at ${at} s is under the solid frost`).toBe(true)
       }
     }
