@@ -1119,12 +1119,13 @@ export function makePage(): PageLogic {
       }
       if (s.paper.on && (s.phase === 'resume' || reaching())) {
         const dx = s.paper.x - PAPER_REST.x
-        const dy = s.paper.y - PAPER_REST.y
+        const sy = s.paper.y + (reaching() ? joltNow() : 0)
+        const dy = sy - PAPER_REST.y
         const up = s.paper.held ? LIE + 14 + (s.mode === 'film' ? RESUME.high * raised(s.time) : 0) : s.paper.feed >= 0 ? LIE : 0.6
         const moved = dx !== 0 || dy !== 0
         const hx = s.paper.held ? s.cx : s.paper.x + PAPER.w / 2
-        const hy = s.paper.held ? s.cy : s.paper.y
-        over['resume-paper'] = { x: s.paper.x, y: s.paper.y, z0: up, z1: up + heights.paper, moved, v: [up, s.paper.feed >= 0 ? clamp(s.paper.feed / TIMES.bite, 0, 1) : 0, 0, 0, hx, hy, hx, hy, s.paper.vx, s.paper.vy, 0] }
+        const hy = s.paper.held ? s.cy : sy
+        over['resume-paper'] = { x: s.paper.x, y: sy, z0: up, z1: up + heights.paper, moved, v: [up, s.paper.feed >= 0 ? clamp(s.paper.feed / TIMES.bite, 0, 1) : 0, 0, 0, hx, hy, hx, hy, s.paper.vx, s.paper.vy, 0] }
         const title = boxOf(layout, 'resume-paper-title')
         over['resume-paper-title'] = { x: title.x + dx, y: title.y + dy, z0: up + heights.paper + 0.1, z1: up + heights.paper + 0.1, moved }
         PAPER_LINES.forEach((_, i) => {

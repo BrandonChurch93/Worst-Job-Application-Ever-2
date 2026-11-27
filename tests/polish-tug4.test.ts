@@ -7,8 +7,8 @@ import { film, type FilmRow } from './polish-tug3-run'
 const HOLD = {
   // The arms are at least this much of their length on the frame the sheet first shows its held look, and the look is whole no sooner than `rise` frames after that frame and no later than `whole`.
   out: 0.9, rise: 2, whole: 4,
-  // The sheet goes no further than this into the slot between the frame before the arms come out and the frame they do.
-  fed: 1,
+  // On the frame the arms come out the sheet goes down with the thrown mouth, no further than this, and from there it only comes back until the hands are on it.
+  thrown: 12,
   // In the film the sheet is at the hands' place from the first frame; until the arms are out it shows no more than this of its held look.
   bare: 0.001,
   // The given back arrow stands this many frames at its length before the visitor has it, and no more.
@@ -21,9 +21,9 @@ const HOLD = {
 
 const paper = (list: Shape[]): Shape | undefined => list.find((x) => x.id === 'resume-paper')
 const look = (list: Shape[]): number => (paper(list)?.v?.[10] as number | undefined) ?? 0
-const place = (list: Shape[]): string => {
+const flat = (list: Shape[]): string => {
   const p = paper(list)
-  return p ? `${p.x.toFixed(2)} ${p.y.toFixed(2)} ${p.h.toFixed(2)} ${(p.rot ?? 0).toFixed(4)}` : ''
+  return p ? `${p.x.toFixed(2)} ${p.h.toFixed(2)} ${(p.rot ?? 0).toFixed(4)}` : ''
 }
 
 let runs: Record<'visitor' | 'keen', Frame[]>
@@ -41,9 +41,13 @@ describe('the sheet at the take', () => {
       const grab = rows.findIndex((r) => r.events.includes('arms-out'))
       const held = rows.findIndex((r, n) => n >= grab && look(r.list) > 0)
       expect(held).toBeGreaterThan(grab)
-      for (let n = grab; n < held; n++) expect(place(rows[n]!.list), `frame ${rows[n]!.i}`).toBe(place(rows[grab]!.list))
-      expect(Math.abs(paper(rows[grab]!.list)!.y - paper(rows[grab - 1]!.list)!.y)).toBeLessThanOrEqual(HOLD.fed)
-      expect(paper(rows[grab]!.list)!.rot ?? 0).toBe(0)
+      const y = (n: number): number => paper(rows[n]!.list)!.y
+      for (let n = grab; n < held; n++) {
+        expect(flat(rows[n]!.list), `frame ${rows[n]!.i}`).toBe(flat(rows[grab - 1]!.list))
+        if (n > grab) expect(y(n), `frame ${rows[n]!.i}`).toBeLessThan(y(n - 1))
+        expect(y(n), `frame ${rows[n]!.i}`).toBeGreaterThan(y(grab - 1))
+      }
+      expect(y(grab) - y(grab - 1)).toBeLessThanOrEqual(HOLD.thrown)
       expect(rows[held]!.pose.sprout).toBeGreaterThanOrEqual(HOLD.out)
       const whole = rows.findIndex((r, n) => n >= held && look(r.list) >= 1)
       expect(whole - held).toBeGreaterThanOrEqual(HOLD.rise)
