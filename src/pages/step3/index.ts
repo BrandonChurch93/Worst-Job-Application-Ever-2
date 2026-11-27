@@ -296,7 +296,8 @@ export function makePage(): PageLogic {
     }
     if (b.mode === 'hold' && b.hold === 'plunger') return { scroll: px(Y2 + LOW), floor: px(floorZ(2)) }
     const lane = b.mode === 'rail' && b.rail.startsWith('outlane.') ? railOf(b.rail).points : null
-    const sunk = lane && b.s >= lane[1]![1] - lane[0]![1] ? lane[1]![1] : b.y
+    const shut = lane !== null && !machine().gate[tierAt(lane[0]![1])]
+    const sunk = lane && (shut || b.s >= lane[1]![1] - lane[0]![1]) ? lane[shut ? 0 : 1]![1] : b.y
     const k = b.mode === 'rail' && b.rail.startsWith('chute.') ? TIERS.indexOf(b.rail.slice(6) as never) + 1 : b.mode === 'rail' && b.rail.startsWith('lift.') ? tierAt(railOf(b.rail).points[3]![1]) : tierAt(Math.max(Y0, Math.min(APRON_Y - 0.01, sunk)))
     return { scroll: px(TIER_Y[k]! + (k === 2 ? STREET : 0)), floor: px(floorZ(k)) }
   }
