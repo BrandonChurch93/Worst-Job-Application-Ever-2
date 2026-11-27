@@ -112,15 +112,18 @@ export function crankCorners(b: number): { x: number; y: number }[] {
 // The crank can go down into its tray at an angle where every corner of the arm and the grip lies inside the tray's floor, this far from the tray's edge (the rim and its cove).
 export const CRANK_CLEAR = 8
 export const crankInTray = (b: number): boolean => crankCorners(b).every((c) => c.x >= FX + CRANK_CLEAR && c.x <= FX + FW - CRANK_CLEAR && c.y >= trayY(2) + CRANK_CLEAR && c.y <= trayY(2) + TRAY_H - CRANK_CLEAR)
-// The arc of such angles round the arm's resting angle, found once in steps of 0.001 rad and drawn in by HOME_PAD at each end: a live run ends inside it.
+// The arc of such angles round the arm's resting angle, found once in steps of 0.001 rad and drawn in by HOME_PAD at each end: a live run ends inside it. It ends at HOME_LOW, the arm level: lower, the grip would be the first thing the tray shuts over, while the crank still stands a little.
 const HOME_PAD = 0.03
+const HOME_LOW = 0
 export const CRANK_HOME = ((): { from: number; to: number } => {
   let from = CRANK.rest
   let to = CRANK.rest
   while (crankInTray(from - 0.001)) from -= 0.001
   while (crankInTray(to + 0.001)) to += 0.001
-  return { from: from + HOME_PAD, to: to - HOME_PAD }
+  return { from: from + HOME_PAD, to: Math.min(to - HOME_PAD, HOME_LOW) }
 })()
+// The limits of the crank's blow, as its test in `stepCrank` holds them: the arm strikes a cursor only above this speed, under this height and within this reach of the hub. Outside them the arm's angle decides nothing but the picture, and only there is a coasting crank steered.
+const BLOW_REACH = { speed: 6, high: 70, far: CRANK.tip + 26 }
 // The pace at which a full crank loses its speed, and the speed under which its run is over.
 const COAST = { loss: 5, least: 0.5 }
 // The share of its speed a coasting crank turns by on the live site, so that the run ends with the arm inside the tray: 1 where it would end there anyway, else what brings it to the nearer end of the arc in the same time.
@@ -550,7 +553,9 @@ export function makePage(): PageLogic {
       c.b -= c.o
       if (c.phase === 'runaway') c.w = Math.min(42, c.w + 26 * dt)
       else c.w *= 1 - COAST.loss * dt
-      c.b += c.phase === 'full' && s.mode === 'live' ? c.w * dt * homeward(c.b, c.w) : c.w * dt
+      const hand = io.cursor
+      const safe = c.hit || hand.taken || hand.z >= BLOW_REACH.high || c.w <= BLOW_REACH.speed || Math.hypot(hand.x + 10 - CRANK.hx, hand.y + 20 - CRANK.hy) > BLOW_REACH.far
+      c.b += c.phase === 'full' && s.mode === 'live' && safe ? c.w * dt * homeward(c.b, c.w) : c.w * dt
       c.total += c.w * dt
       c.o = c.phase === 'runaway' ? -WIND.back * (c.t < WIND.long ? Math.pow(smooth(c.t / WIND.long), 1.5) : 1 - smooth((c.t - WIND.long) / WIND.out)) : 0
       c.b += c.o

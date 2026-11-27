@@ -5,7 +5,7 @@ import { config, stepHz } from '../src/config'
 import { ROWS, TRAY, TRAY_H } from '../src/pages/step2/layout'
 import { BotDriver, type BotName } from '../src/stage/bots'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
-import { bare, DRAWN, heights, openings, still, visit, visitor, type Row } from './polish-date-run'
+import { bare, BODY, DRAWN, heights, openings, still, visit, visitor, type Row } from './polish-date-run'
 
 // A tray counts as open once it is taller than this share of its full height: under it the tray is the 4 px slit it starts as.
 const SLIVER = 0.02
@@ -105,21 +105,21 @@ function stopper(turn: number): Driver {
   }
 }
 
-// How far outside the tray's floor the worst corner of the crank's arm and grip lies on the step the lift begins to lower, for every shutting of the crank's row in one visit: 0 or less is inside.
-function overhang(stage: Stage, seconds: number): number[] {
+// How far outside the tray's floor the worst corner of the named parts (the crank's arm and grip unless told) lies on the step the lift begins to lower, for every shutting of that row in one visit: 0 or less is inside.
+function overhang(stage: Stage, seconds: number, row = 2, ids = ['crank-arm', 'crank-grip']): number[] {
   const out: number[] = []
   let was = ''
   for (let i = 0; i < seconds * stepHz && stage.page.id === 'step2'; i++) {
     stage.advance(1)
     if (stage.page.id !== 'step2') break
     const st = stage.page.save() as CrankSaved
-    const now = st.open === 2 ? st.phase : ''
+    const now = st.open === row ? st.phase : ''
     if (now === 'closing' && was !== 'closing') {
       const list: Shape[] = []
       stage.page.draw(list)
-      const tray = list.find((x) => x.id === `${ROWS[2]}-tray`)!
+      const tray = list.find((x) => x.id === `${ROWS[row]}-tray`)!
       let worst = -Infinity
-      for (const id of ['crank-arm', 'crank-grip']) {
+      for (const id of ids) {
         const part = list.find((x) => x.id === id)!
         const rot = part.rot ?? 0
         for (const u of [-1, 1])
@@ -139,7 +139,8 @@ function overhang(stage: Stage, seconds: number): number[] {
 describe('polish date: the crank lies inside its tray before it goes down into it', () => {
   it('keeps the arc of the crank round its resting angle, the last angle of the film in it', () => {
     expect(CRANK_HOME.from).toBeLessThan(-0.9025)
-    expect(CRANK_HOME.to).toBeGreaterThan(0)
+    expect(CRANK_HOME.to).toBeGreaterThan(-0.75)
+    expect(CRANK_HOME.to).toBeLessThanOrEqual(0)
   })
   for (const bot of config.live.bots) {
     it(`bot ${bot}: on the step the lift begins to lower, every corner of the arm and the grip is inside the tray's floor`, () => {
@@ -151,6 +152,13 @@ describe('polish date: the crank lies inside its tray before it goes down into i
   for (let k = 0; k < 8; k++) {
     it(`a visitor who stops turning ${k} eighths of a turn past one turn: the same`, () => {
       const hang = overhang(new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: stopper(TURN + (k * TURN) / 8), seed: config.seed }), 200)
+      expect(hang.length).toBe(1)
+      expect(hang[0]).toBeLessThanOrEqual(0)
+    })
+  }
+  for (const [name, make] of [['rows 1, 2, 3', () => visitor([0, 1, 2])], ['rows 3, 2, 1', () => visitor([2, 1, 0])], ['bot keen', () => new BotDriver('keen', config.seed)], ['bot clumsy', () => new BotDriver('clumsy', config.seed)]] as const) {
+    it(`${name}: the slot's cabinet, lever, mount and payout are inside their tray's floor on the step the lift begins to lower`, () => {
+      const hang = overhang(new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: make(), seed: config.seed }), 200, 1, BODY[1]!)
       expect(hang.length).toBe(1)
       expect(hang[0]).toBeLessThanOrEqual(0)
     })
