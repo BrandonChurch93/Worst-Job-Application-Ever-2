@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
-import { dateMask, ownDate, reelPos, reelWindow } from '../src/pages/step2'
-import { BAND, CRANK, FIELDS, FW, FX, NOTE_Y, ROWS, scaleOf, SLOT, TRAY, TRAY_H, trayY } from '../src/pages/step2/layout'
+import { dateMask, ENTER, ownDate, reelPos, reelWindow } from '../src/pages/step2'
+import { BAND, CRANK, FIELDS, NOTE_Y, PLATE_Y, ROWS, scaleOf, SLOT } from '../src/pages/step2/layout'
 import { SCREEN_H } from '../src/shell/parts'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
 
@@ -10,6 +10,7 @@ interface Saved {
   field: number
   open: number
   phase: string
+  rowT: number
   slide: number
   done: boolean[]
   birth: { focus: boolean; typed: string; fill: string }
@@ -17,7 +18,10 @@ interface Saved {
   crank: { b: number; level: number; phase: string; total: number }
 }
 
-const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
+// The film of the page at the length it plays (change note 003, update 5: the unit runs to 24.85 s), whatever the config says the unit is.
+const LONG = 24.85
+const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2').map((f) => (f.closes !== undefined ? { ...f, closes: LONG } : f)), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
+const MADE = ['dial', 'slot', 'crank']
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver, seed })
 const saved = (s: Stage): Saved => s.page.save() as Saved
 const drawn = (s: Stage): Shape[] => {
@@ -67,7 +71,7 @@ describe('change 002, step 2: one field at a time', () => {
     let was = 0
     let offered = -1
     const at: Record<string, number> = {}
-    run(s, 21, (i) => {
+    run(s, LONG, (i) => {
       const f = s.page.fields!()!
       expect(f.total).toBe(FIELDS)
       expect(f.done).toBeGreaterThanOrEqual(was - 1e-9)
@@ -85,36 +89,67 @@ describe('change 002, step 2: one field at a time', () => {
     expect(at[Math.round(0.8 * stepHz)]).toBeCloseTo(3, 2)
   })
 
-  it('shows one field and its stage at a time: two only while one leaves and the next comes up, and never two trays', () => {
+  it('shows the field alone and then the machine alone on the bare page: no field, box or tray behind a machine, and one machine at a time', () => {
     const s = film()
     const order: number[] = []
-    let two = 0
-    run(s, 20.4, (i) => {
+    const fields: number[] = []
+    let both = 0
+    let bare = 0
+    run(s, LONG - 0.6, (i) => {
       if (i % 3 !== 0) return
       const list = drawn(s)
-      const here = ROWS.map((name, k) => (list.some((x) => x.id === `${name}-label`) ? k : -1)).filter((k) => k >= 0)
-      const trays = ROWS.filter((name) => list.some((x) => x.id === `${name}-tray`))
       const st = saved(s)
-      expect(trays.length).toBeLessThanOrEqual(1)
-      expect(here.length).toBeGreaterThanOrEqual(1)
-      if (st.slide < 0) expect(here.length, `at ${(i / stepHz).toFixed(2)}`).toBe(1)
-      else {
-        expect(here).toEqual([st.field - 1, st.field])
-        two++
+      const here = ROWS.map((name, k) => (list.some((x) => x.id === `${name}-label`) ? k : -1)).filter((k) => k >= 0)
+      const made = MADE.map((part, k) => (list.some((x) => x.part === part && !x.id.startsWith('coin-')) ? k : -1)).filter((k) => k >= 0)
+      const boxes = list.filter((x) => x.role === 'field' || x.id.endsWith('-tray') || x.role === 'card')
+      const holes = list.filter((x) => x.role === 'machineTray')
+      expect(made.length).toBeLessThanOrEqual(1)
+      expect(holes.length).toBeLessThanOrEqual(1)
+      expect(list.some((x) => x.id.endsWith('-tray'))).toBe(false)
+      if (made.length) {
+        expect(made[0]).toBe(st.open)
+        if (order[order.length - 1] !== made[0]) order.push(made[0]!)
+        if (here.length) both++
+        else {
+          bare++
+          expect(boxes.map((x) => x.id), `at ${(i / stepHz).toFixed(2)}`).toEqual([])
+        }
+        if (here.length) expect(st.rowT).toBeLessThan(ENTER.field + 1e-9)
       }
-      if (trays.length) expect(trays[0]).toBe(ROWS[here[here.length - 1]!])
-      const now = here[here.length - 1]!
-      if (order[order.length - 1] !== now) order.push(now)
+      if (st.open >= 0 && st.rowT >= ENTER.field) expect(here, `at ${(i / stepHz).toFixed(2)}`).toEqual([])
+      if (st.open < 0 && st.field < FIELDS) expect(here).toEqual([st.field])
+      if (st.open < 0 && here.length && fields[fields.length - 1] !== here[0]) fields.push(here[0]!)
+      for (const h of holes) expect(h.id).toBe(`${ROWS[st.open]}-hole`)
     })
     expect(order).toEqual([0, 1, 2])
-    expect(two).toBeGreaterThan(40)
+    expect(fields).toEqual([0, 1, 2])
+    expect(bare).toBeGreaterThan(900)
+    expect(both).toBeLessThan(3 * ENTER.field * stepHz / 3 + 3)
   })
 
   it('says when a field is done and when the next comes up, twice and three times, in order', () => {
     const s = film()
-    run(s, 21)
+    run(s, LONG)
     const flow = names(s).filter((n) => n === 'field-done' || n === 'field-next' || n === 'row-open')
     expect(flow).toEqual(['row-open', 'field-done', 'field-next', 'row-open', 'field-done', 'field-next', 'row-open', 'field-done'])
+  })
+
+  it('says when each machine comes out of the page and goes back into it, once each, around its gag', () => {
+    const s = film()
+    run(s, LONG)
+    ROWS.forEach((name, k) => {
+      const key = name === 'birth' ? 'birth' : name
+      const into = times(s, `stage-in-${key}`)
+      const out = times(s, `stage-out-${key}`)
+      expect(into.length).toBe(1)
+      expect(out.length).toBe(1)
+      expect(into[0]).toBe(times(s, 'row-open')[k]!)
+      expect(times(s, 'field-done')[k]! - out[0]!).toBeCloseTo(ENTER.out[k]!, 2)
+      expect(ENTER.long[k]!).toBeGreaterThanOrEqual(0.6)
+      expect(ENTER.long[k]!).toBeLessThanOrEqual(0.9)
+      expect(ENTER.out[k]!).toBeGreaterThanOrEqual(0.4)
+      expect(ENTER.out[k]!).toBeLessThanOrEqual(0.6)
+    })
   })
 })
 
@@ -185,7 +220,7 @@ describe('change 002, step 2: the date of birth', () => {
     const s = film()
     let before: Saved | null = null
     const off: number[] = []
-    run(s, 12, () => {
+    run(s, 13, () => {
       const st = saved(s)
       if (before) for (let r = 0; r < 3; r++) if (before.slot.stopped[r]! < 0 && st.slot.stopped[r]! >= 0) off.push(Math.abs(st.slot.at[r]! - st.slot.own[r]!))
       before = st
@@ -229,54 +264,40 @@ describe('change 002, step 2: the volume crank', () => {
     })
   }
 
-  it('puts up the sign before the crank is touched', () => {
+  it('puts up the sign as the crank comes out of the page, before the crank is touched', () => {
     const s = film()
-    run(s, 21)
+    run(s, LONG)
     const sign = times(s, 'volume-sign')
     expect(sign.length).toBe(1)
-    expect(sign[0]).toBeGreaterThan(times(s, 'row-open')[2]!)
+    expect(sign[0]).toBe(times(s, 'stage-in-volume')[0]!)
     expect(sign[0]).toBeLessThan(times(s, 'crank-turn')[0]!)
     expect(sign[0]).toBeLessThan(times(s, 'crank-runaway')[0]!)
   })
 
-  it('never lays the crank\'s grip over the footnote or outside the floor of its tray, at any angle', () => {
+  it('never lays the crank\'s grip over the bars, the sign, the line above the machine or the lowest band, at any angle, and draws no machine with the footnote', () => {
     const m = scaleOf(2)
-    const floor = { x0: FX + TRAY.rim, x1: FX + FW - TRAY.rim, y0: trayY(2) + TRAY.rim, y1: trayY(2) + TRAY_H - TRAY.rim }
     for (let k = 0; k < 720; k++) {
       const b = (k / 720) * Math.PI * 2
       const cx = CRANK.hx + CRANK.arm * Math.cos(b)
       const cy = CRANK.hy + CRANK.arm * Math.sin(b)
       for (const p of corners({ x: cx - CRANK.gripW / 2, y: cy - CRANK.gripH / 2, w: CRANK.gripW, h: CRANK.gripH, rot: b } as Shape)) {
-        expect(m.x(p.x)).toBeGreaterThan(floor.x0)
-        expect(m.x(p.x)).toBeLessThan(floor.x1)
-        expect(m.y(p.y)).toBeGreaterThan(floor.y0)
-        expect(m.y(p.y)).toBeLessThan(floor.y1)
+        expect(m.x(p.x)).toBeGreaterThan(0)
+        expect(m.x(p.x)).toBeLessThan(m.x(CRANK.segX))
+        expect(m.y(p.y)).toBeGreaterThan(PLATE_Y)
+        expect(m.y(p.y)).toBeLessThan(SCREEN_H - BAND)
       }
     }
     const s = film()
-    let seen = 0
     let rest = 0
-    run(s, 20.4, (i) => {
+    run(s, LONG - 0.6, (i) => {
       if (i % 2 !== 0) return
       const list = drawn(s)
-      const grip = list.find((x) => x.id === 'crank-grip')
       const note = list.find((x) => x.id === 'note')
-      const tray = list.find((x) => ROWS.some((r) => x.id === `${r}-tray`))
-      if (note) {
-        rest++
-        expect(tray, `step ${i}`).toBeUndefined()
-        expect(note.y).toBe(NOTE_Y)
-      }
-      if (!grip || !tray) return
-      seen++
-      for (const p of corners(grip)) {
-        expect(p.x).toBeGreaterThan(tray.x + TRAY.rim)
-        expect(p.x).toBeLessThan(tray.x + tray.w - TRAY.rim)
-        expect(p.y).toBeGreaterThan(tray.y)
-        expect(p.y).toBeLessThan(trayY(2) + TRAY_H - TRAY.rim)
-      }
+      if (!note) return
+      rest++
+      expect(list.some((x) => MADE.includes(x.part) && !x.id.startsWith('coin-')), `step ${i}`).toBe(false)
+      expect(note.y).toBe(NOTE_Y)
     })
-    expect(seen).toBeGreaterThan(500)
     expect(rest).toBeGreaterThan(300)
   })
 })
@@ -286,7 +307,7 @@ describe('change 002, step 2: the lowest band of the page is left to the spoken 
     const s = film()
     const line = SCREEN_H - BAND
     const low = new Set<string>()
-    run(s, 20.4, (i) => {
+    run(s, LONG - 0.6, (i) => {
       if (i % 4 !== 0) return
       for (const x of drawn(s)) {
         if (x.id.startsWith('continue') || x.id.startsWith('coin-') || x.id === 'page' || x.id === 'paper') continue

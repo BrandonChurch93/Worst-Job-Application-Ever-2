@@ -153,7 +153,7 @@ export const stopId = (r: number): string => `slot-stop-${r}`
 export const PLATE_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
 export const PLATE_Y = ROW_Y - 14
 // The openings of the page: the phone's round one and the slot machine's hatch, in page pixels, and how deep they go.
-export const HOLE = { deep: 64, flush: 2, iris: 208, seat: 112, hatch: 26, hatchR: 18, clear: 40, pit: 96, gone: 190 }
+export const HOLE = { deep: 64, flush: 2, iris: 208, seat: 112, hatch: 26, hatchR: 18, clear: 40, pit: 26, gone: 190 }
 
 const centred = (id: string, key: string, state: string, i: number): LayoutNode => text(id, key, PROMPT_TYPE, FX + SW(i) / 2, PROMPT_Y, { part: 'type', on: TRAY_Z, states: [state] })
 
@@ -240,7 +240,7 @@ function crankNodes(): LayoutNode[] {
 export function buildLayout(): LayoutNode {
   const machines = [dialNodes(), slotNodes(), crankNodes()]
   const stages = ROWS.map((name, i): LayoutNode => ({ id: `${name}-stage`, kind: 'row', box: [FX, trayY(i), SW(i), SH(i)], children: machines[i]!, states: [`${name}-open`], part: 'rows' }))
-  const holes = ROWS.slice(0, 2).map((name, i) => node(`${name}-hole`, 'machineTray', [PAGE_W / 2 - HOLE.iris, trayY(i), HOLE.iris * 2, HOLE.iris * 2], { part: 'rows', r: HOLE.iris, tone: 'glass', states: [`${name}-hole`] }))
+  const holes = ROWS.slice(0, 2).map((name, i) => node(`${name}-hole`, 'machineTray', [FX, trayY(i), SW(i), SH(i)], { part: 'rows', r: HOLE.hatchR, tone: 'glass', states: [`${name}-hole`] }))
   const plates = ROWS.flatMap((_, i) => plateNodes(i))
   const rows: LayoutNode[] = []
   for (let i = 0; i < 3; i++) rows.push(...rowNodes(i))

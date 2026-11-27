@@ -82,7 +82,7 @@ const TEMPER = { safe: 12.74, dust: 12.78, fume: 13.3, red: 13.5, march: 13.52, 
 // Flat, it drags itself to the button and stops short of it. Half way it heaves and falls flat again. There it peels up and fills out, standing still, draws back, and throws itself at the button.
 const RISE = { heave: 18.45, heaved: 2.35, there: 19.6, flop: 19.73, life: 0.6, back: 20.33, coiled: 20.385, on: 20.41 }
 // The narrator's line over the crank is 6.25 s long from the sign, and the next one starts no sooner than 0.3 s after it, on the full level. So the arrow turns the crank more slowly than it was first timed, cowers longer where it was thrown and lies longer where it was struck, while the crank runs on and the level rises.
-const CRANKED = { hand: 1.05, cower: 16.2, wait: 0.7, flat: 17.1, lie: 0.7 }
+const CRANKED = { hand: 1.05, cower: 16.2, wait: 0.9, flat: 17.1, lie: 0.5 }
 // The film's clock against the script's. The script's times are those of its acting; the film gives each machine the time to come out of the page, and the crank the time of the narrator's line. Each entry: from this time of the script to that one (the same time twice is a wait), the film takes this much longer.
 const LONGER: [number, number, number][] = [
   [T.phone + 0.26, T.phone + 0.26, 0.43],

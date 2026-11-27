@@ -231,13 +231,13 @@ function tray(s: Shape): THREE.Object3D {
 // a wall that leans in and goes dark with its depth, darker on the light's side, and a floor in the dark.
 const isHole = (s: Shape): boolean => isTray(s) && s.id.endsWith('-hole')
 const holeKey = (s: Shape): string => `hole:${q(s.w)}x${q(s.h)}:${q(s.r ?? 0)}:${q(s.z0)}`
-const PIT = { lip: 5, lipDrop: 3.2, lean: 0.5, steps: 8, colour: 0xf2f1ee, top: 0.2, topSide: 0.15, foot: 0.78, footSide: 0.14, ease: 0.9, shallow: 40, least: 0.35, cool: 0.08 }
+const PIT = { lip: 5, lipDrop: 3.2, lean: 1.9, steps: 8, colour: 0xf2f1ee, top: 0.26, topSide: 0.12, foot: 0.9, footSide: 0.05, ease: 0.9, shallow: 20, least: 0.35, cool: 0.08 }
 export const pitFoot = (depth: number): number => Math.min(PIT.lip, depth) + PIT.lean * depth
 
 function pit(s: Shape): { lip: THREE.BufferGeometry; wall: THREE.BufferGeometry; floor: THREE.BufferGeometry } {
   const depth = -s.z0
   const outline = outlineOf(s, 0, 16)
-  const foot = pitFoot(depth)
+  const foot = Math.min(pitFoot(depth), Math.min(s.w, s.h) / 2 - 1)
   const in0 = Math.min(PIT.lip, foot * 0.8)
   const drop = Math.min(PIT.lipDrop, depth * 0.5)
   const lip = sweep(outline, profile([[-0.3, depth + 0.02, true], [in0, depth - drop, true]]), false)
@@ -255,7 +255,7 @@ function pit(s: Shape): { lip: THREE.BufferGeometry; wall: THREE.BufferGeometry;
       const facing = (outline.nx[i]! * lx + outline.ny[i]! * ly) / l
       const top = PIT.top + PIT.topSide * facing
       const dark = Math.min(0.95, much * (top + (PIT.foot + PIT.footSide * facing - top) * Math.pow(down, PIT.ease)))
-      const v = (1 - dark) * (1 - dark)
+      const v = 1 - dark
       colour.set([base.r * v * (1 - PIT.cool * dark), base.g * v, base.b * v], (k * n + i) * 3)
     }
   })

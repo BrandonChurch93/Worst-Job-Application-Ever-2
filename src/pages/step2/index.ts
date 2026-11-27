@@ -911,7 +911,7 @@ export function makePage(): PageLogic {
       if (coming) {
         const rho = t < 0.5 ? HOLE.iris * out3(seg(t, 0, 0.2)) : mix(HOLE.iris, HOLE.seat, smooth(seg(t, 0.5, 0.72)))
         const down = mix(deep, flush, out3(seg(t, 0.14, 0.5)))
-        return { ...STANDING, hole: t < 0.72 ? round(rho, down) : null, sink: down - flush - 12 * hop(seg(t, 0.5, 0.74)), spin: TAU * 1.25 * (1 - out3(seg(t, 0.14, 0.68))), shown: t >= 0.1 }
+        return { ...STANDING, hole: t < 0.72 ? round(rho, HOLE.pit) : null, sink: down - flush - 12 * hop(seg(t, 0.5, 0.74)), spin: TAU * 1.25 * (1 - out3(seg(t, 0.14, 0.68))), shown: t >= 0.1 }
       }
       const rho = t < 0.34 ? mix(HOLE.seat, HOLE.iris, out3(seg(t, 0, 0.12))) : HOLE.iris * (1 - smooth(seg(t, 0.34, 0.5)))
       const fall = seg(t, 0.08, 0.36)
@@ -932,7 +932,7 @@ export function makePage(): PageLogic {
         const rise = seg(t, 0.08, 0.24)
         const under = HOLE.gone * (1 - rise * rise)
         return {
-          ...STANDING, hole: hatch(gape, clamp(under + flush, flush, HOLE.pit)), sink: under - 30 * hop(seg(t, 0.24, 0.46)) - 9 * hop(seg(t, 0.46, 0.56)),
+          ...STANDING, hole: hatch(gape, HOLE.pit), sink: under - 30 * hop(seg(t, 0.24, 0.46)) - 9 * hop(seg(t, 0.46, 0.56)),
           jolt: t > 0.46 ? 5 * Math.exp(-16 * (t - 0.46)) * Math.sin(60 * (t - 0.46)) : 0,
           lever: t < 0.4 ? 1 : 1 - back(seg(t, 0.4, 0.64)),
           drop: (id) => (stop(id) < 0 ? 0 : 40 * (1 - back(seg(t, 0.46 + 0.07 * stop(id), 0.58 + 0.07 * stop(id))))),
@@ -945,7 +945,7 @@ export function makePage(): PageLogic {
       const midY = (y0 + y1) / 2
       const midX = (x0 + x1) / 2
       return {
-        ...STANDING, hole: hatch(gape, clamp(under + flush, flush, HOLE.pit)), sink: under - 14 * hop(seg(t, 0.03, 0.17)), lever: smooth(seg(t, 0, 0.14)),
+        ...STANDING, hole: hatch(gape, HOLE.pit), sink: under - 14 * hop(seg(t, 0.03, 0.17)), lever: smooth(seg(t, 0, 0.14)),
         drop: (id) => (stop(id) < 0 ? 0 : 40 * seg(t, 0.03 * (2 - stop(id)), 0.03 * (2 - stop(id)) + 0.08) ** 2),
         coin: (n, x, y) => {
           const from = SWEEP.from + SWEEP.each * (n % 7)
@@ -1393,7 +1393,7 @@ export function makePage(): PageLogic {
       overMachine(over, i, demo, 1)
       const local: DrawList = []
       const settledNow = SLOT.film.map((legend, r) => reelId(r, legend))
-      for (const child of find(layout, `${ROWS[i]}-tray`).children ?? []) if (!child.id.startsWith('slot-stop') && child.id !== 'crank-sign') drawLayout(local, child, { states: i === 1 ? settledNow : [], over })
+      for (const child of find(layout, `${ROWS[i]}-stage`).children ?? []) if (!child.id.startsWith('slot-stop') && child.id !== 'crank-sign') drawLayout(local, child, { states: i === 1 ? settledNow : [], over })
       machine(local, i, demo, 1, 0, 0, '')
       for (const shape of local) {
         const meter = shape.id.startsWith('meter-')
