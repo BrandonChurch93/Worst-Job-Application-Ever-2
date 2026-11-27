@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: motion on the live site under a visitor's input, first part: the arrow walked across a page, one page turn whole on three sheets, the page seating on step 1 on four sheets at every 1/60 s, and a hit on the arrow, consecutive frames",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the hit on the G key, frames 0:14.95 to 0:15.05",
+   "what": "on the hit frames the key only glows orange; the cap never dips and never springs back, and no second object visibly reaches it, so the contact has no weight and neither body reacts to the other",
+   "fix": "on the hit frame drop the G cap a few pixels with a tight shadow under its lower edge then rebound it over two frames, and give a small adjacent-key or keyboard-deck jolt so the page answers the strike"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "the last row, 0:10.23 to 0:10.30, start of the page turn",
+   "what": "the old page darkens while staying fully frontal and flat, then by 0:10.33 it is already at a high angle; the flat fade reads as a dissolve and gives the slab no weight at takeoff, and the jump from flat to ~30 degrees in one frame skips the wind-up",
+   "fix": "keep the page lit and show it tipping: foreshorten the face, expose a slab edge and cast a growing shadow over those frames, with an eased first frame of rotation before the fast part of the swing"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the whole sheet, 0:14.88 to 0:15.25",
+   "what": "without the caption the sheet is unclear: a cursor hovers over an on-screen keyboard while keys light up in sequence, but nothing reads as a turret firing a bolt; the metal piece at the left edge never moves and no projectile is legible in flight",
+   "fix": "animate the bolt: show the turret at the left cock and release, show the bolt crossing toward G in two or three frames with a frame of visible travel, and light only the struck key rather than a wandering glow along F and G"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "bottom strip near the ticker, frames 0:01.10 to 0:01.20",
+   "what": "a second small arrow-shaped mark appears in the ticker area on some frames while the main pointer is mid-page; at delivery size it may be ticker text, but if it is a cursor it reads as a flickering duplicate pointer",
+   "fix": "make the ticker content plain text or confirm and remove any duplicate cursor render so only one pointer exists per frame"
+  }
+ ]
+}
