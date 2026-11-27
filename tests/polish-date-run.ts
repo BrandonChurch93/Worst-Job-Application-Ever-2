@@ -38,6 +38,21 @@ export function visitor(order: number[], wait = 0): Driver {
 
 export const still = (): Driver => new StillDriver({ x: 300, y: 900 })
 
+// The step on which the leaver presses the third row, and for how many steps.
+export const LEAVER = { at: 400, steps: 8, aim: 160 }
+
+// A visitor who presses the third row once, leaves the pointer far off, so the crank runs by itself, and presses Skip on one step of the page (0: never).
+export function leaver(skipAt: number): Driver {
+  return {
+    name: 'bot',
+    input(v: DriverView): Pointer {
+      const out: Pointer = v.pageStep >= LEAVER.at - LEAVER.aim && v.pageStep < LEAVER.at + LEAVER.steps ? { x: FX + 40, y: rowY(2) + 12, down: v.pageStep >= LEAVER.at } : { x: 300, y: 900, down: false }
+      if (skipAt > 0 && v.pageStep === skipAt) out.skip = true
+      return out
+    }
+  }
+}
+
 export function heights(): Map<string, number> {
   const s = new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: visitor([0, 1, 2]), seed: config.seed })
   const full = new Map<string, number>()

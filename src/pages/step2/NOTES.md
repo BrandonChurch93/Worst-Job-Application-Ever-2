@@ -76,3 +76,4 @@ Decisions taken without asking, in the order they were met.
 - A field's chevron turns with its tray's spring.
 - The slot's window is rounded (`SLOT_LOOK.window`), its drums 97 px wide with a bright plateau (`drum.dark`, `drum.full`). The meter's lamps: `CRANK_LOOK.lamp`.
 - The keeper's notes, decisions and counts: `pipeline/phase4/step2-keeper.md`. Recipes: `assets-src/step2-keeper/RECIPE.md`.
+- A Skip with the crank's row open and the arm outside `CRANK_HOME`: the row does not go to closing on that step. The arm turns on in the run's direction (`skipHome`: its own speed, never under `SKIP_HOME.least` rad a second, falling to it over the last `SKIP_HOME.soft` rad) to the arc's near end, and the row goes to closing on the first step the arm is in the arc (`crankHome`). At most 98 steps. Everything else of the Skip is as it was, and the film has no Skip.

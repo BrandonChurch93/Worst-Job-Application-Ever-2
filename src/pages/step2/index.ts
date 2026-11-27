@@ -138,6 +138,15 @@ function homeward(b: number, w: number): number {
   const more = off > 0 ? half - off : -half - off
   return Math.max(0, 1 + more / left)
 }
+// A Skip pressed while the arm stands outside that arc: the arm goes on in the run's direction to the arc's near end before the lift lowers, at its own speed and never under `least` rad a second, falling to `least` over the last `soft` rad.
+const SKIP_HOME = { least: 14, soft: 0.6 }
+// How far past the arc's ends an angle still counts as in it, in rad: the arm is set on the end itself.
+const HOME_NEAR = 1e-9
+const crankHome = (b: number): boolean => Math.abs(wrapPi(b - (CRANK_HOME.from + CRANK_HOME.to) / 2)) <= (CRANK_HOME.to - CRANK_HOME.from) / 2 + HOME_NEAR
+function skipHome(b: number, w: number, dt: number): number {
+  const left = mod(CRANK_HOME.from - b, TAU)
+  return b + Math.min(left, (SKIP_HOME.least + Math.max(0, w - SKIP_HOME.least) * Math.min(1, left / SKIP_HOME.soft)) * dt)
+}
 const knobY = (p: number): number => SLOT.knobY + SLOT.pull * clamp(p, -LEVER.rise, 1 + LEVER.give)
 const reelPos = (slot: SlotState, r: number): number => {
   if (slot.phase === 'rest') return slot.to[r]!
@@ -763,8 +772,11 @@ export function makePage(): PageLogic {
         for (let i = 0; i < 3; i++) s.done[i] = true
         s.crank.level = 1
         if (s.open >= 0 && s.phase !== 'closing') {
-          s.phase = 'closing'
           if (io.cursor.taken) io.cursor.release()
+          if (s.open === 2 && !crankHome(s.crank.b)) {
+            s.crank.b = skipHome(s.crank.b, s.crank.w, dt)
+            s.endT = 0
+          } else s.phase = 'closing'
         }
       }
       if (s.open < 0) {

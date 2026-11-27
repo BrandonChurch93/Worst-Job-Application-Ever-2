@@ -5,7 +5,7 @@ import { config, stepHz } from '../src/config'
 import { ROWS, TRAY, TRAY_H } from '../src/pages/step2/layout'
 import { BotDriver, type BotName } from '../src/stage/bots'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
-import { bare, BODY, DRAWN, heights, openings, still, visit, visitor, type Row } from './polish-date-run'
+import { bare, BODY, DRAWN, heights, leaver, LEAVER, openings, still, visit, visitor, type Row } from './polish-date-run'
 
 // A tray counts as open once it is taller than this share of its full height: under it the tray is the 4 px slit it starts as.
 const SLIVER = 0.02
@@ -169,3 +169,84 @@ describe('polish date: the crank lies inside its tray before it goes down into i
     expect(hang[0]).toBeLessThanOrEqual(0)
   })
 })
+
+// The angles of the arc a run or a Skip leaves the crank in, and whether an angle lies in it.
+const inArc = (b: number): boolean => Math.abs(b - (CRANK_HOME.from + CRANK_HOME.to) / 2 - TURN * Math.round((b - (CRANK_HOME.from + CRANK_HOME.to) / 2) / TURN)) <= (CRANK_HOME.to - CRANK_HOME.from) / 2 + 1e-6
+// The most steps a Skip may wait for the arm: the way round from one end of the arc to the other at the least speed of the way home (14 rad a second in src/pages/step2/index.ts).
+const SKIP_WAIT = Math.ceil(((TURN - (CRANK_HOME.to - CRANK_HOME.from)) / 14) * stepHz)
+
+// What a Skip leaves: the angle it caught the arm at, how many steps later the lift begins to lower, and how far outside the floor the arm and the grip then lie.
+function skipped(driver: Driver): { caught: number; wait: number; hang: number[] } {
+  const stage = new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver, seed: config.seed })
+  let caught = NaN
+  let at = 0
+  let wait = -1
+  const probe: Driver = {
+    name: 'bot',
+    input(v: DriverView): Pointer {
+      const out = driver.input(v)
+      if (out.skip && !at) {
+        at = v.pageStep
+        caught = (v.page.save() as CrankSaved).crank.b
+      }
+      return out
+    }
+  }
+  const run = new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: probe, seed: config.seed })
+  for (let i = 0; i < 60 * stepHz && run.page.id === 'step2'; i++) {
+    run.advance(1)
+    if (run.page.id !== 'step2') break
+    const st = run.page.save() as CrankSaved
+    if (at && wait < 0 && st.open === 2 && st.phase === 'closing') wait = i + 1 - at - 1
+  }
+  return { caught, wait, hang: overhang(stage, 60) }
+}
+
+describe('polish date: a Skip lets the crank\'s arm come inside its tray before the lift lowers', () => {
+  const plain = new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: leaver(0), seed: config.seed })
+  const steps: number[] = []
+  for (let i = 0; i < 40 * stepHz && plain.page.id === 'step2' && steps.length < 8; i++) {
+    plain.advance(1)
+    if (plain.page.id !== 'step2') break
+    const st = plain.page.save() as CrankSaved
+    if (st.open !== 2 || (st.crank.phase !== 'runaway' && st.crank.phase !== 'full')) continue
+    const eighth = Math.floor((((st.crank.b % TURN) + TURN) % TURN) / (TURN / 8))
+    if (eighth === steps.length) steps.push(i + 1)
+  }
+  it('finds a step of the run for each of eight angles of the arm', () => {
+    expect(steps.length).toBe(8)
+  })
+  for (let k = 0; k < 8; k++) {
+    it(`Skip pressed with the running arm in eighth ${k} of its turn: every corner of the arm and the grip is inside the tray's floor on the step the lift begins to lower`, () => {
+      const r = skipped(leaver(steps[k]!))
+      expect(r.hang.length).toBe(1)
+      expect(r.hang[0]).toBeLessThanOrEqual(0)
+      expect(r.wait).toBeGreaterThanOrEqual(0)
+      expect(r.wait).toBeLessThanOrEqual(SKIP_WAIT)
+      if (inArc(r.caught)) expect(r.wait).toBe(0)
+    })
+  }
+  it('Skip pressed with the arm left at rest outside the arc by the visitor\'s own hand: it starts from rest and the same holds', () => {
+    const inner = stopper(TURN + (3 * TURN) / 8)
+    const r = skipped({
+      name: 'bot',
+      input(v: DriverView): Pointer {
+        const out = inner.input(v)
+        const st = v.page.save() as CrankSaved
+        if (v.skipOffered && st.open === 2 && st.crank.phase === 'rest' && !out.down) out.skip = true
+        return out
+      }
+    })
+    expect(inArc(r.caught)).toBe(false)
+    expect(r.hang.length).toBe(1)
+    expect(r.hang[0]).toBeLessThanOrEqual(0)
+    expect(r.wait).toBeGreaterThan(0)
+    expect(r.wait).toBeLessThanOrEqual(SKIP_WAIT)
+  })
+  it('Skip pressed before the crank is touched: the lift lowers on the next step, as before', () => {
+    const r = skipped(leaver(LEAVER.at + 4801))
+    expect(inArc(r.caught)).toBe(true)
+    expect(r.wait).toBe(0)
+  })
+})
+
