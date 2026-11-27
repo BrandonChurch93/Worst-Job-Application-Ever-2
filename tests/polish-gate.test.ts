@@ -7,6 +7,9 @@ import type { DrawList, Driver, Pointer } from '../src/stage/types'
 import { WIRE, movingShapes } from '../src/table/draw'
 import { BALL, TH, TIERS, TIER_Y } from '../src/table/layout'
 import { Machine, SAVE, prepare } from '../src/table/physics'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 // The save at a shut gate as it must read at real size, and the ball's first frames out of the port. Stepped, no browser.
 const EACH = stepHz / 60

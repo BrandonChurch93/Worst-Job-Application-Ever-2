@@ -116,6 +116,8 @@ for (const size of SIZES) {
     fs.writeFileSync(path.join(dir, 'out-live.png'), liveOut)
     r.out = await differ(videoOut, liveOut, path.join(dir, 'out-diff-x8.png'))
     await page.evaluate(() => { window.videoBridge.hold.out = false })
+    await step(1)
+    await page.waitForFunction(() => window.videoTrace.faded >= 0, null, { timeout: 60000 })
     const hero = []
     for (let i = 0; i < 6; i++) {
       await step(i === 0 ? 1 : 4)
@@ -130,7 +132,48 @@ for (const size of SIZES) {
   }
   if (!a.pictures) {
     const { context, page, problems } = await open(size, false)
-    await page.waitForFunction(() => window.videoTrace.left >= 0, null, { timeout: 240000 })
+    const cdp = await context.newCDPSession(page)
+    const cast = []
+    cdp.on('Page.screencastFrame', (f) => {
+      cast.push({ at: f.metadata.timestamp * 1000, data: Buffer.from(f.data, 'base64') })
+      cdp.send('Page.screencastFrameAck', { sessionId: f.sessionId }).catch(() => undefined)
+    })
+    const film = (on) => cdp.send(on ? 'Page.startScreencast' : 'Page.stopScreencast', on ? { format: 'jpeg', quality: 80, maxWidth: 480, maxHeight: 480, everyNthFrame: 1 } : {}).catch(() => undefined)
+    await film(true)
+    await page.waitForFunction(() => window.videoTrace.shown >= 0 && document.querySelector('video').currentTime > 1, null, { timeout: 900000, polling: 100 })
+    await film(false)
+    let hidden = null
+    if (a.hide) {
+      await page.waitForFunction((at) => document.querySelector('video').currentTime >= at, Number(a.hide), { timeout: 600000, polling: 100 })
+      const see = (state) => page.evaluate((v) => {
+        Object.defineProperty(document, 'visibilityState', { value: v, configurable: true })
+        document.dispatchEvent(new Event('visibilitychange'))
+        return { clock: document.querySelector('video').currentTime, cues: window.videoBridge.cues.length, paused: document.querySelector('video').paused }
+      }, state)
+      const went = await see('hidden')
+      await sleep(2000)
+      const back = await see('visible')
+      hidden = { hiddenAtVideoSecond: went.clock, shownAtVideoSecond: back.clock, pausedWhileHidden: back.paused, cuesBefore: back.cues }
+    }
+    await page.waitForFunction(() => { const v = document.querySelector('video'); return v.duration - v.currentTime < 1.2 || window.videoTrace.left >= 0 }, null, { timeout: 900000, polling: 100 })
+    await film(true)
+    await page.waitForFunction(() => window.videoTrace.left >= 0, null, { timeout: 900000 })
+    await sleep(1200)
+    await film(false)
+    const origin = await page.evaluate(() => performance.timeOrigin)
+    const seen = []
+    for (const c of cast) {
+      const raw = await sharp(c.data).removeAlpha().raw().toBuffer({ resolveWithObject: true })
+      let sum = 0
+      for (let i = 0; i < raw.data.length; i++) sum += raw.data[i]
+      const prev = seen[seen.length - 1]
+      let step = 0
+      if (prev && prev.raw.length === raw.data.length) {
+        for (let i = 0; i < raw.data.length; i++) step += Math.abs(raw.data[i] - prev.raw[i])
+        step /= raw.data.length
+      }
+      seen.push({ at: c.at - origin, light: sum / raw.data.length, step, raw: raw.data, data: c.data })
+    }
     const t = await page.evaluate(() => {
       const v = document.querySelector('video')
       const q = v.getVideoPlaybackQuality()
@@ -143,14 +186,27 @@ for (const size of SIZES) {
     const third = (k) => late.slice(Math.floor((late.length * k) / 3), Math.floor((late.length * (k + 1)) / 3))
     const stat = (list) => (list.length ? { n: list.length, mean: Number((list.reduce((s, v) => s + v, 0) / list.length).toFixed(2)), worst: Number(Math.max(...list).toFixed(2)) } : null)
     const last = f[f.length - 1]
+    const ms = (v) => Number(v.toFixed(1))
+    const moving = f.find((x) => x.media > 0 && x.shown >= t.trace.played)
     r.timing = {
-      asked: t.trace.asked, shown: t.trace.shown, firstFrameShown: f[0].shown, firstFrameMedia: f[0].media,
-      inMs: Number((f[0].shown - t.trace.asked).toFixed(1)), inDisplayFrames: Number(((f[0].shown - t.trace.asked) / (1000 / 60)).toFixed(2)), liveFramesWhileWaiting: t.trace.live.length,
+      asked: t.trace.asked, fadeInFrom: t.trace.shown, playAsked: t.trace.played, firstFrameShown: f[0].shown, firstFrameMedia: f[0].media,
+      askedToFadeMs: ms(t.trace.shown - t.trace.asked), fadeInMs: ms(t.trace.played - t.trace.shown), liveFramesWhileWaiting: t.trace.live.length,
+      playToMovingMs: moving ? ms(moving.shown - t.trace.played) : null, playToMovingDisplayFrames: moving ? Number(((moving.shown - t.trace.played) / (1000 / 60)).toFixed(2)) : null, firstMovingMedia: moving ? moving.media : null,
       videoFramesSeen: f.length, presented: last.count - f[0].count + 1, total: t.quality.total, dropped: t.quality.dropped,
       frameGapMs: { median: Number(sorted[Math.floor(sorted.length / 2)].toFixed(2)), p99: Number(sorted[Math.floor(sorted.length * 0.99)].toFixed(2)), largest: Number(sorted[sorted.length - 1].toFixed(2)) },
-      lastFrameMedia: last.media, lastFrameShown: last.shown, left: t.trace.left, outMs: Number((t.trace.left - last.shown).toFixed(1)), outDisplayFrames: Number(((t.trace.left - last.shown) / (1000 / 60)).toFixed(2)),
-      cuesLateMs: { start: stat(third(0)), middle: stat(third(1)), end: stat(third(2)), all: stat(late) }
+      lastFrameMedia: last.media, lastFrameShown: last.shown, faded: t.trace.faded, left: t.trace.left, lastFrameToFadedMs: ms(t.trace.faded - last.shown), fadedToLeftMs: ms(t.trace.left - t.trace.faded), fadedToLeftDisplayFrames: Number(((t.trace.left - t.trace.faded) / (1000 / 60)).toFixed(2)),
+      cuesLateMs: { start: stat(third(0)), middle: stat(third(1)), end: stat(third(2)), all: stat(late), afterHidden: hidden ? stat(late.slice(hidden.cuesBefore)) : null },
+      hidden, cues: t.cues.length
     }
+    const near = (at, name) => {
+      const list = seen.filter((c) => Math.abs(c.at - at) < 700)
+      const k = list.findIndex((c) => c.at >= at)
+      const row = list.slice(Math.max(0, k - 3), k + 3)
+      row.forEach((c, i) => fs.writeFileSync(path.join(dir, `${name}-row-${i}.jpg`), c.data))
+      const light = list.map((c) => c.light)
+      return { pictures: list.length, light: light.length ? [Number(Math.min(...light).toFixed(2)), Number(Math.max(...light).toFixed(2))] : null, largestStep: list.length ? Number(Math.max(...list.slice(1).map((c) => c.step), 0).toFixed(2)) : null, row: row.map((c) => ({ ms: Number((c.at - at).toFixed(1)), light: Number(c.light.toFixed(2)), step: Number(c.step.toFixed(2)) })) }
+    }
+    r.screen = { in: near(t.trace.shown, 'in'), out: near(t.trace.left, 'out') }
     r.problems = [...r.problems, ...problems]
     await context.close()
   }

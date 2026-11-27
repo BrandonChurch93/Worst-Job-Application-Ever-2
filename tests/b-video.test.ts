@@ -170,13 +170,29 @@ describe('step 3 of the live site plays the scene as a video', () => {
 })
 
 describe('the video and the page', () => {
-  const fake = (o: Partial<VideoPlayer>): VideoPlayer => ({ ready: () => true, enter: () => undefined, clock: () => 0, over: () => false, leave: () => undefined, ...o })
+  const fake = (o: Partial<VideoPlayer>): VideoPlayer => ({ ready: () => true, enter: () => undefined, clock: () => 0, over: () => false, gone: () => true, leave: () => undefined, ...o })
 
-  it('waits a named time for a video that is not ready and then plays the page\'s own ending', () => {
+  it('waits a named time for a video that is not ready and then plays the table itself, as before there was a video', () => {
     bridge.player = fake({ ready: () => false })
+    bridge.gaveUp = false
     const w = live('keen', config.seed)
     expect(w.names).not.toContain('video-in')
+    expect(w.names).toContain('tube-run')
     expect(w.names).toContain('ball-open')
+    expect(bridge.gaveUp).toBe(true)
+    expect(w.stage.longestIgnored.film).toBe(0)
+    expect(w.stage.longestIgnored.flippers).toBeLessThan(config.live.controlTakenMaxSeconds)
+    expect(w.done).toBe(true)
+    expect(VIDEO.waitMax).toBeLessThanOrEqual(1)
+  })
+
+  it('plays the table itself at once where the video is switched off or no file can be played', () => {
+    bridge.player = null
+    bridge.off = true
+    const w = live('keen', config.seed)
+    bridge.off = false
+    expect(w.names).not.toContain('video-in')
+    expect(w.names).toContain('tube-run')
     expect(w.stage.longestIgnored.film).toBe(0)
     expect(w.done).toBe(true)
   })

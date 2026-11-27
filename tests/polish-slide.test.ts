@@ -6,6 +6,9 @@ import { Stage } from '../src/stage/stage'
 import type { Driver, DriverView, Pointer } from '../src/stage/types'
 import { TIER_Y } from '../src/table/layout'
 import { Machine, prepare } from '../src/table/physics'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 // The numbers the director holds in SHOT.slide: the scene's budget of waiting before the bats' power may be cut, the limit of all waiting, and the seconds after a stroke that met the ball in which no cut starts on the floor.
 const BUDGET = 5

@@ -21,7 +21,7 @@ const results = []
 for (const moment of moments) {
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, deviceScaleFactor: 1 })
   const page = await context.newPage()
-  await page.goto(`${server.url}/index.html?mode=live&step=3&bot=keen&seed=1&video=trace`)
+  await page.goto(`${server.url}/index.html?mode=live&step=3&bot=keen&seed=1&video=trace&quality=low`)
   await page.evaluate(() => window.showcase.ready)
   await page.waitForFunction(() => window.videoTrace && window.videoTrace.shown >= 0, null, { timeout: 120000 })
   const link = page.getByRole('button', { name: /skip/i })
@@ -34,10 +34,10 @@ for (const moment of moments) {
   const pressed = await page.evaluate(() => ({ now: performance.now(), clock: document.querySelector('video').currentTime }))
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
   await page.waitForFunction(() => window.videoTrace.left >= 0, null, { timeout: 20000, polling: 'raf' })
-  const left = await page.evaluate(() => ({ left: window.videoTrace.left, opacity: document.querySelector('video').style.opacity, cues: window.videoBridge.cues.length }))
+  const left = await page.evaluate(() => ({ left: window.videoTrace.left, opacity: document.querySelector('video').style.opacity, cues: window.videoBridge.cues.length, backing: document.querySelector('[data-backing]')?.dataset.backing ?? null }))
   await new Promise((r) => setTimeout(r, 700))
   await page.screenshot({ path: path.join(out, `after-${moment}.png`) })
-  const row = { pressAtVideoSecond: Number(pressed.clock.toFixed(2)), linkOnScreenFromVideoSecond: Number(offered.toFixed(2)), elementUnderThePress: top, pressToVideoGoneMs: Number((left.left - pressed.now).toFixed(1)), videoOpacityAfter: left.opacity }
+  const row = { pressAtVideoSecond: Number(pressed.clock.toFixed(2)), linkOnScreenFromVideoSecond: Number(offered.toFixed(2)), elementUnderThePress: top, pressToVideoGoneMs: Number((left.left - pressed.now).toFixed(1)), videoOpacityAfter: left.opacity, backingOfTheRow: left.backing }
   results.push(row)
   console.log(JSON.stringify(row))
   writeJson(path.join(out, 'skip.json'), { made: new Date().toISOString(), browser: version, results })

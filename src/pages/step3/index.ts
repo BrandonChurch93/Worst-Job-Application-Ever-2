@@ -897,8 +897,7 @@ export function makePage(): PageLogic {
       if (s.mode === 'live' && !(s.skipped && vid.phase === 'before')) {
         const was = videoOn(vid)
         const act = videoStep(vid, io, s.phase === 'sealed' && s.t >= videoFrom)
-        if (act === 'ride') rideOut()
-        else if (act !== null && act !== 'hold') {
+        if (act !== null && act !== 'hold') {
           logic.load({ ...(act.load as object), v: vid })
           s.mode = 'live'
         }

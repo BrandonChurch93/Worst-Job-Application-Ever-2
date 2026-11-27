@@ -5,6 +5,9 @@ import { Stage } from '../src/stage/stage'
 import type { Driver, DriverView, Pointer } from '../src/stage/types'
 import { TH, TIER_Y, railOf, tierAt } from '../src/table/layout'
 import { Machine, prepare } from '../src/table/physics'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 // The view's follow while the ball rides an outlane rail to the way out of a tier: the rail dips under the next tier's line and comes up over it again at its end, and the view's goal must not go back up a tier there. Stepped, no browser.
 // The visitor is the hand that follows the page's hint a little late (pipeline/phase5/polish-save2-jerks.mjs, pack seed 1): it loses the ball down the office's left outlane 24.5 s into the page, with the office's gate spent.

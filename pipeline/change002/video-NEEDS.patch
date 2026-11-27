@@ -21,7 +21,7 @@ index 51176e9e..383f2caf 100644
 -export interface BotRun { bot: BotName; seed: number; finished: boolean; seconds: number; ignoredPointer: number; ignoredFlippers: number; gags: string[]; pages: string[]; pageSeconds: Record<string, number>; skips: number; stuckOn: string | null }
 +export interface BotRun { bot: BotName; seed: number; finished: boolean; seconds: number; ignoredPointer: number; ignoredFlippers: number; ignoredFilm: number; gags: string[]; pages: string[]; pageSeconds: Record<string, number>; skips: number; stuckOn: string | null }
 diff --git a/src/stage/stage.ts b/src/stage/stage.ts
-index 612aa1cc..f4355eed 100644
+index 612aa1cc..7bdc3847 100644
 --- a/src/stage/stage.ts
 +++ b/src/stage/stage.ts
 @@ -42,7 +42,7 @@ interface Saved {
@@ -76,6 +76,15 @@ index 612aa1cc..f4355eed 100644
        if (this.run > this.max[key]) this.max[key] = this.run
      } else this.run = 0
      this.pageStep++
+@@ -279,7 +282,7 @@ export class Stage {
+ 
+   private save(): Saved {
+     return {
+-      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max }, lag: { ...this.lag }, late: { ...this.late },
++      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: this.max.film ? { ...this.max } : { pointer: this.max.pointer, flippers: this.max.flippers }, lag: { ...this.lag }, late: { ...this.late },
+       reached: [...this.reached], visited: [...this.visited], events: this.events.length, page: JSON.parse(JSON.stringify(this.page.save() ?? null)), cursor: this.cursor.save()
+     }
+   }
 @@ -299,7 +302,7 @@ export class Stage {
      this.down = s.down
      this.skipped = s.skipped

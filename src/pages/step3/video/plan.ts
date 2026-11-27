@@ -11,10 +11,12 @@ export const VIDEO = {
   outEvent: 'peel-up',
   // Seconds after that event at which the result card begins to rise. The last picture of the video is the last film frame that ends before it: a film frame gathers light over its whole sixtieth, and one that straddles the card shows half a card.
   outLag: 0.2,
-  // Seconds the page waits at the join in for a video that is not ready, before it plays its own ending.
-  waitMax: 4,
+  // Seconds the page waits at the join in for a video that is not ready, before it plays the table itself as it did before there was a video.
+  waitMax: 1,
   // Seconds before the end of the video at which the page lays its own picture of the last frame under it.
   underlay: 0.3,
+  // Seconds over which the video is faded in over the page's picture of its first frame, and out over the page's picture of its last. The video stands on that frame meanwhile.
+  fade: 0.2,
   // Seconds the video's clock may stand still while it should run before the page stops waiting for it and goes to the join out.
   stallMax: 3,
   // The largest step of the video's clock, in seconds, that is taken as play. A larger one is a seek or a tab that slept: its cues are not sounded.

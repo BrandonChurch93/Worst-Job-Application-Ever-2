@@ -4,6 +4,9 @@ import { pages } from '../src/pages'
 import { Stage } from '../src/stage/stage'
 import type { Driver, DriverView, Pointer } from '../src/stage/types'
 import { Machine, prepare } from '../src/table/physics'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 // The view's follow while the ball rides an upper outlane rail to a gate that is still shut: the ball will be taken on its own tier, so the view's goal stays on that tier for the whole ride and the view does not run down a tier and back. When the scene's clock opens the gate under the ride, the goal goes down from that step. Stepped, no browser.
 // The first visitor is the hand that follows the page's hint a little late (pipeline/phase5/polish-save2-shut.mjs, seed 4): it loses the ball down the office's left outlane 22.63 s into the page, with the office's gate shut. The second never moves, and the ride is forced on the lobby's left outlane 60 steps before the lobby's gate opens.

@@ -5,7 +5,7 @@ import { VIDEO } from './plan'
 import states from './states.json'
 
 export interface VideoState { phase: 'before' | 'play' | 'under' | 'after'; clock: number; sent: number; waited: number; stalled: number; leave: boolean; gaveUp: boolean }
-export type VideoAct = null | 'hold' | 'ride' | { load: unknown }
+export type VideoAct = null | 'hold' | { load: unknown }
 
 export const videoFresh = (): VideoState => ({ phase: 'before', clock: 0, sent: 0, waited: 0, stalled: 0, leave: false, gaveUp: false })
 export const videoFrom = manifest.from.time
@@ -23,13 +23,17 @@ export function videoStep(v: VideoState, io: StepIo, due: boolean): VideoAct {
   const player = io.mode === 'live' ? bridge.player : null
   if (v.phase === 'before') {
     if (!due) return null
+    if (io.mode === 'live' && bridge.off) {
+      v.phase = 'after'
+      return null
+    }
     if (player && !player.ready()) {
       v.waited += io.dt
       if (v.waited < VIDEO.waitMax) return 'hold'
       v.phase = 'after'
       v.gaveUp = true
       bridge.gaveUp = true
-      return 'ride'
+      return null
     }
     v.phase = 'play'
     io.cursor.load(states.from.cursor)
@@ -50,21 +54,20 @@ export function videoStep(v: VideoState, io: StepIo, due: boolean): VideoAct {
     if (play && player) bridge.cues?.push({ name: e.name, at: e.at / manifest.stepHz, clock: now })
   }
   v.clock = now
-  if (now >= end && !(player && bridge.hold?.out)) {
-    const under = v.phase === 'under'
-    v.phase = 'after'
-    pin(io)
-    io.cursor.release()
-    player?.leave()
-    io.emit('video-out', io.cursor.x, io.cursor.y)
-    return under ? null : { load: states.to.page }
-  }
-  if (v.phase === 'play' && now >= end - VIDEO.underlay) {
+  if (v.phase === 'play') {
+    if (now < end - VIDEO.underlay) {
+      io.cursor.load(states.from.cursor)
+      return 'hold'
+    }
     v.phase = 'under'
     pin(io)
     return { load: states.to.page }
   }
-  if (v.phase === 'under') pin(io)
-  else io.cursor.load(states.from.cursor)
-  return 'hold'
+  pin(io)
+  if (now < end || (player && (bridge.hold?.out || !player.gone()))) return 'hold'
+  v.phase = 'after'
+  io.cursor.release()
+  player?.leave()
+  io.emit('video-out', io.cursor.x, io.cursor.y)
+  return null
 }
