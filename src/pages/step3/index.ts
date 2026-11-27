@@ -93,7 +93,7 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number[]
 }
 
 type Rolled = State & { over?: Record<string, number> }
@@ -193,8 +193,9 @@ const lagOf = (u: number): number => {
   const w = (u - FALL.still - FALL.grow) / rest
   return Math.max(0, ramp - ((top - 1) / 2) * rest * (w + Math.sin(Math.PI * w) / Math.PI))
 }
-// Live play, the room under a gate: while a ball is past the bats' tips on its way to a shut gate, lies on the gate's wire or was just thrown from it, the live view of the lobby and of the office aims `px` lower and goes there and back with the follow it has everywhere, so the wire, its posts and the hole under it are on the screen (the street's view has that room already). `stay`: the seconds after the kick it stays for the wire's swings.
-const ROOM = { px: 90, stay: 0.6, ease: 8 / 60, lead: 0.1, calm: 2, near: 0.6 }
+// Live play, the room under a gate: while a ball is past the bats' tips on its way to a shut gate, lies on the gate's wire or was just thrown from it, the live view of the lobby and of the office stands `px` lower, so the wire, its posts and the hole under it are on the screen (the street's view has that room already). `stay`: the seconds after the kick it stays for the wire's swings.
+// The view takes that room by a travel of its own, added to its follow: it gains speed by `gain` (px/s a second) up to `pace` (px/s), slows the same way and stands on its place with no step back and no tail; when the ball is struck away the view stops where it is and stands while the ball is in the lower part of the tier (`keep` balls or more down it), and goes back once the ball is above that or off the tier's floor.
+const ROOM = { px: 90, stay: 0.6, gain: 9000, pace: 720, keep: 5.6, lead: 0.1, calm: 2, near: 0.6 }
 // The roll in a tube: the arrow turns by `gear` radians for each ball's width travelled, a whole number of turns over the tube, and the last `ease` of the way slows the turn to rest. In the film the roll down the feed tube is over after `film` balls, before the cut to the wide view of the table.
 const TUMBLE = { gear: 1, ease: 0.15, film: 10.5 }
 // How far shut the half shells are for the share of the close that has passed: a slow swing, then a snap into the seam with growing speed.
@@ -512,6 +513,10 @@ export function makePage(): PageLogic {
     } else if (e.name === 'gate-take') {
       say('flasher', true)
       io.cursor.react('flinch')
+      const p = io.cursor.pose()
+      s.lay = [p.lean + p.spin, s.t]
+      s.sway = -9
+      io.cursor.wobble(0, 1, 0)
     } else if (e.name === 'doors-slam') {
       s.shut = true
       say('doors-slam', true)
@@ -831,6 +836,7 @@ export function makePage(): PageLogic {
       s.roll = [0, 0]
       io.cursor.aim(null)
     }
+    if (s.mode === 'live' && machine().taken >= 0) io.cursor.strike(s.lay[0]!, dt)
     if (s.t < s.lay[1]! && (s.was[4] === 1) !== held) {
       io.cursor.strike(s.lay[0]!, s.lay[1]! - s.t)
       s.snap = s.t
@@ -1010,10 +1016,23 @@ export function makePage(): PageLogic {
       const to = target()
       const low = atGate()
       if (low || s.room) {
-        const r = Math.max(0, Math.min(1, (s.room ?? 0) + (low ? dt : -dt) / ROOM.ease))
-        if (r > 0) s.room = r
+        const [x, v, gone] = s.room ?? [0, 0, 0]
+        const b = ball()
+        const back = !low && (gone === 1 || b.mode !== 'plane' || b.tier > 1 || b.y - TIER_Y[b.tier]! < ROOM.keep)
+        const wait = !low && !back
+        const goal = low ? ROOM.px : 0
+        const way = wait ? (v! < 0 ? -1 : 1) : goal >= x! ? 1 : -1
+        const far = Math.abs(goal - x!)
+        const u = v! * way
+        const up = Math.min(ROOM.pace, u + ROOM.gain * dt)
+        const w = wait ? Math.max(0, u - ROOM.gain * dt) : u > 0 && far - ((u + up) / 2) * dt < (up * up) / (2 * ROOM.gain) ? Math.max(0, u - ((u * u) / (2 * far)) * dt) : up
+        const y = x! + way * ((u + w) / 2) * dt
+        const there = !wait && ((w <= 0 && u > 0) || (goal - y) * way <= 1e-3)
+        const now = there ? goal : Math.max(0, Math.min(ROOM.px, y))
+        if (now > 0 || low) s.room = [now, there ? 0 : way * w, back ? 1 : 0]
         else delete s.room
-        to.scroll = Math.min(lastScroll, to.scroll + ROOM.px * r * r * (3 - 2 * r))
+        to.scroll = Math.min(lastScroll, to.scroll + now)
+        s.scroll = Math.min(lastScroll, s.scroll + now - x!)
       }
       const rate = Math.min(1, dt / (live.tierTravelSeconds / 4))
       const cap = 4200 * dt
