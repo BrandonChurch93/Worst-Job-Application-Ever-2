@@ -4,7 +4,7 @@ import { hash01, hashName } from '../../../core/random'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { circle, merge } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
-import { TURRET } from '../turrets'
+import { RECOIL, TURRET } from '../turrets'
 import { BRUSH, kit, lit, turn } from './keyboard-kit'
 import { EMIT, fx, GLOW, overlay } from './turret-fx'
 
@@ -236,10 +236,10 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const charge = Math.min(1, Math.max(0, v[2]!))
   const since = v[3]!
   const heat = Math.min(1, Math.max(0, v[4]!))
-  const kick = since < 0.12 ? -5 * Math.exp(-since / 0.03) * Math.sin(Math.min(1, since / 0.03) * Math.PI * 0.5) : 0
   const out = smooth((up - TURRET_LOOK.clear) / (1 - TURRET_LOOK.clear))
   const lift = TURRET_LOOK.lift * out
-  d.barrel.position.x = -v[5]! * 0.55 + kick - TURRET_LOOK.stowed * (1 - out)
+  d.barrel.position.x = -v[5]! - TURRET_LOOK.stowed * (1 - out)
+  d.head.position.set(-v[0]! * v[5]! * RECOIL.head, v[1]! * v[5]! * RECOIL.head, 0)
   d.barrel.rotation.y = -lift
   const cx = s.x + s.w / 2
   const cy = s.y + s.h / 2
@@ -368,14 +368,13 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const gone = from ? Math.hypot(s.x + s.w / 2 + Math.cos(a) * TURRET.bolt * 0.5 - from.x - from.w / 2, s.y + s.h / 2 + Math.sin(a) * TURRET.bolt * 0.5 - from.y - from.h / 2) - TURRET.barrel : 0
   const far = u > 0.02 && from ? Math.max(0, gone) / u : TURRET_LOOK.lob / TURRET_LOOK.lobShare
   const lob = Math.min(TURRET_LOOK.lob, far * TURRET_LOOK.lobShare) * Math.sin(Math.PI * u) ** 0.4
-  const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
   d.head.position.set(TURRET.bolt / 2 - 8, side * lob, 10 + lob * 0.5)
   v3.set(TURRET.bolt / 2 - 12, side * lob, 10 + lob * 0.5)
-  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(26 + 50 * born, 2 * flick, 2 * flick)))
+  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(26 + 50 * born, 2, 2)))
   d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(14 + 26 * born, 1.1, 1.1)))
   d.tails.instanceMatrix.needsUpdate = true
   const half = TURRET.bolt / 2 - 9
-  ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half + side * Math.sin(a) * lob, y: s.y + s.h / 2 + Math.sin(a) * half - side * Math.cos(a) * lob, z: s.z0 + 8 + lob * 0.5, colour: EMIT.bolt.colour, power: EMIT.bolt.power * flick, reach: EMIT.bolt.reach, shadow: true })
+  ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half + side * Math.sin(a) * lob, y: s.y + s.h / 2 + Math.sin(a) * half - side * Math.cos(a) * lob, z: s.z0 + 8 + lob * 0.5, colour: EMIT.bolt.colour, power: EMIT.bolt.power, reach: EMIT.bolt.reach, shadow: true })
 }
 
 interface ScorchData {

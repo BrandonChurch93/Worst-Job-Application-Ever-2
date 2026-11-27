@@ -11,12 +11,13 @@ export const TURRET = {
 // The longest, in seconds, one shot is held back for held keys on the live site.
 export const STAY = 0.7
 
-// How far, in px, the barrel stands back along its line: it creeps back `creep` over the whole wind-up and is cocked `cock` further over its last `cockSeconds`; on the step of the shot it is thrown back to `kick` and rings down, dying over `tau` at `hz` swings a second, still after `ring` seconds. The head gives `head` of it.
-export const RECOIL = { creep: 3, cock: 9, cockSeconds: 0.084, kick: 18, tau: 0.04, hz: 9, ring: 0.15, head: 0.22 }
+// How far, in px, the barrel stands back along its line: it creeps back `creep` over the whole wind-up and is cocked `cock` further over its last `cockSeconds`; on the step of the shot it is thrown back to `kick` and rings down, dying over `tau` at `hz` swings a second, still after `ring` seconds, and it is read at whole frames of `frames` a second so the frame of the shot always holds the whole kick. The head gives `head` of it.
+export const RECOIL = { creep: 2, cock: 8, cockSeconds: 0.084, kick: 22, tau: 0.04, hz: 9, ring: 0.15, frames: 60, head: 0.22 }
 export const recoilOf = (charge: number, since: number): number => {
   if (charge > 0) return RECOIL.creep * charge + RECOIL.cock * ease((charge - 1 + RECOIL.cockSeconds / TURRET.windup) / (RECOIL.cockSeconds / TURRET.windup))
-  if (since < 0 || since >= RECOIL.ring) return 0
-  return RECOIL.kick * Math.exp(-since / RECOIL.tau) * Math.cos(since * RECOIL.hz * Math.PI * 2) * (1 - ease((since - RECOIL.ring * 0.6) / (RECOIL.ring * 0.4)))
+  const t = Math.floor(since * RECOIL.frames + 1e-6) / RECOIL.frames
+  if (since < 0 || t >= RECOIL.ring) return 0
+  return RECOIL.kick * Math.exp(-t / RECOIL.tau) * Math.cos(t * RECOIL.hz * Math.PI * 2) * (1 - ease((t - RECOIL.ring * 0.6) / (RECOIL.ring * 0.4)))
 }
 
 const ease = (t: number): number => {
