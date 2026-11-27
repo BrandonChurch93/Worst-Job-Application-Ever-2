@@ -8,8 +8,9 @@ import { ARENA, PAGE, SEAMS, SLABS, inset, type Pt, type Slab } from './layout'
 const wx = (x: number): number => x - PAGE.w / 2
 const wy = (y: number): number => PAGE.h / 2 - y
 
-// The picture the ground reads its wounds from: red soot, green depth of a cut, blue embers, alpha the light from below where a slab is broken through. Half a texel to the page px.
-export const DAMAGE = { w: 960, h: 540 }
+// The picture the ground reads its wounds from: red soot, green depth of a cut, blue embers, alpha the light from below where a slab is broken through. Three texels to four page px.
+export const DAMAGE = { w: 1440, h: 810 }
+const SPILL = { w: 960, h: 540 }
 
 export interface Wounds { texture: THREE.DataTexture; data: Uint8Array; time: { value: number }; ember: { value: number }; spill: THREE.DataTexture; seam: { value: number } }
 
@@ -27,7 +28,7 @@ export function makeWounds(): Wounds {
 
 // How much of the seams' light falls on the ceramic beside them: 1 at a seam's edge, gone some 40 px away. Made once.
 function spillTexture(): THREE.DataTexture {
-  const W = DAMAGE.w, H = DAMAGE.h
+  const W = SPILL.w, H = SPILL.h
   const data = new Uint8Array(W * H)
   const reach = 46
   // The light comes from below and the picture looks from below: the spill lies a little down the screen.
@@ -80,7 +81,7 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
     const emissive = '#include <emissivemap_fragment>'
     if (!shader.fragmentShader.includes(colour) || !shader.fragmentShader.includes(emissive)) throw new Error('The surface code of this three.js release is not the one the arena was written for')
     shader.fragmentShader = head + shader.fragmentShader
-      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.15, 0.115 ), smoothstep( 0.0, 0.5, arenaW.r ) * 0.85 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.03, 0.027, 0.025 ), smoothstep( 0.3, 1.0, arenaW.r ) );\n\tdiffuseColor.rgb *= mix( vec3( 1.0 ), vec3( 0.7, 0.6, 0.52 ), smoothstep( 0.08, 0.3, arenaW.a ) );`)
+      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.15, 0.115 ), smoothstep( 0.0, 0.5, arenaW.r ) * 0.85 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.03, 0.027, 0.025 ), smoothstep( 0.3, 1.0, arenaW.r ) );\n\tdiffuseColor.rgb *= mix( vec3( 1.0 ), vec3( 0.2, 0.115, 0.075 ), smoothstep( 0.08, 0.3, arenaW.a ) ) * ( 1.0 - 0.94 * smoothstep( 0.55, 0.9, arenaW.a ) );`)
       .replace(emissive, `${emissive}
 \t{
 \t\tvec2 arenaT = ${texel};
@@ -88,13 +89,12 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
 \t\tfloat arenaDy = texture2D( arenaWounds, vArenaUv + vec2( 0.0, arenaT.y ) ).g - texture2D( arenaWounds, vArenaUv - vec2( 0.0, arenaT.y ) ).g;
 \t\tnormal = normalize( normal + vec3( arenaDx, arenaDy, 0.0 ) * 2.6 );
 \t\troughnessFactor = mix( roughnessFactor, 0.95, arenaW.r );
-\t\tvec2 arenaCell = floor( vArenaUv * vec2( ${(PAGE.w / 3).toFixed(1)}, ${(PAGE.h / 3).toFixed(1)} ) );
-\t\tfloat arenaFlick = 0.72 + 0.28 * sin( arenaTime * ( 3.0 + 5.0 * arenaHash( arenaCell ) ) + 6.283 * arenaHash( arenaCell + 7.0 ) );
+\t\tfloat arenaFlick = 0.76 + 0.24 * sin( arenaTime * 5.0 + vArenaUv.x * 173.0 + sin( vArenaUv.y * 131.0 + arenaTime * 3.1 ) * 2.0 );
 \t\tfloat arenaLight = smoothstep( 0.55, 0.9, arenaW.a );
 \t\tfloat arenaWall = smoothstep( 0.08, 0.3, arenaW.a ) * ( 1.0 - arenaLight );
 \t\tfloat arenaB = arenaW.b * arenaW.b;
 \t\ttotalEmissiveRadiance += arenaEmber * mix( vec3( 1.9, 0.36, 0.03 ), vec3( 3.6, 1.7, 0.34 ), arenaB ) * arenaB * arenaFlick;
-\t\ttotalEmissiveRadiance += mix( vec3( 1.7, 0.5, 0.05 ), vec3( 2.7, 1.25, 0.22 ), arenaHash( floor( vArenaUv * vec2( 96.0, 54.0 ) ) ) * 0.6 + 0.2 ) * arenaLight + vec3( 0.2, 0.06, 0.01 ) * arenaWall;
+\t\ttotalEmissiveRadiance += mix( vec3( 1.1, 0.24, 0.018 ), vec3( 1.75, 0.5, 0.04 ), smoothstep( 0.66, 1.0, arenaW.a ) ) * arenaLight + vec3( 0.5, 0.12, 0.014 ) * arenaWall;
 \t\tfloat arenaS = texture2D( arenaSpill, vArenaUv ).r;
 \t\ttotalEmissiveRadiance += vec3( 0.8, 0.2, 0.03 ) * arenaS * arenaS * arenaSeam * ( 1.0 - arenaW.r );
 \t}`)

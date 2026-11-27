@@ -1,4 +1,5 @@
 // What stands in the arena: eight pillars, two panes, a rotary gun in each corner, and the health bar in its bolted frame.
+import { makeGun as makeLookGun, poseGun as poseLookGun, type Gun as LookGun } from '../boss/look1/gun'
 import * as THREE from 'three'
 import type { BossView, ViewCorner } from '../boss/view'
 import { studio } from '../post/studio'
@@ -6,7 +7,7 @@ import type { Emitter } from '../real/types'
 import { materials } from '../shell/materials'
 import { merge, outlineOf, profile, roundedRect, sweep, type ProfilePoint } from '../shell/solids'
 import { barDrop, clamp01, rise } from './change'
-import { ARENA, PAGE, PANES, PILLARS } from './layout'
+import { ARENA, EYE, PAGE, PANES, PILLARS } from './layout'
 
 const wx = (x: number): number => x - PAGE.w / 2
 const wy = (y: number): number => PAGE.h / 2 - y
@@ -44,6 +45,7 @@ export interface Kit {
   glass: THREE.MeshPhysicalMaterial
   glassEdge: THREE.MeshPhysicalMaterial
   shard: THREE.MeshPhysicalMaterial
+  tooth: THREE.MeshPhysicalMaterial
   orange: THREE.Material
   broken: THREE.MeshPhysicalMaterial
   hot: THREE.MeshBasicMaterial
@@ -54,10 +56,12 @@ export function makeKit(): Kit {
   const m = materials()
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.5, 0.7, 0.62), emissive: new THREE.Color(0.2, 0.3, 0.26), roughness: 0.5, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.4, specularIntensity: 0.7, transparent: true, opacity: 0.72, depthWrite: true, side: THREE.FrontSide }))
   const glassEdge = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.8, 0.93, 0.88), roughness: 0.35, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.2, specularIntensity: 0.9, transparent: true, opacity: 0.9 }))
-  const shard = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.36, 0.62, 0.52), emissive: new THREE.Color(0.1, 0.17, 0.145), roughness: 0.3, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.2, specularIntensity: 0.9, transparent: true, opacity: 0.78, side: THREE.DoubleSide, flatShading: true }))
-  const broken = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.36, 0.36, 0.375), roughness: 0.8, metalness: 0.45, specularIntensity: 0.5, flatShading: true }))
+  const shard = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.62, 0.84, 0.75), emissive: new THREE.Color(0.1, 0.16, 0.14), roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, specularIntensity: 1, transparent: true, opacity: 0.5, depthWrite: false, side: THREE.DoubleSide, flatShading: true }))
+  // What is left standing of a shattered pane: the same glass as the whole one, seen from both sides.
+  const tooth = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.55, 0.76, 0.67), emissive: new THREE.Color(0.17, 0.26, 0.225), roughness: 0.3, metalness: 0, clearcoat: 0.9, clearcoatRoughness: 0.15, specularIntensity: 0.9, transparent: true, opacity: 0.74, side: THREE.DoubleSide, flatShading: true }))
+  const broken = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.5, 0.5, 0.515), roughness: 0.9, metalness: 0.2, specularIntensity: 0.4, flatShading: true }))
   const hot = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 1.1, 0.16), toneMapped: false })
-  return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, orange: m.orange, broken, hot, own: [glass, glassEdge, shard, broken, hot] }
+  return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, tooth, orange: m.orange, broken, hot, own: [glass, glassEdge, shard, tooth, broken, hot] }
 }
 
 export interface Pillar { root: THREE.Group; foot: THREE.Mesh; body: THREE.Mesh; x: number; y: number; order: number }
@@ -66,7 +70,8 @@ export interface Pillar { root: THREE.Group; foot: THREE.Mesh; body: THREE.Mesh;
 export function stand(x: number, y: number): { lean: THREE.Group; root: THREE.Group } {
   const lean = new THREE.Group()
   lean.matrixAutoUpdate = false
-  lean.matrix.set(1, 0, 0, wx(x), 0, 1, ARENA.lean, wy(y), 0, 0, 1, 0, 0, 0, 0, 1)
+  // The camera's own lean, away from the middle of the page, is taken out, so that every thing leans the same way wherever it stands.
+  lean.matrix.set(1, 0, ARENA.leanX - wx(x) / EYE, wx(x), 0, 1, ARENA.lean - wy(y) / EYE, wy(y), 0, 0, 1, 0, 0, 0, 0, 1)
   const root = new THREE.Group()
   lean.add(root)
   return { lean, root }
@@ -158,40 +163,8 @@ function paneShade(x: number, y0: number, y1: number): THREE.BufferGeometry {
   return g
 }
 
-export interface Gun { root: THREE.Group; turret: THREE.Group; barrels: THREE.Group; muzzle: THREE.Mesh; flash: THREE.Mesh; order: number }
-
-function gunGeometries(): { base: THREE.BufferGeometry; ring: THREE.BufferGeometry; body: THREE.BufferGeometry; dark: THREE.BufferGeometry; barrels: THREE.BufferGeometry; clamps: THREE.BufferGeometry } {
-  const G = ARENA.gun
-  const base = sweep(outlineOf({ kind: 'disc', w: G.base * 2, h: G.base * 2 }), profile([[0, 0, true], [0, 5], [3, 8], [10, 8], [13, 11], [G.base - 16, 11]]), true)
-  const ring = sweep(outlineOf({ kind: 'disc', w: (G.base - 14) * 2, h: (G.base - 14) * 2 }), profile([[0, 11, true], [0, 15], [2, 17], [G.base - 26, 17]]), true)
-  const box = (w: number, h: number, d: number, x: number, y: number, z: number): THREE.BufferGeometry => {
-    const g = sweep(roundedRect(w, h, Math.min(w, h) * 0.18, 4), profile([[0, 0, true], [0, d - 2], [2, d], [Math.min(w, h) * 0.3, d]]), true)
-    g.translate(x, y, z)
-    return g
-  }
-  // The turret looks along +x.
-  const body = merge([box(58, 40, 20, -4, 0, 17), box(24, 26, 8, -14, 0, 37), box(20, 14, 14, 2, 27, 17), box(20, 14, 14, 2, -27, 17)])
-  const dark = merge([box(16, 30, 4, 12, 0, 37), box(10, 46, 10, -30, 0, 19)])
-  const tubes: THREE.BufferGeometry[] = []
-  for (let i = 0; i < 6; i++) {
-    const a = (i / 6) * Math.PI * 2
-    const t = new THREE.CylinderGeometry(3.1, 3.1, G.barrel, 10, 1)
-    t.rotateZ(-Math.PI / 2)
-    t.translate(G.barrel / 2, Math.cos(a) * 7.2, Math.sin(a) * 7.2)
-    tubes.push(t)
-  }
-  const clamp = (x: number, r: number, w: number): THREE.BufferGeometry => {
-    const c = new THREE.CylinderGeometry(r, r, w, 20, 1)
-    c.rotateZ(-Math.PI / 2)
-    c.translate(x, 0, 0)
-    return c
-  }
-  const strip = (g: THREE.BufferGeometry): THREE.BufferGeometry => {
-    const out = g.index ? g : g
-    return out
-  }
-  return { base, ring, body, dark, barrels: merge(tubes), clamps: merge([clamp(6, 12.5, 9), clamp(G.barrel * 0.55, 12, 5), clamp(G.barrel - 5, 12, 6)]) }
-}
+// The corner guns are the rotary gun of the boss's own sides (src/boss/look1/gun.ts), a little larger.
+export interface Gun { root: THREE.Group; look: LookGun; order: number }
 
 let dotMade: THREE.DataTexture | null = null
 // A soft round dot, bright in the middle, for a flash or a puff.
@@ -214,34 +187,17 @@ export function softDot(): THREE.DataTexture {
   return dotMade
 }
 
-export function makeGuns(kit: Kit): { object: THREE.Group; list: Gun[]; flashStuff: THREE.Material[]; dispose(): void } {
-  const g = gunGeometries()
-  const G = ARENA.gun
+export function makeGuns(_kit: Kit): { object: THREE.Group; list: Gun[]; dispose(): void } {
   const object = new THREE.Group()
-  const flashGeo = new THREE.PlaneGeometry(1, 1)
-  const flashStuff: THREE.Material[] = []
   const list: Gun[] = ARENA.corners.map((c, i) => {
+    const look = makeLookGun()
     const root = new THREE.Group()
     root.position.set(wx(c.x), wy(c.y), 0)
-    const turret = new THREE.Group()
-    const barrels = new THREE.Group()
-    barrels.position.set(22, 0, 30)
-    barrels.add(lit(g.barrels, kit.chrome), lit(g.clamps, kit.steel))
-    const muzzle = new THREE.Mesh(new THREE.SphereGeometry(6, 12, 8), kit.hot)
-    muzzle.position.set(22 + G.barrel + 2, 0, 30)
-    muzzle.visible = false
-    const stuff = new THREE.MeshBasicMaterial({ map: softDot(), color: new THREE.Color(3.5, 1.6, 0.4), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, opacity: 0 })
-    flashStuff.push(stuff)
-    const flash = new THREE.Mesh(flashGeo, stuff)
-    flash.position.set(22 + G.barrel + 18, 0, 34)
-    flash.scale.set(90, 60, 1)
-    flash.visible = false
-    turret.add(lit(g.body, kit.satin), lit(g.dark, kit.dark), barrels, muzzle, flash)
-    root.add(lit(g.base, kit.steel), lit(g.ring, kit.aluminium), turret)
+    root.add(look.root)
     object.add(root)
-    return { root, turret, barrels, muzzle, flash, order: 0.86 + 0.045 * i }
+    return { root, look, order: 0.86 + 0.045 * i }
   })
-  return { object, list, flashStuff, dispose: () => { Object.values(g).forEach((x) => x.dispose()); flashGeo.dispose(); flashStuff.forEach((x) => x.dispose()) } }
+  return { object, list, dispose: () => list.forEach((g) => g.look.dispose()) }
 }
 
 export const GUN_LIGHT = { tell: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.5, reach: 150 }, fire: { colour: [1, 0.62, 0.25] as [number, number, number], power: 1.4, reach: 260 } }
@@ -250,24 +206,19 @@ export function poseGun(gun: Gun, c: ViewCorner, time: number, light?: (e: Emitt
   const up = rise(time, gun.order)
   gun.root.visible = up > 0
   if (!gun.root.visible) return
+  const k = ARENA.gun.scale
   gun.root.position.set(wx(c.x), wy(c.y), 0)
-  gun.root.scale.set(ARENA.gun.scale, ARENA.gun.scale, ARENA.gun.scale * Math.max(0.02, up))
-  // 0 along +x, growing clockwise on the page: on the page y runs down, here it runs up.
-  gun.turret.rotation.z = -c.aim
+  gun.root.scale.set(k, k, k * Math.max(0.02, up))
   const tell = clamp01(c.tell)
   const since = c.firedAt === null ? 9 : time - c.firedAt
   const kick = since >= 0 && since < 0.5 ? Math.exp(-since / 0.07) : 0
-  gun.turret.position.set(-Math.cos(c.aim) * 9 * kick, Math.sin(c.aim) * 9 * kick, 0)
-  // The cluster spins up with the tell; the angle is a function of the time alone.
-  gun.barrels.rotation.x = time * 26 * tell * tell + (since < 0.4 ? since * 30 * (1 - since / 0.4) : 0)
-  gun.muzzle.visible = tell > 0.02
-  gun.muzzle.scale.setScalar(0.4 + 1.1 * tell)
-  const flashOn = since >= 0 && since < 0.09
-  gun.flash.visible = flashOn
-  if (flashOn) (gun.flash.material as THREE.MeshBasicMaterial).opacity = 1 - since / 0.09
+  const flash = since >= 0 && since < 0.09 ? 1 - since / 0.09 : 0
+  // 0 along +x, growing clockwise on the page: on the page y runs down, here it runs up. The cluster spins up with the tell; its angle is a function of the time alone.
+  poseLookGun(gun.look, { yaw: -c.aim, spin: time * 26 * tell * tell + (since >= 0 && since < 0.4 ? since * 30 * (1 - since / 0.4) : 0), recoil: 16 * kick + 7 * tell, lamp: tell, flash })
   if (light) {
-    const mx = c.x + Math.cos(c.aim) * (22 + ARENA.gun.barrel), my = c.y + Math.sin(c.aim) * (22 + ARENA.gun.barrel)
-    if (flashOn) light({ x: mx, y: my, z: 36, colour: GUN_LIGHT.fire.colour, power: GUN_LIGHT.fire.power * (1 - since / 0.09), reach: GUN_LIGHT.fire.reach })
+    const reach = ARENA.gun.reach
+    const mx = c.x + Math.cos(c.aim) * reach, my = c.y + Math.sin(c.aim) * reach
+    if (flash > 0) light({ x: mx, y: my, z: 36, colour: GUN_LIGHT.fire.colour, power: GUN_LIGHT.fire.power * flash, reach: GUN_LIGHT.fire.reach })
     else if (tell > 0.3) light({ x: mx, y: my, z: 34, colour: GUN_LIGHT.tell.colour, power: GUN_LIGHT.tell.power * tell, reach: GUN_LIGHT.tell.reach })
   }
 }

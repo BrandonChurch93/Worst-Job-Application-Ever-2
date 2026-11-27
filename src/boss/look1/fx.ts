@@ -368,8 +368,8 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       if (b.locked || t >= 1) {
         const [s1x, s1y] = fromBody(p, HATCH.cx + 70, 96)
         const [s2x, s2y] = fromBody(p, HATCH.cx + 40, -100)
-        plume(s1x, s1y, 70, now, 0.16, 1.3, 5, 24, STEAM, 0.5, 10, 20)
-        plume(s2x, s2y, 70, now, 0.19, 1.2, 6, 20, STEAM, 0.42, 14, -8)
+        plume(s1x, s1y, 70, now, 0.14, 1.4, 5, 30, STEAM, 0.75, 12, 22)
+        plume(s2x, s2y, 70, now, 0.17, 1.3, 6, 26, STEAM, 0.65, 16, -10)
       }
       const lockAge = p.lockAge
       if (lockAge >= 0 && lockAge < 0.5) {
@@ -504,11 +504,15 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
     // Damage: smoke where he is hurt, more as he falls from stage to stage; sparks that come and go at the last stage.
     if (p.shown && f >= 1 && (b.stage > 0 || beaten > 0)) {
       const heavy = b.stage >= 2 || beaten > 0
-      const [ax, ay] = fromBody(p, -150, 70)
-      plume(ax, ay, 66, now, heavy ? 0.1 : 0.16, 1.1, 11, heavy ? 30 : 22, SMOKE, heavy ? 0.6 : 0.42)
+      const [ax, ay] = fromBody(p, -212, 78)
+      plume(ax, ay, 66, now, heavy ? 0.09 : 0.13, 1.3, 11, heavy ? 40 : 30, SMOKE, heavy ? 0.8 : 0.62)
       if (heavy) {
-        const [cx2, cy2] = fromBody(p, 120, -96)
-        plume(cx2, cy2, 60, now, 0.13, 1, 12, 26, SMOKE, 0.5)
+        const [cx2, cy2] = fromBody(p, 160, -92)
+        plume(cx2, cy2, 62, now, 0.11, 1.2, 12, 34, SOOT, 0.7, -8, 26)
+        const flick = 0.6 + 0.4 * hash01(Math.floor(now * 24), 5, o.seed)
+        glow.add(cx2, cy2, 70, 46 * flick + 14, 46 * flick + 14, 0, ORANGE, 0.9 * flick)
+        glow.add(cx2, cy2, 70.5, 20 * flick + 6, 20 * flick + 6, 0, HOT, 1.2 * flick)
+        lamp(cx2, cy2, 70, ORANGE, 0.25 * flick, 110)
         const tick = Math.floor(now / 0.45)
         const sAge = now - tick * 0.45
         if (rnd(tick, 111) > 0.35) {
