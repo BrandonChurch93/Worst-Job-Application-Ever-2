@@ -388,7 +388,7 @@ export const MEETS = { within: 24, kick: 4, lifts: 3, soon: 4, share: 0.6 }
 // The first reading needs no word of the page: the ball lies `held` steps or more in a row within `near` widths of the middle, its centre `deep` or lower in its tier (under the bats' tips),
 // moving under `still` px a step, and then goes up at `leaves` widths a second or more. The page's words only confirm a save so found: they find none and hide none.
 // A ball that is `deep` in the mouth for `sunk` steps and is `out` of it again on the same tier was saved: where no reading finds that save, the plan says so and the tool fails.
-export const SAVE = { names: ['ball-save', 'flipper-save'], take: 'gate-take', lifts: 30, breaks: 12, across: 1, low: 10.3, rises: 0.15, clears: 3, same: 3, most: 90, before: 4, after: 4, sheets: 2, held: 10, near: 0.5, deep: 10.4, still: 1, leaves: 18, sunk: 2, out: 9.6 }
+export const SAVE = { names: ['ball-save', 'flipper-save'], take: 'gate-take', lifts: 30, breaks: 12, across: 1, low: 10.3, rises: 0.15, clears: 3, same: 3, most: 90, before: 6, after: 8, sheets: 4, held: 10, near: 0.5, deep: 10.4, still: 1, leaves: 18, sunk: 2, out: 9.6 }
 // What struck the arrow, in plain words, by the name the site tells the hit under.
 export const STRUCK = { 'bolt-hit-cursor': "a turret's bolt", 'tug-lost': 'the lost tug of war' }
 export const struckWords = (name) => STRUCK[name] || `what the page calls "${String(name).replace(/-/g, ' ')}"`
@@ -673,7 +673,7 @@ export function momentsOf(cfg, run) {
     for (let j = Math.max(0, from); j <= Math.min(n - 1, to); j++) if (rows[j][COL.left] || rows[j][COL.right]) return true
     return false
   }
-  const whole = (i) => !saves.some((x) => x !== i && x >= takes[i] - SAVE.before * EVERY && x <= i + SAVE.after * EVERY) && !handIn(takes[i] - SAVE.before * EVERY, i + SAVE.after * EVERY)
+  const whole = (i) => !saves.some((x) => x !== i && x >= takes[i] - SAVE.before && x <= i + SAVE.after) && !handIn(takes[i] - SAVE.before, i + SAVE.after)
   const save = saves.find(whole) ?? saves[0] ?? null
   const word = (step, names) => run.hits.some((h) => names.includes(h.name) && Math.abs(h.step - step) <= SAVE.same)
   const gate = save === null ? null : { take: takes[save], kick: save, lifted: lifted[save] ?? null, said: word(save, SAVE.names), takeSaid: word(takes[save], [SAVE.take]) }
@@ -1119,7 +1119,8 @@ export function motionPlan(cfg, run) {
   if (m.gate) {
     // The save: from SAVE.before frames before the ball is down at the gate to SAVE.after frames after the kick. The heading names the event, the window and the marks, and nothing of what strikes.
     const g = m.gate
-    const need = sheetsFor(g.take - SAVE.before * EVERY, g.kick + SAVE.after * EVERY)
+    const sheetsOf = (from, to) => Math.max(1, Math.ceil((to - from + 1) / count))
+    const need = sheetsOf(g.take - SAVE.before, g.kick + SAVE.after)
     // What the rows hold of the save. A ball the page puts higher in one step is said in plain words: that is a fault of the page and is shown, not skipped.
     const moved = g.lifted ? `, moved ${g.lifted} px up in that one step` : ''
     const down = `The ball is low in the mouth from ${timeOf(g.take)}`
@@ -1127,19 +1128,19 @@ export function motionPlan(cfg, run) {
     const told = `${down} and ${up}`
     const words = 'as the machine saves a ball lost between the bats'
     if (need <= SAVE.sheets) {
-      add('save', 'site-hit-sheet', words, g.take - SAVE.before * EVERY, need, g.kick, { marks: 'hand' })
+      add('save', 'site-hit-sheet', words, g.take - SAVE.before, need, g.kick, { marks: 'hand', every: 1 })
       runs[runs.length - 1].after = told
     } else {
       // The ball is held longer than SAVE.sheets sheets show in a row: two runs, each of frames in a row and none skipped inside it.
       // The first from SAVE.before frames before the take, the second from SAVE.before frames before the kick until the ball is clear of the bats and SAVE.after frames are past.
-      add('save', 'site-hit-sheet', `${words}, the first of two runs: the ball comes down to the mouth`, g.take - SAVE.before * EVERY, 1, g.take, { marks: 'hand' })
+      add('save', 'site-hit-sheet', `${words}, the first of two runs: the ball comes down to the mouth`, g.take - SAVE.before, 1, g.take, { marks: 'hand', every: 1 })
       runs[runs.length - 1].after = down
       const tier = ballAt(cfg, rows[g.kick]).tier
       const under = (i) => rows[i][COL.heroY] - rows[i][COL.scroll] + cfg.table.ballPx * REACH.ballR > saveHolds(cfg, rows[i], tier).bats[1]
       let clear = g.kick
       while (clear < last && clear < g.kick + SAVE.most && under(clear)) clear += 1
-      const from = g.kick - SAVE.before * EVERY
-      add('save', 'site-hit-sheet', `${words}, the second of two runs: the ball goes back up`, from, sheetsFor(from, Math.max(g.kick + SAVE.after * EVERY, clear)), g.kick, { marks: 'hand' })
+      const from = g.kick - SAVE.before
+      add('save', 'site-hit-sheet', `${words}, the second of two runs: the ball goes back up`, from, sheetsOf(from, Math.max(g.kick + SAVE.after, clear)), g.kick, { marks: 'hand', every: 1 })
       runs[runs.length - 1].after = `The ball ${up}`
     }
   }

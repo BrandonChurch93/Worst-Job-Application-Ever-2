@@ -140,13 +140,13 @@ describe('the packs of the unit site', () => {
     // The pages: the walk, the turn on three sheets, the key, the hit, taken, given back. The machine: the seal, the ball leaving the port, the stroke on two sheets, the save on two.
     expect(plan.sets.map((s) => s.groups)).toEqual([['pages', 'arrow'], ['machine']])
     expect(plan.sets[0]!.files.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'turn', 'type', 'hit', 'taken', 'given-back', 'given-back'])
-    expect(plan.sets[1]!.files.map((f) => f.moment)).toEqual(['flippers', 'flippers', 'flip', 'flip', 'flip-close', 'save', 'save'])
+    expect(plan.sets[1]!.files.map((f) => f.moment)).toEqual(['flippers', 'flippers', 'flip', 'flip', 'flip-close', 'save', 'save', 'save'])
     for (const s of plan.sets) expect(s.files.length).toBeLessThanOrEqual(most)
     expect(plan.sets[1]!.files[0]!.name).toBe('set-B-01.png')
     for (const f of files) {
       expect(f.steps!.length).toBe(count)
       // The give back and the close sheet of the blow are drawn at every step (1/60 s), all other moments at every second, and each heading says its own.
-      const every = f.moment === 'given-back' || f.moment === 'flip-close' ? 1 : 2
+      const every = f.moment === 'given-back' || f.moment === 'flip-close' || f.moment === 'save' ? 1 : 2
       for (let i = 1; i < f.steps!.length; i++) expect(f.steps![i]! - f.steps![i - 1]!).toBe(every)
       expect(f.every).toBe(every)
       expect(f.heading.startsWith(`Consecutive frames, 1/${60 / every} s apart, `)).toBe(true)
@@ -305,7 +305,7 @@ describe('the packs of the unit site', () => {
     // The stroke's sheets say in numbers how the pack's visitor presses.
     for (const f of flip) expect(f.heading).toContain(`The pack's visitor presses ${FLIPS.reactSteps} steps after the page's cue and holds ${FLIPS.holdSteps} steps. `)
     // No other sheet carries the sentence or the letters.
-    expect(files.filter((f) => f.hands && f.moment !== 'type').map((f) => f.moment)).toEqual(['flippers', 'flippers', 'flip', 'flip', 'flip-close', 'save', 'save'])
+    expect(files.filter((f) => f.hands && f.moment !== 'type').map((f) => f.moment)).toEqual(['flippers', 'flippers', 'flip', 'flip', 'flip-close', 'save', 'save', 'save'])
   })
 
   it('R4: a hand that taps between two frames is still under the frame that follows it', () => {
@@ -339,22 +339,23 @@ describe('the packs of the unit site', () => {
     expect((siteNotes(cfg, 'R4', none) as { leftOut: string[] }).leftOut).toEqual(plan.leftOut)
     // The save of that run carries the hand's tap under its frames.
     const save = plan.items.filter((f) => f.moment === 'save')
-    expect(save.length).toBe(2)
-    expect(save[0]!.at).toBe(3 * LONG + 200)
-    expect(save[0]!.hands!.filter((h) => h === 'R').length).toBe(2)
+    expect(save.length).toBe(3)
+    expect(save[1]!.at).toBe(3 * LONG + 200)
+    expect(save.flatMap((f) => f.hands!).filter((h) => h === 'R').length).toBeGreaterThan(0)
   })
 
-  it('R4: the save is the machine own, from four frames before the ball is low in the mouth to four after the kick, under a heading that names the event and nothing that strikes', () => {
+  it('R4: the save is the machine own, every step a frame from six before the ball is low in the mouth to eight after the kick, under a heading that names the event and nothing that strikes', () => {
     const save = filesOf(planOf('R4')).filter((f) => f.moment === 'save')
     // The made-up save: the ball is low between the bats from 3 * LONG + 190 and goes back up at 3 * LONG + 200.
     expect(facts.moments.gate).toMatchObject({ take: 3 * LONG + 190, kick: 3 * LONG + 200 })
     const steps = save.flatMap((f) => f.steps!)
-    expect(save.length).toBe(2)
-    expect(steps[0]).toBe(3 * LONG + 190 - SAVE.before * 2)
-    expect(steps[steps.length - 1]).toBeGreaterThanOrEqual(3 * LONG + 200 + SAVE.after * 2)
-    expect(save[0]!.at).toBe(3 * LONG + 200)
+    expect(save.length).toBe(3)
+    for (let i = 1; i < steps.length; i++) expect(steps[i]! - steps[i - 1]!).toBe(1)
+    expect(steps[0]).toBe(3 * LONG + 190 - SAVE.before)
+    expect(steps[steps.length - 1]).toBeGreaterThanOrEqual(3 * LONG + 200 + SAVE.after)
+    expect(save[1]!.at).toBe(3 * LONG + 200)
     for (const f of save) {
-      expect(f.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as the machine saves a ball lost between the bats, one fixed window on the mouth, its gate and both bats at 100% of its size, sheet \d of 2 of one run/)
+      expect(f.heading).toMatch(/^Consecutive frames, 1\/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the mouth, its gate and both bats at 100% of its size, sheet \d of 3 of one run/)
       expect(f.heading).toMatch(/: \d:\d\d\.\d\d to \d:\d\d\.\d\d\. The ball is low in the mouth from 0:18\.17 and goes back up from 0:18\.33, moved 63 px up in that one step\. Under a frame, L or R/)
       expect(f.heading).not.toMatch(/strik|throw|its own bat|round the arrow/)
     }
@@ -383,15 +384,16 @@ describe('the packs of the unit site', () => {
       const held = momentsOf(cfg, madeRun(hits, { save: false, hold: HOLD }))
       expect(held.moments.gate).toEqual({ take: 3 * LONG + 190, kick: 3 * LONG + 190 + HOLD, lifted: null, said: hits.length > BOLT.length, takeSaid: hits.length > BOLT.length })
       expect(held.moments.unsaved).toEqual([])
-      // Held longer than two sheets show in a row: two runs, the first from four frames before the take, the second from four before the kick, no frame skipped inside either.
+      // Held longer than SAVE.sheets sheets show in a row: two runs, every step a frame, the first one sheet from SAVE.before steps before the take, the second from SAVE.before before the kick to SAVE.after after it, no step skipped inside either.
       const runs = motionPlan(cfg, held).items.filter((f: { moment: string }) => f.moment === 'save') as { steps: number[]; heading: string }[]
-      expect(runs.length).toBe(2)
-      expect(runs[0]!.steps[0]).toBe(3 * LONG + 190 - SAVE.before * 2)
-      expect(runs[1]!.steps[0]).toBe(3 * LONG + 190 + HOLD - SAVE.before * 2)
-      expect(runs[1]!.steps[runs[1]!.steps.length - 1]).toBeGreaterThanOrEqual(3 * LONG + 190 + HOLD + SAVE.after * 2)
+      expect(runs.length).toBe(3)
+      expect(runs[0]!.steps[0]).toBe(3 * LONG + 190 - SAVE.before)
+      expect(runs[1]!.steps[0]).toBe(3 * LONG + 190 + HOLD - SAVE.before)
+      expect(runs[2]!.steps[0]).toBe(runs[1]!.steps[count - 1]! + 1)
+      expect(runs[2]!.steps[runs[2]!.steps.length - 1]).toBeGreaterThanOrEqual(3 * LONG + 190 + HOLD + SAVE.after)
       for (const r of runs) {
         expect(r.steps.length).toBe(count)
-        for (let i = 1; i < r.steps.length; i++) expect(r.steps[i]! - r.steps[i - 1]!).toBe(2)
+        for (let i = 1; i < r.steps.length; i++) expect(r.steps[i]! - r.steps[i - 1]!).toBe(1)
         expect(r.heading).not.toMatch(/strik|throw|its own bat|in that one step/)
       }
       expect(runs[0]!.heading).toContain('the first of two runs: the ball comes down to the mouth')

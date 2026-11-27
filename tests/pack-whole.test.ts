@@ -87,8 +87,8 @@ describe('the recorded save', () => {
   const run = { format: 'preview', rows, moments: { gate: rec.gate } }
 
   it('begins four frames or more before the ball is at the gate and ends four frames or more after the kick, on two sheets at most', () => {
-    expect((rec.gate.take - steps[0]!) / 2).toBeGreaterThanOrEqual(SAVE.before)
-    expect((steps[steps.length - 1]! - rec.gate.kick) / 2).toBeGreaterThanOrEqual(SAVE.after)
+    expect(rec.gate.take - steps[0]!).toBeGreaterThanOrEqual(SAVE.before)
+    expect(steps[steps.length - 1]! - rec.gate.kick).toBeGreaterThanOrEqual(SAVE.after)
     expect(steps.length % count).toBe(0)
     expect(steps.length / count).toBeLessThanOrEqual(SAVE.sheets)
     // The ball of the rows is low in the mouth from the take to the step before the kick, and out of it soon after.
