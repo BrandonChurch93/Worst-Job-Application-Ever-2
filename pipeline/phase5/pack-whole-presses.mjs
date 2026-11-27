@@ -18,7 +18,7 @@ for (let i = s3.first + 1; i <= s3.last; i++) {
     while (i - wanted - 1 > s3.first && inWant(overBat(cfg, rows[i - wanted - 1], side))) wanted += 1
     let held = 0
     while (rows[i + held] && rows[i + held][col]) held += 1
-    const stroke = m.strokes.find((x) => x.press === i && x.side === side)
+    const stroke = m.blows.find((x) => x.press === i && x.side === side)
     out.push({ step: i, side, along: r2(o.along), above: r2(o.above), fromReach: r2(reachGap(cfg, o)), wantedFor: wanted, held, meets: stroke ? `step ${stroke.step}, kick ${stroke.kick} px a step` : 'no' })
   }
 }
@@ -28,6 +28,6 @@ function inWant(o) {
 function r2(n) {
   return Math.round(n * 100) / 100
 }
-console.log(`presses of a flipper by the visitor in the machine: ${out.length}; within the bat's reach on the step of the press: ${out.filter((x) => x.fromReach === 0).length}; with a blow of the bat on the ball: ${out.filter((x) => x.meets !== 'no').length}`)
+console.log(`presses of a flipper by the visitor in the machine: ${out.length}; within the bat's reach on the step of the press: ${out.filter((x) => x.fromReach === 0).length}; with a blow of the bat on the ball: ${out.filter((x) => x.meets !== 'no').length}, of which hard enough to be shown (MEETS.share of the hardest): ${m.strokes.length}`)
 for (const x of out) console.log(JSON.stringify(x))
 console.log(`saves: ${JSON.stringify(m.saves)}; shown ${JSON.stringify(m.save)}; strokes ${JSON.stringify(m.strokes)}; shown ${JSON.stringify(m.stroke)}`)
