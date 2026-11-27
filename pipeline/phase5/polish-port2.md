@@ -268,6 +268,7 @@ live, release at step 1448. Step = the ball's way on the page between two frames
 
 - `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders (MEASURED 14:45 UTC, on the branch merged with main at 8a39fcaa, with `KNOCK.px` 2.6; not run again after the number became 5.2).
 - `npm test` on the tree merged with main at e2364b9c: 169 files and 2124 tests passed, 12 files and 15 tests skipped, none failed (MEASURED 15:00 UTC). The run before it (14:52 UTC) had 5 failing: this file's own knock test (the number), `tests/polish-sharp-shadow.test.ts` (4259), `tests/table-ball.test.ts` (the new field, mended in the maker) and `tests/cut-of-build.test.ts` (`cut/SHOTS.md`).
-- `npx tsc --noEmit -p .`: clean (MEASURED 14:55 UTC, after the last change to a `.ts` file).
+- After the last merge of main (5013511c, status files only): `npm test` again 169 files and 2124 tests passed, none failed (MEASURED 15:10 UTC).
+- `npx tsc --noEmit -p .`: clean (MEASURED 14:55 UTC after the last change to a `.ts` file, and again 15:10 UTC on the last merged tree).
 - `npm run bots`: all clear, exit 0 (MEASURED 15:04 UTC, on the same merged tree).
 - Stills `table-wide`, `last-save`, `loader-page`: byte equal (14:40 UTC, with `KNOCK.px` 2.6; the tube is at rest in all three).
