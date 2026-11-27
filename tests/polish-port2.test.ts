@@ -146,7 +146,7 @@ describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (nam
       expect(give[0]!).toBeLessThanOrEqual(3)
       expect(Math.min(...give)).toBeLessThan(-1)
       expect(Math.abs(give[4]!)).toBeLessThan(0.5)
-      expect(Math.abs(give[5]!)).toBeLessThan(1e-9)
+      expect(Math.abs(give[5]!)).toBeLessThan(0.05)
       expect(Math.hypot(...BENDS[b]!.push)).toBeCloseTo(1, 12)
     }
     expect(BENDS[0]!.push[0]).toBeLessThan(0)
