@@ -20,5 +20,6 @@ const box = { left: cut[0], top: cut[1], width: cut[2], height: cut[3] }
 const left = await sharp(src).extract(box).png().toBuffer()
 const right = await sharp(mock).extract(box).png().toBuffer()
 const gap = 16
-await sharp({ create: { width: box.width * 2 + gap, height: box.height, channels: 3, background: '#1b1b1d' } }).composite([{ input: left, left: 0, top: 0 }, { input: right, left: box.width + gap, top: 0 }]).resize({ width: 1200 }).jpeg({ quality: 88, chromaSubsampling: '4:4:4' }).toFile(out)
+const both = await sharp({ create: { width: box.width * 2 + gap, height: box.height, channels: 3, background: '#1b1b1d' } }).composite([{ input: left, left: 0, top: 0 }, { input: right, left: box.width + gap, top: 0 }]).png().toBuffer()
+await sharp(both).resize({ width: 1200 }).jpeg({ quality: 88, chromaSubsampling: '4:4:4' }).toFile(out)
 console.log(`wrote ${out}: as built on the left, the patch of radius ${r} px drawn ${by} times larger on the right`)

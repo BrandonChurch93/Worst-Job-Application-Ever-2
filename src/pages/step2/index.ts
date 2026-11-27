@@ -43,7 +43,7 @@ const COINS = 14
 // How fast the rail's fill glides to the count of fields that are done.
 const EASE = 7
 // The hint presses a stop while the visitor's own legend is this near the window's middle, in legends.
-const HIT = 0.2
+const HINT = { from: -0.44, to: -0.2 }
 // The dial runs home: it gathers speed, runs, and slows into its stop.
 const RETURN = { most: 42, gather: 300, least: 4, slow: 30 }
 // The crank draws back before it takes off.
@@ -1006,7 +1006,7 @@ export function makePage(): PageLogic {
         if (r >= 0 && s.phase !== 'ending' && s.phase !== 'closing') {
           const len = SLOT.strips[r]!.length
           const off = mod(reelPos(sl, r) - sl.own[r]! + len / 2, len) - len / 2
-          return { x: stops[r]!.cx, y: stops[r]!.cy, down: sl.phase === 'spin' && sl.t >= REEL.gather && Math.abs(off) <= HIT && Math.hypot(s.px - stops[r]!.cx, s.py - stops[r]!.cy) <= 20 }
+          return { x: stops[r]!.cx, y: stops[r]!.cy, down: sl.phase === 'spin' && sl.t >= REEL.gather && off >= HINT.from && off <= HINT.to && Math.hypot(s.px - stops[r]!.cx, s.py - stops[r]!.cy) <= 20 }
         }
         const out: Hint = { x: SLOT.leverX + 6, y: SLOT.y + SLOT.h + 6, down: false }
         if (sl.win && (sl.phase === 'read' || sl.phase === 'pay')) out.dodge = { x: 420, y: trayY(1) + 60 }

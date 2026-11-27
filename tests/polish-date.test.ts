@@ -16,7 +16,7 @@ const SLIVER = 0.02
 // The opening as it was before the machines were housed (MEASURED on b3e4f902): steps of the stage from the row's first step to its tray at full height, to the machine at full height and to the row taking the visitor's hand.
 const OPENING = { full: 54, whole: 97, ready: 99 }
 // The whole visit of the page by each visitor, in steps (MEASURED on b3e4f902).
-const VISIT = { down: 4615, up: 4615, itself: 37106, film: 48000 }
+const VISIT = { down: 4600, up: 4600, itself: 37106, film: 48000 }
 // The most a part of a machine may change its height in one step while its tray opens or shuts, as a share of its full height. The steepest step MEASURED is 0.0302, so the first risen step is a small step on from the housed one and no step is a pop.
 const STEP_MOST = 0.04
 

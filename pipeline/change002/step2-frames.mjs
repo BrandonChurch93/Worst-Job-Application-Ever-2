@@ -21,6 +21,65 @@ const cut = String(a.cut ?? '0.29,0.37,0.42,0.43').split(',').map(Number)
 const first = unit.first + Math.round(Number(a.at ?? 16.2) * fps)
 const frames = Array.from({ length: count }, (_, i) => first + i * every)
 
+if (a.hand) {
+  const { makeVisitor, VISITOR } = await import('../../tools/lib/pack-site.mjs')
+  const { load, close } = await logic()
+  const { SLOT } = await load('/src/pages/step2/layout.ts')
+  const stopY = SLOT.stopY + SLOT.stopH / 2
+  await close()
+  const session = await openSession({ format: 'hd', assets: 'web', mode: 'live', query: `&clock=steps&step=2` })
+  const tell = (dt) => session.page.evaluate((d) => {
+    if (d > 0) window.liveRun.advance(d, true)
+    const t = window.liveRun.told()
+    return { time: t.time, pageTime: t.pageTime, page: t.page, gags: t.gags, finished: t.finished, turning: t.turning, scroll: t.scroll, hint: t.hint, hero: t.hero, hits: t.hits }
+  }, dt)
+  const send = async (act) => {
+    if (act.move) await session.page.mouse.move(act.move[0], act.move[1])
+    else if (act.down) await session.page.mouse.down({ button: act.down })
+    else if (act.up) await session.page.mouse.up({ button: act.up })
+    else if (act.wheel) await session.page.mouse.wheel(0, act.wheel)
+    else if (act.press) await session.page.keyboard.press(act.press)
+  }
+  const v = makeVisitor(1, VISITOR, null)
+  const early = Boolean(a.early)
+  const from = Number(a.at ?? 0)
+  const tiles = []
+  const told = []
+  try {
+    let t = await tell(0)
+    let presses = 0
+    let start = -1
+    for (let i = 0; i < 60 * 40 && tiles.length < count; i++) {
+      if (t.page !== 'step2') break
+      const h = t.hint
+      const slot = (t.gags.at(-1) ?? '').includes('slot') || (t.gags.at(-1) ?? '').includes('birth')
+      if (early && h && slot && Math.abs(h.y - stopY) < 3 && Math.hypot(h.x - v.pointer().x, h.y - v.pointer().y) <= 20) h.down = true
+      for (const x of t.hits.slice(told.length)) told.push(`${t.pageTime.toFixed(3)} ${x.name}`)
+      const list = v.act(t)
+      for (const x of list) {
+        await send(x)
+        if (x.down && slot && h && Math.abs(h.y - stopY) < 3) presses++
+      }
+      if (start < 0 && (a.at !== undefined ? t.pageTime >= from : presses >= Number(a.press ?? 3))) start = i
+      if (start >= 0 && (i - start) % every === 0) {
+        const shot = await session.page.evaluate(() => window.liveRun.state())
+        const png = Buffer.from(shot.png.split(',')[1], 'base64')
+        const m = await sharp(png).metadata()
+        const box = { left: Math.round(cut[0] * m.width), top: Math.round(cut[1] * m.height), width: Math.round(cut[2] * m.width), height: Math.round(cut[3] * m.height) }
+        tiles.push({ png: await sharp(png).extract(box).png().toBuffer(), label: `${t.pageTime.toFixed(3)} s  ${shot.gag ?? shot.page}` })
+      }
+      t = await tell(1 / 60)
+    }
+  } finally {
+    await session.close()
+  }
+  console.log(told.join('\n'))
+  const file = at('out', 'work', 'sheets', `step2-${String(a.name ?? 'hand')}.jpg`)
+  const g = await composeSheet(tiles, file, { edge: Number(a.edge ?? 1200), heading: `Step 2 on the live site, real pointer and key events from the site pack's visitor${early ? ', who presses each STOP as soon as the arrow is on it' : ''}: ${tiles.length} pictures ${every} sixtieth${every > 1 ? 's' : ''} of a second apart. Under each: the page's time and its gag.`, columns: Number(a.columns ?? 6) })
+  console.log(`wrote ${path.relative(at(), file)} ${g.width} by ${g.height}, ${tiles.length} pictures`)
+  process.exit(0)
+}
+
 if (a.live) {
   const bot = String(a.bot ?? 'keen')
   const seed = Number(a.seed ?? cfg.seed)
