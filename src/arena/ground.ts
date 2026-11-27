@@ -151,11 +151,20 @@ function slabs(): { tops: THREE.BufferGeometry; walls: THREE.BufferGeometry; bed
       tri(bed, f0, m1, m0, [0, 0, 1], [WALL_FOOT, BED, BED])
     }
   }
-  // Under every joint of three seams, where no slab's bed reaches: one sheet of the same light.
-  const z = -ARENA.seamDepth - 0.5
-  const a: V3 = [-980, -560, z], b: V3 = [980, -560, z], c: V3 = [980, 560, z], d: V3 = [-980, 560, z]
-  tri(bed, a, b, c, [0, 0, 1], [BED, BED, BED])
-  tri(bed, a, c, d, [0, 0, 1], [BED, BED, BED])
+  // Under every joint of three seams, where no slab's bed reaches: a patch of the same light.
+  const z = -ARENA.seamDepth - 0.5, sunk = ARENA.lean * z, r = 30
+  const seen = new Set<string>()
+  for (const s of SEAMS) {
+    for (const p of [s.points[0]!, s.points[s.points.length - 1]!]) {
+      const key = `${Math.round(p.x)},${Math.round(p.y)}`
+      if (seen.has(key)) continue
+      seen.add(key)
+      const x = wx(p.x), y = wy(p.y) + sunk
+      const a: V3 = [x - r, y - r, z], b: V3 = [x + r, y - r, z], c: V3 = [x + r, y + r, z], d: V3 = [x - r, y + r, z]
+      tri(bed, a, b, c, [0, 0, 1], [BED, BED, BED])
+      tri(bed, a, c, d, [0, 0, 1], [BED, BED, BED])
+    }
+  }
   return { tops: geometryOf(tops), walls: geometryOf(walls, true), bed: geometryOf(bed, true) }
 }
 
