@@ -377,7 +377,7 @@ export class Machine {
         this.aim = keep
         if (to) this.kick(0, to[0], to[1])
       }
-      if (this.live && i === 0) this.own[this.balls[i]!.vx > 0 ? 0 : 1] = LIVE.own
+      if (this.live && i === 0) this.own[this.balls[i]!.vx > 0 ? 0 : 1] = LIVE.own + 1
       this.say('ball-save', i, `${TIERS[k]}.gate`)
       return
     }
@@ -564,12 +564,10 @@ export class Machine {
     let done = -1
     let beside = false
     if (dead) this.dark()
-    const own = [this.live && this.own[0]! > 0, this.live && this.own[1]! > 0]
+    const own = [this.live && this.own[0]! > 1, this.live && this.own[1]! > 1]
     for (let s = 0; s < 2; s++) {
-      if (own[s]) {
-        want[s] = true
-        this.own[s] = this.own[s]! - 1
-      }
+      if (this.own[s]! > 0) this.own[s] = this.own[s]! - 1
+      if (own[s]) want[s] = true
       if (want[s] && !this.held[s]) {
         this.events.push({ name: 'flipper', ball: -1, id: s === 0 ? 'left' : 'right', x: s === 0 ? FLIP.pivotU : 20 - FLIP.pivotU, y: 0 })
         const o = this.over(s)

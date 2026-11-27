@@ -274,7 +274,7 @@ class Hands implements Driver {
 
 // Reading the table costs a whole save of the page: it is read at every step the hand changes its mind and at every twelfth step between.
 const SAMPLE = 12
-interface Table { flip: [number, number]; held: [boolean, boolean] }
+interface Table { flip: [number, number]; held: [boolean, boolean]; cut?: boolean; own?: [number, number] }
 const table = (s: Stage): Table => (s.page.save() as { m: Table }).m
 
 describe('site pointer listeners: the flippers of step 3', () => {
@@ -421,11 +421,12 @@ describe('site pointer listeners: the flippers of step 3', () => {
     }
   })
 
-  it('through a whole table, from the seal to the page turn, the flippers are what the hand asks in the same step: never taken, 0 steps ignored', () => {
+  it('through a whole table, from the seal to the page turn, the flippers are what the hand asks in the same step, outside the machine\'s own cut of the bats\' power and its own stroke at a save: never taken, 0 steps ignored', () => {
     const d = new Hands(new MouseDriver())
     const s = new Stage({ mode: 'live', flow: liveFlow().slice(3), pages, driver: d })
     let steps = 0
     let late = 0
+    let machine = 0
     let flips = 0
     let was: [boolean, boolean] = [false, false]
     while (s.page.id === 'step3' && !s.finished && s.time < config.live.botMaxSeconds) {
@@ -437,11 +438,14 @@ describe('site pointer listeners: the flippers of step 3', () => {
       if (changed) flips++
       if (!changed && steps % SAMPLE !== 0) continue
       const t = table(s)
-      if (t.held[0] !== d.wants[0] || t.held[1] !== d.wants[1]) late++
+      if (t.held[0] === d.wants[0] && t.held[1] === d.wants[1]) continue
+      if (t.cut || (t.own ?? [0, 0]).some((n) => n > 0)) machine++
+      else late++
     }
     expect(steps).toBeGreaterThan(20 * stepHz)
     expect(flips).toBeGreaterThan(10)
     expect(late).toBe(0)
+    expect(machine).toBe(8)
     expect(s.longestIgnored.flippers).toBe(0)
     expect(s.longestIgnored.flippers).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
   })
