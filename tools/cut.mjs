@@ -1,26 +1,15 @@
 // npm run cut: the cut list, the cue sheet and the shot list of the film, from the whole film run in film mode. No browser.
-// Writes cut/CUTLIST.json, cut/CUES.md and cut/SHOTS.md. Exits 1 when a beat's event falls outside its beat. --check writes nothing.
+// Writes cut/CUTLIST.json, cut/CUES.md and cut/SHOTS.md. Exits 1 when a beat's event falls outside its beat.
+// --check writes nothing and exits 1 as well when a file of cut/ is not what this build gives.
 import fs from 'node:fs'
 import path from 'node:path'
-import { args, at, readJson, writeJson } from './lib/paths.mjs'
+import { args, at, writeJson } from './lib/paths.mjs'
 import { logic } from './lib/logic.mjs'
+import { cutOfBuild, cutState } from './lib/cut-build.mjs'
 
 const a = args()
 const { load, close } = await logic()
-const { makeCut, cuesText, shotsText } = await load('/src/film/cut.ts')
-const { pages } = await load('/src/pages/index.ts')
-
-const keptDir = at('audio', 'kept')
-const kept = fs.existsSync(keptDir)
-  ? fs.readdirSync(keptDir).filter((f) => f.endsWith('.json')).sort().map((f) => ({ file: `audio/kept/${f}`, record: readJson(path.join(keptDir, f)) }))
-  : []
-
-const { list, shots, problems } = makeCut(pages, kept)
-const files = [
-  ['cut/CUTLIST.json', JSON.stringify(list, null, 2) + '\n'],
-  ['cut/CUES.md', cuesText(list)],
-  ['cut/SHOTS.md', shotsText(list, shots)]
-]
+const { list, problems, files } = await cutOfBuild(load)
 
 const withEvent = list.beats.filter((b) => b.event)
 const inside = withEvent.filter((b) => b.event.inside)
@@ -31,12 +20,13 @@ console.log(`cut: ${inside.length} of ${withEvent.length} beat events fell insid
 console.log(`cut: ${list.events.length} events, ${cued.length} with a cue; ${list.lines.length} narrator lines, ${takes.length} with a kept take`)
 console.log(`cut: the opening of film A is ${list.opening.frameCount} frames (${list.opening.seconds} s), the card loop ${list.loop.frameCount} frames of ${list.loop.scene}`)
 
+let behind = 0
 if (a.check) {
-  for (const [name, text] of files) {
-    const file = at(...name.split('/'))
-    if (!fs.existsSync(file)) console.log(`cut: ${name} does not exist yet (npm run cut)`)
-    else if (fs.readFileSync(file, 'utf8') !== text) console.log(`cut: ${name} is not what the film gives now (npm run cut)`)
+  for (const { name, state } of cutState(files)) {
+    if (state === 'absent') console.log(`cut: ${name} does not exist yet (npm run cut)`)
+    else if (state === 'stale') console.log(`cut: ${name} is not what the film gives now (npm run cut)`)
     else console.log(`cut: ${name} is up to date`)
+    if (state !== 'equal') behind++
   }
 } else {
   for (const [name, text] of files) {
@@ -51,5 +41,6 @@ if (a.check) {
 }
 for (const p of problems) console.log(`PROBLEM  ${p}`)
 console.log(problems.length ? `cut: ${problems.length} problem${problems.length === 1 ? '' : 's'}` : 'cut: every beat\'s event fell inside its beat')
+if (behind) console.log(`cut: ${behind} of the ${files.length} files of cut/ ${behind === 1 ? 'is' : 'are'} not of this build. No mix is laid by them and no film is joined with such a mix`)
 await close()
-process.exit(problems.length ? 1 : 0)
+process.exit(problems.length || behind ? 1 : 0)

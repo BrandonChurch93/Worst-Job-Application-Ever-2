@@ -45,6 +45,17 @@ export function reasonsFromProbe(probe, record, cfg) {
   return out
 }
 
+// A film with sound names the mix it was joined with, and that mix was laid by the cut list and made from the kept sounds that are here now.
+// `now` holds the sha256 of cut/CUTLIST.json (null when there is none) and the sum over the kept sounds, as the tree gives them at this moment.
+export function reasonsFromSound(record, now) {
+  if (!record.sound) return []
+  if (!record.mix) return ['it has sound, and its record does not name the mix it was joined with (join it again with npm run film -- --join)']
+  const out = []
+  if (record.mix.cutSha256 !== now.cutSha256) out.push('its sound was laid by another cut list than cut/CUTLIST.json holds now')
+  if (record.mix.keptSha256 !== now.keptSha256) out.push('the kept sounds have changed since its sound was mixed')
+  return out
+}
+
 export const tooLarge = (bytes, cfg) => bytes >= cfg.repo.maxFileMb * MB
 export const megabytes = (bytes) => Number((bytes / MB).toFixed(2))
 
@@ -54,7 +65,7 @@ export function keptRecord(record, cfg, which, { commit, commitClean, from, sha2
   return {
     film: which, file: keptNames(cfg)[which], engineHash: record.engineHash, sharedHash: record.sharedHash, pageHashes: record.pageHashes, commit, commitClean,
     format: record.format, tier: record.tier, assets: record.assets, rate: record.what.film.rate, frames: record.frames, openingFrames: which === 'a' ? record.frames - b : 0,
-    codec: probe.codec, width: probe.width, height: probe.height, seconds: probe.seconds, mbps: probe.mbps, sound: probe.audio || null, soundFrom: record.sound || null,
+    codec: probe.codec, width: probe.width, height: probe.height, seconds: probe.seconds, mbps: probe.mbps, sound: probe.audio || null, soundFrom: record.sound || null, mix: record.mix || null,
     sha256, bytes, megabytes: megabytes(bytes), keptFrom: from, browser: record.browser, machine: record.machine, standIns: record.standIns
   }
 }
