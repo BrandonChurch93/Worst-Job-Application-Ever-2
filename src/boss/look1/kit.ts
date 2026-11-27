@@ -279,7 +279,7 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x7f8388), roughness: 0.6, metalness: 0.4, specularIntensity: 0.5 })
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0xa4a8ad), roughness: 0.58, metalness: 0.22, specularIntensity: 0.5 })
   const brushed = (hex: number): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); return studio(c) }
   look = {
     hull: brushed(0x777b80),

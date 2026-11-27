@@ -43,7 +43,7 @@ export const FORM = {
 // The stages of the turret beat, as shares of boss.turret.
 export const TURRET = { hatch: [0.02, 0.16], rise: [0.14, 0.44], swing: [0.46, 0.94], lock: 0.94, kick: 0.16, glow: [0.9, 1] } as const
 
-export const WALK = { pitch: 40, band: 0.14, lift: 46, bob: 5 }
+export const WALK = { pitch: 40, band: 0.14, lift: 38, bob: 5 }
 // The fall when he is beaten, as shares of boss.beaten: the cannon leaves, the glass bursts, the body drops on its belly.
 export const FALL = { off: [0, 0.4], glass: [0.05, 0.3], drop: [0.3, 0.7] } as const
 export const TIMES = { form: 2.9, turret: 1.6, beaten: 1, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
