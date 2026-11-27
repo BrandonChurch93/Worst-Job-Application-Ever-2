@@ -24,7 +24,10 @@ const cues = await load('/src/audio/cues.ts')
 const standin = await load('/src/audio/standin.ts')
 const metrics = await load('/src/shell/metrics.ts')
 const said = await load('/src/ui/said.ts')
-const lines = copy.timedLines(c, readJson(at('content', 'narration.json'))).map((l) => ({ id: cues.filmLineId(l.beat, l.index), frame: Math.round(l.start * fps) })).filter((l) => l.frame < until * fps)
+const settled = readJson(at('content', 'narration.json'))
+const drafts = fs.existsSync(at('content', 'narration-drafts.json')) ? readJson(at('content', 'narration-drafts.json')).film ?? {} : {}
+const script = { ...settled, film: { ...settled.film, ...Object.fromEntries(Object.entries(drafts).filter(([beat, ls]) => ls.length && !(settled.film[beat]?.length))) } }
+const lines = copy.timedLines(c, script).map((l) => ({ id: cues.filmLineId(l.beat, l.index), frame: Math.round(l.start * fps) })).filter((l) => l.frame < until * fps)
 const caps = standin.filmCaptions(lines, fps)
 const fonts = [...metrics.FONTS]
 const low = said.CAPTION.low
@@ -96,6 +99,7 @@ if (a.proof && list.length) {
   const frames = Number(execFileSync('ffprobe', ['-v', 'error', '-count_frames', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_frames', '-of', 'csv=p=0', out]).toString().trim())
   record.proof = { what: 'the pictures laid over a kept still of the careers page held for the length asked: the timing of the captions, not the film', file: path.relative(at(), out), seconds, frames }
 }
-writeJson(typeof a.name === 'string' ? path.join(work, `${name}.json`) : at('pipeline', 'change002', 'shell-film-captions.json'), record)
-console.log(`captions: ${list.length} phrases of ${lines.length} lines${Number.isFinite(until) ? ` that start in the first ${until} s` : ''}, pictures in ${path.relative(at(), work)}, list in pipeline/change002/shell-film-captions.json`)
+const listFile = typeof a.name === 'string' ? path.join(work, `${name}.json`) : at('pipeline', 'change002', 'shell-film-captions.json')
+writeJson(listFile, record)
+console.log(`captions: ${list.length} phrases of ${lines.length} lines${Number.isFinite(until) ? ` that start in the first ${until} s` : ''}, pictures in ${path.relative(at(), work)}, list in ${path.relative(at(), listFile)}`)
 for (const x of list) console.log(`  frames ${x.first} to ${x.last}${x.draft ? ' (draft)' : ''}: ${x.words}`)
