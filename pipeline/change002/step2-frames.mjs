@@ -17,15 +17,15 @@ const fps = plan.fps
 const count = Number(a.count ?? 24)
 const every = Number(a.every ?? 1)
 const show = String(a.show ?? 'crank')
-const cut = String(a.cut ?? '0.29,0.37,0.42,0.43').split(',').map(Number)
+const cut = String(a.cut ?? '0.2,0.3,0.6,0.58').split(',').map(Number)
 const first = unit.first + Math.round(Number(a.at ?? 16.2) * fps)
 const frames = Array.from({ length: count }, (_, i) => first + i * every)
 
 if (a.hand) {
   const { makeVisitor, VISITOR } = await import('../../tools/lib/pack-site.mjs')
   const { load, close } = await logic()
-  const { SLOT } = await load('/src/pages/step2/layout.ts')
-  const stopY = SLOT.stopY + SLOT.stopH / 2
+  const { SLOT, scaleOf } = await load('/src/pages/step2/layout.ts')
+  const stopY = scaleOf(1).y(SLOT.stopY + SLOT.stopH / 2)
   await close()
   const session = await openSession({ format: 'hd', assets: 'web', mode: 'live', query: `&clock=steps&step=2` })
   const tell = (dt) => session.page.evaluate((d) => {
