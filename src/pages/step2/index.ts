@@ -101,6 +101,40 @@ export const phoneMask = (digits: string): string => words('data:step2.phone.pre
 
 const holePlace = (k: number, a: number): { x: number; y: number } => ({ x: DIAL.cx + DIAL.ring * Math.cos(DIAL.holeAngle(k) + a), y: DIAL.cy + DIAL.ring * Math.sin(DIAL.holeAngle(k) + a) })
 const gripPlace = (b: number, r: number = CRANK.arm): { x: number; y: number } => ({ x: CRANK.hx + r * Math.cos(b), y: CRANK.hy + r * Math.sin(b) })
+
+// The corners of the crank's arm and of its grip at one angle, as boxes turned about the hub.
+export function crankCorners(b: number): { x: number; y: number }[] {
+  const out: { x: number; y: number }[] = []
+  for (const [from, to, half] of [[-CRANK.armW / 2, CRANK.arm + CRANK.armW / 2, CRANK.armW / 2], [CRANK.arm - CRANK.gripW / 2, CRANK.arm + CRANK.gripW / 2, CRANK.gripH / 2]] as const)
+    for (const along of [from, to]) for (const side of [-half, half]) out.push({ x: CRANK.hx + along * Math.cos(b) - side * Math.sin(b), y: CRANK.hy + along * Math.sin(b) + side * Math.cos(b) })
+  return out
+}
+// The crank can go down into its tray at an angle where every corner of the arm and the grip lies inside the tray's floor, this far from the tray's edge (the rim and its cove).
+export const CRANK_CLEAR = 8
+export const crankInTray = (b: number): boolean => crankCorners(b).every((c) => c.x >= FX + CRANK_CLEAR && c.x <= FX + FW - CRANK_CLEAR && c.y >= trayY(2) + CRANK_CLEAR && c.y <= trayY(2) + TRAY_H - CRANK_CLEAR)
+// The arc of such angles round the arm's resting angle, found once in steps of 0.001 rad and drawn in by HOME_PAD at each end: a live run ends inside it.
+const HOME_PAD = 0.03
+export const CRANK_HOME = ((): { from: number; to: number } => {
+  let from = CRANK.rest
+  let to = CRANK.rest
+  while (crankInTray(from - 0.001)) from -= 0.001
+  while (crankInTray(to + 0.001)) to += 0.001
+  return { from: from + HOME_PAD, to: to - HOME_PAD }
+})()
+// The pace at which a full crank loses its speed, and the speed under which its run is over.
+const COAST = { loss: 5, least: 0.5 }
+// The share of its speed a coasting crank turns by on the live site, so that the run ends with the arm inside the tray: 1 where it would end there anyway, else what brings it to the nearer end of the arc in the same time.
+function homeward(b: number, w: number): number {
+  const left = (w - COAST.least) / COAST.loss
+  if (left <= 1e-3) return 1
+  const end = b + left
+  const mid = (CRANK_HOME.from + CRANK_HOME.to) / 2
+  const off = wrapPi(end - mid)
+  const half = (CRANK_HOME.to - CRANK_HOME.from) / 2
+  if (Math.abs(off) <= half) return 1
+  const more = off > 0 ? half - off : -half - off
+  return Math.max(0, 1 + more / left)
+}
 const knobY = (p: number): number => SLOT.knobY + SLOT.pull * clamp(p, -LEVER.rise, 1 + LEVER.give)
 const reelPos = (slot: SlotState, r: number): number => {
   if (slot.phase === 'rest') return slot.to[r]!
@@ -515,8 +549,8 @@ export function makePage(): PageLogic {
       c.t += dt
       c.b -= c.o
       if (c.phase === 'runaway') c.w = Math.min(42, c.w + 26 * dt)
-      else c.w *= 1 - 5 * dt
-      c.b += c.w * dt
+      else c.w *= 1 - COAST.loss * dt
+      c.b += c.phase === 'full' && s.mode === 'live' ? c.w * dt * homeward(c.b, c.w) : c.w * dt
       c.total += c.w * dt
       c.o = c.phase === 'runaway' ? -WIND.back * (c.t < WIND.long ? Math.pow(smooth(c.t / WIND.long), 1.5) : 1 - smooth((c.t - WIND.long) / WIND.out)) : 0
       c.b += c.o
@@ -525,7 +559,7 @@ export function makePage(): PageLogic {
         c.phase = 'full'
         s.done[2] = true
       }
-      if (c.phase === 'full' && c.w < 0.5) {
+      if (c.phase === 'full' && c.w < COAST.least) {
         c.phase = 'over'
         c.w = 0
       }

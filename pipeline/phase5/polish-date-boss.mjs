@@ -1,5 +1,6 @@
 // Polish date, a measure and no change: the pack's own visitor on the live site up to step 4, then a picture of every sixtieth of a second round one error slab at the lower edge.
 // node pipeline/phase5/polish-date-boss.mjs LABEL FIRST LAST CX CY [W H]   FIRST and LAST are sixtieths of a second of the visit (tests/polish-date-boss-measure.test.ts gives them)
+// With FIND=EVERY,MOST in the environment it looks instead: from FIRST on a picture every EVERY sixtieths; LEAVES sixtieths after the first one whose lower left differs from the picture at FIRST it takes every sixtieth, until that part is as at FIRST again on 3 pictures or MOST such pictures are kept.
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
@@ -29,17 +30,53 @@ const tell = (dt, shot) =>
     return { time: t.time, page: t.page, gags: t.gags, finished: t.finished, turning: t.turning, skipOffered: t.skipOffered, scroll: t.scroll, hint: t.hint, hero: t.hero, hits: t.hits, control: t.control, pageTime: t.pageTime, png: r && s ? r.png : '' }
   }, [dt, shot])
 const tiles = []
+const FIND = process.env.FIND ? process.env.FIND.split(',').map(Number) : null
+// the part of the screen a slab lies in: left of the Submit machine, below the card
+const PART = { left: 0, top: 600, width: 1200, height: 480 }
+// a byte of that part counts as changed past this many levels, and the part as holding a slab past this many changed bytes (the cursor alone changes under 9000)
+const LEVELS = 40
+const BYTES = 30000
+// sixtieths from a slab's first picture to a little before it starts to leave (the stepped measure: drawn from 8699, leaves from 8804)
+const LEAVES = 88
+let at = 0
+let base = null
+let found = false
+let calm = 0
+let kept = 0
+const holds = async (png) => {
+  const now = await sharp(png).extract(PART).raw().toBuffer()
+  if (!base) {
+    base = now
+    return false
+  }
+  let n = 0
+  for (let k = 0; k < now.length; k++) if (Math.abs(now[k] - base[k]) > LEVELS) n++
+  return n > BYTES
+}
 try {
   const v = makeVisitor(1, VISITOR, keyBlock(cfg))
   let t = await tell(0, false)
   for (let i = 0; i < Number(last) && !t.finished; i++) {
     for (const a of v.act(t)) await send(session.page, a)
-    const keep = i + 1 >= Number(first)
+    const keep = i + 1 >= Number(first) && (!FIND || (found && i + 1 >= at + LEAVES) || (i + 1 - Number(first)) % FIND[0] === 0)
     t = await tell(1 / VISITOR.hz, keep)
     if (i % 1200 === 0) console.log(`tick ${i + 1}: ${t.page} at ${t.time.toFixed(2)} s`)
     if (!keep) continue
     const png = Buffer.from(t.png.split(',')[1], 'base64')
     fs.writeFileSync(path.join(dir, `${String(i + 1).padStart(6, '0')}.png`), png)
+    if (FIND) {
+      const slab = await holds(png)
+      if (slab && !found) {
+        at = i + 1
+        console.log(`found at picture ${at}`)
+      }
+      found = found || slab
+      const close = found && i + 1 >= at + LEAVES
+      calm = close && !slab ? calm + 1 : 0
+      kept += close ? 1 : 0
+      console.log(`picture ${i + 1} ${slab ? 'holds' : 'plain'}`)
+      if (calm >= 3 || kept >= FIND[1]) break
+    }
     const left = Math.max(0, Math.min(1920 - Number(w), Math.round(Number(cx) - Number(w) / 2)))
     const top = Math.max(0, Math.min(1080 - Number(h), Math.round(Number(cy) - Number(h) / 2)))
     tiles.push({ png: await sharp(png).extract({ left, top, width: Number(w), height: Number(h) }).png().toBuffer(), text: `${((i + 1) / 60).toFixed(2)} s, picture ${i + 1}, ${t.page}` })

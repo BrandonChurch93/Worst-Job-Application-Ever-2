@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { HOUSED } from '../src/pages/step2'
-import { config } from '../src/config'
-import { TRAY_H } from '../src/pages/step2/layout'
+import { pages } from '../src/pages'
+import { CRANK_HOME, HOUSED } from '../src/pages/step2'
+import { config, stepHz } from '../src/config'
+import { ROWS, TRAY, TRAY_H } from '../src/pages/step2/layout'
+import { BotDriver, type BotName } from '../src/stage/bots'
+import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
 import { bare, DRAWN, heights, openings, still, visit, visitor, type Row } from './polish-date-run'
 
 // A tray counts as open once it is taller than this share of its full height: under it the tray is the 4 px slit it starts as.
@@ -80,4 +83,81 @@ describe('polish date: the opening and the visit are as long as they were', () =
       expect(rows.length).toBe(steps)
     })
   }
+})
+
+const TURN = Math.PI * 2
+
+// How often each bot shuts the crank's row on the page (MEASURED: two of them skip the page before they open it).
+const SHUTS: Record<string, number> = { keen: 1, clumsy: 1, random: 0, skipper: 0 }
+
+interface CrankSaved { open: number; phase: string; crank: { b: number; total: number; phase: string } }
+
+// A visitor who opens the crank's row first, turns the crank by so much, lets go and waits for it to run away.
+function stopper(turn: number): Driver {
+  const inner = visitor([2, 1, 0])
+  return {
+    name: 'bot',
+    input(v: DriverView): Pointer {
+      const st = v.page.save() as CrankSaved
+      if (st.open === 2 && st.crank.phase === 'rest' && st.crank.total >= turn) return { x: 300, y: 900, down: false }
+      return inner.input(v)
+    }
+  }
+}
+
+// How far outside the tray's floor the worst corner of the crank's arm and grip lies on the step the lift begins to lower, for every shutting of the crank's row in one visit: 0 or less is inside.
+function overhang(stage: Stage, seconds: number): number[] {
+  const out: number[] = []
+  let was = ''
+  for (let i = 0; i < seconds * stepHz && stage.page.id === 'step2'; i++) {
+    stage.advance(1)
+    if (stage.page.id !== 'step2') break
+    const st = stage.page.save() as CrankSaved
+    const now = st.open === 2 ? st.phase : ''
+    if (now === 'closing' && was !== 'closing') {
+      const list: Shape[] = []
+      stage.page.draw(list)
+      const tray = list.find((x) => x.id === `${ROWS[2]}-tray`)!
+      let worst = -Infinity
+      for (const id of ['crank-arm', 'crank-grip']) {
+        const part = list.find((x) => x.id === id)!
+        const rot = part.rot ?? 0
+        for (const u of [-1, 1])
+          for (const v of [-1, 1]) {
+            const x = part.x + part.w / 2 + (u * part.w * Math.cos(rot)) / 2 - (v * part.h * Math.sin(rot)) / 2
+            const y = part.y + part.h / 2 + (u * part.w * Math.sin(rot)) / 2 + (v * part.h * Math.cos(rot)) / 2
+            worst = Math.max(worst, tray.x + TRAY.rim - x, x - (tray.x + tray.w - TRAY.rim), tray.y + TRAY.rim - y, y - (tray.y + TRAY_H - TRAY.rim))
+          }
+      }
+      out.push(worst)
+    }
+    was = now
+  }
+  return out
+}
+
+describe('polish date: the crank lies inside its tray before it goes down into it', () => {
+  it('keeps the arc of the crank round its resting angle, the last angle of the film in it', () => {
+    expect(CRANK_HOME.from).toBeLessThan(-0.9025)
+    expect(CRANK_HOME.to).toBeGreaterThan(0)
+  })
+  for (const bot of config.live.bots) {
+    it(`bot ${bot}: on the step the lift begins to lower, every corner of the arm and the grip is inside the tray's floor`, () => {
+      const hang = overhang(new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: new BotDriver(bot as BotName, config.seed), seed: config.seed }), 200)
+      expect(hang.length).toBe(SHUTS[bot])
+      for (const h of hang) expect(h).toBeLessThanOrEqual(0)
+    })
+  }
+  for (let k = 0; k < 8; k++) {
+    it(`a visitor who stops turning ${k} eighths of a turn past one turn: the same`, () => {
+      const hang = overhang(new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: stopper(TURN + (k * TURN) / 8), seed: config.seed }), 200)
+      expect(hang.length).toBe(1)
+      expect(hang[0]).toBeLessThanOrEqual(0)
+    })
+  }
+  it('the film: the same, its run untouched', () => {
+    const hang = overhang(new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') }), 200)
+    expect(hang.length).toBe(1)
+    expect(hang[0]).toBeLessThanOrEqual(0)
+  })
 })
