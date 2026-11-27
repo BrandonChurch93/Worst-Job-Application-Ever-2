@@ -15,7 +15,7 @@ const HZ = 60
 const STEPS = cfg.sim.stepHz / HZ
 const FIELD = { x: 1000, w: 792, h: cfg.scale.sizes.field, pitch: 149, gap: 12, tray: 250 }
 // The pictures kept of one opening: from this many before the row starts to open to this many after.
-const KEEP = { before: 2, after: 30 }
+const KEEP = { before: 2, after: Number(process.env.POLISH_DATE_AFTER || 30) }
 // A pixel of the tray's floor is part of a machine's edge when it differs from its left neighbour by more than this many levels.
 const EDGE = 9
 const dir = path.join('out', 'work', 'polish-date', label)
