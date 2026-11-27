@@ -48,6 +48,7 @@ export interface Kit {
   tooth: THREE.MeshPhysicalMaterial
   orange: THREE.Material
   broken: THREE.MeshPhysicalMaterial
+  fallen: THREE.MeshPhysicalMaterial
   hot: THREE.MeshBasicMaterial
   own: THREE.Material[]
 }
@@ -59,9 +60,11 @@ export function makeKit(): Kit {
   const shard = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.62, 0.84, 0.75), emissive: new THREE.Color(0.1, 0.16, 0.14), roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, specularIntensity: 1, transparent: true, opacity: 0.5, depthWrite: false, side: THREE.DoubleSide, flatShading: true }))
   // What is left standing of a shattered pane: the same glass as the whole one, seen from both sides.
   const tooth = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.55, 0.76, 0.67), emissive: new THREE.Color(0.17, 0.26, 0.225), roughness: 0.3, metalness: 0, clearcoat: 0.9, clearcoatRoughness: 0.15, specularIntensity: 0.9, transparent: true, opacity: 0.74, side: THREE.DoubleSide, flatShading: true }))
-  const broken = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.5, 0.5, 0.515), roughness: 0.9, metalness: 0.2, specularIntensity: 0.4, flatShading: true }))
+  const broken = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.34, 0.34, 0.355), roughness: 0.62, metalness: 0.55, specularIntensity: 0.7, flatShading: true }))
+  // The upper part of a pillar that lies where it fell: the same metal, dulled by the blast, so that its broad side neither mirrors the sky nor goes black as it turns.
+  const fallen = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.47, 0.47, 0.49), roughness: 0.74, metalness: 0.35, specularIntensity: 0.5 }))
   const hot = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 1.1, 0.16), toneMapped: false })
-  return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, tooth, orange: m.orange, broken, hot, own: [glass, glassEdge, shard, tooth, broken, hot] }
+  return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, tooth, orange: m.orange, broken, fallen, hot, own: [glass, glassEdge, shard, tooth, broken, fallen, hot] }
 }
 
 export interface Pillar { root: THREE.Group; foot: THREE.Mesh; body: THREE.Mesh; x: number; y: number; order: number }

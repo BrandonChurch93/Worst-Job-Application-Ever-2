@@ -30,13 +30,13 @@ export function makeWounds(): Wounds {
 function spillTexture(): THREE.DataTexture {
   const W = SPILL.w, H = SPILL.h
   const data = new Uint8Array(W * H)
-  const reach = 46
+  const reach = 30
   // The light comes from below and the picture looks from below: the spill lies a little down the screen.
-  const drop = ARENA.lean * ARENA.seamDepth * 0.5
+  const drop = ARENA.lean * ARENA.seamDepth * 0.5, side = -ARENA.leanX * ARENA.seamDepth * 0.5
   for (const seam of SEAMS) {
     const p = seam.points
     for (let i = 0; i < p.length - 1; i++) {
-      const ax = p[i]!.x, ay = p[i]!.y + drop, bx = p[i + 1]!.x, by = p[i + 1]!.y + drop
+      const ax = p[i]!.x + side, ay = p[i]!.y + drop, bx = p[i + 1]!.x + side, by = p[i + 1]!.y + drop
       const i0 = Math.max(0, Math.floor((Math.min(ax, bx) - reach) / 2)), i1 = Math.min(W - 1, Math.ceil((Math.max(ax, bx) + reach) / 2))
       const j0 = Math.max(0, Math.floor((Math.min(ay, by) - reach) / 2)), j1 = Math.min(H - 1, Math.ceil((Math.max(ay, by) + reach) / 2))
       const ex = bx - ax, ey = by - ay, l2 = ex * ex + ey * ey || 1
@@ -46,7 +46,7 @@ function spillTexture(): THREE.DataTexture {
           const x = k * 2 + 1
           const u = Math.max(0, Math.min(1, ((x - ax) * ex + (y - ay) * ey) / l2))
           const d = Math.hypot(x - ax - ex * u, y - ay - ey * u) - ARENA.seamHalf * 0.6
-          const v = d <= 0 ? 255 : Math.round(255 * Math.exp(-d / 13))
+          const v = d <= 0 ? 255 : Math.round(255 * Math.exp(-d / 8))
           const at = (H - 1 - j) * W + k
           if (v > data[at]!) data[at] = v
         }
@@ -81,7 +81,7 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
     const emissive = '#include <emissivemap_fragment>'
     if (!shader.fragmentShader.includes(colour) || !shader.fragmentShader.includes(emissive)) throw new Error('The surface code of this three.js release is not the one the arena was written for')
     shader.fragmentShader = head + shader.fragmentShader
-      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.15, 0.115 ), smoothstep( 0.0, 0.5, arenaW.r ) * 0.85 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.03, 0.027, 0.025 ), smoothstep( 0.3, 1.0, arenaW.r ) );\n\tdiffuseColor.rgb *= mix( vec3( 1.0 ), vec3( 0.2, 0.115, 0.075 ), smoothstep( 0.08, 0.3, arenaW.a ) ) * ( 1.0 - 0.94 * smoothstep( 0.55, 0.9, arenaW.a ) );`)
+      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.15, 0.115 ), smoothstep( 0.0, 0.5, arenaW.r ) * 0.85 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.03, 0.027, 0.025 ), smoothstep( 0.3, 1.0, arenaW.r ) );\n\tfloat arenaHole = smoothstep( 0.56, 0.64, arenaW.a );\n\tdiffuseColor.rgb *= mix( 1.0, 0.5, smoothstep( 0.3, 0.56, arenaW.a ) ) * ( 1.0 - 0.97 * arenaHole );`)
       .replace(emissive, `${emissive}
 \t{
 \t\tvec2 arenaT = ${texel};
@@ -90,11 +90,28 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
 \t\tnormal = normalize( normal + vec3( arenaDx, arenaDy, 0.0 ) * 2.6 );
 \t\troughnessFactor = mix( roughnessFactor, 0.95, arenaW.r );
 \t\tfloat arenaFlick = 0.76 + 0.24 * sin( arenaTime * 5.0 + vArenaUv.x * 173.0 + sin( vArenaUv.y * 131.0 + arenaTime * 3.1 ) * 2.0 );
-\t\tfloat arenaLight = smoothstep( 0.55, 0.9, arenaW.a );
-\t\tfloat arenaWall = smoothstep( 0.08, 0.3, arenaW.a ) * ( 1.0 - arenaLight );
 \t\tfloat arenaB = arenaW.b * arenaW.b;
 \t\ttotalEmissiveRadiance += arenaEmber * mix( vec3( 1.9, 0.36, 0.03 ), vec3( 3.6, 1.7, 0.34 ), arenaB ) * arenaB * arenaFlick;
-\t\ttotalEmissiveRadiance += mix( vec3( 1.1, 0.24, 0.018 ), vec3( 1.75, 0.5, 0.04 ), smoothstep( 0.66, 1.0, arenaW.a ) ) * arenaLight + vec3( 0.5, 0.12, 0.014 ) * arenaWall;
+\t\tif ( arenaW.a > 0.5 ) {
+\t\t\t// Where a slab is broken through, the picture looks under its upper left edge: the broken side of the slab shows there as a wall, copper at its top and lit at its foot, and past the wall lies the light itself.
+\t\t\tvec2 arenaUp = vec2( ${(-13 / PAGE.w).toFixed(6)}, ${(36 / PAGE.h).toFixed(6)} );
+\t\t\tfloat arenaDepth = 1.0;
+\t\t\tfloat arenaPrev = arenaW.a;
+\t\t\tbool arenaFound = false;
+\t\t\tfor ( int i = 1; i <= 8; i ++ ) {
+\t\t\t\tfloat arenaA = texture2D( arenaWounds, vArenaUv + arenaUp * ( float( i ) / 8.0 ) ).a;
+\t\t\t\tif ( ! arenaFound && arenaA < 0.6 ) {
+\t\t\t\t\tarenaDepth = ( float( i - 1 ) + clamp( ( arenaPrev - 0.6 ) / max( 0.001, arenaPrev - arenaA ), 0.0, 1.0 ) ) / 8.0;
+\t\t\t\t\tarenaFound = true;
+\t\t\t\t}
+\t\t\t\tarenaPrev = arenaA;
+\t\t\t}
+\t\t\tvec2 arenaCell = floor( vArenaUv * vec2( ${(PAGE.w / 1.7).toFixed(1)}, ${(PAGE.h / 1.7).toFixed(1)} ) );
+\t\t\tfloat arenaGrain = 0.72 + 0.56 * arenaHash( arenaCell ) * ( 0.6 + 0.4 * arenaHash( vec2( arenaCell.x * 0.25, 7.0 ) ) );
+\t\t\tvec3 arenaSide = mix( vec3( 0.13, 0.043, 0.017 ), vec3( 0.62, 0.16, 0.022 ), arenaDepth * arenaDepth ) * arenaGrain;
+\t\t\tvec3 arenaBelow = vec3( 1.05, 0.235, 0.016 ) * ( 0.92 + 0.08 * arenaFlick );
+\t\t\ttotalEmissiveRadiance += arenaHole * ( arenaFound ? arenaSide : arenaBelow );
+\t\t}
 \t\tfloat arenaS = texture2D( arenaSpill, vArenaUv ).r;
 \t\ttotalEmissiveRadiance += vec3( 0.8, 0.2, 0.03 ) * arenaS * arenaS * arenaSeam * ( 1.0 - arenaW.r );
 \t}`)
@@ -151,17 +168,22 @@ function slotOutline(insetBy: number): THREE.Vector2[] {
   return out
 }
 
-const WALL_TOP: V3 = [0.1, 0.034, 0.014]
-const WALL_FOOT: V3 = [0.5, 0.14, 0.024]
-const BED: V3 = [1.7, 0.5, 0.075]
-const BED_INSET = 3.5
+// The walls of a seam are dull copper, lit from the bed below: dark at the lip, copper down the wall, glowing at its foot. The bed is the light itself.
+const WALL_TOP: V3 = [0.15, 0.052, 0.024]
+const WALL_MID: V3 = [0.36, 0.118, 0.045]
+const WALL_FOOT: V3 = [1.0, 0.3, 0.045]
+const BED: V3 = [2.4, 0.85, 0.15]
+const BED_INSET = 2.5
+const WALL_SPLIT = 0.62
 
-// The tops of the nine slabs with their chamfers, and the walls of the seams below them.
+// The tops of the nine slabs with their bevels, and the walls of the seams below them.
 function slabs(): { tops: THREE.BufferGeometry; walls: THREE.BufferGeometry; bed: THREE.BufferGeometry } {
   const tops = fresh()
   const walls = fresh()
   const bed = fresh()
   const half = ARENA.seamHalf
+  // The picture looks a little from below and from the right: what lies deep is seen further down the screen and to the right, so the wall under the upper left lip shows and the bed glows along the lower right lip.
+  const deep = -ARENA.seamDepth, sunk = ARENA.lean * deep, sunkX = ARENA.leanX * deep
   for (const slab of SLABS) {
     const top = inset(slab, half + ARENA.chamfer)
     const lip = inset(slab, half + 0.6)
@@ -178,31 +200,34 @@ function slabs(): { tops: THREE.BufferGeometry; walls: THREE.BufferGeometry; bed
     for (let i = 0; i < n; i++) {
       if (!slab.open[i]) continue
       const j = (i + 1) % n
+      const lz = -ARENA.chamfer * 0.7
       const t0: V3 = [wx(top[i]!.x), wy(top[i]!.y), 0], t1: V3 = [wx(top[j]!.x), wy(top[j]!.y), 0]
-      const l0: V3 = [wx(lip[i]!.x), wy(lip[i]!.y), -ARENA.chamfer * 0.8], l1: V3 = [wx(lip[j]!.x), wy(lip[j]!.y), -ARENA.chamfer * 0.8]
-      // The picture looks a little from below: what lies deep is seen further down the screen, so the wall under the upper edge shows and the bed glows along the lower edge.
-      const deep = -ARENA.seamDepth, sunk = ARENA.lean * deep
-      const f0: V3 = [wx(foot[i]!.x), wy(foot[i]!.y) + sunk, deep], f1: V3 = [wx(foot[j]!.x), wy(foot[j]!.y) + sunk, deep]
-      const m0: V3 = [wx(mid[i]!.x), wy(mid[i]!.y) + sunk, deep], m1: V3 = [wx(mid[j]!.x), wy(mid[j]!.y) + sunk, deep]
-      // The chamfer faces up and out into the seam.
+      const l0: V3 = [wx(lip[i]!.x), wy(lip[i]!.y), lz], l1: V3 = [wx(lip[j]!.x), wy(lip[j]!.y), lz]
+      const f0: V3 = [wx(foot[i]!.x) + sunkX, wy(foot[i]!.y) + sunk, deep], f1: V3 = [wx(foot[j]!.x) + sunkX, wy(foot[j]!.y) + sunk, deep]
+      const m0: V3 = [wx(mid[i]!.x) + sunkX, wy(mid[i]!.y) + sunk, deep], m1: V3 = [wx(mid[j]!.x) + sunkX, wy(mid[j]!.y) + sunk, deep]
+      const w0: V3 = [l0[0] + (f0[0] - l0[0]) * WALL_SPLIT, l0[1] + (f0[1] - l0[1]) * WALL_SPLIT, lz + (deep - lz) * WALL_SPLIT]
+      const w1: V3 = [l1[0] + (f1[0] - l1[0]) * WALL_SPLIT, l1[1] + (f1[1] - l1[1]) * WALL_SPLIT, lz + (deep - lz) * WALL_SPLIT]
+      // The bevel faces up and out into the seam: the light of the site from the upper left catches the one that faces it and leaves the other in shade.
       const out: V3 = [l0[0] - t0[0], l0[1] - t0[1], 3]
       tri(tops, t0, t1, l1, out)
       tri(tops, t0, l1, l0, out)
-      tri(walls, l0, l1, f1, out, [WALL_TOP, WALL_TOP, WALL_FOOT])
-      tri(walls, l0, f1, f0, out, [WALL_TOP, WALL_FOOT, WALL_FOOT])
+      tri(walls, l0, l1, w1, out, [WALL_TOP, WALL_TOP, WALL_MID])
+      tri(walls, l0, w1, w0, out, [WALL_TOP, WALL_MID, WALL_MID])
+      tri(walls, w0, w1, f1, out, [WALL_MID, WALL_MID, WALL_FOOT])
+      tri(walls, w0, f1, f0, out, [WALL_MID, WALL_FOOT, WALL_FOOT])
       tri(bed, f0, f1, m1, [0, 0, 1], [WALL_FOOT, WALL_FOOT, BED])
       tri(bed, f0, m1, m0, [0, 0, 1], [WALL_FOOT, BED, BED])
     }
   }
   // Under every joint of three seams, where no slab's bed reaches: a patch of the same light.
-  const z = -ARENA.seamDepth - 0.5, sunk = ARENA.lean * z, r = 30
+  const z = deep - 0.5, r = 30
   const seen = new Set<string>()
   for (const s of SEAMS) {
     for (const p of [s.points[0]!, s.points[s.points.length - 1]!]) {
       const key = `${Math.round(p.x)},${Math.round(p.y)}`
       if (seen.has(key)) continue
       seen.add(key)
-      const x = wx(p.x), y = wy(p.y) + sunk
+      const x = wx(p.x) + sunkX, y = wy(p.y) + ARENA.lean * z
       const a: V3 = [x - r, y - r, z], b: V3 = [x + r, y - r, z], c: V3 = [x + r, y + r, z], d: V3 = [x - r, y + r, z]
       tri(bed, a, b, c, [0, 0, 1], [BED, BED, BED])
       tri(bed, a, c, d, [0, 0, 1], [BED, BED, BED])
@@ -287,6 +312,12 @@ export function makeGround(seed: number): Ground {
   top.castShadow = false
   top.frustumCulled = false
   const wallStuff = new THREE.MeshBasicMaterial({ vertexColors: true, toneMapped: false })
+  // The copper of the walls is rough: a grain that lies on the ground, not on the screen.
+  wallStuff.onBeforeCompile = (shader) => {
+    shader.vertexShader = 'varying vec2 vArenaAt;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvArenaAt = position.xy + position.z * vec2( 0.37, 0.61 );')
+    shader.fragmentShader = 'varying vec2 vArenaAt;\n' + shader.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n\t{\n\t\tvec2 arenaC = floor( vArenaAt * 1.6 );\n\t\tfloat arenaG = fract( sin( dot( arenaC, vec2( 127.1, 311.7 ) ) ) * 43758.5453 );\n\t\tfloat arenaLit = clamp( ( diffuseColor.r - 0.5 ) * 2.0, 0.0, 1.0 );\n\t\tdiffuseColor.rgb *= 1.0 + ( arenaG - 0.5 ) * 0.5 * ( 1.0 - arenaLit );\n\t}')
+  }
+  wallStuff.customProgramCacheKey = () => 'arena-seam-walls'
   const walls = new THREE.Mesh(s.walls, wallStuff)
   const bed = new THREE.Mesh(s.bed, wallStuff)
   walls.frustumCulled = false
