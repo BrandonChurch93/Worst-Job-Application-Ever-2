@@ -269,7 +269,7 @@ export interface LookKit {
   glass: THREE.MeshPhysicalMaterial
   glassEdge: THREE.MeshPhysicalMaterial
   crack: THREE.MeshPhysicalMaterial
-  soot: THREE.MeshPhysicalMaterial
+  soot: THREE.MeshBasicMaterial
   ceramic: THREE.MeshPhysicalMaterial
 }
 
@@ -300,7 +300,7 @@ export function lookKit(): LookKit {
     glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9cc4b0), roughness: 0.3, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.2, specularIntensity: 0.6, envMapIntensity: 0.5, transparent: true, opacity: 0.62, depthWrite: false })),
     glassEdge: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xcfe2d8), roughness: 0.22, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1c1a19), roughness: 0.9, metalness: 0, specularIntensity: 0.1, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 })),
-    soot: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1a1a1b), roughness: 0.95, metalness: 0, specularIntensity: 0.05, transparent: true, opacity: 0.6, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 })),
+    soot: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.018, 0.017, 0.016), transparent: true, opacity: 0.62, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
     ceramic: m.ceramic
   }
   return look

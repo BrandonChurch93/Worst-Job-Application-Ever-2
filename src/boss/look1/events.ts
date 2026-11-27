@@ -8,7 +8,7 @@ export const EVENTS = {
   'body-land': { on: 'form', at: FORM.land, seconds: 0.99, sound: 0.9, note: 'he lands on the slab on his belly' },
   'leg-stomp': { on: 'form', at: [FORM.legs[0] + FORM.legTime, FORM.legs[1] + FORM.legTime, FORM.legs[2] + FORM.legTime, FORM.legs[3] + FORM.legTime], seconds: [1.8, 2.03, 2.26, 2.49], sound: 0.35, note: 'each foot comes down' },
   'turret-rise': { on: 'turret', at: TURRET.hatch[0], seconds: 0.03, sound: 1.25, note: 'the hatch slides, then the cannon climbs; the sound runs to the lock' },
-  'turret-lock': { on: 'turret', at: TURRET.lock, seconds: 1.28, sound: 0.7, note: 'the cannon comes down on its rest; the kick is on this frame' },
+  'turret-lock': { on: 'turret', at: 1, seconds: 1.6, sound: 0.7, note: 'the fight fires it when turret reaches 1; the cannon comes down on its rest at turret 0.94 (0.10 s before) and the kick, sparks and ring run 0.16 to 0.5 s from there, past turret 1 when the view carries boss.lockedAt' },
   'bullet-fire': { on: 'guns[i].firedAt', at: 0, seconds: 0, sound: 0.3, note: 'flash for 0.07 s, kick for 0.25 s' },
   'shield-glance': { on: 'shield.glancedAt', at: 0, seconds: 0, sound: 0.35, note: 'the glass flashes for 0.3 s' },
   'boss-heal': { on: 'healedAt', at: 0, seconds: 0, sound: 0.6, note: 'a pulse over the hull for 0.6 s' },

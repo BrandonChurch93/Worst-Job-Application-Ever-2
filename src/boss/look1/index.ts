@@ -49,6 +49,8 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     const out = p.wings[i]!
     w.visible = p.hull.show && out > 0.001
     w.position.set(p.hull.x, p.hull.y - side * (1 - out) * (WING.reach + 6), p.hull.z - (1 - Math.min(1, out)) * 4)
+    w.rotation.x = -side * 0.1 * p.sag
+    w.position.z -= 10 * p.sag
   })
 
   m.hatch.visible = p.hull.show && p.hatch.gone < 1
@@ -71,6 +73,8 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     g.root.visible = p.hull.show && q.rise > 0.001
     g.root.position.set(GUN.x + p.hull.x, side * GUN.y + p.hull.y - side * (1 - out) * (WING.reach + 6), GUN.z - 3 + p.hull.z - (1 - q.rise) * 70)
     poseGun(g, q)
+    g.root.rotation.set(-side * 0.16 * p.sag, 0.2 * p.sag * side, 0)
+    g.root.position.z -= 22 * p.sag
   })
 
   p.legs.forEach((l, i) => {

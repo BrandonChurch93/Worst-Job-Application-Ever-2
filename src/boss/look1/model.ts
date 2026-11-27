@@ -124,7 +124,7 @@ function legGeo(): { upper: Record<string, THREE.BufferGeometry>; lower: Record<
   ]
   const knuckle = (ang: number, len: number, w: number): THREE.BufferGeometry => across(15, w / 2 + 3, 2, 14).translate(len * 0.56, 0, 30).rotateZ(ang)
   const foot = {
-    plate: joined([...finger(0, 112, 40), ...finger(0.66, 104, 38), ...finger(-0.66, 104, 38), ...finger(Math.PI, 62, 44)]),
+    plate: joined([...finger(0, 146, 42), ...finger(0.62, 134, 40), ...finger(-0.62, 134, 40), ...finger(Math.PI, 66, 46)]),
     joint: joined([discAt(40, 0, 0, 4, 46, 5, 24), knuckle(0, 112, 40), knuckle(0.66, 104, 38), knuckle(-0.66, 104, 38)]),
     pin: joined([discAt(17, 0, 0, 45, 53, 2, 16), screwsAt([[26, 0], [-13, 22.5], [-13, -22.5]], 46, 4.5, 21)]),
     dark: joined([boxAt(70, -3.5, 12, 100, 3.5, 31, 1), boxAt(66, -3.5, 12, 94, 3.5, 31, 1).rotateZ(0.66), boxAt(66, -3.5, 12, 94, 3.5, 31, 1).rotateZ(-0.66)])
@@ -147,7 +147,7 @@ function cannonGeo(): Record<string, THREE.BufferGeometry> {
     along([[r.breech + 0.6, b0 + 38], [r.breech + 2.5, b0 + 40], [r.breech + 2.5, b0 + 50], [r.breech + 0.6, b0 + 52]], 40),
     along([[r.breech + 0.6, b1 - 64], [r.breech + 2.5, b1 - 62], [r.breech + 2.5, b1 - 52], [r.breech + 0.6, b1 - 50]], 40)
   ])
-  const window = boxAt(b0 + 124, -36, r.breech + 7, b0 + 194, 36, r.breech + 11, 0.5)
+  const window = boxAt(b0 + 130, -30, r.breech + 7, b0 + 190, 30, r.breech + 11, 0.5)
   const slit = joined([-1, 1].flatMap((s) => [0, 1, 2].map((i) => boxAt(b1 - 38, -8, r.breech - 4.2, b1 - 18, 8, r.breech + 0.8, 0.4).rotateX(s * (0.5 + i * 0.36)))))
   const yoke = joined([across(38, 58, 4), across(20, 66, 3, 20)])
   const hoses = joined([-1, 1].flatMap((s) => [

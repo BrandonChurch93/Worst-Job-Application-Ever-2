@@ -41,7 +41,7 @@ export const FORM = {
 } as const
 
 // The stages of the turret beat, as shares of boss.turret.
-export const TURRET = { hatch: [0.02, 0.16], rise: [0.14, 0.44], swing: [0.46, 0.8], lock: 0.8, kick: [0.8, 0.9], glow: [0.84, 1] } as const
+export const TURRET = { hatch: [0.02, 0.16], rise: [0.14, 0.44], swing: [0.46, 0.94], lock: 0.94, kick: 0.16, glow: [0.9, 1] } as const
 
 export const WALK = { pitch: 40, band: 0.24, lift: 46, bob: 5 }
 export const TIMES = { form: 2.9, turret: 1.6, beaten: 2, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
@@ -63,6 +63,8 @@ export interface Pose {
   legs: LegPose[]
   cannon: { show: boolean; x: number; z: number; elev: number; yaw: number; ribs: number; sleeve: number; barrel: number; window: number; bore: number; slits: number; heat: number; off: number }
   weak: number
+  // Seconds since the cannon came down on its rest; below 0 before, large when it can no longer be told.
+  lockAge: number
   // 0 whole, 1 and 2 the stages of the fight, 3 beaten.
   damage: number
   hurt: number
@@ -177,8 +179,10 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const rise = outCubic(lin(t, TURRET.rise[0], TURRET.rise[1]))
   const sw = lin(t, TURRET.swing[0], TURRET.swing[1])
   const swing = inQuad(sw)
-  const lockAge = lin(t, TURRET.kick[0], TURRET.kick[1])
-  const lockKick = t >= TURRET.lock && t < TURRET.kick[1] ? Math.sin(Math.PI * Math.sqrt(lockAge)) * (1 - lockAge) : 0
+  const lockedAt = (b as { lockedAt?: number | null }).lockedAt
+  const lockAge = t < TURRET.lock ? -1 : t < 1 ? (t - TURRET.lock) * TIMES.turret : typeof lockedAt === 'number' ? now - lockedAt + (1 - TURRET.lock) * TIMES.turret : 99
+  const lockU = clamp01(lockAge / TURRET.kick)
+  const lockKick = lockAge >= 0 && lockAge < TURRET.kick ? Math.sin(Math.PI * Math.sqrt(lockU)) * (1 - lockU) : 0
   const stow = 150 - 597
   const cannonZ = mix(stow, CANNON.z + 60, rise) - 60 * swing
   const elev = (Math.PI / 2) * (1 - swing) + (t >= TURRET.lock ? -0.035 * lockKick : 0)
@@ -207,7 +211,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const body = {
     x: -recoilBack - hurtShove + tj(1), y: tj(2),
     z: bodyZ - brace - 16 * lockKick - (formed ? walkBob : 0) - 58 * sagPart - 14 * blast,
-    yaw, pitch: flightPitch + 0.05 * blast - 0.012 * charge + 0.03 * sagPart, roll: 0.05 * sagPart + (formed ? 0.012 * Math.sin((b.walked / WALK.pitch) * Math.PI) : 0)
+    yaw, pitch: flightPitch + 0.05 * blast - 0.012 * charge, roll: formed && beaten <= 0 ? 0.012 * Math.sin((b.walked / WALK.pitch) * Math.PI) : 0
   }
 
   // Legs.
@@ -244,9 +248,9 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const off = lin(beaten, 0, 0.35)
   const cannon = {
     show: t > TURRET.rise[0] && off < 1, x: mix(CANNON.bayX, CANNON.pivotX, smooth(sw)), z: cannonZ, elev, yaw: 0,
-    ribs: -225 * (1 - prog(t, 0.44, 0.6)), sleeve: -295 * (1 - prog(t, 0.5, 0.68)), barrel: -640 * (1 - (t >= 1 ? 1 : outBack(lin(t, 0.56, 0.84), 1.2))) - 46 * blast - 20 * charge,
-    window: 0.2 + 1.15 * glowUp + 2.2 * charge + (beamOn ? 5 : 0) + 1.5 * kick(blastAge, TIMES.after), bore: 0.05 + 1.2 * bump(t, 0.9, 1.0) + 0.5 * glowUp + 7 * charge * charge + (beamOn ? 14 : 0),
-    slits: 0.2 + 1.3 * prog(t, 0.86, 0.96) + 2 * charge, heat: clamp01(kick(blastAge, TIMES.after) * 1.4), off
+    ribs: -225 * (1 - prog(t, 0.44, 0.6)), sleeve: -295 * (1 - prog(t, 0.5, 0.68)), barrel: -640 * (1 - (t >= 1 ? 1 : outBack(lin(t, 0.6, 0.92), 1.2))) - 46 * blast - 20 * charge,
+    window: 0.2 + 1.15 * glowUp + 2.2 * charge + (beamOn ? 5 : 0) + 1.5 * kick(blastAge, TIMES.after), bore: 0.05 + 1.2 * kick(lockAge, 0.4) + 0.5 * glowUp + 7 * charge * charge + (beamOn ? 14 : 0),
+    slits: 0.2 + 1.3 * prog(t, 0.92, 1) + 2 * charge, heat: clamp01(kick(blastAge, TIMES.after) * 1.4), off
   }
 
   const cw = Math.cos(yaw)
@@ -266,7 +270,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
     shield: { rise: shieldUp, slide: shieldOut, flash: kick(since(now, b.shield.glancedAt), TIMES.glance), broken: lin(beaten, 0.05, 0.3), show: f >= FORM.shield[0] },
     guns, legs, cannon,
     weak: b.weak ? (b.weak.shownAt === null ? 0 : 0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16)) * 4 : 0,
-    damage: f < 1 ? 0 : beaten > 0.02 ? 3 : b.stage, hurt, heal: healNow, sag: sagPart, word
+    damage: f < 1 ? 0 : beaten > 0.02 ? 3 : b.stage, hurt, heal: healNow, sag: sagPart, lockAge, word
   }
 }
 
