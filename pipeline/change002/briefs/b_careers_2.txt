@@ -1,0 +1,37 @@
+SECOND BRIEF for the careers unit (`b_careers_builder`, branch `agent/b-careers`). It replaces the part of your first brief headed "NOT YOURS, and not now" and its time limits. Everything else in the first brief and in `pipeline/change002/PLAN.md` still holds.
+
+WHAT CHANGED
+Brandon wrote in the thread on 2026-11-27, about 2:27 PM Mountain Time: "Marketing site mock up looks great. I love it replace the first screen with the marketing site upon clicking apply on the marketing site it essentially takes you to the first step."
+So the look of the careers page is yours now. The approved picture is `references/approved-002/careers-page.png` (the entire page, 1920 by 5357) and `references/approved-002/careers-top.png` (its first screen, 1920 by 1080). `references/STATUS.md`, under "Approved by change note 002", says what it settles and where the build differs from it on purpose. Build the page to that picture inside `src/pages/marketing/*`. It is judged beside the picture, section by section.
+
+DECISIONS (mine; do not reopen them, log a different view in your notes and carry on)
+1. The page. A flat white company website on the site's own stage: navigation, hero, awards, ticker, benefits, staff quotes, questions, comparison table, the five steps, the closing call, the footer, in the picture's order and proportions. The white is about 252 of 255 after the lit pipeline, not pure white (the site's rule against pure white stands). FIRST measure what a flat white sheet turns into under the lit pipeline, on a patch chart (white, the picture's greys, the orange, the ink): send that picture and the numbers in your first message. A small patch to `src/post/` or to the ground behind one interface is allowed with my leave: say what you need before you make it.
+2. Type. One type scale and the site's Inter in place of the picture's condensed and monospace faces. The headline needs Inter Display 800: you may add the font file and one entry in `src/shell/metrics.ts`; tell me the file and the entry so that I can tell the shell unit.
+3. Words. Every word comes from `content/copy.json`. No new words. Where the picture shows words the copy does not hold, use the copy's nearest words and list each case.
+4. Cards (benefits). The face as drawn: icon, title, promise, and the fine print small. A hover flips the card to its back with the fine print large; it flips back when the pointer leaves (your fault A, now on the new cards).
+5. Apply. Live from the first frame: drop the gate that waited for three opened cards. Apply in the navigation, in the hero and in the closing call all run the existing press sequence and the stage's page turn into step 1.
+6. Ticker. A full-width band, x 0 to 1920 at 1920 wide and edge to edge at every window width from 1280 to 2560 (your fault B, now on the new page).
+7. Staff quotes. All six as cards, two rows of three.
+8. Awards. Each keeps its fine print under its wreath.
+9. The comparison table. Ticks drawn as in the picture.
+10. The cursor. The build's own arrow at its real size, not the picture's.
+11. The `rejected` variant stays: `step5.closing` stands in the footer and the ticker repeats that one line.
+12. Sound. None of it is yours (item 10 of the note belongs to the shell unit). Keep the event names `step`, `card-flip`, `button-press` exactly: the shell unit hangs the narrator and the one allowed sound on them.
+13. The header. The new page has its own navigation in place of the shell's header and rail. Use the hook on `origin/main` (87f6bac1): `chrome?(): { header: number } | null` on a page's logic, 1 in place, 0 off the top; return 0 on this page and let the page turn into step 1 bring the header in. Merge `origin/main` first.
+14. Height. The page is taller than a screen. The live site scrolls it under the visitor's wheel and keys as today; say how the stage's scroll takes a page of 5357 px and what it costs at the low level.
+
+THE FILM
+The careers page's beats and events stay inside their windows: the stroll 0 to 2 s, the perks 2 to 8 s with three `card-flip`, the ticker 8 to 11 s, Apply 11 to 14 s. The key still `marketing-top` stays at 11.0 s with the arrow by the hero's button. The film scrolls down for the perks and the ticker and back up for Apply. No beat moves in time; nothing after 14 s changes.
+
+TESTS
+Rewrite your own: `tests/marketing.test.ts` and the five `tests/careers-*.test.ts`. Do not touch tests of other units; list each one that your change breaks, with file and line, and what it pinned. Mine to mend, list what you see: the key `marketing-top` and its target, `tools/assets/approved-boxes.json`, the four judged stills of the page, the settled list.
+Add one command that draws the whole page as one tall picture (1920 wide) and lays it beside the approved one, so that the two are judged section by section. Name it in your notes.
+
+PROOF, in each report
+The whole page beside the approved picture; the first screen beside `careers-top.png` at 1920 by 1080; twelve frames in a row of a card under a real mouse (in, flip, out, flip back); the ticker at 1920 and 2560 wide; the press of Apply and the first frames of the turn into step 1; the film's 14 seconds as twelve frames. Pictures at most 1200 px on the long edge.
+
+NOTES
+`pipeline/change002/careers.md`: decisions, measurements with how each was measured, every difference from the picture that you chose, and what is left.
+
+TIME
+Read the time with `date -u` before you write any time. This brief reaches you at about 21:46 UTC on 2026-11-27. First message with the white-surface picture and numbers: within 30 minutes. First pass, pushed and reported with the pictures above: within 105 minutes. Hard limit: 195 minutes after this brief reaches you; at that minute push what you have, tests green, and send your last report. The whole suite takes under 5 minutes on your machine (measured by the other helpers at 276 s to 283 s), so run it before every report. Commit and push at least every 15 minutes.
