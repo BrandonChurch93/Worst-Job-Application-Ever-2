@@ -90,6 +90,19 @@ Where the build differs from this picture on purpose: the heading sizes differ f
 
 For the boss, the same message picks a direction and approves no picture yet: "At the arena in Boss options boss six looks like the best arena. I'm not sold on any of the bosses though. I think we need to go back to the drawing board and regenerate what that Boss looks like. He's also a bit big. He takes up a lot of the screen his health bar is being covered up in the images that you shown. I also think we should remove the top part. The whole screen should kinda changed to be like a video game. The only thing up top should be the bosses health bar." BOSS 6 is `references/drafts/round-7b/BOSS-6.png`. Round 9 follows it.
 
+On 2026-11-27, about 3:12 PM MT, Brandon picked the boss and its arena in the thread. His words: "Arena six is definitely my favorite. I also like the looks with the turn in and out." The Builder reads it so, and read it back to him in Status 172: ARENA 6 of round 9 is the arena; "the looks with the turn in and out" are LOOK 1 with the turret inside (STATE 1) and with the turret out (STATE 2). From now the boss and its arena are built and judged against these four pictures:
+
+| File in `references/approved-002/` | Came from | Kind | What it settles |
+| --- | --- | --- | --- |
+| `boss-arena.png` | round 9, ARENA 6, 1920 by 1080 | Key, the fight | The arena as the whole screen: the ceramic ground broken into nine slabs by seams that glow orange, an eight-sided middle slab, eight aluminum pillars, two panes of frosted glass, a rotary gun in each corner, the dark slot, and only the boss's health bar in its bolted frame at the top. The small size of the boss. Bullets as round glowing balls with trails |
+| `boss-arena-after-the-cannon.png` | round 9, ARENA 6 after the cannon | Key, after the big cannon | What the big cannon breaks and how it looks: scorched trenches with embers, shattered glass, pillars with broken tops and rubble, a toppled pillar, a slab broken through to the light below |
+| `boss-turret-inside.png` | round 9, LOOK 1 STATE 1 | Sheet, from above | The boss fully formed with the big turret still inside: the hull, the Submit button clear with the word in its centre, the closed hatch at the rear, two rotary guns, the glass shield, four legs |
+| `boss-turret-out.png` | round 9, LOOK 1 STATE 2, take 2 | Sheet, from above | The big turret risen and locked: the open hatch, the long cannon along the back over the button to past the shield. The word is covered and is not moved |
+
+Not picked, and used as working guides only until he says: LOOK 1 beaten (`references/drafts/round-9/LOOK-1-STATE-3-beaten.png`), for the beaten boss, and LOOK 1 from the side (`references/drafts/round-8/LOOK-1-from-the-side.png`), for heights; the side view shows six legs and the build has four, as from above.
+
+Where the build differs from these pictures on purpose: in `boss-arena.png` the cannon points away from the shield, and the build follows `boss-turret-out.png`, where the muzzle reaches out past the shield; in the after picture the beam is still firing and a ninth pillar appears, and the build shows the wreck after the blast with the eight pillars of the first picture; the arrow in the pictures is a little larger than the approved cursor and the build keeps its own at its real size; the size and the number of the bullets are set by play, so that they can be dodged; every word comes from `content/copy.json`. The kit's config still lists `references/approved/boss-fight.png`, `boss-down.png` and `boss-stages.png` as the targets of the boss; only Brandon changes that file, and Partner is told.
+
 ## Rejected, and why
 
 Read this before generating or building anything. Each of these was tried.
