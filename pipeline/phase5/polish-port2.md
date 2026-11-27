@@ -253,3 +253,20 @@ live, release at step 1448. Step = the ball's way on the page between two frames
 | 64 | 13.86 | 13.86 | 636.0 | 659.9 | 0.136 | 0.174 |
 | 65 | 13.86 | 13.86 | 638.8 | 658.0 | 0.136 | 0.163 |
 | 66 | 13.86 | 13.86 | 641.3 | 656.3 | 0.136 | 0.156 |
+
+## Tests of other owners, changed for the numbers this work changes
+
+- `tests/polish-gate.test.ts`, describe "the ball's first frames out of the port, in the film". Title "lets the ball fall from rest: a first step of under 4 px, nine steps each longer than the one before, and then no step more than 0.2 px shorter than the one before until it has the tube's pace" became "lets the ball fall from rest: a first step of under 4 px, and each of the 39 steps after it longer than the one before". `steps[0] > 0.5` became `> 0.2` (the first step is 0.27 px, was 1.77). The loop `k = 1..9` growing by more than 0.05 became `k = 1..steps.length - 1` (39 steps). Three lines went, which held the old curve's return to the tube's pace by frame 41: `steps[k - 1] - steps[k] < 0.2` for k from 10, `max(steps) < 1.2 x last`, `|last - one before| < 0.01`. Next test's title: "from 40 frames after the release on" became "from 77 frames"; its body is unchanged.
+- `tests/polish-port.test.ts`, describe "the machine page's own moments in the film". Title "lets the ball run down the screen and brings the view after it" became "lets the ball run down the screen, past 640 px of it 22 frames after the release, and brings the view after it". `y(3.5) > 640` became `y(3.7 - 2/60) < 640` and `y(3.7 - 1/60) > 640`; `y(3.8) > 740` became `y(4) > 740`; `y(3.8) < 900` became `y(4) < 900`; `y(4.3) < y(3.8) - 80` became `y(4.3) < y(4) - 80`.
+- `tests/polish-ball.test.ts`, line 11: `MAIN[1]` 8af59575 became 2a7d25b2, `MAIN[2]` 7d7bc7da became b0469cd4 (the state at 6 s and 9 s: the arrow's turn 5e-10 rad off, one number of the pose 1e-16 off), with one comment line above.
+- `tests/polish-sharp-shadow.test.ts`, "had the shadow on in the film while the ball was in the tube, and has it off there now": `[4259, 4536]` became `[4265, 4536]`: the drawn ball is below 1080 px of the page inside the tube 6 frames later than before.
+- `tests/table-ball.test.ts` is unchanged: the maker's state holds `jaws` only when the flag is set.
+- `cut/SHOTS.md`, written again by `npm run cut` as `tests/cut-of-build.test.ts` asks: two numbers, the view's place at the end of `pinball.seal` (y 338.2 became 193.8) and at the start of `pinball.reveal` (y 358.1 became 213.2). `cut/CUTLIST.json` and `cut/CUES.md` are equal: no cut and no cue moved.
+
+## Checks
+
+- `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders (MEASURED 14:45 UTC, on the branch merged with main at 8a39fcaa, with `KNOCK.px` 2.6; not run again after the number became 5.2).
+- `npm test` on the tree merged with main at e2364b9c: 169 files and 2124 tests passed, 12 files and 15 tests skipped, none failed (MEASURED 15:00 UTC). The run before it (14:52 UTC) had 5 failing: this file's own knock test (the number), `tests/polish-sharp-shadow.test.ts` (4259), `tests/table-ball.test.ts` (the new field, mended in the maker) and `tests/cut-of-build.test.ts` (`cut/SHOTS.md`).
+- `npx tsc --noEmit -p .`: clean (MEASURED 14:55 UTC, after the last change to a `.ts` file).
+- `npm run bots`: not run in this round by me. UNKNOWN.
+- Stills `table-wide`, `last-save`, `loader-page`: byte equal (14:40 UTC, with `KNOCK.px` 2.6; the tube is at rest in all three).
