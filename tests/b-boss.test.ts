@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
 import { BODY, DART, HOME } from '../src/boss/plan'
-import { BIG, CORNER, FLAT, GUARD, GUN, HEAL, REAL_DART, SOLID, TOP } from '../src/boss/tune'
+import { BIG, CORNER, FLAT, GUARD, GUN, HEAL, MERCY, REAL_DART, SOLID, TOP } from '../src/boss/tune'
+import { HOLD, UNIT_SECONDS } from '../src/pages/step4/script'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
 import { filmFlow, filmOptions, isHeader, ScriptDriver, Stage, type Driver, type DriverView, type FlowEntry, type Pointer } from '../src/stage/stage'
@@ -62,7 +63,7 @@ const onScreen = (s: Shape): boolean => {
   const b = reach(s)
   return b.x1 > 0 && b.x0 < SCREEN.w && b.y1 > 0 && b.y0 < SCREEN.h
 }
-const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open)/
+const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open|power-|arrow-flat|finish-|smoke)/
 const OF_THE_VISITOR = /^(muzzle-|dart-)/
 
 interface Seen { time: number; list: Shape[]; fight: Fight }
@@ -117,7 +118,7 @@ describe('how the boss plays (change 002, item 15)', () => {
     const drops: number[] = []
     let was = -1
     let glanced = 0
-    while (stage.time < 11.4 && !stage.events.some((e) => e.name === 'shot-round')) {
+    while (stage.time < 11.4 + HOLD && !stage.events.some((e) => e.name === 'shot-round')) {
       stage.advance(1)
       const now = stage.events.filter((e) => e.name === 'shield-glance').length
       const fill = (stage.frameAt(stage.time).list as Shape[]).find((s) => s.id === 'health-fill')
@@ -208,11 +209,12 @@ describe('how the boss plays (change 002, item 15)', () => {
       }
     }
     const stage = live(stand)
-    while (stage.page.id === 'step4' && stage.time < 150) stage.advance(12)
+    const clock = (): number => (stage.page.save() as { fight: Fight | null }).fight?.clock ?? 0
+    while (stage.page.id === 'step4' && clock() < MERCY.from - 1) stage.advance(12)
     expect(stage.page.id).toBe('step4')
     const f = (stage.page.save() as { fight: Fight }).fight
     const flat = stage.events.filter((e) => e.name === 'flatten').length
-    expect(flat).toBeGreaterThan(10)
+    expect(flat).toBeGreaterThan(4)
     expect(stage.events.filter((e) => e.name === 'peel-up').length).toBeGreaterThanOrEqual(flat - 1)
     expect(f.healed).toBeLessThan(15)
     expect(f.health).toBeGreaterThan(50)
@@ -306,7 +308,7 @@ describe('how the boss plays (change 002, item 15)', () => {
     const stage = film()
     const offsets: { time: number; dx: number; dy: number; w: number; h: number; turret: boolean; over: boolean }[] = []
     let label: Shape | null = null
-    while (stage.page.id === 'step4' && stage.time < 31.4) {
+    while (stage.page.id === 'step4' && stage.time < UNIT_SECONDS - 0.6) {
       stage.advance(2)
       const list = stage.frameAt(stage.time).list as Shape[]
       label ??= list.find((s) => s.id === 'submit-label') ?? null
@@ -342,9 +344,9 @@ describe('how the boss plays (change 002, item 15)', () => {
 
   it('emits every event of the rules in the film, each inside the time the film gives step 4', () => {
     const stage = film()
-    stage.advance(Math.round(31 * stepHz))
+    stage.advance(Math.round((UNIT_SECONDS - 1) * stepHz))
     const names = new Set(stage.events.map((e) => e.name))
-    for (const n of ['shield-glance', 'shot-round', 'weak-tell', 'cannon-tell', 'cannon-fire', 'slab-fire', 'flatten', 'peel-up', 'boss-heal', 'boss-move', 'turret-rise', 'turret-lock', 'big-tell', 'big-fire', 'arena-break', 'power-down', 'turret-off']) expect(names.has(n), n).toBe(true)
+    for (const n of ['shield-glance', 'shot-round', 'weak-tell', 'cannon-tell', 'cannon-fire', 'slab-fire', 'flatten', 'peel-up', 'boss-heal', 'boss-move', 'turret-rise', 'turret-lock', 'big-tell', 'big-fire', 'arena-break', 'power-down', 'turret-off', 'boss-formed', 'boss-turn', 'boss-music', 'power-up', 'boss-fall', 'finish-arms', 'finish-charge', 'finish-fire', 'boss-gone', 'button-down']) expect(names.has(n), n).toBe(true)
     const flat = stage.events.filter((e) => e.name === 'flatten')
     expect(flat.length).toBe(1)
     expect(flat[0]!.hitsCursor).toBe(true)

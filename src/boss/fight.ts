@@ -1,7 +1,7 @@
 import type { StepIo } from '../stage/types'
 import { FOOT_OFF, muzzleAt, smooth } from './body'
 import { FLOOR, DART, EVENT, EXPIRED_GAIN, HEALTH, HOME, LAST_CLEAR, LOOK_EASE, POPUP, SHIELD, SLOW_SECONDS, THRESHOLD } from './plan'
-import { BIG, CORNER, FILM, FLAT, GUARD, GUN, HEAL, IDLE, LOOK1_ON, MOVE, POPUPS_ON, REAL_DART, SHAPE, SOLID, TRACK, WEAR } from './tune'
+import { BIG, CORNER, FILM, FLAT, GUARD, GUN, HEAL, IDLE, LOOK1_ON, MERCY, MOVE, POPUPS_ON, REAL_DART, SHAPE, SOLID, TRACK, WEAR } from './tune'
 
 export interface Rect { x: number; y: number; w: number; h: number }
 export interface Wall { id: string; kind: 'pillar' | 'pane' | 'bar'; x0: number; y0: number; x1: number; y1: number }
@@ -113,6 +113,7 @@ export const ceiling = (phase: number, tired: number): number => {
 
 export const turn = (a: number): number => Math.atan2(Math.sin(a), Math.cos(a))
 export const bearing = (f: { x: number; y: number }, x: number, y: number): number => Math.atan2(y - f.y, x - f.x)
+export const mercy = (clock: number): number => (clock < MERCY.from ? 0 : MERCY.share[Math.min(MERCY.share.length - 1, Math.floor((clock - MERCY.from) / MERCY.every))]!)
 export const shielded = (f: { x: number; y: number; face: number }, x: number, y: number): boolean => Math.abs(turn(bearing(f, x, y) - f.face)) <= GUARD.cover
 export const turnRate = (clock: number): number => TRACK.turn * Math.max(TRACK.least, 1 - ((1 - TRACK.least) * clock) / TRACK.tire)
 export const wear = (clock: number): number => 1 + Math.max(0, clock - WEAR.from) / WEAR.double
@@ -601,7 +602,8 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean, walls: Wall[])
         d.y = f.y + Math.sin(a) * GUARD.radius
       }
       const open = !(f.phase === 2 && f.expired < 0.8)
-      const worth = glass ? GUARD.chip : REAL_DART[f.phase]! * wear(f.clock) * (io.mode === 'film' ? FILM.dart[f.phase]! : 1)
+      const real = REAL_DART[f.phase]! * wear(f.clock) * (io.mode === 'film' ? FILM.dart[f.phase]! : 1)
+      const worth = glass ? Math.max(GUARD.chip, real * mercy(f.clock)) : real
       if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - worth)
       spark(f, d.x, d.y, glass ? SHIELD.z : 0, glass ? 'glance' : 'round')
       if (glass) {

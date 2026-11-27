@@ -134,6 +134,44 @@ export const HEAL = {
   shrink: 0.6 // each later heal is this share of the one before, so all heals together stay under first / (1 - shrink) = 15 points
 } as const
 
+// The mercy rule (mail of 22:45, item 5): from this long into a fight a dart that meets the shield starts to count, by steps, so that the visitor who stands and clicks does win.
+export const MERCY = {
+  from: 60, // s into the fight before the shield lets anything through
+  every: 15, // s from one step to the next
+  share: [0.05, 0.1, 0.2, 0.35, 0.6, 1] as const // by step, the share of a dart that got round that a dart on the shield is worth
+} as const
+
+// Line 7 of the narrator, said between the forming and the fight (change note 003). Lengths are the Builder's of 22:45 and the shell's of 22:48; they move the day the voice is recorded.
+export const LINE7 = {
+  part0: 18.125, // s of `boss.unfold.0`, from `boss-formed`
+  ends: [1.25, 4.375, 7.5, 8.75, 10, 13.125, 15, 18.125] as const, // s at which its phrases end: where the shell stops it after a `boss-turn`
+  gap: 0.3, // s of silence the shell leaves before the next part
+  part1: 4.375, // s of `boss.unfold.1`
+  music: 2.5, // s into part 1 at which "their student loans." and the music start (`boss-music`)
+  part2: 3.75, // s of `boss.unfold.2`; the turret locks on its last word
+  power: 0.6, // s into part 2 at which the gold starts to build (`power-up`), after the arrow has turned round
+  glow: 2, // s the gold builds
+  alone: 1.5, // s without a move or a press after which the arrow droops and starts to drift (live)
+  drift: 26, // px/s it drifts toward the top right while it is left alone
+  most: 6, // s at most that the drift holds the arrow on the live site
+  to: [1790, 150] as const // page px it drifts toward: where a tab would be closed
+} as const
+
+// The finishing blast (mail of 22:45, item 3). Plain stand-ins; the look is the Builder's picture round.
+export const FINISH = {
+  fall: 1, // s the beaten boss takes to fall (`boss-fall`)
+  arms: 0.6, // s the arrow's arms take to come out (`finish-arms`)
+  full: 1.2, // s of holding the button for a full charge (`finish-charge`)
+  charge: 2, // s at most that a charge is held before it fires by itself
+  idle: 6, // s with no press after the arms are out before it charges and fires by itself
+  small: 0.25, // share of a full blast that a plain click fires
+  fire: 2, // s the blast lasts (`finish-fire`); the body is gone at its end (`boss-gone`)
+  settle: 1.4, // s the button takes to settle on the ground after that (`button-down`)
+  film: 1.2, // s the film holds the charge
+  wide: 90, // px to each side of the full blast's line as drawn
+  ball: 120 // px across of the full charge as drawn
+} as const
+
 // E. The visitor who does nothing: the old rule that the boss tires by the clock, kept for him alone.
 export const IDLE = {
   after: config.live.idleSeconds, // s without a shot before the boss starts to give up

@@ -1,11 +1,11 @@
 import { smooth } from './body'
 import { blastLine, cornerAt, cursorCentre, muzzle, newFight, SPARK_SECONDS, weakSide, type Fight } from './fight'
-import { COLLAPSE_SECONDS, DART, HOME, SOCKET, UNFOLD } from './plan'
+import { COLLAPSE_SECONDS, DART, FALLEN, HOME, SOCKET, UNFOLD } from './plan'
 import { BIG, CORNER, FLAT, GUARD, GUN } from './tune'
 import type { BossView, ViewCorner, ViewGun, ViewPhase } from './view'
 
 // What the page knows when it fills the view. `clock` runs from the page's first step of the break-out; `base` is that clock at the fight's first step and `fell` at the boss's fall, each -1 until then.
-export interface ViewInput { clock: number; unfold: number; fight: Fight | null; base: number; fell: number; pressed: boolean; arrow: { x: number; y: number } }
+export interface ViewInput { clock: number; unfold: number; fight: Fight | null; base: number; fell: number; pressed: boolean; arrow: { x: number; y: number }; fall?: number; gone?: number; power?: number; arms?: number; charge?: number; blast?: { power: number; since: number } | null }
 
 // The view's clock: 0 at `button-crack`. The body is whole at FORMED, and the fight's own clock starts there.
 export const LEAD = UNFOLD.crack
@@ -42,20 +42,22 @@ export function viewOf(i: ViewInput): BossView | null {
     boss: {
       x: place.x, y: place.y, vx: b.speed.x, vy: b.speed.y, heading: b.face, walked: b.walked,
       form,
-      turret: i.fell >= 0 ? 0 : b.turret, locked: i.fell < 0 && b.turret >= 1,
+      turret: i.fell >= 0 ? 0 : b.turret, locked: i.fell < 0 && b.turret >= 1, lockedAt: b.turret >= 1 ? at(BIG.lock) : null,
       health: Math.max(0, b.shown), stage: b.phase,
       shield: { glancedAt: at(b.at.glance), half: GUARD.cover },
       guns: [gun(0), gun(1)],
       big: b.big.t >= 0 || b.big.beam > 0 ? { tell: b.big.t >= 0 ? Math.min(1, b.big.t / BIG.tell) : 1, aim: b.big.a, firedAt: b.big.t >= 0 ? null : at(b.at.big), x0: line.x0, y0: line.y0, x1: line.x1, y1: line.y1, width: BIG.wide * 2 } : null,
       weak: b.weak > 0 ? { ...weakSide(b), shownAt: at(b.at.weak) } : null,
       healedAt: at(b.at.heal), hitAt: at(b.at.hit),
-      beaten: i.fell < 0 ? 0 : Math.min(1, (i.clock - i.fell) / COLLAPSE_SECONDS)
+      beaten: i.fell < 0 ? 0 : Math.min(1, (i.clock - i.fell) / (i.fall ?? COLLAPSE_SECONDS)),
+      gone: i.gone ?? 0
     },
     bullets: b.balls.map((k) => ({ id: k.n, x: k.x, y: k.y, vx: k.dx * k.v, vy: k.dy * k.v, r: GUN.r, from: k.i === 4 ? 'gun' as const : 'corner' as const })),
     darts: b.darts.filter((d) => d.t >= 0 && (d.dx !== 0 || d.dy !== 0)).map((d) => ({ id: d.n, x: d.x, y: d.y, vx: d.dx * DART.speed, vy: d.dy * DART.speed })),
     hits: b.sparks.filter((k) => k.t < SPARK_SECONDS).map((k) => ({ id: k.n, at: time - k.t, x: k.x, y: k.y, kind: k.k ?? 'round' })),
     corners: [corner(0), corner(1), corner(2), corner(3)],
-    arrow: { x: c.x, y: c.y, flat: b.flat > 0 ? 1 : flatAt !== null ? Math.max(0, 1 - (time - flatAt - FLAT.down) / (FLAT.life - FLAT.down)) : 0, flatAt },
-    breaks: b.breaks.map((k) => ({ id: k.n, at: i.base - LEAD + k.at, x0: k.x0, y0: k.y0, x1: k.x1, y1: k.y1, width: k.width }))
+    arrow: { x: c.x, y: c.y, flat: b.flat > 0 ? 1 : flatAt !== null ? Math.max(0, 1 - (time - flatAt - FLAT.down) / (FLAT.life - FLAT.down)) : 0, flatAt, power: i.power ?? 0, arms: i.arms ?? 0, charge: i.charge ?? 0 },
+    breaks: b.breaks.map((k) => ({ id: k.n, at: i.base - LEAD + k.at, x0: k.x0, y0: k.y0, x1: k.x1, y1: k.y1, width: k.width })),
+    finish: i.blast ? { x0: c.x, y0: c.y, x1: FALLEN.x, y1: FALLEN.y, power: i.blast.power, firedAt: time - i.blast.since } : null
   }
 }
