@@ -24,6 +24,7 @@ for (let t = 0; t < end; t += every) {
     else console.log(`  ${(e.step / stepHz).toFixed(2).padStart(6)}  ${e.name}${e.hitsCursor ? ' (on the arrow)' : ''}`)
   }
   seen = stage.events.length
+  if (a.balls && f) for (const k of f.balls) console.log(`        ball ${k.n} of ${k.i} at ${k.x.toFixed(0)},${k.y.toFixed(0)} going ${k.dx.toFixed(2)},${k.dy.toFixed(2)}`)
   const beat = beats.find((b) => stage.time >= b.from && stage.time < b.to)
   let open = ''
   if (f) {
@@ -31,7 +32,7 @@ for (let t = 0; t < end; t += every) {
     const off = Math.abs(Math.atan2(Math.sin(b - f.face), Math.cos(b - f.face)))
     open = `arrow ${stage.cursor.x.toFixed(0)},${stage.cursor.y.toFixed(0)} is ${off.toFixed(2)} rad off the shield's middle and ${Math.hypot(stage.cursor.x + 18 - f.x, stage.cursor.y + 32 - f.y).toFixed(0)} px from the boss`
   }
-  console.log(`${stage.time.toFixed(2).padStart(5)} s  ${String(stage.page.gag()).padEnd(14)} ${f ? `health ${f.health.toFixed(1)} flat ${Math.max(0, f.flat).toFixed(2)} boss ${f.x.toFixed(0)},${f.y.toFixed(0)} ${open}` : ''}  ${Object.entries(tally).map(([k, v]) => `${k} ${v}`).join(', ')}`)
+  console.log(`${stage.time.toFixed(2).padStart(5)} s  ${String(stage.page.gag()).padEnd(14)} ${f ? `health ${f.health.toFixed(1)} flat ${Math.max(0, f.flat).toFixed(2)} boss ${f.x.toFixed(0)},${f.y.toFixed(0)} faces ${f.face.toFixed(2)} ph ${f.phase} ${open}` : ''}  ${Object.entries(tally).map(([k, v]) => `${k} ${v}`).join(', ')}`)
   tally = {}
 }
 for (const b of beats) {

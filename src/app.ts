@@ -82,7 +82,7 @@ export class App {
 
   static check(): void {
     const layouts = App.layouts()
-    const problems = [...configProblems(config, { approved: build.approved, eventCues }), ...contentProblems(config, copy, narration, layouts)]
+    const problems = [...configProblems(config, { approved: build.approved, eventCues, carryLength: true }), ...contentProblems(config, copy, narration, layouts)]
     for (const [id, make] of Object.entries(pages)) {
       const p = make()
       if (p.id !== id) problems.push(`pages: the page "${id}" calls itself "${p.id}"`)
