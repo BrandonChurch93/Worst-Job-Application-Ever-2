@@ -388,6 +388,75 @@ function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, cast = t
   return m
 }
 
+// Where the dial lies under the page on the live site, each of its solids is drawn no taller than `wall` and no higher than the dial's top, from `margin` px past the opening's edge on. A wall on edge under the page shows through it as dots where a pixel has more than one sample, the taller the wall the further up. Only a corner whose every triangle lies wholly past that line is moved, so that nothing in the opening changes.
+export const DIAL_UNDER = { wall: 0.1, margin: 2 }
+
+interface Level { whole: THREE.BufferGeometry; low: THREE.BufferGeometry; at: number[] }
+const reach = new THREE.Matrix4()
+const point = new THREE.Vector3()
+
+// `edge` is how far below the dial's centre the opening ends, in px of the page, or null when all of the dial is in the opening or the picture is the film's: then every solid is whole. `top` is the dial's top over the floor it stands on.
+export function levelDial(root: THREE.Object3D, edge: number | null, top: number): void {
+  root.traverse((c) => {
+    const m = c as THREE.Mesh
+    if (!m.isMesh || (c as THREE.InstancedMesh).isInstancedMesh || (m.material as THREE.Material).transparent) return
+    const u = m.userData as { level?: Level }
+    const whole = u.level ? u.level.whole : m.geometry
+    if (edge === null) {
+      m.geometry = whole
+      return
+    }
+    reach.identity()
+    for (let p: THREE.Object3D | null = m; p && p !== root; p = p.parent) {
+      if (p.matrixAutoUpdate) p.updateMatrix()
+      reach.premultiply(p.matrix)
+    }
+    const at = [edge, top, ...reach.elements]
+    if (u.level && u.level.at.length === at.length && u.level.at.every((v, i) => v === at[i])) {
+      m.geometry = u.level.low
+      return
+    }
+    const from = whole.getAttribute('position') as THREE.BufferAttribute
+    const tall = reach.elements[10]!
+    const past = new Uint8Array(from.count)
+    let most = -Infinity
+    for (let i = 0; i < from.count; i++) {
+      point.fromBufferAttribute(from, i).applyMatrix4(reach)
+      most = Math.max(most, point.z)
+      if (point.y < -(edge + DIAL_UNDER.margin)) past[i] = 1
+    }
+    const low = Uint8Array.from(past)
+    const index = whole.getIndex()
+    const corners = index ? index.count : from.count
+    for (let t = 0; t + 2 < corners; t += 3) {
+      const a = index ? index.getX(t) : t
+      const b = index ? index.getX(t + 1) : t + 1
+      const c = index ? index.getX(t + 2) : t + 2
+      if (past[a] && past[b] && past[c]) continue
+      low[a] = low[b] = low[c] = 0
+    }
+    if (!low.includes(1) || tall < 1e-6) {
+      m.geometry = whole
+      if (u.level) u.level.at = []
+      return
+    }
+    u.level ??= { whole, low: whole.clone(), at: [] }
+    const to = u.level.low.getAttribute('position') as THREE.BufferAttribute
+    const hi = Math.min(most, top)
+    for (let i = 0; i < from.count; i++) {
+      if (!low[i]) {
+        to.setZ(i, from.getZ(i))
+        continue
+      }
+      point.fromBufferAttribute(from, i).applyMatrix4(reach)
+      to.setZ(i, from.getZ(i) + (Math.min(hi, Math.max(hi - DIAL_UNDER.wall, point.z)) - point.z) / tall)
+    }
+    to.needsUpdate = true
+    u.level.at = at
+    m.geometry = u.level.low
+  })
+}
+
 interface Kept { ring: THREE.Mesh; body: THREE.Group; wheel: THREE.Group; face: THREE.Mesh; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh }
 const place = new THREE.Matrix4()
 
@@ -492,6 +561,7 @@ const plainDial: PartMaker = {
       kept.shades.setMatrixAt(k - 1, place)
     }
     kept.shades.instanceMatrix.needsUpdate = true
+    levelDial(o, s.v !== undefined && s.v.length > 1 ? s.v[1]! : null, top)
   }
 }
 

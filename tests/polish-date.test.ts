@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import * as THREE from 'three'
 import { pages } from '../src/pages'
-import { CRANK_HOME, HOUSED } from '../src/pages/step2'
+import { CRANK_HOME, DIAL_REACH, HOUSED } from '../src/pages/step2'
 import { config, stepHz } from '../src/config'
-import { ROWS, TRAY, TRAY_H } from '../src/pages/step2/layout'
+import { DIAL, DIAL_BODY, ROWS, TRAY, TRAY_H, trayY } from '../src/pages/step2/layout'
+import { dial, DIAL_UNDER } from '../src/pages/step2/real/dial'
+import type { RealContext } from '../src/real/types'
 import { BotDriver, type BotName } from '../src/stage/bots'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
 import { bare, BODY, DRAWN, heights, leaver, LEAVER, openings, still, visit, visitor, type Row } from './polish-date-run'
@@ -250,3 +253,129 @@ describe('polish date: a Skip lets the crank\'s arm come inside its tray before 
   })
 })
 
+
+// The dial's wheel on each step of a visit it is drawn at rest in a tray that is not yet whole, or is no longer: its height, where its tray's opening ends below its centre, and what its maker is told of that.
+interface Housed { step: number; tall: number; edge: number; opening: boolean; told: number | null; wheel: Shape }
+function housedDial(stage: Stage, seconds: number): Housed[] {
+  const out: Housed[] = []
+  let was = 0
+  for (let i = 0; i < seconds * stepHz && stage.page.id === 'step2'; i++) {
+    stage.advance(1)
+    if (stage.page.id !== 'step2') break
+    const list: Shape[] = []
+    stage.page.draw(list)
+    const wheel = list.find((s) => s.id === 'dial-wheel')
+    const tray = list.find((s) => s.id === `${ROWS[0]}-tray`)
+    const opening = Boolean(tray) && tray!.h >= was
+    was = tray ? tray.h : 0
+    if (!wheel || !tray || tray.h >= TRAY_H) continue
+    out.push({ step: i, tall: wheel.z1 - wheel.z0, edge: trayY(0) + tray.h - DIAL.cy, opening, told: wheel.v && wheel.v.length > 1 ? wheel.v[1]! : null, wheel })
+  }
+  return out
+}
+
+// The steps of a visit on which part of the dial lies under the page: how many, how many of them while its tray opens, the dial's greatest height on them and its height on the last.
+const UNDER = { live: { steps: 96, opening: 48, most: 4.16, last: 1.6 }, film: { steps: 96, opening: 48, most: 4.16, last: 1.6 } }
+
+describe('polish date: the dial under the page is drawn low on the live site, and whole in the film', () => {
+  const ctx = (list: Shape[]): RealContext => ({ page: 'step2', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })
+  const solids = (o: THREE.Object3D): THREE.Mesh[] => {
+    const out: THREE.Mesh[] = []
+    o.traverse((c) => {
+      const m = c as THREE.Mesh
+      if (m.isMesh && !(c as THREE.InstancedMesh).isInstancedMesh && !(m.material as THREE.Material).transparent) out.push(m)
+    })
+    return out
+  }
+  const corner = new THREE.Vector3()
+  const span = (o: THREE.Object3D): { least: number; most: number } => {
+    o.updateMatrixWorld(true)
+    let least = Infinity
+    let most = -Infinity
+    for (const m of solids(o)) {
+      const at = m.geometry.getAttribute('position')
+      for (let i = 0; i < at.count; i++) {
+        const z = corner.fromBufferAttribute(at, i).applyMatrix4(m.matrixWorld).z
+        least = Math.min(least, z)
+        most = Math.max(most, z)
+      }
+    }
+    return { least, most }
+  }
+  // Each solid of a dial told where the opening ends, beside the same solid of a whole one: how many corners were moved, the tallest wall the moved corners make, their highest point, and how many corners of a triangle that is not wholly past the line were moved.
+  const lowered = (o: THREE.Object3D, whole: THREE.Object3D, line: number): { moved: number; wall: number; most: number; touched: number }[] => {
+    o.updateMatrixWorld(true)
+    whole.updateMatrixWorld(true)
+    const a = solids(o)
+    const b = solids(whole)
+    return a.map((m, n) => {
+      const low = m.geometry.getAttribute('position')
+      const full = b[n]!.geometry.getAttribute('position')
+      const index = b[n]!.geometry.getIndex()
+      const past: boolean[] = []
+      const z: number[] = []
+      for (let i = 0; i < full.count; i++) {
+        past.push(corner.fromBufferAttribute(full, i).applyMatrix4(b[n]!.matrixWorld).y < line)
+        z.push(corner.fromBufferAttribute(low, i).applyMatrix4(m.matrixWorld).z)
+      }
+      const held = past.map((p) => !p)
+      const corners = index ? index.count : full.count
+      for (let t = 0; t + 2 < corners; t += 3) {
+        const tri = [0, 1, 2].map((k) => (index ? index.getX(t + k) : t + k))
+        if (!tri.every((i) => past[i])) for (const i of tri) held[i] = true
+      }
+      const free = z.filter((_, i) => !held[i])
+      let touched = 0
+      for (let i = 0; i < full.count; i++) if (held[i] && low.getZ(i) !== full.getZ(i)) touched++
+      return { moved: free.length, wall: free.length ? Math.max(...free) - Math.min(...free) : 0, most: free.length ? Math.max(...free) : -Infinity, touched }
+    })
+  }
+
+  // The dial is at rest on every step its tray opens over it. Its tray starts to shut while it is still going down, so the first steps of the shutting find it a little taller: never taller than `most`, never rising, and at rest at the end.
+  const heldLow = (rows: Housed[]): { steps: number; opening: number; most: number; last: number } => {
+    for (let n = 0; n < rows.length; n++) {
+      const r = rows[n]!
+      if (r.opening) expect(r.tall, `step ${r.step}`).toBeCloseTo(DIAL_BODY.rest, 9)
+      else if (n > 0 && rows[n - 1]!.step === r.step - 1) expect(r.tall, `step ${r.step}`).toBeLessThanOrEqual(rows[n - 1]!.tall + 1e-9)
+    }
+    return { steps: rows.length, opening: rows.filter((r) => r.opening).length, most: Math.round(Math.max(...rows.map((r) => r.tall)) * 1e6) / 1e6, last: Math.round(rows[rows.length - 1]!.tall * 1e6) / 1e6 }
+  }
+
+  it('the live site: the housed dial is as tall as it was, and its maker is told where the opening ends on every step part of it lies under the page, and on no other', () => {
+    const rows = housedDial(new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: visitor([0, 1, 2]), seed: config.seed }), 60)
+    for (const r of rows) expect(r.told, `step ${r.step}`).toBe(r.edge < DIAL_REACH ? r.edge : null)
+    const held = heldLow(rows.filter((r) => r.told !== null))
+    expect(held).toEqual(UNDER.live)
+  })
+
+  it('the film: its maker is never told, and the housed dial is as tall as it was', () => {
+    const rows = housedDial(new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') }), 200)
+    for (const r of rows) expect(r.told, `step ${r.step}`).toBeNull()
+    const held = heldLow(rows.filter((r) => r.edge < DIAL_REACH))
+    expect(held).toEqual(UNDER.film)
+  })
+
+  it('the dial\'s maker: told, no solid under the page stands taller than the wall it is allowed or higher than the dial\'s top, and what is in the opening is as it was; not told, the housed dial is whole, 42 px deep under its top', () => {
+    const rows = housedDial(new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: visitor([0, 1, 2]), seed: config.seed }), 60)
+    const wheel = rows.find((r) => r.told !== null)!.wheel
+    const whole = dial.make({ ...wheel, v: [0] }, ctx([wheel]))
+    dial.pose!(whole, { ...wheel, v: [0] }, ctx([wheel]))
+    const was = span(whole)
+    expect(was.least).toBeCloseTo(DIAL_BODY.rest - DIAL_BODY.tall - DIAL_BODY.below, 6)
+    expect(was.most).toBeGreaterThan(DIAL_BODY.rest)
+    for (const edge of [-90, -40, 0, 37.5, 80]) {
+      const o = dial.make({ ...wheel, v: [0, edge] }, ctx([wheel]))
+      dial.pose!(o, { ...wheel, v: [0, edge] }, ctx([wheel]))
+      const rows = lowered(o, whole, -(edge + DIAL_UNDER.margin))
+      expect(rows.reduce((n, r) => n + r.moved, 0), `edge ${edge}`).toBeGreaterThan(edge < 0 ? 4000 : 400)
+      for (const r of rows) {
+        expect(r.touched, `edge ${edge}`).toBe(0)
+        expect(r.wall, `edge ${edge}`).toBeLessThanOrEqual(DIAL_UNDER.wall + 1e-6)
+        expect(r.most, `edge ${edge}`).toBeLessThanOrEqual(DIAL_BODY.rest + 1e-6)
+      }
+      dial.pose!(o, { ...wheel, v: [0] }, ctx([wheel]))
+      expect(span(o)).toEqual(was)
+      expect(lowered(o, whole, -(edge + DIAL_UNDER.margin)).every((r) => r.touched === 0)).toBe(true)
+    }
+  })
+})
