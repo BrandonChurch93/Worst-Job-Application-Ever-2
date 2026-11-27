@@ -8,6 +8,11 @@ Branch `agent/b-pinball`. Owner of this file: the pinball helper.
 - Before it, the live fight says `vacuum-on` (the pull starts), `vacuum-slip` (each slip toward the port) and `vacuum-lose` (the arrow lets go, 0.41 s before `ball-seal` in the film).
 - After `ball-seal` nothing of the scene depends on the visitor until the result card.
 
+## For the shell unit: narrator line 5 (change note 003)
+
+- The moment the vacuum takes hold of the arrow is the event `vacuum-on`. It fires once in a run. Film: 0.700 s of step 3. Live: when the port's reach meets the visitor's arrow, 1.2 s at the earliest.
+- The moment is off screen after `ball-seal` (film 3.300 s). From `vacuum-on` to `ball-seal` is 2.6 s in the film; a line of 6.3 s ends 3.7 s after the arrow is gone, 0.3 s before `power-on` (7.300 s). The clock is not changed for the line.
+
 ## Events
 
 Kept as they were: `ball-seal`, `tube-run`, `lights-down`, `power-on`, `plunger`, `sling`, `carpet-roll`, `spinner`, `doors-slam`, `tier-fall`, `drop-target`, `bumper`, `flasher`, `inbox-take`, `ball-drop`, `firehouse-take`, `scoop-kick`, `ramp-roll`, `spiral`, `flipper`, `flipper-save`, `drain`, `ball-open`.
