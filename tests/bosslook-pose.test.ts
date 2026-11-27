@@ -145,3 +145,21 @@ describe('look 1 of the boss: the word, the turret, the places of the muzzles', 
     expect(DEFAULTS.pit).toBe(false)
   })
 })
+
+describe('look 1: the finishing blast', () => {
+  it('leaves the parts where they are until gone moves, then lets them go one by one and brings the button down', () => {
+    const lying = { turret: 1, locked: true, stage: 2 as const, health: 0, beaten: 1 }
+    const before = poseOf(view({ phase: 'beaten' }, lying))
+    expect(before.gone).toBe(0)
+    expect(before.away.hull).toBe(0)
+    const mid = poseOf(view({ phase: 'beaten' }, { ...lying, gone: 0.5 } as never))
+    expect(mid.away.shield).toBe(1)
+    expect(mid.away.legs[3]).toBeGreaterThan(0)
+    expect(mid.away.hull).toBe(0)
+    const end = poseOf(view({ phase: 'beaten' }, { ...lying, gone: 0.95 } as never))
+    expect(end.away.hull).toBe(1)
+    expect(end.body.z + end.button.z).toBeCloseTo(0, 5)
+    expect(Math.hypot(end.blow[0], end.blow[1])).toBeCloseTo(1, 5)
+    for (const name of ['boss-fall', 'finish-fire', 'boss-gone', 'button-down']) expect(EVENTS, name).toHaveProperty(name)
+  })
+})

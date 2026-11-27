@@ -8,7 +8,7 @@ import { setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
 import { poseGun } from './gun'
 
-export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FORM, TURRET, TIMES, DEFAULTS } from './pose'
+export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FALL, FORM, GONE, TURRET, TIMES, DEFAULTS } from './pose'
 export type { LookOptions, Pose } from './pose'
 export { EVENTS } from './events'
 export { makeGun, poseGun } from './gun'
@@ -36,6 +36,9 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   b.position.set(p.body.x * cy - p.body.y * sy, p.body.x * sy + p.body.y * cy, p.body.z)
   b.rotation.set(p.body.roll, p.body.pitch, p.body.yaw)
 
+  for (const o of [m.hull, m.bay, m.shield, ...m.wings, ...m.guns.map((g) => g.root), ...m.legs.flatMap((l) => [l.upper, l.lower, l.foot])]) o.scale.set(1, 1, 1)
+  m.shield.rotation.set(0, 0, 0)
+  for (const w of m.wings) w.rotation.set(0, 0, 0)
   m.hull.visible = p.hull.show
   m.hull.position.set(p.hull.x, p.hull.y, p.hull.z)
   m.bay.visible = p.hull.show
@@ -93,6 +96,42 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   })
   void legsRoot
 
+  if (p.gone > 0) {
+    const [wx, wy] = p.blow
+    const cyaw = Math.cos(-p.body.yaw)
+    const syaw = Math.sin(-p.body.yaw)
+    const bx = wx * cyaw - wy * syaw
+    const by = wx * syaw + wy * cyaw
+    const fling = (o: THREE.Object3D, k: number, id: number, dx: number, dy: number, ox: number, oy: number): void => {
+      if (k <= 0) return
+      const e = k * k
+      const d = Math.hypot(ox, oy) || 1
+      o.position.x += (dx * 560 + (ox / d) * 220) * e
+      o.position.y += (dy * 560 + (oy / d) * 220) * e
+      o.position.z += 240 * Math.sin(Math.PI * Math.min(1, k * 0.8))
+      o.rotation.x += (3 + id) * 0.9 * e
+      o.rotation.y += (2 - id * 0.7) * e
+      o.scale.setScalar(Math.max(0.001, 1 - e * e))
+      if (k >= 1) o.visible = false
+    }
+    fling(m.shield, p.away.shield, 0, bx, by, 1, 0)
+    m.wings.forEach((w, i) => fling(w, p.away.wings[i]!, 1 + i, bx, by, 0, i === 0 ? 1 : -1))
+    m.guns.forEach((g, i) => fling(g.root, p.away.guns[i]!, 3 + i, bx, by, 0, i === 0 ? 1 : -1))
+    p.legs.forEach((l, i) => {
+      const g = m.legs[i]!
+      for (const o of [g.upper, g.lower, g.foot]) fling(o, p.away.legs[i]!, 5 + i, wx, wy, l.foot[0] - l.hip[0], l.foot[1] - l.hip[1])
+    })
+    const h = p.away.hull
+    if (h > 0) {
+      const e = h * h
+      for (const o of [m.hull, m.bay]) {
+        o.scale.set(1 - 0.55 * e, 1 - 0.55 * e, Math.max(0.02, 1 - e))
+        o.position.z -= 40 * e
+        if (h >= 1) o.visible = false
+      }
+    }
+  }
+
   const c = m.cannon
   c.carriage.visible = p.cannon.show
   if (p.cannon.show) {
@@ -109,9 +148,10 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     setGlow(c.heat, 1 + 3 * p.cannon.heat)
   }
   setGlow(m.weak, p.weak)
-  m.damage[0].visible = p.damage >= 1
-  m.damage[1].visible = p.damage >= 2
-  m.damage[2].visible = p.damage >= 3
+  const burnt = p.away.hull > 0.5
+  m.damage[0].visible = p.damage >= 1 && !burnt
+  m.damage[1].visible = p.damage >= 2 && !burnt
+  m.damage[2].visible = p.damage >= 3 && !burnt
   void CANNON
   void HATCH
   void HULL
