@@ -62,9 +62,46 @@ How the pictures were read: `node pipeline/phase5/polish-sharp-look.mjs texels B
 - UNKNOWN: which of frames 4259 to 4536 change as pictures (no browser was free). The key `table-wide` stands at 7.6 s, inside that span, so its still can change.
 - The drain tube is not handled by the patch.
 
+## The whole unit at the final tier (MEASURED 09:39 to 10:08 UTC, source as at 63c6494c)
+
+`npm run measure -- --unit pinball --only M2,M3 --tier final`, engine 938d1655f4f3e922:
+
+```
+unit pinball: 14 judged stills
+pass  M2  14 stills, 8126632 textured pixels: the largest soft share 0.0093, the most allowed 0.02
+pass  M3  10 keys: the least ratio of fine detail to the approved image 0.9355, the least allowed 0.8
+measure: 2 green, 0 red, 0 not yet
+```
+
+M3 by key (the look script on the measure's own stills; the least equals the measure's): loader-page 3.056, table-wide 1.797, tier-corporate 0.936, lobby-doors 1.174, tier-office 1.165, reply-all 1.228, tier-street 1.204, youre-fired 1.563, rail-cam 0.951, last-save 1.569. The largest soft share of M2 is the sheet `clear-ball` (2,011 of 216,036).
+
+## The drain tube (asked 09:48 UTC)
+
+MEASURED from the film's take without a browser: the ball's middle is inside the bore of the drain tube in film frames 6293 to 6349 (57 frames), and the rule that turns the drawn shadow on holds in none of them.
+
 ## Decisions
 
 - The texels view is mended by a mark and not by a brick picture baked for the firehouse.
 - The wires get lines only when wide on the screen: far off they would shimmer.
 - The tube keeps its width.
 - G15 is not run: no texture's size changed (`tests/polish-sharp.test.ts` pins every size in both sets).
+
+## Checks (MEASURED, source as at 63c6494c; only files under `pipeline/phase5/` changed after)
+
+- `npm run take -- --check`: exit 0, the 10 beat events inside their beats. The stored take is not in this branch's diff.
+- `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- `npm run bots`: all clear.
+- `npm test` (10:17 UTC, on the last commit's tree): 160 files passed, 3 skipped; 1949 tests passed, 3 skipped.
+- `npx tsc --noEmit -p .`: no output, exit 0.
+- `npm run measure -- --views` (tier draft, hd): pass, 33 views drawn over 3 moments, beauty differs after 0 of them.
+- G15 was not run: no texture's size changed.
+- A slip: for about a minute at 09:36 UTC two browser jobs ran together (the views check and the base's M2). The views check was stopped and run again alone after the measure.
+
+## Open
+
+- The ball at `rail-cam` is hazier than the approved ball; the two middle regions stand at 0.71 and 0.56 of the approved detail there.
+- The tube is 106 px wide, the approved about 85 px.
+- A dark dot about 4 px high at the tube's right wall on the last rows of the first screen at rest.
+- The shadow patch is not applied here and no picture of it was drawn here.
+- At 3840x2160 every counted floor pixel at `youre-fired` is soft.
+- The pools of light of the corporate and office tiers are painted bare by the `texels` view; not counted.
