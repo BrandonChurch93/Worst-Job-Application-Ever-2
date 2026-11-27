@@ -1038,7 +1038,7 @@ export function makePage(): PageLogic {
     },
     done: () => s.done,
     gag: () => gagAt(s.t),
-    ignoring: () => false,
+    ignoring: () => machine().cut || machine().own.some((n) => n > 0),
     states: () => activeStates(),
     tableState(): TableState {
       const mc = machine()

@@ -1,5 +1,5 @@
 diff --git a/src/pages/step3/index.ts b/src/pages/step3/index.ts
-index f3ec0261..4ef60108 100644
+index f3ec0261..170c53f3 100644
 --- a/src/pages/step3/index.ts
 +++ b/src/pages/step3/index.ts
 @@ -237,7 +237,7 @@ export function makePage(): PageLogic {
@@ -11,3 +11,12 @@ index f3ec0261..4ef60108 100644
    const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + (n.tier + 1) * WAKE && s.t < T.wake + (n.tier + 1) * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
    const modeOf = (k: number): number | null => {
      let out: number | null = null
+@@ -1038,7 +1038,7 @@ export function makePage(): PageLogic {
+     },
+     done: () => s.done,
+     gag: () => gagAt(s.t),
+-    ignoring: () => false,
++    ignoring: () => machine().cut || machine().own.some((n) => n > 0),
+     states: () => activeStates(),
+     tableState(): TableState {
+       const mc = machine()
