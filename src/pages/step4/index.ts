@@ -57,6 +57,7 @@ interface State {
   py: number
   gold: number
   charge: number
+  own: boolean
   fired: number
   shot: number
   blown: boolean
@@ -98,7 +99,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -416,7 +417,8 @@ export function makePage(): PageLogic {
         aimAt(io, FALLEN)
         if (s.fired < 0 && u >= SHOUT.arms) {
           const down = io.pointer.down
-          for (const b of SHOUT.beats) if (u >= b && u - dt < b) io.emit('finish-charge', io.cursor.x, io.cursor.y, false)
+          const whole = SHOUT.fire - SHOUT.beats[0]!
+          const had = s.charge < 0 ? 0 : steps(s.charge)
           const fire = (): void => {
             s.shot = Math.max(FINISH.small, s.charge < 0 ? 0 : steps(s.charge))
             s.fired = 0
@@ -425,14 +427,17 @@ export function makePage(): PageLogic {
             io.cursor.knock(((io.cursor.x - FALLEN.x) / d) * KICK.popup * s.shot, ((io.cursor.y - FALLEN.y) / d) * KICK.popup * s.shot)
           }
           if (s.charge < 0) {
-            if (down) {
+            if (down || u >= SHOUT.arms + FINISH.alone - whole) {
               s.charge = 0
+              s.own = down
               io.cursor.react('anticipate')
-            } else if (u >= SHOUT.fire) fire()
+            }
           } else {
             s.charge += dt
-            if (!down || u >= SHOUT.fire + FINISH.late) fire()
+            if (!s.own && down) s.own = true
+            else if (s.own ? !down || s.charge >= whole + FINISH.late : s.charge >= whole) fire()
           }
+          if (s.fired < 0 && s.charge >= 0 && steps(s.charge) > had) io.emit('finish-charge', io.cursor.x, io.cursor.y, false)
         } else if (s.fired >= 0) {
           const was = s.fired
           s.fired += dt

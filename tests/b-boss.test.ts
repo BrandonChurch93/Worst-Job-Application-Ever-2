@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
 import { BODY, DART, HOME } from '../src/boss/plan'
-import { BIG, CORNER, FLAT, GUARD, GUN, HEAL, MERCY, REAL_DART, SOLID, TOP } from '../src/boss/tune'
+import { BIG, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
 import { HOLD, UNIT_SECONDS } from '../src/pages/step4/script'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
@@ -351,6 +351,61 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(flat.length).toBe(1)
     expect(flat[0]!.hitsCursor).toBe(true)
     expect(stage.events.filter((e) => e.hitsCursor).length).toBe(1)
+  })
+
+  it('mail of 23:13. runs the finish on the marks of the shout in the film: the arms, one finish-charge on each beat, the blast let go on the last word and held for its length', () => {
+    const stage = film()
+    stage.advance(Math.round((UNIT_SECONDS - 1) * stepHz))
+    const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+    const fall = at('boss-fall')[0]! + FINISH.fall
+    expect(at('finish-arms')[0]! - fall).toBeCloseTo(SHOUT.arms, 1)
+    const beats = at('finish-charge').map((t) => t - fall)
+    expect(beats.length).toBe(SHOUT.beats.length)
+    beats.forEach((t, i) => expect(t).toBeCloseTo(SHOUT.beats[i]!, 1))
+    expect(at('finish-fire').length).toBe(1)
+    expect(at('finish-fire')[0]! - fall).toBeCloseTo(SHOUT.fire, 1)
+    expect(at('boss-gone')[0]! - fall).toBeCloseTo(SHOUT.gone, 1)
+    expect(at('button-down')[0]! - fall).toBeCloseTo(SHOUT.gone + FINISH.settle, 1)
+  })
+
+  it.each([
+    ['who presses nothing', (): boolean => false, FINISH.alone, 4, 1],
+    ['who holds the button and never lets go', (): boolean => true, SHOUT.fire - SHOUT.beats[0] + FINISH.late, 4, 1],
+    ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2, 2, 0.5],
+    ['who clicks once and lets go', (u: number): boolean => u >= 0.5 && u < 0.7, 0.7, 1, FINISH.small],
+    ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.2, 3, 0.75]
+  ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (_name, down, fires, charges, power) => {
+    for (const seed of [config.seed, 7, 1234]) {
+      const bot = new BotDriver('keen', seed)
+      let since = -1
+      const driver: Driver = {
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          if (v.page.gag() !== 'boss.collapse') return bot.input(v)
+          if (since < 0) since = v.time
+          return { x: v.cursor.x, y: v.cursor.y, down: down(v.time - since - FINISH.fall) }
+        }
+      }
+      const stage = new Stage({ mode: 'live', flow, pages, driver, seed })
+      let wide = 0
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'button-down') && stage.time < 140) {
+        stage.advance(1)
+        const q = (stage.frameAt(stage.time).list as Shape[]).find((x) => x.id === 'finish-blast')
+        if (q) wide = Math.max(wide, q.h / 2 / FINISH.wide)
+      }
+      const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+      const fall = at('boss-fall')[0]! + FINISH.fall
+      expect(at('finish-arms').length, `seed ${seed}`).toBe(1)
+      expect(at('finish-fire').length, `seed ${seed}`).toBe(1)
+      expect(at('finish-fire')[0]! - fall, `seed ${seed}`).toBeCloseTo(fires, 1)
+      expect(at('finish-charge').length, `seed ${seed}`).toBe(charges)
+      expect(wide, `seed ${seed}`).toBeCloseTo(power, 2)
+      expect(at('boss-gone')[0]! - at('finish-fire')[0]!).toBeCloseTo(SHOUT.gone - SHOUT.fire, 1)
+      expect(at('button-down').length).toBe(1)
+      expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
+      while (stage.page.id === 'step4' && stage.time < 160) stage.advance(1)
+      expect(stage.page.id, `seed ${seed}`).not.toBe('step4')
+    }
   })
 
   it('E. ends on the skip link at any moment of the fight, with the header and the rail off the screen', () => {
