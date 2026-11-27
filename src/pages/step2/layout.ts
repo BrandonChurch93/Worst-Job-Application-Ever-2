@@ -44,30 +44,31 @@ export const PROMPT_Y = trayY() + 30
 export const BAND = 150
 export const NOTE_Y = trayY() + 10
 
-// Each machine is laid out and run at the size it was built, in a tray of its own (the stage), and drawn `times` larger about the tray's upper left corner on its floor.
-// The real tray is one size for all three: a stage is that tray divided by its machine's `times`.
-export const STAGE = { times: [1.5, 1.4, 1.25] }
+// Each machine is laid out and run at the size it was built, on a stage of its own, and drawn `times` larger about the stage's upper left corner, `up` px higher on the page.
+// A machine stands on the bare page: the floor it was built on (`machineTray`) is the page's face.
+export const STAGE = { times: [1.5, 1.4, 1.25], up: 60 }
 export const SW = (i: number): number => FW / STAGE.times[i]!
 export const SH = (i: number): number => TRAY_H / STAGE.times[i]!
 const TRAY_FLOOR = heights.machineTray
 const HOVER = heights.cursorHover
 export interface Scale { k: number; x: (x: number) => number; y: (y: number) => number; z: (z: number) => number; ground: (z: number) => number; air: (z: number) => number; backX: (x: number) => number; backY: (y: number) => number; backAir: (z: number) => number }
-// From a stage to the page and back. A part's height grows from the tray's floor. The arrow's height grows from where it hovers, and joins the parts' heights a little above that, so it stands as far over a larger part as over the built one.
+// From a stage to the page and back. A part's height grows from the floor it was built on, which is the page's face. The arrow's height grows from where it hovers, and joins the parts' heights a little above that, so it stands as far over a larger part as over the built one.
 export function scaleOf(i: number): Scale {
   const k = STAGE.times[i]!
   const ty = trayY(i)
-  const join = 2 * (k - 1) * (HOVER - TRAY_FLOOR)
-  const z = (v: number): number => TRAY_FLOOR + (v - TRAY_FLOOR) * k
+  const oy = ty - STAGE.up
+  const join = 2 * (k * (HOVER - TRAY_FLOOR) - HOVER)
+  const z = (v: number): number => (v - TRAY_FLOOR) * k
   return {
     k,
     x: (x) => FX + (x - FX) * k,
-    y: (y) => ty + (y - ty) * k,
+    y: (y) => oy + (y - ty) * k,
     z,
-    ground: (v) => (v <= 0 ? v : k * v + (z(0) - 0) * Math.min(1, v / -TRAY_FLOOR)),
+    ground: (v) => (v <= 0 ? v : k * v + z(0) * Math.min(1, v / -TRAY_FLOOR)),
     air: (v) => (v <= HOVER ? v : v < HOVER + join ? HOVER + (v - HOVER) * (k + 0.5) : z(v)),
     backX: (x) => FX + (x - FX) / k,
-    backY: (y) => ty + (y - ty) / k,
-    backAir: (v) => (v <= HOVER ? v : v < HOVER + join * (k + 0.5) ? HOVER + (v - HOVER) / (k + 0.5) : TRAY_FLOOR + (v - TRAY_FLOOR) / k)
+    backY: (y) => ty + (y - oy) / k,
+    backAir: (v) => (v <= HOVER ? v : v < HOVER + join * (k + 0.5) ? HOVER + (v - HOVER) / (k + 0.5) : TRAY_FLOOR + v / k)
   }
 }
 
@@ -148,6 +149,11 @@ export const STOP_TYPE = { font: 'inter-600', px: 20, align: 'centre' as const }
 export const SIGN_TYPE = { font: 'inter-600', px: 56, align: 'centre' as const }
 export const PROMPT_TYPE = { ...TYPE.body, align: 'centre' as const }
 export const stopId = (r: number): string => `slot-stop-${r}`
+// What a field would hold while its machine is out stands on the bare page over the machine, as a line of type.
+export const PLATE_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
+export const PLATE_Y = ROW_Y - 14
+// The openings of the page: the phone's round one and the slot machine's hatch, in page pixels, and how deep they go.
+export const HOLE = { deep: 64, flush: 2, iris: 208, seat: 112, hatch: 16, hatchR: 14 }
 
 const centred = (id: string, key: string, state: string, i: number): LayoutNode => text(id, key, PROMPT_TYPE, FX + SW(i) / 2, PROMPT_Y, { part: 'type', on: TRAY_Z, states: [state] })
 
@@ -158,9 +164,7 @@ function rowNodes(i: number): LayoutNode[] {
   const value = (suffix: string, key: string, cond: string, soft: boolean): LayoutNode =>
     text(`${name}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116, ...(soft ? { ink: 'soft' } : {}) }, FX + PAD, capY, { part: 'type', on: VALUE_Z, states: [`${name}-${cond}`] })
   const values: LayoutNode[] = []
-  if (name === 'phone') values.push(value('typed', 'runtime:step2.phone', 'typing', false), value('value', 'copy:step2.rows.phone.gaveUp', 'done', true))
-  if (name === 'birth') values.push(value('ask', 'copy:drafts.step2.birth.placeholder', 'ask', true), value('typed', 'runtime:step2.birth', 'typing', false), value('value', 'copy:step2.rows.birth.recorded', 'done', true), value('missed', 'copy:drafts.step2.birth.missed', 'missed', true))
-  if (name === 'volume') values.push(value('typed', 'runtime:step2.volume', 'typing', false), value('value', 'copy:step2.rows.volume.done', 'done', true))
+  if (name === 'birth') values.push(value('ask', 'copy:drafts.step2.birth.placeholder', 'ask', true), value('typed', 'runtime:step2.birth', 'typing', false))
   const chevron = node(`${name}-chevron`, 'chevron', [FX + FW - PAD - 28, y + (FH - 28) / 2, 28, 28], { part: 'rows', shape: 'none' })
   const here = { states: [`${name}-here`] }
   return [
@@ -168,6 +172,17 @@ function rowNodes(i: number): LayoutNode[] {
     text(`${name}-helper`, `copy:step2.rows.${name}.helper`, ROW_HELPER, FX, HEAD_Y + 42, { part: 'type', ...here }),
     node(`${name}-pocket`, 'field', [FX, y, FW, FH], { part: 'rows', r: 14, children: name === 'birth' ? values : [...values, chevron], ...here })
   ]
+}
+
+// The lines of a machine on the bare page: what is being set, and what the form made of it.
+function plateNodes(i: number): LayoutNode[] {
+  const name = ROWS[i]!
+  const line = (suffix: string, key: string, cond: string): LayoutNode => text(`${name}-plate-${suffix}`, key, PLATE_TYPE, PAGE_W / 2, PLATE_Y, { part: 'type', states: [`${name}-plate-${cond}`] })
+  const out = [line('typed', `runtime:step2.${name}`, 'typing')]
+  if (name === 'phone') out.push(line('value', 'copy:step2.rows.phone.gaveUp', 'done'))
+  if (name === 'birth') out.push(line('value', 'copy:step2.rows.birth.recorded', 'done'), line('missed', 'copy:drafts.step2.birth.missed', 'missed'))
+  if (name === 'volume') out.push(line('value', 'copy:step2.rows.volume.done', 'done'))
+  return out
 }
 
 function dialNodes(): LayoutNode[] {
@@ -224,7 +239,9 @@ function crankNodes(): LayoutNode[] {
 
 export function buildLayout(): LayoutNode {
   const machines = [dialNodes(), slotNodes(), crankNodes()]
-  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: TRAY_R, tone: 'glass', states: [`${name}-open`], children: machines[i]! }))
+  const stages = ROWS.map((name, i): LayoutNode => ({ id: `${name}-stage`, kind: 'row', box: [FX, trayY(i), SW(i), SH(i)], children: machines[i]!, states: [`${name}-open`], part: 'rows' }))
+  const holes = ROWS.slice(0, 2).map((name, i) => node(`${name}-hole`, 'machineTray', [PAGE_W / 2 - HOLE.iris, trayY(i), HOLE.iris * 2, HOLE.iris * 2], { part: 'rows', r: HOLE.iris, tone: 'glass', states: [`${name}-hole`] }))
+  const plates = ROWS.flatMap((_, i) => plateNodes(i))
   const rows: LayoutNode[] = []
   for (let i = 0; i < 3; i++) rows.push(...rowNodes(i))
   const w = buttonWidth('copy:step2.continue')
@@ -232,22 +249,25 @@ export function buildLayout(): LayoutNode {
   const go = button('continue', RIGHT - w, by, w, 'copy:step2.continue', { part: 'shell', tone: 'metal' })
   find(go, 'continue-label').tone = 'ink'
   const note = text('note', 'copy:step2.note', { ...ROW_HELPER, wrap: FW }, FX, NOTE_Y, { part: 'type', states: ['note'] })
-  return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...trays, note, go])
+  return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...holes, ...stages, ...plates, note, go])
 }
 
-// What the page shows: which fields stand on it (two while one leaves and the next comes), which tray is open, and what each field holds: '' for nothing, or 'typing', 'done', 'ask', 'missed'.
-export interface StateView { here: number[]; open: number; panel: boolean; value: string[]; settled: string[] | null }
+// What the page shows: which fields stand on it (none while a machine is out), which machine is out, whether the page is open under it, and the line over it: '' for none, or 'typing', 'done', 'missed'. `value` is what the date's field holds: 'ask' or 'typing'.
+export interface StateView { here: number[]; open: number; hole: boolean; panel: boolean; plate: string[]; value: string; note: boolean; settled: string[] | null }
 
 export function statesOf(v: StateView): string[] {
   const out: string[] = []
-  if (v.open < 0) out.push('note')
+  if (v.note) out.push('note')
   for (const i of v.here) {
-    const name = ROWS[i]!
-    out.push(`${name}-here`)
-    if (v.value[i]) out.push(`${name}-${v.value[i]}`)
+    out.push(`${ROWS[i]}-here`)
+    if (i === 1) out.push(`birth-${v.value}`)
   }
+  v.plate.forEach((p, i) => {
+    if (p) out.push(`${ROWS[i]}-plate-${p}`)
+  })
   if (v.open >= 0) {
     out.push(`${ROWS[v.open]}-open`)
+    if (v.hole) out.push(`${ROWS[v.open]}-hole`)
     if (v.panel) out.push(`${ROWS[v.open]}-panel`)
     if (v.open === 1 && v.settled) v.settled.forEach((legend, r) => out.push(reelId(r, legend)))
   }

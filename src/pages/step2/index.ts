@@ -9,8 +9,8 @@ import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
 import type { FieldProgress } from '../../stage/types'
-import { buildLayout, COIN, CRANK, DIAL, DIAL_BODY, dialPlate, dialTop, FH, FIELDS, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SIGN_Z, SLIDE, SLOT, statesOf, STOP_Z, stopId, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z, scaleOf, SH, STAGE, SW } from './layout'
-import { actingAt, AWAY, FILM, LANDING, PEEL_AT, TOSS, pointerAt, poses, reactions, type Mark, type Marks } from './script'
+import { buildLayout, COIN, CRANK, DIAL, DIAL_BODY, dialPlate, dialTop, FH, FIELDS, FW, FX, HOLE, PAD, reelId, reelType, ROWS, rowY, SHEET, SIGN_TYPE, SIGN_Z, SLIDE, SLOT, statesOf, STOP_Z, stopId, TOP, TRAY_Z, trayY, VALUE_Z, scaleOf, SH, SW } from './layout'
+import { actingAt, AWAY, FILM, filmAt, LANDING, LEVER_AT, PEEL_AT, TOSS, pointerAt, poses, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
 const LIMIT = config.live.skipLinkAfterSeconds
@@ -56,6 +56,19 @@ const dialShown = (d: DialState): number => d.a + (d.home >= 0 ? SNAG.amp * Math
 const WIND = { long: 0.12, back: 1.6, out: 0.2 }
 const BLOW = { load: 0.2, kick: 1170, out: 0.15, drag: 9, stuck: 0.45, dip: 0.07, lamps: 2 }
 
+// A machine comes out of the bare page and goes back into it. The field leaves in `field` s from the click, the machine starts `from` s after it and stands `long` s after it; it is gone `out` s after it starts to go.
+export const ENTER = { field: 0.2, from: 0.08, long: [0.84, 0.8, 0.86], out: [0.5, 0.46, 0.5], held: 0.4 }
+// How a machine is drawn on its way: the page's opening under it, how far the whole of it and each of its parts lie under where they stand (page pixels), and what its own parts do meanwhile.
+interface Pose { hole: { x: number; y: number; w: number; h: number; r: number; deep: number } | null; sink: number; drop: (id: string) => number; spin: number; lever: number | null; jolt: number; swing: number; sign: number; shown: boolean }
+const STANDING: Pose = { hole: null, sink: 0, drop: () => 0, spin: 0, lever: null, jolt: 0, swing: 0, sign: 1, shown: true }
+const seg = (t: number, a: number, b: number): number => Math.min(1, Math.max(0, (t - a) / (b - a)))
+const out3 = (u: number): number => 1 - (1 - u) * (1 - u) * (1 - u)
+const back = (u: number): number => 1 + 2.70158 * (u - 1) * (u - 1) * (u - 1) + 1.70158 * (u - 1) * (u - 1)
+const hop = (u: number): number => Math.sin(Math.PI * u)
+const CRANK_BODY = ['crank-base', 'crank-arm', 'crank-hub', 'crank-grip']
+// A legend is not drawn while its part lies further than this under where it stands: type has no page to hide under.
+const UNDER = 1.5
+
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean; falls: boolean; row: number; hops: number }
 interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'snag' | 'fly' | 'skid' | 'over'; home: number; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number; r: number; turn: number; from: number; air: number }
@@ -67,11 +80,10 @@ interface State {
   time: number
   open: number
   phase: RowPhase
-  spring: number[]
-  springV: number[]
   lift: number
   rowT: number
   endT: number
+  outT: number
   idle: number
   done: boolean[]
   field: number
@@ -111,7 +123,7 @@ const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t
 const freshBirth = (): BirthState => ({ focus: false, typed: '', t: 0, fill: '' })
 const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0, kx: 0, ky: 0, o: 0, toss: -1, ox: 0, oy: 0, oz: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
-  mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], field: 0, count: 0, eased: 0, turn: 0, slide: -1, birth: freshBirth(), px: 0, py: 0,
+  mode, time: 0, open: -1, phase: 'closed', lift: 0, rowT: 0, endT: 0, outT: 0, idle: 0, done: [false, false, false], field: 0, count: 0, eased: 0, turn: 0, slide: -1, birth: freshBirth(), px: 0, py: 0,
   dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, reach: { x: 0, y: 0, z: 0, t: 1 }, swing: null, climb: 0, marks: {}, rng: []
 })
 
@@ -235,10 +247,11 @@ export function makePage(): PageLogic {
   const up = ROWS.map((name) => rowParts(layout, name))
   const stops = [0, 1, 2].map((r) => boxOf(layout, stopId(r)))
   const sign = boxOf(layout, 'crank-sign')
-  const parts = ROWS.map((name) => machineParts(layout, `${name}-tray`))
+  const signWords = boxOf(layout, 'crank-sign-words')
+  const parts = ROWS.map((name) => machineParts(layout, `${name}-stage`))
   const scales = [0, 1, 2].map(scaleOf)
   const inStage = new Set<string>()
-  for (const name of ROWS) for (const child of find(layout, `${name}-tray`).children ?? []) walk(child, (n) => void inStage.add(n.id))
+  for (const name of ROWS) for (const child of find(layout, `${name}-stage`).children ?? []) walk(child, (n) => void inStage.add(n.id))
   // What a machine is told and what it tells, in its stage: the pointer and the arrow come to it at its built size, and where it puts the arrow or tells of a thing goes out at the size it is drawn.
   function staged(io: StepIo, i: number): StepIo {
     const m = scales[i]!
@@ -256,6 +269,9 @@ export function makePage(): PageLogic {
     })
     return { ...io, pointer: { ...io.pointer, x: m.backX(io.pointer.x), y: m.backY(io.pointer.y) }, cursor, emit: (name, x, y, hits) => io.emit(name, m.x(x), m.y(y), hits) }
   }
+  const middle = [{ x: scales[0]!.x(DIAL.cx), y: scales[0]!.y(DIAL.cy) }, { x: scales[1]!.x(SLOT.x + SLOT.w / 2), y: scales[1]!.y(SLOT.y + SLOT.h / 2) }, { x: scales[2]!.x(CRANK.hx), y: scales[2]!.y(CRANK.hy) }]
+  const plates = ROWS.map((name) => (find(layout, 'step2').children ?? []).filter((n) => n.id.startsWith(`${name}-plate-`)).map((n) => n.id))
+  const plateX = boxOf(layout, 'phone-plate-typed').x
   const legendBox = SLOT.strips.map((strip, r) => boxOf(layout, reelId(r, strip[0]!)))
   let s = fresh('live')
   let rng: Random = stream('step2', config.seed)
@@ -274,6 +290,7 @@ export function makePage(): PageLogic {
     s.phase = 'opening'
     s.rowT = 0
     s.endT = 0
+    s.outT = 0
     s.lift = 0
     s.idle = 0
     if (i === 2) s.crank.set = true
@@ -285,6 +302,14 @@ export function makePage(): PageLogic {
       for (let r = 0; r < 3; r++) sl.from[r] = sl.own[r]! - (s.mode === 'film' ? SLOT.speed[r]! * (FILM.stops[r]! - FILM.lever) : SLOT.lead[r]!)
     }
     io.emit('row-open', FX + FW / 2, rowY(i) + FH / 2, false)
+    io.emit(`stage-in-${ROWS[i]}`, middle[i]!.x, middle[i]!.y, false)
+    if (i === 2) staged(io, 2).emit('volume-sign', sign.cx, sign.cy, false)
+  }
+
+  function closeRow(io: StepIo): void {
+    s.phase = 'closing'
+    s.outT = 0
+    io.emit(`stage-out-${ROWS[s.open]}`, middle[s.open]!.x, middle[s.open]!.y, false)
   }
 
   function dialRelease(io: StepIo): void {
@@ -561,7 +586,7 @@ export function makePage(): PageLogic {
     const p = io.pointer
     if (sl.phase === 'rest') {
       sl.wait += dt
-      if (forced || (s.mode === 'film' ? io.time >= FILM.lever - dt / 2 : sl.wait >= REEL.auto)) pull(io)
+      if (forced || (s.mode === 'film' ? io.time >= LEVER_AT - dt / 2 : sl.wait >= REEL.auto)) pull(io)
     } else if (sl.phase === 'spin') {
       sl.t += dt
       for (let r = 0; r < 3; r++) if (sl.stopped[r]! < 0 && (forced || (io.pressed && inStop(p, r)))) stopReel(io, r)
@@ -864,6 +889,75 @@ export function makePage(): PageLogic {
     io.emit('button-press', go.cx, go.cy, false)
   }
 
+  // Each machine has its own way out of the page and back into it.
+  // The phone: the page opens round under it like an iris, the dial is pushed up turning, the iris shuts under it and it lands. It goes back the same way and bounces once at the bottom.
+  // The slot machine: a hatch gapes, the machine is shot up through it and hangs while the hatch slams shut, it lands with a thud, its lever unfolds and its three buttons come up through the page one after the other. Going, it pulls its own lever, hops, and drops through the hatch.
+  // The crank: it winds itself up out of the page, the bars of the level come up through the page in a row, and the sign unfolds from its lower edge last. It folds away in the same order backwards.
+  function pose(): Pose {
+    const i = s.open
+    if (i < 0 || s.phase === 'ready' || s.phase === 'ending') return STANDING
+    const coming = s.phase === 'opening'
+    const t = coming ? s.rowT - ENTER.from : s.outT
+    if (coming && t < 0) return { ...STANDING, shown: false }
+    const m = scales[i]!
+    const { deep, flush } = HOLE
+    if (i === 0) {
+      const c = middle[0]!
+      const round = (rho: number, down: number): Pose['hole'] => (rho >= 8 ? { x: c.x - rho, y: c.y - rho, w: rho * 2, h: rho * 2, r: rho, deep: down } : null)
+      if (coming) {
+        const rho = t < 0.5 ? HOLE.iris * out3(seg(t, 0, 0.2)) : mix(HOLE.iris, HOLE.seat, smooth(seg(t, 0.5, 0.72)))
+        const down = mix(deep, flush, out3(seg(t, 0.14, 0.5)))
+        return { ...STANDING, hole: t < 0.72 ? round(rho, down) : null, sink: down - flush - 12 * hop(seg(t, 0.5, 0.74)), spin: TAU * 1.25 * (1 - out3(seg(t, 0.14, 0.68))), shown: t >= 0.1 }
+      }
+      const rho = t < 0.36 ? mix(HOLE.seat, HOLE.iris, out3(seg(t, 0, 0.12))) : HOLE.iris * (1 - smooth(seg(t, 0.36, 0.5)))
+      const fall = seg(t, 0.1, 0.32)
+      const down = mix(flush, deep, fall * fall) - 18 * hop(seg(t, 0.32, 0.42))
+      return { ...STANDING, hole: round(rho, down), sink: down - flush, spin: TAU * fall * fall, shown: rho >= 8 }
+    }
+    if (i === 1) {
+      const x0 = m.x(SLOT.x) - HOLE.hatch * 1.6
+      const x1 = m.x(SLOT.leverX + SLOT.knob / 2) + HOLE.hatch * 1.6
+      const y0 = m.y(SLOT.y - 6) - HOLE.hatch
+      const y1 = m.y(SLOT.payY + SLOT.payH) + HOLE.hatch * 0.75
+      const hatch = (gape: number, down: number): Pose['hole'] => {
+        const h = (y1 - y0) * gape
+        return h >= 10 ? { x: x0, y: (y0 + y1) / 2 - h / 2, w: x1 - x0, h, r: Math.min(HOLE.hatchR, h / 2), deep: down } : null
+      }
+      const stop = (id: string): number => (id.startsWith('slot-stop-') ? Number(id.charAt(10)) : -1)
+      if (coming) {
+        const gape = t < 0.3 ? out3(seg(t, 0, 0.1)) : 1 - smooth(seg(t, 0.3, 0.42))
+        const rise = seg(t, 0.08, 0.24)
+        const down = mix(deep, flush, rise * rise)
+        return {
+          ...STANDING, hole: hatch(gape, down), sink: down - flush - 30 * hop(seg(t, 0.24, 0.46)) - 9 * hop(seg(t, 0.46, 0.56)),
+          jolt: t > 0.46 ? 5 * Math.exp(-16 * (t - 0.46)) * Math.sin(60 * (t - 0.46)) : 0,
+          lever: t < 0.4 ? 1 : 1 - back(seg(t, 0.4, 0.64)),
+          drop: (id) => (stop(id) < 0 ? 0 : 40 * (1 - back(seg(t, 0.46 + 0.07 * stop(id), 0.58 + 0.07 * stop(id))))),
+          shown: t >= 0.05
+        }
+      }
+      const gape = t < 0.32 ? out3(seg(t, 0.05, 0.15)) : 1 - smooth(seg(t, 0.32, 0.44))
+      const fall = seg(t, 0.17, 0.32)
+      const down = mix(flush, deep, fall * fall)
+      return {
+        ...STANDING, hole: hatch(gape, down), sink: down - flush - 14 * hop(seg(t, 0.03, 0.17)), lever: smooth(seg(t, 0, 0.14)),
+        drop: (id) => (stop(id) < 0 ? 0 : 40 * seg(t, 0.03 * (2 - stop(id)), 0.03 * (2 - stop(id)) + 0.08) ** 2),
+        shown: t < 0.44
+      }
+    }
+    const bar = (id: string): number => (id.startsWith('meter-') ? Number(id.slice(6)) : -1)
+    if (coming)
+      return {
+        ...STANDING, swing: -TAU * 1.5 * (1 - out3(seg(t, 0.02, 0.52))), sign: t < 0.5 ? 0 : back(seg(t, 0.5, 0.78)),
+        drop: (id) => (CRANK_BODY.includes(id) ? 100 * (1 - back(seg(t, 0, 0.34))) : bar(id) > 0 ? 36 * (1 - back(seg(t, 0.3 + 0.028 * bar(id), 0.42 + 0.028 * bar(id)))) : 0)
+      }
+    const u = seg(t, 0.14, 0.48)
+    return {
+      ...STANDING, swing: -TAU * 1.5 * u * u, sign: 1 - seg(t, 0, 0.16) ** 2,
+      drop: (id) => (CRANK_BODY.includes(id) ? 100 * u * u : bar(id) > 0 ? 36 * seg(t, 0.08 + 0.016 * (10 - bar(id)), 0.15 + 0.016 * (10 - bar(id))) ** 2 : 0)
+    }
+  }
+
   const page: PageLogic = {
     id: 'step2', unit: 'step2', width: 1920, height: SCREEN_H, layout, gags, start: { x: 1560, y: 440 }, control: 'pointer',
     reset(ctx: PageContext) {
@@ -879,9 +973,9 @@ export function makePage(): PageLogic {
       s.py = io.pointer.y
       if (s.mode === 'film') {
         io.cursor.act(actingAt(io.time, s.marks))
-        for (const [at, name] of reactions) if (io.step === Math.round(at * stepHz)) io.cursor.react(name)
+        for (const [at, name] of reactions) if (io.step === Math.round(filmAt(at) * stepHz)) io.cursor.react(name)
         for (const [at, kind, a, b, c] of poses) {
-          if (io.step !== Math.round(at * stepHz)) continue
+          if (io.step !== Math.round(filmAt(at) * stepHz)) continue
           if (kind === 'aim') io.cursor.aim(a)
           else if (kind === 'press') io.cursor.press(a, b)
           else if (kind === 'hold') io.cursor.hold(a)
@@ -902,7 +996,7 @@ export function makePage(): PageLogic {
           if (s.open === 2 && !crankHome(s.crank.b)) {
             s.crank.b = skipHome(s.crank.b, s.crank.w, dt)
             s.endT = 0
-          } else s.phase = 'closing'
+          } else closeRow(io)
         }
       }
       if (s.slide >= 0) {
@@ -930,11 +1024,11 @@ export function makePage(): PageLogic {
         s.rowT += dt
         const forced = s.phase === 'ready' && s.rowT >= LIMIT
         const active = s.phase === 'ready' || s.phase === 'ending' || s.phase === 'closing'
-        if (s.phase === 'opening' && s.spring[i]! >= 0.9) {
-          s.lift = Math.min(1, s.lift + dt / 0.25)
-          if (s.lift >= 1) {
+        if (s.phase === 'opening') {
+          s.lift = seg(s.rowT, ENTER.from, ENTER.long[i]!)
+          if (s.rowT >= ENTER.long[i]! - dt / 2) {
             s.phase = 'ready'
-            if (i === 2) staged(io, 2).emit('volume-sign', sign.cx, sign.cy, false)
+            s.lift = 1
           }
         }
         let over = false
@@ -949,10 +1043,12 @@ export function makePage(): PageLogic {
           s.endT = 0
         } else if (s.phase === 'ending') {
           s.endT += dt
-          if (s.endT >= 0.4) s.phase = 'closing'
+          if (s.endT >= ENTER.held) closeRow(io)
         } else if (s.phase === 'closing') {
-          s.lift = Math.max(0, s.lift - dt / 0.25)
-          if (s.lift === 0 && s.spring[i]! <= 0.004) {
+          s.outT += dt
+          s.lift = 1 - seg(s.outT, 0, ENTER.out[i]!)
+          if (s.outT >= ENTER.out[i]! - dt / 2) {
+            s.lift = 0
             s.open = -1
             s.phase = 'closed'
             s.idle = 0
@@ -961,8 +1057,6 @@ export function makePage(): PageLogic {
               s.count = Math.max(s.count, i + 1)
               io.emit('field-done', FX + FW / 2, rowY(i) + FH / 2, false)
             }
-            s.spring[i] = 0
-            s.springV[i] = 0
             s.slot.coins = []
             if (io.cursor.taken && s.crank.stuck <= 0) io.cursor.release()
             if (s.mode === 'live' && (!s.crank.hit || s.crank.peeled)) io.cursor.act('plain')
@@ -972,16 +1066,6 @@ export function makePage(): PageLogic {
       afterCrank(staged(io, 2))
       ground(s.open >= 0 ? staged(io, s.open) : io)
       if (s.mode === 'film') grip(s.open >= 0 ? staged(io, s.open) : io)
-      for (let i = 0; i < 3; i++) {
-        const target = s.open === i && (s.phase === 'opening' || s.phase === 'ready' || s.phase === 'ending' || (s.phase === 'closing' && s.lift > COVER)) ? 1 : 0
-        if (target === 0 && s.spring[i] === 0) continue
-        s.springV[i] = s.springV[i]! + (300 * (target - s.spring[i]!) - 27 * s.springV[i]!) * dt
-        s.spring[i] = s.spring[i]! + s.springV[i]! * dt
-        if (target === 0 && s.spring[i]! < 0.004 && s.open !== i) {
-          s.spring[i] = 0
-          s.springV[i] = 0
-        }
-      }
       s.eased += (s.count - s.eased) * Math.min(1, EASE * dt)
       if (Math.abs(s.count - s.eased) < 1e-3) s.eased = s.count
       if (s.pressed) {
@@ -1075,17 +1159,25 @@ export function makePage(): PageLogic {
     fields: (): FieldProgress => ({ done: s.eased, total: FIELDS }),
     ignoring: () => s.pressed || s.skipping,
     volume: () => (s.crank.set && !s.done[2] ? Math.max(0.1, s.crank.level) : 1),
-    states: () => statesOf({
-      here: s.slide >= 0 ? [s.field - 1, s.field] : [Math.min(s.field, FIELDS - 1)],
-      open: s.spring.findIndex((v) => v > 0.004),
-      panel: s.open >= 0 && s.spring[s.open]! > 0.9,
-      value: [
-        s.done[0] ? 'done' : s.open === 0 || s.dial.digits.length > 0 ? 'typing' : '',
-        s.done[1] ? (s.slot.win ? 'done' : 'missed') : s.birth.typed.length > 0 ? 'typing' : 'ask',
-        s.done[2] ? 'done' : s.crank.set ? 'typing' : ''
-      ],
-      settled: settled()
-    }),
+    states: () => {
+      const i = s.open
+      const plate = ['', '', '']
+      const verdict = (k: number): string => (k === 1 && !s.slot.win ? 'missed' : 'done')
+      if (i >= 0) plate[i] = s.done[i] ? verdict(i) : s.phase === 'opening' ? '' : 'typing'
+      else if (s.slide >= 0) plate[s.field - 1] = verdict(s.field - 1)
+      else if (allDone()) plate[FIELDS - 1] = verdict(FIELDS - 1)
+      else if (s.done[s.field]) plate[s.field] = verdict(s.field)
+      return statesOf({
+        here: i >= 0 ? (s.phase === 'opening' && s.rowT < ENTER.field ? [i] : []) : s.field < FIELDS && !s.done[s.field] ? [s.field] : [],
+        open: i >= 0 && pose().shown ? i : -1,
+        hole: i >= 0 && pose().hole !== null,
+        panel: i >= 0 && (s.phase === 'ready' || s.phase === 'ending') && !s.done[i],
+        plate,
+        value: s.birth.typed.length > 0 ? 'typing' : 'ask',
+        note: i < 0,
+        settled: settled()
+      })
+    },
     sheet(id: string): SheetFrame | null {
       if (id !== 'machines') return null
       return machinesSheet()
@@ -1099,21 +1191,21 @@ export function makePage(): PageLogic {
 
   const risen = (i: number, lift: number): number => smooth(lift) + (i > 0 ? HOUSED * (1 - smooth(lift)) : 0)
 
-  function machine(out: DrawList, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number, dx: number, dy: number, tag: string, fade = 1): void {
+  function machine(out: DrawList, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number, dx: number, dy: number, tag: string, a: Pose = STANDING): void {
     const L = risen(i, lift)
     const z = (v: number): number => mix(TRAY_Z, v, L)
     if (i === 0) {
       const plate = TRAY_Z + dialPlate(dialTop(L))
       for (let k = 1; k <= 10; k++) {
-        const h = holePlace(k, dialShown(m.dial))
+        const h = holePlace(k, dialShown(m.dial) + a.spin)
         out.push({ id: `${tag}dial-hole-${k}`, part: 'dial', kind: 'disc', x: h.x - DIAL.hole + dx, y: h.y - DIAL.hole + dy, w: DIAL.hole * 2, h: DIAL.hole * 2, z0: plate - 0.5, z1: plate, tone: 'light' })
       }
       const sx = DIAL.cx + (DIAL.ring + 20) * Math.cos(DIAL.stop)
       const sy = DIAL.cy + (DIAL.ring + 20) * Math.sin(DIAL.stop)
       out.push({ id: `${tag}dial-stop`, part: 'dial', kind: 'capsule', x: sx - 20 + dx, y: sy - 5 + dy, w: 40, h: 10, z0: z(TOP + 2), z1: z(TOP + 12), tone: 'dark', rot: DIAL.stop, mechanism: true })
     } else if (i === 1) {
-      const ky = knobY(m.slot.p) + kickOf(m.slot)
-      const pivot = SLOT.pivotY + kickOf(m.slot)
+      const ky = knobY(a.lever ?? m.slot.p) + kickOf(m.slot) + a.jolt
+      const pivot = SLOT.pivotY + kickOf(m.slot) + a.jolt
       out.push({ id: `${tag}slot-mount`, part: 'slot', kind: 'box', x: SLOT.x + SLOT.w - 2 + dx, y: pivot - 10 + dy, w: 50, h: 20, z0: z(0), z1: z(TOP), tone: 'metal', r: 4 })
       out.push({ id: `${tag}slot-arm`, part: 'slot', kind: 'capsule', x: SLOT.leverX - 6 + dx, y: Math.min(ky, pivot) + dy, w: 12, h: Math.max(1, Math.abs(pivot - ky)), z0: z(TOP), z1: z(TOP + 12), tone: 'raised', v: [ky <= pivot ? 1 : -1], mechanism: true })
       for (let r = 0; r < 3; r++) {
@@ -1127,24 +1219,23 @@ export function makePage(): PageLogic {
           out.push({ id: `${tag}${reelId(r, legend)}`, part: 'slot', kind: 'text', x: SLOT.reelX(r) + dx, y: b.y + off + dy, w: SLOT.reelW, h: b.h, z0: z(TOP + 14), z1: z(TOP + 14), tone: 'ink', words: `data:step2.${SLOT.names[r]}.${legend}`, type: reelType(r) })
         }
       }
-      const shut = trayY(1) + SH(1) * clamp(s.spring[1]!, 0, 1) - COIN.r - COIN.wall / 2
-      for (const coin of m.slot.coins) if (tag !== '' || coin.y <= shut) out.push({ id: `${tag}coin-${coin.n}`, part: 'slot', kind: 'disc', x: coin.x - COIN.r + dx, y: coin.y - COIN.r + dy, w: COIN.r * 2, h: COIN.r * 2, z0: coin.z, z1: coin.z + 4, tone: 'light', rot: coin.rot })
+      for (const coin of m.slot.coins) out.push({ id: `${tag}coin-${coin.n}`, part: 'slot', kind: 'disc', x: coin.x - COIN.r + dx, y: coin.y - COIN.r + dy, w: COIN.r * 2, h: COIN.r * 2, z0: coin.z, z1: coin.z + 4, tone: 'light', rot: coin.rot })
     }
   }
 
-  function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number, edge: number | null = null): void {
+  function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number, edge: number | null = null, a: Pose = STANDING): void {
     const L = risen(i, lift)
     for (const part of parts[i]!) over[part.id] = part.text ? { z0: mix(TRAY_Z, part.top, L), z1: mix(TRAY_Z, part.top, L) } : { z0: mix(TRAY_Z, part.floor, L), z1: mix(TRAY_Z, part.top, L) }
     if (i === 0) {
       const top = dialTop(L)
       const plate = TRAY_Z + dialPlate(top)
-      Object.assign(over['dial-wheel']!, { z1: TRAY_Z + top, v: edge === null ? [dialShown(m.dial)] : [dialShown(m.dial), edge] })
+      Object.assign(over['dial-wheel']!, { z1: TRAY_Z + top, v: edge === null ? [dialShown(m.dial) + a.spin] : [dialShown(m.dial) + a.spin, edge] })
       for (let k = 1; k <= 10; k++) over[`dial-numeral-${DIAL.digit(k)}`] = { z0: plate, z1: plate }
     }
     if (i === 1) {
       const knob = boxOf(layout, 'slot-knob')
-      const p = clamp(m.slot.p, -LEVER.rise, 1 + LEVER.give)
-      const kick = kickOf(m.slot)
+      const p = clamp(a.lever ?? m.slot.p, -LEVER.rise, 1 + LEVER.give)
+      const kick = kickOf(m.slot) + a.jolt
       Object.assign(over['slot-knob']!, { y: knob.y + SLOT.pull * p + kick, ...(Math.abs(p) > 0.002 || Math.abs(kick) > 0.002 ? { moved: true } : {}) })
       if (Math.abs(kick) > 0.002) {
         Object.assign(over['slot-cabinet']!, { y: SLOT.y + kick, moved: true })
@@ -1161,7 +1252,7 @@ export function makePage(): PageLogic {
       }
     }
     if (i === 2) {
-      const b = m.crank.b
+      const b = m.crank.b + a.swing
       const arm = gripPlace(b, CRANK.arm / 2)
       const grip = gripPlace(b)
       const away = Math.abs(wrapPi(b - CRANK.rest)) > 0.002 ? { moved: true } : {}
@@ -1169,6 +1260,14 @@ export function makePage(): PageLogic {
       Object.assign(over['crank-grip']!, { x: grip.x - CRANK.gripW / 2, y: grip.y - CRANK.gripH / 2, rot: b, ...away })
       const lit = Math.floor(m.crank.level * 10 + 1e-6)
       for (let k = 1; k <= 10; k++) Object.assign(over[`meter-${k}`]!, { tone: (k <= lit ? 'accent' : 'glass') as Tone, z1: mix(TRAY_Z, k <= lit ? 18 : 12, L) })
+      if (a.sign <= 0.02) over['crank-sign'] = null
+      else if (a.sign !== 1) {
+        const tall = sign.h * a.sign
+        const cap = sign.h - 2 * (signWords.y - sign.y)
+        Object.assign(over['crank-sign']!, { y: sign.y + sign.h - tall, h: tall, r: Math.min(16, tall / 2) })
+        if (a.sign < 0.5) over['crank-sign-words'] = null
+        else Object.assign(over['crank-sign-words']!, { y: sign.y + sign.h - tall + (tall - cap * a.sign) / 2, type: { ...SIGN_TYPE, px: SIGN_TYPE.px * a.sign } })
+      }
     }
   }
 
@@ -1186,20 +1285,24 @@ export function makePage(): PageLogic {
   function drawPage(out: DrawList): void {
     const states = page.states()
     const over: Record<string, Partial<Shape> | null> = {}
-    const shown = s.spring.findIndex((v) => v > 0.004)
+    const a = pose()
+    const shown = s.open >= 0 && a.shown ? s.open : -1
     const dx = [0, 0, 0]
+    const leaving = s.open >= 0 && s.phase === 'opening' && s.rowT < ENTER.field
+    if (leaving) {
+      dx[s.open] = -SLIDE.far * smooth(s.rowT / ENTER.field) ** 2
+      for (const part of up[s.open]!.ids) over[part.id] = { x: part.x + dx[s.open]! }
+    }
     if (s.slide >= 0) {
       const u = smooth(s.slide / SLIDE.long)
       dx[s.field - 1] = -SLIDE.far * u
       dx[s.field] = SLIDE.far * (1 - u)
-      for (const i of [s.field - 1, s.field]) for (const part of up[i]!.ids) over[part.id] = { x: part.x + dx[i]! }
+      for (const part of up[s.field]!.ids) over[part.id] = { x: part.x + dx[s.field]! }
+      for (const id of plates[s.field - 1]!) over[id] = { x: plateX + dx[s.field - 1]! }
     }
     if (shown >= 0) {
-      const name = ROWS[shown]!
-      const tall = Math.max(4, Math.round(TRAY_H * clamp(s.spring[shown]!, 0, 1)))
-      over[`${name}-tray`] = { h: tall, r: Math.min(TRAY_R, tall / 2) }
-      const edge = trayY(0) + tall / STAGE.times[0]! - DIAL.cy
-      overMachine(over, shown, s, s.lift, s.mode === 'live' && shown === 0 && edge < DIAL_REACH ? edge : null)
+      if (a.hole) over[`${ROWS[shown]}-hole`] = { x: a.hole.x, y: a.hole.y, w: a.hole.w, h: a.hole.h, r: a.hole.r, z0: -a.hole.deep }
+      overMachine(over, shown, s, 1, null, a)
     }
     if (allDone()) {
       over['continue-cap'] = { tone: 'accent', ...(s.pressed ? { z1: heights.button - heights.keyTravel } : {}) }
@@ -1209,27 +1312,34 @@ export function makePage(): PageLogic {
     drawLayout(out, layout, { states, over, runtime: { 'step2.phone': phoneMask(s.dial.digits), 'step2.birth': dateMask(s.birth.typed), 'step2.volume': volumeMask(s.crank.level) } })
     const staged: number[] = []
     if (shown >= 0) for (let j = first; j < out.length; j++) if (inStage.has(out[j]!.id)) staged.push(j)
-    const here = s.slide >= 0 ? [s.field - 1, s.field] : [Math.min(s.field, FIELDS - 1)]
+    const here = s.open >= 0 ? (leaving ? [s.open] : []) : s.field < FIELDS && !s.done[s.field] ? [s.field] : []
     for (const i of here) {
       const y = rowY(i)
-      if (i !== 1) chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28 + dx[i]!, y + (FH - 28) / 2, clamp(s.spring[i]!, 0, 1))
-      const lit = (s.open === i && s.phase !== 'closing') || (i === 1 && s.birth.focus && !s.done[1])
+      if (i !== 1) chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28 + dx[i]!, y + (FH - 28) / 2, 0)
+      const lit = leaving || (i === 1 && s.birth.focus && !s.done[1])
       if (lit) out.push({ id: 'field-focus', part: 'rows', kind: 'box', x: FX + 14 + dx[i]!, y: y + FH - 5, w: FW - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [0.3] })
     }
     const blink = Math.floor(s.time * 2) % 2 === 0
-    const caret = blink && s.slide < 0 && ((s.open === 0 && !s.done[0] && s.phase !== 'closing') || (s.open < 0 && s.field === 1 && s.birth.focus && !s.done[1]))
+    const caret = blink && s.slide < 0 && s.open < 0 && s.field === 1 && s.birth.focus && !s.done[1]
     if (caret) {
-      const wide = (s.field === 1 ? (s.birth.typed.length > 0 ? measure(TYPE.value.font, dateMask(s.birth.typed), TYPE.value.px).width : 0) : measure(TYPE.value.font, phoneMask(s.dial.digits), TYPE.value.px).width) + 4
+      const wide = (s.birth.typed.length > 0 ? measure(TYPE.value.font, dateMask(s.birth.typed), TYPE.value.px).width : 0) + 4
       out.push({ id: 'field-caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.field) + 16, w: 3, h: FH - 32, z0: 0.1, z1: 0.5, tone: 'ink' })
     }
     if (shown >= 0) {
       const from = out.length
-      machine(out, shown, s, s.lift, 0, 0, '', s.phase === 'closing' ? Math.max(0.02, smooth(s.lift)) : 1)
+      machine(out, shown, s, 1, 0, 0, '', a)
       for (let j = from; j < out.length; j++) staged.push(j)
-      let high = 0
-      for (const j of staged) if (out[j]!.kind !== 'text') high = Math.max(high, out[j]!.z1 - TRAY_Z)
-      const sink = (scales[shown]!.k - 1) * Math.min(high, SINK.flat) * clamp((SINK.whole - high) / (SINK.whole - SINK.flat), 0, 1)
-      for (const j of staged) out[j] = grown(out[j]!, shown, sink)
+      const gone = new Set<number>()
+      for (const j of staged) {
+        const down = a.sink + a.drop(out[j]!.id)
+        if (out[j]!.kind === 'text' && down > UNDER) gone.add(j)
+        else out[j] = grown(out[j]!, shown, down)
+      }
+      if (gone.size > 0) {
+        const kept = out.filter((_, j) => !gone.has(j))
+        out.length = 0
+        out.push(...kept)
+      }
     }
   }
 

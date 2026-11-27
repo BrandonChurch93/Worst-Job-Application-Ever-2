@@ -28,20 +28,25 @@ describe('step 2, the layout', () => {
   it('has no problems in any state the page can be in', () => {
     const seen = new Set<string>()
     const settled = [null, ['07', '23', '1991'], ['12', '31', '2015']]
-    const values = [['', 'typing', 'done'], ['ask', 'typing', 'done', 'missed'], ['', 'typing', 'done']]
-    for (const here of [[0], [1], [2], [0, 1], [1, 2]]) {
-      for (const open of [-1, ...here]) {
-        for (const panel of [false, true]) {
-          for (const pick of [0, 1, 2, 3]) {
-            for (const reels of settled) {
-              const states = statesOf({ here, open, panel, value: values.map((v) => v[pick % v.length]!), settled: reels })
-              const key = states.join(',')
-              if (seen.has(key)) continue
-              seen.add(key)
-              expect(layoutProblems(pruned(page.layout, states), size), key).toEqual([])
-            }
-          }
-        }
+    const lines = ['', 'typing', 'done', 'missed']
+    const none = ['', '', '']
+    const check = (view: Parameters<typeof statesOf>[0]): void => {
+      const states = statesOf(view)
+      const key = states.join(',')
+      if (seen.has(key)) return
+      seen.add(key)
+      expect(layoutProblems(pruned(page.layout, states), size), key).toEqual([])
+    }
+    for (const i of [0, 1, 2]) {
+      for (const value of ['ask', 'typing']) {
+        check({ here: [i], open: -1, hole: false, panel: false, plate: none, value, note: true, settled: null })
+        check({ here: [i], open: i, hole: false, panel: false, plate: none, value, note: false, settled: null })
+        if (i > 0) for (const line of lines.slice(2)) check({ here: [i], open: -1, hole: false, panel: false, plate: none.map((_, k) => (k === i - 1 && (line !== 'missed' || k === 1) ? line : '')), value, note: true, settled: null })
+      }
+      for (const line of lines) {
+        if (line === 'missed' && i !== 1) continue
+        check({ here: [], open: -1, hole: false, panel: false, plate: none.map((_, k) => (k === i ? line : '')), value: 'typing', note: true, settled: null })
+        for (const hole of [false, true]) for (const panel of [false, true]) for (const reels of settled) check({ here: [], open: i, hole: hole && i < 2, panel, plate: none.map((_, k) => (k === i ? line : '')), value: 'typing', note: false, settled: reels })
       }
     }
     expect(seen.size).toBeGreaterThan(40)

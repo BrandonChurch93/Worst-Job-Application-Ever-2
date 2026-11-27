@@ -79,7 +79,41 @@ const TEMPER = { safe: 12.74, dust: 12.78, fume: 13.3, red: 13.5, march: 13.52, 
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
 // Flat, it drags itself to the button and stops short of it. Half way it heaves and falls flat again. There it peels up and fills out, standing still, draws back, and throws itself at the button.
 const RISE = { heave: 18.45, heaved: 2.35, there: 19.6, flop: 19.73, life: 0.6, back: 20.33, coiled: 20.385, on: 20.41 }
-export const PEEL_AT = RISE.flop + RISE.life * 0.5
+// The film's clock against the script's. The script's times are those of its acting; the film gives each machine the time to come out of the page, and the crank the time of the narrator's line. Each entry: from this time of the script to that one (the same time twice is a wait), the film takes this much longer.
+const LONGER: [number, number, number][] = [
+  [T.phone + 0.26, T.phone + 0.26, 0.43],
+  [PULL.leave - 0.01, PULL.leave - 0.01, 0.39],
+  [TEMPER.stamp - 0.02, TEMPER.stamp - 0.02, 0.1],
+  [T.volume + 0.2, T.volume + 0.2, 0.45]
+]
+const knots: [number, number][] = [[0, 0]]
+{
+  let more = 0
+  for (const [a, b, extra] of LONGER) {
+    knots.push([a, a + more])
+    more += extra
+    knots.push([b, b + more])
+  }
+  knots.push([1000, 1000 + more])
+}
+// The film's time of a time of the script: after a wait, where the two fall together.
+export function filmAt(at: number): number {
+  let j = 0
+  for (let k = 0; k < knots.length - 1; k++) if (knots[k]![0] <= at) j = k
+  const [a0, t0] = knots[j]!
+  const [a1, t1] = knots[j + 1]!
+  return t0 + ((at - a0) * (t1 - t0)) / (a1 - a0)
+}
+// The script's time of a time of the film: through a wait it stands.
+export function scriptAt(time: number): number {
+  let j = 0
+  for (let k = 0; k < knots.length - 1; k++) if (knots[k]![1] <= time) j = k
+  const [a0, t0] = knots[j]!
+  const [a1, t1] = knots[j + 1]!
+  return a1 === a0 ? a0 : a0 + ((time - t0) * (a1 - a0)) / (t1 - t0)
+}
+export const PEEL_AT = filmAt(RISE.flop + RISE.life * 0.5)
+export const LEVER_AT = filmAt(FILM.lever)
 export const TOSS = { at: 0.05, air: 0.28, skid: 0.1 }
 const THROWN = { see: T.runaway + TOSS.at, off: T.runaway + TOSS.at + 0.12, look: T.runaway + TOSS.at + TOSS.air + TOSS.skid + 0.02, tall: 0.37, snap: 0.59, back: T.lean - 0.08, turn: -0.9, off2: 0.45, again: -1.15, square: -2.3 }
 const idle: P = { x: 1575, y: 392 }
@@ -162,7 +196,7 @@ const presses: [number, number][] = [
 ]
 
 export function pointerAt(time: number): Pointer {
-  const t = Math.max(0, time)
+  const t = scriptAt(Math.max(0, time))
   let seg = path[path.length - 1]!
   for (const s of path) {
     if (t < s.to) {
@@ -186,7 +220,7 @@ const acts: [number | Mark, Acting][] = [
 export function actingAt(time: number, marks: Marks = {}): Acting {
   let out: Acting = 'plain'
   for (const [at, a] of acts) {
-    const from = typeof at === 'number' ? at : marks[at]
+    const from = typeof at === 'number' ? filmAt(at) : marks[at]
     if (from !== undefined && time >= from) out = a
   }
   return out
