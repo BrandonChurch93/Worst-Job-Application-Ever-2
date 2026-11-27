@@ -8,8 +8,9 @@ import { SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
-import { buildLayout, COIN, CRANK, DIAL, DIAL_BODY, dialPlate, dialTop, FH, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
-import { actingAt, AWAY, LANDING, PEEL_AT, TOSS, pointerAt, poses, reactions, type Mark, type Marks } from './script'
+import type { FieldProgress } from '../../stage/types'
+import { buildLayout, COIN, CRANK, DIAL, DIAL_BODY, dialPlate, dialTop, FH, FIELDS, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SIGN_Z, SLIDE, SLOT, statesOf, STOP_Z, stopId, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
+import { actingAt, AWAY, FILM, LANDING, PEEL_AT, TOSS, pointerAt, poses, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
 const LIMIT = config.live.skipLinkAfterSeconds
@@ -25,14 +26,24 @@ const SWING = { settle: 1.5 }
 const heights = config.scale.heights
 const G = 2400
 const TAU = Math.PI * 2
-const STOPS = [0.8, 1.15, 1.5]
-const REEL = { gather: 0.3, jolt: 0.2, die: 13, ring: 24, read: 0.688 }
+const REEL = { gather: 0.3, die: 13, ring: 24, read: 0.588, auto: 0.35, still: 0.5 }
+// The date is typed on the keyboard. A second press on the field, or this long without a key, and the field types the rest itself, a digit every `every` seconds. A full date stands for `open` seconds before the field turns.
+const TYPED = { digits: 8, after: 4, every: 0.07, open: 0.14, first: 0.12 }
+// A stop button stays down this long. A date that was missed pays one coin, and its stage is over this long after it.
+const STOP = { down: 0.16, dip: 9, reach: 6 }
+const MISS = { coins: 1, long: 0.8, fall: 150 }
+// The level of the volume belongs to the crank's turning: a tenth a turn in the visitor's hand, and the rest of the way over `turns` turns once the crank runs by itself, which it does no faster than `most` rad a second so that each drawn frame shows it further round.
+const RUN = { turns: 7, most: 21, hand: 0.1 }
 const SPIT = { first: 3, air: [0.15, 0.19], aim: 0.3, far: 7, die: 14, ring: 50, every: 0.035, long: 0.9 }
 const kickOf = (slot: SlotState): number => (slot.phase === 'pay' ? -SPIT.far * Math.exp(-SPIT.die * slot.t) * Math.sin(Math.min(Math.PI * 3, SPIT.ring * slot.t)) : 0)
 const LEVER = { rise: 0.1, give: 0.045, drive: 5.5, hold: 0.42, spring: 230, damp: 12, over: 0.075 }
 const REEL_PITCH = 62
 const REEL_SEEN = 58
 const COINS = 14
+// How fast the rail's fill glides to the count of fields that are done.
+const EASE = 7
+// The hint presses a stop while the visitor's own legend is this near the window's middle, in legends.
+const HIT = 0.2
 // The dial runs home: it gathers speed, runs, and slows into its stop.
 const RETURN = { most: 42, gather: 300, least: 4, slow: 30 }
 // The crank draws back before it takes off.
@@ -48,7 +59,8 @@ const BLOW = { load: 0.2, kick: 1170, out: 0.15, drag: 9, stuck: 0.45, dip: 0.07
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean; falls: boolean; row: number; hops: number }
 interface DialState { a: number; k: number; phase: 'rest' | 'drag' | 'return' | 'whip' | 'snag' | 'fly' | 'skid' | 'over'; home: number; digits: string; w: number; left: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; t: number; r: number; turn: number; from: number; air: number }
-interface SlotState { p: number; pv: number; grab: boolean; phase: 'rest' | 'spin' | 'read' | 'pay' | 'over'; t: number; from: number[]; to: number[]; latch: number; coins: Coin[]; spawned: number; cool: number; rang: boolean }
+interface SlotState { p: number; pv: number; grab: boolean; phase: 'rest' | 'spin' | 'read' | 'pay' | 'over'; t: number; from: number[]; to: number[]; latch: number; coins: Coin[]; spawned: number; cool: number; rang: boolean; own: number[]; stopped: number[]; at: number[]; down: number[]; win: boolean; wait: number }
+interface BirthState { focus: boolean; typed: string; t: number; fill: string }
 interface CrankState { b: number; set: boolean; grab: boolean; total: number; turns: number; phase: 'rest' | 'runaway' | 'full' | 'over'; w: number; level: number; hit: boolean; hitAt: number; peeled: boolean; t: number; stuck: number; sx: number; sy: number; kx: number; ky: number; o: number; toss: number; ox: number; oy: number; oz: number }
 interface State {
   mode: 'live' | 'film'
@@ -62,6 +74,12 @@ interface State {
   endT: number
   idle: number
   done: boolean[]
+  field: number
+  count: number
+  eased: number
+  turn: number
+  slide: number
+  birth: BirthState
   px: number
   py: number
   dial: DialState
@@ -89,15 +107,25 @@ const mod = (a: number, m: number): number => ((a % m) + m) % m
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t
 
 const freshDial = (): DialState => ({ a: 0, k: 0, phase: 'rest', home: -1, digits: '', w: 0, left: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, t: 0, r: 0, turn: 0, from: 0, air: 0 })
-const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t: 0, from: [0, 0, 0], to: [0, 0, 0], latch: 0, coins: [], spawned: 0, cool: 0, rang: false })
+const freshSlot = (): SlotState => ({ p: 0, pv: 0, grab: false, phase: 'rest', t: 0, from: [0, 0, 0], to: [0, 0, 0], latch: 0, coins: [], spawned: 0, cool: 0, rang: false, own: [0, 0, 0], stopped: [-1, -1, -1], at: [0, 0, 0], down: [0, 0, 0], win: false, wait: 0 })
+const freshBirth = (): BirthState => ({ focus: false, typed: '', t: 0, fill: '' })
 const freshCrank = (): CrankState => ({ b: CRANK.rest, set: false, grab: false, total: 0, turns: 0, phase: 'rest', w: 0, level: 0, hit: false, hitAt: -1, peeled: false, t: 0, stuck: 0, sx: 0, sy: 0, kx: 0, ky: 0, o: 0, toss: -1, ox: 0, oy: 0, oz: 0 })
 const fresh = (mode: 'live' | 'film'): State => ({
-  mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], px: 0, py: 0,
+  mode, time: 0, open: -1, phase: 'closed', spring: [0, 0, 0], springV: [0, 0, 0], lift: 0, rowT: 0, endT: 0, idle: 0, done: [false, false, false], field: 0, count: 0, eased: 0, turn: 0, slide: -1, birth: freshBirth(), px: 0, py: 0,
   dial: freshDial(), slot: freshSlot(), crank: freshCrank(), pressed: false, hold: 0, finished: false, skipping: false, gripped: false, reach: { x: 0, y: 0, z: 0, t: 1 }, swing: null, climb: 0, marks: {}, rng: []
 })
 
 export const volumeMask = (level: number): string => String(Math.round(clamp(level, 0, 1) * 100)) + words('data:step2.volume.percent')
 export const phoneMask = (digits: string): string => words('data:step2.phone.prefix') + digits
+export const dateMask = (digits: string): string => digits.slice(0, 2) + (digits.length >= 2 ? words('data:step2.birth.gap') : '') + digits.slice(2, 4) + (digits.length >= 4 ? words('data:step2.birth.gap') : '') + digits.slice(4)
+const two = (n: number): string => String(n).padStart(2, '0')
+// A typed date as the reels can show it: each part held to its strip.
+export function ownDate(digits: string): { typed: string; own: number[] } {
+  const years = SLOT.strips[2]!
+  const part = (from: number, to: number, lo: number, hi: number): number => clamp(Number(digits.slice(from, to)) || lo, lo, hi)
+  const legends = [two(part(0, 2, 1, 12)), two(part(2, 4, 1, 31)), String(part(4, 8, Number(years[0]), Number(years[years.length - 1])))]
+  return { typed: legends.join(''), own: legends.map((legend, r) => SLOT.strips[r]!.indexOf(legend)) }
+}
 
 const holePlace = (k: number, a: number): { x: number; y: number } => ({ x: DIAL.cx + DIAL.ring * Math.cos(DIAL.holeAngle(k) + a), y: DIAL.cy + DIAL.ring * Math.sin(DIAL.holeAngle(k) + a) })
 const gripPlace = (b: number, r: number = CRANK.arm): { x: number; y: number } => ({ x: CRANK.hx + r * Math.cos(b), y: CRANK.hy + r * Math.sin(b) })
@@ -118,8 +146,8 @@ const HOME_LOW = -0.5
 export const CRANK_HOME = ((): { from: number; to: number } => {
   let from = CRANK.rest
   let to = CRANK.rest
-  while (crankInTray(from - 0.001)) from -= 0.001
-  while (crankInTray(to + 0.001)) to += 0.001
+  while (from > CRANK.rest - Math.PI && crankInTray(from - 0.001)) from -= 0.001
+  while (to < CRANK.rest + Math.PI && crankInTray(to + 0.001)) to += 0.001
   return { from: from + HOME_PAD, to: Math.min(to - HOME_PAD, HOME_LOW) }
 })()
 // The limits of the crank's blow, as its test in `stepCrank` holds them: the arm strikes a cursor only above this speed, under this height and within this reach of the hub. Outside them the arm's angle decides nothing but the picture, and only there is a coasting crank steered.
@@ -148,22 +176,24 @@ function skipHome(b: number, w: number, dt: number): number {
   return b + Math.min(left, (SKIP_HOME.least + Math.max(0, w - SKIP_HOME.least) * Math.min(1, left / SKIP_HOME.soft)) * dt)
 }
 const knobY = (p: number): number => SLOT.knobY + SLOT.pull * clamp(p, -LEVER.rise, 1 + LEVER.give)
-const reelPos = (slot: SlotState, r: number): number => {
-  if (slot.phase === 'rest') return slot.to[r]!
-  if (slot.phase !== 'spin') return slot.to[r]!
-  const stop = STOPS[r]!
-  const a = REEL.gather / stop
-  const u = slot.t / stop
-  if (slot.t < stop) return mix(slot.from[r]!, slot.to[r]!, u < a ? (u * u) / (a * (2 - a)) : (2 * u - a) / (2 - a))
-  const late = slot.t - stop
-  return slot.to[r]! + REEL.jolt * Math.exp(-REEL.die * late) * Math.sin(REEL.ring * late)
+// Where a reel stands, in legends of its strip. It rests on a whole legend, gathers, turns at its one speed, and where it is stopped it rings on the legend nearest the window's middle.
+export const reelPos = (slot: SlotState, r: number): number => {
+  const rest = Math.floor(slot.from[r]! + 1e-9)
+  if (slot.phase === 'rest') return rest
+  if (slot.stopped[r]! >= 0) return slot.to[r]! + (slot.at[r]! - slot.to[r]!) * Math.exp(-REEL.die * slot.stopped[r]!) * Math.cos(REEL.ring * slot.stopped[r]!)
+  const track = (t: number): number => slot.from[r]! + SLOT.speed[r]! * t
+  if (slot.t >= REEL.gather) return track(slot.t)
+  const u = slot.t / REEL.gather
+  return rest + (track(REEL.gather) - rest) * u * u
 }
+// The window of a reel in milliseconds: how long one legend is the nearest to the window's middle.
+export const reelWindow = (r: number): number => 1000 / SLOT.speed[r]!
 
-interface RowIds { ids: { id: string; y: number }[] }
+interface RowIds { ids: { id: string; x: number }[] }
 
 function rowParts(tree: LayoutNode, prefix: string): RowIds {
-  const ids: { id: string; y: number }[] = []
-  for (const top of [`${prefix}-label`, `${prefix}-helper`, `${prefix}-pocket`]) walk(find(tree, top), (n) => void ids.push({ id: n.id, y: n.box[1]! }))
+  const ids: { id: string; x: number }[] = []
+  for (const top of [`${prefix}-label`, `${prefix}-helper`, `${prefix}-pocket`]) walk(find(tree, top), (n) => void ids.push({ id: n.id, x: n.box[0]! }))
   return { ids }
 }
 
@@ -193,18 +223,21 @@ export function makePage(): PageLogic {
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: (b as { event?: string | null }).event ?? null }))
   const go = boxOf(layout, 'continue-cap')
   const up = ROWS.map((name) => rowParts(layout, name))
-  const low = ROWS.map((name, i) => (i > 0 ? rowParts(layout, `${name}-low`) : null))
+  const stops = [0, 1, 2].map((r) => boxOf(layout, stopId(r)))
+  const sign = boxOf(layout, 'crank-sign')
   const parts = ROWS.map((name) => machineParts(layout, `${name}-tray`))
   const legendBox = SLOT.strips.map((strip, r) => boxOf(layout, reelId(r, strip[0]!)))
   let s = fresh('live')
   let rng: Random = stream('step2', config.seed)
   let seed: number = config.seed
 
-  const allDone = (): boolean => s.done.every(Boolean)
+  const allDone = (): boolean => s.field >= FIELDS
+  const inStop = (p: { x: number; y: number }, r: number): boolean => p.x >= stops[r]!.x - STOP.reach && p.x <= stops[r]!.x + stops[r]!.w + STOP.reach && p.y >= stops[r]!.y - STOP.reach && p.y <= stops[r]!.y + stops[r]!.h + STOP.reach
   const fieldAt = (i: number): { x: number; y: number } => ({ x: FX + FW / 2, y: rowY(i) + FH / 2 })
   const inField = (p: { x: number; y: number }, i: number): boolean => p.x >= FX && p.x <= FX + FW && p.y >= rowY(i) && p.y <= rowY(i) + FH
   const overGo = (p: { x: number; y: number }): boolean => p.x >= go.x && p.x <= go.x + go.w && p.y >= go.y && p.y <= go.y + go.h
-  const settled = (): string[] | null => (s.slot.phase === 'spin' ? null : SLOT.strips.map((strip, r) => strip[mod(Math.round(s.slot.to[r]!), strip.length)]!))
+  const still = (sl: SlotState): boolean => sl.phase === 'rest' || sl.stopped.every((v) => v >= REEL.still)
+  const settled = (): string[] | null => (still(s.slot) ? SLOT.strips.map((strip, r) => strip[mod(Math.round(reelPos(s.slot, r)), strip.length)]!) : null)
 
   function openRow(i: number, io: StepIo): void {
     s.open = i
@@ -214,6 +247,13 @@ export function makePage(): PageLogic {
     s.lift = 0
     s.idle = 0
     if (i === 2) s.crank.set = true
+    if (i === 1) {
+      const sl = s.slot
+      const date = ownDate(s.birth.typed)
+      s.birth.typed = date.typed
+      sl.own = date.own
+      for (let r = 0; r < 3; r++) sl.from[r] = sl.own[r]! - (s.mode === 'film' ? SLOT.speed[r]! * (FILM.stops[r]! - FILM.lever) : SLOT.lead[r]!)
+    }
     io.emit('row-open', FX + FW / 2, rowY(i) + FH / 2, false)
   }
 
@@ -355,18 +395,61 @@ export function makePage(): PageLogic {
 
   function pull(io: StepIo): void {
     const sl = s.slot
-    sl.grab = false
     sl.pv = LEVER.drive
     sl.latch = LEVER.hold
     sl.phase = 'spin'
     sl.t = 0
     io.emit('lever-pull', SLOT.leverX, knobY(1), false)
     io.emit('reels-spin', SLOT.x + SLOT.w / 2, SLOT.y + SLOT.h / 2, false)
-    for (let r = 0; r < 3; r++) {
-      const strip = SLOT.strips[r]!
-      const want = s.mode === 'film' ? strip.indexOf(SLOT.film[r]!) : rng.int(strip.length)
-      const least = Math.ceil(sl.from[r]! + 13 * STOPS[r]!)
-      sl.to[r] = least + mod(want - least, strip.length)
+  }
+
+  function stopReel(io: StepIo, r: number): void {
+    const sl = s.slot
+    const at = reelPos(sl, r)
+    sl.at[r] = at
+    sl.to[r] = Math.round(at)
+    sl.stopped[r] = 0
+    sl.down[r] = STOP.down
+    s.rowT = 0
+    io.emit('reel-stop', SLOT.reelX(r) + SLOT.reelW / 2, SLOT.reelY + SLOT.reelH / 2, false)
+    if (sl.stopped.every((v) => v >= 0)) {
+      sl.phase = 'read'
+      sl.t = 0
+      sl.win = [0, 1, 2].every((k) => mod(sl.to[k]!, SLOT.strips[k]!.length) === sl.own[k])
+      s.done[1] = true
+    }
+  }
+
+  function stepBirth(io: StepIo): void {
+    const b = s.birth
+    const add = (digit: string): void => {
+      b.typed += digit
+      b.t = 0
+      io.emit('date-key', FX + FW / 2, rowY(1) + FH / 2, false)
+    }
+    if (!b.focus) {
+      if ((io.pressed && inField(io.pointer, 1)) || s.idle >= LIMIT) {
+        b.focus = true
+        b.t = 0
+      }
+      return
+    }
+    b.t += dt
+    const full = b.typed.length >= TYPED.digits
+    const key = io.pointer.key
+    if (full) {
+      if (b.t >= TYPED.open) openRow(1, io)
+    } else if (s.mode === 'film') {
+      if (b.t >= (b.typed.length === 0 ? TYPED.first : TYPED.every)) add(SLOT.film.join('')[b.typed.length]!)
+    } else if (b.fill !== '') {
+      if (b.t >= TYPED.every) add(b.fill[b.typed.length]!)
+    } else if (key !== undefined && key >= '0' && key <= '9' && key.length === 1) add(key)
+    else if (key === 'Backspace') {
+      b.typed = b.typed.slice(0, -1)
+      b.t = 0
+    } else if ((io.pressed && inField(io.pointer, 1)) || b.t >= TYPED.after) {
+      b.fill = two(1 + rng.int(12)) + two(1 + rng.int(28)) + String(1960 + rng.int(45))
+      b.t = 0
     }
   }
 
@@ -380,7 +463,7 @@ export function makePage(): PageLogic {
     const c = io.cursor
     const left = FX + COIN.wall + COIN.r
     const right = FX + FW - COIN.wall - COIN.r
-    const roof = trayY(1) + COIN.wall + COIN.r
+    const roof = SLOT.payY + COIN.r
     const lid = trayY(1) + COIN.r + 2
     const ledge = trayY(1) + TRAY_H - COIN.wall - COIN.r
     const floor = TRAY_Z + COIN.clear
@@ -447,16 +530,15 @@ export function makePage(): PageLogic {
     const sl = s.slot
     const p = io.pointer
     if (sl.phase === 'rest') {
-      if (forced) pull(io)
-      else if (!sl.grab && io.pressed && Math.hypot(p.x - SLOT.leverX, p.y - knobY(sl.p)) <= SLOT.knob / 2 + 8) sl.grab = true
-      else if (sl.grab) {
-        if (!p.down) sl.grab = false
-        else {
-          sl.p = clamp((p.y - SLOT.knobY) / SLOT.pull, -LEVER.rise, 1)
-          sl.pv = 0
-          if (sl.p >= 0.85) pull(io)
-        }
-      }
+      sl.wait += dt
+      if (forced || (s.mode === 'film' ? io.time >= FILM.lever - dt / 2 : sl.wait >= REEL.auto)) pull(io)
+    } else if (sl.phase === 'spin') {
+      sl.t += dt
+      for (let r = 0; r < 3; r++) if (sl.stopped[r]! < 0 && (forced || (io.pressed && inStop(p, r)))) stopReel(io, r)
+    }
+    for (let r = 0; r < 3; r++) {
+      if (sl.stopped[r]! >= 0) sl.stopped[r] = sl.stopped[r]! + dt
+      sl.down[r] = Math.max(0, sl.down[r]! - dt)
     }
     if (!sl.grab && sl.latch > 0) {
       if (sl.p < 1 + LEVER.give) sl.p = Math.min(1 + LEVER.give, sl.p + sl.pv * dt)
@@ -476,20 +558,24 @@ export function makePage(): PageLogic {
         sl.pv = 0
       }
     }
-    if (sl.phase === 'spin') {
-      sl.t += dt
-      if (sl.t >= STOPS[2]! + 0.25) {
-        sl.phase = 'read'
-        sl.t = 0
-        s.done[1] = true
-        for (let r = 0; r < 3; r++) sl.from[r] = sl.to[r]!
-      }
-    } else if (sl.phase === 'read') {
+    if (sl.phase === 'read') {
       sl.t += dt
       if (sl.t >= REEL.read) {
         sl.phase = 'pay'
         sl.t = 0
-        if (s.mode === 'live') io.cursor.act('shocked')
+        io.emit(sl.win ? 'date-hit' : 'date-miss', SLOT.x + SLOT.w / 2, SLOT.y + SLOT.h / 2, false)
+        if (!sl.win) sl.rang = true
+        if (s.mode === 'live') io.cursor.act(sl.win ? 'shocked' : 'nervous')
+      }
+    } else if (sl.phase === 'pay' && !sl.win) {
+      sl.t += dt
+      if (sl.spawned < MISS.coins) {
+        sl.coins.push({ n: sl.spawned, x: SLOT.payX + SLOT.payW / 2, y: SLOT.payY + SLOT.payH / 2, z: 6, vx: rng.range(-30, 30), vy: MISS.fall, vz: 180, rot: 0, hit: true, still: false, falls: true, row: 0, hops: 0 })
+        sl.spawned++
+      }
+      if (sl.t >= MISS.long) {
+        sl.phase = 'over'
+        if (s.mode === 'live') io.cursor.act('plain')
       }
     } else if (sl.phase === 'pay') {
       sl.t += dt
@@ -535,7 +621,6 @@ export function makePage(): PageLogic {
     const turned = (): void => {
       while (c.total >= (c.turns + 1) * TAU) {
         c.turns++
-        c.level = Math.min(1, 0.1 * c.turns)
         if (c.phase === 'rest') {
           const at = gripPlace(c.b)
           io.emit('crank-turn', at.x, at.y, false)
@@ -553,6 +638,7 @@ export function makePage(): PageLogic {
           if (d > 0) {
             c.b += d
             c.total += d
+            c.level = Math.min(1, c.level + (RUN.hand * d) / TAU)
             c.w = mix(c.w, d / dt, 0.2)
             turned()
             if (c.turns >= TURNS) runaway(io)
@@ -562,18 +648,20 @@ export function makePage(): PageLogic {
     } else if (c.phase === 'runaway' || c.phase === 'full') {
       c.t += dt
       c.b -= c.o
-      if (c.phase === 'runaway') c.w = Math.min(42, c.w + 26 * dt)
+      if (c.phase === 'runaway') c.w = Math.min(RUN.most, c.w + 26 * dt)
       else c.w *= 1 - COAST.loss * dt
       const hand = io.cursor
       const safe = c.hit || hand.taken || hand.z >= BLOW_REACH.high || c.w <= BLOW_REACH.speed || Math.hypot(hand.x + 10 - CRANK.hx, hand.y + 20 - CRANK.hy) > BLOW_REACH.far
       c.b += c.phase === 'full' && s.mode === 'live' && safe ? c.w * dt * homeward(c.b, c.w) : c.w * dt
       c.total += c.w * dt
+      if (c.phase === 'runaway') c.level = Math.min(1, c.level + ((1 - RUN.hand * TURNS) * c.w * dt) / (RUN.turns * TAU))
       c.o = c.phase === 'runaway' ? -WIND.back * (c.t < WIND.long ? Math.pow(smooth(c.t / WIND.long), 1.5) : 1 - smooth((c.t - WIND.long) / WIND.out)) : 0
       c.b += c.o
       turned()
       if (c.phase === 'runaway' && c.level >= 1) {
         c.phase = 'full'
         s.done[2] = true
+        io.emit('crank-full', CRANK.segX + 5 * (CRANK.segW + CRANK.segGap), CRANK.segY + CRANK.segH / 2, false)
       }
       if (c.phase === 'full' && c.w < COAST.least) {
         c.phase = 'over'
@@ -662,11 +750,13 @@ export function makePage(): PageLogic {
       if (x >= SLOT.x + 10 && x <= SLOT.x + SLOT.w - 10 && y >= SLOT.y + 14 && y <= SLOT.y + SLOT.h - 14) put(TOP + 14)
       if (Math.abs(x - SLOT.leverX) <= 6 && y >= Math.min(ky, SLOT.pivotY) && y <= Math.max(ky, SLOT.pivotY)) put(TOP + 12)
       if (Math.hypot(x - SLOT.leverX, y - ky) <= SLOT.knob / 2) put(TOP + 40)
+      for (let r = 0; r < 3; r++) if (x >= stops[r]!.x && x <= stops[r]!.x + stops[r]!.w && y >= stops[r]!.y && y <= stops[r]!.y + stops[r]!.h) put(STOP_Z - (s.slot.stopped[r]! >= 0 ? STOP.dip : 0))
     } else {
       const c = s.crank
       const far = Math.hypot(x - CRANK.hx, y - CRANK.hy)
       if (far <= CRANK.base / 2) put(18)
       if (far <= CRANK.hub / 2) put(TOP + 10)
+      if (x >= sign.x && x <= sign.x + sign.w && y >= sign.y && y <= sign.y + sign.h) put(SIGN_Z)
       if (x >= CRANK.segX && x <= CRANK.segX + 10 * CRANK.segW + 9 * CRANK.segGap && y >= CRANK.segY && y <= CRANK.segY + CRANK.segH) put(18)
       if (c.phase === 'rest') {
         const ux = Math.cos(c.b)
@@ -704,7 +794,6 @@ export function makePage(): PageLogic {
     const ready = s.open >= 0 && s.phase === 'ready'
     let at: { x: number; y: number; z: number } | null = null
     if (ready && s.open === 0 && s.dial.phase === 'drag') at = { ...holePlace(s.dial.k, s.dial.a), z: TOP + 3 }
-    if (ready && s.open === 1 && s.slot.grab) at = { x: SLOT.leverX, y: knobY(s.slot.p), z: TOP + 40 }
     if (ready && s.open === 2 && (s.crank.grab || (s.crank.phase === 'runaway' && s.crank.t < WIND.long))) {
       const shown = s.crank.b
       const hold = gripPlace(shown, CRANK.arm + CRANK.hold)
@@ -773,6 +862,11 @@ export function makePage(): PageLogic {
       if (s.skipping && !s.pressed) {
         for (let i = 0; i < 3; i++) s.done[i] = true
         s.crank.level = 1
+        if (s.open < 0) {
+          s.field = FIELDS
+          s.count = FIELDS
+          s.slide = -1
+        }
         if (s.open >= 0 && s.phase !== 'closing') {
           if (io.cursor.taken) io.cursor.release()
           if (s.open === 2 && !crankHome(s.crank.b)) {
@@ -781,14 +875,26 @@ export function makePage(): PageLogic {
           } else s.phase = 'closing'
         }
       }
+      if (s.slide >= 0) {
+        s.slide += dt
+        if (s.slide >= SLIDE.long) s.slide = -1
+      }
       if (s.open < 0) {
         s.idle += dt
-        if (!allDone()) {
-          let pick = -1
-          if (io.pressed) for (let i = 0; i < 3; i++) if (!s.done[i] && inField(io.pointer, i)) pick = i
-          if (pick < 0 && s.idle >= LIMIT) pick = s.done.indexOf(false)
-          if (pick >= 0) openRow(pick, io)
-        } else if (!s.pressed && ((io.pressed && overGo(io.pointer)) || s.idle >= LIMIT || s.skipping)) press(io)
+        const i = s.field
+        if (i < FIELDS && s.done[i]) {
+          s.turn += dt
+          if (i === FIELDS - 1) s.field = FIELDS
+          else if (s.turn >= (s.mode === 'film' ? SLIDE.filmHold : SLIDE.hold)) {
+            s.field = i + 1
+            s.slide = 0
+            s.idle = 0
+            io.emit('field-next', FX + FW / 2, rowY(i + 1) + FH / 2, false)
+          }
+        } else if (i < FIELDS && s.slide < 0) {
+          if (i === 1) stepBirth(io)
+          else if ((io.pressed && inField(io.pointer, i)) || s.idle >= LIMIT) openRow(i, io)
+        } else if (i >= FIELDS && !s.pressed && ((io.pressed && overGo(io.pointer)) || s.idle >= LIMIT || s.skipping)) press(io)
       } else {
         const i = s.open
         s.rowT += dt
@@ -796,7 +902,10 @@ export function makePage(): PageLogic {
         const active = s.phase === 'ready' || s.phase === 'ending' || s.phase === 'closing'
         if (s.phase === 'opening' && s.spring[i]! >= 0.9) {
           s.lift = Math.min(1, s.lift + dt / 0.25)
-          if (s.lift >= 1) s.phase = 'ready'
+          if (s.lift >= 1) {
+            s.phase = 'ready'
+            if (i === 2) io.emit('volume-sign', sign.cx, sign.cy, false)
+          }
         }
         let over = false
         if (active && !s.skipping) {
@@ -816,6 +925,11 @@ export function makePage(): PageLogic {
             s.open = -1
             s.phase = 'closed'
             s.idle = 0
+            s.turn = 0
+            if (s.done[i]) {
+              s.count = Math.max(s.count, i + 1)
+              io.emit('field-done', FX + FW / 2, rowY(i) + FH / 2, false)
+            }
             s.spring[i] = 0
             s.springV[i] = 0
             s.slot.coins = []
@@ -837,6 +951,8 @@ export function makePage(): PageLogic {
           s.springV[i] = 0
         }
       }
+      s.eased += (s.count - s.eased) * Math.min(1, EASE * dt)
+      if (Math.abs(s.count - s.eased) < 1e-3) s.eased = s.count
       if (s.pressed) {
         s.hold += dt
         if (s.hold > 0.25 && !io.cursor.damaged) s.finished = true
@@ -862,7 +978,12 @@ export function makePage(): PageLogic {
       if (s.pressed || s.skipping) return here
       if (s.open < 0) {
         if (allDone()) return { x: go.cx, y: go.cy, down: blink }
-        const at = fieldAt(s.done.indexOf(false))
+        const at = fieldAt(s.field)
+        if (s.done[s.field] || s.slide >= 0) return { x: at.x, y: at.y, down: false }
+        if (s.field === 1 && s.birth.focus) {
+          const next = SLOT.film.join('')[s.birth.typed.length]
+          return { x: at.x, y: at.y, down: false, ...(next !== undefined && s.birth.fill === '' ? { key: next } : {}) }
+        }
         return { x: at.x, y: at.y, down: blink }
       }
       if (s.open === 0) {
@@ -881,10 +1002,14 @@ export function makePage(): PageLogic {
       }
       if (s.open === 1) {
         const sl = s.slot
-        if (s.phase === 'opening') return { x: SLOT.leverX, y: SLOT.knobY, down: false }
-        if (sl.phase === 'rest' && s.phase === 'ready') return { x: SLOT.leverX, y: sl.grab ? Math.min(knobY(1) + 4, Math.max(s.py, knobY(sl.p)) + 12) : knobY(sl.p), down: sl.grab || Math.hypot(s.px - SLOT.leverX, s.py - knobY(sl.p)) <= SLOT.knob / 2 }
+        const r = sl.stopped.findIndex((v) => v < 0)
+        if (r >= 0 && s.phase !== 'ending' && s.phase !== 'closing') {
+          const len = SLOT.strips[r]!.length
+          const off = mod(reelPos(sl, r) - sl.own[r]! + len / 2, len) - len / 2
+          return { x: stops[r]!.cx, y: stops[r]!.cy, down: sl.phase === 'spin' && sl.t >= REEL.gather && Math.abs(off) <= HIT && Math.hypot(s.px - stops[r]!.cx, s.py - stops[r]!.cy) <= 20 }
+        }
         const out: Hint = { x: SLOT.leverX + 6, y: SLOT.y + SLOT.h + 6, down: false }
-        if (sl.phase === 'read' || sl.phase === 'pay') out.dodge = { x: 420, y: trayY(1) + 60 }
+        if (sl.win && (sl.phase === 'read' || sl.phase === 'pay')) out.dodge = { x: 420, y: trayY(1) + 60 }
         return out
       }
       const c = s.crank
@@ -904,11 +1029,24 @@ export function makePage(): PageLogic {
     gag() {
       if (s.open >= 0) return gags[s.open + 1]!.id
       if (allDone()) return gags[4]!.id
+      if (s.field === 1 && s.birth.focus) return gags[2]!.id
       return s.done.some(Boolean) ? null : gags[0]!.id
     },
+    typing: () => s.open < 0 && s.field === 1 && s.birth.focus && !s.done[1] && !s.pressed && !s.skipping,
+    fields: (): FieldProgress => ({ done: s.eased, total: FIELDS }),
     ignoring: () => s.pressed || s.skipping,
     volume: () => (s.crank.set && !s.done[2] ? Math.max(0.1, s.crank.level) : 1),
-    states: () => statesOf({ open: s.spring.findIndex((v) => v > 0.004), panel: s.open >= 0 && s.spring[s.open]! > 0.9, done: s.done, typing: [s.open === 0 || s.dial.digits.length > 0, false, s.crank.set && !s.done[2]], settled: settled() }),
+    states: () => statesOf({
+      here: s.slide >= 0 ? [s.field - 1, s.field] : [Math.min(s.field, FIELDS - 1)],
+      open: s.spring.findIndex((v) => v > 0.004),
+      panel: s.open >= 0 && s.spring[s.open]! > 0.9,
+      value: [
+        s.done[0] ? 'done' : s.open === 0 || s.dial.digits.length > 0 ? 'typing' : '',
+        s.done[1] ? (s.slot.win ? 'done' : 'missed') : s.birth.typed.length > 0 ? 'typing' : 'ask',
+        s.done[2] ? 'done' : s.crank.set ? 'typing' : ''
+      ],
+      settled: settled()
+    }),
     sheet(id: string): SheetFrame | null {
       if (id !== 'machines') return null
       return machinesSheet()
@@ -943,7 +1081,7 @@ export function makePage(): PageLogic {
         const strip = SLOT.strips[r]!
         const pos = reelPos(m.slot, r)
         const b = legendBox[r]!
-        for (const n of m.slot.phase === 'spin' ? [Math.floor(pos), Math.floor(pos) + 1] : []) {
+        for (const n of still(m.slot) ? [] : [Math.floor(pos), Math.floor(pos) + 1]) {
           const off = (n - pos) * REEL_PITCH
           if (Math.abs(off) > REEL_SEEN) continue
           const legend = strip[mod(n, strip.length)]!
@@ -974,7 +1112,14 @@ export function makePage(): PageLogic {
         for (let r = 0; r < 3; r++) Object.assign(over[`slot-reel-${r}`]!, { y: boxOf(layout, `slot-reel-${r}`).y + kick, moved: true })
         for (const part of parts[1]!) if (part.text && part.id !== 'slot-prompt' && over[part.id]) Object.assign(over[part.id]!, { y: boxOf(layout, part.id).y + kick })
       }
-      for (let r = 0; r < 3; r++) Object.assign(over[`slot-reel-${r}`]!, { v: [reelPos(m.slot, r)] })
+      for (let r = 0; r < 3; r++) {
+        Object.assign(over[`slot-reel-${r}`]!, { v: [reelPos(m.slot, r)] })
+        const dip = m.slot.down[r]! > 0 ? STOP.dip : m.slot.stopped[r]! >= 0 ? STOP.dip / 2 : 0
+        if (dip > 0 && over[stopId(r)]) {
+          Object.assign(over[stopId(r)]!, { z1: mix(TRAY_Z, STOP_Z - dip, L), tone: 'metal' as Tone })
+          over[`${stopId(r)}-label`] = { z0: mix(TRAY_Z, STOP_Z - dip, L), z1: mix(TRAY_Z, STOP_Z - dip, L), tone: 'ink' as Tone }
+        }
+      }
     }
     if (i === 2) {
       const b = m.crank.b
@@ -983,7 +1128,7 @@ export function makePage(): PageLogic {
       const away = Math.abs(wrapPi(b - CRANK.rest)) > 0.002 ? { moved: true } : {}
       Object.assign(over['crank-arm']!, { x: arm.x - (CRANK.arm + CRANK.armW) / 2, y: arm.y - CRANK.armW / 2, rot: b, ...away })
       Object.assign(over['crank-grip']!, { x: grip.x - CRANK.gripW / 2, y: grip.y - CRANK.gripH / 2, rot: b, ...away })
-      const lit = Math.round(m.crank.level * 10) - (m.crank.stuck > BLOW.stuck - BLOW.dip ? BLOW.lamps : 0)
+      const lit = Math.floor(m.crank.level * 10 + 1e-6)
       for (let k = 1; k <= 10; k++) Object.assign(over[`meter-${k}`]!, { tone: (k <= lit ? 'accent' : 'glass') as Tone, z1: mix(TRAY_Z, k <= lit ? 18 : 12, L) })
     }
   }
@@ -991,14 +1136,13 @@ export function makePage(): PageLogic {
   function drawPage(out: DrawList): void {
     const states = page.states()
     const over: Record<string, Partial<Shape> | null> = {}
-    const offsets = [0, 0, 0]
-    for (let i = 1; i < 3; i++) offsets[i] = offsets[i - 1]! + SHIFT * Math.max(0, s.spring[i - 1]!)
     const shown = s.spring.findIndex((v) => v > 0.004)
-    for (let i = 1; i < 3; i++) {
-      const isLow = shown >= 0 && shown < i
-      const set = isLow ? low[i]! : up[i]!
-      const dy = offsets[i]! - (isLow ? SHIFT : 0)
-      if (Math.abs(dy) > 1e-6) for (const part of set.ids) over[part.id] = { y: part.y + dy }
+    const dx = [0, 0, 0]
+    if (s.slide >= 0) {
+      const u = smooth(s.slide / SLIDE.long)
+      dx[s.field - 1] = -SLIDE.far * u
+      dx[s.field] = SLIDE.far * (1 - u)
+      for (const i of [s.field - 1, s.field]) for (const part of up[i]!.ids) over[part.id] = { x: part.x + dx[i]! }
     }
     if (shown >= 0) {
       const name = ROWS[shown]!
@@ -1011,19 +1155,19 @@ export function makePage(): PageLogic {
       over['continue-cap'] = { tone: 'accent', ...(s.pressed ? { z1: heights.button - heights.keyTravel } : {}) }
       over['continue-label'] = { tone: 'inkLight', ...(s.pressed ? { z0: heights.button - heights.keyTravel, z1: heights.button - heights.keyTravel } : {}) }
     }
-    drawLayout(out, layout, { states, over, runtime: { 'step2.phone': phoneMask(s.dial.digits), 'step2.volume': volumeMask(s.crank.total / (TAU * 10)) } })
-    for (let i = 0; i < 3; i++) {
-      const y = rowY(i) + offsets[i]!
-      const isOpen = s.open === i && s.phase !== 'closing'
-      chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28, y + (FH - 28) / 2, clamp(s.spring[i]!, 0, 1))
-      if (isOpen) {
-        out.push({ id: 'field-focus', part: 'rows', kind: 'box', x: FX + 14, y: y + FH - 5, w: FW - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [0.3] })
-      }
+    drawLayout(out, layout, { states, over, runtime: { 'step2.phone': phoneMask(s.dial.digits), 'step2.birth': dateMask(s.birth.typed), 'step2.volume': volumeMask(s.crank.level) } })
+    const here = s.slide >= 0 ? [s.field - 1, s.field] : [Math.min(s.field, FIELDS - 1)]
+    for (const i of here) {
+      const y = rowY(i)
+      if (i !== 1) chevron(out, `${ROWS[i]}-chevron`, FX + FW - 24 - 28 + dx[i]!, y + (FH - 28) / 2, clamp(s.spring[i]!, 0, 1))
+      const lit = (s.open === i && s.phase !== 'closing') || (i === 1 && s.birth.focus && !s.done[1])
+      if (lit) out.push({ id: 'field-focus', part: 'rows', kind: 'box', x: FX + 14 + dx[i]!, y: y + FH - 5, w: FW - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent', v: [0.3] })
     }
-    const caret = s.open === 0 && !s.done[0] && s.phase !== 'closing' && Math.floor(s.time * 2) % 2 === 0
+    const blink = Math.floor(s.time * 2) % 2 === 0
+    const caret = blink && s.slide < 0 && ((s.open === 0 && !s.done[0] && s.phase !== 'closing') || (s.open < 0 && s.field === 1 && s.birth.focus && !s.done[1]))
     if (caret) {
-      const wide = measure(TYPE.value.font, phoneMask(s.dial.digits), TYPE.value.px).width + 4
-      out.push({ id: 'field-caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.open) + offsets[s.open]! + 16, w: 3, h: FH - 32, z0: 0.1, z1: 0.5, tone: 'ink' })
+      const wide = (s.field === 1 ? (s.birth.typed.length > 0 ? measure(TYPE.value.font, dateMask(s.birth.typed), TYPE.value.px).width : 0) : measure(TYPE.value.font, phoneMask(s.dial.digits), TYPE.value.px).width) + 4
+      out.push({ id: 'field-caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.field) + 16, w: 3, h: FH - 32, z0: 0.1, z1: 0.5, tone: 'ink' })
     }
     if (shown >= 0) machine(out, shown, s, s.lift, 0, 0, '', s.phase === 'closing' ? Math.max(0.02, smooth(s.lift)) : 1)
   }
@@ -1032,7 +1176,7 @@ export function makePage(): PageLogic {
     const list: DrawList = []
     for (const part of stepHead(2)) drawLayout(list, part, { states: [], over: {} })
     const demo = { dial: freshDial(), slot: { ...freshSlot(), p: 1 }, crank: { ...freshCrank(), level: SHEET.meter.level, b: SHEET.crank.turn } }
-    demo.slot.to = SLOT.film.map((legend, r) => SLOT.strips[r]!.indexOf(legend))
+    demo.slot.from = SLOT.film.map((legend, r) => SLOT.strips[r]!.indexOf(legend))
     const spots = [SHEET.dial, SHEET.slot, SHEET.crank]
     const origin = [{ x: DIAL.cx, y: DIAL.cy }, { x: SLOT.x, y: SLOT.y }, { x: CRANK.hx, y: CRANK.hy }]
     const put = (shape: Shape, from: { x: number; y: number }, to: { x: number; y: number; times: number }): Shape => {
@@ -1047,7 +1191,7 @@ export function makePage(): PageLogic {
       overMachine(over, i, demo, 1)
       const local: DrawList = []
       const settledNow = SLOT.film.map((legend, r) => reelId(r, legend))
-      for (const child of find(layout, `${ROWS[i]}-tray`).children ?? []) drawLayout(local, child, { states: i === 1 ? settledNow : [], over })
+      for (const child of find(layout, `${ROWS[i]}-tray`).children ?? []) if (!child.id.startsWith('slot-stop') && child.id !== 'crank-sign') drawLayout(local, child, { states: i === 1 ? settledNow : [], over })
       machine(local, i, demo, 1, 0, 0, '')
       for (const shape of local) {
         const meter = shape.id.startsWith('meter-')

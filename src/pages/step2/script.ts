@@ -34,8 +34,9 @@ const woundAt = (k: number): P => holeAt(k, DIAL.travel(k))
 const shoulder: P = { x: DIAL.cx + 15, y: DIAL.cy + 14 }
 const lead: P = { x: DIAL.cx - 17, y: DIAL.cy - 1 }
 export const LANDING: P = { x: DIAL.cx - 600, y: DIAL.cy + 30 }
-const knob: P = { x: SLOT.leverX, y: SLOT.knobY }
-const pulled: P = { x: SLOT.leverX, y: SLOT.knobY + SLOT.pull + 6 }
+// The film's date: when the lever pulls itself, and when the arrow stops each reel on the applicant's own legend.
+export const FILM = { lever: 9.6, stops: [10.2, 10.6, 11.0] }
+const stopAt = (r: number): P => ({ x: SLOT.reelX(r) + SLOT.reelW / 2, y: SLOT.stopY + SLOT.stopH / 2 })
 const watch: P = { x: SLOT.leverX + 44, y: SLOT.y + 64 }
 const peer: P = { x: watch.x - 14, y: watch.y + 4 }
 const hub: P = { x: CRANK.hx, y: CRANK.hy }
@@ -54,7 +55,7 @@ const coiled: P = { x: beside.x - 18, y: beside.y - 9 }
 
 const T = {
   phone: 1.88, zero: 2.31, one: 2.83, third: 3.8,
-  birth: 8.2, lever: 9.15,
+  birth: 8.2,
   volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.32, press: 20.42
 }
 
@@ -66,11 +67,11 @@ const HAUL = 0.42
 const EASY = { eye: 1.02, load: 1.03, stroll: 1.12, there: 1.66, tap: T.phone - 0.14, steps: 3, hop: 14, tall: 1.26, low: 0.9, land: 0.05, chest: 0.14 }
 // A row opens under it. The first time it only starts, the second time it rears, the third time it has lost its temper and stamps the field open.
 const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: T.birth + 0.08, go: T.birth + 0.5 } }
-// The lever: it has learnt to be careful, so it draws the knob up a little before it pulls.
-const PULL = { there: 8.9, back: 8.93, up: 9.08, rise: 12 }
+// The stops: it has learnt to be careful, so it stands over the first button before the reels turn, and takes each reel as its own legend comes.
+const PULL = { leave: 9.2, there: 9.75, tap: 0.09, on: 0.12 }
 // The coins: it hides, shakes them off where it is safe, and comes back angry. The temper is spent on the stamp: it takes the crank with a cool head.
 // The reels: it leans in to watch them, small and tight. The coins: it goes flat under them where it stands, held, and then darts for cover.
-const STRUCK = { tight: T.lever + 0.9, brace: 10.55, read: 10.9, near: 11.9, duck: 12.0, flee: 12.56 }
+const STRUCK = { tight: FILM.stops[2]! + 0.1, read: FILM.stops[2]! + 0.1, near: 11.9, duck: 12.0, flee: 12.56 }
 const TEMPER = { safe: 12.74, dust: 12.78, fume: 13.3, red: 13.5, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
 // Flat, it drags itself to the button and stops short of it. Half way it heaves and falls flat again. There it peels up and fills out, standing still, draws back, and throws itself at the button.
@@ -111,14 +112,15 @@ const path: Seg[] = [
   line(T.third + 1.2, 7.55, LANDING, LANDING),
   line(7.55, T.birth - 0.06, LANDING, field(1)),
   line(T.birth - 0.06, DREAD.birth.go, field(1), field(1)),
-  line(DREAD.birth.go, PULL.there, field(1), knob),
-  line(PULL.there, PULL.back, knob, knob),
-  line(PULL.back, PULL.up, knob, { x: knob.x, y: knob.y - PULL.rise }),
-  line(PULL.up, T.lever, { x: knob.x, y: knob.y - PULL.rise }, knob),
-  line(T.lever, T.lever + 0.3, knob, pulled),
-  line(T.lever + 0.3, T.lever + 0.64, pulled, pulled),
-  line(T.lever + 0.64, T.lever + 0.9, pulled, watch),
-  line(T.lever + 0.9, STRUCK.near, watch, peer),
+  line(DREAD.birth.go, PULL.leave, field(1), field(1)),
+  line(PULL.leave, PULL.there, field(1), stopAt(0)),
+  line(PULL.there, FILM.stops[0]! + PULL.tap, stopAt(0), stopAt(0)),
+  line(FILM.stops[0]! + PULL.tap, FILM.stops[1]! - PULL.on, stopAt(0), stopAt(1)),
+  line(FILM.stops[1]! - PULL.on, FILM.stops[1]! + PULL.tap, stopAt(1), stopAt(1)),
+  line(FILM.stops[1]! + PULL.tap, FILM.stops[2]! - PULL.on, stopAt(1), stopAt(2)),
+  line(FILM.stops[2]! - PULL.on, FILM.stops[2]! + PULL.tap, stopAt(2), stopAt(2)),
+  line(FILM.stops[2]! + PULL.tap, STRUCK.read + 0.4, stopAt(2), watch),
+  line(STRUCK.read + 0.4, STRUCK.near, watch, peer),
   line(STRUCK.near, STRUCK.flee, peer, peer),
   line(STRUCK.flee, TEMPER.safe, peer, refuge),
   line(TEMPER.safe, TEMPER.march, refuge, refuge),
@@ -149,7 +151,7 @@ const presses: [number, number][] = [
   [T.phone, T.phone + 0.1],
   [T.zero, T.zero + 0.25], [T.one, T.one + 0.11], [T.third, T.third + HAUL],
   [T.birth, T.birth + 0.12],
-  [PULL.back, T.lever + 0.6],
+  ...FILM.stops.map((at): [number, number] => [at, at + PULL.tap]),
   [T.volume, T.volume + 0.1],
   [T.crank, T.runaway + 0.05],
   [T.press, T.press + 0.12]
@@ -173,7 +175,7 @@ export type Mark = 'fling' | 'strike'
 export type Marks = Partial<Record<Mark, number>>
 
 const acts: [number | Mark, Acting][] = [
-  [0, 'plain'], [EASY.eye, 'confident'], [T.third + HAUL, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [STRUCK.tight, 'nervous'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
+  [0, 'plain'], [EASY.eye, 'confident'], [T.third + HAUL, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.0, 'plain'], [STRUCK.tight, 'nervous'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
   [THROWN.see, 'shocked'], [THROWN.back, 'angry'], [16.95, 'exhausted'], [RISE.flop + RISE.life * 0.78, 'plain']
 ]
 
@@ -205,11 +207,7 @@ export const poses: Pose[] = [
   [T.zero, 'aim', 0.5], [T.zero, 'press', 1.26, 0.22], [T.zero + 0.24, 'press', 0.66, 0.1], [T.zero + 0.26, 'aim', null],
   [T.third, 'aim', 0.85], [T.third, 'press', 1.36, HAUL - 0.06], [T.third + HAUL - 0.06, 'press', 0.62, 0.06], [T.third + HAUL - 0.01, 'aim', null],
   [6.5, 'aim', 0.9], [6.5, 'press', 0.7, 0.5], [7.5, 'aim', null],
-  [PULL.back, 'aim', 0.5], [PULL.back, 'press', 0.78, PULL.up - PULL.back], [T.lever, 'aim', null],
-  [T.lever + 0.02, 'press', 1.38, 0.2],
-  [T.lever + 0.3, 'press', 0.72, 0.3],
-  [STRUCK.tight, 'aim', -0.5],
-  [STRUCK.brace, 'press', 0.74, STRUCK.read - STRUCK.brace],
+  ...FILM.stops.map((at): Pose => [at, 'press', 0.7, 0.08]),
   [STRUCK.read, 'aim', 0.34], [STRUCK.read, 'press', 1.3, 0.5],
   [STRUCK.near, 'aim', null], [STRUCK.duck + 0.3, 'hold', 0.2],
   [TEMPER.safe, 'wobble', 0.5, 9, 0.5], [TEMPER.safe, 'aim', -1], [TEMPER.safe + 0.04, 'press', 0.66, TEMPER.fume - TEMPER.safe - 0.04], [TEMPER.fume, 'aim', null], [TEMPER.fume, 'press', 1.3, 0.12],
