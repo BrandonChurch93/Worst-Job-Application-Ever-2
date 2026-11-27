@@ -1220,7 +1220,7 @@ export function motionPlan(cfg, run) {
     const which = m.type.clear
       ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets have stopped: ${stopped}; these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
       : `The first press of the visitor's on the keyboard; the turrets may fire in these frames`
-    r.after = [which, hit ? `${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : '', `The visitor rests ${KEYS.rest} frames after it lets a key go`].filter(Boolean).join('. ')
+    r.after = [which, hit ? `In these frames ${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : '', `The visitor rests ${KEYS.rest} frames after it lets a key go`].filter(Boolean).join('. ')
   }
   if (have(m.taken)) {
     // The take whole and close: every step from TAKEN.before frames before the page takes the arrow until TAKEN.after frames after the arrow has come to rest.
@@ -1247,6 +1247,8 @@ export function motionPlan(cfg, run) {
     // The give back whole, every step of the page a frame: from GIVES.before frames before the arrow first moves to GIVES.after frames under the visitor.
     // What the heading says of it is what the rows hold: when the arrow lies still, when it moves, and where it stands between.
     const t = m.thrown
+    // Its heading holds the page's design and two legends: a line more than the other close sheets of lay.
+    const lay = closeLayout(cfg, 3, count, CLOSE_HEAD.lines + 1)
     const from = Math.min(m.released ?? m.back, m.back) - GIVES.before
     const to = (t ? t.handed : m.back) + GIVES.after - 1
     // The pointer has the arrow from a step when the arrow comes nearer to it from there on.
@@ -1259,9 +1261,9 @@ export function motionPlan(cfg, run) {
     }
     // The run goes on under the visitor's hand to the end of its last sheet, as far as the arrow stays whole in the window at 100%.
     let end = to
-    while (end < Math.min(last, from + sheets * count - 1) && closeFit(cfg, boxOf(end + 1), twelve).percent === 100) end += 1
-    const fit = closeFit(cfg, boxOf(end), twelve)
-    close('given-back', 'as the page gives the arrow back to the visitor', from, end, m.back, twelve, [fit.window], fit.percent, `one fixed window round the arrow's way, ${scaleWords(fit.percent)} (${placeWords(fit.window)})`, ['back', 'move'])
+    while (end < Math.min(last, from + sheets * count - 1) && closeFit(cfg, boxOf(end + 1), lay).percent === 100) end += 1
+    const fit = closeFit(cfg, boxOf(end), lay)
+    close('given-back', 'as the page gives the arrow back to the visitor', from, end, m.back, lay, [fit.window], fit.percent, `one fixed window round the arrow's way, ${scaleWords(fit.percent)} (${placeWords(fit.window)})`, ['back', 'move'])
     const comes = far(Math.min(last, has + GIVES.after - 1)) < far(has - 1) ? ", from where it comes to the visitor's pointer" : ''
     const r = runs[runs.length - 1]
     r.has = [-Infinity, has - 1]
@@ -1358,7 +1360,7 @@ export function motionPlan(cfg, run) {
     // A sheet says its true size: the run's pictures are half the page's size, a whole frame on a sheet is smaller still, and only a close sheet is the page pixel for pixel.
     const size = r.px ? `, ${r.place}` : !win ? `, whole frames at ${whole}% of the page's size` : `, the part of the picture round the arrow${win.shown === 100 ? '' : "'s way"} at ${Math.round(win.shown * k)}% of the page's size`
     const marks = !r.marks ? [] : Array.isArray(r.marks) ? r.marks : [r.marks]
-    const legend = marks.map((x) => LEGENDS[x]).join(' ').replace(/\.$/, '')
+    const legend = marks.map((x) => LEGENDS[x]).join(' ')
     const markAt = (i) => marks.map((x) => (x === 'hand' ? handAt(rows, i, every) : x === 'key' ? downAt(rows, i) : x === 'move' ? movedAt(rows, i, every) : x === 'page' ? (i >= r.has[0] && i <= r.has[1] ? PAGE_HAS.mark : '') : x === 'back' ? (i === r.follows ? PAGE_HAS.back : i >= r.has[0] && i <= r.has[1] ? PAGE_HAS.mark : '') : x === 'seat' ? (i === r.at ? SEAT.mark : '') : '')).filter(Boolean).join(' ')
     for (let j = 0; j < sheets; j++) {
       const steps = r.steps.slice(j * per, (j + 1) * per)
@@ -1380,7 +1382,19 @@ export function motionPlan(cfg, run) {
   const groups = items.length <= most
     ? [{ id: 'moments', items }]
     : [pick('pages', (f) => !HANDS.includes(f.moment) && !ARROW.includes(f.moment)), pick('arrow', (f) => ARROW.includes(f.moment)), ...(machine.length <= most ? [{ id: 'machine', items: machine }] : [pick('port', (f) => PORTS.includes(f.moment)), pick('bats', (f) => HANDS.includes(f.moment) && !PORTS.includes(f.moment))])].filter((g) => g.items.length)
-  return { items, groups, leftOut, limitTook, missing }
+  // A group larger than one message is cut between two runs, never inside one: a run's sheets stay side by side in one set.
+  const uncut = (g) => {
+    if (g.items.length <= most) return [g]
+    const parts = [[]]
+    for (const f of g.items) {
+      const run = g.items.filter((x) => x.moment === f.moment && x.run[0] === f.run[0])
+      const part = parts[parts.length - 1]
+      if (run[0] === f && part.length && part.length + run.length > most) parts.push([f])
+      else part.push(f)
+    }
+    return parts.map((list, i) => ({ id: i ? `${g.id}-${i + 1}` : g.id, items: list }))
+  }
+  return { items, groups: groups.flatMap(uncut), leftOut, limitTook, missing }
 }
 const motionGroups = (cfg, unit, facts) => motionPlan(cfg, needRun(facts, 'R4')).groups
 // What pack.json says of a pack of the site besides its files: for R4, a moment that is left out and the sheets the limit took (none: the plan makes a second set instead).
