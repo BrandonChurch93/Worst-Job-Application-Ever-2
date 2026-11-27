@@ -134,7 +134,7 @@ describe('the save at the gate on the live site', () => {
       expect(Math.min(...after.slice(0, SHEET).map((r) => r.turn))).toBe(-WIRE.snap)
       expect(after.slice(SHEET, 3 * SHEET).some((r) => r.turn > 0.05), 'the wire swings back past its rest').toBe(true)
       expect(after[Math.ceil(WIRE.seconds * stepHz)]!.turn).toBe(0)
-      expect(after.at(-1)!.state).toEqual([0, 0])
+      expect(after.at(-1)!.state).toEqual([0, 0, 0])
       m.free()
     }
   })
@@ -182,10 +182,24 @@ describe('the save at the gate on the live site', () => {
     m.gate = [false, true, false]
     m.toPlane(0, 6, TIER_Y[1]! + 4, 0, 0)
     for (let n = 0; n < 30; n++) m.step(false, false)
-    expect(stateOf(m, 0)).toEqual([0, 0])
-    expect(stateOf(m, 1)).toEqual([1, 0])
-    expect(stateOf(m, 2)).toEqual([0, 0])
+    expect(stateOf(m, 0)).toEqual([0, 0, 0])
+    expect(stateOf(m, 1)).toEqual([1, 0, 0])
+    expect(stateOf(m, 2)).toEqual([0, 0, 0])
     m.free()
+  })
+
+  it('has the wire carry the ball\'s load in live play only: none before the landing, whole within a sheet frame of it and through the hold to the kick, gone again when the wire has rung out', () => {
+    for (const w of ways) {
+      const { rows, take, kick, m } = lost(true, w)
+      const land = rows.findIndex((r) => r.taken > 0)
+      expect(land).toBeGreaterThan(take)
+      for (let n = 0; n < land; n++) expect(rows[n]!.state[2]).toBe(0)
+      for (let n = land; n < land + WIRE.gleam; n++) expect(rows[n]!.state[2]!).toBeGreaterThan(rows[n - 1]!.state[2]!)
+      for (let n = land + WIRE.gleam - 1; n < kick; n++) expect(rows[n]!.state[2]).toBe(1)
+      for (let n = kick + 1; n < kick + WIRE.seconds * stepHz; n++) expect(rows[n]!.state[2]!).toBeLessThan(rows[n - 1]!.state[2]!)
+      for (let n = kick + Math.ceil(WIRE.seconds * stepHz) + 1; n < rows.length; n++) expect(rows[n]!.state[2]).toBe(0)
+      m.free()
+    }
   })
 
   it('leaves film mode as it was: with the switch off the gate takes nothing, the ball is towed to the hole and put back at the mouth as before, and nothing of the take is drawn or saved', () => {

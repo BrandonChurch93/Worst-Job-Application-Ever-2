@@ -180,8 +180,8 @@ const STROBE_HZ = 2.5
 // Live play, the wire of a shut gate at a save, as radians added to its shut pose (more is toward open, down the table). It leans on the shell of the ball it holds: `lean` with the ball at rest on it and `turn` more for every ball's width the ball sinks,
 // never past `flat`. At the kick it snaps `snap` up the table, stands there for `hold` seconds as a kicker's coil does, falls back and rings out. It never stands inside the clear ball.
 // The wire gate at a live save, as the hardware builds it (the test holds these to the hardware's own): the pin's place above the tier's foot (balls), the pin's height, the wire's height above the pin and its thickness (px),
-// its turn when shut (rad), and how far across the ball may be and still lie on the top wire (balls). After the kick the wire is thrown up the table by `snap` (rad), stands there `hold` s and rings out.
-export const WIRE = { pin: 0.15, axle: 7, tall: 30, thick: 2.5, shut: -0.3, across: 1.5, snap: 0.9, hold: 1 / 15, decay: 24, period: 0.11, seconds: 0.45 }
+// its turn when shut (rad), and how far across the ball may be and still lie on the top wire (balls). After the kick the wire is thrown up the table by `snap` (rad), stands there `hold` s and rings out. `gleam`: the steps over which the wire takes the ball's load.
+export const WIRE = { pin: 0.15, axle: 7, tall: 30, thick: 2.5, shut: -0.3, across: 1.5, snap: 0.9, hold: 1 / 15, decay: 24, period: 0.11, seconds: 0.45, gleam: 8 }
 // The turn past shut at which the top wire lies on the ball's shell, for a ball `v` balls down the tier: the wire is never drawn inside the ball.
 export function wireOn(v: number): number {
   const dy = px(TH - WIRE.pin - v)
@@ -201,6 +201,14 @@ function wireOf(m: Machine, k: number): number {
   return Math.max(ring, wireOn(b.y - TIER_Y[k]!))
 }
 
+// Live play, how much of a ball's load the gate's wire carries, 0 to 1: it rises as the ball lands on it, stays while the ball lies there and goes as the wire rings out after the kick.
+function loadOf(m: Machine, k: number): number {
+  if (m.gate[k]) return 0
+  if (m.taken > 0 && m.balls[0]!.tier === k) return Math.min(1, m.taken / WIRE.gleam)
+  const kicked = m.since(`ball-save:${TIERS[k]}.gate`)
+  return kicked >= WIRE.seconds ? 0 : 1 - kicked / WIRE.seconds
+}
+
 function stateOf(id: string, m: Machine): number[] {
   const hold = HELD[id]
   if (hold) {
@@ -213,7 +221,7 @@ function stateOf(id: string, m: Machine): number[] {
   if (id.startsWith('sling.')) return [m.since(id.slice(6, id.lastIndexOf('.')))]
   if (id.startsWith('gate.')) {
     const k = Number(id.slice(5))
-    return m.live ? [m.gate[k] ? 1 : 0, wireOf(m, k)] : [m.gate[k] ? 1 : 0]
+    return m.live ? [m.gate[k] ? 1 : 0, wireOf(m, k), loadOf(m, k)] : [m.gate[k] ? 1 : 0]
   }
   if (id === 'flap.highway') return [m.on['street.flap'] !== false ? 1 : 0]
   return [m.since(`${id.split('.')[2]}.lift.door`)]
