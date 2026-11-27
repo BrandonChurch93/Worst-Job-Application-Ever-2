@@ -10,6 +10,8 @@ export interface Checks {
   approved: string[] | null
   // The table of events to cues, from src/audio/cues.ts.
   eventCues: Record<string, string>
+  // The film over film.maxSeconds is carried as a known problem where this is set: the site still starts.
+  carryLength?: boolean
 }
 
 const TOP_KEYS = ['name', 'slug', 'seed', 'repo', 'host', 'employer', 'table', 'applicant', 'film', 'intro', 'formats', 'platform', 'export', 'previewFilm', 'tiers', 'cursor',
@@ -74,7 +76,7 @@ export function configProblems(c: Config, checks: Checks): string[] {
     for (const b of mine) if (!(b.to > b.from)) out.push(`config: the beat "${b.id}" has no length`)
     if (!near(mine[mine.length - 1]!.to, u.seconds)) out.push(`config: the beats of "${u.id}" end at ${mine[mine.length - 1]!.to} s and the page is ${u.seconds} s long`)
   }
-  if (total > c.film.maxSeconds + 1e-9) out.push(`config: film.units adds up to ${total} s, which is more than film.maxSeconds, ${c.film.maxSeconds} s`)
+  if (total > c.film.maxSeconds + 1e-9 && !checks.carryLength) out.push(`config: film.units adds up to ${total} s, which is more than film.maxSeconds, ${c.film.maxSeconds} s`)
 
   const phaseTotal = Object.values(c.budget.phaseHours).reduce((s, v) => s + v, 0)
   if (!near(phaseTotal, c.budget.runHours)) out.push(`config: budget.phaseHours adds up to ${phaseTotal} h and budget.runHours is ${c.budget.runHours} h`)

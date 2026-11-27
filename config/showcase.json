@@ -50,7 +50,7 @@
     "hookSeconds": 2,
     "unitTuneFraction": 0.2,
     "beatToleranceSeconds": 0.25,
-    "maxSeconds": 185,
+    "maxSeconds": 165,
     "plannedSeconds": { "marketing": 14, "step1": 32, "step2": 21, "pinball": 42, "boss": 32, "decision": 12 },
     "units": [
       { "id": "marketing", "seconds": 14 },
