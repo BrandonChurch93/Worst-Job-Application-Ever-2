@@ -7,6 +7,8 @@ import type { Zone } from '../zone'
 const ROW = { step: 72, away: 96, high: 45, strength: 8 }
 // The room is this bright beside the lamps of the table: its values below are shares of it.
 const SHOW = 0.14
+// What a polished wire shows once it is wide on the screen: the room drawn to hard lines along it, as a mirror does. The panel overhead is its bright crown, the lamps a warm line down each flank, with the dark of the room between them. `near` is the page pixels to one screen pixel under which the lines are whole and over which they are gone, each line is a span of the mirrored ray's height, and the last three are how bright the crown, the lamp line and the dark between stand.
+export const MIRROR = { near: [0.55, 0.8], crown: 0.82, lamp: [0.06, 0.6], gap: -0.12, bright: 1.5, warm: 1.15, dark: 0.02 }
 
 // What the metal of a zone mirrors once the website's light is down: a dark room with one soft panel overhead, a row of small lamps round the table, the lit edge of the table at the horizon and the tier's own floor below.
 // A flat top seen from above shows the dark ceiling and the panel's slow gradient, a chamfer shows the horizon as one hard bright line, a wire shows all of it across its width.
@@ -74,6 +76,12 @@ vec3 wjsPolish( vec3 R, float rough ) {
 	float turn = atan( R.y, R.x );
 	float rings = exp( - ( R.z - 0.84 ) * ( R.z - 0.84 ) / ( w * w ) ) + 0.5 * exp( - ( R.z - 0.42 ) * ( R.z - 0.42 ) / ( w * w * 0.5 ) );
 	vec3 above = mix( wjsLamp, vec3( 1.0 ), 0.5 ) * ( 0.02 + ( rings * ( 0.6 + 0.4 * cos( turn * 2.0 + 0.6 ) ) * keep * keep + line * smoothstep( 0.44, 0.64, R.z ) ) * 2.6 / ( 1.0 + rough * 6.0 ) ) * smoothstep( -0.02, 0.1, R.z );
+	float close = step( 0.001, line ) * ( 1.0 - smoothstep( ${MIRROR.near[0].toFixed(2)}, ${MIRROR.near[1].toFixed(2)}, min( length( dFdx( wjsAt ) ), length( dFdy( wjsAt ) ) ) ) );
+	float edge = max( fwidth( R.z ) * 0.7, 0.004 );
+	float crown = smoothstep( ${MIRROR.crown.toFixed(2)} - edge, ${MIRROR.crown.toFixed(2)} + edge, R.z );
+	float flank = smoothstep( ${MIRROR.lamp[0].toFixed(2)} - edge, ${MIRROR.lamp[0].toFixed(2)} + edge, R.z ) - smoothstep( ${MIRROR.lamp[1].toFixed(2)} - edge, ${MIRROR.lamp[1].toFixed(2)} + edge, R.z );
+	vec3 hard = mix( wjsLamp, vec3( 1.0 ), 0.7 ) * crown * ${MIRROR.bright.toFixed(2)} * ( 0.8 + 0.2 * cos( turn * 2.0 + 0.6 ) ) + wjsLamp * flank * ${MIRROR.warm.toFixed(2)} * ( 0.75 + 0.25 * cos( turn - 0.9 ) ) + vec3( ${MIRROR.dark.toFixed(3)} );
+	above = mix( above, hard * smoothstep( ${MIRROR.gap.toFixed(2)} - edge, ${MIRROR.gap.toFixed(2)} + edge, R.z ), close );
 	float side = 0.1 + 0.9 * smoothstep( -0.3, 0.3, R.x * 1.6 + 0.3 * sin( wjsAt.y * 0.031 ) );
 	vec3 field = mix( wjsLamp, vec3( 1.0 ), 0.4 ) * ( 0.08 + 0.07 * sin( wjsAt.y * 0.047 + R.x * 3.0 ) ) * side;
 	float az = atan( R.y, R.x );
@@ -81,7 +89,7 @@ vec3 wjsPolish( vec3 R, float rough ) {
 	field += ( vec3( 1.0, 0.22, 0.14 ) * pow( 0.5 + 0.5 * cos( az - 0.9 - wjsAt.y * 0.004 ), 40.0 ) + vec3( 0.2, 0.45, 1.0 ) * pow( 0.5 + 0.5 * cos( az + 2.1 + wjsAt.y * 0.003 ), 40.0 ) ) * 1.6 * low * keep * wjsSpark;
 	field += wjsLamp * 2.4 * pow( 0.5 + 0.5 * cos( az * 7.0 + wjsAt.y * 0.013 ), 24.0 ) * exp( - ( R.z + 0.22 ) * ( R.z + 0.22 ) / 0.012 ) * keep * wjsSpark;
 	field += mix( wjsLamp, vec3( 1.0 ), 0.6 ) * line * 2.0 * exp( - ( R.z + 0.26 ) * ( R.z + 0.26 ) / 0.004 ) * ( 0.55 + 0.45 * cos( az * 3.0 + 0.7 ) );
-	return on * ( above + field * smoothstep( 0.12, -0.3, R.z ) );
+	return on * ( above + field * mix( smoothstep( 0.12, -0.3, R.z ), 1.0 - smoothstep( ${MIRROR.gap.toFixed(2)} - edge, ${MIRROR.gap.toFixed(2)} + edge, R.z ), close ) );
 }
 `
 
@@ -153,6 +161,6 @@ export function steel<T extends THREE.MeshPhysicalMaterial>(m: T, own: Zone, o: 
     shader.vertexShader = 'varying vec3 wjsAt;\n' + shader.vertexShader.replace('#include <project_vertex>', 'wjsAt = transformed;\n#include <project_vertex>')
     shader.fragmentShader = PARS + shader.fragmentShader.replace(AT, BODY + AT)
   }
-  m.customProgramCacheKey = () => `${key.call(m)}|wjs34`
+  m.customProgramCacheKey = () => `${key.call(m)}|wjs35`
   return m
 }
