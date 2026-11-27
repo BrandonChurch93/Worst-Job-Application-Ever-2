@@ -166,7 +166,7 @@ export interface PageLogic {
   readonly layout: LayoutNode
   readonly gags: GagInfo[]
   readonly start: { x: number; y: number }
-  readonly control: 'pointer' | 'flippers'
+  readonly control: 'pointer' | 'flippers' | 'film'
   reset(ctx: PageContext): void
   step(io: StepIo): void
   save(): unknown
