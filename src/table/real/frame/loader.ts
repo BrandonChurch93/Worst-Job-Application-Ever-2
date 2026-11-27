@@ -27,7 +27,7 @@ export const dipOf = (t: number): number => {
 export const LET = { wide: 0.04, over: ANSWER.over }
 // How bright the flash of the rim stands, 1 to 0.
 // The tube's answer where the ball strikes its wall at one of the feed tube's first two bends: the wall the ball runs on next gives `px` px at the bend, less with the distance and nothing `reach` px away. It holds that for `lead` seconds, so the frame drawn next shows all of it, swings back past its rest once in `swing` seconds and is still `over` seconds after the strike. The page gives the seconds since each strike as the ring's third and fourth numbers.
-export const KNOCK = { px: 2.6, reach: 100, lead: 1 / 60, over: 6 / 60, swing: 5 / 60 }
+export const KNOCK = { px: 2.6, reach: 150, lead: 1 / 60, over: 6 / 60, swing: 5 / 60 }
 export const knockOf = (t: number): number => {
   if (t < 0 || t >= KNOCK.over) return 0
   const u = Math.max(0, t - KNOCK.lead)
