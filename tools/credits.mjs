@@ -316,8 +316,8 @@ async function main() {
     }
     const L = limits(c, ledger)
     const total = totalOf(ledger)
-    console.log(`credits: ${total} of ${L.cap} used in ${ledger.rows.length} calls. ${L.limit - total} left before ${ledger.reviewReached ? 'the cap' : `the review's reserve of ${L.reserve}`}.`)
-    if (L.hard) console.log(`credits: hard limit ${L.hard.limit} (${L.hard.from}). ${L.hard.limit - total} left before it.`)
+    console.log(`credits: ${total} of ${L.cap} used in ${ledger.rows.length} calls. ${L.limit - total} left before ${L.hard && L.hard.limit === L.limit ? `the hard limit of ${L.hard.limit}` : ledger.reviewReached ? 'the cap' : `the review's reserve of ${L.reserve}`}.`)
+    if (L.hard) console.log(`credits: the hard limit is from ${L.hard.from}.`)
     console.log(`credits: speech ${ledger.rates.speech ? `${ledger.rates.speech.perCharacter} a character` : 'not measured'}, effects ${ledger.rates.effect ? `${ledger.rates.effect.perSecond} a second` : 'not measured'}`)
     console.log('credits: --quota reads the account. --speech --what W --text T | --text-file F [--speed N --stability N --similarity N --style N --model ID --voice ID --out F] speaks a line. --effect --what W --prompt P | --prompt-file F --seconds N [--loop --influence N --out F] makes an effect. --measure reads the usage round a call. --extra marks a call section 2 of the addendum calls extra.')
   } finally {
