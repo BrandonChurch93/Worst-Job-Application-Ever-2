@@ -81,8 +81,8 @@ for ( int b = 0; b < ${BALLS}; b ++ ) {
 	vec4 wjaBall = wjlBall[ b ];
 	if ( wjaBall.w == 0.0 ) continue;
 	float wjaR = abs( wjaBall.w );
-	vec2 wjaOff = ( wjaAt.xy - wjaBall.xy ) / ( wjaR * ${OVER.spot.toFixed(2)} );
-	totalEmissiveRadiance *= 1.0 - ${OVER.shade.toFixed(2)} * exp( - dot( wjaOff, wjaOff ) ) * ( 1.0 - smoothstep( ${(OVER.far * 0.6).toFixed(2)}, ${OVER.far.toFixed(2)}, length( wjaAt.xy - wjaBall.xy ) / wjaR ) ) * ( 1.0 - smoothstep( 1.2 * wjaR, 2.0 * wjaR, wjaBall.z ) );
+	float wjaQ = length( wjaAt.xy - wjaBall.xy ) / wjaR;
+	totalEmissiveRadiance *= 1.0 - ${OVER.shade.toFixed(2)} * ( 1.0 - smoothstep( 0.0, ${OVER.far.toFixed(2)}, wjaQ ) ) * ( 1.0 - smoothstep( 1.2 * wjaR, 2.0 * wjaR, wjaBall.z ) );
 }`
 
 // The three windows of a tier are one mesh and one drawing. How far each is lit rides on its corners, so one material serves all three.
@@ -111,7 +111,7 @@ function windowsOf(z: Zone): THREE.Mesh {
     shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute float wjaGlow;\nvarying float vWjaGlow;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvWjaGlow = wjaGlow;')
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vWjaGlow;').replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>\ntotalEmissiveRadiance *= vWjaGlow;\n${UNDER}`)
   }
-  material.customProgramCacheKey = () => 'wja-studio-art-window-2'
+  material.customProgramCacheKey = () => 'wja-studio-art-window-3'
   material.userData.lit = true
   lit(material, z)
   material.name = `tier-art.windows.${z.id}`

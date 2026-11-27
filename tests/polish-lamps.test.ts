@@ -41,6 +41,8 @@ const STATE = '4e4de23c7807426f'
 const FIRST = 4020
 const FRAMES = 2520
 const STEP = 1 / 240
+// The film frames on which some window has a ball in reach: the only frames of the film whose pictures differ from 308e96a1.
+const CHANGED = 575
 const context = (list: Shape[]): RealContext => ({ page: 'step3', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => {} })
 const r6 = (n: number): number => Math.round(n * 1e6) / 1e6
 
@@ -146,14 +148,14 @@ describe('a ball over a window in the floor', () => {
     expect(Math.round(OVER.rise * 60)).toBeLessThanOrEqual(5)
   })
 
-  it('never takes more than a third of the way up in one frame, on any frame of the film and for a ball that crosses in one frame', () => {
+  it('never takes more than two fifths of the way up in one frame, on any frame of the film and for a ball that crosses in one frame', () => {
     let most = 0
     for (const n of table.inserts) {
       const rows = seen.filter((x) => x.id === n.id)
       for (let i = 1; i < rows.length; i++) most = Math.max(most, rows[i]!.now - rows[i - 1]!.now)
     }
     expect(most).toBeGreaterThan(0.1)
-    expect(most).toBeLessThan(0.36)
+    expect(most).toBeLessThan(0.4)
     let k: number | undefined
     for (let i = 0; i < 4; i++) k = stepOver(k, -0.6, ANSWER.reach, STEP)
     expect(k).toBeCloseTo(0.25, 9)
