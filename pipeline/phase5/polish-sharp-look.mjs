@@ -54,6 +54,7 @@ if (mode === 'texels') {
   let sharpAll = 0
   const box = [w, h, 0, 0]
   const hist = new Array(9).fill(0)
+  const dens = []
   for (let i = 0; i < n; i++) {
     const o = i * t.channels
     const tex = lin[t.data[o + 1]] >= 0.5
@@ -66,6 +67,7 @@ if (mode === 'texels') {
       textured++
       if (inFocus) {
         counted++
+        dens.push(d)
         if (d < config.detail.minTexelsPerPixel) soft++
         box[0] = Math.min(box[0], i % w)
         box[1] = Math.min(box[1], Math.floor(i / w))
@@ -77,7 +79,9 @@ if (mode === 'texels') {
     coc.set(ramp(c / COC_RANGE), i * 3)
     den.set(tex ? ramp(d / TEXEL_RANGE) : [40, 40, 40], i * 3)
   }
-  console.log(JSON.stringify({ pixels: n, textured, texturedInFocus: counted, softInFocus: soft, share: counted ? soft / counted : null, inFocusAnySurface: sharpAll, boxOfCounted: counted ? box : null, cocHistogramPx: hist }))
+  dens.sort((x, y) => x - y)
+  const q = (f) => (dens.length ? Math.round(dens[Math.min(dens.length - 1, Math.floor(f * dens.length))] * 100) / 100 : null)
+  console.log(JSON.stringify({ pixels: n, textured, texturedInFocus: counted, softInFocus: soft, share: counted ? soft / counted : null, texelsPerPixelInFocus: { min: q(0), p05: q(0.05), median: q(0.5), p95: q(0.95), max: q(1) }, inFocusAnySurface: sharpAll, boxOfCounted: counted ? box : null, cocHistogramPx: hist }))
   await stack(
     [
       ['build, beauty', await sharp(beautyFile).removeAlpha().resize(w, h).png().toBuffer()],

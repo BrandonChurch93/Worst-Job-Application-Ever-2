@@ -101,6 +101,19 @@ export function drainWay(u: number): { x: number; y: number; z: number } {
   return { x: a[0] + (b[0] - a[0]) * t, y: a[1] + (b[1] - a[1]) * t, z: a[2] + (b[2] - a[2]) * t }
 }
 
+// The plane in which the feed tube's two straight runs meet at the corner under the first screen, in a zone's frame, if the corner lies in that zone.
+function creaseOf(z: Zone): { at: V3; normal: V3; reach: number } | null {
+  const r = railOf('feed').points
+  const a = r[1]!
+  const b = r[2]!
+  const c = r[3]!
+  if (b[1] * BALL < z.top || b[1] * BALL >= z.top + z.height || b[1] * BALL <= FOOT.edge) return null
+  const into = new THREE.Vector2(b[0] - a[0], -(b[1] - a[1])).normalize()
+  const out = new THREE.Vector2(c[0] - b[0], -(c[1] - b[1])).normalize()
+  const n = into.add(out).normalize()
+  return { at: local(z, b[0] * BALL, b[1] * BALL, b[2] * BALL + BALL / 2) as V3, normal: [n.x, n.y, 0], reach: TUBE.outer * 3 }
+}
+
 const lengthOf = (path: V3[]): number => {
   let d = 0
   for (let i = 1; i < path.length; i++) d += Math.hypot(path[i]![0] - path[i - 1]![0], path[i]![1] - path[i - 1]![1], path[i]![2] - path[i - 1]![2])
@@ -334,8 +347,9 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
   } else if (z.id === 'first') ringed(PORT, () => port(A, G, z, PORT))
   else if (z.id === 'last') ringed(OUTLET, () => port(A, G, z, OUTLET))
   if (path.length > 1) {
-    G.pipe(path, TUBE.outer, TUBE.sides, [1, 1, 1])
-    G.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, [1, 1, 1], true)
+    const fold = z.id === 'last' ? null : creaseOf(z)
+    G.pipe(path, TUBE.outer, TUBE.sides, [1, 1, 1], false, undefined, fold)
+    G.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, [1, 1, 1], true, undefined, fold)
     let length = 0
     for (let i = 1; i < path.length; i++) length += Math.hypot(path[i]![0] - path[i - 1]![0], path[i]![1] - path[i - 1]![1], path[i]![2] - path[i - 1]![2])
     const ground = z.tier >= 0 ? -z.floor : 0
