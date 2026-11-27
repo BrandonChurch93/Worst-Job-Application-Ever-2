@@ -37,9 +37,11 @@ export async function sheet(sharp, file, cells, cols, cellW) {
 const target = (at, name, folder = 'references/approved-002') => (fs.existsSync(at(folder, name)) ? fs.readFileSync(at(folder, name)) : execFileSync('git', ['show', `origin/main:${folder}/${name}`], { cwd: at(), maxBuffer: 1 << 28 }))
 
 export const SETS = {
-  async states({ look, sharp, at, outDir, tier }) {
+  async states({ look, sharp, at, outDir, workDir, tier }) {
     const inside = await look.render({ view: viewOf(), ...sheetCam, width: 1920, height: 1080, tier })
     const out = await look.render({ view: viewOf({}, { turret: 1, locked: true }), ...sheetCam, width: 1920, height: 1080, tier })
+    fs.writeFileSync(path.join(workDir, 'inside.png'), inside.png)
+    fs.writeFileSync(path.join(workDir, 'out.png'), out.png)
     console.log(`  inside: ${JSON.stringify(inside.stats)}; out: ${JSON.stringify(out.stats)}`)
     return sheet(sharp, path.join(outDir, 'states.jpg'), [
       { png: target(at, 'boss-turret-inside.png'), caption: 'TARGET: turret inside' }, { png: inside.png, caption: `BUILD: turret inside (${tier})` },

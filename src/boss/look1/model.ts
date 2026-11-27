@@ -98,9 +98,9 @@ function gunGeo(): { housing: THREE.BufferGeometry; dark: THREE.BufferGeometry; 
   }
   bs.push(along([[5, 84], [18, 84], [18, 91], [5, 91]], 20), along([[5, 128], [18, 128], [18, 135], [5, 135]], 20))
   bs.push(along([[0, 150], [17, 150], [20.5, 156], [20.5, GUN.reach - 4], [18, GUN.reach], [13, GUN.reach], [13, GUN.reach - 14]], 24))
-  const barrels = joined(bs)
-  const barrelDark = along([[0, GUN.reach - 15], [13.2, GUN.reach - 15]], 20)
-  return { housing, dark, pin, barrels, barrelDark }
+  const barrels = joined(bs).scale(1, 1.3, 1.3)
+  const barrelDark = along([[0, GUN.reach - 15], [13.2, GUN.reach - 15]], 20).scale(1, 1.3, 1.3)
+  return { housing: housing.scale(1.12, 1.25, 1.15), dark: dark.scale(1.12, 1.25, 1.15), pin: pin.scale(1.12, 1.25, 1.15), barrels, barrelDark }
 }
 
 function shieldArc(rIn: number, rOut: number, half: number, n = 22): [number, number][] {
@@ -115,33 +115,40 @@ function shieldArc(rIn: number, rOut: number, half: number, n = 22): [number, nu
 function legGeo(): { upper: Record<string, THREE.BufferGeometry>; lower: Record<string, THREE.BufferGeometry>; foot: Record<string, THREE.BufferGeometry> } {
   const A = LEG.a
   const B = LEG.b
-  const side = (len: number, y: number, w: number, h: number): THREE.BufferGeometry => {
-    const pts: [number, number][] = [[-h * 0.5, -h * 0.5], [len * 0.2, -h * 0.62], [len * 0.8, -h * 0.5], [len + h * 0.4, -h * 0.4], [len + h * 0.4, h * 0.4], [len * 0.8, h * 0.5], [len * 0.2, h * 0.62], [-h * 0.5, h * 0.5]]
-    const g = cutPlate(pts, w, 1.6)
-    g.rotateX(Math.PI / 2)
-    g.translate(0, y + w / 2, 0)
-    return g
+  // A link: two frames with a long window, a web down each side, a boss on each end; the ram, its spring and the hoses lie in the window.
+  const link = (len: number, R: number, slot: number, deep: number): Record<string, THREE.BufferGeometry> => {
+    const outer = pillOutline(len + 2 * R, 2 * R, R, 7).map(([x, y]) => [x + len / 2, y] as [number, number])
+    const inner = pillOutline(len - R * 0.9, slot, slot / 2, 5).map(([x, y]) => [x + len / 2, y] as [number, number]).reverse()
+    const frame = (z: number): THREE.BufferGeometry => ringPlate(outer, inner, 9, 2).translate(0, 0, z)
+    const boss = (x: number): THREE.BufferGeometry[] => [discAt(R * 0.74, x, 0, deep - 1, deep + 5, 2, 24), discAt(R * 0.74, x, 0, -deep - 5, -deep + 1, 2, 24)]
+    const springs: THREE.BufferGeometry[] = []
+    const s0 = len * 0.56
+    const s1 = len * 0.84
+    for (let i = 0; i < 9; i++) springs.push(along([[slot * 0.2, 0], [slot * 0.34, 0], [slot * 0.34, 3.2], [slot * 0.2, 3.2]], 10).translate(s0 + ((s1 - s0) * i) / 8, 0, 0))
+    return {
+      plate: joined([frame(deep - 9), frame(-deep), boxAt(R * 0.6, -R + 1.5, -deep + 6, len - R * 0.6, -R + 9, deep - 6, 2), boxAt(R * 0.6, R - 9, -deep + 6, len - R * 0.6, R - 1.5, deep - 6, 2)]),
+      joint: joined([...boss(0), ...boss(len), along([[0, len * 0.14], [slot * 0.42, len * 0.14], [slot * 0.42, len * 0.5], [slot * 0.3, len * 0.53], [0, len * 0.53]], 14), boxAt(len * 0.84, -slot * 0.42, -7, len * 0.9, slot * 0.42, 7, 1.5)]),
+      pin: joined([discAt(R * 0.3, 0, 0, deep + 4, deep + 9, 1.5, 14), discAt(R * 0.3, len, 0, deep + 4, deep + 9, 1.5, 14), along([[0, len * 0.5], [slot * 0.16, len * 0.5], [slot * 0.16, len * 0.86], [0, len * 0.86]], 8), ...springs]),
+      dark: boxAt(R * 0.7, -R + 8, -deep + 3, len - R * 0.7, R - 8, -deep + 7, 1)
+    }
   }
   const upper = {
-    plate: joined([side(A, -21, 9, 50), side(A, 21, 9, 50), boxAt(A * 0.3, -18, -8, A * 0.72, 18, 4, 2)]),
-    joint: joined([across(31, 30, 3).translate(0, 0, 0), across(13, 34, 2, 16).translate(A * 0.5, 0, -2)]),
-    pin: joined([across(9, 33, 1.5, 12), rod([A * 0.16, 0, 12], [A * 0.86, 0, 14], 5.5, 10), rod([A * 0.16, 0, 12], [A * 0.5, 0, 13], 8.5, 12)]),
-    orange: joined([hose([[8, -9, 20], [A * 0.3, -10, 34], [A * 0.7, -8, 30], [A - 6, -9, 20]], 5.2), hose([[10, 9, 18], [A * 0.35, 11, 30], [A * 0.72, 9, 27], [A - 4, 9, 18]], 4.4)])
+    ...link(A, 43, 38, 23),
+    orange: joined([hose([[14, -9, 10], [A * 0.3, -13, 17], [A * 0.62, 12, 16], [A - 16, 9, 9]], 4.4, 20, 7), hose([[18, 10, 6], [A * 0.3, 13, 12], [A * 0.55, -12, 12], [A - 20, -10, 6]], 3.6, 20, 7)])
   }
   const lower = {
-    plate: joined([side(B, -15, 8, 40), side(B, 15, 8, 40), boxAt(B * 0.5, -12, -6, B * 0.86, 12, 5, 2)]),
-    joint: joined([across(34, 27, 3), across(22, 31, 2, 20)]),
-    pin: joined([across(10, 34, 1.5, 12), rod([B * 0.12, 0, 6], [B * 0.92, 0, 4], 6, 10), rod([B * 0.4, 0, 5], [B * 0.92, 0, 4], 9.5, 12)]),
-    orange: joined([hose([[6, 0, 26], [B * 0.25, 5, 30], [B * 0.55, -4, 20], [B * 0.8, 0, 14]], 4.6)])
+    ...link(B, 36, 32, 20),
+    orange: joined([hose([[14, 7, 8], [B * 0.3, 10, 14], [B * 0.6, -9, 13], [B - 22, -6, 8]], 3.8, 20, 7)])
   }
-  const toe = (ang: number, len: number, w: number): THREE.BufferGeometry => {
-    const pts: [number, number][] = [[10, -w / 2], [len * 0.7, -w / 2], [len, -w * 0.18], [len, w * 0.18], [len * 0.7, w / 2], [10, w / 2]]
-    return cutPlate(pts, 20, 3).rotateZ(ang)
+  const toe = (ang: number, len: number, w: number, tall: number): THREE.BufferGeometry => {
+    const pts: [number, number][] = [[4, -w / 2], [len * 0.62, -w / 2], [len, -w * 0.14], [len, w * 0.14], [len * 0.62, w / 2], [4, w / 2]]
+    return cutPlate(pts, tall, 3.5).rotateZ(ang)
   }
   const foot = {
-    plate: joined([toe(0.34, 96, 26), toe(-0.34, 96, 26), toe(Math.PI, 58, 30), toe(1.75, 52, 20), toe(-1.75, 52, 20)]),
-    joint: joined([discAt(34, 0, 0, 0, 26, 4), across(24, 22, 3).translate(0, 0, LEG.ankle)]),
-    pin: joined([across(8, 26, 1.5, 12).translate(0, 0, LEG.ankle), screwsAt([[18, 0], [-9, 15.6], [-9, -15.6]], 26, 4, 21)])
+    plate: joined([toe(0.46, 98, 44, 30), toe(-0.46, 98, 44, 30), toe(Math.PI, 60, 48, 24), boxAt(-30, -36, 4, 36, 36, 32, 5)]),
+    joint: joined([across(27, 25, 3, 20).translate(0, 0, LEG.ankle), discAt(26, 0, 0, 30, 39, 2, 20)]),
+    pin: joined([across(9, 29, 1.5, 12).translate(0, 0, LEG.ankle), screwsAt([[60, 28], [60, -28], [-40, 0]], 30, 5, 21)]),
+    dark: joined([boxAt(36, -4, 8, 70, 4, 24, 1)])
   }
   return { upper, lower, foot }
 }
@@ -270,9 +277,11 @@ export function buildModel(): Model {
   const legs: LegParts[] = HIPS.map(() => {
     const part = (name: string): THREE.Group => {
       const g = new THREE.Group()
-      g.add(mesh(shared.get(`leg.${name}.plate`)!, kit.plateLight), mesh(shared.get(`leg.${name}.joint`)!, kit.joint), mesh(shared.get(`leg.${name}.pin`)!, kit.pin))
+      g.add(mesh(shared.get(`leg.${name}.plate`)!, kit.plateLight), mesh(shared.get(`leg.${name}.joint`)!, kit.limb), mesh(shared.get(`leg.${name}.pin`)!, kit.pin))
       const o = shared.get(`leg.${name}.orange`)
       if (o) g.add(mesh(o, kit.orange))
+      const d = shared.get(`leg.${name}.dark`)
+      if (d) g.add(mesh(d, kit.dark))
       g.rotation.order = 'ZYX'
       return g
     }
@@ -283,9 +292,9 @@ export function buildModel(): Model {
   const c = (name: string): THREE.BufferGeometry => shared.get(`cannon.${name}`)!
   const carriage = new THREE.Group()
   const root = new THREE.Group()
-  const window = glowMaterial(0xff8a1c, 0.4)
+  const window = glowMaterial(0xff7a14, 0.4)
   const bore = glowMaterial(0xff9a3a, 0.05)
-  const slits = glowMaterial(0xffa23a, 0.3)
+  const slits = glowMaterial(0xff8a22, 0.3)
   const heat = glowMaterial(0xff5a10, 0)
   heat.transparent = true
   heat.opacity = 0

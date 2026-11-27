@@ -30,7 +30,8 @@ export async function openLook() {
   const page = await context.newPage()
   const problems = []
   page.on('pageerror', (e) => problems.push(String(e && e.message ? e.message : e)))
-  page.on('console', (m) => { if (m.type() === 'error') problems.push(m.text()) })
+  page.on('console', (m) => { if (m.type() === 'error' && !/status of 404/.test(m.text())) problems.push(m.text()) })
+  page.on('response', (r) => { if (r.status() >= 400 && !/favicon/.test(r.url())) problems.push(`${r.status()} ${r.url()}`) })
   await page.goto(`http://127.0.0.1:${port}/index.html`)
   try {
     await page.waitForFunction(() => window.bosslook !== undefined, null, { timeout: 120000 })

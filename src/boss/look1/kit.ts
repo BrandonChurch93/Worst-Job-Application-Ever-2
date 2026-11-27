@@ -253,6 +253,7 @@ export function hose(points: V3[], r: number, segments = 24, sides = 8): THREE.B
 export interface LookKit {
   plate: THREE.MeshPhysicalMaterial
   plateLight: THREE.MeshPhysicalMaterial
+  limb: THREE.MeshPhysicalMaterial
   dark: THREE.MeshPhysicalMaterial
   housing: THREE.MeshPhysicalMaterial
   joint: THREE.MeshPhysicalMaterial
@@ -274,11 +275,11 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = b.plate.clone()
-  plateLight.color = srgb(0xa4a8ad)
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x7f8388), roughness: 0.6, metalness: 0.4, specularIntensity: 0.5 })
   look = {
     plate: b.plate,
     plateLight: studio(plateLight),
+    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
     dark: b.plateSide,
     housing: b.housing,
     joint: b.joint,
@@ -297,9 +298,12 @@ export function lookKit(): LookKit {
 }
 
 // Light that is its own source: brighter than the picture's white, so the lens spreads it.
+// A lamp that is off is dark smoked glass, never black.
+const OFF = 0.012
+export const setGlow = (m: THREE.MeshBasicMaterial, gain: number): void => { m.color.copy(m.userData.base as THREE.Color).multiplyScalar(Math.max(0, gain)).addScalar(OFF) }
 export const glowMaterial = (hex: number, gain = 1): THREE.MeshBasicMaterial => {
-  const m = new THREE.MeshBasicMaterial({ color: srgb(hex).multiplyScalar(gain) })
+  const m = new THREE.MeshBasicMaterial()
   m.userData.base = srgb(hex)
+  setGlow(m, gain)
   return m
 }
-export const setGlow = (m: THREE.MeshBasicMaterial, gain: number): void => { m.color.copy(m.userData.base as THREE.Color).multiplyScalar(gain) }
