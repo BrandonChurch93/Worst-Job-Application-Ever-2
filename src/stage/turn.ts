@@ -4,12 +4,12 @@ const DEG = Math.PI / 180
 // `land` is the share of the speed of the hand over that the slab still has when it meets its seat: it falls into the seat, it does not coast into it.
 // `held` is how long the slab lies pressed flat in the seat before it springs back, as a share of the arriving half of the turn: two frames of the film, so a picture taken every other frame holds the slab flat once.
 // `knocks` are how far the slab springs back off the seat, and for how long, as shares of the arriving half of the turn.
-// `back` is how fast the slab leans back on its first step, as an angle per wind-up: it is at the lean's deepest by the first frame and held there for the second.
+// `back` is how fast the slab leans back on its first step, as an angle per wind-up: it is near the lean's deepest by the first frame and held there for the second, and the lean is as deep as it was, under a degree, so no more of the backing shows over the head of the page.
 // `start` is the share of the quarter turn the swing would cover at the speed it starts with. The lean's way back is at that speed when the slab passes flat, so the wind-up runs into the swing and nothing stalls between the two.
 export const TURN = {
   windUp: 0.12,
   lean: 1.6 * DEG,
-  back: 8 * DEG,
+  back: 4.5 * DEG,
   start: 0.264,
   power: 2.2,
   seat: 0.6,

@@ -46,21 +46,33 @@ describe('polish, the first frames of a page turn', () => {
   it('leans back by less than 1.5 degrees on its first frame, and from there no step of the angle is smaller than the one before, to the last frame', () => {
     expect(steps[0]!).toBeLessThan(0)
     expect(Math.abs(steps[0]!)).toBeLessThan(1.5)
-    expect(Math.abs(steps[0]!)).toBeGreaterThan(1)
+    expect(Math.abs(steps[0]!)).toBeGreaterThan(0.7)
     for (let i = 1; i < steps.length; i++) expect(steps[i]!, `frame ${i + 1}`).toBeGreaterThanOrEqual(steps[i - 1]!)
     for (let i = 1; i <= 6; i++) expect(steps[i]!, `frame ${i + 1}`).toBeGreaterThanOrEqual(steps[i - 1]!)
   })
 
-  it('holds the lean for the second frame, within a tenth of a degree, and passes flat between the third frame and the fourth', () => {
-    expect(Math.abs(angles[2]! - angles[1]!)).toBeLessThan(0.1)
-    expect(angles[1]!).toBeLessThan(-1.2)
+  it('holds the lean for the second frame, within 0.15 degrees, is no deeper than it was by more than a tenth of a degree, and passes flat between the third frame and the fourth', () => {
+    expect(Math.abs(angles[2]! - angles[1]!)).toBeLessThan(0.15)
+    expect(angles[1]!).toBeLessThan(-0.8)
+    expect(angles[2]!).toBeLessThan(-0.8)
+    let deepest = 0
+    let deepestBefore = 0
+    for (let i = 0; i <= 1200; i++) {
+      deepest = Math.min(deepest, leaveTurn((i / 1200) * TURN.windUp) / DEG)
+      deepestBefore = Math.min(deepestBefore, leaveBefore((i / 1200) * 0.12) / DEG)
+    }
+    expect(deepestBefore).toBeLessThan(-0.9)
+    expect(deepestBefore).toBeGreaterThan(-0.95)
+    expect(deepest).toBeGreaterThan(deepestBefore - 0.1)
+    expect(deepest).toBeLessThan(-0.9)
+    expect(-deepest * DEG).toBeLessThan(TURN.lean)
     expect(angles[3]!).toBeLessThan(0)
     expect(angles[4]!).toBeGreaterThan(0)
   })
 
-  it('swings with no stall and no jump: from the frame it passes flat no step is under 0.9 degrees, none in the first 12 frames is over 2, and none is more than twice the one before', () => {
+  it('swings with no stall and no jump: from the frame it passes flat no step is under 0.8 degrees, none in the first 12 frames is over 2, and none is more than twice the one before', () => {
     for (let i = 3; i < steps.length; i++) {
-      expect(steps[i]!, `frame ${i + 1}`).toBeGreaterThan(0.9)
+      expect(steps[i]!, `frame ${i + 1}`).toBeGreaterThan(0.8)
       expect(steps[i]! / steps[i - 1]!, `frame ${i + 1}`).toBeLessThanOrEqual(2)
     }
     for (let i = 0; i < 12; i++) expect(Math.abs(steps[i]!), `frame ${i + 1}`).toBeLessThan(2)

@@ -1,14 +1,15 @@
-// node pipeline/phase5/polish-turn2-sheet.mjs BEFORE_DIR AFTER_DIR KIND FIRST OUT [CUT] [LEAN] [PAIRS]
+// node pipeline/phase5/polish-turn2-sheet.mjs BEFORE_DIR AFTER_DIR KIND FIRST OUT [CUT] [LEAN] [PAIRS] [FROM,TO]
 // Lays pictures of a page turn's first 16 frames side by side, the ones made before the change above and the ones made after it below.
 // KIND is live (step-000NNN.png) or film (frame-000NNN-hd-draft.png), FIRST the number of the picture of the turn's first step: frame n of the turn is picture FIRST + n.
 // OUT-edge.png: a cut at real size (CUT as x,y,w,h, by default the foot of the page at its left corner), frames 1 to 8 and 9 to 16.
 // OUT-whole.png: the whole frames at half size, four to a row. OUT-whole-NN.png: frame NN alone at half size, for each NN of PAIRS.
 // OUT-lean.png: frames 0 to 3 at three times (LEAN as x,y,w,h, by default the upper edge of the page).
+// With FROM,TO only OUT-edge.png is made, of the frames FROM to TO, eight to a band.
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 
-const [beforeDir, afterDir, kind, firstArg, out, cutArg, leanArg, pairsArg] = process.argv.slice(2)
+const [beforeDir, afterDir, kind, firstArg, out, cutArg, leanArg, pairsArg, rangeArg] = process.argv.slice(2)
 const first = Number(firstArg)
 const box = (s, d) => {
   const [x, y, w, h] = (s && s !== '-' ? s : d).split(',').map(Number)
@@ -16,7 +17,8 @@ const box = (s, d) => {
 }
 const cut = box(cutArg, '30,890,150,190')
 const lean = box(leanArg, '900,0,100,30')
-const pairs = pairsArg ? pairsArg.split(',').map(Number) : []
+const pairs = pairsArg && pairsArg !== '-' ? pairsArg.split(',').map(Number) : []
+const range = rangeArg ? rangeArg.split(',').map(Number) : null
 const file = (dir, n) => path.join(dir, kind === 'film' ? `frame-${String(first + n).padStart(6, '0')}-hd-draft.png` : `step-${String(first + n).padStart(6, '0')}.png`)
 const LABEL = 22
 const INK = '#f2efe6'
@@ -58,7 +60,12 @@ async function sheet(name, frames, perRow, region, scale, kernel, title) {
 fs.mkdirSync(path.dirname(out), { recursive: true })
 const sixteen = Array.from({ length: 16 }, (_, i) => i + 1)
 const where = (r) => `x ${r.left} to ${r.left + r.width}, y ${r.top} to ${r.top + r.height}`
-await sheet(`${out}-edge.png`, sixteen, 8, cut, 1, 'nearest', `${kind}, the turn's frames 1 to 16 at real size (${where(cut)}): in each band before the change above, after it below`)
-await sheet(`${out}-whole.png`, sixteen, 4, null, 0.5, 'lanczos3', `${kind}, the turn's frames 1 to 16, whole at half size: in each band before the change above, after it below`)
-for (const n of pairs) await sheet(`${out}-whole-${String(n).padStart(2, '0')}.png`, [n], 1, null, 0.5, 'lanczos3', `${kind}, frame ${n} at half size: before above, after below`)
-await sheet(`${out}-lean.png`, [0, 1, 2, 3], 4, lean, 3, 'nearest', `${kind}, frames 0 to 3 at three times (${where(lean)}): before above, after below`)
+if (range) {
+  const frames = Array.from({ length: range[1] - range[0] + 1 }, (_, i) => range[0] + i)
+  await sheet(`${out}-edge.png`, frames, 8, cut, 1, 'nearest', `${kind}, the turn's frames ${range[0]} to ${range[1]} at real size (${where(cut)}): in each band before the change above, after it below`)
+} else {
+  await sheet(`${out}-edge.png`, sixteen, 8, cut, 1, 'nearest', `${kind}, the turn's frames 1 to 16 at real size (${where(cut)}): in each band before the change above, after it below`)
+  await sheet(`${out}-whole.png`, sixteen, 4, null, 0.5, 'lanczos3', `${kind}, the turn's frames 1 to 16, whole at half size: in each band before the change above, after it below`)
+  for (const n of pairs) await sheet(`${out}-whole-${String(n).padStart(2, '0')}.png`, [n], 1, null, 0.5, 'lanczos3', `${kind}, frame ${n} at half size: before above, after below`)
+  await sheet(`${out}-lean.png`, [0, 1, 2, 3], 4, lean, 3, 'nearest', `${kind}, frames 0 to 3 at three times (${where(lean)}): before above, after below`)
+}
