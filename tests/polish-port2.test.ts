@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
-import type { DrawList, Driver, Pointer } from '../src/stage/types'
+import type { DrawList, Driver, Pointer, Shape } from '../src/stage/types'
+import { PART, stateOf } from '../src/table/real/ball'
 import { ANSWER, BENDS, dipOf, KNOCK, knockOf } from '../src/table/real/frame/loader'
 import { BALL, PORT } from '../src/table/layout'
 
@@ -165,5 +166,15 @@ describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (nam
     expect(turned).toBeLessThanOrEqual(way / (BALL / 2))
     const turn = rows.slice(1).map((r, i) => r.turn - rows[i]!.turn)
     for (let k = 18; k < 44; k++) expect(turn[k]!, `frame ${k + 1}`).toBeGreaterThan(turn[k - 1]!)
+  })
+})
+
+describe('the ball maker reads the jaw flag', () => {
+  it('holds jaws only when the shape gives the seventh number, and the three numbers of before without it', () => {
+    const shape = (v?: number[]): Shape => ({ id: 'ball.clear', part: PART, kind: 'ball', x: 0, y: 0, w: 96, h: 96, z0: 0, z1: 96, tone: 'glass', ...(v ? { v } : {}) })
+    expect(stateOf(shape())).toEqual({ closed: 1, since: 9, sweat: 0 })
+    expect('jaws' in stateOf(shape())).toBe(false)
+    expect('jaws' in stateOf(shape([0.5, 0, 0]))).toBe(false)
+    expect(stateOf(shape([0.5, 0, 0, 0, 0, 0, 1]))).toEqual({ closed: 0.5, since: 0, sweat: 0, jaws: true })
   })
 })
