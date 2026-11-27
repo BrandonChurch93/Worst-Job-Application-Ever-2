@@ -59,8 +59,8 @@ const BLOW = { load: 0.2, kick: 1170, out: 0.15, drag: 9, stuck: 0.45, dip: 0.07
 // A machine comes out of the bare page and goes back into it. The field leaves in `field` s from the click, the machine starts `from` s after it and stands `long` s after it; it is gone `out` s after it starts to go.
 export const ENTER = { field: 0.2, from: 0.08, long: [0.84, 0.8, 0.86], out: [0.5, 0.46, 0.5], held: 0.4 }
 // How a machine is drawn on its way: the page's opening under it, how far the whole of it and each of its parts lie under where they stand (page pixels), and what its own parts do meanwhile.
-interface Pose { hole: { x: number; y: number; w: number; h: number; r: number; deep: number } | null; sink: number; drop: (id: string) => number; spin: number; lever: number | null; jolt: number; swing: number; sign: number; shown: boolean }
-const STANDING: Pose = { hole: null, sink: 0, drop: () => 0, spin: 0, lever: null, jolt: 0, swing: 0, sign: 1, shown: true }
+interface Pose { hole: { x: number; y: number; w: number; h: number; r: number; deep: number } | null; sink: number; drop: (id: string) => number; spin: number; lever: number | null; jolt: number; swing: number; sign: number; shown: boolean; coin: ((n: number, x: number, y: number) => { x: number; y: number; down: number }) | null }
+const STANDING: Pose = { hole: null, sink: 0, drop: () => 0, spin: 0, lever: null, jolt: 0, swing: 0, sign: 1, shown: true, coin: null }
 const seg = (t: number, a: number, b: number): number => Math.min(1, Math.max(0, (t - a) / (b - a)))
 const out3 = (u: number): number => 1 - (1 - u) * (1 - u) * (1 - u)
 const back = (u: number): number => 1 + 2.70158 * (u - 1) * (u - 1) * (u - 1) + 1.70158 * (u - 1) * (u - 1)
@@ -68,6 +68,9 @@ const hop = (u: number): number => Math.sin(Math.PI * u)
 const CRANK_BODY = ['crank-base', 'crank-arm', 'crank-hub', 'crank-grip']
 // A legend is not drawn while its part lies further than this under where it stands: type has no page to hide under.
 const UNDER = 1.5
+// How far a bar of the level goes under the page, and how the coins are swept into the hatch after the machine: when the first one starts, how much later each next one, how long the way takes, how far inside the hatch's ends they stop, how far apart their rows lie and how deep they fall.
+const BAR_UNDER = 44
+const SWEEP = { from: 0.12, each: 0.006, long: 0.15, in: 46, row: 9, deep: 96 }
 
 type RowPhase = 'closed' | 'opening' | 'ready' | 'ending' | 'closing'
 interface Coin { n: number; x: number; y: number; z: number; vx: number; vy: number; vz: number; rot: number; hit: boolean; still: boolean; falls: boolean; row: number; hops: number }
@@ -917,8 +920,8 @@ export function makePage(): PageLogic {
     if (i === 1) {
       const x0 = m.x(SLOT.x) - HOLE.hatch * 1.6
       const x1 = m.x(SLOT.leverX + SLOT.knob / 2) + HOLE.hatch * 1.6
-      const y0 = m.y(SLOT.y - 6) - HOLE.hatch
-      const y1 = m.y(SLOT.payY + SLOT.payH) + HOLE.hatch * 0.75
+      const y0 = m.y(SLOT.y - 6) - HOLE.hatch * 1.5
+      const y1 = m.y(SLOT.payY + SLOT.payH) + HOLE.hatch * 1.5
       const hatch = (gape: number, down: number): Pose['hole'] => {
         const h = (y1 - y0) * gape
         return h >= 10 ? { x: x0, y: (y0 + y1) / 2 - h / 2, w: x1 - x0, h, r: Math.min(HOLE.hatchR, h / 2), deep: down } : null
@@ -936,25 +939,31 @@ export function makePage(): PageLogic {
           shown: t >= 0.05
         }
       }
-      const gape = t < 0.32 ? out3(seg(t, 0.05, 0.15)) : 1 - smooth(seg(t, 0.32, 0.44))
+      const gape = t < 0.34 ? out3(seg(t, 0.05, 0.15)) : 1 - smooth(seg(t, 0.34, 0.455))
       const fall = seg(t, 0.17, 0.32)
       const down = mix(flush, deep, fall * fall)
+      const midY = (y0 + y1) / 2
       return {
         ...STANDING, hole: hatch(gape, down), sink: down - flush - 14 * hop(seg(t, 0.03, 0.17)), lever: smooth(seg(t, 0, 0.14)),
         drop: (id) => (stop(id) < 0 ? 0 : 40 * seg(t, 0.03 * (2 - stop(id)), 0.03 * (2 - stop(id)) + 0.08) ** 2),
-        shown: t < 0.44
+        coin: (n, x, y) => {
+          const from = SWEEP.from + SWEEP.each * (n % 7)
+          const u = seg(t, from, from + SWEEP.long)
+          return { x: mix(x, clamp(x, x0 + SWEEP.in, x1 - SWEEP.in), u * u), y: mix(y, midY + SWEEP.row * ((n % 5) - 2), u * u), down: SWEEP.deep * seg(t, from + SWEEP.long - 0.02, from + SWEEP.long + 0.08) ** 2 }
+        },
+        shown: t < 0.455
       }
     }
     const bar = (id: string): number => (id.startsWith('meter-') ? Number(id.slice(6)) : -1)
     if (coming)
       return {
-        ...STANDING, swing: -TAU * 1.5 * (1 - out3(seg(t, 0.02, 0.52))), sign: t < 0.5 ? 0 : back(seg(t, 0.5, 0.78)),
-        drop: (id) => (CRANK_BODY.includes(id) ? 100 * (1 - back(seg(t, 0, 0.34))) : bar(id) > 0 ? 36 * (1 - back(seg(t, 0.3 + 0.028 * bar(id), 0.42 + 0.028 * bar(id)))) : 0)
+        ...STANDING, swing: -TAU * 1.5 * (1 - out3(seg(t, 0.02, 0.52))), sign: t < 0.27 ? 0 : back(seg(t, 0.27, 0.77)),
+        drop: (id) => (CRANK_BODY.includes(id) ? 100 * (1 - back(seg(t, 0, 0.34))) : bar(id) > 0 ? BAR_UNDER * (1 - back(seg(t, 0.14 + 0.03 * bar(id), 0.27 + 0.03 * bar(id)))) : 0)
       }
-    const u = seg(t, 0.14, 0.48)
+    const u = seg(t, 0.14, 0.46)
     return {
-      ...STANDING, swing: -TAU * 1.5 * u * u, sign: 1 - seg(t, 0, 0.16) ** 2,
-      drop: (id) => (CRANK_BODY.includes(id) ? 100 * u * u : bar(id) > 0 ? 36 * seg(t, 0.08 + 0.016 * (10 - bar(id)), 0.15 + 0.016 * (10 - bar(id))) ** 2 : 0)
+      ...STANDING, swing: -TAU * 1.5 * u * u, sign: 1 - seg(t, 0, 0.18) ** 2,
+      drop: (id) => (CRANK_BODY.includes(id) ? 100 * u * u : bar(id) > 0 ? BAR_UNDER * seg(t, 0.1 + 0.026 * (10 - bar(id)), 0.2 + 0.026 * (10 - bar(id))) ** 2 : 0)
     }
   }
 
@@ -1282,6 +1291,13 @@ export function makePage(): PageLogic {
     return out
   }
 
+  const inHole = (h: Pose['hole'], x: number, y: number): boolean => {
+    if (!h) return false
+    const qx = Math.abs(x - h.x - h.w / 2) - (h.w / 2 - h.r)
+    const qy = Math.abs(y - h.y - h.h / 2) - (h.h / 2 - h.r)
+    return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - h.r < -HOLE.clear
+  }
+
   function drawPage(out: DrawList): void {
     const states = page.states()
     const over: Record<string, Partial<Shape> | null> = {}
@@ -1331,9 +1347,21 @@ export function makePage(): PageLogic {
       for (let j = from; j < out.length; j++) staged.push(j)
       const gone = new Set<number>()
       for (const j of staged) {
-        const down = a.sink + a.drop(out[j]!.id)
-        if (out[j]!.kind === 'text' && down > UNDER) gone.add(j)
-        else out[j] = grown(out[j]!, shown, down)
+        const id = out[j]!.id
+        if (id.startsWith('coin-')) {
+          const g = grown(out[j]!, shown, 0)
+          const c = a.coin?.(Number(id.slice(5)), g.x + g.w / 2, g.y + g.h / 2)
+          if (c) {
+            const swept: Shape = { ...g, x: c.x - g.w / 2, y: c.y - g.h / 2, z0: g.z0 - c.down, z1: g.z1 - c.down }
+            builtOf.set(swept, builtOf.get(g)!)
+            out[j] = swept
+          } else out[j] = g
+          continue
+        }
+        const down = a.sink + a.drop(id)
+        const g = grown(out[j]!, shown, down)
+        if (g.kind === 'text' && down > UNDER && !inHole(a.hole, g.x + g.w / 2, g.y + g.h / 2)) gone.add(j)
+        else out[j] = g
       }
       if (gone.size > 0) {
         const kept = out.filter((_, j) => !gone.has(j))

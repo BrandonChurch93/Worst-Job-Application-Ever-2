@@ -69,7 +69,9 @@ const ARRIVE = { look: 0.52, there: 0.8 }
 const HAUL = 0.42
 const EASY = { eye: 1.02, load: 1.03, stroll: 1.12, there: 1.66, tap: T.phone - 0.14, steps: 3, hop: 14, tall: 1.26, low: 0.9, land: 0.05, chest: 0.14 }
 // A row opens under it. The first time it only starts, the second time it rears, the third time it has lost its temper and stamps the field open.
-const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: T.birth + 0.08, go: T.birth + 0.5 } }
+const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: 8.98, go: T.birth + 0.5 } }
+// The page opens under it and a machine comes up: it hops back off the place, stands clear and watches, and steps onto the machine once the machine stands. The date's machine comes by itself when the date is whole, 0.14 s after the last key.
+const SHY = { phone: T.phone + 0.1, birth: 9.0, volume: T.volume + 0.08, long: 0.14, hop: 46, to: [{ x: 1235, y: 452 }, { x: 640, y: 452 }, { x: 850, y: 400 }] as P[] }
 // The stops: it has learnt to be careful, so it stands over the first button before the reels turn, and takes each reel as its own legend comes.
 const PULL = { leave: 9.2, there: 9.75, tap: 0.09, on: 0.12 }
 // The coins: it hides, shakes them off where it is safe, and comes back angry. The temper is spent on the stamp: it takes the crank with a cool head.
@@ -135,8 +137,10 @@ const path: Seg[] = [
   line(ARRIVE.look, ARRIVE.there, hand, idle),
   line(ARRIVE.there, EASY.stroll, idle, idle),
   ...strut(EASY.stroll, EASY.there, idle, field(0), EASY.steps, EASY.hop),
-  line(EASY.there, DREAD.phone.go, field(0), field(0)),
-  line(DREAD.phone.go, T.zero - 0.04, field(0), on(0, holeAt(10))),
+  line(EASY.there, SHY.phone, field(0), field(0)),
+  ...strut(SHY.phone, SHY.phone + SHY.long, field(0), SHY.to[0]!, 1, SHY.hop),
+  line(SHY.phone + SHY.long, DREAD.phone.go, SHY.to[0]!, SHY.to[0]!),
+  line(DREAD.phone.go, T.zero - 0.04, SHY.to[0]!, on(0, holeAt(10))),
   line(T.zero - 0.04, T.zero, on(0, holeAt(10)), on(0, holeAt(10))),
   ...wind(T.zero, 10, 0.24),
   line(T.zero + 0.26, T.one - 0.06, on(0, woundAt(10)), on(0, holeAt(1))),
@@ -154,8 +158,10 @@ const path: Seg[] = [
   line(T.third + 1.2, 7.55, on(0, LANDING), on(0, LANDING)),
   line(7.55, T.birth - 0.06, on(0, LANDING), field(1)),
   line(T.birth - 0.06, DREAD.birth.go, field(1), field(1)),
-  line(DREAD.birth.go, PULL.leave, field(1), field(1)),
-  line(PULL.leave, PULL.there, field(1), on(1, stopAt(0))),
+  line(DREAD.birth.go, SHY.birth, field(1), field(1)),
+  ...strut(SHY.birth, SHY.birth + SHY.long, field(1), SHY.to[1]!, 1, SHY.hop),
+  line(SHY.birth + SHY.long, PULL.leave, SHY.to[1]!, SHY.to[1]!),
+  line(PULL.leave, PULL.there, SHY.to[1]!, on(1, stopAt(0))),
   line(PULL.there, FILM.stops[0]! + PULL.tap, on(1, stopAt(0)), on(1, stopAt(0))),
   line(FILM.stops[0]! + PULL.tap, FILM.stops[1]! - PULL.on, on(1, stopAt(0)), on(1, stopAt(1))),
   line(FILM.stops[1]! - PULL.on, FILM.stops[1]! + PULL.tap, on(1, stopAt(1)), on(1, stopAt(1))),
@@ -167,8 +173,10 @@ const path: Seg[] = [
   line(STRUCK.flee, TEMPER.safe, on(1, peer), refuge),
   line(TEMPER.safe, TEMPER.march, refuge, refuge),
   line(TEMPER.march, TEMPER.there, refuge, field(2)),
-  line(TEMPER.there, TEMPER.go, field(2), field(2)),
-  line(TEMPER.go, T.crank - 0.05, field(2), on(2, grip)),
+  line(TEMPER.there, SHY.volume, field(2), field(2)),
+  ...strut(SHY.volume, SHY.volume + SHY.long - 0.02, field(2), SHY.to[2]!, 1, SHY.hop),
+  line(SHY.volume + SHY.long - 0.02, TEMPER.go, SHY.to[2]!, SHY.to[2]!),
+  line(TEMPER.go, T.crank - 0.05, SHY.to[2]!, on(2, grip)),
   line(T.crank - 0.05, T.crank, on(2, grip), on(2, grip)),
   arc(T.crank, T.runaway + 0.01, on(2, hub), CRANK.arm * scaleOf(2).k, CRANK.rest, CRANK.rest + TURNS * 2 * Math.PI, (u) => u * (1.25 - 0.25 * u)),
   line(T.runaway + 0.01, THROWN.see, on(2, grip), on(2, grip)),

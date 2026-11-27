@@ -227,9 +227,59 @@ function tray(s: Shape): THREE.Object3D {
   return root
 }
 
+// A hole in the page that a machine comes up through: the page's own ceramic turned down into it. A bevelled lip at the surface that takes the light,
+// a wall that leans in and goes dark with its depth, darker on the light's side, and a floor in the dark.
+const isHole = (s: Shape): boolean => isTray(s) && s.id.endsWith('-hole')
+const holeKey = (s: Shape): string => `hole:${q(s.w)}x${q(s.h)}:${q(s.r ?? 0)}:${q(s.z0)}`
+const PIT = { lip: 5, lipDrop: 3.2, lit: 0.5, deep: 0.86, side: 0.34, ease: 0.8, cool: 0.1, steps: 8 }
+
+function pitWall(s: Shape): { wall: THREE.BufferGeometry; shade: THREE.BufferGeometry } {
+  const depth = -s.z0
+  const outline = outlineOf(s, 0, 16)
+  const foot = trayFoot(depth)
+  const lip = Math.min(PIT.lip, foot * 0.8)
+  const drop = Math.min(PIT.lipDrop, depth * 0.5)
+  const points: ProfilePoint[] = [[-0.3, depth + 0.02, true], [lip, depth - drop, true]]
+  for (let i = 1; i <= PIT.steps; i++) points.push([lip + ((foot - lip) * i) / PIT.steps, (depth - drop) * (1 - i / PIT.steps)])
+  const wall = sweep(outline, profile(points), false)
+  const rungs: [number, number, number][] = [[lip * 0.5, depth - drop * 0.5 + 0.06, 0], [lip, depth - drop + 0.06, 0.04]]
+  for (let i = 1; i <= PIT.steps; i++) rungs.push([lip + ((foot - lip) * i) / PIT.steps, (depth - drop) * (1 - i / PIT.steps) + 0.06, Math.pow((i / PIT.steps) * Math.min(1, depth / 40), PIT.ease)])
+  const shade = sweep(outline, rungs.map(([inset, z]) => ({ inset, z, out: 0, up: 1 })), false)
+  const [lx, ly] = look.key.direction
+  const l = Math.hypot(lx, ly) || 1
+  const n = outline.count
+  const colour = new Float32Array(rungs.length * n * 3)
+  rungs.forEach(([, , down], k) => {
+    for (let i = 0; i < n; i++) {
+      const facing = (outline.nx[i]! * lx + outline.ny[i]! * ly) / l
+      const dark = Math.min(0.94, down * PIT.deep * (1 - PIT.lit * Math.max(0, -facing)) + (k > 0 ? PIT.side * Math.pow(Math.max(0, facing), 0.6) * (1 - down * 0.5) : 0))
+      const v = 1 - dark
+      colour.set([v * (1 - PIT.cool * dark), v, v * (1 - PIT.cool * 0.3 * dark)], (k * n + i) * 3)
+    }
+  })
+  shade.setAttribute('color', new THREE.BufferAttribute(colour, 3))
+  return { wall, shade }
+}
+
+function hole(s: Shape): THREE.Object3D {
+  const m = materials()
+  const root = new THREE.Group()
+  const { wall, shade } = pitWall(s)
+  const sides = new THREE.Mesh(wall, m.ceramic)
+  sides.receiveShadow = true
+  root.add(sides)
+  const floor = new THREE.Mesh(trayFloor(s), m.gap)
+  floor.receiveShadow = true
+  root.add(floor)
+  shadeMaterial ??= new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })
+  root.add(new THREE.Mesh(shade, shadeMaterial))
+  root.userData.passing = true
+  return root
+}
+
 export const rows: PartMaker = {
-  key: (s: Shape, ctx: RealContext): string | null => (isTray(s) ? trayKey(s) : controls.key(s, ctx)),
-  make: (s: Shape, ctx: RealContext): THREE.Object3D => (isTray(s) ? tray(s) : controls.make(s, ctx)),
+  key: (s: Shape, ctx: RealContext): string | null => (isHole(s) ? holeKey(s) : isTray(s) ? trayKey(s) : controls.key(s, ctx)),
+  make: (s: Shape, ctx: RealContext): THREE.Object3D => (isHole(s) ? hole(s) : isTray(s) ? tray(s) : controls.make(s, ctx)),
   pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     if (!isTray(s)) controls.pose?.(o, s, ctx)
   },
