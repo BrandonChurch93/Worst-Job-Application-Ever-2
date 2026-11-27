@@ -1,0 +1,114 @@
+{
+  "stamp": {
+    "role": "R5",
+    "round": 25,
+    "unit": "site",
+    "commit": "ce259d65eac2b2cbc46982b9ae5467fe128e5580",
+    "tier": "live-high",
+    "engineHash": "78a7b4a43470fdd9",
+    "sharedHash": "ecc0c035659847ab",
+    "pageHashes": {
+      "step1": "75828b0a80e12add",
+      "step2": "9cbb42379da170d6",
+      "marketing": "9dd612c528d5d3e7",
+      "pinball": "5aa8710b2cf98673",
+      "boss": "ed18eab775dec297",
+      "decision": "7268eb60f24ef748"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R5-1",
+      "groups": [
+        "rest",
+        "visit"
+      ],
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "heading": "The 6 pages at rest",
+          "width": 1399,
+          "height": 620,
+          "bytes": 901159,
+          "sha256": "68eb7ba5d50607f14dd0d2287f1a30be41aef3ca1292780dc72a2a03d9100181"
+        },
+        {
+          "name": "set-A-02.png",
+          "heading": "The application as a visitor has it, with its controls",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1771021,
+          "sha256": "0b1bcd01001f45b89ab579ef42382cf495c9f4dbd4984ce23d81172861527445"
+        },
+        {
+          "name": "set-A-03.png",
+          "heading": "What a visitor on a touch device gets in place of the application",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1491377,
+          "sha256": "ccdf77686416d7db484138626f366fd687acff7ccfb834e82e0f2a9c49a81b24"
+        },
+        {
+          "name": "set-A-04.png",
+          "heading": "One visitor's visit in order, sheet 1 of 6, page 1 of 6: 0:00.00 to 0:09.93",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1961220,
+          "sha256": "31097c2b6ed307abf26f815efc980dc775b33a1b8a9b27723170e8a3d8069bfc"
+        },
+        {
+          "name": "set-A-05.png",
+          "heading": "One visitor's visit in order, sheet 2 of 6, page 2 of 6: 0:10.95 to 0:43.95",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1869367,
+          "sha256": "2409a9a1368565badfa925d2f18bd1ec41ba3a7a9bfcacaa8d8150fa76d7be83"
+        },
+        {
+          "name": "set-A-06.png",
+          "heading": "One visitor's visit in order, sheet 3 of 6, page 3 of 6: 0:44.97 to 1:34.08",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1827802,
+          "sha256": "b35d5fe3ebfff0a0185c66a2771dea7a98047c6ea305d67d55fb48dcae31dfa2"
+        },
+        {
+          "name": "set-A-07.png",
+          "heading": "One visitor's visit in order, sheet 4 of 6, page 4 of 6: 1:35.10 to 2:20.53",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 2966842,
+          "sha256": "4b803ee177be03a1d11187f4a8d02aa95245fb893dcea85e03444462b520d86e"
+        },
+        {
+          "name": "set-A-08.png",
+          "heading": "The machine's tiers and the passage from one to the next. Frames 1 to 4 are single moments 94 steps (1.57 s) apart, not frames in a row: the camera's first travel, from the page's top down the machine to tier 3 (1:38.05 to 1:42.63), then back up to tier 1. Frames 5 to 8 and 9 to 12, 16 steps (0.27 s) apart: its travel from tier 1 to tier 2 (1:49.07 to 1:49.80) and from tier 2 to tier 3 (1:59.40 to 2:00.17). Each group of 4 begins before its travel and ends after it",
+          "width": 1399,
+          "height": 1276,
+          "bytes": 3119826,
+          "sha256": "e1393471cf4fe7673170d3fbdf58f58165afc255dbb067893d0563c1ddb54f8f"
+        },
+        {
+          "name": "set-A-09.png",
+          "heading": "One visitor's visit in order, sheet 5 of 6, page 5 of 6: 2:21.55 to 2:49.27",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1934372,
+          "sha256": "e5e782c69f0e69d9b0d0123eb6ec252824eeab41e628b3b9d396fa1cc7683cfd"
+        },
+        {
+          "name": "set-A-10.png",
+          "heading": "One visitor's visit in order, sheet 6 of 6, page 6 of 6: 2:50.28 to 2:57.67",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1913193,
+          "sha256": "4df7d4b02223e4d19ae6aa1498d427d2454ca90fc48a8602a98d7339946bea1e"
+        }
+      ]
+    }
+  ]
+}
