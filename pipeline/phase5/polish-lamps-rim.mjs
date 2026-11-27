@@ -1,6 +1,7 @@
 // Reads whole pictures, 1920 by 1080 with one px of the page a px, and says for each how bright the rim of the ball is against the glass of a window right beside it, and how bright the floor just outside the window's brass ring is.
 // node pipeline/phase5/polish-lamps-rim.mjs walk RUN.json DIR STEP [STEP ...]    pictures step-NNNNNN-x2.png of the pack's walk
 // node pipeline/phase5/polish-lamps-rim.mjs film DIR FRAME [FRAME ...]          pictures film-N.png of the film (the camera of the film must look straight down for the places to hold)
+// node pipeline/phase5/polish-lamps-rim.mjs still FILE WX WY BX BY K              one picture from straight above (tools/still.mjs with a tier camera): the window's middle and the ball's middle in px of the picture, K px of the picture to a px of the page; the rim reading holds only at K 1
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
@@ -17,6 +18,9 @@ if (what === 'walk') {
     const row = run.rows[st]
     jobs.push({ name: `step ${st}`, file: path.join(rest[1], `step-${String(st).padStart(6, '0')}-x2.png`), bx: row[3], by: row[4] - row[5], scroll: row[5] })
   }
+} else if (what === 'still') {
+  const [file, wx, wy, bx, by, k] = [rest[0], ...rest.slice(1).map(Number)]
+  jobs.push({ name: path.basename(file), file, bx, by, scroll: 0, k, only: { id: 'the window named', x: wx, y: wy, r: ins[0].r * k } })
 } else {
   const { Stage, ScriptDriver, filmFlow, filmOptions } = await load('/src/stage/stage.ts')
   const { pages } = await load('/src/pages/index.ts')
@@ -40,7 +44,8 @@ for (const j of jobs) {
     for (let k = 0; k < 4; k++) sum += lum(cx + (r0 + ((r1 - r0) * k) / 3) * Math.cos(a), cy + (r0 + ((r1 - r0) * k) / 3) * Math.sin(a))
     return sum / 4
   }
-  for (const w of ins) {
+  const k = j.k ?? 1
+  for (const w of j.only ? [j.only] : ins) {
     const wx = w.x
     const wy = w.y - j.scroll
     const dist = Math.hypot(j.bx - wx, j.by - wy)
@@ -52,13 +57,13 @@ for (const j of jobs) {
     for (let i = 0; i < 120; i++) {
       const a = (i * Math.PI) / 60
       for (const q of [20, 35, 50]) {
-        const x = wx + q * Math.cos(a)
-        const y = wy + q * Math.sin(a)
-        if (Math.hypot(x - j.bx, y - j.by) > BALL / 2 + 6) { glassAll += lum(x, y); n0++ }
+        const x = wx + q * k * Math.cos(a)
+        const y = wy + q * k * Math.sin(a)
+        if (Math.hypot(x - j.bx, y - j.by) > (BALL / 2 + 6) * k) { glassAll += lum(x, y); n0++ }
       }
-      const x = wx + (w.r + 12) * Math.cos(a)
-      const y = wy + (w.r + 12) * Math.sin(a)
-      if (Math.hypot(x - j.bx, y - j.by) > BALL / 2 + 10) { halo += lum(x, y); n1++ }
+      const x = wx + (w.r + 12 * k) * Math.cos(a)
+      const y = wy + (w.r + 12 * k) * Math.sin(a)
+      if (Math.hypot(x - j.bx, y - j.by) > (BALL / 2 + 10) * k) { halo += lum(x, y); n1++ }
     }
     const rims = []
     const glass = []
