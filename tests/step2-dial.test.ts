@@ -326,17 +326,37 @@ describe('the rows as they are built', () => {
     }
   })
 
-  it('never leaves a reel\'s legend lying bare on the floor of a tray whose machine has sunk', () => {
-    let sunk = 0
-    for (let t = 13.2; t < 13.7; t += 0.02) {
-      const list = listAt(t)
-      const cabinet = list.find((s) => s.id === 'slot-cabinet')
-      const legends = list.filter((s) => s.id.startsWith('reel-'))
-      if (!cabinet || cabinet.z1 - cabinet.z0 > 2) continue
-      sunk++
-      expect(legends.length, `at ${t.toFixed(2)}`).toBe(0)
+  it('never leaves a reel\'s legend lying bare on the floor of a tray: a legend is in the list only while its own reel and the cabinet are drawn by their makers, and it lies on its reel\'s face, opening and shutting', () => {
+    const DRAWN = 0.02
+    const CABINET = TOP + 20 - TRAY_Z
+    const REEL = 4
+    const sides: [string, number, number][] = [['opening', 8.1, 8.7], ['shutting', 13.2, 13.7]]
+    for (const [side, from, to] of sides) {
+      let housed = 0
+      let lying = 0
+      for (let t = from; t < to; t += 0.02) {
+        const at = `${side} at ${t.toFixed(2)}`
+        const list = listAt(t)
+        const cabinet = list.find((s) => s.id === 'slot-cabinet')
+        const legends = list.filter((s) => s.id.startsWith('reel-'))
+        const cabinetUp = cabinet ? (cabinet.z1 - cabinet.z0) / CABINET : 0
+        if (cabinetUp <= DRAWN) expect(legends.length, at).toBe(0)
+        if (cabinet && cabinet.z1 - cabinet.z0 <= 2) housed++
+        for (const legend of legends) {
+          const reel = list.find((s) => s.id === `slot-reel-${legend.id.split('-')[1]}`)
+          expect(reel, `${at} ${legend.id}`).toBeDefined()
+          expect((reel!.z1 - reel!.z0) / REEL, `${at} ${legend.id}`).toBeGreaterThan(DRAWN)
+          expect(legend.x, `${at} ${legend.id}`).toBeGreaterThanOrEqual(reel!.x)
+          expect(legend.x + legend.w, `${at} ${legend.id}`).toBeLessThanOrEqual(reel!.x + reel!.w)
+          expect(legend.y, `${at} ${legend.id}`).toBeGreaterThanOrEqual(reel!.y)
+          expect(legend.y + legend.h, `${at} ${legend.id}`).toBeLessThanOrEqual(reel!.y + reel!.h)
+          expect(Math.abs(legend.z0 - reel!.z1), `${at} ${legend.id}`).toBeLessThan(1e-6)
+          lying++
+        }
+      }
+      expect(housed, side).toBeGreaterThan(0)
+      expect(lying, side).toBeGreaterThan(0)
     }
-    expect(sunk).toBeGreaterThan(0)
   })
 
   it('builds a tray on its way open for the height it has', () => {

@@ -1,6 +1,7 @@
 // Polish date: the live site at step 2, a picture of every sixtieth of a second while a row's tray opens, without the pack.
 // node pipeline/phase5/polish-date-live.mjs walk LABEL ORDER [LEVEL]   ORDER is the rows to press, as 123, 321 or 2, or self (self2: the first two rows that open themselves)
 // node pipeline/phase5/polish-date-live.mjs measure LABEL
+// node pipeline/phase5/polish-date-live.mjs shut LABEL ROW LEVEL OPENING [AT]   one row pressed and left alone until it shuts: OPENING pictures of its opening and the last SHUT.keep of its shutting; AT is the count of sixtieths from the hand's leaving to the tray shut, found by a first visit without pictures when it is not given
 // node pipeline/phase5/polish-date-live.mjs sheet LABEL ROW NAME [FIRST COUNT STRIDE ZOOM COLS]
 import fs from 'node:fs'
 import path from 'node:path'
@@ -17,6 +18,12 @@ const KEEP = { before: 2, after: 30 }
 // A pixel of the tray's floor is part of a machine's edge when it differs from its left neighbour by more than this many levels.
 const EDGE = 9
 const dir = path.join('out', 'work', 'polish-date', label)
+// The pictures kept of one shutting: this many up to the one on which the tray is shut, and this many after it.
+const SHUT = { keep: 30, after: 2 }
+// The longest a row left alone is waited for, in sixtieths of a second.
+const LONGEST = 400 * HZ
+// The top of the first row's field on the page, as the walks found it.
+const TOP = 318
 
 const send = async (page, act) => {
   if (act.move) await page.mouse.move(act.move[0], act.move[1])
@@ -131,6 +138,65 @@ if (what === 'walk') {
     console.log(`row ${o.row + 1} (${run.order}, ${run.level}): picture, steps since the row began to open, tray height by the page's spring, edge pixels inside the tray, pixels changed since the picture before, mean distance from the last picture`)
     for (const l of lines) console.log(`  ${String(l.n).padStart(2)}  ${String(l.steps).padStart(3)}  ${String(l.tall).padStart(3)}  ${String(l.edges).padStart(6)}  ${String(l.moved).padStart(6)}  ${l.far.toFixed(2)}`)
   }
+} else if (what === 'shut') {
+  const [rowText = '2', level = 'high', openingText = '0', atText = ''] = rest
+  const row = Number(rowText) - 1
+  const opening = Number(openingText)
+  fs.rmSync(dir, { recursive: true, force: true })
+  fs.mkdirSync(dir, { recursive: true })
+  const closedAt = (h) => Boolean(h) && Math.abs(h.x - (FIELD.x + FIELD.w / 2)) < 0.01
+  const visit = async (at) => {
+    const session = await openSession({ format: 'hd', assets: 'web', mode: 'live', query: `&clock=steps&quality=${at < 0 ? 'low' : level}&step=2` })
+    const page = session.page
+    try {
+      await page.waitForFunction(() => Boolean(window.liveRun), null, { timeout: 120000 })
+      const tell = (ticks, shot) =>
+        page.evaluate(([d, s]) => {
+          const r = d > 0 ? window.liveRun.advance(d, !s) : null
+          const t = window.liveRun.told()
+          return { page: t.page, hint: t.hint, png: r && s ? r.png : '' }
+        }, [ticks / HZ, shot])
+      const keep = (t, name) => fs.writeFileSync(path.join(dir, name), Buffer.from(t.png.split(',')[1], 'base64'))
+      await send(page, { move: [300, 900] })
+      let t = await tell(0, false)
+      for (let n = 0; n < 40 && !closedAt(t.hint); n++) t = await tell(15, false)
+      if (!closedAt(t.hint)) throw new Error('the page did not come to rest')
+      await send(page, { move: [FIELD.x + 40, TOP + row * FIELD.pitch + 12] })
+      t = await tell(40, false)
+      for (let n = -KEEP.before; n <= KEEP.after; n++) {
+        if (n === 0) await send(page, { down: true })
+        if (n === 2) await send(page, { up: true })
+        const shot = at >= 0 && n + KEEP.before < opening
+        t = await tell(1, shot)
+        if (shot) keep(t, `row${row + 1}-${String(n + KEEP.before).padStart(3, '0')}.png`)
+      }
+      if (closedAt(t.hint)) throw new Error(`row ${row + 1} did not open`)
+      await send(page, { move: [300, 900] })
+      let n = 0
+      if (at < 0) {
+        while (!closedAt(t.hint) && t.page === 'step2' && n < LONGEST) {
+          t = await tell(1, false)
+          n++
+        }
+        if (!closedAt(t.hint)) throw new Error(`row ${row + 1} did not shut`)
+        return n
+      }
+      const from = at - SHUT.keep + 1
+      t = await tell(from - 1, false)
+      for (let k = 0; k < SHUT.keep + SHUT.after; k++) {
+        t = await tell(1, true)
+        keep(t, `row${row + 1}-shut-${String(k).padStart(3, '0')}.png`)
+      }
+      return at
+    } finally {
+      await session.close()
+    }
+  }
+  const at = atText ? Number(atText) : await visit(-1)
+  console.log(`row ${row + 1}: the tray is shut ${at} sixtieths after the hand leaves`)
+  await visit(at)
+  fs.writeFileSync(path.join(dir, 'run.json'), JSON.stringify({ row: row + 1, level, opening, at, keep: SHUT.keep, after: SHUT.after }) + '\n')
+  console.log(JSON.stringify({ row: row + 1, level, opening, at }))
 } else if (what === 'sheet') {
   const [row, name, first = '0', count = '36', stride = '1', zoom = '1', cols = '3', wide = String(FIELD.w + 40), high = String(FIELD.h + FIELD.gap + FIELD.tray + 36)] = rest
   const run = JSON.parse(fs.readFileSync(path.join(dir, 'run.json'), 'utf8'))
