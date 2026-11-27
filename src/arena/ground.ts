@@ -108,9 +108,9 @@ function slotOutline(insetBy: number): THREE.Vector2[] {
   return out
 }
 
-const WALL_TOP: V3 = [0.3, 0.052, 0.006]
-const WALL_FOOT: V3 = [1.05, 0.26, 0.03]
-const BED: V3 = [2.3, 0.72, 0.11]
+const WALL_TOP: V3 = [0.06, 0.025, 0.014]
+const WALL_FOOT: V3 = [0.2, 0.055, 0.016]
+const BED: V3 = [1.1, 0.33, 0.05]
 const BED_INSET = 3.5
 
 // The tops of the nine slabs with their chamfers, and the walls of the seams below them.
@@ -137,8 +137,10 @@ function slabs(): { tops: THREE.BufferGeometry; walls: THREE.BufferGeometry; bed
       const j = (i + 1) % n
       const t0: V3 = [wx(top[i]!.x), wy(top[i]!.y), 0], t1: V3 = [wx(top[j]!.x), wy(top[j]!.y), 0]
       const l0: V3 = [wx(lip[i]!.x), wy(lip[i]!.y), -ARENA.chamfer * 0.8], l1: V3 = [wx(lip[j]!.x), wy(lip[j]!.y), -ARENA.chamfer * 0.8]
-      const f0: V3 = [wx(foot[i]!.x), wy(foot[i]!.y), -ARENA.seamDepth], f1: V3 = [wx(foot[j]!.x), wy(foot[j]!.y), -ARENA.seamDepth]
-      const m0: V3 = [wx(mid[i]!.x), wy(mid[i]!.y), -ARENA.seamDepth], m1: V3 = [wx(mid[j]!.x), wy(mid[j]!.y), -ARENA.seamDepth]
+      // The picture looks a little from below: what lies deep is seen further down the screen, so the wall under the upper edge shows and the bed glows along the lower edge.
+      const deep = -ARENA.seamDepth, sunk = ARENA.lean * deep
+      const f0: V3 = [wx(foot[i]!.x), wy(foot[i]!.y) + sunk, deep], f1: V3 = [wx(foot[j]!.x), wy(foot[j]!.y) + sunk, deep]
+      const m0: V3 = [wx(mid[i]!.x), wy(mid[i]!.y) + sunk, deep], m1: V3 = [wx(mid[j]!.x), wy(mid[j]!.y) + sunk, deep]
       // The chamfer faces up and out into the seam.
       const out: V3 = [l0[0] - t0[0], l0[1] - t0[1], 3]
       tri(tops, t0, t1, l1, out)
@@ -149,6 +151,11 @@ function slabs(): { tops: THREE.BufferGeometry; walls: THREE.BufferGeometry; bed
       tri(bed, f0, m1, m0, [0, 0, 1], [WALL_FOOT, BED, BED])
     }
   }
+  // Under every joint of three seams, where no slab's bed reaches: one sheet of the same light.
+  const z = -ARENA.seamDepth - 0.5
+  const a: V3 = [-980, -560, z], b: V3 = [980, -560, z], c: V3 = [980, 560, z], d: V3 = [-980, 560, z]
+  tri(bed, a, b, c, [0, 0, 1], [BED, BED, BED])
+  tri(bed, a, c, d, [0, 0, 1], [BED, BED, BED])
   return { tops: geometryOf(tops), walls: geometryOf(walls, true), bed: geometryOf(bed, true) }
 }
 

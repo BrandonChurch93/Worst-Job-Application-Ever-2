@@ -19,10 +19,12 @@ export const ARENA = {
   // The health bar drops into place and lands.
   barAt: 1.7, barLands: 2.12,
   // Sizes.
-  seamHalf: 9, chamfer: 3, seamDepth: 30,
-  pillar: { side: 56, foot: 76, footHigh: 7, high: 240 },
-  pane: { thick: 20, high: 240 },
-  gun: { base: 46, high: 34, barrel: 78 },
+  seamHalf: 12, chamfer: 3, seamDepth: 22,
+  pillar: { side: 56, foot: 76, footHigh: 7, high: 180 },
+  pane: { thick: 14, high: 240 },
+  // The picture is drawn a little from below the page: every standing thing leans up the screen by this much of its height.
+  lean: 0.5,
+  gun: { base: 46, high: 34, barrel: 78, scale: 1.2 },
   slot: { x: 960, y: 967, w: 267, h: 75 },
   bar: { x0: 590, y0: 66, x1: 1333, y1: 137, trackInset: 22, trackHalf: 19, high: 9 },
   label: { x: 960, y: 40, px: 30, font: 'inter-600' },
@@ -202,7 +204,28 @@ export function inset(slab: Slab, d: number): Pt[] {
     const reach = Math.max(-4 * d - 1, Math.min(4 * d + 1, u))
     out.push({ x: ax + t0.x * reach, y: ay + t0.y * reach })
   }
-  return out
+  if (d <= 0) return out
+  // Near a sharp corner the moved line folds over itself. A point that ended up nearer than d to another open side is in such a fold: it takes the place of the nearest point that is not.
+  const near = (q: Pt): number => {
+    let best = Infinity
+    for (let i = 0; i < n; i++) {
+      if (!slab.open[i]) continue
+      const a = o[i]!, b = o[(i + 1) % n]!
+      const ex = b.x - a.x, ey = b.y - a.y
+      const u = Math.max(0, Math.min(1, ((q.x - a.x) * ex + (q.y - a.y) * ey) / (ex * ex + ey * ey || 1)))
+      best = Math.min(best, Math.hypot(q.x - a.x - ex * u, q.y - a.y - ey * u))
+    }
+    return best
+  }
+  const sound = out.map((q, i) => (!slab.open[i] && !slab.open[(i + n - 1) % n]) || near(q) >= d - 0.35)
+  return out.map((q, i) => {
+    if (sound[i]) return q
+    for (let k = 1; k < n; k++) {
+      if (sound[(i + k) % n]) return out[(i + k) % n]!
+      if (sound[(i + n - k) % n]) return out[(i + n - k) % n]!
+    }
+    return q
+  })
 }
 
 // The outline of the middle slab as the fight needs it: the eight joints, clockwise from the upper left.

@@ -54,11 +54,15 @@ export function makeArena(o: { seed?: number } = {}): Arena {
     for (const p of pillars.list) {
       const up = rise(t, p.order)
       p.root.visible = up > 0
+      p.foot.visible = up > 0
+      p.foot.scale.set(1, 1, Math.min(1, Math.max(0.02, up * 6)))
       p.root.scale.set(1, 1, Math.max(0.02, up))
     }
     for (const p of panes.list) {
       const up = rise(t, p.order)
       p.root.visible = up > 0
+      p.foot.visible = up > 0
+      p.foot.scale.set(1, 1, Math.min(1, Math.max(0.02, up * 6)))
       p.root.scale.set(1, 1, Math.max(0.02, up))
     }
     guns.list.forEach((g, i) => poseGun(g, view.corners[i]!, t, light))

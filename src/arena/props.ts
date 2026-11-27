@@ -51,14 +51,24 @@ export interface Kit {
 
 export function makeKit(): Kit {
   const m = materials()
-  const glass = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.56, 0.74, 0.67), roughness: 0.5, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.4, specularIntensity: 0.7, transparent: true, opacity: 0.6, depthWrite: true, side: THREE.FrontSide }))
+  const glass = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.5, 0.7, 0.62), emissive: new THREE.Color(0.2, 0.3, 0.26), roughness: 0.5, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.4, specularIntensity: 0.7, transparent: true, opacity: 0.72, depthWrite: true, side: THREE.FrontSide }))
   const glassEdge = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.8, 0.93, 0.88), roughness: 0.35, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.2, specularIntensity: 0.9, transparent: true, opacity: 0.9 }))
   const broken = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.2, 0.2, 0.21), roughness: 0.82, metalness: 0.55, specularIntensity: 0.5, flatShading: true }))
   const hot = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 1.1, 0.16), toneMapped: false })
   return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, orange: m.orange, broken, hot, own: [glass, glassEdge, broken, hot] }
 }
 
-export interface Pillar { root: THREE.Group; body: THREE.Mesh; x: number; y: number; order: number }
+export interface Pillar { root: THREE.Group; foot: THREE.Mesh; body: THREE.Mesh; x: number; y: number; order: number }
+
+// A thing that stands: its foot at a place on the page, its top leaning up the screen as the picture has it. What is put in `root` rises by root.scale.z.
+export function stand(x: number, y: number): { lean: THREE.Group; root: THREE.Group } {
+  const lean = new THREE.Group()
+  lean.matrixAutoUpdate = false
+  lean.matrix.set(1, 0, 0, wx(x), 0, 1, ARENA.lean, wy(y), 0, 0, 1, 0, 0, 0, 0, 1)
+  const root = new THREE.Group()
+  lean.add(root)
+  return { lean, root }
+}
 
 export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; dispose(): void } {
   const P = ARENA.pillar
@@ -66,19 +76,20 @@ export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; di
   const plate = sweep(roundedRect(P.foot, P.foot, 5, 6), profile([[0, 0, true], [0, P.footHigh - 2], [2, P.footHigh], [9, P.footHigh]]), true)
   const object = new THREE.Group()
   const list: Pillar[] = PILLARS.map((p, i) => {
-    const root = new THREE.Group()
-    root.position.set(wx(p.x), wy(p.y), 0)
+    const { lean, root } = stand(p.x, p.y)
     const b = lit(body, kit.aluminium)
-    root.add(lit(plate, kit.satin), b)
-    object.add(root)
+    const foot = lit(plate, kit.satin)
+    foot.position.set(wx(p.x), wy(p.y), 0)
+    root.add(b)
+    object.add(foot, lean)
     // The inner four first, then the outer four.
     const inner = Math.abs(p.x - 960) < 500
-    return { root, body: b, x: p.x, y: p.y, order: (inner ? 0 : 0.28) + 0.04 * (i % 4) }
+    return { root, foot, body: b, x: p.x, y: p.y, order: (inner ? 0 : 0.28) + 0.04 * (i % 4) }
   })
   return { object, list, dispose: () => { body.dispose(); plate.dispose() } }
 }
 
-export interface Pane { root: THREE.Group; whole: THREE.Group; x: number; y0: number; y1: number; order: number }
+export interface Pane { root: THREE.Group; foot: THREE.Mesh; whole: THREE.Group; x: number; y0: number; y1: number; order: number }
 
 export function makePanes(kit: Kit): { object: THREE.Group; list: Pane[]; dispose(): void } {
   const T = ARENA.pane
@@ -93,17 +104,18 @@ export function makePanes(kit: Kit): { object: THREE.Group; list: Pane[]; dispos
     const shoe = new THREE.BoxGeometry(T.thick + 10, long + 10, 5)
     shoe.translate(0, 0, 2.5)
     made.push(sheet, cap, shoe)
-    const root = new THREE.Group()
-    root.position.set(wx(p.x), wy((p.y0 + p.y1) / 2), 0)
+    const { lean, root } = stand(p.x, (p.y0 + p.y1) / 2)
     const whole = new THREE.Group()
     const s = lit(sheet, kit.glass)
     s.renderOrder = 4
     const c = lit(cap, kit.glassEdge, false)
     c.renderOrder = 5
     whole.add(s, c)
-    root.add(lit(shoe, kit.satin), whole)
-    object.add(root)
-    return { root, whole, x: p.x, y0: p.y0, y1: p.y1, order: 0.5 + 0.08 * i }
+    const rail = lit(shoe, kit.satin)
+    rail.position.set(wx(p.x), wy((p.y0 + p.y1) / 2), 0)
+    root.add(whole)
+    object.add(rail, lean)
+    return { root, foot: rail, whole, x: p.x, y0: p.y0, y1: p.y1, order: 0.5 + 0.08 * i }
   })
   return { object, list, dispose: () => made.forEach((g) => g.dispose()) }
 }
@@ -201,7 +213,7 @@ export function poseGun(gun: Gun, c: ViewCorner, time: number, light?: (e: Emitt
   gun.root.visible = up > 0
   if (!gun.root.visible) return
   gun.root.position.set(wx(c.x), wy(c.y), 0)
-  gun.root.scale.set(1, 1, Math.max(0.02, up))
+  gun.root.scale.set(ARENA.gun.scale, ARENA.gun.scale, ARENA.gun.scale * Math.max(0.02, up))
   // 0 along +x, growing clockwise on the page: on the page y runs down, here it runs up.
   gun.turret.rotation.z = -c.aim
   const tell = clamp01(c.tell)
@@ -263,7 +275,7 @@ export function makeBar(kit: Kit): { bar: Bar; dispose(): void } {
     }
   }
   const boltGeo = merge(bolts)
-  const fullW = trackW - 6, fillH = trackH - 8
+  const fullW = trackW - 3, fillH = trackH - 3
   const half = fillH / 2
   const fillGeo = sweep(outlineOf({ kind: 'capsule', w: fullW, h: fillH }, 0, 18), profile([[0, 2.5, true], [0, 5], [1.2, 7.4], [3.4, 8.8], [half * 0.5, 9.6], [half * 0.97, 9.9]]))
   const root = new THREE.Group()
