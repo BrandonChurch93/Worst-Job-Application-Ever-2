@@ -441,11 +441,25 @@ export function makePage(): PageLogic {
       say('flasher', true)
       flat()
     } else if (e.name === 'ball-save') {
-      if (gag === 'pinball.save' && !s.saved) {
-        s.saved = true
-        say('flipper-save', true)
-        flat()
-      } else say('flasher')
+      const first = gag === 'pinball.save' && !s.saved
+      if (first) s.saved = true
+      say(first ? 'flipper-save' : 'flasher', first)
+      if (first || s.mode === 'live') flat()
+      if (s.mode === 'live') {
+        // Live play: the gate's kick throws the arrow against its shell as any blow on the ball does.
+        const b = ball()
+        const way = Math.atan2(-b.vy, -b.vx)
+        const turn = ROLL.rest + way + TURN
+        s.blow = [Math.min(1, (Math.hypot(b.vx, b.vy) - SHELL.soft) / (SHELL.full - SHELL.soft)), way, s.t]
+        s.lay = [turn - 6.283185307179586 * Math.round(turn / 6.283185307179586), s.t + HIT.hold]
+        io.cursor.strike(s.lay[0]!, HIT.hold)
+        io.cursor.press(HIT.short, HIT.hold)
+        s.snap = s.t
+        s.sway = s.blow[0]! >= HIT.big ? s.t + HIT.hold : -9
+      }
+    } else if (e.name === 'gate-take') {
+      say('flasher', true)
+      io.cursor.react('flinch')
     } else if (e.name === 'doors-slam') {
       s.shut = true
       say('doors-slam', true)
