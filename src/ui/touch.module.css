@@ -19,7 +19,8 @@
   overflow-x: hidden;
   overflow-y: auto;
   box-sizing: border-box;
-  padding: max(28px, calc(var(--u) * 40)) var(--side) max(40px, calc(var(--u) * 64));
+  /* The top margin puts the title where the header of the steps has it: its capitals start 84 page pixels down. */
+  padding: max(28px, calc(var(--u) * 73)) var(--side) max(40px, calc(var(--u) * 64));
   color-scheme: light;
   color-scheme: only light;
   forced-color-adjust: none;
@@ -86,7 +87,8 @@
 .rule {
   /* The machined rule: 6 page pixels thick, never under 4 px. */
   height: max(4px, calc(var(--u) * 6));
-  margin-top: max(18px, calc(var(--u) * 55));
+  /* 26 page pixels under the title's line, so the rule lies 160 page pixels down as on the steps. */
+  margin-top: max(18px, calc(var(--u) * 26));
   border-radius: 999px;
   /* The bands of a turned rod, in hard steps so they stay crisp at every size: a shaded upper line, the lit body, a dark lower edge. */
   background: linear-gradient(to bottom, #c4c1bc 0 10%, #dddedf 10% 36%, #cccecf 36% 50%, #aeafb1 50% 60%, #d0d2d3 60% 74%, #a9aaab 74% 84%, #2f3030 84% 100%);
