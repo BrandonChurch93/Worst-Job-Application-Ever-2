@@ -48,6 +48,8 @@ export interface TypeSpec {
   lead?: number
   // Asks for the quieter ink where the ground has one: the fine print on a card of glass.
   ink?: 'soft'
+  // The run is set only as far as its box is wide, in whole glyphs from the end it is aligned to.
+  cut?: boolean
 }
 
 export interface Shape {
