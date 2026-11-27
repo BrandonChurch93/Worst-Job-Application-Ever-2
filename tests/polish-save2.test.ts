@@ -231,6 +231,7 @@ describe('the arrow and the view at a save, in a live visit', () => {
       const stand = run[take + 7 * EACH]!.scroll
       expect(stand - TIER_Y[k]! * BALL, 'the room under the gate, px').toBeCloseTo(90, 6)
       for (let n = take + 7 * EACH; n <= to; n++) expect(run[n]!.scroll).toBe(stand)
+      for (let n = take; n <= kick; n++) expect(run[n]!.scroll - TIER_Y[k]! * BALL, 'the room under the wire while the ball lies on it, px').toBeGreaterThanOrEqual(45)
     }
   })
 
