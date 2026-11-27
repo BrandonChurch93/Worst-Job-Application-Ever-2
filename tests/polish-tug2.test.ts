@@ -7,6 +7,8 @@ import { visit, type Frame } from './polish-tug2-run'
 const HOLD = {
   // The most the arrow's drawn angle, and its drawn length, may change in one frame through the take.
   turn: 12, length: 0.13,
+  // The most the tail's lag, which turns the tail 0.85 radians at 1, may change in one frame through the take.
+  bend: 0.2,
   // The take is read from the bite for this many frames, and the arrow is never drawn shorter than this in them.
   take: 24, short: 1,
   // The tray's answer on the frame of the grab and on the frame the arrow arrives, px, and how much of its last pace the arrow keeps on that frame.
@@ -55,15 +57,18 @@ describe.each(['visitor', 'keen'] as const)('polish tug 2: the page takes the ar
     let turn = 0
     let length = 0
     let short = 9
+    let bend = 0
     for (let n = bite; n < bite + HOLD.take; n++) {
       turn = Math.max(turn, Math.abs(rows[n]!.angle - rows[n - 1]!.angle))
       length = Math.max(length, Math.abs(rows[n]!.pose.squash - rows[n - 1]!.pose.squash))
       short = Math.min(short, rows[n]!.pose.squash)
+      bend = Math.max(bend, Math.abs(rows[n]!.pose.bend - rows[n - 1]!.pose.bend))
     }
-    console.log(`${who} take: the angle changes ${turn.toFixed(1)} degrees a frame at the most, the length ${length.toFixed(3)}, the shortest is ${short.toFixed(3)}`)
+    console.log(`${who} take: the angle changes ${turn.toFixed(1)} degrees a frame at the most, the length ${length.toFixed(3)}, the shortest is ${short.toFixed(3)}, the tail's lag changes ${bend.toFixed(3)} a frame at the most`)
     expect(turn).toBeLessThanOrEqual(HOLD.turn)
     expect(length).toBeLessThanOrEqual(HOLD.length)
     expect(short).toBeGreaterThan(HOLD.short)
+    expect(bend).toBeLessThanOrEqual(HOLD.bend)
   })
 
   it('hauls the arrow in fastest in the first frames and ends with a stop', () => {
