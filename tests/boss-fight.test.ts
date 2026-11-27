@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { config, stepHz } from '../src/config'
 import { newFight, stepFight, type Arena } from '../src/boss/fight'
 import { DART, HOME, POPUP, SHIELD } from '../src/boss/plan'
+import { GUARD, GUN } from '../src/boss/tune'
 import { pages } from '../src/pages'
 import { makeLayout } from '../src/pages/step4/layout'
 import { ACT, makeScript } from '../src/pages/step4/script'
@@ -22,7 +23,7 @@ const context = (list: Shape[], time = 0, lights: Emitter[] = []): RealContext =
 const io = (pressed: boolean, cursor: { x: number; y: number }, events: string[]): StepIo =>
   ({ dt: 1 / stepHz, time: 0, pressed, pointer: { ...cursor, down: pressed }, cursor: { ...cursor, damaged: false, act: () => undefined, react: () => undefined, hurt: () => undefined, knock: () => undefined }, emit: (name: string) => void events.push(name) }) as unknown as StepIo
 
-const arena: Arena = { slabs: [], popups: [] }
+const arena: Arena = { popups: [] }
 
 function frames(): { time: number; list: Shape[] }[] {
   const stage = film()
@@ -74,39 +75,40 @@ describe('the boss fight, made real', () => {
     expect(keys.get('health-track')!.size).toBe(1)
   })
 
-  it('fires a volley with each click, and a click still does the damage of three', () => {
+  it('fires a volley with each click, and a volley that meets the shield takes almost nothing', () => {
     const f = newFight(HOME.x, HOME.y)
     const events: string[] = []
     stepFight(f, io(true, { x: 450, y: 900 }, events), arena)
     for (let i = 0; i < stepHz * 1.2; i++) stepFight(f, io(false, { x: 450, y: 900 }, events), arena)
     expect(events.filter((e) => e === 'dart-fire').length).toBe(DART.volley)
-    expect(events.filter((e) => e === 'dart-hit').length).toBe(DART.volley)
+    expect(events.filter((e) => e === 'shield-glance').length).toBe(DART.volley)
+    expect(events.filter((e) => e === 'dart-hit').length).toBe(0)
     expect(POPUP.hp).toBe(3 * DART.volley)
-    expect(100 - f.health).toBeCloseTo(DART.damage[0] * DART.volley, 5)
+    expect(100 - f.health).toBeCloseTo(GUARD.chip * DART.volley, 5)
   })
 
-  it('stops a dart from the left on the glass shield, and sets its spark on the glass', () => {
+  it('stops a dart from the left on the shield, and sets its spark on the shield', () => {
     const f = newFight(HOME.x, HOME.y)
     const events: string[] = []
     stepFight(f, io(true, { x: 450, y: 900 }, events), arena)
-    let seen: { x: number; z: number } | null = null
+    let seen: { far: number; z: number } | null = null
     for (let i = 0; i < stepHz && !seen; i++) {
       stepFight(f, io(false, { x: 450, y: 900 }, events), arena)
-      if (f.sparks.length) seen = { x: f.sparks[0]!.x - f.x, z: f.sparks[0]!.z ?? 0 }
+      if (f.sparks.length) seen = { far: Math.hypot(f.sparks[0]!.x - f.x, f.sparks[0]!.y - f.y), z: f.sparks[0]!.z ?? 0 }
     }
     expect(seen).not.toBeNull()
-    expect(seen!.x).toBeCloseTo(SHIELD.x, 3)
+    expect(seen!.far).toBeCloseTo(GUARD.radius, 3)
     expect(seen!.z).toBe(SHIELD.z)
   })
 
-  it('shows, in the key picture of the fight, a slab in flight, a stream of darts, a spark and the health bar', () => {
+  it('shows, in the key picture of the fight, a stream of darts, a spark and the health bar, and no slab in flight', () => {
     const at = beats.find((b) => b.id === 'boss.slabs')!
     const t = at.from + (at.to - at.from) * 0.5
     const f = all.reduce((a, b) => (Math.abs(b.time - t) < Math.abs(a.time - t) ? b : a))
     const ids = f.list.map((s) => s.id)
     expect(ids.filter((id) => /^dart-\d+$/.test(id)).length).toBeGreaterThanOrEqual(4)
     expect(ids.filter((id) => /^spark-\d+$/.test(id)).length).toBeGreaterThanOrEqual(1)
-    expect(f.list.filter((s) => /^fired-\d+$/.test(s.id) && s.z0 > 10).length).toBeGreaterThanOrEqual(1)
+    expect(f.list.filter((s) => /^fired-\d+$/.test(s.id)).length).toBe(0)
     expect(ids).toContain('health-fill')
     expect(ids).toContain('health-track')
   })
@@ -166,19 +168,18 @@ describe('the boss fight, made real', () => {
     for (const e of lights) expect(e.power).toBeGreaterThan(0)
   })
 
-  it('shows the fight of the key: three slabs in the air, darts in a stream, a spark, the health near half', () => {
+  it('shows the fight of the key: no slab in any frame, darts in a stream, a spark, the health still high', () => {
     const beat = beats.find((b) => b.id === 'boss.slabs')!
     const at = (beat.from + beat.to) / 2
-    const frame = frames().find((f) => f.time >= at - 1e-6)!
-    const flying = frame.list.filter((s) => /^fired-\d+$/.test(s.id) && (s.v?.[2] ?? 9) < 9)
-    expect(flying.length).toBe(3)
-    expect(new Set(flying.map((s) => Math.round(s.y / 60))).size).toBe(3)
+    const every = frames()
+    const frame = every.find((f) => f.time >= at - 1e-6)!
+    for (const f of every) expect(f.list.some((s) => /^fired-\d+$/.test(s.id)), `a slab at ${f.time.toFixed(2)}`).toBe(false)
     expect(frame.list.filter((s) => s.id.startsWith('dart-')).length).toBeGreaterThanOrEqual(4)
     expect(frame.list.some((s) => s.id.startsWith('spark-'))).toBe(true)
     const fill = frame.list.find((s) => s.id === 'health-fill')!
     const part = fill.w / fill.v![0]!
-    expect(part).toBeGreaterThan(0.5)
-    expect(part).toBeLessThan(0.62)
+    expect(part).toBeGreaterThan(0.75)
+    expect(part).toBeLessThan(1)
   })
 
   it('presses the checkbox cap down under the click and lets it come back to rest', () => {
@@ -203,21 +204,31 @@ describe('the boss fight, made real', () => {
     expect(sheet.height! - (cap.y + cap.h / 2 + 240)).toBeGreaterThan(60)
   })
 
-  it('keeps the tail of a fired slab at the mouth until the whole block is out', () => {
+  it('sends each bullet of the film straight, at the speed of its gun, with its trail behind it', () => {
     const all = frames()
-    const first = all.findIndex((f) => f.list.some((s) => /^fired-\d+$/.test(s.id) && (s.v?.[2] ?? 9) < 9))
-    const id = all[first]!.list.find((s) => /^fired-\d+$/.test(s.id))!.id
-    const seen: { x: number; y: number; half: number }[] = []
-    for (let n = first; n < first + 30; n++) {
-      const slab = all[n]!.list.find((s) => s.id === id)
-      if (!slab || (slab.v?.[0] ?? 1) >= 1) break
-      seen.push({ x: slab.x + slab.w / 2, y: slab.y + slab.h / 2, half: (slab.w / 2) * slab.v![0]! })
+    const first = all.findIndex((f) => f.list.some((s) => /^bullet-\d+$/.test(s.id)))
+    expect(first).toBeGreaterThan(0)
+    const id = all[first]!.list.find((s) => /^bullet-\d+$/.test(s.id))!.id
+    const seen: { t: number; x: number; y: number; tx: number; ty: number }[] = []
+    for (let n = first; n < first + 12; n++) {
+      const ball = all[n]!.list.find((s) => s.id === id)
+      const trail = all[n]!.list.find((s) => s.id === `${id}-trail`)
+      if (ball && !trail && !seen.length) continue
+      if (!ball || !trail) break
+      seen.push({ t: all[n]!.time, x: ball.x + ball.w / 2, y: ball.y + ball.h / 2, tx: trail.x + trail.w / 2, ty: trail.y + trail.h / 2 })
     }
-    expect(seen.length).toBeGreaterThan(2)
+    expect(seen.length).toBeGreaterThan(4)
     const a = seen[0]!
     const b = seen[seen.length - 1]!
     const l = Math.hypot(b.x - a.x, b.y - a.y)
-    const tails = seen.map((p) => ((p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)) / l - p.half)
-    expect(Math.max(...tails) - Math.min(...tails)).toBeLessThan(2)
+    expect(l / (b.t - a.t)).toBeGreaterThan(GUN.speed[0] - 12)
+    expect(l / (b.t - a.t)).toBeLessThan(GUN.speed[2] + 12)
+    for (const p of seen) {
+      const off = Math.abs((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x)) / l
+      expect(off).toBeLessThan(1)
+      expect((p.tx - p.x) * (b.x - a.x) + (p.ty - p.y) * (b.y - a.y)).toBeLessThan(0)
+    }
+    const ball = all[first]!.list.find((s) => s.id === id)!
+    expect(ball.w).toBe(GUN.r * 2)
   })
 })

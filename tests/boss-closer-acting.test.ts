@@ -57,7 +57,7 @@ describe('the acting of step 4 in the film', () => {
   })
 
   it('shows the bar going back up at the last stand', () => {
-    const bar = span(22, 25)
+    const bar = span(22, 24)
     const low = Math.min(...bar.map((s) => s.health))
     const after = bar.slice(bar.findIndex((s) => s.health === low))
     expect(Math.max(...after.map((s) => s.health)) - low).toBeGreaterThan(100)

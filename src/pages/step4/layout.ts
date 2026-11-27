@@ -5,7 +5,7 @@ import { block } from '../../shell/metrics'
 import { button, buttonWidth, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { ARENA, FALLEN, HOME, SLAB_H, SOCKET } from '../../boss/plan'
-import { POPUP_RIGHT } from '../../boss/tune'
+import { POPUP_RIGHT, RACK_GAP } from '../../boss/tune'
 import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../boss/weapons'
 
 const heights = config.scale.heights
@@ -99,7 +99,7 @@ export function makeLayout(): Step4Layout {
     'slab-rack',
     LEFT + 12,
     ARENA.y0 + 30,
-    16,
+    RACK_GAP,
     slabPlans.map((p, i) => (x: number, y: number) =>
       node(`slab-${i}`, 'slab', [x, y, p.w, p.h], {
         part: 'boss-weapons',

@@ -113,6 +113,7 @@ export const FILM = { dart: [2.4, 2, 3.4] as const } as const
 
 // The right edge of the pop-ups, which stand left of the boss's fence.
 export const POPUP_RIGHT = 1040
+export const RACK_GAP = 36 // page px between the old validation slabs in the layout tree, where their words are still registered and never drawn in the fight; wide enough for the last one to lie under the lowest pop-up
 
 // The top of the screen during the fight.
 export const TOP = {
