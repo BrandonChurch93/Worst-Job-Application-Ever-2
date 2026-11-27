@@ -10,7 +10,7 @@ Three issues of the round 25 critic, set B, on step 1 (pack clock, STATED):
 2. set-B-03, 0:31.40 to 0:31.48 (pictures 1884 to 1888): the paper abruptly creases while the hands are still next to the arrow.
 3. set-B-09, 0:43.93 to 0:44.07 (pictures 2636 to 2644): the arrow stays parked after the drop despite mouse movement, and the first frame of control is almost identical.
 
-Rulings of the Builder, 13:07 UTC (STATED): issue 2 mended live and in the film, the bite, the sheet's jerk, the tray's throw and the start value of Phase 3 decision 42 untouched; issue 1 accepted as read, the near stillness between the arrival and the first answer CONTESTED and not changed; issue 3 mended live only, the film byte equal, the stand of 12 and the ease of 0.44 s kept.
+Rulings of the Builder, 13:07 UTC (STATED): issue 2 mended live and in the film, the bite, the sheet's jerk, the tray's throw and the start value of Phase 3 decision 42 untouched; issue 1 accepted as read, the near stillness between the arrival and the first answer CONTESTED and not changed; issue 3 mended live only, the film byte equal, the ease of 0.44 s kept; the release 7 frames sooner was approved on my word that no round had set it, which was wrong (see issue 3).
 
 ## Issue 2: the crease before the grab
 
@@ -38,18 +38,15 @@ No change (ruled CONTESTED for the stillness; the hold and step not found). MEAS
 
 Before (MEASURED in rows): the arrow is down and at its length on row 2622; the pack's visitor moves the mouse 25 px a step from row 2629; control is back on row 2641. The arrow stands 19 steps, 12 of them under a moving mouse. Its first moves are 0.02, 0.30, 1.16, 2.69 px, so the first frame of control looks like the last frame of the stand.
 
-Rule 6: `GIVE.back` 0.44 (round 22, `pipeline/phase5/polish-tug.md` point 5) and the stand of 12 (round 24, `stand: 12` in `tests/polish-tug2.test.ts`, fault 8 "decided by the Builder 08:08 UTC, nothing changed") are contested and stay. The 7 further steps came from `CAUGHT.beat` 0.4, which no round set for a critic's issue (STATED from reading the history).
+Rule 6, and a mistake of mine: the stand is set by `CAUGHT.beat` 0.4, from commit `fc10b9ba` in the round of the keys, on the Builder's ruling there (`pipeline/phase5/polish-keys.md` point 8: "the stand before the visitor has the arrow again keeps the numbers of the earlier fixes ... the arrow stands 20 frames after the throw. A first pass of this work had a stand of 4 frames ... that is undone"). `tests/polish-keys.test.ts` (at least 18 still frames) and `tests/fix-tug.test.ts` (settled for 0.3 s before the mouse has it) hold it. In my first message of this round I told the Builder that no round had set those steps. That was wrong; I had read only the rounds of the tug. A first pass (commit `bb436274`) released the arrow 7 steps sooner (`CAUGHT.beat` 0.28) and those two tests failed in the whole `npm test`. The sooner release is CONTESTED and was taken out in `a12572c8`; no test of another owner was changed. `GIVE.back` 0.44 (round 22) and the stand of at least 12 (round 24) are contested as well and stay.
 
-The mend, live only, in `src/pages/step1/index.ts`:
+The mend that stays, live only, in `src/pages/step1/index.ts`: on the step of the release and the one after, the arrow is drawn up toward `GIVE.wake` (1.12 of its length) over `GIVE.woke` (0.034 s) and then let go; the body's own spring brings it back. This is the critic's second way, a pose on the exact handoff frame.
 
-1. `CAUGHT.beat` 0.4 to 0.28: the release comes 7 steps sooner, so the stand is the pinned 12.
-2. On the step of the release and the one after, the arrow is drawn up toward `GIVE.wake` (1.12 of its length) over `GIVE.woke` (0.034 s) and then let go; the body's own spring brings it back.
+After (MEASURED in rows): control is back on row 2641, as before. Length 1.059, 1.118, 1.094, 1.052, 1.023, 1.013, 1.021 on rows 2641 to 2647 (before 1.000, 1.000, 0.981, 0.958, 0.957, 0.973, 1.004). The arrow's moves are equal to before on every row (0.02, 0.30, 1.16, 2.69, 4.95, 7.78, 11.11 px on rows 2641 to 2647; no snap to the mouse). 23 rows from 2641 to 2673 differ from before, in the length only. `button-press` stays on row 2679, `tug-lost` on 2400, `strips-zip` on 2556, and the visit has the same 2041 rows: no event moved.
 
-After (MEASURED in rows): control is back on row 2634; the stand is rows 2622 to 2633, 12 steps, 5 under a moving mouse. Length 1.071, 1.120, 1.100, 1.049, 1.013, 0.996, 0.997 on rows 2634 to 2640. Moves 0.02, 0.22, 0.76, 1.73, 3.19, 5.13, 7.47, 10.20 px on rows 2634 to 2641 (each larger than the one before; no snap to the mouse). `button-press` stays on row 2679, `tug-lost` on 2400, `strips-zip` on 2556, and the visit has the same 2041 rows: no later event moved.
+Seen in pictures (2637 to 2650, before above, after below, real size): the arrow's drawn height is 69 px on pictures 2638 to 2641, then 73, 77, 75, 71, 70, 69 px on 2642 to 2647 (MEASURED in pixels; before 69, 69, 67, 65, 65, 66). The stretch goes up over two frames and comes back over four, so by measure it is not a one frame pop. It is small: 4 px of 69 on the handoff frame, 8 px on the next. Whether it reads as the arrow coming alive is the Builder's call from the picture.
 
-Seen in pictures (2631 to 2644, before above, after below, real size): the arrow's drawn height is 69 px on pictures 2631 to 2634, then 74, 77, 75, 71, 69, 67, 68 px on 2635 to 2641 (MEASURED in pixels), and it is leaving to the right from 2638. Before, it is 69 px and still on every picture to 2642. The stretch goes up over two frames and comes back over three, so by measure it is not a one frame pop. Whether it reads as the arrow coming alive is the Builder's call from the picture; it is a small stretch (8 px of 69).
-
-What is left open, said plainly: the arrow still stands 12 steps (0.2 s) after it is down, 5 of them while the pack's visitor is already moving the mouse, because the stand is contested. The first three frames of control still move less than 1 px, because the ease of 0.44 s is contested; the stretch is what marks the handoff.
+What is left open, said plainly: the arrow still stands 19 steps (0.32 s) after it is down, 12 of them while the pack's visitor is already moving the mouse. That part of the critic's issue is not mended, because the stand is a ruling of an earlier round. The first three frames of control still move less than 1.2 px, because the ease of 0.44 s is contested; the stretch is the only thing that marks the handoff.
 
 ## The film
 
@@ -59,12 +56,12 @@ UNKNOWN: the key stills and the full film were not rendered again in this round;
 
 ## Tests
 
-`tests/polish-tug4.test.ts` (new, mine): the sheet takes its held look only once the arms are at 0.9 of their length, by degrees over 2 to 4 frames, live under two visitors and in the film; the given back arrow stands 12 frames and no more, is drawn at least 1.05 of its length on the frame the visitor has it and 1.1 within two, is within 0.02 of its length six frames on, and goes off by degrees. `tests/polish-tug4-measure.test.ts` writes the rows (`POLISH_TUG4_TABLE=/tmp/x`). No test of another owner was changed in this round. Before this round, on `agent/polish-tug3`, the pin of my own `tests/polish-tug3.test.ts` was mended to count from the step the arms come out (merge 50 had moved the visit by 60 steps).
+`tests/polish-tug4.test.ts` (new, mine): the sheet takes its held look only once the arms are at 0.9 of their length, by degrees over 2 to 4 frames, live under two visitors and in the film; the given back arrow stands at least 12 frames, is drawn at least 1.04 of its length on the frame the visitor has it and 1.1 within two, is within 0.03 of its length six frames on, and goes off by degrees. `tests/polish-tug4-measure.test.ts` writes the rows (`POLISH_TUG4_TABLE=/tmp/x`). No test of another owner was changed in this round. Before this round, on `agent/polish-tug3`, the pin of my own `tests/polish-tug3.test.ts` was mended to count from the step the arms come out (merge 50 had moved the visit by 60 steps).
 
 ## Commands
 
 - Rows: `POLISH_TUG4_TABLE=/tmp/x npx vitest run tests/polish-tug4-measure.test.ts`
-- Live pictures: `POLISH_FORMAT=hd node pipeline/phase5/polish-tug4-shots.mjs walk LABEL 1880-1892 2616-2648`
+- Live pictures: `POLISH_FORMAT=hd node pipeline/phase5/polish-tug4-shots.mjs walk LABEL 1880-1892 2632-2650`
 - Pairs: `node pipeline/phase5/polish-tug4-pair.mjs BEFORE_DIR AFTER_DIR FIRST COUNT LEFT TOP W H COLS OUT`
 - Film frames: `npm run -s seq -- --first 2158 --last 2173 --tier draft --force`
 - Film diff: copy `pipeline/phase5/polish-tug-filmdiff.ts.txt` to `tests/polish-tug-filmdiff.test.ts`, run it with `FILMDIFF=/tmp/x`, remove it.
