@@ -123,6 +123,15 @@ The site shows its touch page (`touchOnly()` in `src/ui/device.ts`, then `mountT
 - Colour range and matrix: the file is BT.709, limited range, and all four tags say so (`ffprobe`, above); the measured mean difference of the pictures leaves no room for a range fault (a range fault alone is about 16 of 255 in the darks).
 - Scaling: the element is laid on the canvas's own box, read from `getBoundingClientRect` at the join and on every resize; `object-fit: fill`.
 
+### The real clock a second time, after the change of the cue rule
+
+`node pipeline/change002/video-join.mjs --only 1280x720@1 --quality low --hide 12 --out out/work/video-join-time2`, 23:54Z to 23:57Z, `out/work/video-join-time2/joins.json`.
+
+- Cues: 60 of 60 sounded (59 before the change). Late by, mean of the absolute values / worst: first third 5.22 / 8.00 ms, middle third 5.46 / 8.53 ms, last third 13.64 / 195.83 ms, all 8.11 / 195.83 ms, the 50 after the tab was hidden and shown 8.71 / 195.83 ms. The mean is under one display frame (16.7 ms). The worst is not under 50 ms: one cue of the last third came 195.83 ms late; the other 19 of that third have a mean of 4.05 ms (a sum: 13.64 x 20 less 195.83, over 19). Which cue was not read from the trace. STATED, not proved: it is `peel-up`, the cue the first run passed over, which falls in the last 0.3 s of the video where the page draws its own picture under the video, and one such picture holds the page for 0.7 to 1.5 s on this machine. On a machine that draws a live picture in a few ms: UNKNOWN.
+- Times: asked to fade 2966 ms (2 live pictures), fade in 1500 ms, play asked to first moving frame 149.9 ms (8.99 display frames), 2184 decoded, 45 dropped, gap median 16.7 ms, p99 33.4 ms, largest 2016.6 ms; last frame to fade 1683 ms, fade out 1600 ms, faded to left 16.7 ms (1 display frame).
+- The screen at the join in (pictures of the screencast in a row, light as the mean of the picture): 203.51, 203.51, 203.63 live, then 201.51, 201.51 the video's first frame: a step of 2.15 of 255 darker, the largest in that row. That is the light of tier final against the live picture (above), spread over the 0.2 s of the fade on a machine that draws the fade; here the fade is one picture.
+- The screen at the join out: the screencast gave no picture at or after the start of the fade out, so the row holds none; in the 4 s before it the light went from 197.21 to 204.12, largest step 7.22, and where in those 4 s was not read. The first run had 204.06 to 204.12 over 24 pictures. Why the two runs differ: UNKNOWN.
+
 ### Sound
 
 Same run. The offset between a cue's moment in the film and the video's clock when the page sounded it, as mean of the absolute offsets and worst: first third of the video 3.82 ms, 7.53 ms (19 cues); middle third 5.02 ms, 7.90 ms (20); last third 4.87 ms, 9.63 ms (20); the 46 cues after the tab was hidden for 2 s and shown again 4.76 ms, 9.63 ms. The Builder's limits: under 16.7 ms on average, under 50 ms at worst. With the mean signed offset -1.21 ms: the cue lead of 1/120 s puts them about even round their frames.
@@ -182,5 +191,5 @@ A correction to the first report: the presses reported then (28.42 s, 31.43 s, 3
 - Every time at the real clock on a machine with a graphics card (the 2 live frames before the fade, the fades, the start of play, the join out): UNKNOWN. This machine draws a live frame of the pinball page in 0.7 to 1.5 s.
 - Safari and Firefox: not run here. STATED: both play H.264 High in MP4 from a blob. Their colour handling of the file against the canvas: UNKNOWN.
 - Why the film's renderer gives a darker frame at tier final than at draft (7.0 of 255 on the join in frame): UNKNOWN, outside this unit; told to the Builder.
-- The last cue (`peel-up`) in the browser after the change of the passing-over rule: not measured again.
+- The limit of 50 ms at worst for a cue is not kept by one cue on this machine (the second run of the real clock, below). Not mended.
 - `npm run hostcheck` with the pieces in place: not run (it builds a clean copy, on which the stand-in's pieces are not present).
