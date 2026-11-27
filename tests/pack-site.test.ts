@@ -461,7 +461,7 @@ describe('the packs of the unit site', () => {
     expect(save[1]!.at).toBe(3 * LONG + 200)
     for (const f of save) {
       expect(f.heading).toMatch(/^Consecutive frames, 1\/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the gate's wire, its posts and both bats' tips, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page \(x \d+ to \d+, y \d+ to \d+ of the page\), sheet \d of 3 of one run/)
-      expect(f.heading).toMatch(/: \d:\d\d\.\d\d to \d:\d\d\.\d\d\. The ball is low in the mouth from 0:18\.17 and goes back up from 0:18\.33, moved 63 px up in that one step\. The page's own picture ends 0 px under the wire's lowest place in these frames, and the window ends with it\. Under a frame, L or R/)
+      expect(f.heading).toMatch(/: \d:\d\d\.\d\d to \d:\d\d\.\d\d\. The ball is low in the mouth from 0:18\.17 and goes back up from 0:18\.33, moved 63 px up in that one step\. The page's own picture ends 31 px above the ball's foot at its lowest in these frames, so the wire that leans on the ball there is not in the picture; the window ends with the picture\. Under a frame, L or R/)
       expect(f.heading).not.toMatch(/strik|throw|its own bat|round the arrow/)
     }
     // One fixed window for the whole run, taken from the run's rows: at 100% it holds the gate's posts, both bats' tips and the wire's lowest place in every frame.

@@ -20,7 +20,7 @@ The plan laid the turn and the seat at 1/30 s on whole frames at 24%, the take a
 8. The give back: no change outside my files. `P` under each frame while the page holds the arrow, "follows" under the first frame in which the arrow follows the pointer again (found from the rows: the arrow moves, stands 3 to 60 steps, moves again). The page's release (row 2581 of the old visit, MEASURED by r24_fix_tug) is not in the rows the site tells; the sheet marks the first following frame and the heading carries the page's design in the Builder's words. 7 heading lines, tile 461 by 272.
 9. The drop: `DROP = { before 6, after 24, tube 170 }`, hung on the step at which the ball first moves (`moments.leaves`). Window 344 by 594: the collar's ring (330 px), the cup and 170 px of tube under the ring in every frame, with each row's scroll.
 10. The close blow: `BLOW.room 8`; the window is the box of the ball (96 px) in every frame of the run with 8 px round it, 461 by 594, 6 frames a sheet.
-11. The save: `GATE = { under 20, hole 11.05, wire 8, room 8 }`, `gateWindow()`. The window is laid from the rows: the wire's lowest place in each frame (the mouth's line, or the foot of the ball while it lies in the mouth), 20 px under it if the page's picture goes that far, the posts at the mouth's two sides, both bats' tips. On today's view the page's picture ends at the wire, and the heading says how many px are under it.
+11. The save: `GATE = { under 20, hole 11.05, wire 8, room 8 }`, `gateWindow()`. The window is laid from the rows: the wire's lowest place in each frame (the mouth's line, or the foot of the ball while it lies in the mouth), 20 px under it if the page's picture goes that far, the posts at the mouth's two sides, both bats' tips. On today's view the ball's foot at its lowest lies on the foot of the page's picture (the rows: 1080.3 of 1080) and the wire that leans on the ball is out of the picture; the heading says so (`gateWords`). MEASURED on the picture of step 6798, the gate at rest: the wire's two rails lie on rows 1062 to 1067, its line by the layout at 1060.8, so `wire` 8 holds them.
 
 ## MEASURED
 
@@ -36,3 +36,22 @@ The plan laid the turn and the seat at 1/30 s on whole frames at 24%, the take a
 - `pack-frames-gap.mjs`: the height of the dark gap over the page's edge in a row of pictures.
 - `pack-frames-sheets.mjs`: the sheets of chosen moments only, from a walk's rows.
 - `pack-frames-rows.mjs`: the rows the motion plan reads, cut from a walk, for `tests/pack-frames.test.ts`.
+
+## The round 24 pack on 2bacfab4 (src = b3e4f902), what the sheets show
+
+`npm run -s pack -- --phase 5 --round 24 --unit site --role R4`: exit 0, 08:33:31 to 09:08:21 UTC. 31 sheets, sets A 9, B 9, C 6, D 7; limitTook, leftOut and missing empty. Every sheet seen whole (my viewer shows a 1400 px sheet at about 80%); real-size cuts where said.
+
+- A-01 walk: twelve whole frames at 24%, the arrow crosses the cards.
+- A-02 to A-04 turn: M under 0:09.93 to 0:10.13, none after; the old page swings away, the new page stands on its edge at 0:10.47 and closes; A-04 has no M and its heading says the visitor does not move the mouse and the page's arrow moves from 0:10.97.
+- A-05 to A-08 seat, close (real-size cuts of A-05 frames 3 to 6 and A-06 frames 1 to 6): the dark gap over the page's upper edge shrinks frame by frame; "contact" stands under 0:10.75 and that frame has no gap; the five knobs and the rule under them are whole in each frame; the right edge slants in on 0:10.80 to 0:10.83. The tray corner beside it: MEASURED on the pictures (mean grey right of the tray's edge, x 946 to 986, y 340 to 440 of the page): 229 to 230 on steps 641 to 644, 218 on 645 (contact), 211 to 218 across the strip on 646 and 647, 220 to 227 on 648, 229 and 227 on 649 and 650, 217 to 222 from 651, 218 at rest from 654.
+- A-09 hit: the bolt hits the arrow on the key G at 0:14.98, 50%.
+- B-01, B-02 key (real-size cut): key O; "down" under 0:22.17 to 0:22.35; the key sinks, then leaps away from the arrow; no turret and no bolt in any frame (a round shut hatch stands right of the keys); M under the frames while the button is held (the hand trembles a few px) and none under the six frames after the release.
+- B-03 to B-05 take (real-size cut): P from 0:31.40; the arrow at the button, both arms growing to the paper, the paper bends and leaves the slot, the arrow goes after it; holder and tray corner in every frame. The button's left end is cut by the window.
+- B-06 to B-09 give back (real-size cut): P to 0:44.03, "follows" under 0:44.05, M under every frame from 0:43.68.
+- C-01, C-02 flippers, 50%: the arrow goes into the cup and the ball closes round it; the ball leaves the port.
+- C-03 to C-06 drop (real-size cut): the collar's ring, the cup and the tube with two bands whole in every frame; the ball still to 1:39.20, moving from 1:39.22.
+- D-01 to D-03 save (real-size cut): both bats' tips, the posts and the wire; the ball's foot touches the picture's lower edge at 1:53.48.
+- D-04, D-05 flip, 27%: L under 2:06.33 to 2:06.47.
+- D-06, D-07 close blow (real-size cut): the ball whole in all twelve frames; the bat is down on 2:06.32 and up on 2:06.33.
+
+Faults of this build's headings, mended after it: the take said the arrow "has come to rest (0:31.78, from where it moves under 1 px a frame)", the rows hold 1.20, 1.73 and 1.10 px on three of the six frames after; the save said the picture "ends 0 px under the wire's lowest place", the wire under the ball is out of the picture.

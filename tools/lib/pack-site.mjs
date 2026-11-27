@@ -1099,6 +1099,7 @@ export const TAKEN = { before: 6, after: 6, rest: 1, moves: 5, most: 240, room: 
 export const DROP = { before: 6, after: 24, port: [1627, 520], ring: 330, cup: 220, tube: 170, room: 6 }
 // The gate at the mouth, for the save's window: the wire lies `hole` widths of the ball down its tier (MOUTH.hole in src/table/layout.ts) and under the ball while it holds one;
 // the window holds `under` px under the wire's lowest place where the page's picture has them, and the bats' tips with `room` round them.
+// MEASURED on the picture of step 6798 of the recorded visit, the gate at rest: the wire's two rails lie on rows 1062 to 1067 of the page, its line by the layout at 1060.8: 6.2 px, so `wire` 8 holds them.
 export const GATE = { under: 20, hole: 11.05, wire: 8, room: 8 }
 // The window of a run of the save, from the rows of its frames: the wire's lowest place is the lower of its line at rest and the foot of a ball that lies in the mouth, `wire` px thick;
 // the window's lower edge lies GATE.under px under it, or on the foot of the page's picture where the picture ends sooner; `under` is how many px it does hold there.
@@ -1112,9 +1113,21 @@ export function gateWindow(cfg, run, steps, layout) {
     return (g.y(tier) + Math.max(GATE.hole, inMouth ? b.v + REACH.ballR : 0)) * g.ball + GATE.wire - rows[i][COL.scroll]
   }
   const low = Math.max(...steps.map(wire))
+  const ball = Math.max(...steps.map((i) => {
+    const b = ballAt(cfg, rows[i])
+    return b.tier === tier && Math.abs(b.u - MACHINE.mid) <= MACHINE.mouthHalf ? (g.y(tier) + b.v + REACH.ballR) * g.ball - rows[i][COL.scroll] : -Infinity
+  }))
   const foot = Math.min(cfg.formats.hd.height, low + GATE.under)
   const fit = closeFit(cfg, [(MACHINE.mid - MACHINE.mouthHalf) * g.ball - GATE.room, foot - layout.h, (MACHINE.mid + MACHINE.mouthHalf) * g.ball + GATE.room, foot], layout, true)
-  return { ...fit, tier, low, under: fit.window[1] + fit.window[3] - low }
+  return { ...fit, tier, low, ball, under: fit.window[1] + fit.window[3] - low }
+}
+// What a save's heading says of the room under the wire, from what its window holds: the 20 px, fewer, or a picture that ends at the ball's foot with the wire under it out of sight.
+export function gateWords(win) {
+  if (win.under >= GATE.under) return `The window holds ${GATE.under} px or more under the wire's lowest place in every frame`
+  if (win.under >= 0) return `The page's own picture ends ${Math.round(win.under)} px under the wire's lowest place in these frames, and the window ends with it`
+  const gap = win.window[1] + win.window[3] - win.ball
+  const px = Math.abs(Math.round(gap))
+  return `The page's own picture ends ${px === 0 ? 'at' : `${px} px ${gap >= 0 ? 'under' : 'above'}`} the ball's foot at its lowest in these frames, so the wire that leans on the ball there is not in the picture; the window ends with the picture`
 }
 // The close blow: the ball with `room` px round it in every frame.
 export const BLOW = { room: 8 }
@@ -1328,7 +1341,7 @@ export function motionPlan(cfg, run) {
     const shut = (from, to, at, text, after) => {
       const win = gateWindow(cfg, run, range(from, to), twelve)
       close('save', text, from, to, at, twelve, [win.window], win.percent, `one fixed window on the gate's wire, its posts and both bats' tips, ${scaleWords(win.percent)} (${placeWords(win.window)})`, ['hand'])
-      runs[runs.length - 1].after = `${after}. ${win.under >= GATE.under ? `The window holds ${GATE.under} px or more under the wire's lowest place in every frame` : `The page's own picture ends ${Math.max(0, Math.round(win.under))} px under the wire's lowest place in these frames, and the window ends with it`}`
+      runs[runs.length - 1].after = `${after}. ${gateWords(win)}`
     }
     if (need <= SAVE.sheets) shut(g.take - SAVE.before, g.take - SAVE.before + need * count - 1, g.kick, words, told)
     else {

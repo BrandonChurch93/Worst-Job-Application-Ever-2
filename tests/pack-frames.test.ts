@@ -320,6 +320,10 @@ describe('the motion pack of a recorded visit', () => {
     const low = Math.max(...steps.map(wire))
     const under = w[1]! + w[3]! - low
     // What the heading says of it is what the rows hold.
-    for (const f of save) expect(f.heading).toContain(under >= GATE.under ? `. The window holds ${GATE.under} px or more under the wire's lowest place in every frame. ` : `. The page's own picture ends ${Math.max(0, Math.round(under))} px under the wire's lowest place in these frames, and the window ends with it. `)
+    // In this visit the view stands on the tier: the ball's foot at its lowest lies on the picture's foot (the rows: 1080.3 of 1080), and the wire that leans on it is out of the picture.
+    expect(under).toBeLessThan(0)
+    const foot = Math.max(...steps.filter((i) => Math.abs(num(i, COL.heroX) / BALL - MID) <= MOUTH.half && num(i, COL.heroY) >= top).map((i) => at(i)[1] + BALL / 2))
+    expect(foot).toBeCloseTo(1080.3, 1)
+    for (const f of save) expect(f.heading).toContain(". The page's own picture ends at the ball's foot at its lowest in these frames, so the wire that leans on the ball there is not in the picture; the window ends with the picture. ")
   })
 })
