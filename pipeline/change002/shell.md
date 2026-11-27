@@ -270,11 +270,11 @@ Section 3 and the lines of section 6 that speak of takes are superseded by this 
 
 | line | key | words | seconds | starts on | said only until | other |
 |---|---|---|---|---|---|---|
-| 1 | marketing.stroll.0 | 22 | 13.750 | sound allowed with the careers page on screen | | |
+| 1 | marketing.stroll.0 | 22 | 13.750 | sound allowed with the careers page at rest on screen | `button-press` | once a visit (11h) |
 | 2 | step1.firstName.0 | 9 | 5.625 | `candidate-sensed` | `field-done` | |
 | 3 | step1.shredded.0 | 20 | 12.500 | `resume-received` | | |
 | 4a | step2.crank.0 | 10 | 6.250 | `volume-sign` | `field-done` | |
-| 4b | step2.crank.1 | 4 | 2.500 | `crank-full` | `field-done` | |
+| 4b | step2.crank.1 | 4 | 2.500 | `crank-full`, no sooner than the end of 4a and 0.3 s | | a part of line 4; said until the page turns (11h) |
 | 5 | pinball.seal.0 | 10 | 6.250 | `vacuum-on` | `ball-seal` | |
 | 6 | boss.verify.0 | 11 | 6.875 | `checkbox` | `boss-formed` | |
 | 7 | boss.unfold.0 | 29 | 18.125 | `boss-formed` | `turret-rise`, `power-down` | ends at its next pause on `boss-turn` |
@@ -285,7 +285,7 @@ Section 3 and the lines of section 6 that speak of takes are superseded by this 
 
 - Each line once in a run; a restart starts a new run.
 - No line talks over another. A line whose event comes while another is being said is booked for that line's end and the kit's gap (`audio.liveNarratorMinGapSeconds`, 6 s); parts of line 7 follow at `audio.lineGapSeconds` (0.3 s). If one of its "said only until" events, a skip or a turn of its page comes before its start it is taken back and logged with the reason. A line that has started is never cut by these: line 2 runs on into the Email field.
-- Line 1 is asked for when the sound is ready with the careers page on screen, and is owed through the loading of the sounds. Where the first click is Apply it starts then and runs over the turn.
+- Line 1 is asked for when the sound is ready with the careers page on screen, and is owed through the loading of the sounds. Where the first click is Apply: see 11h, which supersedes what stood here.
 - The jump of line 7: on `boss-turn` the phrase being said ends, the rest of boss.unfold.0 is dropped and the two later parts move up. With stand-ins the pause times are exact; with takes the engine will need a list of pause times a line.
 - The music of the fight: stand-in cue `boss-loop` starts at the start of the last phrase of boss.unfold.1. The stage event `boss-music` maps to the same cue and is skipped while the narrator's is running. `unfold` no longer starts it, so on main, where the boss page emits neither `boss-formed` nor `boss-music`, there is no fight music until the boss helper's branch lands.
 - The caption panel can show one phrase large and in capitals: `CaptionLine.loud`, `CAPTION.loudFontPx` 64, set by `loud: true` on a row of the table. No row has it yet.
@@ -293,8 +293,8 @@ Section 3 and the lines of section 6 that speak of takes are superseded by this 
 ### 11b. Decisions
 
 - Stand-ins do not duck the effects (`LIVE.standInDucks` false): nothing is spoken.
-- After a restart line 1 is asked for again once line 9 and the gap are over, if the careers page is still on screen. The Builder wrote that the restart is silent apart from line 9; to make it so, line 1 must not be owed again in `atPage`. Left for his word.
-- 4a and 4b are two lines with the kit's gap, as the script has them. Making 4b a part (`after: 'step2.crank.0'`) is one word in the table and a ruling for Brandon.
+- Superseded by 11h. After a restart line 1 is asked for again once line 9 and the gap are over, if the careers page is still on screen. The Builder wrote that the restart is silent apart from line 9; to make it so, line 1 must not be owed again in `atPage`. Left for his word.
+- Superseded by 11h. 4a and 4b are two lines with the kit's gap, as the script has them. Making 4b a part (`after: 'step2.crank.0'`) is one word in the table and a ruling for Brandon.
 - A waiting line that is taken back does not pull later waiting lines forward.
 - `tests/audio-tools.test.ts` is a test of the tools, not of this unit. Two of its tests named `narration.liveOnly.hit[1]`, which the script emptied; they were moved to the new script in commit f2ab850f.
 
@@ -349,3 +349,41 @@ Section 3 and the lines of section 6 that speak of takes are superseded by this 
 - NEEDS commit 684c40d4, `tools/mix.mjs` (diff appended to `shell-NEEDS.patch`): the record and the last line count `standInsLaid`; check A9 looks at stand-ins too; check A10 leaves out kept takes of lines that are gone or reworded and says so; `--until SECONDS` mixes the first seconds alone. MEASURED on the throwaway tree after `npm run cut` there: `node tools/mix.mjs --until 18 --out /tmp/opening.wav` gave 18.000 s, 864000 samples at 48000 Hz, 2 stand-ins placed (line 1 at frame 0, 13.75 s; line 2 at frame 1022, 5.625 s), no voice. That tree has no kept sounds, so the file was silence; on this tree the mix is refused until `npm run cut` is run (the Builder's).
 - `node pipeline/change002/shell-film-captions.mjs --until 18 --proof` is the caption writer: it takes the lines and frames from `timedLines`, the phrases from `filmCaptions`, draws each phrase with the panel of `src/ui/said.ts` and the site's baked fonts in a browser at 1920 by 1080 with a clear ground (`out/work/captions/*.png`), and writes the frames and the ffmpeg filter to `shell-film-captions.json`. `--onto FILM --out FILE` lays them over a film. MEASURED: 12 phrases of the 2 lines that start in the first 18 s under today's beats; line 1 on frames 0 to 824 in 8 phrases; the proof (the pictures over a kept still of the careers page for 18 s) has 1080 frames. Picture `shell-pictures/script-film-captions-opening.png`: frames 19, 94, 206, 300, 412, 525, 637, 768 and 900 of the proof, the lowest 200 lines of each; the last has no panel, as it must.
 - The first run of the writer showed each phrase twice: the page lacked the style sheet that hides the words kept for screen readers. Mended by linking the style sheet the build writes.
+
+### 11h. The rulings of 23:03 UTC (written 23:22 UTC)
+
+- Line 1 is said at most once a visit, and only when sound becomes allowed while the careers page stands at rest on screen. A `button-press` or `page-turn` of the careers page, or leaving it, closes line 1 for the visit (`openingOpen` in `src/audio/index.ts`). So a visit whose first gesture is the press of Apply has no line 1.
+- Line 1 starts `LIVE.openingWaitSeconds` (0.15 s) after sound is allowed. Reason: the gesture that allows sound is seen by the sound before the stage has stepped the press of Apply made by the same gesture; the wait lets that press arrive and take line 1 back. Own number, in `src/audio/levels.ts`.
+- If Apply is pressed while line 1 is being said, line 1 runs to its end and line 2 follows the built rule.
+- The restart is silent apart from line 9: arriving on the careers page from another page starts a new run of the script (`desk.restart()`), and line 1 is not owed again. Supersedes the second decision of 11b.
+- Rows of one key with .0, .1, .2 are parts of one moment. The rule is by beat, in `Narrator.live`: a line waits `audio.lineGapSeconds` (0.3 s) after a line of the same beat and `audio.liveNarratorMinGapSeconds` (6 s) after any other. A part is not said if the part before it was not said in this run (logged: the part before it was not said); when a waiting part is taken back, the waiting parts after it go with it.
+- 4b (`step2.crank.1`) waits for `crank-full` and for the end of 4a and 0.3 s. Its moment lasts until step 2's page turn begins; the crank's `field-done` no longer takes it back. Once started it is not cut.
+- No kit number is changed. `audio.liveNarratorMinGapSeconds` stays 6.
+- The measuring script takes the gap as arguments, in memory only: `node pipeline/change002/shell-script-visit.mjs 6 6 3 0.3` (runs, then one or more gaps) writes `shell-script-visit-gap-6.json`, `-gap-3.json`, `-gap-0.3.json`. Each bot's visit is run twice: with sound allowed while the careers page is at rest (first: page), and as a visit whose first press is Apply (first: apply; the press is given to the sound before sound is allowed).
+- `tools/mix.mjs` (NEEDS commit b588f981): reads `content/narration-drafts.json`; a draft line of a beat with no settled line is laid as a silent stand-in at its beat, also when the cut list does not hold it, and is named in `draftsLaid` and in the last line. `shell-film-captions.mjs` reads the drafts the same way.
+
+MEASURED 23:19 UTC on the throwaway merge of 11c with this branch's `src/audio/*` at 0cc60890, 6 seeds a bot (all seeds of a bot equal), said of 6 visits and seconds late after the line's event:
+
+| gap | first | bot | 1 | 2 | 4a | 4b | 5 | 9 after the turn back |
+|---|---|---|---|---|---|---|---|---|
+| 6 | page | keen | 6 | 0 | 6, 2.60 | 0 | 0 | 11.61 |
+| 6 | page | clumsy | 6 | 0 | 6, 0 | 6, 0 | 0 | 11.61 |
+| 6 | apply | keen | 0 | 6, 0 | 6, 2.60 | 0 | 0 | 11.61 |
+| 6 | apply | clumsy | 0 | 6, 0 | 6, 0 | 6, 0 | 0 | 11.61 |
+| 3 | page | keen | 6 | 0 | 6, 0 | 0 | 6, 2.37 | 8.61 |
+| 3 | page | clumsy | 6 | 0 | 6, 0 | 6, 0 | 6, 0.05 | 8.61 |
+| 3 | apply | keen | 0 | 6, 0 | 6, 0 | 0 | 6, 2.37 | 8.61 |
+| 3 | apply | clumsy | 0 | 6, 0 | 6, 0 | 6, 0 | 6, 0.05 | 8.61 |
+| 0.3 | page | keen | 6 | 0 | 6, 0 | 0 | 6, 0 | 5.91 |
+| 0.3 | page | clumsy | 6 | 6, 0.32 | 6, 0 | 6, 0 | 6, 0 | 5.91 |
+| 0.3 | apply | keen | 0 | 6, 0 | 6, 0 | 0 | 6, 0 | 5.91 |
+| 0.3 | apply | clumsy | 0 | 6, 0 | 6, 0 | 6, 0 | 6, 0 | 5.91 |
+
+- Lines 3, 6 and 8 are said on their events on every visit at every gap. Line 7 is not asked for: no `boss-formed` on b-boss 48319d4f. Line 1 is said a second time on no visit.
+- Line 2 is said on every visit whose first press is Apply, on its event. Where line 1 is said, line 2 is lost at 6 s and 3 s on both bots.
+- 4b on the keen visit is lost at every gap: from `volume-sign` to the press of Continue is 5.68 s, 4a alone lasts 6.25 s. On the clumsy visit that time is 12.13 s and 4b is said on `crank-full`.
+- At 6 s line 5 is lost on both bots; on the clumsy visit it is lost because 4b is now said (4b ends 72.95 s, `vacuum-on` 75.90 s, 6 s after 4b is 78.95 s, `ball-seal` comes first). Before this ruling the clumsy visit had line 5 and no 4b.
+- On the whole film in that tree (`node tools/mix.mjs`): 12 stand-ins, 1 of them the draft; line 9 lies at frame 9060 (151.000 s) for 3.125 s, line 8 at frame 8580 (143.000 s) for 8.125 s, the film ends at 153.000 s. Under the present beats line 9 starts 0.125 s before line 8 ends and runs 1.125 s past the end of the film. The beats are the Builder's.
+
+Tests changed by this section, all in commit 0cc60890: `tests/b-shell-script.test.ts` "says nothing before the first click..." (line 1 now starts 0.15 s after the unlock); "says line 1 when the first press is the Apply button" replaced by "says no line 1 on a visit whose first press is the Apply button..." and "lets line 1 run to its end when Apply is pressed while it is being said"; "says the line of the turn back ... and says line 1 again" now asserts line 1 once; "makes a line whose event comes while another is spoken wait" moved by 0.15 s; new describe "the parts of one moment" (2 tests). `tests/audio-visit.test.ts` test 1 and the skipper test: the start of line 1 is measured from the first turn of the visit and allows the 0.15 s.
+

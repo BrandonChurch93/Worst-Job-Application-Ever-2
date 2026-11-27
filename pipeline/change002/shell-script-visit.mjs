@@ -55,7 +55,7 @@ for (const how of ['page', 'apply']) for (const bot of ['keen', 'clumsy']) {
       line1: start('marketing.stroll.0'), sensed, nameDone,
       line2: start('step1.firstName.0'), line2Lost: lost('step1.firstName.0'), line2Late: start('step1.firstName.0') === null || sensed === null ? null : start('step1.firstName.0') - sensed,
       received: first('resume-received', 'step1'), line3: start('step1.shredded.0'), line3Lost: lost('step1.shredded.0'),
-      sign, line4a: start('step2.crank.0'), line4aLost: lost('step2.crank.0'), full, crankGone, line4b: start('step2.crank.1'), line4bLost: lost('step2.crank.1'),
+      sign, line4a: start('step2.crank.0'), line4aLost: lost('step2.crank.0'), full, crankGone, continueAt: first('page-turn', 'step2'), line4b: start('step2.crank.1'), line4bLost: lost('step2.crank.1'),
       vacuum: first('vacuum-on', 'step3'), line5: start('pinball.seal.0'), line5Lost: lost('pinball.seal.0'),
       checkbox: first('checkbox', 'step4'), line6: start('boss.verify.0'), line6Lost: lost('boss.verify.0'),
       formed: first('boss-formed', 'step4'), line7: start('boss.unfold.0'), line7Lost: lost('boss.unfold.0'), line7b: start('boss.unfold.1'), line7c: start('boss.unfold.2'),
@@ -86,7 +86,7 @@ console.log(`gap ${gap} s`)
 const late = (rs, k, e) => { const n = nums(rs.map((r) => (r[k] === null || r[e] === null ? null : r[k] - r[e]))); return n.length ? `${n.length} of ${rs.length}, ${r2(n[0])} to ${r2(n[n.length - 1])} s late` : `0 of ${rs.length}` }
 for (const how of ['page', 'apply']) for (const bot of ['keen', 'clumsy']) {
   const rs = of(how, bot)
-  console.log(`first ${how}, ${bot}: 1 ${rs.filter((r) => r.line1 !== null).length} of ${rs.length} | 2 ${late(rs, 'line2', 'sensed')} | 3 ${late(rs, 'line3', 'received')} | 4a ${late(rs, 'line4a', 'sign')} | 4b ${late(rs, 'line4b', 'full')} | 5 ${late(rs, 'line5', 'vacuum')} | 6 ${late(rs, 'line6', 'checkbox')} | 7 ${late(rs, 'line7', 'formed')} | 8 ${late(rs, 'line8', 'stamp')} | 9 ${late(rs, 'line9', 'restart')} | 1 again ${rs.filter((r) => r.line1Again !== null).length}`)
+  console.log(`first ${how}, ${bot}: 1 ${rs.filter((r) => r.line1 !== null).length} of ${rs.length} | 2 ${late(rs, 'line2', 'sensed')} | 3 ${late(rs, 'line3', 'received')} | 4a ${late(rs, 'line4a', 'sign')} | 4b ${late(rs, 'line4b', 'full')} | 5 ${late(rs, 'line5', 'vacuum')} | 6 ${late(rs, 'line6', 'checkbox')} | 7 ${late(rs, 'line7', 'formed')} | 8 ${late(rs, 'line8', 'stamp')} | 9 ${late(rs, 'line9', 'restart')} | 1 again ${rs.filter((r) => r.line1Again !== null).length} | sign to Continue ${r2(rs[0].continueAt === null || rs[0].sign === null ? null : rs[0].continueAt - rs[0].sign)} s`)
 }
 }
 live.audio.liveNarratorMinGapSeconds = kitGap
