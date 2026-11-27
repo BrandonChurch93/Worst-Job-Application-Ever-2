@@ -158,6 +158,12 @@ export interface SheetFrame {
   gutter?: number
 }
 
+// How far a page is through its own fields: `done` of `total`. `done` may be a fraction while a page eases it. The header's rail fills by it.
+export interface FieldProgress { done: number; total: number }
+
+// How far the header and its step rail are in: 1 in place, 0 off the top of the screen.
+export interface Chrome { header: number }
+
 export interface PageLogic {
   readonly id: string
   readonly unit: string
@@ -187,6 +193,8 @@ export interface PageLogic {
   sheet?(id: string): SheetFrame | null
   typing?(): boolean
   volume?(): number
+  fields?(): FieldProgress | null
+  chrome?(): Chrome | null
 }
 
 export type PageMaker = () => PageLogic
