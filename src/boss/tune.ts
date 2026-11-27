@@ -46,10 +46,10 @@ export const GUARD = {
 } as const
 
 // What a dart that reaches the body takes from the boss, by phase.
-export const REAL_DART = [0.4, 0.21, 0.23] as const
+export const REAL_DART = [0.35, 0.18, 0.2] as const
 
 // The boss wears out: from this second of the fight on a real dart does more, and twice as much again after each `double` seconds.
-export const WEAR = { from: 35, double: 25 } as const
+export const WEAR = { from: 35, double: 20 } as const
 
 // B. How the boss tracks and moves.
 export const TRACK = {
@@ -179,7 +179,7 @@ export const IDLE = {
 } as const
 
 // In the film a dart that reaches the body does this many times as much, by phase: the film gives the whole fight 18 s, half of what a keen visitor needs.
-export const FILM = { dart: [2.45, 2.4, 2.3] as const } as const
+export const FILM = { dart: [2.8, 2.8, 2.645] as const } as const
 
 // The right edge of the pop-ups, which stand left of the boss's fence.
 export const POPUP_RIGHT = 1040
