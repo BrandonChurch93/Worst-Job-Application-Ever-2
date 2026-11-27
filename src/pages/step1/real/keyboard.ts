@@ -3,7 +3,7 @@ import { hashName } from '../../../core/random'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { circle, merge, ringPath, roundedRect, sweep, translate, type Ring } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
-import { DECK, HATCH, hatchCentre, seats, TIP } from '../keyboard'
+import { DECK, HATCH, hatchCentre, seats, SINK, TIP } from '../keyboard'
 import { config } from '../../../config'
 import { BRUSH, CAP, capGeometry, kit, lit, refine, scaleUv, sheen } from './keyboard-kit'
 
@@ -162,6 +162,7 @@ const at = new THREE.Vector3()
 const v3 = new THREE.Vector3()
 
 // A cap in the air leans a few degrees, by its name. It sinks by what the lean lifts under its legend, so the flat legend is never under the plastic.
+const sunkOf = (s: Shape): number => (s.v && s.v.length > 6 ? s.v[6]! : 0)
 const tipped = (s: Shape): boolean => !!s.v && s.v.length > 5 && (s.v[4] !== 0 || s.v[5] !== 0)
 const tumble = (s: Shape, hop: number): number => {
   const tip = tipped(s)
@@ -277,7 +278,8 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const place = (c: Shape): boolean => {
     const hop = Math.max(0, c.v && c.v.length > 1 ? c.v[1]! : c.z0 - s.z1)
     const sink = tumble(c, hop)
-    at.set(c.x + c.w / 2 - cx, -(c.y + c.h / 2 - cy), c.z1 - s.z0 - sink)
+    const held = sunkOf(c)
+    at.set(c.x + c.w / 2 - cx + SINK.x * held, -(c.y + c.h / 2 - cy) - SINK.y * held, c.z1 - s.z0 - sink)
     if (!tipped(c)) return hop > 0.01
     at.x -= TIP.lever * c.v![5]!
     at.y += TIP.lever * c.v![4]!
@@ -310,7 +312,8 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
       matrix.setPosition(at.x + hop * SHADE.x, at.y - hop * SHADE.y, floor)
       data.shades.setMatrixAt(patches++, matrix)
     } else {
-      const off = SHADE.rest * (1 - SHADE.tight * Math.min(1, Math.max(0, c.v && c.v.length > 0 ? c.v[0]! : 0)))
+      const held = sunkOf(c)
+      const off = held !== 0 ? SHADE.rest * (1 - (1 - SINK.shade) * held) : SHADE.rest * (1 - SHADE.tight * Math.min(1, Math.max(0, c.v && c.v.length > 0 ? c.v[0]! : 0)))
       const lean = tipped(c)
       matrix.makeScale(c.w + SHADE.grow, c.h + SHADE.grow * 1.4, 1)
       matrix.setPosition(at.x + off + (lean ? TIP.shade * c.v![5]! : 0), at.y - off - (lean ? TIP.shade * c.v![4]! : 0), floor)

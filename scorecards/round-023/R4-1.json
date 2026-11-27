@@ -1,0 +1,44 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: motion on the live site under a visitor's input: the arrow walked across a page, a page turn, a hit on the arrow, control taken and given back, the arrow into the ball and a flipper's strike, consecutive frames",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-08.png",
+   "where": "center drain and automatic right bat, 1:59.25–1:59.38",
+   "what": "The clear ball reverses and rises out of the drain before the bat can reach it. The bat sweeps and returns beside the ball, but no visible contact changes its path, so the save looks like the ball is being pulled back up rather than struck.",
+   "fix": "Show what ejects the ball from the drain, then put the tip on the shell and change the ball’s velocity on that frame. If the bat is meant to miss, separate the two beats so the ejector visibly owns the save."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "incoming application slab, 0:10.83–0:10.93",
+   "what": "The first sampled frame is already almost face-on and the remaining seating is a slight flattening. The sheet reads as a held application page, not a slab turning and seating under its own weight; it does not establish what the preceding turn did.",
+   "fix": "Include the actual edge-on and closing frames in the sequence. Make the last degrees close briskly against a hard stop, with a brief contact-shadow change and a stationary hold before the pointer moves."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "P key above Enter, 0:15.58–0:15.95",
+   "what": "The cap shows at most a subtle shading change while the turret muzzle pulses brightly next to it. Without the caption it reads more like aim and hover than a press and spring return.",
+   "fix": "Make the cap travel visibly into its socket, tighten the rim shadow at bottom-out, and snap it back to the neighbor key height on release. Keep the muzzle glow from dominating the press."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "arrow and tab beneath the resume tray, 0:43.47–0:43.73",
+   "what": "The arrow is already loose-looking in the first frame; the tab quietly disappears and then the arrow moves. The moment the page actually gives control back is not readable without the caption.",
+   "fix": "Show one last frame of positive restraint, then an unmistakable unlatch or tether recoil; hold the freed arrow for a short beat before it follows visitor motion."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "turret bolt impact at G/B, 0:14.98–0:15.08",
+   "what": "The bolt flashes and the arrow kicks sideways, but the surrounding keyboard stays visually rigid and the hot spot lingers. The impact reads on the arrow, not through the page around it.",
+   "fix": "Add a quick, localized jolt or reflected light on the keyboard frame at impact without depressing a key, then let the flash decay quickly so the rebound stays legible."
+  }
+ ]
+}

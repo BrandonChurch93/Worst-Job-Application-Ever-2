@@ -6,19 +6,22 @@ import { spawnSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { logic } from './lib/logic.mjs'
-import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, sha, siteBuild, siteInBrowser, target } from './sound.mjs'
+import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, refuseStale, sha, siteBuild, siteInBrowser, target } from './sound.mjs'
+import { keptSum, mixBuild, proveCutList } from './lib/cut-build.mjs'
 
 const rel = (p) => path.relative(at(), p)
 const narration = () => readJson(at('content', 'narration.json'))
 
 // The events and the lines of the film, by frame.
-export async function filmPlan(c, M) {
+// A cut list on disk is used only when it is, byte for byte, the list this build gives now: the film is run once more to prove it,
+// and a list of another build is refused with the command that mends it. The plan carries the sha256 of the list it was read from.
+export async function filmPlan(c, M, file = at('cut', 'CUTLIST.json')) {
   const fps = c.film.fps
   const seconds = c.film.units.reduce((s, u) => s + u.seconds, 0)
   const timed = M.copy.timedLines(c, narration())
   let lines = timed.map((l) => ({ id: M.cues.filmLineId(l.beat, l.index), beat: l.beat, index: l.index, frame: Math.round(l.start * fps) }))
-  const file = at('cut', 'CUTLIST.json')
   if (fs.existsSync(file)) {
+    const cutSha256 = await proveCutList(M.load, file, 'the mix')
     const cut = readJson(file)
     const frameOf = (e) => (Number.isFinite(e.frame) ? e.frame : Number.isFinite(e.seconds) ? Math.floor(e.seconds * fps + 1e-6) : Number.isFinite(e.time) ? Math.floor(e.time * fps + 1e-6) : Number.isFinite(e.step) ? Math.floor((e.step * fps) / c.sim.stepHz) : NaN)
     const list = Array.isArray(cut.events) ? cut.events.map((e) => ({ name: e.name, frame: frameOf(e), x: Number.isFinite(e.x) ? e.x : 960 })) : []
@@ -28,7 +31,7 @@ export async function filmPlan(c, M) {
         lines = cut.lines.map((l) => ({ id: typeof l.id === 'string' ? l.id : M.cues.filmLineId(l.beat, l.index ?? 0), beat: l.beat, index: l.index ?? 0, frame: lineFrame(l) }))
       }
       const total = Number.isFinite(cut.frameCount) ? cut.frameCount / fps : Number.isFinite(cut.seconds) ? cut.seconds : seconds
-      return { source: 'cut/CUTLIST.json', fps, seconds: total, events: list, lines }
+      return { source: 'cut/CUTLIST.json', cutSha256, fps, seconds: total, events: list, lines }
     }
     console.log('mix: cut/CUTLIST.json is there but holds no list of events by name and frame, so the events are read from the stage')
   }
@@ -63,12 +66,13 @@ export async function filmPlanA(c, M) {
     }
   }
   if (frames === null) return { plan: null, why: 'the length of the opening is not known' }
-  return { plan: { source: `${b.source}, behind the opening from ${source}`, fps: b.fps, seconds: frames / b.fps + b.seconds, events: [...events, ...M.mix.behindOpening(b.events, frames)], lines: M.mix.behindOpening(b.lines, frames), toneFromFrame: frames, openingFrames: frames, openingEvents: events.length } }
+  return { plan: { source: `${b.source}, behind the opening from ${source}`, cutSha256: b.cutSha256 ?? null, fps: b.fps, seconds: frames / b.fps + b.seconds, events: [...events, ...M.mix.behindOpening(b.events, frames)], lines: M.mix.behindOpening(b.lines, frames), toneFromFrame: frames, openingFrames: frames, openingEvents: events.length } }
 }
 
 export async function makeMix(P, c, M, out, name, given = null) {
   const plan = given ?? (await filmPlan(c, M))
-  const { sounds, absent } = keptSounds(P, M)
+  const { sounds, absent, stale } = keptSounds(P, M)
+  refuseStale(stale, 'the mix')
   const result = M.mix.mixFilm({
     sampleRate: c.audio.sampleRate, fps: plan.fps, seconds: plan.seconds, events: plan.events, lines: plan.lines, sounds, sfx: c.audio.sfx,
     duckDb: c.audio.duckDb, holdMusicSeconds: c.audio.holdMusicSeconds, targetLufs: c.audio.filmLoudnessLufs, truePeakDb: c.audio.truePeakDb, toneFromFrame: plan.toneFromFrame ?? 0
@@ -78,7 +82,7 @@ export async function makeMix(P, c, M, out, name, given = null) {
   fs.writeFileSync(out, bytes)
   const fix = (v) => (Number.isFinite(v) ? Number(v.toFixed(2)) : null)
   const record = {
-    mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), ...(plan.openingFrames ? { openingFrames: plan.openingFrames, openingEvents: plan.openingEvents } : {}), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
+    mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), cutSha256: plan.cutSha256 ?? null, keptSha256: keptSum(keptRecords(P).filter((r) => sounds.has(r.id))), build: mixBuild(), ...(plan.openingFrames ? { openingFrames: plan.openingFrames, openingEvents: plan.openingEvents } : {}), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
     samples: result.sound.channels[0].length, silent: result.mastered.silent, lufs: fix(result.mastered.lufs), truePeakDb: fix(result.mastered.truePeakDb), gainDb: fix(result.mastered.gainDb),
     targetLufs: c.audio.filmLoudnessLufs, ceilingDb: c.audio.truePeakDb, duckDb: c.audio.duckDb, bytes: bytes.length, sha256: sha(bytes),
     events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.cueOfEvent(e.name)).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length,
@@ -289,8 +293,15 @@ export async function soundChecks(a, P, c, M) {
   if (!fs.existsSync(mixRecord)) add('A9', 'not yet', 'no mix has been made, and cut/CUES.md is written by npm run cut')
   else {
     const r = readJson(mixRecord)
-    const plan = await filmPlan(c, M)
-    if (r.planSha256 !== planSha(plan)) add('A9', 'not yet', `${rel(mixRecord)} was made from an older list of events than ${plan.source} holds now. Run npm run mix`)
+    let plan = null
+    try {
+      plan = await filmPlan(c, M)
+    } catch (e) {
+      add('A9', 'fail', `the film's events cannot be read for the check: ${String(e.message).replace(/^the mix is refused: /, '')}`)
+    }
+    if (!plan) {
+      // Said above.
+    } else if (r.planSha256 !== planSha(plan)) add('A9', 'not yet', `${rel(mixRecord)} was made from an older list of events than ${plan.source} holds now. Run npm run mix`)
     else {
     const late = []
     const seen = new Set()

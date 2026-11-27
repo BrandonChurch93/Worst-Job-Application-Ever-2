@@ -20,7 +20,7 @@ export interface BallState {
 export interface TableEvent { name: string; ball: number; id: string; x: number; y: number }
 export interface MachineState {
   snap: string; balls: BallState[]; flip: [number, number]; held: [boolean, boolean]; down: boolean[]; bank: number[]; cool: number[]; gate: boolean[]; on: Record<string, boolean>
-  mom: boolean; carpet?: boolean; live?: boolean; bounce?: [number, number]; mark?: [number, number, number, number] | null; slid?: number; cut?: boolean; own?: [number, number]; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
+  mom: boolean; carpet?: boolean; live?: boolean; taken?: number; bounce?: [number, number]; mark?: [number, number, number, number] | null; slid?: number; cut?: boolean; own?: [number, number]; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
 }
 
 const DEG = 0.017453292519943295
@@ -30,6 +30,9 @@ const DT = 1 / HZ
 const MAX_SPEED = 30
 // Live play, set by the page each step and off in the film: the steps of a bat's stroke up and of its fall, the height and the steps of its bounce at rest, and the speed limit of a visitor's ball.
 const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36, own: 12 }
+// Live play, the save at a shut gate. The gate takes the ball on its wire, holds it, draws back and kicks it: where the ball's middle lies against the shut wire (balls down the tier), the stiffness of the wire under the ball and of the mouth's funnel (1/s, both damped dead),
+// the steps from the ball's landing on the wire in which it comes to lie still, the steps of the wind-up and the last of them in which the drawn wire stands still, how far the wire draws back with the ball on it (balls), the steps of the kick's drive back up to where the ball lay, the speed of the plain kick (balls/s), and how near the wire a ball that comes by the outlane's channel must be for the gate to take it (balls).
+export const SAVE = { rest: 10.55, wire: 60, funnel: 50, land: 24, wind: 28, still: 10, back: 0.22, drive: 4, kick: 24, reach: 1 }
 // Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
 const MET = 3
 const LIFT_SHUT = 0.4
@@ -90,6 +93,7 @@ export class Machine {
   slid = 0
   cut = false
   own: [number, number] = [0, 0]
+  taken = -1
   aim: [number, number, number] | null = null
   shot: [number, number, number] | null = null
   armed: [boolean, boolean] = [false, false]
@@ -150,6 +154,7 @@ export class Machine {
     this.slid = 0
     this.cut = false
     this.own = [0, 0]
+    this.taken = -1
     this.saves = 0
     this.magnet = null
     this.aim = null
@@ -173,7 +178,7 @@ export class Machine {
   save(): MachineState {
     return {
       snap: toBase64(this.world.takeSnapshot()), balls: this.balls.map((b) => ({ ...b })), flip: [...this.flip], held: [...this.held], down: [...this.down], bank: [...this.bank], cool: [...this.cool], gate: [...this.gate],
-      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null, slid: this.slid, cut: this.cut, own: [...this.own] as [number, number] } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
+      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null, slid: this.slid, cut: this.cut, own: [...this.own] as [number, number], taken: this.taken } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
     }
   }
 
@@ -197,6 +202,7 @@ export class Machine {
     this.slid = s.slid ?? 0
     this.cut = s.cut === true
     this.own = s.own ? [...s.own] : [0, 0]
+    this.taken = s.taken ?? -1
     this.saves = s.saves
     this.magnet = s.magnet ? [...s.magnet] : null
     this.aim = s.aim ? [...s.aim] : null
@@ -368,6 +374,10 @@ export class Machine {
       return
     }
     if (!this.gate[k]) {
+      if (this.live && i === 0 && Math.hypot(b.x - MID, b.y - TIER_Y[k]! - SAVE.rest) < SAVE.reach) {
+        this.take(k)
+        return
+      }
       this.saves++
       this.toPlane(i, MID, TIER_Y[k]! + 10.55, this.saves % 2 === 0 ? 1.2 : -1.2, -24)
       if (this.live && i === 0 && this.mark) {
@@ -377,7 +387,6 @@ export class Machine {
         this.aim = keep
         if (to) this.kick(0, to[0], to[1])
       }
-      if (this.live && i === 0) this.own[this.balls[i]!.vx > 0 ? 0 : 1] = LIVE.own + 1
       this.say('ball-save', i, `${TIERS[k]}.gate`)
       return
     }
@@ -388,6 +397,71 @@ export class Machine {
       this.ride(i, 'drain')
       this.say('drain', i, 'street.gate')
     }
+  }
+
+  // Live play: the shut gate takes the clear ball. The ball keeps the speed it came with, and from here to the kick the slope, the mouth's funnel and the wire are all that move it.
+  private take(k: number): void {
+    const b = this.balls[0]!
+    this.offPlane(0)
+    b.mode = 'tow'
+    b.tx = MID
+    b.ty = TIER_Y[k]! + SAVE.rest
+    b.speed = 0
+    b.then = `gate:${k}`
+    this.taken = 0
+    this.say('gate-take', 0, `${TIERS[k]}.gate`)
+  }
+
+  // Live play, one step of the ball at a shut gate: it falls onto the wire, the wire gives and holds it still, draws back with it, drives it back up to where it lay, and on the step after the drive the kick sends it out from there.
+  private lie(): void {
+    const b = this.balls[0]!
+    const k = b.tier
+    if (this.gate[k]) {
+      this.taken = -1
+      this.tow(0, MID, TIER_Y[k]! + MOUTH.hole, Math.max(12, Math.hypot(b.vx, b.vy)), `gate:${k}`)
+      return
+    }
+    const cock = SAVE.land + SAVE.wind
+    if (this.taken >= cock) {
+      const j = ++this.taken - cock
+      if (j > SAVE.drive) {
+        this.kickOut(k)
+        return
+      }
+      const y = b.fy + (b.ty - b.fy) * (j / SAVE.drive) * (j / SAVE.drive)
+      b.vx = 0
+      b.vy = (y - b.y) / DT
+      b.y = y
+      return
+    }
+    b.vx += (-SAVE.funnel * SAVE.funnel * (b.x - b.tx) - 2 * SAVE.funnel * b.vx) * DT
+    if (this.taken === 0 && b.y < b.ty) b.vy += GRAVITY * DT
+    else {
+      const u = Math.max(0, Math.min(1, (++this.taken - SAVE.land) / (SAVE.wind - SAVE.still)))
+      const at = b.ty + SAVE.back * u * u * (3 - 2 * u)
+      b.vy += (-SAVE.wire * SAVE.wire * (b.y - at) - 2 * SAVE.wire * b.vy) * DT
+    }
+    b.x += b.vx * DT
+    b.y += b.vy * DT
+    if (this.taken === cock) b.fy = b.y
+  }
+
+  // Live play: the gate's kick. The ball leaves from where it lies, by the director's aimed lob when there is one.
+  private kickOut(k: number): void {
+    const b = this.balls[0]!
+    this.taken = -1
+    this.saves++
+    this.toPlane(0, b.x, b.y, this.saves % 2 === 0 ? 1.2 : -1.2, -SAVE.kick)
+    if (this.mark) {
+      const keep = this.aim
+      this.aim = [this.mark[0], this.mark[1], -1]
+      const to = this.aimed(0, 0, -1, this.mark[2], this.mark[3] === 1)
+      this.aim = keep
+      if (to) this.kick(0, to[0], to[1])
+    }
+    this.last[`rise.${k}`] = this.steps
+    this.last[`flash.${k}`] = this.steps
+    this.say('ball-save', 0, `${TIERS[k]}.gate`)
   }
 
   private railEnd(i: number): void {
@@ -453,7 +527,8 @@ export class Machine {
       return
     }
     if (v > MOUTH.v && b.vy > 0 && Math.abs(b.x - MID) < MOUTH.half) {
-      this.tow(i, MID, y0 + MOUTH.hole, Math.max(12, Math.hypot(b.vx, b.vy)), `gate:${k}`)
+      if (this.live && i === 0 && !this.gate[k]) this.take(k)
+      else this.tow(i, MID, y0 + MOUTH.hole, Math.max(12, Math.hypot(b.vx, b.vy)), `gate:${k}`)
       return
     }
     if (v > OUTLANE.v && (b.x < OUTLANE.inner || b.x > 20 - OUTLANE.inner)) {
@@ -648,7 +723,8 @@ export class Machine {
         }
         b.wait -= DT
         if (b.wait <= 0) this.holdEnd(i)
-      } else if (b.mode === 'tow') {
+      } else if (b.mode === 'tow' && i === 0 && this.taken >= 0) this.lie()
+      else if (b.mode === 'tow') {
         const dx = b.tx - b.x
         const dy = b.ty - b.y
         const d = Math.hypot(dx, dy)

@@ -1,0 +1,116 @@
+{
+  "stamp": {
+    "role": "R4",
+    "round": 23,
+    "unit": "site",
+    "commit": "41acb79571f46e214ea6d2e1ca42755eaefae162",
+    "tier": "live-high",
+    "engineHash": "23a6fdb7ae6fae6d",
+    "sharedHash": "6b07439bda532919",
+    "pageHashes": {
+      "step1": "0f0147b07a9833c8",
+      "step2": "1ba00f8ab331f145",
+      "marketing": "8cd6ae0941a08122",
+      "pinball": "a5a325cae0ba55dc",
+      "boss": "ed18eab775dec297",
+      "decision": "7268eb60f24ef748"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "leftOut": [],
+  "limitTook": [
+    "turn: sheet 1 of 2 of its run (0:10.43 to 0:10.80)",
+    "flippers: its second run, the ball, with the arrow sealed in it, leaves the port (1:38.55 to 1:38.92)",
+    "save: sheet 2 of 2 of its run (1:59.62 to 1:59.98)"
+  ],
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R4-1",
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "heading": "Consecutive frames as a visitor's pointer walks the arrow across the page: 0:00.87 to 0:01.23",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1966354,
+          "sha256": "dafaf9e804a6fdee8b90c56f0582aff0b049b67fccb30fc39a5437b02568227d"
+        },
+        {
+          "name": "set-A-02.png",
+          "heading": "Consecutive frames of a page turn, from the page on its edge to the page seated and still: 0:10.83 to 0:11.20",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1726934,
+          "sha256": "c557a5e3d65f8894d26d27ae8ab8b3140cfac1e1995b3384b49b669dd3439294"
+        },
+        {
+          "name": "set-A-03.png",
+          "heading": "Consecutive frames as a turret's bolt hits the arrow, no key is pressed in these frames, the part of the picture round the arrow at its real size: 0:14.88 to 0:15.25",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2190490,
+          "sha256": "51ef115e695a46ac5f87f7954a5f018b4e04f6b0b237d8c7963d71f57fd8e2bc"
+        },
+        {
+          "name": "set-A-04.png",
+          "heading": "Consecutive frames as the visitor's arrow presses a key of the page's keyboard and lets it go, the part of the picture round the arrow at its real size: 0:15.58 to 0:15.95",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2205539,
+          "sha256": "3bf2f4b8ca5cacf901591f015670ce6f092d2103b021979208b1785ecf347445"
+        },
+        {
+          "name": "set-A-05.png",
+          "heading": "Consecutive frames as the page takes the arrow from the visitor, the part of the picture round the arrow at its real size: 0:30.80 to 0:31.17",
+          "width": 1399,
+          "height": 1342,
+          "bytes": 2116463,
+          "sha256": "b1c0c9dc701f0e06e7b193a79788e9cc226c608fd5f682abc5712a0fac854fc0"
+        },
+        {
+          "name": "set-A-06.png",
+          "heading": "Consecutive frames as the page gives the arrow back to the visitor and the visitor moves it away, the part of the picture round the arrow at its real size: 0:43.47 to 0:43.83",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 1900396,
+          "sha256": "c6e5c2e61a4db120f3546fde1ab50bf50eb77d2fbcd9639c32ee5cf2da73c915"
+        },
+        {
+          "name": "set-A-07.png",
+          "heading": "Consecutive frames as the arrow goes into the ball and the visitor gets the flippers, the part of the picture round the arrow at its real size: 1:36.98 to 1:37.35. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2147634,
+          "sha256": "1caf1993e89bf743e6984128785876a6fd0659dc05d425934a6f0e5a182069d2"
+        },
+        {
+          "name": "set-A-08.png",
+          "heading": "Consecutive frames as the machine saves a ball lost between the bats: its own bat strikes as the save throws the ball back, the part of the picture round the arrow's way at 92% of its size: 1:59.22 to 1:59.58. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3787355,
+          "sha256": "d71e0e33ee7a652bb46fa939a2953496da19188dbb0b2b0e49aace549e1a851a"
+        },
+        {
+          "name": "set-A-09.png",
+          "heading": "Consecutive frames as the visitor's flipper meets the ball and the ball goes off it, the part of the picture round the arrow's way at 75% of its size, sheet 1 of 2 of one run, frames 1 to 12 of 24: 2:11.17 to 2:11.53. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3458101,
+          "sha256": "110fcd35190591430c62868dca8a4e054796c0fe2fa324866c627f4bdc4a1305"
+        },
+        {
+          "name": "set-A-10.png",
+          "heading": "Consecutive frames as the visitor's flipper meets the ball and the ball goes off it, the part of the picture round the arrow's way at 75% of its size, sheet 2 of 2 of one run, frames 13 to 24 of 24: 2:11.57 to 2:11.93. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3497802,
+          "sha256": "42c9df7a2e7e01c5230c5cc4cb9d5d461736e864fc04ed68cf1461bb099c9449"
+        }
+      ]
+    }
+  ]
+}

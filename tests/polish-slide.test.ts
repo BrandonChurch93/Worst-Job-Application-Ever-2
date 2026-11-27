@@ -226,7 +226,7 @@ describe('a beat\'s deadline while the visitor\'s ball is in play', () => {
     m.free()
   })
 
-  it('has a bat of the machine swing on the step a save throws the ball out of the gate\'s mouth, in live play only: the bat on the side the ball leaves from, up in 8 steps, down again after 12', () => {
+  it('swings no bat of the machine at a save, in live play or in the film: the gate throws the ball out of its mouth and both bats lie at rest', () => {
     for (const live of [true, false]) {
       const m = new Machine()
       m.live = live
@@ -242,19 +242,8 @@ describe('a beat\'s deadline while the visitor\'s ball is in play', () => {
       expect(at).toBeGreaterThan(0)
       const b = m.balls[0]!
       expect(b.mode).toBe('plane')
-      if (!live) {
-        expect(seen.every((f) => f[0] === 0 && f[1] === 0)).toBe(true)
-        expect(m.own).toEqual([0, 0])
-      } else {
-        const side = seen[1]![0]! > 0 ? 0 : 1
-        expect(seen[1]![side]!).toBeGreaterThan(0)
-        expect(seen[1]![1 - side]!).toBe(0)
-        expect(seen[8]![side]!).toBe(1)
-        expect(seen[12]![side]!).toBe(1)
-        expect(seen[39]![side]!).toBe(0)
-        expect(seen.every((f) => f[1 - side] === 0)).toBe(true)
-        expect(b.vx > 0 ? 0 : 1).toBe(side)
-      }
+      expect(seen.every((f) => f[0] === 0 && f[1] === 0)).toBe(true)
+      expect(m.own).toEqual([0, 0])
       m.free()
     }
   })

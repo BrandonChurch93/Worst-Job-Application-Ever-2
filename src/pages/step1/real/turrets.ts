@@ -397,7 +397,7 @@ interface ScorchData {
   hotMaterial: THREE.MeshBasicMaterial
 }
 
-const SCORCH = { size: 54, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 15, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72 }
+const SCORCH = { size: 54, smoke: 3, smokeSeconds: 1.5, hotSeconds: 0.4, hotSize: 46, emberSize: 15, shoulder: 9, core: 13, legend: 30, word: 52, bar: 400, wide: 112, sparks: 6, sparkSeconds: 0.24, fall: 900, ember: 0.35, snap: 36, flareSeconds: 0.1, ride: 16, strikeSeconds: 1.5, strikeMark: 0.72, quick: 0.04, thrownZ: 46 }
 
 function makeScorch(s: Shape): THREE.Object3D {
   const f = fx()
@@ -504,7 +504,8 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   layScorch(d, s, ctx, s.z0 - drop)
   if (strike) d.at = [0, 0]
   d.material.opacity = smooth((strike ? SCORCH.strikeSeconds - age : left * TURRET.scorchSeconds) / TURRET.scorchFade)
-  const ember = Math.exp(-age / SCORCH.ember)
+  const quick = strike && (s.v?.[3] ?? 0) > 0
+  const ember = Math.exp(-age / (quick ? SCORCH.quick : SCORCH.ember))
   const spent = age / SCORCH.sparkSeconds
   const struck = age / SCORCH.flareSeconds
   d.flare.visible = struck < 1 && left * TURRET.scorchSeconds > TURRET.scorchFade
@@ -529,7 +530,7 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   if (d.sparks.visible) d.sparks.instanceMatrix.needsUpdate = true
   d.material.color.setRGB(1 + 0.9 * ember, 1 + 0.25 * ember, 1)
   const alive = left * TURRET.scorchSeconds > TURRET.scorchFade
-  const warm = strike ? Math.exp(-age / SCORCH.hotSeconds) : ember
+  const warm = quick ? ember : strike ? Math.exp(-age / SCORCH.hotSeconds) : ember
   d.hot.visible = alive && warm > 0.04
   if (d.hot.visible) {
     const size = (strike ? SCORCH.hotSize : SCORCH.emberSize) * (0.8 + 0.2 * warm)
@@ -537,8 +538,8 @@ function poseScorch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
     d.hot.scale.set(size, size, 1)
     d.hotMaterial.color.setRGB(...mix([0, 0, 0], GLOW.boltTail, (strike ? 0.5 : 0.16) * warm))
   }
-  const lamp = strike ? EMIT.struck : EMIT.ember
-  if (alive && warm > 0.06) ctx.light({ x: s.x + s.w / 2 + d.at[0], y: s.y + s.h / 2 - d.at[1], z: s.z0 - drop + 22, colour: lamp.colour, power: lamp.power * warm, reach: lamp.reach })
+  const lamp = quick ? EMIT.thrown : strike ? EMIT.struck : EMIT.ember
+  if (alive && warm > 0.06) ctx.light({ x: s.x + s.w / 2 + d.at[0], y: s.y + s.h / 2 - d.at[1], z: s.z0 - drop + (quick ? SCORCH.thrownZ : 22), colour: lamp.colour, power: lamp.power * warm, reach: lamp.reach })
   d.smoke.forEach((puff, i) => {
     const u = age / SCORCH.smokeSeconds - i * 0.13
     puff.visible = u > 0 && u < 1 && alive

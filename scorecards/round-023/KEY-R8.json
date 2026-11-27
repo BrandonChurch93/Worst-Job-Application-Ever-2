@@ -1,0 +1,206 @@
+{
+  "role": "R8",
+  "round": 23,
+  "unit": "site",
+  "commit": "41acb79571f46e214ea6d2e1ca42755eaefae162",
+  "tier": "live-high",
+  "engineHash": "23a6fdb7ae6fae6d",
+  "sharedHash": "6b07439bda532919",
+  "pageHashes": {
+    "step1": "0f0147b07a9833c8",
+    "step2": "1ba00f8ab331f145",
+    "marketing": "8cd6ae0941a08122",
+    "pinball": "a5a325cae0ba55dc",
+    "boss": "ed18eab775dec297",
+    "decision": "7268eb60f24ef748"
+  },
+  "browser": "159.0.8154.6",
+  "files": {
+    "set-A-01.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-page",
+      "heading": "Page 1 of 6, at rest",
+      "judged": "site:marketing",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "scale": 0.7292
+    },
+    "set-A-02.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-page",
+      "heading": "Page 2 of 6, at rest",
+      "judged": "site:step1",
+      "still": {
+        "page": "step1",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "scale": 0.7292
+    },
+    "set-A-03.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-page",
+      "heading": "Page 3 of 6, at rest",
+      "judged": "site:step2",
+      "still": {
+        "page": "step2",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "scale": 0.7292
+    },
+    "set-A-04.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-page",
+      "heading": "Page 4 of 6, at rest",
+      "judged": "site:pinball",
+      "still": {
+        "page": "pinball",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "scale": 0.7292
+    },
+    "set-A-05.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-page",
+      "heading": "Page 5 of 6, at rest",
+      "judged": "site:boss",
+      "still": {
+        "page": "boss",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "scale": 0.7292
+    },
+    "set-A-06.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-page",
+      "heading": "Page 6 of 6, at rest",
+      "judged": "site:decision",
+      "still": {
+        "page": "decision",
+        "camera": "home",
+        "tier": "draft",
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "scale": 0.7292
+    },
+    "set-A-07.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-screen",
+      "heading": "The application as a visitor has it, with its controls",
+      "judged": "still:screen-live",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "draft",
+        "interface": true,
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "scale": 0.7292
+    },
+    "set-A-08.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-screen",
+      "heading": "What a visitor on a touch device gets in place of the application",
+      "judged": "still:screen-touch",
+      "still": {
+        "page": "marketing",
+        "camera": "home",
+        "tier": "draft",
+        "interface": true,
+        "touchOnly": true,
+        "live": "high"
+      },
+      "format": "hd",
+      "level": "high",
+      "scale": 0.7292
+    },
+    "set-A-09.png": {
+      "set": "A",
+      "critic": "R8-1",
+      "kind": "site-control-crops",
+      "heading": "What a visitor can have on screen besides the page, each at its real size",
+      "crops": [
+        {
+          "screen": "screen-live",
+          "window": [
+            0,
+            0,
+            696,
+            200
+          ]
+        },
+        {
+          "screen": "screen-skip",
+          "window": [
+            34,
+            0,
+            696,
+            200
+          ]
+        },
+        {
+          "screen": "film",
+          "window": [
+            612,
+            412,
+            696,
+            200
+          ]
+        },
+        {
+          "screen": "film",
+          "window": [
+            131,
+            880,
+            696,
+            200
+          ]
+        },
+        {
+          "screen": "film",
+          "window": [
+            1093,
+            880,
+            696,
+            200
+          ]
+        }
+      ],
+      "format": "hd",
+      "level": "high"
+    }
+  }
+}

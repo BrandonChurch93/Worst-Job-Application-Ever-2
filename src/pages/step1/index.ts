@@ -6,7 +6,7 @@ import { block } from '../../shell/metrics'
 import { SCREEN_H, TYPE } from '../../shell/parts'
 import { homeDistance, smooth } from '../../stage/camera'
 import type { CameraPose, DrawList, Emit, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
-import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, TIP, tipOf, TRAVEL, typed } from './keyboard'
+import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, SINK, TIP, tipOf, TRAVEL, typed } from './keyboard'
 import { slotShapes } from './real/shredderShape'
 import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, uploadGlyph, ZONE, type FieldName } from './layout'
 import { BITE, filmCamera, FRINGE, HOOD, makePlan, PILE, pointerAt, raised, RESUME, SHRED, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
@@ -43,6 +43,9 @@ const LOSS = { pull: 0.22, back: 20, gain: 0.12, skid: 0.36, long: 1.28, kick: 0
 const JOLT = { seconds: 0.24, bite: 12, lost: 16, meet: 24, panel: 0.75 }
 // The live give-back: how short the whole arrow is pressed as it drops its pose, for how long, and the seconds over which the page lets it back to its length; the seconds from there to the release (`settle`), of which the last `hold` it stands still at its plain tilt; and the seconds over which the arrow is then eased to the mouse.
 const GIVE = { settle: 0.42, hold: 0.2, low: 0.78, press: 0.06, rise: 0.2, back: 0.44 }
+// The give back on the live site. The mended arrow lies with its tip `under` px beneath the hood's lip and is drawn out to `long` over `strain` seconds before the page lets go.
+// Then the cassette kicks by `kick`, the arrow is thrown back to where the pile lay inside `fall` seconds, short by `low` for `press` seconds and at its length again by `rise`, swinging `swing` radians at `hz` over `ring` seconds, and `beat` seconds after the kick, having stood, it is the visitor's again, eased over `GIVE.back`.
+const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.034, rise: 0.084, fall: 0.067, swing: 0.3, hz: 12, ring: 0.084, beat: 0.4 }
 // The seconds the slot takes to close after the tug; below `last` of its travel, where the two panels meet and drop into the page, it goes `slower` times as slowly, so the pale panels arrive and settle over several frames.
 const SHUT = { seconds: 0.36, last: 0.3, slower: 2.2 }
 // The live loss, after the paper is in: the seconds the empty hands are shed while the arrow is thrown back from the mouth, and how far, in page pixels.
@@ -61,6 +64,8 @@ const DOWN = { seconds: 0.02, first: 0.5 }
 const TAP = { seconds: 0.2, hold: 0.05, depth: 1, shake: 0.22 }
 const STRIKE = { seconds: 1.5, id: 90000, z: 96, over: 1.46 }
 // The key under an arrow a bolt hits: it stays down `held` seconds, is back at its full height a third of the way from there to `back`, goes `pop` px over its seat and is still at `back`.
+// How the caps round a bolt's hit are thrown on the live site: px at the strike, falling to nothing at reach, held out for hold seconds so the frame of the hit shows all of it, then dying over tau, one swing a period, over by seconds.
+const JAR = { px: 7.5, reach: 300, fall: 1.3, hold: 0.017, tau: 0.035, period: 0.08, seconds: 0.2 }
 const THUD = { seconds: 0.17, hold: 0.085, shake: 0.7, hop: 9, reach: 260, toss: 0.1, speed: 6000, held: 0.05, back: 0.2, pop: 2 }
 const PULSE = { hold: 0.05, fade: 0.3 }
 const FLIGHT = { over: 1.25, under: 0.75, ripple: 0.17, span: 800, jitter: 0.02, seconds: 0.2, rise: 0.58, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 4, land: 2.2, rattle: 1.6, clear: 5 }
@@ -90,7 +95,9 @@ interface State {
   rng: number[]
   shuffles: number
   shuffledAt: number
-  queue: { key: number; wait: number }[]
+  queue: { key: number; wait: number; click: number }[]
+  held: string
+  click: number
   keyDown: Record<string, number>
   drum: number
   shock: number
@@ -148,6 +155,7 @@ const spring = (e: number, hold: number, total: number): number => {
   return Math.cos(t * Math.PI * 1.5) * (1 - t) ** 1.5
 }
 const stroke = (e: number): number => (e >= 0 && e < DOWN.seconds ? DOWN.first + (1 - DOWN.first) * (e / DOWN.seconds) : spring(e, HOLD, PRESS))
+const jarOf = (t: number): number => (t < 0 || t > JAR.seconds ? 0 : t < JAR.hold ? 1 : Math.exp(-(t - JAR.hold) / JAR.tau) * Math.cos(((t - JAR.hold) / JAR.period) * Math.PI * 2))
 const ring = (t: number, px: number): number => (t < 0 || t > 0.3 ? 0 : px * Math.exp(-t * 16) * Math.cos(t * 58))
 const inside = (b: { x: number; y: number; w: number; h: number }, x: number, y: number, pad = 0): boolean => x >= b.x - pad && x <= b.x + b.w + pad && y >= b.y - pad && y <= b.y + b.h + pad
 
@@ -178,7 +186,7 @@ export function makePage(): PageLogic {
 
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
-    rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
+    rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], held: '', click: 0, keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
     paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1 },
     lost: -1, last: -1, lostFrom: { x: 0, y: 0, ux: 0, uy: -1 }, jolt: 9, joltAmp: 0, give: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, thudLean: { x: 0, y: 1 }, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
@@ -269,11 +277,12 @@ export function makePage(): PageLogic {
       act(io, 'proud')
     }
   }
-  const strike = (io: StepIo, key: number): void => {
+  const strike = (io: StepIo, key: number, click: number): void => {
     const name = seats[key]!.name
     const at = seatOf(key, 1)
     io.emit('key-press', at.x + seats[key]!.w / 2, at.y + seats[key]!.h / 2, false)
     s.keyDown[name] = PRESS
+    s.held = s.mode === 'live' && io.pointer.down && click === s.click ? name : ''
     const field = FIELD_OF[s.phase]
     if (!field || s.phase === 'keyboard' || s.phase === 'slabs') return
     const value = s.values[field]
@@ -298,8 +307,11 @@ export function makePage(): PageLogic {
   const paperTarget = (): { x: number; y: number } => ({ x: BITE.x, y: BITE.y })
 
   const stepKeys = (io: StepIo): void => {
+    const typing = s.phase === 'firstName' || s.phase === 'lastName' || s.phase === 'email'
+    if (io.pressed) s.click++
+    if (s.held !== '' && !(io.pointer.down && !s.blocks && (typing || s.phase === 'slabs'))) s.held = ''
     for (const k of Object.keys(s.keyDown)) {
-      s.keyDown[k] = s.keyDown[k]! - io.dt
+      s.keyDown[k] = Math.max(s.keyDown[k]! - io.dt, k === s.held ? PRESS - HOLD : 0)
       if (s.keyDown[k]! <= 0) delete s.keyDown[k]
     }
     if (s.drum > 0) s.drum = Math.max(0, s.drum - io.dt)
@@ -307,10 +319,9 @@ export function makePage(): PageLogic {
       s.shuffle = Math.min(1, s.shuffle + io.dt / TIMES.shuffleSeconds)
     }
     if (s.blocks && s.shuffle >= 1 && s.sinceShuffle >= SEATED) s.blocks = false
-    const typing = s.phase === 'firstName' || s.phase === 'lastName' || s.phase === 'email'
     if (io.pressed && s.board >= 1 && !s.blocks && (typing || s.phase === 'slabs')) {
       const key = keyAt(s.places, io.pointer.x, io.pointer.y)
-      if (key >= 0 && s.queue.length < 4) s.queue.push({ key, wait: TIMES.pressWait })
+      if (key >= 0 && s.queue.length < 4) s.queue.push({ key, wait: TIMES.pressWait, click: s.click })
     }
     for (const q of s.queue) q.wait -= io.dt
     const head = s.queue[0]
@@ -319,7 +330,7 @@ export function makePage(): PageLogic {
       const own = seats[head.key]!
       if (head.wait <= 0 || inside({ x: at.x, y: at.y, w: own.w, h: own.h }, io.cursor.x, io.cursor.y)) {
         s.queue.shift()
-        strike(io, head.key)
+        strike(io, head.key, head.click)
       }
     }
     if (typing && s.mode === 'live') {
@@ -354,6 +365,7 @@ export function makePage(): PageLogic {
         s.shakeAt = { x, y }
       }
     }
+    if (s.mode === 'live' && s.held !== '') turrets.wait(io.dt)
     const hits = turrets.step(io.dt, body, exposed, emit)
     for (const h of hits) {
       io.emit('bolt-hit-cursor', h.x, h.y, true)
@@ -365,6 +377,7 @@ export function makePage(): PageLogic {
       s.shock = 0.9
       s.singe = SINGE
       s.queue = []
+      s.held = ''
       s.thud = 0
       s.thudKey = keyAt(s.places, body.x, body.y)
       s.thudLean = { x: -h.dx, y: -h.dy }
@@ -687,7 +700,7 @@ export function makePage(): PageLogic {
     }
     if (crossed(SHRED.gone)) io.cursor.setOnPage(false)
     if (crossed(SHRED.pile)) {
-      io.cursor.place(PILE.x, PILE.y)
+      io.cursor.place(PILE.x, s.mode === 'film' ? PILE.y : HOOD.y - CAUGHT.under)
       io.cursor.setOnPage(true)
       io.cursor.hurt('shredded', SHRED.pileSeconds)
     }
@@ -714,12 +727,16 @@ export function makePage(): PageLogic {
       io.emit('strips-zip', PILE.x + BODY.x, PILE.y + BODY.y, false)
       act(io, 'exhausted')
     }
+    if (s.mode !== 'film' && crossed(SHRED.end - CAUGHT.strain)) act(io, 'plain')
+    if (s.mode !== 'film' && s.shred >= SHRED.end - CAUGHT.strain && s.shred < SHRED.end) io.cursor.press(lerp(1, CAUGHT.long, smooth((s.shred - SHRED.end + CAUGHT.strain) / (CAUGHT.strain * 0.6))), io.dt)
     if (crossed(SHRED.end)) {
       if (s.mode === 'film') io.cursor.release()
       else {
         s.give = 0
         act(io, 'plain')
-        io.cursor.press(GIVE.low, GIVE.press)
+        jolt(CAUGHT.kick)
+        io.cursor.press(CAUGHT.low, CAUGHT.press)
+        io.cursor.wobble(CAUGHT.swing, CAUGHT.hz, CAUGHT.ring)
       }
       enter('received')
     }
@@ -727,9 +744,11 @@ export function makePage(): PageLogic {
 
   const stepReceived = (io: StepIo): void => {
     if (s.give >= 0) {
+      const fell = s.give >= CAUGHT.fall
       s.give += io.dt
-      if (s.give > GIVE.press && s.give < GIVE.rise) io.cursor.press(lerp(GIVE.low, 1, smooth((s.give - GIVE.press) / (GIVE.rise - GIVE.press))), io.dt)
-      if (s.give >= GIVE.settle) {
+      if (!fell) io.cursor.place(PILE.x, lerp(PILE.y, HOOD.y - CAUGHT.under, Math.pow(1 - Math.min(1, s.give / CAUGHT.fall), 3)))
+      if (s.give > CAUGHT.press && s.give < CAUGHT.rise) io.cursor.press(lerp(CAUGHT.low, 1, smooth((s.give - CAUGHT.press) / (CAUGHT.rise - CAUGHT.press))), io.dt)
+      if (s.give >= CAUGHT.beat) {
         s.give = -1
         io.cursor.release(GIVE.back)
       }
@@ -933,12 +952,23 @@ export function makePage(): PageLogic {
         for (const side of [0, 1]) over[`hatch-${side}`] = { y: hatchY[side]! + shake, z0: DECK_TOP + off, z1: DECK_TOP + 0.6 + off, ...(shaken ? { moved: true } : {}) }
         const scorches = turrets.s.scorches
         const spots: { x: number; y: number; w: number; h: number; top: number; air: boolean }[] = []
+        const onSite = s.mode === 'live'
+        const jarred = onSite && s.shakeAmp === THUD.shake && s.thud < JAR.seconds
         seats.forEach((seat, key) => {
           const fl = flightOf(key)
           const at = seatOf(key, fl.u, fl.bow)
           at.y += shake
           const down = s.keyDown[seat.name]
           const far = Math.hypot(at.x + seat.w / 2 - s.shakeAt.x, at.y + seat.h / 2 - s.shakeAt.y)
+          let thrown = false
+          if (jarred && far < JAR.reach && !at.moved) {
+            const push = JAR.px * (1 - far / JAR.reach) ** JAR.fall * jarOf(s.thud)
+            const ux = far > 1 ? (at.x + seat.w / 2 - s.shakeAt.x) / far : -s.thudLean.x
+            const uy = far > 1 ? (at.y + seat.h / 2 - s.shakeAt.y) / far : -s.thudLean.y
+            at.x += ux * push
+            at.y += uy * push
+            thrown = Math.abs(push) > 0.01
+          }
           let pin = 0
           s.slabs.forEach((b, n) => {
             if (!b.landed || !(at.x < b.x + SLAB.w && at.x + seat.w > b.x && at.y < b.y + SLAB.h && at.y + seat.h > b.y)) return
@@ -952,7 +982,7 @@ export function makePage(): PageLogic {
           const rattle = !down && s.seat < RATTLE.seconds ? RATTLE.px * hash01(key, 2, 17) * Math.sin(Math.PI * clamp((s.seat - 0.08 * hash01(key, 4, 17)) / (RATTLE.seconds - 0.08), 0, 1)) : 0
           const jar = fl.t > FLIGHT.seconds ? fl.t - FLIGHT.seconds : fl.t
           const stir = !at.moved && !down && jar > 0 && jar < 0.1 ? FLIGHT.rattle * (0.4 + 0.6 * hash01(key, s.shuffles, 29)) * Math.sin((Math.PI * jar) / 0.1) : 0
-          const sprung = !down && !pinned && key === s.thudKey ? spring(s.thud, THUD.held, THUD.back) : 0
+          const sprung = !onSite && !down && !pinned && key === s.thudKey ? spring(s.thud, THUD.held, THUD.back) : 0
           const hop = (at.moved ? fl.air * fl.high : 0) + kick + rattle + stir + THUD.pop * 4 * Math.max(0, -sprung)
           const wave = s.drum > 0 ? Math.max(0, Math.sin((0.8 - s.drum) * 14 - (seat.cx - DECK.x) / 160)) * TRAVEL : 0
           let heat = 0
@@ -969,16 +999,17 @@ export function makePage(): PageLogic {
           const press = sunk * TRAVEL + wave
           const top = CAP_TOP + off + hop - press
           if (key === s.thudKey) strikeTop = Math.max(strikeTop, top)
-          const away = at.moved || s.places[key] !== key || shaken
+          const away = at.moved || s.places[key] !== key || shaken || thrown
           const seen = top > 0 || at.y >= mouth + LEGEND_CLEAR
           const depth = clamp(press / TRAVEL, 0, 1)
-          const lean = pinned || at.moved ? 0 : down ? TIP.press * clamp(struck, -1, 1) : key === s.thudKey ? TIP.rad * tipOf(s.thud) : 0
+          const lean = pinned || at.moved ? 0 : down ? TIP.press * clamp(struck, -1, 1) : key === s.thudKey && !onSite ? TIP.rad * tipOf(s.thud) : 0
+          const sink = onSite && down && !pinned ? clamp(struck, -1, 1) : 0
           const tipX = lean * (down ? 0 : s.thudLean.x) * Math.min(1, SLAB_HOP.wide / seat.w)
           const tipY = lean * (down ? 1 : s.thudLean.y)
-          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(down ? { tone: 'pocket' as const } : {}), v: [depth, hop, at.moved ? fl.air : 0, heat, tipY, tipX] }
+          over[`key-${seat.name}`] = { x: at.x, y: at.y, z0: DECK_TOP + off + hop, z1: top, mechanism: top >= heights.machineMinTop, moved: away, ...(down ? { tone: 'pocket' as const } : {}), v: [depth, hop, at.moved ? fl.air : 0, heat, tipY, tipX, ...(onSite ? [sink] : [])] }
           const legend = boxOf(layout, `key-${seat.name}`)
           const label = seat.name === 'space' ? null : boxOf(layout, `key-${seat.name}-legend`)
-          if (label) over[`key-${seat.name}-legend`] = !seen ? null : { x: label.x + (at.x - legend.x) - TIP.lever * tipX, y: label.y + (at.y - legend.y) - TIP.lever * tipY, z0: top, z1: top, moved: away }
+          if (label) over[`key-${seat.name}-legend`] = !seen ? null : { x: label.x + (at.x - legend.x) - TIP.lever * tipX + SINK.x * sink, y: label.y + (at.y - legend.y) - TIP.lever * tipY + SINK.y * sink, z0: top, z1: top, moved: away }
           spots.push({ x: at.x, y: at.y, w: seat.w, h: seat.h, top, air: at.moved && fl.air > 0 })
         })
         if (spots.some((p) => p.air)) {
@@ -1059,7 +1090,7 @@ export function makePage(): PageLogic {
       }
       if (!s.received) for (const [i, g] of glyph.entries()) out.push({ id: `resume-glyph-${i}`, part: 'shell', kind: 'box', x: g.x, y: g.y + joltNow() * JOLT.panel, w: g.w, h: g.h, z0: heights.card, z1: heights.card + 0.4, r: 1.5, rot: g.rot, tone: 'ink' })
       if (s.board > 0) turrets.draw(out, off)
-      if (s.board > 0 && s.thud < STRIKE.seconds && turrets.s.hits > 0) out.push({ id: `scorch-${STRIKE.id + turrets.s.hits}`, part: 'turrets', kind: 'disc', x: s.struckAt.x, y: s.struckAt.y, w: 0, h: 0, z0: STRIKE.z + off, z1: STRIKE.z + off, tone: 'dark', v: [1 - s.thud / TURRET.scorchSeconds, 1, STRIKE.z + off - strikeTop + STRIKE.over] })
+      if (s.board > 0 && s.thud < STRIKE.seconds && turrets.s.hits > 0) out.push({ id: `scorch-${STRIKE.id + turrets.s.hits}`, part: 'turrets', kind: 'disc', x: s.struckAt.x, y: s.struckAt.y, w: 0, h: 0, z0: STRIKE.z + off, z1: STRIKE.z + off, tone: 'dark', v: [1 - s.thud / TURRET.scorchSeconds, 1, STRIKE.z + off - strikeTop + STRIKE.over, ...(s.mode === 'live' ? [1] : [])] })
       if (s.slot > 0) {
         const open = smooth(s.slot)
         const rate = s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0

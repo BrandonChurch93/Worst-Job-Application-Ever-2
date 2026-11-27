@@ -1,20 +1,20 @@
 {
   "film": "b",
   "file": "preview-b.mp4",
-  "engineHash": "e6f9508050543b35",
-  "sharedHash": "a365b739db2b651c",
+  "engineHash": "e68903f7837ca4c7",
+  "sharedHash": "6b07439bda532919",
   "pageHashes": {
-    "marketing": "da0853ca495d3bc5",
-    "step1": "143605278a5b331a",
-    "step2": "55cb277c9b082808",
-    "pinball": "52eaa98774a574fc",
-    "boss": "c760279b498e8bb3",
-    "decision": "08e4b1401a38f867"
+    "marketing": "8cd6ae0941a08122",
+    "step1": "0f0147b07a9833c8",
+    "step2": "1ba00f8ab331f145",
+    "pinball": "a5a325cae0ba55dc",
+    "boss": "ed18eab775dec297",
+    "decision": "7268eb60f24ef748"
   },
-  "commit": "7c717a717ba5bdb339cd7f0657450c2a7bdf4f78",
+  "commit": "684f2e89a6bdc8fd164e739c0c522e9bd243f18a",
   "commitClean": true,
   "format": "preview",
-  "tier": "draft",
+  "tier": "review",
   "assets": "full",
   "rate": 30,
   "frames": 4590,
@@ -22,259 +22,18 @@
   "codec": "h264",
   "width": 960,
   "height": 540,
-  "seconds": 153,
-  "mbps": 4.132,
+  "seconds": 152.997,
+  "mbps": 4.374,
   "sound": {
     "codec": "aac",
     "sampleRate": 48000,
     "channels": 2,
-    "kbps": 2
+    "kbps": 256
   },
   "soundFrom": "audio/mix/review.wav",
-  "sha256": "1b6c8b52ba36902dd4b581450c88be105726217c313919cf880c3169ef34b0b3",
-  "bytes": 79019423,
-  "megabytes": 75.36,
-  "keptFrom": "out/work/film-b-preview-draft.mp4",
-  "standIns": [
-    {
-      "name": "apply-button",
-      "unit": "marketing"
-    },
-    {
-      "name": "careers-page",
-      "unit": "marketing"
-    },
-    {
-      "name": "cursor-acting",
-      "unit": "step1"
-    },
-    {
-      "name": "cursor-body",
-      "unit": "step1"
-    },
-    {
-      "name": "perk-cards",
-      "unit": "marketing"
-    },
-    {
-      "name": "shell",
-      "unit": "step1"
-    },
-    {
-      "name": "ticker",
-      "unit": "marketing"
-    },
-    {
-      "name": "type",
-      "unit": "step1"
-    },
-    {
-      "name": "cursor-damage",
-      "unit": "step1"
-    },
-    {
-      "name": "keyboard",
-      "unit": "step1"
-    },
-    {
-      "name": "turrets",
-      "unit": "step1"
-    },
-    {
-      "name": "cursor-arms",
-      "unit": "step1"
-    },
-    {
-      "name": "paper",
-      "unit": "step1"
-    },
-    {
-      "name": "shredder",
-      "unit": "step1"
-    },
-    {
-      "name": "slabs",
-      "unit": "step1"
-    },
-    {
-      "name": "dial",
-      "unit": "step2"
-    },
-    {
-      "name": "rows",
-      "unit": "step2"
-    },
-    {
-      "name": "slot",
-      "unit": "step2"
-    },
-    {
-      "name": "crank",
-      "unit": "step2"
-    },
-    {
-      "name": "bumpers",
-      "unit": "pinball"
-    },
-    {
-      "name": "clear-ball",
-      "unit": "pinball"
-    },
-    {
-      "name": "displays",
-      "unit": "pinball"
-    },
-    {
-      "name": "flippers",
-      "unit": "pinball"
-    },
-    {
-      "name": "lift",
-      "unit": "pinball"
-    },
-    {
-      "name": "loader",
-      "unit": "pinball"
-    },
-    {
-      "name": "marquee",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-bank",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-beach",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-boardroom",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-coffee-machine",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-cubicles",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-firehouse",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-garage",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-houses",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-hq",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-inbox",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-ladder",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-moms",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-notes",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-police",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-revolving-door",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-road-signs",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-staplers",
-      "unit": "pinball"
-    },
-    {
-      "name": "model-wedges",
-      "unit": "pinball"
-    },
-    {
-      "name": "ramps",
-      "unit": "pinball"
-    },
-    {
-      "name": "table-frame",
-      "unit": "pinball"
-    },
-    {
-      "name": "table-hardware",
-      "unit": "pinball"
-    },
-    {
-      "name": "table-layout",
-      "unit": "pinball"
-    },
-    {
-      "name": "table-lights",
-      "unit": "pinball"
-    },
-    {
-      "name": "targets",
-      "unit": "pinball"
-    },
-    {
-      "name": "tier-art",
-      "unit": "pinball"
-    },
-    {
-      "name": "boss-body",
-      "unit": "boss"
-    },
-    {
-      "name": "boss-transform",
-      "unit": "boss"
-    },
-    {
-      "name": "health-bar",
-      "unit": "boss"
-    },
-    {
-      "name": "verify-card",
-      "unit": "boss"
-    },
-    {
-      "name": "boss-weapons",
-      "unit": "boss"
-    },
-    {
-      "name": "letter",
-      "unit": "decision"
-    },
-    {
-      "name": "metrics",
-      "unit": "decision"
-    },
-    {
-      "name": "stamp",
-      "unit": "decision"
-    },
-    {
-      "name": "wait",
-      "unit": "decision"
-    }
-  ]
+  "sha256": "cd455e1bd593048919e9943b036475168ccc1bfaa83cf40bbda8d2249a641352",
+  "bytes": 83656397,
+  "megabytes": 79.78,
+  "keptFrom": "out/work/film-b-preview-review.mp4",
+  "standIns": []
 }

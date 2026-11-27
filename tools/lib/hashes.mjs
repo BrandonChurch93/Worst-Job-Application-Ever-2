@@ -60,6 +60,11 @@ export function pageHashes(root) {
   return out
 }
 
+// The sound code: src/audio is in no other hash, because a change of the sound changes no picture. A mix names it.
+export function soundHash(root) {
+  return hashFiles(root, walk(path.join(root, 'src', 'audio')))
+}
+
 // The folders every page is drawn with. They sit in the look lock unit's hash, so a record of another page names them too.
 export const sharedFolders = ['src/shell', 'src/cursor', 'src/post']
 
