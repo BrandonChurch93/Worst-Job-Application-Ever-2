@@ -111,3 +111,17 @@ The view in a rally, no change made. MEASURED, `node pipeline/phase5/polish-save
 So the view is lowered for 4.90 s before the take with no save yet (17.12 to 22.02 s), of which it stands 4.25 s. While it is lowered and no save has begun, the ball's middle is never higher than y 473.9 of 1080 on the screen (at 20.37 s). Named as it is: between 19.25 and 19.77 s the way down comes in pieces, because the ball goes in and out of the gate's reach at the bats; no piece goes back.
 
 The arrow's step on the kick's step (the strike's own law, kept by the Builder's ruling; MEASURED with the measure script, the heading on the last frame on the wire and on the kick's frame): pack seed 3 save 2: 120.7 to -63.0 degrees, 176.3 degrees by the shorter way; pack seed 1 save 1: -170.8 to -50.5, 120.3 degrees; keen seed 1 save 1: -151.2 to -50.5, 100.7 degrees.
+
+`view-rally.png` (two whole frames of the live site at half size, keen seed 1, made with `polish-gate-shots.mjs --at 19.0 --count 1` and `--at 20.3667 --count 1`). What I saw: at 19.000 s (30.6 px lowered) the whole tier is on the screen, its upper lamps at the top, the gate's wire at the lower edge, the ball on the blue bumper. At 20.367 s (90 px lowered) the wire, the hole under it and the lamps of the tier below are on the screen; the tier's upper edge and its row of lamps are off the top; the ball is beside the lowest cup, in the upper half of the picture.
+
+The lines changed in another owner's test, all in `tests/polish-gate.test.ts`, in the one test of the load (`describe` "the save at the gate, read at real size"):
+
+- line 56, the test's title: "... and holds it there, dead still, for five frames of 60 or more" to "... for three and a half frames of 60 or more".
+- line 65: `expect(held.length / EACH, 'frames at the deepest').toBeGreaterThanOrEqual(5)` to `.toBeGreaterThanOrEqual(3.5)`.
+
+Why: `SAVE.still` went from 26 steps (6.5 frames) to 14 (3.5 frames), the landing's swings taking the steps (the Builder's ruling 2). No other line of that file and no other owner's test is changed.
+
+## Checks on the last merged trees
+
+- With `origin/main` at `4ef92716` (merge 51) merged in (`d22885d5`), 14:26 to 14:37, one job at a time: the three draft stills `cmp` byte equal to those of `308e96a1`; `npm run determinism` pass, 12 pictures; `npm run bots` all clear, keen 37 of 37 gags; `npm test` 169 files passed, 12 skipped, 2116 tests passed, 15 skipped, none failed; `npx tsc --noEmit -p .` clean.
+- With `origin/main` at `e2364b9c` (status 153) merged in (`c05f44ef`), 14:40 to 14:52, the same chain: the three stills byte equal; determinism pass, 12 pictures; bots all clear, keen 37 of 37; `npm test` 169 files passed, 12 skipped, 2116 tests passed, 15 skipped, none failed; `tsc` clean.
