@@ -4,7 +4,7 @@ import { hash01, hashName } from '../../../core/random'
 import type { PartMaker, RealContext } from '../../../real/types'
 import { circle, merge } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
-import { TURRET } from '../turrets'
+import { RECOIL, TURRET } from '../turrets'
 import { BRUSH, kit, lit, turn } from './keyboard-kit'
 import { EMIT, fx, GLOW, overlay } from './turret-fx'
 
@@ -15,6 +15,8 @@ export const TURRET_LOOK = {
   flashSeconds: 0.034, steam: 6, sparks: 8
 }
 
+// The barrel slides in a sleeve that stays in the dome: SLEEVE px of the barrel lie inside it at rest, so no gap opens when the barrel springs forward of rest, and behind them a blunt end as long as the rest of the sleeve's line, so the steel's grain lies on the barrel where it lay.
+const SLEEVE = 8
 const smooth = (t: number) => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * (3 - 2 * u)
@@ -31,6 +33,7 @@ interface Shared {
   head: THREE.BufferGeometry
   headDark: THREE.BufferGeometry
   barrel: THREE.BufferGeometry
+  sleeve: THREE.BufferGeometry
   tip: THREE.BufferGeometry
   barrelDark: THREE.BufferGeometry
   bezel: THREE.BufferGeometry
@@ -120,8 +123,11 @@ function geometries(): Shared {
   ]
   const headDark: THREE.BufferGeometry[] = []
   const m = L.muzzle
+  const sleeveLine: [number, number][] = [[19, 26], [19, 46], [18, 47.2], [15.6, 47.2]]
+  const lead = sleeveLine.slice(1).reduce((sum, p, i) => sum + Math.hypot(p[0] - sleeveLine[i]![0], p[1] - sleeveLine[i]![1]), 0) - SLEEVE
+  const sleeve = along(turn(sleeveLine, 32, 2))
   const barrel = merge([
-    along(turn([[19, 26], [19, 46], [18, 47.2], [15.6, 47.2], [15.6, 52], [14.8, 52.6], [14.8, 54], [15.6, 54.6]], 32, 2)),
+    along(turn([[0, 47.2 - SLEEVE - Math.sqrt(lead * lead - 15.6 * 15.6)], [15.6, 47.2 - SLEEVE], [15.6, 47.2], [15.6, 52], [14.8, 52.6], [14.8, 54], [15.6, 54.6]], 32, 2)),
     along(smoothTurn([[15.6, 54.6], [11.4, m - 17]], 32)),
     along(turn([[11.4, m - 17], [13.8, m - 15.8], [13.8, m - 10]], 32, 2))
   ])
@@ -136,7 +142,7 @@ function geometries(): Shared {
   const lu = lid.getAttribute('uv')
   for (let i = 0; i < lu.count; i++) lu.setXY(i, lid.getAttribute('position').getX(i) / BRUSH.u, lid.getAttribute('position').getY(i) / BRUSH.v)
   lid.setAttribute('color', new THREE.BufferAttribute(new Float32Array(lu.count * 3).fill(L.doorTone), 3))
-  shared = { collar, head: merge(headParts), headDark: merge(headDark), barrel, tip, barrelDark, bezel, socket, door: lid }
+  shared = { collar, head: merge(headParts), headDark: merge(headDark), barrel, sleeve, tip, barrelDark, bezel, socket, door: lid }
   return shared
 }
 
@@ -144,6 +150,7 @@ interface TurretData {
   rise: THREE.Group
   head: THREE.Group
   barrel: THREE.Group
+  sleeve: THREE.Mesh
   metal: THREE.MeshPhysicalMaterial
   steel: THREE.MeshPhysicalMaterial
   cool: [THREE.Color, THREE.Color]
@@ -185,7 +192,9 @@ function makeTurret(s: Shape): THREE.Object3D {
   const hotTip = new THREE.Mesh(g.tip, tipMaterial)
   barrel.add(new THREE.Mesh(g.barrel, steel), bore, hotTip)
   barrel.position.z = TURRET_LOOK.axis
-  head.add(barrel)
+  const sleeve = new THREE.Mesh(g.sleeve, steel)
+  sleeve.position.z = TURRET_LOOK.axis
+  head.add(barrel, sleeve)
   rise.add(head)
   root.add(rise)
   lit(root)
@@ -220,7 +229,7 @@ function makeTurret(s: Shape): THREE.Object3D {
     steamMaterials.push(m)
     rise.add(puff)
   }
-  const data: TurretData = { rise, head, barrel, metal, steel, cool: [metal.color.clone(), steel.color.clone()], charge, chargeMaterial, tipMaterial, halo, haloMaterial, sparks, flash, flashMaterial, steam, steamMaterials, seed: hashName(s.id) & 0xffff }
+  const data: TurretData = { rise, head, barrel, sleeve, metal, steel, cool: [metal.color.clone(), steel.color.clone()], charge, chargeMaterial, tipMaterial, halo, haloMaterial, sparks, flash, flashMaterial, steam, steamMaterials, seed: hashName(s.id) & 0xffff }
   root.userData.turret = data
   return root
 }
@@ -236,10 +245,12 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const charge = Math.min(1, Math.max(0, v[2]!))
   const since = v[3]!
   const heat = Math.min(1, Math.max(0, v[4]!))
-  const kick = since < 0.12 ? -5 * Math.exp(-since / 0.03) * Math.sin(Math.min(1, since / 0.03) * Math.PI * 0.5) : 0
   const out = smooth((up - TURRET_LOOK.clear) / (1 - TURRET_LOOK.clear))
   const lift = TURRET_LOOK.lift * out
-  d.barrel.position.x = -v[5]! * 0.55 + kick - TURRET_LOOK.stowed * (1 - out)
+  d.sleeve.position.x = -TURRET_LOOK.stowed * (1 - out)
+  d.sleeve.rotation.y = -lift
+  d.barrel.position.set(d.sleeve.position.x - v[5]! * Math.cos(lift), 0, TURRET_LOOK.axis - v[5]! * Math.sin(lift))
+  d.head.position.set(-v[0]! * v[5]! * RECOIL.head, v[1]! * v[5]! * RECOIL.head, 0)
   d.barrel.rotation.y = -lift
   const cx = s.x + s.w / 2
   const cy = s.y + s.h / 2
@@ -368,14 +379,13 @@ function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const gone = from ? Math.hypot(s.x + s.w / 2 + Math.cos(a) * TURRET.bolt * 0.5 - from.x - from.w / 2, s.y + s.h / 2 + Math.sin(a) * TURRET.bolt * 0.5 - from.y - from.h / 2) - TURRET.barrel : 0
   const far = u > 0.02 && from ? Math.max(0, gone) / u : TURRET_LOOK.lob / TURRET_LOOK.lobShare
   const lob = Math.min(TURRET_LOOK.lob, far * TURRET_LOOK.lobShare) * Math.sin(Math.PI * u) ** 0.4
-  const flick = 0.92 + 0.08 * Math.sin(ctx.time * 140 + (hashName(s.id) & 255))
   d.head.position.set(TURRET.bolt / 2 - 8, side * lob, 10 + lob * 0.5)
   v3.set(TURRET.bolt / 2 - 12, side * lob, 10 + lob * 0.5)
-  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(26 + 50 * born, 2 * flick, 2 * flick)))
+  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(26 + 50 * born, 2, 2)))
   d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(14 + 26 * born, 1.1, 1.1)))
   d.tails.instanceMatrix.needsUpdate = true
   const half = TURRET.bolt / 2 - 9
-  ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half + side * Math.sin(a) * lob, y: s.y + s.h / 2 + Math.sin(a) * half - side * Math.cos(a) * lob, z: s.z0 + 8 + lob * 0.5, colour: EMIT.bolt.colour, power: EMIT.bolt.power * flick, reach: EMIT.bolt.reach, shadow: true })
+  ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half + side * Math.sin(a) * lob, y: s.y + s.h / 2 + Math.sin(a) * half - side * Math.cos(a) * lob, z: s.z0 + 8 + lob * 0.5, colour: EMIT.bolt.colour, power: EMIT.bolt.power, reach: EMIT.bolt.reach, shadow: true })
 }
 
 interface ScorchData {
