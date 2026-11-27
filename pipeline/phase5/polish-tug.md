@@ -95,3 +95,46 @@ What changed, `src/cursor/body.ts` only, by the Builder's leave: `EMERGE = { lea
 - MEASURED, the state dump against the commit before (7803a6c7): 7 frames of step 1 differ, unit 1682 to 1688, film 2522 to 2528; every frame from 2529 on is equal; the events byte equal by `cmp` (351).
 - MEASURED in pictures, `npm run -s seq -- --first 2520 --last 2534 --tier draft` before and after, every frame 2520 to 2532 round the slot at the preview's real size: no strip above the lower lip in any frame; at 2522 the bundle hangs from under the roller, shorter than before by eye about a quarter; it is longer in each of 2523 to 2526; 2527 reads as before; 2528 on is the same picture. NOT reached: at 2522 most of each strip's length is already below the lip in that one frame. A growth from nothing needs a clip or a length in the model (`src/cursor/model/body.ts`), not done.
 - MEASURED on the live site by numbers only (`npx vitest run tests/polish-tug-strips.test.ts`): film, bot keen (strips first at 30.417 s) and bot clumsy (41.525 s): the strips show only in `step1.shredded`, with the arrow on the page and hurt `shredded`, the highest strip 0.38 on the first step, 9.17 a frame on, 34.33 at 0.12 s. No live picture of it was made.
+
+## The strips grow down from the lip (asked 00:14Z, for the merge after 43, one commit of its own: df2a79cf)
+
+By the Builder's leave for `applyStrips` in `src/cursor/model/body.ts` and what it needs in the pose.
+
+What changed:
+
+- `src/cursor/contract.ts`: a strip of the pose may name `below` (a line across the page over the body's place, in the body's pixels up the page) and `shown` (0 to 1, how far it has come out).
+- `src/cursor/body.ts`: `EMERGE = { least: 0.16, most: 0.19, lip: 43 }`. `emerged()` gives a loose strip its own fall (x, y, rot untouched; z and tilt eased as in d4b94e4e) and the two new fields until it is out; the 18 px shift under the hood of d4b94e4e is gone. The blend of two poses carries the two fields. `lip: 43` is `PILE.y - HOOD.y` of step 1 (`script.ts`: the hood's line 17 px under the slot's middle, the pile 60 px under it), written as a number here because the cursor does not read a page's file.
+- `src/cursor/model/body.ts`: `LIP = { first: 0.12, whole: 0.55, least: 0.2, lift: 0.5 }` and `underLip()`. For a strip that names a lip the model measures the strip's own length up the page as its fall would draw it, holds it up so that only its share is under the lip (0.12 at the first, the whole at 0.55 of its coming out), lifts it off the page by half of what it is held up (the mouth stands at the hood's height, as the paper's strips leave it), and from 0.55 to 1 lets it go to where its fall has it, quickening as a fall does. Every point above the lip is drawn back along the strip to the lip, so nothing is drawn above it. A strip that names no lip goes through none of this.
+
+Decisions:
+
+- The root of the body is turned by the arrow's lean (0.376 at that frame), so "up" in the pose is not up the page. The lip is a line across the page, so the model reads its own root's turn and measures up the page.
+- The first try shifted the strip in the pose and clipped it in the model. Dropped: the strips are 7 to 20 px long up the page and fall 4.3 px a frame, so a strip that only follows its fall is whole in 2 to 5 frames, never 5 to 7. To take 5 to 7 frames a strip must be held at the mouth while it comes out and then catch its fall up. That is what is built, and it is the cost: see "not mended".
+- Without the lift the held strips slid under the paper's strips and looked see-through (seen in the picture of the second try); with it they pass over them.
+- `tests/polish-tug-strips.test.ts` gains one check for the film and two bots, on the model itself: share drawn on the first step at most 0.2, nothing over the lip, each strip whole in 5 to 7 frames, the share never falling, no lip named after 7 to 12 frames, and then the strip's pose holds only x, y, z, rot, tilt.
+
+Film frames that change, MEASURED by the state dump (pose and draw list hashed per frame, `polish-tug-filmdiff.ts.txt` run in worktrees of 518e4428, of merge 43 (19c0d013) and of the new head): 12 frames of step 1 differ, film 2522 to 2533, against both; every other of the 1920 frames is equal; from 2534 on the state is byte equal; the events byte equal by `cmp` (351 lines). No beat or event moves.
+
+MEASURED on the model, `npx vitest run tests/polish-tug-strips.test.ts`, the same for the film (strips first at 28.033 s), bot keen (30.417 s) and bot clumsy (41.525 s): each of the 15 strips shows 0.16 of its length on the first step (film frame 2522), 0.30 to 0.33 a frame on, 0.58 to 0.66 three frames on, and is whole after 5.25 to 6.00 frames; the highest drawn point over the lip is 0.0000 px on every step; the pose names no lip after 11.25 frames.
+
+MEASURED in pictures, the film: `npm run -s seq -- --first 2518 --last 2536 --tier draft --force` (exit 0), every frame 2520 to 2533 round the mouth at the preview's real size, three rows (main, d4b94e4e, new). What the new row shows: 2520 and 2521 no arrow strip; 2522 short stubs at the roller's lower edge; longer in each of 2523 to 2527, all from that edge, none above it; 2528 whole and still at the mouth; 2529 leaving it; 2530 to 2532 dropping to the right and down, drawn as several faint copies (the film's blur of a fast move); 2533 nearly where main and d4b94e4e have the bundle at 2532. Pixels against the d4b94e4e pictures: 2520 and 2521 no pixel differs.
+
+MEASURED in pictures, the live site: `node pipeline/phase5/polish-tug-live.mjs walk LABEL` (the pack's visitor on the built site, a picture of every step from 20 to 70 steps after `step1.shredded` begins).
+
+Not mended, and why:
+
+- The drop after the strips are whole is quicker than the fall was: the bundle goes from the mouth to its place in about 4 frames (2529 to 2533) where main and d4b94e4e take the fall over 6 and more, and the film's blur draws it as faint copies in 2530 to 2532. This is the price of holding a short strip at the mouth for 5 to 7 frames while its fall, untouched, runs on without it. Two numbers set it: `LIP.whole` (earlier whole, longer drop) and `EMERGE.least` / `most` (a longer whole time lands the bundle later than 2533).
+- With the lift the strips' cut ends stand about 2 draft pixels (4 of the film's) under the roller's lower edge, in its shadow, not flush with it.
+- A white speck of 2 pixels on the roller's lower edge at 2528: it is in the d4b94e4e picture of that frame too (bright pixels counted on rows 336 to 345: 23 there, 22 here). Not from this change; UNKNOWN what it is.
+
+Checks on the head that holds this and merge 43 (24b41006), one at a time, 00:44Z to 00:54Z:
+
+- `npx tsc --noEmit -p .`: exit 0.
+- `npx vitest run`: 153 files passed, 1 skipped; 1854 tests passed, 1 skipped (merge 43 alone: 1851 passed, 1 skipped; the 3 more are the new check for the film and two bots).
+- `npm run -s determinism`: exit 0, "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders".
+- `npm run -s take -- --check`: exit 0, "take: every one of the 10 beat events fell inside its beat", "hits within 0.15 s of a cut of the film: 0".
+- `npm run -s bots`: exit 0, "keen reached every one of the 37 gags on every seed", "bots: all clear".
+- Stills at draft by `cmp`: `table-wide` and `boss-fight` byte equal to the pictures of `origin/main` kept from 23:00Z; `step1-fire` byte equal to my own of d4b94e4e.
+- `step1-fire` against merge 43: `npm run -s still -- --key step1-fire --tier draft` in a worktree of 19c0d013 (exit 0), `cmp` with the new head's: byte equal.
+
+The live picture row, `node pipeline/phase5/polish-tug-live.mjs walk strips2` on the new head (exit 0; `step1.shredded` begins at step 2329), every step 2367 to 2382 round the mouth, each pixel twice: 2367 no arrow strip; 2368 short strips at the roller's lower edge; longer in each of 2369 to 2373, all from that edge; 2374 and 2375 whole at the mouth; 2376 to 2378 dropping to the right and down; 2379 to 2382 at the pile's place.
