@@ -6,11 +6,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 import { at, readJson } from './paths.mjs'
-import { drawStill, ensureBuild, openSession, stillFrom } from './capture.mjs'
+import { drawStill, ensureBuild, openSession, readCanvas, stillFrom } from './capture.mjs'
 import { launch } from './browser.mjs'
 import { serve } from './serve.mjs'
 import { controlBoxes, controlWindows, cut, grid, single, windowRound } from './pack-build.mjs'
 import { hitTileHeight } from './pack-look.mjs'
+import { timeLabel } from './film-plan.mjs'
 
 const GAP = 8
 export const SITE = 'site'
@@ -398,6 +399,38 @@ export async function replay(cfg, run, steps, { plan = steps, cache = null, log 
     }
   } finally {
     await session.close()
+  }
+  return got
+}
+
+// The film's own frames on a sheet: each drawn as `npm run seq` draws it, at the page's size, at the film's setting `tier` (config `tiers`), and kept with what the film tells of it:
+// where the camera stands and where the arrow is on the picture.
+export const FILM = { tier: 'draft' }
+export const filmSamples = (cfg) => cfg.tiers[FILM.tier].samplesPerFrame
+export async function filmFrames(cfg, session, frames, { cache = null, log = () => {} } = {}) {
+  const got = new Map()
+  let drawn = 0
+  for (const n of [...new Set(frames)].sort((a, b) => a - b)) {
+    const file = cache ? path.join(cache, `site-film-${cfg.formats.hd.id}-${FILM.tier}-${String(n).padStart(6, '0')}.png`) : null
+    const note = file ? file.replace(/\.png$/, '.json') : null
+    if (file && fs.existsSync(file) && fs.existsSync(note)) {
+      got.set(n, { png: fs.readFileSync(file), ...readJson(note) })
+      continue
+    }
+    await session.page.evaluate(async ([i, t]) => {
+      window.showcase.setDiagnostic('beauty')
+      await window.showcase.renderFilmFrame(i, t)
+    }, [n, FILM.tier])
+    const png = await readCanvas(session.page)
+    const st = await session.page.evaluate((i) => window.showcase.filmState(i), n)
+    const told = { frame: n, unit: st.unit, camera: st.camera, cursor: st.cursor }
+    if (file) {
+      fs.mkdirSync(cache, { recursive: true })
+      fs.writeFileSync(file, png)
+      fs.writeFileSync(note, JSON.stringify(told) + '\n')
+    }
+    got.set(n, { png, ...told })
+    if (++drawn % 6 === 0) log(`frames of the film: ${drawn} drawn`)
   }
   return got
 }
@@ -892,12 +925,22 @@ export function holdsOf(cfg, run, steps, what) {
 }
 
 /** @param {any} cfg @param {any} run @param {number[]} steps @param {string | null} [what] */
+// How many lines the heading of a moment's 1/30 sheets has room for, where it holds more than the three that hitTileHeight leaves: the kit's words on the view and on the inserts stand in it.
+export const HEAD_LINES = { flippers: 4, flip: 6 }
+// The height of a tile of a 1/30 sheet: as tall as the long edge leaves under its heading.
+export const runTileHeight = (edge, count, what) => {
+  const tall = hitTileHeight(edge, count)
+  if (!HEAD_LINES[what]) return tall
+  const rows = Math.ceil(count / 3)
+  const room = Math.floor((edge - (HEAD_LINES[what] * 22 + 8) - GAP - GAP * (rows - 1)) / rows) - 28
+  return Math.min(tall, room - (room % 2))
+}
 export function runWindow(cfg, run, steps, what = null) {
   const edge = cfg.critics.maxImageLongEdgePx
   const rf = cfg.formats[run.format || RUN.format]
   const k = rf.width / cfg.formats.hd.width
   const tileW = Math.floor((edge - GAP * 2) / 3)
-  const tileH = hitTileHeight(edge, Math.min(steps.length, cfg.critics.contactSheetFrames))
+  const tileH = runTileHeight(edge, Math.min(steps.length, cfg.critics.contactSheetFrames), what)
   const xs = steps.map((i) => run.rows[i][COL.heroX] * k)
   const ys = steps.map((i) => (run.rows[i][COL.heroY] - run.rows[i][COL.scroll]) * k)
   const holds = what ? holdsOf(cfg, run, steps, what).map((b) => b.map((v) => v * k)) : []
@@ -980,10 +1023,10 @@ export function tierSheet(cfg, run) {
   const steps = [...(reveal ? framesOf(reveal, open) : []), ...falls.flatMap((f) => framesOf(f, step))]
   const n = cfg.table.tiers.length
   const at = (k) => `${k * each + 1} to ${(k + 1) * each}`
-  const fell = falls.map((f) => `from tier ${f.tier + 1} to tier ${f.tier + 2} (${timeOf(f.first)} to ${timeOf(f.last)})`)
+  const fell = falls.map((f) => `from ${tierName(cfg, f.tier)} to ${tierName(cfg, f.tier + 1)} (${timeOf(f.first)} to ${timeOf(f.last)})`)
   const ends = `Each group of ${each} begins before its travel and ends after it`
   const heading = reveal
-    ? `The machine's tiers and the passage from one to the next. Frames ${at(0)} are single moments ${secs(open)} apart, not frames in a row: the camera's first travel, from the page's top down the machine to tier ${n} (${timeOf(reveal.first)} to ${timeOf(reveal.last)})${reveal.back ? ', then back up to tier 1' : ''}. Frames ${falls.map((_, i) => at(i + 1)).join(' and ')}, ${secs(step)} apart: its travel ${fell.join(' and ')}. ${ends}`
+    ? `The machine's tiers and the passage from one to the next. Frames ${at(0)} are single moments ${secs(open)} apart, not frames in a row: the camera's first travel, from the page's top down the machine to ${tierName(cfg, n - 1)} (${timeOf(reveal.first)} to ${timeOf(reveal.last)})${reveal.back ? `, then back up to ${tierName(cfg, 0)}` : ''}. Frames ${falls.map((_, i) => at(i + 1)).join(' and ')}, ${secs(step)} apart: its travel ${fell.join(' and ')}. ${ends}`
     : `The machine's tiers and the passage from one to the next, whole frames ${secs(step)} apart: ${falls.map((_, i) => `frames ${at(i)}, the camera's travel ${fell[i]}`).join('; ')}. ${ends}`
   const part = (run.pages || []).find((p) => falls[0].first >= p.first && falls[0].first <= p.last)
   return { kind: 'site-run-sheet', moment: 'tiers', page: part ? part.unit : run.rows[falls[0].first][COL.page], steps, every: step, each, opens: reveal ? open : null, heading }
@@ -1179,8 +1222,78 @@ export function viewWords(rows, steps, timeOf) {
   const way = [up >= 1 ? `${up} px up the page from the first frame to ${timeOf(high)}` : '', down >= 1 ? `${down} px down the page from ${up >= 1 ? 'there' : `${timeOf(high)}`} to the last frame` : ''].filter(Boolean).join(', then ')
   return `The page's view moves in these frames, ${way}, so the gate, its posts and the bats stand ${up >= 1 && down >= 1 ? 'lower, then higher' : down >= 1 ? 'higher' : 'lower'} in the window as it goes`
 }
+// The sets of the motion pack and the moments of each, in the order they stand in it: each set is a whole of its own for a critic who sees no other.
+export const SETS = {
+  walk: 'pages', turn: 'pages', seat: 'pages', type: 'pages',
+  hit: 'shot', 'hit-close': 'shot', 'given-back': 'shot',
+  taken: 'paper', bite: 'paper', 'film-paper': 'paper',
+  flippers: 'port', drop: 'port', 'bend-1': 'port', 'bend-2': 'port',
+  'film-bend-1': 'tube', 'film-bend-2': 'tube', launch: 'tube', 'view-down': 'tube', 'view-up': 'tube',
+  save: 'bats', flip: 'bats', 'flip-close': 'bats'
+}
+// The page of step 3, the machine, by the name the run's rows give it.
+export const MACHINE_PAGE = 'step3'
+export const SET_ORDER = ['pages', 'shot', 'paper', 'port', 'tube', 'bats']
 // The close blow: the ball with `room` px round it in every frame.
 export const BLOW = { room: 8 }
+// The machine's tiers by the names the kit gives them (kit/02-SUBJECT.md line 297: Corporate at the top, then the Office, then the Street), by their ids in config `table.tiers`.
+export const TIER_NAMES = { corporate: 'Corporate', office: 'the Office', street: 'the Street' }
+export const tierName = (cfg, k) => {
+  const name = TIER_NAMES[cfg.table.tiers[k]]
+  if (!name) throw new Error(`pack: the tier ${cfg.table.tiers[k]} has no name in TIER_NAMES`)
+  return name
+}
+// kit/03-METHOD.md line 397, word for word: said on every sheet in whose frames the view moves on the page of step 3.
+export const VIEW_WORDS = "By the page's design: \"The page of step 3 does not scroll under the visitor's hand. The scene moves the view: down the page after the ball on the way in, and to the last screen on the way out\""
+// kit/02-SUBJECT.md line 320 and kit/03-METHOD.md line 300, the kit's own words: said on every sheet in whose frames the ball lies over one of the three inserts.
+export const INSERT_WORDS = 'By the machine\'s design: "Three large round inserts above the flippers, each a lit picture with no words." "Inserts are cut into the art: clear coloured windows with a moulded picture inside, lit from below." They are flat windows in the floor and light when the ball rolls over them'
+// The three inserts of a tier as the table lays them out (INSERTS in src/table/layout.ts): their middles and their radius, in widths of the ball inside the tier.
+export const INSERTS = { spots: [[8.3, 7.1], [10, 8.0], [11.7, 7.1]], r: 0.62 }
+export const overInsert = (cfg, row) => {
+  const b = ballAt(cfg, row)
+  return INSERTS.spots.some((c) => Math.hypot(b.u - c[0], b.v - c[1]) < INSERTS.r + REACH.ballR)
+}
+// The shot at the arrow as the page's turrets make it (TURRET and RECOIL in src/pages/step1/turrets.ts): the bolt flies `speed` px a second from the muzzle and the barrel is cocked over the last `cock` s before the shot.
+// Its close run: from `before` frames before the barrel cocks to `after` frames after the hit, `per` frames a sheet in `columns` columns, each frame two windows: the turret that fires, `turret` px wide, and the arrow on its key.
+// `under` is how far the key's window reaches under the arrow's tip more than above it, for the arrow's body.
+export const SHOT = { speed: 1500, cock: 0.084, before: 6, after: 8, per: 12, columns: 2, lines: 8, turret: 300, back: 120, room: 40, under: 20 }
+// The turret that fired the bolt of the hit and the steps of its shot, read from where the arrow stood and which way it was thrown: null where that names no one turret.
+export function shotOf(cfg, run) {
+  const m = run.moments
+  if (m.struck !== STANDS.hit || m.hit === null || m.hit === undefined) return null
+  const block = keyBlock(cfg)
+  const at = run.rows[m.hit]
+  const before = run.rows[m.hit - 1]
+  const after = run.rows[Math.min(run.rows.length - 1, m.hit + HOLDS.knock)]
+  const stood = { x: at[COL.pointerX], y: at[COL.pointerY] + at[COL.scroll] }
+  const thrown = { x: after[COL.heroX] - before[COL.heroX], y: after[COL.heroY] - before[COL.heroY] }
+  const fired = block.turrets.filter((c) => (stood.x - c.x) * thrown.x + (stood.y - c.y) * thrown.y > 0)
+  if (fired.length !== 1) return null
+  const c = fired[0]
+  const hit = (run.hits || []).find((h) => h.name === STANDS.hit && h.step === m.hit) || { x: before[COL.heroX], y: before[COL.heroY] }
+  const far = Math.max(0, Math.hypot(hit.x - c.x, hit.y - c.y) - BLOCK.barrel)
+  const fires = m.hit - Math.ceil(far / (SHOT.speed / VISITOR.hz))
+  return { turret: c, side: c.x < stood.x ? 'left' : 'right', fires, cocks: fires - Math.round(SHOT.cock * VISITOR.hz), place: hit }
+}
+// The frames round the take, close: from `before` frames before the page takes the arrow to `after` frames after, the sheet of paper, its holder and the arrow in one window, `room` px round the arrow.
+export const BITE = { before: 8, after: 12, room: 30, lines: 7 }
+// The two bends of the feed tube, in px of the page of step 3 (BENDS in src/table/real/frame/loader.ts, the feed rail's points 2 and 3), and the run round each: the ball is at a bend on the step
+// at which it is nearest to it; from `before` frames before that step to `after` frames after, `per` frames a sheet, the window `round` px or more round the bend where the screen has them.
+export const BEND = { places: [[1627, 1094.4], [1838.4, 1286.4]], before: 8, after: 9, per: 9, lines: 7, most: 240, round: 150 }
+// The view's travel at a save: the steps in which the view moves before the take and after the kick, with `lead` frames before each travel, as many frames after as fill `per` frames in `columns` columns.
+// A travel is the steps without a rest of `rest` steps or more; it is looked for `most` steps either side of the save.
+export const VIEW = { lead: 5, per: 20, columns: 4, rest: 3, most: 120, lines: 6, mark: 'view' }
+export const VIEW_MARK_WORDS = 'Under a frame, after its time: the view\'s place down the page in px of the page at that frame. That number is not on the visitor\'s screen.'
+// The launch: the ball leaves its rest in the plunger lane. From `before` frames before it first moves to the end of `sheets` sheets of VIEW.per; the rest is `still` steps or more without a move, on the lowest tier, right of `lane` widths of the ball.
+export const LAUNCH = { before: 6, sheets: 2, still: 30, lane: 17 }
+// The film's own frames in this pack, by their numbers in the film: `paper` round frame 2162 with its window on the film's picture, `bends` the two bends of the feed tube with theirs.
+// Each window is fixed on the film's picture and holds the things named in its heading in every frame of its run (seen on the frames drawn).
+export const FILM_RUNS = {
+  paper: { frames: [2154, 2174], window: [1125, 140, 461, 582], columns: 3, per: 6, lines: 7 },
+  bend1: { frames: [4258, 4275], window: [1400, 560, 461, 376], columns: 3, per: 9, lines: 7 },
+  bend2: { frames: [4272, 4287], window: [1224, 498, 696, 582], columns: 2, per: 4, lines: 7 }
+}
+export const FILM_WORDS = (cfg) => `film frames drawn with ${filmSamples(cfg)} samples a frame, the quickest setting, so the grain is coarser than the finished film's`
 
 // R4: the sheets kit/07 names for `site`, each found in the visitor's run. A moment is one run of consecutive pictures, EVERY steps apart, on as many sheets as it needs.
 // Nothing is taken away: `limitTook` stays empty, and when the sheets are more than one message holds they go out as two sets, the pages and the machine.
@@ -1206,8 +1319,12 @@ export function motionPlan(cfg, run) {
     return steps
   }
   // A close run: every step from `from` to `to`, drawn at CLOSE_PX, in the fixed windows `windows` of the page shown at `percent`.
-  const close = (what, words, from, to, at, layout, windows, percent, place, marks) =>
-    add(what, 'site-hit-sheet', words, from, 0, at, { every: 1, frames: to - from + 1, px: CLOSE_PX, per: layout.per, layout, windows, percent, place, marks })
+  const close = (what, words, from, to, at, layout, windows, percent, place, marks, more = {}) =>
+    add(what, 'site-hit-sheet', words, from, 0, at, { every: 1, frames: to - from + 1, px: CLOSE_PX, per: layout.per, layout, windows, percent, place, marks, ...more })
+  // A run of the film's own frames `a` to `b`, in one fixed window of the film's picture.
+  const film = (what, words, spec, place) => runs.push({ what, kind: 'site-film-sheet', words, steps: Array.from({ length: spec.frames[1] - spec.frames[0] + 1 }, (_, i) => spec.frames[0] + i), at: null, film: true, every: 1, per: spec.per, layout: { ...closeLayout(cfg, spec.columns, spec.per, spec.lines), w: spec.window[2], h: spec.window[3] }, windows: [spec.window], percent: 100, place })
+  // Whole frames of the screen, every step from `from`, VIEW.per a sheet in VIEW.columns columns, the view's place under each.
+  const screens = (what, words, from, sheets, at) => add(what, 'site-run-sheet', words, from, 0, at, { every: 1, frames: VIEW.per * sheets, per: VIEW.per, columns: VIEW.columns, marks: [VIEW.mark] })
   const twelve = closeLayout(cfg, 3, count)
   const scaleWords = (percent) => (percent === 100 ? FULL_WORDS : `at ${percent}% of the page's size, the largest at which the window holds them`)
   const screenY = (i) => rows[i][COL.heroY] - rows[i][COL.scroll]
@@ -1260,9 +1377,30 @@ export function motionPlan(cfg, run) {
   const lead = LEAD * EVERY
   if (have(m.hit)) {
     // The hit is named by what struck, and the hand is said to be off only where the run shows it off in every step of the sheet.
-    const steps = add('hit', 'site-hit-sheet', '', m.hit - lead, 1, m.hit)
+    // Where a turret's bolt struck, the run begins SHOT.before frames before that turret's barrel cocks, on a step from which every second step holds the hit.
+    const shot = shotOf(cfg, run)
+    const begins = shot ? shot.cocks - SHOT.before : m.hit - lead
+    const from = m.hit - Math.ceil((m.hit - begins) / EVERY) * EVERY
+    const steps = add('hit', 'site-hit-sheet', '', from, shot ? sheetsFor(from, m.hit + lead) : 1, m.hit)
     const r = runs[runs.length - 1]
-    if (steps.length) r.words = `as ${struckWords(m.struck)} hits the arrow${handsOff(run, steps) ? ', the visitor presses no button and no key in these frames' : ''}`
+    const off = (list) => (handsOff(run, list) ? ', the visitor presses no button and no key in these frames' : '')
+    if (steps.length) r.words = `as ${struckWords(m.struck)} hits the arrow${off(steps)}`
+    if (shot) {
+      // The same shot close: every step, the turret that fires in a window of its own beside the arrow on its key.
+      const lay = closeLayout(cfg, SHOT.columns, SHOT.per, SHOT.lines)
+      const to = Math.min(last, m.hit + SHOT.after)
+      const all = range(begins, to)
+      const wide = lay.w - GAP - SHOT.turret
+      const xs = all.map((i) => rows[i][COL.heroX])
+      const ys = all.map(screenY)
+      const hd = cfg.formats.hd
+      const fit = (v, size, most) => Math.round(Math.max(0, Math.min(most - size, v)))
+      const gun = [fit(shot.turret.x - (shot.side === 'left' ? SHOT.back : SHOT.turret - SHOT.back), SHOT.turret, hd.width), fit(shot.turret.y - rows[m.hit][COL.scroll] - lay.h / 2, lay.h, hd.height), SHOT.turret, lay.h]
+      const key = [fit((Math.min(...xs) + Math.max(...xs)) / 2 - wide / 2, wide, hd.width), fit((Math.min(...ys) + Math.max(...ys)) / 2 + SHOT.under - lay.h / 2, lay.h, hd.height), wide, lay.h]
+      close('hit-close', `the shot of the sheets before once more, close: every frame from ${SHOT.before} frames before the ${shot.side} turret's barrel cocks (${timeOf(shot.cocks)}) through the shot (${timeOf(shot.fires)}) and the hit (${timeOf(m.hit)}) to ${to - m.hit} frames after${off(all)}`, begins, to, m.hit, lay, [gun, key], 100,
+        `two fixed windows side by side in each frame, ${FULL_WORDS}: left, the turret that fires (${placeWords(gun)}); right, the arrow on its key (${placeWords(key)})`, ['move'])
+      runs[runs.length - 1].shot = shot
+    }
   }
   if (m.type) {
     // The key press whole and close: every step from KEYS.before frames before the press to KEYS.after frames after the release, with the button's mark and the hand's under each frame.
@@ -1309,6 +1447,24 @@ export function motionPlan(cfg, run) {
     close('taken', `as the page takes the arrow from the visitor: every frame from ${TAKEN.before} frames before the take (${timeOf(m.taken)}) to ${TAKEN.after} frames after the arrow arrives (${timeOf(rest)}, the first frame after its travel in which it moves under ${TAKEN.rest} px)`, from, to, m.taken, twelve, [fit.window], fit.percent,
       `one fixed window on the arrow at the button, both arms, the paper, its holder and the tray's lower right corner, ${scaleWords(fit.percent)} (${placeWords(fit.window)})`, ['page', 'move'])
     runs[runs.length - 1].has = [m.taken, Infinity]
+    // The frames round the take once more, close: the sheet of paper, its holder and the arrow at the page's own size.
+    {
+      const a = m.taken - BITE.before
+      const b = Math.min(last, m.taken + BITE.after)
+      const steps = range(a, b)
+      const lay = closeLayout(cfg, 3, count, BITE.lines)
+      const hold = [
+        Math.min(TAKEN.slot[0] - TAKEN.paper[0], ...steps.map((i) => rows[i][COL.heroX] - BITE.room)),
+        Math.min(TAKEN.slot[1] - TAKEN.paper[1], ...steps.map((i) => screenY(i) - BITE.room)),
+        Math.max(TAKEN.slot[0] + TAKEN.paper[0], ...steps.map((i) => rows[i][COL.heroX] + BITE.room)),
+        Math.max(TAKEN.slot[1] + TAKEN.holder, ...steps.map((i) => screenY(i) + BITE.room))
+      ]
+      const near = closeFit(cfg, hold, lay)
+      close('bite', `the frames round the take once more, close: every frame from ${BITE.before} frames before the page takes the arrow (${timeOf(m.taken)}) to ${b - m.taken} frames after`, a, b, m.taken, lay, [near.window], near.percent,
+        `one fixed window on the sheet of paper, its holder and the arrow, ${scaleWords(near.percent)} (${placeWords(near.window)})`, ['page', 'move'])
+      runs[runs.length - 1].has = [m.taken, Infinity]
+      film('film-paper', 'of the arrow at the sheet of paper in its holder', FILM_RUNS.paper, `one fixed window on the arrow, the sheet of paper and its holder, at 100%: one pixel of the sheet is one pixel of the film's 1920 by 1080 picture (${placeWords(FILM_RUNS.paper.window).replace('of the page', "of the film's picture")})`)
+    }
   }
   if (have(m.back)) {
     // The give back whole, every step of the page a frame: from GIVES.before frames before the arrow first moves to GIVES.after frames under the visitor.
@@ -1362,11 +1518,48 @@ export function motionPlan(cfg, run) {
       `one fixed window on the port's cup, its collar and the first stretch of the tube, ${scaleWords(fit.percent)} (${placeWords(fit.window)})`, ['hand'])
     const moved = rows[to][COL.scroll] - rows[from][COL.scroll]
     if (moved) runs[runs.length - 1].after = `The page's view moves ${Math.round(Math.abs(moved))} px ${moved > 0 ? 'down' : 'up'} the page in these frames, so the port stands ${moved > 0 ? 'higher' : 'lower'} in the later ones`
+    // The two bends of the feed tube, close: every step round the step at which the ball is nearest to each, in a window that goes with the page so that the bend keeps its place in it.
+    const hd = cfg.formats.hd
+    const bends = closeLayout(cfg, 3, BEND.per, BEND.lines)
+    BEND.places.forEach((c, n) => {
+      const far = (i) => Math.hypot(rows[i][COL.heroX] - c[0], rows[i][COL.heroY] - c[1])
+      const at = range(m.leaves, Math.min(last, m.leaves + BEND.most)).reduce((a, i) => (far(i) < far(a) ? i : a), m.leaves)
+      const a = at - BEND.before
+      const b = Math.min(last, at + BEND.after)
+      const x = Math.round(Math.max(0, Math.min(hd.width - bends.w, c[0] - bends.w / 2)))
+      const windowsAt = range(a, b).map((i) => [[x, Math.round(Math.max(0, Math.min(hd.height - bends.h, c[1] - rows[i][COL.scroll] - bends.h / 2))), bends.w, bends.h]])
+      const nth = n ? 'second' : 'first'
+      close(`bend-${n + 1}`, `the ball at the ${nth} bend of the feed tube, close: every frame from ${BEND.before} frames before the ball is nearest the bend (${timeOf(at)}) to ${b - at} frames after`, a, b, at, bends, windowsAt[0], 100,
+        `one window round the bend, ${FULL_WORDS}; the window goes down the visitor's screen with the page as the view moves, so the bend keeps its place in it (x ${x} to ${x + bends.w} of the page${x + bends.w === hd.width ? ', its right edge the page\'s right edge' : ''})`, ['hand'], { windowsAt })
+      runs[runs.length - 1].bend = c
+    })
+    film('film-bend-1', 'as the ball passes the first bend of the feed tube', FILM_RUNS.bend1, `one fixed window on the bend and the ball, at 100%: one pixel of the sheet is one pixel of the film's 1920 by 1080 picture (${placeWords(FILM_RUNS.bend1.window).replace('of the page', "of the film's picture")})`)
+    film('film-bend-2', 'as the ball passes the second bend of the feed tube', FILM_RUNS.bend2, `one fixed window on the bend and the ball, at 100%: one pixel of the sheet is one pixel of the film's 1920 by 1080 picture (${placeWords(FILM_RUNS.bend2.window).replace('of the page', "of the film's picture")})`)
+  }
+  // The launch: the ball's first move out of a rest of LAUNCH.still steps or more in the plunger lane of the lowest tier, whole frames of the screen at every step.
+  {
+    const g = tiersOf(cfg)
+    const inLane = (i) => { const b = ballAt(cfg, rows[i]); return b.tier === g.count - 1 && b.u >= LAUNCH.lane }
+    const same = (i) => rows[i][COL.heroX] === rows[i - 1][COL.heroX] && rows[i][COL.heroY] === rows[i - 1][COL.heroY]
+    let goes = null
+    let still = 0
+    for (let i = (m.leaves ?? last) + 1; i <= last && goes === null; i++) {
+      if (same(i) && inLane(i)) still += 1
+      else {
+        if (still >= LAUNCH.still && inLane(i - 1)) goes = i
+        still = 0
+      }
+    }
+    if (goes !== null) {
+      screens('launch', `as the ball leaves its rest in the plunger lane of ${tierName(cfg, g.count - 1)}: every frame from ${LAUNCH.before} frames before the ball first moves (${timeOf(goes)})`, goes - LAUNCH.before, LAUNCH.sheets, goes)
+    } else if (have(m.flippers)) leftOut.push('launch: the run holds no step at which the ball leaves a rest in the plunger lane, so no sheet stands under that heading')
   }
   // The flipper meets the ball: only a true stroke of the visitor's own bat stands under this heading. With none in the run the sheets are left out.
   if (have(m.met)) {
-    add('flip', 'site-hit-sheet', "as the visitor's flipper meets the ball and the ball goes off it", m.met - lead, 2, m.met, { marks: 'hand' })
-    runs[runs.length - 1].after = VISITOR_WORDS
+    const blow = add('flip', 'site-hit-sheet', "as the visitor's flipper meets the ball and the ball goes off it", m.met - lead, 2, m.met, { marks: 'hand' })
+    // Where the window of these sheets lies is said, and that its upper edge is the upper edge of the visitor's screen where it is.
+    const lies = windowOf(cfg, run, 'flip', blow).window.map((v) => Math.round(v / (cfg.formats[run.format || RUN.format].width / cfg.formats.hd.width)))
+    runs[runs.length - 1].after = `The window lies at ${placeWords(lies).replace('of the page', "of the visitor's screen")}${lies[1] === 0 ? "; its upper edge is the upper edge of the visitor's screen" : ''}. ${VISITOR_WORDS}`
     // The same blow close: every step round it at the page's own size, in a window taken from the rows of these same frames, so that the ball is whole in every one of them.
     const half = cfg.table.ballPx * REACH.ballR
     const from = m.met - CLOSE.before
@@ -1411,12 +1604,36 @@ export function motionPlan(cfg, run) {
       shut(from, from + sheetsOf(from, Math.max(g.kick + SAVE.after, clear)) * count - 1, g.kick, `${words}, the second of two runs: the ball goes back up`, `The ball ${up}`)
     }
   }
+  if (m.gate) {
+    // The view's travel before the save and after it: whole frames of the screen at every step, from VIEW.lead frames before the view first moves.
+    const g = m.gate
+    const moves = (i) => i > 0 && rows[i][COL.scroll] !== rows[i - 1][COL.scroll]
+    // The travel that ends last before `to`, or begins first after `from`: its first and its last moving step.
+    const travel = (from, to, back) => {
+      const list = range(from, to).filter(moves)
+      if (!list.length) return null
+      const parts = [[list[0]]]
+      for (const i of list.slice(1)) {
+        const p = parts[parts.length - 1]
+        if (i - p[p.length - 1] > VIEW.rest) parts.push([i])
+        else p.push(i)
+      }
+      const p = back ? parts[parts.length - 1] : parts[0]
+      return [p[0], p[p.length - 1]]
+    }
+    const way = (t) => `${Math.round(Math.abs(rows[t[1]][COL.scroll] - rows[t[0] - 1][COL.scroll]))} px ${rows[t[1]][COL.scroll] > rows[t[0] - 1][COL.scroll] ? 'down' : 'up'} the page from ${timeOf(t[0])} to ${timeOf(t[1])}`
+    const down = travel(g.take - VIEW.most, g.take, true)
+    const up = travel(g.kick, Math.min(last, g.kick + VIEW.most), false)
+    if (down) screens('view-down', `of the view's travel before a save: every frame from ${VIEW.lead} frames before the view first moves; the view goes ${way(down)}, and the ball is low in the mouth from ${timeOf(g.take)}`, down[0] - VIEW.lead, Math.max(1, Math.ceil((down[1] - down[0] + 1 + VIEW.lead + 1) / VIEW.per)), down[0])
+    if (up) screens('view-up', `of the view's travel after the same save: every frame from ${VIEW.lead} frames before the view first moves; the ball goes back up from ${timeOf(g.kick)}, and the view goes ${way(up)}`, up[0] - VIEW.lead, Math.max(1, Math.ceil((up[1] - up[0] + 1 + VIEW.lead + 1) / VIEW.per)), up[0])
+  }
   // A save the rows show and no reading found has no sheet: it is said, and the tool does not end well.
   for (const u of m.unsaved || []) missing.push(u.word ? `save: the page says ${u.word} at ${timeOf(u.step)} and no save was read from the ball's path there, so no sheet shows it` : `save: the ball is deep in the mouth at ${timeOf(u.step)} and up on its tier again at ${timeOf(u.up)}, and no save was read there, so no sheet shows it`)
   const items = []
   const k = cfg.formats[run.format || RUN.format].width / cfg.formats.hd.width
-  const whole = Math.round((Math.floor((cfg.critics.maxImageLongEdgePx - GAP * 2) / 3) / cfg.formats.hd.width) * 100)
-  const LEGENDS = { hand: HAND_WORDS, key: KEY_WORDS, move: MOVE_WORDS, page: `${PAGE_WORDS}.`, back: BACK_WORDS, seat: SEAT_WORDS }
+  const wholeAt = (columns) => Math.round((Math.floor((cfg.critics.maxImageLongEdgePx - GAP * (columns - 1)) / columns) / cfg.formats.hd.width) * 100)
+  const LEGENDS = { hand: HAND_WORDS, key: KEY_WORDS, move: MOVE_WORDS, page: `${PAGE_WORDS}.`, back: BACK_WORDS, seat: SEAT_WORDS, [VIEW.mark]: VIEW_MARK_WORDS }
+  const fps = cfg.film.fps
   for (const r of runs) {
     const per = r.per ?? count
     const every = r.every ?? EVERY
@@ -1424,32 +1641,46 @@ export function motionPlan(cfg, run) {
     const first = runs.find((x) => x.what === r.what)
     // The second run of a moment: how long after the first run's last picture its first picture is.
     const apart = first !== r ? Math.round(((r.steps[0] - first.steps[first.steps.length - 1]) / VISITOR.hz) * 100) / 100 : null
+    if (r.film) {
+      for (let j = 0; j < sheets; j++) {
+        const frames = r.steps.slice(j * per, (j + 1) * per)
+        const part = sheets > 1 ? `, sheet ${j + 1} of ${sheets} of one run, frames ${j * per + 1} to ${j * per + frames.length} of ${r.steps.length}` : ''
+        items.push({ kind: r.kind, moment: r.what, set: SETS[r.what], film: true, page: null, steps: frames, run: r.steps, every: 1, part: sheets > 1 ? [j + 1, sheets] : null, apart: null, windows: r.windows, percent: 100, columns: r.layout.columns, tileW: r.layout.w, tileH: r.layout.h, lines: r.layout.lines,
+          heading: `Consecutive frames of the film, 1/${fps} s apart, ${r.words}, ${r.place}${part}: ${timeLabel(frames[0], fps)} to ${timeLabel(frames[frames.length - 1], fps)} of the film. These are ${FILM_WORDS(cfg)}` })
+      }
+      continue
+    }
     const win = r.px || r.kind !== 'site-hit-sheet' ? null : windowOf(cfg, run, r.what, r.steps)
     // A sheet says its true size: the run's pictures are half the page's size, a whole frame on a sheet is smaller still, and only a close sheet is the page pixel for pixel.
-    const size = r.px ? `, ${r.place}` : !win ? `, whole frames at ${whole}% of the page's size` : `, the part of the picture round the arrow${win.shown === 100 ? '' : "'s way"} at ${Math.round(win.shown * k)}% of the page's size`
+    const size = r.px ? `, ${r.place}` : !win ? `, whole frames${r.columns ? ' of the screen' : ''} at ${wholeAt(r.columns || 3)}% of the page's size` : `, the part of the picture round the arrow${win.shown === 100 ? '' : "'s way"} at ${Math.round(win.shown * k)}% of the page's size`
     const marks = !r.marks ? [] : Array.isArray(r.marks) ? r.marks : [r.marks]
     const legend = marks.map((x) => LEGENDS[x]).join(' ')
-    const markAt = (i) => marks.map((x) => (x === 'hand' ? handAt(rows, i, every) : x === 'key' ? downAt(rows, i) : x === 'move' ? movedAt(rows, i, every) : x === 'page' ? (i >= r.has[0] && i <= r.has[1] ? PAGE_HAS.mark : '') : x === 'back' ? (i === r.follows ? PAGE_HAS.back : i >= r.has[0] && i <= r.has[1] ? PAGE_HAS.mark : '') : x === 'seat' ? (i === r.at ? SEAT.mark : '') : '')).filter(Boolean).join(' ')
+    const markAt = (i) => marks.map((x) => (x === 'hand' ? handAt(rows, i, every) : x === 'key' ? downAt(rows, i) : x === 'move' ? movedAt(rows, i, every) : x === 'page' ? (i >= r.has[0] && i <= r.has[1] ? PAGE_HAS.mark : '') : x === 'back' ? (i === r.follows ? PAGE_HAS.back : i >= r.has[0] && i <= r.has[1] ? PAGE_HAS.mark : '') : x === 'seat' ? (i === r.at ? SEAT.mark : '') : x === VIEW.mark ? String(rows[i][COL.scroll]) : '')).filter(Boolean).join(' ')
     for (let j = 0; j < sheets; j++) {
       const steps = r.steps.slice(j * per, (j + 1) * per)
       const part = sheets > 1 ? `, sheet ${j + 1} of ${sheets} of one run, frames ${j * per + 1} to ${j * per + steps.length} of ${r.steps.length}` : ''
       const says = r.says ? `: ${r.says(steps)}` : ''
-      const tail = [r.after, legend].filter(Boolean).map((t) => `. ${t}`).join('')
-      const item = { kind: r.kind, moment: r.what, page: rows[steps[0]][COL.page], steps, run: r.steps, every, part: sheets > 1 ? [j + 1, sheets] : null, apart, heading: `Consecutive frames, 1/${VISITOR.hz / every} s apart, ${r.words}${size}${part}${says}: ${span(steps)}${tail}` }
+      // What the kit says of the view and of the inserts, on each sheet whose own frames hold it: every step from the sheet's first frame to its last is read.
+      const through = range(steps[0], steps[steps.length - 1])
+      const onMachine = through.filter((i) => rows[i][COL.page] === MACHINE_PAGE)
+      const viewMoves = onMachine.some((i) => i > steps[0] && rows[i][COL.scroll] !== rows[i - 1][COL.scroll])
+      const overOne = onMachine.some((i) => overInsert(cfg, rows[i]))
+      const tail = [r.after, viewMoves ? VIEW_WORDS : '', overOne ? INSERT_WORDS : '', legend].filter(Boolean).map((t) => `. ${t}`).join('')
+      const item = { kind: r.kind, moment: r.what, set: SETS[r.what], ...(viewMoves ? { viewMoves } : {}), ...(overOne ? { overInsert: overOne } : {}), page: rows[steps[0]][COL.page], steps, run: r.steps, every, part: sheets > 1 ? [j + 1, sheets] : null, apart, heading: `Consecutive frames, 1/${VISITOR.hz / every} s apart, ${r.words}${size}${part}${says}: ${span(steps)}${tail}` }
       if (marks.length) item.hands = steps.map(markAt)
       if (r.px) Object.assign(item, { px: r.px, windows: r.windows, percent: r.percent, columns: r.layout.columns, tileW: r.layout.w, tileH: r.layout.h, lines: r.layout.lines })
+      if (r.windowsAt) item.windowsAt = r.windowsAt.slice(j * per, j * per + steps.length)
+      if (r.columns) item.columns = r.columns
       if (r.at !== null && steps.includes(r.at)) item.at = r.at
       items.push(item)
     }
   }
-  // In the order they happen, a run's sheets side by side.
-  items.sort((x, y) => x.run[0] - y.run[0] || x.steps[0] - y.steps[0])
-  // One set while one message holds the sheets; else the pages in one group and the machine (the moments of HANDS) in another, each a whole of its own, cut only between runs.
-  const pick = (id, test) => ({ id, items: items.filter(test) })
-  const machine = items.filter((f) => HANDS.includes(f.moment))
-  const groups = items.length <= most
-    ? [{ id: 'moments', items }]
-    : [pick('pages', (f) => !HANDS.includes(f.moment) && !ARROW.includes(f.moment)), pick('arrow', (f) => ARROW.includes(f.moment)), ...(machine.length <= most ? [{ id: 'machine', items: machine }] : [pick('port', (f) => PORTS.includes(f.moment)), pick('bats', (f) => HANDS.includes(f.moment) && !PORTS.includes(f.moment))])].filter((g) => g.items.length)
+  // Six sets, each a whole of its own, in the order of SET_ORDER; inside a set the moments in the order SETS names them, a run's sheets side by side. One set while one message holds every sheet.
+  const order = Object.keys(SETS)
+  const nth = new Map(items.map((f, i) => [f, i]))
+  items.sort((x, y) => SET_ORDER.indexOf(x.set) - SET_ORDER.indexOf(y.set) || order.indexOf(x.moment) - order.indexOf(y.moment) || nth.get(x) - nth.get(y))
+  for (const f of items) if (!SET_ORDER.includes(f.set)) throw new Error(`pack: the moment ${f.moment} is in no set of SETS`)
+  const groups = items.length <= most ? [{ id: 'moments', items }] : SET_ORDER.map((id) => ({ id, items: items.filter((f) => f.set === id) })).filter((g) => g.items.length)
   // A group larger than one message is cut between two runs, never inside one: a run's sheets stay side by side in one set.
   const uncut = (g) => {
     if (g.items.length <= most) return [g]
@@ -1483,7 +1714,7 @@ export const siteRoles = {
 const OTHER_UNITS = [/^- Pack for (a page|`pinball`|`film`)/, /^- For the film:/, /^- In the loop's seam sheet/]
 export const siteLines = (section) => section.split('\n').filter((l) => !OTHER_UNITS.some((r) => r.test(l))).join('\n')
 
-export const SITE_KINDS = ['site-jury', 'site-page', 'site-pages-sheet', 'site-screen', 'site-control-crops', 'site-run-sheet', 'site-hit-sheet']
+export const SITE_KINDS = ['site-jury', 'site-page', 'site-pages-sheet', 'site-screen', 'site-control-crops', 'site-run-sheet', 'site-hit-sheet', 'site-film-sheet']
 
 const fitted = (w, h, edge) => {
   const k = Math.min(1, edge / w, edge / h)
@@ -1621,6 +1852,24 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
     log(`${f.name}: ${tiles.length} crops of the controls`)
   }
 
+  // The film's own frames, each in its sheet's fixed window of the film's picture, uncut and unscaled.
+  const films = files.filter((x) => x.kind === 'site-film-sheet')
+  if (films.length) {
+    const got = await filmFrames(cfg, session, films.flatMap((f) => f.steps), { cache, log })
+    const fps = cfg.film.fps
+    for (const f of films) {
+      const tiles = []
+      for (const n of f.steps) {
+        const png = got.get(n).png
+        const m = await sharp(png).metadata()
+        if (m.width !== hd.width || m.height !== hd.height) throw new Error(`pack: a frame of the film is ${m.width} by ${m.height}, not ${hd.width} by ${hd.height}`)
+        tiles.push({ png: await cut(png, f.windows[0]), label: timeLabel(n, fps) })
+      }
+      built.set(f.name, await grid(tiles, f.heading, { edge, columns: f.columns, tileW: f.tileW, tileH: f.tileH, exact: true }))
+      about.set(f.name, { moment: f.moment, film: true, frames: f.steps, run: f.run, windows: f.windows, shownPercent: 100, tier: FILM.tier, samplesPerFrame: filmSamples(cfg), cameras: f.steps.map((n) => got.get(n).camera), sha256: f.steps.map((n) => shaOf(got.get(n).png)), format: hd.id })
+      log(`${f.name}: the film, ${f.moment}`)
+    }
+  }
   const sheets = files.filter((x) => x.kind === 'site-run-sheet' || x.kind === 'site-hit-sheet')
   if (!sheets.length) return
   const run = needRun(facts, 'R4 or R5')
@@ -1634,7 +1883,9 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
   const tileW = Math.floor((edge - GAP * (columns - 1)) / columns)
   for (const f of sheets.filter((x) => x.kind === 'site-run-sheet')) {
     const tiles = f.steps.map((i, n) => ({ png: frames.get(i), label: f.hands && f.hands[n] ? `${timeOf(i)} ${f.hands[n]}` : timeOf(i) }))
-    built.set(f.name, await grid(tiles, f.heading, { edge, columns, tileW, tileH: Math.round((tileW * rf.height) / rf.width) }))
+    const across = f.columns || columns
+    const wide = Math.floor((edge - GAP * (across - 1)) / across)
+    built.set(f.name, await grid(tiles, f.heading, { edge, columns: across, tileW: wide, tileH: Math.round((wide * rf.height) / rf.width) }))
     about.set(f.name, { moment: f.moment || null, page: f.page, steps: f.steps, run: f.run || f.steps, ...(f.hands ? { hands: f.hands } : {}), sha256: f.steps.map((i) => shaOf(frames.get(i))), format: rf.id, level: LEVEL, visitor: VISITOR })
     log(`${f.name}: ${f.moment ? `the moment ${f.moment}` : `the visit on ${f.page}`}`)
   }
@@ -1646,7 +1897,7 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
       const m = await sharp(png).metadata()
       if (m.width !== hd.width || m.height !== hd.height) throw new Error(`pack: a close picture is ${m.width} by ${m.height}, not the page's ${hd.width} by ${hd.height}`)
       const parts = []
-      for (const w of f.windows) parts.push(await cut(png, w))
+      for (const w of f.windowsAt ? f.windowsAt[n] : f.windows) parts.push(await cut(png, w))
       let tile = parts[0]
       if (parts.length > 1) {
         const put = []
@@ -1660,7 +1911,7 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
       tiles.push({ png: tile, label: f.hands && f.hands[n] ? `${timeOf(i)} ${f.hands[n]}` : timeOf(i) })
     }
     built.set(f.name, await grid(tiles, f.heading, { edge, columns: f.columns, tileW: f.tileW, tileH: f.tileH, exact: true }))
-    about.set(f.name, { moment: f.moment, page: f.page, at: f.at ?? null, steps: f.steps, run: f.run || f.steps, ...(f.hands ? { hands: f.hands } : {}), windows: f.windows, shownPercent: f.percent, devicePixels: f.px, sha256: f.steps.map((i) => shaOf(closeFrames.get(i))), format: rf.id, level: LEVEL, visitor: VISITOR })
+    about.set(f.name, { moment: f.moment, page: f.page, at: f.at ?? null, steps: f.steps, run: f.run || f.steps, ...(f.hands ? { hands: f.hands } : {}), windows: f.windows, ...(f.windowsAt ? { windowsAt: f.windowsAt } : {}), shownPercent: f.percent, devicePixels: f.px, sha256: f.steps.map((i) => shaOf(closeFrames.get(i))), format: rf.id, level: LEVEL, visitor: VISITOR })
     log(`${f.name}: the moment ${f.moment}, close${f.at !== undefined ? `, step ${f.at}` : ''}`)
   }
   for (const f of sheets.filter((x) => x.kind === 'site-hit-sheet' && !x.px)) {
