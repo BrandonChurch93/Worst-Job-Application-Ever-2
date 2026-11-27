@@ -263,3 +263,25 @@ index 78cd9a6f..04be2ab7 100644
      ]
    }
  }
+
+# 23:48Z tests/polish-hand.test.ts: the rows of the film first turn pinned again (old careers page of this branch). On the page of agent/b-careers b13d25f9 the rows are in shell.md 11l.
+diff --git a/tests/polish-hand.test.ts b/tests/polish-hand.test.ts
+index f8151aac..bbe08075 100644
+--- a/tests/polish-hand.test.ts
++++ b/tests/polish-hand.test.ts
+@@ -296,7 +296,7 @@ describe('without a hand the turn and the hit are what they were', () => {
+   }
+   const line = (r: Row): string => `${r.i} ${r.page} ${r.phase} ${r.x.toFixed(2)} ${(r.y - r.scroll).toFixed(2)} ${r.z.toFixed(2)} ${r.angle.toFixed(2)}`
+ 
+-  it("the film's first turn: the arrow is lifted to the hand over place and handed over there", () => {
++  it("the film's first turn: the arrow stays on the button it pressed, goes over with its slab, and stands at the hand over place on the next page", () => {
+     const rows = rowsOf(new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver() }), 40 * 60)
+     const t = turnsOf(rows)[0]!
+     expect([t.start, t.start + 1, t.start + 10, t.start + 29, t.half, t.half + 18, t.flat, t.flat + 10, t.flat + 30].map((k) => line(rows[k]!))).toEqual(FILM_TURN)
+@@ -309,5 +309,5 @@ describe('without a hand the turn and the hit are what they were', () => {
+   })
+ })
+ 
+-const FILM_TURN = ['809 marketing leave 508.00 440.00 13.96 11.69', '810 marketing leave 534.49 445.86 48.84 10.27', '819 marketing leave 968.26 541.83 206.66 -18.96', '838 marketing leave 959.81 539.96 257.08 39.87', '839 step1 arrive 960.00 540.00 260.00 0.00', '857 step1 arrive 960.00 540.00 260.00 -11.10', '869 step1  960.00 540.00 260.00 -11.10', '879 step1  960.00 540.00 225.83 -11.10', '899 step1  960.00 540.00 4.00 -11.10']
++const FILM_TURN = ['809 marketing leave 508.00 440.00 13.96 11.69', '810 marketing leave 508.00 440.00 13.96 11.50', '819 marketing leave 508.00 440.00 13.96 -16.06', '838 marketing leave 508.00 440.00 13.96 39.80', '839 step1 arrive 960.00 540.00 260.00 0.00', '857 step1 arrive 960.00 540.00 260.00 -11.10', '869 step1  960.00 540.00 260.00 -11.10', '879 step1  960.00 540.00 225.83 -11.10', '899 step1  960.00 540.00 4.00 -11.10']
+ const FILM_HIT = ['348 -12.0', '349 -5.7', '350 1.9', '351 8.7', '352 14.0', '353 17.7', '354 19.4', '355 17.9', '356 18.0', '357 19.6', '358 21.8', '359 24.2', '360 26.4', '361 28.3', '362 29.8', '363 31.0']
