@@ -1,0 +1,116 @@
+diff --git a/src/pages/step2/NOTES.md b/src/pages/step2/NOTES.md
+index d692e9e4..cfba1093 100644
+--- a/src/pages/step2/NOTES.md
++++ b/src/pages/step2/NOTES.md
+@@ -56,7 +56,7 @@ Decisions taken without asking, in the order they were met.
+ - An open tray is `TRAY_H` 250 px high, as in the approved images. Its rim is 8 px of shared satin aluminium, its wall the shared matt grey `cardSeal`, its floor the sunk glass; the shade under the upper and left walls is painted (`TRAY.floor`, `TRAY.soak`, `TRAY.wallShade`).
+ - The slot stands 12 px in from the tray's padding and 9 px under its top (`SLOT`), the crank's hub at `CRANK.hx` (padding plus 73), its grip 84 by 52.
+ - The dial's hub is a lacquered copy of the shared orange (`DIAL_BODY.hubCoat`, `hubRough`, `hubIor`); the risen dial lays a painted shade on the floor (`DIAL_BODY.cast`), away from the key.
+-- The slot and the crank lie housed in the floor of their trays (`HOUSED`, 0.022 of their height) while the tray opens over them and while it shuts, as the dial does, and rise from there. The reel legends are not drawn while the slot is housed (`SUNK`, under 0.05 of its rise), as before. Why and what was measured: `pipeline/phase5/polish-date.md`.
++- The slot and the crank lie housed in the floor of their trays (`HOUSED`, 0.022 of their height) while the tray opens over them and while it shuts, as the dial does, and rise from there. The reel legends are drawn on the housed reels, so `SUNK` is gone. Why and what was measured: `pipeline/phase5/polish-date.md`.
+ 
+ ## Phase 4: the keeper (agent step2-keeper)
+ 
+diff --git a/src/pages/step2/index.ts b/src/pages/step2/index.ts
+index f986288f..7bb689c7 100644
+--- a/src/pages/step2/index.ts
++++ b/src/pages/step2/index.ts
+@@ -121,8 +121,6 @@ function rowParts(tree: LayoutNode, prefix: string): RowIds {
+   return { ids }
+ }
+ 
+-// Under this share of its rise the slot is in the floor, and what is printed on its reels is not drawn.
+-const SUNK = 0.05
+ // A machine that has sunk under the page is covered by its tray as the tray shuts: the tray starts to shut at this share of the lift, not after the machine has gone.
+ const COVER = 0.25
+ // The slot and the crank are housed in the floor of their trays, as the dial is: they lie there at this share of their height while the tray opens over them and while it shuts over them, and rise from it. Their makers draw a part above 0.02 of its height, and at 0.0256 the slot's knob would reach the floor of the field below (`scale.heights.field`), whose pocket passes over the machine as the tray opens.
+@@ -924,7 +922,6 @@ export function makePage(): PageLogic {
+         for (const part of parts[1]!) if (part.text && part.id !== 'slot-prompt' && over[part.id]) Object.assign(over[part.id]!, { y: boxOf(layout, part.id).y + kick })
+       }
+       for (let r = 0; r < 3; r++) Object.assign(over[`slot-reel-${r}`]!, { v: [reelPos(m.slot, r)] })
+-      if (L < SUNK) for (const part of parts[1]!) if (part.text) over[part.id] = null
+     }
+     if (i === 2) {
+       const b = m.crank.b
+diff --git a/src/pages/step2/real/slot.ts b/src/pages/step2/real/slot.ts
+index 83c5b9fa..b3af9e40 100644
+--- a/src/pages/step2/real/slot.ts
++++ b/src/pages/step2/real/slot.ts
+@@ -402,7 +402,7 @@ function poseLegend(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
+   const crest = cab.z0 + (cab.z1 - cab.z0) * ((L.drum.crest - R * (1 - Math.cos(a))) / L.top)
+   run.position.set(0, off - R * Math.sin(a), (crest - s.z0) / k + L.legend.lift)
+   run.rotation.x = a
+-  run.visible = up > 0.05
++  run.visible = up > 0.02
+ }
+ 
+ export function coinGeometry(): THREE.BufferGeometry {
+diff --git a/tests/polish-date.test.ts b/tests/polish-date.test.ts
+index 7eebc26c..c878597a 100644
+--- a/tests/polish-date.test.ts
++++ b/tests/polish-date.test.ts
+@@ -31,6 +31,12 @@ describe('polish date: a row of step 2 is never shown open and empty', () => {
+       for (const r of open) expect(r.least, `step ${r.step}, row ${r.open + 1}, ${r.phase}`).toBeGreaterThan(DRAWN)
+     })
+ 
++    it(`${name}: the reels show their legends on every step the tray of the date is seen and the reels do not spin`, () => {
++      const slot = rows.filter((r) => r.open === 1 && (r.phase === 'opening' || r.phase === 'closing'))
++      expect(slot.length).toBeGreaterThan(150)
++      for (const r of slot) expect(r.legends, `step ${r.step}, ${r.phase}`).toBe(3)
++    })
++
+     it(`${name}: a machine lies under the floor of the fields, which pass over it, until its rise starts and again once it has sunk`, () => {
+       const under = rows.filter((r) => r.open >= 0 && r.lift === 0)
+       expect(under.length).toBeGreaterThan(150)
+diff --git a/tests/step2-dial.test.ts b/tests/step2-dial.test.ts
+index 68456d37..4321a568 100644
+--- a/tests/step2-dial.test.ts
++++ b/tests/step2-dial.test.ts
+@@ -326,17 +326,37 @@ describe('the rows as they are built', () => {
+     }
+   })
+ 
+-  it('never leaves a reel\'s legend lying bare on the floor of a tray whose machine has sunk', () => {
+-    let sunk = 0
+-    for (let t = 13.2; t < 13.7; t += 0.02) {
+-      const list = listAt(t)
+-      const cabinet = list.find((s) => s.id === 'slot-cabinet')
+-      const legends = list.filter((s) => s.id.startsWith('reel-'))
+-      if (!cabinet || cabinet.z1 - cabinet.z0 > 2) continue
+-      sunk++
+-      expect(legends.length, `at ${t.toFixed(2)}`).toBe(0)
++  it('never leaves a reel\'s legend lying bare on the floor of a tray: a legend is in the list only while its own reel and the cabinet are drawn by their makers, and it lies on its reel\'s face, opening and shutting', () => {
++    const DRAWN = 0.02
++    const CABINET = TOP + 20 - TRAY_Z
++    const REEL = 4
++    const sides: [string, number, number][] = [['opening', 8.1, 8.7], ['shutting', 13.2, 13.7]]
++    for (const [side, from, to] of sides) {
++      let housed = 0
++      let lying = 0
++      for (let t = from; t < to; t += 0.02) {
++        const at = `${side} at ${t.toFixed(2)}`
++        const list = listAt(t)
++        const cabinet = list.find((s) => s.id === 'slot-cabinet')
++        const legends = list.filter((s) => s.id.startsWith('reel-'))
++        const cabinetUp = cabinet ? (cabinet.z1 - cabinet.z0) / CABINET : 0
++        if (cabinetUp <= DRAWN) expect(legends.length, at).toBe(0)
++        if (cabinet && cabinet.z1 - cabinet.z0 <= 2) housed++
++        for (const legend of legends) {
++          const reel = list.find((s) => s.id === `slot-reel-${legend.id.split('-')[1]}`)
++          expect(reel, `${at} ${legend.id}`).toBeDefined()
++          expect((reel!.z1 - reel!.z0) / REEL, `${at} ${legend.id}`).toBeGreaterThan(DRAWN)
++          expect(legend.x, `${at} ${legend.id}`).toBeGreaterThanOrEqual(reel!.x)
++          expect(legend.x + legend.w, `${at} ${legend.id}`).toBeLessThanOrEqual(reel!.x + reel!.w)
++          expect(legend.y, `${at} ${legend.id}`).toBeGreaterThanOrEqual(reel!.y)
++          expect(legend.y + legend.h, `${at} ${legend.id}`).toBeLessThanOrEqual(reel!.y + reel!.h)
++          expect(Math.abs(legend.z0 - reel!.z1), `${at} ${legend.id}`).toBeLessThan(1e-6)
++          lying++
++        }
++      }
++      expect(housed, side).toBeGreaterThan(0)
++      expect(lying, side).toBeGreaterThan(0)
+     }
+-    expect(sunk).toBeGreaterThan(0)
+   })
+ 
+   it('builds a tray on its way open for the height it has', () => {
