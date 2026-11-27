@@ -28,7 +28,7 @@ const HOME = homePlaces()
 const SLAB_FALL = { seconds: 0.3, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6 }
 const SLAB_SUNK = 3
 const GO_EDGE = 6
-const SLAB_SHADOW = { from: 0.3, to: 1.12, dark: 0.55 }
+const SLAB_SHADOW = { from: 0.3, to: 1.12, dark: 0.8 }
 const BITS = { speed: [240, 640], up: [820, 1500], pull: 4200, turn: 7, thick: 10, shard: 0.34, bias: 0.55 }
 const CRACKS = { count: 6, parts: 3, long: [46, 96], bend: 0.55, wide: [5, 2], grow: 0.09 }
 const SLAB_LAND = TIMES.slabHang + TIMES.slabFall
@@ -73,7 +73,7 @@ interface State {
   slabs: { t: number; x: number; y: number; base: number; landed: boolean; since: number }[]
   slabDue: { t: number; x: number; y: number; base: number }[]
   slabClear: number
-  broken: { key: number; t: number; ux: number; uy: number }[]
+  broken: { key: number; t: number; ux: number; uy: number; x: number; y: number }[]
   craters: { x: number; y: number; t: number }[]
   accepted: boolean
   slow: number
@@ -346,7 +346,12 @@ export function makePage(): PageLogic {
         const dx = seat.cx - cx + (hash01(key, n, 61) - 0.5) * 60
         const dy = (seat.cy - cy) * 2.4 - BITS.bias * 100 + (hash01(key, n, 62) - 0.5) * 60
         const d = Math.hypot(dx, dy) || 1
-        s.broken.push({ key, t: 0, ux: dx / d, uy: dy / d })
+        const ux = dx / d
+        const uy = dy / d
+        const px = clamp(seat.cx, b.x, b.x + SLAB.w)
+        const py = clamp(seat.cy, b.y, b.y + SLAB.h)
+        const out = Math.min(ux > 0 ? (b.x + SLAB.w - px) / ux : ux < 0 ? (b.x - px) / ux : Infinity, uy > 0 ? (b.y + SLAB.h - py) / uy : uy < 0 ? (b.y - py) / uy : Infinity)
+        s.broken.push({ key, t: 0, ux, uy, x: px + ux * out, y: py + uy * out })
         broke++
       })
       s.craters.push({ x: b.x, y: b.y, t: 0 })
@@ -672,8 +677,8 @@ export function makePage(): PageLogic {
             const turn = part === 0 ? 0 : (h(83) - 0.5) * 1.4
             const ux = k.ux * Math.cos(turn) - k.uy * Math.sin(turn)
             const uy = k.ux * Math.sin(turn) + k.uy * Math.cos(turn)
-            const x = seat.cx + ux * speed * t
-            const y = seat.cy + uy * speed * t
+            const x = k.x + ux * speed * t
+            const y = k.y + uy * speed * t
             const w = part === 0 ? seat.w : Math.min(seat.w, seat.h) * BITS.shard
             const hh = part === 0 ? seat.h : seat.h * BITS.shard
             const rest = onBoard(x, y) ? CAP_TOP + 1 + off : 0.5

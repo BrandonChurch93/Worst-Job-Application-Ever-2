@@ -73,6 +73,8 @@ Decision 11. The broken keys, the cracks and the craters go with the Email stage
 
 MEASURED (the film of `dc3296b8` and of this branch laid frame on frame, `/tmp/zz-dump.test.ts`): from 19.5 s to 32 s the events are the same but for the new ones; no pose number differs by more than 0.0087 between 19.5 s and 21.9 s, and by more than 1.2e-9 after that, the tug included.
 
+Decision 13. A broken key starts at the edge of the slab that broke it and flies out from under it (it first started at its own seat, and for the landing frame the keys lay whole on top of the slab and over its words: seen on the frames of 18.30 s). The shadow's darkest is 0.8 (it was 0.55 and hard to see on the film's frames at the size of a sheet).
+
 ## Item 9: the arrow behind Continue (F)
 
 Found on the live site: `node pipeline/change002/step1-continue.mjs before` walks a real mouse through step 1 by the page's hint, then moves it over and round Continue with no press and keeps all 86 frames. The fault: while the arrow is over the cap its lower half is hidden by it. The cause: `ground()` in `index.ts` gave the arrow the page's height, 0, under Continue, and the cap stands 14 px above the page, so the arrow's body went through the cap. The mend: over the cap (its tip or its body within 6 px of it) the ground is the cap's top, less the travel while it is pressed. `node pipeline/change002/step1-continue.mjs after` gives the same 86 frames after the mend.
@@ -81,6 +83,10 @@ Other buttons of the page: Browse files stands in the drop zone of the Resume st
 ## The narrator's line 2 (change note 003)
 
 Decision 12. `turret-rise` is given twice, once for each turret, on the same step, and tests and the sound hold it so. The line needs one event given once, so the page gives a new one, `candidate-sensed`, on that same step, at the middle between the turrets (960, 892). MEASURED (`npx vitest run tests/b-step1-blasts.test.ts`): in the film once, at 3.02 s of the unit (17.02 s of the film, frame 1021); a line of 5.6 s is over at 8.62 s, the Name is done at 9.72 s, the Email beat begins at 15 s: no beat pays for it. On the live site once on each of 200 seeded visits; there the Name is done before 5.6 s are over on 94 of the 200 (least 1.5 s, median 5.8 s from the event to the Name done), so on the live site the line runs on into the Email field on about half the visits unless the shell cuts it. The moment is off the screen from the first `field-done` of the page (the Name's; the turrets go down with it).
+
+## Where the caption stands while the keyboard is up (ruling 2)
+
+Proposed: the panel's lower edge at y 640 of the page, centred on x 960 (a panel of 900 by 96 then lies from x 510 to 1410 and from y 544 to 640). STATED from the page's own places: the Name field and its helper line end near y 500, the line about physical keyboards stands near y 690, the keyboard's deck is from y 728 to 1040 and the turrets, the keys and every blast's path lie inside it; nothing a visitor reads, presses or dodges lies between y 510 and 680. The broken keys of the Email stage fly up through that band, but no line is spoken there (change note 003). Picture: `node pipeline/change002/step1-frames.mjs caption 5.9 5.9 1 0 0 1920 1080 1 1200 510,544,900,96` draws a stand-in panel with two rows of words on a film frame with a blast in the air. Not wired: the page gives no `caption` in `chrome()` until the shell names the hook.
 
 ## Events
 
