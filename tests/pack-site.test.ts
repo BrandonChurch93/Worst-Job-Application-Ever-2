@@ -203,7 +203,7 @@ describe('the packs of the unit site', () => {
     expect(sets.flatMap((x) => x.files).filter((f) => f.moment === 'given-back').length).toBe(3)
     expect(sets.filter((x) => x.files.some((f) => f.moment === 'given-back')).length).toBe(1)
     // The blow close: every step from CLOSE.before before it to CLOSE.after after it, the marks under each frame, in a window of the tile's own size that holds the ball at the blow.
-    const close = motionPlan(cfg, facts).items.find((f: { moment: string }) => f.moment === 'flip-close') as { steps: number[]; heading: string; every: number; hands: string[] }
+    const close = motionPlan(cfg, facts).items.find((f: { moment: string }) => f.moment === 'flip-close') as unknown as { steps: number[]; heading: string; every: number; hands: string[] }
     const met = facts.moments.met as number
     expect(close.steps).toEqual(Array.from({ length: count }, (_, i) => met - CLOSE.before + i))
     expect(close.hands.length).toBe(count)
@@ -373,7 +373,7 @@ describe('the packs of the unit site', () => {
     expect(named.moments.gate).toBe(null)
     expect(named.moments.unsaved).toEqual([{ step: 3 * LONG + 250, word: 'flipper-save' }])
     expect(motionPlan(cfg, named).missing).toEqual(["save: the page says flipper-save at 0:19.17 and no save was read from the ball's path there, so no sheet shows it"])
-    expect(siteNotes(cfg, 'R4', named).missing.length).toBe(1)
+    expect((siteNotes(cfg, 'R4', named).missing as string[]).length).toBe(1)
     expect(motionPlan(cfg, facts).missing).toEqual([])
     expect(fs.readFileSync(new URL('../tools/pack.mjs', import.meta.url), 'utf8')).toMatch(/manifest\.missing\.length\) \{\n.*\n  process\.exitCode = MISSING_EXIT/)
     // The shut gate's save, read from the ball's path alone: the ball lies still and deep for 64 steps and leaves upward. The page's words for the take and the kick only confirm it.
