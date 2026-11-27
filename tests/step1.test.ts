@@ -399,7 +399,7 @@ describe('the slabs and the typed address', () => {
     const hits = (p: { x: number; y: number; w: number; h: number }, q: { x: number; y: number; w: number; h: number }): boolean => p.x < q.x + q.w && q.x < p.x + p.w && p.y < q.y + q.h && q.y < p.y + p.h
     const places = new Map<string, string>()
     const lows = new Map<string, number>()
-    const falls = new Map<string, number>()
+    const falls = new Map<string, number[]>()
     let air = 0
     let frames = 0
     let most = 0
@@ -437,8 +437,10 @@ describe('the slabs and the typed address', () => {
           lows.set(slab.id, Math.min(lows.get(slab.id) ?? Infinity, slab.z0))
           expect(slab.z0 - lows.get(slab.id)!).toBeLessThanOrEqual(6)
         } else if (st.slabClear < 0) {
-          expect(slab.z0, slab.id).toBeLessThan(falls.get(slab.id) ?? Infinity)
-          falls.set(slab.id, slab.z0)
+          const seen = falls.get(slab.id) ?? []
+          expect(slab.z0, slab.id).toBeLessThanOrEqual(seen[seen.length - 1] ?? Infinity)
+          expect(slab.z0, slab.id).toBeLessThan(seen[seen.length - stepHz / 60] ?? Infinity)
+          falls.set(slab.id, [...seen, slab.z0])
           air++
         }
       })

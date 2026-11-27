@@ -1,4 +1,4 @@
-import { config } from '../../config'
+import { config, stepHz } from '../../config'
 import { hash01 } from '../../core/random'
 import type { Acting } from '../../cursor/body'
 import { boxOf, drawLayout } from '../../shell/layout'
@@ -25,7 +25,7 @@ const NEAR = 130
 const SINGE = 0.2
 const WIPE: FieldName[] = ['email', 'name']
 const HOME = homePlaces()
-const SLAB_FALL = { seconds: 0.3, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6 }
+const SLAB_FALL = { seconds: 0.3, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6, fps: 60 }
 const SLAB_SUNK = 3
 const GO_EDGE = 6
 const SLAB_SHADOW = { from: 0.3, to: 1.12, dark: 0.8 }
@@ -330,7 +330,7 @@ export function makePage(): PageLogic {
   const slabGone = (TIMES.slabCount - 1) * SLAB_OUT.every + SLAB_OUT.wait + SLAB_OUT.fly
   const stepSlabs = (io: StepIo): void => {
     for (const d of s.slabDue) d.t += io.dt
-    while (s.slabDue.length && s.slabDue[0]!.t >= SLAB_LAND - SLAB_FALL.seconds) s.slabs.push({ ...s.slabDue.shift()!, landed: false, since: 0 })
+    while (s.slabDue.length && s.slabDue[0]!.t >= SLAB_LAND - SLAB_FALL.seconds - 1.5 * io.dt) s.slabs.push({ ...s.slabDue.shift()!, landed: false, since: 0 })
     s.slabs.forEach((b, n) => {
       b.t += io.dt
       if (b.landed) b.since += io.dt
@@ -411,7 +411,7 @@ export function makePage(): PageLogic {
   const ground = (io: StepIo): number => {
     const stage = shows(2) ? resume.ground(io) : null
     if (stage !== null) return stage
-    if (resume.received() && s.board <= 0 && (inside(go, io.cursor.x, io.cursor.y, GO_EDGE) || inside(go, io.cursor.x + BODY.x, io.cursor.y + BODY.y, GO_EDGE))) return heights.button - (s.pressed >= 0 ? TRAVEL : 0)
+    if (s.board <= 0 && (inside(go, io.cursor.x, io.cursor.y, GO_EDGE) || inside(go, io.cursor.x + BODY.x, io.cursor.y + BODY.y, GO_EDGE))) return heights.button - (s.pressed >= 0 ? TRAVEL : 0)
     if (s.board <= 0 || !onDeck(io.cursor.x, io.cursor.y)) return 0
     const key = keyAt(HOME, io.cursor.x, io.cursor.y)
     const down = key >= 0 ? s.keyDown[seats[key]!.name] : undefined
@@ -591,8 +591,10 @@ export function makePage(): PageLogic {
           if (label) over[`key-${seat.name}-legend`] = !seen ? null : { x: label.x + (at.x - legend.x) - TIP.lever * tipX + SINK.x * sink, y: label.y + (at.y - legend.y) - TIP.lever * tipY + SINK.y * sink, z0: top, z1: top, moved: away }
         })
       }
+      const per = stepHz / SLAB_FALL.fps
+      const late = ((Math.round(((s.time * SLAB_FALL.fps) % 1) * per) + 1) % per) / stepHz
       const slabAt = (b: { t: number; x: number; y: number; base: number }, n: number): { x: number; y: number; z: number } => {
-        const u = clamp((b.t - SLAB_LAND + SLAB_FALL.seconds) / SLAB_FALL.seconds, 0, 1)
+        const u = clamp((b.t - (b.t < SLAB_LAND ? late : 0) - SLAB_LAND + SLAB_FALL.seconds) / SLAB_FALL.seconds, 0, 1)
         const fall = SLAB_FALL.high * (1 - u) * (1 + (1 - SLAB_FALL.thrown) * u)
         const e = s.slabClear < 0 ? 0 : Math.max(0, s.slabClear - n * SLAB_OUT.every)
         const pop = SLAB_OUT.up * (1 - (1 - Math.min(1, e / SLAB_OUT.pop)) ** 2)

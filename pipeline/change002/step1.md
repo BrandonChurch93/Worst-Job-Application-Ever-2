@@ -75,6 +75,10 @@ MEASURED (the film of `dc3296b8` and of this branch laid frame on frame, `/tmp/z
 
 Decision 13. A broken key starts at the edge of the slab that broke it and flies out from under it (it first started at its own seat, and for the landing frame the keys lay whole on top of the slab and over its words: seen on the frames of 18.30 s). The shadow's darkest is 0.8 (it was 0.55 and hard to see on the film's frames at the size of a sheet).
 
+Decision 14. Over the Continue cap the arrow's ground is the cap's top whenever the keyboard is down (`s.board <= 0`), not only once the resume is received: the cap is drawn, off, from the arrival on, and the keen hand rests on it then (`tests/polish-hand.test.ts` turn 1).
+
+Decision 15 (the Builder's ruling of 22:52, a falling slab is solid from its first frame). Cause, measured with a dump of the film's draw list: the film draws each frame as several shutter samples, the slab came into the list two steps after a frame's edge (18.5583 s where the frame starts at 18.55 s), and its height changed at every sample, so its first frame was a mix of slab and no slab and each later one a pale smear. Mend: the slab takes one pose a film frame (`SLAB_FALL.fps` 60; `late` in the draw holds the height through the frame) and comes into the list on the frame's edge (`SLAB_LAND - SLAB_FALL.seconds - 1.5 * io.dt` in `stepSlabs`). MEASURED on the draw list: first seen at 18.0000, 18.5500 and 19.1000 s at height 1227, the same height for four steps, then 1204, then 1177; lands (27) at 18.3000, 18.8500, 19.4000 s; `slab-shadow` 17.40, 17.95, 18.50 s and `slab-drop` 18.30, 18.85, 19.40 s did not move. Seen on `node pipeline/change002/step1-frames.mjs fall2 18.5 18.68 0.016667 0 0 1920 1080 4 298`: the slab at 18.55 s is of full colour with its words sharp.
+
 ## Item 9: the arrow behind Continue (F)
 
 Found on the live site: `node pipeline/change002/step1-continue.mjs before` walks a real mouse through step 1 by the page's hint, then moves it over and round Continue with no press and keeps all 86 frames. The fault: while the arrow is over the cap its lower half is hidden by it. The cause: `ground()` in `index.ts` gave the arrow the page's height, 0, under Continue, and the cap stands 14 px above the page, so the arrow's body went through the cap. The mend: over the cap (its tip or its body within 6 px of it) the ground is the cap's top, less the travel while it is pressed. `node pipeline/change002/step1-continue.mjs after` gives the same 86 frames after the mend.
@@ -132,7 +136,16 @@ Skipped for now after item 7, each named, for the same reason as the 19 above (t
 ## Tests of other units that fail because of this unit (told to the Builder)
 
 - `tests/b-shell-fields.test.ts`: `leaves every page of the build as it was: none reports fields...`: step 1 now reports fields.
-- `tests/cut-of-build.test.ts`: two tests: `cut/` is not what this build gives (977 events on disk, 924 in the build); `npm run cut` makes it again.
-- `tests/pack-site.test.ts`: `R4: a key of the page keyboard at every step...`.
-- `tests/polish-hand.test.ts`: `turn 1: while the tray under the arrow hops on the seat...`.
-- `tests/site-finish.test.ts`: `the measure itself: a keen hand through this driver finishes as the keen bot does`.
+- `tests/cut-of-build.test.ts`: two tests: `cut/` is not what this build gives; `npm run cut` makes it again. Left red by the Builder's word.
+
+## The NEEDS commit (files that are not this unit's, by the Builder's ruling of 21:53)
+
+- `tools/bots.mjs` lines 14 and 15: `CUT = ['step1.lastName']`, and the list of gags is the film's beats without it. The frozen beat list still names the gag that is cut; the bots still ask for all the other 36.
+- `tests/site-finish.test.ts`, `the measure itself: a keen hand through this driver finishes as the keen bot does`: the keen hand reaches every beat but `step1.lastName` (the test names it), 36 gags (was 37). It still checks that the hand finishes as the bot does.
+- `tests/polish-hand.test.ts`, `turn 1: while the tray under the arrow hops on the seat...`: the keen hand now rests on step 1's Continue cap at (1686, 779) while it waits (the drop zone and its tray are not shown at the arrival any more), so the test asks that the arrow lies on the cap's top and that a loose thing is under it at the seat, then the same turn limits as before. `FILM_HIT` is pinned again at film frames 407 to 422 (was 348 to 363): the blast that hits lands later because of the slower blasts.
+- `tools/lib/pack-site.mjs`: `ANGRY_WORDS` and its line of comment are out and the heading of the Email press ends at the field's name: the page does not make the arrow angry on the Email field any more. `tests/pack-site.test.ts` R4: the check now asks for `enter('email')` followed by `act(io, 'plain')` in the page and that the heading has no "angry"; the three lines that read `FLIGHT` from the page (the shuffle's flight, cut) are replaced by `expect(KEYS.home).toBe(32)`. `tests/pack-frames.test.ts`: the import and one use of `ANGRY_WORDS` are out.
+- Not mended, for the Builder: `tools/lib/pack-site.mjs` still speaks of "the last name" and takes gag `step1.lastName` as the moment the turrets go down (`STANDS.until`, `FIELD_WORDS.last`, the headings "the turrets went down before the last name"); the page never gives that gag now. `KEYS.home` 32 is kept but its reason, the keys' flight home, is cut.
+
+## Tests of this unit changed after the first pass
+
+- `tests/step1.test.ts`, `drops each slab straight down...`: the height of a falling slab is read a slab; it never rises from step to step and is lower than `stepHz / 60` steps before (it was: lower at every step), because the slab now holds one pose a film frame.
