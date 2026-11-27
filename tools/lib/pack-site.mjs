@@ -367,7 +367,9 @@ const LEAD = 3
 // Out of the port: the ball's middle is this far, in px of the page, from where the arrow was sealed, and the run holds this many steps more.
 const PORT = { clear: 150, tail: 6, most: 600 }
 // The flipper meets the ball: within `within` steps of a press of a flipper the arrow's speed changes by `kick` px of the page a step or more, the ball then `lifts` px a step or more up the table.
-const MEETS = { within: 24, kick: 4, lifts: 3 }
+// A bat's own blow comes while the bat rises, `soon` steps after the press at most, and is hard: the first press counts whose change of speed is `share` of the hardest
+// such change in the visit or more. So a ball the table throws back by itself just after a press that met nothing (the save's lob from the gate's mouth) is not taken for the bat's blow.
+export const MEETS = { within: 24, kick: 4, lifts: 3, soon: 4, share: 0.6 }
 // Round a run's path in a close sheet: this much of the picture stays clear on every side of the arrow's places, in px of the picture.
 const ROOM = 56
 // When the limit of files cuts a run of two sheets to one, the second sheets go in this order, the least worth first.
@@ -478,14 +480,23 @@ export function momentsOf(cfg, run) {
   const speed = (i) => [rows[i][COL.heroX] - rows[i - 1][COL.heroX], rows[i][COL.heroY] - rows[i - 1][COL.heroY]]
   let blow = null
   if (s3 && flip !== null) {
-    for (let p = flip; p <= s3.last && blow === null; p++) {
+    // Every press with the first change of the ball's speed after it that lifts the ball.
+    const blows = []
+    for (let p = flip; p <= s3.last; p++) {
       if (!((rows[p][COL.left] && !rows[p - 1][COL.left]) || (rows[p][COL.right] && !rows[p - 1][COL.right]))) continue
-      for (let i = Math.max(p, s3.first + 2); i <= Math.min(s3.last, p + MEETS.within) && blow === null; i++) {
+      for (let i = Math.max(p, s3.first + 2); i <= Math.min(s3.last, p + MEETS.within); i++) {
         const now = speed(i)
         const was = speed(i - 1)
-        if (Math.hypot(now[0] - was[0], now[1] - was[1]) >= MEETS.kick && now[1] <= -MEETS.lifts) blow = i
+        const kick = Math.hypot(now[0] - was[0], now[1] - was[1])
+        if (kick >= MEETS.kick && now[1] <= -MEETS.lifts) {
+          blows.push({ step: i, kick, soon: i - p <= MEETS.soon })
+          break
+        }
       }
     }
+    const hardest = blows.reduce((m, b) => (b.soon ? Math.max(m, b.kick) : m), 0)
+    const own = blows.find((b) => b.soon && b.kick >= MEETS.share * hardest)
+    blow = own ? own.step : blows.length ? blows[0].step : null
   }
   return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, flippers, leaves, left, flip, met: blow, turn: turns[0] || null } }
 }
