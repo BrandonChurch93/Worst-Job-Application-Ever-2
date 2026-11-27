@@ -20,6 +20,7 @@ The Builder's memory. Read it at the start of every task and after every compact
 - Repo is private: no. MEASURED 2026-11-25T05:38Z with the repo host's own answer (isPrivate false). `repo.expectPrivate` is true, so the two disagree. The first status said so
 - Sound files: not committed, because the repo is public. Recipes, settings, measurements and listener answers are committed as text. The files stay in the workspace and in the published site, and one archive of every kept file is attached with each status that follows new sounds and with the `REVIEW` block. `.gitignore` keeps them out
 - Portfolio link: not set
+- Change note in force: 002 from Brandon, by Partner, of 2026-11-27T20:00Z. It is pasted whole under "Change note 002 from Brandon, by Partner" below. Read it after every compaction, before any other work
 
 ## Latest pictures
 
@@ -1701,6 +1702,135 @@ His notes from the thread, the review rounds and the review, in his words, numbe
 - 2026-11-27T00:22Z, the automation's run of 00:17Z found the build at work (merge 43 in its whole run); no new word from Brandon since his message of 4:38 PM MT. That run's turn ends with Status 122, so its notification stays on.
 - 2026-11-27T01:28Z, logged by the Builder. Brandon wrote in the thread between 01:06Z and 01:18Z (6:06 PM to 6:18 PM MT), after Status 123, in his words: "Good work, I still need to see an actual rendered video. You could do one at lower resolution so it doesn’t take that long. Before I make my approval. Didn’t make sure the direction looks good, the art looks good, and so on. So please go ahead and get to work on that video". How it is applied: (1) Preview 05, the whole film on merge 43 with its sound, was joined at once and is attached to Status 124 as a file. (2) A cleaner low resolution film, Preview 06 (review tier, 960 by 540), is drawn by 13 helpers from 01:27Z. (3) His word on the five design points is not asked for again before he has watched; the status says where each plays in the video. No kit number is changed by this note.
 - 2026-11-27T19:11Z, logged by the Builder. A mail from Brandon's Partner session (bdbb2938) came at 19:10Z (12:10 PM MT), after Status 165 went out at about 19:08Z. It quotes his words from the Partner chat, "The worst job and Galactic war should continue working. I actually have a bunch of updates to do to the worst job that will change a lot with aspects of it and I’m putting that together now so expected soon the very first thing is the voice over for the worst job script is not good at all. We need to rewrite the script. It was very lazy written from random words that was in the GitHub repo. Those words were never meant to be written as a script. A lot of them were kickers and little funny bits of text spread throughout the sight. They were never meant to be the main focus so we need to write our own custom script based on the experience that Happens, but because I’m gonna be making some tweaks to that experience, we need to hold off on that for now". The quote is STATED by Partner; the Builder did not read the Partner chat to check it (Brandon confirmed in this thread on 2026-11-26 that Partner speaks for him when it relays his word, note 4). Partner's reading of what it asks, in five points: keep working, with the follow through timer set running again by Partner until 2026-12-04 at noon MT (STATED by Partner); his updates come in this thread soon and change a lot of the experience, so until then work that survives a change comes before work that locks the experience in, and the final render is not started; the voiceover script is to be replaced by one written for the experience as it happens, held until his changes are in, and by Partner's own reading no ElevenLabs credits go to the current script; when the new script is written the spoken words are shown on screen; the next status tells him in one line that this is received. How it is applied is in the Builder's decision of the same time.
+
+## Change note 002 from Brandon, by Partner
+
+Received 2026-11-27T20:00Z (1:00 PM MT) by mail from Brandon's Partner session (bdbb2938), which speaks for him. Pasted word for word as he ordered, each line set as a quotation so that the note's own headings stay out of this log's list of sections. It beats `kit/01-FILM.md` and addendum 001 wherever they disagree. Read it again after every compaction. The one exclamation point in it is Brandon's own, inside his quoted words in section A item 5; the Builder added none.
+
+> # Worst Job Application Ever - Change note 002
+>
+> From Partner, speaking for Brandon under house rule 23. Partner chat: https://www.perplexity.ai/computer/tasks/bdbb2938-8540-483e-906c-8485c8c301e1
+>
+> Sent November 27, 2026, about 1:00 PM Mountain Time. Brandon watched the film and then played the live site. This note is his review, in his words, with the decisions he made today. Lines marked "Partner's reading" are how Partner reads his words; if the picture or the code says otherwise, say so in your next status and carry on with the nearest sensible choice.
+>
+> ## His go, in his words
+>
+> - On timing: "come to it with like the actual finalized new plan or at least like hey we have 80% finalized. We just need to generate images on the rest of it and then pivot and have it work from there that way it's clear to it and there's no confusion."
+> - On Partner's picks (sections B and C below): "I like your pics for everything here except for the Rotary phone."
+> - On the pictures: "I think we're good to go ahead and start it. I think we have a plea clear idea of the new direction that we wanna go obviously we still need to rewrite the script and yes, we do need to regenerate the images to figure out like what it is, we're actually building."
+>
+> This is that plan. Pivot to it now. It beats `kit/01-FILM.md` and addendum 001 wherever they disagree. Paste this whole note, word for word, into `kit/PROGRESS.md` under the heading "Change note 002 from Brandon, by Partner" so it survives a compaction, and read it again after every compaction.
+>
+> ## A. Stop now
+>
+> Stop all work, including critic rounds, on these. They are cut or about to be rebuilt.
+>
+> 1. The last name field and its shuffling keyboard. Cut (item 11).
+> 2. The live, playable pinball view, such as the ball leaving the screen. Replaced (item 8).
+> 3. The look of the careers page. Pictures first (section E).
+> 4. The look of the boss and its page. Pictures first (section E).
+> 5. Narrator lines: no new takes, no rewording, no ElevenLabs credits on narration. The script is being rewritten and will arrive as its own note. Brandon: "There's already so much dialogue packed in here that we need to dial it back quite a bit!"
+>
+> Still in force from his earlier words today: keep working, and no final render.
+>
+> ## B. Build now
+>
+> The test for every field, in his words: "This is already turning something that was slightly annoying, but funny and into just annoying". Partner's reading: each gag is one short beat, the visitor can win it, and it is fun to watch even while it is happening to you.
+>
+> 1. Voiceover plays on events. "right now it's constantly talking and I don't really want that. I want the voice over to actually play while the user is playing not necessarily on a timer but on an event basis." Until the new script arrives, wire every line to an event and leave silence between. Spoken words are shown on screen (house rule).
+>
+> 2. Name field: turret blasts with weight, and dodgeable. "the Tourette's blast should look a bit more powerful maybe more like a teardrop so it's fat upfront. It may have like sparks around it or something to make it feel more powerful. I also feel like they don't have a cool enough sound. It doesn't sound powerful. It's more of like a laser pew then like something powerful firing out out of a canon they also fire a bit too fast. The user actually has to be able to dodge these while typing their name things like a Mario game versus like whatever it is now." Partner's reading: "Tourette's" is "turret's". Teardrop shape with sparks, a cannon sound, and slow enough to see coming and dodge.
+>
+> 3. Resume: show what is happening, in order. "the résumé appears and then it looks like the mouse puts it in the shredder. I think this needs to be done better to really explain to the user what's happening". His sequence: the mouse presses Browse files; a folder pops up and the mouse selects the resume; the resume animates into a submission slot or drop area; "for some reason like wind catches it or whatever and then it heads into the shredder"; only then the mouse grows arms and tries to pull it out. The shredder is labelled: "there's also no like indication that it's a shredder like it doesn't have the word shredder". Keep: "The resume animation is great. I love how animated the mouse curse looks".
+>
+> 4. Vacuum before the pinball: it must feel like a fight. "there's no real indication that the mouse is being sucked in there and it's fighting the vacuum effective being pulled in. I think we need to update that scene to really imply that it needs to feel powerful and big like the mouse just can't escape and it's like fighting it sweating it and eventually gives away and it sucked in."
+>
+> 5. Pinball scene: chaos, effects, signs. Keep: "The pinball machine as an asset looks great" and "the overall like cameras here and showing off the beautiful mess of the pinball machine is done really really well." Change:
+>    - "there's no moment of like absolute chaos where like the mouse is just being exploded around like super hard and like there's like particle effects invisible visible wait till like the strikes like I really wanted to feel like the poor mouse is just being absolutely hammered and it's going like super fast and insane."
+>    - "doesn't have the sounds of a pinball machine would have or the lights lighting up when you hit certain things"
+>    - "how like the coins came out like it would be nice if crazy stuff like that was happening. You hit something and bunch of coins fly out or whatever"
+>    - "It also happens like a bit fast and it might feel fast because it has to go to all these stops where the actual script narrates different things instead of it actually being like this crazy pinball experience"
+>    - "instead of pointing out like things like corporate HQ in the unemployment office. I just think it would be funny if signs were there so the user could see that themselves"
+>    - Lower priority: "some of the buildings could probably be better and worked on to match the references more"
+>
+> 6. Rotary phone: keep the fling exactly. "I love the animation at the end of the rotary phone where it spins the mouse cursor off that's super animated and I love that." Leave the start of the dial as it is for now. He turned down Partner's idea of a joke on each drag: "I don't know if I want another small joke on each one of them." and "We'll see what the new script looks like and how that feels maybe we'll revisit that later but as of now, I don't think I love that option." Its place on the page changes under item 12.
+>
+> 7. Email: the slabs hit like something falling from the sky. "I don't like where the invalid email things drop. I thought they could be much more impactful too like somethings actually slamming down and because we're done with the keyboard at this point, we could actually like kinda destroy the keyboard with them like destroy some of the keys and like the ground cracked like it fell, and like went through the keyboard and now has like a crater on the ground type deal, you know what I mean, make it way more impactful." Partner's reading: email is the last field that uses the keyboard, so step 1 runs name, email, resume.
+>
+> 8. Pinball on the live site becomes a short film the visitor watches. "The pinball machine area is super laggy." and "as far as I could tell there weren't any controls where I could actually hit the pinball and we didn't get that choreograph scene that we get in the video I kind of feel like for a user. The choreograph scene may be better, so no matter what happens that pinball area is like a prescriptive thing that you watch like a little mini film inside of this application I think that's how we should do it and maybe if it's pre-filmed and we do it seamlessly that helps with how demanding that part is". And: "I really wouldn't wanna compromise it visually for that." Partner's reading: on the live site the visitor's mouse is pulled in, the scripted pinball scene (after item 5 is done) plays as pre-rendered video, and the mouse is handed back at the end. Load it while the visitor does steps 1 and 2 so it starts at once. This replaces the kit's rule that nothing is built for the film that the live site does not have. Test the join into and out of the video at desktop and phone sizes and report what you measured.
+>
+> 9. Faults found while playing:
+>    - Cards: "I wish they flipped back over when you hover them when you first hover them the first time they do a flip and they don't ever flip back when you uncover them". A card flips back when the pointer leaves it.
+>    - Quotes strip: "The funny quotes at the bottom are capped by a max width, which makes it where you can only read a couple of them at once. I don't necessarily love that." Run it the full width of the page.
+>    - "don't like how the mouse kinda glitches behind the buttons or at least he's glitching behind the continue button on the end of part one"
+>    - "after the application ends and it restarts at the beginning, there's this weird like humming sound that should not be there super annoying."
+>
+> Partner's picks that Brandon approved today ("I like your pics for everything here except for the Rotary phone"), each from his own words:
+>
+> 10. Careers page sound. "the sound effects of everything on the marketing site really suck. I don't even know if we need sound effects on the marketing site side of it." No sound on the careers page except the press of the Apply button.
+>
+> 11. One Name field. "The last name filled is pretty annoying to be honest with you with the whole keyboard rearranging itself. It's cool concept but not fun in practice." and "we might be able to fix this by getting rid of the last name filled and just having a name filled". One Name field with the turrets of item 2. The last name field and the shuffling keyboard are cut.
+>
+> 12. One field at a time, in steps 1 and 2. "the way we have everything on screen at once it might help if we just do like one field at a time like after you type in your number that kind of goes away and then the next field comes up that just might be a better flow to let everything breathe and have its moment" and "I don't love how the rotary phone is like inside of a text area field to me that kind of seems a bit weird layout wise". Each field takes the page as its own stage and the progress bar counts fields. The rotary phone is the stage, not a thing inside a text box. Each field still looks like an ordinary form field for a moment before it turns on the visitor.
+>
+> 13. Date of birth: keep the slot machine, give the visitor the stops. "it looks like it's random, which isn't as bad as what I thought of being the same date every time but it's still not like super interactive. It's just like a slot machine." Each reel has its own stop button; the visitor stops month, day and year. Hit your own date and it pays out coins. Miss and the form accepts it as close enough.
+>
+> 14. Volume crank: keep it and make it unmissable. "the dialogue here is pretty funny. I think it's hilarious. It was actually a more funner doing it in person than I thought it would be. I wish it was like more in your face like hey this is for cutting up the audio cause when your user actually going through it, you're not necessarily reading everything because this place is kinda like a video game." A big sign that says to turn it up, the crank as the whole stage, and the narrator's line shown on screen as it is spoken. In the film, fix this: "it stops cranking when the volume is halfway up and then the volume bar keeps going up". The crank turns for as long as the level rises.
+>
+> 15. The boss: how it plays. Keep: "For the Boss fight, the mouse actually has better controls and I thought you actually do click to shoot which is pretty cool." Change:
+>    - "I feel like it's way too easy though cause like you still damage him by hitting his shield I think the shield should virtually do like almost no damage to him, and you kinda have to go around him to shoot him where his shield is not to do more damage."
+>    - "He needs to have better AI where he tracks the users mouse a bit more but not impossible to beat. Maybe he moves around the map and you have to dodge him."
+>    - "Maybe we could add more like cannons to like the four corners of the screen fire at the user not like constantly, we still want them to win but things they have to dodge"
+>    - Being hit: the mouse is flattened for a moment, peels itself up, and the boss wins back a little health. The visitor has no health bar and can never lose outright. Brandon: "I agree with your recommendation on the health bar that we shouldn't have one for the user."
+>    - Build and tune these rules now on a plain stand-in. Do not polish how the stand-in looks.
+>
+> New on-screen words these items need (the shredder's label, the pinball signs, the volume sign, the slot machine's miss line): draft them, use them, and list each one in your next status for Brandon. Do not edit the locked copy file. If the loader needs them inside it, say so and Partner will bring the change as an addendum.
+>
+> Sound effects for these items (cannon, pinball sounds, heavier slabs) stay inside addendum 001's cap and ledger.
+>
+> ## C. Waits for Brandon's pick of pictures
+>
+> 16. The careers page as a real website. "the opening marketing site just doesn't look good. I know it matches like the look and feel of the actual application itself, but I kind of wish it felt more like a website. It's just a bunch of cards. The design isn't good at all maybe we should have him generate some options maybe like three or four different ones and choose between them and then iterate with the finalized screenshot as the quality?" His pick becomes the approved picture the page is built and judged against.
+>
+> 17. The boss and its arena as a different world.
+>    - "You just get near the cement button and it kind of breaks out. I kind of want like the whole atmosphere to change think about your walking in Elden ring and then you just come across a boss fig. The whole scene should like change into like a boss arena". Partner's reading: "cement button" is the Submit button.
+>    - "The health bar could be better too. I really think we should move all the content off the screen for this boss fight so it feels like an actual boss fight."
+>    - "the overall design the boss isn't bad but again it's a bit boring and lackluster like I wanted to really feel Crazy kinda like how the pinball machine game kinda comes out of nowhere and takes you to like a different world"
+>    - "the boss should look insanely cool. I don't really know how it should look yet. Maybe we should get with the model to generate some new images"
+>    - New today: "It would also be cool at this new Boss Arena we create has actual like 3-D to it that can be like destroyed by the boss like he fires like a big cannon like he has an extra cannon on his back or something that fires like a giant blast that could actually destroy the environment. I think that would be super cool"
+>    - "the sound effects of the button breaking out aren't spectacular either. It doesn't feel powerful enough."
+>
+> ## D. Waits for something else
+>
+> 18. The script. Rewritten with far fewer lines, played on events. It will arrive as its own note. Brandon loves the volume line ("It will regret that").
+> 19. The start of the rotary dial. Revisited after the new script.
+> 20. Boss music. "the music to change I can actually pick some royalty free ones so we don't use all of our 11 lab tokens on music". Brandon supplies the files. Until then, build the arena to a stand-in tempo and spend nothing on music.
+>
+> ## E. Reference round 7: start it now, alongside the build
+>
+> A picture round run with the reference-derby skill. It does not pause the build. Nothing from it is built until Brandon picks.
+>
+> Set PAGE: four options for the careers page, PAGE A to PAGE D.
+> - Look first at three or four well-made careers pages of real companies for structure only (navigation, a hero, values, perks, open roles, footer). Take no artwork, names or wording from them.
+> - Each option is a complete website design, not a row of cards. Use the real words from the locked copy file. Keep the perk cards with their fine print, the quotes strip at full width, the orange Apply button the cursor jumps on, and the cursor exactly as approved. No people or faces (kit rule).
+> - Make the four clearly different. At least one stays in the page's own materials (ceramic, frosted glass, aluminum, orange plastic) and at least one looks like an ordinary, polished company website that the application then betrays.
+> - For each option: the first screen at 1920x1080, and the full page top to bottom.
+>
+> Set BOSS: six looks for the boss and its arena together, BOSS A to BOSS F.
+> - Each is one 1920x1080 frame of the fight as the visitor would see it: the boss, the arena, the cursor at its approved look and size, the boss's health bar, cannons in the four corners, and none of the form's content.
+> - The arena has real depth and things in it that the boss can destroy. The boss carries a large cannon on its back for the blast that wrecks the arena.
+> - The boss is a machine that came out of the Submit button (kit rule: no creatures, no people). Make the six clearly different in shape, scale, color and mood. One is a wildcard of your own, with one line on why.
+>
+> For both sets:
+> - The code is printed on the image itself, in a corner, large enough to read on a phone ("PAGE B", "BOSS D").
+> - Deliver one labelled contact sheet per set first, then the full-size files, in a delivered message to Brandon with the images attached, and a list of each code with one line on what it is. He picks by code and may mix ("boss from C, arena from E").
+> - One take per image. No judging for taste. Retake only a failed call or broken text.
+> - Save drafts under `references/drafts/round-7/`. Nothing is approved until Brandon picks.
+> - Partner's timebox, not Brandon's: show what exists about an hour after you start.
+>
+> ## F. What to send back
+>
+> One delivered status to Brandon when you have read this: what you stopped, what you started, and anything in this note that cannot be done as written. Then your normal statuses.
 
 ## Probe results
 
