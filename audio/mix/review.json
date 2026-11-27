@@ -3,6 +3,20 @@
   "file": "review.wav",
   "source": "cut/CUTLIST.json",
   "planSha256": "361d8210827976c7be8f6a8f86eb22e80e2cf930946497162e68cb51ee5e206c",
+  "cutSha256": "c229eb00fa71fd99e7033f623a85ad1d34aed523154908a5e7f8c6fa787ae1fa",
+  "keptSha256": "16d14f5d92b501694ff05749cd85a7aa800a9efd80444038a23aeda8f3fd85d6",
+  "build": {
+    "engine": "e68903f7837ca4c7",
+    "pages": {
+      "step1": "9aed1d9639574f01",
+      "step2": "1ba00f8ab331f145",
+      "marketing": "8cd6ae0941a08122",
+      "pinball": "7a828333ccfa0fb2",
+      "boss": "ed18eab775dec297",
+      "decision": "7268eb60f24ef748"
+    },
+    "sound": "77d50e4ede371370"
+  },
   "seconds": 153,
   "frames": 9180,
   "fps": 60,
