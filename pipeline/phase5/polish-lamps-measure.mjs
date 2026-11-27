@@ -95,6 +95,8 @@ if (what === 'heights') {
   const ins = table.inserts.map((n) => ({ n, x: n.c[0] * BALL, y: n.c[1] * BALL, r: n.r * BALL }))
   const smooth = (t) => t * t * (3 - 2 * t)
   const clamp = (x) => Math.max(0, Math.min(1, x))
+  const OV = await load('/src/table/real/lights/over.ts').catch(() => null)
+  const counts = new Map()
   run.rows.forEach((row, i) => {
     const [time, page, , x, y] = row
     if (page !== 'step3' || time < from || time > to) { last = null; return }
@@ -103,10 +105,15 @@ if (what === 'heights') {
     for (const w of ins) {
       const d = Math.hypot(x - w.x, y - w.y)
       const gap = (d - w.r - BALL / 2) / BALL
+      if (OV) {
+        const k = OV.stepOver(counts.get(w.n.id), gap, LV.ANSWER.reach, 1 / 60)
+        if (k === undefined) counts.delete(w.n.id)
+        else counts.set(w.n.id, k)
+      }
       if (gap > near) continue
       const t = clamp(-gap / 0.8) * 0.5 + clamp(1 - gap / LV.ANSWER.reach) * 0.5
       const a = smooth(t)
-      console.log(`step ${i} (${Math.floor(time / 60)}:${(time % 60).toFixed(2).padStart(5, '0')}) ${w.n.id}: middle ${f1(d)} px from the window's middle, gap ${f2(gap)} balls, ball moved ${f1(speed)} px, answer of today's law ${f2(a)}, glass glow lit ${f2(0.64 + 0.36 * a)} unlit ${f2(0.34 + 0.66 * a)}`)
+      console.log(`step ${i} (${Math.floor(time / 60)}:${(time % 60).toFixed(2).padStart(5, '0')}) ${w.n.id}: middle ${f1(d)} px from the window's middle, gap ${f2(gap)} balls, ball moved ${f1(speed)} px, answer of today's law ${f2(a)}, glass glow lit ${f2(0.64 + 0.36 * a)} unlit ${f2(0.34 + 0.66 * a)}${OV ? `; with the count ${f2(counts.get(w.n.id) ?? 0)} kept from row to row at 1/60 s: answer ${f2(a * OV.risen(counts.get(w.n.id) ?? 0))}, glass glow lit ${f2(0.64 + 0.36 * a * OV.risen(counts.get(w.n.id) ?? 0))}` : ''}`)
     }
   })
 } else {

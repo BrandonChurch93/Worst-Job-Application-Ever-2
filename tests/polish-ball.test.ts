@@ -8,7 +8,8 @@ import { Machine, prepare } from '../src/table/physics'
 const beats = config.film.beats.filter((b) => b.unit === 'pinball')
 // The machine page's film every three seconds, as the port's decided change left it in merge 43: the port's own branch gives these 14 values and so does the merged tree.
 // Before that change main gave a78db9db, 67595780, 53b15e3d, 92be0fa4, 28fb4385, d8bd0843, bde2c563, 053aaa9a, 5600a8f9, 1900be91, 84a92fe6, c836ba9e, baedfda5, 61fc457c, and this file's own branch gave the same.
-const MAIN = ['5843b578', '8af59575', '7d7bc7da', '15c63b03', 'afa8fe82', 'f235b7d4', 'f676307c', 'f011e14b', '28d37272', '3072f8fe', '9c015495', '9cc7f685', '31e7a824', '63443663']
+// The sixth, seventh and eighth (18, 21 and 24 s) were f235b7d4, f676307c, f011e14b until agent/polish-lamps: at those moments a ball is in reach of a window and the state holds that window's count. With the count left out the state of every frame is as it was (tests/polish-lamps.test.ts).
+const MAIN = ['5843b578', '8af59575', '7d7bc7da', '15c63b03', 'afa8fe82', 'f75112a9', '66a8fde5', '8758c1fe', '28d37272', '3072f8fe', '9c015495', '9cc7f685', '31e7a824', '63443663']
 const DEG = Math.PI / 180
 const bat = table.flippers.find((f) => f.tier === 1 && f.side === 'right')!
 const onBat = (along: number): [number, number] => {
