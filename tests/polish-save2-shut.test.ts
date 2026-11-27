@@ -6,7 +6,7 @@ import type { Driver, DriverView, Pointer } from '../src/stage/types'
 import { Machine, prepare } from '../src/table/physics'
 
 // The view's follow while the ball rides an upper outlane rail to a gate that is still shut: the ball will be taken on its own tier, so the view's goal stays on that tier for the whole ride and the view does not run down a tier and back. When the scene's clock opens the gate under the ride, the goal goes down from that step. Stepped, no browser.
-// The first visitor is the hand that follows the page's hint a little late (pipeline/phase5/polish-save2-shut.mjs, seed 4): it loses the ball down the office's left outlane 22.63 s into the page, with the office's gate shut. The second never moves, and the ride is forced on the lobby's left outlane 60 steps before the lobby's gate opens.
+// The first visitor is the hand that follows the page's hint a little late (pipeline/phase5/polish-save2-shut.mjs, seed 4; since the long fight at the port seed 1): it loses the ball down the office's left outlane 22.53 s into the page, with the office's gate shut. The second never moves, and the ride is forced on the lobby's left outlane 60 steps before the lobby's gate opens.
 const HAND = 1500 / stepHz
 const hand = (seed: number): Driver => {
   const d = { x: 960, y: 540, queue: [] as ({ x: number; y: number; left: boolean; right: boolean } | null)[], left: false, right: false, goal: null as { x: number; y: number } | null }
@@ -63,7 +63,7 @@ describe('the view while the ball rides an upper outlane rail to a shut gate', (
 
   it('stands on the office while the ball rides the office\'s outlane to the shut gate, and then only goes into the room under the gate', () => {
     mc = null
-    const stage = new Stage({ mode: 'live', flow: [{ page: 'step3' }, { page: 'step4' }], pages, driver: hand(4), seed: 4 })
+    const stage = new Stage({ mode: 'live', flow: [{ page: 'step3' }, { page: 'step4' }], pages, driver: hand(1), seed: 1 })
     const out: Step[] = []
     while (stage.entryIndex === 0 && stage.pageTime < 23.9) {
       stage.advance(1)

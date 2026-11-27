@@ -47,7 +47,7 @@ function run(s: Stage, until: number): Take {
   return { rows, seal, lock, release, arrive }
 }
 
-const film = run(new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver(), film: filmOptions('pinball') }), 12)
+const film = run(new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver(), film: filmOptions('pinball') }), 16)
 const live = run(new Stage({ mode: 'live', flow: [{ page: 'step3' }], pages, driver: new Still(), seed: config.seed }), 20)
 const takes: [string, Take][] = [['film', film], ['live', live]]
 
@@ -60,8 +60,8 @@ if (process.env.PORT2_TRACE) writeFileSync(process.env.PORT2_TRACE, JSON.stringi
 
 // The numbers of before this work (commit 308e96a1), taken with this file's own take: the step of the seal, of the lock, of the release and of the ball's arrival at the tube's end, and the sha256 of the ball's place and the page's scroll at every step from 1.3 s after the release on.
 const WAS: Record<string, { seal: number; lock: number; release: number; arrive: number; after: string }> = {
-  film: { seal: 793, lock: 858, release: 952, arrive: 2224, after: 'd8e063f021cc030ab78fbf1841a816dede694277fd3dac8b1a790a07bfd3f681' },
-  live: { seal: 1658, lock: 1723, release: 1794, arrive: 3066, after: '0729b67b8cb0c14fee28355c9972896788fe5020dc87b27c20eef455ed0ff494' }
+  film: { seal: 1657, lock: 1722, release: 1817, arrive: 3089, after: 'c9214b6f6b8dd8d75fb545c421f64a5479f5ea265594b3bcd4077ec593ba854a' },
+  live: { seal: 1852, lock: 1917, release: 1988, arrive: 3260, after: '60d335c88d073afdfb4fb4e08580e980decb38deee9dcd9a638424817e88efeb' }
 }
 
 describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (name, t) => {

@@ -16,36 +16,36 @@ import { zone } from '../src/table/real/zone'
 
 // The clear ball of the film on film frames 6213 to 6229, over the white window and on to the amber one, as the tree stood before this work (308e96a1): frame, place x and y in balls, speed x and y, and the two values of its roll.
 const PATH: number[][] = [
-  [6213, 12.558784, 44.423519, -6.875895, 12.81694, 0, 0],
-  [6214, 12.430183, 44.630325, -9.021493, 11.651034, 0, 0],
-  [6215, 12.214356, 44.662766, -13.318563, 1.21742, 0, 0],
-  [6216, 11.992387, 44.687397, -13.318563, 1.70742, 0, 0],
-  [6217, 11.770417, 44.720196, -13.318563, 2.19742, 0, 0],
-  [6218, 11.548448, 44.761154, -13.318563, 2.687422, 0, 0],
-  [6219, 11.326478, 44.810284, -13.318563, 3.177423, 0, 0],
-  [6220, 11.104508, 44.867577, -13.318563, 3.667425, 0, 0],
-  [6221, 10.882539, 44.933041, -13.318563, 4.157425, 0, 0],
-  [6222, 10.660569, 45.006672, -13.318563, 4.647423, 0, 0],
-  [6223, 10.4386, 45.088467, -13.318563, 5.137421, 0, 0],
-  [6224, 10.21663, 45.178429, -13.318563, 5.627419, 0, 0],
-  [6225, 9.99466, 45.276554, -13.318563, 6.117417, 0, 0],
-  [6226, 9.772691, 45.382851, -13.318563, 6.607415, 0, 0],
-  [6227, 9.550721, 45.497314, -13.318563, 7.097413, 0, 0],
-  [6228, 9.328752, 45.619946, -13.318563, 7.58741, 0, 0],
-  [6229, 9.106782, 45.75074, -13.318563, 8.07741, 0, 0],
+  [6213, 12.465924, 44.573402, -8.648677, 11.827829, 0, 0],
+  [6214, 12.273206, 44.646908, -13.064461, 0.687002, 0, 0],
+  [6215, 12.055463, 44.662693, -13.064461, 1.177002, 0, 0],
+  [6216, 11.83772, 44.686646, -13.064461, 1.667002, 0, 0],
+  [6217, 11.619977, 44.718769, -13.064461, 2.157002, 0, 0],
+  [6218, 11.402234, 44.759056, -13.064461, 2.647004, 0, 0],
+  [6219, 11.184491, 44.807514, -13.064461, 3.137006, 0, 0],
+  [6220, 10.966748, 44.864136, -13.064461, 3.627007, 0, 0],
+  [6221, 10.749005, 44.928925, -13.064461, 4.117008, 0, 0],
+  [6222, 10.531262, 45.001881, -13.064461, 4.607006, 0, 0],
+  [6223, 10.313519, 45.083, -13.064461, 5.097004, 0, 0],
+  [6224, 10.095777, 45.172291, -13.064461, 5.587002, 0, 0],
+  [6225, 9.878034, 45.269745, -13.064461, 6.077, 0, 0],
+  [6226, 9.660291, 45.37537, -13.064461, 6.566998, 0, 0],
+  [6227, 9.442548, 45.489159, -13.064461, 7.056995, 0, 0],
+  [6228, 9.224805, 45.611111, -13.064461, 7.546993, 0, 0],
+  [6229, 9.007062, 45.741234, -13.064461, 8.036992, 0, 0]
 ]
 // The plane the ball's own shadow is drawn on, in px over the floor (src/table/real/ball/index.ts, the decal's place).
 const SHADOW_PLANE = 3.4
 // Every film frame's saved state of the pinball page with the windows' count left out, as one number: what `node pipeline/phase5/polish-lamps-state.mjs` gives on 308e96a1 and on this tree.
 // It was 4e4de23c7807426f until merge 52 joined agent/polish-port2: the port's slower fall down the feed tube moves the saved state (film frames 4219 to 4568), the lamps do not. Written at the join by the Builder for this file's owner (r25_fix_lamps): the same script gives f02499fec9df137c on the port's tree alone at 13639b48 (no frame with a count) and on the joined tree (575 frames with a count).
-const STATE = '40f94706e47631c7'
+const STATE = '48172ab9aec72201'
 const FIRST = 4020
 const FRAMES = 2520
 const STEP = 1 / 240
 // The film frames on which some window has a ball in reach: the only frames of the film whose pictures differ from 308e96a1.
-const CHANGED = 638
+const CHANGED = 575
 // The same frames as runs, first and last of each.
-const RANGES: number[][] = [[4759, 4800], [4875, 4884], [4953, 5071], [5076, 5080], [5085, 5089], [5094, 5098], [5103, 5107], [5112, 5116], [5121, 5125], [5130, 5134], [5139, 5144], [5149, 5153], [5158, 5162], [5167, 5172], [5176, 5181], [5186, 5190], [5195, 5199], [5204, 5208], [5214, 5234], [5237, 5249], [5278, 5428], [5432, 5485], [5491, 5497], [5555, 5573], [5631, 5642], [5650, 5665], [5828, 5838], [5844, 5855], [6139, 6152], [6158, 6164], [6210, 6255], [6261, 6266]]
+const RANGES: number[][] = [[4921, 4962], [5037, 5046], [5115, 5233], [5239, 5242], [5247, 5251], [5256, 5260], [5266, 5269], [5274, 5279], [5284, 5288], [5293, 5297], [5302, 5306], [5311, 5315], [5320, 5324], [5329, 5333], [5339, 5342], [5347, 5352], [5357, 5361], [5366, 5370], [5375, 5399], [5401, 5413], [5415, 5421], [5444, 5508], [5521, 5594], [5597, 5610], [5634, 5638], [5640, 5645], [5667, 5670], [5673, 5678], [5700, 5713], [5734, 5736], [5829, 5838], [5845, 5855], [6140, 6152], [6158, 6165], [6209, 6254], [6259, 6264]]
 const context = (list: Shape[]): RealContext => ({ page: 'step3', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => {} })
 const r6 = (n: number): number => Math.round(n * 1e6) / 1e6
 
@@ -127,7 +127,7 @@ describe('a ball over a window in the floor', () => {
       back.seek((f - FIRST) / 60)
       expect(back.hash()).toBe(hashes[[2, 0, 1][i]!])
     }
-    expect((kept as { page: { s: { over?: Record<string, number> } } }).page.s.over).toEqual({ 'insert.street.insert.3': 0.625 })
+    expect((kept as { page: { s: { over?: Record<string, number> } } }).page.s.over).toEqual({ 'insert.street.insert.3': 0.8125 })
   }, 240000)
 
   it('leaves the ball its place, its speed and its roll across the white window and the amber one', () => {
@@ -142,9 +142,9 @@ describe('a ball over a window in the floor', () => {
   })
 
   it('brings the brighter light up over four frames from the frame the middle of the ball is over the glass', () => {
-    const white = seen.filter((x) => x.id === 'street.insert.3' && x.film >= 6213 && x.film <= 6222)
-    expect(white.map((x) => x.v[1])).toEqual([0, 0, 0.125, 0.375, 0.625, 0.875, 1, 1, 1, 1])
-    expect(white.find((x) => x.gap <= -0.5)!.film).toBe(6215)
+    const white = seen.filter((x) => x.id === 'street.insert.3' && x.film >= 6212 && x.film <= 6221)
+    expect(white.map((x) => x.v[1])).toEqual([0, 0, 0.0625, 0.3125, 0.5625, 0.8125, 1, 1, 1, 1])
+    expect(white.find((x) => x.gap <= -0.5)!.film).toBe(6214)
     const up = white.map((x) => x.now)
     for (let i = 3; i <= 6; i++) expect(up[i]!).toBeGreaterThan(up[i - 1]!)
     expect(up[2]!).toBeLessThan(0.06)

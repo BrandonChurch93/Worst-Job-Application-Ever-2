@@ -7,14 +7,14 @@ import { TH, TIER_Y, railOf, tierAt } from '../src/table/layout'
 import { Machine, prepare } from '../src/table/physics'
 
 // The view's follow while the ball rides an outlane rail to the way out of a tier: the rail dips under the next tier's line and comes up over it again at its end, and the view's goal must not go back up a tier there. Stepped, no browser.
-// The visitor is the hand that follows the page's hint a little late (pipeline/phase5/polish-save2-jerks.mjs, pack seed 1): it loses the ball down the office's left outlane 24.5 s into the page, with the office's gate spent.
+// The visitor is the hand that follows the page's hint a little late (pipeline/phase5/polish-save2-jerks.mjs, pack seed 1; since the long fight at the port it reads the hint one step earlier, seed 2): it loses the ball down the office's left outlane 24.4 s into the page, with the office's gate spent.
 const HAND = 1500 / stepHz
 const hand = (): Driver => {
   const d = { x: 960, y: 540, queue: [] as ({ x: number; y: number; left: boolean; right: boolean } | null)[], left: false, right: false, goal: null as { x: number; y: number } | null }
   return {
     name: 'mouse' as const,
     input: (v: DriverView): Pointer => {
-      if (v.step % 4 === 0) {
+      if ((v.step + 1) % 4 === 0) {
         const h = v.turning ? null : v.page.hint()
         d.queue.push(h ? { x: h.x, y: h.y - v.scroll, left: h.flipLeft === true, right: h.flipRight === true } : null)
         const seen = d.queue.length > 11 ? d.queue.shift() : null
@@ -52,7 +52,7 @@ describe('the view while the ball rides an outlane rail', () => {
       mc = this
       return step.call(this, l, r)
     }
-    const stage = new Stage({ mode: 'live', flow: [{ page: 'step3' }, { page: 'step4' }], pages, driver: hand(), seed: 1 })
+    const stage = new Stage({ mode: 'live', flow: [{ page: 'step3' }, { page: 'step4' }], pages, driver: hand(), seed: 2 })
     while (stage.entryIndex === 0 && stage.pageTime < 25.4) {
       stage.advance(1)
       const m = mc as Machine | null

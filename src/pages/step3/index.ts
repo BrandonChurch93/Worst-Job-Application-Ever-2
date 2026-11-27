@@ -1212,10 +1212,11 @@ export function makePage(): PageLogic {
       const hits = strikeShapes(s.fx, s.t)
       for (const shape of hits) out.push(shape)
       const b0 = machine().balls[0]
-      if (hits.length > 0 && b0 && b0.mode === 'plane') {
+      const paid = !!b0 && b0.mode === 'rail' && !!RUN.ids[b0.rail]
+      if (hits.length > 0 && b0 && (b0.mode === 'plane' || paid)) {
         const from = (s.mode === 'film' ? cut(sceneOf(s.time)) : follow()).eye
-        const mid = px(b0.z) + BALL / 2
-        out.push({ id: 'fx.hero', part: 'table-lights', kind: 'box', x: px(b0.x), y: px(b0.y), w: 0, h: 0, z0: mid, z1: mid, tone: 'light', v: [from[0] + 960, 540 - from[1], from[2], machine().frenzy > 0 ? 1 : 0] })
+        const mid = px(paid ? lies.z : b0.z) + BALL / 2
+        out.push({ id: 'fx.hero', part: 'table-lights', kind: 'box', x: px(paid ? lies.x : b0.x), y: px(paid ? lies.y : b0.y), w: 0, h: 0, z0: mid, z1: mid, tone: 'light', v: [from[0] + 960, 540 - from[1], from[2], machine().frenzy > 0 ? 1 : 0] })
       }
       const counts = (s as Rolled).over
       if (counts) for (const shape of out) if (shape.id in counts) shape.v = [shape.v?.[0] ?? 0, counts[shape.id]!]
