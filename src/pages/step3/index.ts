@@ -18,7 +18,7 @@ import { ANSWER } from '../../table/real/lights/levels'
 import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
 import { fight, filmHand, LEAN, leanOf, VAC, windOf } from './vacuum'
-import { FRENZY, noted, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
+import { FRENZY, noted, RIOT, riotAim, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -32,7 +32,7 @@ const px = (v: number): number => v * BALL
 
 export const T = {
   arrive: 0.7, seal: 3.4, tube: 3.95, lightsDown: 4.75, wake: 5.7, powerOn: 7.3, atPlunger: 9.25, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 19.8, inboxBy: 20.3,
-  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedOn: 27.0, firedBy: 27.2, scoopKick: 29.35, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
+  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedOn: 27.55, firedTow: 27.75, firedBy: 27.2, scoopKick: 29.35, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -145,7 +145,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-gap': { ...look('table-save', [11.9, Y2 + 14.3, 1.5], [12.2, Y2 + 8.3, -2.5]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [T.arrive, 'port', PUSH.seconds], [4.35, 'tube', 0.45], [5.3, 'table-wide', 0], [9.3, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.6, 'follow', 0],
+  [0, 'follow', 0], [T.arrive, 'port', PUSH.seconds], [4.35, 'tube', 0.45], [5.3, 'table-wide', 0], [9.3, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.7, 'table-fired', 0], [29.6, 'follow', 0],
   [30.75, 'rail', 0], [32.3, 'follow', 0.6], [34.65, 'table-gap', 0], [35.35, 'table-save', 0], [37.2, 'follow', 0]
 ]
 const TUBE: { eye: [number, number, number]; at: [number, number, number]; wide: number } = { eye: [0.55, 2.7, 1.5], at: [-2.7, -1.2, 0.1], wide: 12 }
@@ -186,6 +186,7 @@ const PLUNGE = { reach: 0.24, sink: 5 / 60, grow: 2, lead: 0.35, floor: 2, long:
 // The words of the page that lean to the port while it pulls.
 // Where the film's ball is shot on the street before the firehouse opens: the face of the bank's targets, in balls from the left and down the tier.
 const BANK = [4.9, 4.35]
+const BANKED = table.targets.filter((g) => g.id.startsWith('street.bank.drop')).map((g) => `drop-target:${g.id}`)
 // The holds of the live table, which is played and keeps the times it had: when the inbox lights, by when the ball is in it, and when the firehouse kicks it out.
 const HOLDS = { inboxOn: 17.9, inboxBy: 19.1, scoopKick: 29.35 }
 const LEANERS = ['heading', 'subline', 'intro']
@@ -722,22 +723,25 @@ export function makePage(): PageLogic {
     on['office.inbox'] = t >= H().inboxOn && t < T.eject
     const inbox = b.tier === 1 && t >= H().inboxOn - SHOT.back && t < T.eject ? lob(holdOf('office.inbox').c, SHOT.inbox, H().inboxBy, 'office', T.eject - slide[2]!, H().inboxOn - slide[7]!) : 0
     const wild = !live && b.tier === 1 && t >= FRENZY.from && t < FRENZY.to
-    mc.frenzy = wild ? FRENZY.speed : 0
+    const riot = !live && b.tier === 2 && t >= RIOT.from && t < RIOT.to && !(t >= RIOT.last && BANKED.some((id) => mc.since(id) < 9))
+    mc.frenzy = wild ? FRENZY.speed : riot ? RIOT.speed : 0
+    const hammer = (f: { speed: number; slow: number; gap: number; cone: number }, y0: number, id: string, to: readonly number[]): void => {
+      const last = s.fx && s.fx.length > 0 ? s.fx[s.fx.length - STRIKE.each + 1]! : -9
+      mc.magnet = null
+      mc.aim = [MID + to[0]!, y0 + to[1]!, f.cone]
+      const d = Math.hypot(mc.aim[0] - b.x, mc.aim[1] - b.y)
+      if (Math.hypot(b.vx, b.vy) < f.speed * f.slow && t - last >= f.gap && d > 0.5) {
+        mc.kick(0, ((mc.aim[0] - b.x) / d) * f.speed, ((mc.aim[1] - b.y) / d) * f.speed)
+        emitTable(io, { name: 'rebound', ball: 0, id, x: b.x, y: b.y })
+      }
+    }
+    if (riot && once('riot-on')) io.emit('frenzy-on', px(MID), px(Y2 + RIOT.low[1]!), false)
+    if (!riot && t >= RIOT.to && s.said.includes('riot-on') && once('riot-off')) io.emit('frenzy-off', px(MID), px(Y2 + RIOT.low[1]!), false)
     if (wild && once('frenzy-on')) io.emit('frenzy-on', px(MID), px(Y1 + FRENZY.low[1]!), false)
     if (!wild && t >= FRENZY.to && s.said.includes('frenzy-on') && once('frenzy-off')) io.emit('frenzy-off', px(MID), px(Y1 + FRENZY.low[1]!), false)
     if (b.tier === 1 && b.mode === 'plane') {
-      if (wild) {
-        const n = (s.fx?.length ?? 0) / STRIKE.each
-        const to = FRENZY.round[n % FRENZY.round.length]!
-        const last = s.fx && s.fx.length > 0 ? s.fx[s.fx.length - STRIKE.each + 1]! : -9
-        mc.magnet = null
-        mc.aim = [MID + to[0]!, Y1 + to[1]!, FRENZY.cone]
-        const d = Math.hypot(mc.aim[0] - b.x, mc.aim[1] - b.y)
-        if (Math.hypot(b.vx, b.vy) < FRENZY.speed * FRENZY.slow && t - last >= FRENZY.gap && d > 0.5) {
-          mc.kick(0, ((mc.aim[0] - b.x) / d) * FRENZY.speed, ((mc.aim[1] - b.y) / d) * FRENZY.speed)
-          emitTable(io, { name: 'rebound', ball: 0, id: 'office.rail', x: b.x, y: b.y })
-        }
-      } else if (t >= H().inboxOn && t < T.eject) {
+      if (wild) hammer(FRENZY, Y1, 'office.rail', FRENZY.round[((s.fx?.length ?? 0) / STRIKE.each) % FRENZY.round.length]!)
+      else if (t >= H().inboxOn && t < T.eject) {
         const c = holdOf('office.inbox').c
         if (!live && t >= H().inboxBy) towTo('office.inbox')
         else shoot(c[0], c[1], SHOT.scoop, inbox === 1 ? 0 : PULL.scoop)
@@ -767,9 +771,10 @@ export function makePage(): PageLogic {
     on['street.firehouse'] = (live || t >= T.firedOn) && t < H().scoopKick + 0.3
     const street = b.tier !== 2 ? 0 : t < H().scoopKick ? lob(holdOf('street.firehouse').mouth!, SHOT.fire, T.firedBy, 'street', H().scoopKick - slide[2]!, T.firedBy - slide[8]!) : t >= T.flapOn && t < T.highwayEnd ? lob(railOf('highway').points[0]!, SHOT.flap, T.flapBy, 'street', T.highwayEnd - slide[3]!, T.flapOn) : 0
     if (b.tier === 2 && b.mode === 'plane') {
-      if (t < H().scoopKick) {
+      if (riot) hammer(RIOT, Y2, 'street.rail', riotAim(b.x - MID, b.y - Y2, b.vy, t))
+      else if (t < H().scoopKick) {
         const c = holdOf('street.firehouse').mouth!
-        if (!live && t >= T.firedBy) towTo('street.firehouse')
+        if (!live && t >= T.firedTow) towTo('street.firehouse')
         else if (!live && t < T.firedOn) shoot(BANK[0]!, Y2 + BANK[1]!, SHOT.scoop)
         else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
       } else if (t < T.highwayEnd) {

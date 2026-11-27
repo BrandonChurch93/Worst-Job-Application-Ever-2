@@ -12,6 +12,20 @@ export const JOLT = { by: [0, 0, 0.5, 2.2], most: 2.6, decay: 0.07, hz: 27, last
 // The frenzy: from and to, in seconds of the scene; the speed of every throw in balls a second; the round of places the ball is sent to, one after each strike, in balls from the middle and down the tier (the low cup, a slingshot, an upper cup, the other slingshot and so on); `slow`: the share of that speed under which the ball has come off a dead wall and is thrown again; `gap`: the least seconds between two such throws; `cone`: the least share of a throw that must leave a face.
 export const FRENZY = { from: 17.5, to: 19.8, speed: 36, round: [[0, 5.1], [-3.0, 6.25], [1.1, 3.2], [3.0, 6.25], [-1.1, 3.2], [3.0, 6.25], [0, 5.1], [-3.0, 6.25], [-1.1, 3.2], [3.0, 6.25], [1.1, 3.2], [-3.0, 6.25]], low: [0, 5.1], slow: 0.8, gap: 0.06, cone: 0.1 }
 
+// The second frenzy, on the street: a loop of three, a slingshot, the other slingshot, the top wall, and from `turn` on the same loop mirrored. `sling` and `top` are the places, in balls from the middle and down the tier; `band` is how far under the top wall the ball counts as up there; `up` is the speed upward from which it counts as on its way up. From `last` on the right slingshot throws the ball at the bank's targets (`bank`), and the frenzy ends when one of them falls, or at `to`.
+export const RIOT = { from: 24.95, to: 27.6, turn: 26.2, last: 27.1, speed: 36, sling: [3.3, 6.5], top: [2.5, 0.3], bank: [-5.3, 4.35], band: 2.2, up: 5, low: [0, 5.1], slow: 0.8, gap: 0.06, cone: 0.1 }
+
+export function riotAim(x: number, y: number, vy: number, t: number): number[] {
+  const m = t < RIOT.turn ? 1 : -1
+  const far = [m * RIOT.sling[0]!, RIOT.sling[1]!]
+  const near = [-m * RIOT.sling[0]!, RIOT.sling[1]!]
+  const top = [-m * RIOT.top[0]!, RIOT.top[1]!]
+  if (t >= RIOT.last) return x > 1.5 && y > RIOT.band * 2 ? RIOT.bank : [RIOT.sling[0]!, RIOT.sling[1]!]
+  if (y < RIOT.band) return near
+  if (vy < -RIOT.up) return top
+  return x * m < 0 ? far : top
+}
+
 const HARD: Record<string, [number, number]> = {
   bumper: [2, 1], sling: [1, 0], 'drop-target': [2, 1], standup: [1, 2], 'ball-hit': [2, 0], 'scoop-kick': [2, 0], 'doors-slam': [2, 0], spinner: [1, 1], 'mom-save': [2, 0], 'ball-save': [1, 0], plunger: [2, 0], rebound: [3, 0]
 }
