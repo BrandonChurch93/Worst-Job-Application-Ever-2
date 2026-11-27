@@ -126,3 +126,39 @@ Why: `SAVE.still` went from 26 steps (6.5 frames) to 14 (3.5 frames), the landin
 - With `origin/main` at `4ef92716` (merge 51) merged in (`d22885d5`), 14:26 to 14:37, one job at a time: the three draft stills `cmp` byte equal to those of `308e96a1`; `npm run determinism` pass, 12 pictures; `npm run bots` all clear, keen 37 of 37 gags; `npm test` 169 files passed, 12 skipped, 2116 tests passed, 15 skipped, none failed; `npx tsc --noEmit -p .` clean.
 - With `origin/main` at `e2364b9c` (status 153) merged in (`c05f44ef`), 14:40 to 14:52, the same chain: the three stills byte equal; determinism pass, 12 pictures; bots all clear, keen 37 of 37; `npm test` 169 files passed, 12 skipped, 2116 tests passed, 15 skipped, none failed; `tsc` clean.
 - With `origin/main` at `5013511c` (status 154) merged in (`08fdc427`), 14:52 to 15:04, the same jobs one at a time: `npm test` 169 files passed, 12 skipped, 2116 tests passed, 15 skipped, none failed; the three stills byte equal; bots all clear, keen 37 of 37; determinism pass, 12 pictures; `tsc` clean, last of all.
+
+# polish-view: the view's way down in a rally is one move
+
+Branch `agent/polish-view` from `94e68b25` (the Builder's second job, 15:10). Nothing more went to `agent/polish-save2`.
+
+## Shown first, before any change (`94e68b25`)
+
+Keen seed 1, 19.200 to 19.850 s, 40 frames in a row, one fixed window of the screen (x 650, y 530, 300 by 200 px, real size) round the pizza bumper, which stands on the floor: `view-before-1.png`, `view-before-2.png` (20 tiles each), made with `node pipeline/phase5/polish-gate-shots.mjs --bot keen --seed 1 --quality high --at 19.2 --count 40 --keep <dir>` and `polish-save-sheet.mjs --crop 650,530,300,200 --cols 4`.
+
+MEASURED, `node pipeline/phase5/polish-save2-measure.mjs --visitor keen --seed 1 --nth 1 --before 430 --after 200`, the lowering in px (scroll less the tier's place 2544.0) for each of the 40 frames from 19.200 s:
+
+30.6, 30.6, 30.6, 31.9, 35.6, 39.4, 40.6, 40.6, 40.6, 40.6, 40.6, 40.7, 42.6, 47.0, 53.8, 60.7, 65.1, 67.0, 67.0, 67.0, 67.0, 67.7, 70.9, 76.5, 83.2, 87.7, 89.7, 89.8, 89.8, 89.8, 89.8, 89.8, 89.8, 90.0, 90.0, 90.0, 90.0, 90.0, 90.0, 90.0.
+
+What I saw in the tiles, frames in a row: the bumper stands in tiles 1 to 3, climbs over 19.250 to 19.300, stands 19.317 to 19.383, climbs over 19.400 to 19.483, stands 19.500 to 19.533, climbs over 19.550 to 19.633, stands from 19.650. It reads as a stutter: three starts in under half a second, each stand 2 to 5 frames.
+
+## The mend
+
+`src/pages/step3/index.ts`, the view's room only: a way down once begun goes to its end (90 px) in that one eased move. The brake and stand part way (the `wait` of the first job) is taken out: the goal is 90 px unless the view is on its way back. The view stands lowered while the struck ball is in the lower part of the tier, and goes back as before once the ball is above that or off the floor.
+
+Decision: the first lowering no longer stops at 30.6 px. At the step the ball is struck away nothing tells the stop at 30.6 px (which then stood 2.00 s) from the stops at 40.6 and 67.0 px (which stood 0.06 and 0.03 s); a rule that does not look ahead cannot keep the one and drop the others. So the move is finished every time.
+
+## Measured, after
+
+Same command. One move from 17.117 to 17.317 s, the lowering per frame: 0.3, 2.8, 7.8, 15.3, 25.3, 37.2, 49.2, 61.2, 71.9, 80.2, 85.9, 89.2, 90.0 (steps 0.3, 2.5, 5.0, 7.5, 10.0, 11.9, 12.0, 12.0, 10.8, 8.3, 5.8, 3.3, 0.8); then 90.0 on every frame to 22.87 s (take 22.02 s and kick 22.27 s as before, so the play is the play it was); back from 22.87 to 23.08 s. From 19.200 to 19.850 s: 90.0 on all 40 frames. Before, the same first lowering was 0.3, 2.8, 7.8, 15.3, 22.8, 27.8, 30.3, 30.6. The view is now lowered 90 px for 4.70 s before the take (17.32 to 22.02 s); before it was 30.6 px for 2.0 s and then 90 px for 2.25 s. The ball's middle is never higher than y 473.9 of 1080 in that time, as before.
+
+The three cases, the view's place (scroll) at the take, at the kick and 0.6 s after the kick, MEASURED with the measure script (`--after 60`) on `94e68b25` and after:
+
+| case | take | kick | 0.6 s after | after the change |
+|---|---|---|---|---|
+| pack seed 3 save 2 | 2593.2 | 2634.0 | 3227.4 | the same three |
+| pack seed 1 save 1 | 2634.0 | 2634.0 | 2633.3 | the same three |
+| keen seed 1 save 1 | 2634.0 | 2634.0 | 2632.8 | the same three |
+
+The largest step of the view in one frame is 12.0 px before and after. In the fastest case (pack seed 3) the steps round the take are equal frame for frame (0.3, 2.5, 5.0, 7.5, 10.0, 11.9, 12.0 at the take, 12.0, 10.8, 8.3, 5.8, 3.3, 0.8, 0), so the ease out ends on the same frame.
+
+Test: `tests/polish-save2.test.ts`, "goes down to its place under the gate in one eased move, in a rally at the bats too": the whole 90 px inside 0.3 s with no stand inside it, 14 frames at most, no frame faster than 12.01 px, no step back from there to the take. MEASURED: it fails on `94e68b25` (29.3 px inside 0.3 s) and passes now. No line of another owner's test is changed in this job.
