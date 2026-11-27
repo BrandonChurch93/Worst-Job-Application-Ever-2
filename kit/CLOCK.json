@@ -1,7 +1,7 @@
 {
   "version": 1,
   "lastMark": {
-    "at": 1795806242910,
+    "at": 1795807682045,
     "boot": "df551acd-542a-4cfe-8bc6-11afd76c75c3"
   },
   "epochs": [
@@ -61,9 +61,9 @@
       "boxes": {
         "5": 12
       },
-      "seconds": 4266.807,
+      "seconds": 5705.942,
       "phaseSeconds": {
-        "5": 4266.807
+        "5": 5705.942
       }
     }
   ],
@@ -85,21 +85,21 @@
       "5": true
     }
   },
-  "lastStatusAt": 1795806242910,
-  "ticks": 321,
+  "lastStatusAt": 1795807682045,
+  "ticks": 323,
   "phaseSeconds": {
     "0": 6207.739,
     "1": 1349.032,
     "2": 18875.037,
     "3": 43904.471000000005,
     "4": 53340.359999999986,
-    "5": 96799.33800000006
+    "5": 98238.47300000006
   },
   "lastPrint": [
-    "clock: phase 5, tick 321 at 2026-11-27T19:04:02Z, allowance: continuation 3",
-    "time used in this phase: 1.19 h of its box of 12.00 h, of which 2.00 h is the reserve",
-    "time used under the allowance in force: 1.19 h of 12.00 h allowed",
-    "time used: 61.24 of 72.00 hours before the review",
+    "clock: phase 5, tick 323 at 2026-11-27T19:28:02Z, allowance: continuation 3",
+    "time used in this phase: 1.58 h of its box of 12.00 h, of which 2.00 h is the reserve",
+    "time used under the allowance in force: 1.58 h of 12.00 h allowed",
+    "time used: 61.64 of 72.00 hours before the review",
     "extra rounds: yes",
     "half point: reached",
     "box end: reached",
