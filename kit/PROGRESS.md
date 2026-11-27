@@ -26,25 +26,27 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 176, 2026-11-27T22:06Z, Phase 5.
+Status 177, 2026-11-27T22:30Z, Phase 5.
 
-1. `out/stills/status/01-round-9-contact-sheet-arena.jpg`: One sheet, 1956 by 3780, twelve tiles two across, each with its label in a dark band under it. BASELINE: the real screenshot of step 4 in the fight, the pale ceramic page with the header, the step rail, the orange health bar labelled SUBMIT, a glass card, three red error slabs and the small aluminum boss with the orange Submit button. Beside it a dark tile with the legend in white letters. YOUR PICK, Round 7b BOSS 6: the page broken into great slabs over orange light at the left and the right, tall aluminum pillars with long shadows, a pane of frosted glass, a large boss firing a beam, the header still on top. ARENA 5 empty: the same place with no header, no boss and no cursor, the health bar alone at the top. ARENA 5: the same place with a small walker boss right of the middle, a long cannon on its back pointing left, fans of bullets from its two small guns, shots from the four corner turrets and a white arrow cursor at the lower left. ARENA 5 after the cannon: a black scorched trench with embers from the cannon to the left edge, a shattered pane of glass, a broken pillar, smoke. ARENA 6 and after: white ground cut into many slabs by thin orange seams, short pillars, two panes of glass, a small boss in the middle; after, three scorched trenches, shattered glass and fallen pillars. ARENA 7 and after: a round platform in a ring of orange light with bridges, rows of tall pillars at both sides; after, a trench across the ring and broken pillars. ARENA 8 and after: ARENA 5 in a dusk light, the ground dark warm grey, the cracks and the bullets glowing orange.
-2. `out/stills/status/02-round-9-contact-sheet-state.jpg`: One sheet, 1956 by 1896, six tiles two across, each with its label in a dark band under it. BASELINE: the real screenshot of step 4 in the fight. Beside it a dark tile with the legend in white letters. YOUR PICK, Round 8 LOOK 1: the walker from above on plain white ground, an eight-sided aluminum hull, an orange button with the word Submit pushed to its lower edge under a long cannon, two rotary guns, a curved green glass shield at the left, four clawed legs with orange cables. LOOK 1 STATE 1, turret inside: the same machine with no cannon, the orange button clear with Submit in its centre, and a closed hatch with a glowing orange seam at the right end. LOOK 1 STATE 2, turret out: the hatch open with steam, a long heavy cannon with orange cooling rings and a glowing core lying over the button and reaching out to the left past the shield, the word hidden. LOOK 1 STATE 3, beaten: no cannon, the hatch blown open and blackened, green shards of the shield on the ground at the left, the guns bent, a little smoke, the orange button whole with the word Submit.
+1. `out/stills/status/01-the-four-pictures-the-boss-and-its-arena-are-now.jpg`: One sheet, 1956 by 1284, four tiles two across with a label under each. Upper left, ARENA 6: the pale ceramic ground seen from above, broken into slabs by thin seams that glow orange, an orange health bar labelled SUBMIT in a bolted frame alone at the top, eight short aluminum pillars, two tall panes of green frosted glass, a rotary gun in each corner, a dark slot at the bottom, a small walker boss in the middle with a cannon, round orange bullets with trails and the small arrow cursor at the lower left. Upper right, ARENA 6 after the cannon: the same place with a white-hot beam to the left, a scorched glowing trench to the lower left with a toppled pillar, a second trench to the right through a shattered pane and broken pillars. Lower left, LOOK 1 with the turret inside: the walker from above, an eight-sided aluminum hull, an orange button with the word Submit in its centre, a closed hatch at the right, two rotary guns, a curved glass shield at the left, four clawed legs with orange cables. Lower right, LOOK 1 with the turret out: the hatch open with steam and a long cannon with orange ribs lying over the button, its muzzle out past the shield.
+2. `out/stills/status/02-step-2-one-field-at-a-time-in-the-film-first-pas.jpg`: One sheet, 1200 by 1022, twelve film frames from 0:46.00 to 0:56.03 in three columns, each with its time under it. The page turns in; Contact number stands alone in the middle of the pale page under the header and the step rail; its tray opens under it with an aluminum rotary dial with an orange centre and the arrow cursor on it; the field fills with (555) 01 and then reads Close enough. We were never going to call.; the arrow is flung off to the left; the field leaves; Date of birth stands alone; its tray opens with three reels and a small orange STOP button under each. The tray is small on a large empty page.
+3. `out/stills/status/03-step-2-stop-buttons-on-the-reels-and-the-crank-w.jpg`: One sheet, 1200 by 1022, eleven film frames from 0:56.93 to 1:06.97. The reels stop on 07 23 1991 with the arrow on a STOP button; gold coins fly out to the right and the field reads Date of birth recorded. Corrections are not supported.; the field slides off; Audio volume stands alone with a tray holding an orange crank at the left, a large orange sign TURN IT UP and a row of bars that fill with orange light at 7, 40, 70 and 92 percent; the field reads Volume set to 100%. You were warned.; the arrow presses the orange Continue button and the page turns away.
+4. `out/stills/status/04-step-2-dial-stage-as-built-left-and-1-5-times-la.jpg`: Two crops side by side, 1200 by 384. Left, as built: the Contact number field with (555) 01 and an orange outline, and under it a grey-green tray with the line Dial your 10-digit number. and a small aluminum rotary dial with an orange centre, the arrow on it. Right, a picture mock of the same with the dial 1.5 times larger: it fills the height of the tray and runs over the line above it, which is why the tray grows with it.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 336 at 2026-11-27T22:28:29Z, allowance: continuation 3
-time used in this phase: 4.59 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 4.59 h of 12.00 h allowed
-time used: 64.65 of 72.00 hours before the review
+clock: phase 5, tick 337 at 2026-11-27T22:30:02Z, allowance: continuation 3
+time used in this phase: 4.62 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 4.62 h of 12.00 h allowed
+time used: 64.68 of 72.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: reached
 budget report: not due
-minutes since the last status: 22
+minutes since the last status: 0
 ```
 
 ## Phases
