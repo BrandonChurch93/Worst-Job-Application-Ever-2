@@ -191,7 +191,7 @@ const lagOf = (u: number): number => {
   return Math.max(0, ramp - ((top - 1) / 2) * rest * (w + Math.sin(Math.PI * w) / Math.PI))
 }
 // Live play, the room under a gate: while a ball is past the bats' tips on its way to a shut gate, lies on the gate's wire or was just thrown from it, the live view of the lobby and of the office aims `px` lower and goes there and back with the follow it has everywhere, so the wire, its posts and the hole under it are on the screen (the street's view has that room already). `stay`: the seconds after the kick it stays for the wire's swings.
-const ROOM = { px: 90, stay: 0.6, ease: 8 / 60, lead: 0.1 }
+const ROOM = { px: 90, stay: 0.6, ease: 8 / 60, lead: 0.1, calm: 2, near: 0.6 }
 // The roll in a tube: the arrow turns by `gear` radians for each ball's width travelled, a whole number of turns over the tube, and the last `ease` of the way slows the turn to rest. In the film the roll down the feed tube is over after `film` balls, before the cut to the wide view of the table.
 const TUMBLE = { gear: 1, ease: 0.15, film: 10.5 }
 // How far shut the half shells are for the share of the close that has passed: a slow swing, then a snap into the seam with growing speed.
@@ -304,7 +304,10 @@ export function makePage(): PageLogic {
     const k = b.tier
     if (k > 1 || mc.gate[k] || (b.mode !== 'plane' && b.mode !== 'tow')) return false
     if (mc.taken >= 0 || mc.since(`ball-save:${TIERS[k]}.gate`) < ROOM.stay) return true
-    return b.mode === 'plane' && b.vy > 0 && Math.abs(b.x - MID) < MOUTH.half && b.y + b.vy * ROOM.lead - TIER_Y[k]! > FLIP.pivotV + FLIP_REACH * Math.sin((FLIP.rest * Math.PI) / 180)
+    if (b.mode !== 'plane' || b.vy < -ROOM.calm || Math.abs(b.x - MID) > MOUTH.half) return false
+    const past = b.y - TIER_Y[k]! - FLIP.pivotV - FLIP_REACH * Math.sin((FLIP.rest * Math.PI) / 180)
+    if (s.room !== undefined) return past > -ROOM.near || past + b.vy * ROOM.lead > 0
+    return past + b.vy * ROOM.lead > 0 && Math.abs(b.x + b.vx * ROOM.lead - MID) < MOUTH.half
   }
   const soft = (r: ReturnType<typeof railOf>, at: number): { x: number; y: number; z: number } => {
     const end = railLength(r)

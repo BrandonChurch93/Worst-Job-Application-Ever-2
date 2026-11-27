@@ -162,7 +162,7 @@ describe('a gate that opens under a ball on its wire', () => {
 })
 
 describe('the live view under a gate', () => {
-  it('stands lower while a ball lies on the wire of the lobby or the office, goes there and back from rest with no step more than 0.16 px apart from the step before it, and leaves the street\'s view alone', async () => {
+  it('stands lower while a ball lies on the wire of the lobby or the office, goes there and back from rest with no step more than 0.16 px apart from the step before it, does not move at a ball the bat\'s tip turns away, and leaves the street\'s view alone', async () => {
     await prepare()
     let mc: Machine | null = null
     const step = Machine.prototype.step
@@ -221,6 +221,15 @@ describe('the live view under a gate', () => {
         }
       }
       expect(soft).toBeGreaterThanOrEqual(2)
+      let began = 0
+      for (let i = stepHz; i < seen.length - stepHz; i++) {
+        const [scroll, k] = seen[i]!
+        if (k > 1 || Math.abs(seen[i - 1]![0] - TIER_Y[k]! * BALL) > 0.5 || scroll - seen[i - 1]![0] < 0.02) continue
+        if (seen.slice(i - stepHz / 2, i + stepHz).some((r) => r[1] !== k) || seen[i - 1]![0] - seen[i - 2]![0] >= 0.02 || seen[i - 1]![0] < seen[i - 2]![0]) continue
+        began++
+        expect(seen.slice(i, i + stepHz).some((r) => r[2]), `a take within a second of the view's first step down from rest, step ${i}`).toBe(true)
+      }
+      expect(began).toBeGreaterThanOrEqual(2)
     } finally {
       Machine.prototype.step = step
     }
