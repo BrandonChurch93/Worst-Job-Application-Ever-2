@@ -257,3 +257,89 @@ Changed by section 4 (item 10):
 Removed, by the Builder's mail of 21:57 UTC (section 1a): `tests/b-shell-fields.test.ts`, "leaves every page of the build as it was: none reports fields". The test beside it holds what replaces it: a page that reports nothing draws as 0 of 1.
 
 Red and left, by the same mail: `tests/cut-of-build.test.ts`, until the Builder runs `npm run cut` on the merged tree.
+
+## 11. Change note 003: the script of eight spoken moments (mails of 22:29, 22:32 and 22:44 UTC)
+
+Section 3 and the lines of section 6 that speak of takes are superseded by this section. Written 22:56 UTC on 2026-11-27.
+
+### 11a. The rule as built
+
+- Nothing recorded is played: `src/audio/index.ts` fetches no line file and the film mix (`src/audio/mix.ts`) lays no take under the id of a line of the script. Each line is a silent stand-in (`src/audio/standin.ts`): its length is its words divided by `audio.narratorMaxWordsPerSecond` (1.6), its caption is shown phrase by phrase, split at the pause mark of `content/narration.json`, each phrase for its share of the words.
+- The words come from `content/narration.json` and `content/narration-drafts.json`; neither file is written by this unit. A line of the drafts file carries `draft: true` in `standIns()`, in `said()`, in `filmCaptions()` and in `shell-script-visit.json`.
+- The table `spoken` in `src/audio/cues.ts` is the whole script. A line of the files with no row is said nowhere; `liveTriggers` is empty and no line is only for the live site.
+
+| line | key | words | seconds | starts on | said only until | other |
+|---|---|---|---|---|---|---|
+| 1 | marketing.stroll.0 | 22 | 13.750 | sound allowed with the careers page on screen | | |
+| 2 | step1.firstName.0 | 9 | 5.625 | `candidate-sensed` | `field-done` | |
+| 3 | step1.shredded.0 | 20 | 12.500 | `resume-received` | | |
+| 4a | step2.crank.0 | 10 | 6.250 | `volume-sign` | `field-done` | |
+| 4b | step2.crank.1 | 4 | 2.500 | `crank-full` | `field-done` | |
+| 5 | pinball.seal.0 | 10 | 6.250 | `vacuum-on` | `ball-seal` | |
+| 6 | boss.verify.0 | 11 | 6.875 | `checkbox` | `boss-formed` | |
+| 7 | boss.unfold.0 | 29 | 18.125 | `boss-formed` | `turret-rise`, `power-down` | ends at its next pause on `boss-turn` |
+| 7 | boss.unfold.1 | 7 | 4.375 | the end of boss.unfold.0 and 0.3 s | `turret-rise`, `power-down` | its last phrase starts the music (mark `music-in`) |
+| 7 | boss.unfold.2 | 6 | 3.750 | the end of boss.unfold.1 and 0.3 s | `turret-rise`, `power-down` | |
+| 8 | decision.letter.0 | 13 | 8.125 | `stamp` | | |
+| 9 | decision.reset.0 (draft) | 5 | 3.125 | `page-turn` of the decision page | | kept over the turn back |
+
+- Each line once in a run; a restart starts a new run.
+- No line talks over another. A line whose event comes while another is being said is booked for that line's end and the kit's gap (`audio.liveNarratorMinGapSeconds`, 6 s); parts of line 7 follow at `audio.lineGapSeconds` (0.3 s). If one of its "said only until" events, a skip or a turn of its page comes before its start it is taken back and logged with the reason. A line that has started is never cut by these: line 2 runs on into the Email field.
+- Line 1 is asked for when the sound is ready with the careers page on screen, and is owed through the loading of the sounds. Where the first click is Apply it starts then and runs over the turn.
+- The jump of line 7: on `boss-turn` the phrase being said ends, the rest of boss.unfold.0 is dropped and the two later parts move up. With stand-ins the pause times are exact; with takes the engine will need a list of pause times a line.
+- The music of the fight: stand-in cue `boss-loop` starts at the start of the last phrase of boss.unfold.1. The stage event `boss-music` maps to the same cue and is skipped while the narrator's is running. `unfold` no longer starts it, so on main, where the boss page emits neither `boss-formed` nor `boss-music`, there is no fight music until the boss helper's branch lands.
+- The caption panel can show one phrase large and in capitals: `CaptionLine.loud`, `CAPTION.loudFontPx` 64, set by `loud: true` on a row of the table. No row has it yet.
+
+### 11b. Decisions
+
+- Stand-ins do not duck the effects (`LIVE.standInDucks` false): nothing is spoken.
+- After a restart line 1 is asked for again once line 9 and the gap are over, if the careers page is still on screen. The Builder wrote that the restart is silent apart from line 9; to make it so, line 1 must not be owed again in `atPage`. Left for his word.
+- 4a and 4b are two lines with the kit's gap, as the script has them. Making 4b a part (`after: 'step2.crank.0'`) is one word in the table and a ruling for Brandon.
+- A waiting line that is taken back does not pull later waiting lines forward.
+- `tests/audio-tools.test.ts` is a test of the tools, not of this unit. Two of its tests named `narration.liveOnly.hit[1]`, which the script emptied; they were moved to the new script in commit f2ab850f.
+
+### 11c. Measured: whole visits with the helpers' events
+
+`node pipeline/change002/shell-script-visit.mjs 20` on a throwaway merge of this branch with origin/agent/b-step1 a6084acf, b-step2 50bc9f1f, b-resume 6780a8fc, b-pinball 2dad3c71 and b-boss 48319d4f; numbers in `shell-script-visit.json`. The 20 seeds of a bot gave the same times, so this is one keen and one clumsy visit. Sound is allowed at once (line 1 starts at 0.017 s), as after a restart.
+
+| | keen | clumsy |
+|---|---|---|
+| step 1 on screen | 10.20 s | 10.67 s |
+| `candidate-sensed` | 12.53 s | 13.90 s |
+| the Name's `field-done` after it | 0.17 s | 2.77 s |
+| line 2 could start (line 1 start + 13.75 + 6) | 19.77 s, 7.23 s late | 19.77 s, 5.87 s late |
+| line 2 | taken back | taken back |
+| line 2 late if the first click is Apply (arithmetic on the same times) | 17.42 s | 16.52 s |
+| line 3 | on its event | on its event |
+| line 4a after `volume-sign` | 2.60 s late (line 3 and the gap) | on its event |
+| `volume-sign` to `crank-full` | 3.30 s | 8.35 s |
+| `crank-full` to the `field-done` that ends the crank | 1.55 s | 1.55 s |
+| line 4b | taken back | taken back |
+| line 5 | taken back (`ball-seal` first) | on its event |
+| lines 6 and 8 | on their events | on their events |
+| line 7 | not asked for: no `boss-formed` on that branch | the same |
+| line 9 after the turn back | 11.61 s | 11.61 s |
+
+- Line 2 is said on neither visit. Without the 6 s gap it could start at 14.07 s: still after the keen visitor's Name is done (12.70 s), before the clumsy one's (16.67 s).
+- The kit's gap of 6 s does hurt 4a to 4b: 4b can start no sooner than 12.25 s after 4a starts and the crank is gone 1.55 s after `crank-full`. As a part of 4a (0.3 s) it would be said on the clumsy visit (4a ends 68.35 s, `crank-full` 70.45 s) and still not on the keen one (4a ends 57.63 s, the crank is gone at 53.63 s).
+- Line 9 starts 11.61 s after the page turned back because line 8 starts on `stamp`, 2.52 s before the turn, lasts 8.125 s and the gap follows.
+
+### 11d. The film: what the tools need for the preview of the opening (18 s)
+
+- Done in this unit: `mixFilm` places every line of the script as kind `stand-in` with its seconds and lays no voice, whatever is kept under its id (`MixInput.standIns` overrides); `filmCaptions(lines, fps)` in `src/audio/standin.ts` gives each phrase its first and last frame, its words, `draft` and `loud`. Line 1 at frame 0 at 60 fps covers frames 0 to 824, inside the 1080 frames of the opening.
+- `tools/mix.mjs` needs: to count and print `placed` of kind `stand-in` beside `linesLaid`, marking drafts; to pass check A10 for a line that is a stand-in (the kept takes are of the old words); to read `content/narration-drafts.json` for line 9; an option to end the plan at a time (18 s) so the opening alone is mixed.
+- The caption writer does not exist in `tools/`. It needs: the plan's lines by frame (as `tools/mix.mjs` builds them), `filmCaptions` through `logic().load('/src/audio/standin.ts')`, a picture of the panel a phrase (the panel of `src/ui/said.ts` on a clear page, 1920 by 1080, lower edge at `CAPTION.low` 1044 or the `caption` of the page's chrome), and the encode laying each picture over frames first to last (`overlay` with `enable='between(n,first,last)'`). The encode is not a file of this unit.
+- `timedLines` and the eight red tests of `tests/content.test.ts` wait for the Builder's beat times; with the beats as they are the built site does not start (MEASURED 22:55 UTC: "The site cannot start. 5 problems", all of them lines that run into the next).
+
+### 11e. Tests changed or removed by this section
+
+- Removed: `tests/audio-live.test.ts` (the old rule of live lines); in `tests/audio-rules.test.ts` the describe "the rules of the narrator on the live site" and the skip test; four tests of `tests/audio-engine.test.ts` on line files and ducking by takes; in `tests/audio-cues.test.ts` the describe "the triggers of the live lines"; three tests of `tests/b-shell-sound.test.ts` on the lines of section 3. Reason: 11a, no line only for the live site, no take played.
+- Changed: `tests/audio-visit.test.ts` tests 1, 3 and 4 (lines of the script once, never two at once, the gap; fight music on the phrase or `boss-music`); `tests/audio-mix.test.ts` "gives the mix its events from the stage" (stand-ins, not missing lines); `tests/audio-tools.test.ts` two tests (11b); the remaining tests of `tests/audio-rules.test.ts` moved to `boss-music`.
+- New: `tests/b-shell-script.test.ts` (21 tests) and "the lines of the narrator" in `tests/audio-cues.test.ts`.
+- Red and not of this unit, left as they are: 8 in `tests/content.test.ts` and 1 in `tests/review.test.ts` (the old beats cannot hold the new lines), 2 in `tests/cut-of-build.test.ts` (waits for `npm run cut`).
+
+### 11f. Pictures and scripts of this section
+
+- `shell-script-caption.mjs` runs line 1 through the engine and the panel in a browser in real time: MEASURED 8 phrases, each read from the panel at the middle of its time and equal to the words of the script, 13.750 s from the first to the end of the last, the panel off after it, no page error (`shell-script-caption.json`). The page behind is a kept still of the careers page (`out/stills/key-marketing-top-hd-final.jpg`), not the running site, and the fonts of the site are not loaded in it. Pictures: `shell-pictures/script-line1-phrases.png` (the lowest fifth of the page at each phrase) and `shell-pictures/script-loud.png` (a phrase asked for loud: capitals, 40 px at a page 1200 wide, which is 64 px at 1920).
+- Seen in the first picture: at `CAPTION.low` the panel lies on the strip of perks at the foot of the careers page. The careers page can name another place through `chrome().caption`.
+- `shell-caption.mjs` is of the script before this section: its second part reads tables that are gone and its first part needs a site that starts. It is kept for the numbers of section 6 and not run again.
