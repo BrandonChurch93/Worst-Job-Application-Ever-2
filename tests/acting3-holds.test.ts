@@ -33,9 +33,9 @@ describe('the held poses of step 1 outside the tug', () => {
   })
 
   it('is squashed in the first frames of the hit and then holds one tall recoil, still, to the dash', () => {
-    const blow = span(5.82, 5.86)
+    const blow = span(6.8, 6.84)
     expect(Math.min(...blow.map((p) => p.squash))).toBeLessThan(0.8)
-    const hold = span(6.05, 6.3)
+    const hold = span(7.02, 7.27)
     expect(still(hold)).toBe(true)
     for (const p of hold) {
       expect(p.acting).toBe('shocked')
@@ -45,20 +45,20 @@ describe('the held poses of step 1 outside the tug', () => {
       expect(p.lean).toBeLessThan(-0.4)
       expect(Math.abs(p.spin)).toBeLessThan(0.2)
     }
-    const turns = span(5.82, 6.33).map((p) => p.spin)
+    const turns = span(6.8, 7.31).map((p) => p.spin)
     let flips = 0
     for (let i = 2; i < turns.length; i++) if ((turns[i]! - turns[i - 1]!) * (turns[i - 1]! - turns[i - 2]!) < -1e-6) flips++
     expect(flips).toBeLessThanOrEqual(2)
   })
 
   it('stands nervous and still on Enter before the first slab is seen', () => {
-    const hold = span(17.8, 17.9)
+    const hold = span(17.3, 17.39)
     expect(still(hold)).toBe(true)
     for (const p of hold) expect(p.acting).toBe('nervous')
   })
 
   it('holds a cower under each slab in a different place', () => {
-    const first = span(18.45, 18.65)
+    const first = span(18.38, 18.57)
     const second = span(19.1, 19.4)
     for (const hold of [first, second]) {
       expect(still(hold)).toBe(true)
