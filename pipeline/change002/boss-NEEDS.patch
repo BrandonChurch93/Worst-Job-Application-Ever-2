@@ -1,3 +1,43 @@
+diff --git a/config/showcase.json b/config/showcase.json
+index 067ca527..204a0da6 100644
+--- a/config/showcase.json
++++ b/config/showcase.json
+@@ -50,14 +50,14 @@
+     "hookSeconds": 2,
+     "unitTuneFraction": 0.2,
+     "beatToleranceSeconds": 0.25,
+-    "maxSeconds": 165,
++    "maxSeconds": 185,
+     "plannedSeconds": { "marketing": 14, "step1": 32, "step2": 21, "pinball": 42, "boss": 32, "decision": 12 },
+     "units": [
+       { "id": "marketing", "seconds": 14 },
+       { "id": "step1", "seconds": 32 },
+       { "id": "step2", "seconds": 21 },
+       { "id": "pinball", "seconds": 42 },
+-      { "id": "boss", "seconds": 32 },
++      { "id": "boss", "seconds": 61.5 },
+       { "id": "decision", "seconds": 12 }
+     ],
+     "beats": [
+@@ -88,12 +88,12 @@
+       { "id": "pinball.save", "unit": "pinball", "from": 34, "to": 37, "event": "flipper-save" },
+       { "id": "pinball.drain", "unit": "pinball", "from": 37, "to": 42, "event": "drain" },
+       { "id": "boss.verify", "unit": "boss", "from": 0, "to": 5, "event": "checkbox" },
+-      { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 9, "event": "unfold" },
+-      { "id": "boss.slabs", "unit": "boss", "from": 9, "to": 16, "event": "slab-fire" },
+-      { "id": "boss.popups", "unit": "boss", "from": 16, "to": 22, "event": "popup" },
+-      { "id": "boss.lastStand", "unit": "boss", "from": 22, "to": 27, "event": "session-expired" },
+-      { "id": "boss.collapse", "unit": "boss", "from": 27, "to": 29, "event": "power-down" },
+-      { "id": "boss.press", "unit": "boss", "from": 29, "to": 32, "event": "button-press" },
++      { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 34.1, "event": "unfold" },
++      { "id": "boss.slabs", "unit": "boss", "from": 34.1, "to": 41.1, "event": "slab-fire" },
++      { "id": "boss.popups", "unit": "boss", "from": 41.1, "to": 47.1, "event": "popup" },
++      { "id": "boss.lastStand", "unit": "boss", "from": 47.1, "to": 52.1, "event": "session-expired" },
++      { "id": "boss.collapse", "unit": "boss", "from": 52.1, "to": 58.6, "event": "power-down" },
++      { "id": "boss.press", "unit": "boss", "from": 58.6, "to": 61.5, "event": "button-press" },
+       { "id": "decision.wait", "unit": "decision", "from": 0, "to": 2, "event": "hold-music" },
+       { "id": "decision.letter", "unit": "decision", "from": 2, "to": 6, "event": "stamp" },
+       { "id": "decision.metrics", "unit": "decision", "from": 6, "to": 10, "event": "button-press" },
 diff --git a/tests/b-shell-chrome.test.ts b/tests/b-shell-chrome.test.ts
 index 62112b61..275d5c5c 100644
 --- a/tests/b-shell-chrome.test.ts
