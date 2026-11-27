@@ -48,6 +48,8 @@ export const WALK = { pitch: 40, band: 0.14, lift: 38, bob: 5 }
 export const FALL = { off: [0, 0.4], glass: [0.05, 0.3], drop: [0.3, 0.7] } as const
 // The finishing blast, as shares of boss.gone: when each part leaves, and when the bare button comes down on the ground.
 export const GONE = { shield: [0.04, 0.3], wings: [[0.1, 0.42], [0.16, 0.48]], guns: [[0.08, 0.38], [0.2, 0.5]], legs: [[0.22, 0.56], [0.3, 0.64], [0.36, 0.7], [0.44, 0.78]], hull: [0.55, 0.9], button: [0.62, 0.9] } as const
+// The face of the word as in the approved pictures: lighter and a little smaller than the page's own button (inter-600 at 26 px).
+export const WORD = { font: 'inter-400', px: 25 }
 export const TIMES = { form: 2.9, turret: 1.6, beaten: 1, gone: 2.13, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
 
 export interface LegPose { hip: [number, number, number]; knee: [number, number, number]; foot: [number, number, number]; yaw: number; up: number; yaw2: number; down: number; footYaw: number; lift: number; show: number; planted: [number, number] }
@@ -67,6 +69,8 @@ export interface Pose {
   legs: LegPose[]
   cannon: { show: boolean; x: number; z: number; elev: number; yaw: number; ribs: number; sleeve: number; barrel: number; window: number; bore: number; slits: number; heat: number; off: number }
   weak: number
+  // 0 to 1: how far the lids of the hatch have parted over the open flank.
+  weakOpen: number
   // Seconds since the cannon came down on its rest; below 0 before, large when it can no longer be told.
   lockAge: number
   // 0 whole, 1 and 2 the stages of the fight, 3 beaten.
@@ -295,7 +299,8 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
     hatch: { x: HATCH.cx - HATCH.slide * hatchOpen, z: HATCH.top + 7 * bump(t, TURRET.hatch[0], TURRET.hatch[0] + 0.06) + (hatchOpen > 0 ? 3 * hatchOpen : 0), seam: 1.4 + 3 * bump(t, 0, 0.2) + 0.6 * Math.sin(now * 3) * 0.3, gone: off },
     shield: { rise: shieldUp, slide: shieldOut, flash: kick(since(now, b.shield.glancedAt), TIMES.glance), broken: lin(beaten, FALL.glass[0], FALL.glass[1]), show: f >= FORM.shield[0] },
     guns, legs, cannon,
-    weak: b.weak ? (b.weak.shownAt === null ? 0 : 1.6 + 2.6 * (0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16))) : 0,
+    weak: b.weak ? (b.weak.shownAt === null ? 0 : 2.2 + 3 * (0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16))) : 0,
+    weakOpen: b.weak && b.weak.shownAt !== null && beaten <= 0 ? smooth(lin(now - b.weak.shownAt, 0, 0.18)) : 0,
     damage: f < 1 ? 0 : beaten > 0.02 ? 3 : b.stage, hurt, heal: healNow, sag: sagPart, gone, away, blow, lockAge, word
   }
 }

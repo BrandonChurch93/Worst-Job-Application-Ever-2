@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
-import { across, along, blot, boxAt, crackStar, cutPlate, discAt, glowMaterial, hose, joined, lathe, lookKit, mesh, oct, pillOutline, plateAt, ringPlate, rod, screw, turnedAt, type V3 } from './kit'
+import { across, along, blot, boxAt, chamfer, crackStar, cutPlate, discAt, glowMaterial, hose, joined, lathe, lookKit, mesh, oct, pillOutline, plateAt, ringPlate, rod, screw, turnedAt, type V3 } from './kit'
 
 // Everything here is in the units of the target sheets (px of the 1920 wide pictures), forward along +x, z up from the ground, the hull's centre over the origin.
 
@@ -19,6 +19,9 @@ export interface Model {
   bay: THREE.Group
   shield: THREE.Group
   shieldGlass: THREE.Mesh
+  lids: THREE.Mesh[]
+  slab: THREE.Mesh
+  hatchSeam: THREE.Mesh
   shieldEdge: THREE.Mesh
   own: THREE.Material[]
   damage: [THREE.Group, THREE.Group, THREE.Group]
@@ -44,10 +47,7 @@ function hullGeo(): { plate: THREE.BufferGeometry; dark: THREE.BufferGeometry; t
   const { hx, hy, c, top, tall, belly } = HULL
   const bezelOut = pillOutline(BTN.w + 40, BTN.h + 40, BTN.r + 18)
   const bezelIn = pillOutline(BTN.w + 12, BTN.h + 12, BTN.r + 5)
-  const plate = joined([
-    plateAt(oct(hx, hy, c), top - tall, top - 5, 3),
-    plateAt(oct(hx - 11, hy - 11, c - 5), top - 6, top, 2.5)
-  ])
+  const plate = chamfer(oct(hx, hy, c), top - tall, top, 15, 7)
   const dark = joined([
     plateAt(oct(hx - 16, hy - 14, c - 6), belly, top - tall + 1, 5),
     plateAt(oct(hx - 60, hy - 40, 20), belly - 22, belly + 1, 5)
@@ -67,7 +67,7 @@ function wingGeo(side: number): { plate: THREE.BufferGeometry; dark: THREE.Buffe
     const pts: [number, number][] = [[-WING.inner + inset, y0], [WING.inner - inset, y0], [WING.outer - inset * 0.8, y1 - inset - 14], [WING.outer - 14 - inset * 0.8, y1 - inset], [-WING.outer + 14 + inset * 0.8, y1 - inset], [-WING.outer + inset * 0.8, y1 - inset - 14]]
     return side > 0 ? pts : pts.map(([x, y]) => [x, -y] as [number, number]).reverse()
   }
-  const plate = joined([plateAt(shape(0), WING.top - 22, WING.top - 5, 3), plateAt(shape(11), WING.top - 6, WING.top, 2.5)])
+  const plate = chamfer(shape(0), WING.top - 22, WING.top, 13, 6)
   const fins: THREE.BufferGeometry[] = [plateAt(shape(14), WING.top - 70, WING.top - 21, 4)]
   for (let i = 0; i < 6; i++) fins.push(plateAt(shape(8 - (i % 2) * 0), WING.top - 66 + i * 7, WING.top - 63 + i * 7, 1))
   const dark = joined(fins)
@@ -208,11 +208,20 @@ export function buildModel(): Model {
   const hatch = new THREE.Group()
   const seam = glowMaterial(0xff7a1e, 1.6)
   const ho = oct(HATCH.hx - 3, HATCH.hy - 3, HATCH.c - 2)
+  const hatchSeam = mesh(geo('hatch.seam', () => joined([boxAt(-HATCH.hx + 22, -2.6, -4.6, -24, 2.6, -2.4, 0.3), boxAt(-24, -2.6, -4.6, -19, 12, -2.4, 0.3), boxAt(-24, 7, -4.6, 44, 12, -2.4, 0.3), boxAt(40, -2.6, -4.6, 45, 12, -2.4, 0.3), boxAt(40, -2.6, -4.6, HATCH.hx - 22, 2.6, -2.4, 0.3)])), seam, false, false)
   hatch.add(
-    mesh(geo('hatch.plate', () => joined([plateAt(ho, -14, -4, 3), ringPlate(oct(HATCH.hx - 12, HATCH.hy - 12, HATCH.c - 6), oct(HATCH.hx - 19, HATCH.hy - 19, HATCH.c - 9), 3, 0.8).translate(0, 0, -4.4), plateAt(oct(HATCH.hx - 20, 58, 14, 0, -64), -5, 0, 2), plateAt(oct(HATCH.hx - 20, 58, 14, 0, 64), -5, 0, 2)])), kit.hatch),
-    mesh(geo('hatch.seam', () => joined([boxAt(-HATCH.hx + 22, -2.6, -4.6, -24, 2.6, -2.4, 0.3), boxAt(-24, -2.6, -4.6, -19, 12, -2.4, 0.3), boxAt(-24, 7, -4.6, 44, 12, -2.4, 0.3), boxAt(40, -2.6, -4.6, 45, 12, -2.4, 0.3), boxAt(40, -2.6, -4.6, HATCH.hx - 22, 2.6, -2.4, 0.3)])), seam, false, false),
+    mesh(geo('hatch.plate', () => joined([chamfer(ho, -14, -4, 10, 4.5), ringPlate(oct(HATCH.hx - 12, HATCH.hy - 12, HATCH.c - 6), oct(HATCH.hx - 19, HATCH.hy - 19, HATCH.c - 9), 3, 0.8).translate(0, 0, -4.4)])), kit.hatch),
+    hatchSeam,
     mesh(geo('hatch.pins', () => screwsAt([[-80, -100], [80, -100], [-80, 100], [80, 100]], 0, 5, 7)), kit.pin)
   )
+  const weak = glowMaterial(0xff2a12, 0)
+  const lids = [-1, 1].map((side) => {
+    const lid = mesh(geo(`hatch.lid${side}`, () => chamfer(oct(HATCH.hx - 20, 58, 14, 0, side * 64), -5, 0.6, 7, 3)), kit.hatch)
+    hatch.add(lid)
+    return lid
+  })
+  const slab = mesh(geo('hatch.weak', () => boxAt(-HATCH.hx + 26, -22, -5, HATCH.hx - 26, 22, -3.4, 0.3)), weak, false, false)
+  hatch.add(slab)
   hatch.position.set(HATCH.cx, 0, HATCH.top)
   body.add(hatch)
 
@@ -270,15 +279,15 @@ export function buildModel(): Model {
   heat.transparent = true
   heat.opacity = 0
   heat.depthWrite = false
-  root.add(mesh(cg, kit.housing), mesh(c('breechDark'), kit.bed), mesh(c('window'), window, false, false), mesh(c('slit'), slits, false, false), mesh(c('yoke'), kit.joint), mesh(c('hoses'), kit.orange))
+  root.add(mesh(cg, kit.steel), mesh(c('breechDark'), kit.bed), mesh(c('window'), window, false, false), mesh(c('slit'), slits, false, false), mesh(c('yoke'), kit.joint), mesh(c('hoses'), kit.orange))
   const ribs = new THREE.Group()
   ribs.add(mesh(c('ribCore'), kit.dark), mesh(c('ribs'), kit.orange))
   const sleeve = new THREE.Group()
-  sleeve.add(mesh(c('sleeve'), kit.housing))
+  sleeve.add(mesh(c('sleeve'), kit.steel))
   const barrel = new THREE.Group()
   const heatMesh = mesh(c('heat'), heat, false, false)
   heatMesh.scale.set(1, 1.02, 1.02)
-  barrel.add(mesh(c('barrel'), kit.joint), mesh(c('bore'), kit.bore, false, false), mesh(c('glow'), bore, false, false), heatMesh)
+  barrel.add(mesh(c('barrel'), kit.steel), mesh(c('bore'), kit.bore, false, false), mesh(c('glow'), bore, false, false), heatMesh)
   root.add(ribs, sleeve, barrel)
   root.rotation.order = 'ZYX'
   carriage.add(root)
@@ -311,10 +320,9 @@ export function buildModel(): Model {
   d3.visible = false
   body.add(d1, d2, d3)
 
-  const weak = glowMaterial(0xff3a1a, 0)
   const weakLamp = mesh(geo('weak', () => joined([discAt(11, HATCH.cx - HATCH.hx - 2, 0, 128, 140, 2, 18).rotateY(0), boxAt(HATCH.cx - HATCH.hx - 9, -34, 120, HATCH.cx - HATCH.hx - 4, 34, 146, 1.5)])), weak, false, false)
   bay.add(weakLamp)
 
-  return { body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, damage: [d1, d2, d3], own: [seam, window, bore, slits, heat, weak, ember], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
+  return { body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, lids, slab, hatchSeam, damage: [d1, d2, d3], own: [seam, window, bore, slits, heat, weak, ember], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
 }
 

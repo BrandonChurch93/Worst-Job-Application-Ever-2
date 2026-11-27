@@ -8,7 +8,7 @@ import { setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
 import { poseGun } from './gun'
 
-export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FALL, FORM, GONE, TURRET, TIMES, DEFAULTS } from './pose'
+export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FALL, FORM, GONE, TURRET, TIMES, WORD, DEFAULTS } from './pose'
 export type { LookOptions, Pose } from './pose'
 export { EVENTS } from './events'
 export { makeGun, poseGun } from './gun'
@@ -148,6 +148,9 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     setGlow(c.heat, 1 + 3 * p.cannon.heat)
   }
   setGlow(m.weak, p.weak)
+  m.lids.forEach((l, i) => { l.position.y = (i === 0 ? -1 : 1) * 17 * p.weakOpen })
+  m.slab.visible = p.weakOpen > 0
+  m.hatchSeam.visible = p.weakOpen < 0.5
   const burnt = p.away.hull > 0.5
   m.damage[0].visible = p.damage >= 1 && !burnt
   m.damage[1].visible = p.damage >= 2 && !burnt
