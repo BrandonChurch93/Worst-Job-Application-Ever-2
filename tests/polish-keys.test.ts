@@ -29,7 +29,7 @@ describe('polish keys: a key pressed on the live site', () => {
     return { down, up, name: down.keys.find((k) => k.sink > 0)!.name }
   }
 
-  it.skip('goes down on the press and is at the bottom on the next frame', () => {
+  it('goes down on the press and is at the bottom on the next frame', () => {
     const { down, name } = press()
     expect(at(down.i - 1).all.get(name)!.sink).toBe(0)
     expect(down.all.get(name)!.sink).toBeGreaterThanOrEqual(0.5)
@@ -39,7 +39,7 @@ describe('polish keys: a key pressed on the live site', () => {
     expect(next.top).toBeCloseTo(config.scale.heights.keycap - TRAVEL, 5)
   })
 
-  it.skip('is drawn sunk in the plane of the page, cap and label together, by a travel seen at 1920 by 1080', () => {
+  it('is drawn sunk in the plane of the page, cap and label together, by a travel seen at 1920 by 1080', () => {
     const { down, name } = press()
     const rest = at(down.i - 1).all.get(name)!
     const sunk = at(down.i + 1).all.get(name)!
@@ -50,13 +50,13 @@ describe('polish keys: a key pressed on the live site', () => {
     expect(SINK.shade).toBeLessThanOrEqual(0.2)
   })
 
-  it.skip('stays at the bottom on every frame the button is held, and before this work it rose 9 frames sooner', () => {
+  it('stays at the bottom on every frame the button is held, and before this work it rose 9 frames sooner', () => {
     const { down, up, name } = press()
     expect(up.i - down.i).toBeGreaterThan(BEFORE.riseBeforeRelease)
     for (let i = down.i + 1; i < up.i; i++) expect(at(i).all.get(name)!.sink, `frame ${i}`).toBe(1)
   })
 
-  it.skip('springs back on the release: at its neighbours height within three frames, a short overshoot, at rest inside nine', () => {
+  it('springs back on the release: at its neighbours height within three frames, a short overshoot, at rest inside nine', () => {
     const { up, name } = press()
     const sink = (n: number): number => at(up.i + n).all.get(name)!.sink
     expect(sink(0)).toBeLessThan(1)

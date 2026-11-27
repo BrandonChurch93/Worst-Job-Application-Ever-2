@@ -176,7 +176,7 @@ describe('polish keys 2: the page answers a hit on the arrow', () => {
     expect(Math.abs(at(HIT + 11).deckY - was)).toBe(0)
   })
 
-  it.skip('presses no key, as round 23 ruled, and leaves no key hot that the bolt did not strike', () => {
+  it('presses no key, as round 23 ruled, and leaves no key hot that the bolt did not strike', () => {
     for (let i = HIT; i < HIT + 13; i++) {
       for (const k of at(i).all.values()) {
         expect(k.depth, `${k.name} on ${i}`).toBe(0)

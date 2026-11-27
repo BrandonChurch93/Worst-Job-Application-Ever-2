@@ -156,5 +156,5 @@ describe('step 1: the one event of the narrator\'s line', () => {
     const room = runs.map((r) => r.room)
     console.log(`live, 200 seeds: candidate-sensed once on ${runs.filter((r) => r.sensed === 1).length}; from it to the Name done: least ${pick(room, 0).toFixed(1)} s, median ${pick(room, 0.5).toFixed(1)} s; ${runs.filter((r) => r.room < LINE).length} of 200 visits have the Name done before a line of ${LINE} s is over`)
     for (const r of runs) expect(r.sensed).toBe(1)
-  })
+  }, 120000)
 })

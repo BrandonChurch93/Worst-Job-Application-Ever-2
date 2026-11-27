@@ -76,7 +76,7 @@ describe('the arrow at a strain of the paper, live', () => {
       for (let n = arrival + 1; n <= arrival + HOLD.after; n++) expect(Math.abs(rows[n]!.angle - rows[n - 1]!.angle), `frame ${rows[n]!.i}`).toBeLessThanOrEqual(HOLD.turn)
     })
 
-    ;(who === 'visitor' ? it.skip : it)(`leaves the arrow to rest after its arrival, then answers each strain a frame after the hands are jerked: ${who}`, () => {
+    ;it(`leaves the arrow to rest after its arrival, then answers each strain a frame after the hands are jerked: ${who}`, () => {
       const rows = runs[who]
       const { lost, strains } = tug(rows)
       const deep: number[] = []
