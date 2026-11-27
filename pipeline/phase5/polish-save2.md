@@ -201,3 +201,85 @@ All: 13 ways down, each one move after (largest count of starts 1, 0 stands, 0 t
 - The three draft stills (`table-wide`, `last-save`, `tier-street`): byte equal to the kept ones by `cmp`.
 
 `view-after-back.png`: the way back, 22.850 to 23.100 s, 16 frames in a row, window 650,530 300 by 200, shot after the checks. What I saw at real size: the bumper stands in tile 1, goes down gently from tile 2, fastest round tiles 5 to 8, slows over 9 to 13, stands from tile 14. One move, no stand inside it.
+
+# polish-follow: the view does not go back up a tier while the ball rides an outlane rail
+
+Branch `agent/polish-follow` from `297ca7d3` (the Builder's third job, 16:12). Main is not merged into it. Nothing more went to `agent/polish-save2` or `agent/polish-view`.
+
+## The fault, older than round 25
+
+Every outlane rail runs from the outlane's hold 0.85 balls down, 0.2 under the next tier's line, along to the middle and 0.4 back up to the way out, which lies 0.2 over the line. The view's goal for a ball on such a rail was the tier of the ball's place (`tierAt` of its y), so on the last three steps of the ride the goal went back to the tier above, and the view, which was on its way down, stepped back at its cap (17.5 px a step) until the ball was on the chute, where the goal is taken from the rail's name. MEASURED on `297ca7d3` and on `308e96a1` alike (pack seed 1, 24.93 s: steps 13.1, 11.7, -48.3, 15.6, 13.9 px a frame).
+
+## The mend
+
+`src/pages/step3/index.ts`, `target()`, two lines: for a ball on an outlane rail that has gone past the rail's first leg, the place the goal is read from is the rail's lowest point, not the ball's own place. So the goal goes down a tier when the ball dips under the line, as before and on the same step, and does not come back up while the ball is on that rail.
+
+Why this one and not the goal from the rail's name, as a chute has it: the name would start the view's move down 0.04 s sooner on every ride, so every outlane ride would be drawn differently; this way a ride is step for step what it was until the three steps of the fault. No state is added, the view's place at rest on a tier is untouched (a ball on the floor is read as before), and the follow's pace and cap and the room under a gate are not touched.
+
+## Proof
+
+1. The same case, pack seed 1, save 2, frames n -125 to -101 (page 24.73 to 25.13 s), MEASURED, `node pipeline/phase5/polish-save2-measure.mjs --visitor pack --seed 1 --nth 2 --before 130 --after 20`:
+   - before, scroll: 3376.9, 3413.0, 3445.2, 3473.9, 3499.7, 3522.6, 3543.1, 3561.5, 3577.9, 3592.5, 3605.6, 3617.3, 3568.9, 3584.5, 3598.4, 3610.9, 3622.0, 3631.9, 3640.8, 3648.7, 3655.8, 3662.1, 3667.8, 3672.9, 3677.4; step: 40.4, 36.1, 32.2, 28.8, 25.7, 23.0, 20.5, 18.3, 16.4, 14.6, 13.1, 11.7, -48.3, 15.6, 13.9, 12.4, 11.1, 9.9, 8.9, 7.9, 7.1, 6.3, 5.7, 5.1, 4.5.
+   - after, scroll: 3376.9, 3413.0, 3445.2, 3473.9, 3499.7, 3522.6, 3543.1, 3561.5, 3577.9, 3592.5, 3605.6, 3617.3, 3627.7, 3637.0, 3645.4, 3652.8, 3659.4, 3665.4, 3670.7, 3675.4, 3679.7, 3683.5, 3686.8, 3689.9, 3692.6; step: 40.4, 36.1, 32.2, 28.8, 25.7, 23.0, 20.5, 18.3, 16.4, 14.6, 13.1, 11.7, 10.4, 9.3, 8.3, 7.4, 6.7, 5.9, 5.3, 4.7, 4.2, 3.8, 3.4, 3.0, 2.7. No step of the other sign; the first twelve frames are equal. The take is in the frame at 26.82 s before and after.
+2. The sweep, MEASURED, `node pipeline/phase5/polish-save2-jerks.mjs --visitor never,pack,keen,clumsy,random --seeds 1,2,3,4` on `297ca7d3` and on this branch: 20 whole visits, 53757 frames. One-frame jerks (a step of more than 2 px against the step before and the step after): before 1 (pack seed 1, 24.933 s, steps 11.7, -48.3, 15.6, the ball leaving `outlane.office.left` for `chute.office`), after 0. The wider net of the same script (a frame of more than 2 px one way followed by one of more than 2 px the other way) finds what the mend does not touch, older causes, not mended, the first three the same before and after: on the launch rail (steps 2.3, -3.3, in 19 of the 20 visits), on the drain rail (17.3, -2.1 and 12.1, -2.0), under a tow at a gate (-3.8, 28.8; -3.8, 63.8; -5.0, 10.0), and the one below.
+3. The other outlane rails, MEASURED, `node pipeline/phase5/polish-save2-lanes.mjs` (the rails' points, and a ride forced on each rail by `Machine.ride` in a visit of the visitor who never moves, so not a ride a visit came to by itself):
+   - `outlane.corporate.left` and `.right`: line at 26.50, lowest point 26.70 (tier 1), end 26.30 (tier 0): the end comes back up over the line, as the office's does. Forced ride with the gate spent, frames 24 to 32: before 13.4, 11.9, 10.7, -30.1, -6.4, 13.4, 12.0, 10.7, 9.6 (two frames back); after 13.4, 11.9, 10.7, 9.5, 8.5, 7.6, 6.8, 6.1, 5.4.
+   - `outlane.office.left` and `.right`: line at 37.75, lowest 37.95 (tier 2), end 37.55 (tier 1): the same. The right rail has the same points mirrored; no visit of the sweep rode it, and the visitor who never moves has no ball on the office floor with the gate spent, so its spent ride is not shown; the test holds the four rails' points.
+   - `outlane.street.left` and `.right`: line at 49.00 (the apron), lowest 49.20, end 48.80: the tier read is 2 all the way, no line is crossed back, the view does not step back (0 px steps on frames 24 to 32, before and after).
+4. The film, MEASURED: `node pipeline/phase5/polish-save2-ways.mjs --film` gives sha256 df8e74b073a9806643188d59a800c1ff48bffe639211b0c6a9be801fb6004676 over the 10080 steps of the pinball piece, equal to the line of `94e68b25` by `cmp`. The three draft stills are byte equal to the kept ones by `cmp`. No film frame changes (the same limit as before: state and three stills, not every drawn frame).
+5. The test: `tests/polish-save2-follow.test.ts`, two tests: the four upper rails dip under the next tier's line and end above it; in the visit of pack seed 1 the view never steps back while the ball rides the office's left outlane under the line, nor in the 0.4 s after. MEASURED: the second fails on `297ca7d3` (expected -17.5 to be 0) and passes now.
+6. The picture is not made. The visitor `pack` is a hand of my measure scripts, stepped without a browser; the built site plays only its own bots, and keen, clumsy and random ride no upper outlane on seeds 1 to 4 (the sweep; the skipper was not swept), so the browser cannot draw this visit. The fault and the mend are shown in numbers only; in drawn frames they are UNKNOWN.
+
+The three cases of polish-view, MEASURED after this change with the measure script: pack seed 3 save 2: 2593.2 at the take, 2634.0 at the kick, 3227.4 0.6 s after; pack seed 1 save 1: 2634.0, 2634.0, 2633.3; keen seed 1 save 1: 2634.0, 2634.0, 2632.8. As before.
+
+## Found, not mended: the view goes a tier down and comes back when a ball rides an upper outlane to a shut gate
+
+MEASURED in a visit that came to it by itself, pack seed 4, on `297ca7d3` and on this branch (a throwaway script printing the scroll on every frame): the ball takes `outlane.office.left` at 22.63 s with the office's gate still shut. From 22.68 s the view goes down toward the street at its cap, 70 px a frame, from 2544.0 to 3611.6 (before) or 3622.6 (after) at 23.07 s, 1068 or 1079 px in 0.42 s; then the ball is taken at the office's gate and the view comes back up at up to 69 px a frame, to within 15 px of its place under the gate (2634.0) by 23.75 s. The cause is the same line: on an outlane rail the goal follows the ball under the line, though with the gate shut the ball is going to be saved on its own tier. The forced rides show the same on the corporate tier (997 px down by frame 27, then back). With this branch the turn comes on the take's step, three steps later than before, and the view is 11 px further down at the turn; nothing else of it changes. A mend would be to keep the goal on the ball's own tier while that tier's gate is shut; it is not done, for it was not ordered.
+
+## Checks, on this branch as pushed (no merge of main), one at a time
+
+- The three draft stills: byte equal to the kept ones by `cmp`.
+- `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- `npm run bots`: all clear; keen reached every one of the 37 gags on every seed.
+- `npm test`: 170 files passed, 12 skipped; 2119 tests passed, 15 skipped (the two new tests in one new file).
+- `npx tsc --noEmit -p .`: exit 0, run last.
+
+# polish-shut: the view stays on the tier while the ball rides an upper outlane to a shut gate
+
+Branch `agent/polish-shut` from `02fef86a` (the Builder's fourth job, 16:35, word to mend at 16:37). Main is not merged into it. Nothing more went to `agent/polish-save2`, `agent/polish-view` or `agent/polish-follow`.
+
+## Is the ball always taken: no
+
+Read in the code before mending (STATED): an outlane rail ends in `atGate`, which reads the gate on that one step. Shut: the clear ball is taken in live play (it ends 0.5 ball from the wire's rest, the reach is 1) or gets the plain kick; it stays on its tier. Open: it rides the chute. The ride is 7.3 balls at 16 balls a second, 0.46 s. The page sets the gates on every step from the scene's clock (`t >= T.doorOpen`, `T.officeOpen`, `T.streetOpen`), and the clock's waiting never holds it under those, so a gate can open under a ride and the ball then goes down the chute. In the sweep (20 visits) no ride does: 5 rides on an outlane, 1 with the gate shut from start to end (pack seed 4, taken), 4 with it spent from the start (MEASURED with a throwaway census). Mailed at 16:36; the Builder's word at 16:37: mend as worded, the goal read from the gate's state on each step.
+
+## The mend
+
+`src/pages/step3/index.ts`, `target()`, one line added and one changed: while the ball is on an outlane rail and the gate of that rail's tier is shut, the place the goal is read from is the rail's first point, which lies on the rail's own tier, for the whole ride. With the gate open the lines of `02fef86a` stand. The gate is read on each step, so on the step a gate opens under a ride the goal becomes that of `02fef86a`: the tier below once the ball is past the first leg; on the first leg the ball's own place, which is the rail's tier until it dips under the line. The street's rails read tier 2 either way. No look ahead, no state added; the room under a gate, the follow's pace and cap, the saved state and the view's place at rest are untouched.
+
+## Proof
+
+All from `node pipeline/phase5/polish-save2-shut.mjs`, run on a worktree of `02fef86a` (before) and on this branch (after), MEASURED.
+
+1. Pack seed 4, the office's left outlane with the office's gate shut, the 73 frames from 22.60 to 23.80 s. Before: the view stands at 2544.0 to 22.667 s, then runs down at up to 70.0 px a frame to 3622.6 at 23.083 s (1078.6 px), then comes back up at up to 66.9 px a frame to 2644.5 at 23.800 s. After: the view stands at 2544.0 on every frame of the ride (22.633 to 23.083 s); from the take (23.100 s) it only goes into the room under the gate, steps 0.7, 3.1, 5.6, 8.1, 10.6, 12.0, 12.0, 11.9, 10.1, 7.6, 5.1, 2.6, 0.4, and stands at 2634.0 from 23.300 s to 23.800 s. Largest step 12.0 px, furthest 90.0 px.
+2. The forced ride on the lobby's left outlane with the lobby's gate shut (set on the rail at 14.717 s, the visitor who never moves), 72 frames. Before: down at up to 70.0 px a frame, 996.9 px by frame 27, then back up at up to 66.9. After: on the 27 frames of the ride the view moves 2.9 px in all (1467.1 to 1464.2, the end of a move it was in, no step over 0.4 px); from the take it goes into the room, the same thirteen steps as in 1, to 1554.0. Largest step 12.0 px. From frame 54 on, before and after alike under the way back: the scene tows the thrown ball to the revolving door and holds it, and the room goes 30 px back and comes again twice in 19 frames (steps up to 7.5 px, after; -12.3 to 5.6, before). That is the room of polish-view in this forced scene; not mended, not seen in a visit of the sweep.
+2b. A ride that begins with the gate shut and ends with it open: forced (no visit of the sweep holds one), on the lobby's left outlane, the visitor who never moves, the ball taken from its hold at the lobby's doors. Set 60 steps before the gate opens (step 4037): before, steps 0.0, 0.0, 52.5, 70.0 and on down from the third frame of the ride, 1074.7 px by 0.6 s after the opening. After: 0.0 on the 14 frames with the gate shut, then 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 69.2, 63.0, 56.2, 50.3, 44.9, 40.1, 35.8, 32.0, 28.6 and on down, the first of them on the frame of the opening (16.833 s); no step back up; the ball takes the chute on frame 28; 1059.9 px by 0.6 s after. Set 8 steps before the gate opens (the ball on the first leg when it opens): the frames are equal before and after by `cmp` (0.0, 0.0, 52.5, 70.0 and on); the goal on the first leg is read from the ball's own place, the rail's tier until the ball dips under the line.
+3. The sweep, `node pipeline/phase5/polish-save2-jerks.mjs --visitor never,pack,keen,clumsy,random --seeds 1,2,3,4`, 53757 frames: one-frame jerks 0 before and 0 after; the wider net 32 turns before, 31 after; the one that went is pack seed 4, 23.083 s (11.0, -49.2), the one of this job; the other 31 lines are equal by `diff`. The three cases of polish-view (`polish-save2-measure.mjs`, pack seed 3 save 2, pack seed 1 save 1, keen seed 1 save 1) and the pack seed 1 save 2 frames of polish-follow's item 1: the outputs are byte equal to those of `02fef86a` by `cmp`.
+4. The film: `node pipeline/phase5/polish-save2-ways.mjs --film` gives sha256 df8e74b073a9806643188d59a800c1ff48bffe639211b0c6a9be801fb6004676 (the page's state and scroll on each of the 10080 steps), equal to the line of `02fef86a` by `cmp`; the three draft stills are byte equal to the kept ones. No film frame changes (the hash holds the scroll on every step; drawn frames: three stills).
+5. The test: `tests/polish-save2-shut.test.ts`, two tests: in pack seed 4's visit the view stays within 1 px of its place for the whole ride and then goes 80 to 91 px down with no step back in 0.6 s; in the forced ride the view stands while the gate is shut, steps down on the step the gate opens and never back up. Both fail on `02fef86a` (expected 17.5 to be less than 1), both pass now. No line of another owner's test is changed.
+7. The picture is not made: the browser's hook (`window.liveRun`) gives state, advance and told only, with no way to the machine, so a ride cannot be forced there without code that ships; and the site's own bots ride no upper outlane. Numbers only; in drawn frames UNKNOWN.
+
+## Checks, on this branch at `c2a22b28` (the source and the tests as pushed; only these notes and one measure script came after), one at a time
+
+- The three draft stills: byte equal to the kept ones by `cmp`.
+- `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- `npm run bots`: all clear; keen reached every one of the 37 gags on every seed.
+- `npm test`: 171 files passed, 12 skipped; 2121 tests passed, 15 skipped.
+- `npx tsc --noEmit -p .`: exit 0, run last.
+
+## The older turns of the wider net, numbers only, not mended
+
+`node pipeline/phase5/polish-save2-turns.mjs`, MEASURED (the steps); the causes are read from the code and fit the frames.
+
+- The launch rail, in 19 of the 20 visits (keen seed 1 at 10.517 s, never seed 1 at 13.233 s): steps 0.0, 23.3, 15.5, 8.5, 2.3, -3.3, -8.2, -12.7, -16.6. While the ball is held at the plunger the goal is a fixed place (3854.4); when the launch rail takes it the goal becomes the ball's own place less 540 px, which is lower than that place until the ball has climbed 0.5 ball, so the view dips 49.6 px in four frames before it goes up.
+- Under a tow at an open gate: never seed 1, 27.050 s: 0.0, 0.0, 0.0, -1.3, -3.8, 28.8, 61.3, 58.8, 58.0; pack seed 3, 24.333 s: 0.0, 0.0, 0.0, -1.3, -3.8, 63.8, 61.3, 58.8, 58.0; pack seed 4, 24.983 s: 0.0, 0.0, -0.3, -2.5, -5.0, 10.0, 60.0, 58.1, 58.0. The room under the office's gate starts its way back up (the gate has opened, or the ball goes on the tow to the open gate's hole) two or three frames before the chute takes the ball and the tier's goal goes down.
+- The drain rail: never seed 1, 42.400 s: 31.9, 28.7, 25.2, 21.4, 17.3, -2.1, -1.7, -1.0, -0.1; pack seed 3, 40.133 s and pack seed 4, 40.467 s: 31.1, 27.8, 24.3, 20.4, 12.1, -2.0, -1.6, -0.8, 0.1. No change of goal: it is the page's leaving move (`LEAVE`), a timed move to the page's last place that arrives at a quarter of its pace and then goes 5 px back and comes again over 0.12 s (`back: 5, settle: 0.12`), as written.
