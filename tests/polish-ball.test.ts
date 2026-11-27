@@ -41,6 +41,7 @@ describe('the ball off a visitor\'s flipper', () => {
       s.advance(60)
       if (k % 12 === 11) seen.push(s.hash())
     }
+    if (process.env.BALL_WAS) console.log('MAIN', JSON.stringify(seen))
     expect(seen).toEqual(MAIN)
   })
 

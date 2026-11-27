@@ -101,7 +101,9 @@ describe('a ball over a window in the floor', () => {
       const { over: _count, ...rest } = saved.page.s
       h.update(JSON.stringify({ ...saved, page: { ...saved.page, s: rest } }))
     }
-    expect(h.digest('hex').slice(0, 16)).toBe(STATE)
+    const state = h.digest('hex').slice(0, 16)
+    if (process.env.LAMPS_WAS) console.log('STATE', state)
+    expect(state).toBe(STATE)
   }, 240000)
 
   it('draws a frame from a kept state as it draws it stepped from the start, in the middle of a rise', () => {
@@ -129,12 +131,14 @@ describe('a ball over a window in the floor', () => {
   }, 240000)
 
   it('leaves the ball its place, its speed and its roll across the white window and the amber one', () => {
-    for (const row of PATH) {
+    const got = PATH.map((row) => {
       stage.seek((row[0]! - FIRST) / 60)
       const { s, m } = (stage['save']() as { page: { s: { roll: number[] }; m: { balls: { x: number; y: number; vx: number; vy: number }[] } } }).page
       const b = m.balls[0]!
-      expect([row[0], r6(b.x), r6(b.y), r6(b.vx), r6(b.vy), r6(s.roll[0]!), r6(s.roll[1]!)]).toEqual(row)
-    }
+      return [row[0], r6(b.x), r6(b.y), r6(b.vx), r6(b.vy), r6(s.roll[0]!), r6(s.roll[1]!)]
+    })
+    if (process.env.LAMPS_WAS) console.log('PATH', JSON.stringify(got))
+    expect(got).toEqual(PATH)
   })
 
   it('brings the brighter light up over four frames from the frame the middle of the ball is over the glass', () => {
@@ -188,13 +192,14 @@ describe('a ball over a window in the floor', () => {
       }
     }
     const changed = new Set(seen.filter((x) => x.gap < ANSWER.reach).map((x) => x.film))
-    expect(changed.size).toBe(CHANGED)
     const runs: number[][] = []
     for (const f of [...changed].sort((p, q) => p - q)) {
       const last = runs[runs.length - 1]
       if (last && last[1] === f - 1) last[1] = f
       else runs.push([f, f])
     }
+    if (process.env.LAMPS_WAS) console.log('RANGES', changed.size, JSON.stringify(runs))
+    expect(changed.size).toBe(CHANGED)
     expect(runs).toEqual(RANGES)
     expect(quiet.length).toBe(FRAMES - changed.size)
     const shapes = (dx: number, v: number[]): Shape[] => {

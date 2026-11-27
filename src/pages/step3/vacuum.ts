@@ -3,7 +3,7 @@ import type { Acting } from '../../cursor/body'
 // The fight with the port. `keys`: how far of the way from the hand to the port the arrow is held, by the seconds of the fight (dragged, digs in, slips, claws back, slips again, hangs on the rim). `slips`: the seconds a slip starts. `end`: the fight's length when the hand does nothing.
 // `grip`: the px a hand must travel away from the port to win back the whole way; `gripMost`: the most it can win back; `tire`: how fast what it won is lost again, a second; `stall`: how far a hand that pulls away slows the fight's clock, so a fighting hand lasts `end / (1 - stall)` seconds at most; `hard`: the px a second that count as pulling with all it has.
 export const VAC = {
-  keys: [[0, 0], [0.6, 0.22], [1.0, 0.25], [1.2, 0.55], [1.8, 0.58], [2.05, 0.82], [2.3, 0.86]],
+  keys: [[0, 0], [0.6, 0.22], [1.0, 0.25], [1.2, 0.55], [1.8, 0.58], [2.05, 0.79], [2.3, 0.83]],
   slips: [1.0, 1.8],
   end: 2.3,
   grip: 620,
@@ -21,7 +21,7 @@ export const VAC = {
   hand: [0.2, 0.03, 0.26],
   jerks: 3
 }
-const MOOD: Acting[] = ['nervous', 'nervous', 'shocked', 'angry', 'scared', 'scared']
+const MOOD: Acting[] = ['shocked', 'nervous', 'shocked', 'angry', 'scared', 'nervous']
 
 const smooth = (u: number): number => {
   const t = Math.max(0, Math.min(1, u))

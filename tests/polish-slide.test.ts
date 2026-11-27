@@ -6,6 +6,7 @@ import { Stage } from '../src/stage/stage'
 import type { Driver, DriverView, Pointer } from '../src/stage/types'
 import { TIER_Y } from '../src/table/layout'
 import { Machine, prepare } from '../src/table/physics'
+import { VAC } from '../src/pages/step3/vacuum'
 
 // The numbers the director holds in SHOT.slide: the scene's budget of waiting before the bats' power may be cut, the limit of all waiting, and the seconds after a stroke that met the ball in which no cut starts on the floor.
 const BUDGET = 5
@@ -161,12 +162,12 @@ describe('a beat\'s deadline while the visitor\'s ball is in play', () => {
     for (const f of facts) expect([f.name, f.tows]).toEqual([f.name, []])
   })
 
-  it('still ends the scene for everyone: within the scene\'s seconds plus 10, every beat reached, the page left, and no stretch longer than 8 s in which a press does nothing', () => {
+  it('still ends the scene for everyone: within the scene\'s seconds plus 10 and the longest fight with the port, every beat reached, the page left, and no stretch longer than 8 s in which a press does nothing', () => {
     for (const f of facts) {
       expect([f.name, f.left, f.gags]).toEqual([f.name, true, true])
       expect(f.scene).toBeGreaterThan(0)
-      expect(f.scene).toBeLessThanOrEqual(config.live.pinball.sceneSeconds + 10)
-      expect(f.page).toBeLessThanOrEqual(config.live.pinball.sceneSeconds + config.live.idleSeconds + 2)
+      expect(f.scene).toBeLessThanOrEqual(config.live.pinball.sceneSeconds + 10 + VAC.end / (1 - VAC.stall))
+      expect(f.page).toBeLessThanOrEqual(config.live.pinball.sceneSeconds + config.live.idleSeconds + 2 + VAC.end / (1 - VAC.stall))
       expect(f.dead).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
       expect(f.slid).toBeLessThanOrEqual(LIMIT + 1e-6)
     }
