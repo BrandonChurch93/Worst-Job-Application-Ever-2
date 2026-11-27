@@ -1,3 +1,16 @@
+diff --git a/src/diagnostics/NOTES.md b/src/diagnostics/NOTES.md
+index 96228f3e..191b0c78 100644
+--- a/src/diagnostics/NOTES.md
++++ b/src/diagnostics/NOTES.md
+@@ -47,6 +47,8 @@ A view is drawn without tone and grade: a pixel is the sRGB code of a linear val
+ ## What the finished look has to expose
+ 
+ - Textures (M2, `texels`): nothing beyond a `map` on the material of each textured mesh, with `repeat` set if it repeats. A mesh that takes several maps at different scales is judged by `map` alone. If the engine gets a lens with focus, the blur circle the view computes (`aperture * |d - focus| / d` at the focus plane, in pixels) has to be the engine's own, from `CameraPose.focus` and `CameraPose.aperture`.
++- The mark `userData.texels = 'through'` (M2, `texels`): for a mesh that only darkens or lightens the surface under it and has no surface detail of its own, such as a drawn shadow. The view leaves such a mesh out, so the pixel shows the surface the eye sees there. It exists because the view repaints every mesh opaque: the ball's shadow, a clear quad about 500 px square on the floor, hid the textured floor under the ball and was itself counted as bare.
++- The mark stands on `ball.shadow` and on nothing else. At the key `youre-fired` (final tier, hd) before it: 55,991 textured pixels, 1 counted, 1 soft. With it: 337,386 textured, 254,134 counted, 741 soft, a share of 0.0029.
+ - Light groups (`lights`): each light of the machine carries `userData.lightGroup`, and each mesh that glows with a group carries the same name, so its glow stays on with its group. The lights have to be in the context's list: today `src/app.ts` gives the rig's two.
+ - Coverage (M8): when the playfield is one mesh with its lines in a texture, the printed lines are not meshes any more. The table then has to give the lines to the view: either as flat meshes that carry `userData.coverage = 'mark'` and are drawn only in this view, or the measure has to read the playfield's texture. That is a decision for the round in which the playfield gets its print.
+ - Parts (`ids`, M1): every mesh carries `userData.standIn` with its part's name, as now.
 diff --git a/src/diagnostics/views.ts b/src/diagnostics/views.ts
 index 297969f3..7d5f20fd 100644
 --- a/src/diagnostics/views.ts
