@@ -91,10 +91,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; room: number; fall: number[]
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall: number[]
 }
 
-const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, out: [-9, 0, 0], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false, sink: [-1, 0, 0, 0, 0, 0], latch: -9, sv: 0, roll: [0, 0], room: 0, fall: [0, 0, 0] })
+const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, out: [-9, 0, 0], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false, sink: [-1, 0, 0, 0, 0, 0], latch: -9, sv: 0, roll: [0, 0], fall: [0, 0, 0] })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
 const held = (side: string, time: number): boolean => flips.some((f) => f[0] === side && time >= f[1] && time < f[2])
@@ -190,8 +190,8 @@ const lagOf = (u: number): number => {
   const w = (u - FALL.still - FALL.grow) / rest
   return Math.max(0, ramp - ((top - 1) / 2) * rest * (w + Math.sin(Math.PI * w) / Math.PI))
 }
-// Live play, the room under a gate: while a ball is past the bats' tips on its way to a shut gate, lies on the gate's wire or was just thrown from it, the live view of the lobby and of the office stands `px` lower, so the wire, its posts and the hole under it are on the screen (the street's view has that room already). `in` and `out` are the seconds the view takes down and back, and `stay` the seconds after the kick it stays for the wire's swings.
-const ROOM = { px: 90, in: 0.1, out: 0.5, stay: 0.6 }
+// Live play, the room under a gate: while a ball is past the bats' tips on its way to a shut gate, lies on the gate's wire or was just thrown from it, the live view of the lobby and of the office aims `px` lower and goes there and back with the follow it has everywhere, so the wire, its posts and the hole under it are on the screen (the street's view has that room already). `stay`: the seconds after the kick it stays for the wire's swings.
+const ROOM = { px: 90, stay: 0.6 }
 // The roll in a tube: the arrow turns by `gear` radians for each ball's width travelled, a whole number of turns over the tube, and the last `ease` of the way slows the turn to rest. In the film the roll down the feed tube is over after `film` balls, before the cut to the wide view of the table.
 const TUMBLE = { gear: 1, ease: 0.15, film: 10.5 }
 // How far shut the half shells are for the share of the close that has passed: a slow swing, then a snap into the seam with growing speed.
@@ -984,11 +984,7 @@ export function makePage(): PageLogic {
         io.cursor.setGround(on ? PORT_TOP : 0)
       }
       const to = target()
-      const under = ROOM.px * smooth(s.room)
-      s.room = Math.max(0, Math.min(1, s.room + (atGate() ? dt / ROOM.in : -dt / ROOM.out)))
-      const room = ROOM.px * smooth(s.room)
-      to.scroll = Math.min(lastScroll, to.scroll + room)
-      if (room !== under) s.scroll = Math.min(lastScroll, s.scroll + room - under)
+      if (atGate()) to.scroll = Math.min(lastScroll, to.scroll + ROOM.px)
       const rate = Math.min(1, dt / (live.tierTravelSeconds / 4))
       const cap = 4200 * dt
       if (s.out[0]! >= 0) {

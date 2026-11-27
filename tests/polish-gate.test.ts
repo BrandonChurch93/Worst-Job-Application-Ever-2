@@ -1,0 +1,200 @@
+import { createHash } from 'node:crypto'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { stepHz } from '../src/config'
+import { pages } from '../src/pages'
+import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
+import type { DrawList, Driver } from '../src/stage/types'
+import { WIRE, movingShapes } from '../src/table/draw'
+import { BALL, TH, TIERS, TIER_Y } from '../src/table/layout'
+import { Machine, SAVE, prepare } from '../src/table/physics'
+
+// The save at a shut gate as it must read at real size, and the ball's first frames out of the port. Stepped, no browser.
+const EACH = stepHz / 60
+// The film's pinball take as it was before this work (commit 305e5bf3): the machine's events as a count and a hash of their names, balls and steps; the ball's place on the feed rail and the page's scroll at page time 5.2 s (film frame 4332);
+// the stage step on which the ball left the feed rail; and the stage step of the release.
+const WAS = { events: 71, hash: '2de74972e18c5c12926bbeb879f810b44699d585356401bc7f112d671630db03', at: 16.463416279267907, scroll: 1345.716953935067, arrive: 2068, release: 792 }
+
+interface Row { mode: string; v: number; taken: number; names: string[]; turn: number; gap: number; flip: number[]; own: number[]; state: number[] }
+
+const stateOf = (m: Machine, k: number): number[] => movingShapes(m, [false, false, false], false).find((s) => s.id === `gate.${k}`)!.v!
+const gapOf = (m: Machine, k: number): number => {
+  const b = m.balls[0]!
+  const turn = WIRE.shut + (stateOf(m, k)[1] ?? 0)
+  const y = WIRE.tall * Math.sin(turn) + (TH - WIRE.pin - (b.y - TIER_Y[k]!)) * BALL
+  const z = WIRE.axle + WIRE.tall * Math.cos(turn) - 0.5 * BALL
+  return Math.hypot(y, z) - 0.5 * BALL - WIRE.thick
+}
+// How far down the table the top wire stands from its rest place, px.
+const down = (turn: number): number => WIRE.tall * (Math.sin(WIRE.shut + turn) - Math.sin(WIRE.shut))
+const lost = (live: boolean, k: number, w: { x: number; vx: number; vy: number }): { rows: Row[]; take: number; kick: number; m: Machine } => {
+  const m = new Machine()
+  m.live = live
+  m.gate = [false, false, false]
+  m.toPlane(0, w.x, TIER_Y[k]! + 10.2, w.vx, w.vy)
+  const row = (names: string[]): Row => {
+    const state = stateOf(m, k)
+    return { mode: m.balls[0]!.mode, v: m.balls[0]!.y - TIER_Y[k]!, taken: m.taken, names, turn: state[1] ?? 0, gap: gapOf(m, k), flip: [...m.flip], own: [...m.own], state }
+  }
+  const rows: Row[] = [row([])]
+  let take = -1
+  let kick = -1
+  for (let n = 1; n < 700 && (kick < 0 || n <= kick + 160); n++) {
+    const names = m.step(false, false).filter((e) => e.ball === 0).map((e) => e.name)
+    rows.push(row(names))
+    if (take < 0 && names.includes('gate-take')) take = n
+    if (kick < 0 && names.includes('ball-save')) kick = n
+  }
+  return { rows, take, kick, m }
+}
+const ways = [{ x: 10.1, vx: 0, vy: 4 }, { x: 9.8, vx: 1.3, vy: 6 }, { x: 10.2, vx: -3, vy: 5 }, { x: 9.85, vx: 6, vy: 24 }, { x: 10, vx: 0, vy: 0.5 }]
+
+describe('the save at the gate, read at real size', () => {
+  beforeAll(async () => {
+    await prepare()
+  })
+
+  it('loads the wire by a third of the ball\'s width down the table and holds it there, dead still, for five frames of 60 or more', () => {
+    for (const k of [0, 1]) for (const w of ways) {
+      const { rows, take, kick, m } = lost(true, k, w)
+      expect(take).toBeGreaterThan(0)
+      const on = rows.slice(take, kick).filter((r) => r.taken > 0)
+      const deep = Math.max(...on.map((r) => r.turn))
+      expect(down(deep), 'the travel of the top wire, px').toBeGreaterThanOrEqual(BALL / 3)
+      const held = on.filter((r) => r.turn === deep)
+      expect(held.length / EACH, 'frames at the deepest').toBeGreaterThanOrEqual(5)
+      expect(held.length).toBeGreaterThanOrEqual(SAVE.still)
+      for (const r of held) expect(r.v).toBeCloseTo(SAVE.rest + SAVE.back, 9)
+      expect(on.indexOf(held[0]!) + held.length, 'the hold ends where the drive begins').toBe(SAVE.land + SAVE.wind)
+      m.free()
+    }
+  })
+
+  it('leaves no gap between the shell and the wire from the landing to the kick, and throws on the frame the ball turns', () => {
+    for (const k of [0, 1]) for (const w of ways) {
+      const { rows, take, kick, m } = lost(true, k, w)
+      const on = rows.slice(take, kick + 1).filter((r, i) => r.taken > 0 || i === kick - take)
+      expect(on.length).toBe(SAVE.land + SAVE.wind + SAVE.drive + 1)
+      for (const r of on) expect(Math.abs(r.gap)).toBeLessThan(0.01)
+      const drive = rows.slice(kick - SAVE.drive - 1, kick)
+      for (let n = 1; n < drive.length; n++) {
+        expect(drive[n]!.v, 'the ball goes up').toBeLessThan(drive[n - 1]!.v)
+        expect(drive[n]!.turn, 'and the wire with it').toBeLessThan(drive[n - 1]!.turn)
+      }
+      expect(rows[kick - SAVE.drive - 2]!.v).toBe(rows[kick - SAVE.drive - 1]!.v)
+      expect(rows[kick]!.v, 'on the kick\'s step the ball sits on the wire').toBe(rows[kick - 1]!.v)
+      m.free()
+    }
+  })
+
+  it('swings the wire past its rest place twice or more after the kick, in swings of more than 2 px that grow smaller, and brings it to rest', () => {
+    for (const k of [0, 1]) {
+      const { rows, kick, m } = lost(true, k, ways[0]!)
+      const after = rows.slice(kick + 1).map((r) => r.turn)
+      const tops: number[] = []
+      let crossings = 0
+      let top = 0
+      for (let n = 1; n < after.length; n++) {
+        if (Math.abs(down(after[n]!)) > Math.abs(top)) top = down(after[n]!)
+        if (after[n - 1]! !== 0 && after[n]! !== 0 && Math.sign(after[n]!) !== Math.sign(after[n - 1]!)) {
+          crossings++
+          tops.push(top)
+          top = 0
+        }
+      }
+      tops.push(top)
+      expect(crossings).toBeGreaterThanOrEqual(2)
+      const seen = tops.slice(1).filter((t) => Math.abs(t) > 2)
+      expect(seen.length).toBeGreaterThanOrEqual(2)
+      expect(seen.length).toBeLessThanOrEqual(3)
+      for (let n = 1; n < tops.length; n++) expect(Math.abs(tops[n]!)).toBeLessThan(Math.abs(tops[n - 1]!))
+      expect(tops[0]!).toBeLessThan(-2)
+      expect(after.at(-1)).toBe(0)
+      m.free()
+    }
+  })
+
+  it('swings no bat at a save, live or film, and gives the gate in film mode the one number it had', () => {
+    for (const live of [true, false]) for (const k of [0, 1]) for (const w of ways) {
+      const { rows, take, kick, m } = lost(live, k, w)
+      expect(kick).toBeGreaterThan(0)
+      expect(take > 0).toBe(live)
+      for (const r of rows) {
+        expect(r.flip).toEqual([0, 0])
+        expect(r.own).toEqual([0, 0])
+        if (!live) expect(r.state).toEqual([0])
+      }
+      m.free()
+    }
+    expect(TIERS.length).toBe(3)
+  })
+})
+
+describe('the ball\'s first frames out of the port, in the film', () => {
+  let mc: Machine | null = null
+  const step = Machine.prototype.step
+  const events: [string, number, number][] = []
+  const feed: { n: number; s: number; y: number; scroll: number; ring: number[] }[] = []
+  let arrive = -1
+  let release = -1
+  beforeAll(() => {
+    Machine.prototype.step = function (this: Machine, l: boolean, r: boolean) {
+      mc = this
+      const out = step.call(this, l, r)
+      for (const e of out) events.push([e.name, e.ball, this.steps])
+      return out
+    }
+    const s = new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver() as Driver, film: filmOptions('pinball') })
+    let n = 0
+    while (!s.finished && s.time < 43) {
+      s.advance(1)
+      n++
+      const b = mc ? (mc as Machine).balls[0]! : null
+      if (!b) continue
+      const on = b.mode === 'rail' && b.rail === 'feed'
+      if (on && release < 0) release = n
+      if (!on && release >= 0 && arrive < 0) arrive = n
+      if (on && n <= release + 2 * stepHz) {
+        const list: DrawList = []
+        s.page.draw(list)
+        feed.push({ n, s: b.s, y: b.y * BALL, scroll: s.page.scroll(), ring: [...(list.find((x) => x.id === 'loader.ring')?.v ?? [])] })
+      }
+    }
+  })
+  afterAll(() => {
+    Machine.prototype.step = step
+  })
+  const hash = (): string => createHash('sha256').update(JSON.stringify(events)).digest('hex')
+  const frame = (k: number): { n: number; s: number; y: number; scroll: number; ring: number[] } => feed.find((f) => f.n === release + k * EACH)!
+
+  it('moves no event of the film\'s machine', () => {
+    if (process.env.GATE_WAS) console.log('WAS', JSON.stringify({ events: events.length, hash: hash(), at: feed.find((f) => f.n === 5.2 * stepHz)!.s, scroll: feed.find((f) => f.n === 5.2 * stepHz)!.scroll, arrive, release }))
+    expect(events.length).toBe(WAS.events)
+    expect(hash()).toBe(WAS.hash)
+  })
+
+  it('opens the port\'s ring on the frame before the ball moves', () => {
+    expect(release).toBe(WAS.release)
+    expect(frame(0).y).toBe(frame(1).y)
+    expect(frame(0).ring.length).toBe(1)
+    expect(frame(1).ring.length).toBe(2)
+    expect(frame(2).y).toBeGreaterThan(frame(1).y)
+  })
+
+  it('lets the ball fall from rest: a first step of under 4 px, nine steps each longer than the one before, and then no step more than 0.2 px shorter than the one before until it has the tube\'s pace', () => {
+    const steps: number[] = []
+    for (let k = 2; k <= 41; k++) steps.push(frame(k).y - frame(k - 1).y)
+    expect(steps[0]!).toBeGreaterThan(0.5)
+    expect(steps[0]!).toBeLessThan(4)
+    for (let k = 1; k <= 9; k++) expect(steps[k]! - steps[k - 1]!, `step ${k + 1}`).toBeGreaterThan(0.05)
+    for (let k = 10; k < steps.length; k++) expect(steps[k - 1]! - steps[k]!).toBeLessThan(0.2)
+    expect(Math.max(...steps)).toBeLessThan(1.2 * steps.at(-1)!)
+    expect(Math.abs(steps.at(-1)! - steps.at(-2)!)).toBeLessThan(0.01)
+  })
+
+  it('is the ball of before from 40 frames after the release on: at page time 5.2 s its place on the rail and the page\'s scroll are the numbers of before, and it leaves the tube on the same step', () => {
+    const at = feed.find((f) => f.n === 5.2 * stepHz)!
+    expect(at.s).toBe(WAS.at)
+    expect(at.scroll).toBe(WAS.scroll)
+    expect(arrive).toBe(WAS.arrive)
+  })
+})

@@ -38,7 +38,7 @@ const lost = (live: boolean, o: { k?: number; x?: number; vx?: number; vy?: numb
   const rows: Row[] = [rowOf(m, k, [])]
   let take = -1
   let kick = -1
-  for (let n = 1; n < 600 && (kick < 0 || n <= kick + (o.tail ?? 120)); n++) {
+  for (let n = 1; n < 600 && (kick < 0 || n <= kick + (o.tail ?? 160)); n++) {
     o.each?.(m, n)
     const names = m.step(false, false).filter((e) => e.ball === 0).map((e) => e.name)
     rows.push(rowOf(m, k, names))
@@ -74,10 +74,10 @@ describe('the save at the gate on the live site', () => {
       expect(on.length / SHEET).toBeGreaterThanOrEqual(6)
       expect(on.length / SHEET).toBeLessThanOrEqual(8)
       expect(kick - take).toBeLessThanOrEqual(on.length + 2 * SHEET)
-      const still = on.slice(SAVE.land - SHEET / 2, SAVE.land)
+      const still = on.slice(SAVE.land + SAVE.wind - SAVE.still + 1, SAVE.land + SAVE.wind)
       for (const r of still) {
         expect(speed(r), 'the ball lies still on the wire').toBeLessThan(0.6)
-        expect(Math.abs(r.v - SAVE.rest)).toBeLessThan(0.02)
+        expect(Math.abs(r.v - SAVE.rest - SAVE.back)).toBeLessThan(0.02)
         expect(Math.abs(r.x - MID)).toBeLessThan(0.03)
       }
       expect(Math.max(...on.slice(0, SAVE.land).map((r) => r.turn)), 'the wire gives under the ball').toBeGreaterThan(wireOn(SAVE.rest))
