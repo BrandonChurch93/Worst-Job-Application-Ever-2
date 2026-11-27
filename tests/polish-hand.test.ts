@@ -2,11 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { HAND, TAIL } from '../src/cursor/body'
 import { pages } from '../src/pages'
+import { BotDriver, type BotName } from '../src/stage/bots'
 import { LANDING } from '../src/pages/marketing/script'
-import { filmFlow, filmOptions, ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
+import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
 import type { Pointer } from '../src/stage/types'
 import { SHIVER } from '../src/stage/turn'
-import { fork, forked, onScreen, PER, resting, rowOf, stroking, turnsOf, visit, type Row, type Turn } from './polish-hand-run'
+import { fork, forked, Kept, onScreen, PER, resting, rowOf, stroking, turnsOf, visit, type Row, type Turn } from './polish-hand-run'
 
 // What a page turn may do to the arrow under a resting hand, px of 1920 by 1080: how far from the pointer's place it may lie on the page when the page is flat,
 // how far from the pointer on the screen (its height over the page is seen in perspective), how far it may go in the 30 frames after, and how far its height may change.
@@ -160,6 +161,28 @@ describe('the arrow under a hand through a page turn', () => {
     expect(way(r.rows, m.play + lands - 1, m.play + lands + 30, true)).toBeLessThanOrEqual(FLAT.after)
     for (let k = m.half; k <= m.play + lands + 60; k++) expect(r.rows[k]!.state).not.toContain('startle')
   })
+})
+
+describe('the four bots, whose pointer the stage reads as a hand', () => {
+  for (const bot of ['keen', 'clumsy', 'random', 'skipper'] as BotName[]) {
+    it(`${bot} ends the site, and on every arriving page its arrow lies no further from its pointer than the pointer goes in one frame`, () => {
+      const kept = new Kept(new BotDriver(bot, config.seed))
+      const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: kept, seed: config.seed })
+      const rows: Row[] = []
+      for (let i = 0; i < config.live.botMaxSeconds * 60 && !s.finished; i++) {
+        s.advance(PER)
+        rows.push(rowOf(s, i, kept.log[s.step - 1]!, false))
+      }
+      expect(s.finished).toBe(true)
+      const all = turnsOf(rows)
+      expect(all.length).toBe(6)
+      for (const t of all) {
+        let stride = 0
+        for (let k = t.start; k <= t.flat; k++) stride = Math.max(stride, Math.hypot(rows[k]!.px - rows[k - 1]!.px, rows[k]!.py - rows[k - 1]!.py))
+        for (let k = t.half; k <= t.flat; k++) expect(off(rows[k]!)).toBeLessThanOrEqual(stride + FLAT.page)
+      }
+    })
+  }
 })
 
 describe('the arrow under a hand after a bolt', () => {

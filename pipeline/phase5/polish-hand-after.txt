@@ -20,7 +20,6 @@ turn 6 step5 to marketing (stroking): starts frame 10660; on the leaving page th
 hits: 898 step1, 1059 step1, 1114 step1, 1669 step1, 2340 step1, 3626 step2, 5389 step2, 5780 step3, 6462 step3, 6572 step3, 6666 step3, 6721 step3, 6782 step3, 6922 step3, 6952 step3, 6976 step3, 6989 step3, 7004 step3, 7307 step3, 7437 step3, 7897 step3, 8362 step3, 8392 step3, 10512 step5
 film hits of step 1, frames of the page at 60: 348
 
-the hit at frame 898 of step 1 under a resting hand, a row a frame of 60:
 frame    time page   phase    turn  ptrX  ptrY  tipX  tipY    z  scrX  scrY   off  move squash  angle state
   895  14.933 step1            0.0   985   892   985   892   46   986   897   5.4   0.0   1.00    0.0 plain
   896  14.950 step1            0.0   985   892   985   892   46   986   897   5.4   0.0   1.00    0.0 plain
