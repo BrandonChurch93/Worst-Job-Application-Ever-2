@@ -568,7 +568,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
       if (age <= 0 || age >= 1) continue
       const full = WIND.long[i % WIND.long.length]!
       const len = Math.max(24, Math.round((full * Math.sin(Math.PI * age)) / 24) * 24)
-      const across = (hash01(i, 21, s.seed) - 0.5) * 300
+      const across = (hash01(i, 21, s.seed) - 0.5) * WIND.spread
       const along = -330 + (hash01(i, 23, s.seed) - 0.5) * 120 + WIND.speed * WIND.life * age
       const cx = land.x + PAPER.w / 2 + ux * along - uy * across
       const cy = land.y + PAPER.h / 2 + uy * along + ux * across

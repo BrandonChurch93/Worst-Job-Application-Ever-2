@@ -17,7 +17,7 @@ export const FLOW = {
   machine: 0.25, wait: 1.2
 }
 // The wind: the sheet leaves the drop zone on a rising bend (`bend` px to the side of the straight line, `high` px over the card at the most), swinging `swing` radians `turns` times and coming to rest upright over the slot; `off` is the share of the wind that has blown before it lifts. The streaks: how many, how long each lives, how far apart they start, their speed in px a second and their heading in radians down from level.
-export const WIND = { off: 0.16, bend: 70, high: 64, swing: 0.75, turns: 1.6, streaks: 9, life: 0.34, every: 0.07, speed: 1900, heading: 0.52, long: [150, 96, 190], wide: 3, z: 40 }
+export const WIND = { off: 0.16, bend: 70, high: 64, swing: 0.75, turns: 1.6, streaks: 10, life: 0.36, every: 0.065, speed: 1800, heading: 0.52, long: [264, 168, 312], wide: 6, z: 30, spread: 250 }
 
 export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 28, reach: { rest: 43, min: 37, max: 52, bite: 26, haul: 70 } }
 export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 11, jerk: 9, settle: 0.5, snap: 0.72 }
