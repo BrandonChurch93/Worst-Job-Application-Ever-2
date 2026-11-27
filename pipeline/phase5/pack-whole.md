@@ -60,3 +60,18 @@ The round 24 visitor keeps the ball in play longer: the machine page is 2820 ste
 ## Tests
 
 `tests/pack-site.test.ts`, `tests/fix-packs.test.ts` (changed where the plan changed: sets, the turn, the save, the key, the limit), `tests/pack-whole.test.ts` (new): a heading and its frames agree; nothing is taken from a run; every set within the limit; a run never cut by the end of a set; the save's window holds the gate and both bats in every row of a recorded run (`pipeline/phase5/pack-whole-rows.json`, cut by `pack-whole-rows.mjs` from the walk); the key's marks follow the button in the recorded rows; the tiers' sheet; the visitor at the flippers; the pack's numbers against the page's files.
+
+## At the end (06:33 UTC)
+
+Pictures of R4's pack built at `adf4a8ae` (exit 0, 598 s, set A 10 files, set B 6 files, `limitTook` empty, `missing` empty), each looked at at its real size:
+
+- `set-B-05.png`, the blow close: 12 steps in a row, 1:55.02 to 1:55.20, one window at 100%. R first stands under 1:55.08 with the right bat still down, the bat is up and on the ball at 1:55.10, the ball is whole in every frame.
+- `set-B-06.png`, the save on the page of the base: the window holds page x 500 to 1422 and y 496 to 1080, so the Builder's box and both bats and the gate to the foot of the screen. The ball is 59 px higher at 2:18.00 than at 2:17.98; the machine's left bat is up at 2:18.02 and 2:18.05 with no mark under any frame.
+- `set-A-09.png` and `set-A-10.png`, the give back: 24 steps in a row, 0:43.47 to 0:43.85. The arrow lies still and tilted to 0:43.55, moves from 0:43.57, stands upright by 0:43.67.
+- `set-A-01.png` to `set-A-07.png` and `set-B-03.png` are byte equal to the pack built at `1d90c6bc` (`cmp`). `set-A-08.png` differs from it in 425 pixels by at most 16 levels of 255 (4 pixels by more than 8), cause UNKNOWN.
+
+Decisions:
+
+19. A message holds files of at most 1200 px and a sheet is 1399 px wide, so each sheet went to the Builder as two files cut from it with no scaling (frames 1 to 6 and 7 to 12, its labels and marks under each, its heading printed above). The pack's own files are not changed by this.
+20. The save on the helper's page (`origin/agent/polish-save` at `bd9332d0`, a worktree with these tools copied in, numbers only, no picture): `node pipeline/phase5/pack-whole-walk.mjs /tmp/run-save.json` gave 10760 steps and 0 problems, `node pipeline/phase5/pack-whole-plan.mjs /tmp/run-save.json` gave one save read from the ball's path, the ball low in the mouth from step 7933 and leaving at 7947, 14 steps, shown as one run of 24 frames 1/30 s apart on two sheets (7925 to 7971) in a window at 100% that holds the gate and both bats in 24 of 24 frames, `missing` empty. The hold is 14 steps of the page, not 59 to 66, so the plan does not split it into two runs; why the Builder's number and this one differ is UNKNOWN. The run file holds no word of the page at 7933 or 7947, so the heading does not say that the page said it.
+21. The throw of the helper's page (`origin/agent/polish-keys`) was not walked: no time was left for it beside the builds. The three sheets of the give back with a throw stand in `tests/pack-site.test.ts` on a made run only.
