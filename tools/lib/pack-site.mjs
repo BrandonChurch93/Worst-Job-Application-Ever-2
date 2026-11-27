@@ -778,8 +778,18 @@ export function momentsOf(cfg, run) {
     const on = run.gags.find((g) => g.gag === STANDS.until && g.step >= s1.first && g.step <= s1.last) || null
     const last = hot && (!on || hot.step <= on.step) ? { step: hot.step, why: 'hot' } : on ? { step: on.step, why: 'on' } : null
     const clear = last ? presses.find((x) => x.press - KEYS.before >= last.step + KEYS.spent) : null
-    const shown = clear || presses[0] || null
-    if (shown) type = { ...shown, nth: presses.indexOf(shown) + 1, of: presses.length, clear: Boolean(clear), spent: last ? last.step : null, why: last ? last.why : null }
+    // Before that one, a press on the Email field, where the keys stay in their seats: its frames begin KEYS.home steps or more after the page goes on to that field (the keys have flown home),
+    // after the turrets have stopped, and end before the first red slab and before the page asks for the resume. In such frames the pressed key is in its seat from the press to the last frame.
+    const inS1 = (g) => g.step >= s1.first && g.step <= s1.last
+    const email = run.gags.find((g) => g.gag === KEYS.field && inS1(g)) || null
+    const next = run.gags.find((g) => g.gag === KEYS.until && inS1(g)) || null
+    const slab = email ? (run.hits || []).find((h) => h.name === KEYS.slab && h.step >= email.step) || null : null
+    const end = Math.min(s1.last + 1, next ? next.step : Infinity, slab ? slab.step : Infinity)
+    const seated = email && last ? presses.find((x) => x.press - KEYS.before >= Math.max(email.step + KEYS.home, last.step + KEYS.spent) && x.release + KEYS.after < end) || null : null
+    const shown = seated || clear || presses[0] || null
+    const named = run.gags.find((g) => g.gag === STANDS.until && inS1(g)) || null
+    const field = !shown ? null : email && shown.press >= email.step ? 'email' : named && shown.press >= named.step ? 'last' : 'first'
+    if (shown) type = { ...shown, nth: presses.indexOf(shown) + 1, of: presses.length, clear: Boolean(seated || clear), spent: last ? last.step : null, why: last ? last.why : null, field, seated: seated ? email.step : null }
   }
   return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, thrown, flippers, leaves, left, flip, met: blow, stroke, strokes, blows, save, saves, gate, unsaved, type, turn: turns[0] || null, falls: fallsOf(cfg, rows, s3), reveal: revealOf(cfg, rows, s3) } }
 }
@@ -992,7 +1002,15 @@ export const TURNS = { seat: 18, flat: 27, quiet: 31, lead: 2, still: 4 }
 // The key press: its run starts `before` frames before the press and ends `after` frames after the release. `mark` stands under a frame in which the visitor holds the mouse button.
 // `rest`: after it lets a key go the visitor stays where it is, hands still, for this many steps before it walks on. `spent`: a bolt of a turret (1500 px a second, TURRET.boltSpeed
 // in src/pages/step1/turrets.ts) crosses the whole 1920 px page in fewer steps than this, so this long after the turrets' last shot none is in the air.
-export const KEYS = { before: 3, after: 8, mark: 'down', rest: 6, spent: 78 }
+// `home`: when the page goes on to the Email field its keys fly home and seat, in 0.515 s at the most (FLIGHT in src/pages/step1/index.ts: crouch 0.035 + ripple 0.17 + jitter 0.02 + seconds 0.2 + seat 0.09),
+// 31 steps; a step more, and every key is in its seat. `field`, `until`, `slab`: the page's names for the Email field, the resume after it, and a red slab's drop.
+export const KEYS = { before: 3, after: 8, mark: 'down', rest: 6, spent: 78, home: 32, field: 'step1.email', until: 'step1.resume', slab: 'slab-drop' }
+// What the page does to its keys on each field, by its design (kit/02-SUBJECT.md, "Field by field").
+export const FIELD_WORDS = {
+  email: 'By the page\'s design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go',
+  last: 'This press lies on the last name, where by the page\'s design the keys change places after every letter: the keys that fly in these frames do so by that design',
+  first: 'This press lies on the first name, where by the page\'s design the turrets fire at the arrow'
+}
 export const KEY_WORDS = `Under a frame, "${KEYS.mark}": the visitor holds the mouse button in it.`
 // The mark under frame i: picture i is the site before the visitor's events of step i, so it shows the button as row i - 1 holds it.
 export const downAt = (rows, i) => (i > 0 && rows[i - 1][COL.down] ? KEYS.mark : '')
@@ -1222,18 +1240,22 @@ export function motionPlan(cfg, run) {
     const key = [Math.min(...held.map((i) => rows[i][COL.pointerX])), Math.min(...held.map((i) => rows[i][COL.pointerY])), Math.max(...held.map((i) => rows[i][COL.pointerX])), Math.max(...held.map((i) => rows[i][COL.pointerY]))]
     const all = range(from, to)
     const box = [Math.min(key[0], ...all.map((i) => rows[i][COL.heroX] - TAKEN.room)), Math.min(key[1], ...all.map((i) => screenY(i) - TAKEN.room)), Math.max(key[2], ...all.map((i) => rows[i][COL.heroX] + TAKEN.room)), Math.max(key[3], ...all.map((i) => screenY(i) + TAKEN.room))]
-    const fit = closeFit(cfg, box, twelve)
-    const steps = close('type', `as the visitor's arrow presses a key of the page's keyboard and lets it go: every frame from ${KEYS.before} frames before the press (${timeOf(m.type.press)}) to ${KEYS.after} after the release (${timeOf(m.type.release)})`, from, to, m.type.press, twelve, [fit.window], fit.percent,
+    const lay = closeLayout(cfg, 3, count, CLOSE_HEAD.lines + 1)
+    const fit = closeFit(cfg, box, lay)
+    const steps = close('type', `as the visitor's arrow presses a key of the page's keyboard and lets it go: every frame from ${KEYS.before} frames before the press (${timeOf(m.type.press)}) to ${KEYS.after} after the release (${timeOf(m.type.release)})`, from, to, m.type.press, lay, [fit.window], fit.percent,
       `one fixed window on the key, its neighbours and the arrow, ${scaleWords(fit.percent)} (${placeWords(fit.window)})`, ['key', 'move'])
     const r = runs[runs.length - 1]
     // Which press it is, in true words, and a hit on the arrow inside the run, so that what it does to the page is not read as a press.
     const hit = (run.hits || []).find((h) => HITS.includes(h.name) && h.step >= steps[0] && h.step <= steps[steps.length - 1])
     const nth = cfg.live.step1.hitsBeforeTurretsOverheat
     const stopped = m.type.why === 'hot' ? `bolt ${nth} hit the arrow at ${timeOf(m.type.spent)} and the turrets fire no more after it` : `the page went on to the last name at ${timeOf(m.type.spent)} and its turrets fire no more from then`
-    const which = m.type.clear
+    const which = m.type.seated !== null && m.type.seated !== undefined
+      ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first on the Email field after its keys have come home: the page went on to the Email field at ${timeOf(m.type.seated)} and these frames begin ${((from - m.type.seated) / VISITOR.hz).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}`
+      : m.type.clear
       ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets have stopped: ${stopped}; these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
       : `The first press of the visitor's on the keyboard; the turrets may fire in these frames`
-    r.after = [which, hit ? `In these frames ${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : '', `The visitor rests ${KEYS.rest} frames after it lets a key go`].filter(Boolean).join('. ')
+    const where = m.type.seated !== null && m.type.seated !== undefined ? '' : FIELD_WORDS[m.type.field] || ''
+    r.after = [which, where, hit ? `In these frames ${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : '', `The visitor rests ${KEYS.rest} frames after it lets a key go`].filter(Boolean).join('. ')
   }
   if (have(m.taken)) {
     // The take whole and close: every step from TAKEN.before frames before the page takes the arrow until TAKEN.after frames after the arrow arrives: the first step, after it has moved TAKEN.moves px or more in a step, at which it moves under TAKEN.rest px.

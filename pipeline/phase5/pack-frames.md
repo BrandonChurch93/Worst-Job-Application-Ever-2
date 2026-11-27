@@ -60,3 +60,18 @@ Faults of this build's headings, mended after it: the take said the arrow "has c
 - `pack-frames-list.mjs`: the sets of a built pack with each heading, and the sha256 of every file.
 
 MEASURED 09:27 UTC: the visit the pack recorded for itself (`out/work/packs/cache/2bacfab4367d/live-high/site-run.json`) holds the same 10795 rows and the same moments as my walk `/tmp/run2.json`. `node pipeline/phase5/pack-frames-check.mjs` on it: 14 lines ok, 0 NOT.
+
+## The key sheets on the Email field (the Builder's mail of 09:38 UTC)
+
+The fault: press 7 of the walk lies on the last name, where the keys change places after every letter by the page's design (kit/02-SUBJECT.md, "Field by field"). In round 24's B-01 and B-02 the keys fly while the button is held, so the pressed key's way back after the release is not in the sheet.
+
+Decisions:
+- The press shown is the first on the Email field whose frames begin `KEYS.home` (32) steps or more after the page goes on to that field and end before the first red slab drops and before the page asks for the resume. STATED from `src/pages/step1/index.ts`: going on from the last name sends the keys home (`goHome()`), a flight and seat of at most 0.515 s (`FLIGHT` crouch 0.035 + ripple 0.17 + jitter 0.02 + seconds 0.2 + seat 0.09), 31 steps. With no such press the rule before stands (the first after the turrets have stopped, else the first), and the heading names the field the press lies on and what the page does to its keys there.
+- The heading says: which press, when the page went on to the Email field and how long after it the frames begin, and "By the page's design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go". The heading is one line longer (7), the tiles 272 px tall instead of 278.
+- No sheet of the shuffle: a close picture costs about 5 s of the build, a sheet of twelve one minute; the Builder asked for it only at no extra build time.
+- `pipeline/phase5/pack-frames-key.mjs` reads the pressed key's left edge from the pictures, frame by frame.
+
+MEASURED on round 24's walk (`/tmp/run2.json`), 09:41 to 09:46 UTC:
+- `node pipeline/phase5/pack-frames-check.mjs` on it: press 10 of 13 (key A), steps 1476 to 1499; field email; the page goes on to the Email field at step 1420, the frames begin 56 steps after it; they end 227 steps before the first red slab (1726) and 253 before the resume (1752); 0 hits on the arrow in the frames; 0 marks that do not follow the button.
+- Trial sheets (`node pipeline/phase5/pack-frames-sheets.mjs /tmp/run2.json /tmp/sheets2 type`), every frame seen at real size: the keys stand in their usual order (2 3 4 5, Tab Q W, Caps Lock A S D, Shift Z X) in all 24 frames and none leaves its seat; no bolt, no turret; key A is dark and smaller under "down", 0:24.67 to 0:24.85, and light again from 0:24.88.
+- `node pipeline/phase5/pack-frames-key.mjs /tmp/run2.json /tmp/sheets2/cache`: the key's left edge is at x 527.5 before the press, 531.8 then 533.9 while held; after the release 531.8, 529.5, 526.7, 525.8, 525.8, 526.5, 526.7, 527.5: it goes 1.8 px past its place on the fourth and fifth frame and is back at 527.5 on the eighth, the sheet's last. The rows hold no place of a key, so this is read from the pictures only.

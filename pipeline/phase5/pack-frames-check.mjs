@@ -60,6 +60,13 @@ if (type.length) {
   const wrong = s.filter((i, j) => k[j].includes(KEYS.mark) !== Boolean(rows[i - 1][COL.down]))
   const hits = run.hits.filter((h) => h.step >= s[0] && h.step <= s[s.length - 1])
   say(wrong.length === 0 && s[0] === m.type.press - KEYS.before && s[s.length - 1] === m.type.release + KEYS.after, `key: press ${m.type.nth} of ${m.type.of}, clear ${m.type.clear} (${m.type.why}), steps ${span(s)}, marks that do not follow the button ${wrong.length}, hits on the arrow in its frames ${hits.length}`)
+  const mail = run.gags.find((g) => g.gag === KEYS.field)
+  const next = run.gags.find((g) => g.gag === KEYS.until)
+  const slab = mail ? run.hits.find((h) => h.name === KEYS.slab && h.step >= mail.step) : null
+  const named = run.gags.find((g) => g.gag === 'step1.lastName')
+  const shuffles = named && mail ? s.filter((i) => i >= named.step && i < mail.step + KEYS.home).length : null
+  say(m.type.field === 'email' && m.type.seated === (mail ? mail.step : null) && s[0] - mail.step >= KEYS.home && (!next || s[s.length - 1] < next.step) && (!slab || s[s.length - 1] < slab.step) && shuffles === 0,
+    `key: field ${m.type.field}; the page goes on to the Email field at step ${mail ? mail.step : 'none'}, the frames begin ${mail ? s[0] - mail.step : 'no'} steps after it (keys home after ${KEYS.home}); they end ${slab ? slab.step - s[s.length - 1] : 'no'} steps before the first red slab (step ${slab ? slab.step : 'none'}) and ${next ? next.step - s[s.length - 1] : 'no'} before the resume (step ${next ? next.step : 'none'}); frames on the last name or in the keys' flight home: ${shuffles}. The rows hold no place of a key: that the pressed key is in its seat in every frame is read from the page's rule for the field, and seen by eye on the pictures`)
   const block = keyBlock(cfg)
   const s1 = run.pages.find((p) => p.page === 'step1')
   let n = 0

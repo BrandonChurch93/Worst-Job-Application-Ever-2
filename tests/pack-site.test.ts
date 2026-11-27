@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { BANNED, briefFor, neutral, packPlan, rolesOf } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
 import { FLIP, MID, MOUTH } from '../src/table/layout'
-import { BLOW, CLOSE, COL, DROP, FLIPS, FULL_WORDS, GATE, GIVES, HAND_WORDS, KEYS, KEY_WORDS, MOVES, MOVE_WORDS, PAGE_HAS, SAVE, SEAT, TAKEN, TURNS, gateWindow, holdsBox, seatWindows, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, handAt, handsOff, keyBlock, makeVisitor, momentsOf, motionPlan, saveWindow, siteLines, siteNotes, spreadSteps, struckWords, tierSheet, closeWindow, windowHolds } from '../tools/lib/pack-site.mjs'
+import { BLOW, CLOSE, COL, DROP, FIELD_WORDS, FLIPS, FULL_WORDS, GATE, GIVES, HAND_WORDS, KEYS, KEY_WORDS, MOVES, MOVE_WORDS, PAGE_HAS, SAVE, SEAT, TAKEN, TURNS, gateWindow, holdsBox, seatWindows, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, handAt, handsOff, keyBlock, makeVisitor, momentsOf, motionPlan, saveWindow, siteLines, siteNotes, spreadSteps, struckWords, tierSheet, closeWindow, windowHolds } from '../tools/lib/pack-site.mjs'
 
 const root = path.resolve(__dirname, '..')
 const cfg = JSON.parse(fs.readFileSync(path.join(root, 'config/showcase.json'), 'utf8'))
@@ -571,7 +571,7 @@ describe('the packs of the unit site', () => {
   })
 
   it('R4: a key of the page keyboard at every step, from three frames before the press to eight after the release, at 100%, with a mark under each frame in which the button is held', () => {
-    expect(facts.moments.type).toEqual({ press: LONG + 32, release: LONG + 38, nth: 1, of: 1, clear: false, spent: null, why: null })
+    expect(facts.moments.type).toEqual({ press: LONG + 32, release: LONG + 38, nth: 1, of: 1, clear: false, spent: null, why: null, field: 'first', seated: null })
     const type = filesOf(planOf('R4')).filter((f) => f.moment === 'type')
     expect(type.length).toBe(2)
     const steps = type.flatMap((f) => f.steps!)
@@ -587,7 +587,7 @@ describe('the packs of the unit site', () => {
       expect(f.percent).toBe(100)
       expect(f.heading.startsWith(`Consecutive frames, 1/60 s apart, as the visitor's arrow presses a key of the page's keyboard and lets it go: every frame from 3 frames before the press (0:05.53) to 8 after the release (0:05.63), one fixed window on the key, its neighbours and the arrow, ${FULL_WORDS} (x `)).toBe(true)
       // With one press only, and the turrets not known to have stopped, the heading says so and claims nothing more.
-      expect(f.heading).toContain(". The first press of the visitor's on the keyboard; the turrets may fire in these frames. The visitor rests 6 frames after it lets a key go. ")
+      expect(f.heading).toContain(`. The first press of the visitor's on the keyboard; the turrets may fire in these frames. ${FIELD_WORDS.first}. The visitor rests 6 frames after it lets a key go. `)
       expect(f.heading.endsWith(`${KEY_WORDS} ${MOVE_WORDS}`)).toBe(true)
       expect(linesOf(f)).toBeLessThanOrEqual(f.lines!)
       // The window holds the key under the pointer, the arrow in every frame, and a key's width of neighbours round them.
@@ -599,7 +599,7 @@ describe('the packs of the unit site', () => {
     const struck = madeRun()
     struck.hits.push({ name: 'bolt-hit-cursor', step: LONG + 44, page: 'step1', x: 0, y: 0 })
     const hit = motion(momentsOf(cfg, struck)).items.find((x) => x.moment === 'type')!
-    expect(hit.heading).toContain(". The first press of the visitor's on the keyboard; the turrets may fire in these frames. In these frames a turret's bolt hits the arrow at 0:05.73. The visitor rests ")
+    expect(hit.heading).toContain(`. The first press of the visitor's on the keyboard; the turrets may fire in these frames. ${FIELD_WORDS.first}. In these frames a turret's bolt hits the arrow at 0:05.73. The visitor rests `)
     // Among the visitor's presses the sheet takes the first whose frames begin after the turrets have stopped: KEYS.spent steps after the page goes on to the last name,
     // or after the bolt that overheats them, whichever the run holds first. The heading says which press it is and why no bolt lands in its frames.
     const twice = madeRun()
@@ -609,11 +609,41 @@ describe('the packs of the unit site', () => {
     }
     twice.gags.push({ gag: 'step1.lastName', step: LONG + 50 })
     const later = momentsOf(cfg, twice)
-    expect(later.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 2, of: 2, clear: true, spent: LONG + 50, why: 'on' })
+    expect(later.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 2, of: 2, clear: true, spent: LONG + 50, why: 'on', field: 'last', seated: null })
     expect(LONG + 132 - KEYS.before).toBeGreaterThanOrEqual(LONG + 50 + KEYS.spent)
     const shown = motion(later).items.filter((x) => x.moment === 'type')
     expect(shown[0]!.steps![0]).toBe(LONG + 132 - KEYS.before)
-    expect(shown[0]!.heading).toContain(". Press 2 of the visitor's 2 on the keyboard, the first whose frames begin after the turrets have stopped: the page went on to the last name at 0:05.83 and its turrets fire no more from then; these frames begin 1.32 s later, so no bolt lands in them. The visitor rests ")
+    expect(shown[0]!.heading).toContain(`. Press 2 of the visitor's 2 on the keyboard, the first whose frames begin after the turrets have stopped: the page went on to the last name at 0:05.83 and its turrets fire no more from then; these frames begin 1.32 s later, so no bolt lands in them. ${FIELD_WORDS.last}. The visitor rests `)
+    // Before that one the sheet takes a press on the Email field, where the keys stay in their seats: the first whose frames begin KEYS.home steps or more after the page goes on to that field
+    // and end before the first red slab drops and before the page asks for the resume. The heading names the field and says in one sentence what the page does to its keys there.
+    const mail = madeRun()
+    for (const at of [LONG + 100, LONG + 132]) for (let i = at; i < at + 8; i++) {
+      mail.rows[i]![COL.down] = 1
+      for (const [c, v] of [[COL.pointerX, KEY.x], [COL.pointerY, KEY.y], [COL.heroX, KEY.x], [COL.heroY, KEY.y]] as [number, number][]) mail.rows[i]![c] = v
+    }
+    mail.gags.push({ gag: 'step1.lastName', step: LONG + 10 }, { gag: KEYS.field, step: LONG + 80 })
+    const seated = momentsOf(cfg, mail)
+    // The press at LONG + 100 lies on the Email field too, but its frames begin while the keys still fly home.
+    expect(LONG + 100 - KEYS.before - (LONG + 80)).toBeLessThan(KEYS.home)
+    expect(seated.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 3, of: 3, clear: true, spent: LONG + 10, why: 'on', field: 'email', seated: LONG + 80 })
+    const sat = motion(seated).items.filter((x) => x.moment === 'type')
+    expect(sat[0]!.steps![0]).toBe(LONG + 132 - KEYS.before)
+    expect(sat[0]!.heading).toContain(`. Press 3 of the visitor's 3 on the keyboard, the first on the Email field after its keys have come home: the page went on to the Email field at 0:06.33 and these frames begin 0.82 s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. The visitor rests 6 frames after it lets a key go. `)
+    for (const f of sat) expect(linesOf(f)).toBeLessThanOrEqual(f.lines!)
+    expect(FIELD_WORDS.email).toBe("By the page's design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go")
+    // A red slab that drops inside those frames, or the page asking for the resume in them, and the press is not taken for a seated one: the rule before stands, and the heading names the field it lies on.
+    for (const spoil of [{ hits: [{ name: KEYS.slab, step: LONG + 145, page: 'step1', x: 0, y: 0 }], gags: [] }, { hits: [], gags: [{ gag: KEYS.until, step: LONG + 148 }] }]) {
+      const spoilt = madeRun()
+      spoilt.rows = mail.rows
+      spoilt.gags.push(...mail.gags, ...spoil.gags)
+      spoilt.hits.push(...spoil.hits)
+      const t = momentsOf(cfg, spoilt).moments.type
+      expect(t).toMatchObject({ press: LONG + 100, nth: 2, seated: null, clear: true, field: 'email' })
+    }
+    // The keys are home KEYS.home steps after the page goes on: crouch, ripple, jitter, flight and seat of FLIGHT in the page's own file, at the visitor's rate, and a step more.
+    const flight = /const FLIGHT = \{([^}]*)\}/.exec(fs.readFileSync(path.join(root, 'src/pages/step1/index.ts'), 'utf8'))![1]!
+    const part = (name: string) => Number(new RegExp(`${name}: ([0-9.]+)`).exec(flight)![1])
+    expect(KEYS.home).toBe(Math.ceil((part('crouch') + part('ripple') + part('jitter') + part('seconds') + part('seat')) * VISITOR.hz) + 1)
     // A press that begins sooner than that after the turrets' last shot is not taken for a clear one: the first press stands, with the plain word.
     const soon = madeRun()
     soon.gags.push({ gag: 'step1.lastName', step: LONG + 10 })

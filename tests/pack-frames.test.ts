@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
-import { BLOW, CLOSE, CLOSE_PX, COL, DROP, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
+import { BLOW, CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
 import { FORM_BOTTOM, PAPER, SLOT, ZONE } from '../src/pages/step1/layout'
 import { BALL, FLIP, MID, MOUTH, PORT } from '../src/table/layout'
 import { HEADER, progressCentre } from '../src/shell/parts'
@@ -32,7 +32,7 @@ const at = (i: number): [number, number] => [num(i, COL.heroX), num(i, COL.heroY
 const span = (a: number, b: number) => Array.from({ length: b - a + 1 }, (_, i) => a + i)
 const time = (i: number) => `${Math.floor(i / 60 / 60)}:${(i / 60 - Math.floor(i / 60 / 60) * 60).toFixed(2).padStart(5, '0')}`
 const linesOf = (f: Sheet) => wrap(f.heading, f.columns! * f.tileW! + 8 * (f.columns! - 1) - 16, 15).length
-const m = rec.moments as { turn: { first: number; last: number }; taken: number; back: number; thrown: { first: number; stand: number; handed: number }; leaves: number; met: number; gate: { take: number; kick: number }; type: { press: number; release: number; nth: number; of: number; clear: boolean; spent: number; why: string } }
+const m = rec.moments as { turn: { first: number; last: number }; taken: number; back: number; thrown: { first: number; stand: number; handed: number }; leaves: number; met: number; gate: { take: number; kick: number }; type: { press: number; release: number; nth: number; of: number; clear: boolean; spent: number; why: string; field: string; seated: number } }
 const NEAR = ['seat', 'type', 'taken', 'given-back', 'drop', 'flip-close', 'save']
 
 describe('the motion pack of a recorded visit', () => {
@@ -166,12 +166,18 @@ describe('the motion pack of a recorded visit', () => {
     // Picture i shows the page before the visitor's events of step i, the button as row i - 1 holds it.
     steps.forEach((i, j) => expect(marks[j]!.split(' ').includes(KEYS.mark)).toBe(Boolean(num(i - 1, COL.down))))
     expect(steps.filter((_, j) => marks[j]!.split(' ').includes(KEYS.mark))).toEqual(span(m.type.press + 1, m.type.release))
-    // The press taken: the first whose frames begin KEYS.spent steps or more after the page went on to the last name, where its turrets retract (src/pages/step1/index.ts: advance()).
-    expect(m.type).toEqual({ press: 1329, release: 1341, nth: 7, of: 13, clear: true, spent: 1220, why: 'on' })
-    expect((rec.gags as { gag: string; step: number }[]).find((g) => g.gag === 'step1.lastName')!.step).toBe(m.type.spent)
+    // The press taken: the first on the Email field whose frames begin KEYS.home steps or more after the page went on to that field (its keys fly home there: src/pages/step1/index.ts, advance()),
+    // and end before the first red slab drops and before the page asks for the resume. On that field the keys stay in their seats (kit/02-SUBJECT.md, "Field by field").
+    expect(m.type).toEqual({ press: 1479, release: 1491, nth: 10, of: 13, clear: true, spent: 1220, why: 'on', field: 'email', seated: 1420 })
+    const gags = rec.gags as { gag: string; step: number }[]
+    const hits = rec.hits as { name: string; step: number }[]
+    expect(gags.find((g) => g.gag === 'step1.lastName')!.step).toBe(m.type.spent)
+    expect(gags.find((g) => g.gag === KEYS.field)!.step).toBe(m.type.seated)
     expect(steps[0]! - m.type.spent).toBeGreaterThanOrEqual(KEYS.spent)
-    expect((rec.hits as { name: string; step: number }[]).filter((h) => h.step >= steps[0]! && h.step <= steps[steps.length - 1]!)).toEqual([])
-    for (const f of type) expect(f.heading).toContain(`. Press 7 of the visitor's 13 on the keyboard, the first whose frames begin after the turrets have stopped: the page went on to the last name at ${time(1220)} and its turrets fire no more from then; these frames begin ${((steps[0]! - 1220) / 60).toFixed(2)} s later, so no bolt lands in them. The visitor rests ${KEYS.rest} frames after it lets a key go. `)
+    expect(steps[0]! - m.type.seated).toBeGreaterThanOrEqual(KEYS.home)
+    expect(steps[steps.length - 1]!).toBeLessThan(Math.min(gags.find((g) => g.gag === KEYS.until)!.step, hits.find((h) => h.name === KEYS.slab && h.step >= m.type.seated)!.step))
+    expect(hits.filter((h) => h.step >= steps[0]! && h.step <= steps[steps.length - 1]!)).toEqual([])
+    for (const f of type) expect(f.heading).toContain(`. Press 10 of the visitor's 13 on the keyboard, the first on the Email field after its keys have come home: the page went on to the Email field at ${time(1420)} and these frames begin ${((steps[0]! - 1420) / 60).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. The visitor rests ${KEYS.rest} frames after it lets a key go. `)
     // The window: the key under the pointer and the arrow in every frame, inside the key block, at 100%.
     const w = type[0]!.windows![0]!
     for (const i of steps) expect(holdsBox(w, [at(i)[0] - TAKEN.room, at(i)[1] - TAKEN.room, at(i)[0] + TAKEN.room, at(i)[1] + TAKEN.room])).toBe(true)
