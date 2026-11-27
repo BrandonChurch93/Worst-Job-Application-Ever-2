@@ -2,6 +2,7 @@ import { config, stepHz } from '../src/config'
 import type { CursorPose } from '../src/cursor/body'
 import { pages } from '../src/pages'
 import { SLOT } from '../src/pages/step1/layout'
+import { openOf, shutOf } from '../src/pages/step1/real/shredderShape'
 import { BotDriver } from '../src/stage/bots'
 import { liveFlow, MouseDriver, Stage } from '../src/stage/stage'
 import type { DrawList, Shape } from '../src/stage/types'
@@ -33,7 +34,7 @@ function frame(s: Stage, i: number, down: boolean, px: number, py: number, event
   return {
     i, time: s.time, gag: s.page.gag() ?? '', down, px, py, pose: c, taken: c.taken, events,
     angle: deg(c.lean + c.spin), heat: c.feel.heat * (1 - 0.72 * busy), arms: c.arms ? c.sprout : 0, paper: deg(paper?.rot ?? 0), paperX: paper?.x ?? 0, paperY: paper?.y ?? 0,
-    far: Math.hypot(c.x + BODY.x - SLOT.cx, c.y + BODY.y - SLOT.cy), zoneY: by('resume-zone')?.y ?? 0, open: jaw?.v?.[0] ?? 0, shut: jaw?.v?.[3] ?? 0, slotY: jaw?.y ?? 0, strips: list.filter((x) => x.id.startsWith('strip-')), keys, words, list
+    far: Math.hypot(c.x + BODY.x - SLOT.cx, c.y + BODY.y - SLOT.cy), zoneY: by('resume-zone')?.y ?? 0, open: openOf(jaw), shut: shutOf(jaw), slotY: jaw?.y ?? 0, strips: list.filter((x) => x.id.startsWith('strip-')), keys, words, list
   }
 }
 

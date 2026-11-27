@@ -7,7 +7,7 @@ import { SCREEN_H, TYPE } from '../../shell/parts'
 import { homeDistance, smooth } from '../../stage/camera'
 import type { CameraPose, DrawList, Emit, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIndex, seats, shuffled, SINK, TIP, tipOf, TRAVEL, typed } from './keyboard'
-import { slotShapes } from './real/shredderShape'
+import { SNAP_FROM, slotShapes } from './real/shredderShape'
 import { buildLayout, FIELDS, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, SLAB, SLOT, uploadGlyph, ZONE, type FieldName } from './layout'
 import { BITE, filmCamera, FRINGE, HOOD, makePlan, PILE, pointerAt, raised, RESUME, SHRED, START, TIMES, TUG, tugCurve, tugReach, type Plan } from './script'
 import { Turrets, TURRET, type TurretsState } from './turrets'
@@ -53,7 +53,7 @@ const GIVE = { settle: 0.42, hold: 0.2, low: 0.78, press: 0.06, rise: 0.2, back:
 // Then the cassette kicks by `kick`, the arrow is thrown back to where the pile lay inside `fall` seconds, short by `low` for `press` seconds and at its length again by `rise`, swinging `swing` radians at `hz` over `ring` seconds, and `beat` seconds after the kick, having stood, it is the visitor's again, eased over `GIVE.back`.
 const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.034, rise: 0.084, fall: 0.067, swing: 0.3, hz: 12, ring: 0.084, beat: 0.4 }
 // The slot closes after the tug: the hood folds and the cassette starts down at `seconds` for the whole travel, as far as `down` of it, where the cassette is still half up in its well; from there the two panels snap shut over it in `snap` seconds, three frames, each frame further than the last, the cassette going down under them, and on the step they meet the slot is gone and the tray is thrown `kick` px and comes back.
-const SHUT = { seconds: 0.36, down: 0.54, snap: 0.05, kick: 4 }
+const SHUT = { seconds: 0.36, down: SNAP_FROM, snap: 0.05, kick: 4 }
 // The live loss, after the paper is in: the seconds the empty hands are shed while the arrow is thrown back from the mouth, and how far, in page pixels.
 const SHED = { seconds: 0.29, back: 16, out: 0.1 }
 const PANEL = ['resume-zone', 'resume-prompt', 'resume-browse', 'resume-browse-label', 'resume-received']
@@ -949,6 +949,8 @@ export function makePage(): PageLogic {
       if (slotOpen || s.slot > SHUT.down) {
         s.slot = clamp(s.slot + (slotOpen ? io.dt / 0.25 : -io.dt / SHUT.seconds), slotOpen ? 0 : SHUT.down, 1)
         s.shut = 0
+      } else if (s.slot > 0 && s.slot < SHUT.down) {
+        s.slot = Math.max(0, s.slot - io.dt / SHUT.seconds)
       } else if (s.slot > 0) {
         s.shut += io.dt
         if (s.shut > SHUT.snap - 1e-6) {
@@ -1150,7 +1152,7 @@ export function makePage(): PageLogic {
         const open = smooth(s.slot)
         const rate = s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0
         const thrown = joltNow()
-        const slot = slotShapes(s.shut > 0 ? [open, s.turn, rate, s.shut / SHUT.snap] : [open, s.turn, rate])
+        const slot = slotShapes([s.shut > 0 ? -s.shut / SHUT.snap : open, s.turn, rate])
         if (thrown > 0) for (const x of slot) if (x.mechanism) x.y += thrown
         out.push(...slot)
       }

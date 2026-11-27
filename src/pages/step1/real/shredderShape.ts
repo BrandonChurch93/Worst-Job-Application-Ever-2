@@ -26,10 +26,11 @@ export const CASSETTE = {
 // The same in page pixels, for what meets the cassette on the page: the sheet, the strips.
 export const UNIT = { half: CASSETTE.half * K, deep: CASSETTE.deep * K, r: CASSETTE.roller.r * K }
 
-// The slot as the page draws it: the well, the lip and the housing. `jaw` is how far it is open, the rollers' turn, the rate the sheet is fed at and, while the panels snap shut, how far through the snap they are. On a contact the page throws the housing down the page from `housingY`, by a few pixels, for a moment.
+// The slot as the page draws it: the well, the lip and the housing. `jaw` is how far it is open, the rollers' turn and the rate the sheet is fed at. While the panels snap shut the first number is below zero: how far through the snap they are, with the slot held open at SNAP_FROM under them. On a contact the page throws the housing down the page from `housingY`, by a few pixels, for a moment.
 export const HOUSING = 22
+export const SNAP_FROM = 0.54
 export const housingY = SLOT.cy - SLOT.h / 2
-export function slotShapes(jaw: number[]): Shape[] {
+export function slotShapes(jaw: [number, number, number]): Shape[] {
   const w = SLOT.w
   return [
     { id: 'shredder-slot', part: 'shredder', kind: 'well', x: SLOT.cx - w / 2, y: SLOT.cy - SLOT.h / 2, w, h: SLOT.h, z0: -WELL, z1: 0, tone: 'dark' },
@@ -46,7 +47,7 @@ export const smooth = (t: number): number => {
 // How far the slot has opened, from the mechanism's shape: the number the page hands over, or the width it has grown to.
 export function openOf(jaw: Shape | undefined): number {
   if (!jaw) return 0
-  if (jaw.v && jaw.v.length > 0) return Math.min(1, Math.max(0, jaw.v[0]!))
+  if (jaw.v && jaw.v.length > 0) return jaw.v[0]! < 0 ? smooth(SNAP_FROM) : Math.min(1, Math.max(0, jaw.v[0]!))
   return Math.min(1, Math.max(0, jaw.w / SLOT.w))
 }
 
@@ -59,7 +60,7 @@ export function riseOf(open: number): number {
 }
 
 // The snap shut: how far through it the panels are, and what is left of their gap, a little less than even so the first frame is the longest step.
-export const shutOf = (jaw: Shape | undefined): number => (jaw && jaw.v && jaw.v.length > 3 ? Math.min(1, Math.max(0, jaw.v[3]!)) : 0)
+export const shutOf = (jaw: Shape | undefined): number => (jaw && jaw.v && jaw.v.length > 0 && jaw.v[0]! < 0 ? Math.min(1, -jaw.v[0]!) : 0)
 export const SNAP = 1.3
 export const gapLeft = (shut: number): number => Math.pow(1 - shut, SNAP)
 
