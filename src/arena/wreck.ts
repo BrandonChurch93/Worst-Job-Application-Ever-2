@@ -22,6 +22,7 @@ const SHARDS_EACH = 22
 const SPARKS_EACH = 64
 const SMOKE_EACH = 20
 const DUST = 44
+const DUST_SECONDS = 1.5
 // Over how many frames the wound of an aimed blast is painted ahead.
 const AHEAD_FRAMES = 18
 
@@ -35,13 +36,13 @@ function stumpGeometry(seed: number, id: number, high: number): { sides: THREE.B
     const a = corners[c]!, b = corners[(c + 1) % 4]!
     for (let i = 0; i < per; i++) {
       const u = i / per
-      ring.push({ x: a[0] + (b[0] - a[0]) * u, y: a[1] + (b[1] - a[1]) * u, z: high * (0.72 + 0.4 * rnd(seed, 700 + id, c * per + i)) })
+      ring.push({ x: a[0] + (b[0] - a[0]) * u, y: a[1] + (b[1] - a[1]) * u, z: high * (0.84 + 0.22 * rnd(seed, 700 + id, c * per + i)) })
     }
   }
   const sides = fresh(), top = fresh()
   const n = ring.length
-  const inner = ring.map((p, i) => ({ x: p.x * 0.5, y: p.y * 0.5, z: high * (0.74 + 0.4 * rnd(seed, 720 + id, i)) }))
-  const mid: V3 = [0, 0, high * (0.8 + 0.3 * rnd(seed, 740 + id))]
+  const inner = ring.map((p, i) => ({ x: p.x * 0.5, y: p.y * 0.5, z: high * (0.86 + 0.26 * rnd(seed, 720 + id, i)) }))
+  const mid: V3 = [0, 0, high * (0.9 + 0.2 * rnd(seed, 740 + id))]
   for (let i = 0; i < n; i++) {
     const p = ring[i]!, q = ring[(i + 1) % n]!
     const out: V3 = [p.x + q.x, p.y + q.y, 0]
@@ -219,7 +220,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
   flashes.renderOrder = 7
   smoke.renderOrder = 5
 
-  const bandStuff = keep(new THREE.MeshBasicMaterial({ map: keep(bandTexture()), color: new THREE.Color(1, 0.36, 0.06), opacity: 0, ...add }))
+  const bandStuff = keep(new THREE.MeshBasicMaterial({ map: keep(bandTexture()), color: new THREE.Color(1.5, 0.3, 0.03), opacity: 0, ...add, blending: THREE.NormalBlending }))
   const band = new THREE.Mesh(plane, bandStuff)
   band.name = 'arena-warning'
   band.visible = false
@@ -310,7 +311,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
       for (let j = 0; j < RUBBLE_EACH; j++) {
         const a = Math.atan2(-ay, ax) + (rnd(seed, 910 + i, j) - 0.5) * 2.6
         const far = 34 + 120 * rnd(seed, 920 + i, j) ** 1.5
-        const size = 12 + 30 * rnd(seed, 930 + i, j) ** 2
+        const size = 14 + 38 * rnd(seed, 930 + i, j) ** 1.7
         const z = size * 0.3 + Math.sin(Math.PI * fly) * (30 + 60 * rnd(seed, 935 + i, j))
         e.set(rnd(seed, 940 + i, j) * 6 + fly * 5, rnd(seed, 941 + i, j) * 6 + fly * 4, rnd(seed, 942 + i, j) * 6)
         q.setFromEuler(e)
@@ -411,12 +412,12 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
 
     // The dust of the split.
     const since = t - ARENA.splitAt
-    if (since >= 0 && since < 1.3) {
+    if (since >= 0 && since < DUST_SECONDS) {
       for (const d of dust) {
-        const born = 0.35 * rnd(seed, 990, d.k)
-        const g = clamp01((since - born) / (1.3 - born))
-        const dark = 0.34 * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g * 0.6)
-        const size = 40 + 130 * g + 40 * rnd(seed, 991, d.k)
+        const born = 0.3 * rnd(seed, 990, d.k)
+        const g = clamp01((since - born) / (DUST_SECONDS - born))
+        const dark = 0.5 * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g * 0.55)
+        const size = 50 + 170 * g + 50 * rnd(seed, 991, d.k)
         put(smoke, nSmoke++, wx(d.x) + 24 * g * (rnd(seed, 992, d.k) - 0.5), wy(d.y) + 30 * g, 10 + 40 * g, rnd(seed, 993, d.k) * 6, size, size, dark * 0.86, dark * 0.9, dark)
       }
     }
@@ -440,7 +441,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
       band.position.set(wx((big.x0 + big.x1) / 2), wy((big.y0 + big.y1) / 2), 0.8)
       band.rotation.z = Math.atan2(-(big.y1 - big.y0), big.x1 - big.x0)
       band.scale.set(long, big.width, 1)
-      bandStuff.opacity = (0.25 + 0.75 * tell * tell) * (0.72 + 0.28 * Math.sin(t * (9 + 22 * tell)))
+      bandStuff.opacity = (0.4 + 0.6 * tell * tell) * (0.72 + 0.28 * Math.sin(t * (9 + 22 * tell)))
     }
 
     for (const [mesh, n] of [[rubble, nRubble], [shards, nShards], [sparks, nSparks], [flashes, nFlash], [smoke, nSmoke]] as [THREE.InstancedMesh, number][]) {

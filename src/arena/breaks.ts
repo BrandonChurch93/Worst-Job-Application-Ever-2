@@ -174,7 +174,7 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
       const taper = step(-16, 46, s)
       const edge = half * (0.62 + 0.5 * (streak - 0.5)) + 14 * (mid - 0.5)
       const hair = noise(s / 70 + 31.7, c / 3.2, seed + 17)
-      let soot = step(edge + 46, edge - 12, ac) ** 1.4 * (0.6 + 0.4 * hair) * (0.82 + 0.18 * fine)
+      let soot = step(edge + 46, edge - 12, ac) ** 1.4 * (0.86 + 0.14 * hair) * (0.82 + 0.18 * fine)
       soot = Math.max(soot, 0.4 * step(edge + 96, edge + 4, ac) * (0.35 + 0.65 * mid))
       // Specks of soot thrown wide of the trench, and dark fissures that run with it.
       if (ac < edge + 74 && mid > 0.42) {
@@ -190,10 +190,10 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
       let ember = 0
       if (ac < half * 0.56) {
         // Two rows of them, in clumps drawn out along the line, as coals lie in a furrow.
-        const patch = step(0.3, 0.5, noise(s / 80 + id * 3.7, (c > 0 ? 3.3 : 9.1), seed + 15))
+        const patch = 0.45 + 0.55 * step(0.3, 0.5, noise(s / 80 + id * 3.7, (c > 0 ? 3.3 : 9.1), seed + 15))
         const blob = fbm(s / 21 + 50, c / 8.5 + id, seed + 16)
         const row = Math.exp(-(((ac - half * 0.27) / (half * 0.13)) ** 2))
-        ember = step(0.5, 0.64, blob) * (0.4 + 0.6 * step(0.36, 0.56, fine)) * patch * (0.12 + 0.88 * row) * taper
+        ember = step(0.46, 0.6, blob) * (0.4 + 0.6 * step(0.36, 0.56, fine)) * patch * (0.12 + 0.88 * row) * taper
       }
       data[at] = Math.round(255 * Math.min(1, soot))
       data[at + 1] = Math.round(255 * Math.min(1, depth))
