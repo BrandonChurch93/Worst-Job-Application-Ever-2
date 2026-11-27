@@ -195,18 +195,6 @@ export function bossKit(): BossKit {
 
 export type V3 = [number, number, number]
 
-// The fight's size: the hull of the target sheets is 590 px long and stands 226 page px long in the arena.
-export const K = 226 / 590
-
-export const clamp01 = (t: number): number => Math.min(1, Math.max(0, t))
-export const smooth = (t: number): number => { const u = clamp01(t); return u * u * (3 - 2 * u) }
-export const prog = (t: number, a: number, b: number): number => smooth((t - a) / (b - a))
-export const lin = (t: number, a: number, b: number): number => clamp01((t - a) / (b - a))
-export const mix = (a: number, b: number, t: number): number => a + (b - a) * t
-export const outBack = (t: number, s = 1.7): number => { const u = clamp01(t) - 1; return 1 + u * u * ((s + 1) * u + s) }
-export const outCubic = (t: number): number => 1 - Math.pow(1 - clamp01(t), 3)
-export const inCubic = (t: number): number => Math.pow(clamp01(t), 3)
-
 // An eight sided plate outline, counter clockwise, round (cx, cy).
 export function oct(hx: number, hy: number, c: number, cx = 0, cy = 0): [number, number][] {
   return [[cx - hx + c, cy - hy], [cx + hx - c, cy - hy], [cx + hx, cy - hy + c], [cx + hx, cy + hy - c], [cx + hx - c, cy + hy], [cx - hx + c, cy + hy], [cx - hx, cy + hy - c], [cx - hx, cy - hy + c]]

@@ -1,0 +1,287 @@
+import type { BossView, ViewPoint } from '../view'
+import { hash01 } from '../../core/random'
+import { BTN, CANNON, FEET, GUN, HATCH, HIPS, HULL, LEG, PAGE_BTN, SHIELD } from './numbers'
+
+// The pose of every part as plain numbers, a pure function of the view and a seed. No three.js here, so the tests read it in Node.
+// Lengths are model units (px of the target sheets) unless a name says page; K turns units into page px.
+
+export const K = 226 / 590
+
+export const clamp01 = (t: number): number => Math.min(1, Math.max(0, t))
+export const smooth = (t: number): number => { const u = clamp01(t); return u * u * (3 - 2 * u) }
+export const lin = (t: number, a: number, b: number): number => clamp01((t - a) / (b - a))
+export const prog = (t: number, a: number, b: number): number => smooth(lin(t, a, b))
+export const mix = (a: number, b: number, t: number): number => a + (b - a) * t
+export const outBack = (t: number, s = 1.7): number => { const u = clamp01(t) - 1; return 1 + u * u * ((s + 1) * u + s) }
+export const outCubic = (t: number): number => 1 - Math.pow(1 - clamp01(t), 3)
+export const inQuad = (t: number): number => clamp01(t) * clamp01(t)
+export const bump = (t: number, a: number, b: number): number => { const u = lin(t, a, b); return u <= 0 || u >= 1 ? 0 : Math.sin(Math.PI * u) }
+// A blow that starts at once and dies away: 1 at 0, 0 from `life` on.
+export const kick = (age: number, life: number): number => (age < 0 || age >= life ? 0 : Math.pow(1 - age / life, 2))
+const since = (now: number, at: number | null): number => (at === null ? -1 : now - at)
+
+export interface LookOptions {
+  seed: number
+  // Where the Submit button sits in the form, page px.
+  socket: ViewPoint
+  // Where he stands when formed and which way he faces there: the footholds are laid so that his feet stand exactly as in the target there.
+  home: { x: number; y: number; heading: number }
+}
+
+export const DEFAULTS: LookOptions = { seed: 20261127, socket: { x: 960, y: 960 }, home: { x: 960, y: 548, heading: Math.PI } }
+
+// The stages of the forming, as shares of boss.form.
+export const FORM = {
+  crack: [0, 0.06], launch: 0.06, clamp: [0.1, 0.19], press: [0.15, 0.2], land: 0.34, wingA: [0.38, 0.46], wingB: [0.43, 0.51], guns: [0.47, 0.58],
+  legs: [0.52, 0.6, 0.68, 0.76], legTime: 0.1, stand: [0.82, 0.93], shield: [0.84, 0.97], arc: 480
+} as const
+
+// The stages of the turret beat, as shares of boss.turret.
+export const TURRET = { hatch: [0.02, 0.16], rise: [0.14, 0.44], swing: [0.46, 0.8], lock: 0.8, kick: [0.8, 0.9], glow: [0.84, 1] } as const
+
+export const WALK = { pitch: 40, band: 0.24, lift: 46, bob: 5 }
+export const TIMES = { gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
+
+export interface LegPose { hip: [number, number, number]; knee: [number, number, number]; foot: [number, number, number]; yaw: number; up: number; down: number; footYaw: number; lift: number; show: number; planted: [number, number] }
+export interface GunPose { yaw: number; recoil: number; spin: number; lamp: number; flash: number; rise: number }
+export interface Pose {
+  // The boss's centre in world px (x right, y up the page) and the scale of the whole figure.
+  x: number
+  y: number
+  shown: boolean
+  body: { x: number; y: number; z: number; yaw: number; pitch: number; roll: number }
+  hull: { x: number; y: number; z: number; show: boolean }
+  button: { z: number; sx: number; sy: number; jx: number; jy: number; glow: number }
+  wings: [number, number]
+  hatch: { x: number; z: number; seam: number; gone: number }
+  shield: { rise: number; slide: number; flash: number; broken: number; show: boolean }
+  guns: [GunPose, GunPose]
+  legs: LegPose[]
+  cannon: { show: boolean; x: number; z: number; elev: number; yaw: number; ribs: number; sleeve: number; barrel: number; window: number; bore: number; slits: number; heat: number; off: number }
+  weak: number
+  hurt: number
+  heal: number
+  sag: number
+  // The middle of the word on the button, page px and height, and the turn of the button on the page.
+  word: { x: number; y: number; z: number; rot: number; show: boolean }
+}
+
+const rot = (x: number, y: number, a: number): [number, number] => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)]
+
+// One axis of a foothold: the foot holds the nearest point of a row of points `pitch` apart and steps to the next one while the body crosses the band between two.
+function hold(p: number, pitch: number, off: number): { at: number; lift: number } {
+  const g = p / pitch - off + 0.5
+  const i = Math.floor(g)
+  const t = g - i
+  const w = WALK.band
+  let s = 0
+  let u = 0
+  if (t > 1 - w) { u = (t - 1 + w) / (2 * w); s = smooth(u) } else if (t < w) { u = (t + w) / (2 * w); s = smooth(u) - 1 }
+  return { at: (i + s + off) * pitch, lift: u > 0 && u < 1 ? Math.sin(Math.PI * u) : 0 }
+}
+
+// Where foot i stands on the ground, world px, for a body at (x, y) facing `yaw` (world, counter clockwise).
+export function footAt(i: number, x: number, y: number, yaw: number, o: LookOptions): { x: number; y: number; lift: number } {
+  const [fx, fy] = rot(FEET[i]![0] * K, FEET[i]![1] * K, yaw)
+  const hy = -(o.home.heading)
+  const [ox, oy] = rot(FEET[i]![0] * K, FEET[i]![1] * K, hy)
+  const offX = (o.home.x - 960 + ox) / WALK.pitch
+  const offY = (540 - o.home.y + oy) / WALK.pitch
+  const a = hold(x + fx, WALK.pitch, offX - Math.floor(offX))
+  const b = hold(y + fy, WALK.pitch, offY - Math.floor(offY))
+  return { x: a.at, y: b.at, lift: Math.max(a.lift, b.lift) }
+}
+
+function legIk(hip: [number, number, number], foot: [number, number, number]): { knee: [number, number, number]; yaw: number; up: number; down: number } {
+  const dx = foot[0] - hip[0]
+  const dy = foot[1] - hip[1]
+  const d = Math.max(1, Math.hypot(dx, dy))
+  const h = foot[2] + LEG.ankle - hip[2]
+  const D = Math.min(LEG.a + LEG.b - 2, Math.max(Math.abs(LEG.a - LEG.b) + 2, Math.hypot(d, h)))
+  const base = Math.atan2(h, d)
+  const inner = Math.acos(Math.min(1, Math.max(-1, (LEG.a * LEG.a + D * D - LEG.b * LEG.b) / (2 * LEG.a * D))))
+  const up = base + inner
+  const yaw = Math.atan2(dy, dx)
+  const kr = LEG.a * Math.cos(up)
+  const knee: [number, number, number] = [hip[0] + Math.cos(yaw) * kr, hip[1] + Math.sin(yaw) * kr, hip[2] + LEG.a * Math.sin(up)]
+  const down = Math.atan2(foot[2] + LEG.ankle - knee[2], Math.max(1e-3, (d * Math.min(1, D / Math.hypot(d, h))) - kr))
+  return { knee, yaw, up, down }
+}
+
+export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
+  const b = view.boss
+  const now = view.time
+  const f = clamp01(b.form)
+  const t = clamp01(b.turret)
+  const beaten = clamp01(b.beaten)
+  const yaw = -b.heading
+  const wx = b.x - 960
+  const wy = 540 - b.y
+
+  // The forming.
+  const u = lin(f, FORM.launch, FORM.land)
+  const flying = f >= FORM.launch && f < FORM.land
+  const low = -(HULL.belly - 28)
+  const stand = f >= 1 ? 1 : outBack(lin(f, FORM.stand[0], FORM.stand[1]), 2.2)
+  const landed = f >= FORM.land
+  const bounce = landed ? 26 * Math.abs(Math.sin(lin(f, FORM.land, FORM.land + 0.09) * Math.PI * 2)) * (1 - lin(f, FORM.land, FORM.land + 0.09)) : 0
+  let bodyZ = landed ? mix(low, 0, stand) + bounce : 0
+  const buttonRest = 14 / K - BTN.tall
+  let buttonZ = BTN.z
+  if (!landed) {
+    const zb = f < FORM.launch ? buttonRest - 5 * prog(f, 0, FORM.launch) : mix(buttonRest, BTN.z + low, u) + FORM.arc * 4 * u * (1 - u)
+    bodyZ = zb - BTN.z
+    buttonZ = BTN.z
+  }
+  const press = prog(f, FORM.press[0], FORM.press[1])
+  const sx = mix(PAGE_BTN.w / K / BTN.w, 1, press)
+  const sy = mix(PAGE_BTN.h / K / BTN.h, 1, press)
+  const shake = f > 0 && f < FORM.launch ? (0.3 + 0.7 * f / FORM.launch) * 7 : 0
+  const jx = shake * (hash01(Math.floor(now * 60), 1, o.seed) - 0.5)
+  const jy = shake * (hash01(Math.floor(now * 60), 2, o.seed) - 0.5)
+  const clamp = outCubic(lin(f, FORM.clamp[0], FORM.clamp[1]))
+  const toSocket: [number, number] = rot((o.socket.x - b.x) / K, -(o.socket.y - b.y) / K, -yaw)
+  const hull = { x: toSocket[0] * (1 - clamp), y: toSocket[1] * (1 - clamp), z: -(bodyZ + HULL.top + 40) * (1 - clamp), show: f >= FORM.clamp[0] }
+  const flightPitch = flying ? -0.22 * Math.sin(Math.PI * u) * (1 - 2 * u) : 0
+  const wingA = f >= 1 ? 1 : outBack(lin(f, FORM.wingA[0], FORM.wingA[1]), 2.4)
+  const wingB = f >= 1 ? 1 : outBack(lin(f, FORM.wingB[0], FORM.wingB[1]), 2.4)
+  const gunsUp = f >= 1 ? 1 : outBack(lin(f, FORM.guns[0], FORM.guns[1]), 2)
+  const shieldUp = f >= 1 ? 1 : outBack(lin(f, FORM.shield[0] + 0.05, FORM.shield[1]), 1.6)
+  const shieldOut = f >= 1 ? 1 : outCubic(lin(f, FORM.shield[0], FORM.shield[0] + 0.07))
+
+  // The turret beat.
+  const hatchOpen = smooth(lin(t, TURRET.hatch[0], TURRET.hatch[1]))
+  const rise = outCubic(lin(t, TURRET.rise[0], TURRET.rise[1]))
+  const sw = lin(t, TURRET.swing[0], TURRET.swing[1])
+  const swing = inQuad(sw)
+  const lockAge = lin(t, TURRET.kick[0], TURRET.kick[1])
+  const lockKick = t >= TURRET.lock && t < TURRET.kick[1] ? Math.sin(Math.PI * Math.sqrt(lockAge)) * (1 - lockAge) : 0
+  const stow = 150 - 597
+  const cannonZ = mix(stow, CANNON.z + 60, rise) - 60 * swing
+  const elev = (Math.PI / 2) * (1 - swing) + (t >= TURRET.lock ? -0.035 * lockKick : 0)
+  const glowUp = prog(t, TURRET.glow[0], TURRET.glow[1])
+
+  // The fight: guns, the big cannon, hits.
+  const big = b.big
+  const charge = big ? clamp01(big.tell) : 0
+  const blastAge = big ? since(now, big.firedAt) : -1
+  const blast = kick(blastAge, TIMES.recoil)
+  const beamOn = blastAge >= 0 && blastAge < TIMES.beam
+  const brace = charge * 10 + (beamOn ? 6 : 0)
+  const hitAge = since(now, b.hitAt)
+  const hurt = kick(hitAge, TIMES.hit)
+  const heal = hitAge >= 0 && b.healedAt !== null && b.healedAt > (b.hitAt ?? -1e9) ? 0 : bump(since(now, b.healedAt), 0, TIMES.heal)
+  const healNow = bump(since(now, b.healedAt), 0, TIMES.heal)
+  void heal
+  const sagPart = smooth(lin(beaten, 0.1, 0.55))
+  const tremble = charge > 0 && !beamOn && blastAge < 0 ? charge * charge * 2.2 : 0
+  const tj = (k: number): number => tremble * (hash01(Math.floor(now * 60), k, o.seed + 9) - 0.5)
+  const walkBob = WALK.bob * Math.sin((b.walked / WALK.pitch) * Math.PI) * Math.sin((b.walked / WALK.pitch) * Math.PI)
+  const recoilBack = 38 * blast
+  const hurtShove = 9 * hurt
+
+  const formed = f >= 1
+  const body = {
+    x: -recoilBack - hurtShove + tj(1), y: tj(2),
+    z: bodyZ - brace - 16 * lockKick - (formed ? walkBob : 0) - 58 * sagPart - 14 * blast,
+    yaw, pitch: flightPitch + 0.05 * blast - 0.012 * charge + 0.03 * sagPart, roll: 0.05 * sagPart + (formed ? 0.012 * Math.sin((b.walked / WALK.pitch) * Math.PI) : 0)
+  }
+
+  // Legs.
+  const legs: LegPose[] = HIPS.map(([hx, hy], i) => {
+    const start = FORM.legs[i]!
+    const out = f >= 1 ? 1 : lin(f, start, start + FORM.legTime)
+    const show = f >= 1 ? 1 : f >= start ? 1 : 0
+    const [rx, ry] = rot(hx + body.x, hy + body.y, yaw)
+    const hip: [number, number, number] = [rx, ry, LEG.hipZ + body.z]
+    const p = footAt(i, wx, wy, yaw, o)
+    const planted: [number, number] = [p.x, p.y]
+    let foot: [number, number, number] = [(p.x - wx) / K, (p.y - wy) / K, p.lift * WALK.lift]
+    if (out < 1) {
+      const [tx, ty] = rot(hx * 1.25, hy * 1.5, yaw)
+      const reach = outCubic(lin(out, 0, 0.7))
+      const drop = lin(out, 0.7, 1)
+      foot = [mix(tx, foot[0], reach), mix(ty, foot[1], reach), mix(60 + body.z + 40, 0, 0) + (1 - drop * drop) * (150 + 120 * Math.sin(Math.PI * lin(out, 0, 0.7)))]
+    }
+    if (sagPart > 0) foot = [foot[0] * (1 + 0.1 * sagPart), foot[1] * (1 + 0.1 * sagPart), foot[2]]
+    const ik = legIk(hip, foot)
+    return { hip, knee: ik.knee, foot, yaw: ik.yaw, up: ik.up, down: ik.down, footYaw: ik.yaw, lift: p.lift, show, planted }
+  })
+
+  const guns = b.guns.map((g, i) => {
+    const age = since(now, g.firedAt)
+    const k = kick(age, TIMES.gunKick)
+    const idle = f < 1 ? (gunsUp >= 1 ? 0.5 * Math.sin(lin(f, FORM.guns[1], 1) * Math.PI * 2) * (i === 0 ? 1 : -1) : 0) : 0
+    return {
+      yaw: (formed ? -g.aim - yaw : idle), recoil: 16 * k + 7 * clamp01(g.tell), spin: (age >= 0 ? Math.min(age, 0.6) * 38 : 0) + g.tell * g.tell * 9 + (f < 1 ? gunsUp * 12 : 0),
+      lamp: g.tell > 0 ? 0.6 + 3.4 * g.tell * (0.5 + 0.5 * Math.sin(now * 38)) : 0.15, flash: age >= 0 && age < 0.07 ? 1 - age / 0.07 : 0, rise: gunsUp
+    }
+  }) as [GunPose, GunPose]
+
+  const off = lin(beaten, 0, 0.35)
+  const cannon = {
+    show: t > TURRET.rise[0] && off < 1, x: mix(CANNON.bayX, CANNON.pivotX, smooth(sw)), z: cannonZ, elev, yaw: 0,
+    ribs: -225 * (1 - prog(t, 0.44, 0.6)), sleeve: -295 * (1 - prog(t, 0.5, 0.68)), barrel: -640 * (1 - (t >= 1 ? 1 : outBack(lin(t, 0.56, 0.84), 1.2))) - 46 * blast - 20 * charge,
+    window: 0.25 + 2.6 * glowUp + 3.5 * charge + (beamOn ? 6 : 0) + 1.5 * kick(blastAge, TIMES.after), bore: 0.05 + 1.2 * bump(t, 0.9, 1.0) + 0.5 * glowUp + 7 * charge * charge + (beamOn ? 14 : 0),
+    slits: 0.2 + 2.2 * prog(t, 0.86, 0.96) + 2 * charge, heat: clamp01(kick(blastAge, TIMES.after) * 1.4), off
+  }
+
+  const cw = Math.cos(yaw)
+  const sw2 = Math.sin(yaw)
+  const wxm = body.x * K
+  const wym = body.y * K
+  const word = {
+    x: 960 + wx + (wxm * cw - wym * sw2), y: 540 - (wy + (wxm * sw2 + wym * cw)), z: (body.z + buttonZ + BTN.tall) * K + 0.3,
+    rot: b.heading - Math.PI, show: !(cannon.show && sw > 0.55) || off >= 1
+  }
+
+  return {
+    x: wx, y: wy, shown: f > 0 || view.phase !== 'form', body, hull,
+    button: { z: buttonZ, sx, sy, jx, jy, glow: bump(f, 0, FORM.launch + 0.02) },
+    wings: [wingA, wingB],
+    hatch: { x: HATCH.cx - HATCH.slide * hatchOpen, z: HATCH.top + 7 * bump(t, TURRET.hatch[0], TURRET.hatch[0] + 0.06) + (hatchOpen > 0 ? 3 * hatchOpen : 0), seam: 1.4 + 3 * bump(t, 0, 0.2) + 0.6 * Math.sin(now * 3) * 0.3, gone: off },
+    shield: { rise: shieldUp, slide: shieldOut, flash: kick(since(now, b.shield.glancedAt), TIMES.glance), broken: lin(beaten, 0.05, 0.3), show: f >= FORM.shield[0] },
+    guns, legs, cannon,
+    weak: b.weak ? (b.weak.shownAt === null ? 0 : 0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16)) * 4 : 0,
+    hurt, heal: healNow, sag: sagPart, word
+  }
+}
+
+// Where the muzzle of gun i is, page px.
+export function muzzleOf(view: BossView, i: 0 | 1): { x: number; y: number; z: number; aim: number } {
+  const b = view.boss
+  const side = i === 0 ? 1 : -1
+  const [gx, gy] = rot(GUN.x * K, side * GUN.y * K, -b.heading)
+  const aim = b.guns[i]!.aim
+  return { x: b.x + gx + Math.cos(aim) * GUN.reach * K, y: b.y - gy + Math.sin(aim) * GUN.reach * K, z: (GUN.z + GUN.axis) * K, aim }
+}
+
+// Where the mouth of the big cannon is when locked, page px.
+export function bigMuzzleOf(view: BossView): { x: number; y: number; z: number; aim: number } {
+  const b = view.boss
+  const reach = (CANNON.pivotX + CANNON.brake[1]) * K
+  return { x: b.x + Math.cos(b.heading) * reach, y: b.y + Math.sin(b.heading) * reach, z: CANNON.z * K, aim: b.heading }
+}
+
+// The open flank, page px: the rear of the hull, behind the hatch.
+export function weakOf(view: BossView): { x: number; y: number } {
+  const b = view.boss
+  const back = (HATCH.cx - HATCH.hx) * K
+  return { x: b.x + Math.cos(b.heading) * back, y: b.y + Math.sin(b.heading) * back }
+}
+
+export const wordAt = (view: BossView, o: LookOptions = DEFAULTS): Pose['word'] => poseOf(view, o).word
+
+// His size in the fight, page px, measured in the targets and scaled.
+export const SIZE = {
+  scale: K,
+  hull: { long: 2 * HULL.hx * K, wide: 2 * HULL.hy * K },
+  wings: { wide: 2 * (HULL.hy + 151) * K },
+  hatch: { from: (HATCH.cx + HATCH.hx) * K, to: (HATCH.cx - HATCH.hx) * K },
+  shield: { ahead: SHIELD.mid * K, half: SHIELD.half * K, cover: Math.atan2(SHIELD.half, SHIELD.mid - 38) },
+  feet: { long: 2 * 445 * K, wide: 2 * 435 * K },
+  guns: { x: GUN.x * K, y: GUN.y * K, reach: GUN.reach * K },
+  big: { muzzle: (CANNON.pivotX + CANNON.brake[1]) * K, pivot: CANNON.pivotX * K, height: CANNON.z * K },
+  button: { w: BTN.w * K, h: BTN.h * K },
+  tall: { deck: HULL.top * K, knee: 250 * K, cannon: (CANNON.z + 79) * K }
+} as const

@@ -4,17 +4,7 @@ import { across, along, boxAt, cutPlate, discAt, glowMaterial, hose, joined, lat
 
 // Everything here is in the units of the target sheets (px of the 1920 wide pictures), forward along +x, z up from the ground, the hull's centre over the origin.
 
-export const HULL = { hx: 295, hy: 127, c: 44, top: 170, tall: 26, belly: 92 }
-export const BTN = { w: 462, h: 150, r: 64, tall: 24, z: 172 }
-export const PAGE_BTN = { w: 288, h: 72 }
-export const WING = { inner: 175, outer: 130, reach: 151, top: 150 }
-export const GUN = { x: 7, y: 206, z: 162, axis: 26, reach: 196, baseR: 62 }
-export const HATCH = { cx: -385, hx: 108, hy: 128, c: 36, top: 166, slide: 205 }
-export const SHIELD = { mid: 388, half: 194, r: 514, thick: 25, z0: 92, z1: 222 }
-export const HIPS: [number, number][] = [[205, 152], [205, -152], [-205, 152], [-205, -152]]
-export const FEET: [number, number][] = [[440, 430], [440, -430], [-445, 435], [-445, -435]]
-export const LEG = { a: 235, b: 265, hipZ: 138, ankle: 34 }
-export const CANNON = { pivotX: -521, bayX: -385, z: 268, breech: [89, 391] as const, ribs: [391, 631] as const, sleeve: [631, 707] as const, barrel: [707, 1111] as const, brake: [1111, 1237] as const, r: { breech: 79, ribs: 71, core: 56, sleeve: 42, barrel: 31, brake: 41 } }
+import { BTN, CANNON, GUN, HATCH, HIPS, HULL, LEG, SHIELD, WING } from './numbers'
 
 export interface LegParts { upper: THREE.Group; lower: THREE.Group; foot: THREE.Group }
 export interface GunParts { root: THREE.Group; barrels: THREE.Group; lamp: THREE.MeshBasicMaterial; flash: THREE.Mesh }
@@ -29,6 +19,8 @@ export interface Model {
   bay: THREE.Group
   shield: THREE.Group
   shieldGlass: THREE.Mesh
+  shieldEdge: THREE.Mesh
+  own: THREE.Material[]
   guns: [GunParts, GunParts]
   legs: LegParts[]
   cannon: CannonParts
@@ -170,9 +162,7 @@ function cannonGeo(): Record<string, THREE.BufferGeometry> {
     along([[r.breech + 0.6, b1 - 64], [r.breech + 2.5, b1 - 62], [r.breech + 2.5, b1 - 52], [r.breech + 0.6, b1 - 50]], 40)
   ])
   const window = boxAt(b0 + 113, -41, r.breech + 7, b0 + 201, 41, r.breech + 11, 0.5)
-  const slits: THREE.BufferGeometry[] = []
-  for (let i = 0; i < 3; i++) for (const s of [-1, 1]) slits.push(boxAt(b1 - 38, s * (30 + i * 0) - 9, 0, b1 - 18, s * 30 + 9, 4, 0.5).rotateX(s * (0.55 + i * 0.42)).translate(0, 0, 0))
-  const slit = joined(slits.map((g, i) => { const s = i % 2 === 0 ? -1 : 1; const a = (0.5 + Math.floor(i / 2) * 0.36) * s; return boxAt(b1 - 38, -8, r.breech - 4.2, b1 - 18, 8, r.breech + 0.8, 0.4).rotateX(a) }))
+  const slit = joined([-1, 1].flatMap((s) => [0, 1, 2].map((i) => boxAt(b1 - 38, -8, r.breech - 4.2, b1 - 18, 8, r.breech + 0.8, 0.4).rotateX(s * (0.5 + i * 0.36)))))
   const yoke = joined([across(38, 58, 4), across(20, 66, 3, 20)])
   const hoses = joined([-1, 1].flatMap((s) => [
     hose([[b0 + 6, s * 44, 26], [b0 - 40, s * 70, 30], [-20, s * 84, -6], [20, s * 74, -70]], 9, 28, 10),
@@ -246,9 +236,10 @@ export function buildModel(): Model {
   shieldGlass.userData.order = 5
   const struts: THREE.BufferGeometry[] = []
   for (const y of [-150, -52, 52, 150]) struts.push(rod([HULL.hx - 20 - Math.abs(y) * 0.12, y * 0.74, 132], [SHIELD.mid - SHIELD.thick - (y * y) / (2 * SHIELD.r) + 4, y, 118], 6.5, 10))
+  const shieldEdge = mesh(geo('shield.edge', () => plateAt(shieldArc(SHIELD.r - SHIELD.thick - 0.4, SHIELD.r + 0.4, SHIELD.half + 0.4), SHIELD.z1 - 0.5, SHIELD.z1 + 3, 1.2)), kit.glassEdge, false, false)
   shield.add(
     shieldGlass,
-    mesh(geo('shield.edge', () => plateAt(shieldArc(SHIELD.r - SHIELD.thick - 0.4, SHIELD.r + 0.4, SHIELD.half + 0.4), SHIELD.z1 - 0.5, SHIELD.z1 + 3, 1.2)), kit.glassEdge, false, false),
+    shieldEdge,
     mesh(geo('shield.base', () => joined([plateAt(shieldArc(SHIELD.r - SHIELD.thick - 6, SHIELD.r + 5, SHIELD.half + 6), SHIELD.z0 - 22, SHIELD.z0 + 20, 3), ...[-1, 1].map((s) => boxAt(SHIELD.mid - 62, s * (SHIELD.half + 1) - 7, SHIELD.z0 - 22, SHIELD.mid - 24, s * (SHIELD.half + 1) + 7, SHIELD.z1 + 2, 2).rotateZ(0))])), kit.plate),
     mesh(geo('shield.struts', () => joined(struts)), kit.pin)
   )
@@ -317,7 +308,6 @@ export function buildModel(): Model {
   const weakLamp = mesh(geo('weak', () => joined([discAt(11, HATCH.cx - HATCH.hx - 2, 0, 128, 140, 2, 18).rotateY(0), boxAt(HATCH.cx - HATCH.hx - 9, -34, 120, HATCH.cx - HATCH.hx - 4, 34, 146, 1.5)])), weak, false, false)
   bay.add(weakLamp)
 
-  return { body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
+  return { body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, own: [seam, window, bore, slits, heat, weak, ...guns.map((g) => g.lamp)], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
 }
 
-export type { V3 }
