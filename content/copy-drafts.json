@@ -16,7 +16,8 @@
       "birth": {
         "placeholder": "MM / DD / YYYY",
         "stop": "STOP",
-        "missed": "Close enough. Date of birth recorded."
+        "missed": "Close enough. Date of birth recorded.",
+        "panel": "Stop each reel on your date of birth."
       },
       "volume": {
         "sign": "TURN IT UP"
@@ -31,6 +32,7 @@
     "step2.birth.placeholder": "items 12 and 13, the date field looks ordinary for a moment and asks for the date the reels are then held to",
     "step2.birth.stop": "item 13, the stop button of each reel",
     "step2.birth.missed": "item 13, the line when the stopped date is not the visitor's own",
+    "step2.birth.panel": "item 13, the line in the date's tray; the locked line step2.rows.birth.panel says to pull the lever, and the lever now pulls itself",
     "step2.volume.sign": "item 14, the big sign over the crank"
   },
   "notNew": "The pinball signs of item 5 use the eight building names the locked copy already holds under step3.table.buildings."
