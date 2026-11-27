@@ -44,8 +44,8 @@ const JOLT = { seconds: 0.24, bite: 12, lost: 16, meet: 24, panel: 0.75 }
 // The live give-back: how short the whole arrow is pressed as it drops its pose, for how long, and the seconds over which the page lets it back to its length; the seconds from there to the release (`settle`), of which the last `hold` it stands still at its plain tilt; and the seconds over which the arrow is then eased to the mouse.
 const GIVE = { settle: 0.42, hold: 0.2, low: 0.78, press: 0.06, rise: 0.2, back: 0.44 }
 // The give back on the live site. The mended arrow lies with its tip `under` px beneath the hood's lip and is drawn out to `long` over `strain` seconds before the page lets go.
-// Then the cassette kicks by `kick`, the arrow is thrown back to where the pile lay, short by `low` for `press` seconds, swinging `swing` radians at `hz` over `ring` seconds, and after `beat` seconds it is the visitor's again, eased over `back`.
-const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.05, rise: 0.13, swing: 0.3, hz: 11, ring: 0.3, beat: 0.15, back: 0.24 }
+// Then the cassette kicks by `kick`, the arrow is thrown back to where the pile lay inside `fall` seconds, short by `low` for `press` seconds and at its length again by `rise`, swinging `swing` radians at `hz` over `ring` seconds, and after `beat` seconds it is the visitor's again, eased over `back`.
+const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.034, rise: 0.084, fall: 0.067, swing: 0.3, hz: 12, ring: 0.084, beat: 0.134, back: 0.24 }
 // The seconds the slot takes to close after the tug; below `last` of its travel, where the two panels meet and drop into the page, it goes `slower` times as slowly, so the pale panels arrive and settle over several frames.
 const SHUT = { seconds: 0.36, last: 0.3, slower: 2.2 }
 // The live loss, after the paper is in: the seconds the empty hands are shed while the arrow is thrown back from the mouth, and how far, in page pixels.
@@ -735,7 +735,6 @@ export function makePage(): PageLogic {
         s.give = 0
         act(io, 'plain')
         jolt(CAUGHT.kick)
-        io.cursor.drive(PILE.x, PILE.y)
         io.cursor.press(CAUGHT.low, CAUGHT.press)
         io.cursor.wobble(CAUGHT.swing, CAUGHT.hz, CAUGHT.ring)
       }
@@ -745,7 +744,9 @@ export function makePage(): PageLogic {
 
   const stepReceived = (io: StepIo): void => {
     if (s.give >= 0) {
+      const fell = s.give >= CAUGHT.fall
       s.give += io.dt
+      if (!fell) io.cursor.place(PILE.x, lerp(PILE.y, HOOD.y - CAUGHT.under, Math.pow(1 - Math.min(1, s.give / CAUGHT.fall), 3)))
       if (s.give > CAUGHT.press && s.give < CAUGHT.rise) io.cursor.press(lerp(CAUGHT.low, 1, smooth((s.give - CAUGHT.press) / (CAUGHT.rise - CAUGHT.press))), io.dt)
       if (s.give >= CAUGHT.beat) {
         s.give = -1

@@ -14,6 +14,40 @@ Every number below is from the live stage stepped under the pack's own visitor, 
 6. C. No new prop. In the tug's end the mended arrow is put with its tip `CAUGHT.under` px under the hood's lip of the shredder's cassette (before it lay 43 px below it, touching nothing), drops its tired pose and is drawn out long toward the hood over the last `CAUGHT.strain` seconds. At the end the cassette kicks (`CAUGHT.kick`), the arrow is thrown back short to where the pile lay and swings, stands, and is released `CAUGHT.beat` (0.15 s) after the snap. Before, the release came 0.42 s after the same moment, so the visitor waits less.
 7. The arms are untouched and stay inside `step1.tug`.
 
-## Numbers
+## Numbers (MEASURED, the command above, before at 664bedb5 and after)
 
-See the report at the end of this note, filled from the tables after the last change.
+A, the visitor presses P at frame 939 (0:15.65) and lets go at frame 954.
+
+| | before | after |
+| --- | --- | --- |
+| press to the bottom | 1 frame (0.81 of the travel on 939, all of it on 940) | 1 frame (the same) |
+| frames at the bottom | 5 (940 to 944), then it rose with the button still down | 14 (940 to 953), every frame the button is down |
+| up again | at frame 948, 6 frames before the release | at its neighbours' height on frame 956, 2 frames after the release (0.70, 0.29, then past by 0.06, 0.24, 0.24, 0.15, 0.05 of the slide, at rest on 961) |
+| what moves on screen at 1920 by 1080 | the cap's top 6 px lower in height, about 1.3 px (STATED) | the cap and its label 5.5 px right and 5.5 px down, the shadow drawn in to a tenth |
+| turret 1 beside it | winds up from 0.44 to 0.96 through frames 939 to 950 and fires on 951 | 0.39 on 938, 0 from 939 to 953, winds again from 954 |
+| letter on the sunk cap | | ink (19, 16, 14) on cap (161, 154, 144), contrast 6.8, read off the pictures of frames 958 and 950 at 960 by 540 |
+
+One bolt fired on frame 924, before the press, is in the air while the key is held and lands on the cap G on frame 953, before and after. It is at the left edge of the pack's crop.
+
+B, the bolt meets the arrow on frame 898 (0:14.97).
+
+| | before | after |
+| --- | --- | --- |
+| key under the arrow (G) | down all 6 px on 898, 899, 900, up by 904 | no key down, frames 898 to 910 |
+| caps round the strike | none moved but with the deck | thrown outward by up to `JAR.px` (7.5 px) on 898, back inside `JAR.seconds` (0.2 s) |
+| deck | 3.08, 0.34, -1.64, -1.61, -0.43 px | the same |
+| the strike's light | a 46 px halo and a lamp of reach 48 dying on 0.4 s | thrown on the deck and caps to 300 px, dying on 0.04 s: a fifth left after 4 frames, a twentieth after 7 |
+
+C, the give back.
+
+| | before | after |
+| --- | --- | --- |
+| the visitor loses the arrow | frame 2357 | frame 2327 (the visitor's run is 30 frames ahead by then, nothing in the tug changed) |
+| the shredding starts | 2419 | 2389 |
+| what holds the arrow | nothing drawn: it lay 43 px under the hood's lip | its tip 7 px under the hood's lip and not moving, drawn out from frame 2527 to 1.24 of its length by 2544 and held so for 13 frames (2544 to 2556) |
+| the release | none drawn | frame 2557: the cassette is kicked 19.8 px and is back in 13 frames, the arrow goes from 1.24 to 0.70 of its length in one frame and is thrown 49 px back in 9 frames, swinging |
+| the arrow is the visitor's again | 2612, 25 frames after the shredding's end | 2566, 9 frames after it |
+| from the shredding's start to the visitor's arrow | 193 frames | 177 frames |
+| control taken, all of it | 255 frames, 4.25 s | 239 frames, 3.98 s (`live.controlTakenMaxSeconds` is 8) |
+
+The film: `POLISH_KEYS_FILM=<file> npx vitest run tests/polish-keys-film.test.ts` at 664bedb5 and now, 1920 frames of the page, `cmp` says the two files and their event lists are the same.
