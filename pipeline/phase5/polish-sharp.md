@@ -11,6 +11,7 @@ How the pictures were read: `node pipeline/phase5/polish-sharp-look.mjs texels B
 - The mend: the shadow carries `userData.texels = 'through'`, and the view leaves a mesh with that mark out (NEEDS patch, accepted by the Builder 08:53 UTC on terms: the mark on `ball.shadow` alone, pinned by a test, two lines in the notes of the views).
 - MEASURED after (final, hd): 337,386 textured, 254,134 counted, 741 soft, a share of 0.0029 against a limit of 0.02.
 - No texture was added or enlarged. No lens number was changed.
+- MEASURED, the floor's density inside the sharp range at `youre-fired` (texels per pixel, limit 1.0): hd 1920x1080: least 0.54, 5th hundredth 1.08, middle 1.17, 95th hundredth 1.29, most 1.31. uhd 3840x2160 (`npm run still -- --key youre-fired --format uhd --tier final --diag texels`): 1,349,261 textured, 788,613 counted, 788,613 soft, a share of 1.0; least 0.27, 5th hundredth 0.54, middle 0.58, 95th hundredth 0.61, most 0.61. At the master's size the full set's floor (8192x4608) is under the limit everywhere in focus. Nothing is mended for that here: the film is drawn at 1920x1080.
 - Not marked, and UNKNOWN in pixels: other clear meshes that lie over the printed floor and are repainted bare by the view: the pools of light `corporate.glow.<zone>` and `office.glow.<zone>` (STATED, from the code). Counting them takes the `texels` view twice per still, with and without each.
 
 ## M3 at `rail-cam`
@@ -27,6 +28,16 @@ How the pictures were read: `node pipeline/phase5/polish-sharp-look.mjs texels B
 - The mend, in `loader.ts`: the corner is rounded no further up than 1 px under the screen's lower edge (`FOOT`), so the middle line is straight to y 1080. The rail's places are not touched. The collars further down stand where they stood (`line(false, true)` gives the old line's length). Under the edge the shadow goes on as the first screen's last row lies and turns to the lamp's way over 60 px of tube, as dark from the first as that row; a row whose foot would step back inside the bend keeps the foot before it. The inside of the tight bend is one clean edge (`crease` in `Geo.pipe`).
 - What stays: the tube is 106 px wide (`TUBE.outer` 53) because it holds the 96 px ball with a wall; the approved picture's is about 85 px (MEASURED on the picture, rows 1040 and 1076). The Builder agreed 08:53 UTC.
 - What stays, and why: the two straight runs of a tube 106 px wide meet inside the bend at page y 1071, 9 px over the screen's edge, because the rail's corner lies 14.4 px under it. In the still it is a dark dot about 4 px high at the tube's right wall on the last rows. To put it under the edge the rail's corner would have to lie 10 px lower, which is the rail's place and the film's take.
+
+## The ten draft stills, before (b3e4f902) and after, hd
+
+- Changed: `rail-cam` (126,980 pixels: the wires), `youre-fired` (16,057: the close wire at the lower right), `loader-page` (24,396: the tube's foot and its shadow), `table-wide` (3,490, x 1164 to 1342, y 154 to 223: the feed tube's elbow under the cabinet is tighter, the same change as the foot), `lobby-doors` (203 at the right edge, x 1908 to 1919, the greatest difference 14 of 255).
+- Equal in every pixel: `last-save`, `tier-office`, `tier-street`, `tier-corporate`, `reply-all`.
+- The sheet `clear-ball`: 9,883 pixels, y 0 to 128, the blurred wires behind; the ball itself is equal.
+
+## Seen and not mine to change
+
+- Film frames 4260 and 4262: a dark smudge left of the tube beside the ball at the elbow. STATED from the code: the ball's drawn shadow comes on when the ball enters the tier's zone (`src/table/real/ball/index.ts`, `own.decal.visible`), while the ball is still in the tube.
 
 ## Decisions
 
