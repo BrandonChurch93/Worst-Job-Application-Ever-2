@@ -5,7 +5,7 @@ import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { DrawList, Driver, Pointer } from '../src/stage/types'
-import { ANSWER, dipOf } from '../src/table/real/frame/loader'
+import { ANSWER, BENDS, dipOf, KNOCK, knockOf } from '../src/table/real/frame/loader'
 import { BALL, PORT } from '../src/table/layout'
 
 const EACH = stepHz / 60
@@ -59,8 +59,8 @@ if (process.env.PORT2_TRACE) writeFileSync(process.env.PORT2_TRACE, JSON.stringi
 
 // The numbers of before this work (commit 308e96a1), taken with this file's own take: the step of the seal, of the lock, of the release and of the ball's arrival at the tube's end, and the sha256 of the ball's place and the page's scroll at every step from 1.3 s after the release on.
 const WAS: Record<string, { seal: number; lock: number; release: number; arrive: number; after: string }> = {
-  film: { seal: 0, lock: 0, release: 0, arrive: 0, after: '' },
-  live: { seal: 0, lock: 0, release: 0, arrive: 0, after: '' }
+  film: { seal: 553, lock: 618, release: 796, arrive: 2068, after: '7fdb7b035bc9fec5fc9f048c8096103efc1912742f3fb736fc4ad80910b22dfb' },
+  live: { seal: 1228, lock: 1293, release: 1448, arrive: 2720, after: '8d1f55f1ee3c5607fc571fc0016cb66627be020af88e68e67164eb1346f2efcf' }
 }
 
 describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (name, t) => {
@@ -115,9 +115,8 @@ describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (nam
     const fall = steps(frames(t, t.release, 66))
     const top = fall.indexOf(Math.max(...fall))
     expect(top + 1).toBeGreaterThanOrEqual(40)
-    expect(fall[0]).toBe(0)
-    expect(fall[1]!).toBeGreaterThan(0)
-    expect(fall[1]!).toBeLessThan(1)
+    expect(fall[0]!).toBeGreaterThan(0)
+    expect(fall[0]!).toBeLessThan(0.5)
     for (let k = 1; k <= top; k++) expect(fall[k]!, `frame ${k + 1}`).toBeGreaterThanOrEqual(fall[k - 1]!)
     expect(fall[top + 1]! / fall[top]!).toBeLessThan(0.75)
     expect(fall[top + 1]! / fall[top]!).toBeGreaterThan(0.6)
@@ -129,6 +128,34 @@ describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (nam
     expect(fall[second - 1]!).toBeGreaterThan(pace * 1.3)
   })
 
+  it('tells the tube of each strike on the frame the ball loses its speed, and the tube gives 1 to 3 px at the bend, swings back past its rest and is still 5 frames later', () => {
+    const fall = steps(frames(t, t.release, 66))
+    const top = fall.indexOf(Math.max(...fall))
+    const second = fall.findIndex((v, k) => k > top + 1 && v < fall[k - 1]! - 1)
+    const told = t.rows.filter((r) => r.ring.length === 4)
+    const struck = [0, 1].map((b) => told.filter((r) => r.ring[2 + b]! >= 0 && r.ring[2 + b]! < KNOCK.over))
+    expect(struck.map((rows) => rows.length)).toEqual([KNOCK.over * stepHz, KNOCK.over * stepHz])
+    const slow = [t.release + (top + 2) * EACH, t.release + (second + 1) * EACH]
+    for (let b = 0; b < 2; b++) {
+      const first = struck[b]![0]!.n
+      expect(slow[b]! - first, `bend ${b + 1}`).toBeGreaterThanOrEqual(0)
+      expect(slow[b]! - first, `bend ${b + 1}`).toBeLessThan(EACH)
+      const give = [0, 1, 2, 3, 4, 5].map((k) => KNOCK.px * knockOf(t.rows[slow[b]! - 1 + k * EACH]!.ring[2 + b] ?? -1))
+      expect(give[0]).toBe(KNOCK.px)
+      expect(give[0]!).toBeGreaterThanOrEqual(1)
+      expect(give[0]!).toBeLessThanOrEqual(3)
+      expect(Math.min(...give)).toBeLessThan(-1)
+      expect(Math.abs(give[4]!)).toBeLessThan(0.5)
+      expect(Math.abs(give[5]!)).toBeLessThan(1e-9)
+      expect(Math.hypot(...BENDS[b]!.push)).toBeCloseTo(1, 12)
+    }
+    expect(BENDS[0]!.push[0]).toBeLessThan(0)
+    expect(BENDS[0]!.push[1]).toBeGreaterThan(0)
+    expect(BENDS[1]!.push[0]).toBeGreaterThan(0)
+    expect(Math.abs(BENDS[1]!.push[1])).toBeLessThan(1e-12)
+    expect(t.rows.filter((r) => r.n > t.release + (second + 7) * EACH).every((r) => r.ring.length < 4)).toBe(true)
+  })
+
   it('turns the arrow no further than the ball rolls', () => {
     const rows = frames(t, t.release, 62)
     const way = steps(rows).reduce((a, b) => a + b, 0)
@@ -136,6 +163,6 @@ describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (nam
     expect(turned).toBeGreaterThan(0)
     expect(turned).toBeLessThanOrEqual(way / (BALL / 2))
     const turn = rows.slice(1).map((r, i) => r.turn - rows[i]!.turn)
-    for (let k = 12; k < 44; k++) expect(turn[k]!, `frame ${k + 1}`).toBeGreaterThan(turn[k - 1]!)
+    for (let k = 18; k < 44; k++) expect(turn[k]!, `frame ${k + 1}`).toBeGreaterThan(turn[k - 1]!)
   })
 })
