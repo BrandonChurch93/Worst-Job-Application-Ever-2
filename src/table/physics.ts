@@ -36,7 +36,7 @@ const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36, own: 12 }
 // The save as it was before the load was made to read, kept as a second place of the ball beside the one that is drawn (the ball's `s` and `speed`, which a ball on the wire has no other use for): when the gate opens under a ball on the wire,
 // the ball goes down the hole in the steps it took from that place, so the play after it is the play it was.
 const WAS = { land: 24, wind: 28, still: 10, back: 0.22, drive: 4 }
-export const SAVE = { rest: 10.55, wire: 60, funnel: 50, mouth: 52, land: 8, wind: 40, still: 24, back: 0.4, drive: 8, kick: 24, reach: 1 }
+export const SAVE = { rest: 10.55, wire: 60, funnel: 50, mouth: 52, land: 8, wind: 42, still: 26, back: 0.27, drive: 6, kick: 24, reach: 1 }
 // Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
 const MET = 3
 const LIFT_SHUT = 0.4
