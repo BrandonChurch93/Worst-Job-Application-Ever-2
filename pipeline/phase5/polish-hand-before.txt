@@ -1,0 +1,114 @@
+visitor finished: true, frames 10734, turns 6
+turn 1 marketing to step1 (visitor): starts frame 596; on the leaving page the arrow goes 512.4 px over 23 frames; when given to play it stands 603.2 px from the pointer, goes 1045.4 px over 30 frames after, within 2 px -1 frames after; furthest from the pointer on the page 627.0 px
+turn 1 marketing to step1 (resting): starts frame 596; on the leaving page the arrow goes 512.4 px over 23 frames; when given to play it stands 608.1 px from the pointer, goes 639.7 px over 18 frames after, within 2 px 16 frames after; furthest from the pointer on the page 631.9 px
+turn 1 marketing to step1 (stroking): starts frame 596; on the leaving page the arrow goes 512.4 px over 23 frames; when given to play it stands 212.2 px from the pointer, goes 224.9 px over 16 frames after, within 2 px 14 frames after; furthest from the pointer on the page 585.6 px
+turn 2 step1 to step2 (visitor): starts frame 2637; on the leaving page the arrow goes 795.1 px over 25 frames; when given to play it stands 709.3 px from the pointer, goes 1149.0 px over 30 frames after, within 2 px 8 frames after; furthest from the pointer on the page 777.4 px
+turn 2 step1 to step2 (resting): starts frame 2637; on the leaving page the arrow goes 795.1 px over 25 frames; when given to play it stands 713.5 px from the pointer, goes 744.7 px over 18 frames after, within 2 px 8 frames after; furthest from the pointer on the page 782.0 px
+turn 2 step1 to step2 (stroking): starts frame 2637; on the leaving page the arrow goes 795.1 px over 25 frames; when given to play it stands 233.5 px from the pointer, goes 234.5 px over 15 frames after, within 2 px 14 frames after; furthest from the pointer on the page 720.7 px
+turn 3 step2 to step3 (visitor): starts frame 5663; on the leaving page the arrow goes 896.7 px over 26 frames; when given to play it stands 864.0 px from the pointer, goes 1191.4 px over 28 frames after, within 2 px 30 frames after; furthest from the pointer on the page 878.6 px
+turn 3 step2 to step3 (resting): starts frame 5663; on the leaving page the arrow goes 897.2 px over 26 frames; when given to play it stands 865.6 px from the pointer, goes 897.0 px over 19 frames after, within 2 px 18 frames after; furthest from the pointer on the page 880.3 px
+turn 3 step2 to step3 (stroking): starts frame 5663; on the leaving page the arrow goes 897.1 px over 26 frames; when given to play it stands 339.8 px from the pointer, goes 339.5 px over 16 frames after, within 2 px 15 frames after; furthest from the pointer on the page 805.2 px
+turn 4 step3 to step4 (visitor): starts frame 8450; on the leaving page the arrow goes 286.4 px over 29 frames; when given to play it stands 301.8 px from the pointer, goes 715.3 px over 30 frames after, within 2 px -1 frames after; furthest from the pointer on the page 301.8 px
+turn 4 step3 to step4 (resting): starts frame 8450; on the leaving page the arrow goes 286.5 px over 29 frames; when given to play it stands 298.2 px from the pointer, goes 314.1 px over 16 frames after, within 2 px 15 frames after; furthest from the pointer on the page 298.2 px
+turn 4 step3 to step4 (stroking): starts frame 8450; on the leaving page the arrow goes 286.6 px over 29 frames; when given to play it stands 285.8 px from the pointer, goes 321.4 px over 16 frames after, within 2 px 15 frames after; furthest from the pointer on the page 285.8 px
+turn 5 step4 to step5 (visitor): starts frame 10169; on the leaving page the arrow goes 425.6 px over 24 frames; when given to play it stands 367.4 px from the pointer, goes 796.8 px over 30 frames after, within 2 px 7 frames after; furthest from the pointer on the page 409.4 px
+turn 5 step4 to step5 (resting): starts frame 10169; on the leaving page the arrow goes 425.6 px over 24 frames; when given to play it stands 366.9 px from the pointer, goes 387.9 px over 16 frames after, within 2 px 7 frames after; furthest from the pointer on the page 408.9 px
+turn 5 step4 to step5 (stroking): starts frame 10169; on the leaving page the arrow goes 425.6 px over 24 frames; when given to play it stands 157.9 px from the pointer, goes 186.7 px over 13 frames after, within 2 px 13 frames after; furthest from the pointer on the page 359.7 px
+turn 6 step5 to marketing (visitor): starts frame 10673; on the leaving page the arrow goes 389.1 px over 30 frames; when given to play it stands 397.2 px from the pointer, goes 0.0 px over 0 frames after, within 2 px -1 frames after; furthest from the pointer on the page 427.0 px
+turn 6 step5 to marketing (resting): starts frame 10673; on the leaving page the arrow goes 389.2 px over 30 frames; when given to play it stands 399.2 px from the pointer, goes 422.0 px over 16 frames after, within 2 px 7 frames after; furthest from the pointer on the page 429.3 px
+turn 6 step5 to marketing (stroking): starts frame 10673; on the leaving page the arrow goes 389.2 px over 30 frames; when given to play it stands 343.5 px from the pointer, goes 377.3 px over 16 frames after, within 2 px 15 frames after; furthest from the pointer on the page 365.9 px
+hits: 898 step1, 1059 step1, 1114 step1, 1669 step1, 2340 step1, 3638 step2, 5401 step2, 5789 step3, 6480 step3, 6590 step3, 6684 step3, 6739 step3, 6800 step3, 6940 step3, 6970 step3, 6994 step3, 7007 step3, 7022 step3, 7325 step3, 7455 step3, 7915 step3, 8380 step3, 8410 step3, 10525 step5
+film hits of step 1, frames of the page at 60: 348
+
+the hit at frame 898 of step 1 under a resting hand, a row a frame of 60:
+frame    time page   phase    turn  ptrX  ptrY  tipX  tipY    z  scrX  scrY   off  move squash  angle state
+  895  14.933 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.00    0.0 plain
+  896  14.950 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.00    0.0 plain
+  897  14.967 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.00    0.0 plain
+  898  14.983 step1            0.0   985   892  1045   894   49  1045   894  60.0  60.0   0.67   -2.8 shocked+recoil HIT <- hit
+  899  15.000 step1            0.0   985   892  1045   894   53  1045   894  60.0   0.0   0.66   -9.4 shocked+recoil
+  900  15.017 step1            0.0   985   892  1045   894   55  1045   894  60.0   0.0   0.66  -16.1 shocked+recoil
+  901  15.033 step1            0.0   985   892  1045   894   58  1045   894  60.0   0.0   0.69  -20.4 shocked+recoil
+  902  15.050 step1            0.0   985   892  1044   894   59  1044   894  58.6   1.4   0.76  -22.9 shocked+recoil
+  903  15.067 step1            0.0   985   892  1035   894   60  1035   894  50.1   8.5   0.90  -20.3 shocked+recoil
+  904  15.083 step1            0.0   985   892  1022   893   60  1022   893  36.7  13.4   1.09  -13.2 shocked+recoil
+  905  15.100 step1            0.0   985   892  1007   893   60  1007   893  21.8  14.9   1.24  -12.0 shocked+recoil
+  906  15.117 step1            0.0   985   892   994   892   60   994   892   8.8  13.0   1.31  -13.2 shocked+recoil
+  907  15.133 step1            0.0   985   892   986   892   59   986   892   1.0   7.9   1.34  -15.1 shocked+recoil
+  908  15.150 step1            0.0   985   892   985   892   58   985   892   0.3   1.3   1.34  -17.0 shocked+recoil
+  909  15.167 step1            0.0   985   892   985   892   56   985   892   0.6   0.3   1.33  -18.7 shocked+recoil
+  910  15.183 step1            0.0   985   892   985   892   54   985   892   0.6   0.0   1.31  -20.1 shocked+recoil
+  911  15.200 step1            0.0   985   892   985   892   50   985   892   0.6   0.1   1.30  -21.1 shocked+recoil
+  912  15.217 step1            0.0   985   892   985   892   46   985   892   0.4   0.1   1.28  -21.9 shocked+recoil
+  913  15.233 step1            0.0   985   892   985   892   46   985   892   0.3   0.1   1.27  -22.5 shocked+recoil
+  914  15.250 step1            0.0   985   892   985   892   46   985   892   0.2   0.1   1.26  -22.9 shocked+recoil
+  915  15.267 step1            0.0   985   892   985   892   46   985   892   0.1   0.1   1.25  -23.2 shocked+recoil
+  916  15.283 step1            0.0   985   892   985   892   46   985   892   0.0   0.1   1.24  -23.4 shocked+recoil
+  917  15.300 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.24  -23.5 shocked+recoil
+  918  15.317 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.24  -23.5 shocked+recoil
+  919  15.333 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.5 shocked+recoil
+  920  15.350 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.5 shocked+recoil
+  921  15.367 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.5 shocked+recoil
+  922  15.383 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.4 shocked+recoil
+  923  15.400 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.4 shocked+recoil
+  924  15.417 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.3 shocked+recoil
+  925  15.433 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.26  -23.3 shocked+recoil
+  926  15.450 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.26  -23.3 shocked+recoil
+  927  15.467 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.26  -23.3 shocked+recoil
+  928  15.483 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.26  -23.2 shocked+recoil
+  929  15.500 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.2 shocked+recoil
+  930  15.517 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.3 shocked+recoil
+  931  15.533 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.3 shocked+recoil
+  932  15.550 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -23.3 shocked+recoil
+  933  15.567 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.25  -22.5 shocked+recoil
+  934  15.583 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.24  -20.2 shocked+recoil
+  935  15.600 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.22  -16.9 shocked
+  936  15.617 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.21  -12.8 shocked
+  937  15.633 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.20   -8.0 shocked
+  938  15.650 step1            0.0   985   892   985   892   46   985   892   0.0   0.0   1.19   -3.1 shocked
+the film's hit on step 1, frames of the page at 60 (not changed):
+frame    time page   phase    turn  ptrX  ptrY  tipX  tipY    z  scrX  scrY   off  move squash  angle state
+  345   5.767 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.15  -13.3 proud
+  346   5.783 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.14  -13.3 proud
+  347   5.800 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.13  -13.4 proud
+  348   5.817 step1            0.0  1072   870  1012   870   48  1012   870  60.0  60.0   0.67  -12.0 shocked+recoil HIT <- hit
+  349   5.833 step1            0.0  1072   870  1012   870   52  1012   870  60.0   0.0   0.67   -5.7 shocked+recoil
+  350   5.850 step1            0.0  1072   870  1012   870   55  1012   870  60.0   0.0   0.67    1.9 shocked+recoil
+  351   5.867 step1            0.0  1072   870  1012   870   57  1012   870  60.0   0.0   0.69    8.7 shocked+recoil
+  352   5.883 step1            0.0  1072   870  1012   870   59  1012   870  59.6   0.4   0.76   14.0 shocked+recoil
+  353   5.900 step1            0.0  1072   870  1019   870   60  1019   870  52.8   6.8   0.87   17.7 shocked+recoil
+  354   5.917 step1            0.0  1072   870  1032   870   60  1032   870  40.3  12.5   1.05   19.4 shocked+recoil
+  355   5.933 step1            0.0  1072   870  1046   870   60  1046   870  25.5  14.8   1.21   17.9 shocked+recoil
+  356   5.950 step1            0.0  1072   870  1060   870   60  1060   870  11.7  13.8   1.30   18.0 shocked+recoil
+  357   5.967 step1            0.0  1072   870  1070   870   60  1070   870   2.3   9.5   1.33   19.6 shocked+recoil
+  358   5.983 step1            0.0  1072   870  1072   870   58  1072   870   0.2   2.4   1.34   21.8 shocked+recoil
+  359   6.000 step1            0.0  1072   870  1073   870   57  1073   870   0.6   0.5   1.33   24.2 shocked+recoil
+  360   6.017 step1            0.0  1072   870  1073   870   54  1073   870   0.8   0.2   1.32   26.4 shocked+recoil
+  361   6.033 step1            0.0  1072   870  1073   870   51  1073   870   0.9   0.0   1.30   28.3 shocked+recoil
+  362   6.050 step1            0.0  1072   870  1073   870   47  1073   870   0.8   0.1   1.29   29.8 shocked+recoil
+  363   6.067 step1            0.0  1072   870  1073   870   46  1073   870   0.6   0.1   1.27   31.0 shocked+recoil
+  364   6.083 step1            0.0  1072   870  1072   870   46  1072   870   0.5   0.2   1.26   31.9 shocked+recoil
+  365   6.100 step1            0.0  1072   870  1072   870   46  1072   870   0.3   0.1   1.25   32.5 shocked+recoil
+  366   6.117 step1            0.0  1072   870  1072   870   46  1072   870   0.2   0.1   1.25   32.9 shocked+recoil
+  367   6.133 step1            0.0  1072   870  1072   870   46  1072   870   0.1   0.1   1.24   33.2 shocked+recoil
+  368   6.150 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.1   1.24   33.3 shocked+recoil
+  369   6.167 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.25   33.3 shocked+recoil
+  370   6.183 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.25   33.2 shocked+recoil
+  371   6.200 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.25   33.1 shocked+recoil
+  372   6.217 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.25   33.0 shocked+recoil
+  373   6.233 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.25   32.9 shocked+recoil
+  374   6.250 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.25   32.7 shocked+recoil
+  375   6.267 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.26   32.6 shocked+recoil
+  376   6.283 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.26   32.5 shocked+recoil
+  377   6.300 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.26   32.4 shocked+recoil
+  378   6.317 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.26   32.4 shocked+recoil
+  379   6.333 step1            0.0  1072   870  1072   870   46  1072   870   0.0   0.0   1.25   32.4 shocked+recoil
+  380   6.350 step1            0.0  1072   870  1072   870   46  1072   870   0.2   0.2   1.24   30.7 shocked+anticipate
+  381   6.367 step1            0.0  1056   854  1070   868   47  1070   868  18.9   3.2   1.15   24.7 shocked+anticipate
+  382   6.383 step1            0.0  1013   821  1061   861   50  1061   861  62.5  10.8   1.08   15.6 shocked+snap
+  383   6.400 step1            0.0   961   801  1044   850   58  1044   850  96.7  20.1   1.10    6.0 shocked+snap
+  384   6.417 step1            0.0   918   802  1020   838   60  1020   838 108.0  27.5   1.17   -4.3 shocked+snap
+  385   6.433 step1            0.0   902   806   991   827   59   991   827  91.6  30.3   1.25  -12.0 shocked+snap
+  386   6.450 step1            0.0   902   806   964   818   58   964   818  63.3  28.5   1.31  -13.8 shocked+snap
+  387   6.467 step1            0.0   902   806   941   812   60   941   812  39.3  24.2   1.34  -15.3 shocked+snap
+  388   6.483 step1            0.0   902   806   923   807   60   923   807  20.7  18.8   1.36  -16.1 shocked+snap

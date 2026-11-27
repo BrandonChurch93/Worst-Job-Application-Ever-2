@@ -38,7 +38,7 @@ const lost = (live: boolean, o: { k?: number; x?: number; vx?: number; vy?: numb
   const rows: Row[] = [rowOf(m, k, [])]
   let take = -1
   let kick = -1
-  for (let n = 1; n < 600 && (kick < 0 || n <= kick + (o.tail ?? 120)); n++) {
+  for (let n = 1; n < 600 && (kick < 0 || n <= kick + (o.tail ?? 160)); n++) {
     o.each?.(m, n)
     const names = m.step(false, false).filter((e) => e.ball === 0).map((e) => e.name)
     rows.push(rowOf(m, k, names))
@@ -74,10 +74,10 @@ describe('the save at the gate on the live site', () => {
       expect(on.length / SHEET).toBeGreaterThanOrEqual(6)
       expect(on.length / SHEET).toBeLessThanOrEqual(8)
       expect(kick - take).toBeLessThanOrEqual(on.length + 2 * SHEET)
-      const still = on.slice(SAVE.land - SHEET / 2, SAVE.land)
+      const still = on.slice(SAVE.land + SAVE.wind - SAVE.still + 1, SAVE.land + SAVE.wind)
       for (const r of still) {
         expect(speed(r), 'the ball lies still on the wire').toBeLessThan(0.6)
-        expect(Math.abs(r.v - SAVE.rest)).toBeLessThan(0.02)
+        expect(Math.abs(r.v - SAVE.rest - SAVE.back)).toBeLessThan(0.02)
         expect(Math.abs(r.x - MID)).toBeLessThan(0.03)
       }
       expect(Math.max(...on.slice(0, SAVE.land).map((r) => r.turn)), 'the wire gives under the ball').toBeGreaterThan(wireOn(SAVE.rest))
@@ -134,7 +134,7 @@ describe('the save at the gate on the live site', () => {
       expect(Math.min(...after.slice(0, SHEET).map((r) => r.turn))).toBe(-WIRE.snap)
       expect(after.slice(SHEET, 3 * SHEET).some((r) => r.turn > 0.05), 'the wire swings back past its rest').toBe(true)
       expect(after[Math.ceil(WIRE.seconds * stepHz)]!.turn).toBe(0)
-      expect(after.at(-1)!.state).toEqual([0, 0])
+      expect(after.at(-1)!.state).toEqual([0, 0, 0])
       m.free()
     }
   })
@@ -182,10 +182,24 @@ describe('the save at the gate on the live site', () => {
     m.gate = [false, true, false]
     m.toPlane(0, 6, TIER_Y[1]! + 4, 0, 0)
     for (let n = 0; n < 30; n++) m.step(false, false)
-    expect(stateOf(m, 0)).toEqual([0, 0])
-    expect(stateOf(m, 1)).toEqual([1, 0])
-    expect(stateOf(m, 2)).toEqual([0, 0])
+    expect(stateOf(m, 0)).toEqual([0, 0, 0])
+    expect(stateOf(m, 1)).toEqual([1, 0, 0])
+    expect(stateOf(m, 2)).toEqual([0, 0, 0])
     m.free()
+  })
+
+  it('has the wire carry the ball\'s load in live play only: none before the landing, whole within a sheet frame of it and through the hold to the kick, gone again when the wire has rung out', () => {
+    for (const w of ways) {
+      const { rows, take, kick, m } = lost(true, w)
+      const land = rows.findIndex((r) => r.taken > 0)
+      expect(land).toBeGreaterThan(take)
+      for (let n = 0; n < land; n++) expect(rows[n]!.state[2]).toBe(0)
+      for (let n = land; n < land + WIRE.gleam; n++) expect(rows[n]!.state[2]!).toBeGreaterThan(rows[n - 1]!.state[2]!)
+      for (let n = land + WIRE.gleam - 1; n < kick; n++) expect(rows[n]!.state[2]).toBe(1)
+      for (let n = kick + 1; n < kick + WIRE.seconds * stepHz; n++) expect(rows[n]!.state[2]!).toBeLessThan(rows[n - 1]!.state[2]!)
+      for (let n = kick + Math.ceil(WIRE.seconds * stepHz) + 1; n < rows.length; n++) expect(rows[n]!.state[2]).toBe(0)
+      m.free()
+    }
   })
 
   it('leaves film mode as it was: with the switch off the gate takes nothing, the ball is towed to the hole and put back at the mouth as before, and nothing of the take is drawn or saved', () => {

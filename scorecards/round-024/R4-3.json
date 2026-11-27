@@ -1,0 +1,23 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "C: motion on the live site under a visitor's input, third part: the arrow into the ball and the ball out of the port, the machine saving a lost ball on three sheets at every 1/60 s, and a flipper's blow wide and close, consecutive frames",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-C-03.png, set-C-04.png, set-C-05.png",
+   "where": "drain between the two bats, 1:52.33–1:52.65, especially the reversal at 1:52.57–1:52.60",
+   "what": "The ball sits nosed against the drain and then rises with neither bat moving. The gate's motion is too subtle to tell what sends it back; without the caption it reads as the ball reversing itself rather than the machine making a save.",
+   "fix": "Give the gate or a visible kicker a short load beat, then snap it into the ball on the exact frame the ball changes direction. Let the mechanism recoil and settle while the ball carries the impulse upfield."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-02.png",
+   "where": "port throat and clear tube, 1:38.22–1:38.48",
+   "what": "Once the ball leaves its held position, it covers almost the same vertical distance each frame from the cup through the collar. There is no clear release action or change of pace, so it reads as a guided glide instead of a free ball dropping into the chute.",
+   "fix": "Show a small mechanical release at the end of the hold, start the ball with short falling steps, and increase the step size on its way into the clear tube. If it touches the lip, show the brief speed or spin change at contact."
+  }
+ ]
+}

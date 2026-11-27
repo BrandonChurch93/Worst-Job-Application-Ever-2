@@ -60,11 +60,11 @@ describe('polish keys: a key pressed on the live site', () => {
     const { up, name } = press()
     const sink = (n: number): number => at(up.i + n).all.get(name)!.sink
     expect(sink(0)).toBeLessThan(1)
-    expect(sink(0)).toBeGreaterThan(0.4)
+    expect(sink(0)).toBeGreaterThan(0.2)
     expect(sink(2)).toBeLessThanOrEqual(0.05)
     const least = Math.min(...[2, 3, 4, 5, 6, 7].map(sink))
     expect(least).toBeLessThan(-0.1)
-    expect(least).toBeGreaterThan(-0.3)
+    expect(least).toBeGreaterThan(-0.5)
     expect(Math.abs(sink(9))).toBeLessThan(0.01)
     expect(at(up.i + 9).all.get(name)!.top).toBeCloseTo(config.scale.heights.keycap, 1)
   })

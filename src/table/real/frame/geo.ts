@@ -201,9 +201,9 @@ export class Geo {
     return this
   }
 
-  // A round pipe along a path of points. `inward` turns its faces to the inside.
-  pipe(path: V3[], radius: number, segs: number, col: RGB, inward = false, arc: [number, number] = [0, Math.PI * 2]): this {
-    const frames: { o: V3; s: V3; u: V3 }[] = []
+  // A round pipe along a path of points. `inward` turns its faces to the inside. At a bend tighter than the pipe is wide give `crease`, the plane the two straight runs meet in: a ring within `reach` of it keeps to its own side of it, so the wall inside the bend is one clean edge.
+  pipe(path: V3[], radius: number, segs: number, col: RGB, inward = false, arc: [number, number] = [0, Math.PI * 2], crease: { at: V3; normal: V3; reach: number } | null = null): this {
+    const frames: { o: V3; s: V3; u: V3; t: V3 }[] = []
     let run = 0
     const runs: number[] = []
     for (let i = 0; i < path.length; i++) {
@@ -215,7 +215,7 @@ export class Geo {
       const kept: V3 | null = prev ? sub(prev, [t[0] * dot(prev, t), t[1] * dot(prev, t), t[2] * dot(prev, t)]) : null
       const s = unit(kept && Math.hypot(...kept) > 0.2 ? kept : cross(t, ref))
       const u = unit(cross(s, t))
-      frames.push({ o: path[i]!, s, u })
+      frames.push({ o: path[i]!, s, u, t })
       if (i > 0) run += Math.hypot(...sub(path[i]!, path[i - 1]!))
       runs.push(run)
     }
@@ -223,11 +223,17 @@ export class Geo {
       for (let k = 0; k < segs; k++) {
         const a0 = arc[0] + ((arc[1] - arc[0]) * k) / segs
         const a1 = arc[0] + ((arc[1] - arc[0]) * (k + 1)) / segs
-        const corner = (f: { o: V3; s: V3; u: V3 }, a: number, at: number): [V3, V3, number, number] => {
+        const corner = (f: { o: V3; s: V3; u: V3; t: V3 }, a: number, at: number): [V3, V3, number, number] => {
           const c = Math.cos(a)
           const s = Math.sin(a)
           const nn: V3 = [f.s[0] * c + f.u[0] * s, f.s[1] * c + f.u[1] * s, f.s[2] * c + f.u[2] * s]
-          return [[f.o[0] + nn[0] * radius, f.o[1] + nn[1] * radius, f.o[2] + nn[2] * radius], inward ? [-nn[0], -nn[1], -nn[2]] : nn, at, a * radius]
+          let p: V3 = [f.o[0] + nn[0] * radius, f.o[1] + nn[1] * radius, f.o[2] + nn[2] * radius]
+          if (crease && Math.hypot(...sub(f.o, crease.at)) < crease.reach) {
+            const d = dot(sub(p, crease.at), crease.normal)
+            const k = dot(f.t, crease.normal)
+            if (d * dot(sub(f.o, crease.at), crease.normal) < 0 && Math.abs(k) > 0.2) p = [p[0] - (f.t[0] * d) / k, p[1] - (f.t[1] * d) / k, p[2] - (f.t[2] * d) / k]
+          }
+          return [p, inward ? [-nn[0], -nn[1], -nn[2]] : nn, at, a * radius]
         }
         const quad = [corner(frames[i]!, a0, runs[i]!), corner(frames[i + 1]!, a0, runs[i + 1]!), corner(frames[i + 1]!, a1, runs[i + 1]!), corner(frames[i]!, a1, runs[i]!)]
         const order = sign(quad[0]![0], quad[1]![0], quad[2]![0], quad[3]![0], quad[0]![1]) ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]

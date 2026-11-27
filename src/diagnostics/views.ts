@@ -295,6 +295,10 @@ function paintTexels(ctx: ViewContext, change: Change): void {
   lens.focus.value = focus
   lens.pxPerUnit.value = ctx.height / (2 * focus * Math.tan(((pose?.fov ?? ctx.camera.fov) * Math.PI) / 360))
   change.ground(0, 0, 0)
+  // A mesh that only shades what lies under it, and says so, is left out: the surface under it is what the eye sees there.
+  ctx.scene.traverse((o) => {
+    if (o.userData.texels === 'through' && o.visible) change.set(o, 'visible', false)
+  })
   change.paint((m) => texelShade(Array.isArray(m.material) ? null : (m.material as THREE.MeshStandardMaterial).map))
 }
 
