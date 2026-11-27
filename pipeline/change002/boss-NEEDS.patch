@@ -1,0 +1,32 @@
+diff --git a/tests/b-shell-chrome.test.ts b/tests/b-shell-chrome.test.ts
+index 62112b61..275d5c5c 100644
+--- a/tests/b-shell-chrome.test.ts
++++ b/tests/b-shell-chrome.test.ts
+@@ -17,11 +17,12 @@ const frameOf = (id: string, chrome?: Chrome | null): Frame => {
+ }
+ 
+ describe('the header hook', () => {
+-  it('leaves every page of the build as it was: none says anything of the header, and the frame holds what the page drew', () => {
++  it('leaves every page of the build as it was: none but step 4 says anything of the header, step 4 says it is in place before its fight, and the frame holds what the page drew', () => {
+     for (const { page } of liveFlow().slice(0, 6)) {
+       const s = new Stage({ mode: 'live', flow: [{ page }], pages, driver: still, seed: config.seed })
+       s.advance(30)
+-      expect(s.page.chrome, page).toBeUndefined()
++      if (page === 'step4') expect(s.page.chrome!(), page).toEqual({ header: 1 })
++      else expect(s.page.chrome, page).toBeUndefined()
+       const list: DrawList = []
+       s.page.draw(list)
+       expect(s.frameAt(s.step / stepHz).list, page).toEqual(list)
+diff --git a/tests/site-pointer.test.ts b/tests/site-pointer.test.ts
+index 9652daf7..bcb2dec9 100644
+--- a/tests/site-pointer.test.ts
++++ b/tests/site-pointer.test.ts
+@@ -172,7 +172,7 @@ describe('site pointer: the hand back', () => {
+     for (const page of ['step1', 'step2', 'step3', 'step4', 'step5', 'marketing']) expect(where(page, 'land').length, page).toBeGreaterThan(0)
+     expect(where('step4', 'any moment').length).toBeGreaterThan(8)
+     expect(where('step1', 'hit bolt-hit').length, 'a turret hit').toBeGreaterThan(0)
+-    expect(where('step4', 'hit slab-drop').length, 'a boss hit').toBeGreaterThan(3)
++    expect(where('step4', 'hit flatten').length, 'a boss hit').toBeGreaterThan(3)
+     expect(where('step5', 'release').length + where('step5', 'whole again').length, 'the stamp').toBeGreaterThan(0)
+     expect(all.length).toBeGreaterThan(120)
+   })

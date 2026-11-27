@@ -17,11 +17,12 @@ const frameOf = (id: string, chrome?: Chrome | null): Frame => {
 }
 
 describe('the header hook', () => {
-  it('leaves every page of the build as it was: none says anything of the header, and the frame holds what the page drew', () => {
+  it('leaves every page of the build as it was: none but step 4 says anything of the header, step 4 says it is in place before its fight, and the frame holds what the page drew', () => {
     for (const { page } of liveFlow().slice(0, 6)) {
       const s = new Stage({ mode: 'live', flow: [{ page }], pages, driver: still, seed: config.seed })
       s.advance(30)
-      expect(s.page.chrome, page).toBeUndefined()
+      if (page === 'step4') expect(s.page.chrome!(), page).toEqual({ header: 1 })
+      else expect(s.page.chrome, page).toBeUndefined()
       const list: DrawList = []
       s.page.draw(list)
       expect(s.frameAt(s.step / stepHz).list, page).toEqual(list)

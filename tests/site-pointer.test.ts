@@ -172,7 +172,7 @@ describe('site pointer: the hand back', () => {
     for (const page of ['step1', 'step2', 'step3', 'step4', 'step5', 'marketing']) expect(where(page, 'land').length, page).toBeGreaterThan(0)
     expect(where('step4', 'any moment').length).toBeGreaterThan(8)
     expect(where('step1', 'hit bolt-hit').length, 'a turret hit').toBeGreaterThan(0)
-    expect(where('step4', 'hit slab-drop').length, 'a boss hit').toBeGreaterThan(3)
+    expect(where('step4', 'hit flatten').length, 'a boss hit').toBeGreaterThan(3)
     expect(where('step5', 'release').length + where('step5', 'whole again').length, 'the stamp').toBeGreaterThan(0)
     expect(all.length).toBeGreaterThan(120)
   })
