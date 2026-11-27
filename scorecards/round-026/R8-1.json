@@ -1,0 +1,79 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the site as web pages: the six pages at rest, the application with its controls on, the message page for touch devices, and the controls at their real size",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "Step 3 body, whole area below the intro text",
+   "what": "the page has no visible field, button or instruction to act on; the left two-thirds is empty and the portal and pipe sit alone at the right edge, with the pipe cut off by the bottom of the viewport. It is not clear what to do first, and at rest it reads more like a half-loaded layout than a step of a form",
+   "fix": "add one clear prompt or control next to the intro (for example 'Press Start to begin' with a button) and anchor the portal to the content grid. Make the pipe end inside the page, or give it a clear lip or socket where it goes off-screen"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the three feature cards (Unlimited PTO, Competitive Salary, Flexible Hours)",
+   "what": "each card has a divider under its line of text and then about 70px of empty panel with nothing in it. The space has no purpose and looks like missing content",
+   "fix": "either put a short line or small print under each divider (the obvious place for the fine-print joke) or remove the divider and shrink the cards to fit their content"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the Submit button, bottom centre",
+   "what": "it is centred while every other element on every step is left-aligned or right-aligned to the content edges. It is also orange, while Continue on the other steps is grey and right-aligned, so the primary action changes place and style from step to step",
+   "fix": "right-align Submit to the content edge at the same height Continue uses, or deliberately restyle every step's primary button the same way"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png / set-A-03.png",
+   "where": "the Continue button",
+   "what": "it sits at y≈604 on Step 1 and y≈768 on Step 2, so the main action jumps around between steps. Its grey pill also looks disabled next to the orange buttons elsewhere",
+   "fix": "pin Continue to one position (for example a fixed footer row at the same y on every step), and if it is meant to be active, give it the same primary styling as Apply and Submit"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-02.png",
+   "where": "right column, the helper 'Minimum 3 characters required' and the 'Last name' label",
+   "what": "the helper sits almost on top of the next label, so the gap from First name to Last name is visibly different from the gap from Last name to Email. The field rhythm is uneven",
+   "fix": "use a fixed gap after each field group (about 20px) that includes any helper line, so all three label-to-field-to-label spacings match"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "top right, the 'Skip step (Accept Defeat)' link",
+   "what": "the control uses the site's joke voice, so it reads as part of the gag rather than a real way out. That blurs the line between the controls and the page",
+   "fix": "label it plainly, for example 'Skip this step', in the same quiet style as 'Watch the film instead'"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-07.png",
+   "where": "top left, the row with the sound control and 'Watch the film instead' above the brand name",
+   "what": "the row sits about 15px above the wordmark and crowds the header, so the header looks pushed down compared with set-A-01",
+   "fix": "give the row its own strip with about 12–16px more space above the header, or move it into the top-right corner, clear of the nav"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "bottom ticker, '\"Revolutionizing Mediocrity Since 2022\"™'",
+   "what": "the closing quote and the ™ run together, which looks like a typo",
+   "fix": "drop the quotes or move the ™ inside them, for example 'Revolutionizing Mediocrity™ Since 2022'"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "the space between 'Step 4: Submit' and the Human Verification card",
+   "what": "the gap is about twice as large as the heading-to-content gap on the other steps, and Step 4 has no subtitle line where the others do",
+   "fix": "add the usual one-line subtitle, or close the gap to match Steps 1–3"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-03.png",
+   "where": "the three dropdowns",
+   "what": "they are completely blank, with no placeholder such as 'Select…', so at rest they read as empty bars rather than fields you can use",
+   "fix": "add placeholder text in muted grey inside each select"
+  }
+ ]
+}
