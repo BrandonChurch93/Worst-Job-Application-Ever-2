@@ -115,6 +115,7 @@ const ready = async (page: string | null = null) => {
 const ev = (name: string, page: string) => ({ name, step: 0, page, x: 960, y: 540, hitsCursor: false })
 type Api = ReturnType<typeof make>
 const near = (v: number) => Number(v.toFixed(3))
+const W = LIVE.openingWaitSeconds
 const booked = (s: Api) => s.log().filter((e) => e.what === 'spoken').map((e) => [e.line, e.start])
 const back = (s: Api) => s.log().filter((e) => e.what === 'taken back').map((e) => e.line)
 const linesAt = (s: Api) => [...new Set(s.said().lines.map((l) => l.line))]
@@ -207,31 +208,52 @@ describe('change note 003: a line is a silent stand-in with its caption', () => 
 })
 
 describe('change note 003: line 1, the moment sound is allowed on the careers page', () => {
-  it('says nothing before the first click or key press, and line 1 at once when the unlock is over with the careers page on screen', async () => {
+  it('says nothing before the first click or key press, and line 1 a moment after the unlock is over with the careers page at rest on screen', async () => {
     const s = make()
     s.page('marketing')
     s.event(ev('step', 'marketing'), 'live')
     expect(made.length).toBe(0)
     expect(s.said().lines).toEqual([])
     await s.unlock()
-    expect(booked(s)).toEqual([[id('marketing.stroll.0'), 0]])
+    expect(booked(s)).toEqual([[id('marketing.stroll.0'), W]])
+    made[0]!.currentTime = W + 0.01
     expect(linesAt(s)).toEqual([id('marketing.stroll.0')])
   })
 
-  it('says line 1 when the first press is the Apply button and the page has turned before the sound is loaded, and lets it run through the turn', async () => {
+  it('says no line 1 on a visit whose first press is the Apply button, whether the press is seen before the sound is loaded or just after, and not later in that visit', async () => {
     const s = make()
     s.page('marketing')
     let open = () => undefined as void
     hold = new Promise<void>((done) => { open = done })
     const unlocked = s.unlock()
     s.event(ev('button-press', 'marketing'), 'live')
-    s.event(ev('page-turn', 'marketing'), 'live')
-    s.page('step1')
     open()
     await unlocked
-    const ctx = made[0]!
-    expect(booked(s)).toEqual([[id('marketing.stroll.0'), ctx.currentTime]])
+    expect(booked(s)).toEqual([])
+    s.event(ev('step', 'marketing'), 'live')
+    expect(booked(s)).toEqual([])
+    const late = await ready('marketing')
+    expect(booked(late.s)).toEqual([[id('marketing.stroll.0'), W]])
+    late.ctx.currentTime = W / 2
+    late.s.event(ev('button-press', 'marketing'), 'live')
+    expect(back(late.s)).toEqual([id('marketing.stroll.0')])
+    late.ctx.currentTime = 5
+    late.s.event(ev('page-turn', 'marketing'), 'live')
+    late.s.page('step1')
+    late.s.page('marketing')
+    late.ctx.currentTime = 50
+    late.s.event(ev('step', 'marketing'), 'live')
+    expect(booked(late.s).length).toBe(1)
+    expect(late.s.said().lines).toEqual([])
+  })
+
+  it('lets line 1 run to its end when Apply is pressed while it is being said', async () => {
+    const { s, ctx } = await ready('marketing')
     ctx.currentTime = 1
+    s.event(ev('button-press', 'marketing'), 'live')
+    s.event(ev('page-turn', 'marketing'), 'live')
+    s.page('step1')
+    ctx.currentTime = 2
     s.event(ev('keyboard-rise', 'step1'), 'live')
     expect(back(s)).toEqual([])
     expect(linesAt(s)).toEqual([id('marketing.stroll.0')])
@@ -242,7 +264,7 @@ describe('change note 003: line 1, the moment sound is allowed on the careers pa
     expect(booked(s)).toEqual([])
   })
 
-  it('says the line of the turn back to the start after line 8 and the gap, keeps it through the turn, and says line 1 again after it while the careers page is on screen', async () => {
+  it('says the line of the turn back to the start after line 8 and the gap, keeps it through the turn, and says nothing else on the restart: line 1 is said once a visit', async () => {
     const { s, ctx } = await ready('marketing')
     ctx.currentTime = 100
     s.event(ev('page-turn', 'marketing'), 'live')
@@ -251,18 +273,17 @@ describe('change note 003: line 1, the moment sound is allowed on the careers pa
     ctx.currentTime = 102
     s.event(ev('page-turn', 'step5'), 'live')
     s.page('marketing')
-    expect(booked(s).slice(1)).toEqual([[id('decision.letter.0'), 100], [id('decision.reset.0'), 100 + L + gap], [id('marketing.stroll.0'), 100 + 2 * (L + gap)]])
+    expect(booked(s).slice(1)).toEqual([[id('decision.letter.0'), 100], [id('decision.reset.0'), 100 + L + gap]])
     expect(back(s)).toEqual([])
     ctx.currentTime = 300
+    s.event(ev('step', 'marketing'), 'live')
     s.event(ev('page-turn', 'marketing'), 'live')
     s.page('step5')
     ctx.currentTime = 310
     s.event(ev('page-turn', 'step5'), 'live')
     s.page('marketing')
-    expect(booked(s).slice(4)).toEqual([[id('decision.reset.0'), 310], [id('marketing.stroll.0'), 310 + L + gap]])
-    ctx.currentTime = 312
-    s.event(ev('page-turn', 'marketing'), 'live')
-    expect(back(s)).toEqual([id('marketing.stroll.0')])
+    expect(booked(s).slice(3)).toEqual([[id('decision.reset.0'), 310]])
+    expect(booked(s).filter(([line]) => line === id('marketing.stroll.0')).length).toBe(1)
   })
 })
 
@@ -273,8 +294,8 @@ describe('change note 003: no line talks over another', () => {
     s.event(ev('page-turn', 'marketing'), 'live')
     ctx.currentTime = 4.5
     s.event(ev('candidate-sensed', 'step1'), 'live')
-    expect(booked(s)).toEqual([[id('marketing.stroll.0'), 0], [id('step1.firstName.0'), L + gap]])
-    ctx.currentTime = L + gap + 0.1
+    expect(booked(s)).toEqual([[id('marketing.stroll.0'), W], [id('step1.firstName.0'), near(W + L + gap)]])
+    ctx.currentTime = W + L + gap + 0.1
     expect(linesAt(s)).toEqual([id('step1.firstName.0')])
     expect(back(s)).toEqual([])
     s.event(ev('field-done', 'step1'), 'live')
@@ -322,6 +343,54 @@ describe('change note 003: no line talks over another', () => {
       const parts = heard[i]!.line === id('boss.unfold.1') || heard[i]!.line === id('boss.unfold.2')
       expect(heard[i]!.start! - (heard[i - 1]!.start! + heard[i - 1]!.seconds!), heard[i]!.line).toBeGreaterThanOrEqual((parts ? lineGap : gap) - 1e-9)
     }
+  })
+})
+
+describe('change note 003: the parts of one moment', () => {
+  it('says the second part of line 4 on its own event, no sooner than the end of the first and the gap between two lines of a beat, and keeps it through the field-done of the crank', async () => {
+    const { s, ctx } = await ready('step2')
+    ctx.currentTime = 10
+    s.event(ev('volume-sign', 'step2'), 'live')
+    ctx.currentTime = 11
+    s.event(ev('crank-full', 'step2'), 'live')
+    expect(booked(s).map(([line, start]) => [line, near(start as number)])).toEqual([[id('step2.crank.0'), 10], [id('step2.crank.1'), near(10 + L + lineGap)]])
+    ctx.currentTime = 12
+    s.event(ev('field-done', 'step2'), 'live')
+    expect(back(s)).toEqual([])
+    const slow = await ready('step2')
+    slow.ctx.currentTime = 10
+    slow.s.event(ev('volume-sign', 'step2'), 'live')
+    slow.ctx.currentTime = 10 + L + 5
+    slow.s.event(ev('crank-full', 'step2'), 'live')
+    expect(booked(slow.s)[1]).toEqual([id('step2.crank.1'), 10 + L + 5])
+  })
+
+  it('takes the second part back when the page turns before it began, and never says it when the first part was not said', async () => {
+    const { s, ctx } = await ready('step2')
+    ctx.currentTime = 10
+    s.event(ev('volume-sign', 'step2'), 'live')
+    ctx.currentTime = 11
+    s.event(ev('crank-full', 'step2'), 'live')
+    ctx.currentTime = 12
+    s.event(ev('page-turn', 'step2'), 'live')
+    expect(back(s)).toEqual([id('step2.crank.1')])
+    const alone = await ready('step2')
+    alone.ctx.currentTime = 10
+    alone.s.event(ev('crank-full', 'step2'), 'live')
+    expect(booked(alone.s)).toEqual([])
+    expect(alone.s.log().filter((e) => e.what === 'dropped').map((e) => [e.line, e.why])).toEqual([[id('step2.crank.1'), 'the part before it was not said']])
+    const both = await ready('step1')
+    both.s.event(ev('resume-received', 'step1'), 'live')
+    both.ctx.currentTime = 1
+    both.s.event(ev('page-turn', 'step1'), 'live')
+    both.s.page('step2')
+    both.s.event(ev('volume-sign', 'step2'), 'live')
+    both.ctx.currentTime = 2
+    both.s.event(ev('crank-full', 'step2'), 'live')
+    expect(booked(both.s).map(([line, start]) => [line, near(start as number)])).toEqual([[id('step1.shredded.0'), 0], [id('step2.crank.0'), near(L + gap)], [id('step2.crank.1'), near(2 * L + gap + lineGap)]])
+    both.ctx.currentTime = 3
+    both.s.event(ev('field-done', 'step2'), 'live')
+    expect(back(both.s).sort()).toEqual([id('step2.crank.0'), id('step2.crank.1')])
   })
 })
 

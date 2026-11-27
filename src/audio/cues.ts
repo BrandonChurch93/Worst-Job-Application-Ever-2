@@ -210,11 +210,11 @@ export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'ste
 export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string }; jump?: string[]; keeps?: boolean; loud?: boolean }
 
 export const spoken: Record<string, SpokenRow> = {
-  'marketing.stroll.0': { event: null, until: [] },
+  'marketing.stroll.0': { event: null, until: ['button-press'] },
   'step1.firstName.0': { event: 'candidate-sensed', until: ['field-done'] },
   'step1.shredded.0': { event: 'resume-received', until: [] },
   'step2.crank.0': { event: 'volume-sign', until: ['field-done'] },
-  'step2.crank.1': { event: 'crank-full', until: ['field-done'] },
+  'step2.crank.1': { event: 'crank-full', until: [] },
   'pinball.seal.0': { event: 'vacuum-on', until: ['ball-seal'] },
   'boss.verify.0': { event: 'checkbox', until: ['boss-formed'] },
   'boss.unfold.0': { event: 'boss-formed', until: ['turret-rise', 'power-down'], jump: ['boss-turn'] },

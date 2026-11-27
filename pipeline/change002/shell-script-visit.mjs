@@ -1,5 +1,6 @@
 // Change note 003, measured: when each line of the script is asked for and when it is spoken on whole visits of the live site, with no browser.
-// Run it on a tree that holds the pages' events: node pipeline/change002/shell-script-visit.mjs [runs]. It writes shell-script-visit.json beside itself.
+// Run it on a tree that holds the pages' events: node pipeline/change002/shell-script-visit.mjs [runs] [gap seconds, one or more]. It writes shell-script-visit.json beside itself,
+// or shell-script-visit-gap-N.json when a gap is given. The gap is the kit's audio.liveNarratorMinGapSeconds; a gap given here is set for the run only, in memory, and no file of the kit is written.
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -9,9 +10,13 @@ import { visit } from '../../tools/lib/sound-visit.mjs'
 const here = path.dirname(fileURLToPath(import.meta.url))
 const c = JSON.parse(fs.readFileSync(path.join(here, '..', '..', 'config', 'showcase.json'), 'utf8'))
 const runs = Number(process.argv[2] ?? 20)
-const gap = c.audio.liveNarratorMinGapSeconds
+const gaps = process.argv.slice(3).map(Number).filter((g) => Number.isFinite(g) && g >= 0)
 const r2 = (v) => (v === null || v === undefined ? null : Number(v.toFixed(2)))
 const { load, close } = await logic()
+const live = (await load('/src/config.ts')).config
+const kitGap = live.audio.liveNarratorMinGapSeconds
+for (const gap of gaps.length ? gaps : [kitGap]) {
+live.audio.liveNarratorMinGapSeconds = gap
 const { standIns } = await load('/src/audio/standin.ts')
 const lines = standIns()
 const secondsOf = (key) => lines.get(key).seconds
@@ -35,12 +40,12 @@ for (const bot of ['keen', 'clumsy']) {
     const full = first('crank-full', 'step2')
     const crankGone = events.filter((e) => e.name === 'field-done' && e.page === 'step2' && full !== null && e.at >= full)[0]?.at ?? null
     const one = secondsOf('marketing.stroll.0')
-    const clickStart = apply === null ? null : Math.max(sensed ?? Infinity, apply + one + gap)
+    const clickStart = sensed
     rows.push({
       bot, seed, finished: v.finished, seconds: v.seconds, step1At: apply,
       line1: start('marketing.stroll.0'), sensed, nameDone,
       line2: start('step1.firstName.0'), line2Lost: lost('step1.firstName.0'), line2Late: start('step1.firstName.0') === null || sensed === null ? null : start('step1.firstName.0') - sensed,
-      ifFirstClickIsApply: { line2: clickStart !== null && nameDone !== null && clickStart < nameDone ? clickStart : null, late: clickStart !== null && sensed !== null ? clickStart - sensed : null },
+      ifFirstClickIsApply: { line1: null, line2: clickStart, late: clickStart === null ? null : 0 },
       received: first('resume-received', 'step1'), line3: start('step1.shredded.0'), line3Lost: lost('step1.shredded.0'),
       sign, line4a: start('step2.crank.0'), line4aLost: lost('step2.crank.0'), full, crankGone, line4b: start('step2.crank.1'), line4bLost: lost('step2.crank.1'),
       vacuum: first('vacuum-on', 'step3'), line5: start('pinball.seal.0'), line5Lost: lost('pinball.seal.0'),
@@ -52,7 +57,6 @@ for (const bot of ['keen', 'clumsy']) {
     })
   }
 }
-await close()
 const of = (bot) => rows.filter((r) => r.bot === bot)
 const nums = (list) => list.filter((x) => x !== null && Number.isFinite(x)).sort((a, b) => a - b)
 const stat = (list) => { const n = nums(list); return n.length ? { n: n.length, least: r2(n[0]), median: r2(n[Math.floor(n.length / 2)]), most: r2(n[n.length - 1]) } : { n: 0 } }
@@ -70,5 +74,9 @@ for (const bot of ['keen', 'clumsy']) {
     lost: Object.fromEntries(['line2Lost', 'line3Lost', 'line4aLost', 'line4bLost', 'line5Lost', 'line6Lost', 'line7Lost', 'line8Lost'].map((k) => [k, rs.reduce((m, r) => { if (r[k]) m[r[k]] = (m[r[k]] ?? 0) + 1; return m }, {})]))
   }
 }
-fs.writeFileSync(path.join(here, 'shell-script-visit.json'), JSON.stringify({ runs, gapSeconds: gap, seconds: Object.fromEntries([...lines.values()].map((l) => [l.key, { words: l.phrases.reduce((n, p) => n + p.words.split(' ').length, 0), seconds: l.seconds, draft: l.draft }])), summary, rows }, null, 1) + '\n')
+fs.writeFileSync(path.join(here, gaps.length ? `shell-script-visit-gap-${gap}.json` : 'shell-script-visit.json'), JSON.stringify({ runs, gapSeconds: gap, kitGapSeconds: kitGap, seconds: Object.fromEntries([...lines.values()].map((l) => [l.key, { words: l.phrases.reduce((n, p) => n + p.words.split(' ').length, 0), seconds: l.seconds, draft: l.draft }])), summary, rows }, null, 1) + '\n')
+console.log(`gap ${gap} s`)
 console.log(JSON.stringify(summary, null, 1))
+}
+live.audio.liveNarratorMinGapSeconds = kitGap
+await close()

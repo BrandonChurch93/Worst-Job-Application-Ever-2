@@ -5,6 +5,7 @@ import * as botsModule from '../src/stage/bots'
 import * as pagesModule from '../src/pages'
 import * as configModule from '../src/config'
 import { spoken } from '../src/audio/cues'
+import { LIVE } from '../src/audio/levels'
 import { keyPage } from '../src/audio/standin'
 import { config } from '../src/config'
 import { visit } from '../tools/lib/sound-visit.mjs'
@@ -24,7 +25,7 @@ const heard = (v: Visit): Entry[] => {
   const back = new Set(v.log.filter((e) => e.what === 'taken back').map((e) => `${e.line}@${e.start}`))
   return v.log.filter((e) => e.what === 'spoken' && !back.has(`${e.line}@${e.start}`))
 }
-const leftAt = (v: Visit, at: number): number => v.turns.find((t) => t.at > at)?.at ?? v.seconds
+const leftAt = (v: Visit, at: number): number => v.turns.find((t) => t.at > Math.max(at, v.turns[0]?.at ?? 0))?.at ?? v.seconds
 
 describe('a whole visit of the live site through the stage and the sound engine', () => {
   it('lets the keen visitor hear only lines of the script, each once in a run, set off on its own page, line 1 first, never two at once and never two closer than the gap', async () => {
@@ -34,7 +35,7 @@ describe('a whole visit of the live site through the stage and the sound engine'
     expect(lines.length).toBeGreaterThanOrEqual(3)
     expect(v.lines).toBe(0)
     expect(lines[0]).toMatchObject({ line: 'line.marketing.stroll.0', page: 'marketing' })
-    expect(lines[0]!.start!).toBeLessThan(0.1)
+    expect(lines[0]!.start!).toBeLessThan(0.1 + LIVE.openingWaitSeconds)
     for (const e of lines) {
       expect(pageOfLine[e.line], e.line).toBeDefined()
       expect(e.start!, e.line).toBeGreaterThanOrEqual(e.at - 1e-9)

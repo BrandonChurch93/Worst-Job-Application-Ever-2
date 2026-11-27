@@ -54,20 +54,22 @@ export class Narrator {
     return { spoken, dropped, cancelled }
   }
 
+  // Lines of one group are parts of one moment: between them the gap is the one between two lines of a beat.
   // A live line starts as soon as nothing is said and the gap since the last line is kept. If that is later than it may wait, it is not spoken at all.
   live(now: number, id: string, group: string, seconds: number, wait: number = this.rules.liveLate, gap: number = this.rules.minGap, from: number = now): Booking | null {
     let start = Math.max(now, from)
     let after = ''
     this.why = null
-    for (const b of this.bookings(now)) if (b.start <= start && b.end + gap > start) {
-      start = b.end + gap
+    const apart = (b: Booking) => (b.group === group ? Math.min(gap, this.rules.lineGap) : gap)
+    for (const b of this.bookings(now)) if (b.start <= start && b.end + apart(b) > start) {
+      start = b.end + apart(b)
       after = b.id
     }
     if (start - now > wait + 1e-9) {
       this.why = wait < 0 ? 'it may not be said here' : `it could start ${(start - now).toFixed(2)} s after its trigger, ${this.rules.minGap} s after ${after} ends, and may wait ${wait.toFixed(2)} s`
       return null
     }
-    for (const b of this.booked) if (b.start > start && start + seconds + this.rules.minGap > b.start) {
+    for (const b of this.booked) if (b.start > start && start + seconds + (b.group === group ? this.rules.lineGap : this.rules.minGap) > b.start) {
       this.why = `it would end less than ${this.rules.minGap} s before ${b.id}, which is booked`
       return null
     }
@@ -155,6 +157,13 @@ export class LiveDesk {
       f.end -= by
     }
     return by
+  }
+
+  // A line that waits is given up. One that has begun is left.
+  drop(now: number, b: Booking): boolean {
+    if (!this.narrator.cancel(now, b)) return false
+    this.waiting.delete(b)
+    return true
   }
 
   // A new run of the site: the careers page is on screen again. Every line may be said once more.

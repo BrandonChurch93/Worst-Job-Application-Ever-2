@@ -69,6 +69,8 @@ export const LIVE = {
   liveLateSeconds: 0.4,
   // Whether the effects are held down under a line that is a silent stand-in. Off: nothing is heard to make room for. Turn it on when the lines are recorded.
   standInDucks: false,
+  // The seconds line 1 waits after sound is allowed, so that a press of Apply by the same gesture is seen first and takes it back.
+  openingWaitSeconds: 0.15,
   // The same cue set off twice within this time sounds once.
   sameCueSeconds: 0.012,
   // A loop that nothing stops ends by itself after this long.

@@ -1,4 +1,4 @@
-// node pipeline/change002/shell-film-captions.mjs [--until 18] [--onto film.mp4 --out captioned.mp4] [--proof]
+// node pipeline/change002/shell-film-captions.mjs [--until 18] [--fps 30] [--name list] [--onto film.mp4 --out captioned.mp4] [--proof]
 // The captions of the film: one picture of the panel a phrase (1920 by 1080, clear around the panel), the frames each is on, and the filter that lays them over a film.
 // The lines and their frames are the ones the film gives (timedLines of src/copy.ts); the phrases are those of src/audio/standin.ts; the panel is the one of src/ui/said.ts.
 // --proof lays them over a kept still of the careers page held for the length asked, to show the timing; it is not the film.
@@ -10,10 +10,11 @@ import { args, at, config, readJson, writeJson } from '../../tools/lib/paths.mjs
 
 const a = args()
 const c = config()
-const fps = c.film.fps
+const fps = typeof a.fps === 'string' && Number.isFinite(Number(a.fps)) ? Number(a.fps) : c.film.fps
+const name = typeof a.name === 'string' ? a.name : 'shell-film-captions'
 const until = typeof a.until === 'string' && Number.isFinite(Number(a.until)) ? Number(a.until) : Infinity
 const SIZE = { width: 1920, height: 1080 }
-const work = at('out', 'work', 'captions')
+const work = at('out', 'work', typeof a.name === 'string' ? `captions-${a.name}` : 'captions')
 fs.mkdirSync(work, { recursive: true })
 
 const { logic } = await import('../../tools/lib/logic.mjs')
@@ -78,7 +79,7 @@ try {
 
 const filter = list.map((x, i) => `[${i === 0 ? '0:v' : `v${i}`}][${i + 1}:v]overlay=0:0:enable='between(n,${x.first},${x.last})'[v${i + 1}]`).join(';')
 const record = {
-  made: `node pipeline/change002/shell-film-captions.mjs${Number.isFinite(until) ? ` --until ${until}` : ''}`, browser: launched.version, fps, size: SIZE, lowerEdgeY: low,
+  made: `node pipeline/change002/shell-film-captions.mjs${Number.isFinite(until) ? ` --until ${until}` : ''}${typeof a.fps === 'string' ? ` --fps ${fps}` : ''}`, browser: launched.version, fps, size: SIZE, lowerEdgeY: low,
   note: 'every line is a silent stand-in; a line with draft true is a draft', lines, captions: list,
   filter, filterUse: 'ffmpeg -i FILM -i each picture in order -filter_complex FILTER -map [vN] -map 0:a? ...; n is the frame of the film'
 }
@@ -95,6 +96,6 @@ if (a.proof && list.length) {
   const frames = Number(execFileSync('ffprobe', ['-v', 'error', '-count_frames', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_frames', '-of', 'csv=p=0', out]).toString().trim())
   record.proof = { what: 'the pictures laid over a kept still of the careers page held for the length asked: the timing of the captions, not the film', file: path.relative(at(), out), seconds, frames }
 }
-writeJson(at('pipeline', 'change002', 'shell-film-captions.json'), record)
+writeJson(typeof a.name === 'string' ? path.join(work, `${name}.json`) : at('pipeline', 'change002', 'shell-film-captions.json'), record)
 console.log(`captions: ${list.length} phrases of ${lines.length} lines${Number.isFinite(until) ? ` that start in the first ${until} s` : ''}, pictures in ${path.relative(at(), work)}, list in pipeline/change002/shell-film-captions.json`)
 for (const x of list) console.log(`  frames ${x.first} to ${x.last}${x.draft ? ' (draft)' : ''}: ${x.words}`)

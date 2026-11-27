@@ -11,7 +11,7 @@ import { allCues, alsoStarts, cueOfEvent, eventCues, loopCues, markStandsFor, op
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
-import { phraseStart, standIns, type StandIn } from './standin'
+import { phraseStart, standIns, type StandIn, lineKey } from './standin'
 import shipped from '../../public/audio/index.json'
 
 export type SoundMode = 'live' | 'film'
@@ -308,6 +308,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   let leaving: string | null = null
   let toQuiet = false
   let owedOpen = false
+  let openingOpen = true
+  const told = new Set<string>()
   let lastMode: SoundMode | null = null
   let caption: Caption | null = null
   let captionAt: number | undefined
@@ -394,10 +396,13 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     const from = here
     here = page
     if (page === quietPage && mode !== 'film' && lastMode !== 'film') {
-      if (from !== null) desk.restart()
-      wantOpening(from === null ? 'the careers page on screen' : 'the careers page on screen again')
+      if (from !== null) {
+        desk.restart()
+        told.clear()
+      } else wantOpening('the careers page on screen')
     }
     if (page !== quietPage) {
+      openingOpen = false
       toQuiet = false
       startTone()
       return
@@ -475,7 +480,10 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
 
   const inMode = (mode: SoundMode) => {
     if (mode === lastMode) return
-    if (lastMode !== null) desk.restart()
+    if (lastMode !== null) {
+      desk.restart()
+      told.clear()
+    }
     lastMode = mode
   }
 
@@ -500,7 +508,13 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
 
   const takeBack = (list: Booking[], why: string) => {
     for (const c of list) {
+      const gone = speaking.get(c)
       speaking.delete(c)
+      if (gone) {
+        told.delete(gone.key)
+        const later = [...speaking].filter(([b, l]) => l.beat === gone.beat && l.index > gone.index && desk.drop(backend!.now(), b)).map(([b]) => b)
+        if (later.length) list.push(...later)
+      }
       const cue = marks.get(c)
       if (cue) stopCue(cue)
       marks.delete(c)
@@ -510,17 +524,23 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   }
 
   // A line of the script: once in a run, at its event or after the line that is being said and the gap. In the film the gap is the one between two lines of a beat.
+  const openingKey = Object.keys(spoken).find((k) => spoken[k]!.event === null && spoken[k]!.after === undefined) ?? ''
   const say = (key: string, trigger: string, mode: SoundMode, from?: number) => {
     const line = lines.get(key)
     const row = spoken[key]
     if (!line || !row || !backend || desk.isSpent(line.id)) return
     const now = backend.now()
-    const booking = desk.ask(now, { id: line.id, group: line.beat, seconds: line.seconds, page: row.keeps ? null : line.page, until: row.until, gap: row.after !== undefined || mode === 'film' ? audio.lineGapSeconds : undefined, from })
+    if (line.index > 0 && !told.has(lineKey(line.beat, line.index - 1))) {
+      note({ at: round(now), line: line.id, trigger, what: 'dropped', why: 'the part before it was not said' })
+      return
+    }
+    const booking = desk.ask(now, { id: line.id, group: line.beat, seconds: line.seconds, page: row.keeps ? null : line.page, until: row.until, gap: mode === 'film' ? audio.lineGapSeconds : undefined, from })
     if (!booking) {
       note({ at: round(now), line: line.id, trigger, what: 'dropped', why: narrator.why ?? '' })
       return
     }
     note({ at: round(now), line: line.id, trigger, what: 'spoken', start: round(booking.start), seconds: round(line.seconds) })
+    told.add(key)
     speak(booking, line)
     for (const [next, r] of Object.entries(spoken)) if (r.after === key) say(next, `after ${line.id}`, mode, booking.end)
     reduck()
@@ -559,14 +579,17 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     }
   }
 
-  // The line that hangs on no event: it is said the moment sound is allowed while its page is on screen.
+  // The line that hangs on no event: it is said when sound is allowed while its page stands at rest on screen, once a visit.
+  // A press of the page's button or a turn away from it closes it for the visit; it starts a moment late so that the press that allowed the sound is seen first.
   function wantOpening(trigger: string): void {
+    if (!openingOpen) return
     if (state !== 'ready' || !backend) {
       owedOpen = unlocking !== null
       return
     }
     owedOpen = false
-    for (const [key, row] of Object.entries(spoken)) if (row.event === null && row.after === undefined && lines.get(key)?.page === quietPage) say(key, trigger, 'live')
+    openingOpen = false
+    for (const [key, row] of Object.entries(spoken)) if (row.event === null && row.after === undefined && lines.get(key)?.page === quietPage) say(key, trigger, 'live', backend.now() + LIVE.openingWaitSeconds)
   }
 
   const api: SoundApi = {
@@ -596,7 +619,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         setState(ok ? 'ready' : 'silent')
         if (ok) watchPage()
         if (here !== null) startTone()
-        if (ok && lastMode !== 'film' && (owedOpen || here === quietPage)) wantOpening('sound allowed')
+        if (ok && lastMode !== 'film' && here === quietPage) wantOpening('sound allowed')
       })()
       return unlocking
     },
@@ -613,7 +636,9 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     event(e, mode) {
       inMode(mode)
       if (e.page !== undefined) atPage(e.page, mode)
+      const closes = e.page === quietPage && (e.name === 'page-turn' || (spoken[openingKey]?.until.includes(e.name) ?? false))
       if (state !== 'ready' || !backend) {
+        if (closes) openingOpen = false
         if (e.name === 'page-turn' && e.page !== undefined) turnFrom(e.page, mode)
         return
       }
@@ -635,6 +660,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       takeBack(desk.ended(now, page, e.name), `its moment ended with ${e.name}`)
       jump(e.name, page)
       if (e.name === 'skip' || e.name === 'page-turn') takeBack(desk.leave(now, page), e.name === 'skip' ? 'its page was skipped' : 'its page was turned')
+      if (closes) openingOpen = false
       for (const key of spokenKeysFor(e.name, page)) say(key, `event ${e.name}`, mode)
     },
     beat(id, mode, into = 0) {
@@ -648,6 +674,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       for (const [key, row] of Object.entries(spoken)) {
         if (row.event !== null || row.after !== undefined || lines.get(key)?.beat !== id) continue
         desk.restart()
+        told.clear()
         say(key, `beat ${id}`, 'film')
       }
     },
