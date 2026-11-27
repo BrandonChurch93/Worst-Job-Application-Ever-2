@@ -57,7 +57,8 @@ const eight = (a: string) => `${a} one two ${mark} three four five ${mark} six s
 const film = Object.fromEntries(['marketing.stroll', 'step1.firstName', 'step1.shredded', 'pinball.seal', 'boss.verify', 'decision.letter'].map((b) => [b, [{ at: 0, text: eight(b) }]]))
 film['step2.crank'] = [{ at: 0, text: eight('crank') }, { at: 0.5, text: eight('top') }]
 film['boss.unfold'] = [{ at: 0, text: eight('beaten') }, { at: 0.5, text: eight('loans') }, { at: 0.8, text: eight('ready') }]
-const drafts = { 'decision.reset': [{ at: 0, text: eight('next') }] }
+const shout = { seconds: 6, starts: [0.5, 1.5, 3] }
+const drafts = { 'decision.reset': [{ at: 0, text: eight('next') }], 'boss.finish': [{ at: 0, text: `ka ${mark} me ${mark} ha`, loud: true, standIn: shout }] }
 const L = 8 / wps
 const id = (key: string) => `line.${key}`
 
@@ -122,10 +123,10 @@ const linesAt = (s: Api) => [...new Set(s.said().lines.map((l) => l.line))]
 const loops = (ctx: FakeContext, name: string) => ctx.sources.filter((x) => x.buffer?.id === name)
 
 describe('change note 003: the table of the script', () => {
-  it('has the spoken moments of the script in twelve lines, each on its event, and no line that only the live site has', () => {
+  it('has the spoken moments of the script in twelve lines and the shout of the boss, each on its event, and no line that only the live site has', () => {
     expect(Object.fromEntries(Object.entries(spoken).map(([k, r]) => [k, r.event]))).toEqual({
       'marketing.stroll.0': null, 'step1.firstName.0': 'candidate-sensed', 'step1.shredded.0': 'resume-received', 'step2.crank.0': 'volume-sign', 'step2.crank.1': 'crank-full',
-      'pinball.seal.0': 'vacuum-on', 'boss.verify.0': 'checkbox', 'boss.unfold.0': 'boss-formed', 'boss.unfold.1': null, 'boss.unfold.2': null, 'decision.letter.0': 'stamp', 'decision.reset.0': 'page-turn'
+      'pinball.seal.0': 'vacuum-on', 'boss.verify.0': 'checkbox', 'boss.unfold.0': 'boss-formed', 'boss.unfold.1': null, 'boss.unfold.2': null, 'boss.finish.0': 'finish-arms', 'decision.letter.0': 'stamp', 'decision.reset.0': 'page-turn'
     })
     expect(liveTriggers).toEqual({})
     for (const key of Object.keys(spoken)) expect(Object.values(unitPage), key).toContain(keyPage(key))
@@ -164,6 +165,7 @@ describe('change note 003: a line is a silent stand-in with its caption', () => 
     const all = standIns(film, drafts)
     expect([...all.keys()]).toEqual(Object.keys(spoken))
     for (const l of all.values()) {
+      if (spoken[l.key]!.steps) continue
       expect(l.seconds, l.key).toBeCloseTo(wordCount(l.words) / wps, 12)
       expect(l.words.includes(mark), l.key).toBe(false)
       expect(l.phrases[0]!.from).toBe(0)
@@ -175,7 +177,7 @@ describe('change note 003: a line is a silent stand-in with its caption', () => 
 
   it('marks as a draft every line that comes from the drafts file and no other', () => {
     const all = standIns(film, drafts)
-    expect([...all.values()].filter((l) => l.draft).map((l) => l.key)).toEqual(['decision.reset.0'])
+    expect([...all.values()].filter((l) => l.draft).map((l) => l.key)).toEqual(['boss.finish.0', 'decision.reset.0'])
     const real = standIns()
     const settled = narration.film as Record<string, unknown[]>
     for (const l of real.values()) expect(l.draft, l.key).toBe(settled[l.beat]?.[l.index] === undefined)
@@ -391,6 +393,66 @@ describe('change note 003: the parts of one moment', () => {
     both.ctx.currentTime = 3
     both.s.event(ev('field-done', 'step2'), 'live')
     expect(back(both.s).sort()).toEqual([id('step2.crank.0'), id('step2.crank.1')])
+  })
+})
+
+describe('the shout of the boss: a draft shown one word a mark of the page', () => {
+  it('takes its times from the stand-in of the drafts file, not from the pace of the narrator, and is large and a draft', () => {
+    const l = standIns(film, drafts).get('boss.finish.0')!
+    expect(l.phrases).toEqual([{ words: 'ka', from: 0.5, to: 1.5 }, { words: 'me', from: 1.5, to: 3 }, { words: 'ha', from: 3, to: 6 }])
+    expect([l.seconds, l.draft, l.loud, l.page]).toEqual([6, true, true, 'step4'])
+    expect(filmCaptions([{ id: id('boss.finish.0'), frame: 600 }], 60, standIns(film, drafts)).map((c) => [c.words, c.first, c.last, c.loud, c.draft])).toEqual([['ka', 630, 689, true, true], ['me', 690, 779, true, true], ['ha', 780, 959, true, true]])
+    const real = standIns().get('boss.finish.0')!
+    expect(real.draft && real.loud).toBe(true)
+    expect(real.text).toBe(draftFilm()['boss.finish']![0]!.text)
+    expect(real.phrases.length).toBe(real.text.split(mark).length)
+  })
+
+  it('shows nothing on finish-arms, one word on each finish-charge until the next mark, the last word on finish-fire, and nothing after boss-gone', async () => {
+    const { s, ctx } = await ready('step4')
+    const words = () => s.said().lines.filter((l) => l.start <= ctx.currentTime && ctx.currentTime < l.end).map((l) => [l.words, l.loud])
+    ctx.currentTime = 100
+    s.event(ev('finish-arms', 'step4'), 'live')
+    expect(booked(s)).toEqual([[id('boss.finish.0'), 100]])
+    ctx.currentTime = 100.05
+    expect(words()).toEqual([])
+    ctx.currentTime = 100.4
+    s.event(ev('finish-charge', 'step4'), 'live')
+    ctx.currentTime = 100.5
+    expect(words()).toEqual([['ka', true]])
+    ctx.currentTime = 102
+    s.event(ev('finish-charge', 'step4'), 'live')
+    ctx.currentTime = 102.5
+    expect(words()).toEqual([['me', true]])
+    s.event(ev('finish-charge', 'step4'), 'live')
+    expect(words()).toEqual([['me', true]])
+    ctx.currentTime = 103
+    s.event(ev('finish-fire', 'step4'), 'live')
+    ctx.currentTime = 104
+    expect(words()).toEqual([['ha', true]])
+    s.event(ev('boss-gone', 'step4'), 'live')
+    ctx.currentTime = 104.01
+    expect(s.said().lines).toEqual([])
+  })
+
+  it('shows the last word on a finish-fire that comes early, and takes the shout back when boss-gone comes before it began', async () => {
+    const { s, ctx } = await ready('step4')
+    const words = () => s.said().lines.filter((l) => l.start <= ctx.currentTime && ctx.currentTime < l.end).map((l) => l.words)
+    ctx.currentTime = 10
+    s.event(ev('finish-arms', 'step4'), 'live')
+    ctx.currentTime = 10.2
+    s.event(ev('finish-charge', 'step4'), 'live')
+    ctx.currentTime = 10.6
+    s.event(ev('finish-fire', 'step4'), 'live')
+    ctx.currentTime = 10.7
+    expect(words()).toEqual(['ha'])
+    const late = await ready('step4')
+    late.s.event(ev('checkbox', 'step4'), 'live')
+    late.ctx.currentTime = 1
+    late.s.event(ev('finish-arms', 'step4'), 'live')
+    late.ctx.currentTime = 2
+    late.s.event(ev('boss-gone', 'step4'), 'live')
+    expect(back(late.s)).toEqual([id('boss.finish.0')])
   })
 })
 

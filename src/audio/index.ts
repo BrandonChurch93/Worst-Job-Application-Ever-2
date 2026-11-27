@@ -326,6 +326,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const running = new Map<string, Voice[]>()
   const speaking = new Map<Booking, StandIn>()
   const marks = new Map<Booking, string>()
+  const stepped = new WeakMap<Booking, number[]>()
   const byMark = new Set<string>()
   const entries: SoundLogEntry[] = []
   const note = (e: SoundLogEntry) => {
@@ -561,6 +562,28 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     return out
   }
 
+  // A line whose phrases come on marks of its page: each mark shows the next phrase, the last mark the last phrase, and the end mark ends the line.
+  const step = (name: string, page: string) => {
+    const now = backend!.now()
+    for (const [b, l] of [...speaking]) {
+      const steps = spoken[l.key]?.steps
+      if (!steps || l.page !== page || b.end <= now) continue
+      const got = stepped.get(b) ?? []
+      const at = Math.max(now, b.start)
+      if (name === steps.next) {
+        if (got.length < l.phrases.length - 1) got.push(at)
+      } else if (name === steps.last) {
+        while (got.length < l.phrases.length) got.push(at)
+      } else if (name === steps.ends) {
+        desk.shorten(now, b, at, [])
+        if (b.start >= b.end) speaking.delete(b)
+        note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'its moment ended on the mark of its page' })
+      } else continue
+      stepped.set(b, got)
+      caption?.wake()
+    }
+  }
+
   // An event that makes a line jump to its next part: the phrase being said is said to its end and no further.
   const jump = (name: string, page: string) => {
     const now = backend!.now()
@@ -659,6 +682,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       takeBack(desk.at(now, page), 'its page was left')
       takeBack(desk.ended(now, page, e.name), `its moment ended with ${e.name}`)
       jump(e.name, page)
+      step(e.name, page)
       if (e.name === 'skip' || e.name === 'page-turn') takeBack(desk.leave(now, page), e.name === 'skip' ? 'its page was skipped' : 'its page was turned')
       if (closes) openingOpen = false
       for (const key of spokenKeysFor(e.name, page)) say(key, `event ${e.name}`, mode)
@@ -699,9 +723,14 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         if (b.end <= now) {
           speaking.delete(b)
           marks.delete(b)
-        } else l.phrases.forEach((p, k) => {
-          if (b.start + p.from < b.end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: p.words, start: b.start + p.from, end: Math.min(b.end, b.start + p.to), draft: l.draft, loud: spoken[l.key]?.loud === true })
-        })
+        } else {
+          const got = spoken[l.key]?.steps ? stepped.get(b) ?? [] : null
+          l.phrases.forEach((p, k) => {
+            const start = got ? got[k] : b.start + p.from
+            const end = Math.min(b.end, got ? got[k + 1] ?? b.end : b.start + p.to)
+            if (start !== undefined && start < end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: p.words, start, end, draft: l.draft, loud: l.loud })
+          })
+        }
       }
       return { now, lines: out.sort((a, b) => a.start - b.start) }
     },

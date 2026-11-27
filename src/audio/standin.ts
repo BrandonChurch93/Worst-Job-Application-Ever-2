@@ -1,5 +1,6 @@
 // The narrator's script as the site and the film use it while no line is recorded: each line is a silent stand-in with its caption.
 // A line lasts its words divided by audio.narratorMaxWordsPerSecond. Its caption is shown phrase by phrase, split at the pause mark, each phrase for its share of the words.
+// A line whose phrases come on marks of its page carries the times of a stand-in instead: the start of each phrase and the length of the whole.
 import { config } from '../config'
 import { narration } from '../copy'
 import { sayable } from '../ui/said'
@@ -23,9 +24,15 @@ export function phrasesOf(text: string, pauseMark: string, wordsPerSecond: numbe
   return out
 }
 
-export interface StandIn { key: string; id: string; beat: string; index: number; page: string; at: number; text: string; words: string; seconds: number; phrases: Phrase[]; draft: boolean }
+export interface StandIn { key: string; id: string; beat: string; index: number; page: string; at: number; text: string; words: string; seconds: number; phrases: Phrase[]; draft: boolean; loud: boolean }
 
-type Film = Record<string, { at: number; text: string }[]>
+type Film = Record<string, { at: number; text: string; loud?: boolean; standIn?: { seconds: number; starts: number[] } }[]>
+
+// The phrases of a line at the times of its stand-in: each from its start to the start of the next, the last to the end.
+export function phrasesAt(text: string, pauseMark: string, starts: number[], seconds: number): Phrase[] {
+  const words = text.split(pauseMark).map((part) => part.trim().split(/\s+/).filter((w) => w.length > 0).join(' ')).filter((w) => w.length > 0)
+  return words.map((w, k) => ({ words: w, from: starts[k] ?? seconds, to: starts[k + 1] ?? seconds }))
+}
 
 const draftFiles = import.meta.glob('../../content/narration-drafts.json', { eager: true }) as Record<string, { default?: { film?: Film }; film?: Film }>
 
@@ -49,8 +56,8 @@ export function standIns(film: Film = narration.film as Film, drafts: Film = dra
     const settled = film[beat]?.[index]
     const line = settled ?? drafts[beat]?.[index]
     if (!line) continue
-    const phrases = phrasesOf(line.text, pauseMark, wordsPerSecond)
-    out.set(key, { key, id: `line.${key}`, beat, index, page: keyPage(key), at: line.at, text: line.text, words: sayable(line.text, pauseMark), seconds: phrases.length ? phrases[phrases.length - 1]!.to : 0, phrases, draft: !settled })
+    const phrases = line.standIn ? phrasesAt(line.text, pauseMark, line.standIn.starts, line.standIn.seconds) : phrasesOf(line.text, pauseMark, wordsPerSecond)
+    out.set(key, { key, id: `line.${key}`, beat, index, page: keyPage(key), at: line.at, text: line.text, words: sayable(line.text, pauseMark), seconds: phrases.length ? phrases[phrases.length - 1]!.to : 0, phrases, draft: !settled, loud: line.loud === true || spoken[key]?.loud === true })
   }
   return out
 }
@@ -70,7 +77,7 @@ export function filmCaptions(lines: { id: string; frame: number }[], fps: number
     line.phrases.forEach((p, k) => {
       const first = at.frame + Math.round(p.from * fps)
       const last = at.frame + Math.round(p.to * fps) - 1
-      if (last >= first) out.push({ id: line.id, key: line.key, phrase: k, words: p.words, first, last, draft: line.draft, loud: spoken[line.key]?.loud === true })
+      if (last >= first) out.push({ id: line.id, key: line.key, phrase: k, words: p.words, first, last, draft: line.draft, loud: line.loud })
     })
   }
   return out
