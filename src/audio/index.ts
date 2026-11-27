@@ -6,7 +6,7 @@ import { config } from '../config'
 import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
-import type { Caption, CaptionSource } from '../ui/said'
+import { CAPTION, type Caption, type CaptionSource } from '../ui/said'
 import { allCues, alsoStarts, cueOfEvent, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, unitPage } from './cues'
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
@@ -46,7 +46,7 @@ export interface SoundApi {
 export interface SoundLogEntry { at: number; line: string; trigger: string; what: 'spoken' | 'dropped' | 'taken back' | 'cut'; start?: number; seconds?: number; why?: string }
 
 // One phrase of a line: id is the line's id, a # and the phrase's place in the line. draft: the line comes from content/narration-drafts.json.
-export interface SaidLine { id: string; line: string; words: string; start: number; end: number; draft: boolean; loud: boolean }
+export interface SaidLine { id: string; line: string; words: string; start: number; end: number; draft: boolean; loud: boolean; step?: { k: number; n: number } }
 
 export interface SoundIndex {
   version: number
@@ -503,7 +503,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     speaking.set(booking, line)
     setMark(booking, line)
     if (!caption && o.caption) caption = o.caption(() => api.said())
-    caption?.place(captionAt)
+    caption?.place(captionAt ?? CAPTION.lowOn[here ?? ''])
     caption?.wake()
   }
 
@@ -714,7 +714,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       inMode('live')
       atPage(id, 'live')
       captionAt = at
-      caption?.place(at)
+      caption?.place(at ?? CAPTION.lowOn[id])
     },
     said() {
       const now = backend ? backend.now() : 0
@@ -728,7 +728,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
           l.phrases.forEach((p, k) => {
             const start = got ? got[k] : b.start + p.from
             const end = Math.min(b.end, got ? got[k + 1] ?? b.end : b.start + p.to)
-            if (start !== undefined && start < end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: p.words, start, end, draft: l.draft, loud: l.loud })
+            if (start !== undefined && start < end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: p.words, start, end, draft: l.draft, loud: l.loud, ...(got ? { step: { k, n: l.phrases.length } } : {}) })
           })
         }
       }

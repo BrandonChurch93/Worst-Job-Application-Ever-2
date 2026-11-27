@@ -65,7 +65,7 @@ export function standIns(film: Film = narration.film as Film, drafts: Film = dra
 // The seconds from the start of a line to the start of one of its phrases; a phrase counted from the end is negative.
 export const phraseStart = (line: StandIn, phrase: number): number => line.phrases[phrase < 0 ? line.phrases.length + phrase : phrase]?.from ?? 0
 
-export interface FilmCaption { id: string; key: string; phrase: number; words: string; first: number; last: number; draft: boolean; loud: boolean }
+export interface FilmCaption { id: string; key: string; phrase: number; words: string; first: number; last: number; draft: boolean; loud: boolean; step?: { k: number; n: number } }
 
 // The captions of the film by frame: each phrase of a line from its first frame to its last, the line starting on the frame the film gives it.
 export function filmCaptions(lines: { id: string; frame: number }[], fps: number, script: Map<string, StandIn> = standIns()): FilmCaption[] {
@@ -77,7 +77,7 @@ export function filmCaptions(lines: { id: string; frame: number }[], fps: number
     line.phrases.forEach((p, k) => {
       const first = at.frame + Math.round(p.from * fps)
       const last = at.frame + Math.round(p.to * fps) - 1
-      if (last >= first) out.push({ id: line.id, key: line.key, phrase: k, words: p.words, first, last, draft: line.draft, loud: line.loud })
+      if (last >= first) out.push({ id: line.id, key: line.key, phrase: k, words: p.words, first, last, draft: line.draft, loud: line.loud, ...(spoken[line.key]?.steps ? { step: { k, n: line.phrases.length } } : {}) })
     })
   }
   return out

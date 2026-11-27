@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
 import { cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysFor, unitPage } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
+import { CAPTION, shoutPx, shoutShake } from '../src/ui/said'
 import { draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, standIns, wordCount } from '../src/audio/standin'
 import { mixFilm, scriptStandIns } from '../src/audio/mix'
 
@@ -433,6 +434,28 @@ describe('the shout of the boss: a draft shown one word a mark of the page', () 
     s.event(ev('boss-gone', 'step4'), 'live')
     ctx.currentTime = 104.01
     expect(s.said().lines).toEqual([])
+  })
+
+  it('tells the panel which word of how many it shows, grows each word by the rate of the panel and makes the last the largest, and names a higher place for the panel on the boss page', async () => {
+    const { s, ctx } = await ready('step4')
+    ctx.currentTime = 10
+    s.event(ev('finish-arms', 'step4'), 'live')
+    s.event(ev('finish-charge', 'step4'), 'live')
+    ctx.currentTime = 11
+    s.event(ev('finish-fire', 'step4'), 'live')
+    expect(s.said().lines.map((l) => [l.words, l.step])).toEqual([['ka', { k: 0, n: 3 }], ['ha', { k: 2, n: 3 }]])
+    expect(filmCaptions([{ id: id('boss.finish.0'), frame: 0 }], 60, standIns(film, drafts)).map((c) => c.step)).toEqual([{ k: 0, n: 3 }, { k: 1, n: 3 }, { k: 2, n: 3 }])
+    expect(filmCaptions([{ id: id('boss.verify.0'), frame: 0 }], 60, standIns(film, drafts)).every((c) => c.step === undefined)).toBe(true)
+    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5)))).toEqual([150, 168, 188, 211, 240])
+    expect([0, 1, 2].map((k) => Math.round(shoutPx(k, 3)))).toEqual([150, 168, 240])
+    for (const t of [0, 0.01, 0.37, 2.2]) {
+      const off = shoutShake(t)
+      expect(Math.abs(off.x)).toBeLessThanOrEqual(CAPTION.shout.shakePx)
+      expect(Math.abs(off.y)).toBeLessThanOrEqual(CAPTION.shout.shakePx)
+    }
+    expect(shoutShake(0.37)).toEqual(shoutShake(0.37))
+    expect(CAPTION.lowOn.step4).toBeLessThan(CAPTION.low)
+    expect(CAPTION.shout.top + CAPTION.shout.lastPx).toBeLessThan(CAPTION.lowOn.step4!)
   })
 
   it('shows the last word on a finish-fire that comes early, and takes the shout back when boss-gone comes before it began', async () => {
