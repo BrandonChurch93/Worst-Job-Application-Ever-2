@@ -32,8 +32,8 @@ const SINGE = 0.2
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
 const TIDY = 0.3
-// The live takeover: the seconds the hands travel to the bitten paper before they close on it, then the seconds over which the taut arms haul the arrow in to arm's length, and the most the held paper leans from upright, in radians, wherever the arrow stands. On the step the hands close the paper swings to the arrow and a little past (`swing`: how fast it dies and how fast it turns, a second), and the arrow is drawn long (`long`) for `jolt` seconds and thrown toward the paper at `kick` px a second.
-const TAKE = { reach: 0.075, haul: 0.15, lean: 0.6, swing: { dies: 20, turns: 30 }, long: 1.2, jolt: 0.05, kick: 240 }
+// The live takeover: the seconds the hands travel to the bitten paper before they close on it, then the seconds over which the taut arms haul the arrow in to arm's length, and the most the held paper leans from upright, in radians, wherever the arrow stands. On the step the hands close the paper swings to the arrow and a little past (`swing`: how fast it dies and how fast it turns, a second), and the arrow is drawn long (`long`) for `jolt` seconds and thrown toward the paper at `kick` px a second. Until that step the sheet lies as the bite left it; from it the sheet takes its held look over `crease` seconds, and in the film, where nothing swings, it is turned to the arrow over `turn` seconds.
+const TAKE = { reach: 0.075, haul: 0.15, lean: 0.6, swing: { dies: 20, turns: 30 }, long: 1.2, jolt: 0.05, kick: 240, crease: 0.05, turn: 0.1 }
 // The way in on the taut arms, live: the arrow comes in from where it stood when the hands closed to where the arms' pull and the hand's meet, over `TAKE.haul` seconds, at `first` times the even pace on the first step down to `last` times on the last. Each step the page gives it the pace it is short of and `near` a second of the distance it is behind; a slack under `least` px is left to the spring.
 const WAY = { first: 1.6, last: 0.4, near: 120, least: 8 }
 // The stop at arm's length, live: what is left of the pace is taken out on one step and the arrow thrown `back` px a second the other way; for `still` seconds the page takes `grip` of the arrow's pace out of it each step, less and less, so it stands before the hand has it on the arms again; its length is pressed from `from` to `low` over `dip` seconds and the body's spring takes it up again.
@@ -119,7 +119,7 @@ interface State {
   paper: { on: boolean; slide: number; x: number; y: number; held: boolean; dx: number; dy: number; feed: number; fx: number; fy: number; vx: number; vy: number }
   slot: number
   shut: number
-  tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number; slack: number; far: number; from: number; into: number; ax: number; ay: number; heave: number; size: number }
+  tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number; slack: number; far: number; from: number; into: number; ax: number; ay: number; heave: number; size: number; held: number }
   lost: number
   last: number
   lostFrom: { x: number; y: number; ux: number; uy: number }
@@ -207,7 +207,7 @@ export function makePage(): PageLogic {
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], held: '', click: 0, keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
-    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, shut: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0 },
+    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, shut: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0, held: 0 },
     lost: -1, last: -1, lostFrom: { x: 0, y: 0, ux: 0, uy: -1 }, jolt: 9, joltAmp: 0, give: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, thudLean: { x: 0, y: 1 }, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
@@ -515,7 +515,7 @@ export function makePage(): PageLogic {
       p.vy = (p.y - wy) / io.dt
       if (p.feed >= TIMES.bite) {
         enter('tug')
-        s.tug = { t: 0, amount: tugCurve(0), most: 0, cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0 }
+        s.tug = { t: 0, amount: tugCurve(0), most: 0, cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0, held: 0 }
         s.lost = -1
         s.last = -1
         jolt(JOLT.bite)
@@ -563,6 +563,8 @@ export function makePage(): PageLogic {
   const joltNow = (): number => (s.jolt < JOLT.seconds ? s.joltAmp * (1 - s.jolt / JOLT.seconds) ** 2 : 0)
   const holding = (): boolean => s.phase === 'tug' && (s.lost < 0 || (s.mode !== 'film' && s.lost < LOSS.skid + LOSS.feed))
 
+  const reaching = (): boolean => s.phase === 'tug' && s.tug.t < TAKE.reach
+
   const grip = (io: StepIo): void => {
     const t = s.tug
     const sx = io.cursor.x + TUG.shoulder.x
@@ -583,12 +585,13 @@ export function makePage(): PageLogic {
     const oy = t.gy
     grip(io)
     const since = t.t - TAKE.reach
-    const closed = film || since >= 0
+    const closed = since >= 0
+    t.held = closed ? Math.min(1, t.held + io.dt / TAKE.crease) : 0
     const tx = t.gx - SLOT.cx
     const ty = t.gy - SLOT.cy
     const td = Math.hypot(tx, ty) || 1
-    if (!film) {
-      const swung = closed ? 1 - Math.exp(-since * TAKE.swing.dies) * Math.cos(since * TAKE.swing.turns) : 0
+    const swung = !closed ? 0 : film ? smooth(since / TAKE.turn) : 1 - Math.exp(-since * TAKE.swing.dies) * Math.cos(since * TAKE.swing.turns)
+    if (!film || swung < 1) {
       const lean = clamp(Math.atan2(tx, -ty), -TAKE.lean / SWING_PEAK, TAKE.lean / SWING_PEAK) * swung
       const far = lerp(PAPER.h, td, clamp(swung, 0, 1))
       t.gx = SLOT.cx + Math.sin(lean) * far
@@ -879,7 +882,7 @@ export function makePage(): PageLogic {
     const reach = armed ? TUG.hands : 0
     const hx = armed ? t.hx : t.gx
     const hy = armed ? t.hy : t.gy
-    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx - uy * reach, hy + ux * reach, hx + uy * reach, hy - ux * reach, t.vx, t.vy, armed ? 1 : 0]
+    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx - uy * reach, hy + ux * reach, hx + uy * reach, hy - ux * reach, t.vx, t.vy, armed ? t.held : 0]
     out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', moved: true, v })
     const rest = Math.max(10, PAPER.h * (1 - t.amount))
     const scale = whole / rest
@@ -903,7 +906,7 @@ export function makePage(): PageLogic {
     if (s.board > 0) out.push('keyboard', 'note')
     else out.push('closed')
     if (s.slabs.length) out.push('slab')
-    if (s.paper.on && s.phase === 'resume') out.push('paper')
+    if (s.paper.on && (s.phase === 'resume' || reaching())) out.push('paper')
     return out
   }
 
@@ -1112,7 +1115,7 @@ export function makePage(): PageLogic {
         over['email-slab'] = { x: p.x, y: p.y, z0: p.z, z1: p.z + heights.slab, moved: true, v: slabV(first) }
         over['email-slab-label'] = { x: slabLabel.x + (p.x - slabHome.x), y: slabLabel.y + (p.y - slabHome.y), z0: p.z + heights.slab, z1: p.z + heights.slab, moved: true }
       }
-      if (s.paper.on && s.phase === 'resume') {
+      if (s.paper.on && (s.phase === 'resume' || reaching())) {
         const dx = s.paper.x - PAPER_REST.x
         const dy = s.paper.y - PAPER_REST.y
         const up = s.paper.held ? LIE + 14 + (s.mode === 'film' ? RESUME.high * raised(s.time) : 0) : s.paper.feed >= 0 ? LIE : 0.6
@@ -1171,7 +1174,7 @@ export function makePage(): PageLogic {
         if (thrown > 0) for (const x of slot) if (x.mechanism) x.y += thrown
         out.push(...slot)
       }
-      if (s.phase === 'tug' || s.phase === 'shredded') tugPaper(out)
+      if ((s.phase === 'tug' && !reaching()) || s.phase === 'shredded') tugPaper(out)
       strips(out)
     },
     scroll: () => 0,
