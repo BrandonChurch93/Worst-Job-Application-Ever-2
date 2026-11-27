@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 5,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: motion on the live site under a visitor's input: the arrow walked across a page, a page turn, a hit on the arrow, control taken and given back, the arrow into the ball and a flipper's strike, consecutive frames",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-09.png, set-A-10.png",
+   "where": "the right flipper and the ball, frames f10-f11 (about 1:52.93-1:52.97)",
+   "what": "the scoring hit is never struck: the ball sits beside the right flipper in f10 and is already moving up the lane in f11, but the flipper is at rest in every frame - no wind-up, no swing through the ball, no recoil; only the green lamp flash answers, so the ball accelerates away from a stationary bat and reads as being moved by hand, not hit",
+   "fix": "show the right flipper rotated up over 1-2 frames through the ball's position, with the ball changing direction on the contact frame (both react: bat committed, ball kicked at its fastest), then snap the bat back to rest over 1-2 frames"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "flippers, frames f2-f6 (about 1:52.67-1:52.83)",
+   "what": "the flippers flap (right bat raised in f3-f4, left bat raised around f2) while no ball is anywhere near them - the playfield below is empty down to the drain; the bat moves when nothing is there and is still at the actual hit, which reverses cause and effect and makes the machine feel animated rather than played",
+   "fix": "either remove the idle flaps so the only flipper motion is the genuine strike, or put the ball arriving at the bat on the frames the bat fires so the flaps meet something"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "the F, G, B and H keys under the arrow",
+   "what": "a key press is shown only as an orange glow on the keycap - the cap never travels down and never springs back, so the hits read as light switches, not as a mechanical keyboard being struck; weight is missing in the one sheet built around a hit",
+   "fix": "sink the hit key 2-4px with a tightened dark gap around its edges for 1-2 frames, then let it rebound on the next frame, keeping the glow as a secondary accent"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-07.png",
+   "where": "the seal swirls round the ball, frames f8-f12 (1:37.22-1:37.35)",
+   "what": "the bright arcs pop around the ball face at inconsistent positions from frame to frame and the arrow inside reverses its drift (leftward f3-f9, then back right f10-f12), so the seal reads as shimmer rather than one swirl closing round the ball",
+   "fix": "give the arcs one consistent orbit direction, stepping the same angular amount per frame as they close into the ring, and let the arrow settle to one spot as the ring seals"
+  }
+ ]
+}
