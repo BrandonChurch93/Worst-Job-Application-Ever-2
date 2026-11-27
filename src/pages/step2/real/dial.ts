@@ -369,6 +369,27 @@ function lacquered(shared: THREE.MeshPhysicalMaterial): THREE.MeshPhysicalMateri
   return m
 }
 
+// The studio's shadow height law speckles a surface at once as it rises over the law's knee. While the dial moves between housed and whole, the knob and the ring look up their shadows up to `lift` px nearer the light, less the nearer it is to whole, so the speckle comes in and goes by degrees; `ramp` is the share of the rise over which the lift comes on from the housed dial. Exactly 0 housed and whole.
+export const SHADE_EASE = { lift: 0.2, ramp: 0.2 }
+const shadeLift = { value: 0 }
+export function shadeEase(low: number): number {
+  return low > 0 && low < 1 ? SHADE_EASE.lift * low * Math.min(1, (1 - low) / SHADE_EASE.ramp) : 0
+}
+
+function eased<T extends THREE.MeshPhysicalMaterial>(m: T): T {
+  const compile = m.onBeforeCompile
+  const key = m.customProgramCacheKey
+  const at = '#include <shadowmap_vertex>'
+  m.onBeforeCompile = (shader, renderer) => {
+    compile.call(m, shader, renderer)
+    if (!shader.vertexShader.includes(at)) throw new Error('dial: no shadow coordinates to ease')
+    shader.uniforms.wjaDialLift = shadeLift
+    shader.vertexShader = 'uniform float wjaDialLift;\n' + shader.vertexShader.replace(at, `${at}\n\t#if defined( USE_SHADOWMAP ) && NUM_DIR_LIGHT_SHADOWS > 0\n\tfor ( int i = 0; i < NUM_DIR_LIGHT_SHADOWS; i ++ ) vDirectionalShadowCoord[ i ] += directionalShadowMatrix[ i ] * vec4( 0.0, 0.0, wjaDialLift, 0.0 );\n\t#endif`)
+  }
+  m.customProgramCacheKey = () => `${key.call(m)}|dial-lift`
+  return m
+}
+
 interface Kit { inner: THREE.BufferGeometry; innerRing: THREE.BufferGeometry; seam: THREE.BufferGeometry; foot: THREE.BufferGeometry; seat: THREE.BufferGeometry; gap: THREE.BufferGeometry; groove: THREE.BufferGeometry; housing: THREE.BufferGeometry; plate: THREE.BufferGeometry; face: THREE.BufferGeometry; edges: THREE.BufferGeometry; holes: THREE.BufferGeometry; glint: THREE.BufferGeometry; hub: THREE.BufferGeometry; hubRing: THREE.BufferGeometry; stop: THREE.BufferGeometry; shade: THREE.BufferGeometry; cast: THREE.BufferGeometry }
 let kit: Kit | null = null
 
@@ -500,7 +521,7 @@ const plainDial: PartMaker = {
     wheel.add(face)
     wheel.add(mesh(g.edges, housingMaterial))
     wheel.add(mesh(g.holes, m.aluminiumSatin))
-    innerMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(B.innerTone), roughness: B.innerRough, metalness: 0, clearcoat: 0.2, clearcoatRoughness: 0.5, specularIntensity: 0.4, name: 'dial-inner' }))
+    innerMaterial ??= eased(studio(new THREE.MeshPhysicalMaterial({ color: srgb(B.innerTone), roughness: B.innerRough, metalness: 0, clearcoat: 0.2, clearcoatRoughness: 0.5, specularIntensity: 0.4, name: 'dial-inner' })))
     const inner = mesh(g.inner, innerMaterial, false)
     wheel.add(inner)
     const ring = mesh(g.innerRing, m.aluminiumSatin)
@@ -508,7 +529,7 @@ const plainDial: PartMaker = {
     const hubRing = mesh(g.hubRing, m.gap, false)
     hubRing.position.z = B.innerTall + B.hubSeatDeep - 0.1
     wheel.add(hubRing)
-    hubMaterial ??= lacquered(m.orange)
+    hubMaterial ??= eased(lacquered(m.orange))
     const hub = mesh(g.hub, hubMaterial)
     wheel.add(hub)
     body.add(wheel)
@@ -530,6 +551,7 @@ const plainDial: PartMaker = {
     cast.receiveShadow = false
     cast.position.z = B.castOver
     root.add(cast)
+    root.userData.shade = shadeLift
     root.userData.dial = { ring, body, wheel, face, shades, hub, stop, plate, cast, seat, glint, inner, hubRing } satisfies Kept
     return root
   },
@@ -552,6 +574,7 @@ const plainDial: PartMaker = {
     kept.ring.position.z = -B.innerRingTall * low
     kept.seat.scale.z = Math.max(0.1, 1 - low)
     kept.glint.visible = low < 1
+    shadeLift.value = shadeEase(low)
     kept.glint.scale.setScalar(Math.max(1e-6, 1 - low))
     kept.glint.position.z = on * (1 - swell) + (H + B.glintUp) * swell
     const [lx, ly] = look.key.direction
