@@ -33,6 +33,8 @@ const WALLS: Record<string, number[]> = { 'model-hq': [0.74, 0.5, 0.2], glass: [
 export const PRESS = { most: 0.4, hit: 0.4, stood: 0.3, dies: 0.05, stand: 3 }
 // How the shell opens, as shares of the way open: the halves have swung apart by `swung`, they sink from `sinks` on, by `deep` radii, and they are gone from sight between `fades` and 1.
 export const PARTING = { swung: 0.8, sinks: 0.55, deep: 1.9, fades: 0.8 }
+// How the shell shuts in the port's cup: the halves stand `wide` radii apart, each on its side of the seam, `deep` radii down under the cup's floor. They are up when the shell is `up` shut and come together as it shuts, with no swing.
+export const JAWS = { wide: 1.2, deep: 1.25, up: 0.3 }
 const INSIDE = { key: 2.6, fill: 0.6, lamps: 0.12, face: 1.6, least: 0.85, most: 1.0 }
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
 
@@ -54,8 +56,8 @@ export function piped(x: number, y: number, z: number): boolean {
 }
 
 // What the page tells the maker about the ball, on the shape's `v`: the share it is closed, the seconds since it closed, how much it sweats.
-export interface State { closed: number; since: number; sweat: number }
-export const stateOf = (s: Shape): State => ({ closed: clamp01(s.v?.[0] ?? 1), since: Math.max(0, s.v?.[1] ?? 9), sweat: clamp01(s.v?.[2] ?? 0) })
+export interface State { closed: number; since: number; sweat: number; jaws: boolean }
+export const stateOf = (s: Shape): State => ({ closed: clamp01(s.v?.[0] ?? 1), since: Math.max(0, s.v?.[1] ?? 9), sweat: clamp01(s.v?.[2] ?? 0), jaws: (s.v?.[6] ?? 0) > 0 })
 
 // The two grades of what is seen through the ball: 'bend' bends a picture of the floor in the shell's own drawing, 'true' adds one drawing that carries the scene behind it through the wall.
 export type Grade = 'bend' | 'true'
@@ -216,6 +218,7 @@ const lightUniforms = (): Record<string, THREE.IUniform> => ({
   uTrue: { value: 0 },
   uPlugTurn: { value: 0 },
   uOpen: { value: 0 },
+  uJaws: { value: 0 },
   uGone: { value: 0 },
   uBend: { value: 1 },
   uPress: { value: new THREE.Vector4(1, 0, 0, 0) },
@@ -387,8 +390,9 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const stood = pressAt(cx, cy, r, s.z0, ctx)
   const hit = hitOf(s)
   const pressed = debug.press ? { x: debug.press[0] ?? 1, y: debug.press[1] ?? 0, amount: debug.press[2] ?? 0 } : hit.amount > stood.amount ? hit : stood
-  const gone = smooth((open - PARTING.fades) / (1 - PARTING.fades))
-  own.roll.position.z = r - smooth((open - PARTING.sinks) / (1 - PARTING.sinks)) * PARTING.deep * r
+  const jaws = st.jaws && debug.open === null && open > 0
+  const gone = jaws ? 0 : smooth((open - PARTING.fades) / (1 - PARTING.fades))
+  own.roll.position.z = r - (jaws ? (1 - smooth(st.closed / JAWS.up)) * JAWS.deep : smooth((open - PARTING.sinks) / (1 - PARTING.sinks)) * PARTING.deep) * r
   const lean = open > 0 || debug.press || pressed !== hit ? 0 : (1 - (1 - SQUASH.cut * hit.amount) * (1 - SQUASH.thin * hit.amount)) * r
   own.roll.position.x = hit.x * lean
   own.roll.position.y = -hit.y * lean
@@ -477,7 +481,8 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   sealed.from.value.set(SOFT_DIR.x, SOFT_DIR.y, SOFT_DIR.z, INSIDE.face)
   u.uDrop!.value = L.drop
   u.uTrue!.value = debug.grade === 'true' ? 1 : 0
-  u.uOpen!.value = smooth(open / PARTING.swung)
+  u.uOpen!.value = jaws ? open : smooth(open / PARTING.swung)
+  u.uJaws!.value = jaws ? JAWS.wide : 0
   u.uGone!.value = gone
   u.uBend!.value = debug.bend ? 1 : 0
   own.back.visible = debug.shell

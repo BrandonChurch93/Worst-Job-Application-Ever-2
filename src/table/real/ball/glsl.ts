@@ -95,6 +95,7 @@ attribute float aHalf;
 attribute float aKind;
 uniform mat4 uToPage;
 uniform float uOpen;
+uniform float uJaws;
 uniform vec4 uPress;
 varying vec3 vO;
 varying vec3 vP;
@@ -109,7 +110,9 @@ varying float vRw;
 void main() {
 	vec3 p = position;
 	vec3 n = normal;
-	if ( uOpen > 0.0 ) {
+	if ( uOpen > 0.0 && uJaws > 0.0 ) {
+		p = p + vec3( 0.0, aHalf * uOpen * uJaws, 0.0 );
+	} else if ( uOpen > 0.0 ) {
 		float a = - aHalf * uOpen * 1.2;
 		float c = cos( a );
 		float s = sin( a );
