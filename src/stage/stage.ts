@@ -152,7 +152,7 @@ export class Stage {
   get pageTime(): number { return this.pageStep / stepHz }
   get turning(): boolean { return this.phase !== 'play' }
   get finished(): boolean { return this.phase === 'end' || (this.index === this.o.flow.length - 1 && this.phase === 'play' && !this.o.film?.leave && this.index > 0) }
-  get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && this.pageStep >= skipAfter && this.index < this.o.flow.length - 1 && this.page.unit !== 'marketing' }
+  get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && (this.pageStep >= skipAfter || this.page.control === 'film') && this.index < this.o.flow.length - 1 && this.page.unit !== 'marketing' }
   get longestIgnored(): { pointer: number; flippers: number; film: number } { return { pointer: this.max.pointer / stepHz, flippers: this.max.flippers / stepHz, film: this.max.film / stepHz } }
   get gagsReached(): string[] { return [...this.reached] }
   get pagesVisited(): string[] { return [...this.visited] }

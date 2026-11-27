@@ -405,7 +405,7 @@ function play(first: PlayMode): void {
     const key = `${now}${app.diagnostic}${p.key}`
     still = size.changed() || key !== before ? 0 : Math.min(still + 1, rest.length)
     before = key
-    if (still >= rest.length) return
+    if (still >= rest.length || (still > 0 && now === 'live' && stage.page.control === 'film')) return
     frame++
     app.put(p.frame, p.size, p.pose)
     app.setCamera(p.pose)
