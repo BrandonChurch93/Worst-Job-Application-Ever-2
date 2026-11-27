@@ -10,7 +10,17 @@ import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom
 import { keptSum, mixBuild, proveCutList } from './lib/cut-build.mjs'
 
 const rel = (p) => path.relative(at(), p)
-const narration = () => readJson(at('content', 'narration.json'))
+const settled = () => readJson(at('content', 'narration.json'))
+const draftFilm = () => (fs.existsSync(at('content', 'narration-drafts.json')) ? readJson(at('content', 'narration-drafts.json')).film ?? {} : {})
+// The script the film is timed from: the settled lines, and a draft line for a beat that has no settled one. A draft is a silent stand-in with its caption and is never a take.
+const narration = () => {
+  const n = settled()
+  return { ...n, film: { ...n.film, ...Object.fromEntries(Object.entries(draftFilm()).filter(([beat, lines]) => lines.length && !(n.film[beat]?.length))) } }
+}
+const draftIds = (M) => {
+  const n = settled()
+  return Object.entries(draftFilm()).filter(([beat, lines]) => lines.length && !(n.film[beat]?.length)).flatMap(([beat, lines]) => lines.map((_, i) => M.cues.filmLineId(beat, i)))
+}
 const lineExists = (r, c, cues) => {
   try {
     target({ line: r.beat ? `${r.beat}:${r.index}` : `live.${r.liveKey}:${r.index}` }, c, cues)
@@ -37,6 +47,8 @@ export async function filmPlan(c, M, file = at('cut', 'CUTLIST.json')) {
       const lineFrame = (l) => (Number.isFinite(l.first) ? l.first : frameOf({ frame: l.frame, seconds: l.startSeconds ?? l.start }))
       if (Array.isArray(cut.lines) && cut.lines.every((l) => typeof l.beat === 'string' && Number.isFinite(lineFrame(l)))) {
         lines = cut.lines.map((l) => ({ id: typeof l.id === 'string' ? l.id : M.cues.filmLineId(l.beat, l.index ?? 0), beat: l.beat, index: l.index ?? 0, frame: lineFrame(l) }))
+        const drafts = draftIds(M)
+        for (const l of timed.map((t) => ({ id: M.cues.filmLineId(t.beat, t.index), beat: t.beat, index: t.index, frame: Math.round(t.start * fps) }))) if (drafts.includes(l.id) && !lines.some((x) => x.id === l.id)) lines.push(l)
       }
       const total = Number.isFinite(cut.frameCount) ? cut.frameCount / fps : Number.isFinite(cut.seconds) ? cut.seconds : seconds
       return { source: 'cut/CUTLIST.json', cutSha256, fps, seconds: total, events: list, lines }
@@ -100,7 +112,7 @@ export async function makeMix(P, c, M, out, name, given = null) {
     mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), cutSha256: plan.cutSha256 ?? null, keptSha256: keptSum(keptRecords(P).filter((r) => sounds.has(r.id))), build: mixBuild(), ...(plan.openingFrames ? { openingFrames: plan.openingFrames, openingEvents: plan.openingEvents } : {}), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
     samples: result.sound.channels[0].length, silent: result.mastered.silent, lufs: fix(result.mastered.lufs), truePeakDb: fix(result.mastered.truePeakDb), gainDb: fix(result.mastered.gainDb),
     targetLufs: c.audio.filmLoudnessLufs, ceilingDb: c.audio.truePeakDb, duckDb: c.audio.duckDb, bytes: bytes.length, sha256: sha(bytes),
-    events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.cueOfEvent(e.name)).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length, standInsLaid: result.placed.filter((p) => p.kind === 'stand-in').length,
+    events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.cueOfEvent(e.name)).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length, standInsLaid: result.placed.filter((p) => p.kind === 'stand-in').length, draftsLaid: result.placed.filter((p) => p.kind === 'stand-in' && draftIds(M).includes(p.id)).map((p) => p.id),
     missingCues: result.missingCues, missingLines: result.missingLines, recordsWithNoFile: absent, hushed: result.hushed, quiet: result.quiet,
     placed: result.placed.map((p) => ({ ...p, seconds: Number(p.seconds.toFixed(4)), pan: Number(p.pan.toFixed(3)) }))
   }
@@ -164,7 +176,7 @@ export async function picture(c, M, wav, out) {
 
 const lastLine = (r, out) => r.silent
   ? `mix: SILENT. No sound is kept, so ${rel(out)} is ${r.seconds.toFixed(3)} s of silence, ${r.samples} samples at ${r.sampleRate} Hz, the film's exact length. sha256 ${r.sha256.slice(0, 16)}`
-  : `mix: ${rel(out)}, ${r.seconds.toFixed(3)} s, ${r.cuesLaid} cues and ${r.linesLaid} lines laid from ${r.source}, ${r.standInsLaid ?? 0} lines as silent stand-ins with no voice, ${r.lufs} LUFS, true peak ${r.truePeakDb} dB, ${r.missingCues.length} cues and ${r.missingLines.length} lines with no kept sound. sha256 ${r.sha256.slice(0, 16)}`
+  : `mix: ${rel(out)}, ${r.seconds.toFixed(3)} s, ${r.cuesLaid} cues and ${r.linesLaid} lines laid from ${r.source}, ${r.standInsLaid ?? 0} lines as silent stand-ins with no voice${r.draftsLaid?.length ? ` (${r.draftsLaid.length} of them a draft: ${r.draftsLaid.join(', ')})` : ''}, ${r.lufs} LUFS, true peak ${r.truePeakDb} dB, ${r.missingCues.length} cues and ${r.missingLines.length} lines with no kept sound. sha256 ${r.sha256.slice(0, 16)}`
 
 const has = (file, re) => fs.existsSync(file) && re.test(fs.readFileSync(file, 'utf8'))
 
