@@ -114,16 +114,57 @@ Short beats (contract 5):
 - The fight has 18.0 s in the film and about 32 s for a keen visitor: 14 s short. Fitted by letting a film dart on the body count 2.4, 2 and 3.4 times by phase.
 - The last stand has 4.4 s after the banner (22.6 to 27.0) where the live one runs about 12 s; the boss's guns and the cannons do not fire in it in the film.
 
+## Change note 003: the film's boss unit with lines 6 and 7 (a plan, not built)
+
+Counted at the narrator's pace of 1.6 words a second, the fastest allowed: line 6 has 10 words, 6.3 s; line 7 part one has 32 words, 20.0 s, and the music starts on "their student loans", 18.1 s into it; part two has 17 words, 10.6 s. The three together are 36.9 s of speech, against 32 s planned for the unit and 38.4 s at most. The arena's change is 2.4 s (`ARENA.changeSeconds` of the arena helper), the body is formed 2.9 s after the crack, the turret beat is 1.75 s (`BIG.lock`).
+
+| Part | Honest length, s of the unit | Shortest I would still hand over |
+| --- | --- | --- |
+| The doubt and the tick (`checkbox`) | 0 to 3.8 | 0 to 3.0 |
+| Line 6, the arrow holds under the answer | 3.8 to 10.1 | 3.0 to 9.3 |
+| The break-out and the arena's change (`button-crack`, `arena-split`, `arena-rise`, `healthbar-drop`) | 10.1 to 12.5 | 7.4 to 9.8, under "takes that as a threat" |
+| The body forms, Submit in plain view (`boss-formed` at the end) | to 13.0 | to 10.3 |
+| Line 7 part one, the arrow droops and drifts toward the top of the screen | 13.0 to 33.0 (`boss-music` at 31.1) | 10.3 to 30.3 (`boss-music` at 28.4) |
+| The turn (`boss-turn`): it stops, straightens, comes back down | 33.0 to 33.8 | 30.3 to 30.9 |
+| Part two | 33.8 to 44.4 | 30.9 to 41.5 |
+| The turret beat (`turret-rise`, `turret-lock`) | 44.4 to 46.2 | 39.7 to 41.5, under "They are ready" |
+| The fight, silent | 46.2 to 63.2 (17.0 s; a keen visitor's is 34.8 s in the middle) | 41.5 to 55.5 (14.0 s) |
+| Beaten (`power-down`, `turret-off`) | 63.2 to 65.2 | 55.5 to 57.5 |
+| The click (`button-press`) | 65.2 to 68.2 | 57.5 to 60.0 |
+| The unit | 68.2 s | 60.0 s |
+
+- Against the plan: 68.2 s is 36.2 s over the 32 s planned and 29.8 s over the 38.4 s the kit allows; the short version is 28.0 s and 21.6 s over. With nothing else changed the film of 165 s becomes 201.2 s, or 193.0 s.
+- The fight is not cut to fit. 14 s is the least in which the film still shows, each with its hold: darts on the shield, the way round, a corner cannon's tell and shot, the arrow flattened and peeling up, one tell of the big cannon (1.6 s) with its blast and what it breaks, and the last charge. Under 14 s one of them goes. A second blast of the big cannon, which the mail of 22:19 asks of a middle-length fight, wants 3 s more (17 s).
+- With a fight as long as a keen visitor's (34.8 s) the unit is 86.0 s.
+- The live site, while line 7 is spoken. The Builder's reading holds the arrow for about 31 s. That breaks `live.controlTakenMaxSeconds` (8 s) and the bots' check that the pointer is never ignored, and those are Brandon's numbers. What I would build instead: the pointer stays the visitor's; the arrow droops and drifts upward only while he leaves it alone; nothing can hit him; the fight starts at "They are ready" or at his first click after the body has formed, whichever comes first (the line is then cut short and the turret beat plays at once). A visitor who waits watches 31 s plus 1.75 s; one who clicks waits 1.75 s. Not built: it waits for the Builder's word.
+- Events for the shell helper (told at 22:30): line 6 on `checkbox`; line 7 on `boss-formed`; then `boss-music`, `boss-turn`, `turret-rise`, `turret-lock`. Until the cue table sends its three lengths the page holds 20.0 s, 18.1 s and 10.6 s.
+
 ## Numbers from the bots
 
 `node pipeline/change002/boss-bots.mjs --seeds 200 --json out/work/boss-bots.json`. Step 4 alone, from the first step of the fight to `power-down`. `keen` and `clumsy` are the stage's own bots (`src/stage/bots.ts`), which play the same fight on every seed; `keen~` and `clumsy~` are the same hands with a seeded speed, lag and click rate; `random` is the stage's random bot with the skip link taken away; `still` stands where it is and clicks four times a second; `absent` does nothing.
 
-Measured on commit 331ff723 (the rules of the first pass, before the rules of the mail of 22:19).
+Measured on the code of commit 331ff723 (the rules of the first pass, before the rules of the mail of 22:19), between 22:20 and 22:35 UTC.
 
 | Visitor | Seeds | Wins | Fight, s (least / middle / most) | Flattenings (least / middle / most) | Health won back (middle / most) | Darts on the shield / round it (middle) | `weak-tell` (middle) | Hits a fight (mean): boss's guns / corner cannon / body / big blast |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `keen~` | 200 | 200 | 22.4 / 34.8 / 53.6 | 0 / 0 / 4 | 0.0 / 13.1 | 11 / 423 | 0 | 0.3 / 0.2 / 0.2 / 0.0 |
-BOTS_ROWS
+| `clumsy~` | 200 | 200 | 44.5 / 61.7 / 93.3 | 0 / 2 / 7 | 3.6 / 11.8 | 39 / 320 | 3 | 0.4 / 0.7 / 1.1 / 0.0 |
+| `random` | 200 | 200 | 104.3 / 130.1 / 167.8 | 12 / 21 / 31 | 8.6 / 15.0 | 97 / 178 | 8 | 3.1 / 1.3 / 16.6 / 0.2 |
+| `keen` | 200 | 200 | 36.9 / 36.9 / 36.9 | 0 / 0 / 0 | 0.0 / 0.0 | 0 / 417 | 0 | 0.0 / 0.0 / 0.0 / 0.0 |
+| `clumsy` | 200 | 200 | 47.2 / 47.2 / 47.2 | 0 / 0 / 0 | 0.0 / 0.0 | 0 / 386 | 0 | 0.0 / 0.0 / 0.0 / 0.0 |
+| `absent` | 200 | 200 (the fight ends by itself) | 26.9 / 26.9 / 26.9 | 6 / 6 / 6 | 2.1 / 2.1 | 0 / 0 | 0 | 4.0 / 1.0 / 0.0 / 1.0 |
+| `still` | 40 | 0 (86.6 points of health left after 240 s) | never won | 70 / 70 / 70 | 4.2 / 4.2 | 3050 / 6 | 80 | 49.0 / 17.0 / 0.0 / 4.0 |
+
+Read against the aims of the Builder's mail (keen 25 to 45 s, clumsy 45 to 80 s and never over 90 s):
+- `keen~`: the middle fight is 34.8 s. 16 of 200 are under 25 s (the shortest 22.4 s) and 12 are over 45 s (the longest 53.6 s); 90 in 100 lie between 23.9 and 45.3 s. Over the 200 fights the arrow was flattened 123 times and the boss won back 497.7 points in all.
+- `clumsy~`: the middle fight is 61.7 s. 3 of 200 are over 80 s and 1 is over 90 s (93.3 s): the aim "never more than 90 s" is missed by one seed in 200. Flattened 447 times, 664.3 points won back in all.
+- `random`: every one wins, none under 104 s. The random hand walks into the body 16.6 times a fight; flattened 4247 times, 1728.8 points won back in all, never more than 15.0 in one fight.
+- `still` (40 seeds, not 200: each run is 240 s of fight and the run is the same on every seed): never wins, 3050 darts on the shield against 6 round it, 80 `weak-tell`.
+- `absent`: the fight ends by itself at 26.9 s on every seed (`live.boss.maxSeconds` 45, untouched).
+- The big cannon fired 1 time in the middle keen fight (1 to 2) and 3 times in the middle clumsy fight (2 to 5). The mail of 22:19 asks 2 to 4 in a middle-length fight: not met for the keen visitor on these rules.
+- What stops the boss from healing for ever: each heal is 0.6 of the one before (6, 3.6, 2.16 and so on), so all the heals of one fight stay under 15 points whatever the number of hits; the most measured in one fight is 15.0 (`random`), 13.1 (`keen~`), 11.8 (`clumsy~`).
+
+The first three rows are `out/work/boss-bots-first-a.json`, the next three `-first-b.json`, the last `-first-c.json` (not in the repo: `out/` is ignored).
 
 
 ## Tests
