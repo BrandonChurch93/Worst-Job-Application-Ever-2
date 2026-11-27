@@ -30,7 +30,17 @@ Kept: `paper-slide` (now the sheet leaving the folder), `shredder`, `arms-out`, 
 
 ## Words on screen
 
-All from `content/copy-drafts.json`, none added: `copy.drafts.step1.resume.folderTitle` "Documents", `fileName` "Resume.pdf", `shredderLabel` "SHREDDER". No file under `content/` was edited. (STATED)
+All from `content/copy-drafts.json`, none added, no file under `content/` edited. (STATED) Where each stands (MEASURED from the film's draw list, page px):
+
+| Word | Key | Stands on | Box of the words | Shown |
+| --- | --- | --- | --- | --- |
+| "Documents" | `copy.drafts.step1.resume.folderTitle` | the brushed bar of the folder window (bar x 1012, y 358, 476 by 52; window x 1000, y 346, 500 by 314, on the bare page right of the drop zone) | x 1064, y 375, 144 by 19 | from `folder-open` until the window sinks, 20.96 to 21.87 s in the film |
+| "Resume.pdf" | `copy.drafts.step1.resume.fileName` | the file tile in the folder window (tile x 1040, y 436, 196 by 184), under the small sheet | x 1069, y 566, 138 by 17 | with the window |
+| "SHREDDER" | `copy.drafts.step1.resume.shredderLabel` | the orange plate on the bare page left of the slot (plate x 511, y 672, 226 by 52) | x 533, y 686, 182 by 25 | from the wind until the machine sinks after the message |
+
+Words that were there before and are unchanged: "Resume", "Drag and drop your resume here", "Browse files", "Resume" on the sheet, "Resume received. Please re-enter all information manually."
+
+What stands on the drop zone's panel and what does not (STATED from the boxes above): the folder window, its tile and ring, the plate and the slot stand on the bare page. The sheet lies on the panel for 0.25 s (film) and the wind's streaks cross over it; neither is fixed to the panel, both are placed by page px and would lie on and cross the bare page if the panel went.
 
 ## Needs outside my folder
 
@@ -84,16 +94,21 @@ The film's tug against the old one, frame by frame from `arms-out` for 271 frame
 - 200 of 200 get through to "Resume received" without a skip: 165 of 165 clumsy, 10 of 10 idle, 25 of 25 wandering.
 - Clumsy visitors: stage begun to Browse pressed, least 0.66, middle 1.40, most 2.88 s; folder up to file picked, least 0.74, middle 1.50, most 2.86 s.
 - All visitors: Browse pressed to folder up 0.12 s; file picked to the sheet leaving 0.22 s; flight 0.55 s; lying in the drop zone 0.50 s; wind and catch 1.36 s (wind 0.95, catch 0.4); bite to the tug lost 8.02 to 8.62 s; tug lost to the message 3.42 to 3.43 s. Stage begun to the message: least 16.43, middle 18.04, most 34.65 s. An idle visitor is taken through at the film's pace once the skip link is up (20 s).
-- The longest the arrow is held from a visitor: 4.24 s (limit 8). The page takes the arrow at the wind, runs it after the sheet to the place the old take started from, and gives it back at the bite, where the arms take over as before.
+- The longest the arrow is held from a visitor: 4.24 s (limit 8). The page takes the arrow at the wind, moves it to the place the old take started from, and gives it back when the slot catches the sheet, 0.4 s before the bite; the tug then takes it as before.
 - The visitor presses Browse files himself (a press on the chip, 26 px of slack, or anywhere in the drop zone) and picks the file himself (the tile, 26 px of slack). The stage's skip still works at any beat.
 
 UNKNOWN: how the stage plays under a real finger on a touch screen; the tests press with the stepped pointer only. The touch page's rules are the stage's own as before (a press lands where the arrow is).
 
 ## What is off
 
-1. The live take is not quite as it was (MEASURED, tests/polish-tug2.test.ts and tests/polish-tug3.test.ts). The page now runs the arrow to the place the old take started from (252 px left of the slot and 155 px above it) and lets go at the bite. Three old measures of the take are missed by a little: under the pack's visitor the first three frames of the haul average 13.4 px against the 14.1 px the test asks (1.4 times the last three); the arrow's angle changes more than 4 degrees in a frame on four frames under the pack's visitor (6.49 degrees at the most) and on two frames under the keen bot (6.30 at the most); the strains of the paper no longer fall on the frames the test lists. tests/fix-tug.test.ts, tests/polish-tug.test.ts and tests/polish-tug4.test.ts are green. UNKNOWN: by how many frames the strains moved.
-2. The first 0.4 s of the film's tug differ in the arrow's lean, length and sweat, as measured above, because the arrow arrives from a run. The pointer's path, the cues, the curve and the loss are the old ones.
-3. The strips of the shredded arrow in the film: one strip is whole after 8.27 frames where tests/polish-tug-strips.test.ts asks 8 or fewer. UNKNOWN why; no line of the strips was changed.
+1. The live take is close to the old one but not frame for frame (MEASURED, tests/polish-tug2.test.ts and tests/polish-tug3.test.ts, and a frame by frame comparison with the tree at a5508ada). The page takes the arrow at the wind, moves it to the place the old take started from (252 px left of the slot and 155 px above it), gives it back when the slot catches the sheet (a blend of 0.3 s, over before the bite 0.4 s later), so that at the bite the arrow is free in the visitor's hand as it was before, and the old code of the tug hauls it in. What still differs:
+   - The pack's own visitor: the first frame of the haul brings the arrow 5.3 px nearer the slot where the old run had 15.8 px, so the first three frames average 13.4 px against the 14.1 px the test asks. In the old run the visitor's hand happened to be moving toward the slot at the grab (8 to 12 px a frame); now it waits at the hinted place, moving 3 px or less, and the haul starts from rest. (MEASURED)
+   - The arrow's angle changes more than 4 degrees in a frame on four frames under the pack's visitor (6.48 at the most) and on one under the keen bot (5.41, on the fifth frame after the bite; the old run had 3.5 there). The test lists by number the frames on which a jerk is allowed, and the jerks now fall on other frames. (MEASURED)
+   - Two of the nine strains of the paper fall one frame later counted from the bite (frame 139 for 138, 356 for 355); the bite, the other seven and the loss at frame 517 are on their old frames. (MEASURED)
+   - The keen bot's hand starts for the slot one frame later than before, counted from the bite. (MEASURED; STATED cause: the bite falls on another step of the four in a frame)
+   tests/fix-tug.test.ts, tests/polish-tug.test.ts and tests/polish-tug4.test.ts are green.
+2. The first 0.4 s of the film's tug differ in the arrow's lean, length and sweat, as measured above, because the arrow arrives from a run. The pointer's path, the cues, the curve and the loss are the old ones. From frame 46 after the bite to the 460th every value of the arrow's pose is within 0.001 of the old one, through the shredding. (MEASURED)
+3. The strips of the shredded arrow in the film: tests/polish-tug-strips.test.ts asks that the middle of no strip goes more than 8 page px in a film frame; on the first frame one goes 8.27 px. The arrow's pose and its strips at that moment are equal to the old ones to the last digit (MEASURED on frames 359 to 370 after the bite). The test draws the body at the stage's own clock, which is 1.5 s later now. (STATED: that clock is the only input left that differs; UNKNOWN which part of the body's look reads it)
 4. The fifth beat (the slot takes the sheet) is 0.400 s on screen, under the half second asked of a beat; it is the old catch, kept.
 5. Until the config patch is applied the branch's own film shows the message for 0 s before the page turns.
 6. The folder window is not movable and has no close knob that works; a press outside the file does nothing. (STATED)
@@ -104,6 +119,20 @@ UNKNOWN: how the stage plays under a real finger on a touch screen; the tests pr
 ## Proof
 
 Under `pipeline/change002/proof/resume/`: `film-beat-step1_resume.jpg` (field, press, folder, pick, flight, lying, wind, catch), `film-beat-step1_tug.jpg` (the tug with the plate SHREDDER), `film-beat-step1_shredded.jpg` (the loss, the message, the arrow's moves in the hold, Continue), `clean-resume-drop-zone-1920x1080.jpg`, `clean-shredder-1920x1080.jpg`, `live-keen-step1.jpg`.
+
+One clean film frame of each stage at 1920 by 1080, home camera, draft tier, with the config patch applied (MEASURED seconds of the unit):
+
+| File | Stage | Second |
+| --- | --- | --- |
+| `clean-1-browse-1920x1080.jpg` | the arrow presses Browse files | 20.90 |
+| `clean-2-folder-open-1920x1080.jpg` | the folder window is up | 21.20 |
+| `clean-3-file-picked-1920x1080.jpg` | the file is picked, ring lit (the arrow covers part of the file's name) | 21.56 |
+| `clean-4-slot-1920x1080.jpg` | the sheet lies in the drop zone | 22.20 |
+| `clean-5-wind-1920x1080.jpg` | the wind carries it; the plate is up | 22.75 |
+| `clean-6-shredder-label-1920x1080.jpg` | the slot has it, beside the plate SHREDDER | 23.40 |
+| `clean-7-arms-1920x1080.jpg` | the arms, the tug | 24.50 |
+
+In the film itself the camera moves in from 22.38 s; these stills are taken from the home camera so that the whole page is seen. (STATED)
 
 What each stands in or on (MEASURED from the draw list, page px):
 
@@ -134,4 +163,4 @@ Red by this stage (MEASURED, 18 tests; the reason is STATED from reading each te
 - tests/polish-keys2.test.ts "holds the same events at the same frames in the film": 284 events against 268; the new events and the later frames.
 - tests/polish-tug3.test.ts "the arrow in the tug of the film is as it was": a sum over the frames' numbers and poses; the frames are 90 later and the first 24 differ as measured above.
 - tests/polish-tug3.test.ts "moves no event of the tug", "turns no more than the named degrees in a frame ...: visitor" and "...: keen"; tests/polish-tug2.test.ts "the page takes the arrow from the visitor: hauls the arrow in fastest in the first frames and ends with a stop": the live take, item 1 of "What is off".
-- tests/polish-tug-strips.test.ts "the film of step 1: each is fed down from the mouth's lower lip at an even pace": item 3 of "What is off".
+- tests/polish-tug-strips.test.ts "the film of step 1: each is fed down from the mouth's lower lip at an even pace": 8.27 px against 8, item 3 of "What is off".

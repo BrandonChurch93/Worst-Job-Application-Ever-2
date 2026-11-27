@@ -30,7 +30,7 @@ const POP = { chip: 4, over: 5, tile: 1.2, arc: 54, high: 46, lean: 0.24, lie: 0
 const WINDOW = ['resume-folder', 'resume-folder-bar', 'resume-folder-knob', 'resume-folder-title', 'resume-file', 'resume-file-name']
 const LIE = heights.card + 9
 // The live arrow's run after the sheet: it starts `from` into the wind, and stands where the tug starts `stand` into the slot's catch.
-const CHASE = { on: true, from: 0.22, x: -252, y: -155 }
+const CHASE = { on: true, from: 0.22, x: -252, y: -155, back: 0.3 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
@@ -294,6 +294,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
         p.feed = 0
         p.fx = p.x
         p.fy = p.y
+        if (!film && CHASE.on) io.cursor.release(CHASE.back)
       }
       return
     }
@@ -309,9 +310,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
       p.y = lerp(p.fy, to.y - BITE.jerk, u) + BITE.jerk * snap * snap
       p.vx = (p.x - wx) / io.dt
       p.vy = (p.y - wy) / io.dt
-      if (s.mode !== 'film') chase(io, 1)
       if (p.feed >= TIMES.bite) {
-        if (s.mode !== 'film' && CHASE.on) io.cursor.release(0.08)
         enter('tug')
         s.tug = { ...freshTug(), amount: tugCurve(0), cool: 0.5 }
         s.lost = -1
