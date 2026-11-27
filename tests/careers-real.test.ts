@@ -2,156 +2,168 @@ import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
+import { careersLayout, CARD, WIDTH, Z } from '../src/pages/marketing/layout'
 import { applyButton } from '../src/pages/marketing/real/apply-button'
 import { careersPage } from '../src/pages/marketing/real/careers-page'
-import { cardGlass, groundEdge, perkCards } from '../src/pages/marketing/real/perk-cards'
+import { ICONS, perkCards } from '../src/pages/marketing/real/perk-cards'
 import { ticker } from '../src/pages/marketing/real/ticker'
-import type { Emitter, PartMaker, RealContext } from '../src/real/types'
+import type { PartMaker, RealContext } from '../src/real/types'
 import type { Shape } from '../src/stage/types'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
 
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('marketing'), pages, driver: new ScriptDriver(), film: filmOptions('marketing') })
 const steps = (seconds: number): number => Math.round(seconds * stepHz)
 
-function listOf(s: Stage): Shape[] {
+function at(seconds: number): Shape[] {
+  const s = film()
+  s.advance(steps(seconds))
   const list: DrawList = []
   s.page.draw(list)
   return list as Shape[]
 }
 
-function context(list: Shape[], time: number, asked: Emitter[] = []): RealContext {
-  return { page: 'marketing', list, byId: new Map(list.map((s) => [s.id, s])), time, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: (e) => asked.push(e) }
-}
+const context = (list: Shape[], time: number): RealContext => ({ page: 'marketing', list, byId: new Map(list.map((s) => [s.id, s])), time, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })
 
 const MAKERS: Record<string, PartMaker> = { 'perk-cards': perkCards!, ticker: ticker!, 'apply-button': applyButton!, 'careers-page': careersPage! }
 
-function at(seconds: number): { list: Shape[]; time: number } {
-  const s = film()
-  s.advance(steps(seconds))
-  return { list: listOf(s), time: seconds }
-}
-
-function sound(o: THREE.Object3D, id: string): number {
+function sound(o: THREE.Object3D, id: string): { triangles: number; meshes: number; box: THREE.Box3 } {
   let triangles = 0
+  let meshes = 0
+  const box = new THREE.Box3()
   o.traverse((n) => {
     const m = n as THREE.Mesh
     if (!m.isMesh) return
+    meshes++
     const p = m.geometry.getAttribute('position')
-    const nor = m.geometry.getAttribute('normal')
-    expect(nor, id).toBeDefined()
-    for (let i = 0; i < p.count; i++) {
-      expect(Number.isFinite(p.getX(i) + p.getY(i) + p.getZ(i)), id).toBe(true)
-      const l = Math.hypot(nor.getX(i), nor.getY(i), nor.getZ(i))
-      expect(Math.abs(l - 1), `${id} normal ${i}`).toBeLessThan(0.02)
-    }
+    for (let i = 0; i < p.count; i++) expect(Number.isFinite(p.getX(i) + p.getY(i) + p.getZ(i)), id).toBe(true)
     const index = m.geometry.getIndex()
+    if (index) for (let i = 0; i < index.count; i++) expect(index.getX(i), id).toBeLessThan(p.count)
     triangles += (index ? index.count : p.count) / 3
+    m.geometry.computeBoundingBox()
+    box.union(m.geometry.boundingBox!)
   })
-  return triangles
+  return { triangles, meshes, box }
 }
 
 describe('the real careers page', () => {
-  it('has a maker for every shape of its four parts, and every object is sound', () => {
-    const { list, time } = at(11)
-    const ctx = context(list, time)
-    const made = new Map<string, THREE.Object3D>()
-    let shapes = 0
-    for (const s of list) {
-      const maker = MAKERS[s.part ?? '']
-      if (!maker || s.kind === 'text' || s.kind === 'well') continue
-      const key = maker.key(s, ctx)
-      expect(key, s.id).not.toBeNull()
-      if (key === '') continue
-      shapes++
-      if (!made.has(key!)) made.set(key!, maker.make(s, ctx))
-      const o = made.get(key!)!
-      maker.pose?.(o, s, ctx)
-      expect(sound(o, s.id), s.id).toBeGreaterThan(0)
-    }
-    expect(shapes).toBeGreaterThan(20)
-    expect(made.size).toBeLessThan(shapes)
-  })
-
-  it('builds the turning card once: its key and its vertices are the same all through the turn', () => {
-    const s = film()
-    const keys = new Set<string>()
-    let o: THREE.Object3D | null = null
-    let first: Float32Array | null = null
-    let turned = 0
-    for (let i = 0; i < steps(3.2); i++) {
-      s.advance(1)
-      const list = listOf(s)
-      const slab = list.find((x) => x.id === 'perk-0-slab')
-      if (!slab) continue
-      const ctx = context(list, i / stepHz)
-      keys.add(perkCards!.key(slab, ctx)!)
-      if (!o) {
-        o = perkCards!.make(slab, ctx)
-        first = Float32Array.from((o.getObjectByName('glass') as THREE.Mesh).geometry.getAttribute('position').array as Float32Array)
+  it('has a maker for every shape of its four parts and of no other part, and every object is sound', () => {
+    for (const t of [0, 3.7, 9, 11, 12.7]) {
+      const list = at(t)
+      const ctx = context(list, t)
+      for (const s of list) {
+        expect(Object.keys(MAKERS), `${t} ${s.id}`).toContain(s.part)
+        const maker = MAKERS[s.part!]!
+        const key = maker.key(s, ctx)
+        expect(key, `${t} ${s.id}`).not.toBeNull()
+        if (key === '' || (s.kind === 'text' && (t > 0 || s.y > 300))) continue
+        const o = maker.make(s, ctx)
+        const r = sound(o, s.id)
+        expect(r.triangles, s.id).toBeGreaterThan(0)
+        maker.pose?.(o, s, ctx)
+        maker.drop?.(o)
       }
-      o.rotation.set(slab.turnX ?? 0, 0, 0)
-      perkCards!.pose!(o, slab, ctx)
-      const seal = o.getObjectByName('seal')!
-      const up = new THREE.Vector3(0, 0, 1).applyQuaternion(seal.getWorldQuaternion(new THREE.Quaternion()))
-      expect(up.z).toBeGreaterThan(0.999)
-      if (Math.abs(slab.turnX ?? 0) > 0.5) turned++
     }
-    expect(turned).toBeGreaterThan(5)
-    expect(keys.size).toBe(1)
-    const now = (o!.getObjectByName('glass') as THREE.Mesh).geometry.getAttribute('position').array as Float32Array
-    expect(Array.from(now)).toEqual(Array.from(first!))
   })
 
-  it('gives the slab two ground faces and one thickness: as much glass below its middle as above', () => {
-    const { list, time } = at(2.4)
-    const slab = list.find((x) => x.id === 'perk-0-slab')!
-    const o = perkCards!.make(slab, context(list, time))
-    const g = (o.getObjectByName('glass') as THREE.Mesh).geometry
-    g.computeBoundingBox()
-    const box = g.boundingBox!
-    expect(box.max.z).toBeCloseTo(-box.min.z, 3)
-    expect(box.max.z - box.min.z).toBeCloseTo(slab.v![0]!, 3)
-    expect(box.max.x - box.min.x).toBeGreaterThan(slab.w - 8)
+  it('draws each stretch of the website as one white sheet from edge to edge with what is printed on it, in two meshes at most', () => {
+    const list = at(0)
+    const ctx = context(list, 0)
+    const sheets = list.filter((s) => s.role === 'sheet')
+    expect(sheets.length).toBe(8)
+    let triangles = 0
+    for (const s of sheets) {
+      const o = careersPage!.make(s, ctx)
+      const r = sound(o, s.id)
+      triangles += r.triangles
+      expect(r.meshes, s.id).toBeLessThanOrEqual(2)
+      expect(r.box.min.x, s.id).toBeCloseTo(-WIDTH / 2, 3)
+      expect(r.box.max.x, s.id).toBeCloseTo(WIDTH / 2, 3)
+      expect(r.box.max.y - r.box.min.y, s.id).toBeGreaterThanOrEqual(s.h - 0.01)
+      expect(r.box.max.z, s.id).toBeLessThan(Z.type)
+      expect(careersPage!.key(s, ctx)).toBe(careersPage!.key({ ...s }, ctx))
+    }
+    expect(triangles).toBeLessThan(60000)
   })
 
-  it('makes a button cap once and lowers it by the press, and the ticker is the glass of the cards over a channel the words run in, and asks for no lamp', () => {
+  it('sets its type flat in the colour asked for, with nothing built anew while a card turns', () => {
+    const list = at(0)
+    const ctx = context(list, 0)
+    const title = list.find((s) => s.id === 'perk-0-title')!
+    const key = careersPage!.key(title, ctx)
+    expect(careersPage!.key({ ...title, y: title.y + 9, v: [0.4] }, ctx)).toBe(key)
+    const o = careersPage!.make(title, ctx)
+    careersPage!.pose!(o, { ...title, v: [0.4] }, ctx)
+    expect(o.scale.y).toBeCloseTo(0.4, 6)
+    careersPage!.pose!(o, title, ctx)
+    expect(o.scale.y).toBe(1)
+    const inks = new Set<number>()
+    for (const s of list) {
+      if (s.kind !== 'text' || s.y > 1080) continue
+      const m = careersPage!.make(s, ctx)
+      m.traverse((n) => {
+        const mesh = n as THREE.Mesh
+        if (mesh.isMesh) inks.add((mesh.material as THREE.MeshBasicMaterial).color.getHex())
+      })
+    }
+    expect(inks.size).toBeGreaterThanOrEqual(4)
+    expect(inks.size).toBeLessThanOrEqual(7)
+  })
+
+  it('makes a card with a face and a back, of which one shows, squeezed to its edge at the middle of the turn', () => {
+    const list = at(0)
+    const ctx = context(list, 0)
+    const cards = list.filter((s) => s.role === 'perkCard')
+    expect(cards.length).toBe(8)
+    expect(ICONS.length).toBe(8)
+    const keys = new Set(cards.map((s) => perkCards!.key(s, ctx)))
+    expect(keys.size).toBe(8)
+    const card = cards[0]!
+    expect([card.w, card.h]).toEqual([CARD.w, CARD.h])
+    const o = perkCards!.make(card, ctx)
+    const front = o.getObjectByName('front')!
+    const back = o.getObjectByName('back')!
+    perkCards!.pose!(o, card, ctx)
+    expect([front.visible, back.visible, o.scale.y]).toEqual([true, false, 1])
+    perkCards!.pose!(o, { ...card, v: [0.3] }, ctx)
+    expect([front.visible, back.visible]).toEqual([true, false])
+    expect(o.scale.y).toBeCloseTo(0.3, 6)
+    perkCards!.pose!(o, { ...card, v: [0] }, ctx)
+    expect(o.scale.y).toBeLessThan(0.01)
+    expect(o.scale.y).toBeGreaterThan(0)
+    perkCards!.pose!(o, { ...card, v: [-1] }, ctx)
+    expect([front.visible, back.visible, o.scale.y]).toEqual([false, true, 1])
+    expect(perkCards!.key({ ...card, v: [-0.2] }, ctx)).toBe(perkCards!.key(card, ctx))
+    expect(sound(front, 'front').triangles).toBeGreaterThan(sound(back, 'back').triangles)
+  })
+
+  it('takes the button down toward the sheet at a press, a little smaller and darker, and never under the sheet', () => {
+    const rest = at(11).find((s) => s.id === 'hero-cta-cap')!
+    const ctx = context([rest], 11)
+    const o = applyButton!.make(rest, ctx)
+    applyButton!.pose!(o, rest, ctx)
+    const up = o.position.z
+    expect(o.getObjectByName('down')!.visible).toBe(false)
+    expect(o.scale.x).toBe(1)
+    let lowest = up
+    let dark = 0
     const s = film()
-    const tops: number[] = []
-    const keys = new Set<string>()
-    for (let i = 0; i < steps(13.6); i++) {
+    s.advance(steps(12.3))
+    for (let i = 0; i < steps(1.1); i++) {
       s.advance(1)
-      if (i < steps(11.6)) continue
-      const list = listOf(s)
-      const shape = list.find((x) => x.id === 'hero-cta-cap')!
-      const ctx = context(list, i / stepHz)
-      keys.add(applyButton!.key(shape, ctx)!)
-      tops.push(shape.z1)
+      const list: DrawList = []
+      s.page.draw(list)
+      const cap = (list as Shape[]).find((d) => d.id === 'hero-cta-cap')!
+      const label = (list as Shape[]).find((d) => d.id === 'hero-cta-label')!
+      expect(label.z0).toBeCloseTo(cap.z1, 6)
+      o.position.z = 0
+      applyButton!.pose!(o, cap, ctx)
+      lowest = Math.min(lowest, o.position.z)
+      if (o.getObjectByName('down')!.visible) dark++
+      expect(cap.z1).toBeGreaterThan(Z.sheet + 1)
+      expect(applyButton!.key(cap, ctx)).toBe(applyButton!.key(rest, ctx))
     }
-    expect(keys.size).toBe(1)
-    expect(Math.max(...tops) - Math.min(...tops)).toBeGreaterThan(5)
-    const { list, time } = at(9)
-    const asked: Emitter[] = []
-    const ctx = context(list, time, asked)
-    const strip = list.find((x) => x.id === 'ticker-glass')!
-    const pocket = list.find((x) => x.id === 'ticker-window')!
-    expect(ticker!.key(pocket, ctx)).toBe('')
-    expect(pocket.x - strip.x).toBeLessThan(groundEdge(strip) - 2)
-    const o = ticker!.make(strip, ctx)
-    let glass = 0
-    let clear = 0
-    o.traverse((n) => {
-      const m = (n as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
-      if (m === cardGlass()) glass++
-      if (m?.transparent) clear++
-    })
-    expect(glass).toBe(2)
-    expect(clear).toBe(2)
-    const frost = o.children.find((n) => ((n as THREE.Mesh).geometry?.getAttribute('color')?.itemSize ?? 0) === 4) as THREE.Mesh
-    const alpha = frost.geometry.getAttribute('color')
-    const seen = new Set<number>()
-    for (let i = 0; i < alpha.count; i++) seen.add(alpha.getW(i))
-    expect(seen.has(1) && seen.has(0)).toBe(true)
-    for (const r of list.filter((x) => x.kind === 'text' && x.id.startsWith('ticker-'))) expect(r.z1).toBeLessThan(0)
-    expect(asked.length).toBe(0)
+    expect(up - lowest).toBeCloseTo(Z.button - Z.pressed, 3)
+    expect(dark).toBeGreaterThan(steps(0.2))
+    expect(careersLayout().layout.children!.length).toBe(8)
   })
 })

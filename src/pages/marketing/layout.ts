@@ -1,67 +1,125 @@
-import { config } from '../../config'
 import { copy, type LayoutNode } from '../../copy'
-import { column, group, node, row, text, type Item } from '../../shell/layout'
+import { node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
-import { button, buttonWidth, field, LEFT, page, RIGHT, TYPE } from '../../shell/parts'
+import { page } from '../../shell/parts'
 import { words } from '../../shell/words'
 import type { TypeSpec } from '../../stage/types'
 
-const heights = config.scale.heights
-const sizes = config.scale.sizes
 const m = copy.marketing
 
 export const PAGE = 'careers-page'
-export const WIDTH = RIGHT - LEFT
-export const CENTRE = (LEFT + RIGHT) / 2
-export const GAP = 34
-export const CARD_W = (WIDTH - GAP * 2) / 3
-export const CARD_H = 248
-export const CARD_R = 28
-export const MEDAL = 380
-export const MEDAL_H = 10
-const MEDAL_TWO = 84
-export const HERO_W = 460
-export const TICKER = { x: LEFT, y: 990, w: WIDTH, h: 58, floor: -2.4, tape: -2, pad: 28, gap: 30, edge: 5, clip: 18, thick: 12, r: 16, solid: 80, ramp: 50 }
-export const FIRST_CARDS = 3
-const SECTION = 170
-const HEAD_TO_CONTENT = 140
-const FOOT = 128
-const NAV = { y: 76, ruleY: 148 }
+export const CARDS = 'perk-cards'
+export const APPLY = 'apply-button'
+export const TAPE = 'ticker'
+export const WIDTH = 1920
+export const CENTRE = 960
+export const FIRST_SCREEN = 1080
+
+// Heights over the ground, in page pixels: the white sheet, the type on it, a card at rest, the top of an Apply button.
+export const Z = { sheet: 0.2, type: 1.2, card: 2, cardType: 3.2, button: 6, pressed: 1.6 }
+
+export const COLOUR = {
+  white: 0xffffff, ink: 0x111111, soft: 0x3d3934, grey: 0x6b7280, greyType: 0x5c636f, line: 0xe5e7eb, band: 0xebeef1, peach: 0xffedd9, orange: 0xe97832,
+  deep: 0xbe5418, down: 0xa3460f, onWhite: 0xb65821, onPeach: 0xaa521e, tick: 0x33b428, wreath: 0x9c9fae, glow: 0xfee4c9
+}
 
 export const T = {
-  display: { font: 'inter-display-600', px: 68, lead: 84 },
-  section: { font: 'inter-display-600', px: 52 },
-  kicker: { font: 'inter-600', px: 20 },
-  cardTitle: { font: 'inter-600', px: 30 },
-  strong: { font: 'inter-600', px: 22 },
-  medalTitle: { font: 'inter-600', px: 33, lead: 40 },
-  medalFrom: { font: 'inter-400', px: 18, lead: 24 },
-  quote: { font: 'inter-400', px: 20, lead: 30 },
-  role: { font: 'inter-600', px: 20 },
-  answer: { font: 'inter-400', px: 20, lead: 30 },
+  display: { font: 'inter-display-800', px: 82, lead: 86 },
+  section: { font: 'inter-display-800', px: 56, lead: 62 },
+  brand: { font: 'inter-600', px: 32 },
+  lead: { font: 'inter-400', px: 24, lead: 38 },
+  strong: { font: 'inter-600', px: 24, lead: 30 },
+  label: { font: 'inter-600', px: 20, lead: 26 },
+  link: { font: 'inter-500', px: 20 },
+  body: { font: 'inter-400', px: 20, lead: 28 },
+  small: { font: 'inter-400', px: 16, lead: 24 },
+  fine: { font: 'inter-400', px: 14, lead: 20 },
   tape: { font: 'inter-500', px: 20 }
 } satisfies Record<string, TypeSpec>
+
+export const TICKER = { x: 0, w: 1920, clip: 0, y: 1009, h: 70, gap: 52, dot: 8, speed: 96, keyAt: 420, keyItem: 1 }
+export const CARD = { x: 202, w: 355, h: 327, gap: 32, r: 16, rows: [1359, 1718], tile: { x: 27, y: 28, size: 77, r: 14 }, pad: 30 }
+export const QUOTE = { x: 323, w: 408, gap: 25.5, r: 16, pad: 26 }
+export const TABLE = { x: 318, w: 1285, r: 16, pad: 24, head: 81, row: 66.4, feature: 357, us: [733, 1187] as const, usAt: 960, themAt: 1385, tick: 26 }
+export const FAQ = { x: 597, w: 727, h: 52, pitch: 64.4, pad: 24 }
+export const STEPS = { first: 426.5, pitch: 266.5, d: 51, wrap: 236 }
+export const GLOW = { x: 960, y: 545, rx: 960, ry: 430 }
 
 const cap = (t: TypeSpec): number => block(t.font, 'X', t.px).cap
 const tall = (t: TypeSpec, key: string, wrap?: number): number => block(t.font, words(key), t.px, wrap, t.lead).height
 const wide = (t: TypeSpec, key: string): number => block(t.font, words(key), t.px).width
-const type = { part: 'type' }
-const onCard = { part: 'type', on: heights.card }
+const on = { part: PAGE, on: Z.type }
+const mid = (t: TypeSpec): TypeSpec => ({ ...t, align: 'centre' })
+const soft = (t: TypeSpec): TypeSpec => ({ ...t, ink: 'soft' })
 
-export interface Section { nodes: LayoutNode[]; bottom: number }
+const centred = (id: string, key: string, t: TypeSpec, y: number, extra: Partial<LayoutNode> = {}): LayoutNode => text(id, key, mid(t), CENTRE, y, { ...on, ...extra })
+const sheet = (name: string, y: number, h: number, children: LayoutNode[]): LayoutNode => node(`sheet-${name}`, 'sheet', [0, y, WIDTH, h], { part: PAGE, height: Z.sheet, children })
 
-function head(id: string, y: number, o: { kicker?: string; heading: string; subline: string; centre?: boolean }): Section {
-  const nodes: LayoutNode[] = []
-  const x = o.centre ? CENTRE : LEFT
-  const align = o.centre ? ({ align: 'centre' } as const) : {}
-  let at = y
-  if (o.kicker) {
-    nodes.push(text(`${id}-kicker`, o.kicker, { ...T.kicker, ...align }, x, at, type))
-    at += cap(T.kicker) + 28
-  }
-  nodes.push(text(`${id}-heading`, o.heading, { ...T.section, ...align }, x, at, type))
-  nodes.push(text(`${id}-subline`, o.subline, { ...TYPE.subline, ...align }, x, at + 70, type))
-  return { nodes, bottom: at + HEAD_TO_CONTENT }
+// Two runs of type side by side on one line, set about the middle of the page.
+function pair(id: string, a: string, b: string, ta: TypeSpec, tb: TypeSpec, y: number, gap: number, extra: Partial<LayoutNode> = {}): LayoutNode[] {
+  const wa = wide(ta, a)
+  const x = CENTRE - (wa + gap + wide(tb, b)) / 2
+  return [text(`${id}-q`, a, ta, x, y, { ...on, ...extra }), text(`${id}-a`, b, tb, x + wa + gap, y, { ...on, ...extra })]
+}
+
+function pill(id: string, key: string, t: TypeSpec, y: number, h: number, pad: number, tone: string, ink: string): LayoutNode {
+  const w = wide(t, key) + pad * 2
+  return node(id, 'pill', [CENTRE - w / 2, y, w, h], { part: PAGE, shape: 'capsule', floor: Z.sheet, height: Z.sheet + 0.6, tone, children: [centred(`${id}-text`, key, t, y + (h - cap(t)) / 2, { tone: ink })] })
+}
+
+export function applyButton(id: string, x: number, y: number, w: number, h: number, key: string, t: TypeSpec): LayoutNode {
+  const label = text(`${id}-label`, key, mid(t), x + w / 2, y + (h - cap(t)) / 2, { part: PAGE, on: Z.button, tone: 'inkLight' })
+  return node(id, 'applySeat', [x, y, w, h], {
+    part: PAGE, shape: 'capsule', floor: Z.sheet, height: Z.sheet + 0.4,
+    children: [node(`${id}-cap`, 'applyCap', [x, y, w, h], { part: APPLY, shape: 'capsule', floor: Z.sheet + 0.4, height: Z.button, tone: 'accent', children: [label] })]
+  })
+}
+
+function award(i: number, cx: number, y: number): LayoutNode {
+  const k = `copy:marketing.awards.items.${i}`
+  const title = { ...mid(T.label), wrap: 172 }
+  const from = { ...mid(T.small), wrap: 176, lead: 22 }
+  const th = tall(title, `${k}.title`, title.wrap)
+  const fh = tall(from, `${k}.from`, from.wrap)
+  const h = 122
+  const top = y + (h - (th + 14 + fh)) / 2
+  return node(`award-${i}`, 'award', [cx - 126, y, 252, h + 44], {
+    part: PAGE, floor: Z.sheet, height: Z.sheet + 0.6,
+    children: [
+      text(`award-${i}-title`, `${k}.title`, title, cx, top, on),
+      text(`award-${i}-from`, `${k}.from`, from, cx, top + th + 14, { ...on, tone: 'metal' }),
+      text(`award-${i}-fine`, `${k}.finePrint`, { ...mid(T.fine), wrap: 240 }, cx, y + h + 14, { ...on, tone: 'metal' })
+    ]
+  })
+}
+
+export const tapeStates = (i: number): string => `tape-${i}`
+
+function ticker(): LayoutNode {
+  const y = TICKER.y + (TICKER.h - cap(T.tape)) / 2
+  const at = { part: PAGE, on: Z.type }
+  const items = m.ticker.map((_, i) => text(`ticker-${i}`, `copy:marketing.ticker.${i}`, T.tape, 0, y, { ...at, states: [tapeStates(i)] }))
+  items.push(text('ticker-after', 'copy:marketing.tickerAfterRejection', T.tape, 0, y, { ...at, states: ['tape-after'] }))
+  return node('ticker-window', 'tickerBand', [0, TICKER.y, WIDTH, TICKER.h], { part: TAPE, floor: Z.sheet, height: Z.sheet + 0.6, tone: 'pocket', children: items })
+}
+
+function top(): LayoutNode {
+  const out: LayoutNode[] = []
+  const navY = 46.5
+  out.push(text('nav-brand', 'copy:marketing.nav.brand', T.brand, 68, navY - cap(T.brand) / 2, on))
+  ;[1082, 1282, 1439].forEach((x, i) => out.push(text(`nav-link-${i}`, `copy:marketing.nav.links.${i}`, T.link, x, navY - cap(T.link) / 2, on)))
+  out.push(applyButton('nav-cta', 1646, 20, 207, 52, 'copy:marketing.nav.cta', T.label))
+  out.push(node('nav-rule', 'hairline', [0, 97, WIDTH, 1], { part: PAGE, floor: Z.sheet, height: Z.sheet + 0.6 }))
+  out.push(pill('hero-pill', 'copy:marketing.ticker.8', T.label, 181, 44, 28, 'paper', 'danger'))
+  const headline = { ...T.display, wrap: 1240 }
+  out.push(centred('hero-headline', 'copy:marketing.hero.headline', headline, 260))
+  out.push(centred('hero-subline', 'copy:marketing.hero.sublineLong', soft({ ...T.lead, wrap: 980 }), 461))
+  out.push(applyButton('hero-cta', 685, 568, 550, 78, 'copy:marketing.hero.cta', T.strong))
+  out.push(centred('hero-under', 'copy:marketing.hero.underCta', T.body, 708, { tone: 'metal' }))
+  const centres = [390.5, 674.5, 960, 1245, 1529.5]
+  m.awards.items.forEach((_, i) => out.push(award(i, centres[i]!, 790)))
+  out.push(ticker())
+  return sheet('top', 0, FIRST_SCREEN, out)
 }
 
 export const perkStates = (i: number): { shut: string; open: string } => ({ shut: `perk-${i}-shut`, open: `perk-${i}-open` })
@@ -69,266 +127,185 @@ export const perkStates = (i: number): { shut: string; open: string } => ({ shut
 function perkCard(i: number, x: number, y: number): LayoutNode {
   const k = `copy:marketing.perks.items.${i}`
   const st = perkStates(i)
-  const pad = 36
-  const wrap = CARD_W - pad * 2
-  const tCap = cap(T.cardTitle)
-  const bCap = cap(TYPE.body)
-  const promiseY = y + 46 + tCap + 30
-  const ruleY = promiseY + bCap + 26
-  return node(`perk-${i}`, 'card', [x, y, CARD_W, CARD_H], {
-    part: 'perk-cards', r: CARD_R,
+  const cx = x + CARD.w / 2
+  const wrap = CARD.w - CARD.pad * 2
+  const at = { part: PAGE, on: Z.cardType }
+  const promise = { ...mid(T.body), wrap }
+  const fine = { ...mid(T.small), wrap }
+  const large = { ...mid(T.lead), wrap, lead: 34 }
+  const promiseY = y + 181
+  const fineY = promiseY + tall(promise, `${k}.promise`, wrap) + 22
+  return node(`perk-${i}`, 'perkCard', [x, y, CARD.w, CARD.h], {
+    part: CARDS, r: CARD.r, floor: Z.sheet, height: Z.card,
     children: [
-      text(`perk-${i}-title`, `${k}.title`, T.cardTitle, x + pad, y + 46, { ...onCard, states: [st.shut] }),
-      text(`perk-${i}-promise`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, promiseY, { ...onCard, states: [st.shut] }),
-      node(`perk-${i}-rule-shut`, 'cardRule', [x + pad, ruleY, wrap, 2], { part: 'perk-cards', floor: heights.card, height: heights.card + 1, tone: 'metal', states: [st.shut] }),
-      text(`perk-${i}-title-open`, `${k}.title`, T.cardTitle, x + pad, y + 46, { ...onCard, states: [st.open] }),
-      text(`perk-${i}-promise-open`, `${k}.promise`, { ...TYPE.body, wrap }, x + pad, promiseY, { ...onCard, states: [st.open] }),
-      node(`perk-${i}-rule`, 'cardRule', [x + pad, ruleY, wrap, 2], { part: 'perk-cards', floor: heights.card, height: heights.card + 1, tone: 'metal', states: [st.open] }),
-      text(`perk-${i}-fine`, `${k}.finePrint`, { ...TYPE.helper, wrap, lead: 26, ink: 'soft' }, x + pad, ruleY + 26, { ...onCard, states: [st.open] })
+      text(`perk-${i}-title`, `${k}.title`, mid(T.strong), cx, y + 135, { ...at, states: [st.shut] }),
+      text(`perk-${i}-promise`, `${k}.promise`, promise, cx, promiseY, { ...at, states: [st.shut] }),
+      text(`perk-${i}-fine`, `${k}.finePrint`, fine, cx, fineY, { ...at, tone: 'metal', states: [st.shut] }),
+      text(`perk-${i}-fine-large`, `${k}.finePrint`, large, cx, y + (CARD.h - tall(large, `${k}.finePrint`, wrap)) / 2, { ...at, states: [st.open] })
     ]
   })
 }
 
-function medallion(i: number, cx: number, y: number, under = 28): LayoutNode[] {
-  const k = `copy:marketing.awards.items.${i}`
-  const title = { ...T.medalTitle, align: 'centre' as const, wrap: 204 }
-  const th = tall(title, `${k}.title`, title.wrap)
-  const from = { ...T.medalFrom, align: 'centre' as const, wrap: th > MEDAL_TWO ? 170 : 232 }
-  const fh = tall(from, `${k}.from`, from.wrap)
-  const top = y + (MEDAL - (th + 22 + fh)) / 2
-  const on = { part: 'type', on: MEDAL_H }
-  const disc = node(`award-${i}`, 'medallion', [cx - MEDAL / 2, y, MEDAL, MEDAL], {
-    part: PAGE, shape: 'disc', height: MEDAL_H, tone: 'metal',
-    children: [text(`award-${i}-title`, `${k}.title`, title, cx, top, on), text(`award-${i}-from`, `${k}.from`, from, cx, top + th + 22, on)]
-  })
-  return [disc, text(`award-${i}-fine`, `${k}.finePrint`, { ...TYPE.helper, align: 'centre' }, cx, y + MEDAL + under, type)]
-}
-
-function firstScreen(): LayoutNode[] {
+function perks(y0: number): LayoutNode {
+  const d = y0 - 1080
   const out: LayoutNode[] = []
-  out.push(text('nav-brand', 'copy:marketing.nav.brand', TYPE.title, LEFT, NAV.y - cap(TYPE.title) / 2, { part: 'shell' }))
-  const ctaW = buttonWidth('copy:marketing.nav.cta')
-  const ctaX = RIGHT - ctaW
-  out.push(button('nav-cta', ctaX, NAV.y - sizes.button / 2, ctaW, 'copy:marketing.nav.cta', { part: 'apply-button' }))
-  let right = ctaX - 56
-  for (let i = m.nav.links.length - 1; i >= 0; i--) {
-    const key = `copy:marketing.nav.links.${i}`
-    out.push(text(`nav-link-${i}`, key, { ...TYPE.label, align: 'right' }, right, NAV.y - cap(TYPE.label) / 2, type))
-    right -= wide(TYPE.label, key) + 48
-  }
-  out.push(node('header-rule', 'rule', [LEFT, NAV.ruleY - 2, WIDTH, 6], { part: 'shell' }))
-  const headY = 200
-  const headline = { ...T.display, wrap: 1040 }
-  out.push(text('hero-headline', 'copy:marketing.hero.headline', headline, LEFT, headY, type))
-  const sublineY = headY + tall(headline, 'copy:marketing.hero.headline', headline.wrap) + 36
-  out.push(text('hero-subline', 'copy:marketing.hero.subline', TYPE.subline, LEFT, sublineY, type))
-  const buttonY = 424
-  out.push(button('hero-cta', LEFT, buttonY, HERO_W, 'copy:marketing.hero.cta', { hero: true, part: 'apply-button' }))
-  out.push(text('hero-under', 'copy:marketing.hero.underCta', { ...TYPE.helper, ink: 'soft' }, LEFT, buttonY + sizes.heroButton + 28, type))
-  out.push(...medallion(0, RIGHT - MEDAL / 2 - 44, buttonY + sizes.heroButton - MEDAL + 27, 16))
-  const cards: Item[] = [0, 1, 2].map((i) => (x: number, y: number) => perkCard(i, x, y))
-  out.push(row('perks-first', LEFT, 640, GAP, cards))
-  out.push(tickerNode())
-  return out
+  out.push(pill('perks-kicker', 'copy:marketing.perks.kicker', T.label, 1107 + d, 44, 28, 'paper', 'danger'))
+  out.push(centred('perks-heading', 'copy:marketing.perks.heading', T.section, 1192 + d))
+  out.push(centred('perks-subline', 'copy:marketing.perks.subline', soft(T.lead), 1283 + d))
+  m.perks.items.forEach((_, i) => out.push(perkCard(i, CARD.x + (i % 4) * (CARD.w + CARD.gap), CARD.rows[Math.floor(i / 4)]! + d)))
+  out.push(centred('perks-closing', 'copy:marketing.perks.closing', soft(T.lead), 2105 + d))
+  return sheet('perks', y0, 1090, out)
 }
 
-export const tapeStates = (i: number): string => `tape-${i}`
-
-function tickerNode(): LayoutNode {
-  const y = TICKER.y + (TICKER.h - cap(T.tape)) / 2
-  const at = { part: 'type', on: TICKER.tape }
-  const items = m.ticker.map((_, i) => text(`ticker-${i}`, `copy:marketing.ticker.${i}`, T.tape, TICKER.x + TICKER.clip + TICKER.pad, y, { ...at, states: [tapeStates(i)] }))
-  items.push(text('ticker-after', 'copy:marketing.tickerAfterRejection', T.tape, TICKER.x + TICKER.clip + TICKER.pad, y, { ...at, states: ['tape-after'] }))
-  return node('ticker-window', 'tickerWindow', [TICKER.x + TICKER.edge, TICKER.y + TICKER.edge, TICKER.w - TICKER.edge * 2, TICKER.h - TICKER.edge * 2], { part: 'ticker', r: TICKER.r - TICKER.edge + 2, height: TICKER.floor, tone: 'pocket', children: items })
-}
-
-function perks(y: number): Section {
-  const h = head('perks', y, { kicker: 'copy:marketing.perks.kicker', heading: 'copy:marketing.perks.heading', subline: 'copy:marketing.perks.subline' })
-  const top = h.bottom
-  const rowA: Item[] = [3, 4, 5].map((i) => (x: number, yy: number) => perkCard(i, x, yy))
-  const closing = { ...TYPE.body, wrap: CARD_W - 64, lead: 34 }
-  const note = (x: number, yy: number): LayoutNode =>
-    node('perks-note', 'note', [x, yy, CARD_W, CARD_H], {
-      part: PAGE, shape: 'none',
-      children: [text('perks-closing', 'copy:marketing.perks.closing', closing, x + 32, yy + (CARD_H - tall(closing, 'copy:marketing.perks.closing', closing.wrap)) / 2, type)]
-    })
-  const rowB: Item[] = [...[6, 7].map((i) => (x: number, yy: number) => perkCard(i, x, yy)), note]
-  const grid = column('perks-grid', LEFT, top, GAP, [(x, yy) => row('perks-row-a', x, yy, GAP, rowA), (x, yy) => row('perks-row-b', x, yy, GAP, rowB)])
-  return { nodes: [...h.nodes, grid], bottom: top + CARD_H * 2 + GAP }
-}
-
-function awards(y: number): Section {
-  const h = head('awards', y, { heading: 'copy:marketing.awards.heading', subline: 'copy:marketing.awards.subline' })
-  const col = (WIDTH - GAP * 3) / 4
-  const nodes = [...h.nodes]
-  for (let i = 1; i < m.awards.items.length; i++) nodes.push(...medallion(i, LEFT + (i - 1) * (col + GAP) + col / 2, h.bottom))
-  const footY = h.bottom + MEDAL + 28 + cap(TYPE.helper) + 44
-  nodes.push(text('awards-footnote', 'copy:marketing.awards.footnote', TYPE.helper, LEFT, footY, type))
-  return { nodes, bottom: footY + cap(TYPE.helper) }
-}
-
-export const BADGE = { pad: 28, photo: 96 }
-
-function badge(i: number, x: number, y: number, h: number, quoteH: number): LayoutNode {
-  const k = `copy:marketing.testimonials.items.${i}`
-  const { pad, photo } = BADGE
-  const wrap = CARD_W - pad * 2
-  const mark = { part: PAGE, floor: heights.card, height: heights.card + 1, tone: 'dark' }
-  const bx = x + pad + photo + 24
-  const roleY = y + pad + photo + 28
-  const quoteY = roleY + cap(T.role) + 22
-  return node(`badge-${i}`, 'card', [x, y, CARD_W, h], {
-    part: PAGE, r: CARD_R,
-    children: [
-      node(`badge-${i}-photo`, 'badgePhoto', [x + pad, y + pad, photo, photo], { ...mark, r: 8 }),
-      node(`badge-${i}-name`, 'redaction', [bx, y + pad + 18, 250, 22], mark),
-      node(`badge-${i}-name-2`, 'redaction', [bx, y + pad + 56, 170, 22], mark),
-      text(`badge-${i}-role`, `${k}.role`, T.role, x + pad, roleY, onCard),
-      text(`badge-${i}-quote`, `${k}.quote`, { ...T.quote, wrap }, x + pad, quoteY, onCard),
-      text(`badge-${i}-note`, `${k}.note`, TYPE.helper, x + pad, quoteY + quoteH + 28, onCard)
-    ]
-  })
-}
-
-function testimonials(y: number): Section {
-  const h = head('testimonials', y, { heading: 'copy:marketing.testimonials.heading', subline: 'copy:marketing.testimonials.subline' })
-  const wrap = CARD_W - BADGE.pad * 2
+function quotes(y0: number): { node: LayoutNode; bottom: number } {
+  const out: LayoutNode[] = []
+  out.push(centred('testimonials-heading', 'copy:marketing.testimonials.heading', T.section, y0 + 57))
+  out.push(centred('testimonials-subline', 'copy:marketing.testimonials.subline', soft(T.body), y0 + 120))
+  const wrap = QUOTE.w - QUOTE.pad * 2
+  const role = { ...T.label, wrap }
+  const quote = { ...T.body, wrap }
   let quoteH = 0
-  m.testimonials.items.forEach((_, i) => (quoteH = Math.max(quoteH, tall(T.quote, `copy:marketing.testimonials.items.${i}.quote`, wrap))))
-  const bh = Math.ceil(BADGE.pad + BADGE.photo + 28 + cap(T.role) + 22 + quoteH + 28 + cap(TYPE.helper) + BADGE.pad + 4)
-  const rows: Item[] = [0, 1].map((r) => (x: number, yy: number) => row(`badges-row-${r}`, x, yy, GAP, [0, 1, 2].map((c) => (xx: number, yyy: number) => badge(r * 3 + c, xx, yyy, bh, quoteH))))
-  const grid = column('badges', LEFT, h.bottom, GAP, rows)
-  const footY = h.bottom + bh * 2 + GAP + 40
-  return { nodes: [...h.nodes, grid, text('testimonials-footnote', 'copy:marketing.testimonials.footnote', TYPE.helper, LEFT, footY, type)], bottom: footY + cap(TYPE.helper) }
+  let roleH = 0
+  m.testimonials.items.forEach((_, i) => {
+    quoteH = Math.max(quoteH, tall(quote, `copy:marketing.testimonials.items.${i}.quote`, wrap))
+    roleH = Math.max(roleH, tall(role, `copy:marketing.testimonials.items.${i}.role`, wrap))
+  })
+  const h = Math.ceil(28 + quoteH + 22 + roleH + 12 + cap(T.fine) + 28)
+  const first = y0 + 162
+  m.testimonials.items.forEach((_, i) => {
+    const k = `copy:marketing.testimonials.items.${i}`
+    const x = QUOTE.x + (i % 3) * (QUOTE.w + QUOTE.gap)
+    const y = first + Math.floor(i / 3) * (h + 26)
+    const roleY = y + 28 + quoteH + 22
+    out.push(node(`quote-${i}`, 'quoteCard', [x, y, QUOTE.w, h], {
+      part: PAGE, r: QUOTE.r, floor: Z.sheet, height: Z.sheet + 0.6,
+      children: [
+        text(`quote-${i}-quote`, `${k}.quote`, quote, x + QUOTE.pad, y + 28, on),
+        text(`quote-${i}-role`, `${k}.role`, role, x + QUOTE.pad, roleY, on),
+        text(`quote-${i}-note`, `${k}.note`, T.fine, x + QUOTE.pad, roleY + tall(role, `${k}.role`, wrap) + 12, { ...on, tone: 'accent' })
+      ]
+    }))
+  })
+  const footY = first + h * 2 + 26 + 26
+  out.push(centred('testimonials-footnote', 'copy:marketing.testimonials.footnote', T.small, footY, { tone: 'metal' }))
+  const bottom = footY + cap(T.small) + 40
+  return { node: sheet('testimonials', y0, bottom - y0, out), bottom }
 }
 
-function comparison(y: number): Section {
-  const h = head('comparison', y, { heading: 'copy:marketing.comparison.heading', subline: 'copy:marketing.comparison.subline' })
-  const rowH = 64
-  const pad = 40
-  const cols = [LEFT + pad, LEFT + 640, LEFT + 1200]
-  const count = m.comparison.rows.length + 1
-  const top = h.bottom
-  const line = (id: string, yy: number, keys: (string | null)[], t: TypeSpec): LayoutNode =>
-    node(id, 'tableRow', [LEFT, yy, WIDTH, rowH], {
-      part: PAGE, shape: 'none',
-      children: keys.flatMap((key, c) => (key ? [text(`${id}-${c}`, key, c === 0 ? { ...t, font: 'inter-600' } : t, cols[c]!, yy + (rowH - cap(t)) / 2, onCard)] : []))
-    })
-  const rows: Item[] = [(_, yy) => line('compare-head', yy, [null, 'copy:marketing.comparison.columns.0', 'copy:marketing.comparison.columns.1'], T.strong)]
+function faq(y0: number): LayoutNode {
+  const out: LayoutNode[] = []
+  out.push(centred('faq-heading', 'copy:marketing.faq.heading', T.section, y0 + 52))
+  out.push(centred('faq-subline', 'copy:marketing.faq.subline', soft(T.body), y0 + 119))
+  m.faq.items.forEach((_, i) => {
+    const y = y0 + 162 + i * FAQ.pitch
+    out.push(node(`faq-${i}`, 'faqRow', [FAQ.x, y, FAQ.w, FAQ.h], {
+      part: PAGE, shape: 'capsule', floor: Z.sheet, height: Z.sheet + 0.6,
+      children: [text(`faq-${i}-q`, `copy:marketing.faq.items.${i}.q`, T.link, FAQ.x + FAQ.pad, y + (FAQ.h - cap(T.link)) / 2, on)]
+    }))
+  })
+  out.push(...pair('faq-closing', 'copy:marketing.faq.closingQ', 'copy:marketing.faq.closingA', T.label, T.body, y0 + 569, 7))
+  return sheet('faq', y0, 650, out)
+}
+
+function comparison(y0: number): LayoutNode {
+  const out: LayoutNode[] = []
+  out.push(centred('comparison-heading', 'copy:marketing.comparison.heading', T.section, y0 + 78))
+  out.push(centred('comparison-subline', 'copy:marketing.comparison.subline', soft(T.lead), y0 + 151))
+  const cardY = y0 + 209
+  const rows = m.comparison.rows.length
+  const h = TABLE.pad * 2 + TABLE.head + rows * TABLE.row
+  const inner = cardY + TABLE.pad
+  const children: LayoutNode[] = []
+  const headY = inner + (TABLE.head - cap(T.strong)) / 2
+  children.push(text('compare-head-us', 'copy:marketing.comparison.columns.0', mid(T.strong), TABLE.usAt, headY, on))
+  children.push(text('compare-head-them', 'copy:marketing.comparison.columns.1', mid(T.strong), TABLE.themAt, headY, on))
+  const themW = TABLE.tick + 12 + wide(T.lead, 'copy:marketing.comparison.rows.0.them')
   m.comparison.rows.forEach((_, i) => {
     const k = `copy:marketing.comparison.rows.${i}`
-    rows.push((_x, yy) => line(`compare-${i}`, yy, [`${k}.feature`, `${k}.us`, `${k}.them`], TYPE.body))
+    const y = inner + TABLE.head + i * TABLE.row
+    const ty = y + (TABLE.row - cap(T.lead)) / 2
+    const tx = TABLE.themAt - themW / 2
+    children.push(text(`compare-${i}-feature`, `${k}.feature`, T.lead, TABLE.feature, ty, on))
+    children.push(text(`compare-${i}-us`, `${k}.us`, mid(T.lead), TABLE.usAt, ty, { ...on, tone: 'danger' }))
+    children.push(node(`compare-${i}-tick`, 'tick', [tx, y + (TABLE.row - TABLE.tick) / 2, TABLE.tick, TABLE.tick], { part: PAGE, r: 5, floor: Z.sheet, height: Z.sheet + 0.9 }))
+    children.push(text(`compare-${i}-them`, `${k}.them`, T.lead, tx + TABLE.tick + 12, ty, { ...on, tone: 'metal' }))
   })
-  const rules: LayoutNode[] = []
-  for (let i = 1; i < count; i++) rules.push(node(`compare-rule-${i}`, 'cardRule', [LEFT + pad, top + 12 + i * rowH - 1, WIDTH - pad * 2, 2], { part: PAGE, floor: heights.card, height: heights.card + 1, tone: 'metal' }))
-  const card = node('compare-table', 'card', [LEFT, top, WIDTH, count * rowH + 24], { part: PAGE, r: CARD_R, children: [column('compare-rows', LEFT, top + 12, 0, rows), ...rules] })
-  return { nodes: [...h.nodes, card], bottom: top + count * rowH + 24 }
+  out.push(node('compare-table', 'tableCard', [TABLE.x, cardY, TABLE.w, h], { part: PAGE, r: TABLE.r, floor: Z.sheet, height: Z.sheet + 0.6, children }))
+  return sheet('comparison', y0, 1020, out)
 }
 
-function process(y: number): Section {
-  const h = head('process', y, { heading: 'copy:marketing.process.heading', subline: 'copy:marketing.process.subline' })
+function process(y0: number): LayoutNode {
+  const out: LayoutNode[] = []
+  out.push(centred('process-heading', 'copy:marketing.process.heading', T.section, y0 + 89))
+  out.push(centred('process-subline', 'copy:marketing.process.subline', soft(T.lead), y0 + 165))
+  const railY = y0 + 233
   const n = m.process.items.length
-  const col = (WIDTH - GAP * (n - 1)) / n
-  const d = sizes.progressButton
-  const padRail = 14
-  const railY = h.bottom
-  const title = { ...T.strong, wrap: col }
-  const body = { ...T.answer, wrap: col }
-  let titleH = 0
-  m.process.items.forEach((_, i) => (titleH = Math.max(titleH, tall(title, `copy:marketing.process.items.${i}.title`, col))))
-  let bodyH = 0
-  m.process.items.forEach((_, i) => (bodyH = Math.max(bodyH, tall(body, `copy:marketing.process.items.${i}.body`, col))))
-  const buttons: LayoutNode[] = []
-  const texts: LayoutNode[] = []
-  const titleY = railY + d + padRail * 2 + 32
-  const bodyY = titleY + titleH + 24
+  out.push(node('process-rail', 'hairline', [STEPS.first, railY + STEPS.d / 2 - 1, STEPS.pitch * (n - 1), 2], { part: PAGE, floor: Z.sheet, height: Z.sheet + 0.6 }))
+  const title = { ...mid(T.strong), wrap: STEPS.wrap }
+  const body = { ...mid(T.small), wrap: STEPS.wrap }
   for (let i = 0; i < n; i++) {
-    const x = LEFT + i * (col + GAP)
+    const cx = STEPS.first + i * STEPS.pitch
     const num = `data:numerals.${i + 1}`
-    const c = block(TYPE.numeral.font, words(num), TYPE.numeral.px).cap
-    const label = text(`process-${i}-numeral`, num, { ...TYPE.numeral, align: 'centre' }, x + padRail + d / 2, railY + padRail + d / 2 - c / 2, { part: 'type', on: heights.progressButton })
-    buttons.push(node(`process-${i}`, 'progressButton', [x + padRail, railY + padRail, d, d], { part: PAGE, shape: 'disc', floor: heights.progressRail, children: [label] }))
-    texts.push(text(`process-${i}-title`, `copy:marketing.process.items.${i}.title`, title, x, titleY, type))
-    texts.push(text(`process-${i}-body`, `copy:marketing.process.items.${i}.body`, body, x, bodyY, type))
+    const k = `copy:marketing.process.items.${i}`
+    out.push(node(`process-${i}`, 'stepDisc', [cx - STEPS.d / 2, railY, STEPS.d, STEPS.d], {
+      part: PAGE, shape: 'disc', floor: Z.sheet, height: Z.sheet + 0.9, tone: 'accent',
+      children: [text(`process-${i}-numeral`, num, mid(T.label), cx, railY + (STEPS.d - cap(T.label)) / 2, { ...on, tone: 'inkLight' })]
+    }))
+    const titleY = y0 + 312
+    out.push(text(`process-${i}-title`, `${k}.title`, title, cx, titleY, on))
+    out.push(text(`process-${i}-body`, `${k}.body`, body, cx, titleY + tall(title, `${k}.title`, STEPS.wrap) + 18, on))
   }
-  const rail = node('process-rail', 'progressRail', [LEFT, railY, (n - 1) * (col + GAP) + d + padRail * 2, d + padRail * 2], { part: PAGE, shape: 'capsule', children: buttons })
-  const waitY = bodyY + bodyH + 64
-  const wait = field('wait', LEFT, waitY, col * 2 + GAP, 'copy:marketing.process.waitLabel', { value: 'copy:marketing.process.waitValue', helper: 'copy:marketing.process.footnote', part: PAGE })
-  return { nodes: [...h.nodes, rail, ...texts, wait], bottom: wait.box[1]! + wait.box[3]! }
+  const waitY = y0 + 516
+  const wa = wide(T.lead, 'copy:marketing.process.waitLabel')
+  const wb = wide(T.lead, 'copy:marketing.process.waitValue')
+  const w = wa + 7 + wb + 56
+  const ty = waitY + (51 - cap(T.lead)) / 2
+  out.push(node('process-wait', 'pill', [CENTRE - w / 2, waitY, w, 51], {
+    part: PAGE, shape: 'capsule', floor: Z.sheet, height: Z.sheet + 0.6, tone: 'pocket',
+    children: [text('process-wait-label', 'copy:marketing.process.waitLabel', T.lead, CENTRE - w / 2 + 28, ty, on), text('process-wait-value', 'copy:marketing.process.waitValue', T.lead, CENTRE - w / 2 + 28 + wa + 7, ty, on)]
+  }))
+  out.push(centred('process-footnote', 'copy:marketing.process.footnote', T.small, y0 + 584))
+  return sheet('process', y0, 630, out)
 }
 
-function faq(y: number): Section {
-  const h = head('faq', y, { heading: 'copy:marketing.faq.heading', subline: 'copy:marketing.faq.subline' })
-  const w = (WIDTH - GAP) / 2
-  const pad = 36
-  const answer = { ...T.answer, wrap: w - pad * 2 }
-  let answerH = 0
-  m.faq.items.forEach((_, i) => (answerH = Math.max(answerH, tall(answer, `copy:marketing.faq.items.${i}.a`, answer.wrap))))
-  const qCap = cap(T.strong)
-  const ch = Math.ceil(pad + qCap + 26 + answerH + pad + 6)
-  const card = (i: number, x: number, yy: number): LayoutNode =>
-    node(`faq-${i}`, 'card', [x, yy, w, ch], {
-      part: PAGE, r: CARD_R,
-      children: [text(`faq-${i}-q`, `copy:marketing.faq.items.${i}.q`, T.strong, x + pad, yy + pad, onCard), text(`faq-${i}-a`, `copy:marketing.faq.items.${i}.a`, answer, x + pad, yy + pad + qCap + 26, onCard)]
-    })
-  const rows: Item[] = [0, 1, 2].map((r) => (x: number, yy: number) => row(`faq-row-${r}`, x, yy, GAP, [0, 1].map((c) => (xx: number, yyy: number) => card(r * 2 + c, xx, yyy))))
-  const grid = column('faq-grid', LEFT, h.bottom, GAP, rows)
-  const closeY = h.bottom + ch * 3 + GAP * 2 + 48
-  const q = text('faq-closing-q', 'copy:marketing.faq.closingQ', T.strong, LEFT, closeY, type)
-  const a = text('faq-closing-a', 'copy:marketing.faq.closingA', TYPE.body, LEFT + q.box[2]! + 16, closeY, type)
-  return { nodes: [...h.nodes, grid, q, a], bottom: closeY + qCap }
+function finalCta(y0: number): LayoutNode {
+  const out: LayoutNode[] = []
+  out.push(centred('final-heading', 'copy:marketing.finalCta.heading', T.section, y0 + 40))
+  out.push(centred('final-body', 'copy:marketing.finalCta.body', soft({ ...T.body, wrap: 720, lead: 32 }), y0 + 114))
+  out.push(applyButton('final-cta', 683, y0 + 201, 553, 67, 'copy:marketing.finalCta.cta', T.strong))
+  out.push(centred('final-under', 'copy:marketing.finalCta.underCta', T.small, y0 + 290))
+  return sheet('final', y0, 322, out)
 }
 
-function finalCta(y: number): Section {
-  const nodes: LayoutNode[] = [node('final-rule', 'rule', [LEFT, y, WIDTH, 2], { part: PAGE })]
-  const headY = y + 96
-  nodes.push(text('final-heading', 'copy:marketing.finalCta.heading', { ...T.section, align: 'centre' }, CENTRE, headY, type))
-  const body = { ...TYPE.subline, align: 'centre' as const, wrap: 880, lead: 36 }
-  const bodyY = headY + cap(T.section) + 36
-  nodes.push(text('final-body', 'copy:marketing.finalCta.body', body, CENTRE, bodyY, type))
-  const buttonY = bodyY + tall(body, 'copy:marketing.finalCta.body', body.wrap) + 52
-  nodes.push(button('final-cta', CENTRE - HERO_W / 2, buttonY, HERO_W, 'copy:marketing.finalCta.cta', { hero: true, part: 'apply-button' }))
-  const underY = buttonY + sizes.heroButton + 28
-  nodes.push(text('final-under', 'copy:marketing.finalCta.underCta', { ...TYPE.helper, align: 'centre' }, CENTRE, underY, type))
-  return { nodes, bottom: underY + cap(TYPE.helper) }
-}
-
-function footer(y: number): Section {
-  const nodes: LayoutNode[] = [node('footer-rule', 'rule', [LEFT, y, WIDTH, 2], { part: PAGE })]
-  const top = y + 64
-  const brand = text('footer-brand', 'copy:marketing.footer.brand', TYPE.title, LEFT, top, type)
-  const aboutY = top + cap(TYPE.title) + 28
-  const about = text('footer-about', 'copy:marketing.hero.sublineLong', { ...TYPE.helper, wrap: 640, lead: 28 }, LEFT, aboutY, type)
-  const taglineY = aboutY + about.box[3]! + 28
-  const tagline = text('footer-tagline', 'copy:marketing.footer.tagline', { ...TYPE.helper, wrap: 560 }, LEFT, taglineY, type)
-  const notRealY = taglineY + cap(TYPE.helper) + 20
-  const notReal = text('footer-not-real', 'copy:marketing.footer.notReal', TYPE.helper, LEFT, notRealY, type)
-  const creditY = notRealY + cap(TYPE.helper) + 40
-  const credit = text('footer-credit', 'copy:marketing.footer.credit', TYPE.label, LEFT, creditY, type)
-  const rx = CENTRE
-  const wrap = RIGHT - rx
-  const small = { ...TYPE.helper, wrap, lead: 28 }
-  const bottom = text('footer-bottom', 'copy:marketing.footer.bottom', small, rx, top, type)
-  const twistY = top + bottom.box[3]! + 36
-  const twist = text('footer-plot-twist', 'copy:marketing.footer.plotTwist', small, rx, twistY, { ...type, states: ['hiring'] })
-  const closing = text('footer-closing', 'copy:step5.closing', small, rx, twistY, { ...type, states: ['rejected'] })
-  nodes.push(brand, about, tagline, notReal, credit, bottom, twist, closing)
-  const end = Math.max(creditY + cap(TYPE.label), twistY + Math.max(twist.box[3]!, closing.box[3]!))
-  return { nodes, bottom: end }
+function footer(y0: number): LayoutNode {
+  const out: LayoutNode[] = []
+  const left = 289
+  const right = 1631
+  out.push(node('footer-rule', 'hairline', [left, y0 + 5, right - left, 1], { part: PAGE, floor: Z.sheet, height: Z.sheet + 0.6 }))
+  out.push(text('footer-brand', 'copy:marketing.footer.brand', T.strong, left, y0 + 31, on))
+  out.push(text('footer-tagline', 'copy:marketing.footer.tagline', soft(T.small), left, y0 + 64, { ...on, states: ['hiring'] }))
+  out.push(text('footer-closing', 'copy:step5.closing', soft({ ...T.fine, wrap: 760 }), left, y0 + 62, { ...on, states: ['rejected'] }))
+  out.push(text('footer-not-real', 'copy:marketing.footer.notReal', { ...T.small, align: 'right' }, right, y0 + 34, on))
+  out.push(text('footer-credit', 'copy:marketing.footer.credit', { ...T.small, align: 'right' }, right, y0 + 64, on))
+  return sheet('footer', y0, 95, out)
 }
 
 export interface Careers { layout: LayoutNode; height: number; sections: Record<string, number> }
 
+let made: Careers | null = null
+
 export function careersLayout(): Careers {
-  const nodes = firstScreen()
-  const sections: Record<string, number> = { top: 0 }
-  let y = TICKER.y + TICKER.h + SECTION + 8
-  for (const [name, make] of [['perks', perks], ['awards', awards], ['testimonials', testimonials], ['comparison', comparison], ['process', process], ['faq', faq], ['final', finalCta], ['footer', footer]] as const) {
+  if (made) return made
+  const sections: Record<string, number> = { top: 0, perks: 1080, testimonials: 2170 }
+  const nodes: LayoutNode[] = [top(), perks(sections.perks!)]
+  const q = quotes(sections.testimonials!)
+  nodes.push(q.node)
+  let y = q.bottom
+  for (const [name, make, h] of [['faq', faq, 650], ['comparison', comparison, 1020], ['process', process, 630], ['final', finalCta, 322], ['footer', footer, 95]] as const) {
     sections[name] = y
-    const s = make(y)
-    nodes.push(group(`section-${name}`, s.nodes))
-    y = s.bottom + (name === 'footer' ? 0 : SECTION)
+    nodes.push(make(y))
+    y += h
   }
-  const height = Math.ceil(y + FOOT)
-  return { layout: page('marketing', height, nodes), height, sections }
+  made = { layout: page('marketing', y, nodes), height: y, sections }
+  return made
 }

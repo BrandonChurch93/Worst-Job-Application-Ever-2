@@ -1,74 +1,107 @@
-import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { config, stepHz } from '../src/config'
-import { pages } from '../src/pages'
-import { careersLayout } from '../src/pages/marketing/layout'
-import { darker, fallAt, fallOf, slabKey } from '../src/pages/marketing/real/perk-cards'
-import { ROUND, VISITS } from '../src/pages/marketing/script'
-import { boxOf } from '../src/shell/layout'
-import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
+import * as THREE from 'three'
+import { config } from '../src/config'
+import type { LayoutNode } from '../src/copy'
+import { careersLayout, COLOUR, GLOW, T } from '../src/pages/marketing/layout'
+import { inkOf } from '../src/pages/marketing/real/careers-page'
+import { flat, share, tint, WHITE } from '../src/pages/marketing/real/flat'
+import { look } from '../src/post/look'
 
-const KEY = config.film.beats.find((b) => b.id === 'marketing.apply')!.from
+const lin = (c: number): number => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
+const rgb = (hex: number): [number, number, number] => [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255]
+const luminance = (c: [number, number, number]): number => 0.2126 * lin(c[0] / 255) + 0.7152 * lin(c[1] / 255) + 0.0722 * lin(c[2] / 255)
+const contrast = (a: [number, number, number], b: [number, number, number]): number => {
+  const la = luminance(a)
+  const lb = luminance(b)
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05)
+}
+// What a flat colour comes out as on the screen: every channel stops at the white of the sheet.
+const SHEET = 251.6
+const shown = (hex: number): [number, number, number] => rgb(hex).map((v) => Math.min(SHEET, v)) as [number, number, number]
+const over = (hex: number, under: number): [number, number, number] => shown(hex).map((v, i) => (v * shown(under)[i]!) / SHEET) as [number, number, number]
+const least = config.layout.minTextContrast
 
-describe('careers finish: the walk from the third card to the button', () => {
-  const s = new Stage({ mode: 'film', flow: filmFlow('marketing'), pages, driver: new ScriptDriver(), film: filmOptions('marketing') })
-  const poses: { t: number; x: number; y: number }[] = []
-  for (let i = 0; i < Math.round(KEY * stepHz); i++) {
-    s.advance(1)
-    const p = s.cursor.pose()
-    poses.push({ t: (i + 1) / stepHz, x: p.x, y: p.y })
-  }
-  const { layout } = careersLayout()
-  const cards = [0, 1, 2].map((i) => boxOf(layout, `perk-${i}`))
-  const medal = boxOf(layout, 'award-0')
-
-  it('goes round the card: the tip is never inside a card after it leaves the third', () => {
-    const walk = poses.filter((p) => p.t > VISITS[2]!.leave)
-    expect(walk.length).toBeGreaterThan(stepHz)
-    for (const p of walk) {
-      for (const c of cards) expect(p.x > c.x && p.x < c.x + c.w && p.y > c.y && p.y < c.y + c.h, `at ${p.t.toFixed(2)}`).toBe(false)
-      expect(Math.hypot(p.x - medal.cx, p.y - medal.cy), `medal at ${p.t.toFixed(2)}`).toBeGreaterThan(medal.w / 2)
+describe('the finish of the careers page', () => {
+  it('has one flat white for every sheet, short of pure white, and gives every colour under it its own light', () => {
+    expect(WHITE[0]).toBe(WHITE[1])
+    expect(WHITE[1]).toBe(WHITE[2])
+    expect(Number.isFinite(WHITE[0])).toBe(true)
+    expect(WHITE[0] * look.exposure).toBeLessThanOrEqual(1.3 + 1e-9)
+    let last = -1
+    for (let v = 0; v <= 255; v += 5) {
+      const c = tint((v << 16) | (v << 8) | v)[0]
+      expect(c).toBeGreaterThanOrEqual(last)
+      last = c
     }
+    const c = new THREE.Color().setHex(COLOUR.ink, THREE.SRGBColorSpace)
+    expect(tint(COLOUR.ink)[0] * look.exposure).toBeCloseTo(c.r, 6)
+    expect(share(0xffffff)).toEqual([1, 1, 1])
+    for (const v of share(COLOUR.glow)) expect(v).toBeLessThanOrEqual(1)
+    expect(share(COLOUR.glow)[2]).toBeLessThan(share(COLOUR.glow)[0])
+    expect(flat().vertexColors).toBe(true)
+    expect(flat()).toBe(flat())
   })
 
-  it('takes the right margin and the lane above the cards, in that order', () => {
-    const third = cards[2]!
-    const walk = poses.filter((p) => p.t > VISITS[2]!.leave)
-    const level = walk.filter((p) => p.y > third.y && p.y < third.y + third.h)
-    expect(level.length).toBeGreaterThan(stepHz * 0.1)
-    for (const p of level) expect(p.x - (third.x + third.w), `at ${p.t.toFixed(2)}`).toBeGreaterThan(12)
-    const above = walk.filter((p) => p.x > third.x && p.x < third.x + third.w)
-    for (const p of above.filter((q) => q.t > ROUND.up)) expect(third.y - p.y, `at ${p.t.toFixed(2)}`).toBeGreaterThan(12)
-    expect(ROUND.aside).toBeGreaterThan(VISITS[2]!.leave)
-    expect(ROUND.up).toBeGreaterThan(ROUND.aside)
-    expect(ROUND.lane).toBeGreaterThan(ROUND.up)
-  })
-})
-
-describe('careers finish: the glass darkens toward the right of the page', () => {
-  const { layout } = careersLayout()
-  const box = (i: number): { x: number; y: number; w: number; h: number } => boxOf(layout, `perk-${i}`)
-  const shape = (i: number) => ({ id: `perk-${i}`, part: 'perk-cards', kind: 'box', x: box(i).x, y: box(i).y, w: box(i).w, h: box(i).h, z0: 0, z1: 12, tone: 'glass', r: 28, role: 'card' }) as never
-
-  it('falls evenly with the page x, a little at the first card and most at the third', () => {
-    const at = [0, 1, 2].map((i) => fallOf(shape(i)))
-    expect(at[0]!).toBeGreaterThan(0.96)
-    expect(at[0]!).toBeLessThan(1)
-    expect(at[1]!).toBeLessThan(at[0]!)
-    expect(at[2]!).toBeLessThan(at[1]!)
-    expect(at[2]!).toBeGreaterThan(0.8)
-    expect(fallAt(0) - fallAt(100)).toBeCloseTo(fallAt(1000) - fallAt(1100), 9)
+  it('keeps the fills of the picture and deepens the orange for type only, so that every pair reaches the measure', () => {
+    expect(rgb(COLOUR.orange)).toEqual([233, 120, 50])
+    expect(rgb(COLOUR.peach)).toEqual([255, 237, 217])
+    expect(contrast(shown(COLOUR.orange), shown(COLOUR.white))).toBeLessThan(3.1)
+    const own: [string, number, [number, number, number]][] = [
+      ['white label on the button', COLOUR.white, shown(COLOUR.deep)],
+      ['white label on the pressed button', COLOUR.white, shown(COLOUR.down)]
+    ]
+    for (const [name, type, ground] of own) expect(contrast(shown(type), ground), name).toBeGreaterThanOrEqual(least)
+    const pairs: [string, number, [number, number, number]][] = [
+      ['orange type on white', COLOUR.onWhite, shown(COLOUR.white)],
+      ['orange type on the peach pill', COLOUR.onPeach, shown(COLOUR.peach)],
+      ['grey type on white', COLOUR.greyType, shown(COLOUR.white)],
+      ['grey type on the peach column', COLOUR.greyType, shown(COLOUR.peach)],
+      ['grey type on the grey band', COLOUR.greyType, shown(COLOUR.band)],
+      ['grey type on the middle of the glow', COLOUR.greyType, over(COLOUR.glow, COLOUR.white)],
+      ['soft ink on the middle of the glow', COLOUR.soft, over(COLOUR.glow, COLOUR.white)],
+      ['soft ink on the ticker', COLOUR.soft, shown(COLOUR.band)],
+      ['ink on the peach column', COLOUR.ink, shown(COLOUR.peach)]
+    ]
+    for (const [name, type, ground] of pairs) expect(contrast(shown(type), ground), name).toBeGreaterThanOrEqual(least + 0.1)
+    const hue = (hex: number): number => new THREE.Color(hex).getHSL({ h: 0, s: 0, l: 0 }).h
+    for (const deep of [COLOUR.onWhite, COLOUR.onPeach, COLOUR.deep]) expect(Math.abs(hue(deep) - hue(COLOUR.orange))).toBeLessThan(0.012)
   })
 
-  it('gives each card of a row its own slab, darker at its right end than at its left', () => {
-    expect(new Set([0, 1, 2].map((i) => slabKey(shape(i)))).size).toBe(3)
-    const g = new THREE.PlaneGeometry(400, 100, 4, 1)
-    g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 3).fill(0.5), 3))
-    darker(g, shape(2))
-    const p = g.getAttribute('position')
-    const c = g.getAttribute('color')
-    for (let i = 0; i < p.count; i++) expect(c.getX(i)).toBeCloseTo(0.5 * fallAt(box(2).x + box(2).w / 2 + p.getX(i)), 6)
-    const bare = darker(new THREE.PlaneGeometry(10, 10), shape(0))
-    expect(bare.getAttribute('color').getX(0)).toBeCloseTo(fallAt(box(0).x + box(0).w / 2 - 5), 6)
+  it('sets every run of type in an ink that reaches the measure on what the layout puts under it, at the least size or larger', () => {
+    const { layout } = careersLayout()
+    let runs = 0
+    const visit = (n: LayoutNode, ground: [number, number, number], path: string): void => {
+      let under = ground
+      if (n.kind === 'pill' || n.kind === 'tickerBand') under = shown(n.tone === 'pocket' ? COLOUR.band : COLOUR.peach)
+      if (n.kind === 'applyCap' || n.kind === 'stepDisc') under = shown(COLOUR.deep)
+      if (n.kind === 'tick') under = shown(COLOUR.tick)
+      if (n.kind === 'perkCard' || n.kind === 'quoteCard' || n.kind === 'faqRow' || n.kind === 'tableCard') under = shown(COLOUR.white)
+      if (n.kind === 'text' && n.type) {
+        runs++
+        expect(n.type.px, n.id).toBeGreaterThanOrEqual(config.layout.minTextPx)
+        const type = shown(inkOf({ tone: (n.tone ?? 'ink') as never, type: n.type }))
+        const inGlow = path.includes('sheet-top') && under[0] === SHEET && under[1] === SHEET
+        const grounds = [under]
+        if (inGlow) grounds.push(over(COLOUR.glow, COLOUR.white))
+        if (path.includes('compare-table') && n.id.endsWith('-us')) grounds.push(shown(COLOUR.peach))
+        if (path.includes('compare-table') && n.id.startsWith('compare-head')) grounds.push(shown(COLOUR.band))
+        for (const g of grounds) expect(contrast(type, g), `${n.id} on ${g.map(Math.round)}`).toBeGreaterThanOrEqual(least)
+      }
+      for (const c of n.children ?? []) visit(c, under, `${path}/${n.id}`)
+    }
+    visit(layout, shown(COLOUR.white), '')
+    expect(runs).toBeGreaterThan(120)
+  })
+
+  it('has one type scale in the site\'s own face, with the display weight for the headline and the section headings only', () => {
+    const fonts = new Set(Object.values(T).map((t) => t.font))
+    for (const f of fonts) expect(f).toMatch(/^inter(-display)?-(400|500|600|800)$/)
+    expect(T.display.font).toBe('inter-display-800')
+    expect(T.section.font).toBe('inter-display-800')
+    const sizes = [...new Set(Object.values(T).map((t) => t.px))].sort((a, b) => a - b)
+    expect(sizes[0]).toBeGreaterThanOrEqual(config.layout.minTextPx)
+    expect(sizes.length).toBeLessThanOrEqual(8)
+    expect(GLOW.y + GLOW.ry).toBeLessThan(1009)
+    expect(GLOW.y - GLOW.ry).toBeGreaterThan(97)
   })
 })

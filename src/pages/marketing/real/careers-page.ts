@@ -1,153 +1,209 @@
 import * as THREE from 'three'
-import { studio } from '../../../post/studio'
+import type { LayoutNode } from '../../../copy'
 import type { PartMaker } from '../../../real/types'
-import { materials } from '../../../shell/materials'
-import { controls } from '../../../shell/real/controls'
-import { arc, circle, outlineOf, profile, sweep, type ProfilePoint } from '../../../shell/solids'
+import { find } from '../../../shell/layout'
+import { dataOf, geometryOf, type Style } from '../../../shell/real/type'
+import { outlineOf, type Outline } from '../../../shell/solids'
+import { words } from '../../../shell/words'
 import type { Shape } from '../../../stage/types'
-import { contact, dims, disc, flange, leaf, leaned, mesh, pressed, q, scattered, shared, sheen, srgb } from './careers-solids'
-import { BRUSHED, brushedPicture } from './medal-picture'
-import { engraved, restingSlab, slabKey } from './perk-cards'
+import { APPLY, CARDS, careersLayout, COLOUR, GLOW, TABLE } from '../layout'
+import { mesh, q } from './careers-solids'
+import { flat, ink, Paint, shade, share, tint, type Rgb } from './flat'
 
-export const MEDAL_LOOK = { lobes: 30, deep: 9, toward: 2.4, side: 0.5, wall: 3.4, wallSide: 0.8, under: [[-2.5, 0.94], [0, 0.94], [1.5, 0.86], [4, 0.6], [8, 0.3], [13, 0.09], [18, 0]] as [number, number][], underTurn: 1.5, band: 141, ring: 138, face: 130.5, wreath: 119, leaves: 12, leaf: [27, 11.5, 2.6] as const, sheen: 0.62, axis: 2.55, rim: 1.02, lean: 0.6, cap: 0.26, capFrom: 0.6, narrow: 3.2, bow: [2.4, 0.5] as [number, number], lip: [2.6, 2.3] as [number, number], flat: [[-1, 0.93], [-0.67, 0.88], [-0.2, 1.07], [0.3, 0.85], [0.74, 0.75], [0.9, 1.2], [1, 1.7]] as [number, number][], ridge: [2.5, 2.1] as [number, number], groove: 0.5, away: [0.3, 0.45, 4, 0.52] as [number, number, number, number], pressed: [0.9, 0.32, 1.35] as [number, number, number] }
+export const INKS: Record<string, number> = { ink: COLOUR.ink, inkLight: COLOUR.white, accent: COLOUR.onWhite, danger: COLOUR.onPeach, metal: COLOUR.greyType }
+export const inkOf = (s: Pick<Shape, 'tone' | 'type'>): number => (s.tone === 'ink' && s.type?.ink === 'soft' ? COLOUR.soft : (INKS[s.tone] ?? COLOUR.ink))
 
-
-let faceMade: THREE.MeshPhysicalMaterial | null = null
-
-// The medal's face: the shared turned aluminium's own pictures on a paler, softer metal, as a struck medal is beside a machined knob.
-function medalFace(): THREE.MeshPhysicalMaterial {
-  if (!faceMade) {
-    const turned = materials().aluminiumTurned
-    faceMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x919395).multiplyScalar(1 / BRUSHED.level), map: brushedPicture(), roughness: 0.5, metalness: 0.88, vertexColors: true, normalMap: turned.normalMap, normalScale: new THREE.Vector2(0.02, 0.02), anisotropy: 0.45, anisotropyMap: turned.anisotropyMap }))
+const styles = new Map<number, Style>()
+function styleOf(hex: number): Style {
+  let s = styles.get(hex)
+  if (!s) {
+    const c = tint(hex)
+    s = { setting: 'flat', fill: c, lean: 0, rings: [{ d: 0.5, a: 0.8, c }] }
+    styles.set(hex, s)
   }
-  return faceMade
+  return s
 }
 
-let metalMade: THREE.MeshPhysicalMaterial | null = null
+const HOVER = 0.05
 
-// The medal's rim, ring and leaves: the same metal as its face, left as it was struck.
-function medalMetal(): THREE.MeshPhysicalMaterial {
-  if (!metalMade) metalMade = studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8e8f8e).multiplyScalar(1 / BRUSHED.level), map: brushedPicture(), roughness: 0.42, metalness: 0.9, vertexColors: true }))
-  return metalMade
-}
-
-let underMade: THREE.MeshPhysicalMaterial | null = null
-
-// The dark under the medal's far edge, where no light gets between it and the page.
-const underDark = (): THREE.MeshPhysicalMaterial =>
-  (underMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x2b2824), roughness: 1, metalness: 0, specularIntensity: 0, vertexColors: true, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })))
-
-// The face of a turned part: its pictures lie across the whole disc once.
-function discUv(g: THREE.BufferGeometry, d: number): THREE.BufferGeometry {
-  const uv = g.getAttribute('uv')
-  for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) / d + 0.5, uv.getY(i) / d + 0.5)
-  return g
-}
-
-let leafMade: THREE.MeshPhysicalMaterial | null = null
-
-// The wreath: pressed into the face, so it is the face's own darker metal.
-const leafMetal = (): THREE.MeshPhysicalMaterial => (leafMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9b9c), roughness: 0.46, metalness: 0.9, vertexColors: true })))
-
-// A medal struck from aluminium: a scalloped rim, a band, a ring cut with two grooves, a turned face and a wreath pressed into it.
-// Its face lies at the shape's height, where the type is laid. The rim and the ring stand a little above it.
-
-// A polished edge is as bright all the way round: `look` is its brightness on the side toward the light and on the side away, whatever the lean of the solid it is on.
-// The flange's flat top by the approved image: brightest toward the light, a weaker second glow straight away from it, dull between. `rows` are the side it faces and what it is multiplied by.
-function table(rows: [number, number][], at: number): number {
-  for (let i = 1; i < rows.length; i++) {
-    const a = rows[i - 1]!
-    const b = rows[i]!
-    if (at <= b[0]) return a[1] + ((b[1] - a[1]) * Math.max(0, at - a[0])) / (b[0] - a[0])
+// Type printed flat on the website: its own colour wherever the lamp stands.
+export const flatType: PartMaker = {
+  key(s) {
+    if (s.kind !== 'text' || !s.type || !s.words) return null
+    const t = s.type
+    return `flat:${inkOf(s)}|${t.font}|${t.px}|${t.wrap ?? ''}|${t.align ?? ''}${t.cut ? ' cut' : ''}|${t.lead ?? ''}|${q(s.w)}|${q(s.h)}|${s.words}|${words(s.words, s.text)}`
+  },
+  make(s) {
+    const hex = inkOf(s)
+    const m = new THREE.Mesh(geometryOf(dataOf(s, words(s.words!, s.text), styleOf(hex))), ink(hex))
+    m.position.z = HOVER
+    m.castShadow = false
+    m.receiveShadow = false
+    const root = new THREE.Group()
+    root.add(m)
+    return root
+  },
+  drop(o) {
+    o.traverse((c) => (c as THREE.Mesh).geometry?.dispose())
   }
-  return rows[rows.length - 1]![1]
 }
 
-const polished = (look: [number, number], facing: number): number => (look[1] + (look[0] - look[1]) * (0.5 + 0.5 * facing)) / Math.max(0.2, 1 + MEDAL_LOOK.side * facing)
+export const LAYER = { white: 0, glow: 0.12, shadow: 0.16, fill: 0.3, inner: 0.45, mark: 0.6, top: 0.75 }
+export const SHADOW = { card: 0x000000, spread: 22, drop: 8, strength: 0.07, button: 0.16 }
 
-function medallion(s: Shape): THREE.Object3D {
-  const m = materials()
-  const root = new THREE.Group()
-  const h = s.z1 - s.z0
-  const k = s.w / 324
-  const L = MEDAL_LOOK
-  const r = s.w / 2
-  const rimTop = h + 0.6
-  const rim = [{ d: -L.wall, z: 0 }, { d: -L.wall + 0.5, z: 1 }, { d: -0.7, z: rimTop - 2.6 }, { d: 0, z: rimTop - 1.5 }, { d: 0.9, z: rimTop - 0.6 }, { d: 2.2, z: rimTop - 0.15 }, { d: 3.8, z: rimTop }, { t: 0.5, z: rimTop - 0.25 }, { t: 0.92, z: rimTop - 0.35 }, { t: 1, z: rimTop - 1.2 }, { t: 1.04, z: h - 2 }]
-  root.add(mesh(shared(`medalRim:${q(s.w)}:${q(h)}`, () => leaned(flange(r, L.lobes, L.deep * k, L.band * k, rim), L.toward, L.side, s.w, [rimTop - 1.2, L.wallSide], L.bow, (z, facing) => ((z > rimTop - 1.6 && z < rimTop - 0.5) || Math.abs(z - rimTop + 0.15) < 0.03 ? polished(L.lip, facing) : z >= rimTop - 0.5 ? table(L.flat, facing) : 1))), medalMetal()))
-  root.add(mesh(shared(`medalUnder:${q(s.w)}`, () => contact(r, L.lobes, L.deep * k, L.toward, L.under, L.underTurn)), underDark(), false, false))
-  const band = L.band * k
-  const ring = L.ring * k
-  const face = L.face * k
-  const b = (radius: number): number => band - radius
-  const body: ProfilePoint[] = [
-    [b(band), h - 2.4, true], [b(band), h - 1.3, true], [b(ring + 0.4), h - 1.3, true],
-    [b(ring), h - 0.6], [b(ring - 0.8), h + 1.0], [b(ring - 2.0), h + 1.0], [b(ring - 2.5), h + 0.2], [b(ring - 2.9), h - 0.8, true],
-    [b(ring - 3.6), h - 0.8, true], [b(ring - 4.0), h + 0.2], [b(ring - 4.4), h + 0.8], [b(ring - 5.4), h + 0.8], [b(ring - 5.9), h + 0.3], [b(face + 1.2), h - 0.6, true], [b(face + 0.5), h - 0.6, true], [b(face), h, true]
-  ]
-  root.add(mesh(shared(`medalBody:${q(s.w)}:${q(h)}`, () => leaned(sweep(circle(band, 144), profile(body), false), L.toward, L.side, s.w, [-1, 0], L.bow, (z, facing) => (z > h + 0.7 ? polished(L.ridge, facing) : z < h - 0.7 ? L.groove : 1))), medalMetal()))
-  root.add(mesh(shared(`medalFace:${q(s.w)}:${q(h)}`, () => sheen(discUv(disc(face + 0.2, h), s.w), L.axis, L.sheen, L.rim, L.lean, L.cap, L.capFrom, L.narrow, L.away)), medalFace(), false))
-  const wreath = shared(`medalWreath:${q(s.w)}:${q(h)}`, () => {
-    const one = leaf(L.leaf[0] * k, L.leaf[1] * k, L.leaf[2])
-    const places: { x: number; y: number; z: number; turn: number }[] = []
-    for (const side of [-1, 1]) {
-      for (let i = 0; i < L.leaves; i++) {
-        const a = ((20 + (i * 138) / (L.leaves - 1)) * Math.PI) / 180
-        const x = side * Math.sin(a) * L.wreath * k
-        const y = -Math.cos(a) * L.wreath * k
-        const along = Math.atan2(Math.sin(a), side * Math.cos(a))
-        places.push({ x, y, z: h + 0.06, turn: along - side * 0.55 })
+const WHITE = tint(COLOUR.white)
+const LINE = tint(COLOUR.line)
+const BAND = tint(COLOUR.band)
+const PEACH = tint(COLOUR.peach)
+const DEEP = tint(COLOUR.deep)
+const GREY = tint(COLOUR.grey)
+const WREATH = tint(COLOUR.wreath)
+const TICK = tint(COLOUR.tick)
+const dark = (k: number, warm = 0): Rgb => [1 - k, 1 - k * (1 + warm * 0.35), 1 - k * (1 + warm * 0.8)]
+
+interface Brush { s: Shape; flat: Paint; shade: Paint }
+
+const xOf = (b: Brush, x: number): number => x - (b.s.x + b.s.w / 2)
+const yOf = (b: Brush, y: number): number => b.s.y + b.s.h / 2 - y
+const boxOf = (n: LayoutNode): { x: number; y: number; w: number; h: number; cx: number; cy: number } => ({ x: n.box[0]!, y: n.box[1]!, w: n.box[2]!, h: n.box[3]!, cx: n.box[0]! + n.box[2]! / 2, cy: n.box[1]! + n.box[3]! / 2 })
+const outline = (n: LayoutNode, inset = 0): Outline => outlineOf({ kind: n.shape ?? 'box', w: n.box[2]!, h: n.box[3]!, r: n.r ?? 0 }, inset, 12)
+
+function rect(b: Brush, x: number, y: number, w: number, h: number, z: number, c: Rgb, r = 0.6): void {
+  b.flat.face(outlineOf({ kind: 'box', w, h, r }, 0, r > 1 ? 10 : 2), xOf(b, x + w / 2), yOf(b, y + h / 2), z, c)
+}
+
+// A card of the website: a hairline round a white face, and its soft shadow on the sheet.
+function card(b: Brush, n: LayoutNode, lifted = false): void {
+  const o = outline(n)
+  const { cx, cy } = boxOf(n)
+  b.shade.soft(o, xOf(b, cx), yOf(b, cy + SHADOW.drop), LAYER.shadow, SHADOW.spread, dark(SHADOW.strength))
+  if (lifted) return
+  b.flat.face(o, xOf(b, cx), yOf(b, cy), LAYER.fill, LINE)
+  b.flat.face(outline(n, 1), xOf(b, cx), yOf(b, cy), LAYER.inner, WHITE)
+}
+
+// One branch of a laurel wreath: a stem bent like a bracket with leaves in pairs along it. `side` is -1 for the left branch.
+function branch(b: Brush, cx: number, cy: number, side: number): void {
+  const r = 62
+  const mid = cx - side * (r - 16)
+  const at = (deg: number): [number, number] => {
+    const a = (deg * Math.PI) / 180
+    return [xOf(b, mid + side * r * Math.cos(a)), yOf(b, cy - r * Math.sin(a))]
+  }
+  const from = -64
+  const to = 54
+  const stem: [number, number][] = []
+  for (let i = 0; i <= 14; i++) stem.push(at(from + ((to - from) * i) / 14))
+  b.flat.line(stem, 2.2, LAYER.fill, WREATH)
+  const leaves = 7
+  for (let i = 0; i < leaves; i++) {
+    const deg = from + ((to - from) * (i + 0.9)) / leaves
+    const [x, y] = at(deg)
+    const [x2, y2] = at(deg + 2)
+    const along = Math.atan2(y2 - y, x2 - x)
+    for (const turn of i === leaves - 1 ? [0] : [-0.8, 0.8]) {
+      const a = along + turn
+      const long = 17 - i * 0.6
+      const pts: [number, number][] = []
+      for (let k = 0; k < 12; k++) {
+        const u = (k / 12) * Math.PI * 2
+        const lx = (0.5 - 0.5 * Math.cos(u)) * long
+        const ly = Math.sin(u) * 3.7
+        pts.push([x + Math.cos(a) * lx - Math.sin(a) * ly, y + Math.sin(a) * lx + Math.cos(a) * ly])
       }
+      b.flat.poly(pts, LAYER.inner, WREATH)
     }
-    const g = pressed(scattered(one, places), L.toward, L.pressed[0], L.pressed[1], L.pressed[2])
-    one.dispose()
-    return g
-  })
-  root.add(mesh(wreath, leafMetal(), false))
-  return root
+  }
 }
 
-let printMade: THREE.MeshPhysicalMaterial | null = null
-let blackMade: THREE.MeshPhysicalMaterial | null = null
-let tapeMade: THREE.MeshPhysicalMaterial | null = null
+function award(b: Brush, n: LayoutNode): void {
+  const { cx, y } = boxOf(n)
+  for (const side of [-1, 1]) branch(b, cx + side * 108, y + 61, side)
+}
 
-const print = (): THREE.MeshPhysicalMaterial => (printMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xe9e6df), roughness: 0.5, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.2 })))
-const black = (): THREE.MeshPhysicalMaterial => (blackMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x232527), roughness: 0.66, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.34, specularIntensity: 0.4 })))
-const marker = (): THREE.MeshPhysicalMaterial => (tapeMade ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1c1d1f), roughness: 0.7, metalness: 0, clearcoat: 0.15, clearcoatRoughness: 0.45, specularIntensity: 0.42 })))
+function tableCard(b: Brush, n: LayoutNode): void {
+  card(b, n)
+  const box = boxOf(n)
+  const x = box.x + TABLE.pad
+  const w = box.w - TABLE.pad * 2
+  const top = box.y + TABLE.pad
+  const rows = (box.h - TABLE.pad * 2 - TABLE.head) / TABLE.row
+  rect(b, x, top, w, TABLE.head, LAYER.mark, BAND, 8)
+  rect(b, TABLE.us[0], top + TABLE.head, TABLE.us[1] - TABLE.us[0], rows * TABLE.row, LAYER.mark, PEACH)
+  for (let i = 1; i <= rows; i++) rect(b, x, top + TABLE.head + i * TABLE.row - 0.5, w, 1, LAYER.top, LINE)
+}
 
-// A photograph for a staff badge: a print with a white border, its picture blacked out.
-function photo(s: Shape): THREE.Object3D {
+function tick(b: Brush, n: LayoutNode): void {
+  const { x, y, w, cx, cy } = boxOf(n)
+  b.flat.face(outline(n), xOf(b, cx), yOf(b, cy), LAYER.top, TICK)
+  const k = w / 26
+  const p = (px: number, py: number): [number, number] => [xOf(b, x + px * k), yOf(b, y + py * k)]
+  b.flat.line([p(6.5, 13.5), p(11.2, 18.2), p(19.5, 8.6)], 3 * k, LAYER.top + 0.15, WHITE)
+}
+
+function faqRow(b: Brush, n: LayoutNode): void {
+  const { x, w, cx, cy } = boxOf(n)
+  b.flat.face(outline(n), xOf(b, cx), yOf(b, cy), LAYER.fill, LINE)
+  b.flat.face(outline(n, 1.4), xOf(b, cx), yOf(b, cy), LAYER.inner, WHITE)
+  const px = x + w - 37
+  b.flat.line([[xOf(b, px - 8), yOf(b, cy)], [xOf(b, px + 8), yOf(b, cy)]], 2, LAYER.mark, GREY)
+  b.flat.line([[xOf(b, px), yOf(b, cy - 8)], [xOf(b, px), yOf(b, cy + 8)]], 2, LAYER.mark, GREY)
+}
+
+function paint(b: Brush, n: LayoutNode): void {
+  const box = boxOf(n)
+  const part = n.part
+  if (part === CARDS && n.kind === 'perkCard') card(b, n, true)
+  else if (part === APPLY) {
+    const o = outline(n, 6)
+    b.shade.soft(o, xOf(b, box.cx), yOf(b, box.cy + 9), LAYER.shadow, 18, dark(SHADOW.button, 1))
+  } else if (n.kind === 'hairline') rect(b, box.x, box.y, box.w, box.h, LAYER.fill, LINE)
+  else if (n.kind === 'pill') b.flat.face(outline(n), xOf(b, box.cx), yOf(b, box.cy), LAYER.fill, n.tone === 'pocket' ? BAND : PEACH)
+  else if (n.kind === 'tickerBand') rect(b, box.x, box.y, box.w, box.h, LAYER.fill, BAND)
+  else if (n.kind === 'award') award(b, n)
+  else if (n.kind === 'quoteCard') card(b, n)
+  else if (n.kind === 'tableCard') tableCard(b, n)
+  else if (n.kind === 'tick') tick(b, n)
+  else if (n.kind === 'faqRow') faqRow(b, n)
+  else if (n.kind === 'stepDisc') b.flat.face(outline(n), xOf(b, box.cx), yOf(b, box.cy), LAYER.mark, DEEP)
+  for (const c of n.children ?? []) paint(b, c)
+}
+
+// One stretch of the website: the white sheet and everything printed on it that never moves, as two meshes.
+function sheet(s: Shape): THREE.Object3D {
   const root = new THREE.Group()
-  const h = Math.max(0.6, s.z1 - s.z0)
-  root.add(mesh(shared(`photoPrint:${dims(s)}`, () => sweep(outlineOf(s, 0, 8), profile([[0, 0, true], [0, h - 0.3], [0.3, h, true]]))), print()))
-  const inner = { kind: 'box', w: s.w - 12, h: s.h - 12, r: 3 }
-  const picture = mesh(shared(`photoBlack:${dims(s)}`, () => sweep(outlineOf(inner, 0, 6), [{ inset: 0, z: h + 0.05, out: 0, up: 1 }])), black(), false)
-  root.add(picture)
+  const b: Brush = { s, flat: new Paint(), shade: new Paint() }
+  rect(b, s.x, s.y, s.w, s.h, LAYER.white, WHITE, 0.6)
+  if (s.id === 'sheet-top') b.shade.fan(xOf(b, GLOW.x), yOf(b, GLOW.y), GLOW.rx, GLOW.ry, LAYER.glow, share(COLOUR.glow), [1, 1, 1])
+  const n = find(careersLayout().layout, s.id)
+  for (const c of n.children ?? []) paint(b, c)
+  const z = s.z1 - s.z0
+  const face = mesh(b.flat.geometry(), flat(), false, true)
+  face.position.z = z
+  root.add(face)
+  if (!b.shade.empty) {
+    const soft = mesh(b.shade.geometry(), shade(), false, false)
+    soft.position.z = z
+    root.add(soft)
+  }
   return root
-}
-
-// A name struck out: a strip of matt black tape laid over it.
-function redaction(s: Shape): THREE.Object3D {
-  const h = Math.max(0.5, s.z1 - s.z0)
-  return mesh(shared(`redact:${dims(s)}`, () => sweep(outlineOf({ kind: 'box', w: s.w, h: s.h, r: 1.6 }, 0, 4), profile([[0, 0, true], [0, h - 0.3], [0.3, h, true]]))), marker())
 }
 
 export const careersPage: PartMaker | null = {
   key(s, ctx) {
-    if (s.kind === 'text' || s.kind === 'well' || s.kind === 'anchor') return null
-    if (s.role === 'medallion') return `medal:${q(s.w)}:${q(s.z1 - s.z0)}`
-    if (s.role === 'badgePhoto') return `photo:${dims(s)}`
-    if (s.role === 'redaction') return `redact:${dims(s)}`
-    if (s.role === 'cardRule') return `tableRule:${q(s.w)}x${q(s.h)}`
-    if (s.role === 'card') return slabKey(s)
-    return controls.key(s, ctx)
+    if (s.kind === 'text') return flatType.key(s, ctx)
+    if (s.kind === 'well' || s.kind === 'anchor') return null
+    if (s.role === 'sheet') return `sheet:${s.id}:${q(s.y)}:${q(s.h)}`
+    return ''
   },
   make(s, ctx) {
-    if (s.role === 'medallion') return medallion(s)
-    if (s.role === 'badgePhoto') return photo(s)
-    if (s.role === 'redaction') return redaction(s)
-    if (s.role === 'cardRule') return engraved(s)
-    if (s.role === 'card') return restingSlab(s)
-    return controls.make(s, ctx)
+    if (s.kind === 'text') return flatType.make(s, ctx)
+    return sheet(s)
+  },
+  pose(o, s) {
+    if (s.kind === 'text') o.scale.y = Math.max(0.006, s.v?.[0] ?? 1)
+  },
+  drop(o) {
+    flatType.drop!(o)
   }
 }
