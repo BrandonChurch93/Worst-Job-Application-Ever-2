@@ -14,6 +14,8 @@ import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
 import { APRON_Y, BALL, FLIP, FLIP_REACH, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
 import { drainWay, LET } from '../../table/real/frame/loader'
+import { ANSWER } from '../../table/real/lights/levels'
+import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
@@ -94,6 +96,7 @@ interface State {
   scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number
 }
 
+type Rolled = State & { over?: Record<string, number> }
 const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, out: [-9, 0, 0], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false, sink: [-1, 0, 0, 0, 0, 0], latch: -9, sv: 0, roll: [0, 0] })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
@@ -258,6 +261,23 @@ export function makePage(): PageLogic {
   // How bright each tier's general lighting is: a wave down the tiers when the machine wakes, and a slow dim once the ball has left by the drain.
   const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - (k + 1) * WAKE) / WAKE) * (s.t > T.wake + 4 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) * (machine().cut && ball().tier === k ? ASLEEP : 1) : 0))
   const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + (n.tier + 1) * WAKE && s.t < T.wake + (n.tier + 1) * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
+  // The count each window keeps of a ball over its glass (table/real/lights/over.ts). It is in the state only while a ball is in reach of a window, so a table with no ball near one saves and draws as it did.
+  const rollOver = (): void => {
+    const was = (s as Rolled).over
+    let next: Record<string, number> | undefined
+    for (const n of table.inserts) {
+      let gap = 9
+      machine().balls.forEach((b, i) => {
+        if (b.mode === 'none') return
+        const at = i === 0 ? seen3() : b
+        if (Math.abs(at.z - floorZ(n.tier)) <= 0.6) gap = Math.min(gap, Math.hypot(at.x - n.c[0], at.y - n.c[1]) - n.r - 0.5)
+      })
+      const k = stepOver(was?.[`insert.${n.id}`], gap, ANSWER.reach, STEP)
+      if (k !== undefined) (next ??= {})[`insert.${n.id}`] = k
+    }
+    if (next) (s as Rolled).over = next
+    else delete (s as Rolled).over
+  }
   const modeOf = (k: number): number | null => {
     let out: number | null = null
     if (s.phase === 'wait' || s.phase === 'pull') return null
@@ -909,6 +929,7 @@ export function makePage(): PageLogic {
         const before = ball()
         const was = before.mode === 'plane' ? [before.vx, before.vy] : null
         const events = mc.step(io.pointer.flipLeft === true, io.pointer.flipRight === true)
+        rollOver()
         const after = ball()
         if (was && after.mode === 'plane') {
           const push = Math.hypot(was[0]! - after.vx, was[1]! - after.vy)
@@ -1061,6 +1082,8 @@ export function makePage(): PageLogic {
       const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [shutOf(ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!)]
       const lies = seen3()
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, x: px(lies.x - 0.5), y: px(lies.y - 0.5), z0: px(lies.z), z1: px(lies.z) + BALL, v: shell } : shape)
+      const counts = (s as Rolled).over
+      if (counts) for (const shape of out) if (shape.id in counts) shape.v = [shape.v?.[0] ?? 0, counts[shape.id]!]
       out.push(hqPlate)
     },
     scroll: () => s.scroll,

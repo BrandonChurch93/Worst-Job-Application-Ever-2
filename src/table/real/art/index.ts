@@ -7,7 +7,9 @@ import { lit } from '../light'
 import { whole, type Zone } from '../zone'
 import { Floor } from './floor'
 import { INSERT_GLOW } from './inserts'
-import { ANSWER, levels, near } from '../lights/levels'
+import { BALLS } from '../lights/key'
+import { answer, levels } from '../lights/levels'
+import { OVER } from '../lights/over'
 import { setGlow, windowGeometry } from './windows'
 
 const TIER_NAMES = ['corporate', 'office', 'street'] as const
@@ -20,7 +22,7 @@ const relief = ask('table/art/inserts-relief.png', { colour: false })
 const pictures = [...floors, ...masks, ...coats, lens, glow, relief]
 
 // The plate of a tier: its top face half a pixel above the zone's floor, the whole width of the page.
-const PLATE = { w: 1920, h: 1080, z: 0.5 }
+export const PLATE = { w: 1920, h: 1080, z: 0.5 }
 // The ink has no shine of its own: its face meets the lacquer, not the air, so only the coat and the leaf reflect.
 // What the print lies under: a hard clear coat, a little rougher where the coat map says the ball has run, with the orange peel of a sprayed lacquer. Where the coat map says leaf, the print is metal.
 const COAT = [
@@ -28,7 +30,7 @@ const COAT = [
   { roughness: 0.95, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.2, print: 1.35 },
   { roughness: 0.92, leaf: false, coat: 1, peel: 0.05, specular: 0, room: 0.16, print: 1.12 }
 ]
-const WINDOW = { lift: 0.35, bump: 0.9, segments: 56, inset: 0.975, room: 2.4, dome: 0.45 }
+export const WINDOW = { lift: 0.35, bump: 0.9, segments: 56, inset: 0.975, room: 2.4, dome: 0.45 }
 
 let peel: THREE.DataTexture | null = null
 function peelMap(): THREE.DataTexture {
@@ -73,6 +75,16 @@ function plate(z: Zone): THREE.Mesh {
   return mesh
 }
 
+// The glass under a ball gives a little less of its own light, in a soft spot that goes where the ball goes: the ball stands between the eye and the lamp below. With no ball in the tier the glass is drawn as it was.
+const UNDER = `vec3 wjaAt = ( wjlViewInverse * vec4( - vViewPosition, 1.0 ) ).xyz - wjlFrame;
+for ( int b = 0; b < ${BALLS}; b ++ ) {
+	vec4 wjaBall = wjlBall[ b ];
+	if ( wjaBall.w == 0.0 ) continue;
+	float wjaR = abs( wjaBall.w );
+	vec2 wjaOff = ( wjaAt.xy - wjaBall.xy ) / ( wjaR * ${OVER.spot.toFixed(2)} );
+	totalEmissiveRadiance *= 1.0 - ${OVER.shade.toFixed(2)} * exp( - dot( wjaOff, wjaOff ) ) * ( 1.0 - smoothstep( ${(OVER.far * 0.6).toFixed(2)}, ${OVER.far.toFixed(2)}, length( wjaAt.xy - wjaBall.xy ) / wjaR ) ) * ( 1.0 - smoothstep( 1.2 * wjaR, 2.0 * wjaR, wjaBall.z ) );
+}`
+
 // The three windows of a tier are one mesh and one drawing. How far each is lit rides on its corners, so one material serves all three.
 function windowsOf(z: Zone): THREE.Mesh {
   const { geometry, spans, ids } = windowGeometry(z, WINDOW)
@@ -97,9 +109,9 @@ function windowsOf(z: Zone): THREE.Mesh {
   material.onBeforeCompile = (shader, renderer) => {
     room.call(material, shader, renderer)
     shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute float wjaGlow;\nvarying float vWjaGlow;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvWjaGlow = wjaGlow;')
-    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vWjaGlow;').replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance *= vWjaGlow;')
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vWjaGlow;').replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>\ntotalEmissiveRadiance *= vWjaGlow;\n${UNDER}`)
   }
-  material.customProgramCacheKey = () => 'wja-studio-art-window'
+  material.customProgramCacheKey = () => 'wja-studio-art-window-2'
   material.userData.lit = true
   lit(material, z)
   material.name = `tier-art.windows.${z.id}`
@@ -129,7 +141,7 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
     const spans = c.userData.spans as [number, number][]
     ids.forEach((id, k) => {
       const lit = rest + (INSERT_GLOW.on - rest) * (ctx.byId.get(`insert.${id}`)?.v?.[0] ?? 0)
-      setGlow((c as THREE.Mesh).geometry, spans[k]!, lit + (INSERT_GLOW.hit - lit) * levels(ctx, z).general * near(ctx, `insert.${id}`, ANSWER.reach, 0.8))
+      setGlow((c as THREE.Mesh).geometry, spans[k]!, lit + (INSERT_GLOW.hit - lit) * levels(ctx, z).general * answer(ctx, `insert.${id}`))
     })
   }
 }
@@ -144,5 +156,5 @@ function drop(o: THREE.Object3D): void {
 }
 
 export const parts: Record<string, PartMaker | null> = {
-  'tier-art': whole('tier-art', { version: 'art-19', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
+  'tier-art': whole('tier-art', { version: 'art-20', ready: () => pictures.every((p) => p.ready()), build, pose, drop })
 }

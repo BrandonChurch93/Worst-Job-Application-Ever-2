@@ -1,14 +1,24 @@
 import type { RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 import { zoneAt } from '../../draw'
+import { BALL, INSERTS } from '../../layout'
 import { colours, groupsOf, levels } from '../lights'
+import { OVER } from '../lights/over'
 import { local, zone as zoneNamed, type Zone } from '../zone'
 
 export const LAMPS = 8
 export type RGB = [number, number, number]
 
 // One lamp as the ball sees it: where it stands from the foot of the ball (x right, y up the page, z up), and how bright it shows.
-export interface Seen { x: number; y: number; z: number; colour: RGB; amount: number; shine: number; window: boolean }
+// `rank` is the lamp's light on the ball before a window under the ball is held back: the order of the lamps goes by it.
+export interface Seen { x: number; y: number; z: number; colour: RGB; amount: number; shine: number; window: boolean; rank?: number }
+
+// How far the ball stands on a window's glass, by how far its middle is from the middle of the window in px: 1 from the middle of the ball over the rim of the glass inward, 0 from where the two rims part outward.
+const GLASS = INSERTS.r * BALL
+export const onGlass = (d: number): number => {
+  const t = Math.max(0, Math.min(1, (GLASS + BALL / 2 - d) / (BALL / 2)))
+  return t * t * (3 - 2 * t)
+}
 
 export interface Light {
   zone: Zone
@@ -89,11 +99,12 @@ export function lightAt(s: Shape, ctx: RealContext): Light {
         const f = src.power * level * fall(down, src.reach) * (src.z / (down || 1))
         const window = g.name.startsWith('insert.')
         for (let c = 0; c < 3; c++) floor[c]! += g.colour[c]! * f * (window ? 0.3 : 1)
-        all.push({ x, y, z: zz, colour: g.colour, amount: e, shine: window ? 0.9 * level : Math.min(26, 14 * level * Math.max(0.6, src.power / 0.3)), window })
+        const on = window ? onGlass(Math.hypot(x, y)) : 0
+        all.push({ x, y, z: zz, colour: g.colour, amount: e * (1 - OVER.wall * on), shine: window ? 0.9 * level * (1 - OVER.show * on) : Math.min(26, 14 * level * Math.max(0.6, src.power / 0.3)), window, rank: e })
       }
     }
   }
-  all.sort((p, q) => q.amount - p.amount || p.x - q.x || p.y - q.y)
+  all.sort((p, q) => (q.rank ?? q.amount) - (p.rank ?? p.amount) || p.x - q.x || p.y - q.y)
   const fill = FILL[z.id] ?? [0.6, 0.6, 0.62]
   const general = L ? L.general : 0
   const flash = L ? L.flash : 0
