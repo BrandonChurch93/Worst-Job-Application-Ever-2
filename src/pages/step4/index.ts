@@ -1,14 +1,17 @@
 import { config } from '../../config'
-import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
+import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower } from '../../boss/finish'
-import { BIG, CHANGE, FINISH, FLAT, GUARD, LINE7, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BIG, CHANGE, FINISH, FLAT, GUARD, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { ARENA as GROUND } from '../../arena/layout'
+import { STANDS as GROUND_STANDS } from '../../arena/solids'
+import { wordAt } from '../../boss/look1/pose'
 import { setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
-import { SCREEN_H } from '../../shell/parts'
+import { SCREEN_H, TYPE } from '../../shell/parts'
 import type { DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
 import { makeLayout } from './layout'
 import { makeScript, STAND } from './script'
@@ -103,6 +106,8 @@ export function makePage(): PageLogic {
   const beats = config.film.beats.filter((b) => b.unit === 'boss')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: (b as { event?: string }).event ?? null }))
   const arena: Arena = { popups: L.weapons.popups.map((p) => ({ box: p.box, buttons: p.buttons.map((b) => b.box) })) }
+  if (LOOK1_ON) arena.walls = GROUND_STANDS.map((w) => ({ id: w.id, kind: w.kind, x0: w.box.x0, y0: w.box.y0, x1: w.box.x1, y1: w.box.y1 }))
+  const solidsNow = (): { kind: string; x0: number; y0: number; x1: number; y1: number }[] => (arena.walls ? arena.walls.filter((w) => !(s.fight?.fallen ?? []).includes(w.id)) : standing(s.fight ?? NONE))
   let s = fresh('live')
   const kept = new Set<string>([L.tree.id])
   const keepAll = (n: { id: string; children?: unknown[] }): void => {
@@ -172,7 +177,7 @@ export function makePage(): PageLogic {
     if ((s.stage === 'verify' || s.inSocket) && inBox(L.cap, p)) z = heights.button
     if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = PRESS.stand - PRESS.deep * sunk()
     if (raised() >= 1) {
-      for (const w of standing(s.fight ?? NONE)) if (p.x >= w.x0 && p.x <= w.x1 && p.y >= w.y0 && p.y <= w.y1) z = Math.max(z, w.kind === 'pane' ? SOLID.tall.pane : SOLID.tall.pillar)
+      for (const w of solidsNow()) if (p.x >= w.x0 && p.x <= w.x1 && p.y >= w.y0 && p.y <= w.y1) z = Math.max(z, w.kind === 'pane' ? SOLID.tall.pane : SOLID.tall.pillar)
     }
     if (s.stage === 'fight' && s.fight) {
       for (const up of s.fight.popups) if (up.closing < 0 && up.t > 0.14 && inBox(L.weapons.popups[up.slot]!.box, p)) z = Math.max(z, heights.card)
@@ -563,13 +568,25 @@ export function makePage(): PageLogic {
         }
       }
       if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open', undefined, s.stage === 'unfold' && s.t < UNFOLD.lift + CAP_CLEARS ? 'dark' : 'ink')
+      const v = view()
+      const look = LOOK1_ON && v !== null
       const rig = rigNow()
       const give = s.inSocket || s.stage !== 'press' ? 0 : sunk()
-      if (rig) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
-      setView(view())
-      if (s.clock >= 0 && !s.inSocket) drawArena(out, s.fight ?? NONE, raised())
+      if (rig && (!look || s.blown)) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
+      setView(v)
+      if (look && v) {
+        const whole = { x: 0, y: 0, w: 1920, h: SCREEN_H, z1: 0, tone: 'dark' as const }
+        if (v.time >= GROUND.clearAt) out.push({ ...whole, id: 'arena-well', part: 'boss-arena', kind: 'well', z0: -GROUND.wellDepth })
+        out.push({ ...whole, id: 'arena', part: 'boss-arena', kind: 'anchor', z0: 0 })
+        out.push({ ...whole, id: 'boss-look', part: 'boss-look1', kind: 'anchor', z0: 0 })
+        for (let i = out.length - 1; i >= first; i--) if (out[i]!.id.startsWith('health-')) out.splice(i, 1)
+        if (v.time >= GROUND.barLands) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
+        const w = wordAt(v)
+        if (w.show && !s.blown) out.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, TYPE.button, w.z, 'inkLight', w.rot))
+      }
+      if (s.clock >= 0 && !s.inSocket && !look) drawArena(out, s.fight ?? NONE, raised())
       if ((s.stage === 'fight' || s.stage === 'hold') && s.fight) {
-        drawRules(out, s.fight)
+        drawRules(out, s.fight, look)
         drawWeapons(out, s.fight, L.weapons)
         const f = s.fight
         if (f.at.flat >= 0 && f.clock - f.at.flat < FLAT.life) drawPancake(out, s.cx, s.cy, f.flat > 0 ? 1 : 1 - prog(f.clock - f.at.flat, FLAT.down, FLAT.life))
@@ -580,7 +597,7 @@ export function makePage(): PageLogic {
       if (s.stage === 'collapse' && s.from) {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)
         if (sparks.length) drawWeapons(out, { ...newFight(), sparks }, L.weapons)
-        if (s.fight) drawTurretOff(out, s.from.cap.x, s.from.cap.y, s.fight.face, s.t)
+        if (s.fight && !look) drawTurretOff(out, s.from.cap.x, s.from.cap.y, s.fight.face, s.t)
       }
       if ((s.stage === 'collapse' && s.t > CAP_LANDS) || (s.stage === 'finish' && s.t > FINISH.fall) || (s.stage === 'press' && !s.inSocket)) drawSmoke(out, FALLEN.x, FALLEN.y, s.time)
     },

@@ -1,7 +1,7 @@
 import type { DrawList } from '../stage/types'
 import { FINISH } from './tune'
 
-const part = 'boss-weapons'
+const part = 'shell'
 const GOLD = { least: 70, most: 170, z: 3 } as const
 const ARM = { long: 54, wide: 12, out: 30, z: 36 } as const
 const BALL = { ahead: 46, z: 30 } as const

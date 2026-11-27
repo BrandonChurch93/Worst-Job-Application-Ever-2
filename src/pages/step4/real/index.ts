@@ -20,8 +20,8 @@ const bossLook: PartMaker = {
   },
   pose(o: THREE.Object3D, _s: Shape, ctx: RealContext): void {
     const view = viewNow()
-    o.visible = view !== null
-    if (view) (o.userData.look as BossLook).pose(view, 1 / 60, ctx.light)
+    o.visible = view !== null && !((view.boss.gone ?? 0) >= 1)
+    if (o.visible && view) (o.userData.look as BossLook).pose(view, 1 / 60, ctx.light)
   },
   drop(o: THREE.Object3D): void {
     ;(o.userData.look as BossLook | undefined)?.dispose()

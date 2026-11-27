@@ -118,16 +118,16 @@ export function drawArena(out: DrawList, f: { breaks: Fight['breaks']; fallen: s
   }
 }
 
-export function drawRules(out: DrawList, f: Fight): void {
+export function drawRules(out: DrawList, f: Fight, look = false): void {
   if (f.big.t >= 0 && Math.floor(f.big.t * BLINK) % 2 === 0) lane(out, 'big-line', blastLine(f, f.big.a), BIG.wide, 0, LINE.z, 'danger')
   else if (f.big.t < 0 && f.big.beam > 0) lane(out, 'big-beam', blastLine(f, f.big.a), BIG.wide, LINE.beamZ, LINE.beamZ + LINE.beamTall, 'light')
-  for (const side of [-1, 1]) {
+  for (const side of look ? [] : [-1, 1]) {
     const a = f.face + side * GUARD.wing
     const x = f.x + Math.cos(a) * GUARD.radius
     const y = f.y + Math.sin(a) * GUARD.radius
     out.push({ id: `guard-wing-${side < 0 ? 0 : 1}`, part: plain, kind: 'box', x: x - WING.w / 2, y: y - WING.h / 2, w: WING.w, h: WING.h, z0: WING.z, z1: WING.z + WING.tall, tone: 'glass', r: 10, rot: a - Math.PI })
   }
-  if (f.turret > 0) {
+  if (f.turret > 0 && !look) {
     const up = Math.min(1, (f.turret * (BIG.lock - BIG.rise)) / (BIG.up - BIG.rise))
     const over = f.turret >= 1 ? 1 : Math.max(0, (f.turret * (BIG.lock - BIG.rise) - (BIG.up - BIG.rise)) / (BIG.lock - BIG.up))
     const back = BIG.back * (1 - smooth(over))
@@ -145,8 +145,8 @@ export function drawRules(out: DrawList, f: Fight): void {
   CORNER.at.forEach((_, i) => {
     const c = cornerAt(i)
     const rot = Math.atan2(f.look.y - c.y, f.look.x - c.x)
-    out.push({ id: `corner-${i}`, part: plain, kind: 'disc', x: c.x - CORNER.base, y: c.y - CORNER.base, w: CORNER.base * 2, h: CORNER.base * 2, z0: 0, z1: 22, tone: 'metal' })
-    out.push({ id: `corner-${i}-barrel`, part: plain, kind: 'box', x: c.x + Math.cos(rot) * BARREL.w * 0.45 - BARREL.w / 2, y: c.y + Math.sin(rot) * BARREL.w * 0.45 - BARREL.h / 2, w: BARREL.w, h: BARREL.h, z0: 22, z1: 40, tone: 'dark', r: 8, rot })
+    if (!look) out.push({ id: `corner-${i}`, part: plain, kind: 'disc', x: c.x - CORNER.base, y: c.y - CORNER.base, w: CORNER.base * 2, h: CORNER.base * 2, z0: 0, z1: 22, tone: 'metal' })
+    if (!look) out.push({ id: `corner-${i}-barrel`, part: plain, kind: 'box', x: c.x + Math.cos(rot) * BARREL.w * 0.45 - BARREL.w / 2, y: c.y + Math.sin(rot) * BARREL.w * 0.45 - BARREL.h / 2, w: BARREL.w, h: BARREL.h, z0: 22, z1: 40, tone: 'dark', r: 8, rot })
     if (f.tell && f.tell.i === i && Math.floor(f.tell.t * BLINK) % 2 === 0) out.push({ id: `corner-${i}-tell`, part: plain, kind: 'disc', x: c.x - TELL / 2, y: c.y - TELL / 2, w: TELL, h: TELL, z0: 40, z1: 46, tone: 'danger' })
   })
   for (const b of f.balls) {
