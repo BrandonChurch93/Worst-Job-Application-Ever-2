@@ -55,3 +55,8 @@ The plan laid the turn and the seat at 1/30 s on whole frames at 24%, the take a
 - D-06, D-07 close blow (real-size cut): the ball whole in all twelve frames; the bat is down on 2:06.32 and up on 2:06.33.
 
 Faults of this build's headings, mended after it: the take said the arrow "has come to rest (0:31.78, from where it moves under 1 px a frame)", the rows hold 1.20, 1.73 and 1.10 px on three of the six frames after; the save said the picture "ends 0 px under the wire's lowest place", the wire under the ball is out of the picture.
+
+- `pack-frames-check.mjs`: for one recorded visit, from the rows alone, whether each close run holds what its heading says.
+- `pack-frames-list.mjs`: the sets of a built pack with each heading, and the sha256 of every file.
+
+MEASURED 09:27 UTC: the visit the pack recorded for itself (`out/work/packs/cache/2bacfab4367d/live-high/site-run.json`) holds the same 10795 rows and the same moments as my walk `/tmp/run2.json`. `node pipeline/phase5/pack-frames-check.mjs` on it: 14 lines ok, 0 NOT.
