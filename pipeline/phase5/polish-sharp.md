@@ -35,9 +35,14 @@ How the pictures were read: `node pipeline/phase5/polish-sharp-look.mjs texels B
 - Equal in every pixel: `last-save`, `tier-office`, `tier-street`, `tier-corporate`, `reply-all`.
 - The sheet `clear-ball`: 9,883 pixels, y 0 to 128, the blurred wires behind; the ball itself is equal.
 
-## Seen and not mine to change
+## The ball's drawn shadow while the ball is in the feed tube (asked 09:34 UTC, as a patch only)
 
-- Film frames 4260 and 4262: a dark smudge left of the tube beside the ball at the elbow. STATED from the code: the ball's drawn shadow comes on when the ball enters the tier's zone (`src/table/real/ball/index.ts`, `own.decal.visible`), while the ball is still in the tube.
+- Seen in film frames 4260 and 4262 (draft, hd): a dark smudge left of the tube beside the ball at the elbow. The Builder saw the same on the base.
+- The cause, STATED from the code: `own.decal.visible = L.tier && lift < r * 6` in `src/table/real/ball/index.ts`. `L.tier` is true as soon as the ball's middle is in a zone that has lamps, which begins at page y 1080, while the ball is still in the tube. The shadow lies on the floor under the ball, so it shows where the floor beside the tube is in sight and is hidden where the tube runs over the housing: that is why it is seen for a few frames and then goes.
+- MEASURED from the film's take without a browser (`SHADOW_TRACE=1 npx vitest run tests/polish-sharp-shadow.test.ts` with the patch): the shadow was on with the ball in the tube in film frames 4259 to 4536 (3.983 s to 8.6 s of the machine's unit). With the patch it comes on at frame 4537, the ball's middle within a quarter ball of the rail's last point.
+- The patch: `pipeline/phase5/polish-sharp-NEEDS-shadow.patch`, on this branch's head (it uses `line` of `loader.ts` as this branch exports it). It adds `piped(x, y, z)` to the ball's file: true when the ball's middle is inside the bore of the feed tube; the shadow is off there. It holds its test, `tests/polish-sharp-shadow.test.ts`. It is NOT applied on this branch: the long measure was running on the frozen source.
+- UNKNOWN: which of frames 4259 to 4536 change as pictures (no browser was free). The key `table-wide` stands at 7.6 s, inside that span, so its still can change.
+- The drain tube is not handled by the patch.
 
 ## Decisions
 
