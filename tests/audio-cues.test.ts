@@ -91,6 +91,31 @@ describe('the cues the build added', () => {
   })
 })
 
+describe('the lines of the narrator', () => {
+  it('has no line that only the live site has, and every list of liveOnly is empty', () => {
+    expect(liveTriggers).toEqual({})
+    for (const key of liveKeys) expect(narration.liveOnly[key], key).toEqual([])
+  })
+
+  it('finds the words of every line of the script in the film lines or in the drafts, and hangs no line on an event with no page', () => {
+    const drafts = JSON.parse(readFileSync(path.join(process.cwd(), 'content', 'narration-drafts.json'), 'utf8'))
+    for (const key of Object.keys(spoken)) {
+      const beat = key.slice(0, key.lastIndexOf('.'))
+      const index = Number(key.slice(key.lastIndexOf('.') + 1))
+      expect((narration.film[beat]?.[index] ?? drafts.film[beat]?.[index])?.text, key).toBeTruthy()
+      expect(unitPage[key.slice(0, key.indexOf('.'))], key).toBeDefined()
+    }
+    const lines = Object.entries(narration.film as Record<string, unknown[]>).flatMap(([beat, list]) => list.map((_, i) => `${beat}.${i}`))
+    for (const key of lines) expect(spoken[key], key).toBeDefined()
+    expect(spokenKeysFor('vacuum-on', 'step3')).toEqual(['pinball.seal.0'])
+  })
+
+  it('names the lines by beat and place', () => {
+    expect(filmLineId('step1.tug', 0)).toBe('line.step1.tug.0')
+    expect(liveLineId('boss.slow', 0)).toBe('line.live.boss.slow.0')
+  })
+})
+
 describe('the order of the variants', () => {
   it('steps the variants in turn and starts again', () => {
     expect(Array.from({ length: 9 }, (_, i) => variantAt(i, 4).variant)).toEqual([0, 1, 2, 3, 0, 1, 2, 3, 0])

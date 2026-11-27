@@ -202,9 +202,12 @@ export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'ste
 // The page of a line is the page of the unit its key starts with.
 // event: the event of the stage, on the line's page, that sets it off; null for the line said when sound is allowed with its page on screen (in the film: at the start of its beat).
 // until: the events on that page that end the line's moment. A line that has not started by then is not said. A turn or a skip of its page ends every moment.
-// after: the line is a second part, said straight after that line with the gap between two lines of a beat.
+// after: the line is a later part of the line named: it is said straight after it, with the gap between two lines of a beat.
 // mark: an event the narrator itself gives out when that phrase of the line starts (-1 is the last phrase); the cue of that event is played then.
-export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string } }
+// jump: an event on the line's page that ends the line at its next pause mark: the phrase being said is said to its end, the rest is dropped, and the parts after it follow at once.
+// keeps: the line is not taken back when its page is left; it is set off by the turn away from that page.
+// loud: the caption shows the line in capitals, large.
+export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string }; jump?: string[]; keeps?: boolean; loud?: boolean }
 
 export const spoken: Record<string, SpokenRow> = {
   'marketing.stroll.0': { event: null, until: [] },
@@ -214,9 +217,11 @@ export const spoken: Record<string, SpokenRow> = {
   'step2.crank.1': { event: 'crank-full', until: ['field-done'] },
   'pinball.seal.0': { event: 'vacuum-on', until: ['ball-seal'] },
   'boss.verify.0': { event: 'checkbox', until: ['boss-formed'] },
-  'boss.unfold.0': { event: 'boss-formed', until: ['turret-rise', 'power-down'], mark: { phrase: -1, event: 'music-in' } },
-  'boss.unfold.1': { event: null, after: 'boss.unfold.0', until: ['turret-rise', 'power-down'] },
-  'decision.letter.0': { event: 'stamp', until: [] }
+  'boss.unfold.0': { event: 'boss-formed', until: ['turret-rise', 'power-down'], jump: ['boss-turn'] },
+  'boss.unfold.1': { event: null, after: 'boss.unfold.0', until: ['turret-rise', 'power-down'], mark: { phrase: -1, event: 'music-in' } },
+  'boss.unfold.2': { event: null, after: 'boss.unfold.1', until: ['turret-rise', 'power-down'] },
+  'decision.letter.0': { event: 'stamp', until: [] },
+  'decision.reset.0': { event: 'page-turn', until: [], keeps: true }
 }
 
 // The event of the stage that also stands for a mark of the narrator: its cue is played only when the narrator has not booked the line that gives the mark.

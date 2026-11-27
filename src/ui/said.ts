@@ -67,7 +67,8 @@ export function makeSaid(): Said {
 // A line of content/narration.json as it is read: the pause mark is never spoken and never shown.
 export const sayable = (text: string, pauseMark: string): string => text.split(pauseMark).map((p) => p.trim()).filter((p) => p.length > 0).join(' ')
 
-export interface CaptionLine { id: string; words: string; start: number; end: number }
+// loud: the words are one short phrase shown in capitals, large.
+export interface CaptionLine { id: string; words: string; start: number; end: number; loud?: boolean }
 export interface CaptionSource { now: number; lines: CaptionLine[] }
 
 // The line that is being spoken at the clock's time, if one is.
@@ -80,6 +81,8 @@ export const CAPTION = {
   high: 96,
   low: 1044,
   fontPx: 26,
+  // The size of a loud phrase, shown in capitals.
+  loudFontPx: 64,
   minFontPx: 13,
   lineHigh: 1.3,
   padX: 34,
@@ -131,6 +134,7 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
   const shown: CaptionShown[] = []
   let on: CaptionShown | null = null
   let words = ''
+  let loud = false
   let frame = 0
   let want = CAPTION.low
   let y = CAPTION.low
@@ -155,7 +159,7 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
     const fits = box !== null && box.width > 0
     const u = (fits ? box.width : window.innerWidth) / 1920
     const top = fits ? box.top : 0
-    st.fontSize = `${Math.max(CAPTION.minFontPx, CAPTION.fontPx * u)}px`
+    st.fontSize = `${Math.max(CAPTION.minFontPx, (loud ? CAPTION.loudFontPx : CAPTION.fontPx) * u)}px`
     st.padding = `${CAPTION.padY * u}px ${CAPTION.padX * u}px`
     st.borderRadius = `${CAPTION.round * u}px`
     st.maxWidth = `${Math.min(window.innerWidth - 16, CAPTION.wide * u)}px`
@@ -181,7 +185,8 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
       on = { id: line.id, start: line.start, end: line.end, shown: s.now, hidden: null }
       shown.push(on)
       if (shown.length > CAPTION.logMax) shown.splice(0, shown.length - CAPTION.logMax)
-      words = line.words
+      words = line.loud ? line.words.toUpperCase() : line.words
+      loud = line.loud === true
       el.dataset.line = line.id
       write()
       keep()

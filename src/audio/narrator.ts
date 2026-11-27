@@ -140,6 +140,23 @@ export class LiveDesk {
     return this.takeBack(now, (w) => w.page === page)
   }
 
+  // A line ends at a pause, sooner than it was booked to, or is dropped whole when it has not begun; the lines given, which follow it, start that much sooner.
+  // Gives the seconds they moved by.
+  shorten(now: number, b: Booking, end: number, followers: Booking[]): number {
+    const to = Math.max(b.start, Math.min(b.end, end))
+    const by = b.start >= to && followers.length ? followers[0]!.start - b.start : b.end - to
+    b.end = to
+    if (b.start >= to) {
+      this.waiting.delete(b)
+      this.narrator.cancel(now, b)
+    }
+    for (const f of followers) {
+      f.start -= by
+      f.end -= by
+    }
+    return by
+  }
+
   // A new run of the site: the careers page is on screen again. Every line may be said once more.
   restart(): void {
     this.spent.clear()

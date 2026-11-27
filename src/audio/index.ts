@@ -46,7 +46,7 @@ export interface SoundApi {
 export interface SoundLogEntry { at: number; line: string; trigger: string; what: 'spoken' | 'dropped' | 'taken back' | 'cut'; start?: number; seconds?: number; why?: string }
 
 // One phrase of a line: id is the line's id, a # and the phrase's place in the line. draft: the line comes from content/narration-drafts.json.
-export interface SaidLine { id: string; line: string; words: string; start: number; end: number; draft: boolean }
+export interface SaidLine { id: string; line: string; words: string; start: number; end: number; draft: boolean; loud: boolean }
 
 export interface SoundIndex {
   version: number
@@ -295,7 +295,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const unitOfBeat = (beat: string): string | undefined => config.film.beats.find((x) => x.id === beat)?.unit
   const pageOfBeat = (beat: string): string | null => unitPage[unitOfBeat(beat) ?? ''] ?? null
   const lines = o.script ? standIns(o.script.film, o.script.drafts) : standIns()
-  const desk = new LiveDesk(narrator, Object.fromEntries([...lines.values()].map((l) => [l.id, l.page])))
+  const desk = new LiveDesk(narrator, Object.fromEntries([...lines.values()].filter((l) => !spoken[l.key]?.keeps).map((l) => [l.id, l.page])))
   const index = o.index ?? (shipped as unknown as SoundIndex)
   const lists = index.sfx.length + index.loops.length + index.lines.length > 0
   let state: SoundState = lists ? 'locked' : 'silent'
@@ -324,6 +324,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const running = new Map<string, Voice[]>()
   const speaking = new Map<Booking, StandIn>()
   const marks = new Map<Booking, string>()
+  const byMark = new Set<string>()
   const entries: SoundLogEntry[] = []
   const note = (e: SoundLogEntry) => {
     entries.push(e)
@@ -382,6 +383,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const stopCue = (cue: string) => {
     for (const v of running.get(cue) ?? []) v.stop(LIVE.loopFadeSeconds)
     running.delete(cue)
+    byMark.delete(cue)
   }
 
   // The page on screen. On the careers page nothing sounds but the press of its button: what still rings is stopped, and the room tone with it.
@@ -477,14 +479,20 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     lastMode = mode
   }
 
-  const speak = (booking: Booking, line: StandIn) => {
-    speaking.set(booking, line)
+  const setMark = (booking: Booking, line: StandIn) => {
     const mark = spoken[line.key]?.mark
     const cue = mark ? cueOfEvent(mark.event) : undefined
-    if (mark && cue) {
-      playCue(cue, 960, booking.start + phraseStart(line, mark.phrase))
-      marks.set(booking, cue)
-    }
+    if (!mark || !cue) return
+    if (marks.has(booking)) stopCue(cue)
+    lastPlay.delete(cue)
+    playCue(cue, 960, booking.start + phraseStart(line, mark.phrase))
+    marks.set(booking, cue)
+    byMark.add(cue)
+  }
+
+  const speak = (booking: Booking, line: StandIn) => {
+    speaking.set(booking, line)
+    setMark(booking, line)
     if (!caption && o.caption) caption = o.caption(() => api.said())
     caption?.place(captionAt)
     caption?.wake()
@@ -507,7 +515,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     const row = spoken[key]
     if (!line || !row || !backend || desk.isSpent(line.id)) return
     const now = backend.now()
-    const booking = desk.ask(now, { id: line.id, group: line.beat, seconds: line.seconds, page: line.page, until: row.until, gap: row.after !== undefined || mode === 'film' ? audio.lineGapSeconds : undefined, from })
+    const booking = desk.ask(now, { id: line.id, group: line.beat, seconds: line.seconds, page: row.keeps ? null : line.page, until: row.until, gap: row.after !== undefined || mode === 'film' ? audio.lineGapSeconds : undefined, from })
     if (!booking) {
       note({ at: round(now), line: line.id, trigger, what: 'dropped', why: narrator.why ?? '' })
       return
@@ -516,6 +524,39 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     speak(booking, line)
     for (const [next, r] of Object.entries(spoken)) if (r.after === key) say(next, `after ${line.id}`, mode, booking.end)
     reduck()
+  }
+
+  // The lines that follow a line as its later parts, in order.
+  const partsAfter = (key: string): [Booking, StandIn][] => {
+    const out: [Booking, StandIn][] = []
+    for (let at = key, found = true; found;) {
+      found = false
+      for (const [b, l] of speaking) if (spoken[l.key]?.after === at) {
+        out.push([b, l])
+        at = l.key
+        found = true
+        break
+      }
+    }
+    return out
+  }
+
+  // An event that makes a line jump to its next part: the phrase being said is said to its end and no further.
+  const jump = (name: string, page: string) => {
+    const now = backend!.now()
+    for (const [b, l] of [...speaking]) {
+      if (b.end <= now || l.page !== page || !spoken[l.key]?.jump?.includes(name)) continue
+      const at = l.phrases.find((p) => b.start + p.to > now)
+      const end = b.start <= now && at ? b.start + at.to : b.start
+      if (end >= b.end) continue
+      const parts = partsAfter(l.key)
+      desk.shorten(now, b, end, parts.map(([x]) => x))
+      if (b.start >= b.end) speaking.delete(b)
+      for (const [x, part] of parts) setMark(x, part)
+      note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'it ends at its next pause and its next part follows' })
+      caption?.wake()
+      reduck()
+    }
   }
 
   // The line that hangs on no event: it is said the moment sound is allowed while its page is on screen.
@@ -583,7 +624,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (e.name === 'page-turn' || e.name === 'skip') for (const cue of loopCues) if (cue !== 'room-tone') stopCue(cue)
       const cue = cueOfEvent(e.name)
       const mark = markStandsFor[e.name]
-      const marked = mark !== undefined && [...speaking].some(([b, l]) => b.end > backend!.now() && spoken[l.key]?.mark?.event === mark)
+      const marked = mark !== undefined && cue !== undefined && byMark.has(cue)
       if (cue && cue !== 'room-tone' && !marked && !hushed(e, mode, cue)) playCue(cue, e.x)
       for (const more of alsoStarts[e.name] ?? []) if (!hushed(e, mode, more)) playCue(more, e.x)
       if (e.name === 'page-turn' && e.page !== undefined) turnFrom(e.page, mode)
@@ -592,6 +633,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       const now = backend.now()
       takeBack(desk.at(now, page), 'its page was left')
       takeBack(desk.ended(now, page, e.name), `its moment ended with ${e.name}`)
+      jump(e.name, page)
       if (e.name === 'skip' || e.name === 'page-turn') takeBack(desk.leave(now, page), e.name === 'skip' ? 'its page was skipped' : 'its page was turned')
       for (const key of spokenKeysFor(e.name, page)) say(key, `event ${e.name}`, mode)
     },
@@ -630,7 +672,9 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         if (b.end <= now) {
           speaking.delete(b)
           marks.delete(b)
-        } else l.phrases.forEach((p, k) => out.push({ id: `${b.id}#${k}`, line: b.id, words: p.words, start: b.start + p.from, end: b.start + p.to, draft: l.draft }))
+        } else l.phrases.forEach((p, k) => {
+          if (b.start + p.from < b.end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: p.words, start: b.start + p.from, end: Math.min(b.end, b.start + p.to), draft: l.draft, loud: spoken[l.key]?.loud === true })
+        })
       }
       return { now, lines: out.sort((a, b) => a.start - b.start) }
     },
@@ -667,6 +711,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       desk.clear()
       speaking.clear()
       marks.clear()
+      byMark.clear()
       running.clear()
       tone = null
       leaving = null
