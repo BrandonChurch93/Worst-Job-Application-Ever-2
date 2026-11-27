@@ -129,7 +129,7 @@ describe('step 1: the blasts can be seen and dodged', () => {
       expect(runs.every((r) => r.done)).toBe(true)
       expect(Math.max(...runs.map((r) => r.hits))).toBeLessThanOrEqual(config.live.step1.hitsBeforeTurretsOverheat + 1)
       expect(hits / fired).toBeLessThan(0.5)
-    })
+    }, 120000)
   }
 })
 

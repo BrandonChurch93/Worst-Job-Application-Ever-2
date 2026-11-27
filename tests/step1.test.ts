@@ -18,6 +18,10 @@ const beats = config.film.beats.filter((b) => b.unit === 'step1')
 const film = (driver: Driver = new ScriptDriver()): Stage => new Stage({ mode: 'film', flow: filmFlow('step1'), pages, driver, film: filmOptions('step1') })
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step1' }, { page: 'step2' }], pages, driver, seed })
 const at = (seconds: number): number => Math.round(seconds * stepHz)
+const TUG_FROM = beats.find((b) => b.id === 'step1.tug')!.from
+const UNIT_END = Math.max(...beats.map((b) => b.to))
+const inTug = (seconds: number): number => seconds - 22 + TUG_FROM
+const fromEnd = (seconds: number): number => seconds - 32 + UNIT_END
 const state = (s: Stage) => s.page.save() as { phase: string; values: Record<string, string>; resume: { phase: string } }
 const CUT = { beat: 'step1.lastName', event: 'keys-shuffle', words: ['copy:step1.fields.firstName.label', 'copy:step1.fields.lastName.label'] }
 
@@ -46,7 +50,7 @@ class Switch implements Driver {
 
 function wholeFilm(): Stage {
   const s = film()
-  s.advance(at(32))
+  s.advance(at(UNIT_END))
   return s
 }
 
@@ -95,7 +99,7 @@ describe('step 1: the layout', () => {
       }
       for (const key of ['copy:step1.heading', 'copy:step1.emailError', 'copy:step1.emailAccepted', 'copy:step1.keyboardNote', 'copy:step1.resume.paperTitle', 'copy:step1.resume.received', 'copy:step1.continue', 'data:keyboard.keys.enter']) expect(seen.has(key), key).toBe(true)
     }
-    check(film(), 31.4)
+    check(film(), fromEnd(31.4))
     check(live(new Still()), 140)
   })
 })
@@ -232,7 +236,7 @@ describe('step 1: the film', () => {
     const a = film()
     const tug = beats.find((b) => b.id === 'step1.tug')!
     let armed = 0
-    for (let i = 0; i < at(31.45); i++) {
+    for (let i = 0; i < at(fromEnd(31.45)); i++) {
       a.advance(1)
       const pose = a.cursor.pose()
       expect(pose.scale).toBe(1)
@@ -253,9 +257,9 @@ describe('step 1: the film', () => {
   it('pushes the camera in for the tug and is home for the turrets', () => {
     const page = makePage()
     const home = page.camera('film', 6)!
-    const close = page.camera('film', 25.5)!
+    const close = page.camera('film', inTug(25.5))!
     expect(close.eye[2]).toBeLessThan(home.eye[2] * 0.7)
-    expect(page.camera('film', 31.4)!.eye).toEqual(home.eye)
+    expect(page.camera('film', fromEnd(31.4))!.eye).toEqual(home.eye)
     expect(page.camera('nothing', 3)).toBeNull()
   })
 })
@@ -459,7 +463,7 @@ describe('the fixes after round 2 of the blockout', () => {
   it('fights the tug in every second: paper left, the place of the cursor and the stretch of the arms all change', () => {
     const a = film()
     const rows: { amount: number; x: number; y: number; arm: number }[] = []
-    for (let i = 0; i < at(28.2); i++) {
+    for (let i = 0; i < at(inTug(28.2)); i++) {
       a.advance(1)
       const st = (a.page.save() as { resume: { phase: string; tug: { amount: number; reach: number } } }).resume
       if (st.phase === 'tug') rows.push({ amount: st.tug.amount, x: a.cursor.x, y: a.cursor.y, arm: st.tug.reach })
@@ -595,7 +599,7 @@ describe('the hold after the shredder', () => {
     const home = page.camera('film', 0)!
     let reset = -1
     let turn = -1
-    for (let i = 0; i < at(32) && turn < 0; i++) {
+    for (let i = 0; i < at(UNIT_END) && turn < 0; i++) {
       a.advance(1)
       const now = (i + 1) / stepHz
       const st = a.page.save() as { resume: { received: boolean }; values: Record<string, string> }
@@ -607,7 +611,7 @@ describe('the hold after the shredder', () => {
       if (reset >= 0) expect(page.camera('film', now)!.eye).toEqual(home.eye)
       if (a.events.some((e) => e.name === 'page-turn')) turn = now
     }
-    expect(reset).toBeGreaterThan(28.25)
+    expect(reset).toBeGreaterThan(beats.find((b) => b.id === 'step1.shredded')!.from)
     expect(turn - reset).toBeGreaterThanOrEqual(1.4)
   })
 })
@@ -622,7 +626,7 @@ describe('the Continue button', () => {
     }
     a.advance(at(0.3))
     expect(tones()).toEqual(['metal', 'ink'])
-    a.advance(at(30.2) - at(0.3))
+    a.advance(at(fromEnd(30.2)) - at(0.3))
     expect(tones()).toEqual(['accent', 'inkLight'])
   })
 })
@@ -631,7 +635,7 @@ describe('what the measures read', () => {
   it('marks a part as moved only while a gag has taken it from its place in the layout tree', () => {
     const a = film()
     const seen = { paperAtRest: 0, paperAway: 0, keysAway: 0, slab: 0 }
-    for (let i = 0; i < at(31.9); i++) {
+    for (let i = 0; i < at(fromEnd(31.9)); i++) {
       a.advance(1)
       if (i % 6 !== 0) continue
       const list: DrawList = []
@@ -668,7 +672,7 @@ describe('what the measures read', () => {
     const a = film()
     const least = config.scale.heights.machineMinTop
     let keys = 0
-    for (let i = 0; i < at(31.9); i++) {
+    for (let i = 0; i < at(fromEnd(31.9)); i++) {
       a.advance(1)
       if (i % 6 !== 0) continue
       const list: DrawList = []
@@ -705,7 +709,7 @@ describe('what the measures read', () => {
 
   it('says that the strips do not strike the cursor', () => {
     const a = film()
-    a.advance(at(31.9))
+    a.advance(at(fromEnd(31.9)))
     const zip = a.events.filter((e) => e.name === 'strips-zip')
     expect(zip.length).toBe(1)
     expect(zip[0]!.hitsCursor).toBe(false)

@@ -11,6 +11,10 @@ import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../sr
 const beats = config.film.beats.filter((b) => b.unit === 'step1') as { id: string; from: number; to: number; event?: string }[]
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step1'), pages, driver: new ScriptDriver(), film: filmOptions('step1') })
 const at = (seconds: number): number => Math.round(seconds * stepHz)
+const TUG_FROM = beats.find((b) => b.id === 'step1.tug')!.from
+const UNIT_END = Math.max(...beats.map((b) => b.to))
+const inTug = (seconds: number): number => seconds - 22 + TUG_FROM
+const fromEnd = (seconds: number): number => seconds - 32 + UNIT_END
 const drawn = (s: Stage): DrawList => {
   const list: DrawList = []
   s.page.draw(list)
@@ -75,7 +79,7 @@ describe('step 1: the script of the film', () => {
     const s = film()
     const first: Record<string, number> = {}
     let seen = 0
-    for (let i = 0; i < at(32); i++) {
+    for (let i = 0; i < at(UNIT_END); i++) {
       s.advance(1)
       while (seen < s.events.length) {
         const e = s.events[seen++]!
@@ -93,10 +97,10 @@ describe('step 1: the script of the film', () => {
   it('keeps the cursor, the hands and the slot well inside the frame all through the tug', () => {
     const s = film()
     const page = s.page
-    s.advance(at(21.9))
+    s.advance(at(inTug(21.9)))
     let frames = 0
     let least = Infinity
-    for (let i = at(21.9); i < at(27.2); i++) {
+    for (let i = at(inTug(21.9)); i < at(inTug(27.2)); i++) {
       s.advance(1)
       const now = (i + 1) / stepHz
       const st = (page.save() as { resume: { phase: string; lost: number } }).resume
@@ -126,7 +130,7 @@ describe('step 1: the script of the film', () => {
       for (const n of v) expect(Number.isFinite(n), id).toBe(true)
       ;(lengths[id] ??= new Set()).add(v.length)
     }
-    for (let i = 0; i < at(31); i++) {
+    for (let i = 0; i < at(fromEnd(31)); i++) {
       s.advance(1)
       if (i % 4 !== 0) continue
       for (const q of drawn(s)) {
@@ -172,7 +176,7 @@ describe('step 1: the script of the film', () => {
   it('empties the form a field at a time before it says the resume was received', () => {
     const s = film()
     const seen = new Set<string>()
-    for (let i = 0; i < at(31); i++) {
+    for (let i = 0; i < at(fromEnd(31)); i++) {
       s.advance(1)
       const st = s.page.save() as { stage: number; resume: { received: boolean }; values: Record<string, string> }
       if (st.stage === 2) seen.add(`${st.values.name!.length > 0 ? 1 : 0}${st.values.email!.length > 0 ? 1 : 0}`)
@@ -183,19 +187,19 @@ describe('step 1: the script of the film', () => {
 
   it('hangs strips of paper under the hood from the first bite, never draws one back in, and frames them at the key picture', () => {
     const s = film()
-    s.advance(at(22.1))
+    s.advance(at(inTug(22.1)))
     const last = new Map<string, number>()
-    for (let i = at(22.1); i < at(27); i++) {
+    for (let i = at(inTug(22.1)); i < at(inTug(27)); i++) {
       s.advance(1)
       for (const x of drawn(s)) {
         if (!x.id.startsWith('strip-')) continue
         expect(x.v![0]!, x.id).toBeGreaterThanOrEqual((last.get(x.id) ?? 0) - 1e-9)
         last.set(x.id, x.v![0]!)
       }
-      if (i + 1 !== at(25.125)) continue
+      if (i + 1 !== at(inTug(25.125))) continue
       const hung = drawn(s).filter((x) => x.id.startsWith('strip-'))
       expect(hung.length).toBeGreaterThanOrEqual(5)
-      const cam = s.page.camera('film', 25.125)!
+      const cam = s.page.camera('film', inTug(25.125))!
       for (const x of hung) {
         expect(x.v![0]!).toBeGreaterThan(0.15)
         expect(x.v![0]!).toBeLessThan(0.45)
@@ -237,7 +241,7 @@ describe('step 1: the script of the film', () => {
       }
     }
     const wide = widthAt(still)
-    expect(CAMERA.in[1]).toBeLessThan(22.03)
+    expect(CAMERA.in[1]).toBeLessThan(inTug(22.03))
     expect(wide).toBeGreaterThan(560)
     expect(wide).toBeLessThan(680)
     expect((config.cursor.heightPxAt1080 * 1920) / wide / 1080).toBeGreaterThan(0.2)
@@ -258,7 +262,7 @@ describe('step 1: the script of the film', () => {
       expect(g.y).toBeGreaterThan(ZONE.y + 30)
       expect(Math.abs(g.x + g.w / 2 - (ZONE.x + ZONE.w / 2))).toBeLessThanOrEqual(GLYPH.w / 2 + 1)
     }
-    s.advance(at(31) - at(21))
+    s.advance(at(fromEnd(31)) - at(21))
     expect((s.page.save() as { resume: { received: boolean } }).resume.received).toBe(true)
     expect(drawn(s).some((x) => x.id.startsWith('resume-glyph-'))).toBe(false)
   })
