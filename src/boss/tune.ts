@@ -173,6 +173,7 @@ export const FINISH = {
   late: 0.8, // s past the whole charge that a held button is waited for before the blast goes by itself
   alone: 6, // s after the arms come out at which the blast goes by itself, fully charged, when nobody has pressed
   small: 0.25, // share of a full blast that a plain click fires
+  steady: 0.5, // share of the charge that grows all the time from the first press to the fire mark; the rest comes in one step on each mark
   settle: 1.4, // s the button takes to settle on the ground after the body is gone (`button-down`)
   wide: 90, // px to each side of the full blast's line as drawn
   ball: 120 // px across of the full charge as drawn

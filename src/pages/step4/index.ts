@@ -134,7 +134,9 @@ export function makePage(): PageLogic {
     if (s.fired >= BLAST) return 1 - prog(s.fired, BLAST, BLAST + FINISH.settle * 0.5)
     return prog(s.t, FINISH.fall + SHOUT.arms, FINISH.fall + SHOUT.arms + FINISH.arms)
   }
-  const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : steps(s.charge))
+  const WHOLE = SHOUT.fire - SHOUT.beats[0]!
+  const level = (held: number): number => FINISH.steady * Math.min(1, held / WHOLE) + (1 - FINISH.steady) * steps(held)
+  const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : level(s.charge))
   const strip = (rig: Rig, k: number): Rig => ({ ...rig, plate: { ...rig.plate, k: rig.plate.k * k }, sides: rig.sides.map((q) => ({ ...q, k: q.k * k })), legs: rig.legs.map((q) => ({ ...q, k: q.k * k })), cannons: rig.cannons.map((q) => ({ ...q, k: q.k * k })), shield: { ...rig.shield, k: rig.shield.k * k } })
   const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
   const NONE = { breaks: [], fallen: [] as string[] }
@@ -417,10 +419,10 @@ export function makePage(): PageLogic {
         aimAt(io, FALLEN)
         if (s.fired < 0 && u >= SHOUT.arms) {
           const down = io.pointer.down
-          const whole = SHOUT.fire - SHOUT.beats[0]!
+          const whole = WHOLE
           const had = s.charge < 0 ? 0 : steps(s.charge)
           const fire = (): void => {
-            s.shot = Math.max(FINISH.small, s.charge < 0 ? 0 : steps(s.charge))
+            s.shot = Math.max(FINISH.small, s.charge < 0 ? 0 : level(s.charge))
             s.fired = 0
             io.emit('finish-fire', io.cursor.x, io.cursor.y, false)
             const d = Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) || 1
@@ -678,6 +680,7 @@ export function makePage(): PageLogic {
       if (s.stage === 'verify') return 'boss.verify'
       if (s.stage === 'unfold' || s.stage === 'hold') return 'boss.unfold'
       if (s.stage === 'fight') return PHASE_GAG[s.fight ? s.fight.phase : 0]!
+      if (s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms) return 'boss.finish'
       if (s.stage === 'collapse' || s.stage === 'finish') return 'boss.collapse'
       return 'boss.press'
     },
