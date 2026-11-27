@@ -5,6 +5,7 @@ import { CRANK_HOME, DIAL_REACH, HOUSED } from '../src/pages/step2'
 import { config, stepHz } from '../src/config'
 import { DIAL, DIAL_BODY, ROWS, TRAY, TRAY_H, TRAY_Z, trayY, VALUE_Z } from '../src/pages/step2/layout'
 import { dial, DIAL_UNDER } from '../src/pages/step2/real/dial'
+import { look } from '../src/post/look'
 import type { RealContext } from '../src/real/types'
 import { BotDriver, type BotName } from '../src/stage/bots'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
@@ -449,5 +450,60 @@ describe('polish date: the hub of the dial is in sight at every squash, in the f
 
   it('the film: the same', () => {
     holds(squashes(new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') }), 12))
+  })
+})
+
+// The lift of the knob's and the ring's shadow lookup while the dial moves: the most it may change in one step of the stage, and the least it must be on the step the ring first stands over the band of the studio's shadow height law (MEASURED on film frames: no speckle at 0.11 px and more), in px.
+const SHADE = { step: 0.02, clear: 0.11 }
+
+describe('polish date: the speckle of the risen dial comes in by degrees, in the film and on the live site', () => {
+  const ctx = (list: Shape[]): RealContext => ({ page: 'step2', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })
+  const lifts = (stage: Stage, seconds: number): { step: number; top: number; ring: number; lift: number; keys: string[] }[] => {
+    const out: { step: number; top: number; ring: number; lift: number; keys: string[] }[] = []
+    let o: THREE.Object3D | null = null
+    for (let i = 0; i < seconds * stepHz && stage.page.id === 'step2'; i++) {
+      stage.advance(1)
+      if (stage.page.id !== 'step2') break
+      const list: Shape[] = []
+      stage.page.draw(list)
+      const drawn = list.find((s) => s.id === 'dial-wheel')
+      if (!drawn) continue
+      const wheel: Shape = { ...drawn, v: [drawn.v?.[0] ?? 0] }
+      o ??= dial.make(wheel, ctx(list))
+      dial.pose!(o, wheel, ctx(list))
+      const kept = o.userData.dial as { hub: THREE.Mesh; inner: THREE.Mesh; face: THREE.Mesh }
+      const shade = o.userData.shade as { value: number } | undefined
+      out.push({ step: i, top: drawn.z1 - drawn.z0, ring: drawn.z1 + DIAL_BODY.innerTall, lift: shade ? shade.value : Number.NaN, keys: [kept.hub, kept.inner, kept.face].map((m) => (m.material as THREE.Material).customProgramCacheKey()) })
+    }
+    return out
+  }
+  const holds = (rows: ReturnType<typeof lifts>): void => {
+    const moving = rows.filter((r) => r.top > DIAL_BODY.rest + 1e-9 && r.top < DIAL_BODY.tall - 1e-9)
+    expect(moving.length).toBeGreaterThan(60)
+    expect(rows.length - moving.length).toBeGreaterThan(80)
+    let over = 0
+    for (let n = 0; n < rows.length; n++) {
+      const r = rows[n]!
+      const before = n > 0 && rows[n - 1]!.step === r.step - 1 ? rows[n - 1]! : null
+      if (moving.includes(r)) expect(r.lift, `moving at step ${r.step}`).toBeGreaterThan(0)
+      else expect(r.lift, `housed or whole at step ${r.step}`).toBe(0)
+      if (before) expect(Math.abs(r.lift - before.lift), `step ${r.step}`).toBeLessThanOrEqual(SHADE.step)
+      if (before && moving.includes(r) && r.ring > look.shadowHeights.from !== before.ring > look.shadowHeights.from) {
+        over++
+        expect(Math.max(r.lift, before.lift), `the ring passes the band at step ${r.step}`).toBeGreaterThanOrEqual(SHADE.clear)
+      }
+    }
+    expect(over).toBe(2)
+    expect(rows[0]!.keys[0]).toContain('dial-lift')
+    expect(rows[0]!.keys[1]).toContain('dial-lift')
+    expect(rows[0]!.keys[2]).not.toContain('dial-lift')
+  }
+
+  it('the live site: no lift housed or whole, a lift on every step between, never a jump, and the most of it as the ring passes the band', () => {
+    holds(lifts(new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: visitor([0, 1, 2]), seed: config.seed }), 12))
+  })
+
+  it('the film: the same', () => {
+    holds(lifts(new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') }), 12))
   })
 })
