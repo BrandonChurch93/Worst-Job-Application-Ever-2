@@ -189,12 +189,18 @@ describe('the packs of the unit site', () => {
     expect(turn[1]!.heading).toMatch(/sheet 2 of 3 of one run, frames 13 to 24 of 36: the new page goes on closing, it seats at 0:05\.30, it has stopped by 0:05\.52, the last 2 frames come after the stop: /)
     expect(turn[2]!.heading).toMatch(/sheet 3 of 3 of one run, frames 25 to 36 of 36: the last 12 frames come after the stop: /)
     // The pointer is said to lie still only where the rows show it still: the made-up visitor's pointer jumps to a key at 320 and away from it at 352.
-    for (const f of turn) expect(f.heading).not.toMatch(/pointer does not move/)
+    for (const f of turn) expect(f.heading).not.toMatch(/does not move the mouse/)
     const still = madeRun()
-    for (let i = 300; i < 400; i++) [still.rows[i]![COL.pointerX], still.rows[i]![COL.pointerY]] = [500, 400]
+    for (let i = 300; i < 400; i++) [still.rows[i]![COL.pointerX], still.rows[i]![COL.pointerY], still.rows[i]![COL.heroX], still.rows[i]![COL.heroY]] = [500, 400, 960, 540]
     const quiet = motion(momentsOf(cfg, still)).items.filter((f) => f.moment === 'turn')
-    expect(quiet[0]!.heading).not.toMatch(/pointer does not move/)
-    expect(quiet[2]!.heading).toMatch(/: the last 12 frames come after the stop\. The visitor's pointer does not move in these frames: /)
+    expect(quiet[0]!.heading).not.toMatch(/does not move the mouse/)
+    expect(quiet[2]!.heading).toMatch(/: the last 12 frames come after the stop\. The visitor does not move the mouse in these frames, and the page's arrow stays where it is: /)
+    // The arrow the page draws is another thing than the visitor's pointer: where the page moves it under a still hand, the heading says from which frame.
+    const drawn = madeRun()
+    for (let i = 300; i < 400; i++) [drawn.rows[i]![COL.pointerX], drawn.rows[i]![COL.pointerY], drawn.rows[i]![COL.heroX], drawn.rows[i]![COL.heroY]] = [500, 400, i < 343 ? 960 : 960 - (i - 342) * 5, 540]
+    const led = motion(momentsOf(cfg, drawn)).items.filter((f) => f.moment === 'turn')
+    expect(led[2]!.steps).toContain(344)
+    expect(led[2]!.heading).toMatch(/\. The visitor does not move the mouse in these frames, the page's arrow moves from 0:05\.73: /)
     for (const f of turn) expect(f.heading).not.toMatch(/seated and still|from the page on its edge to/)
   })
 
@@ -314,11 +320,11 @@ describe('the packs of the unit site', () => {
 
   it('R4: the hit is named by what struck, and the hand is said to be off only where the run shows it off', () => {
     const hit = filesOf(planOf('R4')).find((f) => f.moment === 'hit')!
-    expect(hit.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as a turret's bolt hits the arrow, no key is pressed in these frames, the part of the picture/)
+    expect(hit.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as a turret's bolt hits the arrow, the visitor presses no button and no key in these frames, the part of the picture/)
     const clicked = motion(momentsOf(cfg, madeRun(BOLT, { clicks: true })))
     const held = clicked.items.find((f) => f.moment === 'hit')!
     expect(held.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as a turret's bolt hits the arrow, the part of the picture/)
-    expect(held.heading).not.toMatch(/no key is pressed/)
+    expect(held.heading).not.toMatch(/presses no button/)
     const tug = motion(momentsOf(cfg, madeRun([BOLT[0]!])))
     expect(tug.items.find((f) => f.moment === 'hit')!.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as the lost tug of war hits the arrow/)
     expect(struckWords('slab-drop')).toBe('what the page calls "slab drop"')
@@ -343,15 +349,20 @@ describe('the packs of the unit site', () => {
     f.steps!.forEach((i, j) => expect(f.hands![j]).toBe(rows[i - 1]![COL.down] ? KEYS.mark : ''))
     expect(f.hands).toEqual(['', '', '', '', 'down', 'down', 'down', '', '', '', '', ''])
     expect(f.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as the visitor's arrow presses a key of the page's keyboard and lets it go, the part of the picture round the arrow at its real size: /)
-    expect(f.heading).toContain('. In this run the button is held from the frame 0:05.57 to the frame 0:05.63. ')
+    expect(f.heading).toContain('. In this run the button is held from the frame 0:05.57 to 0:05.63. ')
     expect(f.heading.endsWith(KEY_WORDS)).toBe(true)
-    expect(KEY_WORDS).toBe('Under a frame, "down": the visitor holds the mouse button in that frame.')
+    expect(KEY_WORDS).toBe('Under a frame, "down": the visitor holds the mouse button in it.')
     // A second press inside the run is marked and said too.
     const twice = madeRun()
     twice.rows[LONG + 45]![COL.down] = 1
     const again = motion(momentsOf(cfg, twice)).items.find((x) => x.moment === 'type')!
     expect(again.hands).toEqual(['', '', '', '', 'down', 'down', 'down', '', '', '', 'down', ''])
-    expect(again.heading).toContain('. In this run the button is held from the frame 0:05.57 to the frame 0:05.63, and again in the frame 0:05.77. ')
+    expect(again.heading).toContain('. In this run the button is held from the frame 0:05.57 to 0:05.63, and again in the frame 0:05.77. ')
+    // A hit on the arrow inside the run is said with its time, so what it does to the page is not read as a press.
+    const struck = madeRun()
+    struck.hits.push({ name: 'bolt-hit-cursor', step: LONG + 44, page: 'step1', x: 0, y: 0 })
+    const hit = motion(momentsOf(cfg, struck)).items.find((x) => x.moment === 'type')!
+    expect(hit.heading).toContain(". In this run the button is held from the frame 0:05.57 to 0:05.63, and a turret's bolt hits the arrow at 0:05.73. ")
   })
 
   it('needs the visit for R4 and R5 and not for R2 and R8', () => {

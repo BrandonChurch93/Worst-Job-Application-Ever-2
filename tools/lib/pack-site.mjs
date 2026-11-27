@@ -829,7 +829,7 @@ function wholeGroups(cfg, unit, facts) {
 export const TURNS = { seat: 18, flat: 27, quiet: 31, lead: 2, still: 4 }
 // The key press: its run starts `before` frames before the press and ends `after` frames after the release. `mark` stands under a frame in which the visitor holds the mouse button.
 export const KEYS = { before: 3, after: 4, mark: 'down' }
-export const KEY_WORDS = `Under a frame, "${KEYS.mark}": the visitor holds the mouse button in that frame.`
+export const KEY_WORDS = `Under a frame, "${KEYS.mark}": the visitor holds the mouse button in it.`
 // The mark under frame i: picture i is the site before the visitor's events of step i, so it shows the button as row i - 1 holds it.
 export const downAt = (rows, i) => (i > 0 && rows[i - 1][COL.down] ? KEYS.mark : '')
 // The tiers' sheet: `each` frames of every fall of the camera from one tier to the next, at an even step: one before the travel, one at its first step, the last after its end.
@@ -837,7 +837,7 @@ export const TIERS = { each: 6 }
 const VISITOR_WORDS = `The pack's visitor presses ${FLIPS.reactSteps} steps after the page's cue and holds ${FLIPS.holdSteps} steps`
 
 // The fixed window of the save's sheets, in px of the run's picture: centred on the middle of the machine, its lower edge on the tier's floor as the camera shows it at the kick,
-// the tile itself at its real size when that holds the gate at the mouth and both bats at rest and raised with HOLDS.margin round them, and a wider one, shown smaller, when it does not.
+// or lower where the ball sinks under it, the tile itself at its real size when that holds the gate at the mouth and both bats at rest and raised with HOLDS.margin round them, and a wider one, shown smaller, when it does not.
 export function saveHolds(cfg, row, tier) {
   const g = tiersOf(cfg)
   const far = MACHINE.pivotU - MACHINE.radius
@@ -857,7 +857,10 @@ export function saveWindow(cfg, run, steps) {
   const tier = ballAt(cfg, run.rows[kick]).tier
   const h = saveHolds(cfg, run.rows[kick], tier)
   const pad = HOLDS.margin * cfg.table.ballPx
-  const floor = Math.min(cfg.formats.hd.height, Math.max(h.floor, h.gate[3]))
+  // The ball's lowest edge in the run, where it sinks under the tier's floor: the window's lower edge goes down to it, so the ball is whole in every frame of its fall.
+  let low = 0
+  for (let i = steps[0]; i <= steps[steps.length - 1]; i++) if (ballAt(cfg, run.rows[i]).tier === tier) low = Math.max(low, run.rows[i][COL.heroY] - run.rows[i][COL.scroll] + cfg.table.ballPx * REACH.ballR)
+  const floor = Math.min(cfg.formats.hd.height, Math.max(h.floor, h.gate[3], low + pad / 2))
   const needW = (h.bats[2] - h.bats[0] + pad * 2) * k
   const needH = (floor - Math.min(h.bats[1], h.gate[1]) + pad) * k
   const zoom = Math.min(Math.max(1, needW / tileW, needH / tileH), rf.width / tileW, rf.height / tileH)
@@ -924,9 +927,14 @@ export function motionPlan(cfg, run) {
       if (a <= edge + TURNS.seat && b >= edge + TURNS.seat) out.push(`it seats at ${timeOf(edge + TURNS.seat)}`)
       if (b > edge + TURNS.seat && a <= quiet) out.push(`it has stopped by ${timeOf(quiet)}`)
       if (after) out.push(after === 1 ? 'the last frame comes after the stop' : `the last ${after} frames come after the stop`)
-      let moved = false
-      for (let i = Math.max(1, a - EVERY + 1); i <= b; i++) if (rows[i][COL.pointerX] !== rows[i - 1][COL.pointerX] || rows[i][COL.pointerY] !== rows[i - 1][COL.pointerY]) moved = true
-      return `${out.join(', ')}${after && !moved ? ". The visitor's pointer does not move in these frames" : ''}`
+      // The visitor's own pointer and the arrow the page draws are two things: each is said only as the rows hold it.
+      const still = (x, y) => (i) => rows[i][x] === rows[i - 1][x] && rows[i][y] === rows[i - 1][y]
+      const walk = []
+      for (let i = Math.max(1, a - EVERY + 1); i <= b; i++) walk.push(i)
+      const hand = walk.every(still(COL.pointerX, COL.pointerY))
+      const drawn = part.find((i) => i > a && !still(COL.heroX, COL.heroY)(i))
+      const arrow = drawn === undefined ? "and the page's arrow stays where it is" : `the page's arrow moves from ${timeOf(drawn)}`
+      return `${out.join(', ')}${after && hand ? `. The visitor does not move the mouse in these frames, ${arrow}` : ''}`
     }
   }
   const lead = LEAD * EVERY
@@ -934,7 +942,7 @@ export function motionPlan(cfg, run) {
     // The hit is named by what struck, and the hand is said to be off only where the run shows it off in every step of the sheet.
     const steps = add('hit', 'site-hit-sheet', '', m.hit - lead, 1, m.hit)
     const r = runs[runs.length - 1]
-    if (steps.length) r.words = `as ${struckWords(m.struck)} hits the arrow${handsOff(run, steps) ? ', no key is pressed in these frames' : ''}`
+    if (steps.length) r.words = `as ${struckWords(m.struck)} hits the arrow${handsOff(run, steps) ? ', the visitor presses no button and no key in these frames' : ''}`
   }
   if (m.type) {
     // The key press whole: from KEYS.before frames before the press to KEYS.after frames after the release, with the button's mark under each frame.
@@ -948,7 +956,10 @@ export function motionPlan(cfg, run) {
       if (here && here[1] === i - EVERY) here[1] = i
       else held.push([i, i])
     }
-    if (held.length) r.after = `In this run the button is held ${held.map((h) => (h[0] === h[1] ? `in the frame ${timeOf(h[0])}` : `from the frame ${timeOf(h[0])} to the frame ${timeOf(h[1])}`)).join(', and again ')}`
+    // A hit on the arrow inside the run is said too, so that what it does to the page is not read as a press.
+    const hit = (run.hits || []).find((h) => HITS.includes(h.name) && h.step >= steps[0] && h.step <= steps[steps.length - 1])
+    const said = [held.length ? `the button is held ${held.map((h) => (h[0] === h[1] ? `in the frame ${timeOf(h[0])}` : `from the frame ${timeOf(h[0])} to ${timeOf(h[1])}`)).join(', and again ')}` : '', hit ? `${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : ''].filter(Boolean)
+    if (said.length) r.after = `In this run ${said.join(', and ')}`
   }
   if (have(m.taken)) add('taken', 'site-hit-sheet', 'as the page takes the arrow from the visitor', m.taken - lead, 1, m.taken)
   if (have(m.back)) add('given-back', 'site-hit-sheet', 'as the page gives the arrow back to the visitor and the visitor moves it away', (m.released ?? m.back) - lead, 1, m.released ?? m.back)

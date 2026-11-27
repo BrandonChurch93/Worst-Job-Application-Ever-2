@@ -111,7 +111,12 @@ describe('the recorded save', () => {
       const y = (((rows[i]![COL.heroY] as number) - (rows[i]![COL.scroll] as number)) * f.width) / cfg.formats.hd.width
       if (i >= rec.gate.take && i <= rec.gate.kick + SAVE.after) expect(y).toBeGreaterThanOrEqual(win.window[1]!)
       expect(b.tier).toBe(win.tier)
+      // The ball is whole in the window at its lowest too, where it sinks under the tier's floor.
+      const r = (cfg.table.ballPx * REACH.ballR * f.width) / cfg.formats.hd.width
+      expect(y + r).toBeLessThanOrEqual(win.window[1]! + win.window[3]!)
     }
+    const lowest = Math.max(...rows.slice(steps[0]!, steps[steps.length - 1]! + 1).map((x) => ballAt(cfg, x).v))
+    expect(lowest + REACH.ballR).toBeGreaterThan(cfg.table.tierHeightBalls)
     // What it holds: the bats from pivot to tip, at rest and raised, and the mouth down to the gate's pin.
     const h = saveHolds(cfg, rows[rec.gate.kick]!, win.tier) as { bats: number[]; gate: number[] }
     expect(h.bats[0]).toBeCloseTo((FLIP.pivotU - FLIP.radius) * cfg.table.ballPx, 6)
