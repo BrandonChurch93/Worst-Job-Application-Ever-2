@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "B: motion on the live site under a visitor's input, second part: a key pressed and let go on two sheets, the moment the page takes the arrow on four sheets and the moment it gives the arrow back on four sheets, at every 1/60 s, consecutive frames",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-05.png",
+   "where": "arrow and résumé during the upward tug, 0:31.75–0:31.88",
+   "what": "The arrow and paper hold nearly the same pose for three frames, then step up together. The repeated steps make the tug look stop-motion rather than like one pull against a caught sheet.",
+   "fix": "Advance the pull and paper flex every frame, with a brief tension build and one decisive tug that eases into a hold."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-09.png",
+   "where": "released arrow below the tray, 0:43.93–0:44.07, continuing the rest in set-B-08.png",
+   "what": "The arrow has already dropped clear and the debris has died away, but it stays parked despite continued mouse movement. The first frame back under visitor control is visually almost identical to the locked frames, so the drop reads as the release before control is actually back.",
+   "fix": "Return pointer control when the arrow settles, or use a distinct unlock pose on the exact handoff frame. Preserve the smooth first move without snapping to the hidden pointer."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-03.png",
+   "where": "résumé in its holder, 0:31.40–0:31.48",
+   "what": "The paper abruptly creases at 0:31.40 while the hands are still next to the arrow. They do not reach the paper until about 0:31.47, so the sheet appears to react before the grab.",
+   "fix": "Keep the original paper pose through the reach. Start the crease under the fingertips on the grip frame, then tilt the sheet and show the holder resist the pull."
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "A key under the smoking pointer, 0:24.67–0:24.73, with release in set-B-02.png",
+   "what": "The key does move and return, but most of the readable change is a darkening face and a small sideways shift. Smoke and the arrow hide the middle, leaving too little socket or bevel change to sell a key bottoming out.",
+   "fix": "Make the socket reveal and near-bevel compression clear at the unobscured edges. Let the cap hit a definite bottom and spring back in a short return."
+  }
+ ]
+}
