@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
-import type { DrawList, Driver } from '../src/stage/types'
+import type { DrawList, Driver, Pointer } from '../src/stage/types'
 import { WIRE, movingShapes } from '../src/table/draw'
 import { BALL, TH, TIERS, TIER_Y } from '../src/table/layout'
 import { Machine, SAVE, prepare } from '../src/table/physics'
@@ -53,13 +53,14 @@ describe('the save at the gate, read at real size', () => {
     await prepare()
   })
 
-  it('loads the wire by a third of the ball\'s width down the table and holds it there, dead still, for five frames of 60 or more', () => {
+  it('loads the wire by more than a quarter of the ball\'s width down the table, no deeper than the shell stays out of the wire, and holds it there, dead still, for five frames of 60 or more', () => {
     for (const k of [0, 1]) for (const w of ways) {
       const { rows, take, kick, m } = lost(true, k, w)
       expect(take).toBeGreaterThan(0)
       const on = rows.slice(take, kick).filter((r) => r.taken > 0)
       const deep = Math.max(...on.map((r) => r.turn))
-      expect(down(deep), 'the travel of the top wire, px').toBeGreaterThanOrEqual(BALL / 3)
+      expect(down(deep), 'the travel of the top wire, px').toBeGreaterThanOrEqual(BALL * 0.28)
+      expect(SAVE.back, 'the depth past which the shell is seen inside the wire, ball widths').toBeLessThanOrEqual(0.27)
       const held = on.filter((r) => r.turn === deep)
       expect(held.length / EACH, 'frames at the deepest').toBeGreaterThanOrEqual(5)
       expect(held.length).toBeGreaterThanOrEqual(SAVE.still)
@@ -156,6 +157,81 @@ describe('a gate that opens under a ball on its wire', () => {
       expect(fall, `opened on step ${open}`).toBe(was)
       expect(far * BALL, 'no step of the way down is a jump').toBeLessThan(12)
       m.free()
+    }
+  })
+})
+
+describe('the live view under a gate', () => {
+  it('stands lower while a ball lies on the wire of the lobby or the office, goes there and back from rest with no step more than 0.16 px apart from the step before it, does not move at a ball the bat\'s tip turns away, and leaves the street\'s view alone', async () => {
+    await prepare()
+    let mc: Machine | null = null
+    const step = Machine.prototype.step
+    Machine.prototype.step = function (this: Machine, l: boolean, r: boolean) {
+      mc = this
+      return step.call(this, l, r)
+    }
+    try {
+      const driver: Driver = { name: 'bot', input: () => ({ x: 300, y: 900, down: false }) as Pointer }
+      const stage = new Stage({ mode: 'live', flow: [{ page: 'step3' }, { page: 'step4' }], pages, driver, seed: 1 })
+      let was = 0
+      let loaded = 0
+      const seen: [number, number, boolean, boolean][] = []
+      let since = -1
+      let tier = 0
+      while (stage.entryIndex === 0 && stage.time < 110) {
+        stage.advance(1)
+        const m = mc as Machine | null
+        if (!m) continue
+        const b = m.balls[0]!
+        const scroll = stage.page.scroll()
+        const home = TIER_Y[b.tier]! * BALL
+        if ((m.taken >= 0 && !m.gate[b.tier]) || (since >= 0 && since < 100 && b.tier === tier)) expect(Math.abs(scroll - was), 'the view\'s step').toBeLessThanOrEqual(2.6)
+        if (m.taken >= 0 && !m.gate[b.tier] && b.tier < 2) expect(scroll - home, 'the room under the wire from the take on, px').toBeGreaterThan(25)
+        seen.push([scroll, b.tier, m.events.some((e) => e.name === 'gate-take' && e.ball === 0), m.events.some((e) => e.name === 'ball-save' && e.ball === 0)])
+        if (m.taken >= SAVE.land + SAVE.wind - SAVE.still && !m.gate[b.tier]) {
+          loaded++
+          if (b.tier < 2) {
+            expect(scroll - home, 'the room under the wire while it stands loaded, px').toBeGreaterThan(55)
+            expect(scroll - home).toBeLessThanOrEqual(90)
+          } else expect(scroll - home).toBeCloseTo(0.95 * BALL, 6)
+        }
+        if (m.events.some((e) => e.name === 'ball-save' && e.ball === 0)) {
+          since = 0
+          tier = b.tier
+        } else if (since >= 0) since++
+        if (since === 2 * stepHz) {
+          if (b.tier === tier && tier < 2 && b.mode === 'plane' && b.y - TIER_Y[tier]! < 9) expect(Math.abs(scroll - home)).toBeLessThan(1)
+          since = -1
+        }
+        was = scroll
+      }
+      expect(loaded).toBeGreaterThan(2 * SAVE.still)
+      let soft = 0
+      for (let i = 2 * stepHz; i < seen.length - 2 * stepHz; i++) {
+        const [, k, take, save] = seen[i]!
+        if (k > 1 || (!take && !save)) continue
+        const from = take ? i - stepHz : i
+        const to = take ? i : i + 2 * stepHz
+        if (seen.slice(from - 4, to + 1).some((r) => r[1] !== k)) continue
+        soft++
+        for (let j = from; j <= to; j++) {
+          const a = seen[j]![0] - seen[j - 1]![0]
+          const b = seen[j - 1]![0] - seen[j - 2]![0]
+          expect(Math.abs(a - b), `the view's step against the step before it, ${take ? 'on the way down' : 'on the way back'}`).toBeLessThanOrEqual(0.16)
+        }
+      }
+      expect(soft).toBeGreaterThanOrEqual(2)
+      let began = 0
+      for (let i = stepHz; i < seen.length - stepHz; i++) {
+        const [scroll, k] = seen[i]!
+        if (k > 1 || Math.abs(seen[i - 1]![0] - TIER_Y[k]! * BALL) > 0.5 || scroll - seen[i - 1]![0] < 0.02) continue
+        if (seen.slice(i - stepHz / 2, i + stepHz).some((r) => r[1] !== k) || seen[i - 1]![0] - seen[i - 2]![0] >= 0.02 || seen[i - 1]![0] < seen[i - 2]![0]) continue
+        began++
+        expect(seen.slice(i, i + stepHz).some((r) => r[2]), `a take within a second of the view's first step down from rest, step ${i}`).toBe(true)
+      }
+      expect(began).toBeGreaterThanOrEqual(2)
+    } finally {
+      Machine.prototype.step = step
     }
   })
 })
