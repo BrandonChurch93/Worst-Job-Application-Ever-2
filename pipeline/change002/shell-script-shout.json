@@ -1,62 +1,117 @@
 {
   "made": "node pipeline/change002/shell-script-caption.mjs --shout",
   "browser": "159.0.8154.6",
-  "behind": "a kept still of the fight, not the running site",
+  "behind": "kept stills of the boss page, not the running site",
   "text": "KA / ME / HA / ME / HA",
   "draft": true,
   "marks": [
     {
       "mark": "finish-arms",
       "at": 0.009,
-      "panelShows": null,
-      "fontPx": null
+      "panel": null
     },
     {
       "mark": "finish-charge",
-      "at": 0.38,
-      "panelShows": "KA",
-      "fontPx": "40px"
+      "at": 0.11,
+      "panel": {
+        "words": "KA",
+        "fontPx": 150,
+        "top": 306,
+        "bottom": 515,
+        "left": 821,
+        "right": 1099,
+        "baked": true
+      }
     },
     {
       "mark": "finish-charge",
-      "at": 1.048,
-      "panelShows": "ME",
-      "fontPx": "40px"
+      "at": 1.051,
+      "panel": {
+        "words": "ME",
+        "fontPx": 168,
+        "top": 306,
+        "bottom": 537,
+        "left": 799,
+        "right": 1121,
+        "baked": true
+      }
     },
     {
       "mark": "finish-charge",
       "at": 2.099,
-      "panelShows": "HA",
-      "fontPx": "40px"
+      "panel": {
+        "words": "HA",
+        "fontPx": 188,
+        "top": 306,
+        "bottom": 562,
+        "left": 789,
+        "right": 1131,
+        "baked": true
+      }
     },
     {
       "mark": "finish-charge",
-      "at": 2.908,
-      "panelShows": "ME",
-      "fontPx": "40px"
+      "at": 2.911,
+      "panel": {
+        "words": "ME",
+        "fontPx": 211,
+        "top": 306,
+        "bottom": 589,
+        "left": 766,
+        "right": 1154,
+        "baked": true
+      }
     },
     {
       "mark": "finish-fire",
       "at": 4.13,
-      "panelShows": "HA",
-      "fontPx": "40px"
+      "panel": {
+        "words": "HA",
+        "fontPx": 240,
+        "top": 303,
+        "bottom": 621,
+        "left": 748,
+        "right": 1165,
+        "baked": true
+      }
     },
     {
       "mark": "boss-gone",
-      "at": 6.269,
-      "panelShows": null,
-      "fontPx": null
+      "at": 6.261,
+      "panel": null
     }
   ],
+  "line6OnTheBossPage": {
+    "words": "They declare themselves human.",
+    "fontPx": 26,
+    "top": 766,
+    "bottom": 828,
+    "left": 721,
+    "right": 1199,
+    "baked": true
+  },
   "log": [
     {
-      "at": 0.342,
+      "at": 0.38,
       "line": "line.boss.finish.0",
       "trigger": "event finish-arms",
       "what": "spoken",
-      "start": 0.342,
+      "start": 0.38,
       "seconds": 6.26
+    },
+    {
+      "at": 6.632,
+      "line": "line.boss.finish.0",
+      "trigger": "event boss-gone",
+      "what": "cut",
+      "start": 0.38,
+      "seconds": 6.252,
+      "why": "its moment ended on the mark of its page"
     }
   ],
-  "pageErrors": []
+  "pageErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
 }

@@ -17,22 +17,27 @@ const { build } = await import('vite')
 const { serve } = await import('../../tools/lib/serve.mjs')
 const { launch } = await import('../../tools/lib/browser.mjs')
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'shell-script-caption-'))
-await build({ root: at(), configFile: false, logLevel: 'silent', publicDir: false, build: { outDir: dir, emptyOutDir: false, target: 'es2022', minify: false, lib: { entry: { engine: at('src', 'audio', 'index.ts'), said: at('src', 'ui', 'said.ts') }, formats: ['es'] } } })
+await build({ root: at(), configFile: false, logLevel: 'silent', publicDir: false, build: { outDir: dir, emptyOutDir: false, target: 'es2022', minify: false, lib: { entry: { engine: at('src', 'audio', 'index.ts'), said: at('src', 'ui', 'said.ts'), metrics: at('src', 'shell', 'metrics.ts') }, formats: ['es'] } } })
 if (fs.existsSync(still)) fs.copyFileSync(still, path.join(dir, 'page.jpg'))
 const fight = at('out', 'stills', 'key-boss-down-hd-final.jpg')
 if (fs.existsSync(fight)) fs.copyFileSync(fight, path.join(dir, 'fight.jpg'))
+const standing = at('out', 'stills', 'key-boss-fight-hd-final.jpg')
+if (fs.existsSync(standing)) fs.copyFileSync(standing, path.join(dir, 'standing.jpg'))
 const css = fs.readdirSync(dir).filter((f) => f.endsWith('.css'))
 const js = (name) => fs.readdirSync(dir).find((f) => f.startsWith(name) && /\.m?js$/.test(f))
 fs.writeFileSync(path.join(dir, 'index.html'), `<!doctype html><meta charset="utf-8"><title>caption</title>${css.map((f) => `<link rel="stylesheet" href="./${f}">`).join('')}<body style="margin:0;background:#16130f url(./page.jpg) center/cover no-repeat;height:100vh"><script type="module">
 import { makeSound } from './${js('engine')}'
 import { makeCaption } from './${js('said')}'
+import { registerFont, FONTS } from './${js('metrics')}'
+for (const name of FONTS) registerFont(name, await (await fetch('./fonts/' + name + '.json')).json())
 let ctx = null
 const AC = window.AudioContext
 window.AudioContext = function (...x) { ctx = new AC(...x); return ctx }
 window.AudioContext.prototype = AC.prototype
 const sound = makeSound({ base: './audio/', caption: makeCaption })
-const shout = location.search === '?shout'
-if (shout) document.body.style.backgroundImage = 'url(./fight.jpg)'
+const shout = location.search === '?shout' || location.search === '?standing'
+if (shout) document.body.style.backgroundImage = location.search === '?standing' ? 'url(./standing.jpg)' : 'url(./fight.jpg)'
+window.box = () => { const el = [...document.querySelectorAll('[data-narrator-caption]')].find((e) => e.style.display !== 'none'); if (!el) return null; const r = el.getBoundingClientRect(); const k = 1920 / window.innerWidth; return { words: el.textContent, fontPx: Math.round(parseFloat(getComputedStyle(el).fontSize) * k), top: Math.round(r.top * k), bottom: Math.round(r.bottom * k), left: Math.round(r.left * k), right: Math.round(r.right * k), baked: el.dataset.drawn !== undefined } }
 sound.page(shout ? 'step4' : 'marketing')
 window.mark = (name) => sound.event({ name, step: 0, page: 'step4', x: 960, y: 540, hitsCursor: false }, 'live')
 window.now = () => (ctx ? ctx.currentTime : null)
@@ -43,7 +48,7 @@ window.loud = (words) => { const t = performance.now(); makeCaption(() => ({ now
 window.show = (words, low) => { const t = performance.now(); const c = makeCaption(() => ({ now: (performance.now() - t) / 1000, lines: [{ id: 'place', words, start: 0, end: 600 }] })); c.place(low); c.wake() }
 window.ready = location.search === '?place' ? Promise.resolve(true) : sound.unlock().then(() => true)
 </script>`)
-const site = await serve(dir, { mounts: { '/audio/': at('public', 'audio') } })
+const site = await serve(dir, { mounts: { '/audio/': at('public', 'audio'), '/fonts/': at('public', 'fonts') } })
 const launched = await launch(['--autoplay-policy=no-user-gesture-required'])
 const record = { made: 'node pipeline/change002/shell-script-caption.mjs', browser: launched.version, view: VIEW, behind: fs.existsSync(still) ? 'a kept still of the careers page, not the running site' : 'a plain page' }
 try {
@@ -78,32 +83,46 @@ try {
   if (process.argv.includes('--shout')) {
     const d = JSON.parse(fs.readFileSync(at('content', 'narration-drafts.json'), 'utf8')).film['boss.finish'][0]
     const marks = [['finish-arms', 0], ...d.standIn.starts.slice(0, -1).map((t) => ['finish-charge', t]), ['finish-fire', d.standIn.starts[d.standIn.starts.length - 1]], ['boss-gone', d.standIn.seconds]]
+    page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()) })
     await page.goto(`${site.url}/index.html?shout`)
+    await page.waitForFunction(() => typeof window.now === 'function' && window.ready !== undefined, null, { timeout: 8000 }).catch(() => { console.log(`page did not start: ${errors.join('; ')}`); process.exit(1) })
     await page.evaluate(() => window.ready)
     const t0 = await page.evaluate(() => window.now())
     const files = []
     const rows = []
     for (const [name, t] of marks) {
-      while ((await page.evaluate(() => window.now())) < t0 + t) await new Promise((r) => setTimeout(r, 10))
+      while ((await page.evaluate(() => window.now())) < t0 + t) await new Promise((r) => setTimeout(r, 5))
       const sent = await page.evaluate((n) => { window.mark(n); return window.now() }, name)
-      await new Promise((r) => setTimeout(r, name === 'finish-arms' ? 40 : 300))
-      const got = await page.evaluate(() => { const el = [...document.querySelectorAll('[data-narrator-caption]')].find((e) => e.style.display !== 'none'); return { words: el ? el.textContent : null, fontPx: el ? getComputedStyle(el).fontSize : null } })
-      rows.push({ mark: name, at: Number((sent - t0).toFixed(3)), panelShows: got.words, fontPx: got.fontPx })
+      if (name === 'finish-arms') { rows.push({ mark: name, at: Number((sent - t0).toFixed(3)), panel: await page.evaluate(() => window.box()) }); continue }
+      await new Promise((r) => setTimeout(r, 250))
+      rows.push({ mark: name, at: Number((sent - t0).toFixed(3)), panel: await page.evaluate(() => window.box()) })
       const file = path.join(dir, `shout-${files.length}.png`)
       await page.screenshot({ path: file })
       files.push(file)
     }
     const log = await page.evaluate(() => window.log())
-    const top = Math.round(VIEW.height * 0.78)
-    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...files.flatMap((f) => ['-i', f]), '-filter_complex', `${files.map((_, i) => `[${i}:v]crop=${VIEW.width}:${VIEW.height - top}:0:${top}[s${i}]`).join(';')};${files.map((_, i) => `[s${i}]`).join('')}vstack=inputs=${files.length}[o]`, '-map', '[o]', '-frames:v', '1', path.join(pictures, 'script-shout.png')])
-    writeJson(path.join(out, 'shell-script-shout.json'), { made: 'node pipeline/change002/shell-script-caption.mjs --shout', browser: launched.version, behind: 'a kept still of the fight, not the running site', text: d.text, draft: true, marks: rows, log, pageErrors: errors })
-    for (const r of rows) console.log(`shout: ${r.mark} at ${r.at} s, panel shows ${r.panelShows === null ? 'nothing' : JSON.stringify(r.panelShows)}${r.fontPx ? ` at ${r.fontPx}` : ''}`)
+    const n = files.length
+    const cell = `scale=${VIEW.width / 3}:${VIEW.height / 3}`
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...files.flatMap((f) => ['-i', f]), '-filter_complex', `${files.map((_, i) => `[${i}:v]${cell}[s${i}]`).join(';')};[s0][s1][s2]hstack=inputs=3[a];${n > 5 ? '[s3][s4][s5]hstack=inputs=3[b]' : `[s3][s4]hstack=inputs=2,pad=${VIEW.width}:${VIEW.height / 3}[b]`};[a][b]vstack=inputs=2[o]`, '-map', '[o]', '-frames:v', '1', path.join(pictures, 'script-shout.png')])
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', files[n - 2], '-frames:v', '1', path.join(pictures, 'script-shout-last.png')])
+    await page.goto(`${site.url}/index.html?standing`)
+    await page.waitForFunction(() => typeof window.mark === 'function' && window.ready !== undefined, null, { timeout: 8000 })
+    await page.evaluate(() => window.ready)
+    await page.evaluate(() => window.mark('checkbox'))
+    await new Promise((r) => setTimeout(r, 700))
+    const pill = await page.evaluate(() => window.box())
+    await page.screenshot({ path: path.join(pictures, 'script-boss-pill.png') })
+    writeJson(path.join(out, 'shell-script-shout.json'), { made: 'node pipeline/change002/shell-script-caption.mjs --shout', browser: launched.version, behind: 'kept stills of the boss page, not the running site', text: d.text, draft: true, marks: rows, line6OnTheBossPage: pill, log, pageErrors: errors })
+    for (const r of rows) console.log(`shout: ${r.mark} at ${r.at} s, panel ${r.panel === null ? 'shows nothing' : JSON.stringify(r.panel)}`)
+    console.log(`line 6 on the boss page: ${JSON.stringify(pill)}`)
+    console.log(`page errors: ${errors.length}`)
     await context.close()
     await launched.browser.close()
     await site.close?.()
     process.exit(0)
   }
   await page.goto(`${site.url}/index.html`)
+  await page.waitForFunction(() => window.ready !== undefined, null, { timeout: 8000 })
   await page.evaluate(() => window.ready)
   const wait = (ms) => new Promise((r) => setTimeout(r, ms))
   let said = []
