@@ -142,8 +142,8 @@ describe('polish keys 2: what is heard on step 1 is what was heard', () => {
 
   it('holds the same events at the same frames in the film', () => {
     const list = heard(film())
-    expect(list.length).toBe(247)
-    expect(sha(list)).toBe('c11f0d0942c8cca994eee01380419a966ed38f9b')
+    expect(list.length).toBe(251)
+    expect(sha(list)).toBe('5fe7ddbe97cd6fce2721206d51a53fc2e230ac47')
     expect(list.filter((l) => l.includes('bolt-hit-cursor'))).toEqual(['408\tbolt-hit,bolt-hit-cursor,sizzle'])
     expect(list.filter((l) => l.includes('bolt-fire')).slice(0, 4).map((l) => Number(l.split('\t')[0]))).toEqual([260, 350, 440, 530])
   })

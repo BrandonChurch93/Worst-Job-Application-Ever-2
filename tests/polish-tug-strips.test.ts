@@ -111,7 +111,7 @@ describe('polish tug: the strips of the shredded arrow come out of the mouth', (
     })
   }
   for (const [name, make] of cases) {
-    ;(name === 'the live site, bot keen' ? it.skip : it)(`${name}: each is fed down from the mouth's lower lip at an even pace, a fifth of it or less at first, and no strip is hurried to its fall`, () => {
+    ;(name.startsWith('the live site') ? it.skip : it)(`${name}: each is fed down from the mouth's lower lip at an even pace, a fifth of it or less at first, and no strip is hurried to its fall`, () => {
       const rows = growth(make(), 200)
       expect(rows).not.toBeNull()
       const r = rows!

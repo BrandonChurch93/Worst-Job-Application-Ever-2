@@ -25,7 +25,11 @@ const NEAR = 130
 const SINGE = 0.2
 const WIPE: FieldName[] = ['email', 'name']
 const HOME = homePlaces()
-const SLAB_FALL = { seconds: 0.1, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6 }
+const SLAB_FALL = { seconds: 0.3, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6 }
+const SLAB_SUNK = 3
+const SLAB_SHADOW = { from: 0.3, to: 1.12, dark: 0.55 }
+const BITS = { speed: [240, 640], up: [820, 1500], pull: 4200, turn: 7, thick: 10, shard: 0.34, bias: 0.55 }
+const CRACKS = { count: 6, parts: 3, long: [46, 96], bend: 0.55, wide: [5, 2], grow: 0.09 }
 const SLAB_LAND = TIMES.slabHang + TIMES.slabFall
 const SLAB_HOP = { high: 34, reach: 280, seconds: 0.16, speed: 6000, wide: 90 }
 const SLAB_GAP = 8
@@ -68,6 +72,8 @@ interface State {
   slabs: { t: number; x: number; y: number; base: number; landed: boolean; since: number }[]
   slabDue: { t: number; x: number; y: number; base: number }[]
   slabClear: number
+  broken: { key: number; t: number; ux: number; uy: number }[]
+  craters: { x: number; y: number; t: number }[]
   accepted: boolean
   slow: number
   slowFired: boolean
@@ -141,7 +147,7 @@ export function makePage(): PageLogic {
 
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, stage: 0, stageTime: SWAP.in, fields: { done: 0, total: STAGES.length }, board: 0, boardUp: false, values: { name: '', email: '' },
-    queue: [], held: '', click: 0, keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
+    queue: [], held: '', click: 0, keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, broken: [], craters: [], accepted: false, slow: 0, slowFired: false, realFired: false,
     singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, thudLean: { x: 0, y: 1 }, caret: 9, glow: 9,
     pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
@@ -299,23 +305,24 @@ export function makePage(): PageLogic {
   }
 
   const slabAim = (io: StepIo): { x: number; y: number; base: number } => {
+    const all = [...s.slabs, ...s.slabDue]
     const x = clamp(io.cursor.x + BODY.x - SLAB.w / 2, DECK.x + SLAB_GAP, DECK.x + DECK.w - SLAB.w - SLAB_GAP)
     const y = clamp(io.cursor.y + BODY.y - SLAB.h / 2, DECK.y + SLAB_GAP, DECK.y + DECK.h - SLAB.h - SLAB_GAP)
     const x0 = DECK.x + SLAB_GAP
     const x1 = DECK.x + DECK.w - SLAB.w - SLAB_GAP
     const y0 = DECK.y + SLAB_GAP
     const y1 = DECK.y + DECK.h - SLAB.h - SLAB_GAP
-    const free = (px: number, py: number): boolean => s.slabs.every((b) => px >= b.x + SLAB.w + SLAB_CLEAR || px + SLAB.w + SLAB_CLEAR <= b.x || py >= b.y + SLAB.h + SLAB_CLEAR || py + SLAB.h + SLAB_CLEAR <= b.y)
-    if (free(x, y)) return { x, y, base: CAP_TOP }
+    const free = (px: number, py: number): boolean => all.every((b) => px >= b.x + SLAB.w + SLAB_CLEAR || px + SLAB.w + SLAB_CLEAR <= b.x || py >= b.y + SLAB.h + SLAB_CLEAR || py + SLAB.h + SLAB_CLEAR <= b.y)
+    if (free(x, y)) return { x, y, base: DECK_TOP + SLAB_SUNK + TRAVEL }
     let best = { x, y, far: Infinity }
-    const xs = [x, x0, x1, ...s.slabs.flatMap((b) => [b.x - SLAB.w - SLAB_CLEAR, b.x + SLAB.w + SLAB_CLEAR])]
-    const ys = [y, y0, y1, ...s.slabs.flatMap((b) => [b.y - SLAB.h - SLAB_CLEAR, b.y + SLAB.h + SLAB_CLEAR])]
+    const xs = [x, x0, x1, ...all.flatMap((b) => [b.x - SLAB.w - SLAB_CLEAR, b.x + SLAB.w + SLAB_CLEAR])]
+    const ys = [y, y0, y1, ...all.flatMap((b) => [b.y - SLAB.h - SLAB_CLEAR, b.y + SLAB.h + SLAB_CLEAR])]
     for (const px of xs) for (const py of ys) {
       if (px < x0 || px > x1 || py < y0 || py > y1 || !free(px, py)) continue
       const far = Math.hypot(px - x, py - y)
       if (far < best.far) best = { x: px, y: py, far }
     }
-    return { x: best.x, y: best.y, base: CAP_TOP }
+    return { x: best.x, y: best.y, base: DECK_TOP + SLAB_SUNK + TRAVEL }
   }
 
   const slabGone = (TIMES.slabCount - 1) * SLAB_OUT.every + SLAB_OUT.wait + SLAB_OUT.fly
@@ -329,6 +336,20 @@ export function makePage(): PageLogic {
       b.landed = true
       const under = inside({ x: b.x, y: b.y, w: SLAB.w, h: SLAB.h }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)
       io.emit('slab-drop', b.x + SLAB.w / 2, b.y + SLAB.h / 2, under)
+      const cx = b.x + SLAB.w / 2
+      const cy = b.y + SLAB.h / 2
+      let broke = 0
+      seats.forEach((seat, key) => {
+        if (s.broken.some((k) => k.key === key) || !(seat.x < b.x + SLAB.w && seat.x + seat.w > b.x && seat.y < b.y + SLAB.h && seat.y + seat.h > b.y)) return
+        const dx = seat.cx - cx + (hash01(key, n, 61) - 0.5) * 60
+        const dy = (seat.cy - cy) * 2.4 - BITS.bias * 100 + (hash01(key, n, 62) - 0.5) * 60
+        const d = Math.hypot(dx, dy) || 1
+        s.broken.push({ key, t: 0, ux: dx / d, uy: dy / d })
+        broke++
+      })
+      s.craters.push({ x: b.x, y: b.y, t: 0 })
+      if (broke) io.emit('keys-break', cx, cy, false)
+      io.emit('page-crack', cx, cy, false)
       s.shake = 0
       s.shakeAmp = SLAB_FALL.amp
       s.shakeAt = { x: b.x + SLAB.w / 2, y: b.y + SLAB.h / 2 }
@@ -357,7 +378,11 @@ export function makePage(): PageLogic {
     }
     const sent = s.slabs.length + s.slabDue.length
     if (sent < TIMES.slabCount) {
-      if (s.phaseTime >= TIMES.slabFirst + sent * TIMES.slabEvery) s.slabDue.push({ t: 0, ...slabAim(io) })
+      if (s.phaseTime >= TIMES.slabFirst + sent * TIMES.slabEvery) {
+        const due = { t: 0, ...slabAim(io) }
+        s.slabDue.push(due)
+        io.emit('slab-shadow', due.x + SLAB.w / 2, due.y + SLAB.h / 2, false)
+      }
       return
     }
     if (s.slabs.length === TIMES.slabCount && s.slabs[s.slabs.length - 1]!.t >= SLAB_LAND + TIMES.slabLie) s.slabClear = 0
@@ -462,6 +487,8 @@ export function makePage(): PageLogic {
           s.slabClear = -1
         }
       }
+      for (const k of s.broken) k.t += io.dt
+      for (const c of s.craters) c.t += io.dt
       if (s.phase === 'slabs') stepSlabs(io)
       else if (s.phase === 'resume') {
         resume.step(io)
@@ -496,7 +523,13 @@ export function makePage(): PageLogic {
         const scorches = turrets.s.scorches
         const onSite = s.mode === 'live'
         const jarred = onSite && s.shakeAmp === THUD.shake && s.thud < JAR.seconds
+        const gone = new Set(s.broken.map((k) => k.key))
         seats.forEach((seat, key) => {
+          if (gone.has(key)) {
+            over[`key-${seat.name}`] = null
+            if (seat.name !== 'space') over[`key-${seat.name}-legend`] = null
+            return
+          }
           const at = { x: seat.x, y: seat.y + shake }
           const down = s.keyDown[seat.name]
           const far = Math.hypot(at.x + seat.w / 2 - s.shakeAt.x, at.y + seat.h / 2 - s.shakeAt.y)
@@ -587,6 +620,66 @@ export function makePage(): PageLogic {
           out.push({ ...face, id: `email-slab-${n}-label`, x: face.x + (p.x - home.x), y: face.y + (p.y - home.y), z0: p.z + heights.slab, z1: p.z + heights.slab })
         })
       }
+      const onBoard = (x: number, y: number): boolean => s.board > 0 && x >= DECK.x && x <= DECK.x + DECK.w && y >= DECK.y && y <= DECK.y + DECK.h
+      s.slabDue.forEach((d, n) => {
+        const u = smooth(clamp(d.t / (SLAB_LAND - SLAB_FALL.seconds), 0, 1))
+        const k = SLAB_SHADOW.from + (SLAB_SHADOW.to - SLAB_SHADOW.from) * u
+        out.push({ id: `slab-shadow-${s.slabs.length + n}`, part: 'slabs', kind: 'box', x: d.x + (SLAB.w * (1 - k)) / 2, y: d.y + (SLAB.h * (1 - k)) / 2, w: SLAB.w * k, h: SLAB.h * k, z0: CAP_TOP + 1.2 + off, z1: CAP_TOP + 1.2 + off, r: 10, tone: 'dark', v: [SLAB_SHADOW.dark * (0.35 + 0.65 * u)] })
+      })
+      s.slabs.forEach((b, n) => {
+        if (b.landed) return
+        const k = SLAB_SHADOW.to
+        out.push({ id: `slab-shadow-${n}`, part: 'slabs', kind: 'box', x: b.x + (SLAB.w * (1 - k)) / 2, y: b.y + (SLAB.h * (1 - k)) / 2, w: SLAB.w * k, h: SLAB.h * k, z0: CAP_TOP + 1.2 + off, z1: CAP_TOP + 1.2 + off, r: 10, tone: 'dark', v: [SLAB_SHADOW.dark + (1 - SLAB_SHADOW.dark) * 0.5 * clamp((b.t - SLAB_LAND + SLAB_FALL.seconds) / SLAB_FALL.seconds, 0, 1)] })
+      })
+      s.craters.forEach((c, n) => {
+        if (s.board > 0) out.push({ id: `slab-crater-${n}`, part: 'slabs', kind: 'box', x: c.x - 3, y: c.y - 3, w: SLAB.w + 6, h: SLAB.h + 6, z0: DECK_TOP + 0.7 + off, z1: DECK_TOP + 0.7 + off, r: 12, tone: 'dark', v: [1] })
+        const cx = c.x + SLAB.w / 2
+        const cy = c.y + SLAB.h / 2
+        for (let i = 0; i < CRACKS.count; i++) {
+          let a = ((i + hash01(i, n, 71)) / CRACKS.count) * Math.PI * 2
+          const reach = Math.min(Math.abs(SLAB.w / 2 / Math.cos(a)), Math.abs(SLAB.h / 2 / Math.sin(a)))
+          let x = cx + Math.cos(a) * reach
+          let y = cy + Math.sin(a) * reach
+          for (let j = 0; j < CRACKS.parts; j++) {
+            const grown = clamp((c.t - j * CRACKS.grow * 0.5) / CRACKS.grow, 0, 1)
+            if (grown <= 0) break
+            a += (hash01(i * 7 + j, n, 72) - 0.5) * 2 * CRACKS.bend
+            const long = (CRACKS.long[0]! + (CRACKS.long[1]! - CRACKS.long[0]!) * hash01(i * 7 + j, n, 73)) * grown
+            const wide = CRACKS.wide[0]! + (CRACKS.wide[1]! - CRACKS.wide[0]!) * (j / (CRACKS.parts - 1))
+            const mx = x + (Math.cos(a) * long) / 2
+            const my = y + (Math.sin(a) * long) / 2
+            const on = onBoard(mx, my)
+            const inDeck = mx >= DECK.x && mx <= DECK.x + DECK.w && my >= DECK.y && my <= DECK.y + DECK.h
+            const z = on ? CAP_TOP + 0.8 + off : 0.4
+            if (on || !inDeck) out.push({ id: `slab-crack-${n}-${i}-${j}`, part: 'slabs', kind: 'box', x: mx - long / 2 - 1, y: my - wide / 2, w: long + 2, h: wide, z0: z, z1: z, rot: a, tone: 'dark', v: [1] })
+            x += Math.cos(a) * long
+            y += Math.sin(a) * long
+          }
+        }
+      })
+      if (shows(1)) {
+        for (const k of s.broken) {
+          const seat = seats[k.key]!
+          for (const part of [0, 1]) {
+            const h = (salt: number): number => hash01(k.key, part, salt)
+            const up = BITS.up[0]! + (BITS.up[1]! - BITS.up[0]!) * h(81)
+            const air = (2 * up) / BITS.pull
+            const t = Math.min(k.t, air)
+            const speed = (BITS.speed[0]! + (BITS.speed[1]! - BITS.speed[0]!) * h(82)) * (part === 0 ? 1 : 1.25)
+            const turn = part === 0 ? 0 : (h(83) - 0.5) * 1.4
+            const ux = k.ux * Math.cos(turn) - k.uy * Math.sin(turn)
+            const uy = k.ux * Math.sin(turn) + k.uy * Math.cos(turn)
+            const x = seat.cx + ux * speed * t
+            const y = seat.cy + uy * speed * t
+            const w = part === 0 ? seat.w : Math.min(seat.w, seat.h) * BITS.shard
+            const hh = part === 0 ? seat.h : seat.h * BITS.shard
+            const rest = onBoard(x, y) ? CAP_TOP + 1 + off : 0.5
+            const z = Math.max(rest, CAP_TOP + up * t - (BITS.pull / 2) * t * t)
+            const flips = 1 + Math.floor(h(84) * 2)
+            out.push({ id: `slab-bit-${k.key}-${part}`, part: 'slabs', kind: 'box', x: x - w / 2, y: y - hh / 2, w, h: hh, z0: z, z1: z + (part === 0 ? CAP_TOP - DECK_TOP : BITS.thick * 0.5), r: 6, rot: (h(85) - 0.5) * BITS.turn * t, tone: 'raised', v: [flips * Math.PI * (t / air), (h(86) - 0.5) * 2 * Math.PI * (t / air) * (t < air ? 1 : 0)] })
+          }
+        }
+      }
       const field = FIELD_OF[s.phase]
       if (field && shows(FIELDS.indexOf(field))) {
         const p = pockets[field]
@@ -645,6 +738,8 @@ export function makePage(): PageLogic {
       s.slabs = []
       s.slabDue = []
       s.slabClear = -1
+      s.broken = []
+      s.craters = []
       s.accepted = false
       s.values = { name: '', email: '' }
       s.phase = 'resume'

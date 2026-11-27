@@ -13,7 +13,7 @@ const sizes = config.scale.sizes
 export const START = { x: 1180, y: 800 }
 export const TIMES = {
   riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.72, pressWait: 0.16,
-  slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
+  slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.6, slabFall: 0.3, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
   ...RESUME_TIMES
 }
 export const SPOT = { x: -12, y: -14 }
@@ -33,11 +33,11 @@ export const FIRST = {
 // The Name stage ends and the Email stage comes up: a look at the bare page as the field goes, a walk up to the new field, a tap on it, and back down to the keys. `from` is the second it leaves the Enter key.
 export const NEXT = { look: 0.42, walk: [0.9, 1.3] as [number, number], tap: 1.62, back: [2.3, 2.7] as [number, number], on: { x: 152, y: 4 } }
 // The email: one careful key, then it backs off it (wait, from the key) and waits there, nervous, for what the key will do. There is no bare place it can reach and leave again in the third of a second before the run without moving the time of a key.
-export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42, wait: { x: 700, y: -46 }, back: [15.18, 15.24] as [number, number], go: 0.022, sure: 0.1 }
+export const MAIL = { first: 14.66, run: 15, every: 0.092, enter: 16.92, wait: { x: 700, y: -46 }, back: [14.68, 14.74] as [number, number], go: 0.022, sure: 0.1 }
 // The slabs: struck is how long after the click on Enter the key is struck, which is when the page starts to count.
 // Where it goes from the slabs: clear on to the bare page above the deck, then into the corner of the Email field, where it stays.
 export const DIVES = [{ x: 1100, y: 676 }, { x: 1716, y: 610 }]
-export const DIVE = { struck: 0.06, doubt: 0.04, see: [0.04, 0.07], start: [0.12, 0.2], seconds: 0.16, jolt: 0.06, duck: 0.03 }
+export const DIVE = { struck: 0.06, doubt: 0.04, see: [0.14, 0.17], start: [0.56, 0.62], seconds: 0.16, jolt: 0.06, duck: 0.03 }
 export const STRUT = { hop: 300, seconds: 0.17, past: { x: 12, y: -8 }, wind: 1.32, back: { x: -22, y: 18 }, rear: 1.64 }
 
 export interface Cue { at: number; act?: Acting; react?: Reaction; hop?: number }
