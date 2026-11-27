@@ -59,7 +59,8 @@ const beside = async (name, mine, theirs) => {
   const left = await sharp(whole).extract({ left: 0, top: Math.round(mine.y), width: 1920, height: Math.round(mine.h) }).resize({ width: w }).toBuffer()
   const right = await sharp(APPROVED).extract({ left: 0, top: Math.round(theirs.y), width: 1920, height: Math.round(theirs.h) }).resize({ width: w }).toBuffer()
   const file = `${OUT}/${name}.jpg`
-  await sharp({ create: { width: w * 2 + GAP, height: Math.round(tall * k), channels: 3, background: '#d81b60' } }).composite([{ input: left, left: 0, top: 0 }, { input: right, left: w + GAP, top: 0 }]).jpeg({ quality: 88 }).toFile(file)
+  const rows = await Promise.all([left, right].map(async (b) => (await sharp(b).metadata()).height))
+  await sharp({ create: { width: w * 2 + GAP, height: Math.max(...rows), channels: 3, background: '#d81b60' } }).composite([{ input: left, left: 0, top: 0 }, { input: right, left: w + GAP, top: 0 }]).jpeg({ quality: 88 }).toFile(file)
   return file
 }
 
