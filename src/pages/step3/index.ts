@@ -800,7 +800,7 @@ export function makePage(): PageLogic {
         s.t = Math.min(s.t + dt, T.seal)
         const reach = 150 + Math.max(0, io.time - 1.2) * 420
         const d = Math.hypot(io.cursor.x - port.x, io.cursor.y - port.y)
-        if (io.time > 0.5 && io.cursor.pose().z < LOADER.low && once('act.land')) io.cursor.press(LOADER.land[0]!, LOADER.land[1]!)
+        if (s.mode === 'film' && io.time > 0.5 && io.cursor.pose().z < LOADER.low && once('act.land')) io.cursor.press(LOADER.land[0]!, LOADER.land[1]!)
         if (s.phase === 'wait' && d < reach && io.time >= T.arrive && !io.cursor.inAir) {
           if (s.seen < 0) {
             const p = io.cursor.pose()
