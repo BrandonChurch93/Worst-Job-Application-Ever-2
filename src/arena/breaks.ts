@@ -166,7 +166,7 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
   }
   // Rows run up the page: a row more is a step toward the top.
   const far = Math.max(1, Math.round(14 / sx)), near = Math.max(1, Math.round(10 / sx))
-  const ring: [number, number][] = [[far, 0], [-far, 0], [0, far], [0, -far], [near, near], [-near, near], [near, -near], [-near, -near]]
+  const ring: [number, number][] = [[far, 0], [-far, 0], [0, far], [0, -far], [near, near], [-near, near], [near, -near], [-near, -near], [2 * far, 0], [-2 * far, 0], [0, 2 * far], [0, -2 * far], [2 * near, 2 * near], [-2 * near, 2 * near], [2 * near, -2 * near], [-2 * near, -2 * near]]
   const wallJ = Math.max(1, Math.round(wall / sy)), wallI = Math.max(1, Math.round((wall * 0.5) / sx))
   for (let j = j0; j <= j1; j++) {
     const y = PAGE.h - (j + 0.5) * sy
@@ -185,7 +185,7 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
         let inside = 0
         for (const [oi, oj] of ring) if (hole(i + oi, j + oj)) inside++
         const lit = hole(i, j + wallJ) && hole(i - wallI, j + wallJ)
-        data[at + 3] = lit ? Math.round(255 * (0.62 + 0.38 * (inside / 8))) : 52
+        data[at + 3] = lit ? Math.round(255 * (0.62 + 0.38 * (inside / 16))) : 52
         continue
       }
       const id = l.tag

@@ -21,7 +21,7 @@ const RUBBLE_EACH = 11
 const SHARDS_EACH = 22
 const SPARKS_EACH = 64
 const SMOKE_EACH = 20
-const DUST = 44
+const DUST = 96
 const DUST_SECONDS = 1.5
 // Over how many frames the wound of an aimed blast is painted ahead.
 const AHEAD_FRAMES = 36
@@ -75,10 +75,10 @@ function lumpGeometry(seed: number): THREE.BufferGeometry {
   return g
 }
 
-// A flat shard of glass, one unit across and three px thick.
-function shardGeometry(): THREE.BufferGeometry {
+// A flat shard of glass, one unit across: a long splinter with four corners, or a three-cornered one.
+function shardGeometry(three: boolean): THREE.BufferGeometry {
   const shape = new THREE.Shape()
-  const pts: [number, number][] = [[-0.56, -0.2], [0.5, -0.46], [0.3, 0.1], [-0.2, 0.52]]
+  const pts: [number, number][] = three ? [[-0.58, -0.3], [0.62, -0.08], [-0.14, 0.5]] : [[-0.56, -0.2], [0.5, -0.46], [0.3, 0.1], [-0.2, 0.52]]
   pts.forEach((q, i) => (i ? shape.lineTo(q[0], q[1]) : shape.moveTo(q[0], q[1])))
   shape.closePath()
   const g = new THREE.ExtrudeGeometry(shape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.05, bevelSegments: 1 })
@@ -178,7 +178,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
   // Teeth of the panes: built when a pane breaks, from where the blast went through it.
   const teeth = PANES.map((p) => {
     const s = stand(p.x, (p.y0 + p.y1) / 2)
-    const mesh = new THREE.Mesh(new THREE.BufferGeometry(), kit.shard)
+    const mesh = new THREE.Mesh(new THREE.BufferGeometry(), kit.tooth)
     mesh.castShadow = false
     mesh.renderOrder = 4
     s.root.add(mesh)
@@ -200,8 +200,10 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
     return mesh
   }
   const rubble = instanced(keep(lumpGeometry(seed)), kit.broken, PILLARS.length * RUBBLE_EACH, 'arena-rubble', true, true)
-  const shards = instanced(keep(shardGeometry()), kit.shard, PANES.length * SHARDS_EACH, 'arena-shards', true, true)
+  const shards = instanced(keep(shardGeometry(false)), kit.shard, PANES.length * SHARDS_EACH, 'arena-shards', true, true)
   shards.renderOrder = 4
+  const splinters = instanced(keep(shardGeometry(true)), kit.shard, PANES.length * SHARDS_EACH, 'arena-splinters', true, true)
+  splinters.renderOrder = 4
   const plane = keep(new THREE.PlaneGeometry(1, 1))
   const add = { transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, fog: false }
   const sparkStuff = keep(new THREE.MeshBasicMaterial({ map: softDot(), color: new THREE.Color(1, 1, 1), ...add }))
@@ -286,7 +288,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
     const newest = active.reduce((a, k) => Math.max(a, k.at), -99)
     wounds.ember.value = 1 + 2.2 * Math.exp(-Math.max(0, t - newest) / 0.5)
 
-    let nRubble = 0, nShards = 0, nSparks = 0, nFlash = 0, nSmoke = 0
+    let nRubble = 0, nShards = 0, nSplinters = 0, nSparks = 0, nFlash = 0, nSmoke = 0
 
     // Pillars.
     pillars.forEach((p, i) => {
@@ -358,7 +360,8 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
         e.set((1 - flat) * (rnd(seed, 965 + i, j) * 5 + 1) + 0.5 * (rnd(seed, 975 + i, j) - 0.5), (1 - flat) * (rnd(seed, 966 + i, j) * 5) + 0.5 * (rnd(seed, 976 + i, j) - 0.5), rnd(seed, 967 + i, j) * 6.283)
         q.setFromEuler(e)
         m4.compose(v.set(wx(p.x) + far * out + leanX * z, wy(along + (rnd(seed, 968 + i, j) - 0.5) * 60 * out) + lean * z, z), q, sc.set(size, size * (0.5 + 0.9 * rnd(seed, 969 + i, j)), size))
-        shards.setMatrixAt(nShards++, m4)
+        if (j % 2) splinters.setMatrixAt(nSplinters++, m4)
+        else shards.setMatrixAt(nShards++, m4)
       }
     })
 
@@ -418,10 +421,10 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
     const since = t - ARENA.splitAt
     if (since >= 0 && since < DUST_SECONDS) {
       for (const d of dust) {
-        const born = 0.3 * rnd(seed, 990, d.k)
+        const born = 0.22 * rnd(seed, 990, d.k)
         const g = clamp01((since - born) / (DUST_SECONDS - born))
-        const dark = 0.5 * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g * 0.55)
-        const size = 50 + 170 * g + 50 * rnd(seed, 991, d.k)
+        const dark = 0.42 * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g * 0.55)
+        const size = 34 + 130 * g + 40 * rnd(seed, 991, d.k)
         put(smoke, nSmoke++, wx(d.x) + 24 * g * (rnd(seed, 992, d.k) - 0.5), wy(d.y) + 30 * g, 10 + 40 * g, rnd(seed, 993, d.k) * 6, size, size, dark * 0.86, dark * 0.9, dark)
       }
     }
@@ -448,7 +451,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
       bandStuff.opacity = (0.4 + 0.6 * tell * tell) * (0.72 + 0.28 * Math.sin(t * (9 + 22 * tell)))
     }
 
-    for (const [mesh, n] of [[rubble, nRubble], [shards, nShards], [sparks, nSparks], [flashes, nFlash], [smoke, nSmoke]] as [THREE.InstancedMesh, number][]) {
+    for (const [mesh, n] of [[rubble, nRubble], [shards, nShards], [splinters, nSplinters], [sparks, nSparks], [flashes, nFlash], [smoke, nSmoke]] as [THREE.InstancedMesh, number][]) {
       mesh.visible = n > 0
       mesh.count = n
       if (n > 0) {
@@ -464,7 +467,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
     dispose(): void {
       made.forEach((x) => x.dispose())
       teeth.forEach((x) => x.mesh.geometry.dispose())
-      for (const mesh of [rubble, shards, sparks, flashes, smoke]) mesh.dispose()
+      for (const mesh of [rubble, shards, splinters, sparks, flashes, smoke]) mesh.dispose()
     }
   }
 }
