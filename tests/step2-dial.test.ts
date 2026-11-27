@@ -1,9 +1,10 @@
+import { drawBuilt } from '../src/pages/step2/index'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { DIAL, DIAL_BODY, dialPlate, dialTop, ROW_HELPER, ROW_TITLE, TOP, TRAY, TRAY_H, TRAY_Z, VALUE_Z } from '../src/pages/step2/layout'
-import { dial, edgesGeometry, faceGeometry, holeShadeGeometry, housingGeometry, hubGeometry, plateGeometry, seatGeometry, stopGeometry } from '../src/pages/step2/real/dial'
+import { plainDial as dial, edgesGeometry, faceGeometry, holeShadeGeometry, housingGeometry, hubGeometry, plateGeometry, seatGeometry, stopGeometry } from '../src/pages/step2/real/dial'
 import { rows, trayFloor, trayFoot, trayJoint, trayLiner, trayRim, trayWallShade } from '../src/pages/step2/real/rows'
 import type { RealContext } from '../src/real/types'
 import type { Shape } from '../src/stage/types'
@@ -15,7 +16,7 @@ function listAt(seconds: number): Shape[] {
   const s = film()
   s.advance(Math.round(seconds * stepHz))
   const list: DrawList = []
-  s.page.draw(list)
+  drawBuilt(s.page, list)
   return list as Shape[]
 }
 

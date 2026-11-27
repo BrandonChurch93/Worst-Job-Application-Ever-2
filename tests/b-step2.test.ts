@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { dateMask, ownDate, reelPos, reelWindow } from '../src/pages/step2'
-import { BAND, CRANK, FIELDS, NOTE_Y, ROWS, SLOT, TRAY, TRAY_H, trayY } from '../src/pages/step2/layout'
+import { BAND, CRANK, FIELDS, FW, FX, NOTE_Y, ROWS, scaleOf, SLOT, TRAY, TRAY_H, trayY } from '../src/pages/step2/layout'
 import { SCREEN_H } from '../src/shell/parts'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
 
@@ -240,34 +240,44 @@ describe('change 002, step 2: the volume crank', () => {
   })
 
   it('never lays the crank\'s grip over the footnote or outside the floor of its tray, at any angle', () => {
-    const floor = { x0: 0, x1: 0, y0: trayY(2) + TRAY.rim, y1: trayY(2) + TRAY_H - TRAY.rim }
+    const m = scaleOf(2)
+    const floor = { x0: FX + TRAY.rim, x1: FX + FW - TRAY.rim, y0: trayY(2) + TRAY.rim, y1: trayY(2) + TRAY_H - TRAY.rim }
     for (let k = 0; k < 720; k++) {
       const b = (k / 720) * Math.PI * 2
       const cx = CRANK.hx + CRANK.arm * Math.cos(b)
       const cy = CRANK.hy + CRANK.arm * Math.sin(b)
       for (const p of corners({ x: cx - CRANK.gripW / 2, y: cy - CRANK.gripH / 2, w: CRANK.gripW, h: CRANK.gripH, rot: b } as Shape)) {
-        expect(p.y).toBeLessThan(NOTE_Y)
-        expect(p.y).toBeLessThan(floor.y1)
-        expect(p.y).toBeGreaterThan(floor.y0)
+        expect(m.x(p.x)).toBeGreaterThan(floor.x0)
+        expect(m.x(p.x)).toBeLessThan(floor.x1)
+        expect(m.y(p.y)).toBeGreaterThan(floor.y0)
+        expect(m.y(p.y)).toBeLessThan(floor.y1)
       }
     }
     const s = film()
     let seen = 0
+    let rest = 0
     run(s, 20.4, (i) => {
       if (i % 2 !== 0) return
       const list = drawn(s)
       const grip = list.find((x) => x.id === 'crank-grip')
-      const note = list.find((x) => x.id === 'note')!
-      const tray = list.find((x) => x.id === 'volume-tray')
+      const note = list.find((x) => x.id === 'note')
+      const tray = list.find((x) => ROWS.some((r) => x.id === `${r}-tray`))
+      if (note) {
+        rest++
+        expect(tray, `step ${i}`).toBeUndefined()
+        expect(note.y).toBe(NOTE_Y)
+      }
       if (!grip || !tray) return
       seen++
       for (const p of corners(grip)) {
-        expect(p.y).toBeLessThan(note.y)
         expect(p.x).toBeGreaterThan(tray.x + TRAY.rim)
         expect(p.x).toBeLessThan(tray.x + tray.w - TRAY.rim)
+        expect(p.y).toBeGreaterThan(tray.y)
+        expect(p.y).toBeLessThan(trayY(2) + TRAY_H - TRAY.rim)
       }
     })
     expect(seen).toBeGreaterThan(500)
+    expect(rest).toBeGreaterThan(300)
   })
 })
 

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { pages } from '../src/pages'
-import { CRANK_HOME, DIAL_REACH, HOUSED } from '../src/pages/step2'
+import { drawBuilt, CRANK_HOME, DIAL_REACH, HOUSED } from '../src/pages/step2'
 import { config, stepHz } from '../src/config'
-import { DIAL, DIAL_BODY, ROWS, TRAY, TRAY_H, TRAY_Z, trayY, VALUE_Z } from '../src/pages/step2/layout'
-import { dial, DIAL_UNDER } from '../src/pages/step2/real/dial'
+import { STAGE, DIAL, DIAL_BODY, ROWS, TRAY, TRAY_H, TRAY_Z, trayY, VALUE_Z } from '../src/pages/step2/layout'
+import { plainDial as dial, DIAL_UNDER } from '../src/pages/step2/real/dial'
 import { look } from '../src/post/look'
 import type { RealContext } from '../src/real/types'
 import { BotDriver, type BotName } from '../src/stage/bots'
@@ -16,7 +16,7 @@ const SLIVER = 0.02
 // The opening as it was before the machines were housed (MEASURED on b3e4f902): steps of the stage from the row's first step to its tray at full height, to the machine at full height and to the row taking the visitor's hand.
 const OPENING = { full: 54, whole: 97, ready: 99 }
 // The whole visit of the page by each visitor, in steps (MEASURED on b3e4f902).
-const VISIT = { down: 4600, up: 4600, itself: 37106, film: 48000 }
+const VISIT = { down: 4606, up: 4606, itself: 37106, film: 48000 }
 // The most a part of a machine may change its height in one step while its tray opens or shuts, as a share of its full height. The steepest step MEASURED is 0.0302, so the first risen step is a small step on from the housed one and no step is a pop.
 const STEP_MOST = 0.04
 
@@ -120,7 +120,7 @@ function overhang(stage: Stage, seconds: number, row = 2, ids = ['crank-arm', 'c
     const now = st.open === row ? st.phase : ''
     if (now === 'closing' && was !== 'closing') {
       const list: Shape[] = []
-      stage.page.draw(list)
+      drawBuilt(stage.page, list)
       const tray = list.find((x) => x.id === `${ROWS[row]}-tray`)!
       let worst = -Infinity
       for (const id of ids) {
@@ -183,19 +183,19 @@ function housedDial(stage: Stage, seconds: number): Housed[] {
     stage.advance(1)
     if (stage.page.id !== 'step2') break
     const list: Shape[] = []
-    stage.page.draw(list)
+    drawBuilt(stage.page, list)
     const wheel = list.find((s) => s.id === 'dial-wheel')
     const tray = list.find((s) => s.id === `${ROWS[0]}-tray`)
     const opening = Boolean(tray) && tray!.h >= was
     was = tray ? tray.h : 0
     if (!wheel || !tray || tray.h >= TRAY_H) continue
-    out.push({ step: i, tall: wheel.z1 - wheel.z0, edge: trayY(0) + tray.h - DIAL.cy, opening, told: wheel.v && wheel.v.length > 1 ? wheel.v[1]! : null, wheel })
+    out.push({ step: i, tall: wheel.z1 - wheel.z0, edge: trayY(0) + tray.h / STAGE.times[0]! - DIAL.cy, opening, told: wheel.v && wheel.v.length > 1 ? wheel.v[1]! : null, wheel })
   }
   return out
 }
 
 // The steps of a visit on which part of the dial lies under the page: how many, how many of them while its tray opens, the dial's greatest height on them and its height on the last.
-const UNDER = { live: { steps: 83, opening: 37, most: 1.943704, last: 1.6 }, film: { steps: 83, opening: 37, most: 1.943704, last: 1.6 } }
+const UNDER = { live: { steps: 97, opening: 47, most: 4.16, last: 1.6 }, film: { steps: 97, opening: 47, most: 4.16, last: 1.6 } }
 
 describe('polish date: the dial under the page is drawn low on the live site, and whole in the film', () => {
   const ctx = (list: Shape[]): RealContext => ({ page: 'step2', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })
@@ -315,7 +315,7 @@ describe('polish date: the hub of the dial is in sight at every squash, in the f
       stage.advance(1)
       if (stage.page.id !== 'step2') break
       const list: Shape[] = []
-      stage.page.draw(list)
+      drawBuilt(stage.page, list)
       const drawn = list.find((s) => s.id === 'dial-wheel')
       if (!drawn) continue
       const top = drawn.z1 - drawn.z0
@@ -384,7 +384,7 @@ describe('polish date: the speckle of the risen dial comes in by degrees, in the
       stage.advance(1)
       if (stage.page.id !== 'step2') break
       const list: Shape[] = []
-      stage.page.draw(list)
+      drawBuilt(stage.page, list)
       const drawn = list.find((s) => s.id === 'dial-wheel')
       if (!drawn) continue
       const wheel: Shape = { ...drawn, v: [drawn.v?.[0] ?? 0] }

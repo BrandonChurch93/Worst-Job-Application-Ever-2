@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import type { RealContext, Emitter } from '../src/real/types'
-import { crank, CRANK_LOOK, gripGeometry } from '../src/pages/step2/real/crank'
+import { crank as shown, plainCrank as crank, CRANK_LOOK, gripGeometry } from '../src/pages/step2/real/crank'
 import { CRANK, SHEET, sheetScale, TRAY_Z } from '../src/pages/step2/layout'
 import type { Shape } from '../src/stage/types'
 
@@ -62,7 +62,7 @@ describe('the crank', () => {
     const { ctx } = context([])
     for (const s of shapes(0)) {
       const k = sheetScale(`sheet-${s.id}`)
-      expect(crank!.key({ ...s, id: `sheet-${s.id}`, w: s.w * k, h: s.h * k, z1: s.z0 + (s.z1 - s.z0) * k }, ctx)).toBe(crank!.key(s, ctx))
+      expect(shown!.key({ ...s, id: `sheet-${s.id}`, w: s.w * k, h: s.h * k, z1: s.z0 + (s.z1 - s.z0) * k }, ctx)).toBe(crank!.key(s, ctx))
     }
   })
 

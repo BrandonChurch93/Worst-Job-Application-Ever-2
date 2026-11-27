@@ -9,7 +9,7 @@ import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
 import type { FieldProgress } from '../../stage/types'
-import { buildLayout, COIN, CRANK, DIAL, DIAL_BODY, dialPlate, dialTop, FH, FIELDS, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SIGN_Z, SLIDE, SLOT, statesOf, STOP_Z, stopId, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
+import { buildLayout, COIN, CRANK, DIAL, DIAL_BODY, dialPlate, dialTop, FH, FIELDS, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SIGN_Z, SLIDE, SLOT, statesOf, STOP_Z, stopId, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z, scaleOf, SH, STAGE, SW } from './layout'
 import { actingAt, AWAY, FILM, LANDING, PEEL_AT, TOSS, pointerAt, poses, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
@@ -139,7 +139,7 @@ export function crankCorners(b: number): { x: number; y: number }[] {
 }
 // The crank can go down into its tray at an angle where every corner of the arm and the grip lies inside the tray's floor, this far from the tray's edge (the rim and its cove).
 export const CRANK_CLEAR = 8
-export const crankInTray = (b: number): boolean => crankCorners(b).every((c) => c.x >= FX + CRANK_CLEAR && c.x <= FX + FW - CRANK_CLEAR && c.y >= trayY(2) + CRANK_CLEAR && c.y <= trayY(2) + TRAY_H - CRANK_CLEAR)
+export const crankInTray = (b: number): boolean => crankCorners(b).every((c) => c.x >= FX + CRANK_CLEAR && c.x <= FX + SW(2) - CRANK_CLEAR && c.y >= trayY(2) + CRANK_CLEAR && c.y <= trayY(2) + SH(2) - CRANK_CLEAR)
 // The arc of such angles round the arm's resting angle, found once in steps of 0.001 rad and drawn in by HOME_PAD at each end: a live run ends inside it. It ends at HOME_LOW: with the arm lower the grip is the first thing the tray shuts over, while the crank still stands a little; up to here the shutting tray reaches the grip on the step the crank lies housed.
 const HOME_PAD = 0.03
 const HOME_LOW = -0.5
@@ -217,6 +217,16 @@ function machineParts(tree: LayoutNode, tray: string): { id: string; floor: numb
   return out
 }
 
+// The shapes of a page as its machines were built: each shape the page drew larger is given back as it was before.
+const builtOf = new WeakMap<Shape, Shape>()
+// A machine that lies down in its tray's floor is drawn no taller for being drawn larger: it is let into the floor by what it would stand higher, and that is given up as it rises to `whole` px.
+const SINK = { flat: 2, whole: 8 }
+export function drawBuilt(page: { draw(out: DrawList): void }, out: DrawList): void {
+  const list: DrawList = []
+  page.draw(list)
+  for (const shape of list) out.push(builtOf.get(shape) ?? shape)
+}
+
 export function makePage(): PageLogic {
   const layout = buildLayout()
   const beats = config.film.beats.filter((b) => b.unit === 'step2')
@@ -226,6 +236,26 @@ export function makePage(): PageLogic {
   const stops = [0, 1, 2].map((r) => boxOf(layout, stopId(r)))
   const sign = boxOf(layout, 'crank-sign')
   const parts = ROWS.map((name) => machineParts(layout, `${name}-tray`))
+  const scales = [0, 1, 2].map(scaleOf)
+  const inStage = new Set<string>()
+  for (const name of ROWS) for (const child of find(layout, `${name}-tray`).children ?? []) walk(child, (n) => void inStage.add(n.id))
+  // What a machine is told and what it tells, in its stage: the pointer and the arrow come to it at its built size, and where it puts the arrow or tells of a thing goes out at the size it is drawn.
+  function staged(io: StepIo, i: number): StepIo {
+    const m = scales[i]!
+    const cursor = new Proxy(io.cursor, {
+      get(t, name) {
+        if (name === 'x') return m.backX(t.x)
+        if (name === 'y') return m.backY(t.y)
+        if (name === 'z') return m.backAir(t.z)
+        if (name === 'place') return (x: number, y: number, z?: number): void => (z === undefined ? t.place(m.x(x), m.y(y)) : t.place(m.x(x), m.y(y), m.air(z)))
+        if (name === 'knock') return (vx: number, vy: number, vz = 0): void => t.knock(vx * m.k, vy * m.k, vz * m.k)
+        if (name === 'setGround') return (z: number): void => t.setGround(m.ground(z))
+        const v: unknown = Reflect.get(t, name, t)
+        return typeof v === 'function' ? (v as (...a: unknown[]) => unknown).bind(t) : v
+      }
+    })
+    return { ...io, pointer: { ...io.pointer, x: m.backX(io.pointer.x), y: m.backY(io.pointer.y) }, cursor, emit: (name, x, y, hits) => io.emit(name, m.x(x), m.y(y), hits) }
+  }
   const legendBox = SLOT.strips.map((strip, r) => boxOf(layout, reelId(r, strip[0]!)))
   let s = fresh('live')
   let rng: Random = stream('step2', config.seed)
@@ -462,10 +492,10 @@ export function makePage(): PageLogic {
     const sl = s.slot
     const c = io.cursor
     const left = FX + COIN.wall + COIN.r
-    const right = FX + FW - COIN.wall - COIN.r
+    const right = FX + SW(1) - COIN.wall - COIN.r
     const roof = trayY(1) + COIN.wall + COIN.r
     const lid = trayY(1) + COIN.r + 2
-    const ledge = trayY(1) + TRAY_H - COIN.wall - COIN.r
+    const ledge = trayY(1) + SH(1) - COIN.wall - COIN.r
     const floor = TRAY_Z + COIN.clear
     sl.cool = Math.max(0, sl.cool - dt)
     for (const coin of sl.coins) {
@@ -904,14 +934,15 @@ export function makePage(): PageLogic {
           s.lift = Math.min(1, s.lift + dt / 0.25)
           if (s.lift >= 1) {
             s.phase = 'ready'
-            if (i === 2) io.emit('volume-sign', sign.cx, sign.cy, false)
+            if (i === 2) staged(io, 2).emit('volume-sign', sign.cx, sign.cy, false)
           }
         }
         let over = false
         if (active && !s.skipping) {
-          if (i === 0) over = stepDial(io, forced)
-          else if (i === 1) over = stepSlot(io, forced)
-          else over = stepCrank(io, forced)
+          const sio = staged(io, i)
+          if (i === 0) over = stepDial(sio, forced)
+          else if (i === 1) over = stepSlot(sio, forced)
+          else over = stepCrank(sio, forced)
         }
         if (s.phase === 'ready' && over) {
           s.phase = 'ending'
@@ -938,9 +969,9 @@ export function makePage(): PageLogic {
           }
         }
       }
-      afterCrank(io)
-      ground(io)
-      if (s.mode === 'film') grip(io)
+      afterCrank(staged(io, 2))
+      ground(s.open >= 0 ? staged(io, s.open) : io)
+      if (s.mode === 'film') grip(s.open >= 0 ? staged(io, s.open) : io)
       for (let i = 0; i < 3; i++) {
         const target = s.open === i && (s.phase === 'opening' || s.phase === 'ready' || s.phase === 'ending' || (s.phase === 'closing' && s.lift > COVER)) ? 1 : 0
         if (target === 0 && s.spring[i] === 0) continue
@@ -973,54 +1004,62 @@ export function makePage(): PageLogic {
     camera: () => null,
     script: (time: number): Pointer => pointerAt(time),
     hint(): Hint | null {
-      const here = { x: s.px, y: s.py, down: false }
-      const blink = Math.floor(s.time * 4) % 2 === 0
-      if (s.pressed || s.skipping) return here
-      if (s.open < 0) {
-        if (allDone()) return { x: go.cx, y: go.cy, down: blink }
-        const at = fieldAt(s.field)
-        if (s.done[s.field] || s.slide >= 0) return { x: at.x, y: at.y, down: false }
-        if (s.field === 1 && s.birth.focus) {
-          const next = SLOT.film.join('')[s.birth.typed.length]
-          return { x: at.x, y: at.y, down: false, ...(next !== undefined && s.birth.fill === '' ? { key: next } : {}) }
+      const m = s.open >= 0 ? scales[s.open]! : null
+      const px = m ? m.backX(s.px) : s.px
+      const py = m ? m.backY(s.py) : s.py
+      const inner = (): Hint | null => {
+        const here = { x: px, y: py, down: false }
+        const blink = Math.floor(s.time * 4) % 2 === 0
+        if (s.pressed || s.skipping) return here
+        if (s.open < 0) {
+          if (allDone()) return { x: go.cx, y: go.cy, down: blink }
+          const at = fieldAt(s.field)
+          if (s.done[s.field] || s.slide >= 0) return { x: at.x, y: at.y, down: false }
+          if (s.field === 1 && s.birth.focus) {
+            const next = SLOT.film.join('')[s.birth.typed.length]
+            return { x: at.x, y: at.y, down: false, ...(next !== undefined && s.birth.fill === '' ? { key: next } : {}) }
+          }
+          return { x: at.x, y: at.y, down: blink }
         }
-        return { x: at.x, y: at.y, down: blink }
-      }
-      if (s.open === 0) {
-        const d = s.dial
-        const k = d.k || 5
-        const rest = holePlace(k, 0)
-        if (s.phase === 'opening') return { ...rest, down: false }
-        if (s.phase !== 'ready' || s.done[0]) return here
-        if (d.phase === 'rest') return { ...rest, down: Math.hypot(s.px - rest.x, s.py - rest.y) <= DIAL.hole * 0.6 }
-        if (d.phase === 'drag') {
-          const full = DIAL.travel(k)
-          if (d.a >= full - 0.01) return { ...holePlace(k, full), down: false }
-          return { ...holePlace(k, Math.min(full + 0.03, d.a + 0.16)), down: true }
+        if (s.open === 0) {
+          const d = s.dial
+          const k = d.k || 5
+          const rest = holePlace(k, 0)
+          if (s.phase === 'opening') return { ...rest, down: false }
+          if (s.phase !== 'ready' || s.done[0]) return here
+          if (d.phase === 'rest') return { ...rest, down: Math.hypot(px - rest.x, py - rest.y) <= DIAL.hole * 0.6 }
+          if (d.phase === 'drag') {
+            const full = DIAL.travel(k)
+            if (d.a >= full - 0.01) return { ...holePlace(k, full), down: false }
+            return { ...holePlace(k, Math.min(full + 0.03, d.a + 0.16)), down: true }
+          }
+          return { ...rest, down: false }
         }
-        return { ...rest, down: false }
-      }
-      if (s.open === 1) {
-        const sl = s.slot
-        const r = sl.stopped.findIndex((v) => v < 0)
-        if (r >= 0 && s.phase !== 'ending' && s.phase !== 'closing') {
-          const len = SLOT.strips[r]!.length
-          const off = mod(reelPos(sl, r) - sl.own[r]! + len / 2, len) - len / 2
-          return { x: stops[r]!.cx, y: stops[r]!.cy, down: sl.phase === 'spin' && sl.t >= REEL.gather && off >= HINT.from && off <= HINT.to && Math.hypot(s.px - stops[r]!.cx, s.py - stops[r]!.cy) <= 20 }
+        if (s.open === 1) {
+          const sl = s.slot
+          const r = sl.stopped.findIndex((v) => v < 0)
+          if (r >= 0 && s.phase !== 'ending' && s.phase !== 'closing') {
+            const len = SLOT.strips[r]!.length
+            const off = mod(reelPos(sl, r) - sl.own[r]! + len / 2, len) - len / 2
+            return { x: stops[r]!.cx, y: stops[r]!.cy, down: sl.phase === 'spin' && sl.t >= REEL.gather && off >= HINT.from && off <= HINT.to && Math.hypot(px - stops[r]!.cx, py - stops[r]!.cy) <= 20 }
+          }
+          const out: Hint = { x: SLOT.leverX + 6, y: SLOT.y + SLOT.h + 6, down: false }
+          if (sl.win && (sl.phase === 'read' || sl.phase === 'pay')) out.dodge = { x: 420, y: trayY(1) + 60 }
+          return out
         }
-        const out: Hint = { x: SLOT.leverX + 6, y: SLOT.y + SLOT.h + 6, down: false }
-        if (sl.win && (sl.phase === 'read' || sl.phase === 'pay')) out.dodge = { x: 420, y: trayY(1) + 60 }
+        const c = s.crank
+        if (s.phase === 'opening') return { ...gripPlace(c.b), down: false }
+        if (c.phase === 'rest' && s.phase === 'ready') {
+          const at = gripPlace(c.b)
+          return { ...gripPlace(c.b + (c.grab ? 0.15 : 0)), down: c.grab || Math.hypot(px - at.x, py - at.y) <= 20 }
+        }
+        const out: Hint = { ...gripPlace(CRANK.rest), down: false }
+        if (c.phase === 'runaway' && !c.hit) out.dodge = { x: CRANK.hx + 300, y: CRANK.hy - 110 }
         return out
       }
-      const c = s.crank
-      if (s.phase === 'opening') return { ...gripPlace(c.b), down: false }
-      if (c.phase === 'rest' && s.phase === 'ready') {
-        const at = gripPlace(c.b)
-        return { ...gripPlace(c.b + (c.grab ? 0.15 : 0)), down: c.grab || Math.hypot(s.px - at.x, s.py - at.y) <= 20 }
-      }
-      const out: Hint = { ...gripPlace(CRANK.rest), down: false }
-      if (c.phase === 'runaway' && !c.hit) out.dodge = { x: CRANK.hx + 300, y: CRANK.hy - 110 }
-      return out
+      const h = inner()
+      if (!h || !m) return h
+      return { ...h, x: m.x(h.x), y: m.y(h.y), ...(h.dodge ? { dodge: { x: m.x(h.dodge.x), y: m.y(h.dodge.y) } } : {}) }
     },
     skip() {
       s.skipping = true
@@ -1088,7 +1127,7 @@ export function makePage(): PageLogic {
           out.push({ id: `${tag}${reelId(r, legend)}`, part: 'slot', kind: 'text', x: SLOT.reelX(r) + dx, y: b.y + off + dy, w: SLOT.reelW, h: b.h, z0: z(TOP + 14), z1: z(TOP + 14), tone: 'ink', words: `data:step2.${SLOT.names[r]}.${legend}`, type: reelType(r) })
         }
       }
-      const shut = trayY(1) + TRAY_H * clamp(s.spring[1]!, 0, 1) - COIN.r - COIN.wall / 2
+      const shut = trayY(1) + SH(1) * clamp(s.spring[1]!, 0, 1) - COIN.r - COIN.wall / 2
       for (const coin of m.slot.coins) if (tag !== '' || coin.y <= shut) out.push({ id: `${tag}coin-${coin.n}`, part: 'slot', kind: 'disc', x: coin.x - COIN.r + dx, y: coin.y - COIN.r + dy, w: COIN.r * 2, h: COIN.r * 2, z0: coin.z, z1: coin.z + 4, tone: 'light', rot: coin.rot })
     }
   }
@@ -1133,6 +1172,17 @@ export function makePage(): PageLogic {
     }
   }
 
+  // A shape of a stage, at the size and the place it is drawn on the page.
+  function grown(shape: Shape, i: number, sink: number): Shape {
+    const m = scales[i]!
+    const k = m.k
+    const made = shape.part === 'dial' || shape.part === 'slot' || shape.part === 'crank'
+    const moved: Shape = { ...shape, x: m.x(shape.x + shape.w / 2) - (shape.w * k) / 2, y: m.y(shape.y + shape.h / 2) - (shape.h * k) / 2, w: shape.w * k, h: shape.h * k, z0: m.z(shape.z0) - sink, z1: m.z(shape.z1) - sink, ...(!made && shape.r !== undefined ? { r: shape.r * k } : {}) }
+    const out: Shape = shape.kind !== 'text' || !shape.type ? moved : { ...moved, x: shape.type.align === 'centre' ? moved.x : m.x(shape.x), y: m.y(shape.y), type: { ...shape.type, px: shape.type.px * k } }
+    builtOf.set(out, shape)
+    return out
+  }
+
   function drawPage(out: DrawList): void {
     const states = page.states()
     const over: Record<string, Partial<Shape> | null> = {}
@@ -1148,14 +1198,17 @@ export function makePage(): PageLogic {
       const name = ROWS[shown]!
       const tall = Math.max(4, Math.round(TRAY_H * clamp(s.spring[shown]!, 0, 1)))
       over[`${name}-tray`] = { h: tall, r: Math.min(TRAY_R, tall / 2) }
-      const edge = trayY(0) + tall - DIAL.cy
+      const edge = trayY(0) + tall / STAGE.times[0]! - DIAL.cy
       overMachine(over, shown, s, s.lift, s.mode === 'live' && shown === 0 && edge < DIAL_REACH ? edge : null)
     }
     if (allDone()) {
       over['continue-cap'] = { tone: 'accent', ...(s.pressed ? { z1: heights.button - heights.keyTravel } : {}) }
       over['continue-label'] = { tone: 'inkLight', ...(s.pressed ? { z0: heights.button - heights.keyTravel, z1: heights.button - heights.keyTravel } : {}) }
     }
+    const first = out.length
     drawLayout(out, layout, { states, over, runtime: { 'step2.phone': phoneMask(s.dial.digits), 'step2.birth': dateMask(s.birth.typed), 'step2.volume': volumeMask(s.crank.level) } })
+    const staged: number[] = []
+    if (shown >= 0) for (let j = first; j < out.length; j++) if (inStage.has(out[j]!.id)) staged.push(j)
     const here = s.slide >= 0 ? [s.field - 1, s.field] : [Math.min(s.field, FIELDS - 1)]
     for (const i of here) {
       const y = rowY(i)
@@ -1169,7 +1222,15 @@ export function makePage(): PageLogic {
       const wide = (s.field === 1 ? (s.birth.typed.length > 0 ? measure(TYPE.value.font, dateMask(s.birth.typed), TYPE.value.px).width : 0) : measure(TYPE.value.font, phoneMask(s.dial.digits), TYPE.value.px).width) + 4
       out.push({ id: 'field-caret', part: 'rows', kind: 'box', x: FX + PAD + wide, y: rowY(s.field) + 16, w: 3, h: FH - 32, z0: 0.1, z1: 0.5, tone: 'ink' })
     }
-    if (shown >= 0) machine(out, shown, s, s.lift, 0, 0, '', s.phase === 'closing' ? Math.max(0.02, smooth(s.lift)) : 1)
+    if (shown >= 0) {
+      const from = out.length
+      machine(out, shown, s, s.lift, 0, 0, '', s.phase === 'closing' ? Math.max(0.02, smooth(s.lift)) : 1)
+      for (let j = from; j < out.length; j++) staged.push(j)
+      let high = 0
+      for (const j of staged) if (out[j]!.kind !== 'text') high = Math.max(high, out[j]!.z1 - TRAY_Z)
+      const sink = (scales[shown]!.k - 1) * Math.min(high, SINK.flat) * clamp((SINK.whole - high) / (SINK.whole - SINK.flat), 0, 1)
+      for (const j of staged) out[j] = grown(out[j]!, shown, sink)
+    }
   }
 
   function machinesSheet(): SheetFrame {

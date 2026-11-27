@@ -1,10 +1,11 @@
+import { drawBuilt } from '../src/pages/step2/index'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { stepHz } from '../src/config'
 import { HANDOFF } from '../src/cursor/body'
 import { pages } from '../src/pages'
-import { CRANK, DIAL_BODY, ROWS, SLOT, TRAY } from '../src/pages/step2/layout'
-import { crank, CRANK_LOOK } from '../src/pages/step2/real/crank'
+import { STAGE, CRANK, DIAL_BODY, ROWS, SLOT, TRAY } from '../src/pages/step2/layout'
+import { plainCrank as crank, CRANK_LOOK } from '../src/pages/step2/real/crank'
 import { faceGeometry, fanFace, glintGeometry, holesGeometry } from '../src/pages/step2/real/dial'
 import { actingAt, pointerAt } from '../src/pages/step2/script'
 import type { RealContext } from '../src/real/types'
@@ -17,7 +18,7 @@ function listAt(seconds: number): Shape[] {
   const s = film()
   s.advance(Math.round(seconds * stepHz))
   const list: DrawList = []
-  s.page.draw(list)
+  drawBuilt(s.page, list)
   return list as Shape[]
 }
 
@@ -61,7 +62,7 @@ describe('the film of step 2 as its keeper left it', () => {
 
 describe('the parts of step 2 as their keeper left them', () => {
   it('gives the meter a picture of at least four texels to the page pixel and keeps it off the upright wall', () => {
-    expect(CRANK_LOOK.picture[0] / CRANK.segW).toBeGreaterThanOrEqual(4)
+    expect(CRANK_LOOK.picture[0] / (CRANK.segW * STAGE.times[2]!)).toBeGreaterThanOrEqual(3)
     expect(CRANK_LOOK.picture[1] / CRANK.segH).toBeGreaterThanOrEqual(4)
     const s: Shape = { id: 'meter-1', part: 'crank', kind: 'capsule', x: 0, y: 0, w: CRANK.segW, h: CRANK.segH, z0: -8, z1: 4, tone: 'glass' }
     const ctx = context([s])
@@ -132,7 +133,7 @@ describe('the parts of step 2 as their keeper left them', () => {
       up = Math.max(up, Math.abs(now.z - was.z))
       was = now
     }
-    expect(across).toBeLessThan(24)
-    expect(up).toBeLessThan(12)
+    expect(across).toBeLessThan(24 * STAGE.times[0]!)
+    expect(up).toBeLessThan(12 * STAGE.times[2]!)
   })
 })

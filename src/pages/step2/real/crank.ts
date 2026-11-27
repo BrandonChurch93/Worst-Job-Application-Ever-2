@@ -365,7 +365,7 @@ const kindOf = (s: Shape): 'base' | 'hub' | 'arm' | 'grip' | 'meter' | null => {
   return null
 }
 
-const plainCrank: PartMaker = {
+export const plainCrank: PartMaker = {
   key(s) {
     if (s.kind === 'text') return null
     const kind = kindOf(s)

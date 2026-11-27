@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import type { Emitter, RealContext } from '../src/real/types'
-import { coinGeometry, coinHeight, coinPose, sheenGeometry, slot, SLOT_LOOK } from '../src/pages/step2/real/slot'
+import { coinGeometry, coinHeight, coinPose, sheenGeometry, plainSlot as slot, SLOT_LOOK } from '../src/pages/step2/real/slot'
 import { lathe, loft, normalsFrom } from '../src/pages/step2/real/slot-kit'
 import { SLOT, TOP, TRAY_Z } from '../src/pages/step2/layout'
 import { roundedRect } from '../src/shell/solids'

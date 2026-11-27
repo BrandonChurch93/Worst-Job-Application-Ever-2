@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { volumeMask } from '../src/pages/step2'
-import { DIAL, TRAY_R, TRAY_Z } from '../src/pages/step2/layout'
+import { scaleOf, STAGE, DIAL, TRAY_R, TRAY_Z } from '../src/pages/step2/layout'
 import { trayFoot } from '../src/pages/step2/real/rows'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList, type Shape } from '../src/stage/stage'
 
@@ -26,7 +26,7 @@ describe('step 2 after its fixer', () => {
     let still = 0
     for (const coin of lying) {
       expect(coin.y + coin.h, coin.id).toBeLessThanOrEqual(tray.y + tray.h - trayFoot(Math.abs(TRAY_Z)))
-      expect(coin.y + coin.h, coin.id).toBeGreaterThan(tray.y + tray.h - 80)
+      expect(coin.y + coin.h, coin.id).toBeGreaterThan(tray.y + tray.h - 80 * STAGE.times[1]!)
       const then = later.find((x) => x.id === coin.id)!
       if (Math.hypot(then.x - coin.x, then.y - coin.y) < 0.01) still++
     }
@@ -56,7 +56,7 @@ describe('step 2 after its fixer', () => {
       const list = to(s, t)
       const grip = list.find((x) => x.id === 'crank-grip')!
       const c = s.cursor.pose()
-      expect(Math.hypot(c.x - (grip.x + grip.w / 2), c.y - (grip.y + grip.h / 2)), `at ${t.toFixed(2)}`).toBeLessThan(52)
+      expect(Math.hypot(c.x - (grip.x + grip.w / 2), c.y - (grip.y + grip.h / 2)), `at ${t.toFixed(2)}`).toBeLessThan(52 * STAGE.times[2]!)
     }
   })
 
@@ -65,7 +65,7 @@ describe('step 2 after its fixer', () => {
     for (const t of [3.2, 3.3, 3.45]) {
       to(s, t)
       const c = s.cursor.pose()
-      expect(Math.hypot(c.x - (DIAL.cx + 15), c.y - (DIAL.cy + 14)), `at ${t}`).toBeLessThan(6)
+      expect(Math.hypot(c.x - scaleOf(0).x(DIAL.cx + 15), c.y - scaleOf(0).y(DIAL.cy + 14)), `at ${t}`).toBeLessThan(6 * STAGE.times[0]!)
     }
   })
 

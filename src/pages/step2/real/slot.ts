@@ -525,7 +525,7 @@ const kindOf = (s: Shape): Kind | '' | null => {
   return null
 }
 
-const plainSlot: PartMaker = {
+export const plainSlot: PartMaker = {
   key(s) {
     const kind = kindOf(s)
     if (kind === null) return null

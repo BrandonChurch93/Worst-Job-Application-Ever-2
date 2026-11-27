@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
-import { makePage } from '../src/pages/step2'
+import { drawBuilt, makePage } from '../src/pages/step2'
 import { DIAL, pruned, ROWS, statesOf } from '../src/pages/step2/layout'
 import { pages } from '../src/pages'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
@@ -84,7 +84,7 @@ describe('step 2, the layout', () => {
     for (let t = 0; t <= 20.4; t += 0.2) {
       s.seek(t)
       const list: Shape[] = []
-      s.page.draw(list)
+      drawBuilt(s.page, list)
       check(list)
       const ids = list.map((x) => x.id)
       expect(new Set(ids).size, `ids at ${t.toFixed(1)}`).toBe(ids.length)
@@ -143,7 +143,7 @@ describe('step 2, the film', () => {
     const t = film()
     const shapes = (): Shape[] => {
       const list: Shape[] = []
-      t.page.draw(list)
+      drawBuilt(t.page, list)
       return list
     }
     t.seek(3.2)
@@ -203,7 +203,7 @@ describe('step 2, the film', () => {
     walkTree(makePage().layout as never)
     const part = (id: string): Shape => {
       const list: Shape[] = []
-      t.page.draw(list)
+      drawBuilt(t.page, list)
       return list.find((x) => x.id === id)!
     }
     t.seek(14.44)
@@ -365,8 +365,8 @@ describe('step 2, live', () => {
         expect(state(b), `${mode} ${at}`).toBe(state(a))
         const la: Shape[] = []
         const lb: Shape[] = []
-        a.page.draw(la)
-        b.page.draw(lb)
+        drawBuilt(a.page, la)
+        drawBuilt(b.page, lb)
         expect(lb, `${mode} ${at}`).toEqual(la)
       }
     }

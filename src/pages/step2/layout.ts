@@ -14,13 +14,13 @@ const heights = config.scale.heights
 export const ROWS = ['phone', 'birth', 'volume'] as const
 export type RowName = (typeof ROWS)[number]
 
-export const FW = 792
+export const FW = 1100
 export const FX = (PAGE_W - FW) / 2
 export const FH = sizes.field
 export const HEAD_Y = HEADER.contentY + 12
 export const ROW_Y = HEAD_Y + 84
 export const TRAY_GAP = 12
-export const TRAY_H = 372
+export const TRAY_H = 448
 export const TRAY_R = 18
 // A tray's liner, in page pixels, and the shade its wall lays on its floor.
 export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 3.4, lean: 0.3, cove: 2, rimShade: 0.66, wallShade: 0.36, wallShadeTop: 0.2, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
@@ -29,7 +29,7 @@ export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 3.4, lean: 0.3
 export const COIN = { r: 13, wall: 14, clear: 0.3, fall: 2600, spring: 0.38, least: 150, hops: 2, rows: 2, roll: 150, pitch: 23, stack: 1.4 }
 // One field stands on the page at a time. The one that is done leaves to the left by this much and the next comes in from the right.
 export const FIELDS = 3
-export const SLIDE = { far: 1500, long: 0.42, hold: 0.7, filmHold: 0 }
+export const SLIDE = { far: 1560, long: 0.42, hold: 0.7, filmHold: 0 }
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
 export const PAD = 24
@@ -42,13 +42,40 @@ export const trayY = (_i = 0): number => ROW_Y + FH + TRAY_GAP
 export const PROMPT_Y = trayY() + 30
 // The lowest band of the page is kept for the spoken words: the footnote stands above it, under the stage.
 export const BAND = 150
-export const NOTE_Y = trayY() + TRAY_H + 22
+export const NOTE_Y = trayY() + 10
+
+// Each machine is laid out and run at the size it was built, in a tray of its own (the stage), and drawn `times` larger about the tray's upper left corner on its floor.
+// The real tray is one size for all three: a stage is that tray divided by its machine's `times`.
+export const STAGE = { times: [1.5, 1.4, 1.25] }
+export const SW = (i: number): number => FW / STAGE.times[i]!
+export const SH = (i: number): number => TRAY_H / STAGE.times[i]!
+const TRAY_FLOOR = heights.machineTray
+const HOVER = heights.cursorHover
+export interface Scale { k: number; x: (x: number) => number; y: (y: number) => number; z: (z: number) => number; ground: (z: number) => number; air: (z: number) => number; backX: (x: number) => number; backY: (y: number) => number; backAir: (z: number) => number }
+// From a stage to the page and back. A part's height grows from the tray's floor. The arrow's height grows from where it hovers, and joins the parts' heights a little above that, so it stands as far over a larger part as over the built one.
+export function scaleOf(i: number): Scale {
+  const k = STAGE.times[i]!
+  const ty = trayY(i)
+  const join = 2 * (k - 1) * (HOVER - TRAY_FLOOR)
+  const z = (v: number): number => TRAY_FLOOR + (v - TRAY_FLOOR) * k
+  return {
+    k,
+    x: (x) => FX + (x - FX) * k,
+    y: (y) => ty + (y - ty) * k,
+    z,
+    ground: (v) => (v <= 0 ? v : k * v + (z(0) - 0) * Math.min(1, v / -TRAY_FLOOR)),
+    air: (v) => (v <= HOVER ? v : v < HOVER + join ? HOVER + (v - HOVER) * (k + 0.5) : z(v)),
+    backX: (x) => FX + (x - FX) / k,
+    backY: (y) => ty + (y - ty) / k,
+    backAir: (v) => (v <= HOVER ? v : v < HOVER + join * (k + 0.5) ? HOVER + (v - HOVER) / (k + 0.5) : TRAY_FLOOR + (v - TRAY_FLOOR) / k)
+  }
+}
 
 const DEG = Math.PI / 180
 
 export const DIAL = {
   r: 100, ring: 70, hole: 15, stop: 30 * DEG, first: -30 * DEG, pitch: 30 * DEG,
-  cx: FX + FW / 2, cy: trayY(0) + 206,
+  cx: FX + SW(0) / 2, cy: trayY(0) + 172,
   holeAngle: (k: number): number => -30 * DEG - 30 * DEG * (k - 1),
   travel: (k: number): number => 60 * DEG + 30 * DEG * (k - 1),
   digit: (k: number): string => String(k % 10)
@@ -70,8 +97,8 @@ export const dialTop = (lift: number): number => Math.max(DIAL_BODY.rest, DIAL_B
 // How far the numeral plate stands above the tray's floor under a wheel whose top stands at `top`: it never sinks into the floor.
 export const dialPlate = (top: number): number => Math.max(DIAL_BODY.plateLeast, top - DIAL_BODY.plate)
 
-const sy = trayY(1) + 46
-const sx = FX + (FW - 392) / 2
+const sy = trayY(1) + 40
+const sx = FX + (SW(1) - 392) / 2
 export const SLOT = {
   x: sx, y: sy + PAD, w: 336, h: 150,
   reelW: 92, reelH: 106, reelGap: 12,
@@ -89,9 +116,9 @@ export const SLOT = {
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + 190, hy: cy + TRAY_H / 2, rest: -0.75, arm: 128, armW: 23, gripW: 90, gripH: 52, tip: 136, hold: 8, holdAside: 6, base: 110, hub: 44,
-  segW: 28, segH: 116, segGap: 13, segX: FX + 378, segY: cy + 214,
-  signY: cy + 42, signH: 130
+  hx: FX + 200, hy: cy + SH(2) / 2, rest: -0.75, arm: 128, armW: 23, gripW: 90, gripH: 52, tip: 136, hold: 8, holdAside: 6, base: 110, hub: 44,
+  segW: 34, segH: 124, segGap: 13, segX: FX + 388, segY: cy + 204,
+  signY: cy + 36, signH: 140
 }
 
 // The sheet of the machines: the page's header, and each machine under its label at the size the approved sheet shows it.
@@ -101,7 +128,7 @@ export const SHEET = {
   cursor: { x: 613, y: 899 }
 }
 export function sheetScale(id: string): number {
-  if (!id.startsWith('sheet-')) return 1
+  if (!id.startsWith('sheet-')) return id.startsWith('meter-') || id.startsWith('crank-') ? STAGE.times[2]! : id.startsWith('dial-') ? STAGE.times[0]! : STAGE.times[1]!
   if (id.includes('meter-')) return SHEET.meter.times
   if (id.includes('dial-')) return SHEET.dial.times
   if (id.includes('crank-')) return SHEET.crank.times
@@ -122,7 +149,7 @@ export const SIGN_TYPE = { font: 'inter-600', px: 56, align: 'centre' as const }
 export const PROMPT_TYPE = { ...TYPE.body, align: 'centre' as const }
 export const stopId = (r: number): string => `slot-stop-${r}`
 
-const centred = (id: string, key: string, state: string): LayoutNode => text(id, key, PROMPT_TYPE, FX + FW / 2, PROMPT_Y, { part: 'type', on: TRAY_Z, states: [state] })
+const centred = (id: string, key: string, state: string, i: number): LayoutNode => text(id, key, PROMPT_TYPE, FX + SW(i) / 2, PROMPT_Y, { part: 'type', on: TRAY_Z, states: [state] })
 
 function rowNodes(i: number): LayoutNode[] {
   const name = ROWS[i]!
@@ -153,7 +180,7 @@ function dialNodes(): LayoutNode[] {
   }
   const centre = node('dial-centre', 'dialCentre', [d.cx - 30, d.cy - 30, 60, 60], { part: 'dial', shape: 'disc', height: TOP + 16, floor: TOP + 2, tone: 'accent', mechanism: true })
   const wheel = node('dial-wheel', 'dialWheel', [d.cx - d.r, d.cy - d.r, d.r * 2, d.r * 2], { part: 'dial', shape: 'disc', height: TOP + 2, floor: TRAY_Z, tone: 'metal', mechanism: true, children: [...numerals, centre] })
-  return [wheel, centred('dial-prompt', 'copy:step2.rows.phone.panel', 'phone-panel')]
+  return [wheel, centred('dial-prompt', 'copy:step2.rows.phone.panel', 'phone-panel', 0)]
 }
 
 function slotNodes(): LayoutNode[] {
@@ -173,7 +200,7 @@ function slotNodes(): LayoutNode[] {
   const cabinet = node('slot-cabinet', 'slotCabinet', [s.x, s.y, s.w, s.h], { part: 'slot', height: TOP + 20, floor: TRAY_Z, tone: 'metal', r: 12, mechanism: true, children: [window] })
   const knob = node('slot-knob', 'slotKnob', [s.leverX - s.knob / 2, s.knobY - s.knob / 2, s.knob, s.knob], { part: 'slot', shape: 'disc', height: TOP + 40, floor: TOP + 12, tone: 'accent', mechanism: true })
   const payout = node('slot-payout', 'slotPayout', [s.payX, s.payY, s.payW, s.payH], { part: 'slot', height: 6, floor: TRAY_Z, tone: 'dark', r: 6 })
-  return [cabinet, knob, payout, ...stops, centred('slot-prompt', 'copy:drafts.step2.birth.panel', 'birth-panel')]
+  return [cabinet, knob, payout, ...stops, centred('slot-prompt', 'copy:drafts.step2.birth.panel', 'birth-panel', 1)]
 }
 
 function crankNodes(): LayoutNode[] {
@@ -204,7 +231,7 @@ export function buildLayout(): LayoutNode {
   const by = SCREEN_H - 40 - sizes.button
   const go = button('continue', RIGHT - w, by, w, 'copy:step2.continue', { part: 'shell', tone: 'metal' })
   find(go, 'continue-label').tone = 'ink'
-  const note = text('note', 'copy:step2.note', { ...ROW_HELPER, wrap: FW }, FX, NOTE_Y, { part: 'type' })
+  const note = text('note', 'copy:step2.note', { ...ROW_HELPER, wrap: FW }, FX, NOTE_Y, { part: 'type', states: ['note'] })
   return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...trays, note, go])
 }
 
@@ -213,6 +240,7 @@ export interface StateView { here: number[]; open: number; panel: boolean; value
 
 export function statesOf(v: StateView): string[] {
   const out: string[] = []
+  if (v.open < 0) out.push('note')
   for (const i of v.here) {
     const name = ROWS[i]!
     out.push(`${name}-here`)
