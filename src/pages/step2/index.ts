@@ -112,9 +112,9 @@ export function crankCorners(b: number): { x: number; y: number }[] {
 // The crank can go down into its tray at an angle where every corner of the arm and the grip lies inside the tray's floor, this far from the tray's edge (the rim and its cove).
 export const CRANK_CLEAR = 8
 export const crankInTray = (b: number): boolean => crankCorners(b).every((c) => c.x >= FX + CRANK_CLEAR && c.x <= FX + FW - CRANK_CLEAR && c.y >= trayY(2) + CRANK_CLEAR && c.y <= trayY(2) + TRAY_H - CRANK_CLEAR)
-// The arc of such angles round the arm's resting angle, found once in steps of 0.001 rad and drawn in by HOME_PAD at each end: a live run ends inside it. It ends at HOME_LOW, the arm level: lower, the grip would be the first thing the tray shuts over, while the crank still stands a little.
+// The arc of such angles round the arm's resting angle, found once in steps of 0.001 rad and drawn in by HOME_PAD at each end: a live run ends inside it. It ends at HOME_LOW: with the arm lower the grip is the first thing the tray shuts over, while the crank still stands a little; up to here the shutting tray reaches the grip on the step the crank lies housed.
 const HOME_PAD = 0.03
-const HOME_LOW = 0
+const HOME_LOW = -0.5
 export const CRANK_HOME = ((): { from: number; to: number } => {
   let from = CRANK.rest
   let to = CRANK.rest

@@ -140,7 +140,7 @@ describe('polish date: the crank lies inside its tray before it goes down into i
   it('keeps the arc of the crank round its resting angle, the last angle of the film in it', () => {
     expect(CRANK_HOME.from).toBeLessThan(-0.9025)
     expect(CRANK_HOME.to).toBeGreaterThan(-0.75)
-    expect(CRANK_HOME.to).toBeLessThanOrEqual(0)
+    expect(CRANK_HOME.to).toBeLessThanOrEqual(-0.5)
   })
   for (const bot of config.live.bots) {
     it(`bot ${bot}: on the step the lift begins to lower, every corner of the arm and the grip is inside the tray's floor`, () => {
