@@ -1,0 +1,13 @@
+diff --git a/src/pages/step3/index.ts b/src/pages/step3/index.ts
+index f3ec0261..4ef60108 100644
+--- a/src/pages/step3/index.ts
++++ b/src/pages/step3/index.ts
+@@ -237,7 +237,7 @@ export function makePage(): PageLogic {
+   // How bright the website's own light is: full on the page, down to dusk by the time the machine wakes, and up again once the ball leaves by the drain.
+   const website = (): number => 1 - (1 - DUSK) * smooth(s.dim)
+   // How bright each tier's general lighting is: a wave down the tiers when the machine wakes, and a slow dim once the ball has left by the drain.
+-  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - (k + 1) * WAKE) / WAKE) * (s.t > T.wake + 4 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) : 0))
++  const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - (k + 1) * WAKE) / WAKE) * (s.t > T.wake + 4 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) * (machine().cut && ball().tier === k ? ASLEEP : 1) : 0))
+   const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + (n.tier + 1) * WAKE && s.t < T.wake + (n.tier + 1) * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
+   const modeOf = (k: number): number | null => {
+     let out: number | null = null
