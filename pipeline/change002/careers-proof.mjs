@@ -1,7 +1,7 @@
-// node pipeline/change002/careers-proof.mjs [--only film,apply,top,card,ticker]
+// node pipeline/change002/careers-proof.mjs [--only film,apply,top,card,ticker,cost] [--setting a|b]
 // The proof pictures of the careers page, each at most 1200 px on its long edge, in out/work/careers/:
 // the first screen beside the approved one, twelve frames of a card under a real mouse, the ticker in windows 1920 and 2560 wide,
-// the press of Apply with the first frames of the turn, and the film's 14 seconds as twelve frames.
+// the press of Apply with the first frames of the turn, and the film's opening on the page as twelve frames (--setting picks setting A or B of the opening).
 import fs from 'node:fs'
 import sharp from 'sharp'
 import { args, at, config } from '../../tools/lib/paths.mjs'
@@ -17,6 +17,8 @@ const GROUND = '#d81b60'
 fs.mkdirSync(OUT, { recursive: true })
 const beats = config().film.beats.filter((b) => b.unit === 'marketing')
 const made = []
+const setting = typeof a.setting === 'string' ? a.setting.toLowerCase() : ''
+const tag = setting ? `-${setting}` : ''
 
 async function grid(name, frames, across, width) {
   const tiles = []
@@ -43,23 +45,23 @@ const filmSpec = (t) => {
 }
 
 if (only.some((o) => ['top', 'film', 'apply'].includes(o))) {
-  const session = await openSession({ format: 'hd', assets: 'full' })
+  const session = await openSession({ format: 'hd', assets: 'full', ...(setting ? { query: `&opening=${setting}` } : {}) })
   try {
     const shot = async (t) => ({ png: (await drawStill(session, filmSpec(t))).png, label: `${t.toFixed(2)} s` })
     if (only.includes('top')) {
-      const mine = await shot(11)
+      const mine = await shot(2.5)
       fs.writeFileSync(`${OUT}/careers-top.png`, mine.png)
       await grid('careers-top-beside', [mine, { png: fs.readFileSync(at('references', 'approved-002', 'careers-top.png')), label: 'approved careers-top.png' }], 2, 597)
     }
     if (only.includes('film')) {
       const frames = []
-      for (const t of [0.4, 1.6, 2.5, 3.2, 3.9, 5.2, 6.6, 7.7, 9.4, 11, 12.6, 13.75]) frames.push(await shot(t))
-      await grid('careers-film-twelve', frames, 4, 295)
+      for (const t of setting === 'a' ? [1, 7, 13.7, 14.1, 14.5, 14.9, 15.3, 15.7, 16.1, 16.8, 18, 18.9] : [1, 2.5, 4, 5.6, 7.3, 8.6, 10.8, 13, 14.9, 16.8, 18, 18.9]) frames.push(await shot(t))
+      await grid(`careers-film-twelve${tag}`, frames, 4, 295)
     }
     if (only.includes('apply')) {
       const frames = []
-      for (const t of [11, 11.5, 11.9, 12.2, 12.4, 12.56, 12.7, 13.1, 13.5, 13.62, 13.75, 13.9]) frames.push(await shot(t))
-      await grid('careers-apply-turn', frames, 4, 295)
+      for (const t of [16.5, 16.9, 17.2, 17.5, 17.8, 17.95, 18.05, 18.3, 18.7, 18.85, 19, 19.15]) frames.push(await shot(t))
+      await grid(`careers-apply-turn${tag}`, frames, 4, 295)
     }
   } finally {
     await session.close()
