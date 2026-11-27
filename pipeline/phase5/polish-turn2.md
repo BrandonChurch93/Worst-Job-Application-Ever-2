@@ -106,7 +106,7 @@ Face: mean of a bare patch of paper, 0 to 255. Rest is 215.1 live and 217.5 in t
 ### 7.3 The Builder's duties (c) and (d)
 
 - The largest step of the face between two frames in a row (slab under 76 degrees): live -19.2 into frame 24, before -30.5 into frame 20. Film -16.4 into frame 24, before -26.6 into frame 20. Smaller than today's largest in both.
-- The shadow of the right card: reach 9 px at rest, 10 at frame 11, 20 at frame 18, 31 at frame 20, 51, 87, 72 at frames 21 to 23, and by frame 24 its depth is 0.01 (gone). Its depth falls every few frames from 0.43 to 0.08 with no rise. The largest step of the reach is +36 into frame 22 at depth 0.12; before it was +35 into frame 18 at depth 0.20 (reach 78, then 95, gone at frame 20). The card's rim x and middle y move by at most 12 px a frame up to frame 16 in both (the columns `card rim x`, `card middle y`).
+- The shadow of the right card: reach 9 px at rest, 10 at frame 11, 20 at frame 18, 31 at frame 20, 51, 87, 72 at frames 21 to 23, and by frame 24 its depth is 0.01 (gone). Its depth falls from 0.43 to 0.08 with ripples of 0.01 to 0.02 (0.40 to 0.42 into frame 7, 0.36 to 0.37 into frame 15) and no larger rise. The largest step of the reach is +36 into frame 22 at depth 0.12; before it was +35 into frame 18 at depth 0.20 (reach 78, then 95, gone at frame 20). The card does not jump or slide: its rim x moves by 1 to 3 px a frame through frame 23 (before 1 to 6), its middle y by steps that grow from 1 px at frame 5 to 12 px at frame 23 with none smaller than the one before by more than 1 (the columns `card rim x`, `card middle y`).
 
 ### 7.4 The slab's side at the foot
 
@@ -127,4 +127,9 @@ Sheets: `node pipeline/phase5/polish-turn2-sheet.mjs BEFORE AFTER live|film FIRS
 - `live1-whole-08.png`, `-12`, `-16` (whole frames at half size). At frame 12 before, the page is flat and greyed; after, it is plainly tipped (26 px of backing under the foot) and as light as at rest.
 - The arrow and the button, frames 0 to 15 at real size: they ride the page, no pop. The right card, frames 11 to 26: its shadow lengthens and fades, no pop.
 - Not my piece, seen before and after alike: the words "(For Your" stand on the dark backing right of the page in live frames 22 to 26 of the turn into step 1.
+
+## 10. The live site at the low level, the stills
+
+- Low level (`node pipeline/phase5/polish-turn2-live.mjs OUT 1 2 20 low`, pictures 960 by 540), read against the high level of the same frames by the gap under the foot and a patch of bare paper: the gap is 1, 2, 3, 4, 6, 8, 10, 13, 16, 20, 25, 31 px at frames 5 to 16 where the high level has 2, 4, 6, 9, 12, 16, 20, 26, 33, 41, 51, 62 (half, as the picture is half), and the patch reads within 0.8 of the high level on every frame from 2 before the turn to frame 20 (at frame 16: 203.3 against 203.0). Seen: frame 12 at the low level is the same picture as at the high level, tipped and light. The low level takes the same path.
+- Draft stills made before the change and after it, `cmp`: `key-step1-fire-hd-draft.png` byte equal, `key-step2-rest-hd-draft.png` byte equal.
 
