@@ -38,6 +38,8 @@ const TAKE = { reach: 0.075, haul: 0.15, lean: 0.6, swing: { dies: 20, turns: 30
 const WAY = { first: 1.6, last: 0.4, near: 120, least: 8 }
 // The stop at arm's length, live: what is left of the pace is taken out on one step and the arrow thrown `back` px a second the other way; for `still` seconds the page takes `grip` of the arrow's pace out of it each step, less and less, so it stands before the hand has it on the arms again; its length is pressed from `from` to `low` over `dip` seconds and the body's spring takes it up again.
 const STOP = { back: 220, still: 0.1, grip: 0.7, from: 1.24, low: 1.07, dip: 0.034 }
+// The live arrow's answer to a strain of the paper. On its first step the hands on the paper are jerked `jerk` px toward the slot, so the arms tighten; from the next step the body is asked to lean back from the slot, the asking rising to `lean` radians over `rise` seconds and let go over `back`, the hands coming back as it rises. No answer begins sooner than `rest` seconds after the hands close on the paper, which leaves the arrow 12 steps after its arrival before the first one. Its size is `least` of the whole at the tug's start and grows to the whole with the tug's age over `long` seconds or the paper eaten up to `whole`, whichever is further on; `side` is how far to one side of the shoulder, in px, the hands must be for the whole lean.
+const HEAVE = { jerk: 6, lean: 0.44, rise: 0.05, back: 0.3, rest: 0.615, least: 0.5, long: 9, whole: 0.6, side: 20 }
 // What the cassette and the panel answer the take with, in page pixels, on `jolt`: up toward the arrow on the step the hands close, down on the step the arrow stops.
 const ANSWER = { grab: -9, stop: 7 }
 // How far past its rest the grabbed paper swings at its first peak, as a share of the rest: the lean is held this much short so the peak stays inside `TAKE.lean`.
@@ -117,7 +119,7 @@ interface State {
   paper: { on: boolean; slide: number; x: number; y: number; held: boolean; dx: number; dy: number; feed: number; fx: number; fy: number; vx: number; vy: number }
   slot: number
   shut: number
-  tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number; slack: number; far: number; from: number; into: number; ax: number; ay: number }
+  tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number; slack: number; far: number; from: number; into: number; ax: number; ay: number; heave: number; size: number }
   lost: number
   last: number
   lostFrom: { x: number; y: number; ux: number; uy: number }
@@ -205,7 +207,7 @@ export function makePage(): PageLogic {
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], held: '', click: 0, keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
-    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, shut: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0 },
+    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, shut: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0 },
     lost: -1, last: -1, lostFrom: { x: 0, y: 0, ux: 0, uy: -1 }, jolt: 9, joltAmp: 0, give: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, thudLean: { x: 0, y: 1 }, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
@@ -513,7 +515,7 @@ export function makePage(): PageLogic {
       p.vy = (p.y - wy) / io.dt
       if (p.feed >= TIMES.bite) {
         enter('tug')
-        s.tug = { t: 0, amount: tugCurve(0), most: 0, cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0 }
+        s.tug = { t: 0, amount: tugCurve(0), most: 0, cool: 0.5, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0 }
         s.lost = -1
         s.last = -1
         jolt(JOLT.bite)
@@ -704,9 +706,20 @@ export function makePage(): PageLogic {
     if (pull > 0.7 && t.cool <= 0) {
       t.cool = 0.9
       io.emit('paper-strain', t.gx, t.gy, false)
-      if (!film && s.last < 0) io.cursor.react('flinch')
+      if (!film && s.last < 0) {
+        t.heave = Math.min(0, since - HEAVE.rest)
+        t.size = lerp(HEAVE.least, 1, clamp(Math.max(t.t / HEAVE.long, t.amount / HEAVE.whole), 0, 1)) * clamp((t.hx - io.cursor.x - TUG.shoulder.x) / HEAVE.side, -1, 1)
+      }
     }
-    hands(hold)
+    let jerk = 0
+    if (t.heave > -1) {
+      const on = t.heave >= 0 && s.last < 0 && t.heave <= HEAVE.rise + HEAVE.back
+      const up = smooth(t.heave / HEAVE.rise)
+      io.cursor.heave(on ? -HEAVE.lean * t.size * up * (1 - smooth((t.heave - HEAVE.rise) / HEAVE.back)) : 0)
+      if (on) jerk = HEAVE.jerk * Math.abs(t.size) * (1 - up)
+      t.heave = on ? t.heave + io.dt : t.heave < 0 && s.last < 0 ? Math.min(0, t.heave + io.dt) : -1
+    }
+    hands(hold - jerk)
     if (!film && s.last < 0) act(io, t.amount > 0.7 ? 'scared' : t.amount > 0.62 ? 'nervous' : 'angry')
     if (film) {
       if (t.t >= TIMES.tugFilm) {

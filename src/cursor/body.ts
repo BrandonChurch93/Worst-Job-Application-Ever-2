@@ -166,6 +166,8 @@ interface State {
   strain: number
   grip: number
   shed: number
+  // What holds the arms asks for this much more lean, in radians.
+  heave?: number
   shedHands: [Place, Place] | null
   arms: boolean
   hands: [Place, Place] | null
@@ -366,6 +368,12 @@ export class CursorBody {
     }
     s.arms = on
     s.hands = on ? (hands ?? s.hands) : null
+    if (!on) s.heave = 0
+  }
+
+  // A heave on the arms: the body leans this much more, in radians, while its arms are out. Its lean's own spring takes it there and back.
+  heave(lean: number): void {
+    this.s.heave = lean
   }
 
   // centred: in the ball the middle of the outline as drawn is kept on the place the body is given, so a page puts it at the ball's middle and nothing else.
@@ -577,6 +585,7 @@ export class CursorBody {
       const was = s.strain
       s.strain += (pull - s.strain) * Math.min(1, dt * 18)
       lean -= Math.max(-0.6, Math.min(0.6, Math.atan2(hx, Math.max(20, hy)) * ((ARM.lean + ARM.back * s.strain) * s.grip - ARM.toward * (1 - s.grip))))
+      lean += s.heave ?? 0
       stretch += 0.2 * s.strain - Math.min(0.3, (Math.max(0, was - s.strain) / dt) * ARM.snap)
       s.sproutV += (ARM.grow.k * (1 - s.sprout) - ARM.grow.c * s.sproutV) * dt
       s.sprout += s.sproutV * dt
