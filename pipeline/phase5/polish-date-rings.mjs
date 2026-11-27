@@ -18,6 +18,7 @@ try {
   await page.waitForFunction(() => Boolean(window.liveRun), null, { timeout: 120000 })
   const tell = (ticks) => page.evaluate((d) => { if (d > 0) window.liveRun.advance(d, true); return window.liveRun.told() }, ticks / HZ)
   const closedAt = (h) => Boolean(h) && Math.abs(h.x - (FIELD.x + FIELD.w / 2)) < 0.01
+  if (process.env.POLISH_DATE_FIRST) await page.evaluate((name) => { window.polishDateOff = name }, process.env.POLISH_DATE_FIRST)
   await page.mouse.move(300, 900)
   let t = await tell(0)
   for (let n = 0; n < 40 && !closedAt(t.hint); n++) t = await tell(15)
