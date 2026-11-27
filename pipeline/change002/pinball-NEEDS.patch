@@ -1,0 +1,86 @@
+diff --git a/config/showcase.json b/config/showcase.json
+index 067ca527..e0c2dcf3 100644
+--- a/config/showcase.json
++++ b/config/showcase.json
+@@ -77,12 +77,12 @@
+       { "id": "step2.slot", "unit": "step2", "from": 8, "to": 14, "event": "coins" },
+       { "id": "step2.crank", "unit": "step2", "from": 14, "to": 20, "event": "flatten" },
+       { "id": "step2.continue", "unit": "step2", "from": 20, "to": 21, "event": "button-press" },
+-      { "id": "pinball.seal", "unit": "pinball", "from": 0, "to": 4, "event": "ball-seal" },
+-      { "id": "pinball.reveal", "unit": "pinball", "from": 4, "to": 7.6, "event": "power-on" },
+-      { "id": "pinball.launch", "unit": "pinball", "from": 7.6, "to": 11, "event": "plunger" },
+-      { "id": "pinball.lobby", "unit": "pinball", "from": 11, "to": 15, "event": "doors-slam" },
+-      { "id": "pinball.coffee", "unit": "pinball", "from": 15, "to": 19, "event": "bumper" },
+-      { "id": "pinball.replyAll", "unit": "pinball", "from": 19, "to": 26, "event": "ball-drop" },
++      { "id": "pinball.seal", "unit": "pinball", "from": 0, "to": 7.6, "event": "ball-seal" },
++      { "id": "pinball.reveal", "unit": "pinball", "from": 7.6, "to": 11.2, "event": "power-on" },
++      { "id": "pinball.launch", "unit": "pinball", "from": 11.2, "to": 13.7, "event": "plunger" },
++      { "id": "pinball.lobby", "unit": "pinball", "from": 13.7, "to": 17.5, "event": "doors-slam" },
++      { "id": "pinball.coffee", "unit": "pinball", "from": 17.5, "to": 21.7, "event": "bumper" },
++      { "id": "pinball.replyAll", "unit": "pinball", "from": 21.7, "to": 26, "event": "ball-drop" },
+       { "id": "pinball.fired", "unit": "pinball", "from": 26, "to": 29.5, "event": "scoop-kick" },
+       { "id": "pinball.highway", "unit": "pinball", "from": 29.5, "to": 34, "event": "ramp-roll" },
+       { "id": "pinball.save", "unit": "pinball", "from": 34, "to": 37, "event": "flipper-save" },
+@@ -280,7 +280,7 @@
+       "id": "loader-page",
+       "unit": "pinball",
+       "beat": "pinball.seal",
+-      "at": 0.7,
++      "at": 0.37,
+       "camera": "home",
+       "image": "references/approved/loader-page.png",
+       "settled": [
+@@ -307,7 +307,7 @@
+       "id": "tier-corporate",
+       "unit": "pinball",
+       "beat": "pinball.lobby",
+-      "at": 0.4,
++      "at": 0.42,
+       "camera": "tier-3",
+       "image": "references/approved/tier-corporate.png",
+       "settled": [
+@@ -319,7 +319,7 @@
+       "id": "lobby-doors",
+       "unit": "pinball",
+       "beat": "pinball.lobby",
+-      "at": 0.7,
++      "at": 0.74,
+       "camera": "table-lobby",
+       "image": "references/approved/lobby-doors.png",
+       "settled": ["The image stands the revolving door beside the carpet. In the build it stands on the carpet in front of the doors, as in tier-corporate."]
+@@ -328,7 +328,7 @@
+       "id": "tier-office",
+       "unit": "pinball",
+       "beat": "pinball.coffee",
+-      "at": 0.6,
++      "at": 0.62,
+       "camera": "tier-2",
+       "image": "references/approved/tier-office.png",
+       "settled": ["The image shows a small blank card in the lower right shoulder. In the build the tier's display is there."]
+@@ -337,7 +337,7 @@
+       "id": "reply-all",
+       "unit": "pinball",
+       "beat": "pinball.replyAll",
+-      "at": 0.3,
++      "at": 0.51,
+       "camera": "table-replyall",
+       "image": "references/approved/reply-all.png",
+       "settled": []
+@@ -346,7 +346,7 @@
+       "id": "tier-street",
+       "unit": "pinball",
+       "beat": "pinball.fired",
+-      "at": 0.15,
++      "at": 0.4,
+       "camera": "tier-1",
+       "image": "references/approved/tier-street.png",
+       "settled": [
+@@ -357,7 +357,7 @@
+         "The clock insert carries no numerals, in the image and in the build."
+       ]
+     },
+-    { "id": "youre-fired", "unit": "pinball", "beat": "pinball.fired", "at": 0.5, "camera": "table-fired", "image": "references/approved/youre-fired.png", "settled": [] },
++    { "id": "youre-fired", "unit": "pinball", "beat": "pinball.fired", "at": 0.91, "camera": "table-fired", "image": "references/approved/youre-fired.png", "settled": [] },
+     {
+       "id": "rail-cam",
+       "unit": "pinball",

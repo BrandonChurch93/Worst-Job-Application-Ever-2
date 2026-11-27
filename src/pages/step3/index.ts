@@ -17,6 +17,7 @@ import { drainWay, KNOCK, LET } from '../../table/real/frame/loader'
 import { ANSWER } from '../../table/real/lights/levels'
 import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
+import { CLOCK, filmOf, sceneOf } from './clock'
 import { fight, filmHand, LEAN, leanOf, VAC, windOf } from './vacuum'
 import { FRENZY, noted, RIOT, riotAim, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
@@ -32,7 +33,7 @@ const px = (v: number): number => v * BALL
 
 export const T = {
   arrive: 0.7, seal: 3.4, tube: 3.95, lightsDown: 4.75, wake: 5.7, powerOn: 7.3, atPlunger: 9.25, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 19.8, inboxBy: 20.3,
-  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedOn: 27.55, firedTow: 27.75, firedBy: 27.2, scoopKick: 29.35, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
+  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedOn: 27.4, firedTow: 27.45, firedBy: 27.2, scoopKick: 29.35, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -145,7 +146,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-gap': { ...look('table-save', [11.9, Y2 + 14.3, 1.5], [12.2, Y2 + 8.3, -2.5]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [T.arrive, 'port', PUSH.seconds], [4.35, 'tube', 0.45], [5.3, 'table-wide', 0], [9.3, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.7, 'table-fired', 0], [29.6, 'follow', 0],
+  [0, 'follow', 0], [T.arrive, 'port', PUSH.seconds], [4.35, 'tube', 0.45], [5.3, 'table-wide', 0], [9.3, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [27.5, 'table-fired', 0], [29.6, 'follow', 0],
   [30.75, 'rail', 0], [32.3, 'follow', 0.6], [34.65, 'table-gap', 0], [35.35, 'table-save', 0], [37.2, 'follow', 0]
 ]
 const TUBE: { eye: [number, number, number]; at: [number, number, number]; wide: number } = { eye: [0.55, 2.7, 1.5], at: [-2.7, -1.2, 0.1], wide: 12 }
@@ -190,7 +191,7 @@ const BANKED = table.targets.filter((g) => g.id.startsWith('street.bank.drop')).
 // The holds of the live table, which is played and keeps the times it had: when the inbox lights, by when the ball is in it, and when the firehouse kicks it out.
 const HOLDS = { inboxOn: 17.9, inboxBy: 19.1, scoopKick: 29.35 }
 const LEANERS = ['heading', 'subline', 'intro']
-const FIGHT_END = T.seal - 0.1 - PLUNGE.sink - PLUNGE.reach - 0.09
+const FIGHT_END = CLOCK.gone - PLUNGE.sink - PLUNGE.reach - 0.09
 // The latch of the half shells: the share of the close that is the slow swing and how far shut it brings them, then the snap into the seam. On the latch the ball is squeezed across the seam by `squeeze` for at most `over` seconds, and the port's ring answers a second time. From `turn` of the close on the arrow turns to the pose it is caught in, so the catch does not turn it in one frame.
 const LATCH = { swing: 0.7, to: 0.5, squeeze: 0.85, way: 1.5707963267948966, over: 0.5, turn: 0.5 }
 // The drop into the feed tube: the view follows the ball as a damped spring whose stiffness grows from `slow` to `firm` (1 / s) over `ramp` seconds after `hold`, so the ball runs down the screen and the view catches it up. After `over` seconds the page's plain rule follows again.
@@ -490,14 +491,14 @@ export function makePage(): PageLogic {
     return { ...p, target: [p.target[0] + (b.right[0] * j.x + b.up[0] * j.y) * reach, p.target[1] + (b.right[1] * j.x + b.up[1] * j.y) * reach, p.target[2] + (b.right[2] * j.x + b.up[2] * j.y) * reach] }
   }
   const seen = (x: number, y: number, z: number): { x: number; y: number } => {
-    const eye = (s.mode === 'film' ? cut(s.time) : follow()).eye
+    const eye = (s.mode === 'film' ? cut(sceneOf(s.time)) : follow()).eye
     const w = toWorld(x, y, z)
     const k = eye[2] / Math.max(1, eye[2] - w[2])
     return { x: eye[0] + (w[0] - eye[0]) * k + 960, y: 540 - (eye[1] + (w[1] - eye[1]) * k) }
   }
 
   const emitTable = (io: StepIo, e: TableEvent): void => {
-    const gag = gagAt(s.t)
+    const gag = gagAt(filmOf(s.t))
     const from = machine().balls[e.ball]
     const at = seen(px(e.x), px(e.y), from && from.mode !== 'none' ? px(from.z) + BALL / 2 : px(floorZ(tierAt(Math.max(Y0, Math.min(APRON_Y - 0.01, e.y))))) + BALL / 2)
     const x = at.x
@@ -851,7 +852,7 @@ export function makePage(): PageLogic {
   const face = (io: StepIo): void => {
     const b = ball()
     const lies = seen3()
-    const eye = (s.mode === 'film' ? cut(s.time) : follow()).eye
+    const eye = (s.mode === 'film' ? cut(sceneOf(s.time)) : follow()).eye
     const c = toWorld(px(lies.x), px(lies.y), px(lies.z) + BALL / 2)
     const d = Math.hypot(eye[0] - c[0], eye[1] - c[1], eye[2] - c[2]) || 1
     const e = [(eye[0] - c[0]) / d, (eye[1] - c[1]) / d, (eye[2] - c[2]) / d]
@@ -866,12 +867,12 @@ export function makePage(): PageLogic {
       const n = [e[0]! * FACE.lens - s.hit[0]! * FACE.wall, e[1]! * FACE.lens - s.hit[1]! * FACE.wall, Math.max(0.2, e[2]!) * FACE.lens, FACE.press]
       for (let i = 0; i < 4; i++) want[i] = want[i]! * (1 - w) + n[i]! * w
     }
-    const rate = s.mode === 'film' && shot(s.time) !== shot(s.time - dt) ? 1 : Math.min(1, dt / (age >= 0 && age < FACE.hold ? FACE.snap : FACE.lag))
+    const rate = s.mode === 'film' && shot(sceneOf(s.time)) !== shot(sceneOf(s.time - dt)) ? 1 : Math.min(1, dt / (age >= 0 && age < FACE.hold ? FACE.snap : FACE.lag))
     for (let i = 0; i < 4; i++) s.face[i] = s.face[i]! + (want[i]! - s.face[i]!) * rate
     const flat = Math.hypot(e[0]!, e[1]!)
-    const tip = s.mode === 'film' ? ROLL.tip[shot(s.time)] : undefined
+    const tip = s.mode === 'film' ? ROLL.tip[shot(sceneOf(s.time))] : undefined
     const round = b.mode === 'rail' && b.rail === 'spiral'
-    const held = round || (tip !== undefined && flat > 0.05 && (b.mode === 'rail' || shot(s.time) !== 'rail'))
+    const held = round || (tip !== undefined && flat > 0.05 && (b.mode === 'rail' || shot(sceneOf(s.time)) !== 'rail'))
     if (round) {
       const at = railAt(railOf('spiral'), b.s)
       const turn = ROLL.rest + Math.atan2(at.dy, at.dx)
@@ -933,7 +934,8 @@ export function makePage(): PageLogic {
         s.t = Math.max(s.t, T.streetBy)
         mc.ride(0, 'drain')
       } else if (s.phase === 'wait' || s.phase === 'pull') {
-        s.t = Math.min(s.t + dt, T.seal)
+        if (s.mode !== 'film') s.t = Math.min(s.t + dt, T.seal)
+        else if (s.t + dt / 2 < CLOCK.stop) s.t += dt
         const reach = 150 + Math.max(0, io.time - 1.2) * 420
         const d = Math.hypot(io.cursor.x - port.x, io.cursor.y - port.y)
         if (s.mode === 'film' && io.time > 0.5 && io.cursor.pose().z < LOADER.low && once('act.land')) io.cursor.press(LOADER.land[0]!, LOADER.land[1]!)
@@ -970,7 +972,7 @@ export function makePage(): PageLogic {
           }
         } else if (s.phase === 'pull') {
           s.pull += dt
-          const due = s.mode === 'live' ? s.pull > 0.3 - PLUNGE.sink : io.time >= T.seal - 0.1 - PLUNGE.sink
+          const due = s.mode === 'live' ? s.pull > 0.3 - PLUNGE.sink : io.time >= CLOCK.gone - PLUNGE.sink
           if (s.sink[0]! < 0 && ((d < 14 && due) || s.pull > 1.1 - PLUNGE.sink)) {
             const p = io.cursor.pose()
             const turn = p.lean + p.spin
@@ -984,7 +986,7 @@ export function makePage(): PageLogic {
           } else {
             s.sink[0] = s.sink[0]! + dt
             const film = s.mode === 'film' && s.pull <= 1.1 - PLUNGE.sink
-            const k = smooth(Math.max(0, Math.min(1, film ? 1 - (T.seal - 0.1 - io.time) / PLUNGE.sink : s.sink[0]! / PLUNGE.sink)))
+            const k = smooth(Math.max(0, Math.min(1, film ? 1 - (CLOCK.gone - io.time) / PLUNGE.sink : s.sink[0]! / PLUNGE.sink)))
             const p = io.cursor.pose()
             const to = LOADER.shut[0]! - 6.283185307179586 * Math.round((LOADER.shut[0]! - s.sink[5]!) / 6.283185307179586)
             const turn = s.sink[5]! + (to - s.sink[5]!) * k
@@ -995,10 +997,13 @@ export function makePage(): PageLogic {
             io.cursor.place(s.sink[1]! + (port.x - mid.x * cs + mid.y * sn - s.sink[1]!) * k, s.sink[2]! + (port.y + mid.x * sn + mid.y * cs - s.sink[2]!) * k, s.sink[3]! + (PLUNGE.floor - s.sink[3]!) * k * k)
             io.cursor.strike(turn, dt)
             io.cursor.press(squash, dt)
-            if (film ? io.time >= T.seal - 0.1 : s.sink[0]! >= PLUNGE.sink - dt / 2) sealNow(io)
+            if (film ? io.time >= CLOCK.gone : s.sink[0]! >= PLUNGE.sink - dt / 2) sealNow(io)
           }
         }
-      } else s.t += dt
+      } else {
+        s.t += dt
+        if (s.mode === 'film') CLOCK.skips.forEach((k, i) => { if (s.t + dt / 2 >= k[0]! && once(`skip.${i}`)) for (let j = Math.round(k[1]! * stepHz); j > 0; j--) s.t += dt })
+      }
       if (s.phase === 'sealed') {
         direct(io)
         if (s.took >= 0 && s.t < s.took + SHELL.shut && s.t < T.tube) {
@@ -1202,13 +1207,14 @@ export function makePage(): PageLogic {
     scroll: () => viewed(),
     view: () => (s.floor === 0 ? null : follow()),
     camera(name: string, time: number): CameraPose | null {
-      return name === 'film' ? filmPose(time) : named(name)
+      return name === 'film' ? filmPose(sceneOf(time)) : named(name)
     },
-    script(time: number): Pointer {
+    script(film: number): Pointer {
+      const time = sceneOf(film)
       const flipLeft = held('L', time)
       const flipRight = held('R', time)
       if (time < T.streetBy) {
-        const at = filmHand(time, HANDOFF, port, TURN_HALF, T.arrive, FIGHT_END)
+        const at = filmHand(film, HANDOFF, port, TURN_HALF, T.arrive, FIGHT_END)
         return { x: at.x, y: at.y, down: false, flipLeft, flipRight }
       }
       const u = smooth(Math.min(1, Math.max(0, (time - (T.press - 1.2)) / 0.9)))
@@ -1219,7 +1225,7 @@ export function makePage(): PageLogic {
       if (s.phase === 'wait' || s.phase === 'pull') return { x: port.x, y: port.y, down: false }
       if (s.phase === 'sealed') {
         const b = ball()
-        const held = gagAt(s.t) === 'pinball.save' && !s.saved && s.t < T.save
+        const held = gagAt(filmOf(s.t)) === 'pinball.save' && !s.saved && s.t < T.save
         const want = machine().shot && b.mode === 'plane' && !machine().gate[b.tier] && !held ? machine().wants(s.t >= H().scoopKick && s.t < T.highwayEnd ? RIDE.tip : 1.2) : [false, false]
         return { x: px(MID), y: px(TIER_Y[b.mode === 'none' ? 2 : Math.min(2, b.tier)]! + 10), down: false, flipLeft: want[0], flipRight: want[1] }
       }
@@ -1237,7 +1243,7 @@ export function makePage(): PageLogic {
       }
     },
     done: () => s.done,
-    gag: () => gagAt(s.t),
+    gag: () => gagAt(filmOf(s.t)),
     ignoring: () => machine().cut || machine().own.some((n) => n > 0),
     states: () => activeStates(),
     tableState(): TableState {
