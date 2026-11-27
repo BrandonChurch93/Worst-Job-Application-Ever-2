@@ -85,3 +85,23 @@ MEASURED from the film's take without a browser: the ball's middle is inside the
 - The wires get lines only when wide on the screen: far off they would shimmer.
 - The tube keeps its width.
 - G15 is not run: no texture's size changed (`tests/polish-sharp.test.ts` pins every size in both sets).
+
+## Checks (MEASURED, source as at 63c6494c; only files under `pipeline/phase5/` changed after)
+
+- `npm run take -- --check`: exit 0, the 10 beat events inside their beats. The stored take is not in this branch's diff.
+- `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- `npm run bots`: all clear.
+- `npm test` (10:17 UTC, on the last commit's tree): 160 files passed, 3 skipped; 1949 tests passed, 3 skipped.
+- `npx tsc --noEmit -p .`: no output, exit 0.
+- `npm run measure -- --views` (tier draft, hd): pass, 33 views drawn over 3 moments, beauty differs after 0 of them.
+- G15 was not run: no texture's size changed.
+- A slip: for about a minute at 09:36 UTC two browser jobs ran together (the views check and the base's M2). The views check was stopped and run again alone after the measure.
+
+## Open
+
+- The ball at `rail-cam` is hazier than the approved ball; the two middle regions stand at 0.71 and 0.56 of the approved detail there.
+- The tube is 106 px wide, the approved about 85 px.
+- A dark dot about 4 px high at the tube's right wall on the last rows of the first screen at rest.
+- The shadow patch is not applied here and no picture of it was drawn here.
+- At 3840x2160 every counted floor pixel at `youre-fired` is soft.
+- The pools of light of the corporate and office tiers are painted bare by the `texels` view; not counted.
