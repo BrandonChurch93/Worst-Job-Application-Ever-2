@@ -27,7 +27,8 @@ export const ARENA = {
   pane: { thick: 14, high: 240 },
   // The picture is drawn a little from below and from the right of the page: every standing thing leans up the screen by `lean` of its height and to the left by `leanX` of it. Its foot stays where it is: the foot is what stops a shot.
   lean: 0.5, leanX: -0.26,
-  gun: { base: 46, high: 34, barrel: 78, scale: 1.2 },
+  // The corner guns: the look's rotary gun at this scale (the boss carries it at 0.383), and how far its muzzle is from its foot, in page px.
+  gun: { scale: 0.62, reach: 122 },
   slot: { x: 960, y: 960, w: 270, h: 66 },
   bar: { x0: 590, y0: 66, x1: 1333, y1: 137, trackInset: 22, trackHalf: 19, high: 9 },
   label: { x: 960, y: 40, px: 30, font: 'inter-600' },

@@ -63,6 +63,7 @@ const SETS = {
       { name: 'blast-0.70', ask: { time: 6.7, breaks: [first], boss: { x: 900, y: 560, heading: Math.atan2(140, 1020) } } }
     ]
   },
+  none: { target: 'boss-arena.png', views: [{ name: 'none', ask: { time: -1 } }] },
   box: { target: 'boss-arena.png', views: [{ name: 'box', ask: { time: REST, boss, hits: [{ id: 1, at: REST - 0.05, x: 577, y: 380, kind: 'solid' }] } }] }
 }
 
@@ -85,6 +86,26 @@ async function main() {
   await page.waitForFunction(() => window.arenaHarness !== undefined, null, { timeout: 60000 })
   const failed = await page.evaluate(() => window.arenaHarness.ready.then(() => null, (e) => String(e && e.stack ? e.stack : e)))
   if (failed) throw new Error(failed)
+  if (args.includes('--measure')) {
+    // The cost of the arena: each view drawn nine times at one sample, the first three thrown away, the median of the rest kept. `none` is the page's own ground with no arena.
+    const views = [...SETS.none.views, ...SETS.rest.views, SETS.change.views[3], SETS.blast.views[2], SETS.breaks.views[2]]
+    const out = {}
+    for (const v of views) {
+      const runs = []
+      let got = null
+      for (let i = 0; i < 9; i++) {
+        got = await page.evaluate((ask) => window.arenaHarness.draw(ask), { ...v.ask, level: level ?? 'low', samples: 1 })
+        if (i >= 3) runs.push(got.ms)
+      }
+      runs.sort((a, b) => a - b)
+      out[v.name] = { triangles: got.triangles, drawCalls: got.drawCalls, ms: Math.round(runs[Math.floor(runs.length / 2)] * 10) / 10, least: Math.round(runs[0] * 10) / 10 }
+      console.log(v.name, JSON.stringify(out[v.name]))
+    }
+    fs.writeFileSync(path.join(proof, `measure-${level ?? 'low'}.json`), JSON.stringify(out, null, 2) + '\n')
+    await browser.close()
+    await site.close()
+    return
+  }
   const counts = {}
   for (const name of wanted.length ? wanted : Object.keys(SETS)) {
     const set = SETS[name]
