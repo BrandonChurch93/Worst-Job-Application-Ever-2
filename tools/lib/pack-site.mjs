@@ -72,6 +72,9 @@ export const TAKES = 'step1.tug'
 // The stroke after the arrow is given back: once the page has taken the arrow, the arrow has lain dead for BACK.still steps and the place the page
 // wants the pointer jumps by `least` px or more, the visitor was waiting for it and goes there `reactSteps` late, not VISITOR.reactSteps. Once a visit.
 export const STROKE = { least: 200, reactSteps: 2 }
+// The flippers: a player at a machine watches the ball come to the bat and is ready for it, so the visitor presses a flipper `reactSteps` after the page first wants it,
+// not VISITOR.reactSteps, and keeps it down for `holdSteps` at least, the time a bat needs for its whole stroke (8 steps, `LIVE.up` in src/table/physics.ts) and a little more.
+export const FLIPS = { reactSteps: 2, holdSteps: 10 }
 
 // The visitor's mind: from what the site tells at a step to the events of that step. No clock and no chance but its own seeded numbers.
 /** @param {number} k @param {typeof VISITOR} [o] @param {ReturnType<typeof keyBlock> | null} [block] */
@@ -82,6 +85,8 @@ export function makeVisitor(k, o = VISITOR, block = null) {
     return seed / 0x7fffffff - 0.5
   }
   const queue = []
+  const flips = []
+  const since = { left: 0, right: 0 }
   const held = { down: false, left: false, right: false }
   let pos = { x: o.start[0] * k, y: o.start[1] * k }
   let step = 0
@@ -141,6 +146,8 @@ export function makeVisitor(k, o = VISITOR, block = null) {
       }
       aimed = h && !t.turning ? { x: h.x, y: h.y } : aimed
       const seen = queue.length > o.reactSteps ? queue.shift() : null
+      flips.push(target ? { left: target.left, right: target.right } : null)
+      const flip = flips.length > FLIPS.reactSteps ? flips.shift() : null
       if (seen && seen.stand) {
         if (held.down) acts.push({ up: 'left' })
         held.down = false
@@ -170,15 +177,17 @@ export function makeVisitor(k, o = VISITOR, block = null) {
           acts.push({ press: seen.key === ' ' ? 'Space' : seen.key })
           lastKey = step
         }
-        if (seen.left !== held.left) {
-          acts.push(seen.left ? { keyDown: 'ShiftLeft' } : { keyUp: 'ShiftLeft' })
-          held.left = seen.left
-        }
-        if (seen.right !== held.right) {
-          acts.push(seen.right ? { keyDown: 'ShiftRight' } : { keyUp: 'ShiftRight' })
-          held.right = seen.right
-        }
       } else if (t.turning) release(acts)
+      if (flip && !(seen && seen.stand) && !t.turning) {
+        for (const [side, code] of [['left', 'ShiftLeft'], ['right', 'ShiftRight']]) {
+          since[side] = held[side] ? since[side] + 1 : 0
+          const want = flip[side] || (held[side] && since[side] < FLIPS.holdSteps)
+          if (want === held[side]) continue
+          acts.push(want ? { keyDown: code } : { keyUp: code })
+          held[side] = want
+          since[side] = 0
+        }
+      }
       step += 1
       return acts
     }
@@ -392,6 +401,42 @@ const ROOM = 56
 const WORTH = ['turn', 'flippers', 'save', 'flip', 'given-back']
 // Pictures of a moment are this many steps apart: 30 a second, as a page's sheets of consecutive frames are.
 const EVERY = 2
+
+// The machine as the page lays it out (src/table/layout.ts), in widths of the ball inside a tier: the middle, a bat's pivot, its radius at the pivot and at the tip,
+// its angle at rest and raised in degrees, half the mouth between the bats, the height at which the gate at the mouth holds a ball, the height of the gate's pin,
+// and how far along a bat the page starts to want a press. The bat's length is table.flipperBalls. A stepped test holds these against the page's own file.
+export const MACHINE = { mid: 10, pivotU: 6.53, pivotV: 8.95, radius: 0.4, tip: 0.26, rest: 25, up: -25, mouthHalf: 1.7, gateV: 10.55, pinV: 11.1, pin: 0.15, wantFrom: 1.2 }
+// Where the tiers lie on the page of the machine, in widths of the ball: a screen, then the marquee, then the tiers one under the other.
+export function tiersOf(cfg) {
+  const t = cfg.table
+  const top = cfg.formats.hd.height / t.ballPx + t.marqueeHeightBalls
+  return { ball: t.ballPx, tall: t.tierHeightBalls, count: t.tiers.length, top, y: (k) => top + t.tierHeightBalls * k, of: (y) => Math.max(0, Math.min(t.tiers.length - 1, Math.floor((y - top) / t.tierHeightBalls))) }
+}
+// The ball of a row inside its tier, in widths of the ball: the arrow is sealed in it, so the arrow's place is the ball's.
+export function ballAt(cfg, row) {
+  const g = tiersOf(cfg)
+  const y = row[COL.heroY] / g.ball
+  const tier = g.of(y)
+  return { u: row[COL.heroX] / g.ball, v: y - g.y(tier), tier }
+}
+// Where the ball is over a bat at rest, as the machine itself reads it (`over` in src/table/physics.ts): how far along the bat from its pivot and how far above its middle line.
+export function overBat(cfg, row, side) {
+  const b = ballAt(cfg, row)
+  const dir = side === 'left' ? 1 : -1
+  const rx = b.u - (side === 'left' ? MACHINE.pivotU : cfg.table.tierWidthBalls - MACHINE.pivotU)
+  const ry = b.v - MACHINE.pivotV
+  const c = Math.cos((MACHINE.rest * Math.PI) / 180)
+  const s = Math.sin((MACHINE.rest * Math.PI) / 180)
+  return { along: rx * c * dir + ry * s, above: rx * s * dir - ry * c, tier: b.tier }
+}
+// A bat's reach, as the machine arms a stroke (`armed` in src/table/physics.ts): the ball is over the bat from `from` along it to its tip and `past` more, and no higher above it than the two radii and `high`.
+export const REACH = { from: 0.2, past: 0.15, high: 0.2, ballR: 0.5 }
+// How far, in widths of the ball, a ball over a bat is from that reach: 0 inside it.
+export function reachGap(cfg, o) {
+  const far = cfg.table.flipperBalls - MACHINE.tip + REACH.past
+  const high = MACHINE.radius + REACH.ballR + REACH.high
+  return Math.hypot(Math.max(0, REACH.from - o.along, o.along - far), Math.max(0, -o.above, o.above - high))
+}
 
 // The moments of the run that the sheets show, found from the run itself.
 export function momentsOf(cfg, run) {
