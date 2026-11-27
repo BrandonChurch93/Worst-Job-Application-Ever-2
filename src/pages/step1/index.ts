@@ -53,7 +53,7 @@ const JOLT = { seconds: 0.24, bite: 12, lost: 16, meet: 24, panel: 0.75 }
 const GIVE = { settle: 0.42, hold: 0.2, low: 0.78, press: 0.06, rise: 0.2, back: 0.44, wake: 1.12, woke: 0.034 }
 // The give back on the live site. The mended arrow lies with its tip `under` px beneath the hood's lip and is drawn out to `long` over `strain` seconds before the page lets go.
 // Then the cassette kicks by `kick`, the arrow is thrown back to where the pile lay inside `fall` seconds, short by `low` for `press` seconds and at its length again by `rise`, swinging `swing` radians at `hz` over `ring` seconds, and `beat` seconds after the kick, having stood, it is the visitor's again, eased over `GIVE.back`.
-const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.034, rise: 0.084, fall: 0.067, swing: 0.3, hz: 12, ring: 0.084, beat: 0.28 }
+const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.034, rise: 0.084, fall: 0.067, swing: 0.3, hz: 12, ring: 0.084, beat: 0.4 }
 // The slot closes after the tug: the hood folds and the cassette starts down at `seconds` for the whole travel, as far as `down` of it, where the cassette is still half up in its well; from there the two panels snap shut over it in `snap` seconds, three frames, each frame further than the last, the cassette going down under them, and on the step they meet the slot is gone and the tray is thrown `kick` px and comes back.
 const SHUT = { seconds: 0.36, down: SNAP_FROM, snap: 0.05, kick: 4 }
 // The live loss, after the paper is in: the seconds the empty hands are shed while the arrow is thrown back from the mouth, and how far, in page pixels.
