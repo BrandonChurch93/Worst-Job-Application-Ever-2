@@ -181,7 +181,7 @@ const STROBE_HZ = 2.5
 // never past `flat`. At the kick it snaps `snap` up the table, stands there for `hold` seconds as a kicker's coil does, falls back and rings out. It never stands inside the clear ball.
 // The wire gate at a live save, as the hardware builds it (the test holds these to the hardware's own): the pin's place above the tier's foot (balls), the pin's height, the wire's height above the pin and its thickness (px),
 // its turn when shut (rad), and how far across the ball may be and still lie on the top wire (balls). After the kick the wire is thrown up the table by `snap` (rad), stands there `hold` s, falls back past its rest place and swings out about it: each swing takes half of `period` s and is smaller by `decay` (1/s), and the last of it dies by `seconds`. `gleam`: the steps over which the wire takes the ball's load.
-export const WIRE = { pin: 0.15, axle: 7, tall: 30, thick: 2.5, shut: -0.3, across: 1.5, snap: 0.9, hold: 1 / 15, decay: 8, period: 0.14, seconds: 0.56, gleam: 8 }
+export const WIRE = { pin: 0.15, axle: 7, tall: 30, thick: 2.5, shut: -0.3, across: 1.5, snap: 0.9, hold: 1 / 15, decay: 14, period: 0.1, seconds: 14 / 60, gleam: 8 }
 // The turn past shut at which the top wire lies on the ball's shell, for a ball `v` balls down the tier: the wire is never drawn inside the ball.
 export function wireOn(v: number): number {
   const dy = px(TH - WIRE.pin - v)

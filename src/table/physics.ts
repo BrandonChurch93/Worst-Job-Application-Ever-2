@@ -38,7 +38,7 @@ const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36, own: 12 }
 const WAS = { land: 24, wind: 28, still: 10, back: 0.22, drive: 4 }
 // The landing, from the touch: the wire lets the ball keep at most `hit` (balls/s) of its speed down the table, and the ball swings on the wire about a place `sag` balls under the wire's own (the wire bent by the ball's weight), `swing` (1/s) stiff and dying by `damp` (1/s):
 // it rides the wire down, comes up again and settles inside `land` steps. Then the load: `wind` steps, of which the last `still` stand dead still.
-export const SAVE = { rest: 10.55, wire: 60, funnel: 50, mouth: 52, land: 30, wind: 20, still: 8, back: 0.27, drive: 6, kick: 24, reach: 1, sag: 0.1, swing: 67.3, damp: 24.1, hit: 12 }
+export const SAVE = { rest: 10.55, wire: 60, funnel: 50, mouth: 52, land: 24, wind: 26, still: 14, back: 0.27, drive: 6, kick: 24, reach: 1, sag: 0.1, swing: 67.3, damp: 24.1, hit: 12 }
 // Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
 const MET = 3
 const LIFT_SHUT = 0.4

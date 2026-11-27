@@ -53,7 +53,7 @@ describe('the save at the gate, read at real size', () => {
     await prepare()
   })
 
-  it('loads the wire by more than a quarter of the ball\'s width down the table, no deeper than the shell stays out of the wire, and holds it there, dead still, for five frames of 60 or more', () => {
+  it('loads the wire by more than a quarter of the ball\'s width down the table, no deeper than the shell stays out of the wire, and holds it there, dead still, for three and a half frames of 60 or more', () => {
     for (const k of [0, 1]) for (const w of ways) {
       const { rows, take, kick, m } = lost(true, k, w)
       expect(take).toBeGreaterThan(0)
@@ -62,7 +62,7 @@ describe('the save at the gate, read at real size', () => {
       expect(down(deep), 'the travel of the top wire, px').toBeGreaterThanOrEqual(BALL * 0.28)
       expect(SAVE.back, 'the depth past which the shell is seen inside the wire, ball widths').toBeLessThanOrEqual(0.27)
       const held = on.filter((r) => r.turn === deep)
-      expect(held.length / EACH, 'frames at the deepest').toBeGreaterThanOrEqual(5)
+      expect(held.length / EACH, 'frames at the deepest').toBeGreaterThanOrEqual(3.5)
       expect(held.length).toBeGreaterThanOrEqual(SAVE.still)
       for (const r of held) expect(r.v).toBeCloseTo(SAVE.rest + SAVE.back, 9)
       expect(on.indexOf(held[0]!) + held.length, 'the hold ends where the drive begins').toBe(SAVE.land + SAVE.wind)

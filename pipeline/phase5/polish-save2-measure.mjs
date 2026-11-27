@@ -1,5 +1,5 @@
 // The save at a gate on the live pinball page, stepped without a browser, per frame of 60 as it lies on the screen (the pack's visitor is `pack`: its hand follows the page's hints a beat late).
-// node pipeline/phase5/polish-save2-measure.mjs [--visitor never,pack] [--seed 1] [--nth 1] [--before 6] [--after 40] [--json file]
+// node pipeline/phase5/polish-save2-measure.mjs [--visitor never,pack,keen,clumsy,random] [--seed 1] [--nth 1] [--before 6] [--after 40] [--json file]
 // Per frame: the page's time, the ball's middle on the screen and its step from the frame before, the wire's turn past shut (rad), the top wire's and the pin's place (px, y down), the wire's lowest point and the px of screen under it,
 // the gap of shell and wire (px), the heading of the arrow inside the ball (degrees), the page's scroll and its step, and the events of that frame. The last lines give the sums.
 import fs from 'node:fs'
@@ -21,6 +21,7 @@ const D = await load('/src/table/draw.ts')
 const C = await load('/src/stage/camera.ts')
 const { Stage } = await load('/src/stage/stage.ts')
 const { pages } = await load('/src/pages/index.ts')
+const { BotDriver } = await load('/src/stage/bots.ts')
 const { TIER_Y, TH, BALL, MID } = L
 
 let mc = null
@@ -31,6 +32,7 @@ P.Machine.prototype.step = function (l, r) {
 }
 const HAND = 1500 / 240
 const makeDriver = (name, s) => {
+  if (name !== 'never' && name !== 'pack') return new BotDriver(name, s)
   if (name === 'never') return { name: 'bot', input: () => ({ x: 300, y: 900, down: false }) }
   const d = { name: 'mouse', x: 960, y: 540, queue: [], left: false, right: false, goal: null }
   d.input = (v) => {
