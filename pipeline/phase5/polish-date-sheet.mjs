@@ -1,6 +1,6 @@
 // Polish date: lays kept pictures in a row on one sheet, a fixed window of each, one block for each source.
 // node pipeline/phase5/polish-date-sheet.mjs OUT COLS ZOOM X Y W H SOURCE...
-// SOURCE is TITLE|DIR|PREFIX|FIRST|COUNT|KIND: the files DIR/PREFIX<n>.png from n = FIRST on; KIND live numbers them from 000 and names each by its time from the press, KIND film names each by its film frame, KIND shut names each by its count before the tray is shut (picture 29 of a shutting is the shut one), KIND visit names each by its sixtieth of a second of a whole visit.
+// SOURCE is TITLE|DIR|PREFIX|FIRST|COUNT|KIND: the files DIR/PREFIX<n>.png from n = FIRST on; KIND live numbers them from 000 and names each by its time from the press, KIND film names each by its film frame, KIND shut names each by its sixtieths of a second before the tray is shut (picture 29 of a shutting is the shut one), KIND visit names each by its sixtieth of a second of a whole visit.
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
@@ -28,7 +28,7 @@ for (const source of sources) {
     const left = (n % C) * (tw + 2)
     const down = top + Math.floor(n / C) * (th + bar)
     layers.push({ input: await tile.png().toBuffer(), left, top: down })
-    marks.push(`<text x="${left + 3}" y="${down + th + 11}" font-family="sans-serif" font-size="10" fill="#ddd">${kind === 'live' ? `${((k - 2) / 60).toFixed(3)} s from the press` : kind === 'shut' ? `${29 - k} sixtieths before the tray is shut` : kind === 'visit' ? `sixtieth ${k} of the visit` : `film frame ${k}`}</text>`)
+    marks.push(`<text x="${left + 3}" y="${down + th + 11}" font-family="sans-serif" font-size="10" fill="#ddd">${kind === 'live' ? `${((k - 2) / 60).toFixed(3)} s from the press` : kind === 'shut' ? `${29 - k}/60 s before it is shut` : kind === 'visit' ? `sixtieth ${k} of the visit` : `film frame ${k}`}</text>`)
   }
   top += Math.ceil(n / C) * (th + bar) + 2
 }

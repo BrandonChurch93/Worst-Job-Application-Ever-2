@@ -8,7 +8,7 @@ import { SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { frame } from '../../stage/camera'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo, Tone } from '../../stage/types'
-import { buildLayout, COIN, CRANK, DIAL, dialPlate, dialTop, FH, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
+import { buildLayout, COIN, CRANK, DIAL, DIAL_BODY, dialPlate, dialTop, FH, FW, FX, PAD, reelId, reelType, ROWS, rowY, SHEET, SHIFT, SLOT, statesOf, TOP, TRAY_H, TRAY_R, TRAY_Z, trayY, VALUE_Z } from './layout'
 import { actingAt, AWAY, LANDING, PEEL_AT, TOSS, pointerAt, poses, reactions, type Mark, type Marks } from './script'
 
 const dt = 1 / stepHz
@@ -171,6 +171,8 @@ function rowParts(tree: LayoutNode, prefix: string): RowIds {
 const COVER = 0.25
 // The slot and the crank are housed in the floor of their trays, as the dial is: they lie there at this share of their height while the tray opens over them and while it shuts over them, and rise from it. Their makers draw a part above 0.02 of its height, and at 0.0256 the slot's knob would reach the floor of the field below (`scale.heights.field`), whose pocket passes over the machine as the tray opens.
 export const HOUSED = 0.022
+// How far below its centre the dial reaches on the page, its seat ring and 4 px more: while the tray's opening ends above that, part of the dial lies under the page, and the live site tells the dial's maker where the opening ends, so that it draws what is under the page low (`levelDial` in real/dial.ts). The film is not told.
+export const DIAL_REACH = DIAL.r + DIAL_BODY.seat + 4
 
 function machineParts(tree: LayoutNode, tray: string): { id: string; floor: number; top: number; text: boolean }[] {
   const out: { id: string; floor: number; top: number; text: boolean }[] = []
@@ -953,13 +955,13 @@ export function makePage(): PageLogic {
     }
   }
 
-  function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number): void {
+  function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number, edge: number | null = null): void {
     const L = risen(i, lift)
     for (const part of parts[i]!) over[part.id] = part.text ? { z0: mix(TRAY_Z, part.top, L), z1: mix(TRAY_Z, part.top, L) } : { z0: mix(TRAY_Z, part.floor, L), z1: mix(TRAY_Z, part.top, L) }
     if (i === 0) {
       const top = dialTop(L)
       const plate = TRAY_Z + dialPlate(top)
-      Object.assign(over['dial-wheel']!, { z1: TRAY_Z + top, v: [dialShown(m.dial)] })
+      Object.assign(over['dial-wheel']!, { z1: TRAY_Z + top, v: edge === null ? [dialShown(m.dial)] : [dialShown(m.dial), edge] })
       for (let k = 1; k <= 10; k++) over[`dial-numeral-${DIAL.digit(k)}`] = { z0: plate, z1: plate }
     }
     if (i === 1) {
@@ -1002,7 +1004,8 @@ export function makePage(): PageLogic {
       const name = ROWS[shown]!
       const tall = Math.max(4, Math.round(TRAY_H * clamp(s.spring[shown]!, 0, 1)))
       over[`${name}-tray`] = { h: tall, r: Math.min(TRAY_R, tall / 2) }
-      overMachine(over, shown, s, s.lift)
+      const edge = trayY(0) + tall - DIAL.cy
+      overMachine(over, shown, s, s.lift, s.mode === 'live' && shown === 0 && edge < DIAL_REACH ? edge : null)
     }
     if (allDone()) {
       over['continue-cap'] = { tone: 'accent', ...(s.pressed ? { z1: heights.button - heights.keyTravel } : {}) }
