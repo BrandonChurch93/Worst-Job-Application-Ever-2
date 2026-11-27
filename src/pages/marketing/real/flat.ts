@@ -154,11 +154,11 @@ export class Paint {
   }
 
   // An oval whose colour goes from `inner` at its middle to `outer` at its edge.
-  fan(cx: number, cy: number, rx: number, ry: number, z: number, inner: Rgb, outer: Rgb, rings = 12, around = 64): this {
+  fan(cx: number, cy: number, rx: number, ry: number, z: number, inner: Rgb, outer: Rgb, hold = 0, rings = 16, around = 64): this {
     let last = -1
     for (let k = 0; k <= rings; k++) {
       const u = k / rings
-      const e = ease(u)
+      const e = ease(Math.max(0, (u - hold) / (1 - hold)))
       const c: Rgb = [inner[0] + (outer[0] - inner[0]) * e, inner[1] + (outer[1] - inner[1]) * e, inner[2] + (outer[2] - inner[2]) * e]
       const first = this.pos.length / 3
       for (let i = 0; i < around; i++) this.point(cx + Math.cos((i / around) * Math.PI * 2) * rx * u, cy + Math.sin((i / around) * Math.PI * 2) * ry * u, z, c)

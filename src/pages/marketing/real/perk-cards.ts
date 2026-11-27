@@ -4,16 +4,17 @@ import { outlineOf } from '../../../shell/solids'
 import type { Shape } from '../../../stage/types'
 import { CARD, COLOUR } from '../layout'
 import { mesh, q } from './careers-solids'
-import { arcPoints, flat, Paint, tint } from './flat'
+import { SHADOW } from './careers-page'
+import { arcPoints, flat, Paint, shade, share, tint } from './flat'
 
 export { cardGlass, GLASS, groundEdge, SLAB, slabGeometry } from './card-glass'
 
 const WHITE = tint(COLOUR.white)
-const LINE = tint(COLOUR.line)
+const LINE = tint(COLOUR.edge)
 const PEACH = tint(COLOUR.peach)
 const ORANGE = tint(COLOUR.orange)
 
-export const CARD_LOOK = { half: 0.5, stroke: 2.6, icon: 44, edge: 0.006 }
+export const CARD_LOOK = { half: 0.5, shadow: 0.38, stroke: 2.6, icon: 44, edge: 0.006 }
 
 type Stroke = { line: [number, number][]; closed?: boolean }
 const ring = (cx: number, cy: number, r: number, from = 0, to = 360, steps = 28): [number, number][] => arcPoints(cx, cy, r, from, to, steps)
@@ -45,7 +46,7 @@ function side(s: Shape, icon: number | null): THREE.Mesh {
   const p = new Paint()
   const o = outlineOf({ kind: 'box', w: s.w, h: s.h, r: s.r ?? CARD.r }, 0, 12)
   p.face(o, 0, 0, CARD_LOOK.half, LINE)
-  p.face(outlineOf({ kind: 'box', w: s.w, h: s.h, r: s.r ?? CARD.r }, 1, 12), 0, 0, CARD_LOOK.half + 0.12, WHITE)
+  p.face(outlineOf({ kind: 'box', w: s.w, h: s.h, r: s.r ?? CARD.r }, 1.5, 12), 0, 0, CARD_LOOK.half + 0.12, WHITE)
   if (icon !== null) {
     const t = CARD.tile
     const cx = -s.w / 2 + t.x + t.size / 2
@@ -70,7 +71,8 @@ export const perkCards: PartMaker | null = {
     front.name = 'front'
     const back = side(s, null)
     back.name = 'back'
-    root.add(front, back)
+    const under = new Paint().soft(outlineOf({ kind: 'box', w: s.w, h: s.h, r: s.r ?? CARD.r }, SHADOW.inset, 12), 0, -SHADOW.drop, CARD_LOOK.shadow, SHADOW.spread, share(SHADOW.card))
+    root.add(front, back, mesh(under.geometry(), shade(), false, false))
     return root
   },
   pose(o, s) {

@@ -1,0 +1,63 @@
+// node pipeline/change002/careers-page.mjs [--tier draft]
+// Draws the whole careers page as one tall picture, 1920 wide, and lays it beside references/approved-002/careers-page.png:
+// once whole, and once for each section, so that the two are judged section by section. Everything goes to out/work/careers/.
+import fs from 'node:fs'
+import sharp from 'sharp'
+import { args, at } from '../../tools/lib/paths.mjs'
+import { drawStill, openSession } from '../../tools/lib/capture.mjs'
+import { logic } from '../../tools/lib/logic.mjs'
+
+const a = args()
+const tier = a.tier || 'draft'
+const APPROVED = at('references', 'approved-002', 'careers-page.png')
+const OUT = at('out', 'work', 'careers')
+const LONG = 1200
+const GAP = 12
+
+const site = await logic()
+const { careersLayout } = await site.load('/src/pages/marketing/layout.ts')
+const { height, sections } = careersLayout()
+await site.close()
+
+const session = await openSession({ format: 'hd', assets: a.assets || 'full' })
+const tiles = []
+try {
+  const room = height - 1080
+  for (let top = 0; top < height; top += 1080) {
+    const y = Math.min(top, room)
+    const { png } = await drawStill(session, { page: 'marketing', camera: 'home', tier, scroll: y / room })
+    tiles.push({ input: png, left: 0, top: y })
+  }
+} finally {
+  await session.close()
+}
+fs.mkdirSync(OUT, { recursive: true })
+const whole = await sharp({ create: { width: 1920, height: Math.round(height), channels: 3, background: '#ff00ff' } }).composite(tiles).png().toBuffer()
+fs.writeFileSync(`${OUT}/careers-page.png`, whole)
+
+const approved = await sharp(APPROVED).metadata()
+const beside = async (name, mine, theirs) => {
+  const tall = Math.max(mine.h, theirs.h)
+  const k = Math.min(1, LONG / Math.max(tall, 1920 * 2 + GAP))
+  const w = Math.round(1920 * k)
+  const left = await sharp(whole).extract({ left: 0, top: Math.round(mine.y), width: 1920, height: Math.round(mine.h) }).resize({ width: w }).toBuffer()
+  const right = await sharp(APPROVED).extract({ left: 0, top: Math.round(theirs.y), width: 1920, height: Math.round(theirs.h) }).resize({ width: w }).toBuffer()
+  const file = `${OUT}/${name}.jpg`
+  await sharp({ create: { width: w * 2 + GAP, height: Math.round(tall * k), channels: 3, background: '#d81b60' } }).composite([{ input: left, left: 0, top: 0 }, { input: right, left: w + GAP, top: 0 }]).jpeg({ quality: 88 }).toFile(file)
+  return file
+}
+
+// The build holds six staff quotes in two rows where the picture holds three in one, so every section after them lies lower by the same amount.
+const lower = height - approved.height
+const names = Object.keys(sections)
+const made = [await beside('careers-page-beside', { y: 0, h: height }, { y: 0, h: approved.height })]
+for (let i = 0; i < names.length; i++) {
+  const y = sections[names[i]]
+  const end = i + 1 < names.length ? sections[names[i + 1]] : height
+  const after = names.indexOf('testimonials')
+  const theirY = i > after ? y - lower : y
+  const theirEnd = i + 1 < names.length ? (i + 1 > after ? end - lower : end) : approved.height
+  made.push(await beside(`careers-section-${i + 1}-${names[i]}`, { y, h: end - y }, { y: theirY, h: theirEnd - theirY }))
+}
+console.log(`the build: ${OUT}/careers-page.png, 1920 by ${Math.round(height)}; the approved picture: 1920 by ${approved.height}`)
+console.log(`left the build, right the approved picture:\n- ${made.join('\n- ')}`)

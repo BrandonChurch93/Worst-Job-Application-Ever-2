@@ -19,13 +19,14 @@ export const FIRST_SCREEN = 1080
 export const Z = { sheet: 0.2, type: 1.2, card: 2, cardType: 3.2, button: 6, pressed: 1.6 }
 
 export const COLOUR = {
-  white: 0xffffff, ink: 0x111111, soft: 0x3d3934, grey: 0x6b7280, greyType: 0x5c636f, line: 0xe5e7eb, band: 0xebeef1, peach: 0xffedd9, orange: 0xe97832,
+  white: 0xffffff, ink: 0x111111, soft: 0x3d3934, grey: 0x6b7280, greyType: 0x5c636f, line: 0xe5e7eb, edge: 0xd9d9de, band: 0xebeef1, peach: 0xffedd9, orange: 0xe97832,
   deep: 0xbe5418, down: 0xa3460f, onWhite: 0xb65821, onPeach: 0xaa521e, tick: 0x33b428, wreath: 0x9c9fae, glow: 0xfee4c9
 }
 
 export const T = {
   display: { font: 'inter-display-800', px: 82, lead: 86 },
-  section: { font: 'inter-display-800', px: 56, lead: 62 },
+  section: { font: 'inter-display-800', px: 72, lead: 78 },
+  heading: { font: 'inter-display-800', px: 44, lead: 50 },
   brand: { font: 'inter-600', px: 32 },
   lead: { font: 'inter-400', px: 24, lead: 38 },
   strong: { font: 'inter-600', px: 24, lead: 30 },
@@ -43,7 +44,7 @@ export const QUOTE = { x: 323, w: 408, gap: 25.5, r: 16, pad: 26 }
 export const TABLE = { x: 318, w: 1285, r: 16, pad: 24, head: 81, row: 66.4, feature: 357, us: [733, 1187] as const, usAt: 960, themAt: 1385, tick: 26 }
 export const FAQ = { x: 597, w: 727, h: 52, pitch: 64.4, pad: 24 }
 export const STEPS = { first: 426.5, pitch: 266.5, d: 51, wrap: 236 }
-export const GLOW = { x: 960, y: 545, rx: 960, ry: 430 }
+export const GLOW = { x: 960, y: 545, rx: 790, ry: 430, hold: 0.45 }
 
 const cap = (t: TypeSpec): number => block(t.font, 'X', t.px).cap
 const tall = (t: TypeSpec, key: string, wrap?: number): number => block(t.font, words(key), t.px, wrap, t.lead).height
@@ -150,7 +151,7 @@ function perks(y0: number): LayoutNode {
   const d = y0 - 1080
   const out: LayoutNode[] = []
   out.push(pill('perks-kicker', 'copy:marketing.perks.kicker', T.label, 1107 + d, 44, 28, 'paper', 'danger'))
-  out.push(centred('perks-heading', 'copy:marketing.perks.heading', T.section, 1192 + d))
+  out.push(centred('perks-heading', 'copy:marketing.perks.heading', T.section, 1186 + d))
   out.push(centred('perks-subline', 'copy:marketing.perks.subline', soft(T.lead), 1283 + d))
   m.perks.items.forEach((_, i) => out.push(perkCard(i, CARD.x + (i % 4) * (CARD.w + CARD.gap), CARD.rows[Math.floor(i / 4)]! + d)))
   out.push(centred('perks-closing', 'copy:marketing.perks.closing', soft(T.lead), 2105 + d))
@@ -159,7 +160,7 @@ function perks(y0: number): LayoutNode {
 
 function quotes(y0: number): { node: LayoutNode; bottom: number } {
   const out: LayoutNode[] = []
-  out.push(centred('testimonials-heading', 'copy:marketing.testimonials.heading', T.section, y0 + 57))
+  out.push(centred('testimonials-heading', 'copy:marketing.testimonials.heading', T.heading, y0 + 61))
   out.push(centred('testimonials-subline', 'copy:marketing.testimonials.subline', soft(T.body), y0 + 120))
   const wrap = QUOTE.w - QUOTE.pad * 2
   const role = { ...T.label, wrap }
@@ -188,13 +189,13 @@ function quotes(y0: number): { node: LayoutNode; bottom: number } {
   })
   const footY = first + h * 2 + 26 + 26
   out.push(centred('testimonials-footnote', 'copy:marketing.testimonials.footnote', T.small, footY, { tone: 'metal' }))
-  const bottom = footY + cap(T.small) + 40
+  const bottom = Math.ceil(footY + cap(T.small) + 40)
   return { node: sheet('testimonials', y0, bottom - y0, out), bottom }
 }
 
 function faq(y0: number): LayoutNode {
   const out: LayoutNode[] = []
-  out.push(centred('faq-heading', 'copy:marketing.faq.heading', T.section, y0 + 52))
+  out.push(centred('faq-heading', 'copy:marketing.faq.heading', T.heading, y0 + 56))
   out.push(centred('faq-subline', 'copy:marketing.faq.subline', soft(T.body), y0 + 119))
   m.faq.items.forEach((_, i) => {
     const y = y0 + 162 + i * FAQ.pitch
@@ -209,7 +210,7 @@ function faq(y0: number): LayoutNode {
 
 function comparison(y0: number): LayoutNode {
   const out: LayoutNode[] = []
-  out.push(centred('comparison-heading', 'copy:marketing.comparison.heading', T.section, y0 + 78))
+  out.push(centred('comparison-heading', 'copy:marketing.comparison.heading', T.heading, y0 + 82))
   out.push(centred('comparison-subline', 'copy:marketing.comparison.subline', soft(T.lead), y0 + 151))
   const cardY = y0 + 209
   const rows = m.comparison.rows.length
@@ -236,7 +237,7 @@ function comparison(y0: number): LayoutNode {
 
 function process(y0: number): LayoutNode {
   const out: LayoutNode[] = []
-  out.push(centred('process-heading', 'copy:marketing.process.heading', T.section, y0 + 89))
+  out.push(centred('process-heading', 'copy:marketing.process.heading', T.heading, y0 + 93))
   out.push(centred('process-subline', 'copy:marketing.process.subline', soft(T.lead), y0 + 165))
   const railY = y0 + 233
   const n = m.process.items.length
@@ -270,7 +271,7 @@ function process(y0: number): LayoutNode {
 
 function finalCta(y0: number): LayoutNode {
   const out: LayoutNode[] = []
-  out.push(centred('final-heading', 'copy:marketing.finalCta.heading', T.section, y0 + 40))
+  out.push(centred('final-heading', 'copy:marketing.finalCta.heading', T.heading, y0 + 44))
   out.push(centred('final-body', 'copy:marketing.finalCta.body', soft({ ...T.body, wrap: 720, lead: 32 }), y0 + 114))
   out.push(applyButton('final-cta', 683, y0 + 201, 553, 67, 'copy:marketing.finalCta.cta', T.strong))
   out.push(centred('final-under', 'copy:marketing.finalCta.underCta', T.small, y0 + 290))

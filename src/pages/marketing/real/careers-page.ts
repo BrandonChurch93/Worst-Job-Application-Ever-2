@@ -49,7 +49,8 @@ export const flatType: PartMaker = {
 }
 
 export const LAYER = { white: 0, glow: 0.12, shadow: 0.16, fill: 0.3, inner: 0.45, mark: 0.6, top: 0.75 }
-export const SHADOW = { card: 0x000000, spread: 22, drop: 8, strength: 0.07, button: 0.16 }
+// A painted shadow is given as the colour the white sheet shows under it. It lies `drop` lower than what casts it and `inset` inside its outline, and fades out over `spread`.
+export const SHADOW = { card: 0xe0e0e4, button: 0xf0cdb4, spread: 26, drop: 14, inset: 12 }
 
 const WHITE = tint(COLOUR.white)
 const LINE = tint(COLOUR.line)
@@ -59,7 +60,9 @@ const DEEP = tint(COLOUR.deep)
 const GREY = tint(COLOUR.grey)
 const WREATH = tint(COLOUR.wreath)
 const TICK = tint(COLOUR.tick)
-const dark = (k: number, warm = 0): Rgb => [1 - k, 1 - k * (1 + warm * 0.35), 1 - k * (1 + warm * 0.8)]
+const EDGE = tint(COLOUR.edge)
+const CARD_SHADOW: Rgb = share(SHADOW.card)
+const BUTTON_SHADOW: Rgb = share(SHADOW.button)
 
 interface Brush { s: Shape; flat: Paint; shade: Paint }
 
@@ -73,13 +76,12 @@ function rect(b: Brush, x: number, y: number, w: number, h: number, z: number, c
 }
 
 // A card of the website: a hairline round a white face, and its soft shadow on the sheet.
-function card(b: Brush, n: LayoutNode, lifted = false): void {
+function card(b: Brush, n: LayoutNode): void {
   const o = outline(n)
   const { cx, cy } = boxOf(n)
-  b.shade.soft(o, xOf(b, cx), yOf(b, cy + SHADOW.drop), LAYER.shadow, SHADOW.spread, dark(SHADOW.strength))
-  if (lifted) return
-  b.flat.face(o, xOf(b, cx), yOf(b, cy), LAYER.fill, LINE)
-  b.flat.face(outline(n, 1), xOf(b, cx), yOf(b, cy), LAYER.inner, WHITE)
+  b.shade.soft(outline(n, SHADOW.inset), xOf(b, cx), yOf(b, cy + SHADOW.drop), LAYER.shadow, SHADOW.spread, CARD_SHADOW)
+  b.flat.face(o, xOf(b, cx), yOf(b, cy), LAYER.fill, EDGE)
+  b.flat.face(outline(n, 1.5), xOf(b, cx), yOf(b, cy), LAYER.inner, WHITE)
 }
 
 // One branch of a laurel wreath: a stem bent like a bracket with leaves in pairs along it. `side` is -1 for the left branch.
@@ -95,20 +97,20 @@ function branch(b: Brush, cx: number, cy: number, side: number): void {
   const stem: [number, number][] = []
   for (let i = 0; i <= 14; i++) stem.push(at(from + ((to - from) * i) / 14))
   b.flat.line(stem, 2.2, LAYER.fill, WREATH)
-  const leaves = 7
+  const leaves = 8
   for (let i = 0; i < leaves; i++) {
     const deg = from + ((to - from) * (i + 0.9)) / leaves
     const [x, y] = at(deg)
     const [x2, y2] = at(deg + 2)
     const along = Math.atan2(y2 - y, x2 - x)
-    for (const turn of i === leaves - 1 ? [0] : [-0.8, 0.8]) {
+    for (const turn of i === leaves - 1 ? [0] : [-0.72, 0.72]) {
       const a = along + turn
-      const long = 17 - i * 0.6
+      const long = 21 - i * 0.8
       const pts: [number, number][] = []
       for (let k = 0; k < 12; k++) {
         const u = (k / 12) * Math.PI * 2
         const lx = (0.5 - 0.5 * Math.cos(u)) * long
-        const ly = Math.sin(u) * 3.7
+        const ly = Math.sin(u) * 4.7
         pts.push([x + Math.cos(a) * lx - Math.sin(a) * ly, y + Math.sin(a) * lx + Math.cos(a) * ly])
       }
       b.flat.poly(pts, LAYER.inner, WREATH)
@@ -143,8 +145,8 @@ function tick(b: Brush, n: LayoutNode): void {
 
 function faqRow(b: Brush, n: LayoutNode): void {
   const { x, w, cx, cy } = boxOf(n)
-  b.flat.face(outline(n), xOf(b, cx), yOf(b, cy), LAYER.fill, LINE)
-  b.flat.face(outline(n, 1.4), xOf(b, cx), yOf(b, cy), LAYER.inner, WHITE)
+  b.flat.face(outline(n), xOf(b, cx), yOf(b, cy), LAYER.fill, EDGE)
+  b.flat.face(outline(n, 1.5), xOf(b, cx), yOf(b, cy), LAYER.inner, WHITE)
   const px = x + w - 37
   b.flat.line([[xOf(b, px - 8), yOf(b, cy)], [xOf(b, px + 8), yOf(b, cy)]], 2, LAYER.mark, GREY)
   b.flat.line([[xOf(b, px), yOf(b, cy - 8)], [xOf(b, px), yOf(b, cy + 8)]], 2, LAYER.mark, GREY)
@@ -153,10 +155,9 @@ function faqRow(b: Brush, n: LayoutNode): void {
 function paint(b: Brush, n: LayoutNode): void {
   const box = boxOf(n)
   const part = n.part
-  if (part === CARDS && n.kind === 'perkCard') card(b, n, true)
-  else if (part === APPLY) {
-    const o = outline(n, 6)
-    b.shade.soft(o, xOf(b, box.cx), yOf(b, box.cy + 9), LAYER.shadow, 18, dark(SHADOW.button, 1))
+  if (part === CARDS && n.kind === 'perkCard') return
+  if (part === APPLY) {
+    b.shade.soft(outline(n, SHADOW.inset), xOf(b, box.cx), yOf(b, box.cy + SHADOW.drop), LAYER.shadow, SHADOW.spread, BUTTON_SHADOW)
   } else if (n.kind === 'hairline') rect(b, box.x, box.y, box.w, box.h, LAYER.fill, LINE)
   else if (n.kind === 'pill') b.flat.face(outline(n), xOf(b, box.cx), yOf(b, box.cy), LAYER.fill, n.tone === 'pocket' ? BAND : PEACH)
   else if (n.kind === 'tickerBand') rect(b, box.x, box.y, box.w, box.h, LAYER.fill, BAND)
@@ -174,7 +175,7 @@ function sheet(s: Shape): THREE.Object3D {
   const root = new THREE.Group()
   const b: Brush = { s, flat: new Paint(), shade: new Paint() }
   rect(b, s.x, s.y, s.w, s.h, LAYER.white, WHITE, 0.6)
-  if (s.id === 'sheet-top') b.shade.fan(xOf(b, GLOW.x), yOf(b, GLOW.y), GLOW.rx, GLOW.ry, LAYER.glow, share(COLOUR.glow), [1, 1, 1])
+  if (s.id === 'sheet-top') b.shade.fan(xOf(b, GLOW.x), yOf(b, GLOW.y), GLOW.rx, GLOW.ry, LAYER.glow, share(COLOUR.glow), [1, 1, 1], GLOW.hold)
   const n = find(careersLayout().layout, s.id)
   for (const c of n.children ?? []) paint(b, c)
   const z = s.z1 - s.z0
