@@ -80,6 +80,7 @@ const gaps = []
 const took = []
 let worst = 0
 let atSave = -9
+let opened = 0
 for (const name of visitors) for (const seed of seeds) {
   mc = null
   const stage = new Stage({ mode: 'live', flow: [{ page: 'step3' }, { page: 'step4' }], pages, driver: makeDriver(name, seed), seed })
@@ -105,7 +106,12 @@ for (const name of visitors) for (const seed of seeds) {
       const may = Math.max(Math.hypot(was.vx, was.vy), Math.hypot(row.vx, row.vy)) / 240
       if (moved > may + 0.02 && moved - may > jumpMost) { jumpMost = moved - may; where = `${was.mode} ${was.what} (${f2(was.x)}, ${f2(was.v)}) to ${row.mode} ${row.what} (${f2(row.x)}, ${f2(row.v)}) at page ${f2(row.page)} s` }
     }
-    if (was && (from || mc.events.some((e) => e.name === 'ball-save' && e.ball === 0))) {
+    if (from && mc.taken < 0 && !mc.events.some((e) => e.name === 'ball-save' && e.ball === 0)) {
+      lines.push(`${name} seed ${seed} page ${f2(row.page)} s tier ${from.k}: the gate opened under a held ball, which went on down the hole (${row.mode} ${row.what})`)
+      opened++
+      from = null
+    }
+    if (was && was.k === k && (from || mc.events.some((e) => e.name === 'ball-save' && e.ball === 0))) {
       const moved = Math.hypot(row.x - was.x, row.v - was.v)
       const may = Math.max(Math.hypot(was.vx, was.vy), Math.hypot(row.vx, row.vy)) / 240
       atSave = Math.max(atSave, moved - may)
@@ -150,6 +156,6 @@ for (const name of visitors) for (const seed of seeds) {
 const by = {}
 for (const s of all) by[s.way] = (by[s.way] ?? 0) + 1
 lines.push(`saves by the way in: ${Object.entries(by).map(([k, n]) => `${k} ${n}`).join(', ')}; the jump at a save: ${f2(Math.min(...all.map((s) => s.jump)))} to ${f2(Math.max(...all.map((s) => s.jump)))} balls`)
-if (gaps.length) lines.push(`from the ball's landing on the wire to the kick, over ${took.length} saves: the gap of shell and drawn wire ${f2(Math.min(...gaps))} to ${f2(Math.max(...gaps))} px; steps from the take to the kick ${Math.min(...took)} to ${Math.max(...took)}; in the steps of a save, from the take to the kick's own step, the ball's largest move in one step less what its speed allows ${atSave.toFixed(4)} balls (0 or under: never more than its speed); in the whole of the visits ${f2(worst)} balls`)
+if (gaps.length) lines.push(`from the ball's landing on the wire to the kick, over ${took.length} saves: the gap of shell and drawn wire ${f2(Math.min(...gaps))} to ${f2(Math.max(...gaps))} px; steps from the take to the kick ${Math.min(...took)} to ${Math.max(...took)}; in the steps of a save, from the take to the kick's own step, the ball's largest move in one step less what its speed allows ${atSave.toFixed(4)} balls (0 or under: never more than its speed); in the whole of the visits ${f2(worst)} balls; takes that ended with the gate opening ${opened}`)
 console.log(lines.join('\n'))
 await close()
