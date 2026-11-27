@@ -191,7 +191,7 @@ describe('the sheet of the tiers', () => {
       expect(part[0]).toBe(f.first - 1)
       expect(part[part.length - 1]).toBeGreaterThan(f.last)
     })
-    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next, whole frames 10 steps (0.17 s) apart: frames 1 to 6, the camera's travel from tier 1 to tier 2 (0:01.67 to 0:02.38); frames 7 to 12, the camera's travel from tier 2 to tier 3 (0:05.00 to 0:05.75). Each group of 6 begins before its travel and ends after it")
+    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next, whole frames 10 steps (0.17 s) apart: frames 1 to 6, the camera's travel from Corporate to the Office (0:01.67 to 0:02.38); frames 7 to 12, the camera's travel from the Office to the Street (0:05.00 to 0:05.75). Each group of 6 begins before its travel and ends after it")
     expect(tierSheet(cfg, { rows, moments: { falls: [] } })).toBe(null)
   })
 
@@ -216,7 +216,7 @@ describe('the sheet of the tiers', () => {
     expect([sheet.opens, sheet.every]).toEqual([68, 16])
     expect(sheet.steps).toEqual([49, 117, 185, 253, 499, 515, 531, 547, 699, 715, 731, 747])
     expect(sheet.steps[3]).toBeGreaterThan(reveal.last)
-    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next. Frames 1 to 4 are single moments 68 steps (1.13 s) apart, not frames in a row: the camera's first travel, from the page's top down the machine to tier 3 (0:00.83 to 0:04.15), then back up to tier 1. Frames 5 to 8 and 9 to 12, 16 steps (0.27 s) apart: its travel from tier 1 to tier 2 (0:08.33 to 0:09.05) and from tier 2 to tier 3 (0:11.67 to 0:12.42). Each group of 4 begins before its travel and ends after it")
+    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next. Frames 1 to 4 are single moments 68 steps (1.13 s) apart, not frames in a row: the camera's first travel, from the page's top down the machine to the Street (0:00.83 to 0:04.15), then back up to Corporate. Frames 5 to 8 and 9 to 12, 16 steps (0.27 s) apart: its travel from Corporate to the Office (0:08.33 to 0:09.05) and from the Office to the Street (0:11.67 to 0:12.42). Each group of 4 begins before its travel and ends after it")
     // The recorded visit opens so: one travel of more than four seconds down the machine, then back up, before the first fall.
     expect(rec.reveal.back).toBe(true)
     expect(rec.reveal.last - rec.reveal.first).toBeGreaterThan(240)

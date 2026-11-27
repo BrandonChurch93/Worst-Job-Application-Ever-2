@@ -1293,7 +1293,7 @@ export const LAUNCH = { before: 6, sheets: 2, still: 30, lane: 17 }
 export const FILM_RUNS = {
   paper: { frames: [2154, 2174], window: [1125, 140, 461, 582], columns: 3, per: 6, lines: 7 },
   bend1: { frames: [4258, 4275], window: [1400, 560, 461, 376], columns: 3, per: 9, lines: 7 },
-  bend2: { frames: [4272, 4287], window: [1224, 498, 696, 582], columns: 2, per: 4, lines: 7 }
+  bend2: { frames: [4272, 4286], window: [1224, 498, 696, 582], columns: 2, per: 4, lines: 7 }
 }
 export const FILM_WORDS = (cfg) => `film frames drawn with ${filmSamples(cfg)} samples a frame, the quickest setting, so the grain is coarser than the finished film's`
 
