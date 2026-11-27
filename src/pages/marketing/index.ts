@@ -17,6 +17,7 @@ export const FLIP_SECONDS = 0.5
 export const SETTLE = { past: 0, over: 1 }
 // A card that is over goes back when the arrow is this far outside it, so that it does not flutter at its edge.
 export const LEAVE = 16
+const LOOK = 0.25
 const SHOCK = 0.8
 const REJECTED_SETTLE = 1.7
 // What the stage's hold on an arrow in the air pulls it back up by in one step, as a share of how far under the hand-off it is.
@@ -385,6 +386,7 @@ export function makePage(setting: Setting = SETTING): PageLogic {
     hint(): Hint | null {
       const at = { x: hero.cx, y: hero.cy }
       if (rejected() || s.apply || s.done) return { ...at, down: false }
+      if (s.time < tickerBeat.from + LOOK) return { x: cards[0]!.cx, y: cards[0]!.cy, down: false }
       return { ...at, down: Math.floor(s.time * 4) % 2 === 0 }
     },
     skip() {

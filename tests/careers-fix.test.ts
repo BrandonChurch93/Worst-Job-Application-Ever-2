@@ -7,6 +7,7 @@ import { OPENING } from '../src/pages/marketing/script'
 import { block } from '../src/shell/metrics'
 import { words } from '../src/shell/words'
 import { fitPicture } from '../src/core/levelFit'
+import { BotDriver } from '../src/stage/bots'
 import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, type Driver, type DriverView } from '../src/stage/stage'
 import type { DrawList, Pointer, Shape } from '../src/stage/types'
 
@@ -170,5 +171,25 @@ describe('fault B: the ticker is a band from edge to edge', () => {
     s.advance(seconds(0.5))
     const later = drawn(s).find((d) => d.id === `ticker-${TICKER.keyItem}-run`)!
     expect(key.x - later.x).toBeCloseTo(TICKER.speed * 0.5, 3)
+  })
+})
+
+describe('the careers page under the keen visitor', () => {
+  it('reaches each of its four beats and turns to step 1 by its own press', () => {
+    const s = live(new BotDriver('keen', config.seed))
+    let steps = 0
+    while (s.entryIndex === 0 && steps < 30 * stepHz) {
+      s.advance(1)
+      steps++
+    }
+    expect(s.entryIndex).toBe(1)
+    const mine = config.film.beats.filter((b) => b.unit === 'marketing').map((b) => b.id)
+    expect(mine.length).toBe(4)
+    expect(s.gagsReached.filter((g) => g.startsWith('marketing.'))).toEqual(mine)
+    const names = s.events.filter((e) => e.page === 'marketing').map((e) => e.name)
+    expect(names).toContain('card-flip')
+    expect(names).toContain('button-press')
+    expect(names).not.toContain('skip')
+    expect(steps / stepHz).toBeLessThan(12)
   })
 })
