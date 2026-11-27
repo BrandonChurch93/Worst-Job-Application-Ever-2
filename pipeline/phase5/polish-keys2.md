@@ -80,6 +80,8 @@ No conflict. The stills' `cmp` and the film frames' proof above were measured be
 - `npm test`: 169 files passed, 13 skipped; 2122 tests passed, 17 skipped; 247.6 s.
 - `npx tsc --noEmit -p .`: no line, exit 0.
 - After them only these notes changed.
+- On this last tree (MEASURED 14:58 to 15:01 UTC): the draft still `step1-tug` is byte equal to the still of 308e96a1 (`cmp`); `step1-fire` differs from it in 16889 pixels, all inside x 136 to 561, y 710 to 1065 (the left turret and the bed under it), 3997 of them by more than 8 levels inside x 166 to 456, y 846 to 942 (`r5-fire-still.png`); film frames 1060 and 1450 are byte equal to before. The last live pictures of the turret (`r1-turret.png`, pictures 863 to 876 at real size, 870 to 873 at 3 times) and the film's (`r6-film3.png`, film frames 1167 to 1172 at 3 times) are of this tree's build: the sleeve's stub over the dome is the same on every one of them and moves only with the dome.
+- `origin/main` went to 5013511c at about 14:58 UTC, after these checks began: `kit/CLOCK.json`, `kit/PROGRESS.md`, `out/stills/status/STATUS.md` and status pictures, no source and no test. It is not merged here, because the checks could not be run again inside the limit.
 
 ## Open
 
