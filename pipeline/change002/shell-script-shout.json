@@ -1,0 +1,62 @@
+{
+  "made": "node pipeline/change002/shell-script-caption.mjs --shout",
+  "browser": "159.0.8154.6",
+  "behind": "a kept still of the fight, not the running site",
+  "text": "KA / ME / HA / ME / HA",
+  "draft": true,
+  "marks": [
+    {
+      "mark": "finish-arms",
+      "at": 0.009,
+      "panelShows": null,
+      "fontPx": null
+    },
+    {
+      "mark": "finish-charge",
+      "at": 0.38,
+      "panelShows": "KA",
+      "fontPx": "40px"
+    },
+    {
+      "mark": "finish-charge",
+      "at": 1.048,
+      "panelShows": "ME",
+      "fontPx": "40px"
+    },
+    {
+      "mark": "finish-charge",
+      "at": 2.099,
+      "panelShows": "HA",
+      "fontPx": "40px"
+    },
+    {
+      "mark": "finish-charge",
+      "at": 2.908,
+      "panelShows": "ME",
+      "fontPx": "40px"
+    },
+    {
+      "mark": "finish-fire",
+      "at": 4.13,
+      "panelShows": "HA",
+      "fontPx": "40px"
+    },
+    {
+      "mark": "boss-gone",
+      "at": 6.269,
+      "panelShows": null,
+      "fontPx": null
+    }
+  ],
+  "log": [
+    {
+      "at": 0.342,
+      "line": "line.boss.finish.0",
+      "trigger": "event finish-arms",
+      "what": "spoken",
+      "start": 0.342,
+      "seconds": 6.26
+    }
+  ],
+  "pageErrors": []
+}
