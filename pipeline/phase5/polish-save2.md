@@ -93,3 +93,21 @@ On the branch with `origin/main` at `8a39fcaa` merged in (`1aa6a8e3` and the com
 - MEASURED, `npm test`: 168 files passed, 11 skipped; 2108 tests passed, 14 skipped; none failed. (On `308e96a1` before any change: 166 files and 2094 tests passed.)
 - MEASURED, `npx tsc --noEmit -p .`: clean, no line of output.
 - MEASURED, `npx vitest run tests/polish-save2.test.ts tests/polish-gate.test.ts`: 18 of 18 passed.
+
+## Owed to the Builder's ruling on the first pass (14:33)
+
+The view in a rally, no change made. MEASURED, `node pipeline/phase5/polish-save2-measure.mjs --visitor keen --seed 1 --nth 1 --before 430 --after 200` (page 14.85 to 25.60 s; the tier's own place of the view is scroll 2544.0, reached at 15.65 s):
+
+| page s | the view |
+|---|---|
+| 15.65 to 17.12 | stands at the tier's place |
+| 17.12 to 17.25 | goes down 30.6 px (the ball comes to the gate's reach and is struck away) |
+| 17.25 to 19.25 | stands 30.6 px lowered, 2.00 s, the ball in play in the lower part of the tier |
+| 19.25 to 19.77 | goes down to 90 px in four pieces (to 40.6, 67.0, 89.8, 90.0 px), with stands of 0.06, 0.03 and 0.08 s between them; never back |
+| 19.77 to 22.87 | stands 90 px lowered: 2.25 s in play before the take at 22.02 s, then the save (kick at 22.27 s) and 0.6 s after it |
+| 22.87 to 23.08 | goes back to the tier's place, 0.21 s |
+| 23.08 to 25.60 | stands at the tier's place |
+
+So the view is lowered for 4.90 s before the take with no save yet (17.12 to 22.02 s), of which it stands 4.25 s. While it is lowered and no save has begun, the ball's middle is never higher than y 473.9 of 1080 on the screen (at 20.37 s). Named as it is: between 19.25 and 19.77 s the way down comes in pieces, because the ball goes in and out of the gate's reach at the bats; no piece goes back.
+
+The arrow's step on the kick's step (the strike's own law, kept by the Builder's ruling; MEASURED with the measure script, the heading on the last frame on the wire and on the kick's frame): pack seed 3 save 2: 120.7 to -63.0 degrees, 176.3 degrees by the shorter way; pack seed 1 save 1: -170.8 to -50.5, 120.3 degrees; keen seed 1 save 1: -151.2 to -50.5, 100.7 degrees.
