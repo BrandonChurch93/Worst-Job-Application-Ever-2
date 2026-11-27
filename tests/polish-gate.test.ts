@@ -162,7 +162,7 @@ describe('a gate that opens under a ball on its wire', () => {
 })
 
 describe('the live view under a gate', () => {
-  it('stands lower while a ball lies on the wire of the lobby or the office, goes there and back by the view\'s own follow, and leaves the street\'s view alone', async () => {
+  it('stands lower while a ball lies on the wire of the lobby or the office, goes there and back from rest with no step more than 0.16 px apart from the step before it, and leaves the street\'s view alone', async () => {
     await prepare()
     let mc: Machine | null = null
     const step = Machine.prototype.step
@@ -175,6 +175,7 @@ describe('the live view under a gate', () => {
       const stage = new Stage({ mode: 'live', flow: [{ page: 'step3' }, { page: 'step4' }], pages, driver, seed: 1 })
       let was = 0
       let loaded = 0
+      const seen: [number, number, boolean, boolean][] = []
       let since = -1
       let tier = 0
       while (stage.entryIndex === 0 && stage.time < 110) {
@@ -185,6 +186,8 @@ describe('the live view under a gate', () => {
         const scroll = stage.page.scroll()
         const home = TIER_Y[b.tier]! * BALL
         if ((m.taken >= 0 && !m.gate[b.tier]) || (since >= 0 && since < 100 && b.tier === tier)) expect(Math.abs(scroll - was), 'the view\'s step').toBeLessThanOrEqual(2.6)
+        if (m.taken >= 0 && !m.gate[b.tier] && b.tier < 2) expect(scroll - home, 'the room under the wire from the take on, px').toBeGreaterThan(25)
+        seen.push([scroll, b.tier, m.events.some((e) => e.name === 'gate-take' && e.ball === 0), m.events.some((e) => e.name === 'ball-save' && e.ball === 0)])
         if (m.taken >= SAVE.land + SAVE.wind - SAVE.still && !m.gate[b.tier]) {
           loaded++
           if (b.tier < 2) {
@@ -203,6 +206,21 @@ describe('the live view under a gate', () => {
         was = scroll
       }
       expect(loaded).toBeGreaterThan(2 * SAVE.still)
+      let soft = 0
+      for (let i = 2 * stepHz; i < seen.length - 2 * stepHz; i++) {
+        const [, k, take, save] = seen[i]!
+        if (k > 1 || (!take && !save)) continue
+        const from = take ? i - stepHz : i
+        const to = take ? i : i + 2 * stepHz
+        if (seen.slice(from - 4, to + 1).some((r) => r[1] !== k)) continue
+        soft++
+        for (let j = from; j <= to; j++) {
+          const a = seen[j]![0] - seen[j - 1]![0]
+          const b = seen[j - 1]![0] - seen[j - 2]![0]
+          expect(Math.abs(a - b), `the view's step against the step before it, ${take ? 'on the way down' : 'on the way back'}`).toBeLessThanOrEqual(0.16)
+        }
+      }
+      expect(soft).toBeGreaterThanOrEqual(2)
     } finally {
       Machine.prototype.step = step
     }
