@@ -7,7 +7,7 @@ import sharp from 'sharp'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { buildInfo } from './lib/hashes.mjs'
 import { BANNED, FORMAT, briefFor, neutral, packPlan, roleOf, roles, rolesOf, roundName } from './lib/pack-plan.mjs'
-import { SITE, SITE_TIER } from './lib/pack-site.mjs'
+import { SITE, SITE_TIER, siteNotes } from './lib/pack-site.mjs'
 
 const a = args()
 const cfg = config()
@@ -81,7 +81,7 @@ fs.mkdirSync(dir, { recursive: true })
 const built = await buildPack(cfg, plan, { tier, cache, facts, whole: everyFile, log: said })
 const edge = cfg.critics.maxImageLongEdgePx
 const key = { ...stamp, browser: built.browser, files: {} }
-const manifest = { stamp, format: FORMAT, longEdgeMostPx: edge, filesMostPerCritic: cfg.critics.maxFilesPerMessage, sets: [] }
+const manifest = { stamp, format: FORMAT, longEdgeMostPx: edge, filesMostPerCritic: cfg.critics.maxFilesPerMessage, ...(site ? siteNotes(cfg, role, facts) : {}), sets: [] }
 for (const s of plan.sets) {
   const files = []
   for (const f of s.files) {
@@ -92,7 +92,7 @@ for (const s of plan.sets) {
     if (Math.max(m.width, m.height) > edge) stop(`${f.name} is ${m.width} by ${m.height}, over ${edge} px`)
     if (m.exif || m.icc || m.xmp || m.iptc) stop(`${f.name} carries metadata`)
     fs.writeFileSync(path.join(dir, f.name), clean)
-    files.push({ name: f.name, width: m.width, height: m.height, bytes: clean.length, sha256: sha(clean) })
+    files.push({ name: f.name, ...(site && b.heading ? { heading: b.heading } : {}), width: m.width, height: m.height, bytes: clean.length, sha256: sha(clean) })
     key.files[f.name] = { set: s.set, critic: s.critic, kind: b.kind, heading: b.heading, ...b.about }
   }
   if (files.length > cfg.critics.maxFilesPerMessage) stop(`set ${s.set} holds ${files.length} files, over ${cfg.critics.maxFilesPerMessage}`)
