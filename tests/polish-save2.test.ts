@@ -235,6 +235,24 @@ describe('the arrow and the view at a save, in a live visit', () => {
     }
   })
 
+  it('goes down to its place under the gate in one eased move, in a rally at the bats too: the whole 90 px inside 0.3 s with no stand inside it, and no step back from there to the take', () => {
+    for (const run of runs) {
+      const take = run.findIndex((r) => r.take)
+      const k = run[take]!.tier
+      const place = TIER_Y[k]! * BALL + 90 - 1e-6
+      let there = take + 7 * EACH
+      while (there > 1 && run[there - 1]!.scroll >= place && run[there - 1]!.tier === k) there--
+      const from = there - 0.3 * stepHz
+      const steps = run.slice(from, there + 1).map((r, n) => r.scroll - run[from + n - 1]!.scroll)
+      const moving = steps.map((d, n) => (d >= 0.02 ? n : -1)).filter((n) => n >= 0)
+      expect(run[there]!.scroll - run[from]!.scroll, 'the way down inside 0.3 s, px').toBeGreaterThanOrEqual(89)
+      expect(moving.length, 'steps of the way down').toBe(moving[moving.length - 1]! - moving[0]! + 1)
+      expect(moving.length / EACH, 'frames of the way down').toBeLessThanOrEqual(14)
+      expect(Math.max(...steps) * EACH, 'the fastest frame of the way down, px').toBeLessThanOrEqual(12.01)
+      for (let n = from; n <= take; n++) expect(run[n]!.scroll - run[n - 1]!.scroll, `step ${n - take} from the take`).toBeGreaterThanOrEqual(0)
+    }
+  })
+
   it('swings no bat of the machine at a save with nobody at the flippers', () => {
     const run = runs[0]!
     const take = run.findIndex((r) => r.take)

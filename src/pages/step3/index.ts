@@ -191,7 +191,7 @@ const lagOf = (u: number): number => {
   return Math.max(0, ramp - ((top - 1) / 2) * rest * (w + Math.sin(Math.PI * w) / Math.PI))
 }
 // Live play, the room under a gate: while a ball is past the bats' tips on its way to a shut gate, lies on the gate's wire or was just thrown from it, the live view of the lobby and of the office stands `px` lower, so the wire, its posts and the hole under it are on the screen (the street's view has that room already). `stay`: the seconds after the kick it stays for the wire's swings.
-// The view takes that room by a travel of its own, added to its follow: it gains speed by `gain` (px/s a second) up to `pace` (px/s), slows the same way and stands on its place with no step back and no tail; when the ball is struck away the view stops where it is and stands while the ball is in the lower part of the tier (`keep` balls or more down it), and goes back once the ball is above that or off the tier's floor.
+// The view takes that room by a travel of its own, added to its follow: it gains speed by `gain` (px/s a second) up to `pace` (px/s), slows the same way and stands on its place with no step back and no tail; a way down once begun is gone to its end in that one move: when the ball is struck away the view stands lowered while the ball is in the lower part of the tier (`keep` balls or more down it), and goes back once the ball is above that or off the tier's floor.
 const ROOM = { px: 90, stay: 0.6, gain: 9000, pace: 720, keep: 5.6, lead: 0.1, calm: 2, near: 0.6 }
 // The roll in a tube: the arrow turns by `gear` radians for each ball's width travelled, a whole number of turns over the tube, and the last `ease` of the way slows the turn to rest. In the film the roll down the feed tube is over after `film` balls, before the cut to the wide view of the table.
 const TUMBLE = { gear: 1, ease: 0.15, film: 10.5 }
@@ -998,15 +998,14 @@ export function makePage(): PageLogic {
         const [x, v, gone] = s.room ?? [0, 0, 0]
         const b = ball()
         const back = !low && (gone === 1 || b.mode !== 'plane' || b.tier > 1 || b.y - TIER_Y[b.tier]! < ROOM.keep)
-        const wait = !low && !back
-        const goal = low ? ROOM.px : 0
-        const way = wait ? (v! < 0 ? -1 : 1) : goal >= x! ? 1 : -1
+        const goal = back ? 0 : ROOM.px
+        const way = goal >= x! ? 1 : -1
         const far = Math.abs(goal - x!)
         const u = v! * way
         const up = Math.min(ROOM.pace, u + ROOM.gain * dt)
-        const w = wait ? Math.max(0, u - ROOM.gain * dt) : u > 0 && far - ((u + up) / 2) * dt < (up * up) / (2 * ROOM.gain) ? Math.max(0, u - ((u * u) / (2 * far)) * dt) : up
+        const w = u > 0 && far - ((u + up) / 2) * dt < (up * up) / (2 * ROOM.gain) ? Math.max(0, u - ((u * u) / (2 * far)) * dt) : up
         const y = x! + way * ((u + w) / 2) * dt
-        const there = !wait && ((w <= 0 && u > 0) || (goal - y) * way <= 1e-3)
+        const there = (w <= 0 && u > 0) || (goal - y) * way <= 1e-3
         const now = there ? goal : Math.max(0, Math.min(ROOM.px, y))
         if (now > 0 || low) s.room = [now, there ? 0 : way * w, back ? 1 : 0]
         else delete s.room
