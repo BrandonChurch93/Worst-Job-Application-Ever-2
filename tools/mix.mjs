@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { logic } from './lib/logic.mjs'
-import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, sha, siteBuild, siteInBrowser, target } from './sound.mjs'
+import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, refuseStale, sha, siteBuild, siteInBrowser, target } from './sound.mjs'
 
 const rel = (p) => path.relative(at(), p)
 const narration = () => readJson(at('content', 'narration.json'))
@@ -68,7 +68,8 @@ export async function filmPlanA(c, M) {
 
 export async function makeMix(P, c, M, out, name, given = null) {
   const plan = given ?? (await filmPlan(c, M))
-  const { sounds, absent } = keptSounds(P, M)
+  const { sounds, absent, stale } = keptSounds(P, M)
+  refuseStale(stale, 'the mix')
   const result = M.mix.mixFilm({
     sampleRate: c.audio.sampleRate, fps: plan.fps, seconds: plan.seconds, events: plan.events, lines: plan.lines, sounds, sfx: c.audio.sfx,
     duckDb: c.audio.duckDb, holdMusicSeconds: c.audio.holdMusicSeconds, targetLufs: c.audio.filmLoudnessLufs, truePeakDb: c.audio.truePeakDb, toneFromFrame: plan.toneFromFrame ?? 0
