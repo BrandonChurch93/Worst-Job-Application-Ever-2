@@ -89,6 +89,23 @@ Made with `node pipeline/phase5/polish-save-shots.mjs --bot never --seed 1 --at 
 - Before: the Builder's own sheet of round 23 (`set-A-08.png`, 1:59.22 to 1:59.58), where the ball is thrown from the mouth with a bat of the machine swinging beside it and the gate below the window. I made no before sheet in my own window in the first pass.
 
 
-CHECKS
+## Checks (each run alone, on the code of `d3459b8e`)
 
-OPEN
+- MEASURED 05:31, `npm test`: 154 files passed, 1 failed, 1 skipped; 1880 tests passed, 1 failed. The one: `tests/site-pointer-listeners.test.ts`, "through a whole table ...", which holds two numbers my work changes: the samples at which the flippers are not what the hand asks inside the machine's own cut (8, now 13) and the longest cut the stage counts for `keen` (1.2417 s, now 1.3292 s). Both grow because the director cuts the bats' power while the ball is in the gate's mouth once the scene's waiting is spent (there before), and the ball now lies there for the hold. I changed those two numbers and the title's "1.24 s" to "1.33 s", nothing else. MEASURED 05:33, `npx vitest run tests/site-pointer-listeners.test.ts tests/polish-save.test.ts tests/polish-slide.test.ts tests/polish-ball.test.ts`: 4 files, 50 tests passed (the film pin of `tests/polish-ball.test.ts` unchanged). The whole `npm test` is run again before the last push.
+- MEASURED 05:37, `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- MEASURED 05:37, `npm run bots`: "keen reached every one of the 37 gags on every seed", "bots: all clear". keen: flippers ignored 1.33 s on each of its 5 seeds.
+- MEASURED 05:38, `npx tsc --noEmit -p .`: exit 0, no output.
+- MEASURED 05:38, `npm run -s take -- --check` against the output kept from `664bedb5`: `diff` prints nothing (14 lines).
+- MEASURED 05:39, `npm run -s still -- --key <step1-fire|table-wide|boss-fight> --format hd --tier draft --force`, each `cmp` to the still kept from `664bedb5`: byte equal, all three. `table-wide` holds the gates at rest in the film, so the lent line draws the gate at rest as before.
+- The gate at rest in live play: `tests/polish-save.test.ts`, "leaves the gate at rest as it was drawn", holds that the wire's turn is 0 with no ball near, shut or open, so the pose is the number it was. A live browser frame before and after was not compared byte for byte: UNKNOWN.
+- MEASURED, picture 27 against picture 25 of the kept frames (mean of the absolute difference per 120 px block): on the first picture after the kick the whole frame is 8.0 levels of 255 brighter and the lamp block at the top left 32.7 brighter (the flasher the page fires at `ball-save`), so the page answers on the kick's frame.
+
+
+## Open, in plain words
+
+- The wire's give under the ball is true in the numbers (gap 0.00 px) but hardly seen: the gate lies at the very foot of the screen (its pin at about y 1065 of 1080) and under the weight the wire turns away from the viewer, down the table, so the bar only thins by a few pixels. What is seen in the take and the hold is the ball: it stops, lies still and sinks. The wire is plainly seen only at the kick and in the ring after it.
+- At the deepest of the wind-up the ball's lower edge is at about the screen's lower edge.
+- The gate has no light of its own that I found; the answer of the page on the kick's frame is the flasher, the shake and the arrow's blow, all there before.
+- The `random` visitor reaches the inbox on 2 of 4 seeds less than before it skips (see the table).
+- `gate-take` has no sound.
+- The motion pack finds a save by the `ball-save` step and starts 2 pictures before it; the take and the hold now lie about 8 sheet frames before the kick, so its sheet will start too late and its caption about the machine's bat no longer fits. The window and start I ask for are in my report.
