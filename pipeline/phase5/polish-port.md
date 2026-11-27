@@ -59,4 +59,4 @@ How the numbers were taken: `PORT_TRACE=/tmp/trace.json npx vitest run tests/pol
 
 - The three stills `table-wide`, `step1-fire`, `boss-fight` (hd, draft): `cmp` 0 against the ones made on `origin/main` before any change.
 - `npm test`: 148 files, 1818 tests passed. `npm run bots`: exit 0. `npm run take -- --check`: `diff` against main's output empty. `npm run determinism`: pass, 12 pictures, identical across two fresh loads and two orders. `npx tsc --noEmit -p .`: clean, run last.
-- Not seen in pictures: the card's odd frames 6419, 6421, 6423 with the words 0.6 px proud (the even frames 6416 to 6426 were seen, words whole).
+- Open, seen at 00:01Z: in the card's odd frames 6421 and 6423 the word on the button is cut (its lower part is gone into the cap); the card's own words are whole there, and in 6419 and the even frames 6416 to 6426 all words are whole. Cause UNKNOWN; whether main shows it in these frames is UNKNOWN (main's odd frames were not made).
