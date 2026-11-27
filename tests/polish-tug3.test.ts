@@ -24,8 +24,8 @@ const HOLD = {
   film: 9.5, filmTug: 271
 }
 
-// The strains, the grab and the loss of step 1 under the pack's visitor before this work, as frame and name.
-const EVENTS = ['1823 shredder arms-out', '1853 paper-strain', '1907 paper-strain', '1961 paper-strain', '2016 paper-strain', '2070 paper-strain', '2124 paper-strain', '2178 paper-strain', '2233 paper-strain', '2287 paper-strain', '2340 tug-lost']
+// The strains, the grab and the loss of step 1 under the pack's visitor before this work, as frames counted from the step the arms come out, and name.
+const EVENTS = ['0 shredder arms-out', '30 paper-strain', '84 paper-strain', '138 paper-strain', '193 paper-strain', '247 paper-strain', '301 paper-strain', '355 paper-strain', '410 paper-strain', '464 paper-strain', '517 tug-lost']
 
 // The film's arrow from its grab to the frame before the slot takes it, as it was before this work: the first 12 letters of the sha1 of its poses.
 const FILM_POSES = 'ed347022bc83'
@@ -54,7 +54,8 @@ const tug = (rows: Frame[]): { grab: number; lost: number; strains: number[] } =
 
 describe('the arrow at a strain of the paper, live', () => {
   it('moves no event of the tug', () => {
-    const got = runs.visitor.filter((r) => r.events.some((e) => e === 'arms-out' || e === 'paper-strain' || e === 'tug-lost')).map((r) => `${r.i} ${r.events.join(' ')}`)
+    const told = runs.visitor.filter((r) => r.events.some((e) => e === 'arms-out' || e === 'paper-strain' || e === 'tug-lost'))
+    const got = told.map((r) => `${r.i - told[0]!.i} ${r.events.join(' ')}`)
     expect(got).toEqual(EVENTS)
   })
 

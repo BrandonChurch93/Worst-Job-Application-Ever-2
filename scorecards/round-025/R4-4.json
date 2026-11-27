@@ -1,0 +1,51 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "D: motion on the live site under a visitor's input, fourth part: the machine saving a lost ball on three sheets at every 1/60 s, and a flipper's blow wide on two sheets and close on two sheets, consecutive frames",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-D-05.png",
+   "where": "white bumper, centre right, 2:06.93 to 2:07.00",
+   "what": "the ball comes down onto the white bumper and, instead of bouncing off, slides onto it. At 2:06.97 and 2:07.00 the ball sits almost on top of the bumper's centre and covers it, so it reads as the ball passing through a solid post. The bumper lights, but the ball never changes direction.",
+   "fix": "resolve the collision on the frame of contact: keep the ball's centre at least the ball radius plus the bumper radius from the bumper's centre, and reflect its velocity about the contact normal so it leaves within 1 to 2 frames"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-06.png / set-D-07.png",
+   "where": "yellow clock bumper, 2:06.35",
+   "what": "on the frame of the hit the ball is sunk about 20 px into the bumper's ring. Its speed then drops from about 72 px a frame before the hit to about 40 px a frame after, and its path hardly bends. A pop bumper should kick the ball away harder, but this one soaks it up like a soft pad. The bumper's flash lasts only that one frame, and nothing else on the page reacts.",
+   "fix": "stop the ball at the ring's edge on the contact frame and add the bumper's kick along the contact normal, so the ball leaves at or above its incoming speed and turns clearly up and to the left. Hold the bumper's flash for 3 to 4 frames, then fade it out"
+  },
+  {
+   "severity": "major",
+   "file": "set-D-01.png / set-D-02.png",
+   "where": "ball on the gate wire, 1:53.33 to 1:53.57",
+   "what": "the ball drops at about 50 px a frame and stops dead on the wire in one frame, with no rebound and no dip of the wire. It then sits still for about 14 frames while the arrow inside it turns from pointing down to pointing left, so it looks like a ball being rotated by hand rather than a loose steel ball. The launch at 1:53.57 has no wind-up: the gate does not dip or load before it throws the ball.",
+   "fix": "give the landing a small rebound of 1 to 2 bounces of a few px, with the wire flexing under the ball. Keep the arrow fixed while the ball is not rolling. Before the throw, have the gate dip 3 to 5 px over 3 to 4 frames, then fire"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-03.png",
+   "where": "gate wire after the ball leaves, 1:53.67 to 1:53.82",
+   "what": "the wire switches from frame to frame between a thin flat line and a short raised rail (thin at .68, .72, .73, .80 and .82; rail at .70, .75, .77 and .78), in no steady pattern and without dying away, so it reads as flicker rather than a wire ringing down",
+   "fix": "replace the switching with one damped swing, 2 to 3 cycles whose size shrinks each cycle, that comes to rest flat by about 1:53.80"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-02.png / set-D-03.png",
+   "where": "view following the launch, 1:53.53 to 1:53.68",
+   "what": "the view slides about 35 px in roughly 5 frames as the ball is thrown, then springs back about 7 px at 1:53.68. The pan starts suddenly, and the small reverse reads as a jolt, not a weighted settle.",
+   "fix": "ease the pan in over 4 to 6 frames and settle with a single overshoot of no more than 2 to 3 px"
+  },
+  {
+   "severity": "minor",
+   "file": "set-D-04.png",
+   "where": "top of the window, 2:06.57 to 2:06.60",
+   "what": "at 27% the ball runs off the top of the window for two frames at the top of its rise, so the turn at the top cannot be seen",
+   "fix": "frame the run so the ball's highest point stays inside the window"
+  }
+ ]
+}

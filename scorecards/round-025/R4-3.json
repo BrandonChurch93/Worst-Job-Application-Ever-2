@@ -1,0 +1,30 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "C: motion on the live site under a visitor's input, third part: the arrow into the ball, the ball's drop out of the port on four sheets at every 1/60 s, and the ball leaving the port at 1/30 s, consecutive frames",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-C-05.png",
+   "where": "the port rim and tube bands during the drop, 1:39.52–1:39.62; starts on set-C-04.png",
+   "what": "The fixed window shows the entire port and both bands sliding upward together while the ball is still in the page-mounted tube. This reads as a vertical camera follow rather than a straight move in or out.",
+   "fix": "Keep the page anchored during release and move straight in or out on the page axis. Begin any vertical follow only once the view has left the page for the machine."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-01.png",
+   "where": "the arrow capture in the center of the black cup, 1:37.62–1:37.92",
+   "what": "The arrow stops, two disconnected crescents appear, then the sealed ball appears where the arrow was. Without the caption it looks more like a loading animation than the port grabbing the arrow, and the change in visitor control has no visible cue in this crop.",
+   "fix": "Give the port an obvious closing action that meets the arrow, show the shell locking in one crisp beat, and tie a distinct flipper-ready cue to that beat."
+  },
+  {
+   "severity": "major",
+   "file": "set-C-04.png",
+   "where": "the ball as it crosses the cup lip and top collar, continuing into set-C-05.png",
+   "what": "After accelerating in the cup on set-C-03.png, the ball advances in nearly even steps relative to the collar and the arrow keeps rotating smoothly. The throat gives no visible response or change of motion, so the drop reads as a guided glide rather than a heavy ball being released.",
+   "fix": "Carry gravity-driven acceleration through the clear tube. If the throat guides the ball by contact, show a brief change in speed or spin at that point and a small matching response from the collar."
+  }
+ ]
+}
