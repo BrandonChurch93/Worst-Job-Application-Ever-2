@@ -312,6 +312,7 @@ function play(first: PlayMode): void {
       volume = v
       sound.setVolume(v)
     }
+    if (stage.page.control === 'film') touched()
     sound.quiet(wallSeconds() - lastInput)
   }
   const touched = () => {
