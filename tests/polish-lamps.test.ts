@@ -37,7 +37,8 @@ const PATH: number[][] = [
 // The plane the ball's own shadow is drawn on, in px over the floor (src/table/real/ball/index.ts, the decal's place).
 const SHADOW_PLANE = 3.4
 // Every film frame's saved state of the pinball page with the windows' count left out, as one number: what `node pipeline/phase5/polish-lamps-state.mjs` gives on 308e96a1 and on this tree.
-const STATE = '4e4de23c7807426f'
+// It was 4e4de23c7807426f until merge 52 joined agent/polish-port2: the port's slower fall down the feed tube moves the saved state (film frames 4219 to 4568), the lamps do not. Written at the join by the Builder for this file's owner (r25_fix_lamps): the same script gives f02499fec9df137c on the port's tree alone at 13639b48 (no frame with a count) and on the joined tree (575 frames with a count).
+const STATE = 'f02499fec9df137c'
 const FIRST = 4020
 const FRAMES = 2520
 const STEP = 1 / 240
