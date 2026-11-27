@@ -3,7 +3,7 @@ import { blendPose, CursorBody, HANDOFF, type CursorPose } from '../cursor/body'
 import { BotDriver, type BotName, type BotRun } from './bots'
 import { homePose, smooth } from './camera'
 import { arriveTurn, holdsTurn, leaveTurn, shiverAt, shiverBase, shiverDelay, shiverSeconds, SHIVER, TURN } from './turn'
-import type { CameraPose, Driver, DrawList, FieldProgress, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
+import type { CameraPose, Chrome, Driver, DrawList, FieldProgress, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
 
 export * from './types'
 
@@ -348,6 +348,7 @@ export class Stage {
     if (this.phase !== 'end') {
       this.page.draw(list)
       railFields(list, this.page.fields?.() ?? null)
+      slideHeader(list, this.page.chrome?.() ?? null)
     }
     const made: Frame = { list, cursor: this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     const settle = this.settledFor()
@@ -405,9 +406,26 @@ export class Stage {
 }
 
 // What a page reports of its fields is handed to the maker of the header's rail as the rail's own numbers: [done, total].
+const isHeaderRail = (s: Shape): boolean => s.id === 'progress-rail' && s.role === 'progressRail'
+
 export function railFields(list: DrawList, fields: FieldProgress | null): void {
   if (!fields || !(fields.total > 0)) return
-  for (const s of list) if (s.role === 'progressRail') s.v = [fields.done, fields.total]
+  for (const s of list) if (isHeaderRail(s)) s.v = [fields.done, fields.total]
+}
+
+// The shapes of the header: the title, the step rail with its buttons and numerals, and the rule under them.
+export const isHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
+// How far up the header travels to be off the screen, in page pixels: its rule at 162, the rule's height and the shadow under it.
+export const HEADER_OUT = 240
+
+export function slideHeader(list: DrawList, chrome: Chrome | null): void {
+  if (!chrome) return
+  const out = (1 - Math.min(1, Math.max(0, chrome.header))) * HEADER_OUT
+  if (!(out > 0)) return
+  for (let i = 0; i < list.length; i++) {
+    const s = list[i]!
+    if (isHeader(s.id)) list[i] = { ...s, y: s.y - out, moved: true }
+  }
 }
 
 const NUMBERS = ['x', 'y', 'w', 'h', 'z0', 'z1', 'rot', 'turnX', 'turnY', 'r'] as const
