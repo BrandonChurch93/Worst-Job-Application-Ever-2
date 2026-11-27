@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
-import { stream } from '../src/core/random'
 import { pages } from '../src/pages'
 import { HANDOFF } from '../src/cursor/body'
 import { makePage } from '../src/pages/step1'
 import { drawFire, makeTurrets } from '../src/pages/step1/fire'
 import { PAPER_REST } from '../src/pages/step1/layout'
-import { DECK, homePlaces, keyboardData, legendKey, seats, shuffled } from '../src/pages/step1/keyboard'
+import { DECK, homePlaces, keyboardData, legendKey, seats } from '../src/pages/step1/keyboard'
 import { Turrets, TURRET } from '../src/pages/step1/turrets'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { block } from '../src/shell/metrics'
@@ -19,7 +18,8 @@ const beats = config.film.beats.filter((b) => b.unit === 'step1')
 const film = (driver: Driver = new ScriptDriver()): Stage => new Stage({ mode: 'film', flow: filmFlow('step1'), pages, driver, film: filmOptions('step1') })
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step1' }, { page: 'step2' }], pages, driver, seed })
 const at = (seconds: number): number => Math.round(seconds * stepHz)
-const state = (s: Stage) => s.page.save() as { phase: string; values: Record<string, string> }
+const state = (s: Stage) => s.page.save() as { phase: string; values: Record<string, string>; resume: { phase: string } }
+const CUT = { beat: 'step1.lastName', event: 'keys-shuffle', words: ['copy:step1.fields.firstName.label', 'copy:step1.fields.lastName.label'] }
 
 class Still implements Driver {
   readonly name = 'script' as const
@@ -70,7 +70,8 @@ describe('step 1: the layout', () => {
       else for (const [k, x] of Object.entries(v as Record<string, unknown>)) visit(x, `${path}.${k}`)
     }
     visit(rawCopy.step1, 'copy:step1')
-    expect(leaves.filter((k) => !used.has(k))).toEqual([])
+    expect(leaves.filter((k) => !used.has(k))).toEqual(CUT.words)
+    expect(used.has('copy:drafts.step1.name.label')).toBe(true)
   })
 
   it('shows no word that is not a key, at any moment of the film or of a live run', () => {
@@ -139,18 +140,6 @@ describe('step 1: the keyboard', () => {
       }
     }
   })
-
-  it('shuffles the letters only, every key keeping one seat, the same way for the same seed', () => {
-    const a = shuffled(homePlaces(), stream('step1:shuffle', 7))
-    const b = shuffled(homePlaces(), stream('step1:shuffle', 7))
-    expect(a).toEqual(b)
-    expect(new Set(a).size).toBe(seats.length)
-    seats.forEach((seat, i) => {
-      if (!seat.letter) expect(a[i]).toBe(i)
-      else expect(seats[a[i]!]!.letter).toBe(true)
-    })
-    expect(a.filter((p, i) => p !== i).length).toBeGreaterThanOrEqual(13)
-  })
 })
 
 describe('step 1: the turrets by themselves', () => {
@@ -205,7 +194,8 @@ describe('step 1: the film', () => {
   const times = (name: string): number[] => events.filter((e) => e.name === name).map((e) => e.step / stepHz)
 
   it('gives the event of every beat inside its beat', () => {
-    for (const b of beats) {
+    expect(times(CUT.event)).toEqual([])
+    for (const b of beats.filter((x) => x.id !== CUT.beat)) {
       const t = times((b as { event: string }).event)
       expect(t.length, b.id).toBeGreaterThan(0)
       for (const x of t) {
@@ -227,12 +217,10 @@ describe('step 1: the film', () => {
   it('types the name and the email of the config in full', () => {
     const a = film()
     a.advance(at(9.7))
-    expect(state(a).values.firstName).toBe(config.applicant.filmFirstName)
-    a.advance(at(14.7 - 9.7))
-    expect(state(a).values.lastName).toBe(config.applicant.filmLastName)
-    a.advance(at(19 - 14.7))
+    expect(state(a).values.name).toBe(config.applicant.filmFirstName)
+    a.advance(at(19 - 9.7))
     expect(state(a).values.email).toBe(config.applicant.filmEmail)
-    expect(times('keys-shuffle').length).toBe(config.applicant.filmLastName.length)
+    expect(Object.keys(state(a).values)).toEqual(['name', 'email'])
   })
 
   it('never gives the live events', () => {
@@ -257,7 +245,7 @@ describe('step 1: the film', () => {
     expect(a.cursor.damaged).toBe(false)
     expect(a.cursor.taken).toBe(false)
     expect(a.cursor.onPage).toBe(true)
-    expect(state(a).phase).toBe('received')
+    expect(state(a).resume.phase).toBe('received')
     expect(a.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
   })
 
@@ -329,11 +317,13 @@ describe('step 1: live', () => {
     it(`ends every gag by itself with a ${name} pointer`, () => {
       const { s, longest } = run(driver())
       expect(s.page.id).toBe('step2')
-      expect(Object.keys(longest).sort()).toEqual(beats.map((b) => b.id).sort())
+      expect(Object.keys(longest).sort()).toEqual(beats.map((b) => b.id).filter((id) => id !== CUT.beat).sort())
       for (const [gag, seconds] of Object.entries(longest)) expect(seconds, gag).toBeLessThanOrEqual(limit + 3)
       expect(s.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
       const names = s.events.filter((e) => e.page === 'step1').map((e) => e.name)
-      for (const event of ['keyboard-rise', 'turret-rise', 'bolt-fire', 'keys-shuffle', 'slab-drop', 'paper-slide', 'shredder', 'arms-out', 'strips-zip']) expect(names.includes(event), event).toBe(true)
+      for (const event of ['keyboard-rise', 'turret-rise', 'bolt-fire', 'slab-drop', 'paper-slide', 'shredder', 'arms-out', 'strips-zip']) expect(names.includes(event), event).toBe(true)
+      expect(names.filter((n) => n === 'field-done').length).toBe(2)
+      expect(names.includes(CUT.event)).toBe(false)
       expect(names.filter((n) => n === 'tug-lost').length).toBe(1)
       expect(names.filter((n) => n === 'slow-typing').length).toBe(1)
       if (name === 'still') expect(names.filter((n) => n === 'bolt-hit-cursor').length).toBe(config.live.step1.hitsBeforeTurretsOverheat)
@@ -468,7 +458,7 @@ describe('the fixes after round 2 of the blockout', () => {
     const rows: { amount: number; x: number; y: number; arm: number }[] = []
     for (let i = 0; i < at(28.2); i++) {
       a.advance(1)
-      const st = a.page.save() as { phase: string; tug: { amount: number; reach: number } }
+      const st = (a.page.save() as { resume: { phase: string; tug: { amount: number; reach: number } } }).resume
       if (st.phase === 'tug') rows.push({ amount: st.tug.amount, x: a.cursor.x, y: a.cursor.y, arm: st.tug.reach })
     }
     const second = stepHz
@@ -498,7 +488,7 @@ describe('the fixes after round 2 of the blockout', () => {
       const now = (i + 1) / stepHz
       const st = a.page.save() as { values: Record<string, string>; keyDown: Record<string, number> }
       if (hit < 0 && a.events.some((e) => e.name === 'bolt-hit-cursor')) hit = now
-      if (st.values.firstName === config.applicant.filmFirstName) full = full < 0 ? now : full
+      if (st.values.name === config.applicant.filmFirstName) full = full < 0 ? now : full
       else full = -1
       const list: DrawList = []
       if (i % 4 === 0) {
@@ -605,8 +595,8 @@ describe('the hold after the shredder', () => {
     for (let i = 0; i < at(32) && turn < 0; i++) {
       a.advance(1)
       const now = (i + 1) / stepHz
-      const st = a.page.save() as { received: boolean; values: Record<string, string> }
-      if (reset < 0 && st.received) {
+      const st = a.page.save() as { resume: { received: boolean }; values: Record<string, string> }
+      if (reset < 0 && st.resume.received) {
         reset = now
         expect(Object.values(st.values).join('')).toBe('')
         expect(a.page.states!()).toContain('received')

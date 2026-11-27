@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
-import { DECK, keyAt, seats } from '../src/pages/step1/keyboard'
-import { FIELD_X, GLYPH, SLOT, ZONE } from '../src/pages/step1/layout'
+import { DECK, homePlaces, keyAt, seats } from '../src/pages/step1/keyboard'
+import { GLYPH, SLOT, ZONE } from '../src/pages/step1/layout'
+import { HALF_X } from '../src/pages/step1/resume/layout'
 import { CAMERA, FIRST, makePlan, pointerAt } from '../src/pages/step1/script'
 import { projectPage } from '../src/stage/camera'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
@@ -19,7 +20,7 @@ const drawn = (s: Stage): DrawList => {
 describe('step 1: the script of the film', () => {
   it('never has two moves of the pointer at once, and holds the pointer still before the hit and in the shock', () => {
     const a = config.applicant
-    const plan = makePlan(config.seed, a.filmFirstName, a.filmLastName, a.filmEmail)
+    const plan = makePlan(a.filmFirstName, a.filmEmail)
     for (let i = 1; i < plan.moves.length; i++) expect(plan.moves[i]!.t0).toBeGreaterThanOrEqual(plan.moves[i - 1]!.t1 - 1e-6)
     const still = (from: number, to: number): boolean => {
       const p = pointerAt(plan, from)
@@ -40,14 +41,14 @@ describe('step 1: the script of the film', () => {
   it('makes the frame of the approved image at 6.0: the cursor still on a key of the middle letter rows, scorched, the key under it hot, a bolt in the air', () => {
     const s = film()
     s.advance(at(6))
-    const st = s.page.save() as unknown as { values: Record<string, string>; thudKey: number; places: number[]; turrets: { bolts: unknown[]; scorches: { x: number; y: number; left: number }[] } }
+    const st = s.page.save() as unknown as { values: Record<string, string>; thudKey: number; turrets: { bolts: unknown[]; scorches: { x: number; y: number; left: number }[] } }
     const pose = s.cursor.pose()
     const body = { x: pose.x + 14, y: pose.y + 26 }
     expect(s.cursor.speed).toBeLessThan(60)
     expect(Math.abs(pose.spin)).toBeLessThan(0.2)
     expect(pose.damage).toContain('burn')
     expect(pose.acting).toBe('shocked')
-    const under = keyAt(st.places, body.x, body.y)
+    const under = keyAt(homePlaces(), body.x, body.y)
     expect(under).toBeGreaterThanOrEqual(0)
     expect(under).toBe(st.thudKey)
     expect(seats[under]!.letter).toBe(true)
@@ -55,7 +56,7 @@ describe('step 1: the script of the film', () => {
     expect(st.turrets.bolts.length).toBeGreaterThanOrEqual(1)
     const near = st.turrets.scorches.filter((c) => Math.hypot(c.x - body.x, c.y - body.y) < 200)
     expect(near.length).toBeGreaterThanOrEqual(1)
-    expect(st.values.firstName).toBe(config.applicant.filmFirstName.slice(0, 5))
+    expect(st.values.name).toBe(config.applicant.filmFirstName.slice(0, 5))
     console.log(`the frame at 6.0: the cursor on the key ${seats[under]!.name}, body at ${body.x.toFixed(0)}, ${body.y.toFixed(0)}, ${near.length} burn near it, ${st.turrets.bolts.length} bolt in the air`)
   })
 
@@ -83,8 +84,9 @@ describe('step 1: the script of the film', () => {
         if (first[e.name] === undefined) first[e.name] = (i + 1) / stepHz
       }
     }
+    expect(first['keys-shuffle']).toBeUndefined()
     for (const b of beats) {
-      if (!b.event) continue
+      if (!b.event || b.id === 'step1.lastName') continue
       expect(first[b.event], b.event).toBeGreaterThanOrEqual(b.from - 0.25)
       expect(first[b.event], b.event).toBeLessThanOrEqual(b.to + 0.25)
     }
@@ -99,7 +101,7 @@ describe('step 1: the script of the film', () => {
     for (let i = at(21.9); i < at(27.2); i++) {
       s.advance(1)
       const now = (i + 1) / stepHz
-      const st = page.save() as { phase: string; lost: number }
+      const st = (page.save() as { resume: { phase: string; lost: number } }).resume
       if (st.phase !== 'tug' || st.lost >= 0) continue
       const cam = page.camera('film', now)!
       const p = s.cursor.pose()
@@ -174,13 +176,11 @@ describe('step 1: the script of the film', () => {
     const seen = new Set<string>()
     for (let i = 0; i < at(31); i++) {
       s.advance(1)
-      const st = s.page.save() as { received: boolean; kept: unknown; values: Record<string, string> }
-      if (st.kept) seen.add(`${st.values.firstName!.length > 0 ? 1 : 0}${st.values.lastName!.length > 0 ? 1 : 0}${st.values.email!.length > 0 ? 1 : 0}`)
-      if (st.received) expect(Object.values(st.values).join('')).toBe('')
+      const st = s.page.save() as { stage: number; resume: { received: boolean }; values: Record<string, string> }
+      if (st.stage === 2) seen.add(`${st.values.name!.length > 0 ? 1 : 0}${st.values.email!.length > 0 ? 1 : 0}`)
+      if (st.resume.received) expect(Object.values(st.values).join('')).toBe('')
     }
-    expect(seen.has('111')).toBe(true)
-    expect(seen.has('110')).toBe(true)
-    expect(seen.has('100')).toBe(true)
+    expect([...seen]).toEqual(['11', '10', '00'])
   })
 
   it('hangs strips of paper under the hood from the first bite, never draws one back in, and frames them at the key picture', () => {
@@ -229,9 +229,9 @@ describe('step 1: the script of the film', () => {
       if (now < CAMERA.in[1] || now > CAMERA.out[0]) continue
       expect(cam.eye, now.toFixed(2)).toEqual(still.eye)
       for (const y of [ZONE.y, ZONE.y + ZONE.h, SLOT.cy]) {
-        gutter = Math.min(gutter, projectPage(cam, FIELD_X - 16, y, 0).x - 1920)
-        expect(projectPage(cam, FIELD_X - 16, y, 0).x, now.toFixed(2)).toBeGreaterThan(1920 - 0.01)
-        expect(projectPage(cam, FIELD_X - 6, y, config.scale.heights.card).x, now.toFixed(2)).toBeGreaterThan(1920)
+        gutter = Math.min(gutter, projectPage(cam, HALF_X - 16, y, 0).x - 1920)
+        expect(projectPage(cam, HALF_X - 16, y, 0).x, now.toFixed(2)).toBeGreaterThan(1920 - 0.01)
+        expect(projectPage(cam, HALF_X - 6, y, config.scale.heights.card).x, now.toFixed(2)).toBeGreaterThan(1920)
       }
       for (const q of [{ x: SLOT.cx - SLOT.w / 2, y: SLOT.cy - SLOT.h / 2 }, { x: SLOT.cx + SLOT.w / 2, y: SLOT.cy + 30 }]) {
         const at = projectPage(cam, q.x, q.y, 0)
@@ -249,6 +249,8 @@ describe('step 1: the script of the film', () => {
   it('draws the upload glyph above the prompt of the drop zone until the resume is received', () => {
     const s = film()
     s.advance(at(6))
+    expect(drawn(s).some((x) => x.id.startsWith('resume-'))).toBe(false)
+    s.advance(at(21) - at(6))
     const list = drawn(s)
     const glyph = list.filter((x) => x.id.startsWith('resume-glyph-'))
     const prompt = list.find((x) => x.id === 'resume-prompt')!
@@ -258,8 +260,8 @@ describe('step 1: the script of the film', () => {
       expect(g.y).toBeGreaterThan(ZONE.y + 30)
       expect(Math.abs(g.x + g.w / 2 - (ZONE.x + ZONE.w / 2))).toBeLessThanOrEqual(GLYPH.w / 2 + 1)
     }
-    s.advance(at(31) - at(6))
-    expect((s.page.save() as { received: boolean }).received).toBe(true)
+    s.advance(at(31) - at(21))
+    expect((s.page.save() as { resume: { received: boolean } }).resume.received).toBe(true)
     expect(drawn(s).some((x) => x.id.startsWith('resume-glyph-'))).toBe(false)
   })
 })

@@ -4,7 +4,7 @@ import { block } from '../../shell/metrics'
 import { TYPE } from '../../shell/parts'
 import type { DrawList, Shape } from '../../stage/types'
 import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seats, TRAVEL } from './keyboard'
-import { buildLayout, FIELDS } from './layout'
+import { buildLayout, FIELDS, stageState } from './layout'
 import { Turrets } from './turrets'
 
 const WELL = -(CAP_TOP + 12)
@@ -32,11 +32,11 @@ export function drawFire(out: DrawList, view: FireView): void {
     if (seat.name !== 'space') over[`key-${seat.name}-legend`] = { z0: top, z1: top }
   }
   for (const f of FIELDS) over[`${f}-value`] = { z0: 0.1, z1: 0.1 }
-  drawLayout(out, layout, { states: ['rest', 'prompt', 'keyboard', 'note'], over, runtime: { 'step1.firstName': view.typed, 'step1.lastName': '', 'step1.email': '' } })
-  const p = boxOf(layout, 'firstName-pocket')
+  drawLayout(out, layout, { states: ['rest', 'keyboard', 'note', stageState('name')], over, runtime: { 'step1.name': view.typed, 'step1.email': '' } })
+  const p = boxOf(layout, 'name-pocket')
   out.push({ id: 'field-focus', part: 'shell', kind: 'box', x: p.x + 14, y: p.y + p.h - 5, w: p.w - 28, h: 3, z0: 0.1, z1: 0.5, tone: 'accent' })
   if (view.time !== undefined && Math.floor(view.time * 2.5) % 2 === 0) {
-    const v = boxOf(layout, 'firstName-value')
+    const v = boxOf(layout, 'name-value')
     const w = view.typed ? block(TYPE.value.font, view.typed, TYPE.value.px).width : 0
     out.push({ id: 'field-caret', part: 'shell', kind: 'box', x: v.x + w + 4, y: p.y + 16, w: 3, h: p.h - 32, z0: 0.1, z1: 0.5, tone: 'ink' })
   }
