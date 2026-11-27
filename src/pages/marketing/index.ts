@@ -377,7 +377,7 @@ export function makePage(): PageLogic {
         const u = Math.min(1, (io.time - LANDING.from) / (LANDING.down - LANDING.from))
         const z = hover + (HANDOFF.z - hover) * (1 - u * u)
         io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, (z - HANDOFF.z * HELD) / (1 - HELD))
-      } else if (rejected() && io.step === Math.round(LANDING.lands * stepHz)) io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, hover)
+      } else if (rejected() && s.mode === 'film' && io.step === Math.round(LANDING.lands * stepHz)) io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, hover)
       if (s.mode === 'film') {
         const cues = rejected() ? REJECTED_CUES : CUES
         while (s.cue < cues.length && cues[s.cue]!.at <= io.time + 1e-9) {
