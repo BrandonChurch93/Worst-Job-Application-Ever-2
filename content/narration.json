@@ -1,6 +1,6 @@
 {
   "about": "The narrator's lines. A wildlife documentary voice that watches the job applicant the way a nature film watches a small animal having a very bad day. The voice is the one saved in Brandon's ElevenLabs account under the name in audio.narratorVoice in config/showcase.json.",
-  "status": "Script of change note 003 (November 27, 2026) with its second and third updates, entered by the Builder as Brandon's words (AGENTS.md: a line of narration Brandon rewrites is replaced with his words). Lines 1 to 6 and line 8 are settled; line 7 is his pick B3. Line 9 is a draft and is kept apart in content/narration-drafts.json. Every older line and every live-only line is gone, as the note orders: eight spoken moments, everything else silent. Nothing is recorded: no narrator take, no test take and no ElevenLabs credit on narration until Partner brings his word to record. The notes are pasted word for word in kit/PROGRESS.md.",
+  "status": "Script of change note 003 (November 27, 2026) with its second and third updates, entered by the Builder as Brandon's words (AGENTS.md: a line of narration Brandon rewrites is replaced with his words). Lines 1 to 6 and line 8 are settled; line 7 is his pick B3, entered as three entries at its own pauses (giving up, the turn, the rise) with no word changed. Line 9 is a draft and is kept apart in content/narration-drafts.json. Every older line and every live-only line is gone, as the note orders: eight spoken moments, everything else silent. Nothing is recorded: no narrator take, no test take and no ElevenLabs credit on narration until Partner brings his word to record. The notes are pasted word for word in kit/PROGRESS.md.",
   "direction": {
     "inBrandonsWords": "Kind of Australian, National Geographic vibe: talking real slow, with a pause every few words. Somebody narrating what the user is doing in a condescending way, but funny, all of it. Never mean or rude just to be mean and rude. Look at the pitiful applicant as it tries to pay its bills, desperately. More than just wildlife.",
     "hisExample": "The lion (pause) walks to the den of his friend (pause) and then (pause) pounces on him.",
@@ -99,8 +99,13 @@
     "boss.unfold": [
       {
         "at": 0,
-        "text": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab. / But then / they remember / their student loans.",
-        "live": "the boss has formed and the applicant stops; the boss music starts on the words their student loans"
+        "text": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
+        "live": "the boss has formed and the applicant stops"
+      },
+      {
+        "at": 0.6,
+        "text": "But then / they remember / their student loans.",
+        "live": "straight after the line before it; the boss music starts on the words their student loans"
       },
       {
         "at": 0.9,
