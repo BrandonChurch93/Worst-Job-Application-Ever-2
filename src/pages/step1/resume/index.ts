@@ -19,6 +19,8 @@ const STRIPS = 20
 const STRIP = { paper: 42, ink: 26, wide: 2.5, every: 4, askew: 0.44 }
 // How far outside Browse files and the file's tile a press still counts, in page pixels: a finger is wider than an arrow's tip.
 const GRAB = 26
+// The arrow stands on Browse files, not in it: this far outside the chip the ground under the arrow is already the chip's top.
+const CHIP_EDGE = 4
 // The beats before the bite. `field`: the drop zone as any form has it, until Browse files is pressed; `press`: the chip is down; `folder`: the window is up and waits for the file to be picked; `lit`: the file is picked;
 // `fly`: the sheet is on its way to the drop zone; `lie`: it lies there; `wind`: the wind has it; `feed`: the slot has it.
 type Beat = 'field' | 'press' | 'folder' | 'lit' | 'fly' | 'lie' | 'wind' | 'feed'
@@ -783,6 +785,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
     states: () => [STAGE, s.received ? 'received' : 'prompt', ...(s.paper.on && s.phase === 'resume' ? ['paper'] : []), ...(s.flow.win > 0 && s.phase === 'resume' ? ['folder'] : []), ...(s.flow.plate > 0 ? ['shredder'] : [])],
     ground(io: StepIo): number | null {
       if (s.phase === 'resume' && s.flow.win >= 1 && inside({ x: WIN.x, y: WIN.y, w: WIN.w, h: WIN.h }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return inside(tile, io.cursor.x + BODY.x, io.cursor.y + BODY.y) ? WIN.top + TILE.up : WIN.top
+      if (!s.received && (inside(chip, io.cursor.x, io.cursor.y, CHIP_EDGE) || inside(chip, io.cursor.x + BODY.x, io.cursor.y + BODY.y, CHIP_EDGE))) return heights.card + 8 - (s.phase === 'resume' && s.flow.at === 'press' ? POP.chip : 0)
       if (inside(ZONE, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return heights.card
       return null
     },
