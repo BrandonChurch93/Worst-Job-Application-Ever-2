@@ -18,7 +18,7 @@ import { ANSWER } from '../../table/real/lights/levels'
 import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
 import { CLOCK, filmOf, sceneOf } from './clock'
-import { fight, filmHand, LEAN, leanOf, VAC, windOf } from './vacuum'
+import { fight, filmHand, LEAN, leanOf, LOOSE, looseOf, VAC, windOf } from './vacuum'
 import { FRENZY, noted, RIOT, riotAim, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
@@ -128,7 +128,7 @@ const Y1 = TIER_Y[1]!
 const Y2 = TIER_Y[2]!
 const LAST_OUT: Shape = { id: 'last.out', part: 'table-layout', kind: 'well', x: 0, y: px(LAST_Y), w: 1920, h: PAGE_H - px(LAST_Y), z0: -px(40), z1: 0, tone: 'dark' }
 // The film's push in on the port while it pulls: the view looks at a place `left` and `down` px from the port's middle, from `near` of the home camera's distance.
-const PUSH = { left: 250, down: 30, near: 0.56, seconds: 1.5 }
+const PUSH = { left: 150, down: 20, near: 0.36, seconds: 1.5 }
 const portPose = (): CameraPose => {
   const p = homePose(0, 0)
   const at = toWorld(px(PORT.x) - PUSH.left, px(PORT.y) + PUSH.down, 0)
@@ -259,6 +259,7 @@ export function makePage(): PageLogic {
   const hqBlock = block(hqType.font, words('copy:step3.table.buildings.hq', ''), hqType.px)
   const hqZ = px(floorZ(0) + DOORS.plate + DOORS.plateH / 2)
   const hqPlate: Shape = { id: 'sign.corporate.hq.plate', part: 'model-hq', kind: 'text', x: px(MID) - hqBlock.width / 2, y: px(Y0 + DOORS.y + 0.1) + 1 - hqBlock.height / 2, w: hqBlock.width, h: hqBlock.height, z0: hqZ, z1: hqZ, tone: 'ink', words: 'copy:step3.table.buildings.hq', type: hqType, turnX: TURN }
+  const torn = words('copy:transitions.step3', '').split(' ').filter((_, i) => i % LOOSE.every === 1).slice(0, LOOSE.at.length).map((word) => ({ word, size: block(TYPE.body.font, word, TYPE.body.px) }))
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: b.event ?? null }))
   const start = { x: 1180, y: 760 }
   const port = { x: px(PORT.x), y: px(PORT.y) }
@@ -956,9 +957,9 @@ export function makePage(): PageLogic {
           io.cursor.drive(f.x, f.y, 30)
           io.cursor.aim(turn - 6.283185307179586 * Math.round((turn - p.lean - p.spin) / 6.283185307179586))
           io.cursor.press(f.long, dt)
-          if (f.began && f.part === 1) io.cursor.wobble(VAC.dig[0]!, VAC.dig[1]!, VAC.dig[2]!)
-          if (f.began && f.part === 5) io.cursor.wobble(VAC.rim[0]!, VAC.rim[1]!, VAC.rim[2]!)
-          if (f.began && (f.part === 2 || f.part === 4)) {
+          if (f.began && f.kind === 1) io.cursor.wobble(VAC.dig[0]!, VAC.dig[1]!, VAC.dig[2]!)
+          if (f.began && f.kind === 5) io.cursor.wobble(VAC.rim[0]!, VAC.rim[1]!, VAC.rim[2]!)
+          if (f.began && f.kind === 2) {
             io.cursor.react('startle')
             io.emit('vacuum-slip', f.x, f.y, false)
           }
@@ -1187,6 +1188,13 @@ export function makePage(): PageLogic {
       const pull = s.seen < 0 ? (s.phase === 'wait' ? wound : 0) : (wound + (1 - wound) * smooth(Math.min(1, (s.time - s.seen) / LEAN.rise))) * (s.phase === 'wait' || s.phase === 'pull' ? 1 : Math.max(0, 1 - (s.t - s.took) / LEAN.fall))
       if (pull > 0) LEANERS.forEach((id, i) => { over[id] = { ...over[id], ...leanOf(boxOf(layout, id), port, pull, s.time, i) } })
       drawLayout(out, layout, { states, runtime: { score: scoreText() }, over })
+      if (s.seen >= 0 && s.time - s.seen < LOOSE.at[LOOSE.at.length - 1]! + LOOSE.flight) {
+        const from = boxOf(layout, 'intro')
+        torn.forEach((w, i) => {
+          const at = looseOf(i, s.time - s.seen, from, port)
+          if (at) out.push({ id: `loose.${i}`, part: 'type', kind: 'text', x: at.x - w.size.width / 2, y: at.y - w.size.height / 2, w: w.size.width, h: w.size.height, z0: LOOSE.lift, z1: LOOSE.lift, tone: 'ink', words: 'runtime:loose', text: w.word, type: TYPE.body, rot: at.rot, moved: true })
+        })
+      }
       if (pull > 0) out.push({ id: 'loader.draw', part: 'loader', kind: 'box', x: port.x, y: port.y, w: 0, h: 0, z0: 0, z1: 0, tone: 'dark', v: [pull] })
       if (s.mode === 'live' && s.phase === 'sealed' && !s.flipped && s.t >= T.onTable && s.t < T.onTable + HINT) out.push({ id: 'display.hint', part: 'displays', kind: 'box', x: px(MID), y: px(MARQUEE_Y), w: 0, h: 0, z0: 0, z1: 0, tone: 'dark', v: [s.t - T.onTable] })
       const ago = (at: number): number => (at < 0 ? 9 : Math.min(9, s.t - at))
