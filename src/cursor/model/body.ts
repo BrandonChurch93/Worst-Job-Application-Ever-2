@@ -20,8 +20,8 @@ const rag = (a: number, burnt: number): number => 1 + (0.25 + 0.3 * burnt) * (0.
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
 // A strip out of its place by more than a few pixels is a loose sliver, and lies thinner. It stays the piece of the arrow it was cut from: its ends keep the outline's slant and the dark edge. Each lies its own way: rolled a little about its length, one end up off the pile.
 const LOOSE = { thin: 0.5, ribbon: 0, from: 12, to: 64, arm: 40, roll: 0.16, pitch: 0.1, seed: 23 }
-// A strip that comes out under a line across the page: the share of its length out at the first, the share of its coming out at which it is whole and let go, how steeply down the page it must run, as a share of its length, to be drawn back along itself to the line and not pressed straight down, and how far it stands off the page for each pixel it is held up the page from where it falls.
-const LIP = { first: 0.12, whole: 0.55, least: 0.2, lift: 0.5 }
+// A strip that comes out under a line across the page: the share of its length out at first, how steeply down the page it must run, as a share of its length, to be drawn back along itself to the line and not pressed straight down, and how far it stands off the page for each pixel it is held up the page from where it falls.
+const LIP = { first: 0.12, least: 0.2, lift: 0.5 }
 
 export class Body implements BodyModel {
   readonly root = new THREE.Group()
@@ -145,11 +145,7 @@ export class Body implements BodyModel {
   private underLip(strips: StripPose[], of: ArrayLike<number>, a: Float32Array, turn: THREE.Quaternion[], foot: Float64Array, top: Float64Array, upX: number, upY: number): void {
     const rise = strips.map((pose, k) => {
       if (pose.below === undefined) return 0
-      const shown = clamp01(pose.shown ?? 1)
-      const out = Math.min(1, LIP.first + ((1 - LIP.first) * shown) / LIP.whole)
-      const held = pose.below - out * (top[k]! - foot[k]!)
-      const free = clamp01((shown - LIP.whole) / (1 - LIP.whole))
-      return Math.max(0, held - foot[k]!) * (1 - free * free)
+      return Math.max(0, pose.below - LIP.first * (top[k]! - foot[k]!) - foot[k]!) * (1 - clamp01(pose.out ?? 1))
     })
     const v = this.v
     for (let i = 0; i < of.length; i++) {

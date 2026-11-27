@@ -138,3 +138,60 @@ Checks on the head that holds this and merge 43 (24b41006), one at a time, 00:44
 - `step1-fire` against merge 43: `npm run -s still -- --key step1-fire --tier draft` in a worktree of 19c0d013 (exit 0), `cmp` with the new head's: byte equal.
 
 The live picture row, `node pipeline/phase5/polish-tug-live.mjs walk strips2` on the new head (exit 0; `step1.shredded` begins at step 2329), every step 2367 to 2382 round the mouth, each pixel twice: 2367 no arrow strip; 2368 short strips at the roller's lower edge; longer in each of 2369 to 2373, all from that edge; 2374 and 2375 whole at the mouth; 2376 to 2378 dropping to the right and down; 2379 to 2382 at the pile's place.
+
+## The strips run their fall late, with no catch up (pass of 01:00Z to 01:40Z)
+
+Asked by the Builder at 01:00Z: the growth from the lip is taken, the quick drop after it is not (in 2530 to 2532 the bundle was drawn as faint separate copies and crossed in 4 frames what the fall took 10 for). Aim: no strip moves in a frame more than about 7 px, no separate copies in the blur, the place and pose where each strip rests byte equal to merge 43's, the events byte equal.
+
+Decision, which of the two ways: the plain one. A strip runs its own fall late by the frames it took to come out, and there is no catch up at all. The other way (a catch up spread evenly) was tried first as a strip fed down at 7 px a frame toward a fall that ran on time: MEASURED, the strip's middle then went 7.1 to 8.7 px a frame for 18 frames and met its fall with a step from about 8 px to 3.7 px in one frame, so it was dropped.
+
+What the code does now:
+
+- `src/cursor/body.ts`: `EMERGE = { time: 2 / 15, lip: 43 }`. A strip is made with `out` one step under 0; `drop()` first counts `out` up to 1 over `EMERGE.time` (8 film frames) and returns, so the fall does not begin until the strip is out; from then on `drop()` is the fall as it was, from the same first state. `emerged()` gives the pose `below` (the lip) and `out` while `out < 1`, and the bare pose after. `slow`, `EMERGE.least` and `EMERGE.most` are gone.
+- `src/cursor/model/body.ts`: `LIP = { first: 0.12, least: 0.2, lift: 0.5 }`. While a strip names a lip it is held up the page by `(below - first * length - foot) * (1 - out)`: it goes at an even pace from "12 in 100 of it under the lip" to the place its fall begins at. The clip at the line and the lift off the page are as they were. `LIP.whole` and the hold and the quick drop are gone.
+- `src/cursor/contract.ts`: the pose field `shown` is now `out`, one line says what it is.
+- A number of my own: `EMERGE.time` 2/15 s. MEASURED why: the longest way a strip has to go from the lip to where its fall begins is 55 px in the film (strip 7, 56 px long), and 55 px in 8 frames is 6.9 px a frame.
+
+MEASURED, the largest step any strip's middle makes from one film frame to the next, page pixels, the film of step 1, frame 2523 on (the step into the named frame), by `npx vitest run tests/polish-tug-strips.test.ts -t "film of step 1: each"` (the lines `STRIDE middle`), the same test file run in a worktree of each commit:
+
+| into film frame | 2523 | 2524 | 2525 | 2526 | 2527 | 2528 | 2529 | 2530 | 2531 | 2532 | 2533 | 2534 | 2535 | 2536 | 2537 | 2538 | 2539 | 2540 | 2541 | 2542 | 2543 | 2544 | 2545 | 2546 | 2547 | 2548 | 2549 | 2550 | 2551 | 2552 | 2553 | 2554 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| merge 43 (19c0d013) | 10.0 | 10.4 | 11.3 | 9.2 | 8.7 | 10.3 | 8.8 | 6.4 | 6.1 | 6.7 | 6.7 | 4.9 | 5.3 | 5.4 | 5.0 | 4.4 | 3.1 | 4.1 | 3.7 | 2.4 | 3.1 | 2.2 | 1.6 | 2.2 | 1.1 | 1.7 | 0.2 | 0.2 | 1.2 | 1.1 | 1.1 | 0.8 |
+| the quick drop (d327942c) | 3.8 | 3.4 | 4.1 | 5.2 | 6.3 | 8.2 | 10.4 | 18.3 | 27.9 | 30.9 | 34.6 | 7.4 | 5.3 | 5.4 | 5.0 | 4.4 | 3.1 | 4.1 | 3.7 | 2.4 | 3.1 | 2.2 | 1.6 | 2.2 | 1.1 | 1.7 | 0.2 | 0.2 | 1.2 | 1.1 | 1.1 | 0.8 |
+| now | 6.9 | 5.9 | 6.2 | 6.0 | 6.1 | 7.0 | 6.6 | 7.0 | 4.6 | 5.8 | 6.7 | 5.4 | 6.3 | 6.8 | 6.8 | 6.6 | 5.6 | 6.8 | 6.4 | 5.1 | 5.9 | 5.1 | 4.9 | 4.7 | 3.8 | 4.4 | 2.9 | 2.7 | 3.3 | 2.6 | 1.8 | 0.6 |
+
+From 2555 to 2581 the three lines hold 0.1 to 1.8 px a frame each (the full lines are printed by the test). The largest now is 7.0 px (into 2528 and 2530); the largest of merge 43 is 11.3 px, of the quick drop 34.6 px. The largest step of any one point of a strip (the lines `STRIDE point`, which count the turn of the strip too): now 8.4 px (into 2523 and 2525), merge 43 11.6 px, the quick drop 34.6 px. On the live site the middle's largest step is 7.8 px (bot keen) and 8.0 px (bot clumsy), both into the first frame after the strips show; the test holds all three under 8.
+
+MEASURED, the strips are whole (film frames after they first show): 1.25 2.00 2.25 3.25 4.50 5.75 6.00 7.50 7.75 8.00 6.25 5.50 3.50 4.50 2.25; the share drawn on the first step is 0.12 of every strip; no lip is named after 8.00 frames; nothing is drawn over the lip (0.0000 px). No strip is held: each moves in every frame until it is out.
+
+MEASURED, what changes in the film against merge 43 (19c0d013), by the state dump (`pipeline/phase5/polish-tug-filmdiff.ts.txt`, a sha1 of the page's draw list and the arrow's whole pose for each of the first 1920 film frames of step 1, and a line for every event):
+
+- Events: `cmp` of the two event files: byte equal, 351 lines. No beat and no event moves.
+- Film frames whose state differs: 2522 to 2576, 55 frames in a row, no gap. The first frame from which the state is byte equal again is 2577.
+- The rest pose is equal by hash: 2577 `e83cbeaac9a7` in both, 2640 `c83e0ddf6478` in both, and every frame between and after to 2760. STATED from the code: `drop()` ends on `p.x = p.tx; p.y = p.ty; p.rot = p.tr`, tilt 0, the strip's own layer, so a strip rests in the same place however late.
+- This is past the "about 2545" of the leave. Why: the fall itself is not shorter than it was. Every strip is now 8.25 frames behind its fall of merge 43 (33 steps of 240 a second: the 32 of `EMERGE.time` and the one the count begins under 0 by), so the last strip comes to rest that much later; when the last one rested in merge 43 I did not measure by itself (2576 less 8.25 says about 2568). What the pictures show of that is under "Not mended".
+
+MEASURED in pictures: `npm run -s seq -- --first 2518 --last 2562 --tier draft --force` on this code (exit 0, 45 pictures) and `--first 2533 --last 2562` in a worktree of 19c0d013 (exit 0, 30 pictures); pixels that differ between merge 43 and now per frame, counted over the whole 960 by 540 picture (any difference / more than 24 levels): 2520 and 2521 none; 2522 13795/6151; 2530 22428/9508; 2540 14261/6948; 2545 10796/5436; 2550 7341/2387; 2555 3919/920; 2560 2258/349; 2562 1979/230.
+
+What the pictures show (the sheets `polish-tug-late-fall-2520-2533.png`, `-2534-2545.png`, `-2546-2562.png`, crops at the preview's real size):
+
+- 2522 to 2529: the strips come down out of the mouth, each longer in every frame, the short ones whole first. No frame in which the bundle stands still under the lip.
+- 2530 to 2540: the bundle goes down and to the right as one drawn bundle with its own smear along the way it goes; I see no second, fainter copy of it beside the first in any of these frames.
+- 2541 to 2553: the camera begins to pull back at about 2541. In merge 43 the bundle lies in its pile by then; now it is still on its last stretch and settles into the pile while the camera moves. By 2554 the two rows look alike to my eye at this size.
+- 2554 to 2576 (the fourth sheet, `-2563-2577.png`, holds 2563 to 2577): the two rows look alike to my eye; counted, 2563 has 1927 pixels that differ at all and 177 by more than 24 levels, 2570 2161 and 142, 2575 1159 and 50, 2576 268 and 1, 2577 and 2578 none (rendered for this on both commits, `--first 2563 --last 2578`, exit 0 each).
+
+Not mended, and why:
+
+- The film differs from merge 43 for 55 frames, 2522 to 2576, where the leave said to about 2545. The plain reading cannot be shorter: the strips land 8.25 frames after their landing of merge 43, and the fall of merge 43 itself runs to about 2568. A shorter feed would end sooner but would break the 7 px (55 px in 6 frames is 9.2 px a frame).
+- The bundle is still on the last stretch of its fall when the camera begins to pull back (about 2541); in merge 43 it was down by then. Whether that reads as a fault I cannot say from stills; it is one for the Builder's eye on the sheet of 2534 to 2545.
+- On the live site the middle of one strip goes 7.8 px (keen) and 8.0 px (clumsy) into the first frame, over the "about 7"; the film's largest is 7.0 px.
+- The largest step of a single point of a strip is 8.4 px in the film (into 2523 and 2525): the short strips turn as they come out. The fall's own largest in merge 43 after its first seven frames is 6.9 px.
+- The two notes of the pass before stand: the cut ends sit about 2 draft pixels under the roller's lower edge, and the 2 pixel speck at 2528 is in merge 43's picture too.
+
+Checks on this code, one at a time, 01:11Z to 01:20Z:
+
+- `npx tsc --noEmit -p .`: exit 0.
+- `npx vitest run tests/polish-tug-strips.test.ts`: 6 passed (the film and the two bots, two checks each). The check of the growth was rewritten for the new numbers: a fifth or less at first, nothing over the lip, whole within 8 frames, the middle's largest step at most 8 px, no lip named after 8.25 frames, the last pose with the keys `rot tilt x y z` alone.
+- `npm run -s determinism`: exit 0, "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders".
+- `npm run -s still -- --key step1-fire --tier draft` (exit 0), `cmp` with merge 43's picture: byte equal (md5 b87598cee9b47b8a82c66601b42892dc both).
+- `npx vitest run` (all): 153 files passed, 1 skipped; 1854 tests passed, 1 skipped.
