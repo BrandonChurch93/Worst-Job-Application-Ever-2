@@ -212,7 +212,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
     }
     if (f.at === 'folder') {
       const ready = f.t >= flow.pop * 0.6
-      f.lit = ready && inside(tile, io.pointer.x, io.pointer.y, GRAB / 2)
+      f.lit = ready && inside(tile, io.cursor.x, io.cursor.y, 0)
       if (ready && ((io.pressed && inside(tile, io.pointer.x, io.pointer.y, GRAB)) || (idle && f.t >= FLOW.wait))) {
         beat('lit')
         f.lit = true
@@ -794,7 +794,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
         const flow = pace()
         if (s.phase === 'idle' || f.at === 'field') return { x: chip.x + chip.w / 2, y: chip.y + chip.h / 2, down: s.phase === 'resume' && blink }
         if (f.at === 'press') return { x: chip.x + chip.w / 2, y: chip.y + chip.h / 2, down: false }
-        if (f.at === 'folder') return { x: TILE.x + TILE.w / 2, y: TILE.y + TILE.h * 0.6, down: f.t >= flow.pop && blink }
+        if (f.at === 'folder') return { x: TILE.x + TILE.w / 2, y: PAPER_REST.y + PAPER.h / 2, down: f.t >= flow.pop && blink }
         return { x: stand.x, y: stand.y, down: false }
       }
       if (s.phase === 'tug') return { x: SLOT.cx - 90, y: SLOT.cy - 260, down: false }

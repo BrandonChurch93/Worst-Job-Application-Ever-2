@@ -34,9 +34,11 @@ All from `content/copy-drafts.json`, none added, no file under `content/` edited
 
 | Word | Key | Stands on | Box of the words | Shown |
 | --- | --- | --- | --- | --- |
-| "Documents" | `copy.drafts.step1.resume.folderTitle` | the brushed bar of the folder window (bar x 1012, y 358, 476 by 52; window x 1000, y 346, 500 by 314, on the bare page right of the drop zone) | x 1064, y 375, 144 by 19 | from `folder-open` until the window sinks, 20.96 to 21.87 s in the film |
-| "Resume.pdf" | `copy.drafts.step1.resume.fileName` | the file tile in the folder window (tile x 1040, y 436, 196 by 184), under the small sheet | x 1069, y 566, 138 by 17 | with the window |
+| "Documents" | `copy.drafts.step1.resume.folderTitle` | the brushed bar of the folder window (bar x 1012, y 358, 736 by 72; window x 1000, y 346, 760 by 338, on the bare page right of the drop zone, 54 px over Continue) | x 1078, y 378, 243 by 32 | from `folder-open` until the window sinks, 20.96 to 21.87 s in the film |
+| "Resume.pdf" | `copy.drafts.step1.resume.fileName` | the file tile in the folder window (tile x 1040, y 452, 304 by 202), under the small sheet | x 1065, y 592, 253 by 32 | with the window |
 | "SHREDDER" | `copy.drafts.step1.resume.shredderLabel` | the orange plate on the bare page left of the slot (plate x 511, y 672, 226 by 52) | x 533, y 686, 182 by 25 | from the wind until the machine sinks after the message |
+
+The folder window was made larger, not longer, by the Builder's word of 23:19Z: 760 px wide where it was 500, its two words 32 px high where they were 19 and 17 (type 44 px), the tile 304 by 202; the seconds are the same. I chose the larger window over a nearer camera because the live site has no camera, and the film's camera would have had to go in and out again inside 0.9 s before its one move to the tug. The sheet in the tile keeps its real size, 64 by 88, so it is small beside its name. (MEASURED for the boxes, STATED for the reason)
 
 Words that were there before and are unchanged: "Resume", "Drag and drop your resume here", "Browse files", "Resume" on the sheet, "Resume received. Please re-enter all information manually."
 
@@ -126,7 +128,7 @@ One clean film frame of each stage at 1920 by 1080, home camera, draft tier, wit
 | --- | --- | --- |
 | `clean-1-browse-1920x1080.jpg` | the arrow presses Browse files | 20.90 |
 | `clean-2-folder-open-1920x1080.jpg` | the folder window is up | 21.20 |
-| `clean-3-file-picked-1920x1080.jpg` | the file is picked, ring lit (the arrow covers part of the file's name) | 21.56 |
+| `clean-3-file-picked-1920x1080.jpg` | the file is picked, ring lit | 21.56 |
 | `clean-4-slot-1920x1080.jpg` | the sheet lies in the drop zone | 22.20 |
 | `clean-5-wind-1920x1080.jpg` | the wind carries it; the plate is up | 22.75 |
 | `clean-6-shredder-label-1920x1080.jpg` | the slot has it, beside the plate SHREDDER | 23.40 |

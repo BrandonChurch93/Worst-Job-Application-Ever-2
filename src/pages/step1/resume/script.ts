@@ -36,7 +36,7 @@ export const AFTER = { look: 3.35, up: [3.05, 2.45] as [number, number], under: 
 // The film before the bite, every time a second of the unit: a wind-up where it stands, a strut to Browse files, a look at the ordinary field, the press; a start at the folder, a walk to the file, the pick; proud, it struts back to stand by its sheet in the drop zone and dusts itself off; the wind makes it start and it runs after the sheet. `drop` is the second the wind lets the sheet go over the slot.
 export const RESUME = {
   leave: 19.9, walk: [20.1, 20.6] as [number, number], on: { x: 12, y: 6 }, press: 20.85,
-  see: 20.97, toFile: [21.06, 21.36] as [number, number], file: { x: 8, y: 14 }, pick: 21.5,
+  see: 20.97, toFile: [21.06, 21.36] as [number, number], file: { x: 12, y: 0 }, pick: 21.5,
   proud: 21.66, back: [21.76, 22.16] as [number, number], beside: { x: 58, y: 66 }, dust: 22.2,
   gust: 22.36, chase: [22.58, 23.02] as [number, number], near: { x: -96, y: -176 },
   raise: 0, high: 0, drop: 21.62 + LATE

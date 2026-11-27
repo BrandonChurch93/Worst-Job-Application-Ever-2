@@ -20,15 +20,15 @@ export const ZONE = { x: LEFT, y: HEADER.contentY + 36, w: COL_W, h: ZONE_H }
 export const FORM_BOTTOM = ZONE.y + ZONE.h
 export const PAPER = { w: 64, h: 88, inset: 5, top: 14, bar: 2 }
 // The folder window: a pane of glass that comes up out of the page on the bare half beside the drop zone, with a bar across its head, a knob on the bar, and one tile that holds the one file. `top` is how high the pane stands once it is up.
-export const WIN = { x: HALF_X + 12, y: ZONE.y + 4, w: 500, h: 314, r: 18, top: heights.card + 2 }
-export const BAR = { inset: 12, h: 52, up: 5, r: 12, knob: 20 }
-export const TILE = { x: WIN.x + 40, y: WIN.y + BAR.inset + BAR.h + 26, w: 196, h: 184, r: 14, up: 3 }
+export const WIN = { x: HALF_X + 12, y: ZONE.y + 4, w: 760, h: 338, r: 20, top: heights.card + 2 }
+export const BAR = { inset: 12, h: 72, up: 5, r: 14, knob: 28 }
+export const TILE = { x: WIN.x + 40, y: WIN.y + BAR.inset + BAR.h + 22, w: 304, h: 202, r: 16, up: 3, gap: 26 }
 // The rim that lights round the tile under the arrow and when the file is picked: orange, this far outside the tile and this high.
-export const RING = { out: 5, up: 1.2 }
+export const RING = { out: 7, up: 1.2 }
 // The sheet lies in the tile as the file's own picture, and comes down in the drop zone on its upload mark.
-export const PAPER_REST = { x: TILE.x + (TILE.w - PAPER.w) / 2, y: TILE.y + 20 }
-export const FILE_TYPE = { font: 'inter-500', px: 24, align: 'centre' as const }
-export const WIN_TYPE = { font: 'inter-600', px: 26 }
+export const PAPER_REST = { x: TILE.x + (TILE.w - PAPER.w) / 2, y: TILE.y + 26 }
+export const FILE_TYPE = { font: 'inter-500', px: 44, align: 'centre' as const }
+export const WIN_TYPE = { font: 'inter-600', px: 44 }
 export const PAPER_TITLE = { font: 'inter-600', px: 14 }
 export const PAPER_LINES = [0.36, 0.44, 0.52, 0.6, 0.7, 0.78, 0.86]
 export const SLOT = { w: 96, h: 10, cx: ZONE.x + ZONE.w * 0.84, cy: FORM_BOTTOM + 9 }
@@ -78,11 +78,11 @@ export const landing = (): { x: number; y: number } => ({ x: ZONE.x + ZONE.w / 2
 export function folderNode(): LayoutNode {
   const bar = { x: WIN.x + BAR.inset, y: WIN.y + BAR.inset, w: WIN.w - BAR.inset * 2, h: BAR.h }
   const barTop = WIN.top + BAR.up
-  const knob = node('resume-folder-knob', 'knob', [bar.x + 16, bar.y + (bar.h - BAR.knob) / 2, BAR.knob, BAR.knob], { part: 'shell', shape: 'disc', floor: barTop, height: barTop + 4, tone: 'accent' })
-  const title = text('resume-folder-title', 'copy:drafts.step1.resume.folderTitle', WIN_TYPE, bar.x + 16 + BAR.knob + 16, bar.y + (bar.h - cap(WIN_TYPE.font, WIN_TYPE.px)) / 2, { part: 'type', on: barTop, tone: 'inkLight' })
+  const knob = node('resume-folder-knob', 'knob', [bar.x + 20, bar.y + (bar.h - BAR.knob) / 2, BAR.knob, BAR.knob], { part: 'shell', shape: 'disc', floor: barTop, height: barTop + 4, tone: 'accent' })
+  const title = text('resume-folder-title', 'copy:drafts.step1.resume.folderTitle', WIN_TYPE, bar.x + 20 + BAR.knob + 18, bar.y + (bar.h - cap(WIN_TYPE.font, WIN_TYPE.px)) / 2, { part: 'type', on: barTop, tone: 'inkLight' })
   const head = node('resume-folder-bar', 'windowBar', [bar.x, bar.y, bar.w, bar.h], { part: 'shell', r: BAR.r, floor: WIN.top, height: barTop, tone: 'metal', children: [knob, title] })
   const tileTop = WIN.top + TILE.up
-  const name = text('resume-file-name', 'copy:drafts.step1.resume.fileName', FILE_TYPE, TILE.x + TILE.w / 2, PAPER_REST.y + PAPER.h + 22, { part: 'type', on: tileTop })
+  const name = text('resume-file-name', 'copy:drafts.step1.resume.fileName', FILE_TYPE, TILE.x + TILE.w / 2, PAPER_REST.y + PAPER.h + TILE.gap, { part: 'type', on: tileTop })
   const tile = node('resume-file', 'fileTile', [TILE.x, TILE.y, TILE.w, TILE.h], { part: 'shell', r: TILE.r, floor: WIN.top, height: tileTop, tone: 'raised', children: [name] })
   return node('resume-folder', 'card', [WIN.x, WIN.y, WIN.w, WIN.h], { part: 'shell', r: WIN.r, height: WIN.top, over: true, states: ['folder'], children: [head, tile] })
 }
