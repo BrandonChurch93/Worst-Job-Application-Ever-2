@@ -56,8 +56,8 @@ export function piped(x: number, y: number, z: number): boolean {
 }
 
 // What the page tells the maker about the ball, on the shape's `v`: the share it is closed, the seconds since it closed, how much it sweats.
-export interface State { closed: number; since: number; sweat: number; jaws: boolean }
-export const stateOf = (s: Shape): State => ({ closed: clamp01(s.v?.[0] ?? 1), since: Math.max(0, s.v?.[1] ?? 9), sweat: clamp01(s.v?.[2] ?? 0), jaws: (s.v?.[6] ?? 0) > 0 })
+export interface State { closed: number; since: number; sweat: number; jaws?: boolean }
+export const stateOf = (s: Shape): State => ({ closed: clamp01(s.v?.[0] ?? 1), since: Math.max(0, s.v?.[1] ?? 9), sweat: clamp01(s.v?.[2] ?? 0), ...((s.v?.[6] ?? 0) > 0 ? { jaws: true } : {}) })
 
 // The two grades of what is seen through the ball: 'bend' bends a picture of the floor in the shell's own drawing, 'true' adds one drawing that carries the scene behind it through the wall.
 export type Grade = 'bend' | 'true'

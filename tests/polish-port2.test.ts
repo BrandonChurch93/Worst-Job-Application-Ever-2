@@ -128,7 +128,7 @@ describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (nam
     expect(fall[second - 1]!).toBeGreaterThan(pace * 1.3)
   })
 
-  it('tells the tube of each strike on the frame the ball loses its speed, and the tube gives 1 to 3 px at the bend, swings back past its rest and is still 5 frames later', () => {
+  it('tells the tube of each strike on the frame the ball loses its speed, and the tube gives 5.2 px at the middle of the bend and about 3.7 px at a wall 53 px from it, swings back past its rest and is still 5 frames later', () => {
     const fall = steps(frames(t, t.release, 66))
     const top = fall.indexOf(Math.max(...fall))
     const second = fall.findIndex((v, k) => k > top + 1 && v < fall[k - 1]! - 1)
@@ -142,8 +142,9 @@ describe.each(takes)('the port takes the arrow and lets the ball fall, %s', (nam
       expect(slow[b]! - first, `bend ${b + 1}`).toBeLessThan(EACH)
       const give = [0, 1, 2, 3, 4, 5].map((k) => KNOCK.px * knockOf(t.rows[slow[b]! - 1 + k * EACH]!.ring[2 + b] ?? -1))
       expect(give[0]).toBe(KNOCK.px)
-      expect(give[0]!).toBeGreaterThanOrEqual(1)
-      expect(give[0]!).toBeLessThanOrEqual(3)
+      const u = 1 - 53 / KNOCK.reach
+      expect(give[0]! * u * u * (3 - 2 * u)).toBeGreaterThan(3.5)
+      expect(give[0]! * u * u * (3 - 2 * u)).toBeLessThan(3.9)
       expect(Math.min(...give)).toBeLessThan(-1)
       expect(Math.abs(give[4]!)).toBeLessThan(0.5)
       expect(Math.abs(give[5]!)).toBeLessThan(0.05)

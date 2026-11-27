@@ -43,7 +43,7 @@ Drop, `src/pages/step3/index.ts`:
 - The view of before goes on aiming at the shadow (`s.scroll`, `s.sv` are the numbers of before at every step). A second spring with the same `DROP` numbers aims at the drawn ball; what is seen is that one, blended into the first between the meeting and `T.tube + DROP.over`.
 - The arrow's roll is driven by the drawn ball's way, not the shadow's.
 
-Tube's answer, `src/table/real/frame/loader.ts`: `KNOCK = { px: 2.6, reach: 150, lead: 1/60, over: 6/60, swing: 5/60 }`. At each strike the tube's wall is pushed 2.6 px at the bend, square to the run the ball goes on with (down left at the first, right at the second), less with distance and nothing 150 px away (the reach was 100 px at first; the live pictures showed under 1 px at the walls, so it was widened at 14:25 UTC); next frames 0.64, -1.26, -0.84, 0.16 px, then rest. The page gives the seconds since each strike as the ring's third and fourth numbers, for those 6/60 s only. The collars do not move. No sound cue added or moved.
+Tube's answer, `src/table/real/frame/loader.ts`: `KNOCK = { px: 5.2, reach: 150, lead: 1/60, over: 6/60, swing: 5/60 }` (2.6 px until the ruling of 14:45 UTC). At each strike the tube's wall is pushed 5.2 px at the bend's middle, about 3.7 px at the wall beside it, square to the run the ball goes on with (down left at the first, right at the second), less with distance and nothing 150 px away (the reach was 100 px at first; the live pictures showed under 1 px at the walls, so it was widened at 14:25 UTC); then it rings down over the next frames (0.25, -0.49, -0.32, 0.06 of the push), then rest. The page gives the seconds since each strike as the ring's third and fourth numbers, for those 6/60 s only. The collars do not move. No sound cue added or moved.
 
 Capture, `src/table/real/ball/index.ts`, `glsl.ts`, and the flag in `src/pages/step3/index.ts`:
 - While the shell shuts at the port the page adds a seventh number 1 to the ball's `v`. With it the maker draws the halves as two jaws: whole half balls, `JAWS = { wide: 1.2, deep: 1.25, up: 0.3 }`, each on its side of the seam, 1.2 radii apart times the share open, risen out of the cup's floor by the time the shell is 0.3 shut, with no fade and no hinge. Without the flag the maker draws as before.
@@ -97,8 +97,18 @@ Stills, draft tier, hd, `npm run still -- --key <key> --format hd --tier draft -
 2. The halves rise from the cup's floor and slide together along the seam's normal; `shutOf`, `LATCH`, `SHELL` untouched.
 3. The tube answers at the bends, not a collar: no collar stands at a bend. No sound cue touched.
 4. The arrow's roll is driven by the drawn ball, accepting the residue above.
-5. `KNOCK.reach` 150 px instead of 100 after the live pictures showed under 1 px at the walls.
+5. `KNOCK.reach` 150 px instead of 100 after the live pictures showed under 1 px at the walls; `KNOCK.px` 5.2 by the Builder's ruling of 14:45 UTC.
 6. After pictures are taken on the branch merged with main, before on 308e96a1.
+
+## The Builder's ruling on the first pass (14:45 UTC) and what followed
+
+- The capture and the drop's pace: accepted. The halves not joined to the cup or its ring: logged open, no new part.
+- The tube's answer: sent back, one number. `KNOCK.px` 2.6 to 5.2 with the reach at 150 px, so that the wall beside the bend moves about 3.7 px on the strike's frame, at both bends, ringing down as before.
+- MEASURED on film frames at the draft tier, by the place of the wall's left edge in the frames drawn with 2.6 px and with 5.2 px (same reach, same frame, so the difference is half the move): on 4265 the edge 5 to 25 px above the first bend stands 1.19 px further left with 5.2 than with 2.6, and 10 to 30 px below it 1.45 px. So with 5.2 px the wall moves 2.4 to 2.9 px sideways there, which is 3.5 to 4.3 px along the push (the push is 0.672 sideways, 0.741 down). On 4266 the same within 0.1 px: the strike falls exactly on a frame, so the full push is drawn on two frames (4265, 4266), then 0.25, -0.49, -0.32, 0.06 of it on 4267 to 4270.
+- Seen, film 4264, 4265, 4266 at 3 times, the wall beside the first bend, before above and after below (`film-knock.png`): before the wall's edge stands at the same place in all three; after it stands about 3 px (9 px at 3 times) further out to the lower left on 4265 and 4266 than on 4264, as one smooth single edge. No tear and no doubled edge. Whether it reads as rubber in motion I cannot say from three stills: the bulge is spread over about 150 px of tube and the collar above it does not move.
+- Seen, second bend, film 4279 to 4283 at real size, before above and after below: the tube keeps one smooth edge on 4280 to 4282, no tear. The move itself I did not measure there.
+- The live pictures of the pack's visitor in this file were taken with 2.6 px and reach 100: live with 5.2 px is not seen unless said below.
+- The arrow's axis: the roll in the tube aims the arrow's heading (`io.cursor.aim` in `src/pages/step3/index.ts`, round 24's `TUMBLE`), so it turns about the axis square to the page, flat in the page's plane, before the first strike and after it alike; it is not a roll about an axis across the tube. MEASURED from the trace: lean plus spin goes on at 0.285, 0.275, 0.263, 0.252, 0.245 rad a frame on 4266 to 4270 (0.283 on 4265). Read by eye from the film frames the heading goes about 270, 285, 300, 320, 340, 0, 0, 10, 15 degrees on 4262 to 4270: it slows more in the picture than the number says. Why is UNKNOWN (the film's tube view starts at 4266 and may turn the page under the arrow; not measured).
 
 ## The ball's step, per frame of 60
 
