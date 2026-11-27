@@ -1,3 +1,4 @@
+import { boxToSegment } from '../arena/solids'
 import type { StepIo } from '../stage/types'
 import { FOOT_OFF, muzzleAt, smooth } from './body'
 import { FLOOR, DART, EVENT, EXPIRED_GAIN, HEALTH, HOME, LAST_CLEAR, LOOK_EASE, POPUP, SHIELD, SLOW_SECONDS, THRESHOLD } from './plan'
@@ -471,7 +472,7 @@ function big(f: Fight, io: StepIo, walls: Wall[]): void {
       io.emit('big-fire', f.x, f.y, false)
       io.emit('arena-break', l.x1, l.y1, false)
       for (const w of walls) {
-        if (w.kind === 'bar' || nearBox(l.x0, l.y0, l.x1, l.y1, w) > BIG.wide) continue
+        if (w.kind === 'bar' || boxToSegment(w, l.x0, l.y0, l.x1, l.y1) > BIG.wide) continue
         f.fallen.push(w.id)
         io.emit(w.kind === 'pane' ? 'pane-shatter' : 'pillar-break', (w.x0 + w.x1) / 2, (w.y0 + w.y1) / 2, false)
       }
