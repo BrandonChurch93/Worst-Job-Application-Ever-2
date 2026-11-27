@@ -1,0 +1,72 @@
+{
+ "critic": "R8",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the site as web pages: the six pages at rest, the application with its controls on, the message page for touch devices, and the controls at their real size",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "step 3, the whole body below the intro text",
+   "what": "nothing on the page says what to do. There is no instruction, no control and no Continue button, just a large empty field with a porthole and a tube on the far right edge. The porthole reads as a real object set into the page, but the step has no first action, so it looks unfinished rather than staged",
+   "fix": "add one clear prompt line under the intro, such as 'Listen to the assessment below' with a pointer toward the porthole, and keep a disabled Continue in the same lower-right spot used on steps 1 and 2 so the page has its usual structure"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "the Submit button, bottom centre",
+   "what": "Submit is centred on the page while the heading, the verification card and its helper text all sit on the left column. It floats unrelated to the form it submits, and it is the only primary action on the steps not placed at the right column edge",
+   "fix": "put Submit under the verification card, left-aligned with it about 32px below the helper text, or right-aligned at x=1302 like Continue on the other steps"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "the three dropdowns on the right",
+   "what": "every select is a blank grey bar with only a chevron. There is no placeholder or current value, so they look empty or broken rather than usable. A phone number in a dropdown might be the joke, but with nothing showing, the joke cannot be read",
+   "fix": "show a placeholder value in each, such as 'Select a number…', 'Select a date…' and '50%', in the field's muted text colour"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the three benefit cards",
+   "what": "each card has a title, one line and a divider, then an empty lower half with nothing under the divider. The divider separates content from nothing, and the cards look like they failed to load",
+   "fix": "either fill the lower section with a fine-print line per card, such as 'Subject to manager approval' or 'Within the hours of 6am–11pm', or remove the divider and shorten the cards to fit their content"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "the controls row on a step, 'Skip step (Accept Defeat)'",
+   "what": "the skip link is written in the site's joke voice, so it reads as part of the parody rather than as a visitor control outside the joke",
+   "fix": "rename it to neutral wording such as 'Skip this step', in the same quiet grey underlined style as 'Watch the film instead'"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "the touch-device message page, header and card",
+   "what": "the header differs from every other step. The title sits at y≈88 instead of 112, with a large gap above the rule and no stepper. The message card offers no way forward, so a touch visitor has nothing to do, even though a film version exists",
+   "fix": "use the same header block as the steps, with the title at the same baseline and a rule at the same height (the stepper can be dropped), and add a 'Watch the film instead' button inside the card"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png",
+   "where": "right-hand field column",
+   "what": "the vertical rhythm is uneven. The gap between the First name field and the Last name label (with its helper) is tighter than it looks, while the gap between the Last name field and the Email label is only about 15px, so the label sits almost on the field above it",
+   "fix": "use one fixed spacing between field groups, about 24px from the bottom of a field (or its helper) to the next label"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-02.png / set-A-03.png",
+   "where": "the Continue button and the field column edges",
+   "what": "the Continue button sits at y≈604 on step 1 and y≈768 on step 2, with slightly different widths. The step 2 select column starts at x≈727, while the step 1 fields start at x≈718",
+   "fix": "pin Continue to the same position and size on every step, and align the right column's left edge across steps"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-07.png",
+   "where": "the controls row above the brand name",
+   "what": "the mute icon and film link sit only about 20px above the brand name, close enough to look like part of the site header. They stay quiet and readable, though",
+   "fix": "give the row a bit more air, about 28–32px above the brand, or lower its contrast slightly so it reads as a layer outside the site"
+  }
+ ]
+}

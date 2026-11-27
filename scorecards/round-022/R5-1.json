@@ -1,0 +1,30 @@
+{
+ "critic": "R5",
+ "score": 8,
+ "pass": true,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the whole site: the six pages at rest on one sheet, the screens with the controls, and sheets across one visitor's visit through the live site",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "Page 3 at rest, top right of the sheet",
+   "what": "The Personal Details page initially reads as a second version of About You: the same header above another stack of recessed grey fields, while the rotary dial, date wheels and crank that distinguish it are all hidden.",
+   "fix": "Give the three closed controls a visible mechanical cue, such as a dial edge, a date drum window or a crank socket, without opening the mechanisms or spoiling their reveals."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "2:17.27, the Submit page before verification",
+   "what": "The small verification card in the upper left and the lone orange button at the bottom feel like two unrelated pieces of the layout. The page looks underdressed until the button turns into a machine.",
+   "fix": "Seat the resting button in a shallow metal dock aligned with the verification card, leaving the open space for the button to escape into during the encounter."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "The touch-device message card",
+   "what": "The type, glass and shadows match the desktop site, but the card ends the visit. The desktop landing page offers a film, while the touch page gives visitors no way to see the pinball centerpiece.",
+   "fix": "Offer the existing Watch the film instead action inside the touch card using the site's orange button treatment."
+  }
+ ]
+}
