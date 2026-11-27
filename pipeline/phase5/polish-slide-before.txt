@@ -1,0 +1,65 @@
+never    seed 1  old tows 1  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.41 s  scene end 41.78 s  page end 55.43 s  beats all
+    TOW page 40.62 s scene 37.90 s  tier 2 (8.2, 8.8) > (10.0, 11.0) 2.8 balls at 16/s to gate:2, ball had 6.7/s, through: flipper.left
+never    seed 2  old tows 1  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.41 s  scene end 41.78 s  page end 55.43 s  beats all
+    TOW page 40.62 s scene 37.90 s  tier 2 (8.2, 8.8) > (10.0, 11.0) 2.8 balls at 16/s to gate:2, ball had 6.7/s, through: flipper.left
+pack     seed 1  old tows 4  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 2.85 s  scene end 39.38 s  page end 53.02 s  beats all
+    TOW page 19.10 s scene 19.10 s  tier 1 (11.5, 7.7) > (14.6, 4.4) 4.5 balls at 16/s to hold:office.inbox, ball had 32.5/s, through: office.sling.post.right.a, office.sling.right
+    TOW page 27.20 s scene 27.20 s  tier 2 (10.1, 9.3) > (5.0, 3.9) 7.4 balls at 16/s to hold:street.firehouse, ball had 22.4/s, through: flipper.left, street.sling.post.left.a, street.sling.left, street.firehouse
+    TOW page 31.70 s scene 31.70 s  tier 2 (13.2, 5.4) > (6.9, 4.9) 6.3 balls at 16/s to rail:highway, ball had 6.4/s, through: nothing
+    TOW page 37.90 s scene 37.90 s  tier 2 (3.9, 6.1) > (10.0, 11.0) 7.8 balls at 16/s to gate:2, ball had 5.0/s, through: street.lane.post.left, street.lane.guide.left, street.inlane.floor.left, street.shoulder.step.left, flipper.left
+pack     seed 2  old tows 3  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.33 s  scene end 39.11 s  page end 52.76 s  beats all
+    TOW page 19.10 s scene 19.10 s  tier 1 (14.2, 1.8) > (14.6, 4.4) 2.6 balls at 16/s to hold:office.inbox, ball had 6.2/s, through: office.coffee, office.coffee.roof, office.coffee.standup
+    TOW page 24.90 s scene 24.90 s  tier 1 (13.1, 2.8) > (10.0, 11.0) 8.7 balls at 16/s to gate:1, ball had 9.7/s, through: flipper.right
+    TOW page 37.90 s scene 37.90 s  tier 2 (12.5, 8.5) > (10.0, 11.0) 3.6 balls at 16/s to gate:2, ball had 5.2/s, through: flipper.right
+keen     seed 1  old tows 3  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.35 s  scene end 38.27 s  page end 39.92 s  beats all
+    TOW page 19.10 s scene 19.10 s  tier 1 (11.3, 8.5) > (14.6, 4.4) 5.3 balls at 16/s to hold:office.inbox, ball had 9.5/s, through: office.sling.post.right.c, office.sling.right, office.sling.post.right.a
+    TOW page 27.20 s scene 27.20 s  tier 2 (7.1, 1.2) > (5.0, 3.9) 3.4 balls at 16/s to hold:street.firehouse, ball had 20.0/s, through: street.firehouse
+    TOW page 31.20 s scene 31.20 s  tier 2 (8.3, 6.3) > (6.9, 4.9) 2.0 balls at 16/s to rail:highway, ball had 24.1/s, through: nothing
+keen     seed 2  old tows 3  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.35 s  scene end 38.27 s  page end 39.92 s  beats all
+    TOW page 19.10 s scene 19.10 s  tier 1 (11.3, 8.5) > (14.6, 4.4) 5.3 balls at 16/s to hold:office.inbox, ball had 9.5/s, through: office.sling.post.right.c, office.sling.right, office.sling.post.right.a
+    TOW page 27.20 s scene 27.20 s  tier 2 (7.1, 1.2) > (5.0, 3.9) 3.4 balls at 16/s to hold:street.firehouse, ball had 20.0/s, through: street.firehouse
+    TOW page 31.20 s scene 31.20 s  tier 2 (8.3, 6.3) > (6.9, 4.9) 2.0 balls at 16/s to rail:highway, ball had 24.1/s, through: nothing
+clumsy   seed 1  old tows 3  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.30 s  scene end 39.07 s  page end 40.75 s  beats all
+    TOW page 24.90 s scene 24.90 s  tier 1 (9.1, 8.5) > (10.0, 11.0) 2.6 balls at 16/s to gate:1, ball had 8.3/s, through: flipper.left
+    TOW page 27.20 s scene 27.20 s  tier 2 (6.8, 4.3) > (5.0, 3.9) 1.8 balls at 16/s to hold:street.firehouse, ball had 10.3/s, through: street.firehouse
+    TOW page 37.90 s scene 37.90 s  tier 2 (11.8, 8.8) > (10.0, 11.0) 2.8 balls at 16/s to gate:2, ball had 6.7/s, through: flipper.right
+clumsy   seed 2  old tows 3  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.30 s  scene end 39.07 s  page end 40.75 s  beats all
+    TOW page 24.90 s scene 24.90 s  tier 1 (9.1, 8.5) > (10.0, 11.0) 2.6 balls at 16/s to gate:1, ball had 8.3/s, through: flipper.left
+    TOW page 27.20 s scene 27.20 s  tier 2 (6.8, 4.3) > (5.0, 3.9) 1.8 balls at 16/s to hold:street.firehouse, ball had 10.3/s, through: street.firehouse
+    TOW page 37.90 s scene 37.90 s  tier 2 (11.8, 8.8) > (10.0, 11.0) 2.8 balls at 16/s to gate:2, ball had 6.7/s, through: flipper.right
+random   seed 1  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 2.16 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+random   seed 2  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 1.01 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+skipper  seed 1  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 1.20 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+skipper  seed 2  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 1.20 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+wander   seed 1  old tows 3  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.35 s  scene end 39.07 s  page end 44.62 s  beats all
+    TOW page 27.20 s scene 27.20 s  tier 2 (8.6, 10.1) > (5.0, 3.9) 7.2 balls at 16/s to hold:street.firehouse, ball had 2.3/s, through: flipper.left, street.sling.post.left.c, street.sling.left, street.sling.post.left.a
+    TOW page 31.20 s scene 31.20 s  tier 2 (9.9, 4.7) > (6.9, 4.9) 3.0 balls at 16/s to rail:highway, ball had 19.0/s, through: nothing
+    TOW page 37.90 s scene 37.90 s  tier 2 (11.8, 8.8) > (10.0, 11.0) 2.8 balls at 16/s to gate:2, ball had 6.7/s, through: flipper.right
+wander   seed 2  old tows 1  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.41 s  scene end 40.64 s  page end 46.58 s  beats all
+    TOW page 39.01 s scene 37.90 s  tier 2 (14.5, 1.7) > (10.0, 11.0) 10.3 balls at 16/s to gate:2, ball had 4.6/s, through: street.police.roof, street.police, flipper.right
+held     seed 1  old tows 4  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.35 s  scene end 41.88 s  page end 55.53 s  beats all
+    TOW page 21.82 s scene 19.10 s  tier 1 (9.8, 6.9) > (14.6, 4.4) 5.4 balls at 16/s to hold:office.inbox, ball had 19.0/s, through: nothing
+    TOW page 29.99 s scene 27.27 s  tier 2 (10.0, 10.5) > (5.0, 3.9) 8.3 balls at 16/s to hold:street.firehouse, ball had 24.0/s, through: flipper.left, street.sling.post.left.c, street.sling.left, street.sling.post.left.a
+    TOW page 33.92 s scene 31.20 s  tier 2 (6.9, 7.8) > (6.9, 4.9) 2.9 balls at 16/s to rail:highway, ball had 0.0/s, through: street.sling.left, street.sling.post.left.c
+    TOW page 40.62 s scene 37.90 s  tier 2 (13.1, 7.8) > (10.0, 11.0) 4.4 balls at 16/s to gate:2, ball had 0.0/s, through: flipper.right
+held     seed 2  old tows 4  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.35 s  scene end 41.88 s  page end 55.53 s  beats all
+    TOW page 21.82 s scene 19.10 s  tier 1 (9.8, 6.9) > (14.6, 4.4) 5.4 balls at 16/s to hold:office.inbox, ball had 19.0/s, through: nothing
+    TOW page 29.99 s scene 27.27 s  tier 2 (10.0, 10.5) > (5.0, 3.9) 8.3 balls at 16/s to hold:street.firehouse, ball had 24.0/s, through: flipper.left, street.sling.post.left.c, street.sling.left, street.sling.post.left.a
+    TOW page 33.92 s scene 31.20 s  tier 2 (6.9, 7.8) > (6.9, 4.9) 2.9 balls at 16/s to rail:highway, ball had 0.0/s, through: street.sling.left, street.sling.post.left.c
+    TOW page 40.62 s scene 37.90 s  tier 2 (13.1, 7.8) > (10.0, 11.0) 4.4 balls at 16/s to gate:2, ball had 0.0/s, through: flipper.right
+flap     seed 1  old tows 5  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.35 s  scene end 41.89 s  page end 55.54 s  beats all
+    TOW page 21.82 s scene 19.10 s  tier 1 (3.9, 1.1) > (14.6, 4.4) 11.2 balls at 16/s to hold:office.inbox, ball had 0.6/s, through: office.bumper.1, office.bumper.2
+    TOW page 27.62 s scene 24.90 s  tier 1 (5.1, 7.7) > (10.0, 11.0) 5.9 balls at 16/s to gate:1, ball had 2.6/s, through: office.inlane.floor.left, office.shoulder.step.left, flipper.left
+    TOW page 29.92 s scene 27.20 s  tier 2 (3.9, 1.4) > (5.0, 3.9) 2.7 balls at 16/s to hold:street.firehouse, ball had 0.9/s, through: street.firehouse.roof, street.firehouse, street.bank.drop.1
+    TOW page 33.92 s scene 31.20 s  tier 2 (5.4, 6.3) > (6.9, 4.9) 2.1 balls at 16/s to rail:highway, ball had 4.9/s, through: street.sling.left, street.sling.post.left.a
+    TOW page 40.62 s scene 37.90 s  tier 2 (13.2, 7.8) > (10.0, 11.0) 4.5 balls at 16/s to gate:2, ball had 7.7/s, through: flipper.right
+flap     seed 2  old tows 5  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.35 s  scene end 41.88 s  page end 55.53 s  beats all
+    TOW page 22.45 s scene 19.72 s  tier 1 (8.0, 5.2) > (14.6, 4.4) 6.7 balls at 16/s to hold:office.inbox, ball had 34.2/s, through: office.bumper.3
+    TOW page 27.62 s scene 24.90 s  tier 1 (8.8, 8.1) > (10.0, 11.0) 3.2 balls at 16/s to gate:1, ball had 27.3/s, through: flipper.left
+    TOW page 29.92 s scene 27.20 s  tier 2 (10.2, 7.2) > (5.0, 3.9) 6.2 balls at 16/s to hold:street.firehouse, ball had 19.8/s, through: street.firehouse
+    TOW page 33.92 s scene 31.20 s  tier 2 (5.2, 7.2) > (6.9, 4.9) 2.8 balls at 16/s to rail:highway, ball had 11.1/s, through: street.sling.left, street.sling.post.left.a
+    TOW page 40.62 s scene 37.90 s  tier 2 (13.2, 8.1) > (10.0, 11.0) 4.4 balls at 16/s to gate:2, ball had 12.2/s, through: flipper.right
+stroke   seed 1  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.41 s  scene end 41.45 s  page end 55.10 s  beats all
+stroke   seed 2  old tows 1  slides 0 (sum 0.00 s, longest 0.00 s)  catches 0  ball off the floor at most 3.41 s  scene end 41.85 s  page end 55.50 s  beats all
+    tow page 27.62 s scene 24.90 s  tier 1 (10.1, 9.7) > (10.0, 11.0) 1.3 balls at 16/s to gate:1, ball had 16.3/s, through: nothing (from the gate's mouth)
+    TOW page 40.62 s scene 37.90 s  tier 2 (7.3, 8.3) > (10.0, 11.0) 3.8 balls at 16/s to gate:2, ball had 2.1/s, through: flipper.left
