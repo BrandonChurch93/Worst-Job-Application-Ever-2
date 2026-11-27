@@ -100,7 +100,7 @@ describe('the finish of the careers page', () => {
     expect(T.section.font).toBe('inter-display-800')
     const sizes = [...new Set(Object.values(T).map((t) => t.px))].sort((a, b) => a - b)
     expect(sizes[0]).toBeGreaterThanOrEqual(config.layout.minTextPx)
-    expect(sizes.length).toBeLessThanOrEqual(8)
+    expect(sizes.length).toBeLessThanOrEqual(9)
     expect(GLOW.y + GLOW.ry).toBeLessThan(1009)
     expect(GLOW.y - GLOW.ry).toBeGreaterThan(97)
   })

@@ -19,7 +19,7 @@ export const FIRST_SCREEN = 1080
 export const Z = { sheet: 0.2, type: 1.2, card: 2, cardType: 3.2, button: 6, pressed: 1.6 }
 
 export const COLOUR = {
-  white: 0xffffff, ink: 0x111111, soft: 0x3d3934, grey: 0x6b7280, greyType: 0x5c636f, line: 0xe5e7eb, edge: 0xd9d9de, band: 0xebeef1, peach: 0xffedd9, orange: 0xe97832,
+  white: 0xffffff, ink: 0x111111, soft: 0x4a4640, grey: 0x6b7280, greyType: 0x5c636f, line: 0xe5e7eb, edge: 0xd9d9de, band: 0xebeef1, peach: 0xffedd9, orange: 0xe97832,
   deep: 0xbe5418, down: 0xa3460f, onWhite: 0xb65821, onPeach: 0xaa521e, tick: 0x33b428, wreath: 0x9c9fae, glow: 0xfee4c9
 }
 
@@ -27,6 +27,7 @@ export const T = {
   display: { font: 'inter-display-800', px: 82, lead: 86 },
   section: { font: 'inter-display-800', px: 72, lead: 78 },
   heading: { font: 'inter-display-800', px: 44, lead: 50 },
+  closing: { font: 'inter-display-800', px: 56, lead: 62 },
   brand: { font: 'inter-600', px: 32 },
   lead: { font: 'inter-400', px: 24, lead: 38 },
   strong: { font: 'inter-600', px: 24, lead: 30 },
@@ -43,7 +44,7 @@ export const CARD = { x: 202, w: 355, h: 327, gap: 32, r: 16, rows: [1359, 1718]
 export const QUOTE = { x: 323, w: 408, gap: 25.5, r: 16, pad: 26 }
 export const TABLE = { x: 318, w: 1285, r: 16, pad: 24, head: 81, row: 66.4, feature: 357, us: [733, 1187] as const, usAt: 960, themAt: 1385, tick: 26 }
 export const FAQ = { x: 597, w: 727, h: 52, pitch: 64.4, pad: 24 }
-export const STEPS = { first: 426.5, pitch: 266.5, d: 51, wrap: 236 }
+export const STEPS = { first: 426.5, pitch: 266.5, d: 51, wrap: 236, title: 258, body: 250 }
 export const GLOW = { x: 960, y: 545, rx: 790, ry: 430, hold: 0.45 }
 
 const cap = (t: TypeSpec): number => block(t.font, 'X', t.px).cap
@@ -242,8 +243,8 @@ function process(y0: number): LayoutNode {
   const railY = y0 + 233
   const n = m.process.items.length
   out.push(node('process-rail', 'hairline', [STEPS.first, railY + STEPS.d / 2 - 1, STEPS.pitch * (n - 1), 2], { part: PAGE, floor: Z.sheet, height: Z.sheet + 0.6 }))
-  const title = { ...mid(T.strong), wrap: STEPS.wrap }
-  const body = { ...mid(T.small), wrap: STEPS.wrap }
+  const title = { ...mid(T.label), wrap: STEPS.title }
+  const body = { ...mid(T.body), wrap: STEPS.body }
   for (let i = 0; i < n; i++) {
     const cx = STEPS.first + i * STEPS.pitch
     const num = `data:numerals.${i + 1}`
@@ -254,7 +255,7 @@ function process(y0: number): LayoutNode {
     }))
     const titleY = y0 + 312
     out.push(text(`process-${i}-title`, `${k}.title`, title, cx, titleY, on))
-    out.push(text(`process-${i}-body`, `${k}.body`, body, cx, titleY + tall(title, `${k}.title`, STEPS.wrap) + 18, on))
+    out.push(text(`process-${i}-body`, `${k}.body`, body, cx, titleY + tall(title, `${k}.title`, STEPS.title) + 16, on))
   }
   const waitY = y0 + 516
   const wa = wide(T.lead, 'copy:marketing.process.waitLabel')
@@ -271,8 +272,8 @@ function process(y0: number): LayoutNode {
 
 function finalCta(y0: number): LayoutNode {
   const out: LayoutNode[] = []
-  out.push(centred('final-heading', 'copy:marketing.finalCta.heading', T.heading, y0 + 44))
-  out.push(centred('final-body', 'copy:marketing.finalCta.body', soft({ ...T.body, wrap: 720, lead: 32 }), y0 + 114))
+  out.push(centred('final-heading', 'copy:marketing.finalCta.heading', T.closing, y0 + 36))
+  out.push(centred('final-body', 'copy:marketing.finalCta.body', soft({ ...T.lead, wrap: 860, lead: 34 }), y0 + 110))
   out.push(applyButton('final-cta', 683, y0 + 201, 553, 67, 'copy:marketing.finalCta.cta', T.strong))
   out.push(centred('final-under', 'copy:marketing.finalCta.underCta', T.small, y0 + 290))
   return sheet('final', y0, 322, out)

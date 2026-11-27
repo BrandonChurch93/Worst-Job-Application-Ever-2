@@ -11,7 +11,7 @@ Branch `agent/b-careers`. Every item below is MEASURED (the command and the numb
 ## Decisions
 
 1. Flat white on the stage: the white sheet is drawn unlit at 251.6 (MEASURED: mean of a 40 by 40 px patch of the draft still of the first screen, with sharp). Nothing in `src/post/` or the ground was changed.
-2. One type scale, Inter: `T` in `layout.ts`. Display 82 (headline), 72 (the benefits heading), 44 (the other section headings), 32, 24, 20, 16, 14. Headline and headings in Inter Display 800, baked to `public/fonts/inter-display-800.json` (183588 bytes, sha256 starts 9bc2142f6987a04c; MEASURED with `wc -c` and `sha256sum`), one entry `'inter-display-800'` added to `FONTS` at `src/shell/metrics.ts:15`.
+2. One type scale, Inter: `T` in `layout.ts`. Display 82 (headline), 72 (the benefits heading), 56 (the closing call), 44 (the other section headings), 32, 24, 20, 16, 14: nine sizes. Headline and headings in Inter Display 800, baked to `public/fonts/inter-display-800.json` (183588 bytes, sha256 starts 9bc2142f6987a04c; MEASURED with `wc -c` and `sha256sum`), one entry `'inter-display-800'` added to `FONTS` at `src/shell/metrics.ts:15`.
 3. Every word is a key of `content/copy.json`. Cases where the picture's word is not in the copy are under "Words".
 4. Cards: face with icon, title, promise and the fine print small. The pointer on a card flips it to the back with the fine print large. It flips back when the pointer is clear of the card by `LEAVE`. Events `card-flip` and `card-flip-back`.
 5. Apply is live from the first frame in the navigation, the hero and the closing call. Each runs the press (wind-up 0.36 s, jump 0.42 s, `button-press` on landing, hold 0.7 s) and the page turns into step 1.
