@@ -67,11 +67,18 @@ export function hitTaken(block, hits) {
 }
 // Given back: the arrow lay dead for at least `still` steps, and now moves again.
 export const BACK = { still: 30, dead: 0.2, moves: 0.5 }
+// The give back whole, every step drawn (1/60 s apart): from `before` frames before the arrow first moves to `after` frames from the step it is the visitor's, on `sheets` sheets at least.
+// Where the page throws the arrow first, the rows hold it so: the arrow moves for `throwMost` steps at most, then stands `beat` steps or more (and `stands` at most), then moves again.
+// The first step of that second move is the first under the visitor; with no such stand the arrow is the visitor's from its first move.
+export const GIVES = { before: 6, after: 6, sheets: 2, throwMost: 12, beat: 3, stands: 60 }
 // The gag at which a page takes the arrow from the visitor, as `told().gags` names it: the tug of war of step 1.
 export const TAKES = 'step1.tug'
 // The stroke after the arrow is given back: once the page has taken the arrow, the arrow has lain dead for BACK.still steps and the place the page
 // wants the pointer jumps by `least` px or more, the visitor was waiting for it and goes there `reactSteps` late, not VISITOR.reactSteps. Once a visit.
 export const STROKE = { least: 200, reactSteps: 2 }
+// The flippers: a player at a machine watches the ball come to the bat and is ready for it, so the visitor presses a flipper `reactSteps` after the page first wants it,
+// not VISITOR.reactSteps, and keeps it down for `holdSteps` at least, the time a bat needs for its whole stroke (8 steps, `LIVE.up` in src/table/physics.ts) and a little more.
+export const FLIPS = { reactSteps: 2, holdSteps: 10 }
 
 // The visitor's mind: from what the site tells at a step to the events of that step. No clock and no chance but its own seeded numbers.
 /** @param {number} k @param {typeof VISITOR} [o] @param {ReturnType<typeof keyBlock> | null} [block] */
@@ -82,6 +89,8 @@ export function makeVisitor(k, o = VISITOR, block = null) {
     return seed / 0x7fffffff - 0.5
   }
   const queue = []
+  const flips = []
+  const since = { left: 0, right: 0 }
   const held = { down: false, left: false, right: false }
   let pos = { x: o.start[0] * k, y: o.start[1] * k }
   let step = 0
@@ -141,6 +150,8 @@ export function makeVisitor(k, o = VISITOR, block = null) {
       }
       aimed = h && !t.turning ? { x: h.x, y: h.y } : aimed
       const seen = queue.length > o.reactSteps ? queue.shift() : null
+      flips.push(target ? { left: target.left, right: target.right } : null)
+      const flip = flips.length > FLIPS.reactSteps ? flips.shift() : null
       if (seen && seen.stand) {
         if (held.down) acts.push({ up: 'left' })
         held.down = false
@@ -170,15 +181,17 @@ export function makeVisitor(k, o = VISITOR, block = null) {
           acts.push({ press: seen.key === ' ' ? 'Space' : seen.key })
           lastKey = step
         }
-        if (seen.left !== held.left) {
-          acts.push(seen.left ? { keyDown: 'ShiftLeft' } : { keyUp: 'ShiftLeft' })
-          held.left = seen.left
-        }
-        if (seen.right !== held.right) {
-          acts.push(seen.right ? { keyDown: 'ShiftRight' } : { keyUp: 'ShiftRight' })
-          held.right = seen.right
-        }
       } else if (t.turning) release(acts)
+      if (flip && !(seen && seen.stand) && !t.turning) {
+        for (const [side, code] of [['left', 'ShiftLeft'], ['right', 'ShiftRight']]) {
+          since[side] = held[side] ? since[side] + 1 : 0
+          const want = flip[side] || (held[side] && since[side] < FLIPS.holdSteps)
+          if (want === held[side]) continue
+          acts.push(want ? { keyDown: code } : { keyUp: code })
+          held[side] = want
+          since[side] = 0
+        }
+      }
       step += 1
       return acts
     }
@@ -360,8 +373,6 @@ export function aroundStep(at, count, every, first, last, part = 2) {
 const HITS = ['bolt-hit-cursor', 'tug-lost']
 // A walk: the arrow moves at least this far in a step, and the stretch is at least this long.
 const WALK = { least: 6, steps: 24 }
-// A page turn's sheets end this many steps after the turning ends: the knock of the seat is inside the turning, the shiver of the page after it lasts this long.
-const TURN = { after: 16 }
 // A moment's run starts this many pictures before the moment itself.
 const LEAD = 3
 // Out of the port: the ball's middle is this far, in px of the page, from where the arrow was sealed, and the run holds this many steps more.
@@ -370,28 +381,105 @@ const PORT = { clear: 150, tail: 6, most: 600 }
 // A bat's own blow comes while the bat rises, `soon` steps after the press at most, and is hard: the first press counts whose change of speed is `share` of the hardest
 // such change in the visit or more. So a ball the table throws back by itself just after a press that met nothing (the save's lob from the gate's mouth) is not taken for the bat's blow.
 export const MEETS = { within: 24, kick: 4, lifts: 3, soon: 4, share: 0.6 }
-// The machine's save of a ball lost between the bats. The run names a save only where the page tells of one as a hit on the arrow (`flipper-save` in `hits`,
-// told once, inside the gag of the save); every other save is read from the ball's own path in the rows: the ball was going down the table, and in one step it stands
-// `lifts` px of the page or more up the table, between the bats (within `across` balls of the page's middle), and the step after its speed differs from that jump by `breaks` px or more.
-// A blow of a bat or a bumper does not do that: the ball keeps the speed a blow gave it. The ball was put there, not struck. `lead`: the save's run starts this many pictures before the save.
-// A save is shown whole (the bat starts, the ball leaves, the bat falls) when its bat was at rest before it and nothing raises a bat again until it is down: no other save and no
-// flipper held by the visitor from `rest` steps before the save (a stroke, its fall and the bounce at rest) to `whole` steps after it (the machine's stroke and its fall).
-export const SAVE = { name: 'flipper-save', lifts: 30, breaks: 12, across: 1, lead: 2, rest: 36, whole: 26 }
-// A key of the page's keyboard pressed by the arrow: the run starts this many pictures before the press.
-export const TYPE = { lead: 2 }
+// The machine saves a ball lost between the bats. Read from the ball's path, a save is a jump: going down, within `across` ball widths of the middle, it stands `lifts` px a step up,
+// and its speed a step later differs from that jump by `breaks` px or more; or a ball that lay `low` in the mouth (in widths of the ball inside its tier) goes up again by `rises` a step. In both the ball was `low` the step before and is out of the mouth `clears` steps later.
+// The page's own words for it are `names` (the kick) and `take` (the ball lands on the gate). Two kicks within `same` steps are one save; a take is sought `most` steps back at most.
+// The save's run starts `before` pictures before the take and ends `after` pictures after the kick, on `sheets` sheets at most.
+// The first reading needs no word of the page: the ball lies `held` steps or more in a row within `near` widths of the middle, its centre `deep` or lower in its tier (under the bats' tips),
+// moving under `still` px a step, and then goes up at `leaves` widths a second or more. The page's words only confirm a save so found: they find none and hide none.
+// A ball that is `deep` in the mouth for `sunk` steps and is `out` of it again on the same tier was saved: where no reading finds that save, the plan says so and the tool fails.
+export const SAVE = { names: ['ball-save', 'flipper-save'], take: 'gate-take', lifts: 30, breaks: 12, across: 1, low: 10.3, rises: 0.15, clears: 3, same: 3, most: 90, before: 4, after: 4, sheets: 2, held: 10, near: 0.5, deep: 10.4, still: 1, leaves: 18, sunk: 2, out: 9.6 }
 // What struck the arrow, in plain words, by the name the site tells the hit under.
 export const STRUCK = { 'bolt-hit-cursor': "a turret's bolt", 'tug-lost': 'the lost tug of war' }
 export const struckWords = (name) => STRUCK[name] || `what the page calls "${String(name).replace(/-/g, ' ')}"`
 // The sheets of these moments carry the visitor's hand under their frames.
-export const HANDS = ['flippers', 'flip', 'save']
+export const HANDS = ['flippers', 'flip', 'flip-close', 'save']
+// The moments of the arrow taken and given back: a group of their own when the sheets go out as more than one set.
+export const ARROW = ['taken', 'given-back']
+// The blow of the visitor's bat once more, close: every step from `before` steps before the blow to `after` steps after it, in a fixed window at its real size
+// round where the ball is in the `round` steps before and after the blow.
+export const CLOSE = { before: 5, after: 6, round: 2 }
 export const HAND_WORDS = 'Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.'
 // Round a run's path in a close sheet: this much of the picture stays clear on every side of the arrow's places, in px of the picture.
 const ROOM = 56
-// When the limit of files cuts a run of two sheets to one, the second sheets go in this order, the least worth first.
-// The turn's first sheet goes first, then the ball leaving the port, then the second sheet of the save; a true stroke keeps its two sheets as long as it can.
-const WORTH = ['turn', 'flippers', 'save', 'flip', 'given-back']
 // Pictures of a moment are this many steps apart: 30 a second, as a page's sheets of consecutive frames are.
 const EVERY = 2
+
+// The machine as the page lays it out (src/table/layout.ts), in widths of the ball inside a tier: the middle, a bat's pivot, its radius at the pivot and at the tip,
+// its angle at rest and raised in degrees, half the mouth between the bats, the height at which the gate at the mouth holds a ball, the height of the gate's pin,
+// and how far along a bat the page starts to want a press. The bat's length is table.flipperBalls. A stepped test holds these against the page's own file.
+export const MACHINE = { mid: 10, pivotU: 6.53, pivotV: 8.95, radius: 0.4, tip: 0.26, rest: 25, up: -25, mouthHalf: 1.7, gateV: 10.55, pinV: 11.1, pin: 0.15, wantFrom: 1.2 }
+// Where the tiers lie on the page of the machine, in widths of the ball: a screen, then the marquee, then the tiers one under the other.
+export function tiersOf(cfg) {
+  const t = cfg.table
+  const top = cfg.formats.hd.height / t.ballPx + t.marqueeHeightBalls
+  return { ball: t.ballPx, tall: t.tierHeightBalls, count: t.tiers.length, top, y: (k) => top + t.tierHeightBalls * k, of: (y) => Math.max(0, Math.min(t.tiers.length - 1, Math.floor((y - top) / t.tierHeightBalls))) }
+}
+// The ball of a row inside its tier, in widths of the ball: the arrow is sealed in it, so the arrow's place is the ball's.
+export function ballAt(cfg, row) {
+  const g = tiersOf(cfg)
+  const y = row[COL.heroY] / g.ball
+  const tier = g.of(y)
+  return { u: row[COL.heroX] / g.ball, v: y - g.y(tier), tier }
+}
+// Where the ball is over a bat at rest, as the machine itself reads it (`over` in src/table/physics.ts): how far along the bat from its pivot and how far above its middle line.
+export function overBat(cfg, row, side) {
+  const b = ballAt(cfg, row)
+  const dir = side === 'left' ? 1 : -1
+  const rx = b.u - (side === 'left' ? MACHINE.pivotU : cfg.table.tierWidthBalls - MACHINE.pivotU)
+  const ry = b.v - MACHINE.pivotV
+  const c = Math.cos((MACHINE.rest * Math.PI) / 180)
+  const s = Math.sin((MACHINE.rest * Math.PI) / 180)
+  return { along: rx * c * dir + ry * s, above: rx * s * dir - ry * c, tier: b.tier }
+}
+// A bat's reach, as the machine arms a stroke (`armed` in src/table/physics.ts): the ball is over the bat from `from` along it to its tip and `past` more, and no higher above it than the two radii and `high`.
+export const REACH = { from: 0.2, past: 0.15, high: 0.2, ballR: 0.5 }
+// How far, in widths of the ball, a ball over a bat is from that reach: 0 inside it.
+export function reachGap(cfg, o) {
+  const far = cfg.table.flipperBalls - MACHINE.tip + REACH.past
+  const high = MACHINE.radius + REACH.ballR + REACH.high
+  return Math.hypot(Math.max(0, REACH.from - o.along, o.along - far), Math.max(0, -o.above, o.above - high))
+}
+
+// The camera's travels from one tier of the machine to the next below: unbroken stretches in which the page's scroll moves by FALLS.moves px a step or more,
+// from within FALLS.near of a tier's top to within FALLS.near of the next tier's top (in tiers' heights).
+export const FALLS = { moves: 1, near: 0.2 }
+// Every unbroken stretch of a page's part in which the scroll moves by FALLS.moves px a step or more: its first and last step, and the scroll before and after it.
+function travelsOf(rows, part) {
+  const out = []
+  let from = -1
+  for (let i = part.first + 1; i <= part.last + 1; i++) {
+    const going = i <= part.last && Math.abs(rows[i][COL.scroll] - rows[i - 1][COL.scroll]) >= FALLS.moves
+    if (going && from < 0) from = i
+    if (!going && from >= 0) {
+      out.push({ first: from, last: i - 1, a: rows[from - 1][COL.scroll], b: rows[i - 1][COL.scroll] })
+      from = -1
+    }
+  }
+  return out
+}
+const tierTops = (cfg) => {
+  const g = tiersOf(cfg)
+  return { tops: Array.from({ length: g.count }, (_, k) => g.y(k) * g.ball), near: FALLS.near * g.tall * g.ball }
+}
+export function fallsOf(cfg, rows, part) {
+  if (!part) return []
+  const { tops, near } = tierTops(cfg)
+  const out = []
+  for (const t of travelsOf(rows, part)) for (let k = 0; k + 1 < tops.length; k++) if (Math.abs(t.a - tops[k]) <= near && Math.abs(t.b - tops[k + 1]) <= near) out.push({ first: t.first, last: t.last, tier: k, from: Math.round(t.a), to: Math.round(t.b) })
+  return out
+}
+// The page's own first travel down the machine, before the play: one unbroken travel from above the first tier to the last tier or below it.
+// `back` is true when a later travel brings the camera up again to the first tier.
+export function revealOf(cfg, rows, part) {
+  if (!part) return null
+  const { tops, near } = tierTops(cfg)
+  const all = travelsOf(rows, part)
+  const j = all.findIndex((t) => t.a < tops[0] - near && t.b >= tops[tops.length - 1] - near)
+  if (j < 0) return null
+  const t = all[j]
+  return { first: t.first, last: t.last, from: Math.round(t.a), to: Math.round(t.b), back: all.slice(j + 1).some((x) => x.b < x.a && Math.abs(x.b - tops[0]) <= near) }
+}
 
 // The moments of the run that the sheets show, found from the run itself.
 export function momentsOf(cfg, run) {
@@ -462,6 +550,15 @@ export function momentsOf(cfg, run) {
     }
   }
 
+  // The throw before the hand has it, where the rows hold one (GIVES).
+  let thrown = null
+  if (back !== null) {
+    let stand = back
+    while (stand <= s1.last && stand - back <= GIVES.throwMost && moved(stand) > BACK.dead) stand += 1
+    let again = stand
+    while (again <= s1.last && again - stand <= GIVES.stands && moved(again) <= BACK.dead) again += 1
+    if (stand - back <= GIVES.throwMost && again - stand >= GIVES.beat && again - stand <= GIVES.stands && again <= s1.last) thrown = { first: back, stand, handed: again }
+  }
   // The release itself: the visitor strokes STROKE.reactSteps after the page lets go, so the page let go that long before the pointer's first long move.
   let released = back
   if (back !== null) {
@@ -495,26 +592,91 @@ export function momentsOf(cfg, run) {
   const speed = (i) => [rows[i][COL.heroX] - rows[i - 1][COL.heroX], rows[i][COL.heroY] - rows[i - 1][COL.heroY]]
   const mid = cfg.formats.hd.width / 2
   const ball = cfg.table.ballPx
-  // The machine's saves: the steps the page tells of by name, and the steps at which the ball, going down, stands thrown up between the bats.
+  // The machine's saves. The kick: a step the page tells of by name (SAVE.names), a step at which the ball, going down, stands thrown up between the bats,
+  // or the step at which a ball that lay low in the mouth (SAVE.low, SAVE.across) first goes up again by SAVE.rises a step.
+  // The take: the step the page tells of as SAVE.take, or with none the first step of the unbroken stay low in the mouth that ends in the kick.
   const saves = []
+  const takes = {}
+  const lifted = {}
+  const unsaved = []
   if (s3) {
-    for (const h of run.hits) if (h.name === SAVE.name && h.step >= s3.first && h.step <= s3.last) saves.push(h.step)
+    const low = (i) => {
+      const b = ballAt(cfg, rows[i])
+      return Math.abs(b.u - MACHINE.mid) <= SAVE.across && b.v >= SAVE.low ? b.tier : -1
+    }
+    const kicks = []
+    const deep = (i) => {
+      const b = ballAt(cfg, rows[i])
+      return Math.abs(b.u - MACHINE.mid) <= SAVE.near && b.v >= SAVE.deep ? b.tier : -1
+    }
+    let lain = 0
+    for (let i = s3.first + 1; i <= s3.last; i++) {
+      if (deep(i) >= 0 && Math.hypot(...speed(i)) < SAVE.still) {
+        lain += 1
+        continue
+      }
+      if (lain >= SAVE.held) for (let j = i; j <= Math.min(s3.last, i + SAVE.clears); j++) if (speed(j)[1] <= -(SAVE.leaves * ball) / VISITOR.hz) {
+        kicks.push(j)
+        break
+      }
+      lain = 0
+    }
+    // The second reading: a ball `deep` in the mouth for `sunk` steps or more that is `out` of it again on the same tier. Its kick is the first step from which it goes up by `rises` a step.
+    const stays = []
+    for (let i = s3.first + 1; i <= s3.last; i++) {
+      const tier = deep(i)
+      if (tier < 0 || deep(i - 1) >= 0) continue
+      let end = i
+      while (end + 1 <= s3.last && deep(end + 1) === tier) end += 1
+      let up = null
+      for (let j = end + 1; j <= Math.min(s3.last, end + SAVE.most) && up === null && ballAt(cfg, rows[j]).tier === tier; j++) if (ballAt(cfg, rows[j]).v <= SAVE.out) up = j
+      if (end - i + 1 >= SAVE.sunk && up !== null) {
+        stays.push({ first: i, up })
+        for (let j = i + 1; j <= up; j++) if (speed(j)[1] <= -SAVE.rises * ball) {
+          kicks.push(j)
+          break
+        }
+      }
+      i = end
+    }
     for (let i = s3.first + 2; i < s3.last; i++) {
       const now = speed(i)
       const was = speed(i - 1)
       const next = speed(i + 1)
-      if (now[1] <= -SAVE.lifts && was[1] > 0 && Math.abs(rows[i][COL.heroX] - mid) <= SAVE.across * ball && Math.hypot(next[0] - now[0], next[1] - now[1]) >= SAVE.breaks && !saves.includes(i)) saves.push(i)
+      // Either way the ball was low in the mouth the step before, and SAVE.clears steps later it is out of the mouth, higher up the same tier: a bat's blow on a ball over the bat is no save.
+      const out = ballAt(cfg, rows[Math.min(s3.last, i + SAVE.clears)])
+      if (low(i - 1) < 0 || out.tier !== low(i - 1) || out.v >= SAVE.low) continue
+      if (now[1] <= -SAVE.lifts && was[1] > 0 && Math.abs(rows[i][COL.heroX] - mid) <= SAVE.across * ball && Math.hypot(next[0] - now[0], next[1] - now[1]) >= SAVE.breaks) {
+        kicks.push(i)
+        lifted[i] = Math.round(-now[1])
+      }
+      if (low(i - 2) >= 0 && low(i - 3) >= 0 && now[1] <= -SAVE.rises * ball && was[1] > -SAVE.rises * ball) kicks.push(i)
     }
-    saves.sort((x, y) => x - y)
+    kicks.sort((x, y) => x - y)
+    for (const k of kicks) if (!saves.some((x) => Math.abs(x - k) <= SAVE.same)) saves.push(k)
+    for (const k of saves) {
+      const said = run.hits.filter((h) => h.name === SAVE.take && h.step <= k && h.step >= k - SAVE.most).pop()
+      let take = k
+      const tier = low(k - 1) >= 0 ? low(k - 1) : low(k)
+      while (take - 1 > s3.first && k - take < SAVE.most && low(take - 1) === tier && tier >= 0) take -= 1
+      takes[k] = said ? said.step : take
+    }
+    // A ball deep in the mouth that is up on its tier again was saved: each such stay must lie in a save that was found.
+    const found = (from, to) => saves.some((k) => k >= from - SAVE.same && takes[k] <= to + SAVE.same)
+    for (const st of stays) if (!found(st.first, st.up)) unsaved.push({ step: st.first, up: st.up })
+    // The page's own words for a save, where no save was found from the path.
+    for (const h of run.hits) if ((SAVE.names.includes(h.name) || h.name === SAVE.take) && h.step >= s3.first && h.step <= s3.last && !found(h.step, h.step) && !unsaved.some((u) => h.step >= u.step - SAVE.most && h.step <= u.up)) unsaved.push({ step: h.step, word: h.name })
   }
-  // The save that is shown: the first of the run whose sheet shows it whole, the bat starting from rest, the ball leaving and the bat falling (SAVE.rest, SAVE.whole);
+  // The save that is shown: the first whose run, from SAVE.before frames before the take to SAVE.after frames after the kick, holds no other save and no flipper of the visitor's;
   // with none such, the first save.
   const handIn = (from, to) => {
     for (let j = Math.max(0, from); j <= Math.min(n - 1, to); j++) if (rows[j][COL.left] || rows[j][COL.right]) return true
     return false
   }
-  const whole = (i) => !saves.some((x) => x !== i && x >= i - SAVE.rest && x <= i + SAVE.whole) && !handIn(i - SAVE.rest, i + SAVE.whole)
+  const whole = (i) => !saves.some((x) => x !== i && x >= takes[i] - SAVE.before * EVERY && x <= i + SAVE.after * EVERY) && !handIn(takes[i] - SAVE.before * EVERY, i + SAVE.after * EVERY)
   const save = saves.find(whole) ?? saves[0] ?? null
+  const word = (step, names) => run.hits.some((h) => names.includes(h.name) && Math.abs(h.step - step) <= SAVE.same)
+  const gate = save === null ? null : { take: takes[save], kick: save, lifted: lifted[save] ?? null, said: word(save, SAVE.names), takeSaid: word(takes[save], [SAVE.take]) }
 
   // The visitor's own bat meets the ball. A step is a true stroke only when all of this holds: the visitor has the flippers; the ball's speed changes by MEETS.kick or more
   // and the ball then goes MEETS.lifts or more up the table; the visitor pressed a flipper MEETS.soon steps before at most (a press of step p first moves the bat in the picture of p + 1);
@@ -537,16 +699,18 @@ export function momentsOf(cfg, run) {
         if (press === null || strokes.some((x) => x.press === press && x.side === side)) continue
         let held = 0
         while (press + held <= s3.last && rows[press + held][col]) held += 1
-        strokes.push({ step: i, side, press, held, kick: r1(kick) })
+        strokes.push({ step: i, side, press, held, kick: r1(kick), fromReach: Math.round(reachGap(cfg, overBat(cfg, rows[press], side)) * 100) / 100 })
         break
       }
     }
   }
   // A bat's own blow is hard: a change of speed under MEETS.share of the hardest such change is a soft throw after a press that met nothing, and is no stroke.
+  const blows = strokes.map((x) => ({ ...x }))
   const hardest = strokes.reduce((k, x) => Math.max(k, x.kick), 0)
   for (let j = strokes.length - 1; j >= 0; j--) if (strokes[j].kick < MEETS.share * hardest) strokes.splice(j, 1)
-  // Of the true strokes the one is shown whose hand holds the flipper longest, and of two held as long the earlier.
-  const stroke = strokes.reduce((best, x) => (!best || x.held > best.held ? x : best), null)
+  // Of the true strokes one pressed with the ball within the bat's reach is shown before one pressed outside it, and of those the one whose hand holds the flipper longest, the earlier of two held as long.
+  const within = strokes.filter((x) => x.fromReach === 0)
+  const stroke = (within.length ? within : strokes).reduce((best, x) => (!best || x.held > best.held ? x : best), null)
   const blow = stroke ? stroke.step : null
 
   // A key of the page's keyboard pressed by the arrow: the first press of the mouse button inside the key block of step 1 once the page asks for the first name, and its release.
@@ -566,7 +730,7 @@ export function momentsOf(cfg, run) {
       type = { press: i, release: up }
     }
   }
-  return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, flippers, leaves, left, flip, met: blow, stroke, strokes, save, saves, type, turn: turns[0] || null } }
+  return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, thrown, flippers, leaves, left, flip, met: blow, stroke, strokes, blows, save, saves, gate, unsaved, type, turn: turns[0] || null, falls: fallsOf(cfg, rows, s3), reveal: revealOf(cfg, rows, s3) } }
 }
 
 // The visitor's hand under a frame: a frame carries L or R when the visitor held that flipper at the frame's own step or at any step since the frame before it on the sheet,
@@ -670,6 +834,22 @@ export function runWindow(cfg, run, steps, what = null) {
   return { window: windowRound(box, w, h, rf.width, rf.height), tileW, tileH, shown: Math.round((tileW / w) * 100) }
 }
 
+export function closeWindow(cfg, run, steps) {
+  const edge = cfg.critics.maxImageLongEdgePx
+  const rf = cfg.formats[run.format || RUN.format]
+  const k = rf.width / cfg.formats.hd.width
+  const tileW = Math.floor((edge - GAP * 2) / 3)
+  const tileH = hitTileHeight(edge, Math.min(steps.length, cfg.critics.contactSheetFrames))
+  const near = []
+  for (let i = run.moments.met - CLOSE.round; i <= run.moments.met + CLOSE.round; i++) if (i >= 0 && i < run.rows.length) near.push(i)
+  const xs = near.map((i) => run.rows[i][COL.heroX] * k)
+  const ys = near.map((i) => (run.rows[i][COL.heroY] - run.rows[i][COL.scroll]) * k)
+  const box = [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)]
+  return { window: windowRound(box, tileW, tileH, rf.width, rf.height), tileW, tileH, shown: 100 }
+}
+// The fixed window of a moment's sheets.
+export const windowOf = (cfg, run, moment, steps) => (moment === 'save' ? saveWindow(cfg, run, steps) : moment === 'flip-close' ? closeWindow(cfg, run, steps) : runWindow(cfg, run, steps, moment))
+
 const unitsOf = (cfg) => cfg.film.units.map((u) => u.id)
 const pageWords = (cfg, page) => `page ${unitsOf(cfg).indexOf(page) + 1} of ${unitsOf(cfg).length}`
 const screens = [
@@ -705,6 +885,32 @@ const needRun = (facts, role) => {
   return facts
 }
 
+// The machine's tiers and the passage between them, on one sheet of whole frames: first the page's own travel down the machine where the visit holds one,
+// then every fall of the camera from one tier to the next. Each is a group of frames at one even step, the first the last frame before the travel begins,
+// the last after the camera has come to rest (it moves less than FALLS.moves px a step). The step is the least even number of steps that does it.
+export function tierSheet(cfg, run) {
+  const count = cfg.critics.contactSheetFrames
+  const reveal = run.moments.reveal || null
+  const falls = (run.moments.falls || []).slice(0, TIERS.falls)
+  if (!falls.length) return null
+  const each = Math.min(TIERS.each, Math.floor(count / (falls.length + (reveal ? 1 : 0))))
+  const stepFor = (len) => Math.ceil(Math.ceil((len + 1) / (each - 1)) / 2) * 2
+  const framesOf = (t, step) => Array.from({ length: each }, (_, i) => t.first - 1 + i * step)
+  const secs = (step) => `${step} steps (${(step / VISITOR.hz).toFixed(2)} s)`
+  const step = stepFor(Math.max(...falls.map((f) => f.last - f.first + 1)))
+  const open = reveal ? stepFor(reveal.last - reveal.first + 1) : 0
+  const steps = [...(reveal ? framesOf(reveal, open) : []), ...falls.flatMap((f) => framesOf(f, step))]
+  const n = cfg.table.tiers.length
+  const at = (k) => `${k * each + 1} to ${(k + 1) * each}`
+  const fell = falls.map((f) => `from tier ${f.tier + 1} to tier ${f.tier + 2} (${timeOf(f.first)} to ${timeOf(f.last)})`)
+  const ends = `Each group of ${each} begins before its travel and ends after it`
+  const heading = reveal
+    ? `The machine's tiers and the passage from one to the next. Frames ${at(0)} are single moments ${secs(open)} apart, not frames in a row: the camera's first travel, from the page's top down the machine to tier ${n} (${timeOf(reveal.first)} to ${timeOf(reveal.last)})${reveal.back ? ', then back up to tier 1' : ''}. Frames ${falls.map((_, i) => at(i + 1)).join(' and ')}, ${secs(step)} apart: its travel ${fell.join(' and ')}. ${ends}`
+    : `The machine's tiers and the passage from one to the next, whole frames ${secs(step)} apart: ${falls.map((_, i) => `frames ${at(i)}, the camera's travel ${fell[i]}`).join('; ')}. ${ends}`
+  const part = (run.pages || []).find((p) => falls[0].first >= p.first && falls[0].first <= p.last)
+  return { kind: 'site-run-sheet', moment: 'tiers', page: part ? part.unit : run.rows[falls[0].first][COL.page], steps, every: step, each, opens: reveal ? open : null, heading }
+}
+
 // R5: the six pages on one sheet, the two screens, and one sheet across each page's part of the visitor's run.
 function wholeGroups(cfg, unit, facts) {
   const run = needRun(facts, 'R5')
@@ -720,99 +926,258 @@ function wholeGroups(cfg, unit, facts) {
     const steps = spreadSteps(first, last, count)
     return { kind: 'site-run-sheet', page: p.unit, steps, heading: `One visitor's visit in order, sheet ${i + 1} of ${parts.length}, ${pageWords(cfg, p.unit)}: ${span(steps)}` }
   })
+  const tiers = tierSheet(cfg, run)
+  if (tiers) sheets.splice(sheets.findIndex((x) => x.page === tiers.page) + 1, 0, tiers)
   return [
     { id: 'rest', items: [{ kind: 'site-pages-sheet', units, heading: `The ${units.length} pages at rest` }, ...screens] },
     { id: 'visit', items: sheets }
   ]
 }
 
-// R4: the sheets kit/07 names for `site`, each found in the visitor's run. A moment is one run of consecutive pictures on one sheet, or on two in a row.
-// `leftOut` names a moment the run does not hold, `limitTook` the sheets the limit of files took.
+// The page turn in steps, as the stage plays it (src/stage/stage.ts, src/stage/turn.ts), counted from the first step of the new page, when it stands on its edge:
+// `seat` the page meets the stage, `flat` its last knock is over and the slab lies flat, `quiet` the loose things on it have stopped shivering.
+// `lead` steps of the old page lying flat come first, `still` frames after `quiet` come last. A stepped test holds the first three against the stage's own numbers.
+export const TURNS = { seat: 18, flat: 27, quiet: 31, lead: 2, still: 4 }
+// The key press: its run starts `before` frames before the press and ends `after` frames after the release. `mark` stands under a frame in which the visitor holds the mouse button.
+export const KEYS = { before: 3, after: 4, mark: 'down' }
+export const KEY_WORDS = `Under a frame, "${KEYS.mark}": the visitor holds the mouse button in it.`
+// The mark under frame i: picture i is the site before the visitor's events of step i, so it shows the button as row i - 1 holds it.
+export const downAt = (rows, i) => (i > 0 && rows[i - 1][COL.down] ? KEYS.mark : '')
+// The tiers' sheet: at most `each` frames to a travel of the camera, and at most `falls` falls from one tier to the next after the page's own first travel down the machine.
+export const TIERS = { each: 6, falls: 2 }
+const VISITOR_WORDS = `The pack's visitor presses ${FLIPS.reactSteps} steps after the page's cue and holds ${FLIPS.holdSteps} steps`
+
+// The fixed window of the save's sheets, in px of the run's picture: centred on the middle of the machine, its lower edge on the foot of the screen,
+// the tile itself at its real size when that holds the gate at the mouth and both bats at rest and raised with HOLDS.margin round them, and a wider one, shown smaller, when it does not.
+// SAVE_BOX is the part of the 1920 by 1080 screen the gate and its wire take up, as the save's owner gave it: the window holds it whole.
+export const SAVE_BOX = [812, 820, 1112, 1080]
+export function saveHolds(cfg, row, tier) {
+  const g = tiersOf(cfg)
+  const far = MACHINE.pivotU - MACHINE.radius
+  const reach = cfg.table.flipperBalls * Math.sin((Math.abs(MACHINE.up) * Math.PI) / 180) + MACHINE.tip
+  const top = (g.y(tier) + MACHINE.pivotV - reach) * g.ball - row[COL.scroll]
+  const floor = (g.y(tier) + g.tall) * g.ball - row[COL.scroll]
+  const gate = (g.y(tier) + MACHINE.pinV + MACHINE.pin) * g.ball - row[COL.scroll]
+  return { bats: [far * g.ball, top, (cfg.table.tierWidthBalls - far) * g.ball, (g.y(tier) + MACHINE.pivotV + reach) * g.ball - row[COL.scroll]], gate: [(MACHINE.mid - MACHINE.mouthHalf) * g.ball, (g.y(tier) + MACHINE.gateV - REACH.ballR) * g.ball - row[COL.scroll], (MACHINE.mid + MACHINE.mouthHalf) * g.ball, gate], floor }
+}
+export function saveWindow(cfg, run, steps) {
+  const edge = cfg.critics.maxImageLongEdgePx
+  const rf = cfg.formats[run.format || RUN.format]
+  const k = rf.width / cfg.formats.hd.width
+  const tileW = Math.floor((edge - GAP * 2) / 3)
+  const tileH = hitTileHeight(edge, Math.min(steps.length, cfg.critics.contactSheetFrames))
+  const kick = run.moments.gate.kick
+  const tier = ballAt(cfg, run.rows[kick]).tier
+  const h = saveHolds(cfg, run.rows[kick], tier)
+  const pad = HOLDS.margin * cfg.table.ballPx
+  // The window's lower edge is the foot of the screen: the gate's wire lies there, and a ball that sinks under the tier's floor is whole in every frame of its fall.
+  const floor = cfg.formats.hd.height
+  const needW = (h.bats[2] - h.bats[0] + pad * 2) * k
+  const needH = (floor - Math.min(h.bats[1], h.gate[1]) + pad) * k
+  const zoom = Math.min(Math.max(1, needW / tileW, needH / tileH), rf.width / tileW, rf.height / tileH)
+  const w = Math.round(tileW * zoom)
+  const hh = Math.round(tileH * zoom)
+  const x = Math.max(0, Math.min(rf.width - w, Math.round(MACHINE.mid * cfg.table.ballPx * k - w / 2)))
+  const y = Math.max(0, Math.min(rf.height - hh, Math.ceil(floor * k) - hh))
+  return { window: [x, y, w, hh], tileW, tileH, shown: Math.round((tileW / w) * 100), tier }
+}
+// True when the save's window holds the gate and both bats in the picture of a step.
+export function windowHolds(cfg, run, win, step) {
+  const k = cfg.formats[run.format || RUN.format].width / cfg.formats.hd.width
+  const h = saveHolds(cfg, run.rows[step], win.tier)
+  const inside = (b) => b[0] * k >= win.window[0] && b[1] * k >= win.window[1] && b[2] * k <= win.window[0] + win.window[2] && b[3] * k <= win.window[1] + win.window[3]
+  return inside(h.bats) && inside(h.gate) && inside(SAVE_BOX)
+}
+
+// R4: the sheets kit/07 names for `site`, each found in the visitor's run. A moment is one run of consecutive pictures, EVERY steps apart, on as many sheets as it needs.
+// Nothing is taken away: `limitTook` stays empty, and when the sheets are more than one message holds they go out as two sets, the pages and the machine.
+// `leftOut` names a moment the run does not hold.
 export function motionPlan(cfg, run) {
   const count = cfg.critics.contactSheetFrames
   const most = cfg.critics.maxFilesPerMessage
   const m = run.moments
-  const last = run.rows.length - 1
+  const rows = run.rows
+  const last = rows.length - 1
   const runs = []
   const leftOut = []
   const limitTook = []
+  const missing = []
   const have = (v) => v !== null && v !== undefined
-  // `sheets` sheets of pictures one after the other from the step `from`. `keep` says which sheet stays when the limit takes the other.
-  const add = (what, kind, words, from, sheets, at = null, keep = 'first') => {
-    const start = Math.max(0, Math.min(from, last - (count * sheets - 1) * EVERY))
-    const steps = Array.from({ length: count * sheets }, (_, i) => start + i * EVERY).filter((i) => i >= 0 && i <= last)
-    if (steps.length) runs.push({ what, kind, words, steps, at, keep })
+  // `sheets` sheets of pictures one after the other from the step `from`.
+  const add = (what, kind, words, from, sheets, at = null, more = {}) => {
+    const every = more.every ?? EVERY
+    const start = Math.max(0, Math.min(from, last - (count * sheets - 1) * every))
+    const steps = Array.from({ length: count * sheets }, (_, i) => start + i * every).filter((i) => i >= 0 && i <= last)
+    if (steps.length) runs.push({ what, kind, words, steps, at, ...more })
     return steps
   }
+  // How many sheets a run from `from` needs to hold the step `to`.
+  const sheetsFor = (from, to) => Math.max(1, Math.ceil((Math.ceil((to - from) / EVERY) + 1) / count))
   if (m.walk) add('walk', 'site-run-sheet', "as a visitor's pointer walks the arrow across the page", m.walk.first + Math.max(0, Math.floor((m.walk.last - m.walk.first + 1 - count * EVERY) / 2)), 1)
-  if (m.turn) add('turn', 'site-run-sheet', 'of a page turn, from the page on its edge to the page seated and still', m.turn.last + TURN.after - (count * 2 - 1) * EVERY, 2, null, 'last')
+  if (m.turn) {
+    // The turn whole: from the old page lying flat, through the edge and the closing, to TURNS.still frames after the last thing on the new page has stopped.
+    let edge = m.turn.first
+    while (edge < m.turn.last && rows[edge][COL.page] === rows[m.turn.first][COL.page]) edge += 1
+    const quiet = edge + TURNS.quiet
+    let from = m.turn.first - TURNS.lead
+    let sheets = sheetsFor(from, quiet + TURNS.still * EVERY)
+    for (let lead = TURNS.lead - 1; lead >= 0; lead--) if (sheetsFor(m.turn.first - lead, quiet + TURNS.still * EVERY) < sheets) {
+      from = m.turn.first - lead
+      sheets = sheetsFor(from, quiet + TURNS.still * EVERY)
+    }
+    const steps = add('turn', 'site-run-sheet', 'of one page turn', from, sheets)
+    const r = runs[runs.length - 1]
+    if (steps.length) r.says = (part) => {
+      const out = []
+      const a = part[0]
+      const b = part[part.length - 1]
+      const before = part.filter((i) => i < m.turn.first).length
+      const after = part.filter((i) => i > quiet).length
+      if (before) out.push(`${before} ${before === 1 ? 'frame' : 'frames'} of the old page lying flat`)
+      if (b >= m.turn.first && a < edge) out.push('the old page swings away')
+      if (a <= edge && b >= edge) out.push(`the new page stands on its edge from ${timeOf(edge)}`)
+      if (b > edge && a < edge + TURNS.seat) out.push(a > edge ? 'the new page goes on closing' : 'and closes')
+      if (a <= edge + TURNS.seat && b >= edge + TURNS.seat) out.push(`it seats at ${timeOf(edge + TURNS.seat)}`)
+      if (b > edge + TURNS.seat && a <= quiet) out.push(`it has stopped by ${timeOf(quiet)}`)
+      if (after) out.push(after === 1 ? 'the last frame comes after the stop' : `the last ${after} frames come after the stop`)
+      // The visitor's own pointer and the arrow the page draws are two things: each is said only as the rows hold it.
+      const still = (x, y) => (i) => rows[i][x] === rows[i - 1][x] && rows[i][y] === rows[i - 1][y]
+      const walk = []
+      for (let i = Math.max(1, a - EVERY + 1); i <= b; i++) walk.push(i)
+      const hand = walk.every(still(COL.pointerX, COL.pointerY))
+      const drawn = part.find((i) => i > a && !still(COL.heroX, COL.heroY)(i))
+      const arrow = drawn === undefined ? "and the page's arrow stays where it is" : `the page's arrow moves from ${timeOf(drawn)}`
+      return `${out.join(', ')}${after && hand ? `. The visitor does not move the mouse in these frames, ${arrow}` : ''}`
+    }
+  }
   const lead = LEAD * EVERY
   if (have(m.hit)) {
     // The hit is named by what struck, and the hand is said to be off only where the run shows it off in every step of the sheet.
     const steps = add('hit', 'site-hit-sheet', '', m.hit - lead, 1, m.hit)
     const r = runs[runs.length - 1]
-    if (steps.length) r.words = `as ${struckWords(m.struck)} hits the arrow${handsOff(run, steps) ? ', no key is pressed in these frames' : ''}`
+    if (steps.length) r.words = `as ${struckWords(m.struck)} hits the arrow${handsOff(run, steps) ? ', the visitor presses no button and no key in these frames' : ''}`
   }
-  if (m.type) add('type', 'site-hit-sheet', "as the visitor's arrow presses a key of the page's keyboard and lets it go", m.type.press - TYPE.lead * EVERY, 1, m.type.press)
+  if (m.type) {
+    // The key press whole: from KEYS.before frames before the press to KEYS.after frames after the release, with the button's mark under each frame.
+    const from = m.type.press - KEYS.before * EVERY
+    const steps = add('type', 'site-hit-sheet', "as the visitor's arrow presses a key of the page's keyboard and lets it go", from, sheetsFor(from, m.type.release + KEYS.after * EVERY), m.type.press, { marks: 'key' })
+    const r = runs[runs.length - 1]
+    // Every stretch of frames in which the button is held, said by the times under its first and its last frame.
+    const held = []
+    for (const i of steps) if (downAt(rows, i)) {
+      const here = held[held.length - 1]
+      if (here && here[1] === i - EVERY) here[1] = i
+      else held.push([i, i])
+    }
+    // A hit on the arrow inside the run is said too, so that what it does to the page is not read as a press.
+    const hit = (run.hits || []).find((h) => HITS.includes(h.name) && h.step >= steps[0] && h.step <= steps[steps.length - 1])
+    const said = [held.length ? `the button is held ${held.map((h) => (h[0] === h[1] ? `in the frame ${timeOf(h[0])}` : `from the frame ${timeOf(h[0])} to ${timeOf(h[1])}`)).join(', and again ')}` : '', hit ? `${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : ''].filter(Boolean)
+    if (said.length) r.after = `In this run ${said.join(', and ')}`
+  }
   if (have(m.taken)) add('taken', 'site-hit-sheet', 'as the page takes the arrow from the visitor', m.taken - lead, 1, m.taken)
-  if (have(m.back)) add('given-back', 'site-hit-sheet', 'as the page gives the arrow back to the visitor and the visitor moves it away', (m.released ?? m.back) - lead, 1, m.released ?? m.back)
+  if (have(m.back)) {
+    // The give back whole, every step of the page a frame: from GIVES.before frames before the arrow first moves to GIVES.after frames under the visitor.
+    // What the heading says of it is what the rows hold: when the arrow lies still, when it moves, and where it stands between.
+    const t = m.thrown
+    const from = Math.min(m.released ?? m.back, m.back) - GIVES.before
+    const to = (t ? t.handed : m.back) + GIVES.after - 1
+    add('given-back', 'site-hit-sheet', 'as the page gives the arrow back to the visitor', from, Math.max(GIVES.sheets, Math.ceil((to - from + 1) / count)), m.back, { every: 1 })
+    // The pointer has the arrow from a step when the arrow comes nearer to it from there on.
+    const far = (i) => Math.hypot(rows[i][COL.heroX] - rows[i][COL.pointerX], rows[i][COL.heroY] - rows[i][COL.scroll] - rows[i][COL.pointerY])
+    const has = t ? t.handed : m.back
+    const comes = far(Math.min(last, has + GIVES.after - 1)) < far(has - 1) ? ", from where it comes to the visitor's pointer" : ''
+    runs[runs.length - 1].after = t
+      ? `In this run the arrow lies still to ${timeOf(m.back - 1)}, it moves from ${timeOf(t.first)} to ${timeOf(t.stand - 1)}, stands still from ${timeOf(t.stand)} to ${timeOf(t.handed - 1)} and moves again from ${timeOf(t.handed)}${comes}`
+      : `In this run the arrow lies still to ${timeOf(m.back - 1)} and moves from ${timeOf(m.back)}${comes}`
+  }
   if (have(m.flippers)) {
     // One run from the seal until the ball is out of the port, where two sheets hold it. Where the ball lies longer in the port than that,
     // the moment is two runs of one sheet each: the seal, and the ball leaving the port.
     const out = !have(m.left) ? null : m.left + PORT.tail
     const from = m.flippers - lead
-    if (out === null || out - from <= (count * 2 - 1) * EVERY) add('flippers', 'site-hit-sheet', 'as the arrow goes into the ball, the ball leaves the port and the visitor gets the flippers', from, 2, m.flippers)
+    if (out === null || out - from <= (count * 2 - 1) * EVERY) add('flippers', 'site-hit-sheet', 'as the arrow goes into the ball, the ball leaves the port and the visitor gets the flippers', from, 2, m.flippers, { marks: 'hand' })
     else {
-      add('flippers', 'site-hit-sheet', 'as the arrow goes into the ball and the visitor gets the flippers', from, 1, m.flippers)
-      add('flippers', 'site-hit-sheet', 'as the ball, with the arrow sealed in it, leaves the port', Math.max(m.leaves - lead, out - (count - 1) * EVERY), 1, m.leaves, 'second')
+      add('flippers', 'site-hit-sheet', 'as the arrow goes into the ball and the visitor gets the flippers', from, 1, m.flippers, { marks: 'hand' })
+      add('flippers', 'site-hit-sheet', 'as the ball, with the arrow sealed in it, leaves the port', Math.max(m.leaves - lead, out - (count - 1) * EVERY), 1, m.leaves, { marks: 'hand' })
     }
   }
   // The flipper meets the ball: only a true stroke of the visitor's own bat stands under this heading. With none in the run the sheets are left out.
-  if (have(m.met)) add('flip', 'site-hit-sheet', "as the visitor's flipper meets the ball and the ball goes off it", m.met - lead, 2, m.met)
-  else if (have(m.flippers)) leftOut.push("flip: the run holds no step at which the visitor's own flipper meets the ball, so no sheet stands under that heading")
-  if (have(m.save)) add('save', 'site-hit-sheet', 'as the machine saves a ball lost between the bats: its own bat strikes as the save throws the ball back', m.save - SAVE.lead * EVERY, 2, m.save)
-  // The limit of files: every moment keeps a sheet, and the second sheets go, the least worth first.
-  const files = () => runs.reduce((n, r) => n + Math.ceil(r.steps.length / count), 0)
-  for (const what of WORTH) {
-    const r = runs.find((x) => x.what === what && x.steps.length > count)
-    const second = runs.findIndex((x) => x.what === what && x.keep === 'second')
-    if (files() <= most) break
-    if (r) {
-      const sheets = Math.ceil(r.steps.length / count)
-      limitTook.push(`${what}: sheet ${r.keep === 'last' ? 1 : sheets} of ${sheets} of its run (${r.keep === 'last' ? span(r.steps.slice(0, count)) : span(r.steps.slice(-count))})`)
-      r.steps = r.keep === 'last' ? r.steps.slice(-count) : r.steps.slice(0, count)
-    } else if (second >= 0) {
-      limitTook.push(`${what}: its second run, ${runs[second].words.replace(/^as /, '')} (${span(runs[second].steps)})`)
-      runs.splice(second, 1)
+  if (have(m.met)) {
+    add('flip', 'site-hit-sheet', "as the visitor's flipper meets the ball and the ball goes off it", m.met - lead, 2, m.met, { marks: 'hand' })
+    runs[runs.length - 1].after = VISITOR_WORDS
+    // The same blow close, at its real size: every step round it, so the bat and the ball can be judged where they meet.
+    const close = add('flip-close', 'site-hit-sheet', '', m.met - CLOSE.before, 1, m.met, { marks: 'hand', every: 1 })
+    const r = runs[runs.length - 1]
+    const k = cfg.formats[run.format || RUN.format].width / cfg.formats.hd.width
+    const win = closeWindow(cfg, run, close).window
+    const half = (cfg.table.ballPx * REACH.ballR) * k
+    const inside = (i) => rows[i][COL.heroX] * k - half >= win[0] && rows[i][COL.heroX] * k + half <= win[0] + win[2] && (rows[i][COL.heroY] - rows[i][COL.scroll]) * k - half >= win[1] && (rows[i][COL.heroY] - rows[i][COL.scroll]) * k + half <= win[1] + win[3]
+    const outs = close.filter((i) => !inside(i))
+    r.words = `the blow of the sheets before once more, close: one fixed window at its real size round where the ball is at ${timeOf(m.met)}`
+    r.after = `${outs.length ? `The ball is not whole in the window in the frame${outs.length > 1 ? 's' : ''} ${outs.map(timeOf).join(', ')}` : 'The ball is whole in the window in every frame'}. ${VISITOR_WORDS}`
+  } else if (have(m.flippers)) leftOut.push("flip: the run holds no step at which the visitor's own flipper meets the ball, so no sheet stands under that heading")
+  if (m.gate) {
+    // The save: from SAVE.before frames before the ball is down at the gate to SAVE.after frames after the kick. The heading names the event, the window and the marks, and nothing of what strikes.
+    const g = m.gate
+    const need = sheetsFor(g.take - SAVE.before * EVERY, g.kick + SAVE.after * EVERY)
+    // What the rows hold of the save. A ball the page puts higher in one step is said in plain words: that is a fault of the page and is shown, not skipped.
+    const moved = g.lifted ? `, moved ${g.lifted} px up in that one step` : ''
+    const down = `The ball is low in the mouth from ${timeOf(g.take)}`
+    const up = `goes back up from ${timeOf(g.kick)}${moved}`
+    const told = `${down} and ${up}`
+    const words = 'as the machine saves a ball lost between the bats'
+    if (need <= SAVE.sheets) {
+      add('save', 'site-hit-sheet', words, g.take - SAVE.before * EVERY, need, g.kick, { marks: 'hand' })
+      runs[runs.length - 1].after = told
+    } else {
+      // The ball is held longer than SAVE.sheets sheets show in a row: two runs, each of frames in a row and none skipped inside it.
+      // The first from SAVE.before frames before the take, the second from SAVE.before frames before the kick until the ball is clear of the bats and SAVE.after frames are past.
+      add('save', 'site-hit-sheet', `${words}, the first of two runs: the ball comes down to the mouth`, g.take - SAVE.before * EVERY, 1, g.take, { marks: 'hand' })
+      runs[runs.length - 1].after = down
+      const tier = ballAt(cfg, rows[g.kick]).tier
+      const under = (i) => rows[i][COL.heroY] - rows[i][COL.scroll] + cfg.table.ballPx * REACH.ballR > saveHolds(cfg, rows[i], tier).bats[1]
+      let clear = g.kick
+      while (clear < last && clear < g.kick + SAVE.most && under(clear)) clear += 1
+      const from = g.kick - SAVE.before * EVERY
+      add('save', 'site-hit-sheet', `${words}, the second of two runs: the ball goes back up`, from, sheetsFor(from, Math.max(g.kick + SAVE.after * EVERY, clear)), g.kick, { marks: 'hand' })
+      runs[runs.length - 1].after = `The ball ${up}`
     }
   }
+  // A save the rows show and no reading found has no sheet: it is said, and the tool does not end well.
+  for (const u of m.unsaved || []) missing.push(u.word ? `save: the page says ${u.word} at ${timeOf(u.step)} and no save was read from the ball's path there, so no sheet shows it` : `save: the ball is deep in the mouth at ${timeOf(u.step)} and up on its tier again at ${timeOf(u.up)}, and no save was read there, so no sheet shows it`)
   const items = []
   for (const r of runs) {
     const sheets = Math.ceil(r.steps.length / count)
     const first = runs.find((x) => x.what === r.what)
     // The second run of a moment: how long after the first run's last picture its first picture is.
     const apart = first !== r ? Math.round(((r.steps[0] - first.steps[first.steps.length - 1]) / VISITOR.hz) * 100) / 100 : null
-    const win = r.kind === 'site-hit-sheet' ? runWindow(cfg, run, r.steps, r.what) : null
-    const size = !win ? '' : win.shown === 100 ? ', the part of the picture round the arrow at its real size' : `, the part of the picture round the arrow's way at ${win.shown}% of its size`
-    const hand = HANDS.includes(r.what)
+    const win = r.kind !== 'site-hit-sheet' ? null : windowOf(cfg, run, r.what, r.steps)
+    const size = !win ? '' : r.what === 'flip-close' ? '' : r.what === 'save' ? `, one fixed window on the mouth, its gate and both bats at ${win.shown}% of its size` : win.shown === 100 ? ', the part of the picture round the arrow at its real size' : `, the part of the picture round the arrow's way at ${win.shown}% of its size`
+    const legend = r.marks === 'hand' ? HAND_WORDS : r.marks === 'key' ? KEY_WORDS : ''
     for (let j = 0; j < sheets; j++) {
       const steps = r.steps.slice(j * count, (j + 1) * count)
       const part = sheets > 1 ? `, sheet ${j + 1} of ${sheets} of one run, frames ${j * count + 1} to ${j * count + steps.length} of ${r.steps.length}` : ''
-      const item = { kind: r.kind, moment: r.what, page: run.rows[steps[0]][COL.page], steps, run: r.steps, part: sheets > 1 ? [j + 1, sheets] : null, apart, heading: `Consecutive frames ${r.words}${size}${part}: ${span(steps)}${hand ? `. ${HAND_WORDS}` : ''}` }
-      if (hand) item.hands = steps.map((i) => handAt(run.rows, i))
+      const says = r.says ? `: ${r.says(steps)}` : ''
+      const tail = [r.after, legend].filter(Boolean).map((t) => `. ${t}`).join('')
+      const item = { kind: r.kind, moment: r.what, page: rows[steps[0]][COL.page], steps, run: r.steps, every: r.every ?? EVERY, part: sheets > 1 ? [j + 1, sheets] : null, apart, heading: `Consecutive frames, 1/${VISITOR.hz / (r.every ?? EVERY)} s apart, ${r.words}${size}${part}${says}: ${span(steps)}${tail}` }
+      if (r.marks === 'hand') item.hands = steps.map((i) => handAt(rows, i, r.every ?? EVERY))
+      if (r.marks === 'key') item.hands = steps.map((i) => downAt(rows, i))
       if (r.at !== null && steps.includes(r.at)) item.at = r.at
       items.push(item)
     }
   }
-  items.sort((x, y) => x.steps[0] - y.steps[0])
-  return { items, leftOut, limitTook }
+  // In the order they happen, a run's sheets side by side.
+  items.sort((x, y) => x.run[0] - y.run[0] || x.steps[0] - y.steps[0])
+  // One set while one message holds the sheets; else the pages in one group and the machine (the moments of HANDS) in another, each a whole of its own, cut only between runs.
+  const groups = items.length <= most ? [{ id: 'moments', items }] : [{ id: 'pages', items: items.filter((f) => !HANDS.includes(f.moment) && !ARROW.includes(f.moment)) }, { id: 'arrow', items: items.filter((f) => ARROW.includes(f.moment)) }, { id: 'machine', items: items.filter((f) => HANDS.includes(f.moment)) }].filter((g) => g.items.length)
+  return { items, groups, leftOut, limitTook, missing }
 }
-const motionGroups = (cfg, unit, facts) => [{ id: 'moments', items: motionPlan(cfg, needRun(facts, 'R4')).items }]
-// What pack.json says of a pack of the site besides its files: for R4, a moment that is left out and the sheets the limit took.
+const motionGroups = (cfg, unit, facts) => motionPlan(cfg, needRun(facts, 'R4')).groups
+// What pack.json says of a pack of the site besides its files: for R4, a moment that is left out and the sheets the limit took (none: the plan makes a second set instead).
 export function siteNotes(cfg, role, facts) {
   if (role !== 'R4' || !facts) return {}
-  const { leftOut, limitTook } = motionPlan(cfg, facts)
-  return { leftOut, limitTook }
+  const { leftOut, limitTook, missing } = motionPlan(cfg, facts)
+  return { leftOut, limitTook, missing }
 }
 
 export const siteRoles = {
@@ -979,7 +1344,7 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
   }
   // A moment is a small thing in a whole picture: its sheet is the part of the picture round the arrow, uncut and unscaled, in one fixed window.
   for (const f of sheets.filter((x) => x.kind === 'site-hit-sheet')) {
-    const { window: win, tileH, shown } = runWindow(cfg, run, f.run || f.steps, f.moment)
+    const { window: win, tileH, shown } = windowOf(cfg, run, f.moment, f.run || f.steps)
     const tiles = []
     for (const i of f.steps) {
       const part = await cut(frames.get(i), win)
