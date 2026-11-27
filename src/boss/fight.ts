@@ -309,6 +309,7 @@ function strike(f: Fight, io: StepIo, x: number, y: number, by: 0 | 1 | 2 | 3): 
   f.hits++
   f.at.flat = f.clock
   io.cursor.hurt('flattened', FLAT.life)
+  io.cursor.press(FLAT.squash, FLAT.down)
   io.emit('flatten', x, y, true)
 }
 

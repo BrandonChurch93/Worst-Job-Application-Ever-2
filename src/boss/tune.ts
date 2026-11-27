@@ -127,7 +127,8 @@ export const FLAT = {
   down: 0.7, // s the arrow lies flat and cannot shoot
   life: 1.4, // s of the whole wound, peel included
   safe: 2.1, // s after a hit in which nothing can hit again
-  heal: 0.35 // s after the hit at which the boss wins health back
+  heal: 0.35, // s after the hit at which the boss wins health back
+  squash: 0.58 // share of its length the flat arrow is pressed to, the least the arrow's body allows
 } as const
 export const HEAL = {
   first: 6, // points of health the first hit gives back

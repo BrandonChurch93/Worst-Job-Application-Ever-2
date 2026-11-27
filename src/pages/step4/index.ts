@@ -133,7 +133,7 @@ export function makePage(): PageLogic {
     if (s.fired >= BLAST) return 1 - prog(s.fired, BLAST, BLAST + FINISH.settle * 0.5)
     return prog(s.t, FINISH.fall + SHOUT.arms, FINISH.fall + SHOUT.arms + FINISH.arms)
   }
-  const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= 0 ? s.shot : steps(s.charge))
+  const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : steps(s.charge))
   const strip = (rig: Rig, k: number): Rig => ({ ...rig, plate: { ...rig.plate, k: rig.plate.k * k }, sides: rig.sides.map((q) => ({ ...q, k: q.k * k })), legs: rig.legs.map((q) => ({ ...q, k: q.k * k })), cannons: rig.cannons.map((q) => ({ ...q, k: q.k * k })), shield: { ...rig.shield, k: rig.shield.k * k } })
   const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
   const NONE = { breaks: [], fallen: [] as string[] }
