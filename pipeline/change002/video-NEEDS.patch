@@ -1,5 +1,5 @@
 diff --git a/src/main.ts b/src/main.ts
-index 3cfd08d1..05a518a0 100644
+index 3cfd08d1..ed3219bf 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -312,6 +312,7 @@ function play(first: PlayMode): void {
@@ -10,6 +10,15 @@ index 3cfd08d1..05a518a0 100644
      sound.quiet(wallSeconds() - lastInput)
    }
    const touched = () => {
+@@ -344,7 +345,7 @@ function play(first: PlayMode): void {
+     if ((PLAY as string[]).includes(m)) setMode(m as PlayMode, false)
+   })
+ 
+-  const backing = (): Backing => backingOf(shown, stage.page.unit)
++  const backing = (): Backing => (stage.page.control === 'film' ? 'dark' : backingOf(shown, stage.page.unit))
+ 
+   let frameSeconds = 1 / 60
+   const api: InterfaceApi = {
 diff --git a/src/stage/bots.ts b/src/stage/bots.ts
 index 51176e9e..383f2caf 100644
 --- a/src/stage/bots.ts

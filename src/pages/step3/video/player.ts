@@ -1,3 +1,4 @@
+import { lessMotion, touchOnly } from '../../../ui/device'
 import { bridge, type VideoPlayer } from './bridge'
 import manifest from './manifest.json'
 import { VIDEO } from './plan'
@@ -12,7 +13,8 @@ let mounted = false
 export function mountVideo(): void {
   if (mounted || typeof document === 'undefined' || typeof window === 'undefined') return
   const asked = new URLSearchParams(window.location.search)
-  if ((asked.get('mode') ?? 'live') !== 'live' || (asked.get('clock') && asked.get('video') !== 'trace')) return
+  const mode = asked.get('mode') ?? (lessMotion() && !touchOnly() && !asked.get('bot') ? 'film' : 'live')
+  if (mode !== 'live' || (asked.get('clock') && asked.get('video') !== 'trace')) return
   mounted = true
   bridge.player = { ready: () => false, enter: () => undefined, clock: () => 0, over: () => true, gone: () => true, leave: () => undefined }
   const canvas = document.getElementById('stage')
