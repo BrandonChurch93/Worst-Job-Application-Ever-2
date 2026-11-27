@@ -34,7 +34,7 @@ MEASURED, stepped stage, no browser, no pack: `POLISH_DATE_TABLE=/tmp/date-befor
 
 - `HOUSED = 0.022`: the slot and the crank lie in the floor of their trays at this share of their height while the tray opens over them and while it shuts, as the dial does, and rise from there on the same steps as before (`risen()`, used by `machine()` and `overMachine()`). At lift 1 the value is exactly 1.
 - The lift, the spring, the phases and the cursor's ground are not touched, so no step of the opening moves.
-- Variant A, shipped in the branch: `SUNK` 0.05 stays, the housed reels are blank and their legends come on once the rise has begun (the picture 0.183 s after the press). Variant B, `pipeline/phase5/polish-date-NEEDS.patch` (commit d9d95f83): `SUNK` goes, the maker draws a legend from 0.02 as it draws its reel, and the test of 48ae1fb4 in `tests/step2-dial.test.ts` is rewritten in two parts. The Builder decides on the pictures.
+- `SUNK` is gone and the maker draws a reel's legend from 0.02 of the cabinet's height, as it draws the reel (`src/pages/step2/real/slot.ts`): the housed reels carry their digits (variant B, decided by the Builder at 08:23 UTC; see The two variants).
 
 Why 0.022 and not more. The first try was 0.07. The picture showed the reels through the pocket of the field below: the floor of a field is at -6 (`scale.heights.field`), the floor of a tray at -8, and the field below passes over the machine's place as the tray opens. The slot's knob is 78 above the tray's floor, so it stays under the field's floor up to 0.0256; the makers draw from 0.02. 0.022 puts the knob's top at -6.28 and the cabinet at 1.28 px (the dial rests at 1.6 px).
 
@@ -47,11 +47,11 @@ Why 0.022 and not more. The first try was 0.07. The picture showed the reels thr
 5. The cursor's ground (`ground()`) still reads `smooth(lift)`: changing it would move the cursor's height in the film. During the rise the ground is at most 0.022 of a part's height under the drawn top (1.7 px at the knob).
 6. The hint line of a tray is printed when the tray is nine tenths open (`panel` in `states()`), as on the dial's row. Not changed.
 
-## Measured after the change (variant A, 50e21f01)
+## Measured after the change
 
 - MEASURED, stepped, `POLISH_DATE_TABLE=/tmp/date-after.txt npx vitest run tests/polish-date-measure.test.ts`: every row, in the orders 1, 2, 3 and 3, 2, 1, the rows that open themselves and the film's stage: tray past a tenth +6, tray full +53, first machine part drawn +0, machine whole +97, row takes the hand +99; open by more than a tenth with a part not drawn on 0 steps. The visits are 3302 and 3301 steps long, as before.
 - MEASURED, the pack's own visitor, stepped (`POLISH_DATE_PACK=/tmp/pack-after.txt npx vitest run tests/polish-date-pack-measure.test.ts`): 0 pictures with a tray open and its machine not drawn (before: 10 opening and 8 shutting on row 2, 10 and 7 on row 3). At 1:02.93 the tray is 197 px open and the slot lies at 0.022 of its height. The machine is whole at 63.20 s, as before.
-- MEASURED in pictures, `node pipeline/phase5/polish-date-live.mjs walk after-2 2 high`: the slot's cabinet is uncovered by the field from 0.033 s after the press and rises from 0.167 s; nothing shows through the pocket of the field that slides over it. In A the reels are blank until 0.167 s and carry their digits from 0.183 s.
+- MEASURED in pictures, `node pipeline/phase5/polish-date-live.mjs walk after-2 2 high`: the slot's cabinet is uncovered by the field from 0.033 s after the press and rises from 0.167 s; nothing shows through the pocket of the field that slides over it. That walk was made on variant A (50e21f01), where the reels are blank until 0.167 s and carry their digits from 0.183 s; `walk B-2 2 high` on variant B shows the digits on the reels from the first picture a reel face is uncovered.
 - MEASURED, the three draft stills `step2-dial`, `step2-crank`, `table-wide` at hd: byte equal by `cmp` to the ones made before the change.
 
 ## The film
@@ -65,8 +65,8 @@ MEASURED with `pipeline/phase5/polish-date-filmdiff.ts.txt`, copied as `tests/po
 
 ## The two variants
 
-- A (the branch): the test of 48ae1fb4 in `tests/step2-dial.test.ts` stands as written, so no legend is in the draw list while the cabinet is 2 px tall or less. The reels are blank while the slot lies housed; the digits come on in one frame once the rise has begun and go off in one frame as the slot settles.
-- B (`pipeline/phase5/polish-date-NEEDS.patch`): the legends are drawn on the housed reels. The premise of that test changed by the Builder's decision of 07:49 UTC (the slot lies housed in the tray's floor, it does not sink out of sight). The rewritten test keeps the guard in two parts: a legend is in the draw list only while its own reel and the cabinet are drawn by their makers; the legend lies inside its reel's face and on its top. The old window, 13.2 to 13.7 s, is the shutting of row 2 in the film; the opening, 8.1 to 8.7 s, is added.
+- A (50e21f01): the test of 48ae1fb4 in `tests/step2-dial.test.ts` stood as written, so no legend was in the draw list while the cabinet was 2 px tall or less. Seen in pictures: the uncovered reels are blank for 9 film frames, the digits come on in one frame (3264) and go off in one frame (3561) while the cabinet stands whole.
+- B (6c9bfdad, the branch): the legends are drawn on the housed reels. Decided by the Builder at 08:23 UTC on the sheets of both. The premise of that test changed (the slot lies housed in the tray's floor, it does not sink out of sight), so the test is rewritten in two parts: a legend is in the draw list only while its own reel and the cabinet are drawn by their makers; the legend lies inside its reel's face and on its top. The old window, 13.2 to 13.7 s, is the shutting of row 2 in the film and is kept; the opening, 8.1 to 8.7 s, is added.
 
 ## The boss tag (a measure, nothing changed)
 

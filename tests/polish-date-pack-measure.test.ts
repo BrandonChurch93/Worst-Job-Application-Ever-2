@@ -19,7 +19,7 @@ describe.skipIf(!process.env.POLISH_DATE_PACK)('polish date: the rows of step 2 
     let left = false
     for (let i = 0; i < VISITOR.mostSeconds * 60 && !s.finished && !left; i++) {
       const pose = s.cursor.pose()
-      const t = { time: s.time, page: s.page.id, gags: s.gagsReached, finished: s.finished, turning: s.turning, scroll: s.page.scroll(), hint: s.page.hint(), hero: { x: pose.x, y: pose.y }, hits: s.events.filter((e) => e.hitsCursor).map((e) => ({ name: e.name, page: e.page, x: e.x, y: e.y })) }
+      const t = { time: s.time, pageTime: s.pageTime, page: s.page.id, gag: s.gagsReached.at(-1) ?? null, gags: s.gagsReached, finished: s.finished, turning: s.turning, skipOffered: s.skipOffered, scroll: s.page.scroll(), hint: s.page.hint(), hero: { x: pose.x, y: pose.y }, hits: s.events.filter((e) => e.hitsCursor).map((e) => ({ name: e.name, time: e.step / stepHz, page: e.page, x: e.x, y: e.y })), control: s.page.control ?? null }
       for (const a of v.act(t) as Record<string, unknown>[]) {
         if (a.move) Object.assign(d.pointer, { x: (a.move as number[])[0]!, y: (a.move as number[])[1]! })
         if (a.down) d.pointer.down = true
