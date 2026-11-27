@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import type { RealContext } from '../../../real/types'
-import { BALL, OUTLET, PORT, railOf } from '../../layout'
+import { BALL, OUTLET, PORT, SCREEN, railOf } from '../../layout'
 import { local, localBalls, type Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
 import { TONE, aluOf, breathOf, clearOf, hex, mesh } from './mats'
@@ -46,8 +46,11 @@ const drainPoints = (): THREE.Vector3[] => {
   return [at(4, r[4]![2] * BALL + BALL / 2), at(3, BALL / 2), at(2, BALL / 2)]
 }
 
-// The middle line of a tube on the page, in page pixels, its corners rounded. It stops `stop` short of its last point.
-function line(drain = false): V3[] {
+// The foot of the feed tube on the first screen: the tube runs straight off the screen's lower edge, so the corner under that edge is rounded no further up than `under` page pixels below it, and past the edge the tube's shadow turns from square to the tube to along the lamp over `turn` pixels of the tube.
+export const FOOT = { edge: SCREEN * BALL, under: 1, turn: 60 }
+
+// The middle line of a tube on the page, in page pixels, its corners rounded. It stops `stop` short of its last point. `wide` rounds the corner at the foot of the first screen as every other: the collars further down stand where that line put them.
+export function line(drain = false, wide = false): V3[] {
   const pts = drain ? drainPoints() : railOf('feed').points.map((p) => new THREE.Vector3(p[0] * BALL, p[1] * BALL, p[2] * BALL + BALL / 2))
   const stop = drain ? RISER.body - RISER.seat : 0.62 * BALL
   const out: V3[] = []
@@ -59,7 +62,8 @@ function line(drain = false): V3[] {
     const a = pts[i - 1]!
     const b = pts[i]!
     const c = pts[i + 1]!
-    const r = Math.min(TUBE.bend, a.distanceTo(b) * 0.45, b.distanceTo(c) * 0.45)
+    let r = Math.min(TUBE.bend, a.distanceTo(b) * 0.45, b.distanceTo(c) * 0.45)
+    if (!drain && !wide && a.y < FOOT.edge && b.y > FOOT.edge + FOOT.under) r = Math.min(r, ((b.y - FOOT.edge - FOOT.under) * a.distanceTo(b)) / (b.y - a.y))
     const p0 = b.clone().add(a.clone().sub(b).setLength(r))
     const p1 = b.clone().add(c.clone().sub(b).setLength(r))
     for (let k = 0; k <= 8; k++) {
@@ -97,6 +101,25 @@ export function drainWay(u: number): { x: number; y: number; z: number } {
   return { x: a[0] + (b[0] - a[0]) * t, y: a[1] + (b[1] - a[1]) * t, z: a[2] + (b[2] - a[2]) * t }
 }
 
+// The plane in which the feed tube's two straight runs meet at the corner under the first screen, in a zone's frame, if the corner lies in that zone.
+function creaseOf(z: Zone): { at: V3; normal: V3; reach: number } | null {
+  const r = railOf('feed').points
+  const a = r[1]!
+  const b = r[2]!
+  const c = r[3]!
+  if (b[1] * BALL < z.top || b[1] * BALL >= z.top + z.height || b[1] * BALL <= FOOT.edge) return null
+  const into = new THREE.Vector2(b[0] - a[0], -(b[1] - a[1])).normalize()
+  const out = new THREE.Vector2(c[0] - b[0], -(c[1] - b[1])).normalize()
+  const n = into.add(out).normalize()
+  return { at: local(z, b[0] * BALL, b[1] * BALL, b[2] * BALL + BALL / 2) as V3, normal: [n.x, n.y, 0], reach: TUBE.outer * 3 }
+}
+
+const lengthOf = (path: V3[]): number => {
+  let d = 0
+  for (let i = 1; i < path.length; i++) d += Math.hypot(path[i]![0] - path[i - 1]![0], path[i]![1] - path[i - 1]![1], path[i]![2] - path[i - 1]![2])
+  return d
+}
+
 // The part of the line that lies in a zone, in the zone's frame, and how far along the whole line it starts.
 function inZone(z: Zone): { path: V3[]; from: number; first: boolean; last: boolean } {
   const all = line(z.id === 'last')
@@ -127,7 +150,9 @@ function inZone(z: Zone): { path: V3[]; from: number; first: boolean; last: bool
       put(p)
     }
   }
-  return { path, from: Math.max(0, from), first: all.length > 0 && inside(all[0]!), last: all.length > 0 && inside(all[all.length - 1]!) }
+  const first = all.length > 0 && inside(all[0]!)
+  const lag = z.id === 'last' || first ? 0 : lengthOf(line(false, true)) - lengthOf(all)
+  return { path, from: Math.max(0, from + lag), first, last: all.length > 0 && inside(all[all.length - 1]!) }
 }
 
 // The path from a way along it on.
@@ -322,8 +347,9 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
   } else if (z.id === 'first') ringed(PORT, () => port(A, G, z, PORT))
   else if (z.id === 'last') ringed(OUTLET, () => port(A, G, z, OUTLET))
   if (path.length > 1) {
-    G.pipe(path, TUBE.outer, TUBE.sides, [1, 1, 1])
-    G.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, [1, 1, 1], true)
+    const fold = z.id === 'last' ? null : creaseOf(z)
+    G.pipe(path, TUBE.outer, TUBE.sides, [1, 1, 1], false, undefined, fold)
+    G.pipe(path, TUBE.outer - TUBE.wall, TUBE.sides, [1, 1, 1], true, undefined, fold)
     let length = 0
     for (let i = 1; i < path.length; i++) length += Math.hypot(path[i]![0] - path[i - 1]![0], path[i]![1] - path[i - 1]![1], path[i]![2] - path[i - 1]![2])
     const ground = z.tier >= 0 ? -z.floor : 0
@@ -358,13 +384,26 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
       // A tube that bends on the page throws its shadow one way, the lamp's, from its lower right edge on: rows laid square to the tube would cross inside the bend.
       const bent = z.id === 'last'
       const lamp = Math.hypot(SHADE.dx, SHADE.dy)
+      // Past the first screen the feed tube bends too: its rows go on as the first screen's last row lies and turn to the lamp's way, as dark from the first as that row, and a row whose foot would step back inside the bend keeps the foot before it, so no two rows cross.
+      const feed = !bent && !first
+      const feet: V2[] = []
       const row = (i: number): V3[] => {
         const q = path[i]!
         const n = sideOf(i)
-        if (bent) return CAST.map(([t]) => [q[0] + n[0] * TUBE.outer * 0.8 + (SHADE.dx / lamp) * TUBE.outer * (t - 0.8), q[1] + n[1] * TUBE.outer * 0.8 + (SHADE.dy / lamp) * TUBE.outer * (t - 0.8), SHADE.up] as V3)
-        return CAST.map(([t]) => [q[0] + n[0] * TUBE.outer * t, q[1] + n[1] * TUBE.outer * t - (t - 0.8) * 5, SHADE.up] as V3)
+        if (!bent && !feed) return CAST.map(([t]) => [q[0] + n[0] * TUBE.outer * t, q[1] + n[1] * TUBE.outer * t - (t - 0.8) * 5, SHADE.up] as V3)
+        const k = bent ? 1 : Math.min(1, at[i]! / FOOT.turn)
+        const e = k * k * (3 - 2 * k)
+        const m = feed ? sideOf(0) : n
+        const d: V2 = [m[0] * TUBE.outer * (1 - e) + (SHADE.dx / lamp) * TUBE.outer * e, (m[1] * TUBE.outer - 5) * (1 - e) + (SHADE.dy / lamp) * TUBE.outer * e]
+        let foot: V2 = [q[0] + n[0] * TUBE.outer * 0.8, q[1] + n[1] * TUBE.outer * 0.8]
+        if (feed) {
+          const back = feet[i - 1]
+          if (back && (foot[0] - back[0]) * d[1] - (foot[1] - back[1]) * d[0] <= 0) foot = back
+          feet[i] = foot
+        }
+        return CAST.map(([t]) => [foot[0] + d[0] * (t - 0.8), foot[1] + d[1] * (t - 0.8), SHADE.up] as V3)
       }
-      const fade = (i: number): number => Math.min(1, Math.max(0, (at[i]! - start) / SHADE.ease), bent ? Math.max(0, (length - at[i]!) / SHADE.ease) : 1)
+      const fade = (i: number): number => (feed ? 1 : Math.min(1, Math.max(0, (at[i]! - start) / SHADE.ease), bent ? Math.max(0, (length - at[i]!) / SHADE.ease) : 1))
       for (let i = 1; i < path.length; i++) {
         if (at[i]! <= start || Math.max(path[i - 1]![2], path[i]![2]) > BALL * 0.75) continue
         const r0 = row(i - 1)

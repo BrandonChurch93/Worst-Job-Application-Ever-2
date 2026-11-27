@@ -296,6 +296,7 @@ function build(s: Shape): THREE.Group {
   dm.userData.unlit = true
   const decal = new THREE.Mesh(k.plane, lit(dm, z))
   decal.name = 'ball.shadow'
+  decal.userData.texels = 'through'
   decal.scale.setScalar(r * 5.2)
   root.add(decal)
 
