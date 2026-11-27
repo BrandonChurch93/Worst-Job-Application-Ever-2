@@ -27,6 +27,7 @@ const WIPE: FieldName[] = ['email', 'name']
 const HOME = homePlaces()
 const SLAB_FALL = { seconds: 0.3, high: 1200, thrown: 0.3, amp: 1.05, sight: 0.6 }
 const SLAB_SUNK = 3
+const GO_EDGE = 6
 const SLAB_SHADOW = { from: 0.3, to: 1.12, dark: 0.55 }
 const BITS = { speed: [240, 640], up: [820, 1500], pull: 4200, turn: 7, thick: 10, shard: 0.34, bias: 0.55 }
 const CRACKS = { count: 6, parts: 3, long: [46, 96], bend: 0.55, wide: [5, 2], grow: 0.09 }
@@ -404,6 +405,7 @@ export function makePage(): PageLogic {
   const ground = (io: StepIo): number => {
     const stage = shows(2) ? resume.ground(io) : null
     if (stage !== null) return stage
+    if (resume.received() && s.board <= 0 && (inside(go, io.cursor.x, io.cursor.y, GO_EDGE) || inside(go, io.cursor.x + BODY.x, io.cursor.y + BODY.y, GO_EDGE))) return heights.button - (s.pressed >= 0 ? TRAVEL : 0)
     if (s.board <= 0 || !onDeck(io.cursor.x, io.cursor.y)) return 0
     const key = keyAt(HOME, io.cursor.x, io.cursor.y)
     const down = key >= 0 ? s.keyDown[seats[key]!.name] : undefined
@@ -631,7 +633,7 @@ export function makePage(): PageLogic {
         const k = SLAB_SHADOW.to
         out.push({ id: `slab-shadow-${n}`, part: 'slabs', kind: 'box', x: b.x + (SLAB.w * (1 - k)) / 2, y: b.y + (SLAB.h * (1 - k)) / 2, w: SLAB.w * k, h: SLAB.h * k, z0: CAP_TOP + 1.2 + off, z1: CAP_TOP + 1.2 + off, r: 10, tone: 'dark', v: [SLAB_SHADOW.dark + (1 - SLAB_SHADOW.dark) * 0.5 * clamp((b.t - SLAB_LAND + SLAB_FALL.seconds) / SLAB_FALL.seconds, 0, 1)] })
       })
-      s.craters.forEach((c, n) => {
+      if (shows(1)) s.craters.forEach((c, n) => {
         if (s.board > 0) out.push({ id: `slab-crater-${n}`, part: 'slabs', kind: 'box', x: c.x - 3, y: c.y - 3, w: SLAB.w + 6, h: SLAB.h + 6, z0: DECK_TOP + 0.7 + off, z1: DECK_TOP + 0.7 + off, r: 12, tone: 'dark', v: [1] })
         const cx = c.x + SLAB.w / 2
         const cy = c.y + SLAB.h / 2
