@@ -97,7 +97,7 @@ export const fork = (v: Visit, from: number, frames: number, own: (step: number,
 
 export interface Told { name: string; frame: number; page: string }
 
-export function forked(v: Visit, from: number, frames: number, own: (step: number, last: Pointer) => Pointer, lead = 0): { rows: Row[]; events: Told[]; stage: Stage } {
+export function forked(v: Visit, from: number, frames: number, own: (step: number, last: Pointer) => Pointer, lead = 0, each?: (s: Stage, i: number) => void): { rows: Row[]; events: Told[]; stage: Stage } {
   const at = from * PER
   const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: new Forked(v.log, at, own) })
   const first = (from - lead) * PER
@@ -113,6 +113,7 @@ export function forked(v: Visit, from: number, frames: number, own: (step: numbe
     seen = s.events.length
     const k = s.step - 1
     rows.push(rowOf(s, i, k < at ? v.log[k]! : own(k - at, v.log[at - 1]!), hit))
+    each?.(s, i)
   }
   return { rows, events: s.events.filter((e) => e.step >= first).map((e) => ({ name: e.name, frame: Math.floor(e.step / PER), page: e.page })), stage: s }
 }

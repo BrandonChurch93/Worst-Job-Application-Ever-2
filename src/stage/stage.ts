@@ -2,7 +2,7 @@ import { beat, config, stepHz } from '../config'
 import { blendPose, CursorBody, HANDOFF, type CursorPose } from '../cursor/body'
 import { BotDriver, type BotName, type BotRun } from './bots'
 import { homePose, smooth } from './camera'
-import { arriveTurn, holdsTurn, leaveTurn, shiverSeconds, TURN } from './turn'
+import { arriveTurn, holdsTurn, leaveTurn, shiverAt, shiverBase, shiverDelay, shiverSeconds, SHIVER, TURN } from './turn'
 import type { CameraPose, Driver, DrawList, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
 
 export * from './types'
@@ -50,6 +50,19 @@ interface Saved {
   events: number
   page: unknown
   cursor: unknown
+}
+
+// Under a visitor's hand the arrow stands on the new page while the page meets its seat. What is loose there hops, and the arrow is drawn hopping with what it stands on, so that nothing rises through it.
+export function hopUnder(list: DrawList, x: number, y: number, settle: number, scroll: number): number {
+  let top: DrawList[number] | null = null
+  for (const u of list) {
+    if (u.kind === 'text' || u.kind === 'well' || u.kind === 'anchor' || u.pocket === true || u.z1 <= SHIVER.loose) continue
+    if (x < u.x || x > u.x + u.w || y < u.y || y > u.y + u.h) continue
+    if (top === null || u.z1 > top.z1) top = u
+  }
+  if (top === null) return 0
+  const b = shiverBase(list, top)
+  return shiverAt(settle - shiverDelay((b.y + b.h / 2 - scroll) / 1080))
 }
 
 export interface Frame { list: DrawList; cursor: CursorPose; turn: number; scroll: number; page: string; view: CameraPose | null; cursors?: CursorPose[]; time?: number; settle?: number }
@@ -335,7 +348,10 @@ export class Stage {
     if (this.phase !== 'end') this.page.draw(list)
     const made: Frame = { list, cursor: this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     const settle = this.settledFor()
-    if (settle !== undefined) made.settle = settle
+    if (settle !== undefined) {
+      made.settle = settle
+      if (this.cursor.hand) made.cursor = { ...made.cursor, z: made.cursor.z + hopUnder(list, made.cursor.x, made.cursor.y, settle, made.scroll) }
+    }
     this.frames.set(this.step, made)
     if (this.frames.size > 12) {
       const oldest = Math.min(...this.frames.keys())

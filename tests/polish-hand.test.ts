@@ -5,7 +5,8 @@ import { pages } from '../src/pages'
 import { LANDING } from '../src/pages/marketing/script'
 import { filmFlow, filmOptions, ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
 import type { Pointer } from '../src/stage/types'
-import { fork, forked, PER, resting, rowOf, stroking, turnsOf, visit, type Row, type Turn } from './polish-hand-run'
+import { SHIVER } from '../src/stage/turn'
+import { fork, forked, onScreen, PER, resting, rowOf, stroking, turnsOf, visit, type Row, type Turn } from './polish-hand-run'
 
 // What a page turn may do to the arrow under a resting hand, px of 1920 by 1080: how far from the pointer's place it may lie on the page when the page is flat,
 // how far from the pointer on the screen (its height over the page is seen in perspective), how far it may go in the 30 frames after, and how far its height may change.
@@ -96,6 +97,32 @@ describe('the arrow under a hand through a page turn', () => {
       expect(s.late.wait).toBe(0)
       expect(Math.hypot(s.lag.x, s.lag.y) * Math.max(0, s.lag.left)).toBeLessThanOrEqual(FLAT.page)
     })
+  })
+
+  it('turn 1: while the tray under the arrow hops on the seat the arrow is drawn hopping with it, and the tray never rises through it', () => {
+    const t = turns[0]!
+    const seat = t.half + Math.round(0.6 * (t.flat - t.half))
+    const drawn: { i: number; lift: number; clear: number; shift: number }[] = []
+    forked(v, t.start, t.flat - t.start + 31, resting, LEAD, (s, i) => {
+      const f = s.frameAt(s.time)
+      const body = s.cursor.pose()
+      const lift = f.cursor.z - body.z
+      let top = 0
+      for (const u of f.list) if (u.kind !== 'text' && u.kind !== 'well' && u.kind !== 'anchor' && u.pocket !== true && u.z1 > SHIVER.loose && body.x >= u.x && body.x <= u.x + u.w && body.y >= u.y && body.y <= u.y + u.h) top = Math.max(top, u.z1)
+      const a = onScreen(body.x, body.y, body.z, f.scroll, 0)
+      const b = onScreen(body.x, body.y, f.cursor.z, f.scroll, 0)
+      drawn.push({ i, lift, clear: f.cursor.z - (top + lift), shift: Math.hypot(a.x - b.x, a.y - b.y) })
+    })
+    const at = (i: number) => drawn.find((d) => d.i === i)!
+    expect(at(seat - 1).lift).toBe(0)
+    expect(Math.max(at(seat + 1).lift, at(seat + 2).lift)).toBeGreaterThan(8)
+    for (const d of drawn) {
+      expect(d.lift).toBeGreaterThanOrEqual(0)
+      expect(d.lift).toBeLessThanOrEqual(SHIVER.hop)
+      expect(d.shift).toBeLessThanOrEqual(FLAT.screen)
+      if (d.i >= seat) expect(d.clear).toBeGreaterThan(0)
+    }
+    for (let i = seat + 12; i <= t.flat + 30; i++) expect(at(i).lift).toBeLessThan(0.5)
   })
 
   it('a page that ends by itself: the turn that comes long after the last press leaves the arrow under the resting hand', () => {

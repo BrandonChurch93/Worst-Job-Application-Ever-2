@@ -1,6 +1,6 @@
 // The live site under the pack's own visitor at 1920 by 1080 and level high, drawn in consecutive frames of 60 a second, and sheets cut from those pictures at real size.
 // node pipeline/phase5/polish-hand-shots.mjs walk LABEL [rest=FRAME] FIRST-LAST[/STRIDE] [...]   walks once, keeps a picture of every frame in the spans; from rest=FRAME on the hand lies still
-// node pipeline/phase5/polish-hand-shots.mjs sheet LABEL NAME FIRST STRIDE COUNT LEFT TOP W H COLS [cross] [mark=FRAME:WORDS ...]   lays COUNT windows on one sheet, cut unscaled at LEFT, TOP
+// node pipeline/phase5/polish-hand-shots.mjs sheet LABEL[+LABEL] NAME FIRST STRIDE COUNT LEFT TOP W H COLS [cross] [mark=FRAME:WORDS ...]   lays COUNT windows on one sheet, cut unscaled at LEFT, TOP; two labels lie side by side frame by frame
 // node pipeline/phase5/polish-hand-shots.mjs film DIR NAME FIRST STRIDE COUNT LEFT TOP W H COLS [mark=FRAME:WORDS ...]   the same from the numbered frames of the film in DIR
 // node pipeline/phase5/polish-hand-shots.mjs stack OUT A.png B.png [C.png ...]   lays finished sheets one above the other
 import fs from 'node:fs'
@@ -94,19 +94,21 @@ if (what === 'walk') {
 } else if (what === 'sheet' || what === 'film') {
   const [name, first, stride, count, left, top, w, h, cols, ...more] = rest
   const marks = marksOf(more)
-  const run = what === 'sheet' ? JSON.parse(fs.readFileSync(path.join(dir, 'run.json'), 'utf8')) : null
+  const runs = what === 'sheet' ? label.split('+') : [label]
   const files = what === 'film' ? fs.readdirSync(label).filter((n) => n.endsWith('.png')) : []
-  const fileOf = (i) => (what === 'sheet' ? path.join(dir, `${String(i).padStart(6, '0')}.png`) : path.join(label, files.find((n) => Number((n.match(/(\d+)\.png$/) || [])[1]) === i) || 'none'))
   const tiles = []
   let at = Number(first)
   for (let n = 0; n < Number(count); n++, at += Number(stride)) {
-    const file = fileOf(at)
-    if (!fs.existsSync(file)) continue
-    const meta = await sharp(file).metadata()
-    if (meta.width !== 1920 || meta.height !== 1080) throw new Error(`${file} is ${meta.width} by ${meta.height}, not 1920 by 1080`)
-    const row = run ? run.rows.find((r) => r[0] === at) : null
-    const cross = row && more.includes('cross') ? { x: Math.round(row[4]) - Number(left), y: Math.round(row[5]) - Number(top) } : null
-    tiles.push({ png: await sharp(file).extract({ left: Number(left), top: Number(top), width: Number(w), height: Number(h) }).png().toBuffer(), text: `${what === 'film' ? 'film frame' : 'frame'} ${at}${marks[at] ? `  ${marks[at]}` : ''}`, marked: Boolean(marks[at]), cross: cross && cross.x > 7 && cross.y > 7 && cross.x < Number(w) - 7 && cross.y < Number(h) - 7 ? cross : null })
+    for (const one of runs) {
+      const run = what === 'sheet' ? JSON.parse(fs.readFileSync(path.join(root, one, 'run.json'), 'utf8')) : null
+      const file = what === 'sheet' ? path.join(root, one, `${String(at).padStart(6, '0')}.png`) : path.join(label, files.find((name) => Number((name.match(/(\d{4,})/) || [])[1]) === at) || 'none')
+      if (!fs.existsSync(file)) continue
+      const meta = await sharp(file).metadata()
+      if (meta.width !== 1920 || meta.height !== 1080) throw new Error(`${file} is ${meta.width} by ${meta.height}, not 1920 by 1080`)
+      const row = run ? run.rows.find((r) => r[0] === at) : null
+      const cross = row && more.includes('cross') ? { x: Math.round(row[4]) - Number(left), y: Math.round(row[5]) - Number(top) } : null
+      tiles.push({ png: await sharp(file).extract({ left: Number(left), top: Number(top), width: Number(w), height: Number(h) }).png().toBuffer(), text: `${runs.length > 1 ? `${one}, ` : ''}${what === 'film' ? 'film frame' : 'frame'} ${at}${marks[at] ? `  ${marks[at]}` : ''}`, marked: Boolean(marks[at]), cross: cross && cross.x > 7 && cross.y > 7 && cross.x < Number(w) - 7 && cross.y < Number(h) - 7 ? cross : null })
+    }
   }
   const about = what === 'film' ? `the film, ${name}` : `the live site at level high, ${label}, ${name}`
   await lay(path.join(root, `${what === 'film' ? 'film' : label}-${name}.png`), `${about}: every ${Number(stride) === 1 ? 'frame' : `${stride} frames`} of 60 a second, window ${w} by ${h} at ${left}, ${top} of 1920 by 1080, not scaled${more.includes('cross') ? '; the cross is the pointer' : ''}`, tiles, Number(w), Number(h), Number(cols))
