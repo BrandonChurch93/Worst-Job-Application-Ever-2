@@ -36,7 +36,9 @@ MEASURED before: `open` 1 to 0 on rows 2575 to 2603, 29 frames; in the pictures 
 
 Changed where it is made (`SHUT` in `index.ts`, `poseCassette` in `real/shredder.ts`, `gapLeft` in `real/shredderShape.ts`), so the film shares it: the hood folds and the cassette starts down as before; at `SHUT.down` of the travel the two panels snap shut over it in `SHUT.snap` seconds, the cassette going down under them, the end plates drawn in with them; on the step they meet the slot is gone and the tray is thrown `SHUT.kick` px and comes back.
 
-MEASURED after, `npx vitest run tests/polish-tug2.test.ts`: closing from row 2575, the panels snap from row 2585 with 0.59 and 0.24 of their gap left, gone at row 2587 (before: `open` at 0 on row 2603); `open` never rises; the tray is thrown 3.00 px on the frame the slot is gone and comes back one way. In the pictures (a picture N shows row N-1; 2585 to 2588): the cassette with the hood folded, the panels half shut over the cassette going down, a slit, gone. No frame shows a black bar.
+Decision: the jaw keeps its three numbers (`tests/step1-script.test.ts` holds that count, and a fourth number would change the film's record on every frame the slot is drawn). While the panels snap the first number is below zero and says how far through the snap they are; the slot is then held open at `SNAP_FROM` (0.54, in `real/shredderShape.ts`, which `SHUT.down` reads). A slot told to close before it is `SNAP_FROM` open closes the old way from where it is.
+
+MEASURED after, `npx vitest run tests/polish-tug2.test.ts`: closing from row 2575, the panels snap from row 2585 with 0.59 and 0.24 of their gap left, gone at row 2587 (before: `open` at 0 on row 2603); `open` never rises; the tray is thrown 3.00 px on the frame the slot is gone and comes back one way. In the pictures (a picture N shows row N-1; 2585 to 2588): the cassette with the hood folded, the panels half shut over the cassette going down, a slit, gone. No frame shows a black bar. Walked again on the last source commit (`aa92dd90`, label `after2`, 08:59 UTC): the key (pictures 950 to 962), the take (1826 to 1852) and the slot (2580 to 2594) differ from the earlier after walk by the page's grain only (no pixel by more than 24 of 255).
 
 ## A key let go (fault 1)
 
@@ -62,7 +64,7 @@ Not mended: the wisp of smoke over the key at the release is the arrow's own, dr
 - `tests/fix-tug.test.ts`: the share of the whole take the arrow may have gone in the first 0.1 s after the bite, 0.1 to 0.25. The hands close 0.079 s after the bite and the way in is now fastest in its first frames (asked for in this round); measured 27.3 px of 112.8 px (0.24).
 - `tests/polish-keys.test.ts`: the cap's sink on the frame of the release, over 0.4 to over 0.2 (measured 0.289: it is further up after one frame); the furthest past rest, over -0.3 to over -0.5 (measured -0.42).
 
-## Which film frames change (MEASURED 08:39 UTC)
+## Which film frames change (MEASURED 08:55 UTC)
 
 How: `pipeline/phase5/polish-tug-filmdiff.ts.txt` copied as `tests/polish-tug-filmdiff.test.ts` into this branch and into a worktree of `b3e4f902`, run on each with `FILMDIFF=<path> npx vitest run tests/polish-tug-filmdiff.test.ts`, then removed. Film frame = unit frame + 840.
 
@@ -74,8 +76,15 @@ How: `pipeline/phase5/polish-tug-filmdiff.ts.txt` copied as `tests/polish-tug-fi
 
 ## Stills
 
-STILLS
+MEASURED 08:56 UTC: `npm run still -- --key K --format hd --tier draft` for `step1-fire`, `step1-tug`, `marketing-top`, each then `cmp out/work/stills/key-K-hd-draft.png /tmp/stills-before/key-K-hd-draft.png` against the same stills made on `b3e4f902` before the work. All three are byte equal: `marketing-top` as it must be, and neither step 1 key changed (neither stands on a frame of a key's release or of the slot's closing).
 
 ## Checks
 
-CHECKS
+Run one at a time on the last source commit `aa92dd90` (after it only this note changes):
+
+- `npx vitest run tests/polish-tug2.test.ts`: 11 tests passed (08:50 UTC).
+- `npm test`: 160 files passed, 4 skipped; 1950 tests passed, 5 skipped (08:54 UTC). At the start: 159 files passed, 3 skipped; 1939 tests passed, 3 skipped. A run one commit earlier failed in `tests/step1-script.test.ts` (the jaw had four numbers while it snapped); mended in the source, see the decision under the slot.
+- `npx tsc --noEmit -p .`: clean (08:50 UTC).
+- `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders (09:03 UTC).
+- `npm run bots`: all clear, keen reached every one of the 37 gags on every seed (09:03 UTC).
+- Live events of step 1 under the pack's visitor (49 rows) and under the keen bot (31 rows): byte equal before and after; the visitor's list is pinned in `tests/polish-tug2.test.ts`.
