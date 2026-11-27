@@ -170,3 +170,11 @@ The line "Rotate the crank clockwise..." goes in one frame at the shutting becau
 - Not exactly zero at low in the opening (above). Rows 2 and 3 were not touched: their machines showed no rings in the pictures of 10:00.
 - The four checks on the merged build (b016a52b) with the mend, one at a time, no browser job beside them, 10:51 to 11:01 UTC: `npm run determinism`: "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders". `npm run bots`: "bots: all clear", keen reached every one of the 37 gags on every seed. `npm test`: 165 test files passed, 10 skipped (175); 2080 tests passed, 11 skipped (2091); 240 s. `npx tsc --noEmit -p .`: exit 0, no output, last of all.
 - Scripts of this piece: `polish-date-cmp.mjs` (differing pixels of same named pictures of two dirs), `polish-date-diffmap.mjs`, `polish-date-pair.mjs`, `polish-date-stack.mjs`; `polish-date-live.mjs` took `POLISH_DATE_AFTER` (pictures kept after the press of a walk); `polish-date-sheet.mjs` names a shutting's pictures shorter.
+
+## The dial's orange centre goes in one frame (asked 11:04 UTC, answered 11:07, not changed)
+
+- What it is, STATED from `src/pages/step2/real/dial.ts`: the hub, a moulded orange knob (r 30, 14 tall, `hubGeometry`), squashed with the dial's height by `swell` down to `DIAL_BODY.hubFlat` 0.02 (0.28 tall at rest). The pale inner disc (`innerGeometry`, top 0.35 over the wheel's face, `innerTall`) covers it once the hub is lower than 0.35.
+- MEASURED, a stepped probe of the live page and the film page (a scratch test, run and deleted; equal numbers in both): on the shutting the dial's top is 5.52, 2.96, 1.60 on three frames in a row, the hub 1.33 and 0.42 over the pale disc and then 0.07 under it, the orange in sight of radius 29.2, 26.7, 0. On the opening radius 0, then 22.1 one step later.
+- The film, MEASURED on rendered frames 3182 to 3189 (`hub-film-shut.png`): orange on 3182 to 3184, pale on 3185; the centre in sight to 3187. On the opening, STATED from the stepped numbers: pale to 2884, orange from 2885.
+- My view: a fault, older than this round. `pipeline/phase4/step2-dial.md` line 27 (b6b65d01) says the housed hub is "an orange disc"; the pale inner disc came later (97e3aa69) and is taller than the flat hub. Not proved by a build of the older commit.
+- Not mended: the Builder rules.
