@@ -1,4 +1,4 @@
-// node pipeline/change002/careers-proof.mjs [--only film,apply,turn,top,card,ticker,cost]
+// node pipeline/change002/careers-proof.mjs [--only film,apply,press,turn,top,card,ticker,cost]
 // The proof pictures of the careers page, each at most 1200 px on its long edge, in out/work/careers/:
 // the first screen beside the approved one, twelve frames of a card under a real mouse, the ticker in windows 1920 and 2560 wide,
 // the press of Apply with the first frames of the turn, and the film's opening on the page as twelve frames.
@@ -17,6 +17,7 @@ const GROUND = '#d81b60'
 fs.mkdirSync(OUT, { recursive: true })
 const beats = config().film.beats.filter((b) => b.unit === 'marketing')
 const made = []
+const PRESS = { box: { left: 560, top: 800, width: 800, height: 200 }, times: [17.8, 17.9, 17.95, 17.98, 18, 18.03, 18.08, 18.2, 18.3, 18.38, 18.44, 18.49] }
 
 async function grid(name, frames, across, width) {
   const tiles = []
@@ -42,7 +43,7 @@ const filmSpec = (t) => {
   return { page: 'marketing', beat: b.id, at: Number(((t - b.from) / (b.to - b.from)).toFixed(6)), camera: 'home', tier: a.tier || 'draft' }
 }
 
-if (only.some((o) => ['top', 'film', 'apply'].includes(o))) {
+if (only.some((o) => ['top', 'film', 'apply', 'press'].includes(o))) {
   const session = await openSession({ format: 'hd', assets: 'full' })
   try {
     const shot = async (t) => ({ png: (await drawStill(session, filmSpec(t))).png, label: `${t.toFixed(2)} s` })
@@ -60,6 +61,14 @@ if (only.some((o) => ['top', 'film', 'apply'].includes(o))) {
       const frames = []
       for (const t of [16.5, 17.2, 17.5, 17.8, 17.9, 17.95, 18, 18.05, 18.15, 18.3, 18.4, 18.48]) frames.push(await shot(t))
       await grid('careers-apply-turn', frames, 4, 295)
+    }
+    if (only.includes('press')) {
+      const frames = []
+      for (const t of PRESS.times) {
+        const f = await shot(t)
+        frames.push({ png: await sharp(f.png).extract(PRESS.box).png().toBuffer(), label: f.label })
+      }
+      await grid('careers-press-large', frames, 3, 396)
     }
   } finally {
     await session.close()
