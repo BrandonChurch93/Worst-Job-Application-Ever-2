@@ -345,7 +345,7 @@ function play(first: PlayMode): void {
     if ((PLAY as string[]).includes(m)) setMode(m as PlayMode, false)
   })
 
-  const backing = (): Backing => backingOf(shown, stage.page.unit)
+  const backing = (): Backing => (stage.page.control === 'film' ? 'dark' : backingOf(shown, stage.page.unit))
 
   let frameSeconds = 1 / 60
   const api: InterfaceApi = {
