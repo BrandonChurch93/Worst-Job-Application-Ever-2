@@ -49,6 +49,8 @@ export const LED = { most: 0.61, knee: 0.42, rate: 12.5, thrown: 0.12, longest: 
 // Through a page turn the visitor's arrow lies on its page, leaving and arriving, at the height it stands at, and goes over with it: the pose says `rides` and the view lays it in the slab's plane. `follow` is how fast it goes to that height.
 // `fall` is how it comes down from more than `clear` above what it stands on when nothing threw it: it walked off a raised thing.
 export const HOVER = { follow: 30, clear: 20, fall: 14000 }
+// Under a visitor's hand, after a bolt's hit: once the hold is over the laid back pose is let go, and the arrow rights itself on the spring `lean`, which does not swing past upright, while it is brought back to where the hand's spring would have had it, had no bolt thrown it, so that it joins a moving hand's path at the hand's own lag and speed. Its own speed on that way neither leans it nor tips it into a dive. `over` seconds after the hit the body's own springs have it again.
+export const TAIL = { lean: { k: 1600, c: 80 }, over: 0.25 }
 // The principles every move gets by itself: a pull back against the way it sets off, a stretch along the way while it travels, a squash where it stops.
 const MOVE = { off: 60, pull: 3, tip: 2.6, long: 0.3, per: 5200, land: 4.8 }
 // The arms: `grow` is the spring they sprout on, so the hands travel to what they grab over four to five frames of 60 and go a little past; `toward` is how far the body leans to the hands while they travel, before it leans back against them; `closed` is the grip from which the hands count as shut.
@@ -170,7 +172,7 @@ interface State {
   onPage: boolean
   inBall: boolean
   face: Face | null
-  air: { x: number; y: number } | null
+  air: { x: number; y: number; led?: boolean } | null
   ground: number
   aloft: boolean
   taken: string | null
@@ -190,6 +192,9 @@ interface State {
   // Under a visitor's hand alone: the seconds since the page knocked the arrow, and the angle as it is drawn.
   thrown?: number
   drawn?: number
+  // Under a visitor's hand alone: the seconds since a bolt's hit, while its tail runs.
+  tail?: number
+  ghost?: { x: number; y: number; vx: number; vy: number }
 }
 
 const fresh = (x: number, y: number): State => ({
@@ -208,7 +213,7 @@ export class CursorBody {
     this.s = fresh(x, y)
     this.s.seed = seed
     if (air) {
-      this.s.air = { x, y }
+      this.s.air = this.hand ? { x, y, led: true } : { x, y }
       this.s.z = this.hand ? hover : HANDOFF.z
     }
   }
@@ -311,6 +316,10 @@ export class CursorBody {
         s.vx -= vx
         s.vy -= vy
         s.shove = { x: s.x, y: s.y, t: 0 }
+        if (this.hand) {
+          s.tail = dt
+          s.ghost = { x: s.x - (vx / d) * HIT.shove, y: s.y - (vy / d) * HIT.shove, vx: s.vx, vy: s.vy }
+        }
         s.dir = vx < -40 ? -1 : vx > 40 ? 1 : s.dir
       }
     }
@@ -413,8 +422,18 @@ export class CursorBody {
     this.s.ground = z
   }
 
+  // Under a visitor's hand the arrow is not carried anywhere: it lies where it stood, and where the hand had it the hand keeps it through the turn.
   lift(x: number = HANDOFF.x, y: number = HANDOFF.y): void {
-    this.s.air = { x, y }
+    const s = this.s
+    if (!this.hand) {
+      s.air = { x, y }
+      return
+    }
+    s.air = { x: s.x, y: s.y, led: s.taken === null && !s.inBall && s.onPage && s.handback >= 1 }
+    if (!s.air.led) {
+      s.vx = 0
+      s.vy = 0
+    }
   }
 
   land(): void {
@@ -446,8 +465,9 @@ export class CursorBody {
     let ty = target.y
     let tz = hover + s.ground
     if (s.air) {
-      tx = s.air.x
-      ty = s.air.y
+      const led = s.air.led === true && s.taken === null && !s.inBall
+      tx = led ? target.x : s.air.x
+      ty = led ? target.y : s.air.y
       tz = HANDOFF.z
     } else if (s.taken !== null) {
       tx = s.drive ? s.drive.x : s.x
@@ -460,10 +480,24 @@ export class CursorBody {
       ty = s.from.y + (target.y - s.from.y) * u
     }
     const before = Math.hypot(s.vx, s.vy)
+    const shoved = this.hand && s.shove !== null
+    const tail = this.hand && (s.tail ?? 0) > HIT.hold
+    if ((s.tail ?? 0) > 0) s.tail = s.tail! + dt > TAIL.over ? 0 : s.tail! + dt
     if (s.shove && !s.air && s.taken === null && !s.inBall) {
       s.shove.t += dt
       const u = Math.min(1, Math.max(0, (s.shove.t - HIT.hold) / HIT.back))
+      if (this.hand && u > 0 && s.reaction === 'recoil') s.reaction = null
+      if (this.hand && u >= 1) s.thrown = 0
       const k = u * u * (3 - 2 * u)
+      const g = this.hand ? s.ghost : undefined
+      if (g) {
+        g.vx += (HAND.stiff * (tx - g.x) - HAND.damp * g.vx) * dt
+        g.vy += (HAND.stiff * (ty - g.y) - HAND.damp * g.vy) * dt
+        g.x += g.vx * dt
+        g.y += g.vy * dt
+        tx = g.x
+        ty = g.y
+      }
       s.vx = (s.shove.x + (tx - s.shove.x) * k - s.x) / dt
       s.vy = (s.shove.y + (ty - s.shove.y) * k - s.y) / dt
       const speed = Math.hypot(s.vx, s.vy)
@@ -474,7 +508,7 @@ export class CursorBody {
       if (u >= 1) s.shove = null
     } else {
       s.shove = null
-      const follow = this.hand && !s.air && s.taken === null && !s.inBall ? HAND : gait
+      const follow = this.hand && (!s.air || s.air.led === true) && s.taken === null && !s.inBall ? HAND : gait
       s.vx += (follow.stiff * (tx - s.x) - follow.damp * s.vx) * dt
       s.vy += (follow.stiff * (ty - s.y) - follow.damp * s.vy) * dt
       const speed = Math.hypot(s.vx, s.vy)
@@ -532,7 +566,7 @@ export class CursorBody {
     if (dragging) stretch += DRAG.pulse * Math.sin(s.drag * 2 * Math.PI)
     const ax = Math.max(-1, Math.min(1, (s.vx - ax0) / dt / 90000))
     const ay = Math.max(-1, Math.min(1, (s.vy - ay0) / dt / 90000))
-    let lean = Math.max(-0.5, Math.min(0.5, s.vx / 2600)) + s.feel.lean + (pose ? pose.lean : 0)
+    let lean = (shoved ? 0 : Math.max(-0.5, Math.min(0.5, s.vx / 2600))) + s.feel.lean + (pose ? pose.lean : 0)
     if (walking) lean += s.foot * gait.rock * Math.sin(Math.PI * s.stride)
     if (dragging) lean += DRAG.lean * Math.max(-1, Math.min(1, s.vx / 300)) * (0.6 + 0.4 * Math.sin(s.drag * 2 * Math.PI))
     if (s.arms && s.hands) {
@@ -568,7 +602,7 @@ export class CursorBody {
       if (s.pressed.left <= dt / 2) s.pressed = null
     }
     const free = !s.air && s.taken === null && !s.inBall
-    const flying = free && (!this.hand || thrown) && s.reaction !== 'rear' && s.reaction !== 'dart' && s.reaction !== 'fume' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
+    const flying = free && (!this.hand || thrown) && !shoved && s.reaction !== 'rear' && s.reaction !== 'dart' && s.reaction !== 'fume' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
     const aimed = free || s.inBall ? s.aimed : null
     const knocked = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share
     const over = (knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0) + (pose ? pose.turn * (aimed !== null ? 0.3 : 1) : 0) + (aimed !== null ? aimed - s.feel.lean : 0)
@@ -579,7 +613,8 @@ export class CursorBody {
       s.spin = 0
       s.spinV = 0
     }
-    s.leanV += (SPRING.lean.k * (Math.max(-0.9, Math.min(0.9, lean)) - s.lean) - SPRING.lean.c * s.leanV) * dt
+    const righting = tail ? TAIL.lean : SPRING.lean
+    s.leanV += (righting.k * (Math.max(-0.9, Math.min(0.9, lean)) - s.lean) - righting.c * s.leanV) * dt
     s.lean += s.leanV * dt
     if (s.struck) {
       s.spin = s.struck.turn - softLean(s.lean)
