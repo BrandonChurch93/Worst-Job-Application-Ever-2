@@ -26,17 +26,17 @@ const HOLD = {
   stand: 12
 }
 
-// Every event of step 1 under the pack's visitor before this work, as frame and names.
+// Every event of step 1 under the pack's visitor, as frame and names. That visitor rests 6 frames after it lets a key go (KEYS.rest in tools/lib/pack-site.mjs); under the visitor without that rest the list was the same before this work and after it.
 const EVENTS = [
   '713 keyboard-rise', '804 turret-rise turret-rise', '870 bolt-fire', '897 bolt-fire', '898 bolt-hit bolt-hit-cursor sizzle', '922 bolt-hit',
-  '924 bolt-fire', '939 key-press', '953 bolt-hit', '975 bolt-fire', '978 bolt-fire', '979 bolt-hit',
-  '983 key-press', '1003 key-press', '1026 bolt-hit', '1035 bolt-fire bolt-fire', '1059 bolt-hit bolt-hit-cursor sizzle', '1062 bolt-hit',
-  '1089 bolt-fire bolt-fire', '1114 bolt-hit bolt-hit-cursor sizzle', '1115 bolt-hit', '1149 key-press', '1179 key-press', '1218 key-press',
-  '1269 key-press keys-shuffle', '1313 key-press keys-shuffle', '1359 key-press keys-shuffle', '1398 key-press', '1451 key-press', '1479 key-press',
-  '1520 key-press', '1555 key-press', '1603 slab-drop', '1636 slab-drop', '1669 slab-drop', '1731 paper-slide',
-  '1823 shredder arms-out', '1853 paper-strain', '1907 paper-strain', '1961 paper-strain', '2016 paper-strain', '2070 paper-strain',
-  '2124 paper-strain', '2178 paper-strain', '2233 paper-strain', '2287 paper-strain', '2340 tug-lost', '2496 strips-zip',
-  '2619 button-press'
+  '924 bolt-fire', '939 key-press', '953 bolt-hit', '972 bolt-fire', '976 bolt-hit', '978 bolt-fire',
+  '999 key-press', '1027 bolt-hit', '1032 bolt-fire bolt-fire', '1054 bolt-hit', '1061 bolt-hit', '1086 bolt-fire bolt-fire',
+  '1111 bolt-hit bolt-hit-cursor sizzle', '1112 bolt-hit', '1121 slow-typing', '1140 bolt-fire bolt-fire', '1151 key-press', '1165 bolt-hit',
+  '1167 bolt-hit', '1186 key-press', '1207 bolt-fire bolt-fire', '1219 key-press', '1233 bolt-hit bolt-hit', '1269 key-press keys-shuffle',
+  '1329 key-press keys-shuffle', '1377 key-press keys-shuffle', '1419 key-press', '1479 key-press', '1511 key-press', '1569 key-press',
+  '1611 key-press', '1659 slab-drop', '1692 slab-drop', '1725 slab-drop', '1787 paper-slide', '1883 shredder arms-out',
+  '1913 paper-strain', '1967 paper-strain', '2021 paper-strain', '2076 paper-strain', '2130 paper-strain', '2184 paper-strain',
+  '2238 paper-strain', '2293 paper-strain', '2347 paper-strain', '2400 tug-lost', '2556 strips-zip', '2679 button-press'
 ]
 
 let runs: Record<'visitor' | 'keen', Frame[]>

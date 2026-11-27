@@ -457,7 +457,10 @@ export function levelDial(root: THREE.Object3D, edge: number | null, top: number
   })
 }
 
-interface Kept { ring: THREE.Mesh; body: THREE.Group; wheel: THREE.Group; face: THREE.Mesh; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh }
+// While the dial lies housed, the pale inner disc and the dark ring under it sink this far into the wheel and the hub, pressed flat, lies on the disc: an orange disc in sight, the whole of it under the floor of a field. They come up again as the body rises.
+export const HUB_HOUSED = { drop: 0.3 }
+
+interface Kept { ring: THREE.Mesh; body: THREE.Group; wheel: THREE.Group; face: THREE.Mesh; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh; inner: THREE.Mesh; hubRing: THREE.Mesh }
 const place = new THREE.Matrix4()
 
 const plainDial: PartMaker = {
@@ -498,7 +501,8 @@ const plainDial: PartMaker = {
     wheel.add(mesh(g.edges, housingMaterial))
     wheel.add(mesh(g.holes, m.aluminiumSatin))
     innerMaterial ??= studio(new THREE.MeshPhysicalMaterial({ color: srgb(B.innerTone), roughness: B.innerRough, metalness: 0, clearcoat: 0.2, clearcoatRoughness: 0.5, specularIntensity: 0.4, name: 'dial-inner' }))
-    wheel.add(mesh(g.inner, innerMaterial, false))
+    const inner = mesh(g.inner, innerMaterial, false)
+    wheel.add(inner)
     const ring = mesh(g.innerRing, m.aluminiumSatin)
     wheel.add(ring)
     const hubRing = mesh(g.hubRing, m.gap, false)
@@ -526,7 +530,7 @@ const plainDial: PartMaker = {
     cast.receiveShadow = false
     cast.position.z = B.castOver
     root.add(cast)
-    root.userData.dial = { ring, body, wheel, face, shades, hub, stop, plate, cast, seat, glint } satisfies Kept
+    root.userData.dial = { ring, body, wheel, face, shades, hub, stop, plate, cast, seat, glint, inner, hubRing } satisfies Kept
     return root
   },
   pose(o: THREE.Object3D, s: Shape, _ctx: RealContext): void {
@@ -538,13 +542,18 @@ const plainDial: PartMaker = {
     kept.plate.position.z = up
     kept.shades.position.z = H - B.plate + 0.12 + up
     const swell = B.hubFlat + (1 - B.hubFlat) * (1 - low)
+    const sunk = HUB_HOUSED.drop * low
+    const on = H + B.innerTall - sunk
+    kept.inner.position.z = -sunk
+    kept.hubRing.position.z = B.innerTall + B.hubSeatDeep - 0.1 - sunk
     kept.hub.scale.z = swell
-    kept.hub.position.z = H * (1 - swell)
+    kept.hub.position.z = on * (1 - swell)
     kept.stop.position.z = -(B.stopClear + B.stopTall + 0.5) * low
     kept.ring.position.z = -B.innerRingTall * low
     kept.seat.scale.z = Math.max(0.1, 1 - low)
-    kept.glint.visible = low < 0.5
-    kept.glint.position.z = H * (1 - swell) + (H + B.glintUp) * swell
+    kept.glint.visible = low < 1
+    kept.glint.scale.setScalar(Math.max(1e-6, 1 - low))
+    kept.glint.position.z = on * (1 - swell) + (H + B.glintUp) * swell
     const [lx, ly] = look.key.direction
     const l = Math.hypot(lx, ly) || 1
     const risen = 1 - low
