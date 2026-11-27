@@ -62,6 +62,12 @@ With the arrow now standing on the new page while it meets its seat, the tray un
 
 Mend, `src/stage/stage.ts` `hopUnder`: under a hand, while the seat's hop runs, the drawn arrow's height gains the hop of the loose thing it stands on, as the type on a card hops with the card. The body's state is not touched; the film's frame is not touched (`hand` false).
 
+Seen in the picture (`hop-before-above-after-below.png`, frames 644 to 648 at real size, before above and after below): before, frame 646 shows a pale stub where the arrow is; after, the arrow is whole on all five frames.
+
+### What the page's jolt does to the arrow on the seat (MEASURED in the pictures, not changed)
+
+The shift at which the arrow's window (50 by 62 px at 335, 468) of each frame of `after-hop` fits frame 652 best: frame 644 (contact) 7 px left, 645 6 px left, 646 6 px left, 647 3 px left, 648 on 0 px. The page is drawn larger and higher on the contact frame and the two after (the jolt, section 3: the head 9, 6, 3 px up), and the pointer rests 604 px left of the middle, so what lies on the page there is carried 6 to 7 px outward, the arrow with it. The stepped test does not see this: its `FLAT.screen` of 4 px is measured without the view's jolt. I left it: the arrow lies on the page and goes with the page when the page is knocked, as the print under it does; sliding it against the print for three frames would make it the one thing on the page that does not answer the seat. The Builder decides whether that is wanted.
+
 ## 2. The hit's tail
 
 ### Before (MEASURED, the hit at frame 898 of step 1 under a resting hand, table in `polish-hand-before.txt`)
@@ -79,6 +85,8 @@ The film (MEASURED, `film hits of step 1` in the same tables): the film's arrow 
 Place: thrown 60.0 px, held 4 frames, back within 2 px at hit+9, unchanged. Angle, hit+0 on: -2.8, -9.4, -16.1, -20.4, -20.0, -15.4, -10.8, -7.6, -5.5, -4.1, -2.3, -0.1, 1.5, 2.6, 3.2, 3.7, 4.1, 4.4 and then within 1 degree of where it stands (4.5 to 4.8, the stand of the `shocked` face): one way out, one way back, at rest by hit+15. A hand that moves off at 25 px a frame from hit+6: steps 1.4, 8.5, 13.7, 17.9, 22.5, 24.5, 21.0, 22.7, 24.3, 25.4, 25.9 px a frame, the largest change from one frame to the next 7.1 px. The burst, the squash and the page's answer are not touched (STATED: no line of them is in the diff).
 
 A second bolt hits a resting pointer again 55 frames later (MEASURED); that is the page's game, not the tail.
+
+Seen in the picture (`hit-before-above-after-below.png`, frames 896 to 920 at real size, hit at 898): before, the arrow comes back by 906 and then leans far over to the left from 907 to 920; after, it comes back by 907 and stands near upright from 908 on. The burst, the lit caps on 898 and 899 and the scorch are the same in both rows.
 
 ## 3. The seat, measured, not changed
 
@@ -120,6 +128,32 @@ What the sheets show at real size: the dark band over the free edge shrinks 25 t
 
 Reading: it arrives with speed and stops dead. It answers with one knock that is plain to see and a second of 3 px over two frames; whether the second is seen at 60 a second is UNKNOWN from stills. Proposal, if strictly one answer is wanted: drop the second entry of `TURN.knocks`; live frames +7 and +8 and film frames 864 to 866 would change. `JOLT` and `SHIVER` left alone. Nothing changed; the Builder decides.
 
+Decided by the Builder at 08:24: the seat reads and stays as it is; the second knock stays; nothing changes in `TURN`, `JOLT` or `SHIVER`.
+
 ## 4. Tests
 
-`npx vitest run tests/polish-hand.test.ts`. Named bounds: `FLAT = { page: 2, screen: 4, after: 2, z: 1 }`, `MOVING = { far: 40, atPlay: 20, joined: 12 }`, `THROWN = { far: 60, hold: 4 }`, `TAILS = { pass: 1, back: 10, rest: 16, again: 0.5, jolt: 8 }`. For each of the six turns: resting hand, nothing fires that the page does not fire by itself, moving hand, a press during the turn, a press on the first step of play (the click lag). Also: the tray's hop under the arrow, a page that ends long after the last press, the skip link, the rejected careers page (stands on the pointer on the step of the landing, no move in 30 frames, no startle), the hit's place, angle and a hand moving off, and without a hand the film's turn and hit against literal lists of what they were.
+`npx vitest run tests/polish-hand.test.ts`. Named bounds: `FLAT = { page: 2, screen: 4, after: 2, z: 1 }`, `MOVING = { far: 40, atPlay: 20, joined: 12 }`, `THROWN = { far: 60, hold: 4 }`, `TAILS = { pass: 1, back: 10, rest: 16, again: 0.5, jolt: 8 }`. For each of the six turns: resting hand, nothing fires that the page does not fire by itself, moving hand, a press during the turn, a press on the first step of play (the click lag). Also: the four bots (each ends the site in six turns, and on every arriving page its arrow lies no further from its pointer than the pointer goes in one frame, plus `FLAT.page`), the tray's hop under the arrow, a page that ends long after the last press, the skip link, the rejected careers page (stands on the pointer on the step of the landing, no move in 30 frames, no startle), the hit's place, angle and a hand moving off, and without a hand the film's turn and hit against literal lists of what they were.
+
+The four bots (MEASURED in a scratch test, the same loop as the test): keen 7955 frames, clumsy 9157, random 6752, skipper 7052, each ends in six turns. Their pointer moves through the turns (keen up to 32.5 px a frame); the arrow lies at most 31.2 px from it on the arriving page, less than one frame of the pointer's way.
+
+## 5. Pictures
+
+All from `node pipeline/phase5/polish-hand-shots.mjs` (the usage is in its head), kept in `out/work/polish-hand/`, which is not in the repo. Every window is cut from 1920 by 1080 and not scaled. The cross is the pointer's place, drawn into the sheet by the script.
+
+- The turn into step 1, before beside after, every second frame from 594 to 676, six sheets: `walk before-rest rest=596 586-690/2` on a worktree of the starting commit, the same on the branch as `after-rest`, then `sheet before-rest+after-rest turn-a 594 2 7 310 405 596 145 2 cross mark=596:"turn starts" mark=626:"arriving page" mark=644:contact mark=656:"given to play"` and so on in steps of 14 frames. The pointer rests at (356, 471). Before, the arrow stands at (960, 540), right of the window, from about frame 606 to 656.
+- The tray's hop: `walk after-hop rest=596 640-652`; before is the same walk made before `hopUnder`.
+- The hit at frame 898: `walk before-hit rest=896 894-922` on the worktree and `walk after-hit rest=896 894-922` on the branch.
+- The seat: section 3.
+
+## 6. The film is untouched
+
+- Stage states (MEASURED): a test of mine kept outside the repo (`/tmp/zz-filmdiff.test.ts`, copied in as `tests/zz-filmdiff.test.ts`, run with `FILMDIFF=/tmp/hand/film-after2 npx vitest run tests/zz-filmdiff.test.ts`, removed again) writes for every film frame a sha1 of the draw list, the arrow's pose and the frame's turn, scroll, page, view, settle and cursor, and one line for every event. `cmp` of the files of the starting commit and of the branch: step 1 1920 frames and 351 events equal, the careers page 840 frames and 35 events equal, the whole film 9105 frames and 977 events equal.
+- Draft stills (MEASURED): `npm run still -- --key step1-fire --format hd --tier draft`, `step1-tug`, `marketing-top` before the change and after it, `cmp`: see section 7.
+
+## 7. Checks before the push of the first pass (MEASURED, one at a time, 08:33 to 08:45)
+
+- `npm run still -- --key step1-fire --format hd --tier draft`, `--key step1-tug`, `--key marketing-top`, each `cmp` against the copy made on the starting commit: byte equal, all three. The copies were kept outside the repo.
+- `npm run -s determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- `npm run -s bots`: 20 runs finished, none stuck; keen reached every one of the 37 gags on every seed; bots: all clear.
+- `npm test`: 160 files passed and 4 skipped, 1983 tests passed and 4 skipped, 223.67 s (on the starting commit: 159 and 3, 1939 and 3; the difference is the 44 tests of `tests/polish-hand.test.ts` and the skipped measure).
+- `npx tsc --noEmit -p .`: clean.
