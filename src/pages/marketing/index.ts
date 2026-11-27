@@ -7,7 +7,7 @@ import { SCREEN_H } from '../../shell/parts'
 import { words } from '../../shell/words'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { careersLayout, PAGE, perkStates, T, TAPE, TICKER, WIDTH, Z } from './layout'
-import { CUES, LANDING, pointerAt, REJECTED_CUES, scrollAt, type Marks } from './script'
+import { CUES, LANDING, OPENING, planOf, pointerAt, REJECTED_CUES, scrollAt, SETTING, type Marks, type Plan, type Setting } from './script'
 
 const dt = 1 / stepHz
 const hover = config.scale.heights.cursorHover
@@ -35,6 +35,9 @@ const JUMP_HEIGHT = 110
 const LINK_LEAD = 96
 const BUTTONS = ['nav-cta', 'hero-cta', 'final-cta'] as const
 const HERO = 1
+const SALARY = 1
+// The arrow goes down the page in its left margin, clear of everything that answers it.
+const LANE = 150
 
 interface Apply { button: number; t: number; fx: number; fy: number; jx: number; jy: number; jumped: boolean; stamped: boolean; pressed: boolean; held: number }
 
@@ -67,7 +70,47 @@ const smooth = (u: number): number => {
 }
 const mod = (a: number, n: number): number => ((a % n) + n) % n
 
-export function makePage(): PageLogic {
+// The film's opening on this page: where the arrow goes and how the page scrolls under it, in one setting.
+export function careersOpening(setting: Setting = SETTING): { marks: Marks; plan: Plan } {
+  const { layout, height } = careersLayout()
+  const maxScroll = height - SCREEN_H
+  const caps = BUTTONS.map((id) => boxOf(layout, `${id}-cap`))
+  const hero = caps[HERO]!
+  const last = caps[BUTTONS.length - 1]!
+  const start = { x: 64, y: 596 }
+  const stand = { x: hero.x + hero.w + 92, y: hero.cy - 2 }
+  const salary = boxOf(layout, `perk-${SALARY}`)
+  const badge = boxOf(layout, 'quote-0-note')
+  const lol = boxOf(layout, `compare-${copy.marketing.comparison.rows.length - 1}-us`)
+  const ghosting = boxOf(layout, `process-${copy.marketing.process.items.length - 1}-title`)
+  const mid = (cy: number): number => Math.min(maxScroll, Math.max(0, Math.round(cy - SCREEN_H / 2)))
+  const stops = [
+    { x: salary.x + salary.w - 70, y: salary.y + 34, scroll: mid(salary.cy) },
+    { x: badge.x + badge.w + 22, y: badge.cy - 2, scroll: mid(badge.cy - 60) },
+    { x: lol.cx + 70, y: lol.cy + 2, scroll: mid(lol.cy - 150) },
+    { x: ghosting.x + ghosting.w / 2 + 20, y: ghosting.y + ghosting.h + 96, scroll: mid(ghosting.cy - 220) },
+    { x: last.x + last.w + 92, y: last.cy - 2, scroll: maxScroll }
+  ]
+  const straight = (a: { x: number; y: number }, b: { x: number; y: number }) => [{ f: 0, x: a.x, y: a.y }, { f: 1, x: b.x, y: b.y }]
+  const above = salary.y - 34
+  const marks: Marks = {
+    start,
+    stand,
+    stops,
+    routes: [
+      [{ f: 0, ...stand }, { f: 0.8, x: stops[0]!.x + 20, y: salary.y - 70 }, { f: 1, x: stops[0]!.x, y: stops[0]!.y }],
+      [{ f: 0, x: stops[0]!.x, y: stops[0]!.y }, { f: 0.03, x: stops[0]!.x, y: above }, { f: 0.16, x: LANE, y: above }, { f: 0.85, x: LANE, y: stops[1]!.y - 60 }, { f: 1, x: stops[1]!.x, y: stops[1]!.y }],
+      straight(stops[1]!, stops[2]!),
+      straight(stops[2]!, stops[3]!),
+      straight(stops[3]!, stops[4]!)
+    ],
+    perch: { x: last.x + last.w + 26, y: last.y - 18 },
+    press: { x: last.x + last.w * 0.76, y: last.cy - 4 }
+  }
+  return { marks, plan: planOf(setting, stops.map((p) => p.scroll)) }
+}
+
+export function makePage(setting: Setting = SETTING): PageLogic {
   const { layout, height, sections } = careersLayout()
   const beats = config.film.beats.filter((b) => b.unit === 'marketing')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: b.event ?? null }))
@@ -106,19 +149,8 @@ export function makePage(): PageLogic {
   })
 
   const hero = caps[HERO]!
-  const start = { x: 64, y: 596 }
-  const down = sections.perks! + 50
-  const marks: Marks = {
-    start,
-    stroll: { x: 300, y: 640 },
-    wait: { x: 150, y: cards[0]!.y - down + 190 },
-    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 60, y: cards[i]!.y - down + cards[i]!.h - 50 })),
-    away: { x: cards[2]!.x + cards[2]!.w - 60, y: cards[2]!.y - down - 40 },
-    tape: { x: 360, y: 700 },
-    stand: { x: hero.x + hero.w + 92, y: hero.cy - 2 },
-    perch: { x: hero.x + hero.w + 26, y: hero.y - 18 },
-    press: { x: hero.x + hero.w * 0.76, y: hero.cy - 4 }
-  }
+  const { marks, plan } = careersOpening(setting)
+  const start = marks.start
 
   const s: State = {
     mode: 'live', variant: '', time: 0, clock: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0), over: Array(perkCount).fill(false), took: false, shock: 0,
@@ -223,7 +255,7 @@ export function makePage(): PageLogic {
     const right = TICKER.x + TICKER.w
     const items = rejected() ? afterItems : tapeItems
     const length = rejected() ? afterLength : tapeLength
-    const tape = rejected() ? (s.clock - REJECTED_SETTLE) * TICKER.speed : (s.clock - applyBeat.from) * TICKER.speed + tapeItems[TICKER.keyItem]!.at - TICKER.keyAt
+    const tape = rejected() ? (s.clock - REJECTED_SETTLE) * TICKER.speed : (s.clock - OPENING.key) * TICKER.speed + tapeItems[TICKER.keyItem]!.at - TICKER.keyAt
     for (const item of items) {
       const first = left + mod(item.at - tape, length)
       for (const x of [first, first - length]) {
@@ -261,7 +293,7 @@ export function makePage(): PageLogic {
         if (s.skipAsked) s.scrollTo = 0
         const gap = s.scrollTo - s.scroll
         s.scroll = Math.abs(gap) < 0.05 ? s.scrollTo : s.scroll + gap * Math.min(1, dt * 16)
-      } else if (!rejected()) s.scroll = scrollAt(io.time)
+      } else if (!rejected()) s.scroll = scrollAt(plan, io.time)
 
       if (rejected() && s.mode === 'film' && io.cursor.inAir && io.time >= LANDING.from) {
         const u = Math.min(1, (io.time - LANDING.from) / (LANDING.down - LANDING.from))
@@ -348,7 +380,7 @@ export function makePage(): PageLogic {
     view: () => null,
     camera: () => null,
     script(time: number): Pointer {
-      return pointerAt(marks, time, rejected())
+      return pointerAt(marks, plan, time, rejected())
     },
     hint(): Hint | null {
       const at = { x: hero.cx, y: hero.cy }

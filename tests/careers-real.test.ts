@@ -137,8 +137,8 @@ describe('the real careers page', () => {
   })
 
   it('takes the button down toward the sheet at a press, a little smaller and darker, and never under the sheet', () => {
-    const rest = at(11).find((s) => s.id === 'hero-cta-cap')!
-    const ctx = context([rest], 11)
+    const rest = at(2.5).find((s) => s.id === 'final-cta-cap')!
+    const ctx = context([rest], 2.5)
     const o = applyButton!.make(rest, ctx)
     applyButton!.pose!(o, rest, ctx)
     const up = o.position.z
@@ -147,13 +147,13 @@ describe('the real careers page', () => {
     let lowest = up
     let dark = 0
     const s = film()
-    s.advance(steps(12.3))
-    for (let i = 0; i < steps(1.1); i++) {
+    s.advance(steps(17.75))
+    for (let i = 0; i < steps(0.95); i++) {
       s.advance(1)
       const list: DrawList = []
       s.page.draw(list)
-      const cap = (list as Shape[]).find((d) => d.id === 'hero-cta-cap')!
-      const label = (list as Shape[]).find((d) => d.id === 'hero-cta-label')!
+      const cap = (list as Shape[]).find((d) => d.id === 'final-cta-cap')!
+      const label = (list as Shape[]).find((d) => d.id === 'final-cta-label')!
       expect(label.z0).toBeCloseTo(cap.z1, 6)
       o.position.z = 0
       applyButton!.pose!(o, cap, ctx)

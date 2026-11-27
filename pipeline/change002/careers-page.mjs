@@ -21,12 +21,16 @@ await site.close()
 
 const session = await openSession({ format: 'hd', assets: a.assets || 'full' })
 const tiles = []
+const counts = []
 try {
   const room = height - 1080
   for (let top = 0; top < height; top += 1080) {
     const y = Math.min(top, room)
-    const { png } = await drawStill(session, { page: 'marketing', camera: 'home', tier, scroll: y / room })
+    const spec = { page: 'marketing', camera: 'home', tier, scroll: y / room }
+    const { png } = await drawStill(session, spec)
     tiles.push({ input: png, left: 0, top: y })
+    const told = await session.page.evaluate((x) => window.showcase.countParts(x), spec)
+    counts.push(`scrolled ${Math.round(y)} px: ${Math.round(told.renderer.triangles)} triangles, ${told.renderer.drawCalls} draw calls`)
   }
 } finally {
   await session.close()
@@ -61,3 +65,4 @@ for (let i = 0; i < names.length; i++) {
 }
 console.log(`the build: ${OUT}/careers-page.png, 1920 by ${Math.round(height)}; the approved picture: 1920 by ${approved.height}`)
 console.log(`left the build, right the approved picture:\n- ${made.join('\n- ')}`)
+console.log(`what one frame costs, by the renderer's own count:\n- ${counts.join('\n- ')}`)

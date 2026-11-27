@@ -3,6 +3,7 @@ import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { makePage } from '../src/pages/marketing'
 import { careersLayout, FIRST_SCREEN, WIDTH } from '../src/pages/marketing/layout'
+import { OPENING } from '../src/pages/marketing/script'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords, words } from '../src/shell/words'
 import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, type Driver, type DriverView } from '../src/stage/stage'
@@ -10,6 +11,7 @@ import type { DrawList, Pointer } from '../src/stage/types'
 
 const tolerance = config.film.beatToleranceSeconds
 const beats = config.film.beats.filter((b) => b.unit === 'marketing')
+const unit = config.film.units.find((u) => u.id === 'marketing')!
 const seconds = (n: number): number => Math.round(n * stepHz)
 
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('marketing'), pages, driver: new ScriptDriver(), film: filmOptions('marketing') })
@@ -90,7 +92,7 @@ describe('the careers page', () => {
     for (let i = 0; i < 8; i++) for (const part of ['title', 'promise', 'finePrint']) expect(used.has(`copy:marketing.perks.items.${i}.${part}`), `perk ${i} ${part}`).toBe(true)
     for (let i = 0; i < 5; i++) for (const part of ['title', 'from', 'finePrint']) expect(used.has(`copy:marketing.awards.items.${i}.${part}`), `award ${i} ${part}`).toBe(true)
     expect(used.has('copy:step5.closing')).toBe(true)
-    for (const t of [0, 3.6, 9, 11, 13.2]) {
+    for (const t of [0, 3.6, 9, 11, 13.2, 18.3]) {
       const s = film()
       s.advance(seconds(t))
       checkWords(drawn(s), `film ${t}`)
@@ -100,56 +102,61 @@ describe('the careers page', () => {
     expect(rows[1]![0]![1]!).toBeGreaterThan(rows[0]![0]![1]! + rows[0]![0]![3]!)
   })
 
-  it('keeps each beat and its event inside its window in the film, and nothing moves in time', () => {
+  it('keeps each beat and its event inside its window in the film: one card turned, one press at 18 s, then the turn', () => {
     const s = film()
-    s.advance(seconds(14))
+    s.advance(seconds(unit.seconds))
     const at = (name: string): number[] => s.events.filter((e) => e.name === name).map((e) => e.step / stepHz)
     for (const b of beats) {
       if (!b.event) continue
       const hits = at(b.event).filter((t) => t >= b.from - tolerance && t <= b.to + tolerance)
       expect(hits.length, `${b.id} ${b.event}`).toBeGreaterThan(0)
     }
+    expect(beats[0]!.from).toBe(0)
+    expect(beats[beats.length - 1]!.to).toBe(unit.seconds)
+    for (let i = 1; i < beats.length; i++) expect(beats[i]!.from).toBe(beats[i - 1]!.to)
     const flips = at('card-flip')
-    expect(flips.length).toBe(3)
-    for (const t of flips) expect(t).toBeGreaterThanOrEqual(2)
-    for (const t of flips) expect(t).toBeLessThan(8)
+    expect(flips.length).toBe(1)
     const press = at('button-press')
     expect(press.length).toBe(1)
-    expect(press[0]!).toBeGreaterThan(11)
+    expect(Math.abs(press[0]! - OPENING.total)).toBeLessThanOrEqual(0.03)
     expect(press[0]!).toBeLessThan(at('page-turn')[0]!)
-    expect(at('page-turn')[0]!).toBeLessThan(14)
+    expect(at('page-turn')[0]!).toBe(unit.seconds - 0.5)
   })
 
   it('names the beat it is in at each moment of the film', () => {
     const s = film()
     for (const b of beats) {
-      s.seek(b.id === 'marketing.apply' ? 13.2 : (b.from + b.to) / 2)
+      s.seek(b.id === 'marketing.apply' ? OPENING.total + 0.3 : (b.from + b.to) / 2)
       expect(s.page.gag()).toBe(b.id)
     }
   })
 
-  it('scrolls down for the perks and the ticker and back up for Apply in the film', () => {
+  it('holds at the top, then scrolls down the whole page in the film and stands at the bottom for Apply', () => {
     const s = film()
     const at = (t: number): number => {
       s.seek(t)
       return s.page.scroll()
     }
-    expect(at(1.9)).toBe(0)
-    const card = boxOf('perk-0')
-    const perks = at(5)
-    expect(card[1]! - perks).toBeGreaterThan(100)
-    expect(card[1]! + card[3]! - perks).toBeLessThan(1080 - 100)
-    const band = boxOf('ticker-window')
-    const tape = at(9.5)
-    expect(band[1]! - tape).toBeGreaterThan(300)
-    expect(band[1]! + band[3]! - tape).toBeLessThan(780)
-    expect(at(10.9)).toBe(0)
-    expect(at(13.4)).toBe(0)
+    expect(at(OPENING.key)).toBe(0)
+    expect(at(OPENING[OPENING.use].scrollFrom)).toBe(0)
+    let before = 0
+    for (let t = 3; t <= 16.5; t += 0.5) {
+      const now = at(t)
+      expect(now, `${t}`).toBeGreaterThanOrEqual(before)
+      before = now
+    }
+    const button = boxOf('final-cta-cap')
+    const under = boxOf('final-under')
+    for (const t of [16.5, OPENING.total, unit.seconds - 0.6]) {
+      expect(at(t)).toBe(careersLayout().height - 1080)
+      expect(button[1]! - at(t)).toBeGreaterThan(300)
+      expect(under[1]! + under[3]! - at(t)).toBeLessThan(1080 - 100)
+    }
   })
 
   it('stands the arrow by the button of the hero at the moment of the key', () => {
     const s = film()
-    s.seek(11)
+    s.seek(OPENING.key)
     const cap = boxOf('hero-cta-cap')
     const p = s.cursor.pose()
     expect(s.page.scroll()).toBe(0)

@@ -123,4 +123,35 @@ if (only.includes('ticker')) {
     await server.close()
   }
 }
+if (only.includes('cost')) {
+  for (const step of [0, 1]) {
+    const session = await openSession({ format: 'hd', assets: 'web', mode: 'live', query: `&clock=steps&quality=low${step ? `&step=${step}` : ''}` })
+    try {
+      const page = session.page
+      const time = async (label) => {
+        await page.evaluate(() => window.liveRun.advance(0.5))
+        const ms = await page.evaluate(async () => {
+          const t0 = performance.now()
+          for (let i = 0; i < 30; i++) window.liveRun.advance(1 / 60)
+          return (performance.now() - t0) / 30
+        })
+        made.push(`cost at the low level, ${label}: ${ms.toFixed(1)} ms a frame drawn and read back on this machine's software renderer`)
+      }
+      await page.mouse.move(120, 500)
+      if (step) await time('step 1 at rest, for comparison')
+      else {
+        await time('careers page, first screen')
+        const t0 = Date.now()
+        for (let i = 0; i < 12; i++) {
+          await page.mouse.wheel(0, 100)
+          await page.evaluate(() => window.liveRun.advance(0.15))
+        }
+        made.push(`  wheeling 1200 px down, 12 frames with the type of the next screen built on the way: ${((Date.now() - t0) / 12).toFixed(0)} ms a frame`)
+        await time('careers page, wheeled down to the cards')
+      }
+    } finally {
+      await session.close()
+    }
+  }
+}
 console.log(made.join('\n'))

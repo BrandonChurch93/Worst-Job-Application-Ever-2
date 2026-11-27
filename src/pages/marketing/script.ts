@@ -1,14 +1,40 @@
 import { HANDOFF, type Acting, type Reaction } from '../../cursor/body'
 import type { Pointer } from '../../stage/types'
 
+// The opening of the film on the careers page, every number of it. `total` is the time from the first frame to the press of Apply at the
+// bottom, when the button goes down. `line` is how long the narrator's line 1 runs: 22 words at 1.6 words a second. `after` is what the page
+// has left after the press, the stage's turn into step 1 inside it. `key` is the moment of the key still, at the top with the arrow by the main button. `ramp` is how long the scroll takes to slow down or to pick up again.
+// A setting holds at the top until `scrollFrom` and on its way down slows at the page's five places: for `hold` seconds the page goes at
+// the share `slow` of its speed between stops (1 is no slowing). The fifth place is the bottom: the page stands there for its `hold`, which ends with the press.
+export const OPENING = {
+  use: 'B' as 'A' | 'B',
+  total: 18,
+  key: 2.5,
+  line: 13.75,
+  after: 1.25,
+  ramp: 0.45,
+  places: ['salary', 'badge', 'lol', 'ghosting', 'button'] as const,
+  A: { scrollFrom: 13.75, stops: [{ hold: 0, slow: 1 }, { hold: 0, slow: 1 }, { hold: 0, slow: 1 }, { hold: 0, slow: 1 }, { hold: 1.55, slow: 0 }] },
+  B: { scrollFrom: 3, stops: [{ hold: 1.3, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1.55, slow: 0 }] }
+}
+export type Setting = 'A' | 'B'
+
+const asked = typeof location === 'undefined' ? null : new URLSearchParams(location.search).get('opening')
+export const SETTING: Setting = asked === 'a' || asked === 'A' ? 'A' : asked === 'b' || asked === 'B' ? 'B' : OPENING.use
+
+// The press as the page plays it: the arrow hops onto the button's rim at `hop`, clicks at `click`, and its own run-up and jump end on the cap `lead` later, which is the press.
+export const PRESS = { lead: 0.78, hop: 0.37, ready: 0.73, down: 0.15 }
+export const PRESS_AT = OPENING.total - PRESS.lead
+export const PRESS_FOR = PRESS.down
+export const TURN_AT = OPENING.total + OPENING.after - 0.5
+
 export interface Marks {
   start: { x: number; y: number }
-  stroll: { x: number; y: number }
-  wait: { x: number; y: number }
-  cards: { x: number; y: number }[]
-  away: { x: number; y: number }
-  tape: { x: number; y: number }
   stand: { x: number; y: number }
+  // Where the arrow is at each of the five places, and how far down the page is scrolled there, in px of the page.
+  stops: { x: number; y: number; scroll: number }[]
+  // The way from one place to the next, the first from `stand`: points of the page, each at the share `f` of the way that the scroll has gone.
+  routes: { f: number; x: number; y: number }[][]
   perch: { x: number; y: number }
   press: { x: number; y: number }
 }
@@ -16,24 +42,102 @@ export interface Marks {
 type Ease = 'smooth' | 'line'
 interface Key { t: number; x: number; y: number; e?: Ease }
 
-export const PRESS_AT = 11.75
-export const PRESS_FOR = 0.15
-export const TURN_AT = 13.5
+interface Leg { from: number; to: number; t0: number; t1: number; va: number; vb: number }
+export interface Plan {
+  setting: Setting
+  // The speed between stops, in px of the page a second.
+  speed: number
+  legs: Leg[]
+  holds: { t0: number; t1: number; from: number; to: number }[]
+  end: number
+}
 
-// How far down the website the film has scrolled, in px, at each moment: down to the cards, back up to the ticker, back to the top for Apply.
-export const SCROLL: [number, number][] = [[0, 0], [2.05, 0], [2.85, 1130], [7.95, 1130], [8.75, 430], [10.05, 430], [10.8, 0]]
+const G = (u: number): number => u * u * u - (u * u * u * u) / 2
 
-// The arrow comes onto each of the first three cards at `on` and stays on it until `off`.
-export const VISITS = [{ on: 3.0, at: 3.3, off: 4.3 }, { on: 4.3, at: 4.62, off: 5.75 }, { on: 5.75, at: 6.07, off: 7.2 }]
+// The scroll of one setting over the places: one speed between stops, eased down to each stop's share of it and up again.
+export function planOf(setting: Setting, scrolls: number[]): Plan {
+  const o = OPENING[setting]
+  const r = OPENING.ramp
+  const n = scrolls.length
+  const slow = (k: number): number => (k < 0 || k === n - 1 ? 0 : o.stops[k]!.slow)
+  const hold = (k: number): number => (k === n - 1 ? 0 : o.stops[k]!.hold)
+  let held = 0
+  let crept = 0
+  let ramps = 0
+  for (let k = 0; k < n; k++) {
+    held += hold(k)
+    crept += slow(k) * hold(k)
+    ramps += ((2 - slow(k - 1) - slow(k)) * r) / 2
+  }
+  const speed = scrolls[n - 1]! / (OPENING.total - o.stops[n - 1]!.hold - o.scrollFrom - held - ramps + crept)
+  const legs: Leg[] = []
+  const holds: Plan['holds'] = []
+  let t = o.scrollFrom
+  let at = 0
+  for (let k = 0; k < n; k++) {
+    const creep = slow(k) * speed * hold(k)
+    const to = scrolls[k]! - creep / 2
+    const took = (to - at) / speed + ((2 - slow(k - 1) - slow(k)) * r) / 2
+    legs.push({ from: at, to, t0: t, t1: t + took, va: slow(k - 1) * speed, vb: slow(k) * speed })
+    t += took
+    holds.push({ t0: t, t1: t + hold(k), from: to, to: to + creep })
+    t += hold(k)
+    at = to + creep
+  }
+  return { setting, speed, legs, holds, end: scrolls[n - 1]! }
+}
 
-// Every point is where the arrow is on the screen; the stage adds how far the page has scrolled.
-export function path(m: Marks): Key[] {
-  const keys: Key[] = [{ t: 0, ...m.start }, { t: 0.2, ...m.start }, { t: 1.1, ...m.stroll, e: 'line' }, { t: 2, ...m.stroll }, { t: 2.4, x: m.wait.x, y: (m.stroll.y + m.wait.y) / 2 }, { t: 2.85, ...m.wait }]
-  VISITS.forEach((v, i) => keys.push({ t: v.on, ...(i === 0 ? m.wait : m.cards[i - 1]!) }, { t: v.at, ...m.cards[i]! }, { t: v.off, ...m.cards[i]! }))
-  keys.push({ t: 7.55, ...m.away }, { t: 7.95, ...m.away }, { t: 8.75, ...m.tape }, { t: 10.05, ...m.tape })
-  keys.push({ t: 10.76, x: m.stand.x - 16, y: m.stand.y, e: 'line' }, { t: 10.9, ...m.stand }, { t: 11.38, ...m.stand })
-  keys.push({ t: 11.42, ...m.perch }, { t: PRESS_AT - 0.02, ...m.perch }, { t: PRESS_AT, ...m.press })
-  return keys
+function legAt(p: Plan, l: Leg, time: number): number {
+  const ra = l.va < p.speed ? OPENING.ramp : 0
+  const rb = l.vb < p.speed ? OPENING.ramp : 0
+  const all = l.t1 - l.t0
+  const t = time - l.t0
+  const left = l.t1 - time
+  if (all < ra + rb) {
+    const u = t / all
+    const d = l.to - l.from
+    return l.from + (u * u * u - 2 * u * u + u) * l.va * all + (3 * u * u - 2 * u * u * u) * d + (u * u * u - u * u) * l.vb * all
+  }
+  if (t <= ra) return l.from + l.va * t + (p.speed - l.va) * ra * G(t / ra)
+  if (left <= rb) return l.to - l.vb * left - (p.speed - l.vb) * rb * G(left / rb)
+  return l.from + l.va * ra + (p.speed - l.va) * ra * 0.5 + p.speed * (t - ra)
+}
+
+// How far down the website the film has scrolled, in px, at each moment.
+export function scrollAt(p: Plan, time: number): number {
+  if (time <= p.legs[0]!.t0) return 0
+  for (let k = 0; k < p.legs.length; k++) {
+    const l = p.legs[k]!
+    if (time < l.t1) return legAt(p, l, time)
+    const h = p.holds[k]!
+    if (time < h.t1) return h.from + ((h.to - h.from) * (time - h.t0)) / (h.t1 - h.t0)
+  }
+  return p.end
+}
+
+function routeAt(route: { f: number; x: number; y: number }[], f: number): { x: number; y: number } {
+  for (let i = 1; i < route.length; i++) {
+    const a = route[i - 1]!
+    const b = route[i]!
+    if (f > b.f) continue
+    const u = (f - a.f) / (b.f - a.f)
+    return { x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u }
+  }
+  const last = route[route.length - 1]!
+  return { x: last.x, y: last.y }
+}
+
+// Where the arrow is on the page at each moment: it strolls to the main button, goes down the page with the scroll from place to place, and presses the last button.
+export function pageAt(m: Marks, p: Plan, time: number): { x: number; y: number } {
+  const first = p.legs[0]!
+  if (time <= first.t0) return along([{ t: 0, ...m.start }, { t: 0.2, ...m.start }, { t: 1.3, x: m.stand.x - 16, y: m.stand.y, e: 'line' }, { t: 1.45, ...m.stand }], time)
+  for (let k = 0; k < p.legs.length; k++) {
+    const l = p.legs[k]!
+    if (time < l.t1) return routeAt(m.routes[k]!, (legAt(p, l, time) - l.from) / (l.to - l.from))
+    if (time < p.holds[k]!.t1) return m.stops[k]!
+  }
+  const last = m.stops[m.stops.length - 1]!
+  return along([{ t: PRESS_AT - PRESS.hop, ...last }, { t: PRESS_AT - PRESS.hop + 0.04, ...m.perch }, { t: PRESS_AT - 0.02, ...m.perch }, { t: PRESS_AT, ...m.press }], time)
 }
 
 // The arrow comes back with the page. It is let down from the height of the hand-off from `from` to `down`, a little before the page
@@ -63,29 +167,19 @@ export function along(keys: Key[], time: number): { x: number; y: number } {
   return { x: last.x, y: last.y }
 }
 
-export function scrollAt(time: number): number {
-  const first = SCROLL[0]!
-  if (time <= first[0]) return first[1]
-  for (let i = 1; i < SCROLL.length; i++) {
-    const a = SCROLL[i - 1]!
-    const b = SCROLL[i]!
-    if (time > b[0]) continue
-    return a[1] + (b[1] - a[1]) * ease((time - a[0]) / (b[0] - a[0]))
-  }
-  return SCROLL[SCROLL.length - 1]![1]
-}
-
-export function pointerAt(m: Marks, time: number, rejected: boolean): Pointer {
+// Where the arrow is on the screen; the stage adds how far the page has scrolled.
+export function pointerAt(m: Marks, p: Plan, time: number, rejected: boolean): Pointer {
   if (rejected) return { ...along(rejectedPath(m), time), down: false }
-  return { ...along(path(m), time), down: time >= PRESS_AT && time < PRESS_AT + PRESS_FOR }
+  const at = pageAt(m, p, time)
+  return { x: at.x, y: at.y - scrollAt(p, time), down: time >= PRESS_AT && time < PRESS_AT + PRESS_FOR }
 }
 
 export interface Cue { at: number; act?: Acting; react?: Reaction }
 
 export const CUES: Cue[] = [
   { at: 0, act: 'confident' },
-  { at: 11.02, react: 'anticipate' },
-  { at: 11.38, react: 'jump' },
+  { at: PRESS_AT - PRESS.ready, react: 'anticipate' },
+  { at: PRESS_AT - PRESS.hop, react: 'jump' },
   { at: TURN_AT - 0.2, react: 'anticipate' },
   { at: TURN_AT + 0.16, act: 'shocked', react: 'startle' }
 ]

@@ -3,6 +3,7 @@ import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { FLIP_SECONDS, LEAVE } from '../src/pages/marketing'
 import { careersLayout, perkStates, T, TICKER, WIDTH } from '../src/pages/marketing/layout'
+import { OPENING } from '../src/pages/marketing/script'
 import { block } from '../src/shell/metrics'
 import { words } from '../src/shell/words'
 import { fitPicture } from '../src/core/levelFit'
@@ -114,17 +115,16 @@ describe('fault A: a card flips back when the pointer leaves', () => {
     expect(s.events.filter((e) => e.name === 'card-flip-back').length).toBe(0)
   })
 
-  it('flips three cards in the film and each one back, one at a time under the arrow', () => {
+  it('flips one card in the film, the one with the salary, and it goes back when the arrow leaves', () => {
     const s = film()
     s.advance(seconds(9))
-    const flips = s.events.filter((e) => e.name === 'card-flip').map((e) => e.step / stepHz)
+    const flips = s.events.filter((e) => e.name === 'card-flip')
     const backs = s.events.filter((e) => e.name === 'card-flip-back').map((e) => e.step / stepHz)
-    expect(flips.length).toBe(3)
-    expect(backs.length).toBe(3)
-    for (let i = 0; i < 3; i++) {
-      expect(backs[i]! - flips[i]!).toBeGreaterThan(FLIP_SECONDS + 0.4)
-      expect(backs[i]!).toBeLessThan(8)
-    }
+    expect(flips.length).toBe(1)
+    expect(backs.length).toBe(1)
+    const card = boxOf('perk-1')
+    expect(flips[0]!.x).toBeCloseTo(card[0]! + card[2]! / 2, 3)
+    expect(backs[0]! - flips[0]!.step / stepHz).toBeGreaterThan(FLIP_SECONDS + 0.4)
     for (let i = 0; i < 8; i++) expect(s.page.states()).toContain(perkStates(i).shut)
   })
 })
@@ -164,7 +164,7 @@ describe('fault B: the ticker is a band from edge to edge', () => {
 
   it('runs at one speed and stands at the key with a whole item at its mark', () => {
     const s = film()
-    s.advance(seconds(11))
+    s.advance(seconds(OPENING.key))
     const key = drawn(s).find((d) => d.id === `ticker-${TICKER.keyItem}-run`)!
     expect(key.x).toBeCloseTo(TICKER.keyAt, 3)
     s.advance(seconds(0.5))
