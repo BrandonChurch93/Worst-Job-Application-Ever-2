@@ -1022,8 +1022,6 @@ export const TURNS = { seat: 18, flat: 27, quiet: 31, lead: 2, still: 4 }
 // `home`: when the page goes on to the Email field its keys fly home and seat, in 0.515 s at the most (FLIGHT in src/pages/step1/index.ts: crouch 0.035 + ripple 0.17 + jitter 0.02 + seconds 0.2 + seat 0.09),
 // 31 steps; a step more, and every key is in its seat. `field`, `until`, `slab`: the page's names for the Email field, the resume after it, and a red slab's drop.
 export const KEYS = { before: 3, after: 8, mark: 'down', rest: 6, spent: 78, home: 32, field: 'step1.email', until: 'step1.resume', slab: 'slab-drop' }
-// The arrow on the Email field (src/pages/step1/index.ts: going on to it the page makes the arrow angry; kit/02-SUBJECT.md, "Angry: the tip glows red and it vents steam").
-export const ANGRY_WORDS = 'On this field the arrow is angry by the page\'s design: its tip glows red and it vents steam'
 // What the page does to its keys on each field, by its design (kit/02-SUBJECT.md, "Field by field").
 export const FIELD_WORDS = {
   email: 'By the page\'s design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go',
@@ -1282,7 +1280,7 @@ export function motionPlan(cfg, run) {
     const nth = cfg.live.step1.hitsBeforeTurretsOverheat
     const stopped = m.type.why === 'hot' ? `bolt ${nth} hit the arrow at ${timeOf(m.type.spent)} and the turrets fire no more after it` : `the page went on to the last name at ${timeOf(m.type.spent)} and its turrets fire no more from then`
     const which = m.type.seated !== null && m.type.seated !== undefined
-      ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard${m.type.key ? `, on the key ${m.type.key} (the arrow's tip lies on its letter)` : ''}, the first on the Email field after its keys have come home: the page went on to that field at ${timeOf(m.type.seated)} and these frames begin ${((from - m.type.seated) / VISITOR.hz).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. ${ANGRY_WORDS}`
+      ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard${m.type.key ? `, on the key ${m.type.key} (the arrow's tip lies on its letter)` : ''}, the first on the Email field after its keys have come home: the page went on to that field at ${timeOf(m.type.seated)} and these frames begin ${((from - m.type.seated) / VISITOR.hz).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}`
       : m.type.clear
       ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets have stopped: ${stopped}; these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
       : `The first press of the visitor's on the keyboard; the turrets may fire in these frames`

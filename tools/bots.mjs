@@ -11,7 +11,8 @@ const { runBot } = await load('/src/stage/stage.ts')
 const { pages } = await load('/src/pages/index.ts')
 const bots = a.bot ? [a.bot] : c.live.bots
 const seeds = a.seed !== undefined ? [Number(a.seed)] : Array.from({ length: c.live.botSeeds }, (_, i) => c.seed + i)
-const gags = c.film.beats.map((b) => b.id)
+const CUT = ['step1.lastName']
+const gags = c.film.beats.map((b) => b.id).filter((id) => !CUT.includes(id))
 const runs = []
 const problems = []
 for (const bot of bots) {
