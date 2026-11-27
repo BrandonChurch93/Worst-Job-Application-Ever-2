@@ -1745,6 +1745,7 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-27T22:50Z, Status 173 is delivered with four pictures: the boss and the arena as first built by code beside the approved pictures, step 1's turret blast and its email slabs in the film. It carries the read-back of updates 2 to 4, the film's length as stated (about 196 to 207 s against 165 s), the two settings of the opening in numbers, the proposal for firing the finishing blast on the live site, and the ledger at 2677 with all 2,000 credits of the new limit unspent.
 - 2026-11-27T22:50Z, a wrong count corrected. The entry of 22:44Z said setting B of the opening has five slow-downs. Read from `OPENING` in `src/pages/marketing/script.ts` at 8411b054 it has four (1.3, 1, 1 and 1 s at 0.12 of the speed) and then a stand of 1.55 s at the button before the press.
 - 2026-11-27T22:50Z, first passes read and pictures looked at between 22:44Z and 22:49Z, each with notes in the Builder's scratch file. Step 1 (a6084acf): the blast and the slabs are what he asked for; sent back: a falling slab is pale and see-through in two frames. Boss rules (48319d4f): the rules read in the film; sent back: the flattened arrow reads as a white flash and the bar's gain cannot be seen; the cannon's line is a flat red band. Boss body (4549e74d) and arena (ddaf5fbc), first pictures beside the targets: both read as the approved pictures; the body's legs, guns and breech window and the arena's seams, glass shadow and corner guns are below them. Pinball: the helper said at 22:48Z that the longer vacuum fight costs it 60 to 75 minutes of pinning tests again; ruled: the fight first, its limit moves from 00:30Z to 01:30Z, no revert, a mail at 00:30Z if not green. Careers: the helper renders setting A of the opening in its sandbox (2.59 s a frame) while the Builder renders B (4.1 to 4.6 s a frame).
+- 2026-11-27T22:55Z, update 5 applied. The pop-up windows stay out of the new fight, behind their switch, with their words kept. Step 2's dial is drawn about 1.5 times larger with the fling scaled with it and unchanged in time and acting. The finishing blast on the live site is built as proposed in Status 173. The pinball video's 36.3 s without control is the exception his note 002 item 8 ordered, with the skip link offered throughout. The film's length: no new ceiling yet; every part is built to the short end (the boss part toward 58.9 s), no padding, his numbers in the config untouched, the red length checks carried as known and shown part by part with the whole-film preview. Step 2's three objects (the rotary phone, the slot machine, the crank) no longer stand in any field box, tray or card: the ordinary field appears, the visitor clicks it, the field goes away and the object comes out of the empty page in the middle; after the gag the object goes away again and the next field appears; each coming out and going away is its own piece of animation; the three entrances go to Brandon as picture strips or a short preview before polishing. Step 1 is not changed on this note: one picture of each of its stages (the keyboard, the resume slot, the shredder) goes to him with the question whether they stand in a field's box.
 
 ## Notes from Brandon
 
@@ -1767,6 +1768,7 @@ His notes from the thread, the review rounds and the review, in his words, numbe
 - 2026-11-27T22:29Z, Brandon in the thread at about 22:12Z (3:12 PM MT), word for word: "Arena six is definitely my favorite. I also like the looks with the turn in and out." The Builder's reading: ARENA 6 of round 9 is the arena; "the looks with the turn in and out" are LOOK 1 with the turret inside (STATE 1) and with the turret out (STATE 2). STATE 3, beaten, was not named and is a working guide only. Partner's change note 003 of 22:21Z confirms the reading with his words from the Partner chat: "I have approved the arena, and the new bosses look in the chat there".
 - 2026-11-27T22:29Z, Change note 003 from Brandon, by Partner, arrived at 22:21Z and its update on the opening scroll at 22:23Z. Both are pasted word for word under their own heading above. They bring the record of what he approved (it matches this file line for line), the new script of eight spoken moments, the film's opening on the careers page at 18 seconds, and the order to record nothing.
 - 2026-11-27T22:44Z, three more updates of change note 003 arrived by mail from Partner between about 22:32Z and 22:38Z and are pasted word for word under the note. His words in them: line 7 is his pick "B3" ("for the boss speach I think B3 is my favorite", to be made cinematic, the hopeless moment and then getting fired up); line 8 ends at "with other candidates" ("It doesn't need the rest of that statement"); a possible line 9 ("Maybe we have one more line that's like onto the next application"), a draft; the power-up and the finishing blast are a go with pictures first ("Yes, build both"); two shouts are to be tested ("Test both"); and a hard limit of 2,000 new ElevenLabs credits for change notes 002 and 003 together, so the ledger does not pass 4,677 without his word.
+- 2026-11-27T22:55Z, update 5 of change note 003 arrived by mail from Partner at 22:55Z and is pasted word for word under the note. His words in it: "The questions on the worst job ever I'll go with your recommendations. You can go ahead and send them to him." (Partner's recommendations, accepted without his reading each one, each undone by one word from him), and on step 2: "he still using that like text area background and the component is like built inside of it I don't want that. I kind of want the component to just come out of the empty background space in the middle of the page. It shouldn't have like a input fields background behind it." and "should be a really nice animation on all three of the assets."
 
 ## Change note 002 from Brandon, by Partner
 
@@ -2145,6 +2147,42 @@ Update 4 (the power-up, the finishing blast, the shout and a hard credit limit),
 > Both ideas add seconds. Report the film's length with them; do not change the film's ceiling or the boss part's planned seconds. Partner will bring those as an addendum on his word, with your measured figures.
 >
 > Paste this under the note in kit/PROGRESS.md. Your cost mail asked for in the second update is no longer needed as a separate mail; put the seconds in your status.
+
+Update 5 (answers to the open questions, and step 2's stages), received 2026-11-27T22:55Z (3:55 PM MT) by mail from the same session, pasted word for word under the note as it asks.
+
+> Worst Job Application Ever - Change note 003, fifth update (answers to your open questions, and step 2's stages)
+>
+> From Partner, speaking for Brandon under house rule 23. Partner chat: https://www.perplexity.ai/computer/tasks/bdbb2938-8540-483e-906c-8485c8c301e1
+> Sent November 27, 2026, 3:55 PM Mountain Time. Your 3:51 PM mail and Status 173 are read.
+>
+> ## A. Your open questions
+>
+> His words, just now in the Partner chat, after Partner listed your open questions to him: "The questions on the worst job ever I'll go with your recommendations. You can go ahead and send them to him."
+>
+> So these are Partner's recommendations, which he accepted in those words without reading each one. Partner is telling him now what was sent. Each can be undone by one word from him in either chat.
+>
+> 1. The three pop-up windows: they stay out of the new fight. Reason, from his own words: "The whole screen should kinda changed to be like a video game. The only thing up top should be the bosses health bar." Keep the switch and keep their words; do not delete anything.
+> 2. Step 2's dial drawn about 1.5 times larger, with the fling scaled by the same amount and its timing and acting unchanged: yes. Read section B first, which changes what stands behind it.
+> 3. Firing the finishing blast on the live site: build it as you proposed in Status 173 (arms come out by themselves once the boss has fallen, hold to charge and let go to fire, a plain click fires a smaller blast, it fires by itself after 6 seconds, nobody can lose).
+> 4. The pinball as a video holding the visitor for 36.3 s: your reading is right. It is the exception his words in change note 002 item 8 ordered, with the skip link offered throughout.
+> 5. The film's length: no new ceiling yet. He decides it after he has seen a whole-film preview, as Partner told him. Until then: build every part to the short end of your table (the boss part toward 58.9 s, not 68.6), add no padding, leave his numbers in the config alone, and carry the red length checks as known. Show the length, part by part, with the whole-film preview. This is not a change of any kit number.
+>
+> Not answered here, and still his: opening Version A or B (he wants to see them), line 9, the cookie-style sound bar (not built), the word to record.
+>
+> ## B. Step 2: no field box behind the phone, the slot machine or the crank
+>
+> His words, in the same message: "One thing I do wanna update though is he still using that like text area background and the component is like built inside of it I don't want that. I kind of want the component to just come out of the empty background space in the middle of the page. It shouldn't have like a input fields background behind it. Does that make sense? And then it should go away and then the new field appears and they click that and then the slot machine appears from the background should be a really nice animation on all three of the assets."
+>
+> Partner's reading:
+> - "All three of the assets" are step 2's three: the rotary phone, the slot machine for the date of birth, and the volume crank.
+> - None of them sits inside a field's box, card or text-area background. Each comes out of the empty page itself, in the middle of the page, with nothing behind it but the page.
+> - The order for each field: the ordinary field appears; the visitor clicks it; the field goes away and the object comes out of the background; the visitor does the gag; the object goes away again; the next field appears.
+> - The coming out and the going away are each a real piece of animation, one for each object, worth watching on its own. They are part of the gag, not a fade.
+> - This follows change note 002 item 12 ("I don't love how the rotary phone is like inside of a text area field") and goes further: no field background at all behind the object.
+> - He named step 2. If step 1's stages (the keyboard, the resume slot, the shredder) also stand in a field's box, show him one picture of each and ask; do not change step 1 on this note alone.
+> - Show him the three entrances as a short preview or picture strips in your thread before polishing.
+>
+> Paste this under the note in kit/PROGRESS.md.
 
 ## Probe results
 
