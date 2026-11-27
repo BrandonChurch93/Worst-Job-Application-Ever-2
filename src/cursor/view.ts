@@ -47,6 +47,7 @@ export class CursorView {
   private hang = new THREE.Vector3()
 
   constructor() {
+    this.root.matrixAutoUpdate = false
     this.root.add(this.at)
     this.at.add(this.body.root)
     this.at.add(this.effects.root)
@@ -57,6 +58,11 @@ export class CursorView {
   apply(c: CursorPose, ctx: RealContext): void {
     const look = lookOf(c, ctx.time)
     const turn = -c.lean - c.spin
+    // What holds the cursor stands still in the room while a page turns. A cursor that rides its page undoes that, and so lies in the slab's plane.
+    const stand = c.rides ? this.root.parent : null
+    if (stand) this.root.matrix.copy(stand.matrix).invert()
+    else this.root.matrix.identity()
+    this.root.matrixWorldNeedsUpdate = true
     this.at.quaternion.identity()
     // The body is shaped first: where a sealed body stands comes from its outline as it is drawn.
     this.body.root.rotation.set(0, 0, turn)
