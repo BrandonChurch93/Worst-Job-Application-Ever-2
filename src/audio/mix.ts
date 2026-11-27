@@ -5,6 +5,7 @@ export { openingEvents, type OpeningPlan } from './cues'
 import { dehum, master, repitch, type Mastered, type Sound } from './dsp'
 import { DUCK, LIVE, MIX, TONE, db } from './levels'
 import { duckAt, duckSpans } from './narrator'
+import { standIns } from './standin'
 
 // page: the page the event came from, when the list of events names it. A page-turn names the page it leaves.
 export interface FilmEvent { name: string; frame: number; x: number; page?: string }
@@ -25,6 +26,13 @@ export interface MixInput {
   targetLufs: number
   truePeakDb: number
   toneFromFrame?: number
+  // The lines that are silent stand-ins, by id, with their seconds. Left out, it is every line of the script: no take of it is kept yet.
+  standIns?: Map<string, number>
+}
+
+// The lines of the script as silent stand-ins: id and seconds. A take kept under the id of one of them is not laid.
+export function scriptStandIns(): Map<string, number> {
+  return new Map([...standIns().values()].map((l) => [l.id, l.seconds]))
 }
 
 // Film A is the opening and then film B unchanged: every event and line of film B moves back by the opening's frames.
@@ -32,7 +40,7 @@ export function behindOpening<T extends { frame: number }>(list: T[], openingFra
   return list.map((e) => ({ ...e, frame: e.frame + openingFrames }))
 }
 
-export interface Placed { kind: 'cue' | 'line' | 'tone'; event: string; cue: string; id: string; frame: number; sample: number; seconds: number; cents: number; pan: number }
+export interface Placed { kind: 'cue' | 'line' | 'stand-in' | 'tone'; event: string; cue: string; id: string; frame: number; sample: number; seconds: number; cents: number; pan: number }
 
 export interface MixResult {
   sound: Sound
@@ -166,7 +174,14 @@ export function mixFilm(o: MixInput): MixResult {
   }
 
   const spoken: { start: number; end: number }[] = []
+  const silent = o.standIns ?? scriptStandIns()
   for (const line of o.lines.slice().sort((a, b) => a.frame - b.frame)) {
+    const standIn = silent.get(line.id)
+    if (standIn !== undefined) {
+      placed.push({ kind: 'stand-in', event: line.beat, cue: 'narrator', id: line.id, frame: line.frame, sample: at(line.frame), seconds: standIn, cents: 0, pan: 0 })
+      if (LIVE.standInDucks) spoken.push({ start: at(line.frame) / sr, end: at(line.frame) / sr + standIn })
+      continue
+    }
     const kept = o.sounds.get(line.id)
     if (!kept) {
       missingLines.push(line.id)
