@@ -1,0 +1,48 @@
+# Polish keys 2: the shot, the bolt in flight, the hit and the pressed key of step 1
+
+Branch `agent/polish-keys2`, from 308e96a1. Round 25, R4, three majors (`set-A-09`, `set-B-01`, `set-B-02`).
+
+Files changed: `src/pages/step1/turrets.ts`, `src/pages/step1/index.ts` (the one line of `JAR`), `src/pages/step1/real/turrets.ts`, `src/pages/step1/real/turret-fx.ts` (the one line of `EMIT.bolt`), `src/pages/step1/real/keyboard.ts`, `tests/polish-keys2.test.ts`, `tests/polish-keys2-measure.test.ts`, `pipeline/phase5/polish-keys2-shots.mjs`, `pipeline/phase5/polish-keys2-px.mjs`, this file. No file of another owner, no test of another owner, no number the kit sets, no word on the page, no sound event.
+
+A frame below is a frame of 60 a second. On the live site it is the frame of the pack's own visitor, stepped with no browser: `POLISH_KEYS2_TABLE=<file> npx vitest run tests/polish-keys2-measure.test.ts` writes one row for each frame (`<file>`), one for each frame of the film's step 1 (`<file>.film`) and one hash of the draw list and the arrow's pose for each film frame (`<file>.film.hash`). A picture of the walk (`node pipeline/phase5/polish-keys2-shots.mjs walk`) named N shows the stage after frame N - 1. "Before" is 308e96a1.
+
+## Rule 6: what an earlier round set, and what was not changed for that reason
+
+Read from `pipeline/phase5/polish-keys.md`, `pipeline/phase3/keyboard.md`, `scorecards/round-022` to `round-025` and `git log -p`. The Builder ruled on all four at 13:39 UTC.
+
+1. The struck key's dip at a hit. CONTESTED, not changed. Round 22 asked to sink it; round 23 (R4-1) asked for "a quick, localized jolt or reflected light ... without depressing a key" and got `polish-keys.md` decision 5 ("On the live site a bolt that hits the arrow presses no key"), which is the `!onSite` gate on `sprung` and on the lean in `src/pages/step1/index.ts`; round 25 asks to sink it again. Open item, the Builder's.
+2. The cap's slide at a press. CONTESTED if moved, not changed. `SINK = { x: 5.5, y: 5.5, shade: 0.1 }` in `src/pages/step1/keyboard.ts` is round 23's (`polish-keys.md` decision 2). The view's angle, for the log: the camera looks straight down from about 3062 px (540 / tan 10 degrees, the 20 degree lens of `config/showcase.json`), so the 6 px a key goes down move key A (about 385 px left of the middle and 352 px below it) by about 0.75 px to the right and 0.69 px up on screen (STATED: computed, not measured in a picture). The slide drawn is 5.5 px right and 5.5 px down, about 7 times the angle's share and downward: it is round 23's drawn travel, not parallax.
+3. The bolt's body, a halo, a larger flash. CONTESTED, not changed. `keyboard.md` decision 19 (round 4), decision 21 (the ruling "longer, not fatter", head 8 by 3, no halo, flash 24 to 32 px for two frames), round 5's look fix 3 (head 8 by 2.4, tails 76 and 40 px, lamp 0.16 over 64).
+4. The hit's light on the caps round it (`EMIT.thrown` 1.1 over 300, `SCORCH.quick` 0.04). CONTESTED, not changed: round 23's decision 5.
+
+Not contested: `RELEASE` (round 24) is as it was, to the digit. `JAR` (round 23) keeps its px, reach and fall; its hold and tau changed (decision 4).
+
+## Measures before (MEASURED, the command above)
+
+- Shot, live: turret 0 fires on frame 870 (0:14.50). The barrel's draw back was `charge * 14 * 0.55` in the look: 7.7 px spread evenly over the 21 frames of the wind-up, 0.37 px a frame. On the shot frame it went 7.4 px forward to rest, and the kick was 0 on that frame and about 2.2 px one frame later. Flash 24 to 32 px for 2 frames.
+- Flight, live: bolt 0 flies frames 870 to 897, 28 frames, 25.0 px a frame (1500 px a second), from (288.2, 894.0) at height 69.8 to (962.8, 916.6) at height 44.3; the caps' tops are at 42. Head 16 by 4.8 px, tails 76 and 40 px, both flickering by 8 per cent at 140 radians a second, lamp 0.16 over 64 px.
+- The critic's sheet `set-A-09` holds frames 893, 895, ... 913: the shot is 23 frames before its first frame and the hit frame 898 is between two of its frames. The Builder took the sheet's window (13:39 UTC).
+- Hit, live, frame 898: the arrow's tip goes 985.4 to 1045.4 px in one frame, stands 898 to 901, is back over 902 to 907. Deck +3.08, +0.34, -1.64, -1.61, -0.43, +0.46, +0.51, +0.15 px on 898 to 905. Caps thrown outward on 898 (dx:dy): f -3.8:2.3, g -3.5:-2.6, h 4.5:1.9, v -4.3:5.8, b 3.8:7.4; on 899 about 0.6 of that. The caps round the strike also hop (`THUD.hop`, up to 6.9 px of height on 901). No cap goes down.
+- Press of A, live (email field): sink 0.71 on 1479, 1.00 on 1480 to 1490, 0.29 on 1491, then -0.42, -0.29, -0.17, -0.08, -0.02, 0 on 1497. Two frames to the bottom, eleven frames standing, the seat crossed inside two frames, five frames over it. Seen in the pictures before: the face of the cap goes darker and the cap slides; the bed round it and the cap's own edges do not change.
+- Film: `bolt-fire` on unit frames 248, 275, 302, 329, 356, 383 ...; `bolt-hit-cursor` on unit frame 349.
+
+## Decisions
+
+1. The turret, site and film, mended where it is made. `RECOIL` and `recoilOf` in `src/pages/step1/turrets.ts`: the barrel creeps back 2 px over the wind-up, is cocked 8 px further over its last 5 frames (0.084 s, eased), is thrown back to 22 px on the step of the shot and rings down (time constant 0.04 s, 9 swings a second), still after 0.15 s. The ring-down is read at whole frames of 60, so the shot frame holds the whole kick whatever the step the shot fell on (the film's shot falls 0.012 s into its frame, the live one 0.004 s). The turret's `v[5]` now carries the barrel's whole offset in px; `real/turrets.ts` no longer has a kick of its own and no longer scales `v[5]` by 0.55; the head gives 0.22 of the barrel's offset. The flash is not changed. The bolt's birth place, path and speed do not read `v[5]` and are not changed.
+   MEASURED after, live, frames 865 to 878, px back: 1.6, 2.9, 5.2, 7.6, 9.4, shot frame 22.0, then 8.5, -3.0, -6.0, -3.4, 0, 1.4, 0.7, 0.
+2. The bolt. No flicker: the two tails' width and the lamp's power no longer swing by 8 per cent, so the bolt is the same thing on every frame. Its lamp on the keys is `EMIT.bolt` 0.075 over 48 px (was 0.16 over 64), at the head as before, with its shadow as before: weaker than the body, further down the way round 5 went. Head and tails keep their sizes. The Builder's question on the two tails: seen at 3 times on six frames in a row before the change (`out/work/polish-keys2/before-bolt3.png`), head and tails read as one streak, widest and brightest at the head, thinning to nothing behind; they do not break up between frames. Not changed.
+3. The hit. The struck key does not dip (rule 6, 1). What answers the hit is round 23's: the deck's jolt, the caps thrown outward, the caps' hop, the light.
+4. The caps' throw at a hit is held two frames: `JAR.hold` 0.03 s (was 0.017) and `JAR.tau` 0.025 s (was 0.035), so the throw is whole on the frame of the hit and the frame after it, under half on the third, under 1.5 px on the fifth. A sheet of every second frame holds the whole throw whichever frames it takes. `tests/polish-keys.test.ts` (round 23's) passes unchanged.
+5. The pressed key, live site only (`real/keyboard.ts`, `WELL`). While a cap is held down: the bed round its seat is darkened out to 8 px beyond the seat, with two more patches of the shadow mesh that is already there, laid at the seat and not at the slid cap, so the bed the cap slid off shows dark along its upper and left edges; and the cap itself is shaded along its upper and left edges, by 0.5 at the edge, falling to nothing 14 px in. Both grow with the sink and are gone when the cap is up. `SINK`, `DOWN`, `HOLD`, `PRESS` and `RELEASE` are not changed. No new mesh, material or colour.
+
+## Film frames that change
+
+Step 1 is film frames 840 to 2759; unit frame n is film frame 840 + n.
+
+- MEASURED (`<file>.film.hash`, before against after, 1920 frames): the draw list changes on unit frames 227 to 583 and on no other frame, 357 frames in a row: film frames 1067 to 1423. The only value that changes is the turrets' `v[5]` and the two boxes placed from it; every other column of the table is equal (`diff` of the two tables without the turret columns: no line).
+- The bolt's look (no flicker, the lamp) changes the picture of every film frame that holds a bolt: unit frames 248 to 605, film frames 1088 to 1445.
+- So film frames 1067 to 1445 change and no other. MEASURED: every unit frame from 227 to 605 holds a turret winding up, a turret inside its ring-down or a bolt in flight (0 frames without). The film has no pressed key in the sense of `v[6]` and no `JAR`, so decisions 4 and 5 change no film frame.
+
+## Tests
+
+`tests/polish-keys2.test.ts`, stepped, no browser: the turret's creep, cock, kick and ring-down in px and frames, live and film; the bolt's speed (25.0 px a frame), its first and last place and its 28 frames live and 25 in the film, with the numbers of before written in the test; the caps' throw for two frames, the deck's jolt, no key pressed and none hot after the hit; the pressed cap's sink frame by frame, its wall shade and the dark bed posed in the look; the list of step 1's events and their frames, live (178 lines, sha1 b50cfa60...) and film (311 lines, sha1 8d251c75...), both taken from the tables of before.
