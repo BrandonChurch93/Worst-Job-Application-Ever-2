@@ -1,0 +1,51 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the site as web pages: the six pages at rest, the application with its controls on, the message page for touch devices, and the controls at their real size",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-04.png",
+   "where": "Step 3: Skills Assessment, below the introduction and beside the exposed port",
+   "what": "At rest the assessment gives no instruction, status, or visible way to start. The pipe running off the lower edge is the only next visual cue, so the page reads as unfinished rather than as a working assessment with a mechanism emerging from it.",
+   "fix": "Add a short status or action line beneath the introduction and associate it with the port. If it starts automatically, say so; if it needs input, name the input or give it a Start control."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-08.png",
+   "where": "touch-device message card",
+   "what": "The only thing a visitor can do here is read the device restriction; the film alternative shown on desktop is missing precisely where it would be most useful.",
+   "fix": "Put a plainly labeled Watch the film button in the message card, with the desktop requirement as secondary text."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "Human Verification card and the isolated Submit button",
+   "what": "The checkbox and its explanatory copy are grouped in the upper left, but the action that follows sits alone at bottom center. The prior Continue actions are right-aligned at two different heights, so the next-action position is not predictable across steps.",
+   "fix": "Keep Continue and Submit on a shared action alignment with a consistent gap from the last form element. If Submit must start centered for its gag, visually connect it to the verification block before the gag begins."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-03.png",
+   "where": "Contact number, Date of birth, and Audio volume controls",
+   "what": "All three are identical blank wells with chevrons. They show neither a value nor a prompt, and the volume helper says to set 100% without telling the visitor the current setting.",
+   "fix": "Retain the shared physical styling and unusual input mechanisms, but put a field-specific prompt in each closed control and show the current percentage for volume."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the three benefits cards below the hero",
+   "what": "Each card has a rule with a large empty compartment below it. With the page at rest those repeated empty regions look like missing content rather than intentional padding.",
+   "fix": "Remove the rules and size the cards to their copy, or give the lower compartments a short second line so the dividers have a purpose."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "upper-right crop, the skip utility beside the film link",
+   "what": "The utility row is restrained and readable, but ‘Accept Defeat’ makes the skip control sound like part of the application joke rather than a reliable way past it.",
+   "fix": "Label the utility ‘Skip this step’ in the same quiet style as the film link and keep the satirical wording inside the application."
+  }
+ ]
+}
