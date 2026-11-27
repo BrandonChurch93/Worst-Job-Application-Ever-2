@@ -33,24 +33,61 @@ export const MOVE = {
   leg: 1.5, // s the boss walks at most on one leg
   speed: 190, // px/s it walks
   least: 60, // px: a place nearer than this is not worth a leg
+  short: 340, // px from the arrow at which the boss stops when it closes in
   touch: 34, // px round the body's ellipse inside which the arrow is run over
   back: 430, // px from the arrow to where the boss steps back to after it ran the arrow over
   fence: { x0: 1250, y0: 480, x1: 1580, y1: 800 } // where the boss's centre may be: under the band below the bar, and right of where the pop-ups stand
 } as const
 
-// C. The four corner cannons.
+// C. Bullets. Every gun fires them: the boss's own two guns and the four corner cannons.
+export const GUN = {
+  first: 1.5, // s into the fight before the boss's own guns first wind up, after the turret has locked
+  tell: 0.6, // s a gun pulls back and its lamp blinks before it fires
+  every: [2.6, 3.2, 2.6] as const, // s from one pattern to the next, by phase
+  late: 2, // s into the last phase before the first pattern
+  least: 0.9, // s at least into the second phase before a pattern
+  speed: [520, 560, 600] as const, // px/s of a bullet of the boss's own guns, by phase
+  r: 14, // px, a bullet's radius: 28 px across
+  reach: 16, // px added to that radius for a hit on the arrow's centre
+  berth: 34, // px more that a careful visitor keeps from a bullet's line
+  lead: 0.4, // share of the arrow's own travel during the bullet's flight that an aimed shot allows for
+  leadMost: 180, // px at most that an aimed shot leads
+  follow: 6, // 1/s, how fast the guns' reading of the arrow's speed follows it
+  fan: 0.2, // rad between the bullets of a fan of three
+  fanGap: 0.11, // s between them
+  line: 4, // bullets in a burst along a line
+  lineGap: 0.16, // s between them
+  ring: 10, // bullets in a ring
+  life: 5, // s a bullet flies at most
+  trail: 44 // px, the trail behind a bullet as drawn
+} as const
+
+// The four corner cannons.
 export const CORNER = {
   at: [[84, 176], [1836, 176], [84, 996], [1836, 996]] as const, // their places, in the corners of the whole screen, the upper two under the band
   order: [2, 1, 0, 3] as const, // which fires next
   first: 4.5, // s into the fight before the first tell
   every: 5, // s from one tell to the next
   tell: 0.9, // s a cannon shows that it will fire; it aims at the arrow the whole time and locks at the end
-  speed: 540, // px/s of its ball
-  ball: 26, // px, the ball's radius
-  reach: 24, // px added to that radius for a hit on the arrow's centre
-  life: 4.5, // s a ball flies at most
+  speed: 540, // px/s of its bullet
   base: 48, // px, the radius of the cannon as drawn
-  band: 112 // px from the top: a ball that would fly above this line is gone
+  band: 112 // px from the top: a bullet, a line or a mark that would come above this line is cut off there
+} as const
+
+// The big turret on the boss's back.
+export const BIG = {
+  rise: 0.15, // s into the fight at which it starts to rise out of the back
+  up: 0.7, // s into the fight at which it is up and starts to slide over the button
+  lock: 1.05, // s into the fight at which it locks over the button
+  back: 150, // px behind the button, on the side away from the shield, where it comes up
+  first: 11, // s into the fight before its first tell
+  every: 13, // s from one blast to the next tell
+  tell: 1.6, // s the line of the blast lies on the ground before the blast; the boss and its shield hold still
+  wide: 64, // px to each side of the line that the blast takes
+  beam: 0.3, // s the blast stands
+  scorch: { w: 240, h: 150 }, // px, the mark where the arrow stood when the line was laid
+  scorchLife: 9, // s the mark stays
+  off: 0.7 // s the turret takes to fly off when the boss is beaten
 } as const
 
 // D. Being hit.

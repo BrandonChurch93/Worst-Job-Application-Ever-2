@@ -3,7 +3,7 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, restRig
 import { bearing, clearSpot, newFight, SPARK_SECONDS, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { GUARD, STANDS, TOP } from '../../boss/tune'
-import { drawRules, drawWeapons } from '../../boss/weapons'
+import { drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
 import { SCREEN_H } from '../../shell/parts'
@@ -79,7 +79,7 @@ export function makePage(): PageLogic {
   const film = makeScript(L)
   const beats = config.film.beats.filter((b) => b.unit === 'boss')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: (b as { event?: string }).event ?? null }))
-  const arena: Arena = { slabs: L.weapons.slabs.map((s) => ({ w: s.w, h: s.h })), popups: L.weapons.popups.map((p) => ({ box: p.box, buttons: p.buttons.map((b) => b.box) })) }
+  const arena: Arena = { popups: L.weapons.popups.map((p) => ({ box: p.box, buttons: p.buttons.map((b) => b.box) })) }
   let s = fresh('live')
   const kept = new Set<string>([L.tree.id])
   const keepAll = (n: { id: string; children?: unknown[] }): void => {
@@ -129,10 +129,6 @@ export function makePage(): PageLogic {
     if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = PRESS.stand - PRESS.deep * sunk()
     if (s.stage === 'fight' && s.fight) {
       for (const up of s.fight.popups) if (up.closing < 0 && up.t > 0.14 && inBox(L.weapons.popups[up.slot]!.box, p)) z = Math.max(z, heights.card)
-      for (const slab of s.fight.slabs) {
-        const size = L.weapons.slabs[slab.m]!
-        if (slab.state === 1 && Math.abs(x - slab.x) < size.w / 2 && Math.abs(y - slab.y) < size.h / 2) z = Math.max(z, heights.slab)
-      }
     }
     return z
   }
@@ -143,13 +139,15 @@ export function makePage(): PageLogic {
     if (s.fight) {
       s.fight.over = true
       s.fight.health = 0
-      s.fight.slabs = []
+      s.fight.balls = []
+      s.fight.marks = []
       s.fight.popups = []
       s.fight.darts = []
       s.fight.sparks = []
       s.fight.flashes = []
     }
     io.emit('power-down', from.cap.x, from.cap.y, false)
+    io.emit('turret-off', from.cap.x, from.cap.y, false)
     io.cursor.heal()
     io.cursor.hurt('scorched')
     io.cursor.act('plain')
@@ -404,6 +402,7 @@ export function makePage(): PageLogic {
       if (s.stage === 'collapse' && s.from) {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)
         if (sparks.length) drawWeapons(out, { ...newFight(), sparks }, L.weapons)
+        if (s.fight) drawTurretOff(out, s.from.cap.x, s.from.cap.y, s.fight.face, s.t)
       }
       if ((s.stage === 'collapse' && s.t > CAP_LANDS) || (s.stage === 'press' && !s.inSocket)) drawSmoke(out, FALLEN.x, FALLEN.y, s.time)
     },

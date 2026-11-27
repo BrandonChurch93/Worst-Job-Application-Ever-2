@@ -34,3 +34,6 @@ export const BODY = { rx: 196, ry: 118 }
 
 // The glass shield stands on the cursor's side of the body: a dart that comes from the left stops on it.
 export const SHIELD = { x: -290, half: 122, z: 92, clear: 60, drift: 0.06, spread: 40 }
+
+// What the fight calls the firing of the boss's own guns. It is still the name the film's beat and the narrator's line hang on; `bullet-fire` is asked for in the notes.
+export const EVENT = { gun: 'slab-fire' } as const

@@ -109,7 +109,7 @@ for (const kind of kinds) {
     }
     const count = (name) => stage.events.filter((e) => e.name === name).length
     const fight = stage.page.save().fight
-    rows.push({ seed, won: to >= 0, seconds: to >= 0 ? (to - from) / stepHz : null, health: fight ? fight.health : null, flat: count('flatten'), heals: count('boss-heal'), healed: fight ? fight.healed : 0, glance: count('shield-glance'), round: count('shot-round'), tells: count('cannon-tell'), moves: count('boss-move'), weak: count('weak-tell'), by: fight ? fight.by : [0, 0, 0] })
+    rows.push({ seed, won: to >= 0, seconds: to >= 0 ? (to - from) / stepHz : null, health: fight ? fight.health : null, flat: count('flatten'), heals: count('boss-heal'), healed: fight ? fight.healed : 0, glance: count('shield-glance'), round: count('shot-round'), tells: count('cannon-tell'), moves: count('boss-move'), weak: count('weak-tell'), by: fight ? fight.by : [0, 0, 0, 0], big: count('big-fire') })
   }
   const won = rows.filter((r) => r.won)
   const secs = won.map((r) => r.seconds)
@@ -119,12 +119,12 @@ for (const kind of kinds) {
     flat: { least: Math.min(...rows.map((r) => r.flat)), middle: mid(rows.map((r) => r.flat)), most: Math.max(...rows.map((r) => r.flat)) },
     healed: { middle: mid(rows.map((r) => r.healed)), most: Math.max(...rows.map((r) => r.healed)) },
     glance: mid(rows.map((r) => r.glance)), round: mid(rows.map((r) => r.round)), weak: mid(rows.map((r) => r.weak)),
-    by: [0, 1, 2].map((i) => rows.reduce((n, r) => n + r.by[i], 0) / seeds),
+    by: [0, 1, 2, 3].map((i) => rows.reduce((n, r) => n + r.by[i], 0) / seeds),
     left: won.length < seeds ? { least: Math.min(...rows.filter((r) => !r.won).map((r) => r.health)), most: Math.max(...rows.filter((r) => !r.won).map((r) => r.health)) } : null
   }
   out[kind] = { line, rows }
   const s = line.seconds
-  console.log(`${kind.padEnd(7)} wins ${won.length} of ${seeds}  fight ${s ? `${s.least.toFixed(1)} / ${s.middle.toFixed(1)} / ${s.most.toFixed(1)} s` : 'never won'}  flattened ${line.flat.least} / ${line.flat.middle} / ${line.flat.most}  healed ${line.healed.middle.toFixed(1)} middle, ${line.healed.most.toFixed(1)} most  on the shield ${line.glance}, round it ${line.round} (middle)  weak tells ${line.weak}  hit by slab ${line.by[0].toFixed(1)}, ball ${line.by[1].toFixed(1)}, body ${line.by[2].toFixed(1)} (mean)${line.left ? `  boss health left when not won ${line.left.least.toFixed(1)} to ${line.left.most.toFixed(1)} after ${maxSeconds} s` : ''}`)
+  console.log(`${kind.padEnd(7)} wins ${won.length} of ${seeds}  fight ${s ? `${s.least.toFixed(1)} / ${s.middle.toFixed(1)} / ${s.most.toFixed(1)} s` : 'never won'}  flattened ${line.flat.least} / ${line.flat.middle} / ${line.flat.most}  healed ${line.healed.middle.toFixed(1)} middle, ${line.healed.most.toFixed(1)} most  on the shield ${line.glance}, round it ${line.round} (middle)  weak tells ${line.weak}  hit by the boss's guns ${line.by[0].toFixed(1)}, a corner cannon ${line.by[1].toFixed(1)}, the body ${line.by[2].toFixed(1)}, the big blast ${line.by[3].toFixed(1)} (mean)${line.left ? `  boss health left when not won ${line.left.least.toFixed(1)} to ${line.left.most.toFixed(1)} after ${maxSeconds} s` : ''}`)
 }
 if (a.json) writeJson(at(String(a.json)), out)
 await close()
