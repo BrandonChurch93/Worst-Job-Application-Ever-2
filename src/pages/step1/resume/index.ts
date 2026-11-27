@@ -30,7 +30,7 @@ const POP = { chip: 4, over: 5, tile: 1.2, arc: 54, high: 46, lean: 0.24, lie: 0
 const WINDOW = ['resume-folder', 'resume-folder-bar', 'resume-folder-knob', 'resume-folder-title', 'resume-file', 'resume-file-name']
 const LIE = heights.card + 9
 // The live arrow's run after the sheet: it starts `from` into the wind, and stands where the tug starts `stand` into the slot's catch.
-const CHASE = { on: true, from: 0.22, x: -252, y: -155, back: 0.3 }
+const CHASE = { on: true, from: 0.22, to: 0.8, x: -252, y: -155, back: 0.3, free: 0.55 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
@@ -165,11 +165,11 @@ export function makeResume(host: ResumeHost): ResumeStage {
   // The pace of the beats: the film's, and the film's too on the live site once the skip link is up, so a visitor who does nothing is through in time.
   const pace = (): typeof FLOW.film => (s.mode === 'film' || s.flow.fast ? FLOW.film : FLOW.live)
   const stand = { x: SLOT.cx + CHASE.x, y: SLOT.cy + CHASE.y }
-  // The live site takes the arrow for the wind: it runs after the sheet and stands by the slot as the slot catches it, where the film's arrow stands.
+  // The live site takes the arrow for the wind: it goes to the place the tug's take starts from, and is given back `free` seconds before the bite, so the bite finds it in the visitor's hand.
   const chase = (io: StepIo, share: number): void => {
     const f = s.flow
     if (!CHASE.on) return
-    const a = smooth(clamp((share - CHASE.from) / (1 - CHASE.from), 0, 1))
+    const a = smooth(clamp((share - CHASE.from) / (CHASE.to - CHASE.from), 0, 1))
     io.cursor.drive(lerp(f.cx, stand.x, a), lerp(f.cy, stand.y, a), lerp(f.cz, heights.card + 6, a))
   }
   // How far up the window is, 0 under the page to 1 in its place, a little past 1 on the way.
@@ -285,7 +285,10 @@ export function makeResume(host: ResumeHost): ResumeStage {
       p.rot = WIND.swing * Math.sin(Math.PI * 2 * WIND.turns * e) * (1 - e) + POP.shiver * Math.sin(share * 70) * (1 - u)
       p.vx = (p.x - wx) / io.dt
       p.vy = (p.y - wy) / io.dt
-      if (!film) chase(io, share)
+      if (!film && io.cursor.taken) {
+        chase(io, share)
+        if ((1 - share) * flow.wind + TIMES.bite <= CHASE.free) io.cursor.release(CHASE.back)
+      }
       if (film ? io.time >= RESUME.drop : f.t >= flow.wind) {
         beat('feed')
         p.rot = 0
@@ -294,7 +297,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
         p.feed = 0
         p.fx = p.x
         p.fy = p.y
-        if (!film && CHASE.on) io.cursor.release(CHASE.back)
+        if (!film && io.cursor.taken) io.cursor.release(CHASE.back)
       }
       return
     }
