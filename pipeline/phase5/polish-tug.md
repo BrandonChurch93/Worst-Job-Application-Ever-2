@@ -195,3 +195,6 @@ Checks on this code, one at a time, 01:11Z to 01:20Z:
 - `npm run -s determinism`: exit 0, "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders".
 - `npm run -s still -- --key step1-fire --tier draft` (exit 0), `cmp` with merge 43's picture: byte equal (md5 b87598cee9b47b8a82c66601b42892dc both).
 - `npx vitest run` (all): 153 files passed, 1 skipped; 1854 tests passed, 1 skipped.
+- `npm run -s take -- --check`: exit 0, "take: every one of the 10 beat events fell inside its beat", "hits within 0.15 s of a cut of the film: 0".
+- `npm run -s bots`: exit 0, "keen reached every one of the 37 gags on every seed", "bots: all clear".
+- Not run in this pass: the stills `table-wide` and `boss-fight`.
