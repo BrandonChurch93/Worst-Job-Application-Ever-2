@@ -9,9 +9,6 @@ const TIER = 37.75
 const BATS = 7
 const HIGH = 91.2
 const REST = 3715.2
-// The street's bats and gate, in balls down the tier, from src/table/layout.ts (FLIP, MOUTH): the bats' lowest point at rest is the pivot's place plus the reach to the tip's middle at 25 degrees plus the tip's radius; the gate's wire lies at MOUTH.v. Both are taken at the floor's level, where a px of the page is a px of the screen.
-const BATS_LOW = 8.95 + (3 - 0.26) * Math.sin((25 * Math.PI) / 180) + 0.26
-const WIRE = 10.35
 const all = { highest: Infinity, visits: 0, moves: 0, most: 0, mostIn: '', gap: Infinity, gapIn: '', trips: 0, ups: 0, downs: 0, over: 0, ease: [], back: 0, turned: 0, low: 0, lowLift: 0, lowOff: 0, lowFar: 0, lowFarSettled: 0, settled: 0, reach: [] }
 for (const file of fs.readdirSync(dir).filter((f) => /^[a-z]+-\d\.json$/.test(f)).sort()) {
   const rows = JSON.parse(fs.readFileSync(`${dir}/${file}`))
@@ -90,5 +87,4 @@ console.log(`easing in, frames to the first frame of full pace: least ${Math.min
 console.log(`frames with the ball on the street's floor at ${BATS.toFixed(1)} balls down or lower: ${all.low}; with the lift not 0: ${all.lowLift} (largest ${all.lowOff.toFixed(1)} px); largest distance of the view from ${REST}: ${all.lowFar.toFixed(1)} px on all of them, ${all.lowFarSettled.toFixed(1)} px on the ${all.settled} that lie more than 60 frames after the ball came to the tier`)
 const lifts = all.reach.filter((x) => x.lift !== 0)
 console.log(`the frame the ball is at the bats' line again, ${all.reach.length} times: lift 0 on ${all.reach.length - lifts.length}, not 0 on ${lifts.length}${lifts.length ? ` (largest ${Math.max(...lifts.map((x) => x.lift)).toFixed(1)} px)` : ''}; view's place least ${Math.min(...all.reach.map((x) => x.place)).toFixed(1)}, most ${Math.max(...all.reach.map((x) => x.place)).toFixed(1)}`)
-const y = (v) => (TIER + v) * 96 - all.highest
-console.log(`the view's highest place with the lift on: ${all.highest.toFixed(1)}; there the bats' lowest point is at y ${y(BATS_LOW).toFixed(1)} of 1080 and the gate's wire at y ${y(WIRE).toFixed(1)}, ${(1080 - y(WIRE)).toFixed(1)} px of screen under the wire; at ${REST} the wire is at y ${((TIER + WIRE) * 96 - REST).toFixed(1)}, ${(1080 - (TIER + WIRE) * 96 + REST).toFixed(1)} px under it`)
+console.log(`the view's highest place with the lift on and the ball on the street: ${all.highest.toFixed(1)} (the wire's and the bats' place on the screen at a given place of the view: polish-sight-wire.mjs)`)
