@@ -1,7 +1,7 @@
 import type { Acting } from '../../cursor/body'
 
 // The fight with the port. `keys`: how far of the way from the hand to the port the arrow is held, by the seconds of the fight. `kinds`: what the arrow does between one key and the next: 0 dragged, 1 digs in, 2 slips, 3 claws back, 5 hooked on the rim. `end`: the fight's length when the hand does nothing.
-// `grip`: the px a hand must travel away from the port to win back the whole way; `gripMost`: the most it can win back; `tire`: how fast what it won is lost again, a second; `stall`: how far a hand that pulls away slows the fight's clock, so a fighting hand lasts `end / (1 - stall)` seconds at most; `hard`: the px a second that count as pulling with all it has.
+// `grip`: the px a hand must travel away from the port to win back the whole way; `gripMost`: the most it can win back; `tire`: how fast what it won is lost again, a second; `quick`: how fast the fight's clock runs on the live site, where the scene has fewer seconds to give, so a hand that does nothing is taken in `end / quick` seconds; `stall`: how far a hand that pulls away slows that clock, so a fighting hand lasts `end / quick / (1 - stall)` seconds at most; `hard`: the px a second that count as pulling with all it has.
 export const VAC = {
   keys: [[0, 0], [0.6, 0.2], [1.2, 0.24], [1.6, 0.6], [2.9, 0.3], [3.2, 0.66], [4.3, 0.42], [4.6, 0.7], [5.1, 0.62], [5.3, 0.75], [5.8, 0.77]],
   kinds: [0, 1, 2, 3, 2, 3, 2, 3, 2, 5],
@@ -9,7 +9,8 @@ export const VAC = {
   grip: 620,
   gripMost: 0.3,
   tire: 0.12,
-  stall: 0.17,
+  quick: 1.8125,
+  stall: 0.54,
   hard: 260,
   // The arrow's length as drawn in each kind of part, the lunges a second while it claws back and how deep they are, and its shake when it digs in and on the rim (radians, swings a second, seconds).
   long: [1.12, 0.8, 1.42, 0.98, 1, 1.46],
@@ -55,7 +56,7 @@ export function fight(state: number[], hand: { x: number; y: number }, port: { x
   const dy = port.y - hand.y
   const d = Math.hypot(dx, dy) || 1
   const away = Math.max(0, -((hand.x - state[2]!) * dx + (hand.y - state[3]!) * dy) / d)
-  const tau = clock >= 0 ? clock : state[0]! + dt * (1 - VAC.stall * Math.min(1, away / dt / VAC.hard))
+  const tau = clock >= 0 ? clock : state[0]! + dt * VAC.quick * (1 - VAC.stall * Math.min(1, away / dt / VAC.hard))
   const part = partAt(tau)
   const kind = VAC.kinds[part]!
   const began = part !== state[4]

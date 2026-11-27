@@ -49,18 +49,19 @@ describe('the fight with the port', () => {
     })
     expect(VAC.kinds[VAC.kinds.length - 1]).toBe(5)
     expect(VAC.end - VAC.keys[VAC.keys.length - 2]![0]!).toBeCloseTo(0.5, 6)
-    expect(VAC.end / (1 - VAC.stall)).toBeLessThanOrEqual(7)
+    expect(VAC.end / VAC.quick / (1 - VAC.stall)).toBeLessThanOrEqual(7)
+    expect(VAC.end / VAC.quick).toBeGreaterThan(3)
     expect([0.3, 0.8, 1.4, 2, 3, 5.5].map(kindAt)).toEqual([0, 1, 2, 3, 2, 5])
   })
 
   it('takes a hand that does nothing in its own length, and a hand that pulls away later, but takes it', () => {
     const still = lost(() => ({ x: 900, y: 520, down: false }))
-    expect(still.seconds).toBeCloseTo(VAC.end, 2)
+    expect(still.seconds).toBeCloseTo(VAC.end / VAC.quick, 2)
     const away = lost((t) => ({ x: 900 - VAC.hard * 2 * t, y: 520, down: false }))
     expect(away.seconds).toBeGreaterThan(still.seconds + 1)
     expect(away.seconds).toBeLessThanOrEqual(7)
-    expect(away.seconds).toBeLessThanOrEqual(VAC.end / (1 - VAC.stall) + 0.01)
-    const at = Math.round(0.9 * stepHz)
+    expect(away.seconds).toBeLessThanOrEqual(VAC.end / VAC.quick / (1 - VAC.stall) + 0.01)
+    const at = Math.round(0.4 * stepHz)
     expect(away.nearest[at]!).toBeLessThan(still.nearest[at]!)
   })
 
@@ -166,8 +167,8 @@ describe('the fight on the live site', () => {
     const r = run(() => ({ x: 1100, y: 620, down: false }))
     expect(r.on).toBeGreaterThan(0)
     expect(r.drift).toBeGreaterThan(200)
-    expect(r.seal).toBeGreaterThan(r.on + VAC.end)
-    expect(r.seal).toBeLessThan(r.on + VAC.end + 1.5)
+    expect(r.seal).toBeGreaterThan(r.on + VAC.end / VAC.quick)
+    expect(r.seal).toBeLessThan(r.on + VAC.end / VAC.quick + 1.5)
   })
 
   it('lets a hand that pulls away last longer, and takes it all the same', () => {
@@ -175,8 +176,7 @@ describe('the fight on the live site', () => {
     const away = run((t) => ({ x: Math.max(40, 1100 - VAC.hard * Math.max(0, t - still.on)), y: 620, down: false }))
     expect(away.on).toBeGreaterThan(0)
     expect(away.seal - away.on).toBeGreaterThan(still.seal - still.on + 0.4)
-    expect(away.seal - away.on).toBeLessThan(VAC.end / (1 - VAC.stall) + 1.5)
-    expect(still.seal - still.on).toBeLessThan(7)
+    expect(away.seal - away.on).toBeLessThan(VAC.end / VAC.quick / (1 - VAC.stall) + 1.5)
   })
 })
 

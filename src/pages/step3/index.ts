@@ -1003,7 +1003,7 @@ export function makePage(): PageLogic {
         }
       } else {
         s.t += dt
-        if (s.mode === 'film') CLOCK.skips.forEach((k, i) => { if (s.t + dt / 2 >= k[0]! && once(`skip.${i}`)) for (let j = Math.round(k[1]! * stepHz); j > 0; j--) s.t += dt })
+        CLOCK.skips.forEach((k, i) => { if ((s.mode === 'film' || k[2] === 1) && s.t + dt / 2 >= k[0]! && once(`skip.${i}`)) for (let j = Math.round(k[1]! * stepHz); j > 0; j--) s.t += dt })
       }
       if (s.phase === 'sealed') {
         direct(io)
@@ -1207,7 +1207,14 @@ export function makePage(): PageLogic {
       const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [shutOf(ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!), ...(ago(s.took) < SHELL.shut ? [1] : [])]
       const lies = seen3()
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, x: px(lies.x - 0.5), y: px(lies.y - 0.5), z0: px(lies.z), z1: px(lies.z) + BALL, v: shell } : shape)
-      for (const shape of strikeShapes(s.fx, s.t)) out.push(shape)
+      const hits = strikeShapes(s.fx, s.t)
+      for (const shape of hits) out.push(shape)
+      const b0 = machine().balls[0]
+      if (hits.length > 0 && b0 && b0.mode === 'plane') {
+        const from = (s.mode === 'film' ? cut(sceneOf(s.time)) : follow()).eye
+        const mid = px(b0.z) + BALL / 2
+        out.push({ id: 'fx.hero', part: 'table-lights', kind: 'box', x: px(b0.x), y: px(b0.y), w: 0, h: 0, z0: mid, z1: mid, tone: 'light', v: [from[0] + 960, 540 - from[1], from[2], machine().frenzy > 0 ? 1 : 0] })
+      }
       const counts = (s as Rolled).over
       if (counts) for (const shape of out) if (shape.id in counts) shape.v = [shape.v?.[0] ?? 0, counts[shape.id]!]
       out.push(hqPlate)

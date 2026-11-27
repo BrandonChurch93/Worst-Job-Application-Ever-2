@@ -166,8 +166,8 @@ describe('a beat\'s deadline while the visitor\'s ball is in play', () => {
     for (const f of facts) {
       expect([f.name, f.left, f.gags]).toEqual([f.name, true, true])
       expect(f.scene).toBeGreaterThan(0)
-      expect(f.scene).toBeLessThanOrEqual(config.live.pinball.sceneSeconds + 10 + VAC.end / (1 - VAC.stall))
-      expect(f.page).toBeLessThanOrEqual(config.live.pinball.sceneSeconds + config.live.idleSeconds + 2 + VAC.end / (1 - VAC.stall))
+      expect(f.scene).toBeLessThanOrEqual(config.live.pinball.sceneSeconds + 10 + VAC.end / VAC.quick / (1 - VAC.stall))
+      expect(f.page).toBeLessThanOrEqual(config.live.pinball.sceneSeconds + config.live.idleSeconds + 2 + VAC.end / VAC.quick / (1 - VAC.stall))
       expect(f.dead).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
       expect(f.slid).toBeLessThanOrEqual(LIMIT + 1e-6)
     }

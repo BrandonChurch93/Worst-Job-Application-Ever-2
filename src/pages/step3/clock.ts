@@ -1,7 +1,7 @@
 import { stepHz } from '../../config'
 
-// The film's clock against the scene's own clock. The scene's clock stands still at `stop` (where the seal used to fall) while the fight with the port goes on, until the film's second `gone`, when the arrow is gone. To give those seconds back, the scene's clock skips three waits, each `[at, by]`: the ball on the plunger, the office tier emptying, the ball in the firehouse. All in seconds; the skips add up to `gone - stop`, so the film and the scene agree again after the last one.
-export const CLOCK = { stop: 3.3, gone: 6.9, skips: [[9.45, 0.9], [23.4, 1.3], [27.95, 1.4]] }
+// The film's clock against the scene's own clock. The scene's clock stands still at `stop` (where the seal used to fall) while the fight with the port goes on, until the film's second `gone`, when the arrow is gone. To give those seconds back, the scene's clock skips three waits, each `[at, by, live]`: the ball on the plunger, the office tier emptying, the ball in the firehouse. All in seconds; the skips add up to `gone - stop`, so the film and the scene agree again after the last one. A skip whose `live` is 1 is made on the live site too, where the fight is that much longer than it was.
+export const CLOCK = { stop: 3.3, gone: 6.9, skips: [[9.45, 0.9, 1], [23.4, 1.3, 0], [27.95, 1.4, 0]] }
 
 const steps = (seconds: number): number => Math.round(seconds * stepHz)
 

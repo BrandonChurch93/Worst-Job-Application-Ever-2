@@ -8,6 +8,7 @@ import { lit } from '../light'
 import { local, type Zone } from '../zone'
 
 // What a strike throws out, in balls and seconds. A strike is a shape `fx.<serial>` of this part whose `v` is its age, how hard it was (1 to 3), its loot (0 none, 1 coins, 2 paper) and its serial.
+// The shape `fx.hero` is the ball with the arrow in it, at its middle, with the camera's eye as page x, page y and height in `v`: no spark and no flash is drawn over it. `berth` is how far from the ball's middle they stay as the camera sees it, and `berthFar` how much further off than the ball a thing may be and still be moved. While the fourth number of its `v` is 1 the ball stands on a dark disc of radius `back` and darkness `backDark` and wears a ring of light of radius `rim`.
 export const FX = {
   strikes: 14,
   sparks: [0, 8, 14, 22],
@@ -39,10 +40,16 @@ export const FX = {
   paperOut: [1, 4],
   paperUp: [5, 9],
   paperFall: 11,
-  paperSeconds: 1.65
+  paperSeconds: 1.65,
+  berth: 0.66,
+  berthFar: 2.5,
+  back: 0.6,
+  backDark: 0.6,
+  rim: 0.74
 }
 const HOT: [number, number, number][] = [[3.2, 2.6, 1.6], [3.4, 1.9, 0.5], [3.6, 3.4, 2.8]]
 const GLOW: [number, number, number] = [1, 0.72, 0.36]
+const RIM: [number, number, number] = [0.3, 1.5, 2.4]
 
 // One number from 0 to 1 for a strike's serial and a count: the same in every run.
 export const chance = (serial: number, n: number): number => {
@@ -51,7 +58,7 @@ export const chance = (serial: number, n: number): number => {
 }
 const span = (r: number[], u: number): number => r[0]! + (r[1]! - r[0]!) * u
 
-export interface Fx { sparks: THREE.InstancedMesh; rings: THREE.InstancedMesh; cores: THREE.InstancedMesh; coins: THREE.InstancedMesh; papers: THREE.InstancedMesh }
+export interface Fx { sparks: THREE.InstancedMesh; rings: THREE.InstancedMesh; cores: THREE.InstancedMesh; coins: THREE.InstancedMesh; papers: THREE.InstancedMesh; back: THREE.Mesh; rim: THREE.Mesh }
 const made = new WeakMap<THREE.Object3D, Fx>()
 
 const glow = (): THREE.MeshBasicMaterial => new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
@@ -79,7 +86,19 @@ export function buildFx(group: THREE.Object3D, z: Zone): void {
     o.renderOrder = 6
     o.userData.order = 6
   }
-  made.set(group, { sparks, rings, cores, coins, papers })
+  const back = new THREE.Mesh(new THREE.CircleGeometry(FX.back * BALL, 40), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: FX.backDark, depthWrite: false, toneMapped: false }))
+  const rim = new THREE.Mesh(new THREE.RingGeometry(FX.rim * BALL * 0.84, FX.rim * BALL, 48), glow())
+  ;(rim.material as THREE.MeshBasicMaterial).color.setRGB(RIM[0], RIM[1], RIM[2])
+  back.name = 'fx-hero-back'
+  rim.name = 'fx-hero-rim'
+  for (const [o, order] of [[back, 5], [rim, 7]] as const) {
+    o.visible = false
+    o.frustumCulled = false
+    o.renderOrder = order
+    o.userData.order = order
+    group.add(o)
+  }
+  made.set(group, { sparks, rings, cores, coins, papers, back, rim })
 }
 
 const at = new THREE.Matrix4()
@@ -90,6 +109,29 @@ const axis = new THREE.Vector3()
 const along = new THREE.Vector3(1, 0, 0)
 const tint = new THREE.Color()
 const spin = new THREE.Euler()
+const eye = new THREE.Vector3()
+const hero = new THREE.Vector3()
+const ray = new THREE.Vector3()
+const off = new THREE.Vector3()
+const UP = new THREE.Vector3(0, 0, 1)
+
+// Moves a glowing thing of radius `r` sideways, as the camera sees it, until it stands clear of the ball with the arrow.
+function clear(p: THREE.Vector3, r: number, on: boolean): void {
+  if (!on) return
+  ray.copy(p).sub(eye)
+  const far = ray.length()
+  if (far < 1e-6) return
+  ray.multiplyScalar(1 / far)
+  const along = off.copy(hero).sub(eye).dot(ray)
+  if (along <= 0 || far > along * FX.berthFar) return
+  off.copy(eye).addScaledVector(ray, along).sub(hero)
+  const gap = off.length()
+  const need = FX.berth * BALL + r
+  if (gap >= need) return
+  if (gap < 1e-3) off.crossVectors(ray, UP)
+  off.normalize()
+  p.addScaledVector(off, ((need - gap) * far) / along)
+}
 
 // Where a thrown thing is after `t` seconds: out along the floor, up, and down again with one bounce, in balls. The last number is 1 once it lies still.
 export function thrown(out: number, up: number, fall: number, bounce: number, start: number, t: number): [number, number, number] {
@@ -112,6 +154,24 @@ export function poseFx(group: THREE.Object3D, z: Zone, ctx: RealContext): void {
   let cores = 0
   let coins = 0
   let papers = 0
+  const h = ctx.byId.get('fx.hero')
+  const guarded = h !== undefined && h.v !== undefined && h.v.length >= 3
+  if (guarded) {
+    const c = local(z, h.x, h.y, h.z0)
+    const e = local(z, h.v![0]!, h.v![1]!, h.v![2]!)
+    hero.set(c[0], c[1], c[2])
+    eye.set(e[0], e[1], e[2])
+  }
+  const worn = guarded && h.v![3] === 1 && zoneAt(h.y) === z.id
+  f.back.visible = worn
+  f.rim.visible = worn
+  if (worn) {
+    turn.setFromUnitVectors(UP, off.copy(eye).sub(hero).normalize())
+    f.back.position.copy(hero)
+    f.back.quaternion.copy(turn)
+    f.rim.position.copy(hero)
+    f.rim.quaternion.copy(turn)
+  }
   for (const s of strikesIn(ctx, z)) {
     const age = s.v![0]!
     const hard = Math.max(1, Math.min(3, Math.round(s.v![1]!)))
@@ -132,6 +192,7 @@ export function poseFx(group: THREE.Object3D, z: Zone, ctx: RealContext): void {
         const vz = rise - FX.sparkFall * age
         const zz = Math.max(0.05, 0.5 + rise * age - 0.5 * FX.sparkFall * age * age)
         place.set(p[0] + Math.cos(way) * speed * age * BALL, p[1] + Math.sin(way) * speed * age * BALL, p[2] + zz * BALL)
+        clear(place, 0, guarded)
         axis.set(Math.cos(way) * speed, Math.sin(way) * speed, vz).normalize()
         turn.setFromUnitVectors(along, axis)
         const long = Math.hypot(speed, vz) * FX.sparkLong * BALL * (0.4 + 0.6 * k)
@@ -151,7 +212,9 @@ export function poseFx(group: THREE.Object3D, z: Zone, ctx: RealContext): void {
       const u = age / FX.coreSeconds
       const r = FX.core[hard]! * (0.5 + 0.5 * u) * BALL
       turn.identity()
-      f.cores.setMatrixAt(cores, at.compose(place.set(p[0], p[1], p[2] + BALL * 0.5), turn, size.set(r, r, r)))
+      place.set(p[0], p[1], p[2] + BALL * 0.5)
+      clear(place, r, guarded)
+      f.cores.setMatrixAt(cores, at.compose(place, turn, size.set(r, r, r)))
       f.cores.setColorAt(cores++, tint.setRGB(hot[0] * (1 - u) * 0.3, hot[1] * (1 - u) * 0.3, hot[2] * (1 - u) * 0.3))
     }
     if (loot === 1 && age < FX.coinSeconds) {
