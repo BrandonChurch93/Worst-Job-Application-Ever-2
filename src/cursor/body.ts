@@ -527,7 +527,7 @@ export class CursorBody {
     if (now > 320) s.fast = 0.25
     else if (s.fast > 0) {
       s.fast -= dt
-      if (now < MOVE.off && before >= MOVE.off) s.squashV -= MOVE.land
+      if (now < MOVE.off && before >= MOVE.off && !(this.hand && s.arms)) s.squashV -= MOVE.land
     }
     let hop = 0
     const walking = !s.air && s.taken === null && !s.inBall && now > 180 && gait.hop > 0

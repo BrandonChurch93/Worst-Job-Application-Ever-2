@@ -26,8 +26,9 @@ export const CASSETTE = {
 // The same in page pixels, for what meets the cassette on the page: the sheet, the strips.
 export const UNIT = { half: CASSETTE.half * K, deep: CASSETTE.deep * K, r: CASSETTE.roller.r * K }
 
-// The slot as the page draws it: the well, the lip and the housing. `jaw` is how far it is open, the rollers' turn, and the rate the sheet is fed at. On a contact the page throws the housing down the page from `housingY`, by a few pixels, for a moment.
+// The slot as the page draws it: the well, the lip and the housing. `jaw` is how far it is open, the rollers' turn and the rate the sheet is fed at. While the panels snap shut the first number is below zero: how far through the snap they are, with the slot held open at SNAP_FROM under them. On a contact the page throws the housing down the page from `housingY`, by a few pixels, for a moment.
 export const HOUSING = 22
+export const SNAP_FROM = 0.54
 export const housingY = SLOT.cy - SLOT.h / 2
 export function slotShapes(jaw: [number, number, number]): Shape[] {
   const w = SLOT.w
@@ -46,7 +47,7 @@ export const smooth = (t: number): number => {
 // How far the slot has opened, from the mechanism's shape: the number the page hands over, or the width it has grown to.
 export function openOf(jaw: Shape | undefined): number {
   if (!jaw) return 0
-  if (jaw.v && jaw.v.length > 0) return Math.min(1, Math.max(0, jaw.v[0]!))
+  if (jaw.v && jaw.v.length > 0) return jaw.v[0]! < 0 ? smooth(SNAP_FROM) : Math.min(1, Math.max(0, jaw.v[0]!))
   return Math.min(1, Math.max(0, jaw.w / SLOT.w))
 }
 
@@ -57,6 +58,11 @@ export function riseOf(open: number): number {
   const over = 1 + 0.06 * Math.sin(Math.PI * Math.min(1, u / 0.85)) * (u < 0.85 ? 1 : 0)
   return u >= 1 ? 1 : (1 - Math.pow(1 - Math.min(1, u / 0.85), 3)) * over
 }
+
+// The snap shut: how far through it the panels are, and what is left of their gap, a little less than even so the first frame is the longest step.
+export const shutOf = (jaw: Shape | undefined): number => (jaw && jaw.v && jaw.v.length > 0 && jaw.v[0]! < 0 ? Math.min(1, -jaw.v[0]!) : 0)
+export const SNAP = 1.3
+export const gapLeft = (shut: number): number => Math.pow(1 - shut, SNAP)
 
 // The chute hangs down the south wall while the cassette travels, swings out when it is up, then reaches.
 export const chuteOf = (open: number): number => smooth((open - 0.86) / 0.14)

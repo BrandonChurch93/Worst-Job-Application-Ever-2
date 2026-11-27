@@ -7,7 +7,7 @@ import { materials } from '../../../shell/materials'
 import type { Shape } from '../../../stage/types'
 import { PAPER, SLOT } from '../layout'
 import { INK, stock } from './paperStock'
-import { CASSETTE as C, GAP, HOOD, K, RAISE, TRAVEL, UNIT, chuteAngle, chuteOf, chuteReach, hoodUnder, housingY, openOf, panelsOf, riseOf, smooth } from './shredderShape'
+import { CASSETTE as C, GAP, HOOD, K, RAISE, TRAVEL, UNIT, chuteAngle, chuteOf, chuteReach, gapLeft, hoodUnder, housingY, openOf, panelsOf, riseOf, shutOf, smooth } from './shredderShape'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 
@@ -427,16 +427,18 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   o.position.set(SLOT.cx - 960, 540 - SLOT.cy, 0)
   o.rotation.set(0, 0, 0)
   const open = openOf(s)
-  const rise = riseOf(open)
+  const shut = shutOf(s)
+  const left = gapLeft(shut)
+  const rise = riseOf(open) * left
   const p = panelsOf(open)
   const thrown = s.y - housingY
   rig.lift.position.z = RAISE - TRAVEL * (1 - rise) - thrown * THROWN.dip
   rig.lift.position.y = -thrown * THROWN.slip
-  rig.lift.visible = p > 0.5
+  rig.lift.visible = p > 0.5 || shut > 0
   rig.seat.visible = rig.lift.visible
   for (const e of rig.ears) {
     e.visible = p > 0.02
-    e.scale.x = Math.max(0.001, smooth(p / 0.4))
+    e.scale.x = Math.max(0.001, smooth(p / 0.4) * left)
   }
   const turn = s.v && s.v.length > 1 ? s.v[1]! : ctx.time * 9
   rig.north.rotation.x = turn
@@ -445,7 +447,7 @@ function poseCassette(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   rig.chute.rotation.x = chuteAngle(c) + thrown * THROWN.chute
   rig.reach.rotation.x = chuteReach(c) / HOOD.r
   const up = (PANEL.thick + 0.5) * smooth(p / PANEL.lift)
-  const slide = (SLOT.h / 2 + PANEL.clear) * smooth((p - PANEL.lift * 0.7) / (1 - PANEL.lift * 0.7)) + thrown * THROWN.panels
+  const slide = (SLOT.h / 2 + PANEL.clear) * smooth((p - PANEL.lift * 0.7) / (1 - PANEL.lift * 0.7)) * left + thrown * THROWN.panels
   rig.panelN.position.set(0, slide, up)
   rig.panelS.position.set(0, -slide, up)
 }
