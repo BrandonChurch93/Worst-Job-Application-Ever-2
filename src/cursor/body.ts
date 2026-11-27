@@ -80,7 +80,7 @@ export const STRIKE = { x: 4.3, y: 9.4, reach: 2.1 }
 const UNIT_PX = config.cursor.heightPxAt1080 / 19
 
 export interface Strip { x: number; y: number; z: number; rot: number; tilt: number }
-interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number }
+interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number; out: number; slow: number }
 export interface Wound { kind: Damage; at: number; x: number; y: number }
 
 export interface Face { x: number; y: number; z: number; back: number }
@@ -659,7 +659,7 @@ export class CursorBody {
       damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, centred: s.inBall && s.centred, taken: s.taken !== null, scale: 1,
       bend: s.bend, feel: { ...s.feel }, gulp: s.gulp,
       wounds: s.damage.map((d) => ({ kind: d.kind, at: Math.min(1, Math.max(0, 1 - d.left / Math.max(d.whole, dt))), x: d.x, y: d.y })),
-      strips: s.strips ? s.strips.map((p) => ({ x: p.x, y: p.y, z: p.z, rot: p.rot, tilt: p.tilt })) : null,
+      strips: s.strips ? s.strips.map(emerged) : null,
       sprout: s.sprout, strain: s.strain, grip: [s.grip, s.grip], shed: shed ? s.shed / ARM.shed : 0
     }
   }
@@ -727,6 +727,14 @@ function lie(i: number, seed: number): Strip {
   return { x: FAN.away[0]! + toX + dx * cut.half - cut.x, y: FAN.away[1]! + toY + dy * cut.half - cut.y, z: layer(i), rot, tilt: 0 }
 }
 
+// How the strips come out of the shredder's mouth: the least and the most seconds a strip takes, and how far up under the hood it starts, in page pixels, lying low until it is out.
+const EMERGE = { least: 0.05, most: 0.12, under: 18 }
+
+function emerged(p: LooseStrip): Strip {
+  const e = Math.min(1, Math.max(0, p.out))
+  return { x: p.x, y: p.y + (1 - e) * EMERGE.under, z: p.z * e * e, rot: p.rot, tilt: p.tilt * e }
+}
+
 // The strips as they leave the shredder: thrown down the page from above their places, each with its own spin, each bound for its place in the fan.
 function pile(seed: number): LooseStrip[] {
   const out: LooseStrip[] = []
@@ -736,7 +744,7 @@ function pile(seed: number): LooseStrip[] {
     out.push({
       x: (h(1) - 0.5) * 6, y: 38 + h(2) * 12, z: 22 + h(3) * 26 + i * 2, rot: (h(4) - 0.5) * 0.5, tilt: (h(5) - 0.5) * 1.4,
       vx: (h(6) - 0.5) * 60, vy: -(210 + h(7) * 60), vz: -90, vr: (h(8) - 0.5) * 5, vt: (h(9) - 0.5) * 10, rest: false,
-      tx: to.x, ty: to.y, tr: to.rot
+      tx: to.x, ty: to.y, tr: to.rot, out: 0, slow: EMERGE.least + h(10) * (EMERGE.most - EMERGE.least)
     })
   }
   return out
@@ -750,6 +758,7 @@ function fall(strips: LooseStrip[]): void {
 }
 
 function drop(p: LooseStrip, i: number): void {
+  if (p.out < 1) p.out = Math.min(1, p.out + dt / p.slow)
   if (p.rest) return
   const floor = layer(i)
   const down = p.z <= floor + 0.01 && Math.abs(p.vz) < 1
