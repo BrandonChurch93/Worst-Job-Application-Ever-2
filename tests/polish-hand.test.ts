@@ -12,6 +12,9 @@ import { fork, forked, Kept, onScreen, onScreenJolted, PER, resting, rowOf, stro
 // What a page turn may do to the arrow under a resting hand, px of 1920 by 1080: how far from the pointer's place it may lie on the page when the page is flat,
 // how far from the pointer on the screen (its height over the page is seen in perspective), how far it may go in the 30 frames after, and how far its height may change.
 const FLAT = { page: 2, screen: 4, after: 2, z: 1 }
+// FLAT.screen holds on the seat and at play only. While the slab is tilted (the turn and its knocks) the arrow lies on the slab's face at the pointer's place, so on the screen it is away from the pointer
+// by what the tilt does to that place. Stepped, resting hand: 65.9 px on the first arriving frame of turn 1 and 482.8 px on that of turn 3 (the pointer in the lower right corner), 17.3 px on the second knock of turn 3.
+// Under the stroking hand of MOVING on turn 1 it is at most 65.8 px on the screen where it is 36.2 px on the slab. No bound is set on these here.
 // FLAT.screen is measured without the view's jolt on the seat. With it, stepped as the renderer does it, the arrow is carried with the page it lies on, px from where it comes to rest on the screen:
 // `seat` on the `frames` frames from the contact (the jolt and the tray's hop), `knock` on the frames of the first knock after them, `still` from `from` frames after the contact.
 // For a pointer 604 px left of the middle and 69 px over it, as on turn 1: the jolt carries what lies on the page by JOLT.push of its distance from the middle and JOLT.rise up.

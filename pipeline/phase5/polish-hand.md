@@ -141,7 +141,7 @@ Decided by the Builder at 08:24: the seat reads and stays as it is; the second k
 
 ## 4. Tests
 
-`npx vitest run tests/polish-hand.test.ts`. Named bounds: `FLAT = { page: 2, screen: 4, after: 2, z: 1 }`, `MOVING = { far: 40, atPlay: 20, joined: 12 }`, `THROWN = { far: 60, hold: 4 }`, `TAILS = { pass: 1, back: 10, rest: 16, again: 0.5, jolt: 8 }`. For each of the six turns: resting hand, nothing fires that the page does not fire by itself, moving hand, a press during the turn, a press on the first step of play (the click lag). Also: the four bots (each ends the site in six turns, and on every arriving page its arrow lies no further from its pointer than the pointer goes in one frame, plus `FLAT.page`), the tray's hop under the arrow, a page that ends long after the last press, the skip link, the rejected careers page (stands on the pointer on the step of the landing, no move in 30 frames, no startle), the hit's place, angle and a hand moving off, and without a hand the film's turn and hit against literal lists of what they were.
+`npx vitest run tests/polish-hand.test.ts`, 45 tests. Named bounds: `FLAT = { page: 2, screen: 4, after: 2, z: 1 }`, `CARRY = { seat: 9, frames: 4, knock: 2.5, from: 9, still: 1 }` (the view's jolt stepped by `onScreenJolted` in `tests/polish-hand-run.ts`, turn 1), `MOVING = { far: 40, atPlay: 20, joined: 12 }`, `THROWN = { far: 60, hold: 4 }`, `TAILS = { pass: 1, back: 10, rest: 16, again: 0.5, jolt: 8 }`. For each of the six turns: resting hand, nothing fires that the page does not fire by itself, moving hand, a press during the turn, a press on the first step of play (the click lag). Also: the four bots (each ends the site in six turns, and on every arriving page its arrow lies no further from its pointer than the pointer goes in one frame, plus `FLAT.page`), the tray's hop under the arrow, a page that ends long after the last press, the skip link, the rejected careers page (stands on the pointer on the step of the landing, no move in 30 frames, no startle), the hit's place, angle and a hand moving off, and without a hand the film's turn and hit against literal lists of what they were.
 
 The four bots (MEASURED in a scratch test, the same loop as the test): keen 7955 frames, clumsy 9157, random 6752, skipper 7052, each ends in six turns. Their pointer moves through the turns (keen up to 32.5 px a frame); the arrow lies at most 31.2 px from it on the arriving page, less than one frame of the pointer's way.
 
@@ -167,3 +167,53 @@ All from `node pipeline/phase5/polish-hand-shots.mjs` (the usage is in its head)
 - `npm run -s bots`: 20 runs finished, none stuck; keen reached every one of the 37 gags on every seed; bots: all clear.
 - `npm test`: 160 files passed and 4 skipped, 1983 tests passed and 4 skipped, 223.67 s (on the starting commit: 159 and 3, 1939 and 3; the difference is the 44 tests of `tests/polish-hand.test.ts` and the skipped measure).
 - `npx tsc --noEmit -p .`: clean.
+
+## 8. After the first pass (08:47 to 09:35), the Builder's list
+
+### Where an arrow is drawn through turn 1, frame by frame (resting hand at (356, 471), `walk after-half rest=596 619-635`, sheet `after-half-half.png`, every frame)
+
+- 596 to 625: one arrow, on the leaving slab, on the button where the careers page holds it (about 150 px right of the pointer; the page takes the arrow at the press, `io.cursor.take('apply')`). It tilts and darkens with the slab. 625 is the last frame the leaving face shows (82.7 degrees).
+- 626: both slabs are edge on. No page face can be read and no arrow can be read: the slab is a light line about 6 px thick and the arrow lies in that line (stepped screen place 369, 536).
+- 627: the first frame of the arriving face. One arrow, on the arriving slab, flat, 52 px under the cross in the picture (stepped 53.2).
+- 628 to 656: one arrow, on the arriving slab. On the slab's face it is 0.0 px from the pointer's place on every frame from 626. On the screen it is away from the pointer by what the tilt does to that place (MEASURED stepped): 65.9 px at 626, 53.2 at 627, 43.7 at 628, 36.5 at 629, 26.3 at 631, 19.5 at 633, 14.3 at 635, 9.7 at 637, 5.5 at 639, under 4 px from 641.
+- Two arrows are drawn on no frame. The change from the button to the pointer's place falls on the edge on frame 626 (screen 493, 544 at 625, 369, 523 at 627: 124 px in two frames, while no face can be read).
+- Frames 594 and 596 (the Builder's question): at 594 the page is in play and the arrow is on the button after the press; 596 is the first frame of the turn; in both the cross is the pointer and the arrow is 150 px right of it, held by the button. That is the page's own doing and is the same before and after.
+
+### A moving hand through turn 1 (`walk after-stroke move=596:500:250:70 620-678/2` and `598-618/4`, sheets `after-stroke-leave.png` and `after-stroke-arrive.png`)
+
+- On the leaving page (596 to 624) the arrow stays on the button and does not follow the hand: the button holds it.
+- 626: edge on, no arrow can be read.
+- From 628 one arrow on the arriving slab, up left of the cross, keeping that place from frame to frame and closing in.
+- CORRECTION: "furthest 36.2 px" in section 1 is on the slab's face. On the screen it is more while the slab is tilted, because the arrow stands at the pointer's place on a tilted face and 16 px over it. MEASURED stepped, on the screen: 54.3 px at 628, 65.8 at 632 (the largest), 60.9 at 636, 47.2 at 640, 30.8 at 644 (contact), 25.4 at 650, 18.1 at 656 (play), 12.4 at 660, 2.1 at 666, 0.3 at 668. The picture agrees: about 60 px at 636, about 20 px at 656, on the cross at 666.
+- The same on the screen for all six turns, stroking hand, from the first arriving frame on (MEASURED stepped): 65.8, 131.6, 368.0, 79.3, 34.6, 278.5 px at the most, the large ones on the edge on frame where the pointer is far from the slab's axis; from the seat on at most 30.0 to 31.7 px.
+
+### The hit with the hand moving off (`walk before-hit-move` and `after-hit-move`, `rest=896 move=904:500:120:20:line 900-916`, sheet `before-hit-move+after-hit-move-hit-move.png`)
+
+- Before: at 905 the arrow snaps upright and at 906 its tip is on the cross (one step of 44.5 px), then it trails the moving cross by about 60 px.
+- After: from 905 to 908 the arrow still leans from the hit and is about 45 px behind the cross, it is upright by 910, then trails by about 65 px as before. The largest change of step from one frame to the next is 7.1 px (before 44.5).
+- So after the mend the arrow is for about four frames further from a moving hand than before, and without the snap.
+
+### Turn 3, step 2 to step 3, resting hand at (1686, 1001), the lower right corner
+
+`walk after-turn3 rest=5645 5643-5657/2 5699-5727/2` on the branch and `walk before-turn3 rest=5663 5661-5675/2 5717-5745/2` on a worktree of the starting commit. The two runs are not the same frame for frame from turn 2 on (before, the visitor waits for the arrow's walk), so turn 3 starts at 5645 after and at 5663 before. For the sheets the before frames are numbered 18 less, so that equal numbers are equal frames of the turn. The pointer rests at (1686, 1001) after and at (1688, 1007) before. This is the turn where the arrow walked furthest before (897 px on leaving, 866 px back).
+
+- Leave (`before-turn3+after-turn3-leave.png`, 5643 to 5657 every 2nd): before, the arrow is at the cross at 5645, at the window's upper left corner at 5647 and gone from 5649 (it runs to (960, 540) at about 87 px a frame). After, it stands on the cross on the button on every frame and tilts with the slab.
+- Play (`before-turn3+after-turn3-play.png`, 5701 to 5727 every 2nd): before, no arrow from 5701 to 5709, it comes in at the upper left at 5711, is at the cross at 5713, goes past it by about 10 px at 5715 to 5719 and is still by 5725. After, it stands on the cross on every frame.
+- Seen in both, and the page's own doing: from the frame after play the arrow is pressed short for about seven frames (stepped body length 0.66 from 5706 to 5712, back at 1.00 by 5717, 1.06 at 5719). That is step 3's `act.land` (`src/pages/step3/index.ts` line 803, `LOADER.land = [0.66, 0.1]`): the page presses the arrow once when it is lower than 16 px and the page is older than half a second. Before the mend the same press fell on the arrow as it set off from (960, 540), seen in the before frames 5707 and 5709 there; after the mend it falls on an arrow that stands still under the hand, so it shows as a squash with no cause in view. Not changed: it is another owner's page.
+- On the screen while the slab is tilted (MEASURED stepped, resting hand): the arrow lies on the slab's face at the pointer's place, and that place is far from the slab's axis here, so it goes with the slab away from the pointer: 362.8 px at 5673 on the leaving slab, 482.8 px at 5675 (edge on), 419.0, 364.4, 318.1, 279.2, 246.2, 218.0, 193.3, 171.2 px on the frames after, 17.3 px at 5697 and 13.5 px at 5698 (the second knock), 1.1 px at 5699, 5.0 px at 5700 and 5701 (the last knock), 1.1 px from 5702.
+- The whole of that in pictures, after only (`walk after-turn3b rest=5645 5659-5697/2`, sheets `after-turn3b-carried.png` 5659 to 5673 and `after-turn3b-sweep.png` 5675 to 5689, window 290 by 560): leaving, the slab's lower edge swings up, the button and the arrow on it go up with it and darken, and from 5663 the cross is over the dark ground; 5675 is edge on with no face and no arrow to read; arriving, the new slab comes down from above with one arrow lying at its lower edge and brings it to the cross as it lands. One arrow or none on every frame, never two.
+- Edge on, resting hand, arrow to pointer on the screen for the six turns (MEASURED stepped): 65.9, 229.1, 482.8, 24.6, 102.3, 366.7 px. `FLAT.screen` holds on the seat and at play only; the test file says so above the bound.
+- Sent to the Builder at 09:05 for his ruling: whether the ride on the slab is wanted when the hand is in a corner, and whether step 3's landing press should be kept from an arrow that stands under a hand (that would be a NEEDS in `src/pages/step3/index.ts`, not made).
+
+### Pushes
+
+WIP commits were pushed with only `npx tsc --noEmit -p .` and `tests/polish-hand.test.ts` green when the four gates could not be run inside the 15 minutes (a browser walk was running, and the gates run one at a time). The four gates were run on `07a1fead` (section 7). No line of `src` changed after that commit.
+
+
+### Checks on the last commit (MEASURED, one at a time, 09:02 to 09:11)
+
+- `git diff --stat 07a1fead -- src`: empty. Since the four gates of section 7 only tests, notes and the shots script changed, so `npm run determinism` and `npm run bots` were not run again.
+- `npx vitest run tests/polish-hand.test.ts`: 45 passed.
+- `npm test`: 160 files passed and 4 skipped, 1984 tests passed and 4 skipped, 224.65 s (one more than in section 7: the test of the jolt's carry).
+- `npx tsc --noEmit -p .`: clean.
+- The copies of the three stills and the worktree of the starting commit, both kept outside the repo, are removed. `tests/zz-filmdiff.test.ts` is not in the repo.
