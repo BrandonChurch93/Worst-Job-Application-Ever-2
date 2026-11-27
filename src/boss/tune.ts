@@ -109,7 +109,7 @@ export const IDLE = {
 } as const
 
 // In the film a dart that reaches the body does this many times as much, by phase: the film gives the whole fight 18 s, half of what a keen visitor needs.
-export const FILM = { dart: [2.4, 2, 2.6] as const } as const
+export const FILM = { dart: [2.4, 2, 3.4] as const } as const
 
 // The right edge of the pop-ups, which stand left of the boss's fence.
 export const POPUP_RIGHT = 1040
