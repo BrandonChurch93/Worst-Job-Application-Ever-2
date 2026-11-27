@@ -65,3 +65,7 @@ Made with `pipeline/phase5/polish-keys2-shots.mjs` (`walk`, `film`, `sheet`, `pa
 - `npm run bots`: 20 runs finished, 0 stuck, "bots: all clear".
 - `npm test`: 167 files passed, 11 skipped; 2107 tests passed, 13 skipped; 245.9 s. At 308e96a1: 166 files, 2094 passed.
 - `npx tsc --noEmit -p .`: no line, exit 0.
+
+## The merge of `origin/main` (0267e51f) at 14:22 UTC
+
+No conflict. The stills' `cmp` and the film frames' proof above were measured before the merge, 308e96a1 against 851f6fbe, so they show this branch's change alone; main's merge 50 changes the tug of war, which is not in these files' lines.

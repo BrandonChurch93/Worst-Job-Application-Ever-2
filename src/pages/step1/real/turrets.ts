@@ -15,6 +15,8 @@ export const TURRET_LOOK = {
   flashSeconds: 0.034, steam: 6, sparks: 8
 }
 
+// The barrel slides in a sleeve that stays in the dome: SLEEVE px of the barrel lie inside it at rest, so no gap opens when the barrel springs forward of rest.
+const SLEEVE = 8
 const smooth = (t: number) => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * (3 - 2 * u)
@@ -31,6 +33,7 @@ interface Shared {
   head: THREE.BufferGeometry
   headDark: THREE.BufferGeometry
   barrel: THREE.BufferGeometry
+  sleeve: THREE.BufferGeometry
   tip: THREE.BufferGeometry
   barrelDark: THREE.BufferGeometry
   bezel: THREE.BufferGeometry
@@ -120,8 +123,9 @@ function geometries(): Shared {
   ]
   const headDark: THREE.BufferGeometry[] = []
   const m = L.muzzle
+  const sleeve = along(turn([[19, 26], [19, 46], [18, 47.2], [15.6, 47.2]], 32, 2))
   const barrel = merge([
-    along(turn([[19, 26], [19, 46], [18, 47.2], [15.6, 47.2], [15.6, 52], [14.8, 52.6], [14.8, 54], [15.6, 54.6]], 32, 2)),
+    along(turn([[15.6, 47.2 - SLEEVE], [15.6, 52], [14.8, 52.6], [14.8, 54], [15.6, 54.6]], 32, 2)),
     along(smoothTurn([[15.6, 54.6], [11.4, m - 17]], 32)),
     along(turn([[11.4, m - 17], [13.8, m - 15.8], [13.8, m - 10]], 32, 2))
   ])
@@ -136,7 +140,7 @@ function geometries(): Shared {
   const lu = lid.getAttribute('uv')
   for (let i = 0; i < lu.count; i++) lu.setXY(i, lid.getAttribute('position').getX(i) / BRUSH.u, lid.getAttribute('position').getY(i) / BRUSH.v)
   lid.setAttribute('color', new THREE.BufferAttribute(new Float32Array(lu.count * 3).fill(L.doorTone), 3))
-  shared = { collar, head: merge(headParts), headDark: merge(headDark), barrel, tip, barrelDark, bezel, socket, door: lid }
+  shared = { collar, head: merge(headParts), headDark: merge(headDark), barrel, sleeve, tip, barrelDark, bezel, socket, door: lid }
   return shared
 }
 
@@ -144,6 +148,7 @@ interface TurretData {
   rise: THREE.Group
   head: THREE.Group
   barrel: THREE.Group
+  sleeve: THREE.Mesh
   metal: THREE.MeshPhysicalMaterial
   steel: THREE.MeshPhysicalMaterial
   cool: [THREE.Color, THREE.Color]
@@ -185,7 +190,9 @@ function makeTurret(s: Shape): THREE.Object3D {
   const hotTip = new THREE.Mesh(g.tip, tipMaterial)
   barrel.add(new THREE.Mesh(g.barrel, steel), bore, hotTip)
   barrel.position.z = TURRET_LOOK.axis
-  head.add(barrel)
+  const sleeve = new THREE.Mesh(g.sleeve, steel)
+  sleeve.position.z = TURRET_LOOK.axis
+  head.add(barrel, sleeve)
   rise.add(head)
   root.add(rise)
   lit(root)
@@ -220,7 +227,7 @@ function makeTurret(s: Shape): THREE.Object3D {
     steamMaterials.push(m)
     rise.add(puff)
   }
-  const data: TurretData = { rise, head, barrel, metal, steel, cool: [metal.color.clone(), steel.color.clone()], charge, chargeMaterial, tipMaterial, halo, haloMaterial, sparks, flash, flashMaterial, steam, steamMaterials, seed: hashName(s.id) & 0xffff }
+  const data: TurretData = { rise, head, barrel, sleeve, metal, steel, cool: [metal.color.clone(), steel.color.clone()], charge, chargeMaterial, tipMaterial, halo, haloMaterial, sparks, flash, flashMaterial, steam, steamMaterials, seed: hashName(s.id) & 0xffff }
   root.userData.turret = data
   return root
 }
@@ -238,7 +245,9 @@ function poseTurret(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const heat = Math.min(1, Math.max(0, v[4]!))
   const out = smooth((up - TURRET_LOOK.clear) / (1 - TURRET_LOOK.clear))
   const lift = TURRET_LOOK.lift * out
-  d.barrel.position.x = -v[5]! - TURRET_LOOK.stowed * (1 - out)
+  d.sleeve.position.x = -TURRET_LOOK.stowed * (1 - out)
+  d.sleeve.rotation.y = -lift
+  d.barrel.position.set(d.sleeve.position.x - v[5]! * Math.cos(lift), 0, TURRET_LOOK.axis - v[5]! * Math.sin(lift))
   d.head.position.set(-v[0]! * v[5]! * RECOIL.head, v[1]! * v[5]! * RECOIL.head, 0)
   d.barrel.rotation.y = -lift
   const cx = s.x + s.w / 2
