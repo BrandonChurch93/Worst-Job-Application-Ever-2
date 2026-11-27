@@ -204,7 +204,7 @@ describe('the save at the gate on the live site', () => {
     }
   })
 
-  it('holds through a whole visit with nobody at the flippers: every save is a take, a hold and a kick, and the scene still ends', () => {
+  it('holds through a whole visit with nobody at the flippers: every save is a take, a hold and a kick, the landing is heard by the cue a blow on the ball has, and the scene still ends', () => {
     let mc: Machine | null = null
     const step = Machine.prototype.step
     Machine.prototype.step = function (this: Machine, l: boolean, r: boolean) {
@@ -219,11 +219,17 @@ describe('the save at the gate on the live site', () => {
       let from = -1
       const holds: number[] = []
       let other = 0
+      let heard = 0
       while (stage.entryIndex === 0 && stage.time < 110) {
+        const before = stage.events.length
         stage.advance(1)
         const m = mc as Machine | null
         if (!m || m.steps === last) continue
         last = m.steps
+        if (m.events.some((e) => e.name === 'gate-take')) {
+          expect(stage.events.slice(before).some((e) => e.name === 'flasher' && e.hitsCursor)).toBe(true)
+          heard++
+        }
         const b = m.balls[0]!
         const now = { x: b.x, y: b.y, s: Math.hypot(b.vx, b.vy) }
         const kicked = m.events.some((e) => e.name === 'ball-save' && e.ball === 0)
@@ -239,6 +245,7 @@ describe('the save at the gate on the live site', () => {
         was = now
       }
       expect(other).toBe(0)
+      expect(heard).toBeGreaterThanOrEqual(holds.length)
       expect(holds.length).toBeGreaterThanOrEqual(3)
       expect(Math.min(...holds)).toBeGreaterThanOrEqual(SAVE.land + SAVE.wind + SAVE.drive)
       expect(Math.max(...holds)).toBeLessThanOrEqual(SAVE.land + SAVE.wind + SAVE.drive + 3 * SHEET)

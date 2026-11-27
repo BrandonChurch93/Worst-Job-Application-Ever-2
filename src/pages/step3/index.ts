@@ -457,8 +457,10 @@ export function makePage(): PageLogic {
         s.snap = s.t
         s.sway = s.blow[0]! >= HIT.big ? s.t + HIT.hold : -9
       }
-    } else if (e.name === 'gate-take') io.cursor.react('flinch')
-    else if (e.name === 'doors-slam') {
+    } else if (e.name === 'gate-take') {
+      say('flasher', true)
+      io.cursor.react('flinch')
+    } else if (e.name === 'doors-slam') {
       s.shut = true
       say('doors-slam', true)
       s.struck = s.t
