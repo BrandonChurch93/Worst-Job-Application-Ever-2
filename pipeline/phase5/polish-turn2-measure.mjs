@@ -25,7 +25,7 @@ const k = Math.tan((cfg.cameras.home.fovDeg * DEG) / 2)
 // The angle is the code's own: src/stage/turn.ts imports nothing, so it is made into a module as it stands and asked.
 fs.mkdirSync(inRepo('out/work'), { recursive: true })
 await build({ input: inRepo('src/stage/turn.ts'), logLevel: 'silent', output: { file: inRepo('out/work/polish-turn2-turn.mjs'), format: 'esm' } })
-const made = await import(`${pathToFileURL(inRepo('out/work/polish-turn2-turn.mjs')).href}?${Date.now()}`)
+const made = await import(pathToFileURL(inRepo('out/work/polish-turn2-turn.mjs')).href)
 const leave = made.leaveTurn
 const leaveLight = made.leaveLight
 
@@ -61,6 +61,12 @@ for (let n = 0; n < files.length; n++) {
   while (foot < 1080 && rowMean(1079 - foot) < BACKING) foot++
   let head = 0
   while (head < 1080 && rowMean(head) < BACKING) head++
+  // The slab's side at its foot: the rows over the gap that stand 12 or more under the face 16 to 26 rows further up.
+  let rim = 0
+  if (foot > 0 && foot < 1000) {
+    const over = mean(STRIP.x0, STRIP.x1, 1079 - foot - 26, 1079 - foot - 16)
+    while (rim < 14 && rowMean(1079 - foot - rim) < over - 12) rim++
+  }
   const face = mean(PATCH.x0, PATCH.x1, PATCH.y0, PATCH.y1)
   if (rest === null) rest = face
   // The slab's side over its upper edge: the rows from the first row of the slab that stand 20 or more over the face under them.
@@ -83,30 +89,30 @@ for (let n = 0; n < files.length; n++) {
   const y0 = mid - 10
   const y1 = mid + 10
   const colMean = (x) => mean(x, x + 1, y0, y1)
-  let rim = CARD.through
-  while (rim < 1919 && green(rim, rim + 1, y0, y1) > 0) rim++
-  while (rim < 1919 && colMean(rim) < colMean(rim + 1) - 1) rim++
+  let card = CARD.through
+  while (card < 1919 && green(card, card + 1, y0, y1) > 0) card++
+  while (card < 1919 && colMean(card) < colMean(card + 1) - 1) card++
   let edge = 1920
-  while (edge > rim && colMean(edge - 1) < BACKING) edge--
+  while (edge > card && colMean(edge - 1) < BACKING) edge--
   const to = edge - CARD.clear - CARD.ground
   const ground = mean(to, to + CARD.ground, y0, y1)
   // The shadow the card throws to its right: how deep it is at its darkest, as a share of the bare face, and how far from the rim it is still half as deep.
   let deep = 0
-  for (let x = rim; x < to; x++) deep = Math.max(deep, 1 - colMean(x) / ground)
+  for (let x = card; x < to; x++) deep = Math.max(deep, 1 - colMean(x) / ground)
   let reach = 0
-  if (deep > 0.03) for (let x = rim; x < to; x++) if (1 - colMean(x) / ground >= deep / 2) reach = x - rim + 1
+  if (deep > 0.03) for (let x = card; x < to; x++) if (1 - colMean(x) / ground >= deep / 2) reach = x - card + 1
   const dark = deep
   const f = start + n
   const code = f >= 0 ? leave(Math.min(1, f / 30)) / DEG : 0
   const seen = foot > 0 ? angleOf(foot, 1) : head > 0 && side === 0 ? angleOf(head, -1) : 0
-  lines.push({ f, code, seen, face, foot, head, side, reach, dark, rim, mid })
+  lines.push({ f, code, seen, face, foot, head, side, reach, dark, rim, card, mid })
 }
 // The key's share on the face, of what a flat page takes: the lights go round the slab by `leaveLight` of the angle where the code has it (before the change by the whole angle), and by no more than 8 degrees toward the key.
 const KEY = [-0.65, 0.6, 0.36]
 const TOWARD = 8 * DEG
 const round = (angle) => (angle < 0 ? -TOWARD * Math.tanh(-angle / TOWARD) : leaveLight ? leaveLight(angle) : angle)
 const share = (deg) => Math.max(0, KEY[2] * Math.cos(round(deg * DEG)) - KEY[1] * Math.sin(round(deg * DEG))) / KEY[2]
-console.log("frame | angle by the code | its step | angle read from the gap | key's share on the face | lights round by, degrees | face 0 to 255 | face less rest | its step | gap at the foot px | gap at the head px | slab side px | card rim x | card middle y | shadow reach px | shadow depth")
+console.log("frame | angle by the code | its step | angle read from the gap | key's share on the face | lights round by, degrees | face 0 to 255 | face less rest | its step | gap at the foot px | gap at the head px | slab side over the head px | slab side at the foot px | card rim x | card middle y | shadow reach px | shadow depth")
 let last = 0
 let lastFace = null
 let most = { step: 0, f: 0 }
@@ -116,6 +122,6 @@ for (const l of lines) {
   const faceStep = lastFace === null ? 0 : l.face - lastFace
   lastFace = l.face
   if (l.code < 76 && Math.abs(faceStep) > Math.abs(most.step)) most = { step: faceStep, f: l.f }
-  console.log([l.f, l.code.toFixed(2), step.toFixed(2), l.seen.toFixed(1), share(l.code).toFixed(3), (round(l.code * DEG) / DEG).toFixed(2), l.face.toFixed(1), (l.face - rest).toFixed(1), faceStep.toFixed(1), l.foot, l.head, l.side, l.rim, l.mid, l.reach, l.dark.toFixed(2)].join(' | '))
+  console.log([l.f, l.code.toFixed(2), step.toFixed(2), l.seen.toFixed(1), share(l.code).toFixed(3), (round(l.code * DEG) / DEG).toFixed(2), l.face.toFixed(1), (l.face - rest).toFixed(1), faceStep.toFixed(1), l.foot, l.head, l.side, l.rim, l.card, l.mid, l.reach, l.dark.toFixed(2)].join(' | '))
 }
 console.log(`largest step of the face between two frames in a row, while the slab is under 76 degrees: ${most.step.toFixed(1)} into frame ${most.f}`)
