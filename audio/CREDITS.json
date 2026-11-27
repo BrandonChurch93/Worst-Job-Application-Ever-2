@@ -11,6 +11,13 @@
     }
   },
   "reviewReached": false,
+  "hardLimits": [
+    {
+      "limit": 4677,
+      "from": "Brandon, by Partner, change note 003 update 4, 2026-11-27",
+      "words": "\"2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect\"; \"the ledger does not pass 4,677 without his word\"."
+    }
+  ],
   "rows": [
     {
       "n": 1,
@@ -1791,6 +1798,26 @@
       "answer": "HTTP 200, 0.8 s",
       "cost": 18,
       "how": "reported by the response"
+    },
+    {
+      "n": 179,
+      "time": "2026-11-27T23:03:32Z",
+      "endpoint": "GET /v1/models",
+      "what": "which models may speak",
+      "asked": "nothing, a read",
+      "answer": "9 models that speak",
+      "cost": 0,
+      "how": "a read costs nothing"
+    },
+    {
+      "n": 180,
+      "time": "2026-11-27T23:03:44Z",
+      "endpoint": "GET /v1/voices/{the narrator}",
+      "what": "what the narrator's voice is",
+      "asked": "nothing, a read",
+      "answer": "voice Worst-Job-Application-Ever, generated",
+      "cost": 0,
+      "how": "a read costs nothing"
     }
   ]
 }

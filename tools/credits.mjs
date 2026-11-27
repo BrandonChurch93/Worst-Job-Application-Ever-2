@@ -26,15 +26,22 @@ export const readLedger = (file = ledgerPath()) => (fs.existsSync(file) ? readJs
 export const totalOf = (ledger) => ledger.rows.reduce((n, r) => n + r.cost, 0)
 export const effectSeconds = (s) => Math.min(EFFECT_MAX_SECONDS, Math.max(EFFECT_MIN_SECONDS, s))
 
+// A hard limit is a line Brandon has drawn under the cap for a stretch of the work. It is kept in the ledger with his words,
+// never in the kit's numbers, and only his word takes it away. The lowest one that stands is the one that counts.
+export const hardLimitOf = (ledger) => (ledger.hardLimits ?? []).filter((h) => !h.lifted).reduce((low, h) => (!low || h.limit < low.limit ? h : low), null)
+
 export function limits(c, ledger) {
   const cap = c.audio.creditCap
   const reserve = ledger.reviewReached ? 0 : c.audio.creditReserveAfterReview
-  return { cap, reserve, limit: cap - reserve, extrasStop: cap * c.audio.creditExtrasStopFraction }
+  const hard = hardLimitOf(ledger)
+  return { cap, reserve, limit: hard ? Math.min(cap - reserve, hard.limit) : cap - reserve, hard, extrasStop: cap * c.audio.creditExtrasStopFraction }
 }
 
 // What a call is expected to cost, before it is made.
 export function estimate(call, ledger) {
   if (call.kind === 'quota' || call.kind === 'voices') return 0
+  // A model other than the voice's usual one is checked at its own measured rate, and at the dearest known rate until it has one.
+  if (call.kind === 'speech' && call.model) return Math.ceil(String(call.text ?? '').length * (ledger.rates.speechByModel?.[call.model]?.perCharacter ?? WORST.speech))
   if (call.kind === 'speech') return Math.ceil(String(call.text ?? '').length * (ledger.rates.speech?.perCharacter ?? WORST.speech))
   if (call.kind === 'effect') return Math.ceil(effectSeconds(call.seconds) * (ledger.rates.effect?.perSecond ?? WORST.effect))
   throw new Error(`No kind of call named "${call.kind}"`)
@@ -48,6 +55,7 @@ export function allow(call, ledger, c) {
   if (call.kind === 'effect' && !(typeof call.prompt === 'string' && call.prompt.trim())) return { ok: false, why: 'a sound effect call needs its prompt' }
   if (call.kind === 'speech' && !(typeof call.text === 'string' && call.text.trim())) return { ok: false, why: 'a speech call needs its text' }
   const cost = estimate(call, ledger)
+  if (L.hard && total + cost > L.hard.limit) return { ok: false, cost, total, why: `the running total ${total} and this call's ${cost} would pass ${L.hard.limit}, the hard limit of ${L.hard.from}: ${L.hard.words}. Sound stops here and Brandon is asked` }
   if (total + cost > L.limit) return { ok: false, cost, total, why: `the running total ${total} and this call's ${cost} would pass ${L.limit}, which is the cap of ${L.cap}${L.reserve ? ` less the ${L.reserve} held back for the review` : ''}` }
   if (call.extra && total > L.extrasStop) return { ok: false, cost, total, why: `the running total ${total} is past ${L.extrasStop}, where nothing extra is made` }
   return { ok: true, cost, total, limit: L.limit }
@@ -67,11 +75,13 @@ export function sheetOf(ledger, c) {
     'The count is of this build\'s own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.',
     '',
     `Running total: ${total} of ${L.cap}. Calls: ${ledger.rows.length}.`,
+    ...(L.hard ? ['', `Hard limit: ${L.hard.limit}. ${L.hard.from}: ${L.hard.words} Left before it: ${L.hard.limit - total}. No call is made that would pass it.`] : []),
     '',
     '## Rates',
     '',
     `- Speech: ${rate(ledger.rates.speech, 'character')}`,
     `- Sound effects: ${rate(ledger.rates.effect, 'second')}`,
+    ...Object.entries(ledger.rates.speechByModel ?? {}).map(([m, r]) => `- Speech with the model ${m}: ${r.perCharacter} credits a character. ${r.how}`),
     '',
     '## Calls',
     '',
@@ -239,6 +249,9 @@ function post(c, ledger, call, a) {
       ? { perCharacter: per, how: `MEASURED ${time} on call ${n}: ${cost} credits for ${units} characters, ${how}.` }
       : { perSecond: per, how: `MEASURED ${time} on call ${n}: ${cost} credits for ${units} s asked, ${how}.` }
   }
+  if (status === 200 && cost > 0 && call.kind === 'speech' && call.model && !ledger.rates.speechByModel?.[call.model] && how.startsWith('reported')) {
+    ledger.rates.speechByModel = { ...(ledger.rates.speechByModel ?? {}), [call.model]: { perCharacter: Number((cost / units).toFixed(4)), how: `MEASURED ${time} on call ${n}: ${cost} credits for ${units} characters, ${how}.` } }
+  }
   let answer = `HTTP ${status}, ${took.toFixed(1)} s`
   if (status !== 200) {
     let said = ''
@@ -256,7 +269,7 @@ function post(c, ledger, call, a) {
 async function main() {
   const a = args()
   const c = config()
-  if (a.speech || a.effect || a.quota || a['review-reached']) lock()
+  if (a.speech || a.effect || a.quota || a.models || a['voice-info'] || a['review-reached']) lock()
   try {
     const ledger = readLedger()
     if (a['review-reached']) {
@@ -270,6 +283,24 @@ async function main() {
       addRow(ledger, { time: now(), endpoint: 'GET /v1/user/subscription', what: a.what && a.what !== true ? String(a.what) : 'the account\'s quota', asked: 'nothing, a read', answer: `plan ${u.tier}, ${u.status}: ${u.used} of ${u.limit} used by every build on the account, reset ${new Date(u.reset * 1000).toISOString().replace(/\.\d+Z$/, 'Z')}`, cost: 0, how: 'a read costs nothing' })
       save(ledger, c)
       console.log(JSON.stringify({ ok: true, ...u, total: totalOf(ledger) }))
+      return
+    }
+    if (a.models || a['voice-info']) {
+      // Reads that cost nothing: which models the account may speak with, and what the narrator's voice is.
+      const id = a['voice-info'] ? voiceId(c, a.voice) : null
+      const r = curl([a.models ? `${HOST}/v1/models` : `${HOST}/v1/voices/${id}`])
+      let d
+      try {
+        d = JSON.parse(r.stdout)
+      } catch {
+        throw new Error(`the read gave no JSON: ${(r.stdout || r.stderr || '').slice(0, 200)}`)
+      }
+      const said = a.models
+        ? (Array.isArray(d) ? d : []).filter((m) => m.can_do_text_to_speech).map((m) => ({ id: m.model_id, name: m.name, costFactor: m.token_cost_factor, rate: m.model_rates?.character_cost_multiplier, maxChars: m.maximum_text_length_per_request, style: m.can_use_style, boost: m.can_use_speaker_boost }))
+        : { name: d.name, id: d.voice_id, category: d.category, models: d.high_quality_base_model_ids, settings: d.settings, labels: d.labels, description: d.description, verified: d.voice_verification?.is_verified, fineTuning: d.fine_tuning?.state }
+      addRow(ledger, { time: now(), endpoint: a.models ? 'GET /v1/models' : 'GET /v1/voices/{the narrator}', what: a.what && a.what !== true ? String(a.what) : a.models ? 'which models may speak' : 'what the narrator\'s voice is', asked: 'nothing, a read', answer: a.models ? `${said.length} models that speak` : `voice ${said.name}, ${said.category}`, cost: 0, how: 'a read costs nothing' })
+      save(ledger, c)
+      console.log(JSON.stringify({ ok: true, said, total: totalOf(ledger) }))
       return
     }
     if (a.speech || a.effect) {
@@ -286,6 +317,7 @@ async function main() {
     const L = limits(c, ledger)
     const total = totalOf(ledger)
     console.log(`credits: ${total} of ${L.cap} used in ${ledger.rows.length} calls. ${L.limit - total} left before ${ledger.reviewReached ? 'the cap' : `the review's reserve of ${L.reserve}`}.`)
+    if (L.hard) console.log(`credits: hard limit ${L.hard.limit} (${L.hard.from}). ${L.hard.limit - total} left before it.`)
     console.log(`credits: speech ${ledger.rates.speech ? `${ledger.rates.speech.perCharacter} a character` : 'not measured'}, effects ${ledger.rates.effect ? `${ledger.rates.effect.perSecond} a second` : 'not measured'}`)
     console.log('credits: --quota reads the account. --speech --what W --text T | --text-file F [--speed N --stability N --similarity N --style N --model ID --voice ID --out F] speaks a line. --effect --what W --prompt P | --prompt-file F --seconds N [--loop --influence N --out F] makes an effect. --measure reads the usage round a call. --extra marks a call section 2 of the addendum calls extra.')
   } finally {

@@ -1,10 +1,12 @@
 # The sound credits of this build
 
-This build may spend at most 10000 ElevenLabs credits in all, on every call of every kind. 2000 of them are held back for what Brandon asks for at the review, so the build stops at 8000 before it. Nothing extra is made once the total passes 8000.
+This build may spend at most 10000 ElevenLabs credits in all, on every call of every kind. 2000 of them are held back for what Brandon asks for at the review, so the build stops at 4677 before it. Nothing extra is made once the total passes 8000.
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 2677 of 10000. Calls: 178.
+Running total: 2677 of 10000. Calls: 180.
+
+Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 2000. No call is made that would pass it.
 
 ## Rates
 
@@ -193,3 +195,5 @@ Running total: 2677 of 10000. Calls: 178.
 | 176 | 2026-11-25T19:29:01Z | POST /v1/sound-generation | carpet-roll take 2 | 1 s | HTTP 200, 1.6 s | 11 | reported by the response | 2648 |
 | 177 | 2026-11-25T19:30:12Z | POST /v1/sound-generation | carpet-roll take 3 | 1 s | HTTP 200, 2.1 s | 11 | reported by the response | 2659 |
 | 178 | 2026-11-25T20:06:01Z | POST /v1/text-to-speech | line.live.tugLost.0 take 2, breaks of 1.1 s | 53 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 18 | reported by the response | 2677 |
+| 179 | 2026-11-27T23:03:32Z | GET /v1/models | which models may speak | nothing, a read | 9 models that speak | 0 | a read costs nothing | 2677 |
+| 180 | 2026-11-27T23:03:44Z | GET /v1/voices/{the narrator} | what the narrator's voice is | nothing, a read | voice Worst-Job-Application-Ever, generated | 0 | a read costs nothing | 2677 |
