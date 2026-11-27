@@ -184,7 +184,7 @@ for (const size of SIZES) {
     const sorted = [...gaps].sort((p, q) => p - q)
     const late = t.cues.map((c) => (c.clock - c.at) * 1000)
     const third = (k) => late.slice(Math.floor((late.length * k) / 3), Math.floor((late.length * (k + 1)) / 3))
-    const stat = (list) => (list.length ? { n: list.length, mean: Number((list.reduce((s, v) => s + v, 0) / list.length).toFixed(2)), worst: Number(Math.max(...list).toFixed(2)) } : null)
+    const stat = (list) => (list.length ? { n: list.length, mean: Number((list.reduce((s, v) => s + v, 0) / list.length).toFixed(2)), meanAbs: Number((list.reduce((s, v) => s + Math.abs(v), 0) / list.length).toFixed(2)), worst: Number(Math.max(...list.map(Math.abs)).toFixed(2)) } : null)
     const last = f[f.length - 1]
     const ms = (v) => Number(v.toFixed(1))
     const moving = f.find((x) => x.media > 0 && x.shown >= t.trace.played)
@@ -196,10 +196,10 @@ for (const size of SIZES) {
       frameGapMs: { median: Number(sorted[Math.floor(sorted.length / 2)].toFixed(2)), p99: Number(sorted[Math.floor(sorted.length * 0.99)].toFixed(2)), largest: Number(sorted[sorted.length - 1].toFixed(2)) },
       lastFrameMedia: last.media, lastFrameShown: last.shown, faded: t.trace.faded, left: t.trace.left, lastFrameToFadedMs: ms(t.trace.faded - last.shown), fadedToLeftMs: ms(t.trace.left - t.trace.faded), fadedToLeftDisplayFrames: Number(((t.trace.left - t.trace.faded) / (1000 / 60)).toFixed(2)),
       cuesLateMs: { start: stat(third(0)), middle: stat(third(1)), end: stat(third(2)), all: stat(late), afterHidden: hidden ? stat(late.slice(hidden.cuesBefore)) : null },
-      hidden, cues: t.cues.length
+      hidden, cues: t.cues.length, screencastPictures: seen.length, screencastLight: seen.length ? [Number(Math.min(...seen.map((c) => c.light)).toFixed(2)), Number(Math.max(...seen.map((c) => c.light)).toFixed(2))] : null
     }
     const near = (at, name) => {
-      const list = seen.filter((c) => Math.abs(c.at - at) < 700)
+      const list = seen.filter((c) => Math.abs(c.at - at) < 4000)
       const k = list.findIndex((c) => c.at >= at)
       const row = list.slice(Math.max(0, k - 3), k + 3)
       row.forEach((c, i) => fs.writeFileSync(path.join(dir, `${name}-row-${i}.jpg`), c.data))

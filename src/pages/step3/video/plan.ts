@@ -19,6 +19,8 @@ export const VIDEO = {
   fade: 0.2,
   // Seconds the video's clock may stand still while it should run before the page stops waiting for it and goes to the join out.
   stallMax: 3,
+  // Seconds before its moment at which a cue is sounded in a browser: half a display frame at 60 Hz, since the page looks at the video's clock once a display frame and a cue would else be late by half a frame on average.
+  cueLead: 1 / 120,
   // The largest step of the video's clock, in seconds, that is taken as play. A larger one is a seek or a tab that slept: its cues are not sounded.
   jumpMax: 0.25
 } as const

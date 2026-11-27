@@ -48,7 +48,8 @@ export function videoStep(v: VideoState, io: StepIo, due: boolean): VideoAct {
   }
   const now = v.leave ? end : player ? (player.over() ? end : Math.min(end, Math.max(v.clock, player.clock()))) : Math.min(end, v.clock + io.dt)
   const play = !v.leave && now - v.clock <= VIDEO.jumpMax
-  while (v.sent < events.length && events[v.sent]!.at / manifest.stepHz <= now) {
+  const lead = player && !v.leave ? VIDEO.cueLead : 0
+  while (v.sent < events.length && events[v.sent]!.at / manifest.stepHz <= now + lead) {
     const e = events[v.sent++]!
     if (play) io.emit(e.name, e.x, e.y, e.hits)
     if (play && player) bridge.cues?.push({ name: e.name, at: e.at / manifest.stepHz, clock: now })

@@ -127,7 +127,8 @@ describe('step 3 of the live site plays the scene as a video', () => {
     const j = events.findIndex((e) => e.name === 'video-out')
     expect(events.slice(i + 1, j).map((e) => e.name)).toEqual(manifest.events.map((e) => e.name))
     const late = events.slice(i + 1, j).map((e, k) => e.step - events[i]!.step - manifest.events[k]!.at)
-    expect(Math.min(...late)).toBeGreaterThanOrEqual(0)
+    expect(Math.min(...late)).toBeGreaterThanOrEqual(-VIDEO.cueLead - 1e-9)
+    expect(VIDEO.cueLead).toBeLessThanOrEqual(1 / 120)
     expect(Math.max(...late)).toBeLessThanOrEqual(1)
   })
 
@@ -215,7 +216,8 @@ describe('the video and the page', () => {
     const cues = heard.slice(i + 1).filter((e) => e.name !== 'video-out')
     expect(cues.map((e) => e.name)).toEqual(manifest.events.map((e) => e.name))
     const late = cues.map((e, k) => e.clock - manifest.events[k]!.at / stepHz)
-    expect(Math.min(...late)).toBeGreaterThanOrEqual(0)
+    expect(Math.min(...late)).toBeGreaterThanOrEqual(-VIDEO.cueLead - 1e-9)
+    expect(VIDEO.cueLead).toBeLessThanOrEqual(1 / 120)
     expect(Math.max(...late)).toBeLessThan(2 / stepHz)
   })
 
@@ -231,9 +233,9 @@ describe('the video and the page', () => {
     expect(stage.events.length).toBe(before)
     t += 1 / stepHz
     stage.advance(1)
-    const next = manifest.events.find((e) => e.at / stepHz > t)!
+    const next = manifest.events.find((e) => e.at / stepHz > manifest.seconds / 2 + VIDEO.cueLead)!
     t = next.at / stepHz
     stage.advance(1)
-    expect(stage.events.at(-1)!.name).toBe(next.name)
+    expect(stage.events[before]!.name).toBe(next.name)
   })
 })

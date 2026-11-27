@@ -2,7 +2,7 @@
 //   node pipeline/change002/video-line.mjs [--rates 0,20,8,4] [--out out/work/video-line]
 // A whole visit by the keen bot from step 1 at the real clock. For each speed (megabits a second down, 0 is the line as it is):
 // when the fetch of the file began and ended, when the page reached the join in, how many steps it held for a video not ready,
-// and whether the video played or the page played its own ending.
+// and whether the video played or the page played the table itself.
 import fs from 'node:fs'
 import path from 'node:path'
 import { args, at, writeJson } from '../../tools/lib/paths.mjs'
@@ -14,7 +14,7 @@ const a = args()
 const out = at(...(a.out ? [a.out] : ['out', 'work', 'video-line']))
 fs.mkdirSync(out, { recursive: true })
 const rates = String(a.rates ?? '0,20,8,4').split(',').map(Number)
-const query = `mode=live&bot=keen&seed=1&video=trace${a.step ? `&step=${a.step}` : ''}`
+const query = `mode=live&bot=keen&seed=1&video=trace&quality=low${a.step ? `&step=${a.step}` : ''}`
 
 ensureBuild()
 const server = await serve(at('dist'))
@@ -39,9 +39,14 @@ for (const rate of rates) {
   const row = {
     megabits: rate || 'unlimited', fetchBeganS: s(r.fetchStart), fetchEndedS: s(r.loaded), megabytes: r.bytes ? Number((r.bytes / 1048576).toFixed(2)) : null,
     joinS: r.gaveUp ? s(r.now) : s(r.asked), readyBeforeJoinS: r.loaded >= 0 && r.asked >= 0 ? Number(((r.asked - r.loaded) / 1000).toFixed(2)) : null,
-    heldSteps: r.waits, heldSeconds: Number((r.waits / 240).toFixed(2)), sees: r.gaveUp ? 'the page held the shut ball, then played its own ending' : r.waits ? 'the page held the shut ball, then the video' : 'the video, at once'
+    heldSteps: r.waits, heldSeconds: Number((r.waits / 240).toFixed(2)), sees: r.gaveUp ? 'the page held the shut ball, then played the table itself, as before there was a video' : r.waits ? 'the page held the shut ball, then the video' : 'the video, at once'
   }
-  if (r.gaveUp) await page.screenshot({ path: path.join(out, `gave-up-${rate}.png`) })
+  if (r.gaveUp) {
+    await page.screenshot({ path: path.join(out, `gave-up-${rate}.png`) })
+    await new Promise((done) => setTimeout(done, 20000))
+    await page.screenshot({ path: path.join(out, `gave-up-${rate}-later.png`) })
+    row.control = await page.evaluate(() => window.liveRun?.told?.().control ?? null).catch(() => null)
+  }
   results.push(row)
   console.log(JSON.stringify(row))
   writeJson(path.join(out, 'line.json'), { made: new Date().toISOString(), browser: version, query, results })
