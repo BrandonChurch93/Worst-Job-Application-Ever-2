@@ -4,7 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
 import { cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysFor, unitPage } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
-import { draftFilm, keyPage, phraseStart, phrasesOf, standIns, wordCount } from '../src/audio/standin'
+import { draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, standIns, wordCount } from '../src/audio/standin'
+import { mixFilm, scriptStandIns } from '../src/audio/mix'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
 const cfg: any = read('config', 'showcase.json')
@@ -405,5 +406,34 @@ describe('change note 003: the same lines in the film on the site', () => {
     const late = await ready()
     late.s.beat('marketing.stroll', 'film', LIVE.beatLateSeconds + 1)
     expect(booked(late.s)).toEqual([])
+  })
+})
+
+describe('change note 003: the film', () => {
+  it('gives the caption writer each phrase of line 1 by frame, one after the other with no hole, done inside the 18 s of the opening, and marks a draft', () => {
+    const fps: number = cfg.film.fps
+    const caps = filmCaptions([{ id: id('marketing.stroll.0'), frame: 0 }, { id: id('decision.reset.0'), frame: 9000 }, { id: 'line.not.one.0', frame: 5 }], fps)
+    const one = caps.filter((x) => x.key === 'marketing.stroll.0')
+    const line = standIns().get('marketing.stroll.0')!
+    expect(one.map((x) => x.words)).toEqual(line.phrases.map((p) => p.words))
+    expect(one[0]!.first).toBe(0)
+    for (let i = 1; i < one.length; i++) expect(one[i]!.first).toBe(one[i - 1]!.last + 1)
+    expect(one[one.length - 1]!.last).toBe(Math.round(line.seconds * fps) - 1)
+    expect(one[one.length - 1]!.last).toBeLessThan(18 * fps)
+    expect(one.every((x) => !x.draft && !x.loud)).toBe(true)
+    const nine = caps.filter((x) => x.key === 'decision.reset.0')
+    expect(nine.length).toBeGreaterThan(0)
+    expect(nine.every((x) => x.draft && x.first >= 9000)).toBe(true)
+    expect(caps.some((x) => x.id === 'line.not.one.0')).toBe(false)
+  })
+
+  it('lays no take in the mix for a line of the script, kept or not, and places it as a stand-in of its length', () => {
+    const sr = 8000
+    const take = { sampleRate: sr, channels: [new Float32Array(sr).fill(0.5)] }
+    const r = mixFilm({ sampleRate: sr, fps: 60, seconds: 20, events: [], lines: [{ id: id('marketing.stroll.0'), beat: 'marketing.stroll', frame: 0 }], sounds: new Map([[id('marketing.stroll.0'), take]]) as never, sfx: [], duckDb: cfg.audio.duckDb, holdMusicSeconds: cfg.audio.holdMusicSeconds, targetLufs: cfg.audio.filmLoudnessLufs, truePeakDb: cfg.audio.truePeakDb })
+    expect(r.missingLines).toEqual([])
+    expect(r.placed.filter((p) => p.kind === 'line')).toEqual([])
+    expect(r.placed.filter((p) => p.kind === 'stand-in').map((p) => [p.id, p.frame, p.seconds])).toEqual([[id('marketing.stroll.0'), 0, scriptStandIns().get(id('marketing.stroll.0'))]])
+    expect(r.sound.channels.every((ch) => ch.every((v) => v === 0))).toBe(true)
   })
 })
