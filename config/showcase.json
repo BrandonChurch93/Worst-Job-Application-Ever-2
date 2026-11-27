@@ -79,8 +79,8 @@
       { "id": "step2.continue", "unit": "step2", "from": 20, "to": 21, "event": "button-press" },
       { "id": "pinball.seal", "unit": "pinball", "from": 0, "to": 7.6, "event": "ball-seal" },
       { "id": "pinball.reveal", "unit": "pinball", "from": 7.6, "to": 11.2, "event": "power-on" },
-      { "id": "pinball.launch", "unit": "pinball", "from": 11.2, "to": 13.7, "event": "plunger" },
-      { "id": "pinball.lobby", "unit": "pinball", "from": 13.7, "to": 17.5, "event": "doors-slam" },
+      { "id": "pinball.launch", "unit": "pinball", "from": 11.2, "to": 14, "event": "plunger" },
+      { "id": "pinball.lobby", "unit": "pinball", "from": 14, "to": 17.5, "event": "doors-slam" },
       { "id": "pinball.coffee", "unit": "pinball", "from": 17.5, "to": 21.7, "event": "bumper" },
       { "id": "pinball.replyAll", "unit": "pinball", "from": 21.7, "to": 26, "event": "ball-drop" },
       { "id": "pinball.fired", "unit": "pinball", "from": 26, "to": 29.5, "event": "scoop-kick" },
@@ -307,7 +307,7 @@
       "id": "tier-corporate",
       "unit": "pinball",
       "beat": "pinball.lobby",
-      "at": 0.42,
+      "at": 0.37,
       "camera": "tier-3",
       "image": "references/approved/tier-corporate.png",
       "settled": [
@@ -319,7 +319,7 @@
       "id": "lobby-doors",
       "unit": "pinball",
       "beat": "pinball.lobby",
-      "at": 0.74,
+      "at": 0.72,
       "camera": "table-lobby",
       "image": "references/approved/lobby-doors.png",
       "settled": ["The image stands the revolving door beside the carpet. In the build it stands on the carpet in front of the doors, as in tier-corporate."]
