@@ -82,3 +82,14 @@ What I saw at real size, frames in a row:
 
 MEASURED for this case, `node pipeline/phase5/polish-save2-measure.mjs --visitor keen --seed 1 --nth 1 --before 4 --after 20`, the view's step per frame from 4 frames before the take: before 1.1, 2.5, 4.0, 5.3, 6.2 (take), 6.6, 6.2, 5.6, 5.0, 4.4, 4.0, 3.5, 3.2, 2.8, 2.5, 2.3, 2.0, 1.8, 1.6, 1.4 (kick), 1.3, 1.1, 1.0, 0.9, 0.8 and on; after 0.0 on every frame (the view stood lowered from 17.1 s). The arrow: before 68.5 degrees turned on the wire, after 0.0. Screen under the wire's lowest point in the hold: before at least 26.0 px, after at least 77.4 px.
 - `save-low.png`, `wire-low.png`: the same two sheets at `--quality low`. The motion is the same frame for frame as at `high`: the same seven steps of landing, load, stand and throw, the arrow's heading held, the view standing; the wire thrown 4 frames, thin at 22.350 and 22.383, under the rest place at 22.367, at rest from 22.433.
+
+## Checks
+
+On the branch with `origin/main` at `8a39fcaa` merged in (`1aa6a8e3` and the commits after it), one job at a time, 14:12 to 14:25:
+
+- MEASURED, `npm run still -- --key table-wide --format hd --tier draft --force` (and `last-save`, `tier-street`), then `cmp` with the three stills kept from `308e96a1` before any change: all three byte equal.
+- MEASURED, `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- MEASURED, `npm run bots`: all clear; keen reached every one of the 37 gags on every seed.
+- MEASURED, `npm test`: 168 files passed, 11 skipped; 2108 tests passed, 14 skipped; none failed. (On `308e96a1` before any change: 166 files and 2094 tests passed.)
+- MEASURED, `npx tsc --noEmit -p .`: clean, no line of output.
+- MEASURED, `npx vitest run tests/polish-save2.test.ts tests/polish-gate.test.ts`: 18 of 18 passed.
