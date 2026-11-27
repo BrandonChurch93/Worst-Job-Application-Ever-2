@@ -44,7 +44,9 @@ export function visit(who: 'visitor' | 'keen' | 'clumsy' = 'visitor', mostSecond
   let seen = 0
   let was = false
   if (who !== 'visitor') {
-    const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: new BotDriver(who, config.seed) })
+    const bot = new BotDriver(who, config.seed)
+    const hand = bot as unknown as { x: number; y: number }
+    const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: bot })
     for (let i = 0; i < mostSeconds * 60 && !s.finished; i++) {
       s.advance(PER)
       const events = s.events.slice(seen).map((e) => e.name)
@@ -52,7 +54,7 @@ export function visit(who: 'visitor' | 'keen' | 'clumsy' = 'visitor', mostSecond
       const on = s.page.id === 'step1' && !s.turning
       if (was && !on) break
       was = on
-      if (on) rows.push(frame(s, i, false, 0, 0, events))
+      if (on) rows.push(frame(s, i, false, hand.x, hand.y, events))
     }
     return rows
   }

@@ -1,7 +1,8 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { gapLeft } from '../src/pages/step1/real/shredderShape'
 import { SINK } from '../src/pages/step1/keyboard'
-import { visit, type Frame } from './polish-tug2-run'
+import { SLOT } from '../src/pages/step1/layout'
+import { BODY, visit, type Frame } from './polish-tug2-run'
 
 // What this work holds, each a number of frames of 60 a second or a size on the 1920 by 1080 page.
 const HOLD = {
@@ -13,6 +14,8 @@ const HOLD = {
   take: 24, short: 1,
   // The tray's answer on the frame of the grab and on the frame the arrow arrives, px, and how much of its last pace the arrow keeps on that frame.
   answer: 3, keeps: 0.45,
+  // From the bite to the step the hands close the page does not move the arrow: in a frame it goes no further than this from the hand, px, and over those frames it comes no more than this nearer the slot than the hand does.
+  free: 1,
   // After the stop the arrow comes no nearer the slot than this in a frame, for this many frames.
   drift: 4, still: 8,
   // The slot is gone this many frames after its panels begin to snap shut.
@@ -82,6 +85,20 @@ describe.each(['visitor', 'keen'] as const)('polish tug 2: the page takes the ar
     expect((pace[0]! + pace[1]! + pace[2]!) / 3).toBeGreaterThan(1.4 * ((pace[pace.length - 4]! + pace[pace.length - 3]! + pace[pace.length - 2]!) / 3))
     expect(pace[pace.length - 1]!).toBeLessThanOrEqual(HOLD.keeps * pace[pace.length - 2]!)
     for (let n = stop + 1; n <= stop + HOLD.still; n++) expect(Math.abs(nearer(rows, n)), `frame ${rows[n]!.i}`).toBeLessThanOrEqual(HOLD.drift)
+  })
+
+  it('does not haul the arrow before the hands close: from the bite to that step the arrow goes only where the hand takes it', () => {
+    const rows = runs[who]
+    const { bite, grab } = take(rows)
+    const off = (n: number, hand: number): number => Math.hypot(rows[n]!.pose.x - rows[hand]!.px, rows[n]!.pose.y - rows[hand]!.py)
+    const handFar = (n: number): number => Math.hypot(rows[n]!.px + BODY.x - SLOT.cx, rows[n]!.py + BODY.y - SLOT.cy)
+    let away = -9
+    for (let n = bite; n < grab; n++) away = Math.max(away, off(n, n) - off(n - 1, n))
+    const arrow = rows[bite - 1]!.far - rows[grab - 1]!.far
+    const hand = handFar(bite - 1) - handFar(grab - 1)
+    console.log(`${who} before the grab: frames ${rows[bite]!.i} to ${rows[grab - 1]!.i}, the arrow goes ${away.toFixed(2)} px from the hand in a frame at the most, it comes ${arrow.toFixed(1)} px nearer the slot and the hand ${hand.toFixed(1)} px`)
+    expect(away).toBeLessThanOrEqual(HOLD.free)
+    expect(arrow - Math.max(0, hand)).toBeLessThanOrEqual(HOLD.free)
   })
 
   it('is answered on the frame of the grab and on the frame the arrow arrives: the tray kicks back, the paper swings, the tray dips and the arrow is pressed short', () => {

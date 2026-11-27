@@ -171,6 +171,8 @@ const release = (e: number): number => {
   return t < RELEASE.up + RELEASE.settle ? -RELEASE.over * (1 - (t - RELEASE.up) / RELEASE.settle) ** 2 : 0
 }
 const stroke = (e: number): number => (e >= 0 && e < DOWN.seconds ? DOWN.first + (1 - DOWN.first) * (e / DOWN.seconds) : release(e))
+// The ground a pressed cap gives the arrow that stands on it: it comes up on the slower spring, so a cap let go does not toss the arrow.
+const footing = (e: number): number => (e >= 0 && e < DOWN.seconds ? DOWN.first + (1 - DOWN.first) * (e / DOWN.seconds) : spring(e, HOLD, PRESS))
 const jarOf = (t: number): number => (t < 0 || t > JAR.seconds ? 0 : t < JAR.hold ? 1 : Math.exp(-(t - JAR.hold) / JAR.tau) * Math.cos(((t - JAR.hold) / JAR.period) * Math.PI * 2))
 const ring = (t: number, px: number): number => (t < 0 || t > 0.3 ? 0 : px * Math.exp(-t * 16) * Math.cos(t * 58))
 const inside = (b: { x: number; y: number; w: number; h: number }, x: number, y: number, pad = 0): boolean => x >= b.x - pad && x <= b.x + b.w + pad && y >= b.y - pad && y <= b.y + b.h + pad
@@ -816,7 +818,7 @@ export function makePage(): PageLogic {
     if (s.board <= 0 || !onDeck(io.cursor.x, io.cursor.y)) return 0
     const key = keyAt(s.places, io.cursor.x, io.cursor.y)
     const down = key >= 0 ? s.keyDown[seats[key]!.name] : undefined
-    const top = key >= 0 ? CAP_TOP - (down ? TRAVEL * Math.max(0, stroke(PRESS - down)) : 0) : DECK_TOP
+    const top = key >= 0 ? CAP_TOP - (down ? TRAVEL * Math.max(0, footing(PRESS - down)) : 0) : DECK_TOP
     return Math.max(0, top + lift(s.board))
   }
 
