@@ -5,6 +5,7 @@ import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { SINK, TRAVEL } from '../src/pages/step1/keyboard'
 import { keyboard } from '../src/pages/step1/real/keyboard'
+import { turrets } from '../src/pages/step1/real/turrets'
 import { RECOIL, recoilOf, TURRET } from '../src/pages/step1/turrets'
 import type { RealContext } from '../src/real/types'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
@@ -197,6 +198,30 @@ describe('polish keys 2: a key the visitor presses goes to a bottom, stands ther
     expect(at(PRESSED + 1).all.get('a')!.depth).toBe(1)
     expect(TRAVEL).toBe(6)
     expect([SINK.x, SINK.y]).toEqual([5.5, 5.5])
+  })
+
+  it('throws the barrel back inside a sleeve that stays where it stands at rest, so no more of its rear end shows over the dome', () => {
+    const gun = (i: number): { sleeve: THREE.Mesh; barrel: THREE.Group; back: number } => {
+      const list = at(i).list
+      const t = shape(list, 'turret-0')!
+      const ctx = { page: 'step1', list, byId: new Map(list.map((x) => [x.id, x])), time: i / 60, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => {} } as unknown as RealContext
+      const o = turrets.make(t, ctx)
+      turrets.pose!(o, t, ctx)
+      const d = o.userData.turret as { sleeve: THREE.Mesh; barrel: THREE.Group }
+      return { sleeve: d.sleeve, barrel: d.barrel, back: t.v![5]! }
+    }
+    const rest = gun(SHOT + 12)
+    expect(rest.back).toBe(0)
+    for (const i of [SHOT - 3, SHOT, SHOT + 1, SHOT + 3]) {
+      const g = gun(i)
+      expect(g.sleeve.position.toArray(), `frame ${i}`).toEqual(rest.sleeve.position.toArray())
+      expect(g.sleeve.rotation.y, `frame ${i}`).toBe(rest.sleeve.rotation.y)
+      const lift = -g.barrel.rotation.y
+      expect(rest.barrel.position.x - g.barrel.position.x, `frame ${i}`).toBeCloseTo(g.back * Math.cos(lift), 6)
+      expect(rest.barrel.position.z - g.barrel.position.z, `frame ${i}`).toBeCloseTo(g.back * Math.sin(lift), 6)
+    }
+    expect(gun(SHOT).back).toBeCloseTo(RECOIL.kick, 6)
+    expect(Math.min(...[1, 2, 3, 4, 5].map((n) => gun(SHOT + n).back))).toBeGreaterThan(-8)
   })
 
   interface Deck { caps: Map<string, { start: number; count: number }>; body: THREE.Mesh; shades: THREE.InstancedMesh }
