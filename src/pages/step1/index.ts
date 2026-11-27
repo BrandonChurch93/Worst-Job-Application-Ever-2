@@ -10,7 +10,7 @@ import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seatIn
 import { buildLayout, FIELDS, SLAB, STAGES, stageState, type FieldName } from './layout'
 import { makeResume } from './resume'
 import { filmCamera, makePlan, pointerAt, SHRED, START, SWAP, TIMES, type Plan } from './script'
-import { Turrets, TURRET, type TurretsState } from './turrets'
+import { BLAST, Turrets, TURRET, type TurretsState } from './turrets'
 
 const live = config.live
 const heights = config.scale.heights
@@ -134,7 +134,7 @@ export function makePage(): PageLogic {
     return DROP * SWING * (1 - ((u - 0.8) / 0.2) ** 2)
   }
   const surface = (x: number, y: number): number => (onDeck(x, y) ? (keyAt(HOME, x, y) >= 0 ? CAP_TOP : DECK_TOP) : 0)
-  const turrets = new Turrets(hatches, DECK_TOP, live.step1.hitsBeforeTurretsOverheat, surface)
+  const turrets = new Turrets(hatches, DECK_TOP, live.step1.hitsBeforeTurretsOverheat, surface, BLAST)
   const film = config.applicant
   let plan: Plan = makePlan(film.filmFirstName, film.filmEmail)
   const names: Record<FieldName, string[]> = { name: ['p', 'e', 'r'], email: ['a', 'at', 'b'] }

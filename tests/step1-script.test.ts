@@ -30,17 +30,15 @@ describe('step 1: the script of the film', () => {
       }
       return true
     }
-    expect(still(FIRST.cocky[1], FIRST.flee[0])).toBe(true)
-    expect(FIRST.flee[0] - FIRST.cocky[1]).toBeGreaterThanOrEqual(1.5)
-    expect(still(FIRST.flee[1], FIRST.slide[0])).toBe(true)
-    expect(FIRST.slide[0] - FIRST.flee[1]).toBeGreaterThanOrEqual(0.6)
-    expect(still(FIRST.slide[1], FIRST.after[0]![0])).toBe(true)
-    expect(FIRST.after[0]![0] - FIRST.slide[1]).toBeGreaterThanOrEqual(0.4)
+    expect(still(FIRST.cocky[1], FIRST.hit)).toBe(true)
+    expect(FIRST.hit - FIRST.cocky[1]).toBeGreaterThanOrEqual(1.5)
+    expect(still(FIRST.hit, FIRST.after[0]![0])).toBe(true)
+    expect(FIRST.after[0]![0] - FIRST.hit).toBeGreaterThanOrEqual(0.6)
   })
 
-  it('makes the frame of the approved image at 6.0: the cursor still on a key of the middle letter rows, scorched, the key under it hot, a bolt in the air', () => {
+  it('makes the frame of the approved image, now at 7.4: the cursor still on a key of the middle letter rows, scorched, the key under it hot, a bolt in the air', () => {
     const s = film()
-    s.advance(at(6))
+    s.advance(at(7.4))
     const st = s.page.save() as unknown as { values: Record<string, string>; thudKey: number; turrets: { bolts: unknown[]; scorches: { x: number; y: number; left: number }[] } }
     const pose = s.cursor.pose()
     const body = { x: pose.x + 14, y: pose.y + 26 }
@@ -56,8 +54,8 @@ describe('step 1: the script of the film', () => {
     expect(st.turrets.bolts.length).toBeGreaterThanOrEqual(1)
     const near = st.turrets.scorches.filter((c) => Math.hypot(c.x - body.x, c.y - body.y) < 200)
     expect(near.length).toBeGreaterThanOrEqual(1)
-    expect(st.values.name).toBe(config.applicant.filmFirstName.slice(0, 5))
-    console.log(`the frame at 6.0: the cursor on the key ${seats[under]!.name}, body at ${body.x.toFixed(0)}, ${body.y.toFixed(0)}, ${near.length} burn near it, ${st.turrets.bolts.length} bolt in the air`)
+    expect(st.values.name).toBe(config.applicant.filmFirstName.slice(0, 4))
+    console.log(`the frame at 7.4: the cursor on the key ${seats[under]!.name}, body at ${body.x.toFixed(0)}, ${body.y.toFixed(0)}, ${near.length} burn near it, ${st.turrets.bolts.length} bolt in the air`)
   })
 
   it('clicks the field only once the cursor stands on the page', () => {

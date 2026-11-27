@@ -20,15 +20,13 @@ export const SPOT = { x: -12, y: -14 }
 // A stage change: the stage that is done stays for `out` seconds, the page is bare until `in`, and from then the next stage stands on it.
 export const SWAP = { out: 0.3, in: 0.5 }
 
-// The film's first name: every time is a second of the unit. The turrets are up at 3.52 and fire at 4.12, 4.57, 5.02, 5.47, 5.92, and so on.
-// 6.0 is the frame of the approved image: the shot of 5.02 has just landed on L, the shot of 5.47 is a hand's width from the cursor, the shot of 5.92 has left the barrel, and the cursor has snapped out of the way to the row above, a key short of 5 (short), and holds there, still.
-// It ducks flat and slides a key along, so the shot of 6.37 lands where it was. It stretches out of the duck, takes the pause for a win, and the shot of 6.82 hits it at 7.14: it is thrown across the board on to the bare deck by the right hatch and holds its shock there.
+// The film's first name: every time is a second of the unit. The turrets are up at 3.52. The left one loads at 3.62 on the key the arrow stands on and fires at 4.32; the arrow has leapt clear and the blast lands on the empty key at 5.52.
+// The arrow takes that for a win and stands proud. The right turret loads at 5.12, fires at 5.82, and the blast reaches the arrow at 6.82: it sees it late, is hit, is thrown and holds its shock, then types the rest of the name.
 export const FIRST = {
   tap: 1.5,
   keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
   notice: 3.42, dodge: 3.86, cocky: [4.42, 4.58] as [number, number], proud: 4.7,
-  stand: { x: 1072, y: 870 }, see: 6.335, flee: [6.335, 6.415] as [number, number], aside: { x: -170, y: -64 }, snap: 6.37,
-  duck: 7.14, slide: [7.16, 7.28] as [number, number], under: { x: -200, y: 64 }, up: 7.6,
+  stand: { x: 1072, y: 870 }, see: 6.5, hit: 6.82, up: 7.6,
   after: [[7.716, 8.0], [8.07, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
   enter: [9.4, 9.6] as [number, number]
 }
@@ -117,15 +115,10 @@ export function makePlan(first: string, email: string): Plan {
     }
   }
   const stand = FIRST.stand
-  const aside = { x: stand.x + FIRST.aside.x, y: stand.y + FIRST.aside.y }
   leap(FIRST.cocky[0], FIRST.cocky[1], stand.x, stand.y, { arc: 20 })
   cue(FIRST.proud, { act: 'proud' })
   cue(FIRST.proud + 0.06, { react: 'dustOff' })
-  cue(FIRST.see, { react: 'anticipate' })
-  leap(FIRST.flee[0], FIRST.flee[1], aside.x, aside.y, { arc: 30, ease: 'smooth', hop: false })
-  cue(FIRST.snap, { react: 'snap' })
-  cue(FIRST.duck, { react: 'duck' })
-  to(FIRST.slide[0], FIRST.slide[1], aside.x + FIRST.under.x, aside.y + FIRST.under.y, { ease: 'out' })
+  cue(FIRST.see, { react: 'doubleTake' })
   cue(FIRST.up, { react: 'anticipate' })
   for (let i = before - 1; i < keys.length; i++) {
     const n = i - (before - 1)

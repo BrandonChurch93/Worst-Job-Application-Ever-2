@@ -209,7 +209,8 @@ describe('step 1: the film', () => {
     const hit = events.filter((e) => e.name === 'bolt-hit-cursor')
     expect(hit.length).toBe(1)
     expect(hit[0]!.hitsCursor).toBe(true)
-    expect(times('bolt-fire').length).toBeGreaterThan(4)
+    expect(times('bolt-fire').length).toBeGreaterThanOrEqual(4)
+    expect(times('turret-load').length).toBeGreaterThanOrEqual(times('bolt-fire').length)
     expect(times('sizzle').length).toBe(1)
     expect(events.filter((e) => e.name === 'slab-drop').map((e) => e.hitsCursor)).toEqual([false, false, false])
   })
@@ -502,8 +503,8 @@ describe('the fixes after round 2 of the blockout', () => {
         }
       }
     }
-    expect(hit).toBeGreaterThan(5.5)
-    expect(hit).toBeLessThan(6)
+    expect(hit).toBeGreaterThan(6.5)
+    expect(hit).toBeLessThan(7)
     expect(a.pageTime).toBeGreaterThan(0)
     expect(full).toBeGreaterThan(hit + 1.5)
     expect(full).toBeLessThanOrEqual(9.5)

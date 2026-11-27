@@ -5,7 +5,7 @@ import { TYPE } from '../../shell/parts'
 import type { DrawList, Shape } from '../../stage/types'
 import { CAP_TOP, DECK, DECK_TOP, hatchCentre, homePlaces, keyAt, onDeck, seats, TRAVEL } from './keyboard'
 import { buildLayout, FIELDS, stageState } from './layout'
-import { Turrets } from './turrets'
+import { Turrets, type Tune } from './turrets'
 
 const WELL = -(CAP_TOP + 12)
 
@@ -13,8 +13,8 @@ export interface FireView { typed: string; pressed: string[]; turrets: Turrets; 
 
 export const fireSurface = (x: number, y: number): number => (onDeck(x, y) ? (keyAt(homePlaces(), x, y) >= 0 ? CAP_TOP : DECK_TOP) : 0)
 
-export function makeTurrets(): Turrets {
-  return new Turrets([hatchCentre(0), hatchCentre(1)], DECK_TOP, config.live.step1.hitsBeforeTurretsOverheat, fireSurface)
+export function makeTurrets(tune?: Tune): Turrets {
+  return new Turrets([hatchCentre(0), hatchCentre(1)], DECK_TOP, config.live.step1.hitsBeforeTurretsOverheat, fireSurface, tune)
 }
 
 let built: ReturnType<typeof buildLayout> | null = null

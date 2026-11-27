@@ -6,7 +6,7 @@ import { pages } from '../src/pages'
 import { SINK, TRAVEL } from '../src/pages/step1/keyboard'
 import { keyboard } from '../src/pages/step1/real/keyboard'
 import { turrets } from '../src/pages/step1/real/turrets'
-import { RECOIL, recoilOf, TURRET } from '../src/pages/step1/turrets'
+import { BLAST, RECOIL, recoilOf, TURRET } from '../src/pages/step1/turrets'
 import type { RealContext } from '../src/real/types'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { DrawList, Shape } from '../src/stage/types'
@@ -45,7 +45,7 @@ const SHOT = 870
 const PRESSED = 1479
 const LET_GO = 1491
 const HIT = 898
-const FILM_SHOT = 248
+const FILM_SHOT = 260
 
 describe('polish keys 2: a turret draws back, is thrown back by its shot and rings down', () => {
   const frame = 1 / 60
@@ -83,8 +83,9 @@ describe('polish keys 2: a turret draws back, is thrown back by its shot and rin
     const back = (n: number): number => shape(film()[n - 1]!.list, 'turret-0')!.v![5]!
     expect(film()[FILM_SHOT - 1]!.events).toContain('bolt-fire')
     expect(back(FILM_SHOT - 1) - back(FILM_SHOT - 6)).toBeGreaterThan(7)
-    expect(back(FILM_SHOT)).toBe(RECOIL.kick)
+    expect(back(FILM_SHOT)).toBe(BLAST.kick)
     expect(back(FILM_SHOT) - back(FILM_SHOT - 1)).toBeGreaterThan(10)
+    expect(back(FILM_SHOT - 30)).toBeCloseTo(BLAST.creep, 6)
     expect(back(FILM_SHOT + 2)).toBeLessThan(0)
     expect(back(FILM_SHOT + 9)).toBe(0)
   })
@@ -116,21 +117,21 @@ describe('polish keys 2: a bolt flies as it flew', () => {
 
   it('goes the same way in the film', () => {
     const flown = film().filter((r) => shape(r.list, 'bolt-0')).map((r) => r.n)
-    expect([flown[0], flown[flown.length - 1], flown.length]).toEqual([FILM_SHOT, 272, 25])
+    expect([flown[0], flown[flown.length - 1], flown.length]).toEqual([FILM_SHOT, 331, 72])
     const first = centre(film()[FILM_SHOT - 1]!.list, 'bolt-0')
-    const last = centre(film()[271]!.list, 'bolt-0')
+    const last = centre(film()[330]!.list, 'bolt-0')
     expect([first.x, first.y, first.z].map((n) => Math.round(n * 10) / 10)).toEqual(FILM_PATH.first)
     expect([last.x, last.y, last.z].map((n) => Math.round(n * 10) / 10)).toEqual(FILM_PATH.last)
-    for (let n = FILM_SHOT + 1; n <= 272; n++) {
+    for (let n = FILM_SHOT + 1; n <= 331; n++) {
       const a = centre(film()[n - 2]!.list, 'bolt-0')
       const b = centre(film()[n - 1]!.list, 'bolt-0')
-      expect(Math.hypot(b.x - a.x, b.y - a.y), `frame ${n}`).toBeCloseTo(25, 6)
+      expect(Math.hypot(b.x - a.x, b.y - a.y), `frame ${n}`).toBeCloseTo(BLAST.boltSpeed / 60, 6)
     }
   })
 })
 
 const LIVE_PATH = { first: [288.2, 894, 69.8], last: [962.8, 916.6, 44.3] }
-const FILM_PATH = { first: [300.5, 886.6, 69.2], last: [898.9, 841.8, 44.3] }
+const FILM_PATH = { first: [288.3, 887.4, 69.7], last: [901.8, 840.1, 44.1] }
 
 describe('polish keys 2: what is heard on step 1 is what was heard', () => {
   it.skip('holds the same events at the same frames on the live site', () => {
@@ -141,10 +142,10 @@ describe('polish keys 2: what is heard on step 1 is what was heard', () => {
 
   it('holds the same events at the same frames in the film', () => {
     const list = heard(film())
-    expect(list.length).toBe(268)
-    expect(sha(list)).toBe('02f918dbec7b8f71c1a1c6612caf593124b5ea54')
-    expect(list.filter((l) => l.includes('bolt-hit-cursor'))).toEqual(['349\tbolt-hit,bolt-hit-cursor,sizzle'])
-    expect(list.filter((l) => l.includes('bolt-fire')).slice(0, 6).map((l) => Number(l.split('\t')[0]))).toEqual([248, 275, 302, 329, 356, 383])
+    expect(list.length).toBe(247)
+    expect(sha(list)).toBe('c11f0d0942c8cca994eee01380419a966ed38f9b')
+    expect(list.filter((l) => l.includes('bolt-hit-cursor'))).toEqual(['408\tbolt-hit,bolt-hit-cursor,sizzle'])
+    expect(list.filter((l) => l.includes('bolt-fire')).slice(0, 4).map((l) => Number(l.split('\t')[0]))).toEqual([260, 350, 440, 530])
   })
 })
 
