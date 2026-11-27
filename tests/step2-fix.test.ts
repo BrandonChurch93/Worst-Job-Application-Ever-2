@@ -18,8 +18,8 @@ const coinsOf = (list: Shape[]): Shape[] => list.filter((x) => /^coin-\d+$/.test
 describe('step 2 after its fixer', () => {
   it('lays the coins down inside the tray, where all but the last few lie still', () => {
     const s = film()
-    const at = to(s, 13.1)
-    const later = to(s, 13.25)
+    const at = to(s, 13.06)
+    const later = to(s, 13.1)
     const lying = coinsOf(at)
     expect(lying.length).toBeGreaterThanOrEqual(8)
     const tray = at.find((x) => x.id === 'birth-tray')!

@@ -35,7 +35,7 @@ const shoulder: P = { x: DIAL.cx + 15, y: DIAL.cy + 14 }
 const lead: P = { x: DIAL.cx - 17, y: DIAL.cy - 1 }
 export const LANDING: P = { x: DIAL.cx - 600, y: DIAL.cy + 30 }
 // The film's date: when the lever pulls itself, and when the arrow stops each reel on the applicant's own legend.
-export const FILM = { lever: 9.6, stops: [10.2, 10.6, 11.0] }
+export const FILM = { lever: 9.82, stops: [10.42, 10.82, 11.22] }
 const stopAt = (r: number): P => ({ x: SLOT.reelX(r) + SLOT.reelW / 2, y: SLOT.stopY + SLOT.stopH / 2 })
 const watch: P = { x: SLOT.leverX + 44, y: SLOT.y + 64 }
 const peer: P = { x: watch.x - 14, y: watch.y + 4 }
@@ -44,6 +44,7 @@ const grip: P = { x: CRANK.hx + CRANK.arm * Math.cos(CRANK.rest), y: CRANK.hy + 
 const TURNS = 3.03
 export const AWAY: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
 const away = AWAY
+const under: P = { x: CRANK.segX - 16, y: CRANK.signY + CRANK.signH + 6 }
 const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
 const thrown: P = { x: caught.x + 127, y: caught.y + 27 }
 const shrunk: P = { x: thrown.x - 12, y: thrown.y + 26 }
@@ -71,7 +72,7 @@ const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { r
 const PULL = { leave: 9.2, there: 9.75, tap: 0.09, on: 0.12 }
 // The coins: it hides, shakes them off where it is safe, and comes back angry. The temper is spent on the stamp: it takes the crank with a cool head.
 // The reels: it leans in to watch them, small and tight. The coins: it goes flat under them where it stands, held, and then darts for cover.
-const STRUCK = { tight: FILM.stops[2]! + 0.1, read: FILM.stops[2]! + 0.1, near: 11.9, duck: 12.0, flee: 12.56 }
+const STRUCK = { read: FILM.stops[2]! + 0.1, near: 11.9, duck: 12.0, flee: 12.56 }
 const TEMPER = { safe: 12.74, dust: 12.78, fume: 13.3, red: 13.5, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
 // Flat, it drags itself to the button and stops short of it. Half way it heaves and falls flat again. There it peels up and fills out, standing still, draws back, and throws itself at the button.
@@ -131,9 +132,10 @@ const path: Seg[] = [
   arc(T.crank, T.runaway + 0.01, hub, CRANK.arm, CRANK.rest, CRANK.rest + TURNS * 2 * Math.PI, (u) => u * (1.25 - 0.25 * u)),
   line(T.runaway + 0.01, THROWN.see, grip, grip),
   line(THROWN.see, THROWN.off, grip, away),
-  line(THROWN.off, T.lean, away, away),
-  line(T.lean, T.lean + 0.3, away, caught),
-  line(T.lean + 0.3, 16.85, caught, caught),
+  line(THROWN.off, T.lean - 0.06, away, away),
+  line(T.lean - 0.06, T.lean + 0.15, away, under),
+  line(T.lean + 0.15, T.lean + 0.24, under, caught),
+  line(T.lean + 0.24, 16.85, caught, caught),
   line(16.85, 17.0, caught, thrown),
   line(17.0, WARNED.see, thrown, thrown),
   line(WARNED.see, WARNED.back, thrown, shrunk),
@@ -175,7 +177,7 @@ export type Mark = 'fling' | 'strike'
 export type Marks = Partial<Record<Mark, number>>
 
 const acts: [number | Mark, Acting][] = [
-  [0, 'plain'], [EASY.eye, 'confident'], [T.third + HAUL, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.0, 'plain'], [STRUCK.tight, 'nervous'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
+  [0, 'plain'], [EASY.eye, 'confident'], [T.third + HAUL, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.0, 'plain'], [FILM.lever, 'nervous'], [FILM.stops[2]! + 0.12, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
   [THROWN.see, 'shocked'], [THROWN.back, 'angry'], [16.95, 'exhausted'], [RISE.flop + RISE.life * 0.78, 'plain']
 ]
 

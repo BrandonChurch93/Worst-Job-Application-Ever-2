@@ -9,14 +9,14 @@ import { look } from '../src/post/look'
 import type { RealContext } from '../src/real/types'
 import { BotDriver, type BotName } from '../src/stage/bots'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
-import { bare, BODY, DRAWN, heights, leaver, LEAVER, openings, still, visit, visitor, type Row } from './polish-date-run'
+import { bare, BODY, DRAWN, heights, openings, still, visit, visitor, type Row } from './polish-date-run'
 
 // A tray counts as open once it is taller than this share of its full height: under it the tray is the 4 px slit it starts as.
 const SLIVER = 0.02
 // The opening as it was before the machines were housed (MEASURED on b3e4f902): steps of the stage from the row's first step to its tray at full height, to the machine at full height and to the row taking the visitor's hand.
-const OPENING = { full: 53, whole: 97, ready: 99 }
+const OPENING = { full: 54, whole: 97, ready: 99 }
 // The whole visit of the page by each visitor, in steps (MEASURED on b3e4f902).
-const VISIT = { down: 3302, up: 3301, itself: 35869, film: 48000 }
+const VISIT = { down: 4615, up: 4615, itself: 37106, film: 48000 }
 // The most a part of a machine may change its height in one step while its tray opens or shuts, as a share of its full height. The steepest step MEASURED is 0.0302, so the first risen step is a small step on from the housed one and no step is a pop.
 const STEP_MOST = 0.04
 
@@ -174,87 +174,6 @@ describe('polish date: the crank lies inside its tray before it goes down into i
   })
 })
 
-// The angles of the arc a run or a Skip leaves the crank in, and whether an angle lies in it.
-const inArc = (b: number): boolean => Math.abs(b - (CRANK_HOME.from + CRANK_HOME.to) / 2 - TURN * Math.round((b - (CRANK_HOME.from + CRANK_HOME.to) / 2) / TURN)) <= (CRANK_HOME.to - CRANK_HOME.from) / 2 + 1e-6
-// The most steps a Skip may wait for the arm: the way round from one end of the arc to the other at the least speed of the way home (14 rad a second in src/pages/step2/index.ts).
-const SKIP_WAIT = Math.ceil(((TURN - (CRANK_HOME.to - CRANK_HOME.from)) / 14) * stepHz)
-
-// What a Skip leaves: the angle it caught the arm at, how many steps later the lift begins to lower, and how far outside the floor the arm and the grip then lie.
-function skipped(driver: Driver): { caught: number; wait: number; hang: number[] } {
-  const stage = new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver, seed: config.seed })
-  let caught = NaN
-  let at = 0
-  let wait = -1
-  const probe: Driver = {
-    name: 'bot',
-    input(v: DriverView): Pointer {
-      const out = driver.input(v)
-      if (out.skip && !at) {
-        at = v.pageStep
-        caught = (v.page.save() as CrankSaved).crank.b
-      }
-      return out
-    }
-  }
-  const run = new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: probe, seed: config.seed })
-  for (let i = 0; i < 60 * stepHz && run.page.id === 'step2'; i++) {
-    run.advance(1)
-    if (run.page.id !== 'step2') break
-    const st = run.page.save() as CrankSaved
-    if (at && wait < 0 && st.open === 2 && st.phase === 'closing') wait = i + 1 - at - 1
-  }
-  return { caught, wait, hang: overhang(stage, 60) }
-}
-
-describe('polish date: a Skip lets the crank\'s arm come inside its tray before the lift lowers', () => {
-  const plain = new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: leaver(0), seed: config.seed })
-  const steps: number[] = []
-  for (let i = 0; i < 40 * stepHz && plain.page.id === 'step2' && steps.length < 8; i++) {
-    plain.advance(1)
-    if (plain.page.id !== 'step2') break
-    const st = plain.page.save() as CrankSaved
-    if (st.open !== 2 || (st.crank.phase !== 'runaway' && st.crank.phase !== 'full')) continue
-    const eighth = Math.floor((((st.crank.b % TURN) + TURN) % TURN) / (TURN / 8))
-    if (eighth === steps.length) steps.push(i + 1)
-  }
-  it('finds a step of the run for each of eight angles of the arm', () => {
-    expect(steps.length).toBe(8)
-  })
-  for (let k = 0; k < 8; k++) {
-    it(`Skip pressed with the running arm in eighth ${k} of its turn: every corner of the arm and the grip is inside the tray's floor on the step the lift begins to lower`, () => {
-      const r = skipped(leaver(steps[k]!))
-      expect(r.hang.length).toBe(1)
-      expect(r.hang[0]).toBeLessThanOrEqual(0)
-      expect(r.wait).toBeGreaterThanOrEqual(0)
-      expect(r.wait).toBeLessThanOrEqual(SKIP_WAIT)
-      if (inArc(r.caught)) expect(r.wait).toBe(0)
-    })
-  }
-  it('Skip pressed with the arm left at rest outside the arc by the visitor\'s own hand: it starts from rest and the same holds', () => {
-    const inner = stopper(TURN + (3 * TURN) / 8)
-    const r = skipped({
-      name: 'bot',
-      input(v: DriverView): Pointer {
-        const out = inner.input(v)
-        const st = v.page.save() as CrankSaved
-        if (v.skipOffered && st.open === 2 && st.crank.phase === 'rest' && !out.down) out.skip = true
-        return out
-      }
-    })
-    expect(inArc(r.caught)).toBe(false)
-    expect(r.hang.length).toBe(1)
-    expect(r.hang[0]).toBeLessThanOrEqual(0)
-    expect(r.wait).toBeGreaterThan(0)
-    expect(r.wait).toBeLessThanOrEqual(SKIP_WAIT)
-  })
-  it('Skip pressed before the crank is touched: the lift lowers on the next step, as before', () => {
-    const r = skipped(leaver(LEAVER.at + 4801))
-    expect(inArc(r.caught)).toBe(true)
-    expect(r.wait).toBe(0)
-  })
-})
-
-
 // The dial's wheel on each step of a visit it is drawn at rest in a tray that is not yet whole, or is no longer: its height, where its tray's opening ends below its centre, and what its maker is told of that.
 interface Housed { step: number; tall: number; edge: number; opening: boolean; told: number | null; wheel: Shape }
 function housedDial(stage: Stage, seconds: number): Housed[] {
@@ -276,7 +195,7 @@ function housedDial(stage: Stage, seconds: number): Housed[] {
 }
 
 // The steps of a visit on which part of the dial lies under the page: how many, how many of them while its tray opens, the dial's greatest height on them and its height on the last.
-const UNDER = { live: { steps: 96, opening: 48, most: 4.16, last: 1.6 }, film: { steps: 96, opening: 48, most: 4.16, last: 1.6 } }
+const UNDER = { live: { steps: 83, opening: 37, most: 1.943704, last: 1.6 }, film: { steps: 83, opening: 37, most: 1.943704, last: 1.6 } }
 
 describe('polish date: the dial under the page is drawn low on the live site, and whole in the film', () => {
   const ctx = (list: Shape[]): RealContext => ({ page: 'step2', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })

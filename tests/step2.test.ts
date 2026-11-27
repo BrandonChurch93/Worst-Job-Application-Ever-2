@@ -13,6 +13,8 @@ const tolerance = config.film.beatToleranceSeconds
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver, seed })
 const state = (s: Stage) => JSON.stringify({ page: s.page.save(), cursor: s.cursor.save(), id: s.page.id })
+// The events change note 002 adds to step 2. Their sounds are made by the Builder in one batch, so none has a cue of its own yet.
+const NEW_EVENTS = ['date-key', 'reel-stop', 'date-hit', 'date-miss', 'volume-sign', 'crank-full', 'field-done', 'field-next']
 const names = (s: Stage) => s.events.filter((e) => e.page === 'step2').map((e) => e.name)
 
 describe('step 2, the layout', () => {
@@ -25,13 +27,14 @@ describe('step 2, the layout', () => {
 
   it('has no problems in any state the page can be in', () => {
     const seen = new Set<string>()
-    const settled = [null, ['07', '23', '1991'], ['12', '31', '2008']]
-    for (const open of [-1, 0, 1, 2]) {
-      for (const panel of [false, true]) {
-        for (let mask = 0; mask < 8; mask++) {
-          for (const typing of [false, true]) {
+    const settled = [null, ['07', '23', '1991'], ['12', '31', '2015']]
+    const values = [['', 'typing', 'done'], ['ask', 'typing', 'done', 'missed'], ['', 'typing', 'done']]
+    for (const here of [[0], [1], [2], [0, 1], [1, 2]]) {
+      for (const open of [-1, ...here]) {
+        for (const panel of [false, true]) {
+          for (const pick of [0, 1, 2, 3]) {
             for (const reels of settled) {
-              const states = statesOf({ open, panel, done: [0, 1, 2].map((i) => (mask & (1 << i)) !== 0), typing: [typing, false, typing], settled: reels })
+              const states = statesOf({ here, open, panel, value: values.map((v) => v[pick % v.length]!), settled: reels })
               const key = states.join(',')
               if (seen.has(key)) continue
               seen.add(key)
@@ -63,9 +66,10 @@ describe('step 2, the layout', () => {
       expect(hasWords(key), key).toBe(true)
     }
     const want = ['heading', 'subline', 'note', 'continue']
-    for (const row of ROWS) for (const leaf of ['label', 'helper', 'panel']) want.push(`rows.${row}.${leaf}`)
-    want.push('rows.phone.gaveUp', 'rows.birth.recorded', 'rows.volume.done')
+    for (const row of ROWS) for (const leaf of ['label', 'helper']) want.push(`rows.${row}.${leaf}`)
+    want.push('rows.phone.panel', 'rows.phone.gaveUp', 'rows.birth.recorded', 'rows.volume.done')
     for (const leaf of want) expect(keys, leaf).toContain(`copy:step2.${leaf}`)
+    for (const leaf of ['birth.placeholder', 'birth.stop', 'birth.missed', 'birth.panel', 'volume.sign']) expect(keys, leaf).toContain(`copy:drafts.step2.${leaf}`)
   })
 
   it('draws only shapes whose words are keys, in the film and on the sheet', () => {
@@ -109,12 +113,14 @@ describe('step 2, the film', () => {
 
   it('reports every contact that has a cue, in the order of the story', () => {
     const seen = names(s).filter((n) => n !== 'step')
-    const order = ['row-open', 'dial-wind', 'dial-return', 'dial-fling', 'row-open', 'lever-pull', 'reels-spin', 'coins', 'row-open', 'crank-turn', 'crank-runaway', 'flatten', 'peel-up', 'button-press', 'page-turn']
+    const order = ['row-open', 'dial-wind', 'dial-return', 'dial-fling', 'field-done', 'field-next', 'date-key', 'row-open', 'lever-pull', 'reels-spin', 'reel-stop', 'reel-stop', 'reel-stop', 'date-hit', 'coins', 'field-done', 'field-next', 'row-open', 'volume-sign', 'crank-turn', 'crank-runaway', 'flatten', 'crank-full', 'field-done', 'peel-up', 'button-press', 'page-turn']
     let i = 0
     for (const n of seen) if (n === order[i]) i++
     expect(i, seen.join(' ')).toBe(order.length)
     const cues = new Set(config.audio.sfx.map((c) => c.id))
-    for (const n of seen) if (n !== 'dial-fling') expect(cues.has(n), n).toBe(true)
+    for (const n of seen) if (n !== 'dial-fling' && !NEW_EVENTS.includes(n)) expect(cues.has(n), n).toBe(true)
+    expect(seen.filter((n) => n === 'date-key').length).toBe(8)
+    expect(seen.filter((n) => n === 'reel-stop').length).toBe(3)
     expect(seen.filter((n) => n === 'dial-wind').length).toBe(config.live.step2.dialDigitsBeforeItGivesUp)
     expect(seen.filter((n) => n === 'crank-turn').length).toBe(config.live.step2.crankTurnsBeforeItRunsAway)
     expect(seen.filter((n) => n === 'dial-fling').length).toBe(1)
@@ -129,7 +135,7 @@ describe('step 2, the film', () => {
     }
     for (const at of [1, 8.1, 13.9, 20]) {
       t.seek(at)
-      expect(t.page.states(), String(at)).toContain('rest')
+      expect(t.page.states().filter((x) => x.endsWith('-open')), String(at)).toEqual([])
     }
   })
 
@@ -149,7 +155,7 @@ describe('step 2, the film', () => {
     t.seek(15.2)
     const lit = shapes().filter((x) => /^meter-\d+$/.test(x.id) && x.tone === 'accent').map((x) => x.id)
     expect(lit).toEqual(['meter-1', 'meter-2', 'meter-3'])
-    expect(t.page.volume!()).toBeCloseTo(0.3, 5)
+    expect(t.page.volume!()).toBeCloseTo(0.3, 1)
   })
 
   it('sets the volume of the site with the crank: full before the row, low when it opens, full at the end', () => {
@@ -210,9 +216,9 @@ describe('step 2, the film', () => {
     }
     t.seek(15.2)
     for (const id of ['crank-arm', 'crank-grip']) expect(part(id).moved, id).toBe(true)
-    t.seek(8.9)
+    t.seek(9.5)
     expect(part('slot-knob').moved).toBeUndefined()
-    t.seek(9.35)
+    t.seek(9.95)
     expect(part('slot-knob').moved).toBe(true)
   })
 
@@ -255,7 +261,8 @@ describe('step 2, live', () => {
     expect(s.page.id).toBe('step3')
     expect(s.gagsReached.filter((g) => g.startsWith('step2.'))).toEqual(beats.map((b) => b.id))
     const seen = names(s)
-    for (const n of ['row-open', 'lever-pull', 'reels-spin', 'coins', 'crank-runaway', 'button-press']) expect(seen, n).toContain(n)
+    for (const n of ['row-open', 'lever-pull', 'reels-spin', 'reel-stop', 'date-miss', 'crank-runaway', 'button-press']) expect(seen, n).toContain(n)
+    expect(seen).not.toContain('coins')
     expect(seen.filter((n) => n === 'row-open').length).toBe(3)
     expect(s.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
   })

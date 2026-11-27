@@ -312,8 +312,8 @@ describe('the rows as they are built', () => {
   })
 
   it('sets the row titles semi-bold over a regular helper line, each a key of the copy', () => {
-    const list = listAt(1.0)
-    for (const name of ['phone', 'birth', 'volume']) {
+    for (const [name, at] of [['phone', 1.0], ['birth', 8.5], ['volume', 14.2]] as const) {
+      const list = listAt(at)
       const title = list.find((n) => n.id === `${name}-label`)!
       const helper = list.find((n) => n.id === `${name}-helper`)!
       expect(title.type?.font).toBe(ROW_TITLE.font)
@@ -330,7 +330,7 @@ describe('the rows as they are built', () => {
     const DRAWN = 0.02
     const CABINET = TOP + 20 - TRAY_Z
     const REEL = 4
-    const sides: [string, number, number][] = [['opening', 8.1, 8.7], ['shutting', 13.2, 13.7]]
+    const sides: [string, number, number][] = [['opening', 8.9, 9.5], ['shutting', 13.05, 13.56]]
     for (const [side, from, to] of sides) {
       let housed = 0
       let lying = 0

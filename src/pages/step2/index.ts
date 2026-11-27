@@ -463,7 +463,7 @@ export function makePage(): PageLogic {
     const c = io.cursor
     const left = FX + COIN.wall + COIN.r
     const right = FX + FW - COIN.wall - COIN.r
-    const roof = SLOT.payY + COIN.r
+    const roof = trayY(1) + COIN.wall + COIN.r
     const lid = trayY(1) + COIN.r + 2
     const ledge = trayY(1) + TRAY_H - COIN.wall - COIN.r
     const floor = TRAY_Z + COIN.clear

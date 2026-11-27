@@ -29,7 +29,7 @@ export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 3.4, lean: 0.3
 export const COIN = { r: 13, wall: 14, clear: 0.3, fall: 2600, spring: 0.38, least: 150, hops: 2, rows: 2, roll: 150, pitch: 23, stack: 1.4 }
 // One field stands on the page at a time. The one that is done leaves to the left by this much and the next comes in from the right.
 export const FIELDS = 3
-export const SLIDE = { far: 1500, long: 0.42, hold: 0.7, filmHold: 0.2 }
+export const SLIDE = { far: 1500, long: 0.42, hold: 0.7, filmHold: 0 }
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
 export const PAD = 24
