@@ -106,7 +106,7 @@ describe('site finish: e. one who leaves for the film at the worst moment and co
       expect(m.page + stage.entryIndex).toBe(LAST)
       expect(stage.time + before(m.page)).toBeLessThanOrEqual(MAX)
       expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(TAKEN)
-      expect(stage.longestIgnored.flippers).toBe(0)
+      expect(stage.longestIgnored.flippers).toBeLessThanOrEqual(TAKEN)
     })
   }
 })

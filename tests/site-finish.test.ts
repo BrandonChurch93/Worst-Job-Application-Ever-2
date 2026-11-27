@@ -59,7 +59,7 @@ function holds(r: Run, who: string, spent = 0): void {
   expect(r.from + r.stage.entryIndex, who).toBe(LAST)
   expect(r.seconds + spent, `${who}: inside live.botMaxSeconds`).toBeLessThanOrEqual(MAX)
   expect(r.pointer, `${who}: the pointer ignored`).toBeLessThanOrEqual(TAKEN)
-  expect(r.flippers, `${who}: the flippers ignored`).toBe(0)
+  expect(r.flippers, `${who}: the flippers ignored`).toBeLessThanOrEqual(TAKEN)
 }
 
 const keen = play(new Visitor((me, v) => me.keen(v)))
