@@ -1,6 +1,7 @@
 import type { StepIo } from '../stage/types'
 import { FOOT_OFF, muzzleAt, smooth } from './body'
-import { ARENA, BODY, CAPS, FLOOR, DART, EXPIRED_GAIN, HEALTH, HIT, HOME, LAST_CLEAR, LOOK_EASE, POPUP, RAMP, SHIELD, SLAB, SOCKET, SLOW_SECONDS, THRESHOLD } from './plan'
+import { ARENA, BODY, FLOOR, DART, EXPIRED_GAIN, HEALTH, HOME, LAST_CLEAR, LOOK_EASE, POPUP, SHIELD, SLAB, SOCKET, SLOW_SECONDS, THRESHOLD } from './plan'
+import { CORNER, FLAT, GUARD, HEAL, IDLE, MOVE, REAL_DART, TRACK, WEAR } from './tune'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
@@ -11,6 +12,7 @@ export interface Popup { slot: number; hp: number; t: number; closing: number; o
 export interface Dart { n: number; x: number; y: number; dx: number; dy: number; t: number; p: number }
 export interface Flash { n: number; x: number; y: number; rot: number; t: number; r?: number }
 export interface Spark { n: number; x: number; y: number; t: number; z?: number }
+export interface Ball { n: number; i: number; x: number; y: number; dx: number; dy: number; t: number }
 export interface Foot { x: number; y: number; fx: number; fy: number; tx: number; ty: number; t: number }
 
 export interface Fight {
@@ -44,11 +46,32 @@ export interface Fight {
   slow: boolean
   safe: number
   dust: number
-  blow: { t: number; dx: number; dy: number } | null
   hits: number
   flash: number
   look: { x: number; y: number }
   over: boolean
+  face: number
+  stall: number
+  to: { x: number; y: number }
+  leg: number
+  moveDue: number
+  cornerDue: number
+  cornerCount: number
+  tell: { i: number; t: number } | null
+  balls: Ball[]
+  ballCount: number
+  flat: number
+  healDue: number
+  heals: number
+  healed: number
+  idle: number
+  tired: number
+  glances: number
+  rounds: number
+  run: number
+  weakDue: number
+  weak: number
+  by: [number, number, number]
 }
 
 const START = [HEALTH, THRESHOLD[0], THRESHOLD[1] + EXPIRED_GAIN] as const
@@ -61,7 +84,6 @@ const LEAVE = { back: 0.3, pull: 9, power: 2.6, past: 30, tall: 44, machine: 230
 const PAGE = { w: 1920, h: 1080 } as const
 export const SPARK_SECONDS = 0.3
 export const FLASH_SECONDS = 0.16
-const DUST_AFTER = 0.3
 const TIP_FLASH = { n: 5000, ahead: 14, r: 26 }
 
 export const cursorCentre = (c: { x: number; y: number }): { x: number; y: number } => ({ x: c.x + 18, y: c.y + 32 })
@@ -71,18 +93,26 @@ export function newFight(x: number = HOME.x, y: number = HOME.y): Fight {
     phase: 0, clock: 0, phaseClock: 0, health: HEALTH, shown: HEALTH, x, y,
     feet: FOOT_OFF.map(([ox, oy]) => ({ x: x + ox, y: y + oy, fx: 0, fy: 0, tx: 0, ty: 0, t: -1 })),
     slabs: [], popups: [], darts: [], sparks: [], flashes: [], nextSlab: SLAB.first, windup: -1, aim: { x: 0, y: 0 }, cannon: 0, attacks: 0, burst: 0, burstDue: 0, recoil: [0, 0], slabCount: 3, popupCount: 0, popupDue: POPUP.first,
-    dartCount: 0, sparkCount: 0, expired: -1, slow: false, safe: 0, dust: -1, blow: null, hits: 0, flash: 0, look: { x: x - 600, y }, over: false
+    dartCount: 0, sparkCount: 0, expired: -1, slow: false, safe: 0, dust: -1, hits: 0, flash: 0, look: { x: x - 600, y }, over: false,
+    face: Math.PI, stall: 0, to: { x, y }, leg: 0, moveDue: MOVE.first, cornerDue: CORNER.first, cornerCount: 0, tell: null, balls: [], ballCount: 0, flat: 0, healDue: -1, heals: 0, healed: 0, idle: 0, tired: 0, glances: 0, rounds: 0, run: 0, weakDue: 0, weak: 0, by: [0, 0, 0]
   }
 }
 
-export const ceiling = (phase: number, phaseClock: number): number => {
+export const ceiling = (phase: number, tired: number): number => {
   const from = START[phase]!
   const to = THRESHOLD[phase]!
-  const cap = CAPS[phase]!
-  const ramp = RAMP[phase]!
-  if (phaseClock <= cap - ramp) return from
-  return Math.max(to, from - ((from - to) * (phaseClock - (cap - ramp))) / ramp)
+  return Math.max(to, from - ((from - to) * Math.max(0, tired)) / IDLE.ramp)
 }
+
+export const turn = (a: number): number => Math.atan2(Math.sin(a), Math.cos(a))
+export const bearing = (f: { x: number; y: number }, x: number, y: number): number => Math.atan2(y - f.y, x - f.x)
+export const shielded = (f: { x: number; y: number; face: number }, x: number, y: number): boolean => Math.abs(turn(bearing(f, x, y) - f.face)) <= GUARD.cover
+export const turnRate = (clock: number): number => TRACK.turn * Math.max(TRACK.least, 1 - ((1 - TRACK.least) * clock) / TRACK.tire)
+export const wear = (clock: number): number => 1 + Math.max(0, clock - WEAR.from) / WEAR.double
+export const healNext = (heals: number): number => HEAL.first * HEAL.shrink ** heals
+export const cornerAt = (i: number): { x: number; y: number } => ({ x: CORNER.at[i]![0], y: CORNER.at[i]![1] })
+export const weakSide = (f: { x: number; y: number; face: number }): { x: number; y: number } => ({ x: f.x - Math.cos(f.face) * BODY.rx * 0.8, y: f.y - Math.sin(f.face) * BODY.ry * 0.8 })
+const touches = (f: Fight, x: number, y: number): boolean => ((x - f.x) / (BODY.rx + MOVE.touch)) ** 2 + ((y - f.y) / (BODY.ry + MOVE.touch)) ** 2 <= 1
 
 const floor = (f: Fight): number => {
   const from = START[f.phase]!
@@ -108,24 +138,47 @@ function clearPage(f: Fight): void {
   }
   f.windup = -1
   f.burst = 0
+  f.tell = null
+  f.leg = 0
 }
 
-function wander(f: Fight): { x: number; y: number; speed: number } {
-  if (f.phase === 0) return { x: HOME.x - 50 + 60 * Math.sin(f.clock * 0.6), y: HOME.y - 10 + 80 * Math.sin(f.clock * 0.5 + 2.9), speed: 130 }
-  if (f.phase === 1) return { x: HOME.x, y: HOME.y, speed: 170 }
-  if (f.expired < 1.5) return { x: HOME.x, y: HOME.y + 24, speed: 170 }
-  return { x: HOME.x - 60 + 30 * Math.sin(f.clock * 0.9), y: HOME.y + 10 + 100 * Math.sin(f.clock * 0.75), speed: 210 }
+function wander(f: Fight, io: StepIo): { x: number; y: number; speed: number } {
+  const dt = io.dt
+  const held = bannerUp(f) || (f.phase === 2 && f.expired < 0)
+  if (held) {
+    f.leg = 0
+    return { x: f.x, y: f.y, speed: 0 }
+  }
+  if (f.leg > 0) {
+    f.leg -= dt
+    return { x: f.to.x, y: f.to.y, speed: MOVE.speed }
+  }
+  f.moveDue -= dt
+  if (f.moveDue <= 0) {
+    const at = cursorCentre(io.cursor)
+    const x = Math.min(MOVE.fence.x1, Math.max(MOVE.fence.x0, at.x))
+    const y = Math.min(MOVE.fence.y1, Math.max(MOVE.fence.y0, at.y))
+    f.moveDue = MOVE.every
+    if (Math.hypot(x - f.x, y - f.y) >= MOVE.least) {
+      f.to = { x, y }
+      f.leg = MOVE.leg
+      io.emit('boss-move', f.x, f.y, false)
+    }
+  }
+  return { x: f.x, y: f.y, speed: 0 }
 }
 
-function walk(f: Fight, dt: number): void {
-  const to = wander(f)
+function walk(f: Fight, io: StepIo): void {
+  const dt = io.dt
+  const to = wander(f, io)
   const dx = to.x - f.x
   const dy = to.y - f.y
   const d = Math.hypot(dx, dy)
   const max = to.speed * dt
   let vx = 0
   let vy = 0
-  if (d > 0.5) {
+  if (d <= 0.5 && f.leg > 0) f.leg = 0
+  if (d > 0.5 && max > 0) {
     const k = Math.min(1, max / d)
     vx = (dx * k) / dt
     vy = (dy * k) / dt
@@ -264,6 +317,56 @@ function leave(f: Fight, s: Slab, arena: Arena): void {
   s.out = Math.min(LEAVE.most, Math.max(SLAB.out, LEAVE.least + way.far / LEAVE.speed))
 }
 
+function strike(f: Fight, io: StepIo, x: number, y: number, by: 0 | 1 | 2): void {
+  f.by[by]++
+  f.safe = FLAT.safe
+  f.flat = FLAT.down
+  f.healDue = FLAT.heal
+  f.dust = FLAT.life
+  f.hits++
+  io.cursor.hurt('flattened', FLAT.life)
+  io.emit('flatten', x, y, true)
+}
+
+function corners(f: Fight, io: StepIo): void {
+  const dt = io.dt
+  const c = cursorCentre(io.cursor)
+  if (f.tell) {
+    f.tell.t += dt
+    if (f.tell.t >= CORNER.tell) {
+      const from = cornerAt(f.tell.i)
+      const d = Math.hypot(c.x - from.x, c.y - from.y) || 1
+      f.balls.push({ n: f.ballCount++, i: f.tell.i, x: from.x, y: from.y, dx: (c.x - from.x) / d, dy: (c.y - from.y) / d, t: 0 })
+      f.flashes.push({ n: 7000 + f.ballCount, x: from.x + ((c.x - from.x) / d) * CORNER.base, y: from.y + ((c.y - from.y) / d) * CORNER.base, rot: Math.atan2(c.y - from.y, c.x - from.x), t: 0 })
+      io.emit('cannon-fire', from.x, from.y, false)
+      f.tell = null
+    }
+  } else if (!quiet(f)) {
+    f.cornerDue -= dt
+    if (f.cornerDue <= 0 && f.flat <= 0) {
+      const i = CORNER.order[f.cornerCount % CORNER.order.length]!
+      f.cornerCount++
+      f.cornerDue = CORNER.every
+      f.tell = { i, t: 0 }
+      const from = cornerAt(i)
+      io.emit('cannon-tell', from.x, from.y, false)
+    }
+  }
+  const keep: Ball[] = []
+  for (const b of f.balls) {
+    b.t += dt
+    b.x += b.dx * CORNER.speed * dt
+    b.y += b.dy * CORNER.speed * dt
+    if (f.safe <= 0 && Math.hypot(c.x - b.x, c.y - b.y) < CORNER.ball + CORNER.reach) {
+      strike(f, io, c.x, c.y, 1)
+      spark(f, b.x, b.y)
+      continue
+    }
+    if (b.t < CORNER.life && b.x > -60 && b.x < PAGE.w + 60 && b.y > CORNER.band && b.y < PAGE.h + 60) keep.push(b)
+  }
+  f.balls = keep
+}
+
 function slabs(f: Fight, io: StepIo, arena: Arena): void {
   const dt = io.dt
   const c = cursorCentre(io.cursor)
@@ -293,6 +396,7 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
     const one = f.phase === 0 || (armed && f.slabs.length === 0 && !f.popups.some((p) => p.t < read))
     if (f.nextSlab <= 0 && one) {
       f.windup = 0
+      f.stall = TRACK.stall
       f.aim = { x: c.x, y: c.y }
     }
   }
@@ -307,13 +411,8 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
       const size = arena.slabs[s.m]!
       const hit = f.safe <= 0 && s.t > 0.12 && Math.abs(c.x - s.x) < size.w / 2 + STRIKE.x && Math.abs(c.y - s.y) < size.h / 2 + STRIKE.y
       if (hit) {
-        f.safe = HIT.safe
-        f.dust = DUST_AFTER
-        f.hits++
-        io.cursor.hurt('scorched')
-        io.cursor.react('recoil')
+        strike(f, io, c.x, c.y, 0)
         io.emit('slab-drop', c.x, c.y, true)
-        f.blow = { t: STRIKE.hold, dx: s.dx, dy: s.dy }
         s.air = s.t
         s.state = 1
         s.t = 0
@@ -345,13 +444,6 @@ function slabs(f: Fight, io: StepIo, arena: Arena): void {
       const go = back + (s.far ?? 0) * Math.pow(Math.min(1, Math.max(0, (u - LEAVE.back * 0.6) / (1 - LEAVE.back * 0.6))), LEAVE.power)
       s.x = (s.ox ?? s.x) + (s.ex ?? 0) * go
       s.y = (s.oy ?? s.y) + (s.ey ?? 1) * go
-    }
-  }
-  if (f.blow) {
-    f.blow.t -= dt
-    if (f.blow.t <= 0) {
-      io.cursor.knock(f.blow.dx * HIT.knock, f.blow.dy * HIT.knock, 260)
-      f.blow = null
     }
   }
   f.slabs = f.slabs.filter((s) => !(s.state === 2 && s.t >= (s.out ?? SLAB.out)))
@@ -400,7 +492,9 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
 
 function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
   const dt = io.dt
-  if (io.pressed && !used) {
+  if (io.pressed && !used && f.flat <= 0) {
+    f.idle = 0
+    f.tired = 0
     for (let i = 0; i < DART.volley; i++) f.darts.push({ n: f.dartCount++, x: io.cursor.x, y: io.cursor.y, dx: 0, dy: 0, t: -i * DART.gap, p: f.phase })
   }
   const keep: Dart[] = []
@@ -413,10 +507,8 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
     }
     if (was < 0 || (was === 0 && d.dx === 0 && d.dy === 0)) {
       const tip = { x: io.cursor.x, y: io.cursor.y }
-      const face = f.x + SHIELD.x
-      const lead = tip.x < face - SHIELD.clear
-      const dx = (lead ? face : f.x) - tip.x
-      const dy = f.y + (lead ? Math.max(-SHIELD.spread, Math.min(SHIELD.spread, (tip.y - f.y) * SHIELD.drift)) : 0) - tip.y
+      const dx = f.x - tip.x
+      const dy = f.y - tip.y
       const len = Math.hypot(dx, dy) || 1
       d.x = tip.x
       d.y = tip.y
@@ -442,23 +534,32 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
       io.emit('dart-hit', d.x, d.y, false)
       continue
     }
-    const plate = f.x + SHIELD.x
-    const before = d.x - d.dx * DART.speed * dt
-    const cross = d.dx > 0 && before < plate && d.x >= plate
-    const py = cross ? d.y - d.dy * (d.x - plate) / d.dx : 0
-    const glass = cross && Math.abs(py - f.y) < SHIELD.half
+    const far = Math.hypot(d.x - f.x, d.y - f.y)
+    const was2 = Math.hypot(d.x - d.dx * DART.speed * dt - f.x, d.y - d.dy * DART.speed * dt - f.y)
+    const glass = was2 > GUARD.radius && far <= GUARD.radius && shielded(f, d.x, d.y)
     const ex = (d.x - f.x) / BODY.rx
     const ey = (d.y - f.y) / BODY.ry
     if (glass || ex * ex + ey * ey <= 1) {
       if (glass) {
-        d.x = plate
-        d.y = py
+        const a = bearing(f, d.x, d.y)
+        d.x = f.x + Math.cos(a) * GUARD.radius
+        d.y = f.y + Math.sin(a) * GUARD.radius
       }
       const open = !(f.phase === 2 && f.expired < 0.8)
-      if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - DART.damage[f.phase]!)
-      f.flash = 0.12
+      const worth = glass ? GUARD.chip : REAL_DART[f.phase]! * wear(f.clock)
+      if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - worth)
       spark(f, d.x, d.y, glass ? SHIELD.z : 0)
-      io.emit('dart-hit', d.x, d.y, false)
+      if (glass) {
+        f.glances++
+        f.run++
+        io.emit('shield-glance', d.x, d.y, false)
+      } else {
+        f.rounds++
+        f.run = 0
+        f.flash = 0.12
+        io.emit('dart-hit', d.x, d.y, false)
+        io.emit('shot-round', d.x, d.y, false)
+      }
       continue
     }
     if (d.t < DART.life && d.x > -40 && d.x < 1960 && d.y > -40 && d.y < 1120) keep.push(d)
@@ -497,11 +598,52 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
     }
   }
   if (spent(f)) clearPage(f)
-  walk(f, dt)
+  f.idle += dt
+  if (f.idle >= IDLE.after) f.tired += dt
+  if (f.flat > 0) {
+    f.flat -= dt
+    if (f.flat <= 0) io.emit('peel-up', at.x, at.y, false)
+  }
+  if (f.healDue >= 0) {
+    f.healDue -= dt
+    if (f.healDue < 0) {
+      const gain = Math.max(0, Math.min(healNext(f.heals), START[f.phase] - f.health))
+      f.heals++
+      if (gain > 0.01 && !(f.phase === 2 && f.expired < 0.5)) {
+        f.health += gain
+        f.healed += gain
+        io.emit('boss-heal', f.x, f.y, false)
+      }
+    }
+  }
+  if (f.stall > 0) f.stall -= dt
+  else if (!bannerUp(f)) {
+    const max = turnRate(f.clock) * dt
+    f.face = turn(f.face + Math.max(-max, Math.min(max, turn(bearing(f, at.x, at.y) - f.face))))
+  }
+  if (f.weak > 0) f.weak -= dt
+  if (f.weakDue > 0) f.weakDue -= dt
+  if (f.run >= GUARD.tellAfter && f.weakDue <= 0) {
+    f.weakDue = GUARD.tellEvery
+    f.weak = GUARD.tellSeconds
+    f.run = 0
+    const w = weakSide(f)
+    io.emit('weak-tell', w.x, w.y, false)
+  }
+  walk(f, io)
+  if (f.safe <= 0 && touches(f, at.x, at.y)) {
+    strike(f, io, at.x, at.y, 2)
+    const d = Math.hypot(f.x - at.x, f.y - at.y) || 1
+    f.to = { x: Math.min(MOVE.fence.x1, Math.max(MOVE.fence.x0, at.x + ((f.x - at.x) / d) * MOVE.back)), y: Math.min(MOVE.fence.y1, Math.max(MOVE.fence.y0, at.y + ((f.y - at.y) / d) * MOVE.back)) }
+    f.leg = MOVE.leg
+    f.moveDue = MOVE.every
+    io.emit('boss-move', f.x, f.y, false)
+  }
   slabs(f, io, arena)
+  corners(f, io)
   const used = popups(f, io, arena)
   darts(f, io, arena, used)
-  if (!(f.phase === 2 && f.expired < 0.5)) f.health = Math.min(f.health, ceiling(f.phase, f.phaseClock))
+  if (!(f.phase === 2 && f.expired < 0.5)) f.health = Math.min(f.health, ceiling(f.phase, f.tired))
   if (!f.slow && f.clock >= SLOW_SECONDS) {
     f.slow = true
     if (io.mode === 'live' && f.health > HEALTH / 2) io.emit('boss-slow', f.x, f.y, false)
@@ -514,6 +656,7 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
     } else {
       f.phase = (f.phase + 1) as 1 | 2
       f.phaseClock = 0
+      f.tired = 0
       f.popupDue = f.phase === 2 ? POPUP.late : POPUP.first
       f.nextSlab = f.phase === 2 ? SLAB.late : Math.max(f.nextSlab, 0.9)
       f.windup = -1
@@ -545,6 +688,11 @@ export function threat(f: Fight, arena: Arena, x: number, y: number): { dx: numb
   const c = { x: x + 18, y: y + 32 }
   const lanes: { x: number; y: number; dx: number; dy: number; reach: number; half: number }[] = []
   for (const s of f.slabs) if (s.state === 0) lanes.push({ x: s.x, y: s.y, dx: s.dx, dy: s.dy, reach: s.left + arena.slabs[s.m]!.w / 2 + 30, half: (Math.abs(s.dy) * arena.slabs[s.m]!.w + Math.abs(s.dx) * arena.slabs[s.m]!.h) / 2 + 24 })
+  for (const b of f.balls) lanes.push({ x: b.x, y: b.y, dx: b.dx, dy: b.dy, reach: 2400, half: CORNER.ball + CORNER.reach + 30 })
+  if (touches({ ...f, x: f.leg > 0 ? f.to.x : f.x, y: f.leg > 0 ? f.to.y : f.y } as Fight, c.x, c.y) || Math.hypot(c.x - f.x, c.y - f.y) < BODY.rx + MOVE.touch + 40) {
+    const d = Math.hypot(c.x - f.x, c.y - f.y) || 1
+    return { dx: (c.x - f.x) / d, dy: (c.y - f.y) / d }
+  }
   if (f.windup >= 0) {
     const from = muzzle(f, f.cannon)
     const d = Math.hypot(f.aim.x - from.x, f.aim.y - from.y) || 1

@@ -2,8 +2,9 @@ import { config } from '../config'
 import { TYPE } from '../shell/parts'
 import type { DrawList, TypeSpec } from '../stage/types'
 import { label, MUZZLE, prog, smooth } from './body'
-import { bannerUp, FLASH_SECONDS, SPARK_SECONDS, type Fight } from './fight'
+import { bannerUp, cornerAt, FLASH_SECONDS, SPARK_SECONDS, weakSide, type Fight } from './fight'
 import { ARENA, POPUP, SLAB } from './plan'
+import { CORNER, GUARD } from './tune'
 
 const heights = config.scale.heights
 const sizes = config.scale.sizes
@@ -102,6 +103,35 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
     const z = Math.max(SPARK_Z, s.z ?? 0)
     out.push({ id: `spark-${s.n}`, part, kind: 'disc', x: s.x - 40, y: s.y - 40, w: 80, h: 80, z0: z, z1: z + 4, tone: 'light', v: [s.t / SPARK_SECONDS, s.n] })
   }
+}
+
+const plain = 'shell'
+const WING = { w: 60, h: 190, tall: 24, z: 8 }
+const BARREL = { w: 84, h: 34 }
+const LAMP = 64
+const TELL = 40
+const BLINK = 8
+
+// The plainest things that show the rules: two side plates of the shield, the lamp on the open flank, the four corner cannons with their tells, and their balls.
+export function drawRules(out: DrawList, f: Fight): void {
+  for (const side of [-1, 1]) {
+    const a = f.face + side * GUARD.wing
+    const x = f.x + Math.cos(a) * GUARD.radius
+    const y = f.y + Math.sin(a) * GUARD.radius
+    out.push({ id: `guard-wing-${side < 0 ? 0 : 1}`, part: plain, kind: 'box', x: x - WING.w / 2, y: y - WING.h / 2, w: WING.w, h: WING.h, z0: WING.z, z1: WING.z + WING.tall, tone: 'glass', r: 10, rot: a - Math.PI })
+  }
+  if (f.weak > 0 && Math.floor(f.weak * BLINK) % 2 === 0) {
+    const w = weakSide(f)
+    out.push({ id: 'weak-lamp', part: plain, kind: 'disc', x: w.x - LAMP / 2, y: w.y - LAMP / 2, w: LAMP, h: LAMP, z0: 112, z1: 118, tone: 'accent' })
+  }
+  CORNER.at.forEach((_, i) => {
+    const c = cornerAt(i)
+    const rot = Math.atan2(f.look.y - c.y, f.look.x - c.x)
+    out.push({ id: `corner-${i}`, part: plain, kind: 'disc', x: c.x - CORNER.base, y: c.y - CORNER.base, w: CORNER.base * 2, h: CORNER.base * 2, z0: 0, z1: 22, tone: 'metal' })
+    out.push({ id: `corner-${i}-barrel`, part: plain, kind: 'box', x: c.x + Math.cos(rot) * BARREL.w * 0.45 - BARREL.w / 2, y: c.y + Math.sin(rot) * BARREL.w * 0.45 - BARREL.h / 2, w: BARREL.w, h: BARREL.h, z0: 22, z1: 40, tone: 'dark', r: 8, rot })
+    if (f.tell && f.tell.i === i && Math.floor(f.tell.t * BLINK) % 2 === 0) out.push({ id: `corner-${i}-tell`, part: plain, kind: 'disc', x: c.x - TELL / 2, y: c.y - TELL / 2, w: TELL, h: TELL, z0: 40, z1: 46, tone: 'danger' })
+  })
+  for (const b of f.balls) out.push({ id: `corner-ball-${b.n}`, part: plain, kind: 'ball', x: b.x - CORNER.ball, y: b.y - CORNER.ball, w: CORNER.ball * 2, h: CORNER.ball * 2, z0: 14, z1: 14 + CORNER.ball * 2, tone: 'danger' })
 }
 
 export const buttonHeight = sizes.button
