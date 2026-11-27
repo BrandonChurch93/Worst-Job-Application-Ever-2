@@ -24,7 +24,7 @@ const GRAB = 26
 type Beat = 'field' | 'press' | 'folder' | 'lit' | 'fly' | 'lie' | 'wind' | 'feed'
 // The chip goes down `chip` px under a press. The window comes up out of the page `over` px past its place and settles; everything in it rides with it. The picked tile goes down `tile` px.
 // The sheet flies to the drop zone `arc` px above the straight line and `high` px over the page at the most, leaning `lean` radians on the way; it lies `lie` px over the card. Before the wind lifts it the sheet shivers `shiver` radians.
-const POP = { chip: 4, over: 5, tile: 2, arc: 54, high: 46, lean: 0.24, lie: 0.6, shiver: 0.07 }
+const POP = { chip: 4, over: 5, tile: 1.2, arc: 54, high: 46, lean: 0.24, lie: 0.6, shiver: 0.07 }
 const WINDOW = ['resume-folder', 'resume-folder-bar', 'resume-folder-knob', 'resume-folder-title', 'resume-file', 'resume-file-name']
 const LIE = heights.card + 9
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
@@ -106,7 +106,8 @@ export interface ResumeHost {
 // The stage of the resume, behind one seam. The page makes it once, puts `nodes` in its layout tree, and from then on calls:
 // `reset` with the page, `begin` on the step the stage comes up, `step` every step from then on, `pose` before it draws its layout and `draw` after,
 // and reads `done` (the resume is received, the arrow is on its way back to the visitor), `gag`, `states`, `ground`, `hint`.
-// Events it emits: browse-press, folder-open, file-pick, paper-slide, slot-in, wind-gust, shredder, arms-out, paper-strain, tug-lost, strips-zip, shredder-stop.
+// Events it emits: browse-press, folder-open, file-pick, paper-slide, slot-in, wind-gust, shredder, arms-out, paper-strain, tug-lost, strips-zip, resume-received, shredder-stop.
+// `resume-received` is emitted once, on the step the drop zone first says the resume is received; a skip does not emit it.
 export interface ResumeStage {
   nodes: LayoutNode[]
   reset(mode: Mode, seed: number): void
@@ -518,6 +519,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
       if (u >= 1 + SHRED.hold / SHRED.emptySeconds) {
         s.emptied = -1
         s.received = true
+        io.emit('resume-received', ZONE.x + ZONE.w / 2, ZONE.y + ZONE.h / 2, false)
       }
     }
     if (crossed(SHRED.zip)) {

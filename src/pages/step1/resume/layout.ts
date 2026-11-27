@@ -24,7 +24,7 @@ export const WIN = { x: HALF_X + 12, y: ZONE.y + 4, w: 500, h: 314, r: 18, top: 
 export const BAR = { inset: 12, h: 52, up: 5, r: 12, knob: 20 }
 export const TILE = { x: WIN.x + 40, y: WIN.y + BAR.inset + BAR.h + 26, w: 196, h: 184, r: 14, up: 3 }
 // The rim that lights round the tile under the arrow and when the file is picked: orange, this far outside the tile and this high.
-export const RING = { out: 5, up: 1.6 }
+export const RING = { out: 5, up: 1.2 }
 // The sheet lies in the tile as the file's own picture, and comes down in the drop zone on its upload mark.
 export const PAPER_REST = { x: TILE.x + (TILE.w - PAPER.w) / 2, y: TILE.y + 20 }
 export const FILE_TYPE = { font: 'inter-500', px: 24, align: 'centre' as const }
@@ -34,8 +34,11 @@ export const PAPER_LINES = [0.36, 0.44, 0.52, 0.6, 0.7, 0.78, 0.86]
 export const SLOT = { w: 96, h: 10, cx: ZONE.x + ZONE.w * 0.84, cy: FORM_BOTTOM + 9 }
 // The machine's name plate: orange plastic beside the slot, on the side the tug does not use, its type large enough to be read at half size.
 export const PLATE_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
-export const PLATE = { w: Math.round(block(PLATE_TYPE.font, words('copy:drafts.step1.resume.shredderLabel'), PLATE_TYPE.px).width + 44), h: 52, gap: 18, thick: 8, r: 10 }
-export const PLATE_AT = { x: SLOT.cx - SLOT.w / 2 - PLATE.gap - PLATE.w, y: FORM_BOTTOM + 8 }
+export const PLATE = { pad: 22, h: 52, gap: 18, thick: 8, r: 10 }
+export const plateBox = (): { x: number; y: number; w: number; h: number } => {
+  const w = Math.round(block(PLATE_TYPE.font, words('copy:drafts.step1.resume.shredderLabel'), PLATE_TYPE.px).width + PLATE.pad * 2)
+  return { x: SLOT.cx - SLOT.w / 2 - PLATE.gap - w, y: FORM_BOTTOM + 8, w, h: PLATE.h }
+}
 
 const cap = (font: string, px: number): number => block(font, 'X', px).cap
 
@@ -86,8 +89,9 @@ export function folderNode(): LayoutNode {
 
 // The name plate of the machine, shown in the layout state `shredder`.
 export function plateNode(): LayoutNode {
-  const label = text('resume-shredder-label', 'copy:drafts.step1.resume.shredderLabel', PLATE_TYPE, PLATE_AT.x + PLATE.w / 2, PLATE_AT.y + (PLATE.h - cap(PLATE_TYPE.font, PLATE_TYPE.px)) / 2, { part: 'type', on: PLATE.thick, tone: 'inkLight' })
-  return node('resume-shredder-plate', 'namePlate', [PLATE_AT.x, PLATE_AT.y, PLATE.w, PLATE.h], { part: 'shell', r: PLATE.r, height: PLATE.thick, tone: 'accent', over: true, states: ['shredder'], children: [label] })
+  const b = plateBox()
+  const label = text('resume-shredder-label', 'copy:drafts.step1.resume.shredderLabel', PLATE_TYPE, b.x + b.w / 2, b.y + (b.h - cap(PLATE_TYPE.font, PLATE_TYPE.px)) / 2, { part: 'type', on: PLATE.thick, tone: 'inkLight' })
+  return node('resume-shredder-plate', 'namePlate', [b.x, b.y, b.w, b.h], { part: 'shell', r: PLATE.r, height: PLATE.thick, tone: 'accent', over: true, states: ['shredder'], children: [label] })
 }
 
 // The nodes of the stage at rest: its label, the drop zone with its prompt, its chip and its last message, and the sheet. The label and the zone show in the layout state `STAGE`; inside the zone `prompt` and `received` pick what it says; the sheet shows in `paper`.
