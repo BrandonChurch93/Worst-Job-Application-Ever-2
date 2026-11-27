@@ -12,11 +12,13 @@ const heights = config.scale.heights
 export const GUTTER = 56
 export const COL_W = (RIGHT - LEFT - GUTTER) / 2
 export const FIELD_X = RIGHT - COL_W
-export const FIELD_GAP = 12
-export const HELPER_ROOM = 34
-export const FIELD_PITCH = 36 + sizes.field + FIELD_GAP
-export const FIELD_Y = [HEADER.contentY, HEADER.contentY + FIELD_PITCH + HELPER_ROOM, HEADER.contentY + FIELD_PITCH * 2 + HELPER_ROOM]
-export const ZONE = { x: LEFT, y: HEADER.contentY + 36, w: COL_W, h: FIELD_Y[2]! + 36 + sizes.field - (HEADER.contentY + 36) }
+// A label's top over its own pocket, the helper's top under its pocket, and a pocket's foot to the next label's top.
+export const LABEL_RISE = 26
+export const HELPER_DROP = 8
+export const FIELD_GAP = 44
+export const FIELD_PITCH = LABEL_RISE + sizes.field + FIELD_GAP
+export const FIELD_Y = [0, 1, 2].map((i) => HEADER.contentY + LABEL_RISE - 36 + FIELD_PITCH * i)
+export const ZONE = { x: LEFT, y: FIELD_Y[0]! + 36, w: COL_W, h: FIELD_Y[2]! + sizes.field - FIELD_Y[0]! }
 export const FORM_BOTTOM = ZONE.y + ZONE.h
 export const FIELDS = ['firstName', 'lastName', 'email'] as const
 export type FieldName = (typeof FIELDS)[number]
@@ -81,10 +83,10 @@ export function buildLayout(): LayoutNode {
       text('resume-received', 'copy:step1.resume.received', { ...TYPE.hero, align: 'centre', wrap: ZONE.w - 120 }, cx, ZONE.y + (ZONE.h - received.height) / 2, { part: 'type', on: heights.card, states: ['received'] })
     ]
   })
-  const fields = group('fields', FIELDS.map((name, i) => field(name, FIELD_X, FIELD_Y[i]!, COL_W, `copy:step1.fields.${name}.label`, { value: `runtime:step1.${name}`, ...(i === 0 ? { helper: 'copy:step1.fields.firstName.helper' } : {}) })))
+  const fields = group('fields', FIELDS.map((name, i) => field(name, FIELD_X, FIELD_Y[i]!, COL_W, `copy:step1.fields.${name}.label`, { value: `runtime:step1.${name}`, labelRise: LABEL_RISE, helperDrop: HELPER_DROP, ...(i === 0 ? { helper: 'copy:step1.fields.firstName.helper' } : {}) })))
   const labelCap = cap(TYPE.label.font, TYPE.label.px)
   const helperCap = cap(TYPE.helper.font, TYPE.helper.px)
-  const accepted = text('email-accepted', 'copy:step1.emailAccepted', { ...TYPE.helper, align: 'right' }, RIGHT, FIELD_Y[2]! + labelCap - helperCap, { part: 'type', states: ['accepted'] })
+  const accepted = text('email-accepted', 'copy:step1.emailAccepted', { ...TYPE.helper, align: 'right' }, RIGHT, FIELD_Y[2]! + 36 - LABEL_RISE + labelCap - helperCap, { part: 'type', states: ['accepted'] })
   const note = text('keyboard-note', 'copy:step1.keyboardNote', TYPE.helper, LEFT, NOTE_Y, { part: 'type', states: ['note'] })
   const w = buttonWidth('copy:step1.continue')
   const go = button('continue', RIGHT - 5 - w, CONTINUE_Y + 5, w, 'copy:step1.continue', { part: 'shell', tone: 'metal', states: ['closed'] })

@@ -60,19 +60,19 @@ export function stepHead(step: number): LayoutNode[] {
   return out
 }
 
-export interface FieldOptions { helper?: string; value?: string; part?: string; states?: string[] }
+export interface FieldOptions { helper?: string; value?: string; part?: string; states?: string[]; labelRise?: number; helperDrop?: number }
 
 export function field(id: string, x: number, y: number, w: number, label: string, o: FieldOptions = {}): LayoutNode {
   const part = o.part ?? 'shell'
   const pocketY = y + 36
   const children: LayoutNode[] = [
-    text(`${id}-label`, label, TYPE.label, x, y, { part: 'type' }),
+    text(`${id}-label`, label, TYPE.label, x, o.labelRise === undefined ? y : pocketY - o.labelRise, { part: 'type' }),
     node(`${id}-pocket`, 'field', [x, pocketY, w, sizes.field], {
       part, r: 14,
       children: o.value ? [text(`${id}-value`, o.value, { ...TYPE.value, wrap: w - 48 }, x + 24, pocketY + (sizes.field - block(TYPE.value.font, 'X', TYPE.value.px).cap) / 2, { part: 'type', on: heights.field })] : []
     })
   ]
-  if (o.helper) children.push(text(`${id}-helper`, o.helper, TYPE.helper, x, pocketY + sizes.field + 14, { part: 'type' }))
+  if (o.helper) children.push(text(`${id}-helper`, o.helper, TYPE.helper, x, pocketY + sizes.field + (o.helperDrop ?? 14), { part: 'type' }))
   const extra: Extra = o.states ? { states: o.states } : {}
   return group(id, children, extra)
 }
