@@ -6,6 +6,7 @@ import { openSession } from './lib/capture.mjs'
 import { bitrateOf, clip, filmName, formatOfConfig, framesIn, tierOfConfig } from './lib/film-plan.mjs'
 import { addSound, checkDisk, clock, ffmpeg, framesOnDisk, join, probe, probeLine, seconds, took } from './lib/film-encode.mjs'
 import { ask, chunkOf, chunksFrom, chunksTo, clipPieces, makeContext, matches, recordOf, renderUnit, writeOut } from './lib/film-render.mjs'
+import { mixOfTree } from './lib/cut-build.mjs'
 
 const a = args()
 const cfg = config()
@@ -49,8 +50,19 @@ function finish(code = 0) {
   process.exit(code)
 }
 
+// The mix a film is joined with must be the mix of this build: the wav its record names, laid by the cut list that is here now,
+// made in a tree of this code and from the kept sounds that are here now. The wav is not in the repo, so a tree can hold an older one.
+// Gives what the film's record says of its sound, or throws with the reasons and the commands that mend it. No sound, no check.
+function soundOfBuild() {
+  if (!fs.existsSync(sound)) return null
+  const { record, reasons } = mixOfTree(sound)
+  if (reasons.length) throw new Error(`the film is not joined, because ${path.relative(at(), sound)} is not the mix of this build: ${reasons.join('; ')}. Run npm run cut and then npm run mix in this tree and join again, or move the wav away for a silent film`)
+  return { file: path.relative(at(), sound), sha256: record.sha256, planSha256: record.planSha256, cutSha256: record.cutSha256, keptSha256: record.keptSha256 }
+}
+
 // Joins the chunks that exist into the film, with its sound if there is any.
 function joinFilm(ctx, opening) {
+  const mix = soundOfBuild()
   const units = ctx.plan.units
   const parts = []
   const missing = []
@@ -67,7 +79,7 @@ function joinFilm(ctx, opening) {
   const name = a.review ? path.basename(cfg.export.files.reviewCut, path.extname(cfg.export.files.reviewCut)) : filmName(which, format.id, tier, diag)
   const out = fileOf(name)
   const frames = parts.reduce((s, p) => s + p.frames, 0)
-  const hasSound = fs.existsSync(sound)
+  const hasSound = mix !== null
   const silent = hasSound ? path.join(ctx.dirs.chunks, `${name}.silent.${cfg.export.container}`) : out
   join(parts.map((p) => p.file), silent, frames)
   let p
@@ -94,7 +106,7 @@ function joinFilm(ctx, opening) {
   for (const r of records) for (const s of r.standIns || []) standIns.set(s.name, s)
   writeOut(out, record, {
     complete: missing.length === 0, units: parts.filter((x) => !x.opening).map((x) => x.unit), missingUnits: missing, opening: which === 'a', frames, probe: p,
-    sound: hasSound ? path.relative(at(), sound) : null, chunks: parts.map((x) => path.basename(x.file)), renderSeconds: Number(records.reduce((s, r) => s + (r.renderSeconds || 0), 0).toFixed(2)), standIns: [...standIns.values()]
+    sound: hasSound ? path.relative(at(), sound) : null, mix, chunks: parts.map((x) => path.basename(x.file)), renderSeconds: Number(records.reduce((s, r) => s + (r.renderSeconds || 0), 0).toFixed(2)), standIns: [...standIns.values()]
   })
   console.log(`film: wrote ${path.relative(at(), out)}: ${probeLine(p)}`)
   if (missing.length) console.log(`film: NOT THE WHOLE FILM. No chunk of this build for: ${missing.join(', ')}. The file holds ${parts.filter((x) => !x.opening).map((x) => x.unit).join(', ')}`)
@@ -208,7 +220,8 @@ try {
     const got = clip(range.first, range.last, ctx.step)
     const out = fileOf(filmName(which, format.id, tier, diag, got))
     const frames = framesIn(got.first, got.last, ctx.step).length
-    const hasSound = fs.existsSync(sound)
+    const mix = soundOfBuild()
+    const hasSound = mix !== null
     const silent = hasSound ? path.join(ctx.dirs.chunks, `${path.basename(out, path.extname(out))}.silent.${cfg.export.container}`) : out
     join(c.pieces.map((x) => x.file), silent, frames)
     let p
@@ -216,7 +229,7 @@ try {
       p = addSound(silent, sound, out, [{ from: got.first / cfg.film.fps, seconds: frames / ctx.rate }], { codec: cfg.export.audioCodec, kbps: cfg.export.audioKbps })
       fs.rmSync(silent, { force: true })
     } else p = probe(out)
-    writeOut(out, recordOf(ctx, units.map((u) => u.id), { film: { which, first: got.first, last: got.last, rate: ctx.rate, step: ctx.step, codec: ctx.codec, mbps: ctx.mbps } }), { complete: false, frames, probe: p, sound: hasSound ? path.relative(at(), sound) : null, pieces: c.pieces.map((x) => path.basename(x.file)) })
+    writeOut(out, recordOf(ctx, units.map((u) => u.id), { film: { which, first: got.first, last: got.last, rate: ctx.rate, step: ctx.step, codec: ctx.codec, mbps: ctx.mbps } }), { complete: false, frames, probe: p, sound: hasSound ? path.relative(at(), sound) : null, mix, pieces: c.pieces.map((x) => path.basename(x.file)) })
     console.log(`film: wrote ${path.relative(at(), out)}, frames ${got.first} to ${got.last}: ${probeLine(p)}`)
   } else if (a.unit && a.unit !== true) {
     console.log(`film: the chunk of ${a.unit} is in ${path.relative(at(), ctx.dirs.chunks)}. Join the film with --join`)

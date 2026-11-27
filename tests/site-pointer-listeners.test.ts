@@ -421,7 +421,7 @@ describe('site pointer listeners: the flippers of step 3', () => {
     }
   })
 
-  it('through a whole table, from the seal to the page turn, the flippers are what the hand asks in the same step, outside the machine\'s own cut of the bats\' power and its own stroke at a save: never taken, 0 steps ignored outside them, and the stage counts the 1.24 s of the longest cut', () => {
+  it('through a whole table, from the seal to the page turn, the flippers are what the hand asks in the same step, outside the machine\'s own cut of the bats\' power and its own stroke at a save: never taken, 0 steps ignored outside them, and the stage counts the 1.33 s of the longest cut', () => {
     const d = new Hands(new MouseDriver())
     const s = new Stage({ mode: 'live', flow: liveFlow().slice(3), pages, driver: d })
     let steps = 0
@@ -445,8 +445,8 @@ describe('site pointer listeners: the flippers of step 3', () => {
     expect(steps).toBeGreaterThan(20 * stepHz)
     expect(flips).toBeGreaterThan(10)
     expect(late).toBe(0)
-    expect(machine).toBe(8)
-    expect(s.longestIgnored.flippers).toBeCloseTo(1.2417, 3)
+    expect(machine).toBe(13)
+    expect(s.longestIgnored.flippers).toBeCloseTo(1.3292, 3)
     expect(s.longestIgnored.flippers).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
   })
 })

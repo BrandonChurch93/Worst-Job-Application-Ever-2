@@ -177,6 +177,30 @@ const SWING = { leaf: 0.09, seconds: 0.15, wait: 1 }
 const BEACON = { idle: 0.35, seconds: 1.5 }
 const STROBE_HZ = 2.5
 
+// Live play, the wire of a shut gate at a save, as radians added to its shut pose (more is toward open, down the table). It leans on the shell of the ball it holds: `lean` with the ball at rest on it and `turn` more for every ball's width the ball sinks,
+// never past `flat`. At the kick it snaps `snap` up the table, stands there for `hold` seconds as a kicker's coil does, falls back and rings out. It never stands inside the clear ball.
+// The wire gate at a live save, as the hardware builds it (the test holds these to the hardware's own): the pin's place above the tier's foot (balls), the pin's height, the wire's height above the pin and its thickness (px),
+// its turn when shut (rad), and how far across the ball may be and still lie on the top wire (balls). After the kick the wire is thrown up the table by `snap` (rad), stands there `hold` s and rings out.
+export const WIRE = { pin: 0.15, axle: 7, tall: 30, thick: 2.5, shut: -0.3, across: 1.5, snap: 0.9, hold: 1 / 15, decay: 24, period: 0.11, seconds: 0.45 }
+// The turn past shut at which the top wire lies on the ball's shell, for a ball `v` balls down the tier: the wire is never drawn inside the ball.
+export function wireOn(v: number): number {
+  const dy = px(TH - WIRE.pin - v)
+  const dz = px(0.5) - WIRE.axle
+  const d = Math.hypot(dy, dz)
+  const clear = px(0.5) + WIRE.thick
+  if (d >= WIRE.tall + clear) return -9
+  return Math.acos(Math.max(-1, Math.min(1, (WIRE.tall * WIRE.tall + d * d - clear * clear) / (2 * WIRE.tall * d)))) - Math.atan2(dy, dz) - WIRE.shut
+}
+function wireOf(m: Machine, k: number): number {
+  if (m.gate[k]) return 0
+  const b = m.balls[0]!
+  const kicked = m.since(`ball-save:${TIERS[k]}.gate`)
+  const rung = kicked - WIRE.hold
+  const ring = kicked >= WIRE.seconds ? 0 : rung < 0 ? -WIRE.snap : -WIRE.snap * Math.exp(-WIRE.decay * rung) * Math.cos((2 * Math.PI * rung) / WIRE.period)
+  if (b.mode === 'none' || b.mode === 'rail' || b.mode === 'hold' || b.tier !== k || Math.abs(b.x - MID) > WIRE.across) return ring
+  return Math.max(ring, wireOn(b.y - TIER_Y[k]!))
+}
+
 function stateOf(id: string, m: Machine): number[] {
   const hold = HELD[id]
   if (hold) {
@@ -187,7 +211,10 @@ function stateOf(id: string, m: Machine): number[] {
   }
   if (id.startsWith('bumper.')) return [m.since(id.slice(7))]
   if (id.startsWith('sling.')) return [m.since(id.slice(6, id.lastIndexOf('.')))]
-  if (id.startsWith('gate.')) return [m.gate[Number(id.slice(5))] ? 1 : 0]
+  if (id.startsWith('gate.')) {
+    const k = Number(id.slice(5))
+    return m.live ? [m.gate[k] ? 1 : 0, wireOf(m, k)] : [m.gate[k] ? 1 : 0]
+  }
   if (id === 'flap.highway') return [m.on['street.flap'] !== false ? 1 : 0]
   return [m.since(`${id.split('.')[2]}.lift.door`)]
 }

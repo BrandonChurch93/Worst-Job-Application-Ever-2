@@ -8,6 +8,9 @@ export const TURRET = {
   muzzleHeight: heights.turret - 18
 }
 
+// The longest, in seconds, one shot is held back for held keys on the live site.
+export const STAY = 0.7
+
 const ease = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * (3 - 2 * u)
@@ -32,11 +35,12 @@ export interface TurretsState {
   nextId: number
   hits: number
   heat: number
+  late: [number, number]
 }
 
 const fresh = (at: [Place, Place]): TurretsState => ({
   wanted: false, overheated: false, up: 0, clock: 0, aim: { x: (at[0].x + at[1].x) / 2, y: at[0].y }, angle: [0, Math.PI], lock: [null, null],
-  next: [TURRET.firstShot, TURRET.firstShot + TURRET.stagger], bolts: [], scorches: [], nextId: 0, hits: 0, heat: 0
+  next: [TURRET.firstShot, TURRET.firstShot + TURRET.stagger], bolts: [], scorches: [], nextId: 0, hits: 0, heat: 0, late: [0, 0]
 })
 
 export class Turrets {
@@ -61,6 +65,19 @@ export class Turrets {
   retract(): void {
     this.s.wanted = false
     this.s.lock = [null, null]
+  }
+
+  // The live site calls this for every step a key is held down: a wind-up that would run over the held key starts when the key is up, each shot held back by STAY at most.
+  wait(dt: number): void {
+    const s = this.s
+    if (!this.firing) return
+    for (let i = 0; i < 2; i++) {
+      const add = s.clock + dt * 2 + TURRET.windup - s.next[i]!
+      if (add <= 0 || s.late[i]! + add > STAY) continue
+      s.next[i] = s.next[i]! + add
+      s.late[i] = s.late[i]! + add
+      s.lock[i] = null
+    }
   }
 
   get firing(): boolean {
@@ -102,6 +119,7 @@ export class Turrets {
           emit('bolt-fire', x0, y0, false)
           s.lock[i] = null
           s.next[i] = s.next[i]! + TURRET.period
+          s.late[i] = 0
         }
       }
     }

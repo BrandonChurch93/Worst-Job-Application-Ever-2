@@ -41,6 +41,8 @@ export const CAP_TOP = heights.keycap
 export const DECK_TOP = heights.keyboardDeck
 export const TRAVEL = heights.keyTravel
 export const TIP = { rad: 0.36, hold: 0.034, seconds: 0.15, lever: 12, press: 0.14, shade: 44 }
+// A key the visitor holds down on the live site is drawn sunk in the page's plane: its cap and label slide this many px toward its shadow, and the shadow closes to this share of its rest width.
+export const SINK = { x: 5.5, y: 5.5, shade: 0.1 }
 export const tipOf = (e: number): number => {
   if (e < 0 || e >= TIP.seconds) return 0
   if (e < TIP.hold) return 1

@@ -8,7 +8,8 @@ import sharp from 'sharp'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { buildInfo } from './lib/hashes.mjs'
 import { probe } from './lib/film-encode.mjs'
-import { isWholePreview, keptNames, keptRecord, megabytes, reasonsAgainst, reasonsFromProbe, tooLarge } from './lib/film-keep.mjs'
+import { isWholePreview, keptNames, keptRecord, megabytes, reasonsAgainst, reasonsFromProbe, reasonsFromSound, tooLarge } from './lib/film-keep.mjs'
+import { keptRecordsIn, keptSum } from './lib/cut-build.mjs'
 
 const a = args()
 const c = config()
@@ -52,6 +53,8 @@ if (a.film) {
   const commit = git(['rev-parse', 'HEAD'])
   const commitClean = git(['status', '--porcelain', '--', 'src', 'config', 'content', 'public', 'assets-full', 'package-lock.json']) === ''
   const names = keptNames(c)
+  const cutList = at('cut', 'CUTLIST.json')
+  const soundNow = { cutSha256: fs.existsSync(cutList) ? shaOf(cutList) : null, keptSha256: keptSum(keptRecordsIn(at('audio', 'kept'))) }
   const lines = []
   for (const which of ['b', 'a']) {
     const title = `film ${which.toUpperCase()}`
@@ -67,7 +70,7 @@ if (a.film) {
     for (const film of found) {
       const rec = film.replace(/\.[a-z0-9]+$/i, '.json')
       const record = fs.existsSync(rec) ? readJson(rec) : null
-      const why = record ? reasonsAgainst(record, info, c, which) : ['it has no record beside it']
+      const why = record ? [...reasonsAgainst(record, info, c, which), ...reasonsFromSound(record, soundNow)] : ['it has no record beside it']
       let sha256 = null
       let p = null
       if (!why.length) {

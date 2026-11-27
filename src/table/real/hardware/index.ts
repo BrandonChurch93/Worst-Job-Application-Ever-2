@@ -87,7 +87,7 @@ function poseHardware(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
       }
     }
     const gate = part(o, 'hardware.gate')
-    if (gate) gate.rotation.x = (ctx.byId.get(`gate.${z.tier}`)?.v?.[0] ?? 0) > 0.5 ? GATE.open : GATE.shut
+    if (gate) gate.rotation.x = ((ctx.byId.get(`gate.${z.tier}`)?.v?.[0] ?? 0) > 0.5 ? GATE.open : GATE.shut) + (ctx.byId.get(`gate.${z.tier}`)?.v?.[1] ?? 0)
     const tip = part(o, 'hardware.tip')
     if (tip) tip.position.y = (tip.userData.home as number) - pullOf(ctx) * PLUNGE.tip + ringOf(ctx)
     const balls = part(o, 'hardware.balls') as THREE.InstancedMesh | undefined
