@@ -228,7 +228,7 @@ function strike(f: Fight, io: StepIo, x: number, y: number, by: 0 | 1 | 2 | 3): 
 }
 
 // An aimed shot allows for a share of the arrow's own travel while the bullet flies, and never for all of it.
-function leadAim(f: Fight, from: { x: number; y: number }, c: { x: number; y: number }, speed: number): { x: number; y: number } {
+export function leadAim(f: Fight, from: { x: number; y: number }, c: { x: number; y: number }, speed: number): { x: number; y: number } {
   const go = (Math.hypot(c.x - from.x, c.y - from.y) / speed) * GUN.lead
   let lx = f.vel.x * go
   let ly = f.vel.y * go
