@@ -110,6 +110,8 @@ const MORE = {
     ['heal, 0.2 s after healedAt', viewOf({ time: 30.2 }, { ...out, stage: 1, healedAt: 30 })]
   ], near, 3),
 
+  gone: (c) => moments(c, 'gone', [0.03, 0.2, 0.4, 0.6, 0.8, 0.95].map((g) => [`gone ${g.toFixed(2)} (${(g * 2.13).toFixed(2)} s)`, viewOf({ time: 46 + g * 2.13, phase: 'beaten' }, { ...out, stage: 2, health: 0, beaten: 1, gone: g })]), { cx: 960, cy: 548, zoom: 1.7 }, 3),
+
   async beaten({ look, sharp, at, outDir, workDir, tier }) {
     const cells = [{ png: target(at, 'LOOK-1-STATE-3-beaten.png', 'references/drafts/round-9'), caption: 'GUIDE, not picked: beaten' }]
     for (const [caption, b] of [['beaten 0.08', 0.08], ['beaten 0.3', 0.3], ['beaten 0.55', 0.55], ['beaten 0.75', 0.75], ['beaten 1.0, lying', 1]]) {
