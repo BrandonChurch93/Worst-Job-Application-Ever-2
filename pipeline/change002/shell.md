@@ -32,3 +32,33 @@ Decisions:
 
 MEASURED: `npx vitest run tests/b-shell-fields.test.ts`: 8 tests passed. `npx tsc --noEmit -p .`: no output.
 MEASURED by eye: `shell-pictures/rail-step2-2of3-draft.png`, a crop of `npm run still -- --page step2 --beat step2.open --at 0.9 --format hd --tier draft --force` with the stage told for that one render to report 2 of 3 on every page (not committed). The strip from 1 to 2 and two thirds of the way from 2 to 3 is the lighter satin; the rest is the flat grey of today.
+
+### 1a. The Builder's rulings of 21:36 UTC on the rail, and what changed
+
+- STATED by the Builder: `FILL_FROM_FIRST` stays true; a page with a rail and no `fields`, or `null`, is drawn as 0 of 1; the fill is the orange plastic of the button in hand, with a notch at each field's boundary.
+- Done in `src/shell/real/controls.ts`: `railCount` gives 0 of 1 when the rail holds no count, so steps 3, 4 and 5 keep the fill up to the collar of their button with no line in their pages. The fill is `materials().orange`, the material of the cap of the step in hand. `railNotches` gives one notch at each boundary between two fields (total minus 1 of them), drawn as a strip of the `gap` material 2.5 px wide over the rail and the fill (`NOTCH_WIDE`, `NOTCH_OVER`). No new material.
+- The fraction now runs from the collar of the step in hand to the edge of the next cap, so a notch stands exactly where the fill of that many fields ends; a full count goes 6 px under the cap.
+- Found while doing it: two other shapes of the build carry the role `progressRail`, the boss's `health-track` (which uses `v` for its own lift) and the careers page's `process-rail`. `railFields` in `src/stage/stage.ts` and the fill in `controls.ts` now act only on the shape with id `progress-rail`. Before this, a boss page reporting fields would have had its health track's `v` overwritten.
+- Test changed: `tests/b-shell-fields.test.ts`, "draws a page that reports nothing, null, or no fields at all with the key and the object of today" is now "draws a page with a rail that reports nothing, null, or no fields at all as 0 of 1: bare on step 1, filled up to the collar of the step in hand after it" (this note, 1a). Two tests added: the orange and the notches; the other rails left alone. The ratio of a full count to one field is now pinned between 3 and 3.3 (the 6 px under the cap).
+- MEASURED: `npx vitest run tests/b-shell-fields.test.ts tests/b-shell-chrome.test.ts tests/ui.test.ts`: 3 files, 41 tests passed. `npx tsc --noEmit -p .`: no output.
+- MEASURED on `out/work/stills/step2-step2_open-0p9-hd-draft.png` (hd, draft, 2 of 3 stamped for the render only): mean colour of the fill 213, 97, 37, relative luminance 0.228; of the bare rail 114, 117, 119, relative luminance 0.178. The difference is in hue more than in luminance.
+- Picture: `shell-pictures/rail-orange-step1-1of3-step2-2of3.png`: step 1 at 1 of 3 and step 2 at 2 of 3 at 1920 wide (crops), and the same two frames scaled to 390 wide under them.
+
+## 2. The header hook (asked by the Builder, 21:41 UTC)
+
+The type, in `src/stage/types.ts`:
+
+    export interface Chrome { header: number }
+
+A page gives its `PageLogic` one more optional method:
+
+    chrome?(): Chrome | null
+
+`header` is how far the header is in: 1 in place, 0 off the top of the screen. It is read from the page's own state at each frame (`slideHeader` in `src/stage/stage.ts`, called in `Stage.snap` after `railFields`). Example:
+
+    chrome: () => ({ header: 1 - easeOut(s.fightIn) }),
+
+- The header is the shapes `header-title`, `header-rule`, `progress-rail`, `progress-1` to `progress-5` and their numerals (`isHeader`). Each is moved up by `(1 - header) * HEADER_OUT` page pixels (`HEADER_OUT` 240) and marked `moved`. The page's own shapes are not changed: the frame holds copies.
+- No method, `null`, or `header` 1 or more: the frame is what the page drew. Values under 0 count as 0.
+- The page eases the number itself; the shell keeps no state.
+- MEASURED: `tests/b-shell-chrome.test.ts`, 6 tests passed. Picture `shell-pictures/chrome-header-0p55-step2-draft.png`: step 2 with `header` 0.55 stamped for one render (not committed), the header 108 px up.
