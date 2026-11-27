@@ -78,3 +78,11 @@ The film turns six times: five by the clock and a sixth when step 5 is done and 
 - `npx tsc --noEmit -p .`: exit 0, no output.
 - `pipeline/phase5/polish-tape-NEEDS.patch` equals `git diff d7388ff3 -- src/shell/real/type.ts src/stage/types.ts` (`cmp`); sha256 76003fe4717529bd978dc95c4270e55b35f5cf106cc9ea4479982587c90d42bc.
 - Main was not merged into this branch (the Builder joins it in the merge tree).
+
+## 12. The live sixth turn (step 5 back to the careers page)
+
+`node pipeline/phase5/polish-turn2-live.mjs OUT 6 0 49 high` on this branch and `... 6 0 31 high` in a tree at 308e96a1 (one walk each; the script keeps the pictures as it goes when it starts at the turn). The turn starts at the visitor's step 10734 in both trees; the careers page arrives on step 10764; the seat is step 10782.
+
+- 308e96a1 against this branch (the turn and the tape together), `polish-turn2-same.mjs`: steps 10734 to 10763 not equal (30 pictures: the first changed step is 10734, the first whose row says turning, the last is 10763, the turn's frame 29), 10764 byte equal, 10765 not equal by 9 pixels, none by 8 or more of a channel, at x 1914 to 1919, y 655 to 658, the picture's right edge in the rows of the strip. That spot is taken to be the old tail at the page's edge (the tape), not the turn: in the film the arriving half is byte equal between 308e96a1 and d7388ff3 on all 21 frames drawn. Not proven for the live picture. Steps 10766 on were not drawn at 308e96a1: UNKNOWN.
+- d7388ff3 was not walked to the sixth turn: the live arriving half before the tape change is UNKNOWN in pictures. The film stands for it (section 8).
+- Seen at real size, `out/work/polish-tape/arrive-live.png` (this branch only, steps 10765 to 10782, x 1380 to 1920, the rows of the strip): the run "(Position" fades under the frost on every picture, nothing stands right of the window, on the page or on the backing, and no edge shows under the frost. The page is as wide as the picture from its first step.
