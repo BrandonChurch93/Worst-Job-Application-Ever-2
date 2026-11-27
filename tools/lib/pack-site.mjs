@@ -1223,7 +1223,7 @@ export function motionPlan(cfg, run) {
     r.after = [which, hit ? `In these frames ${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : '', `The visitor rests ${KEYS.rest} frames after it lets a key go`].filter(Boolean).join('. ')
   }
   if (have(m.taken)) {
-    // The take whole and close: every step from TAKEN.before frames before the page takes the arrow until TAKEN.after frames after the arrow has come to rest.
+    // The take whole and close: every step from TAKEN.before frames before the page takes the arrow until TAKEN.after frames after the arrow arrives: the first step, after it has moved TAKEN.moves px or more in a step, at which it moves under TAKEN.rest px.
     const speed = (i) => Math.hypot(rows[i][COL.heroX] - rows[i - 1][COL.heroX], rows[i][COL.heroY] - rows[i - 1][COL.heroY])
     let fast = m.taken + 1
     while (fast < last && fast < m.taken + TAKEN.most && speed(fast) < TAKEN.moves) fast += 1
@@ -1239,7 +1239,7 @@ export function motionPlan(cfg, run) {
       Math.max(TAKEN.slot[1] + TAKEN.holder, TAKEN.tray[1] + TAKEN.edge, ...all.map((i) => screenY(i) + TAKEN.room))
     ]
     const fit = closeFit(cfg, box, twelve)
-    close('taken', `as the page takes the arrow from the visitor: every frame from ${TAKEN.before} frames before the take (${timeOf(m.taken)}) to ${TAKEN.after} frames after the arrow has come to rest (${timeOf(rest)}, from where it moves under ${TAKEN.rest} px a frame)`, from, to, m.taken, twelve, [fit.window], fit.percent,
+    close('taken', `as the page takes the arrow from the visitor: every frame from ${TAKEN.before} frames before the take (${timeOf(m.taken)}) to ${TAKEN.after} frames after the arrow arrives (${timeOf(rest)}, the first frame after its travel in which it moves under ${TAKEN.rest} px)`, from, to, m.taken, twelve, [fit.window], fit.percent,
       `one fixed window on the arrow at the button, both arms, the paper, its holder and the tray's lower right corner, ${scaleWords(fit.percent)} (${placeWords(fit.window)})`, ['page', 'move'])
     runs[runs.length - 1].has = [m.taken, Infinity]
   }

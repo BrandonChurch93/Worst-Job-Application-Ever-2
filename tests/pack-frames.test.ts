@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
-import { BLOW, CLOSE, CLOSE_PX, COL, DROP, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, TAKEN, TURNS, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
+import { BLOW, CLOSE, CLOSE_PX, COL, DROP, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
 import { FORM_BOTTOM, PAPER, SLOT, ZONE } from '../src/pages/step1/layout'
 import { BALL, FLIP, MID, MOUTH, PORT } from '../src/table/layout'
 import { HEADER, progressCentre } from '../src/shell/parts'
@@ -126,18 +126,21 @@ describe('the motion pack of a recorded visit', () => {
     for (const f of seat) expect(f.heading).toContain(`the page's seat, close: every frame from 6 frames before the stage seats the page (${time(645)}) to 14 frames after, two fixed windows side by side in each frame, ${FULL_WORDS}`)
   })
 
-  it('the take: from 6 frames before the take to 6 after the arrow has come to rest, on three sheets, one window at 100% on the arrow at the button, the paper, its holder and the tray corner', () => {
+  it('the take: from 6 frames before the take to 6 after the arrow arrives, on three sheets, one window at 100% on the arrow at the button, the paper, its holder and the tray corner', () => {
     const taken = of('taken')
     const steps = taken.flatMap((f) => f.steps)
     expect(m.taken).toBe(1884)
     expect(steps[0]).toBe(m.taken - TAKEN.before)
-    // The arrow has come to rest at the first step, after it has moved fast, at which it moves under TAKEN.rest px: read here from the rows once more.
+    // The arrow arrives at the first step, after it has moved TAKEN.moves px or more in a step, at which it moves under TAKEN.rest px: read here from the rows once more.
     const speed = (i: number) => Math.hypot(num(i, COL.heroX) - num(i - 1, COL.heroX), num(i, COL.heroY) - num(i - 1, COL.heroY))
     let rest = m.taken + 1
     while (speed(rest) < TAKEN.moves) rest += 1
     while (speed(rest) >= TAKEN.rest) rest += 1
+    expect(rest).toBe(1907)
     expect(steps[steps.length - 1]).toBe(rest + TAKEN.after)
-    for (const i of span(rest, rest + TAKEN.after)) expect(speed(i)).toBeLessThan(TAKEN.rest)
+    // It settles in the frames after: under 2 px a step, and it ends where the paper's slot is, TAKEN.room or less from it.
+    for (const i of span(rest, rest + TAKEN.after)) expect(speed(i)).toBeLessThan(2)
+    for (const f of taken) expect(f.heading).toContain(`every frame from ${TAKEN.before} frames before the take (${time(m.taken)}) to ${TAKEN.after} frames after the arrow arrives (${time(rest)}, the first frame after its travel in which it moves under ${TAKEN.rest} px)`)
     expect(taken.length).toBe(3)
     taken.forEach((f, j) => expect(f.heading).toContain(`sheet ${j + 1} of 3 of one run`))
     const w = taken[0]!.windows![0]!
@@ -187,30 +190,32 @@ describe('the motion pack of a recorded visit', () => {
   })
 
   it('the visitor rests the named steps after it lets a key go, and only then walks on', () => {
-    // The made-up page: the visitor holds the button over a key and the page's hint moves away. It lets go where it is, and KEYS.rest steps pass before its first move.
-    const block = keyBlock(cfg) as { place: { x: number; y: number } }
-    const v = makeVisitor(cfg) as { step(told: unknown): { move?: number[]; down?: boolean; up?: boolean }[] }
-    const told = (hint: { x: number; y: number; down?: boolean }, hero = block.place) => ({ time: 0, pageTime: 0, page: 'step1', gags: ['step1.firstName'], finished: false, turning: false, skipOffered: false, scroll: 0, hint, hero, hits: [], control: 'pointer' })
+    // A made-up page: the page's hint stands on one key with the button wanted, then on a key 300 px to the right. The visitor lets go where it is, and KEYS.rest steps pass before its first move.
+    const block = keyBlock(cfg) as { x: number; y: number; w: number; h: number }
+    const v = makeVisitor(1, VISITOR, block) as { act(told: unknown): Record<string, unknown>[]; pointer(): { x: number; y: number } }
+    const one = { x: block.x + 200, y: block.y + block.h / 2 }
+    const two = { x: one.x + 300, y: one.y }
+    const told = (hint: { x: number; y: number }) => ({ page: STANDS.page, gags: [STANDS.from, STANDS.until], turning: false, scroll: 0, hint: { ...hint, down: true }, hero: hint, hits: [] })
     const acts: string[] = []
-    let n = 0
-    const tick = (hint: { x: number; y: number; down?: boolean }) => {
-      const out = v.step(told(hint))
-      acts.push(out.map((a) => Object.keys(a)[0]).join('+'))
-      n += 1
-      return out
+    const places: { x: number; y: number }[] = []
+    const tick = (hint: { x: number; y: number }) => {
+      acts.push(v.act(told(hint)).map((a) => Object.keys(a)[0]).join('+'))
+      places.push(v.pointer())
     }
-    for (let i = 0; i < 400 && !acts.some((a) => a.includes('down')); i++) tick({ ...block.place, down: true })
-    expect(acts.some((a) => a.includes('down'))).toBe(true)
-    const pressed = n
-    for (let i = 0; i < 60 && !acts.slice(pressed).some((a) => a.includes('up')); i++) tick({ x: block.place.x - 400, y: block.place.y, down: false })
-    const released = acts.findIndex((a, i) => i >= pressed && a.includes('up'))
-    expect(released).toBeGreaterThanOrEqual(pressed)
-    // The step of the release holds no move, and neither do the KEYS.rest steps after it.
+    for (let i = 0; i < 600 && !acts.some((a) => a.includes('down')); i++) tick(one)
+    const pressed = acts.findIndex((a) => a.includes('down'))
+    expect(pressed).toBeGreaterThan(0)
+    for (let i = 0; i < 120; i++) tick(two)
+    const released = acts.findIndex((a, i) => i > pressed && a.includes('up'))
+    expect(released).toBeGreaterThan(pressed)
+    // The step of the release holds no move, and neither do the KEYS.rest steps after it: the pointer stays where the key was let go.
     expect(acts[released]).toBe('up')
-    for (let i = 0; i < 40; i++) tick({ x: block.place.x - 400, y: block.place.y, down: false })
+    expect(KEYS.rest).toBe(6)
+    for (let i = released; i <= released + KEYS.rest; i++) expect(places[i]).toEqual(places[released - 1])
+    for (const a of acts.slice(released + 1, released + KEYS.rest + 1)) expect(a).toBe('')
     const moved = acts.findIndex((a, i) => i > released && a.includes('move'))
-    expect(moved - released).toBeGreaterThanOrEqual(KEYS.rest)
-    for (const a of acts.slice(released + 1, released + KEYS.rest)) expect(a).toBe('')
+    expect(moved).toBe(released + KEYS.rest + 1)
+    expect(places[moved]!.x).toBeGreaterThan(places[released]!.x)
   })
 
   it('the give back: P while the page has the arrow, and "follows" on the first frame the hand has it again', () => {
@@ -226,9 +231,13 @@ describe('the motion pack of a recorded visit', () => {
     })
     // The rows say the same: the arrow stands where the page left it from the stand to the step before, and from the marked step it comes nearer to the pointer, step after step.
     for (const i of span(m.thrown.stand, m.thrown.handed - 1)) expect(at(i)).toEqual(at(m.thrown.stand))
-    const far = (i: number) => Math.hypot(num(i, COL.heroX) - num(i, COL.pointerX), num(i, COL.heroY) - num(i, COL.scroll) - num(i, COL.pointerY))
     expect(at(m.thrown.handed)).not.toEqual(at(m.thrown.stand))
-    for (const i of span(m.thrown.handed, m.thrown.handed + GIVES.after - 1)) expect(far(i)).toBeLessThan(far(i - 1))
+    // From the marked step the arrow goes the way the pointer lies, step after step.
+    for (const i of span(m.thrown.handed, m.thrown.handed + GIVES.after - 1)) {
+      const went = [at(i)[0] - at(i - 1)[0], at(i)[1] - at(i - 1)[1]]
+      const lies = [num(i, COL.pointerX) - at(i - 1)[0], num(i, COL.pointerY) - at(i - 1)[1]]
+      expect(went[0]! * lies[0]! + went[1]! * lies[1]!).toBeGreaterThan(0)
+    }
     // The arrow is inside the one window in every frame, and the heading carries the page's design and both legends.
     const w = back[0]!.windows![0]!
     for (const i of steps) expect(holdsBox(w, [...at(i), ...at(i)])).toBe(true)
