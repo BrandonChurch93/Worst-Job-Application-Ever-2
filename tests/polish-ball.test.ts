@@ -6,7 +6,9 @@ import { FLIP, FLIP_REACH, GRAVITY, R, TH, TIER_Y, table } from '../src/table/la
 import { Machine, prepare } from '../src/table/physics'
 
 const beats = config.film.beats.filter((b) => b.unit === 'pinball')
-const MAIN = ['a78db9db', '67595780', '53b15e3d', '92be0fa4', '28fb4385', 'd8bd0843', 'bde2c563', '053aaa9a', '5600a8f9', '1900be91', '84a92fe6', 'c836ba9e', 'baedfda5', '61fc457c']
+// The machine page's film every three seconds, as the port's decided change left it in merge 43: the port's own branch gives these 14 values and so does the merged tree.
+// Before that change main gave a78db9db, 67595780, 53b15e3d, 92be0fa4, 28fb4385, d8bd0843, bde2c563, 053aaa9a, 5600a8f9, 1900be91, 84a92fe6, c836ba9e, baedfda5, 61fc457c, and this file's own branch gave the same.
+const MAIN = ['5843b578', '8af59575', '7d7bc7da', '15c63b03', 'afa8fe82', 'f235b7d4', 'f676307c', 'f011e14b', '28d37272', '3072f8fe', '9c015495', '9cc7f685', '31e7a824', '63443663']
 const DEG = Math.PI / 180
 const bat = table.flippers.find((f) => f.tier === 1 && f.side === 'right')!
 const onBat = (along: number): [number, number] => {
@@ -30,7 +32,7 @@ describe('the ball off a visitor\'s flipper', () => {
     await prepare()
   })
 
-  it('leaves the film as it was on main: the take replayed gives the same state every three seconds', () => {
+  it('leaves the film as it was: the take replayed gives the same state every three seconds', () => {
     const s = new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver(), film: filmOptions('pinball') })
     const seen: string[] = []
     for (let k = 0; k < 168 && !s.finished; k++) {
