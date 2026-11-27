@@ -15,7 +15,7 @@ export const TURRET_LOOK = {
   flashSeconds: 0.034, steam: 6, sparks: 8
 }
 
-// The barrel slides in a sleeve that stays in the dome: SLEEVE px of the barrel lie inside it at rest, so no gap opens when the barrel springs forward of rest.
+// The barrel slides in a sleeve that stays in the dome: SLEEVE px of the barrel lie inside it at rest, so no gap opens when the barrel springs forward of rest, and behind them a blunt end as long as the rest of the sleeve's line, so the steel's grain lies on the barrel where it lay.
 const SLEEVE = 8
 const smooth = (t: number) => {
   const u = Math.min(1, Math.max(0, t))
@@ -123,9 +123,11 @@ function geometries(): Shared {
   ]
   const headDark: THREE.BufferGeometry[] = []
   const m = L.muzzle
-  const sleeve = along(turn([[19, 26], [19, 46], [18, 47.2], [15.6, 47.2]], 32, 2))
+  const sleeveLine: [number, number][] = [[19, 26], [19, 46], [18, 47.2], [15.6, 47.2]]
+  const lead = sleeveLine.slice(1).reduce((sum, p, i) => sum + Math.hypot(p[0] - sleeveLine[i]![0], p[1] - sleeveLine[i]![1]), 0) - SLEEVE
+  const sleeve = along(turn(sleeveLine, 32, 2))
   const barrel = merge([
-    along(turn([[15.6, 47.2 - SLEEVE], [15.6, 52], [14.8, 52.6], [14.8, 54], [15.6, 54.6]], 32, 2)),
+    along(turn([[0, 47.2 - SLEEVE - Math.sqrt(lead * lead - 15.6 * 15.6)], [15.6, 47.2 - SLEEVE], [15.6, 47.2], [15.6, 52], [14.8, 52.6], [14.8, 54], [15.6, 54.6]], 32, 2)),
     along(smoothTurn([[15.6, 54.6], [11.4, m - 17]], 32)),
     along(turn([[11.4, m - 17], [13.8, m - 15.8], [13.8, m - 10]], 32, 2))
   ])
