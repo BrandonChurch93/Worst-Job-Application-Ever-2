@@ -245,7 +245,7 @@ describe('the moments of the visit, as the sheets need them', () => {
     expect(files[1]!.steps[count - 1]).toBeGreaterThanOrEqual(1400)
     expect(files[1]!.apart).toBeCloseTo((files[1]!.steps[0]! - files[0]!.steps[count - 1]!) / 60, 2)
     const plan = planOf(run)
-    const brief = briefFor(plan as never, plan.sets[0]!.set, kit)
+    const brief = briefFor(plan as never, plan.sets.find((x) => x.files.some((f) => f.moment === 'flippers'))!.set, kit)
     expect(brief).toMatch(/One event on two sheets/)
     expect(brief).toContain(`${files[0]!.name} and ${files[1]!.name} are two runs of one event`)
   })
@@ -258,40 +258,39 @@ describe('the moments of the visit, as the sheets need them', () => {
     expect(steps[steps.length - 1]).toBe(1501 - 6 + (count * 2 - 1) * 2)
   })
 
-  it('tells the critic in plain words which two sheets are one run', () => {
+  it('tells the critic in plain words which sheets are one run, in the brief of the set that holds them', () => {
     const plan = planOf(madeRun())
-    const files = plan.sets.flatMap((s) => s.files)
-    const brief = briefFor(plan as never, plan.sets[0]!.set, kit)
-    expect(brief).toMatch(/One run on two sheets/)
     for (const moment of ['turn', 'flippers', 'flip']) {
-      const pair = files.filter((f) => f.moment === moment)
-      expect(brief).toContain(`${pair[0]!.name} and ${pair[1]!.name} are one run of ${count * 2} consecutive frames`)
+      const set = plan.sets.find((x) => x.files.some((f) => f.moment === moment))!
+      const run = set.files.filter((f) => f.moment === moment)
+      // A run is never cut by the end of a set.
+      expect(run.flatMap((f) => f.steps)).toEqual(run[0]!.run)
+      const brief = briefFor(plan as never, set.set, kit)
+      expect(brief).toMatch(/One run on more than one sheet/)
+      const names = run.length > 2 ? `${run.slice(0, -1).map((f) => f.name).join(', ')} and ${run[run.length - 1]!.name}` : run.map((f) => f.name).join(' and ')
+      expect(brief).toContain(`${names} are one run of ${count * run.length} consecutive frames`)
+      expect(brief).not.toMatch(/One event on two sheets/)
     }
-    expect(brief).not.toMatch(/One event on two sheets/)
+    expect(plan.sets.flatMap((x) => x.files).filter((f) => f.moment === 'turn').length).toBe(3)
   })
 
-  // The rule changed by the Builder's word of 2026-11-27: under the limit the turn's first sheet now goes before a flip sheet, then the ball leaving the port, and a true stroke keeps its two sheets as long as it can.
-  it('stays inside the limit of files: every moment keeps a sheet and the second sheets go, the least worth first', () => {
-    expect(plan10().length).toBe(10)
+  // The rule changed by the Builder's word of 2026-11-27, round 24: the limit of files takes no sheet away. Where one message cannot hold the sheets the plan makes a second set.
+  it('stays inside the limit of files in every set and takes no sheet away, whatever the limit', () => {
+    expect(plan10().length).toBe(11)
     expect(most).toBeGreaterThanOrEqual(10)
     const moments = ['walk', 'turn', 'hit', 'taken', 'given-back', 'flippers', 'flip']
     const at = (n: number) => {
       const c = { ...cfg, critics: { ...cfg.critics, maxFilesPerMessage: n } }
       const plan = planOf(madeRun(), c)
-      expect(plan.sets.length).toBe(1)
-      const files = plan.sets[0]!.files
-      expect(files.length).toBeLessThanOrEqual(n)
-      for (const moment of moments) expect(files.some((f) => f.moment === moment)).toBe(true)
-      return Object.fromEntries(moments.map((moment) => [moment, files.filter((f) => f.moment === moment).length]))
+      for (const x of plan.sets) expect(x.files.length).toBeLessThanOrEqual(n)
+      const files = plan.sets.flatMap((x) => x.files)
+      return { sets: plan.sets.length, ...Object.fromEntries(moments.map((moment) => [moment, files.filter((f) => f.moment === moment).length])) }
     }
-    expect(at(9)).toEqual({ walk: 1, turn: 1, hit: 1, taken: 1, 'given-back': 1, flippers: 2, flip: 2 })
-    expect(at(8)).toEqual({ walk: 1, turn: 1, hit: 1, taken: 1, 'given-back': 1, flippers: 1, flip: 2 })
-    expect(at(7)).toEqual({ walk: 1, turn: 1, hit: 1, taken: 1, 'given-back': 1, flippers: 1, flip: 1 })
-    // Cut to one sheet, the turn keeps its last twelve pictures: the seat and what follows it.
-    const c = { ...cfg, critics: { ...cfg.critics, maxFilesPerMessage: 7 } }
-    const turn = filesOf(madeRun(), c).filter((f) => f.moment === 'turn')
-    expect(turn[0]!.steps[count - 1]).toBe(429 + 16)
-    expect(turn[0]!.heading).not.toMatch(/sheet 1 of/)
+    for (const n of [10, 9, 8, 7]) expect(at(n)).toEqual({ sets: 2, walk: 1, turn: 3, hit: 1, taken: 1, 'given-back': 1, flippers: 2, flip: 2 })
+    expect(at(11)).toEqual({ sets: 1, walk: 1, turn: 3, hit: 1, taken: 1, 'given-back': 1, flippers: 2, flip: 2 })
+    // The turn is whole: its three sheets are one run, and each says which it is.
+    const turn = filesOf(madeRun()).filter((f) => f.moment === 'turn')
+    turn.forEach((f, j) => expect(f.heading).toContain(`sheet ${j + 1} of 3 of one run`))
   })
   function plan10() {
     return filesOf(madeRun())
@@ -434,7 +433,7 @@ describe('what the window of a close sheet holds besides the arrow', () => {
     }
     expect(w.shown).toBeLessThan(100)
     expect(w.window[2] / w.window[3]).toBeCloseTo(w.tileW / w.tileH, 1)
-    const flips = planOf(made).sets[0]!.files.filter((f) => f.moment === 'flip')
+    const flips = planOf(made).sets.flatMap((x) => x.files).filter((f) => f.moment === 'flip')
     expect(flips).toHaveLength(2)
     for (const f of flips) expect(f.heading).toContain(`at ${w.shown}% of its size`)
   })

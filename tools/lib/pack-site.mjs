@@ -796,7 +796,8 @@ export function tierSheet(cfg, run) {
   const step = Math.ceil(Math.ceil(longest / (TIERS.each - 2)) / 2) * 2
   const steps = falls.flatMap((f) => Array.from({ length: TIERS.each }, (_, i) => f.first + (i - 1) * step))
   const parts = falls.map((f, i) => `frames ${i * TIERS.each + 1} to ${(i + 1) * TIERS.each} from tier ${f.tier + 1} to tier ${f.tier + 2} of ${cfg.table.tiers.length} (the camera travels ${timeOf(f.first)} to ${timeOf(f.last)})`)
-  return { kind: 'site-run-sheet', moment: 'tiers', page: run.rows[steps[0]][COL.page], steps, every: step, heading: `The machine's tiers and the passage from one to the next, whole frames ${step} steps (${(step / VISITOR.hz).toFixed(2)} s) apart: ${parts.join('; ')}. In each, the first frame is ${step} steps before the camera starts to travel and the last is after it has stopped` }
+  const part = (run.pages || []).find((p) => falls[0].first >= p.first && falls[0].first <= p.last)
+  return { kind: 'site-run-sheet', moment: 'tiers', page: part ? part.unit : run.rows[falls[0].first][COL.page], steps, every: step, heading: `The machine's tiers and the passage from one to the next, whole frames ${step} steps (${(step / VISITOR.hz).toFixed(2)} s) apart: ${parts.join('; ')}. In each, the first frame is ${step} steps before the camera starts to travel and the last is after it has stopped` }
 }
 
 // R5: the six pages on one sheet, the two screens, and one sheet across each page's part of the visitor's run.
@@ -922,7 +923,7 @@ export function motionPlan(cfg, run) {
       if (b > edge && a < edge + TURNS.seat) out.push(a > edge ? 'the new page goes on closing' : 'and closes')
       if (a <= edge + TURNS.seat && b >= edge + TURNS.seat) out.push(`it seats at ${timeOf(edge + TURNS.seat)}`)
       if (b > edge + TURNS.seat && a <= quiet) out.push(`it has stopped by ${timeOf(quiet)}`)
-      if (after) out.push(`the last ${after} frames come after the stop`)
+      if (after) out.push(after === 1 ? 'the last frame comes after the stop' : `the last ${after} frames come after the stop`)
       let moved = false
       for (let i = Math.max(1, a - EVERY + 1); i <= b; i++) if (rows[i][COL.pointerX] !== rows[i - 1][COL.pointerX] || rows[i][COL.pointerY] !== rows[i - 1][COL.pointerY]) moved = true
       return `${out.join(', ')}${after && !moved ? ". The visitor's pointer does not move in these frames" : ''}`
@@ -996,7 +997,8 @@ export function motionPlan(cfg, run) {
       items.push(item)
     }
   }
-  items.sort((x, y) => x.steps[0] - y.steps[0])
+  // In the order they happen, a run's sheets side by side.
+  items.sort((x, y) => x.run[0] - y.run[0] || x.steps[0] - y.steps[0])
   // One set while one message holds the sheets; else the pages in one group and the machine (the moments of HANDS) in another, each a whole of its own, cut only between runs.
   const groups = items.length <= most ? [{ id: 'moments', items }] : [{ id: 'pages', items: items.filter((f) => !HANDS.includes(f.moment)) }, { id: 'machine', items: items.filter((f) => HANDS.includes(f.moment)) }].filter((g) => g.items.length)
   return { items, groups, leftOut, limitTook }
