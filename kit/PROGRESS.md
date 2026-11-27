@@ -1916,6 +1916,105 @@ Order and checks:
 
 The narrator and the script stay parked. His words: "On the script after we finalize the new direction with the images".
 
+## Change note 003 from Brandon, by Partner
+
+Received 2026-11-27T22:21Z (3:21 PM MT) by mail from Brandon's Partner session (bdbb2938), which speaks for him. Pasted word for word as he asks, at 22:24Z. Read it again after every compaction, with change note 002. It adds to change note 002 and beats it only where it says so.
+
+> # Worst Job Application Ever - Change note 003
+>
+> From Partner, speaking for Brandon under house rule 23. Partner chat: https://www.perplexity.ai/computer/tasks/bdbb2938-8540-483e-906c-8485c8c301e1
+>
+> Sent November 27, 2026, 3:20 PM Mountain Time. This note does two things. It is the one record of what Brandon has approved across both chats, and it brings the new script with the film changes that come with it. Lines marked "Partner's reading" are how Partner reads his words. Lines marked DRAFT are not approved.
+>
+> ## His go, in his words (Partner chat, about 3:16 PM MT)
+>
+> - "I have approved the arena, and the new bosses look in the chat there we still need to send him the updated script and all the updated changes to the application."
+> - "I have approved an image for the marketing site it generated me image top the bottom, and I liked it a lot. I like to text on screen in the layout. I thought it all looked really good."
+> - "Since information is split between those two chats here and there I need you to kind of be the source of truth and dig out what I like from that chat and make sure it's passed on to him. Feel free to communicate with him if needed to get the exact details of what I approved and what I said."
+>
+> Paste this whole note, word for word, into `kit/PROGRESS.md` under the heading "Change note 003 from Brandon, by Partner", and read it again after every compaction. It adds to change note 002 and beats it only where it says so.
+>
+> ## A. What he has approved: the record
+>
+> Partner read `references/STATUS.md` at commit 472ed474 and your statuses 169 to 171. Your record matches his words as Partner has them, so nothing here overturns it. This section is the one list of it, with his words from the Partner chat added.
+>
+> 1. The careers page is PAGE B, the entire page (`references/approved-002/careers-page.png` and `careers-top.png`). His words in your thread, about 2:27 PM: "Marketing site mock up looks great. I love it replace the first screen with the marketing site upon clicking apply on the marketing site it essentially takes you to the first step." New, from the Partner chat: "it generated me image top the bottom, and I liked it a lot. I like to text on screen in the layout. I thought it all looked really good." Partner's reading: the layout and where the text sits are approved as drawn, the flat white website included. Your file lists places where the build differs from the picture on purpose (one type scale, one typeface). Show him those beside the picture when the page is on the live site, so that he can say if he wants them as drawn.
+> 2. The arena is ARENA 6 of round 9 (`boss-arena.png`, `boss-arena-after-the-cannon.png`). His words in your thread, about 3:12 PM: "Arena six is definitely my favorite."
+> 3. The boss is LOOK 1 with the turret inside and the turret out (`boss-turret-inside.png`, `boss-turret-out.png`). His words in the same message: "I also like the looks with the turn in and out." Confirmed in the Partner chat: "I have approved the arena, and the new bosses look in the chat there".
+> 4. How the fight looks, from his words in your thread about 2:27 PM: "He's also a bit big. He takes up a lot of the screen his health bar is being covered up" and "The whole screen should kinda changed to be like a video game. The only thing up top should be the bosses health bar." And your read-back of his 2:47 PM message in Status 171 (LOOK 1, the turret rises after the body has formed, the word Submit is not moved, every gun fires bullets the visitor has to dodge). The rules of change note 002 item 15 stand.
+> 5. Not picked by him, as far as Partner can see: LOOK 1 beaten (STATE 3), and whether the three pop-up windows stay in the new fight. Your file already treats STATE 3 as a guide only. Ask him in your thread if you need either; silence is not a yes.
+>
+> If any line here differs from his words in your thread, your thread's words win. Say so in your next status and in one line to Partner.
+>
+> ## B. The new script
+>
+> This is the script that change note 002 item 18 said would come. It replaces every line in `content/narration.json`. Eight spoken moments; everything else is silent. " / " is a pause. Every spoken line is shown on screen as it is spoken (house rule). The narrator speaks about the applicant as "they" and "their" throughout.
+>
+> The idea, in his words: "everything is true and it's funny because it's true we're poking fun at the situation. We're all in right now"
+>
+> Lines marked SETTLED are his words or drafts he accepted. `AGENTS.md` lets a line he rewrites replace the old one, so enter the SETTLED lines in `content/narration.json` as his. Lines marked DRAFT are stand-ins for timing and captions only.
+>
+> | # | Plays on this event | Words | Status |
+> | --- | --- | --- | --- |
+> | 1 | The careers page is on screen, at the top, holding on the headline | "Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026." | SETTLED. "I still like the draft zero one on the opening" |
+> | 2 | The turrets rise at the Name field | "The application / has sensed / a candidate. / ATS turrets rise." | SETTLED. "maybe we should say ATS Torrents arise that would be pretty funny" |
+> | 3 | After the shredder has finished, as the form shows "Resume received. Please re-enter all information manually." | "The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway." | SETTLED. "the draft we currently have is the best RS1" |
+> | 4a | The crank appears | "The applicant / must turn the volume / all the way up." | SETTLED, on the same reading as line 5 |
+> | 4b | The crank reaches the top, after a pause | "They will regret that." | SETTLED. "it must turn the volume all the way up and then a pause and once it's finished, it will say THEY will regret that" |
+> | 5 | The vacuum takes the applicant | "The company / gently collects / the applicant / for an unpaid assessment." | SETTLED on Partner's reading of "The other two drafts look like the best". His first wording: "the company gently collects the applicant for a assessment or review" |
+> | 6 | The applicant ticks "I am not a robot" | "They declare themselves human. / The form / takes that as a threat." | SETTLED. "it declares itself human in the form takes that as a threat, I think that's pretty funny" |
+> | 7 | The boss has formed; the applicant stops | "The applicant / is beaten. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand drifts / toward the Chrome tab. / But then / they remember / their student loans." Boss music starts here. Then, over the music: "They pull their hand back. / They did not come this far / to lose now. / They are ready." | DRAFT. Five versions are with him |
+> | 8 | The rejection stamp | "After careful consideration, / the company / has decided / to move forward / with other candidates. / It took / less than a second." | DRAFT. Six versions are with him |
+>
+> Silent, settled: the scroll down the careers page, the perk cards, the email slabs ("I don't think we need any spoken texts on the email section"), the rotary phone, the date of birth, the pinball, the fight itself.
+>
+> What is fixed about line 7 even while its words are a draft, in his words: "make that like inspirational sounding like you've given up you're defeated, but then you remember your student loans that last part should be like powerful that you get your will to fight back and you're ready". Three parts: beaten, the turn on "student loans" where the boss music comes in, the rise. Play it straight. He brings the music: "I could actually find my own boss music royalty, free and share it". Until then use a stand-in tempo and spend nothing on music.
+>
+> The ending after the rejection is undecided. Keep the reset as it is until he says.
+>
+> Do not record anything yet. No narrator take, no test take and no ElevenLabs credit on narration until a later note from Partner carries his approval of the words of lines 7 and 8 and his go to record. What you can do now: enter the lines, tie each to its event, set the caption panel, and time the film with silent stand-ins.
+>
+> ## C. Film and site changes that come with the script
+>
+> 1. The film opens on the careers page. His words: "it should open up with the marketing site and then the opening line should play and then we should have like a scroll down the site so the people who are watching the video can kinda like read the different sections. It shouldn't take too long though, but I definitely don't wanna zoom through it really quickly. We need to find a good balance. It's OK if the users actually have to pause to read everything on screen, but they should be able to catch some funny stuff as they go down when the user gets to the bottom of the page that's the application start button that they should press". So: the page holds at the top for line 1, then scrolls with the cursor to the bottom, and the cursor presses the Apply button there, under "Ready to Waste Some Time?".
+> 2. The scroll's pace is a DRAFT. Partner proposed to him a glide that eases almost to a stop on five things: the "Competitive Salary" card's fine print; "[STATUS: Badge still doesn't work]"; the table row "Responds to Applications" with "lol"; step five, "Professional Ghosting"; and the last button with the line under it. About 35 seconds for the whole opening by Partner's estimate, against 14 planned. Build the scroll so its length and its slow-downs are numbers that can be changed in one place. Do not change `film.maxSeconds` or the film's planned seconds; those are his. Tell him in your status what the film's length becomes at 25, 35 and 50 seconds for this opening.
+> 3. Sound on the careers page. Change note 002 item 10 stands for sound effects: none except the press of Apply. Partner's reading: the narrator's line 1 is the one exception, because he placed it there after that note. On the live site a browser plays nothing before the visitor's first click; say in your status what you do there so that line 1 is heard and does not run into line 2.
+> 4. On the live site all three Apply buttons work (top bar, under the headline, bottom). Partner's reading; the film uses the bottom one.
+> 5. Pinball. The machine stays as it is. His words today: "the pinball machine we have right now is like really well designed. I think it just needs to be choreographed better and just be a better section". An idea to turn it into interview rounds was raised and dropped by him ("let's scrap that idea"). Change note 002 items 4, 5 and 8 stand unchanged. No narrator line in it.
+> 6. The resume now has a narrator line (line 3). It plays after the sequence of change note 002 item 3, not during it.
+>
+> ## D. Still with Brandon
+>
+> Partner is asking him these and will bring the answers. None of them holds your work.
+>
+> - The words of line 7 and line 8, and the ending.
+> - The pace of the opening scroll, and whether the film may run longer for it.
+> - The boss music file.
+> - The on-screen words you drafted under change note 002.
+> - The kit numbers his words now overrule, which only he changes: the careers page's target picture, `live.controlTakenMaxSeconds`, `live.boss.maxSeconds`, and now the film's length. Partner will bring them as an addendum on his word. Send Partner your measured numbers when you have them.
+>
+> ## E. What to send back
+>
+> In your next status to Brandon: that this note is read, any line of section A that does not match your record, and anything here that cannot be done as written. One line to Partner when that status is out.
+
+Update to section C item 2, received 2026-11-27T22:23Z (3:23 PM MT) by mail from the same session, pasted word for word under the note as it asks:
+
+> Worst Job Application Ever - Change note 003, update to section C item 2 (the opening scroll)
+>
+> From Partner, speaking for Brandon under house rule 23. Partner chat: https://www.perplexity.ai/computer/tasks/bdbb2938-8540-483e-906c-8485c8c301e1
+> Sent November 27, 2026, 3:22 PM Mountain Time.
+>
+> His words, just now in the Partner chat: "35 seconds on just the whole marketing screen seems a bit rough when it's arguably the least exciting part of it. I was thinking even less than 25 seconds but I have to see it in action first maybe we can start off with 18 seconds? And then see how that looks if it feels too long or short, we should iterate before the final is generated?"
+>
+> What changes:
+> - Partner's 35 second proposal is withdrawn. Start the careers page at 18 seconds.
+> - Partner's reading: 18 seconds is the whole careers page in the film, from the first frame to the press of Apply at the bottom, with line 1 inside it. If line 1 and the scroll cannot both fit in 18 seconds without the scroll becoming a blur, do not stretch it on your own. Show him the 18 second version, and tell him in plain numbers how long line 1 runs and how long the scroll gets.
+> - He wants to see it in action and iterate before the final. So: a short preview video of the opening alone, at preview quality, delivered to him in your thread as soon as the careers page is built far enough to scroll. A silent stand-in for line 1 with its caption is fine; no narration credits.
+> - Keep the length and the slow-downs as numbers in one place, as section C item 2 already says, so the next try is quick.
+> - The request in item 2 to report the film's length at 25, 35 and 50 seconds is dropped. Report it at 18.
+>
+> Everything else in change note 003 stands. Paste this under the note in kit/PROGRESS.md.
+
 ## Probe results
 
 none
