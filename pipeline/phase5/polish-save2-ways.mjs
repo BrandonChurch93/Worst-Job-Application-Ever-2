@@ -1,6 +1,6 @@
 // The view's ways down to its place under a gate, counted over live visits stepped without a browser, and the film's pinball take as a hash of the page's whole state on every step.
 // node pipeline/phase5/polish-save2-ways.mjs [--visitor never,pack,keen,clumsy,random] [--seeds 1,2] [--film]
-// A way down begins on the step the room under the gate starts to grow. It ends when the room has its whole depth or is gone again. Counted inside it: the starts (a step that goes down after one that did not), the stands part way (a step with no travel) and the turns back part way (a step that goes back before the whole depth).
+// A way down begins on the step the room under the gate starts to grow. It ends when the room has its whole depth or is gone again. Counted inside it: the starts (a step that goes down after one that did not), the stands part way (a step with no travel) and the turns back part way (a step that goes back before the whole depth). A way back begins on the step the whole depth is left and ends when the room is gone; a step inside it that stands or goes down again is counted.
 import { createHash } from 'node:crypto'
 import { logic } from '../../tools/lib/logic.mjs'
 
@@ -17,14 +17,15 @@ if (process.argv.includes('--film')) {
   const hash = createHash('sha256')
   let steps = 0
   let rooms = 0
-  while (stage.entryIndex === 0 && steps < 200000) {
+  const seconds = filmFlow('pinball')[0].closes
+  while (stage.time < seconds) {
     stage.advance(1)
     const state = stage.page.save()
     if (state.s.room !== undefined) rooms++
     hash.update(JSON.stringify([state, stage.page.scroll()]))
     steps++
   }
-  console.log(`film, pinball: ${steps} steps, ${rooms} of them with a room under a gate, sha256 of the page's state and scroll on every step ${hash.digest('hex')}`)
+  console.log(`film, pinball: ${seconds} s, ${steps} steps, ${rooms} of them with a room under a gate, sha256 of the page's state and scroll on every step ${hash.digest('hex')}`)
 } else {
   const HAND = 1500 / 240
   const makeDriver = (name, s) => {
@@ -59,6 +60,10 @@ if (process.argv.includes('--film')) {
     const ways = []
     const stood = []
     const back = []
+    const series = createHash('sha256')
+    let up = false
+    let ups = 0
+    const halt = []
     const end = () => {
       on = false
       most = Math.max(most, starts)
@@ -68,6 +73,7 @@ if (process.argv.includes('--film')) {
       if (stage.entryIndex !== 0) break
       const x = stage.page.save().s.room?.[0] ?? 0
       const d = x - was
+      series.update(`${x},${stage.page.scroll()};`)
       if (!on && d > 0) {
         on = true
         rising = true
@@ -81,13 +87,20 @@ if (process.argv.includes('--film')) {
         rising = d > 0
         if (x >= 90 || x <= 0) end()
       }
+      if (!up && was >= 90 && d < 0) {
+        up = true
+        ups++
+      } else if (up) {
+        if (x > 0 && d >= 0) halt.push(`${stage.pageTime.toFixed(2)} s at ${x.toFixed(1)} px`)
+        if (x <= 0 || d >= 0) up = false
+      }
       was = x
     }
     sum[0] += ways.length
     sum[1] += stood.length
     sum[2] += back.length
     sum[3] = Math.max(sum[3], most)
-    console.log(`${name} seed ${seed}: ${ways.length} ways down, largest count of starts inside one way down ${most}, ${stood.length} stands part way${stood.length ? ` (${stood.join('; ')})` : ''}, ${back.length} turns back part way${back.length ? ` (${back.join('; ')})` : ''}`)
+    console.log(`${name} seed ${seed}: ${ways.length} ways down, largest count of starts inside one way down ${most}, ${stood.length} stands part way${stood.length ? ` (${stood.join('; ')})` : ''}, ${back.length} turns back part way${back.length ? ` (${back.join('; ')})` : ''}, ${ups} ways back, ${halt.length} of them stood or turned part way${halt.length ? ` (${halt.join('; ')})` : ''}, the room and the view on every step ${series.digest('hex').slice(0, 12)}`)
   }
   console.log(`all: ${sum[0]} ways down, ${sum[1]} stands part way, ${sum[2]} turns back part way, largest count of starts inside one way down ${sum[3]}`)
 }
