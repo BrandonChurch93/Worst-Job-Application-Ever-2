@@ -90,3 +90,23 @@ The first build on the merge commit 9de8c3a8 was stopped after its visit: `pack-
 - The drop: the ball now starts slowly (0.3 px in its first step, 5953; then 1.8, 5.0, 7.9). The old rule took a move of 0.5 px or more for the start and named 5954. `LEAVES` 0.05: any move the rows hold. Steps 5947 to 5977, window as in round 24.
 - The take: the arrow arrives 5 steps later (1912), so 41 frames on 4 sheets; set B holds 10 sheets.
 - The save's kick is at 6814 (6815 before). Seat, key, give back: the same steps; the give back's window moved 3 px down (y 581).
+
+## Round 25's motion pack on d6fe4a6b (src as merge 47, ce259d65), built 10:45 to 11:20 UTC
+
+MEASURED: `npm run -s pack -- --phase 5 --round 25 --unit site --role R4`, exit 0, 32 sheets, "the limit of files took nothing away". `node pipeline/phase5/pack-frames-check.mjs out/work/packs/cache/d6fe4a6b8ed9/live-high/site-run.json`: 15 ok, 0 NOT. The pack is in `out/work/packs/round-025/R4/`, its key in `out/work/keys/round-025-R4.json`; the list with every heading and sha256 is made by `node pipeline/phase5/pack-frames-list.mjs out/work/packs/round-025/R4 out/work/keys/round-025-R4.json`.
+
+- Set A, pages, 9: walk A-01 (0:00.87 to 0:01.23), turn A-02 to 04 (0:09.93 to 0:11.10), seat A-05 to 08 (steps 639 to 659, 0:10.65 to 0:10.98, windows x 818 to 1920, y 0 to 176 and x 780 to 1070, y 290 to 466), bolt A-09 (0:14.88 to 0:15.25).
+- Set B, arrow, 10: key B-01, B-02 (steps 1476 to 1499, 0:24.60 to 0:24.98, window x 374 to 835, y 758 to 1026, press 10 of 13, key A, Email field), take B-03 to 06 (steps 1878 to 1918, 0:31.30 to 0:31.97, window x 485 to 946, y 438 to 716), give back B-07 to 10 (steps 2612 to 2658, 0:43.53 to 0:44.30, window x 730 to 1191, y 581 to 853).
+- Set C, port, 6: flippers C-01 (1:37.55 to 1:37.92 at 1/30 s), drop C-02 to 05 (steps 5947 to 5977, 1:39.12 to 1:39.62, window x 1455 to 1799, y 292 to 886), C-06 (1:39.17 to 1:39.53 at 1/30 s).
+- Set D, bats, 7: save D-01 to 03 (steps 6794 to 6829, 1:53.23 to 1:53.82, window x 730 to 1191, y 802 to 1074), flip D-04, D-05 (2:06.23 to 2:07.00 at 1/30 s), blow D-06, D-07 (steps 7575 to 7586, 2:06.25 to 2:06.43, window x 666 to 1127, y 277 to 871).
+
+What was seen and measured on it:
+
+- The release, B-02, seen frame by frame at real size: key A dark and smaller under "down" to 0:24.85; light again and almost full size at 0:24.87; a touch larger than its seat at 0:24.88; it closes on its seat to 0:24.97. MEASURED `node pipeline/phase5/pack-frames-key.mjs <site-run.json> <cache>`: left edge 527.5 before the press, 531.8 and 533.9 held, after the release 529.5, 524.8, 525.5, 526.5, 526.8, 527.2, 527.5, 527.5. Round 24's build: 531.8, 529.5, 526.7, 525.8, 525.8, 526.5, 526.7, 527.5.
+- The seat, A-06: after the contact at step 645 the page's right edge is inside the page again on steps 648, 649, 650 and a little on 652, 653. MEASURED by a reading of the pack's own pictures (the first column from the right at row 100 that is not dark; a throwaway script, not kept): 641 to 644: 1847, 1864, 1881, 1900; 645 to 647: 1920; 648 to 650: 1908, 1901, 1906; 651: 1920; 652, 653: 1916; 654 to 659: 1920. The same numbers on round 24's build (cache 2bacfab4367d), so merge 47 did not change it. Not judged here; reported to the Builder as a thing to look at.
+- The save, D-03: after the ball has gone the wire shows as a thin line at 1:53.67 to 1:53.73, as a low rail at 1:53.75 to 1:53.80, a line at 1:53.82. Seen whole, not at real size. Not judged.
+- The take, B-06: the arrow leans left in all 5 frames 0:31.90 to 0:31.97 where B-05's last 5 show it upright. Seen whole. Not judged.
+
+## A test of another owner whose numbers the visitor's rest changes: tests/polish-tug2.test.ts
+
+The test came with merge 47. Its list `EVENTS` holds the frames of step 1's events under the pack's visitor (`makeVisitor` of `tools/lib/pack-site.mjs`). The visitor of this branch rests 6 frames after it lets a key go (`KEYS.rest`), so its presses and all that follows them fall on later frames. MEASURED: in a worktree of ce259d65 (the same src and test, main's visitor) `npx vitest run tests/polish-tug2.test.ts` gives 13 passed; on this branch 12 passed and that one failed. Decision: by the rule that such a test is changed only where this work changes a number it holds, `EVENTS` now holds the frames under this branch's visitor (54 entries, 49 before; the tug is lost at 2400, 2340 before) and its comment line says which visitor. Nothing else in the file is changed. Its own commit.
