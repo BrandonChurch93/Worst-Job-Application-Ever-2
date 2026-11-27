@@ -149,15 +149,17 @@ MORE.counts = async ({ look, at, outDir }) => {
     'beaten 0.2': viewOf({ time: 40.2, phase: 'beaten' }, { ...out, stage: 2, beaten: 0.2 })
   }
   const rows = []
-  for (const level of ['low', 'medium', 'high']) {
+  const file = path.join(outDir, 'counts.json')
+  const levels = (process.env.BOSSLOOK_LEVELS ?? 'low,medium,high').split(',')
+  const old = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')).rows.filter((r) => !levels.includes(r.level)) : []
+  for (const level of levels) {
     for (const [name, view] of Object.entries(states)) {
       const r = await look.timing({ view, ...full, level }, 5)
       rows.push({ level, state: name, ownTriangles: Math.round(r.own.triangles), ownDraws: r.own.draws, frameTriangles: r.frame.triangles, frameDrawCalls: r.frame.drawCalls, bareTriangles: r.bare.triangles, bareDrawCalls: r.bare.drawCalls, msWith: +r.withMs.toFixed(2), msWithout: +r.withoutMs.toFixed(2) })
       console.log('  ' + JSON.stringify(rows[rows.length - 1]))
     }
   }
-  const file = path.join(outDir, 'counts.json')
-  fs.writeFileSync(file, JSON.stringify({ note: 'MEASURED by tools/bosslook.mjs counts in the headless browser of the helper machine, 1920 by 1080; own = the meshes of the boss alone in one pass, frame = the whole frame with him over all passes, bare = the same frame without him; ms is the median of 5 frames', rows }, null, 2) + '\n')
+  fs.writeFileSync(file, JSON.stringify({ note: 'MEASURED by tools/bosslook.mjs counts in the headless browser of the helper machine, 1920 by 1080; own = the meshes of the boss alone in one pass, frame = the whole frame with him over all passes, bare = the same frame without him; ms is the median of 5 frames drawn by the software renderer of that machine, so only the two columns against each other mean anything', rows: [...old, ...rows] }, null, 2) + '\n')
   return file
 }
 Object.assign(SETS, MORE)
