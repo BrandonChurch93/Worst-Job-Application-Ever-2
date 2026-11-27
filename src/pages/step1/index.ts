@@ -32,8 +32,8 @@ const SINGE = 0.2
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
 const TIDY = 0.3
-// The live takeover: the seconds the hands travel to the bitten paper before they close on it, then the seconds over which the taut arms haul the arrow in to arm's length, and the most the held paper leans from upright, in radians, wherever the arrow stands. On the step the hands close the paper swings to the arrow and a little past (`swing`: how fast it dies and how fast it turns, a second), and the arrow is drawn long (`long`) for `jolt` seconds and thrown toward the paper at `kick` px a second. Until that step the sheet lies as the bite left it; from it the sheet takes its held look over `crease` seconds, and in the film, where nothing swings, it is turned to the arrow over `turn` seconds.
-const TAKE = { reach: 0.075, haul: 0.15, lean: 0.6, swing: { dies: 20, turns: 30 }, long: 1.2, jolt: 0.05, kick: 240, crease: 0.05, turn: 0.1 }
+// The live takeover: the seconds the hands travel to the bitten paper before they close on it, then the seconds over which the taut arms haul the arrow in to arm's length, and the most the held paper leans from upright, in radians, wherever the arrow stands. On the step the hands close the paper swings to the arrow and a little past (`swing`: how fast it dies and how fast it turns, a second), and the arrow is drawn long (`long`) for `jolt` seconds and thrown toward the paper at `kick` px a second. Until that step the live sheet lies as the bite left it, and from it the sheet takes its held look over `crease` seconds, in the film too, where the sheet is at the hands' place from the first frame and shows `bare` of that look until then.
+const TAKE = { reach: 0.075, haul: 0.15, lean: 0.6, swing: { dies: 20, turns: 30 }, long: 1.2, jolt: 0.05, kick: 240, crease: 0.05, bare: 0.001 }
 // The way in on the taut arms, live: the arrow comes in from where it stood when the hands closed to where the arms' pull and the hand's meet, over `TAKE.haul` seconds, at `first` times the even pace on the first step down to `last` times on the last. Each step the page gives it the pace it is short of and `near` a second of the distance it is behind; a slack under `least` px is left to the spring.
 const WAY = { first: 1.6, last: 0.4, near: 120, least: 8 }
 // The stop at arm's length, live: what is left of the pace is taken out on one step and the arrow thrown `back` px a second the other way; for `still` seconds the page takes `grip` of the arrow's pace out of it each step, less and less, so it stands before the hand has it on the arms again; its length is pressed from `from` to `low` over `dip` seconds and the body's spring takes it up again.
@@ -49,11 +49,11 @@ const SWING_PEAK = 1 - Math.exp((-SWING_AT * TAKE.swing.dies) / TAKE.swing.turns
 const LOSS = { pull: 0.22, back: 20, gain: 0.12, skid: 0.36, long: 1.28, kick: 0.07, feed: 0.16, sink: 26 }
 // The slot's answer to a contact: its seconds, and how far the cassette and the panel round it are thrown, in page pixels, at the bite, at the lost grip and where the arrow meets the slot.
 const JOLT = { seconds: 0.24, bite: 12, lost: 16, meet: 24, panel: 0.75 }
-// The live give-back: how short the whole arrow is pressed as it drops its pose, for how long, and the seconds over which the page lets it back to its length; the seconds from there to the release (`settle`), of which the last `hold` it stands still at its plain tilt; and the seconds over which the arrow is then eased to the mouse.
-const GIVE = { settle: 0.42, hold: 0.2, low: 0.78, press: 0.06, rise: 0.2, back: 0.44 }
+// The live give-back: how short the whole arrow is pressed as it drops its pose, for how long, and the seconds over which the page lets it back to its length; the seconds from there to the release (`settle`), of which the last `hold` it stands still at its plain tilt; and the seconds over which the arrow is then eased to the mouse. From the step it is handed back the arrow is drawn up to `wake` of its length over `woke` seconds and let go.
+const GIVE = { settle: 0.42, hold: 0.2, low: 0.78, press: 0.06, rise: 0.2, back: 0.44, wake: 1.12, woke: 0.034 }
 // The give back on the live site. The mended arrow lies with its tip `under` px beneath the hood's lip and is drawn out to `long` over `strain` seconds before the page lets go.
 // Then the cassette kicks by `kick`, the arrow is thrown back to where the pile lay inside `fall` seconds, short by `low` for `press` seconds and at its length again by `rise`, swinging `swing` radians at `hz` over `ring` seconds, and `beat` seconds after the kick, having stood, it is the visitor's again, eased over `GIVE.back`.
-const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.034, rise: 0.084, fall: 0.067, swing: 0.3, hz: 12, ring: 0.084, beat: 0.4 }
+const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.034, rise: 0.084, fall: 0.067, swing: 0.3, hz: 12, ring: 0.084, beat: 0.28 }
 // The slot closes after the tug: the hood folds and the cassette starts down at `seconds` for the whole travel, as far as `down` of it, where the cassette is still half up in its well; from there the two panels snap shut over it in `snap` seconds, three frames, each frame further than the last, the cassette going down under them, and on the step they meet the slot is gone and the tray is thrown `kick` px and comes back.
 const SHUT = { seconds: 0.36, down: SNAP_FROM, snap: 0.05, kick: 4 }
 // The live loss, after the paper is in: the seconds the empty hands are shed while the arrow is thrown back from the mouth, and how far, in page pixels.
@@ -563,7 +563,7 @@ export function makePage(): PageLogic {
   const joltNow = (): number => (s.jolt < JOLT.seconds ? s.joltAmp * (1 - s.jolt / JOLT.seconds) ** 2 : 0)
   const holding = (): boolean => s.phase === 'tug' && (s.lost < 0 || (s.mode !== 'film' && s.lost < LOSS.skid + LOSS.feed))
 
-  const reaching = (): boolean => s.phase === 'tug' && s.tug.t < TAKE.reach
+  const reaching = (): boolean => s.mode !== 'film' && s.phase === 'tug' && s.tug.t < TAKE.reach
 
   const grip = (io: StepIo): void => {
     const t = s.tug
@@ -585,13 +585,13 @@ export function makePage(): PageLogic {
     const oy = t.gy
     grip(io)
     const since = t.t - TAKE.reach
-    const closed = since >= 0
-    t.held = closed ? Math.min(1, t.held + io.dt / TAKE.crease) : 0
+    const closed = film || since >= 0
+    t.held = since >= 0 ? Math.min(1, t.held + io.dt / TAKE.crease) : 0
     const tx = t.gx - SLOT.cx
     const ty = t.gy - SLOT.cy
     const td = Math.hypot(tx, ty) || 1
-    const swung = !closed ? 0 : film ? smooth(since / TAKE.turn) : 1 - Math.exp(-since * TAKE.swing.dies) * Math.cos(since * TAKE.swing.turns)
-    if (!film || swung < 1) {
+    if (!film) {
+      const swung = closed ? 1 - Math.exp(-since * TAKE.swing.dies) * Math.cos(since * TAKE.swing.turns) : 0
       const lean = clamp(Math.atan2(tx, -ty), -TAKE.lean / SWING_PEAK, TAKE.lean / SWING_PEAK) * swung
       const far = lerp(PAPER.h, td, clamp(swung, 0, 1))
       t.gx = SLOT.cx + Math.sin(lean) * far
@@ -812,8 +812,10 @@ export function makePage(): PageLogic {
       if (!fell) io.cursor.place(PILE.x, lerp(PILE.y, HOOD.y - CAUGHT.under, Math.pow(1 - Math.min(1, s.give / CAUGHT.fall), 3)))
       if (s.give > CAUGHT.press && s.give < CAUGHT.rise) io.cursor.press(lerp(CAUGHT.low, 1, smooth((s.give - CAUGHT.press) / (CAUGHT.rise - CAUGHT.press))), io.dt)
       if (s.give >= CAUGHT.beat) {
-        s.give = -1
-        io.cursor.release(GIVE.back)
+        const woke = s.give - CAUGHT.beat
+        if (woke < io.dt) io.cursor.release(GIVE.back)
+        io.cursor.press(lerp(1, GIVE.wake, Math.min(1, (woke + io.dt) / GIVE.woke)), io.dt)
+        if (woke + io.dt >= GIVE.woke) s.give = -1
       }
     }
     if (s.pressed < 0) {
@@ -882,7 +884,7 @@ export function makePage(): PageLogic {
     const reach = armed ? TUG.hands : 0
     const hx = armed ? t.hx : t.gx
     const hy = armed ? t.hy : t.gy
-    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx - uy * reach, hy + ux * reach, hx + uy * reach, hy - ux * reach, t.vx, t.vy, armed ? t.held : 0]
+    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx - uy * reach, hy + ux * reach, hx + uy * reach, hy - ux * reach, t.vx, t.vy, armed ? (s.mode === 'film' ? Math.max(TAKE.bare, t.held) : t.held) : 0]
     out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', moved: true, v })
     const rest = Math.max(10, PAPER.h * (1 - t.amount))
     const scale = whole / rest
