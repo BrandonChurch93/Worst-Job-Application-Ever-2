@@ -1,6 +1,6 @@
 import type { Reaction } from '../../cursor/body'
 import { FALLEN } from '../../boss/plan'
-import { BIG, FINISH, LINE7 } from '../../boss/tune'
+import { BIG, FINISH, LINE7, SHOUT } from '../../boss/tune'
 import type { Pointer } from '../../stage/types'
 import type { Step4Layout } from './layout'
 
@@ -25,14 +25,16 @@ const FORMED = 9
 export const HOLD = LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.part2 - BIG.lock
 const SHIFT = HOLD
 const TWO = FORMED + LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap
-export const FIGHT = 18.3
+export const FIGHT = 13.69
+// The last charge, in seconds of the fight's own table: when it leaves the right for the shield's face, and when it leaves that for the high side.
+const LAST = [20.4, 21.55] as const
 export const DOWN = Number((FORMED + HOLD + FIGHT).toFixed(3))
-const ARMED = DOWN + FINISH.fall + FINISH.arms
-const FIRE = ARMED + FINISH.film
-const GONE = FIRE + FINISH.fire
+const ARMED = DOWN + FINISH.fall + SHOUT.beats[0]
+const FIRE = DOWN + FINISH.fall + SHOUT.fire
+const GONE = DOWN + FINISH.fall + SHOUT.gone
 const SETTLED = GONE + FINISH.settle
 const late = (t: number): number => Number((t + SHIFT).toFixed(3))
-export const ACT = { flinch: 1.95, windup: 3.36, tap: 3.72, take: 4.62, hide: 7.1, cower: 7.6, brace: late(10.55), snap: late(11.5), charge: late(23.65), ram: late(27.15), gather: Number((SETTLED + 0.3).toFixed(3)), press: Number((SETTLED + 0.78).toFixed(3)) } as const
+export const ACT = { flinch: 1.95, windup: 3.36, tap: 3.72, take: 4.62, hide: 7.1, cower: 7.6, brace: late(10.55), snap: late(11.5), charge: late(LAST[0]), ram: late(FIGHT + FORMED - 0.15), gather: Number((SETTLED + 0.3).toFixed(3)), press: Number((SETTLED + 0.78).toFixed(3)) } as const
 export const UNIT_SECONDS = Number((ACT.press + 2.12).toFixed(2))
 
 export const STAND = { x: 150, y: 96, near: 190 } as const
@@ -61,10 +63,8 @@ export function makeScript(L: Step4Layout): FilmScript {
   const fight: Key[] = [
     [11.55, GLANCE.x, GLANCE.y], [11.75, 940, 236], [11.95, FLANK.x, FLANK.y, 'out'],
     [13.3, FLANK.x, FLANK.y], [13.44, 720, 236], [13.58, 440, 430], [13.72, OTHER.x, OTHER.y, 'out'],
-    [17.2, OTHER.x, OTHER.y], [17.36, 900, 950], [17.55, RIGHT.x, RIGHT.y, 'out'], [20.4, RIGHT.x, RIGHT.y], [20.56, 940, 236], [20.75, GLANCE.x, GLANCE.y, 'out'],
-    [23.65, GLANCE.x, GLANCE.y],
-    [23.82, 940, 236], [24.0, OVER.x, OVER.y, 'out'], [25.0, OVER.x, OVER.y], [25.14, 940, 236], [25.28, GLANCE.x, GLANCE.y, 'out'],
-    [26.2, GLANCE.x, GLANCE.y], [26.34, 940, 236], [26.48, OVER.x, OVER.y, 'out'], [27.75, OVER.x, OVER.y]
+    [17.2, OTHER.x, OTHER.y], [17.36, 900, 950], [17.55, RIGHT.x, RIGHT.y, 'out'], [LAST[0], RIGHT.x, RIGHT.y], [LAST[0] + 0.16, 940, 236], [LAST[0] + 0.35, GLANCE.x, GLANCE.y, 'out'],
+    [LAST[1], GLANCE.x, GLANCE.y], [LAST[1] + 0.14, 940, 236], [LAST[1] + 0.28, OVER.x, OVER.y, 'out'], [FIGHT + FORMED, OVER.x, OVER.y]
   ]
   const path: Key[] = [
     [0, 960, 560], [0.5, 960, 560],
@@ -75,7 +75,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     [GONE + 0.2, OVER.x, OVER.y], [SETTLED, FALLEN.x - 150, FALLEN.y + 74], [ACT.gather, FALLEN.x - 150, FALLEN.y + 74], [ACT.press - 0.12, FALLEN.x - PRESS_AT.x, FALLEN.y - PRESS_AT.y, 'in'], [UNIT_SECONDS, FALLEN.x - PRESS_AT.x, FALLEN.y - PRESS_AT.y]
   ]
   const clicks: number[] = [tickAt]
-  const holds: [number, number][] = [[ARMED + 0.03, FIRE]]
+  const holds: [number, number][] = [[ARMED, FIRE]]
   const burst = (from: number, to: number, every: number): void => {
     for (let t = from; t < to - 1e-6; t += every) clicks.push(Number(t.toFixed(3)))
   }
@@ -83,11 +83,9 @@ export function makeScript(L: Step4Layout): FilmScript {
   burst(late(12.05), late(13.28), 0.17)
   burst(late(13.8), late(14.9), 0.17)
   burst(late(16.0), late(16.5), 0.17)
-  burst(late(17.6), late(20.35), 0.17)
-  burst(late(20.8), late(22.4), 0.17)
-  burst(late(24.05), late(24.95), 0.17)
-  burst(late(25.32), late(26.15), 0.15)
-  burst(late(26.5), late(27.3), 0.1)
+  burst(late(17.6), late(LAST[0] - 0.05), 0.17)
+  burst(late(LAST[0] + 0.4), late(LAST[1] - 0.05), 0.15)
+  burst(late(LAST[1] + 0.3), late(FIGHT + FORMED), 0.1)
   clicks.push(ACT.press)
   const pointer = (time: number): Pointer => {
     let x = path[0]![1]

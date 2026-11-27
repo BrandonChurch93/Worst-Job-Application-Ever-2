@@ -3,7 +3,7 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, restRig
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower } from '../../boss/finish'
-import { BIG, CHANGE, FINISH, FLAT, GUARD, LINE7, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BIG, CHANGE, FINISH, FLAT, GUARD, LINE7, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
@@ -54,7 +54,6 @@ interface State {
   py: number
   gold: number
   charge: number
-  auto: boolean
   fired: number
   shot: number
   blown: boolean
@@ -96,7 +95,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, auto: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -120,18 +119,20 @@ export function makePage(): PageLogic {
     return { x, w: L.track.w + (BAR.right - (L.track.x + BAR.x - labelBox[0]!) - L.track.w) * gone() }
   }
 
-  const gone2 = (): number => (s.blown ? 1 : s.stage === 'finish' && s.fired >= 0 ? Math.min(1, s.fired / FINISH.fire) : 0)
+  const BLAST = SHOUT.gone - SHOUT.fire
+  const steps = (held: number): number => SHOUT.beats.filter((b) => b - SHOUT.beats[0]! <= held + 1e-6).length / SHOUT.beats.length
+  const gone2 = (): number => (s.blown ? 1 : s.stage === 'finish' && s.fired >= 0 ? Math.min(1, s.fired / BLAST) : 0)
   const power = (): number => (s.gold < 0 ? 0 : Math.min(1, s.gold / LINE7.glow))
   const arms = (): number => {
     if (s.stage !== 'finish') return 0
-    if (s.fired >= FINISH.fire) return 1 - prog(s.fired, FINISH.fire, FINISH.fire + FINISH.settle * 0.5)
-    return prog(s.t, FINISH.fall, FINISH.fall + FINISH.arms)
+    if (s.fired >= BLAST) return 1 - prog(s.fired, BLAST, BLAST + FINISH.settle * 0.5)
+    return prog(s.t, FINISH.fall + SHOUT.arms, FINISH.fall + SHOUT.arms + FINISH.arms)
   }
-  const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= 0 ? s.shot : Math.min(1, s.charge / FINISH.full))
+  const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= 0 ? s.shot : steps(s.charge))
   const strip = (rig: Rig, k: number): Rig => ({ ...rig, plate: { ...rig.plate, k: rig.plate.k * k }, sides: rig.sides.map((q) => ({ ...q, k: q.k * k })), legs: rig.legs.map((q) => ({ ...q, k: q.k * k })), cannons: rig.cannons.map((q) => ({ ...q, k: q.k * k })), shield: { ...rig.shield, k: rig.shield.k * k } })
   const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
   const NONE = { breaks: [], fallen: [] as string[] }
-  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= 0 && s.fired < FINISH.fire ? { power: s.shot, since: s.fired } : null }))
+  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= 0 && s.fired < BLAST ? { power: s.shot, since: s.fired } : null }))
   const inBox = (b: { x: number; y: number; w: number; h: number }, p: { x: number; y: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const fallenBox = { x: FALLEN.x - 150, y: FALLEN.y - 62, w: 300, h: 124 }
   const wake = (): number => (s.mode === 'film' ? WAKE_AFTER_TICK.film : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
@@ -405,37 +406,37 @@ export function makePage(): PageLogic {
         }
         if (f.over) toCollapse(io, rigNow()!, true)
       } else if (s.stage === 'finish') {
-        const armed = FINISH.fall + FINISH.arms
-        if (s.t >= FINISH.fall && s.t - dt < FINISH.fall) io.emit('finish-arms', io.cursor.x, io.cursor.y, false)
+        const u = s.t - FINISH.fall
+        if (u >= SHOUT.arms && u - dt < SHOUT.arms) io.emit('finish-arms', io.cursor.x, io.cursor.y, false)
         aimAt(io, FALLEN)
-        if (s.fired < 0 && s.t >= armed) {
+        if (s.fired < 0 && u >= SHOUT.arms) {
           const down = io.pointer.down
+          for (const b of SHOUT.beats) if (u >= b && u - dt < b) io.emit('finish-charge', io.cursor.x, io.cursor.y, false)
+          const fire = (): void => {
+            s.shot = Math.max(FINISH.small, s.charge < 0 ? 0 : steps(s.charge))
+            s.fired = 0
+            io.emit('finish-fire', io.cursor.x, io.cursor.y, false)
+            const d = Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) || 1
+            io.cursor.knock(((io.cursor.x - FALLEN.x) / d) * KICK.popup * s.shot, ((io.cursor.y - FALLEN.y) / d) * KICK.popup * s.shot)
+          }
           if (s.charge < 0) {
-            if (down || s.t >= armed + FINISH.idle) {
+            if (down) {
               s.charge = 0
-              s.auto = !down
-              io.emit('finish-charge', io.cursor.x, io.cursor.y, false)
               io.cursor.react('anticipate')
-            }
+            } else if (u >= SHOUT.fire) fire()
           } else {
             s.charge += dt
-            if (s.auto ? s.charge >= FINISH.full : !down || s.charge >= FINISH.charge) {
-              s.shot = Math.max(FINISH.small, Math.min(1, s.charge / FINISH.full))
-              s.fired = 0
-              io.emit('finish-fire', io.cursor.x, io.cursor.y, false)
-              const d = Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) || 1
-              io.cursor.knock(((io.cursor.x - FALLEN.x) / d) * KICK.popup * s.shot, ((io.cursor.y - FALLEN.y) / d) * KICK.popup * s.shot)
-            }
+            if (!down || u >= SHOUT.fire + FINISH.late) fire()
           }
         } else if (s.fired >= 0) {
           const was = s.fired
           s.fired += dt
-          if (s.fired >= FINISH.fire && was < FINISH.fire) {
+          if (s.fired >= BLAST && was < BLAST) {
             io.emit('boss-gone', FALLEN.x, FALLEN.y, false)
             io.cursor.act('exhausted')
             io.cursor.aim(null)
           }
-          if (s.fired >= FINISH.fire + FINISH.settle) {
+          if (s.fired >= BLAST + FINISH.settle) {
             io.emit('button-down', FALLEN.x, FALLEN.y, false)
             s.blown = true
             s.stage = 'press'
@@ -575,7 +576,7 @@ export function makePage(): PageLogic {
       }
       const lit = LINE7.part2 - LINE7.power
       if (s.gold >= 0 && s.gold < lit + GOLD_OUT && (s.stage === 'hold' || s.stage === 'fight')) drawPower(out, s.cx, s.cy, power() * (1 - prog(s.gold, lit, lit + GOLD_OUT)))
-      if (s.stage === 'finish') drawFinish(out, { x: s.cx, y: s.cy }, FALLEN, arms(), charged(), s.fired >= 0 && s.fired < FINISH.fire ? { power: s.shot, u: s.fired / FINISH.fire } : null)
+      if (s.stage === 'finish') drawFinish(out, { x: s.cx, y: s.cy }, FALLEN, arms(), charged(), s.fired >= 0 && s.fired < BLAST ? { power: s.shot, u: s.fired / BLAST } : null)
       if (s.stage === 'collapse' && s.from) {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)
         if (sparks.length) drawWeapons(out, { ...newFight(), sparks }, L.weapons)
@@ -594,7 +595,7 @@ export function makePage(): PageLogic {
       if (s.stage === 'verify') return { x: SOCKET.x, y: SOCKET.y, down: blink }
       if (s.stage === 'unfold') return { x: SPOTS[0]![0], y: SPOTS[0]![1], down: false }
       if (s.stage === 'hold') return { x: SPOTS[0]![0], y: SPOTS[0]![1], down: s.turned < 0 && blink }
-      if (s.stage === 'finish') return { x: SPOTS[0]![0], y: SPOTS[0]![1], down: s.t >= FINISH.fall + FINISH.arms && s.fired < 0 && blink }
+      if (s.stage === 'finish') return { x: SPOTS[0]![0], y: SPOTS[0]![1], down: s.t >= FINISH.fall + SHOUT.arms && s.fired < 0 && blink }
       if (s.stage === 'fight' && s.fight) {
         const f = s.fight
         const near = (list: [number, number][]): [number, number] | null => {

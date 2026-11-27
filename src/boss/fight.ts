@@ -122,10 +122,10 @@ export const cornerAt = (i: number): { x: number; y: number } => ({ x: CORNER.at
 export const weakSide = (f: { x: number; y: number; face: number }): { x: number; y: number } => ({ x: f.x - Math.cos(f.face) * SHAPE.rx * 0.8, y: f.y - Math.sin(f.face) * SHAPE.ry * 0.8 })
 const touches = (f: Fight, x: number, y: number): boolean => ((x - f.x) / (SHAPE.rx + MOVE.touch)) ** 2 + ((y - f.y) / (SHAPE.ry + MOVE.touch)) ** 2 <= 1
 
-const floor = (f: Fight): number => {
+const floor = (f: Fight, film: boolean): number => {
   const from = START[f.phase]!
   const clock = f.phase === 2 ? f.expired - 0.8 : f.phaseClock
-  return from - ((from - THRESHOLD[f.phase]!) * Math.max(0, clock)) / FLOOR[f.phase]!
+  return from - ((from - THRESHOLD[f.phase]!) * Math.max(0, clock)) / (FLOOR[f.phase]! * (film ? FILM.floor[f.phase]! : 1))
 }
 
 const inside = (r: Rect, x: number, y: number, grow = 0): boolean => x >= r.x - grow && x <= r.x + r.w + grow && y >= r.y - grow && y <= r.y + r.h + grow
@@ -604,7 +604,7 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean, walls: Wall[])
       const open = !(f.phase === 2 && f.expired < 0.8)
       const real = REAL_DART[f.phase]! * wear(f.clock) * (io.mode === 'film' ? FILM.dart[f.phase]! : 1)
       const worth = glass ? Math.max(GUARD.chip, real * mercy(f.clock)) : real
-      if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - worth)
+      if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f, io.mode === 'film')), f.health - worth)
       spark(f, d.x, d.y, glass ? SHIELD.z : 0, glass ? 'glance' : 'round')
       if (glass) {
         f.glances++

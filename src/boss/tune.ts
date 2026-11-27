@@ -158,16 +158,20 @@ export const LINE7 = {
 } as const
 
 // The finishing blast (mail of 22:45, item 3). Plain stand-ins; the look is the Builder's picture round.
+// The finishing blast runs on the marks of the shout, one table that is swapped when the take is picked. These are the stand-in's.
+export const SHOUT = {
+  arms: 0, // s after the fall at which the arrow's arms come out (`finish-arms`)
+  beats: [0.1, 1.04, 2.09, 2.9], // s at which each charge word or syllable starts; the glow steps up on each (`finish-charge` on each)
+  fire: 4.13, // s at which the last word starts: the blast is let go there (`finish-fire`)
+  gone: 6.26 // s at which the last word ends: the blast has held that long and the body is gone (`boss-gone`)
+} as const
+
 export const FINISH = {
-  fall: 1, // s the beaten boss takes to fall (`boss-fall`)
-  arms: 0.6, // s the arrow's arms take to come out (`finish-arms`)
-  full: 1.2, // s of holding the button for a full charge (`finish-charge`)
-  charge: 2, // s at most that a charge is held before it fires by itself
-  idle: 6, // s with no press after the arms are out before it charges and fires by itself
-  small: 0.25, // share of a full blast that a plain click fires
-  fire: 2, // s the blast lasts (`finish-fire`); the body is gone at its end (`boss-gone`)
-  settle: 1.4, // s the button takes to settle on the ground after that (`button-down`)
-  film: 1.2, // s the film holds the charge
+  fall: 1, // s the beaten boss takes to fall (`boss-fall`); the marks of the shout count from its end
+  arms: 0.6, // s the arrow's arms take to come out
+  late: 0.8, // s past the fire mark that a held button is waited for before the blast goes by itself
+  small: 0.25, // share of a full blast that a plain click, or nobody, fires
+  settle: 1.4, // s the button takes to settle on the ground after the body is gone (`button-down`)
   wide: 90, // px to each side of the full blast's line as drawn
   ball: 120 // px across of the full charge as drawn
 } as const
@@ -178,8 +182,8 @@ export const IDLE = {
   ramp: 5 // s in which a phase then runs out
 } as const
 
-// In the film a dart that reaches the body does this many times as much, by phase: the film gives the whole fight 18 s, half of what a keen visitor needs.
-export const FILM = { dart: [2.8, 2.8, 2.645] as const } as const
+// The film's fight is shorter than any visitor's: a dart that reaches the body does `dart` times as much, by phase, and a phase may end in `floor` of its least length.
+export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const } as const
 
 // The right edge of the pop-ups, which stand left of the boss's fence.
 export const POPUP_RIGHT = 1040
