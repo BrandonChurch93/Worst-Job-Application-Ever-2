@@ -1,0 +1,35 @@
+diff --git a/config/showcase.json b/config/showcase.json
+index 067ca527..bf97064d 100644
+--- a/config/showcase.json
++++ b/config/showcase.json
+@@ -51,11 +51,11 @@
+     "unitTuneFraction": 0.2,
+     "beatToleranceSeconds": 0.25,
+     "maxSeconds": 165,
+-    "plannedSeconds": { "marketing": 14, "step1": 32, "step2": 21, "pinball": 42, "boss": 32, "decision": 12 },
++    "plannedSeconds": { "marketing": 14, "step1": 32, "step2": 24.85, "pinball": 42, "boss": 32, "decision": 12 },
+     "units": [
+       { "id": "marketing", "seconds": 14 },
+       { "id": "step1", "seconds": 32 },
+-      { "id": "step2", "seconds": 21 },
++      { "id": "step2", "seconds": 24.85 },
+       { "id": "pinball", "seconds": 42 },
+       { "id": "boss", "seconds": 32 },
+       { "id": "decision", "seconds": 12 }
+@@ -72,11 +72,11 @@
+       { "id": "step1.resume", "unit": "step1", "from": 20, "to": 22, "event": "paper-slide" },
+       { "id": "step1.tug", "unit": "step1", "from": 22, "to": 28.25, "event": "arms-out" },
+       { "id": "step1.shredded", "unit": "step1", "from": 28.25, "to": 32, "event": "strips-zip" },
+-      { "id": "step2.open", "unit": "step2", "from": 0, "to": 2, "event": null },
+-      { "id": "step2.dial", "unit": "step2", "from": 2, "to": 8, "event": "dial-fling" },
+-      { "id": "step2.slot", "unit": "step2", "from": 8, "to": 14, "event": "coins" },
+-      { "id": "step2.crank", "unit": "step2", "from": 14, "to": 20, "event": "flatten" },
+-      { "id": "step2.continue", "unit": "step2", "from": 20, "to": 21, "event": "button-press" },
++      { "id": "step2.open", "unit": "step2", "from": 0, "to": 1.9, "event": null },
++      { "id": "step2.dial", "unit": "step2", "from": 1.9, "to": 7.8, "event": "dial-fling" },
++      { "id": "step2.slot", "unit": "step2", "from": 7.8, "to": 14.4, "event": "coins" },
++      { "id": "step2.crank", "unit": "step2", "from": 14.4, "to": 22.8, "event": "flatten" },
++      { "id": "step2.continue", "unit": "step2", "from": 22.8, "to": 24.85, "event": "button-press" },
+       { "id": "pinball.seal", "unit": "pinball", "from": 0, "to": 4, "event": "ball-seal" },
+       { "id": "pinball.reveal", "unit": "pinball", "from": 4, "to": 7.6, "event": "power-on" },
+       { "id": "pinball.launch", "unit": "pinball", "from": 7.6, "to": 11, "event": "plunger" },
