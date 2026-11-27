@@ -1,0 +1,14 @@
+{
+  "about": "Narrator lines Brandon has not approved. They are stand-ins for timing and captions only and are never recorded. Same shape as content/narration.json. A line leaves this file for that one when Partner brings his words for it.",
+  "status": "Line 9 is a draft from change note 003, third update (November 27, 2026). His words: 'Maybe we have one more line that's like onto the next application and then it kinda just restarts the application seamlessly if you wanna go through it again'.",
+  "pauseMark": "/",
+  "film": {
+    "decision.reset": [
+      {
+        "at": 0,
+        "text": "On to / the next application.",
+        "live": "after the line on the stamp, as the page turns back to the start"
+      }
+    ]
+  }
+}
