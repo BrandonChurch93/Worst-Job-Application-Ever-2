@@ -175,13 +175,16 @@ describe('polish, every turn of the film from its seat on', () => {
   it('holds every value of the stage equal to before on every step from the seat on, the angle through the leaving half apart, and nothing else differs before the seat', () => {
     const tail = Math.round((shiverSeconds + 0.5) * stepHz)
     let differ = 0
+    const changed: number[][] = []
     for (const start of starts) {
+      const frames: number[] = []
       now.goto(start - 4)
       then.goto(start - 4)
       for (let k = -4; k <= 2 * HALF_STEPS + tail; k++) {
         const a = now.frameAt((start + k) / stepHz)
         const b = then.frameAt((start + k) / stepHz)
         expect(rest(a), `step ${k} of the turn at ${start / stepHz} s`).toBe(rest(b))
+        if (k % (stepHz / 60) === 0 && a.turn !== b.turn) frames.push((start + k) / (stepHz / 60))
         if (k <= 0) expect(a.turn).toBe(0)
         else if (k < HALF_STEPS) {
           expect(a.turn).toBe(leaveTurn(k / HALF_STEPS))
@@ -198,7 +201,16 @@ describe('polish, every turn of the film from its seat on', () => {
         if (k === HALF_STEPS + SEAT_STEPS - 1) expect(a.turn).toBeLessThan(0)
         if (k === HALF_STEPS - 1) expect(a.page).not.toBe(now.frameAt((start + HALF_STEPS) / stepHz).page)
       }
+      changed.push([frames[0]!, frames[frames.length - 1]!, frames.length])
     }
+    // The frames of the film, of 60 a second, whose angle is not the one of before: 29 at each turn, from the frame after the turn's first step to the last of the leaving half. The seats are frames 858, 2778, 4038, 6558 and 8478.
+    expect(changed).toEqual([
+      [811, 839, 29],
+      [2731, 2759, 29],
+      [3991, 4019, 29],
+      [6511, 6539, 29],
+      [8431, 8459, 29]
+    ])
     expect(differ).toBeGreaterThan(5 * (HALF_STEPS - 10))
   }, 240000)
 })
