@@ -131,6 +131,8 @@ for (const name of visitors) for (const seed of seeds) {
   let slideFrom = -1
   let off = 0
   let offMost = 0
+  let dead = 0
+  let deadMost = 0
   let onTable = false
   let end = -1
   let skipped = false
@@ -176,8 +178,10 @@ for (const name of visitors) for (const seed of seeds) {
     if (onTable && end < 0) {
       off = b.mode === 'plane' ? 0 : off + 1
       offMost = Math.max(offMost, off)
+      dead = b.mode === 'plane' && !mc.cut ? 0 : dead + 1
+      deadMost = Math.max(deadMost, dead)
     }
-    if (mc.cut && !wasCut) cuts.push({ from: page, met: mc.since('met') })
+    if (mc.cut && !wasCut) cuts.push({ from: page, met: mc.since('met'), mode: b.mode })
     if (!mc.cut && wasCut) cuts[cuts.length - 1].seconds = page - cuts[cuts.length - 1].from
     wasCut = !!mc.cut
     if (has('rows')) rows.push({ page, scene, mode: b.mode, tier: b.tier, x: b.x, v: b.y - TIER_Y[b.tier], vx: b.vx, vy: b.vy, what: b.mode === 'tow' ? `tow>${b.then}` : b.mode === 'hold' ? `hold ${b.hold}` : b.mode === 'rail' ? `rail ${b.rail}` : '', ev: mc.events.filter((e) => e.name !== 'flipper').map((e) => `${e.name}:${e.id}`).join(' '), mag: mc.magnet ? mc.magnet.map((n) => n.toFixed(1)).join(',') : '', L: stage.page && mc.held[0], R: mc.held[1], slid, cut: mc.cut })
@@ -187,10 +191,10 @@ for (const name of visitors) for (const seed of seeds) {
   const old = towRows.filter((t) => t.old)
   const slidSum = slides.reduce((m, x) => m + x.seconds, 0)
   const gags = config.film.beats.filter((x) => x.unit === 'pinball').every((x) => stage.gagsReached.includes(x.id))
-  lines.push(`${name.padEnd(8)} seed ${seed}  old tows ${old.length}  slides ${slides.length} (sum ${f2(slidSum)} s, longest ${f2(slides.reduce((m, x) => Math.max(m, x.seconds), 0))} s)  cuts ${cuts.length} (longest ${f2(cuts.reduce((m, x) => Math.max(m, x.seconds ?? 0), 0))} s, sum ${f2(cuts.reduce((m, x) => m + (x.seconds ?? 0), 0))} s)  devices ${WANT.filter((w) => got.has(w)).length} of ${WANT.length}${WANT.every((w) => got.has(w)) ? '' : ` MISSED ${WANT.filter((w) => !got.has(w)).join(',')}`}  ball off the floor at most ${f2(offMost / 240)} s  scene end ${end < 0 ? 'NEVER' : f2(end)} s  page end ${stage.entryIndex === 0 ? 'NEVER' : f2(stage.time)} s  beats ${gags ? 'all' : 'MISSED'}${skipped ? '  skipped' : ''}`)
+  lines.push(`${name.padEnd(8)} seed ${seed}  old tows ${old.length}  slides ${slides.length} (sum ${f2(slidSum)} s, longest ${f2(slides.reduce((m, x) => Math.max(m, x.seconds), 0))} s)  cuts ${cuts.length} (longest ${f2(cuts.reduce((m, x) => Math.max(m, x.seconds ?? 0), 0))} s, sum ${f2(cuts.reduce((m, x) => m + (x.seconds ?? 0), 0))} s)  devices ${WANT.filter((w) => got.has(w)).length} of ${WANT.length}${WANT.every((w) => got.has(w)) ? '' : ` MISSED ${WANT.filter((w) => !got.has(w)).join(',')}`}  ball off the floor at most ${f2(offMost / 240)} s  a press does nothing for at most ${f2(deadMost / 240)} s  scene end ${end < 0 ? 'NEVER' : f2(end)} s  page end ${stage.entryIndex === 0 ? 'NEVER' : f2(stage.time)} s  beats ${gags ? 'all' : 'MISSED'}${skipped ? '  skipped' : ''}`)
   for (const t of towRows) lines.push(`    ${t.old ? 'TOW' : 'tow'} page ${f2(t.page)} s scene ${f2(t.scene)} s  tier ${t.tier} (${f1(t.from[0])}, ${f1(t.from[1] - TIER_Y[t.tier])}) > (${f1(t.to[0])}, ${f1(t.to[1] - TIER_Y[t.tier])}) ${f1(t.near)} balls at ${t.speed}/s to ${t.then}, ball had ${f1(t.v)}/s, through: ${t.hit.length ? t.hit.join(', ') : 'nothing'}${t.mouth ? ' (from the gate\'s mouth)' : ''}`)
   for (const x of slides) lines.push(`    slide page ${f2(x.from)} s  ${x.which} deadline waited ${f2(x.seconds)} s`)
-  for (const c of cuts) lines.push(`    cut page ${f2(c.from)} s  the bats' power was cut for ${f2(c.seconds ?? 0)} s, ${c.met >= 9 ? 'no stroke had met the ball' : `${f2(c.met)} s after a stroke met the ball`}`)
+  for (const c of cuts) lines.push(`    cut page ${f2(c.from)} s  the bats' power was cut for ${f2(c.seconds ?? 0)} s, from ${c.mode === 'tow' ? 'the gate\'s mouth' : 'the floor'}, ${c.met >= 9 ? 'no stroke had met the ball' : `${f2(c.met)} s after a stroke met the ball`}`)
   for (const f of facts) lines.push(`      ${f}`)
   if (has('rows')) {
     const at = Number(arg('at', 0))

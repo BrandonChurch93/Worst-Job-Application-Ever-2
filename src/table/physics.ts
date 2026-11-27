@@ -20,7 +20,7 @@ export interface BallState {
 export interface TableEvent { name: string; ball: number; id: string; x: number; y: number }
 export interface MachineState {
   snap: string; balls: BallState[]; flip: [number, number]; held: [boolean, boolean]; down: boolean[]; bank: number[]; cool: number[]; gate: boolean[]; on: Record<string, boolean>
-  mom: boolean; carpet?: boolean; live?: boolean; bounce?: [number, number]; mark?: [number, number, number, number] | null; slid?: number; cut?: boolean; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
+  mom: boolean; carpet?: boolean; live?: boolean; bounce?: [number, number]; mark?: [number, number, number, number] | null; slid?: number; cut?: boolean; own?: [number, number]; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
 }
 
 const DEG = 0.017453292519943295
@@ -29,7 +29,7 @@ const HZ = config.sim.stepHz
 const DT = 1 / HZ
 const MAX_SPEED = 30
 // Live play, set by the page each step and off in the film: the steps of a bat's stroke up and of its fall, the height and the steps of its bounce at rest, and the speed limit of a visitor's ball.
-const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36 }
+const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36, own: 12 }
 // Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
 const MET = 3
 const LIFT_SHUT = 0.4
@@ -89,6 +89,7 @@ export class Machine {
   mark: [number, number, number, number] | null = null
   slid = 0
   cut = false
+  own: [number, number] = [0, 0]
   aim: [number, number, number] | null = null
   shot: [number, number, number] | null = null
   armed: [boolean, boolean] = [false, false]
@@ -148,6 +149,7 @@ export class Machine {
     this.mark = null
     this.slid = 0
     this.cut = false
+    this.own = [0, 0]
     this.saves = 0
     this.magnet = null
     this.aim = null
@@ -171,7 +173,7 @@ export class Machine {
   save(): MachineState {
     return {
       snap: toBase64(this.world.takeSnapshot()), balls: this.balls.map((b) => ({ ...b })), flip: [...this.flip], held: [...this.held], down: [...this.down], bank: [...this.bank], cool: [...this.cool], gate: [...this.gate],
-      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null, slid: this.slid, cut: this.cut } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
+      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null, slid: this.slid, cut: this.cut, own: [...this.own] as [number, number] } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
     }
   }
 
@@ -194,6 +196,7 @@ export class Machine {
     this.mark = s.mark ? [...s.mark] : null
     this.slid = s.slid ?? 0
     this.cut = s.cut === true
+    this.own = s.own ? [...s.own] : [0, 0]
     this.saves = s.saves
     this.magnet = s.magnet ? [...s.magnet] : null
     this.aim = s.aim ? [...s.aim] : null
@@ -374,6 +377,7 @@ export class Machine {
         this.aim = keep
         if (to) this.kick(0, to[0], to[1])
       }
+      if (this.live && i === 0) this.own[this.balls[i]!.vx > 0 ? 0 : 1] = LIVE.own
       this.say('ball-save', i, `${TIERS[k]}.gate`)
       return
     }
@@ -560,7 +564,12 @@ export class Machine {
     let done = -1
     let beside = false
     if (dead) this.dark()
+    const own = [this.live && this.own[0]! > 0, this.live && this.own[1]! > 0]
     for (let s = 0; s < 2; s++) {
+      if (own[s]) {
+        want[s] = true
+        this.own[s] = this.own[s]! - 1
+      }
       if (want[s] && !this.held[s]) {
         this.events.push({ name: 'flipper', ball: -1, id: s === 0 ? 'left' : 'right', x: s === 0 ? FLIP.pivotU : 20 - FLIP.pivotU, y: 0 })
         const o = this.over(s)
@@ -572,7 +581,7 @@ export class Machine {
       const was = this.flip[s]!
       this.flip[s] = to > was ? Math.min(to, was + d) : Math.max(to, was - d)
       if (this.live) this.rebound(s, want[s]!, was)
-      if (this.live && this.flip[s]! > was && this.near(s)) beside = true
+      if (this.live && !own[s] && this.flip[s]! > was && this.near(s)) beside = true
       if (!want[s]) this.armed[s] = false
       else if (this.armed[s] && was < 1 && this.flip[s] === 1) done = s
     }
