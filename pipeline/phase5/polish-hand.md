@@ -247,3 +247,5 @@ WIP commits were pushed with only `npx tsc --noEmit -p .` and `tests/polish-hand
 - `npx vitest run tests/polish-hand.test.ts`: 51 passed.
 - `npm test`: 160 files passed and 4 skipped, 1990 tests passed and 4 skipped, 223.95 s.
 - `npx tsc --noEmit -p .`: clean.
+- `npm run -s bots` (09:22 to 09:27, after the push of `99c731c7`, no file changed between): 20 runs finished, keen reached every one of the 37 gags on every seed, bots: all clear.
+- `npm run -s determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
