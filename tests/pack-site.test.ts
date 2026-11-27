@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { BANNED, briefFor, neutral, packPlan, rolesOf } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
 import { FLIP, MID, MOUTH } from '../src/table/layout'
-import { ANGRY_WORDS, BLOW, CLOSE, COL, DROP, FIELD_WORDS, FLIPS, FULL_WORDS, GATE, GIVES, HAND_WORDS, KEYS, KEY_WORDS, MOVES, MOVE_WORDS, PAGE_HAS, SAVE, SEAT, TAKEN, TURNS, gateWindow, holdsBox, seatWindows, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, handAt, handsOff, keyAt, keyBlock, keySeats, makeVisitor, momentsOf, motionPlan, saveWindow, siteLines, siteNotes, spreadSteps, struckWords, tierSheet, closeWindow, windowHolds } from '../tools/lib/pack-site.mjs'
+import { ANGRY_WORDS, BLOW, CLOSE, COL, DROP, HEAD_LINES, INSERT_WORDS, SAVE_PER, VIEW, FIELD_WORDS, FLIPS, FULL_WORDS, GATE, GIVES, HAND_WORDS, KEYS, KEY_WORDS, MOVES, MOVE_WORDS, PAGE_HAS, SAVE, SEAT, TAKEN, TURNS, gateWindow, holdsBox, seatWindows, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, handAt, handsOff, keyAt, keyBlock, keySeats, makeVisitor, momentsOf, motionPlan, saveWindow, siteLines, siteNotes, spreadSteps, struckWords, tierSheet, closeWindow, windowHolds } from '../tools/lib/pack-site.mjs'
 
 const root = path.resolve(__dirname, '..')
 const cfg = JSON.parse(fs.readFileSync(path.join(root, 'config/showcase.json'), 'utf8'))
@@ -13,7 +13,7 @@ const units: string[] = cfg.film.units.map((u: { id: string }) => u.id)
 const count: number = cfg.critics.contactSheetFrames
 const most: number = cfg.critics.maxFilesPerMessage
 
-type File = { name: string; kind: string; heading: string; unit?: string; judged?: boolean; control?: string; image?: string; still?: string; steps?: number[]; moment?: string; at?: number; page?: string; hands?: string[]; part?: number[] | null; run?: number[]; every?: number; px?: number; windows?: number[][]; percent?: number; columns?: number; tileW?: number; tileH?: number; lines?: number }
+type File = { name: string; kind: string; heading: string; unit?: string; judged?: boolean; control?: string; image?: string; still?: string; steps?: number[]; moment?: string; at?: number; windowsAt?: number[][][]; page?: string; hands?: string[]; part?: number[] | null; run?: number[]; every?: number; px?: number; windows?: number[][]; percent?: number; columns?: number; tileW?: number; tileH?: number; lines?: number }
 type Plan = { role: string; unit: string; sets: { set: string; critic: string; groups: string[]; files: File[] }[] }
 
 // A made-up visit: six pages of 300 steps with a turn of 20 steps between them, a pointer that walks, a bolt, a key of the page's keyboard, a tug and a table.
@@ -76,7 +76,9 @@ const facts = momentsOf(cfg, madeRun())
 const planOf = (role: string): Plan => packPlan(cfg, { role, round: 20, unit: SITE, facts }) as Plan
 const filesOf = (plan: Plan): File[] => plan.sets.flatMap((s) => s.files)
 // The moments drawn close: every step a frame, in windows of the page at its own size.
-const NEAR = ['seat', 'type', 'taken', 'given-back', 'drop', 'flip-close', 'save']
+const NEAR = ['seat', 'type', 'hit-close', 'taken', 'bite', 'given-back', 'drop', 'bend-1', 'bend-2', 'flip-close', 'save']
+// Whole frames of the screen at every step, 20 a sheet.
+const SCREENS = ['launch', 'view-down', 'view-up']
 // The lines a heading takes on its sheet, as the sheet lays it out (tools/lib/pack-build.mjs): 15 px type, 8 px at each side.
 const linesOf = (f: File) => wrap(f.heading, f.columns! * f.tileW! + 8 * (f.columns! - 1) - 16, 15).length
 const motion = (run: unknown) => motionPlan(cfg, run) as unknown as { items: File[]; groups: { id: string; items: File[] }[]; leftOut: string[]; limitTook: string[] }
@@ -96,7 +98,7 @@ describe('the packs of the unit site', () => {
           expect(neutral(f.name)).toBe(true)
           expect(BANNED.test(f.heading)).toBe(false)
           expect(SITE_KINDS).toContain(f.kind)
-          if (f.steps) expect(f.steps.length).toBeLessThanOrEqual(count)
+          if (f.steps) expect(f.steps.length).toBeLessThanOrEqual(SCREENS.includes(f.moment!) ? VIEW.per : count)
         })
       }
     }
@@ -145,28 +147,34 @@ describe('the packs of the unit site', () => {
     const files = filesOf(plan)
     // The pages: the walk, the turn on three sheets, the seat close on four, the hit. The arrow: the key, the take, the give back. The port: the seal, the ball leaving, its drop close.
     // The bats: the stroke on two sheets, the blow close on two, the save on three.
-    expect(plan.sets.map((s) => s.groups)).toEqual([['pages'], ['arrow'], ['port'], ['bats']])
-    expect(plan.sets[0]!.files.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'turn', 'seat', 'seat', 'seat', 'seat', 'hit'])
-    expect(plan.sets[1]!.files.map((f) => f.moment)).toEqual(['type', 'type', 'taken', 'taken', 'given-back', 'given-back'])
-    expect(plan.sets[2]!.files.map((f) => f.moment)).toEqual(['flippers', 'flippers', 'drop', 'drop', 'drop', 'drop'])
-    expect(plan.sets[3]!.files.map((f) => f.moment)).toEqual(['flip', 'flip', 'flip-close', 'flip-close', 'save', 'save', 'save'])
+    // Round 26: six groups (the pages, the shot, the paper, the port, the tube, the bats). In this made-up visit the shot's and the tube's sheets are few enough for one set.
+    expect(plan.sets.map((s) => s.groups)).toEqual([['pages'], ['shot', 'tube'], ['paper'], ['port'], ['bats']])
+    expect(plan.sets[0]!.files.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'turn', 'seat', 'seat', 'seat', 'seat', 'type', 'type'])
+    expect(plan.sets[1]!.files.map((f) => f.moment)).toEqual(['hit', 'given-back', 'given-back', 'film-bend-1', 'film-bend-1', 'film-bend-2', 'film-bend-2', 'film-bend-2', 'film-bend-2', 'view-up'])
+    expect(plan.sets[2]!.files.map((f) => f.moment)).toEqual(['taken', 'taken', 'bite', 'bite', 'film-paper', 'film-paper', 'film-paper', 'film-paper'])
+    expect(plan.sets[3]!.files.map((f) => f.moment)).toEqual(['flippers', 'flippers', 'drop', 'drop', 'drop', 'drop', 'bend-1', 'bend-1', 'bend-2', 'bend-2'])
+    expect(plan.sets[4]!.files.map((f) => f.moment)).toEqual(['save', 'save', 'save', 'save', 'save', 'save', 'flip', 'flip', 'flip-close', 'flip-close'])
     for (const s of plan.sets) expect(s.files.length).toBeLessThanOrEqual(most)
     expect(plan.sets[1]!.files[0]!.name).toBe('set-B-01.png')
-    for (const f of files) {
+    for (const f of files.filter((x) => x.kind !== 'site-film-sheet')) {
       const near = NEAR.includes(f.moment!)
       // A close sheet is drawn at every step (1/60 s) and holds as many frames as its tiles at 100% leave room for; every other sheet holds twelve, two steps apart. Each heading says its own.
-      const every = near ? 1 : 2
-      if (!near) expect(f.steps!.length).toBe(count)
+      const every = near || SCREENS.includes(f.moment!) ? 1 : 2
+      if (!near) expect(f.steps!.length).toBe(SCREENS.includes(f.moment!) ? VIEW.per : count)
       for (let i = 1; i < f.steps!.length; i++) expect(f.steps![i]! - f.steps![i - 1]!).toBe(every)
       expect(f.every).toBe(every)
       expect(f.heading.startsWith(`Consecutive frames, 1/${60 / every} s apart, `)).toBe(true)
       expect(f.px !== undefined).toBe(near)
       // The moment itself is the fourth picture of its run: three pictures lead up to it. The runs drawn at every step lead up to theirs with more frames.
       if (f.at !== undefined && every === 2) expect(f.steps![3]).toBe(f.at)
-      expect(f.kind).toBe(f.moment === 'walk' || f.moment === 'turn' ? 'site-run-sheet' : 'site-hit-sheet')
+      expect(f.kind).toBe(f.moment === 'walk' || f.moment === 'turn' || SCREENS.includes(f.moment!) ? 'site-run-sheet' : 'site-hit-sheet')
       // A heading and its sentences fit the room over its tiles: three lines over a sheet of twelve whole frames (headings of 445 characters were seen to fit them in round 24's sheets),
       // and the lines its layout keeps over a close sheet.
       if (near) expect(linesOf(f)).toBeLessThanOrEqual(f.lines!)
+      // Twenty whole frames of the screen in five rows of 194 px leave room for eleven lines of heading.
+      else if (SCREENS.includes(f.moment!)) expect(wrap(f.heading, cfg.critics.maxImageLongEdgePx - 16, 15).length).toBeLessThanOrEqual(11)
+      // The sheets of the seal and of the stroke keep more lines over their tiles (HEAD_LINES).
+      else if (HEAD_LINES[f.moment as 'flip']) expect(wrap(f.heading, cfg.critics.maxImageLongEdgePx - 16, 15).length).toBeLessThanOrEqual(HEAD_LINES[f.moment as 'flip'])
       else expect(f.heading.length).toBeLessThanOrEqual(450)
     }
     const walk = files[0]!.steps!
@@ -175,7 +183,7 @@ describe('the packs of the unit site', () => {
     // A plan that one message holds is one set. With no stroke the made-up ball never leaves the port, so its drop is not in the plan.
     const small = momentsOf(cfg, madeRun(BOLT, { stroke: false, save: false }))
     const all = motion(small).items
-    expect(all.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'turn', 'seat', 'seat', 'seat', 'seat', 'type', 'type', 'hit', 'taken', 'taken', 'given-back', 'given-back', 'flippers', 'flippers'])
+    expect(all.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'turn', 'seat', 'seat', 'seat', 'seat', 'type', 'type', 'hit', 'given-back', 'given-back', 'taken', 'taken', 'bite', 'bite', 'film-paper', 'film-paper', 'film-paper', 'film-paper', 'flippers', 'flippers'])
     const roomy = { ...cfg, critics: { ...cfg.critics, maxFilesPerMessage: all.length } }
     const least = packPlan(roomy, { role: 'R4', round: 20, unit: SITE, facts: small }) as Plan
     expect(least.sets.map((s) => s.groups)).toEqual([['moments']])
@@ -267,7 +275,7 @@ describe('the packs of the unit site', () => {
     for (const run of [madeRun(), madeRun(BOLT, { stroke: false }), madeRun(BOLT, { tap: true, clicks: true })]) {
       const plan = motion(momentsOf(cfg, run))
       const time = (i: number) => `${Math.floor(i / 60 / 60)}:${(i / 60 - Math.floor(i / 60 / 60) * 60).toFixed(2).padStart(5, '0')}`
-      for (const f of plan.items) {
+      for (const f of plan.items.filter((x) => x.kind !== 'site-film-sheet')) {
         const steps = f.steps!
         expect(f.heading).toContain(`: ${time(steps[0]!)} to ${time(steps[steps.length - 1]!)}`)
         // The stride it says is the stride of its steps, and the scale it says is the scale its tiles are drawn at.
@@ -276,7 +284,8 @@ describe('the packs of the unit site', () => {
         if (f.px) {
           expect(f.heading).toContain(f.percent === 100 ? FULL_WORDS : `at ${f.percent}% of the page's size, the largest at which the window holds them`)
           expect(f.heading.includes(FULL_WORDS)).toBe(f.percent === 100)
-          for (const w of f.windows!) expect(f.heading).toContain(`x ${w[0]} to ${w[0]! + w[2]!}, y ${w[1]} to ${w[1]! + w[3]!} of the page`)
+          // A window that goes with the page says its place across the page only.
+          for (const w of f.windows!) expect(f.heading).toContain(f.windowsAt ? `x ${w[0]} to ${w[0]! + w[2]!} of the page` : `x ${w[0]} to ${w[0]! + w[2]!}, y ${w[1]} to ${w[1]! + w[3]!} of the page`)
           // At 100% a window is its tile, pixel for pixel; scaled, it is the tile's shape.
           if (f.windows!.length === 1 && f.percent === 100) expect([f.windows![0]![2], f.windows![0]![3]]).toEqual([f.tileW, f.tileH])
           if (f.windows!.length === 1 && f.percent !== 100) expect(Math.floor((f.tileW! / f.windows![0]![2]!) * 100)).toBe(f.percent)
@@ -391,9 +400,9 @@ describe('the packs of the unit site', () => {
   it('R4: the hand under the frames of the flippers, the stroke and the save, and one sentence for it in the heading', () => {
     const files = filesOf(planOf('R4'))
     for (const f of files) {
-      const hand = ['flippers', 'drop', 'flip', 'flip-close', 'save'].includes(f.moment!)
+      const hand = ['flippers', 'drop', 'bend-1', 'bend-2', 'flip', 'flip-close', 'save'].includes(f.moment!)
       expect(f.heading.endsWith(HAND_WORDS)).toBe(hand)
-      expect(f.hands !== undefined).toBe(hand || ['turn', 'seat', 'type', 'taken', 'given-back'].includes(f.moment!))
+      expect(f.hands !== undefined).toBe(hand || ['turn', 'seat', 'type', 'taken', 'bite', 'given-back', ...SCREENS].includes(f.moment!))
       if (f.hands) expect(f.hands.length).toBe(f.steps!.length)
     }
     // The stroke: the visitor presses the right flipper at 3 * LONG + 120 and holds it for ten steps, to 3 * LONG + 129.
@@ -410,7 +419,7 @@ describe('the packs of the unit site', () => {
     for (const f of flip) expect(f.heading).toContain(`The pack's visitor presses ${FLIPS.reactSteps} steps after the page's cue and holds ${FLIPS.holdSteps} steps. `)
     // No other sheet carries the sentence or the letters.
     expect(files.filter((f) => f.hands && f.hands.some((h) => /\b[LR]\b/.test(h))).map((f) => f.moment)).toEqual(['flippers', 'drop', 'drop', 'flip', 'flip-close', 'flip-close'])
-    expect(files.filter((f) => f.heading.includes('L or R')).map((f) => f.moment)).toEqual(['flippers', 'flippers', 'drop', 'drop', 'drop', 'drop', 'flip', 'flip', 'flip-close', 'flip-close', 'save', 'save', 'save'])
+    expect(files.filter((f) => f.heading.includes('L or R')).map((f) => f.moment)).toEqual(['flippers', 'flippers', 'drop', 'drop', 'drop', 'drop', 'bend-1', 'bend-1', 'bend-2', 'bend-2', 'save', 'save', 'save', 'save', 'save', 'save', 'flip', 'flip', 'flip-close', 'flip-close'])
   })
 
   it('R4: a hand that taps between two frames is still under the frame that follows it', () => {
@@ -439,13 +448,15 @@ describe('the packs of the unit site', () => {
     const plan = motion(none)
     expect(plan.items.some((f) => f.moment === 'flip')).toBe(false)
     expect(plan.items.some((f) => /flipper meets the ball/.test(f.heading))).toBe(false)
-    expect(plan.leftOut.length).toBe(1)
-    expect(plan.leftOut[0]).toMatch(/^flip: the run holds no step/)
+    // Round 26: the made-up visit holds no launch either, and the plan says so in the same way.
+    expect(plan.leftOut.length).toBe(2)
+    expect(plan.leftOut[0]).toMatch(/^launch: the run holds no step/)
+    expect(plan.leftOut[1]).toMatch(/^flip: the run holds no step/)
     expect((siteNotes(cfg, 'R4', none) as { leftOut: string[] }).leftOut).toEqual(plan.leftOut)
     // The save of that run carries the hand's tap under its frames.
     const save = plan.items.filter((f) => f.moment === 'save')
-    expect(save.length).toBe(3)
-    expect(save[1]!.at).toBe(3 * LONG + 200)
+    expect(save.length).toBe(36 / SAVE_PER)
+    expect(save[2]!.at).toBe(3 * LONG + 200)
     expect(save.flatMap((f) => f.hands!).filter((h) => h === 'R').length).toBeGreaterThan(0)
   })
 
@@ -454,14 +465,14 @@ describe('the packs of the unit site', () => {
     // The made-up save: the ball is low between the bats from 3 * LONG + 190 and goes back up at 3 * LONG + 200.
     expect(facts.moments.gate).toMatchObject({ take: 3 * LONG + 190, kick: 3 * LONG + 200 })
     const steps = save.flatMap((f) => f.steps!)
-    expect(save.length).toBe(3)
+    expect(save.length).toBe(36 / SAVE_PER)
     for (let i = 1; i < steps.length; i++) expect(steps[i]! - steps[i - 1]!).toBe(1)
     expect(steps[0]).toBe(3 * LONG + 190 - SAVE.before)
     expect(steps[steps.length - 1]).toBeGreaterThanOrEqual(3 * LONG + 200 + SAVE.after)
-    expect(save[1]!.at).toBe(3 * LONG + 200)
+    expect(save[2]!.at).toBe(3 * LONG + 200)
     for (const f of save) {
-      expect(f.heading).toMatch(/^Consecutive frames, 1\/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the gate's wire, its posts and both bats' tips, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page \(x \d+ to \d+, y \d+ to \d+ of the page\), sheet \d of 3 of one run/)
-      expect(f.heading).toMatch(/: \d:\d\d\.\d\d to \d:\d\d\.\d\d\. The ball is low in the mouth from 0:18\.17 and goes back up from 0:18\.33, moved 63 px up in that one step\. The page's own picture ends 31 px above the ball's foot at its lowest in these frames, so the wire that leans on the ball there is not in the picture; the window ends with the picture\. Under a frame, L or R/)
+      expect(f.heading).toMatch(/^Consecutive frames, 1\/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the gate's wire, its posts and both bats' tips, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page \(x \d+ to \d+, y \d+ to \d+ of the page\), sheet \d of 6 of one run/)
+      expect(f.heading).toMatch(/: \d:\d\d\.\d\d to \d:\d\d\.\d\d\. The ball is low in the mouth from 0:18\.17 and goes back up from 0:18\.33, moved 63 px up in that one step\. The page's own picture ends 31 px above the ball's foot at its lowest in these frames, so the wire that leans on the ball there is not in the picture; the window ends with the picture\. (By the machine's design: .* light when the ball rolls over them\. )?Under a frame, L or R/)
       expect(f.heading).not.toMatch(/strik|throw|its own bat|round the arrow/)
     }
     // One fixed window for the whole run, taken from the run's rows: at 100% it holds the gate's posts, both bats' tips and the wire's lowest place in every frame.
@@ -514,7 +525,8 @@ describe('the packs of the unit site', () => {
       expect(seen.w[1]! + seen.w[3]! - seen.low).toBeGreaterThanOrEqual(GATE.under)
       for (const i of seen.all) expect(seen.w[1]! + seen.w[3]! - wireAt(run, i)).toBeGreaterThanOrEqual(GATE.under)
       expect(seen.w[1]! + seen.w[3]!).toBeLessThanOrEqual(cfg.formats.hd.height)
-      for (const f of files) expect(f.heading).toContain(`. The window holds ${GATE.under} px or more under the wire's lowest place in every frame. Under a frame, L or R`)
+      // The words on the inserts stand between the two on the sheets in whose frames the ball lies over one.
+      for (const f of files) expect(f.heading.replace(`${INSERT_WORDS}. `, '')).toContain(`. The window holds ${GATE.under} px or more under the wire's lowest place in every frame. Under a frame, L or R`)
     }
     // The page's word finds no save and hides none: a save it tells of where the ball's path holds none is missing, said in the plan and in pack.json, and the tool then ends with a code other than 0.
     const named = momentsOf(cfg, madeRun([...BOLT, { name: 'flipper-save', step: 3 * LONG + 250, page: 'step3', x: 0, y: 0 }], { save: false }))
@@ -534,20 +546,22 @@ describe('the packs of the unit site', () => {
       expect(held.moments.unsaved).toEqual([])
       // Held longer than SAVE.sheets sheets show in a row: two runs, every step a frame, the first one sheet from SAVE.before steps before the take, the second from SAVE.before before the kick to SAVE.after after it, no step skipped inside either.
       const runs = motionPlan(cfg, held).items.filter((f: { moment: string }) => f.moment === 'save') as { steps: number[]; heading: string }[]
-      expect(runs.length).toBe(3)
+      // Round 26: a sheet of the save holds SAVE_PER frames, so the first run of twelve frames lies on two sheets and the second of twenty-four on four.
+      const one = count / SAVE_PER
+      expect(runs.length).toBe(3 * one)
       expect(runs[0]!.steps[0]).toBe(3 * LONG + 190 - SAVE.before)
-      expect(runs[1]!.steps[0]).toBe(3 * LONG + 190 + HOLD - SAVE.before)
-      expect(runs[2]!.steps[0]).toBe(runs[1]!.steps[count - 1]! + 1)
-      expect(runs[2]!.steps[runs[2]!.steps.length - 1]).toBeGreaterThanOrEqual(3 * LONG + 190 + HOLD + SAVE.after)
+      expect(runs[one]!.steps[0]).toBe(3 * LONG + 190 + HOLD - SAVE.before)
+      runs.forEach((r, n) => { if (n !== 0 && n !== one) expect(r.steps[0]).toBe(runs[n - 1]!.steps[SAVE_PER - 1]! + 1) })
+      expect(runs[3 * one - 1]!.steps[SAVE_PER - 1]).toBeGreaterThanOrEqual(3 * LONG + 190 + HOLD + SAVE.after)
       for (const r of runs) {
-        expect(r.steps.length).toBe(count)
+        expect(r.steps.length).toBe(SAVE_PER)
         for (let i = 1; i < r.steps.length; i++) expect(r.steps[i]! - r.steps[i - 1]!).toBe(1)
         expect(r.heading).not.toMatch(/strik|throw|its own bat|in that one step/)
       }
       expect(runs[0]!.heading).toContain('the first of two runs: the ball comes down to the mouth')
       expect(runs[0]!.heading).toContain('. The ball is low in the mouth from 0:18.17. The page')
-      expect(runs[1]!.heading).toContain('the second of two runs: the ball goes back up')
-      expect(runs[1]!.heading).toContain('. The ball goes back up from 0:19.23. The page')
+      expect(runs[one]!.heading).toContain('the second of two runs: the ball goes back up')
+      expect(runs[one]!.heading).toContain('. The ball goes back up from 0:19.23. The page')
     }
     // A blow on a ball that is not low in the mouth is no save, however the ball jumps: the made-up stroke lifts the ball over the bat and is none.
     expect(facts.moments.saves).toEqual([3 * LONG + 200])
@@ -673,7 +687,8 @@ describe('the packs of the unit site', () => {
   it('tells the critics of R5 and R8 nothing of how the pictures were made', () => {
     const told = /\b(live|bot|render\w*|tier|level|film|frames?|replay\w*|stepped|clock|driver|high)\b/i
     for (const role of ['R5', 'R8']) for (const f of filesOf(planOf(role))) expect(f.heading, f.heading).not.toMatch(told)
-    for (const role of ['R4']) for (const f of filesOf(planOf(role))) expect(f.heading, f.heading).not.toMatch(/\b(live|bot|render\w*|tier|level|film|replay\w*|stepped|driver)\b/i)
+    // A sheet of the film's own frames says that it is the film (the Builder's word of 2026-11-27, round 26); no other sheet of R4 says how it was made.
+    for (const role of ['R4']) for (const f of filesOf(planOf(role))) expect(f.heading, f.heading).not.toMatch(f.kind === 'site-film-sheet' ? /\b(live|bot|render\w*|tier|level|replay\w*|stepped|driver)\b/i : /\b(live|bot|render\w*|tier|level|film|replay\w*|stepped|driver)\b/i)
   })
 
   it('gives each critic the lines for site and not the lines for other units', () => {

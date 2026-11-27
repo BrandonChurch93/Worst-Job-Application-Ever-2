@@ -342,6 +342,7 @@ describe('the motion pack of a recorded visit', () => {
     expect(save.map((f) => f.steps.length)).toEqual([6, 6, 6, 6, 6, 6])
     for (const i of steps) expect(holdsBox(w, [at(i)[0] - BALL / 2, at(i)[1] - BALL / 2, at(i)[0] + BALL / 2, at(i)[1] + BALL / 2])).toBe(true)
   })
+})
 
 describe('what round 26 adds to the motion pack', () => {
   const stepsOf = (moment: string) => of(moment).flatMap((f) => f.steps)
@@ -380,7 +381,7 @@ describe('what round 26 adds to the motion pack', () => {
   })
 
   it('both bends of the feed tube: every frame round the step at which the ball is nearest, in a window that goes with the page', () => {
-    expect(BEND.places).toEqual([2, 3].map((i) => railOf('feed').points[i]!.map((v) => Math.round(v * BALL * 10) / 10)))
+    expect(BEND.places).toEqual([2, 3].map((i) => railOf('feed').points[i]!.slice(0, 2).map((v) => Math.round(v * BALL * 10) / 10)))
     BEND.places.forEach((c, n) => {
       const files = of(`bend-${n + 1}`)
       const steps = files.flatMap((f) => f.steps)
@@ -443,7 +444,7 @@ describe('what round 26 adds to the motion pack', () => {
     for (const f of plan.items) expect(f.heading).not.toMatch(/\btiers?\s*\d/i)
     expect(cfg.table.tiers.map((_: string, k: number) => tierName(cfg, k))).toEqual(['Corporate', 'the Office', 'the Street'])
     const kit = fs.readFileSync(path.join(root, 'kit/02-SUBJECT.md'), 'utf8')
-    for (const name of ['Corporate', 'the Office', 'the Street']) expect(kit).toContain(name)
+    expect(kit).toContain('Tier 3 Corporate, Tier 2 The Office, Tier 1 The Street')
   })
 
   it('the kit words on the view stand on every sheet in whose frames the view moves on step 3, and on no other', () => {

@@ -935,7 +935,7 @@ export const runTileHeight = (edge, count, what) => {
   const room = Math.floor((edge - (HEAD_LINES[what] * 22 + 8) - GAP - GAP * (rows - 1)) / rows) - 28
   return Math.min(tall, room - (room % 2))
 }
-export function runWindow(cfg, run, steps, what = null) {
+export function runWindow(cfg, run, steps, what) {
   const edge = cfg.critics.maxImageLongEdgePx
   const rf = cfg.formats[run.format || RUN.format]
   const k = rf.width / cfg.formats.hd.width
