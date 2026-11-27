@@ -286,21 +286,22 @@ export function buildModel(): Model {
 
   // What the fight leaves on him: soot and cracks from the first stage, torn plates and loose hoses from the second, char when he is beaten.
   const at = (g: THREE.BufferGeometry, x: number, y: number, z: number, turn = 0): THREE.BufferGeometry => g.rotateZ(turn).translate(x, y, z)
+  const scorch = (seed: number, r: number, x: number, y: number, z: number): THREE.BufferGeometry[] => [at(blot(seed, r, 22), x, y, z), at(blot(seed + 50, r * 0.74, 20), x + r * 0.06, y - r * 0.05, z + 0.15), at(blot(seed + 90, r * 0.46, 16), x - r * 0.05, y + r * 0.04, z + 0.3)]
   const d1 = new THREE.Group()
   d1.add(
-    mesh(geo('dmg1.soot', () => joined([at(blot(1, 58), -205, 72, HULL.top + 0.5), at(blot(2, 44), 70, 212, WING.top + 0.5), at(blot(3, 36), 196, -70, HULL.top + 0.5)])), kit.soot, false, false),
-    mesh(geo('dmg1.crack', () => joined([at(crackStar(31, 6, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 70, 2.2), -212, 78, HULL.top + 0.8), at(crackStar(32, 5, (a) => [Math.cos(a) * 4, Math.sin(a) * 4], 54, 1.8), 72, 214, WING.top + 0.8)])), kit.crack, false, false)
+    mesh(geo('dmg1.soot', () => joined([...scorch(1, 96, -212, 78, HULL.top + 2), ...scorch(2, 78, 70, 214, WING.top + 2), ...scorch(3, 62, 204, -74, HULL.top + 2)])), kit.soot, false, false),
+    mesh(geo('dmg1.crack', () => joined([at(crackStar(31, 7, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 96, 3), -212, 78, HULL.top + 2.6), at(crackStar(32, 6, (a) => [Math.cos(a) * 4, Math.sin(a) * 4], 76, 2.6), 72, 214, WING.top + 2.6)])), kit.crack, false, false)
   )
   const d2 = new THREE.Group()
   d2.add(
-    mesh(geo('dmg2.soot', () => joined([at(blot(4, 72), 150, -84, HULL.top + 0.55), at(blot(5, 60), -120, -196, WING.top + 0.5), at(blot(6, 52), -40, 104, HULL.top + 0.55), at(blot(7, 46), HATCH.cx + 30, -60, HATCH.top + 0.5)])), kit.soot, false, false),
-    mesh(geo('dmg2.crack', () => joined([at(crackStar(33, 7, (a) => [Math.cos(a) * 6, Math.sin(a) * 6], 86, 2.4), 156, -88, HULL.top + 0.85), at(crackStar(34, 6, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 64, 2), -118, -200, WING.top + 0.8), at(crackStar(35, 5, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 60, 2), HATCH.cx + 24, -56, HATCH.top + 0.8)])), kit.crack, false, false),
-    mesh(geo('dmg2.hole', () => joined([at(blot(8, 30, 9), 232, 84, HULL.top + 0.9), at(blot(9, 24, 9), -150, 196, WING.top + 0.9)])), kit.bore, false, false),
-    mesh(geo('dmg2.plate', () => joined([boxAt(-30, -24, 0, 30, 24, 5, 1.5).rotateY(-0.5).rotateZ(0.4).translate(252, 104, HULL.top + 12), boxAt(-24, -18, 0, 24, 18, 4, 1.2).rotateX(0.6).rotateZ(-0.3).translate(-150, 222, WING.top + 10)])), kit.plate),
-    mesh(geo('dmg2.hose', () => joined([hose([[226, 80, HULL.top - 4], [250, 60, HULL.top + 30], [286, 84, HULL.top + 22], [300, 116, HULL.top - 30]], 5, 16, 7), hose([[-150, 190, WING.top - 4], [-176, 204, WING.top + 22], [-196, 236, WING.top - 20]], 4.2, 12, 7)])), kit.orange)
+    mesh(geo('dmg2.soot', () => joined([...scorch(4, 112, 160, -92, HULL.top + 2), ...scorch(5, 98, -118, -200, WING.top + 2), ...scorch(6, 80, -30, 110, HULL.top + 2), ...scorch(7, 84, HATCH.cx + 24, -56, HATCH.top + 2)])), kit.soot, false, false),
+    mesh(geo('dmg2.crack', () => joined([at(crackStar(33, 8, (a) => [Math.cos(a) * 6, Math.sin(a) * 6], 110, 3.2), 156, -88, HULL.top + 2.6), at(crackStar(34, 7, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 86, 2.8), -118, -200, WING.top + 2.6), at(crackStar(35, 6, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 80, 2.6), HATCH.cx + 24, -56, HATCH.top + 2.6)])), kit.crack, false, false),
+    mesh(geo('dmg2.hole', () => joined([at(blot(8, 40, 9), 232, 84, HULL.top + 2.8), at(blot(9, 34, 9), -150, 196, WING.top + 2.8)])), kit.bore, false, false),
+    mesh(geo('dmg2.plate', () => joined([boxAt(-40, -30, 0, 40, 30, 6, 1.5).rotateY(-0.5).rotateZ(0.4).translate(258, 108, HULL.top + 14), boxAt(-32, -24, 0, 32, 24, 5, 1.2).rotateX(0.6).rotateZ(-0.3).translate(-150, 226, WING.top + 12)])), kit.plate),
+    mesh(geo('dmg2.hose', () => joined([hose([[226, 80, HULL.top - 4], [250, 60, HULL.top + 34], [292, 84, HULL.top + 26], [312, 124, HULL.top - 30]], 6.5, 16, 7), hose([[-150, 190, WING.top - 4], [-178, 204, WING.top + 26], [-202, 244, WING.top - 20]], 5.5, 12, 7)])), kit.orange)
   )
   const d3 = new THREE.Group()
-  d3.add(mesh(geo('dmg3.soot', () => joined([at(blot(10, 130, 18), HATCH.cx + 20, 10, HATCH.top + 1.1), at(blot(11, 90, 16), -240, -30, HULL.top + 0.7), at(blot(12, 84, 16), 250, 20, HULL.top + 0.65), at(blot(13, 70), 30, -210, WING.top + 0.6), at(blot(14, 66), -30, 206, WING.top + 0.6)])), kit.soot, false, false))
+  d3.add(mesh(geo('dmg3.soot', () => joined([...scorch(10, 150, HATCH.cx + 20, 10, HATCH.top + 2.4), ...scorch(11, 104, -262, -60, HULL.top + 2.2), ...scorch(12, 100, 262, 40, HULL.top + 2.2), ...scorch(13, 96, 30, -212, WING.top + 2.2), ...scorch(14, 90, -40, 208, WING.top + 2.2)])), kit.soot, false, false))
   d1.visible = false
   d2.visible = false
   d3.visible = false

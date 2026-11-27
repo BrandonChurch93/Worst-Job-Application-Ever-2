@@ -43,7 +43,7 @@ export const FORM = {
 // The stages of the turret beat, as shares of boss.turret.
 export const TURRET = { hatch: [0.02, 0.16], rise: [0.14, 0.44], swing: [0.46, 0.94], lock: 0.94, kick: 0.16, glow: [0.9, 1] } as const
 
-export const WALK = { pitch: 40, band: 0.24, lift: 46, bob: 5 }
+export const WALK = { pitch: 40, band: 0.14, lift: 46, bob: 5 }
 export const TIMES = { form: 2.9, turret: 1.6, beaten: 2, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
 
 export interface LegPose { hip: [number, number, number]; knee: [number, number, number]; foot: [number, number, number]; yaw: number; up: number; yaw2: number; down: number; footYaw: number; lift: number; show: number; planted: [number, number] }
@@ -76,9 +76,9 @@ export interface Pose {
 
 const rot = (x: number, y: number, a: number): [number, number] => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)]
 
-// One axis of a foothold: the foot holds the nearest point of a row of points `pitch` apart and steps to the next one while the body crosses the band between two.
-function hold(p: number, pitch: number, off: number): { at: number; lift: number } {
-  const g = p / pitch - off + 0.5
+// One axis of a foothold: the foot holds a point of a row of points `pitch` apart and steps to the next one while the body crosses a band between two. The band lies a quarter of the way on for one pair of legs and three quarters for the other (q), so the pairs step in turn and all four stand at rest.
+function hold(p: number, pitch: number, off: number, q: number): { at: number; lift: number } {
+  const g = p / pitch - off + 0.5 - q
   const i = Math.floor(g)
   const t = g - i
   const w = WALK.band
@@ -95,8 +95,9 @@ export function footAt(i: number, x: number, y: number, yaw: number, o: LookOpti
   const [ox, oy] = rot(FEET[i]![0] * K, FEET[i]![1] * K, hy)
   const offX = (o.home.x - 960 + ox) / WALK.pitch
   const offY = (540 - o.home.y + oy) / WALK.pitch
-  const a = hold(x + fx, WALK.pitch, offX - Math.floor(offX))
-  const b = hold(y + fy, WALK.pitch, offY - Math.floor(offY))
+  const q = i === 0 || i === 3 ? -0.25 : 0.25
+  const a = hold(x + fx, WALK.pitch, offX - Math.floor(offX), q)
+  const b = hold(y + fy, WALK.pitch, offY - Math.floor(offY), q)
   return { x: a.at, y: b.at, lift: Math.max(a.lift, b.lift) }
 }
 
