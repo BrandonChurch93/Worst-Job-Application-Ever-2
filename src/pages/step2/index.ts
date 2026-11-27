@@ -32,8 +32,8 @@ const TYPED = { digits: 8, after: 4, every: 0.07, open: 0.14, first: 0.12 }
 // A stop button stays down this long. A date that was missed pays one coin, and its stage is over this long after it.
 const STOP = { down: 0.16, dip: 9, reach: 6 }
 const MISS = { coins: 1, long: 0.8, fall: 150 }
-// The level of the volume belongs to the crank's turning: a tenth a turn in the visitor's hand, and the rest of the way over `turns` turns once the crank runs by itself, which it does no faster than `most` rad a second so that each drawn frame shows it further round.
-const RUN = { turns: 7, most: 21, hand: 0.1 }
+// The level of the volume belongs to the crank's turning: a tenth a turn in the visitor's hand, and the rest of the way over `turns` turns once the crank runs by itself (`film` turns in the film, where the narrator's line is spoken over it), which it does no faster than `most` rad a second so that each drawn frame shows it further round.
+const RUN = { turns: 7, film: 10.5, most: 21, hand: 0.1 }
 const SPIT = { first: 3, air: [0.15, 0.19], aim: 0.3, far: 7, die: 14, ring: 50, every: 0.035, long: 0.9 }
 const kickOf = (slot: SlotState): number => (slot.phase === 'pay' ? -SPIT.far * Math.exp(-SPIT.die * slot.t) * Math.sin(Math.min(Math.PI * 3, SPIT.ring * slot.t)) : 0)
 const LEVER = { rise: 0.1, give: 0.045, drive: 5.5, hold: 0.42, spring: 230, damp: 12, over: 0.075 }
@@ -709,7 +709,7 @@ export function makePage(): PageLogic {
       const safe = c.hit || hand.taken || hand.z >= BLOW_REACH.high || c.w <= BLOW_REACH.speed || Math.hypot(hand.x + 10 - CRANK.hx, hand.y + 20 - CRANK.hy) > BLOW_REACH.far
       c.b += c.phase === 'full' && s.mode === 'live' && safe ? c.w * dt * homeward(c.b, c.w) : c.w * dt
       c.total += c.w * dt
-      if (c.phase === 'runaway') c.level = Math.min(1, c.level + ((1 - RUN.hand * TURNS) * c.w * dt) / (RUN.turns * TAU))
+      if (c.phase === 'runaway') c.level = Math.min(1, c.level + ((1 - RUN.hand * TURNS) * c.w * dt) / ((s.mode === 'film' ? RUN.film : RUN.turns) * TAU))
       c.o = c.phase === 'runaway' ? -WIND.back * (c.t < WIND.long ? Math.pow(smooth(c.t / WIND.long), 1.5) : 1 - smooth((c.t - WIND.long) / WIND.out)) : 0
       c.b += c.o
       turned()
@@ -1170,7 +1170,7 @@ export function makePage(): PageLogic {
       return statesOf({
         here: i >= 0 ? (s.phase === 'opening' && s.rowT < ENTER.field ? [i] : []) : s.field < FIELDS && !s.done[s.field] ? [s.field] : [],
         open: i >= 0 && pose().shown ? i : -1,
-        hole: i >= 0 && pose().hole !== null,
+        hole: i >= 0 && pose().hole !== null ? i : -1,
         panel: i >= 0 && (s.phase === 'ready' || s.phase === 'ending') && !s.done[i],
         plate,
         value: s.birth.typed.length > 0 ? 'typing' : 'ask',
@@ -1300,8 +1300,8 @@ export function makePage(): PageLogic {
       for (const part of up[s.field]!.ids) over[part.id] = { x: part.x + dx[s.field]! }
       for (const id of plates[s.field - 1]!) over[id] = { x: plateX + dx[s.field - 1]! }
     }
+    if (a.hole) over[`${ROWS[s.open]}-hole`] = { x: a.hole.x, y: a.hole.y, w: a.hole.w, h: a.hole.h, r: a.hole.r, z0: -a.hole.deep }
     if (shown >= 0) {
-      if (a.hole) over[`${ROWS[shown]}-hole`] = { x: a.hole.x, y: a.hole.y, w: a.hole.w, h: a.hole.h, r: a.hole.r, z0: -a.hole.deep }
       overMachine(over, shown, s, 1, null, a)
     }
     if (allDone()) {

@@ -1,5 +1,5 @@
 // The order of things on step 2: each event with its time, and each change of the page's stage, in the film or on the live site with a hand that follows the page's hint.
-// node pipeline/change002/step2-trace.mjs film|live
+// node pipeline/change002/step2-trace.mjs film [seconds of the unit, if not the config's] | live [seed]
 import { logic } from '../../tools/lib/logic.mjs'
 
 const mode = process.argv[2] ?? 'film'
@@ -8,7 +8,7 @@ const { stepHz, config } = await load('/src/config.ts')
 const { pages } = await load('/src/pages/index.ts')
 const { Stage, ScriptDriver, filmFlow, filmOptions } = await load('/src/stage/stage.ts')
 const follow = { name: 'bot', input: (v) => { const h = v.page.hint(); return h ? { x: h.dodge ? h.dodge.x : h.x, y: h.dodge ? h.dodge.y : h.y, down: h.down, ...(h.key !== undefined ? { key: h.key } : {}) } : { x: 300, y: 900, down: false } } }
-const s = mode === 'film' ? new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') }) : new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: follow, seed: Number(process.argv[3] ?? config.seed) })
+const s = mode === 'film' ? new Stage({ mode: 'film', flow: filmFlow('step2').map((f) => (f.closes && process.argv[3] ? { ...f, closes: Number(process.argv[3]) } : f)), pages, driver: new ScriptDriver(), film: filmOptions('step2') }) : new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: follow, seed: Number(process.argv[3] ?? config.seed) })
 let last = ''
 let seen = 0
 const t = (i) => ((i + 1) / stepHz).toFixed(3)

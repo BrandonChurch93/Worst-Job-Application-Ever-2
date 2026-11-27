@@ -252,8 +252,8 @@ export function buildLayout(): LayoutNode {
   return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...holes, ...stages, ...plates, note, go])
 }
 
-// What the page shows: which fields stand on it (none while a machine is out), which machine is out, whether the page is open under it, and the line over it: '' for none, or 'typing', 'done', 'missed'. `value` is what the date's field holds: 'ask' or 'typing'.
-export interface StateView { here: number[]; open: number; hole: boolean; panel: boolean; plate: string[]; value: string; note: boolean; settled: string[] | null }
+// What the page shows: which fields stand on it (none while a machine is out), which machine is out, which has the page open under it, and the line over it: '' for none, or 'typing', 'done', 'missed'. `value` is what the date's field holds: 'ask' or 'typing'.
+export interface StateView { here: number[]; open: number; hole: number; panel: boolean; plate: string[]; value: string; note: boolean; settled: string[] | null }
 
 export function statesOf(v: StateView): string[] {
   const out: string[] = []
@@ -265,9 +265,9 @@ export function statesOf(v: StateView): string[] {
   v.plate.forEach((p, i) => {
     if (p) out.push(`${ROWS[i]}-plate-${p}`)
   })
+  if (v.hole >= 0) out.push(`${ROWS[v.hole]}-hole`)
   if (v.open >= 0) {
     out.push(`${ROWS[v.open]}-open`)
-    if (v.hole) out.push(`${ROWS[v.open]}-hole`)
     if (v.panel) out.push(`${ROWS[v.open]}-panel`)
     if (v.open === 1 && v.settled) v.settled.forEach((legend, r) => out.push(reelId(r, legend)))
   }

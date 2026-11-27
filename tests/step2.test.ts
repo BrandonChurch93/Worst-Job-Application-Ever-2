@@ -39,14 +39,14 @@ describe('step 2, the layout', () => {
     }
     for (const i of [0, 1, 2]) {
       for (const value of ['ask', 'typing']) {
-        check({ here: [i], open: -1, hole: false, panel: false, plate: none, value, note: true, settled: null })
-        check({ here: [i], open: i, hole: false, panel: false, plate: none, value, note: false, settled: null })
-        if (i > 0) for (const line of lines.slice(2)) check({ here: [i], open: -1, hole: false, panel: false, plate: none.map((_, k) => (k === i - 1 && (line !== 'missed' || k === 1) ? line : '')), value, note: true, settled: null })
+        check({ here: [i], open: -1, hole: -1, panel: false, plate: none, value, note: true, settled: null })
+        check({ here: [i], open: i, hole: -1, panel: false, plate: none, value, note: false, settled: null })
+        if (i > 0) for (const line of lines.slice(2)) check({ here: [i], open: -1, hole: -1, panel: false, plate: none.map((_, k) => (k === i - 1 && (line !== 'missed' || k === 1) ? line : '')), value, note: true, settled: null })
       }
       for (const line of lines) {
         if (line === 'missed' && i !== 1) continue
-        check({ here: [], open: -1, hole: false, panel: false, plate: none.map((_, k) => (k === i ? line : '')), value: 'typing', note: true, settled: null })
-        for (const hole of [false, true]) for (const panel of [false, true]) for (const reels of settled) check({ here: [], open: i, hole: hole && i < 2, panel, plate: none.map((_, k) => (k === i ? line : '')), value: 'typing', note: false, settled: reels })
+        check({ here: [], open: -1, hole: -1, panel: false, plate: none.map((_, k) => (k === i ? line : '')), value: 'typing', note: true, settled: null })
+        for (const hole of [false, true]) for (const panel of [false, true]) for (const reels of settled) check({ here: [], open: i, hole: hole && i < 2 ? i : -1, panel, plate: none.map((_, k) => (k === i ? line : '')), value: 'typing', note: false, settled: reels })
       }
     }
     expect(seen.size).toBeGreaterThan(40)

@@ -1,6 +1,6 @@
 // Film frames of step 2 in a row, each cut to the stage, with what the page holds on that frame written under it.
 // node pipeline/change002/step2-frames.mjs --live [--bot keen] --at 7.4 --count 18 [--every 1]   the same of the live site with a bot as the visitor
-// node pipeline/change002/step2-frames.mjs --at 16.2 --count 24 [--every 1] [--show crank|reels|fling|fields] [--cut x,y,w,h as shares of the picture] [--columns 6] [--name crank]
+// node pipeline/change002/step2-frames.mjs --at 16.2[,18.4,...] --count 24 [--every 1] [--show crank|reels|fling|fields|stage] [--cut x,y,w,h as shares of the picture] [--columns 6] [--name crank]
 import path from 'node:path'
 import sharp from 'sharp'
 import { args, at, config } from '../../tools/lib/paths.mjs'
@@ -18,8 +18,8 @@ const count = Number(a.count ?? 24)
 const every = Number(a.every ?? 1)
 const show = String(a.show ?? 'crank')
 const cut = String(a.cut ?? '0.2,0.3,0.6,0.58').split(',').map(Number)
-const first = unit.first + Math.round(Number(a.at ?? 16.2) * fps)
-const frames = Array.from({ length: count }, (_, i) => first + i * every)
+const first = unit.first + Math.round(Number(String(a.at ?? 16.2).split(',')[0]) * fps)
+const frames = String(a.at ?? 16.2).split(',').flatMap((from) => Array.from({ length: count }, (_, i) => unit.first + Math.round(Number(from) * fps) + i * every))
 
 if (a.hand) {
   const { makeVisitor, VISITOR } = await import('../../tools/lib/pack-site.mjs')
@@ -125,7 +125,8 @@ for (const frame of frames) {
   else if (show === 'fling') {
     const p = stage.cursor.pose()
     labels.push(`${t} s  ${st.dial.phase}  ${Math.round(p.x - DIAL.cx)}, ${Math.round(p.y - DIAL.cy)}, z ${Math.round(p.z)}`)
-  } else labels.push(`${t} s  field ${st.field + 1}  done ${stage.page.fields().done.toFixed(2)} of 3`)
+  } else if (show === 'stage') labels.push(`${t} s  ${st.open < 0 ? 'no machine' : ['phone', 'slot machine', 'crank'][st.open] + ' ' + (st.phase === 'opening' ? 'coming' : st.phase === 'closing' ? 'going' : st.phase)}`)
+  else labels.push(`${t} s  field ${st.field + 1}  done ${stage.page.fields().done.toFixed(2)} of 3`)
 }
 await close()
 
