@@ -125,6 +125,8 @@ function rowParts(tree: LayoutNode, prefix: string): RowIds {
 const SUNK = 0.05
 // A machine that has sunk under the page is covered by its tray as the tray shuts: the tray starts to shut at this share of the lift, not after the machine has gone.
 const COVER = 0.25
+// The slot and the crank are housed in the floor of their trays, as the dial is: they lie there at this share of their height, under the page, while the tray opens over them and while it shuts over them, and rise from it.
+export const HOUSED = 0.07
 
 function machineParts(tree: LayoutNode, tray: string): { id: string; floor: number; top: number; text: boolean }[] {
   const out: { id: string; floor: number; top: number; text: boolean }[] = []
@@ -867,8 +869,10 @@ export function makePage(): PageLogic {
     for (const side of [-1, 1]) out.push({ id: `${id}-${side < 0 ? 'a' : 'b'}`, part: 'rows', kind: 'box', x: x + 14 + side * 5.2 - 8, y: y + 12.5, w: 16, h: 3, z0: VALUE_Z + 0.05, z1: VALUE_Z + 0.6, tone: 'ink', rot: -tilt * side, r: 1.5 })
   }
 
+  const risen = (i: number, lift: number): number => smooth(lift) + (i > 0 ? HOUSED * (1 - smooth(lift)) : 0)
+
   function machine(out: DrawList, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number, dx: number, dy: number, tag: string, fade = 1): void {
-    const L = smooth(lift)
+    const L = risen(i, lift)
     const z = (v: number): number => mix(TRAY_Z, v, L)
     if (i === 0) {
       const plate = TRAY_Z + dialPlate(dialTop(L))
@@ -901,7 +905,7 @@ export function makePage(): PageLogic {
   }
 
   function overMachine(over: Record<string, Partial<Shape> | null>, i: number, m: { dial: DialState; slot: SlotState; crank: CrankState }, lift: number): void {
-    const L = smooth(lift)
+    const L = risen(i, lift)
     for (const part of parts[i]!) over[part.id] = part.text ? { z0: mix(TRAY_Z, part.top, L), z1: mix(TRAY_Z, part.top, L) } : { z0: mix(TRAY_Z, part.floor, L), z1: mix(TRAY_Z, part.top, L) }
     if (i === 0) {
       const top = dialTop(L)

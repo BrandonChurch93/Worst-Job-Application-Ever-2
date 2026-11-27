@@ -1,0 +1,32 @@
+import fs from 'node:fs'
+import crypto from 'node:crypto'
+import { it } from 'vitest'
+import { config, stepHz } from '../src/config'
+import { pages } from '../src/pages'
+import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
+import type { DrawList } from '../src/stage/types'
+
+it('writes one line per film frame of every unit and one per event', () => {
+  const per = stepHz / 60
+  const out: string[] = []
+  const ev: string[] = []
+  let first = 0
+  for (const u of config.film.units) {
+    const s = new Stage({ mode: 'film', flow: filmFlow(u.id), pages, driver: new ScriptDriver(), film: filmOptions(u.id) })
+    let seen = 0
+    for (let n = 1; n <= u.seconds * stepHz; n++) {
+      s.advance(1)
+      for (const e of s.events.slice(seen)) ev.push(`${u.id}\t${n}\t${e.name}\t${e.x}\t${e.y}`)
+      seen = s.events.length
+      if (n % per !== 0) continue
+      const list: DrawList = []
+      s.page.draw(list)
+      const h = crypto.createHash('sha1').update(JSON.stringify(list)).digest('hex').slice(0, 12)
+      const c = crypto.createHash('sha1').update(JSON.stringify(s.cursor.pose())).digest('hex').slice(0, 12)
+      out.push(`${first + n / per}\t${u.id}\t${n / per}\t${s.page.id}\t${s.page.gag() ?? ''}\t${h}\t${c}`)
+    }
+    first += u.seconds * 60
+  }
+  fs.writeFileSync(process.env.FILMDIFF!, out.join('\n') + '\n')
+  fs.writeFileSync(process.env.FILMDIFF! + '.events', ev.join('\n') + '\n')
+})

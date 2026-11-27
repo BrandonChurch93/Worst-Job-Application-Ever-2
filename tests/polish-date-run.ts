@@ -71,7 +71,7 @@ export function visit(driver: Driver | 'film', full: Map<string, number>, second
     const body = BODY[shown]!.map((id) => list.find((x) => x.id === id))
     const shares = body.map((shape) => (shape ? (shape.z1 - shape.z0) / full.get(shape.id)! : 0))
     const top = Math.max(...body.map((shape) => (shape ? shape.z1 : TRAY_Z)))
-    const legends = list.filter((x) => x.kind === 'text' && x.id.startsWith('slot-reel-') && x.z0 > TRAY_Z).length
+    const legends = list.filter((x) => x.kind === 'text' && x.id.startsWith('reel-') && x.z0 > TRAY_Z).length
     rows.push({ step: i + 1, open: shown, phase: st.phase, spring: st.spring[shown]!, lift: st.lift, tall: tray ? tray.h : 0, least: Math.min(...shares), most: Math.max(...shares), top, legends })
   }
   return rows
