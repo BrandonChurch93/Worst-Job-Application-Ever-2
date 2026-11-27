@@ -1,9 +1,10 @@
 // The pinball scene of the live site as a video: the film's own frames between the two joins, encoded, with the record the page plays it by.
 //   node tools/pinball-video.mjs                      render, encode, measure, write src/pages/step3/video/
-//   node tools/pinball-video.mjs --time               seconds per frame at each tier on this machine, nothing written
+//   node tools/pinball-video.mjs --time               seconds per frame at each tier on this machine (each timed frame follows its neighbour, as in a render), nothing written
 //   --tier draft|review|final   --every N (render one frame in N and hold it, a stand-in)   --codec h264,vp9   --quality 16
 //   --sound mix.wav (the scene's sound, cut to the span, muxed in)   --keep (use the frames already on disk)
 //   --middle preview --ends 3   a stand-in: all but the first and last 3 frames are rendered in the small format and enlarged
+//   --edge final   with --middle, the tier of those first and last frames   --keep any (keep whatever frames are on disk)
 import fs from 'node:fs'
 import path from 'node:path'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
@@ -19,7 +20,7 @@ const cfg = config()
 const tier = a.tier || 'draft'
 const every = Math.max(1, Number(a.every || 1))
 const quality = Number(a.quality || 16)
-const codecs = String(a.codec || 'h264,vp9').split(',')
+const codecs = String(a.codec || 'h264').split(',')
 const out = at('src', 'pages', 'step3', 'video')
 const work = at('out', 'work', 'pinball-video')
 const frames = path.join(work, 'frames')
@@ -31,6 +32,7 @@ console.log(`scene: join in at frame ${sc.from.frame} (${sc.from.time.toFixed(3)
 
 const ends = Math.max(1, Number(a.ends || 3))
 const middle = typeof a.middle === 'string' ? a.middle : null
+const edgeTier = middle && typeof a.edge === 'string' ? a.edge : tier
 let session = await openSession({ format: a.format || 'hd', assets: 'full', mode: 'capture' })
 const full = session.format
 try {
@@ -40,6 +42,7 @@ try {
     for (const t of String(a.time === true ? 'draft,review,final' : a.time).split(',')) {
       const list = []
       for (const f of spots) {
+        await renderJob(session, { kind: 'film', frame: base + f - 1, tier: 'draft' })
         const t0 = clock()
         await renderJob(session, { kind: 'film', frame: base + f, tier: t })
         list.push(Number(seconds(t0).toFixed(2)))
@@ -50,9 +53,9 @@ try {
     }
     writeJson(path.join(work, 'time.json'), report)
   } else {
-    const record = { from: sc.from, to: sc.to, tier, format: session.format.id, every, middle, ends }
+    const record = { from: sc.from, to: sc.to, tier, edgeTier, format: session.format.id, every, middle, ends }
     const recordFile = path.join(work, 'record.json')
-    const same = a.keep && fs.existsSync(recordFile) && JSON.stringify(readJson(recordFile)) === JSON.stringify(record)
+    const same = a.keep === 'any' || (a.keep && fs.existsSync(recordFile) && JSON.stringify(readJson(recordFile)) === JSON.stringify(record))
     if (!same) fs.rmSync(frames, { recursive: true, force: true })
     fs.mkdirSync(frames, { recursive: true })
     writeJson(recordFile, record)
@@ -64,7 +67,7 @@ try {
     const own = (i) => i % every === 0 || i === sc.frames - 1 || (middle && edge(i))
     const render = async (i, small) => {
       if (fs.existsSync(name(i))) return
-      const png = await renderJob(session, { kind: 'film', frame: base + sc.from.frame + i, tier })
+      const png = await renderJob(session, { kind: 'film', frame: base + sc.from.frame + i, tier: small ? tier : edgeTier })
       fs.writeFileSync(name(i) + '.part', small ? await sharp(png).resize(full.width, full.height, { kernel: 'lanczos3' }).png().toBuffer() : png)
       fs.renameSync(name(i) + '.part', name(i))
       rendered++
@@ -94,7 +97,7 @@ try {
     }
     writeJson(path.join(out, 'manifest.json'), {
       unit: sc.unit, fps: sc.fps, stepHz: sc.stepHz, frames: sc.frames, seconds: sc.frames / sc.fps, from: sc.from, to: sc.to, events: sc.events,
-      render: { tier, samples: cfg.tiers[tier]?.samplesPerFrame ?? null, format: full.id, every, middle, ends: middle ? ends : null, quality, standIn: tier !== 'final' || every !== 1 || middle !== null, renderSeconds: Number(renderSeconds.toFixed(1)), browser: session.version },
+      render: { tier, samples: cfg.tiers[tier]?.samplesPerFrame ?? null, format: full.id, every, middle, ends: middle ? ends : null, edgeTier: middle ? edgeTier : null, quality, standIn: tier !== 'final' || every !== 1 || middle !== null, renderSeconds: Number(renderSeconds.toFixed(1)), browser: session.version },
       files
     })
     fs.writeFileSync(path.join(out, 'states.json'), JSON.stringify(sc.states) + '\n')

@@ -1,7 +1,7 @@
 import { bridge, type VideoPlayer } from './bridge'
 import manifest from './manifest.json'
 
-interface Trace { asked: number; shown: number; left: number; frames: { now: number; media: number; shown: number; count: number }[]; live: number[] }
+interface Trace { asked: number; shown: number; left: number; waits: number; loaded: number; frames: { now: number; media: number; shown: number; count: number }[]; live: number[] }
 
 const sources = import.meta.glob('./pinball.*', { query: '?url', import: 'default', eager: true }) as Record<string, string>
 const files = (manifest.files as { file: string; mime: string }[]).map((f) => ({ url: sources[`./${f.file}`], mime: f.mime })).filter((f) => f.url)
@@ -11,14 +11,14 @@ let mounted = false
 export function mountVideo(): void {
   if (mounted || typeof document === 'undefined' || typeof window === 'undefined') return
   const asked = new URLSearchParams(window.location.search)
-  if ((asked.get('mode') ?? 'live') !== 'live' || asked.get('clock') || asked.get('video') === 'off') return
+  if ((asked.get('mode') ?? 'live') !== 'live' || (asked.get('clock') && asked.get('video') !== 'trace')) return
+  mounted = true
+  bridge.player = { ready: () => false, enter: () => undefined, clock: () => 0, over: () => true, leave: () => undefined }
   const canvas = document.getElementById('stage')
   const host = document.getElementById('controls')
-  if (!canvas || !host) return
   const video = document.createElement('video')
   const pick = files.find((f) => video.canPlayType(f.mime) === 'probably') ?? files.find((f) => video.canPlayType(f.mime) !== '')
-  if (!pick) return
-  mounted = true
+  if (!canvas || !host || !pick || asked.get('video') === 'off') return
   video.muted = true
   video.playsInline = true
   video.preload = 'auto'
@@ -27,9 +27,10 @@ export function mountVideo(): void {
   video.tabIndex = -1
   video.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;margin:0;object-fit:fill;pointer-events:none;opacity:0;background:transparent'
   document.body.insertBefore(video, host)
-  const trace: Trace | null = asked.get('video') === 'trace' ? { asked: -1, shown: -1, left: -1, frames: [], live: [] } : null
+  const trace: Trace | null = asked.get('video') === 'trace' ? { asked: -1, shown: -1, left: -1, waits: 0, loaded: -1, frames: [], live: [] } : null
   if (trace) (window as unknown as { videoTrace: Trace; videoBridge: typeof bridge }).videoTrace = trace
   if (trace) (window as unknown as { videoBridge: typeof bridge }).videoBridge = bridge
+  if (trace) bridge.cues = []
   let primed = false
   let state: 'idle' | 'entering' | 'playing' | 'done' = 'idle'
   let wait = 0
@@ -59,7 +60,11 @@ export function mountVideo(): void {
     if (state === 'entering' || state === 'playing') requestAnimationFrame(tick)
   }
   const player: VideoPlayer = {
-    ready: () => primed && video.readyState >= 3 && !video.error,
+    ready() {
+      const ok = primed && video.readyState >= 3 && !video.error
+      if (trace && !ok) trace.waits++
+      return ok
+    },
     enter() {
       if (state !== 'idle') return
       state = 'entering'
@@ -94,9 +99,9 @@ export function mountVideo(): void {
     .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))))
     .then((blob) => {
       video.src = URL.createObjectURL(blob)
+      if (trace) trace.loaded = performance.now()
       video.load()
       bridge.player = player
     })
     .catch(() => undefined)
-  bridge.player = { ...player, ready: () => false }
 }

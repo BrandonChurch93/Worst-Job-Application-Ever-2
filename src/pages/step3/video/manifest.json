@@ -2,8 +2,8 @@
   "unit": "pinball",
   "fps": 60,
   "stepHz": 240,
-  "frames": 2177,
-  "seconds": 36.28333333333333,
+  "frames": 2176,
+  "seconds": 36.266666666666666,
   "from": {
     "frame": 195,
     "step": 780,
@@ -11,10 +11,10 @@
     "hash": "16ae1071"
   },
   "to": {
-    "frame": 2371,
-    "step": 9484,
-    "time": 39.516666666666666,
-    "hash": "af54b662"
+    "frame": 2370,
+    "step": 9480,
+    "time": 39.5,
+    "hash": "3201d554"
   },
   "events": [
     {
@@ -438,6 +438,84 @@
       "hits": true
     }
   ],
-  "render": null,
-  "files": []
+  "render": {
+    "tier": "draft",
+    "samples": 2,
+    "format": "hd",
+    "every": 24,
+    "middle": "preview",
+    "ends": 3,
+    "quality": 16,
+    "standIn": true,
+    "renderSeconds": 21.7,
+    "browser": "159.0.8154.6"
+  },
+  "files": [
+    {
+      "file": "pinball.mp4",
+      "codec": "h264",
+      "mime": "video/mp4; codecs=\"avc1.64002A\"",
+      "bytes": 33850681,
+      "mbps": 7.467,
+      "width": 1920,
+      "height": 1080,
+      "pixelFormat": "yuv420p",
+      "sound": null,
+      "against": {
+        "frames": 2176,
+        "thirty": {
+          "at": [
+            0,
+            75,
+            150,
+            225,
+            300,
+            375,
+            450,
+            525,
+            600,
+            675,
+            750,
+            825,
+            900,
+            975,
+            1050,
+            1125,
+            1200,
+            1275,
+            1350,
+            1425,
+            1500,
+            1575,
+            1650,
+            1725,
+            1800,
+            1875,
+            1950,
+            2025,
+            2100,
+            2175
+          ],
+          "psnr": {
+            "mean": 43.7887,
+            "least": 37.58
+          },
+          "ssim": {
+            "mean": 0.9844,
+            "least": 0.9085
+          }
+        },
+        "all": {
+          "psnr": {
+            "mean": 44.4053,
+            "least": 37.58
+          },
+          "ssim": {
+            "mean": 0.9875,
+            "least": 0.9085
+          }
+        }
+      }
+    }
+  ]
 }

@@ -9,12 +9,14 @@ export const VIDEO = {
   inLead: 0.04,
   // The event the join out is counted on from: the flattened arrow is peeled up.
   outEvent: 'peel-up',
-  // Seconds after that event before the page takes over: the arrow is up and still, and the film's script has not begun to walk it.
-  outLag: 0.19,
+  // Seconds after that event at which the result card begins to rise. The last picture of the video is the last film frame that ends before it: a film frame gathers light over its whole sixtieth, and one that straddles the card shows half a card.
+  outLag: 0.2,
   // Seconds the page waits at the join in for a video that is not ready, before it plays its own ending.
   waitMax: 4,
   // Seconds before the end of the video at which the page lays its own picture of the last frame under it.
   underlay: 0.3,
+  // Seconds the video's clock may stand still while it should run before the page stops waiting for it and goes to the join out.
+  stallMax: 3,
   // The largest step of the video's clock, in seconds, that is taken as play. A larger one is a seek or a tab that slept: its cues are not sounded.
   jumpMax: 0.25
 } as const
@@ -29,5 +31,5 @@ export function joinsOf(events: readonly { name: string; step: number }[]): { fr
     if (!e) throw new Error(`The scene has no event "${name}" to join the video on`)
     return e.step / stepHz
   }
-  return { from: Math.floor((at(VIDEO.inEvent) - VIDEO.inLead) * config.film.fps), to: Math.ceil((at(VIDEO.outEvent) + VIDEO.outLag) * config.film.fps) }
+  return { from: Math.floor((at(VIDEO.inEvent) - VIDEO.inLead) * config.film.fps), to: Math.floor((at(VIDEO.outEvent) + VIDEO.outLag) * config.film.fps) - 1 }
 }

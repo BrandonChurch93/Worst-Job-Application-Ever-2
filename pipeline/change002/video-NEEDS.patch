@@ -1,3 +1,15 @@
+diff --git a/src/main.ts b/src/main.ts
+index 3cfd08d1..05a518a0 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -312,6 +312,7 @@ function play(first: PlayMode): void {
+       volume = v
+       sound.setVolume(v)
+     }
++    if (stage.page.control === 'film') touched()
+     sound.quiet(wallSeconds() - lastInput)
+   }
+   const touched = () => {
 diff --git a/src/stage/bots.ts b/src/stage/bots.ts
 index 51176e9e..383f2caf 100644
 --- a/src/stage/bots.ts
