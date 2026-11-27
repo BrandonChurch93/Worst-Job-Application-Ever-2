@@ -1,6 +1,6 @@
 // One-frame jerks of the live pinball view, counted on every frame of 60 of whole visits stepped without a browser.
 // node pipeline/phase5/polish-save2-jerks.mjs [--visitor never,pack,keen,clumsy,random] [--seeds 1,2]
-// A jerk is a frame on which the view steps more than 2 px one way while it steps the other way on the frame before and on the frame after. Each is printed with the page's seconds, the three steps, the ball's mode, rail and place down the table, and whether a room under a gate was on.
+// A jerk is a frame on which the view steps more than 2 px one way while it steps the other way on the frame before and on the frame after. Each is printed with the page's seconds, the three steps, the ball's mode, rail and place down the table, and whether a room under a gate was on. Also listed, as a wider net: every frame on which the view steps more than 2 px one way and more than 2 px the other way on the next frame.
 import { logic } from '../../tools/lib/logic.mjs'
 
 const arg = (name, fallback) => {
@@ -57,9 +57,15 @@ for (const name of arg('visitor', 'never,pack,keen,clumsy,random').split(',')) f
     const c = rows[i + 1].y - rows[i].y
     if (Math.abs(d) > 2 && a * d < 0 && c * d < 0) found.push(`${rows[i].t.toFixed(3)} s: steps ${a.toFixed(1)}, ${d.toFixed(1)}, ${c.toFixed(1)}; ${rows[i].ball}; room ${rows[i].room ? 'on' : 'off'}`)
   }
+  const turns = []
+  for (let i = 2; i < rows.length - 1; i++) {
+    const d = rows[i].y - rows[i - 1].y
+    const c = rows[i + 1].y - rows[i].y
+    if (Math.abs(d) > 2 && Math.abs(c) > 2 && c * d < 0) turns.push(`${rows[i].t.toFixed(3)} s: steps ${d.toFixed(1)}, ${c.toFixed(1)}; ${rows[i].ball}`)
+  }
   all += found.length
   frames += rows.length
-  console.log(`${name} seed ${seed}: ${rows.length} frames, ${rides.length} rides on an outlane rail${rides.length ? ` (${rides.join(', ')})` : ''}, ${found.length} one-frame jerks${found.length ? `\n  ${found.join('\n  ')}` : ''}`)
+  console.log(`${name} seed ${seed}: ${rows.length} frames, ${rides.length} rides on an outlane rail${rides.length ? ` (${rides.join(', ')})` : ''}, ${found.length} one-frame jerks${found.length ? `\n  ${found.join('\n  ')}` : ''}; ${turns.length} frames after which the view turns round at more than 2 px a frame on both sides${turns.length ? `\n  ${turns.join('\n  ')}` : ''}`)
 }
 console.log(`all: ${frames} frames, ${all} one-frame jerks`)
 await close()
