@@ -1,12 +1,15 @@
 // The film's sound, laid out from the events of the film. Pure arithmetic: the same inputs give the same samples.
-import { allCues, alsoStarts, cueOfEvent, loopCues, pickVariant, stopEvents } from './cues'
+import { allCues, alsoStarts, cueOfEvent, loopCues, pageAfter, pickVariant, quietPage, quietPageCues, stopEvents } from './cues'
 
 export { openingEvents, type OpeningPlan } from './cues'
-import { master, repitch, type Mastered, type Sound } from './dsp'
-import { DUCK, LIVE, MIX, db } from './levels'
+import { dehum, master, repitch, type Mastered, type Sound } from './dsp'
+import { DUCK, LIVE, MIX, TONE, db } from './levels'
 import { duckAt, duckSpans } from './narrator'
 
-export interface FilmEvent { name: string; frame: number; x: number }
+// page: the page the event came from, when the list of events names it. A page-turn names the page it leaves.
+export interface FilmEvent { name: string; frame: number; x: number; page?: string }
+// A stretch of the film with the careers page on screen, in frames: from is its first frame, to is the frame after its last.
+export interface QuietSpan { from: number; to: number }
 export interface FilmLine { id: string; beat: string; frame: number }
 
 export interface MixInput {
@@ -37,6 +40,28 @@ export interface MixResult {
   missingCues: string[]
   missingLines: string[]
   mastered: Mastered
+  // The stretches with the careers page on screen, and the events in them that were given no sound because of it, each as name@frame.
+  quiet: QuietSpan[]
+  hushed: string[]
+}
+
+// The stretches of the film with the careers page on screen, read from the pages the events name. The film is on it from the start when the first
+// event that names a page names it. The page is on screen until a turn away from it begins, and from half a turn after a turn to it begins.
+// A list of events that names no page has no such stretch.
+export function quietSpans(events: FilmEvent[], fromFrame: number, frames: number, fps: number): QuietSpan[] {
+  const half = Math.round(LIVE.quietTurnSeconds * fps)
+  const paged = events.filter((e) => e.page !== undefined && e.frame >= fromFrame).sort((a, b) => a.frame - b.frame)
+  const out: QuietSpan[] = []
+  let since: number | null = paged[0]?.page === quietPage ? fromFrame : null
+  for (const e of paged) {
+    if (e.name !== 'page-turn') continue
+    if (e.page === quietPage && since !== null) {
+      out.push({ from: since, to: e.frame })
+      since = null
+    } else if (pageAfter[e.page!] === quietPage) since = e.frame + half
+  }
+  if (since !== null && since < frames) out.push({ from: since, to: frames })
+  return out
 }
 
 export const frameSample = (frame: number, fps: number, sampleRate: number): number => Math.round((frame / fps) * sampleRate)
@@ -65,6 +90,16 @@ export function mixFilm(o: MixInput): MixResult {
   const counts = new Map<string, number>()
   const lastFrame = new Map<string, number>()
   const turns = events.filter((e) => e.name === 'page-turn').map((e) => e.frame)
+  const frames = Math.round(o.seconds * o.fps)
+  const quiet = quietSpans(o.events, o.toneFromFrame ?? 0, frames, o.fps)
+  const half = Math.round(LIVE.quietTurnSeconds * o.fps)
+  // On the careers page, and at a turn to it or away from it, nothing sounds but the press of its button.
+  const hush = (e: FilmEvent, cue: string): boolean => {
+    if (e.name === 'page-turn') return quiet.some((q) => e.frame === q.to || e.frame + half === q.from)
+    if (e.page !== undefined) return e.page === quietPage && !quietPageCues.includes(cue)
+    return quiet.some((q) => e.frame >= q.from && e.frame < q.to) && !quietPageCues.includes(cue)
+  }
+  const hushed: string[] = []
 
   const stopFrame = (cue: string, from: number): number => {
     let end = Infinity
@@ -81,6 +116,10 @@ export function mixFilm(o: MixInput): MixResult {
 
   for (const e of events) for (const cue of [cueOfEvent(e.name), ...(alsoStarts[e.name] ?? [])]) {
     if (!cue || cue === 'room-tone') continue
+    if (hush(e, cue)) {
+      hushed.push(`${e.name}@${e.frame}`)
+      continue
+    }
     if (lastFrame.get(cue) === e.frame) continue
     lastFrame.set(cue, e.frame)
     const spec = allCues(o.sfx).find((s) => s.id === cue)
@@ -143,16 +182,32 @@ export function mixFilm(o: MixInput): MixResult {
 
   const room = o.sounds.get('room-tone')
   if (room && room.channels[0]!.length > 0) {
-    const n = room.channels[0]!.length
-    const l = room.channels[0]!
-    const r = room.channels[1] ?? l
-    const first = Math.min(length, at(o.toneFromFrame ?? 0))
-    for (let i = first; i < length; i++) {
-      const g = first > 0 ? Math.min(1, (i - first) / fadeLen) : 1
-      tone[0]![i] = l[(i - first) % n]! * g
-      tone[1]![i] = r[(i - first) % n]! * g
+    const mended = TONE.dehum ? room.channels.map((c) => dehum(c, sr, TONE)) : room.channels
+    const n = mended[0]!.length
+    const l = mended[0]!
+    const r = mended[1] ?? l
+    // The room tone runs under every page but the careers page: it comes in when a turn away from that page is done and is out when a turn to it is done.
+    const from = o.toneFromFrame ?? 0
+    const runs: { first: number; last: number; out: number }[] = []
+    let open = from
+    for (const q of quiet) {
+      if (q.from > open) runs.push({ first: open, last: q.from, out: half })
+      open = q.to + half
     }
-    placed.push({ kind: 'tone', event: 'always', cue: 'room-tone', id: 'room-tone', frame: o.toneFromFrame ?? 0, sample: first, seconds: (length - first) / sr, cents: 0, pan: 0 })
+    if (open < frames) runs.push({ first: open, last: frames, out: 0 })
+    const fadeIn = Math.round(LIVE.toneFadeInSeconds * sr)
+    for (const run of runs) {
+      const first = Math.min(length, at(run.first))
+      const last = Math.min(length, at(run.last))
+      const fadeOut = Math.round((run.out / o.fps) * sr)
+      for (let i = first; i < last; i++) {
+        let g = first > 0 ? Math.min(1, (i - first) / fadeIn) : 1
+        if (fadeOut > 0 && last - i < fadeOut) g *= (last - i) / fadeOut
+        tone[0]![i] = l[(i - first) % n]! * g
+        tone[1]![i] = r[(i - first) % n]! * g
+      }
+      placed.push({ kind: 'tone', event: 'always', cue: 'room-tone', id: 'room-tone', frame: run.first, sample: first, seconds: (last - first) / sr, cents: 0, pan: 0 })
+    }
   } else missingCues.add('room-tone')
 
   const spans = duckSpans(spoken, DUCK.attackSeconds, DUCK.releaseSeconds)
@@ -171,5 +226,5 @@ export function mixFilm(o: MixInput): MixResult {
 
   const sound: Sound = { sampleRate: sr, channels: out }
   const mastered = master(sound, o.targetLufs, o.truePeakDb)
-  return { sound, placed, missingCues: [...missingCues].sort(), missingLines, mastered }
+  return { sound, placed, missingCues: [...missingCues].sort(), missingLines, mastered, quiet, hushed }
 }

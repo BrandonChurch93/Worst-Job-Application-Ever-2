@@ -393,6 +393,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       startTone()
       return
     }
+    toQuiet = false
     stopTone(LIVE.loopFadeSeconds)
     for (const cue of [...running.keys()]) if (!quietPageCues.includes(cue)) stopCue(cue)
   }
@@ -405,6 +406,7 @@ export function makeSound(o: { base: string; index?: SoundIndex }): SoundApi {
       toQuiet = true
       stopTone(LIVE.quietTurnSeconds)
     } else if (page === quietPage && next !== undefined) {
+      toQuiet = false
       here = next
       startTone(LIVE.quietTurnSeconds)
     }

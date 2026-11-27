@@ -137,8 +137,13 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
   let last = 0
   let drawWords: ((to: HTMLElement, text: string) => void) | null = null
   const write = () => {
-    if (drawWords) drawWords(el, words)
-    else el.textContent = words
+    try {
+      if (drawWords) drawWords(el, words)
+      else el.textContent = words
+    } catch {
+      drawWords = null
+      el.textContent = words
+    }
   }
   void import('./glyphs').then((g) => {
     drawWords = (to, text) => g.draw(to, text, CAPTION.face, { wrap: true })

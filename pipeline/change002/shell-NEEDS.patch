@@ -1,0 +1,39 @@
+diff --git a/tools/mix.mjs b/tools/mix.mjs
+index 6ee53e7d..df4925a0 100644
+--- a/tools/mix.mjs
++++ b/tools/mix.mjs
+@@ -24,7 +24,7 @@ export async function filmPlan(c, M, file = at('cut', 'CUTLIST.json')) {
+     const cutSha256 = await proveCutList(M.load, file, 'the mix')
+     const cut = readJson(file)
+     const frameOf = (e) => (Number.isFinite(e.frame) ? e.frame : Number.isFinite(e.seconds) ? Math.floor(e.seconds * fps + 1e-6) : Number.isFinite(e.time) ? Math.floor(e.time * fps + 1e-6) : Number.isFinite(e.step) ? Math.floor((e.step * fps) / c.sim.stepHz) : NaN)
+-    const list = Array.isArray(cut.events) ? cut.events.map((e) => ({ name: e.name, frame: frameOf(e), x: Number.isFinite(e.x) ? e.x : 960 })) : []
++    const list = Array.isArray(cut.events) ? cut.events.map((e) => ({ name: e.name, frame: frameOf(e), x: Number.isFinite(e.x) ? e.x : 960, ...(typeof e.page === 'string' ? { page: e.page } : {}) })) : []
+     if (list.length && list.every((e) => typeof e.name === 'string' && Number.isFinite(e.frame))) {
+       const lineFrame = (l) => (Number.isFinite(l.first) ? l.first : frameOf({ frame: l.frame, seconds: l.startSeconds ?? l.start }))
+       if (Array.isArray(cut.lines) && cut.lines.every((l) => typeof l.beat === 'string' && Number.isFinite(lineFrame(l)))) {
+@@ -39,7 +39,7 @@ export async function filmPlan(c, M, file = at('cut', 'CUTLIST.json')) {
+   const { pages } = await M.load('/src/pages/index.ts')
+   const stage = new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver(), film: { arrive: false, leave: false } })
+   stage.advance(Math.round(seconds * c.sim.stepHz))
+-  const events = stage.events.map((e) => ({ name: e.name, frame: Math.floor((e.step * fps) / c.sim.stepHz), x: e.x }))
++  const events = stage.events.map((e) => ({ name: e.name, frame: Math.floor((e.step * fps) / c.sim.stepHz), x: e.x, page: e.page }))
+   return { source: 'the stage', fps, seconds, events, lines }
+ }
+ 
+@@ -86,7 +86,7 @@ export async function makeMix(P, c, M, out, name, given = null) {
+     samples: result.sound.channels[0].length, silent: result.mastered.silent, lufs: fix(result.mastered.lufs), truePeakDb: fix(result.mastered.truePeakDb), gainDb: fix(result.mastered.gainDb),
+     targetLufs: c.audio.filmLoudnessLufs, ceilingDb: c.audio.truePeakDb, duckDb: c.audio.duckDb, bytes: bytes.length, sha256: sha(bytes),
+     events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.cueOfEvent(e.name)).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length,
+-    missingCues: result.missingCues, missingLines: result.missingLines, recordsWithNoFile: absent,
++    missingCues: result.missingCues, missingLines: result.missingLines, recordsWithNoFile: absent, hushed: result.hushed, quiet: result.quiet,
+     placed: result.placed.map((p) => ({ ...p, seconds: Number(p.seconds.toFixed(4)), pan: Number(p.pan.toFixed(3)) }))
+   }
+   writeJson(out.replace(/\.wav$/, '.json'), record)
+@@ -308,6 +308,7 @@ export async function soundChecks(a, P, c, M) {
+     for (const e of plan.events) {
+       const cue = M.cues.cueOfEvent(e.name)
+       if (!cue || cue === 'room-tone' || r.missingCues.includes(cue)) continue
++      if ((r.hushed ?? []).includes(`${e.name}@${e.frame}`)) continue
+       const k = `${cue}@${e.frame}`
+       if (seen.has(k)) continue
+       seen.add(k)

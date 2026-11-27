@@ -123,6 +123,14 @@ export const newEventCues: Record<string, string> = {
   'shot-round': 'dart-hit',
   'cannon-fire': 'slab-fire',           // file to come: cannon-fire, a low heavy thump, 0.5
   'boss-heal': 'power-on',              // file to come: boss-heal, a short rising power-up, 0.6
+  'bullet-fire': 'bolt-fire',
+  'turret-lock': 'lever-pull',
+  'big-fire': 'slab-fire',
+  'arena-break': 'button-crack',
+  // step 1
+  'turret-load': 'lever-pull',
+  'keys-break': 'button-crack',
+  'page-crack': 'button-crack',
   // step 2
   'date-key': 'key-press',
   'reel-stop': 'drop-target',           // file to come: reel-stop, 0.3
@@ -140,6 +148,9 @@ export const newEventCues: Record<string, string> = {
 export const newSilent: string[] = [
   'boss-move',
   'cannon-tell',                        // file to come: cannon-tell, a rising charge whine, 0.8
+  'big-tell',
+  'turret-off',
+  'slab-shadow',
   'volume-sign',                        // file to come: volume-sign, 0.5
   'field-next',
   'vacuum-on',                          // file to come: vacuum-roar, 3.0, can loop
