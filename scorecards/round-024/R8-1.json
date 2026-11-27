@@ -1,0 +1,44 @@
+{
+ "critic": "R8",
+ "score": 7,
+ "pass": false,
+ "model": "kimi_k3",
+ "set": "A: the site as web pages: the six pages at rest, the application with its controls on, the message page for touch devices, and the controls at their real size",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "Step 3, whole page below the intro text",
+   "what": "at rest there is nothing to do: no start control, no Continue, no hint of what happens next - every other step has a clear way forward, and the middle two-thirds of this page is empty",
+   "fix": "show the assessment's control at rest (a play/start button on the device, or a queued Continue with a one-line hint) so the page has a readable next action"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "the three perk cards (Unlimited PTO, Competitive Salary, Flexible Hours)",
+   "what": "each card has a divider rule under its one line of text and then an empty lower half; on a still page the rule promises content that is not there, so the cards read as failed to load rather than finished",
+   "fix": "either size the cards to their content at rest or put a resting-state line under the rule"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-04.png",
+   "where": "the headphone device, bottom right, where its tube meets the page edge",
+   "what": "the tube runs off the bottom edge and is cut by a diagonal tonal split at the corner; at rest it sits between deliberate 'mechanism leaving the page' and an overflow/rendering mistake",
+   "fix": "give the tube a clean exit (a socket or shadow at the edge) or end it inside the page"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-03.png",
+   "where": "the three dropdowns (Contact number, Date of birth, Audio volume)",
+   "what": "all three render completely empty - no placeholder or selected value - so at rest they read as blank boxes with chevrons rather than fields with a pending choice",
+   "fix": "show a placeholder or default value in each ('Select...' or the joke default for Audio volume)"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "the Submit button, lower centre of Step 4",
+   "what": "the primary action jumps position: Continue sits bottom right on Steps 1-2, but Submit floats horizontally centred on a mostly empty page, anchored to nothing, while the verification card is top left",
+   "fix": "keep the primary action in the same bottom-right slot on every step, or centre the verification card with the button beneath it"
+  }
+ ]
+}

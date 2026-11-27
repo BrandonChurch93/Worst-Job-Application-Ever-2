@@ -1,0 +1,65 @@
+{
+ "critic": "R5",
+ "score": 7,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "A: the whole site: the six pages at rest on one sheet, the screens with the controls, sheets across one visitor's visit through the live site, and the machine's tiers with the passage from one to the next",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "Page 5 of 6 at rest, whole frame",
+   "what": "Step 4 at rest is one small sage card at the upper left and a lone orange Submit button floating low in the centre, with most of the page empty paper. Next to the hero, the stamp page and the machine, it looks least finished. Its real scene (the armoured Submit robot and the drain) only shows up after a click.",
+   "fix": "Give the resting page a composed scene. Seat the Submit button in its housing from the start, with the drain slot visible and a socket under the button, and balance the card against it so the page reads as designed before any interaction"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "Page 2 of 6 and Page 3 of 6 at rest",
+   "what": "The two pages are the same kind of scene: title, a step heading, sage input bars, and a pill Continue at the lower right over a lot of blank paper. At rest, Page 3 reads as a copy of Page 2 with one fewer column. The dial, flip-date and crank only appear once a field is opened.",
+   "fix": "Give Page 3 its own resting identity. Show the rotary dial, date lever and crank housed in their bars, closed but visible, or lay it out differently (for example a stacked console panel) so it doesn't echo Page 2's form grid"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "frame 1:02.93, the Date of birth dropdown",
+   "what": "The dropdown opens onto an empty sage panel with no mechanism in it for a moment, before the flip-date unit appears at 1:07.43. It reads as a missing asset.",
+   "fix": "Have the flip-date mechanism already in place as the panel opens, or animate it rising in with the panel so the panel is never shown empty"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-07.png",
+   "where": "frames 1:39.53 to 2:16.70, the whole machine",
+   "what": "Inside the machine the light changes to a dark navy, teal and black world, nothing like the warm paper and sage everywhere else. Only the orange flippers and chrome tie it back to the site. As the high point it clearly wins, but on entry and exit it feels like a different site, not the same materials in the same light.",
+   "fix": "Carry the site's materials into the cabinet: warm paper-cream on the apron and side rails, sage glass on the playfield inserts and score panel, and warm key light matching the page. Keep the playfield dark if you like, but frame it in the site's materials"
+  },
+  {
+   "severity": "major",
+   "file": "set-A-10.png",
+   "where": "frames 2:55.20 to 2:57.88, the stamp",
+   "what": "The stamp is a saturated candy-red glossy plastic block, the only pure red object on the site. It clashes with the burnt-orange accent used on every other control and looks like a toy, not part of the same family.",
+   "fix": "Make the stamp handle burnt orange or dark lacquered wood with a chrome or rubber base, in the site's palette. Keep red only for the REJECTED ink"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-09.png",
+   "where": "frame 2:31.90, lower left",
+   "what": "The red 'Field cannot be blank' tag is clipped by the bottom edge of the frame.",
+   "fix": "Keep error tags inside the viewport, with a margin"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-05.png",
+   "where": "frame 0:28.95, below the resume drop zone",
+   "what": "The dragged resume is a tiny, flat paper icon, much thinner in material than the rest of the site's objects.",
+   "fix": "Draw the resume as a real sheet of paper at a believable size, with a slight curl and a soft cast shadow"
+  },
+  {
+   "severity": "minor",
+   "file": "set-A-01.png",
+   "where": "Page 4 of 6 at rest, left two-thirds",
+   "what": "Before the plunger is used, the page is a block of text and a chrome pipe on blank paper. It's acceptable as an anteroom, but it's sparse.",
+   "fix": "Hint at the machine behind the wall, for example a faint glow or cabinet edge around the porthole, so the page anticipates the high point"
+  }
+ ]
+}
