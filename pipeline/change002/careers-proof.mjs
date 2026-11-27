@@ -41,7 +41,7 @@ async function grid(name, frames, across, width) {
 
 const filmSpec = (t) => {
   const b = beats.find((x) => t >= x.from && t < x.to) || beats[beats.length - 1]
-  return { page: 'marketing', beat: b.id, at: Number((t - b.from).toFixed(4)), camera: 'home', tier: a.tier || 'draft' }
+  return { page: 'marketing', beat: b.id, at: Number(((t - b.from) / (b.to - b.from)).toFixed(6)), camera: 'home', tier: a.tier || 'draft' }
 }
 
 if (only.some((o) => ['top', 'film', 'apply'].includes(o))) {
@@ -49,7 +49,7 @@ if (only.some((o) => ['top', 'film', 'apply'].includes(o))) {
   try {
     const shot = async (t) => ({ png: (await drawStill(session, filmSpec(t))).png, label: `${t.toFixed(2)} s` })
     if (only.includes('top')) {
-      const mine = await shot(2.5)
+      const mine = await shot(2.4)
       fs.writeFileSync(`${OUT}/careers-top.png`, mine.png)
       await grid('careers-top-beside', [mine, { png: fs.readFileSync(at('references', 'approved-002', 'careers-top.png')), label: 'approved careers-top.png' }], 2, 597)
     }

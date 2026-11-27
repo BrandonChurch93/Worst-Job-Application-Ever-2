@@ -137,8 +137,8 @@ describe('the real careers page', () => {
   })
 
   it('takes the button down toward the sheet at a press, a little smaller and darker, and never under the sheet', () => {
-    const rest = at(2.5).find((s) => s.id === 'final-cta-cap')!
-    const ctx = context([rest], 2.5)
+    const rest = at(2.4).find((s) => s.id === 'final-cta-cap')!
+    const ctx = context([rest], 2.4)
     const o = applyButton!.make(rest, ctx)
     applyButton!.pose!(o, rest, ctx)
     const up = o.position.z

@@ -9,7 +9,7 @@ import type { Pointer } from '../../stage/types'
 export const OPENING = {
   use: 'B' as 'A' | 'B',
   total: 18,
-  key: 2.5,
+  key: 2.4,
   line: 13.75,
   after: 1.25,
   ramp: 0.45,
