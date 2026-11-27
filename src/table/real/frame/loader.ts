@@ -23,6 +23,8 @@ export const dipOf = (t: number): number => {
   const u = t - ANSWER.hold
   return Math.exp(-ANSWER.damp * u) * Math.cos((Math.PI * 2 * u) / ANSWER.ring) * (1 - u / (ANSWER.over - ANSWER.hold))
 }
+// The port's release, when the hold ends and the ball is let go: the ring is thrown open by `wide` of its size for the answer's two frames and springs back as `dipOf` does, and the rim of light flashes. The page gives the seconds since it as the ring's second number, for `over` seconds.
+export const LET = { wide: 0.04, over: ANSWER.over }
 // How bright the flash of the rim stands, 1 to 0.
 export const flashOf = (t: number): number => (t < 0 || t >= ANSWER.over ? 0 : Math.exp(-t / ANSWER.fade) * (1 - t / ANSWER.over))
 interface Ring { x: number; y: number; at: number; runs: { mesh: THREE.Mesh; from: number; rest: Float32Array }[] }
@@ -472,13 +474,14 @@ export function loaderPose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
   if (z.id !== 'first' && z.id !== 'last') return
   const t = ctx.byId.get(z.id === 'first' ? 'loader.ring' : 'outlet.ring')?.v?.[0] ?? 9
   const rest = z.id === 'first' ? GLOW.low + (GLOW.high - GLOW.low) * (0.5 - 0.5 * Math.cos((ctx.time * Math.PI * 2) / GLOW.seconds)) : GLOW.low
-  breathOf(z).value = rest + ANSWER.flash * flashOf(t)
+  const gone = z.id === 'first' ? ctx.byId.get('loader.ring')?.v?.[1] ?? 9 : 9
+  breathOf(z).value = rest + ANSWER.flash * (flashOf(t) + flashOf(gone))
   const r = o.userData.ring as Ring | undefined
   if (!r) return
-  const d = dipOf(t)
+  const d = ANSWER.shrink * dipOf(t) - LET.wide * dipOf(gone)
   if (d === r.at) return
   r.at = d
-  const k = 1 - ANSWER.shrink * d
+  const k = 1 - d
   for (const part of r.runs) {
     const pos = part.mesh.geometry.getAttribute('position') as THREE.BufferAttribute
     const a = pos.array as Float32Array

@@ -30,9 +30,13 @@ const DT = 1 / HZ
 const MAX_SPEED = 30
 // Live play, set by the page each step and off in the film: the steps of a bat's stroke up and of its fall, the height and the steps of its bounce at rest, and the speed limit of a visitor's ball.
 const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36, own: 12 }
-// Live play, the save at a shut gate. The gate takes the ball on its wire, holds it, draws back and kicks it: where the ball's middle lies against the shut wire (balls down the tier), the stiffness of the wire under the ball and of the mouth's funnel (1/s, both damped dead),
-// the steps from the ball's landing on the wire in which it comes to lie still, the steps of the wind-up and the last of them in which the drawn wire stands still, how far the wire draws back with the ball on it (balls), the steps of the kick's drive back up to where the ball lay, the speed of the plain kick (balls/s), and how near the wire a ball that comes by the outlane's channel must be for the gate to take it (balls).
-export const SAVE = { rest: 10.55, wire: 60, funnel: 50, land: 24, wind: 28, still: 10, back: 0.22, drive: 4, kick: 24, reach: 1 }
+// Live play, the save at a shut gate. The gate takes the ball on its wire, the wire gives under it, is drawn down with it, stands loaded, and throws it: where the ball's middle lies against the shut wire (balls down the tier), the stiffness of the wire under the ball and of the mouth's funnel (1/s, both damped dead),
+// the steps from the ball's landing on the wire in which the wire gives, the steps of the load and the last of them in which the loaded wire and the ball stand dead still, how far the wire is drawn down with the ball on it (balls), the steps of the throw's drive back up to where the ball lay, the speed of the plain kick (balls/s), and how near the wire a ball that comes by the outlane's channel must be for the gate to take it (balls).
+// From the landing to the kick it is `land + wind + drive` steps, 56 as before, and the funnel moves the ball across for the first `mouth` of them, as before, so the ball is thrown from the same place on the same step and the play after a save is the play it was.
+// The save as it was before the load was made to read, kept as a second place of the ball beside the one that is drawn (the ball's `s` and `speed`, which a ball on the wire has no other use for): when the gate opens under a ball on the wire,
+// the ball goes down the hole in the steps it took from that place, so the play after it is the play it was.
+const WAS = { land: 24, wind: 28, still: 10, back: 0.22, drive: 4 }
+export const SAVE = { rest: 10.55, wire: 60, funnel: 50, mouth: 52, land: 8, wind: 40, still: 24, back: 0.4, drive: 8, kick: 24, reach: 1 }
 // Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
 const MET = 3
 const LIFT_SHUT = 0.4
@@ -406,44 +410,78 @@ export class Machine {
     b.mode = 'tow'
     b.tx = MID
     b.ty = TIER_Y[k]! + SAVE.rest
-    b.speed = 0
+    b.s = b.y
+    b.speed = b.vy
     b.then = `gate:${k}`
     this.taken = 0
     this.say('gate-take', 0, `${TIERS[k]}.gate`)
   }
 
-  // Live play, one step of the ball at a shut gate: it falls onto the wire, the wire gives and holds it still, draws back with it, drives it back up to where it lay, and on the step after the drive the kick sends it out from there.
+  // Live play, one step of the ball at a shut gate: it falls onto the wire and the wire gives, the wire is drawn down with the ball on it and stands loaded and still, drives the ball back up to where it lay with growing steps, and on the step after the drive the kick sends it out from there.
   private lie(): void {
     const b = this.balls[0]!
     const k = b.tier
     if (this.gate[k]) {
       this.taken = -1
-      this.tow(0, MID, TIER_Y[k]! + MOUTH.hole, Math.max(12, Math.hypot(b.vx, b.vy)), `gate:${k}`)
+      const hole = TIER_Y[k]! + MOUTH.hole
+      const go = Math.max(12, Math.hypot(b.vx, b.speed)) * DT
+      let steps = 1
+      for (let d = Math.hypot(MID - b.x, hole - b.s); d > go; d -= go) steps++
+      this.tow(0, MID, hole, Math.hypot(MID - b.x, hole - b.y) / ((steps - 0.01) * DT), `gate:${k}`)
       return
     }
     const cock = SAVE.land + SAVE.wind
+    const deep = b.ty + SAVE.back
+    if (this.taken >= cock + SAVE.drive) {
+      this.kickOut(k)
+      return
+    }
+    if (this.taken === 0 && b.y < b.ty) {
+      b.s = b.y + (b.vy + GRAVITY * DT) * DT
+      b.speed = b.vy + GRAVITY * DT
+    } else if (this.taken >= WAS.land + WAS.wind) {
+      const j = this.taken + 1 - WAS.land - WAS.wind
+      const q = ((j - 1) / WAS.drive) * ((j - 1) / WAS.drive)
+      const from = (b.s - b.ty * q) / (1 - q)
+      const y = from + (b.ty - from) * (j / WAS.drive) * (j / WAS.drive)
+      b.speed = (y - b.s) / DT
+      b.s = y
+    } else {
+      const u = Math.max(0, Math.min(1, (this.taken + 1 - WAS.land) / (WAS.wind - WAS.still)))
+      b.speed += (-SAVE.wire * SAVE.wire * (b.s - b.ty - WAS.back * u * u * (3 - 2 * u)) - 2 * SAVE.wire * b.speed) * DT
+      b.s += b.speed * DT
+    }
+    if (this.taken < SAVE.mouth) {
+      b.vx += (-SAVE.funnel * SAVE.funnel * (b.x - b.tx) - 2 * SAVE.funnel * b.vx) * DT
+      b.x += b.vx * DT
+    } else b.vx = 0
     if (this.taken >= cock) {
       const j = ++this.taken - cock
-      if (j > SAVE.drive) {
-        this.kickOut(k)
-        return
-      }
-      const y = b.fy + (b.ty - b.fy) * (j / SAVE.drive) * (j / SAVE.drive)
-      b.vx = 0
+      const y = j === SAVE.drive ? b.ty : deep + (b.ty - deep) * (j / SAVE.drive) * (j / SAVE.drive)
       b.vy = (y - b.y) / DT
       b.y = y
       return
     }
-    b.vx += (-SAVE.funnel * SAVE.funnel * (b.x - b.tx) - 2 * SAVE.funnel * b.vx) * DT
-    if (this.taken === 0 && b.y < b.ty) b.vy += GRAVITY * DT
-    else {
-      const u = Math.max(0, Math.min(1, (++this.taken - SAVE.land) / (SAVE.wind - SAVE.still)))
-      const at = b.ty + SAVE.back * u * u * (3 - 2 * u)
-      b.vy += (-SAVE.wire * SAVE.wire * (b.y - at) - 2 * SAVE.wire * b.vy) * DT
+    if (this.taken === 0 && b.y < b.ty) {
+      b.vy += GRAVITY * DT
+      b.y += b.vy * DT
+      return
     }
-    b.x += b.vx * DT
-    b.y += b.vy * DT
-    if (this.taken === cock) b.fy = b.y
+    const n = ++this.taken - SAVE.land
+    if (n <= 0) {
+      b.vy += (-SAVE.wire * SAVE.wire * (b.y - b.ty) - 2 * SAVE.wire * b.vy) * DT
+      b.y += b.vy * DT
+      if (n === 0) {
+        b.fy = b.y
+        b.fx = b.vy * (SAVE.wind - SAVE.still) * DT
+      }
+      return
+    }
+    // The load: from where the ball lies and the speed it has to the loaded place, at rest there (a cubic through both), then dead still.
+    const u = Math.min(1, n / (SAVE.wind - SAVE.still))
+    const y = u >= 1 ? deep : b.fy * (1 + u * u * (2 * u - 3)) + b.fx * u * (1 - u) * (1 - u) + deep * u * u * (3 - 2 * u)
+    b.vy = (y - b.y) / DT
+    b.y = y
   }
 
   // Live play: the gate's kick. The ball leaves from where it lies, by the director's aimed lob when there is one.

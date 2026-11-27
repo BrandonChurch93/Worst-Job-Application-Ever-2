@@ -13,6 +13,8 @@ import { GATE, SLING, kickOf, tier } from './tier'
 export const VERSION = 'hardware-30'
 const STEEL_BALLS = 8
 const TURN = 0.34
+// Live play: how much brighter the gate's own metal stands while its wire carries a ball, as a share of its tone.
+const GLEAM = 1.2
 // The lift's rings stand upright and are seen on their flat faces from the player's end, so they keep more of their tone.
 const RING = 0.62
 const SOFT = [FIN.rubber, FIN.gloss, FIN.satin]
@@ -87,7 +89,19 @@ function poseHardware(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
       }
     }
     const gate = part(o, 'hardware.gate')
-    if (gate) gate.rotation.x = ((ctx.byId.get(`gate.${z.tier}`)?.v?.[0] ?? 0) > 0.5 ? GATE.open : GATE.shut) + (ctx.byId.get(`gate.${z.tier}`)?.v?.[1] ?? 0)
+    if (gate) {
+      const v = ctx.byId.get(`gate.${z.tier}`)?.v
+      gate.rotation.x = ((v?.[0] ?? 0) > 0.5 ? GATE.open : GATE.shut) + (v?.[1] ?? 0)
+      const load = v?.[2] ?? 0
+      if (load !== ((gate.userData.load as number | undefined) ?? 0)) {
+        const tone = (gate as THREE.Mesh).geometry.getAttribute('color') as THREE.BufferAttribute
+        const now = tone.array as Float32Array
+        const home = (gate.userData.tone ??= Float32Array.from(now)) as Float32Array
+        for (let i = 0; i < home.length; i++) now[i] = home[i]! * (1 + GLEAM * load)
+        tone.needsUpdate = true
+        gate.userData.load = load
+      }
+    }
     const tip = part(o, 'hardware.tip')
     if (tip) tip.position.y = (tip.userData.home as number) - pullOf(ctx) * PLUNGE.tip + ringOf(ctx)
     const balls = part(o, 'hardware.balls') as THREE.InstancedMesh | undefined
