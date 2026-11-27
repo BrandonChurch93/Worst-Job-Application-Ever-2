@@ -53,7 +53,7 @@
     "maxSeconds": 165,
     "plannedSeconds": { "marketing": 14, "step1": 32, "step2": 21, "pinball": 42, "boss": 32, "decision": 12 },
     "units": [
-      { "id": "marketing", "seconds": 14 },
+      { "id": "marketing", "seconds": 19.25 },
       { "id": "step1", "seconds": 32 },
       { "id": "step2", "seconds": 21 },
       { "id": "pinball", "seconds": 42 },
@@ -61,10 +61,10 @@
       { "id": "decision", "seconds": 12 }
     ],
     "beats": [
-      { "id": "marketing.stroll", "unit": "marketing", "from": 0, "to": 2, "event": "step" },
-      { "id": "marketing.perks", "unit": "marketing", "from": 2, "to": 8, "event": "card-flip" },
-      { "id": "marketing.ticker", "unit": "marketing", "from": 8, "to": 11, "event": null },
-      { "id": "marketing.apply", "unit": "marketing", "from": 11, "to": 14, "event": "page-turn" },
+      { "id": "marketing.stroll", "unit": "marketing", "from": 0, "to": 3, "event": "step" },
+      { "id": "marketing.perks", "unit": "marketing", "from": 3, "to": 6.75, "event": "card-flip" },
+      { "id": "marketing.ticker", "unit": "marketing", "from": 6.75, "to": 16.45, "event": null },
+      { "id": "marketing.apply", "unit": "marketing", "from": 16.45, "to": 19.25, "event": "page-turn" },
       { "id": "step1.keyboard", "unit": "step1", "from": 0, "to": 2, "event": "keyboard-rise" },
       { "id": "step1.firstName", "unit": "step1", "from": 2, "to": 10, "event": "bolt-hit-cursor" },
       { "id": "step1.lastName", "unit": "step1", "from": 10, "to": 15, "event": "keys-shuffle" },
@@ -230,7 +230,7 @@
     "Sizes are not taken from any image. A part's size and its height off the page come from scale in the config and from the layout tree. The images draw the same part at different sizes."
   ],
   "keys": [
-    { "id": "marketing-top", "unit": "marketing", "beat": "marketing.apply", "at": 0, "camera": "home", "image": "references/approved/marketing-top.png", "settled": [] },
+    { "id": "marketing-top", "unit": "marketing", "beat": "marketing.stroll", "at": 2.5, "camera": "home", "image": "references/approved/marketing-top.png", "settled": [] },
     {
       "id": "step1-fire",
       "unit": "step1",
