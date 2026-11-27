@@ -76,6 +76,15 @@ MEASURED with `pipeline/phase5/polish-date-filmdiff.ts.txt`, copied as `tests/po
 - Row 3, level high: the hub and the lit bars lie in the floor and the page covers them from below, 13 to 10 sixtieths before shut. The crank ends its run with the arm pointing down across the tray's lower rim: at 15 and 14 before shut the arm and grip overhang the rim while still risen, at 13 and 12 the housed arm ends at the rim, under the page.
 - On the last pictures of a shutting (row 3: 9 to 5 before shut; row 2: 6 and 5) the strip of tray still open is bare floor, because the machine's place is already under the page: a tray shuts from below upward. The stepped test counts a machine as drawn, not as in view.
 
+## Seen on the other pictures of 08:40 to 08:50 UTC
+
+- The housed state at real size (`node pipeline/phase5/polish-date-housed.mjs`, 0.133 s from the press, levels high and low): the cabinet with its reels and digits, the coin arm and the plate lie flat in the floor; the crank's hub, arm and grip lie flat, the bars unlit as outlines. The tray's rim runs unbroken. High and low differ a little in the shadows only (bytes of the crop differing by more than 8 levels: 17342 of 598000 for the slot, 21848 for the crank; mean 1.15 and 1.46 levels).
+- Across the start of the rise (0.150 to 0.233 s, level high): the shadow widens a little each picture; no part appears or jumps.
+- The crank's hint line is absent at 0.133 s and whole at 0.150 s, and gone in one picture at the shutting: as before the change (the line is not touched; on film frame 3610 before and after alike). The grip lies over part of that line in the whole state too.
+- Row 3 shutting, live, levels high and low: at 15 and 14 sixtieths before shut the crank's arm points down and the grip's tip lies over the tray's lower rim while the crank is still risen. Whether the base does the same there is UNKNOWN (no base shutting of row 3 was shot live). The film's shutting ends with the arm pointing up and does not show it.
+- Row 1 opening, live: faint rings (the dial's outline) show on the page and on the two fields below the tray on its first three pictures, on the base pictures and after the change alike. Not changed: the dial stays.
+- Row 3 in the film: before, no machine in the open tray on frames 3602 to 3610 (the hint line alone on 3610); after, the grip is seen from 3603 and the hub from 3605; at the shutting the grip stays until the field covers it (3832).
+
 ## The film's rendered frames
 
 A rendered frame differs one frame wider than the draw list, because the film blurs a moving edge over the steps to the next frame. The soft band at a moving field's edge (about 12 px) is on the frames before the change too; with the change the cabinet and the digits are seen faintly through it on the frames where the edge passes over them (3256, 3562 to 3564).
