@@ -62,8 +62,8 @@
     ],
     "beats": [
       { "id": "marketing.stroll", "unit": "marketing", "from": 0, "to": 3, "event": "step" },
-      { "id": "marketing.perks", "unit": "marketing", "from": 3, "to": 6.75, "event": "card-flip" },
-      { "id": "marketing.ticker", "unit": "marketing", "from": 6.75, "to": 16.45, "event": null },
+      { "id": "marketing.perks", "unit": "marketing", "from": 3, "to": 7, "event": "card-flip" },
+      { "id": "marketing.ticker", "unit": "marketing", "from": 7, "to": 16.45, "event": null },
       { "id": "marketing.apply", "unit": "marketing", "from": 16.45, "to": 19.25, "event": "page-turn" },
       { "id": "step1.keyboard", "unit": "step1", "from": 0, "to": 2, "event": "keyboard-rise" },
       { "id": "step1.firstName", "unit": "step1", "from": 2, "to": 10, "event": "bolt-hit-cursor" },
