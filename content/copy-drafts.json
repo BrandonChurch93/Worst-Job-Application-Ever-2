@@ -1,0 +1,37 @@
+{
+  "about": "Drafts of new on-screen words asked for by change note 002, section B. Written by the Builder for Brandon to approve, change or strike. This file is not the locked copy and nothing in it is approved. A line Brandon approves moves into content/copy.json by an addendum and leaves this file. No em dashes anywhere.",
+  "state": "draft, not approved",
+  "words": {
+    "step1": {
+      "name": {
+        "label": "Name"
+      },
+      "resume": {
+        "folderTitle": "Documents",
+        "fileName": "Resume.pdf",
+        "shredderLabel": "SHREDDER"
+      }
+    },
+    "step2": {
+      "birth": {
+        "placeholder": "MM / DD / YYYY",
+        "stop": "STOP",
+        "missed": "Close enough. Date of birth recorded."
+      },
+      "volume": {
+        "sign": "TURN IT UP"
+      }
+    }
+  },
+  "serves": {
+    "step1.name.label": "item 11, one Name field; the locked copy has First name and Last name only",
+    "step1.resume.folderTitle": "item 3, the folder that pops up when the mouse presses Browse files",
+    "step1.resume.fileName": "item 3, the file the mouse selects in the folder",
+    "step1.resume.shredderLabel": "item 3, the shredder is labelled as a shredder",
+    "step2.birth.placeholder": "items 12 and 13, the date field looks ordinary for a moment and asks for the date the reels are then held to",
+    "step2.birth.stop": "item 13, the stop button of each reel",
+    "step2.birth.missed": "item 13, the line when the stopped date is not the visitor's own",
+    "step2.volume.sign": "item 14, the big sign over the crank"
+  },
+  "notNew": "The pinball signs of item 5 use the eight building names the locked copy already holds under step3.table.buildings."
+}

@@ -1,0 +1,105 @@
+{
+  "stamp": {
+    "role": "R8",
+    "round": 26,
+    "unit": "site",
+    "commit": "2ce6ca9daa898e59947cfb011c85e80654291cc7",
+    "tier": "live-high",
+    "engineHash": "7cd3b37117ec03b3",
+    "sharedHash": "ea373a6bfcb754b9",
+    "pageHashes": {
+      "step1": "8de79564c757b5e4",
+      "step2": "2131529b782fd57c",
+      "marketing": "40cbc1558d3f1a68",
+      "pinball": "174facdd16eaaf1f",
+      "boss": "ed18eab775dec297",
+      "decision": "7268eb60f24ef748"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R8-1",
+      "groups": [
+        "page"
+      ],
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "heading": "Page 1 of 6, at rest",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1765443,
+          "sha256": "ba93ab40e2841baf30be8a26b36250479d0b92b4a102d066896f6a99ed40a3bb"
+        },
+        {
+          "name": "set-A-02.png",
+          "heading": "Page 2 of 6, at rest",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1638058,
+          "sha256": "7b01ffa0f86a9edf018dcbb4a2b0a8c109312ca0956735bc1fc6604bd1a53632"
+        },
+        {
+          "name": "set-A-03.png",
+          "heading": "Page 3 of 6, at rest",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1634287,
+          "sha256": "38eede850a5c8d2772e386c743f69f21644850fff513a1d558fa96eb6e308b22"
+        },
+        {
+          "name": "set-A-04.png",
+          "heading": "Page 4 of 6, at rest",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1708762,
+          "sha256": "bc64e8420b5c01a488c80607740d6d25c2b6175f5ef3bdb19c34d0facadbca8c"
+        },
+        {
+          "name": "set-A-05.png",
+          "heading": "Page 5 of 6, at rest",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1644984,
+          "sha256": "79c2f63375a2e8838faa52c1ae7d3cac1df581824653fadfd10ebd8b240999f5"
+        },
+        {
+          "name": "set-A-06.png",
+          "heading": "Page 6 of 6, at rest",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1745702,
+          "sha256": "015b8244969c70f6dfcd9e63e0b5eb13b079f3e70b3f427d9965cb6f3c1d1af4"
+        },
+        {
+          "name": "set-A-07.png",
+          "heading": "The application as a visitor has it, with its controls",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1771021,
+          "sha256": "0b1bcd01001f45b89ab579ef42382cf495c9f4dbd4984ce23d81172861527445"
+        },
+        {
+          "name": "set-A-08.png",
+          "heading": "What a visitor on a touch device gets in place of the application",
+          "width": 1400,
+          "height": 826,
+          "bytes": 1491377,
+          "sha256": "ccdf77686416d7db484138626f366fd687acff7ccfb834e82e0f2a9c49a81b24"
+        },
+        {
+          "name": "set-A-09.png",
+          "heading": "What a visitor can have on screen besides the page, each at its real size",
+          "width": 1400,
+          "height": 738,
+          "bytes": 823125,
+          "sha256": "b734b05c82549416c4412ed2d1d1732f20c64f45487c086eea3309761f1845f5"
+        }
+      ]
+    }
+  ]
+}
