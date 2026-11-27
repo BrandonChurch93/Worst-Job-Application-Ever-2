@@ -97,7 +97,7 @@ for (const s of plan.sets) {
   }
   if (files.length > cfg.critics.maxFilesPerMessage) stop(`set ${s.set} holds ${files.length} files, over ${cfg.critics.maxFilesPerMessage}`)
   fs.writeFileSync(path.join(dir, `brief-${s.set}.txt`), briefFor(plan, s.set) + '\n')
-  manifest.sets.push({ set: s.set, critic: s.critic, files })
+  manifest.sets.push({ set: s.set, critic: s.critic, groups: s.groups, files })
 }
 writeJson(record, manifest)
 writeJson(keyFile, key)
@@ -105,4 +105,10 @@ const seconds = Number(process.hrtime.bigint() - t0) / 1e9
 const mb = manifest.sets.reduce((n, s) => n + s.files.reduce((k, f) => k + f.bytes, 0), 0) / 1e6
 console.log(`pack: ${role}, round ${round}, commit ${commit.slice(0, 7)}: ${manifest.sets.map((s) => `${s.critic} set ${s.set} ${s.files.length} files`).join(', ')}; ${mb.toFixed(1)} MB in ${path.relative(at(), dir)}, ${seconds.toFixed(0)} s`)
 console.log(`pack: the key file is at ${path.relative(at(), keyFile)}, outside the pack. It goes into ${path.relative(at(), cards)} with --release-key, after every answer is in`)
+for (const s of manifest.sets) {
+  console.log(`pack: set ${s.set}, ${s.files.length} files with brief-${s.set}.txt, in this order:`)
+  for (const f of s.files) console.log(`pack:   ${f.name}${f.heading ? `: ${f.heading}` : ''}`)
+}
+if (site && manifest.limitTook) console.log(manifest.limitTook.length ? `pack: the limit of files took ${manifest.limitTook.length}: ${manifest.limitTook.join('; ')}` : 'pack: the limit of files took nothing away')
+if (site && manifest.leftOut && manifest.leftOut.length) console.log(`pack: left out: ${manifest.leftOut.join('; ')}`)
 if (built.problems.length) console.log(`pack: the browser reported ${built.problems.length} problem${built.problems.length > 1 ? 's' : ''}: ${built.problems.slice(0, 4).join(' | ')}`)
