@@ -30,16 +30,17 @@ class Presser implements Driver {
   }
 }
 
-interface Watch { stage: Stage; from: number; to: number; filmSteps: number; names: string[]; farthest: number; left: { x: number; y: number } | null; done: boolean; lists: string[]; after: string[]; scroll: number }
+interface Watch { stage: Stage; from: number; to: number; filmSteps: number; unoffered: number; names: string[]; farthest: number; left: { x: number; y: number } | null; done: boolean; lists: string[]; after: string[]; scroll: number }
 
 function live(bot: BotName, seed: number, skipAt = -1): Watch {
   const stage = new Stage({ mode: 'live', flow: liveFlow().slice(STEP3), pages, driver: new Presser(bot, seed, skipAt), seed })
-  const w: Watch = { stage, from: -1, to: -1, filmSteps: 0, names: [], farthest: 0, left: null, done: false, lists: [], after: [], scroll: -1 }
+  const w: Watch = { stage, from: -1, to: -1, filmSteps: 0, unoffered: 0, names: [], farthest: 0, left: null, done: false, lists: [], after: [], scroll: -1 }
   let was = { x: 0, y: 0 }
   while (stage.entryIndex === 0 && stage.step < LIMIT) {
     stage.advance(1)
     if (stage.entryIndex !== 0) break
     if (stage.page.control === 'film') w.filmSteps++
+    if (stage.page.control === 'film' && !stage.skipOffered) w.unoffered++
     const c = stage.cursor.pose()
     if (w.from < 0 && stage.events.some((e) => e.name === 'video-in')) {
       w.from = stage.step
@@ -156,8 +157,11 @@ describe('step 3 of the live site plays the scene as a video', () => {
     expect(keen.after[0] === stage.frameAt(stage.time).list.map((x) => x.id).join(' ')).toBe(true)
   })
 
-  it('lets the visitor out by the skip link at three moments of the video', () => {
-    for (const at of [SKIP + 0.5, SKIP + 8, SKIP + 15]) {
+  it('offers the skip link on every step of the video and lets the visitor out by it at three moments, the first before the link would else be offered', () => {
+    expect(keen.filmSteps).toBeGreaterThan(0)
+    expect(keen.unoffered).toBe(0)
+    expect(manifest.from.time + 0.75).toBeLessThan(SKIP)
+    for (const at of [manifest.from.time + 0.75, SKIP + 8, SKIP + 15]) {
       const w = live('keen', config.seed, at)
       const skip = w.stage.events.find((e) => e.name === 'skip')!
       const out = w.stage.events.find((e) => e.name === 'video-out')!

@@ -96,3 +96,30 @@ The bots: `tools/bots.mjs` and `tools/gate.mjs` as said under NEEDS. In node a b
 ### Phone sizes
 
 The site shows its touch page (`touchOnly()` in `src/ui/device.ts`, then `mountTouchMessage` in `src/main.ts`) on a device with touch and neither hover nor a fine pointer, whatever its window: a phone never reaches step 3 and never fetches the video. So "phone sizes" here are desktop windows of 390 by 844 and 844 by 390: the stage is letterboxed to 390 by 219 and 693 by 390 and the video lies on it to the pixel. The numbers are in the table.
+
+### The joins at the real clock
+
+`node pipeline/change002/video-join.mjs --only 1280x720@1 --quality low --hide 12` (one visit at the real clock, bot keen; `out/work/video-join-time/joins.json`). On this machine the browser draws the stage in software: one live frame of the pinball page takes 0.2 s to several seconds, and the frozen live loop (`src/main.ts`) steps the stage once a display frame and no more than 0.1 s of stage time. So every time below that depends on a live frame is the time of this machine. What a machine with a graphics card gives: UNKNOWN, it cannot be measured here.
+
+- Join in: play asked to the start of the fade 1512 ms, which is 2 frames of the page (the 2 live frames the player lets pass, as built). The fade 1483 ms, again 2 frames of the page (200 ms by the clock: on a machine at 60 a second it is 12 frames).
+- The video itself: 2184 frames decoded, 49 dropped (`getVideoPlaybackQuality`), gap between presented frames median 16.7 ms, 99th percentile 33.5 ms. The largest gap is the 2 s the test hid the tab.
+- Join out: last video frame to the end of the fade 3583 ms; from there to the page's clock running again 18.1 ms, 1.09 display frames.
+- After the join in the canvas refines its rest picture for 64 display frames (frozen), then stops drawing: from there the video plays alone and the page costs nothing.
+- A black or white flash: the pictures of the screen taken through both joins (`in-row-*.jpg`, `out-row-*.jpg`, with the mean light of each) show none; the video element is transparent until its first frame is decoded, has no poster and no background, and is only made visible after a frame callback said the first frame is there (`ready`).
+- The first frame not decoded when play is asked: ruled out by `ready()`, which is false until the whole file is here, a frame was presented and `readyState >= 3`; play is asked only after the fade in, on a video that already shows its first frame.
+- Colour range and matrix: the file is tagged BT.709, limited range (`ffprobe`: `color_range=tv`, `color_space=bt709`), which is what a browser assumes for a 1080 line file; the measured mean difference of 3 to 6 of 255 leaves no room for a range fault.
+- Scaling: the element is laid on the canvas's own box, read from `getBoundingClientRect` at the join and on every resize; `object-fit: fill`.
+
+### Sound
+
+Same run. The offset between a cue's moment in the film and the video's clock when the page sounded it (before `VIDEO.cueLead` was added): first third of the video mean 14.65 ms, worst 120.13 ms; middle third 11.20 ms, 16.63 ms; last third 8.75 ms, 15.97 ms; all cues after the tab was hidden for 2 s and shown again 9.64 ms, 19.03 ms. 50 of 60 cues were sounded: 10 at the start were passed over because the video's clock had moved more than 0.25 s between two looks of the page, while the live loop refined its rest picture on this machine. The worst of the first third is over the Builder's 50 ms for the same cause. Since then a cue is sounded half a display frame ahead (`VIDEO.cueLead`), which takes about 8 ms off the mean.
+
+How the rule against sound before a press is met: the video has no sound track and is `muted`, so a browser plays it without a press; the cues come out of the site's own engine, which the visitor's first press unlocked on step 1 or 2.
+
+### The skip link
+
+`node pipeline/change002/video-skip.mjs --at 28,31,34` (real presses of the mouse at 1280x720). The press was taken at 28.42 s, 31.43 s and 34.51 s of the video; each time the video left and the page stood on the result card (`out/work/video-skip/before-*.png`, `after-*.png`). Press to the video gone: 10994 ms, 10080 ms, 5116 ms on this machine (the live frames of the join out). The row of controls stands on its dark capsule over the video (NEEDS, `src/main.ts`).
+
+### Not ready
+
+`node pipeline/change002/video-line.mjs --step 3 --rates 0.5` (the line held to 0.5 Mbit/s down): the file is not here at the join; the page plays the table itself (`out/work/video-line-slow/gave-up-0.5.png`, and 20 s later `gave-up-0.5-later.png` with the ball on its way down the feed tube). The hold before it is at most 1 s (`VIDEO.waitMax`, pinned by a test).

@@ -3,10 +3,10 @@ import { bridge, type VideoPlayer } from './bridge'
 import manifest from './manifest.json'
 import { VIDEO } from './plan'
 
-interface Trace { asked: number; shown: number; played: number; faded: number; left: number; waits: number; loaded: number; frames: { now: number; media: number; shown: number; count: number }[]; live: number[] }
+interface Trace { asked: number; shown: number; played: number; fell: number; faded: number; left: number; waits: number; loaded: number; frames: { now: number; media: number; shown: number; count: number }[]; live: number[] }
 
-const sources = import.meta.glob('./pinball.*', { query: '?url', import: 'default', eager: true }) as Record<string, string>
-const files = (manifest.files as { file: string; mime: string }[]).map((f) => ({ url: sources[`./${f.file}`], mime: f.mime })).filter((f) => f.url)
+const sources = import.meta.glob('./pinball.*.part', { query: '?url', import: 'default', eager: true }) as Record<string, string>
+const files = (manifest.files as { parts?: string[]; mime: string }[]).map((f) => ({ urls: (f.parts ?? []).map((p) => sources[`./${p}`] ?? ''), mime: f.mime })).filter((f) => f.urls.length > 0 && f.urls.every((u) => u !== ''))
 
 let mounted = false
 
@@ -33,7 +33,7 @@ export function mountVideo(): void {
   video.tabIndex = -1
   video.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;margin:0;object-fit:fill;pointer-events:none;opacity:0;background:transparent'
   document.body.insertBefore(video, host)
-  const trace: Trace | null = asked.get('video') === 'trace' ? { asked: -1, shown: -1, played: -1, faded: -1, left: -1, waits: 0, loaded: -1, frames: [], live: [] } : null
+  const trace: Trace | null = asked.get('video') === 'trace' ? { asked: -1, shown: -1, played: -1, fell: -1, faded: -1, left: -1, waits: 0, loaded: -1, frames: [], live: [] } : null
   if (trace) (window as unknown as { videoTrace: Trace; videoBridge: typeof bridge }).videoTrace = trace
   if (trace) (window as unknown as { videoBridge: typeof bridge }).videoBridge = bridge
   if (trace) bridge.cues = []
@@ -104,6 +104,7 @@ export function mountVideo(): void {
         const from = state
         state = 'falling'
         since = performance.now()
+        if (trace) trace.fell = since
         video.pause()
         if (from === 'entering') state = 'gone'
       }
@@ -129,10 +130,9 @@ export function mountVideo(): void {
   })
   if ('requestVideoFrameCallback' in video) video.requestVideoFrameCallback(frame)
   else (video as HTMLVideoElement).addEventListener('loadeddata', () => { primed = true })
-  void fetch(pick.url)
-    .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))))
-    .then((blob) => {
-      video.src = URL.createObjectURL(blob)
+  void Promise.all(pick.urls.map((url) => fetch(url).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))))
+    .then((pieces) => {
+      video.src = URL.createObjectURL(new Blob(pieces, { type: pick.mime.split(';')[0] }))
       if (trace) trace.loaded = performance.now()
       video.load()
       bridge.player = player

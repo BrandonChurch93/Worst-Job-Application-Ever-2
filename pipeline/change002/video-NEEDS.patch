@@ -1,5 +1,5 @@
 diff --git a/src/main.ts b/src/main.ts
-index 3cfd08d1..ed3219bf 100644
+index 3cfd08d1..c12d2142 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -312,6 +312,7 @@ function play(first: PlayMode): void {
@@ -19,6 +19,15 @@ index 3cfd08d1..ed3219bf 100644
  
    let frameSeconds = 1 / 60
    const api: InterfaceApi = {
+@@ -404,7 +405,7 @@ function play(first: PlayMode): void {
+     const key = `${now}${app.diagnostic}${p.key}`
+     still = size.changed() || key !== before ? 0 : Math.min(still + 1, rest.length)
+     before = key
+-    if (still >= rest.length) return
++    if (still >= rest.length || (still > 0 && now === 'live' && stage.page.control === 'film')) return
+     frame++
+     app.put(p.frame, p.size, p.pose)
+     app.setCamera(p.pose)
 diff --git a/src/stage/bots.ts b/src/stage/bots.ts
 index 51176e9e..383f2caf 100644
 --- a/src/stage/bots.ts
@@ -30,7 +39,7 @@ index 51176e9e..383f2caf 100644
 -export interface BotRun { bot: BotName; seed: number; finished: boolean; seconds: number; ignoredPointer: number; ignoredFlippers: number; gags: string[]; pages: string[]; pageSeconds: Record<string, number>; skips: number; stuckOn: string | null }
 +export interface BotRun { bot: BotName; seed: number; finished: boolean; seconds: number; ignoredPointer: number; ignoredFlippers: number; ignoredFilm: number; gags: string[]; pages: string[]; pageSeconds: Record<string, number>; skips: number; stuckOn: string | null }
 diff --git a/src/stage/stage.ts b/src/stage/stage.ts
-index 612aa1cc..7bdc3847 100644
+index e400abc1..cacf50e1 100644
 --- a/src/stage/stage.ts
 +++ b/src/stage/stage.ts
 @@ -42,7 +42,7 @@ interface Saved {
@@ -62,11 +71,13 @@ index 612aa1cc..7bdc3847 100644
      this.lag = { x: 0, y: 0, left: 0 }
      this.late = { raw: false, wait: 0 }
      this.reached = new Set()
-@@ -151,7 +153,7 @@ export class Stage {
+@@ -150,8 +152,8 @@ export class Stage {
+   get pageTime(): number { return this.pageStep / stepHz }
    get turning(): boolean { return this.phase !== 'play' }
    get finished(): boolean { return this.phase === 'end' || (this.index === this.o.flow.length - 1 && this.phase === 'play' && !this.o.film?.leave && this.index > 0) }
-   get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && this.pageStep >= skipAfter && this.index < this.o.flow.length - 1 && this.page.unit !== 'marketing' }
+-  get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && this.pageStep >= skipAfter && this.index < this.o.flow.length - 1 && this.page.unit !== 'marketing' }
 -  get longestIgnored(): { pointer: number; flippers: number } { return { pointer: this.max.pointer / stepHz, flippers: this.max.flippers / stepHz } }
++  get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && (this.pageStep >= skipAfter || this.page.control === 'film') && this.index < this.o.flow.length - 1 && this.page.unit !== 'marketing' }
 +  get longestIgnored(): { pointer: number; flippers: number; film: number } { return { pointer: this.max.pointer / stepHz, flippers: this.max.flippers / stepHz, film: this.max.film / stepHz } }
    get gagsReached(): string[] { return [...this.reached] }
    get pagesVisited(): string[] { return [...this.visited] }
@@ -103,7 +114,7 @@ index 612aa1cc..7bdc3847 100644
      this.lag = { ...(s.lag ?? { x: 0, y: 0, left: 0 }) }
      this.late = { ...(s.late ?? { raw: s.down, wait: 0 }) }
      this.reached = new Set(s.reached)
-@@ -495,7 +498,7 @@ export function runBot(pages: Record<string, PageMaker>, bot: BotName, seed: num
+@@ -522,7 +525,7 @@ export function runBot(pages: Record<string, PageMaker>, bot: BotName, seed: num
    }
    const ignored = stage.longestIgnored
    return {
@@ -113,10 +124,10 @@ index 612aa1cc..7bdc3847 100644
    }
  }
 diff --git a/src/stage/types.ts b/src/stage/types.ts
-index cfd2592e..2ec19139 100644
+index 5a862789..795ba348 100644
 --- a/src/stage/types.ts
 +++ b/src/stage/types.ts
-@@ -166,7 +166,7 @@ export interface PageLogic {
+@@ -172,7 +172,7 @@ export interface PageLogic {
    readonly layout: LayoutNode
    readonly gags: GagInfo[]
    readonly start: { x: number; y: number }
