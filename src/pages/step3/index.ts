@@ -156,7 +156,9 @@ const BACK = { behind: 2.8, up: 3.6, aim: 2.4, lift: -0.8, lag: 0.4, lead: 1.93,
 const NEAR: Record<string, { off: [number, number, number]; mid: [number, number]; keep: number }> = { 'near-nest': { off: [0, 6, 15], mid: [11.3, Y1 + 6.9], keep: 0.6 }, 'near-spent': { off: [0, 3.4, 8.6], mid: [0, 0], keep: 1 } }
 const PAN = { lag: 0.25, in: 0.68, slow: 0.5 }
 const RIDE = { crest: 2.2, foot: 8.5, tip: 2 }
-const SHOT = { door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1, cone: 0.7, sink: 0.9, air: 1.4, inbox: [20.5, 1, 0.35, 0.85], fire: [21.2, 1, 0.1, 1.2], flap: [20, 0, 0, 0.5] }
+// slide, live play: [seconds of waiting a scene may spend before the bats' power is cut, seconds after which no deadline waits any more, seconds before the inbox's eject and the scoop's kick where a lob still counts, the same before the highway's end,
+// balls a falling lob may be under its mark before it counts as missed, balls down a tier from where the ball is in the bats' reach, seconds after a stroke that met the ball in which the power is never cut, seconds before the inbox lights and before the firehouse's deadline from which a spent scene cuts the power]
+const SHOT = { slide: [5, 8, 0.3, 0.8, 1.5, 6.6, 0.75, 0.5, 2], door: 13, scoop: 21, ramp: 21, nest: 17, save: 19, lob: 9, lean: 0.3, jets: 0.5, wide: 2.5, low: 7.5, early: 0.3, back: 1, cone: 0.7, sink: 0.9, air: 1.4, inbox: [20.5, 1, 0.35, 0.85], fire: [21.2, 1, 0.1, 1.2], flap: [20, 0, 0, 0.5] }
 const FACE = { over: 0.94, low: 0.82, turn: 0.9, back: 5, press: 20, hit: 0.5, hold: 0.45, lag: 0.1, snap: 0.02, step: 0.03, wall: 0.6, lens: 0.8 }
 const SHEET = { along: 0.9, gap: 0.5, press: 0.6, side: 2.6, fly: [0.4, 7.4, 0.6], from: [0.18, 0.76, 0.624], far: 10.2, open: 15 }
 const LEAVE = { seconds: 0.55, in: 1.7, firm: 0.25, back: 5, settle: 0.12, up: 0.3 }
@@ -512,12 +514,38 @@ export function makePage(): PageLogic {
       s.tows++
       mc.tow(0, MID, TIER_Y[k]! + 11.0, 16, `gate:${k}`)
     }
-    const lob = (to: readonly number[], set: readonly number[], by: number, gate: string): number => {
+    const slide = SHOT.slide
+    const wasCut = mc.cut
+    const play = b.mode === 'plane' || b.mode === 'tow'
+    // Live play: a deadline waits while the ball is in play on its tier. The scene's clock holds just under it, and what the page ages from that clock keeps ageing.
+    const stay = (at: number, end: number, k: number): boolean => {
+      if (!live || b.tier !== k || !(play || (b.mode === 'rail' && b.rail.startsWith('outlane.'))) || t < at - 2 * dt || t >= end || mc.slid >= slide[1]!) return false
+      s.t -= dt
+      mc.slid += dt
+      s.struck -= dt
+      s.snap -= dt
+      s.scoreAt -= dt
+      s.blow[2] = s.blow[2]! - dt
+      s.lay[1] = s.lay[1]! - dt
+      if (s.sway >= 0) s.sway -= dt
+      return true
+    }
+    // Live play, the last resort when the scene's waiting is spent: the machine cuts the bats' power while the ball is in their reach, so the ball drains to the gate and its save.
+    const spent = (from: number, k: number): boolean => live && b.tier === k && play && mc.slid >= slide[0]! && t >= from
+    const cut = (): void => {
+      if (b.mode === 'tow' || (b.y > TIER_Y[b.tier]! + slide[5]! && (wasCut || mc.since('met') >= slide[6]!))) mc.cut = true
+    }
+    const lob = (to: readonly number[], set: readonly number[], by: number, gate: string, end: number, from: number): number => {
       if (!live) return 0
       const flown = mc.since(`ball-save:${gate}.gate`)
-      if (t < by - set[2]!) mc.mark = [to[0]!, to[1]!, set[0]!, set[1]!]
-      if (flown < SHOT.air && t - flown < by - set[2]! && t < by + set[3]!) return 1
-      return t >= by - set[2]! - SHOT.sink && t < by - set[2]! && Math.hypot(to[0]! - b.x, to[1]! - b.y) > PULL.near ? 2 : 0
+      if (t < end) mc.mark = [to[0]!, to[1]!, set[0]!, set[1]!]
+      if (flown < SHOT.air && t < end && !(b.vy > 0 && b.y > to[1]! + slide[4]!)) {
+        if (mc.slid >= slide[0]!) cut()
+        return 1
+      }
+      if (t >= end || !play) return 0
+      if (spent(from, b.tier)) cut()
+      return (t >= by - set[2]! - SHOT.sink || spent(from, b.tier)) && Math.hypot(to[0]! - b.x, to[1]! - b.y) > PULL.near ? 2 : 0
     }
     const sink = (): void => {
       if (b.mode === 'plane') mc.magnet = [MID, TIER_Y[b.tier]! + 11.2, PULL.gate]
@@ -537,6 +565,7 @@ export function makePage(): PageLogic {
     mc.aim = null
     mc.shot = null
     mc.mark = null
+    mc.cut = false
     if (b.mode === 'hold' && b.hold === 'loader' && t >= T.tube) {
       mc.release(0)
     }
@@ -554,23 +583,24 @@ export function makePage(): PageLogic {
       b.wait = t >= T.doorKick ? Math.min(b.wait, 0.05) : 1e9
     }
     if (b.mode === 'hold' && b.hold === 'corporate.doors') b.wait = t >= T.doorOpen ? Math.min(b.wait, 0.01) : 1e9
+    if (!stay(T.lobbyEnd, 1e9, 0) && !stay(T.inboxBy, T.eject - slide[2]!, 1) && !stay(T.officeBy, 1e9, 1) && !stay(T.firedBy, T.scoopKick - slide[2]!, 2) && !stay(T.flapBy, T.highwayEnd - slide[3]!, 2)) stay(T.streetBy, 1e9, 2)
+    if (spent(T.doorOpen, 0) || spent(T.officeOpen, 1) || spent(T.streetOpen, 2)) cut()
     if (b.tier === 0 && b.mode === 'plane') {
       if (t >= T.doorKick - 0.3 && t < T.doorKick) towTo('corporate.revolving', 18)
-      else if (t >= T.lobbyEnd) towGate(0)
+      else if (!live && t >= T.lobbyEnd) towGate(0)
       else if (t < T.doorKick) shoot(holdOf('corporate.revolving').stand![0], holdOf('corporate.revolving').stand![1], SHOT.door, PULL.door)
       else if (t >= T.doorOpen) mc.magnet = [MID, Y0 + 11.2, PULL.gate]
     }
     on['office.inbox'] = t >= T.inboxOn && t < T.eject
-    const inbox = b.tier === 1 && t >= T.inboxOn - SHOT.back && t < T.eject ? lob(holdOf('office.inbox').c, SHOT.inbox, T.inboxBy, 'office') : 0
+    const inbox = b.tier === 1 && t >= T.inboxOn - SHOT.back && t < T.eject ? lob(holdOf('office.inbox').c, SHOT.inbox, T.inboxBy, 'office', T.eject - slide[2]!, T.inboxOn - slide[7]!) : 0
     if (b.tier === 1 && b.mode === 'plane') {
       if (t >= T.inboxOn && t < T.eject) {
         const c = holdOf('office.inbox').c
-        if (t >= T.inboxBy && inbox !== 1) towTo('office.inbox')
+        if (!live && t >= T.inboxBy) towTo('office.inbox')
         else shoot(c[0], c[1], SHOT.scoop, inbox === 1 ? 0 : PULL.scoop)
-        if (inbox === 2) sink()
       } else if (t >= T.officeOpen - SHOT.back) {
         mc.aim = [MID, Y1 + MOUTH.v, lean]
-        if (t >= T.officeBy) towGate(1)
+        if (!live && t >= T.officeBy) towGate(1)
         else if (t >= T.officeOpen) mc.magnet = [MID, Y1 + 11.2, PULL.gate]
       } else {
         const low = table.bumpers.filter((m) => m.tier === 1)[2]!.c
@@ -580,6 +610,7 @@ export function makePage(): PageLogic {
         if (!live && b.y < table.bumpers.filter((m) => m.tier === 1)[0]!.c[1]) mc.aim = [b.x > MID ? MID - NEST.over[0]! : MID + NEST.over[0]!, Y1 + NEST.over[1]!, lean]
       }
     }
+    if (inbox === 2) sink()
     if (b.mode === 'hold' && b.hold === 'office.inbox') b.wait = t >= T.eject ? 0 : 1e9
     while (s.drops < T.drops.length && t >= T.drops[s.drops]! && b.tier === 1) {
       const h = holdOf('office.inbox')
@@ -591,27 +622,26 @@ export function makePage(): PageLogic {
     }
     if (t >= T.officeBy + 2) for (let i = 1; i < mc.balls.length; i++) if (mc.balls[i]!.mode !== 'none') mc.remove(i)
     on['street.firehouse'] = t < T.scoopKick + 0.3
-    const street = b.tier !== 2 ? 0 : t < T.scoopKick ? lob(holdOf('street.firehouse').mouth!, SHOT.fire, T.firedBy, 'street') : t >= T.flapOn && t < T.highwayEnd ? lob(railOf('highway').points[0]!, SHOT.flap, T.flapBy, 'street') : 0
+    const street = b.tier !== 2 ? 0 : t < T.scoopKick ? lob(holdOf('street.firehouse').mouth!, SHOT.fire, T.firedBy, 'street', T.scoopKick - slide[2]!, T.firedBy - slide[8]!) : t >= T.flapOn && t < T.highwayEnd ? lob(railOf('highway').points[0]!, SHOT.flap, T.flapBy, 'street', T.highwayEnd - slide[3]!, T.flapOn) : 0
     if (b.tier === 2 && b.mode === 'plane') {
       if (t < T.scoopKick) {
         const c = holdOf('street.firehouse').mouth!
-        if (t >= T.firedBy && street !== 1) towTo('street.firehouse')
+        if (!live && t >= T.firedBy) towTo('street.firehouse')
         else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
-        if (street === 2) sink()
       } else if (t < T.highwayEnd) {
         const p = railOf('highway').points[0]!
-        if (street === 2) sink()
-        if (t >= T.flapBy && street !== 1) {
+        if (!live && t >= T.flapBy) {
           s.tows++
           mc.tow(0, p[0], p[1], 16, 'rail:highway')
         } else mc.shot = [p[0], p[1], SHOT.ramp]
       } else if (t >= T.spiralEnd && t < T.streetOpen - SHOT.back) mc.shot = [MID + 1.2, Y2 + 2.2, SHOT.save]
       else {
         if (t >= T.streetOpen - SHOT.back) mc.aim = [MID, Y2 + MOUTH.v, lean]
-        if (t >= T.streetBy) towGate(2)
+        if (!live && t >= T.streetBy) towGate(2)
         else if (t >= T.streetOpen) mc.magnet = [MID, Y2 + 11.2, PULL.gate]
       }
     }
+    if (street === 2) sink()
     if (b.mode === 'hold' && b.hold === 'street.firehouse') {
       b.wait = t >= T.scoopKick ? Math.min(b.wait, 0.01) : 1e9
     }

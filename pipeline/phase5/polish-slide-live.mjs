@@ -22,6 +22,7 @@ const { TIER_Y, R, table, solids } = L
 const T = S3.T
 const DEADLINES = [['lobby gate', T.lobbyEnd], ['inbox', T.inboxBy], ['office gate', T.officeBy], ['firehouse', T.firedBy], ['ramp', T.flapBy], ['street gate', T.streetBy]]
 
+const WANT = ['spinner:corporate.revolving', 'tier-fall:corporate.gate', 'scoop-in:office.inbox', 'tier-fall:office.gate', 'scoop-in:street.firehouse', 'ramp-roll:highway', 'drain:street.gate']
 let mc = null
 let inStep = false
 let tows = []
@@ -136,6 +137,9 @@ for (const name of visitors) for (const seed of seeds) {
   const facts = []
   const slides = []
   const catches = []
+  const cuts = []
+  const got = new Set()
+  let wasCut = false
   const rows = []
   const towRows = []
   while (stage.entryIndex === 0 && stage.time < 110) {
@@ -149,6 +153,7 @@ for (const name of visitors) for (const seed of seeds) {
       if (e.name === 'plunger' && base === null) base = T.plunger - mc.steps / 240 + (mc.slid ?? 0)
       if (e.name === 'rail-out' && e.id === 'launch') onTable = true
       if (e.name === 'at-outlet' && end < 0) end = page
+      if (e.name === 'scoop-in' || e.name === 'ramp-roll' || e.name === 'tier-fall' || e.name === 'drain' || e.name === 'spinner') got.add(`${e.name}:${e.id}`)
       if (e.name === 'catch' || e.name === 'throw' || e.name === 'magnet-catch' || e.name === 'magnet-throw') catches.push(`${f2(page)} ${e.name} ${e.id} at (${f1(b.x)}, ${f1(b.y - TIER_Y[b.tier])})`)
       if (has('facts') && e.name !== 'flipper') facts.push(`${f2(page)} s  ${e.name}:${e.id}`)
     }
@@ -172,24 +177,27 @@ for (const name of visitors) for (const seed of seeds) {
       off = b.mode === 'plane' ? 0 : off + 1
       offMost = Math.max(offMost, off)
     }
-    if (has('rows')) rows.push({ page, scene, mode: b.mode, tier: b.tier, x: b.x, v: b.y - TIER_Y[b.tier], vx: b.vx, vy: b.vy, what: b.mode === 'tow' ? `tow>${b.then}` : b.mode === 'hold' ? `hold ${b.hold}` : b.mode === 'rail' ? `rail ${b.rail}` : '', ev: mc.events.filter((e) => e.name !== 'flipper').map((e) => `${e.name}:${e.id}`).join(' '), mag: mc.magnet ? mc.magnet.map((n) => n.toFixed(1)).join(',') : '', L: stage.page && mc.held[0], R: mc.held[1], slid })
+    if (mc.cut && !wasCut) cuts.push({ from: page, met: mc.since('met') })
+    if (!mc.cut && wasCut) cuts[cuts.length - 1].seconds = page - cuts[cuts.length - 1].from
+    wasCut = !!mc.cut
+    if (has('rows')) rows.push({ page, scene, mode: b.mode, tier: b.tier, x: b.x, v: b.y - TIER_Y[b.tier], vx: b.vx, vy: b.vy, what: b.mode === 'tow' ? `tow>${b.then}` : b.mode === 'hold' ? `hold ${b.hold}` : b.mode === 'rail' ? `rail ${b.rail}` : '', ev: mc.events.filter((e) => e.name !== 'flipper').map((e) => `${e.name}:${e.id}`).join(' '), mag: mc.magnet ? mc.magnet.map((n) => n.toFixed(1)).join(',') : '', L: stage.page && mc.held[0], R: mc.held[1], slid, cut: mc.cut })
     if (was && was !== b.mode && has('facts')) facts.push(`${f2(page)} s  ${was} > ${b.mode} ${b.mode === 'tow' ? b.then : b.mode === 'hold' ? b.hold : b.mode === 'rail' ? b.rail : ''}`)
     was = b.mode
   }
   const old = towRows.filter((t) => t.old)
   const slidSum = slides.reduce((m, x) => m + x.seconds, 0)
   const gags = config.film.beats.filter((x) => x.unit === 'pinball').every((x) => stage.gagsReached.includes(x.id))
-  lines.push(`${name.padEnd(8)} seed ${seed}  old tows ${old.length}  slides ${slides.length} (sum ${f2(slidSum)} s, longest ${f2(slides.reduce((m, x) => Math.max(m, x.seconds), 0))} s)  catches ${catches.filter((c) => c.includes('catch')).length}  ball off the floor at most ${f2(offMost / 240)} s  scene end ${end < 0 ? 'NEVER' : f2(end)} s  page end ${stage.entryIndex === 0 ? 'NEVER' : f2(stage.time)} s  beats ${gags ? 'all' : 'MISSED'}${skipped ? '  skipped' : ''}`)
+  lines.push(`${name.padEnd(8)} seed ${seed}  old tows ${old.length}  slides ${slides.length} (sum ${f2(slidSum)} s, longest ${f2(slides.reduce((m, x) => Math.max(m, x.seconds), 0))} s)  cuts ${cuts.length} (longest ${f2(cuts.reduce((m, x) => Math.max(m, x.seconds ?? 0), 0))} s, sum ${f2(cuts.reduce((m, x) => m + (x.seconds ?? 0), 0))} s)  devices ${WANT.filter((w) => got.has(w)).length} of ${WANT.length}${WANT.every((w) => got.has(w)) ? '' : ` MISSED ${WANT.filter((w) => !got.has(w)).join(',')}`}  ball off the floor at most ${f2(offMost / 240)} s  scene end ${end < 0 ? 'NEVER' : f2(end)} s  page end ${stage.entryIndex === 0 ? 'NEVER' : f2(stage.time)} s  beats ${gags ? 'all' : 'MISSED'}${skipped ? '  skipped' : ''}`)
   for (const t of towRows) lines.push(`    ${t.old ? 'TOW' : 'tow'} page ${f2(t.page)} s scene ${f2(t.scene)} s  tier ${t.tier} (${f1(t.from[0])}, ${f1(t.from[1] - TIER_Y[t.tier])}) > (${f1(t.to[0])}, ${f1(t.to[1] - TIER_Y[t.tier])}) ${f1(t.near)} balls at ${t.speed}/s to ${t.then}, ball had ${f1(t.v)}/s, through: ${t.hit.length ? t.hit.join(', ') : 'nothing'}${t.mouth ? ' (from the gate\'s mouth)' : ''}`)
   for (const x of slides) lines.push(`    slide page ${f2(x.from)} s  ${x.which} deadline waited ${f2(x.seconds)} s`)
-  for (const c of catches) lines.push(`    ${c}`)
+  for (const c of cuts) lines.push(`    cut page ${f2(c.from)} s  the bats' power was cut for ${f2(c.seconds ?? 0)} s, ${c.met >= 9 ? 'no stroke had met the ball' : `${f2(c.met)} s after a stroke met the ball`}`)
   for (const f of facts) lines.push(`      ${f}`)
   if (has('rows')) {
     const at = Number(arg('at', 0))
     const k0 = rows.findIndex((r) => r.page >= at)
     for (let k = Math.max(0, k0); k < Math.min(rows.length, k0 + Number(arg('after', 150))); k++) {
       const r = rows[k]
-      lines.push(`      ${f2(r.page)} ${r.scene.toFixed(3)} ${r.L ? 'L' : '.'}${r.R ? 'R' : '.'} ${r.mode.padEnd(5)} t${r.tier} ${f2(r.x).padStart(6)} ${f2(r.v).padStart(6)} ${f2(r.vx).padStart(7)} ${f2(r.vy).padStart(7)} ${f1(Math.hypot(r.vx, r.vy)).padStart(5)} ${r.mag} ${r.what} ${r.ev}`)
+      lines.push(`      ${f2(r.page)} ${r.scene.toFixed(3)} ${r.L ? 'L' : '.'}${r.R ? 'R' : '.'} ${r.mode.padEnd(5)} t${r.tier} ${f2(r.x).padStart(6)} ${f2(r.v).padStart(6)} ${f2(r.vx).padStart(7)} ${f2(r.vy).padStart(7)} ${f1(Math.hypot(r.vx, r.vy)).padStart(5)} ${r.cut ? 'CUT' : '   '} ${r.mag} ${r.what} ${r.ev}`)
     }
   }
 }

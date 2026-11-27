@@ -20,7 +20,7 @@ export interface BallState {
 export interface TableEvent { name: string; ball: number; id: string; x: number; y: number }
 export interface MachineState {
   snap: string; balls: BallState[]; flip: [number, number]; held: [boolean, boolean]; down: boolean[]; bank: number[]; cool: number[]; gate: boolean[]; on: Record<string, boolean>
-  mom: boolean; carpet?: boolean; live?: boolean; bounce?: [number, number]; mark?: [number, number, number, number] | null; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
+  mom: boolean; carpet?: boolean; live?: boolean; bounce?: [number, number]; mark?: [number, number, number, number] | null; slid?: number; cut?: boolean; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
 }
 
 const DEG = 0.017453292519943295
@@ -30,6 +30,8 @@ const DT = 1 / HZ
 const MAX_SPEED = 30
 // Live play, set by the page each step and off in the film: the steps of a bat's stroke up and of its fall, the height and the steps of its bounce at rest, and the speed limit of a visitor's ball.
 const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36 }
+// Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
+const MET = 3
 const LIFT_SHUT = 0.4
 const FOREVER = 1e9
 const BAT = { bounce: 0.3, grip: 0.4 }
@@ -85,6 +87,8 @@ export class Machine {
   saves = 0
   magnet: number[] | null = null
   mark: [number, number, number, number] | null = null
+  slid = 0
+  cut = false
   aim: [number, number, number] | null = null
   shot: [number, number, number] | null = null
   armed: [boolean, boolean] = [false, false]
@@ -142,6 +146,8 @@ export class Machine {
     this.live = false
     this.bounce = [0, 0]
     this.mark = null
+    this.slid = 0
+    this.cut = false
     this.saves = 0
     this.magnet = null
     this.aim = null
@@ -165,7 +171,7 @@ export class Machine {
   save(): MachineState {
     return {
       snap: toBase64(this.world.takeSnapshot()), balls: this.balls.map((b) => ({ ...b })), flip: [...this.flip], held: [...this.held], down: [...this.down], bank: [...this.bank], cool: [...this.cool], gate: [...this.gate],
-      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
+      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null, slid: this.slid, cut: this.cut } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
     }
   }
 
@@ -186,6 +192,8 @@ export class Machine {
     this.live = s.live === true
     this.bounce = s.bounce ? [...s.bounce] : [0, 0]
     this.mark = s.mark ? [...s.mark] : null
+    this.slid = s.slid ?? 0
+    this.cut = s.cut === true
     this.saves = s.saves
     this.magnet = s.magnet ? [...s.magnet] : null
     this.aim = s.aim ? [...s.aim] : null
@@ -547,8 +555,11 @@ export class Machine {
   step(left: boolean, right: boolean): TableEvent[] {
     this.events = []
     this.swell()
-    const want: [boolean, boolean] = [left, right]
+    const dead = this.live && this.cut
+    const want: [boolean, boolean] = dead ? [false, false] : [left, right]
     let done = -1
+    let beside = false
+    if (dead) this.dark()
     for (let s = 0; s < 2; s++) {
       if (want[s] && !this.held[s]) {
         this.events.push({ name: 'flipper', ball: -1, id: s === 0 ? 'left' : 'right', x: s === 0 ? FLIP.pivotU : 20 - FLIP.pivotU, y: 0 })
@@ -561,6 +572,7 @@ export class Machine {
       const was = this.flip[s]!
       this.flip[s] = to > was ? Math.min(to, was + d) : Math.max(to, was - d)
       if (this.live) this.rebound(s, want[s]!, was)
+      if (this.live && this.flip[s]! > was && this.near(s)) beside = true
       if (!want[s]) this.armed[s] = false
       else if (this.armed[s] && was < 1 && this.flip[s] === 1) done = s
     }
@@ -577,7 +589,12 @@ export class Machine {
       const d = Math.hypot(dx, dy)
       if (d > 0.05 && (m[3] === undefined || d < m[3]!)) this.kick(0, b.vx + (dx / d) * m[2]! * DT, b.vy + (dy / d) * m[2]! * DT)
     }
+    const before = beside ? Math.hypot(this.balls[0]!.vx, this.balls[0]!.vy) : 0
     this.world.step()
+    if (beside) {
+      const v = this.body(0).linvel()
+      if (Math.hypot(v.x, v.y) - before > MET) this.last['met'] = this.steps
+    }
     if (done >= 0) this.strike(done)
     for (let c = 0; c < this.cool.length; c++) if (this.cool[c]! > 0) this.cool[c] = this.cool[c]! - DT
     for (let k = 0; k < this.bank.length; k++) {
@@ -675,6 +692,19 @@ export class Machine {
       const u = this.bounce[s]! / LIVE.back
       this.flip[s] = LIVE.bounce * 4 * u * (1 - u)
     } else if (was > 0 && this.flip[s] === 0) this.bounce[s] = LIVE.back
+  }
+
+  // Live play: the bats' power is cut, and the lamps of the ball's tier flicker for as long as it is, no faster than the machine's own flashes.
+  private dark(): void {
+    const k = this.balls[0]!.tier
+    if (this.steps - (this.last[`rise.${k}`] ?? -PULSE.gap) < PULSE.gap) return
+    this.last[`rise.${k}`] = this.steps
+    this.last[`flash.${k}`] = this.steps
+  }
+
+  private near(s: number): boolean {
+    const o = this.over(s)
+    return !!o && o.above > 0 && Math.hypot(o.along, o.above) < FLIP.length + R + 0.5
   }
 
   // Where the clear ball is over a bat at rest: how far along it from the pivot and how far above its middle line.
