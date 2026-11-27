@@ -1,5 +1,5 @@
 // The live site under the pack's own visitor at 1920 by 1080 and level high, drawn in consecutive frames of 60 a second, and sheets cut from those pictures at real size.
-// node pipeline/phase5/polish-hand-shots.mjs walk LABEL [rest=FRAME] FIRST-LAST[/STRIDE] [...]   walks once, keeps a picture of every frame in the spans; from rest=FRAME on the hand lies still
+// node pipeline/phase5/polish-hand-shots.mjs walk LABEL [rest=FRAME] [move=FRAME:DX:DY:FRAMES[:line]] FIRST-LAST[/STRIDE] [...]   walks once, keeps a picture of every frame in the spans; from rest=FRAME on the hand lies still; from move=FRAME on it goes DX, DY over FRAMES frames, eased or at one speed
 // node pipeline/phase5/polish-hand-shots.mjs sheet LABEL[+LABEL] NAME FIRST STRIDE COUNT LEFT TOP W H COLS [cross] [mark=FRAME:WORDS ...]   lays COUNT windows on one sheet, cut unscaled at LEFT, TOP; two labels lie side by side frame by frame
 // node pipeline/phase5/polish-hand-shots.mjs film DIR NAME FIRST STRIDE COUNT LEFT TOP W H COLS [mark=FRAME:WORDS ...]   the same from the numbered frames of the film in DIR
 // node pipeline/phase5/polish-hand-shots.mjs stack OUT A.png B.png [C.png ...]   lays finished sheets one above the other
@@ -48,8 +48,10 @@ if (what === 'walk') {
   fs.mkdirSync(dir, { recursive: true })
   const want = new Set()
   let still = Infinity
+  let stroke = null
   for (const span of rest) {
     if (span.startsWith('rest=')) { still = Number(span.slice(5)); continue }
+    if (span.startsWith('move=')) { const [from, dx, dy, over, how] = span.slice(5).split(':'); still = Number(from); stroke = { dx: Number(dx), dy: Number(dy), over: Number(over), line: how === 'line' }; continue }
     const [a, b, by = 1] = span.split(/[-/]/).map(Number)
     for (let i = a; i <= b; i += by) want.add(i)
   }
@@ -75,9 +77,18 @@ if (what === 'walk') {
           if (a.up) hand.down = false
           await send(session.page, a)
         }
-      } else if (hand.down) {
-        hand.down = false
-        await session.page.mouse.up()
+      } else {
+        if (hand.down) {
+          hand.down = false
+          await session.page.mouse.up()
+        }
+        if (stroke) {
+          if (!stroke.from) stroke.from = { x: hand.x, y: hand.y }
+          const u = Math.min(1, (i - still + 1) / stroke.over)
+          const e = stroke.line ? u : u * u * (3 - 2 * u)
+          Object.assign(hand, { x: stroke.from.x + stroke.dx * e, y: stroke.from.y + stroke.dy * e })
+          await session.page.mouse.move(hand.x, hand.y)
+        }
       }
       t = await tell(1 / VISITOR.hz)
       rows.push([i, Math.round(t.time * 1000) / 1000, t.hero.x, t.hero.y, hand.x, hand.y, t.scroll, t.page, t.turning ? 1 : 0])

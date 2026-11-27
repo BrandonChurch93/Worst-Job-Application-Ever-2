@@ -2,6 +2,7 @@ import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { homeDistance } from '../src/stage/camera'
 import { liveFlow, MouseDriver, Stage } from '../src/stage/stage'
+import { JOLT } from '../src/stage/turn'
 import type { Driver, Pointer } from '../src/stage/types'
 import { keyBlock, makeVisitor, VISITOR } from '../tools/lib/pack-site.mjs'
 
@@ -19,6 +20,16 @@ export function onScreen(x: number, y: number, z: number, scroll: number, turn: 
   const vz = v * Math.sin(turn) + z * Math.cos(turn)
   const k = D / (D - vz)
   return { x: 960 + u * k, y: 540 - vy * k }
+}
+
+// The same with the view's jolt on the seat, `jolt` from 1 down to 0: the camera is knocked JOLT.push of its distance toward the slab and JOLT.rise page units down, as the renderer does it.
+export function onScreenJolted(x: number, y: number, z: number, scroll: number, turn: number, jolt: number): { x: number; y: number } {
+  const u = x - 960
+  const v = 540 - (y - scroll)
+  const vy = v * Math.cos(turn) - z * Math.sin(turn)
+  const vz = v * Math.sin(turn) + z * Math.cos(turn)
+  const k = D / (D * (1 - JOLT.push * jolt) - vz)
+  return { x: 960 + u * k, y: 540 - (vy + JOLT.rise * jolt) * k }
 }
 
 // Every input the stage asked for, kept by step, so that a second stage can be given the same hand up to a step and another hand from there.

@@ -6,12 +6,16 @@ import { BotDriver, type BotName } from '../src/stage/bots'
 import { LANDING } from '../src/pages/marketing/script'
 import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
 import type { Pointer } from '../src/stage/types'
-import { SHIVER } from '../src/stage/turn'
-import { fork, forked, Kept, onScreen, PER, resting, rowOf, stroking, turnsOf, visit, type Row, type Turn } from './polish-hand-run'
+import { joltAt, SHIVER } from '../src/stage/turn'
+import { fork, forked, Kept, onScreen, onScreenJolted, PER, resting, rowOf, stroking, turnsOf, visit, type Row, type Turn } from './polish-hand-run'
 
 // What a page turn may do to the arrow under a resting hand, px of 1920 by 1080: how far from the pointer's place it may lie on the page when the page is flat,
 // how far from the pointer on the screen (its height over the page is seen in perspective), how far it may go in the 30 frames after, and how far its height may change.
 const FLAT = { page: 2, screen: 4, after: 2, z: 1 }
+// FLAT.screen is measured without the view's jolt on the seat. With it, stepped as the renderer does it, the arrow is carried with the page it lies on, px from where it comes to rest on the screen:
+// `seat` on the `frames` frames from the contact (the jolt and the tray's hop), `knock` on the frames of the first knock after them, `still` from `from` frames after the contact.
+// For a pointer 604 px left of the middle and 69 px over it, as on turn 1: the jolt carries what lies on the page by JOLT.push of its distance from the middle and JOLT.rise up.
+const CARRY = { seat: 9, frames: 4, knock: 2.5, from: 9, still: 1 }
 // Under a hand that strokes 560 px in 70 frames through the turn: the furthest the arrow may lie from the pointer's place on the slab, at the step the page is given to play, and the frames after which it is within FLAT.page.
 const MOVING = { far: 40, atPlay: 20, joined: 12 }
 // After a bolt's hit under a hand: px past the hand's place, the frame from the hit by which the place is back within 2 px, the frame by which the drawn angle is within 1 degree of its stand,
@@ -124,6 +128,22 @@ describe('the arrow under a hand through a page turn', () => {
       if (d.i >= seat) expect(d.clear).toBeGreaterThan(0)
     }
     for (let i = seat + 12; i <= t.flat + 30; i++) expect(at(i).lift).toBeLessThan(0.5)
+  })
+
+  it("turn 1: with the view's jolt the arrow is carried with the page on the seat by no more than CARRY, and lies still after", () => {
+    const t = turns[0]!
+    const seat = t.half + Math.round(0.6 * (t.flat - t.half))
+    const seen: { i: number; x: number; y: number }[] = []
+    forked(v, t.start, t.flat - t.start + 31, resting, LEAD, (s, i) => {
+      const f = s.frameAt(s.time)
+      seen.push({ i, ...onScreenJolted(f.cursor.x, f.cursor.y, f.cursor.z, f.scroll, f.cursor.rides ? f.turn : 0, f.settle === undefined ? 0 : joltAt(f.settle)) })
+    })
+    const rest = seen[seen.length - 1]!
+    const carry = (i: number): number => { const a = seen.find((d) => d.i === i)!; return Math.hypot(a.x - rest.x, a.y - rest.y) }
+    expect(carry(seat)).toBeGreaterThan(FLAT.screen)
+    for (let i = seat; i < seat + CARRY.frames; i++) expect(carry(i)).toBeLessThanOrEqual(CARRY.seat)
+    for (let i = seat + CARRY.frames; i < seat + CARRY.from; i++) expect(carry(i)).toBeLessThanOrEqual(CARRY.knock)
+    for (let i = seat + CARRY.from; i <= t.flat + 30; i++) expect(carry(i)).toBeLessThanOrEqual(CARRY.still)
   })
 
   it('a page that ends by itself: the turn that comes long after the last press leaves the arrow under the resting hand', () => {

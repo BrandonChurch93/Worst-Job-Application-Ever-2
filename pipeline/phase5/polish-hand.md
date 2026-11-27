@@ -64,9 +64,18 @@ Mend, `src/stage/stage.ts` `hopUnder`: under a hand, while the seat's hop runs, 
 
 Seen in the picture (`hop-before-above-after-below.png`, frames 644 to 648 at real size, before above and after below): before, frame 646 shows a pale stub where the arrow is; after, the arrow is whole on all five frames.
 
-### What the page's jolt does to the arrow on the seat (MEASURED in the pictures, not changed)
+### What the page's jolt does to the arrow on the seat (MEASURED, left as it is by the Builder's ruling of 08:47)
 
-The shift at which the arrow's window (50 by 62 px at 335, 468) of each frame of `after-hop` fits frame 652 best: frame 644 (contact) 7 px left, 645 6 px left, 646 6 px left, 647 3 px left, 648 on 0 px. The page is drawn larger and higher on the contact frame and the two after (the jolt, section 3: the head 9, 6, 3 px up), and the pointer rests 604 px left of the middle, so what lies on the page there is carried 6 to 7 px outward, the arrow with it. The stepped test does not see this: its `FLAT.screen` of 4 px is measured without the view's jolt. I left it: the arrow lies on the page and goes with the page when the page is knocked, as the print under it does; sliding it against the print for three frames would make it the one thing on the page that does not answer the seat. The Builder decides whether that is wanted.
+The view is jolted on the seat (`JOLT`, `src/stage/turn.ts`: the camera is knocked 1 in 100 of its distance toward the slab and 4.9 units down, back in 5 frames), so everything on the page is carried outward from the middle and up, the arrow with it. The stepped bound `FLAT.screen` of 4 px is measured without the view's jolt and does not see this.
+
+MEASURED in the pictures of `after-hop` (the topmost dark pixel of the arrow's outline, its tip, against frame 652 where it is (351, 470)): frame 644 (contact) 7 px left and 5 px up, 645 6 left 3 up, 646 5 left 2 up, 647 2 left 3 up, 648 1 right 2 up, 649 0 and 1 up, 650 1 left 1 down.
+MEASURED stepped, with the view's transform written out in `tests/polish-hand-run.ts` (`onScreenJolted`), px from where the arrow comes to rest: 8.4 on the contact frame, then 6.8, 5.3, 3.3 (the jolt and the tray's hop), then 2.3, 1.8, 0.5, 0.5, 0.6 (the first knock tilts the slab), then 0.1 and less from the ninth frame after the contact. The stepped numbers and the pictures agree to the px.
+
+My first report gave 7, 6, 6, 3 px and 0 from 648: that fit was of a window with the print in it and read only the sideways part rightly. The numbers above replace it.
+
+The test pins it (`CARRY = { seat: 9, frames: 4, knock: 2.5, from: 9, still: 1 }`): at most 9 px on the four frames from the contact, at most 2.5 px until the ninth, at most 1 px after. For another pointer's place the carry is 1 in 100 of its distance from the middle plus 4.9 px up on the contact frame.
+
+Left as it is: the arrow lies on the page and goes with the page when the page is knocked, as the print under it does.
 
 ## 2. The hit's tail
 
@@ -141,6 +150,7 @@ The four bots (MEASURED in a scratch test, the same loop as the test): keen 7955
 All from `node pipeline/phase5/polish-hand-shots.mjs` (the usage is in its head), kept in `out/work/polish-hand/`, which is not in the repo. Every window is cut from 1920 by 1080 and not scaled. The cross is the pointer's place, drawn into the sheet by the script.
 
 - The turn into step 1, before beside after, every second frame from 594 to 676, six sheets: `walk before-rest rest=596 586-690/2` on a worktree of the starting commit, the same on the branch as `after-rest`, then `sheet before-rest+after-rest turn-a 594 2 7 310 405 596 145 2 cross mark=596:"turn starts" mark=626:"arriving page" mark=644:contact mark=656:"given to play"` and so on in steps of 14 frames. The pointer rests at (356, 471). Before, the arrow stands at (960, 540), right of the window, from about frame 606 to 656.
+  What the six sheets show, before left and after right: 594 to 606, before the arrow walks off the button to the right from 598, after it lies on the button; 608 to 620, before no arrow in the window, after it lies on the button and darkens with the page as the page tips away; 622 to 634, the arriving page comes up, before no arrow, after it lies on the tilted page below the cross and nears it as the page comes flat; 636 to 648, after its tip is at the cross from 640, the contact 644 and the two knocks pass under it; 650 to 662, before the arrow walks in from the right from 658, after it stands on the cross; 664 to 676, before it reaches the cross at 664, goes past by a few px and is still by 672, after it has not moved.
 - The tray's hop: `walk after-hop rest=596 640-652`; before is the same walk made before `hopUnder`.
 - The hit at frame 898: `walk before-hit rest=896 894-922` on the worktree and `walk after-hit rest=896 894-922` on the branch.
 - The seat: section 3.
