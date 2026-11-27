@@ -797,7 +797,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
         const flow = pace()
         if (s.phase === 'idle' || f.at === 'field') return { x: chip.x + chip.w / 2, y: chip.y + chip.h / 2, down: s.phase === 'resume' && blink }
         if (f.at === 'press') return { x: chip.x + chip.w / 2, y: chip.y + chip.h / 2, down: false }
-        if (f.at === 'folder') return { x: TILE.x + TILE.w / 2, y: PAPER_REST.y + PAPER.h / 2, down: f.t >= flow.pop && blink }
+        if (f.at === 'folder') return { x: PAPER_REST.x + PAPER.w / 2 - 8, y: PAPER_REST.y + PAPER.h / 2 - 4, down: f.t >= flow.pop && blink }
         return { x: stand.x, y: stand.y, down: false }
       }
       if (s.phase === 'tug') return { x: SLOT.cx - 90, y: SLOT.cy - 260, down: false }
