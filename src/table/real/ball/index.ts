@@ -12,6 +12,7 @@ import { zone } from '../zone'
 import { keyOf } from '../lights/key'
 import { backFragment, decalFragment, decalVertex, dropFragment, dropVertex, frontFragment, shellVertex, SQUASH, WALL } from './glsl'
 import { BOXES, LAMPS, lightAt, washAt, type Light, type RGB } from './lamps'
+import { line, TUBE } from '../frame/loader'
 
 export const PART = 'clear-ball'
 export const RIN = 0.875
@@ -34,6 +35,23 @@ export const PRESS = { most: 0.4, hit: 0.4, stood: 0.3, dies: 0.05, stand: 3 }
 export const PARTING = { swung: 0.8, sinks: 0.55, deep: 1.9, fades: 0.8 }
 const INSIDE = { key: 2.6, fill: 0.6, lamps: 0.12, face: 1.6, least: 0.85, most: 1.0 }
 const floors = TIERS.map((id) => ask(`table/art/${id}.webp`, { colour: true }))
+
+let feed: number[][] | null = null
+// Whether a ball with its middle at a place of the page, in page pixels, is inside the bore of the feed tube: it casts no shadow on the floor there.
+export function piped(x: number, y: number, z: number): boolean {
+  feed ??= line()
+  const bore = TUBE.outer - TUBE.wall
+  for (let i = 1; i < feed.length; i++) {
+    const a = feed[i - 1]!
+    const b = feed[i]!
+    const dx = b[0]! - a[0]!
+    const dy = b[1]! - a[1]!
+    const dz = b[2]! - a[2]!
+    const t = Math.max(0, Math.min(1, ((x - a[0]!) * dx + (y - a[1]!) * dy + (z - a[2]!) * dz) / Math.max(1e-9, dx * dx + dy * dy + dz * dz)))
+    if (Math.hypot(x - a[0]! - dx * t, y - a[1]! - dy * t, z - a[2]! - dz * t) < bore) return true
+  }
+  return false
+}
 
 // What the page tells the maker about the ball, on the shape's `v`: the share it is closed, the seconds since it closed, how much it sweats.
 export interface State { closed: number; since: number; sweat: number }
@@ -470,7 +488,7 @@ function pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   own.core.visible = debug.grade === 'true' && open < 0.01
 
   const lift = Math.max(0, -L.drop)
-  own.decal.visible = L.tier && lift < r * 6
+  own.decal.visible = L.tier && lift < r * 6 && !piped(cx, cy, s.z0 + r)
   const rug = u.uFlat!.value as THREE.Vector4
   own.decal.position.set(0, 0, L.drop + (rug.z > 0 && Math.abs(rug.x) < rug.z + r * 3 && Math.abs(rug.y) < rug.w + r * 3 ? 5.6 : 3.4))
   const shade = d.uShade!.value as THREE.Vector4[]
