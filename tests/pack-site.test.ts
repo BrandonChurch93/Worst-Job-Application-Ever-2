@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { BANNED, briefFor, neutral, packPlan, rolesOf } from '../tools/lib/pack-plan.mjs'
-import { COL, HAND_WORDS, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, handAt, handsOff, keyBlock, makeVisitor, momentsOf, motionPlan, siteLines, siteNotes, spreadSteps, struckWords } from '../tools/lib/pack-site.mjs'
+import { CLOSE, COL, FLIPS, GIVES, HAND_WORDS, KEYS, KEY_WORDS, SAVE, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, handAt, handsOff, keyBlock, makeVisitor, momentsOf, motionPlan, saveWindow, siteLines, siteNotes, spreadSteps, struckWords, tierSheet, closeWindow, windowHolds } from '../tools/lib/pack-site.mjs'
 
 const root = path.resolve(__dirname, '..')
 const cfg = JSON.parse(fs.readFileSync(path.join(root, 'config/showcase.json'), 'utf8'))
@@ -11,21 +11,23 @@ const units: string[] = cfg.film.units.map((u: { id: string }) => u.id)
 const count: number = cfg.critics.contactSheetFrames
 const most: number = cfg.critics.maxFilesPerMessage
 
-type File = { name: string; kind: string; heading: string; unit?: string; judged?: boolean; control?: string; image?: string; still?: string; steps?: number[]; moment?: string; at?: number; page?: string; hands?: string[]; part?: number[] | null }
-type Plan = { role: string; unit: string; sets: { set: string; critic: string; files: File[] }[] }
+type File = { name: string; kind: string; heading: string; unit?: string; judged?: boolean; control?: string; image?: string; still?: string; steps?: number[]; moment?: string; at?: number; page?: string; hands?: string[]; part?: number[] | null; run?: number[]; every?: number }
+type Plan = { role: string; unit: string; sets: { set: string; critic: string; groups: string[]; files: File[] }[] }
 
 // A made-up visit: six pages of 300 steps with a turn of 20 steps between them, a pointer that walks, a bolt, a key of the page's keyboard, a tug and a table.
-// On the table the ball lies right of the middle and falls slowly. `stroke`: the visitor presses the right flipper at 120 and the ball goes off it at 121.
-// `save`: the ball falls between the bats from 190 and stands thrown up at 200, as the machine's save does, with no hand on a flipper.
+// On the table the camera stands on the middle tier and the ball lies right of the middle. `stroke`: the visitor presses the right flipper at 120 and the ball goes off it at 121.
+// `save`: the ball is low in the mouth between the bats from 190 and stands thrown up at 200, as the machine's save does, with no hand on a flipper.
 // `tap`: the visitor presses the right flipper for three steps just before that save, and meets nothing. `clicks`: the mouse button is down at the bolt.
 const PAGES = ['marketing', 'step1', 'step2', 'step3', 'step4', 'step5']
 const LONG = 300
+const TIER: number = cfg.formats.hd.height + (cfg.table.marqueeHeightBalls + cfg.table.tierHeightBalls) * cfg.table.ballPx
 const KEY = keyBlock(cfg).place as { x: number; y: number }
 const BOLT = [{ name: 'tug-lost', step: 480, page: 'step1', x: 0, y: 0 }, { name: 'bolt-hit-cursor', step: 360, page: 'step1', x: 0, y: 0 }]
-function madeRun(hits = BOLT, o: { stroke?: boolean; save?: boolean; tap?: boolean; clicks?: boolean } = {}) {
-  const { stroke = true, save = true, tap = false, clicks = false } = o
+// `hold`: the ball lies still, deep in the mouth, from 190 for that many steps and then leaves upward at 30 px a step, as the shut gate's take, hold and kick do.
+function madeRun(hits = BOLT, o: { stroke?: boolean; save?: boolean; tap?: boolean; clicks?: boolean; hold?: number; throws?: boolean } = {}) {
+  const { stroke = true, save = true, tap = false, clicks = false, hold = 0, throws = false } = o
   const rows: (number | string)[][] = []
-  let ballY = 400
+  let ballY = 800
   for (let i = 0; i < PAGES.length * LONG; i++) {
     const p = Math.floor(i / LONG)
     const at = i % LONG
@@ -44,26 +46,34 @@ function madeRun(hits = BOLT, o: { stroke?: boolean; save?: boolean; tap?: boole
     if (p === 1 && at >= 150 && at < 160) heroX = x + (at - 149) * 20
     if (p === 1 && at >= 160 && at < 240) heroX = x + 200
     if (p === 1 && at >= 240 && at < 250) heroX = x + 200 - (at - 239) * 20
+    // `throws`: at 240 the page throws the arrow 50 px back in 4 steps (23, 18, 7, 2), it stands 18 steps, and from 262 it comes to the pointer.
+    if (throws && p === 1 && at >= 240 && at < 244) heroX = x + 200 - [23, 41, 48, 50][at - 240]!
+    if (throws && p === 1 && at >= 244 && at < 262) heroX = x + 150
+    if (throws && p === 1 && at >= 262) heroX = x + 150 - Math.min(15, at - 261) * 10
     const flippers = p === 3 && at >= 80 ? 1 : 0
     let right = stroke && p === 3 && at >= 120 && at < 130 ? 1 : 0
     if (tap && p === 3 && at >= 196 && at < 199) right = 1
+    let scroll = 0
     if (p === 3) {
-      if (at === 0) ballY = 400
+      scroll = TIER
+      if (at === 0) ballY = 800
       heroX = at >= 190 && at < 230 ? 960 : 1000
       if (stroke && at >= 121 && at < 141) ballY -= 20
-      else if (save && at >= 190 && at < 200) ballY += 10
-      else if (save && at === 200) ballY -= 60
+      else if (hold && at >= 190 && at < 190 + hold) ballY = 1010
+      else if (hold && at >= 190 + hold && at < 190 + hold + 16) ballY -= 30
+      else if (save && at >= 190 && at < 200) ballY = 1000 + (at - 190) * 7
+      else if (save && at === 200) ballY = 1000
       else if (save && at > 200 && at < 216) ballY -= 25
-      heroY = ballY
+      heroY = TIER + ballY
     }
-    rows.push([i / 60, PAGES[p]!, turning, heroX, heroY, 0, x, y, 1, flippers, down, 0, right, flippers])
+    rows.push([i / 60, PAGES[p]!, turning, heroX, heroY, scroll, x, y, 1, flippers, down, 0, right, flippers])
   }
   return { format: 'preview', level: 'high', finished: true, steps: rows.length, gags: [{ gag: 'step1.firstName', step: 320 }, { gag: 'step1.tug', step: 450 }], hits, acts: {}, rows }
 }
 const facts = momentsOf(cfg, madeRun())
 const planOf = (role: string): Plan => packPlan(cfg, { role, round: 20, unit: SITE, facts }) as Plan
 const filesOf = (plan: Plan): File[] => plan.sets.flatMap((s) => s.files)
-const motion = (run: unknown) => motionPlan(cfg, run) as unknown as { items: File[]; leftOut: string[]; limitTook: string[] }
+const motion = (run: unknown) => motionPlan(cfg, run) as unknown as { items: File[]; groups: { id: string; items: File[] }[]; leftOut: string[]; limitTook: string[] }
 
 describe('the packs of the unit site', () => {
   it('are the four the kit names, and each is inside the limits with neutral names', () => {
@@ -124,53 +134,162 @@ describe('the packs of the unit site', () => {
     expect(planOf('R5').sets.length).toBe(1)
   })
 
-  it('R4: the moments of the visit, each a run of consecutive frames, in the order they happen', () => {
-    const files = filesOf(planOf('R4'))
-    // With a true stroke and a save the limit of files leaves: the walk, the landing of the turn, the key, the hit, taken, given back, the seal, the stroke on two sheets, the save.
-    expect(files.map((f) => f.moment)).toEqual(['walk', 'turn', 'type', 'hit', 'taken', 'given-back', 'flippers', 'flip', 'flip', 'save'])
-    expect(files.length).toBe(most)
+  it('R4: the moments of the visit, each a run of consecutive frames, in the order they happen, in two sets when one message cannot hold them', () => {
+    const plan = planOf('R4')
+    const files = filesOf(plan)
+    // The pages: the walk, the turn on three sheets, the key, the hit, taken, given back. The machine: the seal, the ball leaving the port, the stroke on two sheets, the save on two.
+    expect(plan.sets.map((s) => s.groups)).toEqual([['pages', 'arrow'], ['machine']])
+    expect(plan.sets[0]!.files.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'turn', 'type', 'hit', 'taken', 'given-back', 'given-back'])
+    expect(plan.sets[1]!.files.map((f) => f.moment)).toEqual(['flippers', 'flippers', 'flip', 'flip', 'flip-close', 'save', 'save', 'save'])
+    for (const s of plan.sets) expect(s.files.length).toBeLessThanOrEqual(most)
+    expect(plan.sets[1]!.files[0]!.name).toBe('set-B-01.png')
     for (const f of files) {
       expect(f.steps!.length).toBe(count)
-      for (let i = 1; i < f.steps!.length; i++) expect(f.steps![i]! - f.steps![i - 1]!).toBe(2)
-      // The moment itself is the fourth picture of its run: three pictures lead up to it. A key's press and a save are the third: two lead up to them.
-      if (f.at !== undefined) expect(f.steps![f.moment === 'type' || f.moment === 'save' ? 2 : 3]).toBe(f.at)
+      // The give back and the close sheet of the blow are drawn at every step (1/60 s), all other moments at every second, and each heading says its own.
+      const every = f.moment === 'given-back' || f.moment === 'flip-close' || f.moment === 'save' ? 1 : 2
+      for (let i = 1; i < f.steps!.length; i++) expect(f.steps![i]! - f.steps![i - 1]!).toBe(every)
+      expect(f.every).toBe(every)
+      expect(f.heading.startsWith(`Consecutive frames, 1/${60 / every} s apart, `)).toBe(true)
+      // The moment itself is the fourth picture of its run: three pictures lead up to it. The save's is the kick, further in; the runs drawn at every step lead up to theirs with more frames.
+      if (f.at !== undefined && f.moment !== 'save' && every === 2) expect(f.steps![3]).toBe(f.at)
       expect(f.kind).toBe(f.moment === 'walk' || f.moment === 'turn' ? 'site-run-sheet' : 'site-hit-sheet')
-      // A heading and its sentence of the hand fit the three lines a sheet of twelve has room for.
-      expect(f.heading.length).toBeLessThanOrEqual(420)
+      // A heading and its sentences fit the three lines a sheet of twelve has room for: headings of 445 characters were seen to fit them in round 24's sheets.
+      expect(f.heading.length).toBeLessThanOrEqual(450)
     }
-    // The turn's run ends 16 steps after the turning ends, and is two sheets long. Here the limit took its first sheet: the one left holds the seat and what follows it.
-    const turn = files.filter((f) => f.moment === 'turn').flatMap((f) => f.steps!)
-    expect(turn.length).toBe(count)
-    expect(turn[turn.length - 1]).toBe(309 + 16)
-    expect(turn[0]).toBe(309 + 16 - (count - 1) * 2)
     const walk = files[0]!.steps!
     expect(walk[0]).toBeGreaterThanOrEqual(40)
     expect(walk[count - 1]).toBeLessThanOrEqual(99)
+    // A plan that one message holds is one set.
+    const roomy = { ...cfg, critics: { ...cfg.critics, maxFilesPerMessage: most + 1 } }
+    const least = packPlan(roomy, { role: 'R4', round: 20, unit: SITE, facts: momentsOf(cfg, madeRun(BOLT, { stroke: false, save: false })) }) as Plan
+    expect(least.sets.map((s) => s.groups)).toEqual([['moments']])
+    expect(least.sets[0]!.files.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'turn', 'type', 'hit', 'taken', 'given-back', 'given-back', 'flippers', 'flippers'])
+    expect(least.sets[0]!.files.length).toBe(most + 1)
   })
 
-  it('R4: says in plain fields which sheets the limit took, and takes them in the order of their worth', () => {
-    const notes = siteNotes(cfg, 'R4', facts) as { leftOut: string[]; limitTook: string[] }
-    expect(notes.leftOut).toEqual([])
-    expect(notes.limitTook.map((l) => l.split(':')[0])).toEqual(['turn', 'flippers', 'save'])
-    expect(notes.limitTook[0]).toMatch(/^turn: sheet 1 of 2/)
-    expect(notes.limitTook[2]).toMatch(/^save: sheet 2 of 2/)
-    expect(siteNotes(cfg, 'R5', facts)).toEqual({})
-    // With no true stroke the room goes to the second sheet of the save first, then to the second sheet of the flippers; the turn's first sheet is the one the limit takes.
-    const bare = motion(momentsOf(cfg, madeRun(BOLT, { stroke: false })))
-    expect(bare.items.map((f) => f.moment)).toEqual(['walk', 'turn', 'type', 'hit', 'taken', 'given-back', 'flippers', 'flippers', 'save', 'save'])
-    expect(bare.limitTook.map((l) => l.split(':')[0])).toEqual(['turn'])
-    // With neither a stroke nor a save nothing is taken, and the turn keeps both sheets.
-    const least = motion(momentsOf(cfg, madeRun(BOLT, { stroke: false, save: false })))
-    expect(least.items.map((f) => f.moment)).toEqual(['walk', 'turn', 'turn', 'type', 'hit', 'taken', 'given-back', 'flippers', 'flippers'])
-    expect(least.limitTook).toEqual([])
+  it('R4: the give back whole at every step, from six frames before the arrow first moves to six under the visitor, and the blow once more close at its real size', () => {
+    const t = (i: number) => {
+      const c = Math.round((i / 60) * 100)
+      return `${Math.floor(c / 6000)}:${String(Math.floor((c % 6000) / 100)).padStart(2, '0')}.${String(c % 100).padStart(2, '0')}`
+    }
+    const K = LONG + 240
+    // With no throw in the rows the arrow is the visitor's from its first move: two sheets of one run, every step a frame.
+    const plain = motionPlan(cfg, facts).items.filter((f: { moment: string }) => f.moment === 'given-back') as { steps: number[]; heading: string; every: number }[]
+    expect(facts.moments.thrown).toBe(null)
+    expect(plain.length).toBe(GIVES.sheets)
+    expect(plain[0]!.steps[0]).toBe(K - GIVES.before)
+    plain.forEach((f, j) => expect(f.heading).toContain(`sheet ${j + 1} of 2 of one run`))
+    for (const f of plain) expect(f.heading).toContain(`In this run the arrow lies still to ${t(K - 1)} and moves from ${t(K)}`)
+    // With a throw: the first move, the stand and the second move are read from the rows, and the run holds them all.
+    const run = momentsOf(cfg, madeRun(BOLT, { throws: true }))
+    expect(run.moments.back).toBe(K)
+    expect(run.moments.thrown).toEqual({ first: K, stand: K + 4, handed: K + 22 })
+    const whole = motionPlan(cfg, run).items.filter((f: { moment: string }) => f.moment === 'given-back') as { steps: number[]; heading: string; every: number }[]
+    const steps = whole.flatMap((f) => f.steps)
+    expect(whole.length).toBe(3)
+    expect(steps[0]).toBe(K - GIVES.before)
+    expect(steps[steps.length - 1]).toBeGreaterThanOrEqual(K + 22 + GIVES.after - 1)
+    for (let i = 1; i < steps.length; i++) expect(steps[i]! - steps[i - 1]!).toBe(1)
+    whole.forEach((f, j) => {
+      expect(f.every).toBe(1)
+      expect(f.heading.startsWith('Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor')).toBe(true)
+      expect(f.heading).toContain(`sheet ${j + 1} of 3 of one run, frames ${j * count + 1} to ${(j + 1) * count} of ${3 * count}`)
+      expect(f.heading).toContain(`In this run the arrow lies still to ${t(K - 1)}, it moves from ${t(K)} to ${t(K + 3)}, stands still from ${t(K + 4)} to ${t(K + 21)} and moves again from ${t(K + 22)}, from where it comes to the visitor's pointer`)
+      expect(f.heading.length).toBeLessThanOrEqual(450)
+    })
+    // The plan with the third sheet: nothing is taken away, every set within the limit, no run cut between two sets.
+    const sets = (packPlan(cfg, { role: 'R4', round: 20, unit: SITE, facts: run }) as Plan).sets
+    for (const x of sets) expect(x.files.length).toBeLessThanOrEqual(most)
+    expect(sets.flatMap((x) => x.files).filter((f) => f.moment === 'given-back').length).toBe(3)
+    expect(sets.filter((x) => x.files.some((f) => f.moment === 'given-back')).length).toBe(1)
+    // The blow close: every step from CLOSE.before before it to CLOSE.after after it, the marks under each frame, in a window of the tile's own size that holds the ball at the blow.
+    const close = motionPlan(cfg, facts).items.find((f: { moment: string }) => f.moment === 'flip-close') as unknown as { steps: number[]; heading: string; every: number; hands: string[] }
+    const met = facts.moments.met as number
+    expect(close.steps).toEqual(Array.from({ length: count }, (_, i) => met - CLOSE.before + i))
+    expect(close.hands.length).toBe(count)
+    expect(close.hands.filter((h) => h === 'R').length).toBeGreaterThan(0)
+    const win = closeWindow(cfg, facts, close.steps) as { window: number[]; tileW: number; tileH: number; shown: number }
+    expect(win.shown).toBe(100)
+    expect([win.window[2], win.window[3]]).toEqual([win.tileW, win.tileH])
+    const k = cfg.formats.preview.width / cfg.formats.hd.width
+    const row = facts.rows[met] as number[]
+    expect(row[COL.heroX]! * k).toBeGreaterThan(win.window[0]!)
+    expect(row[COL.heroX]! * k).toBeLessThan(win.window[0]! + win.window[2]!)
+    expect((row[COL.heroY]! - row[COL.scroll]!) * k).toBeGreaterThan(win.window[1]!)
+    expect((row[COL.heroY]! - row[COL.scroll]!) * k).toBeLessThan(win.window[1]! + win.window[3]!)
+    expect(close.heading).toMatch(/^Consecutive frames, 1\/60 s apart, the blow of the sheets before once more, close: one fixed window at its real size round where the ball is at \d:\d\d\.\d\d: /)
   })
+
+  it('R4: a heading and its frames agree: the step apart, the times, which sheet of how many, which frames of the run', () => {
+    for (const run of [madeRun(), madeRun(BOLT, { stroke: false }), madeRun(BOLT, { tap: true, clicks: true })]) {
+      const plan = motion(momentsOf(cfg, run))
+      const time = (i: number) => `${Math.floor(i / 60 / 60)}:${(i / 60 - Math.floor(i / 60 / 60) * 60).toFixed(2).padStart(5, '0')}`
+      for (const f of plan.items) {
+        const steps = f.steps!
+        expect(f.heading).toContain(`: ${time(steps[0]!)} to ${time(steps[steps.length - 1]!)}`)
+        const sheets = plan.items.filter((g) => g.moment === f.moment && g.run![0] === f.run![0])
+        expect(sheets.flatMap((g) => g.steps!)).toEqual(f.run)
+        const said = /, sheet (\d+) of (\d+) of one run, frames (\d+) to (\d+) of (\d+)/.exec(f.heading)
+        expect(said !== null).toBe(sheets.length > 1)
+        if (said) {
+          const nth = sheets.indexOf(f)
+          expect(said.slice(1).map(Number)).toEqual([nth + 1, sheets.length, nth * count + 1, nth * count + steps.length, f.run!.length])
+          expect(f.part).toEqual([nth + 1, sheets.length])
+        }
+      }
+    }
+  })
+
+  it('R4: the turn whole, from the old page lying flat to four frames after the last thing on the new page has stopped, each sheet saying what it holds', () => {
+    const turn = filesOf(planOf('R4')).filter((f) => f.moment === 'turn')
+    // The made-up turn: rows 290 to 309, the new page from 300. It stops 31 steps after its edge, at 331.
+    expect(facts.moments.turn).toEqual({ first: 290, last: 309 })
+    const steps = turn.flatMap((f) => f.steps!)
+    expect(steps[0]).toBe(288)
+    expect(steps.length).toBe(count * 3)
+    expect(steps.filter((i) => i > 331).length).toBeGreaterThanOrEqual(4)
+    expect(turn[0]!.heading).toMatch(/of one page turn, sheet 1 of 3 of one run, frames 1 to 12 of 36: 1 frame of the old page lying flat, the old page swings away, the new page stands on its edge from 0:05\.00, and closes: 0:04\.80 to 0:05\.17$/)
+    expect(turn[1]!.heading).toMatch(/sheet 2 of 3 of one run, frames 13 to 24 of 36: the new page goes on closing, it seats at 0:05\.30, it has stopped by 0:05\.52, the last 2 frames come after the stop: /)
+    expect(turn[2]!.heading).toMatch(/sheet 3 of 3 of one run, frames 25 to 36 of 36: the last 12 frames come after the stop: /)
+    // The pointer is said to lie still only where the rows show it still: the made-up visitor's pointer jumps to a key at 320 and away from it at 352.
+    for (const f of turn) expect(f.heading).not.toMatch(/does not move the mouse/)
+    const still = madeRun()
+    for (let i = 300; i < 400; i++) [still.rows[i]![COL.pointerX], still.rows[i]![COL.pointerY], still.rows[i]![COL.heroX], still.rows[i]![COL.heroY]] = [500, 400, 960, 540]
+    const quiet = motion(momentsOf(cfg, still)).items.filter((f) => f.moment === 'turn')
+    expect(quiet[0]!.heading).not.toMatch(/does not move the mouse/)
+    expect(quiet[2]!.heading).toMatch(/: the last 12 frames come after the stop\. The visitor does not move the mouse in these frames, and the page's arrow stays where it is: /)
+    // The arrow the page draws is another thing than the visitor's pointer: where the page moves it under a still hand, the heading says from which frame.
+    const drawn = madeRun()
+    for (let i = 300; i < 400; i++) [drawn.rows[i]![COL.pointerX], drawn.rows[i]![COL.pointerY], drawn.rows[i]![COL.heroX], drawn.rows[i]![COL.heroY]] = [500, 400, i < 343 ? 960 : 960 - (i - 342) * 5, 540]
+    const led = motion(momentsOf(cfg, drawn)).items.filter((f) => f.moment === 'turn')
+    expect(led[2]!.steps).toContain(344)
+    expect(led[2]!.heading).toMatch(/\. The visitor does not move the mouse in these frames, the page's arrow moves from 0:05\.73: /)
+    for (const f of turn) expect(f.heading).not.toMatch(/seated and still|from the page on its edge to/)
+  })
+
+  it('R4: the limit of files takes nothing away: every run keeps every sheet, and every set is within the limit', () => {
+    expect(siteNotes(cfg, 'R5', facts)).toEqual({})
+    for (const o of [{}, { stroke: false }, { stroke: false, save: false }, { tap: true }]) {
+      const run = momentsOf(cfg, madeRun(BOLT, o))
+      const notes = siteNotes(cfg, 'R4', run) as { leftOut: string[]; limitTook: string[] }
+      expect(notes.limitTook).toEqual([])
+      const plan = packPlan(cfg, { role: 'R4', round: 20, unit: SITE, facts: run }) as Plan
+      for (const s of plan.sets) {
+        expect(s.files.length).toBeLessThanOrEqual(most)
+        // A run is never cut by the end of a set: its sheets lie in one set, side by side.
+        for (const f of s.files) expect(s.files.filter((g) => g.moment === f.moment && g.run![0] === f.run![0]).flatMap((g) => g.steps!)).toEqual(f.run)
+      }
+      expect(filesOf(plan).length).toBe(motion(run).items.length)
+    }
+  })
+
 
   it('R4: the hand under the frames of the flippers, the stroke and the save, and one sentence for it in the heading', () => {
     const files = filesOf(planOf('R4'))
     for (const f of files) {
-      const hand = ['flippers', 'flip', 'save'].includes(f.moment!)
+      const hand = ['flippers', 'flip', 'flip-close', 'save'].includes(f.moment!)
       expect(f.heading.endsWith(HAND_WORDS)).toBe(hand)
-      expect(f.hands !== undefined).toBe(hand)
+      expect(f.hands !== undefined).toBe(hand || f.moment === 'type')
       if (f.hands) expect(f.hands.length).toBe(f.steps!.length)
     }
     // The stroke: the visitor presses the right flipper at 3 * LONG + 120 and holds it for ten steps, to 3 * LONG + 129.
@@ -183,8 +302,10 @@ describe('the packs of the unit site', () => {
     // The save: no hand on a flipper in any of its frames.
     const save = files.find((f) => f.moment === 'save')!
     expect(save.hands!.every((h) => h === '')).toBe(true)
+    // The stroke's sheets say in numbers how the pack's visitor presses.
+    for (const f of flip) expect(f.heading).toContain(`The pack's visitor presses ${FLIPS.reactSteps} steps after the page's cue and holds ${FLIPS.holdSteps} steps. `)
     // No other sheet carries the sentence or the letters.
-    expect(files.filter((f) => f.hands).map((f) => f.moment)).toEqual(['flippers', 'flip', 'flip', 'save'])
+    expect(files.filter((f) => f.hands && f.moment !== 'type').map((f) => f.moment)).toEqual(['flippers', 'flippers', 'flip', 'flip', 'flip-close', 'save', 'save', 'save'])
   })
 
   it('R4: a hand that taps between two frames is still under the frame that follows it', () => {
@@ -218,32 +339,81 @@ describe('the packs of the unit site', () => {
     expect((siteNotes(cfg, 'R4', none) as { leftOut: string[] }).leftOut).toEqual(plan.leftOut)
     // The save of that run carries the hand's tap under its frames.
     const save = plan.items.filter((f) => f.moment === 'save')
-    expect(save.length).toBe(2)
-    expect(save[0]!.at).toBe(3 * LONG + 200)
-    expect(save[0]!.hands!.filter((h) => h === 'R').length).toBe(2)
+    expect(save.length).toBe(3)
+    expect(save[1]!.at).toBe(3 * LONG + 200)
+    expect(save.flatMap((f) => f.hands!).filter((h) => h === 'R').length).toBeGreaterThan(0)
   })
 
-  it('R4: the save is the machine own, shown from two frames before it, under its own heading', () => {
-    const save = filesOf(planOf('R4')).find((f) => f.moment === 'save')!
-    expect(save.at).toBe(3 * LONG + 200)
-    expect(save.steps![0]).toBe(3 * LONG + 200 - 4)
-    expect(save.heading).toMatch(/^Consecutive frames as the machine saves a ball lost between the bats: its own bat strikes as the save throws the ball back, the part of the picture round the arrow/)
-    expect(save.heading).toMatch(/: \d:\d\d\.\d\d to \d:\d\d\.\d\d\. Under a frame/)
-    // A save the page tells of by name is a save too, wherever the ball is.
+  it('R4: the save is the machine own, every step a frame from six before the ball is low in the mouth to eight after the kick, under a heading that names the event and nothing that strikes', () => {
+    const save = filesOf(planOf('R4')).filter((f) => f.moment === 'save')
+    // The made-up save: the ball is low between the bats from 3 * LONG + 190 and goes back up at 3 * LONG + 200.
+    expect(facts.moments.gate).toMatchObject({ take: 3 * LONG + 190, kick: 3 * LONG + 200 })
+    const steps = save.flatMap((f) => f.steps!)
+    expect(save.length).toBe(3)
+    for (let i = 1; i < steps.length; i++) expect(steps[i]! - steps[i - 1]!).toBe(1)
+    expect(steps[0]).toBe(3 * LONG + 190 - SAVE.before)
+    expect(steps[steps.length - 1]).toBeGreaterThanOrEqual(3 * LONG + 200 + SAVE.after)
+    expect(save[1]!.at).toBe(3 * LONG + 200)
+    for (const f of save) {
+      expect(f.heading).toMatch(/^Consecutive frames, 1\/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the mouth, its gate and both bats at 100% of its size, sheet \d of 3 of one run/)
+      expect(f.heading).toMatch(/: \d:\d\d\.\d\d to \d:\d\d\.\d\d\. The ball is low in the mouth from 0:18\.17 and goes back up from 0:18\.33, moved 63 px up in that one step\. Under a frame, L or R/)
+      expect(f.heading).not.toMatch(/strik|throw|its own bat|round the arrow/)
+    }
+    // One fixed window for the whole run, centred on the middle of the machine, that holds the gate and both bats in every step of the run.
+    const win = saveWindow(cfg, facts, steps) as { window: number[]; shown: number; tier: number }
+    expect(win.shown).toBe(100)
+    expect(win.tier).toBe(1)
+    expect(Math.abs(win.window[0]! + win.window[2]! / 2 - cfg.formats.preview.width / 2)).toBeLessThanOrEqual(1)
+    expect(win.window[1]! + win.window[3]!).toBe(cfg.formats.preview.height)
+    for (let i = steps[0]!; i <= steps[steps.length - 1]!; i++) expect(windowHolds(cfg, facts, win, i)).toBe(true)
+    // A window that stood a tier too high would not hold them: the check is no formality.
+    expect(windowHolds(cfg, facts, { ...win, window: [win.window[0]!, 0, win.window[2]!, win.window[3]!] }, steps[0]!)).toBe(false)
+    // The page's word finds no save and hides none: a save it tells of where the ball's path holds none is missing, said in the plan and in pack.json, and the tool then ends with a code other than 0.
     const named = momentsOf(cfg, madeRun([...BOLT, { name: 'flipper-save', step: 3 * LONG + 250, page: 'step3', x: 0, y: 0 }], { save: false }))
-    expect(named.moments.saves).toEqual([3 * LONG + 250])
-    expect(named.moments.save).toBe(3 * LONG + 250)
+    expect(named.moments.saves).toEqual([])
+    expect(named.moments.gate).toBe(null)
+    expect(named.moments.unsaved).toEqual([{ step: 3 * LONG + 250, word: 'flipper-save' }])
+    expect(motionPlan(cfg, named).missing).toEqual(["save: the page says flipper-save at 0:19.17 and no save was read from the ball's path there, so no sheet shows it"])
+    expect((siteNotes(cfg, 'R4', named).missing as string[]).length).toBe(1)
+    expect(motionPlan(cfg, facts).missing).toEqual([])
+    expect(fs.readFileSync(new URL('../tools/pack.mjs', import.meta.url), 'utf8')).toMatch(/manifest\.missing\.length\) \{\n.*\n  process\.exitCode = MISSING_EXIT/)
+    // The shut gate's save, read from the ball's path alone: the ball lies still and deep for 64 steps and leaves upward. The page's words for the take and the kick only confirm it.
+    const HOLD = 64
+    const words = [{ name: 'gate-take', step: 3 * LONG + 190, page: 'step3', x: 0, y: 0 }, { name: 'ball-save', step: 3 * LONG + 190 + HOLD, page: 'step3', x: 0, y: 0 }]
+    for (const hits of [BOLT, [...BOLT, ...words]]) {
+      const held = momentsOf(cfg, madeRun(hits, { save: false, hold: HOLD }))
+      expect(held.moments.gate).toEqual({ take: 3 * LONG + 190, kick: 3 * LONG + 190 + HOLD, lifted: null, said: hits.length > BOLT.length, takeSaid: hits.length > BOLT.length })
+      expect(held.moments.unsaved).toEqual([])
+      // Held longer than SAVE.sheets sheets show in a row: two runs, every step a frame, the first one sheet from SAVE.before steps before the take, the second from SAVE.before before the kick to SAVE.after after it, no step skipped inside either.
+      const runs = motionPlan(cfg, held).items.filter((f: { moment: string }) => f.moment === 'save') as { steps: number[]; heading: string }[]
+      expect(runs.length).toBe(3)
+      expect(runs[0]!.steps[0]).toBe(3 * LONG + 190 - SAVE.before)
+      expect(runs[1]!.steps[0]).toBe(3 * LONG + 190 + HOLD - SAVE.before)
+      expect(runs[2]!.steps[0]).toBe(runs[1]!.steps[count - 1]! + 1)
+      expect(runs[2]!.steps[runs[2]!.steps.length - 1]).toBeGreaterThanOrEqual(3 * LONG + 190 + HOLD + SAVE.after)
+      for (const r of runs) {
+        expect(r.steps.length).toBe(count)
+        for (let i = 1; i < r.steps.length; i++) expect(r.steps[i]! - r.steps[i - 1]!).toBe(1)
+        expect(r.heading).not.toMatch(/strik|throw|its own bat|in that one step/)
+      }
+      expect(runs[0]!.heading).toContain('the first of two runs: the ball comes down to the mouth')
+      expect(runs[0]!.heading).toContain('The ball is low in the mouth from 0:18.17. Under a frame')
+      expect(runs[1]!.heading).toContain('the second of two runs: the ball goes back up')
+      expect(runs[1]!.heading).toContain('The ball goes back up from 0:19.23. Under a frame')
+    }
+    // A blow on a ball that is not low in the mouth is no save, however the ball jumps: the made-up stroke lifts the ball over the bat and is none.
+    expect(facts.moments.saves).toEqual([3 * LONG + 200])
   })
 
   it('R4: the hit is named by what struck, and the hand is said to be off only where the run shows it off', () => {
     const hit = filesOf(planOf('R4')).find((f) => f.moment === 'hit')!
-    expect(hit.heading).toMatch(/^Consecutive frames as a turret's bolt hits the arrow, no key is pressed in these frames, the part of the picture/)
+    expect(hit.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as a turret's bolt hits the arrow, the visitor presses no button and no key in these frames, the part of the picture/)
     const clicked = motion(momentsOf(cfg, madeRun(BOLT, { clicks: true })))
     const held = clicked.items.find((f) => f.moment === 'hit')!
-    expect(held.heading).toMatch(/^Consecutive frames as a turret's bolt hits the arrow, the part of the picture/)
-    expect(held.heading).not.toMatch(/no key is pressed/)
+    expect(held.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as a turret's bolt hits the arrow, the part of the picture/)
+    expect(held.heading).not.toMatch(/presses no button/)
     const tug = motion(momentsOf(cfg, madeRun([BOLT[0]!])))
-    expect(tug.items.find((f) => f.moment === 'hit')!.heading).toMatch(/^Consecutive frames as the lost tug of war hits the arrow/)
+    expect(tug.items.find((f) => f.moment === 'hit')!.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as the lost tug of war hits the arrow/)
     expect(struckWords('slab-drop')).toBe('what the page calls "slab drop"')
     // A key sent as one press, with nothing held, is a key too.
     const run = madeRun()
@@ -252,15 +422,34 @@ describe('the packs of the unit site', () => {
     expect(handsOff({ ...run, acts: { 355: [{ move: [1, 2] }] } }, [354, 356, 358])).toBe(true)
   })
 
-  it('R4: a key of the page keyboard, from two frames before the press to after the release, round the arrow at its real size', () => {
+  it('R4: a key of the page keyboard, from three frames before the press to four after the release, with a mark under each frame in which the button is held', () => {
     expect(facts.moments.type).toEqual({ press: LONG + 32, release: LONG + 38 })
-    const type = filesOf(planOf('R4')).find((f) => f.moment === 'type')!
-    expect(type.page).toBe('step1')
-    expect(type.at).toBe(LONG + 32)
-    expect(type.steps![0]).toBe(LONG + 32 - 4)
-    expect(type.steps![count - 1]).toBeGreaterThan(LONG + 38)
-    expect(type.heading).toMatch(/^Consecutive frames as the visitor's arrow presses a key of the page's keyboard and lets it go, the part of the picture round the arrow at its real size: /)
-    expect(type.hands).toBe(undefined)
+    const type = filesOf(planOf('R4')).filter((f) => f.moment === 'type')
+    expect(type.length).toBe(1)
+    const f = type[0]!
+    expect(f.page).toBe('step1')
+    expect(f.at).toBe(LONG + 32)
+    expect(f.steps![0]).toBe(LONG + 32 - KEYS.before * 2)
+    expect(f.steps![count - 1]).toBeGreaterThanOrEqual(LONG + 38 + KEYS.after * 2)
+    // Picture i is the page before the visitor's events of step i: it shows the button as row i - 1 holds it. The marks follow that, frame by frame.
+    const rows = facts.rows as number[][]
+    f.steps!.forEach((i, j) => expect(f.hands![j]).toBe(rows[i - 1]![COL.down] ? KEYS.mark : ''))
+    expect(f.hands).toEqual(['', '', '', '', 'down', 'down', 'down', '', '', '', '', ''])
+    expect(f.heading).toMatch(/^Consecutive frames, 1\/30 s apart, as the visitor's arrow presses a key of the page's keyboard and lets it go, the part of the picture round the arrow at its real size: /)
+    expect(f.heading).toContain('. In this run the button is held from the frame 0:05.57 to 0:05.63. ')
+    expect(f.heading.endsWith(KEY_WORDS)).toBe(true)
+    expect(KEY_WORDS).toBe('Under a frame, "down": the visitor holds the mouse button in it.')
+    // A second press inside the run is marked and said too.
+    const twice = madeRun()
+    twice.rows[LONG + 45]![COL.down] = 1
+    const again = motion(momentsOf(cfg, twice)).items.find((x) => x.moment === 'type')!
+    expect(again.hands).toEqual(['', '', '', '', 'down', 'down', 'down', '', '', '', 'down', ''])
+    expect(again.heading).toContain('. In this run the button is held from the frame 0:05.57 to 0:05.63, and again in the frame 0:05.77. ')
+    // A hit on the arrow inside the run is said with its time, so what it does to the page is not read as a press.
+    const struck = madeRun()
+    struck.hits.push({ name: 'bolt-hit-cursor', step: LONG + 44, page: 'step1', x: 0, y: 0 })
+    const hit = motion(momentsOf(cfg, struck)).items.find((x) => x.moment === 'type')!
+    expect(hit.heading).toContain(". In this run the button is held from the frame 0:05.57 to 0:05.63, and a turret's bolt hits the arrow at 0:05.73. ")
   })
 
   it('needs the visit for R4 and R5 and not for R2 and R8', () => {
@@ -324,7 +513,9 @@ describe('the moments of a visit', () => {
 
   it('finds the stroke of the visitor own bat, the machine save and the key from the run', () => {
     expect(m.met).toBe(3 * LONG + 121)
-    expect(m.stroke).toEqual({ step: 3 * LONG + 121, side: 'right', press: 3 * LONG + 120, held: 10, kick: 20 })
+    // The made-up ball lies 0.75 of its width above the bat's reach when the flipper is pressed.
+    expect(m.stroke).toEqual({ step: 3 * LONG + 121, side: 'right', press: 3 * LONG + 120, held: 10, kick: 20, fromReach: 0.75 })
+    expect(m.gate).toMatchObject({ take: 3 * LONG + 190, kick: 3 * LONG + 200 })
     expect(m.saves).toEqual([3 * LONG + 200])
     expect(m.save).toBe(3 * LONG + 200)
     expect(m.type).toEqual({ press: LONG + 32, release: LONG + 38 })
