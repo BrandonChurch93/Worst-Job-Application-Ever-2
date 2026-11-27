@@ -282,7 +282,7 @@ export class Stage {
 
   private save(): Saved {
     return {
-      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max }, lag: { ...this.lag }, late: { ...this.late },
+      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: this.max.film ? { ...this.max } : { pointer: this.max.pointer, flippers: this.max.flippers }, lag: { ...this.lag }, late: { ...this.late },
       reached: [...this.reached], visited: [...this.visited], events: this.events.length, page: JSON.parse(JSON.stringify(this.page.save() ?? null)), cursor: this.cursor.save()
     }
   }
