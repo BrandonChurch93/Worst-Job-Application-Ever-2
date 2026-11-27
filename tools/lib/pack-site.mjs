@@ -432,24 +432,41 @@ export function reachGap(cfg, o) {
 // The camera's travels from one tier of the machine to the next below: unbroken stretches in which the page's scroll moves by FALLS.moves px a step or more,
 // from within FALLS.near of a tier's top to within FALLS.near of the next tier's top (in tiers' heights).
 export const FALLS = { moves: 1, near: 0.2 }
-export function fallsOf(cfg, rows, part) {
-  if (!part) return []
-  const g = tiersOf(cfg)
-  const tops = Array.from({ length: g.count }, (_, k) => g.y(k) * g.ball)
-  const near = (y, k) => Math.abs(y - tops[k]) <= FALLS.near * g.tall * g.ball
+// Every unbroken stretch of a page's part in which the scroll moves by FALLS.moves px a step or more: its first and last step, and the scroll before and after it.
+function travelsOf(rows, part) {
   const out = []
   let from = -1
   for (let i = part.first + 1; i <= part.last + 1; i++) {
     const going = i <= part.last && Math.abs(rows[i][COL.scroll] - rows[i - 1][COL.scroll]) >= FALLS.moves
     if (going && from < 0) from = i
     if (!going && from >= 0) {
-      const a = rows[from - 1][COL.scroll]
-      const b = rows[i - 1][COL.scroll]
-      for (let k = 0; k + 1 < g.count; k++) if (near(a, k) && near(b, k + 1)) out.push({ first: from, last: i - 1, tier: k, from: Math.round(a), to: Math.round(b) })
+      out.push({ first: from, last: i - 1, a: rows[from - 1][COL.scroll], b: rows[i - 1][COL.scroll] })
       from = -1
     }
   }
   return out
+}
+const tierTops = (cfg) => {
+  const g = tiersOf(cfg)
+  return { tops: Array.from({ length: g.count }, (_, k) => g.y(k) * g.ball), near: FALLS.near * g.tall * g.ball }
+}
+export function fallsOf(cfg, rows, part) {
+  if (!part) return []
+  const { tops, near } = tierTops(cfg)
+  const out = []
+  for (const t of travelsOf(rows, part)) for (let k = 0; k + 1 < tops.length; k++) if (Math.abs(t.a - tops[k]) <= near && Math.abs(t.b - tops[k + 1]) <= near) out.push({ first: t.first, last: t.last, tier: k, from: Math.round(t.a), to: Math.round(t.b) })
+  return out
+}
+// The page's own first travel down the machine, before the play: one unbroken travel from above the first tier to the last tier or below it.
+// `back` is true when a later travel brings the camera up again to the first tier.
+export function revealOf(cfg, rows, part) {
+  if (!part) return null
+  const { tops, near } = tierTops(cfg)
+  const all = travelsOf(rows, part)
+  const j = all.findIndex((t) => t.a < tops[0] - near && t.b >= tops[tops.length - 1] - near)
+  if (j < 0) return null
+  const t = all[j]
+  return { first: t.first, last: t.last, from: Math.round(t.a), to: Math.round(t.b), back: all.slice(j + 1).some((x) => x.b < x.a && Math.abs(x.b - tops[0]) <= near) }
 }
 
 // The moments of the run that the sheets show, found from the run itself.
@@ -648,7 +665,7 @@ export function momentsOf(cfg, run) {
       type = { press: i, release: up }
     }
   }
-  return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, flippers, leaves, left, flip, met: blow, stroke, strokes, blows, save, saves, gate, type, turn: turns[0] || null, falls: fallsOf(cfg, rows, s3) } }
+  return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, flippers, leaves, left, flip, met: blow, stroke, strokes, blows, save, saves, gate, type, turn: turns[0] || null, falls: fallsOf(cfg, rows, s3), reveal: revealOf(cfg, rows, s3) } }
 }
 
 // The visitor's hand under a frame: a frame carries L or R when the visitor held that flipper at the frame's own step or at any step since the frame before it on the sheet,
@@ -787,17 +804,30 @@ const needRun = (facts, role) => {
   return facts
 }
 
-// The machine's tiers and the passage between them: for every fall of the camera from one tier to the next, TIERS.each whole frames at one even step,
-// the first one such step before the travel begins, the second at its first step, the last after its end. The step is the least even number of steps that does it for every fall.
+// The machine's tiers and the passage between them, on one sheet of whole frames: first the page's own travel down the machine where the visit holds one,
+// then every fall of the camera from one tier to the next. Each is a group of frames at one even step, the first the last frame before the travel begins,
+// the last after the camera has come to rest (it moves less than FALLS.moves px a step). The step is the least even number of steps that does it.
 export function tierSheet(cfg, run) {
-  const falls = (run.moments.falls || []).slice(0, Math.floor(cfg.critics.contactSheetFrames / TIERS.each))
+  const count = cfg.critics.contactSheetFrames
+  const reveal = run.moments.reveal || null
+  const falls = (run.moments.falls || []).slice(0, TIERS.falls)
   if (!falls.length) return null
-  const longest = Math.max(...falls.map((f) => f.last - f.first + 1))
-  const step = Math.ceil(Math.ceil(longest / (TIERS.each - 2)) / 2) * 2
-  const steps = falls.flatMap((f) => Array.from({ length: TIERS.each }, (_, i) => f.first + (i - 1) * step))
-  const parts = falls.map((f, i) => `frames ${i * TIERS.each + 1} to ${(i + 1) * TIERS.each} from tier ${f.tier + 1} to tier ${f.tier + 2} of ${cfg.table.tiers.length} (the camera travels ${timeOf(f.first)} to ${timeOf(f.last)})`)
+  const each = Math.min(TIERS.each, Math.floor(count / (falls.length + (reveal ? 1 : 0))))
+  const stepFor = (len) => Math.ceil(Math.ceil((len + 1) / (each - 1)) / 2) * 2
+  const framesOf = (t, step) => Array.from({ length: each }, (_, i) => t.first - 1 + i * step)
+  const secs = (step) => `${step} steps (${(step / VISITOR.hz).toFixed(2)} s)`
+  const step = stepFor(Math.max(...falls.map((f) => f.last - f.first + 1)))
+  const open = reveal ? stepFor(reveal.last - reveal.first + 1) : 0
+  const steps = [...(reveal ? framesOf(reveal, open) : []), ...falls.flatMap((f) => framesOf(f, step))]
+  const n = cfg.table.tiers.length
+  const at = (k) => `${k * each + 1} to ${(k + 1) * each}`
+  const fell = falls.map((f) => `from tier ${f.tier + 1} to tier ${f.tier + 2} (${timeOf(f.first)} to ${timeOf(f.last)})`)
+  const ends = 'Each group: from the last frame before the travel to after its end'
+  const heading = reveal
+    ? `The machine's tiers and the passage from one to the next, whole frames. Frames ${at(0)}, ${secs(open)} apart: the camera's first travel, from the page's top down the machine to tier ${n} (${timeOf(reveal.first)} to ${timeOf(reveal.last)})${reveal.back ? ', then back up to tier 1' : ''}. Frames ${falls.map((_, i) => at(i + 1)).join(' and ')}, ${secs(step)} apart: its travel ${fell.join(' and ')}. ${ends}`
+    : `The machine's tiers and the passage from one to the next, whole frames ${secs(step)} apart: ${falls.map((_, i) => `frames ${at(i)}, the camera's travel ${fell[i]}`).join('; ')}. ${ends}`
   const part = (run.pages || []).find((p) => falls[0].first >= p.first && falls[0].first <= p.last)
-  return { kind: 'site-run-sheet', moment: 'tiers', page: part ? part.unit : run.rows[falls[0].first][COL.page], steps, every: step, heading: `The machine's tiers and the passage from one to the next, whole frames ${step} steps (${(step / VISITOR.hz).toFixed(2)} s) apart: ${parts.join('; ')}. In each, the first frame is ${step} steps before the camera starts to travel and the last is after it has stopped` }
+  return { kind: 'site-run-sheet', moment: 'tiers', page: part ? part.unit : run.rows[falls[0].first][COL.page], steps, every: step, each, opens: reveal ? open : null, heading }
 }
 
 // R5: the six pages on one sheet, the two screens, and one sheet across each page's part of the visitor's run.
@@ -832,8 +862,8 @@ export const KEYS = { before: 3, after: 4, mark: 'down' }
 export const KEY_WORDS = `Under a frame, "${KEYS.mark}": the visitor holds the mouse button in it.`
 // The mark under frame i: picture i is the site before the visitor's events of step i, so it shows the button as row i - 1 holds it.
 export const downAt = (rows, i) => (i > 0 && rows[i - 1][COL.down] ? KEYS.mark : '')
-// The tiers' sheet: `each` frames of every fall of the camera from one tier to the next, at an even step: one before the travel, one at its first step, the last after its end.
-export const TIERS = { each: 6 }
+// The tiers' sheet: at most `each` frames to a travel of the camera, and at most `falls` falls from one tier to the next after the page's own first travel down the machine.
+export const TIERS = { each: 6, falls: 2 }
 const VISITOR_WORDS = `The pack's visitor presses ${FLIPS.reactSteps} steps after the page's cue and holds ${FLIPS.holdSteps} steps`
 
 // The fixed window of the save's sheets, in px of the run's picture: centred on the middle of the machine, its lower edge on the tier's floor as the camera shows it at the kick,

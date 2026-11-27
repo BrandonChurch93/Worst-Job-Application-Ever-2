@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
-import { COL, FALLS, FLIPS, KEYS, MACHINE, REACH, SAVE, SITE, TIERS, TURNS, VISITOR, ballAt, downAt, fallsOf, makeVisitor, overBat, reachGap, saveHolds, saveWindow, tierSheet, tiersOf, windowHolds } from '../tools/lib/pack-site.mjs'
+import { COL, FALLS, FLIPS, KEYS, MACHINE, REACH, SAVE, SITE, TIERS, TURNS, VISITOR, ballAt, downAt, fallsOf, makeVisitor, overBat, reachGap, saveHolds, saveWindow, revealOf, tierSheet, tiersOf, windowHolds } from '../tools/lib/pack-site.mjs'
 import { FLIP, FLIP_REACH, MID, MOUTH, R, TIER_Y, W } from '../src/table/layout'
 import { SHIVER, TURN, shiverSeconds } from '../src/stage/turn'
 
@@ -17,6 +17,7 @@ const rec = JSON.parse(fs.readFileSync(path.join(root, 'pipeline/phase5/pack-who
   gate: { take: number; kick: number }
   save: { rows: Record<string, (number | string)[]> }
   falls: { first: number; last: number; tier: number }[]
+  reveal: { first: number; last: number; from: number; to: number; back: boolean }
   stroke: { fromReach: number; held: number }
 }
 const sparse = (rows: Record<string, (number | string)[]>) => {
@@ -171,20 +172,49 @@ describe('the sheet of the tiers', () => {
     for (const f of rec.falls) expect(f.last - f.first).toBeLessThan(60)
   })
 
-  it('shows each travel in frames at one even step, from before it starts to after it has stopped, and says the step and the frames in its heading', () => {
-    const sheet = tierSheet(cfg, { rows, moments: { falls } }) as { kind: string; steps: number[]; every: number; heading: string; page: string; moment: string }
+  it('shows each travel in frames at one even step, from the last frame before it to after its end, and says the step and the frames in its heading', () => {
+    const sheet = tierSheet(cfg, { rows, moments: { falls } }) as { kind: string; steps: number[]; every: number; each: number; heading: string; page: string; moment: string }
     expect(sheet.kind).toBe('site-run-sheet')
     expect(sheet.steps.length).toBe(count)
-    expect(sheet.every).toBe(12)
-    expect(sheet.steps).toEqual([88, 100, 112, 124, 136, 148, 288, 300, 312, 324, 336, 348])
+    expect(sheet.each).toBe(TIERS.each)
+    expect(sheet.every).toBe(10)
+    expect(sheet.steps).toEqual([99, 109, 119, 129, 139, 149, 299, 309, 319, 329, 339, 349])
     falls.forEach((f, k) => {
-      const part = sheet.steps.slice(k * TIERS.each, (k + 1) * TIERS.each)
+      const part = sheet.steps.slice(k * sheet.each, (k + 1) * sheet.each)
       for (let j = 1; j < part.length; j++) expect(part[j]! - part[j - 1]!).toBe(sheet.every)
-      expect(part[0]).toBeLessThan(f.first)
+      expect(part[0]).toBe(f.first - 1)
       expect(part[part.length - 1]).toBeGreaterThan(f.last)
     })
-    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next, whole frames 12 steps (0.20 s) apart: frames 1 to 6 from tier 1 to tier 2 of 3 (the camera travels 0:01.67 to 0:02.38); frames 7 to 12 from tier 2 to tier 3 of 3 (the camera travels 0:05.00 to 0:05.75). In each, the first frame is 12 steps before the camera starts to travel and the last is after it has stopped")
+    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next, whole frames 10 steps (0.17 s) apart: frames 1 to 6, the camera's travel from tier 1 to tier 2 (0:01.67 to 0:02.38); frames 7 to 12, the camera's travel from tier 2 to tier 3 (0:05.00 to 0:05.75). Each group: from the last frame before the travel to after its end")
     expect(tierSheet(cfg, { rows, moments: { falls: [] } })).toBe(null)
+  })
+
+  it('begins with the page\'s own travel down the whole machine where the visit holds one, each group of frames at its own stated step', () => {
+    // The made-up page opens as the live one does: from its top the camera travels down past every tier (steps 50 to 249), rests, goes back up to the first tier (300 to 359), and the play begins.
+    const low = top(2) + 200
+    const opens: (number | string)[][] = []
+    for (let i = 0; i < 400; i++) {
+      const scroll = i < 50 ? 0 : i < 250 ? (low * (i - 49)) / 200 : i < 300 ? low : i < 360 ? low - ((low - top(0)) * (i - 299)) / 60 : top(0)
+      opens.push([i / 60, 'step3', 0, 960, scroll + 500, scroll, 0, 0, 1, 1, 0, 0, 0, 1])
+    }
+    const all = [...opens, ...rows.map((r, i) => [(i + 400) / 60, ...r.slice(1)])]
+    const part = { first: 0, last: all.length - 1 }
+    const reveal = revealOf(cfg, all, part) as { first: number; last: number; back: boolean }
+    expect([reveal.first, reveal.last, reveal.back]).toEqual([50, 249, true])
+    expect(revealOf(cfg, rows, { first: 0, last: 499 })).toBe(null)
+    const both = fallsOf(cfg, all, part) as { first: number; last: number; tier: number }[]
+    expect(both.map((f) => [f.first, f.last, f.tier])).toEqual([[500, 543, 0], [700, 745, 1]])
+    const sheet = tierSheet(cfg, { rows: all, moments: { falls: both, reveal } }) as { steps: number[]; every: number; each: number; opens: number; heading: string }
+    expect(sheet.steps.length).toBe(count)
+    expect(sheet.each).toBe(4)
+    expect([sheet.opens, sheet.every]).toEqual([68, 16])
+    expect(sheet.steps).toEqual([49, 117, 185, 253, 499, 515, 531, 547, 699, 715, 731, 747])
+    expect(sheet.steps[3]).toBeGreaterThan(reveal.last)
+    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next, whole frames. Frames 1 to 4, 68 steps (1.13 s) apart: the camera's first travel, from the page's top down the machine to tier 3 (0:00.83 to 0:04.15), then back up to tier 1. Frames 5 to 8 and 9 to 12, 16 steps (0.27 s) apart: its travel from tier 1 to tier 2 (0:08.33 to 0:09.05) and from tier 2 to tier 3 (0:11.67 to 0:12.42). Each group: from the last frame before the travel to after its end")
+    // The recorded visit opens so: one travel of more than four seconds down the machine, then back up, before the first fall.
+    expect(rec.reveal.back).toBe(true)
+    expect(rec.reveal.last - rec.reveal.first).toBeGreaterThan(240)
+    expect(rec.reveal.last).toBeLessThan(rec.falls[0]!.first)
   })
 
   it('stands in the story pack after the sheet of the machine page, as its tenth file', () => {

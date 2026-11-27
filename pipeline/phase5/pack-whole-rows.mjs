@@ -27,6 +27,7 @@ const out = {
   gate: m.gate,
   save: { rows: cut(save[0], save[save.length - 1]) },
   falls: m.falls,
+  reveal: m.reveal,
   stroke: m.stroke
 }
 fs.writeFileSync(process.argv[3], JSON.stringify(out) + '\n')
