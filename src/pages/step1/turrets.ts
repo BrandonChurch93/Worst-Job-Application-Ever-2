@@ -11,6 +11,14 @@ export const TURRET = {
 // The longest, in seconds, one shot is held back for held keys on the live site.
 export const STAY = 0.7
 
+// How far, in px, the barrel stands back along its line: it creeps back `creep` over the whole wind-up and is cocked `cock` further over its last `cockSeconds`; on the step of the shot it is thrown back to `kick` and rings down, dying over `tau` at `hz` swings a second, still after `ring` seconds. The head gives `head` of it.
+export const RECOIL = { creep: 3, cock: 9, cockSeconds: 0.084, kick: 18, tau: 0.04, hz: 9, ring: 0.15, head: 0.22 }
+export const recoilOf = (charge: number, since: number): number => {
+  if (charge > 0) return RECOIL.creep * charge + RECOIL.cock * ease((charge - 1 + RECOIL.cockSeconds / TURRET.windup) / (RECOIL.cockSeconds / TURRET.windup))
+  if (since < 0 || since >= RECOIL.ring) return 0
+  return RECOIL.kick * Math.exp(-since / RECOIL.tau) * Math.cos(since * RECOIL.hz * Math.PI * 2) * (1 - ease((since - RECOIL.ring * 0.6) / (RECOIL.ring * 0.4)))
+}
+
 const ease = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * (3 - 2 * u)
@@ -172,10 +180,10 @@ export class Turrets {
         const stands = top >= heights.machineMinTop
         const winding = s.lock[i] !== null
         const charge = winding ? Math.min(1, (TURRET.windup - (s.next[i]! - s.clock)) / TURRET.windup) : 0
-        const back = charge * 14
         const a = s.overheated ? (i === 0 ? 0.5 : Math.PI - 0.5) : s.angle[i]!
         const first = TURRET.firstShot + (i === 0 ? 0 : TURRET.stagger)
         const since = this.firing && s.next[i]! > first + 1e-9 ? Math.min(1, s.clock - (s.next[i]! - TURRET.period)) : 1
+        const back = recoilOf(charge, since)
         const shots = Math.round((s.next[i]! - first) / TURRET.period)
         const heat = s.overheated ? Math.min(1, s.heat / 0.6) : 0
         out.push({
