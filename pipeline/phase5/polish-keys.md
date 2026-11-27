@@ -11,8 +11,9 @@ Every number below is from the live stage stepped under the pack's own visitor, 
 3. A, the hold. The key stays at the bottom for as long as the button of the click that pressed it is down, the pointer anywhere. It rises on the release on the spring it had (0.14 s, a short overshoot). One press types one letter however long it is held.
 4. A, the turrets. While a key is held on the live site a turret does not wind up: a shot whose wind up would run under the held key is put off, by `STAY` (0.7 s) at the most for one shot, so holding a key down does not stop the turrets. A bolt already in the air flies on. The film never calls this.
 5. B. On the live site a bolt that hits the arrow presses no key. The caps within `JAR.reach` of the strike are thrown outward from it by up to `JAR.px` on the frame of the hit and are back within `JAR.seconds`; the deck's own shake is kept. The strike's light is thrown on the deck and the caps round it (`EMIT.thrown`) and dies with a time constant of `SCORCH.quick` (0.04 s, was 0.4 s). A bolt that misses the arrow and lands on a cap still taps that cap, and the tap types no letter: it is a depth in the draw only, `strike()` is not called.
-6. C. No new prop. In the tug's end the mended arrow is put with its tip `CAUGHT.under` px under the hood's lip of the shredder's cassette (before it lay 43 px below it, touching nothing), drops its tired pose and is drawn out long toward the hood over the last `CAUGHT.strain` seconds. At the end the cassette kicks (`CAUGHT.kick`), the arrow is thrown back short to where the pile lay and swings, stands, and is released `CAUGHT.beat` (0.15 s) after the snap. Before, the release came 0.42 s after the same moment, so the visitor waits less.
+6. C. No new prop. In the tug's end the mended arrow is put with its tip `CAUGHT.under` px under the hood's lip of the shredder's cassette (before it lay 43 px below it, touching nothing), drops its tired pose and is drawn out long toward the hood over the last `CAUGHT.strain` seconds. At the end the cassette kicks (`CAUGHT.kick`), the arrow is thrown back short to where the pile lay inside `CAUGHT.fall` (0.067 s) with one swing, stands, and is released `CAUGHT.beat` (0.134 s) after the snap. Before, the release came 0.42 s after the same moment, so the visitor waits less.
 7. The arms are untouched and stay inside `step1.tug`.
+8. Two numbers held by tests of other owners are changed, because the beat the arrow stands before it is given back is now 4 frames and was 25. `tests/fix-tug.test.ts`: the window in which the arrow must lie settled before the mouse has it, 0.3 s to 0.05 s. `tests/polish-tug.test.ts`: the least time the arrow stands still before the mouse has it, 0.2 s to 0.05 s (0.071 s is measured). Nothing else in either file is touched. The reason the beat is short: the pack's sheet of the give back runs from 6 frames before the arrow's first move to 16 frames after it, so a longer stand would put the arrow following the visitor outside the sheet, and the visitor would wait longer.
 
 ## Numbers (MEASURED, the command above, before at 664bedb5 and after)
 
@@ -45,9 +46,10 @@ C, the give back.
 | the visitor loses the arrow | frame 2357 | frame 2327 (the visitor's run is 30 frames ahead by then, nothing in the tug changed) |
 | the shredding starts | 2419 | 2389 |
 | what holds the arrow | nothing drawn: it lay 43 px under the hood's lip | its tip 7 px under the hood's lip and not moving, drawn out from frame 2527 to 1.24 of its length by 2544 and held so for 13 frames (2544 to 2556) |
-| the release | none drawn | frame 2557: the cassette is kicked 19.8 px and is back in 13 frames, the arrow goes from 1.24 to 0.70 of its length in one frame and is thrown 49 px back in 9 frames, swinging |
-| the arrow is the visitor's again | 2612, 25 frames after the shredding's end | 2566, 9 frames after it |
-| from the shredding's start to the visitor's arrow | 193 frames | 177 frames |
-| control taken, all of it | 255 frames, 4.25 s | 239 frames, 3.98 s (`live.controlTakenMaxSeconds` is 8) |
+| the release | none drawn | frame 2557: the cassette is kicked 19.8 px and is back in 13 frames, the arrow goes from 1.24 to 0.70 of its length in one frame and is thrown 50 px back in 4 frames (23, 18, 7, 2 px), turned 0.18 rad on the first, at its length again on 2561 |
+| the beat | the arrow stood 25 frames | it stands without moving on frames 2561 to 2564 |
+| the arrow is the visitor's again | 2612, 25 frames after the shredding's end | 2565, 8 frames after it |
+| from the shredding's start to the visitor's arrow | 193 frames | 176 frames |
+| control taken, all of it | 255 frames, 4.25 s | 238 frames, 3.97 s (`live.controlTakenMaxSeconds` is 8) |
 
 The film: `POLISH_KEYS_FILM=<file> npx vitest run tests/polish-keys-film.test.ts` at 664bedb5 and now, 1920 frames of the page, `cmp` says the two files and their event lists are the same.
