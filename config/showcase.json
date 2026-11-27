@@ -230,7 +230,7 @@
     "Sizes are not taken from any image. A part's size and its height off the page come from scale in the config and from the layout tree. The images draw the same part at different sizes."
   ],
   "keys": [
-    { "id": "marketing-top", "unit": "marketing", "beat": "marketing.stroll", "at": 2.5, "camera": "home", "image": "references/approved/marketing-top.png", "settled": [] },
+    { "id": "marketing-top", "unit": "marketing", "beat": "marketing.stroll", "at": 0.8, "camera": "home", "image": "references/approved/marketing-top.png", "settled": [] },
     {
       "id": "step1-fire",
       "unit": "step1",
