@@ -14,6 +14,10 @@ let seen = 0
 const t = (i) => ((i + 1) / stepHz).toFixed(3)
 for (let i = 0; i < 60 * stepHz && s.page.id === 'step2'; i++) {
   s.advance(1)
+  if (s.page.id !== 'step2') {
+    for (const e of s.events.slice(seen)) if (e.page === 'step2') console.log(t(i), 'EVENT', e.name, Math.round(e.x), Math.round(e.y))
+    break
+  }
   const p = s.page.save()
   const f = s.page.fields()
   const now = `field ${p.field} open ${p.open} ${p.phase} dial ${p.dial.phase} slot ${p.slot.phase} [${p.slot.stopped.map((v) => (v >= 0 ? 1 : 0)).join('')}]${p.slot.win ? ' win' : ''} crank ${p.crank.phase} date "${p.birth.typed}" count ${p.count} slide ${p.slide >= 0 ? 1 : 0}`
