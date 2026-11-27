@@ -114,7 +114,7 @@ describe('polish tug: the takeover and the release of step 1 on the live site, s
     console.log(`release: the arms are shed over ${(shedding / stepHz).toFixed(3)} s; the page holds the arrow ${held.toFixed(2)} s of the ${config.live.controlTakenMaxSeconds} s it may; the arrow stands still ${(still / stepHz).toFixed(3)} s before the mouse has it; in the first frame of 60 after it moves ${first.toFixed(2)} px; its lean changes ${((turn * 180) / Math.PI).toFixed(1)} degrees in a frame of 60 at the most in the half second after`)
     expect(shedding / stepHz).toBeGreaterThan(0.2)
     expect(held).toBeLessThan(config.live.controlTakenMaxSeconds)
-    expect(still / stepHz).toBeGreaterThanOrEqual(0.05)
+    expect(still / stepHz).toBeGreaterThanOrEqual(0.2)
     expect(first).toBeLessThan(4)
     expect((turn * 180) / Math.PI).toBeLessThan(12)
   })

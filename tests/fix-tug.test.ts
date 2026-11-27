@@ -123,8 +123,8 @@ describe('fix tug: the takeover, the loss and the give-back of step 1 on the liv
     expect(back).toBeGreaterThan(shredded)
     const whole = rows.findIndex((r, i) => i > shredded && r.received)
     const held = (back - taken) / stepHz
-    const settled = rows.slice(back - Math.round(stepHz * 0.05), back)
-    console.log(`give-back: the arrow is held ${held.toFixed(2)} s in all, the page may hold it ${config.live.controlTakenMaxSeconds} s; it stands ${fastest(settled).toFixed(3)} px a step at most in the 0.05 s before the mouse has it; the largest step after is ${fastest(rows.slice(back - 1)).toFixed(2)} px`)
+    const settled = rows.slice(back - Math.round(stepHz * 0.3), back)
+    console.log(`give-back: the arrow is held ${held.toFixed(2)} s in all, the page may hold it ${config.live.controlTakenMaxSeconds} s; it stands ${fastest(settled).toFixed(3)} px a step at most in the 0.3 s before the mouse has it; the largest step after is ${fastest(rows.slice(back - 1)).toFixed(2)} px`)
     expect(whole).toBeGreaterThan(shredded)
     expect(held).toBeLessThan(config.live.controlTakenMaxSeconds)
     expect(fastest(settled)).toBeLessThan(0.5)

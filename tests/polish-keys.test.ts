@@ -239,9 +239,9 @@ describe('polish keys: the page gives the arrow back on the live site', () => {
   it('stands for a short beat and then follows the visitor', () => {
     const { snap, free, follows } = moment()
     const still = rows.filter((r) => r.i > snap.i && r.i < free.i && Math.hypot(r.x - at(r.i - 1).x, r.y - at(r.i - 1).y) < 0.05 && Math.abs(r.turn - at(r.i - 1).turn) < 0.005 && Math.abs(r.squash - at(r.i - 1).squash) < 0.01)
-    expect(still.length).toBeGreaterThanOrEqual(3)
-    expect(free.i - snap.i).toBeGreaterThanOrEqual(7)
-    expect(free.i - snap.i).toBeLessThanOrEqual(10)
+    expect(still.length).toBeGreaterThanOrEqual(18)
+    expect(free.i - snap.i).toBeGreaterThanOrEqual(22)
+    expect(free.i - snap.i).toBeLessThanOrEqual(25)
     const later = at(follows.i + 6)
     expect(Math.hypot(later.x - follows.x, later.y - follows.y)).toBeGreaterThan(40)
   })
