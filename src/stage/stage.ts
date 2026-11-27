@@ -96,7 +96,7 @@ export class Stage {
     return p
   }
 
-  private enter(index: number, arrive: boolean): void {
+  private enter(index: number, arrive: boolean, hand?: { x: number; y: number }): void {
     const entry = this.o.flow[index]!
     this.index = index
     this.page = this.pageOf(entry)
@@ -109,7 +109,9 @@ export class Stage {
     this.phaseStep = 0
     this.phase = arrive ? 'arrive' : 'play'
     this.visited.add(entry.page)
-    if (arrive) this.cursor.reset(HANDOFF.x, this.page.scroll() + HANDOFF.y, true)
+    // Under a visitor's hand the arrow comes in with its page where the hand is. The film's arrow is handed over at the middle.
+    const at = this.cursor.hand && hand ? hand : HANDOFF
+    if (arrive) this.cursor.reset(at.x, this.page.scroll() + at.y, true)
     else this.cursor.reset(this.page.start.x, this.page.start.y)
   }
 
@@ -196,7 +198,7 @@ export class Stage {
     this.unitStep++
     this.phaseStep++
     this.step++
-    this.advancePhase(emit)
+    this.advancePhase(emit, raw)
   }
 
   private told(pointer: Pointer): boolean {
@@ -231,7 +233,7 @@ export class Stage {
     return { ...pointer, x: pointer.x + this.lag.x * this.lag.left, y: pointer.y + this.lag.y * this.lag.left }
   }
 
-  private advancePhase(emit: (name: string, x: number, y: number) => void): void {
+  private advancePhase(emit: (name: string, x: number, y: number) => void, hand: { x: number; y: number }): void {
     const last = this.index === this.o.flow.length - 1
     const film = this.o.film
     if (this.phase === 'arrive' && this.phaseStep >= turnSteps) {
@@ -258,7 +260,7 @@ export class Stage {
       if (last) {
         this.phase = 'end'
         this.phaseStep = 0
-      } else this.enter(this.index + 1, true)
+      } else this.enter(this.index + 1, true, hand)
     }
   }
 
