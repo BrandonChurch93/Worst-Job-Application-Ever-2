@@ -1,7 +1,7 @@
 {
   "version": 1,
   "lastMark": {
-    "at": 1795800876023,
+    "at": 1795801750163,
     "boot": "df551acd-542a-4cfe-8bc6-11afd76c75c3"
   },
   "epochs": [
@@ -48,9 +48,9 @@
       "boxes": {
         "5": 12
       },
-      "seconds": 42432.11,
+      "seconds": 43306.25000000001,
       "phaseSeconds": {
-        "5": 42432.11
+        "5": 43306.25000000001
       }
     }
   ],
@@ -72,25 +72,25 @@
       "5": true
     }
   },
-  "lastStatusAt": 1795800876023,
-  "ticks": 308,
+  "lastStatusAt": 1795801750163,
+  "ticks": 313,
   "phaseSeconds": {
     "0": 6207.739,
     "1": 1349.032,
     "2": 18875.037,
     "3": 43904.471000000005,
     "4": 53340.359999999986,
-    "5": 91658.39100000003
+    "5": 92532.53100000005
   },
   "lastPrint": [
-    "clock: phase 5, tick 308 at 2026-11-27T17:34:36Z, allowance: continuation 2",
-    "time used in this phase: 11.79 h of its box of 12.00 h, of which 2.00 h is the reserve",
-    "time used under the allowance in force: 11.79 h of 12.00 h allowed",
-    "time used: 59.82 of 60.00 hours before the review",
+    "clock: phase 5, tick 313 at 2026-11-27T17:49:10Z, allowance: continuation 2",
+    "time used in this phase: 12.03 h of its box of 12.00 h, of which 2.00 h is the reserve",
+    "time used under the allowance in force: 12.03 h of 12.00 h allowed",
+    "time used: 60.06 of 60.00 hours before the review",
     "extra rounds: no",
     "half point: reached",
     "box end: reached",
-    "budget report: not due",
+    "budget report: due",
     "minutes since the last status: 0"
   ],
   "firstMarkAt": 1795584754000
