@@ -1210,7 +1210,7 @@ export function motionPlan(cfg, run) {
     const all = range(from, to)
     const box = [Math.min(key[0], ...all.map((i) => rows[i][COL.heroX] - TAKEN.room)), Math.min(key[1], ...all.map((i) => screenY(i) - TAKEN.room)), Math.max(key[2], ...all.map((i) => rows[i][COL.heroX] + TAKEN.room)), Math.max(key[3], ...all.map((i) => screenY(i) + TAKEN.room))]
     const fit = closeFit(cfg, box, twelve)
-    const steps = close('type', `as the visitor's arrow presses a key of the page's keyboard and lets it go: every frame from ${KEYS.before} frames before the press (${timeOf(m.type.press)}) to ${KEYS.after} frames after the release (${timeOf(m.type.release)})`, from, to, m.type.press, twelve, [fit.window], fit.percent,
+    const steps = close('type', `as the visitor's arrow presses a key of the page's keyboard and lets it go: every frame from ${KEYS.before} frames before the press (${timeOf(m.type.press)}) to ${KEYS.after} after the release (${timeOf(m.type.release)})`, from, to, m.type.press, twelve, [fit.window], fit.percent,
       `one fixed window on the key, its neighbours and the arrow, ${scaleWords(fit.percent)} (${placeWords(fit.window)})`, ['key', 'move'])
     const r = runs[runs.length - 1]
     // Which press it is, in true words, and a hit on the arrow inside the run, so that what it does to the page is not read as a press.
@@ -1218,9 +1218,9 @@ export function motionPlan(cfg, run) {
     const nth = cfg.live.step1.hitsBeforeTurretsOverheat
     const stopped = m.type.why === 'hot' ? `bolt ${nth} hit the arrow at ${timeOf(m.type.spent)} and the turrets fire no more after it` : `the page went on to the last name at ${timeOf(m.type.spent)} and its turrets fire no more from then`
     const which = m.type.clear
-      ? `This is press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets have stopped: ${stopped}, and these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
-      : `This is the first press of the visitor's on the keyboard; the turrets may fire in these frames`
-    r.after = [which, hit ? `${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : '', `The pack's visitor rests ${KEYS.rest} frames after it lets a key go`].filter(Boolean).join('. ')
+      ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets have stopped: ${stopped}; these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
+      : `The first press of the visitor's on the keyboard; the turrets may fire in these frames`
+    r.after = [which, hit ? `${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : '', `The visitor rests ${KEYS.rest} frames after it lets a key go`].filter(Boolean).join('. ')
   }
   if (have(m.taken)) {
     // The take whole and close: every step from TAKEN.before frames before the page takes the arrow until TAKEN.after frames after the arrow has come to rest.
