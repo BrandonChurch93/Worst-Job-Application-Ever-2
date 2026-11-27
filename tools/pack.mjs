@@ -16,6 +16,8 @@ const stop = (line) => {
   process.exit(1)
 }
 const git = (...words) => execFileSync('git', words, { cwd: at(), encoding: 'utf8' }).trim()
+// The exit code of a pack that is built and lacks a sheet it owes: a save the run shows and no reading found.
+const MISSING_EXIT = 3
 const sha = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex')
 
 const round = Number(a.round)
@@ -70,7 +72,8 @@ if (!a.force && fs.existsSync(record) && fs.existsSync(keyFile)) {
   const old = readJson(record)
   if (JSON.stringify(old.stamp) === JSON.stringify(stamp) && whole(old)) {
     console.log(`pack: reused ${path.relative(at(), dir)}, it is of this commit: ${old.sets.map((s) => `${s.critic} ${s.files.length} files`).join(', ')}`)
-    process.exit(0)
+    if (old.missing && old.missing.length) console.log(`pack: MISSING, ${old.missing.length}: ${old.missing.join('; ')}`)
+    process.exit(old.missing && old.missing.length ? MISSING_EXIT : 0)
   }
 }
 
@@ -111,4 +114,8 @@ for (const s of manifest.sets) {
 }
 if (site && manifest.limitTook) console.log(manifest.limitTook.length ? `pack: the limit of files took ${manifest.limitTook.length}: ${manifest.limitTook.join('; ')}` : 'pack: the limit of files took nothing away')
 if (site && manifest.leftOut && manifest.leftOut.length) console.log(`pack: left out: ${manifest.leftOut.join('; ')}`)
+if (site && manifest.missing && manifest.missing.length) {
+  console.log(`pack: MISSING, ${manifest.missing.length}: ${manifest.missing.join('; ')}`)
+  process.exitCode = MISSING_EXIT
+}
 if (built.problems.length) console.log(`pack: the browser reported ${built.problems.length} problem${built.problems.length > 1 ? 's' : ''}: ${built.problems.slice(0, 4).join(' | ')}`)

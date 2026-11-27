@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
-import { COL, FALLS, FLIPS, KEYS, MACHINE, REACH, SAVE, SITE, TIERS, TURNS, VISITOR, ballAt, downAt, fallsOf, makeVisitor, overBat, reachGap, saveHolds, saveWindow, revealOf, tierSheet, tiersOf, windowHolds } from '../tools/lib/pack-site.mjs'
+import { COL, FALLS, FLIPS, KEYS, MACHINE, REACH, SAVE, SAVE_BOX, SITE, TIERS, TURNS, VISITOR, ballAt, downAt, fallsOf, makeVisitor, overBat, reachGap, saveHolds, saveWindow, revealOf, tierSheet, tiersOf, windowHolds } from '../tools/lib/pack-site.mjs'
 import { FLIP, FLIP_REACH, MID, MOUTH, R, TIER_Y, W } from '../src/table/layout'
 import { SHIVER, TURN, shiverSeconds } from '../src/stage/turn'
 
@@ -104,7 +104,13 @@ describe('the recorded save', () => {
     expect(win.window[0]).toBeGreaterThanOrEqual(0)
     expect(win.window[1]).toBeGreaterThanOrEqual(0)
     expect(win.window[0]! + win.window[2]!).toBeLessThanOrEqual(f.width)
-    expect(win.window[1]! + win.window[3]!).toBeLessThanOrEqual(f.height)
+    // Its lower edge is the foot of the screen, and it holds the part of the screen the gate and its wire take up (812 to 1112 across, 820 to 1080 down, of 1920 by 1080).
+    expect(win.window[1]! + win.window[3]!).toBe(f.height)
+    const k = f.width / cfg.formats.hd.width
+    expect(SAVE_BOX).toEqual([812, 820, 1112, 1080])
+    expect(win.window[0]).toBeLessThanOrEqual(SAVE_BOX[0]! * k)
+    expect(win.window[1]).toBeLessThanOrEqual(SAVE_BOX[1]! * k)
+    expect(win.window[0]! + win.window[2]!).toBeGreaterThanOrEqual(SAVE_BOX[2]! * k)
     for (let i = steps[0]!; i <= steps[steps.length - 1]!; i++) {
       expect(windowHolds(cfg, run, win, i)).toBe(true)
       // The ball itself is in the window from the take on, as far up as the tile reaches.
@@ -185,7 +191,7 @@ describe('the sheet of the tiers', () => {
       expect(part[0]).toBe(f.first - 1)
       expect(part[part.length - 1]).toBeGreaterThan(f.last)
     })
-    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next, whole frames 10 steps (0.17 s) apart: frames 1 to 6, the camera's travel from tier 1 to tier 2 (0:01.67 to 0:02.38); frames 7 to 12, the camera's travel from tier 2 to tier 3 (0:05.00 to 0:05.75). Each group: from the last frame before the travel to after its end")
+    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next, whole frames 10 steps (0.17 s) apart: frames 1 to 6, the camera's travel from tier 1 to tier 2 (0:01.67 to 0:02.38); frames 7 to 12, the camera's travel from tier 2 to tier 3 (0:05.00 to 0:05.75). Each group of 6 begins before its travel and ends after it")
     expect(tierSheet(cfg, { rows, moments: { falls: [] } })).toBe(null)
   })
 
@@ -210,7 +216,7 @@ describe('the sheet of the tiers', () => {
     expect([sheet.opens, sheet.every]).toEqual([68, 16])
     expect(sheet.steps).toEqual([49, 117, 185, 253, 499, 515, 531, 547, 699, 715, 731, 747])
     expect(sheet.steps[3]).toBeGreaterThan(reveal.last)
-    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next, whole frames. Frames 1 to 4, 68 steps (1.13 s) apart: the camera's first travel, from the page's top down the machine to tier 3 (0:00.83 to 0:04.15), then back up to tier 1. Frames 5 to 8 and 9 to 12, 16 steps (0.27 s) apart: its travel from tier 1 to tier 2 (0:08.33 to 0:09.05) and from tier 2 to tier 3 (0:11.67 to 0:12.42). Each group: from the last frame before the travel to after its end")
+    expect(sheet.heading).toBe("The machine's tiers and the passage from one to the next. Frames 1 to 4 are single moments 68 steps (1.13 s) apart, not frames in a row: the camera's first travel, from the page's top down the machine to tier 3 (0:00.83 to 0:04.15), then back up to tier 1. Frames 5 to 8 and 9 to 12, 16 steps (0.27 s) apart: its travel from tier 1 to tier 2 (0:08.33 to 0:09.05) and from tier 2 to tier 3 (0:11.67 to 0:12.42). Each group of 4 begins before its travel and ends after it")
     // The recorded visit opens so: one travel of more than four seconds down the machine, then back up, before the first fall.
     expect(rec.reveal.back).toBe(true)
     expect(rec.reveal.last - rec.reveal.first).toBeGreaterThan(240)
