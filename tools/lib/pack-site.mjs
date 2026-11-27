@@ -771,13 +771,15 @@ export function momentsOf(cfg, run) {
       while (up <= s1.last && rows[up][COL.down]) up += 1
       presses.push({ press: i, release: up })
     }
-    // The press that is shown: the first whose frames begin once the turrets are spent. They fire no more from the hit on the arrow that overheats them
-    // (live.step1.hitsBeforeTurretsOverheat), and a bolt in the air at that hit has landed or left the page KEYS.spent steps later. With no such press, the first.
+    // The press that is shown: the first whose frames begin once the turrets fire no more and nothing of theirs is left. They stop at the hit on the arrow that overheats them
+    // (live.step1.hitsBeforeTurretsOverheat) or when the page goes on to the last name (STANDS.until), whichever comes first; KEYS.spent steps later no bolt is in the air. With no such press, the first.
     const shots = bolts(run.hits || [])
-    const last = shots[cfg.live.step1.hitsBeforeTurretsOverheat - 1] || null
+    const hot = shots[cfg.live.step1.hitsBeforeTurretsOverheat - 1] || null
+    const on = run.gags.find((g) => g.gag === STANDS.until && g.step >= s1.first && g.step <= s1.last) || null
+    const last = hot && (!on || hot.step <= on.step) ? { step: hot.step, why: 'hot' } : on ? { step: on.step, why: 'on' } : null
     const clear = last ? presses.find((x) => x.press - KEYS.before >= last.step + KEYS.spent) : null
     const shown = clear || presses[0] || null
-    if (shown) type = { ...shown, nth: presses.indexOf(shown) + 1, of: presses.length, clear: Boolean(clear), spent: last ? last.step : null }
+    if (shown) type = { ...shown, nth: presses.indexOf(shown) + 1, of: presses.length, clear: Boolean(clear), spent: last ? last.step : null, why: last ? last.why : null }
   }
   return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, thrown, flippers, leaves, left, flip, met: blow, stroke, strokes, blows, save, saves, gate, unsaved, type, turn: turns[0] || null, falls: fallsOf(cfg, rows, s3), reveal: revealOf(cfg, rows, s3) } }
 }
@@ -1214,8 +1216,9 @@ export function motionPlan(cfg, run) {
     // Which press it is, in true words, and a hit on the arrow inside the run, so that what it does to the page is not read as a press.
     const hit = (run.hits || []).find((h) => HITS.includes(h.name) && h.step >= steps[0] && h.step <= steps[steps.length - 1])
     const nth = cfg.live.step1.hitsBeforeTurretsOverheat
+    const stopped = m.type.why === 'hot' ? `bolt ${nth} hit the arrow at ${timeOf(m.type.spent)} and the turrets fire no more after it` : `the page went on to the last name at ${timeOf(m.type.spent)} and its turrets fire no more from then`
     const which = m.type.clear
-      ? `This is press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets are spent: bolt ${nth} hit the arrow at ${timeOf(m.type.spent)}, the turrets fire no more after it, and these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
+      ? `This is press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets have stopped: ${stopped}, and these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
       : `This is the first press of the visitor's on the keyboard; the turrets may fire in these frames`
     r.after = [which, hit ? `${struckWords(hit.name)} hits the arrow at ${timeOf(hit.step)}` : '', `The pack's visitor rests ${KEYS.rest} frames after it lets a key go`].filter(Boolean).join('. ')
   }
