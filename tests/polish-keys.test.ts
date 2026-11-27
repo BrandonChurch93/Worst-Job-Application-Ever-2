@@ -135,6 +135,19 @@ describe('polish keys: a bolt hits the arrow on the live site', () => {
     }
   })
 
+  it('lets a bolt that lands on a cap tap that cap, and the tap types no letter', () => {
+    let taps = 0
+    for (const r of rows) {
+      if (!r.events.includes('bolt-hit') || r.events.includes('bolt-hit-cursor') || r.i < 1) continue
+      const before = at(r.i - 1)
+      const tapped = r.keys.filter((k) => k.depth > 0.5 && k.sink === 0 && !before.keys.some((b) => b.name === k.name))
+      if (tapped.length === 0) continue
+      taps++
+      if (!(r.down && !before.down)) expect(r.events, `frame ${r.i}`).not.toContain('key-press')
+    }
+    expect(taps).toBeGreaterThan(0)
+  })
+
   it('throws the caps round the strike outward on the frame of the hit, and the deck with them', () => {
     const h = hit()
     const was = at(h.i - 1)

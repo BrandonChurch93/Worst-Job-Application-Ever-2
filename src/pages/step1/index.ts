@@ -727,6 +727,7 @@ export function makePage(): PageLogic {
       io.emit('strips-zip', PILE.x + BODY.x, PILE.y + BODY.y, false)
       act(io, 'exhausted')
     }
+    if (s.mode !== 'film' && crossed(SHRED.end - CAUGHT.strain)) act(io, 'plain')
     if (s.mode !== 'film' && s.shred >= SHRED.end - CAUGHT.strain && s.shred < SHRED.end) io.cursor.press(lerp(1, CAUGHT.long, smooth((s.shred - SHRED.end + CAUGHT.strain) / (CAUGHT.strain * 0.6))), io.dt)
     if (crossed(SHRED.end)) {
       if (s.mode === 'film') io.cursor.release()
