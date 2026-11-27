@@ -44,7 +44,9 @@ export const FORM = {
 export const TURRET = { hatch: [0.02, 0.16], rise: [0.14, 0.44], swing: [0.46, 0.94], lock: 0.94, kick: 0.16, glow: [0.9, 1] } as const
 
 export const WALK = { pitch: 40, band: 0.14, lift: 46, bob: 5 }
-export const TIMES = { form: 2.9, turret: 1.6, beaten: 2, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
+// The fall when he is beaten, as shares of boss.beaten: the cannon leaves, the glass bursts, the body drops on its belly.
+export const FALL = { off: [0, 0.4], glass: [0.05, 0.3], drop: [0.3, 0.7] } as const
+export const TIMES = { form: 2.9, turret: 1.6, beaten: 1, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
 
 export interface LegPose { hip: [number, number, number]; knee: [number, number, number]; foot: [number, number, number]; yaw: number; up: number; yaw2: number; down: number; footYaw: number; lift: number; show: number; planted: [number, number] }
 export interface GunPose { yaw: number; recoil: number; spin: number; lamp: number; flash: number; rise: number }
@@ -201,7 +203,9 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const heal = hitAge >= 0 && b.healedAt !== null && b.healedAt > (b.hitAt ?? -1e9) ? 0 : bump(since(now, b.healedAt), 0, TIMES.heal)
   const healNow = bump(since(now, b.healedAt), 0, TIMES.heal)
   void heal
-  const sagPart = smooth(lin(beaten, 0.1, 0.55))
+  const fall = lin(beaten, FALL.drop[0], FALL.drop[1])
+  const sagPart = fall * fall
+  const settle = Math.sin(Math.PI * lin(beaten, FALL.drop[1], FALL.drop[1] + 0.2))
   const tremble = charge > 0 && !beamOn && blastAge < 0 ? charge * charge * 2.2 : 0
   const tj = (k: number): number => tremble * (hash01(Math.floor(now * 60), k, o.seed + 9) - 0.5)
   const walkBob = WALK.bob * Math.sin((b.walked / WALK.pitch) * Math.PI) * Math.sin((b.walked / WALK.pitch) * Math.PI)
@@ -211,7 +215,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const formed = f >= 1
   const body = {
     x: -recoilBack - hurtShove + tj(1), y: tj(2),
-    z: bodyZ - brace - 16 * lockKick - (formed ? walkBob : 0) - 58 * sagPart - 14 * blast,
+    z: bodyZ - brace - 16 * lockKick - (formed ? walkBob : 0) - 84 * sagPart + 9 * settle - 14 * blast,
     yaw, pitch: flightPitch + 0.05 * blast - 0.012 * charge, roll: formed && beaten <= 0 ? 0.012 * Math.sin((b.walked / WALK.pitch) * Math.PI) : 0
   }
 
@@ -231,7 +235,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
       const drop = lin(out, 0.7, 1)
       foot = [mix(tx, foot[0], reach), mix(ty, foot[1], reach), mix(60 + body.z + 40, 0, 0) + (1 - drop * drop) * (150 + 120 * Math.sin(Math.PI * lin(out, 0, 0.7)))]
     }
-    if (sagPart > 0) foot = [foot[0] * (1 + 0.1 * sagPart), foot[1] * (1 + 0.1 * sagPart), foot[2]]
+    if (sagPart > 0) foot = [foot[0] * (1 + 0.16 * sagPart), foot[1] * (1 + 0.16 * sagPart), foot[2]]
     const ik = legIk(hip, foot, (hx * hy > 0 ? 1 : -1) * LEG.lean)
     return { hip, knee: ik.knee, foot, yaw: ik.yaw, up: ik.up, yaw2: ik.yaw2, down: ik.down, footYaw: Math.atan2(foot[1] - hip[1], foot[0] - hip[0]), lift: p.lift, show, planted }
   })
@@ -246,7 +250,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
     }
   }) as [GunPose, GunPose]
 
-  const off = lin(beaten, 0, 0.35)
+  const off = lin(beaten, FALL.off[0], FALL.off[1])
   const cannon = {
     show: t > TURRET.rise[0] && off < 1, x: mix(CANNON.bayX, CANNON.pivotX, smooth(sw)), z: cannonZ, elev, yaw: 0,
     ribs: -225 * (1 - prog(t, 0.44, 0.6)), sleeve: -295 * (1 - prog(t, 0.5, 0.68)), barrel: -640 * (1 - (t >= 1 ? 1 : outBack(lin(t, 0.6, 0.92), 1.2))) - 46 * blast - 20 * charge,
@@ -260,7 +264,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const wym = body.y * K
   const word = {
     x: 960 + wx + (wxm * cw - wym * sw2), y: 540 - (wy + (wxm * sw2 + wym * cw)), z: (body.z + buttonZ + BTN.tall) * K + 0.3,
-    rot: b.heading - Math.PI, show: !(cannon.show && sw > 0.55) || off >= 1
+    rot: b.heading - Math.PI, show: !(cannon.show && sw > 0.55) || off >= 0.3
   }
 
   return {
@@ -268,7 +272,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
     button: { z: buttonZ, sx, sy, jx, jy, glow: bump(f, 0, FORM.launch + 0.02) },
     wings: [wingA, wingB],
     hatch: { x: HATCH.cx - HATCH.slide * hatchOpen, z: HATCH.top + 7 * bump(t, TURRET.hatch[0], TURRET.hatch[0] + 0.06) + (hatchOpen > 0 ? 3 * hatchOpen : 0), seam: 1.4 + 3 * bump(t, 0, 0.2) + 0.6 * Math.sin(now * 3) * 0.3, gone: off },
-    shield: { rise: shieldUp, slide: shieldOut, flash: kick(since(now, b.shield.glancedAt), TIMES.glance), broken: lin(beaten, 0.05, 0.3), show: f >= FORM.shield[0] },
+    shield: { rise: shieldUp, slide: shieldOut, flash: kick(since(now, b.shield.glancedAt), TIMES.glance), broken: lin(beaten, FALL.glass[0], FALL.glass[1]), show: f >= FORM.shield[0] },
     guns, legs, cannon,
     weak: b.weak ? (b.weak.shownAt === null ? 0 : 1.6 + 2.6 * (0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16))) : 0,
     damage: f < 1 ? 0 : beaten > 0.02 ? 3 : b.stage, hurt, heal: healNow, sag: sagPart, lockAge, word

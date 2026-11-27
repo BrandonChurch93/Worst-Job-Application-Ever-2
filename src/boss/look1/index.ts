@@ -8,7 +8,7 @@ import { setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
 import { poseGun } from './gun'
 
-export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FORM, TURRET, TIMES, DEFAULTS } from './pose'
+export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FALL, FORM, TURRET, TIMES, DEFAULTS } from './pose'
 export type { LookOptions, Pose } from './pose'
 export { EVENTS } from './events'
 export { makeGun, poseGun } from './gun'

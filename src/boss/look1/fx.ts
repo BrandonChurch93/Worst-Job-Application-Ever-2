@@ -3,7 +3,7 @@ import type { BossView } from '../view'
 import type { Emitter } from '../../real/types'
 import { hash01 } from '../../core/random'
 import { CANNON, FEET, GUN, HATCH, PAGE_BTN, SHIELD } from './numbers'
-import { FORM, K, TIMES, bigMuzzleOf, clamp01, kick, lin, mix, muzzleOf, outCubic, prog, smooth, type LookOptions, type Pose } from './pose'
+import { FALL, FORM, K, TIMES, bigMuzzleOf, clamp01, kick, lin, mix, muzzleOf, outCubic, prog, smooth, type LookOptions, type Pose } from './pose'
 import { boxAt, crackStar, joined, lookKit, mesh, pillOutline, ringPlate } from './kit'
 
 // Everything round the body: the broken socket, the cracks where he lands, chunks, dust and smoke, bullets, flashes, the beam.
@@ -509,11 +509,24 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
     // Damage: smoke where he is hurt, more as he falls from stage to stage; sparks that come and go at the last stage.
     if (p.shown && f >= 1 && (b.stage > 0 || beaten > 0)) {
       const heavy = b.stage >= 2 || beaten > 0
-      const [ax, ay] = fromBody(p, 70, 214)
-      plume(ax, ay, 64, now, heavy ? 0.09 : 0.13, 1.3, 11, heavy ? 40 : 30, SMOKE, heavy ? 0.8 : 0.62)
+      const [ox, oy] = fromBody(p, 0, 0)
+      const vent = (bx: number, by: number, id: number, every: number, life: number, size: number, colour: [number, number, number], strength: number, speed: number): [number, number] => {
+        const [x, y] = fromBody(p, bx, by)
+        const d = Math.hypot(x - ox, y - oy) || 1
+        plume(x, y, 64, now, every, life, id, size, colour, strength, ((x - ox) / d) * speed + 5, ((y - oy) / d) * speed + 9)
+        return [x, y]
+      }
+      const [ax, ay] = vent(215, 92, 11, heavy ? 0.1 : 0.13, 1.7, heavy ? 36 : 30, SMOKE, heavy ? 0.85 : 0.78, 50)
+      vent(-125, 208, 13, 0.17, 1.5, 24, SMOKE, 0.6, 40)
+      const beat = Math.floor(now / 0.8)
+      const bAge = now - beat * 0.8
+      if (!heavy && rnd(beat, 114) > 0.3) {
+        sparks(ax, ay, 68, bAge, 6, 700 + beat * 5, 240, 0.25, HOT, 2)
+        if (bAge < 0.06) flash(ax, ay, 70, 26, [0.8, 0.9, 1], 1.5 * (1 - bAge / 0.06))
+      }
       if (heavy) {
         const [cx2, cy2] = fromBody(p, 150, -112)
-        plume(cx2, cy2, 62, now, 0.11, 1.2, 12, 34, SOOT, 0.7, -8, 26)
+        vent(150, -112, 12, 0.13, 1.6, 30, SOOT, 0.6, 46)
         const flick = 0.6 + 0.4 * hash01(Math.floor(now * 24), 5, o.seed)
         glow.add(cx2, cy2, 70, 46 * flick + 14, 46 * flick + 14, 0, ORANGE, 0.9 * flick)
         glow.add(cx2, cy2, 70.5, 20 * flick + 6, 20 * flick + 6, 0, HOT, 1.2 * flick)
@@ -539,13 +552,17 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
         lamp(ex, ey, 120, [1, 0.62, 0.3], 1.1 * k, 380)
       }
       sparks(ex, ey, 100, age, 22, 900, 620, 0.6, HOT, 2.6)
-      burst(ex, ey, 80, age, 16, 940, 170, 70, 1.3, SOOT, 0.75, 20)
-      burst(ex, ey, 60, age - 0.1, 10, 960, 110, 60, 1.1, SMOKE, 0.6, 10)
+      burst(ex, ey, 80, age, 16, 940, 190, 70, 0.95, SOOT, 0.75, 20)
+      burst(ex, ey, 60, age - 0.1, 10, 960, 120, 60, 0.85, SMOKE, 0.6, 10)
+      const [lx, ly] = fromBody(p, 0, 0)
+      burst(lx, ly, 3, age - FALL.drop[1] * TIMES.beaten, 20, 980, 260, 50, 0.29, DUST, 0.8, 90, 0.7)
       const [hx2, hy2] = fromBody(p, HATCH.cx + 40, 0)
-      const grow = smooth(lin(beaten, 0.1, 0.5))
-      plume(hx2, hy2, 60, now, 0.09, 1.5, 21, 44, SOOT, 0.7 * grow, 20, 34)
+      const grow = smooth(lin(beaten, 0.1, 0.6))
+      const hd = Math.hypot(hx2 - lx, hy2 - ly) || 1
+      plume(hx2, hy2, 60, now, 0.12, 1.7, 21, 32, SOOT, 0.5 * grow, ((hx2 - lx) / hd) * 44 + 5, ((hy2 - ly) / hd) * 44 + 9)
       const [gx, gy] = fromBody(p, GUN.x, GUN.y)
-      plume(gx, gy, 60, now, 0.14, 1.2, 22, 30, SMOKE, 0.5 * grow, 16, 26)
+      const gd = Math.hypot(gx - lx, gy - ly) || 1
+      plume(gx, gy, 60, now, 0.18, 1.4, 22, 24, SMOKE, 0.45 * grow, ((gx - lx) / gd) * 36 + 5, ((gy - ly) / gd) * 36 + 9)
       const sh = (beaten - 0.05) * TIMES.beaten
       if (sh >= 0) {
         for (let i = 0; i < 18; i++) {

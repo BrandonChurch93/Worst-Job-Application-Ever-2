@@ -1,4 +1,4 @@
-import { FORM, TURRET } from './pose'
+import { FALL, FORM, TURRET } from './pose'
 
 // On which moment of the look each event must land, and how long its sound may be.
 // `at` is a share of boss.form or boss.turret where the event belongs to a stage, else the field of the view that starts it. Seconds are for the live site's 2.9 s forming and 1.6 s turret beat.
@@ -14,5 +14,6 @@ export const EVENTS = {
   'boss-heal': { on: 'healedAt', at: 0, seconds: 0, sound: 0.6, note: 'a pulse over the hull for 0.6 s' },
   'big-tell': { on: 'big.tell', at: 0, seconds: 0, sound: 1.6, note: 'a rising charge as long as the tell; it must end on big-fire' },
   'big-fire': { on: 'big.firedAt', at: 0, seconds: 0, sound: 1.5, note: 'the beam stands 0.3 s, the recoil 0.45 s, heat and smoke 1.2 s' },
-  'turret-off': { on: 'beaten', at: 0, seconds: 0, sound: 1.2, note: 'the cannon is blown off over the first 0.35 of beaten (0.7 s), the shield bursts at 0.05' }
+  'turret-off': { on: 'beaten', at: FALL.off[0], seconds: 0, sound: 0.9, note: 'the cannon is blown off over beaten 0 to 0.4 (0.4 s of the 1.0 s fall), the glass bursts from 0.05' },
+  'boss-fall': { on: 'beaten', at: FALL.drop[1], seconds: 0.7, sound: 0.8, note: 'the body drops from beaten 0.3 and hits the ground on its belly at 0.7; dust and a short settle follow' }
 } as const
