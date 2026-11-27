@@ -141,7 +141,7 @@ function clearPage(f: Fight): void {
 
 function wander(f: Fight, io: StepIo): { x: number; y: number; speed: number } {
   const dt = io.dt
-  const held = bannerUp(f) || (f.phase === 2 && f.expired < 0) || f.big.t >= 0 || f.turret < 1
+  const held = bannerUp(f) || (f.phase === 2 && f.expired < 0) || f.big.t >= 0
   if (held) {
     f.leg = 0
     return { x: f.x, y: f.y, speed: 0 }
@@ -258,7 +258,7 @@ function corners(f: Fight, io: StepIo): void {
       io.emit('cannon-fire', from.x, from.y, false)
       f.tell = null
     }
-  } else if (!quiet(f) && f.turret >= 1) {
+  } else if (!quiet(f)) {
     f.cornerDue -= dt
     if (f.cornerDue <= 0 && f.flat <= 0) {
       const i = CORNER.order[f.cornerCount % CORNER.order.length]!
@@ -332,7 +332,7 @@ function guns(f: Fight, io: StepIo): void {
       f.burst--
       f.burstDue = f.shape === 'fan' ? GUN.fanGap : GUN.lineGap
     }
-  } else if (!quiet(f) && f.turret >= 1 && f.big.t < 0) {
+  } else if (!quiet(f) && f.big.t < 0) {
     f.gunDue -= dt
     const armed = f.phase !== 1 || f.popupCount >= POPUP_ORDER.length || f.phaseClock >= POPUP.armed
     const read = f.phase === 1 ? POPUP.aim : POPUP.read
@@ -369,9 +369,9 @@ function big(f: Fight, io: StepIo): void {
       const across = -rx * Math.sin(b.a) + ry * Math.cos(b.a)
       if (f.safe <= 0 && along > 0 && Math.abs(across) < BIG.wide) strike(f, io, c.x, c.y, 3)
     }
-  } else if (!quiet(f) && f.turret >= 1 && f.windup < 0 && f.burst === 0) {
+  } else if (!quiet(f)) {
     b.due -= dt
-    if (b.due <= 0 && f.flat <= 0) {
+    if (b.due <= 0 && f.flat <= 0 && f.windup < 0 && f.burst === 0) {
       b.t = 0
       b.a = bearing(f, c.x, c.y)
       b.x = c.x
@@ -474,7 +474,7 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
         d.y = f.y + Math.sin(a) * GUARD.radius
       }
       const open = !(f.phase === 2 && f.expired < 0.8)
-      const worth = glass ? GUARD.chip : REAL_DART[f.phase]! * wear(f.clock) * (io.mode === 'film' ? FILM.dart : 1)
+      const worth = glass ? GUARD.chip : REAL_DART[f.phase]! * wear(f.clock) * (io.mode === 'film' ? FILM.dart[f.phase]! : 1)
       if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - worth)
       spark(f, d.x, d.y, glass ? SHIELD.z : 0)
       if (glass) {

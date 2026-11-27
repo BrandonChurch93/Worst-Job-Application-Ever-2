@@ -4,7 +4,7 @@ import { args } from '../../tools/lib/paths.mjs'
 import { logic } from '../../tools/lib/logic.mjs'
 
 const a = args()
-const every = Number(a.every ?? 1)
+const every = Number(a.every ?? 0.5)
 const { load, close } = await logic()
 const { Stage, ScriptDriver, filmFlow, filmOptions } = await load('/src/stage/stage.ts')
 const { pages } = await load('/src/pages/index.ts')
@@ -12,7 +12,7 @@ const { config, stepHz } = await load('/src/config.ts')
 const beats = config.film.beats.filter((b) => b.unit === 'boss')
 const stage = new Stage({ mode: 'film', flow: filmFlow('boss'), pages, driver: new ScriptDriver(), film: filmOptions('boss') })
 const end = Math.max(...beats.map((b) => b.to))
-const quiet = new Set(['dart-fire', 'dart-hit', 'shot-round', 'shield-glance'])
+const quiet = new Set(['dart-fire', 'dart-hit', 'shot-round', 'shield-glance', 'step'])
 let seen = 0
 let tally = {}
 for (let t = 0; t < end; t += every) {
@@ -25,7 +25,13 @@ for (let t = 0; t < end; t += every) {
   }
   seen = stage.events.length
   const beat = beats.find((b) => stage.time >= b.from && stage.time < b.to)
-  console.log(`${stage.time.toFixed(1).padStart(5)} s  ${String(stage.page.gag()).padEnd(16)} beat ${(beat ? beat.id : '').padEnd(16)} ${f ? `health ${f.health.toFixed(1)} phase ${f.phase} flat ${f.flat.toFixed(2)} boss ${f.x.toFixed(0)},${f.y.toFixed(0)} face ${f.face.toFixed(2)}` : ''}  ${Object.entries(tally).map(([k, v]) => `${k} ${v}`).join(', ')}`)
+  let open = ''
+  if (f) {
+    const b = Math.atan2(stage.cursor.y + 32 - f.y, stage.cursor.x + 18 - f.x)
+    const off = Math.abs(Math.atan2(Math.sin(b - f.face), Math.cos(b - f.face)))
+    open = `arrow ${stage.cursor.x.toFixed(0)},${stage.cursor.y.toFixed(0)} is ${off.toFixed(2)} rad off the shield's middle and ${Math.hypot(stage.cursor.x + 18 - f.x, stage.cursor.y + 32 - f.y).toFixed(0)} px from the boss`
+  }
+  console.log(`${stage.time.toFixed(2).padStart(5)} s  ${String(stage.page.gag()).padEnd(14)} ${f ? `health ${f.health.toFixed(1)} flat ${Math.max(0, f.flat).toFixed(2)} boss ${f.x.toFixed(0)},${f.y.toFixed(0)} ${open}` : ''}  ${Object.entries(tally).map(([k, v]) => `${k} ${v}`).join(', ')}`)
   tally = {}
 }
 for (const b of beats) {

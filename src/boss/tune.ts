@@ -41,7 +41,7 @@ export const MOVE = {
 
 // C. Bullets. Every gun fires them: the boss's own two guns and the four corner cannons.
 export const GUN = {
-  first: 1.5, // s into the fight before the boss's own guns first wind up, after the turret has locked
+  first: 1.5, // s into the fight before the boss's own guns first wind up; like every first shot and the first set-off it comes after the turret has locked
   tell: 0.6, // s a gun pulls back and its lamp blinks before it fires
   every: [2.6, 3.2, 2.6] as const, // s from one pattern to the next, by phase
   late: 2, // s into the last phase before the first pattern
@@ -108,8 +108,8 @@ export const IDLE = {
   ramp: 5 // s in which a phase then runs out
 } as const
 
-// In the film a dart that reaches the body does this many times as much: the film gives the whole fight 18 s, half of what a keen visitor needs.
-export const FILM = { dart: 3 } as const
+// In the film a dart that reaches the body does this many times as much, by phase: the film gives the whole fight 18 s, half of what a keen visitor needs.
+export const FILM = { dart: [2.4, 2, 2.6] as const } as const
 
 // The right edge of the pop-ups, which stand left of the boss's fence.
 export const POPUP_RIGHT = 1040
