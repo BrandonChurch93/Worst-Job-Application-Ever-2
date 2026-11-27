@@ -31,6 +31,8 @@ export interface StageOptions {
 }
 
 type Phase = 'arrive' | 'play' | 'leave' | 'end'
+// The pages whose arrow, in the film, is not lifted to the hand over place when the page turns: it stays where it stands, on the button it has pressed, and goes over with its slab.
+export const STAYS_ON: readonly string[] = ['marketing']
 
 interface Saved {
   step: number
@@ -155,6 +157,8 @@ export class Stage {
   get gagsReached(): string[] { return [...this.reached] }
   get pagesVisited(): string[] { return [...this.visited] }
 
+  private staysOn(): boolean { return this.o.mode === 'film' && STAYS_ON.includes(this.page.unit) }
+
   private turnAt(): number {
     const u = Math.min(1, this.phaseStep / turnSteps)
     if (this.phase === 'arrive') return arriveTurn(u)
@@ -264,7 +268,7 @@ export class Stage {
         this.phase = 'leave'
         this.phaseStep = 0
         const y = this.page.scroll() + HANDOFF.y
-        this.cursor.lift(HANDOFF.x, y)
+        if (!this.staysOn()) this.cursor.lift(HANDOFF.x, y)
         emit('page-turn', HANDOFF.x, y)
       }
       return
@@ -350,7 +354,7 @@ export class Stage {
       railFields(list, this.page.fields?.() ?? null)
       slideHeader(list, this.page.chrome?.() ?? null)
     }
-    const made: Frame = { list, cursor: this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
+    const made: Frame = { list, cursor: this.phase === 'leave' && this.staysOn() ? { ...this.cursor.pose(), rides: true } : this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     const settle = this.settledFor()
     if (settle !== undefined) {
       made.settle = settle
