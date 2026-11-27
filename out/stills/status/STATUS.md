@@ -1,8 +1,8 @@
 # Status pictures
 
-Time: 2026-11-27T02:33Z. Phase 5, status 132.
+Time: 2026-11-27T04:10Z. Phase 5, status 133.
 
-1. `01-decision-at-the-final-setting.jpg`: Step 5, Decision, the key `decision`, drawn from merge 43 at the final tier (24 samples) at 1920 by 1080 by the measures helper. Looked at by the Builder at full size.
-2. `02-step-2-crank-at-the-final-setting.jpg`: Step 2 with the volume crank, the key `step2-crank`, drawn from merge 43 at the final tier at 1920 by 1080 by the measures helper. Looked at by the Builder at full size.
-3. `03-preview-06-in-sixteen-frames-across-the-film.jpg`: Sixteen frames of Preview 06 (merge 43, review tier, 960 by 540), the film time above each. Looked at by the Builder.
-4. `04-preview-06-the-pinball-machine-in-twelve-frames.jpg`: Twelve frames of the pinball machine from Preview 06, film 1:07.5 to 1:47.5, the film time above each. Looked at by the Builder.
+1. `01-the-stamp-sound-in-preview-06-and-preview-07-on-.jpg`: Ten frames of Decision from 2:25.1 to 2:26.9 and, on the same time line, the sound of Preview 06 and of Preview 07. MEASURED on both files: in Preview 06 the stamp's sound was laid at 2:25.30, under the narrator, and there is silence as the stamp lands at 2:26.43; in Preview 07 the sound starts at 2:26.40. Made and looked at by the Builder.
+2. `02-the-bat-lobs-the-ball-up-the-table-where-the-tow.jpg`: Twelve frames, every third frame, of the live site at merge 44 under a keen bot visitor, by the slide helper: a save between the bats ends in a stroke that lobs the ball up the table; before, the ball was towed (0 tows in 40 visits now, STATED by the helper). Not mended and seen here: the lob crosses the red lamp window. Looked at by the Builder.
+3. `03-the-bats-lose-power-as-a-seen-event-ten-moments.jpg`: Ten moments of the live site at merge 44, by the slide helper: as a last resort the tier's light goes down and the bats hang without power for 1.24 s (36.47 to 37.71 s of that visit), so a visitor sees why a press does nothing. Never in the film. Looked at by the Builder.
+4. `04-a-visitor-flipper-stroke-with-the-held-key-marke.jpg`: Sheet 9 of round 23's motion pack (merge 44, the live site under a visitor, frames in a row at 75% of their size): the right flipper meets the ball and the ball goes off it; R under a frame marks that the visitor held the right flipper. The letters are new in this pack, so a critic can tell a press from a stroke of the machine. Looked at by the Builder.
