@@ -563,8 +563,6 @@ export function makePage(): PageLogic {
   const joltNow = (): number => (s.jolt < JOLT.seconds ? s.joltAmp * (1 - s.jolt / JOLT.seconds) ** 2 : 0)
   const holding = (): boolean => s.phase === 'tug' && (s.lost < 0 || (s.mode !== 'film' && s.lost < LOSS.skid + LOSS.feed))
 
-  const reaching = (): boolean => s.mode !== 'film' && s.phase === 'tug' && s.tug.t < TAKE.reach
-
   const grip = (io: StepIo): void => {
     const t = s.tug
     const sx = io.cursor.x + TUG.shoulder.x
@@ -884,7 +882,7 @@ export function makePage(): PageLogic {
     const reach = armed ? TUG.hands : 0
     const hx = armed ? t.hx : t.gx
     const hy = armed ? t.hy : t.gy
-    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx - uy * reach, hy + ux * reach, hx + uy * reach, hy - ux * reach, t.vx, t.vy, armed ? (s.mode === 'film' ? Math.max(TAKE.bare, t.held) : t.held) : 0]
+    const v = [LIE, 1, t.amount, armed ? t.pull : 0, hx - uy * reach, hy + ux * reach, hx + uy * reach, hy - ux * reach, t.vx, t.vy, armed ? Math.max(TAKE.bare, t.held) : 0]
     out.push({ id: 'resume-paper', part: 'paper', kind: 'box', x: c.x - PAPER.w / 2, y: c.y - shown / 2, w: PAPER.w, h: shown, z0: LIE, z1: LIE + heights.paper, rot, tone: 'paper', moved: true, v })
     const rest = Math.max(10, PAPER.h * (1 - t.amount))
     const scale = whole / rest
@@ -908,7 +906,7 @@ export function makePage(): PageLogic {
     if (s.board > 0) out.push('keyboard', 'note')
     else out.push('closed')
     if (s.slabs.length) out.push('slab')
-    if (s.paper.on && (s.phase === 'resume' || reaching())) out.push('paper')
+    if (s.paper.on && s.phase === 'resume') out.push('paper')
     return out
   }
 
@@ -1117,15 +1115,14 @@ export function makePage(): PageLogic {
         over['email-slab'] = { x: p.x, y: p.y, z0: p.z, z1: p.z + heights.slab, moved: true, v: slabV(first) }
         over['email-slab-label'] = { x: slabLabel.x + (p.x - slabHome.x), y: slabLabel.y + (p.y - slabHome.y), z0: p.z + heights.slab, z1: p.z + heights.slab, moved: true }
       }
-      if (s.paper.on && (s.phase === 'resume' || reaching())) {
+      if (s.paper.on && s.phase === 'resume') {
         const dx = s.paper.x - PAPER_REST.x
-        const sy = s.paper.y + (reaching() ? joltNow() : 0)
-        const dy = sy - PAPER_REST.y
+        const dy = s.paper.y - PAPER_REST.y
         const up = s.paper.held ? LIE + 14 + (s.mode === 'film' ? RESUME.high * raised(s.time) : 0) : s.paper.feed >= 0 ? LIE : 0.6
         const moved = dx !== 0 || dy !== 0
         const hx = s.paper.held ? s.cx : s.paper.x + PAPER.w / 2
-        const hy = s.paper.held ? s.cy : sy
-        over['resume-paper'] = { x: s.paper.x, y: sy, z0: up, z1: up + heights.paper, moved, v: [up, s.paper.feed >= 0 ? clamp(s.paper.feed / TIMES.bite, 0, 1) : 0, 0, 0, hx, hy, hx, hy, s.paper.vx, s.paper.vy, 0] }
+        const hy = s.paper.held ? s.cy : s.paper.y
+        over['resume-paper'] = { x: s.paper.x, y: s.paper.y, z0: up, z1: up + heights.paper, moved, v: [up, s.paper.feed >= 0 ? clamp(s.paper.feed / TIMES.bite, 0, 1) : 0, 0, 0, hx, hy, hx, hy, s.paper.vx, s.paper.vy, 0] }
         const title = boxOf(layout, 'resume-paper-title')
         over['resume-paper-title'] = { x: title.x + dx, y: title.y + dy, z0: up + heights.paper + 0.1, z1: up + heights.paper + 0.1, moved }
         PAPER_LINES.forEach((_, i) => {
@@ -1177,7 +1174,7 @@ export function makePage(): PageLogic {
         if (thrown > 0) for (const x of slot) if (x.mechanism) x.y += thrown
         out.push(...slot)
       }
-      if ((s.phase === 'tug' && !reaching()) || s.phase === 'shredded') tugPaper(out)
+      if (s.phase === 'tug' || s.phase === 'shredded') tugPaper(out)
       strips(out)
     },
     scroll: () => 0,
