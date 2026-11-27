@@ -17,6 +17,7 @@ import { drainWay, KNOCK, LET } from '../../table/real/frame/loader'
 import { ANSWER } from '../../table/real/lights/levels'
 import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
+import { FRENZY, noted, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
 export const prepare = (): Promise<void> => startPhysics()
@@ -29,7 +30,7 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.1, wake: 5.6, powerOn: 7.2, atPlunger: 8.6, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 17.9, inboxBy: 19.1,
+  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.1, wake: 5.6, powerOn: 7.2, atPlunger: 8.6, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 19.8, inboxBy: 20.3,
   drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedBy: 27.2, scoopKick: 29.35, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
@@ -93,7 +94,7 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number[]
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number[]; fx?: number[]
 }
 
 type Rolled = State & { over?: Record<string, number> }
@@ -460,7 +461,9 @@ export function makePage(): PageLogic {
   }
   const filmPose = (time: number): CameraPose => {
     const p = cut(time)
-    const j = jolt()
+    const a = jolt()
+    const k = strikeJolt(s.fx, s.t)
+    const j = { x: a.x + k.x, y: a.y + k.y }
     if (j.x === 0 && j.y === 0) return p
     const b = basis(p)
     const d = Math.hypot(p.target[0] - p.eye[0], p.target[1] - p.eye[1], p.target[2] - p.eye[2])
@@ -481,6 +484,12 @@ export function makePage(): PageLogic {
     const x = at.x
     const y = at.y
     const say = (name: string, hits = false) => io.emit(name, x, y, hits)
+    const struck = strikeOf(e, machine().frenzy > 0)
+    if (struck) {
+      s.fx = noted(s.fx, s.t, e, struck)
+      if (e.ball === 0) io.emit(`strike:${struck.id}:${struck.hard}`, x, y, false)
+      if (e.ball === 0 && struck.loot > 0) io.emit('loot', x, y, false)
+    }
     if (e.name === 'flipper') {
       io.emit('flipper', px(e.x), px(TIER_Y[ball().mode === 'none' ? 2 : ball().tier]! + FLIP.pivotV), false)
       const want = machine().wants(0.3, -60)
@@ -694,8 +703,23 @@ export function makePage(): PageLogic {
     }
     on['office.inbox'] = t >= T.inboxOn && t < T.eject
     const inbox = b.tier === 1 && t >= T.inboxOn - SHOT.back && t < T.eject ? lob(holdOf('office.inbox').c, SHOT.inbox, T.inboxBy, 'office', T.eject - slide[2]!, T.inboxOn - slide[7]!) : 0
+    const wild = !live && b.tier === 1 && t >= FRENZY.from && t < FRENZY.to
+    mc.frenzy = wild ? FRENZY.speed : 0
+    if (wild && once('frenzy-on')) io.emit('frenzy-on', px(MID), px(Y1 + FRENZY.low[1]!), false)
+    if (!wild && t >= FRENZY.to && s.said.includes('frenzy-on') && once('frenzy-off')) io.emit('frenzy-off', px(MID), px(Y1 + FRENZY.low[1]!), false)
     if (b.tier === 1 && b.mode === 'plane') {
-      if (t >= T.inboxOn && t < T.eject) {
+      if (wild) {
+        const n = (s.fx?.length ?? 0) / STRIKE.each
+        const to = FRENZY.round[n % FRENZY.round.length]!
+        const last = s.fx && s.fx.length > 0 ? s.fx[s.fx.length - STRIKE.each + 1]! : -9
+        mc.magnet = null
+        mc.aim = [MID + to[0]!, Y1 + to[1]!, FRENZY.cone]
+        const d = Math.hypot(mc.aim[0] - b.x, mc.aim[1] - b.y)
+        if (Math.hypot(b.vx, b.vy) < FRENZY.speed * FRENZY.slow && t - last >= FRENZY.gap && d > 0.5) {
+          mc.kick(0, ((mc.aim[0] - b.x) / d) * FRENZY.speed, ((mc.aim[1] - b.y) / d) * FRENZY.speed)
+          emitTable(io, { name: 'rebound', ball: 0, id: 'office.rail', x: b.x, y: b.y })
+        }
+      } else if (t >= T.inboxOn && t < T.eject) {
         const c = holdOf('office.inbox').c
         if (!live && t >= T.inboxBy) towTo('office.inbox')
         else shoot(c[0], c[1], SHOT.scoop, inbox === 1 ? 0 : PULL.scoop)
@@ -1127,6 +1151,7 @@ export function makePage(): PageLogic {
       const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [shutOf(ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!), ...(ago(s.took) < SHELL.shut ? [1] : [])]
       const lies = seen3()
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, x: px(lies.x - 0.5), y: px(lies.y - 0.5), z0: px(lies.z), z1: px(lies.z) + BALL, v: shell } : shape)
+      for (const shape of strikeShapes(s.fx, s.t)) out.push(shape)
       const counts = (s as Rolled).over
       if (counts) for (const shape of out) if (shape.id in counts) shape.v = [shape.v?.[0] ?? 0, counts[shape.id]!]
       out.push(hqPlate)
