@@ -54,6 +54,8 @@ MEASURED by printing `careersOpening('A')` and `careersOpening('B')` in a test r
 - In B the arrow rides down the page with the scroll, stands on the salary card at its stop (the card turns: `card-flip` 4.79 s, `card-flip-back` 6.52 s, MEASURED in the simulation at 240 steps a second), then by the badge line, the "lol" cell, the fifth step and the button. It goes down a lane at x 150 between the salary card and the badge so no other card turns.
 - `button-press` 17.979 s on `final-cta-cap`, `page-turn` 18.750 s: MEASURED in `tests/careers-acting.test.ts`.
 - In B line 1 ends at 13.75 s, at the end of the "lol" stop. The last 4.25 s have no voice.
+- In A no card turns: the page passes the cards at 2024 px/s. So the beat `marketing.perks` has no `card-flip` in its window in A, and with `OPENING.use` set to 'A' two of my tests fail by design ("keeps each beat and its event inside its window" in `tests/marketing.test.ts`, "flips one card in the film" in `tests/careers-fix.test.ts`). MEASURED: `npx vitest run tests/marketing.test.ts tests/careers-*.test.ts` with `use: 'A'`, 2 failed of 37. The tests pin the default, B.
+- The turn at the bottom: while the page turns, the stage draws only the screen on show as a slab. A sheet of the website that reaches above the screen (the comparison's, by 987 px at scroll 4553) is now cut to the screen for those frames (`Paint.keep` in `real/flat.ts`, the sheet's key in `real/careers-page.ts`), so it does not hang over the slab. MEASURED in `tests/careers-real.test.ts` (the cut sheet's upper edge is at the scroll). A card or a line of type that straddles the screen's edge is not cut: at scroll 4553 none does. On the live site a press of Apply at another scroll can leave a card or a line across the edge for the half second of the turn: STATED, not looked at.
 
 ## NEEDS (outside my files)
 
@@ -87,7 +89,15 @@ Other:
 - The arrow is the build's own, at its real size (decision 10).
 - The compare command shows the arrow at its start place in each tile it stitches.
 
-Crops of each beside the picture: NOT MADE YET.
+Seen in the crops and not meant, to mend in the polish pass (type scale):
+
+- Lead lines under headings: mine 3d3934, the picture's a little lighter (its darkest 1 percent of pixels in the hero subline is 65,61,56; mine 51,47,42. MEASURED with sharp on both pictures).
+- Staff quotes: the picture's quote and role are about 22 px and its bracket notes are in a typewriter face about 16 px; mine 20 px and Inter 14.
+- Process: the picture's step titles sit on one line where mine wrap ("Find Our Job Posting"), and its step text is about 20 px; mine 16.
+- Closing call: the picture's heading is about 54 px and its text 24; mine 44 and 20.
+- The picture's arrow is about one and a half times the build's and stands on the button's right end.
+
+Crops, mine left and the picture right: `node pipeline/change002/careers-differences.mjs` writes `out/work/careers/careers-differs-<name>.jpg` for type-headline, cursor-button, glow, awards, navigation, benefits-heading, cards, quotes, table, steps, closing. It reads the pictures of the two other commands.
 
 ## Words
 
@@ -99,6 +109,7 @@ Crops of each beside the picture: NOT MADE YET.
 
 - `node pipeline/change002/careers-page.mjs`: draws the whole page as one tall picture 1920 wide (`out/work/careers/careers-page.png`), lays it beside the approved one (`careers-page-beside.jpg`) and cuts the eight sections (`careers-section-N-name.jpg`, mine left, approved right). Prints triangles and draw calls of each tile.
 - `node pipeline/change002/careers-proof.mjs [--only top,film,apply,card,ticker,cost] [--setting a|b]`: the proof pictures in `out/work/careers/`.
+- `node pipeline/change002/careers-differences.mjs`: the crops of the on-purpose differences beside the picture.
 - `npm run film -- --unit marketing --tier draft --format preview`: the opening as a film (setting by `OPENING.use`).
 - Tests: `npx vitest run tests/marketing.test.ts tests/careers-*.test.ts`.
 
@@ -121,7 +132,7 @@ NOT LISTED YET: the whole `npm test` has not run since the opening changed.
 
 ## What is left
 
-- Crops of each on-purpose difference beside the picture.
+- The type sizes named under "Seen in the crops and not meant".
 - The cost at the low level, per tile and per frame.
 - The list of other units' tests.
 - The turn into step 1 from the bottom of the page: looked at in the film only.
