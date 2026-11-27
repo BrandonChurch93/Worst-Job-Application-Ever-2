@@ -11,7 +11,7 @@ const wy = (y: number): number => PAGE.h / 2 - y
 // The picture the ground reads its wounds from: red soot, green depth of a cut, blue embers, alpha the light from below where a slab is broken through. Half a texel to the page px.
 export const DAMAGE = { w: 960, h: 540 }
 
-export interface Wounds { texture: THREE.DataTexture; data: Uint8Array; time: { value: number }; ember: { value: number } }
+export interface Wounds { texture: THREE.DataTexture; data: Uint8Array; time: { value: number }; ember: { value: number }; spill: THREE.DataTexture; seam: { value: number } }
 
 export function makeWounds(): Wounds {
   const data = new Uint8Array(DAMAGE.w * DAMAGE.h * 4)
@@ -22,7 +22,42 @@ export function makeWounds(): Wounds {
   texture.wrapT = THREE.ClampToEdgeWrapping
   texture.colorSpace = THREE.NoColorSpace
   texture.needsUpdate = true
-  return { texture, data, time: { value: 0 }, ember: { value: 1 } }
+  return { texture, data, time: { value: 0 }, ember: { value: 1 }, spill: spillTexture(), seam: { value: 0 } }
+}
+
+// How much of the seams' light falls on the ceramic beside them: 1 at a seam's edge, gone some 40 px away. Made once.
+function spillTexture(): THREE.DataTexture {
+  const W = DAMAGE.w, H = DAMAGE.h
+  const data = new Uint8Array(W * H)
+  const reach = 46
+  // The light comes from below and the picture looks from below: the spill lies a little down the screen.
+  const drop = ARENA.lean * ARENA.seamDepth * 0.5
+  for (const seam of SEAMS) {
+    const p = seam.points
+    for (let i = 0; i < p.length - 1; i++) {
+      const ax = p[i]!.x, ay = p[i]!.y + drop, bx = p[i + 1]!.x, by = p[i + 1]!.y + drop
+      const i0 = Math.max(0, Math.floor((Math.min(ax, bx) - reach) / 2)), i1 = Math.min(W - 1, Math.ceil((Math.max(ax, bx) + reach) / 2))
+      const j0 = Math.max(0, Math.floor((Math.min(ay, by) - reach) / 2)), j1 = Math.min(H - 1, Math.ceil((Math.max(ay, by) + reach) / 2))
+      const ex = bx - ax, ey = by - ay, l2 = ex * ex + ey * ey || 1
+      for (let j = j0; j <= j1; j++) {
+        const y = j * 2 + 1
+        for (let k = i0; k <= i1; k++) {
+          const x = k * 2 + 1
+          const u = Math.max(0, Math.min(1, ((x - ax) * ex + (y - ay) * ey) / l2))
+          const d = Math.hypot(x - ax - ex * u, y - ay - ey * u) - ARENA.seamHalf * 0.6
+          const v = d <= 0 ? 255 : Math.round(255 * Math.exp(-d / 13))
+          const at = (H - 1 - j) * W + k
+          if (v > data[at]!) data[at] = v
+        }
+      }
+    }
+  }
+  const t = new THREE.DataTexture(data, W, H, THREE.RedFormat, THREE.UnsignedByteType)
+  t.magFilter = THREE.LinearFilter
+  t.minFilter = THREE.LinearFilter
+  t.colorSpace = THREE.NoColorSpace
+  t.needsUpdate = true
+  return t
 }
 
 // The page's own ceramic, with the wounds read in: the soot darkens it, the cut bends its normal so the light of the site shades the trench, the embers and the light from below shine.
@@ -36,14 +71,16 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
     shader.uniforms.arenaWounds = { value: w.texture }
     shader.uniforms.arenaTime = w.time
     shader.uniforms.arenaEmber = w.ember
+    shader.uniforms.arenaSpill = { value: w.spill }
+    shader.uniforms.arenaSeam = w.seam
     shader.vertexShader = 'varying vec2 vArenaUv;\n' + shader.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>\n\tvArenaUv = vec2( position.x / ${PAGE.w.toFixed(1)} + 0.5, position.y / ${PAGE.h.toFixed(1)} + 0.5 );`)
-    const head = `varying vec2 vArenaUv;\nuniform sampler2D arenaWounds;\nuniform float arenaTime;\nuniform float arenaEmber;\nfloat arenaHash( vec2 p ) { return fract( sin( dot( p, vec2( 127.1, 311.7 ) ) ) * 43758.5453 ); }\n`
+    const head = `varying vec2 vArenaUv;\nuniform sampler2D arenaWounds;\nuniform float arenaTime;\nuniform float arenaEmber;\nuniform sampler2D arenaSpill;\nuniform float arenaSeam;\nfloat arenaHash( vec2 p ) { return fract( sin( dot( p, vec2( 127.1, 311.7 ) ) ) * 43758.5453 ); }\n`
     const texel = `vec2( ${(1.5 / DAMAGE.w).toFixed(6)}, ${(1.5 / DAMAGE.h).toFixed(6)} )`
     const colour = '#include <color_fragment>'
     const emissive = '#include <emissivemap_fragment>'
     if (!shader.fragmentShader.includes(colour) || !shader.fragmentShader.includes(emissive)) throw new Error('The surface code of this three.js release is not the one the arena was written for')
     shader.fragmentShader = head + shader.fragmentShader
-      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.012, 0.011, 0.01 ), clamp( arenaW.r * 1.05, 0.0, 1.0 ) );`)
+      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.012, 0.011, 0.01 ), clamp( arenaW.r * 1.05, 0.0, 1.0 ) );\n\tdiffuseColor.rgb *= mix( vec3( 1.0 ), vec3( 0.62, 0.5, 0.42 ), smoothstep( 0.08, 0.3, arenaW.a ) );`)
       .replace(emissive, `${emissive}
 \t{
 \t\tvec2 arenaT = ${texel};
@@ -53,7 +90,11 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
 \t\troughnessFactor = mix( roughnessFactor, 0.95, arenaW.r );
 \t\tvec2 arenaCell = floor( vArenaUv * vec2( ${(PAGE.w / 3).toFixed(1)}, ${(PAGE.h / 3).toFixed(1)} ) );
 \t\tfloat arenaFlick = 0.72 + 0.28 * sin( arenaTime * ( 3.0 + 5.0 * arenaHash( arenaCell ) ) + 6.283 * arenaHash( arenaCell + 7.0 ) );
-\t\ttotalEmissiveRadiance += arenaEmber * ( vec3( 2.6, 0.62, 0.07 ) * arenaW.b * arenaW.b * arenaFlick + vec3( 3.4, 1.5, 0.3 ) * arenaW.a );
+\t\tfloat arenaLight = smoothstep( 0.55, 0.9, arenaW.a );
+\t\tfloat arenaWall = smoothstep( 0.08, 0.3, arenaW.a ) * ( 1.0 - arenaLight );
+\t\ttotalEmissiveRadiance += arenaEmber * vec3( 2.6, 0.62, 0.07 ) * arenaW.b * arenaW.b * arenaFlick + vec3( 3.1, 1.3, 0.24 ) * arenaLight * ( 0.8 + 0.2 * arenaHash( arenaCell ) ) + vec3( 0.42, 0.13, 0.02 ) * arenaWall;
+\t\tfloat arenaS = texture2D( arenaSpill, vArenaUv ).r;
+\t\ttotalEmissiveRadiance += vec3( 0.8, 0.2, 0.03 ) * arenaS * arenaS * arenaSeam * ( 1.0 - arenaW.r );
 \t}`)
   }
   m.customProgramCacheKey = () => `${base.customProgramCacheKey()}-arena-wounds`
@@ -108,9 +149,9 @@ function slotOutline(insetBy: number): THREE.Vector2[] {
   return out
 }
 
-const WALL_TOP: V3 = [0.06, 0.025, 0.014]
-const WALL_FOOT: V3 = [0.2, 0.055, 0.016]
-const BED: V3 = [1.1, 0.33, 0.05]
+const WALL_TOP: V3 = [0.1, 0.034, 0.014]
+const WALL_FOOT: V3 = [0.5, 0.14, 0.024]
+const BED: V3 = [1.7, 0.5, 0.075]
 const BED_INSET = 3.5
 
 // The tops of the nine slabs with their chamfers, and the walls of the seams below them.
@@ -322,6 +363,7 @@ export function makeGround(seed: number): Ground {
     wounds.time.value = time
     const level = seamLight(time)
     wallStuff.color.setScalar(level)
+    wounds.seam.value = level * Math.max(0, Math.min(1, (time - ARENA.splitAt) / (ARENA.splitTo - ARENA.splitAt)))
     if (cracks.visible) {
       let k = 0
       for (const seam of SEAMS) {
@@ -405,6 +447,7 @@ export function makeGround(seed: number): Ground {
       for (const g of [s.tops, s.walls, s.bed, sl.collar, sl.pit, lidGeo, crackGeo, sc.geometry]) g.dispose()
       for (const x of [topStuff, wallStuff, collarStuff, pitStuff, crackStuff]) x.dispose()
       wounds.texture.dispose()
+      wounds.spill.dispose()
     }
   }
 }

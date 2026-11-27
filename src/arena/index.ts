@@ -61,6 +61,7 @@ export function makeArena(o: { seed?: number } = {}): Arena {
     for (const p of panes.list) {
       const up = rise(t, p.order)
       p.root.visible = up > 0
+      p.shade.visible = up > 0.5
       p.foot.visible = up > 0
       p.foot.scale.set(1, 1, Math.min(1, Math.max(0.02, up * 6)))
       p.root.scale.set(1, 1, Math.max(0.02, up))

@@ -19,13 +19,13 @@ export const ARENA = {
   // The health bar drops into place and lands.
   barAt: 1.7, barLands: 2.12,
   // Sizes.
-  seamHalf: 12, chamfer: 3, seamDepth: 22,
-  pillar: { side: 56, foot: 76, footHigh: 7, high: 180 },
+  seamHalf: 9, chamfer: 3, seamDepth: 18,
+  pillar: { side: 56, foot: 76, footHigh: 7, high: 210 },
   pane: { thick: 14, high: 240 },
   // The picture is drawn a little from below the page: every standing thing leans up the screen by this much of its height.
   lean: 0.5,
   gun: { base: 46, high: 34, barrel: 78, scale: 1.2 },
-  slot: { x: 960, y: 967, w: 267, h: 75 },
+  slot: { x: 960, y: 960, w: 270, h: 66 },
   bar: { x0: 590, y0: 66, x1: 1333, y1: 137, trackInset: 22, trackHalf: 19, high: 9 },
   label: { x: 960, y: 40, px: 30, font: 'inter-600' },
   corners: [{ x: 89, y: 82 }, { x: 1831, y: 82 }, { x: 82, y: 987 }, { x: 1824, y: 981 }] as Pt[],

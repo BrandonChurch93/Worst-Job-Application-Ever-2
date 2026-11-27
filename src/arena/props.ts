@@ -89,12 +89,13 @@ export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; di
   return { object, list, dispose: () => { body.dispose(); plate.dispose() } }
 }
 
-export interface Pane { root: THREE.Group; foot: THREE.Mesh; whole: THREE.Group; x: number; y0: number; y1: number; order: number }
+export interface Pane { root: THREE.Group; foot: THREE.Mesh; shade: THREE.Mesh; whole: THREE.Group; x: number; y0: number; y1: number; order: number }
 
 export function makePanes(kit: Kit): { object: THREE.Group; list: Pane[]; dispose(): void } {
   const T = ARENA.pane
   const made: THREE.BufferGeometry[] = []
   const object = new THREE.Group()
+  const shadeStuff = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false })
   const list: Pane[] = PANES.map((p, i) => {
     const long = p.y1 - p.y0
     const sheet = new THREE.BoxGeometry(T.thick, long, T.high - 3)
@@ -106,7 +107,7 @@ export function makePanes(kit: Kit): { object: THREE.Group; list: Pane[]; dispos
     made.push(sheet, cap, shoe)
     const { lean, root } = stand(p.x, (p.y0 + p.y1) / 2)
     const whole = new THREE.Group()
-    const s = lit(sheet, kit.glass)
+    const s = lit(sheet, kit.glass, false)
     s.renderOrder = 4
     const c = lit(cap, kit.glassEdge, false)
     c.renderOrder = 5
@@ -114,10 +115,45 @@ export function makePanes(kit: Kit): { object: THREE.Group; list: Pane[]; dispos
     const rail = lit(shoe, kit.satin)
     rail.position.set(wx(p.x), wy((p.y0 + p.y1) / 2), 0)
     root.add(whole)
-    object.add(rail, lean)
-    return { root, foot: rail, whole, x: p.x, y0: p.y0, y1: p.y1, order: 0.5 + 0.08 * i }
+    // Light through glass: a soft green shade on the ground where the key would throw the pane's shadow, in place of a hard dark one.
+    const shadeGeo = paneShade(p.x, p.y0, p.y1)
+    made.push(shadeGeo)
+    const shade = new THREE.Mesh(shadeGeo, shadeStuff)
+    shade.position.z = 0.5
+    shade.frustumCulled = false
+    object.add(rail, lean, shade)
+    return { root, foot: rail, shade, whole, x: p.x, y0: p.y0, y1: p.y1, order: 0.5 + 0.08 * i }
   })
-  return { object, list, dispose: () => made.forEach((g) => g.dispose()) }
+  return { object, list, dispose: () => { made.forEach((g) => g.dispose()); shadeStuff.dispose() } }
+}
+
+// The shade of a pane: a sheet on the ground that runs from the pane's foot the way the key's shadows fall, green and strong at the foot, gone at its far edge and at both ends.
+function paneShade(x: number, y0: number, y1: number): THREE.BufferGeometry {
+  const reach = { x: 250, y: 120 }
+  const tint = [0.5, 0.72, 0.63]
+  const cols = 9, rows = 7
+  const pos: number[] = [], col: number[] = [], idx: number[] = []
+  for (let r = 0; r <= rows; r++) {
+    const t = r / rows
+    for (let c = 0; c <= cols; c++) {
+      const u = -0.1 + 1.2 * (c / cols)
+      const ends = Math.min(1, Math.max(0, Math.min(u + 0.1, 1.1 - u) / 0.22))
+      const a = ends * ends * (3 - 2 * ends) * (1 - t) ** 1.6 * (r === 0 ? 0.9 : 1)
+      pos.push(wx(x + reach.x * t), wy(y0 + (y1 - y0) * u + reach.y * t), 0)
+      col.push(1 + (tint[0]! - 1) * a, 1 + (tint[1]! - 1) * a, 1 + (tint[2]! - 1) * a)
+    }
+  }
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const a = r * (cols + 1) + c, b = a + 1, d = a + cols + 1, e = d + 1
+      idx.push(a, b, d, b, e, d)
+    }
+  }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3))
+  g.setIndex(idx)
+  return g
 }
 
 export interface Gun { root: THREE.Group; turret: THREE.Group; barrels: THREE.Group; muzzle: THREE.Mesh; flash: THREE.Mesh; order: number }
