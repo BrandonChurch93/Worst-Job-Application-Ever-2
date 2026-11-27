@@ -13,7 +13,9 @@ import type { CameraPose, Collider, DrawList, GagInfo, Hint, PageContext, PageLo
 import take from '../../../cut/TABLE-TAKE.json'
 import { BOARD, boardAt, DOORS, fixedShapes, movingShapes } from '../../table/draw'
 import { APRON_Y, BALL, FLIP, FLIP_REACH, LAST_Y, MARQUEE_Y, MID, MOUTH, OUTLET, PAGE_H, PORT, TH, TIERS, TIER_Y, floorZ, holdOf, railAt, railLength, railOf, solids, table, tierAt } from '../../table/layout'
-import { drainWay, LET } from '../../table/real/frame/loader'
+import { drainWay, KNOCK, LET } from '../../table/real/frame/loader'
+import { ANSWER } from '../../table/real/lights/levels'
+import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
@@ -91,9 +93,10 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number[]
 }
 
+type Rolled = State & { over?: Record<string, number> }
 const fresh = (): State => ({ mode: 'live', time: 0, t: 0, phase: 'wait', pull: 0, said: [], drops: 0, tows: 0, scroll: 0, floor: 0, opened: 0, result: 0, pressed: false, hold: 0, took: -1, home: -1, pan: [0, 0, 0, 1], arc: -9, blow: [0, 0, -9], snap: -9, sway: -9, lay: [0, -9], seen: -9, out: [-9, 0, 0], done: false, skipped: false, saved: false, score: 0, shut: false, dim: 0, struck: -9, face: [0, 0, 1, 0], hit: [0, 0], was: [0, 0, 1, 0], scoreAt: -9, scoreWas: 0, flipped: false, sink: [-1, 0, 0, 0, 0, 0], latch: -9, sv: 0, roll: [0, 0] })
 
 const flips = (take as unknown as { flips: [string, number, number][] }).flips
@@ -173,25 +176,34 @@ const PLUNGE = { reach: 0.24, sink: 5 / 60, grow: 2, lead: 0.35, floor: 2, long:
 const LATCH = { swing: 0.7, to: 0.5, squeeze: 0.85, way: 1.5707963267948966, over: 0.5, turn: 0.5 }
 // The drop into the feed tube: the view follows the ball as a damped spring whose stiffness grows from `slow` to `firm` (1 / s) over `ramp` seconds after `hold`, so the ball runs down the screen and the view catches it up. After `over` seconds the page's plain rule follows again.
 const DROP = { slow: 4, firm: 13.8, hold: 0.15, ramp: 0.8, over: 1.3 }
-// The release out of the port, film and live alike. The ball as it ran before is kept as a shadow, and the view and the arrow's roll follow the shadow, so they are what they were. The drawn ball lies `still` seconds more while the port's ring is thrown open,
-// falls with steps that grow over `grow` seconds, fast at first and then less, to a little more than the tube's pace, and loses that little evenly until at `over` seconds after the release, before the tube's first bend, it is its shadow. `ring`: the seconds after the release
-// at which the ring opens (half a frame, so the first frame that shows it is the frame before the ball moves).
-const FALL = { still: 1 / 60, grow: 9 / 60, over: 40 / 60, ring: 1 / 120 }
+// The release out of the port, film and live alike. The ball as it ran before is kept as a shadow, and the view and the tube's events follow the shadow, so they are what they were. The drawn ball lies `still` seconds more while the port's ring is thrown open,
+// then falls from rest down the straight tube with one steady gain of speed, so that `top` seconds later, at the tube's first bend, it is at its top pace. The bend takes the share of its speed that goes into the wall (`BEND.cos` is left), it gains again down the slope,
+// and at the second bend, which it reaches on the step its shadow does, it is its shadow and has the tube's pace. `ring`: the seconds after the release at which the ring opens (half a frame, so the first frame that shows it is the frame before the ball moves).
+const FALL = { still: 1 / 60, top: 46 / 60, ring: 1 / 120 }
 const STEP = 1 / stepHz
-// How far the drawn ball is behind its shadow `u` seconds after the release, in seconds of the tube's pace.
-const lagOf = (u: number): number => {
-  if (u >= FALL.over) return 0
-  if (u <= FALL.still) return u
-  const rest = FALL.over - FALL.still - FALL.grow
-  const top = (FALL.still + FALL.grow + rest / 2) / (rest / 2 + (2 * FALL.grow) / 3)
-  const x = Math.min(1, (u - FALL.still) / FALL.grow)
-  const ramp = FALL.still + x * FALL.grow - top * FALL.grow * (x * x - (x * x * x) / 3)
-  if (x < 1) return ramp
-  const w = (u - FALL.still - FALL.grow) / rest
-  return Math.max(0, ramp - ((top - 1) / 2) * rest * (w + Math.sin(Math.PI * w) / Math.PI))
+// The feed tube's first two bends: how far down the rail each lies, in balls, and the share of the ball's speed that the first leaves it.
+const BEND = (() => {
+  const p = railOf('feed').points
+  const d = (i: number): number => Math.hypot(p[i]![0] - p[i - 1]![0], p[i]![1] - p[i - 1]![1])
+  const first = d(1) + d(2)
+  return { first, second: first + d(3), cos: (p[3]![1] - p[2]![1]) / d(3) }
+})()
+// How far the drawn ball is behind its shadow `u` seconds after the release, in balls, when the shadow runs `lead` balls a second.
+const lagOf = (u: number, lead: number): number => {
+  const over = BEND.second / lead
+  if (u >= over) return 0
+  if (u <= FALL.still) return lead * u
+  const gain = (2 * BEND.first) / (FALL.top * FALL.top)
+  const f = u - FALL.still
+  if (f <= FALL.top) return lead * u - 0.5 * gain * f * f
+  const v = gain * FALL.top * BEND.cos
+  const d = over - FALL.still - FALL.top
+  const w = f - FALL.top
+  return Math.max(0, lead * u - (BEND.first + v * w + ((BEND.second - BEND.first - v * d) / (d * d)) * w * w))
 }
-// Live play, the room under a gate: while a ball is past the bats' tips on its way to a shut gate, lies on the gate's wire or was just thrown from it, the live view of the lobby and of the office aims `px` lower and goes there and back with the follow it has everywhere, so the wire, its posts and the hole under it are on the screen (the street's view has that room already). `stay`: the seconds after the kick it stays for the wire's swings.
-const ROOM = { px: 90, stay: 0.6, ease: 8 / 60, lead: 0.1, calm: 2, near: 0.6 }
+// Live play, the room under a gate: while a ball is past the bats' tips on its way to a shut gate, lies on the gate's wire or was just thrown from it, the live view of the lobby and of the office stands `px` lower, so the wire, its posts and the hole under it are on the screen (the street's view has that room already). `stay`: the seconds after the kick it stays for the wire's swings.
+// The view takes that room by a travel of its own, added to its follow: it gains speed by `gain` (px/s a second) up to `pace` (px/s), slows the same way and stands on its place with no step back and no tail; when the ball is struck away the view stops where it is and stands while the ball is in the lower part of the tier (`keep` balls or more down it), and goes back once the ball is above that or off the tier's floor.
+const ROOM = { px: 90, stay: 0.6, gain: 9000, pace: 720, keep: 5.6, lead: 0.1, calm: 2, near: 0.6 }
 // The roll in a tube: the arrow turns by `gear` radians for each ball's width travelled, a whole number of turns over the tube, and the last `ease` of the way slows the turn to rest. In the film the roll down the feed tube is over after `film` balls, before the cut to the wide view of the table.
 const TUMBLE = { gear: 1, ease: 0.15, film: 10.5 }
 // How far shut the half shells are for the share of the close that has passed: a slow swing, then a snap into the seam with growing speed.
@@ -258,6 +270,23 @@ export function makePage(): PageLogic {
   // How bright each tier's general lighting is: a wave down the tiers when the machine wakes, and a slow dim once the ball has left by the drain.
   const general = (): number[] => [0, 1, 2].map((k) => (powered() ? smooth((s.t - T.wake - (k + 1) * WAKE) / WAKE) * (s.t > T.wake + 4 * WAKE ? ASLEEP + (1 - ASLEEP) * smooth(s.dim) : 1) * (machine().cut && ball().tier === k ? ASLEEP : 1) : 0))
   const lit = (): boolean[] => table.inserts.map((n) => (powered() && s.t >= T.wake + (n.tier + 1) * WAKE && s.t < T.wake + (n.tier + 1) * WAKE + 0.6) || MODES.some((x) => x.mode === n.mode && s.t >= x.at && s.phase !== 'wait' && s.phase !== 'pull'))
+  // The count each window keeps of a ball over its glass (table/real/lights/over.ts). It is in the state only while a ball is in reach of a window, so a table with no ball near one saves and draws as it did.
+  const rollOver = (): void => {
+    const was = (s as Rolled).over
+    let next: Record<string, number> | undefined
+    for (const n of table.inserts) {
+      let gap = 9
+      machine().balls.forEach((b, i) => {
+        if (b.mode === 'none') return
+        const at = i === 0 ? seen3() : b
+        if (Math.abs(at.z - floorZ(n.tier)) <= 0.6) gap = Math.min(gap, Math.hypot(at.x - n.c[0], at.y - n.c[1]) - n.r - 0.5)
+      })
+      const k = stepOver(was?.[`insert.${n.id}`], gap, ANSWER.reach, STEP)
+      if (k !== undefined) (next ??= {})[`insert.${n.id}`] = k
+    }
+    if (next) (s as Rolled).over = next
+    else delete (s as Rolled).over
+  }
   const modeOf = (k: number): number | null => {
     let out: number | null = null
     if (s.phase === 'wait' || s.phase === 'pull') return null
@@ -286,7 +315,7 @@ export function makePage(): PageLogic {
     if (b.mode === 'hold' && b.hold === 'loader') return { scroll: 0, floor: 0 }
     if (b.mode === 'hold' && b.hold === 'outlet') return { scroll: lastScroll, floor: 0 }
     if (b.mode === 'rail' && (b.rail === 'feed' || b.rail === 'launch' || b.rail === 'drain')) {
-      const by = b.rail === 'feed' && s.fall ? railAt(railOf('feed'), s.fall[0]!).y : b.y
+      const by = b.rail === 'feed' && s.fall && s.fall[0]! >= 0 ? railAt(railOf('feed'), s.fall[0]!).y : b.y
       const y = px(by)
       const inTier = by >= Y0 && by < APRON_Y && b.rail !== 'feed'
       if (b.rail === 'launch' && by < Y0 + TH) return { scroll: px(Y0), floor: px(floorZ(0)) }
@@ -362,7 +391,13 @@ export function makePage(): PageLogic {
     const along = [(a.x - e.x) / d, (a.y - e.y) / d]
     return { eye: toWorld(px(c.x - along[0]! * BACK.behind), px(c.y - along[1]! * BACK.behind), px(c.z + BACK.up)), target: toWorld(px(c.x + along[0]! * BACK.aim), px(c.y + along[1]! * BACK.aim), px(c.z + BACK.lift)), up: [0, 0, 1], fov: fov('rail') }
   }
-  const follow = (): CameraPose => homePose(s.scroll, s.floor)
+  // The view as it is seen in the drop: it follows the drawn ball, and from the step the ball is its shadow to the end of the drop's own follow it goes over to the view that followed the shadow, which is the view of before.
+  const viewed = (): number => {
+    if (!s.fall) return s.scroll
+    const meet = T.tube + BEND.second / s.fall[2]!
+    return s.fall[3]! + (s.scroll - s.fall[3]!) * smooth(Math.max(0, Math.min(1, (s.t - meet) / (T.tube + DROP.over - meet))))
+  }
+  const follow = (): CameraPose => homePose(viewed(), s.floor)
   const tubePose = (): CameraPose => {
     const b = ball()
     const c = b.mode === 'rail' ? soft(railOf(b.rail), b.s) : { x: b.x, y: b.y, z: b.z }
@@ -492,6 +527,10 @@ export function makePage(): PageLogic {
     } else if (e.name === 'gate-take') {
       say('flasher', true)
       io.cursor.react('flinch')
+      const p = io.cursor.pose()
+      s.lay = [p.lean + p.spin, s.t]
+      s.sway = -9
+      io.cursor.wobble(0, 1, 0)
     } else if (e.name === 'doors-slam') {
       s.shut = true
       say('doors-slam', true)
@@ -620,14 +659,16 @@ export function makePage(): PageLogic {
     if (t >= T.powerOn && once('power-on')) io.emit('power-on', px(MID), px(MARQUEE_Y + 2), false)
     if (b.mode === 'rail' && b.rail === 'feed') {
       const pace = (at: number): number => Math.max(6, Math.min(40, (railLength(railOf('feed')) - at) / Math.max(0.05, T.atPlunger - t)))
-      if (!s.fall && b.s === 0) s.fall = [0, 1, pace(0)]
+      if (!s.fall && b.s === 0) s.fall = [0, 1, pace(0), s.scroll, s.sv]
       if (s.fall) {
         const [was, n, lead] = s.fall as [number, number, number]
-        const go = pace(was) * STEP
-        b.s = Math.max(-go, was - lead * lagOf(n * STEP))
-        b.speed = pace(was)
-        if (n * STEP >= FALL.over) delete s.fall
-        else s.fall = [was + go, n + 1, lead]
+        if (was >= 0) {
+          const go = pace(was) * STEP
+          b.s = Math.max(-go, was - lagOf(n * STEP, lead))
+          b.speed = pace(was)
+          s.fall[0] = n * STEP >= BEND.second / lead ? -1 : was + go
+        } else b.speed = pace(b.s)
+        s.fall[1] = n + 1
       } else b.speed = pace(b.s)
     }
     if (b.mode === 'hold' && b.hold === 'plunger' && t >= T.plunger) {
@@ -802,7 +843,7 @@ export function makePage(): PageLogic {
       const p = io.cursor.pose()
       const id = b.rail === 'feed' ? 1 : 2
       if (s.roll[0] !== id) s.roll = [id, p.spin]
-      const f = Math.max(0, Math.min(1, (b.rail === 'feed' && s.fall ? s.fall[0]! : b.s) / far))
+      const f = Math.max(0, Math.min(1, b.s / far))
       const u = (f - (1 - TUMBLE.ease)) / TUMBLE.ease
       const g = u <= 0 ? f : 1 - TUMBLE.ease + TUMBLE.ease * (1.5 * u - 0.5 * u * u * u)
       const turns = Math.max(1, Math.round((far * TUMBLE.gear) / 6.283185307179586))
@@ -811,6 +852,7 @@ export function makePage(): PageLogic {
       s.roll = [0, 0]
       io.cursor.aim(null)
     }
+    if (s.mode === 'live' && machine().taken >= 0) io.cursor.strike(s.lay[0]!, dt)
     if (s.t < s.lay[1]! && (s.was[4] === 1) !== held) {
       io.cursor.strike(s.lay[0]!, s.lay[1]! - s.t)
       s.snap = s.t
@@ -909,6 +951,7 @@ export function makePage(): PageLogic {
         const before = ball()
         const was = before.mode === 'plane' ? [before.vx, before.vy] : null
         const events = mc.step(io.pointer.flipLeft === true, io.pointer.flipRight === true)
+        rollOver()
         const after = ball()
         if (was && after.mode === 'plane') {
           const push = Math.hypot(was[0]! - after.vx, was[1]! - after.vy)
@@ -989,10 +1032,23 @@ export function makePage(): PageLogic {
       const to = target()
       const low = atGate()
       if (low || s.room) {
-        const r = Math.max(0, Math.min(1, (s.room ?? 0) + (low ? dt : -dt) / ROOM.ease))
-        if (r > 0) s.room = r
+        const [x, v, gone] = s.room ?? [0, 0, 0]
+        const b = ball()
+        const back = !low && (gone === 1 || b.mode !== 'plane' || b.tier > 1 || b.y - TIER_Y[b.tier]! < ROOM.keep)
+        const wait = !low && !back
+        const goal = low ? ROOM.px : 0
+        const way = wait ? (v! < 0 ? -1 : 1) : goal >= x! ? 1 : -1
+        const far = Math.abs(goal - x!)
+        const u = v! * way
+        const up = Math.min(ROOM.pace, u + ROOM.gain * dt)
+        const w = wait ? Math.max(0, u - ROOM.gain * dt) : u > 0 && far - ((u + up) / 2) * dt < (up * up) / (2 * ROOM.gain) ? Math.max(0, u - ((u * u) / (2 * far)) * dt) : up
+        const y = x! + way * ((u + w) / 2) * dt
+        const there = !wait && ((w <= 0 && u > 0) || (goal - y) * way <= 1e-3)
+        const now = there ? goal : Math.max(0, Math.min(ROOM.px, y))
+        if (now > 0 || low) s.room = [now, there ? 0 : way * w, back ? 1 : 0]
         else delete s.room
-        to.scroll = Math.min(lastScroll, to.scroll + ROOM.px * r * r * (3 - 2 * r))
+        to.scroll = Math.min(lastScroll, to.scroll + now)
+        s.scroll = Math.min(lastScroll, s.scroll + now - x!)
       }
       const rate = Math.min(1, dt / (live.tierTravelSeconds / 4))
       const cap = 4200 * dt
@@ -1009,7 +1065,12 @@ export function makePage(): PageLogic {
           const w = DROP.slow + (DROP.firm - DROP.slow) * smooth(Math.max(0, Math.min(1, (s.t - T.tube - DROP.hold) / DROP.ramp)))
           s.sv += (w * w * (to.scroll - s.scroll) - 2 * w * s.sv) * dt
           s.scroll += s.sv * dt
+          if (s.fall) {
+            s.fall[4] = s.fall[4]! + (w * w * (Math.max(0, Math.min(lastScroll, px(b.y) - 540)) - s.fall[3]!) - 2 * w * s.fall[4]!) * dt
+            s.fall[3] = s.fall[3]! + s.fall[4]! * dt
+          }
         } else {
+          if (s.fall) delete s.fall
           s.sv = 0
           s.scroll += Math.max(-cap, Math.min(cap, (to.scroll - s.scroll) * rate))
         }
@@ -1057,13 +1118,18 @@ export function makePage(): PageLogic {
       const ago = (at: number): number => (at < 0 ? 9 : Math.min(9, s.t - at))
       const rings: Record<string, number> = { 'loader.ring': Math.min(ago(s.took), ago(s.latch)), 'outlet.ring': ago(s.home) }
       const gone = s.fall ? (s.fall[1]! - 1) * STEP - FALL.ring : -1
-      for (const shape of fixedShapes()) out.push(shape.id in rings ? { ...shape, v: shape.id === 'loader.ring' && gone >= 0 && gone < LET.over ? [rings[shape.id]!, gone] : [rings[shape.id]!] } : shape)
-      const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [shutOf(ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!)]
+      const since = s.fall ? (s.fall[1]! - 1) * STEP : -1
+      const struck = s.fall ? [since - FALL.still - FALL.top, since - BEND.second / s.fall[2]!] : [-1, -1]
+      const knock = struck.some((t) => t >= 0 && t < KNOCK.over)
+      for (const shape of fixedShapes()) out.push(shape.id in rings ? { ...shape, v: shape.id === 'loader.ring' && knock ? [rings[shape.id]!, gone >= 0 && gone < LET.over ? gone : 9, ...struck] : shape.id === 'loader.ring' && gone >= 0 && gone < LET.over ? [rings[shape.id]!, gone] : [rings[shape.id]!] } : shape)
+      const shell = s.phase === 'sealed' && s.home >= 0 ? [Math.max(0, 1 - s.opened / SHELL.open), 9, 0, 0, 0, 9] : [shutOf(ago(s.took) / SHELL.shut), Math.max(0, ago(s.took) - SHELL.shut), 0, s.blow[0]!, s.blow[1]!, Math.min(9, s.t - s.blow[2]!), ...(ago(s.took) < SHELL.shut ? [1] : [])]
       const lies = seen3()
       for (const shape of movingShapes(mc, lit(), false, general(), drawn(), s.shut, website())) out.push(shape.id === 'ball.clear' ? { ...shape, x: px(lies.x - 0.5), y: px(lies.y - 0.5), z0: px(lies.z), z1: px(lies.z) + BALL, v: shell } : shape)
+      const counts = (s as Rolled).over
+      if (counts) for (const shape of out) if (shape.id in counts) shape.v = [shape.v?.[0] ?? 0, counts[shape.id]!]
       out.push(hqPlate)
     },
-    scroll: () => s.scroll,
+    scroll: () => viewed(),
     view: () => (s.floor === 0 ? null : follow()),
     camera(name: string, time: number): CameraPose | null {
       return name === 'film' ? filmPose(time) : named(name)

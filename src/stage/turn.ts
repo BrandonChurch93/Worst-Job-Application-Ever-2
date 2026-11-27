@@ -4,9 +4,13 @@ const DEG = Math.PI / 180
 // `land` is the share of the speed of the hand over that the slab still has when it meets its seat: it falls into the seat, it does not coast into it.
 // `held` is how long the slab lies pressed flat in the seat before it springs back, as a share of the arriving half of the turn: two frames of the film, so a picture taken every other frame holds the slab flat once.
 // `knocks` are how far the slab springs back off the seat, and for how long, as shares of the arriving half of the turn.
+// `back` is how fast the slab leans back on its first step, as an angle per wind-up: it is near the lean's deepest by the first frame and held there for the second, and the lean is as deep as it was, under a degree, so no more of the backing shows over the head of the page.
+// `start` is the share of the quarter turn the swing would cover at the speed it starts with. The lean's way back is at that speed when the slab passes flat, so the wind-up runs into the swing and nothing stalls between the two.
 export const TURN = {
   windUp: 0.12,
   lean: 1.6 * DEG,
+  back: 4.5 * DEG,
+  start: 0.264,
   power: 2.2,
   seat: 0.6,
   land: 1.2,
@@ -24,11 +28,20 @@ export function leaveTurn(u: number): number {
   if (t <= 0) return 0
   if (t < TURN.windUp) {
     const s = t / TURN.windUp
-    return -TURN.lean * Math.sin(Math.PI * s) * (1 - s)
+    const out = (QUARTER * TURN.start * TURN.windUp) / (1 - TURN.windUp)
+    return s * (s - 1) * ((out - TURN.back) * s + TURN.back)
   }
   const s = (t - TURN.windUp) / (1 - TURN.windUp)
-  return QUARTER * Math.pow(s, TURN.power)
+  const bend = (TURN.power - TURN.start) / (1 - TURN.start)
+  return QUARTER * (TURN.start * s + (1 - TURN.start) * Math.pow(s, bend))
 }
+
+// How far the lights go round a slab whose face is turning from the key, for the slab's angle. In full the key, which stands 22 degrees over the page, would leave the face at 31 degrees,
+// when the tilt can hardly be read yet. So they go round by next to nothing while the slab starts, never by more than the slab has turned, and by `most` at the end:
+// the face keeps its light while it tips, loses it evenly as it swings, and is out of the key at 56 degrees.
+export const LIGHT = { most: 36 * DEG, over: 40 * DEG } as const
+
+export const leaveLight = (angle: number): number => (angle <= 0 ? angle : LIGHT.most * (1 - Math.exp(-((angle / LIGHT.over) ** 2))))
 
 export function leaveSpeed(): number {
   return (QUARTER * TURN.power) / (1 - TURN.windUp)

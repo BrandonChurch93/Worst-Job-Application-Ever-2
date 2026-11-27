@@ -11,6 +11,7 @@ import { levelPlan, REST_FRAMES, restSample, type LevelPlan } from './levelPlan'
 import { SampleBounds } from './levelClamp'
 import { RestBlend, restShare } from './levelRest'
 import { StillShadows, type StillStats } from './levelShadows'
+import { leaveLight } from '../stage/turn'
 
 // What the lamps must cover, in world units: the page and everything that stands on it.
 export interface Bounds { minX: number; maxX: number; minY: number; maxY: number; minZ: number; maxZ: number }
@@ -31,7 +32,7 @@ const TOWARD = (8 * Math.PI) / 180
 // How the studio's room goes round a turning slab, as a share of the slab's angle. At -1 the room stands with the camera, and a polished face of the slab sweeps the room at twice the slab's speed: the steel of the step row went from dark to lit in one frame.
 // At 1 the room goes the other way, and a face that lies flat on the slab mirrors the same piece of the room in every frame of the turn.
 const ROOM = 1
-const lightTurn = (angle: number): number => (angle < 0 ? -TOWARD * Math.tanh(-angle / TOWARD) : angle)
+const lightTurn = (angle: number): number => (angle < 0 ? -TOWARD * Math.tanh(-angle / TOWARD) : leaveLight(angle))
 
 // What a page that is turning over says to whoever draws it: the angle of the slab about its long axis and where that axis lies.
 export interface SlabTurn { angle: number; y: number }

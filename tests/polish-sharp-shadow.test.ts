@@ -63,7 +63,7 @@ describe('the ball\'s drawn shadow and the feed tube', () => {
     const was = rows.filter((r) => r.lit && r.piped)
     expect(was.length).toBeGreaterThan(0)
     for (const r of was) expect(r.y).toBeGreaterThan(1080)
-    expect([was[0]!.frame, was[was.length - 1]!.frame]).toEqual([4259, 4536])
+    expect([was[0]!.frame, was[was.length - 1]!.frame]).toEqual([4265, 4536])
     const after = rows.filter((r) => r.lit && !r.piped)
     expect(after.length).toBeGreaterThan(0)
     expect(after[0]!.frame).toBe(4537)

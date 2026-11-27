@@ -5,6 +5,7 @@ import type { Zone } from '../zone'
 import { BUMPER } from './colours'
 import { groupsOf } from './groups'
 import { keyOf } from './key'
+import { risen } from './over'
 
 export interface Levels {
   // The level of every group of the zone, 0 to 1, in the order of `groupsOf(zone)`.
@@ -58,6 +59,13 @@ export function near(ctx: RealContext, id: string, reach: number, deep = 0): num
   return best
 }
 
+// How far a window answers the nearest ball: where the ball is, times how far the window's own count has come up since the middle of the ball came over its glass. The stage writes that count as the second value of the window; a draw list that carries none answers by place alone.
+export function answer(ctx: RealContext, id: string): number {
+  const v = ctx.byId.get(id)?.v
+  const k = v !== undefined && v.length > 1 ? v[1]! : 1
+  return k <= 0 ? 0 : risen(k) * near(ctx, id, ANSWER.reach, 0.8)
+}
+
 const first = (ctx: RealContext, id: string, i: number, otherwise: number): number => {
   const v = ctx.byId.get(id)?.v
   return v !== undefined && v.length > i ? v[i]! : otherwise
@@ -91,7 +99,7 @@ export function levels(ctx: RealContext, z: Zone): Levels {
     else if (g.name === 'blue') level = first(ctx, id, 4, 0)
     else if (g.name.startsWith('insert.')) {
       const n = inserts[Number(g.name.slice(7)) - 1]
-      level = n ? Math.max(first(ctx, `insert.${n.id}`, 0, 0) * INSERT_LIT, INSERT_REST * general, general * near(ctx, `insert.${n.id}`, ANSWER.reach, 0.8)) : 0
+      level = n ? Math.max(first(ctx, `insert.${n.id}`, 0, 0) * INSERT_LIT, INSERT_REST * general, general * answer(ctx, `insert.${n.id}`)) : 0
     } else if (g.name.startsWith('globe.')) {
       level = general * (ANSWER.globeRest + (1 - ANSWER.globeRest) * near(ctx, `post.corporate.${g.name}`, ANSWER.globeReach))
     } else if (g.name.startsWith('bumper.')) {
