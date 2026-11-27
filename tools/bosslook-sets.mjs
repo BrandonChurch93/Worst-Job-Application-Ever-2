@@ -114,7 +114,7 @@ const MORE = {
 
   // The boss at the size he has in the film: one output pixel is one pixel of the 1920 wide frame.
   async film({ look, sharp, at, outDir, workDir, tier }) {
-    const cam = { cx: 960, cy: 548, zoom: 1920 / 700, width: 700, height: 540, tier }
+    const cam = { cx: 960, cy: 548, zoom: 2, width: 700, height: 540, tier }
     const arena = await sharp(target(at, 'boss-arena.png')).resize({ width: 1920 }).extract({ left: 610, top: 270, width: 700, height: 540 }).png().toBuffer()
     const cells = [{ png: arena, caption: 'TARGET: the arena, his size in the film' }]
     for (const [caption, view] of [['stage 0', viewOf({ time: 30 }, { ...out })], ['stage 1', viewOf({ time: 30 }, { ...out, stage: 1, health: 0.6 })], ['stage 2', viewOf({ time: 30 }, { ...out, stage: 2, health: 0.25 })], ['turret inside', viewOf()], ['open flank', viewOf({ time: 30.3 }, { ...out, stage: 1, weak: { x: CENTRE.x + 196, y: CENTRE.y, shownAt: 30 } })]]) {

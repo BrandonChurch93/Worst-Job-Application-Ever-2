@@ -92,42 +92,36 @@ function shieldArc(rIn: number, rOut: number, half: number, n = 22): [number, nu
 function legGeo(): { upper: Record<string, THREE.BufferGeometry>; lower: Record<string, THREE.BufferGeometry>; foot: Record<string, THREE.BufferGeometry> } {
   const A = LEG.a
   const B = LEG.b
-  // A link: two frames with a long window, a web down each side, a boss on each end; the ram, its spring and the hoses lie in the window.
-  const link = (len: number, R: number, slot: number, deep: number): Record<string, THREE.BufferGeometry> => {
-    const outer = pillOutline(len + 2 * R, 2 * R, R, 7).map(([x, y]) => [x + len / 2, y] as [number, number])
-    const inner = pillOutline(len - R * 0.9, slot, slot / 2, 5).map(([x, y]) => [x + len / 2, y] as [number, number]).reverse()
-    const frame = (z: number): THREE.BufferGeometry => ringPlate(outer, inner, 9, 2).translate(0, 0, z)
-    const boss = (x: number): THREE.BufferGeometry[] => [discAt(R * 0.74, x, 0, deep - 1, deep + 5, 2, 24), discAt(R * 0.74, x, 0, -deep - 5, -deep + 1, 2, 24)]
-    const springs: THREE.BufferGeometry[] = []
-    const s0 = len * 0.56
-    const s1 = len * 0.84
-    for (let i = 0; i < 9; i++) springs.push(along([[slot * 0.2, 0], [slot * 0.34, 0], [slot * 0.34, 3.2], [slot * 0.2, 3.2]], 10).translate(s0 + ((s1 - s0) * i) / 8, 0, 0))
+  // A slim link: two side rails with a rounded lug on each end, an axle through each lug, a ram and its rod between the rails, hoses beside the ram.
+  const link = (len: number, R: number, deep: number): Record<string, THREE.BufferGeometry> => {
+    const rail = (s: number): THREE.BufferGeometry[] => [
+      cutPlate(pillOutline(len + R * 1.3, R * 0.5, R * 0.25, 5).map(([x, y]) => [x + len / 2, y + s * (R - R * 0.25)] as [number, number]), deep * 2, 3).translate(0, 0, -deep),
+      discAt(R * 0.56, 0, s * (R - R * 0.3), -deep, deep + 3, 3, 20),
+      discAt(R * 0.56, len, s * (R - R * 0.3), -deep, deep + 3, 3, 20)
+    ]
+    const ram = R * 0.36
     return {
-      plate: joined([frame(deep - 9), frame(-deep), boxAt(R * 0.6, -R + 1.5, -deep + 6, len - R * 0.6, -R + 9, deep - 6, 2), boxAt(R * 0.6, R - 9, -deep + 6, len - R * 0.6, R - 1.5, deep - 6, 2)]),
-      joint: joined([...boss(0), ...boss(len), along([[0, len * 0.14], [slot * 0.42, len * 0.14], [slot * 0.42, len * 0.5], [slot * 0.3, len * 0.53], [0, len * 0.53]], 14), boxAt(len * 0.84, -slot * 0.42, -7, len * 0.9, slot * 0.42, 7, 1.5)]),
-      pin: joined([discAt(R * 0.3, 0, 0, deep + 4, deep + 9, 1.5, 14), discAt(R * 0.3, len, 0, deep + 4, deep + 9, 1.5, 14), along([[0, len * 0.5], [slot * 0.16, len * 0.5], [slot * 0.16, len * 0.86], [0, len * 0.86]], 8), ...springs]),
-      dark: boxAt(R * 0.7, -R + 8, -deep + 3, len - R * 0.7, R - 8, -deep + 7, 1)
+      plate: joined([...rail(1), ...rail(-1), boxAt(len * 0.44, -R * 0.62, -deep + 4, len * 0.52, R * 0.62, deep - 2, 2)]),
+      joint: joined([along([[0, len * 0.1], [ram * 0.7, len * 0.1], [ram, len * 0.14], [ram, len * 0.46], [ram * 0.8, len * 0.5], [0, len * 0.5]], 16), across(R * 0.3, R * 0.98, 2, 14), across(R * 0.3, R * 0.98, 2, 14).translate(len, 0, 0)]),
+      pin: joined([along([[0, len * 0.5], [ram * 0.46, len * 0.5], [ram * 0.46, len * 0.9], [0, len * 0.9]], 10), discAt(R * 0.2, 0, R * 0.7, deep + 2, deep + 6, 1.2, 12), discAt(R * 0.2, 0, -R * 0.7, deep + 2, deep + 6, 1.2, 12), discAt(R * 0.2, len, R * 0.7, deep + 2, deep + 6, 1.2, 12), discAt(R * 0.2, len, -R * 0.7, deep + 2, deep + 6, 1.2, 12)]),
+      dark: boxAt(R * 0.4, -R * 0.52, -deep + 1, len - R * 0.4, R * 0.52, -deep + 5, 1)
     }
   }
   const upper = {
-    ...link(A, 54, 44, 27),
-    orange: joined([hose([[14, -9, 10], [A * 0.3, -13, 17], [A * 0.62, 12, 16], [A - 16, 9, 9]], 4.4, 20, 7), hose([[18, 10, 6], [A * 0.3, 13, 12], [A * 0.55, -12, 12], [A - 20, -10, 6]], 3.6, 20, 7)])
+    ...link(A, 38, 19),
+    orange: joined([hose([[10, -12, 6], [A * 0.3, -17, 15], [A * 0.62, 15, 15], [A - 12, 12, 6]], 4.2, 20, 7), hose([[14, 13, 4], [A * 0.3, 17, 11], [A * 0.58, -15, 11], [A - 16, -12, 4]], 3.6, 20, 7)])
   }
   const lower = {
-    ...link(B, 46, 38, 23),
-    orange: joined([hose([[14, 7, 8], [B * 0.3, 10, 14], [B * 0.6, -9, 13], [B - 22, -6, 8]], 3.8, 20, 7)])
+    ...link(B, 33, 17),
+    orange: joined([hose([[12, 11, 5], [B * 0.3, 15, 13], [B * 0.6, -13, 12], [B - 18, -10, 5]], 3.8, 20, 7)])
   }
-  // A claw of three fingers and a spur: each finger a thick root with a knuckle and a wedge that digs in.
-  const finger = (ang: number, len: number, w: number): THREE.BufferGeometry[] => [
-    boxAt(6, -w / 2, 5, len * 0.58, w / 2, 40, 5).rotateZ(ang),
-    cutPlate([[len * 0.5, -w * 0.46], [len * 0.84, -w * 0.3], [len, -w * 0.08], [len, w * 0.08], [len * 0.84, w * 0.3], [len * 0.5, w * 0.46]], 30, 4).rotateZ(ang)
-  ]
-  const knuckle = (ang: number, len: number, w: number): THREE.BufferGeometry => across(15, w / 2 + 3, 2, 14).translate(len * 0.56, 0, 30).rotateZ(ang)
+  // A claw of three fingers that grip: each a rounded bar that leaves the ankle high and dives into the ground at its tip.
+  const finger = (ang: number, len: number, w: number): THREE.BufferGeometry => cutPlate(pillOutline(len, w, w / 2, 6).map(([x, y]) => [x + len / 2 + 8, y] as [number, number]), 24, 7).rotateY(0.24).translate(0, 0, 32).rotateZ(ang)
   const foot = {
-    plate: joined([...finger(0, 146, 42), ...finger(0.62, 134, 40), ...finger(-0.62, 134, 40), ...finger(Math.PI, 66, 46)]),
-    joint: joined([discAt(40, 0, 0, 4, 46, 5, 24), knuckle(0, 112, 40), knuckle(0.66, 104, 38), knuckle(-0.66, 104, 38)]),
-    pin: joined([discAt(17, 0, 0, 45, 53, 2, 16), screwsAt([[26, 0], [-13, 22.5], [-13, -22.5]], 46, 4.5, 21)]),
-    dark: joined([boxAt(70, -3.5, 12, 100, 3.5, 31, 1), boxAt(66, -3.5, 12, 94, 3.5, 31, 1).rotateZ(0.66), boxAt(66, -3.5, 12, 94, 3.5, 31, 1).rotateZ(-0.66)])
+    plate: joined([finger(0, 122, 30), finger(0.5, 116, 30), finger(-0.5, 116, 30)]),
+    joint: joined([boxAt(-30, -30, 6, 26, 30, 50, 6), across(13, 36, 2, 14).translate(0, 0, 46)]),
+    pin: joined([discAt(5, 30, 0, 50, 54, 1.2, 10).rotateZ(0.5), discAt(5, 30, 0, 50, 54, 1.2, 10).rotateZ(-0.5), discAt(5, 30, 0, 50, 54, 1.2, 10)]),
+    dark: boxAt(-34, -24, 2, -26, 24, 30, 1)
   }
   return { upper, lower, foot }
 }
