@@ -52,8 +52,8 @@ const GIVE = { settle: 0.42, hold: 0.2, low: 0.78, press: 0.06, rise: 0.2, back:
 // The give back on the live site. The mended arrow lies with its tip `under` px beneath the hood's lip and is drawn out to `long` over `strain` seconds before the page lets go.
 // Then the cassette kicks by `kick`, the arrow is thrown back to where the pile lay inside `fall` seconds, short by `low` for `press` seconds and at its length again by `rise`, swinging `swing` radians at `hz` over `ring` seconds, and `beat` seconds after the kick, having stood, it is the visitor's again, eased over `GIVE.back`.
 const CAUGHT = { under: 7, long: 1.24, strain: 0.5, kick: 22, low: 0.7, press: 0.034, rise: 0.084, fall: 0.067, swing: 0.3, hz: 12, ring: 0.084, beat: 0.4 }
-// The seconds the slot takes to close after the tug; below `last` of its travel, where the two panels meet and drop into the page, it goes `slower` times as slowly, so the pale panels arrive and settle over several frames.
-const SHUT = { seconds: 0.36, last: 0.3, slower: 2.2 }
+// The slot closes after the tug: the hood folds and the cassette starts down at `seconds` for the whole travel, as far as `down` of it, where the cassette is still half up in its well; from there the two panels snap shut over it in `snap` seconds, three frames, each frame further than the last, the cassette going down under them, and on the step they meet the slot is gone and the tray is thrown `kick` px and comes back.
+const SHUT = { seconds: 0.36, down: 0.54, snap: 0.05, kick: 4 }
 // The live loss, after the paper is in: the seconds the empty hands are shed while the arrow is thrown back from the mouth, and how far, in page pixels.
 const SHED = { seconds: 0.29, back: 16, out: 0.1 }
 const PANEL = ['resume-zone', 'resume-prompt', 'resume-browse', 'resume-browse-label', 'resume-received']
@@ -116,6 +116,7 @@ interface State {
   realFired: boolean
   paper: { on: boolean; slide: number; x: number; y: number; held: boolean; dx: number; dy: number; feed: number; fx: number; fy: number; vx: number; vy: number }
   slot: number
+  shut: number
   tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number; slack: number; far: number; from: number; into: number; ax: number; ay: number }
   lost: number
   last: number
@@ -160,7 +161,16 @@ const spring = (e: number, hold: number, total: number): number => {
   const t = (e - hold) / (total - hold)
   return Math.cos(t * Math.PI * 1.5) * (1 - t) ** 1.5
 }
-const stroke = (e: number): number => (e >= 0 && e < DOWN.seconds ? DOWN.first + (1 - DOWN.first) * (e / DOWN.seconds) : spring(e, HOLD, PRESS))
+// A key let go: held at the bottom for `HOLD`, it springs up through its rest height to `over` of its travel past it inside `up` seconds, two frames, and is back at rest `settle` seconds after that, never crossing its rest height again.
+const RELEASE = { up: 0.034, over: 0.45, settle: 0.084 }
+const release = (e: number): number => {
+  if (e < 0 || e >= PRESS) return 0
+  const t = e - HOLD
+  if (t <= 0) return 1
+  if (t < RELEASE.up) return 1 - (1 + RELEASE.over) * (t / RELEASE.up)
+  return t < RELEASE.up + RELEASE.settle ? -RELEASE.over * (1 - (t - RELEASE.up) / RELEASE.settle) ** 2 : 0
+}
+const stroke = (e: number): number => (e >= 0 && e < DOWN.seconds ? DOWN.first + (1 - DOWN.first) * (e / DOWN.seconds) : release(e))
 const jarOf = (t: number): number => (t < 0 || t > JAR.seconds ? 0 : t < JAR.hold ? 1 : Math.exp(-(t - JAR.hold) / JAR.tau) * Math.cos(((t - JAR.hold) / JAR.period) * Math.PI * 2))
 const ring = (t: number, px: number): number => (t < 0 || t > 0.3 ? 0 : px * Math.exp(-t * 16) * Math.cos(t * 58))
 const inside = (b: { x: number; y: number; w: number; h: number }, x: number, y: number, pad = 0): boolean => x >= b.x - pad && x <= b.x + b.w + pad && y >= b.y - pad && y <= b.y + b.h + pad
@@ -193,7 +203,7 @@ export function makePage(): PageLogic {
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'rest', phaseTime: 0, board: 0, boardUp: false, values: { firstName: '', lastName: '', email: '' }, places: homePlaces(), from: homePlaces(), shuffle: 1, blocks: false,
     rng: stream('step1:shuffle', seed).state(), shuffles: 0, shuffledAt: 0, queue: [], held: '', click: 0, keyDown: {}, drum: 0, shock: 0, slabs: [], slabDue: [], slabClear: -1, accepted: false, slow: 0, slowFired: false, realFired: false,
-    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0 },
+    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, shut: 0, tug: { t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0 },
     lost: -1, last: -1, lostFrom: { x: 0, y: 0, ux: 0, uy: -1 }, jolt: 9, joltAmp: 0, give: -1, singe: 0, armed: false, seat: 9, shake: 9, shakeAt: { x: 0, y: 0 }, struckAt: { x: 0, y: 0 }, shakeAmp: 1, thud: 9, thudKey: -1, thudLean: { x: 0, y: 1 }, sinceShuffle: 9, burst: { x: DECK.x + DECK.w / 2, y: DECK.y + DECK.h / 2 }, caret: 9, glow: 9, spin: 0, turn: 0, kept: null,
     shred: 0, received: false, pressed: -1, skipped: false, cleaned: false, done: false, cue: 0, cx: START.x, cy: START.y, acted: null
   })
@@ -936,7 +946,17 @@ export function makePage(): PageLogic {
       s.spin += ((eating ? (s.phase === 'tug' && s.lost < 0 ? JAW.tug : JAW.shred) : 0) - s.spin) * Math.min(1, io.dt / JAW.lag)
       s.turn += s.spin * io.dt
       const slotOpen = (s.phase === 'resume' && s.paper.feed >= 0) || s.phase === 'tug' || s.phase === 'shredded' || (s.phase === 'received' && s.phaseTime < TIDY && !s.skipped)
-      s.slot = clamp(s.slot + (slotOpen ? io.dt / 0.25 : -io.dt / (s.slot < SHUT.last ? SHUT.seconds * SHUT.slower : SHUT.seconds)), 0, 1)
+      if (slotOpen || s.slot > SHUT.down) {
+        s.slot = clamp(s.slot + (slotOpen ? io.dt / 0.25 : -io.dt / SHUT.seconds), slotOpen ? 0 : SHUT.down, 1)
+        s.shut = 0
+      } else if (s.slot > 0) {
+        s.shut += io.dt
+        if (s.shut > SHUT.snap - 1e-6) {
+          s.slot = 0
+          s.shut = 0
+          jolt(Math.max(joltNow(), SHUT.kick))
+        }
+      }
 
       if (s.phase === 'rest') {
         const onField = FIELDS.some((f) => inside(pockets[f], io.pointer.x, io.pointer.y))
@@ -1130,7 +1150,7 @@ export function makePage(): PageLogic {
         const open = smooth(s.slot)
         const rate = s.phase === 'tug' ? s.tug.rate : s.phase === 'shredded' && s.shred < SHRED.pile ? 1 / TIMES.lost : 0
         const thrown = joltNow()
-        const slot = slotShapes([open, s.turn, rate])
+        const slot = slotShapes(s.shut > 0 ? [open, s.turn, rate, s.shut / SHUT.snap] : [open, s.turn, rate])
         if (thrown > 0) for (const x of slot) if (x.mechanism) x.y += thrown
         out.push(...slot)
       }

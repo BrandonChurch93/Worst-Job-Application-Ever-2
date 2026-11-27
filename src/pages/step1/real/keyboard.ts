@@ -313,7 +313,7 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
       data.shades.setMatrixAt(patches++, matrix)
     } else {
       const held = sunkOf(c)
-      const off = held !== 0 ? SHADE.rest * (1 - (1 - SINK.shade) * held) : SHADE.rest * (1 - SHADE.tight * Math.min(1, Math.max(0, c.v && c.v.length > 0 ? c.v[0]! : 0)))
+      const off = held > SINK.shade ? SHADE.rest * SINK.shade ** 2 + (SHADE.grow / 2 - SINK.lip - SHADE.rest * SINK.shade ** 2) * ((held - SINK.shade) / (1 - SINK.shade)) : held !== 0 ? SHADE.rest * (1 - (1 - SINK.shade) * held) : SHADE.rest * (1 - SHADE.tight * Math.min(1, Math.max(0, c.v && c.v.length > 0 ? c.v[0]! : 0)))
       const lean = tipped(c)
       matrix.makeScale(c.w + SHADE.grow, c.h + SHADE.grow * 1.4, 1)
       matrix.setPosition(at.x + off + (lean ? TIP.shade * c.v![5]! : 0), at.y - off - (lean ? TIP.shade * c.v![4]! : 0), floor)

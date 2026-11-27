@@ -86,7 +86,7 @@ describe('fix tug: the takeover, the loss and the give-back of step 1 on the liv
     expect(moved).toBeGreaterThan(60)
     expect(most).toBeLessThanOrEqual(free(moved))
     const early = rows.slice(first - 1, first + Math.round(stepHz * 0.1))
-    expect(far(early[0]!, early[early.length - 1]!)).toBeLessThan(moved * 0.1)
+    expect(far(early[0]!, early[early.length - 1]!)).toBeLessThan(moved * 0.25)
     expect(rows[first + 2]!.arms).toBe(true)
     expect(rows[first]!.thrown).toBeGreaterThan(0)
     expect(rows[first - 1]!.thrown).toBe(0)

@@ -31,7 +31,7 @@ if (what === 'walk') {
     for (let i = a; i <= b; i++) want.add(i)
   }
   const last = Math.max(...want)
-  const f = cfg.formats[RUN.format]
+  const f = cfg.formats[process.env.POLISH_FORMAT || RUN.format]
   const k = f.width / cfg.formats.hd.width
   const session = await openSession({ format: f.id, assets: RUN.assets, mode: 'live', query: '&clock=steps&quality=high' })
   await session.page.waitForFunction(() => Boolean(window.liveRun), null, { timeout: 120000 })
@@ -64,7 +64,7 @@ if (what === 'walk') {
 } else if (what === 'sheet') {
   const [name, first, stride, count, cx, cy, w = 460, h = 290] = rest
   const run = JSON.parse(fs.readFileSync(path.join(dir, 'run.json'), 'utf8'))
-  const f = cfg.formats[RUN.format]
+  const f = cfg.formats[process.env.POLISH_FORMAT || RUN.format]
   const k = f.width / cfg.formats.hd.width
   const W0 = Number(w)
   const H0 = Number(h)

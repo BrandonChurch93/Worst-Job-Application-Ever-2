@@ -11,7 +11,7 @@ export const PER = stepHz / 60
 export const BODY = { x: 14, y: 26 }
 export interface Frame {
   i: number; time: number; gag: string; down: boolean; px: number; py: number; pose: CursorPose; taken: boolean; events: string[]
-  angle: number; heat: number; arms: number; paper: number; paperX: number; paperY: number; far: number; zoneY: number; open: number; slotY: number; strips: Shape[]; keys: Map<string, Shape>; words: Map<string, Shape>; list: DrawList
+  angle: number; heat: number; arms: number; paper: number; paperX: number; paperY: number; far: number; zoneY: number; open: number; shut: number; slotY: number; strips: Shape[]; keys: Map<string, Shape>; words: Map<string, Shape>; list: DrawList
 }
 
 const deg = (r: number): number => (r * 180) / Math.PI
@@ -33,7 +33,7 @@ function frame(s: Stage, i: number, down: boolean, px: number, py: number, event
   return {
     i, time: s.time, gag: s.page.gag() ?? '', down, px, py, pose: c, taken: c.taken, events,
     angle: deg(c.lean + c.spin), heat: c.feel.heat * (1 - 0.72 * busy), arms: c.arms ? c.sprout : 0, paper: deg(paper?.rot ?? 0), paperX: paper?.x ?? 0, paperY: paper?.y ?? 0,
-    far: Math.hypot(c.x + BODY.x - SLOT.cx, c.y + BODY.y - SLOT.cy), zoneY: by('resume-zone')?.y ?? 0, open: jaw?.v?.[0] ?? 0, slotY: jaw?.y ?? 0, strips: list.filter((x) => x.id.startsWith('strip-')), keys, words, list
+    far: Math.hypot(c.x + BODY.x - SLOT.cx, c.y + BODY.y - SLOT.cy), zoneY: by('resume-zone')?.y ?? 0, open: jaw?.v?.[0] ?? 0, shut: jaw?.v?.[3] ?? 0, slotY: jaw?.y ?? 0, strips: list.filter((x) => x.id.startsWith('strip-')), keys, words, list
   }
 }
 
