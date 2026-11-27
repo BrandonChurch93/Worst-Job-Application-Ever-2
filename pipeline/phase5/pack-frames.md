@@ -81,3 +81,12 @@ MEASURED on round 24's walk (`/tmp/run2.json`), 09:41 to 09:46 UTC:
 - The heading names the key: `keyAt` finds the seat the press lies in from the page's own key data (`src/pages/step1/keyboard.json`, as `keyBlock` reads it). It is named only for a press taken by the Email rule, where the keys are home. On round 24's walk: A.
 - The Builder asked for a clause that the arrow burns from an earlier hit. STATED from the page's files, it is not a burn: a burn heals within `cursor.damageHealSeconds` (4 s; `src/cursor/body.ts`, `hurt`), the walk's last bolt hit the arrow at step 1112 (0:18.53) and the frames begin at 0:24.60. Going on to the Email field the page makes the arrow angry (`src/pages/step1/index.ts`, `advance`: `enter('email')`, `act(io, 'angry')`), and the kit has "Angry: the tip glows red and it vents steam" (kit/02-SUBJECT.md). The heading says that: "On this field the arrow is angry by the page's design: its tip glows red and it vents steam". A test holds both lines against the page's file and the kit.
 - The heading has 8 lines now, the tiles are 268 px tall.
+
+## After merge 47 (ce259d65): what the rows of the new visit changed, 10:41 to 10:45 UTC
+
+The first build on the merge commit 9de8c3a8 was stopped after its visit: `pack-frames-check.mjs` on that visit said NOT for the save. Mended, and the recorded rows of the tests cut anew from the new visit (`/tmp/run25.json`, the pack's own).
+
+- The save: the page's view now moves in the run (the rows: 9 px up the page to 1:53.30, then 69 px down to the last frame). The window's foot was set at the wire's lowest place plus 20 px and then rounded down, 19.8 px, and the heading then said the page's own picture ended there, which was untrue. Now the foot is rounded up (20.8 px under the wire, foot 1074 of 1080), and the heading says how the view moves, so that the gate rising in a fixed window is not read as a fault. Window x 730 to 1191, y 802 to 1074; 7 lines, tiles 272 px.
+- The drop: the ball now starts slowly (0.3 px in its first step, 5953; then 1.8, 5.0, 7.9). The old rule took a move of 0.5 px or more for the start and named 5954. `LEAVES` 0.05: any move the rows hold. Steps 5947 to 5977, window as in round 24.
+- The take: the arrow arrives 5 steps later (1912), so 41 frames on 4 sheets; set B holds 10 sheets.
+- The save's kick is at 6814 (6815 before). Seat, key, give back: the same steps; the give back's window moved 3 px down (y 581).

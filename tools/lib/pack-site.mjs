@@ -84,6 +84,8 @@ export function hitTaken(block, hits) {
 }
 // Given back: the arrow lay dead for at least `still` steps, and now moves again.
 export const BACK = { still: 30, dead: 0.2, moves: 0.5 }
+// The least move of the ball in a step that counts as its leaving the port: the rows hold a tenth of a px, so any move they show. It starts slowly (0.3 px in its first step).
+export const LEAVES = 0.05
 // The give back whole, every step drawn (1/60 s apart): from `before` frames before the arrow first moves to `after` frames from the step it is the visitor's, on `sheets` sheets at least.
 // Where the page throws the arrow first, the rows hold it so: the arrow moves for `throwMost` steps at most, then stands `beat` steps or more (and `stands` at most), then moves again.
 // The first step of that second move is the first under the visitor; with no such stand the arrow is the visitor's from its first move.
@@ -642,7 +644,7 @@ export function momentsOf(cfg, run) {
     // It leaves at the first step of the unbroken move that takes it there.
     if (left !== null) {
       leaves = left
-      while (leaves - 1 > flippers && moved(leaves - 1) >= BACK.moves) leaves -= 1
+      while (leaves - 1 > flippers && moved(leaves - 1) >= LEAVES) leaves -= 1
     }
   }
   const speed = (i) => [rows[i][COL.heroX] - rows[i - 1][COL.heroX], rows[i][COL.heroY] - rows[i - 1][COL.heroY]]
@@ -1152,7 +1154,7 @@ export function gateWindow(cfg, run, steps, layout) {
     const b = ballAt(cfg, rows[i])
     return b.tier === tier && Math.abs(b.u - MACHINE.mid) <= MACHINE.mouthHalf ? (g.y(tier) + b.v + REACH.ballR) * g.ball - rows[i][COL.scroll] : -Infinity
   }))
-  const foot = Math.min(cfg.formats.hd.height, low + GATE.under)
+  const foot = Math.min(cfg.formats.hd.height, Math.ceil(low + GATE.under))
   const fit = closeFit(cfg, [(MACHINE.mid - MACHINE.mouthHalf) * g.ball - GATE.room, foot - layout.h, (MACHINE.mid + MACHINE.mouthHalf) * g.ball + GATE.room, foot], layout, true)
   return { ...fit, tier, low, ball, under: fit.window[1] + fit.window[3] - low }
 }
@@ -1163,6 +1165,19 @@ export function gateWords(win) {
   const gap = win.window[1] + win.window[3] - win.ball
   const px = Math.abs(Math.round(gap))
   return `The page's own picture ends ${px === 0 ? 'at' : `${px} px ${gap >= 0 ? 'under' : 'above'}`} the ball's foot at its lowest in these frames, so the wire that leans on the ball there is not in the picture; the window ends with the picture`
+}
+// What a save's heading says of the page's view where it moves in the run's frames: how far up the page it goes from the first frame and by when, and how far down from there to the last.
+// A view that moves less than a px in all is not named.
+export function viewWords(rows, steps, timeOf) {
+  const at = (i) => rows[i][COL.scroll]
+  const first = steps[0]
+  const last = steps[steps.length - 1]
+  const high = steps.reduce((a, i) => (at(i) < at(a) ? i : a), first)
+  const up = Math.round(at(first) - at(high))
+  const down = Math.round(at(last) - at(high))
+  if (up < 1 && down < 1) return ''
+  const way = [up >= 1 ? `${up} px up the page from the first frame to ${timeOf(high)}` : '', down >= 1 ? `${down} px down the page from ${up >= 1 ? 'there' : `${timeOf(high)}`} to the last frame` : ''].filter(Boolean).join(', then ')
+  return `The page's view moves in these frames, ${way}, so the gate, its posts and the bats stand ${up >= 1 && down >= 1 ? 'lower, then higher' : down >= 1 ? 'higher' : 'lower'} in the window as it goes`
 }
 // The close blow: the ball with `room` px round it in every frame.
 export const BLOW = { room: 8 }
@@ -1377,10 +1392,11 @@ export function motionPlan(cfg, run) {
     const told = `${down} and ${up}`
     const words = 'as the machine saves a ball lost between the bats'
     // The window of a run of the save is taken from the rows of that run's own frames.
+    const lay = closeLayout(cfg, 3, count, CLOSE_HEAD.lines + 1)
     const shut = (from, to, at, text, after) => {
-      const win = gateWindow(cfg, run, range(from, to), twelve)
-      close('save', text, from, to, at, twelve, [win.window], win.percent, `one fixed window on the gate's wire, its posts and both bats' tips, ${scaleWords(win.percent)} (${placeWords(win.window)})`, ['hand'])
-      runs[runs.length - 1].after = `${after}. ${gateWords(win)}`
+      const win = gateWindow(cfg, run, range(from, to), lay)
+      close('save', text, from, to, at, lay, [win.window], win.percent, `one fixed window on the gate's wire, its posts and both bats' tips, ${scaleWords(win.percent)} (${placeWords(win.window)})`, ['hand'])
+      runs[runs.length - 1].after = [after, viewWords(rows, range(from, to), timeOf), gateWords(win)].filter(Boolean).join('. ')
     }
     if (need <= SAVE.sheets) shut(g.take - SAVE.before, g.take - SAVE.before + need * count - 1, g.kick, words, told)
     else {

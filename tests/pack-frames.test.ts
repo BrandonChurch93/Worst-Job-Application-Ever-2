@@ -41,10 +41,10 @@ describe('the motion pack of a recorded visit', () => {
     expect(plan.leftOut).toEqual([])
     expect(plan.missing).toEqual([])
     expect(plan.items.length).toBe(rec.sheets)
-    expect(plan.groups.map((g) => [g.id, g.items.length])).toEqual([['pages', 9], ['arrow', 9], ['port', 6], ['bats', 7]])
+    expect(plan.groups.map((g) => [g.id, g.items.length])).toEqual([['pages', 9], ['arrow', 10], ['port', 6], ['bats', 7]])
     expect(plan.groups.map((g) => [...new Set(g.items.map((f) => f.moment))])).toEqual([['walk', 'turn', 'seat', 'hit'], ['type', 'taken', 'given-back'], ['flippers', 'drop'], ['save', 'flip', 'flip-close']])
     const sets = (packPlan(cfg, { role: 'R4', round: 25, unit: SITE, facts: run as never }) as { sets: { set: string; groups: string[]; files: Sheet[] }[] }).sets
-    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual([['A', 'pages', 9], ['B', 'arrow', 9], ['C', 'port', 6], ['D', 'bats', 7]])
+    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual([['A', 'pages', 9], ['B', 'arrow', 10], ['C', 'port', 6], ['D', 'bats', 7]])
     for (const s of sets) {
       expect(s.files.length).toBeLessThanOrEqual(most)
       // A run is never cut by the end of a set.
@@ -126,7 +126,7 @@ describe('the motion pack of a recorded visit', () => {
     for (const f of seat) expect(f.heading).toContain(`the page's seat, close: every frame from 6 frames before the stage seats the page (${time(645)}) to 14 frames after, two fixed windows side by side in each frame, ${FULL_WORDS}`)
   })
 
-  it('the take: from 6 frames before the take to 6 after the arrow arrives, on three sheets, one window at 100% on the arrow at the button, the paper, its holder and the tray corner', () => {
+  it('the take: from 6 frames before the take to 6 after the arrow arrives, on four sheets, one window at 100% on the arrow at the button, the paper, its holder and the tray corner', () => {
     const taken = of('taken')
     const steps = taken.flatMap((f) => f.steps)
     expect(m.taken).toBe(1884)
@@ -136,13 +136,13 @@ describe('the motion pack of a recorded visit', () => {
     let rest = m.taken + 1
     while (speed(rest) < TAKEN.moves) rest += 1
     while (speed(rest) >= TAKEN.rest) rest += 1
-    expect(rest).toBe(1907)
+    expect(rest).toBe(1912)
     expect(steps[steps.length - 1]).toBe(rest + TAKEN.after)
     // It settles in the frames after: under 2 px a step, and it ends where the paper's slot is, TAKEN.room or less from it.
     for (const i of span(rest, rest + TAKEN.after)) expect(speed(i)).toBeLessThan(2)
     for (const f of taken) expect(f.heading).toContain(`every frame from ${TAKEN.before} frames before the take (${time(m.taken)}) to ${TAKEN.after} frames after the arrow arrives (${time(rest)}, the first frame after its travel in which it moves under ${TAKEN.rest} px)`)
-    expect(taken.length).toBe(3)
-    taken.forEach((f, j) => expect(f.heading).toContain(`sheet ${j + 1} of 3 of one run`))
+    expect(taken.length).toBe(4)
+    taken.forEach((f, j) => expect(f.heading).toContain(`sheet ${j + 1} of 4 of one run`))
     const w = taken[0]!.windows![0]!
     for (const f of taken) expect(f.windows).toEqual([w])
     expect([w[2], w[3]]).toEqual([taken[0]!.tileW, taken[0]!.tileH])
@@ -296,10 +296,10 @@ describe('the motion pack of a recorded visit', () => {
     expect(way + BALL).toBeGreaterThan(278)
   })
 
-  it('the save: the gate wire, its posts and both bat tips at 100%, and under the wire as much as the page shows, up to 20 px', () => {
+  it('the save: the gate wire, its posts and both bat tips at 100%, and 20 px under the wire where the page shows them', () => {
     const save = of('save')
     const steps = save.flatMap((f) => f.steps)
-    expect(m.gate).toMatchObject({ take: 6800, kick: 6815 })
+    expect(m.gate).toMatchObject({ take: 6800, kick: 6814 })
     const w = save[0]!.windows![0]!
     for (const f of save) expect(f.windows).toEqual([w])
     expect([w[2], w[3]]).toEqual([save[0]!.tileW, save[0]!.tileH])
@@ -326,10 +326,16 @@ describe('the motion pack of a recorded visit', () => {
     const low = Math.max(...steps.map(wire))
     const under = w[1]! + w[3]! - low
     // What the heading says of it is what the rows hold.
-    // In this visit the view stands on the tier: the ball's foot at its lowest lies on the picture's foot (the rows: 1080.3 of 1080), and the wire that leans on it is out of the picture.
-    expect(under).toBeLessThan(0)
-    const foot = Math.max(...steps.filter((i) => Math.abs(num(i, COL.heroX) / BALL - MID) <= MOUTH.half && num(i, COL.heroY) >= top).map((i) => at(i)[1] + BALL / 2))
-    expect(foot).toBeCloseTo(1080.3, 1)
-    for (const f of save) expect(f.heading).toContain(". The page's own picture ends at the ball's foot at its lowest in these frames, so the wire that leans on the ball there is not in the picture; the window ends with the picture. ")
+    // In this visit the page's view goes down with the lost ball, so the page shows more than GATE.under px under the wire, and the window's foot lies a whole px or less under those.
+    expect(under).toBeGreaterThanOrEqual(GATE.under)
+    expect(under).toBeLessThan(GATE.under + 1)
+    expect(w[1]! + w[3]!).toBeLessThan(hd.height)
+    expect(new Set(steps.map((i) => num(i, COL.scroll))).size).toBeGreaterThan(1)
+    // The view's way is said from the rows: up to its highest place, then down to the last frame.
+    const views = steps.map((i) => num(i, COL.scroll))
+    const high = Math.min(...views)
+    const when = steps[views.indexOf(high)]!
+    for (const f of save) expect(f.heading).toContain(`. The page's view moves in these frames, ${Math.round(views[0]! - high)} px up the page from the first frame to ${time(when)}, then ${Math.round(views[views.length - 1]! - high)} px down the page from there to the last frame, so the gate, its posts and the bats stand lower, then higher in the window as it goes. The window holds ${GATE.under} px or more under the wire's lowest place in every frame. `)
+    expect(Math.round(views[views.length - 1]! - high)).toBe(69)
   })
 })
