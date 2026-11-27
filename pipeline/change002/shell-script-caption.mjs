@@ -1,6 +1,7 @@
 // node pipeline/change002/shell-script-caption.mjs: line 1 of change note 003 through the site's own engine and caption panel in a browser, in real time.
 // The site as built does not start while the beats of config/showcase.json cannot hold the new lines, so the page behind the panel is a kept still of the careers page.
 // It writes shell-script-caption.json and the pictures shell-pictures/script-line1-phrases.png and script-loud.png.
+// With --place Y it does one thing instead: the longest phrase of line 1 on the careers page with the panel's lower edge at CAPTION.low and at Y, one picture under the other (shell-pictures/script-caption-place.png).
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -33,7 +34,8 @@ window.said = () => sound.said()
 window.log = () => sound.log()
 window.panel = () => { const el = document.querySelector('[data-narrator-caption]'); return el && el.style.display !== 'none' ? el.textContent : null }
 window.loud = (words) => { const t = performance.now(); makeCaption(() => ({ now: (performance.now() - t) / 1000, lines: [{ id: 'loud', words, start: 0, end: 60, loud: true }] })).wake() }
-window.ready = sound.unlock().then(() => true)
+window.show = (words, low) => { const t = performance.now(); const c = makeCaption(() => ({ now: (performance.now() - t) / 1000, lines: [{ id: 'place', words, start: 0, end: 600 }] })); c.place(low); c.wake() }
+window.ready = location.search ? Promise.resolve(true) : sound.unlock().then(() => true)
 </script>`)
 const site = await serve(dir, { mounts: { '/audio/': at('public', 'audio') } })
 const launched = await launch(['--autoplay-policy=no-user-gesture-required'])
@@ -43,6 +45,30 @@ try {
   const page = await context.newPage()
   const errors = []
   page.on('pageerror', (e) => errors.push(String(e.message)))
+  const placeAt = process.argv.indexOf('--place')
+  if (placeAt > 0) {
+    const y = Number(process.argv[placeAt + 1])
+    const n = JSON.parse(fs.readFileSync(at('content', 'narration.json'), 'utf8'))
+    const words = n.film['marketing.stroll'][0].text.split(n.pauseMark).map((x) => x.trim()).sort((a, b) => b.length - a.length)[0]
+    const files = []
+    for (const low of [undefined, y]) {
+      await page.goto(`${site.url}/index.html?place`)
+      await page.evaluate(([w, l]) => window.show(w, l), [words, low ?? null])
+      await new Promise((r) => setTimeout(r, 600))
+      const box = await page.evaluate(() => { const el = [...document.querySelectorAll('[data-narrator-caption]')].find((e) => e.style.display !== 'none'); const r = el?.getBoundingClientRect(); return r ? { top: r.top, bottom: r.bottom, left: r.left, right: r.right } : null })
+      const k = 1920 / VIEW.width
+      console.log(`place: lower edge asked ${low ?? 'CAPTION.low'}, panel in page pixels top ${box ? Math.round(box.top * k) : '-'} bottom ${box ? Math.round(box.bottom * k) : '-'} left ${box ? Math.round(box.left * k) : '-'} right ${box ? Math.round(box.right * k) : '-'}, words: ${words}`)
+      const file = path.join(dir, `place-${files.length}.png`)
+      await page.screenshot({ path: file })
+      files.push(file)
+    }
+    const top = Math.round(VIEW.height * 0.55)
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', files[0], '-i', files[1], '-filter_complex', `[0:v]crop=${VIEW.width}:${VIEW.height - top}:0:${top}[a];[1:v]crop=${VIEW.width}:${VIEW.height - top}:0:${top}[b];[a][b]vstack=inputs=2[o]`, '-map', '[o]', '-frames:v', '1', path.join(pictures, 'script-caption-place.png')])
+    await context.close()
+    await launched.browser.close()
+    await site.close?.()
+    process.exit(0)
+  }
   await page.goto(`${site.url}/index.html`)
   await page.evaluate(() => window.ready)
   const wait = (ms) => new Promise((r) => setTimeout(r, ms))
