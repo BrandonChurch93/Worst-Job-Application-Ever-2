@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { BANNED, briefFor, neutral, packPlan, rolesOf } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
 import { FLIP, MID, MOUTH } from '../src/table/layout'
-import { BLOW, CLOSE, COL, DROP, FIELD_WORDS, FLIPS, FULL_WORDS, GATE, GIVES, HAND_WORDS, KEYS, KEY_WORDS, MOVES, MOVE_WORDS, PAGE_HAS, SAVE, SEAT, TAKEN, TURNS, gateWindow, holdsBox, seatWindows, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, handAt, handsOff, keyBlock, makeVisitor, momentsOf, motionPlan, saveWindow, siteLines, siteNotes, spreadSteps, struckWords, tierSheet, closeWindow, windowHolds } from '../tools/lib/pack-site.mjs'
+import { ANGRY_WORDS, BLOW, CLOSE, COL, DROP, FIELD_WORDS, FLIPS, FULL_WORDS, GATE, GIVES, HAND_WORDS, KEYS, KEY_WORDS, MOVES, MOVE_WORDS, PAGE_HAS, SAVE, SEAT, TAKEN, TURNS, gateWindow, holdsBox, seatWindows, SITE, SITE_KINDS, VISITOR, aroundStep, drawOrder, handAt, handsOff, keyAt, keyBlock, keySeats, makeVisitor, momentsOf, motionPlan, saveWindow, siteLines, siteNotes, spreadSteps, struckWords, tierSheet, closeWindow, windowHolds } from '../tools/lib/pack-site.mjs'
 
 const root = path.resolve(__dirname, '..')
 const cfg = JSON.parse(fs.readFileSync(path.join(root, 'config/showcase.json'), 'utf8'))
@@ -571,7 +571,7 @@ describe('the packs of the unit site', () => {
   })
 
   it('R4: a key of the page keyboard at every step, from three frames before the press to eight after the release, at 100%, with a mark under each frame in which the button is held', () => {
-    expect(facts.moments.type).toEqual({ press: LONG + 32, release: LONG + 38, nth: 1, of: 1, clear: false, spent: null, why: null, field: 'first', seated: null })
+    expect(facts.moments.type).toEqual({ press: LONG + 32, release: LONG + 38, nth: 1, of: 1, clear: false, spent: null, why: null, field: 'first', seated: null, key: null })
     const type = filesOf(planOf('R4')).filter((f) => f.moment === 'type')
     expect(type.length).toBe(2)
     const steps = type.flatMap((f) => f.steps!)
@@ -609,7 +609,7 @@ describe('the packs of the unit site', () => {
     }
     twice.gags.push({ gag: 'step1.lastName', step: LONG + 50 })
     const later = momentsOf(cfg, twice)
-    expect(later.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 2, of: 2, clear: true, spent: LONG + 50, why: 'on', field: 'last', seated: null })
+    expect(later.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 2, of: 2, clear: true, spent: LONG + 50, why: 'on', field: 'last', seated: null, key: null })
     expect(LONG + 132 - KEYS.before).toBeGreaterThanOrEqual(LONG + 50 + KEYS.spent)
     const shown = motion(later).items.filter((x) => x.moment === 'type')
     expect(shown[0]!.steps![0]).toBe(LONG + 132 - KEYS.before)
@@ -625,12 +625,22 @@ describe('the packs of the unit site', () => {
     const seated = momentsOf(cfg, mail)
     // The press at LONG + 100 lies on the Email field too, but its frames begin while the keys still fly home.
     expect(LONG + 100 - KEYS.before - (LONG + 80)).toBeLessThan(KEYS.home)
-    expect(seated.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 3, of: 3, clear: true, spent: LONG + 10, why: 'on', field: 'email', seated: LONG + 80 })
+    expect(seated.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 3, of: 3, clear: true, spent: LONG + 10, why: 'on', field: 'email', seated: LONG + 80, key: 'G' })
     const sat = motion(seated).items.filter((x) => x.moment === 'type')
     expect(sat[0]!.steps![0]).toBe(LONG + 132 - KEYS.before)
-    expect(sat[0]!.heading).toContain(`. Press 3 of the visitor's 3 on the keyboard, the first on the Email field after its keys have come home: the page went on to the Email field at 0:06.33 and these frames begin 0.82 s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. The visitor rests 6 frames after it lets a key go. `)
+    expect(sat[0]!.heading).toContain(`. Press 3 of the visitor's 3 on the keyboard, on the key G (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at 0:06.33 and these frames begin 0.82 s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. ${ANGRY_WORDS}. The visitor rests 6 frames after it lets a key go. `)
     for (const f of sat) expect(linesOf(f)).toBeLessThanOrEqual(f.lines!)
     expect(FIELD_WORDS.email).toBe("By the page's design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go")
+    // The key is named by the seat the press lies in, as its cap shows it; between two keys no key is named. The arrow's red tip and steam are said to be the page's design, as the kit has them.
+    const seats = keySeats(cfg) as { key: string; x: number; y: number; w: number; h: number }[]
+    expect(seats.map((k) => ({ key: k.key, x: k.x, y: k.y }))).toContainEqual(keyBlock(cfg).place)
+    const a = seats.find((k) => k.key === 'a')!
+    expect(keyAt(cfg, a.x - a.w / 2 + 1, a.y + a.h / 2 - 1)).toBe('A')
+    expect(keyAt(cfg, a.x - a.w / 2 - 1, a.y)).toBe(null)
+    expect(keyAt(cfg, seats.find((k) => k.key.length > 1)!.x, seats.find((k) => k.key.length > 1)!.y)).toBe(seats.find((k) => k.key.length > 1)!.key)
+    expect(fs.readFileSync(path.join(root, 'kit/02-SUBJECT.md'), 'utf8')).toContain('| Angry | The tip glows red and it vents steam |')
+    expect(/enter\('email'\)\s+act\(io, 'angry'\)/.test(fs.readFileSync(path.join(root, 'src/pages/step1/index.ts'), 'utf8'))).toBe(true)
+    expect(ANGRY_WORDS).toBe("On this field the arrow is angry by the page's design: its tip glows red and it vents steam")
     // A red slab that drops inside those frames, or the page asking for the resume in them, and the press is not taken for a seated one: the rule before stands, and the heading names the field it lies on.
     for (const spoil of [{ hits: [{ name: KEYS.slab, step: LONG + 145, page: 'step1', x: 0, y: 0 }], gags: [] }, { hits: [], gags: [{ gag: KEYS.until, step: LONG + 148 }] }]) {
       const spoilt = madeRun()
@@ -638,7 +648,7 @@ describe('the packs of the unit site', () => {
       spoilt.gags.push(...mail.gags, ...spoil.gags)
       spoilt.hits.push(...spoil.hits)
       const t = momentsOf(cfg, spoilt).moments.type
-      expect(t).toMatchObject({ press: LONG + 100, nth: 2, seated: null, clear: true, field: 'email' })
+      expect(t).toMatchObject({ press: LONG + 100, nth: 2, seated: null, clear: true, field: 'email', key: null })
     }
     // The keys are home KEYS.home steps after the page goes on: crouch, ripple, jitter, flight and seat of FLIGHT in the page's own file, at the visitor's rate, and a step more.
     const flight = /const FLIGHT = \{([^}]*)\}/.exec(fs.readFileSync(path.join(root, 'src/pages/step1/index.ts'), 'utf8'))![1]!

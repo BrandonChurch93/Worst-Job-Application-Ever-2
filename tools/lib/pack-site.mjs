@@ -34,6 +34,29 @@ export const STANDS = { page: 'step1', from: 'step1.firstName', until: 'step1.la
 // the width of each end where a turret stands, the gap above the keys, what the deck is taller than its keys by and the length of a barrel.
 // `share` is the part of the key block's width a hit must be from the nearer muzzle for its bolt to be seen in flight. A stepped test holds these against the page.
 export const BLOCK = { deckY: 728, end: 200, above: 8, deckMore: 16, barrel: 84, share: 1 / 3, data: 'src/pages/step1/keyboard.json' }
+// The seats of the keys of step 1 when they are home: each key's name, the middle of its cap and its size, in px of the page.
+export function keySeats(cfg) {
+  const g = cfg.scale.grid
+  const key = cfg.scale.sizes.keycapMin
+  const data = readJson(at(BLOCK.data))
+  const x = g.contentLeft + BLOCK.end
+  const y = BLOCK.deckY + BLOCK.above
+  const pitch = (g.contentRight - g.contentLeft - BLOCK.end * 2 + g.keyGap) / data.unitsWide
+  const seats = []
+  data.rows.forEach((row, r) => {
+    let n = 0
+    for (const c of row) {
+      seats.push({ key: c.name, x: x + n * pitch + (c.width * pitch - g.keyGap) / 2, y: y + r * (key + g.keyGap) + key / 2, w: c.width * pitch - g.keyGap, h: key })
+      n += c.width
+    }
+  })
+  return seats
+}
+// The key whose seat holds a place of the page, as its cap names it; null between keys. True only while the keys are home.
+export function keyAt(cfg, x, y) {
+  const seat = keySeats(cfg).find((k) => Math.abs(x - k.x) <= k.w / 2 && Math.abs(y - k.y) <= k.h / 2)
+  return seat ? (seat.key.length === 1 ? seat.key.toUpperCase() : seat.key) : null
+}
 export function keyBlock(cfg) {
   const g = cfg.scale.grid
   const key = cfg.scale.sizes.keycapMin
@@ -42,15 +65,7 @@ export function keyBlock(cfg) {
   const y = BLOCK.deckY + BLOCK.above
   const w = g.contentRight - g.contentLeft - BLOCK.end * 2
   const h = data.rows.length * key + (data.rows.length - 1) * g.keyGap
-  const pitch = (w + g.keyGap) / data.unitsWide
-  const seats = []
-  data.rows.forEach((row, r) => {
-    let n = 0
-    for (const c of row) {
-      seats.push({ key: c.name, x: x + n * pitch + (c.width * pitch - g.keyGap) / 2, y: y + r * (key + g.keyGap) + key / 2 })
-      n += c.width
-    }
-  })
+  const seats = keySeats(cfg).map((k) => ({ key: k.key, x: k.x, y: k.y }))
   const mid = { x: x + w / 2, y: y + h / 2 }
   const far = (s) => Math.hypot(s.x - mid.x, s.y - mid.y)
   const place = seats.reduce((a, b) => (far(b) < far(a) ? b : a))
@@ -789,7 +804,7 @@ export function momentsOf(cfg, run) {
     const shown = seated || clear || presses[0] || null
     const named = run.gags.find((g) => g.gag === STANDS.until && inS1(g)) || null
     const field = !shown ? null : email && shown.press >= email.step ? 'email' : named && shown.press >= named.step ? 'last' : 'first'
-    if (shown) type = { ...shown, nth: presses.indexOf(shown) + 1, of: presses.length, clear: Boolean(seated || clear), spent: last ? last.step : null, why: last ? last.why : null, field, seated: seated ? email.step : null }
+    if (shown) type = { ...shown, nth: presses.indexOf(shown) + 1, of: presses.length, clear: Boolean(seated || clear), spent: last ? last.step : null, why: last ? last.why : null, field, seated: seated ? email.step : null, key: seated ? keyAt(cfg, rows[seated.press][COL.pointerX], rows[seated.press][COL.pointerY] + rows[seated.press][COL.scroll]) : null }
   }
   return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, thrown, flippers, leaves, left, flip, met: blow, stroke, strokes, blows, save, saves, gate, unsaved, type, turn: turns[0] || null, falls: fallsOf(cfg, rows, s3), reveal: revealOf(cfg, rows, s3) } }
 }
@@ -1005,6 +1020,8 @@ export const TURNS = { seat: 18, flat: 27, quiet: 31, lead: 2, still: 4 }
 // `home`: when the page goes on to the Email field its keys fly home and seat, in 0.515 s at the most (FLIGHT in src/pages/step1/index.ts: crouch 0.035 + ripple 0.17 + jitter 0.02 + seconds 0.2 + seat 0.09),
 // 31 steps; a step more, and every key is in its seat. `field`, `until`, `slab`: the page's names for the Email field, the resume after it, and a red slab's drop.
 export const KEYS = { before: 3, after: 8, mark: 'down', rest: 6, spent: 78, home: 32, field: 'step1.email', until: 'step1.resume', slab: 'slab-drop' }
+// The arrow on the Email field (src/pages/step1/index.ts: going on to it the page makes the arrow angry; kit/02-SUBJECT.md, "Angry: the tip glows red and it vents steam").
+export const ANGRY_WORDS = 'On this field the arrow is angry by the page\'s design: its tip glows red and it vents steam'
 // What the page does to its keys on each field, by its design (kit/02-SUBJECT.md, "Field by field").
 export const FIELD_WORDS = {
   email: 'By the page\'s design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go',
@@ -1240,7 +1257,7 @@ export function motionPlan(cfg, run) {
     const key = [Math.min(...held.map((i) => rows[i][COL.pointerX])), Math.min(...held.map((i) => rows[i][COL.pointerY])), Math.max(...held.map((i) => rows[i][COL.pointerX])), Math.max(...held.map((i) => rows[i][COL.pointerY]))]
     const all = range(from, to)
     const box = [Math.min(key[0], ...all.map((i) => rows[i][COL.heroX] - TAKEN.room)), Math.min(key[1], ...all.map((i) => screenY(i) - TAKEN.room)), Math.max(key[2], ...all.map((i) => rows[i][COL.heroX] + TAKEN.room)), Math.max(key[3], ...all.map((i) => screenY(i) + TAKEN.room))]
-    const lay = closeLayout(cfg, 3, count, CLOSE_HEAD.lines + 1)
+    const lay = closeLayout(cfg, 3, count, CLOSE_HEAD.lines + 2)
     const fit = closeFit(cfg, box, lay)
     const steps = close('type', `as the visitor's arrow presses a key of the page's keyboard and lets it go: every frame from ${KEYS.before} frames before the press (${timeOf(m.type.press)}) to ${KEYS.after} after the release (${timeOf(m.type.release)})`, from, to, m.type.press, lay, [fit.window], fit.percent,
       `one fixed window on the key, its neighbours and the arrow, ${scaleWords(fit.percent)} (${placeWords(fit.window)})`, ['key', 'move'])
@@ -1250,7 +1267,7 @@ export function motionPlan(cfg, run) {
     const nth = cfg.live.step1.hitsBeforeTurretsOverheat
     const stopped = m.type.why === 'hot' ? `bolt ${nth} hit the arrow at ${timeOf(m.type.spent)} and the turrets fire no more after it` : `the page went on to the last name at ${timeOf(m.type.spent)} and its turrets fire no more from then`
     const which = m.type.seated !== null && m.type.seated !== undefined
-      ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first on the Email field after its keys have come home: the page went on to the Email field at ${timeOf(m.type.seated)} and these frames begin ${((from - m.type.seated) / VISITOR.hz).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}`
+      ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard${m.type.key ? `, on the key ${m.type.key} (the arrow's tip lies on its letter)` : ''}, the first on the Email field after its keys have come home: the page went on to that field at ${timeOf(m.type.seated)} and these frames begin ${((from - m.type.seated) / VISITOR.hz).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. ${ANGRY_WORDS}`
       : m.type.clear
       ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets have stopped: ${stopped}; these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
       : `The first press of the visitor's on the keyboard; the turrets may fire in these frames`
