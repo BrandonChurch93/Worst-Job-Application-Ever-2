@@ -2,18 +2,21 @@ import type { Acting, Reaction } from '../../../cursor/body'
 import { frame, homePose, mixPose, smooth } from '../../../stage/camera'
 import type { CameraPose } from '../../../stage/types'
 import { config } from '../../../config'
-import { browseBox, HALF_X, landing, PAPER, PAPER_REST, SLOT, TILE } from './layout'
+import { buttonWidth, RIGHT } from '../../../shell/parts'
+import { CONTINUE_Y } from '../layout'
+import { browseBox, HALF_X, landing, PAPER, PAPER_REST, SLOT, TILE, ZONE } from './layout'
 
-// `EARLY`: how many seconds sooner than 19.81 s of the unit the page hands the stage over in the film. `LATE`: how much later than before change note 002 the film's bite and all that follows it come, in seconds: the room the new beats before the bite take, less `EARLY`. The tug, the loss and the strips keep their shape and their length.
-export const EARLY = 0
-export const LATE = 1.4 - EARLY
-const UNIT_END = config.film.units.find((u) => u.id === 'step1')!.seconds
+// How much later than before change note 002 the film's bite and all that follows it come, in seconds: the room the new beats before the bite take. The tug, the loss and the strips keep their shape and their length.
+export const LATE = 1.5
+// How long the film holds on "Resume received" before the page turns, in seconds: the room the narrator's line on that message takes. The unit ends half a second after the turn starts.
+export const HOLD = 5.5
+const TURN = config.film.units.find((u) => u.id === 'step1')!.seconds - 0.5
 
 // Seconds of the stage: the sheet's slide in, the bite, the tug in the film, and how long the arrow stays lost, live and in the film.
 export const RESUME_TIMES = { paperSlide: 0.42, bite: 0.4, tugFilm: 4.52, lost: 0.3, lostFilm: 0.84 }
 // The beats before the bite, in seconds, in the film and on the live site, where the visitor sets the pace and each beat takes the room it needs: how long Browse stays down, the folder's way up and down, the file lit before the sheet leaves, the sheet's flight to the drop zone, how long it lies there, and the wind. The machine and its plate are up `machine` into the wind. `wait` is how long an idle visitor's folder stands open before the page picks the file itself.
 export const FLOW = {
-  film: { press: 0.1, pop: 0.25, shut: 0.25, lit: 0.12, fly: 0.42, lie: 0.24, wind: 0.8 },
+  film: { press: 0.1, pop: 0.25, shut: 0.25, lit: 0.12, fly: 0.45, lie: 0.25, wind: 0.8 },
   live: { press: 0.12, pop: 0.3, shut: 0.3, lit: 0.22, fly: 0.55, lie: 0.5, wind: 0.95 },
   machine: 0.25, wait: 0.5
 }
@@ -28,12 +31,14 @@ export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 60 }
 export const SHRED = { in: 0.3, gone: 0.46, strips: 0.12, pile: 0.64, pileSeconds: 1.14, empty: 1.56, emptySeconds: 0.75, hold: 0.3, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
 export const TRUDGE = { x: 96, y: 84, first: [0.42, 0.62] as [number, number], share: 0.42, second: [0.8, 1.02] as [number, number] }
 export const END = { sag: 0.03 }
+// The film's hold on the message, every time in seconds before the page turns: the arrow looks up at the message from where it dragged itself, goes up under it and sags, then trudges to Continue and presses it. `under` is where it stands under the message, as shares of the drop zone.
+export const AFTER = { look: 3.35, up: [3.05, 2.45] as [number, number], under: { x: 0.52, y: 0.83 }, sag: 2.28, go: [1.7, 0.52] as [number, number], on: { x: -6, y: 2 }, press: 0.3 }
 // The film before the bite, every time a second of the unit: a wind-up where it stands, a strut to Browse files, a look at the ordinary field, the press; a start at the folder, a walk to the file, the pick; proud, it struts back to stand by its sheet in the drop zone and dusts itself off; the wind makes it start and it runs after the sheet. `drop` is the second the wind lets the sheet go over the slot.
 export const RESUME = {
-  leave: 19.9 - EARLY, walk: [20.1 - EARLY, 20.6 - EARLY] as [number, number], on: { x: 12, y: 6 }, press: 20.85 - EARLY,
-  see: 20.97 - EARLY, toFile: [21.04 - EARLY, 21.32 - EARLY] as [number, number], file: { x: 8, y: 14 }, pick: 21.44 - EARLY,
-  proud: 21.6 - EARLY, back: [21.68 - EARLY, 22.06 - EARLY] as [number, number], beside: { x: 58, y: 66 }, dust: 22.08 - EARLY,
-  gust: 22.26 - EARLY, chase: [22.46 - EARLY, 22.9 - EARLY] as [number, number], near: { x: -96, y: -176 },
+  leave: 19.9, walk: [20.1, 20.6] as [number, number], on: { x: 12, y: 6 }, press: 20.85,
+  see: 20.97, toFile: [21.06, 21.36] as [number, number], file: { x: 8, y: 14 }, pick: 21.5,
+  proud: 21.66, back: [21.76, 22.16] as [number, number], beside: { x: 58, y: 66 }, dust: 22.2,
+  gust: 22.36, chase: [22.58, 23.02] as [number, number], near: { x: -96, y: -176 },
   raise: 0, high: 0, drop: 21.62 + LATE
 }
 // The temper of the tug: a stamp as the sheet is caught, a wind-up before each haul, a second stamp, and nothing in the half second before the key picture. Then the big bite: a start, and it stands scared and still, pulled thin, until the sheet goes.
@@ -58,7 +63,7 @@ export const tugCurve = (t: number): number => tugAt(t, 1)
 
 export const tugReach = (rate: number): number => Math.min(TUG.reach.max, Math.max(TUG.reach.min, TUG.reach.rest + rate * (rate > 0 ? TUG.reach.bite : TUG.reach.haul)))
 
-export function tugPoint(tau: number): { x: number; y: number } {
+function tugPoint(tau: number): { x: number; y: number } {
   const amount = tugCurve(tau)
   const reach = tugReach((tugCurve(tau + 0.03) - tugCurve(tau - 0.03)) / 0.06)
   const lean = tugAt(tau, 2)
@@ -127,9 +132,22 @@ export function planResume(w: Writer): { drop: number; bite: number; lost: numbe
   const whole = lost + RESUME_TIMES.lostFilm + SHRED.end
   w.to(lost + 0.1, lost + 0.2, PILE.x, PILE.y, { ease: 'out' })
   w.cue(whole + END.sag, { act: 'exhausted' })
-  // The pulls that still end inside the unit are made; the bite is `LATE` later than it was and the unit's end has not moved.
-  if (whole + TRUDGE.first[1] < UNIT_END) w.to(whole + TRUDGE.first[0], whole + TRUDGE.first[1], PILE.x + TRUDGE.x * TRUDGE.share, PILE.y + TRUDGE.y * TRUDGE.share, { ease: 'out' })
-  if (whole + TRUDGE.second[1] < UNIT_END) w.to(whole + TRUDGE.second[0], whole + TRUDGE.second[1], PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { ease: 'out' })
+  const pull = (t0: number, t1: number, x: number, y: number, o: MoveOptions): boolean => {
+    if (t0 < w.free() || t1 >= TURN) return false
+    w.to(t0, t1, x, y, o)
+    return true
+  }
+  pull(whole + TRUDGE.first[0], whole + TRUDGE.first[1], PILE.x + TRUDGE.x * TRUDGE.share, PILE.y + TRUDGE.y * TRUDGE.share, { ease: 'out' })
+  pull(whole + TRUDGE.second[0], whole + TRUDGE.second[1], PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { ease: 'out' })
+  // The hold on the message: every move that has its room before the page turns is made, so a shorter unit only loses the last of them.
+  const turn = lost + RESUME_TIMES.lostFilm + SHRED.empty + SHRED.emptySeconds + SHRED.hold + HOLD
+  if (turn - AFTER.look > w.free() && turn - AFTER.look < TURN) w.cue(turn - AFTER.look, { react: 'doubleTake' })
+  if (pull(turn - AFTER.up[0], turn - AFTER.up[1], ZONE.x + ZONE.w * AFTER.under.x, ZONE.y + ZONE.h * AFTER.under.y, { ease: 'out', arc: 8 })) w.cue(turn - AFTER.sag, { react: 'cower' })
+  const wide = buttonWidth('copy:step1.continue')
+  if (pull(turn - AFTER.go[0], turn - AFTER.go[1], RIGHT - 5 - wide / 2 + AFTER.on.x, CONTINUE_Y + 5 + config.scale.sizes.button / 2 + AFTER.on.y, { ease: 'smooth', arc: -18 }) && turn - AFTER.press + 0.09 < TURN) {
+    w.cue(turn - AFTER.press - 0.03, { react: 'tap' })
+    w.hold(turn - AFTER.press, turn - AFTER.press + 0.09)
+  }
   return { drop: RESUME.drop, bite, lost }
 }
 
@@ -138,7 +156,7 @@ const TUG_EDGE = HALF_X - 16
 const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 205 }
 const tugFrame = (): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - TUG_FRAME.w, TUG_FRAME.mid - TUG_FRAME.w / 2), y: TUG_FRAME.top, w: TUG_FRAME.w, h: (TUG_FRAME.w * 9) / 16 })
 // It starts in as the wind starts and stands before the bite; `key` is the second of the kit's still and is not moved.
-export const CAMERA = { in: [20.88 + LATE, 21.8 + LATE] as [number, number], key: 25.125, out: [28.3 + LATE, 28.9 + LATE] as [number, number] }
+export const CAMERA = { in: [22.38, 23.3] as [number, number], key: 25.125, out: [28.3 + LATE, 28.9 + LATE] as [number, number] }
 const glide = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * u * (u * (u * 6 - 15) + 10)
