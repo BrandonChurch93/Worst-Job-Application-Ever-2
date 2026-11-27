@@ -1,0 +1,319 @@
+{
+  "stamp": {
+    "role": "R4",
+    "round": 25,
+    "unit": "site",
+    "commit": "d6fe4a6b8ed9c881305ea55c861fe97e4b3781fe",
+    "tier": "live-high",
+    "engineHash": "78a7b4a43470fdd9",
+    "sharedHash": "ecc0c035659847ab",
+    "pageHashes": {
+      "step1": "75828b0a80e12add",
+      "step2": "9cbb42379da170d6",
+      "marketing": "9dd612c528d5d3e7",
+      "pinball": "5aa8710b2cf98673",
+      "boss": "ed18eab775dec297",
+      "decision": "7268eb60f24ef748"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "leftOut": [],
+  "limitTook": [],
+  "missing": [],
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R4-1",
+      "groups": [
+        "pages"
+      ],
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "heading": "Consecutive frames, 1/30 s apart, as a visitor's pointer walks the arrow across the page, whole frames at 24% of the page's size: 0:00.87 to 0:01.23",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1969802,
+          "sha256": "83c0337f2a28022793e83ec6a0edf1ccfce3d55ae13026fc7c8798b19ca371a9"
+        },
+        {
+          "name": "set-A-02.png",
+          "heading": "Consecutive frames, 1/30 s apart, of one page turn, whole frames at 24% of the page's size, sheet 1 of 3 of one run, frames 1 to 12 of 36: 1 frame of the old page lying flat, the old page swings away: 0:09.93 to 0:10.30. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1254,
+          "bytes": 2075889,
+          "sha256": "f501ab5dbb7d72696f3578d8e131d99887fc8e00176a35e8478a6116605684ca"
+        },
+        {
+          "name": "set-A-03.png",
+          "heading": "Consecutive frames, 1/30 s apart, of one page turn, whole frames at 24% of the page's size, sheet 2 of 3 of one run, frames 13 to 24 of 36: the old page swings away, the new page stands on its edge from 0:10.45, and closes: 0:10.33 to 0:10.70. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1254,
+          "bytes": 1266696,
+          "sha256": "52f9a53df6fad7baf710cf49dd230379d1de3db6f063c5d8baa14e5e9360db8f"
+        },
+        {
+          "name": "set-A-04.png",
+          "heading": "Consecutive frames, 1/30 s apart, of one page turn, whole frames at 24% of the page's size, sheet 3 of 3 of one run, frames 25 to 36 of 36: the new page goes on closing, it seats at 0:10.75, it has stopped by 0:10.97, the last 4 frames come after the stop. The visitor does not move the mouse in these frames, and the page's arrow stays where it is: 0:10.73 to 0:11.10. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1276,
+          "bytes": 1768193,
+          "sha256": "fb34bdabcb5f179f5ad739a22314cdff1235cfebcd11e8e5248963d06ddbeddd"
+        },
+        {
+          "name": "set-A-05.png",
+          "heading": "Consecutive frames, 1/60 s apart, the page's seat, close: every frame from 6 frames before the stage seats the page (0:10.75) to 14 frames after, two fixed windows side by side in each frame, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page: left, the page's upper edge down to under the step row, to the page's right edge (x 818 to 1920, y 0 to 176 of the page); right, the tray's corner (x 780 to 1070, y 290 to 466 of the page), sheet 1 of 4 of one run, frames 1 to 6 of 21: 0:10.65 to 0:10.73. Under a frame, \"contact\": the step at which the stage seats the page. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1400,
+          "height": 1390,
+          "bytes": 1754650,
+          "sha256": "4ffb46ae07d356e4c6e521578bebb3fb2d5233be369fb6814b1ebc7b49b503ab"
+        },
+        {
+          "name": "set-A-06.png",
+          "heading": "Consecutive frames, 1/60 s apart, the page's seat, close: every frame from 6 frames before the stage seats the page (0:10.75) to 14 frames after, two fixed windows side by side in each frame, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page: left, the page's upper edge down to under the step row, to the page's right edge (x 818 to 1920, y 0 to 176 of the page); right, the tray's corner (x 780 to 1070, y 290 to 466 of the page), sheet 2 of 4 of one run, frames 7 to 12 of 21: 0:10.75 to 0:10.83. Under a frame, \"contact\": the step at which the stage seats the page. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1400,
+          "height": 1390,
+          "bytes": 2290173,
+          "sha256": "35ad872526c80bad0ed8e53e851cada401cee2e343612b0a1bab3aa649ca5475"
+        },
+        {
+          "name": "set-A-07.png",
+          "heading": "Consecutive frames, 1/60 s apart, the page's seat, close: every frame from 6 frames before the stage seats the page (0:10.75) to 14 frames after, two fixed windows side by side in each frame, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page: left, the page's upper edge down to under the step row, to the page's right edge (x 818 to 1920, y 0 to 176 of the page); right, the tray's corner (x 780 to 1070, y 290 to 466 of the page), sheet 3 of 4 of one run, frames 13 to 18 of 21: 0:10.85 to 0:10.93. Under a frame, \"contact\": the step at which the stage seats the page. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1400,
+          "height": 1390,
+          "bytes": 2371810,
+          "sha256": "c233b5569e52b8ed3674ef5cc38cdfb582eda489e47bf2e7280a259cb613a001"
+        },
+        {
+          "name": "set-A-08.png",
+          "heading": "Consecutive frames, 1/60 s apart, the page's seat, close: every frame from 6 frames before the stage seats the page (0:10.75) to 14 frames after, two fixed windows side by side in each frame, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page: left, the page's upper edge down to under the step row, to the page's right edge (x 818 to 1920, y 0 to 176 of the page); right, the tray's corner (x 780 to 1070, y 290 to 466 of the page), sheet 4 of 4 of one run, frames 19 to 21 of 21: 0:10.95 to 0:10.98. Under a frame, \"contact\": the step at which the stage seats the page. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1400,
+          "height": 754,
+          "bytes": 1219993,
+          "sha256": "e48d7c39e17a6f72c698688d32990305ba1bbfb66f6c86521d4620d1d871baab"
+        },
+        {
+          "name": "set-A-09.png",
+          "heading": "Consecutive frames, 1/30 s apart, as a turret's bolt hits the arrow, the visitor presses no button and no key in these frames, the part of the picture round the arrow at 50% of the page's size: 0:14.88 to 0:15.25",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2241506,
+          "sha256": "584bfe15a0dede5af9ca07544fe630e358804235736c3cf8d19fa59959a0b79c"
+        }
+      ]
+    },
+    {
+      "set": "B",
+      "critic": "R4-2",
+      "groups": [
+        "arrow"
+      ],
+      "files": [
+        {
+          "name": "set-B-01.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the visitor's arrow presses a key of the page's keyboard and lets it go: every frame from 3 frames before the press (0:24.65) to 8 after the release (0:24.85), one fixed window on the key, its neighbours and the arrow, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 374 to 835, y 758 to 1026 of the page), sheet 1 of 2 of one run, frames 1 to 12 of 24: 0:24.60 to 0:24.78. Press 10 of the visitor's 13 on the keyboard, on the key A (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at 0:23.67 and these frames begin 0.93 s later; the turrets went down before the last name and no bolt lands in these frames. By the page's design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go. On this field the arrow is angry by the page's design: its tip glows red and it vents steam. The visitor rests 6 frames after it lets a key go. Under a frame, \"down\": the visitor holds the mouse button in it. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1400,
+          "bytes": 1717078,
+          "sha256": "79d9c0f1797b12a2912ecf04bb2eca5e20d36add8877c6123a9e944daab0e451"
+        },
+        {
+          "name": "set-B-02.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the visitor's arrow presses a key of the page's keyboard and lets it go: every frame from 3 frames before the press (0:24.65) to 8 after the release (0:24.85), one fixed window on the key, its neighbours and the arrow, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 374 to 835, y 758 to 1026 of the page), sheet 2 of 2 of one run, frames 13 to 24 of 24: 0:24.80 to 0:24.98. Press 10 of the visitor's 13 on the keyboard, on the key A (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at 0:23.67 and these frames begin 0.93 s later; the turrets went down before the last name and no bolt lands in these frames. By the page's design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go. On this field the arrow is angry by the page's design: its tip glows red and it vents steam. The visitor rests 6 frames after it lets a key go. Under a frame, \"down\": the visitor holds the mouse button in it. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1400,
+          "bytes": 1707009,
+          "sha256": "84288d6abc7646df3ec3aff410a8290e6242d94baed5a97e7c4475e39a740ca7"
+        },
+        {
+          "name": "set-B-03.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page takes the arrow from the visitor: every frame from 6 frames before the take (0:31.40) to 6 frames after the arrow arrives (0:31.87, the first frame after its travel in which it moves under 1 px), one fixed window on the arrow at the button, both arms, the paper, its holder and the tray's lower right corner, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 485 to 946, y 438 to 716 of the page), sheet 1 of 4 of one run, frames 1 to 12 of 41: 0:31.30 to 0:31.48. Under a frame, P: the page holds the arrow, from the take to the last frame before the arrow follows the pointer again. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1374,
+          "bytes": 2264162,
+          "sha256": "a97f19e7a9d9e7f20872a360fd1fafab2496cedf58e00d3c417c395254dae55f"
+        },
+        {
+          "name": "set-B-04.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page takes the arrow from the visitor: every frame from 6 frames before the take (0:31.40) to 6 frames after the arrow arrives (0:31.87, the first frame after its travel in which it moves under 1 px), one fixed window on the arrow at the button, both arms, the paper, its holder and the tray's lower right corner, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 485 to 946, y 438 to 716 of the page), sheet 2 of 4 of one run, frames 13 to 24 of 41: 0:31.50 to 0:31.68. Under a frame, P: the page holds the arrow, from the take to the last frame before the arrow follows the pointer again. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1374,
+          "bytes": 2282783,
+          "sha256": "133bffce338f12eba5449189d621dfc5d43b6616d8dc04a8da626b41fe854452"
+        },
+        {
+          "name": "set-B-05.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page takes the arrow from the visitor: every frame from 6 frames before the take (0:31.40) to 6 frames after the arrow arrives (0:31.87, the first frame after its travel in which it moves under 1 px), one fixed window on the arrow at the button, both arms, the paper, its holder and the tray's lower right corner, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 485 to 946, y 438 to 716 of the page), sheet 3 of 4 of one run, frames 25 to 36 of 41: 0:31.70 to 0:31.88. Under a frame, P: the page holds the arrow, from the take to the last frame before the arrow follows the pointer again. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1374,
+          "bytes": 2278584,
+          "sha256": "f9aa01b4f98ca668639b5ec1a9c144ed22e7f3cc7647a38f634290a6f212b0d4"
+        },
+        {
+          "name": "set-B-06.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page takes the arrow from the visitor: every frame from 6 frames before the take (0:31.40) to 6 frames after the arrow arrives (0:31.87, the first frame after its travel in which it moves under 1 px), one fixed window on the arrow at the button, both arms, the paper, its holder and the tray's lower right corner, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 485 to 946, y 438 to 716 of the page), sheet 4 of 4 of one run, frames 37 to 41 of 41: 0:31.90 to 0:31.97. Under a frame, P: the page holds the arrow, from the take to the last frame before the arrow follows the pointer again. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 746,
+          "bytes": 1000096,
+          "sha256": "1874d8f5af9acd87fada267a2539a77b562fb0322cbfde4d6e698e26fd267d28"
+        },
+        {
+          "name": "set-B-07.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor, one fixed window round the arrow's way, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 730 to 1191, y 581 to 853 of the page), sheet 1 of 4 of one run, frames 1 to 12 of 47: 0:43.53 to 0:43.72. In this run the arrow lies still to 0:43.62, it moves from 0:43.63 to 0:43.68, stands still from 0:43.70 to 0:44.03 and moves again from 0:44.05. By the page's design the arrow stands in its rest pose until the page lets it go, and from then it leans with the visitor's move, as it does on every move. Under a frame, P: the page holds the arrow, from the take to the last frame before the arrow follows the pointer again; \"follows\": the first frame in which the arrow follows the pointer again. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1372,
+          "bytes": 2097197,
+          "sha256": "468d2e1c654086cd29f5ac3c6889d3d43a9d95bd5b2b79631d75883c8481c4bb"
+        },
+        {
+          "name": "set-B-08.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor, one fixed window round the arrow's way, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 730 to 1191, y 581 to 853 of the page), sheet 2 of 4 of one run, frames 13 to 24 of 47: 0:43.73 to 0:43.92. In this run the arrow lies still to 0:43.62, it moves from 0:43.63 to 0:43.68, stands still from 0:43.70 to 0:44.03 and moves again from 0:44.05. By the page's design the arrow stands in its rest pose until the page lets it go, and from then it leans with the visitor's move, as it does on every move. Under a frame, P: the page holds the arrow, from the take to the last frame before the arrow follows the pointer again; \"follows\": the first frame in which the arrow follows the pointer again. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1372,
+          "bytes": 2081989,
+          "sha256": "900889de0dd4ba6c07546cba15ee9a64471ec3cd1226e7d76b6d16fa066a5b15"
+        },
+        {
+          "name": "set-B-09.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor, one fixed window round the arrow's way, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 730 to 1191, y 581 to 853 of the page), sheet 3 of 4 of one run, frames 25 to 36 of 47: 0:43.93 to 0:44.12. In this run the arrow lies still to 0:43.62, it moves from 0:43.63 to 0:43.68, stands still from 0:43.70 to 0:44.03 and moves again from 0:44.05. By the page's design the arrow stands in its rest pose until the page lets it go, and from then it leans with the visitor's move, as it does on every move. Under a frame, P: the page holds the arrow, from the take to the last frame before the arrow follows the pointer again; \"follows\": the first frame in which the arrow follows the pointer again. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1372,
+          "bytes": 2063434,
+          "sha256": "f88760892ca075aeb00d813b23ea631e0e086cde46300f6b2cce4e2eb82e0c35"
+        },
+        {
+          "name": "set-B-10.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor, one fixed window round the arrow's way, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 730 to 1191, y 581 to 853 of the page), sheet 4 of 4 of one run, frames 37 to 47 of 47: 0:44.13 to 0:44.30. In this run the arrow lies still to 0:43.62, it moves from 0:43.63 to 0:43.68, stands still from 0:43.70 to 0:44.03 and moves again from 0:44.05. By the page's design the arrow stands in its rest pose until the page lets it go, and from then it leans with the visitor's move, as it does on every move. Under a frame, P: the page holds the arrow, from the take to the last frame before the arrow follows the pointer again; \"follows\": the first frame in which the arrow follows the pointer again. Under a frame, M: the visitor moved the mouse since the frame before it (no M: the hand rests).",
+          "width": 1399,
+          "height": 1372,
+          "bytes": 1892417,
+          "sha256": "22211b343bf194a59ab7aac50d9c1ec8d7baaa7394365de451a1e71b70b114c1"
+        }
+      ]
+    },
+    {
+      "set": "C",
+      "critic": "R4-3",
+      "groups": [
+        "port"
+      ],
+      "files": [
+        {
+          "name": "set-C-01.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the arrow goes into the ball and the visitor gets the flippers, the part of the picture round the arrow at 50% of the page's size: 1:37.55 to 1:37.92. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2151622,
+          "sha256": "4405a0c9e355a6ca0f0e475fd663f79b29d89041910b795c0c488edbc989b6e4"
+        },
+        {
+          "name": "set-C-02.png",
+          "heading": "Consecutive frames, 1/60 s apart, the ball's drop from the port, close: every frame from 6 frames before the ball first moves (1:39.22) to 24 frames after, one fixed window on the port's cup, its collar and the first stretch of the tube, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 1455 to 1799, y 292 to 886 of the page), sheet 1 of 4 of one run, frames 1 to 8 of 31: 1:39.12 to 1:39.23. The page's view moves 82 px down the page in these frames, so the port stands higher in the later ones. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1400,
+          "height": 1378,
+          "bytes": 2464569,
+          "sha256": "39aace6960b621db5e5458b91399a0da0935ba7fb045033c413c9ca527296308"
+        },
+        {
+          "name": "set-C-03.png",
+          "heading": "Consecutive frames, 1/60 s apart, the ball's drop from the port, close: every frame from 6 frames before the ball first moves (1:39.22) to 24 frames after, one fixed window on the port's cup, its collar and the first stretch of the tube, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 1455 to 1799, y 292 to 886 of the page), sheet 2 of 4 of one run, frames 9 to 16 of 31: 1:39.25 to 1:39.37. The page's view moves 82 px down the page in these frames, so the port stands higher in the later ones. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1400,
+          "height": 1378,
+          "bytes": 2473883,
+          "sha256": "fc1a0fa04a5897499141bf456ab9fd3f35a9b28d315bed4b3e205e4f631315c0"
+        },
+        {
+          "name": "set-C-04.png",
+          "heading": "Consecutive frames, 1/60 s apart, the ball's drop from the port, close: every frame from 6 frames before the ball first moves (1:39.22) to 24 frames after, one fixed window on the port's cup, its collar and the first stretch of the tube, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 1455 to 1799, y 292 to 886 of the page), sheet 3 of 4 of one run, frames 17 to 24 of 31: 1:39.38 to 1:39.50. The page's view moves 82 px down the page in these frames, so the port stands higher in the later ones. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1400,
+          "height": 1378,
+          "bytes": 2459430,
+          "sha256": "32f3d12f99b630aeef0fd2a9495cb8fc962ceb0328675f35ebeaac07d9d93247"
+        },
+        {
+          "name": "set-C-05.png",
+          "heading": "Consecutive frames, 1/60 s apart, the ball's drop from the port, close: every frame from 6 frames before the ball first moves (1:39.22) to 24 frames after, one fixed window on the port's cup, its collar and the first stretch of the tube, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 1455 to 1799, y 292 to 886 of the page), sheet 4 of 4 of one run, frames 25 to 31 of 31: 1:39.52 to 1:39.62. The page's view moves 82 px down the page in these frames, so the port stands higher in the later ones. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1400,
+          "height": 1378,
+          "bytes": 2251885,
+          "sha256": "a2780b5c69a1cdea37b8bfec2d8183d19a0a86da2df44b162c423abf287d3864"
+        },
+        {
+          "name": "set-C-06.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the ball, with the arrow sealed in it, leaves the port, the part of the picture round the arrow at 50% of the page's size: 1:39.17 to 1:39.53. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2211747,
+          "sha256": "c50cd3cc1194cb01b06398893bae424b62002919ba198a474b708dff5df63c0d"
+        }
+      ]
+    },
+    {
+      "set": "D",
+      "critic": "R4-4",
+      "groups": [
+        "bats"
+      ],
+      "files": [
+        {
+          "name": "set-D-01.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the gate's wire, its posts and both bats' tips, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 730 to 1191, y 802 to 1074 of the page), sheet 1 of 3 of one run, frames 1 to 12 of 36: 1:53.23 to 1:53.42. The ball is low in the mouth from 1:53.33 and goes back up from 1:53.57. The page's view moves in these frames, 9 px up the page from the first frame to 1:53.30, then 69 px down the page from there to the last frame, so the gate, its posts and the bats stand lower, then higher in the window as it goes. The window holds 20 px or more under the wire's lowest place in every frame. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1372,
+          "bytes": 3317133,
+          "sha256": "b7f8236e34c6fdb783ecf199437797b63c30626b8f0016c861a7a006d654762b"
+        },
+        {
+          "name": "set-D-02.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the gate's wire, its posts and both bats' tips, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 730 to 1191, y 802 to 1074 of the page), sheet 2 of 3 of one run, frames 13 to 24 of 36: 1:53.43 to 1:53.62. The ball is low in the mouth from 1:53.33 and goes back up from 1:53.57. The page's view moves in these frames, 9 px up the page from the first frame to 1:53.30, then 69 px down the page from there to the last frame, so the gate, its posts and the bats stand lower, then higher in the window as it goes. The window holds 20 px or more under the wire's lowest place in every frame. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1372,
+          "bytes": 3183109,
+          "sha256": "a4fab04a08cb46b01bf9bebd2a3a9fb7b0ae8be57c6cb2923dc63a8792057647"
+        },
+        {
+          "name": "set-D-03.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the gate's wire, its posts and both bats' tips, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 730 to 1191, y 802 to 1074 of the page), sheet 3 of 3 of one run, frames 25 to 36 of 36: 1:53.63 to 1:53.82. The ball is low in the mouth from 1:53.33 and goes back up from 1:53.57. The page's view moves in these frames, 9 px up the page from the first frame to 1:53.30, then 69 px down the page from there to the last frame, so the gate, its posts and the bats stand lower, then higher in the window as it goes. The window holds 20 px or more under the wire's lowest place in every frame. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1372,
+          "bytes": 3079268,
+          "sha256": "0e20ff62199af4f0fb39a8c830a81f5deaca3f3eb5c35df2b36d0e581b29b2e3"
+        },
+        {
+          "name": "set-D-04.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the visitor's flipper meets the ball and the ball goes off it, the part of the picture round the arrow's way at 27% of the page's size, sheet 1 of 2 of one run, frames 1 to 12 of 24: 2:06.23 to 2:06.60. The pack's visitor presses 2 steps after the page's cue and holds 10 steps. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3367657,
+          "sha256": "daf0469c394b4beed38311dbbc0edf4a9c04de1b444f7e7069d8bb30da0cb19e"
+        },
+        {
+          "name": "set-D-05.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the visitor's flipper meets the ball and the ball goes off it, the part of the picture round the arrow's way at 27% of the page's size, sheet 2 of 2 of one run, frames 13 to 24 of 24: 2:06.63 to 2:07.00. The pack's visitor presses 2 steps after the page's cue and holds 10 steps. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3417919,
+          "sha256": "98aad3a95d61e006cb189d0ae05ce1fb1f89b430e5850558e277355bef90813c"
+        },
+        {
+          "name": "set-D-06.png",
+          "heading": "Consecutive frames, 1/60 s apart, the blow of the sheets before once more, close: every frame from 5 frames before the blow (2:06.33) to 6 frames after, one fixed window that holds the ball in every frame, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 666 to 1127, y 277 to 871 of the page), sheet 1 of 2 of one run, frames 1 to 6 of 12: 2:06.25 to 2:06.33. The ball is whole in the window in every frame. The pack's visitor presses 2 steps after the page's cue and holds 10 steps. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1378,
+          "bytes": 3234575,
+          "sha256": "ee3785c459b203264fbfd05c41fe3e421b78ecd7c7e1f699c5a0e088d0dee819"
+        },
+        {
+          "name": "set-D-07.png",
+          "heading": "Consecutive frames, 1/60 s apart, the blow of the sheets before once more, close: every frame from 5 frames before the blow (2:06.33) to 6 frames after, one fixed window that holds the ball in every frame, at 100%: one pixel of the sheet is one pixel of the 1920 by 1080 page (x 666 to 1127, y 277 to 871 of the page), sheet 2 of 2 of one run, frames 7 to 12 of 12: 2:06.35 to 2:06.43. The ball is whole in the window in every frame. The pack's visitor presses 2 steps after the page's cue and holds 10 steps. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1378,
+          "bytes": 3283963,
+          "sha256": "55664d2615e8c2b5f5d0e3654a62743cb56c6486f4da0895bda2e0b6ded387ae"
+        }
+      ]
+    }
+  ]
+}

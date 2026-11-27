@@ -1,0 +1,23 @@
+{
+ "critic": "R5",
+ "score": 8,
+ "pass": false,
+ "model": "pplx_computer_glm_5_3_1009",
+ "set": "A: the whole site: the six pages at rest on one sheet, the screens with the controls, sheets across one visitor's visit through the live site, and the machine's tiers with the passage from one to the next",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-A-01.png",
+   "where": "page 5 of 6, Step 4: Submit at rest",
+   "what": "The small verification plate in the upper left and the detached Submit button near the bottom leave the center and right looking uncomposed. The live run makes the empty space useful once the machine appears, but at rest this is the one page that looks like parts are missing rather than a scene waiting to unfold.",
+   "fix": "Give the parked Submit button a shallow seat or a subtle mounting detail tied to the hardware that emerges, while keeping the space clear for the reveal."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-09.png",
+   "where": "top progress rail, from 2:27.87 to 2:30.38",
+   "what": "The first two numbered nodes disappear when the Submit encounter starts, leaving a bare rail to the left of nodes 3–5. The other application pages keep the full five-node rail, so this reads as missing UI rather than part of the mechanical transformation.",
+   "fix": "Keep the five nodes visible, or show the missing nodes physically detaching so the change reads as part of the encounter."
+  }
+ ]
+}
