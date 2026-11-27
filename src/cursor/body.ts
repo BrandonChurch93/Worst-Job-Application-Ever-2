@@ -49,7 +49,7 @@ export const LED = { most: 0.61, knee: 0.42, rate: 12.5, thrown: 0.12, longest: 
 // Through a page turn the visitor's arrow lies on its page, leaving and arriving, at the height it stands at, and goes over with it: the pose says `rides` and the view lays it in the slab's plane. `follow` is how fast it goes to that height.
 // `fall` is how it comes down from more than `clear` above what it stands on when nothing threw it: it walked off a raised thing.
 export const HOVER = { follow: 30, clear: 20, fall: 14000 }
-// Under a visitor's hand, after a bolt's hit: once the hold is over the laid back pose is let go, and the arrow rights itself on the spring `lean`, which does not swing past upright, while it is brought back to the hand. Its own speed on that way neither leans it nor tips it into a dive. `over` seconds after the hit the body's own springs have it again.
+// Under a visitor's hand, after a bolt's hit: once the hold is over the laid back pose is let go, and the arrow rights itself on the spring `lean`, which does not swing past upright, while it is brought back to where the hand's spring would have had it, had no bolt thrown it, so that it joins a moving hand's path at the hand's own lag and speed. Its own speed on that way neither leans it nor tips it into a dive. `over` seconds after the hit the body's own springs have it again.
 export const TAIL = { lean: { k: 1600, c: 80 }, over: 0.25 }
 // The principles every move gets by itself: a pull back against the way it sets off, a stretch along the way while it travels, a squash where it stops.
 const MOVE = { off: 60, pull: 3, tip: 2.6, long: 0.3, per: 5200, land: 4.8 }
@@ -194,6 +194,7 @@ interface State {
   drawn?: number
   // Under a visitor's hand alone: the seconds since a bolt's hit, while its tail runs.
   tail?: number
+  ghost?: { x: number; y: number; vx: number; vy: number }
 }
 
 const fresh = (x: number, y: number): State => ({
@@ -315,7 +316,10 @@ export class CursorBody {
         s.vx -= vx
         s.vy -= vy
         s.shove = { x: s.x, y: s.y, t: 0 }
-        if (this.hand) s.tail = dt
+        if (this.hand) {
+          s.tail = dt
+          s.ghost = { x: s.x - (vx / d) * HIT.shove, y: s.y - (vy / d) * HIT.shove, vx: s.vx, vy: s.vy }
+        }
         s.dir = vx < -40 ? -1 : vx > 40 ? 1 : s.dir
       }
     }
@@ -485,6 +489,15 @@ export class CursorBody {
       if (this.hand && u > 0 && s.reaction === 'recoil') s.reaction = null
       if (this.hand && u >= 1) s.thrown = 0
       const k = u * u * (3 - 2 * u)
+      const g = this.hand ? s.ghost : undefined
+      if (g) {
+        g.vx += (HAND.stiff * (tx - g.x) - HAND.damp * g.vx) * dt
+        g.vy += (HAND.stiff * (ty - g.y) - HAND.damp * g.vy) * dt
+        g.x += g.vx * dt
+        g.y += g.vy * dt
+        tx = g.x
+        ty = g.y
+      }
       s.vx = (s.shove.x + (tx - s.shove.x) * k - s.x) / dt
       s.vy = (s.shove.y + (ty - s.shove.y) * k - s.y) / dt
       const speed = Math.hypot(s.vx, s.vy)

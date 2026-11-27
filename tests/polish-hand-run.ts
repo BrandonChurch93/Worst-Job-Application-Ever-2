@@ -93,7 +93,11 @@ export function visit(seconds: number, untilIndex = 99): Visit {
 }
 
 // A second stage that had the kept hand up to the frame `from` and has `own` from there. Rows run from `lead` frames before `from` for `frames` frames after it.
-export function fork(v: Visit, from: number, frames: number, own: (step: number, last: Pointer) => Pointer, lead = 0): Row[] {
+export const fork = (v: Visit, from: number, frames: number, own: (step: number, last: Pointer) => Pointer, lead = 0): Row[] => forked(v, from, frames, own, lead).rows
+
+export interface Told { name: string; frame: number; page: string }
+
+export function forked(v: Visit, from: number, frames: number, own: (step: number, last: Pointer) => Pointer, lead = 0): { rows: Row[]; events: Told[]; stage: Stage } {
   const at = from * PER
   const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: new Forked(v.log, at, own) })
   const first = (from - lead) * PER
@@ -110,7 +114,7 @@ export function fork(v: Visit, from: number, frames: number, own: (step: number,
     const k = s.step - 1
     rows.push(rowOf(s, i, k < at ? v.log[k]! : own(k - at, v.log[at - 1]!), hit))
   }
-  return rows
+  return { rows, events: s.events.filter((e) => e.step >= first).map((e) => ({ name: e.name, frame: Math.floor(e.step / PER), page: e.page })), stage: s }
 }
 
 // A hand that lies still where it was, and one that strokes `by` over `frames` frames from where it was.
