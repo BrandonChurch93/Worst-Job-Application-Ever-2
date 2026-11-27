@@ -187,8 +187,8 @@ function play(first: PlayMode): void {
     }
     window.addEventListener('pointerdown', unlock, { capture: true })
     window.addEventListener('keydown', unlock, { capture: true })
-    void import('./audio/index').then(({ makeSound }) => {
-      sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/` })
+    void Promise.all([import('./audio/index'), import('./ui/said')]).then(([{ makeSound }, { makeCaption }]) => {
+      sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/`, caption: makeCaption })
       if (!flowing()) sound.stop()
       if (touched) void sound.unlock()
     })

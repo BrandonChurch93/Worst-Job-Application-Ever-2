@@ -1,6 +1,6 @@
 // The narrator's rules as plain arithmetic on times, so the site and the tests share them.
 // A line never interrupts another. A live line keeps its distance from every other line. A line that would be late is not said.
-// On the live site every line starts at its event or not at all, and a line of the film is said once in a visit.
+// On the live site a line is said once in a run. A line whose event comes while another is spoken waits for its end and the gap, and is taken back if its moment ends first.
 export interface Booking { id: string; kind: 'beat' | 'live'; group: string; start: number; end: number }
 
 export interface NarratorRules { minGap: number; lineGap: number; beatLate: number; liveLate: number }
@@ -55,12 +55,12 @@ export class Narrator {
   }
 
   // A live line starts as soon as nothing is said and the gap since the last line is kept. If that is later than it may wait, it is not spoken at all.
-  live(now: number, id: string, group: string, seconds: number, wait: number = this.rules.liveLate): Booking | null {
-    let start = now
+  live(now: number, id: string, group: string, seconds: number, wait: number = this.rules.liveLate, gap: number = this.rules.minGap, from: number = now): Booking | null {
+    let start = Math.max(now, from)
     let after = ''
     this.why = null
-    for (const b of this.bookings(now)) if (b.start <= start && b.end + this.rules.minGap > start) {
-      start = b.end + this.rules.minGap
+    for (const b of this.bookings(now)) if (b.start <= start && b.end + gap > start) {
+      start = b.end + gap
       after = b.id
     }
     if (start - now > wait + 1e-9) {
@@ -86,14 +86,14 @@ export class Narrator {
   }
 }
 
-export interface LiveAsk { id: string; group: string; seconds: number; wait: number; page: string | null; once: boolean }
+// gap: the silence kept after the line before, the kit's gap when none is given. from: the line starts no sooner than this.
+export interface LiveAsk { id: string; group: string; seconds: number; page: string | null; until: string[]; gap?: number; from?: number }
 
-// The lines of a visit to the live site. A line of the film is said once in a visit. When its trigger happens while the narrator may not speak,
-// it is not said then and stays owed: it is asked for again each time its trigger happens, until it is said or its page is left.
-// A line that is booked belongs to the page it was set off on, and is given up when that page is left before it began.
+// The lines of a run of the live site. Each is asked for once, when its event comes: it starts at once, or after the line before it and the gap.
+// A line that waits belongs to its moment: an event that ends the moment, or a turn or a skip of its page, takes it back before it began. A line that has begun is left to end.
 export class LiveDesk {
   private spent = new Set<string>()
-  private waiting = new Map<Booking, string>()
+  private waiting = new Map<Booking, { page: string | null; until: string[] }>()
   private current: string | null = null
 
   constructor(readonly narrator: Narrator, readonly pageOfLine: Record<string, string>) {}
@@ -103,11 +103,28 @@ export class LiveDesk {
   isSpent(id: string): boolean { return this.spent.has(id) }
 
   ask(now: number, a: LiveAsk): Booking | null {
-    if (a.once && this.spent.has(a.id)) return null
-    const b = this.narrator.live(now, a.id, a.group, a.seconds, a.wait)
-    if (b && a.once) this.spent.add(a.id)
-    if (b && a.page !== null) this.waiting.set(b, a.page)
+    if (this.spent.has(a.id)) return null
+    this.spent.add(a.id)
+    const b = this.narrator.live(now, a.id, a.group, a.seconds, Infinity, a.gap, a.from)
+    if (b) this.waiting.set(b, { page: a.page, until: a.until })
     return b
+  }
+
+  private takeBack(now: number, gone: (w: { page: string | null; until: string[] }) => boolean): Booking[] {
+    const out: Booking[] = []
+    for (const [b, w] of [...this.waiting]) {
+      if (b.end <= now) this.waiting.delete(b)
+      else if (gone(w) && this.narrator.cancel(now, b)) {
+        this.waiting.delete(b)
+        out.push(b)
+      }
+    }
+    return out
+  }
+
+  // An event of the stage on a page: the lines whose moment it ends, and which have not begun, are taken back.
+  ended(now: number, page: string, name: string): Booking[] {
+    return this.takeBack(now, (w) => w.page === page && w.until.includes(name))
   }
 
   // The stage is on this page now. If it was on another, that one is left.
@@ -117,21 +134,18 @@ export class LiveDesk {
     return from !== null && from !== page ? this.leave(now, from) : []
   }
 
-  // A page is left, by its end or by a skip. Its lines that wait are taken back and its lines of the film are never said afterwards.
+  // A page is left, by its end or by a skip. Its lines that wait are taken back and its lines are not said afterwards in this run.
   leave(now: number, page: string): Booking[] {
     for (const [id, p] of Object.entries(this.pageOfLine)) if (p === page) this.spent.add(id)
-    const out: Booking[] = []
-    for (const [b, p] of [...this.waiting]) {
-      if (b.end <= now) this.waiting.delete(b)
-      else if (p === page && this.narrator.cancel(now, b)) {
-        this.waiting.delete(b)
-        out.push(b)
-      }
-    }
-    return out
+    return this.takeBack(now, (w) => w.page === page)
   }
 
-  // Everything that waits is forgotten. What was said in this visit stays said.
+  // A new run of the site: the careers page is on screen again. Every line may be said once more.
+  restart(): void {
+    this.spent.clear()
+  }
+
+  // Everything that waits is forgotten. What was said in this run stays said.
   clear(): void {
     this.waiting.clear()
   }

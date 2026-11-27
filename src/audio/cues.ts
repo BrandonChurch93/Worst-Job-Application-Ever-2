@@ -142,7 +142,10 @@ export const newEventCues: Record<string, string> = {
   'vacuum-slip': 'ball-drop',           // file to come: vacuum-slip, 0.35
   'vacuum-lose': 'scoop-kick',          // file to come: vacuum-gulp, 0.5
   'frenzy-on': 'flasher',               // file to come: pin-frenzy, 2.4
-  'loot': 'coins'                       // file to come: pin-coins, 0.9
+  'loot': 'coins',                      // file to come: pin-coins, 0.9
+  // the narrator's script, change note 003: the fight music comes in on a phrase of line 7. A stand-in, the old loop; nothing new is made.
+  'boss-music': 'boss-loop',
+  'music-in': 'boss-loop'
 }
 
 export const newSilent: string[] = [
@@ -154,7 +157,12 @@ export const newSilent: string[] = [
   'volume-sign',                        // file to come: volume-sign, 0.5
   'field-next',
   'vacuum-on',                          // file to come: vacuum-roar, 3.0, can loop
-  'frenzy-off'
+  'frenzy-off',
+  // the events that only carry a line of the narrator
+  'candidate-sensed',
+  'resume-received',
+  'boss-formed',
+  'boss-turn'
 ]
 
 // Events named by a prefix: strike:<layout id>:<n> beside every strike of the pinball table, n 1 soft, 2 hard, 3 frenzy.
@@ -177,103 +185,46 @@ export const stopEvents: Record<string, string[]> = {
   'letter-drop': ['hold-music']
 }
 
-// An event that starts a second sound beside its own. Addendum 001: the fight music runs under the boss battle from boss.unfold to boss.collapse.
-// The boss starts to unfold on the event unfold; power-down, the start of the collapse, stops the loop.
-export const alsoStarts: Record<string, string[]> = {
-  'unfold': ['boss-loop']
-}
+// An event that starts a second sound beside its own. None does now: the fight music comes in on the phrase of the narrator's line 7 that names it
+// (change note 003), by the event boss-music of the stage or the narrator's own mark music-in; power-down, the start of the collapse, stops the loop.
+export const alsoStarts: Record<string, string[]> = {}
 
 // Cues that repeat until they are stopped.
 export const loopCues: string[] = ['room-tone', 'shredder', 'boss-loop']
 
-// What sets each live line of the narrator off. The keys are the keys of liveOnly in content/narration.json.
-// call: the site asks for the line by name, when a control of the site is pressed.
-// idle is a call the site no longer makes: only a clock could set it off, and no line is set off by a clock (change note 002, item 1).
-export type LiveTrigger =
-  | { on: 'hit' }
-  | { on: 'event'; event: string; once?: boolean }
-  | { on: 'call' }
-
-export const liveTriggers: Record<string, LiveTrigger> = {
-  'idle': { on: 'call' },
-  'hit': { on: 'hit' },
-  'slowTyping': { on: 'event', event: 'slow-typing' },
-  'realKeyboard': { on: 'event', event: 'real-keyboard' },
-  'tugLost': { on: 'event', event: 'tug-lost' },
-  'pinball.flipper': { on: 'event', event: 'flipper', once: true },
-  'boss.verify': { on: 'event', event: 'checkbox' },
-  'boss.slow': { on: 'event', event: 'boss-slow' },
-  'skip': { on: 'event', event: 'skip' },
-  'watchFilm': { on: 'call' }
-}
+// No line is only on the live site any more (change note 003). The table is kept, empty, for the tools that read it.
+export const liveTriggers: Record<string, { on: string; event?: string }> = {}
 
 // The page each unit of the film is on the live site. An event of the stage carries the page it happened on.
 export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'step1': 'step1', 'step2': 'step2', 'pinball': 'step3', 'boss': 'step4', 'decision': 'step5' }
 
-// What sets each line of the film off on the live site, by beat and by the line's place in the beat.
-// event: an event of that name on the line's page, or one of the names in or. gag: the stage reporting that the line's own beat is reached; no line uses it now.
-export type FilmLive =
-  | { on: 'event'; event: string; or?: string[] }
-  | { on: 'gag' }
+// The narrator's script (change note 003): every line that is spoken, on the live site and in the film, by beat and by the line's place in the beat.
+// The page of a line is the page of the unit its key starts with.
+// event: the event of the stage, on the line's page, that sets it off; null for the line said when sound is allowed with its page on screen (in the film: at the start of its beat).
+// until: the events on that page that end the line's moment. A line that has not started by then is not said. A turn or a skip of its page ends every moment.
+// after: the line is a second part, said straight after that line with the gap between two lines of a beat.
+// mark: an event the narrator itself gives out when that phrase of the line starts (-1 is the last phrase); the cue of that event is played then.
+export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string } }
 
-export const filmLive: Record<string, FilmLive> = {
-  'marketing.stroll.0': { on: 'event', event: 'step' },
-  'marketing.perks.0': { on: 'event', event: 'card-flip' },
-  'step1.firstName.0': { on: 'event', event: 'keyboard-rise' },
-  'step1.firstName.1': { on: 'event', event: 'bolt-hit-cursor' },
-  'step1.email.0': { on: 'event', event: 'slab-drop' },
-  'step1.tug.0': { on: 'event', event: 'arms-out' },
-  'step2.dial.0': { on: 'event', event: 'dial-wind' },
-  'step2.crank.0': { on: 'event', event: 'volume-sign', or: ['crank-turn'] },
-  'pinball.seal.0': { on: 'event', event: 'ball-seal' },
-  'pinball.launch.0': { on: 'event', event: 'plunger' },
-  'pinball.lobby.0': { on: 'event', event: 'carpet-roll' },
-  'pinball.coffee.0': { on: 'event', event: 'bumper' },
-  'pinball.replyAll.0': { on: 'event', event: 'inbox-take' },
-  'pinball.fired.0': { on: 'event', event: 'firehouse-take' },
-  'pinball.drain.0': { on: 'event', event: 'drain' },
-  'boss.verify.0': { on: 'event', event: 'checkbox' },
-  'boss.slabs.0': { on: 'event', event: 'slab-fire' },
-  'boss.lastStand.0': { on: 'event', event: 'session-expired' },
-  'decision.letter.0': { on: 'event', event: 'stamp' },
-  'decision.metrics.0': { on: 'event', event: 'count-run' }
+export const spoken: Record<string, SpokenRow> = {
+  'marketing.stroll.0': { event: null, until: [] },
+  'step1.firstName.0': { event: 'candidate-sensed', until: ['field-done'] },
+  'step1.shredded.0': { event: 'resume-received', until: [] },
+  'step2.crank.0': { event: 'volume-sign', until: ['field-done'] },
+  'step2.crank.1': { event: 'crank-full', until: ['field-done'] },
+  'pinball.seal.0': { event: 'vacuum-on', until: ['ball-seal'] },
+  'boss.verify.0': { event: 'checkbox', until: ['boss-formed'] },
+  'boss.unfold.0': { event: 'boss-formed', until: ['turret-rise', 'power-down'], mark: { phrase: -1, event: 'music-in' } },
+  'boss.unfold.1': { event: null, after: 'boss.unfold.0', until: ['turret-rise', 'power-down'] },
+  'decision.letter.0': { event: 'stamp', until: [] }
 }
 
-export const filmLiveKey = (beat: string, index: number): string => `${beat}.${index}`
+// The event of the stage that also stands for a mark of the narrator: its cue is played only when the narrator has not booked the line that gives the mark.
+export const markStandsFor: Record<string, string> = { 'boss-music': 'music-in' }
 
-// The lines of the film an event of the stage sets off: those tied to that event whose beat is on the page the event came from.
-export function filmKeysForEvent(name: string, page: string, unitOfBeat: (beat: string) => string | undefined): string[] {
-  const out: string[] = []
-  for (const [key, t] of Object.entries(filmLive)) {
-    if (t.on !== 'event' || (t.event !== name && !t.or?.includes(name))) continue
-    const unit = unitOfBeat(key.slice(0, key.lastIndexOf('.')))
-    if (unit !== undefined && unitPage[unit] === page) out.push(key)
-  }
-  return out
-}
-
-// The lines of the film a beat sets off when the stage reports that it is reached.
-export function filmKeysForGag(beat: string): string[] {
-  return Object.entries(filmLive).filter(([key, t]) => t.on === 'gag' && key.slice(0, key.lastIndexOf('.')) === beat).map(([key]) => key)
-}
-
-// Live lines that belong to no page: a page turn does not take them back.
-export const pagelessLive: string[] = ['idle', 'skip', 'watchFilm']
-
-// The live lines an event of the stage sets off, in table order.
-export function liveKeysFor(e: { name: string; hitsCursor: boolean }, seen: Set<string>): string[] {
-  const out: string[] = []
-  for (const [key, t] of Object.entries(liveTriggers)) {
-    if (t.on === 'hit' && e.hitsCursor) out.push(key)
-    if (t.on === 'event' && t.event === e.name) {
-      if (t.once) {
-        if (seen.has(key)) continue
-        seen.add(key)
-      }
-      out.push(key)
-    }
-  }
-  return out
+// The lines an event of the stage on a page sets off, in table order.
+export function spokenKeysFor(name: string, page: string): string[] {
+  return Object.entries(spoken).filter(([key, r]) => r.event === name && unitPage[key.slice(0, key.indexOf('.'))] === page).map(([key]) => key)
 }
 
 // The level class of each cue: room tone is quietest, then the walking and the small ticks, then the mechanisms, then the hits and slams.

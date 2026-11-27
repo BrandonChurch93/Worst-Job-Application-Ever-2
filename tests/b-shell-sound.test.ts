@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
-import { cueOfEvent, eventCues, filmLive, filmLineId, liveLineId, liveTriggers, newEventCues, newSilent, pageAfter, prefixCues, quietPage, quietPageCues, unitPage } from '../src/audio/cues'
+import { cueOfEvent, eventCues, filmLineId, newEventCues, newSilent, pageAfter, prefixCues, quietPage, quietPageCues, unitPage } from '../src/audio/cues'
+import { standIns } from '../src/audio/standin'
 import { dehum } from '../src/audio/dsp'
 import { LIVE, TONE } from '../src/audio/levels'
 import { mixFilm, quietSpans, type FilmEvent } from '../src/audio/mix'
@@ -74,8 +75,7 @@ const LINE = 2
 const CUES = ['step.1', 'card-flip', 'button-press', 'page-turn', 'key-press.1', 'checkbox']
 function site(): { index: SoundIndex; files: Map<string, Uint8Array> } {
   const enc = new TextEncoder()
-  const ids = Object.keys(filmLive).map(idOf)
-  for (const [name, list] of Object.entries(narration.liveOnly as Record<string, unknown>)) if (Array.isArray(list)) list.forEach((_, i) => ids.push(liveLineId(name, i)))
+  const ids = [...standIns().values()].map((l) => l.id)
   const parts = CUES.map((c) => enc.encode(c))
   const pack = new Uint8Array(parts.reduce((n, p) => n + p.length, 0))
   const sfx: SoundIndex['sfx'] = []
@@ -343,50 +343,12 @@ describe('item 9: the hum after a restart', () => {
     const raw = Float32Array.from({ length: TONE_SAMPLES }, (_, i) => 0.1 * Math.sin((2 * Math.PI * 100 * i) / 48000))
     const energy = (x: Float32Array) => x.reduce((a, v) => a + v * v, 0)
     for (const c of ctx.decoded.get('room-tone')!) expect(energy(c)).toBeLessThan(energy(raw) / 10)
-    expect(energy(ctx.decoded.get(idOf('marketing.stroll.0'))![0]!)).toBeCloseTo(energy(raw), 6)
+    expect([...ctx.decoded.keys()].filter((id) => id.startsWith('line.'))).toEqual([])
     expect(energy(ctx.decoded.get('step.1')![0]!)).toBeCloseTo(energy(raw), 6)
   })
 })
 
 describe('item 1: the voiceover on events', () => {
-  it('hangs every line of the film on an event of its page, and no line on a beat or a clock', () => {
-    for (const [key, t] of Object.entries(filmLive)) expect(t.on, key).toBe('event')
-    expect(filmLive['step2.dial.0']).toEqual({ on: 'event', event: 'dial-wind' })
-    expect(filmLive['step2.crank.0']).toEqual({ on: 'event', event: 'volume-sign', or: ['crank-turn'] })
-    for (const [name, t] of Object.entries(liveTriggers)) expect(['hit', 'event', 'call'], name).toContain(t.on)
-    const index = readFileSync(path.join(root, 'src', 'audio', 'index.ts'), 'utf8')
-    expect(index.includes("trigger('idle')")).toBe(false)
-    const main = readFileSync(path.join(root, 'src', 'main.ts'), 'utf8')
-    expect(/trigger\('idle'\)/.test(main)).toBe(false)
-    for (const k of Object.keys(LIVE.waitSeconds)) expect(LIVE.waitSeconds[k]!, k).toBe(LIVE.liveLateSeconds)
-    expect(LIVE.liveLateSeconds).toBe(0.4)
-  })
-
-  it('in a storm of every event on every page starts each line within 0.4 s of the event that set it off, never two at once, with the gap of silence after each', async () => {
-    const { s, ctx } = await ready()
-    const names = [...new Set([...Object.values(filmLive).flatMap((t) => (t.on === 'event' ? [t.event, ...(t.or ?? [])] : [])), ...Object.values(liveTriggers).flatMap((t) => (t.on === 'event' ? [t.event] : [])), 'step', 'bumper', 'page-turn', 'skip'])]
-    const pages = Object.keys(pageAfter)
-    let seed = 99
-    const next = () => {
-      seed = (seed * 1103515245 + 12345) % 2147483648
-      return seed / 2147483648
-    }
-    let now = 0
-    for (let i = 0; i < 6000; i++) {
-      now += next() * 0.9
-      ctx.currentTime = now
-      const r = next()
-      if (r < 0.02) s.trigger('skip')
-      else s.event(ev(names[Math.floor(next() * names.length)]!, pages[Math.floor(next() * pages.length)]!, next() < 0.3), 'live')
-      s.quiet(next() * 40)
-    }
-    const spoken = s.log().filter((e) => e.what === 'spoken')
-    expect(spoken.length).toBeGreaterThan(20)
-    for (const e of spoken) expect(e.start! - e.at, e.line).toBeLessThanOrEqual(LIVE.liveLateSeconds + 0.006)
-    const heard = ctx.sources.filter((x) => x.buffer!.id.startsWith('line.') && x.stopped === null).map((x) => x.started!).sort((a, b) => a - b)
-    for (let i = 1; i < heard.length; i++) expect(heard[i]! - (heard[i - 1]! + LINE)).toBeGreaterThanOrEqual(gap - 1e-6)
-    expect(spoken.some((e) => e.line.startsWith('line.live.idle'))).toBe(false)
-  })
 
   it('has a cue or a silence for every event the units of change 002 named, and matches the strikes of the table by their prefix', () => {
     const boss = ['shield-glance', 'shot-round', 'boss-move', 'cannon-tell', 'cannon-fire', 'flatten', 'peel-up', 'boss-heal', 'bullet-fire', 'turret-rise', 'turret-lock', 'big-tell', 'big-fire', 'arena-break', 'turret-off']
@@ -410,22 +372,6 @@ describe('the words of the narrator on screen while they are spoken', () => {
   it('shows a line as it is read: the pause mark is not shown', () => {
     expect(sayable('A valid email. / Rejected. / The system / is working as designed.', '/')).toBe('A valid email. Rejected. The system is working as designed.')
     for (const list of Object.values(narration.film as Record<string, { text: string }[]>)) for (const l of list) expect(sayable(l.text, narration.pauseMark).includes(narration.pauseMark)).toBe(false)
-  })
-
-  it('gets each line from the engine with its words and the start and end of its voice on the sound clock', async () => {
-    const { s, ctx } = await ready()
-    ctx.currentTime = 10
-    expect(s.said()).toEqual({ now: 10, lines: [] })
-    s.event(ev('keyboard-rise', 'step1'), 'live')
-    const line = narration.film['step1.firstName'][0].text
-    expect(s.said()).toEqual({ now: 10, lines: [{ id: idOf('step1.firstName.0'), words: sayable(line, narration.pauseMark), start: 10, end: 10 + LINE }] })
-    const voice = plays(ctx, idOf('step1.firstName.0'))[0]!
-    expect(voice.started).toBe(10)
-    ctx.currentTime = 10 + LINE - 0.01
-    expect(captionAt(s.said())!.id).toBe(idOf('step1.firstName.0'))
-    ctx.currentTime = 10 + LINE
-    expect(captionAt(s.said())).toBeNull()
-    expect(s.said().lines).toEqual([])
   })
 
   it('is shown from the start of the voice to its end and at no other time', () => {

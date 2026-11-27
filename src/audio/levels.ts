@@ -65,11 +65,10 @@ export const LIVE = {
   elementLoadSeconds: 5,
   // A line of a beat may start this late and still be spoken. Later than that it is dropped.
   beatLateSeconds: 1.5,
-  // A live line is about what happened just now, so it may wait this long and no longer.
+  // The wait the narrator's arithmetic allows a live line when it is given none. The script's lines are given no limit: they wait for the line before and the gap.
   liveLateSeconds: 0.4,
-  // Every line of the live site starts at its event or not at all: it may start this long after it and no later, by what set it off. No line waits for a clock.
-  // film: a line of the film, said once in a visit at its own trigger. The others are the keys of liveOnly in content/narration.json.
-  waitSeconds: { 'film': 0.4, 'hit': 0.4, 'idle': 0.4, 'slowTyping': 0.4, 'realKeyboard': 0.4, 'tugLost': 0.4, 'pinball.flipper': 0.4, 'boss.verify': 0.4, 'boss.slow': 0.4, 'skip': 0.4, 'watchFilm': 0.4 } as Record<string, number>,
+  // Whether the effects are held down under a line that is a silent stand-in. Off: nothing is heard to make room for. Turn it on when the lines are recorded.
+  standInDucks: false,
   // The same cue set off twice within this time sounds once.
   sameCueSeconds: 0.012,
   // A loop that nothing stops ends by itself after this long.

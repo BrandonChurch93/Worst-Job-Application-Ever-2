@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { PITCH_CENTS, allCues, cueClass, cueOfEvent, eventCues, extraCues, filmLineId, liveKeysFor, liveLineId, liveTriggers, loopCues, pickVariant, silentEvents, stopEvents, variantAt, variantId } from '../src/audio/cues'
+import { PITCH_CENTS, allCues, cueClass, cueOfEvent, eventCues, extraCues, filmLineId, liveLineId, liveTriggers, loopCues, spoken, spokenKeysFor, unitPage, pickVariant, silentEvents, stopEvents, variantAt, variantId } from '../src/audio/cues'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
 const cfg: any = read('config', 'showcase.json')
@@ -88,44 +88,6 @@ describe('the cues the build added', () => {
     const after = allCues(held).map((c) => c.id)
     expect(after.length).toBe(new Set(after).size)
     expect(after.slice().sort()).toEqual(before.slice().sort())
-  })
-})
-
-describe('the triggers of the live lines', () => {
-  it('has a trigger for every key of liveOnly and no other', () => {
-    expect(liveKeys.length).toBeGreaterThan(0)
-    expect(Object.keys(liveTriggers).sort()).toEqual(liveKeys.slice().sort())
-  })
-
-  it('sets each line off as the brief says', () => {
-    expect(liveTriggers['hit']).toEqual({ on: 'hit' })
-    expect(liveTriggers['slowTyping']).toEqual({ on: 'event', event: 'slow-typing' })
-    expect(liveTriggers['realKeyboard']).toEqual({ on: 'event', event: 'real-keyboard' })
-    expect(liveTriggers['tugLost']).toEqual({ on: 'event', event: 'tug-lost' })
-    expect(liveTriggers['pinball.flipper']).toEqual({ on: 'event', event: 'flipper', once: true })
-    expect(liveTriggers['boss.verify']).toEqual({ on: 'event', event: 'checkbox' })
-    expect(liveTriggers['boss.slow']).toEqual({ on: 'event', event: 'boss-slow' })
-    expect(liveTriggers['skip']).toEqual({ on: 'event', event: 'skip' })
-    expect(liveTriggers['idle']).toEqual({ on: 'call' })
-    expect(liveTriggers['watchFilm']).toEqual({ on: 'call' })
-  })
-
-  it('speaks of a hit on any event that hits the cursor', () => {
-    expect(liveKeysFor({ name: 'bolt-hit-cursor', hitsCursor: true }, new Set())).toEqual(['hit'])
-    expect(liveKeysFor({ name: 'slab-drop', hitsCursor: true }, new Set())).toEqual(['hit'])
-    expect(liveKeysFor({ name: 'bolt-hit', hitsCursor: false }, new Set())).toEqual([])
-  })
-
-  it('speaks of the flipper on the first flipper of a visit only', () => {
-    const seen = new Set<string>()
-    expect(liveKeysFor({ name: 'flipper', hitsCursor: false }, seen)).toEqual(['pinball.flipper'])
-    expect(liveKeysFor({ name: 'flipper', hitsCursor: false }, seen)).toEqual([])
-    expect(liveKeysFor({ name: 'flipper', hitsCursor: false }, new Set())).toEqual(['pinball.flipper'])
-  })
-
-  it('names the lines by beat and place', () => {
-    expect(filmLineId('step1.tug', 1)).toBe('line.step1.tug.1')
-    expect(liveLineId('boss.slow', 0)).toBe('line.live.boss.slow.0')
   })
 })
 

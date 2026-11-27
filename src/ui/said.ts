@@ -61,7 +61,7 @@ export function makeSaid(): Said {
   }
 }
 
-// What the narrator says is shown while it is said: one soft panel at the bottom centre of the page, over every page alike.
+// What the narrator says is shown while it is said, phrase by phrase: one soft panel at the bottom centre of the page, over every page alike.
 // The sound engine owns the clock. The caption reads it at each drawn frame, so the words come on at the frame the voice starts and go at the frame it ends.
 
 // A line of content/narration.json as it is read: the pause mark is never spoken and never shown.

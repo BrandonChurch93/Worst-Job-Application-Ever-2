@@ -1,0 +1,363 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { makeSound, type SoundIndex } from '../src/audio/index'
+import { cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysFor, unitPage } from '../src/audio/cues'
+import { LIVE } from '../src/audio/levels'
+import { draftFilm, keyPage, phraseStart, phrasesOf, standIns, wordCount } from '../src/audio/standin'
+
+const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
+const cfg: any = read('config', 'showcase.json')
+const narration: any = read('content', 'narration.json')
+const gap: number = cfg.audio.liveNarratorMinGapSeconds
+const lineGap: number = cfg.audio.lineGapSeconds
+const wps: number = cfg.audio.narratorMaxWordsPerSecond
+const mark: string = narration.pauseMark
+
+class Param {
+  value = 1
+  setValueAtTime(v: number) { this.value = v }
+  linearRampToValueAtTime(v: number) { this.value = v }
+  cancelScheduledValues() { return }
+}
+class Node { connect() { return } }
+class Gain extends Node { gain = new Param() }
+class Source extends Node {
+  buffer: { id: string } | null = null
+  loop = false
+  playbackRate = new Param()
+  started: number | null = null
+  stopped: number | null = null
+  onended: (() => void) | null = null
+  start(t: number) { this.started = t }
+  stop(t: number) { this.stopped = t }
+}
+let made: FakeContext[] = []
+class FakeContext {
+  currentTime = 0
+  state = 'suspended'
+  destination = new Node()
+  sources: Source[] = []
+  constructor() { made.push(this) }
+  resume() { this.state = 'running'; return Promise.resolve() }
+  suspend() { this.state = 'suspended'; return Promise.resolve() }
+  close() { return Promise.resolve() }
+  createGain() { return new Gain() }
+  createStereoPanner() { return Object.assign(new Node(), { pan: new Param() }) }
+  createBufferSource() { const s = new Source(); this.sources.push(s); return s }
+  decodeAudioData(bytes: ArrayBuffer, ok: (b: unknown) => void) {
+    ok({ id: new TextDecoder().decode(new Uint8Array(bytes)), numberOfChannels: 1 })
+    return Promise.resolve()
+  }
+}
+
+// Ten lines of eight words each, so each lasts eight words at the config's pace. The words stand for the script; the engine is given them in place of the files.
+const eight = (a: string) => `${a} one two ${mark} three four five ${mark} six seven`
+const film = Object.fromEntries(['marketing.stroll', 'step1.firstName', 'step1.shredded', 'pinball.seal', 'boss.verify'].map((b) => [b, [{ at: 0, text: eight(b) }]]))
+film['step2.crank'] = [{ at: 0, text: eight('crank') }, { at: 0.5, text: eight('top') }]
+const drafts = { 'boss.unfold': [{ at: 0, text: eight('beaten') }, { at: 0.5, text: eight('ready') }], 'decision.letter': [{ at: 0, text: eight('stamp') }] }
+const L = 8 / wps
+const id = (key: string) => `line.${key}`
+
+const CUES = ['button-press', 'checkbox', 'step.1']
+function site(): { index: SoundIndex; files: Map<string, Uint8Array> } {
+  const enc = new TextEncoder()
+  const parts = CUES.map((c) => enc.encode(c))
+  const pack = new Uint8Array(parts.reduce((n, p) => n + p.length, 0))
+  const sfx: SoundIndex['sfx'] = []
+  let at = 0
+  parts.forEach((p, i) => {
+    pack.set(p, at)
+    sfx.push({ id: CUES[i]!, at, bytes: p.length, seconds: 0.2, mime: 'audio/flac' })
+    at += p.length
+  })
+  const index: SoundIndex = {
+    version: 1, pack: { file: 'sfx.bin', bytes: pack.length }, sfx,
+    loops: ['room-tone', 'boss-loop'].map((x) => ({ id: x, file: `${x}.flac`, seconds: 8, mime: 'audio/flac' })),
+    lines: Object.keys(spoken).map((key) => ({ id: id(key), file: `${id(key)}.mp3`, seconds: 2, mime: 'audio/mpeg' }))
+  }
+  const files = new Map<string, Uint8Array>([['sfx.bin', pack]])
+  for (const f of [...index.loops, ...index.lines]) files.set(f.file, enc.encode(f.id))
+  return { index, files }
+}
+
+let fetched: string[] = []
+let hold: Promise<void> | null = null
+beforeEach(() => {
+  made = []
+  fetched = []
+  hold = null
+  vi.stubGlobal('window', { AudioContext: FakeContext, setTimeout, clearTimeout })
+})
+afterEach(() => vi.unstubAllGlobals())
+
+const make = () => {
+  const s0 = site()
+  vi.stubGlobal('fetch', async (url: string) => {
+    const name = url.replace('./audio/', '')
+    fetched.push(name)
+    if (hold) await hold
+    const bytes = s0.files.get(name)
+    if (!bytes) return { ok: false, status: 404 }
+    return { ok: true, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.length) }
+  })
+  return makeSound({ base: './audio/', index: s0.index, script: { film, drafts } })
+}
+// A site whose sound is allowed while the visitor is already on a page: the unlock is over before the first event.
+const ready = async (page: string | null = null) => {
+  const s = make()
+  if (page !== null) s.page(page)
+  await s.unlock()
+  return { s, ctx: made[made.length - 1]! }
+}
+const ev = (name: string, page: string) => ({ name, step: 0, page, x: 960, y: 540, hitsCursor: false })
+type Api = ReturnType<typeof make>
+const booked = (s: Api) => s.log().filter((e) => e.what === 'spoken').map((e) => [e.line, e.start])
+const back = (s: Api) => s.log().filter((e) => e.what === 'taken back').map((e) => e.line)
+const linesAt = (s: Api) => [...new Set(s.said().lines.map((l) => l.line))]
+const loops = (ctx: FakeContext, name: string) => ctx.sources.filter((x) => x.buffer?.id === name)
+
+describe('change note 003: the table of the script', () => {
+  it('has the eight spoken moments in ten lines, each on its event, and no line that only the live site has', () => {
+    expect(Object.fromEntries(Object.entries(spoken).map(([k, r]) => [k, r.event]))).toEqual({
+      'marketing.stroll.0': null, 'step1.firstName.0': 'candidate-sensed', 'step1.shredded.0': 'resume-received', 'step2.crank.0': 'volume-sign', 'step2.crank.1': 'crank-full',
+      'pinball.seal.0': 'vacuum-on', 'boss.verify.0': 'checkbox', 'boss.unfold.0': 'boss-formed', 'boss.unfold.1': null, 'decision.letter.0': 'stamp'
+    })
+    expect(liveTriggers).toEqual({})
+    for (const key of Object.keys(spoken)) expect(Object.values(unitPage), key).toContain(keyPage(key))
+    expect(keyPage('marketing.stroll.0')).toBe(quietPage)
+    expect(spoken['boss.unfold.1']!.after).toBe('boss.unfold.0')
+    expect(Object.values(spoken).filter((r) => r.event === null && r.after === undefined).length).toBe(1)
+  })
+
+  it('sets a line off by its event on its own page only', () => {
+    expect(spokenKeysFor('checkbox', 'step4')).toEqual(['boss.verify.0'])
+    expect(spokenKeysFor('checkbox', 'step2')).toEqual([])
+    expect(spokenKeysFor('stamp', 'step5')).toEqual(['decision.letter.0'])
+    expect(spokenKeysFor('stamp', 'step1')).toEqual([])
+    expect(spokenKeysFor('turret-rise', 'step1')).toEqual([])
+  })
+
+  it('names the moment the fight music comes in: the last phrase of the first part of line 7, with a cue, and the event of the stage that stands for it', () => {
+    expect(spoken['boss.unfold.0']!.mark).toEqual({ phrase: -1, event: 'music-in' })
+    expect(cueOfEvent('music-in')).toBe('boss-loop')
+    expect(cueOfEvent('boss-music')).toBe('boss-loop')
+    expect(markStandsFor['boss-music']).toBe('music-in')
+    expect(cueOfEvent('unfold')).toBe('unfold')
+  })
+})
+
+describe('change note 003: a line is a silent stand-in with its caption', () => {
+  it('lasts its words divided by audio.narratorMaxWordsPerSecond, and shows each phrase for its share of the words', () => {
+    const p = phrasesOf(`Ahh. ${mark} Here we have ${mark} another job applicant.`, mark, wps)
+    expect(p.map((x) => x.words)).toEqual(['Ahh.', 'Here we have', 'another job applicant.'])
+    expect(p.map((x) => [x.from, x.to])).toEqual([[0, 1 / wps], [1 / wps, 4 / wps], [4 / wps, 7 / wps]])
+    expect(wordCount('  two   words ')).toBe(2)
+    const all = standIns(film, drafts)
+    expect([...all.keys()]).toEqual(Object.keys(spoken))
+    for (const l of all.values()) {
+      expect(l.seconds, l.key).toBeCloseTo(wordCount(l.words) / wps, 12)
+      expect(l.words.includes(mark), l.key).toBe(false)
+      expect(l.phrases[0]!.from).toBe(0)
+      for (let i = 1; i < l.phrases.length; i++) expect(l.phrases[i]!.from).toBe(l.phrases[i - 1]!.to)
+      expect(l.phrases[l.phrases.length - 1]!.to).toBe(l.seconds)
+    }
+    expect(phraseStart(all.get('boss.unfold.0')!, -1)).toBeCloseTo(6 / wps, 12)
+  })
+
+  it('marks as a draft every line that comes from the drafts file and no other', () => {
+    const all = standIns(film, drafts)
+    expect([...all.values()].filter((l) => l.draft).map((l) => l.key)).toEqual(['boss.unfold.0', 'boss.unfold.1', 'decision.letter.0'])
+    const real = standIns()
+    const settled = narration.film as Record<string, unknown[]>
+    for (const l of real.values()) expect(l.draft, l.key).toBe(settled[l.beat]?.[l.index] === undefined)
+    for (const l of real.values()) if (l.draft) expect(draftFilm()[l.beat]?.[l.index]?.text, l.key).toBe(l.text)
+  })
+
+  it('fetches and plays no take of any line, and holds the effects down under none', async () => {
+    const { s, ctx } = await ready('step4')
+    expect(fetched.filter((f) => f.startsWith('line.'))).toEqual([])
+    ctx.currentTime = 10
+    s.event(ev('checkbox', 'step4'), 'live')
+    expect(booked(s)).toEqual([[id('boss.verify.0'), 10]])
+    expect(ctx.sources.filter((x) => x.buffer?.id.startsWith('line.'))).toEqual([])
+    expect(LIVE.standInDucks).toBe(false)
+  })
+
+  it('gives the caption one phrase at a time, from the start of the line to its end, and says which line is a draft', async () => {
+    const { s, ctx } = await ready('step5')
+    ctx.currentTime = 20
+    s.event(ev('stamp', 'step5'), 'live')
+    const said = s.said()
+    expect(said.lines.map((l) => l.id)).toEqual([0, 1, 2].map((k) => `${id('decision.letter.0')}#${k}`))
+    expect(said.lines.map((l) => l.words)).toEqual(['stamp one two', 'three four five', 'six seven'])
+    expect(said.lines.map((l) => l.start)).toEqual([20, 20 + 3 / wps, 20 + 6 / wps])
+    expect(said.lines[2]!.end).toBeCloseTo(20 + L, 12)
+    expect(said.lines.every((l) => l.draft && l.line === id('decision.letter.0'))).toBe(true)
+    ctx.currentTime = 20 + L + 0.01
+    expect(s.said().lines).toEqual([])
+  })
+})
+
+describe('change note 003: line 1, the moment sound is allowed on the careers page', () => {
+  it('says nothing before the first click or key press, and line 1 at once when the unlock is over with the careers page on screen', async () => {
+    const s = make()
+    s.page('marketing')
+    s.event(ev('step', 'marketing'), 'live')
+    expect(made.length).toBe(0)
+    expect(s.said().lines).toEqual([])
+    await s.unlock()
+    expect(booked(s)).toEqual([[id('marketing.stroll.0'), 0]])
+    expect(linesAt(s)).toEqual([id('marketing.stroll.0')])
+  })
+
+  it('says line 1 when the first press is the Apply button and the page has turned before the sound is loaded, and lets it run through the turn', async () => {
+    const s = make()
+    s.page('marketing')
+    let open = () => undefined as void
+    hold = new Promise<void>((done) => { open = done })
+    const unlocked = s.unlock()
+    s.event(ev('button-press', 'marketing'), 'live')
+    s.event(ev('page-turn', 'marketing'), 'live')
+    s.page('step1')
+    open()
+    await unlocked
+    const ctx = made[0]!
+    expect(booked(s)).toEqual([[id('marketing.stroll.0'), ctx.currentTime]])
+    ctx.currentTime = 1
+    s.event(ev('keyboard-rise', 'step1'), 'live')
+    expect(back(s)).toEqual([])
+    expect(linesAt(s)).toEqual([id('marketing.stroll.0')])
+  })
+
+  it('says no line 1 when the site is opened on a later step', async () => {
+    const { s } = await ready('step3')
+    expect(booked(s)).toEqual([])
+  })
+
+  it('says line 1 again at once after the restart, and after the last line and the gap when that one is still spoken', async () => {
+    const { s, ctx } = await ready('marketing')
+    ctx.currentTime = 100
+    s.event(ev('page-turn', 'marketing'), 'live')
+    s.page('step5')
+    s.event(ev('stamp', 'step5'), 'live')
+    ctx.currentTime = 102
+    s.event(ev('page-turn', 'step5'), 'live')
+    s.page('marketing')
+    expect(booked(s).slice(1)).toEqual([[id('decision.letter.0'), 100], [id('marketing.stroll.0'), 100 + L + gap]])
+    ctx.currentTime = 300
+    s.event(ev('page-turn', 'marketing'), 'live')
+    s.page('step5')
+    ctx.currentTime = 310
+    s.event(ev('page-turn', 'step5'), 'live')
+    s.page('marketing')
+    expect(booked(s).slice(3)).toEqual([[id('marketing.stroll.0'), 310]])
+  })
+})
+
+describe('change note 003: no line talks over another', () => {
+  it('makes a line whose event comes while another is spoken wait for its end and the gap, and says it then if its moment still stands', async () => {
+    const { s, ctx } = await ready('marketing')
+    ctx.currentTime = 4
+    s.event(ev('page-turn', 'marketing'), 'live')
+    ctx.currentTime = 4.5
+    s.event(ev('candidate-sensed', 'step1'), 'live')
+    expect(booked(s)).toEqual([[id('marketing.stroll.0'), 0], [id('step1.firstName.0'), L + gap]])
+    ctx.currentTime = L + gap + 0.1
+    expect(linesAt(s)).toEqual([id('step1.firstName.0')])
+    expect(back(s)).toEqual([])
+    s.event(ev('field-done', 'step1'), 'live')
+    expect(back(s)).toEqual([])
+    expect(linesAt(s)).toEqual([id('step1.firstName.0')])
+  })
+
+  it('drops the waiting line when its moment ends first: the event that ends it, a turn of its page or a skip', async () => {
+    for (const end of ['field-done', 'page-turn', 'skip']) {
+      const { s, ctx } = await ready('marketing')
+      ctx.currentTime = 4
+      s.event(ev('page-turn', 'marketing'), 'live')
+      ctx.currentTime = 4.5
+      s.event(ev('candidate-sensed', 'step1'), 'live')
+      ctx.currentTime = 6
+      s.event(ev(end, 'step1'), 'live')
+      expect(back(s), end).toEqual([id('step1.firstName.0')])
+      ctx.currentTime = L + gap + 0.1
+      expect(s.said().lines, end).toEqual([])
+      s.event(ev('candidate-sensed', 'step1'), 'live')
+      expect(booked(s).length, end).toBe(2)
+    }
+  })
+
+  it('says each line once in a run, however often its event comes, and never two at a time over a storm of every event', async () => {
+    const { s, ctx } = await ready('marketing')
+    const names = [...new Set(Object.values(spoken).flatMap((r) => (r.event ? [r.event] : [])))]
+    const pages = ['marketing', 'step1', 'step2', 'step3', 'step4', 'step5']
+    let t = 0
+    for (const page of pages) {
+      for (let n = 0; n < 40; n++) {
+        t += 0.7
+        ctx.currentTime = t
+        for (const name of names) s.event(ev(name, page), 'live')
+      }
+      t += 0.7
+      ctx.currentTime = t
+      s.event(ev('page-turn', page), 'live')
+    }
+    const gone = new Set(s.log().filter((e) => e.what === 'taken back').map((e) => `${e.line}@${e.start}`))
+    const heard = s.log().filter((e) => e.what === 'spoken' && !gone.has(`${e.line}@${e.start}`)).sort((a, b) => a.start! - b.start!)
+    expect(new Set(heard.map((e) => e.line)).size).toBe(heard.length)
+    expect(heard.length).toBeGreaterThanOrEqual(6)
+    for (let i = 1; i < heard.length; i++) {
+      const parts = heard[i]!.line === id('boss.unfold.1')
+      expect(heard[i]!.start! - (heard[i - 1]!.start! + heard[i - 1]!.seconds!), heard[i]!.line).toBeGreaterThanOrEqual((parts ? lineGap : gap) - 1e-9)
+    }
+  })
+})
+
+describe('change note 003: line 7 and the fight music', () => {
+  it('says the second part straight after the first and brings the music in at the start of the phrase that names it, once', async () => {
+    const { s, ctx } = await ready('step4')
+    ctx.currentTime = 50
+    s.event(ev('boss-formed', 'step4'), 'live')
+    expect(booked(s)).toEqual([[id('boss.unfold.0'), 50], [id('boss.unfold.1'), 50 + L + lineGap]])
+    const music = loops(ctx, 'boss-loop')
+    expect(music.map((x) => x.started)).toEqual([50 + 6 / wps])
+    ctx.currentTime = 50 + 6 / wps
+    s.event(ev('boss-music', 'step4'), 'live')
+    expect(loops(ctx, 'boss-loop').length).toBe(1)
+    ctx.currentTime = 70
+    s.event(ev('power-down', 'step4'), 'live')
+    expect(music[0]!.stopped).not.toBeNull()
+  })
+
+  it('says nothing of line 7 that has not started once the turrets rise, takes its music back with it, and lets the event of the stage bring the music in then', async () => {
+    const { s, ctx } = await ready('step4')
+    ctx.currentTime = 50
+    s.event(ev('checkbox', 'step4'), 'live')
+    ctx.currentTime = 51
+    s.event(ev('boss-formed', 'step4'), 'live')
+    expect(booked(s).slice(1)).toEqual([[id('boss.unfold.0'), 50 + L + gap], [id('boss.unfold.1'), 50 + L + gap + L + lineGap]])
+    ctx.currentTime = 52
+    s.event(ev('turret-rise', 'step4'), 'live')
+    expect(back(s).sort()).toEqual([id('boss.unfold.0'), id('boss.unfold.1')])
+    expect(loops(ctx, 'boss-loop').every((x) => x.stopped !== null)).toBe(true)
+    const before = loops(ctx, 'boss-loop').length
+    s.event(ev('boss-music', 'step4'), 'live')
+    expect(loops(ctx, 'boss-loop').length).toBe(before + 1)
+  })
+})
+
+describe('change note 003: the same lines in the film on the site', () => {
+  it('says line 1 at the start of its beat and not when the film is joined later in it, and every other line on its event with the gap of the film', async () => {
+    const { s, ctx } = await ready()
+    ctx.currentTime = 30
+    s.beat('marketing.stroll', 'film', 0)
+    expect(booked(s)).toEqual([[id('marketing.stroll.0'), 30]])
+    ctx.currentTime = 30 + L - 1
+    s.event(ev('candidate-sensed', 'step1'), 'film')
+    expect(booked(s)[1]).toEqual([id('step1.firstName.0'), 30 + L + lineGap])
+    const late = await ready()
+    late.s.beat('marketing.stroll', 'film', LIVE.beatLateSeconds + 1)
+    expect(booked(late.s)).toEqual([])
+  })
+})
