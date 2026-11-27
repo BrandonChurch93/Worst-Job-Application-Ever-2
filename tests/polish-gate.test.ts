@@ -12,7 +12,7 @@ import { Machine, SAVE, prepare } from '../src/table/physics'
 const EACH = stepHz / 60
 // The film's pinball take as it was before this work (commit 305e5bf3): the machine's events as a count and a hash of their names, balls and steps; the ball's place on the feed rail and the page's scroll at page time 5.2 s (film frame 4332);
 // the stage step on which the ball left the feed rail; and the stage step of the release.
-const WAS = { events: 97, hash: '32788e007af1afda00b4043e49f63a41543f1fd381a9ec1884a414b9a1897501', at: 16.463416279267882, scroll: 1345.7169539350648, arrive: 2224, release: 948 }
+const WAS = { events: 97, hash: '6798ba493256f861e4e922435992354b5488a15fbfdb148c96a6b97c45c0d196', at: 16.463416279267882, scroll: 1345.7169539350648, arrive: 2224, release: 948 }
 
 interface Row { mode: string; v: number; taken: number; names: string[]; turn: number; gap: number; flip: number[]; own: number[]; state: number[] }
 

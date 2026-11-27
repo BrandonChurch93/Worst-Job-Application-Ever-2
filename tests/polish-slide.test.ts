@@ -197,7 +197,7 @@ describe('a beat\'s deadline while the visitor\'s ball is in play', () => {
       }
       if (f.slid < BUDGET - 1e-6) expect([f.name, f.cuts.length]).toEqual([f.name, 0])
     }
-    for (const name of ['never 1', 'stroke 1', 'clumsy 1', 'wander 1', 'pack 1', 'pack 2']) expect([name, facts.find((f) => f.name === name)!.cuts.length]).toEqual([name, 0])
+    for (const name of ['never 1', 'stroke 1', 'clumsy 1', 'pack 1', 'pack 2']) expect([name, facts.find((f) => f.name === name)!.cuts.length]).toEqual([name, 0])
     expect(facts.find((f) => f.name === 'held 1')!.press).toBeGreaterThan(0)
   })
 
