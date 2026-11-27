@@ -92,13 +92,14 @@ describe('the machine page\'s own moments in the film', () => {
     for (let i = 1; i < close.length; i++) expect(Math.abs(close[i]!.turn - close[i - 1]!.turn)).toBeLessThan(0.25)
   })
 
-  it('lets the ball run down the screen and brings the view after it', () => {
+  it('lets the ball run down the screen, past 640 px of it 22 frames after the release, and brings the view after it', () => {
     const y = (t: number): number => at(t).ball![1]! - at(t).scroll
     expect(y(3.3)).toBeLessThan(530)
-    expect(y(3.5)).toBeGreaterThan(640)
-    expect(y(3.8)).toBeGreaterThan(740)
-    expect(y(3.8)).toBeLessThan(900)
-    expect(y(4.3)).toBeLessThan(y(3.8) - 80)
+    expect(y(3.7 - 2 / 60)).toBeLessThan(640)
+    expect(y(3.7 - 1 / 60)).toBeGreaterThan(640)
+    expect(y(4)).toBeGreaterThan(740)
+    expect(y(4)).toBeLessThan(900)
+    expect(y(4.3)).toBeLessThan(y(4) - 80)
     const view = between(3.3, 4.6).map((r) => r.scroll)
     for (let i = 1; i < view.length; i++) expect(view[i]! - view[i - 1]!).toBeLessThan(26)
     expect(Math.abs(at(6).scroll - WAS_SCROLL)).toBeLessThan(0.01)

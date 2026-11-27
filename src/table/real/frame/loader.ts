@@ -26,6 +26,27 @@ export const dipOf = (t: number): number => {
 // The port's release, when the hold ends and the ball is let go: the ring is thrown open by `wide` of its size for the answer's two frames and springs back as `dipOf` does, and the rim of light flashes. The page gives the seconds since it as the ring's second number, for `over` seconds.
 export const LET = { wide: 0.04, over: ANSWER.over }
 // How bright the flash of the rim stands, 1 to 0.
+// The tube's answer where the ball strikes its wall at one of the feed tube's first two bends: the wall the ball runs on next gives `px` px at the bend, less with the distance and nothing `reach` px away. It holds that for `lead` seconds, so the frame drawn next shows all of it, swings back past its rest once in `swing` seconds and is still `over` seconds after the strike. The page gives the seconds since each strike as the ring's third and fourth numbers.
+export const KNOCK = { px: 5.2, reach: 150, lead: 1 / 60, over: 6 / 60, swing: 5 / 60 }
+export const knockOf = (t: number): number => {
+  if (t < 0 || t >= KNOCK.over) return 0
+  const u = Math.max(0, t - KNOCK.lead)
+  return Math.cos((Math.PI * 2 * u) / KNOCK.swing) * (1 - u / (KNOCK.over - KNOCK.lead))
+}
+// Each of the two bends on the page, in px, and the way its wall is pushed: square to the run that leaves it, away from the run that comes.
+export const BENDS = [2, 3].map((i) => {
+  const p = railOf('feed').points
+  const way = (a: number[], b: number[]): [number, number] => {
+    const d = Math.hypot(b[0]! - a[0]!, b[1]! - a[1]!)
+    return [(b[0]! - a[0]!) / d, (b[1]! - a[1]!) / d]
+  }
+  const come = way(p[i - 1]!, p[i]!)
+  const go = way(p[i]!, p[i + 1]!)
+  const along = come[0] * go[0] + come[1] * go[1]
+  const push = [come[0] - go[0] * along, come[1] - go[1] * along]
+  const d = Math.hypot(push[0]!, push[1]!)
+  return { x: p[i]![0]! * BALL, y: p[i]![1]! * BALL, push: [push[0]! / d, push[1]! / d] as [number, number] }
+})
 export const flashOf = (t: number): number => (t < 0 || t >= ANSWER.over ? 0 : Math.exp(-t / ANSWER.fade) * (1 - t / ANSWER.over))
 interface Ring { x: number; y: number; at: number; runs: { mesh: THREE.Mesh; from: number; rest: Float32Array }[] }
 const CUP: [number, number, number] = [0.013, 0.0145, 0.017]
@@ -470,7 +491,53 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
 }
 
 // The rim of light in the port breathes slowly: it is the one thing on the resting page that moves. Both ports answer a contact: the page gives each ring the seconds since it.
+interface Knocked { mesh: THREE.Mesh | null; at: number[]; index: number[]; share: number[]; rest: number[] }
+
+function knocked(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
+  const v = ctx.byId.get('loader.ring')?.v
+  const amount = BENDS.map((_, i) => KNOCK.px * knockOf(v?.[2 + i] ?? -1))
+  let k = o.userData.knock as Knocked | undefined
+  if (!k) {
+    if (amount.every((a) => a === 0)) return
+    const found = o.getObjectByName(`loader.tube.${z.id}`)
+    k = { mesh: found instanceof THREE.Mesh ? found : null, at: BENDS.map(() => 0), index: [], share: [], rest: [] }
+    o.userData.knock = k
+    if (k.mesh) {
+      const a = (k.mesh.geometry.getAttribute('position') as THREE.BufferAttribute).array as Float32Array
+      const mid = BENDS.map((b) => local(z, b.x, b.y))
+      for (let i = 0; i < a.length; i += 3) {
+        const share = mid.map((m) => {
+          const u = Math.max(0, 1 - Math.hypot(a[i]! - m[0], a[i + 1]! - m[1]) / KNOCK.reach)
+          return u * u * (3 - 2 * u)
+        })
+        if (share.every((w) => w === 0)) continue
+        k.index.push(i)
+        k.share.push(...share)
+        k.rest.push(a[i]!, a[i + 1]!)
+      }
+    }
+  }
+  if (!k.mesh || amount.every((a, i) => a === k.at[i])) return
+  k.at = amount
+  const pos = k.mesh.geometry.getAttribute('position') as THREE.BufferAttribute
+  const a = pos.array as Float32Array
+  const n = BENDS.length
+  for (let j = 0; j < k.index.length; j++) {
+    let x = k.rest[j * 2]!
+    let y = k.rest[j * 2 + 1]!
+    for (let b = 0; b < n; b++) {
+      const by = amount[b]! * k.share[j * n + b]!
+      x += BENDS[b]!.push[0] * by
+      y -= BENDS[b]!.push[1] * by
+    }
+    a[k.index[j]!] = x
+    a[k.index[j]! + 1] = y
+  }
+  pos.needsUpdate = true
+}
+
 export function loaderPose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
+  if (z.id === 'first' || z.id === 'marquee') knocked(o, z, ctx)
   if (z.id !== 'first' && z.id !== 'last') return
   const t = ctx.byId.get(z.id === 'first' ? 'loader.ring' : 'outlet.ring')?.v?.[0] ?? 9
   const rest = z.id === 'first' ? GLOW.low + (GLOW.high - GLOW.low) * (0.5 - 0.5 * Math.cos((ctx.time * Math.PI * 2) / GLOW.seconds)) : GLOW.low
