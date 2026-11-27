@@ -1,0 +1,214 @@
+{
+  "stamp": {
+    "role": "R4",
+    "round": 24,
+    "unit": "site",
+    "commit": "b3e4f90220158fe00becaa34a91ff4ab2f9d0048",
+    "tier": "live-high",
+    "engineHash": "e68903f7837ca4c7",
+    "sharedHash": "6b07439bda532919",
+    "pageHashes": {
+      "step1": "9aed1d9639574f01",
+      "step2": "1ba00f8ab331f145",
+      "marketing": "8cd6ae0941a08122",
+      "pinball": "7a828333ccfa0fb2",
+      "boss": "ed18eab775dec297",
+      "decision": "7268eb60f24ef748"
+    }
+  },
+  "format": "png",
+  "longEdgeMostPx": 1400,
+  "filesMostPerCritic": 10,
+  "leftOut": [],
+  "limitTook": [],
+  "missing": [],
+  "sets": [
+    {
+      "set": "A",
+      "critic": "R4-1",
+      "groups": [
+        "pages"
+      ],
+      "files": [
+        {
+          "name": "set-A-01.png",
+          "heading": "Consecutive frames, 1/30 s apart, as a visitor's pointer walks the arrow across the page: 0:00.87 to 0:01.23",
+          "width": 1399,
+          "height": 1210,
+          "bytes": 1967225,
+          "sha256": "f5f6fd209a7b7bda26f985d89bc97f6cfb6da085104ae6e701904bdce8c60be5"
+        },
+        {
+          "name": "set-A-02.png",
+          "heading": "Consecutive frames, 1/30 s apart, of one page turn, sheet 1 of 3 of one run, frames 1 to 12 of 36: 1 frame of the old page lying flat, the old page swings away: 0:09.93 to 0:10.30",
+          "width": 1399,
+          "height": 1232,
+          "bytes": 2069444,
+          "sha256": "aa1972ec4d6878125eaadfce8daccfa386d41ccdcc396087575fbf3d055a4dd4"
+        },
+        {
+          "name": "set-A-03.png",
+          "heading": "Consecutive frames, 1/30 s apart, of one page turn, sheet 2 of 3 of one run, frames 13 to 24 of 36: the old page swings away, the new page stands on its edge from 0:10.45, and closes: 0:10.33 to 0:10.70",
+          "width": 1399,
+          "height": 1232,
+          "bytes": 1258666,
+          "sha256": "3881520f7ef82c194d6f63d7af8cff241b73a6acc64044136d1cd4dc27a34379"
+        },
+        {
+          "name": "set-A-04.png",
+          "heading": "Consecutive frames, 1/30 s apart, of one page turn, sheet 3 of 3 of one run, frames 25 to 36 of 36: the new page goes on closing, it seats at 0:10.75, it has stopped by 0:10.97, the last 4 frames come after the stop. The visitor does not move the mouse in these frames, the page's arrow moves from 0:10.97: 0:10.73 to 0:11.10",
+          "width": 1399,
+          "height": 1254,
+          "bytes": 1757795,
+          "sha256": "5fb94587323c68b29a2ea645ff05bc86d9735fb4f7424170cc1763273da4e66a"
+        },
+        {
+          "name": "set-A-05.png",
+          "heading": "Consecutive frames, 1/30 s apart, as a turret's bolt hits the arrow, the visitor presses no button and no key in these frames, the part of the picture round the arrow at its real size: 0:14.88 to 0:15.25",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2240944,
+          "sha256": "b41490540a95100e8fbea766a35ed97aae303471217231e1cb19e1dea79db408"
+        },
+        {
+          "name": "set-A-06.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the visitor's arrow presses a key of the page's keyboard and lets it go, the part of the picture round the arrow at its real size, sheet 1 of 2 of one run, frames 1 to 12 of 24: 0:15.55 to 0:15.92. In this run the button is held from the frame 0:15.68 to 0:15.88, and again in the frame 0:16.32. Under a frame, \"down\": the visitor holds the mouse button in it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 2135637,
+          "sha256": "e17b35d12efc51a5960c7b85805bf6555d9b9d5c6c91dc3515031d52acb56696"
+        },
+        {
+          "name": "set-A-07.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the visitor's arrow presses a key of the page's keyboard and lets it go, the part of the picture round the arrow at its real size, sheet 2 of 2 of one run, frames 13 to 24 of 24: 0:15.95 to 0:16.32. In this run the button is held from the frame 0:15.68 to 0:15.88, and again in the frame 0:16.32. Under a frame, \"down\": the visitor holds the mouse button in it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 2161131,
+          "sha256": "52fa05150f273bc4e2352483dbdc4945d450300e9d1a7bd566c54121e5f2a5fc"
+        }
+      ]
+    },
+    {
+      "set": "B",
+      "critic": "R4-2",
+      "groups": [
+        "arrow"
+      ],
+      "files": [
+        {
+          "name": "set-B-01.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the page takes the arrow from the visitor, the part of the picture round the arrow at its real size: 0:30.30 to 0:30.67",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2119126,
+          "sha256": "adf43eff604e3784b292406c71a7af687979485675b5ee72e6b51f1e297e2fbf"
+        },
+        {
+          "name": "set-B-02.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor, the part of the picture round the arrow at its real size, sheet 1 of 4 of one run, frames 1 to 12 of 48: 0:42.53 to 0:42.72. In this run the arrow lies still to 0:42.62, it moves from 0:42.63 to 0:42.68, stands still from 0:42.70 to 0:43.03 and moves again from 0:43.05",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 1954040,
+          "sha256": "ff0b9670bf4d67a91a70bb10b57146caf4df15dd53f65d3755d16061312bc719"
+        },
+        {
+          "name": "set-B-03.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor, the part of the picture round the arrow at its real size, sheet 2 of 4 of one run, frames 13 to 24 of 48: 0:42.73 to 0:42.92. In this run the arrow lies still to 0:42.62, it moves from 0:42.63 to 0:42.68, stands still from 0:42.70 to 0:43.03 and moves again from 0:43.05",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 1952368,
+          "sha256": "b93a8af560d7792e926af36e462cdcc5c3f3f0c1ca5632332a1d78c1eaefc1f6"
+        },
+        {
+          "name": "set-B-04.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor, the part of the picture round the arrow at its real size, sheet 3 of 4 of one run, frames 25 to 36 of 48: 0:42.93 to 0:43.12. In this run the arrow lies still to 0:42.62, it moves from 0:42.63 to 0:42.68, stands still from 0:42.70 to 0:43.03 and moves again from 0:43.05",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 1941282,
+          "sha256": "0f9a9eaee3dce4158c6b197a644c416c95a9aa2cca3f64f09d61d30551031890"
+        },
+        {
+          "name": "set-B-05.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the page gives the arrow back to the visitor, the part of the picture round the arrow at its real size, sheet 4 of 4 of one run, frames 37 to 48 of 48: 0:43.13 to 0:43.32. In this run the arrow lies still to 0:42.62, it moves from 0:42.63 to 0:42.68, stands still from 0:42.70 to 0:43.03 and moves again from 0:43.05",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 1931619,
+          "sha256": "a84ce1fa6c090c6d63ba1a3db959d5625e3043c314d5b34bb34bcaba9f77115a"
+        }
+      ]
+    },
+    {
+      "set": "C",
+      "critic": "R4-3",
+      "groups": [
+        "machine"
+      ],
+      "files": [
+        {
+          "name": "set-C-01.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the arrow goes into the ball and the visitor gets the flippers, the part of the picture round the arrow at its real size: 1:36.40 to 1:36.77. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2148519,
+          "sha256": "dbbc69c5ebd1f31b55c27cd1a09829f8871cac8cd9602d0062e9ebc06eb41370"
+        },
+        {
+          "name": "set-C-02.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the ball, with the arrow sealed in it, leaves the port, the part of the picture round the arrow at its real size: 1:38.12 to 1:38.48. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1364,
+          "bytes": 2209340,
+          "sha256": "e6e681e0fb4aaa5393354c8e1741be3fc6c84b25c0e5197e989acd0169b9ec6e"
+        },
+        {
+          "name": "set-C-03.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the mouth, its gate and both bats at 100% of its size, sheet 1 of 3 of one run, frames 1 to 12 of 36: 1:52.23 to 1:52.42. The ball is low in the mouth from 1:52.33 and goes back up from 1:52.58. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3626057,
+          "sha256": "c8b16bbc9ad8ed9d4182dec85985530c994ddf3be1bd8ae2d0333a33d3b69df7"
+        },
+        {
+          "name": "set-C-04.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the mouth, its gate and both bats at 100% of its size, sheet 2 of 3 of one run, frames 13 to 24 of 36: 1:52.43 to 1:52.62. The ball is low in the mouth from 1:52.33 and goes back up from 1:52.58. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3600002,
+          "sha256": "1af2802a6b9a388af8bf69d502bd9101511a65940874f29887ea1ad3fa1cfb89"
+        },
+        {
+          "name": "set-C-05.png",
+          "heading": "Consecutive frames, 1/60 s apart, as the machine saves a ball lost between the bats, one fixed window on the mouth, its gate and both bats at 100% of its size, sheet 3 of 3 of one run, frames 25 to 36 of 36: 1:52.63 to 1:52.82. The ball is low in the mouth from 1:52.33 and goes back up from 1:52.58. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3673778,
+          "sha256": "77ac698d6fcc44d8647ebd4f7ad1e4d0d130e5d650f18f6c7864f447644e1e56"
+        },
+        {
+          "name": "set-C-06.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the visitor's flipper meets the ball and the ball goes off it, the part of the picture round the arrow's way at 54% of its size, sheet 1 of 2 of one run, frames 1 to 12 of 24: 2:05.23 to 2:05.60. The pack's visitor presses 2 steps after the page's cue and holds 10 steps. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3367019,
+          "sha256": "488d7865f5b4d3073bbe70e1be3b248717cbc5ca850e760a620b4cdf7e1d2b25"
+        },
+        {
+          "name": "set-C-07.png",
+          "heading": "Consecutive frames, 1/30 s apart, as the visitor's flipper meets the ball and the ball goes off it, the part of the picture round the arrow's way at 54% of its size, sheet 2 of 2 of one run, frames 13 to 24 of 24: 2:05.63 to 2:06.00. The pack's visitor presses 2 steps after the page's cue and holds 10 steps. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3418760,
+          "sha256": "e9e6ae707f8a12704f6418f918225cf42f700d90d6b72407ca359489e158be9e"
+        },
+        {
+          "name": "set-C-08.png",
+          "heading": "Consecutive frames, 1/60 s apart, the blow of the sheets before once more, close: one fixed window at its real size round where the ball is at 2:05.33: 2:05.25 to 2:05.43. The ball is not whole in the window in the frames 2:05.42, 2:05.43. The pack's visitor presses 2 steps after the page's cue and holds 10 steps. Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.",
+          "width": 1399,
+          "height": 1386,
+          "bytes": 3529160,
+          "sha256": "0cd3bf7a846dca424c7412b2c61c4bf48043372d1471f5f1ccf0e5956d86faf8"
+        }
+      ]
+    }
+  ]
+}
