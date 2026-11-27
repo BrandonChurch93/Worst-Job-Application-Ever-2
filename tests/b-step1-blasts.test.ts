@@ -4,7 +4,7 @@ import { stream } from '../src/core/random'
 import { pages } from '../src/pages'
 import { seatIndex, seats } from '../src/pages/step1/keyboard'
 import { BLAST, BOLT, TURRET } from '../src/pages/step1/turrets'
-import { Stage } from '../src/stage/stage'
+import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { Driver, DriverView, Pointer } from '../src/stage/types'
 
 const LETTERS = 'etaoinshrdlucmfwypvbgkqjxz'
@@ -71,7 +71,7 @@ export class Clumsy implements Driver {
   }
 }
 
-interface Run { fired: number; hits: number; seconds: number; done: boolean; letters: number }
+interface Run { fired: number; hits: number; seconds: number; done: boolean; letters: number; sensed: number; room: number }
 
 function run(seed: number, dodges: boolean): Run {
   const s = new Stage({ mode: 'live', flow: [{ page: 'step1' }, { page: 'step2' }], pages, driver: new Clumsy(seed, dodges), seed })
@@ -89,7 +89,8 @@ function run(seed: number, dodges: boolean): Run {
   const fired = s.events.filter((e) => e.name === 'bolt-fire').length
   const hits = s.events.filter((e) => e.name === 'bolt-hit-cursor').length
   const st = s.page.save() as { values: { name: string } }
-  return { fired, hits, seconds: done < 0 ? -1 : done - up, done: done >= 0, letters: st.values.name.length }
+  const sensed = s.events.filter((e) => e.name === 'candidate-sensed')
+  return { fired, hits, seconds: done < 0 ? -1 : done - up, done: done >= 0, letters: st.values.name.length, sensed: sensed.length, room: sensed.length > 0 ? done - sensed[0]!.step / stepHz : -1 }
 }
 
 const pick = (list: number[], share: number): number => [...list].sort((a, b) => a - b)[Math.min(list.length - 1, Math.floor(list.length * share))]!
@@ -130,4 +131,30 @@ describe('step 1: the blasts can be seen and dodged', () => {
       expect(hits / fired).toBeLessThan(0.5)
     })
   }
+})
+
+const LINE = 5.6
+
+describe('step 1: the one event of the narrator\'s line', () => {
+  it('fires candidate-sensed once in the film, on the step the turrets begin to rise, and leaves the line its 5.6 s before the Name is done', () => {
+    const s = new Stage({ mode: 'film', flow: filmFlow('step1'), pages, driver: new ScriptDriver(), film: filmOptions('step1') })
+    s.advance(32 * stepHz)
+    const mine = s.events.filter((e) => e.page === 'step1')
+    const sensed = mine.filter((e) => e.name === 'candidate-sensed')
+    const rise = mine.filter((e) => e.name === 'turret-rise')
+    const done = mine.filter((e) => e.name === 'field-done')
+    console.log(`film: candidate-sensed at ${(sensed[0]!.step / stepHz).toFixed(2)} s of the unit, the line over at ${(sensed[0]!.step / stepHz + LINE).toFixed(2)} s, the Name done at ${(done[0]!.step / stepHz).toFixed(2)} s`)
+    expect(sensed.length).toBe(1)
+    expect(rise.length).toBe(2)
+    expect(sensed[0]!.step).toBe(rise[0]!.step)
+    expect(done[0]!.step / stepHz - sensed[0]!.step / stepHz).toBeGreaterThan(LINE)
+    expect(sensed[0]!.step / stepHz + LINE).toBeLessThan(15)
+  })
+
+  it('fires it once on each of 200 live visits', () => {
+    const runs = Array.from({ length: 200 }, (_, i) => run(i + 1, false))
+    const room = runs.map((r) => r.room)
+    console.log(`live, 200 seeds: candidate-sensed once on ${runs.filter((r) => r.sensed === 1).length}; from it to the Name done: least ${pick(room, 0).toFixed(1)} s, median ${pick(room, 0.5).toFixed(1)} s; ${runs.filter((r) => r.room < LINE).length} of 200 visits have the Name done before a line of ${LINE} s is over`)
+    for (const r of runs) expect(r.sensed).toBe(1)
+  })
 })

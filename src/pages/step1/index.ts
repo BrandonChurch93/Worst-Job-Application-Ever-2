@@ -256,6 +256,7 @@ export function makePage(): PageLogic {
   const stepTurrets = (io: StepIo): void => {
     if (s.phase === 'name' && !s.armed && s.phaseTime >= TIMES.turretDelay) {
       s.armed = true
+      io.emit('candidate-sensed', (turrets.at[0].x + turrets.at[1].x) / 2, turrets.at[0].y, false)
       turrets.raise(io.emit)
     }
     const body = { x: io.cursor.x + BODY.x, y: io.cursor.y + BODY.y }

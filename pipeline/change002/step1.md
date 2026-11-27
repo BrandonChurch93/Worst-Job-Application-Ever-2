@@ -78,9 +78,13 @@ MEASURED (the film of `dc3296b8` and of this branch laid frame on frame, `/tmp/z
 Found on the live site: `node pipeline/change002/step1-continue.mjs before` walks a real mouse through step 1 by the page's hint, then moves it over and round Continue with no press and keeps all 86 frames. The fault: while the arrow is over the cap its lower half is hidden by it. The cause: `ground()` in `index.ts` gave the arrow the page's height, 0, under Continue, and the cap stands 14 px above the page, so the arrow's body went through the cap. The mend: over the cap (its tip or its body within 6 px of it) the ground is the cap's top, less the travel while it is pressed. `node pipeline/change002/step1-continue.mjs after` gives the same 86 frames after the mend.
 Other buttons of the page: Browse files stands in the drop zone of the Resume stage, whose ground is `resume.ground()` in the resume helper's file; UNKNOWN whether the arrow goes into that button, it was not looked at on frames.
 
+## The narrator's line 2 (change note 003)
+
+Decision 12. `turret-rise` is given twice, once for each turret, on the same step, and tests and the sound hold it so. The line needs one event given once, so the page gives a new one, `candidate-sensed`, on that same step, at the middle between the turrets (960, 892). MEASURED (`npx vitest run tests/b-step1-blasts.test.ts`): in the film once, at 3.02 s of the unit (17.02 s of the film, frame 1021); a line of 5.6 s is over at 8.62 s, the Name is done at 9.72 s, the Email beat begins at 15 s: no beat pays for it. On the live site once on each of 200 seeded visits; there the Name is done before 5.6 s are over on 94 of the 200 (least 1.5 s, median 5.8 s from the event to the Name done), so on the live site the line runs on into the Email field on about half the visits unless the shell cuts it. The moment is off the screen from the first `field-done` of the page (the Name's; the turrets go down with it).
+
 ## Events
 
-Given by the page: `keyboard-rise`, `key-press`, `turret-rise`, `bolt-fire`, `bolt-hit-cursor`, `sizzle`, `slow-typing`, `real-keyboard`, `email-error`, `slab-drop`, `button-press`, and new: `turret-load` (the tell: a turret locks and loads), `slab-shadow`, `keys-break`, `page-crack`, `field-done` (a stage is got through; twice in a run, at the Name field and at the Email field).
+Given by the page: `keyboard-rise`, `key-press`, `turret-rise`, `bolt-fire`, `bolt-hit-cursor`, `sizzle`, `slow-typing`, `real-keyboard`, `email-error`, `slab-drop`, `button-press`, and new: `candidate-sensed` (once, on the step the turrets begin to rise: the narrator's line 2 of change note 003 hangs on it), `turret-load` (the tell: a turret locks and loads), `slab-shadow`, `keys-break`, `page-crack`, `field-done` (a stage is got through; twice in a run, at the Name field and at the Email field).
 Given by the Resume stage: `paper-slide`, `shredder`, `arms-out`, `paper-strain`, `tug-lost`, `strips-zip`, `shredder-stop`.
 No longer given: `keys-shuffle`.
 
@@ -107,7 +111,7 @@ Changed for items 2 and 7 (decisions 9 and 10):
 
 - `tests/step1.test.ts`: `hits the cursor once, on the first field, with a bolt` asks 4 shots or more in the film (it was more than 4) and a `turret-load` before each; `takes the hit after a cocky pause...` holds the hit between 6.5 s and 7 s (it was 5.5 s to 6 s).
 - `tests/step1-script.test.ts`: `never has two moves of the pointer at once...` holds the pointer still from the proud stand to the hit and from the hit to the next key (the leap aside and the slide of the old film are cut: the arrow now stands and is hit); `makes the frame of the approved image` is read at 7.4 s (it was 6.0 s) and the name has 4 letters there (one is singed off).
-- `tests/polish-keys2.test.ts`: the film's first shot is frame 260 (248); the blast is in the air for frames 260 to 331, 72 frames (248 to 272, 25), at 520 / 60 px a frame (25); the film's event list is 251 lines with a new sum; the hit is at frame 408 (349); `shows it in the film too` holds the blast's kick and draw.
+- `tests/polish-keys2.test.ts`: the film's first shot is frame 260 (248); the blast is in the air for frames 260 to 331, 72 frames (248 to 272, 25), at 520 / 60 px a frame (25); the film's event list is 251 lines with a new sum (and a new one again with `candidate-sensed`, decision 12); the hit is at frame 408 (349); `shows it in the film too` holds the blast's kick and draw.
 - `tests/polish-tug3.test.ts`: the sum of the film's tug poses again (the numbers differ by 1.2e-9 at the most, see item 7).
 - `tests/keyboard.test.ts`: `gives every seat of the data a cap...` counts the seats less the broken keys.
 - New: `tests/b-step1-blasts.test.ts`.
