@@ -38,15 +38,23 @@ const REAR = { settle: 0.36 }
 const HIT = { squash: 0.58, bend: 0.5, shove: 60, lift: 0.7, hold: 0.07, back: 0.1 }
 // The live site's hand: how the body follows a visitor's mouse, whatever it is acting. A 600 px move is 90% done in 100 ms, goes 2.6% past and is at rest in 271 ms. The film keeps each gait's own numbers.
 export const HAND = { stiff: 760, damp: 40, top: 7500 }
-const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 }, sprout: { k: 2400, c: 58 } }
+const SPRING = { squash: { k: 620, c: 26 }, lean: { k: 330, c: 17 }, bend: { k: 260, c: 13 } }
 // A hit knocks the body over, past upright onto its other shoulder, and it swings back: the knocked cursor of the approved fire image.
 const TUMBLE = { far: 0.6, share: 0.08, out: { k: 900, c: 60 }, back: { k: 900, c: 58 } }
 // Thrown through the air it goes tip first: the arrow turns toward the way it flies, most when that is up or to the right. tip is the angle its tip points at rest.
 const DIVE = { tip: 2.09, far: 1.25, high: [5, 18] as [number, number], fast: [150, 400] as [number, number] }
 const DRAG = { stride: 90, pulse: 0.2, lean: 0.34 }
+// Under a visitor's hand the arrow is not thrown by its own walk. `most` is how far the angle as drawn may stand off the standard angle, leaned into from `knee` on, and `rate` how fast it may change, in radians a second: 12 degrees in a frame of 60. A knock by the page lifts both for `thrown` seconds at least and until it is down again, `longest` at most.
+export const LED = { most: 0.61, knee: 0.42, rate: 12.5, thrown: 0.12, longest: 1.5 }
+// Through a page turn the visitor's arrow lies on its page, leaving and arriving, at the height it stands at, and goes over with it: the pose says `rides` and the view lays it in the slab's plane. `follow` is how fast it goes to that height.
+// `fall` is how it comes down from more than `clear` above what it stands on when nothing threw it: it walked off a raised thing.
+export const HOVER = { follow: 30, clear: 20, fall: 14000 }
 // The principles every move gets by itself: a pull back against the way it sets off, a stretch along the way while it travels, a squash where it stops.
 const MOVE = { off: 60, pull: 3, tip: 2.6, long: 0.3, per: 5200, land: 4.8 }
-const ARM = { rest: 40, strain: 13, shed: 0.3, snap: 0.035, lean: 0.35, back: 0.45 }
+// The arms: `grow` is the spring they sprout on, so the hands travel to what they grab over four to five frames of 60 and go a little past; `toward` is how far the body leans to the hands while they travel, before it leans back against them; `closed` is the grip from which the hands count as shut.
+const ARM = { rest: 40, strain: 13, shed: 0.3, snap: 0.035, lean: 0.35, back: 0.45, grow: { k: 1300, c: 47 }, toward: 0.3, closed: 0.999 }
+// The seconds over which the arrow is eased from where a page left it to the pointer, unless the page that gives it back names its own.
+const HANDBACK = 0.35
 // What the body can be drawn at: the springs may ask for more, the pose never does.
 // Leaning right is held short of 0.42, where the arrow would stand upright on its tail and stop reading as a cursor.
 const LIMIT = { short: 0.55, long: 1.4, left: 0.6, right: 0.34 }
@@ -72,7 +80,7 @@ export const STRIKE = { x: 4.3, y: 9.4, reach: 2.1 }
 const UNIT_PX = config.cursor.heightPxAt1080 / 19
 
 export interface Strip { x: number; y: number; z: number; rot: number; tilt: number }
-interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number }
+interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number; out: number; slow: number }
 export interface Wound { kind: Damage; at: number; x: number; y: number }
 
 export interface Face { x: number; y: number; z: number; back: number }
@@ -114,6 +122,8 @@ export interface CursorPose {
   strain: number
   grip: [number, number]
   shed: number
+  // Under a visitor's hand in a page turn: it lies on its page and goes over with it. Absent: it stands in the room while the page turns.
+  rides?: boolean
 }
 
 export interface Place { x: number; y: number; z: number }
@@ -168,7 +178,7 @@ interface State {
   drive: { x: number; y: number; z: number } | null
   handback: number
   shove: { x: number; y: number; t: number } | null
-  from: { x: number; y: number }
+  from: { x: number; y: number; over?: number }
   aimed: number | null
   // What the page asks of the body over its springs: an angle struck and held, a length pressed and held, a reaction held at its phase, a swing that dies away.
   struck: { turn: number; left: number } | null
@@ -177,6 +187,9 @@ interface State {
   sway: { amount: number; hz: number; whole: number; t: number } | null
   swing: number
   centred: boolean
+  // Under a visitor's hand alone: the seconds since the page knocked the arrow, and the angle as it is drawn.
+  thrown?: number
+  drawn?: number
 }
 
 const fresh = (x: number, y: number): State => ({
@@ -196,7 +209,7 @@ export class CursorBody {
     this.s.seed = seed
     if (air) {
       this.s.air = { x, y }
-      this.s.z = HANDOFF.z
+      this.s.z = this.hand ? hover : HANDOFF.z
     }
   }
 
@@ -281,6 +294,7 @@ export class CursorBody {
 
   knock(vx: number, vy: number, vz = 0): void {
     const s = this.s
+    if (this.hand) s.thrown = dt
     s.vx += vx
     s.vy += vy
     s.vz += vz * (s.damage.some((w) => w.fresh && w.kind === 'burn') ? HIT.lift : 1)
@@ -322,13 +336,13 @@ export class CursorBody {
     s.drive = { x, y, z }
   }
 
-  release(): void {
+  release(over = HANDBACK): void {
     const s = this.s
     if (s.taken === null) return
     s.taken = null
     s.drive = null
     s.handback = 0
-    s.from = { x: s.x, y: s.y }
+    s.from = over === HANDBACK ? { x: s.x, y: s.y } : { x: s.x, y: s.y, over }
   }
 
   setArms(on: boolean, hands?: [Place, Place]): void {
@@ -440,7 +454,7 @@ export class CursorBody {
       ty = s.drive ? s.drive.y : s.y
       tz = s.drive ? s.drive.z : hover + s.ground
     } else if (s.handback < 1) {
-      s.handback = Math.min(1, s.handback + dt / 0.35)
+      s.handback = Math.min(1, s.handback + dt / (s.from.over ?? HANDBACK))
       const u = s.handback * s.handback * (3 - 2 * s.handback)
       tx = s.from.x + (target.x - s.from.x) * u
       ty = s.from.y + (target.y - s.from.y) * u
@@ -496,9 +510,12 @@ export class CursorBody {
       s.stride = 0
       s.foot = 1
     }
+    const thrown = (s.thrown ?? 0) > 0
+    if (this.hand && s.air) tz = hover + s.ground
     const floor = tz + hop
-    s.vz += (-(s.reaction === 'dart' ? DART.fall : 2400) + 700 * Math.max(0, floor - s.z) - 0) * dt
-    if (s.air || s.taken !== null) s.vz = (floor - s.z) * 9
+    const high = this.hand && !thrown && !s.air && s.taken === null && !s.inBall && s.z - floor > HOVER.clear
+    s.vz += (-(s.reaction === 'dart' ? DART.fall : high ? HOVER.fall : 2400) + 700 * Math.max(0, floor - s.z) - 0) * dt
+    if (s.air || s.taken !== null) s.vz = (floor - s.z) * (this.hand && s.air ? HOVER.follow : 9)
     s.z += s.vz * dt
     s.aloft = s.z > floor + 2
     if (s.z < floor && !s.air && s.taken === null) {
@@ -525,11 +542,12 @@ export class CursorBody {
       const pull = Math.max(0, Math.min(1, (far - ARM.rest) / ARM.strain))
       const was = s.strain
       s.strain += (pull - s.strain) * Math.min(1, dt * 18)
-      lean -= Math.max(-0.6, Math.min(0.6, Math.atan2(hx, Math.max(20, hy)) * (ARM.lean + ARM.back * s.strain)))
+      lean -= Math.max(-0.6, Math.min(0.6, Math.atan2(hx, Math.max(20, hy)) * ((ARM.lean + ARM.back * s.strain) * s.grip - ARM.toward * (1 - s.grip))))
       stretch += 0.2 * s.strain - Math.min(0.3, (Math.max(0, was - s.strain) / dt) * ARM.snap)
-      s.sproutV += (SPRING.sprout.k * (1 - s.sprout) - SPRING.sprout.c * s.sproutV) * dt
+      s.sproutV += (ARM.grow.k * (1 - s.sprout) - ARM.grow.c * s.sproutV) * dt
       s.sprout += s.sproutV * dt
       s.grip += ((s.sprout > 0.8 ? 1 : 0) - s.grip) * Math.min(1, dt * 30)
+      if (s.grip > ARM.closed) s.grip = 1
     } else if (s.shed === 0) {
       s.sprout = 0
       s.sproutV = 0
@@ -550,7 +568,7 @@ export class CursorBody {
       if (s.pressed.left <= dt / 2) s.pressed = null
     }
     const free = !s.air && s.taken === null && !s.inBall
-    const flying = free && s.reaction !== 'rear' && s.reaction !== 'dart' && s.reaction !== 'fume' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
+    const flying = free && (!this.hand || thrown) && s.reaction !== 'rear' && s.reaction !== 'dart' && s.reaction !== 'fume' ? smooth01((s.z - floor - DIVE.high[0]) / (DIVE.high[1] - DIVE.high[0])) * smooth01((now - DIVE.fast[0]) / (DIVE.fast[1] - DIVE.fast[0])) : 0
     const aimed = free || s.inBall ? s.aimed : null
     const knocked = s.reaction === 'recoil' && pose && 1 - s.reactionLeft / REACTION_SECONDS.recoil < TUMBLE.share
     const over = (knocked ? TUMBLE.far * s.dir : flying > 0 ? DIVE.far * Math.sin(DIVE.tip - Math.atan2(-s.vy, s.vx)) * flying : 0) + (pose ? pose.turn * (aimed !== null ? 0.3 : 1) : 0) + (aimed !== null ? aimed - s.feel.lean : 0)
@@ -575,6 +593,18 @@ export class CursorBody {
       const u = s.sway.t / s.sway.whole
       if (u >= 1) s.sway = null
       else s.swing = s.sway.amount * (1 - u) * (1 - u) * Math.sin(2 * Math.PI * s.sway.hz * s.sway.t)
+    }
+    if (this.hand) {
+      const want = softLean(s.lean) + s.spin + s.swing
+      if (thrown) {
+        s.thrown = (s.thrown ?? 0) + dt
+        if ((s.thrown > LED.thrown && !s.aloft) || s.thrown > LED.longest) s.thrown = 0
+      }
+      const led = !thrown && !s.inBall && s.taken === null && s.aimed === null && s.struck === null && s.reaction !== 'recoil'
+      if (led && s.drawn !== undefined) {
+        const to = Math.abs(want) <= LED.knee ? want : Math.sign(want) * (LED.knee + soft(Math.abs(want) - LED.knee, LED.most - LED.knee))
+        s.drawn += Math.max(-LED.rate * dt, Math.min(LED.rate * dt, to - s.drawn))
+      } else s.drawn = want
     }
     s.bendV += (SPRING.bend.k * (s.feel.bend + (pose ? pose.bend : 0) - ax * 0.9 - ay * 0.35 - s.bend) - SPRING.bend.c * s.bendV) * dt
     s.bend = Math.max(-1, Math.min(1, s.bend + s.bendV * dt))
@@ -624,12 +654,12 @@ export class CursorBody {
     const arms = s.arms || shed
     const hands = s.arms ? s.hands : s.shedHands
     return {
-      x: s.x, y: s.y, z: s.z, squash: softSquash(s.squash), lean: softLean(s.lean), spin: s.spin + s.swing, acting: s.acting, reaction: s.reaction,
+      ...(this.hand && s.air ? { rides: true } : {}), x: s.x, y: s.y, z: s.z, squash: softSquash(s.squash), lean: softLean(s.lean), spin: this.hand && s.drawn !== undefined ? s.drawn - softLean(s.lean) : s.spin + s.swing, acting: s.acting, reaction: s.reaction,
       reactionAt: s.reaction ? 1 - s.reactionLeft / REACTION_SECONDS[s.reaction] : 0,
       damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, centred: s.inBall && s.centred, taken: s.taken !== null, scale: 1,
       bend: s.bend, feel: { ...s.feel }, gulp: s.gulp,
       wounds: s.damage.map((d) => ({ kind: d.kind, at: Math.min(1, Math.max(0, 1 - d.left / Math.max(d.whole, dt))), x: d.x, y: d.y })),
-      strips: s.strips ? s.strips.map((p) => ({ x: p.x, y: p.y, z: p.z, rot: p.rot, tilt: p.tilt })) : null,
+      strips: s.strips ? s.strips.map(emerged) : null,
       sprout: s.sprout, strain: s.strain, grip: [s.grip, s.grip], shed: shed ? s.shed / ARM.shed : 0
     }
   }
@@ -697,6 +727,14 @@ function lie(i: number, seed: number): Strip {
   return { x: FAN.away[0]! + toX + dx * cut.half - cut.x, y: FAN.away[1]! + toY + dy * cut.half - cut.y, z: layer(i), rot, tilt: 0 }
 }
 
+// How the strips come out of the shredder's mouth: the least and the most seconds a strip takes, and how far up under the hood it starts, in page pixels, lying low until it is out.
+const EMERGE = { least: 0.05, most: 0.12, under: 18 }
+
+function emerged(p: LooseStrip): Strip {
+  const e = Math.min(1, Math.max(0, p.out))
+  return { x: p.x, y: p.y + (1 - e) * EMERGE.under, z: p.z * e * e, rot: p.rot, tilt: p.tilt * e }
+}
+
 // The strips as they leave the shredder: thrown down the page from above their places, each with its own spin, each bound for its place in the fan.
 function pile(seed: number): LooseStrip[] {
   const out: LooseStrip[] = []
@@ -706,7 +744,7 @@ function pile(seed: number): LooseStrip[] {
     out.push({
       x: (h(1) - 0.5) * 6, y: 38 + h(2) * 12, z: 22 + h(3) * 26 + i * 2, rot: (h(4) - 0.5) * 0.5, tilt: (h(5) - 0.5) * 1.4,
       vx: (h(6) - 0.5) * 60, vy: -(210 + h(7) * 60), vz: -90, vr: (h(8) - 0.5) * 5, vt: (h(9) - 0.5) * 10, rest: false,
-      tx: to.x, ty: to.y, tr: to.rot
+      tx: to.x, ty: to.y, tr: to.rot, out: 0, slow: EMERGE.least + h(10) * (EMERGE.most - EMERGE.least)
     })
   }
   return out
@@ -720,6 +758,7 @@ function fall(strips: LooseStrip[]): void {
 }
 
 function drop(p: LooseStrip, i: number): void {
+  if (p.out < 1) p.out = Math.min(1, p.out + dt / p.slow)
   if (p.rest) return
   const floor = layer(i)
   const down = p.z <= floor + 0.01 && Math.abs(p.vz) < 1

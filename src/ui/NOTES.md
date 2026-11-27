@@ -37,6 +37,7 @@
 12. The names file holds four names: `Sound`, `Play`, `Position in the film`, `Back to the application`. Play and pause are one toggle with one name and `aria-pressed`. Sound is one toggle with `aria-pressed`, true when sound is on.
 13. The type. The site ships its fonts as baked outlines in `public/fonts/*.json`, which the DOM cannot use as a font. So `glyphs.ts` draws each word as an inline SVG from those same outlines, with the stage's own kerning, in `inter-500` for the controls and in the shell's fonts for the touch message. The word itself stays in the page as text, hidden from the eye, for a screen reader and for the search of the browser. Until the outlines have loaded, or if they do not load, the word shows as plain text in the system's sans serif. `ready()` in `api.ts` resolves when they have loaded or failed, and never rejects, so a still with the interface can wait for it. The clock of the film is set with every digit as wide as the widest, so the bar does not shift each second.
 14. The words of the probe page are in `src/probe/labels.ts`. The probe is a measuring tool for Brandon and not a page of the site.
+15. The sound control on the live row stands in a ring of its own ink (asked by the Builder after round 21 of the whole site, where a critic took the bare speaker for a sign of a state and not for a button). The film's bar keeps its bare icons: a bar of a player reads as controls. No word was added.
 
 ## Open
 

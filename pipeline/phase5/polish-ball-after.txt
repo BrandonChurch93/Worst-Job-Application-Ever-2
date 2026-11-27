@@ -1,0 +1,280 @@
+press hint, visitor phase 0, reaction 11 visitor steps, 12 key presses, 0 set shots, 3 tows to a device, 6 tows to a gate, 583 steps under a pull
+the ball reached the outlet at 39.38 s of the page
+steps on open floor above the bats under 6 balls/s and off a bat: 954, longest run 184 steps
+slow 15.55 s for 177 steps  tier 1  (4.0, 1.1) to (6.4, 1.8)  speed 6.0 to 6.0  pull 0 steps
+slow 18.00 s for 114 steps  tier 1  (5.2, 7.7) to (6.5, 8.0)  speed 5.9 to 4.2  pull 0 steps
+slow 21.75 s for 67 steps  tier 1  (6.3, 1.9) to (7.4, 1.9)  speed 5.6 to 5.9  pull 0 steps
+slow 22.43 s for 40 steps  tier 1  (5.0, 1.4) to (5.7, 1.6)  speed 6.0 to 6.0  pull 0 steps
+slow 29.80 s for 45 steps  tier 2  (5.4, 7.7) to (6.2, 7.9)  speed 5.1 to 6.0  pull 0 steps
+slow 31.23 s for 27 steps  tier 2  (14.0, 4.2) to (13.9, 4.7)  speed 2.9 to 6.0  pull 0 steps
+slow 31.38 s for 73 steps  tier 2  (13.8, 4.9) to (13.2, 5.3)  speed 3.9 to 5.9  pull 0 steps
+slow 34.55 s for 25 steps  tier 2  (14.6, 6.7) to (14.6, 7.1)  speed 3.0 to 5.9  pull 0 steps
+slow 34.73 s for 105 steps  tier 2  (14.6, 7.7) to (13.5, 8.0)  speed 2.9 to 3.6  pull 0 steps
+slow 36.15 s for 184 steps  tier 2  (5.4, 5.9) to (4.0, 6.2)  speed 6.0 to 5.8  pull 5 steps
+3.30 s  hold > rail rail feed  at tier 0 (16.9, -9.8) speed in 0.0
+3.30 s  tube-run:loader  speed 0.0 > 0.0
+8.62 s  rail > hold hold plunger  at tier 0 (17.7, 33.0) speed in 6.0
+8.62 s  at-plunger:plunger  speed 6.0 > 0.0
+10.45 s  hold > rail rail launch  at tier 0 (17.7, 33.0) speed in 0.0
+10.45 s  plunger:plunger  speed 0.0 > 0.0
+11.92 s  rail > plane   at tier 0 (5.3, 2.7) speed in 20.0
+11.92 s  rail-out:launch  speed 20.0 > 5.4
+12.30 s  sling:corporate.sling.left  speed 14.9 > 13.5
+12.46 s  carpet-roll:corporate.carpet  speed 15.2 > 15.3
+12.50 s  plane > hold hold corporate.revolving  at tier 0 (9.7, 6.7) speed in 16.1
+12.50 s  kicker-in:corporate.revolving  speed 16.1 > 0.0
+12.95 s  hold > plane   at tier 0 (10.3, 7.0) speed in 0.0
+12.95 s  spinner:corporate.revolving  speed 0.0 > 14.0
+13.10 s  plane > hold hold corporate.doors  at tier 0 (10.2, 5.2) speed in 9.7
+13.10 s  doors-slam:corporate.hq  speed 9.7 > 0.0
+14.11 s  hold > plane   at tier 0 (10.0, 5.0) speed in 0.0
+14.11 s  doors-open:corporate.doors  speed 0.0 > 6.1
+14.43 s  plane > tow tow>gate:0  at tier 0 (10.0, 10.4) speed in 24.3
+14.46 s  tow > rail rail chute.corporate  at tier 0 (10.0, 11.1) speed in 24.6
+14.46 s  tier-fall:corporate.gate  speed 24.6 > 24.6
+14.74 s  rail > plane   at tier 1 (10.0, 0.9) speed in 4.0
+14.74 s  rail-out:chute.corporate  speed 4.0 > 4.1
+14.94 s  bumper:office.bumper.2  speed 9.9 > 18.0
+15.27 s  drop-target:office.cubicles.drop.1  speed 14.7 > 14.8
+16.51 s  bumper:office.bumper.1  speed 10.6 > 18.0
+16.57 s  drop-target:office.cubicles.drop.2  speed 18.0 > 18.1
+16.57 s  drop-target:office.cubicles.drop.3  speed 18.0 > 18.1
+16.57 s  drop-target:office.cubicles.drop.4  speed 18.0 > 18.1
+16.59 s  drop-target:office.cubicles.drop.5  speed 18.1 > 7.1
+17.34 s  plane > tow tow>gate:1  at tier 1 (10.1, 10.4) speed in 6.3
+17.40 s  tow > plane   at tier 1 (10.0, 10.5) speed in 12.0
+17.40 s  ball-save:office.gate  speed 12.0 > 20.5
+19.05 s  bumper:office.bumper.3  speed 34.7 > 31.1
+19.10 s  plane > tow tow>hold:office.inbox  at tier 1 (11.5, 7.6) speed in 32.5
+19.39 s  tow > hold hold office.inbox  at tier 1 (14.6, 4.4) speed in 16.0
+19.39 s  scoop-in:office.inbox  speed 16.0 > 0.0
+20.72 s  hold > plane   at tier 1 (14.6, 4.4) speed in 0.0
+20.72 s  eject:office.inbox  speed 0.0 > 10.9
+20.78 s  ball-hit:steel.1  speed 11.2 > 11.2
+21.27 s  ball-hit:steel.1  speed 7.1 > 7.0
+21.48 s  bumper:office.bumper.3  speed 35.3 > 35.2
+21.58 s  standup:office.coffee.standup  speed 32.3 > 32.1
+21.73 s  sling:office.sling.right  speed 16.3 > 16.4
+21.74 s  drop-target:office.cubicles.drop.1  speed 16.4 > 16.5
+21.88 s  sling:office.sling.right  speed 4.1 > 4.1
+22.09 s  bumper:office.bumper.2  speed 7.4 > 7.5
+22.12 s  bumper:office.bumper.1  speed 8.2 > 18.0
+22.20 s  ball-hit:steel.3  speed 16.9 > 16.8
+22.22 s  sling:office.sling.right  speed 8.1 > 8.1
+22.45 s  ball-hit:steel.3  speed 5.8 > 5.1
+22.90 s  bumper:office.bumper.1  speed 10.4 > 18.0
+22.96 s  drop-target:office.cubicles.drop.2  speed 17.8 > 17.8
+22.96 s  drop-target:office.cubicles.drop.3  speed 17.8 > 17.8
+23.18 s  bumper:office.bumper.1  speed 9.2 > 18.0
+23.24 s  drop-target:office.cubicles.drop.4  speed 18.5 > 18.5
+23.24 s  drop-target:office.cubicles.drop.5  speed 18.5 > 18.5
+23.26 s  bumper:office.bumper.1  speed 8.5 > 8.6
+23.30 s  steel-out:office.gate  speed 9.3 > 9.4
+23.53 s  bumper:office.bumper.1  speed 15.0 > 15.1
+23.66 s  steel-out:office.gate  speed 18.4 > 18.5
+24.18 s  steel-out:office.gate  speed 3.1 > 3.2
+24.62 s  plane > tow tow>gate:1  at tier 1 (9.8, 10.4) speed in 10.9
+24.68 s  tow > rail rail chute.office  at tier 1 (10.0, 11.0) speed in 12.0
+24.68 s  tier-fall:office.gate  speed 12.0 > 12.0
+24.96 s  rail > plane   at tier 2 (10.0, 0.9) speed in 4.0
+24.96 s  rail-out:chute.office  speed 4.0 > 4.1
+27.08 s  plane > tow tow>gate:2  at tier 2 (10.1, 10.4) speed in 11.2
+27.15 s  tow > plane   at tier 2 (10.0, 10.5) speed in 12.0
+27.15 s  ball-save:street.gate  speed 12.0 > 24.0
+27.20 s  plane > tow tow>hold:street.firehouse  at tier 2 (10.0, 9.2) speed in 22.4
+27.66 s  tow > hold hold street.firehouse  at tier 2 (5.0, 3.9) speed in 16.0
+27.66 s  scoop-in:street.firehouse  speed 16.0 > 0.0
+29.36 s  hold > plane   at tier 2 (5.0, 3.9) speed in 0.0
+29.36 s  scoop-kick:street.firehouse  speed 0.0 > 4.2
+30.62 s  plane > tow tow>gate:2  at tier 2 (9.6, 10.4) speed in 9.4
+30.69 s  tow > plane   at tier 2 (10.0, 10.5) speed in 12.0
+30.69 s  ball-save:street.gate  speed 12.0 > 20.0
+31.70 s  plane > tow tow>rail:highway  at tier 2 (13.1, 5.4) speed in 6.4
+32.10 s  tow > rail rail highway  at tier 2 (6.9, 4.9) speed in 16.0
+32.10 s  ramp-roll:highway  speed 16.0 > 16.0
+33.00 s  spiral:street.garage  speed 2.2 > 2.2
+34.55 s  rail > plane   at tier 2 (14.6, 6.7) speed in 2.2
+34.55 s  rail-out:spiral  speed 2.2 > 3.0
+37.15 s  plane > hold hold street.mom  at tier 2 (4.0, 9.3) speed in 16.6
+37.15 s  mom-hatch:street.mom  speed 16.6 > 0.0
+37.66 s  hold > plane   at tier 2 (4.0, 9.3) speed in 0.0
+37.66 s  mom-save:street.mom  speed 0.0 > 22.0
+37.90 s  plane > tow tow>gate:2  at tier 2 (4.0, 6.2) speed in 5.0
+38.38 s  tow > rail rail drain  at tier 2 (10.0, 11.0) speed in 16.0
+38.38 s  drain:street.gate  speed 16.0 > 16.0
+39.38 s  rail > hold hold outlet  at tier 2 (3.1, 17.6) speed in 13.0
+39.38 s  at-outlet:outlet  speed 13.0 > 0.0
+key press 3 at stage step 5141 (21.421 s of the page), tier 1
+step  key mode   x      v      vx      vy     speed  touch batL   batR   director and events
+ 5121 .. plane  8.45  8.99   -5.50   -2.92   6.22 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5122 .. plane  8.42  8.98   -5.47   -2.90   6.19 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5123 .. plane  8.40  8.97   -5.45   -2.89   6.16 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5124 .. plane  8.38  8.95   -5.42   -2.87   6.13 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5125 .. plane  8.36  8.94   -5.39   -2.86   6.10 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5126 .. plane  8.34  8.93   -5.36   -2.84   6.06 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5127 .. plane  8.31  8.92   -5.33   -2.82   6.03 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5128 .. plane  8.29  8.90   -5.30   -2.81   5.99 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5129 .. plane  8.27  8.89   -5.26   -2.79   5.96 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5130 .. plane  8.25  8.88   -5.23   -2.77   5.92 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5131 .. plane  8.23  8.87   -5.20   -2.76   5.89 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5132 .. plane  8.21  8.85   -5.17   -2.74   5.85 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5133 .. plane  8.19  8.84   -5.14   -2.72   5.82 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5134 .. plane  8.17  8.83   -5.11   -2.71   5.78 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5135 .. plane  8.15  8.82   -5.08   -2.69   5.75 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5136 .. plane  8.12  8.81   -5.04   -2.67   5.71 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5137 .. plane  8.10  8.79   -5.01   -2.66   5.67 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5138 .. plane  8.08  8.78   -4.98   -2.64   5.64 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5139 .. plane  8.06  8.77   -4.95   -2.62   5.60 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5140 .. plane  8.04  8.76   -4.92   -2.61   5.56 Lf    25.00  25.00  shot 10.0 31.6 17.0  
+ 5141 L. plane  8.07  8.63    6.76  -33.21  33.89 Lf    18.75  25.00  shot 10.0 31.6 17.0 flipper:left 
+ 5142 L. plane  8.10  8.48    6.88  -34.00  34.69 Lf    12.50  25.00  shot 10.0 31.6 17.0  
+ 5143 L. plane  8.13  8.33    6.88  -35.34  36.00 Lf     6.25  25.00  shot 10.0 31.6 17.0  
+ 5144 L. plane  8.15  8.18    6.20  -35.46  36.00 Lf     0.00  25.00  shot 10.0 31.6 17.0  
+ 5145 L. plane  8.17  8.00    4.42  -35.73  36.00 Lf    -6.25  25.00  shot 10.0 31.6 17.0  
+ 5146 L. plane  8.18  7.82    1.34  -35.98  36.00 Lf   -12.50  25.00  shot 10.0 31.6 17.0  
+ 5147 L. plane  8.17  7.62   -2.56  -35.91  36.00 Lf   -18.75  25.00  shot 10.0 31.6 17.0  
+ 5148 L. plane  8.14  7.41   -5.47  -35.58  36.00 Lf   -25.00  25.00  shot 10.0 31.6 17.0  
+ 5149 .. plane  8.11  7.27   -5.47  -35.46  35.88 Lf   -20.83  25.00  shot 10.0 31.6 17.0  
+ 5150 .. plane  8.09  7.12   -5.47  -35.34  35.76 .    -16.67  25.00  shot 10.0 31.6 17.0  
+ 5151 .. plane  8.07  6.97   -5.47  -35.21  35.64 .    -12.50  25.00  shot 10.0 31.6 17.0  
+ 5152 .. plane  8.04  6.82   -5.47  -35.09  35.52 .     -8.33  25.00  shot 10.0 31.6 17.0  
+ 5153 L. plane  8.02  6.68   -5.47  -34.97  35.39 .    -14.58  25.00  shot 10.0 31.6 17.0 flipper:left 
+ 5154 L. plane  8.00  6.53   -5.47  -34.85  35.27 .    -20.83  25.00  shot 10.0 31.6 17.0  
+ 5155 L. plane  7.98  6.39   -5.47  -34.72  35.15 .    -25.00  25.00  shot 10.0 31.6 17.0 bumper:office.bumper.3 
+ 5156 L. plane  7.95  6.24   -5.47  -34.60  35.03 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5157 .. plane  7.93  6.10   -5.47  -34.48  34.91 .    -20.83  25.00  shot 10.0 31.6 17.0  
+ 5158 .. plane  7.91  5.96   -5.47  -34.36  34.79 .    -16.67  25.00  shot 10.0 31.6 17.0  
+ 5159 .. plane  7.89  5.81   -5.47  -34.23  34.67 .    -12.50  25.00  shot 10.0 31.6 17.0  
+ 5160 .. plane  7.86  5.67   -5.47  -34.11  34.55 .     -8.33  25.00  shot 10.0 31.6 17.0  
+ 5161 L. plane  7.84  5.53   -5.47  -33.99  34.43 .    -14.58  25.00  shot 10.0 31.6 17.0 flipper:left 
+ 5162 L. plane  7.82  5.39   -5.47  -33.87  34.31 .    -20.83  25.00  shot 10.0 31.6 17.0  
+ 5163 L. plane  7.79  5.25   -5.47  -33.74  34.19 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5164 L. plane  7.77  5.11   -5.47  -33.62  34.06 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5165 L. plane  7.75  4.97   -5.47  -33.50  33.94 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5166 L. plane  7.73  4.83   -5.47  -33.38  33.82 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5167 L. plane  7.70  4.69   -5.47  -33.25  33.70 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5168 L. plane  7.68  4.55   -5.47  -33.13  33.58 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5169 L. plane  7.66  4.41   -5.47  -33.01  33.46 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5170 L. plane  7.63  4.28   -5.47  -32.89  33.34 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5171 L. plane  7.61  4.14   -5.47  -32.76  33.22 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5172 L. plane  7.59  4.00   -5.47  -32.64  33.10 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5173 L. plane  7.57  3.87   -5.47  -32.52  32.98 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5174 L. plane  7.54  3.73   -5.47  -32.40  32.86 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5175 L. plane  7.52  3.60   -5.47  -32.27  32.73 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5176 L. plane  7.50  3.46   -5.47  -32.15  32.61 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5177 L. plane  7.47  3.33   -5.47  -32.03  32.49 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5178 L. plane  7.45  3.20   -5.47  -31.91  32.37 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5179 L. plane  7.43  3.06   -5.47  -31.78  32.25 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5180 L. plane  7.41  2.93   -5.47  -31.66  32.13 .    -25.00  25.00  shot 10.0 31.6 17.0 standup:office.coffee.standup 
+ 5181 L. plane  7.38  2.80   -5.47  -31.54  32.01 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5182 L. plane  7.36  2.67   -5.47  -31.42  31.89 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5183 L. plane  7.34  2.54   -5.47  -31.29  31.77 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5184 L. plane  7.32  2.41   -5.47  -31.17  31.65 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5185 L. plane  7.29  2.28   -5.47  -31.05  31.53 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5186 L. plane  7.27  2.15   -5.47  -30.93  31.41 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5187 L. plane  7.25  2.02   -5.47  -30.80  31.29 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5188 L. plane  7.22  1.89   -5.47  -30.68  31.17 .    -25.00  25.00  shot 10.0 31.6 17.0  
+ 5189 .. plane  7.20  1.77   -5.47  -30.56  31.05 .    -20.83  25.00  shot 10.0 31.6 17.0  
+ 5190 .. plane  7.18  1.64   -5.47  -30.44  30.92 .    -16.67  25.00  shot 10.0 31.6 17.0  
+ 5191 .. plane  7.16  1.51   -5.47  -30.31  30.80 .    -12.50  25.00  shot 10.0 31.6 17.0  
+ 5192 .. plane  7.13  1.39   -5.47  -30.19  30.68 .     -8.33  25.00  shot 10.0 31.6 17.0  
+ 5193 .. plane  7.11  1.26   -5.47  -30.07  30.56 .     -4.17  25.00  shot 10.0 31.6 17.0  
+ 5194 .. plane  7.09  1.14   -5.47  -29.95  30.44 .      0.00  25.00  shot 10.0 31.6 17.0  
+ 5195 .. plane  7.06  1.01   -5.47  -29.82  30.32 .      4.17  25.00  shot 10.0 31.6 17.0  
+ 5196 .. plane  7.04  0.89   -5.47  -29.70  30.20 .      8.33  25.00  shot 10.0 31.6 17.0  
+ 5197 .. plane  7.02  0.76   -5.47  -29.58  30.08 .     12.50  25.00  shot 10.0 31.6 17.0  
+ 5198 .. plane  6.98  0.76   -8.43   11.83  14.53 .     16.67  25.00  shot 10.0 31.6 17.0  
+ 5199 .. plane  6.95  0.81   -8.43   11.95  14.63 .     20.83  25.00  shot 10.0 31.6 17.0  
+ 5200 .. plane  6.91  0.86   -8.43   12.08  14.73 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5201 .. plane  6.88  0.91   -8.43   12.20  14.83 .     23.20  25.00  shot 10.0 31.6 17.0  
+ 5202 .. plane  6.84  0.97   -8.43   12.32  14.93 .     21.80  25.00  shot 10.0 31.6 17.0  
+ 5203 .. plane  6.81  1.02   -8.43   12.44  15.03 .     20.80  25.00  shot 10.0 31.6 17.0  
+ 5204 .. plane  6.77  1.07   -8.43   12.57  15.13 .     20.20  25.00  shot 10.0 31.6 17.0  
+ 5205 .. plane  6.74  1.12   -8.43   12.69  15.23 .     20.00  25.00  shot 10.0 31.6 17.0  
+ 5206 .. plane  6.70  1.17   -8.43   12.81  15.33 .     20.20  25.00  shot 10.0 31.6 17.0  
+ 5207 .. plane  6.67  1.23   -8.43   12.93  15.44 .     20.80  25.00  shot 10.0 31.6 17.0  
+ 5208 .. plane  6.63  1.28   -8.43   13.06  15.54 .     21.80  25.00  shot 10.0 31.6 17.0  
+ 5209 .. plane  6.60  1.34   -8.43   13.18  15.64 .     23.20  25.00  shot 10.0 31.6 17.0  
+ 5210 .. plane  6.56  1.39   -8.43   13.30  15.75 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5211 .. plane  6.53  1.45   -8.43   13.42  15.85 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5212 .. plane  6.49  1.50   -8.43   13.55  15.95 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5213 .. plane  6.46  1.56   -8.43   13.67  16.06 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5214 .. plane  6.42  1.62   -8.43   13.79  16.16 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5215 .. plane  6.39  1.68   -8.43   13.91  16.27 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5216 .. plane  6.35  1.73   -8.43   14.04  16.37 .     25.00  25.00  shot 10.0 31.6 17.0 sling:office.sling.right 
+ 5217 .. plane  6.32  1.79   -8.43   14.16  16.48 .     25.00  25.00  shot 10.0 31.6 17.0 drop-target:office.cubicles.drop.1 
+ 5218 .. plane  6.28  1.85   -8.43   14.28  16.58 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5219 .. plane  6.29  1.86    4.14   -3.82   5.64 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5220 .. plane  6.31  1.84    4.14   -3.70   5.55 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5221 .. plane  6.32  1.83    4.14   -3.58   5.47 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5222 .. plane  6.34  1.81    4.14   -3.45   5.39 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5223 .. plane  6.36  1.80    4.14   -3.33   5.32 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5224 .. plane  6.37  1.78    4.14   -3.21   5.24 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5225 .. plane  6.39  1.77    4.14   -3.09   5.17 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5226 .. plane  6.41  1.76    4.14   -2.96   5.09 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5227 .. plane  6.43  1.75    4.14   -2.84   5.02 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5228 .. plane  6.44  1.73    4.14   -2.72   4.96 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5229 .. plane  6.46  1.72    4.14   -2.60   4.89 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5230 .. plane  6.48  1.71    4.14   -2.47   4.83 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5231 .. plane  6.50  1.70    4.14   -2.35   4.76 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5232 .. plane  6.51  1.69    4.14   -2.23   4.70 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5233 .. plane  6.53  1.68    4.14   -2.11   4.65 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5234 .. plane  6.55  1.68    4.14   -1.98   4.59 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5235 .. plane  6.56  1.67    4.14   -1.86   4.54 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5236 .. plane  6.58  1.66    4.14   -1.74   4.49 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5237 .. plane  6.60  1.65    4.14   -1.62   4.45 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5238 .. plane  6.62  1.65    4.14   -1.49   4.40 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5239 .. plane  6.63  1.64    4.14   -1.37   4.36 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5240 .. plane  6.65  1.64    4.14   -1.25   4.33 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5241 .. plane  6.67  1.63    4.14   -1.13   4.29 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5242 .. plane  6.68  1.63    4.14   -1.00   4.26 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5243 .. plane  6.70  1.62    4.14   -0.88   4.24 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5244 .. plane  6.72  1.62    4.14   -0.76   4.21 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5245 .. plane  6.74  1.62    4.14   -0.64   4.19 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5246 .. plane  6.75  1.61    4.14   -0.51   4.17 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5247 .. plane  6.77  1.61    4.14   -0.39   4.16 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5248 .. plane  6.79  1.61    4.14   -0.27   4.15 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5249 .. plane  6.81  1.61    4.14   -0.15   4.15 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5250 .. plane  6.82  1.61    4.14   -0.02   4.14 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5251 .. plane  6.84  1.61    4.14    0.10   4.14 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5252 .. plane  6.86  1.61    4.14    0.22   4.15 .     25.00  25.00  shot 10.0 31.6 17.0 sling:office.sling.right 
+ 5253 .. plane  6.87  1.61    4.14    0.34   4.16 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5254 .. plane  6.89  1.61    4.14    0.47   4.17 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5255 .. plane  6.91  1.62    4.14    0.59   4.18 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5256 .. plane  6.93  1.62    4.14    0.71   4.20 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5257 .. plane  6.94  1.62    4.14    0.83   4.23 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5258 .. plane  6.96  1.63    4.14    0.96   4.25 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5259 .. plane  6.98  1.63    4.14    1.08   4.28 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5260 .. plane  7.00  1.63    4.14    1.20   4.31 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5261 .. plane  7.01  1.64    4.14    1.32   4.35 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5262 .. plane  7.03  1.65    4.14    1.45   4.39 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5263 .. plane  7.05  1.65    4.14    1.57   4.43 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5264 .. plane  7.06  1.66    4.14    1.69   4.47 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5265 .. plane  7.08  1.67    4.14    1.81   4.52 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5266 .. plane  7.10  1.67    4.14    1.94   4.57 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5267 .. plane  7.12  1.68    4.14    2.06   4.63 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5268 .. plane  7.13  1.69    4.14    2.18   4.68 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5269 .. plane  7.15  1.70    4.14    2.30   4.74 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5270 .. plane  7.17  1.71    4.14    2.43   4.80 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5271 .. plane  7.19  1.72    4.14    2.55   4.86 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5272 .. plane  7.20  1.73    4.14    2.67   4.93 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5273 .. plane  7.22  1.74    4.14    2.79   5.00 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5274 .. plane  7.24  1.76    4.14    2.92   5.07 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5275 .. plane  7.25  1.77    4.14    3.04   5.14 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5276 .. plane  7.27  1.78    4.14    3.16   5.21 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5277 .. plane  7.29  1.79    4.14    3.28   5.29 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5278 .. plane  7.31  1.81    4.14    3.41   5.36 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5279 .. plane  7.32  1.82    4.14    3.53   5.44 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5280 .. plane  7.34  1.84    4.14    3.65   5.52 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5281 .. plane  7.36  1.85    4.14    3.77   5.60 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5282 .. plane  7.38  1.87    4.14    3.90   5.69 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5283 .. plane  7.39  1.89    4.14    4.02   5.77 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5284 .. plane  7.41  1.90    4.14    4.14   5.86 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5285 .. plane  7.43  1.92    4.14    4.26   5.94 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5286 .. plane  7.44  1.94    4.14    4.39   6.03 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5287 .. plane  7.46  1.96    4.14    4.51   6.12 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5288 .. plane  7.48  1.98    4.14    4.63   6.21 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5289 .. plane  7.50  2.00    4.14    4.75   6.31 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5290 .. plane  7.51  2.02    4.14    4.88   6.40 .     25.00  25.00  shot 10.0 31.6 17.0  
+ 5291 .. plane  7.53  2.04    4.14    5.00   6.49 .     25.00  25.00  shot 10.0 31.6 17.0  
+the slope's pull is 0.1225 balls/s a step

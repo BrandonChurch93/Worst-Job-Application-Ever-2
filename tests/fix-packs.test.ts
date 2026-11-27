@@ -168,6 +168,34 @@ describe('the moments of the visit, as the sheets need them', () => {
     expect(m.met).toBe(1501)
   })
 
+  it('takes the first hard blow that comes while a bat rises, not a soft throw after a press that met nothing', () => {
+    const run = madeRun()
+    const y = (at: number): number => {
+      if (at < 2) return 1100
+      if (at < 12) return 1100 - (at - 1) * 12
+      if (at < 41) return 980
+      return 980 - Math.min(400, (at - 40) * 40)
+    }
+    for (let i = 1500; i < 1600; i++) {
+      const at = i - 1500
+      run.rows[i]![COL.heroY] = y(at)
+      run.rows[i]![COL.right] = at < 6 || (at >= 40 && at < 46) ? 1 : 0
+    }
+    const made = momentsOf(cfg, run).moments
+    expect(made.flip).toBe(1500)
+    expect(made.met).toBe(1541)
+  })
+
+  it('falls back to the first lift after a press when no blow comes while a bat rises', () => {
+    const run = madeRun()
+    for (let i = 1500; i < 1600; i++) {
+      const at = i - 1500
+      run.rows[i]![COL.heroY] = at < 10 ? 1100 : 1100 - Math.min(300, (at - 9) * 30)
+      run.rows[i]![COL.right] = at < 6 ? 1 : 0
+    }
+    expect(momentsOf(cfg, run).moments.met).toBe(1510)
+  })
+
   it('starts every moment three pictures before it: the hit, the taking, the release, the seal, the blow of the flipper', () => {
     const files = filesOf(madeRun())
     const first = (moment: string) => stepsOf(files, moment)[0]
