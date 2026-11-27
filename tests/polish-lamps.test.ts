@@ -58,7 +58,7 @@ describe('a ball over a window in the floor', () => {
     for (let f = 0; f < FRAMES; f++) {
       const frame = stage.frameAt(f / 60)
       const ctx = context(frame.list)
-      const state = (stage.save() as { page: { s: { over?: Record<string, number> } } }).page.s.over
+      const state = (stage['save']() as { page: { s: { over?: Record<string, number> } } }).page.s.over
       const balls = frame.list.filter((s) => s.id.startsWith('ball.'))
       let any = false
       for (const n of table.inserts) {
@@ -94,7 +94,7 @@ describe('a ball over a window in the floor', () => {
     const fresh = new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver(), film: filmOptions('pinball') })
     for (let f = 0; f < FRAMES; f++) {
       fresh.seek(f / 60)
-      const saved = fresh.save() as { page: { s: Record<string, unknown> } }
+      const saved = fresh['save']() as { page: { s: Record<string, unknown> } }
       const { over: _count, ...rest } = saved.page.s
       h.update(JSON.stringify({ ...saved, page: { ...saved.page, s: rest } }))
     }
@@ -110,7 +110,7 @@ describe('a ball over a window in the floor', () => {
     })
     const back = new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver(), film: filmOptions('pinball') })
     back.seek((6217 - FIRST) / 60)
-    const kept = back.save()
+    const kept = back['save']()
     back.seek((6400 - FIRST) / 60)
     const other = new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver(), film: filmOptions('pinball') })
     other.restore(kept)
@@ -128,7 +128,7 @@ describe('a ball over a window in the floor', () => {
   it('leaves the ball its place, its speed and its roll across the white window and the amber one', () => {
     for (const row of PATH) {
       stage.seek((row[0]! - FIRST) / 60)
-      const { s, m } = (stage.save() as { page: { s: { roll: number[] }; m: { balls: { x: number; y: number; vx: number; vy: number }[] } } }).page
+      const { s, m } = (stage['save']() as { page: { s: { roll: number[] }; m: { balls: { x: number; y: number; vx: number; vy: number }[] } } }).page
       const b = m.balls[0]!
       expect([row[0], r6(b.x), r6(b.y), r6(b.vx), r6(b.vy), r6(s.roll[0]!), r6(s.roll[1]!)]).toEqual(row)
     }
