@@ -4,6 +4,7 @@ import { BALL, OUTLET, PORT, SCREEN, railOf } from '../../layout'
 import { local, localBalls, type Zone } from '../zone'
 import { Geo, type V2, type V3 } from './geo'
 import { TONE, aluOf, breathOf, clearOf, hex, mesh } from './mats'
+import { buildSuction, DRAW, drawOf, poseSuction } from './suction'
 
 // The one clear tube of the machine. The feed tube is built to it here; the drain tube and the lift tube are to be built to the same.
 export const TUBE = { outer: 53, wall: 3.6, sides: 24, opacity: 0.05, collar: 22, collarOut: 58.5, ferrule: 9, ferruleOut: 56, collarStep: 5.1 * BALL, clampStep: 5.1 * BALL, clampWide: 5, strap: 2, bend: 1.1 * BALL }
@@ -487,6 +488,7 @@ export function loader(z: Zone, _ctx: RealContext): THREE.Object3D {
     const r = ring as { a: [number, number]; g: [number, number]; x: number; y: number } | null
     if (r && o.userData.ring) (o.userData.ring as Ring).runs.push(run(tube, r.g))
   }
+  buildSuction(o, z)
   return o
 }
 
@@ -539,10 +541,11 @@ function knocked(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
 export function loaderPose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
   if (z.id === 'first' || z.id === 'marquee') knocked(o, z, ctx)
   if (z.id !== 'first' && z.id !== 'last') return
+  poseSuction(o, z, ctx)
   const t = ctx.byId.get(z.id === 'first' ? 'loader.ring' : 'outlet.ring')?.v?.[0] ?? 9
   const rest = z.id === 'first' ? GLOW.low + (GLOW.high - GLOW.low) * (0.5 - 0.5 * Math.cos((ctx.time * Math.PI * 2) / GLOW.seconds)) : GLOW.low
   const gone = z.id === 'first' ? ctx.byId.get('loader.ring')?.v?.[1] ?? 9 : 9
-  breathOf(z).value = rest + ANSWER.flash * (flashOf(t) + flashOf(gone))
+  breathOf(z).value = rest + ANSWER.flash * (flashOf(t) + flashOf(gone)) + (z.id === 'first' ? DRAW.glow * drawOf(ctx) * (0.75 + 0.25 * Math.sin(ctx.time * 46)) : 0)
   const r = o.userData.ring as Ring | undefined
   if (!r) return
   const d = ANSWER.shrink * dipOf(t) - LET.wide * dipOf(gone)

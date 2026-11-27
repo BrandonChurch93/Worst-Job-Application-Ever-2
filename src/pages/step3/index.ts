@@ -17,6 +17,7 @@ import { drainWay, KNOCK, LET } from '../../table/real/frame/loader'
 import { ANSWER } from '../../table/real/lights/levels'
 import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
+import { fight, filmHand, LEAN, leanOf, VAC } from './vacuum'
 import { FRENZY, noted, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
@@ -30,8 +31,8 @@ const beatAt = (id: string): { from: number; to: number } => beats.find((b) => b
 const px = (v: number): number => v * BALL
 
 export const T = {
-  arrive: 0.8, seal: 2.4, tube: 3.3, lightsDown: 4.1, wake: 5.6, powerOn: 7.2, atPlunger: 8.6, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 19.8, inboxBy: 20.3,
-  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedBy: 27.2, scoopKick: 29.35, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
+  arrive: 0.7, seal: 3.4, tube: 3.95, lightsDown: 4.35, wake: 5.7, powerOn: 7.3, atPlunger: 8.6, plunger: 10.45, onTable: 11.9, doorKick: 12.9, doorOpen: 14.1, lobbyEnd: 14.9, officeKey: 17.4, inboxOn: 19.8, inboxBy: 20.3,
+  drops: [20.78, 20.88, 20.98], eject: 20.72, officeOpen: 24.3, officeBy: 24.9, firedOn: 27.0, firedBy: 27.2, scoopKick: 28.6, flapOn: 29.4, flapBy: 31.2, highwayEnd: 33.0, spiralEnd: 34.45, save: 35.6, streetOpen: 36.9, streetBy: 37.9,
   press: seconds - TURN_HALF - 0.5
 }
 const MODES: { at: number; tier: number; mode: number }[] = [
@@ -94,7 +95,7 @@ function buildLayout(): LayoutNode {
 
 interface State {
   mode: 'live' | 'film'; time: number; t: number; phase: 'wait' | 'pull' | 'sealed' | 'open' | 'result'; pull: number; said: string[]; drops: number; tows: number
-  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number[]; fx?: number[]
+  scroll: number; floor: number; opened: number; result: number; pressed: boolean; hold: number; took: number; home: number; pan: number[]; arc: number; blow: number[]; snap: number; sway: number; lay: number[]; seen: number; out: number[]; done: boolean; skipped: boolean; saved: boolean; score: number; shut: boolean; dim: number; struck: number; face: number[]; hit: number[]; was: number[]; scoreAt: number; scoreWas: number; flipped: boolean; sink: number[]; latch: number; sv: number; roll: number[]; fall?: number[]; room?: number[]; fx?: number[]; vac?: number[]
 }
 
 type Rolled = State & { over?: Record<string, number> }
@@ -125,7 +126,15 @@ const Y0 = TIER_Y[0]!
 const Y1 = TIER_Y[1]!
 const Y2 = TIER_Y[2]!
 const LAST_OUT: Shape = { id: 'last.out', part: 'table-layout', kind: 'well', x: 0, y: px(LAST_Y), w: 1920, h: PAGE_H - px(LAST_Y), z0: -px(40), z1: 0, tone: 'dark' }
+// The film's push in on the port while it pulls: the view looks at a place `left` and `down` px from the port's middle, from `near` of the home camera's distance.
+const PUSH = { left: 250, down: 30, near: 0.56, seconds: 1.5 }
+const portPose = (): CameraPose => {
+  const p = homePose(0, 0)
+  const at = toWorld(px(PORT.x) - PUSH.left, px(PORT.y) + PUSH.down, 0)
+  return { ...p, eye: [at[0] + (p.eye[0] - p.target[0]) * PUSH.near, at[1] + (p.eye[1] - p.target[1]) * PUSH.near, at[2] + (p.eye[2] - p.target[2]) * PUSH.near], target: at }
+}
 const NAMED: Record<string, CameraPose> = {
+  port: portPose(),
   'tier-3': tierPose(0), 'tier-2': tierPose(1), 'tier-1': streetPose(),
   'table-wide': { ...look('table-wide', [MID, APRON_Y + 17.4, 8.4], [MID, Y2 + 0.45, -1.86]), omit: LAST_OUT },
   'table-lobby': look('table-lobby', [MID + 0.35, Y0 + 9.2, 1.3], [MID - 0.55, Y0 + 5.02, 0.36]),
@@ -136,7 +145,7 @@ const NAMED: Record<string, CameraPose> = {
   'table-gap': { ...look('table-save', [11.9, Y2 + 14.3, 1.5], [12.2, Y2 + 8.3, -2.5]), omit: LAST_OUT }
 }
 const FILM: [number, string, number][] = [
-  [0, 'follow', 0], [4.1, 'tube', 0.5], [5.2, 'table-wide', 0], [8.65, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [18.95, 'near-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [29.6, 'follow', 0],
+  [0, 'follow', 0], [T.arrive, 'port', PUSH.seconds], [4.35, 'tube', 0.45], [5.3, 'table-wide', 0], [8.65, 'ride', 0], [11.55, 'tier-3', 0], [12.75, 'table-lobby', 0], [14.3, 'follow', 0], [16.55, 'table-nest', 0], [20.5, 'table-replyall', 0], [22.2, 'follow', 0], [26.9, 'table-fired', 0], [28.8, 'follow', 0],
   [30.75, 'rail', 0], [32.3, 'follow', 0.6], [34.65, 'table-gap', 0], [35.35, 'table-save', 0], [37.2, 'follow', 0]
 ]
 const TUBE: { eye: [number, number, number]; at: [number, number, number]; wide: number } = { eye: [0.55, 2.7, 1.5], at: [-2.7, -1.2, 0.1], wide: 12 }
@@ -173,6 +182,12 @@ const BEATS = { dread: [0.86, -0.6], brace: [0.4, 0.68], catch: [0.12, 0.64], sh
 const SHELL = { shut: 0.27, open: 0.2, soft: 3.6, full: 14.6 }
 // The way into the cup: the seconds in which the pull's aim runs from the arrow to the port, with growing speed from `lead` of its mean speed and the body stretched to `long` as it goes, and the seconds of the sink, in which the arrow goes down into the cup to `floor` px over the page, shortens and turns to the pose it is sealed in.
 const PLUNGE = { reach: 0.24, sink: 5 / 60, grow: 2, lead: 0.35, floor: 2, long: 1.3 }
+// The second of the film at which the arrow lets go: the plunge and the sink that follow end on the seal.
+// The words of the page that lean to the port while it pulls.
+// Where the film's ball is shot on the street before the firehouse opens: the face of the bank's targets, in balls from the left and down the tier.
+const BANK = [4.9, 4.35]
+const LEANERS = ['heading', 'subline', 'intro']
+const FIGHT_END = T.seal - 0.1 - PLUNGE.sink - PLUNGE.reach - 0.02
 // The latch of the half shells: the share of the close that is the slow swing and how far shut it brings them, then the snap into the seam. On the latch the ball is squeezed across the seam by `squeeze` for at most `over` seconds, and the port's ring answers a second time. From `turn` of the close on the arrow turns to the pose it is caught in, so the catch does not turn it in one frame.
 const LATCH = { swing: 0.7, to: 0.5, squeeze: 0.85, way: 1.5707963267948966, over: 0.5, turn: 0.5 }
 // The drop into the feed tube: the view follows the ball as a damped spring whose stiffness grows from `slow` to `firm` (1 / s) over `ramp` seconds after `hold`, so the ball runs down the screen and the view catches it up. After `over` seconds the page's plain rule follows again.
@@ -746,12 +761,13 @@ export function makePage(): PageLogic {
       }
     }
     if (t >= T.officeBy + 2) for (let i = 1; i < mc.balls.length; i++) if (mc.balls[i]!.mode !== 'none') mc.remove(i)
-    on['street.firehouse'] = t < T.scoopKick + 0.3
+    on['street.firehouse'] = (live || t >= T.firedOn) && t < T.scoopKick + 0.3
     const street = b.tier !== 2 ? 0 : t < T.scoopKick ? lob(holdOf('street.firehouse').mouth!, SHOT.fire, T.firedBy, 'street', T.scoopKick - slide[2]!, T.firedBy - slide[8]!) : t >= T.flapOn && t < T.highwayEnd ? lob(railOf('highway').points[0]!, SHOT.flap, T.flapBy, 'street', T.highwayEnd - slide[3]!, T.flapOn) : 0
     if (b.tier === 2 && b.mode === 'plane') {
       if (t < T.scoopKick) {
         const c = holdOf('street.firehouse').mouth!
         if (!live && t >= T.firedBy) towTo('street.firehouse')
+        else if (!live && t < T.firedOn) shoot(BANK[0]!, Y2 + BANK[1]!, SHOT.scoop)
         else shoot(c[0], c[1], SHOT.scoop, PULL.scoop)
       } else if (t < T.highwayEnd) {
         const p = railOf('highway').points[0]!
@@ -913,23 +929,38 @@ export function makePage(): PageLogic {
         const reach = 150 + Math.max(0, io.time - 1.2) * 420
         const d = Math.hypot(io.cursor.x - port.x, io.cursor.y - port.y)
         if (s.mode === 'film' && io.time > 0.5 && io.cursor.pose().z < LOADER.low && once('act.land')) io.cursor.press(LOADER.land[0]!, LOADER.land[1]!)
-        if (s.phase === 'wait' && d < reach && io.time >= T.arrive && !io.cursor.inAir) {
-          if (s.seen < 0) {
-            const p = io.cursor.pose()
-            s.seen = io.time
-            io.cursor.react('recoil')
-            io.cursor.hold(LOADER.away[2]!)
-            io.cursor.strike(p.lean + p.spin + LOADER.away[0]!, LOADER.away[2]!)
-            io.cursor.press(LOADER.away[1]!, LOADER.away[2]!)
-          } else if (io.time >= s.seen + LOADER.away[2]!) {
-            s.phase = 'pull'
+        if (s.phase === 'wait' && (d < reach || s.mode === 'film') && io.time >= T.arrive && !io.cursor.inAir) {
+          s.seen = io.time
+          s.phase = 'pull'
+          s.vac = [0, 0, io.pointer.x, io.pointer.y, -1]
+          io.cursor.react('recoil')
+          io.cursor.take('ball')
+          io.emit('vacuum-on', port.x, port.y, false)
+        }
+        if (s.phase === 'pull' && s.vac) {
+          const f = fight(s.vac, io.pointer, port, dt, s.mode === 'film' ? (VAC.end * (io.time - s.seen)) / (FIGHT_END - s.seen) : -1)
+          s.vac = f.state
+          const turn = ROLL.rest + Math.atan2(f.y - port.y, f.x - port.x)
+          const p = io.cursor.pose()
+          io.cursor.act(f.mood)
+          io.cursor.drive(f.x, f.y, 30)
+          io.cursor.aim(turn - 6.283185307179586 * Math.round((turn - p.lean - p.spin) / 6.283185307179586))
+          io.cursor.press(f.long, dt)
+          if (f.began && f.part === 1) io.cursor.wobble(VAC.dig[0]!, VAC.dig[1]!, VAC.dig[2]!)
+          if (f.began && f.part === 5) io.cursor.wobble(VAC.rim[0]!, VAC.rim[1]!, VAC.rim[2]!)
+          if (f.began && (f.part === 2 || f.part === 4)) {
+            io.cursor.react('startle')
+            io.emit('vacuum-slip', f.x, f.y, false)
+          }
+          if (f.lost) {
+            s.vac = undefined
             s.pull = 0
             s.sink = [-1, io.cursor.x, io.cursor.y, 0, 0, 0]
-            io.cursor.take('ball')
+            io.cursor.aim(null)
             io.cursor.press(LOADER.go[0]!, LOADER.go[1]!)
+            io.emit('vacuum-lose', f.x, f.y, false)
           }
-        }
-        if (s.phase === 'pull') {
+        } else if (s.phase === 'pull') {
           s.pull += dt
           const due = s.mode === 'live' ? s.pull > 0.3 - PLUNGE.sink : io.time >= T.seal - 0.1 - PLUNGE.sink
           if (s.sink[0]! < 0 && ((d < 14 && due) || s.pull > 1.1 - PLUNGE.sink)) {
@@ -1139,7 +1170,10 @@ export function makePage(): PageLogic {
       }
       const changed = { v: [Math.min(9, s.t - s.scoreAt), s.scoreWas] }
       for (const id of ['marquee-score', ...TIERS.map((z) => `display.${z}.score`)]) over[id] = { ...over[id], ...changed }
+      const pull = s.seen < 0 ? 0 : smooth(Math.min(1, (s.time - s.seen) / LEAN.rise)) * (s.phase === 'wait' || s.phase === 'pull' ? 1 : Math.max(0, 1 - (s.t - s.took) / LEAN.fall))
+      if (pull > 0) LEANERS.forEach((id, i) => { over[id] = { ...over[id], ...leanOf(boxOf(layout, id), port, pull, s.time, i) } })
       drawLayout(out, layout, { states, runtime: { score: scoreText() }, over })
+      if (pull > 0) out.push({ id: 'loader.draw', part: 'loader', kind: 'box', x: port.x, y: port.y, w: 0, h: 0, z0: 0, z1: 0, tone: 'dark', v: [pull] })
       if (s.mode === 'live' && s.phase === 'sealed' && !s.flipped && s.t >= T.onTable && s.t < T.onTable + HINT) out.push({ id: 'display.hint', part: 'displays', kind: 'box', x: px(MID), y: px(MARQUEE_Y), w: 0, h: 0, z0: 0, z1: 0, tone: 'dark', v: [s.t - T.onTable] })
       const ago = (at: number): number => (at < 0 ? 9 : Math.min(9, s.t - at))
       const rings: Record<string, number> = { 'loader.ring': Math.min(ago(s.took), ago(s.latch)), 'outlet.ring': ago(s.home) }
@@ -1165,9 +1199,8 @@ export function makePage(): PageLogic {
       const flipLeft = held('L', time)
       const flipRight = held('R', time)
       if (time < T.streetBy) {
-        const u = smooth(Math.min(1, Math.max(0, (time - TURN_HALF - 0.1) / 1.2)))
-        const v = time < LOADER.by ? Math.min(u, LOADER.short) : u
-        return { x: HANDOFF.x + (port.x - 40 - HANDOFF.x) * v, y: HANDOFF.y + (port.y + 30 - HANDOFF.y) * v, down: false, flipLeft, flipRight }
+        const at = filmHand(time, HANDOFF, port, TURN_HALF, T.arrive, FIGHT_END)
+        return { x: at.x, y: at.y, down: false, flipLeft, flipRight }
       }
       const u = smooth(Math.min(1, Math.max(0, (time - (T.press - 1.2)) / 0.9)))
       const from = { x: outlet.x, y: outlet.y - lastScroll }

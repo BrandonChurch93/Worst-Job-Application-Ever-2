@@ -22,7 +22,7 @@ export function strikeOf(e: TableEvent, frenzy: boolean): Strike | null {
   if (!h) return null
   const paper = PAPER.some((p) => e.id.startsWith(p))
   const steel = e.ball > 0
-  const loot = steel ? 0 : paper ? 2 : frenzy ? 1 : e.name === 'scoop-kick' && e.id === 'street.firehouse' ? 1 : h[1]
+  const loot = steel || e.name === 'rebound' ? 0 : paper ? 2 : frenzy ? 1 : e.name === 'scoop-kick' && e.id === 'street.firehouse' ? 1 : h[1]
   return { id: e.id, hard: steel ? 1 : frenzy && (e.name === 'bumper' || e.name === 'sling') ? 3 : h[0], loot }
 }
 

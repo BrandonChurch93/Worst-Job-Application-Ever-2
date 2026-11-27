@@ -18,20 +18,20 @@ export const FX = {
   sparkLong: 0.045,
   sparkWide: 0.05,
   ringSeconds: 0.3,
-  ringTo: [0, 1.3, 2.1, 3.2],
+  ringTo: [0, 1.1, 1.6, 2.2],
   coreSeconds: 0.12,
-  core: [0, 0.5, 0.8, 1.2],
+  core: [0, 0.22, 0.32, 0.42],
   lightSeconds: 0.28,
   light: [0, 0.5, 0.9, 1.4],
   lightReach: 4.5,
-  coins: [0, 5, 9, 12],
+  coins: [0, 4, 8, 6],
   coinR: 0.17,
   coinThick: 0.045,
   coinOut: [1.5, 6.5],
   coinUp: [7, 13],
   coinFall: 30,
   coinBounce: 0.38,
-  coinSeconds: 1.6,
+  coinSeconds: 1.25,
   coinFade: 0.25,
   coinSpin: 26,
   papers: [0, 3, 5, 7],
@@ -69,7 +69,7 @@ export function buildFx(group: THREE.Object3D, z: Zone): void {
     return o
   }
   const sparks = mesh(new THREE.OctahedronGeometry(1, 0).scale(1, 0.5, 0.5), glow(), n * FX.sparks[3]!, 'fx-sparks')
-  const rings = mesh(new THREE.RingGeometry(0.82, 1, 40), glow(), n, 'fx-rings')
+  const rings = mesh(new THREE.RingGeometry(0.9, 1, 40), glow(), n, 'fx-rings')
   const cores = mesh(new THREE.SphereGeometry(1, 16, 10), glow(), n, 'fx-cores')
   const gold = lit(studio(new THREE.MeshStandardMaterial({ color: new THREE.Color(1, 0.76, 0.22), metalness: 1, roughness: 0.28, emissive: new THREE.Color(0.5, 0.3, 0.04), envMapIntensity: 1.2 })), z)
   const coins = mesh(new THREE.CylinderGeometry(FX.coinR * BALL, FX.coinR * BALL, FX.coinThick * BALL, 18).rotateX(Math.PI / 2), gold, n * FX.coins[3]!, 'fx-coins')
@@ -145,14 +145,14 @@ export function poseFx(group: THREE.Object3D, z: Zone, ctx: RealContext): void {
       const r = (0.4 + (FX.ringTo[hard]! - 0.4) * (1 - (1 - u) * (1 - u))) * BALL
       turn.identity()
       f.rings.setMatrixAt(rings, at.compose(place.set(p[0], p[1], p[2] + 3), turn, size.set(r, r, 1)))
-      f.rings.setColorAt(rings++, tint.setRGB(hot[0] * (1 - u) * 0.6, hot[1] * (1 - u) * 0.6, hot[2] * (1 - u) * 0.6))
+      f.rings.setColorAt(rings++, tint.setRGB(hot[0] * (1 - u) * 0.3, hot[1] * (1 - u) * 0.3, hot[2] * (1 - u) * 0.3))
     }
     if (age < FX.coreSeconds) {
       const u = age / FX.coreSeconds
       const r = FX.core[hard]! * (0.5 + 0.5 * u) * BALL
       turn.identity()
       f.cores.setMatrixAt(cores, at.compose(place.set(p[0], p[1], p[2] + BALL * 0.5), turn, size.set(r, r, r)))
-      f.cores.setColorAt(cores++, tint.setRGB(hot[0] * (1 - u) * 0.5, hot[1] * (1 - u) * 0.5, hot[2] * (1 - u) * 0.5))
+      f.cores.setColorAt(cores++, tint.setRGB(hot[0] * (1 - u) * 0.3, hot[1] * (1 - u) * 0.3, hot[2] * (1 - u) * 0.3))
     }
     if (loot === 1 && age < FX.coinSeconds) {
       const fade = Math.min(1, (FX.coinSeconds - age) / FX.coinFade)
