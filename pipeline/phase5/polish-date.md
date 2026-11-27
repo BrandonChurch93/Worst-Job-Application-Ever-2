@@ -34,7 +34,7 @@ MEASURED, stepped stage, no browser, no pack: `POLISH_DATE_TABLE=/tmp/date-befor
 
 - `HOUSED = 0.022`: the slot and the crank lie in the floor of their trays at this share of their height while the tray opens over them and while it shuts, as the dial does, and rise from there on the same steps as before (`risen()`, used by `machine()` and `overMachine()`). At lift 1 the value is exactly 1.
 - The lift, the spring, the phases and the cursor's ground are not touched, so no step of the opening moves.
-- `SUNK` is gone: the reels carry their legends while housed.
+- Variant A, shipped in the branch: `SUNK` 0.05 stays, the housed reels are blank and their legends come on once the rise has begun (the picture 0.183 s after the press). Variant B, `pipeline/phase5/polish-date-NEEDS.patch` (commit d9d95f83): `SUNK` goes, the maker draws a legend from 0.02 as it draws its reel, and the test of 48ae1fb4 in `tests/step2-dial.test.ts` is rewritten in two parts. The Builder decides on the pictures.
 
 Why 0.022 and not more. The first try was 0.07. The picture showed the reels through the pocket of the field below: the floor of a field is at -6 (`scale.heights.field`), the floor of a tray at -8, and the field below passes over the machine's place as the tray opens. The slot's knob is 78 above the tray's floor, so it stays under the field's floor up to 0.0256; the makers draw from 0.02. 0.022 puts the knob's top at -6.28 and the cabinet at 1.28 px (the dial rests at 1.6 px).
 
