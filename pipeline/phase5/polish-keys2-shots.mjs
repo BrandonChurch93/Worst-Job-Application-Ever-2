@@ -1,5 +1,5 @@
 // The live site under the pack's own visitor, drawn at the real size of the 1920 by 1080 page (2 device pixels to a point of the 960 by 540 window, as the packs' close sheets are).
-// node pipeline/phase5/polish-keys2-shots.mjs walk LABEL FIRST-LAST [FIRST-LAST ...]   walks once and keeps the whole picture of every step in the spans
+// node pipeline/phase5/polish-keys2-shots.mjs walk LABEL FIRST-LAST [FIRST-LAST ...]   walks once and keeps the whole picture of every step in the spans, from dist/ or from the build named by POLISH_KEYS2_DIST
 // node pipeline/phase5/polish-keys2-shots.mjs sheet LABEL NAME FIRST COUNT X Y W H [ZOOM] [COLS]   lays COUNT consecutive pictures from step FIRST, the window X, Y, W, H of the page, on one sheet
 // node pipeline/phase5/polish-keys2-shots.mjs pair NAME UPPER.png LOWER.png   lays one sheet above another
 // node pipeline/phase5/polish-keys2-shots.mjs film LABEL FIRST-LAST [FIRST-LAST ...]   keeps the film's frames in the spans at 1920 by 1080, draft tier, from dist/ or from the build named by POLISH_KEYS2_DIST
@@ -41,7 +41,7 @@ if (what === 'walk') {
   const f = cfg.formats[RUN.format]
   const k = f.width / cfg.formats.hd.width
   ensureBuild()
-  const server = await serve(at('dist'), { mounts: { '/assets-full/': at('assets-full') } })
+  const server = await serve(process.env.POLISH_KEYS2_DIST ? path.resolve(process.env.POLISH_KEYS2_DIST) : at('dist'), { mounts: { '/assets-full/': at('assets-full') } })
   const { browser } = await launch()
   const rows = []
   try {
@@ -113,7 +113,7 @@ if (what === 'walk') {
     let cutOut = sharp(file).extract({ left: Math.round(x * k), top: Math.round(y * k), width: Math.round(w * k), height: Math.round(h * k) })
     if (k !== 1 || zoom !== 1) cutOut = cutOut.resize({ width: Math.round(w * zoom), height: Math.round(h * zoom), kernel: zoom > 1 ? 'nearest' : 'lanczos3' })
     const total = Math.round((i / 60) * 100)
-    tiles.push({ png: await cutOut.png().toBuffer(), text: `${Math.floor(total / 6000)}:${String(Math.floor((total % 6000) / 100)).padStart(2, '0')}.${String(total % 100).padStart(2, '0')} step ${i}` })
+    tiles.push({ png: await cutOut.png().toBuffer(), text: w * zoom < 110 ? String(i) : `${Math.floor(total / 6000)}:${String(Math.floor((total % 6000) / 100)).padStart(2, '0')}.${String(total % 100).padStart(2, '0')} step ${i}` })
   }
   const W0 = Math.round(w * zoom)
   const H0 = Math.round(h * zoom)
