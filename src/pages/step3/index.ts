@@ -103,7 +103,7 @@ const STREET = 0.95
 // The corner of the result card: the radius of the site's other result cards, step 5's two panels.
 const CARD_R = 24
 // The rise of the result card and its button out of the page: its seconds, the height they start from, the share of the rise that is the settle at the top, how far past their height they go before it, in px, and how far over the card's face its words ride while it moves, so that they are not drawn under it as it comes back down.
-const RISE = { seconds: 0.55, low: 0, settle: 0.3, over: 1.5, proud: 0.6 }
+const RISE = { seconds: 0.55, low: 0, settle: 0.3, over: 1.5, proud: 0.6, grain: 0.25 }
 // How far along the rail `drain` the riser of the last screen stands, in balls: from there to the outlet port the ball is drawn in the tube that lies on the page.
 const RISER_S = ((): number => {
   const p = railOf('drain').points
@@ -941,8 +941,9 @@ export function makePage(): PageLogic {
         const back = Math.max(0, (t - (1 - RISE.settle)) / RISE.settle)
         const u = a * a * (3 - 2 * a)
         const past = RISE.over * (t < 1 - RISE.settle ? u * u : (1 - back) * (1 - back) * Math.cos(Math.PI * back))
-        const card = RISE.low + (config.scale.heights.card - RISE.low) * u + past
-        const cap = RISE.low + (config.scale.heights.button - RISE.low) * u + past
+        const step = (z: number): number => Math.max(RISE.grain, Math.round(z / RISE.grain) * RISE.grain)
+        const card = step(RISE.low + (config.scale.heights.card - RISE.low) * u + past)
+        const cap = step(RISE.low + (config.scale.heights.button - RISE.low) * u + past)
         over.result = { z1: card }
         for (const id of ['result-title', 'result-body']) over[id] = { z0: card + RISE.proud, z1: card + RISE.proud }
         if (!s.pressed) {

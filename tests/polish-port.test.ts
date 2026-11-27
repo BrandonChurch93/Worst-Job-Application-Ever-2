@@ -15,10 +15,19 @@ interface Row { time: number; x: number; y: number; z: number; squash: number; t
 const take = (() => {
   const s = new Stage({ mode: 'film', flow: filmFlow('pinball'), pages, driver: new ScriptDriver(), film: filmOptions('pinball') })
   const rows: Row[] = []
+  const plates: number[] = []
   let n = 0
   while (!s.finished && s.time < 43) {
     s.advance(1)
     n++
+    if (s.time > 39.4 && s.time < 42.2) {
+      const now: DrawList = []
+      s.page.draw(now)
+      for (const id of ['result', 'go-cap']) {
+        const plate = now.find((x) => x.id === id)
+        if (plate) plates.push(plate.z1 - plate.z0)
+      }
+    }
     if (n % EACH !== 0) continue
     const c = s.cursor.pose()
     const list: DrawList = []
@@ -29,7 +38,7 @@ const take = (() => {
     const ring = list.find((x) => x.id === 'loader.ring')
     rows.push({ time: s.time, x: c.x, y: c.y, z: c.z, squash: c.squash, turn: c.lean + c.spin, inBall: c.inBall, taken: c.taken, hold: c.inBall ? sealedFit(c, s.time).hold : 1, ball: b ? [b.x + b.w / 2, b.y + b.h / 2, b.z0] : null, shell: b?.v ? [...b.v] : null, scroll: s.page.scroll(), card: card ? card.z1 : null, cap: cap ? cap.z1 : null, ring: ring?.v?.[0] ?? 9 })
   }
-  return { rows, events: s.events.map((e) => ({ name: e.name, time: e.step / stepHz })) }
+  return { rows, plates, events: s.events.map((e) => ({ name: e.name, time: e.step / stepHz })) }
 })()
 
 if (process.env.PORT_TRACE) writeFileSync(process.env.PORT_TRACE, JSON.stringify(take))
@@ -39,6 +48,11 @@ const between = (a: number, b: number): Row[] => take.rows.filter((r) => r.time 
 const WAS: [string, number][] = [['step', 235], ['step', 269], ['step', 300], ['step', 329], ['step', 449], ['ball-seal', 552], ['tube-run', 791], ['lights-down', 983], ['power-on', 1728], ['plunger', 2508], ['sling', 2952], ['carpet-roll', 2995], ['spinner', 3108], ['doors-slam', 3144], ['tier-fall', 3470], ['flasher', 3585], ['drop-target', 3674], ['drop-target', 3675], ['drop-target', 3678], ['drop-target', 3682], ['sling', 3726], ['bumper', 3767], ['bumper', 3850], ['sling', 3873], ['bumper', 3913], ['flipper', 4142], ['bumper', 4174], ['sling', 4202], ['bumper', 4242], ['sling', 4267], ['bumper', 4308], ['flipper', 4385], ['bumper', 4417], ['flipper', 4450], ['inbox-take', 4507], ['ball-drop', 4987], ['flasher', 4987], ['ball-drop', 5011], ['ball-drop', 5035], ['flipper', 5100], ['flasher', 5102], ['flasher', 5134], ['sling', 5159], ['flasher', 5198], ['sling', 5223], ['flasher', 5263], ['flipper', 5380], ['flasher', 5413], ['sling', 5440], ['flasher', 5480], ['sling', 5504], ['flasher', 5543], ['tier-fall', 5952], ['flipper', 6173], ['firehouse-take', 6302], ['scoop-kick', 7046], ['flipper', 7297], ['ramp-roll', 7349], ['spiral', 7919], ['flipper', 8548], ['flipper-save', 8548], ['sling', 8763], ['drain', 9031], ['ball-open', 9316], ['flatten', 9316], ['peel-up', 9437], ['button-press', 9840], ['page-turn', 9960]]
 
 describe('the machine page\'s own moments in the film', () => {
+  it('gives the result card and its button only heights the shell makes a plate for, at every step from the rise to the end of the take', () => {
+    expect(take.plates.length).toBeGreaterThan(2 * 2.4 * stepHz)
+    for (const h of take.plates) expect(Math.round(h * 4) / 4).toBe(h)
+  })
+
   it('moves no event of the take', () => {
     expect(take.events.map((e) => [e.name, Math.round(e.time * stepHz)])).toEqual(WAS)
   })
