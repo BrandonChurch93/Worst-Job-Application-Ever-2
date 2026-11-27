@@ -176,6 +176,33 @@ const GROOVE = 1.5
 
 const currentOf = (ctx: RealContext): Shape | null => ctx.list.find((o) => o.role === 'progressButtonCurrent') ?? null
 
+// The fill starts at the first button: the steps behind the one in hand read as done.
+const FILL_FROM_FIRST = true
+// How far the fill stands over the rail, how far its ends go under the collar and under the next cap, and the round of its corners.
+const FILL_PROUD = 0.25
+const FILL_UNDER_COLLAR = 1.2
+const FILL_UNDER_CAP = 6
+const FILL_ROUND = 3
+
+// The lengths of rail that are filled, from the rail's left end: the steps behind, then from the collar of the step in hand toward the next button by the fields done.
+export function railFill(s: Shape, ctx: RealContext): [number, number][] {
+  const cur = currentOf(ctx)
+  const total = s.v?.[1] ?? 0
+  if (!cur || !(total > 0)) return []
+  const part = Math.min(1, Math.max(0, (s.v?.[0] ?? 0) / total))
+  const c = cur.x + cur.w / 2 - s.x
+  const edge = cur.w / 2 + CLEARANCE + COLLAR - FILL_UNDER_COLLAR
+  const out: [number, number][] = []
+  if (FILL_FROM_FIRST && c - edge > 0.5) out.push([0, q(c - edge)])
+  let next: Shape | null = null
+  for (const o of ctx.list) if (o.role === 'progressButton' && o.x > cur.x && (!next || o.x < next.x)) next = o
+  if (!next) return out
+  const far = next.x - s.x + FILL_UNDER_CAP
+  const lead = q(c + edge + (far - (c + edge)) * part)
+  if (lead - (c + edge) > 0.5) out.push([q(c + edge), lead])
+  return out
+}
+
 // The rail, and round the current step's cap a thin collar that stays where it is: the cap stands in it with a dark clearance between.
 function rail(s: Shape, ctx: RealContext): THREE.Object3D {
   const under = pocketCut(s).under
@@ -186,6 +213,13 @@ function rail(s: Shape, ctx: RealContext): THREE.Object3D {
   if (!cur) return bar
   const root = new THREE.Group()
   root.add(bar)
+  for (const [from, to] of railFill(s, ctx)) {
+    const plan = { kind: 'box', w: to - from, h: s.h, r: Math.min(FILL_ROUND, (to - from) / 2) }
+    const lit = mesh(shared(`railFill:${q(plan.w)}x${q(plan.h)}`, () => sweep(outlineOf(plan, 0.15, 6), profile([[0, -0.2, true], [0, 0.1, true], [RAIL_BEVEL, top + FILL_PROUD, true], [s.h / 2, top + FILL_PROUD + CROWN_RAIL]]))), m.railSatin, false)
+    lit.name = 'rail-fill'
+    lit.position.set((from + to) / 2 - s.w / 2, 0, 0)
+    root.add(lit)
+  }
   const r = cur.w / 2 + CLEARANCE + COLLAR
   const lip = top + COLLAR_PROUD
   const ring = mesh(shared(`collar:${q(cur.w)}`, () => sweep(circle(r, 72), profile([[0, -0.2, true], [0, lip - 0.4], ...arc(0, lip - 0.4, 0.4, 0.4, 3).slice(1), [COLLAR, lip, true], [COLLAR + 0.1, top, true]]), false)), m.capRim, false)
@@ -508,7 +542,9 @@ export const controls: PartMaker = {
     const base = `${s.role ?? 'plate'}:${dims(s)}:${s.tone}:${s.pocket ? 1 : 0}:${s.id.endsWith('-zone') ? 1 : 0}${waits ? ':waits' : ''}`
     if (s.role !== 'progressRail') return base
     const cur = currentOf(ctx)
-    return cur ? `${base}:${q(cur.x - s.x)}:${q(cur.y - s.y)}:${q(cur.w)}` : base
+    if (!cur) return base
+    const fill = railFill(s, ctx).map(([from, to]) => `:${from}-${to}`).join('')
+    return `${base}:${q(cur.x - s.x)}:${q(cur.y - s.y)}:${q(cur.w)}${fill}`
   },
   make(s: Shape, ctx: RealContext): THREE.Object3D {
     if (s.id === 'field-focus') {

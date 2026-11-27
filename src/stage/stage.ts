@@ -3,7 +3,7 @@ import { blendPose, CursorBody, HANDOFF, type CursorPose } from '../cursor/body'
 import { BotDriver, type BotName, type BotRun } from './bots'
 import { homePose, smooth } from './camera'
 import { arriveTurn, holdsTurn, leaveTurn, shiverAt, shiverBase, shiverDelay, shiverSeconds, SHIVER, TURN } from './turn'
-import type { CameraPose, Driver, DrawList, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
+import type { CameraPose, Driver, DrawList, FieldProgress, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
 
 export * from './types'
 
@@ -345,7 +345,10 @@ export class Stage {
     const hit = this.frames.get(this.step)
     if (hit) return hit
     const list: DrawList = []
-    if (this.phase !== 'end') this.page.draw(list)
+    if (this.phase !== 'end') {
+      this.page.draw(list)
+      railFields(list, this.page.fields?.() ?? null)
+    }
     const made: Frame = { list, cursor: this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     const settle = this.settledFor()
     if (settle !== undefined) {
@@ -399,6 +402,12 @@ export class Stage {
     }
     return (h >>> 0).toString(16).padStart(8, '0')
   }
+}
+
+// What a page reports of its fields is handed to the maker of the header's rail as the rail's own numbers: [done, total].
+export function railFields(list: DrawList, fields: FieldProgress | null): void {
+  if (!fields || !(fields.total > 0)) return
+  for (const s of list) if (s.role === 'progressRail') s.v = [fields.done, fields.total]
 }
 
 const NUMBERS = ['x', 'y', 'w', 'h', 'z0', 'z1', 'rot', 'turnX', 'turnY', 'r'] as const
