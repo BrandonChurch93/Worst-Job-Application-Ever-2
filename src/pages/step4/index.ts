@@ -1,9 +1,10 @@
 import { config } from '../../config'
 import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
-import { bearing, clearSpot, newFight, SPARK_SECONDS, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
+import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
-import { GUARD, STANDS, TOP } from '../../boss/tune'
-import { drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
+import { CHANGE, GUARD, SOLID, STANDS, TOP } from '../../boss/tune'
+import { setView, viewOf } from '../../boss/viewof'
+import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
 import { SCREEN_H } from '../../shell/parts'
@@ -41,6 +42,9 @@ interface State {
   cx: number
   cy: number
   away: number
+  clock: number
+  base: number
+  fell: number
 }
 
 const heights = config.scale.heights
@@ -68,11 +72,12 @@ const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 const STAND_GRID: [number, number][] = []
 for (let y = 220; y <= 1000; y += 130) for (let x = 140; x <= 1780; x += 205) STAND_GRID.push([x, y])
-const FORM_OFF = UNFOLD.cannons[0] + 0.3
+const FORM_OFF = UNFOLD.crack
+const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -89,7 +94,16 @@ export function makePage(): PageLogic {
   for (const c of L.tree.children ?? []) if (KEPT.includes(c.id)) keepAll(c)
   const gone = (): number => easeOut(Math.min(1, Math.max(0, s.away)))
   const barLift = (): number => (TOP.bar - L.track.y) * gone()
+  const labelBox = L.tree.children!.find((c) => c.id === 'health')!.children![0]!.box
+  const barShift = (): number => (BAR.x - labelBox[0]!) * gone()
+  const barTrack = (): { x: number; w: number } => {
+    const x = L.track.x + barShift()
+    return { x, w: L.track.w + (BAR.right - (L.track.x + BAR.x - labelBox[0]!) - L.track.w) * gone() }
+  }
 
+  const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
+  const NONE = { breaks: [], fallen: [] as string[] }
+  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy } }))
   const inBox = (b: { x: number; y: number; w: number; h: number }, p: { x: number; y: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const fallenBox = { x: FALLEN.x - 150, y: FALLEN.y - 62, w: 300, h: 124 }
   const wake = (): number => (s.mode === 'film' ? WAKE_AFTER_TICK.film : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
@@ -127,6 +141,9 @@ export function makePage(): PageLogic {
     let z = s.away < 0.5 && inBox({ x: L.card.x, y: L.card.y, w: L.card.w, h: L.card.h - shut() }, p) ? heights.card : 0
     if ((s.stage === 'verify' || s.inSocket) && inBox(L.cap, p)) z = heights.button
     if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = PRESS.stand - PRESS.deep * sunk()
+    if (raised() >= 1) {
+      for (const w of standing(s.fight ?? NONE)) if (p.x >= w.x0 && p.x <= w.x1 && p.y >= w.y0 && p.y <= w.y1) z = Math.max(z, w.kind === 'pane' ? SOLID.tall.pane : SOLID.tall.pillar)
+    }
     if (s.stage === 'fight' && s.fight) {
       for (const up of s.fight.popups) if (up.closing < 0 && up.t > 0.14 && inBox(L.weapons.popups[up.slot]!.box, p)) z = Math.max(z, heights.card)
     }
@@ -134,13 +151,13 @@ export function makePage(): PageLogic {
   }
   const toCollapse = (io: StepIo, from: Rig): void => {
     s.from = from
+    s.fell = s.clock
     s.stage = 'collapse'
     s.t = 0
     if (s.fight) {
       s.fight.over = true
       s.fight.health = 0
       s.fight.balls = []
-      s.fight.marks = []
       s.fight.popups = []
       s.fight.darts = []
       s.fight.sparks = []
@@ -172,7 +189,13 @@ export function makePage(): PageLogic {
       if (s.mode === 'film') {
         while (s.cue < film.reactions.length && s.time >= film.reactions[s.cue]!.at) io.cursor.react(film.reactions[s.cue++]!.name)
       }
-      const off = (s.stage === 'unfold' && s.t >= FORM_OFF) || s.stage === 'fight'
+      if (s.clock >= 0) {
+        const was = s.clock - UNFOLD.crack
+        s.clock += dt
+        const now = s.clock - UNFOLD.crack
+        for (const [name, at] of [['arena-split', CHANGE.split], ['arena-rise', CHANGE.rise], ['healthbar-drop', CHANGE.bar]] as const) if (now >= at && was < at && !s.inSocket) io.emit(name, SOCKET.x, SOCKET.y, false)
+      }
+      const off = s.cracked && !s.inSocket && s.stage !== 'verify'
       s.away = Math.min(1, Math.max(0, s.away + ((off ? 1 : -1) * dt) / TOP.move))
       if (s.fight && s.stage !== 'fight') s.fight.shown += (s.fight.health - s.fight.shown) * Math.min(1, dt * 12)
       if (s.skipping && (s.stage === 'verify' || (s.stage === 'unfold' && s.t < UNFOLD.crack))) {
@@ -199,6 +222,7 @@ export function makePage(): PageLogic {
           if (s.ticked >= wake() || near) {
             s.stage = 'unfold'
             s.t = 0
+            s.clock = 0
           }
         }
       } else if (s.stage === 'unfold') {
@@ -217,6 +241,8 @@ export function makePage(): PageLogic {
         if (s.t >= HORROR.scared && s.t < UNFOLD.end) io.cursor.act('scared')
         if (s.t >= UNFOLD.end) {
           s.fight = newFight(HOME.x, HOME.y)
+          s.base = s.clock
+          io.emit('boss-formed', HOME.x, HOME.y, false)
           s.stage = 'fight'
           s.t = 0
           io.cursor.act('confident')
@@ -367,6 +393,11 @@ export function makePage(): PageLogic {
           const shape = out[i]!
           if (shape.id.startsWith('health-')) {
             shape.y += up
+            if (shape.id === 'health-track') {
+              const t = barTrack()
+              shape.x = t.x + (shape.x - L.track.x)
+              shape.w = t.w
+            } else shape.x += barShift()
             shape.moved = true
           } else if (!kept.has(shape.id) && !shape.id.startsWith('submit') && !ofHeader(shape.id)) {
             if (s.away >= 1) out.splice(i, 1)
@@ -377,24 +408,27 @@ export function makePage(): PageLogic {
           }
         }
       }
-      const fillAt = (w: number): Shape => ({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: L.track.x + FILL_GAP + slide, y: L.track.y + FILL_GAP + up, w, h: L.track.h - FILL_GAP * 2, z0: heights.progressRail + lift, z1: FILL_TOP + lift, tone: 'accent', v: [L.track.w - FILL_GAP * 2], moved: lift > 0 || up !== 0 })
+      const track = barTrack()
+      const fillAt = (w: number): Shape => ({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: track.x + FILL_GAP + slide, y: L.track.y + FILL_GAP + up, w, h: L.track.h - FILL_GAP * 2, z0: heights.progressRail + lift, z1: FILL_TOP + lift, tone: 'accent', v: [L.track.w - FILL_GAP * 2], moved: lift > 0 || up !== 0 })
       if (states.includes('fight')) {
-        const full = L.track.w - FILL_GAP * 2
+        const full = track.w - FILL_GAP * 2
         const w = s.fight ? Math.max(0, full * (s.fight.shown / 100)) : full
         if (w >= L.track.h - FILL_GAP * 2) out.push(fillAt(w))
         const f = s.fight
         const h0 = L.track.h - FILL_GAP * 2
-        if (f && s.stage === 'fight' && s.struck >= 0 && s.struck < STRUCK_GLOW && w >= h0 && !(f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1])) out.push({ ...fillAt(h0), id: 'health-gain', x: L.track.x + FILL_GAP + w - h0 * 0.5, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - s.struck / STRUCK_GLOW] })
+        if (f && s.stage === 'fight' && s.struck >= 0 && s.struck < STRUCK_GLOW && w >= h0 && !(f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1])) out.push({ ...fillAt(h0), id: 'health-gain', x: track.x + FILL_GAP + w - h0 * 0.5, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - s.struck / STRUCK_GLOW] })
         if (f && s.stage === 'fight' && f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1]) {
           const gained = Math.min(w, (full * Math.max(0, f.shown - GAIN.from)) / 100)
           const h = L.track.h - FILL_GAP * 2
-          if (gained >= h) out.push({ ...fillAt(gained), id: 'health-gain', x: L.track.x + FILL_GAP + w - gained, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - prog(f.expired, GAIN.glow[0], GAIN.glow[1])] })
+          if (gained >= h) out.push({ ...fillAt(gained), id: 'health-gain', x: track.x + FILL_GAP + w - gained, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - prog(f.expired, GAIN.glow[0], GAIN.glow[1])] })
         }
       }
       if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open', undefined, s.stage === 'unfold' && s.t < UNFOLD.lift + CAP_CLEARS ? 'dark' : 'ink')
       const rig = rigNow()
       const give = s.inSocket || s.stage !== 'press' ? 0 : sunk()
       if (rig) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
+      setView(view())
+      if (s.clock >= 0 && !s.inSocket) drawArena(out, s.fight ?? NONE, raised())
       if (s.stage === 'fight' && s.fight) {
         drawRules(out, s.fight)
         drawWeapons(out, s.fight, L.weapons)

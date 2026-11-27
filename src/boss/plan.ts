@@ -7,8 +7,8 @@ export const SLOW_SECONDS = config.live.bossSlowSeconds
 export const GAG_MAX = config.live.skipLinkAfterSeconds
 
 export const SOCKET = { x: 960, y: 960 }
-export const HOME = { x: 1600, y: 628 }
-export const FALLEN = { x: 1344, y: 640, rot: 0.26 }
+export const HOME = { x: 960, y: 548 }
+export const FALLEN = { x: 960, y: 650, rot: 0.26 }
 export const ARENA = { x0: 40, y0: 330, x1: 1880, y1: 1050 }
 export const SLAB_H = 64
 
@@ -20,7 +20,7 @@ export const DOUBT_SECONDS = 1.7
 export const THRESHOLD = [51, 25, 0] as const
 export const CAPS = [12.5, 14.5, 13] as const
 export const RAMP = [3, 1.8, 6] as const
-export const FLOOR = [3.9, 4, 3] as const
+export const FLOOR = [3.9, 3.4, 2.4] as const
 export const EXPIRED_GAIN = 10
 export const LAST_CLEAR = 28.75
 // A click is a volley. What a dart is worth changes with the phase, so each phase takes about as many clicks as it did when the phases ended at 75 and 40.
@@ -36,4 +36,4 @@ export const BODY = { rx: 196, ry: 118 }
 export const SHIELD = { x: -290, half: 122, z: 92, clear: 60, drift: 0.06, spread: 40 }
 
 // What the fight calls the firing of the boss's own guns. It is still the name the film's beat and the narrator's line hang on; `bullet-fire` is asked for in the notes.
-export const EVENT = { gun: 'slab-fire' } as const
+export const EVENT = { gun: 'slab-fire', second: 'popup' } as const

@@ -3,7 +3,7 @@ import { config, stepHz } from '../src/config'
 import { copy } from '../src/copy'
 import { pages } from '../src/pages'
 import { FLOOR, SOCKET, WAKE_AFTER_TICK } from '../src/boss/plan'
-import { GUARD } from '../src/boss/tune'
+import { GUARD, POPUPS_ON } from '../src/boss/tune'
 import { makePage } from '../src/pages/step4'
 import { ACT } from '../src/pages/step4/script'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
@@ -326,7 +326,7 @@ describe('step 4, the boss', () => {
     expect(new Set(first).size).toBeGreaterThan(4)
   })
 
-  it('escalates in the film: glances, the way round, a corner cannon, the hit, three pop-ups, the big blast, the banner alone, and a fall that speeds up', () => {
+  it('escalates in the film: glances, the way round, a corner cannon, the hit, the second phase, the big blast, the banner alone, and a fall that speeds up', () => {
     const stage = film()
     stage.advance(Math.round(28 * stepHz))
     const at = (name: string): number[] => stage.events.filter((e) => e.name === name).map((e) => e.step / stepHz)
@@ -346,7 +346,7 @@ describe('step 4, the boss', () => {
     expect(at('peel-up')[0]! - hits[0]!).toBeGreaterThan(0.5)
     expect(at('boss-heal')[0]!).toBeGreaterThan(hits[0]!)
     expect(at('boss-heal')[0]!).toBeLessThan(at('peel-up')[0]!)
-    expect(ups.length).toBe(3)
+    expect(ups.length).toBe(POPUPS_ON ? 3 : 1)
     expect(ups[0]!).toBeGreaterThan(hits[0]!)
     expect(at('big-fire')[0]! - at('big-tell')[0]!).toBeGreaterThan(1.5)
     expect(at('arena-break')[0]!).toBe(at('big-fire')[0]!)

@@ -1,18 +1,19 @@
 import type { StepIo } from '../stage/types'
 import { FOOT_OFF, muzzleAt, smooth } from './body'
-import { BODY, FLOOR, DART, EVENT, EXPIRED_GAIN, HEALTH, HOME, LAST_CLEAR, LOOK_EASE, POPUP, SHIELD, SLOW_SECONDS, THRESHOLD } from './plan'
-import { BIG, CORNER, FILM, FLAT, GUARD, GUN, HEAL, IDLE, MOVE, REAL_DART, TRACK, WEAR } from './tune'
+import { FLOOR, DART, EVENT, EXPIRED_GAIN, HEALTH, HOME, LAST_CLEAR, LOOK_EASE, POPUP, SHIELD, SLOW_SECONDS, THRESHOLD } from './plan'
+import { BIG, CORNER, FILM, FLAT, GUARD, GUN, HEAL, IDLE, LOOK1_ON, MOVE, POPUPS_ON, REAL_DART, SHAPE, SOLID, TRACK, WEAR } from './tune'
 
 export interface Rect { x: number; y: number; w: number; h: number }
-export interface Arena { popups: { box: Rect; buttons: Rect[] }[] }
+export interface Wall { id: string; kind: 'pillar' | 'pane' | 'bar'; x0: number; y0: number; x1: number; y1: number }
+export interface Arena { popups: { box: Rect; buttons: Rect[] }[]; walls?: Wall[] }
+export interface Break { n: number; at: number; x0: number; y0: number; x1: number; y1: number; width: number }
 
 export interface Popup { slot: number; hp: number; t: number; closing: number; off: number; vel: number; dx: number; dy: number; shot: boolean }
 export interface Dart { n: number; x: number; y: number; dx: number; dy: number; t: number; p: number }
 export interface Flash { n: number; x: number; y: number; rot: number; t: number; r?: number }
-export interface Spark { n: number; x: number; y: number; t: number; z?: number }
+export interface Spark { n: number; x: number; y: number; t: number; z?: number; k?: 'glance' | 'round' | 'solid' | 'arrow' }
 // A bullet. `i` says whose it is: 0 to 3 a corner cannon, 4 the boss's own guns.
 export interface Ball { n: number; i: number; x: number; y: number; dx: number; dy: number; t: number; v: number }
-export interface Mark { n: number; x: number; y: number; rot: number; t: number }
 export type Pattern = 'one' | 'fan' | 'line' | 'ring'
 export interface Foot { x: number; y: number; fx: number; fy: number; tx: number; ty: number; t: number }
 
@@ -76,8 +77,11 @@ export interface Fight {
   prev: { x: number; y: number } | null
   turret: number
   big: { due: number; t: number; beam: number; a: number; x: number; y: number }
-  marks: Mark[]
-  markCount: number
+  breaks: Break[]
+  fallen: string[]
+  walked: number
+  speed: { x: number; y: number }
+  at: { glance: number; gun: [number, number]; big: number; heal: number; hit: number; flat: number; weak: number; corner: [number, number, number, number] }
 }
 
 const START = [HEALTH, THRESHOLD[0], THRESHOLD[1] + EXPIRED_GAIN] as const
@@ -96,7 +100,8 @@ export function newFight(x: number = HOME.x, y: number = HOME.y): Fight {
     popups: [], darts: [], sparks: [], flashes: [], gunDue: GUN.first, shape: 'one', windup: -1, aim: { x: 0, y: 0 }, cannon: 0, attacks: 0, burst: 0, burstDue: 0, recoil: [0, 0], popupCount: 0, popupDue: POPUP.first,
     dartCount: 0, sparkCount: 0, expired: -1, slow: false, safe: 0, dust: -1, hits: 0, flash: 0, look: { x: x - 600, y }, over: false,
     face: Math.PI, stall: 0, to: { x, y }, leg: 0, moveDue: MOVE.first, cornerDue: CORNER.first, cornerCount: 0, tell: null, balls: [], ballCount: 0, flat: 0, healDue: -1, heals: 0, healed: 0, idle: 0, tired: 0, glances: 0, rounds: 0, run: 0, weakDue: 0, weak: 0, by: [0, 0, 0, 0],
-    vel: { x: 0, y: 0 }, prev: null, turret: 0, big: { due: BIG.first, t: -1, beam: 0, a: 0, x: 0, y: 0 }, marks: [], markCount: 0
+    vel: { x: 0, y: 0 }, prev: null, turret: 0, big: { due: BIG.first, t: -1, beam: 0, a: 0, x: 0, y: 0 }, breaks: [], fallen: [], walked: 0, speed: { x: 0, y: 0 },
+    at: { glance: -1, gun: [-1, -1], big: -1, heal: -1, hit: -1, flat: -1, weak: -1, corner: [-1, -1, -1, -1] }
   }
 }
 
@@ -113,8 +118,8 @@ export const turnRate = (clock: number): number => TRACK.turn * Math.max(TRACK.l
 export const wear = (clock: number): number => 1 + Math.max(0, clock - WEAR.from) / WEAR.double
 export const healNext = (heals: number): number => HEAL.first * HEAL.shrink ** heals
 export const cornerAt = (i: number): { x: number; y: number } => ({ x: CORNER.at[i]![0], y: CORNER.at[i]![1] })
-export const weakSide = (f: { x: number; y: number; face: number }): { x: number; y: number } => ({ x: f.x - Math.cos(f.face) * BODY.rx * 0.8, y: f.y - Math.sin(f.face) * BODY.ry * 0.8 })
-const touches = (f: Fight, x: number, y: number): boolean => ((x - f.x) / (BODY.rx + MOVE.touch)) ** 2 + ((y - f.y) / (BODY.ry + MOVE.touch)) ** 2 <= 1
+export const weakSide = (f: { x: number; y: number; face: number }): { x: number; y: number } => ({ x: f.x - Math.cos(f.face) * SHAPE.rx * 0.8, y: f.y - Math.sin(f.face) * SHAPE.ry * 0.8 })
+const touches = (f: Fight, x: number, y: number): boolean => ((x - f.x) / (SHAPE.rx + MOVE.touch)) ** 2 + ((y - f.y) / (SHAPE.ry + MOVE.touch)) ** 2 <= 1
 
 const floor = (f: Fight): number => {
   const from = START[f.phase]!
@@ -124,7 +129,83 @@ const floor = (f: Fight): number => {
 
 const inside = (r: Rect, x: number, y: number, grow = 0): boolean => x >= r.x - grow && x <= r.x + r.w + grow && y >= r.y - grow && y <= r.y + r.h + grow
 
-export const muzzle = (f: Fight, i: number): { x: number; y: number; rot: number } => muzzleAt(f.x, f.y, i, f.look)
+// A small gun's muzzle. On the stand-in the two guns sit above and below the body and do not turn with it; on LOOK 1 the whole body turns with the way he faces.
+export const muzzle = (f: Fight, i: number): { x: number; y: number; rot: number } => {
+  if (!LOOK1_ON) return muzzleAt(f.x, f.y, i, f.look)
+  const side = (i === 0 ? -1 : 1) * SHAPE.gun
+  const px = f.x - Math.sin(f.face) * side
+  const py = f.y + Math.cos(f.face) * side
+  const rot = Math.atan2(f.look.y - py, f.look.x - px)
+  return { x: px + Math.cos(rot) * SHAPE.barrel, y: py + Math.sin(rot) * SHAPE.barrel, rot }
+}
+
+// What stands in the arena and stops a shot: the pillars and panes that no blast has broken, and the box round the health bar, which never breaks.
+const ALL_WALLS: Wall[] = [
+  ...SOLID.pillars.map(([x, y], i): Wall => ({ id: `pillar-${i}`, kind: 'pillar', x0: x - SOLID.side / 2, y0: y - SOLID.side / 2, x1: x + SOLID.side / 2, y1: y + SOLID.side / 2 })),
+  ...SOLID.panes.map(([x0, y0, x1, y1], i): Wall => ({ id: `pane-${i}`, kind: 'pane', x0, y0, x1, y1 }))
+]
+export const BAR_WALL: Wall = { id: 'bar', kind: 'bar', x0: SOLID.bar[0], y0: SOLID.bar[1], x1: SOLID.bar[2], y1: SOLID.bar[3] }
+export const standing = (f: { fallen: string[] }): Wall[] => ALL_WALLS.filter((w) => !f.fallen.includes(w.id))
+export const wallsOf = (f: Fight, arena: Arena): Wall[] => [...(arena.walls ?? standing(f)).filter((w) => !f.fallen.includes(w.id)), BAR_WALL]
+
+// Where along the way from (x0, y0) to (x1, y1) a shot first meets the box grown by `grow`: 0 to 1, or -1 when it does not.
+export function meets(x0: number, y0: number, x1: number, y1: number, w: Wall, grow = 0): number {
+  let t0 = 0
+  let t1 = 1
+  const dx = x1 - x0
+  const dy = y1 - y0
+  for (const [p, d, lo, hi] of [[x0, dx, w.x0 - grow, w.x1 + grow], [y0, dy, w.y0 - grow, w.y1 + grow]] as const) {
+    if (Math.abs(d) < 1e-9) {
+      if (p < lo || p > hi) return -1
+    } else {
+      const a = (lo - p) / d
+      const b = (hi - p) / d
+      t0 = Math.max(t0, Math.min(a, b))
+      t1 = Math.min(t1, Math.max(a, b))
+      if (t0 > t1) return -1
+    }
+  }
+  return t0
+}
+
+// How near the stretch from (x0, y0) to (x1, y1) comes to the box, in px.
+export function nearBox(x0: number, y0: number, x1: number, y1: number, w: Wall): number {
+  if (meets(x0, y0, x1, y1, w) >= 0) return 0
+  const toSeg = (px: number, py: number): number => {
+    const dx = x1 - x0
+    const dy = y1 - y0
+    const u = Math.min(1, Math.max(0, ((px - x0) * dx + (py - y0) * dy) / (dx * dx + dy * dy || 1)))
+    return Math.hypot(x0 + dx * u - px, y0 + dy * u - py)
+  }
+  const toBox = (px: number, py: number): number => Math.hypot(Math.max(w.x0 - px, 0, px - w.x1), Math.max(w.y0 - py, 0, py - w.y1))
+  return Math.min(toSeg(w.x0, w.y0), toSeg(w.x1, w.y0), toSeg(w.x0, w.y1), toSeg(w.x1, w.y1), toBox(x0, y0), toBox(x1, y1))
+}
+
+// The line of the big cannon: from its muzzle, ahead of the boss, along `a` to the edge of the screen.
+export function blastLine(f: { x: number; y: number }, a: number): { x0: number; y0: number; x1: number; y1: number } {
+  const dx = Math.cos(a)
+  const dy = Math.sin(a)
+  const x0 = f.x + dx * BIG.muzzle
+  const y0 = f.y + dy * BIG.muzzle
+  const tx = dx > 1e-9 ? (PAGE.w - x0) / dx : dx < -1e-9 ? -x0 / dx : Infinity
+  const ty = dy > 1e-9 ? (PAGE.h - y0) / dy : dy < -1e-9 ? -y0 / dy : Infinity
+  const t = Math.max(0, Math.min(tx, ty))
+  return { x0, y0, x1: x0 + dx * t, y1: y0 + dy * t }
+}
+
+// The way the big cannon will fire: the way he faces, turned to the nearer side of the health bar's box when the line would cross it.
+export function clearAim(f: { x: number; y: number }, a: number): number {
+  const crosses = (b: number): boolean => {
+    const l = blastLine(f, b)
+    return nearBox(f.x, f.y, l.x1, l.y1, BAR_WALL) <= BIG.wide
+  }
+  if (!crosses(a)) return a
+  for (let k = 1; k * BIG.swing < Math.PI; k++) {
+    if (!crosses(a + k * BIG.swing)) return turn(a + k * BIG.swing)
+    if (!crosses(a - k * BIG.swing)) return turn(a - k * BIG.swing)
+  }
+  return a
+}
 
 export const bannerUp = (f: Fight): boolean => f.expired >= 0 && f.expired < 1.5
 export const spent = (f: Fight): boolean => f.phase === 2 && f.expired >= 1.5 && f.health <= LAST_CLEAR
@@ -184,7 +265,9 @@ function walk(f: Fight, io: StepIo): void {
     vy = (dy * k) / dt
     f.x += dx * k
     f.y += dy * k
+    f.walked += d * k
   }
+  f.speed = { x: vx, y: vy }
   const busy = (i: number): boolean => f.feet[i]!.t >= 0
   f.feet.forEach((foot, i) => {
     const ix = f.x + FOOT_OFF[i]![0]
@@ -212,8 +295,8 @@ function walk(f: Fight, io: StepIo): void {
   })
 }
 
-function spark(f: Fight, x: number, y: number, z = 0): void {
-  f.sparks.push({ n: f.sparkCount++, x, y, t: 0, z })
+function spark(f: Fight, x: number, y: number, z = 0, k: Spark['k'] = 'round'): void {
+  f.sparks.push({ n: f.sparkCount++, x, y, t: 0, z, k })
 }
 
 function strike(f: Fight, io: StepIo, x: number, y: number, by: 0 | 1 | 2 | 3): void {
@@ -223,6 +306,7 @@ function strike(f: Fight, io: StepIo, x: number, y: number, by: 0 | 1 | 2 | 3): 
   f.healDue = FLAT.heal
   f.dust = FLAT.life
   f.hits++
+  f.at.flat = f.clock
   io.cursor.hurt('flattened', FLAT.life)
   io.emit('flatten', x, y, true)
 }
@@ -244,7 +328,7 @@ function shoot(f: Fight, i: number, from: { x: number; y: number }, a: number, s
   f.balls.push({ n: f.ballCount++, i, x: from.x, y: from.y, dx: Math.cos(a), dy: Math.sin(a), t: 0, v: speed })
 }
 
-function corners(f: Fight, io: StepIo): void {
+function corners(f: Fight, io: StepIo, walls: Wall[]): void {
   const dt = io.dt
   const c = cursorCentre(io.cursor)
   if (f.tell) {
@@ -256,6 +340,7 @@ function corners(f: Fight, io: StepIo): void {
       shoot(f, f.tell.i, from, a, CORNER.speed)
       f.flashes.push({ n: 7000 + f.ballCount, x: from.x + Math.cos(a) * CORNER.base, y: from.y + Math.sin(a) * CORNER.base, rot: a, t: 0 })
       io.emit('cannon-fire', from.x, from.y, false)
+      f.at.corner[f.tell.i as 0 | 1 | 2 | 3] = f.clock
       f.tell = null
     }
   } else if (!quiet(f)) {
@@ -272,14 +357,29 @@ function corners(f: Fight, io: StepIo): void {
   const keep: Ball[] = []
   for (const b of f.balls) {
     b.t += dt
+    const wx = b.x
+    const wy = b.y
     b.x += b.dx * b.v * dt
     b.y += b.dy * b.v * dt
     if (f.safe <= 0 && Math.hypot(c.x - b.x, c.y - b.y) < GUN.r + GUN.reach) {
       strike(f, io, c.x, c.y, b.i === 4 ? 0 : 1)
-      spark(f, b.x, b.y)
+      spark(f, b.x, b.y, 0, 'arrow')
       continue
     }
-    if (b.t < GUN.life && b.x > -60 && b.x < PAGE.w + 60 && b.y > CORNER.band && b.y < PAGE.h + 60) keep.push(b)
+    let stop = -1
+    let bar = false
+    for (const w of walls) {
+      const u = meets(wx, wy, b.x, b.y, w, GUN.r * 0.5)
+      if (u >= 0 && (stop < 0 || u < stop)) {
+        stop = u
+        bar = w.kind === 'bar'
+      }
+    }
+    if (stop >= 0) {
+      if (!bar) spark(f, wx + (b.x - wx) * stop, wy + (b.y - wy) * stop, 0, 'solid')
+      continue
+    }
+    if (b.t < GUN.life && b.x > -60 && b.x < PAGE.w + 60 && b.y > -60 && b.y < PAGE.h + 60) keep.push(b)
   }
   f.balls = keep
 }
@@ -292,6 +392,7 @@ function gunFire(f: Fight, io: StepIo, turnBy: number): void {
   const a = Math.atan2(f.aim.y - from.y, f.aim.x - from.x) + turnBy
   shoot(f, 4, from, a, GUN.speed[f.phase]!)
   f.recoil[f.cannon] = 26
+  f.at.gun[f.cannon] = f.clock
   f.flashes.push({ n: 6000 + f.ballCount, x: from.x, y: from.y, rot: a, t: 0 })
   io.emit(EVENT.gun, from.x, from.y, false)
 }
@@ -311,9 +412,10 @@ function guns(f: Fight, io: StepIo): void {
         const a0 = bearing(f, f.aim.x, f.aim.y)
         for (let k = 0; k < GUN.ring; k++) {
           const a = a0 + (2 * Math.PI * k) / GUN.ring
-          shoot(f, 4, { x: f.x + Math.cos(a) * BODY.rx, y: f.y + Math.sin(a) * BODY.ry }, a, GUN.speed[f.phase]!)
+          shoot(f, 4, { x: f.x + Math.cos(a) * SHAPE.rx, y: f.y + Math.sin(a) * SHAPE.ry }, a, GUN.speed[f.phase]!)
         }
         f.recoil = [26, 26]
+        f.at.gun = [f.clock, f.clock]
         io.emit(EVENT.gun, f.x, f.y, false)
       } else {
         gunFire(f, io, 0)
@@ -334,7 +436,7 @@ function guns(f: Fight, io: StepIo): void {
     }
   } else if (!quiet(f) && f.big.t < 0) {
     f.gunDue -= dt
-    const armed = f.phase !== 1 || f.popupCount >= POPUP_ORDER.length || f.phaseClock >= POPUP.armed
+    const armed = !POPUPS_ON || f.phase !== 1 || f.popupCount >= POPUP_ORDER.length || f.phaseClock >= POPUP.armed
     const read = f.phase === 1 ? POPUP.aim : POPUP.read
     const one = f.phase === 0 || (armed && !f.popups.some((p) => p.t < read))
     if (f.gunDue <= 0 && one) {
@@ -346,23 +448,28 @@ function guns(f: Fight, io: StepIo): void {
   for (let i = 0; i < 2; i++) if (!(f.windup >= 0 && f.cannon === i)) f.recoil[i] = f.recoil[i]! * Math.max(0, 1 - dt * 9)
 }
 
-// The big turret: a long tell along a line from the boss through the arrow, then one blast down that line. Where the arrow stood the ground is marked.
-function big(f: Fight, io: StepIo): void {
+// The big cannon: a long tell along the way he faces, to the edge of the screen, then one blast down that line. Every pillar and pane on the line breaks for good; an arrow on it is laid flat.
+function big(f: Fight, io: StepIo, walls: Wall[]): void {
   const dt = io.dt
   const c = cursorCentre(io.cursor)
   const b = f.big
   if (b.beam > 0) b.beam -= dt
-  for (const m of f.marks) m.t += dt
-  f.marks = f.marks.filter((m) => m.t < BIG.scorchLife)
   if (b.t >= 0) {
     b.t += dt
     if (b.t >= BIG.tell) {
+      const l = blastLine(f, b.a)
       b.t = -1
       b.beam = BIG.beam
       b.due = BIG.every
+      f.at.big = f.clock
+      f.breaks.push({ n: f.breaks.length, at: f.clock, x0: l.x0, y0: l.y0, x1: l.x1, y1: l.y1, width: BIG.wide * 2 })
       io.emit('big-fire', f.x, f.y, false)
-      f.marks.push({ n: f.markCount++, x: b.x, y: b.y, rot: b.a, t: 0 })
-      io.emit('arena-break', b.x, b.y, false)
+      io.emit('arena-break', l.x1, l.y1, false)
+      for (const w of walls) {
+        if (w.kind === 'bar' || nearBox(l.x0, l.y0, l.x1, l.y1, w) > BIG.wide) continue
+        f.fallen.push(w.id)
+        io.emit(w.kind === 'pane' ? 'pane-shatter' : 'pillar-break', (w.x0 + w.x1) / 2, (w.y0 + w.y1) / 2, false)
+      }
       const rx = c.x - f.x
       const ry = c.y - f.y
       const along = rx * Math.cos(b.a) + ry * Math.sin(b.a)
@@ -373,9 +480,9 @@ function big(f: Fight, io: StepIo): void {
     b.due -= dt
     if (b.due <= 0 && f.flat <= 0 && f.windup < 0 && f.burst === 0) {
       b.t = 0
-      b.a = bearing(f, c.x, c.y)
+      b.a = clearAim(f, f.face)
       b.x = c.x
-      b.y = Math.max(CORNER.band + BIG.scorch.h / 2, c.y)
+      b.y = c.y
       f.leg = 0
       f.stall = BIG.tell
       io.emit('big-tell', f.x, f.y, false)
@@ -399,7 +506,7 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
     }
   }
   f.popups = f.popups.filter((p) => p.closing < POPUP.hold + POPUP.close)
-  if (f.phase === 0 || quiet(f)) return used
+  if (!POPUPS_ON || f.phase === 0 || quiet(f)) return used
   f.popupDue -= dt
   if (f.popupDue <= 0) {
     const free = POPUP_ORDER.filter((slot) => (f.phase !== 2 || slot !== 0) && !f.popups.some((p) => p.slot === slot))
@@ -418,7 +525,7 @@ function popups(f: Fight, io: StepIo, arena: Arena): boolean {
   return used
 }
 
-function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
+function darts(f: Fight, io: StepIo, arena: Arena, used: boolean, walls: Wall[]): void {
   const dt = io.dt
   if (io.pressed && !used && f.flat <= 0) {
     f.idle = 0
@@ -445,8 +552,28 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
       f.flashes.push({ n: TIP_FLASH.n + d.n, x: d.x + d.dx * TIP_FLASH.ahead, y: d.y + d.dy * TIP_FLASH.ahead, rot: Math.atan2(d.dy, d.dx), t: 0, r: TIP_FLASH.r })
       io.emit('dart-fire', d.x, d.y, false)
     }
+    const wx = d.x
+    const wy = d.y
     d.x += d.dx * DART.speed * dt
     d.y += d.dy * DART.speed * dt
+    let stop = -1
+    let bar = false
+    for (const w of walls) {
+      const u = meets(wx, wy, d.x, d.y, w)
+      if (u >= 0 && (stop < 0 || u < stop)) {
+        stop = u
+        bar = w.kind === 'bar'
+      }
+    }
+    if (stop >= 0) {
+      if (!bar) {
+        const sx = wx + (d.x - wx) * stop
+        const sy = wy + (d.y - wy) * stop
+        spark(f, sx, sy, 0, 'solid')
+        io.emit('cover-hit', sx, sy, false)
+      }
+      continue
+    }
     const wall = f.popups.find((p) => p.closing < 0 && p.t > 0.12 && inside(arena.popups[p.slot]!.box, d.x, d.y))
     if (wall) {
       const fresh = wall.hp === POPUP.hp
@@ -465,8 +592,8 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
     const far = Math.hypot(d.x - f.x, d.y - f.y)
     const was2 = Math.hypot(d.x - d.dx * DART.speed * dt - f.x, d.y - d.dy * DART.speed * dt - f.y)
     const glass = (was2 > GUARD.radius || d.t <= dt) && far <= GUARD.radius && shielded(f, d.x, d.y)
-    const ex = (d.x - f.x) / BODY.rx
-    const ey = (d.y - f.y) / BODY.ry
+    const ex = (d.x - f.x) / SHAPE.rx
+    const ey = (d.y - f.y) / SHAPE.ry
     if (glass || ex * ex + ey * ey <= 1) {
       if (glass) {
         const a = bearing(f, d.x, d.y)
@@ -476,13 +603,15 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
       const open = !(f.phase === 2 && f.expired < 0.8)
       const worth = glass ? GUARD.chip : REAL_DART[f.phase]! * wear(f.clock) * (io.mode === 'film' ? FILM.dart[f.phase]! : 1)
       if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - worth)
-      spark(f, d.x, d.y, glass ? SHIELD.z : 0)
+      spark(f, d.x, d.y, glass ? SHIELD.z : 0, glass ? 'glance' : 'round')
       if (glass) {
         f.glances++
+        f.at.glance = f.clock
         f.run++
         io.emit('shield-glance', d.x, d.y, false)
       } else {
         f.rounds++
+        f.at.hit = f.clock
         f.run = 0
         f.flash = 0.12
         io.emit('dart-hit', d.x, d.y, false)
@@ -554,11 +683,16 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
       if (gain > 0.01 && !(f.phase === 2 && f.expired < 0.5)) {
         f.health += gain
         f.healed += gain
+        f.at.heal = f.clock
         io.emit('boss-heal', f.x, f.y, false)
       }
     }
   }
-  if (f.stall > 0) f.stall -= dt
+  if (f.big.t >= 0) {
+    const max = BIG.turn * dt
+    f.face = turn(f.face + Math.max(-max, Math.min(max, turn(f.big.a - f.face))))
+    if (f.stall > 0) f.stall -= dt
+  } else if (f.stall > 0) f.stall -= dt
   else if (!bannerUp(f)) {
     const max = turnRate(f.clock) * dt
     f.face = turn(f.face + Math.max(-max, Math.min(max, turn(bearing(f, at.x, at.y) - f.face))))
@@ -569,11 +703,12 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
     f.weakDue = GUARD.tellEvery
     f.weak = GUARD.tellSeconds
     f.run = 0
+    f.at.weak = f.clock
     const w = weakSide(f)
     io.emit('weak-tell', w.x, w.y, false)
   }
   walk(f, io)
-  if (f.safe <= 0 && touches(f, at.x, at.y)) {
+  if (f.safe <= 0 && f.turret >= 1 && touches(f, at.x, at.y)) {
     strike(f, io, at.x, at.y, 2)
     const d = Math.hypot(f.x - at.x, f.y - at.y) || 1
     f.to = { x: Math.min(MOVE.fence.x1, Math.max(MOVE.fence.x0, at.x + ((f.x - at.x) / d) * MOVE.back)), y: Math.min(MOVE.fence.y1, Math.max(MOVE.fence.y0, at.y + ((f.y - at.y) / d) * MOVE.back)) }
@@ -581,11 +716,12 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
     f.moveDue = MOVE.every
     io.emit('boss-move', f.x, f.y, false)
   }
+  const walls = wallsOf(f, arena)
   guns(f, io)
-  big(f, io)
-  corners(f, io)
+  big(f, io, walls)
+  corners(f, io, walls)
   const used = popups(f, io, arena)
-  darts(f, io, arena, used)
+  darts(f, io, arena, used, wallsOf(f, arena))
   if (!(f.phase === 2 && f.expired < 0.5)) f.health = Math.min(f.health, ceiling(f.phase, f.tired))
   if (!f.slow && f.clock >= SLOW_SECONDS) {
     f.slow = true
@@ -605,11 +741,13 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
       f.attacks = 0
       f.windup = -1
       f.burst = 0
+      if (!POPUPS_ON && f.phase === 1) io.emit(EVENT.second, f.x, f.y, false)
     }
   }
 }
 
 export function clearSpot(f: Fight, arena: Arena, x: number, y: number): boolean {
+  for (const w of wallsOf(f, arena)) if (meets(x, y, f.x, f.y, w, 6) >= 0) return false
   for (const p of f.popups) {
     if (p.closing >= 0) continue
     const b = arena.popups[p.slot]!.box
@@ -626,7 +764,7 @@ export function threat(f: Fight, arena: Arena, x: number, y: number): { dx: numb
   const c = { x: x + 18, y: y + 32 }
   const lanes: { x: number; y: number; dx: number; dy: number; reach: number; half: number }[] = []
   for (const b of f.balls) lanes.push({ x: b.x, y: b.y, dx: b.dx, dy: b.dy, reach: 2400, half: GUN.r + GUN.reach + GUN.berth })
-  if (touches({ ...f, x: f.leg > 0 ? f.to.x : f.x, y: f.leg > 0 ? f.to.y : f.y } as Fight, c.x, c.y) || Math.hypot(c.x - f.x, c.y - f.y) < BODY.rx + MOVE.touch + 40) {
+  if (touches({ ...f, x: f.leg > 0 ? f.to.x : f.x, y: f.leg > 0 ? f.to.y : f.y } as Fight, c.x, c.y) || Math.hypot(c.x - f.x, c.y - f.y) < SHAPE.rx + MOVE.touch + 40) {
     const d = Math.hypot(c.x - f.x, c.y - f.y) || 1
     return { dx: (c.x - f.x) / d, dy: (c.y - f.y) / d }
   }
@@ -638,6 +776,7 @@ export function threat(f: Fight, arena: Arena, x: number, y: number): { dx: numb
     for (const t of turns) lanes.push({ x: shape === 'ring' ? f.x : from.x, y: shape === 'ring' ? f.y : from.y, dx: Math.cos((shape === 'ring' ? bearing(f, f.aim.x, f.aim.y) : a) + t), dy: Math.sin((shape === 'ring' ? bearing(f, f.aim.x, f.aim.y) : a) + t), reach: 2400, half: GUN.r + GUN.reach + GUN.berth })
   }
   if (f.big.t >= 0) lanes.push({ x: f.x, y: f.y, dx: Math.cos(f.big.a), dy: Math.sin(f.big.a), reach: 2400, half: BIG.wide + GUN.berth })
+  else if (f.big.due < BIG.wary && !quiet(f)) lanes.push({ x: f.x, y: f.y, dx: Math.cos(f.face), dy: Math.sin(f.face), reach: 2400, half: BIG.wide })
   for (const l of lanes) {
     const rx = c.x - l.x
     const ry = c.y - l.y
