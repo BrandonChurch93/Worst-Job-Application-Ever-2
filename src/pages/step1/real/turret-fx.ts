@@ -128,7 +128,7 @@ export const GLOW = {
 }
 
 export const EMIT = {
-  bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.11, reach: 52 },
+  bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.075, reach: 48 },
   flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 0.6, reach: 160 },
   charge: { colour: [1, 0.45, 0.12] as [number, number, number], power: 0.3, reach: 110 },
   hot: { colour: [1, 0.12, 0.03] as [number, number, number], power: 0.35, reach: 140 },

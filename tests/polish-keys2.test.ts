@@ -1,8 +1,12 @@
 import crypto from 'node:crypto'
 import { describe, expect, it } from 'vitest'
+import * as THREE from 'three'
 import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
+import { SINK, TRAVEL } from '../src/pages/step1/keyboard'
+import { keyboard } from '../src/pages/step1/real/keyboard'
 import { RECOIL, recoilOf, TURRET } from '../src/pages/step1/turrets'
+import type { RealContext } from '../src/real/types'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { DrawList, Shape } from '../src/stage/types'
 import { type Row, visit } from './polish-keys-run'
@@ -37,6 +41,8 @@ const shape = (list: DrawList, id: string): Shape | undefined => list.find((x) =
 const sha = (lines: string[]): string => crypto.createHash('sha1').update(lines.map((l) => l + '\n').join('')).digest('hex')
 const heard = (all: { n: number; events: string[] }[]): string[] => all.filter((r) => r.events.length > 0).map((r) => `${r.n}\t${r.events.join(',')}`)
 const SHOT = 870
+const PRESSED = 1479
+const LET_GO = 1491
 const HIT = 898
 const FILM_SHOT = 248
 
@@ -138,5 +144,115 @@ describe('polish keys 2: what is heard on step 1 is what was heard', () => {
     expect(sha(list)).toBe('8d251c75bbb7c6f8f7d17f1e79cfbbd83e0cab61')
     expect(list.filter((l) => l.includes('bolt-hit-cursor'))).toEqual(['349\tbolt-hit,bolt-hit-cursor,sizzle'])
     expect(list.filter((l) => l.includes('bolt-fire')).slice(0, 6).map((l) => Number(l.split('\t')[0]))).toEqual([248, 275, 302, 329, 356, 383])
+  })
+})
+
+describe('polish keys 2: the page answers a hit on the arrow', () => {
+  const thrown = (i: number, name: string): number => {
+    const was = at(HIT - 1)
+    const k = at(i).all.get(name)!
+    const seat = was.all.get(name)!
+    return Math.hypot(k.x - seat.x, k.y - at(i).deckY - seat.y + was.deckY)
+  }
+
+  it('throws the caps round the strike outward for two frames, the near ones more than the far ones, and has them back in five', () => {
+    for (const name of ['f', 'g', 'h', 'v', 'b']) {
+      expect(thrown(HIT, name), name).toBeGreaterThan(3)
+      expect(thrown(HIT + 1, name) / thrown(HIT, name), name).toBeGreaterThan(0.95)
+      expect(thrown(HIT + 2, name) / thrown(HIT, name), name).toBeLessThan(0.5)
+      expect(thrown(HIT + 4, name), name).toBeLessThan(1.5)
+      expect(thrown(HIT + 8, name), name).toBeLessThan(0.3)
+      expect(thrown(HIT + 13, name), name).toBe(0)
+    }
+    expect(thrown(HIT, 'g')).toBeGreaterThan(thrown(HIT, 't'))
+    expect(thrown(HIT, 't')).toBeGreaterThan(thrown(HIT, 'q'))
+  })
+
+  it('jolts the deck on the frame of the hit and stills it inside eleven frames', () => {
+    const was = at(HIT - 1).deckY
+    expect(Math.abs(at(HIT).deckY - was)).toBeGreaterThan(2.5)
+    expect(Math.abs(at(HIT + 11).deckY - was)).toBe(0)
+  })
+
+  it('presses no key, as round 23 ruled, and leaves no key hot that the bolt did not strike', () => {
+    for (let i = HIT; i < HIT + 13; i++) {
+      for (const k of at(i).all.values()) {
+        expect(k.depth, `${k.name} on ${i}`).toBe(0)
+        expect(k.sink, `${k.name} on ${i}`).toBe(0)
+        expect(k.heat, `${k.name} on ${i}`).toBe(0)
+      }
+    }
+  })
+})
+
+describe('polish keys 2: a key the visitor presses goes to a bottom, stands there and springs back', () => {
+  const sink = (i: number): number => Math.round(at(i).all.get('a')!.sink * 100) / 100 + 0
+
+  it('is at its bottom on the second frame, stands eleven frames, and is over its seat for five frames after it is let go', () => {
+    expect(sink(PRESSED - 1)).toBe(0)
+    expect([PRESSED, PRESSED + 1].map(sink)).toEqual([0.71, 1])
+    for (let i = PRESSED + 1; i < LET_GO; i++) expect(sink(i), `frame ${i}`).toBe(1)
+    expect([0, 1, 2, 3, 4, 5, 6].map((n) => sink(LET_GO + n))).toEqual([0.29, -0.42, -0.29, -0.17, -0.08, -0.02, 0])
+    for (let i = LET_GO + 6; i < LET_GO + 30; i++) expect(sink(i), `frame ${i}`).toBe(0)
+    expect(at(PRESSED + 1).all.get('a')!.depth).toBe(1)
+    expect(TRAVEL).toBe(6)
+    expect([SINK.x, SINK.y]).toEqual([5.5, 5.5])
+  })
+
+  interface Deck { caps: Map<string, { start: number; count: number }>; body: THREE.Mesh; shades: THREE.InstancedMesh }
+  const posed = (i: number): { data: Deck; deck: Shape; cap: Shape } => {
+    const list = at(i).list
+    const deck = shape(list, 'keyboard-deck')!
+    const ctx = { page: 'step1', list, byId: new Map(list.map((x) => [x.id, x])), time: i / 60, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => {} } as unknown as RealContext
+    const o = keyboard.make(deck, ctx)
+    keyboard.pose!(o, deck, ctx)
+    return { data: o.userData.deck as Deck, deck, cap: shape(list, 'key-a')! }
+  }
+  const tones = (d: Deck, cap: Shape): { upperLeft: number; lowerRight: number; all: number[] } => {
+    const slot = d.caps.get('key-a')!
+    const p = d.body.geometry.getAttribute('position')
+    const c = d.body.geometry.getAttribute('color')
+    let ul = { far: -Infinity, tone: 0 }
+    let lr = { far: -Infinity, tone: 0 }
+    const all: number[] = []
+    for (let n = slot.start; n < slot.start + slot.count; n++) {
+      all.push(c.getX(n))
+      if (-p.getX(n) + p.getY(n) > ul.far) ul = { far: -p.getX(n) + p.getY(n), tone: c.getX(n) }
+      if (p.getX(n) - p.getY(n) > lr.far) lr = { far: p.getX(n) - p.getY(n), tone: c.getX(n) }
+    }
+    expect(cap.w).toBeGreaterThan(0)
+    return { upperLeft: ul.tone, lowerRight: lr.tone, all }
+  }
+
+  it('shades the sunk cap along its upper and left edges and darkens the bed round its seat, and neither is there at rest', () => {
+    const rest = posed(PRESSED - 2)
+    const down = posed(PRESSED + 4)
+    const up = posed(LET_GO + 8)
+    const flat = tones(rest.data, rest.cap)
+    expect(Math.min(...flat.all)).toBe(1)
+    const sunk = tones(down.data, down.cap)
+    expect(sunk.lowerRight).toBeGreaterThan(0.75)
+    expect(sunk.lowerRight).toBeLessThanOrEqual(0.76)
+    expect(sunk.upperLeft).toBeGreaterThanOrEqual(0.26 - 1e-6)
+    expect(sunk.upperLeft).toBeLessThan(0.4)
+    expect(Math.min(...tones(up.data, up.cap).all)).toBe(1)
+    expect(down.data.shades.count).toBe(rest.data.shades.count + 2)
+    expect(up.data.shades.count).toBe(rest.data.shades.count)
+    const seatX = down.cap.x + down.cap.w / 2 - (down.deck.x + down.deck.w / 2)
+    const seatY = -(down.cap.y + down.cap.h / 2 - (down.deck.y + down.deck.h / 2))
+    const m = new THREE.Matrix4()
+    const where = new THREE.Vector3()
+    const size = new THREE.Vector3()
+    const hits: { x: number; y: number; w: number; h: number }[] = []
+    for (let n = 0; n < down.data.shades.count; n++) {
+      down.data.shades.getMatrixAt(n, m)
+      m.decompose(where, new THREE.Quaternion(), size)
+      if (Math.abs(where.x - seatX) < 0.01 && Math.abs(where.y - seatY) < 0.01) hits.push({ x: where.x, y: where.y, w: size.x, h: size.y })
+    }
+    expect(hits.length).toBe(2)
+    for (const h of hits) {
+      expect(h.w).toBeCloseTo(down.cap.w + 16, 2)
+      expect(h.h).toBeCloseTo(down.cap.h + 16, 2)
+    }
   })
 })

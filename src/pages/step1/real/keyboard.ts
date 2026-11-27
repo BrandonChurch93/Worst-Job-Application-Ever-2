@@ -50,8 +50,8 @@ let ghostMaterial: THREE.MeshBasicMaterial | null = null
 const GHOST = { least: 3, under: 7, deep: 12 }
 const matrix = new THREE.Matrix4()
 const SUNK = 0.24
-// A cap held down on the live site: the bed round its seat is darkened `ring` px out, twice over, so the bed it slid off shows dark at its upper and left edges, and its own top is shaded by `wall` along its upper and left edges, falling to nothing at its lower right corner.
-const WELL = { ring: 5, wall: 0.3 }
+// A cap held down on the live site: the bed round its seat is darkened `ring` px out, twice over, so the bed it slid off shows dark at its upper and left edges, and the cap is shaded by `wall` at its upper and left edges, falling to nothing `reach` px in from them.
+const WELL = { ring: 8, wall: 0.5, reach: 14 }
 const LAMP = 0.9
 let core: THREE.BufferGeometry | null = null
 const coreShape = (w: number, h: number): THREE.BufferGeometry => {
@@ -323,7 +323,7 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
       if (held > 0) {
         const more = (2 * WELL.ring - SHADE.grow) * held
         matrix.makeScale(c.w + SHADE.grow + more, c.h + SHADE.grow + more, 1)
-        matrix.setPosition(at.x - SINK.x * held, at.y + SINK.y * held, floor)
+        matrix.setPosition(c.x + c.w / 2 - cx, cy - c.y - c.h / 2, floor)
         data.shades.setMatrixAt(patches++, matrix)
         data.shades.setMatrixAt(patches++, matrix)
       }
@@ -341,8 +341,8 @@ function poseDeck(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
       if (walled === 0) tint.fill(shade, to, to + slot.count * 3)
       else {
         for (let i = 0; i < slot.count * 3; i += 3) {
-          const near = Math.min(1, Math.max(0, 0.5 - slot.from[i]! / c.w, 0.5 + slot.from[i + 1]! / c.h))
-          tint.fill(shade - WELL.wall * walled * near * near, to + i, to + i + 3)
+          const near = Math.min(1, Math.max(0, 1 - Math.min(c.w / 2 + slot.from[i]!, c.h / 2 - slot.from[i + 1]!) / WELL.reach))
+          tint.fill(shade - WELL.wall * walled * near, to + i, to + i + 3)
         }
       }
       shaded = true

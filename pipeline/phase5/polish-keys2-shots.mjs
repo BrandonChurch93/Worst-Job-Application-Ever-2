@@ -2,10 +2,11 @@
 // node pipeline/phase5/polish-keys2-shots.mjs walk LABEL FIRST-LAST [FIRST-LAST ...]   walks once and keeps the whole picture of every step in the spans
 // node pipeline/phase5/polish-keys2-shots.mjs sheet LABEL NAME FIRST COUNT X Y W H [ZOOM] [COLS]   lays COUNT consecutive pictures from step FIRST, the window X, Y, W, H of the page, on one sheet
 // node pipeline/phase5/polish-keys2-shots.mjs pair NAME UPPER.png LOWER.png   lays one sheet above another
+// node pipeline/phase5/polish-keys2-shots.mjs film LABEL FIRST-LAST [FIRST-LAST ...]   keeps the film's frames in the spans at 1920 by 1080, draft tier, from dist/ or from the build named by POLISH_KEYS2_DIST
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
-import { ensureBuild } from '../../tools/lib/capture.mjs'
+import { ensureBuild, readCanvas } from '../../tools/lib/capture.mjs'
 import { launch } from '../../tools/lib/browser.mjs'
 import { serve } from '../../tools/lib/serve.mjs'
 import { at } from '../../tools/lib/paths.mjs'
@@ -73,6 +74,33 @@ if (what === 'walk') {
   }
   fs.writeFileSync(path.join(dir, 'run.json'), JSON.stringify({ rows }) + '\n')
   console.log(`${rows.length} steps walked, ${want.size} kept in ${dir}`)
+} else if (what === 'film') {
+  fs.rmSync(dir, { recursive: true, force: true })
+  fs.mkdirSync(dir, { recursive: true })
+  const from = process.env.POLISH_KEYS2_DIST
+  if (!from) ensureBuild()
+  const server = await serve(from ? path.resolve(from) : at('dist'), { mounts: { '/assets-full/': at('assets-full') } })
+  const { browser } = await launch()
+  try {
+    const context = await browser.newContext({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 })
+    const page = await context.newPage()
+    await page.goto(`${server.url}/index.html?mode=capture&format=hd&assets=full`)
+    await page.evaluate(() => window.showcase.ready)
+    for (const span of rest) {
+      const [a, b] = span.split('-').map(Number)
+      for (let n = a; n <= b; n++) {
+        await page.evaluate(async (frame) => {
+          window.showcase.setDiagnostic('beauty')
+          await window.showcase.renderFilmFrame(frame, 'draft')
+        }, n)
+        fs.writeFileSync(path.join(dir, `${String(n).padStart(6, '0')}.png`), await readCanvas(page))
+      }
+    }
+  } finally {
+    await browser.close()
+    await server.close()
+  }
+  console.log(`film frames kept in ${dir}`)
 } else if (what === 'sheet') {
   const [name, first, count, x, y, w, h, zoom = 1, cols = 6] = rest.map((r, n) => (n === 0 ? r : Number(r)))
   const tiles = []
