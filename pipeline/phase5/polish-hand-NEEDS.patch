@@ -1,0 +1,26 @@
+diff --git a/src/pages/marketing/index.ts b/src/pages/marketing/index.ts
+index 6feba42d..f3ee9a49 100644
+--- a/src/pages/marketing/index.ts
++++ b/src/pages/marketing/index.ts
+@@ -377,7 +377,7 @@ export function makePage(): PageLogic {
+         const u = Math.min(1, (io.time - LANDING.from) / (LANDING.down - LANDING.from))
+         const z = hover + (HANDOFF.z - hover) * (1 - u * u)
+         io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, (z - HANDOFF.z * HELD) / (1 - HELD))
+-      } else if (rejected() && io.step === Math.round(LANDING.lands * stepHz)) io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, hover)
++      } else if (rejected() && s.mode === 'film' && io.step === Math.round(LANDING.lands * stepHz)) io.cursor.place(HANDOFF.x, s.scroll + HANDOFF.y, hover)
+       if (s.mode === 'film') {
+         const cues = rejected() ? REJECTED_CUES : CUES
+         while (s.cue < cues.length && cues[s.cue]!.at <= io.time + 1e-9) {
+diff --git a/src/pages/step3/index.ts b/src/pages/step3/index.ts
+index 41bfab60..69e04138 100644
+--- a/src/pages/step3/index.ts
++++ b/src/pages/step3/index.ts
+@@ -800,7 +800,7 @@ export function makePage(): PageLogic {
+         s.t = Math.min(s.t + dt, T.seal)
+         const reach = 150 + Math.max(0, io.time - 1.2) * 420
+         const d = Math.hypot(io.cursor.x - port.x, io.cursor.y - port.y)
+-        if (io.time > 0.5 && io.cursor.pose().z < LOADER.low && once('act.land')) io.cursor.press(LOADER.land[0]!, LOADER.land[1]!)
++        if (s.mode === 'film' && io.time > 0.5 && io.cursor.pose().z < LOADER.low && once('act.land')) io.cursor.press(LOADER.land[0]!, LOADER.land[1]!)
+         if (s.phase === 'wait' && d < reach && io.time >= T.arrive && !io.cursor.inAir) {
+           if (s.seen < 0) {
+             const p = io.cursor.pose()
