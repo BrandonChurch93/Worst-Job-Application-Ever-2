@@ -9,7 +9,7 @@ const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest
 const out = []
 for (const s of pack.sets) {
   out.push(`SET ${s.set} (${s.files.length} files${s.groups ? `, ${s.groups.join(' + ')}` : ''})`)
-  for (const f of s.files) out.push(`  ${f.file}\n    ${f.heading ?? f.about?.heading ?? ''}`)
+  for (const f of s.files) out.push(`  ${f.name}\n    ${f.heading ?? f.about?.heading ?? ''}`)
 }
 out.push('', 'sha256')
 for (const name of fs.readdirSync(dir).sort()) out.push(`${sha(path.join(dir, name))}  ${name}`)
