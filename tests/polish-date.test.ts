@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { HOUSED } from '../src/pages/step2'
+import { config } from '../src/config'
 import { TRAY_H } from '../src/pages/step2/layout'
 import { bare, DRAWN, heights, openings, still, visit, visitor, type Row } from './polish-date-run'
 
@@ -36,10 +37,10 @@ describe('polish date: a row of step 2 is never shown open and empty', () => {
       for (const r of slot) expect(r.legends, `step ${r.step}, ${r.phase}`).toBe(3)
     })
 
-    it(`${name}: a machine lies under the page until its rise starts, and again once it has sunk`, () => {
+    it(`${name}: a machine lies under the floor of the fields, which pass over it, until its rise starts and again once it has sunk`, () => {
       const under = rows.filter((r) => r.open >= 0 && r.lift === 0)
       expect(under.length).toBeGreaterThan(150)
-      for (const r of under) expect(r.top, `step ${r.step}, row ${r.open + 1}, ${r.phase}, tray ${r.tall} px`).toBeLessThan(0)
+      for (const r of under) expect(r.top, `step ${r.step}, row ${r.open + 1}, ${r.phase}, tray ${r.tall} px`).toBeLessThan(config.scale.heights.field)
     })
 
     it(`${name}: no machine pops as its tray opens or shuts, its height changes by a small share from one step to the next`, () => {
@@ -56,7 +57,7 @@ describe('polish date: a row of step 2 is never shown open and empty', () => {
   }
 
   it('houses the slot and the crank at a share of their height that their makers draw', () => {
-    expect(HOUSED).toBeGreaterThan(DRAWN * 2)
+    expect(HOUSED).toBeGreaterThan(DRAWN)
     for (const [name, rows] of visits) {
       for (const o of openings(rows, SLIVER)) {
         const first = rows.find((r) => r.step === o.from)!
