@@ -1,5 +1,6 @@
 // A sheet of steps in a row of the live pinball page with a bot at the flippers, in the browser, at the site's own pixels.
 // node pipeline/phase5/polish-save-shots.mjs --bot keen --seed 1 --at 19.05 --count 24 --every 1 --crop 700,300,200,280 --cols 6 --words "before" --out /tmp/sheet.png [--whole /tmp/frame.png]
+// --mouth 930 waits from --at for the ball to come down between the bats and starts there; --keep <dir> keeps every whole picture and its time, for polish-save-sheet.mjs to cut sheets from.
 // --at is the page's seconds of the first picture, --every the frames (60 a second) between two pictures, --crop the left, top, width and height cut from every picture, unscaled.
 import fs from 'node:fs'
 import sharp from 'sharp'
@@ -20,6 +21,9 @@ const words = arg('words', '')
 const out = arg('out', '/tmp/polish-save-sheet.png')
 const hand = bot === 'held'
 const none = bot === 'never'
+const mouth = Number(arg('mouth', 0))
+const keep = arg('keep', '')
+if (keep) fs.mkdirSync(keep, { recursive: true })
 const session = await openSession({ format: arg('format', 'hd'), assets: 'web', mode: 'live', query: `${hand || none ? '' : `&bot=${bot}`}&seed=${seed}&clock=steps&step=3` })
 const tiles = []
 try {
@@ -29,10 +33,20 @@ try {
     await session.page.mouse.down({ button: 'right' })
   }
   let s = await session.page.evaluate((dt) => window.liveRun.advance(dt), at)
+  if (mouth) {
+    // --mouth: from --at on, wait without pictures until the ball comes down between the bats (its middle this many px down the screen, within 80 px of the middle), and start there.
+    for (let n = 0; n < 1200; n++) {
+      const t = await session.page.evaluate(() => { window.liveRun.advance(1 / 60, true); const t = window.liveRun.told(); return { x: t.hero.x, y: t.hero.y - t.scroll, time: t.pageTime ?? t.time } })
+      if (t.y > mouth && t.y < 1080 && Math.abs(t.x - 960) < 80) { console.log(`the ball is at the mouth (${t.x.toFixed(0)}, ${t.y.toFixed(0)}) at ${t.time.toFixed(3)} s`); break }
+    }
+    s = await session.page.evaluate(() => window.liveRun.state())
+  }
   for (let i = 0; i < count; i++) {
     if (i > 0) s = await session.page.evaluate((dt) => window.liveRun.advance(dt), every / 60)
     tiles.push({ time: s.time, png: Buffer.from(s.png.split(',')[1], 'base64') })
+    if (keep) fs.writeFileSync(`${keep}/${String(i).padStart(3, '0')}.png`, tiles[i].png)
   }
+  if (keep) fs.writeFileSync(`${keep}/times.json`, JSON.stringify(tiles.map((t) => t.time)))
 } finally {
   await session.close()
 }

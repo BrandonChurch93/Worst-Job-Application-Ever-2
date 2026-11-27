@@ -32,7 +32,7 @@ const MAX_SPEED = 30
 const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36, own: 12 }
 // Live play, the save at a shut gate. The gate takes the ball on its wire, holds it, draws back and kicks it: where the ball's middle lies against the shut wire (balls down the tier), the stiffness of the wire under the ball and of the mouth's funnel (1/s, both damped dead),
 // the steps from the ball's landing on the wire in which it comes to lie still, the steps of the wind-up and the last of them in which the drawn wire stands still, how far the wire draws back with the ball on it (balls), the steps of the kick's drive back up to where the ball lay, the speed of the plain kick (balls/s), and how near the wire a ball that comes by the outlane's channel must be for the gate to take it (balls).
-export const SAVE = { rest: 10.55, wire: 50, funnel: 40, land: 24, wind: 28, still: 10, back: 0.22, drive: 4, kick: 24, reach: 1 }
+export const SAVE = { rest: 10.55, wire: 60, funnel: 50, land: 24, wind: 28, still: 10, back: 0.22, drive: 4, kick: 24, reach: 1 }
 // Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
 const MET = 3
 const LIFT_SHUT = 0.4
@@ -412,7 +412,7 @@ export class Machine {
     this.say('gate-take', 0, `${TIERS[k]}.gate`)
   }
 
-  // Live play, one step of the ball at a shut gate: it falls onto the wire, the wire gives and holds it still, draws back with it, drives it back up, and on the last step of the drive the kick sends it out.
+  // Live play, one step of the ball at a shut gate: it falls onto the wire, the wire gives and holds it still, draws back with it, drives it back up to where it lay, and on the step after the drive the kick sends it out from there.
   private lie(): void {
     const b = this.balls[0]!
     const k = b.tier
@@ -424,11 +424,14 @@ export class Machine {
     const cock = SAVE.land + SAVE.wind
     if (this.taken >= cock) {
       const j = ++this.taken - cock
+      if (j > SAVE.drive) {
+        this.kickOut(k)
+        return
+      }
       const y = b.fy + (b.ty - b.fy) * (j / SAVE.drive) * (j / SAVE.drive)
       b.vx = 0
       b.vy = (y - b.y) / DT
       b.y = y
-      if (j >= SAVE.drive) this.kickOut(k)
       return
     }
     b.vx += (-SAVE.funnel * SAVE.funnel * (b.x - b.tx) - 2 * SAVE.funnel * b.vx) * DT
