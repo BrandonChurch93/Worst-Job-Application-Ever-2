@@ -53,6 +53,8 @@ New:
 15. D-P15. The streaks and rings of the pull are one drawn mesh, because the loader's count of drawings is pinned by `tests/polish-*`.
 16. D-P16. The turn of the arrow in the ball on the live site dips by 0.00014 rad for one frame 1.13 s after the seal (MEASURED in `tests/polish-port2.test.ts`, frame 34 after the release). Cause UNKNOWN. The test allows 0.0005 rad; open.
 
+17. D-P17. On the live site the port takes the arrow when its reach, which grows by 420 px a second from 1.2 s on, meets it (kept as it was, because every pinned live run hangs on that time). So that this wait is not a still page, the port winds up before it has the arrow: from 0.7 s the streaks, the rings and the lean of the words rise to half of the whole pull over 1.4 s (`LEAN.early`, `LEAN.wind`, `LEAN.from`). MEASURED with a real mouse held at (1000, 660): streaks from 1.3 s, the arrow taken at about 2.6 s, the hand pulling away at 420 px a second from then on, `ball-seal` at 5.30 s.
+
 ## Tests changed
 
 Every one of these pins the film of step 3 frame by frame, and each was moved by the note named.

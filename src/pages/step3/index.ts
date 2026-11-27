@@ -17,7 +17,7 @@ import { drainWay, KNOCK, LET } from '../../table/real/frame/loader'
 import { ANSWER } from '../../table/real/lights/levels'
 import { stepOver } from '../../table/real/lights/over'
 import { berth } from './director-arrow'
-import { fight, filmHand, LEAN, leanOf, VAC } from './vacuum'
+import { fight, filmHand, LEAN, leanOf, VAC, windOf } from './vacuum'
 import { FRENZY, noted, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
 
@@ -1173,7 +1173,8 @@ export function makePage(): PageLogic {
       }
       const changed = { v: [Math.min(9, s.t - s.scoreAt), s.scoreWas] }
       for (const id of ['marquee-score', ...TIERS.map((z) => `display.${z}.score`)]) over[id] = { ...over[id], ...changed }
-      const pull = s.seen < 0 ? 0 : smooth(Math.min(1, (s.time - s.seen) / LEAN.rise)) * (s.phase === 'wait' || s.phase === 'pull' ? 1 : Math.max(0, 1 - (s.t - s.took) / LEAN.fall))
+      const wound = s.mode === 'live' ? windOf(s.seen < 0 ? s.time : s.seen) : 0
+      const pull = s.seen < 0 ? (s.phase === 'wait' ? wound : 0) : (wound + (1 - wound) * smooth(Math.min(1, (s.time - s.seen) / LEAN.rise))) * (s.phase === 'wait' || s.phase === 'pull' ? 1 : Math.max(0, 1 - (s.t - s.took) / LEAN.fall))
       if (pull > 0) LEANERS.forEach((id, i) => { over[id] = { ...over[id], ...leanOf(boxOf(layout, id), port, pull, s.time, i) } })
       drawLayout(out, layout, { states, runtime: { score: scoreText() }, over })
       if (pull > 0) out.push({ id: 'loader.draw', part: 'loader', kind: 'box', x: port.x, y: port.y, w: 0, h: 0, z0: 0, z1: 0, tone: 'dark', v: [pull] })

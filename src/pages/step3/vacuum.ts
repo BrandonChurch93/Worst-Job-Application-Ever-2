@@ -83,8 +83,10 @@ export function filmHand(time: number, from: { x: number; y: number }, port: { x
   return { x: from.x + (port.x - from.x) * f, y: from.y + (port.y - from.y) * f }
 }
 
-// What the pull does to the words of the page: each block slides `px` toward the port and tips by `rot` radians, with a shiver of `shiver` of that, `hz` times a second. `rise` and `fall` are the seconds the pull takes to come on and to die when the port has shut.
-export const LEAN = { px: 64, rot: 0.07, shiver: 0.18, hz: 6.5, rise: 0.4, fall: 0.3 }
+// What the pull does to the words of the page: each block slides `px` toward the port and tips by `rot` radians, with a shiver of `shiver` of that, `hz` times a second. `rise` and `fall` are the seconds the pull takes to come on and to die when the port has shut. On the live site the port winds up to `early` of the whole pull over `wind` seconds from `from` on, before it has the arrow.
+export const LEAN = { px: 64, rot: 0.07, shiver: 0.18, hz: 6.5, rise: 0.4, fall: 0.3, early: 0.5, wind: 1.4, from: 0.7 }
+
+export const windOf = (time: number): number => LEAN.early * Math.min(1, Math.max(0, time - LEAN.from) / LEAN.wind)
 
 export function leanOf(box: { x: number; y: number; w: number; h: number }, port: { x: number; y: number }, pull: number, time: number, i: number): { x: number; y: number; rot: number; moved: boolean } {
   const dx = port.x - (box.x + box.w / 2)
