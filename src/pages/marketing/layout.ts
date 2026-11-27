@@ -166,13 +166,16 @@ function quotes(y0: number): { node: LayoutNode; bottom: number } {
   const wrap = QUOTE.w - QUOTE.pad * 2
   const role = { ...T.label, wrap }
   const quote = { ...T.body, wrap }
+  const note = { ...T.small, wrap }
   let quoteH = 0
   let roleH = 0
+  let noteH = 0
   m.testimonials.items.forEach((_, i) => {
     quoteH = Math.max(quoteH, tall(quote, `copy:marketing.testimonials.items.${i}.quote`, wrap))
     roleH = Math.max(roleH, tall(role, `copy:marketing.testimonials.items.${i}.role`, wrap))
+    noteH = Math.max(noteH, tall(note, `copy:marketing.testimonials.items.${i}.note`, wrap))
   })
-  const h = Math.ceil(28 + quoteH + 22 + roleH + 12 + cap(T.fine) + 28)
+  const h = Math.ceil(28 + quoteH + 22 + roleH + 12 + noteH + 26)
   const first = y0 + 162
   m.testimonials.items.forEach((_, i) => {
     const k = `copy:marketing.testimonials.items.${i}`
@@ -184,7 +187,7 @@ function quotes(y0: number): { node: LayoutNode; bottom: number } {
       children: [
         text(`quote-${i}-quote`, `${k}.quote`, quote, x + QUOTE.pad, y + 28, on),
         text(`quote-${i}-role`, `${k}.role`, role, x + QUOTE.pad, roleY, on),
-        text(`quote-${i}-note`, `${k}.note`, T.fine, x + QUOTE.pad, roleY + tall(role, `${k}.role`, wrap) + 12, { ...on, tone: 'accent' })
+        text(`quote-${i}-note`, `${k}.note`, note, x + QUOTE.pad, roleY + tall(role, `${k}.role`, wrap) + 12, { ...on, tone: 'accent' })
       ]
     }))
   })
