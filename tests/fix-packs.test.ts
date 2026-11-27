@@ -186,14 +186,16 @@ describe('the moments of the visit, as the sheets need them', () => {
     expect(made.met).toBe(1541)
   })
 
-  it('falls back to the first lift after a press when no blow comes while a bat rises', () => {
+  // The rule changed by the Builder's word of 2026-11-27: the fallback put the machine's save under the stroke's heading in round 22. With no blow while a bat rises there is no stroke, and no sheet of one.
+  it('takes no step for the stroke when no blow comes while a bat rises: a lift long after a press is not the bat', () => {
     const run = madeRun()
     for (let i = 1500; i < 1600; i++) {
       const at = i - 1500
       run.rows[i]![COL.heroY] = at < 10 ? 1100 : 1100 - Math.min(300, (at - 9) * 30)
       run.rows[i]![COL.right] = at < 6 ? 1 : 0
     }
-    expect(momentsOf(cfg, run).moments.met).toBe(1510)
+    expect(momentsOf(cfg, run).moments.met).toBe(null)
+    expect(filesOf(run).some((f) => f.moment === 'flip')).toBe(false)
   })
 
   it('starts every moment three pictures before it: the hit, the taking, the release, the seal, the blow of the flipper', () => {
@@ -268,6 +270,7 @@ describe('the moments of the visit, as the sheets need them', () => {
     expect(brief).not.toMatch(/One event on two sheets/)
   })
 
+  // The rule changed by the Builder's word of 2026-11-27: under the limit the turn's first sheet now goes before a flip sheet, then the ball leaving the port, and a true stroke keeps its two sheets as long as it can.
   it('stays inside the limit of files: every moment keeps a sheet and the second sheets go, the least worth first', () => {
     expect(plan10().length).toBe(10)
     expect(most).toBeGreaterThanOrEqual(10)
@@ -281,8 +284,8 @@ describe('the moments of the visit, as the sheets need them', () => {
       for (const moment of moments) expect(files.some((f) => f.moment === moment)).toBe(true)
       return Object.fromEntries(moments.map((moment) => [moment, files.filter((f) => f.moment === moment).length]))
     }
-    expect(at(9)).toEqual({ walk: 1, turn: 2, hit: 1, taken: 1, 'given-back': 1, flippers: 2, flip: 1 })
-    expect(at(8)).toEqual({ walk: 1, turn: 2, hit: 1, taken: 1, 'given-back': 1, flippers: 1, flip: 1 })
+    expect(at(9)).toEqual({ walk: 1, turn: 1, hit: 1, taken: 1, 'given-back': 1, flippers: 2, flip: 2 })
+    expect(at(8)).toEqual({ walk: 1, turn: 1, hit: 1, taken: 1, 'given-back': 1, flippers: 1, flip: 2 })
     expect(at(7)).toEqual({ walk: 1, turn: 1, hit: 1, taken: 1, 'given-back': 1, flippers: 1, flip: 1 })
     // Cut to one sheet, the turn keeps its last twelve pictures: the seat and what follows it.
     const c = { ...cfg, critics: { ...cfg.critics, maxFilesPerMessage: 7 } }

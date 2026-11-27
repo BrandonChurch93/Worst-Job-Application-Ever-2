@@ -1,0 +1,165 @@
+never    seed 1  old tows 0  slides 2 (sum 0.53 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.41 s  a press does nothing for at most 3.41 s  scene end 42.13 s  page end 55.77 s  beats all
+    slide page 29.91 s  firehouse deadline waited 0.15 s
+    slide page 40.76 s  street gate deadline waited 0.38 s
+never    seed 2  old tows 0  slides 2 (sum 0.53 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.41 s  a press does nothing for at most 3.41 s  scene end 42.13 s  page end 55.77 s  beats all
+    slide page 29.91 s  firehouse deadline waited 0.15 s
+    slide page 40.76 s  street gate deadline waited 0.38 s
+never    seed 3  old tows 0  slides 2 (sum 0.53 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.41 s  a press does nothing for at most 3.41 s  scene end 42.13 s  page end 55.77 s  beats all
+    slide page 29.91 s  firehouse deadline waited 0.15 s
+    slide page 40.76 s  street gate deadline waited 0.38 s
+never    seed 4  old tows 0  slides 2 (sum 0.53 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.41 s  a press does nothing for at most 3.41 s  scene end 42.13 s  page end 55.77 s  beats all
+    slide page 29.91 s  firehouse deadline waited 0.15 s
+    slide page 40.76 s  street gate deadline waited 0.38 s
+pack     seed 1  old tows 0  slides 3 (sum 2.33 s, longest 1.99 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 40.89 s  page end 54.54 s  beats all
+    slide page 24.90 s  office gate deadline waited 0.32 s
+    slide page 27.51 s  firehouse deadline waited 1.99 s
+    slide page 33.50 s  ramp deadline waited 0.02 s
+pack     seed 2  old tows 0  slides 3 (sum 0.95 s, longest 0.83 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 39.83 s  page end 53.48 s  beats all
+    slide page 27.20 s  firehouse deadline waited 0.04 s
+    slide page 31.24 s  ramp deadline waited 0.08 s
+    slide page 38.01 s  street gate deadline waited 0.83 s
+pack     seed 3  old tows 0  slides 3 (sum 0.96 s, longest 0.83 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 39.84 s  page end 53.49 s  beats all
+    slide page 27.20 s  firehouse deadline waited 0.05 s
+    slide page 31.25 s  ramp deadline waited 0.08 s
+    slide page 38.02 s  street gate deadline waited 0.83 s
+pack     seed 4  old tows 0  slides 3 (sum 2.73 s, longest 1.83 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 41.60 s  page end 55.25 s  beats all
+    slide page 27.20 s  firehouse deadline waited 1.83 s
+    slide page 33.02 s  ramp deadline waited 0.07 s
+    slide page 39.79 s  street gate deadline waited 0.83 s
+keen     seed 1  old tows 0  slides 2 (sum 6.70 s, longest 3.71 s)  cuts 2 (longest 1.24 s, sum 1.46 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 44.97 s  page end 46.75 s  beats all
+    slide page 19.10 s  inbox deadline waited 3.71 s
+    slide page 34.91 s  ramp deadline waited 2.99 s
+    cut page 36.47 s  the bats' power was cut for 1.24 s, from the floor, 1.42 s after a stroke met the ball
+    cut page 43.76 s  the bats' power was cut for 0.22 s, from the floor, 1.46 s after a stroke met the ball
+keen     seed 2  old tows 0  slides 2 (sum 6.70 s, longest 3.71 s)  cuts 2 (longest 1.24 s, sum 1.46 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 44.97 s  page end 46.75 s  beats all
+    slide page 19.10 s  inbox deadline waited 3.71 s
+    slide page 34.91 s  ramp deadline waited 2.99 s
+    cut page 36.47 s  the bats' power was cut for 1.24 s, from the floor, 1.42 s after a stroke met the ball
+    cut page 43.76 s  the bats' power was cut for 0.22 s, from the floor, 1.46 s after a stroke met the ball
+keen     seed 3  old tows 0  slides 2 (sum 6.70 s, longest 3.71 s)  cuts 2 (longest 1.24 s, sum 1.46 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 44.97 s  page end 46.75 s  beats all
+    slide page 19.10 s  inbox deadline waited 3.71 s
+    slide page 34.91 s  ramp deadline waited 2.99 s
+    cut page 36.47 s  the bats' power was cut for 1.24 s, from the floor, 1.42 s after a stroke met the ball
+    cut page 43.76 s  the bats' power was cut for 0.22 s, from the floor, 1.46 s after a stroke met the ball
+keen     seed 4  old tows 0  slides 2 (sum 6.70 s, longest 3.71 s)  cuts 2 (longest 1.24 s, sum 1.46 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 44.97 s  page end 46.75 s  beats all
+    slide page 19.10 s  inbox deadline waited 3.71 s
+    slide page 34.91 s  ramp deadline waited 2.99 s
+    cut page 36.47 s  the bats' power was cut for 1.24 s, from the floor, 1.42 s after a stroke met the ball
+    cut page 43.76 s  the bats' power was cut for 0.22 s, from the floor, 1.46 s after a stroke met the ball
+clumsy   seed 1  old tows 0  slides 2 (sum 0.43 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 39.31 s  page end 40.96 s  beats all
+    slide page 31.20 s  ramp deadline waited 0.05 s
+    slide page 37.94 s  street gate deadline waited 0.38 s
+clumsy   seed 2  old tows 0  slides 2 (sum 0.43 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 39.31 s  page end 40.96 s  beats all
+    slide page 31.20 s  ramp deadline waited 0.05 s
+    slide page 37.94 s  street gate deadline waited 0.38 s
+clumsy   seed 3  old tows 0  slides 2 (sum 0.43 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 39.31 s  page end 40.96 s  beats all
+    slide page 31.20 s  ramp deadline waited 0.05 s
+    slide page 37.94 s  street gate deadline waited 0.38 s
+clumsy   seed 4  old tows 0  slides 2 (sum 0.43 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 39.31 s  page end 40.96 s  beats all
+    slide page 31.20 s  ramp deadline waited 0.05 s
+    slide page 37.94 s  street gate deadline waited 0.38 s
+random   seed 1  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 3 of 7 MISSED tier-fall:office.gate,scoop-in:street.firehouse,ramp-roll:highway,drain:street.gate  ball off the floor at most 2.16 s  a press does nothing for at most 2.16 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+random   seed 2  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 3 of 7 MISSED tier-fall:office.gate,scoop-in:street.firehouse,ramp-roll:highway,drain:street.gate  ball off the floor at most 1.01 s  a press does nothing for at most 1.01 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+random   seed 3  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 3 of 7 MISSED tier-fall:office.gate,scoop-in:street.firehouse,ramp-roll:highway,drain:street.gate  ball off the floor at most 1.24 s  a press does nothing for at most 1.24 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+random   seed 4  old tows 0  slides 1 (sum 0.34 s, longest 0.34 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 3 of 7 MISSED tier-fall:office.gate,scoop-in:street.firehouse,ramp-roll:highway,drain:street.gate  ball off the floor at most 1.01 s  a press does nothing for at most 1.01 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+    slide page 19.10 s  inbox deadline waited 0.34 s
+skipper  seed 1  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 3 of 7 MISSED tier-fall:office.gate,scoop-in:street.firehouse,ramp-roll:highway,drain:street.gate  ball off the floor at most 1.20 s  a press does nothing for at most 1.20 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+skipper  seed 2  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 3 of 7 MISSED tier-fall:office.gate,scoop-in:street.firehouse,ramp-roll:highway,drain:street.gate  ball off the floor at most 1.20 s  a press does nothing for at most 1.20 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+skipper  seed 3  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 3 of 7 MISSED tier-fall:office.gate,scoop-in:street.firehouse,ramp-roll:highway,drain:street.gate  ball off the floor at most 1.20 s  a press does nothing for at most 1.20 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+skipper  seed 4  old tows 0  slides 0 (sum 0.00 s, longest 0.00 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 3 of 7 MISSED tier-fall:office.gate,scoop-in:street.firehouse,ramp-roll:highway,drain:street.gate  ball off the floor at most 1.20 s  a press does nothing for at most 1.20 s  scene end 20.32 s  page end 22.98 s  beats MISSED  skipped
+wander   seed 1  old tows 0  slides 2 (sum 3.57 s, longest 3.26 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.41 s  a press does nothing for at most 3.41 s  scene end 42.45 s  page end 44.62 s  beats all
+    slide page 27.20 s  firehouse deadline waited 3.26 s
+    slide page 41.15 s  street gate deadline waited 0.31 s
+wander   seed 2  old tows 0  slides 4 (sum 5.22 s, longest 2.72 s)  cuts 1 (longest 0.23 s, sum 0.23 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 45.21 s  page end 48.12 s  beats all
+    slide page 26.00 s  office gate deadline waited 0.63 s
+    slide page 28.94 s  firehouse deadline waited 2.72 s
+    slide page 35.66 s  ramp deadline waited 1.51 s
+    slide page 43.86 s  street gate deadline waited 0.36 s
+    cut page 44.00 s  the bats' power was cut for 0.23 s, from the floor, 2.84 s after a stroke met the ball
+wander   seed 3  old tows 0  slides 2 (sum 1.94 s, longest 1.78 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.41 s  a press does nothing for at most 3.41 s  scene end 40.42 s  page end 42.70 s  beats all
+    slide page 24.90 s  office gate deadline waited 1.78 s
+    slide page 28.98 s  firehouse deadline waited 0.16 s
+wander   seed 4  old tows 0  slides 5 (sum 5.53 s, longest 2.57 s)  cuts 1 (longest 0.54 s, sum 0.54 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 44.41 s  page end 46.40 s  beats all
+    slide page 19.10 s  inbox deadline waited 0.34 s
+    slide page 25.24 s  office gate deadline waited 0.01 s
+    slide page 27.55 s  firehouse deadline waited 2.55 s
+    slide page 34.10 s  ramp deadline waited 0.06 s
+    slide page 40.86 s  street gate deadline waited 2.57 s
+    cut page 42.89 s  the bats' power was cut for 0.54 s, from the floor, 1.09 s after a stroke met the ball
+held     seed 1  old tows 0  slides 1 (sum 5.84 s, longest 5.84 s)  cuts 5 (longest 0.91 s, sum 2.96 s)  devices 7 of 7  ball off the floor at most 3.77 s  a press does nothing for at most 3.77 s  scene end 47.25 s  page end 60.90 s  beats all
+    slide page 21.81 s  inbox deadline waited 5.84 s
+    cut page 26.81 s  the bats' power was cut for 0.32 s, from the floor, no stroke had met the ball
+    cut page 32.86 s  the bats' power was cut for 0.07 s, from the floor, no stroke had met the ball
+    cut page 33.76 s  the bats' power was cut for 0.85 s, from the floor, no stroke had met the ball
+    cut page 38.24 s  the bats' power was cut for 0.91 s, from the floor, no stroke had met the ball
+    cut page 45.45 s  the bats' power was cut for 0.81 s, from the floor, no stroke had met the ball
+held     seed 2  old tows 0  slides 1 (sum 5.84 s, longest 5.84 s)  cuts 5 (longest 0.91 s, sum 2.96 s)  devices 7 of 7  ball off the floor at most 3.77 s  a press does nothing for at most 3.77 s  scene end 47.25 s  page end 60.90 s  beats all
+    slide page 21.81 s  inbox deadline waited 5.84 s
+    cut page 26.81 s  the bats' power was cut for 0.32 s, from the floor, no stroke had met the ball
+    cut page 32.86 s  the bats' power was cut for 0.07 s, from the floor, no stroke had met the ball
+    cut page 33.76 s  the bats' power was cut for 0.85 s, from the floor, no stroke had met the ball
+    cut page 38.24 s  the bats' power was cut for 0.91 s, from the floor, no stroke had met the ball
+    cut page 45.45 s  the bats' power was cut for 0.81 s, from the floor, no stroke had met the ball
+held     seed 3  old tows 0  slides 1 (sum 5.84 s, longest 5.84 s)  cuts 5 (longest 0.91 s, sum 2.96 s)  devices 7 of 7  ball off the floor at most 3.77 s  a press does nothing for at most 3.77 s  scene end 47.25 s  page end 60.90 s  beats all
+    slide page 21.81 s  inbox deadline waited 5.84 s
+    cut page 26.81 s  the bats' power was cut for 0.32 s, from the floor, no stroke had met the ball
+    cut page 32.86 s  the bats' power was cut for 0.07 s, from the floor, no stroke had met the ball
+    cut page 33.76 s  the bats' power was cut for 0.85 s, from the floor, no stroke had met the ball
+    cut page 38.24 s  the bats' power was cut for 0.91 s, from the floor, no stroke had met the ball
+    cut page 45.45 s  the bats' power was cut for 0.81 s, from the floor, no stroke had met the ball
+held     seed 4  old tows 0  slides 1 (sum 5.84 s, longest 5.84 s)  cuts 5 (longest 0.91 s, sum 2.96 s)  devices 7 of 7  ball off the floor at most 3.77 s  a press does nothing for at most 3.77 s  scene end 47.25 s  page end 60.90 s  beats all
+    slide page 21.81 s  inbox deadline waited 5.84 s
+    cut page 26.81 s  the bats' power was cut for 0.32 s, from the floor, no stroke had met the ball
+    cut page 32.86 s  the bats' power was cut for 0.07 s, from the floor, no stroke had met the ball
+    cut page 33.76 s  the bats' power was cut for 0.85 s, from the floor, no stroke had met the ball
+    cut page 38.24 s  the bats' power was cut for 0.91 s, from the floor, no stroke had met the ball
+    cut page 45.45 s  the bats' power was cut for 0.81 s, from the floor, no stroke had met the ball
+flap     seed 1  old tows 0  slides 2 (sum 7.72 s, longest 6.56 s)  cuts 4 (longest 0.92 s, sum 2.90 s)  devices 7 of 7  ball off the floor at most 3.77 s  a press does nothing for at most 3.77 s  scene end 49.00 s  page end 62.65 s  beats all
+    slide page 21.81 s  inbox deadline waited 1.16 s
+    slide page 28.77 s  office gate deadline waited 6.56 s
+    cut page 34.41 s  the bats' power was cut for 0.92 s, from the floor, 2.13 s after a stroke met the ball
+    cut page 35.98 s  the bats' power was cut for 0.38 s, from the floor, 3.70 s after a stroke met the ball
+    cut page 40.12 s  the bats' power was cut for 0.91 s, from the floor, 7.84 s after a stroke met the ball
+    cut page 47.33 s  the bats' power was cut for 0.68 s, from the floor, 0.80 s after a stroke met the ball
+flap     seed 2  old tows 0  slides 3 (sum 6.16 s, longest 5.90 s)  cuts 5 (longest 0.91 s, sum 2.38 s)  devices 7 of 7  ball off the floor at most 3.77 s  a press does nothing for at most 3.77 s  scene end 47.70 s  page end 61.35 s  beats all
+    slide page 17.61 s  lobby gate deadline waited 0.11 s
+    slide page 21.92 s  inbox deadline waited 5.90 s
+    slide page 33.62 s  office gate deadline waited 0.15 s
+    cut page 27.02 s  the bats' power was cut for 0.28 s, from the gate's mouth, 0.17 s after a stroke met the ball
+    cut page 33.55 s  the bats' power was cut for 0.22 s, from the floor, 1.18 s after a stroke met the ball
+    cut page 34.42 s  the bats' power was cut for 0.38 s, from the floor, 2.04 s after a stroke met the ball
+    cut page 38.56 s  the bats' power was cut for 0.91 s, from the floor, 6.18 s after a stroke met the ball
+    cut page 46.13 s  the bats' power was cut for 0.59 s, from the floor, 0.75 s after a stroke met the ball
+flap     seed 3  old tows 0  slides 2 (sum 6.07 s, longest 5.85 s)  cuts 5 (longest 0.91 s, sum 2.41 s)  devices 7 of 7  ball off the floor at most 3.77 s  a press does nothing for at most 3.77 s  scene end 47.30 s  page end 60.95 s  beats all
+    slide page 21.81 s  inbox deadline waited 5.85 s
+    slide page 33.47 s  office gate deadline waited 0.21 s
+    cut page 26.86 s  the bats' power was cut for 0.28 s, from the gate's mouth, 0.17 s after a stroke met the ball
+    cut page 33.47 s  the bats' power was cut for 0.21 s, from the floor, 0.75 s after a stroke met the ball
+    cut page 34.33 s  the bats' power was cut for 0.38 s, from the floor, 1.61 s after a stroke met the ball
+    cut page 38.47 s  the bats' power was cut for 0.91 s, from the floor, 5.75 s after a stroke met the ball
+    cut page 45.68 s  the bats' power was cut for 0.63 s, from the floor, 1.72 s after a stroke met the ball
+flap     seed 4  old tows 0  slides 2 (sum 6.83 s, longest 6.80 s)  cuts 6 (longest 0.91 s, sum 2.73 s)  devices 7 of 7  ball off the floor at most 3.77 s  a press does nothing for at most 3.77 s  scene end 47.99 s  page end 61.64 s  beats all
+    slide page 17.61 s  lobby gate deadline waited 6.80 s
+    slide page 34.41 s  office gate deadline waited 0.03 s
+    cut page 23.67 s  the bats' power was cut for 0.74 s, from the floor, 4.60 s after a stroke met the ball
+    cut page 26.95 s  the bats' power was cut for 0.47 s, from the floor, 7.88 s after a stroke met the ball
+    cut page 34.31 s  the bats' power was cut for 0.13 s, from the gate's mouth, 0.50 s after a stroke met the ball
+    cut page 35.08 s  the bats' power was cut for 0.38 s, from the floor, 1.27 s after a stroke met the ball
+    cut page 39.23 s  the bats' power was cut for 0.91 s, from the floor, 5.42 s after a stroke met the ball
+    cut page 46.44 s  the bats' power was cut for 0.10 s, from the floor, 0.88 s after a stroke met the ball
+stroke   seed 1  old tows 0  slides 2 (sum 0.73 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.41 s  a press does nothing for at most 3.41 s  scene end 42.33 s  page end 55.98 s  beats all
+    slide page 29.91 s  firehouse deadline waited 0.35 s
+    slide page 40.96 s  street gate deadline waited 0.38 s
+stroke   seed 2  old tows 0  slides 4 (sum 0.99 s, longest 0.45 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 42.58 s  page end 56.23 s  beats all
+    slide page 27.61 s  office gate deadline waited 0.03 s
+    slide page 29.95 s  firehouse deadline waited 0.45 s
+    slide page 34.40 s  ramp deadline waited 0.12 s
+    slide page 41.22 s  street gate deadline waited 0.38 s
+stroke   seed 3  old tows 0  slides 4 (sum 0.84 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.36 s  a press does nothing for at most 3.36 s  scene end 42.44 s  page end 56.09 s  beats all
+    slide page 21.81 s  inbox deadline waited 0.06 s
+    slide page 29.98 s  firehouse deadline waited 0.37 s
+    slide page 34.35 s  ramp deadline waited 0.03 s
+    slide page 41.07 s  street gate deadline waited 0.38 s
+stroke   seed 4  old tows 0  slides 2 (sum 0.70 s, longest 0.38 s)  cuts 0 (longest 0.00 s, sum 0.00 s)  devices 7 of 7  ball off the floor at most 3.37 s  a press does nothing for at most 3.37 s  scene end 42.30 s  page end 55.95 s  beats all
+    slide page 29.91 s  firehouse deadline waited 0.32 s
+    slide page 40.93 s  street gate deadline waited 0.38 s

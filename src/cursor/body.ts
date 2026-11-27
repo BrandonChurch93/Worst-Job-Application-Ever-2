@@ -79,8 +79,8 @@ export const STRIPS = 15
 export const STRIKE = { x: 4.3, y: 9.4, reach: 2.1 }
 const UNIT_PX = config.cursor.heightPxAt1080 / 19
 
-export interface Strip { x: number; y: number; z: number; rot: number; tilt: number }
-interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number; out: number; slow: number }
+export interface Strip { x: number; y: number; z: number; rot: number; tilt: number; below?: number; out?: number }
+interface LooseStrip extends Strip { vx: number; vy: number; vz: number; vr: number; vt: number; rest: boolean; tx: number; ty: number; tr: number; out: number }
 export interface Wound { kind: Damage; at: number; x: number; y: number }
 
 export interface Face { x: number; y: number; z: number; back: number }
@@ -727,12 +727,13 @@ function lie(i: number, seed: number): Strip {
   return { x: FAN.away[0]! + toX + dx * cut.half - cut.x, y: FAN.away[1]! + toY + dy * cut.half - cut.y, z: layer(i), rot, tilt: 0 }
 }
 
-// How the strips come out of the shredder's mouth: the least and the most seconds a strip takes, and how far up under the hood it starts, in page pixels, lying low until it is out.
-const EMERGE = { least: 0.05, most: 0.12, under: 18 }
+// How the strips come out of the shredder's mouth: the seconds the mouth takes to feed a strip out, in which its fall waits, and the height of the mouth's lower lip over the pile's place, in page pixels.
+const EMERGE = { time: 2 / 15, lip: 43 }
 
 function emerged(p: LooseStrip): Strip {
-  const e = Math.min(1, Math.max(0, p.out))
-  return { x: p.x, y: p.y + (1 - e) * EMERGE.under, z: p.z * e * e, rot: p.rot, tilt: p.tilt * e }
+  if (p.out >= 1) return bare(p)
+  const e = Math.max(0, p.out)
+  return { x: p.x, y: p.y, z: p.z * e * e, rot: p.rot, tilt: p.tilt * e, below: EMERGE.lip, out: e }
 }
 
 // The strips as they leave the shredder: thrown down the page from above their places, each with its own spin, each bound for its place in the fan.
@@ -744,7 +745,7 @@ function pile(seed: number): LooseStrip[] {
     out.push({
       x: (h(1) - 0.5) * 6, y: 38 + h(2) * 12, z: 22 + h(3) * 26 + i * 2, rot: (h(4) - 0.5) * 0.5, tilt: (h(5) - 0.5) * 1.4,
       vx: (h(6) - 0.5) * 60, vy: -(210 + h(7) * 60), vz: -90, vr: (h(8) - 0.5) * 5, vt: (h(9) - 0.5) * 10, rest: false,
-      tx: to.x, ty: to.y, tr: to.rot, out: 0, slow: EMERGE.least + h(10) * (EMERGE.most - EMERGE.least)
+      tx: to.x, ty: to.y, tr: to.rot, out: -dt / EMERGE.time
     })
   }
   return out
@@ -758,7 +759,10 @@ function fall(strips: LooseStrip[]): void {
 }
 
 function drop(p: LooseStrip, i: number): void {
-  if (p.out < 1) p.out = Math.min(1, p.out + dt / p.slow)
+  if (p.out < 1) {
+    p.out = Math.min(1, p.out + dt / EMERGE.time)
+    return
+  }
   if (p.rest) return
   const floor = layer(i)
   const down = p.z <= floor + 0.01 && Math.abs(p.vz) < 1
@@ -896,7 +900,8 @@ export function blendPose(a: CursorPose, b: CursorPose, t: number): CursorPose {
   const strips = a.strips && b.strips && a.strips.length === b.strips.length
     ? b.strips.map((q, i) => {
         const p = a.strips![i]!
-        return { x: mix(p.x, q.x), y: mix(p.y, q.y), z: mix(p.z, q.z), rot: mix(p.rot, q.rot), tilt: mix(p.tilt, q.tilt) }
+        const at = { x: mix(p.x, q.x), y: mix(p.y, q.y), z: mix(p.z, q.z), rot: mix(p.rot, q.rot), tilt: mix(p.tilt, q.tilt) }
+        return q.below === undefined ? at : { ...at, below: q.below, out: mix(p.out ?? 0, q.out ?? 1) }
       })
     : b.strips
   const face = a.face && b.face ? { x: mix(a.face.x, b.face.x), y: mix(a.face.y, b.face.y), z: mix(a.face.z, b.face.z), back: mix(a.face.back, b.face.back) } : b.face ?? null
