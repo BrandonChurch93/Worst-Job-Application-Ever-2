@@ -5,7 +5,7 @@ Branch `agent/b-careers`. Every item below is MEASURED (the command and the numb
 ## What is built
 
 - The page of `references/approved-002/careers-page.png` as a flat white website on the site's stage, in `src/pages/marketing/*`. Eight sections: top (navigation, hero, awards, ticker), benefits, staff quotes, questions, comparison, process, closing call, footer.
-- `careersLayout()` height 5633 px at 1920 wide (the picture is 5357; the 276 more is the second row of quotes). Section tops: 0, 1080, 2170, 2916, 3566, 4586, 5216, 5538. Scroll range 0 to 4553. MEASURED: printed from `careersLayout()` in a test run.
+- `careersLayout()` height 5679 px at 1920 wide (the picture is 5357; the 322 more is the second row of quotes and their bracket notes at 16 px on two lines). Scroll range 0 to 4599. MEASURED: printed from `careersLayout()` in a test run.
 - The film's opening on this page: 18 s from the first frame to the press of the last Apply, in two settings, see "The opening".
 
 ## Decisions
@@ -33,18 +33,18 @@ Branch `agent/b-careers`. Every item below is MEASURED (the command and the numb
 
 All numbers stand in one object, `OPENING` in `src/pages/marketing/script.ts`: `total` 18, `key` 2.4, `line` 13.75, `after` 1.25, `ramp` 0.45, `places` (salary, badge, lol, ghosting, button), and for `A` and `B` the `scrollFrom` and for each place `{ hold, slow }`. `use` picks the setting ('B' by default); the URL query `&opening=a` or `&opening=b` overrides it.
 
-MEASURED by printing `careersOpening('A')` and `careersOpening('B')` in a test run (page px, seconds):
+MEASURED by printing `careersOpening('A')` and `careersOpening('B')` in a test run (page px, seconds), at commit 22e224dd. The two previews rendered on 27 November from 8411b054 have the page 46 px shorter: 2024 and 597 px/s, stops within 0.03 s of these:
 
 | | A | B |
 |---|---|---|
 | Line 1 (22 words at 1.6 a second, silent stand-in) | 0 to 13.75 | 0 to 13.75 |
 | Hold at the top | 0 to 13.75 | 0 to 3.0 |
 | Scroll | 13.75 to 16.45, 2.70 s | 3.0 to 16.45, 13.45 s |
-| Speed between stops | 2024 px/s (33.7 px a frame at 60) | 597 px/s (9.9 px a frame at 60) |
-| "Competitive Salary" fine print | no slowing | 4.99 to 6.29, 1.30 s at 72 px/s |
-| "[STATUS: Badge still doesn't work]" | no slowing | 8.11 to 9.11, 1.0 s at 72 px/s |
-| "Responds to Applications", "lol" | no slowing | 12.47 to 13.47, 1.0 s at 72 px/s |
-| Step five, "Professional Ghosting" | no slowing | 14.43 to 15.43, 1.0 s at 72 px/s |
+| Speed between stops | 2044 px/s (34.1 px a frame at 60) | 603 px/s (10.0 px a frame at 60) |
+| "Competitive Salary" fine print | no slowing | 4.98 to 6.28, 1.30 s at 72 px/s |
+| "[STATUS: Badge still doesn't work]" | no slowing | 8.08 to 9.08, 1.0 s at 72 px/s |
+| "Responds to Applications", "lol" | no slowing | 12.49 to 13.49, 1.0 s at 72 px/s |
+| Step five, "Professional Ghosting" | no slowing | 14.41 to 15.41, 1.0 s at 72 px/s |
 | The last button and the line under it | stands 16.45 to 18.0, 1.55 s | stands 16.45 to 18.0, 1.55 s |
 | Press of Apply (`button-press`) | 18.0 | 18.0 |
 | Turn into step 1 (`page-turn`) | 18.75 | 18.75 |
@@ -54,8 +54,8 @@ MEASURED by printing `careersOpening('A')` and `careersOpening('B')` in a test r
 - In B the arrow rides down the page with the scroll, stands on the salary card at its stop (the card turns: `card-flip` 4.79 s, `card-flip-back` 6.52 s, MEASURED in the simulation at 240 steps a second), then by the badge line, the "lol" cell, the fifth step and the button. It goes down a lane at x 150 between the salary card and the badge so no other card turns.
 - `button-press` 17.979 s on `final-cta-cap`, `page-turn` 18.750 s: MEASURED in `tests/careers-acting.test.ts`.
 - In B line 1 ends at 13.75 s, at the end of the "lol" stop. The last 4.25 s have no voice.
-- In A no card turns: the page passes the cards at 2024 px/s. So the beat `marketing.perks` has no `card-flip` in its window in A, and with `OPENING.use` set to 'A' two of my tests fail by design ("keeps each beat and its event inside its window" in `tests/marketing.test.ts`, "flips one card in the film" in `tests/careers-fix.test.ts`). MEASURED: `npx vitest run tests/marketing.test.ts tests/careers-*.test.ts` with `use: 'A'`, 2 failed of 37. The tests pin the default, B.
-- The turn at the bottom: while the page turns, the stage draws only the screen on show as a slab. A sheet of the website that reaches above the screen (the comparison's, by 987 px at scroll 4553) is now cut to the screen for those frames (`Paint.keep` in `real/flat.ts`, the sheet's key in `real/careers-page.ts`), so it does not hang over the slab. MEASURED in `tests/careers-real.test.ts` (the cut sheet's upper edge is at the scroll). A card or a line of type that straddles the screen's edge is not cut: at scroll 4553 none does. On the live site a press of Apply at another scroll can leave a card or a line across the edge for the half second of the turn: STATED, not looked at.
+- In A no card turns: the page passes the cards at 2044 px/s. So the beat `marketing.perks` has no `card-flip` in its window in A, and with `OPENING.use` set to 'A' two of my tests fail by design ("keeps each beat and its event inside its window" in `tests/marketing.test.ts`, "flips one card in the film" in `tests/careers-fix.test.ts`). MEASURED: `npx vitest run tests/marketing.test.ts tests/careers-*.test.ts` with `use: 'A'`, 2 failed of 37. The tests pin the default, B.
+- The turn at the bottom: while the page turns, the stage draws only the screen on show as a slab. A sheet of the website that reaches above the screen (the comparison's, at the bottom scroll) is now cut to the screen for those frames (`Paint.keep` in `real/flat.ts`, the sheet's key in `real/careers-page.ts`), so it does not hang over the slab. MEASURED in `tests/careers-real.test.ts` (the cut sheet's upper edge is at the scroll). A card or a line of type that straddles the screen's edge is not cut: at the bottom scroll none does. On the live site a press of Apply at another scroll can leave a card or a line across the edge for the half second of the turn: STATED, not looked at.
 
 ## NEEDS (outside my files)
 
@@ -77,7 +77,7 @@ Contrast (the Builder's ruling of 21:50: every run of type 4.5 to 1 against what
 
 Other:
 
-- The page is 276 px taller: six quotes in two rows (decision 7); the picture has three.
+- The page is 322 px taller: six quotes in two rows (decision 7); the picture has three.
 - The awards carry their fine print (decision 8); the picture has none.
 - Type: Inter in one scale of eight sizes; the picture's sizes vary by a few px from section to section.
 - Staff quotes have no quotation marks and the fine print has no "* " in front: the copy has neither.
