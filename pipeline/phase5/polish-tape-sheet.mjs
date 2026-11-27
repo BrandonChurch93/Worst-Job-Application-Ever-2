@@ -1,15 +1,16 @@
-// node pipeline/phase5/polish-tape-sheet.mjs MODE BEFORE_DIR AFTER_DIR KIND FIRST COUNT OUT
+// node pipeline/phase5/polish-tape-sheet.mjs MODE BEFORE_DIR AFTER_DIR KIND FIRST COUNT OUT [EVERY]
 // Pictures of the careers page's tape made before the change and after it. KIND is live (step-000NNN.png) or film (frame-000NNN-hd-draft.png), FIRST the first picture's number, COUNT how many in a row.
 // MODE strip: the inner end of the frost at the strip's right end (x 1420 to 1620, y 1006 to 1032) at three times, a row a frame, before at the left and after at the right.
 // MODE turn: the part of the picture right of the page (x 1380 to 1920, 90 rows that follow the strip) at real size, two frames a row, before above and after below.
 // MODE end: the strip's right end (x 1392 to 1792, y 990 to 1048) at three times, before above and after below, a pair a picture.
 // MODE where: writes no picture. For every pair: how many pixels differ, how many by 8 or more of a channel, the box that holds them all, and the pixels themselves when there are 8 or fewer.
+// MODE foot: for a page turn. Every EVERY-th picture, x 0 to 150 at real size, 200 rows that follow the foot of the page in the picture made after (150 above it, 50 under), eight to a band, before above and after below.
 // MODE diff: writes no picture. For every pair: how many pixels differ in the whole picture, how many of them inside the strip's box at rest (x 128 to 1792, y 990 to 1048), the largest difference of a channel.
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 
-const [mode, beforeDir, afterDir, kind, firstArg, countArg, out] = process.argv.slice(2)
+const [mode, beforeDir, afterDir, kind, firstArg, countArg, out, everyArg = '1'] = process.argv.slice(2)
 const first = Number(firstArg)
 const count = Number(countArg)
 const file = (dir, n) => path.join(dir, kind === 'film' ? `frame-${String(n).padStart(6, '0')}-hd-draft.png` : `step-${String(n).padStart(6, '0')}.png`)
@@ -64,6 +65,29 @@ if (mode === 'diff') {
   }
   await sharp({ create: { width: 1200, height: LABEL + count * h, channels: 4, background: GROUND } }).composite(parts).png().toFile(out)
   console.log(`${out}: 1200 by ${LABEL + count * h}`)
+} else if (mode === 'foot') {
+  const every = Number(everyArg)
+  const [W, H, PER] = [150, 200, 8]
+  const frames = []
+  for (let n = first; n < first + count; n += every) frames.push(n)
+  const bands = Math.ceil(frames.length / PER)
+  const parts = [{ input: words(`${kind}, pictures ${frames[0]} to ${frames[frames.length - 1]}, every ${every}: x 0 to 150 at real size, 200 rows that follow the foot of the page. In each band before above, after below`, PER * W), left: 0, top: 0 }]
+  for (const [k, n] of frames.entries()) {
+    const a = await raw(file(afterDir, n))
+    const lum = (y) => Math.max(a[(y * 1920 + 100) * 3], a[(y * 1920 + 100) * 3 + 1], a[(y * 1920 + 100) * 3 + 2])
+    let y = 1079
+    while (y > 0 && lum(y) < 45) y--
+    const top = Math.max(0, Math.min(1080 - H, y - 150))
+    const [col, row] = [k % PER, Math.floor(k / PER)]
+    const y0 = LABEL + row * (LABEL + 2 * H)
+    parts.push({ input: words(`${n}, y ${top}`, W), left: col * W, top: y0 })
+    for (const [j, dir] of [beforeDir, afterDir].entries()) {
+      const tile = await sharp(file(dir, n)).extract({ left: 0, top, width: W, height: H }).png().toBuffer()
+      parts.push({ input: tile, left: col * W, top: y0 + LABEL + j * H })
+    }
+  }
+  await sharp({ create: { width: PER * W, height: LABEL + bands * (LABEL + 2 * H), channels: 4, background: GROUND } }).composite(parts).png().toFile(out)
+  console.log(`${out}: ${PER * W} by ${LABEL + bands * (LABEL + 2 * H)}`)
 } else if (mode === 'end') {
   const box = { left: 1392, top: 990, width: 400, height: 58 }
   const [w, h] = [box.width * 3, box.height * 3]
