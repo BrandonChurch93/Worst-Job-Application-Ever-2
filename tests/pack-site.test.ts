@@ -173,12 +173,12 @@ describe('the packs of the unit site', () => {
       expect(f.hands !== undefined).toBe(hand)
       if (f.hands) expect(f.hands.length).toBe(f.steps!.length)
     }
-    // The stroke: the visitor presses the right flipper at 3 * LONG + 120 and holds it for ten steps. The press first shows in the picture of the step after it.
+    // The stroke: the visitor presses the right flipper at 3 * LONG + 120 and holds it for ten steps, to 3 * LONG + 129.
     const flip = files.filter((f) => f.moment === 'flip')
     expect(flip.length).toBe(2)
     expect(flip[0]!.at).toBe(3 * LONG + 121)
     expect(flip[0]!.steps!.slice(0, 10)).toEqual([1015, 1017, 1019, 1021, 1023, 1025, 1027, 1029, 1031, 1033])
-    expect(flip[0]!.hands!.slice(0, 10)).toEqual(['', '', '', 'R', 'R', 'R', 'R', 'R', 'R', ''])
+    expect(flip[0]!.hands!.slice(0, 10)).toEqual(['', '', '', 'R', 'R', 'R', 'R', 'R', '', ''])
     expect(flip[1]!.hands!.every((h) => h === '')).toBe(true)
     // The save: no hand on a flipper in any of its frames.
     const save = files.find((f) => f.moment === 'save')!
@@ -192,13 +192,16 @@ describe('the packs of the unit site', () => {
     rows[5]![COL.left] = 1
     rows[8]![COL.right] = 1
     rows[9]![COL.left] = 1
+    // Held at the frame's own step, or at the one step between it and the frame before it.
     expect(handAt(rows, 4)).toBe('')
-    expect(handAt(rows, 5)).toBe('')
+    expect(handAt(rows, 5)).toBe('L')
     expect(handAt(rows, 6)).toBe('L')
-    expect(handAt(rows, 7)).toBe('L')
-    expect(handAt(rows, 8)).toBe('')
-    expect(handAt(rows, 10)).toBe('L R')
+    expect(handAt(rows, 7)).toBe('')
+    expect(handAt(rows, 8)).toBe('R')
+    expect(handAt(rows, 9)).toBe('L R')
+    expect(handAt(rows, 10)).toBe('L')
     expect(handAt(rows, 0)).toBe('')
+    expect(HAND_WORDS).toBe('Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.')
   })
 
   it('R4: the stroke stands only on a step at which the visitor own bat meets the ball, and is left out with a plain word when there is none', () => {

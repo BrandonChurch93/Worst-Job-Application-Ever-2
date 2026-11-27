@@ -369,13 +369,14 @@ const PORT = { clear: 150, tail: 6, most: 600 }
 // The flipper meets the ball: within `within` steps of a press of a flipper the arrow's speed changes by `kick` px of the page a step or more, the ball then `lifts` px a step or more up the table.
 // A bat's own blow comes while the bat rises, `soon` steps after the press at most, and is hard: the first press counts whose change of speed is `share` of the hardest
 // such change in the visit or more. So a ball the table throws back by itself just after a press that met nothing (the save's lob from the gate's mouth) is not taken for the bat's blow.
-// `holds`: a hand's press lasts, so of the true strokes the first is shown in which the hand keeps the key down this many steps from the press; with none that long, the first true stroke.
-export const MEETS = { within: 24, kick: 4, lifts: 3, soon: 4, share: 0.6, holds: 6 }
+export const MEETS = { within: 24, kick: 4, lifts: 3, soon: 4, share: 0.6 }
 // The machine's save of a ball lost between the bats. The run names a save only where the page tells of one as a hit on the arrow (`flipper-save` in `hits`,
 // told once, inside the gag of the save); every other save is read from the ball's own path in the rows: the ball was going down the table, and in one step it stands
 // `lifts` px of the page or more up the table, between the bats (within `across` balls of the page's middle), and the step after its speed differs from that jump by `breaks` px or more.
 // A blow of a bat or a bumper does not do that: the ball keeps the speed a blow gave it. The ball was put there, not struck. `lead`: the save's run starts this many pictures before the save.
-export const SAVE = { name: 'flipper-save', lifts: 30, breaks: 12, across: 1, lead: 2 }
+// A save is shown whole (the bat starts, the ball leaves, the bat falls) when its bat was at rest before it and nothing raises a bat again until it is down: no other save and no
+// flipper held by the visitor from `rest` steps before the save (a stroke, its fall and the bounce at rest) to `whole` steps after it (the machine's stroke and its fall).
+export const SAVE = { name: 'flipper-save', lifts: 30, breaks: 12, across: 1, lead: 2, rest: 36, whole: 26 }
 // A key of the page's keyboard pressed by the arrow: the run starts this many pictures before the press.
 export const TYPE = { lead: 2 }
 // What struck the arrow, in plain words, by the name the site tells the hit under.
@@ -383,7 +384,7 @@ export const STRUCK = { 'bolt-hit-cursor': "a turret's bolt", 'tug-lost': 'the l
 export const struckWords = (name) => STRUCK[name] || `what the page calls "${String(name).replace(/-/g, ' ')}"`
 // The sheets of these moments carry the visitor's hand under their frames.
 export const HANDS = ['flippers', 'flip', 'save']
-export const HAND_WORDS = 'Under a frame, L or R: the visitor holds the left or the right flipper there.'
+export const HAND_WORDS = 'Under a frame, L or R: the visitor held the left or the right flipper at that frame or since the one before it.'
 // Round a run's path in a close sheet: this much of the picture stays clear on every side of the arrow's places, in px of the picture.
 const ROOM = 56
 // When the limit of files cuts a run of two sheets to one, the second sheets go in this order, the least worth first.
@@ -506,13 +507,14 @@ export function momentsOf(cfg, run) {
     }
     saves.sort((x, y) => x - y)
   }
-  // The save that is shown: the first in whose first sheet the visitor holds no flipper, so the bat that strikes is the machine's alone; with none such, the first save.
+  // The save that is shown: the first of the run whose sheet shows it whole, the bat starting from rest, the ball leaving and the bat falling (SAVE.rest, SAVE.whole);
+  // with none such, the first save.
   const handIn = (from, to) => {
     for (let j = Math.max(0, from); j <= Math.min(n - 1, to); j++) if (rows[j][COL.left] || rows[j][COL.right]) return true
     return false
   }
-  const count = cfg.critics.contactSheetFrames
-  const save = saves.find((i) => !handIn(i - (SAVE.lead + 1) * EVERY, i + (count - SAVE.lead) * EVERY)) ?? saves[0] ?? null
+  const whole = (i) => !saves.some((x) => x !== i && x >= i - SAVE.rest && x <= i + SAVE.whole) && !handIn(i - SAVE.rest, i + SAVE.whole)
+  const save = saves.find(whole) ?? saves[0] ?? null
 
   // The visitor's own bat meets the ball. A step is a true stroke only when all of this holds: the visitor has the flippers; the ball's speed changes by MEETS.kick or more
   // and the ball then goes MEETS.lifts or more up the table; the visitor pressed a flipper MEETS.soon steps before at most (a press of step p first moves the bat in the picture of p + 1);
@@ -543,7 +545,8 @@ export function momentsOf(cfg, run) {
   // A bat's own blow is hard: a change of speed under MEETS.share of the hardest such change is a soft throw after a press that met nothing, and is no stroke.
   const hardest = strokes.reduce((k, x) => Math.max(k, x.kick), 0)
   for (let j = strokes.length - 1; j >= 0; j--) if (strokes[j].kick < MEETS.share * hardest) strokes.splice(j, 1)
-  const stroke = strokes.find((x) => x.held >= MEETS.holds) || strokes[0] || null
+  // Of the true strokes the one is shown whose hand holds the flipper longest, and of two held as long the earlier.
+  const stroke = strokes.reduce((best, x) => (!best || x.held > best.held ? x : best), null)
   const blow = stroke ? stroke.step : null
 
   // A key of the page's keyboard pressed by the arrow: the first press of the mouse button inside the key block of step 1 once the page asks for the first name, and its release.
@@ -566,12 +569,12 @@ export function momentsOf(cfg, run) {
   return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, flippers, leaves, left, flip, met: blow, stroke, strokes, save, saves, type, turn: turns[0] || null } }
 }
 
-// The visitor's hand under a frame. Picture i is the page before the visitor's events of step i, so a key that goes down at step i first shows in picture i + 1:
-// a frame carries L or R when the visitor held that flipper in a step since the frame before it (the steps this frame's picture came from).
+// The visitor's hand under a frame: a frame carries L or R when the visitor held that flipper at the frame's own step or at any step since the frame before it on the sheet,
+// so that a tap of one step between two frames is not lost. The columns are the run's own.
 export function handAt(rows, i, every = EVERY) {
   let left = false
   let right = false
-  for (let j = Math.max(0, i - every); j < i; j++) {
+  for (let j = Math.max(0, i - every + 1); j <= i; j++) {
     if (rows[j][COL.left]) left = true
     if (rows[j][COL.right]) right = true
   }
