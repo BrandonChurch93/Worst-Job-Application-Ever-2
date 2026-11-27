@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { pages } from '../src/pages'
 import { CRANK_HOME, DIAL_REACH, HOUSED } from '../src/pages/step2'
 import { config, stepHz } from '../src/config'
-import { DIAL, DIAL_BODY, ROWS, TRAY, TRAY_H, trayY } from '../src/pages/step2/layout'
+import { DIAL, DIAL_BODY, ROWS, TRAY, TRAY_H, TRAY_Z, trayY, VALUE_Z } from '../src/pages/step2/layout'
 import { dial, DIAL_UNDER } from '../src/pages/step2/real/dial'
 import type { RealContext } from '../src/real/types'
 import { BotDriver, type BotName } from '../src/stage/bots'
@@ -377,5 +377,77 @@ describe('polish date: the dial under the page is drawn low on the live site, an
       expect(span(o)).toEqual(was)
       expect(lowered(o, whole, -(edge + DIAL_UNDER.margin)).every((r) => r.touched === 0)).toBe(true)
     }
+  })
+})
+
+// The hub of the dial at every squash: its rim stands at least `rim` over the top of the pale inner disc, so the whole orange disc is in sight, and its top moves against the disc's by at most `step` in one step of the stage, so it swells and is never switched.
+const HUB = { rim: 0.04, step: 0.4 }
+
+describe('polish date: the hub of the dial is in sight at every squash, in the film and on the live site', () => {
+  const ctx = (list: Shape[]): RealContext => ({ page: 'step2', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => undefined })
+  const corner = new THREE.Vector3()
+  // The whole dial of each step on which it is drawn lower than its full height, and of the first step it stands whole: how far the hub's rim and its top stand over the inner disc's top, and the dial's highest point over the tray's floor.
+  const squashes = (stage: Stage, seconds: number): { step: number; top: number; rim: number; crown: number; most: number; swell: number; hubAt: number; innerAt: number; glint: number }[] => {
+    const out: { step: number; top: number; rim: number; crown: number; most: number; swell: number; hubAt: number; innerAt: number; glint: number }[] = []
+    let o: THREE.Object3D | null = null
+    let whole = false
+    for (let i = 0; i < seconds * stepHz && stage.page.id === 'step2'; i++) {
+      stage.advance(1)
+      if (stage.page.id !== 'step2') break
+      const list: Shape[] = []
+      stage.page.draw(list)
+      const drawn = list.find((s) => s.id === 'dial-wheel')
+      if (!drawn) continue
+      const top = drawn.z1 - drawn.z0
+      if (top > DIAL_BODY.tall - 1e-9) {
+        if (whole) continue
+        whole = true
+      }
+      const wheel: Shape = { ...drawn, v: [drawn.v?.[0] ?? 0] }
+      o ??= dial.make(wheel, ctx(list))
+      dial.pose!(o, wheel, ctx(list))
+      o.updateMatrixWorld(true)
+      const kept = o.userData.dial as { hub: THREE.Mesh; inner: THREE.Mesh; glint: THREE.Mesh; body: THREE.Group }
+      let disc = -Infinity
+      const a = kept.inner.geometry.getAttribute('position')
+      for (let k = 0; k < a.count; k++) disc = Math.max(disc, corner.fromBufferAttribute(a, k).applyMatrix4(kept.inner.matrixWorld).z)
+      let rim = -Infinity
+      let crown = -Infinity
+      const h = kept.hub.geometry.getAttribute('position')
+      for (let k = 0; k < h.count; k++) {
+        const far = Math.hypot(h.getX(k), h.getY(k)) > DIAL_BODY.hub - 0.01
+        const z = corner.fromBufferAttribute(h, k).applyMatrix4(kept.hub.matrixWorld).z
+        crown = Math.max(crown, z)
+        if (far) rim = Math.max(rim, z)
+      }
+      out.push({ step: i, top, rim: rim - disc, crown: crown - disc, most: new THREE.Box3().setFromObject(kept.body).max.z, swell: kept.hub.scale.z, hubAt: kept.hub.position.z, innerAt: kept.inner.position.z, glint: kept.glint.scale.x })
+    }
+    return out
+  }
+  const holds = (rows: ReturnType<typeof squashes>): void => {
+    expect(rows.filter((r) => r.top <= DIAL_BODY.rest + 1e-9).length).toBeGreaterThan(40)
+    expect(rows.filter((r) => r.top > DIAL_BODY.rest + 1e-9 && r.top < DIAL_BODY.tall - 1e-9).length).toBeGreaterThan(60)
+    for (let n = 0; n < rows.length; n++) {
+      const r = rows[n]!
+      expect(r.rim, `rim at step ${r.step}`).toBeGreaterThanOrEqual(HUB.rim)
+      expect(r.crown, `top at step ${r.step}`).toBeGreaterThan(r.rim)
+      if (n > 0 && rows[n - 1]!.step === r.step - 1) expect(Math.abs(r.crown - rows[n - 1]!.crown), `step ${r.step}`).toBeLessThanOrEqual(HUB.step)
+      if (r.top <= DIAL_BODY.rest + 1e-9) expect(r.most + TRAY_Z, `housed at step ${r.step}`).toBeLessThan(VALUE_Z)
+    }
+    const last = rows.find((r) => r.top > DIAL_BODY.tall - 1e-9)!
+    expect(last).toBeDefined()
+    expect(last.swell).toBeCloseTo(1, 9)
+    expect(last.hubAt).toBeCloseTo(0, 9)
+    expect(Math.abs(last.innerAt)).toBe(0)
+    expect(last.glint).toBe(1)
+    expect(last.crown).toBeCloseTo(DIAL_BODY.hubTall - DIAL_BODY.innerTall, 4)
+  }
+
+  it('the live site: pressed flat the hub lies on the inner disc, it swells from there, and the risen dial is as it was', () => {
+    holds(squashes(new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver: visitor([0, 1, 2]), seed: config.seed }), 12))
+  })
+
+  it('the film: the same', () => {
+    holds(squashes(new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') }), 12))
   })
 })
