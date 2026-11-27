@@ -217,3 +217,33 @@ WIP commits were pushed with only `npx tsc --noEmit -p .` and `tests/polish-hand
 - `npm test`: 160 files passed and 4 skipped, 1984 tests passed and 4 skipped, 224.65 s (one more than in section 7: the test of the jolt's carry).
 - `npx tsc --noEmit -p .`: clean.
 - The copies of the three stills and the worktree of the starting commit, both kept outside the repo, are removed. `tests/zz-filmdiff.test.ts` is not in the repo.
+
+## 9. Step 3's landing press, for the film only (the Builder's ruling D of 09:12)
+
+- The fault (MEASURED, section 8): under a resting hand the arrow was pressed to 0.66 of its length from the frame after play of turn 3 for about seven frames, with nothing in view that caused it. `src/pages/step3/index.ts` line 803 pressed the arrow once when it was lower than `LOADER.low` after half a second: made for the film's arrow, which comes down.
+- The mend is a NEEDS, commit `f4bc36b1`, second part of `pipeline/phase5/polish-hand-NEEDS.patch`: that one line gains `s.mode === 'film' &&` in front. `s.mode` is the page's own, set from `ctx.mode` at reset (line 789), the same flag the careers page uses. On the live site the arrow under a hand rides the slab into step 3 and never lands there, so the press has no case left on the live site.
+- Test: `ARRIVED = { before: 10, after: 30, length: 0.03, angle: 1, unpressed: 0.02 }`, for each of the six turns under a resting hand from 10 frames before play to 30 after: the length changes by at most 0.03 from frame to frame, the drawn angle by at most 1 degree, the height by at most `FLAT.z`; on step 3 the length is within 0.02 of 1. MEASURED: with line 803 as it was the test of turn 3 fails (`expected 0.34 to be less than or equal to 0.03`), with the patch 51 of 51 pass.
+- Picture (`walk after-land rest=5645 5699-5719`, sheet `after-land-land.png`, every frame 5701 to 5717, after only): the arrow is the same on every frame, on the cross, full length.
+- The six turns under a resting hand, play minus 10 to play plus 30 (MEASURED stepped, a scratch test with the test's own `forked(v, t.start, ..., resting, LEAD)`):
+
+| turn | play | state | length | angle | height | told in the window |
+|---|---|---|---|---|---|---|
+| 1 careers to step 1 | 656 | confident | 1.02 to 1.20, a slow sway, at most 0.02 a frame | -11.1, no change | 16.0 | nothing |
+| 2 step 1 to step 2 | 2697 | plain | 1.00 | 0.0 | 4.0 | nothing |
+| 3 step 2 to step 3 | 5705 | plain | 1.00 (before the patch 0.66 from 5706 to 5712) | 0.0 | 4.0 | nothing |
+| 4 step 3 to step 4 | 8492 | plain | 1.00 | 0.0 | 4.0 | nothing |
+| 5 step 4 to step 5 | 10216 | nervous | 0.92, no change (0.91 on the last frame) | 6.8, no change | 22.0 | hold-music at 10210 |
+| 6 step 5 to careers | 10720 | exhausted | 0.81, no change | 15.9, no change | 4.0 | nothing |
+
+  Where the length is not 1 and the angle not 0 it is the stand of a mood, in place before play and not changing at play: confident is set by step 1 on its first two steps (`src/pages/step1/index.ts` line 872), nervous is set by step 5 on its first step (`src/pages/step5/index.ts` line 297), exhausted by the rejected careers page on every step (`src/pages/marketing/index.ts` lines 363 and 391). STATED from the source. No press, hop, react or strike falls on the arrow from play to 30 frames after on any of the six turns after the patch. Not looked at: later than 30 frames after play.
+
+### The film compared again, all of it (the Builder's question of 09:12)
+
+- "9105 frames" in section 6 was short by 75. My scratch test stopped at `stage.finished`, which is true once the last page of the whole film's flow, the rejected careers page, is given to play at 151.75 s. The 75 frames from 151.75 s to 153 s, the rejected careers page in play, were not compared. That is the page the first NEEDS line (careers page line 380) touches, so it was the wrong place to stop.
+- Done again without that stop and for every unit (MEASURED, `FILMDIFF=/tmp/hand/film2-before` on a worktree of the starting commit, `FILMDIFF=/tmp/hand/film2-after` on the branch with both NEEDS lines, then `cmp` of each pair of files): the whole film 9180 frames and 977 events equal; the units marketing 840 frames 35 events, step1 1920 and 351, step2 1260 and 70, pinball 2520 and 68, boss 1920 and 426, decision 720 and 27, each equal. The last 75 frames of the whole film have 75 different hashes, so the stage was stepping there.
+
+### Checks after the second NEEDS (MEASURED, one at a time, from 09:16)
+
+- `npx vitest run tests/polish-hand.test.ts`: 51 passed.
+- `npm test`: 160 files passed and 4 skipped, 1990 tests passed and 4 skipped, 223.95 s.
+- `npx tsc --noEmit -p .`: clean.

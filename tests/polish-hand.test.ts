@@ -21,6 +21,10 @@ const FLAT = { page: 2, screen: 4, after: 2, z: 1 }
 const CARRY = { seat: 9, frames: 4, knock: 2.5, from: 9, still: 1 }
 // Under a hand that strokes 560 px in 70 frames through the turn: the furthest the arrow may lie from the pointer's place on the slab, at the step the page is given to play, and the frames after which it is within FLAT.page.
 const MOVING = { far: 40, atPlay: 20, joined: 12 }
+// What an arriving page may do to the length and the angle of an arrow that rode in on the slab under a resting hand, from `before` frames before play to `after` frames after it:
+// the most its length (1 is unpressed) and its drawn angle, degrees, may change from one frame to the next, and how far from 1 the length may be on step 3, where the page's landing press is the film's alone.
+// Stepped on the six turns: the length goes 1.02 to 1.20 on turn 1 (the confident stand sways, at most 0.02 a frame), is 1.00 on turns 2, 3 and 4, 0.92 on turn 5 (nervous) and 0.81 on turn 6 (exhausted); the angle does not change.
+const ARRIVED = { before: 10, after: 30, length: 0.03, angle: 1, unpressed: 0.02 }
 // After a bolt's hit under a hand: px past the hand's place, the frame from the hit by which the place is back within 2 px, the frame by which the drawn angle is within 1 degree of its stand,
 // the most the angle may turn back on its way, in degrees, and the most the arrow's step may change from one frame to the next when the hand moves off during the way back, px.
 // What the bolt's hit does to the place, unchanged and the film's too: thrown this far, px, and held this many frames of 60.
@@ -72,6 +76,17 @@ describe('the arrow under a hand through a page turn', () => {
       expect(told.filter((e) => e !== 'page-turn' && e !== 'hold-music')).toEqual([])
       const at = reactionOf(r.rows[m.half]!)
       for (let k = m.half; k <= m.play + 30; k++) expect(['', at]).toContain(reactionOf(r.rows[k]!))
+    })
+
+    it(`${name}: the arriving page gives the arrow that rode in under a hand no press, hop or turn of its own at play`, () => {
+      const r = forked(v, t.start, t.flat - t.start + 61, resting, LEAD)
+      const m = marks(t)
+      for (let k = m.play - ARRIVED.before + 1; k <= m.play + ARRIVED.after; k++) {
+        expect(Math.abs(r.rows[k]!.squash - r.rows[k - 1]!.squash)).toBeLessThanOrEqual(ARRIVED.length)
+        expect(Math.abs(r.rows[k]!.angle - r.rows[k - 1]!.angle)).toBeLessThanOrEqual(ARRIVED.angle)
+        expect(Math.abs(r.rows[k]!.z - r.rows[k - 1]!.z)).toBeLessThanOrEqual(FLAT.z)
+      }
+      if (t.to === 'step3') for (let k = m.play - ARRIVED.before; k <= m.play + ARRIVED.after; k++) expect(Math.abs(r.rows[k]!.squash - 1)).toBeLessThanOrEqual(ARRIVED.unpressed)
     })
 
     it(`${name}: under a moving hand the arrow goes with the pointer on the slab's face`, () => {
