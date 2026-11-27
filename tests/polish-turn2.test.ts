@@ -180,15 +180,19 @@ describe('polish, every turn of the film from its seat on', () => {
   const rest = (f: Frame): string => JSON.stringify({ list: f.list, cursor: f.cursor, scroll: f.scroll, page: f.page, view: f.view, time: f.time, settle: f.settle ?? null })
   const starts = config.film.units.slice(0, -1).map((_, i) => Math.round((config.film.units.slice(0, i + 1).reduce((sum, u) => sum + u.seconds, 0) - TURN_HALF) * stepHz))
 
-  it('turns five pages by the clock, at 13.5, 45.5, 66.5, 108.5 and 140.5 s', () => {
+  // The sixth turn is not by the clock: step 5 is done on step 2341 of the last unit and the careers page comes back. It starts a step after a frame of the film.
+  const SIXTH = Math.round(config.film.units.slice(0, -1).reduce((sum, u) => sum + u.seconds, 0) * stepHz) + 2341
+
+  it('turns five pages by the clock, at 13.5, 45.5, 66.5, 108.5 and 140.5 s, and a sixth on step 36181', () => {
     expect(starts.map((s) => s / stepHz)).toEqual([13.5, 45.5, 66.5, 108.5, 140.5])
+    expect(SIXTH).toBe(36181)
   })
 
   it('holds every value of the stage equal to before on every step from the seat on, the angle through the leaving half apart, and nothing else differs before the seat', () => {
     const tail = Math.round((shiverSeconds + 0.5) * stepHz)
     let differ = 0
     const changed: number[][] = []
-    for (const start of starts) {
+    for (const start of [...starts, SIXTH]) {
       const frames: number[] = []
       now.goto(start - 4)
       then.goto(start - 4)
@@ -196,7 +200,7 @@ describe('polish, every turn of the film from its seat on', () => {
         const a = now.frameAt((start + k) / stepHz)
         const b = then.frameAt((start + k) / stepHz)
         expect(rest(a), `step ${k} of the turn at ${start / stepHz} s`).toBe(rest(b))
-        if (k % (stepHz / 60) === 0 && a.turn !== b.turn) frames.push((start + k) / (stepHz / 60))
+        if ((start + k) % (stepHz / 60) === 0 && a.turn !== b.turn) frames.push((start + k) / (stepHz / 60))
         if (k <= 0) expect(a.turn).toBe(0)
         else if (k < HALF_STEPS) {
           expect(a.turn).toBe(leaveTurn(k / HALF_STEPS))
@@ -215,14 +219,15 @@ describe('polish, every turn of the film from its seat on', () => {
       }
       changed.push([frames[0]!, frames[frames.length - 1]!, frames.length])
     }
-    // The frames of the film, of 60 a second, whose angle is not the one of before: 29 at each turn, from the frame after the turn's first step to the last of the leaving half. The seats are frames 858, 2778, 4038, 6558 and 8478.
+    // The frames of the film, of 60 a second, whose angle is not the one of before: 29 at each turn by the clock, from the frame after the turn's first step to the last of the leaving half, and 30 at the sixth, which starts between two frames. The seats are frames 858, 2778, 4038, 6558 and 8478, and at the sixth turn step 36373, first seen on frame 9094.
     expect(changed).toEqual([
       [811, 839, 29],
       [2731, 2759, 29],
       [3991, 4019, 29],
       [6511, 6539, 29],
-      [8431, 8459, 29]
+      [8431, 8459, 29],
+      [9046, 9075, 30]
     ])
-    expect(differ).toBeGreaterThan(5 * (HALF_STEPS - 10))
+    expect(differ).toBeGreaterThan(6 * (HALF_STEPS - 10))
   }, 240000)
 })
