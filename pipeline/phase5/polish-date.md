@@ -68,6 +68,18 @@ MEASURED with `pipeline/phase5/polish-date-filmdiff.ts.txt`, copied as `tests/po
 - A (50e21f01): the test of 48ae1fb4 in `tests/step2-dial.test.ts` stood as written, so no legend was in the draw list while the cabinet was 2 px tall or less. Seen in pictures: the uncovered reels are blank for 9 film frames, the digits come on in one frame (3264) and go off in one frame (3561) while the cabinet stands whole.
 - B (6c9bfdad, the branch): the legends are drawn on the housed reels. Decided by the Builder at 08:23 UTC on the sheets of both. The premise of that test changed (the slot lies housed in the tray's floor, it does not sink out of sight), so the test is rewritten in two parts: a legend is in the draw list only while its own reel and the cabinet are drawn by their makers; the legend lies inside its reel's face and on its top. The old window, 13.2 to 13.7 s, is the shutting of row 2 in the film and is kept; the opening, 8.1 to 8.7 s, is added.
 
+## The shutting on the live site
+
+`node pipeline/phase5/polish-date-live.mjs shut LABEL ROW LEVEL OPENING [AT]`: one row is pressed and left alone until it shuts. A first visit without pictures finds the sixtieth on which the tray is shut; a second visit shoots the last 30 pictures before it. MEASURED: row 2 shuts 1420 sixtieths after the hand leaves, row 3 1392.
+
+- Row 2, levels high and low, pictures at real size: the slot stays in the tray and the digits stay on the reels until the Date field's lower part covers them, 11 to 8 sixtieths before the tray is shut. The Volume field passes below with a plain pocket: nothing of the slot is seen through it at either level.
+- Row 3, level high: the hub and the lit bars lie in the floor and the page covers them from below, 13 to 10 sixtieths before shut. The crank ends its run with the arm pointing down across the tray's lower rim: at 15 and 14 before shut the arm and grip overhang the rim while still risen, at 13 and 12 the housed arm ends at the rim, under the page.
+- On the last pictures of a shutting (row 3: 9 to 5 before shut; row 2: 6 and 5) the strip of tray still open is bare floor, because the machine's place is already under the page: a tray shuts from below upward. The stepped test counts a machine as drawn, not as in view.
+
+## The film's rendered frames
+
+A rendered frame differs one frame wider than the draw list, because the film blurs a moving edge over the steps to the next frame. The soft band at a moving field's edge (about 12 px) is on the frames before the change too; with the change the cabinet and the digits are seen faintly through it on the frames where the edge passes over them (3256, 3562 to 3564).
+
 ## The boss tag (a measure, nothing changed)
 
 MEASURED, stepped, the pack's visitor (`POLISH_DATE_BOSS=/tmp/boss.txt npx vitest run tests/polish-date-boss-measure.test.ts`): the visit ends at 174.12 s. The slab "Field cannot be blank" is cut by the lower edge on 5 pictures, 147.10 to 147.17 s (ticks 8826 to 8830): it is a spent slab leaving downward (state 2), 2.5, 24.6, 48.7, 74.9 and 103.2 px under the edge, centre x 406.9. No slab is cut while flying or lying. A slab "Invalid input" leaves by the left edge from tick 9254.
