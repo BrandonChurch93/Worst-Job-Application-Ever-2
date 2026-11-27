@@ -1234,6 +1234,8 @@ export const SETS = {
 // The page of step 3, the machine, by the name the run's rows give it.
 export const MACHINE_PAGE = 'step3'
 export const SET_ORDER = ['pages', 'shot', 'paper', 'port', 'tube', 'bats']
+// A sheet of the save holds SAVE_PER frames in two rows: its tile is tall enough to hold the ball whole from the gate to where it is after the kick.
+export const SAVE_PER = 6
 // The close blow: the ball with `room` px round it in every frame.
 export const BLOW = { room: 8 }
 // The machine's tiers by the names the kit gives them (kit/02-SUBJECT.md line 297: Corporate at the top, then the Office, then the Street), by their ids in config `table.tiers`.
@@ -1585,7 +1587,7 @@ export function motionPlan(cfg, run) {
     const told = `${down} and ${up}`
     const words = 'as the machine saves a ball lost between the bats'
     // The window of a run of the save is taken from the rows of that run's own frames.
-    const lay = closeLayout(cfg, 3, count, CLOSE_HEAD.lines + 1)
+    const lay = closeLayout(cfg, 3, SAVE_PER, CLOSE_HEAD.lines + 1)
     const shut = (from, to, at, text, after) => {
       const win = gateWindow(cfg, run, range(from, to), lay)
       close('save', text, from, to, at, lay, [win.window], win.percent, `one fixed window on the gate's wire, its posts and both bats' tips, ${scaleWords(win.percent)} (${placeWords(win.window)})`, ['hand'])

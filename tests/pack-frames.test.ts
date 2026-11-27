@@ -3,9 +3,10 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
-import { ANGRY_WORDS, BLOW, CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
+import { ANGRY_WORDS, BEND, BITE, BLOW, CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FILM_RUNS, FILM_WORDS, FULL_WORDS, GATE, GIVES, INSERTS, INSERT_WORDS, KEYS, LAUNCH, MACHINE_PAGE, MOVES, PAGE_HAS, RUN, SAVE, SAVE_PER, SEAT, SET_ORDER, SHOT, SITE, STANDS, TAKEN, TIER_NAMES, TURNS, VIEW, VIEW_MARK_WORDS, VIEW_WORDS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, overInsert, seatWindows, shotOf, tierName, windowOf } from '../tools/lib/pack-site.mjs'
 import { FORM_BOTTOM, PAPER, SLOT, ZONE } from '../src/pages/step1/layout'
-import { BALL, FLIP, MID, MOUTH, PORT } from '../src/table/layout'
+import { BALL, FLIP, INSERTS as SPOTS, MID, MOUTH, PORT, railOf } from '../src/table/layout'
+import { RECOIL, TURRET } from '../src/pages/step1/turrets'
 import { HEADER, progressCentre } from '../src/shell/parts'
 
 const root = path.resolve(__dirname, '..')
@@ -15,9 +16,9 @@ const most: number = cfg.critics.maxFilesPerMessage
 const edge: number = cfg.critics.maxImageLongEdgePx
 const hd = cfg.formats.hd as { width: number; height: number }
 
-type Sheet = { name?: string; kind: string; heading: string; steps: number[]; run: number[]; moment: string; every: number; at?: number; hands?: string[]; part: number[] | null; px?: number; windows?: number[][]; percent?: number; columns?: number; tileW?: number; tileH?: number; lines?: number }
+type Sheet = { name?: string; kind: string; heading: string; steps: number[]; run: number[]; moment: string; every: number; at?: number; hands?: string[]; part: number[] | null; px?: number; windows?: number[][]; windowsAt?: number[][][]; film?: boolean; percent?: number; columns?: number; tileW?: number; tileH?: number; lines?: number }
 
-// One recorded walk of the pack's visitor through the live site of commit b3e4f902, cut by pipeline/phase5/pack-frames-rows.mjs:
+// One recorded walk of the pack's visitor through the live site of commit d325b790, cut by pipeline/phase5/pack-frames-rows.mjs:
 // its moments, hits and gags, every row the motion plan reads, and the rows round every release on the page's keyboard. A row the plan would read and the file does not hold is no row.
 const rec = JSON.parse(fs.readFileSync(path.join(root, 'pipeline/phase5/pack-frames-rows.json'), 'utf8')) as {
   steps: number; format: string; moments: Record<string, unknown>; hits: unknown[]; gags: unknown[]; releases: number[]; sheets: number; rows: Record<string, (number | string)[]>
@@ -33,18 +34,23 @@ const span = (a: number, b: number) => Array.from({ length: b - a + 1 }, (_, i) 
 const time = (i: number) => `${Math.floor(i / 60 / 60)}:${(i / 60 - Math.floor(i / 60 / 60) * 60).toFixed(2).padStart(5, '0')}`
 const linesOf = (f: Sheet) => wrap(f.heading, f.columns! * f.tileW! + 8 * (f.columns! - 1) - 16, 15).length
 const m = rec.moments as { turn: { first: number; last: number }; taken: number; back: number; thrown: { first: number; stand: number; handed: number }; leaves: number; met: number; gate: { take: number; kick: number }; type: { press: number; release: number; nth: number; of: number; clear: boolean; spent: number; why: string; field: string; seated: number; key: string } }
-const NEAR = ['seat', 'type', 'taken', 'given-back', 'drop', 'flip-close', 'save']
+const NEAR = ['seat', 'type', 'hit-close', 'taken', 'bite', 'given-back', 'drop', 'bend-1', 'bend-2', 'flip-close', 'save']
+// Whole frames of the screen at every step.
+const SCREENS = ['launch', 'view-down', 'view-up']
+const live = plan.items.filter((f) => !f.film)
+const films = plan.items.filter((f) => f.film)
 
 describe('the motion pack of a recorded visit', () => {
-  it('holds every run whole, on four sets within the limit, and takes nothing away', () => {
+  it('holds every run whole, on six sets within the limit, and takes nothing away', () => {
     expect(plan.limitTook).toEqual([])
     expect(plan.leftOut).toEqual([])
     expect(plan.missing).toEqual([])
     expect(plan.items.length).toBe(rec.sheets)
-    expect(plan.groups.map((g) => [g.id, g.items.length])).toEqual([['pages', 9], ['arrow', 10], ['port', 6], ['bats', 7]])
-    expect(plan.groups.map((g) => [...new Set(g.items.map((f) => f.moment))])).toEqual([['walk', 'turn', 'seat', 'hit'], ['type', 'taken', 'given-back'], ['flippers', 'drop'], ['save', 'flip', 'flip-close']])
-    const sets = (packPlan(cfg, { role: 'R4', round: 25, unit: SITE, facts: run as never }) as { sets: { set: string; groups: string[]; files: Sheet[] }[] }).sets
-    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual([['A', 'pages', 9], ['B', 'arrow', 10], ['C', 'port', 6], ['D', 'bats', 7]])
+    expect(plan.groups.map((g) => [g.id, g.items.length])).toEqual([['pages', 10], ['shot', 10], ['paper', 10], ['port', 10], ['tube', 10], ['bats', 10]])
+    expect(plan.groups.map((g) => g.id)).toEqual(SET_ORDER)
+    expect(plan.groups.map((g) => [...new Set(g.items.map((f) => f.moment))])).toEqual([['walk', 'turn', 'seat', 'type'], ['hit', 'hit-close', 'given-back'], ['taken', 'bite', 'film-paper'], ['flippers', 'drop', 'bend-1', 'bend-2'], ['film-bend-1', 'film-bend-2', 'launch', 'view-down', 'view-up'], ['save', 'flip', 'flip-close']])
+    const sets = (packPlan(cfg, { role: 'R4', round: 26, unit: SITE, facts: run as never }) as { sets: { set: string; groups: string[]; files: Sheet[] }[] }).sets
+    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual([['A', 'pages', 10], ['B', 'shot', 10], ['C', 'paper', 10], ['D', 'port', 10], ['E', 'tube', 10], ['F', 'bats', 10]])
     for (const s of sets) {
       expect(s.files.length).toBeLessThanOrEqual(most)
       // A run is never cut by the end of a set.
@@ -63,9 +69,9 @@ describe('the motion pack of a recorded visit', () => {
   })
 
   it('says in every heading the stride, the scale, the count and the event its frames hold', () => {
-    for (const f of plan.items) {
+    for (const f of live) {
       const near = NEAR.includes(f.moment)
-      expect(f.every).toBe(near ? 1 : 2)
+      expect(f.every).toBe(near || SCREENS.includes(f.moment) ? 1 : 2)
       for (let i = 1; i < f.steps.length; i++) expect(f.steps[i]! - f.steps[i - 1]!).toBe(f.every)
       expect(f.heading.startsWith(`Consecutive frames, 1/${60 / f.every} s apart, `)).toBe(true)
       expect(f.heading).toContain(`: ${time(f.steps[0]!)} to ${time(f.steps[f.steps.length - 1]!)}`)
@@ -84,7 +90,7 @@ describe('the motion pack of a recorded visit', () => {
         expect(f.percent).toBe(100)
         expect(f.heading).toContain(FULL_WORDS)
         for (const w of f.windows!) {
-          expect(f.heading).toContain(`x ${w[0]} to ${w[0]! + w[2]!}, y ${w[1]} to ${w[1]! + w[3]!} of the page`)
+          if (!f.windowsAt) expect(f.heading).toContain(`x ${w[0]} to ${w[0]! + w[2]!}, y ${w[1]} to ${w[1]! + w[3]!} of the page`)
           expect(holdsBox([0, 0, hd.width, hd.height], [w[0]!, w[1]!, w[0]! + w[2]!, w[1]! + w[3]!])).toBe(true)
         }
         expect(linesOf(f)).toBeLessThanOrEqual(f.lines!)
@@ -325,17 +331,182 @@ describe('the motion pack of a recorded visit', () => {
     }
     const low = Math.max(...steps.map(wire))
     const under = w[1]! + w[3]! - low
-    // What the heading says of it is what the rows hold.
-    // In this visit the page's view goes down with the lost ball, so the page shows more than GATE.under px under the wire, and the window's foot lies a whole px or less under those.
+    // In this visit the view stands still in the save's frames (it goes down before the take and up after the kick, on sheets of their own), and the window's foot lies a whole px or less under the 20.
     expect(under).toBeGreaterThanOrEqual(GATE.under)
     expect(under).toBeLessThan(GATE.under + 1)
     expect(w[1]! + w[3]!).toBeLessThan(hd.height)
-    expect(new Set(steps.map((i) => num(i, COL.scroll))).size).toBeGreaterThan(1)
-    // The view's way is said from the rows: up to its highest place, then down to the last frame.
-    const views = steps.map((i) => num(i, COL.scroll))
-    const high = Math.min(...views)
-    const when = steps[views.indexOf(high)]!
-    for (const f of save) expect(f.heading).toContain(`. The page's view moves in these frames, ${Math.round(views[0]! - high)} px up the page from the first frame to ${time(when)}, then ${Math.round(views[views.length - 1]! - high)} px down the page from there to the last frame, so the gate, its posts and the bats stand lower, then higher in the window as it goes. The window holds ${GATE.under} px or more under the wire's lowest place in every frame. `)
-    expect(Math.round(views[views.length - 1]! - high)).toBe(69)
+    expect(new Set(steps.map((i) => num(i, COL.scroll))).size).toBe(1)
+    for (const f of save) expect(f.heading).not.toContain("The page's view moves in these frames")
+    // Six frames a sheet in two rows: the ball is whole in the window in every frame, from the gate to where it is after the kick.
+    expect(SAVE_PER).toBe(6)
+    expect(save.map((f) => f.steps.length)).toEqual([6, 6, 6, 6, 6, 6])
+    for (const i of steps) expect(holdsBox(w, [at(i)[0] - BALL / 2, at(i)[1] - BALL / 2, at(i)[0] + BALL / 2, at(i)[1] + BALL / 2])).toBe(true)
+  })
+
+describe('what round 26 adds to the motion pack', () => {
+  const stepsOf = (moment: string) => of(moment).flatMap((f) => f.steps)
+  const ballBox = (i: number) => [at(i)[0] - BALL / 2, at(i)[1] - BALL / 2, at(i)[0] + BALL / 2, at(i)[1] + BALL / 2]
+
+  it('the shot, close: from 6 frames before the barrel cocks through the shot and the hit, every frame, the turret in a window of its own beside the arrow on its key', () => {
+    const shot = shotOf(cfg, run) as { turret: { x: number; y: number }; side: string; fires: number; cocks: number }
+    // The page's own numbers: the bolt's speed and the time the barrel is cocked in.
+    expect([SHOT.speed, SHOT.cock]).toEqual([TURRET.boltSpeed, RECOIL.cockSeconds])
+    // MEASURED on this run's pictures of steps 858 to 880 (node pipeline/phase5/pack-frames-seat.mjs): the left turret's barrel is thrown back on step 871 and its glow swells from 866.
+    expect([shot.side, shot.cocks, shot.fires, (rec.moments as { hit: number }).hit]).toEqual(['left', 866, 871, 899])
+    const steps = stepsOf('hit-close')
+    expect(steps).toEqual(span(shot.cocks - SHOT.before, 899 + SHOT.after))
+    expect(of('hit-close').map((f) => f.steps.length)).toEqual([12, 12, 12, 12])
+    const [gun, key] = of('hit-close')[0]!.windows as [number[], number[]]
+    for (const f of of('hit-close')) {
+      expect(f.windows).toEqual([gun, key])
+      expect(f.heading).toContain("every frame from 6 frames before the left turret's barrel cocks")
+      expect(f.heading).toContain(`left, the turret that fires (x ${gun[0]} to ${gun[0]! + gun[2]!}, y ${gun[1]} to ${gun[1]! + gun[3]!} of the page); right, the arrow on its key`)
+    }
+    expect(gun[2]! + 8 + key[2]!).toBe(of('hit-close')[0]!.tileW)
+    // The turret's body, its barrel to the muzzle and the barrel's way back are in its window; the arrow's tip is in the other in every frame.
+    expect(holdsBox(gun, [shot.turret.x - TURRET.body / 2 - RECOIL.kick, shot.turret.y - TURRET.body / 2, shot.turret.x + TURRET.barrel, shot.turret.y + TURRET.body / 2])).toBe(true)
+    for (const i of steps) expect(holdsBox(key, [...at(i), ...at(i)])).toBe(true)
+    // The 1/30 sheets of the same shot begin no later and hold the hit.
+    expect(stepsOf('hit')[0]).toBeLessThanOrEqual(steps[0]!)
+    expect(stepsOf('hit')).toContain(899)
+  })
+
+  it('the take, close: from 8 frames before to 12 after, the paper, its holder and the arrow at 100%', () => {
+    const steps = stepsOf('bite')
+    expect(steps).toEqual(span(m.taken - BITE.before, m.taken + BITE.after))
+    const w = of('bite')[0]!.windows![0]!
+    expect(holdsBox(w, [TAKEN.slot[0]! - PAPER.w, TAKEN.slot[1]! - PAPER.h, TAKEN.slot[0]! + PAPER.w, TAKEN.slot[1]! + TAKEN.holder])).toBe(true)
+    for (const i of steps) expect(holdsBox(w, [at(i)[0] - BITE.room, at(i)[1] - BITE.room, at(i)[0] + BITE.room, at(i)[1] + BITE.room])).toBe(true)
+  })
+
+  it('both bends of the feed tube: every frame round the step at which the ball is nearest, in a window that goes with the page', () => {
+    expect(BEND.places).toEqual([2, 3].map((i) => railOf('feed').points[i]!.map((v) => Math.round(v * BALL * 10) / 10)))
+    BEND.places.forEach((c, n) => {
+      const files = of(`bend-${n + 1}`)
+      const steps = files.flatMap((f) => f.steps)
+      const wins = files.flatMap((f) => f.windowsAt!.map((x) => x[0]!))
+      const far = (i: number) => Math.hypot(num(i, COL.heroX) - c[0]!, num(i, COL.heroY) - c[1]!)
+      const nearest = steps.reduce((a, i) => (far(i) < far(a) ? i : a), steps[0]!)
+      expect(nearest).toBe([5999, 6014][n])
+      expect(far(nearest)).toBeLessThan(1)
+      expect(steps).toEqual(span(nearest - BEND.before, nearest + BEND.after))
+      expect(files.map((f) => f.steps.length)).toEqual([9, 9])
+      steps.forEach((i, j) => {
+        const w = wins[j]!
+        const y = c[1]! - num(i, COL.scroll)
+        // The bend keeps its place in the window while the screen has room for it, the ball is whole in it, and the window never leaves the screen.
+        expect(holdsBox([0, 0, hd.width, hd.height], [w[0]!, w[1]!, w[0]! + w[2]!, w[1]! + w[3]!])).toBe(true)
+        expect(holdsBox(w, ballBox(i))).toBe(true)
+        expect(Math.min(c[0]! - w[0]!, y - w[1]!)).toBeGreaterThanOrEqual(BEND.round)
+        expect(w[1]! + w[3]! - y >= BEND.round || w[1]! + w[3]! === hd.height).toBe(true)
+      })
+      for (const f of files) expect(f.heading).toContain("the window goes down the visitor's screen with the page as the view moves, so the bend keeps its place in it")
+    })
+  })
+
+  it('the launch: from 6 frames before the ball leaves its rest in the plunger lane, every frame, the whole screen, the view under each frame', () => {
+    const steps = stepsOf('launch')
+    const goes = steps[0]! + LAUNCH.before
+    expect(goes).toBe(6382)
+    for (const i of span(goes - LAUNCH.still, goes - 1)) expect([num(i, COL.heroX), num(i, COL.heroY)]).toEqual([num(goes - 1, COL.heroX), num(goes - 1, COL.heroY)])
+    expect([num(goes, COL.heroX), num(goes, COL.heroY)]).not.toEqual([num(goes - 1, COL.heroX), num(goes - 1, COL.heroY)])
+    expect(steps).toEqual(span(goes - LAUNCH.before, goes - LAUNCH.before + LAUNCH.sheets * VIEW.per - 1))
+    expect(steps[steps.length - 1]! - goes).toBeGreaterThanOrEqual(30)
+    for (const f of of('launch')) {
+      expect(f.columns).toBe(VIEW.columns)
+      expect(f.heading).toContain(`plunger lane of ${TIER_NAMES.street}`)
+      expect(f.heading).toContain(VIEW_MARK_WORDS)
+      expect(f.hands).toEqual(f.steps.map((i) => String(num(i, COL.scroll))))
+    }
+  })
+
+  it('the view at a save: its travel down before the take and up after the kick, every frame, the whole screen, the plain number under each frame', () => {
+    const down = stepsOf('view-down')
+    const up = stepsOf('view-up')
+    const moving = (steps: number[]) => steps.filter((i) => num(i, COL.scroll) !== num(i - 1, COL.scroll))
+    expect([moving(down)[0], moving(down)[moving(down).length - 1]]).toEqual([6781, 6793])
+    expect([moving(up)[0], moving(up)[moving(up).length - 1]]).toEqual([6851, 6863])
+    expect(down).toEqual(span(6781 - VIEW.lead, 6781 - VIEW.lead + VIEW.per - 1))
+    expect(up).toEqual(span(6851 - VIEW.lead, 6851 - VIEW.lead + VIEW.per - 1))
+    expect(down[down.length - 1]!).toBeLessThan(m.gate.take)
+    expect(up[0]!).toBeGreaterThan(m.gate.kick)
+    for (const f of [...of('view-down'), ...of('view-up')]) {
+      expect(f.hands).toEqual(f.steps.map((i) => String(num(i, COL.scroll))))
+      for (const h of f.hands!) expect(h).toMatch(/^\d+(\.\d+)?$/)
+      expect(f.heading).toContain(VIEW_MARK_WORDS)
+      expect(f.heading).toContain("whole frames of the screen at 18% of the page's size")
+    }
+    expect(VIEW_MARK_WORDS).toBe("Under a frame, after its time: the view's place down the page in px of the page at that frame. That number is not on the visitor's screen.")
+  })
+
+  it('no heading says a tier by a number, and the tiers have the kit names', () => {
+    for (const f of plan.items) expect(f.heading).not.toMatch(/\btiers?\s*\d/i)
+    expect(cfg.table.tiers.map((_: string, k: number) => tierName(cfg, k))).toEqual(['Corporate', 'the Office', 'the Street'])
+    const kit = fs.readFileSync(path.join(root, 'kit/02-SUBJECT.md'), 'utf8')
+    for (const name of ['Corporate', 'the Office', 'the Street']) expect(kit).toContain(name)
+  })
+
+  it('the kit words on the view stand on every sheet in whose frames the view moves on step 3, and on no other', () => {
+    const kit = fs.readFileSync(path.join(root, 'kit/03-METHOD.md'), 'utf8')
+    expect(kit).toContain("The page of step 3 does not scroll under the visitor's hand. The scene moves the view: down the page after the ball on the way in, and to the last screen on the way out.")
+    expect(VIEW_WORDS).toBe("By the page's design: \"The page of step 3 does not scroll under the visitor's hand. The scene moves the view: down the page after the ball on the way in, and to the last screen on the way out\"")
+    let n = 0
+    for (const f of live) {
+      const moves = span(f.steps[0]! + 1, f.steps[f.steps.length - 1]!).some((i) => rows[i]![COL.page] === MACHINE_PAGE && num(i, COL.scroll) !== num(i - 1, COL.scroll))
+      expect(f.heading.includes(VIEW_WORDS)).toBe(moves)
+      if (moves) n += 1
+    }
+    expect(n).toBe(11)
+    for (const what of ['bend-1', 'bend-2', 'launch', 'view-down', 'view-up']) for (const f of of(what)) expect(f.heading).toContain(VIEW_WORDS)
+  })
+
+  it('the kit words on the inserts stand on every sheet in whose frames the ball lies over one, and on no other', () => {
+    expect(INSERTS).toEqual({ spots: SPOTS.spots, r: SPOTS.r })
+    const two = fs.readFileSync(path.join(root, 'kit/02-SUBJECT.md'), 'utf8')
+    const three = fs.readFileSync(path.join(root, 'kit/03-METHOD.md'), 'utf8')
+    expect(two).toContain('Three large round inserts above the flippers, each a lit picture with no words.')
+    expect(three).toContain('Inserts are cut into the art: clear coloured windows with a moulded picture inside, lit from below.')
+    expect(INSERT_WORDS).toContain('"Three large round inserts above the flippers, each a lit picture with no words." "Inserts are cut into the art: clear coloured windows with a moulded picture inside, lit from below."')
+    let n = 0
+    for (const f of live) {
+      const over = span(f.steps[0]!, f.steps[f.steps.length - 1]!).some((i) => rows[i]![COL.page] === MACHINE_PAGE && overInsert(cfg, rows[i]))
+      expect(f.heading.includes(INSERT_WORDS)).toBe(over)
+      if (over) n += 1
+    }
+    expect(n).toBeGreaterThan(0)
+    for (const f of of('flip')) expect(f.heading).toContain(INSERT_WORDS)
+  })
+
+  it('the film frames: every frame of the runs named, at 100% in one fixed window, each heading saying it is the film and how it was drawn', () => {
+    expect(films.map((f) => f.moment)).toEqual(['film-paper', 'film-paper', 'film-paper', 'film-paper', 'film-bend-1', 'film-bend-1', 'film-bend-2', 'film-bend-2', 'film-bend-2', 'film-bend-2'])
+    const said = FILM_WORDS(cfg) as string
+    expect(said).toBe("film frames drawn with 2 samples a frame, the quickest setting, so the grain is coarser than the finished film's")
+    const runs: Record<string, { frames: number[]; window: number[]; columns: number; per: number }> = { 'film-paper': FILM_RUNS.paper, 'film-bend-1': FILM_RUNS.bend1, 'film-bend-2': FILM_RUNS.bend2 }
+    expect(FILM_RUNS.paper.frames).toEqual([2154, 2174])
+    for (const [what, r] of Object.entries(runs)) {
+      expect(of(what).flatMap((f) => f.steps)).toEqual(span(r.frames[0]!, r.frames[1]!))
+      for (const f of of(what)) {
+        expect(f.kind).toBe('site-film-sheet')
+        expect(f.heading.startsWith('Consecutive frames of the film, 1/60 s apart, ')).toBe(true)
+        expect(f.heading.endsWith(`of the film. These are ${said}`)).toBe(true)
+        expect(f.windows).toEqual([r.window])
+        expect([f.tileW, f.tileH, f.percent]).toEqual([r.window[2], r.window[3], 100])
+        expect(holdsBox([0, 0, hd.width, hd.height], [r.window[0]!, r.window[1]!, r.window[0]! + r.window[2]!, r.window[1]! + r.window[3]!])).toBe(true)
+        const rowsOf = Math.ceil(f.steps.length / f.columns!)
+        expect(linesOf(f)).toBeLessThanOrEqual(f.lines!)
+        expect(f.lines! * 22 + 8 + 8 + rowsOf * (f.tileH! + 28) + 8 * (rowsOf - 1)).toBeLessThanOrEqual(edge)
+        expect(f.columns! * f.tileW! + 8 * (f.columns! - 1)).toBeLessThanOrEqual(edge)
+      }
+    }
+  })
+
+  it('the blow at 1/30: the heading says where the window lies and that its upper edge is the upper edge of the screen', () => {
+    const flip = of('flip')
+    const k = cfg.formats[RUN.format].width / hd.width
+    const w = (windowOf(cfg, run, 'flip', flip[0]!.run) as { window: number[] }).window.map((v) => Math.round(v / k))
+    expect(w[1]).toBe(0)
+    for (const f of flip) expect(f.heading).toContain(`. The window lies at x ${w[0]} to ${w[0]! + w[2]!}, y ${w[1]} to ${w[1]! + w[3]!} of the visitor's screen; its upper edge is the upper edge of the visitor's screen. `)
+    // Where the ball is not whole in the window in a frame of these sheets, it is not whole on the visitor's screen either.
+    for (const i of flip.flatMap((f) => f.steps)) if (!holdsBox(w, ballBox(i))) expect(holdsBox([0, 0, hd.width, hd.height], ballBox(i))).toBe(false)
   })
 })
