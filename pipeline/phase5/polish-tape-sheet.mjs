@@ -2,6 +2,7 @@
 // Pictures of the careers page's tape made before the change and after it. KIND is live (step-000NNN.png) or film (frame-000NNN-hd-draft.png), FIRST the first picture's number, COUNT how many in a row.
 // MODE strip: the inner end of the frost at the strip's right end (x 1420 to 1620, y 1003 to 1035) at three times, a row a frame, before at the left and after at the right.
 // MODE turn: the part of the picture right of the page (x 1320 to 1920, 100 rows that follow the strip) at real size, two frames a row, before above and after below.
+// MODE end: the strip's right end (x 1392 to 1792, y 990 to 1048) at three times, before above and after below, a pair a picture.
 // MODE diff: writes no picture. For every pair: how many pixels differ in the whole picture, how many of them inside the strip's box at rest (x 128 to 1792, y 990 to 1048), the largest difference of a channel.
 import fs from 'node:fs'
 import path from 'node:path'
@@ -46,6 +47,20 @@ if (mode === 'diff') {
   }
   await sharp({ create: { width: 1200, height: LABEL + count * h, channels: 4, background: GROUND } }).composite(parts).png().toFile(out)
   console.log(`${out}: 1200 by ${LABEL + count * h}`)
+} else if (mode === 'end') {
+  const box = { left: 1392, top: 990, width: 400, height: 58 }
+  const [w, h] = [box.width * 3, box.height * 3]
+  const parts = [{ input: words(`${kind}, pictures ${first} to ${first + count - 1}: the strip's right end, x 1392 to 1792, y 990 to 1048 at three times. In each pair before above, after below`, 1200), left: 0, top: 0 }]
+  for (let k = 0; k < count; k++) {
+    const y0 = LABEL + k * (LABEL + 2 * h)
+    parts.push({ input: words(`picture ${first + k}`, 1200), left: 0, top: y0 })
+    for (const [j, dir] of [beforeDir, afterDir].entries()) {
+      const tile = await sharp(file(dir, first + k)).extract(box).resize(w, h, { kernel: 'nearest' }).png().toBuffer()
+      parts.push({ input: tile, left: 0, top: y0 + LABEL + j * h })
+    }
+  }
+  await sharp({ create: { width: 1200, height: LABEL + count * (LABEL + 2 * h), channels: 4, background: GROUND } }).composite(parts).png().toFile(out)
+  console.log(`${out}: 1200 by ${LABEL + count * (LABEL + 2 * h)}`)
 } else {
   const H = 100
   const rows = Math.ceil(count / 2)
