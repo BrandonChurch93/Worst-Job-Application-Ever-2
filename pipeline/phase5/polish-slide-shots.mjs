@@ -18,9 +18,15 @@ const cols = Number(arg('cols', 6))
 const crop = arg('crop', '').split(',').filter(Boolean).map(Number)
 const words = arg('words', '')
 const out = arg('out', '/tmp/polish-slide-sheet.png')
-const session = await openSession({ format: arg('format', 'hd'), assets: 'web', mode: 'live', query: `&bot=${bot}&seed=${seed}&clock=steps&step=3` })
+const hand = bot === 'held'
+const session = await openSession({ format: arg('format', 'hd'), assets: 'web', mode: 'live', query: `${hand ? '' : `&bot=${bot}`}&seed=${seed}&clock=steps&step=3` })
 const tiles = []
 try {
+  if (hand) {
+    await session.page.mouse.move(40, 40)
+    await session.page.mouse.down({ button: 'left' })
+    await session.page.mouse.down({ button: 'right' })
+  }
   let s = await session.page.evaluate((dt) => window.liveRun.advance(dt), at)
   for (let i = 0; i < count; i++) {
     if (i > 0) s = await session.page.evaluate((dt) => window.liveRun.advance(dt), every / 60)
