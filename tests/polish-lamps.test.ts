@@ -43,6 +43,8 @@ const FRAMES = 2520
 const STEP = 1 / 240
 // The film frames on which some window has a ball in reach: the only frames of the film whose pictures differ from 308e96a1.
 const CHANGED = 575
+// The same frames as runs, first and last of each.
+const RANGES: number[][] = [[4759, 4800], [4875, 4884], [4953, 5141], [5278, 5428], [5432, 5485], [5491, 5496], [5554, 5580], [5828, 5838], [5844, 5855], [6139, 6152], [6158, 6164], [6210, 6255], [6261, 6266]]
 const context = (list: Shape[]): RealContext => ({ page: 'step3', list, byId: new Map(list.map((s) => [s.id, s])), time: 0, scroll: 0, turning: false, width: 1920, top: 0, tall: 1080, light: () => {} })
 const r6 = (n: number): number => Math.round(n * 1e6) / 1e6
 
@@ -186,6 +188,13 @@ describe('a ball over a window in the floor', () => {
     }
     const changed = new Set(seen.filter((x) => x.gap < ANSWER.reach).map((x) => x.film))
     expect(changed.size).toBe(CHANGED)
+    const runs: number[][] = []
+    for (const f of [...changed].sort((p, q) => p - q)) {
+      const last = runs[runs.length - 1]
+      if (last && last[1] === f - 1) last[1] = f
+      else runs.push([f, f])
+    }
+    expect(runs).toEqual(RANGES)
     expect(quiet.length).toBe(FRAMES - changed.size)
     const shapes = (dx: number, v: number[]): Shape[] => {
       const n = table.inserts.find((q) => q.id === 'street.insert.3')!
