@@ -27,7 +27,7 @@ export const applyButton: PartMaker | null = {
     up.name = 'up'
     const down = pill(s, COLOUR.down)
     down.name = 'down'
-    down.position.z = 0.1
+    down.visible = false
     root.add(up, down)
     return root
   },
@@ -37,7 +37,9 @@ export const applyButton: PartMaker | null = {
     o.position.z += top
     const k = 1 - BUTTON_LOOK.squeeze * sunk
     o.scale.set(k, k, 1)
-    o.getObjectByName('down')!.visible = sunk > BUTTON_LOOK.dark
+    const dark = sunk > BUTTON_LOOK.dark
+    o.getObjectByName('down')!.visible = dark
+    o.getObjectByName('up')!.visible = !dark
   },
   drop(o) {
     o.traverse((c) => (c as THREE.Mesh).geometry?.dispose())

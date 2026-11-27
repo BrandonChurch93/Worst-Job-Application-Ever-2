@@ -4,23 +4,18 @@ import type { Pointer } from '../../stage/types'
 // The opening of the film on the careers page, every number of it. `total` is the time from the first frame to the press of Apply at the
 // bottom, when the button goes down. `line` is how long the narrator's line 1 runs: 22 words at 1.6 words a second. `after` is what the page
 // has left after the press, the stage's turn into step 1 inside it. `key` is the moment of the key still, at the top with the arrow by the main button. `ramp` is how long the scroll takes to slow down or to pick up again.
-// A setting holds at the top until `scrollFrom` and on its way down slows at the page's five places: for `hold` seconds the page goes at
-// the share `slow` of its speed between stops (1 is no slowing). The fifth place is the bottom: the page stands there for its `hold`, which ends with the press.
+// The page holds at the top until `scrollFrom` and on its way down slows at its five places: for `hold` seconds it goes at the share `slow`
+// of its speed between stops. The fifth place is the bottom: the page stands there for its `hold`, which ends with the press.
 export const OPENING = {
-  use: 'B' as 'A' | 'B',
   total: 18,
   key: 2.4,
   line: 13.75,
-  after: 1.25,
+  after: 1,
   ramp: 0.45,
   places: ['salary', 'badge', 'lol', 'ghosting', 'button'] as const,
-  A: { scrollFrom: 13.75, stops: [{ hold: 0, slow: 1 }, { hold: 0, slow: 1 }, { hold: 0, slow: 1 }, { hold: 0, slow: 1 }, { hold: 1.55, slow: 0 }] },
-  B: { scrollFrom: 3, stops: [{ hold: 1.3, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1.55, slow: 0 }] }
+  scrollFrom: 3,
+  stops: [{ hold: 1.3, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1.55, slow: 0 }]
 }
-export type Setting = 'A' | 'B'
-
-const asked = typeof location === 'undefined' ? null : new URLSearchParams(location.search).get('opening')
-export const SETTING: Setting = asked === 'a' || asked === 'A' ? 'A' : asked === 'b' || asked === 'B' ? 'B' : OPENING.use
 
 // The press as the page plays it: the arrow hops onto the button's rim at `hop`, clicks at `click`, and its own run-up and jump end on the cap `lead` later, which is the press.
 export const PRESS = { lead: 0.78, hop: 0.37, ready: 0.73, down: 0.15 }
@@ -44,7 +39,6 @@ interface Key { t: number; x: number; y: number; e?: Ease }
 
 interface Leg { from: number; to: number; t0: number; t1: number; va: number; vb: number }
 export interface Plan {
-  setting: Setting
   // The speed between stops, in px of the page a second.
   speed: number
   legs: Leg[]
@@ -54,9 +48,9 @@ export interface Plan {
 
 const G = (u: number): number => u * u * u - (u * u * u * u) / 2
 
-// The scroll of one setting over the places: one speed between stops, eased down to each stop's share of it and up again.
-export function planOf(setting: Setting, scrolls: number[]): Plan {
-  const o = OPENING[setting]
+// The scroll over the places: one speed between stops, eased down to each stop's share of it and up again.
+export function planOf(scrolls: number[]): Plan {
+  const o = OPENING
   const r = OPENING.ramp
   const n = scrolls.length
   const slow = (k: number): number => (k < 0 || k === n - 1 ? 0 : o.stops[k]!.slow)
@@ -84,7 +78,7 @@ export function planOf(setting: Setting, scrolls: number[]): Plan {
     t += hold(k)
     at = to + creep
   }
-  return { setting, speed, legs, holds, end: scrolls[n - 1]! }
+  return { speed, legs, holds, end: scrolls[n - 1]! }
 }
 
 function legAt(p: Plan, l: Leg, time: number): number {

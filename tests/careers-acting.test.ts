@@ -3,12 +3,14 @@ import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { careersOpening, FLIP_SECONDS, makePage } from '../src/pages/marketing'
 import { careersLayout } from '../src/pages/marketing/layout'
-import { CUES, OPENING, planOf, PRESS_AT, scrollAt, TURN_AT, type Setting } from '../src/pages/marketing/script'
+import { CUES, OPENING, planOf, PRESS_AT, scrollAt, TURN_AT } from '../src/pages/marketing/script'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 
 const steps = (seconds: number): number => Math.round(seconds * stepHz)
 const unit = config.film.units.find((u) => u.id === 'marketing')!
 const { height } = careersLayout()
+// The four slow places of the opening the owner picked: from when to when the page creeps at each, in seconds of the film.
+const STOPS = [[4.98, 6.28], [8.08, 9.08], [12.49, 13.49], [14.41, 15.41]]
 
 function boxOf(id: string): number[] {
   let found: number[] | null = null
@@ -22,8 +24,8 @@ function boxOf(id: string): number[] {
 
 interface Pose { t: number; x: number; y: number; z: number; scroll: number; taken: boolean; air: boolean }
 
-function run(setting: Setting): { stage: Stage; poses: Pose[] } {
-  const stage = new Stage({ mode: 'film', flow: filmFlow('marketing'), pages: { ...pages, marketing: () => makePage(setting) }, driver: new ScriptDriver(), film: filmOptions('marketing') })
+function run(): { stage: Stage; poses: Pose[] } {
+  const stage = new Stage({ mode: 'film', flow: filmFlow('marketing'), pages: { ...pages, marketing: () => makePage() }, driver: new ScriptDriver(), film: filmOptions('marketing') })
   const poses: Pose[] = []
   for (let i = 0; i < steps(unit.seconds); i++) {
     stage.advance(1)
@@ -35,38 +37,37 @@ function run(setting: Setting): { stage: Stage; poses: Pose[] } {
 }
 
 describe('the opening of the film on the careers page', () => {
-  it('has every number in one place, and both settings take exactly the 18 seconds to the press of Apply', () => {
+  it('has every number in one place and takes exactly the 18 seconds to the press of Apply, in a whole number of preview frames', () => {
     expect(OPENING.total).toBe(18)
     expect(unit.seconds).toBe(OPENING.total + OPENING.after)
+    expect(Number.isInteger(unit.seconds * config.film.previewFps)).toBe(true)
     expect(OPENING.line).toBeCloseTo(22 / 1.6, 6)
-    expect(OPENING.A.scrollFrom).toBe(OPENING.line)
-    expect(OPENING.B.scrollFrom).toBeLessThanOrEqual(3)
-    for (const k of ['A', 'B'] as const) {
-      const o = OPENING[k]
-      expect(o.stops.length).toBe(OPENING.places.length)
-      const { plan } = careersOpening(k)
-      const last = plan.legs[plan.legs.length - 1]!
-      expect(last.t1).toBeCloseTo(OPENING.total - o.stops[o.stops.length - 1]!.hold, 9)
-      expect(plan.legs[0]!.t0).toBe(o.scrollFrom)
-      expect(scrollAt(plan, o.scrollFrom)).toBe(0)
-      expect(scrollAt(plan, last.t1)).toBe(height - 1080)
-      expect(scrollAt(plan, unit.seconds)).toBe(height - 1080)
-      let before = 0
-      for (let i = 1; i <= steps(unit.seconds); i++) {
-        const now = scrollAt(plan, i / stepHz)
-        expect(now, `${k} at ${i / stepHz}`).toBeGreaterThanOrEqual(before - 1e-9)
-        expect((now - before) * stepHz, `${k} at ${i / stepHz}`).toBeLessThanOrEqual(plan.speed * 1.5 + 1e-6)
-        before = now
-      }
+    expect(OPENING.scrollFrom).toBe(3)
+    expect(OPENING.stops).toEqual([{ hold: 1.3, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1, slow: 0.12 }, { hold: 1.55, slow: 0 }])
+    expect(OPENING.stops.length).toBe(OPENING.places.length)
+    const { plan } = careersOpening()
+    const last = plan.legs[plan.legs.length - 1]!
+    expect(last.t1).toBeCloseTo(16.45, 9)
+    expect(plan.legs[0]!.t0).toBe(OPENING.scrollFrom)
+    expect(scrollAt(plan, OPENING.scrollFrom)).toBe(0)
+    expect(scrollAt(plan, last.t1)).toBe(height - 1080)
+    expect(scrollAt(plan, unit.seconds)).toBe(height - 1080)
+    expect(plan.holds.slice(0, 4).map((h) => [Number(h.t0.toFixed(2)), Number(h.t1.toFixed(2))])).toEqual(STOPS)
+    let before = 0
+    for (let i = 1; i <= steps(unit.seconds); i++) {
+      const now = scrollAt(plan, i / stepHz)
+      expect(now, `at ${i / stepHz}`).toBeGreaterThanOrEqual(before - 1e-9)
+      expect((now - before) * stepHz, `at ${i / stepHz}`).toBeLessThanOrEqual(plan.speed * 1.5 + 1e-6)
+      before = now
     }
   })
 
-  it('in setting B slows almost to a stop at each of the five places, and goes at one speed between them', () => {
-    const { plan, marks } = careersOpening('B')
+  it('slows almost to a stop at each of the five places, and goes at one speed between them', () => {
+    const { plan, marks } = careersOpening()
     expect(plan.speed).toBeGreaterThan(450)
     expect(plan.speed).toBeLessThan(700)
     plan.holds.slice(0, 4).forEach((h, k) => {
-      const o = OPENING.B.stops[k]!
+      const o = OPENING.stops[k]!
       expect(h.t1 - h.t0).toBeCloseTo(o.hold, 9)
       expect((h.to - h.from) / (h.t1 - h.t0)).toBeCloseTo(plan.speed * o.slow, 6)
       expect((h.from + h.to) / 2).toBeCloseTo(marks.stops[k]!.scroll, 6)
@@ -79,40 +80,38 @@ describe('the opening of the film on the careers page', () => {
       expect((scrollAt(plan, mid + 0.01) - scrollAt(plan, mid - 0.01)) / 0.02, `leg from ${l.t0}`).toBeCloseTo(plan.speed, 3)
       expect(l.t1 - l.t0).toBeGreaterThanOrEqual(2 * OPENING.ramp)
     }
-    expect(planOf('B', marks.stops.map((p) => p.scroll)).speed).toBe(plan.speed)
+    expect(planOf(marks.stops.map((p) => p.scroll)).speed).toBe(plan.speed)
   })
 
-  for (const k of ['A', 'B'] as const) {
-    const { stage, poses } = run(k)
+  {
+    const { stage, poses } = run()
     const at = (t: number): Pose => poses[Math.min(poses.length - 1, steps(t) - 1)]!
     const when = (name: string): number[] => stage.events.filter((e) => e.name === name).map((e) => e.step / stepHz)
 
-    it(`setting ${k}: the arrow stays on the screen, turns one card over at the salary's fine print and lets it turn back`, () => {
+    it(`the arrow stays on the screen, turns one card over at the salary's fine print and lets it turn back`, () => {
       for (const p of poses) {
         if (p.taken || p.air) continue
         expect(p.x, `${p.t}`).toBeGreaterThan(20)
         expect(p.x, `${p.t}`).toBeLessThan(1900)
-        expect(p.y - p.scroll, `${p.t}`).toBeGreaterThan(k === 'B' ? 40 : -60)
+        expect(p.y - p.scroll, `${p.t}`).toBeGreaterThan(40)
         expect(p.y - p.scroll, `${p.t}`).toBeLessThan(1080)
       }
       expect(when('card-flip').length).toBe(1)
       expect(when('card-flip-back').length).toBe(1)
-      const { plan } = careersOpening(k)
+      const { plan } = careersOpening()
       const hold = plan.holds[0]!
       expect(when('card-flip')[0]!).toBeGreaterThan(hold.t0 - 0.6)
       expect(when('card-flip')[0]!).toBeLessThan(hold.t0 + 0.3)
       expect(when('card-flip-back')[0]!).toBeGreaterThan(hold.t1)
-      if (k === 'B') {
-        expect(when('card-flip-back')[0]! - when('card-flip')[0]! - FLIP_SECONDS).toBeGreaterThanOrEqual(1)
-        const beat = config.film.beats.find((b) => b.id === 'marketing.perks')!
-        expect(when('card-flip')[0]!).toBeGreaterThan(beat.from)
-        expect(when('card-flip')[0]!).toBeLessThan(beat.to)
-      }
+      expect(when('card-flip-back')[0]! - when('card-flip')[0]! - FLIP_SECONDS).toBeGreaterThanOrEqual(1)
+      const beat = config.film.beats.find((b) => b.id === 'marketing.perks')!
+      expect(when('card-flip')[0]!).toBeGreaterThan(beat.from)
+      expect(when('card-flip')[0]!).toBeLessThan(beat.to)
     })
 
-    it(`setting ${k}: the arrow stands by the main button for the hold, and presses the last button at 18 s before the page turns`, () => {
+    it(`the arrow stands by the main button for the hold, and presses the last button at 18 s before the page turns`, () => {
       const hero = boxOf('hero-cta-cap')
-      const from = OPENING[k].scrollFrom
+      const from = OPENING.scrollFrom
       for (const t of [2, 2.5, from - 0.05]) {
         expect(at(t).scroll).toBe(0)
         expect(at(t).x).toBeGreaterThan(hero[0]! + hero[2]!)

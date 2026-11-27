@@ -7,7 +7,7 @@ import { SCREEN_H } from '../../shell/parts'
 import { words } from '../../shell/words'
 import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { careersLayout, PAGE, perkStates, T, TAPE, TICKER, WIDTH, Z } from './layout'
-import { CUES, LANDING, OPENING, planOf, pointerAt, REJECTED_CUES, scrollAt, SETTING, type Marks, type Plan, type Setting } from './script'
+import { CUES, LANDING, OPENING, planOf, pointerAt, REJECTED_CUES, scrollAt, type Marks, type Plan } from './script'
 
 const dt = 1 / stepHz
 const hover = config.scale.heights.cursorHover
@@ -18,6 +18,8 @@ export const SETTLE = { past: 0, over: 1 }
 // A card that is over goes back when the arrow is this far outside it, so that it does not flutter at its edge.
 export const LEAVE = 16
 const LOOK = 0.25
+// The page has its own navigation, so the stage draws no header over it; the panel of the spoken words ends at y 980, over the ticker.
+const CHROME = { header: 0, caption: 980 }
 const SHOCK = 0.8
 const REJECTED_SETTLE = 1.7
 // What the stage's hold on an arrow in the air pulls it back up by in one step, as a share of how far under the hand-off it is.
@@ -71,8 +73,8 @@ const smooth = (u: number): number => {
 }
 const mod = (a: number, n: number): number => ((a % n) + n) % n
 
-// The film's opening on this page: where the arrow goes and how the page scrolls under it, in one setting.
-export function careersOpening(setting: Setting = SETTING): { marks: Marks; plan: Plan } {
+// The film's opening on this page: where the arrow goes and how the page scrolls under it.
+export function careersOpening(): { marks: Marks; plan: Plan } {
   const { layout, height } = careersLayout()
   const maxScroll = height - SCREEN_H
   const caps = BUTTONS.map((id) => boxOf(layout, `${id}-cap`))
@@ -108,10 +110,10 @@ export function careersOpening(setting: Setting = SETTING): { marks: Marks; plan
     perch: { x: last.x + last.w + 26, y: last.y - 18 },
     press: { x: last.x + last.w * 0.76, y: last.cy - 4 }
   }
-  return { marks, plan: planOf(setting, stops.map((p) => p.scroll)) }
+  return { marks, plan: planOf(stops.map((p) => p.scroll)) }
 }
 
-export function makePage(setting: Setting = SETTING): PageLogic {
+export function makePage(): PageLogic {
   const { layout, height, sections } = careersLayout()
   const beats = config.film.beats.filter((b) => b.unit === 'marketing')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: b.event ?? null }))
@@ -150,7 +152,7 @@ export function makePage(setting: Setting = SETTING): PageLogic {
   })
 
   const hero = caps[HERO]!
-  const { marks, plan } = careersOpening(setting)
+  const { marks, plan } = careersOpening()
   const start = marks.start
 
   const s: State = {
@@ -377,7 +379,7 @@ export function makePage(setting: Setting = SETTING): PageLogic {
       ticker(out)
     },
     scroll: () => s.scroll,
-    chrome: () => ({ header: 0 }),
+    chrome: () => CHROME,
     view: () => null,
     camera: () => null,
     script(time: number): Pointer {

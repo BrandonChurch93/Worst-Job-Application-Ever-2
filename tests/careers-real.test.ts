@@ -148,7 +148,7 @@ describe('the real careers page', () => {
     let dark = 0
     const s = film()
     s.advance(steps(17.75))
-    for (let i = 0; i < steps(0.95); i++) {
+    for (let i = 0; i < steps(0.74); i++) {
       s.advance(1)
       const list: DrawList = []
       s.page.draw(list)
@@ -159,6 +159,8 @@ describe('the real careers page', () => {
       applyButton!.pose!(o, cap, ctx)
       lowest = Math.min(lowest, o.position.z)
       if (o.getObjectByName('down')!.visible) dark++
+      expect(o.getObjectByName('up')!.visible).toBe(!o.getObjectByName('down')!.visible)
+      expect(o.getObjectByName('down')!.position.z).toBe(0)
       expect(cap.z1).toBeGreaterThan(Z.sheet + 1)
       expect(applyButton!.key(cap, ctx)).toBe(applyButton!.key(rest, ctx))
     }

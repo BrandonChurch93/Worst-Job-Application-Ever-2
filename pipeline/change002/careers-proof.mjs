@@ -1,7 +1,7 @@
-// node pipeline/change002/careers-proof.mjs [--only film,apply,turn,top,card,ticker,cost] [--setting a|b]
+// node pipeline/change002/careers-proof.mjs [--only film,apply,turn,top,card,ticker,cost]
 // The proof pictures of the careers page, each at most 1200 px on its long edge, in out/work/careers/:
 // the first screen beside the approved one, twelve frames of a card under a real mouse, the ticker in windows 1920 and 2560 wide,
-// the press of Apply with the first frames of the turn, and the film's opening on the page as twelve frames (--setting picks setting A or B of the opening).
+// the press of Apply with the first frames of the turn, and the film's opening on the page as twelve frames.
 import fs from 'node:fs'
 import sharp from 'sharp'
 import { args, at, config } from '../../tools/lib/paths.mjs'
@@ -17,8 +17,6 @@ const GROUND = '#d81b60'
 fs.mkdirSync(OUT, { recursive: true })
 const beats = config().film.beats.filter((b) => b.unit === 'marketing')
 const made = []
-const setting = typeof a.setting === 'string' ? a.setting.toLowerCase() : ''
-const tag = setting ? `-${setting}` : ''
 
 async function grid(name, frames, across, width) {
   const tiles = []
@@ -45,7 +43,7 @@ const filmSpec = (t) => {
 }
 
 if (only.some((o) => ['top', 'film', 'apply'].includes(o))) {
-  const session = await openSession({ format: 'hd', assets: 'full', ...(setting ? { query: `&opening=${setting}` } : {}) })
+  const session = await openSession({ format: 'hd', assets: 'full' })
   try {
     const shot = async (t) => ({ png: (await drawStill(session, filmSpec(t))).png, label: `${t.toFixed(2)} s` })
     if (only.includes('top')) {
@@ -55,13 +53,13 @@ if (only.some((o) => ['top', 'film', 'apply'].includes(o))) {
     }
     if (only.includes('film')) {
       const frames = []
-      for (const t of setting === 'a' ? [1, 7, 13.7, 14.1, 14.5, 14.9, 15.3, 15.7, 16.1, 16.8, 18, 18.9] : [1, 2.5, 4, 5.6, 7.3, 8.6, 10.8, 13, 14.9, 16.8, 18, 18.9]) frames.push(await shot(t))
-      await grid(`careers-film-twelve${tag}`, frames, 4, 295)
+      for (const t of [1, 2.5, 4, 5.6, 7.3, 8.6, 10.8, 13, 14.9, 16.8, 18, 18.45]) frames.push(await shot(t))
+      await grid('careers-film-twelve', frames, 4, 295)
     }
     if (only.includes('apply')) {
       const frames = []
-      for (const t of [16.5, 16.9, 17.2, 17.5, 17.8, 17.95, 18.05, 18.3, 18.7, 18.85, 19, 19.15]) frames.push(await shot(t))
-      await grid(`careers-apply-turn${tag}`, frames, 4, 295)
+      for (const t of [16.5, 17.2, 17.5, 17.8, 17.9, 17.95, 18, 18.05, 18.15, 18.3, 18.4, 18.48]) frames.push(await shot(t))
+      await grid('careers-apply-turn', frames, 4, 295)
     }
   } finally {
     await session.close()
@@ -70,17 +68,17 @@ if (only.some((o) => ['top', 'film', 'apply'].includes(o))) {
 
 // The turn into step 1 as the film draws it: a still never shows a page mid turn, so these are frames of the film itself.
 if (only.includes('turn')) {
-  const session = await openSession({ format: 'hd', assets: 'full', ...(setting ? { query: `&opening=${setting}` } : {}) })
+  const session = await openSession({ format: 'hd', assets: 'full' })
   try {
     const frames = []
-    for (const t of [18.6, 18.76, 18.8, 18.84, 18.88, 18.92, 18.96, 19, 19.05, 19.1, 19.17, 19.23]) {
+    for (const t of [18.3, 18.45, 18.5, 18.55, 18.6, 18.65, 18.7, 18.75, 18.8, 18.85, 18.92, 18.98]) {
       await session.page.evaluate(async ([n, tier]) => {
         window.showcase.setDiagnostic('beauty')
         await window.showcase.renderFilmFrame(n, tier)
       }, [Math.round(t * config().film.fps), a.tier || 'draft'])
       frames.push({ png: await readCanvas(session.page), label: `${t.toFixed(2)} s` })
     }
-    await grid(`careers-turn${tag}`, frames, 4, 295)
+    await grid('careers-turn', frames, 4, 295)
   } finally {
     await session.close()
   }

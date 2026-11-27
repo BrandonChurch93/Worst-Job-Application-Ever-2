@@ -62,7 +62,7 @@ describe('the careers page', () => {
     expect(page.height).toBeGreaterThan(5357)
     expect(page.height).toBeLessThan(5357 + 400)
     expect(page.gags.map((g) => g.id)).toEqual(beats.map((b) => b.id))
-    expect(page.chrome!()).toEqual({ header: 0 })
+    expect(page.chrome!()).toEqual({ header: 0, caption: 980 })
   })
 
   it('has the sections of the approved picture in its order, each on its own white sheet from edge to edge', () => {
@@ -138,7 +138,7 @@ describe('the careers page', () => {
       return s.page.scroll()
     }
     expect(at(OPENING.key)).toBe(0)
-    expect(at(OPENING[OPENING.use].scrollFrom)).toBe(0)
+    expect(at(OPENING.scrollFrom)).toBe(0)
     let before = 0
     for (let t = 3; t <= 16.5; t += 0.5) {
       const now = at(t)
