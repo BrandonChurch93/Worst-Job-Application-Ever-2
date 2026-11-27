@@ -191,3 +191,13 @@ Test: `tests/polish-save2.test.ts`, "goes down to its place under the gate in on
 | random seed 2 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | equal (dc5bd749cfc9, dc5bd749cfc9) |
 
 All: 13 ways down, each one move after (largest count of starts 1, 0 stands, 0 turns back part way); 13 ways back, 0 of them stood or turned part way. Before, keen seeds 1 and 2 each had 5 starts and 4 stands inside the one way down (at 30.6, 40.6, 67.0 and 89.8 px). The eight visits of never, pack, clumsy and random have the same room and the same view on every step before and after: in these ten visits the change shows in keen's rally at the bats only.
+
+## Checks, on the tree with `origin/main` merged in (`5419f903`), one at a time
+
+- `npm run determinism`: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders.
+- `npm run bots`: all clear; keen reached every one of the 37 gags on every seed.
+- `npm test`: 169 files passed, 12 skipped; 2117 tests passed, 15 skipped (one more than before: the new test).
+- `npx tsc --noEmit -p .`: exit 0, run last.
+- The three draft stills (`table-wide`, `last-save`, `tier-street`): byte equal to the kept ones by `cmp`.
+
+`view-after-back.png`: the way back, 22.850 to 23.100 s, 16 frames in a row, window 650,530 300 by 200, shot after the checks. What I saw at real size: the bumper stands in tile 1, goes down gently from tile 2, fastest round tiles 5 to 8, slows over 9 to 13, stands from tile 14. One move, no stand inside it.
