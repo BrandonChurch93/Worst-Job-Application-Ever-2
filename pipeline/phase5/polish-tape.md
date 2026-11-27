@@ -59,3 +59,22 @@ Before is d7388ff3 in a second tree, after is this branch; both built fresh. Fil
 - The pictures, of the 52 frames drawn in both trees: byte equal on 654, 656 to 665, 54, 55, 390, 391, 560, 561, 9075 to 9080, 9082 to 9084, 9086 to 9095 (36 frames); not equal on 655 (6 pixels), 827 to 839 (the tail on the backing), 9081 and 9085 (9 pixels each).
 - Where the list changes and nothing can be seen to change: the cut run lies under the solid frost, which lets nothing through, so the picture is the same to the bit. The three small differences (655, 9081, 9085) are single dark pixels of the old tail that are gone.
 - Not drawn: the other frames of 0 to 839 and 9096 to 9179. UNKNOWN for them; from the above a frame at rest is expected equal or to lose a single pixel of the old tail, and the frames of a turn's leaving half (810 to 839) to lose the tail.
+
+## 10. The turn job's sixth turn (asked for by the Builder at 15:23)
+
+The film turns six times: five by the clock and a sixth when step 5 is done and the careers page comes back (variant rejected). MEASURED with a stepped probe: its first step is stage step 36181, one step after film frame 9045 (step 36180); the leaving half is steps 36181 to 36300, the careers page arrives on step 36301 (frame 9076 is the first frame of the arriving half), the seat is step 36373, first seen on frame 9094.
+
+- `tests/polish-turn2.test.ts` now walks all six starts with the old curve against the new: the angle differs on frames 9046 to 9075 (30 frames; 29 at each turn by the clock), everything else of the stage is equal on every step. 13 pass.
+- Drawn, 308e96a1 against d7388ff3, film frames 9043 to 9095 in each tree (`polish-turn2-same.mjs`): 9043 and 9044 byte equal, 9045 to 9074 not equal (30 frames), 9075 to 9095 byte equal (21 frames, the seat among them). Frame 9045 differs although its own step is before the turn: the shutter of 180 degrees gathers the half frame after it, as at frame 810 of the first turn. Frame 9075 is byte equal although the angle differs on its step: it is step 119 of 120, the slab at 88.1377 degrees against 88.1356, edge on.
+- d7388ff3 against this branch on 9075 to 9095: section 8 (two frames lose one dark pixel each, the tape).
+- MEASURED in those pictures at x 100 (the dark rows under the foot of the page, and the mean of a patch of bare paper 100 to 140 rows above the foot): the gap under the foot, frames 9050 to 9062, is 0, 1, 1, 3, 5, 7, 11, 15, 21, 28, 37, 48, 61 px at 308e96a1 and 2, 4, 6, 9, 12, 16, 20, 26, 32, 40, 50, 61, 74 px at d7388ff3; it grows on every frame to 494 px at 9074 in both. The paper reads 221, 214, 196, 160, 87 at 308e96a1 on frames 9050, 9054, 9058, 9062, 9066 and 222, 221, 214, 196, 159 at d7388ff3. Its largest fall from one frame to the next is 23 at 308e96a1 (into 9065) and 16 at d7388ff3 (into 9070).
+- Seen at real size, `out/work/polish-tape/sixth-leave-film.png` (9046 to 9074, every second frame, x 0 to 150, 200 rows that follow the foot of the page at its left corner, 308e96a1 above, d7388ff3 below): above, the paper greys from 9058 and is dark by 9064; below, it holds its rest light through 9060 and dims evenly after. The gap under the foot grows on every frame shown in both rows, sooner below. No pop.
+
+## 11. Checks, one at a time, on this branch (15:49 to 15:58)
+
+- `npm run determinism`: exit 0, "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders".
+- `npm run bots`: exit 0, "keen reached every one of the 37 gags on every seed", "bots: all clear".
+- `npm test`: exit 0, 170 files passed and 12 skipped (182), 2125 tests passed and 15 skipped (2140). Before this job: 169 files, 2121 tests; the one file and four tests more are `tests/polish-tape.test.ts`.
+- `npx tsc --noEmit -p .`: exit 0, no output.
+- `pipeline/phase5/polish-tape-NEEDS.patch` equals `git diff d7388ff3 -- src/shell/real/type.ts src/stage/types.ts` (`cmp`); sha256 76003fe4717529bd978dc95c4270e55b35f5cf106cc9ea4479982587c90d42bc.
+- Main was not merged into this branch (the Builder joins it in the merge tree).
