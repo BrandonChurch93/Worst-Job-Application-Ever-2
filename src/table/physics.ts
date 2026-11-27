@@ -33,6 +33,9 @@ const LIVE = { up: 8, down: 12, bounce: 0.1, back: 10, max: 36, own: 12 }
 // Live play, the save at a shut gate. The gate takes the ball on its wire, the wire gives under it, is drawn down with it, stands loaded, and throws it: where the ball's middle lies against the shut wire (balls down the tier), the stiffness of the wire under the ball and of the mouth's funnel (1/s, both damped dead),
 // the steps from the ball's landing on the wire in which the wire gives, the steps of the load and the last of them in which the loaded wire and the ball stand dead still, how far the wire is drawn down with the ball on it (balls), the steps of the throw's drive back up to where the ball lay, the speed of the plain kick (balls/s), and how near the wire a ball that comes by the outlane's channel must be for the gate to take it (balls).
 // From the landing to the kick it is `land + wind + drive` steps, 56 as before, and the funnel moves the ball across for the first `mouth` of them, as before, so the ball is thrown from the same place on the same step and the play after a save is the play it was.
+// The save as it was before the load was made to read, kept as a second place of the ball beside the one that is drawn (the ball's `s` and `speed`, which a ball on the wire has no other use for): when the gate opens under a ball on the wire,
+// the ball goes down the hole in the steps it took from that place, so the play after it is the play it was.
+const WAS = { land: 24, wind: 28, still: 10, back: 0.22, drive: 4 }
 export const SAVE = { rest: 10.55, wire: 60, funnel: 50, mouth: 52, land: 8, wind: 40, still: 24, back: 0.4, drive: 8, kick: 24, reach: 1 }
 // Live play: a stroke has met the ball when the ball gains this many balls/s in one step beside a rising bat.
 const MET = 3
@@ -407,7 +410,8 @@ export class Machine {
     b.mode = 'tow'
     b.tx = MID
     b.ty = TIER_Y[k]! + SAVE.rest
-    b.speed = 0
+    b.s = b.y
+    b.speed = b.vy
     b.then = `gate:${k}`
     this.taken = 0
     this.say('gate-take', 0, `${TIERS[k]}.gate`)
@@ -419,7 +423,11 @@ export class Machine {
     const k = b.tier
     if (this.gate[k]) {
       this.taken = -1
-      this.tow(0, MID, TIER_Y[k]! + MOUTH.hole, Math.max(12, Math.hypot(b.vx, b.vy)), `gate:${k}`)
+      const hole = TIER_Y[k]! + MOUTH.hole
+      const go = Math.max(12, Math.hypot(b.vx, b.speed)) * DT
+      let steps = 1
+      for (let d = Math.hypot(MID - b.x, hole - b.s); d > go; d -= go) steps++
+      this.tow(0, MID, hole, Math.hypot(MID - b.x, hole - b.y) / ((steps - 0.01) * DT), `gate:${k}`)
       return
     }
     const cock = SAVE.land + SAVE.wind
@@ -427,6 +435,21 @@ export class Machine {
     if (this.taken >= cock + SAVE.drive) {
       this.kickOut(k)
       return
+    }
+    if (this.taken === 0 && b.y < b.ty) {
+      b.s = b.y + (b.vy + GRAVITY * DT) * DT
+      b.speed = b.vy + GRAVITY * DT
+    } else if (this.taken >= WAS.land + WAS.wind) {
+      const j = this.taken + 1 - WAS.land - WAS.wind
+      const q = ((j - 1) / WAS.drive) * ((j - 1) / WAS.drive)
+      const from = (b.s - b.ty * q) / (1 - q)
+      const y = from + (b.ty - from) * (j / WAS.drive) * (j / WAS.drive)
+      b.speed = (y - b.s) / DT
+      b.s = y
+    } else {
+      const u = Math.max(0, Math.min(1, (this.taken + 1 - WAS.land) / (WAS.wind - WAS.still)))
+      b.speed += (-SAVE.wire * SAVE.wire * (b.s - b.ty - WAS.back * u * u * (3 - 2 * u)) - 2 * SAVE.wire * b.speed) * DT
+      b.s += b.speed * DT
     }
     if (this.taken < SAVE.mouth) {
       b.vx += (-SAVE.funnel * SAVE.funnel * (b.x - b.tx) - 2 * SAVE.funnel * b.vx) * DT

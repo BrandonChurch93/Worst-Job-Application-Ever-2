@@ -129,6 +129,37 @@ describe('the save at the gate, read at real size', () => {
   })
 })
 
+describe('a gate that opens under a ball on its wire', () => {
+  // The step of the tier's fall for a gate opened on a given step, as it was before this work (commit 305e5bf3), for the first and the fourth of the ways; -1: the ball was thrown before the gate opened.
+  const FELL: [number, number][][] = [
+    [[5, 23], [12, 25], [20, 30], [30, 40], [40, 50], [50, 60], [58, 66], [62, 69], [66, 73], [70, 76]],
+    [[5, 10], [12, 21], [20, 30], [30, 40], [40, 49], [50, 57], [58, 65], [62, -1], [66, -1], [70, -1]]
+  ]
+  beforeAll(async () => {
+    await prepare()
+  })
+
+  it('lets the ball down the hole on the step it fell on before, wherever in the load the gate opens', () => {
+    for (const [i, w] of [ways[0]!, ways[3]!].entries()) for (const [open, was] of FELL[i]!) {
+      const m = new Machine()
+      m.live = true
+      m.gate = [false, false, false]
+      m.toPlane(0, w.x, TIER_Y[1]! + 10.2, w.vx, w.vy)
+      let fall = -1
+      let far = 0
+      for (let n = 1; n < 300 && fall < 0; n++) {
+        if (n === open) m.gate[1] = true
+        const y = m.balls[0]!.y
+        if (m.step(false, false).some((e) => e.name === 'tier-fall')) fall = n
+        else if (n >= open && m.balls[0]!.mode === 'tow') far = Math.max(far, Math.abs(m.balls[0]!.y - y))
+      }
+      expect(fall, `opened on step ${open}`).toBe(was)
+      expect(far * BALL, 'no step of the way down is a jump').toBeLessThan(12)
+      m.free()
+    }
+  })
+})
+
 describe('the ball\'s first frames out of the port, in the film', () => {
   let mc: Machine | null = null
   const step = Machine.prototype.step
