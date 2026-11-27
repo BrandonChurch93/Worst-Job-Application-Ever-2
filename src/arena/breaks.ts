@@ -51,7 +51,7 @@ export function lineOf(k: ViewBreak, seed: number): Line {
   const tag = tagOf(k)
   const long = Math.hypot(k.x1 - k.x0, k.y1 - k.y0) || 1
   const ux = (k.x1 - k.x0) / long, uy = (k.y1 - k.y0) / long
-  const hole = Math.min(long * 0.45, 190 + 120 * rnd(seed, tag, 5))
+  const hole = Math.min(long * 0.45, 290 + 130 * rnd(seed, tag, 5))
   const blobs: Line['blobs'] = []
   SEAMS.forEach((seam, si) => {
     seam.points.forEach((p, pi) => {
@@ -78,7 +78,7 @@ export function holeAt(l: Line, x: number, y: number, seed: number): boolean {
   if (clear <= 0.02) return false
   if (t > 0) {
     const ragged = 0.7 + 0.6 * noise(s / 34 + l.tag * 7.3, 1.7, seed) + 0.5 * (fbm(x / 13, y / 13, seed + 3) - 0.5)
-    const half = (10 + 40 * Math.sqrt(t)) * ragged * clear
+    const half = (14 + 46 * Math.sqrt(t)) * ragged * clear
     const wobble = 12 * (noise(s / 70, l.tag + 20.5, seed) - 0.5)
     if (Math.abs(c - wobble) < half) return true
   }
@@ -116,7 +116,7 @@ export function paintBreak(data: Uint8Array, W: number, H: number, k: ViewBreak,
   layOver(data, scratch, W, H, k)
 }
 
-// Lays a blast painted alone over the wounds that are there: where it broke the slab through, that holds; where an older blast did, that holds; elsewhere the deeper wound of the two.
+// Lays a blast painted alone over the wounds that are there: where either broke the slab through it stays broken, the light below winning over the broken wall; elsewhere the deeper wound of the two. The order of the blasts does not change the picture.
 export function layOver(data: Uint8Array, layer: Uint8Array, W: number, H: number, k: ViewBreak): void {
   const r = reachOf(k, W, H)
   for (let j = r.j0; j <= r.j1; j++) {
@@ -127,8 +127,8 @@ export function layOver(data: Uint8Array, layer: Uint8Array, W: number, H: numbe
         data[at] = 0
         data[at + 1] = 0
         data[at + 2] = 0
-        data[at + 3] = a
-      } else if (data[at + 3]! <= 100) {
+        if (a > data[at + 3]!) data[at + 3] = a
+      } else if (data[at + 3] === 0) {
         if (layer[at]! > data[at]!) data[at] = layer[at]!
         if (layer[at + 1]! > data[at + 1]!) data[at + 1] = layer[at + 1]!
         if (layer[at + 2]! > data[at + 2]!) data[at + 2] = layer[at + 2]!
@@ -175,7 +175,7 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
       const edge = half * (0.62 + 0.5 * (streak - 0.5)) + 14 * (mid - 0.5)
       const hair = noise(s / 70 + 31.7, c / 3.2, seed + 17)
       let soot = step(edge + 46, edge - 12, ac) ** 1.4 * (0.6 + 0.4 * hair) * (0.82 + 0.18 * fine)
-      soot = Math.max(soot, 0.3 * step(edge + 80, edge + 6, ac) * (0.3 + 0.7 * mid))
+      soot = Math.max(soot, 0.4 * step(edge + 96, edge + 4, ac) * (0.35 + 0.65 * mid))
       // Specks of soot thrown wide of the trench, and dark fissures that run with it.
       if (ac < edge + 74 && mid > 0.42) {
         const speck = fbm(x / 4.2, y / 4.2, seed + 18)
@@ -189,10 +189,11 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
       const depth = core * (0.45 + 0.55 * mid) + 0.22 * soot * fine + 0.35 * fissure * taper
       let ember = 0
       if (ac < half * 0.56) {
-        const patch = step(0.4, 0.58, noise(s / 95 + id * 3.7, 3.3, seed + 15))
-        const blob = fbm(x / 15 + 50, y / 15, seed + 16)
-        const rows = 0.3 + 0.7 * step(half * 0.08, half * 0.24, ac)
-        ember = step(0.56, 0.7, blob) * (0.45 + 0.55 * step(0.42, 0.6, fine)) * patch * rows * step(half * 0.56, half * 0.3, ac) * taper
+        // Two rows of them, in clumps drawn out along the line, as coals lie in a furrow.
+        const patch = step(0.3, 0.5, noise(s / 80 + id * 3.7, (c > 0 ? 3.3 : 9.1), seed + 15))
+        const blob = fbm(s / 21 + 50, c / 8.5 + id, seed + 16)
+        const row = Math.exp(-(((ac - half * 0.27) / (half * 0.13)) ** 2))
+        ember = step(0.5, 0.64, blob) * (0.4 + 0.6 * step(0.36, 0.56, fine)) * patch * (0.12 + 0.88 * row) * taper
       }
       data[at] = Math.round(255 * Math.min(1, soot))
       data[at + 1] = Math.round(255 * Math.min(1, depth))

@@ -32,8 +32,10 @@ export const ARENA = {
   bar: { x0: 590, y0: 66, x1: 1333, y1: 137, trackInset: 22, trackHalf: 19, high: 9 },
   label: { x: 960, y: 40, px: 30, font: 'inter-600' },
   corners: [{ x: 89, y: 82 }, { x: 1831, y: 82 }, { x: 82, y: 987 }, { x: 1824, y: 981 }] as Pt[],
-  // Where the boss's centre may be so that his hull stays on the middle slab.
+  // Where the boss's centre may be, as the fight has it.
   safe: { x0: 640, y0: 330, x1: 1280, y1: 770 },
+  // A rectangle that lies wholly on the middle slab, clear of its seams. The rectangle above is the fight's own, for the boss's centre: its corners reach past the slanted seams by up to 53 px.
+  inside: { x0: 700, y0: 385, x1: 1235, y1: 735 },
   // The well the page's ground is cut with while the arena is on.
   wellDepth: 60
 } as const

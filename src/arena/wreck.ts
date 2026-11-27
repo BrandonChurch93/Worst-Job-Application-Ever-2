@@ -77,10 +77,10 @@ function lumpGeometry(seed: number): THREE.BufferGeometry {
 // A flat shard of glass, one unit across and three px thick.
 function shardGeometry(): THREE.BufferGeometry {
   const shape = new THREE.Shape()
-  const pts: [number, number][] = [[-0.5, -0.28], [0.42, -0.44], [0.58, 0.08], [0.06, 0.5], [-0.44, 0.22]]
+  const pts: [number, number][] = [[-0.56, -0.2], [0.5, -0.46], [0.3, 0.1], [-0.2, 0.52]]
   pts.forEach((q, i) => (i ? shape.lineTo(q[0], q[1]) : shape.moveTo(q[0], q[1])))
   shape.closePath()
-  const g = new THREE.ExtrudeGeometry(shape, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.04, bevelSegments: 1 })
+  const g = new THREE.ExtrudeGeometry(shape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.05, bevelSegments: 1 })
   return g
 }
 
@@ -347,12 +347,12 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
         // Most fall the way the blast went, some the other way.
         const dir = rnd(seed, 961 + i, j) < 0.7 ? push : -push
         const far = (24 + 170 * rnd(seed, 962 + i, j) ** 1.3) * (0.5 + 0.7 * near) * dir
-        const size = 30 + 84 * rnd(seed, 963 + i, j) ** 1.6
+        const size = 26 + 66 * rnd(seed, 963 + i, j) ** 1.8
         const z = 2 + size * 0.14 + Math.sin(Math.PI * fly) * (40 + 80 * rnd(seed, 964 + i, j)) + (1 - fly) * 60
         const flat = fly * fly
         e.set((1 - flat) * (rnd(seed, 965 + i, j) * 5 + 1) + 0.5 * (rnd(seed, 975 + i, j) - 0.5), (1 - flat) * (rnd(seed, 966 + i, j) * 5) + 0.5 * (rnd(seed, 976 + i, j) - 0.5), rnd(seed, 967 + i, j) * 6.283)
         q.setFromEuler(e)
-        m4.compose(v.set(wx(p.x) + far * out + leanX * z, wy(along + (rnd(seed, 968 + i, j) - 0.5) * 60 * out) + lean * z, z), q, sc.set(size, size * (0.55 + 0.6 * rnd(seed, 969 + i, j)), size))
+        m4.compose(v.set(wx(p.x) + far * out + leanX * z, wy(along + (rnd(seed, 968 + i, j) - 0.5) * 60 * out) + lean * z, z), q, sc.set(size, size * (0.5 + 0.9 * rnd(seed, 969 + i, j)), size))
         shards.setMatrixAt(nShards++, m4)
       }
     })

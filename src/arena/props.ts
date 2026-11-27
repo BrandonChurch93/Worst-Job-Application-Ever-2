@@ -54,7 +54,7 @@ export function makeKit(): Kit {
   const m = materials()
   const glass = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.5, 0.7, 0.62), emissive: new THREE.Color(0.2, 0.3, 0.26), roughness: 0.5, metalness: 0, clearcoat: 0.5, clearcoatRoughness: 0.4, specularIntensity: 0.7, transparent: true, opacity: 0.72, depthWrite: true, side: THREE.FrontSide }))
   const glassEdge = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.8, 0.93, 0.88), roughness: 0.35, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.2, specularIntensity: 0.9, transparent: true, opacity: 0.9 }))
-  const shard = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.36, 0.62, 0.52), emissive: new THREE.Color(0.1, 0.17, 0.145), roughness: 0.3, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.2, specularIntensity: 0.9, transparent: true, opacity: 0.78, side: THREE.DoubleSide, flatShading: true }))
+  const shard = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.62, 0.84, 0.75), emissive: new THREE.Color(0.1, 0.16, 0.14), roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, specularIntensity: 1, transparent: true, opacity: 0.5, depthWrite: false, side: THREE.DoubleSide, flatShading: true }))
   const broken = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.36, 0.36, 0.375), roughness: 0.8, metalness: 0.45, specularIntensity: 0.5, flatShading: true }))
   const hot = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 1.1, 0.16), toneMapped: false })
   return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, orange: m.orange, broken, hot, own: [glass, glassEdge, shard, broken, hot] }

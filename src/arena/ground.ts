@@ -94,7 +94,7 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
 \t\tfloat arenaWall = smoothstep( 0.08, 0.3, arenaW.a ) * ( 1.0 - arenaLight );
 \t\tfloat arenaB = arenaW.b * arenaW.b;
 \t\ttotalEmissiveRadiance += arenaEmber * mix( vec3( 1.9, 0.36, 0.03 ), vec3( 3.6, 1.7, 0.34 ), arenaB ) * arenaB * arenaFlick;
-\t\ttotalEmissiveRadiance += mix( vec3( 1.5, 0.4, 0.035 ), vec3( 2.9, 1.35, 0.24 ), smoothstep( 0.66, 1.0, arenaW.a ) ) * arenaLight + vec3( 0.2, 0.06, 0.01 ) * arenaWall;
+\t\ttotalEmissiveRadiance += mix( vec3( 1.25, 0.3, 0.025 ), vec3( 2.1, 0.78, 0.085 ), smoothstep( 0.66, 1.0, arenaW.a ) ) * arenaLight + vec3( 0.62, 0.17, 0.022 ) * arenaWall;
 \t\tfloat arenaS = texture2D( arenaSpill, vArenaUv ).r;
 \t\ttotalEmissiveRadiance += vec3( 0.8, 0.2, 0.03 ) * arenaS * arenaS * arenaSeam * ( 1.0 - arenaW.r );
 \t}`)
