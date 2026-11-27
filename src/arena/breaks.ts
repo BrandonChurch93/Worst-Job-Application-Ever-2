@@ -107,6 +107,7 @@ export function reachOf(k: ViewBreak, W: number, H: number): { i0: number; i1: n
 }
 
 let scratch: Uint8Array | null = null
+let memo: { key: string; hit: Int8Array } | null = null
 
 // One blast, painted over what is there.
 export function paintBreak(data: Uint8Array, W: number, H: number, k: ViewBreak, seed: number): void {
@@ -147,6 +148,26 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
   const { i0, i1 } = reachOf(k, W, H)
   const data = layer
   const j0 = from, j1 = to - 1
+  // Whether the slab is broken through is asked many times of the same texel: each answer is kept for as long as the line is the same.
+  const key = `${k.x0},${k.y0},${k.x1},${k.y1},${k.width},${W},${H},${seed}`
+  if (!memo || memo.hit.length !== W * H) memo = { key, hit: new Int8Array(W * H) }
+  else if (memo.key !== key) {
+    memo.hit.fill(0)
+    memo.key = key
+  }
+  const hit = memo.hit
+  const hole = (i: number, j: number): boolean => {
+    if (i < 0 || i >= W || j < 0 || j >= H) return holeAt(l, (i + 0.5) * sx, PAGE.h - (j + 0.5) * sy, seed)
+    const v = hit[j * W + i]!
+    if (v !== 0) return v === 2
+    const is = holeAt(l, (i + 0.5) * sx, PAGE.h - (j + 0.5) * sy, seed)
+    hit[j * W + i] = is ? 2 : 1
+    return is
+  }
+  // Rows run up the page: a row more is a step toward the top.
+  const far = Math.max(1, Math.round(14 / sx)), near = Math.max(1, Math.round(10 / sx))
+  const ring: [number, number][] = [[far, 0], [-far, 0], [0, far], [0, -far], [near, near], [-near, near], [near, -near], [-near, -near]]
+  const wallJ = Math.max(1, Math.round(wall / sy)), wallI = Math.max(1, Math.round((wall * 0.5) / sx))
   for (let j = j0; j <= j1; j++) {
     const y = PAGE.h - (j + 0.5) * sy
     layer.fill(0, (j * W + i0) * 4, (j * W + i1 + 1) * 4)
@@ -159,11 +180,11 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
       const ac = Math.abs(c)
       if (ac > reach) continue
       const at = (j * W + i) * 4
-      if (holeAt(l, x, y, seed)) {
+      if (hole(i, j)) {
         // How far inside the hole: the light is strongest away from its rim, and under its upper edge the broken wall of the slab shows.
         let inside = 0
-        for (const [ox, oy] of [[14, 0], [-14, 0], [0, 14], [0, -14], [10, 10], [-10, 10], [10, -10], [-10, -10]] as [number, number][]) if (holeAt(l, x + ox, y + oy, seed)) inside++
-        const lit = holeAt(l, x, y - wall, seed) && holeAt(l, x - wall * 0.5, y - wall, seed)
+        for (const [oi, oj] of ring) if (hole(i + oi, j + oj)) inside++
+        const lit = hole(i, j + wallJ) && hole(i - wallI, j + wallJ)
         data[at + 3] = lit ? Math.round(255 * (0.62 + 0.38 * (inside / 8))) : 52
         continue
       }

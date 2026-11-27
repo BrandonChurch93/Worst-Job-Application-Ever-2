@@ -24,7 +24,7 @@ const SMOKE_EACH = 20
 const DUST = 44
 const DUST_SECONDS = 1.5
 // Over how many frames the wound of an aimed blast is painted ahead.
-const AHEAD_FRAMES = 18
+const AHEAD_FRAMES = 36
 
 // The broken foot of a pillar: brushed sides that end in a jagged edge, and the dark rough break on top.
 function stumpGeometry(seed: number, id: number, high: number): { sides: THREE.BufferGeometry; top: THREE.BufferGeometry } {
@@ -237,6 +237,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
 
   let painted = 'none'
   let ahead: { key: string; layer: Uint8Array; next: number } | null = null
+  let aimedLast = ''
   const lineKey = (k: { x0: number; y0: number; x1: number; y1: number; width: number }): string => `${k.x0.toFixed(1)},${k.y0.toFixed(1)},${k.x1.toFixed(1)},${k.y1.toFixed(1)},${k.width}`
   const put = (mesh: THREE.InstancedMesh, i: number, x: number, y: number, z: number, turn: number, w: number, h: number, r: number, g: number, b: number): void => {
     q.setFromAxisAngle(v.set(0, 0, 1), turn)
@@ -271,8 +272,11 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
     if (aimed && aimed.firedAt === null) {
       const k: ViewBreak = { id: 0, at: 0, x0: aimed.x0, y0: aimed.y0, x1: aimed.x1, y1: aimed.y1, width: aimed.width }
       const r = reachOf(k, DAMAGE.w, DAMAGE.h)
-      if (!ahead || ahead.key !== lineKey(k)) ahead = { key: lineKey(k), layer: ahead?.layer ?? new Uint8Array(wounds.data.length), next: r.j0 }
-      if (ahead.next <= r.j1) {
+      // A line that still turns is not painted: the work starts once it has lain still from one call to the next.
+      const still = lineKey(k) === aimedLast
+      aimedLast = lineKey(k)
+      if (still && (!ahead || ahead.key !== lineKey(k))) ahead = { key: lineKey(k), layer: ahead?.layer ?? new Uint8Array(wounds.data.length), next: r.j0 }
+      if (still && ahead && ahead.next <= r.j1) {
         const to = Math.min(r.j1 + 1, ahead.next + Math.ceil((r.j1 - r.j0 + 1) / AHEAD_FRAMES))
         paintLayer(ahead.layer, DAMAGE.w, DAMAGE.h, k, seed, ahead.next, to)
         ahead.next = to
