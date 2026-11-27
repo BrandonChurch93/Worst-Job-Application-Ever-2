@@ -3,7 +3,7 @@ import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { T } from '../src/pages/step3'
 import { CLOCK, filmOf } from '../src/pages/step3/clock'
-import { FRENZY, RIOT, STRIKE, noted, strikeJolt, strikeOf, strikeShapes } from '../src/pages/step3/strikes'
+import { FRENZY, RIOT, RUN, STRIKE, noted, strikeJolt, strikeOf, strikeShapes } from '../src/pages/step3/strikes'
 import { LOOSE, VAC, fight, held, kindAt, leanOf, looseOf } from '../src/pages/step3/vacuum'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type Driver, type Pointer } from '../src/stage/stage'
 
@@ -251,5 +251,18 @@ describe('the frenzy in the film', () => {
     const at = new Set(film.events.filter((e) => e.name.startsWith('strike:')).map((e) => Math.round(e.time * stepHz)))
     for (const t of times('loot')) expect(at.has(Math.round(t * stepHz))).toBe(true)
     expect(times('loot').length).toBeGreaterThan(20)
+  })
+
+  it('pays coins from the rail while the ball rides the highway and its spiral, so that no second from the frenzy on the street to the bat\'s save is without a strike', () => {
+    const paid = film.events.filter((e) => Object.values(RUN.ids).some((id) => e.name === `strike:${id}:1`)).map((e) => e.time)
+    expect(paid.length).toBeGreaterThanOrEqual(9)
+    expect(paid[0]!).toBeGreaterThan(times('ramp-roll')[0]! - 2 * DT)
+    expect(paid[paid.length - 1]!).toBeLessThan(times('flipper-save')[0]!)
+    for (let i = 1; i < paid.length; i++) expect(paid[i]! - paid[i - 1]!).toBeLessThan(RUN.every + 2 * DT)
+    const all = film.events.filter((e) => e.name.startsWith('strike:')).map((e) => e.time)
+    for (let t = Math.ceil(times('tier-fall')[0]!); t + 1 <= times('flipper-save')[0]!; t++) expect(all.some((x) => x >= t && x < t + 1), `second ${t}`).toBe(true)
+    const ring = noted(undefined, 1, { name: RUN.name, ball: 0, id: RUN.ids.highway!, x: 8, y: 40 }, { id: RUN.ids.highway!, hard: 1, loot: 1 }, 2)
+    const flat = noted(undefined, 1, { name: RUN.name, ball: 0, id: RUN.ids.highway!, x: 8, y: 40 }, { id: RUN.ids.highway!, hard: 1, loot: 1 })
+    expect(strikeShapes(ring, 1.1)[0]!.z0 - strikeShapes(flat, 1.1)[0]!.z0).toBe(2 * config.table.ballPx)
   })
 })

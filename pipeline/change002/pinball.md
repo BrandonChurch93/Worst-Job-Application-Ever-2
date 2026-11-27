@@ -32,7 +32,9 @@ Where a line below this section names a time of the first pass, the time here is
 9. D-Q9. Signs. No size changed in the second pass. Read at 1920 by 1080, one frame each: Coffee at film 18.5 s (the top view of the office tier), Mom's Basement at 36.2 s and 37.5 s, Unemployment Office at 37.5 s (the top view at the drain; at 36.2 s it is in the near blur of `table-save`).
 10. D-Q10. The kept take `cut/TABLE-TAKE.json` is not searched again: replayed with the new scene every one of the 10 beat events falls inside its beat, no hit is within 0.15 s of a cut, 8 flips, the director brings the ball in 2 times.
 11. D-Q12. From 23 s on (order 4): while the clear ball rides the highway and its spiral the rail pays out coins under it every 0.4 s (`RUN` in `src/pages/step3/strikes.ts`, film only), each a soft strike `strike:street.highway:1` or `strike:street.garage:1` with `loot`. A strike now keeps its height over the floor (`STRIKE.each` 6 to 7), so the coins leave the rail and not the floor under it. MEASURED strikes in each film second: 22:2 23:2 24:3 25:1 26:2 27:5 28:9 29:1 30:2 31:2 32:3 33:2 34:2 36:1; second 35 has the bat's save and its flash at 35.62. No hold was cut in this pass after the three of D-Q1; the ride on the rail is as slow as it was (about 4 balls a second).
-12. D-Q11. Not started: the buildings against `references/approved/` (the brief's last and lowest item).
+12. D-Q13. One step of the scene is lost at the seal: the scene's clock stands at 3.3 s and goes on one step (1/240 s) after the film's second 6.9, so from the release on the scene is 865 steps behind the film and not 864 (MEASURED in `tests/polish-gate.test.ts`: release 948 to 1813, arrival 2224 to 3089). Left as it is: the kept take's flips are matched to this clock, and a step either way plays another game.
+13. D-Q14. On the rail the arrow stays clear too: the shape `fx.hero` is also given while the ball rides the highway and the spiral, so the sparks of the rail's coins stand beside the ball (no disc and no ring there: those are the frenzy's). SEEN at 31.2, 31.7, 32.2 and 33.2 s.
+14. D-Q11. Not started: the buildings against `references/approved/` (the brief's last and lowest item).
 
 ## Events
 
@@ -81,7 +83,23 @@ New:
 
 17. D-P17. On the live site the port takes the arrow when its reach, which grows by 420 px a second from 1.2 s on, meets it (kept as it was, because every pinned live run hangs on that time). So that this wait is not a still page, the port winds up before it has the arrow: from 0.7 s the streaks, the rings and the lean of the words rise to half of the whole pull over 1.4 s (`LEAN.early`, `LEAN.wind`, `LEAN.from`). MEASURED with a real mouse held at (1000, 660): streaks from 1.3 s, the arrow taken at about 2.6 s, the hand pulling away at 420 px a second from then on, `ball-seal` at 5.30 s.
 
-## Tests changed
+## Tests changed in the second pass
+
+Each pins the film or the live run of step 3 step by step. The note that moved it is named.
+
+- `tests/pinball.test.ts`, by D-Q1: the dusk of the website and the wave of the lights are read at the film's seconds of the scene's moments (`filmOf(T.lightsDown)`, `filmOf(T.powerOn)`, `filmOf(T.streetOpen)`, `filmOf(T.wake)`); the checks are the same.
+- `tests/polish-gate.test.ts`, by D-Q1, D-Q6, D-Q13: events 97 to 99 and their hash; release 948 to 1813, arrival 2224 to 3089; the ball is read at the scene's second 5.85 (`AT`, film 9.45 s and one step). Its place on the rail and the page's scroll there are the numbers of before, unchanged.
+- `tests/polish-save2.test.ts`, by D-Q6: events 97 to 99 and their hash.
+- `tests/polish-save2-follow.test.ts` and `tests/polish-save2-shut.test.ts`, by D-Q5: both need a live visitor who loses the ball down the office's left outlane. The live fight is another length, the ball enters at another step, and the old hands play another game. Hands found by a search over 24 (late 9, 11, 13; seeds 1 to 8): follow uses the hand that reads the hint one step earlier (seed 2), the ride is 24.37 to 24.83 s with the gate spent; shut uses seed 1, the ride is 22.53 to 22.99 s with the gate shut. Every check is the same.
+- `tests/polish-lamps.test.ts`, by D-Q6 and D-Q12: `STATE`, `PATH`, `CHANGED` (638 to 575) and `RANGES`; the ball crosses the white window half a frame sooner, so the rise is read from frame 6212 (was 6213), the middle is over the glass at 6214 (was 6215), and the kept count in the middle of the rise is 0.8125 (was 0.625).
+- `tests/polish-ball.test.ts`, by D-Q1, D-Q6, D-Q12: `MAIN`.
+- `tests/polish-port.test.ts`, by D-Q1, D-Q3, D-Q13: `WAS` (252 events); the pull, the sink and the shutting are read against `CLOCK.gone` (6.9 s), the run down the screen and the roll 3.6 s later (`LATE`); the ball passes 640 px 23 frames after the release (was 22: the release is one step later); `WAS_SCROLL` 2011.0711 to 2007.6052 (the view is one step behind, D-Q13).
+- `tests/polish-port2.test.ts`, by D-Q1, D-Q5, D-Q13: film steps 793, 858, 952, 2224 to 1657, 1722, 1817, 3089 (the film is read to 16 s, was 12); live 1658, 1723, 1794, 3066 to 1852, 1917, 1988, 3260; both hashes after. Why the hashes moved is not proven step by step: UNKNOWN. What is known: in the film the scene is one step behind the film's clock that the view reads (D-Q13); live, the second after the arrival now holds the plunger's shot (the 0.9 s skip). The dip of 0.00014 rad (D-P16) is still allowed, cause UNKNOWN.
+- `tests/polish-sharp-shadow.test.ts`, by D-Q1: the frames of the pipe 4304 to 4575 are 4520 to 4791 (216 frames, 3.6 s).
+- `tests/polish-slide.test.ts`, by D-Q5: the longest live fight is `VAC.end / VAC.quick / (1 - VAC.stall)`.
+- `tests/b-pinball.test.ts`, by D-Q1, D-Q3, D-Q4, D-Q6, D-Q12: written again for the long fight, the clock, the loose words, the two frenzies and the rail's coins.
+
+## Tests changed in the first pass
 
 Every one of these pins the film of step 3 frame by frame, and each was moved by the note named.
 
