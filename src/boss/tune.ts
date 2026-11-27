@@ -112,6 +112,7 @@ export const BIG = {
   back: 150, // px behind the button, on the side away from the shield, where it comes up
   first: 7.4, // s into the fight before its first tell
   every: 13, // s from one blast to the next tell
+  last: 0.6, // s after the banner of the last stand at which it tells once more, whatever is left of `every` (not in the film)
   tell: 1.6, // s the line of the blast lies on the ground before the blast; the boss and its shield hold still
   wide: 65, // px to each side of the line that the blast takes: 130 px across
   beam: 0.3, // s the blast stands
@@ -128,7 +129,10 @@ export const FLAT = {
   life: 1.4, // s of the whole wound, peel included
   safe: 2.1, // s after a hit in which nothing can hit again
   heal: 0.35, // s after the hit at which the boss wins health back
-  squash: 0.58 // share of its length the flat arrow is pressed to, the least the arrow's body allows
+  spread: 1.35, // times its size, in both directions, that the flat arrow is drawn at while it lies
+  mark: 2.6, // s the dent, its cracks and the dust stay on the ground after a hit
+  dent: 150, // px across of the dent
+  dust: 0.55 // s the ring of dust takes to leave
 } as const
 export const HEAL = {
   first: 6, // points of health the first hit gives back

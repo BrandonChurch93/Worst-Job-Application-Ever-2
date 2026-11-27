@@ -596,7 +596,7 @@ export function makePage(): PageLogic {
         drawRules(out, s.fight, look)
         drawWeapons(out, s.fight, L.weapons)
         const f = s.fight
-        if (f.at.flat >= 0 && f.clock - f.at.flat < FLAT.life) drawPancake(out, s.cx, s.cy, f.flat > 0 ? 1 : 1 - prog(f.clock - f.at.flat, FLAT.down, FLAT.life))
+        if (f.at.flat >= 0 && f.mark) drawPancake(out, f.mark.x, f.mark.y, f.clock - f.at.flat)
       }
       const lit = LINE7.part2 - LINE7.power
       if (s.gold >= 0 && s.gold < lit + GOLD_OUT && (s.stage === 'hold' || s.stage === 'fight')) drawPower(out, s.cx, s.cy, power() * (1 - prog(s.gold, lit, lit + GOLD_OUT)))

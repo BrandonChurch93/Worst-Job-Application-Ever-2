@@ -1,12 +1,12 @@
 import type { DrawList } from '../stage/types'
-import { FINISH } from './tune'
+import { FINISH, FLAT } from './tune'
 
 const part = 'shell'
 const GOLD = { least: 70, most: 170, z: 3 } as const
 const ARM = { long: 54, wide: 12, out: 30, z: 36 } as const
 const BALL = { ahead: 46, z: 30 } as const
 const BEAM = { z: 34, tall: 16, core: 0.45 } as const
-const FLAT_DISC = { w: 184, h: 138, rim: 12 } as const
+const DENT = { off: [6, 11], grow: 0.06, fade: 0.5, cracks: 7, turn: [0.1, -0.22, 0.3, -0.08, 0.18], run: [[30, 0.25, 2.4], [22, -0.5, 1.6], [14, 0.4, 1.2]], puffs: 14, puff: 20 } as const
 
 // Plain stand-ins for the power-up and the finishing blast; their look comes from the Builder's picture round.
 export function drawPower(out: DrawList, x: number, y: number, k: number): void {
@@ -46,11 +46,34 @@ export function drawFinish(out: DrawList, a: { x: number; y: number }, to: { x: 
   }
 }
 
-export function drawPancake(out: DrawList, x: number, y: number, k: number): void {
-  if (k <= 0) return
-  const w = FLAT_DISC.w * k
-  const h = FLAT_DISC.h * k
-  const rim = FLAT_DISC.rim * k
-  out.push({ id: 'arrow-flat-rim', part, kind: 'disc', x: x - w / 2, y: y - h / 2, w, h, z0: 0, z1: 1, tone: 'dark', moved: true })
-  out.push({ id: 'arrow-flat', part, kind: 'disc', x: x - w / 2 + rim, y: y - h / 2 + rim, w: Math.max(1, w - rim * 2), h: Math.max(1, h - rim * 2), z0: 1, z1: 2, tone: 'metal', moved: true })
+// Where the arrow was laid flat: a shallow dent, a star of cracks round it and a ring of dust that leaves. `age` is seconds since the hit.
+export function drawPancake(out: DrawList, x: number, y: number, age: number): void {
+  if (age < 0 || age >= FLAT.mark) return
+  const cx = x + DENT.off[0]
+  const cy = y + DENT.off[1]
+  const k = Math.min(1, age / DENT.grow) * Math.min(1, (FLAT.mark - age) / DENT.fade)
+  const d = FLAT.dent * (0.6 + 0.4 * k)
+  out.push({ id: 'arrow-dent', part, kind: 'disc', x: cx - d / 2, y: cy - d / 2, w: d, h: d, z0: 0, z1: 0.3, tone: 'pocket', moved: true })
+  for (let i = 0; i < DENT.cracks; i++) {
+    let a = (i / DENT.cracks) * Math.PI * 2 + DENT.turn[i % DENT.turn.length]!
+    let px = cx + Math.cos(a) * FLAT.dent * 0.46
+    let py = cy + Math.sin(a) * FLAT.dent * 0.46
+    DENT.run.forEach(([len, bend, thick], j) => {
+      a += bend * (i % 2 === 0 ? 1 : -1)
+      const l = len * (0.7 + 0.3 * ((i * 7) % 5) / 4) * k
+      if (l < 1) return
+      out.push({ id: `arrow-crack-${i}-${j}`, part, kind: 'box', x: px + Math.cos(a) * l * 0.5 - l / 2, y: py + Math.sin(a) * l * 0.5 - thick / 2, w: l, h: thick, z0: 0, z1: 0.4, tone: 'dark', rot: a, moved: true })
+      px += Math.cos(a) * l
+      py += Math.sin(a) * l
+    })
+  }
+  if (age < FLAT.dust) {
+    const u = age / FLAT.dust
+    const r = FLAT.dent * (0.45 + 0.75 * (1 - (1 - u) * (1 - u)))
+    const size = DENT.puff * (1 - u)
+    for (let i = 0; i < DENT.puffs; i++) {
+      const a = (i / DENT.puffs) * Math.PI * 2 + 0.2
+      if (size > 1) out.push({ id: `arrow-dust-${i}`, part, kind: 'ball', x: cx + Math.cos(a) * r - size / 2, y: cy + Math.sin(a) * r - size / 2, w: size, h: size, z0: 0, z1: size, tone: 'paper', moved: true })
+    }
+  }
 }

@@ -17,7 +17,7 @@ const arena: Arena = { popups: [] }
 const FIGHT = /^boss\.(slabs|popups|lastStand)$/
 
 const io = (pressed: boolean, cursor: { x: number; y: number }, events: string[], mode = 'live'): StepIo =>
-  ({ dt: 1 / stepHz, time: 0, mode, pressed, pointer: { ...cursor, down: pressed }, cursor: { ...cursor, damaged: false, act: () => undefined, react: () => undefined, hurt: () => undefined, knock: () => undefined, press: () => undefined }, emit: (name: string) => void events.push(name) }) as unknown as StepIo
+  ({ dt: 1 / stepHz, time: 0, mode, pressed, pointer: { ...cursor, down: pressed }, cursor: { ...cursor, damaged: false, act: () => undefined, react: () => undefined, hurt: () => undefined, knock: () => undefined, press: () => undefined, spread: () => undefined }, emit: (name: string) => void events.push(name) }) as unknown as StepIo
 
 const volley = (f: Fight, at: { x: number; y: number }, events: string[]): void => {
   stepFight(f, io(true, at, events), arena)
@@ -63,8 +63,8 @@ const onScreen = (s: Shape): boolean => {
   const b = reach(s)
   return b.x1 > 0 && b.x0 < SCREEN.w && b.y1 > 0 && b.y0 < SCREEN.h
 }
-const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open|power-|arrow-flat|finish-|smoke)/
-const OF_THE_VISITOR = /^(muzzle-|dart-|arrow-flat)/
+const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open|power-|arrow-dent|arrow-crack-|arrow-dust-|finish-|smoke)/
+const OF_THE_VISITOR = /^(muzzle-|dart-|arrow-dent|arrow-crack-|arrow-dust-)/
 
 interface Seen { time: number; list: Shape[]; fight: Fight }
 
