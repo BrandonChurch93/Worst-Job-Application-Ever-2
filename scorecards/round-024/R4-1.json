@@ -1,0 +1,37 @@
+{
+ "critic": "R4",
+ "score": 7,
+ "pass": false,
+ "model": "gpt_6_2_sol",
+ "set": "A: motion on the live site under a visitor's input, first part: the arrow walked across a page, one page turn whole on three sheets, a hit on the arrow, and a key pressed and let go on two sheets, consecutive frames",
+ "issues": [
+  {
+   "severity": "severe",
+   "file": "set-A-04.png",
+   "where": "arrow at the left edge of the form fields, 0:10.93–0:11.10",
+   "what": "After the slab stops, the ordinary-looking arrow suddenly moves left across the upload panel despite no visitor input. There is no visible change of state to distinguish the page taking control from normal pointer movement, and this cut does not show control being returned.",
+   "fix": "Give the takeover a distinct on-arrow cue that changes on the first forced frame, carry it through the forced motion, and clear it visibly when the visitor regains control."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-04.png",
+   "where": "new page seating at 0:10.73–0:10.90, after the hinge swing in set-A-02.png and set-A-03.png",
+   "what": "The 36-frame run shows a clear accelerating swing, but the last few degrees mostly ease into place. The shallow rebound has no visible seating reaction in the page or its hardware, so the landing reads softer than the turn of a heavy slab.",
+   "fix": "Retain a little speed up to the seating frame, arrest the slab decisively, and add one short, damped reaction in the slab or its fittings before the flat hold."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-05.png",
+   "where": "G key and arrow, 0:14.98–0:15.25",
+   "what": "The bolt, local flash and initial arrow kick read together, but the arrow then drifts back into a small oscillation around the same spot. The sheet gives no clean beat where the forced reaction ends, making the tail less like a single hit resolving.",
+   "fix": "Keep the contact flash and one-frame kick, then give the recoil a clear directional path, damp it faster, and mark the return to normal pointer control."
+  },
+  {
+   "severity": "major",
+   "file": "set-A-06.png",
+   "where": "P key at 0:15.68–0:15.92 and the follow-through into set-A-07.png",
+   "what": "P darkens and appears to recess while held, but the return to its rest silhouette is hard to separate from the adjacent Enter/turret glow, the G strike, and the arrow walking away. Without the down labels, release does not read as its own spring action.",
+   "fix": "Make the cap travel and socket lip more legible during the hold, then snap it back over one or two frames before the arrow moves off; keep the unrelated turret effects from masking that beat."
+  }
+ ]
+}

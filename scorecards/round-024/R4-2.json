@@ -1,0 +1,58 @@
+{
+ "critic": "R4",
+ "score": 6,
+ "pass": false,
+ "model": "claude_opus_5_5",
+ "set": "B: motion on the live site under a visitor's input, second part: the moment the page takes the arrow, and the moment it gives the arrow back on four sheets at every 1/60 s, consecutive frames",
+ "issues": [
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the tether between the arrow and the resume tag, 0:30.40 to 0:30.43",
+   "what": "the cord appears at full length in one frame from nowhere, so the page takes the arrow with no wind-up. There is no reach, catch or snag first, and the grab reads as a pop-in rather than a mechanism",
+   "fix": "shoot the cord out from the tag over 3 to 4 frames, let it hook the arrow with a 1 to 2 frame jolt on both the arrow and the tag, then pull"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the arrow, 0:30.57 to 0:30.60",
+   "what": "the arrow snaps through about 120 degrees, from pointing up to pointing down-left, and its tip turns orange, all in one frame. At normal speed it reads as a cut or a swap, not as a body being swung round by a cord",
+   "fix": "spread the swing over 4 to 6 frames with a little overshoot and settle, and fade in the tip colour over the same span"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-01.png",
+   "where": "the resume tag and its bracket, lower right, 0:30.47 to 0:30.67",
+   "what": "while the cord pulls tight and the arrow is dragged onto the tag, the tag hardly moves and the bracket and panel do not answer. Contact is one-sided, and the arrow glides along the loop at an almost even speed, as if moved by hand",
+   "fix": "have the tag swing and kick back as the cord tensions, ease the arrow in fast with a short stop when it arrives, and add a small shadow or dip on the panel at the moment of contact"
+  },
+  {
+   "severity": "major",
+   "file": "set-B-04.png / set-B-05.png",
+   "where": "the slot plate under the panel, 0:43.10 to 0:43.25",
+   "what": "after the arrow is given back, the metal slot dissolves away over about 8 frames. A machine part fading like a ghost is weightless and goes against the mechanical release before it",
+   "fix": "close it mechanically: a shutter slides or snaps shut in 2 to 3 frames with a small rebound, or the plate retracts into the panel"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-04.png",
+   "where": "the slot opening, 0:43.12",
+   "what": "for one frame the slot shows a dark solid bar, between lighter frames on either side. It reads as a single-frame flicker",
+   "fix": "make the shutter state change monotonic across frames, with no one-frame dark state"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-02.png / set-B-03.png",
+   "where": "the grit spilling from the slot round the arrow, 0:42.53 to 0:42.82",
+   "what": "the speckle is re-scattered every frame rather than falling and settling, so it shimmers instead of reading as particles with mass",
+   "fix": "give each grain a persistent position and velocity: fall under gravity, land, then fade"
+  },
+  {
+   "severity": "minor",
+   "file": "set-B-04.png / set-B-05.png",
+   "where": "the arrow, 0:43.13 to 0:43.22",
+   "what": "the given-back arrow morphs from a tilted system pointer into the upright site arrow while the visitor is already moving it. The change is readable, but it blurs whether control has really been handed back",
+   "fix": "finish the shape change during the 0:42.70 to 0:43.03 hold, so that the first visitor-driven frame already shows the final arrow"
+  }
+ ]
+}
