@@ -1,7 +1,7 @@
 import type { StepIo } from '../stage/types'
 import { FOOT_OFF, muzzleAt, smooth } from './body'
 import { ARENA, BODY, FLOOR, DART, EXPIRED_GAIN, HEALTH, HOME, LAST_CLEAR, LOOK_EASE, POPUP, SHIELD, SLAB, SOCKET, SLOW_SECONDS, THRESHOLD } from './plan'
-import { CORNER, FLAT, GUARD, HEAL, IDLE, MOVE, REAL_DART, TRACK, WEAR } from './tune'
+import { CORNER, FILM, FLAT, GUARD, HEAL, IDLE, MOVE, REAL_DART, TRACK, WEAR } from './tune'
 
 export interface SlabSize { w: number; h: number }
 export interface Rect { x: number; y: number; w: number; h: number }
@@ -547,7 +547,7 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
         d.y = f.y + Math.sin(a) * GUARD.radius
       }
       const open = !(f.phase === 2 && f.expired < 0.8)
-      const worth = glass ? GUARD.chip : REAL_DART[f.phase]! * wear(f.clock)
+      const worth = glass ? GUARD.chip : REAL_DART[f.phase]! * wear(f.clock) * (io.mode === 'film' ? FILM.dart : 1)
       if (open && d.p === f.phase) f.health = Math.max(THRESHOLD[f.phase]!, Math.min(f.health, floor(f)), f.health - worth)
       spark(f, d.x, d.y, glass ? SHIELD.z : 0)
       if (glass) {

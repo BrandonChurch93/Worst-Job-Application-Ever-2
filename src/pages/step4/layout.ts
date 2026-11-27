@@ -5,6 +5,7 @@ import { block } from '../../shell/metrics'
 import { button, buttonWidth, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { ARENA, FALLEN, HOME, SLAB_H, SOCKET } from '../../boss/plan'
+import { POPUP_RIGHT } from '../../boss/tune'
 import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../boss/weapons'
 
 const heights = config.scale.heights
@@ -113,7 +114,7 @@ export function makeLayout(): Step4Layout {
   const popPad = 24
   const titleCap = block(titleType.font, 'X', titleType.px).cap
   const popH = popPad + titleCap + 22 + sizes.button + 10 + popPad - 6
-  const right = HOME.x - 260
+  const right = POPUP_RIGHT
   const tops = [CONTENT_Y, CONTENT_Y + popH + 16, CONTENT_Y + (popH + 16) * 2]
   const insets = [0, 100, 100]
   const popupPlans: PopupPlan[] = []

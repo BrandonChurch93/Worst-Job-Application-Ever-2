@@ -70,6 +70,7 @@ const STAND_GRID: [number, number][] = []
 for (let y = 220; y <= 1000; y += 130) for (let x = 140; x <= 1780; x += 205) STAND_GRID.push([x, y])
 const FORM_OFF = UNFOLD.cannons[0] + 0.3
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
+const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
 const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0 })
 
@@ -369,7 +370,7 @@ export function makePage(): PageLogic {
           if (shape.id.startsWith('health-')) {
             shape.y += up
             shape.moved = true
-          } else if (!kept.has(shape.id) && !shape.id.startsWith('submit')) {
+          } else if (!kept.has(shape.id) && !shape.id.startsWith('submit') && !ofHeader(shape.id)) {
             if (s.away >= 1) out.splice(i, 1)
             else {
               shape.y -= far
@@ -410,6 +411,7 @@ export function makePage(): PageLogic {
     view: () => null,
     camera: () => null,
     script: (time: number): Pointer => film.pointer(time),
+    chrome: () => ({ header: 1 - gone() }),
     hint(): Hint | null {
       const blink = Math.floor(s.time * 6) % 2 === 0
       if (s.stage === 'verify' && s.ticked < WAKE_AFTER_TICK.near) return { x: L.checkbox.cx, y: L.checkbox.cy, down: s.ticked < 0 && blink }

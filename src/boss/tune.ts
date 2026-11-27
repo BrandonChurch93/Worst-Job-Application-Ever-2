@@ -35,7 +35,7 @@ export const MOVE = {
   least: 60, // px: a place nearer than this is not worth a leg
   touch: 34, // px round the body's ellipse inside which the arrow is run over
   back: 430, // px from the arrow to where the boss steps back to after it ran the arrow over
-  fence: { x0: 520, y0: 480, x1: 1400, y1: 800 } // where the boss's centre may be, so that it, its shield and its flashes stay under the band below the bar
+  fence: { x0: 1250, y0: 480, x1: 1580, y1: 800 } // where the boss's centre may be: under the band below the bar, and right of where the pop-ups stand
 } as const
 
 // C. The four corner cannons.
@@ -70,6 +70,12 @@ export const IDLE = {
   after: config.live.idleSeconds, // s without a shot before the boss starts to give up
   ramp: 5 // s in which a phase then runs out
 } as const
+
+// In the film a dart that reaches the body does this many times as much: the film gives the whole fight 18 s, half of what a keen visitor needs.
+export const FILM = { dart: 3 } as const
+
+// The right edge of the pop-ups, which stand left of the boss's fence.
+export const POPUP_RIGHT = 1040
 
 // The top of the screen during the fight.
 export const TOP = {
