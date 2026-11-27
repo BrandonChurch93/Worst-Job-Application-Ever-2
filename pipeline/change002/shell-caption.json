@@ -1,0 +1,1176 @@
+{
+  "made": "node pipeline/change002/shell-caption.mjs",
+  "view": {
+    "width": 1200,
+    "height": 675
+  },
+  "clock": "seconds of the AudioContext the site made. Voice: the start given to its sound source, and that plus the length of its sound. Caption: the clock read by a watcher of the page when the panel came on and went.",
+  "browser": "159.0.8154.6",
+  "lines": {
+    "what": "every line of content/narration.json, its event sent to the site's engine in a browser in real time; between lines the sound is stopped and started so that the 6 s of silence do not have to be waited out",
+    "drawnFrames": {
+      "frames": 9419,
+      "medianMs": 16.7,
+      "p95Ms": 16.7,
+      "longestMs": 183.4
+    },
+    "lines": [
+      {
+        "id": "line.marketing.stroll.0",
+        "page": "marketing",
+        "by": "event step",
+        "said": true,
+        "lengthInIndex": 5.122,
+        "line": "line.marketing.stroll.0",
+        "words": "Here we find the applicant. Rent is due.",
+        "box": [
+          436.9,
+          613.9,
+          326.1,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 1.913,
+        "captionOff": 7.05,
+        "voiceStart": 1.913,
+        "voiceEnd": 7.073,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.023,
+        "ownLog": {
+          "start": 1.9127437641723355,
+          "end": 7.034743764172335,
+          "shown": 1.9127437641723355,
+          "hidden": 7.0501587301587305
+        }
+      },
+      {
+        "id": "line.marketing.perks.0",
+        "page": "marketing",
+        "by": "event card-flip",
+        "said": true,
+        "lengthInIndex": 6.728,
+        "line": "line.marketing.perks.0",
+        "words": "It spots unlimited PTO. Poor thing believes it.",
+        "box": [
+          416.8,
+          613.9,
+          366.5,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 7.181,
+        "captionOff": 13.912,
+        "voiceStart": 7.172,
+        "voiceEnd": 13.94,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.028,
+        "ownLog": {
+          "start": 7.172063492063492,
+          "end": 13.900063492063492,
+          "shown": 7.1807709750566895,
+          "hidden": 13.911655328798187
+        }
+      },
+      {
+        "id": "line.step1.firstName.0",
+        "page": "step1",
+        "by": "event keyboard-rise",
+        "said": true,
+        "lengthInIndex": 5.344,
+        "line": "line.step1.firstName.0",
+        "words": "First name. Under fire. Standard onboarding.",
+        "box": [
+          417.5,
+          613.9,
+          365,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 14.063,
+        "captionOff": 19.4,
+        "voiceStart": 14.051,
+        "voiceEnd": 19.427,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": -0.027,
+        "ownLog": {
+          "start": 14.050975056689342,
+          "end": 19.394975056689344,
+          "shown": 14.062585034013605,
+          "hidden": 19.400272108843538
+        }
+      },
+      {
+        "id": "line.step1.firstName.1",
+        "page": "step1",
+        "by": "event bolt-hit-cursor",
+        "said": true,
+        "lengthInIndex": 5.184,
+        "line": "line.step1.firstName.1",
+        "words": "Hit. It keeps typing. It has bills.",
+        "box": [
+          469,
+          613.9,
+          262,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 19.542,
+        "captionOff": 24.732,
+        "voiceStart": 19.531,
+        "voiceEnd": 24.739,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": -0.007,
+        "ownLog": {
+          "start": 19.530884353741495,
+          "end": 24.714884353741496,
+          "shown": 19.54249433106576,
+          "hidden": 24.732154195011336
+        }
+      },
+      {
+        "id": "line.step1.email.0",
+        "page": "step1",
+        "by": "event slab-drop",
+        "said": true,
+        "lengthInIndex": 7.472,
+        "line": "line.step1.email.0",
+        "words": "A valid email. Rejected. The system is working as designed.",
+        "box": [
+          363.5,
+          613.9,
+          473,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 24.863,
+        "captionOff": 32.331,
+        "voiceStart": 24.851,
+        "voiceEnd": 32.363,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": -0.032,
+        "ownLog": {
+          "start": 24.851156462585035,
+          "end": 32.32315646258503,
+          "shown": 24.862766439909297,
+          "hidden": 32.330884353741496
+        }
+      },
+      {
+        "id": "line.step1.tug.0",
+        "page": "step1",
+        "by": "event arms-out",
+        "said": true,
+        "lengthInIndex": 7.816,
+        "line": "line.step1.tug.0",
+        "words": "It fights for the resume. Two pages. One of them is true.",
+        "box": [
+          378.4,
+          613.9,
+          443.2,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 32.461,
+        "captionOff": 40.292,
+        "voiceStart": 32.461,
+        "voiceEnd": 40.309,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.017,
+        "ownLog": {
+          "start": 32.46149659863946,
+          "end": 40.27749659863946,
+          "shown": 32.46149659863946,
+          "hidden": 40.292426303854874
+        }
+      },
+      {
+        "id": "line.step2.dial.0",
+        "page": "step2",
+        "by": "event dial-wind",
+        "said": true,
+        "lengthInIndex": 5.864,
+        "line": "line.step2.dial.0",
+        "words": "A rotary phone. The applicant has never seen one.",
+        "box": [
+          396.9,
+          613.9,
+          406.3,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 40.44,
+        "captionOff": 46.301,
+        "voiceStart": 40.42,
+        "voiceEnd": 46.324,
+        "onAfterVoiceStart": 0.02,
+        "offAfterVoiceEnd": -0.024,
+        "ownLog": {
+          "start": 40.42013605442177,
+          "end": 46.284136054421765,
+          "shown": 40.44045351473923,
+          "hidden": 46.2918820861678
+        }
+      },
+      {
+        "id": "line.step2.crank.0",
+        "page": "step2",
+        "by": "event volume-sign",
+        "said": true,
+        "lengthInIndex": 6.454,
+        "line": "line.step2.crank.0",
+        "words": "Volume. All the way up. It will regret that.",
+        "box": [
+          432.9,
+          613.9,
+          334.3,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 46.431,
+        "captionOff": 52.881,
+        "voiceStart": 46.422,
+        "voiceEnd": 52.902,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.022,
+        "ownLog": {
+          "start": 46.42249433106576,
+          "end": 52.87649433106576,
+          "shown": 46.43120181405896,
+          "hidden": 52.880544217687074
+        }
+      },
+      {
+        "id": "line.pinball.seal.0",
+        "page": "step3",
+        "by": "event ball-seal",
+        "said": true,
+        "lengthInIndex": 6.696,
+        "line": "line.pinball.seal.0",
+        "words": "The skills assessment. No skills will be assessed.",
+        "box": [
+          400.8,
+          613.9,
+          398.3,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 53.031,
+        "captionOff": 59.73,
+        "voiceStart": 53.023,
+        "voiceEnd": 59.743,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.012,
+        "ownLog": {
+          "start": 53.0227664399093,
+          "end": 59.718766439909295,
+          "shown": 53.03147392290249,
+          "hidden": 59.73043083900227
+        }
+      },
+      {
+        "id": "line.pinball.launch.0",
+        "page": "step3",
+        "by": "event plunger",
+        "said": true,
+        "lengthInIndex": 3.092,
+        "line": "line.pinball.launch.0",
+        "words": "A career. In reverse.",
+        "box": [
+          506,
+          613.9,
+          187.9,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 59.861,
+        "captionOff": 62.961,
+        "voiceStart": 59.852,
+        "voiceEnd": 62.972,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.011,
+        "ownLog": {
+          "start": 59.85233560090703,
+          "end": 62.94433560090703,
+          "shown": 59.86104308390023,
+          "hidden": 62.960907029478456
+        }
+      },
+      {
+        "id": "line.pinball.lobby.0",
+        "page": "step3",
+        "by": "event carpet-roll",
+        "said": true,
+        "lengthInIndex": 3.672,
+        "line": "line.pinball.lobby.0",
+        "words": "Corporate headquarters. So close.",
+        "box": [
+          454.5,
+          613.9,
+          290.9,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 63.092,
+        "captionOff": 66.781,
+        "voiceStart": 63.092,
+        "voiceEnd": 66.788,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.007,
+        "ownLog": {
+          "start": 63.09151927437642,
+          "end": 66.76351927437642,
+          "shown": 63.09151927437642,
+          "hidden": 66.780589569161
+        }
+      },
+      {
+        "id": "line.pinball.coffee.0",
+        "page": "step3",
+        "by": "event bumper",
+        "said": true,
+        "lengthInIndex": 3.936,
+        "line": "line.pinball.coffee.0",
+        "words": "It runs on coffee and fear.",
+        "box": [
+          486.8,
+          613.9,
+          226.5,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 66.911,
+        "captionOff": 70.861,
+        "voiceStart": 66.911,
+        "voiceEnd": 70.871,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.01,
+        "ownLog": {
+          "start": 66.91120181405896,
+          "end": 70.84720181405896,
+          "shown": 66.91120181405896,
+          "hidden": 70.86149659863946
+        }
+      },
+      {
+        "id": "line.pinball.replyAll.0",
+        "page": "step3",
+        "by": "event inbox-take",
+        "said": true,
+        "lengthInIndex": 2.962,
+        "line": "line.pinball.replyAll.0",
+        "words": "Someone hit reply all.",
+        "box": [
+          500.6,
+          613.9,
+          198.8,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 70.992,
+        "captionOff": 73.961,
+        "voiceStart": 70.992,
+        "voiceEnd": 73.992,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.031,
+        "ownLog": {
+          "start": 70.99210884353741,
+          "end": 73.95410884353741,
+          "shown": 70.99210884353741,
+          "hidden": 73.96136054421768
+        }
+      },
+      {
+        "id": "line.pinball.fired.0",
+        "page": "step3",
+        "by": "event firehouse-take",
+        "said": true,
+        "lengthInIndex": 5.54,
+        "line": "line.pinball.fired.0",
+        "words": "Fired. Before it was hired. A new record.",
+        "box": [
+          434.7,
+          613.9,
+          330.6,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 74.092,
+        "captionOff": 79.633,
+        "voiceStart": 74.092,
+        "voiceEnd": 79.66,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.027,
+        "ownLog": {
+          "start": 74.09197278911564,
+          "end": 79.63197278911565,
+          "shown": 74.09197278911564,
+          "hidden": 79.63283446712018
+        }
+      },
+      {
+        "id": "line.pinball.drain.0",
+        "page": "step3",
+        "by": "event drain",
+        "said": true,
+        "lengthInIndex": 4.558,
+        "line": "line.pinball.drain.0",
+        "words": "The unemployment office. It knows the way.",
+        "box": [
+          421.4,
+          613.9,
+          357.1,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 79.781,
+        "captionOff": 84.332,
+        "voiceStart": 79.772,
+        "voiceEnd": 84.356,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.024,
+        "ownLog": {
+          "start": 79.77215419501134,
+          "end": 84.33015419501135,
+          "shown": 79.78086167800454,
+          "hidden": 84.33197278911565
+        }
+      },
+      {
+        "id": "line.boss.verify.0",
+        "page": "step4",
+        "by": "event checkbox",
+        "said": true,
+        "lengthInIndex": 5.22,
+        "line": "line.boss.verify.0",
+        "words": "Not a robot, it claims. We will see.",
+        "box": [
+          457,
+          613.9,
+          286,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 84.48,
+        "captionOff": 89.702,
+        "voiceStart": 84.471,
+        "voiceEnd": 89.727,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.026,
+        "ownLog": {
+          "start": 84.4712925170068,
+          "end": 89.6912925170068,
+          "shown": 84.48,
+          "hidden": 89.7015873015873
+        }
+      },
+      {
+        "id": "line.boss.slabs.0",
+        "page": "step4",
+        "by": "event slab-fire",
+        "said": true,
+        "lengthInIndex": 8.038,
+        "line": "line.boss.slabs.0",
+        "words": "The submit button fights back. Even it does not want this job.",
+        "box": [
+          360.2,
+          613.9,
+          479.7,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 89.832,
+        "captionOff": 97.872,
+        "voiceStart": 89.821,
+        "voiceEnd": 97.885,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": -0.012,
+        "ownLog": {
+          "start": 89.820589569161,
+          "end": 97.858589569161,
+          "shown": 89.83219954648526,
+          "hidden": 97.87210884353742
+        }
+      },
+      {
+        "id": "line.boss.lastStand.0",
+        "page": "step4",
+        "by": "event session-expired",
+        "said": true,
+        "lengthInIndex": 3.512,
+        "line": "line.boss.lastStand.0",
+        "words": "Session expired. A classic.",
+        "box": [
+          483,
+          613.9,
+          234,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 98.02,
+        "captionOff": 101.532,
+        "voiceStart": 98.003,
+        "voiceEnd": 101.555,
+        "onAfterVoiceStart": 0.017,
+        "offAfterVoiceEnd": -0.023,
+        "ownLog": {
+          "start": 98.00272108843538,
+          "end": 101.51472108843538,
+          "shown": 98.02013605442177,
+          "hidden": 101.53215419501134
+        }
+      },
+      {
+        "id": "line.decision.letter.0",
+        "page": "step5",
+        "by": "event stamp",
+        "said": true,
+        "lengthInIndex": 3.474,
+        "line": "line.decision.letter.0",
+        "words": "Rejected. In under a second.",
+        "box": [
+          474.9,
+          613.9,
+          250.3,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 101.68,
+        "captionOff": 105.152,
+        "voiceStart": 101.663,
+        "voiceEnd": 105.167,
+        "onAfterVoiceStart": 0.017,
+        "offAfterVoiceEnd": -0.015,
+        "ownLog": {
+          "start": 101.66276643990929,
+          "end": 105.1367664399093,
+          "shown": 101.6801814058957,
+          "hidden": 105.15156462585034
+        }
+      },
+      {
+        "id": "line.decision.metrics.0",
+        "page": "step5",
+        "by": "event count-run",
+        "said": true,
+        "lengthInIndex": 5.736,
+        "line": "line.decision.metrics.0",
+        "words": "It will apply again tomorrow. They always do.",
+        "box": [
+          418.1,
+          613.9,
+          363.8,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 105.302,
+        "captionOff": 111.032,
+        "voiceStart": 105.282,
+        "voiceEnd": 111.042,
+        "onAfterVoiceStart": 0.02,
+        "offAfterVoiceEnd": -0.01,
+        "ownLog": {
+          "start": 105.2821768707483,
+          "end": 111.0181768707483,
+          "shown": 105.30249433106576,
+          "hidden": 111.03201814058957
+        }
+      },
+      {
+        "id": "line.live.idle.0",
+        "page": "step1",
+        "by": "no event: 60 s of stillness told to the engine",
+        "said": false,
+        "lengthInIndex": 8.014
+      },
+      {
+        "id": "line.live.idle.1",
+        "page": "step1",
+        "by": "no event: 60 s of stillness told to the engine",
+        "said": false,
+        "lengthInIndex": 5.162
+      },
+      {
+        "id": "line.live.hit.0",
+        "page": "step1",
+        "by": "an event that hits the cursor",
+        "said": true,
+        "lengthInIndex": 0.578,
+        "line": "line.live.hit.0",
+        "words": "Hit.",
+        "box": [
+          566.6,
+          613.9,
+          66.9,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 113.183,
+        "captionOff": 113.752,
+        "voiceStart": 113.171,
+        "voiceEnd": 113.795,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": -0.043,
+        "ownLog": {
+          "start": 113.17115646258503,
+          "end": 113.74915646258503,
+          "shown": 113.1827664399093,
+          "hidden": 113.75165532879818
+        }
+      },
+      {
+        "id": "line.live.hit.1",
+        "page": "step1",
+        "by": "an event that hits the cursor",
+        "said": true,
+        "lengthInIndex": 0.72,
+        "line": "line.live.hit.1",
+        "words": "Again.",
+        "box": [
+          555.7,
+          613.9,
+          88.6,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 113.882,
+        "captionOff": 114.602,
+        "voiceStart": 113.871,
+        "voiceEnd": 114.615,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": -0.013,
+        "ownLog": {
+          "start": 113.87065759637188,
+          "end": 114.59065759637188,
+          "shown": 113.88226757369614,
+          "hidden": 114.60208616780045
+        }
+      },
+      {
+        "id": "line.live.hit.2",
+        "page": "step1",
+        "by": "an event that hits the cursor",
+        "said": true,
+        "lengthInIndex": 3.48,
+        "line": "line.live.hit.2",
+        "words": "Still typing. It has bills.",
+        "box": [
+          498.8,
+          613.9,
+          202.4,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 114.733,
+        "captionOff": 118.201,
+        "voiceStart": 114.721,
+        "voiceEnd": 118.225,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": -0.024,
+        "ownLog": {
+          "start": 114.72108843537416,
+          "end": 118.20108843537416,
+          "shown": 114.73269841269841,
+          "hidden": 118.20117913832199
+        }
+      },
+      {
+        "id": "line.live.hit.3",
+        "page": "step1",
+        "by": "an event that hits the cursor",
+        "said": true,
+        "lengthInIndex": 3.166,
+        "line": "line.live.hit.3",
+        "words": "Resilient. Or desperate.",
+        "box": [
+          493.4,
+          613.9,
+          213.2,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 118.34,
+        "captionOff": 121.51,
+        "voiceStart": 118.332,
+        "voiceEnd": 121.524,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.014,
+        "ownLog": {
+          "start": 118.33179138321995,
+          "end": 121.49779138321995,
+          "shown": 118.34049886621315,
+          "hidden": 121.51002267573696
+        }
+      },
+      {
+        "id": "line.live.slowTyping.0",
+        "page": "step1",
+        "by": "event slow-typing",
+        "said": true,
+        "lengthInIndex": 2.766,
+        "line": "line.live.slowTyping.0",
+        "words": "One letter. Well done.",
+        "box": [
+          500.8,
+          613.9,
+          198.5,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 121.641,
+        "captionOff": 124.413,
+        "voiceStart": 121.641,
+        "voiceEnd": 124.449,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.036,
+        "ownLog": {
+          "start": 121.64063492063492,
+          "end": 124.40663492063493,
+          "shown": 121.64063492063492,
+          "hidden": 124.41251700680272
+        }
+      },
+      {
+        "id": "line.live.realKeyboard.0",
+        "page": "step1",
+        "by": "event real-keyboard",
+        "said": true,
+        "lengthInIndex": 3.632,
+        "line": "line.live.realKeyboard.0",
+        "words": "A real keyboard. How optimistic.",
+        "box": [
+          463.1,
+          613.9,
+          273.7,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 124.54,
+        "captionOff": 128.192,
+        "voiceStart": 124.54,
+        "voiceEnd": 128.212,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.021,
+        "ownLog": {
+          "start": 124.54022675736961,
+          "end": 128.1722267573696,
+          "shown": 124.54022675736961,
+          "hidden": 128.19156462585033
+        }
+      },
+      {
+        "id": "line.live.tugLost.0",
+        "page": "step1",
+        "by": "event tug-lost",
+        "said": true,
+        "lengthInIndex": 4.018,
+        "line": "line.live.tugLost.0",
+        "words": "The shredder always eats first.",
+        "box": [
+          468.1,
+          613.9,
+          263.8,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 128.331,
+        "captionOff": 132.342,
+        "voiceStart": 128.322,
+        "voiceEnd": 132.378,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.036,
+        "ownLog": {
+          "start": 128.3221768707483,
+          "end": 132.3401768707483,
+          "shown": 128.3221768707483,
+          "hidden": 132.34213151927437
+        }
+      },
+      {
+        "id": "line.live.pinball.flipper.0",
+        "page": "step3",
+        "by": "event flipper",
+        "said": true,
+        "lengthInIndex": 6.186,
+        "line": "line.live.pinball.flipper.0",
+        "words": "It found the flippers. Hope is a powerful thing.",
+        "box": [
+          415.7,
+          613.9,
+          368.6,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 132.473,
+        "captionOff": 138.661,
+        "voiceStart": 132.473,
+        "voiceEnd": 138.689,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.028,
+        "ownLog": {
+          "start": 132.47274376417235,
+          "end": 138.65874376417236,
+          "shown": 132.47274376417235,
+          "hidden": 138.66086167800452
+        }
+      },
+      {
+        "id": "line.live.boss.verify.0",
+        "page": "step4",
+        "by": "event checkbox",
+        "said": true,
+        "lengthInIndex": 4.072,
+        "line": "line.live.boss.verify.0",
+        "words": "It claims to be human. Bold.",
+        "box": [
+          478.5,
+          613.9,
+          243,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 138.8,
+        "captionOff": 142.881,
+        "voiceStart": 138.791,
+        "voiceEnd": 142.895,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.014,
+        "ownLog": {
+          "start": 138.7914739229025,
+          "end": 142.8634739229025,
+          "shown": 138.8001814058957,
+          "hidden": 142.88108843537415
+        }
+      },
+      {
+        "id": "line.live.boss.slow.0",
+        "page": "step4",
+        "by": "event boss-slow",
+        "said": true,
+        "lengthInIndex": 4.192,
+        "line": "line.live.boss.slow.0",
+        "words": "The button is winning. The button.",
+        "box": [
+          456.5,
+          613.9,
+          287,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 143.02,
+        "captionOff": 147.212,
+        "voiceStart": 143.012,
+        "voiceEnd": 147.236,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": -0.024,
+        "ownLog": {
+          "start": 143.0117006802721,
+          "end": 147.2037006802721,
+          "shown": 143.0117006802721,
+          "hidden": 147.21160997732426
+        }
+      },
+      {
+        "id": "line.live.skip.0",
+        "page": "step2",
+        "by": "event skip",
+        "said": true,
+        "lengthInIndex": 5.644,
+        "line": "line.live.skip.0",
+        "words": "It skips ahead. Efficient. Still unemployed.",
+        "box": [
+          429,
+          613.9,
+          342.1,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 147.383,
+        "captionOff": 153.011,
+        "voiceStart": 147.363,
+        "voiceEnd": 153.051,
+        "onAfterVoiceStart": 0.02,
+        "offAfterVoiceEnd": -0.04,
+        "ownLog": {
+          "start": 147.36253968253968,
+          "end": 153.00653968253968,
+          "shown": 147.38285714285715,
+          "hidden": 153.01079365079366
+        }
+      },
+      {
+        "id": "line.live.watchFilm.0",
+        "page": "step2",
+        "by": "the press of Watch the film, as src/main.ts passes it on: stop, opening(0, 0), start, trigger",
+        "said": true,
+        "lengthInIndex": 4.016,
+        "line": "line.live.watchFilm.0",
+        "words": "It would rather watch. Understandable.",
+        "box": [
+          439.6,
+          613.9,
+          320.7,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 153.141,
+        "captionOff": 157.161,
+        "voiceStart": 153.141,
+        "voiceEnd": 157.197,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": -0.036,
+        "ownLog": {
+          "start": 153.1414058956916,
+          "end": 157.1574058956916,
+          "shown": 153.1414058956916,
+          "hidden": 157.1613605442177
+        }
+      }
+    ],
+    "said": 32,
+    "notSaid": [
+      "line.live.idle.0",
+      "line.live.idle.1"
+    ],
+    "worstOnAfterVoiceStart": 0.02,
+    "worstOffAfterVoiceEnd": 0.043,
+    "wordsMatch": true,
+    "pageErrors": []
+  },
+  "site": {
+    "what": "the built site, mode live, the keen bot playing it in real time for 150 s, seed 20261124",
+    "audioContext": "running",
+    "sampleRate": 44100,
+    "drawnFrames": {
+      "frames": 57,
+      "medianMs": 2600,
+      "p95Ms": 6016.4,
+      "longestMs": 7449.7
+    },
+    "lines": [
+      {
+        "line": "line.marketing.perks.0",
+        "words": "It spots unlimited PTO. Poor thing believes it.",
+        "box": [
+          405.7,
+          613.9,
+          388.5,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 8.522,
+        "captionOff": 16.913,
+        "voiceStart": 5.7,
+        "voiceEnd": 12.468,
+        "onAfterVoiceStart": 2.821,
+        "offAfterVoiceEnd": 4.444,
+        "ownLog": {
+          "start": 5.7004988662131515,
+          "end": 12.42849886621315,
+          "shown": 8.52172335600907,
+          "hidden": 16.91283446712018
+        }
+      },
+      {
+        "line": "line.marketing.stroll.0",
+        "words": "Here we find the applicant. Rent is due.",
+        "box": [
+          426.8,
+          613.9,
+          346.5,
+          38.6
+        ],
+        "y": "1044.0",
+        "captionOn": 25.922,
+        "captionOff": 28.72,
+        "voiceStart": 22.962,
+        "voiceEnd": 28.122,
+        "onAfterVoiceStart": 2.961,
+        "offAfterVoiceEnd": 0.599,
+        "ownLog": {
+          "start": 22.961632653061226,
+          "end": 28.083632653061226,
+          "shown": 25.9221768707483,
+          "hidden": 28.72018140589569
+        }
+      }
+    ],
+    "linesSaid": 2,
+    "worstOnAfterVoiceStart": 2.961,
+    "worstOffAfterVoiceEnd": 4.444,
+    "pageErrors": [],
+    "shots": [
+      "line.marketing.perks.0",
+      "line.marketing.stroll.0"
+    ]
+  },
+  "site-step3-low-640": {
+    "what": "the built site, mode live, from step 3, quality low, 640 by 360, the keen bot playing it in real time for 45 s, seed 20261124",
+    "audioContext": "running",
+    "sampleRate": 44100,
+    "drawnFrames": {
+      "frames": 59,
+      "medianMs": 550,
+      "p95Ms": 2866.6,
+      "longestMs": 6249.7
+    },
+    "lines": [
+      {
+        "line": "line.pinball.seal.0",
+        "words": "The skills assessment. No skills will be assessed.",
+        "box": [
+          170,
+          304.9,
+          300,
+          43.1
+        ],
+        "y": "1044.0",
+        "captionOn": 11.822,
+        "captionOff": 19.02,
+        "voiceStart": 11.81,
+        "voiceEnd": 18.53,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": 0.49,
+        "ownLog": {
+          "start": 11.810249433106575,
+          "end": 18.506249433106575,
+          "shown": 11.82185941043084,
+          "hidden": 19.02004535147392
+        }
+      }
+    ],
+    "linesSaid": 1,
+    "worstOnAfterVoiceStart": 0.012,
+    "worstOffAfterVoiceEnd": 0.49,
+    "pageErrors": [],
+    "shots": [
+      "line.pinball.seal.0"
+    ]
+  },
+  "site-step3-low-960": {
+    "what": "the built site, mode live, from step 3, quality low, 960 by 540, the keen bot playing it in real time for 70 s, seed 20261124",
+    "audioContext": "running",
+    "sampleRate": 44100,
+    "drawnFrames": {
+      "frames": 61,
+      "medianMs": 1016.7,
+      "p95Ms": 3049.9,
+      "longestMs": 7183
+    },
+    "lines": [
+      {
+        "line": "line.pinball.seal.0",
+        "words": "The skills assessment. No skills will be assessed.",
+        "box": [
+          320.7,
+          491.1,
+          318.7,
+          30.9
+        ],
+        "y": "1044.0",
+        "captionOn": 18.95,
+        "captionOff": 25.832,
+        "voiceStart": 18.942,
+        "voiceEnd": 25.662,
+        "onAfterVoiceStart": 0.009,
+        "offAfterVoiceEnd": 0.171,
+        "ownLog": {
+          "start": 18.94167800453515,
+          "end": 25.637678004535147,
+          "shown": 18.950385487528344,
+          "hidden": 25.83219954648526
+        }
+      }
+    ],
+    "linesSaid": 1,
+    "worstOnAfterVoiceStart": 0.009,
+    "worstOffAfterVoiceEnd": 0.171,
+    "pageErrors": [],
+    "shots": [
+      "line.pinball.seal.0"
+    ]
+  },
+  "site-step4-low-960": {
+    "what": "the built site, mode live, from step 4, quality low, 960 by 540, the keen bot playing it in real time for 70 s, seed 20261124",
+    "audioContext": "running",
+    "sampleRate": 44100,
+    "drawnFrames": {
+      "frames": 60,
+      "medianMs": 1099.9,
+      "p95Ms": 2766.5,
+      "longestMs": 3316.5
+    },
+    "lines": [
+      {
+        "line": "line.boss.verify.0",
+        "words": "Not a robot, it claims. We will see.",
+        "box": [
+          365.6,
+          491.1,
+          228.8,
+          30.9
+        ],
+        "y": "1044.0",
+        "captionOn": 7.111,
+        "captionOff": 12.571,
+        "voiceStart": 7.111,
+        "voiceEnd": 12.367,
+        "onAfterVoiceStart": 0,
+        "offAfterVoiceEnd": 0.204,
+        "ownLog": {
+          "start": 7.111111111111111,
+          "end": 12.33111111111111,
+          "shown": 7.111111111111111,
+          "hidden": 12.570702947845804
+        }
+      }
+    ],
+    "linesSaid": 1,
+    "worstOnAfterVoiceStart": 0,
+    "worstOffAfterVoiceEnd": 0.204,
+    "pageErrors": [],
+    "shots": [
+      "line.boss.verify.0"
+    ]
+  },
+  "site-step1-low-960": {
+    "what": "the built site, mode live, from step 1, quality low, 960 by 540, the keen bot playing it in real time for 70 s, seed 20261124",
+    "audioContext": "running",
+    "sampleRate": 44100,
+    "drawnFrames": {
+      "frames": 39,
+      "medianMs": 1400,
+      "p95Ms": 4016.6,
+      "longestMs": 4216.4
+    },
+    "lines": [
+      {
+        "line": "line.step1.firstName.0",
+        "words": "First name. Under fire. Standard onboarding.",
+        "box": [
+          334,
+          491.1,
+          292,
+          30.9
+        ],
+        "y": "1044.0",
+        "captionOn": 6.972,
+        "captionOff": 14.541,
+        "voiceStart": 6.96,
+        "voiceEnd": 12.336,
+        "onAfterVoiceStart": 0.012,
+        "offAfterVoiceEnd": 2.205,
+        "ownLog": {
+          "start": 6.960181405895692,
+          "end": 12.304181405895692,
+          "shown": 6.971791383219955,
+          "hidden": 14.541496598639457
+        }
+      }
+    ],
+    "linesSaid": 1,
+    "worstOnAfterVoiceStart": 0.012,
+    "worstOffAfterVoiceEnd": 2.205,
+    "pageErrors": [],
+    "shots": []
+  }
+}
