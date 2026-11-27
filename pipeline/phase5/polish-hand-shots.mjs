@@ -1,6 +1,6 @@
 // The live site under the pack's own visitor at 1920 by 1080 and level high, drawn in consecutive frames of 60 a second, and sheets cut from those pictures at real size.
 // node pipeline/phase5/polish-hand-shots.mjs walk LABEL [rest=FRAME] [move=FRAME:DX:DY:FRAMES[:line]] FIRST-LAST[/STRIDE] [...]   walks once, keeps a picture of every frame in the spans; from rest=FRAME on the hand lies still; from move=FRAME on it goes DX, DY over FRAMES frames, eased or at one speed
-// node pipeline/phase5/polish-hand-shots.mjs sheet LABEL[+LABEL] NAME FIRST STRIDE COUNT LEFT TOP W H COLS [cross] [mark=FRAME:WORDS ...]   lays COUNT windows on one sheet, cut unscaled at LEFT, TOP; two labels lie side by side frame by frame
+// node pipeline/phase5/polish-hand-shots.mjs sheet LABEL[+LABEL] NAME FIRST STRIDE COUNT LEFT TOP W H COLS [cross] [follow] [mark=FRAME:WORDS ...]   lays COUNT windows on one sheet, cut unscaled at LEFT, TOP; two labels lie side by side frame by frame; with follow each window is cut at the pointer plus LEFT, TOP, and its label says where
 // node pipeline/phase5/polish-hand-shots.mjs film DIR NAME FIRST STRIDE COUNT LEFT TOP W H COLS [mark=FRAME:WORDS ...]   the same from the numbered frames of the film in DIR
 // node pipeline/phase5/polish-hand-shots.mjs stack OUT A.png B.png [C.png ...]   lays finished sheets one above the other
 import fs from 'node:fs'
@@ -117,12 +117,14 @@ if (what === 'walk') {
       const meta = await sharp(file).metadata()
       if (meta.width !== 1920 || meta.height !== 1080) throw new Error(`${file} is ${meta.width} by ${meta.height}, not 1920 by 1080`)
       const row = run ? run.rows.find((r) => r[0] === at) : null
-      const cross = row && more.includes('cross') ? { x: Math.round(row[4]) - Number(left), y: Math.round(row[5]) - Number(top) } : null
-      tiles.push({ png: await sharp(file).extract({ left: Number(left), top: Number(top), width: Number(w), height: Number(h) }).png().toBuffer(), text: `${runs.length > 1 ? `${one}, ` : ''}${what === 'film' ? 'film frame' : 'frame'} ${at}${marks[at] ? `  ${marks[at]}` : ''}`, marked: Boolean(marks[at]), cross: cross && cross.x > 7 && cross.y > 7 && cross.x < Number(w) - 7 && cross.y < Number(h) - 7 ? cross : null })
+      const follow = row && more.includes('follow')
+      const cut = { left: Math.max(0, Math.min(1920 - Number(w), follow ? Math.round(row[4]) + Number(left) : Number(left))), top: Math.max(0, Math.min(1080 - Number(h), follow ? Math.round(row[5]) + Number(top) : Number(top))) }
+      const cross = row && more.includes('cross') ? { x: Math.round(row[4]) - cut.left, y: Math.round(row[5]) - cut.top } : null
+      tiles.push({ png: await sharp(file).extract({ left: cut.left, top: cut.top, width: Number(w), height: Number(h) }).png().toBuffer(), text: `${runs.length > 1 ? `${one}, ` : ''}${what === 'film' ? 'film frame' : 'frame'} ${at}${follow ? ` at ${cut.left}, ${cut.top}` : ''}${marks[at] ? `  ${marks[at]}` : ''}`, marked: Boolean(marks[at]), cross: cross && cross.x > 7 && cross.y > 7 && cross.x < Number(w) - 7 && cross.y < Number(h) - 7 ? cross : null })
     }
   }
   const about = what === 'film' ? `the film, ${name}` : `the live site at level high, ${label}, ${name}`
-  await lay(path.join(root, `${what === 'film' ? 'film' : label}-${name}.png`), `${about}: every ${Number(stride) === 1 ? 'frame' : `${stride} frames`} of 60 a second, window ${w} by ${h} at ${left}, ${top} of 1920 by 1080, not scaled${more.includes('cross') ? '; the cross is the pointer' : ''}`, tiles, Number(w), Number(h), Number(cols))
+  await lay(path.join(root, `${what === 'film' ? 'film' : label}-${name}.png`), `${about}: every ${Number(stride) === 1 ? 'frame' : `${stride} frames`} of 60 a second, window ${w} by ${h} ${more.includes('follow') ? `cut at the pointer plus ${left}, ${top}` : `at ${left}, ${top}`} of 1920 by 1080, not scaled${more.includes('cross') ? '; the cross is the pointer' : ''}`, tiles, Number(w), Number(h), Number(cols))
 } else if (what === 'stack') {
   const metas = await Promise.all(rest.map((f) => sharp(f).metadata()))
   const W = Math.max(...metas.map((m) => m.width))
