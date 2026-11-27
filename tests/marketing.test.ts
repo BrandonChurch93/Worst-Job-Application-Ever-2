@@ -407,7 +407,7 @@ describe('the careers page', () => {
         expect(centre, r.id).toBeGreaterThanOrEqual(well.x)
         expect(centre, r.id).toBeLessThanOrEqual(well.x + well.w)
         expect(r.z1).toBeLessThan(0)
-        if (r.w === 2) crossing++
+        if (r.type?.cut === true) crossing++
       }
     }
     expect(crossing).toBeGreaterThan(0)
