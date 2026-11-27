@@ -53,3 +53,23 @@ Files: `tools/lib/pack-site.mjs`, `tools/pack.mjs`, `tests/pack-site.test.ts`, `
 ## A file outside my list
 
 - `tests/fix-packs.test.ts`, by the Builder's leave of 02:03Z: two tests changed to the new rules, each with one comment line above it, and nothing else in that file. (1) With no blow while a bat rises there is no stroke (the test wanted the first lift after a press, which is how the machine's save came under the stroke's heading in round 22). (2) Under the limit the turn's first sheet goes before a flip sheet.
+
+## The pack of round 23, built and looked at (2026-11-27, about 02:15Z)
+
+Built with `npm run -s pack -- --phase 5 --round 23 --unit site --role R4`. The frames were drawn once, in the build at 9f34142d (02:02Z to 02:10Z); the build at f2a28b3c read the same frames from the cache of the same site build (no file of the site differs between the two commits) and only laid the sheets out again, in 12 s. I looked at the frames of each new or changed sheet in a row.
+
+- `set-A-03.png`, `hit`, step 899, steps 893 to 915: the bolt comes from the left in frames 1 to 3 and reaches the arrow on the key G; in frame 4 the arrow is thrown to the right and comes back by frame 7. The run has no button down and no press in 891 to 915, so the heading says `no key is pressed in these frames`.
+- `set-A-04.png`, `type`, press at step 939, steps 935 to 957: the arrow stands on the key P in frames 1 to 3, the key is dark and down in frames 4 to 6, light and up again from frame 7, and the arrow leaves for the key O in frames 11 and 12.
+- `set-A-07.png`, `flippers`, step 5825, steps 5819 to 5841: the arrow goes to the middle of the port and the ball closes round it. No letter under any frame; the run holds no flipper there.
+- `set-A-08.png`, `save`, step 7157, steps 7153 to 7175: both bats at rest and the ball falling between them in frames 1 and 2, the right bat starts in frame 3, is at its top in frame 4 with the ball leaving upward, is half down in frame 5 and at rest in frame 6; the ball climbs to the top of the window by frame 9. No letter under any frame.
+- `set-A-09.png` and `set-A-10.png`, `flip`, step 7876, steps 7870 to 7916: the ball comes down to the right bat in frames 1 to 3, the right bat is up from frame 4 and the ball goes off it to the left and up in frames 4 to 8; R stands under frames 4 to 9 (steps 7876 to 7886; the run holds the right flipper from 7875 to 7886), the bat is half down in frame 10 and at rest in frame 11. On the second sheet the ball lies in the upper left corner of the window and the bats are at rest.
+
+Which sheets the limit took (the field `limitTook` of `pack.json`): the turn's first sheet (0:10.43 to 0:10.80), the ball leaving the port (1:38.55 to 1:38.92), the second sheet of the save (1:59.62 to 1:59.98). `leftOut` is empty.
+
+## Not done, and what I am not sure of
+
+- On the `hit` sheet the key G of the page's keyboard looks lit and a little darker in frames 4 to 6, where the bolt landed. The run shows no button down there, so the words stand by the rule, but a reader may take the lit key for a pressed one. I did not read the page's code to say what that light is.
+- On the `type` sheet the page's key is drawn down for three frames (steps 941 to 945) and is up again from step 947, while the run holds the button until step 953. So `lets it go` is true of the key in the picture, and the hand's own release at step 954 has no mark on the sheet.
+- The second sheet of the save's run is not in the pack (the limit took it); the first sheet alone shows the bat start, the ball leave and the bat fall.
+- The second sheet of `flip` shows nothing of the stroke, only the ball at rest after it.
+- The pack's log still says of the hit: 609 px from the nearer muzzle where 421 px is wanted. Not touched.
