@@ -7,6 +7,8 @@
 //   --edge final   with --middle, the tier of those first and last frames   --keep any (keep whatever frames are on disk)
 //   --frames <folder> [--first N]   no render: the film's own frames that already exist (000000.png onward, the film's size and rate). N is the number of the file that holds the join in:
 //                                   by default the join's own frame when the folder holds the unit from its first frame, 0 when it holds exactly the span
+//   --whole film                    with --frames: the folder holds the whole film from its first frame, not the unit alone, so the join in is looked for at the unit's start plus the join's frame
+//   --out <folder>                  write the pieces, the manifest and the states there and not into the site (a proof run)
 //   --rate 30                       with --frames: the folder holds the film at this rate (each file is held); a smaller size is enlarged; both make a stand-in. --tier final says what the frames are
 // The file is written to out/work/pinball-video/ and cut into pieces under the host's limit for one file (config host.maxFileMb); the pieces are what the site ships and the page joins.
 import fs from 'node:fs'
@@ -25,7 +27,7 @@ const tier = a.tier || 'draft'
 const every = Math.max(1, Number(a.every || 1))
 const quality = Number(a.quality || 16)
 const codecs = String(a.codec || 'h264').split(',')
-const out = at('src', 'pages', 'step3', 'video')
+const out = typeof a.out === 'string' ? path.resolve(a.out) : at('src', 'pages', 'step3', 'video')
 const work = at('out', 'work', 'pinball-video')
 const given = typeof a.frames === 'string' ? path.resolve(a.frames) : null
 const frames = path.join(work, given ? 'frames-given' : 'frames')
@@ -67,8 +69,9 @@ try {
     if (given) {
       const have = fs.readdirSync(given).filter((f) => /^\d{6}\.png$/.test(f)).sort()
       const hold = Math.max(1, Math.round(sc.fps / Number(a.rate || sc.fps)))
-      first = a.first !== undefined ? Number(a.first) : have.length === Math.ceil(sc.frames / hold) ? 0 : Math.floor(sc.from.frame / hold)
-      const lead = a.first !== undefined || first === 0 ? 0 : sc.from.frame % hold
+      const whole = a.whole === 'film' ? base + sc.from.frame : sc.from.frame
+      first = a.first !== undefined ? Number(a.first) : have.length === Math.ceil(sc.frames / hold) ? 0 : Math.floor(whole / hold)
+      const lead = a.first !== undefined || first === 0 ? 0 : whole % hold
       const file = (i) => path.join(given, `${String(first + Math.floor((i + lead) / hold)).padStart(6, '0')}.png`)
       const missing = []
       for (let i = 0; i < sc.frames; i++) if (!fs.existsSync(file(i))) missing.push(path.basename(file(i)))
@@ -120,6 +123,7 @@ try {
     const renderSeconds = seconds(t0)
     console.log(`rendered ${rendered} frames in ${took(renderSeconds)}`)
     const files = []
+    fs.mkdirSync(out, { recursive: true })
     for (const codec of codecs) {
       const file = path.join(work, `pinball.${CODECS[codec].ext}`)
       const p = encode(frames, file, { codec, rate: sc.fps, quality, sound: typeof a.sound === 'string' ? a.sound : null })
