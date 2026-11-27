@@ -72,3 +72,174 @@ Strike frames for the sound: the ball stands at the first bend on film frame 426
 Touch: the ball does not touch the lip or the first collar (STATED, round 24 decision 9: bore 49.4 px, ball 48 px), so no answer is added there. It touches the tube's wall at the two bends, where the rail turns. The collars nearest the bends (page y about 1010 and 1405) do not move.
 
 The arrow's turn: driven by the drawn ball's way down the rail. MEASURED from the trace (`/home/user/keep/cmp.py` on the two `PORT_TRACE` files): at the top pace 0.283 rad a frame for 24.70 px (a ball of 48 px radius rolls 0.515 rad on that), before 0.174 rad for 13.86 px (0.289 rad); at release +1 0.019 rad, of which the arrow already had 0.030 rad a frame before the release (round 24's settle, not the roll). After the first strike the turn falls 0.285, 0.275, 0.263, 0.252 over 4 frames.
+
+## The film
+
+Frames drawn at the draft tier, 1920 by 1080, with their sha256: `node pipeline/phase5/polish-port2-film.mjs --keep <folder> --frames <list>`, before in a worktree of 308e96a1, after on the merged branch.
+
+- Capture, 4159 to 4175, before above and after below: before 4159 to 4163 the arrow alone, 4164 to 4172 two thin arcs, 4173 folding, 4174 and 4175 the whole ball. After: 4159 two thin lines, 4160 and 4161 the half domes rise, 4162 to 4172 they close on the arrow, 4173 nearly shut, 4174 the whole ball, 4175 the lock. The arrow is seen on every frame.
+- MEASURED sha256: 4175, 4332, 4537 and 6340 are byte equal before and after. 4159 to 4174 differ (the shell's flag). 4262 to 4270 and 4278 to 4285 differ (the ball, the view, the tube's answer). 6340 is the split at the outlet, drawn without the flag: the maker draws byte equal without it. 4332 and 4537 are a ball frame in the tube after the meeting and the arriving frame.
+- First bend, 4262 to 4270 at real size: before the ball is already on the slope at 4262 and glides; after it comes down the straight at 23 to 24.7 px a frame, stands in the bend on 4265 and goes on along the slope at 16.9 px. Second bend, 4278 to 4284: the after ball arrives faster on 4278 to 4280, and from 4281 the two are the same but for the tube's answer.
+- The tube's answer in the film (reach 150 px): MEASURED by comparing the frames drawn with reach 100 and with reach 150: 4264 equal, 4265 to 4270 and 4280 to 4285 differ, in a box around the bend only. By eye in single frames at real size I see no tear and no move I can name. Not reported as seen.
+- Frames that change, from the per frame compare of the two `PORT_TRACE` takes and the sha256 above: 4159 to 4174 (shell), 4220 to 4280 (the ball's place), 4220 to 4295 (the view), 4265 to 4270 and 4280 to 4285 (the tube). From 4296 on the ball's place and the view are byte equal; the arrow's turn differs under 1e-7 rad from 4296 and is exactly equal from 4528. UNKNOWN: not every frame of 4217 to 4298 was drawn; drawn were 4157 to 4177, 4260 to 4286, 4332, 4537, 4700, 6340, 6344.
+
+Stills, draft tier, hd, `npm run still -- --key <key> --format hd --tier draft --force`, then `cmp` with the ones taken on 308e96a1: `table-wide` byte equal, `last-save` byte equal, `loader-page` byte equal (MEASURED 14:40 UTC, on the merged tree).
+
+## Residue
+
+- The stage's state hash differs from before from step 793 to 2194 and is equal from step 2195 (9.15 s). After the arriving step 2068 only the cursor pose's `bend` differs, by 1.6e-15 falling to 1e-16: the roll's aim feeds a spring in `src/cursor/body.ts`, which is not mine. As pictures, 4332 and 4537 are byte equal.
+- The halves are not joined to the cup's wall or the ring (see above).
+- The tube's answer is built and measured in steps, not seen by me in a picture.
+
+## Decisions
+
+1. The view follows the drawn ball; the view of before is kept in step and blended back by 4.6 s, so that everything after is the numbers of before.
+2. The halves rise from the cup's floor and slide together along the seam's normal; `shutOf`, `LATCH`, `SHELL` untouched.
+3. The tube answers at the bends, not a collar: no collar stands at a bend. No sound cue touched.
+4. The arrow's roll is driven by the drawn ball, accepting the residue above.
+5. `KNOCK.reach` 150 px instead of 100 after the live pictures showed under 1 px at the walls.
+6. After pictures are taken on the branch merged with main, before on 308e96a1.
+
+## The ball's step, per frame of 60
+
+film, release at step 796 (film frame 4219). Step = the ball's way on the page between two frames of 60, px; y = the ball's middle on the screen, px; turn = the arrow's turn in that frame, rad.
+
+| frame after release | film frame | step before | step after | y before | y after | turn before | turn after |
+|---|---|---|---|---|---|---|---|
+| 1 | 4220 | 1.77 | 0.27 | 521.8 | 520.3 | 0.059 | 0.019 |
+| 2 | 4221 | 5.03 | 0.81 | 526.7 | 521.1 | 0.098 | 0.027 |
+| 3 | 4222 | 7.88 | 1.36 | 534.5 | 522.4 | 0.129 | 0.033 |
+| 4 | 4223 | 10.32 | 1.90 | 544.5 | 524.3 | 0.150 | 0.037 |
+| 5 | 4224 | 12.36 | 2.44 | 556.4 | 526.8 | 0.164 | 0.040 |
+| 6 | 4225 | 13.99 | 2.99 | 569.7 | 529.8 | 0.172 | 0.041 |
+| 7 | 4226 | 15.21 | 3.53 | 583.9 | 533.3 | 0.174 | 0.041 |
+| 8 | 4227 | 16.03 | 4.07 | 598.8 | 537.4 | 0.174 | 0.042 |
+| 9 | 4228 | 16.44 | 4.61 | 613.7 | 542.0 | 0.173 | 0.042 |
+| 10 | 4229 | 16.50 | 5.16 | 628.4 | 547.1 | 0.171 | 0.044 |
+| 11 | 4230 | 16.49 | 5.70 | 642.7 | 552.8 | 0.169 | 0.046 |
+| 12 | 4231 | 16.46 | 6.24 | 656.7 | 558.9 | 0.167 | 0.050 |
+| 13 | 4232 | 16.42 | 6.79 | 670.2 | 565.5 | 0.166 | 0.055 |
+| 14 | 4233 | 16.36 | 7.33 | 683.3 | 572.5 | 0.166 | 0.060 |
+| 15 | 4234 | 16.29 | 7.87 | 695.9 | 580.0 | 0.166 | 0.067 |
+| 16 | 4235 | 16.21 | 8.42 | 707.9 | 587.8 | 0.167 | 0.074 |
+| 17 | 4236 | 16.12 | 8.96 | 719.3 | 595.9 | 0.168 | 0.081 |
+| 18 | 4237 | 16.01 | 9.50 | 730.0 | 604.3 | 0.169 | 0.089 |
+| 19 | 4238 | 15.90 | 10.04 | 740.0 | 613.0 | 0.170 | 0.097 |
+| 20 | 4239 | 15.78 | 10.59 | 749.2 | 621.9 | 0.171 | 0.105 |
+| 21 | 4240 | 15.66 | 11.13 | 757.6 | 631.0 | 0.172 | 0.112 |
+| 22 | 4241 | 15.53 | 11.67 | 765.2 | 640.1 | 0.173 | 0.120 |
+| 23 | 4242 | 15.39 | 12.22 | 771.8 | 649.3 | 0.173 | 0.127 |
+| 24 | 4243 | 15.25 | 12.76 | 777.5 | 658.4 | 0.174 | 0.135 |
+| 25 | 4244 | 15.12 | 13.30 | 782.2 | 667.5 | 0.174 | 0.142 |
+| 26 | 4245 | 14.98 | 13.84 | 785.9 | 676.4 | 0.174 | 0.149 |
+| 27 | 4246 | 14.84 | 14.39 | 788.6 | 685.1 | 0.174 | 0.155 |
+| 28 | 4247 | 14.71 | 14.93 | 790.4 | 693.5 | 0.174 | 0.162 |
+| 29 | 4248 | 14.59 | 15.47 | 791.1 | 701.6 | 0.174 | 0.169 |
+| 30 | 4249 | 14.47 | 16.02 | 790.9 | 709.3 | 0.174 | 0.175 |
+| 31 | 4250 | 14.35 | 16.56 | 789.8 | 716.6 | 0.174 | 0.182 |
+| 32 | 4251 | 14.25 | 17.10 | 787.8 | 723.5 | 0.173 | 0.189 |
+| 33 | 4252 | 14.16 | 17.64 | 785.0 | 729.9 | 0.173 | 0.195 |
+| 34 | 4253 | 14.08 | 18.19 | 781.5 | 735.7 | 0.173 | 0.202 |
+| 35 | 4254 | 14.01 | 18.73 | 777.4 | 741.1 | 0.173 | 0.208 |
+| 36 | 4255 | 13.95 | 19.27 | 772.7 | 746.0 | 0.173 | 0.215 |
+| 37 | 4256 | 13.91 | 19.82 | 767.5 | 750.3 | 0.173 | 0.222 |
+| 38 | 4257 | 13.88 | 20.36 | 762.0 | 754.2 | 0.173 | 0.229 |
+| 39 | 4258 | 13.87 | 20.90 | 756.2 | 757.6 | 0.173 | 0.235 |
+| 40 | 4259 | 13.86 | 21.44 | 750.2 | 760.5 | 0.173 | 0.242 |
+| 41 | 4260 | 12.70 | 21.99 | 741.6 | 763.1 | 0.174 | 0.249 |
+| 42 | 4261 | 13.86 | 22.53 | 731.1 | 765.3 | 0.175 | 0.256 |
+| 43 | 4262 | 13.86 | 23.07 | 720.8 | 767.2 | 0.176 | 0.263 |
+| 44 | 4263 | 13.86 | 23.62 | 710.9 | 768.8 | 0.177 | 0.270 |
+| 45 | 4264 | 13.86 | 24.16 | 701.6 | 770.3 | 0.177 | 0.276 |
+| 46 | 4265 | 13.86 | 24.70 | 692.8 | 771.5 | 0.176 | 0.283 |
+| 47 | 4266 | 13.86 | 16.94 | 684.6 | 759.0 | 0.176 | 0.285 |
+| 48 | 4267 | 13.86 | 17.23 | 677.0 | 746.6 | 0.175 | 0.275 |
+| 49 | 4268 | 13.86 | 17.53 | 670.0 | 734.9 | 0.175 | 0.263 |
+| 50 | 4269 | 13.86 | 17.82 | 663.7 | 724.0 | 0.174 | 0.252 |
+| 51 | 4270 | 13.86 | 18.11 | 658.0 | 714.0 | 0.174 | 0.245 |
+| 52 | 4271 | 13.86 | 18.41 | 652.8 | 705.1 | 0.173 | 0.240 |
+| 53 | 4272 | 13.86 | 18.70 | 648.2 | 697.2 | 0.173 | 0.237 |
+| 54 | 4273 | 13.86 | 19.00 | 644.1 | 690.4 | 0.173 | 0.235 |
+| 55 | 4274 | 13.86 | 19.29 | 640.4 | 684.5 | 0.173 | 0.236 |
+| 56 | 4275 | 13.86 | 19.58 | 637.3 | 679.5 | 0.173 | 0.236 |
+| 57 | 4276 | 13.86 | 19.88 | 634.5 | 675.5 | 0.173 | 0.238 |
+| 58 | 4277 | 13.86 | 20.17 | 632.1 | 672.1 | 0.173 | 0.240 |
+| 59 | 4278 | 13.86 | 20.47 | 630.0 | 669.5 | 0.173 | 0.243 |
+| 60 | 4279 | 13.86 | 20.76 | 628.3 | 667.5 | 0.173 | 0.246 |
+| 61 | 4280 | 13.86 | 21.06 | 626.8 | 666.1 | 0.173 | 0.250 |
+| 62 | 4281 | 13.73 | 13.88 | 629.8 | 664.2 | 0.180 | 0.254 |
+| 63 | 4282 | 13.86 | 13.86 | 633.0 | 662.1 | 0.194 | 0.255 |
+| 64 | 4283 | 13.86 | 13.86 | 636.0 | 659.9 | 0.207 | 0.254 |
+| 65 | 4284 | 13.86 | 13.86 | 638.8 | 658.0 | 0.216 | 0.251 |
+| 66 | 4285 | 13.86 | 13.86 | 641.3 | 656.3 | 0.219 | 0.245 |
+
+live, release at step 1448. Step = the ball's way on the page between two frames of 60, px; y = the ball's middle on the screen, px; turn = the arrow's turn in that frame, rad.
+
+| frame after release | step before | step after | y before | y after | turn before | turn after |
+|---|---|---|---|---|---|---|
+| 1 | 1.77 | 0.27 | 521.8 | 520.3 | 0.051 | 0.019 |
+| 2 | 5.03 | 0.81 | 526.7 | 521.1 | 0.080 | 0.023 |
+| 3 | 7.88 | 1.36 | 534.5 | 522.4 | 0.103 | 0.027 |
+| 4 | 10.32 | 1.90 | 544.5 | 524.3 | 0.119 | 0.029 |
+| 5 | 12.36 | 2.44 | 556.4 | 526.8 | 0.129 | 0.030 |
+| 6 | 13.99 | 2.99 | 569.7 | 529.8 | 0.134 | 0.030 |
+| 7 | 15.21 | 3.53 | 583.9 | 533.3 | 0.145 | 0.038 |
+| 8 | 16.03 | 4.07 | 598.8 | 537.4 | 0.156 | 0.049 |
+| 9 | 16.44 | 4.61 | 613.7 | 542.0 | 0.162 | 0.057 |
+| 10 | 16.50 | 5.16 | 628.4 | 547.1 | 0.164 | 0.063 |
+| 11 | 16.49 | 5.70 | 642.7 | 552.8 | 0.164 | 0.065 |
+| 12 | 16.46 | 6.24 | 656.7 | 558.9 | 0.160 | 0.066 |
+| 13 | 16.42 | 6.79 | 670.2 | 565.5 | 0.156 | 0.066 |
+| 14 | 16.36 | 7.33 | 683.3 | 572.5 | 0.151 | 0.066 |
+| 15 | 16.29 | 7.87 | 695.9 | 580.0 | 0.146 | 0.066 |
+| 16 | 16.21 | 8.42 | 707.9 | 587.8 | 0.141 | 0.067 |
+| 17 | 16.12 | 8.96 | 719.3 | 595.9 | 0.138 | 0.069 |
+| 18 | 16.01 | 9.50 | 730.0 | 604.3 | 0.135 | 0.071 |
+| 19 | 15.90 | 10.04 | 740.0 | 613.0 | 0.133 | 0.075 |
+| 20 | 15.78 | 10.59 | 749.2 | 621.9 | 0.133 | 0.080 |
+| 21 | 15.66 | 11.13 | 757.6 | 631.0 | 0.133 | 0.085 |
+| 22 | 15.53 | 11.67 | 765.2 | 640.1 | 0.133 | 0.091 |
+| 23 | 15.39 | 12.22 | 771.8 | 649.3 | 0.134 | 0.097 |
+| 24 | 15.25 | 12.76 | 777.5 | 658.4 | 0.135 | 0.103 |
+| 25 | 15.12 | 13.30 | 782.2 | 667.5 | 0.136 | 0.110 |
+| 26 | 14.98 | 13.84 | 785.9 | 676.4 | 0.137 | 0.116 |
+| 27 | 14.84 | 14.39 | 788.6 | 685.1 | 0.138 | 0.123 |
+| 28 | 14.71 | 14.93 | 790.4 | 693.5 | 0.139 | 0.129 |
+| 29 | 14.59 | 15.47 | 791.1 | 701.6 | 0.139 | 0.135 |
+| 30 | 14.47 | 16.02 | 790.9 | 709.3 | 0.140 | 0.141 |
+| 31 | 14.35 | 16.56 | 789.8 | 716.6 | 0.140 | 0.146 |
+| 32 | 14.25 | 17.10 | 787.8 | 723.5 | 0.140 | 0.152 |
+| 33 | 14.16 | 17.64 | 785.0 | 729.9 | 0.140 | 0.157 |
+| 34 | 14.08 | 18.19 | 781.5 | 735.7 | 0.140 | 0.163 |
+| 35 | 14.01 | 18.73 | 777.4 | 741.1 | 0.140 | 0.168 |
+| 36 | 13.95 | 19.27 | 772.7 | 746.0 | 0.140 | 0.173 |
+| 37 | 13.91 | 19.82 | 767.5 | 750.3 | 0.139 | 0.179 |
+| 38 | 13.88 | 20.36 | 762.0 | 754.2 | 0.139 | 0.184 |
+| 39 | 13.87 | 20.90 | 756.2 | 757.6 | 0.139 | 0.189 |
+| 40 | 13.86 | 21.44 | 750.2 | 760.5 | 0.139 | 0.194 |
+| 41 | 12.70 | 21.99 | 741.6 | 763.1 | 0.139 | 0.200 |
+| 42 | 13.86 | 22.53 | 731.1 | 765.3 | 0.141 | 0.205 |
+| 43 | 13.86 | 23.07 | 720.8 | 767.2 | 0.142 | 0.211 |
+| 44 | 13.86 | 23.62 | 710.9 | 768.8 | 0.142 | 0.216 |
+| 45 | 13.86 | 24.16 | 701.6 | 770.3 | 0.142 | 0.221 |
+| 46 | 13.86 | 24.70 | 692.8 | 771.5 | 0.142 | 0.227 |
+| 47 | 13.86 | 16.94 | 684.6 | 759.0 | 0.141 | 0.228 |
+| 48 | 13.86 | 17.23 | 677.0 | 746.6 | 0.141 | 0.221 |
+| 49 | 13.86 | 17.53 | 670.0 | 734.9 | 0.140 | 0.211 |
+| 50 | 13.86 | 17.82 | 663.7 | 724.0 | 0.140 | 0.203 |
+| 51 | 13.86 | 18.11 | 658.0 | 714.0 | 0.139 | 0.197 |
+| 52 | 13.86 | 18.41 | 652.8 | 705.1 | 0.139 | 0.193 |
+| 53 | 13.86 | 18.70 | 648.2 | 697.2 | 0.139 | 0.190 |
+| 54 | 13.86 | 19.00 | 644.1 | 690.4 | 0.138 | 0.189 |
+| 55 | 13.86 | 19.29 | 640.4 | 684.5 | 0.138 | 0.189 |
+| 56 | 13.86 | 19.58 | 637.3 | 679.5 | 0.138 | 0.190 |
+| 57 | 13.86 | 19.88 | 634.5 | 675.5 | 0.138 | 0.191 |
+| 58 | 13.86 | 20.17 | 632.1 | 672.1 | 0.138 | 0.193 |
+| 59 | 13.86 | 20.47 | 630.0 | 669.5 | 0.138 | 0.195 |
+| 60 | 13.86 | 20.76 | 628.3 | 667.5 | 0.139 | 0.197 |
+| 61 | 13.86 | 21.06 | 626.8 | 666.1 | 0.139 | 0.200 |
+| 62 | 13.73 | 13.88 | 629.8 | 664.2 | 0.138 | 0.197 |
+| 63 | 13.86 | 13.86 | 633.0 | 662.1 | 0.136 | 0.186 |
+| 64 | 13.86 | 13.86 | 636.0 | 659.9 | 0.136 | 0.174 |
+| 65 | 13.86 | 13.86 | 638.8 | 658.0 | 0.136 | 0.163 |
+| 66 | 13.86 | 13.86 | 641.3 | 656.3 | 0.136 | 0.156 |
