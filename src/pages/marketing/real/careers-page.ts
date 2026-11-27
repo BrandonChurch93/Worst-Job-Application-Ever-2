@@ -171,13 +171,19 @@ function paint(b: Brush, n: LayoutNode): void {
 }
 
 // One stretch of the website: the white sheet and everything printed on it that never moves, as two meshes.
-function sheet(s: Shape): THREE.Object3D {
+function sheet(s: Shape, window: { top: number; tall: number } | null): THREE.Object3D {
   const root = new THREE.Group()
   const b: Brush = { s, flat: new Paint(), shade: new Paint() }
   rect(b, s.x, s.y, s.w, s.h, LAYER.white, WHITE, 0.6)
   if (s.id === 'sheet-top') b.shade.fan(xOf(b, GLOW.x), yOf(b, GLOW.y), GLOW.rx, GLOW.ry, LAYER.glow, share(COLOUR.glow), [1, 1, 1], GLOW.hold)
   const n = find(careersLayout().layout, s.id)
   for (const c of n.children ?? []) paint(b, c)
+  if (window) {
+    const hi = yOf(b, window.top)
+    const lo = yOf(b, window.top + window.tall)
+    b.flat.keep(lo, hi)
+    b.shade.keep(lo, hi)
+  }
   const z = s.z1 - s.z0
   const face = mesh(b.flat.geometry(), flat(), false, true)
   face.position.z = z
@@ -194,12 +200,12 @@ export const careersPage: PartMaker | null = {
   key(s, ctx) {
     if (s.kind === 'text') return flatType.key(s, ctx)
     if (s.kind === 'well' || s.kind === 'anchor') return null
-    if (s.role === 'sheet') return `sheet:${s.id}:${q(s.y)}:${q(s.h)}`
+    if (s.role === 'sheet') return `sheet:${s.id}:${q(s.y)}:${q(s.h)}${ctx.turning ? `:${q(ctx.top)}:${q(ctx.tall)}` : ''}`
     return ''
   },
   make(s, ctx) {
     if (s.kind === 'text') return flatType.make(s, ctx)
-    return sheet(s)
+    return sheet(s, ctx.turning ? ctx : null)
   },
   pose(o, s) {
     if (s.kind === 'text') o.scale.y = Math.max(0.006, s.v?.[0] ?? 1)

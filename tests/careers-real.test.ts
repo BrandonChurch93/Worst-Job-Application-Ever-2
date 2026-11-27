@@ -166,4 +166,30 @@ describe('the real careers page', () => {
     expect(dark).toBeGreaterThan(steps(0.2))
     expect(careersLayout().layout.children!.length).toBe(8)
   })
+
+  it('cuts a stretch of the website to the screen on show while the page turns, so nothing hangs over the slab', () => {
+    const list = at(0)
+    const scroll = careersLayout().height - 1080
+    const flatCtx = context(list, 0)
+    const turnCtx: RealContext = { ...flatCtx, scroll, turning: true, top: scroll, tall: 1080 }
+    let cut = 0
+    for (const s of list.filter((x) => x.role === 'sheet')) {
+      expect(careersPage!.key(s, turnCtx)).not.toBe(careersPage!.key(s, flatCtx))
+      const whole = sound(careersPage!.make(s, flatCtx), s.id)
+      const kept = sound(careersPage!.make(s, turnCtx), s.id)
+      const mid = s.y + s.h / 2
+      if (s.y + s.h <= scroll) {
+        expect(kept.triangles, s.id).toBe(0)
+        continue
+      }
+      expect(mid - kept.box.max.y, s.id).toBeGreaterThanOrEqual(scroll - 0.001)
+      expect(mid - kept.box.min.y, s.id).toBeLessThanOrEqual(scroll + 1080 + 0.001)
+      if (s.y < scroll) {
+        cut++
+        expect(mid - kept.box.max.y, s.id).toBeCloseTo(scroll, 2)
+        expect(kept.triangles, s.id).toBeLessThan(whole.triangles)
+      } else expect(kept.triangles, s.id).toBe(whole.triangles)
+    }
+    expect(cut).toBe(1)
+  })
 })

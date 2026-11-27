@@ -183,6 +183,42 @@ export class Paint {
     return this.idx.length === 0
   }
 
+  // Cuts away what lies under `lo` or over `hi` in y: each triangle is clipped to the band and what is left of it is drawn as a fan.
+  keep(lo: number, hi: number): void {
+    const pos = this.pos
+    const col = this.col
+    const idx = this.idx
+    this.pos = []
+    this.col = []
+    this.idx = []
+    type V = number[]
+    const at = (i: number): V => [pos[i * 3]!, pos[i * 3 + 1]!, pos[i * 3 + 2]!, col[i * 3]!, col[i * 3 + 1]!, col[i * 3 + 2]!]
+    const cut = (poly: V[], edge: number, over: boolean): V[] => {
+      const out: V[] = []
+      const inside = (v: V): boolean => (over ? v[1]! <= edge : v[1]! >= edge)
+      for (let i = 0; i < poly.length; i++) {
+        const a = poly[i]!
+        const b = poly[(i + 1) % poly.length]!
+        if (inside(a)) out.push(a)
+        if (inside(a) !== inside(b)) {
+          const f = (edge - a[1]!) / (b[1]! - a[1]!)
+          out.push(a.map((v, k) => v + (b[k]! - v) * f))
+        }
+      }
+      return out
+    }
+    for (let i = 0; i < idx.length; i += 3) {
+      const tri = [at(idx[i]!), at(idx[i + 1]!), at(idx[i + 2]!)]
+      const low = Math.min(tri[0]![1]!, tri[1]![1]!, tri[2]![1]!)
+      const high = Math.max(tri[0]![1]!, tri[1]![1]!, tri[2]![1]!)
+      if (high <= lo || low >= hi) continue
+      const poly = low >= lo && high <= hi ? tri : cut(cut(tri, lo, false), hi, true)
+      if (poly.length < 3) continue
+      const ids = poly.map((v) => this.point(v[0]!, v[1]!, v[2]!, [v[3]!, v[4]!, v[5]!]))
+      for (let k = 1; k + 1 < ids.length; k++) this.idx.push(ids[0]!, ids[k]!, ids[k + 1]!)
+    }
+  }
+
   geometry(): THREE.BufferGeometry {
     const g = new THREE.BufferGeometry()
     const count = this.pos.length / 3
