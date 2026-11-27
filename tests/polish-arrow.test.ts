@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
-import { CursorBody, HANDOFF, HOVER, LED } from '../src/cursor/body'
+import { CursorBody, HANDOFF, LED } from '../src/cursor/body'
 import { pages } from '../src/pages'
 import { FLIP_SECONDS, SETTLE } from '../src/pages/marketing/index'
 import { careersLayout } from '../src/pages/marketing/layout'
 import { boxOf } from '../src/shell/layout'
 import { liveFlow, MouseDriver, Stage, TURN_HALF } from '../src/stage/stage'
-import { arriveTurn } from '../src/stage/turn'
 import type { DrawList } from '../src/stage/types'
 import { strokeRun, visitorRun, type Row } from './polish-arrow-run'
 
@@ -77,8 +76,7 @@ describe('polish, the arrow under a visitor\'s pointer', () => {
     expect(live.seconds).toBeLessThanOrEqual(0.14)
   })
 
-  it('lies on the leaving page, hangs over an arriving page only as high as the slab under it needs, and is down when the page is seated', () => {
-    expect(HOVER.half).toBe(TURN_HALF)
+  it('rides its page through a page turn, leaving and arriving, at the height it stands at, where the film\'s arrow hangs in the room at the hand-off height', () => {
     const live = new CursorBody()
     live.hand = true
     live.reset(HANDOFF.x, HANDOFF.y, true)
@@ -88,11 +86,11 @@ describe('polish, the arrow under a visitor\'s pointer', () => {
     for (let i = 1; i <= n; i++) {
       live.step({ x: 0, y: 0 }, () => undefined, false)
       film.step({ x: 0, y: 0 }, () => undefined, false)
-      const needs = Math.min(HANDOFF.z, hover + HOVER.reach * Math.tan(Math.min(1.5, Math.abs(arriveTurn(i / n)))))
-      expect(live.z).toBeGreaterThanOrEqual(needs - 5)
+      expect(Math.abs(live.z - hover)).toBeLessThanOrEqual(1)
+      expect(live.pose().rides).toBe(true)
       expect(film.z).toBeCloseTo(HANDOFF.z, 6)
+      expect('rides' in film.pose()).toBe(false)
     }
-    expect(live.z).toBeLessThanOrEqual(hover + 6)
     const left = new CursorBody()
     left.hand = true
     left.reset(400, 500)
@@ -100,8 +98,10 @@ describe('polish, the arrow under a visitor\'s pointer', () => {
     for (let i = 0; i < n; i++) {
       left.step({ x: 0, y: 0 }, () => undefined, false)
       expect(Math.abs(left.z - hover)).toBeLessThanOrEqual(1)
+      expect(left.pose().rides).toBe(true)
     }
     live.land()
+    expect('rides' in live.pose()).toBe(false)
     let most = 0
     for (let i = 0; i < stepHz / 2; i++) {
       live.step({ x: HANDOFF.x - 600, y: HANDOFF.y }, () => undefined, false)
