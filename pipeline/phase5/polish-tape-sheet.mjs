@@ -1,7 +1,7 @@
 // node pipeline/phase5/polish-tape-sheet.mjs MODE BEFORE_DIR AFTER_DIR KIND FIRST COUNT OUT [EVERY]
 // Pictures of the careers page's tape made before the change and after it. KIND is live (step-000NNN.png) or film (frame-000NNN-hd-draft.png), FIRST the first picture's number, COUNT how many in a row.
 // MODE strip: the inner end of the frost at the strip's right end (x 1420 to 1620, y 1006 to 1032) at three times, a row a frame, before at the left and after at the right.
-// MODE turn: the part of the picture right of the page (x 1380 to 1920, 90 rows that follow the strip) at real size, two frames a row, before above and after below.
+// MODE turn: the part of the picture right of the page (x 1380 to 1920, 90 rows that follow the strip) at real size, two frames a row, before above and after below. With - as BEFORE_DIR only the pictures made after are laid out.
 // MODE end: the strip's right end (x 1392 to 1792, y 990 to 1048) at three times, before above and after below, a pair a picture.
 // MODE where: writes no picture. For every pair: how many pixels differ, how many by 8 or more of a channel, the box that holds them all, and the pixels themselves when there are 8 or fewer.
 // MODE foot: for a page turn. Every EVERY-th picture, x 0 to 150 at real size, 200 rows that follow the foot of the page in the picture made after (150 above it, 50 under), eight to a band, before above and after below.
@@ -105,8 +105,9 @@ if (mode === 'diff') {
 } else {
   const H = 90
   const W = 540
+  const dirs = beforeDir === '-' ? [afterDir] : [beforeDir, afterDir]
   const rows = Math.ceil(count / 2)
-  const parts = [{ input: words(`${kind}, pictures ${first} to ${first + count - 1}: x 1380 to 1920 at real size, the rows of the strip. In each pair before above, after below`, 2 * W), left: 0, top: 0 }]
+  const parts = [{ input: words(`${kind}, pictures ${first} to ${first + count - 1}: x 1380 to 1920 at real size, the rows of the strip. ${dirs.length > 1 ? 'In each pair before above, after below' : 'After only'}`, 2 * W), left: 0, top: 0 }]
   for (let k = 0; k < count; k++) {
     const a = await raw(file(afterDir, first + k))
     let y = 1079
@@ -114,13 +115,13 @@ if (mode === 'diff') {
     while (y > 0 && lum(y) < 45) y--
     const top = Math.max(0, Math.min(1080 - H, y - 86))
     const [col, row] = [k % 2, Math.floor(k / 2)]
-    const y0 = LABEL + row * (LABEL + 2 * H)
+    const y0 = LABEL + row * (LABEL + dirs.length * H)
     parts.push({ input: words(`picture ${first + k}`, W), left: col * W, top: y0 })
-    for (const [j, dir] of [beforeDir, afterDir].entries()) {
+    for (const [j, dir] of dirs.entries()) {
       const tile = await sharp(file(dir, first + k)).extract({ left: 1380, top, width: W, height: H }).png().toBuffer()
       parts.push({ input: tile, left: col * W, top: y0 + LABEL + j * H })
     }
   }
-  await sharp({ create: { width: 2 * W, height: LABEL + rows * (LABEL + 2 * H), channels: 4, background: GROUND } }).composite(parts).png().toFile(out)
-  console.log(`${out}: ${2 * W} by ${LABEL + rows * (LABEL + 2 * H)}`)
+  await sharp({ create: { width: 2 * W, height: LABEL + rows * (LABEL + dirs.length * H), channels: 4, background: GROUND } }).composite(parts).png().toFile(out)
+  console.log(`${out}: ${2 * W} by ${LABEL + rows * (LABEL + dirs.length * H)}`)
 }
