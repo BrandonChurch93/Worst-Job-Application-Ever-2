@@ -369,18 +369,39 @@ export function keptRecords(P) {
 }
 
 // The kept sounds that are really here, as samples. A record whose file is missing is named, not loaded.
+// The wav files of audio/kept are not in the repo, only their records are, so a work tree can hold the files of an
+// older keeping. A file whose bytes are not the ones its record names is named in `stale` and is not loaded either.
 export function keptSounds(P, M) {
   const sounds = new Map()
   const absent = []
+  const stale = []
   for (const r of keptRecords(P)) {
     const f = path.join(P.kept, r.file)
     if (!fs.existsSync(f)) {
       absent.push(r.id)
       continue
     }
-    sounds.set(r.id, M.dsp.decodeWav(fs.readFileSync(f)))
+    const bytes = fs.readFileSync(f)
+    if (sha(bytes) !== r.sha256) {
+      stale.push(r.id)
+      continue
+    }
+    sounds.set(r.id, M.dsp.decodeWav(bytes))
   }
-  return { sounds, absent }
+  return { sounds, absent, stale }
+}
+
+// The ids of the kept records whose file is here with other bytes than the record names.
+export function staleKept(P) {
+  return keptRecords(P)
+    .filter((r) => fs.existsSync(path.join(P.kept, r.file)) && sha(fs.readFileSync(path.join(P.kept, r.file))) !== r.sha256)
+    .map((r) => r.id)
+}
+
+// Nothing is mixed or packed from a file that is not the kept one: the film and the site would carry a sound nobody kept.
+export function refuseStale(stale, what) {
+  if (!stale.length) return
+  throw new Error(`${what} is refused: ${stale.length} of the files in audio/kept ${stale.length === 1 ? 'is' : 'are'} not the ${stale.length === 1 ? 'file its record names' : 'files their records name'} (sha256 differs): ${stale.join(', ')}. The wav files are not in the repo. Copy them from the tree that kept them, or keep the sounds again`)
 }
 
 // One row for each sound file under public/audio, so that every file the site ships is named.
@@ -407,6 +428,7 @@ const encode = (wav, argv) => run('ffmpeg', ['-v', 'error', '-i', wav, '-map_met
 
 // Builds what the site ships: one packed file of the short sounds with its index, the loops, the narrator's lines.
 export function pack(P, c, M, quiet = false) {
+  refuseStale(staleKept(P), 'the pack')
   fs.mkdirSync(P.pub, { recursive: true })
   for (const f of fs.readdirSync(P.pub)) fs.rmSync(path.join(P.pub, f), { recursive: true, force: true })
   const records = keptRecords(P).filter((r) => fs.existsSync(path.join(P.kept, r.file)))
