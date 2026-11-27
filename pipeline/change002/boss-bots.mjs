@@ -1,14 +1,15 @@
-// node pipeline/change002/boss-bots.mjs [--seeds 200] [--bots keen,clumsy,random,still,absent] [--max 240] [--json out/work/boss-bots.json]
+// node pipeline/change002/boss-bots.mjs [--seeds 200] [--bots keen,keen~,clumsy,clumsy~,random,still,absent] [--max 240] [--json out/work/boss-bots.json]
 // Step 4 alone, played by each kind of visitor on many seeds, without rendering. Prints for each kind: the share that wins, the fight's length (shortest, middle, longest),
 // the flattenings, the health the boss won back, and the darts that met the shield against the darts that got round it.
 // keen and clumsy are the stage's own bots. random is the stage's random bot without the skip link. still walks to the fight as keen does, then stands where it is and clicks four times a second.
 // absent never moves and never clicks.
+// keen~ and clumsy~ follow the same hint with a hand that differs by seed: its speed, how late it is, how often it clicks (the stage's keen and clumsy play the same fight on every seed).
 import { args, at, writeJson } from '../../tools/lib/paths.mjs'
 import { logic } from '../../tools/lib/logic.mjs'
 
 const a = args()
 const seeds = Number(a.seeds ?? 200)
-const kinds = String(a.bots ?? 'keen,clumsy,random,still,absent').split(',')
+const kinds = String(a.bots ?? 'keen,keen~,clumsy,clumsy~,random,still,absent').split(',')
 const maxSeconds = Number(a.max ?? 240)
 const { load, close } = await logic()
 const { Stage } = await load('/src/stage/stage.ts')
@@ -35,7 +36,59 @@ function driver(kind, seed) {
       }
     }
   }
+  if (kind === 'keen~' || kind === 'clumsy~') {
+    const r = rng(seed * 7919 + (kind === 'keen~' ? 1 : 2))
+    const span = kind === 'keen~' ? { speed: [1300, 2600], lag: [0.02, 0.16], rate: [2.2, 5] } : { speed: [380, 700], lag: [0.16, 0.42], rate: [1.2, 2.6] }
+    const pick = (q) => q[0] + (q[1] - q[0]) * r()
+    const speed = pick(span.speed)
+    const lag = Math.round(pick(span.lag) * stepHz)
+    const rate = pick(span.rate)
+    const d = new BotDriver('keen', seed)
+    const seen = []
+    let x = 960
+    let y = 540
+    let want = -1
+    return {
+      name: 'bot',
+      input(v) {
+        if (!FIGHT.includes(v.page.gag())) {
+          const o = d.input(v)
+          x = o.x
+          y = o.y
+          return o
+        }
+        const h = v.page.hint()
+        seen.push(h ? { x: (kind === 'keen~' && h.dodge ? h.dodge : h).x, y: (kind === 'keen~' && h.dodge ? h.dodge : h).y, hx: h.x, hy: h.y, down: h.down } : null)
+        const late = seen.length > lag ? seen.shift() : null
+        if (!late) return { x, y, down: false }
+        const dx = late.x - x
+        const dy = late.y - y
+        const far = Math.hypot(dx, dy)
+        const max = speed / stepHz
+        if (far <= max) {
+          x = late.x
+          y = late.y
+        } else {
+          x += (dx / far) * max
+          y += (dy / far) * max
+        }
+        if (late.down) want = v.time + 0.34
+        const near = Math.hypot(late.hx - x, late.hy - y) <= 60
+        return { x, y, down: near && v.time < want && Math.floor(v.time * rate * 2) % 2 === 0 }
+      }
+    }
+  }
   return { name: 'bot', input: () => ({ x: 700, y: 820, down: false }) }
+}
+function rng(seed) {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0
+    let t = a
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
 }
 
 const mid = (list) => [...list].sort((x, y) => x - y)[Math.floor(list.length / 2)]

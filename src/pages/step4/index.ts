@@ -441,7 +441,10 @@ export function makePage(): PageLogic {
           return Math.hypot(s.cx + dx * u - f.x, s.cy + dy * u - f.y) >= STANDS.round
         }
         const stands = STAND_GRID.filter((c) => reach(c) && safe(c) && free(c))
-        const best = near(stands.filter((c) => open(c) && clearSpot(f, arena, c[0], c[1])))
+        const clear = stands.filter((c) => open(c) && clearSpot(f, arena, c[0], c[1]))
+        const walled = near(stands.filter(open))
+        const handy = near(clear)
+        const best = handy && (!walled || Math.hypot(handy[0] - s.cx, handy[1] - s.cy) <= Math.hypot(walled[0] - s.cx, walled[1] - s.cy) + STANDS.detour) ? handy : walled
         if (best) {
           const out: Hint = { x: best[0], y: best[1], down: blink && f.flat <= 0 }
           if (hot) out.dodge = { x: best[0], y: best[1] }

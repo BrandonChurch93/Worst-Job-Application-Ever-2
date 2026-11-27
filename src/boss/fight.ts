@@ -163,6 +163,7 @@ function wander(f: Fight, io: StepIo): { x: number; y: number; speed: number } {
       f.to = { x, y }
       f.leg = MOVE.leg
       io.emit('boss-move', f.x, f.y, false)
+      return { x: x, y: y, speed: MOVE.speed }
     }
   }
   return { x: f.x, y: f.y, speed: 0 }
@@ -536,7 +537,7 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean): void {
     }
     const far = Math.hypot(d.x - f.x, d.y - f.y)
     const was2 = Math.hypot(d.x - d.dx * DART.speed * dt - f.x, d.y - d.dy * DART.speed * dt - f.y)
-    const glass = was2 > GUARD.radius && far <= GUARD.radius && shielded(f, d.x, d.y)
+    const glass = (was2 > GUARD.radius || d.t <= dt) && far <= GUARD.radius && shielded(f, d.x, d.y)
     const ex = (d.x - f.x) / BODY.rx
     const ey = (d.y - f.y) / BODY.ry
     if (glass || ex * ex + ey * ey <= 1) {

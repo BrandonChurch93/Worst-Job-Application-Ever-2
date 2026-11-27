@@ -15,7 +15,7 @@ export const GUARD = {
 } as const
 
 // What a dart that reaches the body takes from the boss, by phase.
-export const REAL_DART = [0.52, 0.27, 0.3] as const
+export const REAL_DART = [0.4, 0.21, 0.23] as const
 
 // The boss wears out: from this second of the fight on a real dart does more, and twice as much again after each `double` seconds.
 export const WEAR = { from: 35, double: 25 } as const
@@ -83,5 +83,6 @@ export const STANDS = {
   near: 330, // px from the boss's centre at least
   far: 760, // px at most
   margin: 0.3, // rad outside the shield's cover before a stand counts as open
-  round: 262 // px from the boss's centre that the way to a stand must keep
+  round: 262, // px from the boss's centre that the way to a stand must keep
+  detour: 380 // px further that a stand with no pop-up in the way may be and still be chosen over one behind a pop-up
 } as const
