@@ -6,7 +6,7 @@ import type { Emitter } from '../real/types'
 import { materials } from '../shell/materials'
 import { merge, outlineOf, profile, roundedRect, sweep, type ProfilePoint } from '../shell/solids'
 import { barDrop, clamp01, rise } from './change'
-import { ARENA, PAGE, PANES, PILLARS } from './layout'
+import { ARENA, EYE, PAGE, PANES, PILLARS } from './layout'
 
 const wx = (x: number): number => x - PAGE.w / 2
 const wy = (y: number): number => PAGE.h / 2 - y
@@ -66,7 +66,8 @@ export interface Pillar { root: THREE.Group; foot: THREE.Mesh; body: THREE.Mesh;
 export function stand(x: number, y: number): { lean: THREE.Group; root: THREE.Group } {
   const lean = new THREE.Group()
   lean.matrixAutoUpdate = false
-  lean.matrix.set(1, 0, 0, wx(x), 0, 1, ARENA.lean, wy(y), 0, 0, 1, 0, 0, 0, 0, 1)
+  // The camera's own lean, away from the middle of the page, is taken out, so that every thing leans the same way wherever it stands.
+  lean.matrix.set(1, 0, ARENA.leanX - wx(x) / EYE, wx(x), 0, 1, ARENA.lean - wy(y) / EYE, wy(y), 0, 0, 1, 0, 0, 0, 0, 1)
   const root = new THREE.Group()
   lean.add(root)
   return { lean, root }

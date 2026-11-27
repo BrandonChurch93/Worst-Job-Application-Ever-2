@@ -3,7 +3,7 @@
 import * as THREE from 'three'
 import type { BossView, ViewBreak } from '../boss/view'
 import type { Emitter } from '../real/types'
-import { lineOf, paintWounds } from './breaks'
+import { layOver, lineOf, paintLayer, paintWounds, reachOf } from './breaks'
 import { clamp01, rnd } from './change'
 import { DAMAGE, fresh, geometryOf, tri, type V3, type Wounds } from './ground'
 import { ARENA, PAGE, PANES, PILLARS, SEAMS } from './layout'
@@ -22,6 +22,8 @@ const SHARDS_EACH = 22
 const SPARKS_EACH = 64
 const SMOKE_EACH = 20
 const DUST = 44
+// Over how many frames the wound of an aimed blast is painted ahead.
+const AHEAD_FRAMES = 18
 
 // The broken foot of a pillar: brushed sides that end in a jagged edge, and the dark rough break on top.
 function stumpGeometry(seed: number, id: number, high: number): { sides: THREE.BufferGeometry; top: THREE.BufferGeometry } {
@@ -78,7 +80,8 @@ function shardGeometry(): THREE.BufferGeometry {
   const pts: [number, number][] = [[-0.5, -0.28], [0.42, -0.44], [0.58, 0.08], [0.06, 0.5], [-0.44, 0.22]]
   pts.forEach((q, i) => (i ? shape.lineTo(q[0], q[1]) : shape.moveTo(q[0], q[1])))
   shape.closePath()
-  return new THREE.ExtrudeGeometry(shape, { depth: 3, bevelEnabled: false })
+  const g = new THREE.ExtrudeGeometry(shape, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.04, bevelSegments: 1 })
+  return g
 }
 
 // The teeth a shattered pane leaves in its shoe: tall near its ends, short where the blast went through.
@@ -143,7 +146,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
   const made: (THREE.BufferGeometry | THREE.Material | THREE.Texture)[] = []
   const keep = <T extends THREE.BufferGeometry | THREE.Material | THREE.Texture>(x: T): T => { made.push(x); return x }
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v = new THREE.Vector3(), sc = new THREE.Vector3(), col = new THREE.Color()
-  const lean = ARENA.lean
+  const lean = ARENA.lean, leanX = ARENA.leanX
 
   // Stumps of the pillars, and for some the upper part lying where it fell.
   const fallen = keep(columnGeometry(ARENA.pillar.side, ARENA.pillar.high * 0.78))
@@ -232,21 +235,47 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
   }
 
   let painted = 'none'
+  let ahead: { key: string; layer: Uint8Array; next: number } | null = null
+  const lineKey = (k: { x0: number; y0: number; x1: number; y1: number; width: number }): string => `${k.x0.toFixed(1)},${k.y0.toFixed(1)},${k.x1.toFixed(1)},${k.y1.toFixed(1)},${k.width}`
   const put = (mesh: THREE.InstancedMesh, i: number, x: number, y: number, z: number, turn: number, w: number, h: number, r: number, g: number, b: number): void => {
     q.setFromAxisAngle(v.set(0, 0, 1), turn)
-    m4.compose(v.set(x, y + lean * z, z), q, sc.set(w, h, 1))
+    m4.compose(v.set(x + leanX * z, y + lean * z, z), q, sc.set(w, h, 1))
     mesh.setMatrixAt(i, m4)
     mesh.setColorAt(i, col.setRGB(r, g, b))
   }
 
   const pose = (view: BossView, light?: (e: Emitter) => void): void => {
     const t = view.time
-    const active = view.breaks.filter((k) => k.at <= t)
-    const key = active.map((k) => `${k.id}:${k.x0.toFixed(0)},${k.y0.toFixed(0)},${k.x1.toFixed(0)},${k.y1.toFixed(0)}`).join('|')
+    const active = view.breaks.filter((k) => k.at <= t).sort((a, b) => a.at - b.at || a.id - b.id)
+    const keys = active.map((k) => `${k.id}:${lineKey(k)}`)
+    const key = keys.join('|')
     if (key !== painted) {
-      paintWounds(wounds.data, DAMAGE.w, DAMAGE.h, active, seed)
+      // A blast more is laid over what is there; anything else is painted afresh. Both give the same picture.
+      if (active.length > 0 && keys.slice(0, -1).join('|') === painted) {
+        const k = active[active.length - 1]!
+        const r = reachOf(k, DAMAGE.w, DAMAGE.h)
+        if (ahead && ahead.key === lineKey(k)) paintLayer(ahead.layer, DAMAGE.w, DAMAGE.h, k, seed, ahead.next, r.j1 + 1)
+        else {
+          ahead = { key: lineKey(k), layer: ahead?.layer ?? new Uint8Array(wounds.data.length), next: 0 }
+          paintLayer(ahead.layer, DAMAGE.w, DAMAGE.h, k, seed, r.j0, r.j1 + 1)
+        }
+        layOver(wounds.data, ahead.layer, DAMAGE.w, DAMAGE.h, k)
+        ahead.key = ''
+      } else paintWounds(wounds.data, DAMAGE.w, DAMAGE.h, active, seed)
       wounds.texture.needsUpdate = true
       painted = key
+    }
+    // While the big cannon takes aim its line is known: the wound it will leave is painted a few rows a frame, out of sight, so that the frame of the blast has little left to do. What is seen is the same either way.
+    const aimed = view.boss.big
+    if (aimed && aimed.firedAt === null) {
+      const k: ViewBreak = { id: 0, at: 0, x0: aimed.x0, y0: aimed.y0, x1: aimed.x1, y1: aimed.y1, width: aimed.width }
+      const r = reachOf(k, DAMAGE.w, DAMAGE.h)
+      if (!ahead || ahead.key !== lineKey(k)) ahead = { key: lineKey(k), layer: ahead?.layer ?? new Uint8Array(wounds.data.length), next: r.j0 }
+      if (ahead.next <= r.j1) {
+        const to = Math.min(r.j1 + 1, ahead.next + Math.ceil((r.j1 - r.j0 + 1) / AHEAD_FRAMES))
+        paintLayer(ahead.layer, DAMAGE.w, DAMAGE.h, k, seed, ahead.next, to)
+        ahead.next = to
+      }
     }
     // The newest blast keeps its embers hot for a moment.
     const newest = active.reduce((a, k) => Math.max(a, k.at), -99)
@@ -276,7 +305,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
         e.set(0, (Math.PI / 2) * down, turn, 'ZYX')
         s.lying.quaternion.setFromEuler(e)
         const off = 34
-        s.lying.position.set(wx(p.x) + Math.cos(turn) * off * down, wy(p.y) + Math.sin(turn) * off * down + lean * (1 - down) * s.high, (1 - down) * s.high + down * (ARENA.pillar.side / 2))
+        s.lying.position.set(wx(p.x) + Math.cos(turn) * off * down + leanX * (1 - down) * s.high, wy(p.y) + Math.sin(turn) * off * down + lean * (1 - down) * s.high, (1 - down) * s.high + down * (ARENA.pillar.side / 2))
       }
       for (let j = 0; j < RUBBLE_EACH; j++) {
         const a = Math.atan2(-ay, ax) + (rnd(seed, 910 + i, j) - 0.5) * 2.6
@@ -285,7 +314,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
         const z = size * 0.3 + Math.sin(Math.PI * fly) * (30 + 60 * rnd(seed, 935 + i, j))
         e.set(rnd(seed, 940 + i, j) * 6 + fly * 5, rnd(seed, 941 + i, j) * 6 + fly * 4, rnd(seed, 942 + i, j) * 6)
         q.setFromEuler(e)
-        m4.compose(v.set(wx(p.x) + Math.cos(a) * far * out, wy(p.y) + Math.sin(a) * far * out + lean * z, z), q, sc.set(size, size * (0.6 + 0.5 * rnd(seed, 943 + i, j)), size * 0.62))
+        m4.compose(v.set(wx(p.x) + Math.cos(a) * far * out + leanX * z, wy(p.y) + Math.sin(a) * far * out + lean * z, z), q, sc.set(size, size * (0.6 + 0.5 * rnd(seed, 943 + i, j)), size * 0.62))
         rubble.setMatrixAt(nRubble++, m4)
       }
     })
@@ -319,11 +348,11 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
         const dir = rnd(seed, 961 + i, j) < 0.7 ? push : -push
         const far = (24 + 170 * rnd(seed, 962 + i, j) ** 1.3) * (0.5 + 0.7 * near) * dir
         const size = 30 + 84 * rnd(seed, 963 + i, j) ** 1.6
-        const z = 1.5 + Math.sin(Math.PI * fly) * (40 + 80 * rnd(seed, 964 + i, j)) + (1 - fly) * 60
+        const z = 2 + size * 0.14 + Math.sin(Math.PI * fly) * (40 + 80 * rnd(seed, 964 + i, j)) + (1 - fly) * 60
         const flat = fly * fly
-        e.set((1 - flat) * (rnd(seed, 965 + i, j) * 5 + 1), (1 - flat) * (rnd(seed, 966 + i, j) * 5), rnd(seed, 967 + i, j) * 6.283)
+        e.set((1 - flat) * (rnd(seed, 965 + i, j) * 5 + 1) + 0.5 * (rnd(seed, 975 + i, j) - 0.5), (1 - flat) * (rnd(seed, 966 + i, j) * 5) + 0.5 * (rnd(seed, 976 + i, j) - 0.5), rnd(seed, 967 + i, j) * 6.283)
         q.setFromEuler(e)
-        m4.compose(v.set(wx(p.x) + far * out, wy(along + (rnd(seed, 968 + i, j) - 0.5) * 60 * out) + lean * z, z), q, sc.set(size, size * (0.55 + 0.6 * rnd(seed, 969 + i, j)), 1))
+        m4.compose(v.set(wx(p.x) + far * out + leanX * z, wy(along + (rnd(seed, 968 + i, j) - 0.5) * 60 * out) + lean * z, z), q, sc.set(size, size * (0.55 + 0.6 * rnd(seed, 969 + i, j)), size))
         shards.setMatrixAt(nShards++, m4)
       }
     })

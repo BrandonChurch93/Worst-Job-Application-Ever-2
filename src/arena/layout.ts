@@ -5,6 +5,9 @@ export interface Pt { x: number; y: number }
 
 export const PAGE = { w: 1920, h: 1080 }
 
+// How far the site's camera stands from the page: it looks straight down with a field of 20 degrees over 1080 px.
+export const EYE = 540 / Math.tan((10 * Math.PI) / 180)
+
 export const ARENA = {
   // The scene change, on view.time from 0 (the frame the Submit button breaks out).
   changeSeconds: 2.4,
@@ -22,8 +25,8 @@ export const ARENA = {
   seamHalf: 9, chamfer: 3, seamDepth: 18,
   pillar: { side: 56, foot: 76, footHigh: 7, high: 210 },
   pane: { thick: 14, high: 240 },
-  // The picture is drawn a little from below the page: every standing thing leans up the screen by this much of its height.
-  lean: 0.5,
+  // The picture is drawn a little from below and from the right of the page: every standing thing leans up the screen by `lean` of its height and to the left by `leanX` of it. Its foot stays where it is: the foot is what stops a shot.
+  lean: 0.5, leanX: -0.26,
   gun: { base: 46, high: 34, barrel: 78, scale: 1.2 },
   slot: { x: 960, y: 960, w: 270, h: 66 },
   bar: { x0: 590, y0: 66, x1: 1333, y1: 137, trackInset: 22, trackHalf: 19, high: 9 },
