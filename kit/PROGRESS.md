@@ -1735,6 +1735,13 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-27T22:29Z, step 2's first pass arrived at 22:19Z, 41 minutes early (c2e5fdd1; MEASURED by the helper: 144 tests of the stage passed, 5 skipped, tsc clean; the whole suite not yet run). Rulings sent at 22:27Z: the reel windows stay 400, 320, 260 ms (a visitor who only reacts pays out 145 of 300, one who knows the reel 287 of 300, MEASURED by the helper); Continue stays, only the caption panel's box must be clear; the three stages grow to one tray about 1100 wide with the dial at about 1.5 times, the fling's path scaled by the same factor about the dial's centre and unchanged in time. The Builder reads that as keeping the fling exactly, the same animation drawn larger, and tells Brandon so.
 - 2026-11-27T22:29Z, change note 003 applied so far. Each unit's helper was mailed its line and its event between 22:27Z and 22:31Z: line 1 the careers page, 2 the turrets rising, 3 after the shredder, 4a and 4b the crank, 5 the vacuum, 6 the tick, 7 the formed boss, 8 the stamp; the shell helper owns the cue table and the captions; nothing is recorded and no credit is spent. The careers helper builds the 18 second opening with every number in one place and in two settings of exactly 18 s: A, the hold on the headline for all of line 1 and then the scroll, as the note says; B, the scroll starting about 3 s in under the voice. The Builder enters the seven settled lines in `content/narration.json` himself, as the note orders and `AGENTS.md` allows for a line Brandon rewrites; lines 7 and 8 are kept apart as drafts.
 - 2026-11-27T22:29Z, the live site and line 1, as note 003 asks to be said. A browser plays nothing before the first click or key press. Line 1 starts the moment sound is allowed while the careers page is on screen: at once where the browser already allows it, as after the restart, else at the visitor's first click or key press on the page. If that click is an Apply button, line 1 plays over the page turn and the ordinary first moment of the Name field. No line talks over another: a line whose event comes while another is speaking waits for its end and the kit's gap and is spoken only if its moment is still on screen; otherwise it is dropped.
+- 2026-11-27T22:44Z, after the compaction of 22:32Z change note 002, change note 003 and its first update were read again whole at 22:33Z, as both notes order.
+- 2026-11-27T22:44Z, the script is entered as his words, on a branch and not yet on main. Branch `agent/script-003` (b211a9ca, then 9ba1f517): `content/narration.json` holds lines 1 to 8 on the beats `marketing.stroll`, `step1.firstName`, `step1.shredded`, `step2.crank` (4a and 4b), `pinball.seal`, `boss.verify`, `boss.unfold` (line 7, three entries at its own pauses: giving up, the turn, the rise; no word changed) and `decision.letter`; every older line is gone and the live-only lists are empty; the rule that said 'the applicant' and 'it' now says 'the applicant', 'they' and 'their', as section B of the note orders. Line 9, a draft, is alone in the new `content/narration-drafts.json` on `decision.reset`. Counted by script: 146 words, 91.2 s at 1.6 words a second. Why a branch: with the new lines 8 tests of `tests/content.test.ts` and 1 of `tests/review.test.ts` are red, because the beat times of the old film cannot hold them, and main must not carry that red alone; the shell helper merges the branch into its own and the script reaches main with the captions and the stand-ins. The beat times are the Builder's to tune inside the kit's limits (`kit/05-ARCHITECTURE.md`) and are tuned at the merges.
+- 2026-11-27T22:44Z, a wrong count corrected. Status 172 said the script of change note 003 had 152 words; counted by script it had 154 (line 4a has 10 words and line 6 has 11; each was counted one short). With his picks of today it has 146.
+- 2026-11-27T22:44Z, rulings sent to the helpers at about 22:43Z. Resume: step 1 grows from 32 to 37.5 s by the Builder's own tune, because line 3 hangs on the message "Resume received. Please re-enter all information manually."; the sequence keeps its beats as built, the message shows at 31.5 s and stands 5.5 s while the first sentence of line 3 is spoken and the arrow acts the loss, the turn starts at 37.0 s; a skip of the stage does not play line 3. Pinball: the vacuum fight was 2.6 s and slight on its sheet; it gets about 6 s so that line 5 plays over the whole fight, paid for out of the tour after 23 s, the unit stays 42 s; the ball must stay readable in the frenzy; every sign readable at 1920 in at least one frame. Boss: line 7 on the live site leaves the pointer with the visitor, nothing can hit them, a click after the boss has formed jumps to the turn at the next pause and the fight starts when the rise ends; a mercy rule so that a visitor who only stands and clicks still wins inside about 150 s; the power-up and the finishing blast go into the unit's timeline as plain stand-ins with one number each while the pictures are made. Shell: no line is ever cut inside a phrase; one short phrase in capitals can be shown large for the shout.
+- 2026-11-27T22:44Z, the live site and the finishing blast, proposed to Brandon in Status 173: after the boss falls the arrow's arms come out by themselves; the visitor holds the mouse button to charge and lets go to fire; a plain click fires a small one that still does the job; a visitor who does nothing for 6 s sees the arrow fire by itself. Nobody can lose there.
+- 2026-11-27T22:44Z, the careers page scrolls in the film on `agent/b-careers` (8411b054): the press of Apply at 18.0 s, the turn into step 1 at 18.75 s, the unit ends at 19.25 s, every number in one object (`OPENING` in `src/pages/marketing/script.ts`). MEASURED by the helper from its plan: setting A holds 13.75 s on the headline and then scrolls 4553 px in 2.70 s (2024 px a second); setting B holds 3.0 s and scrolls for 13.45 s at 597 px a second with five slow-downs. Both previews are being rendered since 22:40Z: B on the Builder's machine (4.6 s a frame, 578 frames), A in the helper's sandbox.
+- 2026-11-27T22:44Z, the disk of the Builder's machine was full at 22:38Z (20 GB). Deleted to go on: the reference round folders of rounds 5 and 6 outside the repo, the critic packs of rounds 24 and 25, the pieces of Preview 9, the pictures of the Builder's walks, old local copies of shared files, an old merge folder's `out`, and the script worktree. None was the only copy of a kept thing: approved pictures are in the repo, shared files are in the library, verdicts are in this log. 4.3 GB free afterwards.
 
 ## Notes from Brandon
 
@@ -1756,6 +1763,7 @@ His notes from the thread, the review rounds and the review, in his words, numbe
 - 2026-11-27T21:48Z, Brandon in the thread at about 21:47Z (2:47 PM MT), after Status 170 and round 8, word for word: "I think my favorite is like one. We have to have a really nice animation with the big tour coming out once the body is fully formed for like a dramatic effect and so it doesn't cover up the cement button. We also shouldn't move the submit text like it is on the look from above. It's fine at the current covers it up and then of course once it's been destroyed that should go away. I also don't like the cannon foreign validations anymore. I think they should actually fire bullets the user has to dodge" and "None of the arenas you gave me actually look good. Some of them actually still have the information top that I asked you to remove none of them even look like the one I told you I liked earlier would like the broken ground and the pillars and stuff I think we need to generate some new ones."
 - 2026-11-27T22:29Z, Brandon in the thread at about 22:12Z (3:12 PM MT), word for word: "Arena six is definitely my favorite. I also like the looks with the turn in and out." The Builder's reading: ARENA 6 of round 9 is the arena; "the looks with the turn in and out" are LOOK 1 with the turret inside (STATE 1) and with the turret out (STATE 2). STATE 3, beaten, was not named and is a working guide only. Partner's change note 003 of 22:21Z confirms the reading with his words from the Partner chat: "I have approved the arena, and the new bosses look in the chat there".
 - 2026-11-27T22:29Z, Change note 003 from Brandon, by Partner, arrived at 22:21Z and its update on the opening scroll at 22:23Z. Both are pasted word for word under their own heading above. They bring the record of what he approved (it matches this file line for line), the new script of eight spoken moments, the film's opening on the careers page at 18 seconds, and the order to record nothing.
+- 2026-11-27T22:44Z, three more updates of change note 003 arrived by mail from Partner between about 22:32Z and 22:38Z and are pasted word for word under the note. His words in them: line 7 is his pick "B3" ("for the boss speach I think B3 is my favorite", to be made cinematic, the hopeless moment and then getting fired up); line 8 ends at "with other candidates" ("It doesn't need the rest of that statement"); a possible line 9 ("Maybe we have one more line that's like onto the next application"), a draft; the power-up and the finishing blast are a go with pictures first ("Yes, build both"); two shouts are to be tested ("Test both"); and a hard limit of 2,000 new ElevenLabs credits for change notes 002 and 003 together, so the ledger does not pass 4,677 without his word.
 
 ## Change note 002 from Brandon, by Partner
 
@@ -2024,6 +2032,116 @@ Update to section C item 2, received 2026-11-27T22:23Z (3:23 PM MT) by mail from
 > - The request in item 2 to report the film's length at 25, 35 and 50 seconds is dropped. Report it at 18.
 >
 > Everything else in change note 003 stands. Paste this under the note in kit/PROGRESS.md.
+
+Update 2 (line 7, the boss speech), received 2026-11-27Tabout 22:32Z (3:32 PM MT) by mail from the same session, pasted word for word under the note as it asks.
+
+> Worst Job Application Ever - Change note 003, second update (line 7, the boss speech)
+>
+> From Partner, speaking for Brandon under house rule 23. Partner chat: https://www.perplexity.ai/computer/tasks/bdbb2938-8540-483e-906c-8485c8c301e1
+> Sent November 27, 2026, 3:32 PM Mountain Time. Your 3:33 PM mail is received, thank you.
+>
+> ## His pick for line 7
+>
+> His words, just now in the Partner chat: "for the boss speach I think B3 is my favorite. Again, really have to make that cinematic I think of like the main collimation scene of a movie where you've given up then you get your energy back right at the end and you make that decision or like a anime. It's probably even better example when it looks like a hopeless situation and then you remember something and you have to get fired up."
+>
+> B3, which replaces the draft of line 7 in change note 003:
+> "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab. / But then / they remember / their student loans." Boss music starts here. Then, over the music: "They turn back. / One more round."
+>
+> - 42 words against 49 in the draft. Time the boss part with it and report the film's length again.
+> - Partner's reading: "collimation" is the climax. The picture carries this as much as the words: the applicant looks finished, the turn lands on "student loans" with the music, and the rise is the biggest moment of the film before the fight.
+> - The words are picked. Recording still waits for his go and for line 8, which he has not picked.
+>
+> ## Not a go yet: two ideas he is weighing
+>
+> He asked Partner for thoughts on these and has not decided. Do not build them and do not generate pictures for them. They are here so that you can tell Partner what each would cost.
+>
+> - "it would be like really cool if like the mouse actually powered up at the end of that moment like think of like when somebody goes super Saiyan and Dragon Ball Z they get that gold or around them with power up I think we should do something like that."
+> - "If once you beat the boss, he falls on the ground and then your arms come out and you literally do a Kamehameha. We can even get our voice actor around 11 abs to say that just like Goku would screaming at Kamehameha and then blast and that's what kind of destroys the Boss's body leaving the cement button on the ground to finally be selected"
+>
+> Partner's reading: "cement button" is the Submit button, "11 abs" is ElevenLabs. Please send Partner one short mail, when it does not hold your work: for each idea, the seconds it adds to the film, whether the approved arms of the cursor can be reused, what the visitor does on the live site (for example hold to charge and release to fire), and anything in the kit it runs into. Estimates are fine if marked.
+
+Update 3 (line 8 and the ending), received 2026-11-27Tabout 22:34Z (3:34 PM MT) by mail from the same session, pasted word for word under the note as it asks.
+
+> Worst Job Application Ever - Change note 003, third update (line 8, the rejection, and the ending)
+>
+> From Partner, speaking for Brandon under house rule 23. Partner chat: https://www.perplexity.ai/computer/tasks/bdbb2938-8540-483e-906c-8485c8c301e1
+> Sent November 27, 2026, 3:32 PM Mountain Time.
+>
+> ## Line 8 is settled
+>
+> His words, just now in the Partner chat: "I think we just keep it simple like this: After careful consideration, / the company / has decided / to move forward / with other candidates" and "It doesn't need the rest of that statement. It took less than a second doesn't really add anything funny and honestly, this is how most jobs applications actually end anyways in 2026"
+>
+> Line 8, on the rejection stamp: "After careful consideration, / the company / has decided / to move forward / with other candidates."
+> The words "It took / less than a second." are cut.
+>
+> ## The ending: a DRAFT from his words
+>
+> His words: "Maybe we have one more line that's like onto the next application and then it kinda just restarts the application seamlessly if you wanna go through it again"
+>
+> - Line 9, DRAFT: "On to / the next application." It plays after line 8, as the page turns back to the start.
+> - Partner's reading: on the live site the application restarts without a break after this line, so the visitor can go again. In the film this line is the last thing heard, over the turn back to the careers page. He said "maybe", so wire it as a stand-in with its caption and show it to him in a preview; it is not approved.
+> - The hum after a restart is already yours to remove under change note 002 item 9. The restart he describes must be silent apart from this line.
+>
+> ## Where the script stands
+>
+> Lines 1 to 6 settled, line 7 is B3 (picked), line 8 settled as above, line 9 a draft. 146 words in all. Still no recording and no narration credits: that waits for his word to record, which Partner will bring.
+
+Update 4 (the power-up, the finishing blast, the shout and a hard credit limit), received 2026-11-27Tabout 22:38Z (3:38 PM MT) by mail from the same session, pasted word for word under the note as it asks.
+
+> Worst Job Application Ever - Change note 003, fourth update (the power-up, the finishing blast, the shout, a hard credit limit)
+>
+> From Partner, speaking for Brandon under house rule 23. Partner chat: https://www.perplexity.ai/computer/tasks/bdbb2938-8540-483e-906c-8485c8c301e1
+> Sent November 27, 2026, 3:37 PM Mountain Time. This turns the two ideas of the second update from "not a go" into a go.
+>
+> ## His answers, exactly
+>
+> On a form in the Partner chat, just now:
+> - "Are the power-up and the finishing blast a go to build?" He picked: "Yes, build both" (the option read: "Pictures first, as with the boss and arena").
+> - "How should the shout be decided?" He picked: "Test both" (the option read: "Record FIVE YEARS EXPERIENCE and Kamehameha, about 100 credits, you pick by ear").
+> - "What is the hard limit on new ElevenLabs credits for these updates?" He picked: "2,000 credits" (the option read: "full stop and a question to you at the limit").
+>
+> His words before the form: "Regarding the tokens, I definitely want to give them a hard limit on all these updates. I definitely don't want them burning through a bunch of tokens, but I want them to get it right. I don't mind going in and doing stuff myself as well if needed in 11 labs"
+>
+> ## A. The hard limit
+>
+> - 2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect.
+> - Partner's reading of where it starts: the ledger stood at 2,677 in your Status 171, before any sound for these notes. So the ledger does not pass 4,677 without his word. If you have spent since Status 171, that spending counts inside the 2,000; say the ledger's figure in your next status.
+> - At the limit: a full stop on sound and a question to him. No asking Partner for more; only he raises it.
+> - This sits inside addendum 001's cap of 10,000 and does not replace it. Only you spend, as today.
+> - Partner's planning figures, estimates and not his: about 1,100 for narration (three passes, single lines redone rather than the whole script), about 150 for the shout test, about 700 for new sound effects. Spend to get it right, not to try things.
+>
+> ## B. The power-up
+>
+> His words: "it would be like really cool if like the mouse actually powered up at the end of that moment like think of like when somebody goes super Saiyan and Dragon Ball Z they get that gold or around them with power up I think we should do something like that."
+>
+> - It lands at the end of line 7, on "They turn back. / One more round.", as the boss music rises. Partner's reading: a gold glow of power building around the cursor, the picture of the comeback.
+> - Pictures first, by the reference-derby skill, as with the boss: a few options by code, delivered to him in your thread. The cursor stays the approved cursor; the glow is around it.
+>
+> ## C. The finishing blast
+>
+> His words: "If once you beat the boss, he falls on the ground and then your arms come out and you literally do a Kamehameha. We can even get our voice actor around 11 abs to say that just like Goku would screaming at Kamehameha and then blast and that's what kind of destroys the Boss's body leaving the cement button on the ground to finally be selected"
+>
+> - The order: the boss is beaten and falls. The cursor's arms come out. It charges, shouts and fires. The blast destroys the boss's body and leaves the Submit button on the ground, and then the visitor presses it. Partner's reading: "cement button" is the Submit button.
+> - This answers how the beaten boss goes away. Hold your question to him on STATE 3 against this: the beaten look is now the moment before the blast.
+> - Pictures first, same way: the charge, the blast, and the button left on the ground.
+> - On the live site the visitor fires it. Propose how in your status (for example hold to charge, release to fire). The visitor still cannot lose.
+> - The shouted word is shown on screen as it is shouted (house rule on spoken words).
+> - The pose, the charge and the beam carry the reference. No character, costume, hair or logo from the show (kit rule: no people; and the cursor stays the cursor).
+>
+> ## D. The shout: test both, he picks by ear
+>
+> - SHOUT A: "FIVE... YEARS... EXPERIENCE!" in three drawn-out beats, building to the last word.
+> - SHOUT B: "Kamehameha", drawn out the same way.
+> - The voice is the narrator's voice, screaming. His words: "say that just like Goku would screaming".
+> - This is his go to record these two shouts only. Up to four takes of each, and stop sooner if a take is right. Deliver the best take of each to him in your thread as audio, labelled SHOUT A and SHOUT B, with the credits it cost. He picks.
+> - If the voice will not scream well inside those takes, stop and say so. He has offered to do it himself in ElevenLabs; give him the exact text and settings you used.
+> - Everything else in the script still waits for his word to record. Lines 1 to 8 are picked, line 9 is a draft.
+>
+> ## E. Numbers that are his
+>
+> Both ideas add seconds. Report the film's length with them; do not change the film's ceiling or the boss part's planned seconds. Partner will bring those as an addendum on his word, with your measured figures.
+>
+> Paste this under the note in kit/PROGRESS.md. Your cost mail asked for in the second update is no longer needed as a separate mail; put the seconds in your status.
 
 ## Probe results
 
@@ -2446,6 +2564,7 @@ Each with its unit, its severity, the still, the critic's words, what was tried 
 - 2026-11-27T22:04Z, the resume helper promised to step 1 is not started yet at this entry; its brief is the next thing written after Status 171.
 - 2026-11-27T22:29Z, numbers of the new script, counted from the note and not yet measured in the film. Line 1 has 22 words, about 13.8 s at the kit's pace of at most 1.6 words a second, which leaves about 4 s of an 18 second opening for a scroll down 5357 px and the press. Line 7 as drafted has 49 words, about 31 s, in a boss unit planned at 32 s that also holds the break-out, the arena's change, the forming, the turret beat and the fight. The whole script has 152 words in nine lines, about 95 s of speech; the old film script had 147 words in 20 lines. STATED estimate: the boss unit about 60 to 70 s and the film about 185 to 195 s, over `film.maxSeconds` of 165, which only Brandon changes. At an 18 second opening and every other unit as planned the film is 157 s; the careers unit at 18 s is over its limit of 16.8 s by the kit. The boss helper plans the unit to the second; Partner gets the measured numbers.
 - 2026-11-27T22:29Z, `content/narration.json` still holds the old script; the Builder's edit follows this status. Tests that read the old lines will be red on main between that commit and the shell helper's merge; said here so that nobody reads it as a fault of a unit.
+- 2026-11-27T22:44Z, film length as the script and the two new beats stand, STATED from counted words and the helpers' plans, not measured: careers 19.25 s, step 1 37.5 s, step 2 about 24.5 s, pinball 42 s, boss about 63 to 72 s with the power-up and the finishing blast, decision about 14 s: about 200 to 209 s against the ceiling of 165 s that only Brandon changes. The gate will be red on the careers unit (over 16.8 s by his own word of 18 s to the press), on the boss unit (over 38.4 s) and on the film's ceiling until his numbers arrive.
 
 ## Counts
 
