@@ -162,3 +162,32 @@ The three cases, the view's place (scroll) at the take, at the kick and 0.6 s af
 The largest step of the view in one frame is 12.0 px before and after. In the fastest case (pack seed 3) the steps round the take are equal frame for frame (0.3, 2.5, 5.0, 7.5, 10.0, 11.9, 12.0 at the take, 12.0, 10.8, 8.3, 5.8, 3.3, 0.8, 0), so the ease out ends on the same frame.
 
 Test: `tests/polish-save2.test.ts`, "goes down to its place under the gate in one eased move, in a rally at the bats too": the whole 90 px inside 0.3 s with no stand inside it, 14 frames at most, no frame faster than 12.01 px, no step back from there to the take. MEASURED: it fails on `94e68b25` (29.3 px inside 0.3 s) and passes now. No line of another owner's test is changed in this job.
+
+## Pictures, after
+
+`view-pair-1.png`, `view-pair-2.png`: keen seed 1, 19.200 to 19.850 s, all 40 frames of 60, one fixed window (x 725, y 530, 120 by 200 px, the pizza bumper), before above and after below, stacked with `polish-save2-pair.mjs`. What I saw at real size: above, the bumper climbs in pieces (stands tiles 1 to 3, climbs 4 to 6, stands 7 to 12, climbs 13 to 17, stands 18 to 21, climbs 22 to 27, stands from 28); below, the bumper is in one place in all 40 tiles, the place the before row ends in.
+
+`view-after-down.png`: the new way down, 17.083 to 17.350 s, 17 frames in a row, window 650,530 300 by 200. What I saw: the bumper stands in tiles 1 and 2, starts gently at tile 3, climbs fastest round tiles 6 to 9, slows over 10 to 14, stands from tile 15. One move, no stand inside it.
+
+## Owed by the ruling of 15:23
+
+1. The ball while the view is lowered, keen seed 1, MEASURED (the measure command above, the frames with scroll above 2544.05, 17.12 to 23.07 s, 357 frames): the ball's top is never higher on the screen than y 240.1 of 1080, at 22.87 s, after the kick, on the first frame of the way back. Before the take the highest top is y 425.2 at 20.37 s. No frame with the top within 40 px of the top edge. Nothing to mend.
+2. The way back, MEASURED, steps per frame 22.87 to 23.07 s: 1.3, 3.8, 6.3, 8.8, 11.2, 12.0, 12.0, 11.7, 9.5, 7.0, 4.5, 2.0, 0.1, then the view stands at 2544.0. One eased move. A way back once begun is latched (the third number of `s.room`): it goes to its end even if the ball drops into the lower part of the tier again. The one thing that ends it early is the ball at the gate again; then the view turns down.
+3. The ways down and back over the visitors, MEASURED, `node pipeline/phase5/polish-save2-ways.mjs` (never, pack, keen, clumsy, random, seeds 1 and 2, every step of each visit). The lines are in the table below.
+4. The film, MEASURED, `node pipeline/phase5/polish-save2-ways.mjs --film` on `94e68b25` and on this branch: 42 s of the pinball piece, 10080 steps, 0 of them with a room under a gate, and the sha256 of the page's whole state and scroll on every step is df8e74b073a9806643188d59a800c1ff48bffe639211b0c6a9be801fb6004676 on both. The three draft stills are byte equal to the kept ones by `cmp`. No film frame changes: the change is in step 3's live view only, and the room is made only in live play.
+5. Rule 6: the brake and stand part way was of polish-save2's own making in round 25. MEASURED: `git log -S"const wait = !low" -- src/pages/step3/index.ts` gives `6e7a883f` (polish-save2, where it came in) and `6f6f64b9` (polish-view, where it went out), no other. Round 24's room (`308e96a1`) went there and back on one 0.13 s ease with no brake and no stand part way; it turned back at once when the ball left the gate, which the rulings of round 25 forbid before a save.
+
+| visit | ways down | starts inside one, before | after | stands part way, before | after | turns back part way, after | ways back, after | of them stood or turned part way | the room and the view on every step, before against after |
+|---|---|---|---|---|---|---|---|---|---|
+| never seed 1 | 2 | 1 | 1 | 0 | 0 | 0 | 2 | 0 | equal (ae9928ddd82e, ae9928ddd82e) |
+| never seed 2 | 2 | 1 | 1 | 0 | 0 | 0 | 2 | 0 | equal (ae9928ddd82e, ae9928ddd82e) |
+| pack seed 1 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | equal (f1b49514b426, f1b49514b426) |
+| pack seed 2 | 2 | 1 | 1 | 0 | 0 | 0 | 2 | 0 | equal (9066522a2d4b, 9066522a2d4b) |
+| keen seed 1 | 1 | 5 | 1 | 4 | 0 | 0 | 1 | 0 | changed (b5b2555a7dd4, 30ab68115358) |
+| keen seed 2 | 1 | 5 | 1 | 4 | 0 | 0 | 1 | 0 | changed (b5b2555a7dd4, 30ab68115358) |
+| clumsy seed 1 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | equal (fc7d74f815f8, fc7d74f815f8) |
+| clumsy seed 2 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | equal (fc7d74f815f8, fc7d74f815f8) |
+| random seed 1 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | equal (2e6c5bbc3b39, 2e6c5bbc3b39) |
+| random seed 2 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | equal (dc5bd749cfc9, dc5bd749cfc9) |
+
+All: 13 ways down, each one move after (largest count of starts 1, 0 stands, 0 turns back part way); 13 ways back, 0 of them stood or turned part way. Before, keen seeds 1 and 2 each had 5 starts and 4 stands inside the one way down (at 30.6, 40.6, 67.0 and 89.8 px). The eight visits of never, pack, clumsy and random have the same room and the same view on every step before and after: in these ten visits the change shows in keen's rally at the bats only.
