@@ -445,18 +445,24 @@
     "every": 24,
     "middle": "preview",
     "ends": 3,
+    "edgeTier": "final",
     "quality": 16,
     "standIn": true,
-    "renderSeconds": 21.7,
+    "renderSeconds": 3.5,
     "browser": "159.0.8154.6"
   },
   "files": [
     {
       "file": "pinball.mp4",
+      "parts": [
+        "pinball.mp4.0.part",
+        "pinball.mp4.1.part",
+        "pinball.mp4.2.part"
+      ],
       "codec": "h264",
       "mime": "video/mp4; codecs=\"avc1.64002A\"",
-      "bytes": 33850681,
-      "mbps": 7.467,
+      "bytes": 33811412,
+      "mbps": 7.458,
       "width": 1920,
       "height": 1080,
       "pixelFormat": "yuv420p",
@@ -497,22 +503,22 @@
             2175
           ],
           "psnr": {
-            "mean": 43.7887,
+            "mean": 43.7907,
             "least": 37.58
           },
           "ssim": {
-            "mean": 0.9844,
-            "least": 0.9085
+            "mean": 0.9842,
+            "least": 0.9021
           }
         },
         "all": {
           "psnr": {
-            "mean": 44.4053,
+            "mean": 44.4039,
             "least": 37.58
           },
           "ssim": {
             "mean": 0.9875,
-            "least": 0.9085
+            "least": 0.9021
           }
         }
       }

@@ -31,15 +31,16 @@ for (const rate of rates) {
   await page.evaluate(() => window.showcase.ready)
   await page.waitForFunction(() => window.videoTrace && (window.videoTrace.asked >= 0 || window.videoBridge.gaveUp), null, { timeout: 400000, polling: 250 })
   const r = await page.evaluate(() => {
-    const e = performance.getEntriesByType('resource').find((x) => /pinball\.[a-z0-9-]*\.?(mp4|webm)/.test(x.name) || /pinball/.test(x.name))
+    const list = performance.getEntriesByType('resource').filter((x) => /pinball[^/]*\.part/.test(x.name))
+    const e = list.length ? { startTime: Math.min(...list.map((x) => x.startTime)), responseEnd: Math.max(...list.map((x) => x.responseEnd)), size: list.reduce((n, x) => n + (x.encodedBodySize || x.transferSize), 0) } : null
     const t = window.videoTrace
-    return { now: performance.now(), fetchStart: e ? e.startTime : null, fetchEnd: e ? e.responseEnd : null, bytes: e ? e.encodedBodySize || e.transferSize : null, loaded: t.loaded, asked: t.asked, waits: t.waits, gaveUp: Boolean(window.videoBridge.gaveUp) }
+    return { now: performance.now(), pieces: list.length, fetchStart: e ? e.startTime : null, fetchEnd: e ? e.responseEnd : null, bytes: e ? e.size : null, loaded: t.loaded, asked: t.asked, waits: t.waits, gaveUp: Boolean(window.videoBridge.gaveUp) }
   })
   const s = (v) => (v === null || v < 0 ? null : Number((v / 1000).toFixed(2)))
   const row = {
-    megabits: rate || 'unlimited', fetchBeganS: s(r.fetchStart), fetchEndedS: s(r.loaded), megabytes: r.bytes ? Number((r.bytes / 1048576).toFixed(2)) : null,
+    megabits: rate || 'unlimited', pieces: r.pieces, fetchBeganS: s(r.fetchStart), fetchEndedS: s(r.loaded), megabytes: r.bytes ? Number((r.bytes / 1048576).toFixed(2)) : null,
     joinS: r.gaveUp ? s(r.now) : s(r.asked), readyBeforeJoinS: r.loaded >= 0 && r.asked >= 0 ? Number(((r.asked - r.loaded) / 1000).toFixed(2)) : null,
-    heldSteps: r.waits, heldSeconds: Number((r.waits / 240).toFixed(2)), sees: r.gaveUp ? 'the page held the shut ball, then played the table itself, as before there was a video' : r.waits ? 'the page held the shut ball, then the video' : 'the video, at once'
+    heldSteps: r.waits, heldStageSeconds: Number((r.waits / 240).toFixed(2)), sees: r.gaveUp ? 'the page held the shut ball, then played the table itself, as before there was a video' : r.waits ? 'the page held the shut ball, then the video' : 'the video, at once'
   }
   if (r.gaveUp) {
     await page.screenshot({ path: path.join(out, `gave-up-${rate}.png`) })

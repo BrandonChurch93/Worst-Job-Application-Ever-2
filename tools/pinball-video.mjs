@@ -146,6 +146,9 @@ try {
       files
     })
     fs.writeFileSync(path.join(out, 'states.json'), JSON.stringify(sc.states) + '\n')
+    const standIn = taken ? taken.standIn : tier !== 'final' || every !== 1 || middle !== null
+    fs.writeFileSync(path.join(out, '.gitignore'), standIn ? 'pinball.*.part\n' : '')
+    if (standIn) console.log('a stand-in: its pieces are kept out of git by src/pages/step3/video/.gitignore, which the real render empties')
     console.log(`wrote ${path.relative(at(), out)}/manifest.json, states.json and ${files.map((f) => f.parts.join(', ')).join(', ')}`)
   }
 } finally {

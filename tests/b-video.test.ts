@@ -225,21 +225,42 @@ describe('the video and the page', () => {
     expect(Math.max(...late)).toBeLessThan(2 / stepHz)
   })
 
-  it('does not sound the cues a sleeping tab passed over', () => {
+  it('does not sound the cues a sleeping tab passed over, and sounds late the ones no older than a named time', () => {
     let t = 0
     let entered = false
     bridge.player = fake({ enter: () => { entered = true }, clock: () => t, over: () => t >= manifest.seconds })
     const stage = new Stage({ mode: 'live', flow: liveFlow().slice(STEP3), pages, driver: new BotDriver('keen', config.seed), seed: config.seed })
     while (!entered && stage.step < LIMIT) stage.advance(1)
     const before = stage.events.length
-    t = manifest.seconds / 2
+    const half = manifest.seconds / 2
+    const recent = manifest.events.filter((e) => e.at / stepHz <= half + VIDEO.cueLead && half - e.at / stepHz <= VIDEO.jumpMax)
+    const passed = manifest.events.filter((e) => half - e.at / stepHz > VIDEO.jumpMax)
+    expect(passed.length).toBeGreaterThan(0)
+    t = half
     stage.advance(1)
-    expect(stage.events.length).toBe(before)
+    expect(stage.events.slice(before).map((e) => e.name)).toEqual(recent.map((e) => e.name))
     t += 1 / stepHz
     stage.advance(1)
-    const next = manifest.events.find((e) => e.at / stepHz > manifest.seconds / 2 + VIDEO.cueLead)!
+    const next = manifest.events.find((e) => e.at / stepHz > half + 1 / stepHz + VIDEO.cueLead)!
     t = next.at / stepHz
+    const had = stage.events.length
     stage.advance(1)
-    expect(stage.events[before]!.name).toBe(next.name)
+    expect(stage.events[had]!.name).toBe(next.name)
+  })
+
+  it('sounds the last cue of the video when the page looks again only after the video has ended', () => {
+    let t = 0
+    let entered = false
+    bridge.player = fake({ enter: () => { entered = true }, clock: () => t, over: () => t >= manifest.seconds })
+    const stage = new Stage({ mode: 'live', flow: liveFlow().slice(STEP3), pages, driver: new BotDriver('keen', config.seed), seed: config.seed })
+    while (!entered && stage.step < LIMIT) stage.advance(1)
+    const last = manifest.events[manifest.events.length - 1]!
+    expect(manifest.seconds - last.at / stepHz).toBeLessThan(VIDEO.jumpMax)
+    t = manifest.seconds - VIDEO.underlay
+    stage.advance(1)
+    const had = stage.events.length
+    t = manifest.seconds
+    stage.advance(1)
+    expect(stage.events.slice(had).map((e) => e.name)).toContain(last.name)
   })
 })

@@ -6,7 +6,7 @@ import { ffmpeg, probe } from './film-encode.mjs'
 
 // The canvas is full range sRGB. The file is BT.709 in limited range and says so, which is what every browser takes a video without tags to be.
 const COLOUR = ['-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-color_range', 'tv']
-const TO_VIDEO = 'scale=in_range=pc:out_color_matrix=bt709:out_range=tv:flags=accurate_rnd+full_chroma_int+bitexact,format=yuv420p'
+const TO_VIDEO = 'scale=in_range=pc:out_color_matrix=bt709:out_range=tv:flags=accurate_rnd+full_chroma_int+bitexact,format=yuv420p,setparams=range=tv:colorspace=bt709:color_primaries=bt709:color_trc=bt709'
 
 export const CODECS = {
   h264: { ext: 'mp4', mime: 'video/mp4; codecs="avc1.64002A"', args: (q) => ['-c:v', 'libx264', '-preset', 'slow', '-profile:v', 'high', '-level', '4.2', '-crf', String(q), '-bf', '2', '-movflags', '+faststart'] },
