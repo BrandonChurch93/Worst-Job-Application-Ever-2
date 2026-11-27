@@ -10,6 +10,24 @@ How the pictures were read: `node pipeline/phase5/polish-sharp-look.mjs texels B
 - The cause: the `texels` view repaints every mesh opaque. The ball's shadow (`ball.shadow`, a clear quad about 500 px square on the floor) hid the printed floor under the ball, which is the only textured surface inside the lens's sharp range, and was itself counted as bare. The firehouse and the bank are painted by rule in the shader and carry no picture: they are rightly untextured.
 - The mend: the shadow carries `userData.texels = 'through'`, and the view leaves a mesh with that mark out (NEEDS patch, accepted by the Builder 08:53 UTC on terms: the mark on `ball.shadow` alone, pinned by a test, two lines in the notes of the views).
 - MEASURED after (final, hd): 337,386 textured, 254,134 counted, 741 soft, a share of 0.0029 against a limit of 0.02.
+- MEASURED, every judged still of the unit before (b3e4f902) and after the mark (final, hd; textured, counted, soft, share; `npm run measure -- --unit pinball --only M2 --tier final`, then the look script on each `texels` still; the sums of textured pixels equal the measure's own):
+
+| still | before | after |
+| --- | --- | --- |
+| last-save | 326,286 / 70,407 / 0 / 0 | 418,452 / 115,414 / 0 / 0 |
+| lobby-doors | 249,257 / 71,799 / 74 / 0.0010 | 471,783 / 158,766 / 124 / 0.0008 |
+| reply-all | 722,655 / 495,777 / 0 / 0 | 912,250 / 685,372 / 0 / 0 |
+| table-wide | 274,557 / 274,557 / 0 / 0 | the same |
+| tier-corporate | 910,200 / 910,200 / 0 / 0 | 1,088,539 / 1,088,539 / 0 / 0 |
+| tier-office | 923,299 / 923,299 / 0 / 0 | 1,095,668 / 1,095,668 / 0 / 0 |
+| tier-street | 751,932 / 751,932 / 0 / 0 | 877,740 / 877,740 / 0 / 0 |
+| youre-fired | 55,991 / 1 / 1 / 1 | 337,386 / 254,134 / 741 / 0.0029 |
+| rail-cam | 364,175 / 0 / 0 / none | the same |
+| sheet clear-ball | 315,385 / 0 / 0 / none | 1,256,733 / 216,036 / 2,011 / 0.0093 |
+| sheet table-map | 1,029,349 / 1,029,349 / 0 / 0 | the same |
+| loader-page, the two step 3 stills | 0 | 0 |
+
+  No share is over 0.02. At `rail-cam` no textured pixel is inside the sharp range, before or after: M2 counts nothing there.
 - No texture was added or enlarged. No lens number was changed.
 - MEASURED, the floor's density inside the sharp range at `youre-fired` (texels per pixel, limit 1.0): hd 1920x1080: least 0.54, 5th hundredth 1.08, middle 1.17, 95th hundredth 1.29, most 1.31. uhd 3840x2160 (`npm run still -- --key youre-fired --format uhd --tier final --diag texels`): 1,349,261 textured, 788,613 counted, 788,613 soft, a share of 1.0; least 0.27, 5th hundredth 0.54, middle 0.58, 95th hundredth 0.61, most 0.61. At the master's size the full set's floor (8192x4608) is under the limit everywhere in focus. Nothing is mended for that here: the film is drawn at 1920x1080.
 - Not marked, and UNKNOWN in pixels: other clear meshes that lie over the printed floor and are repainted bare by the view: the pools of light `corporate.glow.<zone>` and `office.glow.<zone>` (STATED, from the code). Counting them takes the `texels` view twice per still, with and without each.
@@ -35,9 +53,14 @@ How the pictures were read: `node pipeline/phase5/polish-sharp-look.mjs texels B
 - Equal in every pixel: `last-save`, `tier-office`, `tier-street`, `tier-corporate`, `reply-all`.
 - The sheet `clear-ball`: 9,883 pixels, y 0 to 128, the blurred wires behind; the ball itself is equal.
 
-## Seen and not mine to change
+## The ball's drawn shadow while the ball is in the feed tube (asked 09:34 UTC, as a patch only)
 
-- Film frames 4260 and 4262: a dark smudge left of the tube beside the ball at the elbow. STATED from the code: the ball's drawn shadow comes on when the ball enters the tier's zone (`src/table/real/ball/index.ts`, `own.decal.visible`), while the ball is still in the tube.
+- Seen in film frames 4260 and 4262 (draft, hd): a dark smudge left of the tube beside the ball at the elbow. The Builder saw the same on the base.
+- The cause, STATED from the code: `own.decal.visible = L.tier && lift < r * 6` in `src/table/real/ball/index.ts`. `L.tier` is true as soon as the ball's middle is in a zone that has lamps, which begins at page y 1080, while the ball is still in the tube. The shadow lies on the floor under the ball, so it shows where the floor beside the tube is in sight and is hidden where the tube runs over the housing: that is why it is seen for a few frames and then goes.
+- MEASURED from the film's take without a browser (`SHADOW_TRACE=1 npx vitest run tests/polish-sharp-shadow.test.ts` with the patch): the shadow was on with the ball in the tube in film frames 4259 to 4536 (3.983 s to 8.6 s of the machine's unit). With the patch it comes on at frame 4537, the ball's middle within a quarter ball of the rail's last point.
+- The patch: `pipeline/phase5/polish-sharp-NEEDS-shadow.patch`, on this branch's head (it uses `line` of `loader.ts` as this branch exports it). It adds `piped(x, y, z)` to the ball's file: true when the ball's middle is inside the bore of the feed tube; the shadow is off there. It holds its test, `tests/polish-sharp-shadow.test.ts`. It is NOT applied on this branch: the long measure was running on the frozen source.
+- UNKNOWN: which of frames 4259 to 4536 change as pictures (no browser was free). The key `table-wide` stands at 7.6 s, inside that span, so its still can change.
+- The drain tube is not handled by the patch.
 
 ## Decisions
 
