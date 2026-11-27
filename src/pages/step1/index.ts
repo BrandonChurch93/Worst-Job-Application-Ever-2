@@ -64,8 +64,8 @@ const DOWN = { seconds: 0.02, first: 0.5 }
 const TAP = { seconds: 0.2, hold: 0.05, depth: 1, shake: 0.22 }
 const STRIKE = { seconds: 1.5, id: 90000, z: 96, over: 1.46 }
 // The key under an arrow a bolt hits: it stays down `held` seconds, is back at its full height a third of the way from there to `back`, goes `pop` px over its seat and is still at `back`.
-// How the caps round a bolt's hit are thrown on the live site: px at the strike, falling to nothing at reach, the ring running out at speed, dying over tau, one swing a period, over by seconds.
-const JAR = { px: 8, reach: 300, fall: 1.3, speed: 6000, tau: 0.035, period: 0.08, seconds: 0.18 }
+// How the caps round a bolt's hit are thrown on the live site: px at the strike, falling to nothing at reach, held out for hold seconds so the frame of the hit shows all of it, then dying over tau, one swing a period, over by seconds.
+const JAR = { px: 7.5, reach: 300, fall: 1.3, hold: 0.017, tau: 0.035, period: 0.08, seconds: 0.2 }
 const THUD = { seconds: 0.17, hold: 0.085, shake: 0.7, hop: 9, reach: 260, toss: 0.1, speed: 6000, held: 0.05, back: 0.2, pop: 2 }
 const PULSE = { hold: 0.05, fade: 0.3 }
 const FLIGHT = { over: 1.25, under: 0.75, ripple: 0.17, span: 800, jitter: 0.02, seconds: 0.2, rise: 0.58, crouch: 0.035, low: 24, high: 64, perPx: 0.1, seat: 0.09, jolt: 4, land: 2.2, rattle: 1.6, clear: 5 }
@@ -155,7 +155,7 @@ const spring = (e: number, hold: number, total: number): number => {
   return Math.cos(t * Math.PI * 1.5) * (1 - t) ** 1.5
 }
 const stroke = (e: number): number => (e >= 0 && e < DOWN.seconds ? DOWN.first + (1 - DOWN.first) * (e / DOWN.seconds) : spring(e, HOLD, PRESS))
-const jarOf = (t: number): number => (t < 0 || t > JAR.seconds ? 0 : Math.exp(-t / JAR.tau) * Math.cos((t / JAR.period) * Math.PI * 2))
+const jarOf = (t: number): number => (t < 0 || t > JAR.seconds ? 0 : t < JAR.hold ? 1 : Math.exp(-(t - JAR.hold) / JAR.tau) * Math.cos(((t - JAR.hold) / JAR.period) * Math.PI * 2))
 const ring = (t: number, px: number): number => (t < 0 || t > 0.3 ? 0 : px * Math.exp(-t * 16) * Math.cos(t * 58))
 const inside = (b: { x: number; y: number; w: number; h: number }, x: number, y: number, pad = 0): boolean => x >= b.x - pad && x <= b.x + b.w + pad && y >= b.y - pad && y <= b.y + b.h + pad
 
@@ -951,7 +951,7 @@ export function makePage(): PageLogic {
         const scorches = turrets.s.scorches
         const spots: { x: number; y: number; w: number; h: number; top: number; air: boolean }[] = []
         const onSite = s.mode === 'live'
-        const jarred = onSite && s.shakeAmp === THUD.shake && s.thud < JAR.seconds + JAR.reach / JAR.speed
+        const jarred = onSite && s.shakeAmp === THUD.shake && s.thud < JAR.seconds
         seats.forEach((seat, key) => {
           const fl = flightOf(key)
           const at = seatOf(key, fl.u, fl.bow)
@@ -960,7 +960,7 @@ export function makePage(): PageLogic {
           const far = Math.hypot(at.x + seat.w / 2 - s.shakeAt.x, at.y + seat.h / 2 - s.shakeAt.y)
           let thrown = false
           if (jarred && far < JAR.reach && !at.moved) {
-            const push = JAR.px * (1 - far / JAR.reach) ** JAR.fall * jarOf(s.thud - far / JAR.speed)
+            const push = JAR.px * (1 - far / JAR.reach) ** JAR.fall * jarOf(s.thud)
             const ux = far > 1 ? (at.x + seat.w / 2 - s.shakeAt.x) / far : -s.thudLean.x
             const uy = far > 1 ? (at.y + seat.h / 2 - s.shakeAt.y) / far : -s.thudLean.y
             at.x += ux * push
