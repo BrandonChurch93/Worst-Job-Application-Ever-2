@@ -2,6 +2,7 @@
 // node pipeline/phase5/polish-date-live.mjs walk LABEL ORDER [LEVEL]   ORDER is the rows to press, as 123, 321 or 2, or self (self2: the first two rows that open themselves)
 // node pipeline/phase5/polish-date-live.mjs measure LABEL
 // node pipeline/phase5/polish-date-live.mjs shut LABEL ROW LEVEL OPENING [AT]   one row pressed and left alone until it shuts: OPENING pictures of its opening and the last SHUT.keep of its shutting; AT is the count of sixtieths from the hand's leaving to the tray shut, found by a first visit without pictures when it is not given
+// node pipeline/phase5/polish-date-live.mjs skip LABEL ROW LEVEL AT COUNT   the row pressed and left alone, Skip pressed AT sixtieths after the press: SKIP.before pictures before it and COUNT from it on. The stepped live page mounts no interface, so this runs in a scratch copy whose src/main.ts adds skip to window.liveRun.
 // node pipeline/phase5/polish-date-live.mjs sheet LABEL ROW NAME [FIRST COUNT STRIDE ZOOM COLS]
 import fs from 'node:fs'
 import path from 'node:path'
@@ -20,6 +21,8 @@ const EDGE = 9
 const dir = path.join('out', 'work', 'polish-date', label)
 // The pictures kept of one shutting: this many up to the one on which the tray is shut, and this many after it.
 const SHUT = { keep: 30, after: 2 }
+// The pictures kept before Skip is pressed.
+const SKIP = { before: 2 }
 // The longest a row left alone is waited for, in sixtieths of a second.
 const LONGEST = 400 * HZ
 // The top of the first row's field on the page, as the walks found it.
@@ -197,6 +200,59 @@ if (what === 'walk') {
   await visit(at)
   fs.writeFileSync(path.join(dir, 'run.json'), JSON.stringify({ row: row + 1, level, opening, at, keep: SHUT.keep, after: SHUT.after }) + '\n')
   console.log(JSON.stringify({ row: row + 1, level, opening, at }))
+} else if (what === 'skip') {
+  const [rowText = '3', level = 'high', atText = '1325', countText = '40'] = rest
+  const row = Number(rowText) - 1
+  const at = Number(atText)
+  fs.rmSync(dir, { recursive: true, force: true })
+  fs.mkdirSync(dir, { recursive: true })
+  const closedAt = (h) => Boolean(h) && Math.abs(h.x - (FIELD.x + FIELD.w / 2)) < 0.01
+  const session = await openSession({ format: 'hd', assets: 'web', mode: 'live', query: `&clock=steps&quality=${level}&step=2` })
+  const page = session.page
+  try {
+    await page.waitForFunction(() => Boolean(window.liveRun), null, { timeout: 120000 })
+    const tell = (ticks, shot) =>
+      page.evaluate(([d, s]) => {
+        const r = d > 0 ? window.liveRun.advance(d, !s) : null
+        const t = window.liveRun.told()
+        return { page: t.page, hint: t.hint, skipOffered: t.skipOffered, png: r && s ? r.png : '' }
+      }, [ticks / HZ, shot])
+    const keep = (t, name) => fs.writeFileSync(path.join(dir, name), Buffer.from(t.png.split(',')[1], 'base64'))
+    await send(page, { move: [300, 900] })
+    let t = await tell(0, false)
+    for (let n = 0; n < 40 && !closedAt(t.hint); n++) t = await tell(15, false)
+    if (!closedAt(t.hint)) throw new Error('the page did not come to rest')
+    await send(page, { move: [FIELD.x + 40, TOP + row * FIELD.pitch + 12] })
+    t = await tell(40, false)
+    await send(page, { down: true })
+    t = await tell(2, false)
+    await send(page, { up: true })
+    t = await tell(29, false)
+    if (closedAt(t.hint)) throw new Error(`row ${row + 1} did not open`)
+    await send(page, { move: [300, 900] })
+    t = await tell(at - 31 - SKIP.before, false)
+    for (let k = 0; k < SKIP.before; k++) {
+      t = await tell(1, true)
+      keep(t, `row${row + 1}-skip-${String(k).padStart(3, '0')}.png`)
+    }
+    if (!t.skipOffered) throw new Error('Skip is not offered')
+    const pressed = await page.evaluate(() => {
+      if (typeof window.liveRun.skip !== 'function') return false
+      window.liveRun.skip()
+      return true
+    })
+    if (!pressed) throw new Error('the stepped live page has no Skip: run this in a scratch copy whose src/main.ts adds skip: () => mouse.pulse({ skip: true }) to window.liveRun')
+    const pages = []
+    for (let k = SKIP.before; k < SKIP.before + Number(countText); k++) {
+      t = await tell(1, true)
+      pages.push(t.page)
+      keep(t, `row${row + 1}-skip-${String(k).padStart(3, '0')}.png`)
+    }
+    fs.writeFileSync(path.join(dir, 'run.json'), JSON.stringify({ row: row + 1, level, at, before: SKIP.before, pages }) + '\n')
+    console.log(JSON.stringify({ row: row + 1, level, at, pages: pages.join(' ') }))
+  } finally {
+    await session.close()
+  }
 } else if (what === 'sheet') {
   const [row, name, first = '0', count = '36', stride = '1', zoom = '1', cols = '3', wide = String(FIELD.w + 40), high = String(FIELD.h + FIELD.gap + FIELD.tray + 36)] = rest
   const run = JSON.parse(fs.readFileSync(path.join(dir, 'run.json'), 'utf8'))
