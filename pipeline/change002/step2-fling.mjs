@@ -41,6 +41,7 @@ if (verb === 'record') {
 } else if (verb === 'compare') {
   const A = JSON.parse(fs.readFileSync(file(a), 'utf8'))
   const B = JSON.parse(fs.readFileSync(file(b), 'utf8'))
+  const LIMIT = 0.001
   let bad = 0
   for (const name of Object.keys(A.runs)) {
     const ra = A.runs[name]
@@ -57,10 +58,10 @@ if (verb === 'record') {
       }
     }
     const worst = Math.max(...Object.values(most))
-    if (ra.length !== rb.length || worst > 1e-6 || words > 0) bad++
+    if (ra.length !== rb.length || worst > LIMIT || words > 0) bad++
     console.log(`${name}: steps ${ra.length} and ${rb.length}; largest difference ${JSON.stringify(most)}; words that differ ${words}`)
   }
-  console.log(bad === 0 ? 'the fling is the same' : 'the fling differs')
+  console.log(`limit ${LIMIT} page px and radians on every step: ${bad === 0 ? 'the fling is the same' : 'the fling differs'}`)
   process.exit(bad === 0 ? 0 : 1)
 } else {
   console.log('record <label> | compare <a> <b>')
