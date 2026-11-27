@@ -19,21 +19,33 @@ const { careersLayout } = await site.load('/src/pages/marketing/layout.ts')
 const { height, sections } = careersLayout()
 await site.close()
 
-const session = await openSession({ format: 'hd', assets: a.assets || 'full' })
 const tiles = []
 const counts = []
+const room = height - 1080
+const specs = []
+for (let top = 0; top < height; top += 1080) {
+  const y = Math.min(top, room)
+  specs.push({ y, spec: { page: 'marketing', camera: 'home', tier, scroll: y / room } })
+}
+let session = await openSession({ format: 'hd', assets: a.assets || 'full' })
 try {
-  const room = height - 1080
-  for (let top = 0; top < height; top += 1080) {
-    const y = Math.min(top, room)
-    const spec = { page: 'marketing', camera: 'home', tier, scroll: y / room }
+  for (const { y, spec } of specs) {
     const { png } = await drawStill(session, spec)
     tiles.push({ input: png, left: 0, top: y })
-    const told = await session.page.evaluate((x) => window.showcase.countParts(x), spec)
-    counts.push(`scrolled ${Math.round(y)} px: ${Math.round(told.renderer.triangles)} triangles, ${told.renderer.drawCalls} draw calls`)
   }
 } finally {
   await session.close()
+}
+for (const { y, spec } of specs) {
+  session = await openSession({ format: 'hd', assets: a.assets || 'full' })
+  try {
+    const told = await session.page.evaluate((x) => window.showcase.countParts(x), spec)
+    counts.push(`scrolled ${Math.round(y)} px: ${Math.round(told.renderer.triangles)} triangles, ${told.renderer.drawCalls} draw calls`)
+  } catch (e) {
+    counts.push(`scrolled ${Math.round(y)} px: not counted (${String(e.message).split('\n')[0]})`)
+  } finally {
+    await session.close()
+  }
 }
 fs.mkdirSync(OUT, { recursive: true })
 const whole = await sharp({ create: { width: 1920, height: Math.round(height), channels: 3, background: '#ff00ff' } }).composite(tiles).png().toBuffer()

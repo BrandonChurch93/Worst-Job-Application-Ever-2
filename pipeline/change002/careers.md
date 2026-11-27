@@ -121,7 +121,28 @@ Crops, mine left and the picture right: `node pipeline/change002/careers-differe
 
 ## Tests of other units that this change breaks
 
-NOT LISTED YET: the whole `npm test` has not run since the opening changed.
+MEASURED at 97a793e7: the 24 test files of other units that name the page, run alone in a second worktree (`npx vitest run <the 24 files>`): 18 files pass, 6 files fail with 16 tests. None is touched.
+
+| file and line | what it pinned | what it sees now |
+| --- | --- | --- |
+| `tests/harness-plan.test.ts:33` | the film is a whole number of preview frames: `seconds * previewFps` frames | 158.25 s gives 4747.5; the plan has 4748 |
+| `tests/harness-plan.test.ts:76` | a piece of the first unit cut at `first + 101` starts on frame `first + 102` | the unit's frames moved with its length (19.25 s) |
+| `tests/harness-plan.test.ts:113` | two pieces cut at `first + 400` tile the unit whole | same cause, the grid of the unit is odd now |
+| `tests/harness-plan.test.ts:119` | an empty unit is missing from `first` to `last - 1`: 3075 to 4333 | 3076 to 4334 |
+| `tests/harness-plan.test.ts:199` | the last sheet frame is `frameCount - 2`: 9493 | 9494 |
+| `tests/polish-arrow.test.ts:135` | a mouse held at the page place of `perk-0` with no scroll turns the card: 28 frames of `perk-0-slab` | the cards are below the first screen (page y over 1080), the mouse never meets one: 0 frames |
+| `tests/polish-hand.test.ts:141` | at the first turn a tray under the arrow hops on the seat and lifts the arrow by over 8 | under the arrow is the flat sheet: lift 0 |
+| `tests/polish-hand.test.ts:161` | the arrow is carried by the jolt on the seat by more than 4 px on screen | 3.84 px where the arrow stands now |
+| `tests/polish-hand.test.ts:302` | nine written rows of the arrow through the film's first turn (frame, page, place, height, angle) | the turn is at 18.75 s and the arrow leaves from the closing button |
+| `tests/polish-tape.test.ts:92` | in 60 s live over 1000 steps show a ticker item cut at the head (`TICKER.clip` inside a window narrower than the page) | the ticker is the page's width; 96 |
+| `tests/polish-tape.test.ts:101` | the same in film frames 0 to 839 | 29 |
+| `tests/polish-turn2.test.ts:187` | the five turns by the clock start at 13.5, 45.5, 66.5, 108.5, 140.5 s | 18.75, 50.75, 71.75, 113.75, 145.75 s |
+| `tests/polish-turn2.test.ts:223` | the film frames of each turn, the first 811 to 839 | 1126 to 1154 and on |
+| `tests/site-finish.test.ts:72` | a keen hand reaches 37 gags | 35 at 97a793e7: the hint went straight to Apply. Mended in my file at 7de4cdd8 (the hint leads over the first card until the ticker beat) |
+| `tests/site-finish.test.ts:127` | one who never clicks still turns a card by following the hint | 0 at 97a793e7; same mend |
+| `tests/site-finish.test.ts:161` | the left button held on the page for over 1200 steps before the turn | 514 at 97a793e7; same mend |
+
+The three of `tests/site-finish.test.ts` are run again after the mend; the result is in the report.
 
 ## Mine to tell the Builder (his to mend)
 
