@@ -289,19 +289,19 @@ export function buildModel(): Model {
   const scorch = (seed: number, r: number, x: number, y: number, z: number): THREE.BufferGeometry[] => [at(blot(seed, r, 22), x, y, z), at(blot(seed + 50, r * 0.74, 20), x + r * 0.06, y - r * 0.05, z + 0.15), at(blot(seed + 90, r * 0.46, 16), x - r * 0.05, y + r * 0.04, z + 0.3)]
   const d1 = new THREE.Group()
   d1.add(
-    mesh(geo('dmg1.soot', () => joined([...scorch(1, 96, -212, 78, HULL.top + 2), ...scorch(2, 78, 70, 214, WING.top + 2), ...scorch(3, 62, 204, -74, HULL.top + 2)])), kit.soot, false, false),
-    mesh(geo('dmg1.crack', () => joined([at(crackStar(31, 7, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 96, 3), -212, 78, HULL.top + 2.6), at(crackStar(32, 6, (a) => [Math.cos(a) * 4, Math.sin(a) * 4], 76, 2.6), 72, 214, WING.top + 2.6)])), kit.crack, false, false)
+    mesh(geo('dmg1.soot', () => joined([...scorch(1, 96, -236, 96, HULL.top + 8), ...scorch(2, 78, 70, 214, WING.top + 2), ...scorch(3, 70, 236, -92, HULL.top + 8)])), kit.soot, false, false),
+    mesh(geo('dmg1.crack', () => joined([at(crackStar(31, 7, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 96, 3), -236, 96, HULL.top + 8.6), at(crackStar(32, 6, (a) => [Math.cos(a) * 4, Math.sin(a) * 4], 76, 2.6), 72, 214, WING.top + 2.6)])), kit.crack, false, false)
   )
   const d2 = new THREE.Group()
   d2.add(
-    mesh(geo('dmg2.soot', () => joined([...scorch(4, 112, 160, -92, HULL.top + 2), ...scorch(5, 98, -118, -200, WING.top + 2), ...scorch(6, 80, -30, 110, HULL.top + 2), ...scorch(7, 84, HATCH.cx + 24, -56, HATCH.top + 2)])), kit.soot, false, false),
-    mesh(geo('dmg2.crack', () => joined([at(crackStar(33, 8, (a) => [Math.cos(a) * 6, Math.sin(a) * 6], 110, 3.2), 156, -88, HULL.top + 2.6), at(crackStar(34, 7, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 86, 2.8), -118, -200, WING.top + 2.6), at(crackStar(35, 6, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 80, 2.6), HATCH.cx + 24, -56, HATCH.top + 2.6)])), kit.crack, false, false),
-    mesh(geo('dmg2.hole', () => joined([at(blot(8, 40, 9), 232, 84, HULL.top + 2.8), at(blot(9, 34, 9), -150, 196, WING.top + 2.8)])), kit.bore, false, false),
+    mesh(geo('dmg2.soot', () => joined([...scorch(4, 112, 150, -104, HULL.top + 8), ...scorch(5, 98, -118, -200, WING.top + 2), ...scorch(6, 84, -40, 112, HULL.top + 8), ...scorch(7, 84, HATCH.cx + 24, -56, HATCH.top + 2)])), kit.soot, false, false),
+    mesh(geo('dmg2.crack', () => joined([at(crackStar(33, 8, (a) => [Math.cos(a) * 6, Math.sin(a) * 6], 110, 3.2), 150, -104, HULL.top + 8.6), at(crackStar(34, 7, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 86, 2.8), -118, -200, WING.top + 2.6), at(crackStar(35, 6, (a) => [Math.cos(a) * 5, Math.sin(a) * 5], 80, 2.6), HATCH.cx + 24, -56, HATCH.top + 2.6)])), kit.crack, false, false),
+    mesh(geo('dmg2.hole', () => joined([at(blot(8, 40, 9), 232, 84, HULL.top + 8.8), at(blot(9, 34, 9), -150, 196, WING.top + 2.8)])), kit.bore, false, false),
     mesh(geo('dmg2.plate', () => joined([boxAt(-40, -30, 0, 40, 30, 6, 1.5).rotateY(-0.5).rotateZ(0.4).translate(258, 108, HULL.top + 14), boxAt(-32, -24, 0, 32, 24, 5, 1.2).rotateX(0.6).rotateZ(-0.3).translate(-150, 226, WING.top + 12)])), kit.plate),
     mesh(geo('dmg2.hose', () => joined([hose([[226, 80, HULL.top - 4], [250, 60, HULL.top + 34], [292, 84, HULL.top + 26], [312, 124, HULL.top - 30]], 6.5, 16, 7), hose([[-150, 190, WING.top - 4], [-178, 204, WING.top + 26], [-202, 244, WING.top - 20]], 5.5, 12, 7)])), kit.orange)
   )
   const d3 = new THREE.Group()
-  d3.add(mesh(geo('dmg3.soot', () => joined([...scorch(10, 150, HATCH.cx + 20, 10, HATCH.top + 2.4), ...scorch(11, 104, -262, -60, HULL.top + 2.2), ...scorch(12, 100, 262, 40, HULL.top + 2.2), ...scorch(13, 96, 30, -212, WING.top + 2.2), ...scorch(14, 90, -40, 208, WING.top + 2.2)])), kit.soot, false, false))
+  d3.add(mesh(geo('dmg3.soot', () => joined([...scorch(10, 150, HATCH.cx + 20, 10, HATCH.top + 2.4), ...scorch(11, 104, -262, -60, HULL.top + 8.2), ...scorch(12, 100, 262, 40, HULL.top + 8.2), ...scorch(13, 96, 30, -212, WING.top + 2.2), ...scorch(14, 90, -40, 208, WING.top + 2.2)])), kit.soot, false, false))
   d1.visible = false
   d2.visible = false
   d3.visible = false

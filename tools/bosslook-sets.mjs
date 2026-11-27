@@ -134,4 +134,28 @@ const MORE = {
     ], 2, 700)
   }
 }
+
+// What he costs, MEASURED on this machine: his own triangles and draws by state, and the frame time at each live level with and without him.
+MORE.counts = async ({ look, at, outDir }) => {
+  const full = { cx: 960, cy: 540, zoom: 1, width: 1920, height: 1080 }
+  const states = {
+    'turret inside': viewOf(),
+    'turret out': viewOf({}, out),
+    'forming, form 0.36': forming(0.36),
+    'fight frame: 12 bullets, a gun firing, stage 2': viewOf({ time: 11, bullets: Array.from({ length: 12 }, (_, i) => bullet(i, 300 + i * 110, 300 + (i % 4) * 150, 300, 200)) }, { ...out, stage: 2, guns: [g(2.5, 0.7), g(-2.6, 0, 10.97)] }),
+    'big blast at 0.1 s': viewOf({ time: 21.1 }, { ...out, big: big(1, 21) }),
+    'beaten 0.2': viewOf({ time: 40.2, phase: 'beaten' }, { ...out, stage: 2, beaten: 0.2 })
+  }
+  const rows = []
+  for (const level of ['low', 'medium', 'high']) {
+    for (const [name, view] of Object.entries(states)) {
+      const r = await look.timing({ view, ...full, level }, 5)
+      rows.push({ level, state: name, ownTriangles: Math.round(r.own.triangles), ownDraws: r.own.draws, frameTriangles: r.frame.triangles, frameDrawCalls: r.frame.drawCalls, bareTriangles: r.bare.triangles, bareDrawCalls: r.bare.drawCalls, msWith: +r.withMs.toFixed(2), msWithout: +r.withoutMs.toFixed(2) })
+      console.log('  ' + JSON.stringify(rows[rows.length - 1]))
+    }
+  }
+  const file = path.join(outDir, 'counts.json')
+  fs.writeFileSync(file, JSON.stringify({ note: 'MEASURED by tools/bosslook.mjs counts in the headless browser of the helper machine, 1920 by 1080; own = the meshes of the boss alone in one pass, frame = the whole frame with him over all passes, bare = the same frame without him; ms is the median of 5 frames', rows }, null, 2) + '\n')
+  return file
+}
 Object.assign(SETS, MORE)

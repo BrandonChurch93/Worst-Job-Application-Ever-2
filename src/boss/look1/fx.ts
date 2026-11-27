@@ -21,10 +21,10 @@ export interface Fx {
 const ORANGE: [number, number, number] = [1, 0.42, 0.1]
 const HOT: [number, number, number] = [1, 0.82, 0.55]
 const DUST: [number, number, number] = [0.42, 0.4, 0.37]
-const SMOKE: [number, number, number] = [0.085, 0.085, 0.09]
+const SMOKE: [number, number, number] = [0.018, 0.018, 0.02]
 const STEAM: [number, number, number] = [0.56, 0.57, 0.59]
 const SHADE: [number, number, number] = [0.05, 0.048, 0.045]
-const SOOT: [number, number, number] = [0.022, 0.021, 0.02]
+const SOOT: [number, number, number] = [0.006, 0.006, 0.006]
 
 function texture(alpha: (u: number, v: number) => number, n = 64): THREE.DataTexture {
   const data = new Uint8Array(n * n * 4)
@@ -75,8 +75,8 @@ class Sprites {
   private s = new THREE.Vector3()
   private c = new THREE.Color()
   private fade: THREE.InstancedBufferAttribute | null = null
-  constructor(private max: number, map: THREE.Texture, private additive: boolean, order: number) {
-    const mat = new THREE.MeshBasicMaterial({ map, transparent: true, depthWrite: false, blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending, toneMapped: true })
+  constructor(private max: number, map: THREE.Texture, private additive: boolean, order: number, depth = true) {
+    const mat = new THREE.MeshBasicMaterial({ map, transparent: true, depthWrite: false, depthTest: depth, blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending, toneMapped: true })
     const geo = new THREE.PlaneGeometry(1, 1)
     if (!additive) {
       this.fade = new THREE.InstancedBufferAttribute(new Float32Array(max), 1)
@@ -163,17 +163,19 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
   const budget = (): { chunks: number; puffs: number; lamps: number } => COUNTS[level ?? 'film']
 
   const tex = { blob: texture(blob), puff: texture(puff, 128), ring: texture(ring, 128), bar: texture(bar, 32) }
-  const soft = new Sprites(360, tex.puff, false, 40)
-  const lit = (c: [number, number, number], k: number): [number, number, number] => [Math.min(1, c[0] * k + 0.02), Math.min(1, c[1] * k + 0.02), Math.min(1, c[2] * k + 0.02)]
+  const soft = new Sprites(260, tex.puff, false, 40, false)
+  const shade = new Sprites(130, tex.puff, false, 39)
+  const marks = new Sprites(8, tex.ring, false, 45, false)
+  const lit = (c: [number, number, number], k: number): [number, number, number] => [Math.min(1, c[0] * k + 0.003), Math.min(1, c[1] * k + 0.003), Math.min(1, c[2] * k + 0.003)]
   // Each puff is laid twice, a darker underside and a lighter top pushed toward the light, and throws a faint shade on the ground: that is all its volume.
   const smoke = {
     add(x: number, y: number, z: number, w: number, h: number, turn: number, colour: [number, number, number], a: number): void {
       if (a <= 0.003) return
-      if (z > 6) soft.add(x + z * 0.32, y - z * 0.42, 1.2, w * 1.15, h * 1.15, turn, SHADE, a * 0.3)
+      if (z > 6) shade.add(x + z * 0.32, y - z * 0.42, 1.2, w * 1.15, h * 1.15, turn, SHADE, a * 0.3)
       soft.add(x + w * 0.05, y - h * 0.05, z, w, h, turn, lit(colour, 0.55), a)
       soft.add(x - w * 0.07, y + h * 0.07, z + 0.4, w * 0.8, h * 0.8, turn + 1.7, lit(colour, 1.5), a * 0.85)
     },
-    begin: (): void => soft.begin(), end: (): void => soft.end(), dispose: (): void => soft.dispose(), mesh: soft.mesh
+    begin: (): void => { soft.begin(); shade.begin() }, end: (): void => { soft.end(); shade.end() }, dispose: (): void => { soft.dispose(); shade.dispose() }, mesh: soft.mesh
   }
   const glow = new Sprites(160, tex.blob, true, 50)
   const rings = new Sprites(24, tex.ring, true, 51)
@@ -211,7 +213,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
     ground.add(m)
     return m
   })
-  object.add(ground, chunks.mesh, shards.mesh, balls.mesh, smoke.mesh, glow.mesh, rings.mesh, bars.mesh)
+  object.add(ground, chunks.mesh, shards.mesh, balls.mesh, shade.mesh, smoke.mesh, marks.mesh, glow.mesh, rings.mesh, bars.mesh)
 
   const rnd = (i: number, j: number): number => hash01(i, j, o.seed)
 
@@ -238,7 +240,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       const u = age / life
       const j = (rnd(k + id * 977, 31) - 0.5) * 2
       const s = size * (0.5 + 1.5 * u) * (0.8 + 0.4 * rnd(k + id * 977, 32))
-      smoke.add(x + (dx + 10 * j) * u * life, y + (dy + 8 * j) * u * life, z + 8 + 50 * u, s, s, rnd(k + id * 977, 33) * 6.28, colour, strength * Math.sin(Math.PI * Math.pow(u, 0.6)) * 0.9)
+      smoke.add(x + (dx + 10 * j) * u * life, y + (dy + 8 * j) * u * life, z + 6 + 34 * u, s, s, rnd(k + id * 977, 33) * 6.28, colour, strength * Math.sin(Math.PI * Math.pow(u, 0.6)) * 0.9)
     }
   }
   // Sparks thrown from a place at one moment.
@@ -280,7 +282,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       lamps++
       light({ x: x + 960, y: 540 - y, z, colour, power, reach })
     }
-    smoke.begin(); glow.begin(); rings.begin(); bars.begin(); chunks.begin(); shards.begin(); balls.begin()
+    smoke.begin(); marks.begin(); glow.begin(); rings.begin(); bars.begin(); chunks.begin(); shards.begin(); balls.begin()
 
     // The forming.
     const tf = f * TIMES.form
@@ -366,10 +368,10 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
         }
       }
       if (b.locked || t >= 1) {
-        const [s1x, s1y] = fromBody(p, HATCH.cx + 70, 96)
-        const [s2x, s2y] = fromBody(p, HATCH.cx + 40, -100)
-        plume(s1x, s1y, 70, now, 0.14, 1.4, 5, 30, STEAM, 0.75, 12, 22)
-        plume(s2x, s2y, 70, now, 0.17, 1.3, 6, 26, STEAM, 0.65, 16, -10)
+        const [s1x, s1y] = fromBody(p, HATCH.cx + 86, 132)
+        const [s2x, s2y] = fromBody(p, HATCH.cx + 60, -138)
+        plume(s1x, s1y, 44, now, 0.16, 1.4, 5, 24, STEAM, 0.5, 14, 6)
+        plume(s2x, s2y, 44, now, 0.19, 1.3, 6, 21, STEAM, 0.42, 16, -12)
       }
       const lockAge = p.lockAge
       if (lockAge >= 0 && lockAge < 0.5) {
@@ -495,6 +497,9 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
         const age = now - b.weak.shownAt
         const beat = 0.5 + 0.5 * Math.sin(age * 16)
         const s = 44 + 14 * beat
+        marks.add(wx2, wy2, 80, s * 1.5, s * 1.5, 0, [0.95, 0.12, 0.03], 0.75 + 0.25 * beat)
+        const grow = (age * 1.4) % 1
+        marks.add(wx2, wy2, 80, s * (1.5 + 1.3 * grow), s * (1.5 + 1.3 * grow), 0, [0.95, 0.12, 0.03], 0.6 * (1 - grow))
         rings.add(wx2, wy2, 64, s, s, 0, [1, 0.3, 0.12], 1.2 + 0.8 * beat)
         glow.add(wx2, wy2, 63, 54, 54, 0, [1, 0.25, 0.1], 0.5 + 0.5 * beat)
         lamp(wx2, wy2, 60, [1, 0.3, 0.12], 0.2 + 0.15 * beat, 120)
@@ -504,10 +509,10 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
     // Damage: smoke where he is hurt, more as he falls from stage to stage; sparks that come and go at the last stage.
     if (p.shown && f >= 1 && (b.stage > 0 || beaten > 0)) {
       const heavy = b.stage >= 2 || beaten > 0
-      const [ax, ay] = fromBody(p, -212, 78)
-      plume(ax, ay, 66, now, heavy ? 0.09 : 0.13, 1.3, 11, heavy ? 40 : 30, SMOKE, heavy ? 0.8 : 0.62)
+      const [ax, ay] = fromBody(p, 70, 214)
+      plume(ax, ay, 64, now, heavy ? 0.09 : 0.13, 1.3, 11, heavy ? 40 : 30, SMOKE, heavy ? 0.8 : 0.62)
       if (heavy) {
-        const [cx2, cy2] = fromBody(p, 160, -92)
+        const [cx2, cy2] = fromBody(p, 150, -112)
         plume(cx2, cy2, 62, now, 0.11, 1.2, 12, 34, SOOT, 0.7, -8, 26)
         const flick = 0.6 + 0.4 * hash01(Math.floor(now * 24), 5, o.seed)
         glow.add(cx2, cy2, 70, 46 * flick + 14, 46 * flick + 14, 0, ORANGE, 0.9 * flick)
@@ -611,11 +616,11 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
         lamp(x, y, 30, [1, 0.3, 0.15], 0.4 * k, 140)
       }
     }
-    smoke.end(); glow.end(); rings.end(); bars.end(); chunks.end(); shards.end(); balls.end()
+    smoke.end(); marks.end(); glow.end(); rings.end(); bars.end(); chunks.end(); shards.end(); balls.end()
   }
 
   const dispose = (): void => {
-    for (const s of [smoke, glow, rings, bars]) s.dispose()
+    for (const s of [smoke, marks, glow, rings, bars]) s.dispose()
     for (const s of [chunks, shards, balls]) s.dispose()
     ballMat.dispose()
     tex.blob.dispose(); tex.puff.dispose(); tex.ring.dispose(); tex.bar.dispose()

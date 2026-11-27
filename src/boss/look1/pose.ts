@@ -270,7 +270,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
     hatch: { x: HATCH.cx - HATCH.slide * hatchOpen, z: HATCH.top + 7 * bump(t, TURRET.hatch[0], TURRET.hatch[0] + 0.06) + (hatchOpen > 0 ? 3 * hatchOpen : 0), seam: 1.4 + 3 * bump(t, 0, 0.2) + 0.6 * Math.sin(now * 3) * 0.3, gone: off },
     shield: { rise: shieldUp, slide: shieldOut, flash: kick(since(now, b.shield.glancedAt), TIMES.glance), broken: lin(beaten, 0.05, 0.3), show: f >= FORM.shield[0] },
     guns, legs, cannon,
-    weak: b.weak ? (b.weak.shownAt === null ? 0 : 0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16)) * 4 : 0,
+    weak: b.weak ? (b.weak.shownAt === null ? 0 : 1.6 + 2.6 * (0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16))) : 0,
     damage: f < 1 ? 0 : beaten > 0.02 ? 3 : b.stage, hurt, heal: healNow, sag: sagPart, lockAge, word
   }
 }

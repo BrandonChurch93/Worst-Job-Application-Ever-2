@@ -48,6 +48,7 @@ export async function openLook() {
       return { png: await readCanvas(page), stats }
     },
     counts: (spec) => page.evaluate((s) => window.bosslook.counts(s), spec),
+    timing: (spec, n = 15) => page.evaluate(([s, k]) => window.bosslook.timing(s, k), [spec, n]),
     async close() { await browser.close(); await server.close() }
   }
 }
