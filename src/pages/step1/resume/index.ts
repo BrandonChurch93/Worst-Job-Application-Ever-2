@@ -29,8 +29,8 @@ type Beat = 'field' | 'press' | 'folder' | 'lit' | 'fly' | 'lie' | 'wind' | 'fee
 const POP = { chip: 4, over: 5, tile: 1.2, arc: 54, high: 46, lean: 0.24, lie: 0.6, shiver: 0.07 }
 const WINDOW = ['resume-folder', 'resume-folder-bar', 'resume-folder-knob', 'resume-folder-title', 'resume-file', 'resume-file-name']
 const LIE = heights.card + 9
-// The live arrow's run after the sheet: it starts `from` into the wind, and stands where the tug starts `stand` into the slot's catch.
-const CHASE = { on: true, from: 0.22, to: 0.8, x: -252, y: -155, back: 0.3, free: 0.55 }
+// The live arrow's run after the sheet, as in the film: it starts `from` of the wind in and is by the slot, at the film's place, `to` of the wind in, on a path that bends `arc` px. `x` and `y` are where a visitor who follows the hint waits. It is given back over `back` seconds, `free` seconds before the bite.
+const CHASE = { on: true, from: 0.22, to: 0.8, x: -252, y: -155, arc: 16, back: 0.3, free: 0.55 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
@@ -165,12 +165,18 @@ export function makeResume(host: ResumeHost): ResumeStage {
   // The pace of the beats: the film's, and the film's too on the live site once the skip link is up, so a visitor who does nothing is through in time.
   const pace = (): typeof FLOW.film => (s.mode === 'film' || s.flow.fast ? FLOW.film : FLOW.live)
   const stand = { x: SLOT.cx + CHASE.x, y: SLOT.cy + CHASE.y }
-  // The live site takes the arrow for the wind: it goes to the place the tug's take starts from, and is given back `free` seconds before the bite, so the bite finds it in the visitor's hand.
+  const near = { x: SLOT.cx + RESUME.near.x, y: SLOT.cy + RESUME.near.y }
+  // The live site takes the arrow for the wind: it runs after the sheet to the film's place by the slot, and is given back `free` seconds before the bite, so the bite finds it in the visitor's hand.
   const chase = (io: StepIo, share: number): void => {
     const f = s.flow
     if (!CHASE.on) return
-    const a = smooth(clamp((share - CHASE.from) / (CHASE.to - CHASE.from), 0, 1))
-    io.cursor.drive(lerp(f.cx, stand.x, a), lerp(f.cy, stand.y, a), lerp(f.cz, heights.card + 6, a))
+    const u = clamp((share - CHASE.from) / (CHASE.to - CHASE.from), 0, 1)
+    const a = u * u
+    const dx = near.x - f.cx
+    const dy = near.y - f.cy
+    const d = Math.hypot(dx, dy) || 1
+    const bulge = CHASE.arc * Math.sin(Math.PI * a)
+    io.cursor.drive(lerp(f.cx, near.x, a) + (dy / d) * bulge, lerp(f.cy, near.y, a) - (dx / d) * bulge, lerp(f.cz, heights.card + 6, a))
   }
   // How far up the window is, 0 under the page to 1 in its place, a little past 1 on the way.
   const windowUp = (): number => {
