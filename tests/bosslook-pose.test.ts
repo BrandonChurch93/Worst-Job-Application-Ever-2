@@ -179,17 +179,20 @@ describe('look 1: the finishing blast', () => {
     expect(Math.cos(at.rot)).toBeCloseTo(1, 5)
   })
 
-  it('sinks the button under the fist in 0.07 s and has it back by 0.45 s', () => {
+  it('keeps the button down while the fist is on it and springs it back only when the fist leaves', () => {
     const lying = { turret: 1, locked: true, stage: 2 as const, health: 0, beaten: 1, gone: 1 }
-    const at = (age: number): ReturnType<typeof buttonAt> => buttonAt(view({ phase: 'beaten', time: 60 + age }, { ...lying, pressedAt: 60 }))
+    const at = (age: number, more: object = {}): ReturnType<typeof buttonAt> => buttonAt(view({ phase: 'beaten', time: 60 + age }, { ...lying, pressedAt: 60, ...more }))
     expect(buttonAt(view({ phase: 'beaten', time: 59.9 }, { ...lying, pressedAt: null })).press).toBe(0)
     expect(at(0).press).toBe(0)
     expect(at(PRESS.down).press).toBeCloseTo(1, 5)
     expect(at(PRESS.down).top).toBeLessThan(at(0).top)
     expect(at(PRESS.down).w).toBeLessThan(at(0).w)
-    expect(at(PRESS.back).press).toBeCloseTo(0, 5)
-    expect(at(2).press).toBeCloseTo(0, 5)
-    expect(at(2).top).toBeCloseTo(at(0).top, 5)
+    for (const age of [0.2, 0.45, 2, 30]) expect(at(age).press, `${age}`).toBe(1)
+    const left = { releasedAt: 61 }
+    expect(at(0.9, left).press).toBe(1)
+    expect(at(1 + PRESS.back * 0.6, left).press).toBeLessThan(0)
+    expect(at(1 + PRESS.back, left).press).toBeCloseTo(0, 5)
+    expect(at(4, left).top).toBeCloseTo(at(0).top, 5)
     for (const name of ['boss-fall', 'finish-fire', 'boss-gone', 'button-down']) expect(EVENTS, name).toHaveProperty(name)
   })
 })

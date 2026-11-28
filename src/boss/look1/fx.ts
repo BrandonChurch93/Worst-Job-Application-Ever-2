@@ -205,13 +205,13 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
   ground.add(socket)
   const hx = o.home.x - 960
   const hy = 540 - o.home.y
-  const landCracks = mesh(crackStar(o.seed + 2, 12, (a) => [Math.cos(a) * 96, Math.sin(a) * 52], 120, 2.2), kit.crack, false, false)
+  const landCracks = mesh(crackStar(o.seed + 2, 10, (a) => [Math.cos(a) * 70, Math.sin(a) * 34], 44, 2), kit.crack, false, false)
   landCracks.position.set(hx, hy, 0.25)
   ground.add(landCracks)
   const footCracks = FEET.map(([fx, fy], i) => {
     const c = Math.cos(-o.home.heading)
     const s = Math.sin(-o.home.heading)
-    const m = mesh(crackStar(o.seed + 10 + i, 9, (a) => [Math.cos(a) * 15, Math.sin(a) * 15], 54, 1.3), kit.crack, false, false)
+    const m = mesh(crackStar(o.seed + 10 + i, 9, (a) => [Math.cos(a) * 15, Math.sin(a) * 15], 42, 1.9), kit.crack, false, false)
     m.position.set(hx + (fx * c - fy * s) * K, hy + (fx * s + fy * c) * K, 0.25)
     ground.add(m)
     return m
@@ -566,7 +566,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       const count = n.chunks * 3
       const [ux, uy] = p.blow
       for (let i = 0; i < count; i++) {
-        const a = age - (0.03 + 0.85 * (i / count)) * TIMES.gone
+        const a = age - (0.03 + 0.9 * (i / count)) * TIMES.gone
         if (a < 0 || a >= SCRAP.life) continue
         const u = a / SCRAP.life
         const side = (rnd(i, 81) < 0.5 ? -1 : 1) * (0.3 + 0.9 * rnd(i, 82))
@@ -580,10 +580,10 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       const rise = smooth(lin(p.gone, GONE.button[1], 1))
       const sx3 = p.x + 22
       const sy3 = p.y + 14
-      plume(sx3, sy3, 30, now, 0.1, 3.6, 41, 26, SMOKE, 0.36 * rise, 8, 36)
-      plume(sx3 - 26, sy3 + 4, 30, now + 0.7, 0.17, 2.8, 42, 18, SMOKE, 0.3 * rise, 3, 30)
+      plume(sx3, sy3, 30, now, 0.07, 3.8, 41, 20, STEAM, 0.5 * rise, 9, 36)
+      plume(sx3 - 22, sy3 + 2, 30, now + 0.7, 0.11, 3.2, 42, 15, STEAM, 0.38 * rise, 5, 32)
       const lie = LEFT.lie[0]
-      plume(p.x + lie[0], p.y - lie[1], 20, now + 0.3, 0.3, 1.8, 43, 11, SMOKE, 0.3 * rise, 4, 20)
+      plume(p.x + lie[0], p.y - lie[1], 20, now + 0.3, 0.2, 2, 43, 10, STEAM, 0.3 * rise, 4, 22)
     }
 
     // Beaten: the cannon is blown off, the glass bursts, he smokes.

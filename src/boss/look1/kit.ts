@@ -291,19 +291,19 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x84888d), roughness: 0.56, metalness: 0.3, specularIntensity: 0.5 })
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x6e7277), roughness: 0.54, metalness: 0.35, specularIntensity: 0.5 })
   const brushed = (hex: number, metal: number, rough = 0.46): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); c.metalness = metal; c.roughness = rough; return studio(c) }
   look = {
-    hull: brushed(0xa8abaf, 0.35, 0.52),
+    hull: brushed(0x9c9fa3, 0.35, 0.52),
     wing: brushed(0x8f9296, 0.3, 0.55),
     hatch: brushed(0x8a8e94, 0.6, 0.44),
-    bezel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8d9196), roughness: 0.26, metalness: 0.8 })),
+    bezel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x70747a), roughness: 0.3, metalness: 0.85 })),
     steel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xaeb1b5), roughness: 0.46, metalness: 0.5, specularIntensity: 0.6 })),
     gunBody: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x90949a), roughness: 0.5, metalness: 0.45, specularIntensity: 0.6 })),
     gunBase: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4b7bb), roughness: 0.42, metalness: 0.5, specularIntensity: 0.6 })),
     plate: b.plate,
     plateLight: studio(plateLight),
-    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
+    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x868a8f), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
     dark: b.plateSide,
     housing: b.housing,
     joint: b.joint,

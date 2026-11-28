@@ -53,18 +53,18 @@ const screwsAt = (at: [number, number][], z: number, r = 6.5, seed = 1): THREE.B
 
 function hullGeo(): { plate: THREE.BufferGeometry; dark: THREE.BufferGeometry; trim: THREE.BufferGeometry; bed: THREE.BufferGeometry; pins: THREE.BufferGeometry; joints: THREE.BufferGeometry } {
   const { hx, hy, c, top, tall, belly } = HULL
-  const bezelOut = pillOutline(BTN.w + 40, BTN.h + 40, BTN.r + 18)
+  const bezelOut = pillOutline(BTN.w + 52, BTN.h + 52, BTN.r + 24)
   const bezelIn = pillOutline(BTN.w + 12, BTN.h + 12, BTN.r + 5)
   const plate = chamfer(oct(hx, hy, c), top - tall, top, 5, 5)
   const dark = joined([
-    plateAt(oct(hx + 7, hy + 7, c + 3), top - tall - 3, top - 6, 2),
+    plateAt(oct(hx + 4, hy + 4, c + 2), top - tall - 3, top - 6, 2),
     plateAt(oct(hx - 16, hy - 14, c - 6), belly, top - tall + 1, 5),
     plateAt(oct(hx - 60, hy - 40, 20), belly - 22, belly + 1, 5)
   ])
-  const trim = ringPlate(bezelOut, bezelIn, 7, 2.2).translate(0, 0, top - 0.5)
+  const trim = ringPlate(bezelOut, bezelIn, 8, 5).translate(0, 0, top - 0.5)
   const bed = plateAt(pillOutline(BTN.w + 14, BTN.h + 14, BTN.r + 6), top - 0.4, top + 2, 0.5)
   const sc: [number, number][] = [[-268, -98], [268, -98], [-268, 98], [268, 98], [-150, -111], [150, -111], [-150, 111], [150, 111], [0, -111], [0, 111], [-272, 0], [272, 0]]
-  const pins = screwsAt(sc, top, 4.8, 3)
+  const pins = screwsAt(sc, top, 5.8, 3)
   const joints = joined(HIPS.map(([x, y]) => discAt(30, x * 1.0, y * 0.92, LEG.hipZ - 26, LEG.hipZ + 24, 4)))
   return { plate, dark, trim, bed, pins, joints }
 }
@@ -117,11 +117,11 @@ function legGeo(): { upper: Record<string, THREE.BufferGeometry>; lower: Record<
     }
   }
   const upper = {
-    ...link(A, 43, 20),
+    ...link(A, 50, 22),
     orange: joined([hose([[10, -12, 6], [A * 0.3, -17, 15], [A * 0.62, 15, 15], [A - 12, 12, 6]], 4.2, 20, 7), hose([[14, 13, 4], [A * 0.3, 17, 11], [A * 0.58, -15, 11], [A - 16, -12, 4]], 3.6, 20, 7)])
   }
   const lower = {
-    ...link(B, 38, 18),
+    ...link(B, 44, 20),
     orange: joined([hose([[12, 11, 5], [B * 0.3, 15, 13], [B * 0.6, -13, 12], [B - 18, -10, 5]], 3.8, 20, 7)])
   }
   // A claw of two short thick hooks: each leaves the ankle high, turns inward at its knuckle and sinks its tip into the ground.
@@ -150,16 +150,16 @@ function cannonGeo(): Record<string, THREE.BufferGeometry> {
     boxAt(-30, -26, -22, b0 - 4, 26, 22, 5)
   ])
   const breechDark = joined([
-    ringPlate([[b0 + 109, -51], [b0 + 209, -51], [b0 + 209, 51], [b0 + 109, 51]], [[b0 + 123, -37], [b0 + 195, -37], [b0 + 195, 37], [b0 + 123, 37]], 5, 1).translate(0, 0, r.breech + 8),
+    ringPlate(pillOutline(92, 92, 16, 5).map(([x, y]) => [x + b0 + 160, y] as [number, number]), pillOutline(72, 72, 10, 5).map(([x, y]) => [x + b0 + 160, y] as [number, number]), 5, 1.5).translate(0, 0, r.breech + 8),
     along([[r.breech + 0.6, b0 + 38], [r.breech + 2.5, b0 + 40], [r.breech + 2.5, b0 + 50], [r.breech + 0.6, b0 + 52]], 40),
     along([[r.breech + 0.6, b1 - 64], [r.breech + 2.5, b1 - 62], [r.breech + 2.5, b1 - 52], [r.breech + 0.6, b1 - 50]], 40)
   ])
-  const window = new THREE.PlaneGeometry(60, 60, 10, 10).translate(b0 + 160, 0, r.breech + 11)
+  const window = new THREE.PlaneGeometry(72, 72, 12, 12).translate(b0 + 160, 0, r.breech + 11)
   {
     const pos = window.getAttribute('position')
     const col = new Float32Array(pos.count * 3)
     for (let i = 0; i < pos.count; i++) {
-      const d = Math.min(1, Math.hypot(pos.getX(i) - b0 - 160, pos.getY(i)) / 40)
+      const d = Math.min(1, Math.hypot(pos.getX(i) - b0 - 160, pos.getY(i)) / 46)
       const k = (1 - d * d) * (1 - d * d)
       col.set([0.5 + 2.2 * k, 0.4 + 4.6 * k, 0.3 + 16 * k], i * 3)
     }
@@ -327,7 +327,7 @@ export function buildModel(): Model {
   heat.depthWrite = false
   root.add(mesh(cg, kit.steel), mesh(c('breechDark'), kit.bed), mesh(c('window'), window, false, false), mesh(c('slit'), slits, false, false), mesh(c('yoke'), kit.joint), mesh(c('hoses'), kit.orange))
   const ribs = new THREE.Group()
-  ribs.add(mesh(c('ribCore'), kit.dark), mesh(c('ribs'), kit.orange))
+  ribs.add(mesh(c('ribCore'), kit.steel), mesh(c('ribs'), kit.orange))
   const sleeve = new THREE.Group()
   sleeve.add(mesh(c('sleeve'), kit.steel))
   const barrel = new THREE.Group()

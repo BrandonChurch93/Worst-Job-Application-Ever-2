@@ -3,9 +3,9 @@ import type { BossView } from '../view'
 import type { Emitter } from '../../real/types'
 import { buildModel, type Model } from './model'
 import { CANNON, GUN, HATCH, SHIELD, WING, HULL } from './numbers'
-import { BENT, DEFAULTS, FLY, K, LEFT, clamp01, poseOf, type LookOptions, type Pose } from './pose'
+import { BEAMLIT, BENT, DEFAULTS, FLY, K, LEFT, clamp01, poseOf, type LookOptions, type Pose } from './pose'
 import { hash01 } from '../../core/random'
-import { setGlow } from './kit'
+import { lookKit, setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
 import { poseGun } from './gun'
 import { makeShade } from './shade'
@@ -152,6 +152,24 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
         q.g.visible = true
         q.g.position.set(q.at[0] + p.hull.x, q.at[1] + p.hull.y, q.at[2] + p.hull.z)
         q.g.rotation.set(0, 0, 0)
+        q.g.scale.setScalar(1)
+        q.g.children[1]!.visible = true
+        const stay = LEFT.plates.findIndex((l) => l[0] === i)
+        if (stay >= 0) {
+          const lie = LEFT.plates[stay]!
+          const u = p.landed[stay]!
+          const e = 1 - (1 - u) * (1 - u)
+          const tx = (lie[1] * cyaw + lie[2] * syaw) / K
+          const ty = (lie[1] * syaw - lie[2] * cyaw) / K
+          const h = (n: number): number => hash01(40 + i, n, 77) - 0.5
+          q.g.children[1]!.visible = u <= 0
+          q.g.position.x += (tx - q.at[0]) * e
+          q.g.position.y += (ty - q.at[1]) * e
+          q.g.position.z += (HULL.tall / 2 + 1 - p.body.z - q.g.position.z) * e + 260 * 4 * u * (1 - u) * (1 - u)
+          q.g.rotation.set(h(3) * 9 * (1 - e), h(4) * 8 * (1 - e), (lie[3] - p.body.yaw) * e + h(5) * 5 * (1 - e) * e)
+          q.g.scale.setScalar(1 - (1 - LEFT.small) * e)
+          return
+        }
         const k = p.away.plates[i]!
         const jump = 1 - Math.pow(1 - Math.min(1, k * 3), 3)
         const d = Math.hypot(q.at[0], q.at[1]) || 1
@@ -218,6 +236,8 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
   for (const g of [model.hull, model.bay, model.hatch, model.shield, ...model.wings, model.cannon.barrel, ...model.legs.flatMap((l) => [l.upper, l.lower, l.foot])]) g.traverse((c) => { c.castShadow = false })
   model.button.traverse((c) => { c.castShadow = true })
   object.add(figure)
+  const kit = lookKit()
+  const lit = [kit.hull, kit.wing, kit.hatch, kit.bezel, kit.steel, kit.gunBody, kit.gunBase, kit.plateLight, kit.limb, kit.dark, kit.joint, kit.pin, kit.plate]
   const fx: Fx = makeFx(o, ctx.level ?? null)
   object.add(fx.object)
   const pose = (view: BossView, _dt: number, light?: (e: Emitter) => void): void => {
@@ -225,6 +245,7 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
     figure.visible = p.shown
     figure.position.set(p.x, p.y, 0)
     if (p.shown) { apply(model, figure, p); shade.pose(p) }
+    for (const mat of lit) mat.emissive.copy(mat.color).multiplyScalar(p.shown ? BEAMLIT * p.lit : 0)
     fx.pose(view, p, light)
   }
   const dispose = (): void => {
