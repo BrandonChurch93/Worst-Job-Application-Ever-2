@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
-import { BODY, DART, HOME } from '../src/boss/plan'
-import { BIG, CORNER, FLAT, GUARD, GUN, HEAL, MERCY, REAL_DART, SOLID, TOP } from '../src/boss/tune'
+import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
+import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
 import { HOLD, UNIT_SECONDS } from '../src/pages/step4/script'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
+import { project, toWorld } from '../src/stage/camera'
 import { filmFlow, filmOptions, isHeader, ScriptDriver, Stage, type Driver, type DriverView, type FlowEntry, type Pointer } from '../src/stage/stage'
 import type { Shape, StepIo } from '../src/stage/types'
 
@@ -17,7 +18,7 @@ const arena: Arena = { popups: [] }
 const FIGHT = /^boss\.(slabs|popups|lastStand)$/
 
 const io = (pressed: boolean, cursor: { x: number; y: number }, events: string[], mode = 'live'): StepIo =>
-  ({ dt: 1 / stepHz, time: 0, mode, pressed, pointer: { ...cursor, down: pressed }, cursor: { ...cursor, damaged: false, act: () => undefined, react: () => undefined, hurt: () => undefined, knock: () => undefined, press: () => undefined }, emit: (name: string) => void events.push(name) }) as unknown as StepIo
+  ({ dt: 1 / stepHz, time: 0, mode, pressed, pointer: { ...cursor, down: pressed }, cursor: { ...cursor, damaged: false, act: () => undefined, react: () => undefined, hurt: () => undefined, knock: () => undefined, press: () => undefined, spread: () => undefined }, emit: (name: string) => void events.push(name) }) as unknown as StepIo
 
 const volley = (f: Fight, at: { x: number; y: number }, events: string[]): void => {
   stepFight(f, io(true, at, events), arena)
@@ -63,8 +64,8 @@ const onScreen = (s: Shape): boolean => {
   const b = reach(s)
   return b.x1 > 0 && b.x0 < SCREEN.w && b.y1 > 0 && b.y0 < SCREEN.h
 }
-const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open|power-|arrow-flat|finish-|smoke)/
-const OF_THE_VISITOR = /^(muzzle-|dart-|arrow-flat)/
+const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open|power-|arrow-dent|arrow-crack-|arrow-dust-|finish-|smoke)/
+const OF_THE_VISITOR = /^(muzzle-|dart-|arrow-dent|arrow-crack-|arrow-dust-)/
 
 interface Seen { time: number; list: Shape[]; fight: Fight }
 
@@ -351,6 +352,127 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(flat.length).toBe(1)
     expect(flat[0]!.hitsCursor).toBe(true)
     expect(stage.events.filter((e) => e.hitsCursor).length).toBe(1)
+  })
+
+  it('mail of 23:13. runs the finish on the marks of the shout in the film: the arms, one finish-charge on each beat, the blast let go on the last word and held for its length', () => {
+    const stage = film()
+    stage.advance(Math.round((UNIT_SECONDS - 1) * stepHz))
+    const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+    const fall = at('boss-fall')[0]! + FINISH.fall
+    expect(at('finish-arms')[0]! - fall).toBeCloseTo(SHOUT.arms, 1)
+    const beats = at('finish-charge').map((t) => t - fall)
+    expect(beats.length).toBe(SHOUT.beats.length)
+    beats.forEach((t, i) => expect(t).toBeCloseTo(SHOUT.beats[i]!, 1))
+    expect(at('finish-fire').length).toBe(1)
+    expect(at('finish-fire')[0]! - fall).toBeCloseTo(SHOUT.fire, 1)
+    expect(at('boss-gone')[0]! - fall).toBeCloseTo(SHOUT.gone, 1)
+    expect(at('button-down')[0]! - fall).toBeCloseTo(SHOUT.gone + FINISH.settle, 1)
+  })
+
+  const grown = (held: number, steps: number): number => FINISH.steady * (held / (SHOUT.fire - SHOUT.beats[0])) + ((1 - FINISH.steady) * steps) / SHOUT.beats.length
+
+  it.each([
+    ['who presses nothing', (): boolean => false, FINISH.alone, 4, 1],
+    ['who holds the button and never lets go', (): boolean => true, SHOUT.fire - SHOUT.beats[0] + FINISH.late, 4, 1],
+    ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2, 2, grown(1.5, 2)],
+    ['who clicks once and lets go', (u: number): boolean => u >= 0.5 && u < 0.7, 0.7, 1, FINISH.small],
+    ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.2, 3, grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], 3)]
+  ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (_name, down, fires, charges, power) => {
+    for (const seed of [config.seed, 7, 1234]) {
+      const bot = new BotDriver('keen', seed)
+      let since = -1
+      const driver: Driver = {
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          if (v.page.gag() !== 'boss.collapse' && v.page.gag() !== 'boss.finish') return bot.input(v)
+          if (since < 0) since = v.time
+          return { x: v.cursor.x, y: v.cursor.y, down: down(v.time - since - FINISH.fall) }
+        }
+      }
+      const stage = new Stage({ mode: 'live', flow, pages, driver, seed })
+      let wide = 0
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'button-down') && stage.time < 140) {
+        stage.advance(1)
+        const q = (stage.frameAt(stage.time).list as Shape[]).find((x) => x.id === 'finish-blast')
+        if (q) wide = Math.max(wide, q.h / 2 / FINISH.wide)
+      }
+      const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+      const fall = at('boss-fall')[0]! + FINISH.fall
+      expect(at('finish-arms').length, `seed ${seed}`).toBe(1)
+      expect(at('finish-fire').length, `seed ${seed}`).toBe(1)
+      expect(at('finish-fire')[0]! - fall, `seed ${seed}`).toBeCloseTo(fires, 1)
+      expect(at('finish-charge').length, `seed ${seed}`).toBe(charges)
+      expect(wide, `seed ${seed}`).toBeCloseTo(power, 2)
+      expect(at('boss-gone')[0]! - at('finish-fire')[0]!).toBeCloseTo(SHOUT.gone - SHOUT.fire, 1)
+      expect(at('button-down').length).toBe(1)
+      expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
+      while (stage.page.id === 'step4' && stage.time < 160) stage.advance(1)
+      expect(stage.page.id, `seed ${seed}`).not.toBe('step4')
+    }
+  })
+
+  it.each([
+    ['who leads the arrow straight to the button and clicks it', 'leads'],
+    ['who does nothing more', 'nobody'],
+    ['who leads it about the floor and never clicks', 'strays']
+  ])('mail of 00:01, the last moment. after the blast the arrow of a visitor %s walks to the button, kneels, raises its fist and strikes it, and the blow is the press, on every seed tried', (_name, how) => {
+    for (const seed of [config.seed, 7, 1234]) {
+      const bot = new BotDriver('keen', seed)
+      let gone = -1
+      let clicked = -1
+      const button = { x: 960 + (FALLEN.x - (CLOSE.x + CLOSE.w / 2)) * 2, y: 540 + (FALLEN.y - (CLOSE.y + CLOSE.h / 2)) * 2 }
+      const driver: Driver = {
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          const g = v.page.gag()
+          if (g !== 'boss.collapse' && g !== 'boss.finish' && g !== 'boss.press') return bot.input(v)
+          if (gone < 0) return { x: v.cursor.x, y: v.cursor.y, down: false }
+          const u = v.time - gone
+          if (how === 'nobody') return { x: 400, y: 300, down: false }
+          if (how === 'strays') return { x: 960 + 900 * Math.sin(u * 1.3), y: 540 + 500 * Math.cos(u * 0.9), down: false }
+          const down = u >= 2.4 && u < 2.5
+          if (down && clicked < 0) clicked = v.time
+          return { x: button.x, y: button.y, down }
+        }
+      }
+      const stage = new Stage({ mode: 'live', flow, pages, driver, seed })
+      let out = 0
+      let fast = 0
+      let off = 0
+      let was: { x: number; y: number } | null = null
+      while (stage.page.id === 'step4' && stage.time < 200) {
+        stage.advance(1)
+        if (gone < 0 && stage.events.some((e) => e.name === 'boss-gone')) gone = stage.time
+        if (gone < 0 || stage.page.id !== 'step4' || stage.events.some((e) => e.name === 'finish-press')) continue
+        const c = { x: stage.cursor.x, y: stage.cursor.y }
+        if (c.x < CLOSE.x || c.x > CLOSE.x + CLOSE.w || c.y < CLOSE.y || c.y > CLOSE.y + CLOSE.h) out++
+        if (was) fast = Math.max(fast, Math.hypot(c.x - was.x, c.y - was.y) * stepHz)
+        was = c
+        if (how === 'leads' && stage.events.some((e) => e.name === 'finish-kneel') && off === 0) {
+          const p = project(stage.page.view()!, toWorld(FALLEN.x, FALLEN.y, 0))
+          off = Math.hypot(p.x - button.x, p.y - button.y) + 0.001
+        }
+      }
+      const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+      for (const n of ['finish-walk', 'finish-kneel', 'finish-fist', 'finish-press', 'button-press']) expect(at(n).length, `${n}, seed ${seed}`).toBe(1)
+      expect(at('finish-walk')[0]!).toBeCloseTo(at('boss-gone')[0]!, 2)
+      expect(at('finish-kneel')[0]!).toBeGreaterThanOrEqual(at('button-down')[0]!)
+      expect(at('finish-fist')[0]! - at('finish-kneel')[0]!).toBeCloseTo(LAST.knees, 1)
+      expect(at('finish-press')[0]! - at('finish-fist')[0]!).toBeCloseTo(LAST.fist + LAST.blow, 1)
+      expect(at('button-press')[0]!).toBe(at('finish-press')[0]!)
+      expect(out, `steps outside the close view, seed ${seed}`).toBe(0)
+      expect(fast, `seed ${seed}`).toBeLessThanOrEqual(Math.hypot(CLOSE.w, CLOSE.h) / LAST.most * 1.6)
+      if (how === 'leads') {
+        expect(at('finish-kneel')[0]! - at('boss-gone')[0]!, `seed ${seed}`).toBeLessThanOrEqual(2.5)
+        expect(at('finish-press')[0]! - clicked, `seed ${seed}`).toBeLessThanOrEqual(LAST.knees + LAST.fist + LAST.blow + 0.1)
+        expect(off).toBeGreaterThan(0)
+        expect(off, 'the button lies under the hand that points at it').toBeLessThan(3)
+      } else {
+        expect(at('finish-kneel')[0]! - at('boss-gone')[0]!, `seed ${seed}`).toBeLessThanOrEqual((how === 'nobody' ? LAST.alone + 0.5 : LAST.led) + LAST.most + 0.1)
+      }
+      expect(stage.longestIgnored.pointer, `seed ${seed}`).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
+      expect(stage.page.id, `seed ${seed}`).not.toBe('step4')
+    }
   })
 
   it('E. ends on the skip link at any moment of the fight, with the header and the rail off the screen', () => {

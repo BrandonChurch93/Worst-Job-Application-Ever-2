@@ -112,6 +112,7 @@ export const BIG = {
   back: 150, // px behind the button, on the side away from the shield, where it comes up
   first: 7.4, // s into the fight before its first tell
   every: 13, // s from one blast to the next tell
+  last: 0.6, // s after the banner of the last stand at which it tells once more, whatever is left of `every` (not in the film)
   tell: 1.6, // s the line of the blast lies on the ground before the blast; the boss and its shield hold still
   wide: 65, // px to each side of the line that the blast takes: 130 px across
   beam: 0.3, // s the blast stands
@@ -128,7 +129,10 @@ export const FLAT = {
   life: 1.4, // s of the whole wound, peel included
   safe: 2.1, // s after a hit in which nothing can hit again
   heal: 0.35, // s after the hit at which the boss wins health back
-  squash: 0.58 // share of its length the flat arrow is pressed to, the least the arrow's body allows
+  spread: 1.35, // times its size, in both directions, that the flat arrow is drawn at while it lies
+  mark: 2.6, // s the dent, its cracks and the dust stay on the ground after a hit
+  dent: 190, // px across of the dent
+  dust: 0.55 // s the ring of dust takes to leave
 } as const
 export const HEAL = {
   first: 6, // points of health the first hit gives back
@@ -170,11 +174,38 @@ export const SHOUT = {
 export const FINISH = {
   fall: 1, // s the beaten boss takes to fall (`boss-fall`); the marks of the shout count from its end
   arms: 0.6, // s the arrow's arms take to come out
-  late: 0.8, // s past the fire mark that a held button is waited for before the blast goes by itself
-  small: 0.25, // share of a full blast that a plain click, or nobody, fires
+  late: 0.8, // s past the whole charge that a held button is waited for before the blast goes by itself
+  alone: 6, // s after the arms come out at which the blast goes by itself, fully charged, when nobody has pressed
+  small: 0.25, // share of a full blast that a plain click fires
+  steady: 0.5, // share of the charge that grows all the time from the first press to the fire mark; the rest comes in one step on each mark
   settle: 1.4, // s the button takes to settle on the ground after the body is gone (`button-down`)
   wide: 90, // px to each side of the full blast's line as drawn
   ball: 120 // px across of the full charge as drawn
+} as const
+
+// The close view of the finish: the part of the floor the picture shows from the boss's fall to the press of Submit.
+export const CLOSE = {
+  x: 300, // px, left edge
+  y: 270, // px, top edge
+  w: 960, // px across
+  h: 540, // px down
+  edge: 40 // px inside the edge that the arrow keeps to when it is led
+} as const
+
+// The last moment: when the body is gone the arrow walks to the button that is left, drops to its knees and strikes it with its right fist.
+export const LAST = {
+  stand: [440, 650], // px, where the arrow stands for the charge and the blast
+  reach: 200, // px left of the button's middle at which it kneels
+  speed: 178, // px/s of its walk: 1.8 s from where it stood to the button
+  alone: 6, // s without a move or a press after which it walks there and strikes by itself, live site
+  led: 20, // s of being led about after which it walks there and strikes by itself, live site
+  most: 2, // s at most that its walk to the button takes when it goes by itself
+  knees: 0.7, // s to drop to its knees (`finish-kneel`)
+  breath: 0.6, // s it breathes on its knees, film only
+  fist: 0.6, // s the right fist takes to go up (`finish-fist`)
+  blow: 0.3, // s from the top of the fist to the blow on the button (`finish-press`)
+  hold: 0.5, // s the film holds after the blow before the page turns
+  held: 0.35 // s the live site holds after the blow
 } as const
 
 // E. The visitor who does nothing: the old rule that the boss tires by the clock, kept for him alone.
@@ -202,7 +233,7 @@ export const TOP = {
 export const CHANGE = {
   split: 0.7, // s after the crack at which the floor splits (`arena-split`)
   rise: 1, // s after the crack at which the slabs, pillars and panes start to rise (`arena-rise`)
-  bar: 2.1 // s after the crack at which the health bar's frame drops in (`healthbar-drop`)
+  bar: 1.7 // s after the crack at which the health bar's frame starts to drop (`healthbar-drop`); it lands at 2.12 in the arena
 } as const
 
 // Where a visitor may stand to fire, for the hint the bots follow.

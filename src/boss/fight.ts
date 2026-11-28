@@ -1,3 +1,4 @@
+import { boxToSegment } from '../arena/solids'
 import type { StepIo } from '../stage/types'
 import { FOOT_OFF, muzzleAt, smooth } from './body'
 import { FLOOR, DART, EVENT, EXPIRED_GAIN, HEALTH, HOME, LAST_CLEAR, LOOK_EASE, POPUP, SHIELD, SLOW_SECONDS, THRESHOLD } from './plan'
@@ -76,12 +77,13 @@ export interface Fight {
   vel: { x: number; y: number }
   prev: { x: number; y: number } | null
   turret: number
-  big: { due: number; t: number; beam: number; a: number; x: number; y: number }
+  big: { due: number; t: number; beam: number; a: number; x: number; y: number; last?: boolean }
   breaks: Break[]
   fallen: string[]
   walked: number
   speed: { x: number; y: number }
   at: { glance: number; gun: [number, number]; big: number; heal: number; hit: number; flat: number; weak: number; corner: [number, number, number, number] }
+  mark: { x: number; y: number } | null
 }
 
 const START = [HEALTH, THRESHOLD[0], THRESHOLD[1] + EXPIRED_GAIN] as const
@@ -101,7 +103,7 @@ export function newFight(x: number = HOME.x, y: number = HOME.y): Fight {
     dartCount: 0, sparkCount: 0, expired: -1, slow: false, safe: 0, dust: -1, hits: 0, flash: 0, look: { x: x - 600, y }, over: false,
     face: Math.PI, stall: 0, to: { x, y }, leg: 0, moveDue: MOVE.first, cornerDue: CORNER.first, cornerCount: 0, tell: null, balls: [], ballCount: 0, flat: 0, healDue: -1, heals: 0, healed: 0, idle: 0, tired: 0, glances: 0, rounds: 0, run: 0, weakDue: 0, weak: 0, by: [0, 0, 0, 0],
     vel: { x: 0, y: 0 }, prev: null, turret: 0, big: { due: BIG.first, t: -1, beam: 0, a: 0, x: 0, y: 0 }, breaks: [], fallen: [], walked: 0, speed: { x: 0, y: 0 },
-    at: { glance: -1, gun: [-1, -1], big: -1, heal: -1, hit: -1, flat: -1, weak: -1, corner: [-1, -1, -1, -1] }
+    at: { glance: -1, gun: [-1, -1], big: -1, heal: -1, hit: -1, flat: -1, weak: -1, corner: [-1, -1, -1, -1] }, mark: null
   }
 }
 
@@ -218,7 +220,7 @@ function clearPage(f: Fight): void {
   f.burst = 0
   f.tell = null
   f.leg = 0
-  f.big.t = -1
+  if (!f.big.last) f.big.t = -1
 }
 
 function wander(f: Fight, io: StepIo): { x: number; y: number; speed: number } {
@@ -308,8 +310,9 @@ function strike(f: Fight, io: StepIo, x: number, y: number, by: 0 | 1 | 2 | 3): 
   f.dust = FLAT.life
   f.hits++
   f.at.flat = f.clock
+  f.mark = { x: io.cursor.x, y: io.cursor.y }
   io.cursor.hurt('flattened', FLAT.life)
-  io.cursor.press(FLAT.squash, FLAT.down)
+  io.cursor.spread(FLAT.spread, FLAT.down)
   io.emit('flatten', x, y, true)
 }
 
@@ -463,12 +466,13 @@ function big(f: Fight, io: StepIo, walls: Wall[]): void {
       b.t = -1
       b.beam = BIG.beam
       b.due = BIG.every
+      b.last = false
       f.at.big = f.clock
       f.breaks.push({ n: f.breaks.length, at: f.clock, x0: l.x0, y0: l.y0, x1: l.x1, y1: l.y1, width: BIG.wide * 2 })
       io.emit('big-fire', f.x, f.y, false)
       io.emit('arena-break', l.x1, l.y1, false)
       for (const w of walls) {
-        if (w.kind === 'bar' || nearBox(l.x0, l.y0, l.x1, l.y1, w) > BIG.wide) continue
+        if (w.kind === 'bar' || boxToSegment(w, l.x0, l.y0, l.x1, l.y1) > BIG.wide) continue
         f.fallen.push(w.id)
         io.emit(w.kind === 'pane' ? 'pane-shatter' : 'pillar-break', (w.x0 + w.x1) / 2, (w.y0 + w.y1) / 2, false)
       }
@@ -478,7 +482,7 @@ function big(f: Fight, io: StepIo, walls: Wall[]): void {
       const across = -rx * Math.sin(b.a) + ry * Math.cos(b.a)
       if (f.safe <= 0 && along > 0 && Math.abs(across) < BIG.wide) strike(f, io, c.x, c.y, 3)
     }
-  } else if (!quiet(f)) {
+  } else if (!quiet(f) || (b.last && !bannerUp(f))) {
     b.due -= dt
     if (b.due <= 0 && f.flat <= 0 && f.windup < 0 && f.burst === 0) {
       b.t = 0
@@ -669,6 +673,10 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
     } else if (f.expired >= 0) {
       if (f.expired < 0.5) f.health = Math.min(START[2], f.health + (EXPIRED_GAIN * dt) / 0.5)
       f.expired += dt
+      if (f.expired >= 1.5 && f.expired - dt < 1.5 && io.mode !== 'film') {
+        f.big.last = true
+        f.big.due = Math.min(f.big.due, BIG.last)
+      }
     }
   }
   if (spent(f)) clearPage(f)
@@ -779,7 +787,7 @@ export function threat(f: Fight, arena: Arena, x: number, y: number): { dx: numb
     for (const t of turns) lanes.push({ x: shape === 'ring' ? f.x : from.x, y: shape === 'ring' ? f.y : from.y, dx: Math.cos((shape === 'ring' ? bearing(f, f.aim.x, f.aim.y) : a) + t), dy: Math.sin((shape === 'ring' ? bearing(f, f.aim.x, f.aim.y) : a) + t), reach: 2400, half: GUN.r + GUN.reach + GUN.berth })
   }
   if (f.big.t >= 0) lanes.push({ x: f.x, y: f.y, dx: Math.cos(f.big.a), dy: Math.sin(f.big.a), reach: 2400, half: BIG.wide + GUN.berth })
-  else if (f.big.due < BIG.wary && !quiet(f)) lanes.push({ x: f.x, y: f.y, dx: Math.cos(f.face), dy: Math.sin(f.face), reach: 2400, half: BIG.wide })
+  else if (f.big.due < BIG.wary && (!quiet(f) || f.big.last)) lanes.push({ x: f.x, y: f.y, dx: Math.cos(f.face), dy: Math.sin(f.face), reach: 2400, half: BIG.wide })
   for (const l of lanes) {
     const rx = c.x - l.x
     const ry = c.y - l.y

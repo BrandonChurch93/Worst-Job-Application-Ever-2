@@ -198,10 +198,10 @@ export class Stage {
       const gag = page.gag()
       if (gag) this.reached.add(gag)
       const inBeat = this.o.mode === 'live' || (this.index === 0 && this.pageTime >= armsBeat.from && this.pageTime < armsBeat.to)
-      this.cursor.step(pointer, emit, gag === config.cursor.armsOnlyInBeat && inBeat)
+      this.cursor.step(pointer, emit, (gag === config.cursor.armsOnlyInBeat && inBeat) || page.arms?.() === true)
       this.down = down
     } else this.down = pointer.down
-    const ignored = !playing || page.ignoring() || (page.control === 'pointer' && this.cursor.taken)
+    const ignored = !playing || page.ignoring() || (page.control === 'pointer' && this.cursor.taken && page.led?.() !== true)
     if (ignored && this.phase !== 'end') {
       this.run++
       const key = page.control

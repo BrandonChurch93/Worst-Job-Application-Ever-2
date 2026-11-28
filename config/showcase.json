@@ -57,7 +57,7 @@
       { "id": "step1", "seconds": 32 },
       { "id": "step2", "seconds": 21 },
       { "id": "pinball", "seconds": 42 },
-      { "id": "boss", "seconds": 59.35 },
+      { "id": "boss", "seconds": 60.18 },
       { "id": "decision", "seconds": 12 }
     ],
     "beats": [
@@ -92,8 +92,9 @@
       { "id": "boss.slabs", "unit": "boss", "from": 34.1, "to": 43.4, "event": "slab-fire" },
       { "id": "boss.popups", "unit": "boss", "from": 43.4, "to": 45.3, "event": "popup" },
       { "id": "boss.lastStand", "unit": "boss", "from": 45.3, "to": 47.6, "event": "session-expired" },
-      { "id": "boss.collapse", "unit": "boss", "from": 47.6, "to": 56.4, "event": "power-down" },
-      { "id": "boss.press", "unit": "boss", "from": 56.4, "to": 59.35, "event": "button-press" },
+      { "id": "boss.collapse", "unit": "boss", "from": 47.6, "to": 48.8, "event": "power-down" },
+      { "id": "boss.finish", "unit": "boss", "from": 48.8, "to": 59, "event": "finish-fire" },
+      { "id": "boss.press", "unit": "boss", "from": 59, "to": 60.18, "event": "button-press" },
       { "id": "decision.wait", "unit": "decision", "from": 0, "to": 2, "event": "hold-music" },
       { "id": "decision.letter", "unit": "decision", "from": 2, "to": 6, "event": "stamp" },
       { "id": "decision.metrics", "unit": "decision", "from": 6, "to": 10, "event": "button-press" },
@@ -388,7 +389,7 @@
     {
       "id": "boss-down",
       "unit": "boss",
-      "beat": "boss.collapse",
+      "beat": "boss.finish",
       "at": 1,
       "camera": "home",
       "image": "references/approved/boss-down.png",

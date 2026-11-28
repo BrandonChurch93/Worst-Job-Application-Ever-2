@@ -5,6 +5,9 @@ export interface Pt { x: number; y: number }
 
 export const PAGE = { w: 1920, h: 1080 }
 
+// How far the site's camera stands from the page: it looks straight down with a field of 20 degrees over 1080 px.
+export const EYE = 540 / Math.tan((10 * Math.PI) / 180)
+
 export const ARENA = {
   // The scene change, on view.time from 0 (the frame the Submit button breaks out).
   changeSeconds: 2.4,
@@ -19,18 +22,21 @@ export const ARENA = {
   // The health bar drops into place and lands.
   barAt: 1.7, barLands: 2.12,
   // Sizes.
-  seamHalf: 9, chamfer: 3, seamDepth: 18,
+  seamHalf: 9, chamfer: 5, seamDepth: 24,
   pillar: { side: 56, foot: 76, footHigh: 7, high: 210 },
   pane: { thick: 14, high: 240 },
-  // The picture is drawn a little from below the page: every standing thing leans up the screen by this much of its height.
-  lean: 0.5,
-  gun: { base: 46, high: 34, barrel: 78, scale: 1.2 },
+  // The picture is drawn a little from below and from the right of the page: every standing thing leans up the screen by `lean` of its height and to the left by `leanX` of it. Its foot stays where it is: the foot is what stops a shot.
+  lean: 0.5, leanX: -0.26,
+  // The corner guns: the look's rotary gun at this scale (the boss carries it at 0.383), and how far its muzzle is from its foot, in page px.
+  gun: { scale: 0.62, reach: 122 },
   slot: { x: 960, y: 960, w: 270, h: 66 },
   bar: { x0: 590, y0: 66, x1: 1333, y1: 137, trackInset: 22, trackHalf: 19, high: 9 },
   label: { x: 960, y: 40, px: 30, font: 'inter-600' },
   corners: [{ x: 89, y: 82 }, { x: 1831, y: 82 }, { x: 82, y: 987 }, { x: 1824, y: 981 }] as Pt[],
-  // Where the boss's centre may be so that his hull stays on the middle slab.
+  // Where the boss's centre may be, as the fight has it.
   safe: { x0: 640, y0: 330, x1: 1280, y1: 770 },
+  // A rectangle that lies wholly on the middle slab, clear of its seams. The rectangle above is the fight's own, for the boss's centre: its corners reach past the slanted seams by up to 53 px.
+  inside: { x0: 700, y0: 385, x1: 1235, y1: 735 },
   // The well the page's ground is cut with while the arena is on.
   wellDepth: 60
 } as const
