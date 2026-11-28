@@ -13,6 +13,10 @@
       "eleven_v3": {
         "perCharacter": 0.4384,
         "how": "MEASURED 2026-11-27T23:06:02Z on call 181: 32 credits for 73 characters, reported by the response."
+      },
+      "eleven_v4": {
+        "perCharacter": 0.4483,
+        "how": "MEASURED 2026-11-28T00:26:48Z on call 188: 26 credits for 58 characters, reported by the response; the account's usage moved by 0 across the call."
       }
     }
   },
@@ -1874,6 +1878,116 @@
       "answer": "HTTP 200, 2.6 s",
       "cost": 56,
       "how": "reported by the response"
+    },
+    {
+      "n": 186,
+      "time": "2026-11-28T00:07:09Z",
+      "endpoint": "GET /v1/user/subscription",
+      "what": "the account's quota",
+      "asked": "nothing, a read",
+      "answer": "plan creator, active: 17512 of 131000 used by every build on the account, reset 2026-12-25T16:56:49Z",
+      "cost": 0,
+      "how": "a read costs nothing"
+    },
+    {
+      "n": 187,
+      "time": "2026-11-28T00:23:17Z",
+      "endpoint": "GET /v1/models",
+      "what": "which models may speak",
+      "asked": "nothing, a read",
+      "answer": "9 models that speak",
+      "cost": 0,
+      "how": "a read costs nothing"
+    },
+    {
+      "n": 188,
+      "time": "2026-11-28T00:26:48Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT A round 2 take 1, voice Jerry B. Heroic Action Protagonist (change note 003 update 7)",
+      "asked": "58 characters, stability 0, model eleven_v4",
+      "answer": "HTTP 200, 8.8 s",
+      "cost": 26,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 189,
+      "time": "2026-11-28T00:27:10Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT B round 2 take 1, voice Jerry B. Heroic Action Protagonist (change note 003 update 7)",
+      "asked": "54 characters, stability 0, model eleven_v4",
+      "answer": "HTTP 200, 1.2 s",
+      "cost": 24,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 190,
+      "time": "2026-11-28T00:27:15Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT A round 2 take 1, voice Jerry B. Gruff and Gritty Commander (change note 003 update 7)",
+      "asked": "58 characters, stability 0, model eleven_v4",
+      "answer": "HTTP 200, 6.1 s",
+      "cost": 26,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 191,
+      "time": "2026-11-28T00:27:24Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT B round 2 take 1, voice Jerry B. Gruff and Gritty Commander (change note 003 update 7)",
+      "asked": "54 characters, stability 0, model eleven_v4",
+      "answer": "HTTP 200, 1.4 s",
+      "cost": 24,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 192,
+      "time": "2026-11-28T00:29:57Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT A round 2 take 2, voice Jerry B. Gruff and Gritty Commander, speed 0.8 (change note 003 update 7)",
+      "asked": "69 characters, stability 0, speed 0.8, model eleven_v4",
+      "answer": "HTTP 200, 1.5 s",
+      "cost": 30,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 193,
+      "time": "2026-11-28T00:30:02Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT B round 2 take 2, voice Jerry B. Gruff and Gritty Commander, speed 0.8 (change note 003 update 7)",
+      "asked": "69 characters, stability 0, speed 0.8, model eleven_v4",
+      "answer": "HTTP 200, 1.7 s",
+      "cost": 30,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 194,
+      "time": "2026-11-28T00:30:32Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT A round 2 take 3, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7)",
+      "asked": "75 characters, stability 0, speed 0.7, model eleven_v4",
+      "answer": "HTTP 200, 1.4 s",
+      "cost": 33,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 195,
+      "time": "2026-11-28T00:30:38Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT B round 2 take 3, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7)",
+      "asked": "86 characters, stability 0, speed 0.7, model eleven_v4",
+      "answer": "HTTP 200, 1.5 s",
+      "cost": 38,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 196,
+      "time": "2026-11-28T00:31:24Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "SHOUT A round 2 take 4, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7)",
+      "asked": "74 characters, stability 0, speed 0.7, model eleven_v4",
+      "answer": "HTTP 200, 1.4 s",
+      "cost": 33,
+      "how": "reported by the response; the account's usage moved by 0 across the call"
     }
   ]
 }
