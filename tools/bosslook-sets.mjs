@@ -119,10 +119,11 @@ const MORE = {
     const { sharp, at, outDir } = c
     const fin = { x0: 470, y0: 650, x1: 960, y1: 650, power: 1, firedAt: 46 }
     const lying = { ...out, x: 960, y: 650, stage: 2, health: 0, beaten: 1 }
+    const burn = { x0: 470, y0: 650, x1: 960, y1: 650 }
     const items = [0.12, 0.3, 0.5, 0.7, 0.86, 0.92].map((g) => [`BUILD: gone ${g.toFixed(2)} (${(g * 2.13).toFixed(2)} s)`, viewOf({ time: 46 + g * 2.13, phase: 'beaten', finish: fin, arrow: { x: 440, y: 650, flat: 0, flatAt: null } }, { ...lying, gone: g })])
-    items.push(['BUILD: gone 1, what is left', viewOf({ time: 50, phase: 'beaten' }, { ...lying, gone: 1 })])
-    items.push(['BUILD: the fist is down (0.07 s after pressedAt)', viewOf({ time: 52.07, phase: 'beaten' }, { ...lying, gone: 1, pressedAt: 52 })])
-    items.push(['BUILD: the fist has left (0.15 s after releasedAt)', viewOf({ time: 54.15, phase: 'beaten' }, { ...lying, gone: 1, pressedAt: 52, releasedAt: 54 })])
+    items.push(['BUILD: gone 1, what is left', viewOf({ time: 50, phase: 'beaten', scorch: burn }, { ...lying, gone: 1 })])
+    items.push(['BUILD: the fist is down (0.07 s after pressedAt)', viewOf({ time: 52.07, phase: 'beaten', scorch: burn }, { ...lying, gone: 1, pressedAt: 52 })])
+    items.push(['BUILD: the fist has left (0.15 s after releasedAt)', viewOf({ time: 54.15, phase: 'beaten', scorch: burn }, { ...lying, gone: 1, pressedAt: 52, releasedAt: 54 })])
     const cells = []
     for (const name of ['finish-blast.png', 'finish-button-left.png']) cells.push({ png: await sharp(target(at, name)).resize({ width: 960 }).png().toBuffer(), caption: `TARGET: ${name}` })
     for (const [caption, view] of items) {

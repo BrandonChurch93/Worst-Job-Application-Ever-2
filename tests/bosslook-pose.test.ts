@@ -195,4 +195,23 @@ describe('look 1: the finishing blast', () => {
     expect(at(4, left).top).toBeCloseTo(at(0).top, 5)
     for (const name of ['boss-fall', 'finish-fire', 'boss-gone', 'button-down']) expect(EVENTS, name).toHaveProperty(name)
   })
+
+  it('lays what the blast leaves downrange of the button and keeps it there when the arrow walks', () => {
+    for (const l of LEFT.lie) expect(l[0]).toBeGreaterThan(0)
+    for (const l of LEFT.plates) expect(l[1]).toBeGreaterThan(0)
+    expect(LEFT.shards.near).toBeGreaterThan(0)
+    expect(new Set(LEFT.plates.map((l) => l[4])).size).toBe(LEFT.plates.length)
+    const lying = { turret: 1, locked: true, stage: 2 as const, health: 0, beaten: 1, gone: 1 }
+    const scorch = { x0: 470, y0: 650, x1: 960, y1: 650 }
+    for (const arrow of [{ x: 440, y: 650 }, { x: 900, y: 300 }, { x: 1500, y: 700 }]) {
+      const p = poseOf(view({ phase: 'beaten', scorch, arrow: { ...arrow, flat: 0, flatAt: null } }, lying))
+      expect(p.blow[0]).toBeCloseTo(1, 5)
+      expect(p.blow[1]).toBeCloseTo(0, 5)
+    }
+    const bare = poseOf(view({ phase: 'beaten', arrow: { x: 1500, y: 700, flat: 0, flatAt: null } }, lying))
+    expect(bare.blow).toEqual([1, 0])
+    const up = poseOf(view({ phase: 'beaten', scorch: { x0: 960, y0: 950, x1: 960, y1: 650 } }, lying))
+    expect(up.blow[0]).toBeCloseTo(0, 5)
+    expect(up.blow[1]).toBeCloseTo(1, 5)
+  })
 })
