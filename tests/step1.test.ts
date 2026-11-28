@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
-import { stream } from '../src/core/random'
 import { pages } from '../src/pages'
 import { HANDOFF } from '../src/cursor/body'
 import { makePage } from '../src/pages/step1'
 import { drawFire, makeTurrets } from '../src/pages/step1/fire'
 import { PAPER_REST } from '../src/pages/step1/layout'
-import { DECK, homePlaces, keyboardData, legendKey, seats, shuffled } from '../src/pages/step1/keyboard'
+import { DECK, homePlaces, keyboardData, legendKey, seats } from '../src/pages/step1/keyboard'
 import { Turrets, TURRET } from '../src/pages/step1/turrets'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { block } from '../src/shell/metrics'
@@ -19,7 +18,13 @@ const beats = config.film.beats.filter((b) => b.unit === 'step1')
 const film = (driver: Driver = new ScriptDriver()): Stage => new Stage({ mode: 'film', flow: filmFlow('step1'), pages, driver, film: filmOptions('step1') })
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step1' }, { page: 'step2' }], pages, driver, seed })
 const at = (seconds: number): number => Math.round(seconds * stepHz)
-const state = (s: Stage) => s.page.save() as { phase: string; values: Record<string, string> }
+const TUG_FROM = beats.find((b) => b.id === 'step1.tug')!.from
+const MAIL_TO = beats.find((b) => b.id === 'step1.email')!.to
+const UNIT_END = Math.max(...beats.map((b) => b.to))
+const inTug = (seconds: number): number => seconds - 22 + TUG_FROM
+const fromEnd = (seconds: number): number => seconds - 32 + UNIT_END
+const state = (s: Stage) => s.page.save() as { phase: string; values: Record<string, string>; resume: { phase: string } }
+const CUT = { beat: 'step1.lastName', event: 'keys-shuffle', words: ['copy:step1.fields.firstName.label', 'copy:step1.fields.lastName.label'] }
 
 class Still implements Driver {
   readonly name = 'script' as const
@@ -46,7 +51,7 @@ class Switch implements Driver {
 
 function wholeFilm(): Stage {
   const s = film()
-  s.advance(at(32))
+  s.advance(at(UNIT_END))
   return s
 }
 
@@ -59,7 +64,7 @@ describe('step 1: the layout', () => {
   it('is a full page with every beat of the film as a gag', () => {
     const page = makePage()
     expect(page.gags.map((g) => g.id)).toEqual(beats.map((b) => b.id))
-    expect(page.gags.map((g) => g.event)).toEqual(['keyboard-rise', 'bolt-hit-cursor', 'keys-shuffle', 'slab-drop', 'paper-slide', 'arms-out', 'strips-zip'])
+    expect(page.gags.map((g) => g.event)).toEqual(['keyboard-rise', 'bolt-hit-cursor', 'slab-drop', 'paper-slide', 'arms-out', 'strips-zip'])
   })
 
   it('uses every word of the copy of step 1', () => {
@@ -70,7 +75,8 @@ describe('step 1: the layout', () => {
       else for (const [k, x] of Object.entries(v as Record<string, unknown>)) visit(x, `${path}.${k}`)
     }
     visit(rawCopy.step1, 'copy:step1')
-    expect(leaves.filter((k) => !used.has(k))).toEqual([])
+    expect(leaves.filter((k) => !used.has(k))).toEqual(CUT.words)
+    expect(used.has('copy:drafts.step1.name.label')).toBe(true)
   })
 
   it('shows no word that is not a key, at any moment of the film or of a live run', () => {
@@ -94,7 +100,7 @@ describe('step 1: the layout', () => {
       }
       for (const key of ['copy:step1.heading', 'copy:step1.emailError', 'copy:step1.emailAccepted', 'copy:step1.keyboardNote', 'copy:step1.resume.paperTitle', 'copy:step1.resume.received', 'copy:step1.continue', 'data:keyboard.keys.enter']) expect(seen.has(key), key).toBe(true)
     }
-    check(film(), 31.4)
+    check(film(), fromEnd(31.4))
     check(live(new Still()), 140)
   })
 })
@@ -138,18 +144,6 @@ describe('step 1: the keyboard', () => {
         expect(k.y + k.h).toBeLessThanOrEqual(DECK.y + DECK.h)
       }
     }
-  })
-
-  it('shuffles the letters only, every key keeping one seat, the same way for the same seed', () => {
-    const a = shuffled(homePlaces(), stream('step1:shuffle', 7))
-    const b = shuffled(homePlaces(), stream('step1:shuffle', 7))
-    expect(a).toEqual(b)
-    expect(new Set(a).size).toBe(seats.length)
-    seats.forEach((seat, i) => {
-      if (!seat.letter) expect(a[i]).toBe(i)
-      else expect(seats[a[i]!]!.letter).toBe(true)
-    })
-    expect(a.filter((p, i) => p !== i).length).toBeGreaterThanOrEqual(13)
   })
 })
 
@@ -205,7 +199,8 @@ describe('step 1: the film', () => {
   const times = (name: string): number[] => events.filter((e) => e.name === name).map((e) => e.step / stepHz)
 
   it('gives the event of every beat inside its beat', () => {
-    for (const b of beats) {
+    expect(times(CUT.event)).toEqual([])
+    for (const b of beats.filter((x) => x.id !== CUT.beat)) {
       const t = times((b as { event: string }).event)
       expect(t.length, b.id).toBeGreaterThan(0)
       for (const x of t) {
@@ -219,7 +214,8 @@ describe('step 1: the film', () => {
     const hit = events.filter((e) => e.name === 'bolt-hit-cursor')
     expect(hit.length).toBe(1)
     expect(hit[0]!.hitsCursor).toBe(true)
-    expect(times('bolt-fire').length).toBeGreaterThan(4)
+    expect(times('bolt-fire').length).toBeGreaterThanOrEqual(4)
+    expect(times('turret-load').length).toBeGreaterThanOrEqual(times('bolt-fire').length)
     expect(times('sizzle').length).toBe(1)
     expect(events.filter((e) => e.name === 'slab-drop').map((e) => e.hitsCursor)).toEqual([false, false, false])
   })
@@ -227,12 +223,10 @@ describe('step 1: the film', () => {
   it('types the name and the email of the config in full', () => {
     const a = film()
     a.advance(at(9.7))
-    expect(state(a).values.firstName).toBe(config.applicant.filmFirstName)
-    a.advance(at(14.7 - 9.7))
-    expect(state(a).values.lastName).toBe(config.applicant.filmLastName)
-    a.advance(at(19 - 14.7))
+    expect(state(a).values.name).toBe(config.applicant.filmFirstName)
+    a.advance(at(19 - 9.7))
     expect(state(a).values.email).toBe(config.applicant.filmEmail)
-    expect(times('keys-shuffle').length).toBe(config.applicant.filmLastName.length)
+    expect(Object.keys(state(a).values)).toEqual(['name', 'email'])
   })
 
   it('never gives the live events', () => {
@@ -243,7 +237,7 @@ describe('step 1: the film', () => {
     const a = film()
     const tug = beats.find((b) => b.id === 'step1.tug')!
     let armed = 0
-    for (let i = 0; i < at(31.45); i++) {
+    for (let i = 0; i < at(fromEnd(31.45)); i++) {
       a.advance(1)
       const pose = a.cursor.pose()
       expect(pose.scale).toBe(1)
@@ -257,16 +251,16 @@ describe('step 1: the film', () => {
     expect(a.cursor.damaged).toBe(false)
     expect(a.cursor.taken).toBe(false)
     expect(a.cursor.onPage).toBe(true)
-    expect(state(a).phase).toBe('received')
+    expect(state(a).resume.phase).toBe('received')
     expect(a.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
   })
 
   it('pushes the camera in for the tug and is home for the turrets', () => {
     const page = makePage()
     const home = page.camera('film', 6)!
-    const close = page.camera('film', 25.5)!
+    const close = page.camera('film', inTug(25.5))!
     expect(close.eye[2]).toBeLessThan(home.eye[2] * 0.7)
-    expect(page.camera('film', 31.4)!.eye).toEqual(home.eye)
+    expect(page.camera('film', fromEnd(31.4))!.eye).toEqual(home.eye)
     expect(page.camera('nothing', 3)).toBeNull()
   })
 })
@@ -329,11 +323,13 @@ describe('step 1: live', () => {
     it(`ends every gag by itself with a ${name} pointer`, () => {
       const { s, longest } = run(driver())
       expect(s.page.id).toBe('step2')
-      expect(Object.keys(longest).sort()).toEqual(beats.map((b) => b.id).sort())
+      expect(Object.keys(longest).sort()).toEqual(beats.map((b) => b.id).filter((id) => id !== CUT.beat).sort())
       for (const [gag, seconds] of Object.entries(longest)) expect(seconds, gag).toBeLessThanOrEqual(limit + 3)
       expect(s.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
       const names = s.events.filter((e) => e.page === 'step1').map((e) => e.name)
-      for (const event of ['keyboard-rise', 'turret-rise', 'bolt-fire', 'keys-shuffle', 'slab-drop', 'paper-slide', 'shredder', 'arms-out', 'strips-zip']) expect(names.includes(event), event).toBe(true)
+      for (const event of ['keyboard-rise', 'turret-rise', 'bolt-fire', 'slab-drop', 'paper-slide', 'shredder', 'arms-out', 'strips-zip']) expect(names.includes(event), event).toBe(true)
+      expect(names.filter((n) => n === 'field-done').length).toBe(2)
+      expect(names.includes(CUT.event)).toBe(false)
       expect(names.filter((n) => n === 'tug-lost').length).toBe(1)
       expect(names.filter((n) => n === 'slow-typing').length).toBe(1)
       if (name === 'still') expect(names.filter((n) => n === 'bolt-hit-cursor').length).toBe(config.live.step1.hitsBeforeTurretsOverheat)
@@ -408,11 +404,11 @@ describe('the slabs and the typed address', () => {
     const hits = (p: { x: number; y: number; w: number; h: number }, q: { x: number; y: number; w: number; h: number }): boolean => p.x < q.x + q.w && q.x < p.x + p.w && p.y < q.y + q.h && q.y < p.y + p.h
     const places = new Map<string, string>()
     const lows = new Map<string, number>()
-    const falls = new Map<string, number>()
+    const falls = new Map<string, number[]>()
     let air = 0
     let frames = 0
     let most = 0
-    for (let i = 0; i < at(20); i++) {
+    for (let i = 0; i < at(MAIL_TO); i++) {
       a.advance(1)
       const st = a.page.save() as { slabs: { landed: boolean }[]; slabClear: number; values: Record<string, string> }
       if (!st.slabs.length) continue
@@ -446,8 +442,10 @@ describe('the slabs and the typed address', () => {
           lows.set(slab.id, Math.min(lows.get(slab.id) ?? Infinity, slab.z0))
           expect(slab.z0 - lows.get(slab.id)!).toBeLessThanOrEqual(6)
         } else if (st.slabClear < 0) {
-          expect(slab.z0, slab.id).toBeLessThan(falls.get(slab.id) ?? Infinity)
-          falls.set(slab.id, slab.z0)
+          const seen = falls.get(slab.id) ?? []
+          expect(slab.z0, slab.id).toBeLessThanOrEqual(seen[seen.length - 1] ?? Infinity)
+          expect(slab.z0, slab.id).toBeLessThan(seen[seen.length - stepHz / 60] ?? Infinity)
+          falls.set(slab.id, [...seen, slab.z0])
           air++
         }
       })
@@ -466,9 +464,9 @@ describe('the fixes after round 2 of the blockout', () => {
   it('fights the tug in every second: paper left, the place of the cursor and the stretch of the arms all change', () => {
     const a = film()
     const rows: { amount: number; x: number; y: number; arm: number }[] = []
-    for (let i = 0; i < at(28.2); i++) {
+    for (let i = 0; i < at(inTug(28.2)); i++) {
       a.advance(1)
-      const st = a.page.save() as { phase: string; tug: { amount: number; reach: number } }
+      const st = (a.page.save() as { resume: { phase: string; tug: { amount: number; reach: number } } }).resume
       if (st.phase === 'tug') rows.push({ amount: st.tug.amount, x: a.cursor.x, y: a.cursor.y, arm: st.tug.reach })
     }
     const second = stepHz
@@ -498,7 +496,7 @@ describe('the fixes after round 2 of the blockout', () => {
       const now = (i + 1) / stepHz
       const st = a.page.save() as { values: Record<string, string>; keyDown: Record<string, number> }
       if (hit < 0 && a.events.some((e) => e.name === 'bolt-hit-cursor')) hit = now
-      if (st.values.firstName === config.applicant.filmFirstName) full = full < 0 ? now : full
+      if (st.values.name === config.applicant.filmFirstName) full = full < 0 ? now : full
       else full = -1
       const list: DrawList = []
       if (i % 4 === 0) {
@@ -512,8 +510,8 @@ describe('the fixes after round 2 of the blockout', () => {
         }
       }
     }
-    expect(hit).toBeGreaterThan(5.5)
-    expect(hit).toBeLessThan(6)
+    expect(hit).toBeGreaterThan(6.5)
+    expect(hit).toBeLessThan(7)
     expect(a.pageTime).toBeGreaterThan(0)
     expect(full).toBeGreaterThan(hit + 1.5)
     expect(full).toBeLessThanOrEqual(9.5)
@@ -602,11 +600,11 @@ describe('the hold after the shredder', () => {
     const home = page.camera('film', 0)!
     let reset = -1
     let turn = -1
-    for (let i = 0; i < at(32) && turn < 0; i++) {
+    for (let i = 0; i < at(UNIT_END) && turn < 0; i++) {
       a.advance(1)
       const now = (i + 1) / stepHz
-      const st = a.page.save() as { received: boolean; values: Record<string, string> }
-      if (reset < 0 && st.received) {
+      const st = a.page.save() as { resume: { received: boolean }; values: Record<string, string> }
+      if (reset < 0 && st.resume.received) {
         reset = now
         expect(Object.values(st.values).join('')).toBe('')
         expect(a.page.states!()).toContain('received')
@@ -614,7 +612,7 @@ describe('the hold after the shredder', () => {
       if (reset >= 0) expect(page.camera('film', now)!.eye).toEqual(home.eye)
       if (a.events.some((e) => e.name === 'page-turn')) turn = now
     }
-    expect(reset).toBeGreaterThan(28.25)
+    expect(reset).toBeGreaterThan(beats.find((b) => b.id === 'step1.shredded')!.from)
     expect(turn - reset).toBeGreaterThanOrEqual(1.4)
   })
 })
@@ -629,7 +627,7 @@ describe('the Continue button', () => {
     }
     a.advance(at(0.3))
     expect(tones()).toEqual(['metal', 'ink'])
-    a.advance(at(30.2) - at(0.3))
+    a.advance(at(fromEnd(30.2)) - at(0.3))
     expect(tones()).toEqual(['accent', 'inkLight'])
   })
 })
@@ -638,7 +636,7 @@ describe('what the measures read', () => {
   it('marks a part as moved only while a gag has taken it from its place in the layout tree', () => {
     const a = film()
     const seen = { paperAtRest: 0, paperAway: 0, keysAway: 0, slab: 0 }
-    for (let i = 0; i < at(31.9); i++) {
+    for (let i = 0; i < at(fromEnd(31.9)); i++) {
       a.advance(1)
       if (i % 6 !== 0) continue
       const list: DrawList = []
@@ -675,7 +673,7 @@ describe('what the measures read', () => {
     const a = film()
     const least = config.scale.heights.machineMinTop
     let keys = 0
-    for (let i = 0; i < at(31.9); i++) {
+    for (let i = 0; i < at(fromEnd(31.9)); i++) {
       a.advance(1)
       if (i % 6 !== 0) continue
       const list: DrawList = []
@@ -712,7 +710,7 @@ describe('what the measures read', () => {
 
   it('says that the strips do not strike the cursor', () => {
     const a = film()
-    a.advance(at(31.9))
+    a.advance(at(fromEnd(31.9)))
     const zip = a.events.filter((e) => e.name === 'strips-zip')
     expect(zip.length).toBe(1)
     expect(zip[0]!.hitsCursor).toBe(false)

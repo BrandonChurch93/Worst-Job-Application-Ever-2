@@ -484,7 +484,7 @@ export const HUB_HOUSED = { drop: 0.3 }
 interface Kept { ring: THREE.Mesh; body: THREE.Group; wheel: THREE.Group; face: THREE.Mesh; shades: THREE.InstancedMesh; hub: THREE.Mesh; stop: THREE.Mesh; plate: THREE.Mesh; cast: THREE.Mesh; seat: THREE.Mesh; glint: THREE.Mesh; inner: THREE.Mesh; hubRing: THREE.Mesh }
 const place = new THREE.Matrix4()
 
-const plainDial: PartMaker = {
+export const plainDial: PartMaker = {
   key(s: Shape): string | null {
     if (!OWN.test(s.id)) return null
     return WHEEL.test(s.id) ? 'dial' : ''

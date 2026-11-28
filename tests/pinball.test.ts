@@ -3,6 +3,7 @@ import { config, stepHz } from '../src/config'
 import { copyKeysOf } from '../src/copy'
 import { pages } from '../src/pages'
 import { makePage, T } from '../src/pages/step3'
+import { filmOf } from '../src/pages/step3/clock'
 import { websiteLevel } from '../src/real'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords } from '../src/shell/words'
@@ -151,8 +152,8 @@ describe('the pinball page', () => {
       if (s.page.id === 'step3') seen.push({ t: s.time, v: at() })
     }
     const until = (t: number) => seen.filter((x) => x.t <= t)
-    expect(Math.min(...until(T.lightsDown - 0.05).map((x) => x.v))).toBe(1)
-    const dark = seen.filter((x) => x.t >= T.powerOn + 0.3 && x.t <= T.streetOpen)
+    expect(Math.min(...until(filmOf(T.lightsDown) - 0.05).map((x) => x.v))).toBe(1)
+    const dark = seen.filter((x) => x.t >= filmOf(T.powerOn) + 0.3 && x.t <= filmOf(T.streetOpen))
     expect(dark.length).toBeGreaterThan(300)
     for (const x of dark) expect(x.v).toBeCloseTo(dusk, 6)
     for (let i = 1; i < seen.length; i++) expect(Math.abs(seen[i]!.v - seen[i - 1]!.v)).toBeLessThan(0.07)
@@ -192,7 +193,7 @@ describe('the pinball page', () => {
       })
       note('red', lights[2]![3]!)
       note('blue', lights[2]![4]!)
-      if (Math.abs(s.time - (T.wake + 0.5)) < 0.02) expect(lights[0]![0]!).toBeGreaterThan(lights[2]![0]!)
+      if (Math.abs(s.time - (filmOf(T.wake) + 0.5)) < 0.02) expect(lights[0]![0]!).toBeGreaterThan(lights[2]![0]!)
       last = lights
     }
     expect(low.bumper).toBeLessThan(0.1)

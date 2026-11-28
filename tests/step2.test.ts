@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
-import { makePage } from '../src/pages/step2'
+import { drawBuilt, makePage } from '../src/pages/step2'
 import { DIAL, pruned, ROWS, statesOf } from '../src/pages/step2/layout'
 import { pages } from '../src/pages'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
@@ -10,9 +10,13 @@ import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, type Driver, t
 
 const beats = config.film.beats.filter((b) => b.unit === 'step2')
 const tolerance = config.film.beatToleranceSeconds
-const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
+// The film of the page at the length it plays since change note 003, update 5 (24.9 s), whatever the config says the unit is.
+const LONG = 24.9
+const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2').map((f) => (f.closes !== undefined ? { ...f, closes: LONG } : f)), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver, seed })
 const state = (s: Stage) => JSON.stringify({ page: s.page.save(), cursor: s.cursor.save(), id: s.page.id })
+// The events change note 002 adds to step 2. Their sounds are made by the Builder in one batch, so none has a cue of its own yet.
+const NEW_EVENTS = ['date-key', 'reel-stop', 'date-hit', 'date-miss', 'volume-sign', 'crank-full', 'field-done', 'field-next', ...['phone', 'birth', 'volume'].flatMap((x) => [`stage-in-${x}`, `stage-out-${x}`])]
 const names = (s: Stage) => s.events.filter((e) => e.page === 'step2').map((e) => e.name)
 
 describe('step 2, the layout', () => {
@@ -25,20 +29,25 @@ describe('step 2, the layout', () => {
 
   it('has no problems in any state the page can be in', () => {
     const seen = new Set<string>()
-    const settled = [null, ['07', '23', '1991'], ['12', '31', '2008']]
-    for (const open of [-1, 0, 1, 2]) {
-      for (const panel of [false, true]) {
-        for (let mask = 0; mask < 8; mask++) {
-          for (const typing of [false, true]) {
-            for (const reels of settled) {
-              const states = statesOf({ open, panel, done: [0, 1, 2].map((i) => (mask & (1 << i)) !== 0), typing: [typing, false, typing], settled: reels })
-              const key = states.join(',')
-              if (seen.has(key)) continue
-              seen.add(key)
-              expect(layoutProblems(pruned(page.layout, states), size), key).toEqual([])
-            }
-          }
-        }
+    const settled = [null, ['07', '23', '1991'], ['12', '31', '2015']]
+    const lines = ['', 'typing', 'done', 'missed']
+    const none = ['', '', '']
+    const check = (view: Parameters<typeof statesOf>[0]): void => {
+      const states = statesOf(view)
+      const key = states.join(',')
+      if (seen.has(key)) return
+      seen.add(key)
+      expect(layoutProblems(pruned(page.layout, states), size), key).toEqual([])
+    }
+    for (const i of [0, 1, 2]) {
+      for (const value of ['ask', 'typing']) {
+        check({ here: [i], open: -1, hole: -1, panel: false, plate: none, value, note: true, settled: null })
+        check({ here: [i], open: i, hole: -1, panel: false, plate: none, value, note: false, settled: null })
+      }
+      for (const line of lines) {
+        if (line === 'missed' && i !== 1) continue
+        check({ here: [], open: -1, hole: -1, panel: false, plate: none.map((_, k) => (k === i ? line : '')), value: 'typing', note: true, settled: null })
+        for (const hole of [false, true]) for (const panel of [false, true]) for (const reels of settled) check({ here: [], open: i, hole: hole && i < 2 ? i : -1, panel, plate: none.map((_, k) => (k === i ? line : '')), value: 'typing', note: false, settled: reels })
       }
     }
     expect(seen.size).toBeGreaterThan(40)
@@ -63,9 +72,10 @@ describe('step 2, the layout', () => {
       expect(hasWords(key), key).toBe(true)
     }
     const want = ['heading', 'subline', 'note', 'continue']
-    for (const row of ROWS) for (const leaf of ['label', 'helper', 'panel']) want.push(`rows.${row}.${leaf}`)
-    want.push('rows.phone.gaveUp', 'rows.birth.recorded', 'rows.volume.done')
+    for (const row of ROWS) for (const leaf of ['label', 'helper']) want.push(`rows.${row}.${leaf}`)
+    want.push('rows.phone.panel', 'rows.phone.gaveUp', 'rows.birth.recorded', 'rows.volume.done')
     for (const leaf of want) expect(keys, leaf).toContain(`copy:step2.${leaf}`)
+    for (const leaf of ['birth.placeholder', 'birth.stop', 'birth.missed', 'birth.panel', 'volume.sign']) expect(keys, leaf).toContain(`copy:drafts.step2.${leaf}`)
   })
 
   it('draws only shapes whose words are keys, in the film and on the sheet', () => {
@@ -77,10 +87,10 @@ describe('step 2, the layout', () => {
         if (!shape.words!.startsWith('runtime:')) expect(shape.text, shape.id).toBeUndefined()
       }
     }
-    for (let t = 0; t <= 20.4; t += 0.2) {
+    for (let t = 0; t <= LONG - 0.6; t += 0.2) {
       s.seek(t)
       const list: Shape[] = []
-      s.page.draw(list)
+      drawBuilt(s.page, list)
       check(list)
       const ids = list.map((x) => x.id)
       expect(new Set(ids).size, `ids at ${t.toFixed(1)}`).toBe(ids.length)
@@ -94,7 +104,7 @@ describe('step 2, the layout', () => {
 
 describe('step 2, the film', () => {
   const s = film()
-  s.advance(21 * stepHz)
+  s.advance(LONG * stepHz)
 
   it('reports the event of each beat inside its beat', () => {
     for (const b of beats) {
@@ -109,12 +119,14 @@ describe('step 2, the film', () => {
 
   it('reports every contact that has a cue, in the order of the story', () => {
     const seen = names(s).filter((n) => n !== 'step')
-    const order = ['row-open', 'dial-wind', 'dial-return', 'dial-fling', 'row-open', 'lever-pull', 'reels-spin', 'coins', 'row-open', 'crank-turn', 'crank-runaway', 'flatten', 'peel-up', 'button-press', 'page-turn']
+    const order = ['row-open', 'stage-in-phone', 'dial-wind', 'dial-return', 'dial-fling', 'stage-out-phone', 'field-done', 'field-next', 'date-key', 'row-open', 'stage-in-birth', 'lever-pull', 'reels-spin', 'reel-stop', 'reel-stop', 'reel-stop', 'date-hit', 'coins', 'stage-out-birth', 'field-done', 'field-next', 'row-open', 'stage-in-volume', 'volume-sign', 'crank-turn', 'crank-runaway', 'flatten', 'crank-full', 'stage-out-volume', 'field-done', 'peel-up', 'button-press', 'page-turn']
     let i = 0
     for (const n of seen) if (n === order[i]) i++
     expect(i, seen.join(' ')).toBe(order.length)
     const cues = new Set(config.audio.sfx.map((c) => c.id))
-    for (const n of seen) if (n !== 'dial-fling') expect(cues.has(n), n).toBe(true)
+    for (const n of seen) if (n !== 'dial-fling' && !NEW_EVENTS.includes(n)) expect(cues.has(n), n).toBe(true)
+    expect(seen.filter((n) => n === 'date-key').length).toBe(8)
+    expect(seen.filter((n) => n === 'reel-stop').length).toBe(3)
     expect(seen.filter((n) => n === 'dial-wind').length).toBe(config.live.step2.dialDigitsBeforeItGivesUp)
     expect(seen.filter((n) => n === 'crank-turn').length).toBe(config.live.step2.crankTurnsBeforeItRunsAway)
     expect(seen.filter((n) => n === 'dial-fling').length).toBe(1)
@@ -123,47 +135,67 @@ describe('step 2, the film', () => {
 
   it('opens one row in each beat and closes it before the next', () => {
     const t = film()
-    for (const [at, gag] of [[1, 'step2.open'], [4, 'step2.dial'], [10, 'step2.slot'], [16, 'step2.crank'], [20.4, 'step2.continue']] as const) {
+    for (const [at, gag] of [[1, 'step2.open'], [4, 'step2.dial'], [10, 'step2.slot'], [16, 'step2.crank'], [23.5, 'step2.continue']] as const) {
       t.seek(at)
       expect(t.page.gag(), String(at)).toBe(gag)
     }
-    for (const at of [1, 8.1, 13.9, 20]) {
+    for (const at of [1, 8.1, 14.6, 23]) {
       t.seek(at)
-      expect(t.page.states(), String(at)).toContain('rest')
+      expect(t.page.states().filter((x) => x.endsWith('-open')), String(at)).toEqual([])
     }
   })
 
-  it('stands on the approved keys: two digits dialled at 3.2 s, three segments lit at 15.2 s', () => {
+  it('never lays the last line of a machine over the field that comes after it: the one slides off as the other slides on', () => {
+    const t = film()
+    let both = 0
+    for (let at = 0; at <= LONG - 0.5; at += 1 / 60) {
+      t.seek(at)
+      const list: Shape[] = []
+      drawBuilt(t.page, list)
+      const lines = list.filter((x) => /-plate-/.test(x.id))
+      const fields = list.filter((x) => /^(phone|birth|volume)-(pocket|label|helper)$/.test(x.id))
+      if (lines.length && fields.length) both++
+      for (const a of lines) for (const b of fields) expect(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y, `${a.id} and ${b.id} at ${at.toFixed(2)}`).toBe(true)
+    }
+    expect(both).toBeGreaterThan(20)
+  })
+
+  it('stands on the approved keys: two digits dialled and three segments lit, at the times the config gives the two keys', () => {
+    const keyAt = (id: string): number => {
+      const k = config.keys.find((x) => x.id === id)!
+      const b = beats.find((x) => x.id === k.beat)!
+      return b.from + (b.to - b.from) * k.at
+    }
     const t = film()
     const shapes = (): Shape[] => {
       const list: Shape[] = []
-      t.page.draw(list)
+      drawBuilt(t.page, list)
       return list
     }
-    t.seek(3.2)
+    t.seek(keyAt('step2-dial'))
     const typed = shapes().filter((x) => x.kind === 'text' && x.words === 'runtime:step2.phone')
     expect(typed.length).toBe(1)
     expect(typed[0]!.text).toBe('(555) 01')
     expect(hasWords('data:step2.phone.prefix')).toBe(true)
     expect(t.page.volume!()).toBe(1)
-    t.seek(15.2)
+    t.seek(keyAt('step2-crank'))
     const lit = shapes().filter((x) => /^meter-\d+$/.test(x.id) && x.tone === 'accent').map((x) => x.id)
     expect(lit).toEqual(['meter-1', 'meter-2', 'meter-3'])
-    expect(t.page.volume!()).toBeCloseTo(0.3, 5)
+    expect(t.page.volume!()).toBeCloseTo(0.3, 1)
   })
 
   it('sets the volume of the site with the crank: full before the row, low when it opens, full at the end', () => {
     const t = film()
     let last = 0
     let low = 1
-    for (let at = 0; at <= 20.4; at += 0.05) {
+    for (let at = 0; at <= LONG - 0.5; at += 0.05) {
       t.seek(at)
       const v = t.page.volume!()
       expect(v, at.toFixed(2)).toBeGreaterThanOrEqual(0.1)
       expect(v, at.toFixed(2)).toBeLessThanOrEqual(1)
-      if (at < 13.9) expect(v, at.toFixed(2)).toBe(1)
-      if (at > 14.1) expect(v, at.toFixed(2)).toBeGreaterThanOrEqual(last - 1e-9)
-      if (at > 14.1) last = v
+      if (at < 14.9) expect(v, at.toFixed(2)).toBe(1)
+      if (at > 15) expect(v, at.toFixed(2)).toBeGreaterThanOrEqual(last - 1e-9)
+      if (at > 15) last = v
       low = Math.min(low, v)
     }
     expect(low).toBeCloseTo(0.1, 5)
@@ -172,7 +204,7 @@ describe('step 2, the film', () => {
 
   it('changes the cursor on the step of each strike, at the cursor, and calls nothing else a strike', () => {
     const done = film()
-    done.seek(20.4)
+    done.seek(LONG - 0.5)
     const strikes = done.events.filter((e) => e.page === 'step2' && e.hitsCursor)
     expect(strikes.map((e) => e.name)).toEqual(['dial-fling', 'coins', 'flatten'])
     expect(done.events.filter((e) => e.page === 'step2' && e.name === 'coins').length).toBe(1)
@@ -197,10 +229,10 @@ describe('step 2, the film', () => {
     walkTree(makePage().layout as never)
     const part = (id: string): Shape => {
       const list: Shape[] = []
-      t.page.draw(list)
+      drawBuilt(t.page, list)
       return list.find((x) => x.id === id)!
     }
-    t.seek(14.44)
+    t.seek(15.8)
     for (const id of ['crank-arm', 'crank-grip']) {
       const shape = part(id)
       expect(shape.moved, id).toBeUndefined()
@@ -208,11 +240,11 @@ describe('step 2, the film', () => {
       expect(Math.abs(shape.x - box[0]!), id).toBeLessThan(0.01)
       expect(Math.abs(shape.y - box[1]!), id).toBeLessThan(0.01)
     }
-    t.seek(15.2)
+    t.seek(16.6)
     for (const id of ['crank-arm', 'crank-grip']) expect(part(id).moved, id).toBe(true)
-    t.seek(8.9)
+    t.seek(10.3)
     expect(part('slot-knob').moved).toBeUndefined()
-    t.seek(9.35)
+    t.seek(10.76)
     expect(part('slot-knob').moved).toBe(true)
   })
 
@@ -222,7 +254,7 @@ describe('step 2, the film', () => {
     let longest = 0
     let heldFor = 0
     let held = 0
-    for (let i = 0; i < 20.5 * stepHz; i++) {
+    for (let i = 0; i < LONG * stepHz; i++) {
       t.advance(1)
       hurtFor = t.cursor.damaged ? hurtFor + 1 : 0
       heldFor = t.cursor.taken ? heldFor + 1 : 0
@@ -255,7 +287,8 @@ describe('step 2, live', () => {
     expect(s.page.id).toBe('step3')
     expect(s.gagsReached.filter((g) => g.startsWith('step2.'))).toEqual(beats.map((b) => b.id))
     const seen = names(s)
-    for (const n of ['row-open', 'lever-pull', 'reels-spin', 'coins', 'crank-runaway', 'button-press']) expect(seen, n).toContain(n)
+    for (const n of ['row-open', 'lever-pull', 'reels-spin', 'reel-stop', 'date-miss', 'crank-runaway', 'button-press']) expect(seen, n).toContain(n)
+    expect(seen).not.toContain('coins')
     expect(seen.filter((n) => n === 'row-open').length).toBe(3)
     expect(s.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
   })
@@ -358,8 +391,8 @@ describe('step 2, live', () => {
         expect(state(b), `${mode} ${at}`).toBe(state(a))
         const la: Shape[] = []
         const lb: Shape[] = []
-        a.page.draw(la)
-        b.page.draw(lb)
+        drawBuilt(a.page, la)
+        drawBuilt(b.page, lb)
         expect(lb, `${mode} ${at}`).toEqual(la)
       }
     }

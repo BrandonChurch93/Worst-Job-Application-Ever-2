@@ -4,6 +4,7 @@ import { studio } from '../../../post/studio'
 import type { PartMaker } from '../../../real/types'
 import { grainNormalMap } from '../../../shell/materials'
 import { roundedRect } from '../../../shell/solids'
+import { CAP, capGeometry, kit } from './keyboard-kit'
 
 const srgb = (hex: number) => new THREE.Color().setHex(hex, THREE.SRGBColorSpace)
 const q = (v: number): number => Math.round(v * 4) / 4
@@ -120,15 +121,95 @@ export function makeSlab(w: number, h: number, r: number, depth: number): THREE.
   return group
 }
 
+const kindOf = (id: string): 'shadow' | 'bit' | 'crack' | 'crater' | 'slab' => (id.startsWith('slab-shadow') ? 'shadow' : id.startsWith('slab-bit') ? 'bit' : id.startsWith('slab-crack') ? 'crack' : id.startsWith('slab-crater') ? 'crater' : 'slab')
+
+let softMade: THREE.DataTexture | null = null
+// The shadow of a block that is still above the screen: dark in the middle and soft at its edge.
+function soft(): THREE.DataTexture {
+  if (softMade) return softMade
+  const n = 64
+  const data = new Uint8Array(n * n * 4)
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      const u = Math.abs((x + 0.5) / n - 0.5) * 2
+      const v = Math.abs((y + 0.5) / n - 0.5) * 2
+      const edge = Math.max(0, 1 - Math.max((u - 0.72) / 0.28, 0)) * Math.max(0, 1 - Math.max((v - 0.5) / 0.5, 0))
+      data.set([0, 0, 0, Math.round(255 * edge * edge * (3 - 2 * edge))], (y * n + x) * 4)
+    }
+  }
+  softMade = new THREE.DataTexture(data, n, n, THREE.RGBAFormat, THREE.UnsignedByteType)
+  softMade.magFilter = THREE.LinearFilter
+  softMade.minFilter = THREE.LinearFilter
+  softMade.needsUpdate = true
+  return softMade
+}
+
+function flat(w: number, h: number, material: THREE.Material, order: number): THREE.Mesh {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), material)
+  m.renderOrder = order
+  m.frustumCulled = false
+  return m
+}
+
+function makeBit(w: number, h: number, whole: boolean): THREE.Group {
+  const root = new THREE.Group()
+  const spin = new THREE.Group()
+  const k = kit()
+  const body = new THREE.Mesh(whole ? capGeometry(w, h) : new THREE.BoxGeometry(w, h, 5), k.cap)
+  if (!whole) body.geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(body.geometry.getAttribute('position').count * 3).fill(1), 3))
+  body.position.z = whole ? CAP.rise / 2 : 0
+  body.castShadow = true
+  body.receiveShadow = true
+  body.frustumCulled = false
+  spin.position.z = whole ? CAP.rise / 2 : 2.5
+  spin.add(body)
+  root.add(spin)
+  root.userData.spin = spin
+  return root
+}
+
 export const slabs: PartMaker | null = {
   key(s) {
     if (s.kind === 'text') return null
+    const kind = kindOf(s.id)
+    if (kind === 'shadow') return 'slab-shadow'
+    if (kind === 'crack') return `slab-crack:${q(s.h)}`
+    if (kind === 'crater') return `slab-crater:${q(s.w)}:${q(s.h)}`
+    if (kind === 'bit') return `slab-bit:${q(s.w)}:${q(s.h)}:${s.id.endsWith('-0') ? 1 : 0}`
     return `slab:${q(s.w)}:${q(s.h)}:${q(s.r ?? 0)}:${q(s.z1 - s.z0)}`
   },
   make(s) {
+    const kind = kindOf(s.id)
+    if (kind === 'shadow') return flat(1, 1, new THREE.MeshBasicMaterial({ map: soft(), transparent: true, depthWrite: false, opacity: 0 }), 3)
+    if (kind === 'crack') return flat(1, s.h, new THREE.MeshBasicMaterial({ color: srgb(0x17120f), transparent: true, depthWrite: false, opacity: 0.9 }), 3)
+    if (kind === 'crater') return flat(s.w, s.h, new THREE.MeshBasicMaterial({ color: srgb(0x120e0c), transparent: true, depthWrite: false, opacity: 0.88 }), 2)
+    if (kind === 'bit') return makeBit(s.w, s.h, s.id.endsWith('-0'))
     return makeSlab(s.w, s.h, s.r ?? 0, s.z1 - s.z0)
   },
+  drop(o) {
+    const m = o as THREE.Mesh
+    if (m.isMesh && m.geometry instanceof THREE.PlaneGeometry) {
+      m.geometry.dispose()
+      ;(m.material as THREE.Material).dispose()
+    }
+  },
   pose(o, s) {
+    const kind = kindOf(s.id)
+    if (kind === 'shadow') {
+      o.scale.set(s.w * 1.3, s.h * 1.9, 1)
+      ;((o as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = s.v?.[0] ?? 0
+      return
+    }
+    if (kind === 'crack') {
+      o.scale.set(s.w, 1, 1)
+      return
+    }
+    if (kind === 'crater') return
+    if (kind === 'bit') {
+      const spin = o.userData.spin as THREE.Group
+      spin.rotation.set(s.v?.[0] ?? 0, s.v?.[1] ?? 0, 0)
+      return
+    }
     // The landing rings through the block for a moment: a slow rock on its long axis that dies fast with the impact the
     // page reports. Its label is laid flat by the type maker at the face's resting height, so the block sinks by as much
     // as its highest edge would rise: no part of the face ever comes up through the label.

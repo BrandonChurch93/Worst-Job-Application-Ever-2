@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
-import { ANGRY_WORDS, BLOW, CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
+import { BLOW, CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
 import { FORM_BOTTOM, PAPER, SLOT, ZONE } from '../src/pages/step1/layout'
 import { BALL, FLIP, MID, MOUTH, PORT } from '../src/table/layout'
 import { HEADER, progressCentre } from '../src/shell/parts'
@@ -177,7 +177,7 @@ describe('the motion pack of a recorded visit', () => {
     expect(steps[0]! - m.type.seated).toBeGreaterThanOrEqual(KEYS.home)
     expect(steps[steps.length - 1]!).toBeLessThan(Math.min(gags.find((g) => g.gag === KEYS.until)!.step, hits.find((h) => h.name === KEYS.slab && h.step >= m.type.seated)!.step))
     expect(hits.filter((h) => h.step >= steps[0]! && h.step <= steps[steps.length - 1]!)).toEqual([])
-    for (const f of type) expect(f.heading).toContain(`. Press 10 of the visitor's 13 on the keyboard, on the key A (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at ${time(1420)} and these frames begin ${((steps[0]! - 1420) / 60).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. ${ANGRY_WORDS}. The visitor rests ${KEYS.rest} frames after it lets a key go. `)
+    for (const f of type) expect(f.heading).toContain(`. Press 10 of the visitor's 13 on the keyboard, on the key A (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at ${time(1420)} and these frames begin ${((steps[0]! - 1420) / 60).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. The visitor rests ${KEYS.rest} frames after it lets a key go. `)
     // The window: the key under the pointer and the arrow in every frame, inside the key block, at 100%.
     const w = type[0]!.windows![0]!
     for (const i of steps) expect(holdsBox(w, [at(i)[0] - TAKEN.room, at(i)[1] - TAKEN.room, at(i)[0] + TAKEN.room, at(i)[1] + TAKEN.room])).toBe(true)

@@ -31,6 +31,6 @@ test('the flat arrow comes down over at least 14 frames, after the block is down
   expect(STUCK.swings).toBeLessThanOrEqual(3)
   const keyAt = beat.from + key.at * (beat.to - beat.from)
   expect(FILM.landed).toBeLessThan(keyAt)
-  expect(FILM.landed + STUCK.heal / 2).toBeGreaterThan(keyAt)
-  expect(FILM.landed + STUCK.heal).toBeLessThan(GIVE.look)
+  expect(FILM.landed + FILM.heal / 2).toBeGreaterThan(keyAt)
+  expect(FILM.landed + FILM.heal).toBeLessThan(GIVE.look)
 })

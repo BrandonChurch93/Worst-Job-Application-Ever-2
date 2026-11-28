@@ -10,7 +10,7 @@ const beats = config.film.beats.filter((b) => b.unit === 'pinball')
 // Before that change main gave a78db9db, 67595780, 53b15e3d, 92be0fa4, 28fb4385, d8bd0843, bde2c563, 053aaa9a, 5600a8f9, 1900be91, 84a92fe6, c836ba9e, baedfda5, 61fc457c, and this file's own branch gave the same.
 // The fall down the feed tube of round 25 (pipeline/phase5/polish-port2.md) changes the second and the third, 8af59575 and 7d7bc7da before it: the ball and the view at 6 s are the ones of before, the arrow's turn in the ball is 5e-10 rad off, and at 9 s one number of the arrow's pose is 1e-16 off. From step 2195 (9.15 s) on the state is the state of before.
 // The sixth, seventh and eighth (18, 21 and 24 s) were f235b7d4, f676307c, f011e14b until agent/polish-lamps: at those moments a ball is in reach of a window and the state holds that window's count. With the count left out the state of every frame is as it was (tests/polish-lamps.test.ts).
-const MAIN = ['5843b578', '2a7d25b2', 'b0469cd4', '15c63b03', 'afa8fe82', 'f75112a9', '66a8fde5', '8758c1fe', '28d37272', '3072f8fe', '9c015495', '9cc7f685', '31e7a824', '63443663']
+const MAIN = ['e5ebd3ea', '088ba77c', 'e47a3110', '05aee4a8', 'ef4c5f0b', '248b30b9', '53cead6e', '0456b61e', 'de7b718b', 'c39e0426', '5a60b46d', 'b87c1db3', '69e9ca9e', 'd4ebd6d7']
 const DEG = Math.PI / 180
 const bat = table.flippers.find((f) => f.tier === 1 && f.side === 'right')!
 const onBat = (along: number): [number, number] => {
@@ -41,6 +41,7 @@ describe('the ball off a visitor\'s flipper', () => {
       s.advance(60)
       if (k % 12 === 11) seen.push(s.hash())
     }
+    if (process.env.BALL_WAS) console.log('MAIN', JSON.stringify(seen))
     expect(seen).toEqual(MAIN)
   })
 

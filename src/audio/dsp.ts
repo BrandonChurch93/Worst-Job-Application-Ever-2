@@ -142,6 +142,42 @@ function passFilter(kind: 'high' | 'low', sampleRate: number, hz: number, q = Ma
   return { b0: b0 / a0, b1: b1 / a0, b2: b0 / a0, a1: (-2 * cos) / a0, a2: (1 - alpha) / a0 }
 }
 
+function notchFilter(sampleRate: number, hz: number, q: number): Biquad {
+  const w = (2 * Math.PI * hz) / sampleRate
+  const alpha = Math.sin(w) / (2 * q)
+  const a0 = 1 + alpha
+  return { b0: 1 / a0, b1: (-2 * Math.cos(w)) / a0, b2: 1 / a0, a1: (-2 * Math.cos(w)) / a0, a2: (1 - alpha) / a0 }
+}
+
+export interface Dehum { humHz: number; combKeep: number; notches: { hz: number; q: number }[] }
+
+// A loop with its buzz taken out: a comb with a notch at every harmonic of humHz, then a notch at each named tone.
+// The loop is run through twice and the second pass is kept, so the filters meet the loop's seam as they left it and the loop still closes.
+// A rate at which the cycle is not a whole number of samples gets the named notches alone.
+export function dehum(x: Float32Array, sampleRate: number, o: Dehum): Float32Array {
+  const n = x.length
+  const period = Math.round(sampleRate / o.humHz)
+  let y = new Float64Array(n)
+  for (let i = 0; i < n; i++) y[i] = x[i]!
+  if (period > 0 && period < n && Math.abs(period - sampleRate / o.humHz) < 1e-6) {
+    const r = o.combKeep
+    const g = (1 + r) / 2
+    const w = new Float64Array(n)
+    for (let pass = 0; pass < 2; pass++) for (let i = 0; i < n; i++) w[i] = y[i]! + r * w[(i - period + n) % n]!
+    const out = new Float64Array(n)
+    for (let i = 0; i < n; i++) out[i] = g * (w[i]! - w[(i - period + n) % n]!)
+    y = out
+  }
+  for (const f of o.notches) {
+    if (f.hz >= sampleRate / 2) continue
+    const twice = new Float64Array(2 * n)
+    twice.set(y)
+    twice.set(y, n)
+    y = runBiquad(twice, notchFilter(sampleRate, f.hz, f.q)).slice(n)
+  }
+  return Float32Array.from(y)
+}
+
 export const highPass = (x: Float32Array, sampleRate: number, hz: number): Float32Array => Float32Array.from(runBiquad(x, passFilter('high', sampleRate, hz)))
 export const lowPass = (x: Float32Array, sampleRate: number, hz: number): Float32Array => Float32Array.from(runBiquad(x, passFilter('low', sampleRate, hz)))
 

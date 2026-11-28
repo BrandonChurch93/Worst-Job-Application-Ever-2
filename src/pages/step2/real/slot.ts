@@ -19,7 +19,7 @@ export const SLOT_LOOK = {
   pay: { r: 6, lip: 4, top: 14, floor: 8.5, foot: 1, bed: 0x8d9093, rough: 0.55 },
   top: 58, corner: 16, window: 13, roundOver: 3, band: 12.4, step: 0.9, ledge: 2.4, chamfer: 4.6, chamferDrop: 3.6, gasket: 2.6, glass: 54.2, floor: 18,
   drum: { r: 62, crest: 50, w: 94, lip: 3.4, flat: 0.4, dark: 0.6, full: 0.985 },
-  line: { z: 53.3, r: 0.85, pin: 1.9, glow: 0.1 },
+  line: { z: 53.3, r: 0.85, pin: 1.9, glow: 0.1, pitch: 104, reach: 6 },
   sheen: { top: 0.06, streak: 0.034, order: 800001 },
   lever: { rod: 7.4, pivotX: 11, pivotZ: 28, foot: -2, head: 22, ferrule: 7, ferruleAt: 25, bend: 15, stub: 26, socket: 14.5, socketIn: 3, socketOut: 10, ring: 12.2, ringW: 3.4, rodRough: 0.3 },
   legend: { fit: 72, tall: 1.16, lift: 0.14, order: 799990, style: 'paper:ink', narrow: 0.9, high: 1.1, heavy: 0.014 },
@@ -215,9 +215,15 @@ function cabinet(): THREE.Group {
   })
   const line = shared('line', () => {
     const half = w / 2 - edge
-    const rod = lathe([[L.line.r, -half], [L.line.r, half]], 10)
-    rod.rotateY(Math.PI / 2)
-    return moved(rod, 0, 0, L.line.z)
+    const face = L.drum.w / 2 - L.line.reach
+    const cuts = [-half, -L.line.pitch - face, -L.line.pitch + face, -face, face, L.line.pitch - face, L.line.pitch + face, half]
+    const parts: THREE.BufferGeometry[] = []
+    for (let i = 0; i < cuts.length; i += 2) {
+      const rod = lathe([[L.line.r, cuts[i]!], [L.line.r, cuts[i + 1]!]], 10)
+      rod.rotateY(Math.PI / 2)
+      parts.push(rod)
+    }
+    return moved(fuse(parts), 0, 0, L.line.z)
   })
   const pins = shared('pins', () => {
     const parts: THREE.BufferGeometry[] = []
@@ -525,7 +531,7 @@ const kindOf = (s: Shape): Kind | '' | null => {
   return null
 }
 
-const plainSlot: PartMaker = {
+export const plainSlot: PartMaker = {
   key(s) {
     const kind = kindOf(s)
     if (kind === null) return null

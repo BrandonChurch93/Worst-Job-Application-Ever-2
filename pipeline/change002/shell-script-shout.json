@@ -1,0 +1,159 @@
+{
+  "made": "node pipeline/change002/shell-script-caption.mjs --shout",
+  "browser": "159.0.8154.6",
+  "behind": "kept stills of the boss page, not the running site",
+  "text": "KA / ME / HA / ME / HA",
+  "draft": true,
+  "marks": [
+    {
+      "mark": "finish-arms",
+      "at": 0,
+      "panel": null
+    },
+    {
+      "mark": "finish-charge",
+      "at": 0.11,
+      "panel": {
+        "words": "KA",
+        "fontPx": 106,
+        "top": 96,
+        "bottom": 252,
+        "left": 852,
+        "type": {
+          "left": 885,
+          "right": 1034,
+          "wide": 149
+        },
+        "right": 1068,
+        "baked": true
+      }
+    },
+    {
+      "mark": "finish-charge",
+      "at": 1.051,
+      "panel": {
+        "words": "KAME",
+        "fontPx": 118,
+        "top": 96,
+        "bottom": 267,
+        "left": 754,
+        "type": {
+          "left": 786,
+          "right": 1132,
+          "wide": 346
+        },
+        "right": 1166,
+        "baked": true
+      }
+    },
+    {
+      "mark": "finish-charge",
+      "at": 2.099,
+      "panel": {
+        "words": "KAMEHA",
+        "fontPx": 132,
+        "top": 96,
+        "bottom": 284,
+        "left": 637,
+        "type": {
+          "left": 669,
+          "right": 1249,
+          "wide": 580
+        },
+        "right": 1283,
+        "baked": true
+      }
+    },
+    {
+      "mark": "finish-charge",
+      "at": 2.908,
+      "panel": {
+        "words": "KAMEHAME",
+        "fontPx": 148,
+        "top": 96,
+        "bottom": 303,
+        "left": 490,
+        "type": {
+          "left": 522,
+          "right": 1396,
+          "wide": 874
+        },
+        "right": 1430,
+        "baked": true
+      }
+    },
+    {
+      "mark": "finish-fire",
+      "at": 4.13,
+      "panel": {
+        "words": "KAMEHAMEHA",
+        "fontPx": 166,
+        "top": 101,
+        "bottom": 330,
+        "left": 320,
+        "type": {
+          "left": 352,
+          "right": 1573,
+          "wide": 1220
+        },
+        "right": 1607,
+        "baked": true
+      }
+    },
+    {
+      "mark": "(no mark: its own end)",
+      "at": 6.371,
+      "panel": null
+    }
+  ],
+  "line6OnTheBossPage": {
+    "words": "They declare themselves human.",
+    "fontPx": 26,
+    "top": 766,
+    "bottom": 828,
+    "left": 721,
+    "type": {
+      "left": 753,
+      "right": 1165,
+      "wide": 412
+    },
+    "right": 1199,
+    "baked": true
+  },
+  "line8OnTheDecisionPage": {
+    "words": "After careful consideration,",
+    "fontPx": 26,
+    "top": 202,
+    "bottom": 264,
+    "left": 756,
+    "type": {
+      "left": 789,
+      "right": 1130,
+      "wide": 341
+    },
+    "right": 1164,
+    "baked": true
+  },
+  "log": [
+    {
+      "at": 0.392,
+      "line": "line.boss.finish.0",
+      "trigger": "event finish-arms",
+      "what": "spoken",
+      "start": 0.392,
+      "seconds": 6.26
+    }
+  ],
+  "pageErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "missing": [
+    "shout: /favicon.ico",
+    "shout: /favicon.ico",
+    "standing: /favicon.ico",
+    "decision: /favicon.ico"
+  ]
+}

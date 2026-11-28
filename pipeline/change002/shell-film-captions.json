@@ -1,0 +1,1340 @@
+{
+  "made": "node pipeline/change002/shell-film-captions.mjs",
+  "browser": "159.0.8154.6",
+  "fps": 60,
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "lowerEdgeY": 1044,
+  "lowerEdgeYOn": {
+    "step4": 828,
+    "step5": 264
+  },
+  "note": "every line is a silent stand-in; a line with draft true is a draft",
+  "lines": [
+    {
+      "id": "line.marketing.stroll.0",
+      "frame": 0
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "frame": 1321
+    },
+    {
+      "id": "line.step1.shredded.0",
+      "frame": 2904
+    },
+    {
+      "id": "line.step2.crank.0",
+      "frame": 4159
+    },
+    {
+      "id": "line.step2.crank.1",
+      "frame": 4552
+    },
+    {
+      "id": "line.pinball.seal.0",
+      "frame": 4800
+    },
+    {
+      "id": "line.boss.verify.0",
+      "frame": 7506
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "frame": 7937
+    },
+    {
+      "id": "line.boss.unfold.1",
+      "frame": 9042
+    },
+    {
+      "id": "line.boss.unfold.2",
+      "frame": 9323
+    },
+    {
+      "id": "line.boss.finish.0",
+      "frame": 10206
+    },
+    {
+      "id": "line.decision.letter.0",
+      "frame": 11300
+    },
+    {
+      "id": "line.decision.reset.0",
+      "frame": 11807
+    }
+  ],
+  "captions": [
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 0,
+      "words": "Ahh.",
+      "first": 0,
+      "last": 37,
+      "draft": false,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/000-marketing.stroll.0-0.png",
+      "panel": {
+        "words": "Ahh.",
+        "glyphs": true,
+        "box": [
+          897.2,
+          982,
+          125.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 1,
+      "words": "Here we have",
+      "first": 38,
+      "last": 149,
+      "draft": false,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/001-marketing.stroll.0-1.png",
+      "panel": {
+        "words": "Here we have",
+        "glyphs": true,
+        "box": [
+          841.3,
+          982,
+          237.4,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 2,
+      "words": "another job applicant.",
+      "first": 150,
+      "last": 262,
+      "draft": false,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/002-marketing.stroll.0-2.png",
+      "panel": {
+        "words": "another job applicant.",
+        "glyphs": true,
+        "box": [
+          790.8,
+          982,
+          338.5,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 3,
+      "words": "Desperately hoping",
+      "first": 263,
+      "last": 337,
+      "draft": false,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/003-marketing.stroll.0-3.png",
+      "panel": {
+        "words": "Desperately hoping",
+        "glyphs": true,
+        "box": [
+          804.9,
+          982,
+          310.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 4,
+      "words": "to pay their rent.",
+      "first": 338,
+      "last": 487,
+      "draft": false,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/004-marketing.stroll.0-4.png",
+      "panel": {
+        "words": "to pay their rent.",
+        "glyphs": true,
+        "box": [
+          823.9,
+          982,
+          272.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 5,
+      "words": "Poor fool.",
+      "first": 488,
+      "last": 562,
+      "draft": false,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/005-marketing.stroll.0-5.png",
+      "panel": {
+        "words": "Poor fool.",
+        "glyphs": true,
+        "box": [
+          866.1,
+          982,
+          187.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 6,
+      "words": "They must have forgotten",
+      "first": 563,
+      "last": 712,
+      "draft": false,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/006-marketing.stroll.0-6.png",
+      "panel": {
+        "words": "They must have forgotten",
+        "glyphs": true,
+        "box": [
+          766.5,
+          982,
+          386.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 7,
+      "words": "it is 2026.",
+      "first": 713,
+      "last": 824,
+      "draft": false,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/007-marketing.stroll.0-7.png",
+      "panel": {
+        "words": "it is 2026.",
+        "glyphs": true,
+        "box": [
+          865,
+          982,
+          190,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "key": "step1.firstName.0",
+      "phrase": 0,
+      "words": "The application",
+      "first": 1321,
+      "last": 1395,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/008-step1.firstName.0-0.png",
+      "panel": {
+        "words": "The application",
+        "glyphs": true,
+        "box": [
+          830.2,
+          982,
+          259.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "key": "step1.firstName.0",
+      "phrase": 1,
+      "words": "has sensed",
+      "first": 1396,
+      "last": 1470,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/009-step1.firstName.0-1.png",
+      "panel": {
+        "words": "has sensed",
+        "glyphs": true,
+        "box": [
+          855.2,
+          982,
+          209.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "key": "step1.firstName.0",
+      "phrase": 2,
+      "words": "a candidate.",
+      "first": 1471,
+      "last": 1545,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/010-step1.firstName.0-2.png",
+      "panel": {
+        "words": "a candidate.",
+        "glyphs": true,
+        "box": [
+          849.7,
+          982,
+          220.5,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "key": "step1.firstName.0",
+      "phrase": 3,
+      "words": "ATS turrets rise.",
+      "first": 1546,
+      "last": 1658,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/011-step1.firstName.0-3.png",
+      "panel": {
+        "words": "ATS turrets rise.",
+        "glyphs": true,
+        "box": [
+          826,
+          982,
+          268,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.shredded.0",
+      "key": "step1.shredded.0",
+      "phrase": 0,
+      "words": "The applicant",
+      "first": 2904,
+      "last": 2978,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/012-step1.shredded.0-0.png",
+      "panel": {
+        "words": "The applicant",
+        "glyphs": true,
+        "box": [
+          841.3,
+          982,
+          237.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.shredded.0",
+      "key": "step1.shredded.0",
+      "phrase": 1,
+      "words": "need not worry",
+      "first": 2979,
+      "last": 3091,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/013-step1.shredded.0-1.png",
+      "panel": {
+        "words": "need not worry",
+        "glyphs": true,
+        "box": [
+          831.5,
+          982,
+          256.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.shredded.0",
+      "key": "step1.shredded.0",
+      "phrase": 2,
+      "words": "about the shredded resume.",
+      "first": 3092,
+      "last": 3241,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/014-step1.shredded.0-2.png",
+      "panel": {
+        "words": "about the shredded resume.",
+        "glyphs": true,
+        "box": [
+          750.9,
+          982,
+          418.2,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.shredded.0",
+      "key": "step1.shredded.0",
+      "phrase": 3,
+      "words": "They will have to type it all in",
+      "first": 3242,
+      "last": 3541,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/015-step1.shredded.0-3.png",
+      "panel": {
+        "words": "They will have to type it all in",
+        "glyphs": true,
+        "box": [
+          747.4,
+          982,
+          425.1,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.shredded.0",
+      "key": "step1.shredded.0",
+      "phrase": 4,
+      "words": "by hand",
+      "first": 3542,
+      "last": 3616,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/016-step1.shredded.0-4.png",
+      "panel": {
+        "words": "by hand",
+        "glyphs": true,
+        "box": [
+          876.2,
+          982,
+          167.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.shredded.0",
+      "key": "step1.shredded.0",
+      "phrase": 5,
+      "words": "anyway.",
+      "first": 3617,
+      "last": 3653,
+      "draft": false,
+      "loud": false,
+      "page": "step1",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/017-step1.shredded.0-5.png",
+      "panel": {
+        "words": "anyway.",
+        "glyphs": true,
+        "box": [
+          874.7,
+          982,
+          170.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step2.crank.0",
+      "key": "step2.crank.0",
+      "phrase": 0,
+      "words": "The applicant",
+      "first": 4159,
+      "last": 4233,
+      "draft": false,
+      "loud": false,
+      "page": "step2",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/018-step2.crank.0-0.png",
+      "panel": {
+        "words": "The applicant",
+        "glyphs": true,
+        "box": [
+          841.3,
+          982,
+          237.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step2.crank.0",
+      "key": "step2.crank.0",
+      "phrase": 1,
+      "words": "must turn the volume",
+      "first": 4234,
+      "last": 4383,
+      "draft": false,
+      "loud": false,
+      "page": "step2",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/019-step2.crank.0-1.png",
+      "panel": {
+        "words": "must turn the volume",
+        "glyphs": true,
+        "box": [
+          794.3,
+          982,
+          331.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step2.crank.0",
+      "key": "step2.crank.0",
+      "phrase": 2,
+      "words": "all the way up.",
+      "first": 4384,
+      "last": 4533,
+      "draft": false,
+      "loud": false,
+      "page": "step2",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/020-step2.crank.0-2.png",
+      "panel": {
+        "words": "all the way up.",
+        "glyphs": true,
+        "box": [
+          836.6,
+          982,
+          246.8,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step2.crank.1",
+      "key": "step2.crank.1",
+      "phrase": 0,
+      "words": "They will regret that.",
+      "first": 4552,
+      "last": 4701,
+      "draft": false,
+      "loud": false,
+      "page": "step2",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/021-step2.crank.1-0.png",
+      "panel": {
+        "words": "They will regret that.",
+        "glyphs": true,
+        "box": [
+          798.5,
+          982,
+          322.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.pinball.seal.0",
+      "key": "pinball.seal.0",
+      "phrase": 0,
+      "words": "The company",
+      "first": 4800,
+      "last": 4874,
+      "draft": false,
+      "loud": false,
+      "page": "step3",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/022-pinball.seal.0-0.png",
+      "panel": {
+        "words": "The company",
+        "glyphs": true,
+        "box": [
+          841.1,
+          982,
+          237.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.pinball.seal.0",
+      "key": "pinball.seal.0",
+      "phrase": 1,
+      "words": "gently collects",
+      "first": 4875,
+      "last": 4949,
+      "draft": false,
+      "loud": false,
+      "page": "step3",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/023-pinball.seal.0-1.png",
+      "panel": {
+        "words": "gently collects",
+        "glyphs": true,
+        "box": [
+          835.4,
+          982,
+          249.2,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.pinball.seal.0",
+      "key": "pinball.seal.0",
+      "phrase": 2,
+      "words": "the applicant",
+      "first": 4950,
+      "last": 5024,
+      "draft": false,
+      "loud": false,
+      "page": "step3",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/024-pinball.seal.0-2.png",
+      "panel": {
+        "words": "the applicant",
+        "glyphs": true,
+        "box": [
+          845.4,
+          982,
+          229.2,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.pinball.seal.0",
+      "key": "pinball.seal.0",
+      "phrase": 3,
+      "words": "for an unpaid assessment.",
+      "first": 5025,
+      "last": 5174,
+      "draft": false,
+      "loud": false,
+      "page": "step3",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/025-pinball.seal.0-3.png",
+      "panel": {
+        "words": "for an unpaid assessment.",
+        "glyphs": true,
+        "box": [
+          762.1,
+          982,
+          395.8,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.verify.0",
+      "key": "boss.verify.0",
+      "phrase": 0,
+      "words": "They declare themselves human.",
+      "first": 7506,
+      "last": 7655,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/026-boss.verify.0-0.png",
+      "panel": {
+        "words": "They declare themselves human.",
+        "glyphs": true,
+        "box": [
+          720.6,
+          766,
+          478.8,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.verify.0",
+      "key": "boss.verify.0",
+      "phrase": 1,
+      "words": "The form",
+      "first": 7656,
+      "last": 7730,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/027-boss.verify.0-1.png",
+      "panel": {
+        "words": "The form",
+        "glyphs": true,
+        "box": [
+          869.4,
+          766,
+          181.1,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.verify.0",
+      "key": "boss.verify.0",
+      "phrase": 2,
+      "words": "takes that as a threat.",
+      "first": 7731,
+      "last": 7918,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/028-boss.verify.0-2.png",
+      "panel": {
+        "words": "takes that as a threat.",
+        "glyphs": true,
+        "box": [
+          792.3,
+          766,
+          335.4,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "key": "boss.unfold.0",
+      "phrase": 0,
+      "words": "The applicant",
+      "first": 7937,
+      "last": 8011,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/029-boss.unfold.0-0.png",
+      "panel": {
+        "words": "The applicant",
+        "glyphs": true,
+        "box": [
+          841.3,
+          766,
+          237.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "key": "boss.unfold.0",
+      "phrase": 1,
+      "words": "is ready to give up.",
+      "first": 8012,
+      "last": 8199,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/030-boss.unfold.0-1.png",
+      "panel": {
+        "words": "is ready to give up.",
+        "glyphs": true,
+        "box": [
+          808.2,
+          766,
+          303.5,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "key": "boss.unfold.0",
+      "phrase": 2,
+      "words": "There is no salary listed.",
+      "first": 8200,
+      "last": 8386,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/031-boss.unfold.0-2.png",
+      "panel": {
+        "words": "There is no salary listed.",
+        "glyphs": true,
+        "box": [
+          774.6,
+          766,
+          370.7,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "key": "boss.unfold.0",
+      "phrase": 3,
+      "words": "No guarantee",
+      "first": 8387,
+      "last": 8461,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/032-boss.unfold.0-3.png",
+      "panel": {
+        "words": "No guarantee",
+        "glyphs": true,
+        "box": [
+          841.9,
+          766,
+          236.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "key": "boss.unfold.0",
+      "phrase": 4,
+      "words": "their resume",
+      "first": 8462,
+      "last": 8536,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/033-boss.unfold.0-4.png",
+      "panel": {
+        "words": "their resume",
+        "glyphs": true,
+        "box": [
+          847.9,
+          766,
+          224.1,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "key": "boss.unfold.0",
+      "phrase": 5,
+      "words": "makes it past the ATS.",
+      "first": 8537,
+      "last": 8724,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/034-boss.unfold.0-5.png",
+      "panel": {
+        "words": "makes it past the ATS.",
+        "glyphs": true,
+        "box": [
+          788.2,
+          766,
+          343.7,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "key": "boss.unfold.0",
+      "phrase": 6,
+      "words": "Their hand moves",
+      "first": 8725,
+      "last": 8836,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/035-boss.unfold.0-6.png",
+      "panel": {
+        "words": "Their hand moves",
+        "glyphs": true,
+        "box": [
+          814.8,
+          766,
+          290.5,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.0",
+      "key": "boss.unfold.0",
+      "phrase": 7,
+      "words": "to close the Chrome tab.",
+      "first": 8837,
+      "last": 9024,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/036-boss.unfold.0-7.png",
+      "panel": {
+        "words": "to close the Chrome tab.",
+        "glyphs": true,
+        "box": [
+          773.8,
+          766,
+          372.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.1",
+      "key": "boss.unfold.1",
+      "phrase": 0,
+      "words": "But then",
+      "first": 9042,
+      "last": 9116,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/037-boss.unfold.1-0.png",
+      "panel": {
+        "words": "But then",
+        "glyphs": true,
+        "box": [
+          874,
+          766,
+          171.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.1",
+      "key": "boss.unfold.1",
+      "phrase": 1,
+      "words": "they remember",
+      "first": 9117,
+      "last": 9191,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/038-boss.unfold.1-1.png",
+      "panel": {
+        "words": "they remember",
+        "glyphs": true,
+        "box": [
+          831.6,
+          766,
+          256.8,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.1",
+      "key": "boss.unfold.1",
+      "phrase": 2,
+      "words": "their student loans.",
+      "first": 9192,
+      "last": 9304,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/039-boss.unfold.1-2.png",
+      "panel": {
+        "words": "their student loans.",
+        "glyphs": true,
+        "box": [
+          806.3,
+          766,
+          307.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.2",
+      "key": "boss.unfold.2",
+      "phrase": 0,
+      "words": "They turn back.",
+      "first": 9323,
+      "last": 9435,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/040-boss.unfold.2-0.png",
+      "panel": {
+        "words": "They turn back.",
+        "glyphs": true,
+        "box": [
+          828.4,
+          766,
+          263.2,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.unfold.2",
+      "key": "boss.unfold.2",
+      "phrase": 1,
+      "words": "One more round.",
+      "first": 9436,
+      "last": 9547,
+      "draft": false,
+      "loud": false,
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/041-boss.unfold.2-1.png",
+      "panel": {
+        "words": "One more round.",
+        "glyphs": true,
+        "box": [
+          821.6,
+          766,
+          276.8,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.boss.finish.0",
+      "key": "boss.finish.0",
+      "phrase": 0,
+      "words": "KA",
+      "first": 10212,
+      "last": 10267,
+      "draft": true,
+      "loud": true,
+      "step": {
+        "k": 0,
+        "n": 5
+      },
+      "whole": "KAMEHAMEHA",
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/042-boss.finish.0-0.png",
+      "panel": {
+        "words": "KA",
+        "glyphs": true,
+        "box": [
+          852.3,
+          96,
+          215.4,
+          155.8
+        ]
+      }
+    },
+    {
+      "id": "line.boss.finish.0",
+      "key": "boss.finish.0",
+      "phrase": 1,
+      "words": "KAME",
+      "first": 10268,
+      "last": 10330,
+      "draft": true,
+      "loud": true,
+      "step": {
+        "k": 1,
+        "n": 5
+      },
+      "whole": "KAMEHAMEHA",
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/043-boss.finish.0-1.png",
+      "panel": {
+        "words": "KAME",
+        "glyphs": true,
+        "box": [
+          753.8,
+          96,
+          412.4,
+          171.1
+        ]
+      }
+    },
+    {
+      "id": "line.boss.finish.0",
+      "key": "boss.finish.0",
+      "phrase": 2,
+      "words": "KAMEHA",
+      "first": 10331,
+      "last": 10379,
+      "draft": true,
+      "loud": true,
+      "step": {
+        "k": 2,
+        "n": 5
+      },
+      "whole": "KAMEHAMEHA",
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/044-boss.finish.0-2.png",
+      "panel": {
+        "words": "KAMEHA",
+        "glyphs": true,
+        "box": [
+          636.9,
+          96,
+          646.2,
+          188.3
+        ]
+      }
+    },
+    {
+      "id": "line.boss.finish.0",
+      "key": "boss.finish.0",
+      "phrase": 3,
+      "words": "KAMEHAME",
+      "first": 10380,
+      "last": 10453,
+      "draft": true,
+      "loud": true,
+      "step": {
+        "k": 3,
+        "n": 5
+      },
+      "whole": "KAMEHAMEHA",
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/045-boss.finish.0-3.png",
+      "panel": {
+        "words": "KAMEHAME",
+        "glyphs": true,
+        "box": [
+          489.8,
+          96,
+          940.4,
+          207.5
+        ]
+      }
+    },
+    {
+      "id": "line.boss.finish.0",
+      "key": "boss.finish.0",
+      "phrase": 4,
+      "words": "KAMEHAMEHA",
+      "first": 10454,
+      "last": 10581,
+      "draft": true,
+      "loud": true,
+      "step": {
+        "k": 4,
+        "n": 5
+      },
+      "whole": "KAMEHAMEHA",
+      "page": "step4",
+      "lowerEdgeY": 828,
+      "file": "out/work/captions/046-boss.finish.0-4.png",
+      "panel": {
+        "words": "KAMEHAMEHA",
+        "glyphs": true,
+        "box": [
+          316.7,
+          97.6,
+          1286.6,
+          229
+        ]
+      }
+    },
+    {
+      "id": "line.decision.letter.0",
+      "key": "decision.letter.0",
+      "phrase": 0,
+      "words": "After careful consideration,",
+      "first": 11300,
+      "last": 11412,
+      "draft": false,
+      "loud": false,
+      "page": "step5",
+      "lowerEdgeY": 264,
+      "file": "out/work/captions/047-decision.letter.0-0.png",
+      "panel": {
+        "words": "After careful consideration,",
+        "glyphs": true,
+        "box": [
+          756.2,
+          202,
+          407.5,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.decision.letter.0",
+      "key": "decision.letter.0",
+      "phrase": 1,
+      "words": "the company",
+      "first": 11413,
+      "last": 11487,
+      "draft": false,
+      "loud": false,
+      "page": "step5",
+      "lowerEdgeY": 264,
+      "file": "out/work/captions/048-decision.letter.0-1.png",
+      "panel": {
+        "words": "the company",
+        "glyphs": true,
+        "box": [
+          845.1,
+          202,
+          229.8,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.decision.letter.0",
+      "key": "decision.letter.0",
+      "phrase": 2,
+      "words": "has decided",
+      "first": 11488,
+      "last": 11562,
+      "draft": false,
+      "loud": false,
+      "page": "step5",
+      "lowerEdgeY": 264,
+      "file": "out/work/captions/049-decision.letter.0-2.png",
+      "panel": {
+        "words": "has decided",
+        "glyphs": true,
+        "box": [
+          850.2,
+          202,
+          219.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.decision.letter.0",
+      "key": "decision.letter.0",
+      "phrase": 3,
+      "words": "to move forward",
+      "first": 11563,
+      "last": 11674,
+      "draft": false,
+      "loud": false,
+      "page": "step5",
+      "lowerEdgeY": 264,
+      "file": "out/work/captions/050-decision.letter.0-3.png",
+      "panel": {
+        "words": "to move forward",
+        "glyphs": true,
+        "box": [
+          824.4,
+          202,
+          271.2,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.decision.letter.0",
+      "key": "decision.letter.0",
+      "phrase": 4,
+      "words": "with other candidates.",
+      "first": 11675,
+      "last": 11787,
+      "draft": false,
+      "loud": false,
+      "page": "step5",
+      "lowerEdgeY": 264,
+      "file": "out/work/captions/051-decision.letter.0-4.png",
+      "panel": {
+        "words": "with other candidates.",
+        "glyphs": true,
+        "box": [
+          787.6,
+          202,
+          344.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.decision.reset.0",
+      "key": "decision.reset.0",
+      "phrase": 0,
+      "words": "On to",
+      "first": 11807,
+      "last": 11881,
+      "draft": true,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/052-decision.reset.0-0.png",
+      "panel": {
+        "words": "On to",
+        "glyphs": true,
+        "box": [
+          892.6,
+          982,
+          134.8,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.decision.reset.0",
+      "key": "decision.reset.0",
+      "phrase": 1,
+      "words": "the next application.",
+      "first": 11882,
+      "last": 11994,
+      "draft": true,
+      "loud": false,
+      "page": "marketing",
+      "lowerEdgeY": 1044,
+      "file": "out/work/captions/053-decision.reset.0-1.png",
+      "panel": {
+        "words": "the next application.",
+        "glyphs": true,
+        "box": [
+          799.8,
+          982,
+          320.4,
+          62
+        ]
+      }
+    }
+  ],
+  "filter": "[0:v][1:v]overlay=0:0:enable='between(n,0,37)'[v1];[v1][2:v]overlay=0:0:enable='between(n,38,149)'[v2];[v2][3:v]overlay=0:0:enable='between(n,150,262)'[v3];[v3][4:v]overlay=0:0:enable='between(n,263,337)'[v4];[v4][5:v]overlay=0:0:enable='between(n,338,487)'[v5];[v5][6:v]overlay=0:0:enable='between(n,488,562)'[v6];[v6][7:v]overlay=0:0:enable='between(n,563,712)'[v7];[v7][8:v]overlay=0:0:enable='between(n,713,824)'[v8];[v8][9:v]overlay=0:0:enable='between(n,1321,1395)'[v9];[v9][10:v]overlay=0:0:enable='between(n,1396,1470)'[v10];[v10][11:v]overlay=0:0:enable='between(n,1471,1545)'[v11];[v11][12:v]overlay=0:0:enable='between(n,1546,1658)'[v12];[v12][13:v]overlay=0:0:enable='between(n,2904,2978)'[v13];[v13][14:v]overlay=0:0:enable='between(n,2979,3091)'[v14];[v14][15:v]overlay=0:0:enable='between(n,3092,3241)'[v15];[v15][16:v]overlay=0:0:enable='between(n,3242,3541)'[v16];[v16][17:v]overlay=0:0:enable='between(n,3542,3616)'[v17];[v17][18:v]overlay=0:0:enable='between(n,3617,3653)'[v18];[v18][19:v]overlay=0:0:enable='between(n,4159,4233)'[v19];[v19][20:v]overlay=0:0:enable='between(n,4234,4383)'[v20];[v20][21:v]overlay=0:0:enable='between(n,4384,4533)'[v21];[v21][22:v]overlay=0:0:enable='between(n,4552,4701)'[v22];[v22][23:v]overlay=0:0:enable='between(n,4800,4874)'[v23];[v23][24:v]overlay=0:0:enable='between(n,4875,4949)'[v24];[v24][25:v]overlay=0:0:enable='between(n,4950,5024)'[v25];[v25][26:v]overlay=0:0:enable='between(n,5025,5174)'[v26];[v26][27:v]overlay=0:0:enable='between(n,7506,7655)'[v27];[v27][28:v]overlay=0:0:enable='between(n,7656,7730)'[v28];[v28][29:v]overlay=0:0:enable='between(n,7731,7918)'[v29];[v29][30:v]overlay=0:0:enable='between(n,7937,8011)'[v30];[v30][31:v]overlay=0:0:enable='between(n,8012,8199)'[v31];[v31][32:v]overlay=0:0:enable='between(n,8200,8386)'[v32];[v32][33:v]overlay=0:0:enable='between(n,8387,8461)'[v33];[v33][34:v]overlay=0:0:enable='between(n,8462,8536)'[v34];[v34][35:v]overlay=0:0:enable='between(n,8537,8724)'[v35];[v35][36:v]overlay=0:0:enable='between(n,8725,8836)'[v36];[v36][37:v]overlay=0:0:enable='between(n,8837,9024)'[v37];[v37][38:v]overlay=0:0:enable='between(n,9042,9116)'[v38];[v38][39:v]overlay=0:0:enable='between(n,9117,9191)'[v39];[v39][40:v]overlay=0:0:enable='between(n,9192,9304)'[v40];[v40][41:v]overlay=0:0:enable='between(n,9323,9435)'[v41];[v41][42:v]overlay=0:0:enable='between(n,9436,9547)'[v42];[v42][43:v]overlay=0:0:enable='between(n,10212,10267)'[v43];[v43][44:v]overlay=0:0:enable='between(n,10268,10330)'[v44];[v44][45:v]overlay=0:0:enable='between(n,10331,10379)'[v45];[v45][46:v]overlay=0:0:enable='between(n,10380,10453)'[v46];[v46][47:v]overlay=0:0:enable='between(n,10454,10581)'[v47];[v47][48:v]overlay=0:0:enable='between(n,11300,11412)'[v48];[v48][49:v]overlay=0:0:enable='between(n,11413,11487)'[v49];[v49][50:v]overlay=0:0:enable='between(n,11488,11562)'[v50];[v50][51:v]overlay=0:0:enable='between(n,11563,11674)'[v51];[v51][52:v]overlay=0:0:enable='between(n,11675,11787)'[v52];[v52][53:v]overlay=0:0:enable='between(n,11807,11881)'[v53];[v53][54:v]overlay=0:0:enable='between(n,11882,11994)'[v54]",
+  "filterUse": "ffmpeg -i FILM -i each picture in order -filter_complex FILTER -map [vN] -map 0:a? ...; n is the frame of the film"
+}

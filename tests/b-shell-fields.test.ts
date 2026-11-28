@@ -32,17 +32,6 @@ const ctxOf = (f: Frame): RealContext => {
 const railOf = (f: Frame): Shape => f.list.find((s) => s.id === 'progress-rail')!
 
 describe('the field progress contract', () => {
-  it('leaves every page of the build as it was: none reports fields, and the frame holds what the page drew', () => {
-    for (const { page } of liveFlow().slice(0, 6)) {
-      const s = stageOf(page)
-      s.advance(30)
-      expect(s.page.fields, page).toBeUndefined()
-      const list: DrawList = []
-      s.page.draw(list)
-      expect(s.frameAt(s.step / stepHz).list, page).toEqual(list)
-    }
-  })
-
   it('draws a page with a rail that reports nothing, null, or no fields at all as 0 of 1: bare on step 1, filled up to the collar of the step in hand after it', () => {
     const plain = frameOf('step1')
     const key = controls.key(railOf(plain), ctxOf(plain))

@@ -3,7 +3,7 @@ import type { BossView } from '../view'
 import type { Emitter } from '../../real/types'
 import { hash01 } from '../../core/random'
 import { CANNON, FEET, GUN, HATCH, HIPS, PAGE_BTN, SHIELD } from './numbers'
-import { FALL, FORM, GONE, K, TIMES, bigMuzzleOf, clamp01, kick, lin, mix, muzzleOf, outCubic, prog, smooth, type LookOptions, type Pose } from './pose'
+import { FALL, FORM, GONE, K, LEFT, TIMES, bigMuzzleOf, clamp01, kick, lin, mix, muzzleOf, outCubic, prog, smooth, type LookOptions, type Pose } from './pose'
 import { boxAt, crackStar, joined, lookKit, mesh, pillOutline, ringPlate } from './kit'
 
 // Everything round the body: the broken socket, the cracks where he lands, chunks, dust and smoke, bullets, flashes, the beam.
@@ -153,6 +153,9 @@ function chunkGeo(): THREE.BufferGeometry {
   return g
 }
 
+// Scraps in the finishing blast: seconds each is seen, page px a second down the beam, page px to the side.
+const CRACKS = { least: 0.7, most: 1.3, gone: [0.12, 0.42] }
+const SCRAP = { life: 0.75 }
 const COUNTS = { low: { chunks: 10, puffs: 40, lamps: 2 }, medium: { chunks: 18, puffs: 90, lamps: 5 }, high: { chunks: 26, puffs: 150, lamps: 8 }, film: { chunks: 26, puffs: 150, lamps: 10 } }
 
 export function makeFx(o: LookOptions, level0: Level): Fx {
@@ -184,6 +187,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
   const shards = new Bits(24, new THREE.TetrahedronGeometry(1, 0), kit.glassEdge, true)
   const ballMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.35, 0.36, 0.05) })
   const balls = new Bits(96, new THREE.IcosahedronGeometry(1, 2), ballMat, true)
+  const scraps = new Bits(128, new THREE.CylinderGeometry(1, 1, 0.3, 3).rotateX(Math.PI / 2), kit.scorched, true)
   balls.mesh.receiveShadow = false
 
   // The ground he breaks: the socket and the cracks where he lands.
@@ -202,18 +206,18 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
   ground.add(socket)
   const hx = o.home.x - 960
   const hy = 540 - o.home.y
-  const landCracks = mesh(crackStar(o.seed + 2, 12, (a) => [Math.cos(a) * 96, Math.sin(a) * 52], 120, 2.2), kit.crack, false, false)
+  const landCracks = mesh(crackStar(o.seed + 2, 10, (a) => [Math.cos(a) * 70, Math.sin(a) * 34], 44, 2), kit.crack, false, false)
   landCracks.position.set(hx, hy, 0.25)
   ground.add(landCracks)
   const footCracks = FEET.map(([fx, fy], i) => {
     const c = Math.cos(-o.home.heading)
     const s = Math.sin(-o.home.heading)
-    const m = mesh(crackStar(o.seed + 10 + i, 9, (a) => [Math.cos(a) * 15, Math.sin(a) * 15], 54, 1.3), kit.crack, false, false)
+    const m = mesh(crackStar(o.seed + 10 + i, 9, (a) => [Math.cos(a) * 15, Math.sin(a) * 15], 42, 1.9), kit.crack, false, false)
     m.position.set(hx + (fx * c - fy * s) * K, hy + (fx * s + fy * c) * K, 0.25)
     ground.add(m)
     return m
   })
-  object.add(ground, chunks.mesh, shards.mesh, balls.mesh, shade.mesh, smoke.mesh, marks.mesh, glow.mesh, rings.mesh, bars.mesh)
+  object.add(ground, chunks.mesh, shards.mesh, balls.mesh, scraps.mesh, shade.mesh, smoke.mesh, marks.mesh, glow.mesh, rings.mesh, bars.mesh)
 
   const rnd = (i: number, j: number): number => hash01(i, j, o.seed)
 
@@ -282,7 +286,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       lamps++
       light({ x: x + 960, y: 540 - y, z, colour, power, reach })
     }
-    smoke.begin(); marks.begin(); glow.begin(); rings.begin(); bars.begin(); chunks.begin(); shards.begin(); balls.begin()
+    smoke.begin(); marks.begin(); glow.begin(); rings.begin(); bars.begin(); chunks.begin(); shards.begin(); balls.begin(); scraps.begin()
 
     // The forming.
     const tf = f * TIMES.form
@@ -295,15 +299,15 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       hole.visible = f >= FORM.launch
       lip.visible = f >= FORM.launch
       socketCracks.scale.setScalar(0.25 + 0.75 * open)
-      landCracks.visible = o.ground && f >= FORM.land
-      landCracks.scale.setScalar(0.5 + 0.5 * outCubic(lin(f, FORM.land, FORM.land + 0.03)))
+      landCracks.visible = o.ground && f >= FORM.land && p.gone < CRACKS.gone[1]
+      landCracks.scale.setScalar((0.5 + 0.5 * outCubic(lin(f, FORM.land, FORM.land + 0.03))) * (1 - 0.8 * smooth(lin(p.gone, CRACKS.gone[0], CRACKS.gone[1]))))
       footCracks.forEach((m, i) => {
         const at = FORM.legs[i]! + FORM.legTime
         const leg = p.legs[i]!
-        m.visible = o.ground && f >= at && leg.lift < 0.5
+        m.visible = o.ground && f >= at && leg.lift < 0.5 && p.gone < CRACKS.gone[1]
         m.position.x = leg.planted[0]
         m.position.y = leg.planted[1]
-        m.scale.setScalar(f >= 1 ? 1 - 0.6 * leg.lift * 2 : 0.4 + 0.6 * outCubic(lin(f, at, at + 0.03)))
+        m.scale.setScalar((f >= 1 ? 1 - 0.6 * leg.lift * 2 : 0.4 + 0.6 * outCubic(lin(f, at, at + 0.03))) * (CRACKS.least + (CRACKS.most - CRACKS.least) * rnd(i, 140)) * (1 - 0.8 * smooth(lin(p.gone, CRACKS.gone[0], CRACKS.gone[1]))))
       })
     }
     if (p.shown && f > 0) {
@@ -538,40 +542,70 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       }
     }
 
-    // The finishing blast: he burns white where the beam stands on him, his parts are torn off down the beam, and a last flash leaves the button bare.
+    // The finishing blast: the beam and its light are drawn by the finish; here only what his own parts throw off as they are torn away, and the smoke of what is left.
     if (p.shown && p.gone > 0 && p.gone < 1) {
       const age = p.gone * TIMES.gone
       const [cx3, cy3] = fromBody(p, 0, 0)
       const dir = Math.atan2(p.blow[1], p.blow[0])
       const on = Math.min(1, p.gone / 0.06) * (1 - smooth(lin(p.gone, 0.9, 1)))
-      const flick = 0.75 + 0.25 * hash01(Math.floor(now * 30), 7, o.seed)
-      flash(cx3, cy3, 96, (210 + 70 * flick) * on, HOT, 2.4 * on * flick)
-      glow.add(cx3, cy3, 95, 420 * on, 420 * on, 0, ORANGE, 0.7 * on)
-      lamp(cx3, cy3, 110, [1, 0.8, 0.55], 1.3 * on * flick, 420)
       const tick = Math.floor(age / 0.06)
-      for (let k = tick; k > tick - 8 && k >= 0; k--) sparks(cx3, cy3, 80, age - k * 0.06, 4, 1200 + k * 9, 760, 0.42, HOT, 2.6 * on, dir, 0.6)
-      plume(cx3, cy3, 70, now, 0.07, 1.1, 31, 34, SOOT, 0.6 * on, p.blow[0] * 150, p.blow[1] * 150)
+      for (let k = tick; k > tick - 8 && k >= 0; k--) sparks(cx3, cy3, 80, age - k * 0.06, 4, 1200 + k * 9, 760, 0.42, HOT, 2.2 * on, dir, 0.6)
       const pop = (share: number, bx: number, by: number, id: number, size: number): void => {
         const a = age - share * TIMES.gone
         if (a < 0) return
         const [x, y] = fromBody(p, bx, by)
-        if (a < 0.14) flash(x, y, 100, size * (1.4 - a / 0.14), HOT, 2.6 * (1 - a / 0.14))
+        if (a < 0.1) flash(x, y, 100, size * 0.5 * (1.4 - a / 0.1), [0.85, 0.92, 1], 1.6 * (1 - a / 0.1))
         sparks(x, y, 90, a, 9, 1300 + id * 17, 520, 0.4, HOT, 2.4, dir, 1.2)
-        burst(x, y, 70, a, 5, 1400 + id * 13, 150, 34, 0.5, SOOT, 0.6, 8)
+        burst(x, y, 70, a, 4, 1400 + id * 13, 150, 26, 0.5, SOOT, 0.45, 8)
       }
       pop(GONE.shield[0], 330, 0, 0, 90)
       GONE.wings.forEach((r, i) => pop(r[0], 0, (i === 0 ? 1 : -1) * 200, 1 + i, 110))
       GONE.guns.forEach((r, i) => pop(r[0], GUN.x, (i === 0 ? 1 : -1) * GUN.y, 3 + i, 80))
       GONE.legs.forEach((r, i) => pop(r[0], HIPS[i]![0], HIPS[i]![1], 5 + i, 100))
-      const last = age - GONE.hull[0] * TIMES.gone
-      if (last >= 0) {
-        const span = (GONE.hull[1] - GONE.hull[0]) * TIMES.gone
-        const u = Math.min(1, last / span)
-        flash(cx3, cy3, 120, 220 + 250 * Math.sin(Math.PI * u), [1, 0.97, 0.9], 3 * Math.sin(Math.PI * u))
-        marks.add(cx3, cy3, 6, 160 + 700 * outCubic(u), 160 + 700 * outCubic(u), 0, [0.9, 0.5, 0.2], 0.5 * (1 - u))
-        burst(cx3, cy3, 60, last, 14, 1500, 240, 60, 0.7, SOOT, 0.7, 30)
-        sparks(cx3, cy3, 90, last, 26, 1600, 820, 0.6, HOT, 2.8)
+      pop(GONE.hull[0], 0, 0, 9, 150)
+    }
+    // Small burnt shards torn off all through the blast: each is thrown down the beam, fans out as it goes, lands and stays, flat or half sunk. And soot on the ground and on the side of each large piece that faced the blast.
+    if (p.shown && p.gone > 0) {
+      const age = p.gone * TIMES.gone
+      const [cx3, cy3] = fromBody(p, 0, 0)
+      const [ux, uy] = p.blow
+      const dir = Math.atan2(uy, ux)
+      const S = LEFT.shards
+      const count = n.chunks * 2 + 44
+      for (let i = 0; i < count; i++) {
+        const a = age - (0.03 + 0.6 * rnd(i, 80)) * TIMES.gone
+        if (a < 0) continue
+        const u = Math.min(1, a / SCRAP.life)
+        const e = 1 - (1 - u) * (1 - u)
+        const near = rnd(i, 81) < S.sides
+        const along = near ? 10 + 120 * rnd(i, 83) : S.near + (S.far - S.near) * Math.pow(rnd(i, 83), 0.8)
+        const across = (rnd(i, 82) < 0.5 ? -1 : 1) * (near ? 62 + 90 * rnd(i, 86) : (14 + S.fan * along) * rnd(i, 86))
+        const size = 4 + 15 * rnd(i, 84) * rnd(i, 85)
+        const fx = along * e
+        const fy = across * (near ? Math.sqrt(e) : e)
+        const sunk = rnd(i, 87) < 0.4
+        const z = size * (sunk ? 0.02 : 0.1) + (u < 1 ? (30 + 90 * rnd(i, 88)) * 4 * u * (1 - u) : 0)
+        const fly = (1 - e) * 9
+        scraps.add(cx3 + ux * fx + uy * fy, cy3 + uy * fx - ux * fy, z, size * (1 + rnd(i, 89)), size * (0.45 + 0.5 * rnd(i, 90)), size * 0.5, (sunk ? (rnd(i, 91) - 0.5) * 1.1 : (rnd(i, 91) - 0.5) * 0.2) + fly * (rnd(i, 92) - 0.5), (sunk ? (rnd(i, 93) - 0.5) * 0.9 : 0) + fly * (rnd(i, 94) - 0.5), rnd(i, 95) * 6.28 + fly * 0.5)
       }
+      const soot = (along: number, across: number, size: number, k: number): void => {
+        if (k <= 0) return
+        const ax = along - size * 0.34
+        soft.add(cx3 + ux * ax + uy * across, cy3 + uy * ax - ux * across, 9, size * 1.5, size * 0.95, dir, SOOT, 0.5 * k)
+        soft.add(cx3 + ux * (ax - size * 0.3) + uy * across, cy3 + uy * (ax - size * 0.3) - ux * across, 0.6, size * 1.9, size * 0.8, dir, SOOT, 0.34 * k)
+      }
+      LEFT.plates.forEach((l, i) => soot(l[1], l[2], 120 * l[4], smooth(lin(p.landed[i]!, 0.7, 1))))
+      soot(LEFT.lie[0][0], LEFT.lie[0][1], 46, smooth(lin(p.left, 0.7, 1)))
+      soot(LEFT.lie[1][0], LEFT.lie[1][1], 74, smooth(lin(p.left, 0.7, 1)))
+    }
+    if (p.shown && p.gone >= GONE.button[1]) {
+      const rise = smooth(lin(p.gone, GONE.button[1], 1))
+      const sx3 = p.x + 22
+      const sy3 = p.y + 14
+      plume(sx3, sy3, 30, now, 0.06, 3.8, 41, 27, STEAM, 0.62 * rise, 9, 38)
+      plume(sx3 - 18, sy3 + 2, 30, now + 0.7, 0.09, 3.4, 42, 20, STEAM, 0.48 * rise, 4, 34)
+      const lie = LEFT.lie[0]
+      plume(p.x + lie[0], p.y - lie[1], 20, now + 0.3, 0.2, 2, 43, 10, STEAM, 0.3 * rise, 4, 22)
     }
 
     // Beaten: the cannon is blown off, the glass bursts, he smokes.
@@ -666,12 +700,12 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
         lamp(x, y, 30, [1, 0.3, 0.15], 0.4 * k, 140)
       }
     }
-    smoke.end(); marks.end(); glow.end(); rings.end(); bars.end(); chunks.end(); shards.end(); balls.end()
+    smoke.end(); marks.end(); glow.end(); rings.end(); bars.end(); chunks.end(); shards.end(); balls.end(); scraps.end()
   }
 
   const dispose = (): void => {
     for (const s of [smoke, marks, glow, rings, bars]) s.dispose()
-    for (const s of [chunks, shards, balls]) s.dispose()
+    for (const s of [chunks, shards, balls, scraps]) s.dispose()
     ballMat.dispose()
     tex.blob.dispose(); tex.puff.dispose(); tex.ring.dispose(); tex.bar.dispose()
     ground.traverse((x) => { if ((x as THREE.Mesh).isMesh) (x as THREE.Mesh).geometry.dispose() })

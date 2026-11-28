@@ -1,9 +1,10 @@
 import * as THREE from 'three'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
-import { across, along, blot, boxAt, chamfer, crackStar, cutPlate, discAt, glowMaterial, hose, joined, lathe, lookKit, mesh, oct, pillOutline, plateAt, ringPlate, rod, screw, turnedAt, type V3 } from './kit'
+import { across, along, blot, boxAt, chamfer, clipTo, crackStar, cutPlate, cutTo, discAt, glowMaterial, hose, joined, lathe, lookKit, mesh, oct, pillOutline, plateAt, ringPlate, rod, screw, turnedAt, type V3 } from './kit'
 
 // Everything here is in the units of the target sheets (px of the 1920 wide pictures), forward along +x, z up from the ground, the hull's centre over the origin.
 
+import { hash01 } from '../../core/random'
 import { makeGun, type Gun } from './gun'
 import { BTN, CANNON, GUN, HATCH, HIPS, HULL, LEG, SHIELD, WING } from './numbers'
 
@@ -33,6 +34,9 @@ export interface Model {
   legs: LegParts[]
   cannon: CannonParts
   weak: THREE.MeshBasicMaterial
+  plates: { g: THREE.Group; at: [number, number, number] }[]
+  rim: THREE.Group
+  left: THREE.Group[]
 }
 
 const shared = new Map<string, THREE.BufferGeometry>()
@@ -49,17 +53,18 @@ const screwsAt = (at: [number, number][], z: number, r = 6.5, seed = 1): THREE.B
 
 function hullGeo(): { plate: THREE.BufferGeometry; dark: THREE.BufferGeometry; trim: THREE.BufferGeometry; bed: THREE.BufferGeometry; pins: THREE.BufferGeometry; joints: THREE.BufferGeometry } {
   const { hx, hy, c, top, tall, belly } = HULL
-  const bezelOut = pillOutline(BTN.w + 40, BTN.h + 40, BTN.r + 18)
+  const bezelOut = pillOutline(BTN.w + 36, BTN.h + 36, BTN.r + 17)
   const bezelIn = pillOutline(BTN.w + 12, BTN.h + 12, BTN.r + 5)
-  const plate = chamfer(oct(hx, hy, c), top - tall, top, 14, 12)
+  const plate = chamfer(oct(hx, hy, c), top - tall, top, 5, 5)
   const dark = joined([
+    plateAt(oct(hx + 4, hy + 4, c + 2), top - tall - 3, top - 6, 2),
     plateAt(oct(hx - 16, hy - 14, c - 6), belly, top - tall + 1, 5),
     plateAt(oct(hx - 60, hy - 40, 20), belly - 22, belly + 1, 5)
   ])
-  const trim = ringPlate(bezelOut, bezelIn, 7, 2.2).translate(0, 0, top - 0.5)
+  const trim = ringPlate(bezelOut, bezelIn, 7, 3.5).translate(0, 0, top - 0.5)
   const bed = plateAt(pillOutline(BTN.w + 14, BTN.h + 14, BTN.r + 6), top - 0.4, top + 2, 0.5)
   const sc: [number, number][] = [[-268, -98], [268, -98], [-268, 98], [268, 98], [-150, -111], [150, -111], [-150, 111], [150, 111], [0, -111], [0, 111], [-272, 0], [272, 0]]
-  const pins = screwsAt(sc, top, 6.5, 3)
+  const pins = screwsAt(sc, top, 4.6, 3)
   const joints = joined(HIPS.map(([x, y]) => discAt(30, x * 1.0, y * 0.92, LEG.hipZ - 26, LEG.hipZ + 24, 4)))
   return { plate, dark, trim, bed, pins, joints }
 }
@@ -71,12 +76,12 @@ function wingGeo(side: number): { plate: THREE.BufferGeometry; dark: THREE.Buffe
     const pts: [number, number][] = [[-WING.inner + inset, y0], [WING.inner - inset, y0], [WING.outer - inset * 0.8, y1 - inset - 14], [WING.outer - 14 - inset * 0.8, y1 - inset], [-WING.outer + 14 + inset * 0.8, y1 - inset], [-WING.outer + inset * 0.8, y1 - inset - 14]]
     return side > 0 ? pts : pts.map(([x, y]) => [x, -y] as [number, number]).reverse()
   }
-  const plate = chamfer(shape(0), WING.top - 22, WING.top, 12, 10)
-  const fins: THREE.BufferGeometry[] = [plateAt(shape(14), WING.top - 70, WING.top - 21, 4)]
+  const plate = chamfer(shape(0), WING.top - 22, WING.top, 5, 5)
+  const fins: THREE.BufferGeometry[] = [plateAt(shape(14), WING.top - 70, WING.top - 21, 4), plateAt(shape(-6), WING.top - 25, WING.top - 6, 2)]
   for (let i = 0; i < 6; i++) fins.push(plateAt(shape(8 - (i % 2) * 0), WING.top - 66 + i * 7, WING.top - 63 + i * 7, 1))
   const dark = joined(fins)
   const s = side
-  const pins = screwsAt([[-150, s * (y0 + 22)], [150, s * (y0 + 22)], [-112, s * (y1 - 18)], [112, s * (y1 - 18)], [0, s * (y1 - 12)]], WING.top, 6, 5 + side)
+  const pins = screwsAt([[-150, s * (y0 + 22)], [150, s * (y0 + 22)], [-112, s * (y1 - 18)], [112, s * (y1 - 18)], [0, s * (y1 - 12)]], WING.top, 4.6, 5 + side)
   const base = joined([
     turnedAt([[0, 0], [GUN.baseR, 0], [GUN.baseR, 5], [GUN.baseR - 5, 9], [GUN.baseR - 13, 9], [GUN.baseR - 15, 5], [0, 5]], GUN.x, s * GUN.y, WING.top - 0.2, 48),
     screwsAt(Array.from({ length: 6 }, (_, i) => [GUN.x + Math.cos(i * 1.047 + 0.5) * (GUN.baseR - 9), s * GUN.y + Math.sin(i * 1.047 + 0.5) * (GUN.baseR - 9)] as [number, number]), WING.top + 8.6, 3.4, 9)
@@ -112,23 +117,28 @@ function legGeo(): { upper: Record<string, THREE.BufferGeometry>; lower: Record<
     }
   }
   const upper = {
-    ...link(A, 43, 20),
+    ...link(A, 50, 22),
     orange: joined([hose([[10, -12, 6], [A * 0.3, -17, 15], [A * 0.62, 15, 15], [A - 12, 12, 6]], 4.2, 20, 7), hose([[14, 13, 4], [A * 0.3, 17, 11], [A * 0.58, -15, 11], [A - 16, -12, 4]], 3.6, 20, 7)])
   }
   const lower = {
-    ...link(B, 38, 18),
+    ...link(B, 44, 20),
     orange: joined([hose([[12, 11, 5], [B * 0.3, 15, 13], [B * 0.6, -13, 12], [B - 18, -10, 5]], 3.8, 20, 7)])
   }
-  // A claw of two short thick hooks: each leaves the ankle high, turns inward at its knuckle and sinks its tip into the ground.
+  // A claw of two short thick talons side by side: each a curved blade that leaves the ankle high and sinks its point into the ground.
   const hook = (side: number): THREE.BufferGeometry[] => {
-    const root = cutPlate(pillOutline(74, 40, 20, 6).map(([x, y]) => [x + 30, y] as [number, number]), 34, 9).rotateY(0.16).translate(0, 0, 26)
-    const tip = cutPlate(pillOutline(60, 34, 17, 6).map(([x, y]) => [x + 24, y] as [number, number]), 30, 9).rotateY(0.5).rotateZ(-side * 0.5).translate(58, 0, 16)
-    return [root, tip].map((g) => g.rotateZ(side * 0.42).translate(0, side * 10, 0))
+    const L = 82
+    const n = 10
+    const mid = (t: number): number => side * (18 + 8 * Math.sin(Math.PI * t) - 4 * t * t)
+    const half = (t: number): number => 13.5 - 6 * Math.pow(t, 1.6)
+    const pts: [number, number][] = []
+    for (let i = 0; i <= n; i++) { const t = i / n; pts.push([t * L, mid(t) + half(t)]) }
+    for (let i = n; i >= 0; i--) { const t = i / n; pts.push([t * L, mid(t) - half(t)]) }
+    return [cutPlate(pts, 36, 5).rotateY(0.24).translate(-4, 0, 22)]
   }
   const foot = {
     plate: joined([...hook(1), ...hook(-1)]),
-    joint: joined([boxAt(-34, -32, 6, 22, 32, 52, 7), across(14, 38, 2, 14).translate(0, 0, 46)]),
-    pin: joined([discAt(6, 26, 30, 54, 58, 1.2, 10), discAt(6, 26, -30, 54, 58, 1.2, 10)]),
+    joint: joined([boxAt(-34, -34, 6, 26, 34, 54, 7), across(14, 40, 2, 14).translate(0, 0, 48)]),
+    pin: joined([discAt(6, 12, 20, 56, 60, 1.2, 10), discAt(6, 12, -20, 56, 60, 1.2, 10)]),
     dark: boxAt(-38, -24, 2, -30, 24, 30, 1)
   }
   return { upper, lower, foot }
@@ -145,16 +155,16 @@ function cannonGeo(): Record<string, THREE.BufferGeometry> {
     boxAt(-30, -26, -22, b0 - 4, 26, 22, 5)
   ])
   const breechDark = joined([
-    ringPlate([[b0 + 109, -51], [b0 + 209, -51], [b0 + 209, 51], [b0 + 109, 51]], [[b0 + 123, -37], [b0 + 195, -37], [b0 + 195, 37], [b0 + 123, 37]], 5, 1).translate(0, 0, r.breech + 8),
+    ringPlate(pillOutline(92, 92, 16, 5).map(([x, y]) => [x + b0 + 160, y] as [number, number]), pillOutline(72, 72, 10, 5).map(([x, y]) => [x + b0 + 160, y] as [number, number]), 5, 1.5).translate(0, 0, r.breech + 8),
     along([[r.breech + 0.6, b0 + 38], [r.breech + 2.5, b0 + 40], [r.breech + 2.5, b0 + 50], [r.breech + 0.6, b0 + 52]], 40),
     along([[r.breech + 0.6, b1 - 64], [r.breech + 2.5, b1 - 62], [r.breech + 2.5, b1 - 52], [r.breech + 0.6, b1 - 50]], 40)
   ])
-  const window = new THREE.PlaneGeometry(60, 60, 10, 10).translate(b0 + 160, 0, r.breech + 11)
+  const window = new THREE.PlaneGeometry(72, 72, 12, 12).translate(b0 + 160, 0, r.breech + 11)
   {
     const pos = window.getAttribute('position')
     const col = new Float32Array(pos.count * 3)
     for (let i = 0; i < pos.count; i++) {
-      const d = Math.min(1, Math.hypot(pos.getX(i) - b0 - 160, pos.getY(i)) / 40)
+      const d = Math.min(1, Math.hypot(pos.getX(i) - b0 - 160, pos.getY(i)) / 46)
       const k = (1 - d * d) * (1 - d * d)
       col.set([0.5 + 2.2 * k, 0.4 + 4.6 * k, 0.3 + 16 * k], i * 3)
     }
@@ -190,14 +200,14 @@ export function buildModel(): Model {
   const body = new THREE.Group()
   const hull = new THREE.Group()
   const hg = geo('hull', () => { const h = hullGeo(); shared.set('hull.dark', h.dark); shared.set('hull.trim', h.trim); shared.set('hull.bed', h.bed); shared.set('hull.pins', h.pins); shared.set('hull.joints', h.joints); return h.plate })
-  hull.add(mesh(hg, kit.hull), mesh(shared.get('hull.dark')!, kit.dark), mesh(shared.get('hull.trim')!, kit.bezel), mesh(shared.get('hull.bed')!, kit.bed), mesh(shared.get('hull.pins')!, kit.pin), mesh(shared.get('hull.joints')!, kit.joint))
+  hull.add(mesh(hg, kit.hull), mesh(shared.get('hull.dark')!, kit.dark), mesh(shared.get('hull.trim')!, kit.bezel), mesh(shared.get('hull.bed')!, kit.bed), mesh(shared.get('hull.pins')!, kit.gunBody), mesh(shared.get('hull.joints')!, kit.joint))
   body.add(hull)
 
   const wings = [1, -1].map((side) => {
     const g = new THREE.Group()
     const name = `wing${side}`
     const p = geo(name, () => { const w = wingGeo(side); shared.set(`${name}.dark`, w.dark); shared.set(`${name}.pins`, w.pins); shared.set(`${name}.base`, w.base); return w.plate })
-    g.add(mesh(p, kit.wing), mesh(shared.get(`${name}.dark`)!, kit.dark), mesh(shared.get(`${name}.pins`)!, kit.pin), mesh(shared.get(`${name}.base`)!, kit.joint))
+    g.add(mesh(p, kit.wing), mesh(shared.get(`${name}.dark`)!, kit.dark), mesh(shared.get(`${name}.pins`)!, kit.gunBody), mesh(shared.get(`${name}.base`)!, kit.joint))
     body.add(g)
     return g
   }) as [THREE.Group, THREE.Group]
@@ -224,7 +234,7 @@ export function buildModel(): Model {
   hatch.add(
     mesh(geo('hatch.plate', () => joined([chamfer(ho, -14, -4, 10, 4.5), ringPlate(oct(HATCH.hx - 12, HATCH.hy - 12, HATCH.c - 6), oct(HATCH.hx - 19, HATCH.hy - 19, HATCH.c - 9), 3, 0.8).translate(0, 0, -4.4)])), kit.hatch),
     hatchSeam,
-    mesh(geo('hatch.pins', () => screwsAt([[-80, -100], [80, -100], [-80, 100], [80, 100]], 0, 5, 7)), kit.pin)
+    mesh(geo('hatch.pins', () => screwsAt([[-80, -100], [80, -100], [-80, 100], [80, 100]], 0, 4.4, 7)), kit.gunBody)
   )
   const weak = glowMaterial(0xff2a12, 0)
   const lids = [-1, 1].map((side) => {
@@ -249,17 +259,23 @@ export function buildModel(): Model {
   const shieldGlass = glassOf('shield.glass', CUT, 1)
   const shieldGlassB = glassOf('shield.glassB', -1, CUT)
   const shieldEdgeB = edgeOf('shield.edgeB', -1, CUT)
-  // What is left where the glass broke away: a few teeth standing in the rail.
-  const tooth = (t: number, w: number, deep: number): THREE.BufferGeometry => {
+  // The glass at the last stage: the whole arc still stands, bitten along its top edge, so nothing is open that the rules do not honour.
+  const bitten = (): [number, number][] => {
     const phi = Math.asin(SHIELD.half / SHIELD.r)
     const cx = SHIELD.mid - SHIELD.r
-    const at = (r: number, q: number): [number, number] => [cx + r * Math.cos(q * phi), r * Math.sin(q * phi)]
-    return plateAt([at(SHIELD.r, t - w), at(SHIELD.r, t + w), at(SHIELD.r - SHIELD.thick * deep, t + w * 0.2), at(SHIELD.r - SHIELD.thick, t - w * 0.6)], SHIELD.z0 + 18, SHIELD.z0 + 60, 2)
+    const n = 60
+    const bite = (i: number, id: number): number => { const h = hash01(i, id, 17); return h > 0.62 ? (h - 0.62) * 1.9 * SHIELD.thick : 0 }
+    const pts: [number, number][] = []
+    for (let i = 0; i <= n; i++) { const q = phi * (-1 + (2 * i) / n); const r = SHIELD.r - (i > 0 && i < n ? bite(i, 1) : 0); pts.push([cx + r * Math.cos(q), r * Math.sin(q)]) }
+    for (let i = n; i >= 0; i--) { const q = phi * (-1 + (2 * i) / n); const r = SHIELD.r - SHIELD.thick + (i > 0 && i < n ? bite(i, 2) * 0.5 : 0); pts.push([cx + r * Math.cos(q), r * Math.sin(q)]) }
+    return pts
   }
-  const shieldStub = mesh(geo('shield.stub', () => joined([tooth(CUT - 0.05, 0.06, 0.5), tooth(-0.42, 0.05, 1), tooth(-0.7, 0.035, 0.6), tooth(-0.93, 0.07, 1)])), kit.glass, true, false)
+  const shieldStub = mesh(geo('shield.stub', () => plateAt(bitten(), SHIELD.z0 + 18, SHIELD.z1 - 8, 2)), kit.glass, true, false)
   shieldStub.renderOrder = 5
   shieldStub.userData.order = 5
   shieldStub.visible = false
+  const hullFace = oct(HULL.hx - 5, HULL.hy - 5, HULL.c - 2)
+  const wingFace = (side: number): [number, number][] => [[WING.inner - 12, side * (HULL.hy + 2)], [WING.outer - 8, side * (HULL.hy + WING.reach - 10)], [-WING.outer + 8, side * (HULL.hy + WING.reach - 10)], [-WING.inner + 12, side * (HULL.hy + 2)]]
   const struts: THREE.BufferGeometry[] = []
   for (const y of [-150, -52, 52, 150]) struts.push(rod([HULL.hx - 20 - Math.abs(y) * 0.12, y * 0.74, 132], [SHIELD.mid - SHIELD.thick - (y * y) / (2 * SHIELD.r) + 4, y, 118], 6.5, 10))
   const shieldEdge = edgeOf('shield.edge', CUT, 1)
@@ -291,7 +307,7 @@ export function buildModel(): Model {
   const legs: LegParts[] = HIPS.map(() => {
     const part = (name: string): THREE.Group => {
       const g = new THREE.Group()
-      g.add(mesh(shared.get(`leg.${name}.plate`)!, kit.plateLight), mesh(shared.get(`leg.${name}.joint`)!, kit.limb), mesh(shared.get(`leg.${name}.pin`)!, kit.pin))
+      g.add(mesh(shared.get(`leg.${name}.plate`)!, name === 'foot' ? kit.steel : kit.plateLight), mesh(shared.get(`leg.${name}.joint`)!, kit.limb), mesh(shared.get(`leg.${name}.pin`)!, kit.pin))
       const o = shared.get(`leg.${name}.orange`)
       if (o) g.add(mesh(o, kit.orange))
       const d = shared.get(`leg.${name}.dark`)
@@ -316,7 +332,7 @@ export function buildModel(): Model {
   heat.depthWrite = false
   root.add(mesh(cg, kit.steel), mesh(c('breechDark'), kit.bed), mesh(c('window'), window, false, false), mesh(c('slit'), slits, false, false), mesh(c('yoke'), kit.joint), mesh(c('hoses'), kit.orange))
   const ribs = new THREE.Group()
-  ribs.add(mesh(c('ribCore'), kit.dark), mesh(c('ribs'), kit.orange))
+  ribs.add(mesh(c('ribCore'), kit.steel), mesh(c('ribs'), kit.orange))
   const sleeve = new THREE.Group()
   sleeve.add(mesh(c('sleeve'), kit.steel))
   const barrel = new THREE.Group()
@@ -333,24 +349,37 @@ export function buildModel(): Model {
   const scorch = (seed: number, r: number, x: number, y: number, z: number): THREE.BufferGeometry[] => [at(blot(seed, r, 22), x, y, z), at(blot(seed + 50, r * 0.74, 20), x + r * 0.06, y - r * 0.05, z + 0.15), at(blot(seed + 90, r * 0.46, 16), x - r * 0.05, y + r * 0.04, z + 0.3)]
   const ember = glowMaterial(0xff5a14, 1.7)
   const star = (seed: number, arms: number, core: number, reach: number, wide: number, x: number, y: number, z: number): THREE.BufferGeometry => at(crackStar(seed, arms, (q) => [Math.cos(q) * core, Math.sin(q) * core], reach, wide), x, y, z)
-  const onGlass = (seed: number, arms: number, reach: number, y: number): THREE.BufferGeometry => star(seed, arms, 4, reach, 5.5, SHIELD.mid - SHIELD.thick / 2 - (y * y) / (2 * SHIELD.r), y, SHIELD.z1 + 3.6)
+  const onGlass = (seed: number, arms: number, reach: number, y: number): THREE.BufferGeometry => star(seed, arms, 4, reach, 4.6, SHIELD.mid - SHIELD.thick / 2 - (y * y) / (2 * SHIELD.r), y, SHIELD.z1 + 3.6)
+  const inGlass = (parts: THREE.BufferGeometry[]): THREE.BufferGeometry => {
+    const phi = Math.asin(SHIELD.half / SHIELD.r)
+    const cx = SHIELD.mid - SHIELD.r
+    const pt = (r: number, q: number): [number, number] => [cx + r * Math.cos(q), r * Math.sin(q)]
+    const all = joined(parts)
+    return joined([-1, 0].map((h) => clipTo(all, [pt(SHIELD.r - SHIELD.thick, h * phi), pt(SHIELD.r + 1, h * phi), pt(SHIELD.r + 1, (h + 1) * phi), pt(SHIELD.r - SHIELD.thick, (h + 1) * phi)])))
+  }
+  const onHull = (parts: THREE.BufferGeometry[]): THREE.BufferGeometry => clipTo(joined(parts), hullFace)
+  const onWing = (side: number, parts: THREE.BufferGeometry[]): THREE.BufferGeometry => clipTo(joined(parts), wingFace(side))
+  const HZ = HULL.top + 0.5
+  const WZ = WING.top + 0.5
   const d1 = new THREE.Group()
-  const crackB = mesh(geo('dmg1.crackB', () => joined([onGlass(37, 7, 84, -118), onGlass(39, 6, 60, -58)])), kit.crack, false, false)
+  const crackB = mesh(geo('dmg1.crackB', () => inGlass([onGlass(37, 7, 84, -118), onGlass(39, 6, 60, -58)])), kit.glassCrack, false, false)
   d1.add(
-    mesh(geo('dmg1.soot', () => joined([...scorch(1, 128, 215, 92, HULL.top + 8), ...scorch(2, 108, -125, 208, WING.top + 2), ...scorch(3, 70, 240, -96, HULL.top + 8)])), kit.soot, false, false),
-    mesh(geo('dmg1.crack', () => joined([star(31, 8, 6, 100, 3.4, 215, 92, HULL.top + 8.6), star(32, 7, 5, 80, 3, -125, 208, WING.top + 2.6), onGlass(36, 8, 96, 64), onGlass(40, 6, 64, 150)])), kit.crack, false, false),
+    mesh(geo('dmg1.soot', () => joined([onHull([...scorch(1, 128, 215, 92, HZ), ...scorch(3, 80, 240, -96, HZ)]), onWing(1, scorch(2, 108, -105, 222, WZ))])), kit.soot, false, false),
+    mesh(geo('dmg1.crack', () => joined([onHull([star(31, 8, 6, 100, 3.4, 215, 100, HZ + 0.5)]), onWing(1, [star(32, 7, 5, 80, 3, -105, 222, WZ + 0.5)])])), kit.crack, false, false),
+    mesh(geo('dmg1.glass', () => inGlass([onGlass(36, 8, 96, 64), onGlass(40, 6, 64, 150)])), kit.glassCrack, false, false),
     crackB,
-    mesh(geo('dmg1.ember', () => joined([star(41, 6, 3, 58, 2.6, 215, 92, HULL.top + 9), star(42, 5, 3, 44, 2.2, -125, 208, WING.top + 3)])), ember, false, false),
-    mesh(geo('dmg1.hole', () => joined([at(blot(8, 30, 9), 215, 92, HULL.top + 9.2), at(blot(9, 24, 9), -125, 208, WING.top + 3.2)])), kit.bore, false, false)
+    mesh(geo('dmg1.ember', () => joined([onHull([star(41, 6, 3, 58, 2.6, 215, 100, HZ + 0.8)]), onWing(1, [star(42, 5, 3, 44, 2.2, -105, 222, WZ + 0.8)])])), ember, false, false),
+    mesh(geo('dmg1.hole', () => joined([onHull([at(blot(8, 26, 9), 262, 100, HZ + 1)]), at(blot(9, 24, 9), -105, 222, WZ + 1)])), kit.bore, false, false)
   )
   const d2 = new THREE.Group()
   const hx = HATCH.cx + 10
   const hy = -HATCH.hy
   d2.add(
-    mesh(geo('dmg2.soot', () => joined([...scorch(4, 118, 150, -104, HULL.top + 8), ...scorch(5, 100, -118, -200, WING.top + 2), ...scorch(6, 84, -40, 112, HULL.top + 8), ...scorch(7, 110, hx, hy + 50, HATCH.top + 2)])), kit.soot, false, false),
-    mesh(geo('dmg2.crack', () => joined([star(33, 8, 6, 112, 3.4, 150, -104, HULL.top + 8.6), star(34, 7, 5, 88, 3, -118, -200, WING.top + 2.6), onGlass(38, 7, 70, 10)])), kit.crack, false, false),
-    mesh(geo('dmg2.ember', () => joined([star(43, 7, 3, 70, 2.8, 150, -104, HULL.top + 9), star(44, 6, 3, 52, 2.4, -118, -200, WING.top + 3)])), ember, false, false),
-    mesh(geo('dmg2.hole', () => joined([at(blot(18, 44, 9), 232, 84, HULL.top + 9.4), at(blot(19, 36, 9), -150, 196, WING.top + 3.4), boxAt(hx - 62, hy + 6, HATCH.top + 0.6, hx + 62, hy + 60, HATCH.top + 1.6, 0.4)])), kit.bore, false, false),
+    mesh(geo('dmg2.soot', () => joined([onHull([...scorch(4, 118, 150, -104, HZ), ...scorch(6, 84, -40, 112, HZ)]), onWing(-1, scorch(5, 100, -100, -214, WZ))])), kit.soot, false, false),
+    mesh(geo('dmg2.crack', () => joined([onHull([star(33, 8, 6, 112, 3.4, 150, -108, HZ + 0.5)]), onWing(-1, [star(34, 7, 5, 88, 3, -100, -214, WZ + 0.5)])])), kit.crack, false, false),
+    mesh(geo('dmg2.glass', () => inGlass([onGlass(38, 7, 70, 10), onGlass(46, 7, 80, -150), onGlass(47, 6, 60, 110)])), kit.glassCrack, false, false),
+    mesh(geo('dmg2.ember', () => joined([onHull([star(43, 7, 3, 70, 2.8, 150, -108, HZ + 0.8)]), onWing(-1, [star(44, 6, 3, 52, 2.4, -100, -214, WZ + 0.8)])])), ember, false, false),
+    mesh(geo('dmg2.hole', () => joined([onHull([at(blot(18, 30, 9), 262, -100, HZ + 1)]), at(blot(19, 30, 9), -100, -214, WZ + 1), boxAt(hx - 62, hy + 6, HATCH.top + 0.6, hx + 62, hy + 60, HATCH.top + 1.6, 0.4)])), kit.bore, false, false),
     mesh(geo('dmg2.plate', () => joined([
       boxAt(-40, -30, 0, 40, 30, 6, 1.5).rotateY(-0.5).rotateZ(0.4).translate(258, 108, HULL.top + 14),
       boxAt(-32, -24, 0, 32, 24, 5, 1.2).rotateX(0.6).rotateZ(-0.3).translate(-150, 226, WING.top + 12),
@@ -359,7 +388,7 @@ export function buildModel(): Model {
     mesh(geo('dmg2.hose', () => joined([hose([[226, 80, HULL.top - 4], [250, 60, HULL.top + 34], [292, 84, HULL.top + 26], [312, 124, HULL.top - 30]], 6.5, 16, 7), hose([[-150, 190, WING.top - 4], [-178, 204, WING.top + 26], [-202, 244, WING.top - 20]], 5.5, 12, 7), hose([[hx - 40, hy + 40, HATCH.top - 6], [hx - 20, hy + 14, HATCH.top + 16], [hx + 14, hy + 30, HATCH.top + 8], [hx + 36, hy + 12, HATCH.top - 10]], 5, 14, 7)])), kit.orange)
   )
   const d3 = new THREE.Group()
-  d3.add(mesh(geo('dmg3.soot', () => joined([...scorch(10, 150, HATCH.cx + 20, 10, HATCH.top + 2.4), ...scorch(11, 104, -262, -60, HULL.top + 8.2), ...scorch(12, 100, 262, 40, HULL.top + 8.2), ...scorch(13, 96, 30, -212, WING.top + 2.2), ...scorch(14, 90, -40, 208, WING.top + 2.2)])), kit.soot, false, false))
+  d3.add(mesh(geo('dmg3.soot', () => joined([onHull([...scorch(11, 104, -262, -60, HZ), ...scorch(12, 100, 262, 40, HZ)]), onWing(-1, scorch(13, 96, 30, -212, WZ)), onWing(1, scorch(14, 90, -40, 208, WZ))])), kit.soot, false, false))
   d1.visible = false
   d2.visible = false
   d3.visible = false
@@ -368,6 +397,49 @@ export function buildModel(): Model {
   const weakLamp = mesh(geo('weak', () => joined([discAt(11, HATCH.cx - HATCH.hx - 2, 0, 128, 140, 2, 18).rotateY(0), boxAt(HATCH.cx - HATCH.hx - 9, -34, 120, HATCH.cx - HATCH.hx - 4, 34, 146, 1.5)])), weak, false, false)
   bay.add(weakLamp)
 
-  return { body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, shieldGlassB, shieldEdgeB, shieldStub, crackB, lids, slab, hatchSeam, damage: [d1, d2, d3], own: [seam, window, bore, slits, heat, weak, ember], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
+  // The finishing blast: the hull in pieces along a fan of cuts, each piece turning about its own middle.
+  const fan = [0.25, 1.1, 1.85, 2.8, 3.55, 4.4, 5.35]
+  const mid: [number, number] = [-34, 14]
+  const plates = fan.map((a0, i) => {
+    const a1 = i + 1 < fan.length ? fan[i + 1]! : fan[0]! + Math.PI * 2
+    const am = (a0 + a1) / 2
+    const ray = (a: number, r: number): [number, number] => [mid[0] + Math.cos(a) * r, mid[1] + Math.sin(a) * r]
+    const cut = [mid, ray(a0, 900), ray(am, 900), ray(a1, 900)]
+    const at: [number, number, number] = [mid[0] + Math.cos(am) * 190, mid[1] + Math.sin(am) * 120, HULL.top - HULL.tall / 2]
+    const piece = (name: string, from: string): THREE.BufferGeometry => geo(`${name}${i}`, () => cutTo(shared.get(from)!, cut).translate(-at[0], -at[1], -at[2]))
+    const g = new THREE.Group()
+    g.add(mesh(piece('piece', 'hull'), kit.hull), mesh(piece('piece.dark', 'hull.dark'), kit.under), mesh(piece('piece.trim', 'hull.trim'), kit.bezel))
+    g.rotation.order = 'ZYX'
+    g.visible = false
+    body.add(g)
+    return { g, at }
+  })
+
+  // What is left: the button's own rim, scorched, and a claw, a bent plate and two bolts lying about.
+  const rim = new THREE.Group()
+  const rimOut = pillOutline(BTN.w + 38, BTN.h + 38, BTN.r + 17)
+  rim.add(
+    mesh(geo('rim', () => ringPlate(rimOut, pillOutline(BTN.w + 4, BTN.h + 4, BTN.r + 2), 12, 4)), kit.scorched),
+    mesh(geo('rim.pins', () => joined([-0.36, -0.12, 0.12, 0.36].flatMap((k) => [1, -1].map((s2) => discAt(4.2, k * BTN.w, s2 * (BTN.h / 2 + 11), 11, 14, 1, 10))))), kit.pin)
+  )
+  rim.visible = false
+  button.add(rim)
+  const claw = legs[0]!.foot.clone()
+  claw.traverse((o) => { if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).material = kit.under })
+  const bent = new THREE.Group()
+  bent.add(mesh(geo('left.plate', () => joined([
+    plateAt([[-70, -30], [6, -40], [10, 34], [-58, 30]], 0, 6, 2),
+    plateAt([[0, -40], [62, -22], [84, 8], [56, 40], [0, 34]], 0, 6, 2).rotateY(-0.24).translate(8, 0, 1),
+    plateAt([[-70, -30], [-58, 30], [-96, 12], [-90, -34]], 0, 6, 2).rotateY(0.18).translate(-4, 0, 0)
+  ])), kit.scorched))
+  const bolt = (): THREE.Group => {
+    const g = new THREE.Group()
+    g.add(mesh(geo('left.bolt', () => joined([along([[0, -16], [6, -16], [6, 12], [0, 12]], 12), along([[0, 12], [10.5, 12], [10.5, 20], [0, 20]], 6)]).translate(0, 0, 10.5)), kit.under))
+    return g
+  }
+  const left = [claw, bent, bolt(), bolt()]
+  for (const g of left) { g.rotation.order = 'ZYX'; g.visible = false }
+
+  return { plates, rim, left, body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, shieldGlassB, shieldEdgeB, shieldStub, crackB, lids, slab, hatchSeam, damage: [d1, d2, d3], own: [seam, window, bore, slits, heat, weak, ember], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
 }
 

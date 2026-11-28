@@ -3,7 +3,7 @@ import { config, filmSeconds, stepHz } from '../src/config'
 import { copy } from '../src/copy'
 import { pages } from '../src/pages'
 import { clock, makePage, secondsOf, spun } from '../src/pages/step5'
-import { AT } from '../src/pages/step5/timeline'
+import { AT, FILM } from '../src/pages/step5/timeline'
 import { layoutProblems, typeRegister, walk } from '../src/shell/layout'
 import { hasWords, words } from '../src/shell/words'
 import { filmFlow, filmOptions, runBot, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
@@ -11,6 +11,8 @@ import { filmFlow, filmOptions, runBot, ScriptDriver, Stage, type Driver, type D
 const hz = stepHz
 const tolerance = config.film.beatToleranceSeconds
 const beats = config.film.beats.filter((b) => b.unit === 'decision')
+const unitSeconds = config.film.units.find((u) => u.id === 'decision')!.seconds
+const turned = FILM.leave + 0.25
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('decision'), pages, driver: new ScriptDriver(), film: filmOptions('decision') })
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step5' }, { page: 'marketing', variant: 'rejected' }], pages, driver, seed })
 const still = (x: number, y: number): Driver => ({ name: 'bot', input: (): Pointer => ({ x, y, down: false }) })
@@ -51,7 +53,7 @@ describe('step 5, the layout', () => {
     })
     const seen = new Set<string>()
     const s = film()
-    for (let i = 0; i < 9.7 * hz; i += 6) {
+    for (let i = 0; i < turned * hz; i += 6) {
       s.advance(6)
       if (s.page.id === 'step5') for (const st of s.page.states()) seen.add(st)
     }
@@ -67,7 +69,7 @@ describe('step 5, the layout', () => {
 
   it('keeps every drawn part on the page and every run of type readable, in every state', () => {
     const s = film()
-    for (let i = 0; i < 9.7 * hz; i += 12) {
+    for (let i = 0; i < turned * hz; i += 12) {
       s.advance(12)
       if (s.page.id !== 'step5') break
       const list = draw(s)
@@ -108,7 +110,7 @@ describe('step 5, the words', () => {
       expect(/^(copy:|runtime:|data:|applicant\.)/.test(r.key), r.key).toBe(true)
     }
     const s = film()
-    for (let i = 0; i < 9.7 * hz; i += 24) {
+    for (let i = 0; i < turned * hz; i += 24) {
       s.advance(24)
       if (s.page.id !== 'step5') break
       for (const shape of draw(s)) {
@@ -155,7 +157,7 @@ describe('step 5, the words', () => {
 describe('step 5, the film', () => {
   it('reports the event of every beat inside its beat', () => {
     const s = film()
-    s.advance(12 * hz)
+    s.advance(Math.round(unitSeconds * hz))
     for (const b of beats) {
       const hits = s.events.filter((e) => e.name === b.event).map((e) => e.step / hz)
       expect(hits.length, b.id).toBeGreaterThan(0)
@@ -168,7 +170,7 @@ describe('step 5, the film', () => {
 
   it('plays the beats in the order the film tells them', () => {
     const s = film()
-    s.advance(12 * hz)
+    s.advance(Math.round(unitSeconds * hz))
     const order = s.events.filter((e) => e.name !== 'step').map((e) => e.name)
     expect(order).toEqual(['hold-music', 'letter-drop', 'paper-slide', 'metrics-card', 'stamp', 'flatten', 'count-run', 'peel-up', 'button-press', 'page-turn'])
     const stamp = s.events.find((e) => e.name === 'stamp')!
@@ -184,7 +186,7 @@ describe('step 5, the film', () => {
     const at = b.from + (b.to - b.from) * key.at
     s.advance(Math.round(at * hz))
     expect(s.cursor.pose().damage).toEqual(['flattened'])
-    const press = 9.3
+    const press = FILM.press
     s.advance(Math.round((press - at) * hz) - 1)
     expect(s.cursor.damaged).toBe(false)
     const cap = draw(s).find((x) => x.id === 'accept-cap')!
@@ -198,7 +200,7 @@ describe('step 5, the film', () => {
     const s = film()
     let first = -1
     let last = -1
-    for (let i = 0; i < 9.7 * hz; i++) {
+    for (let i = 0; i < turned * hz; i++) {
       s.advance(1)
       if (s.cursor.taken) {
         if (first < 0) first = s.step
@@ -212,7 +214,7 @@ describe('step 5, the film', () => {
 
   it('never gives the cursor arms and never changes its size', () => {
     const s = film()
-    for (let i = 0; i < 12 * hz; i += 8) {
+    for (let i = 0; i < unitSeconds * hz; i += 8) {
       s.advance(8)
       const pose = s.cursor.pose()
       expect(pose.arms).toBe(false)
@@ -223,7 +225,7 @@ describe('step 5, the film', () => {
   it('is a pure function of time in its script', () => {
     const a = makePage()
     const b = makePage()
-    for (let t = 0; t <= 12; t += 0.37) expect(a.script(t)).toEqual(b.script(t))
+    for (let t = 0; t <= unitSeconds; t += 0.37) expect(a.script(t)).toEqual(b.script(t))
     expect(a.script(3.3)).toEqual(a.script(3.3))
   })
 })
@@ -353,12 +355,12 @@ describe('step 5, the live site', () => {
 })
 
 describe('step 5, save and load', () => {
-  const N = Math.round(11 * hz)
+  const N = Math.round(15 * hz)
 
   it('continues exactly after load(save()), in the film', () => {
     const a = film()
     a.advance(N)
-    for (const cut of [0.3, 2.2, 2.6, 4.31, 5.2, 6.4, 9.35]) {
+    for (const cut of [0.3, 2.2, 2.6, 4.31, 5.2, 6.4, 9.35, 10.5, 12.2, 13.5]) {
       const b = film()
       b.advance(Math.round(cut * hz))
       const page = JSON.parse(JSON.stringify(b.page.save()))
@@ -375,8 +377,8 @@ describe('step 5, save and load', () => {
   it('gives the same frames by seeking as by playing', () => {
     const a = film()
     const b = film()
-    b.seek(11)
-    for (const t of [9.4, 7.2, 4.35, 2.5, 0.2, 4.35, 8.8]) {
+    b.seek(15)
+    for (const t of [9.4, 7.2, 4.35, 2.5, 0.2, 4.35, 8.8, 13.5, 10.5, 12.2]) {
       const fresh = film()
       fresh.advance(Math.round(t * hz))
       b.seek(t)

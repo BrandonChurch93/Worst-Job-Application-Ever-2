@@ -3,12 +3,14 @@ import type { BossView } from '../view'
 import type { Emitter } from '../../real/types'
 import { buildModel, type Model } from './model'
 import { CANNON, GUN, HATCH, SHIELD, WING, HULL } from './numbers'
-import { BENT, DEFAULTS, K, poseOf, type LookOptions, type Pose } from './pose'
-import { setGlow } from './kit'
+import { BEAMLIT, LEGLIT, BENT, DEFAULTS, FLY, K, LEFT, clamp01, poseOf, type LookOptions, type Pose } from './pose'
+import { hash01 } from '../../core/random'
+import { lookKit, setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
 import { poseGun } from './gun'
+import { makeShade } from './shade'
 
-export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FALL, FORM, GONE, TURRET, TIMES, WORD, DEFAULTS } from './pose'
+export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, buttonAt, SIZE, K, FALL, FORM, GONE, LEFT, PRESS, TURRET, TIMES, WORD, DEFAULTS } from './pose'
 export type { LookOptions, Pose } from './pose'
 export { EVENTS } from './events'
 export { makeGun, poseGun } from './gun'
@@ -25,6 +27,13 @@ export interface BossLook {
   setLevel(level: 'low' | 'medium' | 'high' | null): void
   dispose(): void
 }
+
+const char = (g: THREE.Object3D, on: boolean): void => g.traverse((o) => {
+  const me = o as THREE.Mesh
+  if (!me.isMesh) return
+  me.userData.own ??= me.material
+  me.material = on ? lookKit().scorched : me.userData.own
+})
 
 function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   const b = m.body
@@ -72,10 +81,12 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   m.shieldGlassB.scale.copy(m.shieldGlass.scale)
   m.shieldGlassB.position.z = m.shieldGlass.position.z
   m.shieldEdgeB.position.z = m.shieldEdge.position.z
-  m.shieldGlassB.visible = m.shieldGlass.visible && !torn
-  m.shieldEdgeB.visible = m.shieldGlassB.visible
-  m.shieldStub.visible = torn && p.shield.rise >= 1
-  m.crackB.visible = !torn
+  const whole = m.shieldGlass.visible
+  m.shieldStub.visible = whole && torn && p.shield.rise >= 1
+  m.shieldGlass.visible = whole && !m.shieldStub.visible
+  m.shieldEdge.visible = m.shieldGlass.visible
+  m.shieldGlassB.visible = m.shieldGlass.visible
+  m.shieldEdgeB.visible = m.shieldGlass.visible
 
   m.guns.forEach((g, i) => {
     const q = p.guns[i]!
@@ -108,39 +119,95 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   })
   void legsRoot
 
+  for (const q of m.plates) q.g.visible = false
+  for (const g of m.left) g.visible = false
+  m.rim.visible = false
   if (p.gone > 0) {
     const [wx, wy] = p.blow
     const cyaw = Math.cos(-p.body.yaw)
     const syaw = Math.sin(-p.body.yaw)
     const bx = wx * cyaw - wy * syaw
     const by = wx * syaw + wy * cyaw
+    // A piece leaves along the beam and fans out to its own side of it as it goes: nothing moves toward the arrow and nothing crosses the button that stays.
     const fling = (o: THREE.Object3D, k: number, id: number, dx: number, dy: number, ox: number, oy: number): void => {
       if (k <= 0) return
-      const e = k * k
+      if (k >= 1) { o.visible = false; return }
+      const e = k * (0.3 + 0.7 * k)
       const d = Math.hypot(ox, oy) || 1
-      o.position.x += (dx * 560 + (ox / d) * 220) * e
-      o.position.y += (dy * 560 + (oy / d) * 220) * e
-      o.position.z += 240 * Math.sin(Math.PI * Math.min(1, k * 0.8))
-      o.rotation.x += (3 + id) * 0.9 * e
-      o.rotation.y += (2 - id * 0.7) * e
-      o.scale.setScalar(Math.max(0.001, 1 - e * e))
-      if (k >= 1) o.visible = false
+      const h = (n: number): number => hash01(id, n, 77) - 0.5
+      const across = ((ox / d) * -dy + (oy / d) * dx) + h(1) * 0.5
+      const lean = Math.abs(across) < FLY.least ? (across < 0 || (across === 0 && h(2) < 0) ? -FLY.least : FLY.least) : across
+      const far = FLY.far * e * (0.75 + 0.5 * (h(6) + 0.5))
+      const side = lean * (FLY.wide * Math.pow(k, 0.6) + FLY.fan * far)
+      o.position.x += dx * far - dy * side
+      o.position.y += dy * far + dx * side
+      o.position.z += FLY.high * Math.sqrt(k)
+      o.rotation.x += h(3) * 11 * e
+      o.rotation.y += h(4) * 9 * e
+      o.rotation.z += h(5) * 6 * e
+    }
+    const laid = (along: number, acr: number): [number, number] => {
+      const X = along * wx + acr * wy
+      const Y = along * wy - acr * wx
+      return [(X * cyaw - Y * syaw) / K, (X * syaw + Y * cyaw) / K]
     }
     fling(m.shield, p.away.shield, 0, bx, by, 1, 0)
     m.wings.forEach((w, i) => fling(w, p.away.wings[i]!, 1 + i, bx, by, 0, i === 0 ? 1 : -1))
     m.guns.forEach((g, i) => fling(g.root, p.away.guns[i]!, 3 + i, bx, by, 0, i === 0 ? 1 : -1))
     p.legs.forEach((l, i) => {
       const g = m.legs[i]!
-      for (const o of [g.upper, g.lower, g.foot]) fling(o, p.away.legs[i]!, 5 + i, wx, wy, l.foot[0] - l.hip[0], l.foot[1] - l.hip[1])
+      ;[g.upper, g.lower, g.foot].forEach((o, n) => fling(o, clamp01(p.away.legs[i]! * (1 + 0.12 * n) - 0.06 * n), 5 + i * 3 + n, wx, wy, l.foot[0] - l.hip[0], l.foot[1] - l.hip[1]))
     })
-    const h = p.away.hull
-    if (h > 0) {
-      const e = h * h
-      for (const o of [m.hull, m.bay]) {
-        o.scale.set(1 - 0.55 * e, 1 - 0.55 * e, Math.max(0.02, 1 - e))
-        o.position.z -= 40 * e
-        if (h >= 1) o.visible = false
-      }
+    fling(m.bay, p.away.bay, 20, bx, by, -0.4, 0.3)
+    if (p.away.hull > 0) {
+      m.hull.visible = false
+      m.plates.forEach((q, i) => {
+        q.g.visible = true
+        q.g.position.set(q.at[0] + p.hull.x, q.at[1] + p.hull.y, q.at[2] + p.hull.z)
+        q.g.rotation.set(0, 0, 0)
+        q.g.scale.setScalar(1)
+        q.g.children[1]!.visible = true
+        const stay = LEFT.plates.findIndex((l) => l[0] === i)
+        char(q.g, stay >= 0)
+        if (stay >= 0) {
+          const lie = LEFT.plates[stay]!
+          const u = p.landed[stay]!
+          const e = 1 - (1 - u) * (1 - u)
+          const [tx, ty] = laid(lie[1], lie[2])
+          const h = (n: number): number => hash01(40 + i, n, 77) - 0.5
+          const size = 1 - (1 - lie[4]) * Math.min(1, e * 2)
+          q.g.children[1]!.visible = u <= 0
+          q.g.position.x += (tx - q.at[0]) * e
+          q.g.position.y += (ty - q.at[1]) * e
+          q.g.position.z += ((HULL.tall / 2) * size * LEFT.sunk - p.body.z - q.g.position.z) * e + 260 * 4 * u * (1 - u) * (1 - u)
+          q.g.rotation.set(lie[5] * e + h(3) * 9 * (1 - e), lie[6] * e + h(4) * 8 * (1 - e), (lie[3] + Math.atan2(wy, wx) - p.body.yaw) * e + h(5) * 5 * (1 - e) * e)
+          q.g.scale.setScalar(size)
+          return
+        }
+        const k = p.away.plates[i]!
+        const jump = 1 - Math.pow(1 - Math.min(1, k * 3), 3)
+        const d = Math.hypot(q.at[0], q.at[1]) || 1
+        const fwd = Math.max(0, (q.at[0] / d) * bx + (q.at[1] / d) * by)
+        const out = (q.at[0] / d) * -by + (q.at[1] / d) * bx
+        q.g.position.x += (bx * fwd * FLY.burst[0] - by * out * FLY.burst[1]) * jump
+        q.g.position.y += (by * fwd * FLY.burst[0] + bx * out * FLY.burst[1]) * jump
+        fling(q.g, k, 30 + i, bx, by, q.at[0], q.at[1])
+      })
+      m.rim.visible = true
+    }
+    if (p.left > 0) {
+      const u = p.left
+      m.left.forEach((g, i) => {
+        const lie = LEFT.lie[i]!
+        const e = 1 - (1 - u) * (1 - u)
+        const hop = u < 1 ? 4 * u * (1 - u) : 0
+        const tx = (lie[0] * wx + lie[1] * wy) / K
+        const ty = (lie[0] * wy - lie[1] * wx) / K
+        g.visible = true
+        g.position.set(tx * e, ty * e, i === 0 ? -14 + 240 * hop : i === 1 ? -3 + 240 * hop : 2 + 240 * hop)
+        g.scale.setScalar(i >= 2 ? 1.5 : i === 1 ? 1.25 : 1)
+        g.rotation.set((1 - e) * (5 + i * 2) + (i === 1 ? 0.12 * e : 0), (1 - e) * (4 - i) + (i === 1 ? -0.16 * e : 0), lie[2] + Math.atan2(wy, wx) + (1 - e) * 3)
+      })
     }
   }
 
@@ -163,7 +230,7 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   m.lids.forEach((l, i) => { l.position.y = (i === 0 ? -1 : 1) * 17 * p.weakOpen })
   m.slab.visible = p.weakOpen > 0
   m.hatchSeam.visible = p.weakOpen < 0.5
-  const burnt = p.away.hull > 0.5
+  const burnt = p.gone > 0.08
   m.damage[0].visible = p.damage >= 1 && !burnt
   m.damage[1].visible = p.damage >= 2 && !burnt
   m.damage[2].visible = p.damage >= 3 && !burnt
@@ -181,18 +248,28 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
   const model = buildModel()
   figure.add(model.body)
   for (const l of model.legs) figure.add(l.upper, l.lower, l.foot)
+  for (const g of model.left) figure.add(g)
+  const shade = makeShade()
+  figure.add(shade.object)
+  for (const g of [model.hull, model.bay, model.hatch, model.shield, ...model.wings, model.cannon.barrel, ...model.legs.flatMap((l) => [l.upper, l.lower, l.foot])]) g.traverse((c) => { c.castShadow = false })
+  model.button.traverse((c) => { c.castShadow = true })
   object.add(figure)
+  const kit = lookKit()
+  const lit = [kit.hull, kit.wing, kit.hatch, kit.bezel, kit.steel, kit.gunBody, kit.gunBase, kit.plateLight, kit.limb, kit.under]
+  const floor = new Map<THREE.Material, number>([[kit.plateLight, LEGLIT], [kit.limb, LEGLIT]])
   const fx: Fx = makeFx(o, ctx.level ?? null)
   object.add(fx.object)
   const pose = (view: BossView, _dt: number, light?: (e: Emitter) => void): void => {
     const p = poseOf(view, o)
     figure.visible = p.shown
     figure.position.set(p.x, p.y, 0)
-    if (p.shown) apply(model, figure, p)
+    if (p.shown) { apply(model, figure, p); shade.pose(p) }
+    for (const mat of lit) mat.emissive.copy(mat.color).multiplyScalar(p.shown ? (floor.get(mat) ?? 0) + BEAMLIT * p.lit : 0)
     fx.pose(view, p, light)
   }
   const dispose = (): void => {
     fx.dispose()
+    shade.dispose()
     for (const mat of model.own) mat.dispose()
     for (const g of model.guns) g.dispose()
   }

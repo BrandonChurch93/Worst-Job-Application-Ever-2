@@ -279,8 +279,11 @@ export interface LookKit {
   glass: THREE.MeshPhysicalMaterial
   glassEdge: THREE.MeshPhysicalMaterial
   crack: THREE.MeshPhysicalMaterial
+  glassCrack: THREE.MeshBasicMaterial
   soot: THREE.MeshBasicMaterial
   ceramic: THREE.MeshPhysicalMaterial
+  scorched: THREE.MeshPhysicalMaterial
+  under: THREE.MeshPhysicalMaterial
 }
 
 let look: LookKit | null = null
@@ -289,19 +292,19 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x84888d), roughness: 0.56, metalness: 0.3, specularIntensity: 0.5 })
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x64686d), roughness: 0.54, metalness: 0.3, specularIntensity: 0.5 })
   const brushed = (hex: number, metal: number, rough = 0.46): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); c.metalness = metal; c.roughness = rough; return studio(c) }
   look = {
-    hull: brushed(0x9da0a4, 0.3, 0.55),
+    hull: brushed(0x9c9fa3, 0.35, 0.52),
     wing: brushed(0x8f9296, 0.3, 0.55),
     hatch: brushed(0x8a8e94, 0.6, 0.44),
-    bezel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x595d62), roughness: 0.32, metalness: 0.85 })),
+    bezel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x70747a), roughness: 0.3, metalness: 0.85 })),
     steel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xaeb1b5), roughness: 0.46, metalness: 0.5, specularIntensity: 0.6 })),
     gunBody: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x90949a), roughness: 0.5, metalness: 0.45, specularIntensity: 0.6 })),
     gunBase: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4b7bb), roughness: 0.42, metalness: 0.5, specularIntensity: 0.6 })),
     plate: b.plate,
     plateLight: studio(plateLight),
-    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
+    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x74787d), roughness: 0.5, metalness: 0.35, specularIntensity: 0.6 })),
     dark: b.plateSide,
     housing: b.housing,
     joint: b.joint,
@@ -313,8 +316,11 @@ export function lookKit(): LookKit {
     glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6fae92), roughness: 0.3, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.2, specularIntensity: 0.6, envMapIntensity: 0.5, transparent: true, opacity: 0.62, depthWrite: false })),
     glassEdge: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9fcdb6), roughness: 0.22, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1c1a19), roughness: 0.9, metalness: 0, specularIntensity: 0.1, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 })),
+    glassCrack: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.86, 0.95, 0.9), transparent: true, opacity: 0.92, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
     soot: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.011, 0.01), transparent: true, opacity: 0.55, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
-    ceramic: m.ceramic
+    ceramic: m.ceramic,
+    scorched: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4a4744), roughness: 0.62, metalness: 0.7, specularIntensity: 0.5 })),
+    under: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6a6d72), roughness: 0.6, metalness: 0.4, specularIntensity: 0.5 }))
   }
   return look
 }
@@ -372,5 +378,78 @@ export function crackStar(seed: number, arms: number, r0: (a: number) => [number
 export function blot(seed: number, r: number, n = 14): THREE.BufferGeometry {
   const shape = new THREE.Shape(Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; const k = r * (0.62 + 0.5 * hash01(i, 7, seed)); return new THREE.Vector2(Math.cos(a) * k, Math.sin(a) * k) }))
   return new THREE.ShapeGeometry(shape)
+}
+
+
+// What is left of flat geometry inside a convex outline: soot and cracks stay on the plate they lie on.
+export function clipTo(g: THREE.BufferGeometry, outline: [number, number][]): THREE.BufferGeometry {
+  const src = g.index ? g.toNonIndexed() : g
+  const p = src.getAttribute('position')
+  let area = 0
+  for (let i = 0; i < outline.length; i++) { const a = outline[i]!; const b = outline[(i + 1) % outline.length]!; area += a[0] * b[1] - b[0] * a[1] }
+  const clip = area < 0 ? [...outline].reverse() : outline
+  const pos: number[] = []
+  for (let t = 0; t < p.count; t += 3) {
+    const z = p.getZ(t)
+    let poly: [number, number][] = [[p.getX(t), p.getY(t)], [p.getX(t + 1), p.getY(t + 1)], [p.getX(t + 2), p.getY(t + 2)]]
+    for (let i = 0; i < clip.length && poly.length > 0; i++) {
+      const a = clip[i]!
+      const b = clip[(i + 1) % clip.length]!
+      const side = (q: [number, number]): number => (b[0] - a[0]) * (q[1] - a[1]) - (b[1] - a[1]) * (q[0] - a[0])
+      const out: [number, number][] = []
+      for (let j = 0; j < poly.length; j++) {
+        const c = poly[j]!
+        const d = poly[(j + 1) % poly.length]!
+        const sc = side(c)
+        const sd = side(d)
+        if (sc >= 0) out.push(c)
+        if ((sc >= 0) !== (sd >= 0)) { const k = sc / (sc - sd); out.push([c[0] + (d[0] - c[0]) * k, c[1] + (d[1] - c[1]) * k]) }
+      }
+      poly = out
+    }
+    for (let j = 1; j + 1 < poly.length; j++) pos.push(poly[0]![0], poly[0]![1], z, poly[j]![0], poly[j]![1], z, poly[j + 1]![0], poly[j + 1]![1], z)
+  }
+  const o = new THREE.BufferGeometry()
+  o.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  o.setAttribute('normal', new THREE.Float32BufferAttribute(new Float32Array(pos.length).map((_, i) => (i % 3 === 2 ? 1 : 0)), 3))
+  o.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
+  return o
+}
+
+// A piece of a solid part inside a convex outline, with its heights, normals and brushing kept: the hull comes apart along these cuts.
+export function cutTo(g: THREE.BufferGeometry, outline: [number, number][]): THREE.BufferGeometry {
+  const src = g.index ? g.toNonIndexed() : g
+  const p = src.getAttribute('position')
+  const n = src.getAttribute('normal')
+  const u = src.getAttribute('uv')
+  let area = 0
+  for (let i = 0; i < outline.length; i++) { const a = outline[i]!; const b = outline[(i + 1) % outline.length]!; area += a[0] * b[1] - b[0] * a[1] }
+  const clip = area < 0 ? [...outline].reverse() : outline
+  const out: number[][] = []
+  const at = (i: number): number[] => [p.getX(i), p.getY(i), p.getZ(i), n.getX(i), n.getY(i), n.getZ(i), u ? u.getX(i) : 0, u ? u.getY(i) : 0]
+  for (let t = 0; t < p.count; t += 3) {
+    let poly: number[][] = [at(t), at(t + 1), at(t + 2)]
+    for (let i = 0; i < clip.length && poly.length > 0; i++) {
+      const a = clip[i]!
+      const b = clip[(i + 1) % clip.length]!
+      const side = (q: number[]): number => (b[0] - a[0]) * (q[1]! - a[1]) - (b[1] - a[1]) * (q[0]! - a[0])
+      const next: number[][] = []
+      for (let j = 0; j < poly.length; j++) {
+        const c = poly[j]!
+        const d = poly[(j + 1) % poly.length]!
+        const sc = side(c)
+        const sd = side(d)
+        if (sc >= 0) next.push(c)
+        if ((sc >= 0) !== (sd >= 0)) { const k = sc / (sc - sd); next.push(c.map((v, m) => v + (d[m]! - v) * k)) }
+      }
+      poly = next
+    }
+    for (let j = 1; j + 1 < poly.length; j++) out.push(poly[0]!, poly[j]!, poly[j + 1]!)
+  }
+  const o = new THREE.BufferGeometry()
+  o.setAttribute('position', new THREE.Float32BufferAttribute(out.flatMap((v) => [v[0]!, v[1]!, v[2]!]), 3))
+  o.setAttribute('normal', new THREE.Float32BufferAttribute(out.flatMap((v) => [v[3]!, v[4]!, v[5]!]), 3))
+  o.setAttribute('uv', new THREE.Float32BufferAttribute(out.flatMap((v) => [v[6]!, v[7]!]), 2))
+  return o
 }
 

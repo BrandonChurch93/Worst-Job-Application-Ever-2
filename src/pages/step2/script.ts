@@ -1,6 +1,6 @@
 import { HANDOFF, type Acting, type Reaction } from '../../cursor/body'
 import type { Pointer } from '../../stage/types'
-import { CRANK, DIAL, FH, FW, FX, rowY, SLOT } from './layout'
+import { CRANK, DIAL, FH, FW, FX, rowY, scaleOf, SLOT, SW } from './layout'
 
 interface P { x: number; y: number }
 interface Seg { from: number; to: number; at: (u: number) => P }
@@ -25,6 +25,8 @@ const strut = (from: number, to: number, a: P, b: P, n: number, hop: number): Se
     return { from: t0, to: t1, at: (u: number) => ({ x: a.x + ((b.x - a.x) * (i + ease(u))) / n, y: a.y + ((b.y - a.y) * (i + ease(u))) / n - hop * Math.sin(Math.PI * u) }) }
   })
 
+// A place of a machine's stage, on the page: the machines are run at the size they were built and drawn larger.
+const on = (i: number, p: P): P => ({ x: scaleOf(i).x(p.x), y: scaleOf(i).y(p.y) })
 const field = (i: number): P => ({ x: FX + FW * 0.5, y: rowY(i) + FH / 2 })
 const dialC: P = { x: DIAL.cx, y: DIAL.cy }
 export const FILM_DIGITS = [10, 1, 5]
@@ -34,27 +36,29 @@ const woundAt = (k: number): P => holeAt(k, DIAL.travel(k))
 const shoulder: P = { x: DIAL.cx + 15, y: DIAL.cy + 14 }
 const lead: P = { x: DIAL.cx - 17, y: DIAL.cy - 1 }
 export const LANDING: P = { x: DIAL.cx - 600, y: DIAL.cy + 30 }
-const knob: P = { x: SLOT.leverX, y: SLOT.knobY }
-const pulled: P = { x: SLOT.leverX, y: SLOT.knobY + SLOT.pull + 6 }
+// The film's date: when the lever pulls itself, and when the arrow stops each reel on the applicant's own legend.
+export const FILM = { lever: 9.82, stops: [10.42, 10.82, 11.22] }
+const stopAt = (r: number): P => ({ x: SLOT.reelX(r) + SLOT.reelW / 2, y: SLOT.stopY + SLOT.stopH / 2 })
 const watch: P = { x: SLOT.leverX + 44, y: SLOT.y + 64 }
 const peer: P = { x: watch.x - 14, y: watch.y + 4 }
 const hub: P = { x: CRANK.hx, y: CRANK.hy }
 const grip: P = { x: CRANK.hx + CRANK.arm * Math.cos(CRANK.rest), y: CRANK.hy + CRANK.arm * Math.sin(CRANK.rest) }
 const TURNS = 3.03
-export const AWAY: P = { x: CRANK.hx + 636, y: CRANK.hy - 6 }
+export const AWAY: P = { x: FX + SW(2) + 34, y: CRANK.signY + CRANK.signH + 8 }
 const away = AWAY
+const under: P = { x: CRANK.segX - 16, y: CRANK.signY + CRANK.signH + 6 }
 const caught: P = { x: CRANK.hx + 37, y: CRANK.hy - 100 }
 const thrown: P = { x: caught.x + 127, y: caught.y + 27 }
 const shrunk: P = { x: thrown.x - 12, y: thrown.y + 26 }
 const WARNED = { see: 17.3, back: 17.38, held: 17.96, half: 18.62, stall: 18.95 }
 export const BUTTON: P = { x: 1688, y: 1004 }
 const beside: P = { x: BUTTON.x - 160, y: BUTTON.y - 30 }
-const halfway: P = { x: shrunk.x + (beside.x - shrunk.x) * 0.42, y: shrunk.y + (beside.y - shrunk.y) * 0.42 }
+const halfway: P = { x: on(2, shrunk).x + (beside.x - on(2, shrunk).x) * 0.42, y: on(2, shrunk).y + (beside.y - on(2, shrunk).y) * 0.42 }
 const coiled: P = { x: beside.x - 18, y: beside.y - 9 }
 
 const T = {
   phone: 1.88, zero: 2.31, one: 2.83, third: 3.8,
-  birth: 8.2, lever: 9.15,
+  birth: 8.2,
   volume: 14.0, crank: 14.45, runaway: 15.17, lean: 16.32, press: 20.42
 }
 
@@ -65,17 +69,59 @@ const ARRIVE = { look: 0.52, there: 0.8 }
 const HAUL = 0.42
 const EASY = { eye: 1.02, load: 1.03, stroll: 1.12, there: 1.66, tap: T.phone - 0.14, steps: 3, hop: 14, tall: 1.26, low: 0.9, land: 0.05, chest: 0.14 }
 // A row opens under it. The first time it only starts, the second time it rears, the third time it has lost its temper and stamps the field open.
-const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: T.birth + 0.08, go: T.birth + 0.5 } }
-// The lever: it has learnt to be careful, so it draws the knob up a little before it pulls.
-const PULL = { there: 8.9, back: 8.93, up: 9.08, rise: 12 }
+const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: 8.93, go: T.birth + 0.5 } }
+// The page opens under it and a machine comes up: it hops back off the place, stands clear and watches, and steps onto the machine once the machine stands. The date's machine comes by itself when the date is whole, 0.14 s after the last key.
+const SHY = { phone: T.phone + 0.03, birth: 8.95, volume: T.volume + 0.08, long: 0.14, hop: 46, to: [{ x: 1235, y: 452 }, { x: 628, y: 436 }, { x: 850, y: 400 }] as P[] }
+// The stops: it has learnt to be careful, so it stands over the first button before the reels turn, and takes each reel as its own legend comes.
+const PULL = { leave: 9.2, there: 9.75, tap: 0.09, on: 0.12 }
 // The coins: it hides, shakes them off where it is safe, and comes back angry. The temper is spent on the stamp: it takes the crank with a cool head.
 // The reels: it leans in to watch them, small and tight. The coins: it goes flat under them where it stands, held, and then darts for cover.
-const STRUCK = { tight: T.lever + 0.9, brace: 10.55, read: 10.9, near: 11.9, duck: 12.0, flee: 12.56 }
+const STRUCK = { read: FILM.stops[2]! + 0.1, near: 11.9, duck: 12.0, flee: 12.56 }
 const TEMPER = { safe: 12.74, dust: 12.78, fume: 13.3, red: 13.5, march: 13.52, there: 13.86, stamp: T.volume - 0.1, go: T.volume + 0.22, spent: T.volume + 0.16 }
 // The crank throws it clear. It cowers where it lands, and then goes back in to stop it.
 // Flat, it drags itself to the button and stops short of it. Half way it heaves and falls flat again. There it peels up and fills out, standing still, draws back, and throws itself at the button.
 const RISE = { heave: 18.45, heaved: 2.35, there: 19.6, flop: 19.73, life: 0.6, back: 20.33, coiled: 20.385, on: 20.41 }
-export const PEEL_AT = RISE.flop + RISE.life * 0.5
+// The narrator's line over the crank is 6.25 s long from the sign, and the next one starts no sooner than 0.3 s after it, on the full level. So the arrow turns the crank more slowly than it was first timed, cowers longer where it was thrown and lies longer where it was struck, while the crank runs on and the level rises.
+const CRANKED = { hand: 1.05, cower: 16.2, wait: 0.9, flat: 17.1, lie: 0.5, even: 0.05 }
+// The film's clock against the script's. The script's times are those of its acting; the film gives each machine the time to come out of the page, and the crank the time of the narrator's line. Each entry: from this time of the script to that one (the same time twice is a wait), the film takes this much longer.
+const LONGER: [number, number, number][] = [
+  [T.phone + 0.26, T.phone + 0.26, 104 / 240],
+  [PULL.leave - 0.01, PULL.leave - 0.01, 0.82 - 104 / 240],
+  [TEMPER.stamp - 0.02, TEMPER.stamp - 0.02, 0.1],
+  [T.volume + 0.2, T.volume + 0.2, 0.45],
+  [T.crank, T.runaway + 0.01, CRANKED.hand],
+  [CRANKED.cower, CRANKED.cower, CRANKED.wait],
+  [CRANKED.flat, CRANKED.flat, CRANKED.lie],
+  [T.press - 0.1, T.press - 0.1, CRANKED.even]
+]
+const knots: [number, number][] = [[0, 0]]
+{
+  let more = 0
+  for (const [a, b, extra] of LONGER) {
+    knots.push([a, a + more])
+    more += extra
+    knots.push([b, b + more])
+  }
+  knots.push([1000, 1000 + more])
+}
+// The film's time of a time of the script: after a wait, where the two fall together.
+export function filmAt(at: number): number {
+  let j = 0
+  for (let k = 0; k < knots.length - 1; k++) if (knots[k]![0] <= at) j = k
+  const [a0, t0] = knots[j]!
+  const [a1, t1] = knots[j + 1]!
+  return t0 + ((at - a0) * (t1 - t0)) / (a1 - a0)
+}
+// The script's time of a time of the film: through a wait it stands.
+export function scriptAt(time: number): number {
+  let j = 0
+  for (let k = 0; k < knots.length - 1; k++) if (knots[k]![1] <= time) j = k
+  const [a0, t0] = knots[j]!
+  const [a1, t1] = knots[j + 1]!
+  return a1 === a0 ? a0 : a0 + ((time - t0) * (a1 - a0)) / (t1 - t0)
+}
+export const PEEL_AT = filmAt(RISE.flop + RISE.life * 0.5)
+export const LEVER_AT = filmAt(FILM.lever)
 export const TOSS = { at: 0.05, air: 0.28, skid: 0.1 }
 const THROWN = { see: T.runaway + TOSS.at, off: T.runaway + TOSS.at + 0.12, look: T.runaway + TOSS.at + TOSS.air + TOSS.skid + 0.02, tall: 0.37, snap: 0.59, back: T.lean - 0.08, turn: -0.9, off2: 0.45, again: -1.15, square: -2.3 }
 const idle: P = { x: 1575, y: 392 }
@@ -83,8 +129,8 @@ const refuge: P = { x: 1796, y: 704 }
 const hand: P = { x: HANDOFF.x, y: HANDOFF.y }
 
 const wind = (t: number, k: number, long: number): Seg[] => [
-  arc(t, t + long, dialC, DIAL.ring, DIAL.holeAngle(k), DIAL.holeAngle(k) + DIAL.travel(k) + 0.04, (u) => u),
-  line(t + long, t + long + 0.02, woundAt(k), woundAt(k))
+  arc(t, t + long, on(0, dialC), DIAL.ring * scaleOf(0).k, DIAL.holeAngle(k), DIAL.holeAngle(k) + DIAL.travel(k) + 0.04, (u) => u),
+  line(t + long, t + long + 0.02, on(0, woundAt(k)), on(0, woundAt(k)))
 ]
 
 const path: Seg[] = [
@@ -92,51 +138,59 @@ const path: Seg[] = [
   line(ARRIVE.look, ARRIVE.there, hand, idle),
   line(ARRIVE.there, EASY.stroll, idle, idle),
   ...strut(EASY.stroll, EASY.there, idle, field(0), EASY.steps, EASY.hop),
-  line(EASY.there, DREAD.phone.go, field(0), field(0)),
-  line(DREAD.phone.go, T.zero - 0.04, field(0), holeAt(10)),
-  line(T.zero - 0.04, T.zero, holeAt(10), holeAt(10)),
+  line(EASY.there, SHY.phone, field(0), field(0)),
+  ...strut(SHY.phone, SHY.phone + SHY.long, field(0), SHY.to[0]!, 1, SHY.hop),
+  line(SHY.phone + SHY.long, DREAD.phone.go, SHY.to[0]!, SHY.to[0]!),
+  line(DREAD.phone.go, T.zero - 0.04, SHY.to[0]!, on(0, holeAt(10))),
+  line(T.zero - 0.04, T.zero, on(0, holeAt(10)), on(0, holeAt(10))),
   ...wind(T.zero, 10, 0.24),
-  line(T.zero + 0.26, T.one - 0.06, woundAt(10), holeAt(1)),
-  line(T.one - 0.06, T.one, holeAt(1), holeAt(1)),
+  line(T.zero + 0.26, T.one - 0.06, on(0, woundAt(10)), on(0, holeAt(1))),
+  line(T.one - 0.06, T.one, on(0, holeAt(1)), on(0, holeAt(1))),
   ...wind(T.one, 1, 0.1),
-  line(T.one + 0.12, T.one + 0.19, woundAt(1), lead),
-  line(T.one + 0.19, 3.18, lead, lead),
-  line(3.18, 3.2, lead, shoulder),
-  line(3.2, 3.5, shoulder, shoulder),
-  line(3.5, T.third - 0.2, shoulder, holeAt(5)),
-  line(T.third - 0.2, T.third, holeAt(5), holeAt(5)),
+  line(T.one + 0.12, T.one + 0.19, on(0, woundAt(1)), on(0, lead)),
+  line(T.one + 0.19, 3.18, on(0, lead), on(0, lead)),
+  line(3.18, 3.2, on(0, lead), on(0, shoulder)),
+  line(3.2, 3.5, on(0, shoulder), on(0, shoulder)),
+  line(3.5, T.third - 0.2, on(0, shoulder), on(0, holeAt(5))),
+  line(T.third - 0.2, T.third, on(0, holeAt(5)), on(0, holeAt(5))),
   ...wind(T.third, 5, HAUL - 0.01),
-  line(T.third + HAUL + 0.01, T.third + 0.9, woundAt(5), woundAt(5)),
-  line(T.third + 0.9, T.third + 1.2, woundAt(5), LANDING),
-  line(T.third + 1.2, 7.55, LANDING, LANDING),
-  line(7.55, T.birth - 0.06, LANDING, field(1)),
+  line(T.third + HAUL + 0.01, T.third + 0.9, on(0, woundAt(5)), on(0, woundAt(5))),
+  line(T.third + 0.9, T.third + 1.2, on(0, woundAt(5)), on(0, LANDING)),
+  line(T.third + 1.2, 7.55, on(0, LANDING), on(0, LANDING)),
+  line(7.55, T.birth - 0.06, on(0, LANDING), field(1)),
   line(T.birth - 0.06, DREAD.birth.go, field(1), field(1)),
-  line(DREAD.birth.go, PULL.there, field(1), knob),
-  line(PULL.there, PULL.back, knob, knob),
-  line(PULL.back, PULL.up, knob, { x: knob.x, y: knob.y - PULL.rise }),
-  line(PULL.up, T.lever, { x: knob.x, y: knob.y - PULL.rise }, knob),
-  line(T.lever, T.lever + 0.3, knob, pulled),
-  line(T.lever + 0.3, T.lever + 0.64, pulled, pulled),
-  line(T.lever + 0.64, T.lever + 0.9, pulled, watch),
-  line(T.lever + 0.9, STRUCK.near, watch, peer),
-  line(STRUCK.near, STRUCK.flee, peer, peer),
-  line(STRUCK.flee, TEMPER.safe, peer, refuge),
+  line(DREAD.birth.go, SHY.birth, field(1), field(1)),
+  ...strut(SHY.birth, SHY.birth + SHY.long, field(1), SHY.to[1]!, 1, SHY.hop),
+  line(SHY.birth + SHY.long, PULL.leave, SHY.to[1]!, SHY.to[1]!),
+  line(PULL.leave, PULL.there, SHY.to[1]!, on(1, stopAt(0))),
+  line(PULL.there, FILM.stops[0]! + PULL.tap, on(1, stopAt(0)), on(1, stopAt(0))),
+  line(FILM.stops[0]! + PULL.tap, FILM.stops[1]! - PULL.on, on(1, stopAt(0)), on(1, stopAt(1))),
+  line(FILM.stops[1]! - PULL.on, FILM.stops[1]! + PULL.tap, on(1, stopAt(1)), on(1, stopAt(1))),
+  line(FILM.stops[1]! + PULL.tap, FILM.stops[2]! - PULL.on, on(1, stopAt(1)), on(1, stopAt(2))),
+  line(FILM.stops[2]! - PULL.on, FILM.stops[2]! + PULL.tap, on(1, stopAt(2)), on(1, stopAt(2))),
+  line(FILM.stops[2]! + PULL.tap, STRUCK.read + 0.4, on(1, stopAt(2)), on(1, watch)),
+  line(STRUCK.read + 0.4, STRUCK.near, on(1, watch), on(1, peer)),
+  line(STRUCK.near, STRUCK.flee, on(1, peer), on(1, peer)),
+  line(STRUCK.flee, TEMPER.safe, on(1, peer), refuge),
   line(TEMPER.safe, TEMPER.march, refuge, refuge),
   line(TEMPER.march, TEMPER.there, refuge, field(2)),
-  line(TEMPER.there, TEMPER.go, field(2), field(2)),
-  line(TEMPER.go, T.crank - 0.05, field(2), grip),
-  line(T.crank - 0.05, T.crank, grip, grip),
-  arc(T.crank, T.runaway + 0.01, hub, CRANK.arm, CRANK.rest, CRANK.rest + TURNS * 2 * Math.PI, (u) => u * (1.25 - 0.25 * u)),
-  line(T.runaway + 0.01, THROWN.see, grip, grip),
-  line(THROWN.see, THROWN.off, grip, away),
-  line(THROWN.off, T.lean, away, away),
-  line(T.lean, T.lean + 0.3, away, caught),
-  line(T.lean + 0.3, 16.85, caught, caught),
-  line(16.85, 17.0, caught, thrown),
-  line(17.0, WARNED.see, thrown, thrown),
-  line(WARNED.see, WARNED.back, thrown, shrunk),
-  line(WARNED.back, WARNED.held, shrunk, shrunk),
-  line(WARNED.held, WARNED.half, shrunk, halfway),
+  line(TEMPER.there, SHY.volume, field(2), field(2)),
+  ...strut(SHY.volume, SHY.volume + SHY.long - 0.02, field(2), SHY.to[2]!, 1, SHY.hop),
+  line(SHY.volume + SHY.long - 0.02, TEMPER.go, SHY.to[2]!, SHY.to[2]!),
+  line(TEMPER.go, T.crank - 0.05, SHY.to[2]!, on(2, grip)),
+  line(T.crank - 0.05, T.crank, on(2, grip), on(2, grip)),
+  arc(T.crank, T.runaway + 0.01, on(2, hub), CRANK.arm * scaleOf(2).k, CRANK.rest, CRANK.rest + TURNS * 2 * Math.PI, (u) => u * (1.25 - 0.25 * u)),
+  line(T.runaway + 0.01, THROWN.see, on(2, grip), on(2, grip)),
+  line(THROWN.see, THROWN.off, on(2, grip), on(2, away)),
+  line(THROWN.off, T.lean - 0.06, on(2, away), on(2, away)),
+  line(T.lean - 0.06, T.lean + 0.15, on(2, away), on(2, under)),
+  line(T.lean + 0.15, T.lean + 0.24, on(2, under), on(2, caught)),
+  line(T.lean + 0.24, 16.85, on(2, caught), on(2, caught)),
+  line(16.85, 17.0, on(2, caught), on(2, thrown)),
+  line(17.0, WARNED.see, on(2, thrown), on(2, thrown)),
+  line(WARNED.see, WARNED.back, on(2, thrown), on(2, shrunk)),
+  line(WARNED.back, WARNED.held, on(2, shrunk), on(2, shrunk)),
+  line(WARNED.held, WARNED.half, on(2, shrunk), halfway),
   line(WARNED.half, WARNED.stall, halfway, halfway),
   line(WARNED.stall, RISE.there, halfway, beside),
   line(RISE.there, RISE.back, beside, beside),
@@ -149,14 +203,14 @@ const presses: [number, number][] = [
   [T.phone, T.phone + 0.1],
   [T.zero, T.zero + 0.25], [T.one, T.one + 0.11], [T.third, T.third + HAUL],
   [T.birth, T.birth + 0.12],
-  [PULL.back, T.lever + 0.6],
+  ...FILM.stops.map((at): [number, number] => [at, at + PULL.tap]),
   [T.volume, T.volume + 0.1],
   [T.crank, T.runaway + 0.05],
   [T.press, T.press + 0.12]
 ]
 
 export function pointerAt(time: number): Pointer {
-  const t = Math.max(0, time)
+  const t = scriptAt(Math.max(0, time))
   let seg = path[path.length - 1]!
   for (const s of path) {
     if (t < s.to) {
@@ -173,14 +227,14 @@ export type Mark = 'fling' | 'strike'
 export type Marks = Partial<Record<Mark, number>>
 
 const acts: [number | Mark, Acting][] = [
-  [0, 'plain'], [EASY.eye, 'confident'], [T.third + HAUL, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.5, 'plain'], [STRUCK.tight, 'nervous'], [11.0, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
+  [0, 'plain'], [EASY.eye, 'confident'], [T.third + HAUL, 'scared'], ['fling', 'shocked'], [6.5, 'nervous'], [9.0, 'plain'], [FILM.lever, 'nervous'], [FILM.stops[2]! + 0.12, 'shocked'], ['strike', 'scared'], [TEMPER.red, 'angry'], [TEMPER.spent, 'plain'],
   [THROWN.see, 'shocked'], [THROWN.back, 'angry'], [16.95, 'exhausted'], [RISE.flop + RISE.life * 0.78, 'plain']
 ]
 
 export function actingAt(time: number, marks: Marks = {}): Acting {
   let out: Acting = 'plain'
   for (const [at, a] of acts) {
-    const from = typeof at === 'number' ? at : marks[at]
+    const from = typeof at === 'number' ? filmAt(at) : marks[at]
     if (from !== undefined && time >= from) out = a
   }
   return out
@@ -205,11 +259,7 @@ export const poses: Pose[] = [
   [T.zero, 'aim', 0.5], [T.zero, 'press', 1.26, 0.22], [T.zero + 0.24, 'press', 0.66, 0.1], [T.zero + 0.26, 'aim', null],
   [T.third, 'aim', 0.85], [T.third, 'press', 1.36, HAUL - 0.06], [T.third + HAUL - 0.06, 'press', 0.62, 0.06], [T.third + HAUL - 0.01, 'aim', null],
   [6.5, 'aim', 0.9], [6.5, 'press', 0.7, 0.5], [7.5, 'aim', null],
-  [PULL.back, 'aim', 0.5], [PULL.back, 'press', 0.78, PULL.up - PULL.back], [T.lever, 'aim', null],
-  [T.lever + 0.02, 'press', 1.38, 0.2],
-  [T.lever + 0.3, 'press', 0.72, 0.3],
-  [STRUCK.tight, 'aim', -0.5],
-  [STRUCK.brace, 'press', 0.74, STRUCK.read - STRUCK.brace],
+  ...FILM.stops.map((at): Pose => [at, 'press', 0.7, 0.08]),
   [STRUCK.read, 'aim', 0.34], [STRUCK.read, 'press', 1.3, 0.5],
   [STRUCK.near, 'aim', null], [STRUCK.duck + 0.3, 'hold', 0.2],
   [TEMPER.safe, 'wobble', 0.5, 9, 0.5], [TEMPER.safe, 'aim', -1], [TEMPER.safe + 0.04, 'press', 0.66, TEMPER.fume - TEMPER.safe - 0.04], [TEMPER.fume, 'aim', null], [TEMPER.fume, 'press', 1.3, 0.12],

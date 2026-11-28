@@ -42,6 +42,8 @@ const way = (rows: Row[], a: number, b: number, screen = false): number => {
 }
 const reactionOf = (r: Row): string => r.state.split('+').slice(1).filter((w) => !['air', 'rides', 'taken', 'ball'].includes(w)).join('+')
 const LEAD = 10
+const TRAY = { x: 1686, y: 779 }
+const onTray = (): Pointer => ({ x: TRAY.x, y: TRAY.y, down: false })
 const marks = (t: Turn) => ({ start: LEAD, half: LEAD + t.half - t.start, seat: LEAD + t.half - t.start + Math.round(0.6 * (t.flat - t.half)), play: LEAD + t.flat - t.start })
 
 describe('the arrow under a hand through a page turn', () => {
@@ -125,8 +127,8 @@ describe('the arrow under a hand through a page turn', () => {
   it('turn 1: while the tray under the arrow hops on the seat the arrow is drawn hopping with it, and the tray never rises through it', () => {
     const t = turns[0]!
     const seat = t.half + Math.round(0.6 * (t.flat - t.half))
-    const drawn: { i: number; lift: number; clear: number; shift: number }[] = []
-    forked(v, t.start, t.flat - t.start + 31, resting, LEAD, (s, i) => {
+    const drawn: { i: number; lift: number; clear: number; shift: number; top: number }[] = []
+    forked(v, t.start, t.flat - t.start + 31, onTray, LEAD, (s, i) => {
       const f = s.frameAt(s.time)
       const body = s.cursor.pose()
       const lift = f.cursor.z - body.z
@@ -134,9 +136,10 @@ describe('the arrow under a hand through a page turn', () => {
       for (const u of f.list) if (u.kind !== 'text' && u.kind !== 'well' && u.kind !== 'anchor' && u.pocket !== true && u.z1 > SHIVER.loose && body.x >= u.x && body.x <= u.x + u.w && body.y >= u.y && body.y <= u.y + u.h) top = Math.max(top, u.z1)
       const a = onScreen(body.x, body.y, body.z, f.scroll, 0)
       const b = onScreen(body.x, body.y, f.cursor.z, f.scroll, 0)
-      drawn.push({ i, lift, clear: f.cursor.z - (top + lift), shift: Math.hypot(a.x - b.x, a.y - b.y) })
+      drawn.push({ i, lift, clear: f.cursor.z - (top + lift), shift: Math.hypot(a.x - b.x, a.y - b.y), top })
     })
     const at = (i: number) => drawn.find((d) => d.i === i)!
+    expect(at(seat).top).toBeGreaterThan(SHIVER.loose)
     expect(at(seat - 1).lift).toBe(0)
     expect(Math.max(at(seat + 1).lift, at(seat + 2).lift)).toBeGreaterThan(8)
     for (const d of drawn) {
@@ -296,7 +299,7 @@ describe('without a hand the turn and the hit are what they were', () => {
   }
   const line = (r: Row): string => `${r.i} ${r.page} ${r.phase} ${r.x.toFixed(2)} ${(r.y - r.scroll).toFixed(2)} ${r.z.toFixed(2)} ${r.angle.toFixed(2)}`
 
-  it("the film's first turn: the arrow is lifted to the hand over place and handed over there", () => {
+  it("the film's first turn: the arrow stays on the button it pressed, goes over with its slab, and stands at the hand over place on the next page", () => {
     const rows = rowsOf(new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver() }), 40 * 60)
     const t = turnsOf(rows)[0]!
     expect([t.start, t.start + 1, t.start + 10, t.start + 29, t.half, t.half + 18, t.flat, t.flat + 10, t.flat + 30].map((k) => line(rows[k]!))).toEqual(FILM_TURN)
@@ -309,5 +312,5 @@ describe('without a hand the turn and the hit are what they were', () => {
   })
 })
 
-const FILM_TURN = ['809 marketing leave 508.00 440.00 13.96 11.69', '810 marketing leave 534.49 445.86 48.84 10.27', '819 marketing leave 968.26 541.83 206.66 -18.96', '838 marketing leave 959.81 539.96 257.08 39.87', '839 step1 arrive 960.00 540.00 260.00 0.00', '857 step1 arrive 960.00 540.00 260.00 -11.10', '869 step1  960.00 540.00 260.00 -11.10', '879 step1  960.00 540.00 225.83 -11.10', '899 step1  960.00 540.00 4.00 -11.10']
-const FILM_HIT = ['348 -12.0', '349 -5.7', '350 1.9', '351 8.7', '352 14.0', '353 17.7', '354 19.4', '355 17.9', '356 18.0', '357 19.6', '358 21.8', '359 24.2', '360 26.4', '361 28.3', '362 29.8', '363 31.0']
+const FILM_TURN = ['809 marketing leave 508.00 440.00 13.96 11.69', '810 marketing leave 508.00 440.00 13.96 11.50', '819 marketing leave 508.00 440.00 13.96 -16.06', '838 marketing leave 508.00 440.00 13.96 39.80', '839 step1 arrive 960.00 540.00 260.00 0.00', '857 step1 arrive 960.00 540.00 260.00 -11.10', '869 step1  960.00 540.00 260.00 -11.10', '879 step1  960.00 540.00 225.83 -11.10', '899 step1  960.00 540.00 4.00 -11.10']
+const FILM_HIT = ['407 -9.5', '408 -5.7', '409 0.9', '410 7.1', '411 11.8', '412 15.1', '413 16.8', '414 15.6', '415 15.9', '416 17.9', '417 20.4', '418 23.2', '419 25.7', '420 27.9', '421 29.6', '422 30.9']

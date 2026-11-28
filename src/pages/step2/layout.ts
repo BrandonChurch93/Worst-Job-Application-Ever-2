@@ -2,7 +2,7 @@ import { config } from '../../config'
 import type { LayoutNode } from '../../copy'
 import { find, node, text } from '../../shell/layout'
 import { block } from '../../shell/metrics'
-import { button, buttonWidth, HEADER, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
+import { button, buttonWidth, HEADER, page, PAGE_W, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { registerData, words } from '../../shell/words'
 import legends from './legends.json'
 
@@ -14,33 +14,64 @@ const heights = config.scale.heights
 export const ROWS = ['phone', 'birth', 'volume'] as const
 export type RowName = (typeof ROWS)[number]
 
-export const FX = 1000
-export const FW = RIGHT - FX
+export const FW = 1100
+export const FX = (PAGE_W - FW) / 2
 export const FH = sizes.field
-export const ROW_Y = HEADER.contentY + 12
-export const PITCH = 149
+export const HEAD_Y = HEADER.contentY + 12
+export const ROW_Y = HEAD_Y + 84
 export const TRAY_GAP = 12
-export const TRAY_H = 250
-export const TRAY_R = 18
-// A tray's liner, in page pixels, and the shade its wall lays on its floor.
-export const TRAY = { sink: 0.5, joint: 0.3, jointDeep: 0.7, rim: 3.4, lean: 0.3, cove: 2, rimShade: 0.66, wallShade: 0.36, wallShadeTop: 0.2, wallFoot: 0.2, wallFootTop: 0.04, cool: 0.12, soakOver: 0.5,
-  floor: { soak: 0.4, hold: 0.2, reach: 13, bounce: 0.16, bounceReach: 24, base: 1.28, side: 0.8, far: 0.4, farReach: 120, warm: 0.035 },
-  soak: { soak: 0.62, hold: 1, reach: 15, bounce: 0.05, bounceReach: 20, base: 0.94, side: 0.8, cool: 0.14 } }
+export const TRAY_H = 448
 export const COIN = { r: 13, wall: 14, clear: 0.3, fall: 2600, spring: 0.38, least: 150, hops: 2, rows: 2, roll: 150, pitch: 23, stack: 1.4 }
-export const SHIFT = TRAY_H + TRAY_GAP
+// One field stands on the page at a time. The one that is done leaves to the left by this much and the next comes in from the right.
+export const FIELDS = 3
+export const SLIDE = { far: 1560, long: 0.42, hold: 0.7, filmHold: 0 }
 export const TRAY_Z = heights.machineTray
 export const TOP = heights.machineMinTop
 export const PAD = 24
 export const VALUE_Z = heights.field
+export const STOP_Z = 16
+export const SIGN_Z = 22
 
-export const rowY = (i: number, low = false): number => ROW_Y + i * PITCH + (low ? SHIFT : 0)
-export const trayY = (i: number): number => rowY(i) + FH + TRAY_GAP
+export const rowY = (_i = 0): number => ROW_Y
+export const trayY = (_i = 0): number => ROW_Y + FH + TRAY_GAP
+export const PROMPT_Y = trayY() + 30
+// The lowest band of the page is kept for the spoken words: the footnote stands above it, under the stage.
+export const BAND = 150
+export const NOTE_Y = trayY() + 10
+
+// Each machine is laid out and run at the size it was built, on a stage of its own, and drawn `times` larger about the stage's upper left corner, `up` px higher on the page.
+// A machine stands on the bare page: the floor it was built on (`machineTray`) is the page's face.
+export const STAGE = { times: [1.5, 1.4, 1.25], up: 60 }
+export const SW = (i: number): number => FW / STAGE.times[i]!
+export const SH = (i: number): number => TRAY_H / STAGE.times[i]!
+const TRAY_FLOOR = heights.machineTray
+const HOVER = heights.cursorHover
+export interface Scale { k: number; x: (x: number) => number; y: (y: number) => number; z: (z: number) => number; ground: (z: number) => number; air: (z: number) => number; backX: (x: number) => number; backY: (y: number) => number; backAir: (z: number) => number }
+// From a stage to the page and back. A part's height grows from the floor it was built on, which is the page's face. The arrow's height grows from where it hovers, and joins the parts' heights a little above that, so it stands as far over a larger part as over the built one.
+export function scaleOf(i: number): Scale {
+  const k = STAGE.times[i]!
+  const ty = trayY(i)
+  const oy = ty - STAGE.up
+  const join = 2 * (k * (HOVER - TRAY_FLOOR) - HOVER)
+  const z = (v: number): number => (v - TRAY_FLOOR) * k
+  return {
+    k,
+    x: (x) => FX + (x - FX) * k,
+    y: (y) => oy + (y - ty) * k,
+    z,
+    ground: (v) => (v <= 0 ? v : k * v + z(0) * Math.min(1, v / -TRAY_FLOOR)),
+    air: (v) => (v <= HOVER ? v : v < HOVER + join ? HOVER + (v - HOVER) * (k + 0.5) : z(v)),
+    backX: (x) => FX + (x - FX) / k,
+    backY: (y) => ty + (y - oy) / k,
+    backAir: (v) => (v <= HOVER ? v : v < HOVER + join * (k + 0.5) ? HOVER + (v - HOVER) / (k + 0.5) : TRAY_FLOOR + v / k)
+  }
+}
 
 const DEG = Math.PI / 180
 
 export const DIAL = {
   r: 100, ring: 70, hole: 15, stop: 30 * DEG, first: -30 * DEG, pitch: 30 * DEG,
-  cx: FX + PAD + 136, cy: trayY(0) + TRAY_H / 2,
+  cx: FX + SW(0) / 2, cy: trayY(0) + 172,
   holeAngle: (k: number): number => -30 * DEG - 30 * DEG * (k - 1),
   travel: (k: number): number => 60 * DEG + 30 * DEG * (k - 1),
   digit: (k: number): string => String(k % 10)
@@ -62,8 +93,8 @@ export const dialTop = (lift: number): number => Math.max(DIAL_BODY.rest, DIAL_B
 // How far the numeral plate stands above the tray's floor under a wheel whose top stands at `top`: it never sinks into the floor.
 export const dialPlate = (top: number): number => Math.max(DIAL_BODY.plateLeast, top - DIAL_BODY.plate)
 
-const sy = trayY(1) + 9
-const sx = FX + PAD + 12
+const sy = trayY(1) + 40
+const sx = FX + (SW(1) - 392) / 2
 export const SLOT = {
   x: sx, y: sy + PAD, w: 336, h: 150,
   reelW: 92, reelH: 106, reelGap: 12,
@@ -73,13 +104,17 @@ export const SLOT = {
   payX: sx + 60, payY: sy + PAD + 150 + 8, payW: 216, payH: 22,
   strips: [Object.keys(legends.months).sort(), Object.keys(legends.days).sort(), Object.keys(legends.years).sort()] as string[][],
   names: ['months', 'days', 'years'] as const,
-  film: ['07', '23', '1991']
+  film: ['07', '23', '1991'],
+  stopY: sy + PAD + 150 + 42, stopH: 48,
+  // How many legends a second each reel turns, and how many legends before the visitor's own each reel starts.
+  speed: [2.5, 3.125, 3.85], lead: [3, 7, 13]
 }
 
 const cy = trayY(2)
 export const CRANK = {
-  hx: FX + PAD + 73, hy: cy + 174, rest: -0.75, arm: 128, armW: 23, gripW: 90, gripH: 52, tip: 136, hold: 8, holdAside: 6, base: 110, hub: 44,
-  segW: 28, segH: 116, segGap: 13, segX: FX + PAD + 73 + 227, segY: cy + 107
+  hx: FX + 200, hy: cy + SH(2) / 2, rest: -0.75, arm: 128, armW: 23, gripW: 90, gripH: 52, tip: 136, hold: 8, holdAside: 6, base: 110, hub: 44,
+  segW: 34, segH: 124, segGap: 13, segX: FX + 388, segY: cy + 204,
+  signY: cy + 36, signH: 140
 }
 
 // The sheet of the machines: the page's header, and each machine under its label at the size the approved sheet shows it.
@@ -89,7 +124,7 @@ export const SHEET = {
   cursor: { x: 613, y: 899 }
 }
 export function sheetScale(id: string): number {
-  if (!id.startsWith('sheet-')) return 1
+  if (!id.startsWith('sheet-')) return id.startsWith('meter-') || id.startsWith('crank-') ? STAGE.times[2]! : id.startsWith('dial-') ? STAGE.times[0]! : STAGE.times[1]!
   if (id.includes('meter-')) return SHEET.meter.times
   if (id.includes('dial-')) return SHEET.dial.times
   if (id.includes('crank-')) return SHEET.crank.times
@@ -105,26 +140,44 @@ export const DIAL_TYPE = { font: 'inter-600', px: 22, align: 'centre' as const }
 
 export const reelId = (r: number, legend: string): string => `reel-${r}-${legend}`
 
-function rowNodes(i: number, low: boolean): LayoutNode[] {
+export const STOP_TYPE = { font: 'inter-600', px: 20, align: 'centre' as const }
+export const SIGN_TYPE = { font: 'inter-600', px: 56, align: 'centre' as const }
+export const PROMPT_TYPE = { ...TYPE.body, align: 'centre' as const }
+export const stopId = (r: number): string => `slot-stop-${r}`
+// What a field would hold while its machine is out stands on the bare page over the machine, as a line of type.
+export const PLATE_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
+export const PLATE_Y = ROW_Y - 14
+// The openings of the page: the phone's round one and the slot machine's hatch, in page pixels, and how deep they go.
+export const HOLE = { deep: 64, flush: 2, iris: 208, seat: 112, hatch: 26, hatchR: 18, clear: 40, pit: 26, gone: 190, under: 58 }
+
+const centred = (id: string, key: string, state: string, i: number): LayoutNode => text(id, key, PROMPT_TYPE, FX + SW(i) / 2, PROMPT_Y, { part: 'type', on: TRAY_Z, states: [state] })
+
+function rowNodes(i: number): LayoutNode[] {
   const name = ROWS[i]!
-  const id = low ? `${name}-low` : name
-  const y = rowY(i, low)
-  const here = i === 0 ? undefined : low ? [`${name}-low`] : ['rest', `${name}-up`]
-  const when = (cond: string): string[] => (i === 0 ? [`${name}-${cond}`] : [`${name}-${low ? 'low' : 'up'}-${cond}`])
+  const y = rowY(i)
   const capY = y + (FH - block(TYPE.value.font, 'X', TYPE.value.px).cap) / 2
-  const value = (suffix: string, key: string, cond: string): LayoutNode =>
-    text(`${id}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116, ...(cond === 'done' ? { ink: 'soft' } : {}) }, FX + PAD, capY, { part: 'type', on: VALUE_Z, states: when(cond) })
+  const value = (suffix: string, key: string, cond: string, soft: boolean): LayoutNode =>
+    text(`${name}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116, ...(soft ? { ink: 'soft' } : {}) }, FX + PAD, capY, { part: 'type', on: VALUE_Z, states: [`${name}-${cond}`] })
   const values: LayoutNode[] = []
-  if (name === 'phone') values.push(value('typed', 'runtime:step2.phone', 'typing'), value('value', 'copy:step2.rows.phone.gaveUp', 'done'))
-  if (name === 'birth') values.push(value('value', 'copy:step2.rows.birth.recorded', 'done'))
-  if (name === 'volume') values.push(value('typed', 'runtime:step2.volume', 'typing'), value('value', 'copy:step2.rows.volume.done', 'done'))
-  const chevron = node(`${id}-chevron`, 'chevron', [FX + FW - PAD - 28, y + (FH - 28) / 2, 28, 28], { part: 'rows', shape: 'none' })
-  const extra = here ? { states: here } : {}
+  if (name === 'birth') values.push(value('ask', 'copy:drafts.step2.birth.placeholder', 'ask', true), value('typed', 'runtime:step2.birth', 'typing', false))
+  const chevron = node(`${name}-chevron`, 'chevron', [FX + FW - PAD - 28, y + (FH - 28) / 2, 28, 28], { part: 'rows', shape: 'none' })
+  const here = { states: [`${name}-here`] }
   return [
-    text(`${id}-label`, `copy:step2.rows.${name}.label`, ROW_TITLE, LEFT, y + 6, { part: 'type', ...extra }),
-    text(`${id}-helper`, `copy:step2.rows.${name}.helper`, ROW_HELPER, LEFT, y + 42, { part: 'type', ...extra }),
-    node(`${id}-pocket`, 'field', [FX, y, FW, FH], { part: 'rows', r: 14, children: [...values, chevron], ...extra })
+    text(`${name}-label`, `copy:step2.rows.${name}.label`, ROW_TITLE, FX, HEAD_Y + 6, { part: 'type', ...here }),
+    text(`${name}-helper`, `copy:step2.rows.${name}.helper`, ROW_HELPER, FX, HEAD_Y + 42, { part: 'type', ...here }),
+    node(`${name}-pocket`, 'field', [FX, y, FW, FH], { part: 'rows', r: 14, children: name === 'birth' ? values : [...values, chevron], ...here })
   ]
+}
+
+// The lines of a machine on the bare page: what is being set, and what the form made of it.
+function plateNodes(i: number): LayoutNode[] {
+  const name = ROWS[i]!
+  const line = (suffix: string, key: string, cond: string): LayoutNode => text(`${name}-plate-${suffix}`, key, PLATE_TYPE, PAGE_W / 2, PLATE_Y, { part: 'type', states: [`${name}-plate-${cond}`] })
+  const out = [line('typed', `runtime:step2.${name}`, 'typing')]
+  if (name === 'phone') out.push(line('value', 'copy:step2.rows.phone.gaveUp', 'done'))
+  if (name === 'birth') out.push(line('value', 'copy:step2.rows.birth.recorded', 'done'), line('missed', 'copy:drafts.step2.birth.missed', 'missed'))
+  if (name === 'volume') out.push(line('value', 'copy:step2.rows.volume.done', 'done'))
+  return out
 }
 
 function dialNodes(): LayoutNode[] {
@@ -137,34 +190,31 @@ function dialNodes(): LayoutNode[] {
   }
   const centre = node('dial-centre', 'dialCentre', [d.cx - 30, d.cy - 30, 60, 60], { part: 'dial', shape: 'disc', height: TOP + 16, floor: TOP + 2, tone: 'accent', mechanism: true })
   const wheel = node('dial-wheel', 'dialWheel', [d.cx - d.r, d.cy - d.r, d.r * 2, d.r * 2], { part: 'dial', shape: 'disc', height: TOP + 2, floor: TRAY_Z, tone: 'metal', mechanism: true, children: [...numerals, centre] })
-  const prompt = text('dial-prompt', 'copy:step2.rows.phone.panel', TYPE.body, d.cx + d.r + 48, d.cy - block(TYPE.body.font, 'X', TYPE.body.px).cap / 2, { part: 'type', on: TRAY_Z, states: ['phone-panel'] })
-  return [wheel, prompt]
+  return [wheel, centred('dial-prompt', 'copy:step2.rows.phone.panel', 'phone-panel', 0)]
 }
 
 function slotNodes(): LayoutNode[] {
   const s = SLOT
   const reels: LayoutNode[] = []
+  const stops: LayoutNode[] = []
   for (let r = 0; r < 3; r++) {
     const type = reelType(r)
     const cap = block(type.font, '0', type.px).cap
     const marks = s.strips[r]!.map((legend) =>
       text(reelId(r, legend), `data:step2.${s.names[r]}.${legend}`, type, s.reelX(r) + s.reelW / 2, s.reelY + (s.reelH - cap) / 2, { part: 'slot', on: TOP + 14, states: [reelId(r, legend)] }))
     reels.push(node(`slot-reel-${r}`, 'slotReel', [s.reelX(r), s.reelY, s.reelW, s.reelH], { part: 'slot', height: TOP + 14, floor: TOP + 10, tone: 'paper', r: 6, children: marks }))
+    const label = text(`${stopId(r)}-label`, 'copy:drafts.step2.birth.stop', STOP_TYPE, s.reelX(r) + s.reelW / 2, s.stopY + (s.stopH - block(STOP_TYPE.font, 'X', STOP_TYPE.px).cap) / 2, { part: 'type', on: STOP_Z, tone: 'inkLight' })
+    stops.push(node(stopId(r), 'button', [s.reelX(r), s.stopY, s.reelW, s.stopH], { part: 'rows', shape: 'capsule', height: STOP_Z, floor: TRAY_Z, tone: 'accent', children: [label] }))
   }
   const window = node('slot-window', 'slotWindow', [s.x + 10, s.y + 14, s.w - 20, s.h - 28], { part: 'slot', height: TOP + 10, floor: TOP + 8, tone: 'dark', r: 8, children: reels })
   const cabinet = node('slot-cabinet', 'slotCabinet', [s.x, s.y, s.w, s.h], { part: 'slot', height: TOP + 20, floor: TRAY_Z, tone: 'metal', r: 12, mechanism: true, children: [window] })
   const knob = node('slot-knob', 'slotKnob', [s.leverX - s.knob / 2, s.knobY - s.knob / 2, s.knob, s.knob], { part: 'slot', shape: 'disc', height: TOP + 40, floor: TOP + 12, tone: 'accent', mechanism: true })
   const payout = node('slot-payout', 'slotPayout', [s.payX, s.payY, s.payW, s.payH], { part: 'slot', height: 6, floor: TRAY_Z, tone: 'dark', r: 6 })
-  const px = s.leverX + s.knob / 2 + 52
-  const wrap = FX + FW - PAD - px
-  const b = block(TYPE.body.font, words('copy:step2.rows.birth.panel'), TYPE.body.px, wrap)
-  const prompt = text('slot-prompt', 'copy:step2.rows.birth.panel', { ...TYPE.body, wrap }, px, trayY(1) + (TRAY_H - b.height) / 2, { part: 'type', on: TRAY_Z, states: ['birth-panel'] })
-  return [cabinet, knob, payout, prompt]
+  return [cabinet, knob, payout, ...stops, centred('slot-prompt', 'copy:drafts.step2.birth.panel', 'birth-panel', 1)]
 }
 
 function crankNodes(): LayoutNode[] {
   const c = CRANK
-  const prompt = text('crank-prompt', 'copy:step2.rows.volume.panel', TYPE.body, FX + PAD + 10, cy + PAD + 15, { part: 'type', on: TRAY_Z, states: ['volume-panel'] })
   const base = node('crank-base', 'crankBase', [c.hx - c.base / 2, c.hy - c.base / 2, c.base, c.base], { part: 'crank', shape: 'disc', height: 18, floor: TRAY_Z, tone: 'metal' })
   const ax = c.hx + (c.arm / 2) * Math.cos(c.rest)
   const ay = c.hy + (c.arm / 2) * Math.sin(c.rest)
@@ -175,39 +225,42 @@ function crankNodes(): LayoutNode[] {
   const grip = node('crank-grip', 'crankGrip', [gx - c.gripW / 2, gy - c.gripH / 2, c.gripW, c.gripH], { part: 'crank', shape: 'capsule', height: TOP + 30, floor: TOP + 6, tone: 'accent', mechanism: true, over: true })
   const segs: LayoutNode[] = []
   for (let k = 0; k < 10; k++) segs.push(node(`meter-${k + 1}`, 'meterSegment', [c.segX + k * (c.segW + c.segGap), c.segY, c.segW, c.segH], { part: 'crank', shape: 'capsule', height: 12, floor: TRAY_Z, tone: 'glass' }))
-  const meter: LayoutNode = { id: 'meter', kind: 'row', box: [c.segX, c.segY, 10 * c.segW + 9 * c.segGap, c.segH], children: segs, flow: 'row', gap: c.segGap, part: 'crank' }
-  return [prompt, base, arm, hub, grip, meter]
+  const wide = 10 * c.segW + 9 * c.segGap
+  const meter: LayoutNode = { id: 'meter', kind: 'row', box: [c.segX, c.segY, wide, c.segH], children: segs, flow: 'row', gap: c.segGap, part: 'crank' }
+  const words = text('crank-sign-words', 'copy:drafts.step2.volume.sign', SIGN_TYPE, c.segX + wide / 2, c.signY + (c.signH - block(SIGN_TYPE.font, 'X', SIGN_TYPE.px).cap) / 2, { part: 'type', on: SIGN_Z, tone: 'inkLight' })
+  const sign = node('crank-sign', 'sign', [c.segX, c.signY, wide, c.signH], { part: 'rows', height: SIGN_Z, floor: TRAY_Z, tone: 'accent', r: 16, children: [words] })
+  return [base, arm, hub, grip, meter, sign]
 }
 
 export function buildLayout(): LayoutNode {
   const machines = [dialNodes(), slotNodes(), crankNodes()]
-  const trays = ROWS.map((name, i) => node(`${name}-tray`, 'machineTray', [FX, trayY(i), FW, TRAY_H], { part: 'rows', r: TRAY_R, tone: 'glass', states: [`${name}-open`], children: machines[i]! }))
+  const stages = ROWS.map((name, i): LayoutNode => ({ id: `${name}-stage`, kind: 'row', box: [FX, trayY(i), SW(i), SH(i)], children: machines[i]!, states: [`${name}-open`], part: 'rows' }))
+  const holes = ROWS.slice(0, 2).map((name, i) => node(`${name}-hole`, 'machineTray', [FX, trayY(i), SW(i), SH(i)], { part: 'rows', r: HOLE.hatchR, tone: 'glass', states: [`${name}-hole`] }))
+  const plates = ROWS.flatMap((_, i) => plateNodes(i))
   const rows: LayoutNode[] = []
-  for (let i = 0; i < 3; i++) {
-    rows.push(...rowNodes(i, false))
-    if (i > 0) rows.push(...rowNodes(i, true))
-  }
+  for (let i = 0; i < 3; i++) rows.push(...rowNodes(i))
   const w = buttonWidth('copy:step2.continue')
   const by = SCREEN_H - 40 - sizes.button
   const go = button('continue', RIGHT - w, by, w, 'copy:step2.continue', { part: 'shell', tone: 'metal' })
   find(go, 'continue-label').tone = 'ink'
-  const note = text('note', 'copy:step2.note', ROW_HELPER, LEFT, by + (sizes.button - block(ROW_HELPER.font, 'X', ROW_HELPER.px).cap) / 2, { part: 'type' })
-  return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...trays, note, go])
+  const note = text('note', 'copy:step2.note', { ...ROW_HELPER, wrap: FW }, FX, NOTE_Y, { part: 'type', states: ['note'] })
+  return page('step2', SCREEN_H, [...stepHead(2), ...rows, ...holes, ...stages, ...plates, note, go])
 }
 
-export interface StateView { open: number; panel: boolean; done: boolean[]; typing: boolean[]; settled: string[] | null }
+// What the page shows: which fields stand on it (none while a machine is out), which machine is out, which has the page open under it, and the line over it: '' for none, or 'typing', 'done', 'missed'. `value` is what the date's field holds: 'ask' or 'typing'.
+export interface StateView { here: number[]; open: number; hole: number; panel: boolean; plate: string[]; value: string; note: boolean; settled: string[] | null }
 
 export function statesOf(v: StateView): string[] {
   const out: string[] = []
-  if (v.open < 0) out.push('rest')
-  for (let i = 0; i < 3; i++) {
-    const name = ROWS[i]!
-    const low = v.open >= 0 && v.open < i
-    const base = i === 0 ? name : `${name}-${low ? 'low' : 'up'}`
-    if (i > 0) out.push(base)
-    if (v.done[i]) out.push(`${base}-done`)
-    else if (v.typing[i]) out.push(`${base}-typing`)
+  if (v.note) out.push('note')
+  for (const i of v.here) {
+    out.push(`${ROWS[i]}-here`)
+    if (i === 1) out.push(`birth-${v.value}`)
   }
+  v.plate.forEach((p, i) => {
+    if (p) out.push(`${ROWS[i]}-plate-${p}`)
+  })
+  if (v.hole >= 0) out.push(`${ROWS[v.hole]}-hole`)
   if (v.open >= 0) {
     out.push(`${ROWS[v.open]}-open`)
     if (v.panel) out.push(`${ROWS[v.open]}-panel`)

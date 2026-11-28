@@ -66,7 +66,7 @@ describe('the real keyboard', () => {
       if (!deck) continue
       expect(keyboard.key(deck, ctx)).toMatch(/^deck:/)
       const shapes = list.filter(isCap)
-      expect(shapes.length).toBe(seats.length)
+      expect(shapes.length).toBe(seats.length - (s.page.save() as unknown as { broken: unknown[] }).broken.length)
       for (const c of shapes) expect(keyboard.key(c, ctx)).toBe('')
       if (!o) {
         o = keyboard.make(deck, ctx)

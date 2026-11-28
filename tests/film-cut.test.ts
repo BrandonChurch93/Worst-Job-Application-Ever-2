@@ -113,6 +113,16 @@ describe('the cut list', () => {
     expect(withTake.list.lines[1]!.length).toBe('estimate')
   })
 
+  it('does not take the length of a line from a take of other words that is kept under the id of the line', () => {
+    const line = cut.list.lines[0]!
+    const old = makeCut(pages, [{ file: 'audio/kept/old.json', record: { id: line.id, text: 'Other words. / From an earlier script.', seconds: 2.5 } }])
+    expect(old.list.lines[0]!.length).toBe('estimate')
+    expect(old.list.lines[0]!.take).toBe(null)
+    expect(old.list.lines[0]!.seconds).toBe(line.seconds)
+    const noWords = makeCut(pages, [{ file: 'audio/kept/bare.json', record: { id: line.id, seconds: 2.5 } }])
+    expect(noWords.list.lines[0]!.length).toBe('take')
+  })
+
   it('carries the opening of film A and the card loop', () => {
     expect(cut.list.opening.frameCount).toBeLessThanOrEqual(config.intro.maxSeconds * fps)
     expect(cut.list.opening.seconds).toBeCloseTo(cut.list.opening.frameCount / fps, 3)

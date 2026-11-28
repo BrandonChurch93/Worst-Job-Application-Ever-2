@@ -4,6 +4,9 @@ import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
 import { liveFlow, Stage, type Frame } from '../src/stage/stage'
 import { backingOf, MACHINE, ROW, SHADE } from '../src/ui/backing'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 const keen = (flow: { page: string }[]): Stage => new Stage({ mode: 'live', flow: flow as never, pages, driver: new BotDriver('keen', config.seed), seed: config.seed })
 const bare = (over: Partial<Frame>): Frame => ({ list: [], cursor: {} as never, turn: 0, scroll: 0, page: 'x', view: null, ...over })

@@ -187,8 +187,8 @@ function play(first: PlayMode): void {
     }
     window.addEventListener('pointerdown', unlock, { capture: true })
     window.addEventListener('keydown', unlock, { capture: true })
-    void import('./audio/index').then(({ makeSound }) => {
-      sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/` })
+    void Promise.all([import('./audio/index'), import('./ui/said')]).then(([{ makeSound }, { makeCaption }]) => {
+      sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/`, caption: makeCaption })
       if (!flowing()) sound.stop()
       if (touched) void sound.unlock()
     })
@@ -304,6 +304,7 @@ function play(first: PlayMode): void {
       gags = stage.gagsReached.length
       return
     }
+    sound.page(stage.page.id, stage.page.chrome?.()?.caption)
     for (; sent < stage.events.length; sent++) sound.event(stage.events[sent]!, 'live')
     const reached = stage.gagsReached
     for (; gags < reached.length; gags++) sound.beat(reached[gags]!, 'live')
@@ -312,6 +313,7 @@ function play(first: PlayMode): void {
       volume = v
       sound.setVolume(v)
     }
+    if (stage.page.control === 'film') touched()
     sound.quiet(wallSeconds() - lastInput)
   }
   const touched = () => {
@@ -344,7 +346,7 @@ function play(first: PlayMode): void {
     if ((PLAY as string[]).includes(m)) setMode(m as PlayMode, false)
   })
 
-  const backing = (): Backing => backingOf(shown, stage.page.unit)
+  const backing = (): Backing => (stage.page.control === 'film' ? 'dark' : backingOf(shown, stage.page.unit))
 
   let frameSeconds = 1 / 60
   const api: InterfaceApi = {
@@ -357,6 +359,7 @@ function play(first: PlayMode): void {
       base = to
       stage = makeStage()
       sound?.stop()
+      sound?.page(liveFlow()[to]!.page)
       if (flowing()) sound?.start()
       sent = 0
       gags = 0
@@ -404,7 +407,7 @@ function play(first: PlayMode): void {
     const key = `${now}${app.diagnostic}${p.key}`
     still = size.changed() || key !== before ? 0 : Math.min(still + 1, rest.length)
     before = key
-    if (still >= rest.length) return
+    if (still >= rest.length || (still > 0 && now === 'live' && stage.page.control === 'film')) return
     frame++
     app.put(p.frame, p.size, p.pose)
     app.setCamera(p.pose)

@@ -211,6 +211,7 @@ export class Body implements BodyModel {
     for (let i = 0; i < n; i++) {
       const l = loose[set.strip[i]!]! * LOOSE.ribbon
       const inset = r[i * 4 + 3]! + (o[i * 4 + 3]! - r[i * 4 + 3]!) * l
+      this.deform.shake = strips[set.strip[i]!]!.out ?? 1
       this.deform.point(r[i * 4]! + (o[i * 4]! - r[i * 4]!) * l, r[i * 4 + 1]! + (o[i * 4 + 1]! - r[i * 4 + 1]!) * l, r[i * 4 + 2]! + (o[i * 4 + 2]! - r[i * 4 + 2]!) * l, inset, p)
       this.deform.thin(p, 1 - LOOSE.thin * loose[set.strip[i]!]!)
       insets[i] = inset
@@ -227,6 +228,7 @@ export class Body implements BodyModel {
       span[k >> 1] = Math.min(span[k >> 1]!, along)
       span[(k >> 1) + 1] = Math.max(span[(k >> 1) + 1]!, along)
     }
+    this.deform.shake = 1
     const lift = new Float64Array(count)
     const turn: THREE.Quaternion[] = []
     for (let k = 0; k < count; k++) {

@@ -129,6 +129,7 @@ export const GLOW = {
 
 export const EMIT = {
   bolt: { colour: [1, 0.4, 0.09] as [number, number, number], power: 0.075, reach: 48 },
+  blast: { colour: [1, 0.42, 0.1] as [number, number, number], power: 0.2, reach: 90 },
   flash: { colour: [1, 0.5, 0.15] as [number, number, number], power: 0.6, reach: 160 },
   charge: { colour: [1, 0.45, 0.12] as [number, number, number], power: 0.3, reach: 110 },
   hot: { colour: [1, 0.12, 0.03] as [number, number, number], power: 0.35, reach: 140 },
@@ -149,6 +150,7 @@ export interface Fx {
   orb: THREE.SphereGeometry
   headMaterial: THREE.MeshBasicMaterial
   tailMaterial: THREE.MeshBasicMaterial
+  sparkMaterial: THREE.MeshBasicMaterial
   flashMaterial: THREE.MeshBasicMaterial
   puffMaterial: THREE.MeshBasicMaterial
   scorchMaterial: THREE.MeshBasicMaterial
@@ -218,6 +220,7 @@ export function fx(): Fx {
     orb: new THREE.SphereGeometry(1, 16, 10),
     headMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.boltHead), vertexColors: true, toneMapped: false }),
     tailMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.boltTail), vertexColors: true, ...add }),
+    sparkMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.chargeHigh), toneMapped: false }),
     flashMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.flash), map: star, ...add }),
     puffMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.8, 0.8, 0.8), alphaMap: puff, transparent: true, depthWrite: false, toneMapped: false }),
     haloMaterial: new THREE.MeshBasicMaterial({ color: new THREE.Color(...GLOW.boltTail), map: halo, ...add }),

@@ -1,6 +1,6 @@
 # Fonts
 
-## public/fonts/inter-400.json, inter-500.json, inter-600.json, inter-display-600.json
+## public/fonts/inter-400.json, inter-500.json, inter-600.json, inter-display-600.json, inter-display-800.json
 Made by: `pipeline/fonts/bake_fonts.py`, with Python 3, fonttools 4.68.0 and uharfbuzz 0.57.0
 From: the official Inter 4.1 release archive, https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip , sha256 `9883fdd4a49d4fb66bd8177ba6625ef9a64aa45899767dde3d36aa425756b11e`. The script downloads it into `references/cache/fonts/`, which git ignores, and checks the hash before it reads a byte
 Prompt or command: `python3 pipeline/fonts/bake_fonts.py`

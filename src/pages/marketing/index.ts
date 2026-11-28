@@ -5,27 +5,26 @@ import { boxOf, drawLayout, find } from '../../shell/layout'
 import { block } from '../../shell/metrics'
 import { SCREEN_H } from '../../shell/parts'
 import { words } from '../../shell/words'
-import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, StepIo, Tone } from '../../stage/types'
-import { CARD_R, careersLayout, FIRST_CARDS, perkStates, T, TICKER } from './layout'
-import { CUES, LANDING, pointerAt, REJECTED_CUES, type Marks } from './script'
+import type { DrawList, GagInfo, Hint, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
+import { careersLayout, PAGE, perkStates, T, TAPE, TICKER, WIDTH, Z } from './layout'
+import { CUES, LANDING, OPENING, planOf, pointerAt, REJECTED_CUES, scrollAt, type Marks, type Plan } from './script'
 
 const dt = 1 / stepHz
-const heights = config.scale.heights
-const hover = heights.cursorHover
-const skipAfter = config.live.skipLinkAfterSeconds
+const hover = config.scale.heights.cursorHover
 
-export const FLIP_SECONDS = 0.63
-const PIT_CLEAR = 8
+export const FLIP_SECONDS = 0.5
+// A card of the website turns over evenly and stops flat: it goes past flat by the share `past`, which is none.
+export const SETTLE = { past: 0, over: 1 }
+// A card that is over goes back when the arrow is this far outside it, so that it does not flutter at its edge.
+export const LEAVE = 16
+const LOOK = 0.25
+// The page has its own navigation, so the stage draws no header over it; the panel of the spoken words ends at y 980, over the ticker.
+const CHROME = { header: 0, caption: 980 }
 const SHOCK = 0.8
-const TURN_SHARP = 5
-// Under a visitor a card comes over with weight: it is furthest past flat, by the share `past` of the half turn, at the share `over` of the flip, and settles back to flat from there.
-export const SETTLE = { past: 0.045, over: 0.7 }
-const tapeSpeed = 120
-const DOT_GROWS = 24
 const REJECTED_SETTLE = 1.7
 // What the stage's hold on an arrow in the air pulls it back up by in one step, as a share of how far under the hand-off it is.
 const HELD = 9 * dt
-export const TRAVEL = heights.button - 4
+export const TRAVEL = Z.button - Z.pressed
 const WIND = 0.36
 const BACK = 56
 const JUMP = 0.42
@@ -36,11 +35,12 @@ const RISE = 0.18
 const UP = 0.2
 const HOLD = 0.7
 const JUMP_HEIGHT = 110
-const TAKE_NEAR = 150
-const AUTO_GAP = 0.5
 const LINK_LEAD = 96
 const BUTTONS = ['nav-cta', 'hero-cta', 'final-cta'] as const
 const HERO = 1
+const SALARY = 1
+// The arrow goes down the page in its left margin, clear of everything that answers it.
+const LANE = 150
 
 interface Apply { button: number; t: number; fx: number; fy: number; jx: number; jy: number; jumped: boolean; stamped: boolean; pressed: boolean; held: number }
 
@@ -48,12 +48,11 @@ interface State {
   mode: 'live' | 'film'
   variant: string
   time: number
+  clock: number
   scroll: number
   scrollTo: number
   flip: number[]
-  phase: number
-  phaseTime: number
-  auto: number
+  over: boolean[]
   took: boolean
   shock: number
   sink: number[]
@@ -74,13 +73,51 @@ const smooth = (u: number): number => {
 }
 const mod = (a: number, n: number): number => ((a % n) + n) % n
 
+// The film's opening on this page: where the arrow goes and how the page scrolls under it.
+export function careersOpening(): { marks: Marks; plan: Plan } {
+  const { layout, height } = careersLayout()
+  const maxScroll = height - SCREEN_H
+  const caps = BUTTONS.map((id) => boxOf(layout, `${id}-cap`))
+  const hero = caps[HERO]!
+  const last = caps[BUTTONS.length - 1]!
+  const start = { x: 64, y: 596 }
+  const stand = { x: hero.x + hero.w + 92, y: hero.cy - 2 }
+  const salary = boxOf(layout, `perk-${SALARY}`)
+  const badge = boxOf(layout, 'quote-0-note')
+  const lol = boxOf(layout, `compare-${copy.marketing.comparison.rows.length - 1}-us`)
+  const ghosting = boxOf(layout, `process-${copy.marketing.process.items.length - 1}-title`)
+  const mid = (cy: number): number => Math.min(maxScroll, Math.max(0, Math.round(cy - SCREEN_H / 2)))
+  const stops = [
+    { x: salary.x + salary.w - 70, y: salary.y + 34, scroll: mid(salary.cy) },
+    { x: badge.x + badge.w + 22, y: badge.cy - 2, scroll: mid(badge.cy - 32) },
+    { x: lol.cx + 70, y: lol.cy + 2, scroll: mid(lol.cy - 150) },
+    { x: ghosting.x + ghosting.w / 2 + 20, y: ghosting.y + ghosting.h + 96, scroll: mid(ghosting.cy - 220) },
+    { x: last.x + last.w + 92, y: last.cy - 2, scroll: maxScroll }
+  ]
+  const straight = (a: { x: number; y: number }, b: { x: number; y: number }) => [{ f: 0, x: a.x, y: a.y }, { f: 1, x: b.x, y: b.y }]
+  const above = salary.y - 34
+  const marks: Marks = {
+    start,
+    stand,
+    stops,
+    routes: [
+      [{ f: 0, ...stand }, { f: 0.8, x: stops[0]!.x + 20, y: salary.y - 70 }, { f: 1, x: stops[0]!.x, y: stops[0]!.y }],
+      [{ f: 0, x: stops[0]!.x, y: stops[0]!.y }, { f: 0.03, x: stops[0]!.x, y: above }, { f: 0.16, x: LANE, y: above }, { f: 0.85, x: LANE, y: stops[1]!.y - 60 }, { f: 1, x: stops[1]!.x, y: stops[1]!.y }],
+      straight(stops[1]!, stops[2]!),
+      straight(stops[2]!, stops[3]!),
+      straight(stops[3]!, stops[4]!)
+    ],
+    perch: { x: last.x + last.w + 26, y: last.y - 18 },
+    press: { x: last.x + last.w * 0.76, y: last.cy - 4 }
+  }
+  return { marks, plan: planOf(stops.map((p) => p.scroll)) }
+}
+
 export function makePage(): PageLogic {
   const { layout, height, sections } = careersLayout()
   const beats = config.film.beats.filter((b) => b.unit === 'marketing')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: b.event ?? null }))
   const [strollBeat, perksBeat, tickerBeat, applyBeat] = ['marketing.stroll', 'marketing.perks', 'marketing.ticker', 'marketing.apply'].map((id) => beat(id)) as [ReturnType<typeof beat>, ReturnType<typeof beat>, ReturnType<typeof beat>, ReturnType<typeof beat>]
-  const phaseSeconds = [strollBeat.to - strollBeat.from, perksBeat.to - perksBeat.from, tickerBeat.to - tickerBeat.from]
-  const phaseGag = [strollBeat.id, perksBeat.id, tickerBeat.id]
   const maxScroll = height - SCREEN_H
 
   const perkCount = copy.marketing.perks.items.length
@@ -91,15 +128,6 @@ export function makePage(): PageLogic {
     cardNodes.push(find(layout, `perk-${i}`))
   }
   const caps = BUTTONS.map((id) => boxOf(layout, `${id}-cap`))
-  const raised: { box: Box; z: number; round: boolean }[] = []
-  const collect = (n: LayoutNode): void => {
-    const b = { x: n.box[0]!, y: n.box[1]!, w: n.box[2]!, h: n.box[3]!, cx: n.box[0]! + n.box[2]! / 2, cy: n.box[1]! + n.box[3]! / 2 }
-    if (n.kind === 'card' && !n.id.startsWith('perk-')) raised.push({ box: b, z: heights.card, round: false })
-    if (n.kind === 'medallion') raised.push({ box: b, z: n.height ?? 0, round: true })
-    if (n.kind === 'progressButton') raised.push({ box: b, z: heights.progressButton, round: true })
-    for (const c of n.children ?? []) collect(c)
-  }
-  collect(layout)
 
   const tapeItems = copy.marketing.ticker.map((_, i) => {
     const key = `copy:marketing.ticker.${i}`
@@ -112,59 +140,34 @@ export function makePage(): PageLogic {
   }
   const afterKey = 'copy:marketing.tickerAfterRejection'
   const afterW = block(T.tape.font, words(afterKey), T.tape.px).width
-  const afterCount = Math.ceil((TICKER.w + afterW) / (afterW + TICKER.gap)) + 1
+  const afterCount = Math.ceil(TICKER.w / (afterW + TICKER.gap)) + 2
   const afterItems = Array.from({ length: afterCount }, (_, k) => ({ id: `ticker-after-${k}`, key: afterKey, w: afterW, at: k * (afterW + TICKER.gap) }))
   const afterLength = afterCount * (afterW + TICKER.gap)
   const tapeY = boxOf(layout, 'ticker-0').y
   const tapeH = boxOf(layout, 'ticker-0').h
 
-  const links = (['final', 'awards', 'perks'] as const).map((name, i) => {
+  const links = (['final', 'testimonials', 'perks'] as const).map((name, i) => {
     const b = boxOf(layout, `nav-link-${i}`)
     return { box: { ...b, x: b.x - 12, y: b.y - 16, w: b.w + 24, h: b.h + 32 }, to: Math.min(maxScroll, Math.max(0, sections[name]! - LINK_LEAD)) }
   })
 
   const hero = caps[HERO]!
-  const start = { x: 64, y: 596 }
-  const marks: Marks = {
-    start,
-    corner: { x: 66, y: 902 },
-    cards: [0, 1, 2].map((i) => ({ x: cards[i]!.x + cards[i]!.w - 118, y: cards[i]!.y + cards[i]!.h + 4 })),
-    round: { x: cards[2]!.x + cards[2]!.w + 50, y: cards[2]!.y - 44 },
-    lane: { x: cards[2]!.x - 18, y: cards[2]!.y - 44 },
-    medal: { x: boxOf(layout, 'award-0').x - 96, y: boxOf(layout, 'award-0').cy + 56 },
-    stand: { x: hero.x + hero.w + 92, y: hero.cy - 2 },
-    perch: { x: hero.x + hero.w + 26, y: hero.y - 18 },
-    press: { x: hero.x + hero.w * 0.76, y: hero.cy - 4 }
-  }
+  const { marks, plan } = careersOpening()
+  const start = marks.start
 
   const s: State = {
-    mode: 'live', variant: '', time: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0), phase: 0, phaseTime: 0, auto: 0, took: false, shock: 0,
+    mode: 'live', variant: '', time: 0, clock: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0), over: Array(perkCount).fill(false), took: false, shock: 0,
     sink: BUTTONS.map(() => 0), apply: null, skipAsked: false, done: false, cue: 0, base: 'confident'
   }
   const rejected = (): boolean => s.variant === 'rejected'
-  const capTop = (i: number): number => heights.button - TRAVEL * smooth(s.sink[i]!)
-  const landing = (i: number): { x: number; y: number } => ({ x: caps[i]!.cx + Math.min(150, caps[i]!.w / 2 - 70), y: caps[i]!.cy - 32 })
-  const firstOpen = (): boolean => {
-    for (let i = 0; i < FIRST_CARDS; i++) if (s.flip[i]! < 1) return false
-    return true
-  }
+  const capTop = (i: number): number => Z.button - TRAVEL * smooth(s.sink[i]!)
+  const landing = (i: number): { x: number; y: number } => ({ x: caps[i]!.cx + Math.min(150, caps[i]!.w / 2 - 70), y: caps[i]!.cy - 4 })
 
   function surface(x: number, y: number): number {
     const p = { x, y }
-    for (let i = 0; i < perkCount; i++) if (inside(cards[i]!, p)) return s.flip[i]! > 0 && s.flip[i]! < 1 ? turningTop(i) : heights.card
+    for (let i = 0; i < perkCount; i++) if (inside(cards[i]!, p)) return Z.card
     for (let i = 0; i < caps.length; i++) if (inside(caps[i]!, p)) return capTop(i)
-    for (const r of raised) {
-      if (!inside(r.box, p)) continue
-      if (r.round && Math.hypot(x - r.box.cx, y - r.box.cy) > r.box.w / 2) continue
-      return r.z
-    }
-    return 0
-  }
-
-  function openCard(i: number, io: StepIo): void {
-    if (s.flip[i]! > 0) return
-    s.flip[i] = dt / FLIP_SECONDS
-    io.emit('card-flip', cards[i]!.cx, cards[i]!.cy, false)
+    return Z.sheet
   }
 
   function startApply(button: number, io: StepIo): void {
@@ -227,108 +230,15 @@ export function makePage(): PageLogic {
     } else if (a.held >= HOLD) s.done = true
   }
 
-  function stepPhases(io: StepIo): void {
-    if (rejected() || s.phase >= phaseSeconds.length) return
-    s.phaseTime += dt
-    let over = s.phaseTime >= phaseSeconds[s.phase]! - 1e-9
-    if (s.phase === 1) {
-      if (!firstOpen()) {
-        over = false
-        if (s.phaseTime >= skipAfter) {
-          s.auto -= dt
-          if (s.auto <= 0) {
-            for (let i = 0; i < FIRST_CARDS; i++) {
-              if (s.flip[i]! > 0) continue
-              openCard(i, io)
-              s.auto = AUTO_GAP
-              break
-            }
-          }
-        }
-      }
-    }
-    if (over) {
-      s.phase++
-      s.phaseTime = 0
-    }
-  }
+  // How much of a card's own height shows: 1 lying face up, 0 on edge, -1 lying on its face.
+  const shows = (i: number): number => Math.cos(Math.PI * smooth(s.flip[i]!))
+  const turning = (i: number): boolean => s.flip[i]! > 0 && s.flip[i]! < 1
 
-  const turnOf = (i: number): number => {
-    const u = s.flip[i]!
-    if (s.mode !== 'live') return Math.PI * (0.5 + (0.5 * Math.tanh(TURN_SHARP * (u - 0.5))) / Math.tanh(TURN_SHARP / 2))
-    return Math.PI * (u <= SETTLE.over ? (1 + SETTLE.past) * smooth(u / SETTLE.over) : 1 + (SETTLE.past * (1 + Math.cos((Math.PI * (u - SETTLE.over)) / (1 - SETTLE.over)))) / 2)
-  }
-
-  const turningTop = (i: number): number => heights.card + (cards[i]!.h / 2) * Math.abs(Math.sin(turnOf(i)))
-
-  function turning(out: DrawList, i: number): void {
-    const b = cards[i]!
-    const n = cardNodes[i]!
-    const st = perkStates(i)
-    const half = heights.card / 2
-    const a = turnOf(i)
-    const sin = Math.sin(a)
-    const cos = Math.cos(a)
-    out.push({ id: `${n.id}-pit`, part: 'perk-cards', kind: 'well', x: b.x, y: b.y, w: b.w, h: b.h, z0: -(b.h / 2 + PIT_CLEAR), z1: 0, tone: 'page', mechanism: true })
-    out.push({ id: `${n.id}-slab`, part: 'perk-cards', kind: 'box', x: b.x, y: b.y, w: b.w, h: b.h, z0: half, z1: turningTop(i), tone: 'glass', r: CARD_R, turnX: -a, mechanism: true, v: [heights.card] })
-    ;(n.children ?? []).forEach((c, k) => {
-      const front = c.states?.includes(st.shut) === true
-      const [cx, cy, cw, ch] = c.box as [number, number, number, number]
-      const v = cy + ch / 2 - b.cy
-      const y = b.cy + (front ? v * cos - half * sin : -v * cos + half * sin) - ch / 2
-      const z = half + (front ? v * sin + half * cos : -v * sin - half * cos)
-      const turnX = front ? -a : Math.PI - a
-      if (c.copy !== undefined && c.type !== undefined) out.push({ id: `${n.id}-slab-${k}`, part: 'type', kind: 'text', x: cx, y, w: cw, h: ch, z0: z, z1: z, tone: 'ink', words: c.copy, type: c.type, turnX })
-      else out.push({ id: `${n.id}-slab-${k}`, part: 'perk-cards', kind: 'box', role: 'cardRule', x: cx, y, w: cw, h: ch, z0: z, z1: z + 1, tone: (c.tone as Tone | undefined) ?? 'metal', turnX, mechanism: true })
-    })
-  }
-
-  const tapeWindow = TICKER.w - TICKER.clip * 2
-  const tapeRoom = tapeWindow - (TICKER.solid + TICKER.ramp) * 2
-
-  // How wide the whole items are that fit in the clear of the strip, counted from item `j`.
-  const fitFrom = (items: { at: number; w: number }[], length: number, j: number): number => {
-    let end = 0
-    for (let k = 0; k < items.length; k++) {
-      const item = items[(j + k) % items.length]!
-      const rel = mod(item.at - items[j]!.at, length)
-      if (k > 0 && rel === 0) break
-      if (rel + item.w > tapeRoom) break
-      end = rel + item.w
-    }
-    return end
-  }
-  const leadOf = (items: { at: number; w: number }[], length: number, j = 0): number => {
-    const end = fitFrom(items, length, j)
-    return end > 0 ? (tapeWindow - end) / 2 : TICKER.pad
-  }
-  const tapeLead = leadOf(tapeItems, tapeLength)
-  const afterLead = leadOf(afterItems, afterLength)
-
-  // The tape's speed is set so that the page at rest, before a second has passed, shows whole items in the middle of the strip too,
-  // as it does at the moment of the key: of the speeds that do that, the one nearest `tapeSpeed`. `restLead` is where those items begin.
-  const [tapeRate, restLead] = ((): [number, number] => {
-    let best: [number, number] = [tapeSpeed, tapeLead]
-    let off = tapeSpeed * 0.4
-    for (let j = 0; j < tapeItems.length; j++) {
-      const lead = leadOf(tapeItems, tapeLength, j)
-      const rate = mod(-(tapeItems[j]!.at - (lead - tapeLead)), tapeLength) / applyBeat.from
-      if (Math.abs(rate - tapeSpeed) < off) {
-        off = Math.abs(rate - tapeSpeed)
-        best = [rate, lead]
-      }
-    }
-    return best
-  })()
-  const ease = (t: number): number => {
-    const u = Math.max(0, Math.min(1, t))
-    return u * u * (3 - 2 * u)
-  }
-
-  // A run that crosses an end of the window is set in whole glyphs as far as it lies inside: from its head as it comes in, from its tail as it leaves. `cutOf` is how wide that is, and `CUT_INK` the room kept for the ink that stands outside a letter's own width.
+  // A run that crosses an end of the band is set in whole glyphs as far as it lies inside: from its head as it comes in, from its tail as it leaves. `cutOf` is how wide that is, and `CUT_INK` the room kept for the ink that stands outside a letter's own width.
   const CUT_INK = 3
-  const CUT_HEAD = { ...T.tape, cut: true } as const
-  const CUT_TAIL = { ...T.tape, cut: true, align: 'right' } as const
+  const TAPE_TYPE = { ...T.tape, ink: 'soft' } as const
+  const CUT_HEAD = { ...TAPE_TYPE, cut: true } as const
+  const CUT_TAIL = { ...TAPE_TYPE, cut: true, align: 'right' } as const
   const cuts = new Map<string, { head: number[]; tail: number[] }>()
   const cutOf = (key: string, room: number, leaving: boolean): number => {
     let c = cuts.get(key)
@@ -342,56 +252,51 @@ export function makePage(): PageLogic {
     return w
   }
 
+  // The band runs from one edge of the website to the other. At the moment of the key, item `keyItem` begins at `keyAt`. `clock` is the time of the frame that is drawn, one step after the time of the step that made it.
   function ticker(out: DrawList): void {
-    const left = TICKER.x + TICKER.clip
-    const right = TICKER.x + TICKER.w - TICKER.clip
-    out.push({ id: 'ticker-tape', part: 'ticker', kind: 'box', x: TICKER.x + TICKER.edge, y: TICKER.y + TICKER.edge, w: TICKER.w - TICKER.edge * 2, h: TICKER.h - TICKER.edge * 2, z0: TICKER.floor, z1: TICKER.tape, tone: 'paper' })
+    const left = TICKER.x
+    const right = TICKER.x + TICKER.w
     const items = rejected() ? afterItems : tapeItems
     const length = rejected() ? afterLength : tapeLength
-    const tape = rejected() ? (s.time - REJECTED_SETTLE) * tapeSpeed : (s.time - applyBeat.from) * tapeRate
-    const lead = rejected() ? afterLead : tapeLead
-    const whole = rejected() ? afterLead : Math.round(restLead + (tapeLead - restLead) * ease(s.time / applyBeat.from))
-    const frostTo = Math.max(TICKER.solid, whole - TICKER.gap)
-    const clear = TICKER.clip + frostTo + TICKER.gap - 6
-    out.push({ id: 'ticker-glass', part: 'ticker', kind: 'box', x: TICKER.x, y: TICKER.y, w: TICKER.w, h: TICKER.h, r: TICKER.r, z0: 0, z1: TICKER.thick, tone: 'glass', mechanism: true, v: [TICKER.clip + frostTo, TICKER.gap - 6] })
+    const tape = rejected() ? (s.clock - REJECTED_SETTLE) * TICKER.speed : (s.clock - OPENING.key) * TICKER.speed + tapeItems[TICKER.keyItem]!.at - TICKER.keyAt
     for (const item of items) {
-      let rel = mod(item.at - tape, length)
-      if (rel + item.w + TICKER.gap > length) rel -= length
-      const x = left + lead + rel
-      if (x + item.w > left + 2 && x < right - 2) {
-        const run = { id: `${item.id}-run`, part: 'type', kind: 'text', y: tapeY, h: tapeH, z0: TICKER.tape, z1: TICKER.tape, tone: 'ink', words: item.key } as const
-        if (x >= left + CUT_INK && x + item.w <= right - CUT_INK) out.push({ ...run, x, w: item.w, type: T.tape })
+      const first = left + mod(item.at - tape, length)
+      for (const x of [first, first - length]) {
+        const dot = x + item.w + TICKER.gap / 2
+        if (dot - TICKER.dot / 2 >= left && dot + TICKER.dot / 2 <= right) out.push({ id: `${item.id}-dot${x === first ? '' : '-b'}`, part: TAPE, kind: 'disc', x: dot - TICKER.dot / 2, y: TICKER.y + TICKER.h / 2 - TICKER.dot / 2, w: TICKER.dot, h: TICKER.dot, z0: Z.type, z1: Z.type, tone: 'accent' })
+        if (x + item.w <= left + 2 || x >= right - 2) continue
+        const run = { id: `${item.id}-run${x === first ? '' : '-b'}`, part: PAGE, kind: 'text', y: tapeY, h: tapeH, z0: Z.type, z1: Z.type, tone: 'ink', words: item.key } as const
+        if (x >= left + CUT_INK && x + item.w <= right - CUT_INK) out.push({ ...run, x, w: item.w, type: TAPE_TYPE })
         else {
           const leaving = x < left + CUT_INK
           const w = cutOf(item.key, (leaving ? x + item.w - left : right - x) - CUT_INK, leaving)
           if (w > 0) out.push({ ...run, x: leaving ? x + item.w - w : x, w, type: leaving ? CUT_TAIL : CUT_HEAD })
         }
       }
-      const dot = x + item.w + TICKER.gap / 2
-      const d = Math.round(Math.max(0, Math.min(1, (Math.min(dot - TICKER.x, TICKER.x + TICKER.w - dot) - clear) / DOT_GROWS)) * 8) / 2
-      if (d > 0) out.push({ id: `${item.id}-dot`, part: 'ticker', kind: 'disc', x: dot - d / 2, y: TICKER.y + TICKER.h / 2 - d / 2, w: d, h: d, z0: TICKER.tape, z1: TICKER.tape + 0.6, tone: 'dark' })
     }
   }
 
   const page: PageLogic = {
-    id: 'marketing', unit: 'marketing', width: 1920, height, layout, gags, start, control: 'pointer',
+    id: 'marketing', unit: 'marketing', width: WIDTH, height, layout, gags, start, control: 'pointer',
     reset(ctx: PageContext) {
       const after = ctx.variant === 'rejected'
       Object.assign(s, {
-        mode: ctx.mode, variant: ctx.variant, time: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0),
-        phase: after ? phaseSeconds.length : 0, phaseTime: 0, auto: 0, took: false, shock: 0, sink: BUTTONS.map(() => 0), apply: null, skipAsked: false, done: false, cue: 0,
+        mode: ctx.mode, variant: ctx.variant, time: 0, clock: 0, scroll: 0, scrollTo: 0, flip: Array(perkCount).fill(0), over: Array(perkCount).fill(false),
+        took: false, shock: 0, sink: BUTTONS.map(() => 0), apply: null, skipAsked: false, done: false, cue: 0,
         base: after ? 'exhausted' : 'confident'
       } satisfies State)
     },
     step(io: StepIo) {
       s.time = io.time
+      s.clock = io.time + dt
       if (s.mode === 'live') {
         if (io.pointer.scroll !== undefined) s.scrollTo = Math.min(maxScroll, Math.max(0, io.pointer.scroll))
         if (io.pointer.wheel) s.scrollTo = Math.min(maxScroll, Math.max(0, s.scrollTo + io.pointer.wheel))
         if (io.pressed) for (const link of links) if (inside(link.box, io.pointer)) s.scrollTo = link.to
+        if (s.skipAsked) s.scrollTo = 0
         const gap = s.scrollTo - s.scroll
         s.scroll = Math.abs(gap) < 0.05 ? s.scrollTo : s.scroll + gap * Math.min(1, dt * 16)
-      }
+      } else if (!rejected()) s.scroll = scrollAt(plan, io.time)
 
       if (rejected() && s.mode === 'film' && io.cursor.inAir && io.time >= LANDING.from) {
         const u = Math.min(1, (io.time - LANDING.from) / (LANDING.down - LANDING.from))
@@ -413,25 +318,28 @@ export function makePage(): PageLogic {
       const tip = { x: io.cursor.x, y: io.cursor.y }
       const walking = !io.cursor.inAir && !io.cursor.taken
       for (let i = 0; i < perkCount; i++) {
-        const p = s.flip[i]!
-        if (p === 0 && walking && inside(cards[i]!, tip)) {
-          openCard(i, io)
-          io.cursor.react('startle')
-        }
-        if (p > 0 && p < 1) {
-          const next = Math.min(1, p + dt / FLIP_SECONDS)
-          s.flip[i] = next
-          if (i === 0 && !s.took && p < 0.8 && next >= 0.8 && walking && near(cards[0]!, tip, TAKE_NEAR)) {
+        if (!s.over[i] && walking && inside(cards[i]!, tip)) {
+          s.over[i] = true
+          io.emit('card-flip', cards[i]!.cx, cards[i]!.cy, false)
+          if (!s.took) {
             s.took = true
             s.shock = SHOCK
             io.cursor.react('doubleTake')
           }
+        } else if (s.over[i] && !near(cards[i]!, tip, LEAVE)) {
+          s.over[i] = false
+          io.emit('card-flip-back', cards[i]!.cx, cards[i]!.cy, false)
         }
+        const to = s.over[i] ? 1 : 0
+        const p = s.flip[i]!
+        if (p !== to) s.flip[i] = to > p ? Math.min(1, p + dt / FLIP_SECONDS) : Math.max(0, p - dt / FLIP_SECONDS)
       }
 
       if (!s.apply && !s.done && walking) {
-        if (s.skipAsked) startApply(HERO, io)
-        else if (io.pressed) {
+        if (s.skipAsked && s.scroll < 1) {
+          s.skipAsked = false
+          startApply(HERO, io)
+        } else if (io.pressed) {
           for (let i = 0; i < caps.length; i++) {
             if (!inside(caps[i]!, io.pointer)) continue
             startApply(i, io)
@@ -439,10 +347,9 @@ export function makePage(): PageLogic {
           }
         }
       }
-      s.skipAsked = false
+      if (s.mode !== 'live' || s.apply || s.done) s.skipAsked = false
       if (s.apply) stepApply(io)
       for (let i = 0; i < caps.length; i++) if ((!s.apply || s.apply.button !== i) && s.sink[i]! > 0) s.sink[i] = Math.max(0, s.sink[i]! - dt / 0.14)
-      stepPhases(io)
 
       io.cursor.setGround(surface(io.cursor.x, io.cursor.y))
     },
@@ -452,7 +359,16 @@ export function makePage(): PageLogic {
     },
     draw(out: DrawList) {
       const over: Record<string, Partial<Shape> | null> = {}
-      for (let i = 0; i < perkCount; i++) if (s.flip[i]! > 0 && s.flip[i]! < 1) over[`perk-${i}`] = null
+      for (let i = 0; i < perkCount; i++) {
+        if (s.flip[i] === 0) continue
+        const c = shows(i)
+        const b = cards[i]!
+        over[`perk-${i}`] = { v: [c], mechanism: true }
+        for (const t of cardNodes[i]!.children ?? []) {
+          const [, ty, , th] = t.box as [number, number, number, number]
+          over[t.id] = { y: b.cy + (ty + th / 2 - b.cy) * Math.abs(c) - th / 2, v: [Math.abs(c)] }
+        }
+      }
       BUTTONS.forEach((id, i) => {
         if (s.sink[i]! <= 0) return
         const z = capTop(i)
@@ -460,22 +376,19 @@ export function makePage(): PageLogic {
         over[`${id}-label`] = { z0: z, z1: z }
       })
       drawLayout(out, layout, { states: page.states(), over })
-      for (let i = 0; i < perkCount; i++) if (s.flip[i]! > 0 && s.flip[i]! < 1) turning(out, i)
       ticker(out)
     },
     scroll: () => s.scroll,
+    chrome: () => CHROME,
     view: () => null,
     camera: () => null,
     script(time: number): Pointer {
-      return pointerAt(marks, time, rejected())
+      return pointerAt(marks, plan, time, rejected())
     },
     hint(): Hint | null {
       const at = { x: hero.cx, y: hero.cy }
       if (rejected() || s.apply || s.done) return { ...at, down: false }
-      if (s.phase < 2) {
-        for (let i = 0; i < FIRST_CARDS; i++) if (s.flip[i] === 0) return { x: cards[i]!.cx, y: cards[i]!.cy, down: false }
-        return { x: marks.stand.x, y: marks.stand.y, down: false }
-      }
+      if (s.time < tickerBeat.from + LOOK) return { x: cards[0]!.cx, y: cards[0]!.cy, down: false }
       return { ...at, down: Math.floor(s.time * 4) % 2 === 0 }
     },
     skip() {
@@ -484,17 +397,17 @@ export function makePage(): PageLogic {
     done: () => s.done && !rejected(),
     gag() {
       if (s.apply || s.done) return applyBeat.id
-      for (let i = 0; i < perkCount; i++) if (s.flip[i]! > 0 && s.flip[i]! < 1) return perksBeat.id
-      return s.phase < phaseGag.length ? phaseGag[s.phase]! : null
+      if (rejected()) return null
+      for (let i = 0; i < perkCount; i++) if (turning(i)) return perksBeat.id
+      if (s.time < strollBeat.to) return strollBeat.id
+      if (s.time < perksBeat.to) return perksBeat.id
+      if (s.time < tickerBeat.to) return tickerBeat.id
+      return null
     },
     ignoring: () => false,
     states() {
       const out = ['rest', rejected() ? 'rejected' : 'hiring']
-      for (let i = 0; i < perkCount; i++) {
-        const st = perkStates(i)
-        if (s.flip[i]! >= 1) out.push(st.open)
-        else if (s.flip[i] === 0) out.push(st.shut)
-      }
+      for (let i = 0; i < perkCount; i++) out.push(shows(i) > 0 ? perkStates(i).shut : perkStates(i).open)
       return out
     }
   }

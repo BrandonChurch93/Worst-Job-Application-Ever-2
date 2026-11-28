@@ -3,6 +3,7 @@
 import { args, at, config, writeJson } from './lib/paths.mjs'
 import { logic } from './lib/logic.mjs'
 import { buildInfo } from './lib/hashes.mjs'
+import { controlTaken } from './lib/pinball-video-control.mjs'
 
 const a = args()
 const c = config()
@@ -24,8 +25,10 @@ for (const bot of bots) {
     console.log(`${r.finished ? 'finished' : 'STUCK'}  ${bot.padEnd(8)} seed ${seed}  ${r.seconds.toFixed(1)} s  pointer ignored ${r.ignoredPointer.toFixed(2)} s  flippers ignored ${r.ignoredFlippers.toFixed(2)} s  skips ${r.skips}  gags ${r.gags.length} of ${gags.length}`)
     console.log(`          steps: ${steps}`)
     if (!r.finished) problems.push(`${bot} seed ${seed}: did not reach the careers page after the rejection within ${c.live.botMaxSeconds} s (stopped on ${r.stuckOn})`)
-    if (r.ignoredPointer > c.live.controlTakenMaxSeconds) problems.push(`${bot} seed ${seed}: the pointer was ignored for ${r.ignoredPointer.toFixed(2)} s`)
-    if (r.ignoredFlippers > c.live.controlTakenMaxSeconds) problems.push(`${bot} seed ${seed}: the flippers were ignored for ${r.ignoredFlippers.toFixed(2)} s`)
+    const taken = controlTaken(r)
+    if (taken.film > 0) console.log(`          pre-rendered film: ${taken.film.toFixed(2)} s, left out of the limit of ${c.live.controlTakenMaxSeconds} s by item 8 of change note 002`)
+    if (taken.counted.pointer > c.live.controlTakenMaxSeconds) problems.push(`${bot} seed ${seed}: the pointer was ignored for ${taken.counted.pointer.toFixed(2)} s`)
+    if (taken.counted.flippers > c.live.controlTakenMaxSeconds) problems.push(`${bot} seed ${seed}: the flippers were ignored for ${taken.counted.flippers.toFixed(2)} s`)
   }
 }
 const keen = runs.filter((r) => r.bot === 'keen')

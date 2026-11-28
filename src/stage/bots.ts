@@ -116,4 +116,4 @@ export class BotDriver implements Driver {
   }
 }
 
-export interface BotRun { bot: BotName; seed: number; finished: boolean; seconds: number; ignoredPointer: number; ignoredFlippers: number; gags: string[]; pages: string[]; pageSeconds: Record<string, number>; skips: number; stuckOn: string | null }
+export interface BotRun { bot: BotName; seed: number; finished: boolean; seconds: number; ignoredPointer: number; ignoredFlippers: number; ignoredFilm: number; gags: string[]; pages: string[]; pageSeconds: Record<string, number>; skips: number; stuckOn: string | null }

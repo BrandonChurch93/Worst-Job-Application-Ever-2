@@ -7,12 +7,18 @@ import type { DrawList, Driver, Pointer } from '../src/stage/types'
 import { WIRE, movingShapes } from '../src/table/draw'
 import { BALL, TH, TIERS, TIER_Y } from '../src/table/layout'
 import { Machine, SAVE, prepare } from '../src/table/physics'
+import { filmOf } from '../src/pages/step3/clock'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 // The save at a shut gate as it must read at real size, and the ball's first frames out of the port. Stepped, no browser.
 const EACH = stepHz / 60
 // The film's pinball take as it was before this work (commit 305e5bf3): the machine's events as a count and a hash of their names, balls and steps; the ball's place on the feed rail and the page's scroll at page time 5.2 s (film frame 4332);
 // the stage step on which the ball left the feed rail; and the stage step of the release.
-const WAS = { events: 71, hash: '2de74972e18c5c12926bbeb879f810b44699d585356401bc7f112d671630db03', at: 16.463416279267907, scroll: 1345.716953935067, arrive: 2068, release: 792 }
+// The stage step of the scene's second 5.85 in the film: the scene's clock stands for the long fight (clock.ts) and goes on one step after the film's second 6.9.
+const AT = Math.round(filmOf(5.85) * stepHz) + 1
+const WAS = { events: 99, hash: '134cb0eeff6f3dd587ac995f04449b167036a9984b06e315d196d65d7b7bffc8', at: 16.463416279267882, scroll: 1345.7169539350648, arrive: 3089, release: 1813 }
 
 interface Row { mode: string; v: number; taken: number; names: string[]; turn: number; gap: number; flip: number[]; own: number[]; state: number[] }
 
@@ -274,7 +280,7 @@ describe('the ball\'s first frames out of the port, in the film', () => {
   const frame = (k: number): { n: number; s: number; y: number; scroll: number; ring: number[] } => feed.find((f) => f.n === release + k * EACH)!
 
   it('moves no event of the film\'s machine', () => {
-    if (process.env.GATE_WAS) console.log('WAS', JSON.stringify({ events: events.length, hash: hash(), at: feed.find((f) => f.n === 5.2 * stepHz)!.s, scroll: feed.find((f) => f.n === 5.2 * stepHz)!.scroll, arrive, release }))
+    if (process.env.GATE_WAS) console.log('WAS', JSON.stringify({ events: events.length, hash: hash(), at: feed.find((f) => f.n === AT)!.s, scroll: feed.find((f) => f.n === AT)!.scroll, arrive, release }))
     expect(events.length).toBe(WAS.events)
     expect(hash()).toBe(WAS.hash)
   })
@@ -295,8 +301,8 @@ describe('the ball\'s first frames out of the port, in the film', () => {
     for (let k = 1; k < steps.length; k++) expect(steps[k]! - steps[k - 1]!, `step ${k + 1}`).toBeGreaterThan(0.05)
   })
 
-  it('is the ball of before from 77 frames after the release on: at page time 5.2 s its place on the rail and the page\'s scroll are the numbers of before, and it leaves the tube on the same step', () => {
-    const at = feed.find((f) => f.n === 5.2 * stepHz)!
+  it('is the ball of before from 77 frames after the release on: at second 5.85 of the scene its place on the rail and the page\'s scroll are the numbers of before, and it leaves the tube on the same step', () => {
+    const at = feed.find((f) => f.n === AT)!
     expect(at.s).toBe(WAS.at)
     expect(at.scroll).toBe(WAS.scroll)
     expect(arrive).toBe(WAS.arrive)

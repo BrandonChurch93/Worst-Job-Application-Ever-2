@@ -1,0 +1,113 @@
+{
+ "made": "node pipeline/change002/shell-script-caption.mjs",
+ "browser": "159.0.8154.6",
+ "view": {
+  "width": 1200,
+  "height": 675
+ },
+ "behind": "a kept still of the careers page, not the running site",
+ "line1": {
+  "phrases": [
+   {
+    "id": "line.marketing.stroll.0#0",
+    "words": "Ahh.",
+    "from": 0.331,
+    "to": 0.956,
+    "lookedAt": 0.65,
+    "panelShows": "Ahh.",
+    "same": true
+   },
+   {
+    "id": "line.marketing.stroll.0#1",
+    "words": "Here we have",
+    "from": 0.956,
+    "to": 2.831,
+    "lookedAt": 1.913,
+    "panelShows": "Here we have",
+    "same": true
+   },
+   {
+    "id": "line.marketing.stroll.0#2",
+    "words": "another job applicant.",
+    "from": 2.831,
+    "to": 4.706,
+    "lookedAt": 3.791,
+    "panelShows": "another job applicant.",
+    "same": true
+   },
+   {
+    "id": "line.marketing.stroll.0#3",
+    "words": "Desperately hoping",
+    "from": 4.706,
+    "to": 5.956,
+    "lookedAt": 5.341,
+    "panelShows": "Desperately hoping",
+    "same": true
+   },
+   {
+    "id": "line.marketing.stroll.0#4",
+    "words": "to pay their rent.",
+    "from": 5.956,
+    "to": 8.456,
+    "lookedAt": 7.213,
+    "panelShows": "to pay their rent.",
+    "same": true
+   },
+   {
+    "id": "line.marketing.stroll.0#5",
+    "words": "Poor fool.",
+    "from": 8.456,
+    "to": 9.706,
+    "lookedAt": 9.091,
+    "panelShows": "Poor fool.",
+    "same": true
+   },
+   {
+    "id": "line.marketing.stroll.0#6",
+    "words": "They must have forgotten",
+    "from": 9.706,
+    "to": 12.206,
+    "lookedAt": 10.963,
+    "panelShows": "They must have forgotten",
+    "same": true
+   },
+   {
+    "id": "line.marketing.stroll.0#7",
+    "words": "it is 2026.",
+    "from": 12.206,
+    "to": 14.081,
+    "lookedAt": 13.163,
+    "panelShows": "it is 2026.",
+    "same": true
+   }
+  ],
+  "seconds": 13.75,
+  "panelAfterTheLine": null,
+  "log": [
+   {
+    "at": 0.331,
+    "line": "line.marketing.stroll.0",
+    "trigger": "sound allowed",
+    "what": "spoken",
+    "start": 0.331,
+    "seconds": 13.75
+   }
+  ],
+  "picture": {
+   "file": "shell-pictures/script-line1-phrases.png",
+   "what": "the lowest fifth of the page at the middle of each phrase, one under the other, in order"
+  }
+ },
+ "loud": {
+  "asked": "one word",
+  "panelShows": [
+   null,
+   {
+    "words": "ONE WORD",
+    "fontPx": "40px",
+    "transform": "none"
+   }
+  ]
+ },
+ "pageErrors": []
+}

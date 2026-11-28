@@ -37,9 +37,20 @@ export const AT = {
   selfAfter: config.live.skipLinkAfterSeconds
 } as const
 
+// The film only. The narrator's line on the stamp starts at the hit. `SAID` is the seconds after the hit at which each of its five phrases starts, and its end, at the narrator's fastest pace; tests/decision-acting.test.ts holds them to the script.
+export const SAID = [0, 1.875, 3.125, 4.375, 6.25, 8.125] as const
+
+const flat = AT.decide + AT.slam[1]
+// The press is the first whole frame from which the page turns no sooner than the end of that line and the gap between two lines.
+const press = Math.ceil((flat + SAID[5] + config.audio.lineGapSeconds - AT.hold) * 30 - 1e-6) / 30
+
+// `heal` is how long the arrow, landed flat, takes to be whole in the film: it lies flat for half of it. A visitor's arrow takes `STUCK.heal`.
 export const FILM = {
-  flat: AT.decide + AT.slam[1],
+  flat,
   landed: AT.decide + AT.fling[1],
-  press: 9.3,
-  leave: 9.3 + AT.hold
+  heal: 2.3,
+  read: flat + SAID[3],
+  sag: flat + SAID[4],
+  press,
+  leave: press + AT.hold
 } as const
