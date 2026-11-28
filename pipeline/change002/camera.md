@@ -98,3 +98,42 @@ The commits 0515f0a4, 5bcd5681 and 385399d1 carry `wide: 0.5` at lines 117 and 1
 - `tests/b-finish.test.ts:327` pinned that no file outside `src/cursor/stand` and `src/boss/finish` takes the standing figure in; `src/pages/step4/index.ts` took `feetFor` from `src/cursor/stand/rig`. Mended in 385399d1 without touching the test: the page takes it through `src/boss/finish/camera.ts`. Green.
 - `tests/cut-of-build.test.ts:37` pins `cut/` byte for byte to the build. One line of `cut/SHOTS.md` changed: the shot `boss.finish` 10818 to 11513 reads "follows" where it read "holds, shakes". By the Builder's ruling of 07:02Z `npm run -s cut` was run and that one line committed in f0ce65df. Green.
 - UNKNOWN: the whole suite on f0ce65df. It was not run again after 06:44Z.
+
+## Second pass (ruling of 07:25Z, answers of 07:51Z; written 08:18Z to 08:40Z)
+
+Marks. MEASURED by `tests/b-camera.test.ts` and `npm run -s cut`: film frames `finish-arms` 10818, `finish-fire` 11065, `boss-gone` 11271 (was 11193), `finish-walk` 11295, `finish-kneel` 11463, `finish-fist` 11541, `finish-press` 11595 (`button-press` in `cut/CUES.md` at 193.258 s). Arms out to the fire 4.117 s, the fire to `boss-gone` 3.433 s (was 2.133). Added: 78 frames, 1.30 s; `SHOUT.gone` 7.56. The film is 12966 frames, 216.1 s. `config/showcase.json` (NEEDS commit 68457ace): boss 71.8 to 73.1 s, the beat `boss.finish` ends at 71.9, `boss.press` runs 71.9 to 73.1. `content/narration-drafts.json` (NEEDS commit, written by `npm run retime`): `boss.finish.0` at 0.00072 to 0.00065.
+
+The lens, seconds from the fire (film): facing view until -0.90; round -0.90 to 0, the plane of the figure crossed at -0.50 to -0.467 under the ball's glare; from behind until +0.80 (the beam leaves the hands at +0.30); rise +0.80 to +1.40; from above, the picture turned to the page's lie until +2.90; `boss-gone` +3.433.
+
+(a) MEASURED: under 30 degrees off the plane in the move, 3 frames (23.0, -1.2, -29.0 degrees), glare 1.00 in each. SEEN in the strip: film 11034 to 11036 the frame is white from edge to edge, 11037 white over two thirds with a faint pale upright line in it.
+(b) MEASURED: at the fire the lens stands -57.9 degrees off the plane, at the end of the hold -58.7. The back is a second skin on the body's meshes (`back()` in `src/cursor/stand/figure.ts`), white with a cold rim, shown only to a low lens behind the figure. SEEN: the whole arrow shape, pale blue-white, shaded.
+(c) `pillar.3` stands in the frame at the right in the views from behind (answer 2 of 07:51Z). SEEN: its whole width inside the frame from film 11047, its top cut by the top edge, a narrow gap to the arrow, the flames drawn over its left part.
+(d) The hold from behind ends 0.80 s after the fire, not 0.6: the beam is out only from +0.30.
+(e) The rise ends with the beam running up the frame; the turn from above is at most 1.5 degrees a frame (MEASURED, limit 1.55 in the test). NOT MET: during the rise the picture rolls, and the plane of the figure is crossed once more with no glare (MEASURED: +0.983 s -23.0, +1.000 -14.5, +1.017 -5.5, +1.033 +3.7 degrees, the lens more than half way up).
+(f) The pane guard is gone. MEASURED: the field of view changes by at most 1.416 degrees a frame.
+(g) `GONE` and `FLY` in `src/boss/look1/pose.ts`: shield first (0.02 to 0.34 of the burn), then guns, wings, legs two and two, the bay, the hull last; `FLY` far 2700 to 500, wide 420 to 560, fan 0.42 to 0.3, least 0.6 to 0.8, so that a group leaves to the side of the beam and stays in the frame.
+(h) Live: a press after the arms are out lights the ball at once and is kept; the fire comes when the lens has reached the facing view, held 0.3 s and gone round (0.55 s). STATED from the code: a press at the moment the arms are out fires 1.80 s later (0.95 down, 0.30 held, 0.55 round), the longest for a click. MEASURED: a click 0.3 s after the arms fires 1.796 s after the arms; one who holds 2 s from 0.3 s fires at 2.858 s; nobody 6.004 s; one who holds to the end 5.696 s.
+`stage.longestIgnored.pointer` MEASURED 3.833 s for each of the five (was 3.304). The stretch that grew is from the fire to the walk (`ignoring()` in `src/pages/step4/index.ts`: `s.fired >= 0`, then until the end's walk): 3.433 s of burn and 0.4 s, where it was 2.133 and 0.4. For the visitor who fires the moment the arms are out it is the same 3.833 s; his kept press waits 1.80 s before it, answered on screen.
+(i) MEASURED: the lens passes no pillar nearer than 127.9 px (limit 120 in the test).
+(j) A sphere of dusk about the lens (`dusk` in `src/boss/finish/fx.ts`), its strength the lens's lowness, off from above.
+
+Tests of the boss unit that this pass turns red (not edited):
+- `tests/b-boss.test.ts:464` (the table of live visitors, the line `expect(at('finish-fire')[0]! - fall).toBeCloseTo(fires, 1)` at 491): pinned the seconds from the fall to the fire: holds and never lets go 4.83 (now 5.39), holds 1.5 s 2.0 (now 2.55), clicks once 0.7 (now 1.80), presses while the arrow charges by itself 4.2 (now 4.76). The fire waits for the lens by ruling (h).
+- `tests/bosslook-pose.test.ts:158` pinned that at 0.5 of the burn the fourth leg is already leaving (`mid.away.legs[3]` over 0); it leaves from 0.58 now, by ruling (g).
+- `tests/b-boss.test.ts:698` (twelve spots at the power-up) timed out at 20 s in two runs that shared the machine with a render; alone: UNKNOWN.
+
+The whole suite, once, on cbf9d09e (merge of 7c8c0acf in), MEASURED 08:09Z to 08:28Z beside a render and at low priority, 1108 s: 44 failed of 2425 in 16 files. 11 of them are timeouts of 10 or 20 s (`cut-of-build`, `film-cut`, `polish-tug3`, `polish-tug4` at their hooks; `cursor-fit:151`, `site-backing:15`, `stage:103`, `b-boss:698`, two in `polish-tug-strips`, one more): UNKNOWN whether they are red alone. Not run again.
+
+Pixels outside the finish, MEASURED 08:35Z on dc1793ff in a fresh page, film 9000, 10700, 10790, 10817 against 02b7debb: 0 differing px in each. In the long job of 08:06Z the same four frames, drawn in the same page after the frames of the finish, differed by 905, 14326, 13248 and 25616 px, all at the boss's bay (the cannon's carriage missing): something of the boss's look keeps a state when frames are drawn out of order. UNKNOWN whether 02b7debb does the same; the film is drawn in order.
+
+Seen in the strips (08:14Z to 08:34Z, build of ca1bc098, draft, software GL): the move is the facing view, a white flash of film 11034 to 11036, then the back; the pillar stands white a few px from the arrow's right side through the hold; the beam is out from 11081 and fills the left half; in the rise the horizon tilts and the figure is a thin small wedge at 11121 to 11127; from above I can tell four departures of grey parts, not five, none over the core; live click and live hold give the same order of views, the beam out only from behind on.
+
+Not done in this pass:
+- The pillar clear of the arrow (ruling 3 of 08:19Z). The only lens place found: the lens where it stands turned 16.5 degrees toward the boss (pillar's left edge at x 1974 of 1920, feet at x 1696, boss at x 716, -54.4 and -53.2 degrees off the plane). As keys it broke the round (the arrow left the frame on the way, pane clearance 23.8 px); it needs a pan laid over the orbit after the crossing.
+- The second crossing of the plane in the rise, and the roll in the rise.
+- Five groups each readable from above.
+- The dark block close to the lens on the way down on the live click (tile 3 of `proof/camera/live-click.jpg`).
+- The warm band of the dusk is not seen in the strips; a dark triangle past the page shows at film 11173 and 11179.
+- A mark `finish-rise` (asked 08:33Z): none exists. The rise begins `CAMERA.rise[0]` (0.8 s) after `finish-fire`, film frame 11113.
+- The shout's panel with a low view in one picture: not made by me (the shell helper laid it on five frames of da9b0b09).
+- The power-up's switch (`CAMERA.powerUp`) is off and was never rendered on.
