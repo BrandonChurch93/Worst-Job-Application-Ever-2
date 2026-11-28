@@ -359,6 +359,7 @@ export const CAMERA = {
   whip: 2.5,
   glare: [3, 1, 1, 6] as const,
   flash: 160,
+  creep: 0.06,
   back: [0.08, 0.3] as const,
   rise: [1.1, 1.7] as const,
   lift: 2,

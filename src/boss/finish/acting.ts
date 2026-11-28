@@ -112,7 +112,7 @@ export const CHARGE = { sweep: 0.45, ball: 21, least: 0.25, aura: 0.3 } as const
 export const FIRE = {
   coil: 0.1, // s the figure coils before the thrust
   lead: 0.2, // s after the mark at which the beam leaves the hands
-  ahead: 0.45, // s before the fire mark at which the film's thrust starts
+  ahead: 0.6, // s before the fire mark at which the film's thrust starts
   reach: 0.2, // s the thrust with the ball takes, after the coil
   snap: 0.06, // s from the held thrust to the hands furthest out, as the beam leaves
   swift: 0.65, // the share of the time before the beam that a thrust without a coil takes
@@ -124,8 +124,12 @@ export const FIRE = {
   close: 0.32, // s the beam takes to die after its end
   hang: 0.12, // s after the end the arms stay out
   drop: 0.6, // s the arms take to fall
-  smoke: 3.6 // s the hands smoke
+  smoke: 3.6, // s the hands smoke
+  strain: 0.5, // tremble added to the held thrust by the time the beam leaves
+  shiver: 1.8 // px the held hands shake by then
 } as const
+// The beam leaves `FIRE.lead` after the fire mark: the time the hands need to go forward. Where the thrust was held out before the mark, as in the film and on a blast the page knew was coming, the hands are there already and the beam leaves on the mark itself.
+export const beamLead = (thrust: number | undefined, fire: number | undefined): number => (thrust !== undefined && fire !== undefined && fire - thrust >= FIRE.coil + FIRE.reach - 1e-6 ? 0 : FIRE.lead)
 export const LAST = {
   sway: 0.1, // s it sways before the knees give
   land: 0.4, // s after the mark at which the knees land
@@ -249,7 +253,8 @@ export function finishState(i: FinishInput): FinishState {
   const shot = clamp01(i.shot ?? i.charge ?? 1)
   // The rise plays under whatever follows it. A blast let go before it is over quickens what is left of it to end as the beam leaves.
   let risen = t - rise0
-  if (m.fire !== undefined && t >= m.fire && m.fire - rise0 < GETUP) risen = m.fire - rise0 + ((t - m.fire) / FIRE.lead) * (GETUP - (m.fire - rise0))
+  const lead = beamLead(m.thrust, m.fire)
+  if (m.fire !== undefined && t >= m.fire && m.fire - rise0 < GETUP) risen = lead > 0 ? m.fire - rise0 + ((t - m.fire) / lead) * (GETUP - (m.fire - rise0)) : GETUP + t - m.fire
   const rising = getUp(risen)
   let pose = breathe(rising, t, smooth(span(risen, GETUP, GETUP + 0.5)))
   let feet = { ...home }
@@ -266,8 +271,8 @@ export function finishState(i: FinishInput): FinishState {
     const grown = smooth(span(c, 0.22, CHARGE.sweep + 0.25))
     const fired = m.fire !== undefined ? t - m.fire : -1
     const held = m.thrust !== undefined ? t - m.thrust : -1
-    if (fired < FIRE.lead) {
-      const hot = fired >= 0 ? 1 + 0.5 * (fired / FIRE.lead) : 1
+    if (fired < lead) {
+      const hot = fired >= 0 ? 1 + 0.5 * (fired / lead) : 1
       const pulse = 1 + 0.05 * Math.sin(t * 31) * share
       const size = sc * CHARGE.ball * (CHARGE.least + (1 - CHARGE.least) * share) * grown * pulse
       if (held >= 0) {
@@ -278,7 +283,10 @@ export function finishState(i: FinishInput): FinishState {
         const reach = coil > 0 ? FIRE.reach : Math.max(0.05, FIRE.swift * room)
         if (coil > 0) pose = mixPose(pose, POSES.coil, outCubic(span(held, 0, coil)))
         pose = mixPose(pose, POSES.aim, coil > 0 ? outBack(span(held, coil, coil + reach), 1.2) : outCubic(span(held, 0, reach)))
-        pose.tremble = 0.1 + 0.45 * share
+        // Held out, the arms shake harder the nearer the beam is: nothing until the hands are there, the most as it leaves.
+        const near = span(held, coil + reach, FIRE.ahead) ** 2
+        pose.tremble = 0.1 + 0.45 * share + FIRE.strain * near
+        pose.hands = [[pose.hands[0][0] - FIRE.shiver * near * Math.sin(t * 47), pose.hands[0][1], pose.hands[0][2]], [pose.hands[1][0] - FIRE.shiver * near * Math.sin(t * 47 + 1.3), pose.hands[1][1], pose.hands[1][2]]]
       } else if (fired >= 0) {
         pose = mixPose(pose, POSES.coil, outCubic(span(fired, 0, FIRE.coil)))
         pose = mixPose(pose, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
@@ -289,14 +297,14 @@ export function finishState(i: FinishInput): FinishState {
       fx.aura = CHARGE.aura * share * grown
       fx.crackle = share * grown
     }
-    if (fired >= FIRE.lead && m.fire !== undefined) {
+    if (fired >= lead && m.fire !== undefined) {
       const over = m.end !== undefined ? t - m.end : -1
       // The shove: the feet skid back while the beam stands.
-      const pushed = (over >= 0 ? m.end! : t) - m.fire - FIRE.lead
+      const pushed = (over >= 0 ? m.end! : t) - m.fire - lead
       const back = sc * FIRE.shove * shot * (1 - Math.exp(-pushed / FIRE.slide))
       feet = { x: home.x - back, y: home.y }
-      pose = held >= 0 ? mixPose(POSES.aim, POSES.fireOver, outCubic(span(fired, FIRE.lead, FIRE.lead + FIRE.snap))) : mixPose(POSES.coil, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
-      pose = mixPose(pose, POSES.fire, smooth(span(fired, held >= 0 ? FIRE.lead + FIRE.snap : FIRE.thrust, FIRE.settle)))
+      pose = held >= 0 ? mixPose(POSES.aim, POSES.fireOver, outCubic(span(fired, lead, lead + FIRE.snap))) : mixPose(POSES.coil, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
+      pose = mixPose(pose, POSES.fire, smooth(span(fired, held >= 0 ? lead + FIRE.snap : FIRE.thrust, FIRE.settle - FIRE.lead + lead)))
       const push = over < 0 ? 1 : 1 - smooth(span(over, 0, FIRE.close))
       pose.tremble = 0.55 * shot * push
       // The beam's kick runs up the arms.
@@ -305,11 +313,11 @@ export function finishState(i: FinishInput): FinishState {
       const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc, tip }, h[0] + 9, h[1], h[2])
       const to = i.target ?? i.button ?? { x: b.x + 800, y: b.y }
       const aim = Math.atan2(to.y - b.y, to.x - b.x)
-      const open = smooth(span(fired, FIRE.lead, FIRE.lead + FIRE.open)) * push
+      const open = smooth(span(fired, lead, lead + FIRE.open)) * push
       // The ball does not go out before the beam is there: it is spent into the beam as it opens.
-      const opening = smooth(span(fired, FIRE.lead, FIRE.lead + FIRE.open))
+      const opening = smooth(span(fired, lead, lead + FIRE.open))
       if (opening < 1) fx.ball = { x: b.x, y: b.y, z: b.z, size: sc * CHARGE.ball * (CHARGE.least + (1 - CHARGE.least) * shot) * (1 - 0.4 * opening), glow: clamp01(0.35 + 0.65 * shot) * 1.5 * (1 - opening) }
-      if (open > 0.002) fx.beam = { x: b.x, y: b.y, z: b.z, aim, open, power: shot, age: fired - FIRE.lead, keep: i.button ? { x: i.button.x, y: i.button.y, w: i.button.w ?? 110, h: i.button.h ?? (i.button.w ?? 110) * 0.36 } : null }
+      if (open > 0.002) fx.beam = { x: b.x, y: b.y, z: b.z, aim, open, power: shot, age: fired - lead, keep: i.button ? { x: i.button.x, y: i.button.y, w: i.button.w ?? 110, h: i.button.h ?? (i.button.w ?? 110) * 0.36 } : null }
       fx.aura = CHARGE.aura * shot * push
       fx.crackle = shot * push
       for (let k = 0; k < 2; k++) {
@@ -439,7 +447,7 @@ export function finishEvents(a: FinishInput, b: FinishInput): FinishEvent[] {
   const m = b.marks ?? {}
   hit('finish-standup', m.arms === undefined ? undefined : m.stand ?? m.arms - LEAD)
   hit('finish-charge', m.charge)
-  hit('finish-fire', m.fire === undefined ? undefined : m.fire + FIRE.lead)
+  hit('finish-fire', m.fire === undefined ? undefined : m.fire + beamLead(m.thrust, m.fire))
   hit('finish-beam-end', m.end)
   if (m.walk !== undefined && b.time >= m.walk && b.walk) {
     const before = a.walk ? stepsBy(a.walk.walked / (b.scale ?? SCALE)) : 0

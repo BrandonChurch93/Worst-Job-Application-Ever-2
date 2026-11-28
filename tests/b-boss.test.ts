@@ -11,7 +11,7 @@ import { BEAM } from '../src/boss/finish/fx'
 import { drawnBoxes, figureBox } from '../src/boss/spot'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../src/boss/plan'
-import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
+import { BIG, CAMERA, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
 import type { BossView } from '../src/boss/view'
 import { finishNow, viewNow } from '../src/boss/viewof'
 import { SHIFT, UNIT_SECONDS } from '../src/pages/step4/script'
@@ -495,7 +495,7 @@ describe('how the boss plays (change 002, item 15)', () => {
       expect(wide, `seed ${seed}`).toBeCloseTo(power, 2)
       if (LOOK1_ON) {
         if (power === FINISH.small) expect(gap, `seed ${seed}`).toBeNull()
-        else if (name.startsWith('who holds')) expect(gap, `seed ${seed}`).toBeCloseTo(0.45, 2)
+        else if (name.startsWith('who holds')) expect(gap, `seed ${seed}`).toBeCloseTo(Math.min(FIRE.ahead, CAMERA.roundLive), 2)
         else expect(gap ?? -1, `seed ${seed}`).toBeGreaterThanOrEqual(0)
       }
       expect(at('boss-gone')[0]! - at('finish-fire')[0]!).toBeCloseTo(SHOUT.gone - SHOUT.fire, 1)
@@ -804,7 +804,7 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(would).toBeGreaterThan(0)
   })
 
-  it.runIf(LOOK1_ON)('rulings of 04:17, A. in the film the hands thrust the ball forward 0.45 s before the blast is let go', () => {
+  it.runIf(LOOK1_ON)('rulings of 04:17, A. in the film the hands thrust the ball forward 0.6 s before the blast is let go (0.45 s until the beam left on the fire mark)', () => {
     const stage = film()
     while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'finish-fire') && stage.time < 120) stage.advance(1)
     stage.advance(1)
@@ -856,8 +856,9 @@ describe('how the boss plays (change 002, item 15)', () => {
         }
       }
       expect(beamAt, name).toBeGreaterThan(0)
-      expect(beamAt - fire, name).toBeGreaterThanOrEqual(FIRE.lead - 2 / stepHz)
-      expect(beamAt - fire, name).toBeLessThan(FIRE.lead + 0.05)
+      const lead = name === 'plain click' ? FIRE.lead : 0
+      expect(beamAt - fire, name).toBeGreaterThanOrEqual(lead - 2 / stepHz)
+      expect(beamAt - fire, name).toBeLessThan(lead + 0.05)
       expect(burnAt, name).toBeGreaterThanOrEqual(beamAt)
       expect(burnAt - beamAt, name).toBeLessThan(0.2)
     }
