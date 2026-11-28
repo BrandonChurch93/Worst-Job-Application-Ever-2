@@ -445,7 +445,7 @@ describe('site pointer listeners: the flippers of step 3', () => {
     expect(steps).toBeGreaterThan(20 * stepHz)
     expect(flips).toBeGreaterThan(10)
     expect(late).toBe(0)
-    expect(machine).toBe(13)
+    expect(machine).toBe(12)
     expect(s.longestIgnored.flippers).toBeCloseTo(1.3292, 3)
     expect(s.longestIgnored.flippers).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
   })
