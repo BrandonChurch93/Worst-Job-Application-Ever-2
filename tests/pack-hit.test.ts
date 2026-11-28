@@ -67,7 +67,9 @@ describe('the hit sheet of a look pack', () => {
   })
 
   it('gives the machine its own sheets: the save and the rail in consecutive frames, the way in and the way out', () => {
-    const first = 4020
+    const before = cfg.film.units.slice(0, cfg.film.units.findIndex((u: { id: string }) => u.id === 'pinball'))
+    expect(before.map((u: { id: string }) => u.id)).toEqual(['marketing', 'step1', 'step2'])
+    const first = Math.round(before.reduce((sum: number, u: { seconds: number }) => sum + u.seconds, 0) * cfg.film.fps)
     const facts = { unit: 'pinball', hits: [{ frame: first + 138, name: 'hit on the arrow' }], named: { 'ball-seal': first + 138, 'flipper-save': first + 2131, drain: first + 2253 }, turn: first + 2490, states: [] }
     const plan = packPlan(cfg, { role: 'R4', round: 11, unit: 'pinball', facts: facts as never })
     const files = plan.sets.flatMap((s: { files: { kind: string; hit?: string; way?: string; at?: number; frames: number[]; heading: string }[] }) => s.files)

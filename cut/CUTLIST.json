@@ -1,8 +1,8 @@
 {
   "what": "The cut list of film B, with the opening of film A and the card loop. Made by npm run cut from film.units, film.beats, the narrator's film lines and the events of the whole film run in film mode. Frames are counted from 0 at film.fps.",
   "fps": 60,
-  "frameCount": 12612,
-  "seconds": 210.2,
+  "frameCount": 12888,
+  "seconds": 214.8,
   "beatToleranceSeconds": 0.25,
   "beatToleranceFrames": 15,
   "units": [
@@ -39,8 +39,8 @@
     {
       "id": "decision",
       "first": 11586,
-      "last": 12611,
-      "frames": 1026
+      "last": 12887,
+      "frames": 1302
     }
   ],
   "beats": [
@@ -526,12 +526,12 @@
       "id": "decision.metrics",
       "unit": "decision",
       "first": 11946,
-      "last": 12413,
-      "frames": 468,
+      "last": 12689,
+      "frames": 744,
       "event": {
         "name": "button-press",
-        "frame": 12392,
-        "seconds": 206.5333,
+        "frame": 12668,
+        "seconds": 211.1333,
         "inside": true,
         "offByFrames": 0
       }
@@ -539,13 +539,13 @@
     {
       "id": "decision.reset",
       "unit": "decision",
-      "first": 12414,
-      "last": 12611,
+      "first": 12690,
+      "last": 12887,
       "frames": 198,
       "event": {
         "name": "page-turn",
-        "frame": 12419,
-        "seconds": 206.9875,
+        "frame": 12695,
+        "seconds": 211.5875,
         "inside": true,
         "offByFrames": 0
       }
@@ -704,17 +704,17 @@
       "seconds": 12.742,
       "length": "take",
       "take": "audio/kept/line.decision.letter.0.json",
-      "gapToNextSeconds": -4.287
+      "gapToNextSeconds": 0.313
     },
     {
       "id": "line.decision.reset.0",
       "beat": "decision.reset",
       "index": 0,
       "text": "On to / the next application.",
-      "first": 12419,
-      "startSeconds": 206.988,
-      "last": 12610,
-      "endSeconds": 210.186,
+      "first": 12695,
+      "startSeconds": 211.588,
+      "last": 12886,
+      "endSeconds": 214.786,
       "seconds": 3.198,
       "length": "take",
       "take": "audio/kept/line.decision.reset.0.json",
@@ -19561,9 +19561,9 @@
     },
     {
       "name": "button-press",
-      "frame": 12392,
-      "step": 49568,
-      "seconds": 206.5333,
+      "frame": 12668,
+      "step": 50672,
+      "seconds": 211.1333,
       "unit": "decision",
       "beat": "decision.metrics",
       "page": "step5",
@@ -19574,9 +19574,9 @@
     },
     {
       "name": "page-turn",
-      "frame": 12419,
-      "step": 49677,
-      "seconds": 206.9875,
+      "frame": 12695,
+      "step": 50781,
+      "seconds": 211.5875,
       "unit": "decision",
       "beat": "decision.reset",
       "page": "step5",

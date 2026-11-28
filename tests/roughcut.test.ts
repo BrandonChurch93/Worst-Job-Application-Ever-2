@@ -11,7 +11,7 @@ const tl = timeline(cfg, plan)
 
 describe('the rough cut plan', () => {
   it('fills the film frame for frame', () => {
-    const frames = cfg.film.units.reduce((n: number, u: { seconds: number }) => n + u.seconds, 0) * cfg.film.previewFps
+    const frames = Math.round(cfg.film.units.reduce((n: number, u: { seconds: number }) => n + u.seconds, 0) * cfg.film.previewFps)
     expect(tl.total).toBe(frames)
     expect(tl.width).toBe(cfg.formats.preview.width)
     expect(tl.height).toBe(cfg.formats.preview.height)

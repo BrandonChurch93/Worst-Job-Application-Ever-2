@@ -2,7 +2,7 @@
 
 Made by `npm run cut`. Do not edit by hand.
 
-Film B: 12612 frames at 60 a second, 210.2 s. Times are in seconds from the first frame of the film. A frame is counted from 0.
+Film B: 12888 frames at 60 a second, 214.8 s. Times are in seconds from the first frame of the film. A frame is counted from 0.
 
 ## Beats
 
@@ -43,8 +43,8 @@ Film B: 12612 frames at 60 a second, 210.2 s. Times are in seconds from the firs
 | `boss.press` | 191.900 | 11514 | 11585 | `button-press` | 191.958 | 11517 | yes |
 | `decision.wait` | 193.100 | 11586 | 11705 | `hold-music` | 193.500 | 11610 | yes |
 | `decision.letter` | 195.100 | 11706 | 11945 | `stamp` | 198.533 | 11912 | yes |
-| `decision.metrics` | 199.100 | 11946 | 12413 | `button-press` | 206.533 | 12392 | yes |
-| `decision.reset` | 206.900 | 12414 | 12611 | `page-turn` | 206.988 | 12419 | yes |
+| `decision.metrics` | 199.100 | 11946 | 12689 | `button-press` | 211.133 | 12668 | yes |
+| `decision.reset` | 211.500 | 12690 | 12887 | `page-turn` | 211.588 | 12695 | yes |
 
 ## Events with a cue
 
@@ -1365,8 +1365,8 @@ Film B: 12612 frames at 60 a second, 210.2 s. Times are in seconds from the firs
 | 198.533 | 11912 | `decision.letter` | `stamp` | `stamp` | yes |
 | 198.533 | 11912 | `decision.letter` | `flatten` | `flatten` | yes |
 | 202.054 | 12123 | `decision.metrics` | `peel-up` | `peel-up` | no |
-| 206.533 | 12392 | `decision.metrics` | `button-press` | `button-press` | no |
-| 206.988 | 12419 | `decision.reset` | `page-turn` | `page-turn` | no |
+| 211.133 | 12668 | `decision.metrics` | `button-press` | `button-press` | no |
+| 211.588 | 12695 | `decision.reset` | `page-turn` | `page-turn` | no |
 
 ## Narrator lines
 
@@ -1384,5 +1384,5 @@ Film B: 12612 frames at 60 a second, 210.2 s. Times are in seconds from the firs
 | `line.boss.unfold.0` | `boss.unfold` | 133.892 | 8034 | 157.216 | 9432 | take | 0.300 | The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab. |
 | `line.boss.unfold.1` | `boss.unfold` | 157.516 | 9451 | 163.106 | 9785 | take | 0.300 | But then / they remember / their student loans. |
 | `line.boss.unfold.2` | `boss.unfold` | 163.406 | 9804 | 167.360 | 10041 | take | 31.173 | They turn back. / One more round. |
-| `line.decision.letter.0` | `decision.letter` | 198.533 | 11912 | 211.275 | 12676 | take | -4.287 | After careful consideration, / the company / has decided / to move forward / with other candidates. |
-| `line.decision.reset.0` | `decision.reset` | 206.988 | 12419 | 210.186 | 12610 | take |  | On to / the next application. |
+| `line.decision.letter.0` | `decision.letter` | 198.533 | 11912 | 211.275 | 12676 | take | 0.313 | After careful consideration, / the company / has decided / to move forward / with other candidates. |
+| `line.decision.reset.0` | `decision.reset` | 211.588 | 12695 | 214.786 | 12886 | take |  | On to / the next application. |

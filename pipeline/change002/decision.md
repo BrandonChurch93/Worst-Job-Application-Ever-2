@@ -155,3 +155,21 @@ What this leaves, not mended:
 - The reset itself: untouched, as told.
 - No film render, no sound.
 - The one fault `npm run retime -- --check` still names on this base, boss.unfold.0, is not mine and not touched. The Builder says it is already mended on origin `agent/merge55` (STATED).
+
+## After the real take of line 8 (the Builder's task of 04:10Z, branch `agent/b-decision2`)
+
+The times, the reasons and what is not as asked are in `src/pages/step5/NOTES.md`, section "After the real take of line 8". In short: `SAID` is the take's five starts and its end; the unit is 21.7 s; `stamp` 5.433, `button-press` 18.033, `page-turn` 18.4875; the live site holds a press made under the line to the end of the phrase being said.
+
+Numbers in tests that changed, and why:
+
+| Test file | Test | Was | Is | Why |
+| --- | --- | --- | --- | --- |
+| `tests/decision-acting.test.ts` | the phrase times the acting keeps | `SAID` against the words of the script at 1.6 words a second | `SAID` against `standIns().get('decision.letter.0')`, exactly | asked: a new take must fail it |
+| `tests/decision-acting.test.ts` | the arrow acts the line | still flat 0.5 s before the third phrase; whole after the third starts and 0.2 s before the fourth | flat a second or more; the peel starts under 0.7 s before the second phrase; whole after the second starts, inside 4 s of the hit and 0.2 s before its next move; a move in each pause; the eight cues in order | the three old lines cannot hold with the take, and the first two cannot hold at all under the 4 s a damage may last |
+| `tests/decision-acting.test.ts` | the beaten walk to the button | the walk starts 0.4 s or more after the look | 0.25 s or more | the last phrase is 1.73 s and the press 0.14 s before its end: the sag, the look, the walk of 0.6 s and the hold of 0.4 s must fit in 1.59 s |
+| `tests/step5.test.ts` | waits for the press of the button and takes it as soon as the button is up | turned inside 8.5 s | turned no sooner than the first phrase's end and the gap, and inside 0.6 s of it; the press itself is as early as before | the ruling on the live site |
+| `tests/step5.test.ts` | hands the cursor on whole, however early the button is pressed | done inside 7.6 s | done by the first phrase's end and the gap | the same ruling |
+
+New tests: "a press while the line is being said holds the page to the end of the phrase being said and the gap; a press after the line turns as before" (`tests/decision-acting.test.ts`), "turns as before when the button is pressed after the narrator's line has ended" (`tests/step5.test.ts`), and in the keen bot's test that the page holds with the button down and control not taken.
+
+Not committed, as told: `content/narration.json` and `cut/`.
