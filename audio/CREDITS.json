@@ -28,6 +28,26 @@
       "words": "\"2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect\"; \"the ledger does not pass 4,677 without his word\"."
     }
   ],
+  "caps": [
+    {
+      "name": "narration",
+      "limit": 650,
+      "from": "Brandon, by Partner, change note 004 item 7, 2026-11-27",
+      "words": "\"Recording: lines 1 to 9 may be recorded now. Caps, all inside the hard limit of 4,677, which does not change: narration 650 in all (one pass plus single lines done again), sound effects 700, the shout 150. That is 1,500 of the 1,511 left. State the cost in the ledger before each spend. At a cap, stop and mail Partner.\""
+    },
+    {
+      "name": "effects",
+      "limit": 700,
+      "from": "Brandon, by Partner, change note 004 item 7, 2026-11-27",
+      "words": "The same sentence of the same note."
+    },
+    {
+      "name": "shout",
+      "limit": 150,
+      "from": "Brandon, by Partner, change note 004 item 7, 2026-11-27",
+      "words": "The same sentence of the same note."
+    }
+  ],
   "rows": [
     {
       "n": 1,
@@ -1988,6 +2008,17 @@
       "answer": "HTTP 200, 1.4 s",
       "cost": 33,
       "how": "reported by the response; the account's usage moved by 0 across the call"
+    },
+    {
+      "n": 197,
+      "time": "2026-11-28T02:26:15Z",
+      "endpoint": "none: a statement before a spend",
+      "what": "Stated before the spend (change note 004 item 7): one pass of lines 1 to 9",
+      "asked": "nothing, no call",
+      "answer": "One pass of the script's 12 pieces (lines 1 to 9: 146 words, 37 pause marks, 1,647 characters sent) is about 549 credits. Worked out from this ledger's own 45 narrator calls with pause marks: 0.4518 a character of words and 4.098 a pause mark, worst miss 0.64 a call. That leaves about 101 of the cap of 650 for single lines done again. The check this tool makes before a call counts every sent character at 0.439 and so reads high: 728 for the pass.",
+      "cost": 0,
+      "how": "a statement costs nothing",
+      "cap": "narration"
     }
   ]
 }

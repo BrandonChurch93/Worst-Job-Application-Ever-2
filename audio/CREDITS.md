@@ -4,9 +4,15 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 3166 of 10000. Calls: 196.
+Running total: 3166 of 10000. Calls: 197.
 
 Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 1511. No call is made that would pass it.
+
+## Caps
+
+- narration: 0 of 650 used, 650 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: "Recording: lines 1 to 9 may be recorded now. Caps, all inside the hard limit of 4,677, which does not change: narration 650 in all (one pass plus single lines done again), sound effects 700, the shout 150. That is 1,500 of the 1,511 left. State the cost in the ledger before each spend. At a cap, stop and mail Partner."
+- effects: 0 of 700 used, 700 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
+- shout: 0 of 150 used, 150 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
 
 ## Rates
 
@@ -215,3 +221,4 @@ Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,
 | 194 | 2026-11-28T00:30:32Z | POST /v1/text-to-speech | SHOUT A round 2 take 3, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7) | 75 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 1.4 s | 33 | reported by the response; the account's usage moved by 0 across the call | 3095 |
 | 195 | 2026-11-28T00:30:38Z | POST /v1/text-to-speech | SHOUT B round 2 take 3, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7) | 86 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 1.5 s | 38 | reported by the response; the account's usage moved by 0 across the call | 3133 |
 | 196 | 2026-11-28T00:31:24Z | POST /v1/text-to-speech | SHOUT A round 2 take 4, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7) | 74 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 1.4 s | 33 | reported by the response; the account's usage moved by 0 across the call | 3166 |
+| 197 | 2026-11-28T02:26:15Z | none: a statement before a spend | Stated before the spend (change note 004 item 7): one pass of lines 1 to 9 | nothing, no call | One pass of the script's 12 pieces (lines 1 to 9: 146 words, 37 pause marks, 1,647 characters sent) is about 549 credits. Worked out from this ledger's own 45 narrator calls with pause marks: 0.4518 a character of words and 4.098 a pause mark, worst miss 0.64 a call. That leaves about 101 of the cap of 650 for single lines done again. The check this tool makes before a call counts every sent character at 0.439 and so reads high: 728 for the pass. | 0 | a statement costs nothing | 3166 |

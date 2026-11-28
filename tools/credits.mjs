@@ -30,6 +30,11 @@ export const effectSeconds = (s) => Math.min(EFFECT_MAX_SECONDS, Math.max(EFFECT
 // never in the kit's numbers, and only his word takes it away. The lowest one that stands is the one that counts.
 export const hardLimitOf = (ledger) => (ledger.hardLimits ?? []).filter((h) => !h.lifted).reduce((low, h) => (!low || h.limit < low.limit ? h : low), null)
 
+// A cap is a share of what is left that Brandon has given to one kind of work (change note 004 item 7). It is kept in the ledger with his
+// words, like a hard limit. While caps stand, every paid call names the cap it is counted under, and no call is made that would pass it.
+export const capsOf = (ledger) => (ledger.caps ?? []).filter((x) => !x.lifted)
+export const spentUnder = (ledger, name) => ledger.rows.filter((r) => r.cap === name).reduce((n, r) => n + r.cost, 0)
+
 export function limits(c, ledger) {
   const cap = c.audio.creditCap
   const reserve = ledger.reviewReached ? 0 : c.audio.creditReserveAfterReview
@@ -55,6 +60,13 @@ export function allow(call, ledger, c) {
   if (call.kind === 'effect' && !(typeof call.prompt === 'string' && call.prompt.trim())) return { ok: false, why: 'a sound effect call needs its prompt' }
   if (call.kind === 'speech' && !(typeof call.text === 'string' && call.text.trim())) return { ok: false, why: 'a speech call needs its text' }
   const cost = estimate(call, ledger)
+  const caps = capsOf(ledger)
+  if (caps.length) {
+    const cap = caps.find((x) => x.name === call.cap)
+    if (!cap) return { ok: false, cost, total, why: `caps stand in the ledger (${caps.map((x) => `${x.name} ${x.limit}`).join(', ')}): say which one this call is counted under with --cap NAME` }
+    const spent = spentUnder(ledger, cap.name)
+    if (spent + cost > cap.limit) return { ok: false, cost, total, capped: cap.name, why: `the ${spent} spent under the cap "${cap.name}" and this call's ${cost} would pass ${cap.limit}, the cap of ${cap.from}. Work of this kind stops here and Partner is mailed` }
+  }
   if (L.hard && total + cost > L.hard.limit) return { ok: false, cost, total, why: `the running total ${total} and this call's ${cost} would pass ${L.hard.limit}, the hard limit of ${L.hard.from}: ${L.hard.words}. Sound stops here and Brandon is asked` }
   if (total + cost > L.limit) return { ok: false, cost, total, why: `the running total ${total} and this call's ${cost} would pass ${L.limit}, which is the cap of ${L.cap}${L.reserve ? ` less the ${L.reserve} held back for the review` : ''}` }
   if (call.extra && total > L.extrasStop) return { ok: false, cost, total, why: `the running total ${total} is past ${L.extrasStop}, where nothing extra is made` }
@@ -76,6 +88,7 @@ export function sheetOf(ledger, c) {
     '',
     `Running total: ${total} of ${L.cap}. Calls: ${ledger.rows.length}.`,
     ...(L.hard ? ['', `Hard limit: ${L.hard.limit}. ${L.hard.from}: ${L.hard.words} Left before it: ${L.hard.limit - total}. No call is made that would pass it.`] : []),
+    ...(capsOf(ledger).length ? ['', '## Caps', '', ...capsOf(ledger).map((x) => `- ${x.name}: ${spentUnder(ledger, x.name)} of ${x.limit} used, ${x.limit - spentUnder(ledger, x.name)} left. ${x.from}: ${x.words}`)] : []),
     '',
     '## Rates',
     '',
@@ -261,21 +274,31 @@ function post(c, ledger, call, a) {
     answer += said ? `: ${said}` : ''
     fs.rmSync(out, { force: true })
   }
-  addRow(ledger, { time, endpoint: call.kind === 'speech' ? 'POST /v1/text-to-speech' : 'POST /v1/sound-generation', what: call.what, asked, answer, cost, how })
+  addRow(ledger, { time, endpoint: call.kind === 'speech' ? 'POST /v1/text-to-speech' : 'POST /v1/sound-generation', what: call.what, asked, answer, cost, how, ...(call.cap ? { cap: call.cap } : {}) })
   save(ledger, c)
-  return { ok: status === 200, n, status, file: status === 200 ? out : null, cost, how, total: totalOf(ledger), left: limits(c, ledger).limit - totalOf(ledger), seconds: took, headers: Object.keys(head) }
+  return { ok: status === 200, n, status, file: status === 200 ? out : null, cost, how, total: totalOf(ledger), left: limits(c, ledger).limit - totalOf(ledger), ...(call.cap ? { cap: call.cap, capLeft: (capsOf(ledger).find((x) => x.name === call.cap)?.limit ?? 0) - spentUnder(ledger, call.cap) } : {}), seconds: took, headers: Object.keys(head) }
 }
 
 async function main() {
   const a = args()
   const c = config()
-  if (a.speech || a.effect || a.quota || a.models || a['voice-info'] || a['add-voice'] || a['review-reached']) lock()
+  if (a.speech || a.effect || a.quota || a.models || a['voice-info'] || a['add-voice'] || a['review-reached'] || a.note) lock()
   try {
     const ledger = readLedger()
     if (a['review-reached']) {
       ledger.reviewReached = true
       save(ledger, c)
       console.log('credits: the review has been reached, the held back credits may now be used')
+      return
+    }
+    if (a.note) {
+      // A statement in the ledger that costs nothing: the cost of a spend, said before the spend is made (change note 004 item 7).
+      const what = a.what && a.what !== true ? String(a.what) : ''
+      const text = textOf(a.text, a['text-file'])
+      if (!what || !text) throw new Error('--note needs --what W and --text T')
+      addRow(ledger, { time: now(), endpoint: 'none: a statement before a spend', what, asked: 'nothing, no call', answer: text, cost: 0, how: 'a statement costs nothing', ...(a.cap && a.cap !== true ? { cap: String(a.cap) } : {}) })
+      save(ledger, c)
+      console.log(JSON.stringify({ ok: true, n: ledger.rows.length, total: totalOf(ledger), caps: capsOf(ledger).map((x) => ({ name: x.name, limit: x.limit, spent: spentUnder(ledger, x.name) })) }))
       return
     }
     if (a.quota) {
@@ -339,8 +362,8 @@ async function main() {
       const what = a.what && a.what !== true ? String(a.what) : ''
       if (!what) throw new Error('say what the call is for: --what "the line or the cue, and which take"')
       const call = a.speech
-        ? { kind: 'speech', what, text: textOf(a.text, a['text-file']), voice: voiceId(c, a.voice), model: a.model && a.model !== true ? String(a.model) : undefined, speed: num(a.speed), stability: num(a.stability), similarity: num(a.similarity), style: num(a.style), seed: num(a.seed), extra: a.extra === true }
-        : { kind: 'effect', what, prompt: textOf(a.prompt, a['prompt-file']), seconds: num(a.seconds), influence: num(a.influence), loop: a.loop === true, model: a.model && a.model !== true ? String(a.model) : undefined, extra: a.extra === true }
+        ? { kind: 'speech', what, cap: a.cap && a.cap !== true ? String(a.cap) : undefined, text: textOf(a.text, a['text-file']), voice: voiceId(c, a.voice), model: a.model && a.model !== true ? String(a.model) : undefined, speed: num(a.speed), stability: num(a.stability), similarity: num(a.similarity), style: num(a.style), seed: num(a.seed), extra: a.extra === true }
+        : { kind: 'effect', what, cap: a.cap && a.cap !== true ? String(a.cap) : undefined, prompt: textOf(a.prompt, a['prompt-file']), seconds: num(a.seconds), influence: num(a.influence), loop: a.loop === true, model: a.model && a.model !== true ? String(a.model) : undefined, extra: a.extra === true }
       const r = post(c, ledger, call, a)
       console.log(JSON.stringify(r))
       if (!r.ok) process.exitCode = r.refused ? 3 : 2
@@ -350,8 +373,9 @@ async function main() {
     const total = totalOf(ledger)
     console.log(`credits: ${total} of ${L.cap} used in ${ledger.rows.length} calls. ${L.limit - total} left before ${L.hard && L.hard.limit === L.limit ? `the hard limit of ${L.hard.limit}` : ledger.reviewReached ? 'the cap' : `the review's reserve of ${L.reserve}`}.`)
     if (L.hard) console.log(`credits: the hard limit is from ${L.hard.from}.`)
+    for (const x of capsOf(ledger)) console.log(`credits: cap ${x.name}: ${spentUnder(ledger, x.name)} of ${x.limit} used, ${x.limit - spentUnder(ledger, x.name)} left (${x.from}).`)
     console.log(`credits: speech ${ledger.rates.speech ? `${ledger.rates.speech.perCharacter} a character` : 'not measured'}, effects ${ledger.rates.effect ? `${ledger.rates.effect.perSecond} a second` : 'not measured'}`)
-    console.log('credits: --quota reads the account. --speech --what W --text T | --text-file F [--speed N --stability N --similarity N --style N --model ID --voice ID --out F] speaks a line. --effect --what W --prompt P | --prompt-file F --seconds N [--loop --influence N --out F] makes an effect. --add-voice --owner ID --voice ID --name NAME --what W puts a library voice on the list of the account. --measure reads the usage round a call. --extra marks a call section 2 of the addendum calls extra.')
+    console.log('credits: --quota reads the account. --speech --what W --text T | --text-file F [--speed N --stability N --similarity N --style N --model ID --voice ID --out F] speaks a line. --effect --what W --prompt P | --prompt-file F --seconds N [--loop --influence N --out F] makes an effect. --add-voice --owner ID --voice ID --name NAME --what W puts a library voice on the list of the account. --measure reads the usage round a call. --extra marks a call section 2 of the addendum calls extra. --cap NAME counts a paid call under a cap of the ledger. --note --what W --text T [--cap NAME] writes a statement that costs nothing.')
   } finally {
     unlock()
   }

@@ -172,7 +172,11 @@ function writeRecipe(P, ledger, c) {
   const ids = [...new Set(ledger.takes.map((t) => t.key))]
   for (const id of ids) {
     const mine = ledger.takes.filter((t) => t.key === id)
-    lines.push(`### ${id}`, '', `Takes used: ${mine.length} of ${mine[0].kind === 'cue' ? c.audio.maxTakesPerCue : c.audio.narratorMaxTakesPerLine}.`, '', '| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |', '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |')
+    // The limit is for each round, as check A8 counts it: the build, a critic round, or the round of a script that replaced the words.
+    const max = mine[0].kind === 'cue' ? c.audio.maxTakesPerCue : c.audio.narratorMaxTakesPerLine
+    const rounds = [...new Set(mine.map((t) => t.round))]
+    const used = rounds.length === 1 && rounds[0] === 'build' ? `${mine.length} of ${max}` : rounds.map((r) => `${mine.filter((t) => t.round === r).length} of ${max} in ${r === 'build' ? 'the build' : `round ${r}`}`).join(', ')
+    lines.push(`### ${id}`, '', `Takes used: ${used}.`, '', '| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |', '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |')
     for (const t of mine) lines.push(`| ${t.take} | ${t.round} | ${t.filed} | ${t.measured.seconds} s | ${t.measured.peakDb} dB | ${t.measured.lufs} LUFS | ${t.measured.hits} | ${t.cost ?? 'not recorded'} | ${t.kept ? `yes, as ${t.keptAs.join(', ')}` : 'no'} | ${(t.why ?? '').replace(/\|/g, '/')} |`)
     lines.push('', `${mine[0].kind === 'cue' ? 'Prompt' : 'Words'}: ${mine[mine.length - 1].prompt ?? mine[mine.length - 1].text ?? 'not recorded'}`, '')
   }
@@ -260,8 +264,10 @@ export async function fileTake(a, P, c, M, quiet = false) {
       console.log(`  pauses: ${l.pausesFound} found for ${l.pauseMarks} marks: ${l.pausesHold ? 'holds' : 'A PAUSE IS MISSING'}`)
       if (l.room !== null) console.log(`  room in the film: ${l.room} s: ${l.fits ? 'fits' : 'TOO LONG FOR ITS PLACE. Move the beat inside its limits before asking for another take'}`)
     }
-    if (number > t.max) console.log(`  WARNING: this is take ${number} and the limit is ${t.max}. Check A8 will report it`)
-    else console.log(`  takes left: ${t.max - number}`)
+    const inRound = mine.filter((x) => x.round === round).length + 1
+    const where = round === 'build' ? 'the build' : `round ${round}`
+    if (inRound > t.max) console.log(`  WARNING: this is take ${inRound} of ${where} and the limit is ${t.max}. Check A8 will report it`)
+    else console.log(`  takes left in ${where}: ${t.max - inRound}`)
   }
   return record
 }

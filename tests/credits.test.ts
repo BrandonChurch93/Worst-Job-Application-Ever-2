@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { EFFECT_MIN_SECONDS, WORST, addRow, allow, effectSeconds, emptyLedger, estimate, limits, sheetOf, totalOf } from '../tools/credits.mjs'
+import { EFFECT_MIN_SECONDS, WORST, addRow, allow, capsOf, effectSeconds, emptyLedger, estimate, limits, sheetOf, spentUnder, totalOf } from '../tools/credits.mjs'
 
 const cfg: any = JSON.parse(readFileSync(path.join(process.cwd(), 'config', 'showcase.json'), 'utf8'))
 const spent = (n: number): any => {
@@ -67,6 +67,37 @@ describe('the cap on sound credits', () => {
     expect(sheetOf(l, cfg)).toContain('Hard limit: 4677')
     l.hardLimits[0].lifted = 'his word'
     expect(allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 2 }, l, cfg).ok).toBe(true)
+  })
+
+  it('counts each paid call under a cap Brandon has set for its kind of work, and makes none that would pass it (change note 004 item 7)', () => {
+    const l: any = spent(3166)
+    l.rates.effect = { perSecond: 12, how: 'measured' }
+    l.hardLimits = [{ limit: 4677, from: 'Brandon, by Partner', words: 'w' }]
+    l.caps = [{ name: 'narration', limit: 650, from: 'Brandon, by Partner, change note 004 item 7', words: 'w' }, { name: 'effects', limit: 24, from: 'the same', words: 'w' }]
+    const none = allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 1 }, l, cfg)
+    expect(none.ok).toBe(false)
+    expect(none.why).toContain('--cap')
+    expect(allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 1, cap: 'no such cap' }, l, cfg).ok).toBe(false)
+    expect(allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 1, cap: 'effects' }, l, cfg).ok).toBe(true)
+    addRow(l, { time: 't', endpoint: 'e', what: 'w', asked: 'a', answer: 'HTTP 200', cost: 12, how: 'h', cap: 'effects' })
+    expect(spentUnder(l, 'effects')).toBe(12)
+    expect(spentUnder(l, 'narration')).toBe(0)
+    expect(allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 1, cap: 'effects' }, l, cfg).ok).toBe(true)
+    const over = allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 1.5, cap: 'effects' }, l, cfg)
+    expect(over.ok).toBe(false)
+    expect(over.capped).toBe('effects')
+    expect(over.why).toContain('24')
+    // A statement before a spend is a row that costs nothing and moves no total.
+    addRow(l, { time: 't', endpoint: 'none: a statement before a spend', what: 'w', asked: 'nothing, no call', answer: 'about 549', cost: 0, how: 'a statement costs nothing', cap: 'narration' })
+    expect(totalOf(l)).toBe(3178)
+    expect(spentUnder(l, 'narration')).toBe(0)
+    const sheet = sheetOf(l, cfg)
+    expect(sheet).toContain('## Caps')
+    expect(sheet).toContain('- effects: 12 of 24 used, 12 left.')
+    expect(sheet).toContain('- narration: 0 of 650 used, 650 left.')
+    expect(capsOf(l).length).toBe(2)
+    l.caps[1].lifted = 'his word'
+    expect(capsOf(l).length).toBe(1)
   })
 
   it('checks a model that has no measured rate at the dearest known rate', () => {

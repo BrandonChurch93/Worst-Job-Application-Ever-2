@@ -4,6 +4,7 @@
 //   node tools/lib/sound-batch.mjs lines --which film        one take of every film line that has none
 //   node tools/lib/sound-batch.mjs lines --only ID,ID --retake [--n ID=1.8]
 //   node tools/lib/sound-batch.mjs cues [--only ID,ID] [--retake] [--max 25]
+//   --round NAME files the takes under a round of their own (default build); --cap NAME counts the calls under a cap of the credits ledger.
 import fs from 'node:fs'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
@@ -63,6 +64,7 @@ async function main() {
   fs.mkdirSync(asks, { recursive: true })
   fs.mkdirSync(SCRATCH, { recursive: true })
   const batchLog = at('out', 'work', 'audio', 'batches.json')
+  const round = a.round && a.round !== true ? String(a.round) : 'build'
 
   if (cmd === 'plan') {
     for (const l of allLines(narration)) {
@@ -78,20 +80,23 @@ async function main() {
     if (cmd === 'lines') {
       const list = allLines(narration).filter((l) => (only ? only.includes(l.id) : l.which === a.which))
       for (const l of list) {
-        const used = readLedger(P).takes.filter((t) => t.key === l.id)
+        // Takes are counted by round, as check A8 counts them: a line whose words were replaced starts again in its own round.
+        // The take's number goes on through every round, since it names the file.
+        const every = readLedger(P).takes.filter((t) => t.key === l.id)
+        const used = every.filter((t) => t.round === round)
         if (used.length && !a.retake) continue
         if (used.length >= c.audio.narratorMaxTakesPerLine) {
-          console.log(`${l.id}: ${used.length} takes used, none left`)
+          console.log(`${l.id}: ${used.length} takes used in ${round}, none left`)
           continue
         }
-        const take = used.length + 1
+        const take = every.length + 1
         const b = breakFor(l.text, narration.pauseMark)
         const n = overrides[l.id] ?? b.n
         const text = sentText(l.text, n, narration.pauseMark)
         const textFile = path.join(asks, `${l.id}.take-${take}.txt`)
         fs.writeFileSync(textFile, text)
         const out = path.join(asks, `${l.id}.take-${take}.mp3`)
-        const r = credits(['--speech', '--what', `${l.id} take ${take}, breaks of ${n.toFixed(1)} s`, '--text-file', textFile, '--speed', String(SPEECH.speed), '--stability', String(SPEECH.stability), '--out', out, ...(a.extra ? ['--extra'] : [])])
+        const r = credits(['--speech', '--what', `${l.id} take ${take}, breaks of ${n.toFixed(1)} s`, '--text-file', textFile, '--speed', String(SPEECH.speed), '--stability', String(SPEECH.stability), '--out', out, ...(a.extra ? ['--extra'] : []), ...(a.cap && a.cap !== true ? ['--cap', String(a.cap)] : [])])
         log(batchLog, { id: l.id, take, kind: 'line', ...r })
         if (!r.ok) {
           console.log(`${l.id} take ${take}: NOT MADE: ${JSON.stringify(r)}`)
@@ -100,7 +105,7 @@ async function main() {
         }
         fs.copyFileSync(out, path.join(SCRATCH, `${l.id}.take-${take}.mp3`))
         fs.copyFileSync(textFile, path.join(SCRATCH, `${l.id}.take-${take}.txt`))
-        const rec = await fileTake({ line: l.name, file: out, settings: JSON.stringify({ ...SPEECH, breakSeconds: n, sent: text, call: r.n }), cost: String(r.cost) }, P, c, M, true)
+        const rec = await fileTake({ line: l.name, file: out, round, settings: JSON.stringify({ ...SPEECH, breakSeconds: n, sent: text, call: r.n }), cost: String(r.cost) }, P, c, M, true)
         console.log(`${l.id} take ${take}: call ${r.n}, cost ${r.cost}, total ${r.total}; ${rec.line.words} words in ${rec.line.seconds} s = ${rec.line.wordsPerSecond} w/s ${rec.line.paceHolds ? 'holds' : 'TOO FAST'}; pauses ${rec.line.pausesFound}/${rec.line.pauseMarks} ${JSON.stringify(rec.line.pauses)}; room ${rec.line.room} ${rec.line.fits ? 'fits' : 'TOO LONG'}`)
       }
     } else if (cmd === 'cues') {
@@ -112,10 +117,11 @@ async function main() {
         for (let v = 0; v < variants; v++) {
           const id = M.cues.variantId(s.id, v, variants)
           if (only && !only.includes(id) && !only.includes(s.id)) continue
-          const used = readLedger(P).takes.filter((t) => t.key === id)
+          const every = readLedger(P).takes.filter((t) => t.key === id)
+          const used = every.filter((t) => t.round === round)
           if (used.length && !a.retake) continue
           if (used.length >= c.audio.maxTakesPerCue) {
-            console.log(`${id}: ${used.length} takes used, none left`)
+            console.log(`${id}: ${used.length} takes used in ${round}, none left`)
             continue
           }
           if (made >= max) break
@@ -124,13 +130,13 @@ async function main() {
             console.log(`${id}: no prompt in audio/PROMPTS.json`)
             continue
           }
-          const take = used.length + 1
+          const take = every.length + 1
           const prompt = `${p.prompt.replace(/[.\s]+$/, '')}, ${promptLine(s.id)}`
           const promptFile = path.join(asks, `${id}.take-${take}.txt`)
           fs.writeFileSync(promptFile, prompt)
           const out = path.join(asks, `${id}.take-${take}.mp3`)
           const loop = Boolean(p.loop)
-          const r = credits(['--effect', '--what', `${id} take ${take}${variants > 1 ? `, variant ${v + 1} of ${variants}` : ''}`, '--prompt-file', promptFile, '--seconds', String(p.seconds ?? s.seconds), ...(loop ? ['--loop'] : []), ...(p.influence !== undefined ? ['--influence', String(p.influence)] : []), '--out', out, ...(a.extra ? ['--extra'] : [])])
+          const r = credits(['--effect', '--what', `${id} take ${take}${variants > 1 ? `, variant ${v + 1} of ${variants}` : ''}`, '--prompt-file', promptFile, '--seconds', String(p.seconds ?? s.seconds), ...(loop ? ['--loop'] : []), ...(p.influence !== undefined ? ['--influence', String(p.influence)] : []), '--out', out, ...(a.extra ? ['--extra'] : []), ...(a.cap && a.cap !== true ? ['--cap', String(a.cap)] : [])])
           log(batchLog, { id, take, kind: 'cue', ...r })
           made++
           if (!r.ok) {
@@ -140,7 +146,7 @@ async function main() {
           }
           fs.copyFileSync(out, path.join(SCRATCH, `${id}.take-${take}.mp3`))
           fs.copyFileSync(promptFile, path.join(SCRATCH, `${id}.take-${take}.txt`))
-          const rec = await fileTake({ cue: s.id, variant: String(v + 1), file: out, prompt, settings: JSON.stringify({ seconds: Math.max(0.5, p.seconds ?? s.seconds), loop, influence: p.influence ?? null, call: r.n }), asked: String(Math.max(0.5, p.seconds ?? s.seconds)), cost: String(r.cost) }, P, c, M, true)
+          const rec = await fileTake({ cue: s.id, variant: String(v + 1), file: out, round, prompt, settings: JSON.stringify({ seconds: Math.max(0.5, p.seconds ?? s.seconds), loop, influence: p.influence ?? null, call: r.n }), asked: String(Math.max(0.5, p.seconds ?? s.seconds)), cost: String(r.cost) }, P, c, M, true)
           console.log(`${id} take ${take}: call ${r.n}, cost ${r.cost}, total ${r.total}; ${rec.measured.seconds} s, sounding ${rec.measured.start} to ${rec.measured.end}, peak ${rec.measured.peakDb} dB, ${rec.measured.lufs} LUFS, low ${rec.measured.low} mid ${rec.measured.mid} high ${rec.measured.high}, hits ${rec.measured.hits}`)
         }
       }
