@@ -41,8 +41,8 @@ export const BROUGHT = { frames: 10, clear: 6 }
 const broughtSteps = Math.round((BROUGHT.frames * stepHz) / 60)
 // The film's lift is over by the last frame of 60 drawn of the leaving half, one frame before the half is out.
 const liftSteps = turnSteps - Math.round(stepHz / 60)
-// The film's lifted arrow stands nearer the eye, on its own line of sight, while a slab near edge on would cut through it: `under` px of figure below its tip, `over` px of slab behind its face, `near` the height of the slab's near edge when edge on, `by` the room left between, `from` the tilt in radians where this starts.
-export const CLEAR = { under: 60, over: 10, near: 600, by: 20, from: Math.PI / 3 }
+// The film's lifted arrow stands nearer the eye, on its own line of sight, while a slab near edge on would cut through it: `under` px of figure below its tip, `over` px of slab and of what stands on it past the tip, `near` the height of the slab's near edge when edge on, `by` the room left between, `from` the tilt in radians where this starts.
+export const CLEAR = { under: 60, over: 100, near: 600, by: 20, from: Math.PI / 3 }
 
 interface Saved {
   step: number
