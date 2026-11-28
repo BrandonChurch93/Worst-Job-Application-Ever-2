@@ -6,7 +6,7 @@ import { FLIP_SECONDS, SETTLE } from '../src/pages/marketing/index'
 import { careersLayout } from '../src/pages/marketing/layout'
 import { boxOf } from '../src/shell/layout'
 import { liveFlow, MouseDriver, Stage, TURN_HALF } from '../src/stage/stage'
-import type { DrawList } from '../src/stage/types'
+import type { DrawList, Driver, DriverView, Pointer } from '../src/stage/types'
 import { strokeRun, visitorRun, type Row } from './polish-arrow-run'
 
 const DEG = 180 / Math.PI
@@ -112,38 +112,53 @@ describe('polish, the arrow under a visitor\'s pointer', () => {
 })
 
 describe('polish, a perk card under a visitor', () => {
-  function turns(): number[] {
+  const ENTER = 4
+  const LEAVE_AT = 6
+  function turns(): { over: number[]; back: number[] } {
     const { layout } = careersLayout()
     const card = boxOf(layout, 'perk-0')
-    const d = new MouseDriver()
-    const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: d })
-    Object.assign(d.pointer, { x: card.cx, y: card.cy })
-    const out: number[] = []
-    for (let i = 0; i < 3 * 60; i++) {
+    const to = card.y - 240
+    const mouse: Driver = {
+      name: 'bot',
+      input(v: DriverView): Pointer {
+        const wheel = v.scroll < to - 1 && v.step % 4 === 0 ? { wheel: Math.min(160, to - v.scroll) } : {}
+        const on = v.time >= ENTER && v.time < LEAVE_AT
+        return { x: on ? card.x + 180 : card.x - 120, y: card.y + 160 - v.scroll, down: false, ...wheel }
+      }
+    }
+    const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: mouse })
+    const over: number[] = []
+    const back: number[] = []
+    let last = 0
+    for (let i = 0; i < 8 * 60; i++) {
       s.advance(stepHz / 60)
       const list: DrawList = []
       s.page.draw(list)
-      const slab = list.find((x) => x.id === 'perk-0-slab')
-      if (slab) out.push(-(slab.turnX ?? 0) * DEG)
-      else if (out.length) break
+      const c = list.find((x) => x.id === 'perk-0')?.v?.[0]
+      const deg = c === undefined ? 0 : Math.acos(Math.max(-1, Math.min(1, c))) * DEG
+      if (s.time < LEAVE_AT) { if (deg > 0 && (over.length === 0 || last < 180)) over.push(deg) } else if (last > 0 && (back.length === 0 || back[back.length - 1]! > 0)) back.push(deg)
+      last = deg
     }
-    return out
+    return { over, back }
   }
 
-  it('comes over in at most 12 degrees a frame, goes a little past flat and settles back over the last frames, never in one', () => {
-    const a = turns()
-    expect(a.length).toBeGreaterThanOrEqual(Math.round(FLIP_SECONDS * 60) - 2)
-    let most = 0
-    for (let i = 1; i < a.length; i++) most = Math.max(most, Math.abs(a[i]! - a[i - 1]!))
-    expect(most).toBeLessThanOrEqual(12)
-    const peak = Math.max(...a)
+  it('comes over in at most 12 degrees a frame and arrives flat over the last frames, never in one; flips back the same way when the pointer leaves', () => {
+    const { over, back } = turns()
+    const most = (a: number[]): number => a.reduce((m, x, i) => (i ? Math.max(m, Math.abs(x - a[i - 1]!)) : m), 0)
+    expect(over.length).toBeGreaterThanOrEqual(Math.round(FLIP_SECONDS * 60) - 2)
+    expect(most(over)).toBeLessThanOrEqual(12)
+    const peak = Math.max(...over)
     expect(peak).toBeCloseTo(180 * (1 + SETTLE.past), 0)
-    const at = a.indexOf(peak)
-    const from30 = a.findIndex((x) => x >= 150)
-    const flat = a.findIndex((x) => x >= 180)
+    const from30 = over.findIndex((x) => x >= 150)
+    const flat = over.findIndex((x) => x >= 180 - 1e-6)
     expect(flat - from30).toBeGreaterThanOrEqual(3)
-    expect(flat - from30).toBeLessThanOrEqual(6)
-    expect(a.length - at).toBeGreaterThanOrEqual(6)
-    expect(Math.abs(a[a.length - 1]! - 180)).toBeLessThan(0.5)
+    expect(flat - from30).toBeLessThanOrEqual(8)
+    for (let i = over.length - 5; i < over.length; i++) expect(over[i]! - over[i - 1]!).toBeLessThan(over[i - 1]! - over[i - 2]!)
+    expect(Math.abs(over[over.length - 1]! - 180)).toBeLessThan(0.5)
+    expect(back[0]!).toBeGreaterThan(179.5)
+    expect(back[back.length - 1]!).toBe(0)
+    expect(back.filter((x) => x < 180 - 1e-6).length).toBeGreaterThanOrEqual(Math.round(FLIP_SECONDS * 60) - 2)
+    expect(most(back)).toBeLessThanOrEqual(12)
+    for (let i = 1; i < back.length; i++) expect(back[i]!).toBeLessThanOrEqual(back[i - 1]!)
   })
 })

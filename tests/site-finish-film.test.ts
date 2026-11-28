@@ -44,6 +44,8 @@ class Leaver implements Driver {
 }
 
 interface Moment { page: number; at: number; what: string }
+// The big blast of step 4 is left `in` seconds after it fires, half of the 0.3 s it stands, and counts as one with a corner gun firing when a corner gun fired no more than `gun` seconds before it.
+const BLAST = { in: 0.15, gun: 1 }
 
 // One keen page at a time, watched step by step, for the worst moments to leave it.
 function moments(page: number): { list: Moment[]; seconds: number } {
@@ -53,6 +55,7 @@ function moments(page: number): { list: Moment[]; seconds: number } {
   let run = -1
   let seen = 0
   const count: Record<string, number> = {}
+  const guns: number[] = []
   const EVENTS: Record<string, [number, number, string]> = {
     popup: [0.3, 9, 'a popup open'], 'inbox-take': [0.4, 2, 'the ball in a seat'], 'firehouse-take': [0.4, 2, 'the ball in a seat'], 'scoop-kick': [0.02, 1, 'the ball kicked out'],
     'slab-drop': [0.03, 3, 'a slab landing'], 'dart-hit': [0.01, 2, 'the boss mid hit'], 'bolt-hit': [0.01, 1, 'a bolt landing'], 'session-expired': [0.5, 1, 'the session expired'],
@@ -70,6 +73,8 @@ function moments(page: number): { list: Moment[]; seconds: number } {
     } else run = -1
     for (; seen < stage.events.length; seen++) {
       const e = stage.events[seen]!
+      if (e.name === 'cannon-fire') guns.push(stage.pageTime)
+      if (e.name === 'big-fire' && guns.some((t) => stage.pageTime - t <= BLAST.gun)) list.push({ page, at: stage.pageTime + BLAST.in, what: `the big blast with a corner gun firing (big-fire ${(stage.pageTime - guns[guns.length - 1]!).toFixed(2)} s after cannon-fire)` })
       const rule = EVENTS[e.name]
       if (!rule) continue
       count[e.name] = (count[e.name] ?? 0) + 1
@@ -84,12 +89,12 @@ const each = [0, 1, 2, 3, 4, 5].map(moments)
 const before = (page: number): number => each.slice(0, page).reduce((n, m) => n + m.seconds, 0)
 
 describe('site finish: e. one who leaves for the film at the worst moment and comes back by the film bar', () => {
-  it('finds the worst moments: the cursor taken on every page, a popup open, the ball in a seat, the boss mid hit', () => {
+  it('finds the worst moments: the cursor taken on every page, the big blast with a corner gun firing, the ball in a seat, the boss mid hit', () => {
     const all = each.flatMap((m) => m.list)
-    // Step 4 never takes the cursor from a keen hand: its worst moments are the popups and the hits.
+    // Step 4 never takes the cursor from a keen hand: its worst moment is the big blast with a corner gun firing, then the hits.
     for (const k of [0, 1, 2, 3, 5]) expect(each[k]!.list.some((m) => m.what.startsWith('the cursor taken')), liveFlow()[k]!.page).toBe(true)
     expect(each[4]!.list.length).toBeGreaterThanOrEqual(5)
-    expect(all.filter((m) => m.what.startsWith('a popup open')).length).toBeGreaterThanOrEqual(3)
+    expect(each[4]!.list.filter((m) => m.what.startsWith('the big blast with a corner gun firing')).length).toBeGreaterThanOrEqual(1)
     expect(all.filter((m) => m.what.startsWith('the ball in a seat')).length).toBeGreaterThanOrEqual(2)
     expect(all.filter((m) => m.what.startsWith('the boss mid hit')).length).toBe(2)
     expect(all.length).toBeGreaterThanOrEqual(30)

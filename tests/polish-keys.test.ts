@@ -70,7 +70,9 @@ describe('polish keys: a key pressed on the live site', () => {
   })
 
   it('has no turret winding up beside it while it is held', () => {
-    const { down, up } = press()
+    const down = first(0, (r) => r.gag === 'step1.firstName' && r.down && r.events.includes('key-press') && Math.max(...at(r.i - 1).charge) > 0.2)
+    expect(down, 'a press of the Name with a turret winding up on the frame before it').toBeDefined()
+    const up = first(down.i, (r) => !r.down)
     expect(Math.max(...at(down.i - 1).charge)).toBeGreaterThan(0.2)
     for (let i = down.i; i < up.i; i++) expect(Math.max(...at(i).charge), `frame ${i}`).toBe(0)
     const again = first(up.i, (r) => Math.max(...r.charge) > 0)
