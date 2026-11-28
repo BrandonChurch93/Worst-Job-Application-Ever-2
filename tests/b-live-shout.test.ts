@@ -166,13 +166,14 @@ async function visit(down: (u: number) => boolean, frame = 1): Promise<Told> {
   const after = (t: number): number => Math.round((t - arms / stepHz) * 1000) / 1000
   const voices = ctx.sources.filter((x) => x.buffer?.id === ID)
   // The turn's start: the s after the arms for which the camera's own curve, turned from there, is the eye the page drew at every step up to the blast.
+  // `due` is the moment the blast is due, the turn's start and `CAMERA.roundLive`: from the crossing behind the arrow to it the live view closes in by `CAMERA.creep`, as the film's does, so the page's eye is nearer than a curve with no `due` would have it.
   let turn: number | null = null
   if (LOOK1_ON && CAMERA.on && eyes.length) {
     let best = Infinity
     for (let j = -6; j <= 6; j++) {
       const t = fireView - CAMERA.roundLive + j / stepHz
       const off = Math.max(...eyes.map((e) => {
-        const want = finishShot(e.time, { arms: e.arms, turn: e.arms + t, fire: -1, round: CAMERA.roundLive })?.pose.eye
+        const want = finishShot(e.time, { arms: e.arms, turn: e.arms + t, fire: -1, round: CAMERA.roundLive, due: e.arms + t + CAMERA.roundLive })?.pose.eye
         return want ? Math.hypot(want[0] - e.eye[0]!, want[1] - e.eye[1]!, want[2] - e.eye[2]!) : Infinity
       }))
       if (off < best) {
