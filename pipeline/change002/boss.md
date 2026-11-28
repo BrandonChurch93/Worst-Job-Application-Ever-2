@@ -173,6 +173,15 @@ Looked at with the switch `true` in a second work tree, at 84e223bc.
 - The arrow, its arms, the ball and the beam in these frames are my stand-in (`src/boss/finish.ts`): the ball is a flat orange disc beside the arrow, the beam a flat orange block with a pale band. The finish helper's figure is not in these frames.
 - The knees: the arrow is 144 px left of the button's middle, not told apart from the walk at sheet size; the fist: an arm drawn back over the arrow; the press: a black arm from the arrow to the button's left end.
 
+## As seen on the real page at 02:07 (merge 56 at 4a11790b, the arena at 876b2e5c and my e9341149 merged in a trial tree, `LOOK1_ON` true there only, pop-ups off)
+
+The same nine frames, taken again after the arena helper's mail of 02:06 (the pillar no longer falls on the stand; the round burn).
+
+- The arms and the charge: the arrow at (440, 650) is in plain view; the pillar's base is a low stump at about (563, 722), under the line to the button.
+- The button on the ground: face up, level, the word readable, in the middle of a round burn; its middle at (961, 650) as before.
+- The words "Click to submit" at (960, 360): on bare pale ground in the five frames from the button on the ground to the press.
+- The ball, the beam, the arms and the arrow are still my stand-in.
+
 ## Decisions
 
 1. The boss's measures are one object, `SHAPE`, chosen by `LOOK1_ON`.
@@ -327,6 +336,7 @@ My page's two tests of the visitor's hand are green: `tests/site-loading.test.ts
 - The body's release of a taken arrow after 7.5 s is worked round by taking it again (above).
 - 12 of 200 keen~ fights are under 25 s and 5 are over 45 s (table above).
 - After the blast, with the look on, the arena helper measured a plain button near (735, 610). In my frames of the real page the button lies at (961, 650) (above); I did not find where the other picture came from.
-- The arrow under the toppled pillar at `LAST.stand` (above).
-- The pictures of the stand-in's finish in the film and on the live site (01:23) were not taken again after the words moved over the button.
+- The arrow under the toppled pillar at `LAST.stand`: fixed by the arena helper at 876b2e5c (STATED by it, with `tests/arena-clear.test.ts`; seen by me in the frames of 02:07). Not in the Builder's merge when I looked (4a11790b).
+- On the live site with the stand-in (`LOOK1_ON` false) the fallen button lies tilted by about 15 degrees with its word readable; with the look on the look's button is drawn level.
+- The picture of the stand-in's finish in the film (01:23) was not taken again after the words moved over the button; the live site's was (02:05).
 - `cut/` was not remade after line 6 moved the unit's marks (ordered: do not remake it).
