@@ -818,7 +818,8 @@ describe('the standing arrow drawn in pieces of the film', () => {
 describe('the marks of the shout, worked out from the line', () => {
   const STAND_IN = { arms: 0, lead: 0, beats: [0.1, 1.04, 2.09, 2.9], fire: 4.13, gone: 7.56 }
   const TAKE = { starts: [0.2, 1.3, 3.9], seconds: 5.5 }
-  const MOVED = { arms: 0, lead: 0, beats: [0.2, 1.3, 2.183, 2.865], fire: 3.9, gone: 7.3 }
+  const MOVED = { arms: 0, lead: 0, beats: [0.2, 1.3, 2.183, 2.865], fire: 3.9, gone: 7.33 }
+  const LEVEL = LAST_LOW + SHOUT_RULE.level
   const FLOOR = CAMERA.down[1] + CAMERA.rest + CAMERA.ahead
   const INDEX = '../public/audio/index.json'
   afterAll(() => { vi.doUnmock(INDEX); vi.resetModules() })
@@ -829,7 +830,7 @@ describe('the marks of the shout, worked out from the line', () => {
     expect(shoutOf({ starts: [0.5], seconds: 2 })).toEqual(STAND_IN)
     expect(shoutOf({ starts: [0.1, 1.04, 4.13], peak: 4.13, seconds: 6.26 })).toEqual(STAND_IN)
     expect(shoutOf({ starts: [0.1, 1.04, 3.6], peak: 4.13, seconds: 6.26 })).toEqual(STAND_IN)
-    expect(shoutOf({ starts: [0.1, 0.54, 1.46], peak: 2.08, seconds: 3.52 }, 2.85)).toEqual({ arms: 0, lead: 0.77, beats: [0.137, 0.74, 1.457, 2.01], fire: 2.85, gone: 6.25 })
+    expect(shoutOf({ starts: [0.1, 0.54, 1.46], peak: 2.08, seconds: 3.52 }, 2.85)).toEqual({ arms: 0, lead: 0.77, beats: [0.137, 0.74, 1.457, 2.01], fire: 2.85, gone: 6.28 })
     expect(SHOUT_RULE.standIn).toEqual({ starts: [0.1, 1.04, 4.13], seconds: 6.26 })
     const now = lineTimes(SHOUT_LINE)!
     expect({ arms: SHOUT.arms, lead: SHOUT.lead, beats: SHOUT.beats, fire: SHOUT.fire, gone: SHOUT.gone }).toEqual(shoutOf(now))
@@ -843,17 +844,17 @@ describe('the marks of the shout, worked out from the line', () => {
     expect(m.lead).toBe(0)
     expect(m.beats[2] - m.beats[1]).toBeCloseTo(0.3398 * 3.6, 3)
     expect(m.beats[3] - m.beats[1]).toBeCloseTo(0.6019 * 3.6, 3)
-    expect(m.gone).toBeCloseTo(4.2 + LAST_LOW, 6)
+    expect(m.gone).toBeCloseTo(4.2 + LEVEL, 6)
     expect(shoutOf({ starts: [0, 0.6, 4.2], seconds: 4.2 + 2.5 }).gone).toBeCloseTo(4.2 + 2.5 + SHOUT_RULE.held, 6)
-    for (const last of [1.2, 1.7, 2.1, 2.5]) expect(shoutOf({ starts: [0.1, 1, 4], seconds: 4 + last }).gone - (4 + last + SHOUT_RULE.held), `a last phrase of ${last} s`).toBeCloseTo(Math.max(0, LAST_LOW - SHOUT_RULE.held - last), 6)
+    for (const last of [1.2, 1.7, 2.1, 2.5]) expect(shoutOf({ starts: [0.1, 1, 4], seconds: 4 + last }).gone - (4 + last + SHOUT_RULE.held), `a last phrase of ${last} s`).toBeCloseTo(Math.max(0, LEVEL - SHOUT_RULE.held - last), 6)
   })
 
   it('a take whose last phrase starts sooner than the floor is shouted that much after the arms: the fire mark is the floor, the charge marks are stretched with it, and the charge view rests as long as with the stand-in or longer', () => {
     const takes: [string, { starts: number[]; seconds: number; peak?: number }, ShoutMarks][] = [
       ['4.0 s', { starts: [0.05, 0.7, 1.8], seconds: 4.0 }, { arms: 0, lead: 2.05, beats: [0.107, 1.497, 2.297, 2.913], fire: 3.85, gone: 7.35 }],
-      ['3.3 s', { starts: [0.05, 0.6, 1.5], seconds: 3.3 }, { arms: 0, lead: 2.35, beats: [0.128, 1.54, 2.325, 2.93], fire: 3.85, gone: 7.25 }],
-      ['3.52 s with its peak at 2.08 s', { starts: [0.1, 0.54, 1.46], peak: 2.08, seconds: 3.52 }, { arms: 0, lead: 1.77, beats: [0.185, 1, 1.968, 2.715], fire: 3.85, gone: 7.25 }],
-      ['4.25 s with its peak at 2.08 s', { starts: [0.1, 0.54, 1.46], peak: 2.08, seconds: 4.25 }, { arms: 0, lead: 1.77, beats: [0.185, 1, 1.968, 2.715], fire: 3.85, gone: 7.32 }]
+      ['3.3 s', { starts: [0.05, 0.6, 1.5], seconds: 3.3 }, { arms: 0, lead: 2.35, beats: [0.128, 1.54, 2.325, 2.93], fire: 3.85, gone: 7.28 }],
+      ['the take as recorded, 3.52 s with its peak at 2.08 s', { starts: [0.1, 0.82, 1.46], peak: 2.08, seconds: 3.52 }, { arms: 0, lead: 1.77, beats: [0.185, 1.518, 2.31, 2.922], fire: 3.85, gone: 7.28 }],
+      ['the take mended, 4.01 s with its peak at 1.85 s', { starts: [0.1, 0.66, 1.3], peak: 1.85, seconds: 4.01 }, { arms: 0, lead: 2, beats: [0.208, 1.374, 2.215, 2.864], fire: 3.85, gone: 7.31 }]
     ]
     for (const [name, take, want] of takes) {
       const m = shoutOf(take)
@@ -865,7 +866,7 @@ describe('the marks of the shout, worked out from the line', () => {
       expect(m.beats[1] / m.fire, name).toBeCloseTo(take.starts[1]! / peak, 2)
       expect((m.beats[2] - m.beats[1]) / (m.fire - m.beats[1]), name).toBeCloseTo(SHOUT_RULE.between[0], 2)
       expect((m.beats[3] - m.beats[1]) / (m.fire - m.beats[1]), name).toBeCloseTo(SHOUT_RULE.between[1], 2)
-      expect(m.gone, name).toBeCloseTo(Math.max(m.lead + take.seconds + SHOUT_RULE.held, m.fire + LAST_LOW), 6)
+      expect(m.gone, name).toBeCloseTo(Math.max(m.lead + take.seconds + SHOUT_RULE.held, m.fire + LEVEL), 6)
       expect(m.fire - CAMERA.ahead - CAMERA.down[1], name).toBeGreaterThanOrEqual(CAMERA.rest - 1e-9)
     }
   })
@@ -902,7 +903,7 @@ describe('the marks of the shout, worked out from the line', () => {
     const { tune, stage, views } = await played(short)
     expect(tune.SHOUT.lead).toBeCloseTo(FLOOR - 2.3, 6)
     expect(tune.SHOUT.fire).toBeCloseTo(FLOOR, 6)
-    expect(tune.SHOUT.gone).toBeCloseTo(FLOOR + LAST_LOW, 6)
+    expect(tune.SHOUT.gone).toBeCloseTo(FLOOR + LEVEL, 6)
     expect(tune.SHOUT.gone).toBeGreaterThan(tune.SHOUT.lead + short.seconds + SHOUT_RULE.held + 0.8)
     const gone = seen(stage, 'boss-gone')
     const walk = seen(stage, 'finish-walk')

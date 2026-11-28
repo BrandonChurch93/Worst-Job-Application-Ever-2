@@ -181,10 +181,10 @@ export const LINE7 = {
 // peak: s into the line at which the blast is let go: where the take says, and the start of the last phrase where it does not.
 // lead: s after the arms at which the line is shouted, so that its peak lands on the fire mark: 0 when the peak is at the floor or later.
 // The first two charge marks are the starts of the line's first two phrases, stretched with the fire mark; the two charge marks between keep their share of the gap from the second to the fire mark.
-// The body is gone `held` s after the line ends, for the boss to leave in groups (the camera's second pass), and no sooner than the camera is level with the page again after the fire mark: its rise, its hold and its turn back.
+// The body is gone `held` s after the line ends, for the boss to leave in groups (the camera's second pass), and no sooner than `level` s after the camera is level with the page again after the fire mark (its rise, its hold and its turn back): the 0.03 s of the stand-in, which leaves the view from above the larger share of the burn.
 export interface ShoutMarks { arms: number; lead: number; beats: readonly [number, number, number, number]; fire: number; gone: number }
 export const SHOUT_LINE = 'boss.finish.0'
-export const SHOUT_RULE = { between: [0.3398, 0.6019] as const, held: 1.3, standIn: { starts: [0.1, 1.04, 4.13] as const, seconds: 6.26 } } as const
+export const SHOUT_RULE = { between: [0.3398, 0.6019] as const, held: 1.3, level: 0.03, standIn: { starts: [0.1, 1.04, 4.13] as const, seconds: 6.26 } } as const
 const ms = (t: number): number => Number(t.toFixed(3))
 export const shoutFloor = (): number => ms(CAMERA.down[1] + CAMERA.rest + CAMERA.ahead)
 export function shoutOf(line: { starts: readonly number[]; seconds: number; peak?: number } | null, floor: number = shoutFloor()): ShoutMarks {
@@ -195,7 +195,7 @@ export function shoutOf(line: { starts: readonly number[]; seconds: number; peak
   const on = (x: number): number => (lead > 0 ? ms((x * fire) / peak) : x)
   const a = on(t.starts[0]!)
   const b = on(t.starts[1]!)
-  const level = CAMERA.rise[1] + CAMERA.hold + CAMERA.turn
+  const level = CAMERA.rise[1] + CAMERA.hold + CAMERA.turn + SHOUT_RULE.level
   return { arms: 0, lead, beats: [a, b, ms(b + SHOUT_RULE.between[0] * (fire - b)), ms(b + SHOUT_RULE.between[1] * (fire - b))], fire, gone: Math.max(ms(lead + t.seconds + SHOUT_RULE.held), ms(fire + level)) }
 }
 let marks: ShoutMarks | null = null
