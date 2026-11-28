@@ -1,5 +1,5 @@
 // The film's sound, laid out from the events of the film. Pure arithmetic: the same inputs give the same samples.
-import { changeCue, changeLoops, changeStops, cueFor, keptChange } from './change'
+import { changeCue, changeLoops, changeStops, cueFor, keptChange, landers, landing } from './change'
 import { allCues, alsoStarts, cueOfEvent, loopCues, pageAfter, pickVariant, quietPage, quietPageCues, stopEvents } from './cues'
 
 export { openingEvents, type OpeningPlan } from './cues'
@@ -138,7 +138,7 @@ export function mixFilm(o: MixInput): MixResult {
   }
 
   for (const e of events) for (const [slot, cue] of [cueFor(e.name, e.page, has), ...(alsoStarts[e.name] ?? [])].entries()) {
-    if (!cue || cue === 'room-tone') continue
+    if (!cue || cue === 'room-tone' || changeCue(cue)?.lands) continue
     if (hush(e, cue) || (slot === 0 && covered.has(`${e.name}@${e.frame}`))) {
       hushed.push(`${e.name}@${e.frame}`)
       continue
@@ -187,6 +187,44 @@ export function mixFilm(o: MixInput): MixResult {
     }
     // cue stays the cue the table of cues gives the event, where it gives one: the checks find an event's sound by it. id is the sound that was laid.
     placed.push({ kind: 'cue', event: e.name, cue: slot === 0 ? cueOfEvent(e.name) ?? cue : cue, id: pick.id, frame: e.frame, sample: start, seconds: (until - start) / sr, cents: pick.cents, pan: gains.pan })
+  }
+
+  // A kept cue that lands on an event (`lands` in the change list): once for each such event, its body ending on that event's frame and its tail under it.
+  // It starts no sooner than the last `from` event before it: with less room than its body it starts that much later into itself.
+  for (const row of landers) {
+    if (!keptChange(row, has)) continue
+    let since = -1
+    for (const e of events) {
+      if (e.name !== row.lands!.on) continue
+      const from = events.filter((x) => x.name === row.lands!.from && x.frame <= e.frame && x.frame > since).pop()
+      since = e.frame
+      if (!from || hush(e, row.id)) continue
+      const count = counts.get(row.id) ?? 0
+      counts.set(row.id, count + 1)
+      const pick = pickVariant(row.id, count, row.variants ?? 1, has)
+      if (!pick) continue
+      const kept = o.sounds.get(pick.id)!
+      const src = kept.channels.map((c) => repitch(c, pick.cents))
+      const n = src[0]!.length
+      const { wait, skip } = landing(n, Math.round(row.lands!.tail * sr), at(e.frame) - at(from.frame))
+      const start = at(from.frame) + wait
+      if (skip >= n) continue
+      const gains = panGains(e.x)
+      const until = Math.min(length, start + n - skip)
+      for (let i = start; i < until; i++) {
+        const k = i - start + skip
+        const g = skip > 0 && i - start < fadeLen ? (i - start) / fadeLen : 1
+        if (src.length === 1) {
+          const v = src[0]![k]! * g
+          fx[0]![i]! += v * gains.left
+          fx[1]![i]! += v * gains.right
+        } else {
+          fx[0]![i]! += src[0]![k]! * g
+          fx[1]![i]! += src[1]![k]! * g
+        }
+      }
+      placed.push({ kind: 'cue', event: e.name, cue: row.id, id: pick.id, frame: Math.floor((start / sr) * o.fps), sample: start, seconds: (until - start) / sr, cents: pick.cents, pan: gains.pan })
+    }
   }
 
   const spoken: { start: number; end: number }[] = []

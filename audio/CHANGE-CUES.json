@@ -484,16 +484,21 @@
     },
     {
       "id": "finish-charge",
-      "seconds": 0.9,
+      "seconds": 3,
       "class": "mechanism",
       "made": false,
       "events": [
-        "finish-charge"
+        "finish-gather"
       ],
+      "lands": {
+        "on": "finish-fire",
+        "from": "finish-arms",
+        "tail": 0.2
+      },
       "standIn": null,
-      "describes": "One charge of the finish, of four",
-      "playedBy": "Step 4, each of the four charges of the finish",
-      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+      "describes": "The one swell of the finish: the charge gathering, rising without a break to its top",
+      "playedBy": "Step 4, once in a finish: the end of its body, its kept length less its tail, falls on the fire. In the film it starts no sooner than the arms; on the live site it starts with the hold, or with the page's own press",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json; made one swell in place of four charges by the Builder's word of 28 November"
     },
     {
       "id": "boss-gone",

@@ -2,17 +2,18 @@
 // Nothing here is created, fetched or played before unlock(), which the visitor's first click or key press calls.
 // The narrator's lines are silent stand-ins (change note 003): no take is fetched or played, a line holds its time and gives its caption.
 // The index of the sound files is part of the build, so the engine knows from the start whether there is any sound to play.
-import { config } from '../config'
+import { config, stepHz } from '../config'
 import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
 import { CAPTION, type Caption, type CaptionSource } from '../ui/said'
-import { changeCue, changeLoops, changeStops, coverOf, cueFor } from './change'
+import { changeCue, changeLoops, changeStops, coverOf, cueFor, keptChange, landers, landing } from './change'
 import { allCues, alsoStarts, cueOfEvent, earlyEnd, endsSentence, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, turnWaitsFor, unitPage, waitsFor } from './cues'
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
 import { riseAfterFire } from '../ui/rise'
+import { FINISH, SHOUT, SHOUT_LINE, shoutTake, voiceShout } from '../boss/tune'
 import { builtTo, phraseStart, standIns, type StandIn, lineKey } from './standin'
 import shipped from '../../public/audio/index.json'
 
@@ -26,7 +27,7 @@ export interface SoundApi {
   muted(): boolean
   setVolume(v: number): void
   volume(): number
-  event(e: { name: string; x: number; y: number; hitsCursor: boolean; page?: string }, mode: SoundMode): void
+  event(e: { name: string; x: number; y: number; hitsCursor: boolean; page?: string; step?: number }, mode: SoundMode): void
   beat(id: string, mode: SoundMode, into?: number): void
   trigger(name: string): void
   quiet(seconds: number): void
@@ -62,7 +63,8 @@ export interface SoundIndex {
 }
 
 type Bus = 'fx' | 'voice' | 'tone'
-interface PlayOptions { bus: Bus; when: number; cents: number; pan: number; loop: boolean; until?: number; fade?: number; fadeIn?: number }
+// offset: the seconds of the sound that are left out at its start.
+interface PlayOptions { bus: Bus; when: number; cents: number; pan: number; loop: boolean; until?: number; fade?: number; fadeIn?: number; offset?: number }
 // stop: it goes out from now over the fade. until: it is out at a time to come, having gone down over the fade before it, or from now when that is later.
 interface Voice { stop(fade: number): void; until(at: number, fade: number): void }
 interface Backend {
@@ -132,7 +134,8 @@ function graphBackend(Maker: ContextMaker): Backend {
         pan.connect(buses[o.bus])
       } else gain.connect(buses[o.bus])
       const when = Math.max(o.when, ctx.currentTime)
-      src.start(when)
+      if (o.offset) src.start(when, o.offset)
+      else src.start(when)
       if (o.fadeIn) {
         gain.gain.setValueAtTime(0, when)
         gain.gain.linearRampToValueAtTime(1, when + o.fadeIn)
@@ -253,7 +256,7 @@ function elementBackend(): Backend {
         el.playbackRate = Math.pow(2, o.cents / 1200)
         el.volume = volume(o.bus)
         try {
-          el.currentTime = 0
+          el.currentTime = o.offset ?? 0
         } catch {
           return
         }
@@ -345,6 +348,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const coveredAt = new Map<string, number>()
   const running = new Map<string, Voice[]>()
   const speaking = new Map<Booking, StandIn>()
+  let heard: number | undefined
   const turnHeld = new Map<string, number>()
   const voices = new Map<Booking, Voice>()
   const marks = new Map<Booking, string>()
@@ -407,8 +411,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     tone = null
   }
 
-  const stopCue = (cue: string) => {
-    for (const v of running.get(cue) ?? []) v.stop(LIVE.loopFadeSeconds)
+  const stopCue = (cue: string, fade: number = LIVE.loopFadeSeconds) => {
+    for (const v of running.get(cue) ?? []) v.stop(fade)
     running.delete(cue)
     byMark.delete(cue)
   }
@@ -467,9 +471,11 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     return at !== undefined && coverOf(name, has) !== undefined && Math.abs(now - at) < LIVE.sameCueSeconds
   }
 
-  const playCue = (cue: string, x: number, when?: number) => {
+  // room: for a cue that lands on an event (`lands` in the change list), the seconds from now to that event, where they are known.
+  // Its body then ends on the event: it waits, or starts that much into itself. Unknown, it starts whole and at once.
+  const playCue = (cue: string, x: number, when?: number, room?: number) => {
     const b = backend!
-    const now = Math.max(when ?? 0, b.now())
+    let now = Math.max(when ?? 0, b.now())
     const last = lastPlay.get(cue)
     if (last !== undefined && Math.abs(now - last) < LIVE.sameCueSeconds) return
     lastPlay.set(cue, now)
@@ -488,7 +494,12 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       fade = LIVE.loopFadeSeconds
     }
     if (loop) stopCue(cue)
-    const voice = b.play(pick.id, { bus: 'fx', when: now, cents: pick.cents, pan, loop, until, fade, fadeIn: loop ? LIVE.loopFadeSeconds : undefined })
+    const lands = changeCue(cue)?.lands
+    const kept = lengths.get(pick.id) ?? spec?.seconds ?? 0
+    const fit = lands && room !== undefined ? landing(kept, lands.tail, room) : { wait: 0, skip: 0 }
+    if (lands && fit.skip >= kept - lands.tail) return
+    now += fit.wait
+    const voice = b.play(pick.id, { bus: 'fx', when: now, cents: pick.cents, pan, loop, until, fade, fadeIn: loop || fit.skip > 0 ? LIVE.loopFadeSeconds : undefined, ...(fit.skip > 0 ? { offset: fit.skip } : {}) })
     if (voice) running.set(cue, [...(running.get(cue) ?? []).slice(-7), voice])
   }
 
@@ -505,6 +516,34 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     const now = backend.now()
     for (const s of prelude) if (s.cue && s.at >= lo && s.at < hi) playCue(s.cue, s.x, now + s.at - filmAt)
     aheadTo = Math.max(lo, hi)
+  }
+
+  // The cue that lands on the fire of the finish. The arms and the first charge mark after them, the press, are kept as they come.
+  // On the live site while FINISH.onVoice the blast is set at the press (`voiceShout`, as the page reads it), so the seconds to it are known when the cue's own event comes.
+  // With the switch off the blast comes when the button is let go, which nobody knows before: the cue then starts whole.
+  // In the film on the site the cue has no event of its own: it starts at the arms, and the fire is `SHOUT.fire` after them.
+  let armed: { step: number | undefined; at: number } | null = null
+  let pressed: { step: number | undefined; at: number } | null = null
+  const after = (a: { step: number | undefined; at: number }, step: number | undefined, at: number): number => (step !== undefined && a.step !== undefined ? (step - a.step) / stepHz : at - a.at)
+  const roomToFire = (step: number | undefined, now: number): number | undefined => {
+    if (!FINISH.onVoice || !armed) return undefined
+    const p = pressed ?? { step, at: now }
+    return voiceShout(SHOUT.arms + after(armed, p.step, p.at), shoutTake()).due - SHOUT.arms - after(armed, step, now)
+  }
+  const land = (e: { name: string; x: number; step?: number; page?: string }, mode: SoundMode, now: number) => {
+    for (const row of landers) {
+      const l = row.lands!
+      if (e.name === l.from) {
+        armed = { step: e.step, at: now }
+        pressed = null
+        if (mode === 'film' && keptChange(row, has) && !hushed(e, mode, row.id)) playCue(row.id, e.x, undefined, SHOUT.fire - SHOUT.arms)
+      } else if (e.name === spoken[SHOUT_LINE]?.steps?.next) {
+        if (armed && !pressed) pressed = { step: e.step, at: now }
+      } else if (e.name === l.on) {
+        if (mode !== 'film') stopCue(row.id, LIVE.landCutSeconds)
+        armed = null
+      } else if (e.name === 'page-turn' || e.name === 'skip') stopCue(row.id)
+    }
   }
 
   const reduck = () => {
@@ -534,11 +573,11 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   }
 
   // The take of a line with a voice, set on the sound clock at the start of its booking. A line that is a stand-in, or whose file did not come, plays nothing.
-  const voice = (booking: Booking, line: StandIn) => {
+  const voice = (booking: Booking, line: StandIn, offset = 0) => {
     voices.get(booking)?.stop(0)
     voices.delete(booking)
-    if (!line.kept || !loaded.has(line.id)) return
-    const v = backend!.play(line.id, { bus: 'voice', when: booking.start, cents: 0, pan: 0, loop: false })
+    if (waits.has(booking) || !line.kept || !loaded.has(line.id)) return
+    const v = backend!.play(line.id, { bus: 'voice', when: booking.start, cents: 0, pan: 0, loop: false, ...(offset > 0 ? { offset } : {}) })
     if (v) voices.set(booking, v)
   }
 
@@ -552,7 +591,17 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     } else v.until(booking.end, fade)
   }
 
+  // The shout on the live site while FINISH.onVoice: booked on its event as ever, its voice and its words wait for the first charge mark, the visitor's press.
+  // Until then the booking is held open for as long as the page waits before it presses by itself.
+  // The log names it spoken once, at the press, where its voice is made.
+  const waits = new Map<Booking, { step: number | undefined; at: number }>()
+  const onVoice = new Set<Booking>()
+  const waitsForPress = (line: StandIn): boolean => FINISH.onVoice && lastMode === 'live' && line.key === SHOUT_LINE && spoken[line.key]?.steps !== undefined
   const speak = (booking: Booking, line: StandIn) => {
+    if (waitsForPress(line)) {
+      waits.set(booking, { step: heard, at: booking.start })
+      booking.end = booking.start + FINISH.alone + line.seconds
+    }
     speaking.set(booking, line)
     voice(booking, line)
     setMark(booking, line)
@@ -596,7 +645,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       note({ at: round(now), line: line.id, trigger, what: 'dropped', why: narrator.why ?? '' })
       return
     }
-    note({ at: round(now), line: line.id, trigger, what: 'spoken', start: round(booking.start), seconds: round(line.seconds) })
+    if (!waitsForPress(line)) note({ at: round(now), line: line.id, trigger, what: 'spoken', start: round(booking.start), seconds: round(line.seconds) })
     told.add(key)
     speak(booking, line)
     for (const [next, r] of Object.entries(spoken)) if (r.after === key) say(next, `after ${line.id}`, mode, booking.end)
@@ -620,6 +669,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
 
   // A line whose phrases come on marks of its page: each mark shows the next phrase, the last mark the last phrase, and the end mark ends the line.
   // A row with hidesOnRise: its caption leaves riseAfterFire() after the first last mark and stays away; the voice is not touched.
+  // The shout on the live site while FINISH.onVoice: the first charge mark is the press. The file starts there, whole but for its silent lead-in, so that its peak
+  // comes where voiceShout puts the blast, and each phrase is shown as the file reaches it. The later marks and the letting go move nothing; the fire mark takes the caption away on the rise.
   const step = (name: string, page: string) => {
     const now = backend!.now()
     for (const [b, l] of [...speaking]) {
@@ -627,6 +678,30 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (!steps || l.page !== page || b.end <= now) continue
       const got = stepped.get(b) ?? []
       const at = Math.max(now, b.start)
+      const wait = waits.get(b)
+      if (wait || onVoice.has(b)) {
+        if (wait && name === steps.next) {
+          const press = SHOUT.arms + (heard !== undefined && wait.step !== undefined ? (heard - wait.step) / stepHz : now - wait.at)
+          const v = voiceShout(press, { starts: l.phrases.map((p) => p.from), seconds: l.seconds, ...(l.peak !== undefined ? { peak: l.peak } : {}) })
+          const start = at + v.from - press
+          waits.delete(b)
+          onVoice.add(b)
+          b.start = start
+          b.end = start + l.seconds - v.skip
+          voice(b, l, v.skip)
+          stepped.set(b, v.says.map((x) => start + x - v.from))
+          note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'spoken', start: round(start), seconds: round(b.end - start), why: `its voice starts with the press, ${round(v.skip)} s into its file, and its peak comes ${round(v.due - press)} s after the press` })
+          reduck()
+        } else if (name === steps.last) {
+          if (wait) {
+            waits.delete(b)
+            b.end = at
+            note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'dropped', why: 'the fire came and no press before it' })
+          } else if (steps.hidesOnRise && !hidden.has(b)) hidden.set(b, at + riseAfterFire())
+        } else continue
+        caption?.wake()
+        continue
+      }
       if (name === steps.next) {
         if (got.length < l.phrases.length - 1) got.push(at)
       } else if (name === steps.last) {
@@ -773,8 +848,10 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       const cue = cueFor(e.name, e.page ?? here, has)
       const mark = markStandsFor[e.name]
       const marked = mark !== undefined && cue !== undefined && byMark.has(cue)
+      land(e, mode, backend.now())
       if (cue && cue !== 'room-tone' && !marked && !hushed(e, mode, cue) && !covered(e.name, backend.now())) {
-        playCue(cue, e.x)
+        if (!changeCue(cue)?.lands) playCue(cue, e.x)
+        else if (mode !== 'film') playCue(cue, e.x, undefined, roomToFire(e.step, backend.now()))
         covers(cue, backend.now())
       }
       for (const more of alsoStarts[e.name] ?? []) if (!hushed(e, mode, more)) playCue(more, e.x)
@@ -787,6 +864,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (closes && mode !== 'film') closeOpening(now, e.name)
       if (mode === 'live' && (e.name === 'page-turn' || e.name === 'skip')) hushTurn(now, e.name, page)
       jump(e.name, page, mode)
+      heard = e.step
       step(e.name, page)
       if (e.name === 'skip' || e.name === 'page-turn') takeBack(desk.leave(now, page), e.name === 'skip' ? 'its page was skipped' : 'its page was turned')
       if (closes) openingOpen = false
@@ -874,6 +952,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       lead = false
       aheadTo = -1
       lastPlay.clear()
+      armed = null
+      pressed = null
       if (backend) {
         const now = backend.now()
         for (const b of speaking.keys()) if (b.end > now) note({ at: round(now), line: b.id, trigger: 'stop', what: b.start <= now ? 'cut' : 'taken back', start: round(b.start), why: 'the sound was stopped' })
