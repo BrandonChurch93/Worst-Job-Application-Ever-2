@@ -1,0 +1,117 @@
+{
+  "id": "keys-break",
+  "kind": "cue",
+  "cue": "keys-break",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A plastic keyboard crushed under a heavy weight: one sharp crunch and loose key caps scattering",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L2 of the free layering rounds of November 28): keys-break takes 1 and 2 with the stop-press click and a short smack of turret-cannon take 2 as one crunch, then eleven larger pieces of the same snaps and clicks, each lowered by its own amount, with gaps between them over half a second. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 3,
+    "round": "change-002-layer",
+    "file": "take-3.wav",
+    "sha256": "c66034e611070dabd71bc473ecc792c6a93c220963d84a4900f58dfddd375dc4",
+    "filed": "2026-11-28T10:51:59.530Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.578,
+      "peakDb": -1.01,
+      "rmsDb": -19.02,
+      "lufs": -18.48,
+      "truePeakDb": -0.96,
+      "low": 0.039,
+      "mid": 0.796,
+      "high": 0.164,
+      "tailDb": -34.82,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.54,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.578,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -3.76,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.578,
+    "start": 0,
+    "end": 0.558,
+    "peakDb": -5,
+    "rmsDb": -22.72,
+    "lufs": -21.21,
+    "truePeakDb": -4.91,
+    "low": 0.036,
+    "mid": 0.799,
+    "high": 0.165,
+    "tailDb": -35.63,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.526,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A sharp plastic crunch followed by small pieces scattering. / A sharp plastic crunch followed by the clatter of small pieces scattering. / A sharp plastic crunch followed by the rattling of small pieces falling.",
+    "madeOf": "crushing plastic, scattering pieces / plastic / Plastic crunching and scattering",
+    "events": "1 / 2 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio consists of a sharp, heavy impact on plastic followed by the distinct clattering of small plastic pieces bouncing, which aligns perfectly with the description.",
+      "The audio features a distinct heavy plastic break followed by multiple small lightweight impacts, matching a crushed keyboard and scattering keys.",
+      "The audio features a loud, brittle plastic snapping noise followed by the rapid clicking of small plastic pieces bouncing, matching the description of a keyboard being crushed and keys scattering."
+    ],
+    "sameRoom": null
+  },
+  "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "keys-break.wav",
+  "seconds": 0.578,
+  "sha256": "d5874ba836d410206b7c62c691cbe64739e6b134d543014a53bbbdb59b818029"
+}

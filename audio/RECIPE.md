@@ -1528,3 +1528,63 @@ Takes used: 2 of 3 in round script-003.
 | 2 | script-003 | 2026-11-28T02:46:12.582Z | 3.39 s | -1.99 dB | -17.8 LUFS | 2 | 17 | yes, as line.decision.reset.0 | The listening check could not be made to hear this take: 0 whole answers in 25 asks, each said no sound was given. Its numbers hold: 1.563 words a second, 1 pause for 1 mark. A speech-to-text read on this machine (Whisper base.en, out/work/audio/listen/s003-asr-base.en.json) gives the words: on to the next application. Not judged by ear; how it sounds is not known until Brandon hears it. |
 
 Words: On to / the next application.
+
+### turret-cannon
+
+Takes used: 2 of 3 in round change-002, 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T10:51:33.713Z | 0.8 s | -12.22 dB | -29.34 LUFS | 1 | 9 | no |  |
+| 2 | change-002 | 2026-11-28T10:51:35.368Z | 0.8 s | -26.61 dB | -41.73 LUFS | 1 | 9 | no |  |
+| 3 | change-002-layer | 2026-11-28T10:51:36.884Z | 0.8 s | -1.01 dB | -15.7 LUFS | 1 | 0 | yes, as turret-cannon | Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line |
+
+Prompt: Made for free from paid takes, with no call to the sound service (layer L5 of the free layering rounds of November 28): big-fire take 2 lowered by a minor third and so longer, from its loudest moment, cut to 0.8 s with a fade of 0.2 s, with the smack of turret-cannon take 2 4 dB under and take 1 lowered by a sixth 5 dB under, overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.
+
+### slab-slam
+
+Takes used: 2 of 3 in round change-002, 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T10:51:47.843Z | 1 s | -22.62 dB | -43.65 LUFS | 1 | 11 | no |  |
+| 2 | change-002 | 2026-11-28T10:51:49.703Z | 1 s | -26.91 dB | -45.91 LUFS | 1 | 11 | no |  |
+| 3 | change-002-layer | 2026-11-28T10:51:51.496Z | 1 s | -1.01 dB | -16.56 LUFS | 1 | 0 | yes, as slab-slam | Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line |
+
+Prompt: Made for free from paid takes, with no call to the sound service (layer L1 of the free layering rounds of November 28): slab-slam take 1 (body) and take 2 (boom), the thud of turret-cannon take 1 a fourth lower, the smack of turret-cannon take 2, the shatter of button-burst take 2 far under, overtones of the deep part, soft saturation. The takes named are filed under their own cues.
+
+### keys-break
+
+Takes used: 2 of 3 in round change-002, 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T10:51:56.334Z | 0.6 s | -5.22 dB | -26.89 LUFS | 2 | 7 | no |  |
+| 2 | change-002 | 2026-11-28T10:51:57.911Z | 0.6 s | 0.78 dB | -15.58 LUFS | 1 | 7 | no |  |
+| 3 | change-002-layer | 2026-11-28T10:51:59.530Z | 0.6 s | -1.01 dB | -18.48 LUFS | 1 | 0 | yes, as keys-break | Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line |
+
+Prompt: Made for free from paid takes, with no call to the sound service (layer L2 of the free layering rounds of November 28): keys-break takes 1 and 2 with the stop-press click and a short smack of turret-cannon take 2 as one crunch, then eleven larger pieces of the same snaps and clicks, each lowered by its own amount, with gaps between them over half a second. The takes named are filed under their own cues.
+
+### button-burst
+
+Takes used: 2 of 3 in round change-002, 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T10:52:04.441Z | 1.2 s | -5.62 dB | -14.34 LUFS | 1 | 13 | no |  |
+| 2 | change-002 | 2026-11-28T10:52:06.111Z | 1.2 s | -17.07 dB | -34.83 LUFS | 1 | 13 | no |  |
+| 3 | change-002-layer | 2026-11-28T10:52:07.685Z | 1.2 s | -1.01 dB | -18.15 LUFS | 1 | 0 | yes, as button-burst | Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line |
+
+Prompt: Made for free from paid takes, with no call to the sound service (layer L3 of the free layering rounds of November 28): as L2 (the crack of take 2, the deep boom of big-fire take 1, the thud of turret-cannon take 1 lower, the clank of boss-fall take 1, a second boom from slab-slam take 2, six small thuds as chunks falling, take 1 laid 8 dB under), with the crack 3 dB up and a gentler saturation. The takes named are filed under their own cues.
+
+### big-fire
+
+Takes used: 2 of 3 in round change-002, 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T10:52:12.390Z | 1.48 s | -15.85 dB | -33.14 LUFS | 1 | 17 | no |  |
+| 2 | change-002 | 2026-11-28T10:52:13.951Z | 1.48 s | -1.94 dB | -15.06 LUFS | 1 | 17 | no |  |
+| 3 | change-002-layer | 2026-11-28T10:52:15.709Z | 1.5 s | -1.01 dB | -14.45 LUFS | 1 | 0 | yes, as big-fire | Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line |
+
+Prompt: Made for free from paid takes, with no call to the sound service (layer L1 of the free layering rounds of November 28): big-fire take 2 as it is, the deep boom of take 1 3 dB under at its loudest moment, the thud of turret-cannon take 1 an octave lower 5 dB under, overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.

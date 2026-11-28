@@ -1,0 +1,117 @@
+{
+  "id": "turret-cannon",
+  "kind": "cue",
+  "cue": "turret-cannon",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One heavy cannon shot from a short thick steel barrel: a deep hard boom with a sharp crack at its front",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L5 of the free layering rounds of November 28): big-fire take 2 lowered by a minor third and so longer, from its loudest moment, cut to 0.8 s with a fade of 0.2 s, with the smack of turret-cannon take 2 4 dB under and take 1 lowered by a sixth 5 dB under, overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 3,
+    "round": "change-002-layer",
+    "file": "take-3.wav",
+    "sha256": "dc3f6bc889ba8c9bfb305f99e8ba6af37c93da652805ddde200ff57a70ba8149",
+    "filed": "2026-11-28T10:51:36.884Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0,
+      "end": 0.766,
+      "peakDb": -1.01,
+      "rmsDb": -11.66,
+      "lufs": -15.7,
+      "truePeakDb": -0.99,
+      "low": 0.882,
+      "mid": 0.114,
+      "high": 0.005,
+      "tailDb": -41.89,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.694,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.766,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -6.58,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.766,
+    "start": 0,
+    "end": 0.728,
+    "peakDb": -5,
+    "rmsDb": -20.43,
+    "lufs": -22.79,
+    "truePeakDb": -5,
+    "low": 0.8,
+    "mid": 0.192,
+    "high": 0.008,
+    "tailDb": -39.14,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.664,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A single heavy cannon shot with a deep boom and sharp crack. / A single loud, explosive blast like a heavy cannon shot. / A loud, heavy cannon shot or explosive blast.",
+    "madeOf": "explosive blast, bass boom / Explosion or cannon fire / Explosion sound effect",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio features a single, loud explosive boom with a sharp attack that perfectly matches the description of a cannon shot.",
+      "The sound begins with a sharp crack and is followed by a deep, resonant boom, perfectly fitting the description of a heavy cannon shot.",
+      "The audio consists of a single, deep, and heavy explosive boom with a sharp initial crack, perfectly matching the description of a heavy cannon shot."
+    ],
+    "sameRoom": null
+  },
+  "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "turret-cannon.wav",
+  "seconds": 0.766,
+  "sha256": "dca2b465c734dcb51025bc6771255fb995a9b996b2aa2bf813ac82159e4e6db1"
+}

@@ -8,6 +8,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/ball-drop.wav` | Sound effect `ball-drop` | Generated with the sound tool, take 1 (build) | `audio/kept/ball-drop.json` |
 | `audio/kept/ball-open.wav` | Sound effect `ball-open` | Generated with the sound tool, take 1 (build) | `audio/kept/ball-open.json` |
 | `audio/kept/ball-seal.wav` | Sound effect `ball-seal` | Generated with the sound tool, take 1 (build) | `audio/kept/ball-seal.json` |
+| `audio/kept/big-fire.wav` | Sound effect `big-fire` | Generated with the sound tool, take 3 (change-002-layer) | `audio/kept/big-fire.json` |
 | `audio/kept/bolt-fire.1.wav` | Sound effect `bolt-fire`, variant 1 | Generated with the sound tool, take 1 (build) | `audio/kept/bolt-fire.1.json` |
 | `audio/kept/bolt-fire.2.wav` | Sound effect `bolt-fire`, variant 2 | Generated with the sound tool, take 1 (build) | `audio/kept/bolt-fire.2.json` |
 | `audio/kept/bolt-fire.3.wav` | Sound effect `bolt-fire`, variant 3 | Generated with the sound tool, take 1 (build) | `audio/kept/bolt-fire.3.json` |
@@ -19,6 +20,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/bumper.2.wav` | Sound effect `bumper`, variant 2 | Generated with the sound tool, take 1 (build) | `audio/kept/bumper.2.json` |
 | `audio/kept/bumper.3.wav` | Sound effect `bumper`, variant 3 | Generated with the sound tool, take 1 (build) | `audio/kept/bumper.3.json` |
 | `audio/kept/bumper.4.wav` | Sound effect `bumper`, variant 4 | Generated with the sound tool, take 1 (build) | `audio/kept/bumper.4.json` |
+| `audio/kept/button-burst.wav` | Sound effect `button-burst` | Generated with the sound tool, take 3 (change-002-layer) | `audio/kept/button-burst.json` |
 | `audio/kept/button-crack.wav` | Sound effect `button-crack` | Generated with the sound tool, take 2 (build) | `audio/kept/button-crack.json` |
 | `audio/kept/button-press.wav` | Sound effect `button-press` | Generated with the sound tool, take 1 (build) | `audio/kept/button-press.json` |
 | `audio/kept/card-flip.wav` | Sound effect `card-flip` | Generated with the sound tool, take 1 (build) | `audio/kept/card-flip.json` |
@@ -60,6 +62,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/key-press.6.wav` | Sound effect `key-press`, variant 6 | Generated with the sound tool, take 1 (build) | `audio/kept/key-press.6.json` |
 | `audio/kept/key-tap.wav` | Sound effect `key-tap` | Generated with the sound tool, take 1 (build) | `audio/kept/key-tap.json` |
 | `audio/kept/keyboard-rise.wav` | Sound effect `keyboard-rise` | Generated with the sound tool, take 1 (build) | `audio/kept/keyboard-rise.json` |
+| `audio/kept/keys-break.wav` | Sound effect `keys-break` | Generated with the sound tool, take 3 (change-002-layer) | `audio/kept/keys-break.json` |
 | `audio/kept/keys-shuffle.wav` | Sound effect `keys-shuffle` | Generated with the sound tool, take 1 (build) | `audio/kept/keys-shuffle.json` |
 | `audio/kept/letter-drop.wav` | Sound effect `letter-drop` | Generated with the sound tool, take 1 (build) | `audio/kept/letter-drop.json` |
 | `audio/kept/lever-pull.wav` | Sound effect `lever-pull` | Generated with the sound tool, take 1 (build) | `audio/kept/lever-pull.json` |
@@ -104,6 +107,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/slab-fire.1.wav` | Sound effect `slab-fire`, variant 1 | Generated with the sound tool, take 1 (build) | `audio/kept/slab-fire.1.json` |
 | `audio/kept/slab-fire.2.wav` | Sound effect `slab-fire`, variant 2 | Generated with the sound tool, take 1 (build) | `audio/kept/slab-fire.2.json` |
 | `audio/kept/slab-fire.3.wav` | Sound effect `slab-fire`, variant 3 | Generated with the sound tool, take 1 (build) | `audio/kept/slab-fire.3.json` |
+| `audio/kept/slab-slam.wav` | Sound effect `slab-slam` | Generated with the sound tool, take 3 (change-002-layer) | `audio/kept/slab-slam.json` |
 | `audio/kept/sling.1.wav` | Sound effect `sling`, variant 1 | Generated with the sound tool, take 1 (build) | `audio/kept/sling.1.json` |
 | `audio/kept/sling.2.wav` | Sound effect `sling`, variant 2 | Generated with the sound tool, take 1 (build) | `audio/kept/sling.2.json` |
 | `audio/kept/spinner.wav` | Sound effect `spinner` | Generated with the sound tool, take 1 (build) | `audio/kept/spinner.json` |
@@ -117,6 +121,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/tier-fall.wav` | Sound effect `tier-fall` | Generated with the sound tool, take 1 (build) | `audio/kept/tier-fall.json` |
 | `audio/kept/tube-run.wav` | Sound effect `tube-run` | Generated with the sound tool, take 1 (build) | `audio/kept/tube-run.json` |
 | `audio/kept/tug-lost.wav` | Sound effect `tug-lost` | Generated with the sound tool, take 1 (build) | `audio/kept/tug-lost.json` |
+| `audio/kept/turret-cannon.wav` | Sound effect `turret-cannon` | Generated with the sound tool, take 3 (change-002-layer) | `audio/kept/turret-cannon.json` |
 | `audio/kept/turret-rise.wav` | Sound effect `turret-rise` | Generated with the sound tool, take 1 (build) | `audio/kept/turret-rise.json` |
 | `audio/kept/ui-send.wav` | Sound effect `ui-send` | Generated with the sound tool, take 1 (build) | `audio/kept/ui-send.json` |
 | `audio/kept/ui-tick.wav` | Sound effect `ui-tick` | Generated with the sound tool, take 1 (build) | `audio/kept/ui-tick.json` |
@@ -126,7 +131,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 
 | File | What it is | How it was made | Record |
 | --- | --- | --- | --- |
-| `public/audio/sfx.bin` | The 102 short sounds of the site in one file | Made by `npm run sound -- --pack` from the kept sounds of `audio/kept/` named in the index | `public/audio/index.json` |
+| `public/audio/sfx.bin` | The 107 short sounds of the site in one file | Made by `npm run sound -- --pack` from the kept sounds of `audio/kept/` named in the index | `public/audio/index.json` |
 | `public/audio/boss-loop.flac` | The site's copy of `boss-loop` | Made by `npm run sound -- --pack` from `audio/kept/boss-loop.wav` | `audio/kept/boss-loop.json` |
 | `public/audio/room-tone.flac` | The site's copy of `room-tone` | Made by `npm run sound -- --pack` from `audio/kept/room-tone.wav` | `audio/kept/room-tone.json` |
 | `public/audio/shredder.flac` | The site's copy of `shredder` | Made by `npm run sound -- --pack` from `audio/kept/shredder.wav` | `audio/kept/shredder.json` |

@@ -1,0 +1,117 @@
+{
+  "id": "button-burst",
+  "kind": "cue",
+  "cue": "button-burst",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A huge machine tearing itself up out of a thick ceramic floor: one deep crack, then heavy chunks bursting out and falling",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L3 of the free layering rounds of November 28): as L2 (the crack of take 2, the deep boom of big-fire take 1, the thud of turret-cannon take 1 lower, the clank of boss-fall take 1, a second boom from slab-slam take 2, six small thuds as chunks falling, take 1 laid 8 dB under), with the crack 3 dB up and a gentler saturation. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 3,
+    "round": "change-002-layer",
+    "file": "take-3.wav",
+    "sha256": "e307a7ae6ffe131ff99591d0d83ca77816b909f95f5e5b30416dec353adc9ff9",
+    "filed": "2026-11-28T10:52:07.685Z",
+    "measured": {
+      "seconds": 1.2,
+      "start": 0,
+      "end": 1.148,
+      "peakDb": -1.01,
+      "rmsDb": -16.57,
+      "lufs": -18.15,
+      "truePeakDb": -1,
+      "low": 0.711,
+      "mid": 0.189,
+      "high": 0.101,
+      "tailDb": -36.96,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 1.066,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 1.148,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -5.76,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.148,
+    "start": 0,
+    "end": 1.082,
+    "peakDb": -5,
+    "rmsDb": -23.46,
+    "lufs": -24.35,
+    "truePeakDb": -4.96,
+    "low": 0.604,
+    "mid": 0.257,
+    "high": 0.139,
+    "tailDb": -32.44,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 1.054,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A heavy, tearing crack is followed by the impacts of falling debris. / A loud crack followed by the sound of heavy debris crashing and falling. / A heavy burst followed by the crashing and scattering of hard debris.",
+    "madeOf": "cracking, scraping, impacts / Rock or ceramic breaking and impacting. / rock, concrete, heavy debris",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The sound features a prolonged, heavy cracking and tearing noise followed by the thudding impacts of heavy pieces falling, perfectly matching the description.",
+      "The audio features a sharp initial crack followed immediately by the heavy, crumbling impacts of falling debris, matching the description of a thick floor breaking apart.",
+      "The audio contains a loud, initial cracking impact followed by the heavy, scattering crash of brittle, dense chunks, closely matching the described action."
+    ],
+    "sameRoom": null
+  },
+  "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "button-burst.wav",
+  "seconds": 1.148,
+  "sha256": "f143fa569544c60609eec070c4adf73249cf812c6b37d6892cf218ff22b724ed"
+}

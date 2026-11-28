@@ -14971,6 +14971,791 @@
         "fits": true,
         "beatSeconds": 3.3000000000000007
       }
+    },
+    {
+      "key": "turret-cannon",
+      "kind": "cue",
+      "cue": "turret-cannon",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "a289a724ccc463daf0eeb0a1f5f2a99030926c55a31ee395d9629e11e683a0af",
+      "filed": "2026-11-28T10:51:33.713Z",
+      "prompt": "One heavy cannon shot from a short thick steel barrel, a deep hard boom with a sharp crack at its front and a punch of air, powerful and weighty, a single shot, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 215
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -12.22,
+        "rmsDb": -28.98,
+        "lufs": -29.34,
+        "truePeakDb": -12.11,
+        "low": 0.903,
+        "mid": 0.096,
+        "high": 0.001,
+        "tailDb": -60.89,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.398,
+            "peakDb": -12.22
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "turret-cannon",
+      "kind": "cue",
+      "cue": "turret-cannon",
+      "take": 2,
+      "round": "change-002",
+      "file": "take-2.mp3",
+      "sha256": "bf021fa87d108bb9514e059742fc729d876a48d1ec953a74a525b2c3e51afb81",
+      "filed": "2026-11-28T10:51:35.368Z",
+      "prompt": "One shot from a small steel cannon heard close, a loud sharp crack and a hard explosive mid-range punch with a short ring of the barrel, bright, tight and forceful, a single shot, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": 0.5,
+        "call": 248
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -26.61,
+        "rmsDb": -46.08,
+        "lufs": -41.73,
+        "truePeakDb": -25.97,
+        "low": 0.231,
+        "mid": 0.688,
+        "high": 0.081,
+        "tailDb": -57.86,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.37,
+            "peakDb": -26.61
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "turret-cannon",
+      "kind": "cue",
+      "cue": "turret-cannon",
+      "take": 3,
+      "round": "change-002-layer",
+      "file": "take-3.wav",
+      "sha256": "dc3f6bc889ba8c9bfb305f99e8ba6af37c93da652805ddde200ff57a70ba8149",
+      "filed": "2026-11-28T10:51:36.884Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L5 of the free layering rounds of November 28): big-fire take 2 lowered by a minor third and so longer, from its loudest moment, cut to 0.8 s with a fade of 0.2 s, with the smack of turret-cannon take 2 4 dB under and take 1 lowered by a sixth 5 dB under, overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.766,
+        "peakDb": -1.01,
+        "rmsDb": -11.66,
+        "lufs": -15.7,
+        "truePeakDb": -0.99,
+        "low": 0.882,
+        "mid": 0.114,
+        "high": 0.005,
+        "tailDb": -41.89,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.694,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single heavy cannon shot with a deep boom and sharp crack. / A single loud, explosive blast like a heavy cannon shot. / A loud, heavy cannon shot or explosive blast.",
+        "madeOf": "explosive blast, bass boom / Explosion or cannon fire / Explosion sound effect",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a single, loud explosive boom with a sharp attack that perfectly matches the description of a cannon shot.",
+          "The sound begins with a sharp crack and is followed by a deep, resonant boom, perfectly fitting the description of a heavy cannon shot.",
+          "The audio consists of a single, deep, and heavy explosive boom with a sharp initial crack, perfectly matching the description of a heavy cannon shot."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "turret-cannon"
+      ],
+      "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line"
+    },
+    {
+      "key": "slab-slam",
+      "kind": "cue",
+      "cue": "slab-slam",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "ce83076b3b511b03cd23d3ff09859a31ad76458b7e15dc2d76568bbaf46cbb83",
+      "filed": "2026-11-28T10:51:47.843Z",
+      "prompt": "One enormous stone slab dropped from a great height slamming flat onto a ceramic floor, a huge deep boom with the floor cracking under it and a short spray of rubble, very heavy, a single impact, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": null,
+        "call": 216
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 1,
+        "peakDb": -22.62,
+        "rmsDb": -36.34,
+        "lufs": -43.65,
+        "truePeakDb": -22.61,
+        "low": 0.989,
+        "mid": 0.011,
+        "high": 0,
+        "tailDb": -42.81,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.792,
+            "peakDb": -22.62
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "slab-slam",
+      "kind": "cue",
+      "cue": "slab-slam",
+      "take": 2,
+      "round": "change-002",
+      "file": "take-2.mp3",
+      "sha256": "5676ba316214d5934b2178b73d65b9491054e63f136e4b9cf87c7236151de96b",
+      "filed": "2026-11-28T10:51:49.703Z",
+      "prompt": "A massive concrete block slamming flat onto a stone floor, one hard heavy smack with a loud crack of breaking stone and a burst of gritty rubble, full mid-range weight, violent and final, a single impact, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1,
+        "loop": false,
+        "influence": 0.5,
+        "call": 249
+      },
+      "askedSeconds": 1,
+      "cost": "11",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 1,
+        "peakDb": -26.91,
+        "rmsDb": -45.3,
+        "lufs": -45.91,
+        "truePeakDb": -26.82,
+        "low": 0.979,
+        "mid": 0.021,
+        "high": 0,
+        "tailDb": -45.86,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.61,
+            "peakDb": -26.91
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "slab-slam",
+      "kind": "cue",
+      "cue": "slab-slam",
+      "take": 3,
+      "round": "change-002-layer",
+      "file": "take-3.wav",
+      "sha256": "bfa7d1818b890e655905b1aaa282117bc40439edb41990b08e42af79d0fc37a1",
+      "filed": "2026-11-28T10:51:51.496Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering rounds of November 28): slab-slam take 1 (body) and take 2 (boom), the thud of turret-cannon take 1 a fourth lower, the smack of turret-cannon take 2, the shatter of button-burst take 2 far under, overtones of the deep part, soft saturation. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 0.97,
+        "peakDb": -1.01,
+        "rmsDb": -11.63,
+        "lufs": -16.56,
+        "truePeakDb": -1.01,
+        "low": 0.89,
+        "mid": 0.106,
+        "high": 0.004,
+        "tailDb": -35.64,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.908,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A heavy stone slab slams down with a loud impact, followed by cracking and settling debris. / A massive stone slab slams into the ground with a heavy thud. / A massive, heavy object crashes flat onto a hard surface, which subsequently splinters and cracks.",
+        "madeOf": "Heavy impact, cracking sounds, rumble / Stone, concrete, impact, rumble / Stone, ceramic",
+        "events": "1 / 1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a massive, heavy impact immediately followed by sharp, crumbling and cracking noises, matching the description of a heavy slab breaking a ceramic floor.",
+          "The sound features a single, heavy, resonant impact with subsequent rumbling and cracking noises, matching a large stone hitting and breaking a floor.",
+          "The audio features a deep, heavy impact characteristic of a large stone slab dropping, followed immediately by sharp, brittle fracturing noises consistent with ceramic breaking."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "slab-slam"
+      ],
+      "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line"
+    },
+    {
+      "key": "keys-break",
+      "kind": "cue",
+      "cue": "keys-break",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "002a27184cea3480179f3bbf338a814ad56f607a4a50ac9105757a40da120fb6",
+      "filed": "2026-11-28T10:51:56.334Z",
+      "prompt": "A plastic computer keyboard crushed under a heavy weight, one sharp crunch of plastic and loose key caps scattering on a hard floor, medium weight, short, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 217
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.518,
+        "peakDb": -5.22,
+        "rmsDb": -33.78,
+        "lufs": -26.89,
+        "truePeakDb": -4.83,
+        "low": 0.005,
+        "mid": 0.501,
+        "high": 0.495,
+        "tailDb": -55.9,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.014,
+            "end": 0.098,
+            "peakDb": -23.64
+          },
+          {
+            "start": 0.192,
+            "end": 0.356,
+            "peakDb": -5.22
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "keys-break",
+      "kind": "cue",
+      "cue": "keys-break",
+      "take": 2,
+      "round": "change-002",
+      "file": "take-2.mp3",
+      "sha256": "e40dc8060dbcef2acc2a306ecaa0edb10c9bd85de5273221784d4c1dd77a5e68",
+      "filed": "2026-11-28T10:51:57.911Z",
+      "prompt": "Hard plastic smashed with a hammer, one loud snap and crunch as it shatters, small plastic pieces clattering onto a hard table, crisp and brittle, short, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": 0.5,
+        "call": 250
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0.022,
+        "end": 0.39,
+        "peakDb": 0.78,
+        "rmsDb": -21.07,
+        "lufs": -15.58,
+        "truePeakDb": 1.09,
+        "low": 0.032,
+        "mid": 0.771,
+        "high": 0.197,
+        "tailDb": -59.14,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.026,
+            "end": 0.094,
+            "peakDb": 0.78
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "keys-break",
+      "kind": "cue",
+      "cue": "keys-break",
+      "take": 3,
+      "round": "change-002-layer",
+      "file": "take-3.wav",
+      "sha256": "c66034e611070dabd71bc473ecc792c6a93c220963d84a4900f58dfddd375dc4",
+      "filed": "2026-11-28T10:51:59.530Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L2 of the free layering rounds of November 28): keys-break takes 1 and 2 with the stop-press click and a short smack of turret-cannon take 2 as one crunch, then eleven larger pieces of the same snaps and clicks, each lowered by its own amount, with gaps between them over half a second. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.578,
+        "peakDb": -1.01,
+        "rmsDb": -19.02,
+        "lufs": -18.48,
+        "truePeakDb": -0.96,
+        "low": 0.039,
+        "mid": 0.796,
+        "high": 0.164,
+        "tailDb": -34.82,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.54,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A sharp plastic crunch followed by small pieces scattering. / A sharp plastic crunch followed by the clatter of small pieces scattering. / A sharp plastic crunch followed by the rattling of small pieces falling.",
+        "madeOf": "crushing plastic, scattering pieces / plastic / Plastic crunching and scattering",
+        "events": "1 / 2 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio consists of a sharp, heavy impact on plastic followed by the distinct clattering of small plastic pieces bouncing, which aligns perfectly with the description.",
+          "The audio features a distinct heavy plastic break followed by multiple small lightweight impacts, matching a crushed keyboard and scattering keys.",
+          "The audio features a loud, brittle plastic snapping noise followed by the rapid clicking of small plastic pieces bouncing, matching the description of a keyboard being crushed and keys scattering."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "keys-break"
+      ],
+      "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line"
+    },
+    {
+      "key": "button-burst",
+      "kind": "cue",
+      "cue": "button-burst",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "5fdc410a540b526ba23ae79afd2d8ecbf49c3281d4813bdadfa6b6e38712731f",
+      "filed": "2026-11-28T10:52:04.441Z",
+      "prompt": "A huge machine tearing itself up out of a thick ceramic floor, one violent deep crack, then heavy chunks of ceramic and steel bursting outward and falling, very heavy and powerful, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.2,
+        "loop": false,
+        "influence": null,
+        "call": 218
+      },
+      "askedSeconds": 1.2,
+      "cost": "13",
+      "measured": {
+        "seconds": 1.2,
+        "start": 0,
+        "end": 1.042,
+        "peakDb": -5.62,
+        "rmsDb": -20.93,
+        "lufs": -14.34,
+        "truePeakDb": -4.07,
+        "low": 0.06,
+        "mid": 0.605,
+        "high": 0.335,
+        "tailDb": -50.91,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.856,
+            "peakDb": -5.62
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "button-burst",
+      "kind": "cue",
+      "cue": "button-burst",
+      "take": 2,
+      "round": "change-002",
+      "file": "take-2.mp3",
+      "sha256": "3b698ee277041528258a3ee18a1c2351814f9f10af10a009be7e3975dacbeb81",
+      "filed": "2026-11-28T10:52:06.111Z",
+      "prompt": "A stone floor bursting upward from below, one violent explosive crack, then heavy chunks of stone and steel thrown out and crashing down, a hard loud rupture with great force, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.2,
+        "loop": false,
+        "influence": 0.5,
+        "call": 251
+      },
+      "askedSeconds": 1.2,
+      "cost": "13",
+      "measured": {
+        "seconds": 1.2,
+        "start": 0,
+        "end": 1.2,
+        "peakDb": -17.07,
+        "rmsDb": -41.3,
+        "lufs": -34.83,
+        "truePeakDb": -16.24,
+        "low": 0.186,
+        "mid": 0.286,
+        "high": 0.528,
+        "tailDb": -54.73,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.662,
+            "peakDb": -17.07
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "button-burst",
+      "kind": "cue",
+      "cue": "button-burst",
+      "take": 3,
+      "round": "change-002-layer",
+      "file": "take-3.wav",
+      "sha256": "e307a7ae6ffe131ff99591d0d83ca77816b909f95f5e5b30416dec353adc9ff9",
+      "filed": "2026-11-28T10:52:07.685Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L3 of the free layering rounds of November 28): as L2 (the crack of take 2, the deep boom of big-fire take 1, the thud of turret-cannon take 1 lower, the clank of boss-fall take 1, a second boom from slab-slam take 2, six small thuds as chunks falling, take 1 laid 8 dB under), with the crack 3 dB up and a gentler saturation. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 1.2,
+        "start": 0,
+        "end": 1.148,
+        "peakDb": -1.01,
+        "rmsDb": -16.57,
+        "lufs": -18.15,
+        "truePeakDb": -1,
+        "low": 0.711,
+        "mid": 0.189,
+        "high": 0.101,
+        "tailDb": -36.96,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 1.066,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A heavy, tearing crack is followed by the impacts of falling debris. / A loud crack followed by the sound of heavy debris crashing and falling. / A heavy burst followed by the crashing and scattering of hard debris.",
+        "madeOf": "cracking, scraping, impacts / Rock or ceramic breaking and impacting. / rock, concrete, heavy debris",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sound features a prolonged, heavy cracking and tearing noise followed by the thudding impacts of heavy pieces falling, perfectly matching the description.",
+          "The audio features a sharp initial crack followed immediately by the heavy, crumbling impacts of falling debris, matching the description of a thick floor breaking apart.",
+          "The audio contains a loud, initial cracking impact followed by the heavy, scattering crash of brittle, dense chunks, closely matching the described action."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "button-burst"
+      ],
+      "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line"
+    },
+    {
+      "key": "big-fire",
+      "kind": "cue",
+      "cue": "big-fire",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "1ac00abe7013dbca8f9ca73b2f041bfdbd1e30cb5586684475794dd95655aa1b",
+      "filed": "2026-11-28T10:52:12.390Z",
+      "prompt": "One giant cannon blast from a very large gun, a hard crack at the start and a massive deep boom with a heavy roar of force that dies within a second, enormous and powerful, a single shot, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.5,
+        "loop": false,
+        "influence": null,
+        "call": 219
+      },
+      "askedSeconds": 1.5,
+      "cost": "17",
+      "measured": {
+        "seconds": 1.48,
+        "start": 0,
+        "end": 1.48,
+        "peakDb": -15.85,
+        "rmsDb": -35.03,
+        "lufs": -33.14,
+        "truePeakDb": -14.86,
+        "low": 0.971,
+        "mid": 0.029,
+        "high": 0,
+        "tailDb": -66.25,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.572,
+            "peakDb": -15.85
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "big-fire",
+      "kind": "cue",
+      "cue": "big-fire",
+      "take": 2,
+      "round": "change-002",
+      "file": "take-2.mp3",
+      "sha256": "1a292accb0a12d909dbe7f6785bae2214e1846e27f5d5e7c47c40ad2109cfc73",
+      "filed": "2026-11-28T10:52:13.951Z",
+      "prompt": "A battleship gun firing one shell heard close, an ear-splitting crack and a huge explosive blast full of mid-range roar and tearing air, then a short hard tail, enormous, a single shot, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.5,
+        "loop": false,
+        "influence": 0.5,
+        "call": 252
+      },
+      "askedSeconds": 1.5,
+      "cost": "17",
+      "measured": {
+        "seconds": 1.48,
+        "start": 0,
+        "end": 1.48,
+        "peakDb": -1.94,
+        "rmsDb": -17.05,
+        "lufs": -15.06,
+        "truePeakDb": -1.88,
+        "low": 0.866,
+        "mid": 0.127,
+        "high": 0.007,
+        "tailDb": -68.45,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.97,
+            "peakDb": -1.94
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "big-fire",
+      "kind": "cue",
+      "cue": "big-fire",
+      "take": 3,
+      "round": "change-002-layer",
+      "file": "take-3.wav",
+      "sha256": "7bef87d2e49890bac480cdab9551394e47b1690832d22d8ed88283e3a2fc33de",
+      "filed": "2026-11-28T10:52:15.709Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering rounds of November 28): big-fire take 2 as it is, the deep boom of take 1 3 dB under at its loudest moment, the thud of turret-cannon take 1 an octave lower 5 dB under, overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 1.5,
+        "start": 0,
+        "end": 1.358,
+        "peakDb": -1.01,
+        "rmsDb": -12.75,
+        "lufs": -14.45,
+        "truePeakDb": -1.01,
+        "low": 0.876,
+        "mid": 0.12,
+        "high": 0.004,
+        "tailDb": -49.39,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 1.13,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A loud cannon blast fires with a sharp crack and a deep resonant boom. / A single loud explosion or cannon blast is heard. / A single, massive explosion or cannon blast.",
+        "madeOf": "Explosive blast and reverberation / Explosion, rumble / Explosive transient and low rumble",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio matches the description perfectly as it consists of a single massive explosion with a hard initial transient followed by a deep, booming tail.",
+          "The audio is a single explosive event featuring a sharp initial impact followed by a long, deep resonant boom, perfectly matching the description.",
+          "The sound consists of a single loud, sharp detonation with a deep, resonating low-frequency tail, perfectly matching the description of a giant cannon blast."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "big-fire"
+      ],
+      "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line"
     }
   ]
 }

@@ -1,0 +1,117 @@
+{
+  "id": "big-fire",
+  "kind": "cue",
+  "cue": "big-fire",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One giant cannon blast from a very large gun: a hard crack at the start and a massive deep boom",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering rounds of November 28): big-fire take 2 as it is, the deep boom of take 1 3 dB under at its loudest moment, the thud of turret-cannon take 1 an octave lower 5 dB under, overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 3,
+    "round": "change-002-layer",
+    "file": "take-3.wav",
+    "sha256": "7bef87d2e49890bac480cdab9551394e47b1690832d22d8ed88283e3a2fc33de",
+    "filed": "2026-11-28T10:52:15.709Z",
+    "measured": {
+      "seconds": 1.5,
+      "start": 0,
+      "end": 1.358,
+      "peakDb": -1.01,
+      "rmsDb": -12.75,
+      "lufs": -14.45,
+      "truePeakDb": -1.01,
+      "low": 0.876,
+      "mid": 0.12,
+      "high": 0.004,
+      "tailDb": -49.39,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 1.13,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 1.358,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -6.3,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.358,
+    "start": 0,
+    "end": 1.268,
+    "peakDb": -5,
+    "rmsDb": -21.09,
+    "lufs": -21.84,
+    "truePeakDb": -4.99,
+    "low": 0.791,
+    "mid": 0.202,
+    "high": 0.007,
+    "tailDb": -47.76,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.982,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A loud cannon blast fires with a sharp crack and a deep resonant boom. / A single loud explosion or cannon blast is heard. / A single, massive explosion or cannon blast.",
+    "madeOf": "Explosive blast and reverberation / Explosion, rumble / Explosive transient and low rumble",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio matches the description perfectly as it consists of a single massive explosion with a hard initial transient followed by a deep, booming tail.",
+      "The audio is a single explosive event featuring a sharp initial impact followed by a long, deep resonant boom, perfectly matching the description.",
+      "The sound consists of a single loud, sharp detonation with a deep, resonating low-frequency tail, perfectly matching the description of a giant cannon blast."
+    ],
+    "sameRoom": null
+  },
+  "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "big-fire.wav",
+  "seconds": 1.358,
+  "sha256": "2fdbbf4bf5ecdd755c1db62aabbaa71c74b21dff4894f9a10c11abf45323f743"
+}

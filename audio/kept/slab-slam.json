@@ -1,0 +1,117 @@
+{
+  "id": "slab-slam",
+  "kind": "cue",
+  "cue": "slab-slam",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One enormous stone slab slamming flat onto a ceramic floor, the floor cracking under it",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering rounds of November 28): slab-slam take 1 (body) and take 2 (boom), the thud of turret-cannon take 1 a fourth lower, the smack of turret-cannon take 2, the shatter of button-burst take 2 far under, overtones of the deep part, soft saturation. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 3,
+    "round": "change-002-layer",
+    "file": "take-3.wav",
+    "sha256": "bfa7d1818b890e655905b1aaa282117bc40439edb41990b08e42af79d0fc37a1",
+    "filed": "2026-11-28T10:51:51.496Z",
+    "measured": {
+      "seconds": 1,
+      "start": 0,
+      "end": 0.97,
+      "peakDb": -1.01,
+      "rmsDb": -11.63,
+      "lufs": -16.56,
+      "truePeakDb": -1.01,
+      "low": 0.89,
+      "mid": 0.106,
+      "high": 0.004,
+      "tailDb": -35.64,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.908,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.97,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -7.56,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.97,
+    "start": 0,
+    "end": 0.906,
+    "peakDb": -5,
+    "rmsDb": -23.29,
+    "lufs": -25.21,
+    "truePeakDb": -5,
+    "low": 0.705,
+    "mid": 0.285,
+    "high": 0.01,
+    "tailDb": -47.88,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.614,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the chain, and was told the cue's line, as the sheet's eighth question does",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A heavy stone slab slams down with a loud impact, followed by cracking and settling debris. / A massive stone slab slams into the ground with a heavy thud. / A massive, heavy object crashes flat onto a hard surface, which subsequently splinters and cracks.",
+    "madeOf": "Heavy impact, cracking sounds, rumble / Stone, concrete, impact, rumble / Stone, ceramic",
+    "events": "1 / 1 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio features a massive, heavy impact immediately followed by sharp, crumbling and cracking noises, matching the description of a heavy slab breaking a ceramic floor.",
+      "The sound features a single, heavy, resonant impact with subsequent rumbling and cracking noises, matching a large stone hitting and breaking a floor.",
+      "The audio features a deep, heavy impact characteristic of a large stone slab dropping, followed immediately by sharp, brittle fracturing noises consistent with ceramic breaking."
+    ],
+    "sameRoom": null
+  },
+  "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "slab-slam.wav",
+  "seconds": 0.97,
+  "sha256": "c294497f68fe10eb6c46a2e0aa13ed97505feb8291dcd8f8e4bd776399c17568"
+}
