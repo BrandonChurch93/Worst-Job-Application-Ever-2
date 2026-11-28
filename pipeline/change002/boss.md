@@ -618,3 +618,29 @@ Taken first: `origin/agent/merge55` 0429b87e (the page keeps time by the recorde
 - It waits for the head of merge55 with the shell helper's change of the line that sets `s.turned`. At 05:11Z merge55 is 8be20687 and that line is as it was.
 - Read in the code, not run: a press while `s.since < LINE6.after` (stage `hold`, the branch before the one that emits) is dropped today, not remembered. `boss-turn` cannot come before the tick plus `LINE6.after` (8.79 s) on any live path, because that branch holds the clock of line 7 at 0.
 - Decision for when it is built: a press counts from `boss-formed` on, not from the tick, so that a second click on the checkbox does not skip most of line 7.
+
+## F and the strip (rulings of 05:20Z and 05:28Z, written 05:37Z November 28)
+
+### F. boss-turn waits for the end of line 6
+
+- Built on merge55 510be291 (merge 73 of the shell helper is in it; the line that sets `s.turned` is as that merge left it, not edited).
+- Done in `src/pages/step4/index.ts` (commit c63c89af): a new state `asked`. In stage `hold`, while `since < LINE6.after`, a visitor's press sets it; in the next branch the turn is taken on `io.pressed || s.asked`. Presses count from `boss-formed` on, not from the tick (decision accepted 05:20Z). The film never sets it.
+- MEASURED by the new test "rulings of 04:46, 3" (near path and self-tick path, five kinds of visitor each, the fight then played out by the keen bot): `boss-formed` 5.800 s after the tick on both paths; `boss-turn` after the tick: 8.792 s for one who presses as soon as the boss is formed, 8.792 for one who presses 1.5 s before the end, 8.792 for one who presses 0.1 s before the end, 9.792 for one who presses 1 s after it, 32.112 for one who never presses. `LINE6.after` is 8.79 (the take of 8.49 s and the gap of 0.3 s), so the earliest turn is 0.30 s after the last word.
+- Control taken, MEASURED by the same test (`stage.longestIgnored.pointer`, whole visit): 3.304 s for the four who press, 6.004 s for the one who never presses (the drift of `LINE7.most`). Longest 6.004 s.
+- Not run for F: the far path (the visitor ticks and stays away). There the boss is formed 10.6 s after the tick (STATED from `WAKE_AFTER_TICK.live` 7 and the forming of 3.6 s), after the end of line 6, so a press acts at once as before.
+
+### The strip: the boss set down under the bar while he turns
+
+- Tool: `pipeline/change002/boss-under.mjs` leads the mouse of the stepped live site along the fixed course of `boss-under-policy.mjs` (the box ticked at 0.8 s, one press at 7.5 s while the boss forms, then from 10 s a new place under the bar every 1.5 s, clicking). The same course run in the logic (`node /tmp/under.mjs 26`) gives the moments. The two runs are the same run as far as checked: `flatten` hits the arrow at the same step in both.
+- Seen in the first strip (bound as of 636d3a90): the big cannon's barrel is drawn raised, so its tip stood 12 to 13 px under the bar's frame on the picture (read off frames at 6 times), while the boxes on the page that the test measures said 24.5. The test of task 2 measures places on the page, not drawn pixels.
+- Done (commit 2ed22947 and the one after): `TOP.lift` in tune.ts is added to the muzzle's term of `headroom`. With 14 the tip read 23 px under the frame (give or take 2); it is 16 now.
+- Read off the second strip (lift 16) at 6 times, frames 48.704, 49.104 and 49.487 s: the tip stands 25, 30 and 34 px of the page under the lower edge of the bar's frame as drawn, give or take 2. The frame's edge is drawn 4 px of the 960 picture higher in this run than in the first; why is not known.
+- MEASURED in the logic with lift 16, course 26: he is set down from 48.704 s to 49.508 s (0.80 s), y 400.1 to 452.8 (52.7 px), fastest 126 px/s, which is 2.1 px of the page a frame at 60 a second; his own walk is 190 px/s.
+- The film's marks are the same as at 27f7eeef with the lift (`diff` of `node /tmp/ev.mjs`).
+- Not known: the lift of other raised parts (the shield's glass, the deck) was not read off a picture. They are lower on the page than the muzzle whenever the turret is up.
+
+### Checks at the tree of this commit (merge55 510be291 merged, lift 16), each alone, 05:36Z to 05:42Z
+
+- Look on: b-boss EXIT 0 (40), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-finish EXIT 0 (23), takes-timing EXIT 0 (7), tsc EXIT 0. Film marks the same as at 27f7eeef.
+- Not run at this tree: the look off (last run at 40c05ed8), the whole chain of tests, the cut, the build, determinism and the bots' gate.
+- Pictures: `S1-` and `S2-set-down-under-the-bar-live-60-a-second.jpg`, 48 frames in a row at 60 a second from 48.704 s to 49.487 s, 1 to 1 from the 960 px live picture, the crop 180 by 240 px under the bar. The last 0.02 s of the set-down are not in them.
