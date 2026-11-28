@@ -2,6 +2,8 @@
 // Frame of `object`: the ground's own. x = page x - 960, y = 540 - page y, z = 0 on the page surface, in page px.
 import * as THREE from 'three'
 import { makeStand } from '../../cursor/stand/figure'
+import { STAND } from '../../cursor/stand/rig'
+import { look } from '../../post/look'
 import type { Emitter, PartMaker, RealContext } from '../../real/types'
 import type { Shape } from '../../stage/types'
 import { finishState, type FinishInput, type FinishState } from './acting'
@@ -10,6 +12,10 @@ import { makeFinishFx, type Level } from './fx'
 export { finishState, finishEvents, kneelSpot, GETUP, LIEDOWN, POWER, CHARGE, FIRE, LAST } from './acting'
 export type { FinishInput, FinishMarks, FinishState, FinishEvent, Fx } from './acting'
 export type { Level } from './fx'
+
+const FACE = { y: 46, z: 78, colour: [1, 0.975, 0.945] as [number, number, number], power: 0.3, reach: 190 }
+// The shadow the beam throws behind the figure: px of shadow for each px of height, a little down the page, and how much darker than the key's.
+const BLAST = { fall: 2.6, down: -0.35, dark: 0.5 }
 
 export interface Finish {
   object: THREE.Object3D
@@ -33,12 +39,24 @@ export function makeFinish(): Finish {
       const s = finishState(input)
       object.visible = s.up
       if (s.up) {
-        stand.apply(s.pose, input.time)
+        // A flame beside the figure outshines the key: its long shadow thins. The beam throws one of its own, long, away from the hands.
+        const beam = s.fx.beam
+        const key = look.key.direction
+        const open = beam ? beam.open : 0
+        const kx = (-key[0] / key[2]) * STAND.shadow
+        const ky = (-key[1] / key[2]) * STAND.shadow
+        const fall: [number, number] = beam ? [kx + (-Math.cos(beam.aim) * BLAST.fall - kx) * open, ky + (Math.sin(beam.aim) * BLAST.fall + BLAST.down - ky) * open] : [kx, ky]
+        const lit = Math.max(0.75 * Math.min(1, s.fx.aura) * (1 - open), s.fx.ball ? 0.5 * Math.min(1, s.fx.ball.glow) : 0)
+        stand.apply(s.pose, input.time, (1 - lit) * (1 + BLAST.dark * open), fall)
         fx.pose(s.fx, s.pose, input.time, light)
+        // The white face is tipped away from the key when it stands: a little of the page's own light comes back up onto it.
+        const up = Math.min(1, s.pose.rise * 1.5)
+        if (light && up > 0.02) light({ x: s.pose.x, y: s.pose.y + FACE.y, z: s.pose.ground + FACE.z, colour: FACE.colour, power: FACE.power * up, reach: FACE.reach })
       }
       return s
     },
     setLevel(level: Level): void {
+      stand.setLevel(level)
       fx.setLevel(level)
     },
     counts(): { draws: number; triangles: number } {

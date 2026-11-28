@@ -1,6 +1,6 @@
 // The acting of the standing arrow in the power-up, the finishing blast and the last moment, as plain numbers.
 // Everything is a pure function of the marks (view times at which a thing began) and the view time. No clock, no random.
-import { POSES, STAND, WALK, at, clamp01, feetFor, inCubic, lerp, mixPose, outBack, outCubic, smooth, span, stepsBy, toPage, walkPose, type StandPose, type V3 } from '../../cursor/stand/rig'
+import { POSES, STAND, WALK, at, clamp01, feetFor, inCubic, mixPose, outBack, outCubic, smooth, span, stepsBy, toPage, walkPose, type StandPose, type V3 } from '../../cursor/stand/rig'
 
 export interface FinishMarks {
   // The arms come out: the arrow gets up.
@@ -35,7 +35,7 @@ export interface FinishInput {
   // On the walk: where the middle of the feet is, how far it has walked in px, and 0 to 1 how much it is moving (1 when left out).
   walk?: { x: number; y: number; walked: number; pace?: number } | null
   // The Submit button as it lies on the ground: its middle, its width and the height of its top.
-  button?: { x: number; y: number; w?: number; top?: number } | null
+  button?: { x: number; y: number; w?: number; h?: number; top?: number } | null
   // Where the blast goes: the fallen boss. Without it the blast goes to the button, or to the right.
   target?: { x: number; y: number } | null
 }
@@ -47,7 +47,8 @@ export interface Fx {
   // The ball between the hands: its place, its size in px and how bright, 0 to 1.
   ball: { x: number; y: number; z: number; size: number; glow: number } | null
   // The beam: from the wrists, its heading on the page, how open it is (0 to 1), how full, and the seconds since it left the hands.
-  beam: { x: number; y: number; z: number; aim: number; open: number; power: number; age: number } | null
+  // `keep` is the button the beam parts round: its middle, width and height on the page.
+  beam: { x: number; y: number; z: number; aim: number; open: number; power: number; age: number; keep: { x: number; y: number; w: number; h: number } | null } | null
   // The skid of each shoe: from where it stood to where it stands, and how dark.
   skid: { x0: number; y0: number; x1: number; y1: number; k: number }[]
   // A wisp at each hand: where, how much, and its age in seconds.
@@ -78,12 +79,12 @@ export const POWER = {
   burst: 0.5, // s from the burst to the start of lying down
   lead: 0.75 // s after getting up at which the flame starts to build
 } as const
-export const CHARGE = { sweep: 0.45, ball: 86, least: 0.22 } as const
+export const CHARGE = { sweep: 0.45, ball: 21, least: 0.25, aura: 0.3 } as const
 export const FIRE = {
-  coil: 0.09, // s the figure coils before the thrust
-  lead: 0.14, // s after the mark at which the beam leaves the hands
-  thrust: 0.19, // s after the mark at which the hands are furthest out
-  settle: 0.42,
+  coil: 0.1, // s the figure coils before the thrust
+  lead: 0.2, // s after the mark at which the beam leaves the hands
+  thrust: 0.25, // s after the mark at which the hands are furthest out
+  settle: 0.48,
   open: 0.1, // s the beam takes to open
   shove: 38, // px a full blast shoves the figure back
   slide: 0.24, // s, the time constant of the skid
@@ -106,6 +107,7 @@ export const LAST = {
   gaps: [1.75, 1.15] as const
 } as const
 
+const inQuad = (v: number): number => clamp01(v) * clamp01(v)
 const none = (): Fx => ({ aura: 0, burst: 0, ball: null, beam: null, skid: [], smoke: [], dust: [], scuffs: [] })
 
 function getUp(t: number): StandPose {
@@ -195,11 +197,12 @@ export function finishState(i: FinishInput): FinishState {
       const size = CHARGE.ball * (CHARGE.least + (1 - CHARGE.least) * share) * grown * pulse
       if (fired >= 0) {
         pose = mixPose(pose, POSES.coil, outCubic(span(fired, 0, FIRE.coil)))
-        pose = mixPose(pose, POSES.fireOver, inCubic(span(fired, FIRE.coil, FIRE.thrust)))
+        pose = mixPose(pose, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
       }
       const h = handsMid(pose)
       const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise }, h[0], h[1], h[2])
       if (size > 1) fx.ball = { x: b.x, y: b.y, z: b.z, size, glow: clamp01((0.35 + 0.65 * share) * grown) * hot }
+      fx.aura = CHARGE.aura * share * grown
     }
     if (fired >= FIRE.lead && m.fire !== undefined) {
       const over = m.end !== undefined ? t - m.end : -1
@@ -207,7 +210,7 @@ export function finishState(i: FinishInput): FinishState {
       const pushed = (over >= 0 ? m.end! : t) - m.fire - FIRE.lead
       const back = FIRE.shove * shot * (1 - Math.exp(-pushed / FIRE.slide))
       feet = { x: home.x - back, y: home.y }
-      pose = mixPose(POSES.coil, POSES.fireOver, inCubic(span(fired, FIRE.coil, FIRE.thrust)))
+      pose = mixPose(POSES.coil, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
       pose = mixPose(pose, POSES.fire, smooth(span(fired, FIRE.thrust, FIRE.settle)))
       const push = over < 0 ? 1 : 1 - smooth(span(over, 0, FIRE.close))
       pose.tremble = 0.55 * shot * push
@@ -218,7 +221,8 @@ export function finishState(i: FinishInput): FinishState {
       const to = i.target ?? i.button ?? { x: b.x + 800, y: b.y }
       const aim = Math.atan2(to.y - b.y, to.x - b.x)
       const open = smooth(span(fired, FIRE.lead, FIRE.lead + FIRE.open)) * push
-      if (open > 0.002) fx.beam = { x: b.x, y: b.y, z: b.z, aim, open, power: shot, age: fired - FIRE.lead }
+      if (open > 0.002) fx.beam = { x: b.x, y: b.y, z: b.z, aim, open, power: shot, age: fired - FIRE.lead, keep: i.button ? { x: i.button.x, y: i.button.y, w: i.button.w ?? 110, h: i.button.h ?? (i.button.w ?? 110) * 0.36 } : null }
+      fx.aura = CHARGE.aura * shot * push
       for (let k = 0; k < 2; k++) {
         const f = POSES.fire.feet[k]!
         const long = back + (k === 0 ? 10 : 4)
@@ -338,5 +342,3 @@ export function finishEvents(a: FinishInput, b: FinishInput): FinishEvent[] {
   hit('finish-press', m.press, b.button?.x, b.button?.y)
   return out
 }
-
-export const lerpN = lerp

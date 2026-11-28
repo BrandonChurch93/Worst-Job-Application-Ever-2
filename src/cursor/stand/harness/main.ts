@@ -118,9 +118,9 @@ async function draw(a: Ask): Promise<{ triangles: number; drawCalls: number; ms:
 }
 
 // Where the button lies once the boss is gone, and where the figure kneels to strike it.
-function button(boss: NonNullable<Ask['boss']>, arrow: { x: number; y: number }): { x: number; y: number; w: number; top: number; kneel: { x: number; y: number } } {
+function button(boss: NonNullable<Ask['boss']>, arrow: { x: number; y: number }): { x: number; y: number; w: number; h: number; top: number; kneel: { x: number; y: number } } {
   const word = poseOf(viewOf({ input: { time: 0, arrow }, boss: { ...boss, gone: 1 } })).word
-  const b = { x: word.x, y: word.y, w: SIZE.button.w, top: word.z }
+  const b = { x: word.x, y: word.y, w: SIZE.button.w, h: SIZE.button.h, top: word.z }
   return { ...b, kneel: kneelSpot(b) }
 }
 

@@ -31,7 +31,8 @@ float vn(vec2 p) { vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 
 float fbm(vec2 p) { return 0.6 * vn(p) + 0.3 * vn(p * 2.1 + 3.7) + 0.1 * vn(p * 4.3 + 9.1); }
 `
 
-const add = { transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false, fog: false, side: THREE.DoubleSide } as const
+// Laid over the picture, not added to it: the page is nearly white, and light added to white is only white.
+const add = { transparent: true, depthWrite: false, toneMapped: false, fog: false, side: THREE.DoubleSide } as const
 
 function flameStuff(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
@@ -51,21 +52,22 @@ function flameStuff(): THREE.ShaderMaterial {
         float seed = vFlame.x;
         float k = vFlame.y;
         float y = vUv.y;
-        float n = fbm(vec2(vUv.x * 2.6 + seed * 17.0, y * 2.2 - uTime * 2.6 + seed * 5.0));
-        float m = vn(vec2(seed * 31.0, uTime * 3.1 + seed * 7.0));
-        float x = (vUv.x - 0.5) * 2.0 + (n - 0.5) * 1.5 * y + (m - 0.5) * 0.5 * y * y;
-        float tall = 0.62 + 0.38 * m;
+        float m = vn(vec2(seed * 31.0, uTime * 2.3 + seed * 7.0));
+        float tall = 0.6 + 0.4 * m;
         float t = clamp(y / tall, 0.0, 1.0);
-        float w = pow(1.0 - t, 0.75) * (0.34 + 0.34 * sin(3.14159 * min(1.0, t * 1.5 + 0.18)));
-        float body = smoothstep(w, w * 0.55, abs(x)) * smoothstep(0.0, 0.07, y) * step(y, tall);
-        float core = smoothstep(w * 0.62, w * 0.1, abs(x)) * (1.0 - t * 0.7);
-        // A flame is a bright skin with a clearer middle: the pose sheet's wisps.
-        float skin = body * (1.0 - 0.72 * core * (1.0 - vFlame.z));
-        vec3 col = mix(vec3(1.0, 0.5, 0.08), vec3(1.0, 0.86, 0.42), clamp(body * 0.6 + core * 0.6 - t * 0.35, 0.0, 1.0));
-        col += vec3(1.0, 0.95, 0.8) * core * vFlame.z * 0.7;
-        float a = skin * k * (1.0 - 0.45 * t);
+        // A tongue: it leans one way, then the other, and comes to a point.
+        float sway = sin(t * 4.2 + seed * 40.0 - uTime * 5.0) * 0.26 * t + (fbm(vec2(seed * 9.0, y * 3.0 - uTime * 2.6)) - 0.5) * 0.7 * t;
+        float x = (vUv.x - 0.5) * 2.0 - sway;
+        float w = (0.12 + 0.62 * sin(3.14159 * pow(1.0 - t, 0.6))) * pow(1.0 - t, 0.4);
+        float ax = abs(x);
+        float body = smoothstep(w, w * 0.72, ax) * smoothstep(0.0, 0.05, y) * step(y, tall);
+        // A wisp: a bright thin skin, and only a breath of gold inside it.
+        float inner = smoothstep(w * 0.62, w * 0.3, ax) * (1.0 - t * 0.6);
+        float skin = body * (1.0 - (0.86 - 0.6 * vFlame.z) * inner);
+        vec3 col = mix(vec3(1.75, 0.98, 0.16), vec3(1.5, 0.62, 0.06), clamp(inner + t * 0.35, 0.0, 1.0));
+        float a = skin * k * (1.0 - 0.3 * t);
         if (a < 0.003) discard;
-        gl_FragColor = vec4(col * 2.6, a);
+        gl_FragColor = vec4(col, min(1.0, a));
       }`
   })
 }
@@ -89,8 +91,8 @@ function glowStuff(): THREE.ShaderMaterial {
         float pool = exp(-r * r * 5.5) * 0.36 + exp(-r * r * 2.2) * 0.1;
         float a = (ring * (1.0 - uBurst) + pool) * uK * smoothstep(1.0, 0.75, r);
         if (a < 0.002) discard;
-        vec3 col = mix(vec3(1.0, 0.52, 0.1), vec3(1.0, 0.84, 0.45), ring);
-        gl_FragColor = vec4(col * 2.2, a);
+        vec3 col = mix(vec3(1.5, 0.72, 0.1), vec3(1.9, 1.3, 0.4), clamp(ring, 0.0, 1.0));
+        gl_FragColor = vec4(col, min(0.85, a));
       }`
   })
 }
@@ -99,8 +101,9 @@ function ballStuff(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     ...add,
     depthTest: false,
-    uniforms: { uTime: { value: 0 }, uGlow: { value: 0 }, uCore: { value: 0.2 }, uAim: { value: new THREE.Vector2(1, 0) }, uRays: { value: 1 } },
-    vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    uniforms: { uTime: { value: 0 }, uGlow: { value: 0 }, uCore: { value: 0.2 }, uAim: { value: new THREE.Vector2(1, 0) }, uRays: { value: 1 }, uSize: { value: 1 } },
+    // It faces whoever looks at it.
+    vertexShader: /* glsl */ `uniform float uSize; varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * (modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0) + vec4(position.xy * uSize, 0.0, 0.0)); }`,
     fragmentShader: /* glsl */ `
       uniform float uTime; uniform float uGlow; uniform float uCore; uniform vec2 uAim; uniform float uRays;
       varying vec2 vUv;
@@ -111,15 +114,15 @@ function ballStuff(): THREE.ShaderMaterial {
         vec2 d = p / max(r, 1e-4);
         float core = smoothstep(uCore, uCore * 0.6, r);
         float rim = smoothstep(uCore * 1.5, uCore * 0.9, r);
-        float halo = exp(-r * r * 7.0);
+        float halo = exp(-r * r / (uCore * uCore * 5.0));
         // Thin streaks that leave the ball, more of them the way it will go.
-        float thin = pow(vn(d * 9.0 + uTime * vec2(1.3, -0.9)), 7.0) + 0.7 * pow(vn(d * 23.0 - uTime * vec2(0.8, 1.7) + 4.0), 9.0);
+        float thin = pow(vn(d * 7.0 + uTime * vec2(1.3, -0.9)), 9.0) * 1.6 + pow(vn(d * 19.0 - uTime * vec2(0.8, 1.7) + 4.0), 12.0) * 1.4;
         float fore = 0.45 + 0.55 * smoothstep(-0.4, 0.9, dot(d, uAim));
         float run = fract(r * 1.6 - uTime * 1.9 + vn(d * 5.0) * 2.0);
         float rays = thin * fore * smoothstep(1.0, 0.3, r) * smoothstep(uCore * 0.8, uCore * 1.6, r) * (0.5 + 0.5 * run) * uRays;
         vec3 blue = vec3(0.34, 0.62, 1.0);
-        vec3 col = vec3(1.0) * core * 5.0 + mix(blue, vec3(0.8, 0.9, 1.0), rim) * (rim * 1.6 + halo * 0.9) + mix(blue, vec3(1.0), 0.55) * rays * 6.0;
-        float a = clamp(core + rim + halo + rays, 0.0, 1.0) * uGlow * smoothstep(1.0, 0.86, r);
+        vec3 col = mix(mix(blue * 1.25, vec3(0.75, 0.9, 1.3), clamp(rim + rays * 2.0, 0.0, 1.0)), vec3(2.3), core);
+        float a = clamp(core + rim * 0.9 + halo * 0.6 + rays * 2.2, 0.0, 1.0) * min(1.0, uGlow) * smoothstep(1.0, 0.86, r);
         if (a < 0.002) discard;
         gl_FragColor = vec4(col, a);
       }`
@@ -127,16 +130,16 @@ function ballStuff(): THREE.ShaderMaterial {
 }
 
 // The beam's sheet: `long` px along, `wide` px to each side at the far end.
-export const BEAM = { long: 2600, wide: 520, core: [9, 0.05], glow: [26, 0.19], speed: 4200 } as const
+export const BEAM = { long: 2600, wide: 520, core: [5, 0.042], glow: [16, 0.2], speed: 4200 } as const
 
 function beamStuff(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     ...add,
     depthTest: false,
-    uniforms: { uTime: { value: 0 }, uOpen: { value: 0 }, uPower: { value: 1 }, uAge: { value: 0 } },
+    uniforms: { uTime: { value: 0 }, uOpen: { value: 0 }, uPower: { value: 1 }, uAge: { value: 0 }, uKeep: { value: new THREE.Vector4(0, 0, -1, -1) } },
     vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
-      uniform float uTime; uniform float uOpen; uniform float uPower; uniform float uAge;
+      uniform float uTime; uniform float uOpen; uniform float uPower; uniform float uAge; uniform vec4 uKeep;
       varying vec2 vUv;
       ${NOISE}
       void main() {
@@ -150,14 +153,24 @@ function beamStuff(): THREE.ShaderMaterial {
         float head = uAge * ${BEAM.speed.toFixed(1)};
         float reach = smoothstep(head, head - 160.0, d);
         float wob = (fbm(vec2(d * 0.004 - uTime * 6.0, 1.7)) - 0.5) * 0.25;
-        float core = smoothstep(coreH * (1.0 + wob), coreH * 0.45, a) * (1.0 - 0.8 * smoothstep(380.0, 1100.0, d));
-        float glow = exp(-yn * yn * 2.4);
-        float lines = pow(vn(vec2(yn * 15.0, d * 0.0035 - uTime * 9.0)), 5.0) + 0.8 * pow(vn(vec2(yn * 37.0 + 5.0, d * 0.006 - uTime * 13.0)), 7.0);
-        float fan = pow(vn(vec2(yn * 6.0 + 11.0, d * 0.002 - uTime * 4.0)), 3.0);
-        float streak = (lines * 5.0 + fan * 0.9) * exp(-yn * yn * 1.1);
+        float core = smoothstep(coreH * (1.0 + wob), coreH * 0.55, a);
+        float glow = exp(-yn * yn * 3.2);
+        // Streaks: thin lines that fan out with the beam and run along it.
+        float lines = pow(vn(vec2(yn * 17.0, d * 0.003 - uTime * 9.0)), 8.0) * 2.4 + pow(vn(vec2(yn * 41.0 + 5.0, d * 0.005 - uTime * 13.0)), 11.0) * 2.6;
+        float fan = pow(vn(vec2(yn * 6.0 + 11.0, d * 0.002 - uTime * 4.0)), 4.0);
+        float streak = (lines * 2.2 + fan * 0.5) * smoothstep(1.25, 0.2, abs(yn));
         vec3 blue = vec3(0.3, 0.6, 1.0);
-        vec3 col = vec3(1.0) * core * 6.0 + mix(blue, vec3(0.85, 0.93, 1.0), glow) * glow * 1.5 + mix(blue, vec3(1.0), 0.6) * streak * 2.2;
-        float alpha = clamp(core + glow * 0.8 + streak * 0.6, 0.0, 1.0) * reach * smoothstep(0.0, 14.0, d) * uOpen;
+        vec3 col = mix(blue * 1.25, vec3(0.8, 0.93, 1.35), clamp(glow * 0.45 + streak, 0.0, 1.0));
+        col = mix(col, vec3(2.0), core);
+        float alpha = clamp(core + glow * 0.62 + streak * 0.8, 0.0, 1.0) * reach * smoothstep(0.0, 14.0, d) * uOpen;
+        // The button is not the beam's to hide: the light parts round it and closes again behind.
+        if (uKeep.z > 0.0) {
+          vec2 q = abs(vec2(d, y) - uKeep.xy) - uKeep.zw + 12.0;
+          float sd = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - 12.0;
+          float lee = smoothstep(uKeep.z * 3.5, 0.0, d - uKeep.x) * step(uKeep.x, d) * smoothstep(uKeep.w * 1.15, uKeep.w * 0.4, abs(y - uKeep.y));
+          alpha *= 1.0 - 0.94 * max(smoothstep(7.0, -2.0, sd), lee * 0.75);
+          col = mix(col, vec3(1.7), exp(-max(sd, 0.0) / 9.0) * 0.5 * core);
+        }
         if (alpha < 0.002) discard;
         gl_FragColor = vec4(col, alpha);
       }`
@@ -291,8 +304,8 @@ export function makeFinishFx(): FinishFx {
         const ry = 50
         const bx = 2 + Math.cos(th) * rx * 0.86
         const by = 44 + Math.sin(th) * ry * 0.8
-        const tall = (30 + 26 * hash01(j, 2, SEED)) * grow * (0.8 + 0.4 * Math.max(0, Math.sin(th)))
-        flames.setMatrixAt(n, card(p, bx, by, -2.5, 19 + 9 * seed, tall, -Math.cos(th) * 0.42))
+        const tall = (30 + 30 * hash01(j, 2, SEED)) * grow * (1.1 - 0.35 * Math.max(0, Math.sin(th)))
+        flames.setMatrixAt(n, card(p, bx, by, -2.5, 15 + 7 * seed, tall, -Math.cos(th) * 0.5))
         d[n * 4] = seed
         d[n * 4 + 1] = Math.min(1, k) * (1 - 0.6 * fx.burst)
         d[n * 4 + 2] = 0.15
@@ -308,7 +321,7 @@ export function makeFinishFx(): FinishFx {
         const tall = (11 + 15 * hash01(j, 4, SEED)) * grow
         // On the ground: the card's foot is carried from the page to the figure's plane at height 0.
         const a = STAND.rise * p.rise
-        flames.setMatrixAt(n, card(p, gx, -gy * Math.cos(a), gy * Math.sin(a), 11 + 6 * seed, tall, (seed - 0.5) * 0.5))
+        flames.setMatrixAt(n, card(p, gx, -gy * Math.cos(a), gy * Math.sin(a), 9 + 5 * seed, tall, (seed - 0.5) * 0.5))
         d[n * 4] = seed + 0.37
         d[n * 4 + 1] = Math.min(1, k) * (1 - fx.burst)
         d[n * 4 + 2] = 0.5
@@ -321,7 +334,7 @@ export function makeFinishFx(): FinishFx {
       glow.matrixAutoUpdate = false
       glow.matrix.copy(flat(p.x, p.y, p.ground + 0.6, 280, 105, 0))
       const flick = 0.85 + 0.15 * Math.sin(time * 23) * Math.sin(time * 7.3)
-      light?.({ x: p.x, y: p.y - 26, z: p.ground + 44, colour: GOLD, power: (1.5 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
+      light?.({ x: p.x, y: p.y - 26, z: p.ground + 44, colour: GOLD, power: (1.3 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
     }
 
     ball.visible = fx.ball !== null
@@ -330,12 +343,11 @@ export function makeFinishFx(): FinishFx {
       const u = ballMat.uniforms
       u.uTime!.value = time
       u.uGlow!.value = Math.min(1.5, b.glow * 1.25)
-      u.uCore!.value = 0.2
-      u.uRays!.value = 0.35 + 0.65 * Math.min(1, b.glow)
-      const size = b.size * 5
-      ball.matrixAutoUpdate = false
-      ball.matrix.copy(flat(b.x, b.y, b.z + b.size * 0.3, size, size, 0))
-      light?.({ x: b.x, y: b.y, z: b.z + 6, colour: COLD, power: 0.5 + 2.6 * b.glow, reach: 300 + 420 * b.glow, shadow: true })
+      u.uCore!.value = 0.1
+      u.uRays!.value = 0.3 + 0.7 * Math.min(1, b.glow)
+      u.uSize!.value = b.size * 10
+      ball.position.set(b.x - 960, 540 - b.y, b.z + b.size * 0.3)
+      light?.({ x: b.x, y: b.y, z: b.z + 6, colour: COLD, power: 0.2 + 1.0 * b.glow, reach: 200 + 260 * b.glow, shadow: true })
     }
 
     beam.visible = flare.visible = fx.beam !== null
@@ -346,23 +358,28 @@ export function makeFinishFx(): FinishFx {
       u.uOpen!.value = b.open
       u.uPower!.value = b.power
       u.uAge!.value = b.age
+      const keep = u.uKeep!.value as THREE.Vector4
+      if (b.keep) {
+        const kx = b.keep.x - b.x
+        const ky = b.keep.y - b.y
+        keep.set(kx * Math.cos(b.aim) + ky * Math.sin(b.aim), kx * Math.sin(b.aim) - ky * Math.cos(b.aim), b.keep.w / 2, b.keep.h / 2)
+      } else keep.set(0, 0, -1, -1)
       beam.matrixAutoUpdate = false
       beam.matrix.copy(flat(b.x, b.y, b.z, BEAM.long, BEAM.wide * 2, b.aim))
       const f = flareMat.uniforms
       f.uTime!.value = time * 1.7
       f.uGlow!.value = Math.min(1.4, b.open * 1.4)
-      f.uCore!.value = 0.11
+      f.uCore!.value = 0.13
       f.uRays!.value = 1
       ;(f.uAim!.value as THREE.Vector2).set(Math.cos(b.aim), -Math.sin(b.aim))
-      const size = (170 + 190 * b.power) * (0.5 + 0.5 * b.open) * (1 + 0.5 * Math.exp(-b.age * 9))
-      flare.matrixAutoUpdate = false
-      flare.matrix.copy(flat(b.x, b.y, b.z + 2, size, size, 0))
+      f.uSize!.value = (120 + 70 * b.power) * (0.5 + 0.5 * b.open) * (1 + 0.5 * Math.exp(-b.age * 9))
+      flare.position.set(b.x - 960, 540 - b.y, b.z + 2)
       const s = (0.4 + 0.6 * b.power) * b.open * (0.92 + 0.08 * Math.sin(time * 61))
       const c = Math.cos(b.aim)
       const sn = Math.sin(b.aim)
-      light?.({ x: b.x + c * 26, y: b.y + sn * 26, z: b.z + 4, colour: COLD, power: 7.5 * s, reach: 1500, shadow: true })
-      light?.({ x: b.x + c * 430, y: b.y + sn * 430, z: b.z + 30, colour: COLD, power: 6 * s, reach: 1500, shadow: true })
-      light?.({ x: b.x + c * 900, y: b.y + sn * 900, z: b.z + 50, colour: COLD, power: 5 * s, reach: 1500 })
+      light?.({ x: b.x + c * 30, y: b.y + sn * 30, z: b.z + 2, colour: COLD, power: 2.0 * s, reach: 900, shadow: true })
+      light?.({ x: b.x + c * 330, y: b.y + sn * 330, z: b.z + 14, colour: COLD, power: 1.6 * s, reach: 900, shadow: true })
+      light?.({ x: b.x + c * 800, y: b.y + sn * 800, z: b.z + 40, colour: COLD, power: 1.2 * s, reach: 900 })
     }
 
     let n = 0

@@ -22,11 +22,11 @@ const samples = Number(flag('--samples') ?? 8)
 const FPS = 60
 
 // The script the proofs are drawn from. The fight helper owns the real marks: these stand in for them.
-const ARROW = { x: 633, y: 580 }
+const ARROW = { x: 690, y: 548 }
 const BOSS = { x: 960, y: 650, heading: Math.PI }
 const M = { arms: 0, charge: 1.25, fire: 4.13, end: 6.26, walk: 7.7 }
 const POWER = { at: 0, end: 3.4 }
-const CLOSE = { x: 520, y: 458, w: 660, h: 371.25 }
+const CLOSE = { x: 520, y: 370, w: 960, h: 540 }
 const SPEED = 62
 let BUTTON = null
 let WALK = null
@@ -166,7 +166,7 @@ async function main() {
   const failed = await page.evaluate(() => window.finishHarness.ready.then(() => null, (e) => String(e && e.stack ? e.stack : e)))
   if (failed) throw new Error(failed)
   const b = await page.evaluate(([boss, arrow]) => window.finishHarness.button(boss, arrow), [BOSS, ARROW])
-  BUTTON = { x: b.x, y: b.y, w: b.w, top: b.top }
+  BUTTON = { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top }
   const start = await page.evaluate((a) => window.finishHarness.draw(a).then(() => null), { ...finish(M.walk - 0.01), samples: 1 })
   void start
   const feet = { x: ARROW.x + 17.3 - 38, y: ARROW.y + 91.8 }

@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { makeArms, ARM, type Arms } from '../act/arms'
 import { UNIT, restLook, type BodyModel } from '../contract'
 import { makeBody } from '../model/body'
+import { look as picture } from '../../post/look'
 import { STAND, type StandPose } from './rig'
 
 const ALONG = 22
@@ -13,7 +14,10 @@ const RINGS = ALONG + 1
 
 export interface Stand {
   object: THREE.Object3D
-  apply(p: StandPose, time: number): void
+  // `shade`: how dark the long shadow is, 0 to 1 (a flame beside the figure washes it out), and which way it falls when another light than the key throws it: px along the page (x right, y up the page) for each px of height.
+  apply(p: StandPose, time: number, shade?: number, fall?: [number, number] | null): void
+  // The live site's level: at `low` the long shadow is thrown by fewer pieces.
+  setLevel(level: 'low' | 'medium' | 'high' | null): void
   // What it is drawn with: draw calls and triangles, for the report.
   counts(): { draws: number; triangles: number }
   dispose(): void
@@ -34,6 +38,36 @@ function shoeShape(): THREE.BufferGeometry {
   }
   g.computeVertexNormals()
   return g
+}
+
+// The long shadow: every piece of the figure once more, laid flat on the ground the way the key's shadows fall, from the shoes outward.
+// The site's light keeps the shadow of anything tall short; a figure that stands needs the one that starts at its feet and runs.
+function shadeStuff(): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: true, depthFunc: THREE.LessDepth, toneMapped: false, fog: false, side: THREE.DoubleSide,
+    uniforms: { uToGround: { value: new THREE.Matrix4() }, uFall: { value: new THREE.Vector3() }, uK: { value: 0 } },
+    vertexShader: /* glsl */ `
+      uniform mat4 uToGround; uniform vec3 uFall;
+      varying float vH;
+      void main() {
+        vec4 at = vec4(position, 1.0);
+        #ifdef USE_INSTANCING
+        at = instanceMatrix * at;
+        #endif
+        vec4 g = uToGround * at;
+        float h = max(g.z, 0.0);
+        vH = h;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(g.x + uFall.x * h, g.y + uFall.y * h, uFall.z, 1.0);
+      }`,
+    fragmentShader: /* glsl */ `
+      uniform float uK;
+      varying float vH;
+      void main() {
+        float a = uK * mix(1.0, 0.42, clamp(vH / 85.0, 0.0, 1.0));
+        if (a < 0.004) discard;
+        gl_FragColor = vec4(0.07, 0.065, 0.075, a);
+      }`
+  })
 }
 
 export function makeStand(): Stand {
@@ -79,6 +113,46 @@ export function makeStand(): Stand {
     plane.add(m)
   }
 
+  const shades: { of: THREE.Mesh; twin: THREE.Mesh; stuff: THREE.ShaderMaterial; small: boolean }[] = []
+  const shadeBase = shadeStuff()
+  const shadow = new THREE.Group()
+  object.add(shadow)
+  plane.traverse((o) => {
+    const of = o as THREE.Mesh
+    if (!of.isMesh || !of.castShadow) return
+    const stuff = shadeBase.clone()
+    const inst = of as unknown as THREE.InstancedMesh
+    const twin = inst.isInstancedMesh ? new THREE.InstancedMesh(of.geometry, stuff, inst.count) : new THREE.Mesh(of.geometry, stuff)
+    if (inst.isInstancedMesh) (twin as THREE.InstancedMesh).instanceMatrix = inst.instanceMatrix
+    twin.frustumCulled = false
+    twin.renderOrder = 6
+    twin.userData.order = 6
+    shadow.add(twin)
+    shades.push({ of, twin, stuff, small: inst.isInstancedMesh && inst.count > 2 })
+  })
+  let few = false
+  const inv = new THREE.Matrix4()
+  const key = picture.key.direction
+  const layShadow = (shade: number, fall: [number, number] | null): void => {
+    shadow.visible = shade > 0.01
+    if (!shadow.visible) return
+    object.updateMatrixWorld(true)
+    inv.copy(object.matrixWorld).invert()
+    for (const s of shades) {
+      let seen = s.of.visible && !(few && s.small)
+      for (let a: THREE.Object3D | null = s.of.parent; a && a !== object; a = a.parent) if (!a.visible) seen = false
+      s.twin.visible = seen
+      if (!seen) continue
+      const inst = s.of as unknown as THREE.InstancedMesh
+      if (inst.isInstancedMesh) (s.twin as THREE.InstancedMesh).count = inst.count
+      const u = s.stuff.uniforms
+      ;(u.uToGround!.value as THREE.Matrix4).multiplyMatrices(inv, s.of.matrixWorld)
+      if (fall) (u.uFall!.value as THREE.Vector3).set(fall[0], fall[1], 0.22)
+      else (u.uFall!.value as THREE.Vector3).set((-key[0] / key[2]) * STAND.shadow, (-key[1] / key[2]) * STAND.shadow, 0.22)
+      u.uK!.value = STAND.shade * shade
+    }
+  }
+
   const from: [THREE.Vector3, THREE.Vector3] = [new THREE.Vector3(), new THREE.Vector3()]
   const to: [THREE.Vector3, THREE.Vector3] = [new THREE.Vector3(), new THREE.Vector3()]
   const hip = new THREE.Vector3()
@@ -96,7 +170,12 @@ export function makeStand(): Stand {
   // A point of the outline, as the body is drawn now, in the figure's plane.
   const onBody = (ux: number, uy: number, out: THREE.Vector3): THREE.Vector3 => body.anchor(ux, uy, out).applyEuler(body.root.rotation).add(body.root.position)
 
-  const apply = (p: StandPose, time: number): void => {
+  const apply = (p: StandPose, time: number, shade = 1, fall: [number, number] | null = null): void => {
+    pose(p, time)
+    layShadow(shade * Math.min(1, p.rise * 2.5), fall)
+  }
+
+  const pose = (p: StandPose, time: number): void => {
     object.position.set(p.x - 960, 540 - p.y, p.ground)
     plane.rotation.set(STAND.rise * p.rise, 0, 0)
     const look = restLook(time)
@@ -199,6 +278,9 @@ export function makeStand(): Stand {
   return {
     object,
     apply,
+    setLevel(level: 'low' | 'medium' | 'high' | null): void {
+      few = level === 'low'
+    },
     counts(): { draws: number; triangles: number } {
       let draws = 0
       let triangles = 0
@@ -221,6 +303,8 @@ export function makeStand(): Stand {
       geometry.dispose()
       shoe.dispose()
       shoes.dispose()
+      shadeBase.dispose()
+      for (const s of shades) s.stuff.dispose()
     }
   }
 }
