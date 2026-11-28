@@ -152,3 +152,20 @@ The live site (the Builder's ruling):
 - "The phrase has ended" is the start of the next phrase, since the take's index holds only starts. That includes the pause after the words. If the shell ends the line at the pause, about 1.2 s of quiet come before the turn.
 - A press after the line has ended turns 0.45 s later, as before. So does the skip link, whenever it is used. The self walk comes 20 s into the metrics, after the line has ended, so it is as it was.
 - Control is not taken during the hold. One thing had to change for that: a press in the last 0.07 s of the throw used to end the page with the arrow still held by the page; now the throw is let finish and the arrow is given back.
+
+## The push-in under the line, the film only (the Builder's task of 04:29Z)
+
+From 7.0 s to 16.0 s of the unit the frame did not change at frame size; the read was carried by an arrow 70 px long. The film now pushes in slowly through the page's `view()`. The numbers are `VIEW` in `timeline.ts`, in one place.
+
+- In: from the arrow's landing (7.067 s) to the start of "to move forward" (13.599 s), eased at both ends, 6.53 s. Held to 0.2 s after the sag is cued (16.643 s). Out: to the whole page as the walk to the button starts (17.013 s), 0.37 s.
+- The closer view is 1.5 times closer, centred on page (960, 720): it shows page x 320 to 1600, y 360 to 1080. The view goes straight in and down, with no drift to a side. The lower edge of the view is the lower edge of the page, and on the way in the view never shows past the page.
+- In it are the REJECTED mark, the block at rest, the arrow where it lies and acts, and the button. The mark's top corner is the thing nearest the caption.
+- The caption lies still on the screen while the page moves under it, so on the way in it passes over the metrics panel. With the view's centre kept on x 960 it covers the first two letters of "Performance Metrics" from about 9.1 s to 10.3 s and the left rim of the first tile after that; it does not cover the "Your Time" label or the digits. A centre further right (1018 was tried, to put the three things in the middle) took the caption over the label and the first digit as well. In the hold it lies over the gap between the letter and the panel and covers no words.
+- The caption is not in the view. The film lays it over the finished frame as its own 1920 by 1080 picture at a fixed place (`pipeline/change002/shell-film-captions.mjs`; on this page y 202 to 264, centred on x 960). The view does not move or scale it. `VIEW.clear` is the screen y the three things stay below.
+- The hit's shake comes first and is as it was; the push-in starts after it has ended.
+- The live site is not changed: `view()` gives the push-in only when the stage's mode is `film`.
+- Not as asked, and why: "held through 'with other candidates.'" and "back out in time for the walk" cannot both hold. The walk starts 0.57 s into that phrase, since the press must fall inside the take's last words. The view holds through the sag and is out as the walk starts.
+- The walk's start is `FILM.toButton`; `GIVE.walk` and `VIEW.out` both read it.
+- The key `decision` (7.908 s of the unit) falls 0.84 s into the push-in, at a zoom of 1.023. Its `at` was not moved.
+
+Tests: `tests/decision-view.test.ts`.

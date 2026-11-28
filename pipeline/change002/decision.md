@@ -173,3 +173,7 @@ Numbers in tests that changed, and why:
 New tests: "a press while the line is being said holds the page to the end of the phrase being said and the gap; a press after the line turns as before" (`tests/decision-acting.test.ts`), "turns as before when the button is pressed after the narrator's line has ended" (`tests/step5.test.ts`), and in the keen bot's test that the page holds with the button down and control not taken.
 
 Not committed, as told: `content/narration.json` and `cut/`.
+
+## The push-in under the line (the Builder's task of 04:29Z)
+
+The film only. `VIEW` in `src/pages/step5/timeline.ts` holds the numbers: zoom 1.5 centred on page (960, 720), in from 7.067 s to 13.599 s, held to 16.643 s, out by 17.013 s. The reasons, the caption's place and what is not as asked are in `src/pages/step5/NOTES.md`, section "The push-in under the line". Tests: `tests/decision-view.test.ts`. Strip: `node pipeline/change002/decision-frames.mjs --name push --at 5.5,6.0,...,18.5 --columns 5`.
