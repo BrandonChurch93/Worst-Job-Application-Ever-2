@@ -89,9 +89,10 @@ export const POSES = {
   // The coil before the thrust: everything drawn back a little further.
   coil: P([2, 20], 0.3, [[-42, 34, 13], [-24, 16, 14]], [0.3, 0.3], [[-29, 0], [33, 0]], { strain: 0.6, stretch: 0.93 }),
   // The pose sheet's third figure: back leg stretched, both open hands pushed forward, wrists together.
-  fire: P([10, 25], -0.2, [[58, 44, 14], [60, 35, 15]], [0, 0], [[-39, 0], [24, 0]], { strain: 1, stretch: 1.04, knees: [-1, 1], pitch: [0.25, 0] }),
+  // It leans back from the blast (`rise` under 1): seen from straight above the white face shows more of its height, and the chest is puffed.
+  fire: P([10, 25], -0.2, [[58, 30, 14], [60, 22, 15]], [0, 0], [[-39, 0], [24, 0]], { strain: 1, stretch: 1.04, knees: [-1, 1], pitch: [0.25, 0], rise: 0.6, puff: 0.3 }),
   // The thrust a hand's width too far, for the overshoot.
-  fireOver: P([15, 25], -0.3, [[66, 45, 14], [68, 36, 15]], [0, 0], [[-39, 0], [24, 0]], { strain: 1, stretch: 1.08, pitch: [0.3, 0] }),
+  fireOver: P([15, 25], -0.3, [[66, 31, 14], [68, 23, 15]], [0, 0], [[-39, 0], [24, 0]], { strain: 1, stretch: 1.08, pitch: [0.3, 0], rise: 0.6, puff: 0.3 }),
   // After the beam: arms hanging, body slumped.
   spent: P([2, 27], -0.2, [[-27, 22, 8], [37, 21, 8]], [0, 0], [[-13, 0], [15, 0]], { stretch: 0.97 }),
   // On its knees: the shins lie on the ground behind.
