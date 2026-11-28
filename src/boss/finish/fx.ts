@@ -205,14 +205,14 @@ function ballStuff(): THREE.ShaderMaterial {
 // `core` and `glow`: half the width at the hands and what it gains for each px along, in the figure's own px.
 export const BEAM = { long: 2600, wide: 520, core: [13, 0.1], glow: [30, 0.26], speed: 4200 } as const
 
-function beamStuff(): THREE.ShaderMaterial {
+function beamStuff(sunk = false): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     ...add,
-    depthTest: false,
-    uniforms: { uTime: { value: 0 }, uOpen: { value: 0 }, uPower: { value: 1 }, uAge: { value: 0 }, uWide: { value: 1 }, uKeep: { value: new THREE.Vector4(0, 0, -1, -1) } },
+    depthTest: sunk,
+    uniforms: { uTime: { value: 0 }, uOpen: { value: 0 }, uPower: { value: 1 }, uAge: { value: 0 }, uWide: { value: 1 }, uKeep: { value: new THREE.Vector4(0, 0, -1, -1) }, uShare: { value: 1 } },
     vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
-      uniform float uTime; uniform float uOpen; uniform float uPower; uniform float uAge; uniform float uWide; uniform vec4 uKeep;
+      uniform float uTime; uniform float uOpen; uniform float uPower; uniform float uAge; uniform float uWide; uniform vec4 uKeep; uniform float uShare;
       varying vec2 vUv;
       ${NOISE}
       void main() {
@@ -256,7 +256,7 @@ function beamStuff(): THREE.ShaderMaterial {
           col = mix(col, vec3(1.7), exp(-max(sd, 0.0) / 9.0) * 0.5 * core);
         }
         if (alpha < 0.002) discard;
-        gl_FragColor = vec4(col, alpha);
+        gl_FragColor = vec4(col, alpha * uShare);
       }`
   })
 }
@@ -318,6 +318,8 @@ export function makeFinishFx(): FinishFx {
   const flare = new THREE.Mesh(quad, flareMat)
   const beamMat = beamStuff()
   const beam = new THREE.Mesh(along, beamMat)
+  const sunkMat = beamStuff(true)
+  const sunk = new THREE.Mesh(along, sunkMat)
   const markGeo = new THREE.InstancedBufferGeometry().copy(along as unknown as THREE.InstancedBufferGeometry)
   const markData = new THREE.InstancedBufferAttribute(new Float32Array(12 * 2), 2).setUsage(THREE.DynamicDrawUsage)
   markGeo.setAttribute('aMark', markData)
@@ -334,7 +336,7 @@ export function makeFinishFx(): FinishFx {
   dusk.renderOrder = -50
   dusk.visible = false
   object.add(dusk)
-  const all: THREE.Mesh[] = [marks, glow, flames, puffs, beam, ball, flare]
+  const all: THREE.Mesh[] = [marks, glow, flames, puffs, beam, ball, flare, sunk]
   all.forEach((m, i) => {
     m.frustumCulled = false
     m.castShadow = false
@@ -344,6 +346,8 @@ export function makeFinishFx(): FinishFx {
     m.visible = false
     object.add(m)
   })
+  sunk.renderOrder = beam.renderOrder
+  sunk.userData.order = beam.userData.order
 
   const m4 = new THREE.Matrix4()
   const X = new THREE.Vector3()
@@ -547,10 +551,14 @@ export function makeFinishFx(): FinishFx {
       light?.({ x: b.x, y: b.y, z: b.z + 6, colour: COLD, power: 0.12 + 0.5 * b.glow, reach: 170 + 170 * b.glow, shadow: true })
     }
 
-    beam.visible = flare.visible = fx.beam !== null
+    const under = fx.under ?? 0
+    flare.visible = fx.beam !== null
+    beam.visible = fx.beam !== null && under < 1
+    sunk.visible = fx.beam !== null && under > 0
     if (fx.beam) {
       const b = fx.beam
       const u = beamMat.uniforms
+      u.uShare!.value = 1 - under
       u.uTime!.value = time
       u.uOpen!.value = b.open
       u.uPower!.value = b.power
@@ -565,6 +573,14 @@ export function makeFinishFx(): FinishFx {
       beam.matrixAutoUpdate = false
       beam.matrix.copy(flat(b.x, b.y, b.z, BEAM.long, BEAM.wide * 2 * big, b.aim))
       if (fx.lens) faceBeam(beam.matrix, b, BEAM.wide * 2 * big, fx.lens)
+      if (sunk.visible) {
+        const v = sunkMat.uniforms
+        for (const n of ['uTime', 'uOpen', 'uPower', 'uAge', 'uWide'] as const) v[n]!.value = u[n]!.value
+        ;(v.uKeep!.value as THREE.Vector4).copy(keep)
+        v.uShare!.value = under
+        sunk.matrixAutoUpdate = false
+        sunk.matrix.copy(flat(b.x, b.y, CAMERA.sunk, BEAM.long, BEAM.wide * 2 * big, b.aim))
+      }
       const f = flareMat.uniforms
       f.uTime!.value = time * 1.7
       f.uGlow!.value = Math.min(1.4, b.open * 1.4)
@@ -662,7 +678,7 @@ export function makeFinishFx(): FinishFx {
     },
     dispose(): void {
       for (const g of [quad, standing, along, flameGeo, markGeo, puffGeo]) g.dispose()
-      for (const m of [flameMat, glowMat, ballMat, flareMat, beamMat, markMat, puffMat, duskMat]) m.dispose()
+      for (const m of [flameMat, glowMat, ballMat, flareMat, beamMat, sunkMat, markMat, puffMat, duskMat]) m.dispose()
       dusk.geometry.dispose()
       flames.dispose()
       marks.dispose()

@@ -8,7 +8,7 @@ import { BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LO
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { FIRE, finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
-import { ABOVE, facing, feetFor, finishShot, marksOf, type Shot } from '../../boss/finish/camera'
+import { ABOVE, facing, feetFor, finishShot, marksOf, underOf, type Shot } from '../../boss/finish/camera'
 import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
 import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
@@ -228,6 +228,7 @@ export function makePage(): PageLogic {
     if (!LOOK1_ON || !v || (r < 0 && s.fin.arms < 0)) return null
     const m = s.fin
     const b = buttonAt(v)
+    const under = m.arms < 0 ? 0 : underOf(s.clock - LEAD, marksOf(s.mode === 'film', m.arms, s.round >= 0 ? s.round : m.thrust, m.fire))
     return {
       time: v.time,
       arrow: r < 0 ? { x: s.cx, y: s.cy } : spot(r),
@@ -237,7 +238,8 @@ export function makePage(): PageLogic {
       shot: s.shot,
       walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
       button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
-      ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye, glare: low.glare } : {})
+      ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye, glare: low.glare } : {}),
+      ...(under > 0 ? { under } : {})
     }
   }
   const stands = (): boolean => {

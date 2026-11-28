@@ -18,6 +18,7 @@ const clamp = (v: number): number => Math.min(1, Math.max(0, v))
 const smooth = (v: number): number => { const t = clamp(v); return t * t * (3 - 2 * t) }
 const ease = (t: number, from: number, to: number): number => smooth((t - from) / (to - from))
 const lerp = (a: number, b: number, k: number): number => a + (b - a) * k
+const glide = (v: number, e: number): number => { const k = clamp(v); return k < e ? (k * k) / (2 * e * (1 - e)) : k > 1 - e ? 1 - ((1 - k) * (1 - k)) / (2 * e * (1 - e)) : (k - e / 2) / (1 - e) }
 
 export const ABOVE: Rig = { at: toWorld(CLOSE.x + CLOSE.w / 2, CLOSE.y + CLOSE.h / 2, 0), az: -90, el: 90, tall: CLOSE.h, fov: config.cameras.home.fovDeg }
 export const FEET = ((): V3 => { const f = feetFor({ x: LAST.stand[0], y: LAST.stand[1] }); return toWorld(f.x, f.y, 0) })()
@@ -27,9 +28,9 @@ export const keyAt = (k: Key, feet: V3 = FEET): Rig => ({ at: [feet[0] + k.at[0]
 const soon = (k: number, by: number): number => 1 - (1 - k) ** by
 const late = (k: number, by: number): number => k ** by
 
-export const mixRig = (a: Rig, b: Rig, k: number, at = k, el = k, lens = k): Rig => (k <= 0 ? a : k >= 1 ? b : {
+export const mixRig = (a: Rig, b: Rig, k: number, at = k, el = k, lens = k, az = k): Rig => (k <= 0 ? a : k >= 1 ? b : {
   at: [lerp(a.at[0], b.at[0], at), lerp(a.at[1], b.at[1], at), lerp(a.at[2], b.at[2], at)],
-  az: lerp(a.az, b.az, k), el: lerp(a.el, b.el, el), tall: Math.exp(lerp(Math.log(a.tall), Math.log(b.tall), lens)), fov: lerp(a.fov, b.fov, lens)
+  az: lerp(a.az, b.az, az), el: lerp(a.el, b.el, el), tall: Math.exp(lerp(Math.log(a.tall), Math.log(b.tall), lens)), fov: lerp(a.fov, b.fov, lens)
 })
 
 export const lowOf = (r: Rig): number => 1 - smooth((r.el - CAMERA.lowEl[0]) / (CAMERA.lowEl[1] - CAMERA.lowEl[0]))
@@ -55,19 +56,11 @@ const shot = (rig: Rig, view: ViewName, shake: readonly [number, number] = [0, 0
 
 export const marksOf = (film: boolean, arms: number, thrust: number, fire: number): Marks => (film ? { arms, turn: arms + SHOUT.fire - SHOUT.arms - CAMERA.ahead, fire, round: CAMERA.round } : { arms, turn: thrust >= 0 ? thrust : fire, fire, round: CAMERA.roundLive })
 
-export const LAST_LOW = CAMERA.rise[1] + CAMERA.turn
+export const LAST_LOW = CAMERA.rise[1] + CAMERA.hold + CAMERA.turn
 
 export const over = (time: number, m: Marks): boolean => m.arms < 0 || time <= m.arms + CAMERA.down[0] || (m.fire >= 0 && time >= m.fire + LAST_LOW)
 
 export const TOP: Rig = { at: [FEET[0] + CAMERA.top.at[0], FEET[1] + CAMERA.top.at[1], CAMERA.top.at[2]], az: CAMERA.top.az, el: 90, tall: CAMERA.top.tall, fov: ABOVE.fov }
-
-const flat = (az: number): [[number, number], [number, number]] => [[-Math.sin(az * RAD), Math.cos(az * RAD)], [-Math.cos(az * RAD), -Math.sin(az * RAD)]]
-const spot = (r: Rig): [number, number] => {
-  const [right, up] = flat(r.az)
-  const d = [FEET[0] - r.at[0], FEET[1] - r.at[1]]
-  return [(d[0]! * right[0] + d[1]! * right[1]) / r.tall, (d[0]! * up[0] + d[1]! * up[1]) / r.tall]
-}
-const SPOT = [spot(TOP), spot(ABOVE)] as const
 
 const HALF = 55
 export const sideOf = (r: Rig): number => {
@@ -120,14 +113,11 @@ export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; s
     const up = ease(f, CAMERA.rise[0], CAMERA.rise[1])
     rig = mixRig(rig, TOP, up, up, soon(up, CAMERA.lift))
     if (up > 0 && up < 1) rig = { ...rig, tall: rig.tall * (1 + CAMERA.wide * Math.sin(Math.PI * up)) }
-    const turn = ease(f, CAMERA.rise[1], LAST_LOW)
+    const turn = glide((f - CAMERA.rise[1] - CAMERA.hold) / CAMERA.turn, CAMERA.ramp)
     if (turn > 0) {
-      const az = lerp(TOP.az, ABOVE.az, turn)
-      const tall = Math.exp(lerp(Math.log(TOP.tall), Math.log(ABOVE.tall), turn))
-      const [r, u] = flat(az)
-      const a = lerp(SPOT[0][0], SPOT[1][0], turn) * tall
-      const b = lerp(SPOT[0][1], SPOT[1][1], turn) * tall
-      rig = { at: [FEET[0] - r[0] * a - u[0] * b, FEET[1] - r[1] * a - u[1] * b, 0], az, el: 90, tall, fov: ABOVE.fov }
+      const to = soon(turn, CAMERA.lift)
+      const tall = Math.exp(lerp(Math.log(TOP.tall), Math.log(ABOVE.tall), late(turn, CAMERA.lift)))
+      rig = { at: [lerp(TOP.at[0], ABOVE.at[0], to), lerp(TOP.at[1], ABOVE.at[1], to), 0], az: lerp(TOP.az, ABOVE.az, turn), el: 90, tall, fov: ABOVE.fov }
     }
     if (f > CAMERA.back[0]) {
       view = f < CAMERA.rise[0] ? 'blast' : up < 1 ? 'end' : 'above'
@@ -144,6 +134,8 @@ export function finishShot(time: number, m: Marks): Shot | null {
   const r = finishRig(time, m)
   return shot(r.rig, r.view, r.shake, r.glare)
 }
+
+export const underOf = (time: number, m: Marks): number => (!CAMERA.on || m.fire < 0 || time <= m.fire + CAMERA.rise[0] ? 0 : 1 - (finishShot(time, m)?.low ?? 0))
 
 export function facing(from: Rig, feet: V3, k: number): Shot | null {
   if (!CAMERA.on || k <= 0) return null

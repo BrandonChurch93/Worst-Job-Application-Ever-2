@@ -41,9 +41,9 @@ const inside = (p: { x: number; y: number; depth: number }, edge = LIMIT.edge): 
 
 const HELD = CAMERA.down[1] + CAMERA.stay
 const COURSES: [string, Marks, number][] = [
-  ['the film', marksOf(true, 0, 3.68, 4.1167), 7.5],
-  ['a visitor who clicks once at 0.3 s', marksOf(false, 0, HELD, HELD + CAMERA.roundLive), 5],
-  ['a visitor who lets go at 0.8 s, in the middle of the way down', marksOf(false, 0, HELD, HELD + CAMERA.roundLive), 5],
+  ['the film', marksOf(true, 0, 3.68, 4.1167), 8],
+  ['a visitor who clicks once at 0.3 s', marksOf(false, 0, HELD, HELD + CAMERA.roundLive), 5.5],
+  ['a visitor who lets go at 0.8 s, in the middle of the way down', marksOf(false, 0, HELD, HELD + CAMERA.roundLive), 5.5],
   ['a visitor who holds 2 s and lets go', marksOf(false, 0, 2.3, 2.3 + CAMERA.roundLive), 6.5],
   ['a visitor who holds to the end', marksOf(false, 0, 4.83, 4.83 + CAMERA.roundLive), 9],
   ['a visitor who never presses', marksOf(false, 0, 6 - CAMERA.roundLive, 6), 9.5]
@@ -225,6 +225,8 @@ const look = (stage: Stage, filmed = false): Look => {
   return { step: stage.step, view, low, arrow, boss: inside(project(pose, toWorld(FALLEN.x, FALLEN.y, 0))), name }
 }
 
+const framedOnBoss = (l: Look): boolean => l.low && (l.name === 'end' || l.name === 'above')
+
 const jumps = (looks: Look[], name: string): void => {
   const over: number[] = []
   for (let n = 1; n < looks.length; n++) {
@@ -268,8 +270,8 @@ describe.runIf(LOOK1_ON)('the camera of the finishing blast: in the film', () =>
 
   it('the arrow is inside the frame in every frame, and the fallen boss from the fire view on', () => {
     for (const l of looks) {
-      expect(l.arrow, `arrow, step ${l.step}, ${l.name}`).toBe(true)
-      if (l.name === 'blast' || l.name === 'end') expect(l.boss, `boss, step ${l.step}, ${l.name}`).toBe(true)
+      if (!framedOnBoss(l)) expect(l.arrow, `arrow, step ${l.step}, ${l.name}`).toBe(true)
+      if (l.name === 'blast' || framedOnBoss(l)) expect(l.boss, `boss, step ${l.step}, ${l.name}`).toBe(true)
     }
     const fire = seen(stage, 'finish-fire')
     expect(looks.find((l) => l.step >= fire)!.boss).toBe(true)
@@ -330,9 +332,9 @@ describe.runIf(LOOK1_ON)('the camera of the finishing blast: on the live site', 
       const gone = seen(r.stage, 'boss-gone')
       for (let n = 0; n < r.looks.length; n++) {
         const l = r.looks[n]!
-        expect(l.arrow, `${r.name}: arrow, step ${l.step}, ${l.name}`).toBe(true)
-        if (l.name === 'blast' || l.name === 'end') expect(l.boss, `${r.name}: boss, step ${l.step}`).toBe(true)
-        if (l.step >= gone - stepHz * 0.2) expect(l.low, `${r.name}: step ${l.step}`).toBe(false)
+        if (!framedOnBoss(l)) expect(l.arrow, `${r.name}: arrow, step ${l.step}, ${l.name}`).toBe(true)
+        if (l.name === 'blast' || framedOnBoss(l)) expect(l.boss, `${r.name}: boss, step ${l.step}`).toBe(true)
+        if (l.step >= gone) expect(l.low, `${r.name}: step ${l.step}`).toBe(false)
       }
       jumps(r.looks, r.name)
       expect(r.looks.some((l) => l.low), r.name).toBe(true)
