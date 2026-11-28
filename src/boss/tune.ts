@@ -290,6 +290,7 @@ export const CAMERA = {
   upright: 0.75,
   lowEl: [30, 80] as const,
   down: [0, 0.95] as const,
+  dive: [1.2, 4] as const,
   swing: 2,
   push: 0.08,
   pushOver: 6,

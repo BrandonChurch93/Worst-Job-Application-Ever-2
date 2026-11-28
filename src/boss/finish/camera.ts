@@ -96,7 +96,7 @@ export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; s
   const t = time - m.arms
   const charge = keyAt(CAMERA.charge)
   const down = ease(t, CAMERA.down[0], CAMERA.down[1])
-  let rig = mixRig(ABOVE, { ...charge, tall: charge.tall * (1 - CAMERA.push * smooth(t / CAMERA.pushOver)) }, down, soon(down, CAMERA.lead), late(down, CAMERA.lag))
+  let rig = mixRig(ABOVE, { ...charge, tall: charge.tall * (1 - CAMERA.push * smooth(t / CAMERA.pushOver)) }, down, soon(down, CAMERA.dive[0]), late(down, CAMERA.dive[1]))
   rig = { ...rig, az: lerp(ABOVE.az, charge.az, soon(down, CAMERA.swing)) }
   let view: ViewName = t <= CAMERA.down[0] ? 'above' : 'charge'
   let shake: [number, number] = [0, 0]

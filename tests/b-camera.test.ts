@@ -19,7 +19,7 @@ import type { CameraPose } from '../src/stage/types'
 
 const FPS = config.film.fps
 const PER = stepHz / FPS
-const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 140, field: 1.5, edge: 0, pane: 25, rest: 1.5, top: 1.55, thin: 3, pillar: 120 } as const
+const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 140, field: 1.5, edge: 0, pane: 25, rest: 1.5, top: 1.55, thin: 3, pillar: 85 } as const
 const WHIP = { eye: 420, turn: 60, roll: 60, screen: 2600, field: 1.5 } as const
 const ADDED = 78
 const CUTS: number[] = []
@@ -141,22 +141,23 @@ describe('the camera of the finishing blast: its path', () => {
     console.log('from above, the nearest a corner of the frame comes to the edge of the floor, px', least.toFixed(1))
   })
 
-  it('passes no pillar close: the lens keeps its distance from every pillar it is not above', () => {
+  it('passes no pillar close: the lens keeps its distance from the body of every pillar', () => {
     let least = Infinity
+    let where = ''
     for (const [name, m, long] of COURSES) {
       for (let n = 0; n < long * FPS; n++) {
         const shot = finishShot(n / FPS, m)
         if (!shot) continue
         const [x, y, z] = [shot.pose.eye[0] + 960, 540 - shot.pose.eye[1], shot.pose.eye[2]]
-        if (z > ARENA.pillar.high + LIMIT.pillar) continue
         for (const p of PILLARS) {
-          const d = Math.hypot(x - p.x, y - p.y)
-          least = Math.min(least, d)
-          expect(d, `${name}, frame ${n}, ${p.id}`).toBeGreaterThanOrEqual(LIMIT.pillar)
+          const half = ARENA.pillar.side / 2
+          const d = Math.hypot(Math.max(0, Math.abs(x - p.x) - half), Math.max(0, Math.abs(y - p.y) - half), Math.max(0, z - ARENA.pillar.high))
+          if (d < least) [least, where] = [d, `${name}, frame ${n}, ${p.id}`]
         }
       }
     }
-    console.log('nearest pillar to the lens, px', least.toFixed(1))
+    console.log('nearest body of a pillar to the lens, px', least.toFixed(1), where)
+    expect(least, where).toBeGreaterThanOrEqual(LIMIT.pillar)
   })
 
   it('eases in and out of every move: it starts and ends each course at rest, from above', () => {
