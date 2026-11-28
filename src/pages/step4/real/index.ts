@@ -8,6 +8,7 @@ import type { Shape } from '../../../stage/types'
 import { verifyCard } from './verify-card'
 import { healthBar } from './health-bar'
 import { bossWeapons } from './boss-weapons'
+import { lit } from './rise'
 import { bossBody } from '../../../boss/real/body'
 import { bossTransform } from '../../../boss/real/transform'
 
@@ -52,3 +53,4 @@ const shaken = (inner: PartMaker): PartMaker => ({
 })
 
 export const real: PageReal = { parts: { 'verify-card': verifyCard, 'health-bar': healthBar, 'boss-weapons': bossWeapons, 'boss-body': bossBody, 'boss-transform': bossTransform, 'boss-arena': shaken(arenaPart(viewNow, { beam: () => { const i = finishNow(); return i ? beamLight(finishState(i)) : null }, upright: () => finishNow()?.low ?? 0, shade: () => finishNow()?.low ?? 0, fade: () => finishNow()?.fade ?? null })), 'boss-look1': shaken(bossLook), 'boss-finish': finishPart(finishNow) } }
+real.parts['boss-finish'] = lit(real.parts['boss-finish']!)

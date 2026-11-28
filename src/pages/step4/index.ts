@@ -4,7 +4,7 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, 
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
-import { BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, RISE_LIGHT, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { FIRE, finishState, kneelSpot, powerPlan, type FinishInput } from '../../boss/finish/acting'
@@ -238,7 +238,14 @@ export function makePage(): PageLogic {
       const u = ease(since / LINE7.power)
       return { x: TALK.top.x + (TALK.stand.x - TALK.top.x) * u, y: TALK.top.y + (TALK.stand.y - TALK.top.y) * u }
     }
-    if (r >= 0) return closeOn(r + LINE7.getup < LINE7.power ? down(r + LINE7.getup) : spot(r), r < BURST ? 1 : 1 - ease((r - BURST) / (RAISED - BURST)))
+    if (r >= 0) {
+      const c = closeOn(r + LINE7.getup < LINE7.power ? down(r + LINE7.getup) : spot(r), r < BURST ? 1 : 1 - ease((r - BURST) / (RAISED - BURST)))
+      const u = (r - BURST) / RISE_LIGHT.shake.seconds
+      if (!c || u < 0 || u >= 1) return c
+      const k = RISE_LIGHT.shake.px * (1 - u) * (1 - u)
+      const turn = (r - BURST) * RISE_LIGHT.shake.hz * Math.PI * 2
+      return { x: c.x + k * Math.sin(turn), y: c.y + k * Math.cos(turn * 1.31), z: c.z }
+    }
     if (s.stage !== 'hold' || s.fin.power >= 0) return null
     const two = s.turned < 0 ? Infinity : s.turned + LINE7.gap + LINE7.part1 + LINE7.gap
     return closeOn(s.t < two ? { x: s.cx, y: s.cy } : down(s.t - two), Math.min(1, Math.max(0, (s.t - LINE7.ends[1]) / (LINE7.part0 - LINE7.ends[1]))))
@@ -292,7 +299,7 @@ export function makePage(): PageLogic {
   const strip = (rig: Rig, k: number): Rig => ({ ...rig, plate: { ...rig.plate, k: rig.plate.k * k }, sides: rig.sides.map((q) => ({ ...q, k: q.k * k })), legs: rig.legs.map((q) => ({ ...q, k: q.k * k })), cannons: rig.cannons.map((q) => ({ ...q, k: q.k * k })), shield: { ...rig.shield, k: rig.shield.k * k } })
   const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
   const NONE = { breaks: [], fallen: [] as string[] }
-  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= s.lag && s.fired < BLAST ? { power: s.shot, since: s.fired - s.lag } : null, last: s.end && s.fig ? { phase: s.end.phase, since: s.end.t, x: s.fig.x, y: s.fig.y, to: { x: FALLEN.x, y: FALLEN.y }, led: !s.end.go } : null, close: s.close, pressedFor: s.end ? s.pressed : -1, scorch: s.burn }))
+  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= s.lag && s.fired < BLAST ? { power: s.shot, since: s.fired - s.lag } : null, last: s.end && s.fig ? { phase: s.end.phase, since: s.end.t, x: s.fig.x, y: s.fig.y, to: { x: FALLEN.x, y: FALLEN.y }, led: !s.end.go } : null, close: s.close, pressedFor: s.end ? s.pressed : -1, scorch: s.burn, burst: s.fin.power < 0 ? null : { at: s.fin.power + BURST, x: s.fin.tx, y: s.fin.ty } }))
   const inBox = (b: { x: number; y: number; w: number; h: number }, p: { x: number; y: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const fallenBox = { x: FALLEN.x - 150, y: FALLEN.y - 62, w: 300, h: 124 }
   const wake = (): number => (s.mode === 'film' ? Math.max(WAKE_AFTER_TICK.film, LINE6.after - UNFOLD.end) : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
