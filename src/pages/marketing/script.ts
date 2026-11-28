@@ -1,3 +1,4 @@
+import { config } from '../../config'
 import { HANDOFF, type Acting, type Reaction } from '../../cursor/body'
 import type { Pointer } from '../../stage/types'
 
@@ -137,7 +138,11 @@ export function pageAt(m: Marks, p: Plan, time: number): { x: number; y: number 
 // The arrow comes back with the page. It is let down from the height of the hand-off from `from` to `down`, a little before the page
 // lies flat at `lands`, the stage's half turn; `flat` is when it goes flat (`duck`), a moment before it touches. It gets up, stands, then
 // takes half a step of `step` px aside, off the line above Apply for a Job, and stays leant from `lean` on.
-export const LANDING = { lands: 0.5, from: 0.04, down: 0.25, flat: 0.22, lean: 1.24, step: 46, walk: 2.4 }
+// This path is the film's alone (a visitor's arrow is the visitor's). The film ends on this page, on the lean: the walk to the opening place starts at `walk`,
+// which is never sooner than the film's last unit has left once its last beat begins, and the page is entered after that beat begins. So the walk is not in the film.
+const lastUnit = config.film.units[config.film.units.length - 1]!
+const lastBeat = config.film.beats.filter((b) => b.unit === lastUnit.id).reduce((a, b) => (b.from > a.from ? b : a))
+export const LANDING = { lands: 0.5, from: 0.04, down: 0.25, flat: 0.22, lean: 1.24, step: 46, walk: Math.max(2.4, lastUnit.seconds - lastBeat.from) }
 
 export function rejectedPath(m: Marks): Key[] {
   const leant = { x: HANDOFF.x - LANDING.step, y: HANDOFF.y }

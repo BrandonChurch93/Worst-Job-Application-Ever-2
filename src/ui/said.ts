@@ -105,6 +105,9 @@ export const CAPTION = {
   logMax: 60
 }
 
+// The y of the ordinary panel's lower edge on a page that names none: what the live site gives the panel there, and what the film's overlay must give it too.
+export const captionLow = (page?: string): number => CAPTION.lowOn[page ?? ''] ?? CAPTION.low
+
 // The size of step k of n of a line that builds on marks, in page pixels. `most` is the size at which the whole line fits its band.
 export const shoutPx = (k: number, n: number, most: number = CAPTION.shout.lastPx): number => {
   const last = Math.min(CAPTION.shout.lastPx, most)

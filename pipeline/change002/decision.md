@@ -44,7 +44,7 @@ Why 17.1 s. Line 9 ends at 17.0125 s, and the unit's seconds times 30 must be wh
 - 17.4 s broke a test of the careers page's landing: in the last step of the unit the arrow, on its walk, starts to rise off the page (MEASURED: its height 10 where the test allows 6).
 - More time after the line only shows more of a move that cannot finish inside the unit (next paragraph). The owner asked for the short end and no padding, so the short end it is.
 
-A fault this leaves, and it is not mine to mend alone. The careers page, turned back to, plays its own script, which is another unit's and which I did not touch (MEASURED by stepping the unit): the page is entered at 14.3875 s; the arrow comes down and lies flat (14.61 to 15.16), stands, steps left and leans at the Apply button (15.52 to 16.07), holds there, and at 16.79 s (`LANDING.walk`, 2.4 s after it enters) it sets off to the place it stands at when the film starts, a walk of 0.85 s that ends at 17.6375 s. Before, the unit ended at 12 s, 1.75 s after the page was entered, on the lean; the walk was never in the film. Line 9 ends 0.22 s after the walk starts, so with any length the brief allows the film now ends with the arrow in the middle of that walk: at 17.1 s it is 0.31 s into it (the arrow has gone about 40 px of the way). Two ways to mend it, both outside what I was given:
+A fault this left, mended by the Builder's ruling (see "After the ruling on the film's end" below). As it stood: the careers page, turned back to, plays its own script, which is another unit's and which I did not touch (MEASURED by stepping the unit): the page is entered at 14.3875 s; the arrow comes down and lies flat (14.61 to 15.16), stands, steps left and leans at the Apply button (15.52 to 16.07), holds there, and at 16.79 s (`LANDING.walk`, 2.4 s after it enters) it sets off to the place it stands at when the film starts, a walk of 0.85 s that ends at 17.6375 s. Before, the unit ended at 12 s, 1.75 s after the page was entered, on the lean; the walk was never in the film. Line 9 ends 0.22 s after the walk starts, so with any length the brief allows the film ended with the arrow in the middle of that walk: at 17.1 s it was 0.31 s into it (the arrow had gone about 40 px of the way). Two ways to mend it, both outside what I was given; the first is the one ruled:
 
 - `LANDING.walk` in `src/pages/marketing/script.ts` later than the unit's end (it is read by the film only), so the film ends on the arrow leaning at the Apply button, held, under "the next application." That shows nothing the reset did not show before. It is the one I would take.
 - The unit 17.9 s: the walk ends and the arrow stands 0.26 s at its opening place. That is 0.89 s after line 9 ends, more than the 0.4 s allowed.
@@ -70,7 +70,7 @@ A fault this leaves, and it is not mine to mend alone. The careers page, turned 
 | Line 8 (`decision.letter.0`), start to end | 5.433 to 13.558 | 5.433 to 13.558 (not moved; it now ends inside the unit) |
 | Line 9 (draft, `decision.reset.0`), start to end | 13.858 to 16.983, past the unit's end, 4.104 s after its event | 13.8875 to 17.0125, on its event |
 | Line 9's `at` in `content/narration-drafts.json` | 0 | 0.02652 |
-| The careers page, once entered (0.5 s after the turn), is seen for | 1.746 s (ends on its lean at the button) | 2.7125 s (ends 0.31 s into its walk to the opening place, which starts at 16.7875) |
+| The careers page, once entered (0.5 s after the turn), is seen for | 1.746 s (ends on its lean at the button) | 2.7125 s (ends on its lean at the button, held from 16.07; the walk to the opening place is past the unit's end, at 17.1) |
 | The key `decision`, `at` of its beat | 0.3 | 0.15385 (still 7.2 s of the unit) |
 | The film B | 194.9 s, 11694 frames | 200 s, 12000 frames |
 
@@ -95,11 +95,41 @@ All of these are MEASURED from `cut/CUES.md`, `npm run retime` and the constants
 | `tests/step5.test.ts` | gives the same frames by seeking as by playing | first seek to 11 s, times to 9.4 | first seek to 15 s, three more times: 13.5, 10.5, 12.2 | the same |
 | `tests/decision-fix.test.ts` | the flat arrow comes down over at least 14 frames, after the block is down, and lies still before the key | `STUCK.heal` (0.78) in two lines | `FILM.heal` (2.3) | the test is of the film; the film's heal is its own number now |
 | `tests/decision-acting.test.ts` | every cue of the acting sits inside the twelve seconds and in order, now named "every cue of the acting sits before the press and in order" | every cue before 10 s | every cue before `FILM.press` (13.433) | the unit is not twelve seconds and two cues are after 10 s |
-| `tests/careers-fix-landing.test.ts` | the landing back on the careers page: holds three poses long enough to be read: flat on landing, stood again, leant at the button | the deep lean (under -0.45) ends on the unit's last step | the arrow stays at the leant place to the unit's last step or to the page's own walk (`LANDING.walk`), whichever is first, give or take 0.03 s | the reset is longer: the `recoil` that makes the deep lean ends 0.62 s after it starts and the lean eases, and then the page's script reaches its walk; the three holds of 0.4 s and their order are asked as before, and the old config passes the new line too |
+| `tests/careers-fix-landing.test.ts` | the landing back on the careers page: holds three poses long enough to be read: flat on landing, stood again, leant at the button | the deep lean (under -0.45) ends on the unit's last step | the arrow stays at the leant place to the unit's last step, exactly | the reset is longer: the `recoil` that makes the deep lean ends 0.62 s after it starts and the lean eases; after the ruling the walk is past the unit's end, so the line asks the last step itself; the three holds of 0.4 s and their order are asked as before |
 
 New tests in `tests/decision-acting.test.ts`: "the phrase times the acting keeps are those of line 8 at the narrator's rate" (holds `SAID` to the words of `content/narration.json` and `audio.narratorMaxWordsPerSecond`) and "the arrow acts the line: flat through the first two phrases, whole in the third, up on the fourth, down on the fifth, each pose held" (the holds, the heal inside 4 s, the press on a whole frame at or before the line's end, the page turn no sooner than the line's end plus the gap and less than one frame of 30 after it).
 
 No test was loosened to pass: where a number was a film time that moved, the test now reads it from the config or from `FILM`.
+
+## After the ruling on the film's end
+
+RULED by the Builder (STATED, his mail of 01:59Z): in the film the arrow holds its lean at the Apply button to the unit's last frame; the unit stays 17.1 s.
+
+- `LANDING.walk` in `src/pages/marketing/script.ts` was 2.4. It is now `Math.max(2.4, lastUnit.seconds - lastBeat.from)`: the seconds the film's last beat runs, 3.3 with today's config. The careers page is on screen for 2.7125 s of that beat, so the walk is past the end.
+- The live site is not changed (MEASURED by reading the code): `rejectedPath` is read only through the page's `script()`, which only the film's driver runs. A visitor's arrow is the visitor's; the site has no scripted walk.
+- New test in `tests/careers-fix-landing.test.ts`: "ends the film on the lean: over the last 0.3 s of the unit the arrow does not change its place or its pose, and the walk to the opening place is past the end". It asks the same acting, no reaction, y, z and spin exact, x within 0.01 px, lean within 0.005 rad, squash within 0.001. MEASURED over those 0.3 s: x moves 0.00004 px, lean 0.0028 rad (the tail of the ease into the lean), squash 0.00003; the acting is `exhausted` throughout.
+- The frames of the unit from 16.79 s on changed. `cut/` is the same after `npm run cut` (MEASURED). The frames before 16.79 s were not compared one by one; the walk is the only thing whose time moved.
+
+## The caption on the sheets
+
+The Builder saw the caption on `decision-line.jpg` lying under the Accept Rejection button and over the share link. That was the sheet, not the page (MEASURED): the shell already puts the panel on this page in the free band under the title rule (`CAPTION.lowOn.step5` 264 in `src/ui/said.ts`, the panel at y 202 to 264), and on the boss page at 828. The tool that draws the film's captions, `pipeline/change002/shell-film-captions.mjs`, drew every one at the foot (`CAPTION.low`, 1044) whatever the page. The button and the link were not moved (the Builder withdrew that, STATED, 02:02Z).
+
+- `captionLow(page)` in `src/ui/said.ts`: the lower edge the panel has on a page. `filmLinePage(key, unit)` in `src/audio/cues.ts`: the page a line of the film is said over (the page of its unit; for a line set off by the turn of the page, the page turned to).
+- The tool now gives each phrase its `page` and `lowerEdgeY`, tells the panel that place as the live site does, and draws a line that builds on marks (the boss's shout) as the panel does. It was run for the whole film: `pipeline/change002/shell-film-captions.json` holds 54 phrases of 13 lines (it held 12, the first 18 s).
+- New file `tests/film-captions-place.test.ts`, three tests: the page of each line; every phrase's kept box against the live place for its page (lower edge within half a pixel, centred on 960, no wider or higher than the panel may be; line 8's five phrases at y 202 to 264 exactly); and the panel itself, made as the site makes it, puts its lower edge at `captionLow(page)` on each of the six pages.
+
+The three boxes at 9 s of the unit, [left, top, width, height] in the 1920 by 1080 frame (MEASURED):
+
+| | Before | After |
+| --- | --- | --- |
+| Caption "has decided" | 850.2, 982, 219.6, 62 (over the button's lower 18 px and the top 10 px of the link's words) | 850.2, 202, 219.6, 62 |
+| Accept Rejection button (`accept-cap`) | 773, 904, 374, 96 | the same |
+| Share Your Achievement link (`share`, the words and the rule) | 842.3, 1034, 235.3, 19.1 | the same |
+
+What this leaves, not mended:
+
+- Line 9 is given the careers page's place (the foot) for its whole length. For the half second the decision page is still turning away (film frames 11807 to 11836) "On to" lies at the foot. The live panel eases to a new place over about a quarter of a second; the stills do not model that ease.
+- On the careers page the panel at the foot lies partly over the page's ticker band (seen at real size at 16.4 s). That is the shell's place for that page, the same as at the film's start; not this unit's.
 
 ## Outside the list I was given
 
@@ -115,8 +145,8 @@ No test was loosened to pass: where a number was a film time that moved, the tes
 - How any of it moves. I looked at stills only. Whether the peel reads as a peel, whether the puff and the lean on "to move forward" read as hope, whether the sag reads, whether the hold before the press feels held or dead: UNKNOWN in motion.
 - How it sounds. The two lines are silent stand-ins; no sound was made or heard.
 - Whether a real voice fits. The times are the soonest the lines can end at 1.6 words a second. A slower voice makes line 8 end after the press and line 9 run past the unit; `npm run retime` will say so when the real lengths are in.
-- Whether the caption sits well on this page. On the stills it lies just under the Accept Rejection button, over the share link, and the arrow presses the button right beside it. The caption's place is the shell's, not this page's; I did not move it.
-- How the unfinished walk at the very end reads (see "A fault this leaves").
+- Whether the caption sits well on this page, in motion. On the stills it now lies where the shell puts it on this page, in the free band under the title rule (see "The caption on the sheets" below).
+- How the held lean at the very end reads, and whether a film that ends on a still arrow feels ended. On the stills nothing moves in the last 0.3 s but the page's own ticker.
 - Whether the owner wants line 9 over the careers page as it plays at its start (the hero and the Apply button rising), which is what the reset shows.
 
 ## Not done

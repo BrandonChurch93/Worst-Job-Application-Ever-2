@@ -324,6 +324,11 @@ export function variantAt(count: number, variants: number): { variant: number; c
 // The file ids of the kept sounds, shared by the tools, the mix and the site.
 export const variantId = (cue: string, variant: number, variants: number): string => (variants > 1 ? `${cue}.${variant + 1}` : cue)
 export const filmLineId = (beat: string, index: number): string => `line.${beat}.${index}`
+// The page a line of the film is said over: the page of its unit, or, for a line set off by the turn of the page, the page turned to.
+export const filmLinePage = (key: string, unit: string): string => {
+  const page = unitPage[unit] ?? unit
+  return spoken[key]?.event === 'page-turn' ? pageAfter[page] ?? page : page
+}
 export const liveLineId = (key: string, index: number): string => `line.live.${key}.${index}`
 
 // The kept sound the nth play of a cue uses, from the ones that exist, and its pitch offset. Null when the cue has no kept sound.

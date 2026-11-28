@@ -107,7 +107,7 @@ What is above is as it was built; where this section differs, this section holds
 | "has decided", 8.56 to 9.81 s | exhausted | peels itself up (8.22 to 8.86), is whole at 9.37, slumps and holds |
 | "to move forward", 9.81 to 11.68 s | proud | puffs up and leans to the letter, as it did when the letter fell, and holds |
 | "with other candidates.", 11.68 to 13.56 s | exhausted | sags (11.68), holds 0.33 s, looks at the one button (12.01), drags itself there (12.42 to 13.03), holds 0.3 s, strikes (13.33), presses (13.43) |
-| "On to / the next application." (a draft), 13.89 to 17.01 s | plain | the page has turned back to the careers page, whose own script runs on: entered at 14.39, the arrow lands, lies flat, stands, leans at the Apply button (from 15.52) and at 16.79 sets off to its opening place; the unit ends 0.31 s into that walk (a fault, see `pipeline/change002/decision.md`) |
+| "On to / the next application." (a draft), 13.89 to 17.01 s | plain | the page has turned back to the careers page, whose own script runs on: entered at 14.39, the arrow lands, lies flat, stands, leans at the Apply button (from 15.52, held from 16.07) and holds that lean to the unit's last frame; the walk to its opening place is past the end of the film (`LANDING.walk`, ruled by the Builder, see `pipeline/change002/decision.md`) |
 
 - The peel cannot start later than it does: the arrow must be whole inside `cursor.damageHealSeconds` (4 s) of the stamp, and it is whole 3.93 s after it.
 - The key `decision` in the config is at 0.15385 of its beat (it was 0.3): the same 7.2 s of the unit as before, now that the beat is longer.

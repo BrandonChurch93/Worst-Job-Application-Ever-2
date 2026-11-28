@@ -10,14 +10,14 @@ const hover = config.scale.heights.cursorHover
 
 describe('the landing back on the careers page', () => {
   const s = new Stage({ mode: 'film', flow: filmFlow('decision'), pages, driver: new ScriptDriver(), film: filmOptions('decision') })
-  const poses: { t: number; x: number; z: number; squash: number; lean: number; reaction: string | null }[] = []
+  const poses: { t: number; x: number; y: number; z: number; squash: number; lean: number; spin: number; acting: string; reaction: string | null }[] = []
   let entered = 0
   for (let i = 0; i < Math.round(UNIT * stepHz); i++) {
     s.advance(1)
     if (s.page.id !== 'marketing') continue
     if (!entered) entered = i
     const p = s.cursor.pose()
-    poses.push({ t: (i - entered) / stepHz, x: p.x, z: p.z, squash: p.squash, lean: p.lean, reaction: p.reaction })
+    poses.push({ t: (i - entered) / stepHz, x: p.x, y: p.y, z: p.z, squash: p.squash, lean: p.lean, spin: p.spin, acting: p.acting, reaction: p.reaction })
   }
   const longest = (ok: (p: (typeof poses)[number]) => boolean): [number, number] => {
     let best: [number, number] = [0, 0]
@@ -50,6 +50,22 @@ describe('the landing back on the careers page', () => {
     expect(flat[1]).toBeLessThanOrEqual(stood[0])
     expect(stood[1]).toBeLessThanOrEqual(leant[0])
     const there = longest((p) => p.x < HANDOFF.x - 20)
-    expect(there[1]).toBeGreaterThanOrEqual(Math.min(poses[poses.length - 1]!.t, LANDING.walk) - 0.03)
+    expect(there[1]).toBe(poses[poses.length - 1]!.t)
+  })
+
+  it('ends the film on the lean: over the last 0.3 s of the unit the arrow does not change its place or its pose, and the walk to the opening place is past the end', () => {
+    const end = poses[poses.length - 1]!
+    expect(LANDING.walk).toBeGreaterThan(end.t)
+    const tail = poses.filter((p) => p.t >= end.t - 0.3)
+    expect(tail.length).toBeGreaterThanOrEqual(Math.round(0.3 * stepHz))
+    // Held: the same word, no reaction, the same height; the place within a hundredth of a pixel; the settling of the lean and the squash under 0.005 rad and 0.001.
+    for (const p of tail) {
+      expect([p.acting, p.reaction, p.y, p.z, p.spin]).toEqual([end.acting, end.reaction, end.y, end.z, end.spin])
+      expect(Math.abs(p.x - end.x)).toBeLessThan(0.01)
+      expect(Math.abs(p.lean - end.lean)).toBeLessThan(0.005)
+      expect(Math.abs(p.squash - end.squash)).toBeLessThan(0.001)
+    }
+    expect(end.x).toBeCloseTo(HANDOFF.x - LANDING.step, 3)
+    expect(end.reaction).toBeNull()
   })
 })
