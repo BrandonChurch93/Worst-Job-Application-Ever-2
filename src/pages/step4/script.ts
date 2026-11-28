@@ -21,11 +21,11 @@ export interface FilmScript { pointer(time: number): Pointer; reactions: { at: n
 // The finish: it stands where its last shot left it, its arms come out, it charges for as long as the film holds the button and fires; when the body is gone it walks to the button that is left and presses it.
 // The times of the film hang on these: the tick, the crack that follows it, the lengths of line 7 and of the finish in the tuning file, and the length of the fight as the film plays it.
 const TICK = 3.8
-// The forming waits for line 6: `boss-formed` comes LINE6.after after the tick. BASE is the second the fight's own table counts the forming at, as it was seen when the table was tuned; WAIT is what the wait adds, spent under the answer.
-const FORMED = Number((TICK + LINE6.after).toFixed(3))
+// The forming waits for line 6 when line 6 is the longer: `boss-formed` comes LINE6.after after the tick, and no sooner than BASE. BASE is the second the fight's own table counts the forming at, as it was seen when the table was tuned; WAIT is what the wait adds, spent under the answer.
 const BASE = 9.004
+const FORMED = Number(Math.max(BASE, TICK + LINE6.after).toFixed(3))
 const WAIT = Number((FORMED - BASE).toFixed(3))
-export const HOLD = LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.part2 - BIG.lock
+export const HOLD = LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.rise - BIG.lock
 export const SHIFT = HOLD + WAIT
 const TWO = FORMED + LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap
 export const FIGHT = 13.69

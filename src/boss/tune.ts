@@ -161,7 +161,8 @@ export const LINE7 = {
   gap: 0.3, // s of silence the shell leaves before the next part
   part1: 5.59, // s of `boss.unfold.1`
   music: 3.806, // s into part 1 at which "their student loans." and the music start (`boss-music`)
-  part2: 3.954, // s of `boss.unfold.2`; the turret locks on its last word
+  part2: 3.954, // s of `boss.unfold.2`
+  rise: 3.954, // s from the start of part 2 to the turret's lock: the turn back, the gold and the figure's rise. The rise keeps this length whatever the take's; a shorter take ends inside it and the picture carries the rest
   power: 0.6, // s into part 2 at which the gold starts to build (`power-up`), after the arrow has turned round
   glow: 2, // s the gold builds
   alone: 1.5, // s without a move or a press after which the arrow droops and starts to drift (live)

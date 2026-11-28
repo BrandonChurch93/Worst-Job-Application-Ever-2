@@ -186,7 +186,7 @@ export function makePage(): PageLogic {
   }
   const mark = (v: number): number | undefined => (v < 0 ? undefined : v)
   // What the standing arrow is told: the look's figure of the power-up and of the finish stands in the arrow's place for as long as it is up.
-  const RAISED = LINE7.part2 - LINE7.power - RAISE.early
+  const RAISED = LINE7.rise - LINE7.power - RAISE.early
   const raising = (): number => (s.fin.power < 0 || s.fin.arms >= 0 || s.clock - LEAD - s.fin.power >= RAISED ? -1 : s.clock - LEAD - s.fin.power)
   const ease = (u: number): number => {
     const k = Math.min(1, Math.max(0, u))
@@ -547,7 +547,7 @@ export function makePage(): PageLogic {
             s.fin.ty = to.y
             io.cursor.act('angry')
           }
-          if (s.t >= two + LINE7.part2 - BIG.lock) {
+          if (s.t >= two + LINE7.rise - BIG.lock) {
             s.base = s.clock
             s.stage = 'fight'
             s.t = 0
@@ -837,7 +837,7 @@ export function makePage(): PageLogic {
         const f = s.fight
         if (f.at.flat >= 0 && f.mark) drawPancake(out, f.mark.x, f.mark.y, f.clock - f.at.flat)
       }
-      const lit = LINE7.part2 - LINE7.power
+      const lit = LINE7.rise - LINE7.power
       if (!look && s.gold >= 0 && s.gold < lit + GOLD_OUT && (s.stage === 'hold' || s.stage === 'fight')) drawPower(out, s.cx, s.cy, power() * (1 - prog(s.gold, lit, lit + GOLD_OUT)))
       if (s.stage === 'finish' && !look) drawFinish(out, finishHands({ x: s.cx, y: s.cy }, FALLEN, charged(), s.fired >= 0).ball, FALLEN, charged(), s.fired >= 0 && s.fired < BLAST ? { power: s.shot, u: s.fired / BLAST } : null)
       if (s.stage === 'collapse' && s.from) {
