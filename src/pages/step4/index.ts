@@ -536,7 +536,7 @@ export function makePage(): PageLogic {
             stamp('power')
             s.fin.x = io.cursor.x
             s.fin.y = io.cursor.y
-            const to = LOOK1_ON ? clearOf({ x: s.fin.x, y: s.fin.y }) : { x: s.fin.x, y: s.fin.y }
+            const to = LOOK1_ON && s.mode === 'live' ? clearOf({ x: s.fin.x, y: s.fin.y }) : { x: s.fin.x, y: s.fin.y }
             s.fin.tx = to.x
             s.fin.ty = to.y
             io.cursor.act('angry')

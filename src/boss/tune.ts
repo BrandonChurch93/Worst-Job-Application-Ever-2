@@ -232,7 +232,7 @@ export const RAISE = {
   near: 0.5, // s from `power-up` over which the view comes close and the figure steps to its clear spot
   back: [2.35, 2.92] as const, // s after `power-up` between which the view goes back to the whole page
   zoom: 1.6, // times: the figure about 200 px tall in the film's frame, as on the walk
-  box: { x0: -90, y0: -35, x1: 115, y1: 125 }, // px round the arrow's spot that the figure, its raised fists and its ring of flames fill
+  box: { x0: -90, y0: -35, x1: 115, y1: 125 }, // px round the arrow's spot that the figure, its raised fists and its ring of flames fill; read by eye at 03:10Z. Measured off the flames of the finish at ca844027: the full flame -92 to 137 across and -41 to 125 down, pale tips to about -155 and 165. The wider box is not kept yet: see the notes of 04:35Z
   step: 6, // px between the rings on which a clear spot is looked for
   turns: 72, // spots tried on each ring
   most: 720 // px, the widest ring
