@@ -4,7 +4,7 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, 
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
-import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, RISE_LIGHT, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { FIRE, finishState, kneelSpot, powerPlan, type FinishInput } from '../../boss/finish/acting'
@@ -220,7 +220,14 @@ export function makePage(): PageLogic {
       const u = ease(since / LINE7.power)
       return { x: TALK.top.x + (TALK.stand.x - TALK.top.x) * u, y: TALK.top.y + (TALK.stand.y - TALK.top.y) * u }
     }
-    if (r >= 0) return closeOn(r + LINE7.getup < LINE7.power ? down(r + LINE7.getup) : spot(r), r < BURST ? 1 : 1 - ease((r - BURST) / (RAISED - BURST)))
+    if (r >= 0) {
+      const c = closeOn(r + LINE7.getup < LINE7.power ? down(r + LINE7.getup) : spot(r), r < BURST ? 1 : 1 - ease((r - BURST) / (RAISED - BURST)))
+      const u = (r - BURST) / RISE_LIGHT.shake.seconds
+      if (!c || u < 0 || u >= 1) return c
+      const k = RISE_LIGHT.shake.px * (1 - u) * (1 - u)
+      const turn = (r - BURST) * RISE_LIGHT.shake.hz * Math.PI * 2
+      return { x: c.x + k * Math.sin(turn), y: c.y + k * Math.cos(turn * 1.31), z: c.z }
+    }
     if (s.stage !== 'hold' || s.fin.power >= 0) return null
     const two = s.turned < 0 ? Infinity : s.turned + LINE7.gap + LINE7.part1 + LINE7.gap
     return closeOn(s.t < two ? { x: s.cx, y: s.cy } : down(s.t - two), Math.min(1, Math.max(0, (s.t - LINE7.ends[1]) / (LINE7.part0 - LINE7.ends[1]))))

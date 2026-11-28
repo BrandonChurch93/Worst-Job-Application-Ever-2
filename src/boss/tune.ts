@@ -242,6 +242,16 @@ export const RAISE = {
   turns: 72, // spots tried on each ring
   most: 720 // px, the widest ring
 } as const
+// What the gold of the power-up lights, in step with the flame's level: nothing at `none`, all of it at 1, flickering as the flame does.
+export const RISE_LIGHT = {
+  none: 0.12, // the flame's level at which nothing is lit
+  colour: [1, 0.74, 0.25] as const,
+  floor: { reach: 290, most: 0.55 }, // px from the feet to which the floor is warm (three widths of the figure), and how much of the floor's colour is the gold's at the feet
+  lamp: { power: 1.3, reach: 420, off: 110, high: 140 }, // the lift on the near pane's face and on the shield and the boss's near side: a light with no shadow, `off` px before each and `high` px up
+  ring: { seconds: 0.35, from: 84, reach: 600, wide: 56, most: 1 }, // the burst's ring on the floor: from the ring of flames out to half the width of the closer view, and fading
+  flash: { power: 2.6, reach: 360, near: 150 }, // the shield's glass as the ring passes: at its most when the ring is there, none `near` px before and after
+  shake: { seconds: 0.3, px: 3, hz: 27 } // the film's view at the burst
+} as const
 // `spare` is the health the film keeps over the end of a stage until that stage's time is up, with the look on, so that every stage ends at its time whatever the darts meet.
 export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const, ends: [9.83, 11.02, 13.69] as const, spare: 0.5 } as const
 
