@@ -9,7 +9,10 @@ import { ARENA, PAGE, PANES, PILLARS, SEAMS, paneBox } from './layout'
 // ahead: px in front of the arrow's centre at which the trench starts. thin: the half width of the trench there. half: its half width where it runs into the burn. burn: the radius of the burn. long: how many times longer the burn is along the line than across it.
 // far: the half width of the band downrange where it leaves the page. net: the size of a plate of the cracked crust, px. words: the box, from the middle of the burn, that the fight keeps clear for the words over the button; no chip lands in it.
 // seconds: how long the blast burns when the view does not say (the fight's SHOUT.gone - SHOUT.fire). chips: the bits of ceramic thrown out, at the high level.
-export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 140, long: 1.7, far: 14, net: 17, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 } }
+// furrow: the bed the blast ploughs along its line and the lip of crust it throws up on either side. lip: how far from the middle of the line the top of a lip lies, px, and what the half width there adds to it. crown: the half width of a lip, px, and what the half width there adds to it.
+// wander: how far a lip strays from its line, px. shelf: how deep the ground has sunk at the foot of a lip, of 1. deep: how deep the bed is. slope: px outside a lip over which the ground comes back up. pale: how much of its soot the bed has lost. dark: how much wider than a lip its black is. glow: the half width of the line of coals down the bed, px, and what the half width there adds to it.
+// core: px from the middle of the burn between which the furrow dies away. relief: how strongly the ground's shader bends its light by all this.
+export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 140, long: 1.7, far: 14, net: 17, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 }, furrow: { lip: [8, 0.5], crown: [2.6, 0.07], wander: 11, shelf: 0.55, deep: 1, slope: 22, pale: 0.16, dark: 1.5, glow: [1.5, 0.11], core: [84, 124], relief: 0.6 } }
 
 // The line of the finishing blast as the view gives it: the arrow's centre and the place the boss fell.
 export interface BlastLine { x0: number; y0: number; x1: number; y1: number }
@@ -159,15 +162,27 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
         if (speck > 0.71) soot = Math.max(soot, 0.8 * step(out * 0.8, 10, e.px) * step(0.71, 0.79, speck))
       }
       // The crust is cracked into a fine net of plates, inside the black only: the cracks black and cut in, each plate a little paler than the next.
-      let depth = 0.14 * step(0, -30, e.px) * mid
+      let depth = 0.028 * step(0, -30, e.px) * mid
       if (e.px < -4) {
         const c = crust(x + 16 * (fbm(x / 28, y / 28, seed + 49) - 0.5), y + 16 * (fbm(x / 28 + 5.3, y / 28, seed + 49) - 0.5), seed)
         const within = step(-4, -18, e.px)
         // Hairlines, and not every one of them: a crack shows where the crust is brittle.
         const line = step(1.0, 0.35, c.crack) * within * step(0.3, 0.5, fbm(x / 34 + 2.2, y / 34 + 8.1, seed + 54) + 0.25 * c.plate)
         soot = Math.max(soot * (1 - within * 0.05 * c.plate), line)
-        depth = Math.max(depth, 0.22 * line)
+        depth = Math.max(depth, 0.044 * line)
       }
+      // The furrow: the blast ploughs a bed along its line and throws the crust up into a lip on either side. The lips wander, crumble, and die away under the middle of the burn.
+      const F = SCORCH.furrow
+      const open = step(F.core[0]!, F.core[1]!, Math.hypot(e.ba, e.bc))
+      const q = Math.hypot(Math.min(0, e.along), e.off) + F.wander * (mid - 0.5 + 0.6 * (blot - 0.5))
+      const top = F.lip[0]! + F.lip[1]! * e.wide
+      const crown = F.crown[0]! + F.crown[1]! * e.wide
+      const whole = open * (0.35 + 0.65 * step(0.36, 0.54, fbm(x / 9 + 3.3, y / 9, seed + 55)))
+      const lip = whole * Math.exp(-(((q - top) / crown) ** 2))
+      const bed = open * step(top - crown * 0.6, top - crown * 2, q)
+      const sunk = open * F.shelf * step(top + crown + F.slope, top + crown, q) * (1 - lip)
+      depth = Math.min(1, depth + sunk + (F.deep * (0.85 + 0.15 * mid) - sunk) * bed)
+      soot = Math.max(soot * (1 - F.pale * bed * (0.6 + 0.4 * blot)), (0.4 + 0.6 * whole) * Math.exp(-(((q - top) / (crown * F.dark)) ** 2)) * (0.72 + 0.28 * step(0.3, 0.55, fine)))
       // Embers: at the rim of the burn, down the middle of the trench, and a few strays in the black. Small and orange: coals in soot, not the light of a broken slab.
       let ember = 0
       if (e.px < 4) {
@@ -178,7 +193,10 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
         const where = Math.max(rim * (0.3 + 0.7 * patch), 0.12 * step(-10, -40, e.px) * patch)
         const blob = fbm(x / 6 + 50, y / 6, seed + 51)
         ember = 0.62 * step(0.57, 0.68, blob) * (0.3 + 0.7 * step(0.4, 0.6, fine)) * where
+        // And a line of coals lies down the middle of the bed.
         ember = Math.max(ember, 0.8 * edges * step(0.36, 0.5, blob) * (0.55 + 0.45 * step(0.35, 0.6, fine)))
+        const coals = open * Math.exp(-((q / (F.glow[0]! + F.glow[1]! * e.wide)) ** 2)) * step(0.02, 0.1, e.t + Math.max(0, e.ba))
+        ember = Math.max(ember, 0.7 * coals * step(0.5, 0.62, blob) * (0.5 + 0.5 * step(0.35, 0.6, fine)))
         // And the cracks of the crust glow in places near the rim.
         const vein = 1 - Math.abs(2 * fbm(x / 26 + 9.1, y / 26 + 2.3, seed + 53) - 1)
         ember = Math.max(ember, 0.66 * step(0.95, 0.992, vein) * step(0.42, 0.58, blot) * Math.max(rim, 0.2 * patch) * step(2, -14, e.px))

@@ -4,6 +4,7 @@ import { materials } from '../shell/materials'
 import { merge, outlineOf, profile, sweep, translate, type ProfilePoint } from '../shell/solids'
 import { crackHalf, crackTime, rnd, seamLight, seamOpen } from './change'
 import { ARENA, PAGE, SEAMS, SLABS, inset, type Pt, type Slab } from './layout'
+import { SCORCH } from './scorch'
 
 const wx = (x: number): number => x - PAGE.w / 2
 const wy = (y: number): number => PAGE.h / 2 - y
@@ -104,9 +105,13 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
 \t\tvec2 arenaT = ${texel};
 \t\tfloat arenaDx = texture2D( arenaWounds, vArenaUv + vec2( arenaT.x, 0.0 ) ).g - texture2D( arenaWounds, vArenaUv - vec2( arenaT.x, 0.0 ) ).g;
 \t\tfloat arenaDy = texture2D( arenaWounds, vArenaUv + vec2( 0.0, arenaT.y ) ).g - texture2D( arenaWounds, vArenaUv - vec2( 0.0, arenaT.y ) ).g;
-\t\tfloat arenaSg = arenaS4.g * arenaRev;
-\t\tvec2 arenaBent = vec2( dFdx( arenaSg ) / max( 0.000001, abs( dFdx( vArenaUv.x ) ) ), dFdy( arenaSg ) / max( 0.000001, abs( dFdy( vArenaUv.y ) ) ) ) * vec2( ${(4 / PAGE.w).toFixed(6)}, ${(4 / PAGE.h).toFixed(6)} );
-\t\tnormal = normalize( normal + vec3( arenaDx + arenaBent.x * 0.12, arenaDy + arenaBent.y * 0.12, 0.0 ) * 2.6 );
+\t\tvec2 arenaBent = vec2( 0.0 );
+\t\tif ( arenaBurn.x > 0.0 ) {
+\t\t\t// How the scorched ground slopes: read a texel to either side, so that a lip has a smooth flank at any size.
+\t\t\tvec2 arenaV = vec2( ${(1 / SCORCHED.w).toFixed(6)}, ${(1 / SCORCHED.h).toFixed(6)} );
+\t\t\tarenaBent = vec2( ( texture2D( arenaScorch, vArenaUv + vec2( arenaV.x, 0.0 ) ).g - texture2D( arenaScorch, vArenaUv - vec2( arenaV.x, 0.0 ) ).g ) * sign( dFdx( vArenaUv.x ) ), ( texture2D( arenaScorch, vArenaUv + vec2( 0.0, arenaV.y ) ).g - texture2D( arenaScorch, vArenaUv - vec2( 0.0, arenaV.y ) ).g ) * sign( dFdy( vArenaUv.y ) ) ) * arenaRev * ${(2 * PAGE.w / SCORCHED.w).toFixed(2)};
+\t\t}
+\t\tnormal = normalize( normal + vec3( arenaDx + arenaBent.x * ${SCORCH.furrow.relief.toFixed(2)}, arenaDy + arenaBent.y * ${SCORCH.furrow.relief.toFixed(2)}, 0.0 ) * 2.6 );
 \t\troughnessFactor = mix( roughnessFactor, 0.95, arenaW.r );
 \t\tfloat arenaFlick = 0.76 + 0.24 * sin( arenaTime * 5.0 + vArenaUv.x * 173.0 + sin( vArenaUv.y * 131.0 + arenaTime * 3.1 ) * 2.0 );
 \t\tfloat arenaB = arenaW.b * arenaW.b;
