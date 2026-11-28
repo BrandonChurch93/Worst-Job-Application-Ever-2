@@ -1,14 +1,13 @@
 import { config } from '../../../config'
 import { hash01 } from '../../../core/random'
 import { HAND, type Acting } from '../../../cursor/body'
-import { boxOf } from '../../../shell/layout'
+import { boxOf, find } from '../../../shell/layout'
 import type { LayoutNode } from '../../../copy'
-import { SCREEN_H } from '../../../shell/parts'
 import { smooth } from '../../../stage/camera'
 import type { DrawList, Hint, Mode, Shape, StepIo } from '../../../stage/types'
 import { SNAP_FROM, slotShapes } from '../real/shredderShape'
-import { PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, resumeNodes, SLOT, STAGE, uploadGlyph, ZONE } from './layout'
-import { BITE, FRINGE, HOOD, PILE, raised, RESUME, RESUME_TIMES as TIMES, SHRED, TUG, tugCurve, tugReach } from './script'
+import { browseBox, landing, PAPER, PAPER_LINES, PAPER_REST, PAPER_TITLE, PLATE, resumeNodes, RING, SLOT, STAGE, TILE, uploadGlyph, WIN, ZONE } from './layout'
+import { BITE, FLOW, FRINGE, HOOD, PILE, RESUME, RESUME_TIMES as TIMES, SHRED, TUG, tugCurve, tugReach, WIND } from './script'
 
 export { resumeNodes, STAGE } from './layout'
 export { filmCamera, planResume, type Writer } from './script'
@@ -18,8 +17,20 @@ const heights = config.scale.heights
 const BODY = { x: 14, y: 26 }
 const STRIPS = 20
 const STRIP = { paper: 42, ink: 26, wide: 2.5, every: 4, askew: 0.44 }
+// How far outside Browse files and the file's tile a press still counts, in page pixels: a finger is wider than an arrow's tip.
 const GRAB = 26
+// The arrow stands on Browse files, not in it: this far outside the chip the ground under the arrow is already the chip's top.
+const CHIP_EDGE = 4
+// The beats before the bite. `field`: the drop zone as any form has it, until Browse files is pressed; `press`: the chip is down; `folder`: the window is up and waits for the file to be picked; `lit`: the file is picked;
+// `fly`: the sheet is on its way to the drop zone; `lie`: it lies there; `wind`: the wind has it; `feed`: the slot has it.
+type Beat = 'field' | 'press' | 'folder' | 'lit' | 'fly' | 'lie' | 'wind' | 'feed'
+// The chip goes down `chip` px under a press. The window comes up out of the page `over` px past its place and settles; everything in it rides with it. The picked tile goes down `tile` px.
+// The sheet flies to the drop zone `arc` px above the straight line and `high` px over the page at the most, leaning `lean` radians on the way; it lies `lie` px over the card. Before the wind lifts it the sheet shivers `shiver` radians.
+const POP = { chip: 4, over: 5, tile: 1.2, arc: 54, high: 46, lean: 0.24, lie: 0.6, shiver: 0.07 }
+const WINDOW = ['resume-folder', 'resume-folder-bar', 'resume-folder-knob', 'resume-folder-title', 'resume-file', 'resume-file-name']
 const LIE = heights.card + 9
+// The live arrow's run after the sheet, as in the film: it starts `from` of the wind in and is by the slot, at the film's place, `to` of the wind in, on a path that bends `arc` px. `x` and `y` are where a visitor who follows the hint waits. It is given back over `back` seconds at the bite, when the paper has it by the hands: one hold from the wind to the arms.
+const CHASE = { on: true, from: 0.22, to: 0.8, x: -252, y: -155, arc: 16, back: 0.3 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
@@ -64,7 +75,8 @@ interface State {
   time: number
   phase: Phase
   phaseTime: number
-  paper: { on: boolean; slide: number; x: number; y: number; held: boolean; dx: number; dy: number; feed: number; fx: number; fy: number; vx: number; vy: number }
+  paper: { on: boolean; slide: number; x: number; y: number; held: boolean; dx: number; dy: number; feed: number; fx: number; fy: number; vx: number; vy: number; z: number; rot: number }
+  flow: { at: Beat; t: number; win: number; lit: boolean; plate: number; fast: boolean; cx: number; cy: number; cz: number }
   slot: number
   shut: number
   tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number; slack: number; far: number; from: number; into: number; ax: number; ay: number; heave: number; size: number; held: number }
@@ -98,7 +110,8 @@ export interface ResumeHost {
 // The stage of the resume, behind one seam. The page makes it once, puts `nodes` in its layout tree, and from then on calls:
 // `reset` with the page, `begin` on the step the stage comes up, `step` every step from then on, `pose` before it draws its layout and `draw` after,
 // and reads `done` (the resume is received, the arrow is on its way back to the visitor), `gag`, `states`, `ground`, `hint`.
-// Events it emits: paper-slide, shredder, arms-out, paper-strain, tug-lost, strips-zip, shredder-stop.
+// Events it emits: browse-press, folder-open, file-pick, paper-slide, slot-in, wind-gust, shredder, arms-out, paper-strain, tug-lost, strips-zip, resume-received, shredder-stop.
+// `resume-received` is emitted once, on the step the drop zone first says the resume is received; a skip does not emit it.
 export interface ResumeStage {
   nodes: LayoutNode[]
   reset(mode: Mode, seed: number): void
@@ -129,7 +142,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
   const freshTug = (): State['tug'] => ({ t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0, held: 0 })
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'idle', phaseTime: 0,
-    paper: { on: false, slide: 0, x: PAPER_REST.x, y: SCREEN_H + 20, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0 }, slot: 0, shut: 0, tug: freshTug(),
+    paper: { on: false, slide: 0, x: PAPER_REST.x, y: PAPER_REST.y, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0, z: 0, rot: 0 }, flow: { at: 'field', t: 0, win: 0, lit: false, plate: 0, fast: false, cx: 0, cy: 0, cz: 0 }, slot: 0, shut: 0, tug: freshTug(),
     lost: -1, last: -1, lostFrom: { x: 0, y: 0, ux: 0, uy: -1 }, jolt: 9, joltAmp: 0, give: -1, spin: 0, turn: 0, shred: 0, emptied: -1, received: false, skipped: false, cleaned: false, cx: 0, cy: 0
   })
   let s = fresh('live', config.seed)
@@ -140,24 +153,158 @@ export function makeResume(host: ResumeHost): ResumeStage {
 
   const paperTarget = (): { x: number; y: number } => ({ x: BITE.x, y: BITE.y })
 
+  const chip = browseBox()
+  const land = landing()
+  const tile = { x: TILE.x, y: TILE.y, w: TILE.w, h: TILE.h }
+  const windEnd = { x: BITE.x - 10, y: BITE.y - 58 }
+  const beat = (at: Beat): void => {
+    s.flow.at = at
+    s.flow.t = 0
+    s.flow.fast = s.mode !== 'film' && s.phaseTime >= live.skipLinkAfterSeconds
+  }
+  // The pace of the beats: the film's, and the film's too on the live site once the skip link is up, so a visitor who does nothing is through in time.
+  const pace = (): typeof FLOW.film => (s.mode === 'film' || s.flow.fast ? FLOW.film : FLOW.live)
+  const stand = { x: SLOT.cx + CHASE.x, y: SLOT.cy + CHASE.y }
+  const near = { x: SLOT.cx + RESUME.near.x, y: SLOT.cy + RESUME.near.y }
+  // The live site takes the arrow for the wind: it runs after the sheet to the film's place by the slot, stands there while the slot takes the sheet, and is given back at the bite.
+  const chase = (io: StepIo, share: number): void => {
+    const f = s.flow
+    if (!CHASE.on) return
+    const u = clamp((share - CHASE.from) / (CHASE.to - CHASE.from), 0, 1)
+    const a = u * u
+    const dx = near.x - f.cx
+    const dy = near.y - f.cy
+    const d = Math.hypot(dx, dy) || 1
+    const bulge = CHASE.arc * Math.sin(Math.PI * a)
+    io.cursor.drive(lerp(f.cx, near.x, a) + (dy / d) * bulge, lerp(f.cy, near.y, a) - (dx / d) * bulge, lerp(f.cz, heights.card + 6, a))
+  }
+  // How far up the window is, 0 under the page to 1 in its place, a little past 1 on the way.
+  const windowUp = (): number => {
+    const f = s.flow
+    const flow = pace()
+    if (f.at === 'folder' || f.at === 'lit') {
+      const u = clamp((f.at === 'lit' ? flow.pop : f.t) / flow.pop, 0, 1)
+      return 1 - (1 - u) ** 3 + (POP.over / (WIN.top + 4)) * Math.sin(Math.PI * u) * (1 - u)
+    }
+    if (f.at === 'fly') return 1 - smooth(f.t / flow.shut)
+    return 0
+  }
+
   const stepResume = (io: StepIo): void => {
     const p = s.paper
-    if (!p.on) {
-      if (host.clear() && s.phaseTime >= WAIT) {
-        p.on = true
-        io.emit('paper-slide', PAPER_REST.x + PAPER.w / 2, PAPER_REST.y + PAPER.h / 2, false)
-        io.cursor.react('anticipate')
+    const f = s.flow
+    const film = s.mode === 'film'
+    const flow = pace()
+    const idle = !film && s.phaseTime >= live.skipLinkAfterSeconds
+    f.t += io.dt
+    f.win = windowUp()
+    if (f.at === 'field') {
+      if (!host.clear() || s.phaseTime < WAIT) return
+      if ((io.pressed && (inside(chip, io.pointer.x, io.pointer.y, GRAB) || inside(ZONE, io.pointer.x, io.pointer.y))) || idle) {
+        beat('press')
+        io.emit('browse-press', chip.x + chip.w / 2, chip.y + chip.h / 2, false)
       }
       return
     }
-    if (p.slide < 1) {
-      p.slide = Math.min(1, p.slide + io.dt / TIMES.paperSlide)
-      const was = p.y
-      p.y = lerp(SCREEN_H + 20, PAPER_REST.y, 1 - (1 - p.slide) ** 3)
-      p.vy = (p.y - was) / io.dt
+    if (f.at === 'press') {
+      if (f.t < flow.press) return
+      beat('folder')
+      p.on = true
+      p.x = PAPER_REST.x
+      p.y = PAPER_REST.y
+      io.emit('folder-open', WIN.x + WIN.w / 2, WIN.y + WIN.h / 2, false)
+      if (!film) io.cursor.react('doubleTake')
+      return
+    }
+    if (f.at === 'folder') {
+      const ready = f.t >= flow.pop * 0.6
+      f.lit = ready && inside(tile, io.cursor.x, io.cursor.y, 0)
+      if (ready && ((io.pressed && inside(tile, io.pointer.x, io.pointer.y, GRAB)) || (idle && f.t >= FLOW.wait))) {
+        beat('lit')
+        f.lit = true
+        io.emit('file-pick', TILE.x + TILE.w / 2, TILE.y + TILE.h / 2, false)
+      }
+      return
+    }
+    if (f.at === 'lit') {
+      if (f.t < flow.lit) return
+      beat('fly')
+      f.lit = false
+      io.emit('paper-slide', PAPER_REST.x + PAPER.w / 2, PAPER_REST.y + PAPER.h / 2, false)
+      if (!film) act(io, 'proud')
+      return
+    }
+    if (f.at === 'fly') {
+      const u = clamp(f.t / flow.fly, 0, 1)
+      const e = smooth(u)
+      const bulge = Math.sin(Math.PI * e)
+      const wx = p.x
+      const wy = p.y
+      p.x = lerp(PAPER_REST.x, land.x, e)
+      p.y = lerp(PAPER_REST.y, land.y, e) - POP.arc * bulge
+      p.z = lerp(WIN.top + TILE.up, heights.card, e) + POP.lie + POP.high * bulge
+      p.rot = -POP.lean * Math.sin(Math.PI * u) * (1 - u * 0.4)
+      p.vx = (p.x - wx) / io.dt
+      p.vy = (p.y - wy) / io.dt
+      if (u >= 1) {
+        beat('lie')
+        p.x = land.x
+        p.y = land.y
+        p.z = heights.card + POP.lie
+        p.rot = 0
+        p.vx = 0
+        p.vy = 0
+        io.emit('slot-in', land.x + PAPER.w / 2, land.y + PAPER.h / 2, false)
+        jolt(JOLT.bite / 3)
+      }
+      return
+    }
+    if (f.at === 'lie') {
+      if (film ? io.time < RESUME.drop - flow.wind : f.t < flow.lie) return
+      beat('wind')
+      io.emit('wind-gust', land.x + PAPER.w / 2, land.y + PAPER.h / 2, false)
+      if (!film) {
+        if (CHASE.on) {
+          io.cursor.take('wind')
+          f.cx = io.cursor.x
+          f.cy = io.cursor.y
+          f.cz = io.cursor.z
+          io.cursor.drive(f.cx, f.cy, f.cz)
+        }
+        io.cursor.react('startle')
+      }
+      return
+    }
+    if (f.at === 'wind') {
+      const share = film ? clamp(1 - (RESUME.drop - io.time) / flow.wind, 0, 1) : clamp(f.t / flow.wind, 0, 1)
+      const u = clamp((share - WIND.off) / (1 - WIND.off), 0, 1)
+      const e = u * u * (3 - 2 * u)
+      const bulge = Math.sin(Math.PI * e)
+      const dx = windEnd.x - land.x
+      const dy = windEnd.y - land.y
+      const d = Math.hypot(dx, dy)
+      const wx = p.x
+      const wy = p.y
+      p.x = lerp(land.x, windEnd.x, e) + (dy / d) * WIND.bend * bulge
+      p.y = lerp(land.y, windEnd.y, e) - (dx / d) * WIND.bend * bulge
+      p.z = lerp(heights.card + POP.lie, LIE, e) + WIND.high * bulge
+      p.rot = WIND.swing * Math.sin(Math.PI * 2 * WIND.turns * e) * (1 - e) + POP.shiver * Math.sin(share * 70) * (1 - u)
+      p.vx = (p.x - wx) / io.dt
+      p.vy = (p.y - wy) / io.dt
+      if (!film && io.cursor.taken) chase(io, share)
+      if (film ? io.time >= RESUME.drop : f.t >= flow.wind) {
+        beat('feed')
+        p.rot = 0
+        p.z = LIE
+        p.held = false
+        p.feed = 0
+        p.fx = p.x
+        p.fy = p.y
+      }
       return
     }
     if (p.feed >= 0) {
+      if (!film && io.cursor.taken) chase(io, 1)
       p.feed += io.dt
       const share = p.feed / TIMES.bite
       const u = smooth(share / BITE.settle)
@@ -171,6 +318,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
       p.vy = (p.y - wy) / io.dt
       if (p.feed >= TIMES.bite) {
         enter('tug')
+        if (!film && io.cursor.taken) io.cursor.release(CHASE.back)
         s.tug = { ...freshTug(), amount: tugCurve(0), cool: 0.5 }
         s.lost = -1
         s.last = -1
@@ -182,34 +330,6 @@ export function makeResume(host: ResumeHost): ResumeStage {
       }
       return
     }
-    const feed = (): void => {
-      p.held = false
-      p.feed = 0
-      p.fx = p.x
-      p.fy = p.y
-    }
-    if (!p.held) {
-      p.vx = 0
-      p.vy = 0
-      if (io.pressed && inside({ x: p.x, y: p.y, w: PAPER.w, h: PAPER.h }, io.pointer.x, io.pointer.y, GRAB)) {
-        p.held = true
-        p.dx = io.pointer.x - p.x
-        p.dy = io.pointer.y - p.y
-      } else if (s.mode === 'live' && s.phaseTime >= live.skipLinkAfterSeconds) feed()
-      return
-    }
-    const k = Math.min(1, io.dt * 28)
-    const hx = p.x
-    const hy = p.y
-    const high = s.mode === 'film' ? raised(s.time) : 0
-    p.x += (io.cursor.x - p.dx - p.x) * k
-    p.y += (io.cursor.y - p.dy - RESUME.raise * high - p.y) * k
-    p.x = clamp(p.x, 0, 1920 - PAPER.w)
-    p.y = clamp(p.y, 0, SCREEN_H - 40)
-    p.vx = (p.x - hx) / io.dt
-    p.vy = (p.y - hy) / io.dt
-    const over = inside(ZONE, p.x + PAPER.w / 2, p.y + PAPER.h / 2, -10)
-    if ((!io.pointer.down && over) || (s.mode === 'live' && s.phaseTime >= live.skipLinkAfterSeconds * 2)) feed()
   }
 
   const jolt = (amp: number): void => {
@@ -429,6 +549,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
       if (u >= 1 + SHRED.hold / SHRED.emptySeconds) {
         s.emptied = -1
         s.received = true
+        io.emit('resume-received', ZONE.x + ZONE.w / 2, ZONE.y + ZONE.h / 2, false)
       }
     }
     if (crossed(SHRED.zip)) {
@@ -463,6 +584,26 @@ export function makeResume(host: ResumeHost): ResumeStage {
         io.cursor.press(lerp(1, GIVE.wake, Math.min(1, (woke + io.dt) / GIVE.woke)), io.dt)
         if (woke + io.dt >= GIVE.woke) s.give = -1
       }
+    }
+  }
+
+  // The wind made visible: thin pale streaks that cross the drop zone the way the sheet is carried, each born a little after the last, short at its start and its end.
+  const gusts = (out: DrawList): void => {
+    const flow = s.mode === 'film' ? FLOW.film : FLOW.live
+    const t = s.mode === 'film' ? flow.wind - (RESUME.drop - s.time) : s.flow.t
+    const ux = Math.cos(WIND.heading)
+    const uy = Math.sin(WIND.heading)
+    for (let i = 0; i < WIND.streaks; i++) {
+      const age = (t - i * WIND.every) / WIND.life
+      if (age <= 0 || age >= 1) continue
+      const full = WIND.long[i % WIND.long.length]!
+      const len = Math.max(24, Math.round((full * Math.sin(Math.PI * age)) / 24) * 24)
+      const across = (hash01(i, 21, s.seed) - 0.5) * WIND.spread
+      const along = -330 + (hash01(i, 23, s.seed) - 0.5) * 120 + WIND.speed * WIND.life * age
+      const cx = land.x + PAPER.w / 2 + ux * along - uy * across
+      const cy = land.y + PAPER.h / 2 + uy * along + ux * across
+      const z = WIND.z + hash01(i, 25, s.seed) * 30
+      out.push({ id: `resume-gust-${i}`, part: 'shell', kind: 'capsule', x: cx - len / 2, y: cy - WIND.wide / 2, w: len, h: WIND.wide, z0: z, z1: z + 1.2, rot: WIND.heading, tone: 'light' })
     }
   }
 
@@ -552,7 +693,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
       const eating = s.phase === 'tug' || (s.phase === 'shredded' && s.shred < SHRED.pile)
       s.spin += ((eating ? (s.phase === 'tug' && s.lost < 0 ? JAW.tug : JAW.shred) : 0) - s.spin) * Math.min(1, io.dt / JAW.lag)
       s.turn += s.spin * io.dt
-      const slotOpen = (s.phase === 'resume' && s.paper.feed >= 0) || s.phase === 'tug' || s.phase === 'shredded' || (s.phase === 'received' && s.phaseTime < TIDY && !s.skipped)
+      const slotOpen = (s.phase === 'resume' && (s.paper.feed >= 0 || s.flow.at === 'wind')) || s.phase === 'tug' || s.phase === 'shredded' || (s.phase === 'received' && s.phaseTime < TIDY && !s.skipped)
       if (slotOpen || s.slot > SHUT.down) {
         s.slot = clamp(s.slot + (slotOpen ? io.dt / 0.25 : -io.dt / SHUT.seconds), slotOpen ? 0 : SHUT.down, 1)
         s.shut = 0
@@ -566,25 +707,59 @@ export function makeResume(host: ResumeHost): ResumeStage {
           jolt(Math.max(joltNow(), SHUT.kick))
         }
       }
+      s.flow.plate = clamp(s.flow.plate + (slotOpen ? io.dt / FLOW.machine : -io.dt / SHUT.seconds), 0, 1)
       if (s.phase === 'resume') stepResume(io)
       else if (s.phase === 'tug') stepTug(io)
       else if (s.phase === 'shredded') stepShredded(io)
       else if (s.phase === 'received') stepGive(io)
     },
     pose(over, layout) {
+      const f = s.flow
+      if (s.phase === 'resume' && f.at === 'press') {
+        over['resume-browse'] = { z0: heights.card - POP.chip, z1: heights.card + 8 - POP.chip }
+        over['resume-browse-label'] = { z0: heights.card + 8 - POP.chip, z1: heights.card + 8 - POP.chip }
+      }
+      const sunk = (f.win - 1) * (WIN.top + 4)
+      if (f.win > 0 && sunk !== 0) {
+        for (const id of WINDOW) {
+          const n = find(layout, id)
+          const text = n.copy !== undefined
+          const top = n.height ?? n.on ?? 0
+          const floor = text ? top : (n.floor ?? 0)
+          over[id] = { z0: floor + sunk, z1: top + sunk }
+        }
+      }
+      if (f.win > 0 && f.at === 'lit') {
+        over['resume-file'] = { z0: WIN.top + sunk - POP.tile, z1: WIN.top + TILE.up + sunk - POP.tile }
+        over['resume-file-name'] = { z0: WIN.top + TILE.up + sunk - POP.tile, z1: WIN.top + TILE.up + sunk - POP.tile }
+      }
+      if (f.plate > 0 && f.plate < 1) {
+        const down = (smooth(f.plate) - 1) * (PLATE.thick + 2)
+        over['resume-shredder-plate'] = { z0: down, z1: PLATE.thick + down }
+        over['resume-shredder-label'] = { z0: PLATE.thick + down, z1: PLATE.thick + down }
+      }
       if (s.paper.on && s.phase === 'resume') {
-        const dx = s.paper.x - PAPER_REST.x
-        const dy = s.paper.y - PAPER_REST.y
-        const up = s.paper.held ? LIE + 14 + (s.mode === 'film' ? RESUME.high * raised(s.time) : 0) : s.paper.feed >= 0 ? LIE : 0.6
-        const moved = dx !== 0 || dy !== 0
-        const hx = s.paper.held ? s.cx : s.paper.x + PAPER.w / 2
-        const hy = s.paper.held ? s.cy : s.paper.y
-        over['resume-paper'] = { x: s.paper.x, y: s.paper.y, z0: up, z1: up + heights.paper, moved, v: [up, s.paper.feed >= 0 ? clamp(s.paper.feed / TIMES.bite, 0, 1) : 0, 0, 0, hx, hy, hx, hy, s.paper.vx, s.paper.vy, 0] }
-        const title = boxOf(layout, 'resume-paper-title')
-        over['resume-paper-title'] = { x: title.x + dx, y: title.y + dy, z0: up + heights.paper + 0.1, z1: up + heights.paper + 0.1, moved }
+        const p = s.paper
+        const resting = f.at === 'folder' || f.at === 'lit' || f.at === 'press' || f.at === 'field'
+        const up = resting ? WIN.top + TILE.up + POP.lie + sunk - (f.at === 'lit' ? POP.tile : 0) : p.feed >= 0 ? LIE : p.z
+        const dx = p.x - PAPER_REST.x
+        const dy = p.y - PAPER_REST.y
+        const moved = dx !== 0 || dy !== 0 || p.rot !== 0
+        const cos = Math.cos(p.rot)
+        const sin = Math.sin(p.rot)
+        const mx = p.x + PAPER.w / 2
+        const my = p.y + PAPER.h / 2
+        const turned = (b: { cx: number; cy: number; w: number; h: number }): { x: number; y: number } => {
+          const ox = b.cx - (PAPER_REST.x + PAPER.w / 2)
+          const oy = b.cy - (PAPER_REST.y + PAPER.h / 2)
+          return { x: mx + ox * cos - oy * sin - b.w / 2, y: my + ox * sin + oy * cos - b.h / 2 }
+        }
+        const hx = mx - (PAPER.h / 2) * -sin
+        const hy = my - (PAPER.h / 2) * cos
+        over['resume-paper'] = { x: p.x, y: p.y, z0: up, z1: up + heights.paper, rot: p.rot, moved, v: [up, p.feed >= 0 ? clamp(p.feed / TIMES.bite, 0, 1) : 0, 0, 0, hx, hy, hx, hy, p.vx, p.vy, 0] }
+        over['resume-paper-title'] = { ...turned(boxOf(layout, 'resume-paper-title')), z0: up + heights.paper + 0.1, z1: up + heights.paper + 0.1, rot: p.rot, moved }
         PAPER_LINES.forEach((_, i) => {
-          const line = boxOf(layout, `resume-paper-line-${i}`)
-          over[`resume-paper-line-${i}`] = { x: line.x + dx, y: line.y + dy, z0: up + heights.paper, z1: up + heights.paper + 0.4, moved }
+          over[`resume-paper-line-${i}`] = { ...turned(boxOf(layout, `resume-paper-line-${i}`)), z0: up + heights.paper, z1: up + heights.paper + 0.4, rot: p.rot, moved }
         })
       }
       const thrown = joltNow() * JOLT.panel
@@ -600,6 +775,11 @@ export function makeResume(host: ResumeHost): ResumeStage {
         if (thrown > 0) for (const x of slot) if (x.mechanism) x.y += thrown
         out.push(...slot)
       }
+      if (s.phase === 'resume' && s.flow.lit && s.flow.win > 0) {
+        const z = WIN.top + (s.flow.win - 1) * (WIN.top + 4)
+        out.push({ id: 'resume-file-ring', part: 'shell', kind: 'box', x: TILE.x - RING.out, y: TILE.y - RING.out, w: TILE.w + RING.out * 2, h: TILE.h + RING.out * 2, z0: z, z1: z + RING.up, r: TILE.r + RING.out, tone: 'accent' })
+      }
+      if (s.phase === 'resume' && s.flow.at === 'wind') gusts(out)
       if (s.phase === 'tug' || s.phase === 'shredded') tugPaper(out)
       strips(out)
     },
@@ -608,19 +788,21 @@ export function makeResume(host: ResumeHost): ResumeStage {
     received: () => s.received,
     doneFor: () => (s.phase === 'received' ? s.phaseTime : 0),
     gag: () => GAG[s.phase],
-    states: () => [STAGE, s.received ? 'received' : 'prompt', ...(s.paper.on && s.phase === 'resume' ? ['paper'] : [])],
+    states: () => [STAGE, s.received ? 'received' : 'prompt', ...(s.paper.on && s.phase === 'resume' ? ['paper'] : []), ...(s.flow.win > 0 && s.phase === 'resume' ? ['folder'] : []), ...(s.flow.plate > 0 ? ['shredder'] : [])],
     ground(io: StepIo): number | null {
-      if (s.paper.on && s.phase === 'resume' && inside({ x: s.paper.x - 10, y: s.paper.y - 10, w: PAPER.w + 20, h: PAPER.h + 20 }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return (s.paper.held ? LIE + 14 : s.paper.feed >= 0 ? LIE : 0.6) + heights.paper + 1
+      if (s.phase === 'resume' && s.flow.win >= 1 && inside({ x: WIN.x, y: WIN.y, w: WIN.w, h: WIN.h }, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return inside(tile, io.cursor.x + BODY.x, io.cursor.y + BODY.y) ? WIN.top + TILE.up : WIN.top
+      if (!s.received && (inside(chip, io.cursor.x, io.cursor.y, CHIP_EDGE) || inside(chip, io.cursor.x + BODY.x, io.cursor.y + BODY.y, CHIP_EDGE))) return heights.card + 8 - (s.phase === 'resume' && s.flow.at === 'press' ? POP.chip : 0)
       if (inside(ZONE, io.cursor.x + BODY.x, io.cursor.y + BODY.y)) return heights.card
       return null
     },
     hint(blink: boolean): Hint {
       if (s.phase === 'idle' || s.phase === 'resume') {
-        const p = s.paper
-        if (!p.on || p.slide < 1) return { x: PAPER_REST.x + PAPER.w / 2, y: PAPER_REST.y + PAPER.h * 0.3, down: false }
-        if (p.feed >= 0) return { x: s.cx, y: s.cy, down: false }
-        if (!p.held) return { x: p.x + PAPER.w / 2, y: p.y + PAPER.h * 0.3, down: blink }
-        return { x: ZONE.x + ZONE.w / 2 - PAPER.w / 2 + p.dx, y: ZONE.y + ZONE.h / 2 - PAPER.h / 2 + p.dy, down: false }
+        const f = s.flow
+        const flow = pace()
+        if (s.phase === 'idle' || f.at === 'field') return { x: chip.x + chip.w / 2, y: chip.y + chip.h / 2, down: s.phase === 'resume' && blink }
+        if (f.at === 'press') return { x: chip.x + chip.w / 2, y: chip.y + chip.h / 2, down: false }
+        if (f.at === 'folder') return { x: PAPER_REST.x + PAPER.w / 2 - 8, y: PAPER_REST.y + PAPER.h / 2 - 4, down: f.t >= flow.pop && blink }
+        return { x: stand.x, y: stand.y, down: false }
       }
       if (s.phase === 'tug') return { x: SLOT.cx - 90, y: SLOT.cy - 260, down: false }
       return { x: PILE.x, y: PILE.y, down: false }
@@ -631,6 +813,8 @@ export function makeResume(host: ResumeHost): ResumeStage {
       s.cleaned = false
       s.paper.on = false
       s.paper.held = false
+      s.flow.win = 0
+      s.flow.lit = false
       s.lost = -1
       s.last = -1
       s.give = -1
