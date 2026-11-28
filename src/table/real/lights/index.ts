@@ -4,6 +4,7 @@ import { zoneAt } from '../../draw'
 import { BALL, FLIP_REACH, table } from '../../layout'
 import { localBalls, whole, type Zone } from '../zone'
 import { FILL, FLASH, POOL, SOFT } from './colours'
+import { buildFx, poseFx } from './fx'
 import { groupsOf, highOf, LIT, spillsOf, type Group } from './groups'
 import { BALLS, keyOf } from './key'
 import { buildLamps, type Lamps } from './lamps'
@@ -27,6 +28,7 @@ const built = new WeakMap<THREE.Object3D, Built>()
 
 function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
   const b = built.get(o)
+  poseFx(o, z, ctx)
   const s = zoneLight(z)
   const groups = groupsOf(z)
   const L = levels(ctx, z)
@@ -151,11 +153,12 @@ function pose(o: THREE.Object3D, z: Zone, ctx: RealContext): void {
 }
 
 const maker = whole('table-lights', {
-  version: 'lights-1',
+  version: 'lights-2',
   build(z, ctx) {
     const lamps = buildLamps(z, ctx)
     if (LIT.includes(z.id)) zoneLight(z)
     built.set(lamps.group, { ...lamps, tint: new THREE.Color() })
+    buildFx(lamps.group, z)
     return lamps.group
   },
   pose

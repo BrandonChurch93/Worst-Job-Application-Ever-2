@@ -13,7 +13,7 @@ import { Machine, SAVE, prepare } from '../src/table/physics'
 const EACH = stepHz / 60
 // The save as it was before this work (commit 308e96a1): a hash of the steps of the take and of the kick, the ball's state on the kick's step and on the 40 steps after it, for the five ways on both tiers (pipeline/phase5/polish-save2-kick.mjs prints it);
 // and the film's pinball take, the machine's events as a count and a hash of their names, balls and steps.
-const WAS = { kick: 'f70e33781433fead1e97b4a290ffae1ef603ea9efb78b76effd17dd8757a92e7', steps: [[8, 74], [6, 70], [7, 72], [2, 61], [21, 90]], events: 71, hash: '2de74972e18c5c12926bbeb879f810b44699d585356401bc7f112d671630db03' }
+const WAS = { kick: 'f70e33781433fead1e97b4a290ffae1ef603ea9efb78b76effd17dd8757a92e7', steps: [[8, 74], [6, 70], [7, 72], [2, 61], [21, 90]], events: 99, hash: '134cb0eeff6f3dd587ac995f04449b167036a9984b06e315d196d65d7b7bffc8' }
 
 interface Row { y: number; taken: number; names: string[]; turn: number; gap: number; flip: number[]; own: number[]; state: number[] }
 

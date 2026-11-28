@@ -20,7 +20,7 @@ export interface BallState {
 export interface TableEvent { name: string; ball: number; id: string; x: number; y: number }
 export interface MachineState {
   snap: string; balls: BallState[]; flip: [number, number]; held: [boolean, boolean]; down: boolean[]; bank: number[]; cool: number[]; gate: boolean[]; on: Record<string, boolean>
-  mom: boolean; carpet?: boolean; live?: boolean; taken?: number; bounce?: [number, number]; mark?: [number, number, number, number] | null; slid?: number; cut?: boolean; own?: [number, number]; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>
+  mom: boolean; carpet?: boolean; live?: boolean; taken?: number; bounce?: [number, number]; mark?: [number, number, number, number] | null; slid?: number; cut?: boolean; own?: [number, number]; saves: number; magnet: number[] | null; aim?: [number, number, number] | null; shot?: [number, number, number] | null; armed?: boolean[]; score: number; steps: number; last: Record<string, number>; frenzy?: number
 }
 
 const DEG = 0.017453292519943295
@@ -103,6 +103,8 @@ export class Machine {
   aim: [number, number, number] | null = null
   shot: [number, number, number] | null = null
   armed: [boolean, boolean] = [false, false]
+  // The frenzy: while it is over 0 a bumper and a slingshot throw the clear ball at this speed, in balls a second, and the ball may be that fast.
+  frenzy = 0
   score = 0
   steps = 0
   last: Record<string, number> = {}
@@ -166,6 +168,7 @@ export class Machine {
     this.aim = null
     this.shot = null
     this.armed = [false, false]
+    this.frenzy = 0
     this.score = 0
     this.steps = 0
     this.last = {}
@@ -184,7 +187,7 @@ export class Machine {
   save(): MachineState {
     return {
       snap: toBase64(this.world.takeSnapshot()), balls: this.balls.map((b) => ({ ...b })), flip: [...this.flip], held: [...this.held], down: [...this.down], bank: [...this.bank], cool: [...this.cool], gate: [...this.gate],
-      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null, slid: this.slid, cut: this.cut, own: [...this.own] as [number, number], taken: this.taken } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }
+      on: { ...this.on }, mom: this.mom, carpet: this.carpet, ...(this.live ? { live: true, bounce: [...this.bounce] as [number, number], mark: this.mark ? [...this.mark] as [number, number, number, number] : null, slid: this.slid, cut: this.cut, own: [...this.own] as [number, number], taken: this.taken } : {}), saves: this.saves, magnet: this.magnet ? [...this.magnet] : null, aim: this.aim ? [...this.aim] : null, shot: this.shot ? [...this.shot] : null, armed: [...this.armed], score: this.score, steps: this.steps, last: { ...this.last }, ...(this.frenzy > 0 ? { frenzy: this.frenzy } : {})
     }
   }
 
@@ -214,6 +217,7 @@ export class Machine {
     this.aim = s.aim ? [...s.aim] : null
     this.shot = s.shot ? [...s.shot] : null
     this.armed = [!!s.armed?.[0], !!s.armed?.[1]]
+    this.frenzy = s.frenzy ?? 0
     this.score = s.score
     this.steps = s.steps
     this.last = { ...(s.last ?? {}) }
@@ -607,7 +611,7 @@ export class Machine {
       const dy = b.y - m.c[1]
       const d = Math.hypot(dx, dy)
       if (d > m.r + R + 0.05 || d === 0) continue
-      const out = Math.max(KICK.bumper, speed * 0.9)
+      const out = i === 0 && this.frenzy > 0 ? this.frenzy : Math.max(KICK.bumper, speed * 0.9)
       const to = this.aimed(i, dx / d, dy / d, out)
       this.kick(i, to ? to[0] : (dx / d) * out, to ? to[1] : (dy / d) * out)
       this.cool[c] = 0.08
@@ -620,7 +624,7 @@ export class Machine {
       const q = distSeg(b.x, b.y, s.a, s.c)
       const inward = s.side === 'left' ? 1 : -1
       if (q.d > R + 0.06 || q.nx * inward <= 0 || b.vx * q.nx + b.vy * q.ny > 1) continue
-      const to = this.aimed(i, q.nx, q.ny, this.live ? Math.max(KICK.sling, speed * 0.9) : KICK.sling)
+      const to = this.aimed(i, q.nx, q.ny, i === 0 && this.frenzy > 0 ? this.frenzy : this.live ? Math.max(KICK.sling, speed * 0.9) : KICK.sling)
       this.kick(i, to ? to[0] : b.vx + q.nx * KICK.sling, to ? to[1] : b.vy + q.ny * KICK.sling)
       this.cool[c] = 0.15
       this.score += 500
@@ -733,7 +737,7 @@ export class Machine {
         const p = body.translation()
         const v = body.linvel()
         const sp = Math.hypot(v.x, v.y)
-        const most = this.live ? LIVE.max : MAX_SPEED
+        const most = i === 0 && this.frenzy > 0 ? Math.max(this.frenzy, MAX_SPEED) : this.live ? LIVE.max : MAX_SPEED
         if (sp > most) body.setLinvel({ x: (v.x / sp) * most, y: (v.y / sp) * most }, true)
         b.x = p.x
         b.y = p.y
