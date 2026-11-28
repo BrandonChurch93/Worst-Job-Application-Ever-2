@@ -221,12 +221,16 @@ export const spoken: Record<string, SpokenRow> = {
   'boss.unfold.1': { event: null, after: 'boss.unfold.0', until: ['turret-rise', 'power-down'], mark: { phrase: -1, event: 'music-in' } },
   'boss.unfold.2': { event: null, after: 'boss.unfold.1', until: ['turret-rise', 'power-down'] },
   'boss.finish.0': { event: 'finish-arms', until: ['boss-gone'], steps: { next: 'finish-charge', last: 'finish-fire' } },
-  'decision.letter.0': { event: 'stamp', until: [] },
+  'decision.letter.0': { event: 'stamp', until: [], jump: ['button-press'] },
   'decision.reset.0': { event: 'page-turn', until: [], keeps: true }
 }
 
 // The line a page's own way on waits for on the live site: its button cannot be pressed and does not look ready until the line has ended. The skip link does not wait.
 export const waitsFor: Record<string, string> = { step2: 'step2.crank.1' }
+
+// The line a page's turn waits for on the live site once that line was ended by a jump on that page: the page may be pressed while the line is said,
+// and the narrator owes the page until the line's last phrase is out and the gap after it has passed, so that the line the turn sets off starts on the turn.
+export const turnWaitsFor: Record<string, string> = { step5: 'decision.letter.0' }
 
 // The event of the stage that also stands for a mark of the narrator: its cue is played only when the narrator has not booked the line that gives the mark.
 export const markStandsFor: Record<string, string> = { 'boss-music': 'music-in' }
