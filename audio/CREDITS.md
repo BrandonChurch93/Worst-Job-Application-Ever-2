@@ -4,7 +4,7 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 2902 of 10000. Calls: 185.
+Running total: 2902 of 10000. Calls: 186.
 
 Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 1775. No call is made that would pass it.
 
@@ -203,3 +203,4 @@ Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,
 | 183 | 2026-11-27T23:07:46Z | POST /v1/text-to-speech | SHOUT A take 2: model eleven_v3, stability 0, the vowels written long, tags screaming, louder, screaming at the top of his lungs | 108 characters, stability 0, model eleven_v3 | HTTP 200, 2.9 s | 48 | reported by the response | 2793 |
 | 184 | 2026-11-27T23:07:49Z | POST /v1/text-to-speech | SHOUT B take 2: model eleven_v3, stability 0, the vowels written long, tags shouting slow and drawn out, then screaming at the top of his lungs | 121 characters, stability 0, model eleven_v3 | HTTP 200, 3.1 s | 53 | reported by the response | 2846 |
 | 185 | 2026-11-27T23:09:06Z | POST /v1/text-to-speech | SHOUT B take 3: model eleven_v3, stability 0, four shorter syllables and the last written much longer, tags shouting drawn out, then screaming at the top of his lungs held long | 128 characters, stability 0, model eleven_v3 | HTTP 200, 2.6 s | 56 | reported by the response | 2902 |
+| 186 | 2026-11-28T00:07:09Z | GET /v1/user/subscription | the account's quota | nothing, a read | plan creator, active: 17512 of 131000 used by every build on the account, reset 2026-12-25T16:56:49Z | 0 | a read costs nothing | 2902 |

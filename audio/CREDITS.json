@@ -1874,6 +1874,16 @@
       "answer": "HTTP 200, 2.6 s",
       "cost": 56,
       "how": "reported by the response"
+    },
+    {
+      "n": 186,
+      "time": "2026-11-28T00:07:09Z",
+      "endpoint": "GET /v1/user/subscription",
+      "what": "the account's quota",
+      "asked": "nothing, a read",
+      "answer": "plan creator, active: 17512 of 131000 used by every build on the account, reset 2026-12-25T16:56:49Z",
+      "cost": 0,
+      "how": "a read costs nothing"
     }
   ]
 }
