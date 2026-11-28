@@ -4,16 +4,18 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, 
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
-import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { FIRE, finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
+import { ABOVE, facing, finishShot, marksOf, type Shot } from '../../boss/finish/camera'
+import { feetFor } from '../../cursor/stand/rig'
 import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
 import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
 import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
-import { frame } from '../../stage/camera'
+import { frame, toWorld } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
 import { SCREEN_H, TYPE } from '../../shell/parts'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
@@ -207,8 +209,19 @@ export function makePage(): PageLogic {
     const cy = Math.min(1080 - h / 2, Math.max(h / 2, at.y + (RAISE.box.y0 + RAISE.box.y1) / 2))
     return { x: 960 + (cx - 960) * k, y: 540 + (cy - 540) * k, z }
   }
+  const shotNow = (): Shot | null => {
+    if (!LOOK1_ON || s.inSocket || s.clock < 0) return null
+    if (s.fin.arms >= 0) return finishShot(s.clock - LEAD, marksOf(s.mode === 'film', s.fin.arms, s.fin.thrust, s.fin.fire))
+    if (!CAMERA.powerUp) return null
+    const c = closer()
+    const r = raising()
+    if (!c || r < 0) return null
+    const at = feetFor(spot(r))
+    return facing({ ...ABOVE, at: toWorld(c.x, c.y, 0), tall: 1080 / c.z }, toWorld(at.x, at.y, 0), (c.z - 1) / (RAISE.zoom - 1))
+  }
   const figure = (): FinishInput | null => {
     const v = view()
+    const low = shotNow()
     const r = raising()
     if (!LOOK1_ON || !v || (r < 0 && s.fin.arms < 0)) return null
     const m = s.fin
@@ -221,7 +234,8 @@ export function makePage(): PageLogic {
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
       walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
-      button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top }
+      button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
+      ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye } : {})
     }
   }
   const stands = (): boolean => {
@@ -846,6 +860,8 @@ export function makePage(): PageLogic {
     },
     scroll: () => 0,
     view(): CameraPose | null {
+      const low = shotNow()
+      if (low) return low.pose
       const c = s.close <= 0 ? closer() : null
       if (c) return frame({ x: c.x - 960 / c.z, y: c.y - 540 / c.z, w: 1920 / c.z, h: 1080 / c.z })
       if (s.close <= 0) return null

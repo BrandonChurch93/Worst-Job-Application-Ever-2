@@ -46,6 +46,9 @@ export interface FinishInput {
   scale?: number
   // 0 to 1: the warm rim of ember light on the legs, the arms and the gloves. Left out, the figure has it from the end of the beam on (see `emberOf`).
   ember?: number
+  tip?: number
+  low?: number
+  eye?: readonly [number, number, number]
 }
 
 export interface Fx {
@@ -67,6 +70,7 @@ export interface Fx {
   smoke: { x: number; y: number; z: number; k: number; age: number }[]
   // Dust: where, how old in seconds, how big.
   dust: { x: number; y: number; age: number; size: number }[]
+  lens?: { low: number; eye: readonly [number, number, number] }
   // The scuff each landed step left: page px, and how long.
   scuffs: { x: number; y: number; long: number }[]
 }
@@ -213,7 +217,7 @@ function powerUp(i: FinishInput, feet: { x: number; y: number }): FinishState | 
     fx.aura = (1 - smooth(span(u, 0.1, 0.75))) * 1.0
     fx.burst = u < 0.6 ? u / 0.6 : 0
   }
-  return { up: true, pose: { ...at(pose, feet.x, feet.y), scale: 1 + ((i.scale ?? SCALE) - 1) * clamp01(pose.legs) }, fx, feet, press: 0 }
+  return { up: true, pose: { ...at(pose, feet.x, feet.y), scale: 1 + ((i.scale ?? SCALE) - 1) * clamp01(pose.legs), tip: i.tip ?? 0 }, fx, feet, press: 0 }
 }
 
 // What the figure looks like and what burns round it at one moment.
@@ -222,6 +226,7 @@ export function finishState(i: FinishInput): FinishState {
   const m = i.marks ?? {}
   const t = i.time
   const sc = i.scale ?? SCALE
+  const tip = i.tip ?? 0
   const rise0 = m.arms === undefined ? undefined : m.stand ?? m.arms - LEAD
   if (rise0 === undefined || t < rise0) {
     const p = powerUp(i, home)
@@ -229,6 +234,7 @@ export function finishState(i: FinishInput): FinishState {
     return { up: false, pose: at(POSES.lying, home.x, home.y), fx: none(), feet: home, press: 0 }
   }
   const fx = none()
+  if (i.low && i.eye) fx.lens = { low: i.low, eye: i.eye }
   const shot = clamp01(i.shot ?? i.charge ?? 1)
   // The rise plays under whatever follows it. A blast let go before it is over quickens what is left of it to end as the beam leaves.
   let risen = t - rise0
@@ -267,7 +273,7 @@ export function finishState(i: FinishInput): FinishState {
         pose = mixPose(pose, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
       }
       const h = handsMid(pose)
-      const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc }, h[0], h[1], h[2])
+      const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc, tip }, h[0], h[1], h[2])
       if (size > 1) fx.ball = { x: b.x, y: b.y, z: b.z, size, glow: clamp01((0.35 + 0.65 * share) * grown) * hot }
       fx.aura = CHARGE.aura * share * grown
       fx.crackle = share * grown
@@ -285,7 +291,7 @@ export function finishState(i: FinishInput): FinishState {
       // The beam's kick runs up the arms.
       pose.hands = [[pose.hands[0][0] - 2.5 * push * Math.sin(t * 47), pose.hands[0][1], pose.hands[0][2]], [pose.hands[1][0] - 2.5 * push * Math.sin(t * 47 + 1.3), pose.hands[1][1], pose.hands[1][2]]]
       const h = handsMid(pose)
-      const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc }, h[0] + 9, h[1], h[2])
+      const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc, tip }, h[0] + 9, h[1], h[2])
       const to = i.target ?? i.button ?? { x: b.x + 800, y: b.y }
       const aim = Math.atan2(to.y - b.y, to.x - b.x)
       const open = smooth(span(fired, FIRE.lead, FIRE.lead + FIRE.open)) * push
@@ -394,12 +400,12 @@ export function finishState(i: FinishInput): FinishState {
     if (k > 0.01) {
       for (let n = 0; n < 2; n++) {
         const hand = pose.hands[n]!
-        const w = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc }, hand[0], hand[1] - 2, hand[2])
+        const w = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc, tip }, hand[0], hand[1] - 2, hand[2])
         fx.smoke.push({ x: w.x, y: w.y, z: w.z, k, age: over })
       }
     }
   }
-  return { up: true, pose: { ...at(pose, feet.x, feet.y), scale: 1 + ((i.scale ?? SCALE) - 1) * clamp01(pose.legs) }, fx, feet, press }
+  return { up: true, pose: { ...at(pose, feet.x, feet.y), scale: 1 + ((i.scale ?? SCALE) - 1) * clamp01(pose.legs), tip }, fx, feet, press }
 }
 
 export interface FinishEvent { name: string; x: number; y: number }

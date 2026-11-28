@@ -4,7 +4,7 @@
 import * as THREE from 'three'
 import { hash01 } from '../../core/random'
 import type { Emitter } from '../../real/types'
-import { STAND, type StandPose } from '../../cursor/stand/rig'
+import { STAND, tilt, type StandPose } from '../../cursor/stand/rig'
 import type { Fx } from './acting'
 
 export type Level = 'low' | 'medium' | 'high' | null
@@ -326,7 +326,7 @@ export function makeFinishFx(): FinishFx {
 
   // A card that stands in the figure's plane: its foot at a place of that plane, `w` wide and `h` tall, turned by `turn` in the plane.
   const card = (p: StandPose, fx: number, fy: number, fz: number, w: number, h: number, turn: number): THREE.Matrix4 => {
-    const a = STAND.rise * p.rise
+    const a = tilt(p)
     const c = Math.cos(a)
     const s = Math.sin(a)
     const ct = Math.cos(turn)
@@ -341,7 +341,7 @@ export function makeFinishFx(): FinishFx {
 
   // A lick of the power-up: its foot on the ground, `gx` beside the feet and `gy` in front of them (behind when negative), standing in a plane that lies lower than the figure's, so the film, which looks straight down, sees nearly its whole length; `turn` leans it.
   const lick = (p: StandPose, gx: number, gy: number, w: number, h: number, turn: number): THREE.Matrix4 => {
-    const a = STAND.rise * p.rise * LICK.rise
+    const a = tilt(p) * LICK.rise
     const c = Math.cos(a)
     const s = Math.sin(a)
     const ct = Math.cos(turn)
@@ -361,6 +361,25 @@ export function makeFinishFx(): FinishFx {
     Yv.set(s * h, c * h, 0)
     Zv.set(0, 0, 1)
     return m4.makeBasis(X, Yv, Zv).setPosition(x - 960, 540 - y, z)
+  }
+
+  const faceBeam = (m: THREE.Matrix4, b: { x: number; y: number; z: number; aim: number }, h: number, lens: { low: number; eye: readonly [number, number, number] }): void => {
+    const c = Math.cos(b.aim)
+    const s = Math.sin(b.aim)
+    X.set(c, -s, 0)
+    O.set(lens.eye[0] - (b.x - 960), lens.eye[1] - (540 - b.y), lens.eye[2] - b.z)
+    Zv.crossVectors(O, X)
+    if (Zv.lengthSq() < 1e-9) return
+    Zv.normalize()
+    Yv.set(s, c, 0).lerp(Zv, lens.low).normalize()
+    Zv.crossVectors(X, Yv)
+    const e = m.elements
+    e[4] = Yv.x * h
+    e[5] = Yv.y * h
+    e[6] = Yv.z * h
+    e[8] = Zv.x
+    e[9] = Zv.y
+    e[10] = Zv.z
   }
 
   const pose = (fx: Fx, p: StandPose, time: number, light?: (e: Emitter) => void): void => {
@@ -448,7 +467,7 @@ export function makeFinishFx(): FinishFx {
         // The ring is the main fire: many thin flames.
         const tall = (10 + 18 * hash01(j, 4, SEED)) * grow
         // On the ground: the card's foot is carried from the page to the figure's plane at height 0.
-        const a = STAND.rise * p.rise
+        const a = tilt(p)
         flames.setMatrixAt(n, card(p, gx, -gy * Math.cos(a), gy * Math.sin(a), 8 + 5 * seed, tall, (seed - 0.5) * 0.5))
         d[n * 4] = seed + 0.37
         // No flame of the ring stands in front of a shoe.
@@ -506,6 +525,7 @@ export function makeFinishFx(): FinishFx {
       } else keep.set(0, 0, -1, -1)
       beam.matrixAutoUpdate = false
       beam.matrix.copy(flat(b.x, b.y, b.z, BEAM.long, BEAM.wide * 2 * big, b.aim))
+      if (fx.lens) faceBeam(beam.matrix, b, BEAM.wide * 2 * big, fx.lens)
       const f = flareMat.uniforms
       f.uTime!.value = time * 1.7
       f.uGlow!.value = Math.min(1.4, b.open * 1.4)

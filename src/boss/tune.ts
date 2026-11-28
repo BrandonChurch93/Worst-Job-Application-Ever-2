@@ -281,3 +281,24 @@ export const SOLID = {
   bar: [560, 0, 1360, 170] as const, // x0, y0, x1, y1 of the box round the health bar: it stops every shot and no blast line may cross it
   frame: [590, 66, 1333, 137] as const // x0, y0, x1, y1 of the bar's frame in the picture, for the clear band
 } as const
+
+export const CAMERA = {
+  on: true,
+  powerUp: false,
+  upright: 0.75,
+  lowEl: [30, 80] as const,
+  down: [0, 0.95] as const,
+  push: 0.1,
+  pushOver: 6,
+  ahead: 0.9,
+  round: 0.8,
+  roundLive: 0.45,
+  back: [0.2, 0.45] as const,
+  rise: [0.5, 1.05] as const,
+  shake: 5,
+  shakeDies: 0.22,
+  open: 5,
+  charge: { at: [-10, 0, 58], az: -115, el: -3, tall: 190, fov: 46 },
+  fire: { at: [183, -12, 45], az: -208.7, el: 7.5, tall: 279, fov: 40 },
+  blast: { at: [183, -12, 45], az: -210.7, el: 8.9, tall: 382, fov: 46 }
+} as const

@@ -5,7 +5,7 @@ import { makeArms, ARM, type Arms } from '../act/arms'
 import { UNIT, restLook, type BodyModel } from '../contract'
 import { makeBody } from '../model/body'
 import { look as picture } from '../../post/look'
-import { STAND, type StandPose } from './rig'
+import { STAND, tilt, type StandPose } from './rig'
 
 const ALONG = 22
 const ROUND = 10
@@ -232,7 +232,7 @@ export function makeStand(): Stand {
   const pose = (p: StandPose, time: number): void => {
     object.position.set(p.x - 960, 540 - p.y, p.ground)
     object.scale.setScalar(p.scale ?? 1)
-    plane.rotation.set(STAND.rise * p.rise, 0, 0)
+    plane.rotation.set(tilt(p), 0, 0)
     const look = restLook(time)
     look.body.stretch = p.stretch
     look.body.puff = p.puff
