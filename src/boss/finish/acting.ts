@@ -8,7 +8,7 @@ export interface FinishMarks {
   stand?: number
   // The charge begins: the hands go to the hip.
   charge?: number
-  // The hands thrust the ball forward, toward the target, and hold it there until the beam leaves (`FIRE.ahead` before `fire` is what the film uses). Left out, the thrust plays after `fire`, as the visitor's own shot does: nobody knows ahead when a visitor lets go.
+  // The hands thrust the ball forward, toward the target, and hold it there until the beam leaves (`FIRE.ahead` before `fire` is what the film uses). On the live site, when the visitor lets go of a charged shot, give it the fire mark's own time: the hands then go forward at once, in the first frame after the release, and the beam leaves `FIRE.lead` after it. Left out (a plain click), the small shot plays as it always did, with no hold.
   thrust?: number
   // The blast is let go.
   fire?: number
@@ -103,6 +103,7 @@ export const FIRE = {
   ahead: 0.45, // s before the fire mark at which the film's thrust starts
   reach: 0.2, // s the thrust with the ball takes, after the coil
   snap: 0.06, // s from the held thrust to the hands furthest out, as the beam leaves
+  swift: 0.65, // the share of the time before the beam that a thrust without a coil takes
   thrust: 0.25, // s after the mark at which the hands are furthest out
   settle: 0.48,
   open: 0.1, // s the beam takes to open
@@ -254,8 +255,12 @@ export function finishState(i: FinishInput): FinishState {
       const size = sc * CHARGE.ball * (CHARGE.least + (1 - CHARGE.least) * share) * grown * pulse
       if (held >= 0) {
         // The ball goes forward with both hands and is held there: the beam leaves from in front of the figure.
-        pose = mixPose(pose, POSES.coil, outCubic(span(held, 0, FIRE.coil)))
-        pose = mixPose(pose, POSES.aim, outBack(span(held, FIRE.coil, FIRE.coil + FIRE.reach), 1.2))
+        // With less room than the coil and the thrust take (the visitor's own release: the mark is the fire mark itself), there is no coil: the hands go forward at once, in the first frame, and are there before the beam leaves.
+        const room = m.fire !== undefined ? m.fire + FIRE.lead - m.thrust! : FIRE.coil + FIRE.reach
+        const coil = room >= FIRE.coil + FIRE.reach - 1e-6 ? FIRE.coil : 0
+        const reach = coil > 0 ? FIRE.reach : Math.max(0.05, FIRE.swift * room)
+        if (coil > 0) pose = mixPose(pose, POSES.coil, outCubic(span(held, 0, coil)))
+        pose = mixPose(pose, POSES.aim, coil > 0 ? outBack(span(held, coil, coil + reach), 1.2) : outCubic(span(held, 0, reach)))
         pose.tremble = 0.1 + 0.45 * share
       } else if (fired >= 0) {
         pose = mixPose(pose, POSES.coil, outCubic(span(fired, 0, FIRE.coil)))
