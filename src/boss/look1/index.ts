@@ -7,6 +7,7 @@ import { BENT, DEFAULTS, K, poseOf, type LookOptions, type Pose } from './pose'
 import { setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
 import { poseGun } from './gun'
+import { makeShade } from './shade'
 
 export { poseOf, muzzleOf, bigMuzzleOf, weakOf, wordAt, SIZE, K, FALL, FORM, GONE, TURRET, TIMES, WORD, DEFAULTS } from './pose'
 export type { LookOptions, Pose } from './pose'
@@ -72,10 +73,12 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   m.shieldGlassB.scale.copy(m.shieldGlass.scale)
   m.shieldGlassB.position.z = m.shieldGlass.position.z
   m.shieldEdgeB.position.z = m.shieldEdge.position.z
-  m.shieldGlassB.visible = m.shieldGlass.visible && !torn
-  m.shieldEdgeB.visible = m.shieldGlassB.visible
-  m.shieldStub.visible = torn && p.shield.rise >= 1
-  m.crackB.visible = !torn
+  const whole = m.shieldGlass.visible
+  m.shieldStub.visible = whole && torn && p.shield.rise >= 1
+  m.shieldGlass.visible = whole && !m.shieldStub.visible
+  m.shieldEdge.visible = m.shieldGlass.visible
+  m.shieldGlassB.visible = m.shieldGlass.visible
+  m.shieldEdgeB.visible = m.shieldGlass.visible
 
   m.guns.forEach((g, i) => {
     const q = p.guns[i]!
@@ -181,6 +184,10 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
   const model = buildModel()
   figure.add(model.body)
   for (const l of model.legs) figure.add(l.upper, l.lower, l.foot)
+  const shade = makeShade()
+  figure.add(shade.object)
+  for (const g of [model.hull, model.bay, model.hatch, model.shield, ...model.wings, model.cannon.barrel, ...model.legs.flatMap((l) => [l.upper, l.lower, l.foot])]) g.traverse((c) => { c.castShadow = false })
+  model.button.traverse((c) => { c.castShadow = true })
   object.add(figure)
   const fx: Fx = makeFx(o, ctx.level ?? null)
   object.add(fx.object)
@@ -188,11 +195,12 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
     const p = poseOf(view, o)
     figure.visible = p.shown
     figure.position.set(p.x, p.y, 0)
-    if (p.shown) apply(model, figure, p)
+    if (p.shown) { apply(model, figure, p); shade.pose(p) }
     fx.pose(view, p, light)
   }
   const dispose = (): void => {
     fx.dispose()
+    shade.dispose()
     for (const mat of model.own) mat.dispose()
     for (const g of model.guns) g.dispose()
   }

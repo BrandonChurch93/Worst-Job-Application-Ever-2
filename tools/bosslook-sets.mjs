@@ -67,6 +67,10 @@ export const SETS = {
     fs.writeFileSync(path.join(workDir, 'inside.png'), inside.png)
     fs.writeFileSync(path.join(workDir, 'out.png'), out.png)
     console.log(`  inside: ${JSON.stringify(inside.stats)}; out: ${JSON.stringify(out.stats)}`)
+    const crop = async (png, left, top) => sharp(await sharp(png).resize({ width: 1920 }).extract({ left, top, width: 232, height: 160 }).png().toBuffer()).resize({ width: 696, kernel: 'lanczos3' }).png().toBuffer()
+    await sheet(sharp, path.join(outDir, 'hull.jpg'), [
+      { png: await crop(target(at, 'boss-turret-inside.png'), 640, 400), caption: 'TARGET: the hull plate, three times' }, { png: await crop(inside.png, 620, 395), caption: 'BUILD: the hull plate, three times' }
+    ], 2, 696)
     return sheet(sharp, path.join(outDir, 'states.jpg'), [
       { png: target(at, 'boss-turret-inside.png'), caption: 'TARGET: turret inside' }, { png: inside.png, caption: `BUILD: turret inside (${tier})` },
       { png: target(at, 'boss-turret-out.png'), caption: 'TARGET: turret out' }, { png: out.png, caption: `BUILD: turret out (${tier})` }
