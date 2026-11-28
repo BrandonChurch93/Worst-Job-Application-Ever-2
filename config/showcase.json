@@ -381,7 +381,7 @@
       "id": "boss-fight",
       "unit": "boss",
       "beat": "boss.slabs",
-      "at": 0.5,
+      "at": 0.46,
       "camera": "home",
       "image": "references/approved/boss-fight.png",
       "settled": ["The image shows a spark on the shield with no dart at it. In the build every spark has a dart."]
