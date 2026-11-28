@@ -6,6 +6,8 @@ export const WORDS = {
   title: 'copy:site.title',
   skip: 'copy:live.skip',
   watchFilm: 'copy:live.watchFilm',
+  soundBar: 'copy:drafts.live.soundBar.words',
+  soundAccept: 'copy:drafts.live.soundBar.accept',
   touchTitle: 'copy:live.touchOnly.title',
   touchBody: 'copy:live.touchOnly.body',
   touchLink: 'copy:live.touchOnly.link',

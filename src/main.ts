@@ -171,6 +171,9 @@ function probe(): void {
   mountProbe(host, run)
 }
 
+// The keys that do not allow sound by themselves.
+const FOCUS_KEYS: readonly string[] = ['Tab', 'Shift', 'Control', 'Alt', 'Meta']
+
 function play(first: PlayMode): void {
   let now: PlayMode = first
   const size = sizer(() => now === 'film')
@@ -179,18 +182,19 @@ function play(first: PlayMode): void {
   const stepped = params.get('clock') === 'steps'
 
   let sound: Sound | null = null
+  let pressedOnce = false
+  const unlock = () => {
+    pressedOnce = true
+    void sound?.unlock()
+  }
   if (!stepped) {
-    let touched = false
-    const unlock = () => {
-      touched = true
-      void sound?.unlock()
-    }
     window.addEventListener('pointerdown', unlock, { capture: true })
-    window.addEventListener('keydown', unlock, { capture: true })
+    // A key that only moves the focus or is held with another does not count as a press: Accept on the sound bar is reached by Tab.
+    window.addEventListener('keydown', (e) => { if (!FOCUS_KEYS.includes(e.key)) unlock() }, { capture: true })
     void Promise.all([import('./audio/index'), import('./ui/said')]).then(([{ makeSound }, { makeCaption }]) => {
       sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/`, caption: makeCaption })
       if (!flowing()) sound.stop()
-      if (touched) void sound.unlock()
+      if (pressedOnce) void sound.unlock()
     })
   }
   const soundMode = () => (now === 'live' ? 'live' : 'film')
@@ -378,7 +382,9 @@ function play(first: PlayMode): void {
     sound: {
       available: () => sound?.available() ?? false,
       muted: () => sound?.muted() ?? true,
-      setMuted: (m) => sound?.setMuted(m)
+      setMuted: (m) => sound?.setMuted(m),
+      blocked: () => !pressedOnce && sound !== null && sound.state() === 'locked',
+      allow: unlock
     },
     quality: { levels: [...qualityIds], level: size.level, set: size.set, auto: () => !levelIsFixed() },
     diagnostics: [...views],
