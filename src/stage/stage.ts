@@ -232,6 +232,11 @@ export class Stage {
     return { ...c, x, y: scroll + 540 - (v * Math.cos(a) + z * Math.sin(a)), z: z * Math.cos(a) - v * Math.sin(a), rides: true }
   }
 
+  // An arrow that stands in the room while its new page comes in says so, and the view brings the room's lights round to it: they stay with a slab that comes in, so a face that stood still under them went grey.
+  private overPose(c: CursorPose): CursorPose {
+    return this.phase === 'arrive' && c.rides !== true ? { ...c, over: true } : c
+  }
+
   private clearPose(c: CursorPose): CursorPose {
     if (this.o.mode !== 'film' || c.rides === true || (this.phase !== 'leave' && this.phase !== 'arrive')) return c
     const a = this.turnAt()
@@ -443,7 +448,7 @@ export class Stage {
       railFields(list, this.page.fields?.() ?? null)
       slideHeader(list, this.page.chrome?.() ?? null)
     }
-    const made: Frame = { list, cursor: this.phase === 'leave' && this.staysOn() ? { ...this.cursor.pose(), rides: true } : this.clearPose(this.broughtPose(this.cursor.pose())), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
+    const made: Frame = { list, cursor: this.phase === 'leave' && this.staysOn() ? { ...this.cursor.pose(), rides: true } : this.overPose(this.clearPose(this.broughtPose(this.cursor.pose()))), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     const settle = this.settledFor()
     if (settle !== undefined) {
       made.settle = settle

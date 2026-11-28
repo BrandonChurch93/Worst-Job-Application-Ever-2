@@ -142,6 +142,8 @@ export interface CursorPose {
   shed: number
   // Under a visitor's hand in a page turn: it lies on its page and goes over with it. Absent: it stands in the room while the page turns.
   rides?: boolean
+  // Standing in the room over a page that is coming in: the room's lights are brought round to it.
+  over?: boolean
 }
 
 export interface Place { x: number; y: number; z: number }

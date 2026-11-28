@@ -21,6 +21,8 @@ export interface BodyUniforms {
   // How burnt each hole is: 1 a charred burn, 0 a clean punched hole.
   uBurnt: { value: THREE.Vector4 }
   uDetail: { value: THREE.Texture }
+  // The turn the room's two lights are given before they light the body: none, or the one that brings them round to a body standing in the room over a slab coming in.
+  uLit: { value: THREE.Matrix3 }
 }
 
 // The light on a body sealed in the clear ball, written each frame by the ball's owner.
@@ -61,7 +63,8 @@ export function bodyUniforms(): BodyUniforms {
     uShape: { value: new THREE.Vector4() },
     uHoles: { value: Array.from({ length: MAX_HOLES }, () => new THREE.Vector4()) },
     uBurnt: { value: new THREE.Vector4(1, 1, 1, 1) },
-    uDetail: { value: detailTexture() }
+    uDetail: { value: detailTexture() },
+    uLit: { value: new THREE.Matrix3() }
   }
 }
 
@@ -337,6 +340,10 @@ let edgeColour: THREE.Color | null = null
 // The enamel is a bright white paint: its face gives back more of the lamps' light than the black edge beside it.
 export const FACE_LIFT = 1.3
 
+// The room's two lights as the body is lit by them: each comes from where it stands turned by uLit, about the camera's own axes as the room is.
+const ROOM_LIGHT = 'getDirectionalLightInfo( directionalLight, directLight );'
+const LIT = ROOM_LIGHT + '\n\t\tdirectLight.direction = mat3( viewMatrix ) * uLit * transpose( mat3( viewMatrix ) ) * directLight.direction;'
+
 export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial {
   latest = uniforms
   const shared = materials()
@@ -358,7 +365,8 @@ export function bodyMaterial(uniforms: BodyUniforms): THREE.MeshPhysicalMaterial
       '#include <begin_vertex>',
       '#include <begin_vertex>\nvRest = aRest;\nvInk = aInk;\nvInset = aInset;\nvAcross = normalize( normalMatrix * vec3( 1.0, 0.0, 0.0 ) );\nvDown = normalize( normalMatrix * vec3( 0.0, -1.0, 0.0 ) );'
     )
-    shader.fragmentShader = ('uniform vec3 uEnamel;\nuniform vec3 uEdge;\nuniform vec3 uSealedLight;\nuniform vec4 uSealedFrom;\nuniform vec3 uSealedFill;\n' + FRAGMENT_HEAD + shader.fragmentShader)
+    shader.fragmentShader = ('uniform mat3 uLit;\nuniform vec3 uEnamel;\nuniform vec3 uEdge;\nuniform vec3 uSealedLight;\nuniform vec4 uSealedFrom;\nuniform vec3 uSealedFill;\n' + FRAGMENT_HEAD + shader.fragmentShader)
+      .replace(ROOM_LIGHT, LIT)
       .replace('#include <lights_fragment_end>', SEALED + '#include <lights_fragment_end>')
       .replace('#include <opaque_fragment>', SEALED_TOP + '#include <opaque_fragment>')
       .replace('#include <color_fragment>', '#include <color_fragment>\nwjaHoles( vRest );\ndiffuseColor.rgb = wjaSurface( uEnamel, uEdge );')

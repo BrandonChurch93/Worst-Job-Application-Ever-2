@@ -93,6 +93,8 @@ export const restLook = (time = 0): CursorLook => ({
 // The body is built in page pixels with the tip at the origin, x to the right, y up the page (so the arrow hangs down), z off the page.
 export interface BodyModel {
   root: THREE.Object3D
+  // The turn the room's two lights are given before they light the body, written by the view. Left alone, the lights are where the renderer has them.
+  lit?: THREE.Matrix3
   apply(look: BodyLook): void
   // Where a point of the outline is on the body as it is drawn now, in the root's own space.
   anchor(x: number, y: number, out: THREE.Vector3): THREE.Vector3

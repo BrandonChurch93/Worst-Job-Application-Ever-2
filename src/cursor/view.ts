@@ -63,6 +63,10 @@ export class CursorView {
     if (stand) this.root.matrix.copy(stand.matrix).invert()
     else this.root.matrix.identity()
     this.root.matrixWorldNeedsUpdate = true
+    // The room's lights stay with a slab that comes in tilted toward the viewer. A cursor that stands in the room over it has them brought round by the slab's turn, so its face does not go grey under lights that have left it.
+    const room = c.over ? this.root.parent : null
+    if (room && room.matrix.elements[6]! > 0) this.body.lit?.setFromMatrix4(room.matrix)
+    else this.body.lit?.identity()
     this.at.quaternion.identity()
     // The body is shaped first: where a sealed body stands comes from its outline as it is drawn.
     this.body.root.rotation.set(0, 0, turn)

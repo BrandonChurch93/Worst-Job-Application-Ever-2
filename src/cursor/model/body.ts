@@ -27,6 +27,7 @@ export class Body implements BodyModel {
   readonly root = new THREE.Group()
   readonly deform = new Deform()
   private uniforms: BodyUniforms = bodyUniforms()
+  readonly lit = this.uniforms.uLit.value
   private material = bodyMaterial(this.uniforms)
   private depth = bodyDepthMaterial(this.uniforms)
   private char = charMaterial()
