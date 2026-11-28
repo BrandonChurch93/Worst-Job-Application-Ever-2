@@ -146,6 +146,11 @@ export const MERCY = {
   share: [0.05, 0.1, 0.2, 0.35, 0.6, 1] as const // by step, the share of a dart that got round that a dart on the shield is worth
 } as const
 
+// Line 6 of the narrator starts on the tick. Line 7 starts when the boss is formed, and no sooner than line 6 has ended.
+export const LINE6 = {
+  after: 7.175 // s from the tick before line 7's clock may start: line 6's length at the narrator's fastest pace (11 words at 1.6 a second, 6.875 s) plus the gap of 0.3 s
+} as const
+
 // Line 7 of the narrator, said between the forming and the fight (change note 003). Lengths are the Builder's of 22:45 and the shell's of 22:48; they move the day the voice is recorded.
 export const LINE7 = {
   part0: 18.125, // s of `boss.unfold.0`, from `boss-formed`
