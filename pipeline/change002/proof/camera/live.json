@@ -9,6 +9,7 @@
  "kinds": {
   "click": {
    "says": "clicks once",
+   "place": null,
    "stepsToArms": 4291,
    "armsAt": 71.51666666666667,
    "rows": [
@@ -154,14 +155,15 @@
     }
    ],
    "drawMs": {
-    "above": 12963.5,
-    "low": 5517.80000000447,
-    "after": 4543.900000002235
+    "above": 13724.800000000745,
+    "low": 6720.500000003725,
+    "after": 4521.000000003725
    },
    "problems": []
   },
   "hold": {
    "says": "holds 2 s and lets go",
+   "place": null,
    "stepsToArms": 4291,
    "armsAt": 71.51666666666667,
    "rows": [
@@ -307,9 +309,9 @@
     }
    ],
    "drawMs": {
-    "above": 13762.10000000149,
-    "low": 7475.300000000745,
-    "after": 4471.500000003725
+    "above": 12541.699999999255,
+    "low": 5782.000000003725,
+    "after": 4636.89999999851
    },
    "problems": []
   }
