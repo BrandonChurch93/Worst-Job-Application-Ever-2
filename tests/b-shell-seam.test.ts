@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { homeDistance } from '../src/stage/camera'
-import { BROUGHT, CLEAR, filmFlow, filmOptions, ScriptDriver, Stage, STAYS_ON, wholeFilmFlow } from '../src/stage/stage'
+import { BotDriver } from '../src/stage/bots'
+import { BROUGHT, CLEAR, filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, STAYS_ON, wholeFilmFlow } from '../src/stage/stage'
+import type { Driver, DriverView, Pointer } from '../src/stage/types'
 
 const PER = Math.round(stepHz / 60)
 const WHOLE = Math.round(config.film.units.reduce((n, u) => n + u.seconds, 0) * 60)
@@ -94,6 +96,39 @@ describe("the film's arrow across every page turn", () => {
       piece.restore(whole.checkpoint(Math.floor(u.seconds) * stepHz))
       expect(piece.checkpointSteps()).toEqual([0, Math.floor(u.seconds) * stepHz])
       expect(times.map((t) => piece.frameAt(t).cursor)).toEqual(want)
+    })
+  }
+})
+
+class Seen implements Driver {
+  readonly name = 'bot' as const
+  at: Pointer | null = null
+  constructor(private inner: BotDriver) {}
+  input(view: DriverView): Pointer { return (this.at = this.inner.input(view)) }
+}
+
+describe('on the running site a hand back that a page turn finds under way', () => {
+  for (const bot of ['keen', 'clumsy'] as const) {
+    it(`runs on to the pointer through the leaving half and the arrow comes in where it is: the ${bot} visit, step 1 to step 2`, () => {
+      const d = new Seen(new BotDriver(bot, config.seed))
+      const s = new Stage({ mode: 'live', flow: liveFlow(), pages, driver: d, seed: config.seed })
+      const rows: { page: string; turning: boolean; x: number; y: number; far: number }[] = []
+      for (let i = 0; i < 60 * 400 && rows.filter((r) => r.page === 'step2').length < 6; i++) {
+        const f = s.frameAt(((i + 1) * PER) / stepHz)
+        const y = f.cursor.y - f.scroll
+        rows.push({ page: s.page.unit, turning: s.turning, x: f.cursor.x, y, far: Math.hypot(f.cursor.x - d.at!.x, y - d.at!.y) })
+      }
+      const seam = rows.findIndex((r) => r.page === 'step2')
+      let first = seam
+      while (rows[first - 1]!.turning) first--
+      const step = (k: number): number => Math.hypot(rows[k]!.x - rows[k - 1]!.x, rows[k]!.y - rows[k - 1]!.y)
+      expect(seam).toBeGreaterThan(first)
+      let largest = 0
+      for (let k = first; k < seam; k++) largest = Math.max(largest, step(k))
+      expect(step(seam), 'the jump across the seam').toBeLessThanOrEqual(Math.max(largest, 1))
+      expect(rows[seam - 1]!.far, 'the arrow from the pointer on the last leaving frame').toBeLessThan(1)
+      const before = step(first - 1)
+      if (before > 1) for (let k = first; k < first + 5; k++) expect(step(k), `frame ${k + 1}`).toBeGreaterThanOrEqual(before * 0.5)
     })
   }
 })
