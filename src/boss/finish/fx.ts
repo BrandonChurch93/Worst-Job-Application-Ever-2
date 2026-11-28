@@ -4,8 +4,9 @@
 import * as THREE from 'three'
 import { hash01 } from '../../core/random'
 import type { Emitter } from '../../real/types'
-import { STAND, type StandPose } from '../../cursor/stand/rig'
+import { STAND, tilt, type StandPose } from '../../cursor/stand/rig'
 import type { Fx } from './acting'
+import { CAMERA } from '../tune'
 
 export type Level = 'low' | 'medium' | 'high' | null
 
@@ -148,6 +149,26 @@ function glowStuff(): THREE.ShaderMaterial {
   })
 }
 
+function duskStuff(): THREE.ShaderMaterial {
+  const d = CAMERA.dusk
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, toneMapped: false, fog: false, side: THREE.BackSide,
+    uniforms: { uK: { value: 0 }, uTop: { value: new THREE.Vector3(...d.top) }, uLow: { value: new THREE.Vector3(...d.low) }, uBand: { value: new THREE.Vector3(...d.band) }, uHigh: { value: d.bandHigh } },
+    vertexShader: /* glsl */ `varying vec3 vDir; void main() { vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: /* glsl */ `
+      uniform float uK; uniform vec3 uTop; uniform vec3 uLow; uniform vec3 uBand; uniform float uHigh;
+      varying vec3 vDir;
+      void main() {
+        float h = normalize(vDir).z;
+        float up = max(h, 0.0);
+        float under = max(-h, 0.0);
+        vec3 col = mix(uLow, uTop, smoothstep(0.0, 0.55, up)) * (1.0 - 0.75 * smoothstep(0.0, 0.3, under));
+        col += uBand * exp(-h * h / (uHigh * uHigh)) * (h < 0.0 ? 0.6 : 1.0);
+        gl_FragColor = vec4(col, uK);
+      }`
+  })
+}
+
 function ballStuff(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     ...add,
@@ -184,14 +205,14 @@ function ballStuff(): THREE.ShaderMaterial {
 // `core` and `glow`: half the width at the hands and what it gains for each px along, in the figure's own px.
 export const BEAM = { long: 2600, wide: 520, core: [13, 0.1], glow: [30, 0.26], speed: 4200 } as const
 
-function beamStuff(): THREE.ShaderMaterial {
+function beamStuff(sunk = false): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     ...add,
-    depthTest: false,
-    uniforms: { uTime: { value: 0 }, uOpen: { value: 0 }, uPower: { value: 1 }, uAge: { value: 0 }, uWide: { value: 1 }, uKeep: { value: new THREE.Vector4(0, 0, -1, -1) } },
+    depthTest: sunk,
+    uniforms: { uTime: { value: 0 }, uOpen: { value: 0 }, uPower: { value: 1 }, uAge: { value: 0 }, uWide: { value: 1 }, uKeep: { value: new THREE.Vector4(0, 0, -1, -1) }, uShare: { value: 1 } },
     vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
-      uniform float uTime; uniform float uOpen; uniform float uPower; uniform float uAge; uniform float uWide; uniform vec4 uKeep;
+      uniform float uTime; uniform float uOpen; uniform float uPower; uniform float uAge; uniform float uWide; uniform vec4 uKeep; uniform float uShare;
       varying vec2 vUv;
       ${NOISE}
       void main() {
@@ -235,7 +256,7 @@ function beamStuff(): THREE.ShaderMaterial {
           col = mix(col, vec3(1.7), exp(-max(sd, 0.0) / 9.0) * 0.5 * core);
         }
         if (alpha < 0.002) discard;
-        gl_FragColor = vec4(col, alpha);
+        gl_FragColor = vec4(col, alpha * uShare);
       }`
   })
 }
@@ -276,6 +297,33 @@ function puffStuff(): THREE.ShaderMaterial {
   })
 }
 
+function tearStuff(): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: false, toneMapped: false,
+    uniforms: { uK: { value: 0 } },
+    vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: /* glsl */ `
+      varying vec2 vUv; uniform float uK;
+      ${NOISE}
+      void main() {
+        vec2 p = (vUv - 0.5) * 2.0;
+        float r = length(p);
+        float at = 0.22 + 0.72 * (1.0 - (1.0 - uK) * (1.0 - uK));
+        float thick = 0.11 * (1.0 - 0.55 * uK);
+        float ring = smoothstep(thick, 0.0, abs(r - at));
+        float hot = smoothstep(thick * 0.45, 0.0, abs(r - at));
+        float soot = smoothstep(thick * 2.4, thick, abs(r - at));
+        float flash = smoothstep(0.55, 0.0, r) * max(0.0, 1.0 - uK * 3.0);
+        float rays = 0.55 + 0.45 * vn(p / max(r, 0.001) * 3.0 + 7.0);
+        float lit = max(ring * rays, flash);
+        float a = max(lit, soot * 0.4) * (1.0 - uK * uK);
+        if (a < 0.004) discard;
+        vec3 col = mix(vec3(0.8, 0.22, 0.02), vec3(1.0, 0.86, 0.5), max(hot * rays, flash));
+        gl_FragColor = vec4(mix(vec3(0.13, 0.1, 0.07), col, smoothstep(0.0, 0.45, lit)), a);
+      }`
+  })
+}
+
 export function makeFinishFx(): FinishFx {
   const object = new THREE.Group()
   object.name = 'finish-fx'
@@ -297,6 +345,10 @@ export function makeFinishFx(): FinishFx {
   const flare = new THREE.Mesh(quad, flareMat)
   const beamMat = beamStuff()
   const beam = new THREE.Mesh(along, beamMat)
+  const sunkMat = beamStuff(true)
+  const sunk = new THREE.Mesh(along, sunkMat)
+  const tearMat = tearStuff()
+  const tear = new THREE.Mesh(quad, tearMat)
   const markGeo = new THREE.InstancedBufferGeometry().copy(along as unknown as THREE.InstancedBufferGeometry)
   const markData = new THREE.InstancedBufferAttribute(new Float32Array(12 * 2), 2).setUsage(THREE.DynamicDrawUsage)
   markGeo.setAttribute('aMark', markData)
@@ -307,7 +359,13 @@ export function makeFinishFx(): FinishFx {
   puffGeo.setAttribute('aPuff', puffData)
   const puffMat = puffStuff()
   const puffs = new THREE.InstancedMesh(puffGeo, puffMat, MOST.puffs)
-  const all: THREE.Mesh[] = [marks, glow, flames, puffs, beam, ball, flare]
+  const duskMat = duskStuff()
+  const dusk = new THREE.Mesh(new THREE.SphereGeometry(CAMERA.dusk.far, 24, 16).rotateX(Math.PI / 2), duskMat)
+  dusk.frustumCulled = false
+  dusk.renderOrder = -50
+  dusk.visible = false
+  object.add(dusk)
+  const all: THREE.Mesh[] = [marks, glow, flames, puffs, beam, ball, flare, sunk, tear]
   all.forEach((m, i) => {
     m.frustumCulled = false
     m.castShadow = false
@@ -317,6 +375,8 @@ export function makeFinishFx(): FinishFx {
     m.visible = false
     object.add(m)
   })
+  sunk.renderOrder = beam.renderOrder
+  sunk.userData.order = beam.userData.order
 
   const m4 = new THREE.Matrix4()
   const X = new THREE.Vector3()
@@ -326,7 +386,7 @@ export function makeFinishFx(): FinishFx {
 
   // A card that stands in the figure's plane: its foot at a place of that plane, `w` wide and `h` tall, turned by `turn` in the plane.
   const card = (p: StandPose, fx: number, fy: number, fz: number, w: number, h: number, turn: number): THREE.Matrix4 => {
-    const a = STAND.rise * p.rise
+    const a = tilt(p)
     const c = Math.cos(a)
     const s = Math.sin(a)
     const ct = Math.cos(turn)
@@ -341,7 +401,7 @@ export function makeFinishFx(): FinishFx {
 
   // A lick of the power-up: its foot on the ground, `gx` beside the feet and `gy` in front of them (behind when negative), standing in a plane that lies lower than the figure's, so the film, which looks straight down, sees nearly its whole length; `turn` leans it.
   const lick = (p: StandPose, gx: number, gy: number, w: number, h: number, turn: number): THREE.Matrix4 => {
-    const a = STAND.rise * p.rise * LICK.rise
+    const a = tilt(p) * LICK.rise
     const c = Math.cos(a)
     const s = Math.sin(a)
     const ct = Math.cos(turn)
@@ -363,10 +423,35 @@ export function makeFinishFx(): FinishFx {
     return m4.makeBasis(X, Yv, Zv).setPosition(x - 960, 540 - y, z)
   }
 
+  const backOf = (p: StandPose, eye: readonly [number, number, number]): boolean => {
+    const a = tilt(p)
+    return (eye[1] - (540 - p.y)) * -Math.sin(a) + (eye[2] - p.ground) * Math.cos(a) < 0
+  }
+
+  const faceBeam = (m: THREE.Matrix4, b: { x: number; y: number; z: number; aim: number }, h: number, lens: { low: number; eye: readonly [number, number, number] }): void => {
+    const c = Math.cos(b.aim)
+    const s = Math.sin(b.aim)
+    X.set(c, -s, 0)
+    O.set(lens.eye[0] - (b.x - 960), lens.eye[1] - (540 - b.y), lens.eye[2] - b.z)
+    Zv.crossVectors(O, X)
+    if (Zv.lengthSq() < 1e-9) return
+    Zv.normalize()
+    Yv.set(s, c, 0).lerp(Zv, lens.low).normalize()
+    Zv.crossVectors(X, Yv)
+    const e = m.elements
+    e[4] = Yv.x * h
+    e[5] = Yv.y * h
+    e[6] = Yv.z * h
+    e[8] = Zv.x
+    e[9] = Zv.y
+    e[10] = Zv.z
+  }
+
   const pose = (fx: Fx, p: StandPose, time: number, light?: (e: Emitter) => void): void => {
     const k = fx.aura
     const big = p.scale ?? 1
     flames.visible = glow.visible = k > 0.01 || fx.crackle > 0.01
+    const side = fx.lens && backOf(p, fx.lens.eye) ? -1 : 1
     if (flames.visible) {
       flameMat.uniforms.uTime!.value = time
       glowMat.uniforms.uTime!.value = time
@@ -399,7 +484,7 @@ export function makeFinishFx(): FinishFx {
           continue
         }
         const tall = (96 + 34 * seed) * (0.8 + 0.3 * Math.sin(th)) * grow
-        flames.setMatrixAt(n, card(p, 2 + Math.cos(th) * 20, 26 + Math.sin(th) * 22, -3.5, 46 + 12 * seed, tall, -Math.cos(th) * 0.42))
+        flames.setMatrixAt(n, card(p, 2 + Math.cos(th) * 20, 26 + Math.sin(th) * 22, -3.5 * side, 46 + 12 * seed, tall, -Math.cos(th) * 0.42))
         d[n * 4] = seed + 0.61
         d[n * 4 + 1] = 0.5 * Math.min(1, k) * (1 - 0.6 * fx.burst) * (j < 5 ? 1 : 0)
         d[n * 4 + 2] = 0
@@ -432,7 +517,7 @@ export function makeFinishFx(): FinishFx {
         const bx = mixed(2 + Math.cos(th) * rx * 0.86, lx)
         const by = mixed(44 + Math.sin(th) * ry * 0.8, 0)
         const tall = mixed((44 + 38 * hash01(j, 2, SEED)) * (1.1 - 0.25 * Math.max(0, Math.sin(th))), ltall) * grow
-        flames.setMatrixAt(n, card(p, bx, by, -2.5, mixed(22 + 10 * seed, 18 + 8 * seed), tall, mixed(-Math.cos(th) * 0.5, (seed - 0.5) * 0.5)))
+        flames.setMatrixAt(n, card(p, bx, by, -2.5 * side, mixed(22 + 10 * seed, 18 + 8 * seed), tall, mixed(-Math.cos(th) * 0.5, (seed - 0.5) * 0.5)))
         d[n * 4] = seed
         d[n * 4 + 1] = Math.min(1, k) * (1 - 0.6 * fx.burst)
         d[n * 4 + 2] = mixed(0, (hash01(j, 6, SEED) - 0.5) * 0.7)
@@ -448,7 +533,7 @@ export function makeFinishFx(): FinishFx {
         // The ring is the main fire: many thin flames.
         const tall = (10 + 18 * hash01(j, 4, SEED)) * grow
         // On the ground: the card's foot is carried from the page to the figure's plane at height 0.
-        const a = STAND.rise * p.rise
+        const a = tilt(p)
         flames.setMatrixAt(n, card(p, gx, -gy * Math.cos(a), gy * Math.sin(a), 8 + 5 * seed, tall, (seed - 0.5) * 0.5))
         d[n * 4] = seed + 0.37
         // No flame of the ring stands in front of a shoe.
@@ -475,24 +560,40 @@ export function makeFinishFx(): FinishFx {
       light?.({ x: p.x, y: p.y - 26 * big, z: p.ground + 44 * big, colour: GOLD, power: (1.3 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
     }
 
+    dusk.visible = fx.lens !== undefined && fx.lens.low > 0.004
+    if (fx.lens) {
+      duskMat.uniforms.uK!.value = fx.lens.low
+      dusk.position.set(fx.lens.eye[0], fx.lens.eye[1], 0)
+    }
     ball.visible = fx.ball !== null
     if (fx.ball) {
       const b = fx.ball
       const u = ballMat.uniforms
       u.uTime!.value = time
-      u.uGlow!.value = Math.min(1.5, b.glow * 1.25)
-      u.uCore!.value = 0.07
+      const g = fx.lens?.glare ?? 0
+      u.uGlow!.value = Math.max(Math.min(1.5, b.glow * 1.25), 1.5 * g)
+      u.uCore!.value = 0.07 + 0.55 * g
       // Few rays while it is held at the hip: they would cross the figure.
       u.uRays!.value = 0.1 + 0.25 * Math.min(1, b.glow)
-      u.uSize!.value = b.size * 11
+      u.uSize!.value = b.size * 11 + (CAMERA.flash * big - b.size * 11) * g
       ball.position.set(b.x - 960, 540 - b.y, b.z + b.size * 0.3)
       light?.({ x: b.x, y: b.y, z: b.z + 6, colour: COLD, power: 0.12 + 0.5 * b.glow, reach: 170 + 170 * b.glow, shadow: true })
     }
 
-    beam.visible = flare.visible = fx.beam !== null
+    const under = fx.under ?? 0
+    tear.visible = fx.tear !== undefined
+    if (fx.tear) {
+      tearMat.uniforms.uK!.value = fx.tear.k
+      tear.matrixAutoUpdate = false
+      tear.matrix.copy(flat(fx.tear.x, fx.tear.y, CAMERA.tear.z, fx.tear.size * 2, fx.tear.size * 2, 0))
+    }
+    flare.visible = fx.beam !== null
+    beam.visible = fx.beam !== null && under < 1
+    sunk.visible = fx.beam !== null && under > 0
     if (fx.beam) {
       const b = fx.beam
       const u = beamMat.uniforms
+      u.uShare!.value = 1 - under
       u.uTime!.value = time
       u.uOpen!.value = b.open
       u.uPower!.value = b.power
@@ -506,6 +607,15 @@ export function makeFinishFx(): FinishFx {
       } else keep.set(0, 0, -1, -1)
       beam.matrixAutoUpdate = false
       beam.matrix.copy(flat(b.x, b.y, b.z, BEAM.long, BEAM.wide * 2 * big, b.aim))
+      if (fx.lens) faceBeam(beam.matrix, b, BEAM.wide * 2 * big, fx.lens)
+      if (sunk.visible) {
+        const v = sunkMat.uniforms
+        for (const n of ['uTime', 'uOpen', 'uPower', 'uAge', 'uWide'] as const) v[n]!.value = u[n]!.value
+        ;(v.uKeep!.value as THREE.Vector4).copy(keep)
+        v.uShare!.value = under
+        sunk.matrixAutoUpdate = false
+        sunk.matrix.copy(flat(b.x, b.y, CAMERA.sunk, BEAM.long, BEAM.wide * 2 * big, b.aim))
+      }
       const f = flareMat.uniforms
       f.uTime!.value = time * 1.7
       f.uGlow!.value = Math.min(1.4, b.open * 1.4)
@@ -603,7 +713,8 @@ export function makeFinishFx(): FinishFx {
     },
     dispose(): void {
       for (const g of [quad, standing, along, flameGeo, markGeo, puffGeo]) g.dispose()
-      for (const m of [flameMat, glowMat, ballMat, flareMat, beamMat, markMat, puffMat]) m.dispose()
+      for (const m of [flameMat, glowMat, ballMat, flareMat, beamMat, sunkMat, tearMat, markMat, puffMat, duskMat]) m.dispose()
+      dusk.geometry.dispose()
       flames.dispose()
       marks.dispose()
       puffs.dispose()

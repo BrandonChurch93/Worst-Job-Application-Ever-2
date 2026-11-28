@@ -53,6 +53,9 @@ export function makeFinish(): Finish {
         // The white face is tipped away from the key when it stands: a little of the page's own light comes back up onto it.
         const up = Math.min(1, s.pose.rise * 1.5)
         const big = s.pose.scale ?? 1
+        const lens = s.fx.lens
+        const behind = lens ? Math.min(1, Math.max(0, (lens.eye[1] - (540 - s.pose.y)) / 60)) * Math.min(1, lens.low * 2) : 0
+        stand.back(behind, Math.min(1, (s.fx.ball ? s.fx.ball.glow : 0) + open))
         if (light && up > 0.02) light({ x: s.pose.x, y: s.pose.y + FACE.y * big, z: s.pose.ground + FACE.z * big, colour: FACE.colour, power: FACE.power * up * (1 - 0.8 * open) * (1 - 0.6 * Math.min(1, s.fx.aura)), reach: FACE.reach })
       }
       return s

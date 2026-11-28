@@ -176,7 +176,7 @@ export const SHOUT = {
   arms: 0, // s after the fall at which the arrow's arms come out (`finish-arms`)
   beats: [0.1, 1.04, 2.09, 2.9], // s at which each charge word or syllable starts; the glow steps up on each (`finish-charge` on each)
   fire: 4.13, // s at which the last word starts: the blast is let go there (`finish-fire`)
-  gone: 6.26 // s at which the last word ends: the blast has held that long and the body is gone (`boss-gone`)
+  gone: 7.56 // s at which the last word ends: the blast has held that long and the body is gone (`boss-gone`)
 } as const
 
 export const FINISH = {
@@ -282,4 +282,47 @@ export const SOLID = {
   panes: [[336, 233, 370, 754], [1543, 233, 1625, 754]] as const, // x0, y0, x1, y1 of the two glass panes
   bar: [560, 0, 1360, 170] as const, // x0, y0, x1, y1 of the box round the health bar: it stops every shot and no blast line may cross it
   frame: [590, 66, 1333, 137] as const // x0, y0, x1, y1 of the bar's frame in the picture, for the clear band
+} as const
+
+export const CAMERA = {
+  on: true,
+  powerUp: false,
+  upright: 0.75,
+  lowEl: [30, 80] as const,
+  down: [0, 0.95] as const,
+  dive: [1.2, 4] as const,
+  tear: { life: 0.28, size: [170, 200, 230, 200, 330], z: 60 },
+  fade: { near: 95, over: 0.15, body: [36, 150], feet: 1.7 },
+  swing: 2,
+  push: 0.08,
+  pushOver: 6,
+  ahead: 0.9,
+  round: 0.8,
+  lead: 2,
+  roundLive: 0.55,
+  stay: 0.3,
+  thin: 30,
+  cross: 0.5,
+  whip: 2.5,
+  glare: [3, 1, 1, 6] as const,
+  flash: 160,
+  back: [0.08, 0.3] as const,
+  rise: [1.1, 1.7] as const,
+  lift: 2,
+  lag: 2,
+  wide: 0,
+  top: { at: [397.7, 161.8, 0], az: -180, tall: 500 },
+  hold: 0.4,
+  turn: 1.3,
+  ramp: 0.2,
+  sunk: 3,
+  over: 1.6,
+  wall: { x: 420, top: 600, soft: 350 },
+  shake: 5,
+  shakeDies: 0.22,
+  open: 5,
+  dusk: { far: 5200, high: 2600, top: [0.012, 0.014, 0.03], low: [0.05, 0.045, 0.07], band: [0.2, 0.11, 0.06], bandHigh: 0.07 },
+  charge: { at: [-50, 0, 82], az: -120, el: -3, tall: 195, fov: 54 },
+  fire: { at: [127, -13, 52], az: -225, el: 7.5, tall: 325, fov: 50 },
+  blast: { at: [150, 0, 56], az: -224, el: 9, tall: 380, fov: 54 }
 } as const

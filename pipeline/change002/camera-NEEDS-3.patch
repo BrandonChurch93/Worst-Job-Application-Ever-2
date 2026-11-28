@@ -1,0 +1,13 @@
+diff --git a/content/narration-drafts.json b/content/narration-drafts.json
+index 1e81f555..69798829 100644
+--- a/content/narration-drafts.json
++++ b/content/narration-drafts.json
+@@ -5,7 +5,7 @@
+   "film": {
+     "boss.finish": [
+       {
+-        "at": 0.00072,
++        "at": 0.00065,
+         "text": "I have / five years / of experience",
+         "state": "draft",
+         "loud": true,

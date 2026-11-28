@@ -38,6 +38,8 @@ export function columnGeometry(side: number, high: number, bevel = 1.6): THREE.B
 
 export interface Kit {
   aluminium: THREE.Material
+  // What stands and can be put in shade for a low lens: the pillars' bodies and the sides of their stumps. The same metal as `aluminium`.
+  standing: THREE.MeshPhysicalMaterial
   satin: THREE.Material
   steel: THREE.Material
   dark: THREE.Material
@@ -67,7 +69,8 @@ export function makeKit(): Kit {
   // A bit of the ceramic, broken off: the page's white, matt where it broke.
   const chip = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.84, 0.83, 0.81), roughness: 0.6, metalness: 0, specularIntensity: 0.5, flatShading: true }))
   const hot = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 1.1, 0.16), toneMapped: false })
-  return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, tooth, orange: m.orange, broken, fallen, hot, chip, own: [glass, glassEdge, shard, tooth, broken, fallen, hot, chip] }
+  const standing = studio(m.aluminium.clone())
+  return { aluminium: m.aluminium, standing, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, tooth, orange: m.orange, broken, fallen, hot, chip, own: [glass, glassEdge, shard, tooth, broken, fallen, hot, chip, standing] }
 }
 
 export interface Pillar { root: THREE.Group; foot: THREE.Mesh; body: THREE.Mesh; x: number; y: number; order: number }
@@ -95,7 +98,7 @@ export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; on
   const plates: THREE.BufferGeometry[] = []
   const list: Pillar[] = PILLARS.map((p, i) => {
     const { lean, root } = stand(p.x, p.y)
-    const b = lit(body, kit.aluminium)
+    const b = lit(body, kit.standing)
     const foot = lit(plate, kit.satin)
     foot.position.set(wx(p.x), wy(p.y), 0)
     root.add(b)
@@ -113,7 +116,7 @@ export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; on
   const index = allBodies.getIndex()!
   const whole = Uint32Array.from(index.array as ArrayLike<number>)
   index.setUsage(THREE.DynamicDrawUsage)
-  const bodies = lit(allBodies, kit.aluminium)
+  const bodies = lit(allBodies, kit.standing)
   const feet = lit(allFeet, kit.satin)
   bodies.name = 'arena-pillars'
   feet.name = 'arena-feet'

@@ -52,6 +52,7 @@ export interface StandPose {
   scale?: number
   // 0 to 1: the arms leave the body low (see STAND.tuck). Only the power-up uses it.
   tuck?: number
+  tip?: number
   // 0 the legs are in the body, 1 out. The same for the arms.
   legs: number
   arms: number
@@ -150,8 +151,10 @@ export function mixPose(a: StandPose, b: StandPose, t: number): StandPose {
 export const at = (p: StandPose, x: number, y: number, ground = 0): StandPose => ({ ...p, x, y, ground })
 
 // A point of the figure's plane on the page: page px and the height over the page.
-export function toPage(p: { x: number; y: number; ground: number; rise: number; scale?: number }, fx: number, fy: number, fz: number): { x: number; y: number; z: number } {
-  const a = STAND.rise * p.rise
+export const tilt = (p: { rise: number; tip?: number }): number => STAND.rise * p.rise + (p.tip ?? 0)
+
+export function toPage(p: { x: number; y: number; ground: number; rise: number; scale?: number; tip?: number }, fx: number, fy: number, fz: number): { x: number; y: number; z: number } {
+  const a = tilt(p)
   const c = Math.cos(a)
   const s = Math.sin(a)
   const k = p.scale ?? 1

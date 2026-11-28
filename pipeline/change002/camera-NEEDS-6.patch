@@ -1,0 +1,25 @@
+diff --git a/src/pages/step4/index.ts b/src/pages/step4/index.ts
+index 38cf4d6b..2c90cb41 100644
+--- a/src/pages/step4/index.ts
++++ b/src/pages/step4/index.ts
+@@ -11,7 +11,7 @@ import { FIRE, finishState, kneelSpot, type FinishInput } from '../../boss/finis
+ import { ABOVE, facing, feetFor, finishShot, marksOf, underOf, type Shot } from '../../boss/finish/camera'
+ import { BEAM } from '../../boss/finish/fx'
+ import { clearSpot as clearOf } from '../../boss/spot'
+-import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
++import { BREAKS, buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
+ import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
+ import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
+ import { frame, toWorld } from '../../stage/camera'
+@@ -688,6 +688,11 @@ export function makePage(): PageLogic {
+         } else if (s.fired >= 0) {
+           const was = s.fired
+           s.fired += dt
++          if (LOOK1_ON) {
++            const seen = FIRE.lead + FIRE.open / 2
++            if (s.fired >= seen && was < seen) io.emit('finish-beam', io.cursor.x, io.cursor.y, false)
++            for (const b of BREAKS) if (s.fired - s.lag >= b * (BLAST - s.lag) && was - s.lag < b * (BLAST - s.lag)) io.emit('finish-break', FALLEN.x, FALLEN.y, false)
++          }
+           if (s.fired >= BLAST && was < BLAST) {
+             io.emit('boss-gone', FALLEN.x, FALLEN.y, false)
+             io.cursor.act('exhausted')

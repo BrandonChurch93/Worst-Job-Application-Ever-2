@@ -1,0 +1,173 @@
+{
+ "level": "high",
+ "browser": "159.0.8154.6",
+ "window": [
+  960,
+  540,
+  2
+ ],
+ "kinds": {
+  "click": {
+   "says": "clicks once",
+   "place": [
+    300,
+    400
+   ],
+   "placedAtStep": 4227,
+   "heroAtArms": [
+    557,
+    644
+   ],
+   "stepsToArms": 4291,
+   "armsAt": 71.51666666666667,
+   "rows": [
+    {
+     "sixtieths": 0,
+     "seconds": 0,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 18,
+     "seconds": 0.3,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 37,
+     "seconds": 0.617,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 55,
+     "seconds": 0.917,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 74,
+     "seconds": 1.233,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 92,
+     "seconds": 1.533,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 111,
+     "seconds": 1.85,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 129,
+     "seconds": 2.15,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 147,
+     "seconds": 2.45,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 166,
+     "seconds": 2.767,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 184,
+     "seconds": 3.067,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 203,
+     "seconds": 3.383,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 221,
+     "seconds": 3.683,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 239,
+     "seconds": 3.983,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 258,
+     "seconds": 4.3,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 276,
+     "seconds": 4.6,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 295,
+     "seconds": 4.917,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 313,
+     "seconds": 5.217,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 332,
+     "seconds": 5.533,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 350,
+     "seconds": 5.833,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    }
+   ],
+   "drawMs": {
+    "above": 11920.500000003725,
+    "low": 5589.60000000149,
+    "after": 4449.10000000149
+   },
+   "problems": []
+  }
+ }
+}

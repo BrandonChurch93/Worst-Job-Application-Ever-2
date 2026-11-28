@@ -162,7 +162,7 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
     keep(g.sides)
     keep(g.top)
     const s = stand(p.x, p.y)
-    const sides = new THREE.Mesh(g.sides, kit.aluminium)
+    const sides = new THREE.Mesh(g.sides, kit.standing)
     const top = new THREE.Mesh(g.top, kit.broken)
     for (const x of [sides, top]) { x.castShadow = true; x.receiveShadow = true }
     s.root.add(sides, top)

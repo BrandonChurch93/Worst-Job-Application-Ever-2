@@ -5,7 +5,7 @@ import { makeArms, ARM, type Arms } from '../act/arms'
 import { UNIT, restLook, type BodyModel } from '../contract'
 import { makeBody } from '../model/body'
 import { look as picture } from '../../post/look'
-import { STAND, type StandPose } from './rig'
+import { STAND, tilt, type StandPose } from './rig'
 
 const ALONG = 22
 const ROUND = 10
@@ -18,6 +18,7 @@ export interface Stand {
   apply(p: StandPose, time: number, shade?: number, fall?: [number, number] | null): void
   // A thin warm rim on the legs, the arms and the gloves, 0 to 1: the light of embers on black rubber over burnt ground. The white body has none.
   rim(k: number): void
+  back(k: number, light: number): void
   // The live site's level: at `low` the long shadow is thrown by fewer pieces.
   setLevel(level: 'low' | 'medium' | 'high' | null): void
   // What it is drawn with: draw calls and triangles, for the report.
@@ -68,6 +69,29 @@ function shadeStuff(): THREE.ShaderMaterial {
         float a = uK * mix(1.0, 0.42, clamp(vH / 85.0, 0.0, 1.0));
         if (a < 0.004) discard;
         gl_FragColor = vec4(0.07, 0.065, 0.075, a);
+      }`
+  })
+}
+
+function backStuff(): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, toneMapped: false, fog: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -8,
+    uniforms: { uK: { value: 0 }, uLight: { value: 0 } },
+    vertexShader: /* glsl */ `
+      varying vec3 vN; varying vec3 vV;
+      void main() {
+        vec4 at = modelViewMatrix * vec4(position, 1.0);
+        vN = normalMatrix * normal;
+        vV = -at.xyz;
+        gl_Position = projectionMatrix * at;
+      }`,
+    fragmentShader: /* glsl */ `
+      uniform float uK; uniform float uLight;
+      varying vec3 vN; varying vec3 vV;
+      void main() {
+        float facing = abs(dot(normalize(vN), normalize(vV)));
+        vec3 col = vec3(0.56, 0.57, 0.6) * (0.5 + 0.5 * facing) + vec3(0.62, 0.8, 1.0) * pow(1.0 - facing, 2.0) * (0.35 + 1.1 * uLight) + vec3(0.1, 0.14, 0.2) * uLight;
+        gl_FragColor = vec4(col, uK);
       }`
   })
 }
@@ -184,6 +208,28 @@ export function makeStand(): Stand {
       if (on && inst.isInstancedMesh) (r.twin as THREE.InstancedMesh).count = inst.count
     }
   }
+  const backMat = backStuff()
+  const backs: THREE.Mesh[] = []
+  body.root.traverse((o) => {
+    const of = o as THREE.Mesh
+    if (!of.isMesh || !(of.material as THREE.MeshPhysicalMaterial).isMeshPhysicalMaterial) return
+    const twin = new THREE.Mesh(of.geometry, backMat)
+    twin.frustumCulled = false
+    twin.visible = false
+    twin.renderOrder = 7
+    backs.push(twin)
+  })
+  body.root.traverse((o) => {
+    const of = o as THREE.Mesh
+    if (!of.isMesh || !(of.material as THREE.MeshPhysicalMaterial).isMeshPhysicalMaterial || backs.includes(of)) return
+    const twin = backs.find((b) => b.geometry === of.geometry && !b.parent)
+    if (twin) of.add(twin)
+  })
+  const back = (k: number, light: number): void => {
+    backMat.uniforms.uK!.value = Math.min(1, Math.max(0, k))
+    backMat.uniforms.uLight!.value = Math.min(1, Math.max(0, light))
+    for (const b of backs) b.visible = k > 0.004
+  }
   let few = false
   const inv = new THREE.Matrix4()
   const key = picture.key.direction
@@ -232,7 +278,7 @@ export function makeStand(): Stand {
   const pose = (p: StandPose, time: number): void => {
     object.position.set(p.x - 960, 540 - p.y, p.ground)
     object.scale.setScalar(p.scale ?? 1)
-    plane.rotation.set(STAND.rise * p.rise, 0, 0)
+    plane.rotation.set(tilt(p), 0, 0)
     const look = restLook(time)
     look.body.stretch = p.stretch
     look.body.puff = p.puff
@@ -337,6 +383,7 @@ export function makeStand(): Stand {
     object,
     apply,
     rim,
+    back,
     setLevel(level: 'low' | 'medium' | 'high' | null): void {
       few = level === 'low'
     },
@@ -364,6 +411,7 @@ export function makeStand(): Stand {
       shoes.dispose()
       shadeBase.dispose()
       rimMat.dispose()
+      backMat.dispose()
       rimHose.dispose()
       for (const s of shades) s.stuff.dispose()
     }

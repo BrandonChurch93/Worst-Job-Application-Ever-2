@@ -3,11 +3,12 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, emberOf, finishEvents, finishState, kneelSpot, powerPlan, type FinishInput } from '../src/boss/finish/acting'
 import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '../src/cursor/stand/rig'
+import { SHOUT } from '../src/boss/tune'
 
 const FPS = 60
 const ARROW = { x: 690, y: 548 }
 const BUTTON = { x: 960, y: 650, w: 177, top: 9.5 }
-const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
+const M = { arms: SHOUT.arms, charge: SHOUT.beats[0], fire: SHOUT.fire, end: SHOUT.gone, walk: SHOUT.gone + 0.4 }
 const spot = kneelSpot(BUTTON)
 const start = { x: feetFor(ARROW).x - FIRE.shove * SCALE, y: feetFor(ARROW).y }
 const far = Math.hypot(spot.x - start.x, spot.y - start.y)
@@ -263,7 +264,7 @@ describe('the finish: the standing arrow', () => {
 
 describe('the legs rule: the arrow has legs in the power-up and in the finish only', () => {
   const pw = { at: 1, end: 4.4 }
-  const marks = { arms: 20, charge: 20.1, fire: 24.13, end: 26.26 }
+  const marks = { arms: 20 + SHOUT.arms, charge: 20 + SHOUT.beats[0], fire: 20 + SHOUT.fire, end: 20 + SHOUT.gone }
 
   it('has no legs, does not stand and is not drawn at any moment outside the two', () => {
     let lying = 0
