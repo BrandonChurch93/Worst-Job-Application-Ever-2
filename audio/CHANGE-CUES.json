@@ -304,8 +304,8 @@
         "power-up"
       ],
       "standIn": null,
-      "describes": "A small machine charging up: a clean electric hum rising into a soft bright ping",
-      "playedBy": "Step 4, the power up before the turret rises",
+      "describes": "An aura of power flaring up around a fighter: a rush of air and flame that swells and rises fast and ends in a bright ringing shimmer",
+      "playedBy": "Step 4, the arrow's gold power-up on the words One more round, before the turret rises",
       "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
     },
     {

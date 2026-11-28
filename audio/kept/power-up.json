@@ -1,0 +1,117 @@
+{
+  "id": "power-up",
+  "kind": "cue",
+  "cue": "power-up",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "An aura of power flaring up around a fighter: a rush of air and flame that swells and rises fast and ends in a bright ringing shimmer",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): power-up take 1 (a rising hum into a chime) kept under 5.2 kHz so that its edge is softer; under it noise with the colour of vacuum-roar take 1, rising in level and in brightness over 0.66 s with a slow flutter, as a rush of air; boss-heal take 1 (a low hum) played from 0.9 to 2.2 times its speed and kept under 900 Hz, as a low hum rising with it; at 0.6 s the pin-bell ding and the ping of shield-glance an octave up far under the chime; a little room. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 2,
+    "round": "change-002-layer",
+    "file": "take-2.wav",
+    "sha256": "5f91cf83b34c9079417639a861aa36796aec1af0bf8453f9a4de648836a5d8e2",
+    "filed": "2026-11-28T12:39:08.433Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0,
+      "end": 0.762,
+      "peakDb": -1.01,
+      "rmsDb": -12.48,
+      "lufs": -9.16,
+      "truePeakDb": -0.98,
+      "low": 0.093,
+      "mid": 0.676,
+      "high": 0.23,
+      "tailDb": -19.76,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.732,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.762,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -9.07,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.762,
+    "start": 0,
+    "end": 0.74,
+    "peakDb": -10,
+    "rmsDb": -21.69,
+    "lufs": -18.23,
+    "truePeakDb": -9.98,
+    "low": 0.064,
+    "mid": 0.702,
+    "high": 0.234,
+    "tailDb": -19.59,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.722,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A fast synthesized energy swell that culminates in a bright, high-pitched ringing chime. / A rapid, ascending whoosh of magical energy that culminates in a high-pitched metallic chime. / A fast, synthesized upward sweep that resolves into a bright, ringing chime.",
+    "madeOf": "Synthesizer, digital noise sweep, bell tone / Synthesized sweep, filtered noise, and a metallic bell or chime. / Synthesized audio and digital oscillators.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The fast upward synthesizer sweep conveys a rush of rising energy, culminating in a bell-like tone that perfectly matches the described bright ringing shimmer.",
+      "The fast, rising synthesized sweep accurately conveys a sudden rush of flaring energy, and the high-pitched resonance at the end perfectly matches the described bright ringing shimmer.",
+      "The fast, upward-sweeping synthesized noise provides the rushing swell, finishing with a clear, bright chime that perfectly matches the described ringing shimmer."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid first takes. The cue is the arrow's gold power-up on the words One more round, so its line now says that. A listening model that was told the new line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a fast swell of energy rising into a bright ringing chime; all three call it synthesized). The first take fit the old line 2 of 3 and the first layer 0 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "power-up.wav",
+  "seconds": 0.762,
+  "sha256": "5b5a8bfc9e26053224d4b9631fdea8116fe7dd36f4663685eb0975c89b51a98b"
+}

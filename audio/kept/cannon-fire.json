@@ -1,0 +1,117 @@
+{
+  "id": "cannon-fire",
+  "kind": "cue",
+  "cue": "cannon-fire",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One heavy cannon shot: a low heavy thump of a steel barrel with a short push of air",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): cannon-fire take 1 (the muffled thump); slab-slam take 2 an octave up and big-fire take 1 a fifth up, both from their loudest moment, as a body a small speaker can play; a burst of noise with the colour of turret-cannon take 2, 0.06 s long, as the blast; noise with the colour of vacuum-roar take 1, 0.09 s long, as the push of air; the smack of turret-cannon take 2 far under; the clank of healthbar-drop an octave lower far under, as the ring of the barrel; overtones of the deep part; the loudest moments held down by a compressor. No saturation (round L1 was heard as a buzz). The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 2,
+    "round": "change-002-layer",
+    "file": "take-2.wav",
+    "sha256": "0a75245ee3f5b726f6fb0e6b85cb1ba558eca2849f6d6e4e52cb72e5945204e3",
+    "filed": "2026-11-28T12:38:58.680Z",
+    "measured": {
+      "seconds": 0.5,
+      "start": 0,
+      "end": 0.42,
+      "peakDb": -1.01,
+      "rmsDb": -15.85,
+      "lufs": -19.11,
+      "truePeakDb": -1.01,
+      "low": 0.795,
+      "mid": 0.198,
+      "high": 0.007,
+      "tailDb": -45.76,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.362,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.42,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 105,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -4.05,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.42,
+    "start": 0,
+    "end": 0.386,
+    "peakDb": -5,
+    "rmsDb": -20.22,
+    "lufs": -21.51,
+    "truePeakDb": -5,
+    "low": 0.782,
+    "mid": 0.21,
+    "high": 0.008,
+    "tailDb": -38.61,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.352,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A single, low-pitched, hollow thump. / A deep, heavy thud accompanied by a quick rush of air. / A single low, heavy metallic thump with a short burst of air.",
+    "madeOf": "Hollow metal, air pressure / Metal and compressed air. / Metal, air pressure.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The sound is a single, low-frequency, hollow impact that perfectly matches the description of a heavy thump from a steel barrel with a push of air.",
+      "The sound consists of a deep, resonant metallic thud followed immediately by a short burst of air, perfectly matching the description of a heavy cannon shot.",
+      "The sound is a quick, deep thud with a slight metallic resonance and a brief pneumatic burst, matching the description exactly."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a deep, heavy thud with a quick rush of air, and as a low heavy metallic thump with a short burst of air); the first take and the first layer each fit 1 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "cannon-fire.wav",
+  "seconds": 0.42,
+  "sha256": "7844890c07897483e35664e105d1c277bf407249bdaa6068649ddb34f19a2a37"
+}

@@ -1683,13 +1683,14 @@ Prompt: A steel ball slipping free of a suction hose mouth, one short wet pop of
 
 ### cannon-fire
 
-Takes used: 1 of 3 in round change-002.
+Takes used: 1 of 3 in round change-002, 1 of 3 in round change-002-layer.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | change-002 | 2026-11-28T11:38:39.467Z | 0.48 s | -16.11 dB | -28.7 LUFS | 1 | 6 | no |  |
+| 2 | change-002-layer | 2026-11-28T12:38:58.680Z | 0.5 s | -1.01 dB | -19.11 LUFS | 1 | 0 | yes, as cannon-fire | A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a deep, heavy thud with a quick rush of air, and as a low heavy metallic thump with a short burst of air); the first take and the first layer each fit 1 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site. |
 
-Prompt: One heavy cannon shot, a low heavy thump of a steel barrel with a short push of air, large and weighty, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): cannon-fire take 1 (the muffled thump); slab-slam take 2 an octave up and big-fire take 1 a fifth up, both from their loudest moment, as a body a small speaker can play; a burst of noise with the colour of turret-cannon take 2, 0.06 s long, as the blast; noise with the colour of vacuum-roar take 1, 0.09 s long, as the push of air; the smack of turret-cannon take 2 far under; the clank of healthbar-drop an octave lower far under, as the ring of the barrel; overtones of the deep part; the loudest moments held down by a compressor. No saturation (round L1 was heard as a buzz). The takes named are filed under their own cues.
 
 ### cannon-tell
 
@@ -1703,13 +1704,14 @@ Prompt: A heavy cannon winding up before it fires, a low motor whine rising with
 
 ### boss-heal
 
-Takes used: 1 of 3 in round change-002.
+Takes used: 1 of 3 in round change-002, 1 of 3 in round change-002-layer.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | change-002 | 2026-11-28T11:38:45.692Z | 0.6 s | -3.32 dB | -13.6 LUFS | 1 | 7 | no |  |
+| 2 | change-002-layer | 2026-11-28T12:39:03.451Z | 0.6 s | -1.01 dB | -13.31 LUFS | 1 | 0 | yes, as boss-heal | A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a warm low hum that sweeps quickly upward and ends in a bright shimmer; all three call it synthesized); the first take and the first layer each fit 0 of 3, and the first layer was heard as a voice saying a word. A model cannot hear as a person does; Brandon's ear decides on the live site. |
 
-Prompt: A large machine mending itself, a warm low hum rising quickly with a soft bright shimmer of glass at its top, medium weight, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): boss-heal take 1 (a low hum) played from 0.9 to 1.7 times its speed and kept under 1.1 kHz, so that the hum rises; the same take an octave higher, twice, under it, for warmth that a small speaker plays; from 0.33 s the chime at the end of power-up take 1, softened, and the pin-bell ding a fifth and an octave up far under, as the soft shimmer; overtones of the deep part; a little room. The takes named are filed under their own cues.
 
 ### shield-glance
 
@@ -1754,13 +1756,14 @@ Prompt: A long steel bar dropping into two brackets, one solid clank with a shor
 
 ### power-up
 
-Takes used: 1 of 3 in round change-002.
+Takes used: 1 of 3 in round change-002, 1 of 3 in round change-002-layer.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | change-002 | 2026-11-28T11:39:01.534Z | 0.8 s | -22.92 dB | -28.35 LUFS | 1 | 9 | no |  |
+| 2 | change-002-layer | 2026-11-28T12:39:08.433Z | 0.8 s | -1.01 dB | -9.16 LUFS | 1 | 0 | yes, as power-up | A layer made for free from paid first takes. The cue is the arrow's gold power-up on the words One more round, so its line now says that. A listening model that was told the new line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a fast swell of energy rising into a bright ringing chime; all three call it synthesized). The first take fit the old line 2 of 3 and the first layer 0 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site. |
 
-Prompt: A small machine charging up, a clean electric hum rising for under a second into a soft bright ping, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): power-up take 1 (a rising hum into a chime) kept under 5.2 kHz so that its edge is softer; under it noise with the colour of vacuum-roar take 1, rising in level and in brightness over 0.66 s with a slow flutter, as a rush of air; boss-heal take 1 (a low hum) played from 0.9 to 2.2 times its speed and kept under 900 Hz, as a low hum rising with it; at 0.6 s the pin-bell ding and the ping of shield-glance an octave up far under the chime; a little room. The takes named are filed under their own cues.
 
 ### boss-fall
 

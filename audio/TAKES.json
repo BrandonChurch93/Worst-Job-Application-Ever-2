@@ -17823,6 +17823,210 @@
         "vacuum-gulp"
       ],
       "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 2 of 3, on the sound as the site plays it after the chain (two hearings: a hollow intake of air followed by a muffled thud; one: a zap); the first take fit 1 of 3 (heard as a liquid bloop). A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "cannon-fire",
+      "kind": "cue",
+      "cue": "cannon-fire",
+      "take": 2,
+      "round": "change-002-layer",
+      "file": "take-2.wav",
+      "sha256": "0a75245ee3f5b726f6fb0e6b85cb1ba558eca2849f6d6e4e52cb72e5945204e3",
+      "filed": "2026-11-28T12:38:58.680Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): cannon-fire take 1 (the muffled thump); slab-slam take 2 an octave up and big-fire take 1 a fifth up, both from their loudest moment, as a body a small speaker can play; a burst of noise with the colour of turret-cannon take 2, 0.06 s long, as the blast; noise with the colour of vacuum-roar take 1, 0.09 s long, as the push of air; the smack of turret-cannon take 2 far under; the clank of healthbar-drop an octave lower far under, as the ring of the barrel; overtones of the deep part; the loudest moments held down by a compressor. No saturation (round L1 was heard as a buzz). The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.5,
+        "start": 0,
+        "end": 0.42,
+        "peakDb": -1.01,
+        "rmsDb": -15.85,
+        "lufs": -19.11,
+        "truePeakDb": -1.01,
+        "low": 0.795,
+        "mid": 0.198,
+        "high": 0.007,
+        "tailDb": -45.76,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.362,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single, low-pitched, hollow thump. / A deep, heavy thud accompanied by a quick rush of air. / A single low, heavy metallic thump with a short burst of air.",
+        "madeOf": "Hollow metal, air pressure / Metal and compressed air. / Metal, air pressure.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sound is a single, low-frequency, hollow impact that perfectly matches the description of a heavy thump from a steel barrel with a push of air.",
+          "The sound consists of a deep, resonant metallic thud followed immediately by a short burst of air, perfectly matching the description of a heavy cannon shot.",
+          "The sound is a quick, deep thud with a slight metallic resonance and a brief pneumatic burst, matching the description exactly."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "cannon-fire"
+      ],
+      "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a deep, heavy thud with a quick rush of air, and as a low heavy metallic thump with a short burst of air); the first take and the first layer each fit 1 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "boss-heal",
+      "kind": "cue",
+      "cue": "boss-heal",
+      "take": 2,
+      "round": "change-002-layer",
+      "file": "take-2.wav",
+      "sha256": "33bd8af93787aee1ccbf38eff23b373e2c325c37f7441b0112f5d64a85dd972a",
+      "filed": "2026-11-28T12:39:03.451Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): boss-heal take 1 (a low hum) played from 0.9 to 1.7 times its speed and kept under 1.1 kHz, so that the hum rises; the same take an octave higher, twice, under it, for warmth that a small speaker plays; from 0.33 s the chime at the end of power-up take 1, softened, and the pin-bell ding a fifth and an octave up far under, as the soft shimmer; overtones of the deep part; a little room. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.57,
+        "peakDb": -1.01,
+        "rmsDb": -12.12,
+        "lufs": -13.31,
+        "truePeakDb": -1.01,
+        "low": 0.684,
+        "mid": 0.304,
+        "high": 0.011,
+        "tailDb": -34.76,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.002,
+            "end": 0.536,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A synthesized low hum that rapidly sweeps upward in pitch, culminating in a bright, shimmering chime. / A brief, synthesized tone that rapidly sweeps upward in pitch and finishes with a bright, oscillating trill. / A warm, synthesized tone quickly sweeps upward in pitch and ends with a bright shimmer.",
+        "madeOf": "Electronic synthesizer. / Electronic synthesizer. / Synthesizer.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The electronic tone begins low and quickly rises in pitch, finishing with a sparkly, high-frequency sound that perfectly matches the described bright shimmer.",
+          "The audio matches the description by featuring a smooth underlying tone that sweeps quickly upward and culminates in a rapid, high-pitched shimmering modulation at its peak.",
+          "The quick upward sweep of the warm tone and its bright, shimmering peak directly match the described machine mending sound."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "boss-heal"
+      ],
+      "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a warm low hum that sweeps quickly upward and ends in a bright shimmer; all three call it synthesized); the first take and the first layer each fit 0 of 3, and the first layer was heard as a voice saying a word. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "power-up",
+      "kind": "cue",
+      "cue": "power-up",
+      "take": 2,
+      "round": "change-002-layer",
+      "file": "take-2.wav",
+      "sha256": "5f91cf83b34c9079417639a861aa36796aec1af0bf8453f9a4de648836a5d8e2",
+      "filed": "2026-11-28T12:39:08.433Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): power-up take 1 (a rising hum into a chime) kept under 5.2 kHz so that its edge is softer; under it noise with the colour of vacuum-roar take 1, rising in level and in brightness over 0.66 s with a slow flutter, as a rush of air; boss-heal take 1 (a low hum) played from 0.9 to 2.2 times its speed and kept under 900 Hz, as a low hum rising with it; at 0.6 s the pin-bell ding and the ping of shield-glance an octave up far under the chime; a little room. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.762,
+        "peakDb": -1.01,
+        "rmsDb": -12.48,
+        "lufs": -9.16,
+        "truePeakDb": -0.98,
+        "low": 0.093,
+        "mid": 0.676,
+        "high": 0.23,
+        "tailDb": -19.76,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.732,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A fast synthesized energy swell that culminates in a bright, high-pitched ringing chime. / A rapid, ascending whoosh of magical energy that culminates in a high-pitched metallic chime. / A fast, synthesized upward sweep that resolves into a bright, ringing chime.",
+        "madeOf": "Synthesizer, digital noise sweep, bell tone / Synthesized sweep, filtered noise, and a metallic bell or chime. / Synthesized audio and digital oscillators.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The fast upward synthesizer sweep conveys a rush of rising energy, culminating in a bell-like tone that perfectly matches the described bright ringing shimmer.",
+          "The fast, rising synthesized sweep accurately conveys a sudden rush of flaring energy, and the high-pitched resonance at the end perfectly matches the described bright ringing shimmer.",
+          "The fast, upward-sweeping synthesized noise provides the rushing swell, finishing with a clear, bright chime that perfectly matches the described ringing shimmer."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "power-up"
+      ],
+      "why": "A layer made for free from paid first takes. The cue is the arrow's gold power-up on the words One more round, so its line now says that. A listening model that was told the new line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a fast swell of energy rising into a bright ringing chime; all three call it synthesized). The first take fit the old line 2 of 3 and the first layer 0 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site."
     }
   ]
 }

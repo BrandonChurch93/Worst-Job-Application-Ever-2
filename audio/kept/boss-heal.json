@@ -1,0 +1,117 @@
+{
+  "id": "boss-heal",
+  "kind": "cue",
+  "cue": "boss-heal",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A large machine mending itself: a warm low hum rising quickly with a soft bright shimmer at its top",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L2, the second free layering round of November 28 on the seven that did not hold): boss-heal take 1 (a low hum) played from 0.9 to 1.7 times its speed and kept under 1.1 kHz, so that the hum rises; the same take an octave higher, twice, under it, for warmth that a small speaker plays; from 0.33 s the chime at the end of power-up take 1, softened, and the pin-bell ding a fifth and an octave up far under, as the soft shimmer; overtones of the deep part; a little room. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 2,
+    "round": "change-002-layer",
+    "file": "take-2.wav",
+    "sha256": "33bd8af93787aee1ccbf38eff23b373e2c325c37f7441b0112f5d64a85dd972a",
+    "filed": "2026-11-28T12:39:03.451Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.57,
+      "peakDb": -1.01,
+      "rmsDb": -12.12,
+      "lufs": -13.31,
+      "truePeakDb": -1.01,
+      "low": 0.684,
+      "mid": 0.304,
+      "high": 0.011,
+      "tailDb": -34.76,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.002,
+          "end": 0.536,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.57,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -9.62,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.57,
+    "start": 0,
+    "end": 0.548,
+    "peakDb": -10,
+    "rmsDb": -22.71,
+    "lufs": -22.81,
+    "truePeakDb": -10,
+    "low": 0.596,
+    "mid": 0.391,
+    "high": 0.013,
+    "tailDb": -36.53,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 0.512,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A synthesized low hum that rapidly sweeps upward in pitch, culminating in a bright, shimmering chime. / A brief, synthesized tone that rapidly sweeps upward in pitch and finishes with a bright, oscillating trill. / A warm, synthesized tone quickly sweeps upward in pitch and ends with a bright shimmer.",
+    "madeOf": "Electronic synthesizer. / Electronic synthesizer. / Synthesizer.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The electronic tone begins low and quickly rises in pitch, finishing with a sparkly, high-frequency sound that perfectly matches the described bright shimmer.",
+      "The audio matches the description by featuring a smooth underlying tone that sweeps quickly upward and culminates in a rapid, high-pitched shimmering modulation at its peak.",
+      "The quick upward sweep of the warm tone and its bright, shimmering peak directly match the described machine mending sound."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a warm low hum that sweeps quickly upward and ends in a bright shimmer; all three call it synthesized); the first take and the first layer each fit 0 of 3, and the first layer was heard as a voice saying a word. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "boss-heal.wav",
+  "seconds": 0.57,
+  "sha256": "81281db279232e233256f8d221cbacda69aa6f87b9960a7c0cfd1136a306771d"
+}
