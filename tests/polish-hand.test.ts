@@ -3,8 +3,8 @@ import { config, stepHz } from '../src/config'
 import { HAND, TAIL } from '../src/cursor/body'
 import { pages } from '../src/pages'
 import { BotDriver, type BotName } from '../src/stage/bots'
-import { LANDING } from '../src/pages/marketing/script'
-import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
+import { CUES, LANDING } from '../src/pages/marketing/script'
+import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, TURN_HALF, wholeFilmFlow } from '../src/stage/stage'
 import type { Pointer } from '../src/stage/types'
 import { joltAt, SHIVER } from '../src/stage/turn'
 import { fork, forked, Kept, onScreen, onScreenJolted, PER, resting, rowOf, stroking, turnsOf, visit, type Row, type Turn } from './polish-hand-run'
@@ -311,9 +311,33 @@ describe('without a hand the turn and the hit are what they were', () => {
   const line = (r: Row): string => `${r.i} ${r.page} ${r.phase} ${r.x.toFixed(2)} ${(r.y - r.scroll).toFixed(2)} ${r.z.toFixed(2)} ${r.angle.toFixed(2)}`
 
   it("the film's first turn: the arrow stays on the button it pressed, goes over with its slab, and stands at the hand over place on the next page", () => {
-    const rows = rowsOf(new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver() }), 40 * 60)
+    const flow = wholeFilmFlow()
+    const half = Math.round(TURN_HALF * 60)
+    const first = Math.round((config.film.units[0]!.seconds - TURN_HALF) * 60) - 1
+    const stage = new Stage({ mode: 'film', flow, pages, driver: new ScriptDriver() })
+    const rows = rowsOf(stage, first + 2 * half + 60)
     const t = turnsOf(rows)[0]!
-    expect([t.start, t.start + 1, t.start + 10, t.start + 29, t.half, t.half + 18, t.flat, t.flat + 10, t.flat + 30].map((k) => line(rows[k]!))).toEqual(FILM_TURN)
+    expect([t.start, t.half, t.flat]).toEqual([first, first + half, first + 2 * half])
+    // The leaving half: the arrow stands where it stood on the frame the page told its press, at one height. That this place is on the last button's cap is held by tests/careers-acting.test.ts.
+    const pressed = stage.events.filter((e) => e.name === 'button-press' && e.page === flow[0]!.page && e.step <= t.start * PER)
+    expect(pressed.length).toBeGreaterThan(0)
+    const on = rows[Math.ceil(pressed[pressed.length - 1]!.step / PER) - 1]!
+    const place = (r: Row): string => `${r.x.toFixed(2)} ${(r.y - r.scroll).toFixed(2)}`
+    const leaving = [t.start, t.start + 1, t.start + 10, t.start + half - 1].map((k) => rows[k]!)
+    for (const r of leaving) {
+      expect(`${r.page} ${r.phase}`).toBe(`${flow[0]!.page} leave`)
+      expect(place(r)).toBe(place(on))
+      expect(r.z.toFixed(2)).toBe(leaving[0]!.z.toFixed(2))
+    }
+    // The tilt of the leaving arrow was four typed angles. It is the body's answer to the startle the page's script cues inside the leaving half, so what is held here is the cue: not yet on the first two rows, on by the last.
+    // The angles themselves are held by no test; the order of the script's reactions is held by tests/careers-acting.test.ts.
+    const cue = CUES.find((c) => c.react === 'startle')!
+    expect(cue.at * 60).toBeGreaterThan(t.start + 2)
+    expect(cue.at * 60).toBeLessThan(t.start + half - 1)
+    expect(leaving[0]!.state).not.toContain('startle')
+    expect(leaving[1]!.state).not.toContain('startle')
+    expect(leaving[3]!.state).toContain('startle')
+    expect([t.half, t.half + 18, t.flat, t.flat + 10, t.flat + 30].map((k) => line(rows[k]!))).toEqual(FILM_ARRIVE.map((row, n) => `${[t.half, t.half + 18, t.flat, t.flat + 10, t.flat + 30][n]} ${row}`))
   })
 
   it("the film's hit on step 1 keeps its angles", () => {
@@ -323,5 +347,5 @@ describe('without a hand the turn and the hit are what they were', () => {
   })
 })
 
-const FILM_TURN = ['809 marketing leave 508.00 440.00 13.96 11.69', '810 marketing leave 508.00 440.00 13.96 11.50', '819 marketing leave 508.00 440.00 13.96 -16.06', '838 marketing leave 508.00 440.00 13.96 39.80', '839 step1 arrive 960.00 540.00 260.00 0.00', '857 step1 arrive 960.00 540.00 260.00 -11.10', '869 step1  960.00 540.00 260.00 -11.10', '879 step1  960.00 540.00 225.83 -11.10', '899 step1  960.00 540.00 4.00 -11.10']
+const FILM_ARRIVE = ['step1 arrive 960.00 540.00 260.00 0.00', 'step1 arrive 960.00 540.00 260.00 -11.10', 'step1  960.00 540.00 260.00 -11.10', 'step1  960.00 540.00 225.83 -11.10', 'step1  960.00 540.00 4.00 -11.10']
 const FILM_HIT = ['407 -9.5', '408 -5.7', '409 0.9', '410 7.1', '411 11.8', '412 15.1', '413 16.8', '414 15.6', '415 15.9', '416 17.9', '417 20.4', '418 23.2', '419 25.7', '420 27.9', '421 29.6', '422 30.9']

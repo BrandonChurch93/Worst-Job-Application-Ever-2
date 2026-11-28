@@ -218,8 +218,39 @@ export const FINISH = {
   steady: 0.5, // share of the charge that grows all the time from the first press to the fire mark; the rest comes in one step on each mark
   settle: 1.4, // s the button takes to settle on the ground after the body is gone (`button-down`)
   wide: 90, // px to each side of the full blast's line as drawn
-  ball: 120 // px across of the full charge as drawn
+  ball: 120, // px across of the full charge as drawn
+  onVoice: true // live site: the shout starts with the visitor's press and the blast comes on the take's peak (`voiceShout`); false: the shout runs from the arms and letting go fires, as it did
 } as const
+
+// The shout on the live site while `FINISH.onVoice` (the Builder's rule of 28 November, kit/PROGRESS.md). The film keeps the marks of `SHOUT`.
+// The take is one file and plays as it is. It starts with the press, or by itself when nobody presses, and the blast is set at that moment to come on the take's peak.
+// press: s after the fall at which the button went down. camera: the finish camera is on, so the blast waits for its way down, its rest and its turn.
+// due: s after the fall at which the blast goes: the press and the s from the first phrase to the peak, and no sooner than the camera's turn can end.
+// from: s after the fall at which the file starts. skip: s of the file's silent lead-in that are left out, at most the start of its first phrase.
+// says: s after the fall at which each phrase starts, for the words on screen. first: the start of the first phrase, from which a held button charges.
+// whole: s of holding that give the full blast: from the first phrase to the start of the camera's turn. marks: s of holding at which the glow steps up, the starts of the phrases.
+// alone: s after the fall at which the page presses for a visitor who has not: the blast then goes `FINISH.alone` s after the arms.
+export interface VoiceShout { due: number; from: number; skip: number; says: number[]; first: number; whole: number; marks: number[]; alone: number }
+export function voiceShout(press: number, line: { starts: readonly number[]; seconds: number; peak?: number } | null, camera: boolean = LOOK1_ON && CAMERA.on): VoiceShout {
+  const t = line && line.starts.length >= 3 && line.seconds > 0 ? line : SHOUT_RULE.standIn
+  const peak = line === t && line.peak !== undefined && line.peak > 0 ? line.peak : t.starts[t.starts.length - 1]!
+  const lead = t.starts[0]!
+  const run = peak - lead
+  const due = camera ? Math.max(press + run, press + CAMERA.roundLive, SHOUT.arms + CAMERA.down[1] + CAMERA.stay + CAMERA.roundLive) : press + run
+  const file = due - peak
+  const from = Math.max(press, file)
+  const skip = Math.min(lead, Math.max(0, press - file))
+  const whole = Math.max(0, run - CAMERA.roundLive)
+  return { due, from, skip, says: t.starts.map((x) => Math.max(from, file + x)), first: file + lead, whole, marks: t.starts.map((x) => Math.min(whole, x - lead)), alone: SHOUT.arms + FINISH.alone - run }
+}
+export const voiceSteps = (held: number, v: { marks: readonly number[] }): number => v.marks.filter((m) => m <= held + 1e-6).length / v.marks.length
+// The share of a full blast that `held` s of holding give: one part grows all the time, the rest comes in a step on each phrase, and the whole charge or longer is the full blast.
+export function voiceLevel(held: number, v: { whole: number; marks: readonly number[] }): number {
+  if (held >= v.whole - 1e-6) return 1
+  return FINISH.steady * (held / v.whole) + (1 - FINISH.steady) * voiceSteps(held, v)
+}
+// The shout's line as the sound index has it, for the page: the engine reads the same line from its own script.
+export const shoutTake = (): { starts: readonly number[]; seconds: number; peak?: number } | null => lineTimes(SHOUT_LINE)
 
 // The close view of the finish: the part of the floor the picture shows from the boss's fall to the press of Submit.
 export const CLOSE = {
@@ -359,6 +390,7 @@ export const CAMERA = {
   whip: 2.5,
   glare: [3, 1, 1, 6] as const,
   flash: 160,
+  creep: 0.06,
   back: [0.08, 0.3] as const,
   rise: [1.1, 1.7] as const,
   lift: 2,

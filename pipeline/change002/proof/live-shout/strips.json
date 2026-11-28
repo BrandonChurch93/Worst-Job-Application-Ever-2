@@ -1,0 +1,318 @@
+{
+ "level": "high",
+ "browser": "159.0.8154.6",
+ "window": [
+  960,
+  540,
+  2
+ ],
+ "take": {
+  "id": "line.boss.finish.0",
+  "file": "line.boss.finish.0.mp3",
+  "seconds": 4.01,
+  "mime": "audio/mpeg",
+  "words": "I have / five years / of experience",
+  "starts": [
+   0.1,
+   0.66,
+   1.3
+  ],
+  "peak": 1.85
+ },
+ "cases": {
+  "a": {
+   "says": "a plain click at 2.0 s",
+   "armsAt": 62.016666666666666,
+   "press": 2,
+   "blast": 3.75,
+   "pictures": [
+    {
+     "afterArms": 2,
+     "afterPress": 0,
+     "held": true,
+     "words": ""
+    },
+    {
+     "afterArms": 2.1,
+     "afterPress": 0.1,
+     "held": false,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.2,
+     "afterPress": 0.2,
+     "held": false,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.3,
+     "afterPress": 0.3,
+     "held": false,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.4,
+     "afterPress": 0.4,
+     "held": false,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.5,
+     "afterPress": 0.5,
+     "held": false,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.6,
+     "afterPress": 0.6,
+     "held": false,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 2.7,
+     "afterPress": 0.7,
+     "held": false,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 2.8,
+     "afterPress": 0.8,
+     "held": false,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 2.9,
+     "afterPress": 0.9,
+     "held": false,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 3,
+     "afterPress": 1,
+     "held": false,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 3.1,
+     "afterPress": 1.1,
+     "held": false,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 3.2,
+     "afterPress": 1.2,
+     "held": false,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 3.3,
+     "afterPress": 1.3,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.4,
+     "afterPress": 1.4,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.5,
+     "afterPress": 1.5,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.6,
+     "afterPress": 1.6,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.7,
+     "afterPress": 1.7,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.8,
+     "afterPress": 1.8,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.9,
+     "afterPress": 1.9,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 4,
+     "afterPress": 2,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 4.1,
+     "afterPress": 2.1,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 4.2,
+     "afterPress": 2.2,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    }
+   ],
+   "problems": []
+  },
+  "c": {
+   "says": "a hold of 1.2 s from 2.0 s",
+   "armsAt": 62.016666666666666,
+   "press": 2,
+   "blast": 3.75,
+   "pictures": [
+    {
+     "afterArms": 2,
+     "afterPress": 0,
+     "held": true,
+     "words": ""
+    },
+    {
+     "afterArms": 2.1,
+     "afterPress": 0.1,
+     "held": true,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.2,
+     "afterPress": 0.2,
+     "held": true,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.3,
+     "afterPress": 0.3,
+     "held": true,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.4,
+     "afterPress": 0.4,
+     "held": true,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.5,
+     "afterPress": 0.5,
+     "held": true,
+     "words": "I HAVE"
+    },
+    {
+     "afterArms": 2.6,
+     "afterPress": 0.6,
+     "held": true,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 2.7,
+     "afterPress": 0.7,
+     "held": true,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 2.8,
+     "afterPress": 0.8,
+     "held": true,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 2.9,
+     "afterPress": 0.9,
+     "held": true,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 3,
+     "afterPress": 1,
+     "held": true,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 3.1,
+     "afterPress": 1.1,
+     "held": true,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 3.2,
+     "afterPress": 1.2,
+     "held": false,
+     "words": "I HAVE FIVE YEARS"
+    },
+    {
+     "afterArms": 3.3,
+     "afterPress": 1.3,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.4,
+     "afterPress": 1.4,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.5,
+     "afterPress": 1.5,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.6,
+     "afterPress": 1.6,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.7,
+     "afterPress": 1.7,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.8,
+     "afterPress": 1.8,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 3.9,
+     "afterPress": 1.9,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 4,
+     "afterPress": 2,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 4.1,
+     "afterPress": 2.1,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    },
+    {
+     "afterArms": 4.2,
+     "afterPress": 2.2,
+     "held": false,
+     "words": "I HAVE FIVE YEARS OF EXPERIENCE"
+    }
+   ],
+   "problems": []
+  }
+ }
+}

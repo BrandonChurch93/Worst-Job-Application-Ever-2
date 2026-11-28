@@ -454,6 +454,11 @@ describe('change note 004, item 3: what the narrator owes a page', () => {
 })
 
 describe('the shout of the boss: a draft that builds on one row, a part a mark of the page', () => {
+  // These cases hold the path as it was built, a part on each mark of the page: on the live site that is the path with FINISH.onVoice off.
+  const sw = bossTune.FINISH as { onVoice: boolean }
+  beforeEach(() => { sw.onVoice = false })
+  afterEach(() => { sw.onVoice = true })
+
   it('takes its times from the stand-in of the drafts file, not from the pace of the narrator, and is large and a draft', () => {
     const l = standIns(film, drafts).get('boss.finish.0')!
     expect(l.phrases).toEqual([{ words: 'ka', from: 0.5, to: 1.5 }, { words: 'me', from: 1.5, to: 3 }, { words: 'ha', from: 3, to: 6 }])

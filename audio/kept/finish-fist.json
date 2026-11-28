@@ -1,0 +1,117 @@
+{
+  "id": "finish-fist",
+  "kind": "cue",
+  "cue": "finish-fist",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "The fist raised",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): 0.3 s of noise with the colour of vacuum-roar take 1 at full level, rising in brightness and swelling and fading once, 3 dB under, as the arm swinging up; from 0.22 s a fifth of a second of the kept paper-strain of the first build as the fist tightening; at 0.31 s the fist closed: the clunk of pin-kick a little lowered, the same an octave lower and under 800 Hz for body, and the click of stop-press",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 1,
+    "round": "change-002-layer",
+    "file": "take-1.wav",
+    "sha256": "29f6f35676aaf684fac6e8ca6eba15b6c0d154d10e6688c56736fe62e72b491f",
+    "filed": "2026-11-28T17:00:25.286Z",
+    "measured": {
+      "seconds": 0.5,
+      "start": 0,
+      "end": 0.466,
+      "peakDb": -1.01,
+      "rmsDb": -14.85,
+      "lufs": -13.23,
+      "truePeakDb": -1.01,
+      "low": 0.088,
+      "mid": 0.852,
+      "high": 0.06,
+      "tailDb": -21.97,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.008,
+          "end": 0.45,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.07,
+    "trimEnd": 0.466,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 99.03,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -14.2,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.396,
+    "start": 0,
+    "end": 0.384,
+    "peakDb": -16,
+    "rmsDb": -28.57,
+    "lufs": -27.41,
+    "truePeakDb": -15.99,
+    "low": 0.073,
+    "mid": 0.862,
+    "high": 0.065,
+    "tailDb": -24.88,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.362,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A quick whoosh followed by a sharp, tight impact. / A quick, airy swish followed by a tight, muffled grabbing or clenching impact. / A rapid whoosh of air is immediately followed by a short, tight thud.",
+    "madeOf": "Synthesized noise and a percussive hit. / Air movement and skin, leather, or thick cloth. / Air friction and a leather or cloth impact.",
+    "events": "2 / 2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio consists of a fast, airy swish immediately followed by a sharp, percussive knock, perfectly matching the described action.",
+      "The audio features a fast whoosh that matches an arm swinging, immediately followed by a sharp, muffled impact sounding exactly like a tight fist clenching.",
+      "The audio features exactly a quick swishing noise followed by a small, firm knocking sound, perfectly matching an arm swinging and a fist clenching."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a quick whoosh followed by a sharp, tight impact). A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "finish-fist.wav",
+  "seconds": 0.3961,
+  "sha256": "8f152c0f2ab7a5e20350d7e1e79b5e76e9765fcf402373d7ea487c34f82712ff"
+}

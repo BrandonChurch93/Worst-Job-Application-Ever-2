@@ -4,10 +4,10 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, 
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
-import { BAR_GONE, BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, RISE_LIGHT, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BAR_GONE, BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, RISE_LIGHT, SHOUT, SOLID, STANDS, TOP, shoutTake, voiceLevel, voiceShout, voiceSteps } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
-import { FIRE, finishState, kneelSpot, powerPlan, type FinishInput } from '../../boss/finish/acting'
+import { beamLead, FIRE, finishState, kneelSpot, powerPlan, type FinishInput } from '../../boss/finish/acting'
 import { ABOVE, fadesOf, feetFor, finishShot, marksOf, riseFades, riseShot, underOf, type Rig as Rig3, type Shot } from '../../boss/finish/camera'
 import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
@@ -65,6 +65,9 @@ interface State {
   gold: number
   charge: number
   own: boolean
+  freed: boolean
+  swell: boolean
+  said: number
   due: number
   round: number
   fired: number
@@ -117,7 +120,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, asked: false, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, due: -1, round: -1, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, left: -1, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, asked: false, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, freed: false, swell: false, said: 0, due: -1, round: -1, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, left: -1, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -153,7 +156,9 @@ export function makePage(): PageLogic {
     return prog(s.t, FINISH.fall + SHOUT.arms, FINISH.fall + SHOUT.arms + FINISH.arms)
   }
   const WHOLE = SHOUT.fire - SHOUT.beats[0]!
-  const level = (held: number): number => FINISH.steady * Math.min(1, held / WHOLE) + (1 - FINISH.steady) * steps(held)
+  const VOICE = voiceShout(0, shoutTake())
+  const voiced = (): boolean => FINISH.onVoice && s.mode !== 'film'
+  const level = (held: number): number => (voiced() ? voiceLevel(held, VOICE) : FINISH.steady * Math.min(1, held / WHOLE) + (1 - FINISH.steady) * steps(held))
   const armsOut = (): boolean => (s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms && s.fired < BLAST) || fist() !== null
   const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : level(s.charge))
   const KNEEL = LOOK1_ON ? kneelSpot({ x: FALLEN.x, y: FALLEN.y, w: SIZE.button.w }) : { x: FALLEN.x - LAST.reach, y: FALLEN.y }
@@ -220,7 +225,7 @@ export function makePage(): PageLogic {
   }
   const shotNow = (): Shot | null => {
     if (!LOOK1_ON || s.inSocket || s.clock < 0) return null
-    if (s.fin.arms >= 0) return finishShot(s.clock - LEAD, marksOf(s.mode === 'film', s.fin.arms, s.round >= 0 ? s.round : s.fin.thrust, s.fin.fire))
+    if (s.fin.arms >= 0) return finishShot(s.clock - LEAD, marksOf(s.mode === 'film', s.fin.arms, s.round >= 0 ? s.round : s.fin.thrust, s.fin.fire, beamLead(mark(s.fin.thrust), mark(s.fin.fire))))
     const w = rising()
     return w ? riseShot(w.r, RISE, w.feet, w.from) : null
   }
@@ -261,13 +266,13 @@ export function makePage(): PageLogic {
     const m = s.fin
     const b = buttonAt(v)
     const w = rising()
-    const fade = w ? riseFades(w.r, RISE, w.feet, w.from) : m.arms < 0 ? null : fadesOf(s.clock - LEAD, marksOf(s.mode === 'film', m.arms, s.round >= 0 ? s.round : m.thrust, m.fire))
+    const fade = w ? riseFades(w.r, RISE, w.feet, w.from) : m.arms < 0 ? null : fadesOf(s.clock - LEAD, marksOf(s.mode === 'film', m.arms, s.round >= 0 ? s.round : m.thrust, m.fire, beamLead(mark(m.thrust), mark(m.fire))))
     let tear: { x: number; y: number; size: number; k: number } | null = null
     BREAKS.forEach((at, n) => {
       const age = s.fired - s.lag - at * (BLAST - s.lag)
       if (s.fired >= 0 && age >= 0 && age < CAMERA.tear.life) tear = { x: b.x, y: b.y, size: CAMERA.tear.size[n] ?? CAMERA.tear.size[0], k: age / CAMERA.tear.life }
     })
-    const under = m.arms < 0 ? 0 : underOf(s.clock - LEAD, marksOf(s.mode === 'film', m.arms, s.round >= 0 ? s.round : m.thrust, m.fire))
+    const under = m.arms < 0 ? 0 : underOf(s.clock - LEAD, marksOf(s.mode === 'film', m.arms, s.round >= 0 ? s.round : m.thrust, m.fire, beamLead(mark(m.thrust), mark(m.fire))))
     return {
       time: v.time,
       arrow: r < 0 ? { x: s.cx, y: s.cy } : spot(r),
@@ -699,19 +704,38 @@ export function makePage(): PageLogic {
         if (s.fired < 0 && u >= SHOUT.arms) {
           const down = io.pointer.down
           const whole = WHOLE
-          const had = s.charge < 0 ? 0 : steps(s.charge)
+          const count = (held: number): number => (voiced() ? voiceSteps(held, VOICE) : steps(held))
+          const had = s.charge < 0 ? 0 : count(s.charge)
           const fire = (): void => {
             s.shot = Math.max(FINISH.small, s.charge < 0 ? 0 : level(s.charge))
             s.fired = 0
             s.burn = { x: io.cursor.x, y: io.cursor.y }
-            s.lag = LOOK1_ON ? FIRE.lead + Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) / BEAM.speed : 0
+            s.lag = LOOK1_ON ? beamLead(mark(s.fin.thrust), s.clock - LEAD) + Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) / BEAM.speed : 0
             io.emit('finish-fire', io.cursor.x, io.cursor.y, false)
             if (s.shot > FINISH.small) stamp('thrust')
             stamp('fire')
             const d = Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) || 1
             io.cursor.knock(((io.cursor.x - FALLEN.x) / d) * KICK.popup * s.shot, ((io.cursor.y - FALLEN.y) / d) * KICK.popup * s.shot)
           }
-          if (s.charge < 0) {
+          if (voiced()) {
+            if (s.charge < 0) {
+              if (down || u >= VOICE.alone) {
+                const kept = LOOK1_ON && CAMERA.on
+                const v = voiceShout(u, shoutTake(), kept)
+                s.charge = 0
+                s.own = down
+                s.due = v.due
+                s.said = v.first
+                if (kept) s.round = s.clock - LEAD + s.due - CAMERA.roundLive - u
+                io.cursor.react('anticipate')
+              }
+            } else {
+              if (!s.freed) s.charge = Math.min(VOICE.whole, Math.max(0, u - s.said))
+              if (s.own && !down) s.freed = true
+              if (u >= s.due - FIRE.ahead) stamp('thrust')
+              if (u >= s.due) fire()
+            }
+          } else if (s.charge < 0) {
             if (down || u >= SHOUT.arms + FINISH.alone - whole) {
               s.charge = 0
               s.own = down
@@ -722,7 +746,7 @@ export function makePage(): PageLogic {
             if (s.due < 0 || !s.own) s.charge += dt
             if (s.mode === 'film' ? u >= SHOUT.fire - FIRE.ahead : !kept && !s.own && !down && s.charge >= whole - FIRE.ahead) stamp('thrust')
             if (s.due >= 0) {
-              if (u >= s.due - FIRE.ahead && level(s.charge) > FINISH.small) stamp('thrust')
+              if (u >= s.due - FIRE.ahead) stamp('thrust')
               if (u >= s.due) fire()
             } else if (!s.own && down) s.own = true
             else if (!kept) {
@@ -732,15 +756,20 @@ export function makePage(): PageLogic {
               s.round = s.clock - LEAD + s.due - CAMERA.roundLive - u
             }
           }
-          if (s.fired < 0 && s.charge >= 0 && steps(s.charge) > had) {
+          if (s.fired < 0 && s.charge >= 0 && count(s.charge) > had) {
             io.emit('finish-charge', io.cursor.x, io.cursor.y, false)
             stamp('charge')
+          }
+          // The live site's mark for the swell of the charge, once in a finish: a press that has become a hold, more than a click's blast, or the page's own press.
+          if (s.mode !== 'film' && !s.swell && s.fired < 0 && s.charge >= 0 && (!s.own || (down && level(s.charge) > FINISH.small))) {
+            s.swell = true
+            io.emit('finish-gather', io.cursor.x, io.cursor.y, false)
           }
         } else if (s.fired >= 0) {
           const was = s.fired
           s.fired += dt
           if (LOOK1_ON) {
-            const seen = FIRE.lead + FIRE.open / 2
+            const seen = beamLead(mark(s.fin.thrust), mark(s.fin.fire)) + FIRE.open / 2
             if (s.fired >= seen && was < seen) io.emit('finish-beam', io.cursor.x, io.cursor.y, false)
             for (const b of BREAKS) if (s.fired - s.lag >= b * (BLAST - s.lag) && was - s.lag < b * (BLAST - s.lag)) io.emit('finish-break', FALLEN.x, FALLEN.y, false)
           }

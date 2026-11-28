@@ -941,7 +941,7 @@ describe('the marks of the shout, worked out from the line', () => {
     expect(low.length).toBeGreaterThan((MOVED.fire + LAST_LOW) * FPS - 6)
     const off = (marks: Marks): number => Math.max(...low.map((v) => { const e = v.view!.eye; const w = cam.finishShot(after(v.step), marks)?.pose.eye ?? [1e6, 1e6, 1e6]; return Math.hypot(e[0] - w[0]!, e[1] - w[1]!, e[2] - w[2]!) }))
     const grid = [-3, -2, -1, 0, 1, 2, 3].map((d) => d / stepHz)
-    const best = (turn: number): number => Math.min(...grid.flatMap((a) => grid.map((f) => off({ arms: a, turn: a + turn, fire: after(fire) + f, round: CAMERA.round }))))
+    const best = (turn: number): number => Math.min(...grid.flatMap((a) => grid.map((f) => off({ ...cam.marksOf(true, a, -1, after(fire) + f, 0), turn: a + turn }))))
     expect(best(TAKE.starts[2]! - CAMERA.ahead)).toBeLessThan(1e-6)
     expect(best(STAND_IN.fire - CAMERA.ahead)).toBeGreaterThan(50)
 
@@ -954,7 +954,9 @@ describe('the marks of the shout, worked out from the line', () => {
 
     expect(cues.spoken[SHOUT_LINE]!.event).toBe('finish-arms')
     const laid = await import('../src/audio/change')
-    for (const n of ['finish-arms', 'finish-charge', 'finish-fire', 'boss-gone']) expect(laid.changeCuesOf(n, 'step4').map((c) => c.id), n).toContain(n)
+    for (const n of ['finish-arms', 'finish-fire', 'boss-gone']) expect(laid.changeCuesOf(n, 'step4').map((c) => c.id), n).toContain(n)
+    expect(laid.changeCuesOf('finish-charge', 'step4').map((c) => c.id)).toEqual([])
+    expect(laid.changeCue('finish-charge')!.lands).toMatchObject({ on: 'finish-fire', from: 'finish-arms' })
     expect(after(fire) - STAND_IN.fire).toBeLessThan(-0.2)
   })
 })

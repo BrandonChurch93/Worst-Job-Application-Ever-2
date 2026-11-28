@@ -73,7 +73,7 @@ Frames 7278 to 10511.
 | `boss.lastStand` | 9456 to 9593 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `boss.collapse` | 9594 to 9665 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 299, y 269.1, 963.1 by 541.8 |
 | `boss.finish` | 9666 to 10439 | `view` | holds, follows, pushes in, eases out, cuts 2 times (on frame 9885, 9886) | x 299.8, y 269.8, 960.8 by 540.4 | x 300, y 270, 960 by 540 |
-| `boss.press` | 10440 to 10511 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
+| `boss.press` | 10440 to 10511 | `view`, then `home` | follows, eases out | x 300, y 270, 960 by 540 | x 0, y 0, 1920 by 1080 |
 
 ## decision
 

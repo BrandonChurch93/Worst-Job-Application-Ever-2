@@ -229,6 +229,9 @@ export function glow(parts: [number, number, number, number, [number, number, nu
 // Of all the darts in the air one gives off true light, the first of the stream, and of all the sparks the newest:
 // the others show their light as the pool on the paper. More lamps than a few make every lamp throw a shadow.
 const lead = { ctx: null as RealContext | null, dart: '', spark: '', heat: 0 }
+// The page keeps a thing that has left its list, hidden, for a while before it drops it. The flecks of a spark are its own geometry:
+// those of a spark that is no longer on the list are let go in the next frame that has a dart or a spark, not with the thing.
+const flecksOf = new Map<string, THREE.BufferGeometry>()
 
 function leaders(ctx: RealContext): typeof lead {
   if (lead.ctx === ctx) return lead
@@ -238,6 +241,11 @@ function leaders(ctx: RealContext): typeof lead {
   lead.heat = 0
   let first = Infinity
   let last = -1
+  for (const [id, g] of flecksOf) {
+    if (ctx.byId.get(id)?.part === 'boss-weapons') continue
+    g.dispose()
+    flecksOf.delete(id)
+  }
   for (const s of ctx.list) {
     if (s.part !== 'boss-weapons') continue
     if (s.id.startsWith('dart-')) {
@@ -470,7 +478,9 @@ export const bossWeapons: PartMaker | null = {
         star.position.z = 2
         const halo = o.getObjectByName('halo')!
         halo.scale.set(58 * hot + 4, 58 * hot + 4, 1)
-        const at = (o.getObjectByName('flecks') as THREE.Mesh).geometry.getAttribute('position') as THREE.BufferAttribute
+        const flecks = (o.getObjectByName('flecks') as THREE.Mesh).geometry
+        flecksOf.set(s.id, flecks)
+        const at = flecks.getAttribute('position') as THREE.BufferAttribute
         for (let i = 0; i < FLECKS; i++) {
           const a = hash01(n, i, seed + 1) * Math.PI * 2
           const speed = 22 + 78 * hash01(n, i, seed + 2)
@@ -570,7 +580,10 @@ export const bossWeapons: PartMaker | null = {
   },
   drop(o: THREE.Object3D): void {
     const flecks = o.getObjectByName('flecks') as THREE.Mesh | undefined
-    if (flecks) flecks.geometry.dispose()
+    if (flecks) {
+      flecks.geometry.dispose()
+      for (const [id, g] of flecksOf) if (g === flecks.geometry) flecksOf.delete(id)
+    }
     const dust = o.getObjectByName('dust') as THREE.Mesh | undefined
     if (dust) {
       dust.geometry.dispose()

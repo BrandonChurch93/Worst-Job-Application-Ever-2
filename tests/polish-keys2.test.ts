@@ -1,7 +1,9 @@
 import crypto from 'node:crypto'
+import fs from 'node:fs'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
-import { stepHz } from '../src/config'
+import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { SINK, TRAVEL } from '../src/pages/step1/keyboard'
 import { keyboard } from '../src/pages/step1/real/keyboard'
@@ -15,6 +17,8 @@ import { type Row, visit } from './polish-keys-run'
 interface FilmRow { n: number; list: DrawList; events: string[] }
 let live: Row[] | null = null
 let reel: FilmRow[] | null = null
+let told: string[] = []
+const UNIT = config.film.units.find((u) => u.id === 'step1')!
 const rows = (): Row[] => (live ??= visit())
 const film = (): FilmRow[] => {
   if (reel) return reel
@@ -24,7 +28,7 @@ const film = (): FilmRow[] => {
   let seen = 0
   let n = 0
   let events: string[] = []
-  while (s.time < 32) {
+  while (s.time < UNIT.seconds) {
     s.advance(1)
     n++
     events.push(...s.events.slice(seen).map((e) => e.name))
@@ -35,6 +39,7 @@ const film = (): FilmRow[] => {
     reel.push({ n: n / per, list, events })
     events = []
   }
+  told = s.events.map((e) => `${e.step}\t${e.name}`)
   return reel
 }
 const at = (i: number): Row => rows().find((r) => r.i === i)!
@@ -140,10 +145,16 @@ describe('polish keys 2: what is heard on step 1 is what was heard', () => {
     expect(sha(list)).toBe('b50cfa60ed098d43f489ebacede64bcebbba1ade')
   })
 
-  it('holds the same events at the same frames in the film', () => {
+  // The count and the hash typed here on 28 Nov (7e747ba9) went stale with every retime. The record is now the cut list: every event of step 1's unit there, by name and step, is what the stage plays, so a moved key press or footstep is red until `npm run cut` is run again on purpose.
+  it('holds the same events at the same frames in the film as the cut list keeps for step 1', () => {
     const list = heard(film())
-    expect(list.length).toBe(251)
-    expect(sha(list)).toBe('4eb8a358f5d1444b719ff57c1484b6ea225b9b3d')
+    const cut = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'cut', 'CUTLIST.json'), 'utf8')) as { fps: number; units: { id: string; first: number; frames: number }[]; events: { name: string; step: number; unit: string }[] }
+    const unit = cut.units.find((u) => u.id === 'step1')!
+    const first = unit.first * (stepHz / cut.fps)
+    const kept = cut.events.filter((e) => e.unit === 'step1').map((e) => `${e.step - first}\t${e.name}`)
+    expect(film().length).toBe(unit.frames)
+    expect(kept.length).toBeGreaterThan(0)
+    expect(told).toEqual(kept)
     expect(list.filter((l) => l.includes('bolt-hit-cursor'))).toEqual(['408\tbolt-hit,bolt-hit-cursor,sizzle'])
     expect(list.filter((l) => l.includes('bolt-fire')).slice(0, 4).map((l) => Number(l.split('\t')[0]))).toEqual([260, 350, 440, 530])
   })

@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, emberOf, finishEvents, finishState, kneelSpot, powerPlan, type FinishInput } from '../src/boss/finish/acting'
+import { FIRE, beamLead, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, emberOf, finishEvents, finishState, kneelSpot, powerPlan, type FinishInput } from '../src/boss/finish/acting'
 import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '../src/cursor/stand/rig'
 import { SHOUT } from '../src/boss/tune'
 
@@ -119,14 +119,17 @@ describe('the finish: the standing arrow', () => {
 
   it('with a thrust mark, holds the ball in front at both hands for a quarter second at least before the beam leaves', () => {
     const film = (time: number): FinishInput => { const i = finish(time); return { ...i, marks: { ...i.marks!, thrust: M.fire - FIRE.ahead } } }
-    const leaves = M.fire + FIRE.lead
+    const leaves = M.fire + beamLead(M.fire - FIRE.ahead, M.fire)
+    expect(leaves).toBe(M.fire)
     const front = (time: number): boolean => {
       const s = finishState(film(time))
       return s.fx.ball !== null && s.pose.hands[0][0] > 40 && s.pose.hands[1][0] > 40 && s.fx.beam === null
     }
     let first = Infinity
     for (let n = 0; n < 60; n++) { const t = leaves - (n + 1) / FPS; if (front(t)) first = t; else break }
-    expect(leaves - first).toBeGreaterThanOrEqual(0.25)
+    const hold = FIRE.ahead - FIRE.coil - FIRE.reach
+    expect(hold).toBeCloseTo(0.3, 9)
+    expect(leaves - first).toBeGreaterThanOrEqual(hold)
     // The hip pose stays until the thrust, and the marks' times are not moved by it.
     expect(finishState(film(M.fire - FIRE.ahead - 0.01)).pose.hands[0][0]).toBeLessThan(0)
     expect(finishState(film(leaves - 0.01)).fx.beam).toBeNull()

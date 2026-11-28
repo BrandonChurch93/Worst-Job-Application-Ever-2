@@ -1864,3 +1864,63 @@ Takes used: 1 of 3 in round change-002.
 | 1 | change-002 | 2026-11-28T11:39:33.368Z | 1.2 s | -33.15 dB | -50.47 LUFS | 1 | 13 | no |  |
 
 Prompt: One gust of wind through an open office window, a soft rush of air that swells and fades with loose paper lifting, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### finish-arms
+
+Takes used: 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002-layer | 2026-11-28T17:00:10.429Z | 0.8 s | -1.01 dB | -21.99 LUFS | 1 | 0 | yes, as finish-arms | A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as three quick, sharp mechanical clicks occur in rapid succession). A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): as layer L1, with each piece brought to full level before mixing: the kept arms-out pop twice, a third and a fourth lower, 0.08 s apart, now the loudest part, each with a short low thud under it (slab-slam take 1 raised); noise with the colour of vacuum-roar take 1 rising over 0.5 s, 8 dB under, as air drawn in; at 0.54 s the stance locking 3 dB under the pops: the clunk of pin-kick lowered, the thud again and the click of stop-press
+
+### button-down
+
+Takes used: 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002-layer | 2026-11-28T17:00:14.348Z | 0.6 s | -1.01 dB | -23.99 LUFS | 1 | 0 | yes, as button-down | A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a small, hard plastic object drops onto a solid surface and rattles rapidly before coming to a complete rest). A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): as layer L1 (the kept slab-drop with slab-slam take 1 raised under it and a quiet clank), with the rocking of the cap made louder and longer: the kept button-press a third lower four times, at 0.15, 0.26, 0.36 and 0.45 s, 5, 8, 11 and 14 dB under the landing
+
+### finish-walk
+
+Takes used: 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002-layer | 2026-11-28T17:00:18.021Z | 1 s | -1.01 dB | -23.6 LUFS | 4 | 0 | yes, as finish-walk | A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as four light, quick taps in succession). A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): four soft steps at 0.02, 0.27, 0.52 and 0.77 s: the clunk of pin-kick lowered by a fourth and by a fifth in turn, kept under 1.6 kHz, each with a very short piece of the snap of keys-break take 1 14 dB under as grit
+
+### finish-kneel
+
+Takes used: 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002-layer | 2026-11-28T17:00:21.661Z | 0.5 s | -1.01 dB | -18.67 LUFS | 1 | 0 | yes, as finish-kneel | A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a quick rustling sound followed by two dull, hollow thuds). A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): a short rustle from the loudest moment of folder-open take 1, lowered, 7 dB under; two dull knocks at 0.12 and 0.22 s (the clunk of pin-kick an octave lower, under 900 Hz, the second a little lower and quieter) with the kept flatten of the first build under the first; the rustle once more at 0.30 s, 13 dB under, as the figure settling
+
+### finish-fist
+
+Takes used: 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002-layer | 2026-11-28T17:00:25.286Z | 0.5 s | -1.01 dB | -13.23 LUFS | 1 | 0 | yes, as finish-fist | A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a quick whoosh followed by a sharp, tight impact). A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): 0.3 s of noise with the colour of vacuum-roar take 1 at full level, rising in brightness and swelling and fading once, 3 dB under, as the arm swinging up; from 0.22 s a fifth of a second of the kept paper-strain of the first build as the fist tightening; at 0.31 s the fist closed: the clunk of pin-kick a little lowered, the same an octave lower and under 800 Hz for body, and the click of stop-press
+
+### boss-gone
+
+Takes used: 1 of 3 in round change-002-layer.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002-layer | 2026-11-28T17:00:28.903Z | 1 s | -1.01 dB | -16.57 LUFS | 1 | 0 | yes, as boss-gone | A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a heavy impact followed by metallic pieces crashing and scattering). A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: Made for free from paid takes of this build, with no call to the sound service (layer L1 of the free layering round of November 28 on the eight sounds of the finish): at its start, as one deep blow: slab-slam take 2 raised by a third and big-fire take 1 a little raised, both from their loudest moment; from 0.01 s a crash of noise with the colour of button-burst take 1, uneven, dying over 0.2 s; four strokes of the healthbar-drop clank lowered by up to an octave at 0.05, 0.16, 0.30 and 0.47 s, as plates; 30 pieces of the thud of turret-cannon take 1 and the snaps of keys-break takes 1 and 2 at many pitches from 0.08 to 0.92 s, growing quieter, as pieces flying and landing; a compressor; overtones of the deep part added for small speakers
