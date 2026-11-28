@@ -6,6 +6,7 @@ import { barDrop, clamp01 } from '../src/arena/change'
 import { WISP_CLEAR, wispsOf } from '../src/arena/finish'
 import { scorchFrom, scorchOf } from '../src/arena/scorch'
 import { FIRE, finishState, POWER, powerPlan } from '../src/boss/finish/acting'
+import { BEAM } from '../src/boss/finish/fx'
 import { drawnBoxes, figureBox } from '../src/boss/spot'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
@@ -809,5 +810,53 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(m.fire).toBeDefined()
     expect(m.thrust).toBeDefined()
     expect(Math.abs(m.fire! - m.thrust! - FIRE.ahead)).toBeLessThanOrEqual(2 / stepHz)
+  })
+
+  it.runIf(LOOK1_ON)('rulings of 04:46, 1a. nothing burns and nothing of the boss comes off before the beam has left the hands and its front has reached the boss: in the film, for a plain click and for a charged shot let go', () => {
+    const visitor = (down: (u: number) => boolean): Stage => {
+      const bot = new BotDriver('keen', config.seed)
+      let since = -1
+      return new Stage({
+        mode: 'live',
+        flow,
+        pages,
+        seed: config.seed,
+        driver: {
+          name: 'bot',
+          input(v: DriverView): Pointer {
+            if (v.page.gag() !== 'boss.collapse' && v.page.gag() !== 'boss.finish') return bot.input(v)
+            if (since < 0) since = v.time
+            return { x: v.cursor.x, y: v.cursor.y, down: down(v.time - since - FINISH.fall) }
+          }
+        }
+      })
+    }
+    const runs: [string, Stage][] = [['film', film()], ['plain click', visitor((u) => u >= 0.5 && u < 0.7)], ['charged', visitor((u) => u >= 0.5 && u < 2)]]
+    for (const [name, stage] of runs) {
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'finish-fire') && stage.time < 200) stage.advance(1)
+      const fire = stage.time
+      let beamAt = -1
+      let burnAt = -1
+      while (stage.time < fire + 0.8) {
+        stage.advance(1)
+        stage.frameAt(stage.time)
+        const view = viewNow()!
+        const beam = finishState(finishNow()!).fx.beam
+        if (beam && beamAt < 0) beamAt = stage.time
+        const burns = !!view.finish || (view.boss.gone ?? 0) > 0 || (scorchOf(view)?.share ?? 0) > 0
+        if (burnAt < 0 && burns) {
+          burnAt = stage.time
+          expect(beam, name).not.toBeNull()
+          const far = Math.hypot(FALLEN.x - beam!.x, FALLEN.y - beam!.y)
+          expect(beam!.age * BEAM.speed, name).toBeGreaterThanOrEqual(far - (2 * BEAM.speed) / stepHz)
+          expect(beam!.age * BEAM.speed - far, name).toBeLessThan(BEAM.speed * 0.05)
+        }
+      }
+      expect(beamAt, name).toBeGreaterThan(0)
+      expect(beamAt - fire, name).toBeGreaterThanOrEqual(FIRE.lead - 2 / stepHz)
+      expect(beamAt - fire, name).toBeLessThan(FIRE.lead + 0.05)
+      expect(burnAt, name).toBeGreaterThanOrEqual(beamAt)
+      expect(burnAt - beamAt, name).toBeLessThan(0.2)
+    }
   })
 })
