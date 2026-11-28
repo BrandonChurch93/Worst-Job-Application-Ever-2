@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
-import { endsSentence, jumpsLiveOnly, spoken, turnWaitsFor, waitsFor } from '../src/audio/cues'
+import { SENTENCE_WAIT_SECONDS, earlyEnd, endsSentence, jumpsLiveOnly, spoken, turnWaitsFor, waitsFor } from '../src/audio/cues'
 import * as dsp from '../src/audio/dsp'
 import * as levels from '../src/audio/levels'
 import { DUCK, LIVE, db } from '../src/audio/levels'
@@ -279,23 +279,25 @@ describe('the narrator\'s voice: the engine', () => {
     expect(of(ctx, 'step1.firstName.0')[0]!.stopped!).toBeLessThan(of(ctx, 'step1.firstName.0')[0]!.started!)
   })
 
-  it('at a jump lets the voice of line 6a out at the end of the sentence being said, the start of the phrase after it, and sets the voices of 6b and 6c again at their new starts', async () => {
-    const { s, ctx } = await ready('step4')
-    ctx.currentTime = 10
-    s.event(ev('boss-formed', 'step4'), 'live')
+  it('at a jump lets the voice of the first part of line 7 out at the end of its sentence when that is within the wait, at its next pause when it is not, and sets the voices of the two parts after it again at their new starts', async () => {
     const a = TAKES['boss.unfold.0']!
     const b = TAKES['boss.unfold.1']!
-    const b0 = 10 + a.seconds + gap
-    const c0 = b0 + b.seconds + gap
-    expect(booked(s)).toEqual([[id('boss.unfold.0'), 10], [id('boss.unfold.1'), near(b0)], [id('boss.unfold.2'), near(c0)]])
-    ctx.currentTime = 12
-    s.event(ev('boss-turn', 'step4'), 'live')
-    const end = 10 + a.starts![2]!
-    expect(times(ctx, 'boss.unfold.0')).toEqual([[10, near(end)]])
-    expect(times(ctx, 'boss.unfold.1')).toEqual([[near(b0), 12], [near(end + gap), null]])
-    expect(times(ctx, 'boss.unfold.2')).toEqual([[near(c0), 12], [near(end + gap + b.seconds + gap), null]])
-    ctx.currentTime = end + gap + 0.2
-    expect(s.said().lines.filter((l) => l.start <= ctx.currentTime && l.end > ctx.currentTime).map((l) => l.line)).toEqual([id('boss.unfold.1')])
+    for (const [click, phrase] of [[2, 1], [7.9, 1], [8.1, 2], [16 - SENTENCE_WAIT_SECONDS + 0.01, 2]] as const) {
+      const { s, ctx } = await ready('step4')
+      ctx.currentTime = 10
+      s.event(ev('boss-formed', 'step4'), 'live')
+      const b0 = 10 + a.seconds + gap
+      const c0 = b0 + b.seconds + gap
+      expect(booked(s)).toEqual([[id('boss.unfold.0'), 10], [id('boss.unfold.1'), near(b0)], [id('boss.unfold.2'), near(c0)]])
+      ctx.currentTime = 10 + click
+      s.event(ev('boss-turn', 'step4'), 'live')
+      const end = 10 + a.starts![phrase]!
+      expect(times(ctx, 'boss.unfold.0'), `${click}`).toEqual([[10, near(Math.max(end, 10 + click + LIVE.voiceFadeSeconds))]])
+      expect(times(ctx, 'boss.unfold.1')).toEqual([[near(b0), near(10 + click)], [near(end + gap), null]])
+      expect(times(ctx, 'boss.unfold.2')).toEqual([[near(c0), near(10 + click)], [near(end + gap + b.seconds + gap), null]])
+      ctx.currentTime = end + gap + 0.2
+      expect(s.said().lines.filter((l) => l.start <= ctx.currentTime && l.end > ctx.currentTime).map((l) => l.line)).toEqual([id('boss.unfold.1')])
+    }
   })
 
   it('keeps Continue on step 2 waiting until the file of line 4b has ended, whatever its length', async () => {
@@ -622,6 +624,23 @@ describe('where a line that the visitor ends early stops', () => {
       const line = all.get(key)!
       expect(ends(key).length, key).toBeGreaterThan(0)
       expect(ends(key).at(-1), key).toBeCloseTo(line.seconds, 9)
+    }
+  })
+
+  it('ends the first part of line 7 with its sentence when that is no more than the wait after the click and at its next pause otherwise, so no click waits longer', () => {
+    const line = all.get('boss.unfold.0')!
+    const pauses = line.phrases.map((p) => p.to)
+    const stop = (at: number) => earlyEnd(pauses, ends('boss.unfold.0'), at)
+    expect(SENTENCE_WAIT_SECONDS).toBeGreaterThanOrEqual(pauses[1]!)
+    expect(SENTENCE_WAIT_SECONDS - pauses[1]!).toBeLessThan(0.05)
+    const want: [number, number][] = [[0, 1], [pauses[0]! - 0.01, 1], [pauses[0]! + 0.01, 1], [pauses[1]! + 0.01, 2], [pauses[2]! + 0.01, 3], [pauses[3]! - 0.01, 3],
+      [pauses[5]! - SENTENCE_WAIT_SECONDS - 0.01, 4], [pauses[5]! - SENTENCE_WAIT_SECONDS + 0.01, 5], [pauses[4]! + 0.01, 5],
+      [pauses[7]! - SENTENCE_WAIT_SECONDS - 0.01, 6], [pauses[7]! - SENTENCE_WAIT_SECONDS + 0.01, 7], [pauses[6]! + 0.01, 7], [line.seconds + 0.01, 7]]
+    for (const [at, phrase] of want) expect(stop(at), `${at}`).toBeCloseTo(pauses[phrase]!, 9)
+    for (let at = 0; at <= line.seconds; at += 0.01) {
+      expect(stop(at) - at, `${at}`).toBeLessThanOrEqual(SENTENCE_WAIT_SECONDS + 1e-9)
+      expect(stop(at), `${at}`).toBeGreaterThanOrEqual(at - 1e-6)
+      expect(pauses).toContain(stop(at))
     }
   })
 
