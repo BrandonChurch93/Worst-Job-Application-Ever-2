@@ -1,4 +1,4 @@
-// node pipeline/change002/careers-proof.mjs [--only film,apply,press,turn,top,card,ticker,cost] [--only frames --from 1130 --to 1142]
+// node pipeline/change002/careers-proof.mjs [--only film,opening,apply,press,turn,top,card,ticker,cost] [--only frames --from 1130 --to 1142]
 // The proof pictures of the careers page, each at most 1200 px on its long edge, in out/work/careers/:
 // the first screen beside the approved one, twelve frames of a card under a real mouse, the ticker in windows 1920 and 2560 wide,
 // the press of Apply with the first frames of the turn, and the film's opening on the page as twelve frames.
@@ -89,6 +89,24 @@ if (only.includes('turn')) {
       frames.push({ png: await readCanvas(session.page), label: `${t.toFixed(2)} s` })
     }
     await grid('careers-turn', frames, 4, 295)
+  } finally {
+    await session.close()
+  }
+}
+
+// The opening as the film draws it, captions and all: twelve frames, four to a picture.
+if (only.includes('opening')) {
+  const session = await openSession({ format: 'hd', assets: 'full' })
+  try {
+    const frames = []
+    for (const t of [1, 2.4, 4, 5.7, 7.3, 8.9, 10.8, 12.9, 14.9, 16.8, 18, 18.45]) {
+      await session.page.evaluate(async ([n, tier]) => {
+        window.showcase.setDiagnostic('beauty')
+        await window.showcase.renderFilmFrame(n, tier)
+      }, [Math.round(t * config().film.fps), a.tier || 'draft'])
+      frames.push({ png: await readCanvas(session.page), label: `${t.toFixed(2)} s` })
+    }
+    for (let i = 0; i < 3; i++) await grid(`careers-opening-${i + 1}`, frames.slice(i * 4, i * 4 + 4), 2, 597)
   } finally {
     await session.close()
   }
