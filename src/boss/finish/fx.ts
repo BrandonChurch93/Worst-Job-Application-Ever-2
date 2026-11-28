@@ -24,6 +24,7 @@ const SEED = 4107
 // How many pieces each level draws: flame tongues round the figure, flames of the ring, puffs.
 const PIECES = { low: { tongues: 7, ring: 10, puffs: 14 }, medium: { tongues: 11, ring: 16, puffs: 24 }, high: { tongues: 14, ring: 22, puffs: 36 }, film: { tongues: 16, ring: 26, puffs: 44 } } as const
 const MOST = PIECES.film
+const BACK = 5
 
 const NOISE = /* glsl */ `
 float h21(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
@@ -58,12 +59,12 @@ function flameStuff(): THREE.ShaderMaterial {
         // A tongue: it leans one way, then the other, and comes to a point.
         float sway = sin(t * 4.2 + seed * 40.0 - uTime * 5.0) * 0.26 * t + (fbm(vec2(seed * 9.0, y * 3.0 - uTime * 2.6)) - 0.5) * 0.7 * t;
         float x = (vUv.x - 0.5) * 2.0 - sway;
-        float w = (0.12 + 0.62 * sin(3.14159 * pow(1.0 - t, 0.6))) * pow(1.0 - t, 0.4);
+        float w = (0.1 + 0.52 * sin(3.14159 * pow(1.0 - t, 0.6))) * pow(1.0 - t, 0.4);
         float ax = abs(x);
         float body = smoothstep(w, w * 0.72, ax) * smoothstep(0.0, 0.05, y) * step(y, tall);
         float inner = smoothstep(w * 0.75, w * 0.15, ax) * (1.0 - t * 0.75);
-        vec3 col = mix(vec3(1.0, 0.4, 0.02), vec3(1.7, 1.05, 0.22), clamp(inner, 0.0, 1.0));
-        float a = body * k * (0.5 + 0.5 * inner) * (1.0 - 0.45 * t);
+        vec3 col = mix(vec3(1.35, 0.5, 0.02), vec3(2.2, 1.5, 0.4), clamp(inner, 0.0, 1.0));
+        float a = body * k * (0.72 + 0.28 * inner) * (1.0 - 0.35 * t);
         if (a < 0.003) discard;
         gl_FragColor = vec4(col, min(1.0, a));
       }`
@@ -73,10 +74,10 @@ function flameStuff(): THREE.ShaderMaterial {
 function glowStuff(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     ...add,
-    uniforms: { uTime: { value: 0 }, uK: { value: 0 }, uBurst: { value: 0 } },
+    uniforms: { uTime: { value: 0 }, uK: { value: 0 }, uBurst: { value: 0 }, uRing: { value: 1 }, uCrackle: { value: 0 } },
     vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
-      uniform float uTime; uniform float uK; uniform float uBurst;
+      uniform float uTime; uniform float uK; uniform float uBurst; uniform float uRing; uniform float uCrackle;
       varying vec2 vUv;
       ${NOISE}
       void main() {
@@ -85,11 +86,14 @@ function glowStuff(): THREE.ShaderMaterial {
         float ang = atan(p.y, p.x);
         float lick = fbm(vec2(cos(ang), sin(ang)) * 3.0 + uTime * vec2(0.4, -0.9));
         float edge = 0.4 + 0.07 * (lick - 0.5) + 0.42 * uBurst;
-        float ring = exp(-pow((r - edge) / (0.035 + 0.05 * uBurst), 2.0)) * (0.6 + 0.8 * lick);
-        float pool = exp(-r * r * 5.5) * 0.36 + exp(-r * r * 2.2) * 0.1;
-        float a = (ring * (1.0 - uBurst) + pool) * uK * smoothstep(1.0, 0.75, r);
+        float ring = exp(-pow((r - edge) / (0.035 + 0.05 * uBurst), 2.0)) * (0.6 + 0.8 * lick) * uRing;
+        float pool = exp(-r * r * 5.5) * 0.5 + exp(-r * r * 2.2) * 0.12;
+        float jump = floor(uTime * 15.0);
+        float field = fbm(p * 3.4 + jump * 7.31);
+        float arcs = smoothstep(0.034, 0.0, abs(field - 0.5)) * 1.35 * smoothstep(0.22, 0.42, r) * smoothstep(0.98, 0.6, r) * (0.55 + 0.45 * h21(vec2(jump, 3.0))) * uCrackle;
+        float a = ((ring * (1.0 - uBurst) + pool) * uK + arcs) * smoothstep(1.0, 0.75, r);
         if (a < 0.002) discard;
-        vec3 col = mix(vec3(1.5, 0.72, 0.1), vec3(1.9, 1.3, 0.4), clamp(ring, 0.0, 1.0));
+        vec3 col = mix(mix(vec3(1.5, 0.72, 0.1), vec3(1.9, 1.3, 0.4), clamp(ring, 0.0, 1.0)), vec3(2.4, 1.25, 0.1), clamp(arcs * 1.6, 0.0, 1.0));
         gl_FragColor = vec4(col, min(0.85, a));
       }`
   })
@@ -120,7 +124,7 @@ function ballStuff(): THREE.ShaderMaterial {
         float rays = thin * fore * smoothstep(1.0, 0.3, r) * smoothstep(uCore * 0.8, uCore * 1.6, r) * (0.5 + 0.5 * run) * uRays;
         vec3 blue = vec3(0.34, 0.62, 1.0);
         vec3 col = mix(mix(blue * 1.25, vec3(0.75, 0.9, 1.3), clamp(rim + rays * 2.0, 0.0, 1.0)), vec3(2.3), core);
-        float a = clamp(core + rim * 0.9 + halo * 0.4 + rays * 1.5, 0.0, 1.0) * min(1.0, uGlow) * smoothstep(1.0, 0.86, r);
+        float a = clamp(core + rim * 0.9 + halo * 0.4 + rays * 1.8, 0.0, 1.0) * min(1.0, uGlow) * smoothstep(1.0, 0.86, r);
         if (a < 0.002) discard;
         gl_FragColor = vec4(col, a);
       }`
@@ -221,10 +225,10 @@ export function makeFinishFx(): FinishFx {
   let pieces: { tongues: number; ring: number; puffs: number } = MOST
 
   const flameGeo = new THREE.InstancedBufferGeometry().copy(standing as unknown as THREE.InstancedBufferGeometry)
-  const flameData = new THREE.InstancedBufferAttribute(new Float32Array((MOST.tongues + MOST.ring) * 4), 4).setUsage(THREE.DynamicDrawUsage)
+  const flameData = new THREE.InstancedBufferAttribute(new Float32Array((BACK + MOST.tongues + MOST.ring) * 4), 4).setUsage(THREE.DynamicDrawUsage)
   flameGeo.setAttribute('aFlame', flameData)
   const flameMat = flameStuff()
-  const flames = new THREE.InstancedMesh(flameGeo, flameMat, MOST.tongues + MOST.ring)
+  const flames = new THREE.InstancedMesh(flameGeo, flameMat, BACK + MOST.tongues + MOST.ring)
   const glowMat = glowStuff()
   const glow = new THREE.Mesh(quad, glowMat)
   const ballMat = ballStuff()
@@ -285,15 +289,28 @@ export function makeFinishFx(): FinishFx {
 
   const pose = (fx: Fx, p: StandPose, time: number, light?: (e: Emitter) => void): void => {
     const k = fx.aura
-    flames.visible = glow.visible = k > 0.01
+    flames.visible = glow.visible = k > 0.01 || fx.crackle > 0.01
     if (flames.visible) {
       flameMat.uniforms.uTime!.value = time
       glowMat.uniforms.uTime!.value = time
-      glowMat.uniforms.uK!.value = Math.min(1.2, k)
+      glowMat.uniforms.uK!.value = Math.min(1.2, Math.max(k, 0.55 * fx.crackle))
+      glowMat.uniforms.uRing!.value = fx.ring
+      glowMat.uniforms.uCrackle!.value = fx.crackle
       glowMat.uniforms.uBurst!.value = fx.burst
       const grow = 0.3 + 0.7 * Math.min(1, k) + 0.9 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))
       const d = flameData.array as Float32Array
       let n = 0
+      for (let j = 0; j < BACK; j++) {
+        const u = (j + 0.5) / BACK
+        const th = Math.PI * (0.92 - 0.84 * u)
+        const seed = hash01(j, 5, SEED)
+        flames.setMatrixAt(n, card(p, 2 + Math.cos(th) * 20, 26 + Math.sin(th) * 22, -3.5, 46 + 12 * seed, (96 + 34 * seed) * grow * (0.8 + 0.3 * Math.sin(th)), -Math.cos(th) * 0.42))
+        d[n * 4] = seed + 0.61
+        d[n * 4 + 1] = 0.5 * Math.min(1, k) * (1 - 0.6 * fx.burst)
+        d[n * 4 + 2] = 0.15
+        d[n * 4 + 3] = 0
+        n++
+      }
       for (let j = 0; j < pieces.tongues; j++) {
         // Round the figure, from one shoe over the head to the other.
         const u = (j + 0.5) / pieces.tongues
@@ -303,8 +320,8 @@ export function makeFinishFx(): FinishFx {
         const ry = 50
         const bx = 2 + Math.cos(th) * rx * 0.86
         const by = 44 + Math.sin(th) * ry * 0.8
-        const tall = (30 + 30 * hash01(j, 2, SEED)) * grow * (1.1 - 0.35 * Math.max(0, Math.sin(th)))
-        flames.setMatrixAt(n, card(p, bx, by, -2.5, 15 + 7 * seed, tall, -Math.cos(th) * 0.5))
+        const tall = (44 + 38 * hash01(j, 2, SEED)) * grow * (1.1 - 0.25 * Math.max(0, Math.sin(th)))
+        flames.setMatrixAt(n, card(p, bx, by, -2.5, 22 + 10 * seed, tall, -Math.cos(th) * 0.5))
         d[n * 4] = seed
         d[n * 4 + 1] = Math.min(1, k) * (1 - 0.6 * fx.burst)
         d[n * 4 + 2] = 0.15
@@ -331,7 +348,7 @@ export function makeFinishFx(): FinishFx {
       flames.instanceMatrix.needsUpdate = true
       flameData.needsUpdate = true
       glow.matrixAutoUpdate = false
-      glow.matrix.copy(flat(p.x, p.y, p.ground + 0.6, 280, 105, 0))
+      glow.matrix.copy(flat(p.x, p.y - 30 * (1 - fx.ring), p.ground + 0.6, 230 + 50 * fx.ring, 200 - 95 * fx.ring, 0))
       const flick = 0.85 + 0.15 * Math.sin(time * 23) * Math.sin(time * 7.3)
       light?.({ x: p.x, y: p.y - 26, z: p.ground + 44, colour: GOLD, power: (1.3 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
     }
@@ -342,11 +359,11 @@ export function makeFinishFx(): FinishFx {
       const u = ballMat.uniforms
       u.uTime!.value = time
       u.uGlow!.value = Math.min(1.5, b.glow * 1.25)
-      u.uCore!.value = 0.12
+      u.uCore!.value = 0.07
       u.uRays!.value = 0.3 + 0.7 * Math.min(1, b.glow)
-      u.uSize!.value = b.size * 6.5
+      u.uSize!.value = b.size * 11
       ball.position.set(b.x - 960, 540 - b.y, b.z + b.size * 0.3)
-      light?.({ x: b.x, y: b.y, z: b.z + 6, colour: COLD, power: 0.2 + 1.0 * b.glow, reach: 200 + 260 * b.glow, shadow: true })
+      light?.({ x: b.x, y: b.y, z: b.z + 6, colour: COLD, power: 0.12 + 0.5 * b.glow, reach: 170 + 170 * b.glow, shadow: true })
     }
 
     beam.visible = flare.visible = fx.beam !== null
@@ -376,9 +393,9 @@ export function makeFinishFx(): FinishFx {
       const s = (0.4 + 0.6 * b.power) * b.open * (0.92 + 0.08 * Math.sin(time * 61))
       const c = Math.cos(b.aim)
       const sn = Math.sin(b.aim)
-      light?.({ x: b.x + c * 30, y: b.y + sn * 30, z: b.z + 2, colour: COLD, power: 2.0 * s, reach: 900 })
-      light?.({ x: b.x + c * 330, y: b.y + sn * 330, z: b.z + 14, colour: COLD, power: 1.6 * s, reach: 900 })
-      light?.({ x: b.x + c * 800, y: b.y + sn * 800, z: b.z + 40, colour: COLD, power: 1.2 * s, reach: 900 })
+      light?.({ x: b.x + c * 80, y: b.y + sn * 80, z: b.z + 6, colour: COLD, power: 1.0 * s, reach: 900 })
+      light?.({ x: b.x + c * 330, y: b.y + sn * 330, z: b.z + 14, colour: COLD, power: 1.1 * s, reach: 900 })
+      light?.({ x: b.x + c * 800, y: b.y + sn * 800, z: b.z + 40, colour: COLD, power: 0.9 * s, reach: 900 })
     }
 
     let n = 0

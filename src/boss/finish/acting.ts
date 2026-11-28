@@ -47,6 +47,8 @@ export interface Fx {
   burst: number
   // The ring of flame on the ground, 0 to 1.
   ring: number
+  // The gold crackle round the figure while it charges and fires, 0 to 1.
+  crackle: number
   // The ball between the hands: its place, its size in px and how bright, 0 to 1.
   ball: { x: number; y: number; z: number; size: number; glow: number } | null
   // The beam: from the wrists, its heading on the page, how open it is (0 to 1), how full, and the seconds since it left the hands.
@@ -112,7 +114,7 @@ export const LAST = {
 } as const
 
 const inQuad = (v: number): number => clamp01(v) * clamp01(v)
-const none = (): Fx => ({ aura: 0, burst: 0, ring: 0, ball: null, beam: null, skid: [], smoke: [], dust: [], scuffs: [] })
+const none = (): Fx => ({ aura: 0, burst: 0, ring: 0, crackle: 0, ball: null, beam: null, skid: [], smoke: [], dust: [], scuffs: [] })
 
 function getUp(t: number): StandPose {
   const a = mixPose(POSES.lying, POSES.set, outBack(span(t, 0, 0.22)))
@@ -217,6 +219,7 @@ export function finishState(i: FinishInput): FinishState {
       const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise }, h[0], h[1], h[2])
       if (size > 1) fx.ball = { x: b.x, y: b.y, z: b.z, size, glow: clamp01((0.35 + 0.65 * share) * grown) * hot }
       fx.aura = CHARGE.aura * share * grown
+      fx.crackle = share * grown
     }
     if (fired >= FIRE.lead && m.fire !== undefined) {
       const over = m.end !== undefined ? t - m.end : -1
@@ -237,6 +240,7 @@ export function finishState(i: FinishInput): FinishState {
       const open = smooth(span(fired, FIRE.lead, FIRE.lead + FIRE.open)) * push
       if (open > 0.002) fx.beam = { x: b.x, y: b.y, z: b.z, aim, open, power: shot, age: fired - FIRE.lead, keep: i.button ? { x: i.button.x, y: i.button.y, w: i.button.w ?? 110, h: i.button.h ?? (i.button.w ?? 110) * 0.36 } : null }
       fx.aura = CHARGE.aura * shot * push
+      fx.crackle = shot * push
       for (let k = 0; k < 2; k++) {
         const f = POSES.fire.feet[k]!
         const long = back + (k === 0 ? 10 : 4)
