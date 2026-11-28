@@ -180,7 +180,7 @@ The film only. `VIEW` in `src/pages/step5/timeline.ts` holds the numbers: zoom 1
 
 ## Timed ahead for the lines without pauses (the Builder's task of 08:11Z November 28, branch `agent/b-decision`)
 
-The times, the reasons and what is not as asked are in `src/pages/step5/NOTES.md`, section "Timed ahead for the lines without pauses". In short: `SAID` is line 8's five starts and its end from `pipeline/change002/fast-takes.json`; the unit is 14.6 s; `stamp` 5.433, `button-press` 11.333, `page-turn` 11.7875; the arrow peels under "the company", puffs on "to move forward", sags on "with other candidates.".
+The times, the reasons and what is not as asked are in `src/pages/step5/NOTES.md`, section "Timed ahead for the lines without pauses". In short: `SAID` is line 8's five starts and its end from `pipeline/change002/fast-takes.json`; the unit is 14.9 s; `stamp` 5.433, `button-press` 11.333, `page-turn` 11.7875; the arrow peels under "the company", puffs on "to move forward", sags on "with other candidates.".
 
 Tests re-pinned, each with a line of comment in the test:
 

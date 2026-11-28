@@ -193,12 +193,12 @@ The film (seconds of the unit, MEASURED from the code and a run of the stage):
 | The turn (`page-turn`), line 9 starts | 11.7875 |
 | Line 9 ends | 13.127 |
 | The arrow on the careers page steps to the button and leans | 13.40 to 14.15 |
-| It stands again there and is at rest | 14.6 |
-| The unit ends | 14.6 |
+| It stands again there and is at rest | 14.59 |
+| The unit ends | 14.9 |
 
-- The unit is 14.6 s (it was 21.7). Beats: the metrics 6 to 11.7, the reset 11.7 to 14.6. The wait and the letter are as they were. The film is 207.7 s, 12462 frames.
-- Why not shorter. Line 9 ends at 13.127 s. The film ends on the careers page, on the arrow's landing (`LANDING` in `src/pages/marketing/script.ts`, not this page's). There the arrow lies flat, stands, steps to the button and leans on it (13.40 to 14.15 s), stands again and is at rest at 14.6 s: from 14.59 s no number of its pose changes by more than 0.0005 rad a step. The unit ends there, 1.47 s after line 9's last word, with nothing held after it.
-- It was 14.9 s at first: `tests/careers-fix-landing.test.ts` holds the arrow still over the unit's last 0.3 s, and 14.9 is the shortest tenth at which that test passes. The Builder asked for no hold at the end (about 14.1 s, taking the landing to settle at 13.45 s). At 14.1 s the arrow is still leaning and still sliding left, so 14.6 is the nearest length with the landing whole. That one test fails at 14.6 and is not this page's to change.
+- The unit is 14.9 s (it was 21.7). Beats: the metrics 6 to 11.7, the reset 11.7 to 14.9. The wait and the letter are as they were. The film is 208.0 s, 12480 frames.
+- Why not shorter. Line 9 ends at 13.127 s. The film ends on the careers page, on the arrow's landing (`LANDING` in `src/pages/marketing/script.ts`, not this page's). There the arrow lies flat, stands, steps to the button and leans on it (13.40 to 14.15 s), stands again and is at rest at 14.59 s. `tests/careers-fix-landing.test.ts` holds it still over the unit's last 0.3 s, and 14.9 is the shortest tenth at which that test passes.
+- 14.6 and 14.1 were tried and put back (the Builder's ruling of 09:15Z, 28 November): the landing rests at 14.59 s and the 0.3 s after it is the film's last picture, not padding; 14.6 failed the landing's test; 14.1 would have cut the lean.
 - What is kept of the acting, and why. The hit, the arrow flat, the peel: flat from the hit for 2.06 s (under the block, carried, thrown, 0.43 s lying still), whole as "the company" ends. `FILM.heal` follows from `SAID`: 0.858 s, where a visitor's is 0.78. Then two moves and no more, each as its phrase starts: the puff and the lean to the letter on "to move forward", and the sag on "with other candidates.". The line is a false hope and its fall, and those two are the hope and the fall; the puff also holds the look at the letter, since the arrow leans to it. Each pose is held a second or more.
 - What is not played: the dusting, the turn to the letter on edge, the breath, the hop and the look at the button. They stood in the kept take's pauses and there are no pauses. The Builder's guess was the look at the letter on "has decided"; it would start in the same step as the peel ends, and it would leave "to move forward" with nothing.
 - The last phrase is 1.23 s and the press is 0.15 s before its end. The walk (0.61 s), the lean back (0.31 s) and the blow (0.1 s) fill it, so the walk starts 0.06 s after the sag is cued: the arrow sags and goes.
