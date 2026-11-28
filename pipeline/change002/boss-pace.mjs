@@ -3,8 +3,9 @@
 // The time from one frame of the browser to the next is kept with the second of the page it fell in, and told for three stretches:
 // the power-up (1 s before `power-up` to 1 s after the burst), the finish (`finish-arms` to `boss-gone` and 1 s more), and 5 s of plain fight.
 // Outside the three stretches the page is stepped on without a picture, to 0.6 s before each (`--lead`); the seconds of `power-up` and `finish-arms` of that bot are given beforehand (`--power`, `--arms`) and read again from the page's events afterwards.
-// With each frame the count of shader programs, geometries and textures the renderer holds, the draw calls and triangles of the frame, and the counts of the kept shadows (bakes, kept frames, live frames, camera moved, kept changed, movers, kept) are kept, then the lamps that shine and the lamps that draw a shadow in it, so that a long frame can be laid beside a thing made new in it.
+// With each frame the count of shader programs, geometries and textures the renderer holds, the draw calls and triangles of the frame, and the counts of the kept shadows (bakes, kept frames, live frames, camera moved, kept changed, movers, kept) are kept, then the lamps that shine and the lamps that draw a shadow in it, the names of the programs made since the frame before and the things shown for the first time with their material, so that a long frame can be laid beside a thing made new in it.
 // `--only power`, `--only plain` or `--only finish` plays one stretch alone.
+// `--ahead` builds, before the first frame of the run, the program of every material that is in the page's scene then, shown or hidden, to see what the long frames lose by it.
 // Needs one line added to src/main.ts for the run only and never committed, after `let stage = makeStage()`:
 //   ;(window as unknown as { __live: unknown }).__live = { stage: () => stage, app, level: () => size.level() }
 // `--off` hides things for the run so that what they cost is seen: a list of names with commas, each a part (`part:boss-finish`), a named mesh (`name:arena-beam`), `lamps` or `shadows`.
@@ -49,10 +50,33 @@ try {
     const skip = (to) => { const s = live.stage(); const n = Math.round((to - s.time) * hz); if (n > 0) s.advance(n) }
     let phase = plan.only === 'plain' ? 1 : plan.only === 'finish' ? 2 : 0
     skip((phase === 1 ? plan.plain : phase === 2 ? plan.arms : plan.power - 1) - plan.lead)
+    const known = new Set()
+    const mats = new Set()
+    let first = true
+    const fresh = () => {
+      const info = live.app.engine.renderer.info
+      const made = []
+      for (const p of info.programs || []) if (!known.has(p.id)) { known.add(p.id); if (!first) made.push(p.name) }
+      const shown = []
+      live.app.view.scene.traverseVisible((o) => {
+        if (!o.material) return
+        for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+          if (mats.has(m.uuid)) continue
+          mats.add(m.uuid)
+          if (first) continue
+          let named = o
+          while (named && !named.name) named = named.parent
+          shown.push(`${named ? named.name : 'no name'}:${m.type}${m.name ? ':' + m.name : ''}`)
+        }
+      })
+      first = false
+      return [made, shown]
+    }
     const tick = (t) => {
       const s = live.stage()
       const info = live.app.engine.renderer.info
-      if (last >= 0) rows.push([Math.round((t - last) * 100) / 100, Math.round(s.time * 1000) / 1000, info.programs ? info.programs.length : -1, info.memory.geometries, info.memory.textures, live.app.engine.lastCounts ? live.app.engine.lastCounts.drawCalls : -1, live.app.engine.lastCounts ? live.app.engine.lastCounts.triangles : -1, ...(live.app.engine.stillShadows ? [live.app.engine.stillShadows.bakes, live.app.engine.stillShadows.keptFrames, live.app.engine.stillShadows.liveFrames, live.app.engine.stillShadows.cameraMoved, live.app.engine.stillShadows.keptChanged, live.app.engine.stillShadows.movers, live.app.engine.stillShadows.kept] : [0, 0, 0, 0, 0, 0, 0]), ((live.app.rig && live.app.rig.lamps) || []).filter((l) => l.intensity > 0).length, ((live.app.rig && live.app.rig.lamps) || []).filter((l) => l.castShadow && l.shadow.autoUpdate).length])
+      const news = fresh()
+      if (last >= 0) rows.push([Math.round((t - last) * 100) / 100, Math.round(s.time * 1000) / 1000, info.programs ? info.programs.length : -1, info.memory.geometries, info.memory.textures, live.app.engine.lastCounts ? live.app.engine.lastCounts.drawCalls : -1, live.app.engine.lastCounts ? live.app.engine.lastCounts.triangles : -1, ...(live.app.engine.stillShadows ? [live.app.engine.stillShadows.bakes, live.app.engine.stillShadows.keptFrames, live.app.engine.stillShadows.liveFrames, live.app.engine.stillShadows.cameraMoved, live.app.engine.stillShadows.keptChanged, live.app.engine.stillShadows.movers, live.app.engine.stillShadows.kept] : [0, 0, 0, 0, 0, 0, 0]), ((live.app.rig && live.app.rig.lamps) || []).filter((l) => l.intensity > 0).length, ((live.app.rig && live.app.rig.lamps) || []).filter((l) => l.castShadow && l.shadow.autoUpdate).length, news])
       last = t
       const power = seen('power-up')
       const gone = seen('boss-gone')
@@ -62,9 +86,18 @@ try {
       if (phase < 3 && s.page.id === 'step4') requestAnimationFrame(tick)
       else window.__pace.done = true
     }
-    window.__pace = { rows, done: false }
+    let ahead = -1
+    if (plan.ahead) {
+      const r = live.app.engine.renderer
+      const before = r.info.programs ? r.info.programs.length : -1
+      r.setRenderTarget(live.app.engine.acc.sample)
+      r.compile(live.app.view.scene, live.app.camera)
+      r.setRenderTarget(null)
+      ahead = (r.info.programs ? r.info.programs.length : -1) - before
+    }
+    window.__pace = { rows, done: false, ahead }
     requestAnimationFrame(tick)
-  }, { off, plan: { power: Number(a.power ?? 12.858), arms: Number(a.arms ?? 50.879), plain: Number(a.plain ?? 29), burst, lead: Number(a.lead ?? 0.6), only: a.only ? String(a.only) : '' } })
+  }, { off, plan: { power: Number(a.power ?? 12.858), arms: Number(a.arms ?? 50.879), plain: Number(a.plain ?? 29), burst, lead: Number(a.lead ?? 0.6), only: a.only ? String(a.only) : '', ahead: a.ahead === true || a.ahead === 'true' } })
   let state = null
   for (;;) {
     await new Promise((r) => setTimeout(r, 10000))
@@ -72,7 +105,7 @@ try {
     console.log(`frames ${state.n} second ${state.time.toFixed(2)} last frame ${state.ms} ms`)
     if (state.done) break
   }
-  const got = await session.page.evaluate(() => ({ rows: window.__pace.rows, events: window.__live.stage().events.map((e) => [e.name, e.step]), level: window.__live.level() }))
+  const got = await session.page.evaluate(() => ({ ahead: window.__pace.ahead, rows: window.__pace.rows, events: window.__live.stage().events.map((e) => [e.name, e.step]), level: window.__live.level() }))
   const hz = 240
   const at = (name) => { const e = got.events.find((x) => x[0] === name); return e ? e[1] / hz : -1 }
   const stretches = [
@@ -89,7 +122,7 @@ try {
   const cpu = os.cpus()
   const result = { level, levelAtEnd: got.level, off, machine: { cores: cpu.length, cpu: cpu[0] ? cpu[0].model : 'unknown', browser: session.version }, card, stretches: told, events: got.events.filter((e, i, all) => all.findIndex((x) => x[0] === e[0]) === i).map((e) => [e[0], e[1] / hz]), rows: got.rows }
   fs.writeFileSync(String(a.out ?? `/tmp/pace-${level}.json`), JSON.stringify(result))
-  console.log(JSON.stringify({ level, levelAtEnd: got.level, off, machine: result.machine, card }))
+  console.log(JSON.stringify({ level, levelAtEnd: got.level, builtAhead: got.ahead, off, machine: result.machine, card }))
   for (const s of told) console.log(`${level} ${s.name}: second ${s.from.toFixed(3)} to ${s.to.toFixed(3)}, frames ${s.frames}, wall ${s.wall} s, median ${s.median} ms, p95 ${s.p95} ms, worst ${s.worst} ms, over 16.7 ms ${s.over16} %, over 33.3 ms ${s.over33} %`)
   if (session.problems.length) console.log('problems', session.problems.slice(0, 5).join(' | '))
 } finally {

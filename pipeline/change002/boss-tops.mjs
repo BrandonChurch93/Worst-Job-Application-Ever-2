@@ -54,6 +54,48 @@ try {
     fs.writeFileSync(file, png)
     console.log(`tops ${k} frame ${frame} ${file}`)
   }
+  // `--finish "0.45:1,0.6:0.85"`: a finish of their own for the top faces of what stands, tried in the page without a change to the source: the roughness, then the share of the mirrored light kept.
+  // The bodies are drawn in two groups for the trial, the sides with the metal as it is and the tops with a copy of it. Needs the same line in src/main.ts.
+  for (const pair of a.finish ? String(a.finish).split(',') : []) {
+    const [rough, share] = pair.split(':').map(Number)
+    const told = await session.page.evaluate(({ rough, share }) => {
+      const scene = window.__app.view.scene
+      const bodies = scene.getObjectByName('arena-pillars')
+      if (!bodies) return 'no pillars'
+      const g = bodies.geometry
+      if (!Array.isArray(bodies.material)) {
+        const metal = bodies.material
+        const n = g.getAttribute('normal')
+        const index = g.getIndex()
+        const arr = index.array
+        const count = Number.isFinite(g.drawRange.count) ? g.drawRange.count : arr.length
+        const sides = []
+        const tops = []
+        for (let i = 0; i < count; i += 3) (n.getZ(arr[i]) > 0.9 && n.getZ(arr[i + 1]) > 0.9 && n.getZ(arr[i + 2]) > 0.9 ? tops : sides).push(arr[i], arr[i + 1], arr[i + 2])
+        arr.set(sides, 0)
+        arr.set(tops, sides.length)
+        index.needsUpdate = true
+        g.clearGroups()
+        g.addGroup(0, sides.length, 0)
+        g.addGroup(sides.length, tops.length, 1)
+        const top = metal.clone()
+        top.onBeforeCompile = metal.onBeforeCompile
+        top.customProgramCacheKey = metal.customProgramCacheKey
+        bodies.material = [metal, top]
+        window.__tops = { sides: sides.length / 3, tops: tops.length / 3, was: metal.roughness }
+      }
+      const [metal, top] = bodies.material
+      top.roughness = rough
+      top.color.copy(metal.color).multiplyScalar(share)
+      top.envMapIntensity = metal.envMapIntensity
+      return `side faces ${window.__tops.sides}, top faces ${window.__tops.tops}, roughness ${window.__tops.was} to ${rough}, share ${share}`
+    }, { rough, share })
+    console.log(`finish ${pair}: ${told}`)
+    const png = await renderJob(session, { kind: 'film', frame, tier: String(a.tier ?? 'draft') })
+    const file = path.join(out, `finish-${rough}-${share}-f${frame}.png`)
+    fs.writeFileSync(file, png)
+    console.log(`finish ${pair} frame ${frame} ${file}`)
+  }
 } finally {
   await session.close()
 }
