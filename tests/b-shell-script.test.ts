@@ -250,16 +250,19 @@ describe('change note 003: line 1, the moment sound is allowed on the careers pa
     expect(late.s.said().lines).toEqual([])
   })
 
-  it('lets line 1 run to its end when Apply is pressed while it is being said', async () => {
+  it('ends line 1 over LIVE.openingFadeSeconds when Apply is pressed while it is being said, and takes nothing back', async () => {
     const { s, ctx } = await ready('marketing')
     ctx.currentTime = 1
     s.event(ev('button-press', 'marketing'), 'live')
+    expect(linesAt(s)).toEqual([id('marketing.stroll.0')])
+    expect(Math.max(...s.said().lines.map((l) => l.end))).toBeCloseTo(1 + LIVE.openingFadeSeconds, 9)
     s.event(ev('page-turn', 'marketing'), 'live')
     s.page('step1')
     ctx.currentTime = 2
     s.event(ev('keyboard-rise', 'step1'), 'live')
     expect(back(s)).toEqual([])
-    expect(linesAt(s)).toEqual([id('marketing.stroll.0')])
+    expect(linesAt(s)).toEqual([])
+    expect(s.log().filter((e) => e.what === 'cut').map((e) => e.line)).toEqual([id('marketing.stroll.0')])
   })
 
   it('says no line 1 when the site is opened on a later step', async () => {
@@ -297,8 +300,10 @@ describe('change note 003: no line talks over another', () => {
     s.event(ev('page-turn', 'marketing'), 'live')
     ctx.currentTime = 4.5
     s.event(ev('candidate-sensed', 'step1'), 'live')
-    expect(booked(s)).toEqual([[id('marketing.stroll.0'), W], [id('step1.firstName.0'), near(W + L + gap)]])
-    ctx.currentTime = W + L + gap + 0.1
+    // Line 1 belongs to the careers page (ruling of 03:02Z): the turn ends it over LIVE.openingFadeSeconds, and line 2 waits for that end and the gap.
+    const after = 4 + LIVE.openingFadeSeconds + gap
+    expect(booked(s)).toEqual([[id('marketing.stroll.0'), W], [id('step1.firstName.0'), near(after)]])
+    ctx.currentTime = after + 0.1
     expect(linesAt(s)).toEqual([id('step1.firstName.0')])
     expect(back(s)).toEqual([])
     s.event(ev('field-done', 'step1'), 'live')
@@ -311,9 +316,9 @@ describe('change note 003: no line talks over another', () => {
       const { s, ctx } = await ready('marketing')
       ctx.currentTime = 4
       s.event(ev('page-turn', 'marketing'), 'live')
-      ctx.currentTime = 4.5
+      ctx.currentTime = 4.1
       s.event(ev('candidate-sensed', 'step1'), 'live')
-      ctx.currentTime = Math.min(6, W + L + gap - 0.05)
+      ctx.currentTime = 4 + LIVE.openingFadeSeconds + gap - 0.05
       s.event(ev(end, 'step1'), 'live')
       expect(back(s), end).toEqual([id('step1.firstName.0')])
       ctx.currentTime = L + gap + 0.1
@@ -624,13 +629,13 @@ describe('change note 003: the film', () => {
     expect(caps.some((x) => x.id === 'line.not.one.0')).toBe(false)
   })
 
-  it('lays no take in the mix for a line of the script, kept or not, and places it as a stand-in of its length', () => {
+  it('lays no take in the mix for a line that is a stand-in, kept or not, and places it as a stand-in of its length', () => {
     const sr = 8000
     const take = { sampleRate: sr, channels: [new Float32Array(sr).fill(0.5)] }
-    const r = mixFilm({ sampleRate: sr, fps: 60, seconds: 20, events: [], lines: [{ id: id('marketing.stroll.0'), beat: 'marketing.stroll', frame: 0 }], sounds: new Map([[id('marketing.stroll.0'), take]]) as never, sfx: [], duckDb: cfg.audio.duckDb, holdMusicSeconds: cfg.audio.holdMusicSeconds, targetLufs: cfg.audio.filmLoudnessLufs, truePeakDb: cfg.audio.truePeakDb })
+    const r = mixFilm({ sampleRate: sr, fps: 60, seconds: 20, events: [], lines: [{ id: id('marketing.stroll.0'), beat: 'marketing.stroll', frame: 0 }], sounds: new Map([[id('marketing.stroll.0'), take]]) as never, sfx: [], duckDb: cfg.audio.duckDb, holdMusicSeconds: cfg.audio.holdMusicSeconds, targetLufs: cfg.audio.filmLoudnessLufs, truePeakDb: cfg.audio.truePeakDb, standIns: scriptStandIns([]) })
     expect(r.missingLines).toEqual([])
     expect(r.placed.filter((p) => p.kind === 'line')).toEqual([])
-    expect(r.placed.filter((p) => p.kind === 'stand-in').map((p) => [p.id, p.frame, p.seconds])).toEqual([[id('marketing.stroll.0'), 0, scriptStandIns().get(id('marketing.stroll.0'))]])
+    expect(r.placed.filter((p) => p.kind === 'stand-in').map((p) => [p.id, p.frame, p.seconds])).toEqual([[id('marketing.stroll.0'), 0, scriptStandIns([]).get(id('marketing.stroll.0'))]])
     expect(r.sound.channels.every((ch) => ch.every((v) => v === 0))).toBe(true)
   })
 })

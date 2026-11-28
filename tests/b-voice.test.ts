@@ -398,8 +398,9 @@ describe('the narrator\'s voice: the pack', () => {
     const got = phraseStarts(x, SR, `a b ${mark} c d ${mark} e`, M)
     expect(got.marks).toBe(2)
     expect(got.found).toBe(2)
-    expect(got.starts.length).toBe(3)
-    ;[0.1, 2.4, 4.8].forEach((t, k) => expect(Math.abs(got.starts[k] - t)).toBeLessThan(0.005))
+    const starts: number[] = got.starts ?? []
+    expect(starts.length).toBe(3)
+    ;[0.1, 2.4, 4.8].forEach((t, k) => expect(Math.abs(starts[k]! - t)).toBeLessThan(0.005))
     expect(phraseStarts(x, SR, `a b ${mark} c d e`, M)).toEqual({ marks: 1, found: 2, starts: null })
     expect(phraseStarts(new Float32Array(SR), SR, 'a b', M).starts).toBeNull()
   })
