@@ -300,7 +300,7 @@ export const SOLID = {
 export const CAMERA = {
   on: true,
   powerUp: false,
-  power: { down: 0.5, ramp: 0.2, low: 0.5, push: 0.04, dive: [1.2, 2] as const, swing: 1.5, body: [95, 230] as const, key: { at: [125, 10, 85], az: -128, el: -4, tall: 375, fov: 46 } },
+  power: { down: 0.5, ramp: 0.2, low: 0.5, push: 0.04, dive: [1.2, 2] as const, swing: 1.5, body: [95, 230] as const, key: { at: [80, 10, 85], az: -128, el: -4, tall: 375, fov: 46 } },
   upright: 0.75,
   lowEl: [30, 80] as const,
   down: [0, 0.95] as const,
@@ -335,7 +335,7 @@ export const CAMERA = {
   shake: 5,
   shakeDies: 0.22,
   open: 5,
-  dusk: { far: 5200, high: 2600, top: [0.012, 0.014, 0.03], low: [0.05, 0.045, 0.07], band: [0.2, 0.11, 0.06], bandHigh: 0.07 },
+  dusk: { far: 2800, high: 2600, top: [0.012, 0.013, 0.02], low: [0.15, 0.115, 0.095], reach: 0.22, band: [0.07, 0.04, 0.02], bandHigh: 0.07 },
   charge: { at: [-50, 0, 82], az: -120, el: -3, tall: 195, fov: 54 },
   fire: { at: [127, -13, 52], az: -225, el: 7.5, tall: 325, fov: 50 },
   blast: { at: [150, 0, 56], az: -224, el: 9, tall: 380, fov: 54 }

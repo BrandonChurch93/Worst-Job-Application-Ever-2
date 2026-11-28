@@ -76,6 +76,7 @@ export interface Fx {
   // Dust: where, how old in seconds, how big.
   dust: { x: number; y: number; age: number; size: number }[]
   lens?: { low: number; eye: readonly [number, number, number]; glare: number }
+  sky?: { low: number; eye: readonly [number, number, number] }
   under?: number
   tear?: { x: number; y: number; size: number; k: number }
   // The scuff each landed step left: page px, and how long.
@@ -212,6 +213,7 @@ function powerUp(i: FinishInput, feet: { x: number; y: number }): FinishState | 
   const held = span(now, POWER.up[1] * plan.quick, end)
   if (t >= POWER.up[1]) pose = { ...pose, tremble: 0.15 + 0.5 * held, hip: [0, pose.hip[1] - 2.5 * held], puff: 0.35 + 0.3 * held }
   const fx = none()
+  if (i.low && i.eye) fx.sky = { low: i.low, eye: i.eye }
   fx.ring = 1
   const u = (now - end) / plan.quick
   if (u < 0) fx.aura = 0.12 + 0.88 * build

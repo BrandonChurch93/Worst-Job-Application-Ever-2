@@ -153,16 +153,16 @@ function duskStuff(): THREE.ShaderMaterial {
   const d = CAMERA.dusk
   return new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, toneMapped: false, fog: false, side: THREE.BackSide,
-    uniforms: { uK: { value: 0 }, uTop: { value: new THREE.Vector3(...d.top) }, uLow: { value: new THREE.Vector3(...d.low) }, uBand: { value: new THREE.Vector3(...d.band) }, uHigh: { value: d.bandHigh } },
+    uniforms: { uK: { value: 0 }, uTop: { value: new THREE.Vector3(...d.top) }, uLow: { value: new THREE.Vector3(...d.low) }, uBand: { value: new THREE.Vector3(...d.band) }, uHigh: { value: d.bandHigh }, uReach: { value: d.reach } },
     vertexShader: /* glsl */ `varying vec3 vDir; void main() { vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
-      uniform float uK; uniform vec3 uTop; uniform vec3 uLow; uniform vec3 uBand; uniform float uHigh;
+      uniform float uK; uniform vec3 uTop; uniform vec3 uLow; uniform vec3 uBand; uniform float uHigh; uniform float uReach;
       varying vec3 vDir;
       void main() {
         float h = normalize(vDir).z;
         float up = max(h, 0.0);
         float under = max(-h, 0.0);
-        vec3 col = mix(uLow, uTop, smoothstep(0.0, 0.55, up)) * (1.0 - 0.75 * smoothstep(0.0, 0.3, under));
+        vec3 col = mix(uTop, uLow, exp(-up * up / (uReach * uReach))) * (1.0 - 0.75 * smoothstep(0.0, 0.3, under));
         col += uBand * exp(-h * h / (uHigh * uHigh)) * (h < 0.0 ? 0.6 : 1.0);
         gl_FragColor = vec4(col, uK);
       }`
@@ -560,10 +560,11 @@ export function makeFinishFx(): FinishFx {
       light?.({ x: p.x, y: p.y - 26 * big, z: p.ground + 44 * big, colour: GOLD, power: (1.3 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
     }
 
-    dusk.visible = fx.lens !== undefined && fx.lens.low > 0.004
-    if (fx.lens) {
-      duskMat.uniforms.uK!.value = fx.lens.low
-      dusk.position.set(fx.lens.eye[0], fx.lens.eye[1], 0)
+    const sky = fx.lens ?? fx.sky
+    dusk.visible = sky !== undefined && sky.low > 0.004
+    if (sky) {
+      duskMat.uniforms.uK!.value = sky.low
+      dusk.position.set(sky.eye[0], sky.eye[1], 0)
     }
     ball.visible = fx.ball !== null
     if (fx.ball) {
