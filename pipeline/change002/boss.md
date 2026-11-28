@@ -670,3 +670,157 @@ The chain of the Builder on this tree (merge55 b38b9fc0 merged), 06:55Z to 07:00
 Not run: look off, a browser, the bots' gate, determinism.
 
 The retime to come (not done): src/audio/standin.ts already reads public/audio/index.json, and tests/takes-timing.test.ts reads the lengths and phrase ends from it. `LINE6.after`, `LINE7.part0`, `ends`, `sentences`, `part1`, `music` and `part2` can be worked out from `standIns()` in src/boss/tune.ts, so that a kept take needs no number typed. Two numbers set by hand do not fit a part 2 of 1.9 s: `LINE7.power` 0.6 + `LINE7.glow` 2 = 2.6 s, and tests/takes-timing.test.ts wants that sum under the length of part 2. They want a ruling. The window in which the figure of the power-up stands (part 2 less `power` less `RAISE.early`) is 3.304 s now and would be 1.25 s; whether the figure's moves fit it is UNKNOWN.
+
+## The boss kept state between pictures; the keys of step 4 that are never drawn (asked 08:50Z November 28)
+
+Branch agent/b-boss-state, cut from origin/agent/merge55 e5b2dcb5.
+
+### 1. A picture must hang on its frame number alone
+
+MEASURED on merge55 e5b2dcb5 (`node pipeline/change002/boss-frames.mjs --frames ... --out dir`, tier draft, 1920 by 1080, pictures compared pixel by pixel):
+- Frame 11200 (after boss-gone), then 9000, 10700, 10790, 10817 in the same page, against the four drawn alone in rising order: 0 px differ. A frame after gone leaves nothing behind.
+- Frames 11080, 11100, 11150, 11190, 11200, 11300, 11450, then the same four, in one page: 9,890, 22,961, 29,991 and 49,018 px differ (largest difference of a channel 219 to 230). So merge55 has the fault; it did not come in with the camera branch.
+
+Cause, MEASURED by a test that was red on exactly this and nothing else: `fling` in src/boss/look1/index.ts adds to a part's place and to its turn. The top of `apply` sets both afresh for every flung part but one: the bay (`m.bay`) had its place set and its turn never. A pose in which the bay is in flight left it turned for every later pose of the same boss. In the picture of frame 10700 drawn after blast frames the bay stands out of the hull. The carriage of the cannon is a child of the body and is set in every pose; on merge55 it was not the part at fault.
+
+Mend: one line in `apply`, `m.bay.rotation.set(0, 0, 0)`, beside the line that sets its place. It is not among the lines the camera helper is changing (31, 132, 267).
+
+Test: tests/b-boss-state.test.ts poses one boss with 14 late views (12 through the blast, 2 after gone) and then each of 6 early views, and compares every object of the boss that is seen (place, turn, scale, kind of material, colour, glow, see-through, name) with the same early view posed alone on a new boss; and a late view after a later one. Red before the mend on the bay's turn only (0.0443, -0.0043, 0.0314, 0.9985 against 0, 0, 0, 1); passes after.
+
+MEASURED after the mend: the same eleven frames in the same order against the four drawn alone: 0, 0, 0, 0 px. The four drawn alone, mended against before: 0 px.
+
+THE FILM CHANGES, in the blast. Before the mend the bay's turn in a frame was the sum of the turns of every pose made before it in that page, so it hung on the order of drawing and on the number of samples of a frame (draft 2, final 24). MEASURED, frames 11110, 11120, 11130, 11140, 11150, 11160 drawn in a row, before against mended: 12,273 px (largest 39), 6,702 (largest 143), 702 (largest 104), 0, 0, 0. In the order of eleven, frames 11080, 11100, 11150, 11190, 11200, 11300, 11450 mended against before: 0 px. The first and the last frame that change are UNKNOWN; they lie where the bay flies in view, between 11101 and 11139.
+
+Not covered by the test: the arena (src/arena/wreck.ts keeps things), the figure of the finish, the weapons, the health bar. The pixel compare of the four frames is 0 after the mend, which covers them for those four frames and that order only. The camera branch (8304177b) was not drawn; UNKNOWN whether its changes leave further state.
+
+### 2. Gate G11, the share of step 4
+
+Before (`npm run -s gate -- --phase 5 --only G11`, EXIT 1): step 4's layout names copy:step4.errorSlabs.0, .1, .3, .4, .5, copy:step4.popups.0.title, copy:step4.popups.0.buttons.0 and .1, and 4 more keys, never drawn.
+
+Decision: in src/pages/step4/layout.ts the rack of slabs and the pop-up windows are in the group `fight-type` only while `POPUPS_ON` (src/boss/tune.ts, false) is true; the banner is always there. The plans, `SLAB_KEYS`, `POPUPS`, the words in the copy and the switch are all kept. tests/boss.test.ts asked that every string of step 4 be in the register; it now asks that the 12 keys (5 slabs, 7 of the pop-up windows) hold words in the copy and are not in the register while the switch is off, and that everything else is.
+
+After (the same command, EXIT 1): no line of step 4. What is left is step 2's `data:step2.years.*` (8 lines and "2 more"), not mine.
+
+MEASURED with the switch set to true for one run and put back: the 7 keys of the pop-up windows are drawn; the 5 slabs (errorSlabs.0, .1, .3, .4, .5) are named and never drawn. No code of the fight draws the slabs under either setting (`drawWeapons` draws the pop-up windows and the banner). So whoever turns the switch on meets those 5 lines again. Not mended: it is outside what was asked, and the note says keep and do not delete.
+
+## The boss page timed for the lines without pauses (asked 09:15Z November 28)
+
+Branch agent/b-boss-fast, cut from 1c0522a3. Not for merge before such takes are kept. The numbers are those of pipeline/change002/fast-takes.json (the Builder's, provisional); public/audio/index.json still holds the kept takes, and no sound was made or heard for this.
+
+### What was changed
+
+- df8f8b75, not a fast number: `LINE7.rise` 3.954 s is the time from the start of part 2 to the turret's lock (it was `LINE7.part2`, the take's own length). The figure's window (`RAISED`), the start of the fight and the gold's end hang on it. In src/pages/step4/script.ts the forming is at `BASE` 9.004 s or at the tick plus `LINE6.after`, whichever is later. MEASURED with the kept numbers: the film's marks are as they were (diff of the list of events empty), tests/b-boss.test.ts 40 passed.
+- f44d0cf1, `NEEDS:`: `LINE6.after` 4.57 (was 8.79); `LINE7.part0` 11.325 (23.324), `ends` 0.843, 2.264, 3.986, 5.197, 6.177, 8.319, 9.53, 11.325, `sentences` 2.264, 3.986, 8.319, 11.325; `part1` 2.485 (5.59), `music` 1.228 (3.806); `part2` 1.91 (3.954). `rise`, `power` 0.6, `glow` 2, `lead` 0.1, `gap` 0.3 and the drift's numbers are as they were.
+- 6c572db7, `NEEDS:`: config/showcase.json, the boss unit 53.1 s (was 71.8) and its beats (also in pipeline/change002/boss-fast-NEEDS.patch).
+
+### Lengths
+
+The unit: 71.8 s to 53.1 s, MEASURED (`UNIT_SECONDS` of the script, and the film's press at 51.97 s). 18.7 s shorter: 3.59 s because the forming no longer waits for line 6, 15.1 s because parts 0 and 1 of line 7 are shorter. The Builder's estimate was 54.4 s.
+The film: the units of this branch add up to 196.1 s (was 214.8 s), STATED by adding config.film.units. With the Decision unit at 14.6 s as on agent/b-decision it would be 189.0 s, STATED, not built.
+
+### Which acting is at which second of the unit (film, MEASURED from the list of events unless marked)
+
+| what | kept takes | lines without pauses |
+|---|---|---|
+| the tick, line 6 starts | 3.80 | 3.80 |
+| "The form" (STATED from the starts) | 7.76 | 5.77 |
+| the button cracks | 9.70 | 6.11 |
+| "takes that as a threat." (STATED) | 10.23 | 6.62 |
+| the machine unfolds | 10.30 | 6.71 |
+| the arrow hides, then cowers (the script's numbers) | 10.69, 11.19 | 7.10, 7.60 |
+| line 6 ends (STATED) | 12.29 | 8.07 |
+| the boss is formed; part 0 of line 7 starts; the arrow sags and starts to drift | 12.59 | 9.00 |
+| the drift's first leg ends (the script's number) | 21.92 | 13.53 |
+| "Their hand moves" (STATED) | 30.47 | 17.32 |
+| "to close the Chrome tab." (STATED) | 33.36 | 18.53 |
+| part 0 ends, the drift ends (`boss-turn`) | 35.92 | 20.33 |
+| part 1 starts, the arrow stops and stands plain | 36.22 | 20.63 |
+| "their student loans.", the music (`boss-music`) | 40.02 | 21.86 |
+| part 2 starts: the turn back, the snap, the step before the shield in 0.5 s | 42.11 | 23.41 |
+| the gold and the figure (`power-up`) | 42.71 | 24.02 |
+| "One more round." (STATED) | 44.86 | 24.47 |
+| part 2 ends (STATED) | 46.07 | 25.32 |
+| the turret rises | 44.46 | 25.77 |
+| the turret locks | 46.07 | 27.38 |
+| the first dart | 46.15 | 27.47 |
+| the power goes | 58.00 | 39.31 |
+| the blast is let go, the body is gone | 63.13, 65.26 | 44.44, 46.58 |
+| the fist on the button | 70.66 | 51.97 |
+
+Everything from the turret's lock on is 18.69 s sooner and otherwise as it was: the fight's own beats and the finish were not touched.
+
+### What sits on a phrase and what does not
+
+- The crack and the unfolding keep their place against line 6 by themselves: the crack was 0.53 s before "takes that as a threat." and is 0.51 s before it; the unfolding was 0.07 s after its start and is 0.09 s after.
+- The music is on the start of "their student loans." as before (`LINE7.music` is that start).
+- The turn back is on the start of "They turn back." as before, and the gold 0.6 s after it, before "One more round." as before.
+- The hand to the tab is NOT on "Their hand moves" and was not before: the drift is two legs over the whole of part 0, the first 0.4 of the part long, and the arrow points at the tab's corner for all of it (src/pages/step4/script.ts and the `hold` stage of the page). It moved with the part: the legs take 4.53 and 6.80 s (were 9.33 and 13.99 s), 59 and 63 px a second (were 29 and 31). Not changed; if the second leg should start on "Their hand moves" that is one key of the script.
+
+### Acting that needs longer than its line now gives (kept whole, nothing squeezed, no hold added)
+
+- The rise: 3.954 s from the turn back to the lock, and part 2 is 1.91 s. The line ends 2.04 s before the lock; the gold, the figure and the turret carry the rest. Ruled wanted.
+- The forming, in the film: the boss is formed 5.20 s after the tick (1.6 s under the answer and 3.6 s of unfolding, the fight's own table), and line 6 with its gap is 4.57 s. Line 7 starts on `boss-formed`, 0.93 s after line 6's last word (it was 0.30 s). The 3.59 s the arrow used to wait under the answer are gone.
+- The forming, on the live site, MEASURED (`BOSS_SAY=1 npx vitest run tests/b-boss.test.ts -t "rulings of 04:46, 3"`): formed 5.80 s after the tick on both paths, so line 7 starts 1.53 s after line 6's last word (it was 0.30 s). A press between the forming and the end of line 6 can no longer happen, because line 6 is over before the boss is formed; a press in the first tenth of a second of line 7 is still kept and acts at 0.1 s.
+
+Live, MEASURED by the same run, seconds after the tick: one who presses at once: formed 5.800, turn 5.900, the first sentence of part 0 whole to 2.264 s of itself, music 9.596, power-up 11.750, lock 15.108, pointer held 3.304 s at the longest (the rise, as before). One who never presses: turn 17.129, music 18.654, power-up 20.813, lock 24.171, held 6.004 s (the drift, as before). With the kept takes the lock was at 24.116 and 42.263.
+
+### Tests
+
+- New: tests/b-boss-fast.test.ts, 5 tests, holds `LINE6` and `LINE7` to fast-takes.json, and the rise to the kept length of part 2 in that file.
+- Left red and not bent: tests/takes-timing.test.ts, 5 of 7 (line 7 may start no sooner than line 6 has ended; part 0; the sentence ends of part 0; part 1; part 2). They hold the page to public/audio/index.json and go green when takes of these lengths are kept there (the last one also asks that the gold ends inside part 2, which it no longer does: that one must be re-pinned to the rise when the takes are kept).
+- Re-pinned in tests/b-boss.test.ts, all holding under the kept numbers too (40 passed at df8f8b75):
+  - "mail of 01:00": in the film the boss is formed at the later of line 6's end and the forming's own length after the tick (it asked for line 6's end only); for the bots, the turn, the music and the lock are counted from the start of line 7, the later of line 6's end and the forming (it asked that the forming be before line 6's end).
+  - "rulings of 04:46, 3": the six kinds of press are counted from the forming and from the start of line 7 instead of from the end of line 6, and the lock uses `rise`. The claim that the forming is 2 s before line 6's end is gone, since it is no longer so.
+  - "note of 21:27" (the stand-in's size): leaves out the one picture of the look, `boss-look`. Under the kept timing its 28 s held no frame of the fight (the fight stage began at 44.32 s), so it compared nothing; under this timing the fight stage starts at 25.61 s and the look's picture, which spans the screen, was the only far shape (1,105 px against 374). With the look on the stand-in's body is not drawn; what the test still holds is `boss-word` and the two numbers of `BODY`.
+
+### What the branch needs outside my files before the site starts on it
+
+MEASURED 09:32Z to 09:37Z (`node pipeline/change002/boss-talk.mjs ...`, which opens the site): on this branch as pushed "The site cannot start. 3 problems", all three of the narration: lines 6, 7 part 0 and 7 part 1 each run into the next. Three things are needed, none of them mine to commit:
+
+1. The index must hold takes of the new lengths. For a trial I set the seconds and the phrase starts of the four boss lines in public/audio/index.json from fast-takes.json in my working tree and put the file back after; nothing of it is committed and no sound file was touched.
+2. `npm run retime` with that index (RETIME EXIT 0) moves the starts of the lines in content/narration.json: boss.verify.0 `at` 0.54286 to 0.76, boss.unfold.0 0.14992 to 0.19438, boss.unfold.1 0.78328 to 0.75871, boss.unfold.2 0.94119 to 0.89391, and in content/narration-drafts.json boss.finish.0 0.00072 to 0.00144. In the film: line 6 from 125.100 to 129.370 s, part 0 from 130.304 to 141.629, part 1 from 141.929 to 144.414, part 2 from 144.715 to 146.625. Not committed (the ruling is not to touch content/narration.json); it is in pipeline/change002/boss-fast-narration-NEEDS.patch, and the same command gives it.
+3. After both, the site still does not start: the check `contentProblems` in src/copy.ts gives every line of the film the length of its words at `audio.narratorMaxWordsPerSecond` (1.6, config), not the length of its take, and the lines without pauses are quicker than that. By that check line 6 runs 6.875 s (11 words) and has 4.904 s, part 0 has 11.325 s for 29 words, part 1 has 2.486 s for 7 words: the boss lines need 2.82 words a second or more, or the check must read the takes' lengths. For the pictures only I ran with that number at 3 in my working tree and put it back.
+
+### The pictures and how they were made (working tree only, all put back)
+
+1. The seconds and the phrase starts of line.boss.verify.0 and line.boss.unfold.0, .1, .2 in public/audio/index.json set from pipeline/change002/fast-takes.json (a few lines of Python outside the repo; no other field, no sound file).
+2. `"narratorMaxWordsPerSecond": 1.6` set to 3 in config/showcase.json.
+3. `npm run -s retime` (RETIME EXIT 0; the five starts named above).
+4. `node pipeline/change002/boss-talk.mjs --from 3.8 --to 28.3 --every 0.5 --out /tmp/talk` and `--from 23.2 --to 27.6 --every 0.2 --out /tmp/rise`: film frames at 960 by 540, tier draft, the site built at the opening of the session.
+5. `git checkout -- public/audio/index.json content/ config/showcase.json`.
+The strips are put together outside the repo: each frame at 240 by 135 with its second, its film frame and, under it, the phrase that fast-takes.json has being said at that second (line 6 from the tick at 3.80 s, part 0 from 9.004 s, part 1 from 20.629 s, part 2 from 23.414 s). The words under the frames are lettered by that tool; they are not the film's own captions, which were not drawn.
+
+### Read off the pictures and the events
+
+- The stillest stretch, MEASURED on the half-second frames (pixels of 518,400 that differ by more than 12 from the frame before): 588 at 21.3 s, 42 at 21.8, 5 at 22.3, 0 at 22.8, 0 at 23.3. From about 21.3 s to the turn back at 23.41 s nothing moves in the picture, 2.1 s, while "they remember / their student loans." is said and the music comes in (21.86 s). The arrow stops at 20.33 s. Under the kept takes the arrow stood from 35.92 to 42.11 s, 6.19 s, STATED from the script, not drawn.
+- During part 0 (9.0 to 20.3 s) 2,440 to 9,448 pixels change each half second: the arrow's drift and nothing else that I can name.
+- Without a line: 8.07 to 9.00 s (the forming), 25.32 s to the lock at 27.38 s (the rise), and the whole fight after it.
+- The rise against the words has changed, and this is the one thing I would have ruled on: under the kept take "One more round." started 2.15 s after `power-up`, when the gold was nearly full (it is full 2.0 s after). Now it starts 0.46 s after `power-up` (24.47 s) and ends at 25.32 s, while the figure is getting up and the gold has just begun; the gold is full at 26.02 s and the fists are held with no line. The power-up cannot start sooner than the turn back that precedes it.
+- The figure of the rise stands against the left pane of glass in the film, at the stand it had before this change (`RAISE` and the script's stand are not touched). UNKNOWN whether that was looked at before.
+
+### Checks on this branch (kept index, as pushed)
+
+One at a time: TSC EXIT 0; b-boss EXIT 0 (40), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-boss-state EXIT 0 (1), b-finish EXIT 0 (23), b-boss-fast EXIT 0 (5), takes-timing EXIT 1 (5 failed, 2 passed).
+The whole suite, 09:37Z to 09:44Z: WHOLE EXIT 1, 10 files and 50 tests failed, 2,333 passed, 29 skipped of 2,412.
+- Red on 1c0522a3 too (MEASURED there, the same nine files run alone, 31 failed): tests/b-shell-turn.test.ts 1, tests/config.test.ts 26 (the film is longer than film.maxSeconds), tests/polish-hand.test.ts 1, tests/polish-keys2.test.ts 1, tests/polish-turn2.test.ts 2.
+- New with this branch, 19: tests/takes-timing.test.ts 5 and tests/audio-visit.test.ts 3 (the index and the voice still hold the kept takes), tests/content.test.ts 8 (the three boss lines run into the next by the start check), tests/cut-of-build.test.ts 2 and tests/film-cut.test.ts 1 (cut/ is the kept film's; `npm run cut` was not run).
+Not run: RETIME and CUT as checks of the chain (RETIME only on the trial index of the four boss lines, to get the starts), the gates, a browser on the live site, tier final.
+
+## The Builder's ruling of 09:59Z on the fast timing: five things (10:00Z to 10:25Z)
+
+All of it is on agent/b-boss-fast, in commits headed `NEEDS:`, because it types phrase marks of the lines without pauses. Seconds below are seconds of the unit in the film; part 2 starts at 23.41 s.
+
+1. The power-up on the words. `LINE7.getup` 0.2: the figure starts to get up 0.2 s into "They turn back.", when the arrow has come back from the top. `LINE7.power` 1.057, the start of "One more round.": the fists are up and the gold starts (`power-up`). `LINE7.glow` 0.853: the gold is full at the end of the line, 1.91 s. `LINE7.full` 0.8: it is held full, then the figure bursts and lies down while the view goes back, and the turret locks 0.05 s after it lies on the page. `LINE7.rise` is 3.456 s (was 3.954). tests/b-boss-fast.test.ts holds `power` to the phrase start in fast-takes.json, `power + glow` to the line's end within 0.1 s, the fists and the burst to those marks through the figure's own plan, so a new take that moves a mark makes the test red until the numbers are typed again. MEASURED on the figure's module: flame 0.12 until 1.057 s, 0.29 at 1.3, 0.74 at 1.6, 0.97 at 1.81, 1.00 at 1.91, 1.00 to 2.7, burst at 2.710, on the page again at 3.406.
+   - This needed the figure's module (src/boss/finish/acting.ts) to be told two more things, both optional: `fists`, the time by which the fists are up (the moves are played at the pace that gives, 0.536 of their own time here; the module's own floor is 0.55), and `full`, the time at which the flame is full (it builds from `fists` and is then held to the burst). Without them it plays as before. It is a commit of its own, `pipeline/change002/boss-rise-NEEDS.patch`.
+   - The low ring of flame and a first tenth of the glow are there from the moment the figure is up, as before; the build is what starts on "One more round.".
+   - `RAISE.back` is gone: the view goes back from the burst until the figure lies on the page, in the film and on the live site.
+   - On the live site the same marks hold; the arrow turns angry on `power-up` as before (tests/boss-closer-acting.test.ts pins that, unchanged).
+2. The hand to the tab. From the forming the arrow drifts 268 px out of cover in 8.32 s (32 px a second; 59 before this mend, 29 with the kept takes). On "Their hand moves" (17.32 s) it sets off for the top edge, 404 px, speeding up; it is at the edge when "the Chrome tab." has been said (20.33 s), feels 42 px along the edge in the gap and stops dead on "But then" (20.63 s).
+3. The stop. On "they remember" (21.12 s) the arrow lets go of its aim at the tab and looks up (`doubleTake`); on "their student loans." (21.86 s), with the music, it stands plain again. Before this mend it stood plain from "But then". SEEN in the frames every 0.1 s: lying grey and flat to 21.1 s, turned and lifted at 21.2 s, pale to 21.9 s, upright with its dark edge from 22.0 s.
+4. The view, film only. The whole page until "is ready to give up." has been said (11.27 s), then closer at an even rate to 1.6 times at the end of part 0 (20.33 s), on the arrow, by the same clamp the power-up's view uses, so the left edge of the page stays the left edge of the picture; SEEN in the frames every second, the boss is cut at the right and lower edge of the picture from about 19 s to 23.4 s and the bar is out of the picture from about 13 to 18 s; it goes up with the arrow to the top of the page, stands still from "But then", comes down to the figure's stand through "They turn back." (1.057 s) and is the power-up's view from then on. No new part: `talk()` in src/pages/step4/index.ts and the page's `view()`. The live page's view is as it was, with the new times.
+5. Where the figure stands. It stood at the fight's first stand (470, 500), where its darts glance off the shield; the pane's face is at 380 px as drawn and the left fist was 23 px from it. The fists span 155 px (MEASURED on a 1920 px frame). It now gets up at (680, 500): left fist 235 px from the pane (1.52 times its span), right fist about 55 px and the flames about 15 px from the shield's glass (read off the 1280 px frame). It slides the 210 px to the fight's first stand between the burst and the lock, while it lies down. MEASURED: every event from the lock on is at the same time after the lock as before, to 0.01 s, on the first 8 of each of 46 names.
+
+The unit is 52.6 s (was 53.1): the press at 51.47 s, the page turn at 52.10 s. Marks: tick 3.80, crack 6.11, formed 9.00, turn 20.33, music 21.86, power-up 24.48, turret rises 25.27, lock 26.88, first dart 26.97, power-down and fall 38.81, arms 39.82, fire 43.94, gone 46.08, walk 46.48, kneel 49.26, fist 50.57, press 51.47.
+
+The whole suite on a56d2cf5, read 10:31Z November 28 (`npx vitest run`, one job): WHOLE EXIT 1, 11 files and 51 tests red, 2332 passed, 29 skipped. The list of 09:46Z had 10 files and 50 tests. The names are the same but for one new red: tests/site-finish-film.test.ts, "finds the worst moments", which asks that on the keen visitor's step 4 the big blast fires within 1 s after a corner gun. MEASURED (`node /tmp/livek.mjs`, the keen visitor on the live step 4, seconds after the lock): before this change the corner guns fired at 3.65, 9.56, 15.46 and 21.37 and the big blast at 7.26, 21.87 and 25.90, so the second blast came 0.50 s after a gun; now the guns fire at 3.65, 9.55, 15.46 and 21.36 and the big blast at 7.25 and 24.68, the nearest 3.32 s after a gun, and the boss goes down 34.61 s after the lock (35.51 before). The first dart hit is 0.58 s after the lock (0.56 before): the keen visitor's hand is not where it was at the lock, since the lock comes 0.5 s sooner, and its fight runs differently from there. In the film the big blast was never within 1 s of a gun (guns 30.52 and 36.43, blast 34.15). The test is not one of the boss files and is left as it is; the Builder is told.
+

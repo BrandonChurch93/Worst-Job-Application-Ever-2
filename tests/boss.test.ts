@@ -5,6 +5,7 @@ import { pages } from '../src/pages'
 import { FLOOR, SOCKET, WAKE_AFTER_TICK } from '../src/boss/plan'
 import { GUARD, MERCY, POPUPS_ON } from '../src/boss/tune'
 import { makePage } from '../src/pages/step4'
+import { BANNER_KEY, POPUPS, SLAB_KEYS } from '../src/pages/step4/layout'
 import { ACT, HOLD } from '../src/pages/step4/script'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords } from '../src/shell/words'
@@ -71,14 +72,17 @@ describe('step 4, the boss', () => {
     expect(layoutProblems(page.layout, { width: page.width, height: page.height })).toEqual([])
   })
 
-  it('shows only words that resolve to a key, and uses all the copy of step 4', () => {
+  it('shows only words that resolve to a key, and uses all the copy of step 4 but the words of the slabs and of the pop-up windows, which its layout names only while the switch that brings them back is on', () => {
     const page = makePage()
     const register = typeRegister(page.layout)
     for (const entry of register) expect(hasWords(entry.key), entry.key).toBe(true)
     const used = new Set(register.map((e) => e.key))
     const want = leaves((copy as unknown as Record<string, unknown>).step4, 'copy:step4', [])
     expect(want.length).toBeGreaterThan(20)
-    for (const key of want) expect(used.has(key), key).toBe(true)
+    const out = POPUPS_ON ? [] : [...SLAB_KEYS.filter((k) => k !== BANNER_KEY), ...POPUPS.flatMap((p) => [p.title, ...p.buttons])]
+    expect(out.length).toBe(POPUPS_ON ? 0 : 12)
+    for (const key of out) expect(want.includes(key) && hasWords(key), key).toBe(true)
+    for (const key of want) expect(used.has(key), key).toBe(!out.includes(key))
     const runs = [play(film()), play(live(still)), play(live(keen()))]
     for (const run of runs) {
       expect([...run.problems]).toEqual([])

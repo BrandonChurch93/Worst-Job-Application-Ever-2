@@ -36,7 +36,7 @@ export const SLOT = { w: 96, h: 10, cx: ZONE.x + ZONE.w * 0.84, cy: FORM_BOTTOM 
 export const PLATE_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
 export const PLATE = { pad: 22, h: 52, gap: 18, thick: 8, r: 10 }
 export const plateBox = (): { x: number; y: number; w: number; h: number } => {
-  const w = Math.round(block(PLATE_TYPE.font, words('copy:drafts.step1.resume.shredderLabel'), PLATE_TYPE.px).width + PLATE.pad * 2)
+  const w = Math.round(block(PLATE_TYPE.font, words('copy:step1.resume.shredderLabel'), PLATE_TYPE.px).width + PLATE.pad * 2)
   return { x: SLOT.cx - SLOT.w / 2 - PLATE.gap - w, y: FORM_BOTTOM + 8, w, h: PLATE.h }
 }
 
@@ -79,10 +79,10 @@ export function folderNode(): LayoutNode {
   const bar = { x: WIN.x + BAR.inset, y: WIN.y + BAR.inset, w: WIN.w - BAR.inset * 2, h: BAR.h }
   const barTop = WIN.top + BAR.up
   const knob = node('resume-folder-knob', 'knob', [bar.x + 20, bar.y + (bar.h - BAR.knob) / 2, BAR.knob, BAR.knob], { part: 'shell', shape: 'disc', floor: barTop, height: barTop + 4, tone: 'accent' })
-  const title = text('resume-folder-title', 'copy:drafts.step1.resume.folderTitle', WIN_TYPE, bar.x + 20 + BAR.knob + 18, bar.y + (bar.h - cap(WIN_TYPE.font, WIN_TYPE.px)) / 2, { part: 'type', on: barTop, tone: 'inkLight' })
+  const title = text('resume-folder-title', 'copy:step1.resume.folderTitle', WIN_TYPE, bar.x + 20 + BAR.knob + 18, bar.y + (bar.h - cap(WIN_TYPE.font, WIN_TYPE.px)) / 2, { part: 'type', on: barTop, tone: 'inkLight' })
   const head = node('resume-folder-bar', 'windowBar', [bar.x, bar.y, bar.w, bar.h], { part: 'shell', r: BAR.r, floor: WIN.top, height: barTop, tone: 'metal', children: [knob, title] })
   const tileTop = WIN.top + TILE.up
-  const name = text('resume-file-name', 'copy:drafts.step1.resume.fileName', FILE_TYPE, PAPER_REST.x + PAPER.w + TILE.gap, PAPER_REST.y + (PAPER.h - cap(FILE_TYPE.font, FILE_TYPE.px)) / 2, { part: 'type', on: tileTop })
+  const name = text('resume-file-name', 'copy:step1.resume.fileName', FILE_TYPE, PAPER_REST.x + PAPER.w + TILE.gap, PAPER_REST.y + (PAPER.h - cap(FILE_TYPE.font, FILE_TYPE.px)) / 2, { part: 'type', on: tileTop })
   const tile = node('resume-file', 'fileTile', [TILE.x, TILE.y, TILE.w, TILE.h], { part: 'shell', r: TILE.r, floor: WIN.top, height: tileTop, tone: 'raised', children: [name] })
   return node('resume-folder', 'card', [WIN.x, WIN.y, WIN.w, WIN.h], { part: 'shell', r: WIN.r, height: WIN.top, over: true, states: ['folder'], children: [head, tile] })
 }
@@ -90,7 +90,7 @@ export function folderNode(): LayoutNode {
 // The name plate of the machine, shown in the layout state `shredder`.
 export function plateNode(): LayoutNode {
   const b = plateBox()
-  const label = text('resume-shredder-label', 'copy:drafts.step1.resume.shredderLabel', PLATE_TYPE, b.x + b.w / 2, b.y + (b.h - cap(PLATE_TYPE.font, PLATE_TYPE.px)) / 2, { part: 'type', on: PLATE.thick, tone: 'inkLight' })
+  const label = text('resume-shredder-label', 'copy:step1.resume.shredderLabel', PLATE_TYPE, b.x + b.w / 2, b.y + (b.h - cap(PLATE_TYPE.font, PLATE_TYPE.px)) / 2, { part: 'type', on: PLATE.thick, tone: 'inkLight' })
   return node('resume-shredder-plate', 'namePlate', [b.x, b.y, b.w, b.h], { part: 'shell', r: PLATE.r, height: PLATE.thick, tone: 'accent', over: true, states: ['shredder'], children: [label] })
 }
 

@@ -1,0 +1,46 @@
+diff --git a/content/narration-drafts.json b/content/narration-drafts.json
+index 1e81f555..bcf9a50e 100644
+--- a/content/narration-drafts.json
++++ b/content/narration-drafts.json
+@@ -5,7 +5,7 @@
+   "film": {
+     "boss.finish": [
+       {
+-        "at": 0.00072,
++        "at": 0.00144,
+         "text": "I have / five years / of experience",
+         "state": "draft",
+         "loud": true,
+diff --git a/content/narration.json b/content/narration.json
+index 6020b5d9..c95628fb 100644
+--- a/content/narration.json
++++ b/content/narration.json
+@@ -90,24 +90,24 @@
+     "pinball.drain": [],
+     "boss.verify": [
+       {
+-        "at": 0.54286,
++        "at": 0.76,
+         "text": "They declare themselves human. / The form / takes that as a threat.",
+         "live": "the visitor ticks the checkbox"
+       }
+     ],
+     "boss.unfold": [
+       {
+-        "at": 0.14992,
++        "at": 0.19438,
+         "text": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
+         "live": "the boss has formed and the applicant stops"
+       },
+       {
+-        "at": 0.78328,
++        "at": 0.75871,
+         "text": "But then / they remember / their student loans.",
+         "live": "straight after the line before it; the boss music starts on the words their student loans"
+       },
+       {
+-        "at": 0.94119,
++        "at": 0.89391,
+         "text": "They turn back. / One more round.",
+         "live": "straight after the line before it, over the boss music"
+       }

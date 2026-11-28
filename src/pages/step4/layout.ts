@@ -5,7 +5,7 @@ import { block } from '../../shell/metrics'
 import { button, buttonWidth, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { ARENA, FALLEN, HOME, SLAB_H, SOCKET } from '../../boss/plan'
-import { BANNER_LEFT, LAST, POPUP_RIGHT, RACK_GAP } from '../../boss/tune'
+import { BANNER_LEFT, LAST, POPUP_RIGHT, POPUPS_ON, RACK_GAP } from '../../boss/tune'
 import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../boss/weapons'
 
 const heights = config.scale.heights
@@ -146,7 +146,7 @@ export function makeLayout(): Step4Layout {
     children: [text('banner-words', BANNER_KEY, { ...BANNER_TYPE, align: 'centre' }, BANNER_LEFT + banner.w / 2, ARENA.y0 + 20 + (banner.h - bannerBlock.cap) / 2, { part: 'boss-weapons', on: heights.slab, tone: 'inkLight' })]
   })
 
-  const fightType = group('fight-type', [rack, ...popupNodes, bannerNode], { over: true, states: ['fight'] })
+  const fightType = group('fight-type', POPUPS_ON ? [rack, ...popupNodes, bannerNode] : [bannerNode], { over: true, states: ['fight'] })
 
   const tree = page('step4', SCREEN_H, [...stepHead(4), health, verify, submit, defeated, fightType])
   const b = (id: string): Box => boxOf(tree, id)

@@ -159,7 +159,7 @@ function rowNodes(i: number): LayoutNode[] {
   const value = (suffix: string, key: string, cond: string, soft: boolean): LayoutNode =>
     text(`${name}-${suffix}`, key, { ...TYPE.value, wrap: FW - 116, ...(soft ? { ink: 'soft' } : {}) }, FX + PAD, capY, { part: 'type', on: VALUE_Z, states: [`${name}-${cond}`] })
   const values: LayoutNode[] = []
-  if (name === 'birth') values.push(value('ask', 'copy:drafts.step2.birth.placeholder', 'ask', true), value('typed', 'runtime:step2.birth', 'typing', false))
+  if (name === 'birth') values.push(value('ask', 'copy:step2.rows.birth.placeholder', 'ask', true), value('typed', 'runtime:step2.birth', 'typing', false))
   const chevron = node(`${name}-chevron`, 'chevron', [FX + FW - PAD - 28, y + (FH - 28) / 2, 28, 28], { part: 'rows', shape: 'none' })
   const here = { states: [`${name}-here`] }
   return [
@@ -175,7 +175,7 @@ function plateNodes(i: number): LayoutNode[] {
   const line = (suffix: string, key: string, cond: string): LayoutNode => text(`${name}-plate-${suffix}`, key, PLATE_TYPE, PAGE_W / 2, PLATE_Y, { part: 'type', states: [`${name}-plate-${cond}`] })
   const out = [line('typed', `runtime:step2.${name}`, 'typing')]
   if (name === 'phone') out.push(line('value', 'copy:step2.rows.phone.gaveUp', 'done'))
-  if (name === 'birth') out.push(line('value', 'copy:step2.rows.birth.recorded', 'done'), line('missed', 'copy:drafts.step2.birth.missed', 'missed'))
+  if (name === 'birth') out.push(line('value', 'copy:step2.rows.birth.recorded', 'done'), line('missed', 'copy:step2.rows.birth.missed', 'missed'))
   if (name === 'volume') out.push(line('value', 'copy:step2.rows.volume.done', 'done'))
   return out
 }
@@ -203,14 +203,14 @@ function slotNodes(): LayoutNode[] {
     const marks = s.strips[r]!.map((legend) =>
       text(reelId(r, legend), `data:step2.${s.names[r]}.${legend}`, type, s.reelX(r) + s.reelW / 2, s.reelY + (s.reelH - cap) / 2, { part: 'slot', on: TOP + 14, states: [reelId(r, legend)] }))
     reels.push(node(`slot-reel-${r}`, 'slotReel', [s.reelX(r), s.reelY, s.reelW, s.reelH], { part: 'slot', height: TOP + 14, floor: TOP + 10, tone: 'paper', r: 6, children: marks }))
-    const label = text(`${stopId(r)}-label`, 'copy:drafts.step2.birth.stop', STOP_TYPE, s.reelX(r) + s.reelW / 2, s.stopY + (s.stopH - block(STOP_TYPE.font, 'X', STOP_TYPE.px).cap) / 2, { part: 'type', on: STOP_Z, tone: 'inkLight' })
+    const label = text(`${stopId(r)}-label`, 'copy:step2.rows.birth.stop', STOP_TYPE, s.reelX(r) + s.reelW / 2, s.stopY + (s.stopH - block(STOP_TYPE.font, 'X', STOP_TYPE.px).cap) / 2, { part: 'type', on: STOP_Z, tone: 'inkLight' })
     stops.push(node(stopId(r), 'button', [s.reelX(r), s.stopY, s.reelW, s.stopH], { part: 'rows', shape: 'capsule', height: STOP_Z, floor: TRAY_Z, tone: 'accent', children: [label] }))
   }
   const window = node('slot-window', 'slotWindow', [s.x + 10, s.y + 14, s.w - 20, s.h - 28], { part: 'slot', height: TOP + 10, floor: TOP + 8, tone: 'dark', r: 8, children: reels })
   const cabinet = node('slot-cabinet', 'slotCabinet', [s.x, s.y, s.w, s.h], { part: 'slot', height: TOP + 20, floor: TRAY_Z, tone: 'metal', r: 12, mechanism: true, children: [window] })
   const knob = node('slot-knob', 'slotKnob', [s.leverX - s.knob / 2, s.knobY - s.knob / 2, s.knob, s.knob], { part: 'slot', shape: 'disc', height: TOP + 40, floor: TOP + 12, tone: 'accent', mechanism: true })
   const payout = node('slot-payout', 'slotPayout', [s.payX, s.payY, s.payW, s.payH], { part: 'slot', height: 6, floor: TRAY_Z, tone: 'dark', r: 6 })
-  return [cabinet, knob, payout, ...stops, centred('slot-prompt', 'copy:drafts.step2.birth.panel', 'birth-panel', 1)]
+  return [cabinet, knob, payout, ...stops, centred('slot-prompt', 'copy:step2.rows.birth.stopPanel', 'birth-panel', 1)]
 }
 
 function crankNodes(): LayoutNode[] {
@@ -227,7 +227,7 @@ function crankNodes(): LayoutNode[] {
   for (let k = 0; k < 10; k++) segs.push(node(`meter-${k + 1}`, 'meterSegment', [c.segX + k * (c.segW + c.segGap), c.segY, c.segW, c.segH], { part: 'crank', shape: 'capsule', height: 12, floor: TRAY_Z, tone: 'glass' }))
   const wide = 10 * c.segW + 9 * c.segGap
   const meter: LayoutNode = { id: 'meter', kind: 'row', box: [c.segX, c.segY, wide, c.segH], children: segs, flow: 'row', gap: c.segGap, part: 'crank' }
-  const words = text('crank-sign-words', 'copy:drafts.step2.volume.sign', SIGN_TYPE, c.segX + wide / 2, c.signY + (c.signH - block(SIGN_TYPE.font, 'X', SIGN_TYPE.px).cap) / 2, { part: 'type', on: SIGN_Z, tone: 'inkLight' })
+  const words = text('crank-sign-words', 'copy:step2.rows.volume.sign', SIGN_TYPE, c.segX + wide / 2, c.signY + (c.signH - block(SIGN_TYPE.font, 'X', SIGN_TYPE.px).cap) / 2, { part: 'type', on: SIGN_Z, tone: 'inkLight' })
   const sign = node('crank-sign', 'sign', [c.segX, c.signY, wide, c.signH], { part: 'rows', height: SIGN_Z, floor: TRAY_Z, tone: 'accent', r: 16, children: [words] })
   return [base, arm, hub, grip, meter, sign]
 }

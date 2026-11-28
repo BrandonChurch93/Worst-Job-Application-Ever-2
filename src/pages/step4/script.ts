@@ -1,10 +1,10 @@
 import type { Reaction } from '../../cursor/body'
 import { FALLEN } from '../../boss/plan'
-import { BIG, FINISH, LAST as LAST_MOMENT, LINE6, LINE7, LOOK1_ON, SHOUT } from '../../boss/tune'
+import { BIG, FINISH, LAST as LAST_MOMENT, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT } from '../../boss/tune'
 import type { Pointer } from '../../stage/types'
 import type { Step4Layout } from './layout'
 
-type Ease = 'out' | 'in'
+type Ease = 'out' | 'in' | 'line'
 type Key = [number, number, number, Ease?]
 
 export interface FilmScript { pointer(time: number): Pointer; reactions: { at: number; name: Reaction }[]; tickAt: number }
@@ -17,17 +17,18 @@ export interface FilmScript { pointer(time: number): Pointer; reactions: { at: n
 // At the last it takes the low side, the high side and the low side again, each before the shield has come round, firing faster and faster.
 // The collapse: it ducks two frames after the power goes, then walks to the fallen button and sags as it gets there, so it is scorched and sagging at the key.
 // The press: it gathers itself, sets its point on the button and drops its whole weight on it (the page cues the stamp and the relief that is held after it).
-// Line 7: from the forming the arrow sags and drifts up toward the top right, as if to close the tab; it stops on the second part, and on the third it turns back and squares up before the shield, the gold builds on it and the turret rises as the boss's answer.
+// Line 7: from the forming the arrow sags and drifts slowly out of cover; on "Their hand moves" it sets off for the top edge, where the tab would be closed, is there when "the Chrome tab." has been said, feels along the edge and stops dead on "But then". On the third part it turns back to its stand before the shield, gets up, the gold builds on it and the turret rises as the boss's answer.
 // The finish: it stands where its last shot left it, its arms come out, it charges for as long as the film holds the button and fires; when the body is gone it walks to the button that is left and presses it.
 // The times of the film hang on these: the tick, the crack that follows it, the lengths of line 7 and of the finish in the tuning file, and the length of the fight as the film plays it.
 const TICK = 3.8
-// The forming waits for line 6: `boss-formed` comes LINE6.after after the tick. BASE is the second the fight's own table counts the forming at, as it was seen when the table was tuned; WAIT is what the wait adds, spent under the answer.
-const FORMED = Number((TICK + LINE6.after).toFixed(3))
+// The forming waits for line 6 when line 6 is the longer: `boss-formed` comes LINE6.after after the tick, and no sooner than BASE. BASE is the second the fight's own table counts the forming at, as it was seen when the table was tuned; WAIT is what the wait adds, spent under the answer.
 const BASE = 9.004
+const FORMED = Number(Math.max(BASE, TICK + LINE6.after).toFixed(3))
 const WAIT = Number((FORMED - BASE).toFixed(3))
-export const HOLD = LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.part2 - BIG.lock
+export const HOLD = LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.rise - BIG.lock
 export const SHIFT = HOLD + WAIT
-const TWO = FORMED + LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap
+const ONE = FORMED + LINE7.part0 + LINE7.gap
+const TWO = ONE + LINE7.part1 + LINE7.gap
 export const FIGHT = 13.69
 // The last charge, in seconds of the fight's own table: when it leaves the right for the shield's face, and when it leaves that for the high side.
 const LAST = [20.4, 21.55] as const
@@ -55,8 +56,12 @@ const RIGHT = { x: 1400, y: 500 } as const
 // The last charge is three stands on opposite sides of the boss, each one taken before the shield has come round.
 const LOW = { x: 1300, y: 880 } as const
 const OVER = { x: 1340, y: 240 } as const
-// Where line 7 takes it: up the left of the boss and on toward the top right.
-const DRIFT = [{ x: 520, y: 430 }, { x: 900, y: 236 }] as const
+// Where line 7 takes it: up the left of the boss, then to the top edge of the page and a little along it.
+const DRIFT = [{ x: 520, y: 430 }, { x: 478, y: 26 }, { x: 520, y: 22 }] as const
+// For the film's view of line 7: where the arrow stops at the top, and where it stands for the rise.
+// Where it gets up for the rise: between the left pane and the shield, the figure's fists 235 px from the pane as it is drawn (one and a half times the 155 px they span) and its flames 34 px short of the shield's glass. It slides to the fight's first stand while it lies down again.
+const RISE_AT = { x: 680, y: 500 } as const
+export const TALK = { top: DRIFT[2], stand: RISE_AT } as const
 
 export function makeScript(L: Step4Layout): FilmScript {
   const cb = L.checkbox
@@ -74,7 +79,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     [0, 960, 560], [0.5, 960, 560],
     [1.2, short.x, short.y, 'out'], [1.97, short.x, short.y], [2.2, back.x, back.y, 'out'], [3.45, back.x, back.y], [3.72, cb.cx, cb.cy + 2, 'in'], [3.98, cb.cx, cb.cy + 2],
     [4.34, answer.x, answer.y, 'out'], [5.3 + WAIT, answer.x, answer.y], [6.04 + WAIT, 820, 890], [6.1 + WAIT, 822, 892], [6.25 + WAIT, SHOCK.x, SHOCK.y, 'out'], [ACT.hide, SHOCK.x, SHOCK.y], [7.46 + WAIT, COVER.x, COVER.y, 'out'], [FORMED, COVER.x, COVER.y],
-    [FORMED + LINE7.part0 * 0.4, DRIFT[0].x, DRIFT[0].y], [FORMED + LINE7.part0, DRIFT[1].x, DRIFT[1].y], [TWO, DRIFT[1].x, DRIFT[1].y], [TWO + 0.5, GLANCE.x, GLANCE.y, 'out'],
+    [FORMED + LINE7.ends[5], DRIFT[0].x, DRIFT[0].y], [FORMED + LINE7.part0, DRIFT[1].x, DRIFT[1].y, 'in'], [ONE, DRIFT[2].x, DRIFT[2].y, 'line'], [TWO, DRIFT[2].x, DRIFT[2].y], [TWO + LINE7.getup, RISE_AT.x, RISE_AT.y, 'out'], [TWO + LINE7.part2 + LINE7.full, RISE_AT.x, RISE_AT.y], [TWO + LINE7.rise - RAISE.early, GLANCE.x, GLANCE.y],
     ...fight.map((k): Key => (k[3] ? [late(k[0]), k[1], k[2], k[3]] : [late(k[0]), k[1], k[2]])),
     [UNIT_SECONDS, OVER.x, OVER.y]
   ]
@@ -102,7 +107,7 @@ export function makeScript(L: Step4Layout): FilmScript {
         continue
       }
       const u = Math.min(1, Math.max(0, (time - a[0]) / (b[0] - a[0])))
-      const e = b[3] === 'out' ? 1 - (1 - u) ** 3 : b[3] === 'in' ? u ** 2.4 : u * u * (3 - 2 * u)
+      const e = b[3] === 'out' ? 1 - (1 - u) ** 3 : b[3] === 'in' ? u ** 2.4 : b[3] === 'line' ? u : u * u * (3 - 2 * u)
       x = a[1] + (b[1] - a[1]) * e
       y = a[2] + (b[2] - a[2]) * e
       break

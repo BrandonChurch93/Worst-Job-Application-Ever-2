@@ -65,6 +65,7 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   m.hull.position.set(p.hull.x, p.hull.y, p.hull.z)
   m.bay.visible = p.hull.show
   m.bay.position.copy(m.hull.position)
+  m.bay.rotation.set(0, 0, 0)
 
   m.button.position.set(p.button.jx, p.button.jy, p.button.z)
   m.button.scale.set(p.button.sx, p.button.sy, 1)
