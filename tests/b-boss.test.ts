@@ -460,7 +460,7 @@ describe('how the boss plays (change 002, item 15)', () => {
   it.each([
     ['who presses nothing', (): boolean => false, FINISH.alone, 4, 1],
     ['who holds the button and never lets go', (): boolean => true, SHOUT.fire - SHOUT.beats[0] + FINISH.late + 0.56, 4, 1],
-    ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2.55, 2, grown(1.5, 2)],
+    ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2.55, marksBy(1.5), grown(1.5, marksBy(1.5))],
     ['who clicks once and lets go', (u: number): boolean => u >= 0.5 && u < 0.7, 1.8, 1, FINISH.small],
     ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.76, marksBy(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0]), grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], marksBy(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0]))]
   ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (name, down, fires, charges, power) => {
