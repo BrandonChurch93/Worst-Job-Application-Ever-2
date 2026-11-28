@@ -1056,10 +1056,10 @@
         "words": "I HAVE",
         "glyphs": true,
         "box": [
-          854.6,
+          825.4,
           96,
-          210.7,
-          81.4
+          269.2,
+          103.3
         ]
       }
     },
@@ -1084,10 +1084,10 @@
         "words": "I HAVE FIVE YEARS",
         "glyphs": true,
         "box": [
-          697.5,
+          566.5,
           96,
-          524.9,
-          87.8
+          787,
+          122.1
         ]
       }
     },
@@ -1097,7 +1097,7 @@
       "phrase": 2,
       "words": "I have five years of experience",
       "first": 11067,
-      "last": 11194,
+      "last": 11112,
       "draft": true,
       "loud": true,
       "step": {
@@ -1112,10 +1112,10 @@
         "words": "I HAVE FIVE YEARS OF EXPERIENCE",
         "glyphs": true,
         "box": [
-          480,
+          85,
           97.6,
-          960,
-          162
+          1750,
+          145.7
         ]
       }
     },
@@ -1281,6 +1281,19 @@
       }
     }
   ],
-  "filter": "[0:v][1:v]overlay=0:0:enable='between(n,0,110)'[v1];[v1][2:v]overlay=0:0:enable='between(n,111,234)'[v2];[v2][3:v]overlay=0:0:enable='between(n,235,410)'[v3];[v3][4:v]overlay=0:0:enable='between(n,411,567)'[v4];[v4][5:v]overlay=0:0:enable='between(n,568,731)'[v5];[v5][6:v]overlay=0:0:enable='between(n,732,875)'[v6];[v6][7:v]overlay=0:0:enable='between(n,876,1033)'[v7];[v7][8:v]overlay=0:0:enable='between(n,1034,1167)'[v8];[v8][9:v]overlay=0:0:enable='between(n,1321,1466)'[v9];[v9][10:v]overlay=0:0:enable='between(n,1467,1602)'[v10];[v10][11:v]overlay=0:0:enable='between(n,1603,1740)'[v11];[v11][12:v]overlay=0:0:enable='between(n,1741,1875)'[v12];[v12][13:v]overlay=0:0:enable='between(n,2904,3027)'[v13];[v13][14:v]overlay=0:0:enable='between(n,3028,3165)'[v14];[v14][15:v]overlay=0:0:enable='between(n,3166,3358)'[v15];[v15][16:v]overlay=0:0:enable='between(n,3359,3539)'[v16];[v16][17:v]overlay=0:0:enable='between(n,3540,3662)'[v17];[v17][18:v]overlay=0:0:enable='between(n,3663,3707)'[v18];[v18][19:v]overlay=0:0:enable='between(n,4159,4288)'[v19];[v19][20:v]overlay=0:0:enable='between(n,4289,4472)'[v20];[v20][21:v]overlay=0:0:enable='between(n,4473,4535)'[v21];[v21][22:v]overlay=0:0:enable='between(n,4554,4648)'[v22];[v22][23:v]overlay=0:0:enable='between(n,4800,4919)'[v23];[v23][24:v]overlay=0:0:enable='between(n,4920,5080)'[v24];[v24][25:v]overlay=0:0:enable='between(n,5081,5213)'[v25];[v25][26:v]overlay=0:0:enable='between(n,5214,5332)'[v26];[v26][27:v]overlay=0:0:enable='between(n,7506,7742)'[v27];[v27][28:v]overlay=0:0:enable='between(n,7743,7891)'[v28];[v28][29:v]overlay=0:0:enable='between(n,7892,8014)'[v29];[v29][30:v]overlay=0:0:enable='between(n,8034,8165)'[v30];[v30][31:v]overlay=0:0:enable='between(n,8166,8344)'[v31];[v31][32:v]overlay=0:0:enable='between(n,8345,8544)'[v32];[v32][33:v]overlay=0:0:enable='between(n,8545,8714)'[v33];[v33][34:v]overlay=0:0:enable='between(n,8715,8864)'[v34];[v34][35:v]overlay=0:0:enable='between(n,8865,9106)'[v35];[v35][36:v]overlay=0:0:enable='between(n,9107,9279)'[v36];[v36][37:v]overlay=0:0:enable='between(n,9280,9432)'[v37];[v37][38:v]overlay=0:0:enable='between(n,9451,9554)'[v38];[v38][39:v]overlay=0:0:enable='between(n,9555,9678)'[v39];[v39][40:v]overlay=0:0:enable='between(n,9679,9785)'[v40];[v40][41:v]overlay=0:0:enable='between(n,9804,9968)'[v41];[v41][42:v]overlay=0:0:enable='between(n,9969,10040)'[v42];[v42][43:v]overlay=0:0:enable='between(n,10825,10880)'[v43];[v43][44:v]overlay=0:0:enable='between(n,10881,11066)'[v44];[v44][45:v]overlay=0:0:enable='between(n,11067,11194)'[v45];[v45][46:v]overlay=0:0:enable='between(n,11912,12119)'[v46];[v46][47:v]overlay=0:0:enable='between(n,12120,12248)'[v47];[v47][48:v]overlay=0:0:enable='between(n,12249,12401)'[v48];[v48][49:v]overlay=0:0:enable='between(n,12402,12572)'[v49];[v49][50:v]overlay=0:0:enable='between(n,12573,12676)'[v50];[v50][51:v]overlay=0:0:enable='between(n,12695,12806)'[v51];[v51][52:v]overlay=0:0:enable='between(n,12807,12886)'[v52]",
+  "hides": {
+    "what": "a line whose row has steps.hidesOnRise (src/audio/cues.ts) leaves riseAfterFire seconds after the first of these marks of the cut list from its own first frame on; frames at the frames a second of this list",
+    "riseAfterFire": 0.8,
+    "names": [
+      "finish-fire"
+    ],
+    "marks": [
+      {
+        "name": "finish-fire",
+        "frame": 11065
+      }
+    ]
+  },
+  "filter": "[0:v][1:v]overlay=0:0:enable='between(n,0,110)'[v1];[v1][2:v]overlay=0:0:enable='between(n,111,234)'[v2];[v2][3:v]overlay=0:0:enable='between(n,235,410)'[v3];[v3][4:v]overlay=0:0:enable='between(n,411,567)'[v4];[v4][5:v]overlay=0:0:enable='between(n,568,731)'[v5];[v5][6:v]overlay=0:0:enable='between(n,732,875)'[v6];[v6][7:v]overlay=0:0:enable='between(n,876,1033)'[v7];[v7][8:v]overlay=0:0:enable='between(n,1034,1167)'[v8];[v8][9:v]overlay=0:0:enable='between(n,1321,1466)'[v9];[v9][10:v]overlay=0:0:enable='between(n,1467,1602)'[v10];[v10][11:v]overlay=0:0:enable='between(n,1603,1740)'[v11];[v11][12:v]overlay=0:0:enable='between(n,1741,1875)'[v12];[v12][13:v]overlay=0:0:enable='between(n,2904,3027)'[v13];[v13][14:v]overlay=0:0:enable='between(n,3028,3165)'[v14];[v14][15:v]overlay=0:0:enable='between(n,3166,3358)'[v15];[v15][16:v]overlay=0:0:enable='between(n,3359,3539)'[v16];[v16][17:v]overlay=0:0:enable='between(n,3540,3662)'[v17];[v17][18:v]overlay=0:0:enable='between(n,3663,3707)'[v18];[v18][19:v]overlay=0:0:enable='between(n,4159,4288)'[v19];[v19][20:v]overlay=0:0:enable='between(n,4289,4472)'[v20];[v20][21:v]overlay=0:0:enable='between(n,4473,4535)'[v21];[v21][22:v]overlay=0:0:enable='between(n,4554,4648)'[v22];[v22][23:v]overlay=0:0:enable='between(n,4800,4919)'[v23];[v23][24:v]overlay=0:0:enable='between(n,4920,5080)'[v24];[v24][25:v]overlay=0:0:enable='between(n,5081,5213)'[v25];[v25][26:v]overlay=0:0:enable='between(n,5214,5332)'[v26];[v26][27:v]overlay=0:0:enable='between(n,7506,7742)'[v27];[v27][28:v]overlay=0:0:enable='between(n,7743,7891)'[v28];[v28][29:v]overlay=0:0:enable='between(n,7892,8014)'[v29];[v29][30:v]overlay=0:0:enable='between(n,8034,8165)'[v30];[v30][31:v]overlay=0:0:enable='between(n,8166,8344)'[v31];[v31][32:v]overlay=0:0:enable='between(n,8345,8544)'[v32];[v32][33:v]overlay=0:0:enable='between(n,8545,8714)'[v33];[v33][34:v]overlay=0:0:enable='between(n,8715,8864)'[v34];[v34][35:v]overlay=0:0:enable='between(n,8865,9106)'[v35];[v35][36:v]overlay=0:0:enable='between(n,9107,9279)'[v36];[v36][37:v]overlay=0:0:enable='between(n,9280,9432)'[v37];[v37][38:v]overlay=0:0:enable='between(n,9451,9554)'[v38];[v38][39:v]overlay=0:0:enable='between(n,9555,9678)'[v39];[v39][40:v]overlay=0:0:enable='between(n,9679,9785)'[v40];[v40][41:v]overlay=0:0:enable='between(n,9804,9968)'[v41];[v41][42:v]overlay=0:0:enable='between(n,9969,10040)'[v42];[v42][43:v]overlay=0:0:enable='between(n,10825,10880)'[v43];[v43][44:v]overlay=0:0:enable='between(n,10881,11066)'[v44];[v44][45:v]overlay=0:0:enable='between(n,11067,11112)'[v45];[v45][46:v]overlay=0:0:enable='between(n,11912,12119)'[v46];[v46][47:v]overlay=0:0:enable='between(n,12120,12248)'[v47];[v47][48:v]overlay=0:0:enable='between(n,12249,12401)'[v48];[v48][49:v]overlay=0:0:enable='between(n,12402,12572)'[v49];[v49][50:v]overlay=0:0:enable='between(n,12573,12676)'[v50];[v50][51:v]overlay=0:0:enable='between(n,12695,12806)'[v51];[v51][52:v]overlay=0:0:enable='between(n,12807,12886)'[v52]",
   "filterUse": "ffmpeg -i FILM -i each picture in order -filter_complex FILTER -map [vN] -map 0:a? ...; n is the frame of the film"
 }

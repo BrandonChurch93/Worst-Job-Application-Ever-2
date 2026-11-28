@@ -12,6 +12,7 @@ import { allCues, alsoStarts, cueOfEvent, earlyEnd, endsSentence, eventCues, loo
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
+import { riseAfterFire } from '../ui/rise'
 import { builtTo, phraseStart, standIns, type StandIn, lineKey } from './standin'
 import shipped from '../../public/audio/index.json'
 
@@ -348,6 +349,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const voices = new Map<Booking, Voice>()
   const marks = new Map<Booking, string>()
   const stepped = new WeakMap<Booking, number[]>()
+  const hidden = new WeakMap<Booking, number>()
   const byMark = new Set<string>()
   const entries: SoundLogEntry[] = []
   const note = (e: SoundLogEntry) => {
@@ -617,6 +619,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   }
 
   // A line whose phrases come on marks of its page: each mark shows the next phrase, the last mark the last phrase, and the end mark ends the line.
+  // A row with hidesOnRise: its caption leaves riseAfterFire() after the first last mark and stays away; the voice is not touched.
   const step = (name: string, page: string) => {
     const now = backend!.now()
     for (const [b, l] of [...speaking]) {
@@ -627,6 +630,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (name === steps.next) {
         if (got.length < l.phrases.length - 1) got.push(at)
       } else if (name === steps.last) {
+        if (steps.hidesOnRise && !hidden.has(b)) hidden.set(b, at + riseAfterFire())
         if (got.length < l.phrases.length) {
           while (got.length < l.phrases.length) got.push(at)
           const lasts = l.seconds - (l.phrases[l.phrases.length - 1]?.from ?? 0)
@@ -829,7 +833,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
           const got = spoken[l.key]?.steps ? stepped.get(b) ?? [] : null
           l.phrases.forEach((p, k) => {
             const start = got ? got[k] : b.start + p.from
-            const end = Math.min(b.end, got ? got[k + 1] ?? b.end : b.start + p.to)
+            const end = Math.min(b.end, hidden.get(b) ?? b.end, got ? got[k + 1] ?? b.end : b.start + p.to)
             if (start !== undefined && start < end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: got ? builtTo(l, k) : p.words, start, end, draft: l.draft, loud: l.loud, ...(got ? { step: { k, n: l.phrases.length }, whole: builtTo(l, l.phrases.length - 1) } : {}) })
           })
         }

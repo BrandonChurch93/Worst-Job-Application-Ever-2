@@ -6,6 +6,8 @@ import { cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysF
 import { LIVE } from '../src/audio/levels'
 import { CAPTION, shoutPx, shoutShake } from '../src/ui/said'
 import { builtTo, draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, shippedLines, standIns, wordCount } from '../src/audio/standin'
+import { RISE_FALLBACK, riseAfterFire } from '../src/ui/rise'
+import * as bossTune from '../src/boss/tune'
 import { ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
 import { pages } from '../src/pages'
 import { mixFilm, scriptStandIns } from '../src/audio/mix'
@@ -454,7 +456,7 @@ describe('the shout of the boss: a draft that builds on one row, a part a mark o
     expect(builtTo(real, real.phrases.length - 1)).toBe(real.phrases.map((x) => x.words).join(real.join))
   })
 
-  it('shows nothing on finish-arms, adds a part on each finish-charge and the last on finish-fire, keeps what was shouted, and goes when the last part has been held for its length', async () => {
+  it('shows nothing on finish-arms, adds a part on each finish-charge and the last on finish-fire, keeps what was shouted until the rise begins, and is said until the last part has been held for its length', async () => {
     const { s, ctx } = await ready('step4')
     const words = () => s.said().lines.filter((l) => l.start <= ctx.currentTime && ctx.currentTime < l.end).map((l) => [l.words, l.loud])
     ctx.currentTime = 100
@@ -474,10 +476,11 @@ describe('the shout of the boss: a draft that builds on one row, a part a mark o
     expect(words()).toEqual([['ka me', true]])
     ctx.currentTime = 103
     s.event(ev('finish-fire', 'step4'), 'live')
-    ctx.currentTime = 104
+    ctx.currentTime = 103 + riseAfterFire() / 2
     expect(words()).toEqual([['ka me ha', true]])
     ctx.currentTime = 105.9
-    expect(words()).toEqual([['ka me ha', true]])
+    expect(words(), 'the panel left when the rise began').toEqual([])
+    expect(s.said().lines.length, 'the line is said to its end').toBeGreaterThan(0)
     ctx.currentTime = 106.01
     expect(s.said().lines).toEqual([])
   })
@@ -492,9 +495,9 @@ describe('the shout of the boss: a draft that builds on one row, a part a mark o
     expect(s.said().lines.map((l) => [l.words, l.step, l.whole])).toEqual([['ka', { k: 0, n: 3 }, 'ka me ha'], ['ka me ha', { k: 2, n: 3 }, 'ka me ha']])
     expect(filmCaptions([{ id: id('boss.finish.0'), frame: 0 }], 60, standIns(film, drafts)).map((c) => c.step)).toEqual([{ k: 0, n: 3 }, { k: 1, n: 3 }, { k: 2, n: 3 }])
     expect(filmCaptions([{ id: id('boss.verify.0'), frame: 0 }], 60, standIns(film, drafts)).every((c) => c.step === undefined)).toBe(true)
-    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5)))).toEqual([150, 168, 188, 211, 240])
-    expect([0, 1, 2].map((k) => Math.round(shoutPx(k, 3)))).toEqual([150, 168, 240])
-    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5, 166)))).toEqual([105, 118, 132, 148, 166])
+    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5)))).toEqual([98, 123, 154, 192, 240])
+    expect([0, 1, 2].map((k) => Math.round(shoutPx(k, 3)))).toEqual([150, 188, 240])
+    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5, 166)))).toEqual([68, 85, 106, 133, 166])
     for (const n of [3, 4, 5, 6]) for (const most of [60, 166, 240, 400]) for (let k = 1; k < n; k++) expect(shoutPx(k, n, most)).toBeGreaterThan(shoutPx(k - 1, n, most))
     for (const t of [0, 0.01, 0.37, 2.2]) {
       const off = shoutShake(t)
@@ -520,7 +523,8 @@ describe('the shout of the boss: a draft that builds on one row, a part a mark o
     ctx.currentTime = 10.7
     expect(words()).toEqual(['ka me ha'])
     ctx.currentTime = 13.5
-    expect(words()).toEqual(['ka me ha'])
+    expect(words(), 'the panel left when the rise began').toEqual([])
+    expect(s.said().lines.length, 'the line is said to its end').toBeGreaterThan(0)
     ctx.currentTime = 13.61
     expect(s.said().lines).toEqual([])
     const late = await ready('step4')
@@ -530,6 +534,72 @@ describe('the shout of the boss: a draft that builds on one row, a part a mark o
     late.ctx.currentTime = 2
     late.s.event(ev('boss-gone', 'step4'), 'live')
     expect(back(late.s)).toEqual([id('boss.finish.0')])
+  })
+
+  it('takes the panel away when the camera\'s rise begins, riseAfterFire() after the fire mark, while the voice goes on, on a held visit and on a clicked one', async () => {
+    expect(spoken['boss.finish.0']!.steps!.hidesOnRise).toBe(true)
+    const rise = riseAfterFire()
+    const camera = (bossTune as { CAMERA?: { rise?: readonly number[] } }).CAMERA
+    expect(rise).toBe(camera ? camera.rise![0] : RISE_FALLBACK)
+    expect(RISE_FALLBACK).toBe(0.8)
+    expect(rise).toBeGreaterThan(0)
+    expect(rise).toBeLessThan(3)
+    const { s, ctx } = await ready('step4')
+    const words = () => s.said().lines.filter((l) => l.start <= ctx.currentTime && ctx.currentTime < l.end).map((l) => l.words)
+    const voice = () => JSON.stringify([s.log(), ctx.sources.map((x) => [x.buffer?.id, x.started, x.stopped])])
+    ctx.currentTime = 100
+    s.event(ev('finish-arms', 'step4'), 'live')
+    ctx.currentTime = 100.4
+    s.event(ev('finish-charge', 'step4'), 'live')
+    ctx.currentTime = 102
+    s.event(ev('finish-charge', 'step4'), 'live')
+    ctx.currentTime = 103
+    s.event(ev('finish-fire', 'step4'), 'live')
+    expect(s.said().lines.map((l) => [l.words, l.start, l.end])).toEqual([['ka', 100.4, 102], ['ka me', 102, 103], ['ka me ha', 103, 103 + rise]])
+    const was = voice()
+    ctx.currentTime = 103 + rise - 0.01
+    expect(words()).toEqual(['ka me ha'])
+    ctx.currentTime = 103 + rise + 0.01
+    expect(words()).toEqual([])
+    s.event(ev('finish-fire', 'step4'), 'live')
+    expect(words(), 'a second fire mark does not bring it back').toEqual([])
+    ctx.currentTime = 105.5
+    expect(words()).toEqual([])
+    expect(voice(), 'nothing is booked, cut or stopped by the leave').toBe(was)
+    expect(s.said().lines.length, 'the line is still being said').toBeGreaterThan(0)
+    ctx.currentTime = 106.01
+    expect(s.said().lines).toEqual([])
+    const click = await ready('step4')
+    const shown = () => click.s.said().lines.filter((l) => l.start <= click.ctx.currentTime && click.ctx.currentTime < l.end).map((l) => l.words)
+    click.ctx.currentTime = 10
+    click.s.event(ev('finish-arms', 'step4'), 'live')
+    click.ctx.currentTime = 10.3
+    click.s.event(ev('finish-fire', 'step4'), 'live')
+    click.ctx.currentTime = 10.3 + rise - 0.01
+    expect(shown()).toEqual(['ka me ha'])
+    click.ctx.currentTime = 10.3 + rise + 0.01
+    expect(shown()).toEqual([])
+    expect(click.s.said().lines.map((l) => [l.words, l.start, l.end])).toEqual([['ka me ha', 10.3, 10.3 + rise]])
+  })
+
+  it('ends the film\'s pictures of the line on the frame the rise begins, counted from the cut list\'s fire mark: the picture up then stops the frame before, later ones are not laid, and no list of marks changes nothing', () => {
+    const script = standIns(film, drafts)
+    const at = [{ id: id('boss.finish.0'), frame: 600 }, { id: id('boss.verify.0'), frame: 0 }]
+    const frames = (events?: { name: string; frame: number }[]) => filmCaptions(at, 60, script, events).filter((c) => c.key === 'boss.finish.0').map((c) => [c.words, c.first, c.last])
+    const r = Math.round(riseAfterFire() * 60)
+    const whole = [['ka', 630, 689], ['ka me', 690, 779], ['ka me ha', 780, 959]]
+    expect(frames()).toEqual(whole)
+    expect(frames([])).toEqual(whole)
+    expect(frames([{ name: 'finish-charge', frame: 630 }])).toEqual(whole)
+    expect(frames([{ name: 'finish-fire', frame: 778 }])).toEqual([['ka', 630, 689], ['ka me', 690, 779], ['ka me ha', 780, 778 + r - 1]])
+    expect(frames([{ name: 'finish-fire', frame: 700 - r }])).toEqual([['ka', 630, 689], ['ka me', 690, 699]])
+    expect(frames([{ name: 'finish-fire', frame: 780 - r }])).toEqual([['ka', 630, 689], ['ka me', 690, 779]])
+    expect(frames([{ name: 'finish-fire', frame: 960 - r }])).toEqual(whole)
+    expect(frames([{ name: 'finish-fire', frame: 599 }])).toEqual(whole)
+    expect(frames([{ name: 'finish-fire', frame: 599 }, { name: 'finish-fire', frame: 800 }, { name: 'finish-fire', frame: 700 }])).toEqual([['ka', 630, 689], ['ka me', 690, 699 + r]])
+    const others = (events?: { name: string; frame: number }[]) => filmCaptions(at, 60, script, events).filter((c) => c.key !== 'boss.finish.0')
+    expect(others([{ name: 'finish-fire', frame: 10 }])).toEqual(others())
+    expect(others().length).toBeGreaterThan(0)
   })
 })
 

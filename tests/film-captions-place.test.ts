@@ -3,19 +3,26 @@ import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { config } from '../src/config'
 import { narration, timedLines, type Narration } from '../src/copy'
-import { filmLineId, filmLinePage, pageAfter, unitPage } from '../src/audio/cues'
+import { filmLineId, filmLinePage, pageAfter, spoken, unitPage } from '../src/audio/cues'
 import { filmCaptions } from '../src/audio/standin'
+import { riseAfterFire } from '../src/ui/rise'
 import { CAPTION, captionLow, makeCaption } from '../src/ui/said'
 
 // The film's captions are pictures of the panel laid over the film (pipeline/change002/shell-film-captions.mjs keeps the list of them).
 // On the live site the panel lies at CAPTION.lowOn on the boss page and the decision page and at CAPTION.low elsewhere. The film must show it in the same place.
-interface Kept { key: string; phrase: number; words: string; page: string; lowerEdgeY: number; step?: { k: number; n: number }; panel: { box: number[] } }
-const kept = JSON.parse(readFileSync(path.resolve(__dirname, '../pipeline/change002/shell-film-captions.json'), 'utf8')) as { size: { width: number; height: number }; captions: Kept[] }
+interface Kept { key: string; phrase: number; words: string; page: string; lowerEdgeY: number; first: number; last: number; step?: { k: number; n: number }; panel: { box: number[] } }
+interface KeptList { fps: number; size: { width: number; height: number }; captions: Kept[]; hides: { riseAfterFire: number; names: string[]; marks: { name: string; frame: number }[] } }
+const kept = JSON.parse(readFileSync(path.resolve(__dirname, '../pipeline/change002/shell-film-captions.json'), 'utf8')) as KeptList
+const keptSmall = JSON.parse(readFileSync(path.resolve(__dirname, '../pipeline/change002/shell-film-captions-960x540.json'), 'utf8')) as KeptList
+// The film's marks by frame: the cut list's. A line whose row has steps.hidesOnRise leaves riseAfterFire() after its last mark.
+const cut = JSON.parse(readFileSync(path.resolve(__dirname, '../cut/CUTLIST.json'), 'utf8')) as { fps: number; events: { name: string; frame: number }[] }
+const hideNames = [...new Set(Object.values(spoken).filter((row) => row.steps?.hidesOnRise).map((row) => row.steps!.last))]
+const marks = cut.events.filter((e) => hideNames.includes(e.name)).map((e) => ({ name: e.name, frame: e.frame }))
 const drafts = (JSON.parse(readFileSync(path.resolve(__dirname, '../content/narration-drafts.json'), 'utf8')) as { film?: Record<string, unknown[]> }).film ?? {}
 const settled = narration.film as Record<string, unknown[]>
 const script = { ...narration, film: { ...settled, ...Object.fromEntries(Object.entries(drafts).filter(([beat, ls]) => ls.length && !settled[beat]?.length)) } } as Narration
 const fps = config.film.fps
-const now = filmCaptions(timedLines(config, script).map((l) => ({ id: filmLineId(l.beat, l.index), frame: Math.round(l.start * fps) })), fps)
+const now = filmCaptions(timedLines(config, script).map((l) => ({ id: filmLineId(l.beat, l.index), frame: Math.round(l.start * fps) })), fps, undefined, marks)
 const unitOf = (key: string): string => config.film.beats.find((b) => b.id === key.slice(0, key.lastIndexOf('.')))!.unit
 const of = (key: string, phrase: number): Kept | undefined => kept.captions.find((x) => x.key === key && x.phrase === phrase)
 
@@ -61,6 +68,23 @@ describe('where the film lays the captions', () => {
     const line8 = kept.captions.filter((x) => x.key === 'decision.letter.0')
     expect(line8).toHaveLength(5)
     for (const x of line8) expect([x.panel.box[1], x.panel.box[1]! + x.panel.box[3]!]).toEqual([202, 264])
+  })
+
+  it('keeps each picture on the frames the film gives its phrase, ended where the rise begins after the cut list\'s fire mark, in both kept lists', () => {
+    expect(cut.fps).toBe(fps)
+    expect(hideNames).toEqual(['finish-fire'])
+    expect(marks.length).toBeGreaterThan(0)
+    for (const list of [kept, keptSmall]) {
+      const again = 'run node pipeline/change002/shell-film-captions.mjs and the same with --size 960x540 after npm run cut'
+      expect(list.fps).toBe(fps)
+      expect(list.hides.names, again).toEqual(hideNames)
+      expect(list.hides.riseAfterFire, again).toBe(riseAfterFire())
+      expect(list.hides.marks, again).toEqual(marks)
+      expect(list.captions.map((x) => [x.key, x.phrase, x.first, x.last]), again).toEqual(now.map((x) => [x.key, x.phrase, x.first, x.last]))
+    }
+    const up = now.filter((x) => spoken[x.key]?.steps?.hidesOnRise)
+    expect(up.length).toBeGreaterThan(0)
+    expect(Math.max(...up.map((x) => x.last))).toBe(marks[0]!.frame + Math.round(riseAfterFire() * fps) - 1)
   })
 
   it('is the place the live panel takes when it is told the page', () => {

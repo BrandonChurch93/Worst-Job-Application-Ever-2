@@ -2,8 +2,9 @@
   "made": "node pipeline/change002/shell-script-caption.mjs --shout",
   "browser": "159.0.8154.6",
   "behind": "kept stills of the boss page, not the running site",
-  "text": "KA / ME / HA / ME / HA",
+  "text": "I have / five years / of experience",
   "draft": true,
+  "riseAfterFire": 0.8,
   "marks": [
     {
       "mark": "finish-arms",
@@ -12,98 +13,156 @@
     },
     {
       "mark": "finish-charge",
-      "at": 0.11,
+      "at": 0.102,
       "panel": {
-        "words": "KA",
-        "fontPx": 106,
+        "words": "I HAVE",
+        "fontPx": 62,
         "top": 96,
-        "bottom": 252,
-        "left": 852,
+        "bottom": 199,
+        "left": 825,
         "type": {
-          "left": 885,
-          "right": 1034,
-          "wide": 149
+          "left": 858,
+          "right": 1061,
+          "wide": 203
         },
-        "right": 1068,
+        "right": 1095,
         "baked": true
-      }
+      },
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          6.26
+        ]
+      ]
     },
     {
       "mark": "finish-charge",
-      "at": 1.051,
+      "at": 1.042,
       "panel": {
-        "words": "KAME",
-        "fontPx": 118,
+        "words": "I HAVE FIVE YEARS",
+        "fontPx": 78,
         "top": 96,
-        "bottom": 267,
-        "left": 754,
+        "bottom": 218,
+        "left": 566,
         "type": {
-          "left": 786,
-          "right": 1132,
-          "wide": 346
+          "left": 599,
+          "right": 1326,
+          "wide": 728
         },
-        "right": 1166,
+        "right": 1354,
         "baked": true
-      }
-    },
-    {
-      "mark": "finish-charge",
-      "at": 2.099,
-      "panel": {
-        "words": "KAMEHA",
-        "fontPx": 132,
-        "top": 96,
-        "bottom": 284,
-        "left": 637,
-        "type": {
-          "left": 669,
-          "right": 1249,
-          "wide": 580
-        },
-        "right": 1283,
-        "baked": true
-      }
-    },
-    {
-      "mark": "finish-charge",
-      "at": 2.908,
-      "panel": {
-        "words": "KAMEHAME",
-        "fontPx": 148,
-        "top": 96,
-        "bottom": 303,
-        "left": 490,
-        "type": {
-          "left": 522,
-          "right": 1396,
-          "wide": 874
-        },
-        "right": 1430,
-        "baked": true
-      }
+      },
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          1.042
+        ],
+        [
+          "I have five years",
+          1.042,
+          6.26
+        ]
+      ]
     },
     {
       "mark": "finish-fire",
       "at": 4.13,
       "panel": {
-        "words": "KAMEHAMEHA",
-        "fontPx": 166,
-        "top": 101,
-        "bottom": 330,
-        "left": 320,
+        "words": "I HAVE FIVE YEARS OF EXPERIENCE",
+        "fontPx": 97,
+        "top": 95,
+        "bottom": 241,
+        "left": 82,
         "type": {
-          "left": 352,
-          "right": 1573,
-          "wide": 1220
+          "left": 114,
+          "right": 1839,
+          "wide": 1725
         },
-        "right": 1607,
+        "right": 1832,
         "baked": true
-      }
+      },
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          1.042
+        ],
+        [
+          "I have five years",
+          1.042,
+          4.13
+        ],
+        [
+          "I have five years of experience",
+          4.13,
+          4.93
+        ]
+      ]
+    },
+    {
+      "mark": "(no mark: a moment before the rise begins)",
+      "at": 4.641,
+      "panel": {
+        "words": "I HAVE FIVE YEARS OF EXPERIENCE",
+        "fontPx": 97,
+        "top": 92,
+        "bottom": 238,
+        "left": 90,
+        "type": {
+          "left": 122,
+          "right": 1848,
+          "wide": 1725
+        },
+        "right": 1840,
+        "baked": true
+      },
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          1.042
+        ],
+        [
+          "I have five years",
+          1.042,
+          4.13
+        ],
+        [
+          "I have five years of experience",
+          4.13,
+          4.93
+        ]
+      ]
+    },
+    {
+      "mark": "(no mark: the rise begins)",
+      "at": 5.152,
+      "panel": null,
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          1.042
+        ],
+        [
+          "I have five years",
+          1.042,
+          4.13
+        ],
+        [
+          "I have five years of experience",
+          4.13,
+          4.93
+        ]
+      ]
     },
     {
       "mark": "(no mark: its own end)",
       "at": 6.371,
-      "panel": null
+      "panel": null,
+      "captionLines": []
     }
   ],
   "line6OnTheBossPage": {
@@ -136,11 +195,11 @@
   },
   "log": [
     {
-      "at": 0.392,
+      "at": 0.421,
       "line": "line.boss.finish.0",
       "trigger": "event finish-arms",
       "what": "spoken",
-      "start": 0.392,
+      "start": 0.421,
       "seconds": 6.26
     }
   ],
@@ -148,12 +207,66 @@
     "Failed to load resource: the server responded with a status of 404 (Not Found)",
     "Failed to load resource: the server responded with a status of 404 (Not Found)",
     "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
     "Failed to load resource: the server responded with a status of 404 (Not Found)"
   ],
   "missing": [
     "shout: /favicon.ico",
+    "/audio/line.boss.unfold.0.mp3",
+    "shout: /audio/line.boss.unfold.0.mp3",
+    "/audio/line.boss.unfold.1.mp3",
+    "shout: /audio/line.boss.unfold.1.mp3",
+    "/audio/line.boss.unfold.2.mp3",
+    "shout: /audio/line.boss.unfold.2.mp3",
+    "/audio/line.decision.reset.0.mp3",
+    "shout: /audio/line.decision.reset.0.mp3",
+    "/audio/line.step1.shredded.0.mp3",
+    "shout: /audio/line.step1.shredded.0.mp3",
+    "/audio/line.step2.crank.1.mp3",
+    "shout: /audio/line.step2.crank.1.mp3",
     "shout: /favicon.ico",
+    "/audio/line.boss.unfold.0.mp3",
+    "standing: /audio/line.boss.unfold.0.mp3",
+    "/audio/line.boss.unfold.2.mp3",
+    "standing: /audio/line.boss.unfold.2.mp3",
+    "/audio/line.boss.unfold.1.mp3",
+    "standing: /audio/line.boss.unfold.1.mp3",
+    "/audio/line.decision.reset.0.mp3",
+    "standing: /audio/line.decision.reset.0.mp3",
+    "/audio/line.step1.shredded.0.mp3",
+    "standing: /audio/line.step1.shredded.0.mp3",
+    "/audio/line.step2.crank.1.mp3",
+    "standing: /audio/line.step2.crank.1.mp3",
     "standing: /favicon.ico",
+    "/audio/line.boss.unfold.0.mp3",
+    "decision: /audio/line.boss.unfold.0.mp3",
+    "/audio/line.boss.unfold.2.mp3",
+    "decision: /audio/line.boss.unfold.2.mp3",
+    "/audio/line.boss.unfold.1.mp3",
+    "decision: /audio/line.boss.unfold.1.mp3",
+    "/audio/line.decision.reset.0.mp3",
+    "decision: /audio/line.decision.reset.0.mp3",
+    "/audio/line.step1.shredded.0.mp3",
+    "decision: /audio/line.step1.shredded.0.mp3",
+    "/audio/line.step2.crank.1.mp3",
+    "decision: /audio/line.step2.crank.1.mp3",
     "decision: /favicon.ico"
   ]
 }

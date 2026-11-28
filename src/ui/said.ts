@@ -86,11 +86,13 @@ export const CAPTION = {
   // A line that builds one part a mark on one row (the shout of the boss): px of the first step, the growth a step, the most px of the last, the y of the panel's upper edge
   // and the lowest its lower edge may come (the top band of the screen), the widest it gets, its line height, and the px and turns a second by which the last step shakes.
   // The whole line at its last step is fitted into that band, and every step before it is one growth smaller, so the type never shrinks.
-  shout: { firstPx: 150, grow: 1.12, lastPx: 240, top: 96, low: 330, wide: 1760, lineHigh: 1, shakePx: 5, shakeHz: 17 },
+  shout: { firstPx: 150, grow: 1.25, lastPx: 240, top: 96, low: 330, wide: 1760, lineHigh: 1, shakePx: 5, shakeHz: 17 },
   fontPx: 26,
   // The size of a loud phrase, shown in capitals.
   loudFontPx: 64,
   minFontPx: 13,
+  // The least the panel keeps clear of the two edges of the window together, in px of the window.
+  windowEdge: 16,
   lineHigh: 1.3,
   padX: 34,
   padY: 14,
@@ -112,6 +114,14 @@ export const captionLow = (page?: string): number => CAPTION.lowOn[page ?? ''] ?
 export const shoutPx = (k: number, n: number, most: number = CAPTION.shout.lastPx): number => {
   const last = Math.min(CAPTION.shout.lastPx, most)
   return Math.min(k >= n - 1 ? last : CAPTION.shout.firstPx * CAPTION.shout.grow ** k, last / CAPTION.shout.grow ** Math.max(0, n - 1 - k))
+}
+
+// The most px of type, in page pixels, at which the whole of such a line stands in one row inside its band: the row is `wideEm` wide and `highEm` high in ems of its type,
+// the page is drawn at `u` of its size in a window `windowWide` px wide. The panel keeps the shake of the last step clear on each side.
+export const shoutMost = (wideEm: number, highEm: number, u: number, windowWide: number): number => {
+  const wide = Math.min(windowWide - CAPTION.windowEdge, CAPTION.shout.wide * u) - 2 * (CAPTION.padX + CAPTION.shout.shakePx) * u
+  const high = (CAPTION.shout.low - CAPTION.shout.top - CAPTION.shout.shakePx - 2 * CAPTION.padY) * u
+  return Math.min(wide / Math.max(0.01, wideEm), high / Math.max(0.01, highEm)) / u
 }
 
 // How far the last word of such a line is off its place at a time of the sound's clock, in page pixels.
@@ -162,10 +172,13 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
   let want = CAPTION.low
   let y = CAPTION.low
   let last = 0
-  let drawWords: ((to: HTMLElement, text: string) => void) | null = null
+  let drawWords: ((to: HTMLElement, text: string, row: boolean) => void) | null = null
+  let row = false
   const write = () => {
+    if (row !== (step !== null)) delete el.dataset.drawn
+    row = step !== null
     try {
-      if (drawWords) drawWords(el, words)
+      if (drawWords) drawWords(el, words, row)
       else el.textContent = words
     } catch {
       drawWords = null
@@ -173,7 +186,7 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
     }
   }
   void import('./glyphs').then((g) => {
-    drawWords = (to, text) => g.draw(to, text, CAPTION.face, { wrap: true })
+    drawWords = (to, text, row) => g.draw(to, text, CAPTION.face, { wrap: !row })
     fit = null
     if (on) write()
   }).catch(() => undefined)
@@ -190,6 +203,7 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
       st.lineHeight = String(CAPTION.shout.lineHigh)
       st.whiteSpace = 'nowrap'
       st.maxWidth = 'none'
+      st.width = 'max-content'
       st.bottom = 'auto'
       st.top = `${top + CAPTION.shout.top * u}px`
       st.transform = `translate(calc(-50% + ${(off.x * u).toFixed(2)}px), ${(off.y * u).toFixed(2)}px)`
@@ -202,18 +216,15 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
         const box = el.getBoundingClientRect()
         words = said
         write()
-        const padW = 2 * CAPTION.padX * u
-        const padH = 2 * CAPTION.padY * u
-        const wide = Math.min(window.innerWidth - 16, CAPTION.shout.wide * u) - padW
-        const high = (CAPTION.shout.low - CAPTION.shout.top - CAPTION.shout.shakePx) * u - padH
-        fit = { whole, u, most: (100 * Math.min(wide / Math.max(1, box.width - padW), high / Math.max(1, box.height - padH))) }
+        fit = { whole, u, most: shoutMost((box.width - 2 * CAPTION.padX * u) / trial, (box.height - 2 * CAPTION.padY * u) / trial, u, window.innerWidth) }
       }
       st.fontSize = `${shoutPx(step.k, step.n, fit.most) * u}px`
     } else {
       st.fontSize = `${Math.max(CAPTION.minFontPx, (loud ? CAPTION.loudFontPx : CAPTION.fontPx) * u)}px`
       st.lineHeight = String(CAPTION.lineHigh)
       st.whiteSpace = 'normal'
-      st.maxWidth = `${Math.min(window.innerWidth - 16, CAPTION.wide * u)}px`
+      st.width = 'auto'
+      st.maxWidth = `${Math.min(window.innerWidth - CAPTION.windowEdge, CAPTION.wide * u)}px`
       st.top = 'auto'
       st.transform = 'translateX(-50%)'
       st.bottom = `${Math.max(0, window.innerHeight - (top + y * u))}px`

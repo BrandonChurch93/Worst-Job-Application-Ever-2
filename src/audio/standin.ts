@@ -8,6 +8,7 @@ import { narration } from '../copy'
 import { sayable } from '../ui/said'
 import shipped from '../../public/audio/index.json'
 import { spoken, unitPage } from './cues'
+import { riseAfterFire } from '../ui/rise'
 
 export const wordCount = (text: string): number => text.split(/\s+/).filter((w) => w.length > 0).length
 
@@ -95,15 +96,18 @@ export interface FilmCaption { id: string; key: string; phrase: number; words: s
 export const builtTo = (line: { phrases: { words: string }[]; join: string }, k: number): string => line.phrases.slice(0, k + 1).map((p) => p.words).join(line.join)
 
 // The captions of the film by frame: each phrase of a line from its first frame to its last, the line starting on the frame the film gives it.
-export function filmCaptions(lines: { id: string; frame: number }[], fps: number, script: Map<string, StandIn> = standIns()): FilmCaption[] {
+// events: the film's marks by frame (the cut list's). A line whose row has steps.hidesOnRise is shown up to the frame before the camera's rise begins: riseAfterFire() after the first of its last marks from its own first frame on.
+export function filmCaptions(lines: { id: string; frame: number }[], fps: number, script: Map<string, StandIn> = standIns(), events: { name: string; frame: number }[] = []): FilmCaption[] {
   const byId = new Map([...script.values()].map((l) => [l.id, l]))
   const out: FilmCaption[] = []
   for (const at of lines) {
     const line = byId.get(at.id)
     if (!line) continue
+    const steps = spoken[line.key]?.steps
+    const gone = steps?.hidesOnRise ? Math.min(Infinity, ...events.filter((e) => e.name === steps.last && e.frame >= at.frame).map((e) => e.frame)) + Math.round(riseAfterFire() * fps) : Infinity
     line.phrases.forEach((p, k) => {
       const first = at.frame + Math.round(p.from * fps)
-      const last = at.frame + Math.round(p.to * fps) - 1
+      const last = Math.min(at.frame + Math.round(p.to * fps), gone) - 1
       const built = spoken[line.key]?.steps !== undefined
       if (last >= first) out.push({ id: line.id, key: line.key, phrase: k, words: built ? builtTo(line, k) : p.words, first, last, draft: line.draft, loud: line.loud, ...(built ? { step: { k, n: line.phrases.length }, whole: builtTo(line, line.phrases.length - 1) } : {}) })
     })

@@ -212,7 +212,8 @@ export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'ste
 // A line its page's turn waits for (turnWaitsFor) ends at its next pause mark, so that the visitor is not held for a sentence.
 // keeps: the line is not taken back when its page is left; it is set off by the turn away from that page.
 // loud: the caption shows the line in capitals, large.
-export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string }; jump?: string[]; keeps?: boolean; loud?: boolean; steps?: { next: string; last: string; ends?: string } }
+// steps.hidesOnRise: the caption leaves when the camera's rise begins, riseAfterFire() of src/ui/rise.ts after the last mark, while the voice goes on.
+export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string }; jump?: string[]; keeps?: boolean; loud?: boolean; steps?: { next: string; last: string; ends?: string; hidesOnRise?: boolean } }
 
 export const spoken: Record<string, SpokenRow> = {
   'marketing.stroll.0': { event: null, until: ['button-press'] },
@@ -225,7 +226,7 @@ export const spoken: Record<string, SpokenRow> = {
   'boss.unfold.0': { event: 'boss-formed', until: ['turret-rise', 'power-down'], jump: ['boss-turn'] },
   'boss.unfold.1': { event: null, after: 'boss.unfold.0', until: ['turret-rise', 'power-down'], mark: { phrase: -1, event: 'music-in' } },
   'boss.unfold.2': { event: null, after: 'boss.unfold.1', until: ['turret-rise', 'power-down'] },
-  'boss.finish.0': { event: 'finish-arms', until: ['boss-gone'], steps: { next: 'finish-charge', last: 'finish-fire' } },
+  'boss.finish.0': { event: 'finish-arms', until: ['boss-gone'], steps: { next: 'finish-charge', last: 'finish-fire', hidesOnRise: true } },
   'decision.letter.0': { event: 'stamp', until: [], jump: ['button-press'] },
   'decision.reset.0': { event: 'page-turn', until: [], keeps: true }
 }
