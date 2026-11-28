@@ -11,7 +11,7 @@ const WIDE = 597
 const GROUND = '#d81b60'
 const page = { mine: `${OUT}/careers-page.png`, theirs: at('references', 'approved-002', 'careers-page.png') }
 const top = { mine: `${OUT}/careers-top.png`, theirs: at('references', 'approved-002', 'careers-top.png') }
-const MORE = 276
+const MORE = 322
 
 const crops = [
   { name: 'type-headline', from: top, box: [300, 150, 1320, 320], what: 'typeface and scale of the headline, the pill in deeper orange type' },

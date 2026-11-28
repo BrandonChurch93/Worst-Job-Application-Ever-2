@@ -143,7 +143,7 @@ Crops, mine left and the picture right: `node pipeline/change002/careers-differe
 
 ## Tests of other units that this change breaks
 
-MEASURED at b13d25f9 (unit 19.0 s, turn at 18.5 s), the whole `npm test`: 15 files failed, 163 passed, 13 skipped; 33 tests failed, 2161 passed, 17 skipped; 275.7 s. Before this work: 176 files passed, 2177 tests. None of the 15 files is mine and none is touched. At f8b9221e (unit 19.25 s) it was 40 tests in 18 files: the 7 of `tests/harness-plan.test.ts`, `tests/harness-keep.test.ts` and `tests/roughcut.test.ts` were the half preview frame and are green at 19.0 s.
+MEASURED at e80848bc (the head with `origin/main` 5ee40d5a merged; unit 19.0 s, turn at 18.5 s), the whole `npm test`: 15 files failed, 163 passed, 13 skipped; 33 tests failed, 2161 passed, 17 skipped; 276.3 s. The same 33 at b13d25f9, before the type pass. Before this work: 176 files passed, 2177 tests. None of the 15 files is mine and none is touched. At f8b9221e (unit 19.25 s) it was 40 tests in 18 files: the 7 of `tests/harness-plan.test.ts`, `tests/harness-keep.test.ts` and `tests/roughcut.test.ts` were the half preview frame and are green at 19.0 s.
 
 The third column is the test's own message: the value it sees now comes first, the value it pinned comes after "to be", "to equal" or the comparison.
 
@@ -153,13 +153,13 @@ Causes:
 - L: the live site under a bot. The bots leave the careers page on another step and from another place (keen: step 2310 at 960, 247; was step 2445 at 358, 472. MEASURED at 7de4cdd8), so what follows on step 1 falls on other frames.
 - P: the page itself is another page. The cards are below the first screen, the ticker is the page's width, the arrow stands on a flat sheet at the turn.
 - H: the page has a `chrome()` now (`{ header: 0, caption: 980 }`).
-- C: `cut/CUTLIST.json` is the list of the old film; `npm run cut` writes the new one (977 events and 9180 frames there; 1014 events and 9480 frames now).
+- C: `cut/CUTLIST.json` is the list of the old film; `npm run cut` writes the new one (977 events and 9180 frames there; 1013 events and 9480 frames now).
 
 | file and line | what it pinned | now, and what it was | cause |
 | --- | --- | --- | --- |
 | `tests/b-shell-chrome.test.ts:24` | leaves every page of the build as it was: none says anything of the header, and the frame holds what the page drew | marketing: expected [Function chrome] to be undefined | H |
 | `tests/cut-of-build.test.ts:37` | are, byte for byte, what this build gives: run npm run cut and commit cut/ when this fails | expected [ ...(3) ] to deeply equal [ ...(3) ] | C |
-| `tests/cut-of-build.test.ts:58` | is read from the committed cut list and carries the sum of that file | the mix is refused: cut/CUTLIST.json is not the list this build gives now (it holds 977 events and 20 lines; the build gives 1014 events and 20 lines; ... | C |
+| `tests/cut-of-build.test.ts:58` | is read from the committed cut list and carries the sum of that file | the mix is refused: cut/CUTLIST.json is not the list this build gives now (it holds 977 events and 20 lines; the build gives 1013 events and 20 lines; ... | C |
 | `tests/film-cut.test.ts:136` | matches cut/CUTLIST.json in its frame counts when the file exists | expected 9180 to be 9480 | C |
 | `tests/pack-hit.test.ts:80` | gives the machine its own sheets: the save and the rail in consecutive frames, the way in and the way out | expected 4320 to be 4158 | F |
 | `tests/polish-arrow.test.ts:135` | comes over in at most 12 degrees a frame, goes a little past flat and settles back over the last frames, never in one | expected 0 to be greater than or equal to 28 | P |
