@@ -23,7 +23,7 @@ const KINDS = {
   click: { says: 'clicks once', down: (t) => t >= 0.3 && t < 0.38, fire: 0.3875 },
   never: { says: 'never presses', down: () => false, fire: 6 }
 }
-const LEAD = 0.2
+const LEAD = 0
 const GONE = 2.133
 const AFTER = 0.6
 const SHOTS = 20
@@ -99,10 +99,10 @@ try {
       if (want !== held) await send(page, want ? { down: 'left' } : { up: 'left' })
       held = want
       if (i > 0) t = await tell(page, 1 / VISITOR.hz)
-      if (i === 0) costs.above = await cost(page, 7)
-      if (i === Math.round(Math.max(1.2, kind.fire - 0.2) * VISITOR.hz) && name !== 'click') costs.low = await cost(page, 7)
-      if (name === 'click' && i === Math.round((kind.fire + 0.4) * VISITOR.hz)) costs.low = await cost(page, 7)
-      if (i === wanted.at(-1)) costs.after = await cost(page, 7)
+      if (i === 0) costs.above = await cost(page, Number(a.draws ?? 7))
+      if (i === Math.round(Math.max(1.2, kind.fire - 0.2) * VISITOR.hz) && name !== 'click') costs.low = await cost(page, Number(a.draws ?? 7))
+      if (name === 'click' && i === Math.round((kind.fire + 0.4) * VISITOR.hz)) costs.low = await cost(page, Number(a.draws ?? 7))
+      if (i === wanted.at(-1)) costs.after = await cost(page, Number(a.draws ?? 7))
       if (!wanted.includes(i)) continue
       const png = await shot(page)
       const file = path.join(raw, `${name}-${String(i).padStart(4, '0')}.png`)
