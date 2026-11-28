@@ -4,7 +4,7 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, 
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
-import { BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, RISE_LIGHT, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BAR_GONE, BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, RISE_LIGHT, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { FIRE, finishState, kneelSpot, powerPlan, type FinishInput } from '../../boss/finish/acting'
@@ -12,7 +12,7 @@ import { ABOVE, fadesOf, feetFor, finishShot, marksOf, riseFades, riseShot, unde
 import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
 import { BREAKS, buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
-import { keepView, LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
+import { keepView, LEAD, setBar, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame, toWorld } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
@@ -78,6 +78,8 @@ interface State {
   dash: number
   close: number
   burn: { x: number; y: number } | null
+  // Seconds since `boss-gone`, -1 before it.
+  left: number
   end: { phase: 'walk' | 'kneel' | 'fist' | 'blow' | 'pressed'; t: number; idle: number; go: boolean; want: boolean; alone: boolean; px: number; py: number } | null
 }
 
@@ -115,7 +117,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, asked: false, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, due: -1, round: -1, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, asked: false, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, due: -1, round: -1, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, left: -1, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -155,6 +157,7 @@ export function makePage(): PageLogic {
   const armsOut = (): boolean => (s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms && s.fired < BLAST) || fist() !== null
   const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : level(s.charge))
   const KNEEL = LOOK1_ON ? kneelSpot({ x: FALLEN.x, y: FALLEN.y, w: SIZE.button.w }) : { x: FALLEN.x - LAST.reach, y: FALLEN.y }
+  const barLeft = (): number => (BAR_GONE.on && s.left >= 0 ? Math.min(1, s.left / BAR_GONE.seconds) : 0)
   const near = (): { x: number; y: number; z: number } => {
     const k = s.close * s.close * (3 - 2 * s.close)
     const w = 1920 + (CLOSE.w - 1920) * k
@@ -392,6 +395,7 @@ export function makePage(): PageLogic {
   const last = (io: StepIo): void => {
     const e = s.end!
     const dt = io.dt
+    s.left = s.left < 0 ? 0 : s.left + dt
     const press = (): void => {
       e.phase = 'pressed'
       e.t = 0
@@ -900,6 +904,7 @@ export function makePage(): PageLogic {
       if (rig && !look) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
       setView(v)
       setFinish(figure())
+      setBar(barLeft())
       if (look && v) {
         const whole = { x: 0, y: 0, w: 1920, h: SCREEN_H, z1: 0, tone: 'dark' as const }
         const at = keepView(s.mode === 'film' ? 0 : 1, Math.round(s.time * stepHz))
@@ -908,7 +913,7 @@ export function makePage(): PageLogic {
         out.push({ ...whole, id: 'boss-look', part: 'boss-look1', kind: 'anchor', z0: 0, v: at })
         out.push({ ...whole, id: 'finish-figure', part: 'boss-finish', kind: 'anchor', z0: 0, v: at })
         for (let i = out.length - 1; i >= first; i--) if (out[i]!.id.startsWith('health-')) out.splice(i, 1)
-        if (v.time >= GROUND.barLands) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
+        if (v.time >= GROUND.barLands && barLeft() <= 0) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
         const w = wordAt(v)
         if (w.show) out.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, WORD as typeof TYPE.button, w.z, 'inkLight', w.rot))
       }

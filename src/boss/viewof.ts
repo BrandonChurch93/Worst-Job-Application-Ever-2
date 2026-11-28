@@ -26,11 +26,16 @@ export const setFinish = (i: FinishInput | null): void => { figure = i }
 
 // What the page said at each of its last steps, so that a part is given the step of the picture it is drawn in and not the last step the page drew. `run` is 0 for the film and 1 for the live site, which do not share steps. KEPT is how many steps are held, well over the 12 the stage keeps.
 export const KEPT = 64
-const kept = new Map<string, { view: BossView | null; figure: FinishInput | null }>()
+// How far the health bar has left after the kill, 0 to 1, as the page said it at its last drawing: 0 is the bar as it stands.
+let bar = 0
+export const barNow = (): number => bar
+export const setBar = (k: number): void => { bar = k }
+
+const kept = new Map<string, { view: BossView | null; figure: FinishInput | null; bar: number }>()
 export function keepView(run: number, step: number): number[] {
   const key = `${run}:${step}`
   kept.delete(key)
-  kept.set(key, { view: now, figure })
+  kept.set(key, { view: now, figure, bar })
   if (kept.size > KEPT) kept.delete(kept.keys().next().value!)
   return [run, step]
 }
@@ -41,6 +46,7 @@ export function seatView(s: { v?: number[] }): void {
   if (!hit) return
   now = hit.view
   figure = hit.figure
+  bar = hit.bar
 }
 
 export function viewOf(i: ViewInput): BossView | null {

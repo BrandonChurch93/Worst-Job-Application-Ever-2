@@ -1,8 +1,10 @@
 import * as THREE from 'three'
 import { arenaPart, shake } from '../../../arena'
+import { barDrop } from '../../../arena/change'
+import { ARENA } from '../../../arena/layout'
 import { beamLight, finishPart, finishState } from '../../../boss/finish/index'
 import { makeBoss, type BossLook } from '../../../boss/look1'
-import { finishNow, seatView, viewNow } from '../../../boss/viewof'
+import { barNow, finishNow, seatView, viewNow } from '../../../boss/viewof'
 import type { PageReal, PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 import { verifyCard } from './verify-card'
@@ -54,5 +56,19 @@ const shaken = (inner: PartMaker): PartMaker => ({
   }
 })
 
+// The health bar after the kill: the arena has posed it where it stands; from `boss-gone` it is put where its own drop had it, run backwards, and at the end it is taken out.
+const barLeaves = (inner: PartMaker): PartMaker => ({
+  ...inner,
+  pose(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
+    inner.pose?.(o, s, ctx)
+    const k = barNow()
+    const bar = k > 0 ? o.getObjectByName('arena-bar') : undefined
+    if (!bar) return
+    bar.position.z = barDrop(ARENA.barLands - k * (ARENA.barLands - ARENA.barAt)).lift
+    if (k >= 1) bar.visible = false
+  }
+})
+
 export const real: PageReal = { parts: { 'verify-card': verifyCard, 'health-bar': healthBar, 'boss-weapons': bossWeapons, 'boss-body': bossBody, 'boss-transform': bossTransform, 'boss-arena': shaken(arenaPart(viewNow, { beam: () => { const i = finishNow(); return i ? beamLight(finishState(i)) : null }, upright: () => finishNow()?.low ?? 0, shade: () => finishNow()?.low ?? 0, fade: () => finishNow()?.fade ?? null })), 'boss-look1': shaken(bossLook), 'boss-finish': finishPart(finishNow) } }
 real.parts['boss-finish'] = lit(real.parts['boss-finish']!)
+real.parts['boss-arena'] = barLeaves(real.parts['boss-arena']!)

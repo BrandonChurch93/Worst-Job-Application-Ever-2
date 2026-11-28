@@ -205,6 +205,13 @@ export const CLOSE = {
   back: 0.4 // s the view takes back to the whole page after the blow on Submit, the last of `LAST.hold` in the film; on the live site it takes all of `LAST.held`, which is shorter, so the visitor waits no longer: the page turns seen whole, as every other page does
 } as const
 
+// The health bar after the kill, behind a switch. Off: the empty bar and its word stay on the floor to the page's end.
+// On: at `boss-gone` the word goes, as it came when the bar landed, and the bar goes back up the way it came down, its own drop run backwards, and is gone.
+export const BAR_GONE = {
+  on: false,
+  seconds: 0.42 // s from `boss-gone` to the bar gone: the time its drop took
+} as const
+
 // The last moment: when the body is gone the arrow walks to the button that is left, drops to its knees and strikes it with its right fist.
 export const LAST = {
   stand: (LOOK1_ON ? [550, 650] : [440, 650]) as readonly [number, number], // px, where the arrow stands for the charge and the blast

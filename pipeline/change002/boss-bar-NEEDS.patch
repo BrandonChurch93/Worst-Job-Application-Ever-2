@@ -1,0 +1,12 @@
+diff --git a/src/arena/props.ts b/src/arena/props.ts
+index ef5b0887..537b8d90 100644
+--- a/src/arena/props.ts
++++ b/src/arena/props.ts
+@@ -314,6 +314,7 @@ export function makeBar(kit: Kit): { bar: Bar; dispose(): void } {
+   const half = fillH / 2
+   const fillGeo = sweep(outlineOf({ kind: 'capsule', w: fullW, h: fillH }, 0, 18), profile([[0, 2.5, true], [0, 5], [1.2, 7.4], [3.4, 8.8], [half * 0.5, 9.6], [half * 0.97, 9.9]]))
+   const root = new THREE.Group()
++  root.name = 'arena-bar'
+   root.position.set(wx((B.x0 + B.x1) / 2), wy((B.y0 + B.y1) / 2), 0)
+   const floorStuff = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.02, 0.02, 0.022), roughness: 0.6, metalness: 0.3 }))
+   const fill = lit(fillGeo, kit.orange)
