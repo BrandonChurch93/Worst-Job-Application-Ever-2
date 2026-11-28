@@ -145,7 +145,8 @@ function handsMid(p: StandPose): V3 {
 }
 
 // The knees stay `clear` px off the button's near end (its dark rim is about 19 px); the fist lands `on` px in from that end, at most `reach` px ahead of the feet.
-export const KNEEL = { clear: 31, on: 27, reach: 60, below: 6 } as const
+// `hand`: how far short of the button's near end a hanging hand stays while the figure walks up to it and stands there.
+export const KNEEL = { clear: 36, on: 27, reach: 60, below: 6, hand: 10 } as const
 const fistX = (button: { x: number; w?: number }, feetX: number, scale = SCALE): number => Math.min(feetX + KNEEL.reach * scale, button.x - (button.w ?? 110) / 2 + KNEEL.on)
 
 // Where the feet's middle should be for the fist to land on the button: before its near end, never on it.
@@ -253,7 +254,7 @@ export function finishState(i: FinishInput): FinishState {
         fx.skid.push({ x0: feet.x + sc * (f[0] + long), y0: feet.y + sc * (k === 0 ? 2 : -3), x1: feet.x + sc * (f[0] - 3), y1: feet.y + sc * (k === 0 ? 2 : -3), k: clamp01(back / (12 * sc)) })
       }
       if (over >= 0) {
-        const hang = mixPose(POSES.fire, { ...POSES.fire, strain: 0.2, hip: [7, 23], lean: -0.26, hands: [[55, 40, 14], [57, 31, 15]] }, smooth(span(over, 0, FIRE.hang)))
+        const hang = mixPose(POSES.fire, { ...POSES.fire, strain: 0.2, hip: [7, 23], lean: -0.26, hands: [[55, 27, 14], [57, 19, 15]] }, smooth(span(over, 0, FIRE.hang)))
         const d = span(over, FIRE.hang, FIRE.hang + FIRE.drop)
         pose = mixPose(hang, POSES.spent, outBack(d, 1.1))
         // The arms swing out their fall.
@@ -278,6 +279,11 @@ export function finishState(i: FinishInput): FinishState {
     const own = smooth(span(t - m.walk, 0.25, 0.85))
     pose.hands = [0, 1].map((n) => falling[n]!.map((v, a) => v + (stride.hands[n]![a]! - v) * own)) as unknown as StandPose['hands']
     feet = { x: w.x, y: w.y }
+    // The button is not walked into: a hand that hangs ahead of the body is held back from its near end.
+    if (i.button) {
+      const room = (dir * (i.button.x - feet.x) - (i.button.w ?? 110) / 2) / sc - KNEEL.hand
+      pose.hands = pose.hands.map((h) => [dir * Math.min(dir * h[0], Math.max(room, 12)), h[1], h[2]]) as unknown as StandPose['hands']
+    }
     const landed = stepsBy(w.walked / sc)
     for (let n = Math.max(1, landed - 7); n <= landed; n++) {
       const gone = w.walked - (n - 0.5) * WALK.step * sc
