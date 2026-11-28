@@ -6,6 +6,7 @@ import { barDrop, clamp01 } from '../src/arena/change'
 import { WISP_CLEAR, wispsOf } from '../src/arena/finish'
 import { scorchFrom, scorchOf } from '../src/arena/scorch'
 import { FIRE, finishState, POWER, powerPlan } from '../src/boss/finish/acting'
+import { BEAM } from '../src/boss/finish/fx'
 import { drawnBoxes, figureBox } from '../src/boss/spot'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
@@ -810,4 +811,108 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(m.thrust).toBeDefined()
     expect(Math.abs(m.fire! - m.thrust! - FIRE.ahead)).toBeLessThanOrEqual(2 / stepHz)
   })
+
+  it.runIf(LOOK1_ON)('rulings of 04:46, 1a. nothing burns and nothing of the boss comes off before the beam has left the hands and its front has reached the boss: in the film, for a plain click and for a charged shot let go', () => {
+    const visitor = (down: (u: number) => boolean): Stage => {
+      const bot = new BotDriver('keen', config.seed)
+      let since = -1
+      return new Stage({
+        mode: 'live',
+        flow,
+        pages,
+        seed: config.seed,
+        driver: {
+          name: 'bot',
+          input(v: DriverView): Pointer {
+            if (v.page.gag() !== 'boss.collapse' && v.page.gag() !== 'boss.finish') return bot.input(v)
+            if (since < 0) since = v.time
+            return { x: v.cursor.x, y: v.cursor.y, down: down(v.time - since - FINISH.fall) }
+          }
+        }
+      })
+    }
+    const runs: [string, Stage][] = [['film', film()], ['plain click', visitor((u) => u >= 0.5 && u < 0.7)], ['charged', visitor((u) => u >= 0.5 && u < 2)]]
+    for (const [name, stage] of runs) {
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'finish-fire') && stage.time < 200) stage.advance(1)
+      const fire = stage.time
+      let beamAt = -1
+      let burnAt = -1
+      while (stage.time < fire + 0.8) {
+        stage.advance(1)
+        stage.frameAt(stage.time)
+        const view = viewNow()!
+        const beam = finishState(finishNow()!).fx.beam
+        if (beam && beamAt < 0) beamAt = stage.time
+        const burns = !!view.finish || (view.boss.gone ?? 0) > 0 || (scorchOf(view)?.share ?? 0) > 0
+        if (burnAt < 0 && burns) {
+          burnAt = stage.time
+          expect(beam, name).not.toBeNull()
+          const far = Math.hypot(FALLEN.x - beam!.x, FALLEN.y - beam!.y)
+          expect(beam!.age * BEAM.speed, name).toBeGreaterThanOrEqual(far - (2 * BEAM.speed) / stepHz)
+          expect(beam!.age * BEAM.speed - far, name).toBeLessThan(BEAM.speed * 0.05)
+        }
+      }
+      expect(beamAt, name).toBeGreaterThan(0)
+      expect(beamAt - fire, name).toBeGreaterThanOrEqual(FIRE.lead - 2 / stepHz)
+      expect(beamAt - fire, name).toBeLessThan(FIRE.lead + 0.05)
+      expect(burnAt, name).toBeGreaterThanOrEqual(beamAt)
+      expect(burnAt - beamAt, name).toBeLessThan(0.2)
+    }
+  })
+  it.runIf(LOOK1_ON)('rulings of 04:46, 2. in every course of the fight nothing the boss is drawn with comes nearer than the clear band under the frame of the health bar: five kinds of visitor on ten seeds each, twenty looks a second', () => {
+    const after = (seed: number, where: (time: number) => [number, number]): Stage => {
+      const bot = new BotDriver('keen', seed)
+      let formed = false
+      const stage: Stage = live({
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          formed = formed || stage.events.some((e) => e.name === 'boss-formed')
+          if (!formed) return bot.input(v)
+          const [x, y] = where(v.time)
+          return { x, y, down: Math.floor(v.time * 12) % 2 === 0 }
+        }
+      })
+      return stage
+    }
+    const leg = (time: number): number => Math.floor(time / 1.5)
+    const kinds: [string, (seed: number) => Stage, number][] = [
+      ['keen', (seed) => live(new BotDriver('keen', seed)), 1000],
+      ['clumsy', (seed) => live(new BotDriver('clumsy', seed)), 1000],
+      ['one who keeps under the bar', (seed) => after(seed, (t) => [600 + ((seed * 97 + leg(t) * 211) % 720), 180 + ((seed * 31 + leg(t) * 17) % 90)]), 1000],
+      ['one who runs round the boss', (seed) => after(seed, (t) => [960 + 620 * Math.cos(t * 0.9 + seed), 540 + 400 * Math.sin(t * 0.9 + seed)]), 1000],
+      ['one who stands in one place', (seed) => after(seed, () => [200 + ((seed * 131) % 1520), 150 + ((seed * 71) % 800)]), 1000],
+      ['random', (seed) => live(new BotDriver('random', seed)), 0],
+      ['skipper', (seed) => live(new BotDriver('skipper', seed)), 0]
+    ]
+    let least = Infinity
+    let who = ''
+    for (const [kind, make, enough] of kinds) {
+      let looks = 0
+      let mine = Infinity
+      for (let n = 0; n < 10; n++) {
+        const stage = make(config.seed + n)
+        while (stage.page.id === 'step4' && stage.time < 400) {
+          stage.advance(12)
+          if (stage.page.id !== 'step4') break
+          if (!FIGHT.test(stage.page.gag() ?? '')) continue
+          stage.frameAt(stage.time)
+          const v = viewNow()
+          if (!v) continue
+          looks++
+          for (const b of lookBoxes(v)) {
+            const gap = gapTo(b, SOLID.frame)
+            mine = Math.min(mine, gap)
+            if (gap < least) {
+              least = gap
+              who = `${b.id} of ${kind}, seed ${n}, at ${stage.time.toFixed(2)}`
+            }
+          }
+        }
+      }
+      expect(looks, kind).toBeGreaterThanOrEqual(enough)
+      expect(mine, kind).toBeGreaterThanOrEqual(TOP.clear)
+    }
+    expect(who).not.toBe('')
+    expect(least).toBeGreaterThanOrEqual(TOP.clear)
+  }, 240000)
 })

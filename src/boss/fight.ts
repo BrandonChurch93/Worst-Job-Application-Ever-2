@@ -2,7 +2,8 @@ import { boxToSegment } from '../arena/solids'
 import type { StepIo } from '../stage/types'
 import { FOOT_OFF, muzzleAt, smooth } from './body'
 import { FLOOR, DART, EVENT, EXPIRED_GAIN, HEALTH, HOME, LAST_CLEAR, LOOK_EASE, POPUP, SHIELD, SLOW_SECONDS, THRESHOLD } from './plan'
-import { BIG, CORNER, FILM, FLAT, GUARD, GUN, HEAL, IDLE, LOOK1_ON, MERCY, MOVE, POPUPS_ON, REAL_DART, SHAPE, SOLID, TRACK, WEAR } from './tune'
+import { SIZE } from './look1/pose'
+import { BIG, CORNER, FILM, FLAT, GUARD, GUN, HEAL, IDLE, LOOK1_ON, MERCY, MOVE, POPUPS_ON, REAL_DART, SHAPE, SOLID, TOP, TRACK, WEAR } from './tune'
 
 export interface Rect { x: number; y: number; w: number; h: number }
 export interface Wall { id: string; kind: 'pillar' | 'pane' | 'bar'; x0: number; y0: number; x1: number; y1: number }
@@ -252,11 +253,22 @@ function wander(f: Fight, io: StepIo): { x: number; y: number; speed: number } {
   return { x: f.x, y: f.y, speed: 0 }
 }
 
+// The least y of the boss's centre for the way he faces: so low that his feet, his hull with its wings, his shield and the big cannon's muzzle keep the clear band under the health bar's frame.
+export function headroom(f: { face: number; turret: number }): number {
+  if (!LOOK1_ON) return MOVE.fence.y0
+  const s = Math.sin(f.face)
+  const c = Math.abs(Math.cos(f.face))
+  const up = (long: number, wide: number, ahead = 0): number => -s * ahead + (long * Math.abs(s) + wide * c) / 2
+  const reach = Math.max(up(SIZE.feet.long, SIZE.feet.wide), up(SIZE.hull.long, SIZE.wings.wide), up(2 * GUARD.thick, 2 * SIZE.shield.half, SIZE.shield.ahead), f.turret > 0 ? up(TOP.muzzle, TOP.muzzle, SIZE.big.muzzle) : 0)
+  return Math.max(MOVE.fence.y0, SOLID.frame[3] + TOP.clear + TOP.spare + reach)
+}
+
 function walk(f: Fight, io: StepIo): void {
   const dt = io.dt
   const to = wander(f, io)
+  const top = headroom(f)
   const dx = to.x - f.x
-  const dy = to.y - f.y
+  const dy = Math.max(top, to.y) - f.y
   const d = Math.hypot(dx, dy)
   const max = to.speed * dt
   let vx = 0
@@ -269,6 +281,11 @@ function walk(f: Fight, io: StepIo): void {
     f.x += dx * k
     f.y += dy * k
     f.walked += d * k
+  }
+  if (f.y < top) {
+    vy += (top - f.y) / dt
+    f.walked += top - f.y
+    f.y = top
   }
   f.speed = { x: vx, y: vy }
   const busy = (i: number): boolean => f.feet[i]!.t >= 0
