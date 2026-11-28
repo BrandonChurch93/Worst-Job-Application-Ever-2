@@ -107,7 +107,7 @@ export async function visit(load, c, bot, seed = c.seed, calls = null) {
         return p
       }
     }
-    const stage = new Stage({ mode: 'live', flow: liveFlow(), pages, driver, seed })
+    const stage = new Stage({ mode: 'live', flow: liveFlow(), pages, driver, seed, waits: (page) => sound.owed(page) })
     const limit = Math.round(c.live.botMaxSeconds * stepHz)
     const volumes = []
     const steps = []

@@ -1,0 +1,528 @@
+{
+ "made": "node pipeline/change002/shell-soundbar.mjs bar (02:38 to 02:43 UTC), phone (02:30 to 02:33 UTC)",
+ "browser": "159.0.8154.6",
+ "bar": [
+  {
+   "view": {
+    "width": 1280,
+    "height": 720
+   },
+   "by": "Tab, then Enter",
+   "apply": {
+    "stated": "hero-cta of src/pages/marketing/layout.ts, page pixels 685, 568, 550 by 78, scaled to the picture",
+    "left": 457,
+    "top": 379,
+    "right": 823,
+    "bottom": 431
+   },
+   "before": {
+    "bar": {
+     "left": 0,
+     "top": 664,
+     "right": 1280,
+     "bottom": 720
+    },
+    "accept": {
+     "left": 1150,
+     "top": 675,
+     "right": 1253,
+     "bottom": 709
+    },
+    "capsule": {
+     "left": 16,
+     "top": 676,
+     "right": 233,
+     "bottom": 704
+    },
+    "caption": null,
+    "captionWords": null,
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1280,
+     "bottom": 720
+    },
+    "focus": "body",
+    "step": "0"
+   },
+   "pictureSeconds": 14.493,
+   "afterTab": {
+    "bar": {
+     "left": 0,
+     "top": 664,
+     "right": 1280,
+     "bottom": 720
+    },
+    "accept": {
+     "left": 1150,
+     "top": 675,
+     "right": 1253,
+     "bottom": 709
+    },
+    "capsule": {
+     "left": 16,
+     "top": 676,
+     "right": 233,
+     "bottom": 704
+    },
+    "caption": null,
+    "captionWords": null,
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1280,
+     "bottom": 720
+    },
+    "focus": "Accept",
+    "step": "0"
+   },
+   "move": {
+    "hiddenAfterMs": 261,
+    "seen": [
+     [
+      0,
+      664
+     ],
+     [
+      42,
+      664
+     ],
+     [
+      120,
+      664
+     ],
+     [
+      168,
+      664
+     ],
+     [
+      198,
+      664
+     ],
+     [
+      228,
+      664
+     ]
+    ]
+   },
+   "gone": {
+    "bar": null,
+    "accept": null,
+    "capsule": {
+     "left": 16,
+     "top": 676,
+     "right": 233,
+     "bottom": 704
+    },
+    "caption": {
+     "left": 561,
+     "top": 612,
+     "right": 719,
+     "bottom": 653
+    },
+    "captionWords": "Here we have",
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1280,
+     "bottom": 720
+    },
+    "focus": "body",
+    "step": "0"
+   },
+   "goneAfterPicture": {
+    "bar": null,
+    "accept": null,
+    "capsule": {
+     "left": 16,
+     "top": 676,
+     "right": 233,
+     "bottom": 704
+    },
+    "caption": {
+     "left": 577,
+     "top": 612,
+     "right": 703,
+     "bottom": 653
+    },
+    "captionWords": "it is 2026.",
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1280,
+     "bottom": 720
+    },
+    "focus": "body",
+    "step": "0"
+   },
+   "errors": [],
+   "leavingBy": "a press on Apply for a Job",
+   "held": {
+    "leaving": null,
+    "animation": null
+   },
+   "leaving": {
+    "bar": {
+     "left": 0,
+     "top": 664,
+     "right": 1280,
+     "bottom": 720
+    },
+    "accept": {
+     "left": 1150,
+     "top": 675,
+     "right": 1253,
+     "bottom": 709
+    },
+    "capsule": {
+     "left": 16,
+     "top": 676,
+     "right": 233,
+     "bottom": 704
+    },
+    "caption": null,
+    "captionWords": null,
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1280,
+     "bottom": 720
+    },
+    "focus": null,
+    "step": "0"
+   },
+   "leavingAfterPicture": {
+    "bar": {
+     "left": 0,
+     "top": 726,
+     "right": 1280,
+     "bottom": 782
+    },
+    "accept": {
+     "left": 1150,
+     "top": 736,
+     "right": 1253,
+     "bottom": 771
+    },
+    "capsule": {
+     "left": 16,
+     "top": 676,
+     "right": 233,
+     "bottom": 704
+    },
+    "caption": {
+     "left": 577,
+     "top": 612,
+     "right": 703,
+     "bottom": 653
+    },
+    "captionWords": "Poor fool.",
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1280,
+     "bottom": 720
+    },
+    "focus": null,
+    "step": "0"
+   },
+   "errorsSecond": []
+  },
+  {
+   "view": {
+    "width": 1920,
+    "height": 1080
+   },
+   "by": "Tab, then Space",
+   "apply": {
+    "stated": "hero-cta of src/pages/marketing/layout.ts, page pixels 685, 568, 550 by 78, scaled to the picture",
+    "left": 685,
+    "top": 568,
+    "right": 1235,
+    "bottom": 646
+   },
+   "before": {
+    "bar": {
+     "left": 0,
+     "top": 996,
+     "right": 1920,
+     "bottom": 1080
+    },
+    "accept": {
+     "left": 1725,
+     "top": 1012,
+     "right": 1880,
+     "bottom": 1064
+    },
+    "capsule": {
+     "left": 24,
+     "top": 1018,
+     "right": 311,
+     "bottom": 1056
+    },
+    "caption": null,
+    "captionWords": null,
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1920,
+     "bottom": 1080
+    },
+    "focus": "body",
+    "step": "0"
+   },
+   "pictureSeconds": 11.617,
+   "afterTab": {
+    "bar": {
+     "left": 0,
+     "top": 996,
+     "right": 1920,
+     "bottom": 1080
+    },
+    "accept": {
+     "left": 1725,
+     "top": 1012,
+     "right": 1880,
+     "bottom": 1064
+    },
+    "capsule": {
+     "left": 24,
+     "top": 1018,
+     "right": 311,
+     "bottom": 1056
+    },
+    "caption": null,
+    "captionWords": null,
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1920,
+     "bottom": 1080
+    },
+    "focus": "Accept",
+    "step": "0"
+   },
+   "move": {
+    "hiddenAfterMs": 286,
+    "seen": [
+     [
+      0,
+      996
+     ],
+     [
+      49,
+      996
+     ],
+     [
+      127,
+      996
+     ],
+     [
+      157,
+      996
+     ],
+     [
+      187,
+      996
+     ],
+     [
+      223,
+      996
+     ],
+     [
+      255,
+      996
+     ]
+    ]
+   },
+   "gone": {
+    "bar": null,
+    "accept": null,
+    "capsule": {
+     "left": 24,
+     "top": 1018,
+     "right": 311,
+     "bottom": 1056
+    },
+    "caption": {
+     "left": 841,
+     "top": 918,
+     "right": 1079,
+     "bottom": 980
+    },
+    "captionWords": "Here we have",
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1920,
+     "bottom": 1080
+    },
+    "focus": "body",
+    "step": "0"
+   },
+   "goneAfterPicture": {
+    "bar": null,
+    "accept": null,
+    "capsule": {
+     "left": 24,
+     "top": 1018,
+     "right": 311,
+     "bottom": 1056
+    },
+    "caption": null,
+    "captionWords": null,
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1920,
+     "bottom": 1080
+    },
+    "focus": "body",
+    "step": "0"
+   },
+   "errors": [],
+   "leavingBy": "a press on Accept with the mouse",
+   "held": {
+    "leaving": "true",
+    "animation": "transform",
+    "wholeMs": 260,
+    "heldAtMs": 156
+   },
+   "leaving": {
+    "bar": {
+     "left": 0,
+     "top": 1037,
+     "right": 1920,
+     "bottom": 1121
+    },
+    "accept": {
+     "left": 1725,
+     "top": 1053,
+     "right": 1880,
+     "bottom": 1105
+    },
+    "capsule": {
+     "left": 24,
+     "top": 1018,
+     "right": 311,
+     "bottom": 1056
+    },
+    "caption": null,
+    "captionWords": null,
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1920,
+     "bottom": 1080
+    },
+    "focus": "body",
+    "step": "0"
+   },
+   "leavingAfterPicture": {
+    "bar": {
+     "left": 0,
+     "top": 1037,
+     "right": 1920,
+     "bottom": 1121
+    },
+    "accept": {
+     "left": 1725,
+     "top": 1053,
+     "right": 1880,
+     "bottom": 1105
+    },
+    "capsule": {
+     "left": 24,
+     "top": 1018,
+     "right": 311,
+     "bottom": 1056
+    },
+    "caption": {
+     "left": 767,
+     "top": 918,
+     "right": 1153,
+     "bottom": 980
+    },
+    "captionWords": "They must have forgotten",
+    "canvas": {
+     "left": 0,
+     "top": 0,
+     "right": 1920,
+     "bottom": 1080
+    },
+    "focus": "body",
+    "step": "0"
+   },
+   "errorsSecond": []
+  }
+ ],
+ "film": {
+  "bar": null,
+  "accept": null,
+  "capsule": {
+   "left": 50,
+   "top": 664,
+   "right": 1230,
+   "bottom": 720
+  },
+  "caption": null,
+  "captionWords": null,
+  "canvas": {
+   "left": 50,
+   "top": 0,
+   "right": 1230,
+   "bottom": 664
+  },
+  "focus": "body"
+ },
+ "phone": [
+  {
+   "text": "The Worst Job Application Ever\n\nWe're sorry.\n\nThis application requires a mouse, a keyboard and considerably more patience than a phone allows.\n\nWatch the film instead",
+   "links": [
+    {
+     "href": "https://www.perplexity.ai/computer/a/the-worst-job-application-ever-11C.YCwbSEaDnRs_ar70Dw",
+     "words": "Watch the film instead",
+     "target": "",
+     "left": 57,
+     "top": 496,
+     "right": 314,
+     "bottom": 549
+    }
+   ],
+   "buttons": [],
+   "scroll": {
+    "w": 390,
+    "h": 844
+   },
+   "view": {
+    "width": 390,
+    "height": 844
+   },
+   "errors": []
+  },
+  {
+   "text": "The Worst Job Application Ever\n\nWe're sorry.\n\nThis application requires a mouse, a keyboard and considerably more patience than a phone allows.\n\nWatch the film instead",
+   "links": [
+    {
+     "href": "https://www.perplexity.ai/computer/a/the-worst-job-application-ever-11C.YCwbSEaDnRs_ar70Dw",
+     "words": "Watch the film instead",
+     "target": "",
+     "left": 152,
+     "top": 271,
+     "right": 449,
+     "bottom": 322
+    }
+   ],
+   "buttons": [],
+   "scroll": {
+    "w": 844,
+    "h": 390
+   },
+   "view": {
+    "width": 844,
+    "height": 390
+   },
+   "errors": []
+  }
+ ]
+}

@@ -231,6 +231,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
 
   const look = window.setInterval(() => {
     if (noticeState === 'shown') root.style.setProperty('--row', `${live.offsetLeft + live.offsetWidth}px`)
+    showNotice()
     liveSound.update()
     barSound.update()
   }, SOUND_LOOK_MS)

@@ -1,6 +1,6 @@
 // node pipeline/change002/shell-soundbar.mjs [bar] [phone] [step2]: change note 004 in a browser, on the dev server of this tree, at real size.
 // bar: the sound bar on the careers page at 1280 by 720 and 1920 by 1080 (before Accept, leaving, gone), with where each thing lies. phone: the notice at 390 by 844 and 844 by 390.
-// step2: step 2 played by the keen bot with sound allowed, a picture every 0.4 s with the caption's words. Pictures land in pipeline/change002/shell-pictures/ (bar, phone) and /tmp/shell-step2/ (step2).
+// step2: step 2 played by the keen bot with sound allowed and without, with when each caption came and when the page turned. Pictures land in pipeline/change002/shell-pictures/.
 import fs from 'node:fs'
 import path from 'node:path'
 import { createServer } from 'vite'
@@ -12,7 +12,7 @@ const pictures = at('pipeline', 'change002', 'shell-pictures')
 const server = await createServer({ root: at(), configFile: at('vite.config.ts'), server: { port: 5199 }, logLevel: 'error' })
 await server.listen()
 const { browser, version } = await launch()
-const SLOW = 40
+const HOLD = 0.6
 const record = { made: 'node pipeline/change002/shell-soundbar.mjs', browser: version }
 const open = async (q, o) => {
   const ctx = await browser.newContext({ deviceScaleFactor: 1, ...o })
@@ -35,57 +35,67 @@ const rects = (page) => page.evaluate(() => {
 try {
   if (wants('bar')) {
     record.bar = []
-    for (const [view, key] of [[{ width: 1280, height: 720 }, 'Enter'], [{ width: 1920, height: 1080 }, 'Space'], [{ width: 1280, height: 720 }, 'Apply']]) {
+    const ready = async (view) => {
       const page = await open('', { viewport: view })
       await page.waitForFunction(() => [...document.querySelectorAll('#controls button')].some((b) => b.textContent === 'Accept' && b.offsetParent), null, { timeout: 120000 })
       await page.waitForTimeout(2500)
-      const name = `soundbar-${view.width}-${key.toLowerCase()}`
+      return page
+    }
+    for (const [view, key] of [[{ width: 1280, height: 720 }, 'Enter'], [{ width: 1920, height: 1080 }, 'Space']]) {
       const k = view.width / 1920
-      const row = { view, by: key, apply: { stated: 'hero-cta of src/pages/marketing/layout.ts, page pixels 685, 568, 550 by 78, scaled to the picture', left: Math.round(685 * k), top: Math.round(568 * k), right: Math.round(1235 * k), bottom: Math.round(646 * k) }, before: await rects(page) }
+      const name = `soundbar-${view.width}`
+      const row = { view, by: `Tab, then ${key}`, apply: { stated: 'hero-cta of src/pages/marketing/layout.ts, page pixels 685, 568, 550 by 78, scaled to the picture', left: Math.round(685 * k), top: Math.round(568 * k), right: Math.round(1235 * k), bottom: Math.round(646 * k) } }
+      let page = await ready(view)
+      row.before = await rects(page)
+      let t = Date.now()
       await page.screenshot({ path: path.join(pictures, `${name}-before.png`) })
-      // The Enter run is at the real speed and times the move by the bar's own rectangle. The other runs slow the move SLOW times, in the style sheet and in the timer that ends it, so that a picture can be taken on the way.
-      const slow = key !== 'Enter'
-      if (slow) await page.evaluate((n) => {
-        const st = window.setTimeout
-        window.setTimeout = (f, ms, ...a) => st(f, ms === 260 ? ms * n : ms, ...a)
+      row.pictureSeconds = (Date.now() - t) / 1000
+      await page.keyboard.press('Tab')
+      row.afterTab = await rects(page)
+      await page.keyboard.press(key === 'Space' ? ' ' : key)
+      // The move at its real speed, timed by the bar's own rectangle.
+      row.move = await page.evaluate(() => new Promise((done) => {
         const bar = [...document.querySelectorAll('#controls button')].find((b) => b.textContent === 'Accept').parentElement
-        bar.style.transitionDuration = `${0.26 * n}s`
-      }, SLOW)
-      if (key === 'Apply') await page.mouse.click(960 * k, 607 * k)
-      else {
-        await page.keyboard.press('Tab')
-        row.afterTab = await rects(page)
-        await page.screenshot({ path: path.join(pictures, `${name}-focus.png`) })
-        await page.keyboard.press(key === 'Space' ? ' ' : key)
-      }
-      if (slow) {
-        await page.waitForTimeout(1500)
-        row.leaving = await rects(page)
-        await page.screenshot({ path: path.join(pictures, `${name}-leaving.png`) })
-        row.leavingAfter = await rects(page)
-        await page.waitForTimeout(0.26 * SLOW * 1000)
-      } else {
-        row.move = await page.evaluate(() => new Promise((done) => {
-          const bar = [...document.querySelectorAll('#controls button')].find((b) => b.textContent === 'Accept').parentElement
-          const t0 = performance.now()
-          const seen = []
-          const look = () => {
-            const t = Math.round(performance.now() - t0)
-            if (bar.hidden) return done({ hiddenAfterMs: t, seen })
-            seen.push([t, Math.round(bar.getBoundingClientRect().top)])
-            if (t > 3000) return done({ hiddenAfterMs: null, seen })
-            setTimeout(look, 30)
-          }
-          look()
-        }))
-      }
-      await page.waitForTimeout(600)
-      await page.screenshot({ path: path.join(pictures, `${name}-gone.png`) })
+        const t0 = performance.now()
+        const seen = []
+        const look = () => {
+          const ms = Math.round(performance.now() - t0)
+          if (bar.hidden) return done({ hiddenAfterMs: ms, seen })
+          seen.push([ms, Math.round(bar.getBoundingClientRect().top)])
+          if (ms > 3000) return done({ hiddenAfterMs: null, seen })
+          setTimeout(look, 30)
+        }
+        look()
+      }))
+      for (let i = 0; i < 40 && !(await rects(page)).caption; i++) await page.waitForTimeout(100)
       row.gone = await rects(page)
-      await page.waitForTimeout(2500)
-      row.later = await rects(page)
-      await page.screenshot({ path: path.join(pictures, `${name}-later.png`) })
+      await page.screenshot({ path: path.join(pictures, `${name}-gone.png`) })
+      row.goneAfterPicture = await rects(page)
       row.errors = page.errors
+      await page.context().close()
+      // A second visit for the picture on the way out: the press is on Apply at 1280 and on Accept at 1920, and the move is held at HOLD of its time while the picture is taken. The timer that ends the move is kept from ending it.
+      page = await ready(view)
+      await page.evaluate(() => {
+        const st = window.setTimeout
+        window.setTimeout = (f, ms, ...a) => st(f, ms === 260 ? 600000 : ms, ...a)
+      })
+      if (view.width === 1280) await page.mouse.click(960 * k, 607 * k)
+      else await page.mouse.click((row.before.accept.left + row.before.accept.right) / 2, (row.before.accept.top + row.before.accept.bottom) / 2)
+      row.leavingBy = view.width === 1280 ? 'a press on Apply for a Job' : 'a press on Accept with the mouse'
+      row.held = await page.evaluate((hold) => {
+        const bar = [...document.querySelectorAll('#controls button')].find((b) => b.textContent === 'Accept').parentElement
+        void getComputedStyle(bar).transform
+        const a = bar.getAnimations()[0]
+        if (!a) return { leaving: bar.dataset.leaving ?? null, animation: null }
+        a.pause()
+        const whole = a.effect.getComputedTiming().duration
+        a.currentTime = whole * hold
+        return { leaving: bar.dataset.leaving ?? null, animation: a.transitionProperty ?? null, wholeMs: whole, heldAtMs: whole * hold }
+      }, HOLD)
+      row.leaving = await rects(page)
+      await page.screenshot({ path: path.join(pictures, `${name}-leaving.png`) })
+      row.leavingAfterPicture = await rects(page)
+      row.errorsSecond = page.errors
       record.bar.push(row)
       console.log(JSON.stringify(row))
       await page.context().close()
@@ -116,24 +126,37 @@ try {
     }
   }
   if (wants('step2')) {
-    const dir = '/tmp/shell-step2'
-    fs.rmSync(dir, { recursive: true, force: true })
-    fs.mkdirSync(dir, { recursive: true })
-    const page = await open('?step=2&bot=keen', { viewport: { width: 1280, height: 720 } })
-    await page.mouse.click(1270, 10)
-    const t0 = Date.now()
+    // Step 2 played by the keen bot. With sound allowed by a press on the page the narrator says line 4; without it nothing is owed. The page is looked at every 100 ms; pictures are taken when the second part of line 4 is on its panel and when it has left.
     record.step2 = []
-    for (let i = 0; i < 90; i++) {
-      await page.waitForTimeout(400)
-      const r = await rects(page)
-      const row = { wall: (Date.now() - t0) / 1000, step: r.step, caption: r.captionWords }
+    for (const sound of [true, false]) {
+      const page = await open('?step=2&bot=keen', { viewport: { width: 1280, height: 720 } })
+      const t0 = Date.now()
+      if (sound) await page.mouse.click(1270, 10)
+      const row = { sound, captions: [], turnedAt: null, pictures: [] }
+      let last = null
+      let state = 'before'
+      for (let i = 0; i < 900; i++) {
+        const r = await rects(page)
+        const at0 = (Date.now() - t0) / 1000
+        if (r.captionWords !== last) { row.captions.push([Number(at0.toFixed(2)), r.captionWords]); last = r.captionWords }
+        if (r.step !== '2') { row.turnedAt = Number(at0.toFixed(2)); break }
+        if (sound && state === 'before' && /regret/i.test(r.captionWords ?? '')) {
+          state = 'waiting'
+          await page.screenshot({ path: path.join(pictures, 'step2-continue-waiting.png') })
+          row.pictures.push({ what: 'waiting', asked: Number(at0.toFixed(2)), done: Number(((Date.now() - t0) / 1000).toFixed(2)), after: (await rects(page)).captionWords })
+        } else if (sound && state === 'waiting' && r.captionWords === null) {
+          state = 'ready'
+          await page.screenshot({ path: path.join(pictures, 'step2-continue-ready.png') })
+          const after = await rects(page)
+          row.pictures.push({ what: 'ready', asked: Number(at0.toFixed(2)), done: Number(((Date.now() - t0) / 1000).toFixed(2)), stepAfter: after.step })
+        }
+        await page.waitForTimeout(100)
+      }
+      row.errors = page.errors
       record.step2.push(row)
-      await page.screenshot({ path: path.join(dir, `${String(i).padStart(2, '0')}.png`) })
       console.log(JSON.stringify(row))
-      if (r.step !== '2' && i > 5) break
+      await page.context().close()
     }
-    record.step2Errors = page.errors
-    await page.context().close()
   }
 } finally {
   await browser.close()
