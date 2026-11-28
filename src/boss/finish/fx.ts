@@ -26,6 +26,18 @@ const PIECES = { low: { tongues: 7, ring: 10, puffs: 14 }, medium: { tongues: 11
 const MOST = PIECES.film
 const BACK = 9
 
+// The licks of the power-up. `rise`: how much of the figure's own rise their plane has. `tall`: for each of the nine, its foot beside the feet and in front of them (behind when negative), its height, its lean in radians (positive to the left) and its curl. `shoe`: how near a shoe, in px, no low flame may stand.
+const LICK = {
+  rise: 0.5,
+  wide: 66,
+  shoe: 15,
+  tall: [
+    [-86, -3, 62, 0.46, -0.6], [-67, -9, 93, 0.22, 0.62], [-49, -5, 74, 0.04, -0.55],
+    [51, -5, 78, -0.06, 0.58], [69, -9, 98, -0.24, -0.6], [88, -3, 64, -0.48, 0.6],
+    [-22, -15, 99, 0.12, 0.6], [6, -17, 90, -0.04, -0.62], [30, -15, 80, -0.14, 0.55]
+  ]
+} as const
+
 const NOISE = /* glsl */ `
 float h21(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float vn(vec2 p) { vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h21(i), h21(i + vec2(1.0, 0.0)), f.x), mix(h21(i + vec2(0.0, 1.0)), h21(i + vec2(1.0, 1.0)), f.x), f.y); }
@@ -68,6 +80,19 @@ function flameStuff(): THREE.ShaderMaterial {
         float inner = smoothstep(w * 0.58, w * 0.1, ax) * (1.0 - t * 0.75);
         vec3 col = mix(vec3(1.35, 0.5, 0.02), vec3(2.3, 1.75, 0.75), clamp(inner, 0.0, 1.0));
         float a = body * k * (0.72 + 0.28 * inner) * (1.0 - 0.35 * t);
+        if (vFlame.w > 1.5) {
+          // A lick, as on the pose sheet: narrow at the foot, widest at a third of its height, drawn out into a tip that curls over to one side. Its body is see-through, its edge and its core carry it.
+          float lt = clamp(y, 0.0, 1.0);
+          float wave = sin(lt * 6.4 + seed * 40.0 - uTime * 4.2) * 0.2 * lt * (1.0 - 0.5 * lt) + (fbm(vec2(seed * 9.0, y * 2.4 - uTime * 2.2)) - 0.5) * 0.3 * lt;
+          float lx = (vUv.x - 0.5) * 2.0 - wave - vFlame.z * (0.1 * lt + 1.35 * pow(lt, 3.6));
+          float lw = 0.018 * (1.0 - lt) + 0.17 * pow(lt, 0.6) * pow(1.0 - lt, 1.2) / 0.318;
+          float la = abs(lx);
+          float lbody = smoothstep(lw, lw * 0.8, la) * step(0.004, lw);
+          float edge = lbody * smoothstep(lw * 0.45, lw * 0.95, la);
+          float core = smoothstep(lw * 0.36, 0.0, la);
+          col = mix(vec3(1.7, 0.52, 0.0), vec3(2.3, 1.8, 0.8), clamp(0.9 * core, 0.0, 1.0));
+          a = lbody * k * (0.4 + 0.6 * edge + 0.3 * core) * smoothstep(0.0, 0.1, lt) * (1.0 - 0.45 * lt * lt);
+        }
         if (a < 0.003) discard;
         gl_FragColor = vec4(col, min(1.0, a));
       }`
@@ -298,6 +323,21 @@ export function makeFinishFx(): FinishFx {
     return m4.makeBasis(X.multiplyScalar(k), Yv.multiplyScalar(k), Zv).setPosition(O)
   }
 
+  // A lick of the power-up: its foot on the ground, `gx` beside the feet and `gy` in front of them (behind when negative), standing in a plane that lies lower than the figure's, so the film, which looks straight down, sees nearly its whole length; `turn` leans it.
+  const lick = (p: StandPose, gx: number, gy: number, w: number, h: number, turn: number): THREE.Matrix4 => {
+    const a = STAND.rise * p.rise * LICK.rise
+    const c = Math.cos(a)
+    const s = Math.sin(a)
+    const ct = Math.cos(turn)
+    const st = Math.sin(turn)
+    const k = p.scale ?? 1
+    X.set(ct * w, st * c * w, st * s * w)
+    Yv.set(-st * h, ct * c * h, ct * s * h)
+    Zv.set(0, -s, c)
+    O.set(p.x - 960 + k * gx, 540 - p.y - k * gy, p.ground + 0.8)
+    return m4.makeBasis(X.multiplyScalar(k), Yv.multiplyScalar(k), Zv).setPosition(O)
+  }
+
   const flat = (x: number, y: number, z: number, w: number, h: number, rot: number): THREE.Matrix4 => {
     const c = Math.cos(rot)
     const s = Math.sin(rot)
@@ -331,14 +371,22 @@ export function makeFinishFx(): FinishFx {
         const th = Math.PI * (0.92 - 0.84 * u)
         const seed = hash01(j, 5, SEED)
         // Full flames round the figure, as on the pose sheet: three at each side that lean and lick, taller than the fists, and three low ones behind the legs. They stand behind the figure, so the fists and the arrow are never covered.
-        const wx = [-72, -58, -45, 47, 60, 74, -20, 4, 24][j]!
-        const wt = [62, 92, 112, 116, 96, 66, 34, 28, 36][j]!
-        const curl = [-0.46, 0.44, -0.36, 0.38, -0.46, 0.44, 0.3, -0.3, 0.34][j]!
-        const tall = mixed((96 + 34 * seed) * (0.8 + 0.3 * Math.sin(th)), wt * (0.9 + 0.2 * seed)) * grow
-        flames.setMatrixAt(n, card(p, mixed(2 + Math.cos(th) * 20, wx), mixed(26 + Math.sin(th) * 22, 0), -3.5, mixed(46 + 12 * seed, 50 + 10 * seed), tall, mixed(-Math.cos(th) * 0.42, -wx * 0.003)))
+        if (low > 0.5) {
+          // The power-up: nine licks that stand loosely round the figure with gaps between them, three at each side and three behind, each leaning and curling its own way.
+          const L = LICK.tall[j]!
+          flames.setMatrixAt(n, lick(p, L[0], L[1], LICK.wide + 8 * seed, L[2] * (0.94 + 0.12 * seed) * grow, L[3]))
+          d[n * 4] = seed + 0.61
+          d[n * 4 + 1] = Math.min(1, k) * (1 - 0.6 * fx.burst) * low
+          d[n * 4 + 2] = L[4]
+          d[n * 4 + 3] = 2
+          n++
+          continue
+        }
+        const tall = (96 + 34 * seed) * (0.8 + 0.3 * Math.sin(th)) * grow
+        flames.setMatrixAt(n, card(p, 2 + Math.cos(th) * 20, 26 + Math.sin(th) * 22, -3.5, 46 + 12 * seed, tall, -Math.cos(th) * 0.42))
         d[n * 4] = seed + 0.61
-        d[n * 4 + 1] = mixed(0.5, 0.9) * Math.min(1, k) * (1 - 0.6 * fx.burst) * (j < 5 ? 1 : low)
-        d[n * 4 + 2] = mixed(0, curl)
+        d[n * 4 + 1] = 0.5 * Math.min(1, k) * (1 - 0.6 * fx.burst) * (j < 5 ? 1 : 0)
+        d[n * 4 + 2] = 0
         d[n * 4 + 3] = 0
         n++
       }
@@ -347,6 +395,19 @@ export function makeFinishFx(): FinishFx {
         const u = (j + 0.5) / pieces.tongues
         const th = Math.PI * (1.18 - 1.36 * u)
         const seed = hash01(j, 1, SEED)
+        if (low > 0.5) {
+          // The power-up: short licks on the ground behind the feet, every second place left empty, and none where a shoe stands.
+          const gx = ((j + 0.5) / pieces.tongues - 0.5) * 150
+          const shoe = Math.min(Math.abs(gx - p.feet[0][0]), Math.abs(gx - p.feet[1][0])) < LICK.shoe
+          const tall = (26 + 22 * hash01(j, 2, SEED)) * (0.8 + 0.9 * Math.pow(Math.abs(gx) / 75, 2)) * grow
+          flames.setMatrixAt(n, lick(p, gx, -4 - 9 * seed, 40 + 10 * seed, tall, -gx * 0.004 + (seed - 0.5) * 0.5))
+          d[n * 4] = seed
+          d[n * 4 + 1] = j % 2 === 0 && !shoe ? Math.min(1, k) * (1 - 0.6 * fx.burst) : 0
+          d[n * 4 + 2] = (j % 4 < 2 ? 1 : -1) * (0.3 + 0.3 * hash01(j, 6, SEED))
+          d[n * 4 + 3] = 2
+          n++
+          continue
+        }
         const rx = 37 + 8 * seed
         const ry = 50
         // In the power-up: thin and short, along the ground from side to side, taller toward the sides.
@@ -374,7 +435,9 @@ export function makeFinishFx(): FinishFx {
         const a = STAND.rise * p.rise
         flames.setMatrixAt(n, card(p, gx, -gy * Math.cos(a), gy * Math.sin(a), 8 + 5 * seed, tall, (seed - 0.5) * 0.5))
         d[n * 4] = seed + 0.37
-        d[n * 4 + 1] = Math.min(1, k) * (1 - fx.burst) * fx.ring
+        // No flame of the ring stands in front of a shoe.
+        const shod = gy > 0 && Math.min(Math.abs(gx - p.feet[0][0]), Math.abs(gx - p.feet[1][0])) < LICK.shoe
+        d[n * 4 + 1] = shod ? 0 : Math.min(1, k) * (1 - fx.burst) * fx.ring
         d[n * 4 + 2] = (seed - 0.5) * 0.5
         d[n * 4 + 3] = 1
         n++
