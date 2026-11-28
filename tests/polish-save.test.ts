@@ -7,6 +7,9 @@ import { WIRE, movingShapes, wireOn } from '../src/table/draw'
 import { BALL, MID, TH, TIERS, TIER_Y } from '../src/table/layout'
 import { Machine, SAVE, prepare } from '../src/table/physics'
 import { GATE } from '../src/table/real/hardware/tier'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 // The save of a ball lost between the bats, on the live site: the shut gate takes the ball on its wire, holds it, draws back and kicks it. Stepped, no browser.
 const dt = 1 / stepHz

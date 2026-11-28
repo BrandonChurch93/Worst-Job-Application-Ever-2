@@ -8,6 +8,9 @@ import type { DrawList, Driver, Pointer, Shape } from '../src/stage/types'
 import { PART, stateOf } from '../src/table/real/ball'
 import { ANSWER, BENDS, dipOf, KNOCK, knockOf } from '../src/table/real/frame/loader'
 import { BALL, PORT } from '../src/table/layout'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 const EACH = stepHz / 60
 

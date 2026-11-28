@@ -4,6 +4,9 @@ import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
 import { liveFlow, MouseDriver, Stage, type Driver, type DriverView, type Pointer } from '../src/stage/stage'
 import { listenToVisitor, type Visitor } from '../src/ui/pointer'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 type Fn = (e: Fired) => void
 interface Fired { type: string; target: Thing; stopPropagation(): void; preventDefault(): void; [k: string]: unknown }

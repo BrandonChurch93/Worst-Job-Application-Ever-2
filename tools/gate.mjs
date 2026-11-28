@@ -14,6 +14,7 @@ import { storyCheck, wordsCheck } from './lib/story.mjs'
 import { cutListExists, judgedFilm, judgedPages, listedIds, readCutList } from './lib/judged.mjs'
 import { ANCHORS, coveredUnits, filmMoments, flaggedPixels, hashFacts, hosting, memoryAndCounts, resolveCommit, showAt, standInTests, unitStates, unknownUnits } from './lib/gate-checks.mjs'
 import { launch } from './lib/browser.mjs'
+import { controlTaken } from './lib/pinball-video-control.mjs'
 import { serve } from './lib/serve.mjs'
 
 const a = args()
@@ -589,9 +590,10 @@ const checks = {
     const finishing = report.problems.filter((p) => !p.startsWith('keen never reached'))
     const done = report.runs.filter((x) => x.finished).length
     const slowest = report.runs.reduce((m, x) => Math.max(m, x.seconds), 0)
-    const pointer = report.runs.reduce((m, x) => Math.max(m, x.ignoredPointer), 0)
-    const flippers = report.runs.reduce((m, x) => Math.max(m, x.ignoredFlippers), 0)
-    return { pass: finishing.length === 0 && done === report.runs.length, note: `finishing: ${done} of ${report.runs.length} runs (${c.live.bots.join(', ')} on ${c.live.botSeeds} seeds each) reached the careers page after the rejection, the slowest in ${slowest.toFixed(0)} s of ${c.live.botMaxSeconds}; the pointer was ignored for at most ${pointer.toFixed(2)} s and the flippers for at most ${flippers.toFixed(2)} s, of ${c.live.controlTakenMaxSeconds} allowed`, detail: finishing.slice(0, 20) }
+    const pointer = report.runs.reduce((m, x) => Math.max(m, controlTaken(x).counted.pointer), 0)
+    const flippers = report.runs.reduce((m, x) => Math.max(m, controlTaken(x).counted.flippers), 0)
+    const film = report.runs.reduce((m, x) => Math.max(m, controlTaken(x).film), 0)
+    return { pass: finishing.length === 0 && done === report.runs.length, note: `finishing: ${done} of ${report.runs.length} runs (${c.live.bots.join(', ')} on ${c.live.botSeeds} seeds each) reached the careers page after the rejection, the slowest in ${slowest.toFixed(0)} s of ${c.live.botMaxSeconds}; the pointer was ignored for at most ${pointer.toFixed(2)} s and the flippers for at most ${flippers.toFixed(2)} s, of ${c.live.controlTakenMaxSeconds} allowed${film > 0 ? `; the pre-rendered film of the pinball scene held control for ${film.toFixed(2)} s, left out of that limit by item 8 of change note 002` : ''}`, detail: finishing.slice(0, 20) }
   },
 
   async G18() {

@@ -8,6 +8,9 @@ import type { Driver, Pointer } from '../src/stage/types'
 import { WIRE, movingShapes } from '../src/table/draw'
 import { BALL, TH, TIER_Y } from '../src/table/layout'
 import { Machine, SAVE, prepare } from '../src/table/physics'
+import { bridge } from '../src/pages/step3/video/bridge'
+
+bridge.off = true
 
 // The save at a shut gate as round 25's motion critic asked for it: a landing with weight, an arrow that does not turn in a ball that lies still, a load that is seen, a wire that rings out once, a view that goes to its place and stands. Stepped, no browser.
 const EACH = stepHz / 60

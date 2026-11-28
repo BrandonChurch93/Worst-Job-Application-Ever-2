@@ -313,6 +313,7 @@ function play(first: PlayMode): void {
       volume = v
       sound.setVolume(v)
     }
+    if (stage.page.control === 'film') touched()
     sound.quiet(wallSeconds() - lastInput)
   }
   const touched = () => {
@@ -345,7 +346,7 @@ function play(first: PlayMode): void {
     if ((PLAY as string[]).includes(m)) setMode(m as PlayMode, false)
   })
 
-  const backing = (): Backing => backingOf(shown, stage.page.unit)
+  const backing = (): Backing => (stage.page.control === 'film' ? 'dark' : backingOf(shown, stage.page.unit))
 
   let frameSeconds = 1 / 60
   const api: InterfaceApi = {
@@ -406,7 +407,7 @@ function play(first: PlayMode): void {
     const key = `${now}${app.diagnostic}${p.key}`
     still = size.changed() || key !== before ? 0 : Math.min(still + 1, rest.length)
     before = key
-    if (still >= rest.length) return
+    if (still >= rest.length || (still > 0 && now === 'live' && stage.page.control === 'film')) return
     frame++
     app.put(p.frame, p.size, p.pose)
     app.setCamera(p.pose)

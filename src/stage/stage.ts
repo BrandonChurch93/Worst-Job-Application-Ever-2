@@ -48,7 +48,7 @@ interface Saved {
   down: boolean
   skipped: boolean
   run: number
-  max: { pointer: number; flippers: number }
+  max: { pointer: number; flippers: number; film?: number }
   lag: { x: number; y: number; left: number }
   brought?: { sx: number; sy: number; z: number } | null
   late?: { raw: boolean; wait: number }
@@ -91,7 +91,8 @@ export class Stage {
   private down = false
   private skipped = false
   private run = 0
-  private max = { pointer: 0, flippers: 0 }
+  private max = { pointer: 0, flippers: 0, film: 0 }
+  private inFilm = false
   private lag = { x: 0, y: 0, left: 0 }
   private brought: { sx: number; sy: number; z: number } | null = null
   private leftOn: { sx: number; sy: number; z: number } | null = null
@@ -146,7 +147,8 @@ export class Stage {
     this.events = []
     this.down = false
     this.run = 0
-    this.max = { pointer: 0, flippers: 0 }
+    this.max = { pointer: 0, flippers: 0, film: 0 }
+    this.inFilm = false
     this.lag = { x: 0, y: 0, left: 0 }
     this.late = { raw: false, wait: 0 }
     this.reached = new Set()
@@ -163,8 +165,8 @@ export class Stage {
   get pageTime(): number { return this.pageStep / stepHz }
   get turning(): boolean { return this.phase !== 'play' }
   get finished(): boolean { return this.phase === 'end' || (this.index === this.o.flow.length - 1 && this.phase === 'play' && !this.o.film?.leave && this.index > 0) }
-  get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && this.pageStep >= skipAfter && this.index < this.o.flow.length - 1 && this.page.unit !== 'marketing' }
-  get longestIgnored(): { pointer: number; flippers: number } { return { pointer: this.max.pointer / stepHz, flippers: this.max.flippers / stepHz } }
+  get skipOffered(): boolean { return this.o.mode === 'live' && this.phase === 'play' && (this.pageStep >= skipAfter || this.page.control === 'film') && this.index < this.o.flow.length - 1 && this.page.unit !== 'marketing' }
+  get longestIgnored(): { pointer: number; flippers: number; film: number } { return { pointer: this.max.pointer / stepHz, flippers: this.max.flippers / stepHz, film: this.max.film / stepHz } }
   get gagsReached(): string[] { return [...this.reached] }
   get pagesVisited(): string[] { return [...this.visited] }
 
@@ -266,10 +268,11 @@ export class Stage {
       this.cursor.step(pointer, emit, gag === config.cursor.armsOnlyInBeat && inBeat)
       this.down = down
     } else this.down = pointer.down
-    const ignored = !playing || page.ignoring() || (page.control === 'pointer' && this.cursor.taken)
+    const ignored = !playing || page.ignoring() || page.control === 'film' || (page.control === 'pointer' && this.cursor.taken)
     if (ignored && this.phase !== 'end') {
-      this.run++
       const key = page.control
+      this.run = (key === 'film') === this.inFilm ? this.run + 1 : 1
+      this.inFilm = key === 'film'
       if (this.run > this.max[key]) this.max[key] = this.run
     } else this.run = 0
     this.pageStep++
@@ -347,7 +350,7 @@ export class Stage {
 
   private save(): Saved {
     return {
-      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max }, lag: { ...this.lag }, ...(this.brought ? { brought: { ...this.brought } } : {}), late: { ...this.late },
+      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: this.max.film ? { ...this.max } : { pointer: this.max.pointer, flippers: this.max.flippers }, lag: { ...this.lag }, ...(this.brought ? { brought: { ...this.brought } } : {}), late: { ...this.late },
       reached: [...this.reached], visited: [...this.visited], events: this.events.length, page: JSON.parse(JSON.stringify(this.page.save() ?? null)), cursor: this.cursor.save()
     }
   }
@@ -367,7 +370,7 @@ export class Stage {
     this.down = s.down
     this.skipped = s.skipped
     this.run = s.run
-    this.max = { ...s.max }
+    this.max = { film: 0, ...s.max }
     this.lag = { ...(s.lag ?? { x: 0, y: 0, left: 0 }) }
     this.brought = s.brought ? { ...s.brought } : null
     this.late = { ...(s.late ?? { raw: s.down, wait: 0 }) }
@@ -591,7 +594,7 @@ export function runBot(pages: Record<string, PageMaker>, bot: BotName, seed: num
   }
   const ignored = stage.longestIgnored
   return {
-    bot, seed, finished: stage.finished, seconds: stage.time, ignoredPointer: ignored.pointer, ignoredFlippers: ignored.flippers, gags: stage.gagsReached, pages: stage.pagesVisited, pageSeconds,
+    bot, seed, finished: stage.finished, seconds: stage.time, ignoredPointer: ignored.pointer, ignoredFlippers: ignored.flippers, ignoredFilm: ignored.film, gags: stage.gagsReached, pages: stage.pagesVisited, pageSeconds,
     skips: stage.events.filter((e) => e.name === 'skip').length, stuckOn: stage.finished ? null : stage.page.id
   }
 }
