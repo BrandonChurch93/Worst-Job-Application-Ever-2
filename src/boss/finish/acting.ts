@@ -8,6 +8,8 @@ export interface FinishMarks {
   stand?: number
   // The charge begins: the hands go to the hip.
   charge?: number
+  // The hands thrust the ball forward, toward the target, and hold it there until the beam leaves (`FIRE.ahead` before `fire` is what the film uses). Left out, the thrust plays after `fire`, as the visitor's own shot does: nobody knows ahead when a visitor lets go.
+  thrust?: number
   // The blast is let go.
   fire?: number
   // The beam ends.
@@ -42,6 +44,8 @@ export interface FinishInput {
   target?: { x: number; y: number } | null
   // The figure's size during the power-up and the finish: `SCALE` when left out (1 is the cursor's own size).
   scale?: number
+  // 0 to 1: the warm rim of ember light on the legs, the arms and the gloves. Left out, the figure has it from the end of the beam on (see `emberOf`).
+  ember?: number
 }
 
 export interface Fx {
@@ -96,6 +100,9 @@ export const CHARGE = { sweep: 0.45, ball: 21, least: 0.25, aura: 0.3 } as const
 export const FIRE = {
   coil: 0.1, // s the figure coils before the thrust
   lead: 0.2, // s after the mark at which the beam leaves the hands
+  ahead: 0.45, // s before the fire mark at which the film's thrust starts
+  reach: 0.2, // s the thrust with the ball takes, after the coil
+  snap: 0.06, // s from the held thrust to the hands furthest out, as the beam leaves
   thrust: 0.25, // s after the mark at which the hands are furthest out
   settle: 0.48,
   open: 0.1, // s the beam takes to open
@@ -155,6 +162,13 @@ const fistX = (button: { x: number; w?: number }, feetX: number, scale = SCALE):
 // Where the feet's middle should be for the fist to land on the button: before its near end, never on it.
 export function kneelSpot(button: { x: number; y: number; w?: number }, scale = SCALE): { x: number; y: number } {
   return { x: button.x - (button.w ?? 110) / 2 - KNEEL.clear * scale, y: button.y + KNEEL.below * scale }
+}
+
+// The ember rim on the rubber: what the fight says, or by itself from the end of the beam on, when the ground under the figure is burnt.
+export function emberOf(i: FinishInput): number {
+  if (i.ember !== undefined) return clamp01(i.ember)
+  const end = i.marks?.end
+  return end === undefined ? 0 : smooth(span(i.time - end, 0, 0.5))
 }
 
 // How a power-up is laid out in time, in seconds after `at`: `quick` is the share of their own time its moves take (1 as written), `end` is when the flame lets go, `over` is when it lies on the page again.
@@ -233,11 +247,17 @@ export function finishState(i: FinishInput): FinishState {
     pose = mixPose(pose, cup, outBack(span(c, 0.08, CHARGE.sweep), 1.3))
     const grown = smooth(span(c, 0.22, CHARGE.sweep + 0.25))
     const fired = m.fire !== undefined ? t - m.fire : -1
+    const held = m.thrust !== undefined ? t - m.thrust : -1
     if (fired < FIRE.lead) {
       const hot = fired >= 0 ? 1 + 0.5 * (fired / FIRE.lead) : 1
       const pulse = 1 + 0.05 * Math.sin(t * 31) * share
       const size = sc * CHARGE.ball * (CHARGE.least + (1 - CHARGE.least) * share) * grown * pulse
-      if (fired >= 0) {
+      if (held >= 0) {
+        // The ball goes forward with both hands and is held there: the beam leaves from in front of the figure.
+        pose = mixPose(pose, POSES.coil, outCubic(span(held, 0, FIRE.coil)))
+        pose = mixPose(pose, POSES.aim, outBack(span(held, FIRE.coil, FIRE.coil + FIRE.reach), 1.2))
+        pose.tremble = 0.1 + 0.45 * share
+      } else if (fired >= 0) {
         pose = mixPose(pose, POSES.coil, outCubic(span(fired, 0, FIRE.coil)))
         pose = mixPose(pose, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
       }
@@ -253,8 +273,8 @@ export function finishState(i: FinishInput): FinishState {
       const pushed = (over >= 0 ? m.end! : t) - m.fire - FIRE.lead
       const back = sc * FIRE.shove * shot * (1 - Math.exp(-pushed / FIRE.slide))
       feet = { x: home.x - back, y: home.y }
-      pose = mixPose(POSES.coil, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
-      pose = mixPose(pose, POSES.fire, smooth(span(fired, FIRE.thrust, FIRE.settle)))
+      pose = held >= 0 ? mixPose(POSES.aim, POSES.fireOver, outCubic(span(fired, FIRE.lead, FIRE.lead + FIRE.snap))) : mixPose(POSES.coil, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
+      pose = mixPose(pose, POSES.fire, smooth(span(fired, held >= 0 ? FIRE.lead + FIRE.snap : FIRE.thrust, FIRE.settle)))
       const push = over < 0 ? 1 : 1 - smooth(span(over, 0, FIRE.close))
       pose.tremble = 0.55 * shot * push
       // The beam's kick runs up the arms.
@@ -264,6 +284,9 @@ export function finishState(i: FinishInput): FinishState {
       const to = i.target ?? i.button ?? { x: b.x + 800, y: b.y }
       const aim = Math.atan2(to.y - b.y, to.x - b.x)
       const open = smooth(span(fired, FIRE.lead, FIRE.lead + FIRE.open)) * push
+      // The ball does not go out before the beam is there: it is spent into the beam as it opens.
+      const opening = smooth(span(fired, FIRE.lead, FIRE.lead + FIRE.open))
+      if (opening < 1) fx.ball = { x: b.x, y: b.y, z: b.z, size: sc * CHARGE.ball * (CHARGE.least + (1 - CHARGE.least) * shot) * (1 - 0.4 * opening), glow: clamp01(0.35 + 0.65 * shot) * 1.5 * (1 - opening) }
       if (open > 0.002) fx.beam = { x: b.x, y: b.y, z: b.z, aim, open, power: shot, age: fired - FIRE.lead, keep: i.button ? { x: i.button.x, y: i.button.y, w: i.button.w ?? 110, h: i.button.h ?? (i.button.w ?? 110) * 0.36 } : null }
       fx.aura = CHARGE.aura * shot * push
       fx.crackle = shot * push

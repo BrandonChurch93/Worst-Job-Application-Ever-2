@@ -16,6 +16,8 @@ export interface Stand {
   object: THREE.Object3D
   // `shade`: how dark the long shadow is, 0 to 1 (a flame beside the figure washes it out), and which way it falls when another light than the key throws it: px along the page (x right, y up the page) for each px of height.
   apply(p: StandPose, time: number, shade?: number, fall?: [number, number] | null): void
+  // A thin warm rim on the legs, the arms and the gloves, 0 to 1: the light of embers on black rubber over burnt ground. The white body has none.
+  rim(k: number): void
   // The live site's level: at `low` the long shadow is thrown by fewer pieces.
   setLevel(level: 'low' | 'medium' | 'high' | null): void
   // What it is drawn with: draw calls and triangles, for the report.
@@ -66,6 +68,32 @@ function shadeStuff(): THREE.ShaderMaterial {
         float a = uK * mix(1.0, 0.42, clamp(vH / 85.0, 0.0, 1.0));
         if (a < 0.004) discard;
         gl_FragColor = vec4(0.07, 0.065, 0.075, a);
+      }`
+  })
+}
+
+// The ember rim: each piece of rubber once more, a little larger and seen from inside, so only its edge shows round the piece itself.
+function rimStuff(): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, toneMapped: false, fog: false, side: THREE.BackSide,
+    uniforms: { uK: { value: 0 }, uWide: { value: STAND.rim } },
+    vertexShader: /* glsl */ `
+      uniform float uWide;
+      void main() {
+        vec4 at = vec4(position, 1.0);
+        vec3 n = normal;
+        #ifdef USE_INSTANCING
+        at = instanceMatrix * at;
+        n = mat3(instanceMatrix) * n;
+        #endif
+        at.xyz += normalize(n) * uWide;
+        gl_Position = projectionMatrix * modelViewMatrix * at;
+      }`,
+    fragmentShader: /* glsl */ `
+      uniform float uK;
+      void main() {
+        if (uK < 0.004) discard;
+        gl_FragColor = vec4(1.0, 0.46, 0.12, uK);
       }`
   })
 }
@@ -130,6 +158,32 @@ export function makeStand(): Stand {
     shadow.add(twin)
     shades.push({ of, twin, stuff, small: inst.isInstancedMesh && inst.count > 2 })
   })
+  // The rim's pieces: children of the rubber pieces they follow, added after the shadows are gathered so they throw none.
+  const rimMat = rimStuff()
+  // The hoses are wound the other way round from the gloves and the shoes: their rim is the same one seen from the other side.
+  const rimHose = rimStuff()
+  rimHose.side = THREE.FrontSide
+  const rims: { of: THREE.Mesh; twin: THREE.Mesh }[] = []
+  for (const of of [...(arms.root.children as THREE.Mesh[]), hose, shoes]) {
+    if (!of.isMesh) continue
+    const inst = of as unknown as THREE.InstancedMesh
+    const twin = inst.isInstancedMesh ? new THREE.InstancedMesh(of.geometry, rimMat, inst.count) : new THREE.Mesh(of.geometry, rimHose)
+    if (inst.isInstancedMesh) (twin as THREE.InstancedMesh).instanceMatrix = inst.instanceMatrix
+    twin.frustumCulled = false
+    twin.visible = false
+    twin.renderOrder = 7
+    of.add(twin)
+    rims.push({ of, twin })
+  }
+  const rim = (k: number): void => {
+    const on = k > 0.004
+    rimMat.uniforms.uK!.value = rimHose.uniforms.uK!.value = Math.min(1, Math.max(0, k)) * STAND.ember
+    for (const r of rims) {
+      r.twin.visible = on
+      const inst = r.of as unknown as THREE.InstancedMesh
+      if (on && inst.isInstancedMesh) (r.twin as THREE.InstancedMesh).count = inst.count
+    }
+  }
   let few = false
   const inv = new THREE.Matrix4()
   const key = picture.key.direction
@@ -194,7 +248,7 @@ export function makeStand(): Stand {
     if (arms.root.visible) {
       for (let i = 0; i < 2; i++) {
         const s = STAND.shoulders[i]!
-        onBody(s[0], s[1], from[i]!)
+        onBody(s[0], s[1] + STAND.tuck * Math.min(1, Math.max(0, p.tuck ?? 0)), from[i]!)
         const h = p.hands[i]!
         to[i]!.set(h[0], h[1], h[2]).lerpVectors(from[i]!, to[i]!, Math.min(1.12, p.arms))
       }
@@ -282,6 +336,7 @@ export function makeStand(): Stand {
   return {
     object,
     apply,
+    rim,
     setLevel(level: 'low' | 'medium' | 'high' | null): void {
       few = level === 'low'
     },
@@ -308,6 +363,8 @@ export function makeStand(): Stand {
       shoe.dispose()
       shoes.dispose()
       shadeBase.dispose()
+      rimMat.dispose()
+      rimHose.dispose()
       for (const s of shades) s.stuff.dispose()
     }
   }

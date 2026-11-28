@@ -4,6 +4,7 @@ import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena,
 import { ARENA as GROUND } from '../src/arena/layout'
 import { barDrop } from '../src/arena/change'
 import { finishState, POWER, powerPlan } from '../src/boss/finish/acting'
+import { drawnBoxes, figureBox } from '../src/boss/spot'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
 import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
@@ -628,7 +629,7 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(lock - lastUp).toBeGreaterThanOrEqual(RAISE.early - 2 / stepHz)
   })
 
-  it.runIf(LOOK1_ON)('mail of 03:02, item 4b. a visitor who throws the pointer about cannot move the standing figure off its spot in the power-up, nor in the finish once it has run to its stand and until it fires', () => {
+  it.runIf(LOOK1_ON)('mail of 03:02, item 4b. a visitor who throws the pointer about cannot move the standing figure off its spot in the power-up, once it has stepped clear, nor in the finish once it has run to its stand and until it fires', () => {
     const bot = new BotDriver('keen', config.seed)
     let away = false
     const driver: Driver = {
@@ -655,9 +656,104 @@ describe('how the boss plays (change 002, item 15)', () => {
     for (const k of ['power', 'finish'] as const) {
       const list = spots[k]
       expect(list.length / stepHz, k).toBeGreaterThan(0.9)
-      const rest = k === 'power' ? list : list.slice(Math.round(SETTLES * stepHz))
+      const rest = list.slice(Math.round((k === 'power' ? RAISE.near : SETTLES) * stepHz))
       const end = rest[rest.length - 1]!
       for (const f of rest) expect(Math.hypot(f.x - end.x, f.y - end.y), k).toBeLessThanOrEqual(1)
     }
+  })
+
+  const posed = (): { at: { x: number; y: number }; held: boolean } | null => {
+    const i = finishNow()
+    if (!i || !i.power || !finishState(i).up) return null
+    const plan = powerPlan(i.power)
+    const now = i.time - i.power.at
+    return { at: i.arrow, held: now >= POWER.up[1] * plan.quick && now < plan.end }
+  }
+  const standsAt = (spot: readonly [number, number], clicks = false): Stage => {
+    const bot = new BotDriver('keen', config.seed)
+    let formed = false
+    const stage: Stage = live({
+      name: 'bot',
+      input(v: DriverView): Pointer {
+        formed = formed || stage.events.some((e) => e.name === 'boss-formed')
+        if (!formed) return bot.input(v)
+        return { x: spot[0], y: spot[1], down: clicks && Math.floor(v.time * 12) % 2 === 0 }
+      }
+    })
+    return stage
+  }
+  const SPOTS12: [number, number][] = [[563, 925], [540, 880], [185, 372], [577, 352], [372, 550], [1397, 722], [1592, 400], [1802, 712], [89, 82], [1831, 82], [960, 300], [1000, 1000]]
+
+  it.runIf(LOOK1_ON)('rulings of 03:27, item 1. wherever of 12 spots a visitor stands at the power-up, pillar.3 among them, nothing of the arena as it is drawn overlaps the figure while its fists are up, and it gets there without a jump', () => {
+    const things = drawnBoxes()
+    for (const spot of SPOTS12) {
+      const stage = standsAt(spot)
+      let held = 0
+      let last: { x: number; y: number } | null = null
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'turret-lock') && stage.time < 60) {
+        stage.advance(1)
+        stage.frameAt(stage.time)
+        const p = posed()
+        if (!p) continue
+        if (last) expect(Math.hypot(p.at.x - last.x, p.at.y - last.y), `a jump from ${spot}`).toBeLessThan(RAISE.most / (RAISE.near * stepHz) * 2)
+        last = { ...p.at }
+        if (!p.held) continue
+        held++
+        const b = figureBox(p.at)
+        for (const t of things) expect(b.x0 < t.box.x1 && b.x1 > t.box.x0 && b.y0 < t.box.y1 && b.y1 > t.box.y0, `${t.id} over the figure of a visitor at ${spot}, figure at ${p.at.x.toFixed(0)}, ${p.at.y.toFixed(0)}`).toBe(false)
+      }
+      expect(held / stepHz, `${spot}`).toBeGreaterThanOrEqual(1)
+    }
+  })
+
+  it.runIf(LOOK1_ON)('rulings of 03:27, item 2. the view comes close on the figure for the power-up, in the film and for a visitor, and is the whole page again before the turret locks', () => {
+    for (const stage of [film(), standsAt([563, 925])]) {
+      let close = 0
+      let widest = 0
+      let after = -1
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'turret-lock') && stage.time < 60) {
+        stage.advance(1)
+        stage.frameAt(stage.time)
+        const view = stage.page.view()
+        const p = posed()
+        if (!view) {
+          if (stage.events.some((e) => e.name === 'power-up') && after < 0 && close > 0) after = stage.time
+          expect(p?.held ?? false).toBe(false)
+          continue
+        }
+        close++
+        const a = project(view, toWorld(0, 0, 0))
+        const b = project(view, toWorld(100, 0, 0))
+        const z = Math.hypot(b.x - a.x, b.y - a.y) / 100
+        widest = Math.max(widest, z)
+        if (!p?.held) continue
+        expect(z).toBeCloseTo(RAISE.zoom, 2)
+        const box = figureBox(p.at)
+        for (const c of [[box.x0, box.y0], [box.x1, box.y1]] as const) {
+          const q = project(view, toWorld(c[0], c[1], 0))
+          expect(q.x).toBeGreaterThanOrEqual(0)
+          expect(q.x).toBeLessThanOrEqual(1920)
+          expect(q.y).toBeGreaterThanOrEqual(0)
+          expect(q.y).toBeLessThanOrEqual(1080)
+        }
+      }
+      const power = stage.events.find((e) => e.name === 'power-up')!.step / stepHz
+      const lock = stage.events.find((e) => e.name === 'turret-lock')!.step / stepHz
+      expect(widest).toBeCloseTo(RAISE.zoom, 2)
+      expect(after - power).toBeLessThanOrEqual(RAISE.back[1] + 2 / stepHz)
+      expect(after).toBeLessThan(lock)
+    }
+  })
+
+  it.runIf(LOOK1_ON)('rulings of 03:27, item 7. no click fires a dart from the power-up to the lock of the turret, and clicks fire again after it', () => {
+    const stage = standsAt([960, 880], true)
+    const seen = (n: string): boolean => stage.events.some((e) => e.name === n)
+    while (stage.page.id === 'step4' && !seen('turret-lock') && stage.time < 60) stage.advance(1)
+    const lock = stage.events.find((e) => e.name === 'turret-lock')!.step
+    const power = stage.events.find((e) => e.name === 'power-up')!.step
+    expect(lock).toBeGreaterThan(power)
+    expect(stage.events.filter((e) => e.name === 'dart-fire' && e.step >= power && e.step <= lock)).toEqual([])
+    stage.advance(stepHz)
+    expect(stage.events.filter((e) => e.name === 'dart-fire' && e.step > lock).length).toBeGreaterThan(0)
   })
 })

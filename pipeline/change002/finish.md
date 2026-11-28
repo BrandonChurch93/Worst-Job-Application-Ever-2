@@ -195,3 +195,77 @@ Commits of the second task: `8ab57b5d` (size 1.5), `d45017e8` (the blow), then t
 
 Report of the second task sent to the Builder at 03:02Z with four pictures (report-t2-walk, report-t2-power, report-t2-blow-near, report-t2-fire). The fight helper was told the new default size, the kneel spot (793, 659) and the step count.
 Open after it: the power-up's fists stand above the head, the sheet's at the shoulders (suggested hands (-36, 54) and (38, 56), not done); the walk and the fist strips are not re-rendered after the mend of 23; the whole `npm test` was not run on this head.
+
+
+## Third task (Builder's mail of 03:03Z)
+
+### Decisions
+24. The power-up pose to the sheet (item 1). `POSES.power` hands are now `[-30, 50, 7]` and `[32, 52, 7]`: at the height of the shoulders, beside the body. The Builder's suggested hands (-36, 54) and (38, 56) were tried first: with the arms' roots where they were, the hoses arched out over the fists and the arms read as held out to the sides. So the pose has a new field `tuck` (0 to 1; `STAND.tuck` 3.8 outline units): the arms leave the body that much lower, for this pose only, and rise to the fists as on the sheet. Every other pose has `tuck` 0 and is drawn as before. Against the sheet, as I see it: the fists are at the shoulders and close to the body; the sheet's elbows stand further out than mine (my hoses rise in a shallow bow, the sheet's arms have a sharp elbow); my right fist touches the edge of the arrow.
+25. The flames to the sheet (item 1). In the power-up the fire is five tall thin wisps (two at each side, 80 to 106 px tall before the size, one low behind the legs), thin short tongues along the ground that are taller toward the sides, and the ring (flames 8 to 13 wide, 10 to 28 tall). No broad fan. Against the sheet: the wisps are thin and reach the fists and over on both sides; the sheet's wisps curl, mine are straight spikes.
+26. The power-up fitted to its window (item 2). Cause, MEASURED by reading the fight helper's `src/pages/step4/index.ts` line 192: it gave `power.end` 1.85 s after `at`, my moves up took 1.6 s, so the fists were held 0.25 s. New input `power: { at, until }`: `until` is the view time by which the figure must lie on the page again. The moves (getting up, the dip, the fists up, the burst, lying down) are then played in a share `quick` of their own time so that the fists are held `POWER.held` 1.1 s; never quicker than `POWER.quickest` 0.55 unless the window is shorter than the moves. `powerPlan(pw)` returns `{ quick, end, over }` in seconds after `at`. `power.end` and no end at all work as before; no name the fight calls is changed. For the fight's 3.15 s: quick 0.707, fists in the pose at 1.13 s, held 1.10 s, burst at 2.23 s, lying at 3.15 s (STATED from the formula; that both fists are within half a px of the pose for at least 1.0 s and that the figure lies at `until` is MEASURED by the test "the power-up fitted to a window").
+27. The charge and the blast (item 4). Behind the figure the ground is darkened to amber while it charges and fires (`uDark` in the glow), the crackle is thinner and kept off the figure, the ball throws fewer rays. The beam at the hands is core 13 px and glow 30 px half-width before the size (they were 4 and 15).
+28. What of the look hides the beam on the real page (STATED from reading `src/boss/look1/fx.ts` on merge55, block "The finishing blast", lines 546 to 566; not tested by switching it off): the stream of `sparks` at the body's middle (8 ticks, HOT at 2.2) and each part's `pop` (a `flash` of colour [0.85, 0.92, 1] at 1.6, HOT `sparks` at 2.4, a SOOT `burst`). Mailed to the fight helper; that file is not touched.
+29. The fire pose (item 5): left as it is. No further try was made.
+
+### Proof (all from my harness, not the real page; the strips one sample a frame)
+- `proof/finish/report-t3-power.png`: the sheet's "Powering up" figure, the build at a right angle, the build straight down.
+- `proof/finish/report-t3-stills.png`: the charge and the blast at 1.5 in the close view beside the approved pictures.
+- `proof/finish/report-t3-walk-a.png`, `report-t3-walk-b.png`: the walk after the mend of 23, all 44 frames. The harness's arrow now lies at (520, 500), so the walk is about four steps and the framing is not that of the earlier strips.
+- `proof/finish/report-t3-fist.png`: the fist, 26 frames, after the mend.
+What they show, as I see them: every frame of the walk and of the fist strip looked at. The hand nearer the button is held back and stays off the button and its rim in every frame, also at the standstill; the fist rises and stays on the screen. In the charge the arrow and its hands read against the amber ground. In the blast the beam is as thick as the approved picture's from the hands on; over the button the look's white and orange burst still covers it.
+
+### Open
+- The real page was not rendered by me: whether the fight holds the pose there depends on the fight helper taking `until`.
+- The fire pose: fault 2 eased, not closed.
+- The whole `npm test` was not run in this task.
+
+### Draw calls (third task)
+The finish alone in the power-up at 1.5: 14 draw calls, 31,088 triangles (MEASURED, harness, film tier, on the last pose render). Charge and blast: no mesh was added (the dark ground is a uniform of the glow that was there), so 15 and 17 as before (STATED; the log of that render was not kept).
+
+### Runs of the third task (MEASURED, with exit codes)
+On head `5853431c`, the last change to any source file:
+- `npx vitest run tests/b-finish.test.ts`: EXIT 0, 20 of 20, at 03:20Z.
+- `npx tsc --noEmit -p .`: EXIT 0 at 03:20Z.
+- `npm run determinism`: EXIT 0 at 03:25Z ("pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders").
+- `npm run bots`: EXIT 0 at 03:25Z ("bots: all clear").
+- The whole `npm test`: not run.
+Commits of the third task: `0f4d1075` (the input `until`), `8f7bc9e6` (the pose), `5853431c` (wisps, charge, beam), then the tools, the proofs and these notes.
+The fight helper was told at 03:11Z: the input `power: { at, until }`, `powerPlan`, and the part of the look that hides the beam.
+
+
+## Fourth task (Builder's mail of about 03:38Z, with the Builder's note of 03:28Z and the fight helper's mail of 03:29Z)
+
+### Decisions
+30. The grey body (item 1). Cause, found by measuring and by moving the light: when the figure stands, the white face is tipped 40 degrees away from the key, and my own fill light (`FACE` in `src/boss/finish/index.ts`) was weak (0.3) and stood below and beside the face, nearer the ground than the face. The body was white in the power-up and the charge only because the gold light and the ball's light were on. It is not the material, not the long shadow, and in my harness not smoke. Mend: the light stands on the face's own normal, 45 px from it, power 0.8, reach 160; it is turned down while the gold aura is on. My own hand smoke is kept low under the figure.
+31. Brightness of the body (MEASURED in my harness; mean of the pixels of the white face, of 255, found by flood fill from a seed on the face). Before, on `4dde340f`: walk 170.3 and 168.9, fist 164.9; eight frames of the fist strip 162.6 to 169.0. After: walk 251.3, knees 250.6, fist 250.9; the same eight frames of the fist strip 248.1 to 250.9. The standing figure of the power-up: 227.8 before, 242.2 after. So the walk, the knees and the fist are 3.5 to 3.8 percent above the standing figure. NOT measured on the real page.
+32. The ember rim (the fight helper's mail, the Builder's ruling). A thin orange rim on the legs, the arms and the gloves: each rubber piece once more as an inverted hull (`rimStuff` in `src/cursor/stand/figure.ts`), five more draw calls while it shows. The module shows it by itself from `marks.end` on, eased in over 0.5 s; the optional input `ember` (0 to 1) overrides. The white body has none.
+33. The figure above the smoke: NOT done. The figure is solid and is drawn before every see-through thing, so no draw order number lifts it over smoke that lies higher than it. The arena's wisps (read on `origin/agent/b-boss`, `src/arena/finish.ts`) rise to z = 8 + 230 g, 300 for the two over the burn; the figure's top is about 100 px above the ground. Either the arena keeps its wisps low near the figure or the figure moves to the late pass; the second touches the cursor's shared materials and was not tried. The fight helper was told.
+34. The flames (item 2). In the power-up: nine full flames behind the figure (three at each side, 62 to 116 px tall before the size, three low ones behind the legs), each with a curl of its own (`aFlame.z`), a livelier sway, a paler core; the ground tongues are wider; the ring is kept. As I see the picture: fuller and leaning, gold with a pale core, fists and arrow clear; still more blade than curl against the sheet, and one low tongue stands in front of the right shoe.
+35. The charge (item 3). New optional mark `marks.thrust`: from it the figure coils 0.1 s, thrusts the ball forward with both hands in 0.2 s (`POSES.aim`) and holds it until the beam leaves at `fire + FIRE.lead`. The film passes `fire - FIRE.ahead` (0.45), which holds the ball in front for 0.35 s (STATED from the timeline; a test holds 0.25 s at least; seen in all 43 frames). The marks' times do not move. The ball stays and is spent into the beam while it opens (it used to go out two frames before the beam showed). Without the mark (the live visitor, where nobody knows ahead when he lets go) the shot plays as before: no hold.
+36. The small shot (item 4, the Builder's note). Rendered in my harness with the fight's numbers (a plain click 0.32 s after the arms, shot 0.25): blue-white in every frame; my beam shader has no orange in it. The fight helper's 54.75 s frame was taken on the old thin beam (core about 2 px at shot 0.25), so the orange is most likely the arena's ember trench under it (STATED, not verified on the real page). Nothing was changed for this item.
+
+### Proof (all from my harness, not the real page; strips one sample a frame)
+- `proof/finish/report-t4-white.png`: eight frames of the fist strip before and after, each with its measured brightness.
+- `proof/finish/report-t4-power.png`: the sheet's figure, the build at a right angle, the build straight down.
+- `proof/finish/report-t4-thrust.png`: every frame from 0.50 s before the beam leaves to 0.20 s after.
+- `proof/finish/report-t4-small.png`: eight frames in a row of the small shot, from the frame before the beam leaves.
+
+### Draw calls (fourth task, MEASURED, harness, film tier, finish alone at 1.5)
+Power-up 14 (31,088 triangles); charge and thrust 15; blast 17 to 18; walk and knees 19, fist 18 (38,560 triangles with the five rim pieces); small shot 12 to 18.
+
+### Open
+- The real page was not rendered by me in this task: the white body, the rim and the small shot are shown in my harness only.
+- The figure above the smoke (33).
+- The live visitor's shot has no hold of the ball in front (35).
+- The flames are not yet the sheet's curling flames (34). The fire pose is unchanged.
+- The whole `npm test` was not run in this task.
+
+### Runs of the fourth task (MEASURED, with exit codes)
+On head `356fbeaf`, the last change to any source file:
+- `npx vitest run tests/b-finish.test.ts`: EXIT 0, 22 of 22, at 03:59Z (two new tests: the held thrust, the ember rim).
+- `npx tsc --noEmit -p .`: EXIT 0 at 03:59Z.
+- `npm run determinism`: EXIT 0 at 04:04Z ("pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders").
+- `npm run bots`: EXIT 0 at 04:04Z ("bots: all clear").
+- The whole `npm test`: not run.
+Commits of the fourth task: `ae5d4269` (white body, ember rim, thrust held), `9a966641` (flames, low smoke), `356fbeaf` (flames curl more, tools, proofs), then these notes.
+The fight helper was told at 03:55Z and 04:00Z: the rim by itself from `marks.end`, the optional `ember` and `marks.thrust`, the cause of the grey, the draw order answer, the small shot.

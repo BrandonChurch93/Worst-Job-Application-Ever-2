@@ -451,6 +451,57 @@ Written 03:23 UTC. Code at a2923452 on agent/b-boss; merged in: origin/agent/mer
 - `boss-heal` has no cue in the cut. No cue for `finish-fire` checked by ear. `npm test` whole, `npm run bots` and `npm run determinism` not run again at a2923452 (last run at 1e29f3f7).
 - A visitor's clicks in the 1.75 s before the lock can still fire darts while the figure is up (STATED, from the code; not tested).
 
+## The rulings of 03:27Z and the addition of 03:31Z
+
+Written 03:46 UTC. Merged in: origin/agent/merge55 81cf7955 and origin/agent/b-finish 4dde340f.
+
+### What changed in my files
+
+- `src/boss/spot.ts` (new): the boxes the arena's standing things are drawn in (pillars and panes from the arena's own `STANDS`, `ARENA.lean`, `ARENA.leanX` and heights; the four corner guns by `ARENA.gun.reach`), the figure's box with its ring of flames (`RAISE.box`), and `clearSpot`, the nearest spot on rings of `RAISE.step` px at which the figure's box meets none of them and lies on the page.
+- `src/pages/step4/index.ts`: at `power-up` the page asks `clearSpot` for the spot; the figure and the held pointer go there eased over `RAISE.near` (0.5 s); the pointer is handed back with the cursor's own `release()` when the figure lies. `closer()` gives the view of the power-up: in over `RAISE.near`, held, out between `RAISE.back` (2.35 to 2.92 s after `power-up`), `RAISE.zoom` 1.6 times, centred on the figure's box and kept on the page. `stepFight(..., deaf)` with `deaf` true until the turret has locked (look on), and the arrow's kick on a click is held back as long.
+- `src/boss/fight.ts`: `stepFight` takes `deaf`: no click fires a dart in that step.
+- `src/boss/tune.ts`: `RAISE` (`near`, `back`, `zoom`, `box`, `step`, `turns`, `most`); `LAST.stand` (550, 650) with the look (was (440, 650)), `LAST.far` 319.5, `LAST.speed` 114.11 with the look.
+
+### Decisions
+
+- The view of the power-up is kept on the page, so a figure near an edge is not in the middle of the frame (the film's stand at (470, 500) sits at four tenths of the width).
+- The guns' box is a square of `ARENA.gun.reach` round each corner: wider than the gun as drawn.
+- `RAISE.box` is read off the film frames at the module's size 1.5 (STATED: measured by eye in T4b, 205 by 160 px).
+- The film's finish stand went 110 px to the right in two goes (520, then 550), so that the flame's arcs do not reach the pane; the walk's speed went down with it so that no mark moves.
+- The ember rim, the white of the body on the walk and the draw order over smoke are drawn in the finish module: asked of the finish helper at 03:29Z, not made by me.
+- The burst over the button at the blast is in `src/boss/look1/fx.ts`, the look helper's file: not touched; see Not done.
+
+### New tests, by name (look on only)
+
+- "rulings of 03:27, item 1. wherever of 12 spots a visitor stands at the power-up, pillar.3 among them, nothing of the arena as it is drawn overlaps the figure while its fists are up, and it gets there without a jump"
+- "rulings of 03:27, item 2. the view comes close on the figure for the power-up, in the film and for a visitor, and is the whole page again before the turret locks"
+- "rulings of 03:27, item 7. no click fires a dart from the power-up to the lock of the turret, and clicks fire again after it"
+- "mail of 03:02, item 4b" now reads the power-up after the figure has stepped clear.
+
+### MEASURED, 03:31 to 03:46 UTC, look on unless said
+
+- `bash /tmp/five.sh` at a5f023a4: b-boss EXIT 0 (35 passed), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17).
+- With `LOOK1_ON` false: `npx tsc --noEmit -p .` EXIT 0; b-boss EXIT 0 (30 passed, 5 skipped), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17); the film's events `cmp` EXIT 0 against the list from before the look. With it true again: `npx tsc --noEmit -p .` EXIT 0.
+- Film events (`node /tmp/ev.mjs`): power-up 34.68, turret-lock 37.83, flatten 42.80, boss-heal 43.15, power-down 49.77, finish-fire 54.90, finish-walk 57.43, finish-kneel 60.22, finish-fist 61.52, finish-press 62.42 (one frame of 240 earlier than before, inside the older test's two steps), page-turn 63.10; shot-round 153 as before.
+- `node /tmp/sp.mjs`: a visitor at (563, 925) is stepped to (695, 925), 132 px; the film's stand (470, 500) is not moved; the farthest of 13 spots tried is (185, 372), stepped 300 px to (475, 450).
+- Control taken: keen 4.24 s with no wait, 7.52 s with every turn held 4 s.
+- Item 5, `node /tmp/cur.mjs`: at 37.90 s the film's cursor has `damage []` and `wounds []`, acting `angry`, reaction `rear`; the first `dart-fire` is at 37.92 s, after the lock at 37.83 s. The mark at the tip is the arrow's own first shot, not damage, and no dart is fired before the lock. Nothing changed.
+- Item 6, read in the code: `src/film/cut.ts` line 201 gives a cut event `cue: eventCues[e.name] ?? null`, the first table only. The site (`src/audio/index.ts` line 679) and the mix (`src/audio/mix.ts` line 125) play `cueOfEvent(e.name)`, which also reads `extraCues`, `newEventCues` (where `boss-heal` is `power-on`, `src/audio/cues.ts` line 125) and `prefixCues`. The mend is in `src/film/cut.ts`, lines 1 and 201: `cueOfEvent(e.name) ?? null`. Not my file; not made.
+
+### Pictures (a5f023a4)
+
+- `/tmp/pics/T1c-fall-to-press.jpg`: nine film frames. The figure at the charge stands clear of the pane; at the blast its nearest arc of flame is about 15 px from the pane's edge and about 180 px from the frame's left edge (read off a 1 to 1 crop).
+- `/tmp/pics/T4c-power-up-closer.jpg`: eight whole film frames, 34.90 to 37.90 s: the view close from 35.20 to 37.20, whole again at 37.50; the figure about 200 px tall in the frame at 36.40.
+- `/tmp/pics/L1b-live-keen-power-up-at-pillar-3.jpg`: nine whole frames of a keen visitor, 14.30 to 17.60 s: the figure stands to the right of pillar.3, both fists up at 15.50 to 16.50, the whole page back at 17.30.
+
+### Below the bar
+
+- The figure is still black on the black burn from the walk to the press, and its body still reads grey there: waits for the finish helper.
+- The burst over the button at the blast is not thinned.
+- A visitor in a crowded corner is stepped up to 300 px in half a second.
+- The view of the power-up is not centred on a figure near an edge.
+- `boss-heal` has no cue in the cut until `src/film/cut.ts` reads `cueOfEvent`.
+
 ## Not done
 
 - `LOOK1_ON` is true in what is pushed since c23b830d (see "The switch to the real look").
@@ -464,3 +515,27 @@ Written 03:23 UTC. Code at a2923452 on agent/b-boss; merged in: origin/agent/mer
 - On the live site with the stand-in (`LOOK1_ON` false) the fallen button lies tilted by about 15 degrees with its word readable; with the look on the look's button is drawn level.
 - The picture of the stand-in's finish in the film (01:23) was not taken again after the words moved over the button; the live site's was (02:05).
 - `cut/` was not remade after line 6 moved the unit's marks (ordered: do not remake it).
+
+### The burst over the Submit button at the blast (addition of 03:31Z), written 03:53Z
+
+- Trial, MEASURED by picture (`node pipeline/change002/boss-frames.mjs --frames 10578,10584,10590`, once as it was, once with the stream `sparks(cx3, cy3, ...)` at strength 0 and the line `pop(GONE.hull[0], 0, 0, 9, 150)` taken out, `src/boss/look1/fx.ts` put back after): the white streaks that cross the word Submit at 55.00 and 55.10 s go when the two are off. Mean change in the button's box (frame x 1150 to 1490, y 700 to 820) between as it was and off: 2.4, 5.4 and 2.0 of 255 at 55.00, 55.10 and 55.20 s. So the two are the cause of the streaks, and of a small share of what lies over the button.
+- What they are not the cause of: the blue and white wash over the button from 55.20 s is the beam and its light, drawn by the finish; the V shaped piece that crosses the word at 55.20 s is a part of the boss flying off. Both are as they were.
+- Mend: `OVER_BUTTON` 0.25 in `src/boss/look1/fx.ts`: the stream's strength and the hull pop's flash and sparks are drawn at that share; the pops of the shield, wings, guns and legs are as they were. It is the look helper's file, so it is one commit of its own (5f86b1b9, subject starts `NEEDS:`) and the diff is at the end of `pipeline/change002/boss-NEEDS.patch`.
+- After, MEASURED: mean change in the button's box, before to after, 3.2, 1.3, 1.2, 1.4 and 2.4 of 255 at 55.10, 55.20, 55.30, 55.45 and 55.60 s. A few streaks still cross the button at each of the five times. Picture `B1-blast-button-before-after.jpg`.
+- The number 0.25 is a constant in `fx.ts`, not in `tune.ts`: STATED, the look helper may want it in its own table.
+
+### The finish helper's 9a966641 taken (written 04:00Z)
+
+- Merged `origin/agent/b-finish` 9a966641 (merge 4078f1f9). The page passes nothing new: the ember rim comes on by itself from `marks.end`; the face light is the module's.
+- Item 3 of 03:27Z, MEASURED on this page (`node pipeline/change002/boss-frames.mjs --frames 10280,10330,10490,10600,10790,10820,10900,10990,11028 --out /tmp/fr5`): mean of the 1500 lightest pixels in a 140 px box on the arrow, before and after the merge: 221 and 253 at 59.03 s, 204 and 254 at 60.37 s. Seen in the same frames at 1 to 1: an orange rim on the legs, arms and gloves from 58.53 to 61.87 s, none on the white body. Picture `T1d-fall-to-press.jpg`.
+- The figure above the smoke: not settled. The finish helper says (STATED) that its figure is drawn in the solid pass and that the arena's wisps (`src/arena/finish.ts`, lifted to z = 8 + 230 g, 300 for the two over the burn) pass over it wherever they lie higher than about 100 px; either the arena keeps its wisps low near the figure or the finish moves the figure to the late pass. Neither is my file. In the nine frames above no smoke lies over the figure (seen, not a test).
+- `marks.thrust` (new and optional in the module): not passed. The ball and the beam play as before. Decision: left for a ruling, since it changes what is seen at the charge.
+- Marks MEASURED after the merge (`node /tmp/ev.mjs`): power-up 34.68, turret-lock 37.83, flatten 42.80, boss-heal 43.15, power-down 49.77, finish-fire 54.90, finish-walk 57.43, finish-kneel 60.22, finish-fist 61.52, finish-press and button-press 62.42, page-turn 63.10. None moved.
+- Checks at the merge with the look on, each alone: b-boss EXIT 0 (35), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-finish EXIT 0 (22), bosslook-pose EXIT 0 (14, run at 5f86b1b9), `npx tsc --noEmit -p .` EXIT 0. The look-off run was last made at a5f023a4, not since.
+- Not yet taken when this was written: the finish helper's 356fbeaf (the power-up flames lean and curl more). The pictures T4c and L1b are from before it.
+
+### The finish helper's 356fbeaf taken (written 04:05Z)
+
+- Merged `origin/agent/b-finish` 356fbeaf (merge 0fe1507c). Checks after it with the look on, each alone: b-boss EXIT 0 (35), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-finish EXIT 0 (22), `npx tsc --noEmit -p .` EXIT 0.
+- Pictures made again on it: `T4d-power-up-closer.jpg` (film, 34.90 to 37.90 s) and `L1c-live-keen-power-up-at-pillar-3.jpg` (keen visitor, 14.30 to 17.60 s).
+- Seen in them and not measured: with the wider flames the left flame comes to the edge of the glass pane at 36.90 s of the film, and to the side of pillar.3 at 16.50 s for the keen visitor. `RAISE.box` (x0 -90) was read by eye off the flames as they were before 356fbeaf, so the test of item 1 holds for that box and not for the flames as they are now. Unknown by how many px the flames now pass the box.
