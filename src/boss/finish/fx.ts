@@ -7,6 +7,7 @@ import type { Emitter } from '../../real/types'
 import { STAND, tilt, type StandPose } from '../../cursor/stand/rig'
 import type { Fx } from './acting'
 import { CAMERA } from '../tune'
+import { look } from '../../post/look'
 
 export type Level = 'low' | 'medium' | 'high' | null
 
@@ -152,11 +153,11 @@ function glowStuff(): THREE.ShaderMaterial {
 function duskStuff(): THREE.ShaderMaterial {
   const d = CAMERA.dusk
   return new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false, toneMapped: false, fog: false, side: THREE.BackSide,
-    uniforms: { uK: { value: 0 }, uTop: { value: new THREE.Vector3(...d.top) }, uLow: { value: new THREE.Vector3(...d.low) }, uBand: { value: new THREE.Vector3(...d.band) }, uHigh: { value: d.bandHigh }, uReach: { value: d.reach } },
+    depthWrite: false, toneMapped: false, fog: false, side: THREE.BackSide,
+    uniforms: { uK: { value: 0 }, uClear: { value: new THREE.Vector3(...look.background) }, uTop: { value: new THREE.Vector3(...d.top) }, uLow: { value: new THREE.Vector3(...d.low) }, uBand: { value: new THREE.Vector3(...d.band) }, uHigh: { value: d.bandHigh }, uReach: { value: d.reach } },
     vertexShader: /* glsl */ `varying vec3 vDir; void main() { vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
-      uniform float uK; uniform vec3 uTop; uniform vec3 uLow; uniform vec3 uBand; uniform float uHigh; uniform float uReach;
+      uniform float uK; uniform vec3 uTop; uniform vec3 uLow; uniform vec3 uBand; uniform float uHigh; uniform float uReach; uniform vec3 uClear;
       varying vec3 vDir;
       void main() {
         float h = normalize(vDir).z;
@@ -164,7 +165,7 @@ function duskStuff(): THREE.ShaderMaterial {
         float under = max(-h, 0.0);
         vec3 col = mix(uTop, uLow, exp(-up * up / (uReach * uReach))) * (1.0 - 0.75 * smoothstep(0.0, 0.3, under));
         col += uBand * exp(-h * h / (uHigh * uHigh)) * (h < 0.0 ? 0.6 : 1.0);
-        gl_FragColor = vec4(col, uK);
+        gl_FragColor = vec4(mix(uClear, col, uK), 1.0);
       }`
   })
 }
