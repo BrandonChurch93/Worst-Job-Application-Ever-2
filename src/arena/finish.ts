@@ -77,13 +77,14 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
   shadowTint.setUsage(THREE.DynamicDrawUsage)
   shadowGeo.setAttribute('position', shadowAt)
   shadowGeo.setAttribute('color', shadowTint)
-  const shadowStuff = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })
+  const shadowStuff = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.ZeroFactor, depthWrite: false, depthFunc: THREE.GreaterDepth, toneMapped: false, side: THREE.DoubleSide })
   const shadows = new THREE.Mesh(shadowGeo, shadowStuff)
   shadows.name = 'arena-beam-shadows'
   shadows.frustumCulled = false
   shadows.visible = false
   shadows.renderOrder = 3
-  shadows.position.z = 0.7
+  // It lies a hair under the top of the slabs and is drawn only where something lies over it: on the ceramic and on what stands on it, never down in a seam or a hole, whose light a shadow cannot dim.
+  shadows.position.z = -1.4
   root.add(shadows)
 
   let job: { key: string; s: Scorch; next: number; j1: number; done: boolean } | null = null

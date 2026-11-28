@@ -12,17 +12,19 @@ A module in `src/arena/` that draws the arena from the state in `src/boss/view.t
 | `change.ts` | The scene change as functions of `view.time`: cracks, split, light, rise, bar drop, and the shake | no |
 | `solids.ts` | `solids(view)`, of type `SolidsOf`: what stands and stops a shot, and the one rule of a blast | no |
 | `breaks.ts` | What a blast leaves on the ground, as a picture of numbers (soot, cut, embers, hole) | no |
+| `scorch.ts` | What the finishing blast leaves: its line, its share, the scorch as a picture of numbers, the chips, the cold beam's light and the shadows it throws | no |
 | `ground.ts` | Slabs, seams with their light and its spill, the bed below, the socket, cracks, and the ceramic that reads the wounds | yes |
 | `props.ts` | Pillars, panes with their green shade, corner guns, the health bar in its bolted frame | yes |
-| `wreck.ts` | Stumps, toppled columns, rubble, glass teeth and shards, sparks, flash, smoke, the warning band, the dust of the split, the glint of a stopped shot | yes |
+| `wreck.ts` | Stumps, toppled columns, rubble, glass teeth and shards, sparks, flash, smoke, the warning light, the dust of the split, the glint of a stopped shot | yes |
+| `finish.ts` | The finishing blast on the arena: the scorch burnt in, chips, wisps of smoke, the drawn shadows of a cold beam | yes |
 | `index.ts` | `makeArena`, `arenaPart`, `arenaWell`, and the exports the fight reads | yes |
 | `harness/` | The arena alone on the site's real `App`, for `tools/arena-shots.mjs` | yes |
 
-STATED: there is no `Math.random` and no wall clock in the module; `pose` does not read `dt`. MEASURED: `tests/arena-layout.test.ts` reads every file of `src/arena/` for both and passes, and checks that the four files of numbers do not import three.js.
+STATED: there is no `Math.random` and no wall clock in the module; `pose` does not read `dt`. MEASURED: `tests/arena-layout.test.ts` reads every file of `src/arena/` for both and passes, and checks that the files of numbers do not import three.js.
 
 ## How it plugs in
 
-STATED, as agreed with the fight helper and wired by them behind `LOOK1_ON` (agent/b-boss, f5b68d24):
+STATED, as agreed with the fight helper and wired by them behind `LOOK1_ON` (agent/b-boss, f5b68d24; MEASURED on the real page with the switch on, see below):
 
 - The page pushes one shape of kind `anchor` over the whole page (0, 0, 1920, 1080, z0 0) with the part `boss-arena` = `arenaPart(viewOf)`. `viewOf()` gives the view or null.
 - From `ARENA.clearAt` the page also pushes one shape of kind `well` over the whole page, `arenaWell(view)` gives its numbers (z0 -60). That is how the page's own ground is kept from showing through or fighting with mine: the site's ground cuts itself out under a well, so from 0.70 s there is no page ground left under the slabs, and I draw the ceramic top myself with the site's own ceramic material. No shared file was touched and no NEEDS commit was made.
@@ -30,7 +32,10 @@ STATED, as agreed with the fight helper and wired by them behind `LOOK1_ON` (age
 - The health bar is mine: frame, bolts, track and fill from `view.boss.health`. The label is a `text` shape of the page with `copy:step4.bossHealthLabel` at `ARENA.label` (x 960, y 40, 30 px, inter-600), shown from `ARENA.barLands`. No new words.
 - The fight takes its walls from `STANDS` / `solids(view)`.
 
-Exports of `src/arena` (index.ts): `makeArena`, `arenaPart`, `arenaWell`, `ARENA`, `MIDDLE`, `PANES`, `PILLARS`, `SEAMS`, `SLABS`, `solids`, `standing`, `brokenBy`, `breaksBox`, `shake`, `KNOCKS`, `BLAST_KNOCK`.
+- The ceramic runs on 72 px past the edge of the page on every side (off screen at rest). The fight shakes the arena as a wrapper round my part; without the apron the edge of the page came into the picture (MEASURED on the real page at 6.9 s and 43.2 s, mended and seen again).
+- `arenaPart(viewOf, { beam })` and `makeArena({ seed, beam })` take an optional driver for the light of a cold beam, see "The finishing blast".
+
+Exports of `src/arena` (index.ts): `makeArena`, `arenaPart`, `arenaWell`, `ARENA`, `MIDDLE`, `PANES`, `PILLARS`, `SEAMS`, `SLABS`, `solids`, `standing`, `brokenBy`, `breaksBox`, `shake`, `KNOCKS`, `BLAST_KNOCK`, `SCORCH`, `scorchFrom`, `scorchOf`, `beamOf`, and the types `BlastLine`, `BeamLight`, `BeamDriver`.
 
 The page must be clear of its content by **0.70 s** of `view.time` (`ARENA.clearAt`). STATED by the fight helper: the content is off screen by 0.60 s.
 
@@ -41,7 +46,7 @@ All on `view.time`, 0 = the Submit button breaks out. Length 2.4 s (`ARENA.chang
 | Time (s) | Frame | What happens | Event | Sound length |
 | --- | --- | --- | --- | --- |
 | 0.00 | 0 | Cracks start at the socket and run outward along the seams to be, done by 0.62 | `page-crack` (the fight's `button-crack`) | 0.9 s |
-| 0.70 | 42 | The page splits: seams jump open in 0.45 s, a little past and back; light surges up through them; dust rises along them for 1.5 s; the well cuts the page's ground | `arena-split` | 1.2 s |
+| 0.70 | 42 | The page splits: seams jump open in 0.45 s, a little past and back; light surges up through them; pale dust rises along them (96 puffs, up within 6 frames, gone by 2.6 s); the well cuts the page's ground | `arena-split` | 1.2 s |
 | 1.00 | 60 | Pillars start to rise, inner four first | `arena-rise` | 1.0 s |
 | 1.42 to 1.61 | 85 to 97 | The eight pillars lock, one after another | (inside `arena-rise`) | |
 | 1.66 to 1.70 | 100 to 102 | The two panes lock | (inside `arena-rise`) | |
@@ -50,7 +55,7 @@ All on `view.time`, 0 = the Submit button breaks out. Length 2.4 s (`ARENA.chang
 | 2.12 | 127 | The bar lands, one small bounce | (the hit of `healthbar-drop`) | |
 | 2.40 | 144 | The change is over; from here `solids(view)` lists what stands | | |
 
-STATED: the fight helper emits `arena-split`, `arena-rise` and `healthbar-drop` at `ARENA.splitAt`, `ARENA.riseAt`, `ARENA.barAt`.
+STATED by the fight helper (00:16Z): it emits `arena-split` at 0.70, `arena-rise` at 1.00 and `healthbar-drop` at 1.70, the start of the fall. What each event shows and how its sound should sit is in `pipeline/change002/arena-sounds.md`.
 
 ### The shake, for the camera owner
 
@@ -66,26 +71,44 @@ STATED: the fight helper emits `arena-split`, `arena-rise` and `healthbar-drop` 
 | 2.12 | 7 | 0.002 | 24 | 0.15 | the health bar lands |
 | each blast | 26 | 0.008 | 15 | 0.40 | the big cannon fires |
 
-UNKNOWN: who applies it. Asked of the fight helper at 23:38Z.
+STATED by the fight helper (00:16Z): it applies the shake as a wrapper group round my part and the boss's (x, minus y, roll from `shake(view.time, view.breaks.map((k) => k.at))`). The arrow, the caption and the bar's words do not move.
 
 ## What the big cannon breaks
 
 For every entry of `view.breaks` with `at <= view.time`:
 
 - A trench along the line from (x0, y0): soot with a soft edge and thrown specks, a cut that the site's light shades (the ceramic's normal is bent by the depth), fissures, two rows of embers that flicker and are hotter for half a second after the blast.
-- At the far end of the line the slab is broken through: a ragged hole, 290 to 420 px long and never more than 45% of the line, lit from below, with the broken wall of the slab under its upper edge. Where the line crosses a seam the slab edge crumbles the same way.
+- At the far end of the line the slab is broken through: a ragged hole, 290 to 420 px long and never more than 45% of the line. It has depth: under its upper edge the broken side wall of the slab shows, dark, and the light comes up from below, deep orange at the rim and brightest in the middle (how far a texel lies inside the hole is probed in 24 directions). Where the line crosses a seam the slab edge crumbles the same way.
 - The hole never opens under the foot of a pillar, a pane, a corner gun, the health bar or the socket (MEASURED by test), so it is split round them.
-- Each pillar the line breaks: a stump 84 to 140 px high with a rough top and eleven lumps of rubble thrown away from the line; 36% of them topple instead, to a stump 22 to 36 px high and the column lying beside it.
-- Each pane the line breaks: jagged teeth in its shoe, short where the line went through and taller toward its ends, and 22 shards on the ground, most thrown the way the blast went.
+- Each pillar the line breaks: a stump 84 to 140 px high with a rough broken top (a lump, not a flat cap) and eleven lumps of rubble thrown away from the line; 36% of them topple instead, to a stump 22 to 36 px high and the column lying beside it. The column in flight and at rest is lit by the site's light like the standing ones (MEASURED on the real page at 43.2, 43.5 and 44.5 s: grey in all three, where it was black then white before).
+- Each pane the line breaks: low jagged teeth in its shoe, lowest where the line went through, never taller than 24% of the pane, and at most three thin splinters left standing; shards of several shapes on the ground, most thrown the way the blast went. Nothing of it stops a shot.
 - For 0.24 s a flash along the line and a burst at its far end; sparks for 0.7 s; smoke for 1.7 s; two lights of the site's pool for 0.5 s.
-- While `boss.big` is set and not yet fired: a warning band on the ground along the line, as wide as the blast, two bright edges and a faint fill, brighter and quicker as `tell` rises. The look helper draws the thin line at muzzle height; the ground band is mine.
+- While `boss.big` is set and not yet fired: the warning is light on the ground along the line. It is as wide as the blast at first, narrows and brightens as `tell` rises, and lights the pillars and the pane that stand in it. The look helper draws the thin line at muzzle height; the light on the ground is mine. STATED by the fight helper: the line lies still for the whole tell, 1.6 s.
 - A hit of kind `solid`: a glint at its place for 0.18 s.
 
 The wounds are not a picture laid over the ground. They are four numbers a texel (1440 by 810 over the page) that the ceramic's own shader reads: it darkens, roughens, bends the normal, lights the embers and the hole. The same trench is therefore lit and shadowed by the site's light like the rest of the ground.
 
 Events, as the fight helper emits them: `cannon-warn` (their `big-tell`, 0.8 s), `arena-break` once per blast (1.3 s, the slab breaking is folded into it), `pane-shatter` (1.4 s) and `pillar-break` (1.1 s) once per thing.
 
-Room left for the finishing beam (STATED by the Builder at 22:52Z, not designed): nothing of mine stands on the middle slab, a hole never opens in it for a line that starts at the boss (MEASURED by test on the fight's rectangle for one line; STATED in general, since a hole is at most 420 px from the screen edge it runs to), and the wounds picture can take a mark that is soot and cut only. A trench may cross the middle slab from 275 px ahead of the boss's centre outward, as the lines do.
+## The finishing blast
+
+Asked by the Builder at 00:03Z, after `references/approved-002/finish-button-left.png`, `finish-charge.png` and `finish-blast.png`. It differs from the big cannon's blast: it breaks no slab through to the light, it scorches. The slab under the button stays whole.
+
+As a function, like the blasts (`scorch.ts`, no three.js):
+
+- `scorchFrom(line)`: a start place and a direction. `line` is `{ x0, y0, x1, y1 }` in page px: the arrow's centre at firing and the place where the boss lay. The trench starts 70 px ahead of the arrow (`SCORCH.ahead`), is 36 px to each side (`SCORCH.half`), runs through the boss's place and on past the edge of the page; round the boss's place it widens into a burn of 108 px, drawn out 2.1 times along the beam (`SCORCH.burn`, `SCORCH.long`).
+- `scorchOf(view)`: the line and a share from 0 to 1 while the beam burns. The line is `view.scorch` (STATED by the fight helper at 00:16Z: set in the frame of `finish-fire` and kept to the end), else `view.finish`. The share is `view.boss.gone`, else the blast's clock over 2.13 s.
+- `paintScorch(...)`: the scorch as four numbers a texel (soot, depth, embers, and when it burns), 1920 by 1080 over the page. `shownAt(when, share)` says how much of a texel shows at a share: the front runs out along the line first, then the black spreads from the middle to the rim, with a glowing edge while it spreads.
+- The settled state is the same picture at share 1: warm mottled black with veins and two loose rows of small embers that keep a low flicker, a soft rim drawn out into streaks along the beam, specks thrown wide, 120 chips of ceramic thrown out to both sides (fewer at the low level, never a different layout), wisps of smoke (4 columns of 6 puffs).
+
+The ceramic's shader reads this picture beside the wounds of the cannon, so the scorch is lit and shadowed like the rest of the ground and costs no draw call of its own. It is painted ahead over 48 frames while the arrow's aim lies still (`aimOf(view)`), and at once if the blast arrives without that (about 0.1 s here). MEASURED: `tests/arena-scorch.test.ts`, 7 tests pass: the line starts in front of the arrow, runs through the fallen boss and leaves the page; the same line and seed give the same picture, and slices equal the whole; it is a trench that widens into a round burn where the boss lay, with nothing behind the arrow; it burns in from the arrow outward and from the middle to the rim; the line and the share are read from the view; the chips land clear of the black, the seams, the feet and the socket, the same every run; the beam stands as long as the blast and the shadows fall away from it.
+
+The answer to the cold beam, for the helper who owns the arrow and the beam (agent/b-finish):
+
+- `BeamLight = { x0, y0, x1, y1, strength }`, page px, strength 0 to 1. `BeamDriver = (view) => BeamLight | null`, given as `arenaPart(viewOf, { beam })`.
+- While it burns: a cold wash on the ceramic that falls off with the distance from the line, and one drawn mesh (`arena-beam-shadows`) in which every pillar and pane that stands throws a long sharp shadow away from the line (a pane's paler and green). The shadows are drawn on the ceramic and on what stands on it, never down in a seam or a hole.
+- With a driver given, the arena adds no lights of its own; the beam's owner lights pillars, glass and ground through the site's pool. Without one, the arena uses `beamOf(view)` (from `view.finish`: up in 0.05 s, down over the last fifth of the blast) and adds three cold lights so it reads alone.
+- STATED by the finish helper (00:40Z): its drawn shadows go, mine stay; its three cold lights ask for no shadow; it exports `beamLight(state)` in exactly this shape for the fight helper to pass. UNKNOWN: how the two look together, since agent/b-finish is not merged into this branch.
 
 ## Solids
 

@@ -101,7 +101,7 @@ async function main() {
   if (failed) throw new Error(failed)
   if (args.includes('--measure')) {
     // The cost of the arena: each view drawn nine times at one sample, the first three thrown away, the median of the rest kept. `none` is the page's own ground with no arena.
-    const views = [...SETS.none.views, ...SETS.rest.views, SETS.change.views[3], SETS.blast.views[2], SETS.breaks.views[2]]
+    const views = [...SETS.none.views, ...SETS.rest.views, SETS.change.views[3], SETS.blast.views[2], SETS.breaks.views[2], SETS.finish.views[2], SETS.finish.views[3], SETS.finish.views[4]]
     const out = {}
     for (const v of views) {
       const runs = []
