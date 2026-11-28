@@ -28,7 +28,7 @@ const HOLD = {
 const EVENTS = ['0 shredder arms-out', '30 paper-strain', '84 paper-strain', '138 paper-strain', '193 paper-strain', '247 paper-strain', '301 paper-strain', '355 paper-strain', '410 paper-strain', '464 paper-strain', '517 tug-lost']
 
 // The film's arrow from its grab to the frame before the slot takes it, as it was before this work: the first 12 letters of the sha1 of its poses.
-const FILM_POSES = '4c6777016d3e'
+const FILM_POSES = '61d3d7851401'
 
 const deg = (r: number): number => (r * 180) / Math.PI
 const far = (r: Frame): number => {

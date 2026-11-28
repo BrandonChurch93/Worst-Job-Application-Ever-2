@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { stepHz } from '../src/config'
+import { config, stepHz } from '../src/config'
 import { FEEL } from '../src/cursor/act/feel'
 import { pages } from '../src/pages'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
@@ -17,6 +17,8 @@ function trace(): Sample[] {
   return out
 }
 
+const MAIL_TO = config.film.beats.find((b) => b.id === 'step1.email')!.to
+const inMail = (seconds: number): number => seconds - 20 + MAIL_TO
 const all = trace()
 const span = (from: number, to: number): Sample[] => all.filter((p) => p.t >= from && p.t <= to)
 const still = (list: Sample[], within = 4): boolean => list.every((p) => Math.hypot(p.x - list[0]!.x, p.y - list[0]!.y) <= within)
@@ -52,14 +54,14 @@ describe('the held poses of step 1 outside the tug', () => {
   })
 
   it('stands nervous and still on Enter before the first slab is seen', () => {
-    const hold = span(17.3, 17.39)
+    const hold = span(inMail(17.3), inMail(17.39))
     expect(still(hold)).toBe(true)
     for (const p of hold) expect(p.acting).toBe('nervous')
   })
 
   it('holds a cower under each slab in a different place', () => {
-    const first = span(18.38, 18.57)
-    const second = span(19.1, 19.4)
+    const first = span(inMail(18.38), inMail(18.57))
+    const second = span(inMail(19.1), inMail(19.4))
     for (const hold of [first, second]) {
       expect(still(hold)).toBe(true)
       for (const p of hold) {

@@ -33,7 +33,7 @@ export const FIRST = {
 // The Name stage ends and the Email stage comes up: a look at the bare page as the field goes, a walk up to the new field, a tap on it, and back down to the keys. `from` is the second it leaves the Enter key.
 export const NEXT = { look: 0.42, walk: [0.9, 1.3] as [number, number], tap: 1.62, back: [2.3, 2.7] as [number, number], on: { x: 152, y: 4 } }
 // The email: one careful key, then it backs off it (wait, from the key) and waits there, nervous, for what the key will do. There is no bare place it can reach and leave again in the third of a second before the run without moving the time of a key.
-export const MAIL = { first: 14.66, run: 15, every: 0.092, enter: 16.92, wait: { x: 700, y: -46 }, back: [14.68, 14.74] as [number, number], go: 0.022, sure: 0.1 }
+export const MAIL = { first: 12.56, run: 12.9, every: 0.092, enter: 14.82, wait: { x: 700, y: -46 }, back: [12.58, 12.64] as [number, number], go: 0.022, sure: 0.1 }
 // The slabs: struck is how long after the click on Enter the key is struck, which is when the page starts to count.
 // Where it goes from the slabs: clear on to the bare page above the deck, then into the corner of the Email field, where it stays.
 export const DIVES = [{ x: 1100, y: 676 }, { x: 1716, y: 610 }]

@@ -19,6 +19,7 @@ const film = (driver: Driver = new ScriptDriver()): Stage => new Stage({ mode: '
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step1' }, { page: 'step2' }], pages, driver, seed })
 const at = (seconds: number): number => Math.round(seconds * stepHz)
 const TUG_FROM = beats.find((b) => b.id === 'step1.tug')!.from
+const MAIL_TO = beats.find((b) => b.id === 'step1.email')!.to
 const UNIT_END = Math.max(...beats.map((b) => b.to))
 const inTug = (seconds: number): number => seconds - 22 + TUG_FROM
 const fromEnd = (seconds: number): number => seconds - 32 + UNIT_END
@@ -407,7 +408,7 @@ describe('the slabs and the typed address', () => {
     let air = 0
     let frames = 0
     let most = 0
-    for (let i = 0; i < at(20); i++) {
+    for (let i = 0; i < at(MAIL_TO); i++) {
       a.advance(1)
       const st = a.page.save() as { slabs: { landed: boolean }[]; slabClear: number; values: Record<string, string> }
       if (!st.slabs.length) continue
