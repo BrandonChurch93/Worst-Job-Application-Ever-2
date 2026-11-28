@@ -60,6 +60,7 @@ describe("the film's arrow across every page turn", () => {
 
   // A lifted arrow stands in the room while the slab turns under it. On every frame of a turn it stands higher than the slab's body under its figure, by the numbers of src/stage/stage.ts,
   // and across the seam it is drawn on the place of the frame before, and on every frame within 2 parts in 100 of the size of the frame before: standing nearer the eye never moves it or makes it larger.
+  // The careers page's arrow rides its slab into step 1 and is drawn small with it near edge on: by the Builder's ruling of 17:58 UTC, November 28, it is exempt from the rule of size.
   for (const s of all.filter((t) => t.lifted)) {
     it(`from ${s.from} to ${s.to} the lifted arrow stands clear of the slab on every frame of the turn, and is drawn as large as on the frame before`, () => {
       const frames = s.turning.slice(1)
