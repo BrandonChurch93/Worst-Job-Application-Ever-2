@@ -48,7 +48,7 @@ Film B: 12966 frames at 60 a second, 216.1 s. Times are in seconds from the firs
 
 ## Events with a cue
 
-1315 of the film's 1451 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+1315 of the film's 1457 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
