@@ -9,7 +9,7 @@ import type { Shape } from '../../stage/types'
 import { finishState, type FinishInput, type FinishState } from './acting'
 import { makeFinishFx, type Level } from './fx'
 
-export { finishState, finishEvents, kneelSpot, GETUP, LIEDOWN, POWER, CHARGE, FIRE, LAST } from './acting'
+export { finishState, finishEvents, kneelSpot, GETUP, LEAD, LIEDOWN, POWER, CHARGE, FIRE, LAST } from './acting'
 export type { FinishInput, FinishMarks, FinishState, FinishEvent, Fx } from './acting'
 export type { Level } from './fx'
 
@@ -94,4 +94,11 @@ export function finishPart(inputOf: () => FinishInput | null, level: () => Level
       ;(o.userData.finish as Finish | undefined)?.dispose()
     }
   }
+}
+
+// The beam as the arena wants it for its cold wash and its drawn shadows: the line it burns along, page px, and how strong.
+export function beamLight(s: FinishState | null): { x0: number; y0: number; x1: number; y1: number; strength: number } | null {
+  const b = s?.fx.beam
+  if (!b) return null
+  return { x0: b.x, y0: b.y, x1: b.x + Math.cos(b.aim) * 2400, y1: b.y + Math.sin(b.aim) * 2400, strength: (0.4 + 0.6 * b.power) * b.open }
 }

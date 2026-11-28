@@ -61,11 +61,9 @@ function flameStuff(): THREE.ShaderMaterial {
         float w = (0.12 + 0.62 * sin(3.14159 * pow(1.0 - t, 0.6))) * pow(1.0 - t, 0.4);
         float ax = abs(x);
         float body = smoothstep(w, w * 0.72, ax) * smoothstep(0.0, 0.05, y) * step(y, tall);
-        // A wisp: a bright thin skin, and only a breath of gold inside it.
-        float inner = smoothstep(w * 0.62, w * 0.3, ax) * (1.0 - t * 0.6);
-        float skin = body * (1.0 - (0.86 - 0.6 * vFlame.z) * inner);
-        vec3 col = mix(vec3(1.75, 0.98, 0.16), vec3(1.5, 0.62, 0.06), clamp(inner + t * 0.35, 0.0, 1.0));
-        float a = skin * k * (1.0 - 0.3 * t);
+        float inner = smoothstep(w * 0.75, w * 0.15, ax) * (1.0 - t * 0.75);
+        vec3 col = mix(vec3(1.0, 0.4, 0.02), vec3(1.7, 1.05, 0.22), clamp(inner, 0.0, 1.0));
+        float a = body * k * (0.5 + 0.5 * inner) * (1.0 - 0.45 * t);
         if (a < 0.003) discard;
         gl_FragColor = vec4(col, min(1.0, a));
       }`
@@ -156,14 +154,14 @@ function beamStuff(): THREE.ShaderMaterial {
         float core = smoothstep(coreH * (1.0 + wob), coreH * 0.55, a);
         float glow = exp(-yn * yn * 3.2);
         // Streaks: thin lines that fan out with the beam and run along it.
-        float lines = pow(vn(vec2(yn * 17.0, d * 0.003 - uTime * 9.0)), 8.0) * 2.4 + pow(vn(vec2(yn * 41.0 + 5.0, d * 0.005 - uTime * 13.0)), 11.0) * 2.6;
+        float lines = pow(vn(vec2(yn * 23.0, d * 0.003 - uTime * 9.0)), 6.0) * 2.6 + pow(vn(vec2(yn * 53.0 + 5.0, d * 0.005 - uTime * 13.0)), 8.0) * 2.8;
         float fan = pow(vn(vec2(yn * 6.0 + 11.0, d * 0.002 - uTime * 4.0)), 4.0);
         float streak = (lines * 2.2 + fan * 0.5) * smoothstep(1.25, 0.2, abs(yn));
-        vec3 blue = vec3(0.1, 0.42, 1.0);
-        vec3 col = mix(blue, vec3(0.5, 0.78, 1.25), clamp(glow * glow * 0.8, 0.0, 1.0));
+        vec3 blue = vec3(0.06, 0.36, 1.0);
+        vec3 col = mix(blue, vec3(0.4, 0.72, 1.25), clamp(glow * glow * 0.8, 0.0, 1.0));
         col = mix(col, vec3(0.86, 0.95, 1.4), clamp(streak, 0.0, 1.0));
         col = mix(col, vec3(2.0), core);
-        float alpha = clamp(core + glow * 0.78 + streak * 0.85, 0.0, 1.0) * reach * smoothstep(0.0, 14.0, d) * uOpen;
+        float alpha = clamp(core + glow * 0.86 + streak * 0.85, 0.0, 1.0) * reach * smoothstep(0.0, 14.0, d) * uOpen;
         // The button is not the beam's to hide: the light parts round it and closes again behind.
         if (uKeep.z > 0.0) {
           vec2 q = abs(vec2(d, y) - uKeep.xy) - uKeep.zw + 12.0;
@@ -344,9 +342,9 @@ export function makeFinishFx(): FinishFx {
       const u = ballMat.uniforms
       u.uTime!.value = time
       u.uGlow!.value = Math.min(1.5, b.glow * 1.25)
-      u.uCore!.value = 0.1
+      u.uCore!.value = 0.12
       u.uRays!.value = 0.3 + 0.7 * Math.min(1, b.glow)
-      u.uSize!.value = b.size * 8
+      u.uSize!.value = b.size * 6.5
       ball.position.set(b.x - 960, 540 - b.y, b.z + b.size * 0.3)
       light?.({ x: b.x, y: b.y, z: b.z + 6, colour: COLD, power: 0.2 + 1.0 * b.glow, reach: 200 + 260 * b.glow, shadow: true })
     }
@@ -378,8 +376,8 @@ export function makeFinishFx(): FinishFx {
       const s = (0.4 + 0.6 * b.power) * b.open * (0.92 + 0.08 * Math.sin(time * 61))
       const c = Math.cos(b.aim)
       const sn = Math.sin(b.aim)
-      light?.({ x: b.x + c * 30, y: b.y + sn * 30, z: b.z + 2, colour: COLD, power: 2.0 * s, reach: 900, shadow: true })
-      light?.({ x: b.x + c * 330, y: b.y + sn * 330, z: b.z + 14, colour: COLD, power: 1.6 * s, reach: 900, shadow: true })
+      light?.({ x: b.x + c * 30, y: b.y + sn * 30, z: b.z + 2, colour: COLD, power: 2.0 * s, reach: 900 })
+      light?.({ x: b.x + c * 330, y: b.y + sn * 330, z: b.z + 14, colour: COLD, power: 1.6 * s, reach: 900 })
       light?.({ x: b.x + c * 800, y: b.y + sn * 800, z: b.z + 40, colour: COLD, power: 1.2 * s, reach: 900 })
     }
 
