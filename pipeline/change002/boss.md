@@ -702,3 +702,81 @@ Decision: in src/pages/step4/layout.ts the rack of slabs and the pop-up windows 
 After (the same command, EXIT 1): no line of step 4. What is left is step 2's `data:step2.years.*` (8 lines and "2 more"), not mine.
 
 MEASURED with the switch set to true for one run and put back: the 7 keys of the pop-up windows are drawn; the 5 slabs (errorSlabs.0, .1, .3, .4, .5) are named and never drawn. No code of the fight draws the slabs under either setting (`drawWeapons` draws the pop-up windows and the banner). So whoever turns the switch on meets those 5 lines again. Not mended: it is outside what was asked, and the note says keep and do not delete.
+
+## The boss page timed for the lines without pauses (asked 09:15Z November 28)
+
+Branch agent/b-boss-fast, cut from 1c0522a3. Not for merge before such takes are kept. The numbers are those of pipeline/change002/fast-takes.json (the Builder's, provisional); public/audio/index.json still holds the kept takes, and no sound was made or heard for this.
+
+### What was changed
+
+- df8f8b75, not a fast number: `LINE7.rise` 3.954 s is the time from the start of part 2 to the turret's lock (it was `LINE7.part2`, the take's own length). The figure's window (`RAISED`), the start of the fight and the gold's end hang on it. In src/pages/step4/script.ts the forming is at `BASE` 9.004 s or at the tick plus `LINE6.after`, whichever is later. MEASURED with the kept numbers: the film's marks are as they were (diff of the list of events empty), tests/b-boss.test.ts 40 passed.
+- f44d0cf1, `NEEDS:`: `LINE6.after` 4.57 (was 8.79); `LINE7.part0` 11.325 (23.324), `ends` 0.843, 2.264, 3.986, 5.197, 6.177, 8.319, 9.53, 11.325, `sentences` 2.264, 3.986, 8.319, 11.325; `part1` 2.485 (5.59), `music` 1.228 (3.806); `part2` 1.91 (3.954). `rise`, `power` 0.6, `glow` 2, `lead` 0.1, `gap` 0.3 and the drift's numbers are as they were.
+- 6c572db7, `NEEDS:`: config/showcase.json, the boss unit 53.1 s (was 71.8) and its beats (also in pipeline/change002/boss-fast-NEEDS.patch).
+
+### Lengths
+
+The unit: 71.8 s to 53.1 s, MEASURED (`UNIT_SECONDS` of the script, and the film's press at 51.97 s). 18.7 s shorter: 3.59 s because the forming no longer waits for line 6, 15.1 s because parts 0 and 1 of line 7 are shorter. The Builder's estimate was 54.4 s.
+The film: the units of this branch add up to 196.1 s (was 214.8 s), STATED by adding config.film.units. With the Decision unit at 14.6 s as on agent/b-decision it would be 189.0 s, STATED, not built.
+
+### Which acting is at which second of the unit (film, MEASURED from the list of events unless marked)
+
+| what | kept takes | lines without pauses |
+|---|---|---|
+| the tick, line 6 starts | 3.80 | 3.80 |
+| "The form" (STATED from the starts) | 7.76 | 5.77 |
+| the button cracks | 9.70 | 6.11 |
+| "takes that as a threat." (STATED) | 10.23 | 6.62 |
+| the machine unfolds | 10.30 | 6.71 |
+| the arrow hides, then cowers (the script's numbers) | 10.69, 11.19 | 7.10, 7.60 |
+| line 6 ends (STATED) | 12.29 | 8.07 |
+| the boss is formed; part 0 of line 7 starts; the arrow sags and starts to drift | 12.59 | 9.00 |
+| the drift's first leg ends (the script's number) | 21.92 | 13.53 |
+| "Their hand moves" (STATED) | 30.47 | 17.32 |
+| "to close the Chrome tab." (STATED) | 33.36 | 18.53 |
+| part 0 ends, the drift ends (`boss-turn`) | 35.92 | 20.33 |
+| part 1 starts, the arrow stops and stands plain | 36.22 | 20.63 |
+| "their student loans.", the music (`boss-music`) | 40.02 | 21.86 |
+| part 2 starts: the turn back, the snap, the step before the shield in 0.5 s | 42.11 | 23.41 |
+| the gold and the figure (`power-up`) | 42.71 | 24.02 |
+| "One more round." (STATED) | 44.86 | 24.47 |
+| part 2 ends (STATED) | 46.07 | 25.32 |
+| the turret rises | 44.46 | 25.77 |
+| the turret locks | 46.07 | 27.38 |
+| the first dart | 46.15 | 27.47 |
+| the power goes | 58.00 | 39.31 |
+| the blast is let go, the body is gone | 63.13, 65.26 | 44.44, 46.58 |
+| the fist on the button | 70.66 | 51.97 |
+
+Everything from the turret's lock on is 18.69 s sooner and otherwise as it was: the fight's own beats and the finish were not touched.
+
+### What sits on a phrase and what does not
+
+- The crack and the unfolding keep their place against line 6 by themselves: the crack was 0.53 s before "takes that as a threat." and is 0.51 s before it; the unfolding was 0.07 s after its start and is 0.09 s after.
+- The music is on the start of "their student loans." as before (`LINE7.music` is that start).
+- The turn back is on the start of "They turn back." as before, and the gold 0.6 s after it, before "One more round." as before.
+- The hand to the tab is NOT on "Their hand moves" and was not before: the drift is two legs over the whole of part 0, the first 0.4 of the part long, and the arrow points at the tab's corner for all of it (src/pages/step4/script.ts and the `hold` stage of the page). It moved with the part: the legs take 4.53 and 6.80 s (were 9.33 and 13.99 s), 59 and 63 px a second (were 29 and 31). Not changed; if the second leg should start on "Their hand moves" that is one key of the script.
+
+### Acting that needs longer than its line now gives (kept whole, nothing squeezed, no hold added)
+
+- The rise: 3.954 s from the turn back to the lock, and part 2 is 1.91 s. The line ends 2.04 s before the lock; the gold, the figure and the turret carry the rest. Ruled wanted.
+- The forming, in the film: the boss is formed 5.20 s after the tick (1.6 s under the answer and 3.6 s of unfolding, the fight's own table), and line 6 with its gap is 4.57 s. Line 7 starts on `boss-formed`, 0.93 s after line 6's last word (it was 0.30 s). The 3.59 s the arrow used to wait under the answer are gone.
+- The forming, on the live site, MEASURED (`BOSS_SAY=1 npx vitest run tests/b-boss.test.ts -t "rulings of 04:46, 3"`): formed 5.80 s after the tick on both paths, so line 7 starts 1.53 s after line 6's last word (it was 0.30 s). A press between the forming and the end of line 6 can no longer happen, because line 6 is over before the boss is formed; a press in the first tenth of a second of line 7 is still kept and acts at 0.1 s.
+
+Live, MEASURED by the same run, seconds after the tick: one who presses at once: formed 5.800, turn 5.900, the first sentence of part 0 whole to 2.264 s of itself, music 9.596, power-up 11.750, lock 15.108, pointer held 3.304 s at the longest (the rise, as before). One who never presses: turn 17.129, music 18.654, power-up 20.813, lock 24.171, held 6.004 s (the drift, as before). With the kept takes the lock was at 24.116 and 42.263.
+
+### Tests
+
+- New: tests/b-boss-fast.test.ts, 5 tests, holds `LINE6` and `LINE7` to fast-takes.json, and the rise to the kept length of part 2 in that file.
+- Left red and not bent: tests/takes-timing.test.ts, 5 of 7 (line 7 may start no sooner than line 6 has ended; part 0; the sentence ends of part 0; part 1; part 2). They hold the page to public/audio/index.json and go green when takes of these lengths are kept there (the last one also asks that the gold ends inside part 2, which it no longer does: that one must be re-pinned to the rise when the takes are kept).
+- Re-pinned in tests/b-boss.test.ts, all holding under the kept numbers too (40 passed at df8f8b75):
+  - "mail of 01:00": in the film the boss is formed at the later of line 6's end and the forming's own length after the tick (it asked for line 6's end only); for the bots, the turn, the music and the lock are counted from the start of line 7, the later of line 6's end and the forming (it asked that the forming be before line 6's end).
+  - "rulings of 04:46, 3": the six kinds of press are counted from the forming and from the start of line 7 instead of from the end of line 6, and the lock uses `rise`. The claim that the forming is 2 s before line 6's end is gone, since it is no longer so.
+  - "note of 21:27" (the stand-in's size): leaves out the one picture of the look, `boss-look`. Under the kept timing its 28 s held no frame of the fight (the fight stage began at 44.32 s), so it compared nothing; under this timing the fight stage starts at 25.61 s and the look's picture, which spans the screen, was the only far shape (1,105 px against 374). With the look on the stand-in's body is not drawn; what the test still holds is `boss-word` and the two numbers of `BODY`.
+
+### What the branch needs outside my files before the site starts on it
+
+MEASURED 09:32Z to 09:37Z (`node pipeline/change002/boss-talk.mjs ...`, which opens the site): on this branch as pushed "The site cannot start. 3 problems", all three of the narration: lines 6, 7 part 0 and 7 part 1 each run into the next. Three things are needed, none of them mine to commit:
+
+1. The index must hold takes of the new lengths. For a trial I set the seconds and the phrase starts of the four boss lines in public/audio/index.json from fast-takes.json in my working tree and put the file back after; nothing of it is committed and no sound file was touched.
+2. `npm run retime` with that index (RETIME EXIT 0) moves the starts of the lines in content/narration.json: boss.verify.0 `at` 0.54286 to 0.76, boss.unfold.0 0.14992 to 0.19438, boss.unfold.1 0.78328 to 0.75871, boss.unfold.2 0.94119 to 0.89391, and in content/narration-drafts.json boss.finish.0 0.00072 to 0.00144. In the film: line 6 from 125.100 to 129.370 s, part 0 from 130.304 to 141.629, part 1 from 141.929 to 144.414, part 2 from 144.715 to 146.625. Not committed (the ruling is not to touch content/narration.json); it is in pipeline/change002/boss-fast-narration-NEEDS.patch, and the same command gives it.
+3. After both, the site still does not start: the check `contentProblems` in src/copy.ts gives every line of the film the length of its words at `audio.narratorMaxWordsPerSecond` (1.6, config), not the length of its take, and the lines without pauses are quicker than that. By that check line 6 runs 6.875 s (11 words) and has 4.904 s, part 0 has 11.325 s for 29 words, part 1 has 2.486 s for 7 words: the boss lines need 2.82 words a second or more, or the check must read the takes' lengths. For the pictures only I ran with that number at 3 in my working tree and put it back.
