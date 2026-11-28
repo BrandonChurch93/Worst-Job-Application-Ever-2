@@ -328,7 +328,7 @@ export function lookKit(): LookKit {
 }
 
 // A part the blast is tearing off: burnt dark, and hot where its faces turn away from the eye.
-export const TORN = { colour: 0x24211f, rim: [2.6, 0.72, 0.12], power: 2.2 } as const
+export const TORN = { colour: 0x24211f, rim: [2.4, 0.6, 0.1], power: 4 } as const
 function torn(): THREE.MeshPhysicalMaterial {
   const m = studio(new THREE.MeshPhysicalMaterial({ color: srgb(TORN.colour), roughness: 0.8, metalness: 0.4, specularIntensity: 0.3, side: THREE.DoubleSide }))
   const lit = m.onBeforeCompile
