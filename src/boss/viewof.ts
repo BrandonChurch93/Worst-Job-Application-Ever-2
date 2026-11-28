@@ -43,7 +43,7 @@ export function viewOf(i: ViewInput): BossView | null {
       x: place.x, y: place.y, vx: b.speed.x, vy: b.speed.y, heading: b.face, walked: b.walked,
       form,
       turret: i.fell >= 0 ? 0 : b.turret, locked: i.fell < 0 && b.turret >= 1, lockedAt: b.turret >= 1 ? at(BIG.lock) : null,
-      health: Math.max(0, b.shown), stage: b.phase,
+      health: Math.max(0, b.shown) / 100, stage: b.phase,
       shield: { glancedAt: at(b.at.glance), half: GUARD.cover },
       guns: [gun(0), gun(1)],
       big: b.big.t >= 0 || b.big.beam > 0 ? { tell: b.big.t >= 0 ? Math.min(1, b.big.t / BIG.tell) : 1, aim: b.big.a, firedAt: b.big.t >= 0 ? null : at(b.at.big), x0: line.x0, y0: line.y0, x1: line.x1, y1: line.y1, width: BIG.wide * 2 } : null,

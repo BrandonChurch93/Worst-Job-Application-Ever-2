@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
+import { ARENA as GROUND } from '../src/arena/layout'
+import { LOOK1_ON } from '../src/boss/tune'
+import { viewNow } from '../src/boss/viewof'
 import { UNIT_SECONDS } from '../src/pages/step4/script'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('boss'), pages, driver: new ScriptDriver(), film: filmOptions('boss') })
 
 const marks: Record<string, number> = {}
+// With the look the bar is the arena's: its fill is its whole length times the health the view gives.
+const BAR_FULL = GROUND.bar.x1 - GROUND.bar.x0 - GROUND.bar.trackInset * 2 - 17
 
 interface Seen { time: number; acting: string; reaction: string | null; x: number; y: number; health: number }
 
@@ -20,7 +25,9 @@ function trace(): Seen[] {
     const list: Parameters<typeof stage.page.draw>[0] = []
     stage.page.draw(list)
     const fill = list.find((s) => s.id === 'health-fill')
-    out.push({ time: (i + 1) / 20, acting: p.acting, reaction: p.reaction ?? null, x: p.x, y: p.y, health: fill ? fill.w : 0 })
+    const view = viewNow()
+    const bar = LOOK1_ON ? (view ? BAR_FULL * Math.min(1, Math.max(0, view.boss.health)) : 0) : fill ? fill.w : 0
+    out.push({ time: (i + 1) / 20, acting: p.acting, reaction: p.reaction ?? null, x: p.x, y: p.y, health: bar })
   }
   for (const e of stage.events) if (marks[e.name] === undefined) marks[e.name] = e.step / stepHz
   return out
