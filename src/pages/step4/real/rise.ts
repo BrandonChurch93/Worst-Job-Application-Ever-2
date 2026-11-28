@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { finishState, powerPlan, standTilt } from '../../../boss/finish/index'
 import { ringAt } from '../../../boss/rise'
 import { GUARD, RISE_LIGHT as L, SOLID } from '../../../boss/tune'
-import { finishNow, viewNow } from '../../../boss/viewof'
+import { finishNow, seatView, viewNow } from '../../../boss/viewof'
 import type { Emitter, PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 
@@ -112,8 +112,7 @@ const NEAR = /* glsl */ `
   varying vec2 vUv; uniform float uK; uniform float uR; uniform float uWide; uniform vec3 uColour;
   void main() {
     float d = length(vUv - 0.5) * 2.0;
-    float f = max(0.0, 1.0 - d);
-    float a = uK * smoothstep(uR, uR + uWide, d) * f * f * (3.0 - 2.0 * f);
+    float a = uK * smoothstep(uR, uR + uWide, d) * clamp((1.0 - d) / (1.0 - uR - uWide), 0.0, 1.0);
     if (a < 0.003) discard;
     gl_FragColor = vec4(uColour * a, 1.0);
   }`
@@ -147,12 +146,12 @@ export function lit(inner: PartMaker): PartMaker {
       const pool = new THREE.Mesh(quad, ceiling(stuff(POOL, L.pool.colour)))
       const floor = new THREE.Mesh(quad, stuff(FLOOR, L.pool.colour))
       const ring = new THREE.Mesh(quad, stuff(RING))
-      const near = new THREE.Mesh(quad, over(stuff(NEAR, L.pool.colour)))
+      const near = new THREE.Mesh(quad, over(stuff(NEAR, L.near.colour)))
       for (const [n, m] of [pool, floor, ring, near].entries()) {
         m.visible = false
         m.frustumCulled = false
-        m.renderOrder = 6 + n / 2
-        m.userData.order = 6 + n / 2
+        m.renderOrder = m === near ? 4.5 : 6 + n / 2
+        m.userData.order = m.renderOrder
       }
       group.add(o, pool, floor, ring, near)
       group.userData.inner = o
@@ -163,6 +162,7 @@ export function lit(inner: PartMaker): PartMaker {
       return group
     },
     pose(group: THREE.Object3D, s: Shape, ctx: RealContext): void {
+      seatView(s)
       inner.pose?.(group.userData.inner as THREE.Object3D, s, ctx)
       const floor = group.userData.floor as THREE.Mesh
       const ring = group.userData.ring as THREE.Mesh

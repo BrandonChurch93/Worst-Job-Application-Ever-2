@@ -24,6 +24,25 @@ let figure: FinishInput | null = null
 export const finishNow = (): FinishInput | null => figure
 export const setFinish = (i: FinishInput | null): void => { figure = i }
 
+// What the page said at each of its last steps, so that a part is given the step of the picture it is drawn in and not the last step the page drew. `run` is 0 for the film and 1 for the live site, which do not share steps. KEPT is how many steps are held, well over the 12 the stage keeps.
+export const KEPT = 64
+const kept = new Map<string, { view: BossView | null; figure: FinishInput | null }>()
+export function keepView(run: number, step: number): number[] {
+  const key = `${run}:${step}`
+  kept.delete(key)
+  kept.set(key, { view: now, figure })
+  if (kept.size > KEPT) kept.delete(kept.keys().next().value!)
+  return [run, step]
+}
+// Between two steps a picture takes the later one, as the page's last drawing was the later one.
+export function seatView(s: { v?: number[] }): void {
+  if (!s.v || s.v.length !== 2) return
+  const hit = kept.get(`${s.v[0]}:${Math.ceil(s.v[1]! - 5e-7)}`)
+  if (!hit) return
+  now = hit.view
+  figure = hit.figure
+}
+
 export function viewOf(i: ViewInput): BossView | null {
   if (i.clock < 0) return null
   const time = i.clock - LEAD
