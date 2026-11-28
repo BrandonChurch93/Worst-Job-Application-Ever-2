@@ -402,6 +402,7 @@ export function makePage(): PageLogic {
     if (e.phase === 'pressed') {
       e.t += dt
       s.pressed += dt
+      if (s.mode === 'film') s.close = Math.min(s.close, Math.max(0, (LAST.hold - s.pressed) / CLOSE.back))
       if (s.pressed >= (s.mode === 'film' ? LAST.hold : LAST.held)) {
         s.done = true
         io.cursor.release()

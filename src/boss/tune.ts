@@ -201,7 +201,8 @@ export const CLOSE = {
   y: 270, // px, top edge: the arrow, the button and the burn 110 px under mid height, and clean ground over the burn for the words
   w: 960, // px across
   h: 540, // px down
-  edge: 40 // px inside the edge that the arrow keeps to when it is led
+  edge: 40, // px inside the edge that the arrow keeps to when it is led
+  back: 0.4 // s the film's view takes back to the whole page after the blow on Submit, the last of `LAST.hold`: the page turns seen whole, as every other page does
 } as const
 
 // The last moment: when the body is gone the arrow walks to the button that is left, drops to its knees and strikes it with its right fist.
