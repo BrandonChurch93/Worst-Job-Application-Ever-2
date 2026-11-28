@@ -9,7 +9,8 @@ const HOLD = {
   // The most the drawn angle may change in one frame from the grab until the tug is lost, on every frame but the named ones.
   turn: 4,
   // The frames on which the page jerks the arrow in view, counted from the grab: the haul to the paper and the stop at the arrival under the pack's visitor, the haul under the keen bot; and the most the angle may change on one of them.
-  haul: [9, 10, 11, 12, 13], stop: [20, 21], keen: [14, 15, 16, 17], jerk: 9.5,
+  // The keen bot's frames were 14 to 17 while the live arrow was hauled from the film's standing place; it now stands nearer the mouth before the grab, its haul ends two frames sooner, and the same four frame jerk falls on 12 to 15.
+  haul: [9, 10, 11, 12, 13], stop: [20, 21], keen: [12, 13, 14, 15], jerk: 9.5,
   // The frames after the first strain in which the arrow is left to come to rest from its arrival, the most its angle changes in one of them, and the frames looked at after the arrival.
   rest: 11, settle: 2, after: 40,
   // At a strain the hands go at least this far toward the slot on the strain's frame (the first strain: on the frame the rest ends), while the angle moves no more than `calm` on that frame.
