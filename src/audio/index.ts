@@ -635,6 +635,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   }
 
   // An event that makes a line jump to its next part: the line is said to where earlyEnd puts its end and no further.
+  // An event that comes before the line has begun is taken as one that comes at the line's first moment: the line is not dropped.
   // A line its page's turn waits for jumps on the live site only: in the film it is said whole, as the mix lays it.
   const jump = (name: string, page: string, mode: SoundMode) => {
     const now = backend!.now()
@@ -642,7 +643,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (b.end <= now || l.page !== page || !spoken[l.key]?.jump?.includes(name) || (mode !== 'live' && turnWaitsFor[page] === l.key)) continue
       const held = turnWaitsFor[page] === l.key
       const sentences = held ? [] : l.phrases.filter((p) => endsSentence(p.words)).map((p) => p.to)
-      const end = b.start <= now ? Math.min(b.end, b.start + earlyEnd(l.phrases.map((p) => p.to), sentences, now - b.start)) : b.start
+      const end = Math.min(b.end, b.start + earlyEnd(l.phrases.map((p) => p.to), sentences, Math.max(0, now - b.start)))
       if (end >= b.end) continue
       const parts = partsAfter(l.key)
       desk.shorten(now, b, end, parts.map(([x]) => x))

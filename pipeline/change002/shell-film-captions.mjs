@@ -1,5 +1,8 @@
-// node pipeline/change002/shell-film-captions.mjs [--until 18] [--fps 30] [--name list] [--onto film.mp4 --out captioned.mp4] [--proof]
-// The captions of the film: one picture of the panel a phrase (1920 by 1080, clear around the panel), the frames each is on, and the filter that lays them over a film.
+// node pipeline/change002/shell-film-captions.mjs [--until 18] [--fps 30] [--size 960x540] [--name list] [--onto film.mp4 --out captioned.mp4] [--proof]
+// The captions of the film: one picture of the panel a phrase (the size of the film, clear around the panel), the frames each is on, and the filter that lays them over a film.
+// The pictures are drawn at the size of the film they are laid over and are never scaled: with --onto the size and the frames a second are read from that film,
+// with --size they are as given, and with neither they are 1920 by 1080. The panel is the page's own, which is drawn smaller on a smaller page.
+// The list is kept beside this file when no --name is given: shell-film-captions.json, or shell-film-captions-960x540.json for --size 960x540.
 // The lines and their frames are the ones the film gives (timedLines of src/copy.ts); the phrases are those of src/audio/standin.ts; the panel is the one of src/ui/said.ts.
 // --proof lays them over a kept still of the careers page held for the length asked, to show the timing; it is not the film.
 import fs from 'node:fs'
@@ -10,12 +13,27 @@ import { args, at, config, readJson, writeJson } from '../../tools/lib/paths.mjs
 
 const a = args()
 const c = config()
-const fps = typeof a.fps === 'string' && Number.isFinite(Number(a.fps)) ? Number(a.fps) : c.film.fps
+const stop = (line) => {
+  console.error(`captions: ${line}`)
+  process.exit(1)
+}
+const probe = (file, entries) => execFileSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', `stream=${entries}`, '-of', 'csv=p=0', file]).toString().trim().split(',')
+const onto = typeof a.onto === 'string' ? path.resolve(a.onto) : null
+if (onto && !fs.existsSync(onto)) stop(`there is no film at ${a.onto}`)
+const film = onto ? probe(onto, 'width,height,r_frame_rate') : null
+const rate = film ? film[2].split('/').map(Number) : null
+const fps = typeof a.fps === 'string' && Number.isFinite(Number(a.fps)) ? Number(a.fps) : rate ? rate[0] / (rate[1] || 1) : c.film.fps
 const name = typeof a.name === 'string' ? a.name : 'shell-film-captions'
 const until = typeof a.until === 'string' && Number.isFinite(Number(a.until)) ? Number(a.until) : Infinity
-const SIZE = { width: 1920, height: 1080 }
-const work = at('out', 'work', typeof a.name === 'string' ? `captions-${a.name}` : 'captions')
+const PAGE = { width: 1920, height: 1080 }
+const asked = typeof a.size === 'string' ? /^(\d+)x(\d+)$/.exec(a.size) : null
+if (typeof a.size === 'string' && !asked) stop('--size is a width and a height in pixels, as in 960x540')
+const SIZE = film ? { width: Number(film[0]), height: Number(film[1]) } : asked ? { width: Number(asked[1]), height: Number(asked[2]) } : PAGE
+if (film && asked && (SIZE.width !== Number(asked[1]) || SIZE.height !== Number(asked[2]))) stop(`--size ${a.size} is not the size of the film, ${SIZE.width} by ${SIZE.height}`)
+const sized = asked && !film && typeof a.name !== 'string' ? `${SIZE.width}x${SIZE.height}` : ''
+const work = at('out', 'work', typeof a.name === 'string' ? `captions-${a.name}` : sized ? `captions-${sized}` : 'captions')
 fs.mkdirSync(work, { recursive: true })
+if (SIZE.width * PAGE.height !== SIZE.height * PAGE.width) stop(`a picture of ${SIZE.width} by ${SIZE.height} is not the shape of the page, ${PAGE.width} by ${PAGE.height}`)
 
 const { logic } = await import('../../tools/lib/logic.mjs')
 const { load, close } = await logic()
@@ -90,26 +108,30 @@ try {
   await site.close()
 }
 
+const outside = list.filter((x) => x.panel.box[0] < 0 || x.panel.box[1] < 0 || x.panel.box[0] + x.panel.box[2] > SIZE.width || x.panel.box[1] + x.panel.box[3] > SIZE.height).map((x) => `${x.key} phrase ${x.phrase}`)
 const filter = list.map((x, i) => `[${i === 0 ? '0:v' : `v${i}`}][${i + 1}:v]overlay=0:0:enable='between(n,${x.first},${x.last})'[v${i + 1}]`).join(';')
 const record = {
-  made: `node pipeline/change002/shell-film-captions.mjs${Number.isFinite(until) ? ` --until ${until}` : ''}${typeof a.fps === 'string' ? ` --fps ${fps}` : ''}`, browser: launched.version, fps, size: SIZE, lowerEdgeY: low, lowerEdgeYOn: said.CAPTION.lowOn,
+  made: `node pipeline/change002/shell-film-captions.mjs${Number.isFinite(until) ? ` --until ${until}` : ''}${typeof a.fps === 'string' ? ` --fps ${fps}` : ''}${asked ? ` --size ${a.size}` : ''}${onto ? ` --onto ${a.onto}` : ''}`, browser: launched.version, fps, size: SIZE,
+  drawn: 'each picture is drawn at this size, the size of the film it is laid over, and is laid without scaling; lowerEdgeY and lowerEdgeYOn are in pixels of the 1920 by 1080 page, each box is in pixels of the picture',
+  outside, lowerEdgeY: low, lowerEdgeYOn: said.CAPTION.lowOn,
   note: 'every line is a silent stand-in; a line with draft true is a draft', lines, captions: list,
   filter, filterUse: 'ffmpeg -i FILM -i each picture in order -filter_complex FILTER -map [vN] -map 0:a? ...; n is the frame of the film'
 }
-const lay = (film, out) => execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...film, ...list.flatMap((x) => ['-i', at(x.file)]), '-filter_complex', filter, '-map', `[v${list.length}]`, '-r', String(fps), '-pix_fmt', 'yuv420p', out])
-if (typeof a.onto === 'string' && list.length) {
+const lay = (film, out, fit = false) => execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...film, ...list.flatMap((x) => ['-i', at(x.file)]), '-filter_complex', fit ? `[0:v]scale=${SIZE.width}:${SIZE.height}[v0];${filter.replace('[0:v]', '[v0]')}` : filter, '-map', `[v${list.length}]`, '-r', String(fps), '-pix_fmt', 'yuv420p', out])
+if (onto && list.length) {
   const out = typeof a.out === 'string' ? path.resolve(a.out) : path.join(work, 'captioned.mp4')
-  lay(['-i', path.resolve(a.onto)], out)
+  lay(['-i', onto], out)
   record.laidOver = { film: a.onto, out: path.relative(at(), out) }
 }
 if (a.proof && list.length) {
   const seconds = Number.isFinite(until) ? until : Math.ceil((list[list.length - 1].last + 1) / fps)
   const out = path.join(work, 'proof.mp4')
-  lay(['-loop', '1', '-framerate', String(fps), '-t', String(seconds), '-i', at('out', 'stills', 'key-marketing-top-hd-final.jpg')], out)
+  lay(['-loop', '1', '-framerate', String(fps), '-t', String(seconds), '-i', at('out', 'stills', 'key-marketing-top-hd-final.jpg')], out, true)
   const frames = Number(execFileSync('ffprobe', ['-v', 'error', '-count_frames', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_frames', '-of', 'csv=p=0', out]).toString().trim())
-  record.proof = { what: 'the pictures laid over a kept still of the careers page held for the length asked: the timing of the captions, not the film', file: path.relative(at(), out), seconds, frames }
+  record.proof = { what: 'the pictures laid over a kept still of the careers page, fitted to their size and held for the length asked: the timing of the captions, not the film', file: path.relative(at(), out), seconds, frames }
 }
-const listFile = typeof a.name === 'string' ? path.join(work, `${name}.json`) : at('pipeline', 'change002', 'shell-film-captions.json')
+const listFile = typeof a.name === 'string' ? path.join(work, `${name}.json`) : at('pipeline', 'change002', sized ? `shell-film-captions-${sized}.json` : 'shell-film-captions.json')
 writeJson(listFile, record)
-console.log(`captions: ${list.length} phrases of ${lines.length} lines${Number.isFinite(until) ? ` that start in the first ${until} s` : ''}, pictures in ${path.relative(at(), work)}, list in ${path.relative(at(), listFile)}`)
+if (outside.length) console.log(`captions: OUTSIDE THE PICTURE: ${outside.join(', ')}`)
+console.log(`captions: ${list.length} phrases of ${lines.length} lines${Number.isFinite(until) ? ` that start in the first ${until} s` : ''}, drawn at ${SIZE.width} by ${SIZE.height} for ${fps} frames a second, pictures in ${path.relative(at(), work)}, list in ${path.relative(at(), listFile)}`)
 for (const x of list) console.log(`  frames ${x.first} to ${x.last}${x.draft ? ' (draft)' : ''}, ${x.page}, box ${x.panel.box.join(' ')}: ${x.words}`)
