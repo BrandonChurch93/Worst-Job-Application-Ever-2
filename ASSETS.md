@@ -238,7 +238,7 @@ One row for each kept sound and for each sound file the site ships, copied from 
 
 | File | What it is | Source URL | License | Date added |
 | --- | --- | --- | --- | --- |
-| `public/fonts/inter-400.json`, `inter-500.json`, `inter-600.json`, `inter-display-600.json` | Inter 4.1, four cuts, baked to outlines, advances and kerning by `pipeline/fonts/bake_fonts.py`. Every word of the site | https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip | SIL Open Font License 1.1 | 2026-11-25 |
+| `public/fonts/inter-400.json`, `inter-500.json`, `inter-600.json`, `inter-display-600.json`, `inter-display-800.json` | Inter 4.1, five cuts, baked to outlines, advances and kerning by `pipeline/fonts/bake_fonts.py`. Every word of the site | https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip | SIL Open Font License 1.1 | 2026-11-25 |
 | `public/fonts/Inter-LICENSE.txt` | The licence text that came in that archive | https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip | SIL Open Font License 1.1 | 2026-11-25 |
 | `public/fonts/playfair-700.json`, `playfair-900.json` | Playfair Display, weights 700 and 900, latin, baked the same way. The signs and the marquee of the pinball machine | https://www.npmjs.com/package/@fontsource/playfair-display/v/5.3.0 | SIL Open Font License 1.1 | 2026-11-25 |
 | `public/fonts/PlayfairDisplay-LICENSE.txt` | The licence text that came in that package | https://www.npmjs.com/package/@fontsource/playfair-display/v/5.3.0 | SIL Open Font License 1.1 | 2026-11-25 |

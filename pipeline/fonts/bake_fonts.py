@@ -40,6 +40,7 @@ FONTS = [
     ('inter-500', 'inter', 'extras/ttf/Inter-Medium.ttf', 'Inter', 'Medium', 500),
     ('inter-600', 'inter', 'extras/ttf/Inter-SemiBold.ttf', 'Inter', 'SemiBold', 600),
     ('inter-display-600', 'inter', 'extras/ttf/InterDisplay-SemiBold.ttf', 'Inter Display', 'SemiBold', 600),
+    ('inter-display-800', 'inter', 'extras/ttf/InterDisplay-ExtraBold.ttf', 'Inter Display', 'ExtraBold', 800),
     ('playfair-700', 'playfair', 'playfair-display-latin-700-normal.woff', 'Playfair Display', 'Bold', 700),
     ('playfair-900', 'playfair', 'playfair-display-latin-900-normal.woff', 'Playfair Display', 'Black', 900),
 ]
