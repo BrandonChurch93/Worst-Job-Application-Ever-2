@@ -2,10 +2,10 @@ import { smooth } from './body'
 import { blastLine, cornerAt, cursorCentre, muzzle, newFight, SPARK_SECONDS, weakSide, type Fight } from './fight'
 import { COLLAPSE_SECONDS, DART, FALLEN, HOME, SOCKET, UNFOLD } from './plan'
 import { BIG, CORNER, FLAT, GUARD, GUN } from './tune'
-import type { BossView, ViewCorner, ViewGun, ViewPhase } from './view'
+import type { BossView, ViewCorner, ViewGun, ViewLast, ViewPhase } from './view'
 
 // What the page knows when it fills the view. `clock` runs from the page's first step of the break-out; `base` is that clock at the fight's first step and `fell` at the boss's fall, each -1 until then.
-export interface ViewInput { clock: number; unfold: number; fight: Fight | null; base: number; fell: number; pressed: boolean; arrow: { x: number; y: number }; fall?: number; gone?: number; power?: number; arms?: number; charge?: number; blast?: { power: number; since: number } | null }
+export interface ViewInput { clock: number; unfold: number; fight: Fight | null; base: number; fell: number; pressed: boolean; arrow: { x: number; y: number }; fall?: number; gone?: number; power?: number; arms?: number; charge?: number; blast?: { power: number; since: number } | null; last?: ViewLast | null; close?: number; pressedFor?: number }
 
 // The view's clock: 0 at `button-crack`. The body is whole at FORMED, and the fight's own clock starts there.
 export const LEAD = UNFOLD.crack
@@ -50,7 +50,8 @@ export function viewOf(i: ViewInput): BossView | null {
       weak: b.weak > 0 ? { ...weakSide(b), shownAt: at(b.at.weak) } : null,
       healedAt: at(b.at.heal), hitAt: at(b.at.hit),
       beaten: i.fell < 0 ? 0 : Math.min(1, (i.clock - i.fell) / (i.fall ?? COLLAPSE_SECONDS)),
-      gone: i.gone ?? 0
+      gone: i.gone ?? 0,
+      pressedAt: i.pressedFor !== undefined && i.pressedFor >= 0 ? time - i.pressedFor : null
     },
     bullets: b.balls.map((k) => ({ id: k.n, x: k.x, y: k.y, vx: k.dx * k.v, vy: k.dy * k.v, r: GUN.r, from: k.i === 4 ? 'gun' as const : 'corner' as const })),
     darts: b.darts.filter((d) => d.t >= 0 && (d.dx !== 0 || d.dy !== 0)).map((d) => ({ id: d.n, x: d.x, y: d.y, vx: d.dx * DART.speed, vy: d.dy * DART.speed })),
@@ -58,6 +59,8 @@ export function viewOf(i: ViewInput): BossView | null {
     corners: [corner(0), corner(1), corner(2), corner(3)],
     arrow: { x: c.x, y: c.y, flat: b.flat > 0 ? 1 : flatAt !== null ? Math.max(0, 1 - (time - flatAt - FLAT.down) / (FLAT.life - FLAT.down)) : 0, flatAt, power: i.power ?? 0, arms: i.arms ?? 0, charge: i.charge ?? 0 },
     breaks: b.breaks.map((k) => ({ id: k.n, at: i.base - LEAD + k.at, x0: k.x0, y0: k.y0, x1: k.x1, y1: k.y1, width: k.width })),
-    finish: i.blast ? { x0: c.x, y0: c.y, x1: FALLEN.x, y1: FALLEN.y, power: i.blast.power, firedAt: time - i.blast.since } : null
+    finish: i.blast ? { x0: c.x, y0: c.y, x1: FALLEN.x, y1: FALLEN.y, power: i.blast.power, firedAt: time - i.blast.since } : null,
+    last: i.last ?? null,
+    close: i.close ?? 0
   }
 }
