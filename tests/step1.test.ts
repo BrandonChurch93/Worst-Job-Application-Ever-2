@@ -76,7 +76,7 @@ describe('step 1: the layout', () => {
     }
     visit(rawCopy.step1, 'copy:step1')
     expect(leaves.filter((k) => !used.has(k))).toEqual(CUT.words)
-    expect(used.has('copy:drafts.step1.name.label')).toBe(true)
+    expect(used.has('copy:step1.fields.name.label')).toBe(true)
   })
 
   it('shows no word that is not a key, at any moment of the film or of a live run', () => {

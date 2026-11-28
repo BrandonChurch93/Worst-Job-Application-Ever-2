@@ -148,7 +148,8 @@
     "fields": {
       "firstName": { "label": "First name", "helper": "Minimum 3 characters required" },
       "lastName": { "label": "Last name" },
-      "email": { "label": "Email" }
+      "email": { "label": "Email" },
+      "name": { "label": "Name" }
     },
     "keyboardNote": "Physical keyboards are not supported. Please use the keyboard provided.",
     "emailError": "Invalid email",
@@ -158,7 +159,10 @@
       "prompt": "Drag and drop your resume here",
       "browse": "Browse files",
       "paperTitle": "Resume",
-      "received": "Resume received. Please re-enter all information manually."
+      "received": "Resume received. Please re-enter all information manually.",
+      "folderTitle": "Documents",
+      "fileName": "Resume.pdf",
+      "shredderLabel": "SHREDDER"
     },
     "continue": "Continue"
   },
@@ -176,13 +180,18 @@
         "label": "Date of birth",
         "helper": "Used to calculate your remaining working years.",
         "panel": "Pull the lever to select your date of birth.",
-        "recorded": "Date of birth recorded. Corrections are not supported."
+        "recorded": "Date of birth recorded. Corrections are not supported.",
+        "placeholder": "MM / DD / YYYY",
+        "stop": "STOP",
+        "missed": "Close enough. Date of birth recorded.",
+        "stopPanel": "Stop each reel on your date of birth."
       },
       "volume": {
         "label": "Audio volume",
         "helper": "Set to 100%. You will want to hear the Skills Assessment.",
         "panel": "Rotate the crank clockwise. Target: 100% (10 full rotations).",
-        "done": "Volume set to 100%. You were warned."
+        "done": "Volume set to 100%. You were warned.",
+        "sign": "TURN IT UP"
       }
     },
     "note": "Also collected automatically: favorite color, breakfast preferences, and the exact coordinates of your childhood home.",

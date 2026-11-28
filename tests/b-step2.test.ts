@@ -196,7 +196,7 @@ describe('change 002, step 2: the date of birth', () => {
     let words = false
     run(s, 40, () => {
       const st = saved(s)
-      if (st.done[1] && st.field === 1 && !words) words = drawn(s).some((x) => x.words === 'copy:drafts.step2.birth.missed')
+      if (st.done[1] && st.field === 1 && !words) words = drawn(s).some((x) => x.words === 'copy:step2.rows.birth.missed')
     })
     const seen = names(s)
     expect(seen.filter((n) => n === 'reel-stop').length).toBe(3)

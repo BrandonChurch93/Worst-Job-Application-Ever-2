@@ -8,8 +8,9 @@ import type { Config } from './config'
 export type Copy = typeof rawCopy
 export type Drafts = typeof rawDrafts.words
 export type Narration = typeof rawNarration
-// The words change note 002 asked for are drafts until Brandon approves them. They ride beside the locked copy
-// under "drafts", so a layout names one as "copy:drafts.step1.resume.shredderLabel" and the locked file is untouched.
+// New on-screen words are drafts until Brandon approves them. They ride beside the locked copy under "drafts",
+// so a layout names one as "copy:drafts.live.soundBar.words" and the locked file is untouched. An approved word
+// moves into content/copy.json and leaves the drafts (the nine words of change note 002 did, by change note 004 item 9).
 export const copy: Copy & { drafts: Drafts } = { ...rawCopy, drafts: rawDrafts.words }
 export const narration: Narration = rawNarration
 
