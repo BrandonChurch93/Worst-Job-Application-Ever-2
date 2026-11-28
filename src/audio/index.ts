@@ -11,7 +11,7 @@ import { allCues, alsoStarts, cueOfEvent, earlyEnd, endsSentence, eventCues, loo
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
-import { riseAfterFire } from './rise'
+import { riseAfterFire } from '../ui/rise'
 import { builtTo, phraseStart, standIns, type StandIn, lineKey } from './standin'
 import shipped from '../../public/audio/index.json'
 

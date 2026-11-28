@@ -7,7 +7,7 @@ import { narration } from '../copy'
 import { sayable } from '../ui/said'
 import shipped from '../../public/audio/index.json'
 import { spoken, unitPage } from './cues'
-import { riseAfterFire } from './rise'
+import { riseAfterFire } from '../ui/rise'
 
 export const wordCount = (text: string): number => text.split(/\s+/).filter((w) => w.length > 0).length
 

@@ -214,7 +214,7 @@ export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'ste
 // A line its page's turn waits for (turnWaitsFor) ends at its next pause mark, so that the visitor is not held for a sentence.
 // keeps: the line is not taken back when its page is left; it is set off by the turn away from that page.
 // loud: the caption shows the line in capitals, large.
-// steps.hidesOnRise: the caption leaves when the camera's rise begins, riseAfterFire() of src/audio/rise.ts after the last mark, while the voice goes on.
+// steps.hidesOnRise: the caption leaves when the camera's rise begins, riseAfterFire() of src/ui/rise.ts after the last mark, while the voice goes on.
 export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string }; jump?: string[]; keeps?: boolean; loud?: boolean; steps?: { next: string; last: string; ends?: string; hidesOnRise?: boolean } }
 
 export const spoken: Record<string, SpokenRow> = {

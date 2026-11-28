@@ -5,7 +5,7 @@ import { config } from '../src/config'
 import { narration, timedLines, type Narration } from '../src/copy'
 import { filmLineId, filmLinePage, pageAfter, spoken, unitPage } from '../src/audio/cues'
 import { filmCaptions } from '../src/audio/standin'
-import { riseAfterFire } from '../src/audio/rise'
+import { riseAfterFire } from '../src/ui/rise'
 import { CAPTION, captionLow, makeCaption } from '../src/ui/said'
 
 // The film's captions are pictures of the panel laid over the film (pipeline/change002/shell-film-captions.mjs keeps the list of them).

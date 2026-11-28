@@ -3,7 +3,7 @@
 // It writes shell-script-caption.json and the pictures shell-pictures/script-line1-phrases.png and script-loud.png.
 // With --place Y it does one thing instead: the longest phrase of line 1 on the careers page with the panel's lower edge at CAPTION.low and at Y, one picture under the other (shell-pictures/script-caption-place.png).
 // With --shout it runs the shout of the boss through the engine on the marks of the boss page, at the times of the stand-in, over a kept still of the fight (shell-pictures/script-shout.png).
-// The shout's panel leaves when the camera's rise begins (riseAfterFire() of src/audio/rise.ts after the fire mark): the run takes a picture a moment before and one after.
+// The shout's panel leaves when the camera's rise begins (riseAfterFire() of src/ui/rise.ts after the fire mark): the run takes a picture a moment before and one after.
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -89,7 +89,7 @@ try {
     const fire = d.standIn.starts[d.standIn.starts.length - 1]
     const { logic } = await import('../../tools/lib/logic.mjs')
     const { load, close } = await logic()
-    const rise = (await load('/src/audio/rise.ts')).riseAfterFire()
+    const rise = (await load('/src/ui/rise.ts')).riseAfterFire()
     await close()
     const marks = [['finish-arms', 0], ...d.standIn.starts.slice(0, -1).map((t) => ['finish-charge', t]), ['finish-fire', fire], ['(no mark: a moment before the rise begins)', fire + rise - 0.3], ['(no mark: the rise begins)', fire + rise], ['(no mark: its own end)', d.standIn.seconds + 0.1]]
     const missing = []

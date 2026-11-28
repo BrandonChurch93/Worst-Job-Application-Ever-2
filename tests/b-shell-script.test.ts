@@ -6,7 +6,7 @@ import { cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysF
 import { LIVE } from '../src/audio/levels'
 import { CAPTION, shoutPx, shoutShake } from '../src/ui/said'
 import { builtTo, draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, shippedLines, standIns, wordCount } from '../src/audio/standin'
-import { RISE_FALLBACK, riseAfterFire } from '../src/audio/rise'
+import { RISE_FALLBACK, riseAfterFire } from '../src/ui/rise'
 import * as bossTune from '../src/boss/tune'
 import { ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
 import { pages } from '../src/pages'
