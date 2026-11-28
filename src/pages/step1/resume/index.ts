@@ -29,8 +29,10 @@ type Beat = 'field' | 'press' | 'folder' | 'lit' | 'fly' | 'lie' | 'wind' | 'fee
 const POP = { chip: 4, over: 5, tile: 1.2, arc: 54, high: 46, lean: 0.24, lie: 0.6, shiver: 0.07 }
 const WINDOW = ['resume-folder', 'resume-folder-bar', 'resume-folder-knob', 'resume-folder-title', 'resume-file', 'resume-file-name']
 const LIE = heights.card + 9
-// The live arrow's run after the sheet, as in the film: it starts `from` of the wind in and is by the slot, at the film's place, `to` of the wind in, on a path that bends `arc` px. `x` and `y` are where a visitor who follows the hint waits. It is given back over `back` seconds at the bite, when the paper has it by the hands: one hold from the wind to the arms.
-const CHASE = { on: true, from: 0.22, to: 0.8, x: -252, y: -155, arc: 16, back: 0.3 }
+// The live arrow's run after the sheet, as in the film: it starts `from` of the wind in and stands `nx`, `ny` from the slot `to` of the wind in, on a path that bends `arc` px: outrun, an arm's haul short of the film's place, so that the paper has a way to haul it in. `x` and `y` are where a visitor who follows the hint waits before the wind; while the page holds the arrow the hint is the place where it will stand, so a hand that follows finds the arrow in it at the bite. It is given back over `back` seconds at the bite, when the paper has it by the hands: one hold from the wind to the arms.
+const CHASE = { on: true, from: 0.22, to: 0.8, x: -252, y: -155, arc: 16, back: 0.3, nx: -180, ny: -190 }
+// The give back at the bite. A hand that waits within `near` px of where the arrow stands gets it at once. A hand left elsewhere while the page held the arrow gets it when it has moved `moved` px, or `most` seconds after the bite, and its pull comes in over `back` seconds: the arrow pulls from where it stands and is not thrown to a place the hand was left in.
+const LEFT = { near: 24, moved: 14, most: 0.5, back: 0.34 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
@@ -79,7 +81,7 @@ interface State {
   flow: { at: Beat; t: number; win: number; lit: boolean; plate: number; fast: boolean; cx: number; cy: number; cz: number }
   slot: number
   shut: number
-  tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number; slack: number; far: number; from: number; into: number; ax: number; ay: number; heave: number; size: number; held: number }
+  tug: { t: number; amount: number; most: number; cool: number; gx: number; gy: number; reach: number; rate: number; pull: number; vx: number; vy: number; hx: number; hy: number; slack: number; far: number; from: number; into: number; ax: number; ay: number; heave: number; size: number; held: number; px: number; py: number; kept: boolean }
   lost: number
   last: number
   lostFrom: { x: number; y: number; ux: number; uy: number }
@@ -139,7 +141,7 @@ const inside = (b: { x: number; y: number; w: number; h: number }, x: number, y:
 export function makeResume(host: ResumeHost): ResumeStage {
   const glyph = uploadGlyph()
   const act = host.act
-  const freshTug = (): State['tug'] => ({ t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0, held: 0 })
+  const freshTug = (): State['tug'] => ({ t: 0, amount: 0, most: 0, cool: 0, gx: SLOT.cx, gy: SLOT.cy - PAPER.h, reach: TUG.reach.rest, rate: 0, pull: 0, vx: 0, vy: 0, hx: SLOT.cx, hy: SLOT.cy - PAPER.h, slack: -1, far: -1, from: 0, into: -1, ax: 0, ay: 0, heave: -1, size: 0, held: 0, px: 0, py: 0, kept: false })
   const fresh = (mode: Mode, seed: number): State => ({
     mode, seed, time: 0, phase: 'idle', phaseTime: 0,
     paper: { on: false, slide: 0, x: PAPER_REST.x, y: PAPER_REST.y, held: false, dx: 0, dy: 0, feed: -1, fx: 0, fy: 0, vx: 0, vy: 0, z: 0, rot: 0 }, flow: { at: 'field', t: 0, win: 0, lit: false, plate: 0, fast: false, cx: 0, cy: 0, cz: 0 }, slot: 0, shut: 0, tug: freshTug(),
@@ -165,8 +167,8 @@ export function makeResume(host: ResumeHost): ResumeStage {
   // The pace of the beats: the film's, and the film's too on the live site once the skip link is up, so a visitor who does nothing is through in time.
   const pace = (): typeof FLOW.film => (s.mode === 'film' || s.flow.fast ? FLOW.film : FLOW.live)
   const stand = { x: SLOT.cx + CHASE.x, y: SLOT.cy + CHASE.y }
-  const near = { x: SLOT.cx + RESUME.near.x, y: SLOT.cy + RESUME.near.y }
-  // The live site takes the arrow for the wind: it runs after the sheet to the film's place by the slot, stands there while the slot takes the sheet, and is given back at the bite.
+  const near = { x: SLOT.cx + CHASE.nx, y: SLOT.cy + CHASE.ny }
+  // The live site takes the arrow for the wind: it runs after the sheet, stands short of the slot while the slot takes the sheet, and is given back at the bite.
   const chase = (io: StepIo, share: number): void => {
     const f = s.flow
     if (!CHASE.on) return
@@ -318,8 +320,9 @@ export function makeResume(host: ResumeHost): ResumeStage {
       p.vy = (p.y - wy) / io.dt
       if (p.feed >= TIMES.bite) {
         enter('tug')
-        if (!film && io.cursor.taken) io.cursor.release(CHASE.back)
-        s.tug = { ...freshTug(), amount: tugCurve(0), cool: 0.5 }
+        const here = Math.hypot(io.pointer.x - io.cursor.x, io.pointer.y - io.cursor.y) <= LEFT.near
+        if (!film && io.cursor.taken && here) io.cursor.release(CHASE.back)
+        s.tug = { ...freshTug(), amount: tugCurve(0), cool: 0.5, px: io.pointer.x, py: io.pointer.y, kept: !film && io.cursor.taken }
         s.lost = -1
         s.last = -1
         jolt(JOLT.bite)
@@ -355,6 +358,10 @@ export function makeResume(host: ResumeHost): ResumeStage {
     const t = s.tug
     const film = s.mode === 'film'
     t.t += io.dt
+    if (t.kept && (t.t >= LEFT.most || Math.hypot(io.pointer.x - t.px, io.pointer.y - t.py) >= LEFT.moved)) {
+      t.kept = false
+      io.cursor.release(LEFT.back)
+    }
     const ox = t.gx
     const oy = t.gy
     grip(io)
@@ -802,6 +809,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
         if (s.phase === 'idle' || f.at === 'field') return { x: chip.x + chip.w / 2, y: chip.y + chip.h / 2, down: s.phase === 'resume' && blink }
         if (f.at === 'press') return { x: chip.x + chip.w / 2, y: chip.y + chip.h / 2, down: false }
         if (f.at === 'folder') return { x: PAPER_REST.x + PAPER.w / 2 - 8, y: PAPER_REST.y + PAPER.h / 2 - 4, down: f.t >= flow.pop && blink }
+        if (f.at === 'wind' || s.paper.feed >= 0) return { x: near.x, y: near.y, down: false }
         return { x: stand.x, y: stand.y, down: false }
       }
       if (s.phase === 'tug') return { x: SLOT.cx - 90, y: SLOT.cy - 260, down: false }
