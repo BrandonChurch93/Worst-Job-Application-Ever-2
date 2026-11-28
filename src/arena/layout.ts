@@ -22,7 +22,7 @@ export const ARENA = {
   // The health bar drops into place and lands.
   barAt: 1.7, barLands: 2.12,
   // Sizes.
-  seamHalf: 9, chamfer: 3, seamDepth: 18,
+  seamHalf: 9, chamfer: 5, seamDepth: 24,
   pillar: { side: 56, foot: 76, footHigh: 7, high: 210 },
   pane: { thick: 14, high: 240 },
   // The picture is drawn a little from below and from the right of the page: every standing thing leans up the screen by `lean` of its height and to the left by `leanX` of it. Its foot stays where it is: the foot is what stops a shot.
