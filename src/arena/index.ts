@@ -38,13 +38,15 @@ const SEAM_LAMPS: { x: number; y: number }[] = [{ x: 598, y: 438 }, { x: 1368, y
 
 // `beam`: who drives the arena's answer to a cold beam (the light on the ground from its line, the long shadows of what stands). Left out, the arena reads the finishing blast from the view (beamOf).
 // `upright`: 0 to 1, how far what stands is stood upright for a low lens. 0, and left out, is the picture's own lean.
-export interface ArenaOptions { seed?: number; beam?: BeamDriver; upright?: () => number }
+// `shade`: 0 to 1, how far the pillars' bodies and the sides of their stumps stand in shade for a low lens: at 1 they keep 0.4 of their colour and of the light they mirror. 0, and left out, is the picture's own light.
+export interface ArenaOptions { seed?: number; beam?: BeamDriver; upright?: () => number; shade?: () => number }
 
 export function makeArena(o: ArenaOptions = {}): Arena {
   const seed = o.seed ?? config.seed
   const root = new THREE.Group()
   root.name = 'arena'
   const kit = makeKit()
+  const metal = { colour: kit.standing.color.clone(), mirrored: kit.standing.envMapIntensity }
   const ground = makeGround(seed)
   const pillars = makePillars(kit)
   const panes = makePanes(kit)
@@ -79,6 +81,9 @@ export function makeArena(o: ArenaOptions = {}): Arena {
     poseBar(bar.bar, view)
     wreck.pose(view, light)
     finish.pose(view, light, o.beam)
+    const lit = 1 - 0.6 * Math.min(1, Math.max(0, o.shade?.() ?? 0))
+    kit.standing.color.copy(metal.colour).multiplyScalar(lit)
+    kit.standing.envMapIntensity = metal.mirrored * lit
     const k = Math.min(1, Math.max(0, o.upright?.() ?? 0))
     for (const g of [pillars.object, panes.object, wreck.object]) {
       if (k > 0) {

@@ -393,3 +393,44 @@ describe('the arena stood upright for a low lens (NEEDS)', () => {
     arena.dispose()
   })
 })
+
+describe('the arena\'s pillars in shade for a low lens (NEEDS)', () => {
+  const view = viewOf({ clock: UNFOLD.end + 40, unfold: UNFOLD.end, fight: newFight(), base: UNFOLD.end, fell: -1, pressed: false, arrow: { x: 500, y: 500 } })!
+  const metalOf = (root: THREE.Object3D): { standing: THREE.MeshPhysicalMaterial; others: THREE.MeshPhysicalMaterial[] } => {
+    const standing = (root.getObjectByName('arena-pillars') as THREE.Mesh).material as THREE.MeshPhysicalMaterial
+    const others: THREE.MeshPhysicalMaterial[] = []
+    root.traverse((c) => {
+      const m = (c as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
+      if (m && m !== standing && m.isMeshPhysicalMaterial && !others.includes(m)) others.push(m)
+    })
+    return { standing, others }
+  }
+
+  it('at 0, and with nothing said, the pillars keep their colour and mirrored light; at 1 they keep 0.4 of both, and no other material of the arena changes', () => {
+    const plain = makeArena()
+    plain.pose(view)
+    const was = metalOf(plain.object)
+    const colour = was.standing.color.clone()
+    const mirrored = was.standing.envMapIntensity
+    let k = 0
+    const told = makeArena({ shade: () => k })
+    told.pose(view)
+    const now = metalOf(told.object)
+    const rest = now.others.map((m) => [m.color.getHex(), m.envMapIntensity])
+    expect(now.others.length).toBeGreaterThan(3)
+    expect(now.standing.color.equals(colour)).toBe(true)
+    expect(now.standing.envMapIntensity).toBe(mirrored)
+    k = 1
+    told.pose(view)
+    expect(now.standing.color.r).toBeCloseTo(colour.r * 0.4, 9)
+    expect(now.standing.color.b).toBeCloseTo(colour.b * 0.4, 9)
+    expect(now.standing.envMapIntensity).toBeCloseTo(mirrored * 0.4, 9)
+    expect(now.others.map((m) => [m.color.getHex(), m.envMapIntensity])).toEqual(rest)
+    k = 0
+    told.pose(view)
+    expect(now.standing.color.equals(colour)).toBe(true)
+    expect(now.standing.envMapIntensity).toBe(mirrored)
+    plain.dispose()
+    told.dispose()
+  })
+})
