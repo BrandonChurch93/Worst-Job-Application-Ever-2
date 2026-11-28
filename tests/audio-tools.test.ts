@@ -3,6 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { FAMILY_LINE, HOLD_LINE, cueLines, lineNumbers as numbersOf, listenerFindings, listenerSheet, promptLine, target } from '../tools/sound.mjs'
 import * as cues from '../src/audio/cues'
+import { changeCues } from '../src/audio/change'
 import * as copy from '../src/copy'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
@@ -87,10 +88,11 @@ describe('the questions the listener gets', () => {
   const line = target({ line: `${beat}:${index}` }, cfg, cues)
   const effect = target({ cue: 'button-press' }, cfg, cues)
 
-  it('has one describing line for every cue of the config, read from the kit', () => {
+  it('has one describing line for every cue of the config, read from the kit, and one for every cue of the change list, read from its row', () => {
     const lines: Record<string, string> = cueLines()
     for (const s of cfg.audio.sfx) expect(lines[s.id], s.id).toMatch(/^[A-Z].{8,}/)
-    expect(Object.keys(lines).length).toBe(cues.allCues(cfg.audio.sfx).length)
+    expect(Object.keys(lines).length).toBe(cues.allCues(cfg.audio.sfx).length + changeCues.length)
+    for (const row of changeCues) expect(lines[row.id], row.id).toBe(row.describes)
     expect(new Set([lines['ui-tick'], lines['key-tap'], lines['ui-send']]).size).toBe(3)
   })
 

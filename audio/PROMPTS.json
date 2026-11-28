@@ -265,6 +265,103 @@
     },
     "skip": {
       "prompt": "One firm press of a wide plastic key bottoming out on a ceramic base, a single low click"
+    },
+    "turret-cannon": {
+      "prompt": "One heavy cannon shot from a short thick steel barrel, a deep hard boom with a sharp crack at its front and a punch of air, powerful and weighty, a single shot"
+    },
+    "slab-slam": {
+      "prompt": "One enormous stone slab dropped from a great height slamming flat onto a ceramic floor, a huge deep boom with the floor cracking under it and a short spray of rubble, very heavy, a single impact"
+    },
+    "keys-break": {
+      "prompt": "A plastic computer keyboard crushed under a heavy weight, one sharp crunch of plastic and loose key caps scattering on a hard floor, medium weight, short"
+    },
+    "button-burst": {
+      "prompt": "A huge machine tearing itself up out of a thick ceramic floor, one violent deep crack, then heavy chunks of ceramic and steel bursting outward and falling, very heavy and powerful"
+    },
+    "big-fire": {
+      "prompt": "One giant cannon blast from a very large gun, a hard crack at the start and a massive deep boom with a heavy roar of force that dies within a second, enormous and powerful, a single shot"
+    },
+    "pin-bumper": {
+      "prompt": "One pinball pop bumper struck by a steel ball, a short rubber and solenoid thwack, no bell, medium weight, inside a wooden cabinet"
+    },
+    "pin-target": {
+      "prompt": "One steel ball striking a small plastic standup target on a pinball table, a short hard clack, light, inside a wooden cabinet"
+    },
+    "pin-bell": {
+      "prompt": "One steel ball striking a small brass bell on a pinball table, a single clear ding that dies fast, light, inside a wooden cabinet"
+    },
+    "pin-kick": {
+      "prompt": "One pinball kicker firing a steel ball out of a saucer hole, a hard solenoid clunk and the ball leaving on wood, medium weight, inside a wooden cabinet"
+    },
+    "pin-coins": {
+      "prompt": "A short spill of metal coins into a steel tray, bright and quick, light weight, inside a wooden cabinet"
+    },
+    "pin-frenzy": {
+      "prompt": "A pinball machine going into a frenzy, relays chattering fast and mechanical bells ringing in a quick rising run, bright steel and brass, inside a wooden cabinet"
+    },
+    "vacuum-roar": {
+      "prompt": "A large shop vacuum running at full power, a steady roar of air through a wide plastic hose, even from start to end so it can loop, heavy",
+      "loop": true
+    },
+    "vacuum-gulp": {
+      "prompt": "A vacuum hose swallowing a steel ball, one hollow gulp of air in a plastic tube and a dull knock inside, medium weight"
+    },
+    "vacuum-slip": {
+      "prompt": "A steel ball slipping free of a suction hose mouth, one short wet pop of air on rubber, light"
+    },
+    "cannon-fire": {
+      "prompt": "One heavy cannon shot, a low heavy thump of a steel barrel with a short push of air, large and weighty"
+    },
+    "cannon-tell": {
+      "prompt": "A heavy cannon winding up before it fires, a low motor whine rising with a steel ratchet clicking faster, large"
+    },
+    "boss-heal": {
+      "prompt": "A large machine mending itself, a warm low hum rising quickly with a soft bright shimmer of glass at its top, medium weight"
+    },
+    "shield-glance": {
+      "prompt": "One small dart glancing off a curved glass shield, a tiny bright ping that slides away, light"
+    },
+    "arena-split": {
+      "prompt": "A large sheet of thick paper and glass cracking along one straight line, a sharp dry split, heavy"
+    },
+    "arena-rise": {
+      "prompt": "A heavy stone and steel platform rising out of the floor, a low grinding rumble that ends in a locking thud, very heavy"
+    },
+    "healthbar-drop": {
+      "prompt": "A long steel bar dropping into two brackets, one solid clank with a short ring, heavy"
+    },
+    "power-up": {
+      "prompt": "A small machine charging up, a clean electric hum rising for under a second into a soft bright ping, light"
+    },
+    "boss-fall": {
+      "prompt": "A large machine of glass and steel collapsing to the floor, a heavy slump of plates and one deep thud, very heavy"
+    },
+    "pillar-break": {
+      "prompt": "One stone pillar breaking in two and its top half falling, a hard crack and a heavy tumble of rubble, very heavy"
+    },
+    "reel-stop": {
+      "prompt": "One slot machine reel stopping, a hard plastic and steel clack with a short ratchet tick, small and firm"
+    },
+    "stop-press": {
+      "prompt": "One small plastic stop button pressed, a short dry click, very light"
+    },
+    "date-miss": {
+      "prompt": "A slot machine reel slipping past its stop, a short descending ratchet rattle that ends in a dull plastic thud, small"
+    },
+    "volume-sign": {
+      "prompt": "A small lit sign switching on, one soft relay click and a short faint electric buzz that settles, light"
+    },
+    "row-close": {
+      "prompt": "A small drawer mechanism sliding shut and stopping with a soft thunk, a single short movement, light"
+    },
+    "folder-open": {
+      "prompt": "A stiff paper folder flipped open on a desk, one soft flap of card and paper, light"
+    },
+    "slot-in": {
+      "prompt": "A sheet of paper fed into the slot of a machine, a short slide of paper on steel and a soft catch, light"
+    },
+    "wind-gust": {
+      "prompt": "One gust of wind through an open office window, a soft rush of air that swells and fades with loose paper lifting, light"
     }
   }
 }

@@ -95,14 +95,12 @@ export const extraCues: { id: string; seconds: number; event: string }[] = [
   { id: 'skip', seconds: 0.3, event: 'skip' }
 ]
 
-// Cues whose sound is to be made in the effects batch. Each is named here with its length, so that its event has its cue now. It is no cue of allCues yet:
-// nothing plays for it, no take is asked for it and no check counts it, until its row is in audio.sfx and its file is kept.
-export const cuesToMake: { id: string; seconds: number; event: string }[] = [
-  { id: 'finish-fire', seconds: 2.2, event: 'finish-fire' }
-]
+// An event that is named by its own cue before that cue's sound exists: the film's beat boss.finish names finish-fire. The cue is a row of
+// audio/CHANGE-CUES.json, which alone holds its length. Nothing plays for it, no check counts it, until that row's sound is kept.
+export const cuesToCome: Record<string, string> = { 'finish-fire': 'finish-fire' }
 
 export function cueOfEvent(name: string): string | undefined {
-  const known = eventCues[name] ?? extraCues.find((x) => x.event === name)?.id ?? newEventCues[name] ?? cuesToMake.find((x) => x.event === name)?.id
+  const known = eventCues[name] ?? extraCues.find((x) => x.event === name)?.id ?? newEventCues[name] ?? cuesToCome[name]
   if (known !== undefined) return known
   for (const p of prefixCues) if (name.startsWith(p.prefix)) return p.cue(name.slice(p.prefix.length))
   return undefined
@@ -120,15 +118,15 @@ export function allCues<T extends { id: string; seconds: number }>(sfx: T[]): (T
   return [...sfx, ...extraCues.filter((x) => !sfx.some((s) => s.id === x.id)).map((x) => ({ id: x.id, seconds: x.seconds }))]
 }
 
-// The events the units of change 002 added, each on the nearest cue that is kept until its own sound is made. To give one its own sound,
-// add the cue to audio.sfx and write its id in place of the stand-in here. A name in newSilent plays nothing.
-// file to come: the sound the Builder named for it, with its length in seconds.
+// The events the units of change 002 added, each on the nearest cue of the kit, its stand-in. A name in newSilent plays nothing.
+// Where a change note ordered a sound of its own for one, that sound is a row of audio/CHANGE-CUES.json: once it is kept and packed the event
+// plays it (cueFor in change.ts), and until then it plays the stand-in here, which the row repeats; a test holds the two together.
 export const newEventCues: Record<string, string> = {
   // boss
-  'shield-glance': 'bolt-hit',          // file to come: shield-glance, a dull glassy tick, 0.2
+  'shield-glance': 'bolt-hit',
   'shot-round': 'dart-hit',
-  'cannon-fire': 'slab-fire',           // file to come: cannon-fire, a low heavy thump, 0.5
-  'boss-heal': 'power-on',              // file to come: boss-heal, a short rising power-up, 0.6
+  'cannon-fire': 'slab-fire',
+  'boss-heal': 'power-on',
   'bullet-fire': 'bolt-fire',
   'turret-lock': 'lever-pull',
   'big-fire': 'slab-fire',
@@ -139,16 +137,16 @@ export const newEventCues: Record<string, string> = {
   'page-crack': 'button-crack',
   // step 2
   'date-key': 'key-press',
-  'reel-stop': 'drop-target',           // file to come: reel-stop, 0.3
-  'date-hit': 'checkbox',               // file to come: stop-press, 0.15
-  'date-miss': 'popup-close',           // file to come: date-miss, 0.6
+  'reel-stop': 'drop-target',
+  'date-hit': 'checkbox',
+  'date-miss': 'popup-close',
   'crank-full': 'crank-runaway',
   'field-done': 'checkbox',
   // pinball
-  'vacuum-slip': 'ball-drop',           // file to come: vacuum-slip, 0.35
-  'vacuum-lose': 'scoop-kick',          // file to come: vacuum-gulp, 0.5
-  'frenzy-on': 'flasher',               // file to come: pin-frenzy, 2.4
-  'loot': 'coins',                      // file to come: pin-coins, 0.9
+  'vacuum-slip': 'ball-drop',
+  'vacuum-lose': 'scoop-kick',
+  'frenzy-on': 'flasher',
+  'loot': 'coins',
   // the narrator's script, change note 003: the fight music comes in on a phrase of line 7. A stand-in, the old loop; nothing new is made.
   'boss-music': 'boss-loop',
   'music-in': 'boss-loop'
@@ -156,13 +154,13 @@ export const newEventCues: Record<string, string> = {
 
 export const newSilent: string[] = [
   'boss-move',
-  'cannon-tell',                        // file to come: cannon-tell, a rising charge whine, 0.8
+  'cannon-tell',
   'big-tell',
   'turret-off',
   'slab-shadow',
-  'volume-sign',                        // file to come: volume-sign, 0.5
+  'volume-sign',
   'field-next',
-  'vacuum-on',                          // file to come: vacuum-roar, 3.0, can loop
+  'vacuum-on',
   'frenzy-off',
   // the events that only carry a line of the narrator
   'candidate-sensed',
@@ -172,8 +170,8 @@ export const newSilent: string[] = [
 ]
 
 // Events named by a prefix: strike:<layout id>:<n> beside every strike of the pinball table, n 1 soft, 2 hard, 3 frenzy.
-// The old event of the same strike keeps its old cue, so the prefix plays nothing until its own sounds are made; then write the cue for each n.
-// files to come: pin-bumper 0.25, pin-sling 0.2, pin-target 0.25, pin-bell 0.4, pin-kick 0.3.
+// The old event of the same strike keeps its old cue, so the prefix plays nothing here. Its own sounds are the pin rows of audio/CHANGE-CUES.json,
+// each on the strikes of its kind once it is kept.
 export const prefixCues: { prefix: string; cue: (rest: string) => string | undefined }[] = [
   { prefix: 'strike:', cue: () => undefined }
 ]

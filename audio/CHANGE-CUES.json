@@ -1,0 +1,642 @@
+{
+  "about": "The cues Brandon's change notes 002 to 004 ordered: a third list beside audio.sfx of config/showcase.json (the kit's) and audio/EXTRA-CUES.json (the build's own, inside audio.extraCuesMax). By the Builder's ruling these do not count against audio.extraCuesMax. src/audio/change.ts and tools/sound.mjs read this file, and no length here is written anywhere else. A row: seconds, the length the kept sound is cut to; class, its level class of src/audio/levels.ts; loop, it repeats until stopped; made, a first take exists (false: the sound is still to be made, and its describes line is the list's own until its prompt is written); events, the events that play it once its sound is kept and packed, where * stands for any run of letters; page, the only page those events count on; standIn, the cue those events play until then, or null where nothing plays; covers, events that play nothing in the step where this cue plays, once it is kept; stops, events that end a loop; describes, what is heard, the line the listener is asked against. The cut list, cut/CUES.md and the mix's record keep naming an event by the cue the table of cues gives it (a row's standIn) after the row's sound is kept, so that keeping a sound does not change the cut: in audio/mix/review.json placed[].cue is that cue and placed[].id is the sound that was laid, and the picture of the mix draws such a sound in the colour of its stand-in's class, which may not be its own.",
+  "cues": [
+    {
+      "id": "turret-cannon",
+      "seconds": 0.8,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "bolt-fire"
+      ],
+      "page": "step1",
+      "standIn": "bolt-fire",
+      "describes": "One heavy cannon shot from a short thick steel barrel: a deep hard boom with a sharp crack at its front",
+      "playedBy": "Step 1, each shot of the two turrets at the Name field",
+      "orderedBy": "Brandon's change note 002, named in his words"
+    },
+    {
+      "id": "slab-slam",
+      "seconds": 1,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "slab-drop"
+      ],
+      "page": "step1",
+      "standIn": "slab-drop",
+      "covers": [
+        "page-crack"
+      ],
+      "describes": "One enormous stone slab slamming flat onto a ceramic floor, the floor cracking under it",
+      "playedBy": "Step 1, each email slab landing on the page",
+      "orderedBy": "Brandon's change note 002, named in his words"
+    },
+    {
+      "id": "keys-break",
+      "seconds": 0.6,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "keys-break"
+      ],
+      "standIn": "button-crack",
+      "describes": "A plastic keyboard crushed under a heavy weight: one sharp crunch and loose key caps scattering",
+      "playedBy": "Step 1, the keys smashed under a slab",
+      "orderedBy": "Brandon's change note 002, named in his words"
+    },
+    {
+      "id": "button-burst",
+      "seconds": 1.2,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "button-crack"
+      ],
+      "page": "step4",
+      "standIn": "button-crack",
+      "describes": "A huge machine tearing itself up out of a thick ceramic floor: one deep crack, then heavy chunks bursting out and falling",
+      "playedBy": "Step 4, the Submit button breaking out of the page",
+      "orderedBy": "Brandon's change note 002, named in his words"
+    },
+    {
+      "id": "big-fire",
+      "seconds": 1.5,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "big-fire"
+      ],
+      "standIn": "slab-fire",
+      "describes": "One giant cannon blast from a very large gun: a hard crack at the start and a massive deep boom",
+      "playedBy": "Step 4, the boss's great blast from its back cannon",
+      "orderedBy": "Brandon's change note 002, named in his words"
+    },
+    {
+      "id": "pin-bumper",
+      "seconds": 0.25,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "strike:*.bumper.*"
+      ],
+      "standIn": null,
+      "covers": [
+        "bumper"
+      ],
+      "describes": "One pinball pop bumper struck by a steel ball: a short rubber and solenoid thwack, no bell",
+      "playedBy": "The pinball table, the clear ball striking a pop bumper",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "pin-target",
+      "seconds": 0.25,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "strike:*.drop.*"
+      ],
+      "standIn": null,
+      "covers": [
+        "drop-target"
+      ],
+      "describes": "One steel ball striking a small plastic target on a pinball table: a short hard clack",
+      "playedBy": "The pinball table, the clear ball striking a drop target",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "pin-bell",
+      "seconds": 0.4,
+      "class": "tick",
+      "made": true,
+      "events": [
+        "strike:corporate.revolving:*",
+        "strike:street.highway:*",
+        "strike:street.garage:*"
+      ],
+      "standIn": null,
+      "describes": "One steel ball striking a small brass bell on a pinball table: a single clear ding that dies fast",
+      "playedBy": "The pinball table, the strikes that pay and have no part of their own kind: the revolving door and the pay of the two rails",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "pin-kick",
+      "seconds": 0.3,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "strike:street.firehouse:*"
+      ],
+      "standIn": null,
+      "covers": [
+        "scoop-kick"
+      ],
+      "describes": "One pinball kicker firing a steel ball out of a saucer hole: a hard solenoid clunk",
+      "playedBy": "The pinball table, the firehouse throwing the ball out",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "pin-coins",
+      "seconds": 0.9,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "loot"
+      ],
+      "standIn": "coins",
+      "describes": "A short spill of metal coins into a steel tray, bright and quick",
+      "playedBy": "The pinball table, a strike that throws coins or paper out",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "pin-frenzy",
+      "seconds": 2.4,
+      "class": "mechanism",
+      "made": true,
+      "events": [
+        "frenzy-on"
+      ],
+      "standIn": "flasher",
+      "describes": "A pinball machine going into a frenzy: relays chattering fast and bells ringing in a quick rising run",
+      "playedBy": "The pinball table, the start of each of the two frenzies",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "vacuum-roar",
+      "seconds": 3,
+      "class": "mechanism",
+      "loop": true,
+      "made": true,
+      "events": [
+        "vacuum-on"
+      ],
+      "standIn": null,
+      "stops": [
+        "vacuum-lose"
+      ],
+      "describes": "A large shop vacuum running at full power: a steady roar of air through a wide hose. Loops",
+      "playedBy": "Step 3, from the port starting to draw until it takes the arrow",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "vacuum-gulp",
+      "seconds": 0.5,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "vacuum-lose"
+      ],
+      "standIn": "scoop-kick",
+      "describes": "A vacuum hose swallowing a steel ball: one hollow gulp of air and a dull knock inside",
+      "playedBy": "Step 3, the port taking the arrow",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "vacuum-slip",
+      "seconds": 0.35,
+      "class": "mechanism",
+      "made": true,
+      "events": [
+        "vacuum-slip"
+      ],
+      "standIn": "ball-drop",
+      "describes": "A steel ball slipping free of a suction hose mouth: one short wet pop of air",
+      "playedBy": "Step 3, each slip of the arrow in the fight with the port",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "cannon-fire",
+      "seconds": 0.5,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "cannon-fire"
+      ],
+      "standIn": "slab-fire",
+      "describes": "One heavy cannon shot: a low heavy thump of a steel barrel with a short push of air",
+      "playedBy": "Step 4, a shot of the boss's cannon",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "cannon-tell",
+      "seconds": 0.8,
+      "class": "mechanism",
+      "made": true,
+      "events": [
+        "cannon-tell"
+      ],
+      "standIn": null,
+      "describes": "A heavy cannon winding up before it fires: a low motor whine rising with a ratchet clicking faster",
+      "playedBy": "Step 4, the boss's cannon winding up",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "boss-heal",
+      "seconds": 0.6,
+      "class": "mechanism",
+      "made": true,
+      "events": [
+        "boss-heal"
+      ],
+      "standIn": "power-on",
+      "describes": "A large machine mending itself: a warm low hum rising quickly with a soft bright shimmer at its top",
+      "playedBy": "Step 4, the boss mending",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "shield-glance",
+      "seconds": 0.2,
+      "class": "tick",
+      "made": true,
+      "events": [
+        "shield-glance"
+      ],
+      "standIn": "bolt-hit",
+      "describes": "One small dart glancing off a curved glass shield: a tiny bright ping that slides away",
+      "playedBy": "Step 4, a shot glancing off the boss's shield",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "arena-split",
+      "seconds": 0.6,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "arena-split"
+      ],
+      "standIn": null,
+      "describes": "A large sheet of thick paper and glass cracking along one straight line: a sharp dry split",
+      "playedBy": "Step 4, the page splitting for the arena",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "arena-rise",
+      "seconds": 0.9,
+      "class": "mechanism",
+      "made": true,
+      "events": [
+        "arena-rise"
+      ],
+      "standIn": null,
+      "describes": "A heavy stone and steel platform rising out of the floor: a low grinding rumble that ends in a locking thud",
+      "playedBy": "Step 4, the arena rising",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "healthbar-drop",
+      "seconds": 0.5,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "healthbar-drop"
+      ],
+      "standIn": null,
+      "describes": "A long steel bar dropping into two brackets: one solid clank with a short ring",
+      "playedBy": "Step 4, the health bar dropping in",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "power-up",
+      "seconds": 0.8,
+      "class": "mechanism",
+      "made": true,
+      "events": [
+        "power-up"
+      ],
+      "standIn": null,
+      "describes": "A small machine charging up: a clean electric hum rising into a soft bright ping",
+      "playedBy": "Step 4, the power up before the turret rises",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "boss-fall",
+      "seconds": 0.8,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "boss-fall"
+      ],
+      "standIn": null,
+      "describes": "A large machine of glass and steel collapsing to the floor: a heavy slump of plates and one deep thud",
+      "playedBy": "Step 4, the boss falling",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "pillar-break",
+      "seconds": 0.8,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "pillar-break"
+      ],
+      "standIn": null,
+      "describes": "One stone pillar breaking in two and its top half falling: a hard crack and a heavy tumble of rubble",
+      "playedBy": "Step 4, a pillar of the arena breaking under the great blast",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "reel-stop",
+      "seconds": 0.3,
+      "class": "hit",
+      "made": true,
+      "events": [
+        "reel-stop"
+      ],
+      "standIn": "drop-target",
+      "describes": "One slot machine reel stopping: a hard plastic and steel clack with a short ratchet tick",
+      "playedBy": "Step 2, a reel of the date stopping",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "stop-press",
+      "seconds": 0.15,
+      "class": "tick",
+      "made": true,
+      "events": [
+        "date-hit"
+      ],
+      "standIn": "checkbox",
+      "describes": "One small plastic stop button pressed: a short dry click",
+      "playedBy": "Step 2, the stop press that lands on the date",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "date-miss",
+      "seconds": 0.6,
+      "class": "mechanism",
+      "made": true,
+      "events": [
+        "date-miss"
+      ],
+      "standIn": "popup-close",
+      "describes": "A slot machine reel slipping past its stop: a short falling ratchet rattle that ends in a dull plastic thud",
+      "playedBy": "Step 2, the stop press that misses the date",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "volume-sign",
+      "seconds": 0.5,
+      "class": "tick",
+      "made": true,
+      "events": [
+        "volume-sign"
+      ],
+      "standIn": null,
+      "describes": "A small lit sign switching on: one soft relay click and a short faint electric buzz that settles",
+      "playedBy": "Step 2, the sign of the volume row coming on",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "row-close",
+      "seconds": 0.3,
+      "class": "mechanism",
+      "made": true,
+      "events": [
+        "stage-out-phone",
+        "stage-out-birth",
+        "stage-out-volume"
+      ],
+      "standIn": null,
+      "describes": "A small drawer mechanism sliding shut and stopping with a soft thunk",
+      "playedBy": "Step 2, each of the three rows closing",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "folder-open",
+      "seconds": 0.4,
+      "class": "tick",
+      "made": true,
+      "events": [
+        "folder-open"
+      ],
+      "standIn": null,
+      "describes": "A stiff paper folder flipped open on a desk: one soft flap of card and paper",
+      "playedBy": "Step 1, the folder opening",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "slot-in",
+      "seconds": 0.3,
+      "class": "tick",
+      "made": true,
+      "events": [
+        "slot-in"
+      ],
+      "standIn": null,
+      "describes": "A sheet of paper fed into the slot of a machine: a short slide of paper on steel and a soft catch",
+      "playedBy": "Step 1, the file going into the slot",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "wind-gust",
+      "seconds": 1.2,
+      "class": "tick",
+      "made": true,
+      "events": [
+        "wind-gust"
+      ],
+      "standIn": null,
+      "describes": "One gust of wind through an open office window: a soft rush of air that swells and fades with loose paper lifting",
+      "playedBy": "Step 1, the gust before the shredder",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "pin-sling",
+      "seconds": 0.2,
+      "class": "hit",
+      "made": false,
+      "events": [
+        "strike:*.sling.*"
+      ],
+      "standIn": null,
+      "covers": [
+        "sling"
+      ],
+      "describes": "One pinball slingshot struck by a steel ball: a dry rubber snap",
+      "playedBy": "The pinball table, the clear ball striking a slingshot",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "finish-fire",
+      "seconds": 2.2,
+      "class": "hit",
+      "made": false,
+      "events": [
+        "finish-fire"
+      ],
+      "standIn": null,
+      "describes": "The last shot of the finish",
+      "playedBy": "Step 4, the last shot of the finish",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "finish-arms",
+      "seconds": 0.8,
+      "class": "mechanism",
+      "made": false,
+      "events": [
+        "finish-arms"
+      ],
+      "standIn": null,
+      "describes": "The arms coming out for the finish",
+      "playedBy": "Step 4, the arms coming out for the finish",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "finish-charge",
+      "seconds": 0.9,
+      "class": "mechanism",
+      "made": false,
+      "events": [
+        "finish-charge"
+      ],
+      "standIn": null,
+      "describes": "One charge of the finish, of four",
+      "playedBy": "Step 4, each of the four charges of the finish",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "boss-gone",
+      "seconds": 1,
+      "class": "hit",
+      "made": false,
+      "events": [
+        "boss-gone"
+      ],
+      "standIn": null,
+      "describes": "The boss gone",
+      "playedBy": "Step 4, the boss gone",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "finish-walk",
+      "seconds": 1,
+      "class": "tick",
+      "made": false,
+      "events": [
+        "finish-walk"
+      ],
+      "standIn": null,
+      "describes": "The walk to the button",
+      "playedBy": "Step 4, the walk to the button",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "button-down",
+      "seconds": 0.6,
+      "class": "hit",
+      "made": false,
+      "events": [
+        "button-down"
+      ],
+      "standIn": null,
+      "describes": "The button coming down",
+      "playedBy": "Step 4, the button coming down",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "finish-kneel",
+      "seconds": 0.5,
+      "class": "tick",
+      "made": false,
+      "events": [
+        "finish-kneel"
+      ],
+      "standIn": null,
+      "describes": "The kneel",
+      "playedBy": "Step 4, the kneel",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "finish-fist",
+      "seconds": 0.5,
+      "class": "tick",
+      "made": false,
+      "events": [
+        "finish-fist"
+      ],
+      "standIn": null,
+      "describes": "The fist raised",
+      "playedBy": "Step 4, the fist raised",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "big-tell",
+      "seconds": 0.8,
+      "class": "mechanism",
+      "made": false,
+      "events": [
+        "big-tell"
+      ],
+      "standIn": null,
+      "describes": "The great cannon winding up before the great blast",
+      "playedBy": "Step 4, the tell of the boss's great blast",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "weak-tell",
+      "seconds": 0.3,
+      "class": "tick",
+      "made": false,
+      "events": [
+        "weak-tell"
+      ],
+      "standIn": null,
+      "describes": "The tell of the weak spot",
+      "playedBy": "Step 4, the tell of the boss's weak spot",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "pane-shatter",
+      "seconds": 0.8,
+      "class": "hit",
+      "made": false,
+      "events": [
+        "pane-shatter"
+      ],
+      "standIn": null,
+      "describes": "A pane of the arena shattering",
+      "playedBy": "Step 4, a pane of the arena shattering under the great blast",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "cover-hit",
+      "seconds": 0.25,
+      "class": "hit",
+      "made": false,
+      "events": [
+        "cover-hit"
+      ],
+      "standIn": null,
+      "describes": "A shot striking the cover",
+      "playedBy": "Step 4 on the live site, a shot on the cover",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "browse-press",
+      "seconds": 0.15,
+      "class": "tick",
+      "made": false,
+      "events": [
+        "browse-press"
+      ],
+      "standIn": null,
+      "describes": "The press of Browse",
+      "playedBy": "Step 1, the press of Browse",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    },
+    {
+      "id": "file-pick",
+      "seconds": 0.15,
+      "class": "tick",
+      "made": false,
+      "events": [
+        "file-pick"
+      ],
+      "standIn": null,
+      "describes": "The file picked in the folder",
+      "playedBy": "Step 1, the file picked",
+      "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
+    }
+  ]
+}

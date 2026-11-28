@@ -2,6 +2,7 @@
 // A line lasts its words divided by audio.narratorMaxWordsPerSecond. Its caption is shown phrase by phrase, split at the pause mark, each phrase for its share of the words.
 // A line whose phrases come on marks of its page carries the times of a stand-in instead: the start of each phrase and the length of the whole.
 // A line with a kept take in the sound index, recorded from the very words of the script, lasts as long as its file and shows each phrase when the file says it.
+// A line on marks is kept as any other is: with a take its times are the take's, and until then they are the stand-in's.
 import { config } from '../config'
 import { narration } from '../copy'
 import { sayable } from '../ui/said'
@@ -72,11 +73,17 @@ export function standIns(film: Film = narration.film as Film, drafts: Film = dra
     const line = settled ?? drafts[beat]?.[index]
     if (!line) continue
     const take = byId.get(`line.${key}`)
-    const kept = take !== undefined && take.words === line.text && take.seconds > 0 && spoken[key]?.steps === undefined
+    const kept = take !== undefined && take.words === line.text && take.seconds > 0
     const phrases = kept ? (take.starts ? phrasesAt(line.text, pauseMark, take.starts, take.seconds) : phrasesOver(line.text, pauseMark, take.seconds)) : line.standIn ? phrasesAt(line.text, pauseMark, line.standIn.starts, line.standIn.seconds) : phrasesOf(line.text, pauseMark, wordsPerSecond)
     out.set(key, { key, id: `line.${key}`, beat, index, page: keyPage(key), at: line.at, text: line.text, words: sayable(line.text, pauseMark), seconds: kept ? take.seconds : phrases.length ? phrases[phrases.length - 1]!.to : 0, phrases, draft: !settled, loud: line.loud === true || spoken[key]?.loud === true, join: line.join ?? ' ', kept })
   }
   return out
+}
+
+// The times of a line: the start of each phrase and the length of the whole, from its kept take when it has one and from its stand-in until then.
+export function lineTimes(key: string, script: Map<string, StandIn> = standIns()): { starts: number[]; seconds: number; kept: boolean } | null {
+  const line = script.get(key)
+  return line ? { starts: line.phrases.map((p) => p.from), seconds: line.seconds, kept: line.kept } : null
 }
 
 // The seconds from the start of a line to the start of one of its phrases; a phrase counted from the end is negative.

@@ -3,13 +3,13 @@
 //   node tools/lib/sound-batch.mjs plan                      the break length worked out for every line
 //   node tools/lib/sound-batch.mjs lines --which film        one take of every film line that has none
 //   node tools/lib/sound-batch.mjs lines --only ID,ID --retake [--n ID=1.8]
-//   node tools/lib/sound-batch.mjs cues [--only ID,ID] [--retake] [--max 25]
+//   node tools/lib/sound-batch.mjs cues [--only ID,ID] [--retake] [--max 25]      a cue of audio/CHANGE-CUES.json is asked for only when --only names it
 //   --round NAME files the takes under a round of their own (default build); --cap NAME counts the calls under a cap of the credits ledger.
 import fs from 'node:fs'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { args, at, config, readJson, writeJson } from './paths.mjs'
-import { fileTake, modules, closeModules, places, readLedger, promptLine } from '../sound.mjs'
+import { changeCues, fileTake, modules, closeModules, places, readLedger, promptLine } from '../sound.mjs'
 
 const SCRATCH = '/home/user/workspace/wja-scratch/sound/takes'
 export const SPEECH = { speed: 0.7, stability: 0.75 }
@@ -36,6 +36,10 @@ export function allLines(narration) {
   for (const [key, list] of Object.entries(narration.liveOnly)) if (Array.isArray(list)) list.forEach((t, i) => out.push({ which: 'live', name: `live.${key}:${i}`, id: `line.live.${key}.${i}`, text: t }))
   return out
 }
+
+// The cues a run of `cues` goes over: the kit's and the build's own, and a cue of audio/CHANGE-CUES.json only when --only names it,
+// so that no run asks for a change cue nobody named.
+export const batchCues = (all, list, only) => [...all, ...list.filter((s) => only?.includes(s.id) && !all.some((x) => x.id === s.id))]
 
 function credits(argv) {
   const r = spawnSync('node', [at('tools', 'credits.mjs'), ...argv], { encoding: 'utf8', cwd: at() })
@@ -112,7 +116,7 @@ async function main() {
       const prompts = readJson(at('audio', 'PROMPTS.json')).cues
       const max = a.max && a.max !== true ? Number(a.max) : 25
       let made = 0
-      for (const s of M.cues.allCues(c.audio.sfx)) {
+      for (const s of batchCues(M.cues.allCues(c.audio.sfx), changeCues(), only)) {
         const variants = s.variants ?? 1
         for (let v = 0; v < variants; v++) {
           const id = M.cues.variantId(s.id, v, variants)

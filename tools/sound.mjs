@@ -56,16 +56,19 @@ export function decodeFile(file, sampleRate) {
 // What an id on the command line names.
 export function target(a, c, cues) {
   if (a.cue && a.cue !== true) {
-    const spec = cues.allCues(c.audio.sfx).find((s) => s.id === a.cue)
-    if (!spec) throw new Error(`No cue called "${a.cue}" in audio.sfx or among the added cues`)
+    const row = changeCues().find((x) => x.id === a.cue)
+    const spec = cues.allCues(c.audio.sfx).find((s) => s.id === a.cue) ?? row
+    if (!spec) throw new Error(`No cue called "${a.cue}" in audio.sfx, among the added cues or in audio/CHANGE-CUES.json`)
+    const cls = spec === row ? row.class : cues.cueClass[spec.id]
+    const loop = spec === row ? Boolean(row.loop) : cues.loopCues.includes(spec.id)
     const variants = spec.variants ?? 1
     if (a.variant && a.variant !== true && variants > 1) {
       const slot = Number(a.variant) - 1
       if (!(Number.isInteger(slot) && slot >= 0 && slot < variants)) throw new Error(`"${spec.id}" has variants 1 to ${variants}, not ${a.variant}`)
       const key = cues.variantId(spec.id, slot, variants)
-      return { kind: 'cue', id: spec.id, key, seconds: spec.seconds, variants: 1, slot, of: variants, cls: cues.cueClass[spec.id], loop: cues.loopCues.includes(spec.id), max: c.audio.maxTakesPerCue, ids: [key] }
+      return { kind: 'cue', id: spec.id, key, seconds: spec.seconds, variants: 1, slot, of: variants, cls, loop, max: c.audio.maxTakesPerCue, ids: [key] }
     }
-    return { kind: 'cue', id: spec.id, key: spec.id, seconds: spec.seconds, variants, cls: cues.cueClass[spec.id], loop: cues.loopCues.includes(spec.id), max: c.audio.maxTakesPerCue, ids: Array.from({ length: variants }, (_, i) => cues.variantId(spec.id, i, variants)) }
+    return { kind: 'cue', id: spec.id, key: spec.id, seconds: spec.seconds, variants, cls, loop, max: c.audio.maxTakesPerCue, ids: Array.from({ length: variants }, (_, i) => cues.variantId(spec.id, i, variants)) }
   }
   if (a.line && a.line !== true) {
     const cut = String(a.line).lastIndexOf(':')
@@ -202,11 +205,21 @@ export function cueLines(file = at('kit', '03-METHOD.md')) {
     ids.forEach((id, i) => { out[id] = parts.length === ids.length ? parts[i].replace(/^./, (ch) => ch.toUpperCase()) : cells[2] })
   }
   for (const x of extraCues()) out[x.id] = x.heard
+  for (const x of changeCues()) out[x.id] = x.describes
   return out
 }
 
 // Cues the kit's table does not hold: the one an addendum added and the ones the build added inside audio.extraCuesMax.
 export const extraCues = (file = at('audio', 'EXTRA-CUES.json')) => (fs.existsSync(file) ? readJson(file).cues : [])
+// The cues Brandon's change notes ordered, with their lengths and classes: a list of its own, outside audio.sfx and outside audio.extraCuesMax.
+export const changeCues = (file = at('audio', 'CHANGE-CUES.json')) => (fs.existsSync(file) ? readJson(file).cues : [])
+
+// The prompt of a cue as audio/PROMPTS.json holds it, ended with the line every effect prompt ends with: what the batch asks for.
+export function listedPrompt(id, file = at('audio', 'PROMPTS.json')) {
+  const p = fs.existsSync(file) ? readJson(file).cues?.[id] : undefined
+  if (!p?.prompt) throw new Error(`audio/PROMPTS.json has no prompt for "${id}". Give the prompt that was asked with --prompt. Nothing filed, no take used`)
+  return `${p.prompt.replace(/[.\s]+$/, '')}, ${promptLine(id)}`
+}
 
 const readMaybe = (v) => (v && v !== true ? (fs.existsSync(v) ? fs.readFileSync(v, 'utf8').trim() : String(v)) : null)
 const jsonMaybe = (v) => {
@@ -244,7 +257,7 @@ export async function fileTake(a, P, c, M, quiet = false) {
   const measured = M.dsp.measure(sound)
   const record = {
     key: t.key, kind: t.kind, cue: t.kind === 'cue' ? t.id : undefined, take: number, round, file: path.basename(dest), sha256: sha(fs.readFileSync(dest)), filed: a.filed && a.filed !== true ? String(a.filed) : new Date().toISOString(),
-    prompt: t.kind === 'cue' ? readMaybe(a.prompt) : undefined, text: t.kind === 'line' ? t.text : undefined, settings: jsonMaybe(a.settings), askedSeconds: a.asked && a.asked !== true ? Number(a.asked) : null,
+    prompt: t.kind === 'cue' ? readMaybe(a.prompt) ?? (a['listed-prompt'] ? listedPrompt(t.id) : null) : undefined, text: t.kind === 'line' ? t.text : undefined, settings: jsonMaybe(a.settings), askedSeconds: a.asked && a.asked !== true ? Number(a.asked) : null,
     cost: a.cost && a.cost !== true ? String(a.cost) : null, measured, listener: jsonMaybe(a.listener), kept: false, keptAs: [], why: ''
   }
   if (t.kind === 'line') record.line = lineNumbers(t, measured, M.dsp.findPauses(M.dsp.toMono(sound), sound.sampleRate), c, M.copy)
@@ -1129,12 +1142,12 @@ export async function fixtures(a, c, M) {
   }
   const only = a.only && a.only !== true ? String(a.only).split(',') : null
   let made = 0
-  const sfx = c.audio.sfx.filter((s) => !only || only.includes(s.id))
+  const sfx = [...c.audio.sfx.filter((s) => !only || only.includes(s.id)), ...changeCues().filter((s) => only?.includes(s.id))]
   for (const [i, s] of sfx.entries()) {
     const v = s.variants ?? 1
     let expr
     let secs
-    if (M.cues.loopCues.includes(s.id)) {
+    if (M.cues.loopCues.includes(s.id) || s.loop) {
       secs = s.seconds + 6
       expr = `0.2*(random(${i})*2-1)*(0.75+0.25*sin(2*PI*0.37*t))`
     } else if (s.id === 'hold-music') {
@@ -1210,6 +1223,9 @@ export function emittedEvents(M) {
   return { count: found.size, unknown: unknown.map(([name, file]) => `${name} (${file})`) }
 }
 
+// The cues of the change list that are kept: one of its files is among the kept ones. Only these are counted as sounds the build has.
+export const keptChangeCues = (list, kept, cues) => list.filter((s) => Array.from({ length: s.variants ?? 1 }, (_, i) => cues.variantId(s.id, i, s.variants ?? 1)).some((id) => kept.has(id)))
+
 function status(P, c, M) {
   const kept = new Set(keptRecords(P).map((r) => r.id))
   const ledger = readLedger(P)
@@ -1218,14 +1234,22 @@ function status(P, c, M) {
   for (const s of M.cues.allCues(c.audio.sfx)) for (let i = 0; i < (s.variants ?? 1); i++) want.push({ id: M.cues.variantId(s.id, i, s.variants ?? 1), key: s.id })
   for (const [beat, list] of Object.entries(n.film)) list.forEach((_, k) => want.push({ id: M.cues.filmLineId(beat, k), key: M.cues.filmLineId(beat, k) }))
   for (const [key, list] of Object.entries(n.liveOnly)) if (Array.isArray(list)) list.forEach((_, k) => want.push({ id: M.cues.liveLineId(key, k), key: M.cues.liveLineId(key, k) }))
+  const list = changeCues()
+  const listKept = keptChangeCues(list, kept, M.cues)
+  for (const s of listKept) for (let i = 0; i < (s.variants ?? 1); i++) want.push({ id: M.cues.variantId(s.id, i, s.variants ?? 1), key: s.id })
   const missing = want.filter((w) => !kept.has(w.id))
-  console.log(`sound: ${want.length - missing.length} of ${want.length} sounds kept (${M.cues.allCues(c.audio.sfx).length} cues with their variants, and the narrator's lines). ${ledger.takes.length} takes filed`)
+  console.log(`sound: ${want.length - missing.length} of ${want.length} sounds kept (${M.cues.allCues(c.audio.sfx).length} cues with their variants${listKept.length ? `, ${listKept.length} kept cues of the change notes` : ''}, and the narrator's lines). ${ledger.takes.length} takes filed`)
   if (missing.length) console.log(`sound: not kept yet: ${missing.slice(0, 12).map((m) => m.id).join(', ')}${missing.length > 12 ? `, and ${missing.length - 12} more` : ''}`)
+  if (list.length) {
+    const open = list.filter((s) => !listKept.includes(s))
+    const takes = (s) => ledger.takes.filter((t) => t.cue === s.id).length
+    console.log(`sound: audio/CHANGE-CUES.json lists ${list.length} cues the change notes ordered. ${listKept.length} are kept and counted above. ${open.length} are not kept and not counted: their events play what they play today (${open.filter((s) => takes(s) > 0).length} have a take filed, ${open.filter((s) => !s.made).length} are marked as still to be made)`)
+  }
   const e = emittedEvents(M)
   console.log(`sound: the pages emit ${e.count} events by name. ${e.unknown.length ? `With no cue, no stop, no line and not listed as silent in src/audio/cues.ts: ${e.unknown.join(', ')}` : 'Each has a cue, stops one, sets off a line or is listed as silent on purpose'}`)
   const quiet = (M.cues.silentEvents ?? []).filter((name) => !M.cues.cueOfEvent(name))
   if (quiet.length) console.log(`sound: with no sound of its own, on purpose: ${quiet.join(', ')}. The cut list carries each with no cue and the mix lays nothing for it`)
-  console.log('sound: --cue ID --file F files a take, --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --pack-check compares public/audio/ with the committed index, --rekeep-peaks shows what holding the peak does to every kept line and with --write keeps them again from their takes, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
+  console.log('sound: --cue ID --file F files a take (with --listed-prompt its prompt is the one audio/PROMPTS.json holds), --line BEAT:N --file F files a line, --keep keeps one, --pack builds what the site ships, --pack-check compares public/audio/ with the committed index, --rekeep-peaks shows what holding the peak does to every kept line and with --write keeps them again from their takes, --sheet draws the kept sounds, --check runs the sound checks, --fixtures makes stand-ins to test with')
 }
 
 async function main() {

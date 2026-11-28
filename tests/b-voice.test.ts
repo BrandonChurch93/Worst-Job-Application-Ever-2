@@ -171,7 +171,7 @@ describe('the narrator\'s voice: the script read with the sound index', () => {
     expect([...standIns(film, drafts, wps, mark, []).values()].some((l) => l.kept)).toBe(false)
   })
 
-  it('spreads the caption of a take that has no starts over its file by its words, and keeps the line that builds on marks a stand-in', () => {
+  it('spreads the caption of a take that has no starts over its file by its words, and takes the line that builds on marks as kept when a take of its words is in the index', () => {
     const all = standIns(film, drafts, wps, mark, index(TAKES))
     const line = all.get('step1.shredded.0')!
     expect(line.kept).toBe(true)
@@ -179,15 +179,19 @@ describe('the narrator\'s voice: the script read with the sound index', () => {
     expect(line.phrases.map((p) => [near(p.from), near(p.to)])).toEqual([[0, near((13.7 * 3) / 8)], [near((13.7 * 3) / 8), near((13.7 * 6) / 8)], [near((13.7 * 6) / 8), 13.7]])
     const shout = all.get('boss.finish.0')!
     expect(spoken['boss.finish.0']!.steps).toBeDefined()
-    expect(shout.kept).toBe(false)
-    expect(shout.seconds).toBe(6)
+    expect(shout.kept).toBe(true)
+    expect(shout.seconds).toBe(5)
+    expect(shout.phrases.map((p) => p.from)).toEqual([0.1, 1, 2])
+    const none = standIns(film, drafts, wps, mark, index({ ...TAKES, 'boss.finish.0': { seconds: 5, words: 'other words' } })).get('boss.finish.0')!
+    expect(none.kept).toBe(false)
+    expect(none.seconds).toBe(6)
   })
 })
 
 describe('the narrator\'s voice: the engine', () => {
   it('fetches, when sound is allowed, the file of each line that has a take of its words and of no other line', async () => {
     await ready('marketing')
-    const want = Object.keys(TAKES).filter((k) => k !== 'pinball.seal.0' && k !== 'boss.finish.0').map((k) => `${id(k)}.mp3`).sort()
+    const want = Object.keys(TAKES).filter((k) => k !== 'pinball.seal.0').map((k) => `${id(k)}.mp3`).sort()
     expect(fetched.filter((f) => f.endsWith('.mp3')).sort()).toEqual(want)
     expect(fetched).not.toContain(`${id('pinball.seal.0')}.mp3`)
     expect(fetched).not.toContain(`${id('boss.verify.0')}.mp3`)

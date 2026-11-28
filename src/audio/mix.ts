@@ -1,4 +1,5 @@
 // The film's sound, laid out from the events of the film. Pure arithmetic: the same inputs give the same samples.
+import { changeCue, changeLoops, changeStops, cueFor, keptChange } from './change'
 import { allCues, alsoStarts, cueOfEvent, loopCues, pageAfter, pickVariant, quietPage, quietPageCues, stopEvents } from './cues'
 
 export { openingEvents, type OpeningPlan } from './cues'
@@ -28,6 +29,8 @@ export interface MixInput {
   toneFromFrame?: number
   // The lines that are silent stand-ins, by id, with their seconds. Left out, it is every line of the script with no take in the sound index recorded from its words.
   standIns?: Map<string, number>
+  // True to lay every event's own sound even where a kept cue of the change list covers it: a way to compare the two, not what the film ships.
+  ignoreCovers?: boolean
 }
 
 // The lines of the script that are silent stand-ins: id and seconds. A take kept under the id of one of them is not laid.
@@ -50,7 +53,8 @@ export interface MixResult {
   missingCues: string[]
   missingLines: string[]
   mastered: Mastered
-  // The stretches with the careers page on screen, and the events in them that were given no sound because of it, each as name@frame.
+  // The stretches with the careers page on screen, and the events that were given no sound, each as name@frame: those the careers page hushes,
+  // and those a kept cue of the change list covers in the same frame.
   quiet: QuietSpan[]
   hushed: string[]
 }
@@ -94,7 +98,7 @@ export function mixFilm(o: MixInput): MixResult {
   const missingLines: string[] = []
   const at = (frame: number) => frameSample(frame, o.fps, sr)
   const has = (id: string) => o.sounds.has(id)
-  const fadeLen = Math.round(0.03 * sr)
+  const fadeLen = Math.round(LIVE.loopFadeSeconds * sr)
 
   const events = o.events.map((e, i) => ({ ...e, i })).sort((a, b) => a.frame - b.frame || a.i - b.i)
   const counts = new Map<string, number>()
@@ -110,29 +114,38 @@ export function mixFilm(o: MixInput): MixResult {
     return quiet.some((q) => e.frame >= q.from && e.frame < q.to) && !quietPageCues.includes(cue)
   }
   const hushed: string[] = []
+  const loops = (cue: string): boolean => loopCues.includes(cue) || changeLoops.includes(cue)
 
   const stopFrame = (cue: string, from: number): number => {
     let end = Infinity
     for (const e of events) {
       if (e.frame <= from) continue
-      if (stopEvents[e.name]?.includes(cue)) {
+      if (stopEvents[e.name]?.includes(cue) || changeStops(e.name).includes(cue)) {
         end = e.frame
         break
       }
     }
-    if (loopCues.includes(cue)) for (const f of turns) if (f > from && f < end) end = f
+    if (loops(cue)) for (const f of turns) if (f > from && f < end) end = f
     return end
   }
 
-  for (const e of events) for (const cue of [cueOfEvent(e.name), ...(alsoStarts[e.name] ?? [])]) {
+  // A kept cue of the change list that carries another event's sound in its own: that event plays nothing in the frame where the cue plays.
+  const covered = new Set<string>()
+  for (const e of events) {
+    const row = changeCue(cueFor(e.name, e.page, has) ?? '')
+    if (o.ignoreCovers || !row?.covers || !keptChange(row, has) || hush(e, row.id)) continue
+    for (const name of row.covers) covered.add(`${name}@${e.frame}`)
+  }
+
+  for (const e of events) for (const [slot, cue] of [cueFor(e.name, e.page, has), ...(alsoStarts[e.name] ?? [])].entries()) {
     if (!cue || cue === 'room-tone') continue
-    if (hush(e, cue)) {
+    if (hush(e, cue) || (slot === 0 && covered.has(`${e.name}@${e.frame}`))) {
       hushed.push(`${e.name}@${e.frame}`)
       continue
     }
     if (lastFrame.get(cue) === e.frame) continue
     lastFrame.set(cue, e.frame)
-    const spec = allCues(o.sfx).find((s) => s.id === cue)
+    const spec = allCues(o.sfx).find((s) => s.id === cue) ?? changeCue(cue)
     const count = counts.get(cue) ?? 0
     counts.set(cue, count + 1)
     const pick = pickVariant(cue, count, spec?.variants ?? 1, has)
@@ -143,7 +156,7 @@ export function mixFilm(o: MixInput): MixResult {
     const kept = o.sounds.get(pick.id)!
     const start = at(e.frame)
     const gains = panGains(e.x)
-    const loop = loopCues.includes(cue)
+    const loop = loops(cue)
     const stop = stopFrame(cue, e.frame)
     let end = Number.isFinite(stop) ? at(stop) : length
     let dead = false
@@ -172,7 +185,8 @@ export function mixFilm(o: MixInput): MixResult {
         fx[1]![i]! += src[1]![k]! * g
       }
     }
-    placed.push({ kind: 'cue', event: e.name, cue, id: pick.id, frame: e.frame, sample: start, seconds: (until - start) / sr, cents: pick.cents, pan: gains.pan })
+    // cue stays the cue the table of cues gives the event, where it gives one: the checks find an event's sound by it. id is the sound that was laid.
+    placed.push({ kind: 'cue', event: e.name, cue: slot === 0 ? cueOfEvent(e.name) ?? cue : cue, id: pick.id, frame: e.frame, sample: start, seconds: (until - start) / sr, cents: pick.cents, pan: gains.pan })
   }
 
   const spoken: { start: number; end: number }[] = []
