@@ -9,8 +9,9 @@ import type { PageReal, PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 import { verifyCard } from './verify-card'
 import { healthBar } from './health-bar'
-import { bossWeapons } from './boss-weapons'
+import { bossWeapons, weaponsOnce } from './boss-weapons'
 import { lit } from './rise'
+import { warmed } from './warm'
 import { bossBody } from '../../../boss/real/body'
 import { bossTransform } from '../../../boss/real/transform'
 
@@ -72,3 +73,6 @@ const barLeaves = (inner: PartMaker): PartMaker => ({
 export const real: PageReal = { parts: { 'verify-card': verifyCard, 'health-bar': healthBar, 'boss-weapons': bossWeapons, 'boss-body': bossBody, 'boss-transform': bossTransform, 'boss-arena': shaken(arenaPart(viewNow, { beam: () => { const i = finishNow(); return i ? beamLight(finishState(i)) : null }, upright: () => finishNow()?.low ?? 0, shade: () => finishNow()?.low ?? 0, fade: () => finishNow()?.fade ?? null })), 'boss-look1': shaken(bossLook), 'boss-finish': finishPart(finishNow) } }
 real.parts['boss-finish'] = lit(real.parts['boss-finish']!)
 real.parts['boss-arena'] = barLeaves(real.parts['boss-arena']!)
+real.parts['boss-arena'] = warmed(real.parts['boss-arena']!, weaponsOnce)
+real.parts['boss-look1'] = warmed(real.parts['boss-look1']!)
+real.parts['boss-finish'] = warmed(real.parts['boss-finish']!)

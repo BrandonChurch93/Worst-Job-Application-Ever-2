@@ -315,6 +315,12 @@ export const CHANGE = {
   bar: 1.7 // s after the crack at which the health bar's frame starts to drop (`healthbar-drop`); it lands at 2.12 in the arena
 } as const
 
+// The warm-up: while the boss forms, the programs of everything the fight and the finish will show are made on stand-ins with nothing in them.
+export const WARM = {
+  after: 0, // s after the button cracks at which the stand-ins are first drawn
+  frames: 3 // how many times the stand-ins are drawn before they are taken out
+} as const
+
 // Where a visitor may stand to fire, for the hint the bots follow.
 export const STANDS = {
   near: 330, // px from the boss's centre at least
