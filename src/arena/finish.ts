@@ -226,9 +226,9 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
       shadowAt.needsUpdate = true
       shadowTint.needsUpdate = true
       shadows.visible = k > 0
-      if (light) {
-        // The beam itself is another's; this is only the cold light it throws on the arena's own things, at three places along it.
-        for (const u of [0.15, 0.5, 0.85]) light({ x: b.x0 + (b.x1 - b.x0) * u, y: b.y0 + (b.y1 - b.y0) * u, z: 46, colour: [0.72, 0.86, 1], power: 2.4 * b.strength, reach: 900 })
+      if (light && !beam) {
+        // The beam itself is another's. Nobody drives it: three cold lights along it stand in for the light it throws on the arena's own things. Whoever drives it brings its own lights, so there are none of mine then.
+        for (const u of [0.15, 0.5, 0.85]) light({ x: b.x0 + (b.x1 - b.x0) * u, y: b.y0 + (b.y1 - b.y0) * u, z: 46, colour: [0.72, 0.86, 1], power: 1.6 * b.strength, reach: 900 })
       }
     }
   }
