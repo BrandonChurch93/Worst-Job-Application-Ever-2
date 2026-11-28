@@ -4,15 +4,16 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 2902 of 10000. Calls: 185.
+Running total: 3166 of 10000. Calls: 196.
 
-Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 1775. No call is made that would pass it.
+Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 1511. No call is made that would pass it.
 
 ## Rates
 
 - Speech: 0.439 credits a character. MEASURED 2026-11-25T17:44:37Z on call 3: 18 credits for 41 characters, reported by the response; the account's usage moved by 0 across the call.
 - Sound effects: 12 credits a second. MEASURED 2026-11-25T17:54:46Z on call 11: 6 credits for 0.5 s asked, reported by the response; the account's usage moved by 0 across the call.
 - Speech with the model eleven_v3: 0.4384 credits a character. MEASURED 2026-11-27T23:06:02Z on call 181: 32 credits for 73 characters, reported by the response.
+- Speech with the model eleven_v4: 0.4483 credits a character. MEASURED 2026-11-28T00:26:48Z on call 188: 26 credits for 58 characters, reported by the response; the account's usage moved by 0 across the call.
 
 ## Calls
 
@@ -203,3 +204,14 @@ Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,
 | 183 | 2026-11-27T23:07:46Z | POST /v1/text-to-speech | SHOUT A take 2: model eleven_v3, stability 0, the vowels written long, tags screaming, louder, screaming at the top of his lungs | 108 characters, stability 0, model eleven_v3 | HTTP 200, 2.9 s | 48 | reported by the response | 2793 |
 | 184 | 2026-11-27T23:07:49Z | POST /v1/text-to-speech | SHOUT B take 2: model eleven_v3, stability 0, the vowels written long, tags shouting slow and drawn out, then screaming at the top of his lungs | 121 characters, stability 0, model eleven_v3 | HTTP 200, 3.1 s | 53 | reported by the response | 2846 |
 | 185 | 2026-11-27T23:09:06Z | POST /v1/text-to-speech | SHOUT B take 3: model eleven_v3, stability 0, four shorter syllables and the last written much longer, tags shouting drawn out, then screaming at the top of his lungs held long | 128 characters, stability 0, model eleven_v3 | HTTP 200, 2.6 s | 56 | reported by the response | 2902 |
+| 186 | 2026-11-28T00:07:09Z | GET /v1/user/subscription | the account's quota | nothing, a read | plan creator, active: 17512 of 131000 used by every build on the account, reset 2026-12-25T16:56:49Z | 0 | a read costs nothing | 2902 |
+| 187 | 2026-11-28T00:23:17Z | GET /v1/models | which models may speak | nothing, a read | 9 models that speak | 0 | a read costs nothing | 2902 |
+| 188 | 2026-11-28T00:26:48Z | POST /v1/text-to-speech | SHOUT A round 2 take 1, voice Jerry B. Heroic Action Protagonist (change note 003 update 7) | 58 characters, stability 0, model eleven_v4 | HTTP 200, 8.8 s | 26 | reported by the response; the account's usage moved by 0 across the call | 2928 |
+| 189 | 2026-11-28T00:27:10Z | POST /v1/text-to-speech | SHOUT B round 2 take 1, voice Jerry B. Heroic Action Protagonist (change note 003 update 7) | 54 characters, stability 0, model eleven_v4 | HTTP 200, 1.2 s | 24 | reported by the response; the account's usage moved by 0 across the call | 2952 |
+| 190 | 2026-11-28T00:27:15Z | POST /v1/text-to-speech | SHOUT A round 2 take 1, voice Jerry B. Gruff and Gritty Commander (change note 003 update 7) | 58 characters, stability 0, model eleven_v4 | HTTP 200, 6.1 s | 26 | reported by the response; the account's usage moved by 0 across the call | 2978 |
+| 191 | 2026-11-28T00:27:24Z | POST /v1/text-to-speech | SHOUT B round 2 take 1, voice Jerry B. Gruff and Gritty Commander (change note 003 update 7) | 54 characters, stability 0, model eleven_v4 | HTTP 200, 1.4 s | 24 | reported by the response; the account's usage moved by 0 across the call | 3002 |
+| 192 | 2026-11-28T00:29:57Z | POST /v1/text-to-speech | SHOUT A round 2 take 2, voice Jerry B. Gruff and Gritty Commander, speed 0.8 (change note 003 update 7) | 69 characters, stability 0, speed 0.8, model eleven_v4 | HTTP 200, 1.5 s | 30 | reported by the response; the account's usage moved by 0 across the call | 3032 |
+| 193 | 2026-11-28T00:30:02Z | POST /v1/text-to-speech | SHOUT B round 2 take 2, voice Jerry B. Gruff and Gritty Commander, speed 0.8 (change note 003 update 7) | 69 characters, stability 0, speed 0.8, model eleven_v4 | HTTP 200, 1.7 s | 30 | reported by the response; the account's usage moved by 0 across the call | 3062 |
+| 194 | 2026-11-28T00:30:32Z | POST /v1/text-to-speech | SHOUT A round 2 take 3, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7) | 75 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 1.4 s | 33 | reported by the response; the account's usage moved by 0 across the call | 3095 |
+| 195 | 2026-11-28T00:30:38Z | POST /v1/text-to-speech | SHOUT B round 2 take 3, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7) | 86 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 1.5 s | 38 | reported by the response; the account's usage moved by 0 across the call | 3133 |
+| 196 | 2026-11-28T00:31:24Z | POST /v1/text-to-speech | SHOUT A round 2 take 4, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7) | 74 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 1.4 s | 33 | reported by the response; the account's usage moved by 0 across the call | 3166 |
