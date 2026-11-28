@@ -17619,6 +17619,210 @@
       "kept": false,
       "keptAs": [],
       "why": ""
+    },
+    {
+      "key": "pin-frenzy",
+      "kind": "cue",
+      "cue": "pin-frenzy",
+      "take": 2,
+      "round": "change-002-layer",
+      "file": "take-2.wav",
+      "sha256": "0cd7f2c09433f2d02b595afe5499c02f4884fd91f300c9ba2612a214fdfe4c38",
+      "filed": "2026-11-28T12:18:58.380Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): 47 short pieces of the clunk of pin-kick, the click of stop-press, the clack of reel-stop and of pin-target as relays chattering, from 14 to 27 a second; 19 strokes of the pin-bell ding at three pitches in no order, from 4 to 12 a second and louder to the end, the pitch drifting up by a tenth; five thwacks of pin-bumper. All first takes.. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 2.4,
+        "start": 0,
+        "end": 2.34,
+        "peakDb": -1.01,
+        "rmsDb": -15.47,
+        "lufs": -12.31,
+        "truePeakDb": -0.82,
+        "low": 0.015,
+        "mid": 0.283,
+        "high": 0.702,
+        "tailDb": -16.43,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 2.298,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A rapid series of mechanical clicking sounds accompanied by a fast, ascending sequence of bright chimes. / A rapid burst of mechanical clicking accompanied by a fast, ascending series of bell chimes. / A rapid mechanical clicking accompanied by a fast, ascending series of bell chimes.",
+        "madeOf": "Electronic chimes, mechanical relays, synthesized arcade sounds / Mechanical relays, metal bells, and electromechanical pinball machine parts. / Electromechanical relays and metal bells.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "1 yes, 2 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features fast clicking that perfectly matches chattering relays, paired with a quick, rising run of chimes indicative of a pinball machine scoring frenzy.",
+          "The sound consists of fast mechanical chattering and a quick, rising sequence of ringing bells, which exactly matches the description of a pinball machine frenzy.",
+          "The audio features fast mechanical clicking that sounds like relays, paired with a quick, ascending sequence of bell rings, perfectly matching a pinball machine frenzy."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "pin-frenzy"
+      ],
+      "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as relays chattering with a fast rising run of bell chimes); the first take fit 0 of 3 (heard as an alarm bell). A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "arena-split",
+      "kind": "cue",
+      "cue": "arena-split",
+      "take": 2,
+      "round": "change-002-layer",
+      "file": "take-2.wav",
+      "sha256": "2d71fac7de75dad8f766d9a928aa868c6f63abad05e03cb151545b8cdd7d469b",
+      "filed": "2026-11-28T12:19:03.478Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): arena-split take 1 (the snap); the crack of button-burst take 2 raised by a third 4 dB under; the deep part of slab-slam take 2 under it; fourteen small snaps of keys-break takes 1 and 2 running on for 0.4 s and thinning, as the crack running along the line; the ping of shield-glance lowered and the flap of folder-open far under as glass and paper; overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.574,
+        "peakDb": -1.01,
+        "rmsDb": -15.73,
+        "lufs": -17,
+        "truePeakDb": -0.99,
+        "low": 0.528,
+        "mid": 0.271,
+        "high": 0.201,
+        "tailDb": -31.84,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.54,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A sharp, dry snapping or cracking sound. / A very quick, sharp, dry cracking or snapping noise. / A sharp, dry cracking or snapping sound.",
+        "madeOf": "Glass, thick paper, or thin wood. / Thick paper, glass, or a brief burst of static. / Thick paper, glass, or thin wood.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The very brief, high-frequency snap perfectly captures the acoustic profile of a sharp, dry split.",
+          "The very short, harsh, and dry snapping noise perfectly matches the description of a sudden split or crack in stiff materials like glass and thick paper.",
+          "The audio features a sudden, sharp, and dry snap that strongly resembles a stiff material like thick paper or glass cracking in a single motion."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "arena-split"
+      ],
+      "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a sharp, dry crack); the first take fit 1 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "vacuum-gulp",
+      "kind": "cue",
+      "cue": "vacuum-gulp",
+      "take": 2,
+      "round": "change-002-layer",
+      "file": "take-2.wav",
+      "sha256": "508d358fb8d2abc8f1129abadd62a33e3a4daf3fa3cfd732e8fd80504f5f6f2f",
+      "filed": "2026-11-28T12:19:08.278Z",
+      "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): a fifth of a second of vacuum-roar take 1, lowered and with its hollow band lifted, at full from its start (a hit starts at its contact) and swelling a little to a sudden stop; the pop of vacuum-slip played backwards under it; then the clunk of pin-kick lowered and dulled and the thunk of row-close lowered and dulled as the knock inside. The takes named are filed under their own cues.",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.5,
+        "start": 0,
+        "end": 0.418,
+        "peakDb": -1.01,
+        "rmsDb": -14.59,
+        "lufs": -15.24,
+        "truePeakDb": -1,
+        "low": 0.435,
+        "mid": 0.547,
+        "high": 0.018,
+        "tailDb": -39.57,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.378,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A short, synthesized electronic zap or laser sound. / A quick, hollow intake of air is followed by a muffled, solid thud. / A quick, hollow suction noise ending with a muffled thud.",
+        "madeOf": "Synthesizer or electronic sound generator. / Air suction and a solid object impacting a hollow tube. / Air suction and a solid object impacting inside a hollow tube.",
+        "events": "1 / 2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 1 no",
+        "basis": [
+          "The audio is a high-pitched synthetic laser or zap effect, which completely lacks the airy suction of a vacuum or the physical metallic impact of a steel ball.",
+          "The audio features a sharp, hollow suction noise ending with a dull impact, which exactly matches the described gulp of air and internal knock.",
+          "The brief burst of hollow air suction followed immediately by a dull, enclosed clunk perfectly matches the description of a vacuum swallowing a heavy ball."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "vacuum-gulp"
+      ],
+      "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 2 of 3, on the sound as the site plays it after the chain (two hearings: a hollow intake of air followed by a muffled thud; one: a zap); the first take fit 1 of 3 (heard as a liquid bloop). A model cannot hear as a person does; Brandon's ear decides on the live site."
     }
   ]
 }

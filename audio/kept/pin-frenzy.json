@@ -1,0 +1,117 @@
+{
+  "id": "pin-frenzy",
+  "kind": "cue",
+  "cue": "pin-frenzy",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A pinball machine going into a frenzy: relays chattering fast and bells ringing in a quick rising run",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): 47 short pieces of the clunk of pin-kick, the click of stop-press, the clack of reel-stop and of pin-target as relays chattering, from 14 to 27 a second; 19 strokes of the pin-bell ding at three pitches in no order, from 4 to 12 a second and louder to the end, the pitch drifting up by a tenth; five thwacks of pin-bumper. All first takes.. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 2,
+    "round": "change-002-layer",
+    "file": "take-2.wav",
+    "sha256": "0cd7f2c09433f2d02b595afe5499c02f4884fd91f300c9ba2612a214fdfe4c38",
+    "filed": "2026-11-28T12:18:58.380Z",
+    "measured": {
+      "seconds": 2.4,
+      "start": 0,
+      "end": 2.34,
+      "peakDb": -1.01,
+      "rmsDb": -15.47,
+      "lufs": -12.31,
+      "truePeakDb": -0.82,
+      "low": 0.015,
+      "mid": 0.283,
+      "high": 0.702,
+      "tailDb": -16.43,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 2.298,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 2.34,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -9.59,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 2.34,
+    "start": 0,
+    "end": 2.31,
+    "peakDb": -10,
+    "rmsDb": -25.01,
+    "lufs": -21.89,
+    "truePeakDb": -9.93,
+    "low": 0.014,
+    "mid": 0.282,
+    "high": 0.703,
+    "tailDb": -15.49,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 2.278,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A rapid series of mechanical clicking sounds accompanied by a fast, ascending sequence of bright chimes. / A rapid burst of mechanical clicking accompanied by a fast, ascending series of bell chimes. / A rapid mechanical clicking accompanied by a fast, ascending series of bell chimes.",
+    "madeOf": "Electronic chimes, mechanical relays, synthesized arcade sounds / Mechanical relays, metal bells, and electromechanical pinball machine parts. / Electromechanical relays and metal bells.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "1 yes, 2 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio features fast clicking that perfectly matches chattering relays, paired with a quick, rising run of chimes indicative of a pinball machine scoring frenzy.",
+      "The sound consists of fast mechanical chattering and a quick, rising sequence of ringing bells, which exactly matches the description of a pinball machine frenzy.",
+      "The audio features fast mechanical clicking that sounds like relays, paired with a quick, ascending sequence of bell rings, perfectly matching a pinball machine frenzy."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as relays chattering with a fast rising run of bell chimes); the first take fit 0 of 3 (heard as an alarm bell). A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "pin-frenzy.wav",
+  "seconds": 2.34,
+  "sha256": "c2d7e274122b87a6dee84f0c3d2c8bd056e3b7afe7ec9ecf53beac50a35efd4f"
+}

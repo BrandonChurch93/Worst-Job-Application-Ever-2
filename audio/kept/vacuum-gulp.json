@@ -1,0 +1,117 @@
+{
+  "id": "vacuum-gulp",
+  "kind": "cue",
+  "cue": "vacuum-gulp",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A vacuum hose swallowing a steel ball: one hollow gulp of air and a dull knock inside",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): a fifth of a second of vacuum-roar take 1, lowered and with its hollow band lifted, at full from its start (a hit starts at its contact) and swelling a little to a sudden stop; the pop of vacuum-slip played backwards under it; then the clunk of pin-kick lowered and dulled and the thunk of row-close lowered and dulled as the knock inside. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 2,
+    "round": "change-002-layer",
+    "file": "take-2.wav",
+    "sha256": "508d358fb8d2abc8f1129abadd62a33e3a4daf3fa3cfd732e8fd80504f5f6f2f",
+    "filed": "2026-11-28T12:19:08.278Z",
+    "measured": {
+      "seconds": 0.5,
+      "start": 0,
+      "end": 0.418,
+      "peakDb": -1.01,
+      "rmsDb": -14.59,
+      "lufs": -15.24,
+      "truePeakDb": -1,
+      "low": 0.435,
+      "mid": 0.547,
+      "high": 0.018,
+      "tailDb": -39.57,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.378,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.002,
+    "trimEnd": 0.418,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 103.95,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -3.66,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.416,
+    "start": 0,
+    "end": 0.392,
+    "peakDb": -5,
+    "rmsDb": -18.17,
+    "lufs": -18.45,
+    "truePeakDb": -4.96,
+    "low": 0.42,
+    "mid": 0.562,
+    "high": 0.019,
+    "tailDb": -30.53,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.374,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A short, synthesized electronic zap or laser sound. / A quick, hollow intake of air is followed by a muffled, solid thud. / A quick, hollow suction noise ending with a muffled thud.",
+    "madeOf": "Synthesizer or electronic sound generator. / Air suction and a solid object impacting a hollow tube. / Air suction and a solid object impacting inside a hollow tube.",
+    "events": "1 / 2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 1 no",
+    "basis": [
+      "The audio is a high-pitched synthetic laser or zap effect, which completely lacks the airy suction of a vacuum or the physical metallic impact of a steel ball.",
+      "The audio features a sharp, hollow suction noise ending with a dull impact, which exactly matches the described gulp of air and internal knock.",
+      "The brief burst of hollow air suction followed immediately by a dull, enclosed clunk perfectly matches the description of a vacuum swallowing a heavy ball."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 2 of 3, on the sound as the site plays it after the chain (two hearings: a hollow intake of air followed by a muffled thud; one: a zap); the first take fit 1 of 3 (heard as a liquid bloop). A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "vacuum-gulp.wav",
+  "seconds": 0.4158,
+  "sha256": "9c634d91f4fdf67286af782450dd4eb9dcd29578163a6cebd586255ab81d6390"
+}

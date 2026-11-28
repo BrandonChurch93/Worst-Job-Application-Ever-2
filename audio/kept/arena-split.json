@@ -1,0 +1,117 @@
+{
+  "id": "arena-split",
+  "kind": "cue",
+  "cue": "arena-split",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A large sheet of thick paper and glass cracking along one straight line: a sharp dry split",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): arena-split take 1 (the snap); the crack of button-burst take 2 raised by a third 4 dB under; the deep part of slab-slam take 2 under it; fourteen small snaps of keys-break takes 1 and 2 running on for 0.4 s and thinning, as the crack running along the line; the ping of shield-glance lowered and the flap of folder-open far under as glass and paper; overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 2,
+    "round": "change-002-layer",
+    "file": "take-2.wav",
+    "sha256": "2d71fac7de75dad8f766d9a928aa868c6f63abad05e03cb151545b8cdd7d469b",
+    "filed": "2026-11-28T12:19:03.478Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.574,
+      "peakDb": -1.01,
+      "rmsDb": -15.73,
+      "lufs": -17,
+      "truePeakDb": -0.99,
+      "low": 0.528,
+      "mid": 0.271,
+      "high": 0.201,
+      "tailDb": -31.84,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.54,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.574,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -4.98,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.574,
+    "start": 0,
+    "end": 0.544,
+    "peakDb": -5,
+    "rmsDb": -22.17,
+    "lufs": -20.76,
+    "truePeakDb": -4.94,
+    "low": 0.31,
+    "mid": 0.394,
+    "high": 0.296,
+    "tailDb": -36.14,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.502,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A sharp, dry snapping or cracking sound. / A very quick, sharp, dry cracking or snapping noise. / A sharp, dry cracking or snapping sound.",
+    "madeOf": "Glass, thick paper, or thin wood. / Thick paper, glass, or a brief burst of static. / Thick paper, glass, or thin wood.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The very brief, high-frequency snap perfectly captures the acoustic profile of a sharp, dry split.",
+      "The very short, harsh, and dry snapping noise perfectly matches the description of a sudden split or crack in stiff materials like glass and thick paper.",
+      "The audio features a sudden, sharp, and dry snap that strongly resembles a stiff material like thick paper or glass cracking in a single motion."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a sharp, dry crack); the first take fit 1 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "arena-split.wav",
+  "seconds": 0.574,
+  "sha256": "3d145352d3bfe694b16d018f308ded3f6a1b8bd64885a8d80c7e4f839457f708"
+}

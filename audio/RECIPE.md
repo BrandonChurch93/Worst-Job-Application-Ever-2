@@ -1641,13 +1641,14 @@ Prompt: A short spill of metal coins into a steel tray, bright and quick, light 
 
 ### pin-frenzy
 
-Takes used: 1 of 3 in round change-002.
+Takes used: 1 of 3 in round change-002, 1 of 3 in round change-002-layer.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | change-002 | 2026-11-28T11:38:26.712Z | 2.4 s | -4.4 dB | -17.24 LUFS | 1 | 26 | no |  |
+| 2 | change-002-layer | 2026-11-28T12:18:58.380Z | 2.4 s | -1.01 dB | -12.31 LUFS | 1 | 0 | yes, as pin-frenzy | A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as relays chattering with a fast rising run of bell chimes); the first take fit 0 of 3 (heard as an alarm bell). A model cannot hear as a person does; Brandon's ear decides on the live site. |
 
-Prompt: A pinball machine going into a frenzy, relays chattering fast and mechanical bells ringing in a quick rising run, bright steel and brass, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): 47 short pieces of the clunk of pin-kick, the click of stop-press, the clack of reel-stop and of pin-target as relays chattering, from 14 to 27 a second; 19 strokes of the pin-bell ding at three pitches in no order, from 4 to 12 a second and louder to the end, the pitch drifting up by a tenth; five thwacks of pin-bumper. All first takes.. The takes named are filed under their own cues.
 
 ### vacuum-roar
 
@@ -1661,13 +1662,14 @@ Prompt: A large shop vacuum running at full power, a steady roar of air through 
 
 ### vacuum-gulp
 
-Takes used: 1 of 3 in round change-002.
+Takes used: 1 of 3 in round change-002, 1 of 3 in round change-002-layer.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | change-002 | 2026-11-28T11:38:33.215Z | 0.48 s | -15.54 dB | -28.56 LUFS | 2 | 6 | no |  |
+| 2 | change-002-layer | 2026-11-28T12:19:08.278Z | 0.5 s | -1.01 dB | -15.24 LUFS | 1 | 0 | yes, as vacuum-gulp | A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 2 of 3, on the sound as the site plays it after the chain (two hearings: a hollow intake of air followed by a muffled thud; one: a zap); the first take fit 1 of 3 (heard as a liquid bloop). A model cannot hear as a person does; Brandon's ear decides on the live site. |
 
-Prompt: A vacuum hose swallowing a steel ball, one hollow gulp of air in a plastic tube and a dull knock inside, medium weight, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): a fifth of a second of vacuum-roar take 1, lowered and with its hollow band lifted, at full from its start (a hit starts at its contact) and swelling a little to a sudden stop; the pop of vacuum-slip played backwards under it; then the clunk of pin-kick lowered and dulled and the thunk of row-close lowered and dulled as the knock inside. The takes named are filed under their own cues.
 
 ### vacuum-slip
 
@@ -1721,13 +1723,14 @@ Prompt: One small dart glancing off a curved glass shield, a tiny bright ping th
 
 ### arena-split
 
-Takes used: 1 of 3 in round change-002.
+Takes used: 1 of 3 in round change-002, 1 of 3 in round change-002-layer.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | change-002 | 2026-11-28T11:38:51.939Z | 0.6 s | -0.23 dB | -17.37 LUFS | 1 | 7 | no |  |
+| 2 | change-002-layer | 2026-11-28T12:19:03.478Z | 0.6 s | -1.01 dB | -17 LUFS | 1 | 0 | yes, as arena-split | A layer made for free from paid first takes. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a sharp, dry crack); the first take fit 1 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site. |
 
-Prompt: A large sheet of thick paper and glass cracking along one straight line, a sharp dry split, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+Prompt: Made for free from paid takes, with no call to the sound service (layer L1 of the free layering round of November 28 on the ten first takes that did not hold): arena-split take 1 (the snap); the crack of button-burst take 2 raised by a third 4 dB under; the deep part of slab-slam take 2 under it; fourteen small snaps of keys-break takes 1 and 2 running on for 0.4 s and thinning, as the crack running along the line; the ping of shield-glance lowered and the flap of folder-open far under as glass and paper; overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.
 
 ### arena-rise
 

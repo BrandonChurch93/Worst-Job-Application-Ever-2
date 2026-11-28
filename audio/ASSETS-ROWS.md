@@ -4,6 +4,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 
 | File | What it is | How it was made | Record |
 | --- | --- | --- | --- |
+| `audio/kept/arena-split.wav` | Sound effect `arena-split` | Generated with the sound tool, take 2 (change-002-layer) | `audio/kept/arena-split.json` |
 | `audio/kept/arms-out.wav` | Sound effect `arms-out` | Generated with the sound tool, take 1 (build) | `audio/kept/arms-out.json` |
 | `audio/kept/ball-drop.wav` | Sound effect `ball-drop` | Generated with the sound tool, take 1 (build) | `audio/kept/ball-drop.json` |
 | `audio/kept/ball-open.wav` | Sound effect `ball-open` | Generated with the sound tool, take 1 (build) | `audio/kept/ball-open.json` |
@@ -92,6 +93,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/pin-bell.wav` | Sound effect `pin-bell` | Generated with the sound tool, take 1 (change-002) | `audio/kept/pin-bell.json` |
 | `audio/kept/pin-bumper.wav` | Sound effect `pin-bumper` | Generated with the sound tool, take 1 (change-002) | `audio/kept/pin-bumper.json` |
 | `audio/kept/pin-coins.wav` | Sound effect `pin-coins` | Generated with the sound tool, take 1 (change-002) | `audio/kept/pin-coins.json` |
+| `audio/kept/pin-frenzy.wav` | Sound effect `pin-frenzy` | Generated with the sound tool, take 2 (change-002-layer) | `audio/kept/pin-frenzy.json` |
 | `audio/kept/pin-kick.wav` | Sound effect `pin-kick` | Generated with the sound tool, take 1 (change-002) | `audio/kept/pin-kick.json` |
 | `audio/kept/pin-target.wav` | Sound effect `pin-target` | Generated with the sound tool, take 1 (change-002) | `audio/kept/pin-target.json` |
 | `audio/kept/plunger.wav` | Sound effect `plunger` | Generated with the sound tool, take 1 (build) | `audio/kept/plunger.json` |
@@ -140,6 +142,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/ui-send.wav` | Sound effect `ui-send` | Generated with the sound tool, take 1 (build) | `audio/kept/ui-send.json` |
 | `audio/kept/ui-tick.wav` | Sound effect `ui-tick` | Generated with the sound tool, take 1 (build) | `audio/kept/ui-tick.json` |
 | `audio/kept/unfold.wav` | Sound effect `unfold` | Generated with the sound tool, take 1 (build) | `audio/kept/unfold.json` |
+| `audio/kept/vacuum-gulp.wav` | Sound effect `vacuum-gulp` | Generated with the sound tool, take 2 (change-002-layer) | `audio/kept/vacuum-gulp.json` |
 | `audio/kept/vacuum-roar.wav` | Sound effect `vacuum-roar` | Generated with the sound tool, take 1 (change-002) | `audio/kept/vacuum-roar.json` |
 | `audio/kept/vacuum-slip.wav` | Sound effect `vacuum-slip` | Generated with the sound tool, take 1 (change-002) | `audio/kept/vacuum-slip.json` |
 | `audio/kept/volume-sign.wav` | Sound effect `volume-sign` | Generated with the sound tool, take 1 (change-002) | `audio/kept/volume-sign.json` |
@@ -148,7 +151,7 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 
 | File | What it is | How it was made | Record |
 | --- | --- | --- | --- |
-| `public/audio/sfx.bin` | The 123 short sounds of the site in one file | Made by `npm run sound -- --pack` from the kept sounds of `audio/kept/` named in the index | `public/audio/index.json` |
+| `public/audio/sfx.bin` | The 126 short sounds of the site in one file | Made by `npm run sound -- --pack` from the kept sounds of `audio/kept/` named in the index | `public/audio/index.json` |
 | `public/audio/boss-loop.flac` | The site's copy of `boss-loop` | Made by `npm run sound -- --pack` from `audio/kept/boss-loop.wav` | `audio/kept/boss-loop.json` |
 | `public/audio/room-tone.flac` | The site's copy of `room-tone` | Made by `npm run sound -- --pack` from `audio/kept/room-tone.wav` | `audio/kept/room-tone.json` |
 | `public/audio/shredder.flac` | The site's copy of `shredder` | Made by `npm run sound -- --pack` from `audio/kept/shredder.wav` | `audio/kept/shredder.json` |
