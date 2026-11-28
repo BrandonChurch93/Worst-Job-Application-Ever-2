@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { args, at, config, readJson, writeJson } from './lib/paths.mjs'
 import { logic } from './lib/logic.mjs'
-import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, places, readLedger, refuseStale, sha, siteBuild, siteInBrowser, target } from './sound.mjs'
+import { engineInBrowser, keptRecords, keptSounds, listenerFindings, modulesFrom, phraseStarts, places, readLedger, refuseStale, sha, siteBuild, siteInBrowser, target } from './sound.mjs'
 import { keptSum, mixBuild, proveCutList } from './lib/cut-build.mjs'
 
 const rel = (p) => path.relative(at(), p)
@@ -99,10 +99,31 @@ export async function filmPlanA(c, M) {
 // The kept narrator takes as the script reads them: id, seconds and the words each was recorded from.
 export const keptTakes = (records) => records.filter((r) => r.kind !== 'cue').map((r) => ({ id: r.id, seconds: r.seconds, words: r.words }))
 
-export async function makeMix(P, c, M, out, name, given = null) {
+// Another form of a kept line, for a preview: a wav named by the line's id in the folder given with --alt (out/work/audio/alt when none is named).
+// It is laid in place of the kept take in that mix alone. The kept take, its record, the index of the site and the cut list are not written.
+export const ALT_DIR = ['out', 'work', 'audio', 'alt']
+export function altTakes(dir, records, sounds, M) {
+  const out = []
+  if (!fs.existsSync(dir)) return out
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.wav')).sort()) {
+    const id = f.slice(0, -'.wav'.length)
+    const r = records.find((x) => x.id === id && x.kind !== 'cue')
+    const kept = sounds.get(id)
+    if (!r || !kept) throw new Error(`the mix is refused: ${f} is another form of ${id}, and no take of that line is kept with its file`)
+    const bytes = fs.readFileSync(path.join(dir, f))
+    const sound = M.dsp.decodeWav(bytes)
+    if (sound.sampleRate !== kept.sampleRate) throw new Error(`the mix is refused: ${f} is at ${sound.sampleRate} Hz and the kept take of ${id} is at ${kept.sampleRate} Hz`)
+    sounds.set(id, sound)
+    out.push({ id, file: f, sha256: sha(bytes), seconds: Number((sound.channels[0].length / sound.sampleRate).toFixed(3)), keptSeconds: r.seconds, starts: phraseStarts(M.dsp.toMono(sound), sound.sampleRate, r.words ?? '', M).starts })
+  }
+  return out
+}
+
+export async function makeMix(P, c, M, out, name, given = null, altDir = null) {
   const plan = given ?? (await filmPlan(c, M))
   const { sounds, absent, stale } = keptSounds(P, M)
   refuseStale(stale, 'the mix')
+  const alt = altDir ? altTakes(altDir, keptRecords(P), sounds, M) : null
   const result = M.mix.mixFilm({
     sampleRate: c.audio.sampleRate, fps: plan.fps, seconds: plan.seconds, events: plan.events, lines: plan.lines, sounds, sfx: c.audio.sfx,
     duckDb: c.audio.duckDb, holdMusicSeconds: c.audio.holdMusicSeconds, targetLufs: c.audio.filmLoudnessLufs, truePeakDb: c.audio.truePeakDb, toneFromFrame: plan.toneFromFrame ?? 0,
@@ -113,7 +134,7 @@ export async function makeMix(P, c, M, out, name, given = null) {
   fs.writeFileSync(out, bytes)
   const fix = (v) => (Number.isFinite(v) ? Number(v.toFixed(2)) : null)
   const record = {
-    mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), cutSha256: plan.cutSha256 ?? null, keptSha256: keptSum(keptRecords(P).filter((r) => sounds.has(r.id))), build: mixBuild(), ...(plan.openingFrames ? { openingFrames: plan.openingFrames, openingEvents: plan.openingEvents } : {}), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
+    mix: name, file: path.basename(out), source: plan.source, planSha256: planSha(plan), cutSha256: plan.cutSha256 ?? null, keptSha256: keptSum(keptRecords(P).filter((r) => sounds.has(r.id))), build: mixBuild(), ...(alt ? { alt } : {}), ...(plan.openingFrames ? { openingFrames: plan.openingFrames, openingEvents: plan.openingEvents } : {}), seconds: plan.seconds, frames: Math.round(plan.seconds * plan.fps), fps: plan.fps, sampleRate: c.audio.sampleRate, bits: M.levels.MIX.bitsPerSample,
     samples: result.sound.channels[0].length, silent: result.mastered.silent, lufs: fix(result.mastered.lufs), truePeakDb: fix(result.mastered.truePeakDb), gainDb: fix(result.mastered.gainDb),
     targetLufs: c.audio.filmLoudnessLufs, ceilingDb: c.audio.truePeakDb, duckDb: c.audio.duckDb, bytes: bytes.length, sha256: sha(bytes),
     events: plan.events.length, mappedEvents: plan.events.filter((e) => M.cues.cueOfEvent(e.name)).length, cuesLaid: result.placed.filter((p) => p.kind === 'cue').length, linesLaid: result.placed.filter((p) => p.kind === 'line').length, standInsLaid: result.placed.filter((p) => p.kind === 'stand-in').length, draftsLaid: result.placed.filter((p) => p.kind === 'stand-in' && draftIds(M).includes(p.id)).map((p) => p.id),
@@ -421,6 +442,7 @@ async function main() {
       const out = a.out && a.out !== true ? path.resolve(a.out) : at('out', 'work', 'audio', P.scratch ? 'mix-fixtures.png' : 'mix.png')
       console.log(`mix: drawn on ${rel(await picture(c, M, wav, out))}`)
     } else if (a.final) {
+      if (a.alt) throw new Error('another form of a line is for a preview: give --alt without --final')
       const out = a.out && a.out !== true ? path.resolve(a.out) : path.join(P.final, 'film-b.wav')
       const r = await makeMix(P, c, M, out, 'film-b')
       console.log(lastLine(r, out))
@@ -435,8 +457,10 @@ async function main() {
         }
       }
     } else {
-      const out = a.out && a.out !== true ? path.resolve(a.out) : path.join(P.mix, 'review.wav')
-      const r = await makeMix(P, c, M, out, 'review', a.until !== undefined && a.until !== true ? planUntil(await filmPlan(c, M), Number(a.until)) : null)
+      const altDir = a.alt ? (a.alt !== true ? path.resolve(a.alt) : at(...ALT_DIR)) : null
+      const out = a.out && a.out !== true ? path.resolve(a.out) : path.join(P.mix, altDir ? 'review-alt.wav' : 'review.wav')
+      const r = await makeMix(P, c, M, out, altDir ? 'review-alt' : 'review', a.until !== undefined && a.until !== true ? planUntil(await filmPlan(c, M), Number(a.until)) : null, altDir)
+      if (altDir) console.log(r.alt.length ? `mix: a preview, not the film's mix: ${r.alt.map((x) => `${x.id} from ${x.file}, ${x.seconds} s in place of the kept ${x.keptSeconds} s${x.starts ? `, phrases at ${x.starts.join(', ')}` : ', its pauses are not the marks of the line'}`).join('; ')}` : `mix: no other form of a line is in ${rel(altDir)}`)
       console.log(`mix: ${r.events} events of the film from ${r.source}, ${r.mappedEvents} of them with a cue`)
       if (r.missingCues.length && !r.silent) console.log(`mix: no kept sound for: ${r.missingCues.join(', ')}`)
       if (r.missingLines.length && !r.silent) console.log(`mix: no kept line for: ${r.missingLines.join(', ')}`)

@@ -3,7 +3,7 @@ import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { chain, encodeWav, decodeWav, loudness, peak, truePeakDb, type Sound } from '../src/audio/dsp'
-import { behindOpening, frameSample, mixFilm, openingEvents, panGains, type MixInput } from '../src/audio/mix'
+import { behindOpening, frameSample, mixFilm, openingEvents, panGains, scriptStandIns, type MixInput } from '../src/audio/mix'
 import { openingFrames, openingTimes, typedAt } from '../src/film/opening'
 import { DUCK, LIVE, MIX, db, toDb } from '../src/audio/levels'
 import { cueClass, filmLineId } from '../src/audio/cues'
@@ -213,7 +213,7 @@ describe('the film itself', () => {
     const lines = timedLines(config, narration).map((l) => ({ id: filmLineId(l.beat, l.index), beat: l.beat, frame: Math.round(l.start * FPS) }))
     expect(lines.length).toBeGreaterThan(0)
     expect(new Set(lines.map((l) => l.id)).size).toBe(lines.length)
-    const r = mixFilm({ sampleRate: 8000, fps: FPS, seconds, events, lines, sounds: new Map(), sfx: cfg.audio.sfx, duckDb: cfg.audio.duckDb, holdMusicSeconds: cfg.audio.holdMusicSeconds, targetLufs: cfg.audio.filmLoudnessLufs, truePeakDb: cfg.audio.truePeakDb })
+    const r = mixFilm({ sampleRate: 8000, fps: FPS, seconds, events, lines, sounds: new Map(), sfx: cfg.audio.sfx, duckDb: cfg.audio.duckDb, holdMusicSeconds: cfg.audio.holdMusicSeconds, targetLufs: cfg.audio.filmLoudnessLufs, truePeakDb: cfg.audio.truePeakDb, standIns: scriptStandIns([]) })
     expect(r.sound.channels[0]!.length).toBe(seconds * 8000)
     expect(r.mastered.silent).toBe(true)
     expect(r.missingLines).toEqual([])

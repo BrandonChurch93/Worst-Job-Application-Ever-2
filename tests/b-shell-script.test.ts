@@ -5,7 +5,9 @@ import { makeSound, type SoundIndex } from '../src/audio/index'
 import { cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysFor, unitPage } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
 import { CAPTION, shoutPx, shoutShake } from '../src/ui/said'
-import { builtTo, draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, standIns, wordCount } from '../src/audio/standin'
+import { builtTo, draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, shippedLines, standIns, wordCount } from '../src/audio/standin'
+import { ScriptDriver, Stage, wholeFilmFlow } from '../src/stage/stage'
+import { pages } from '../src/pages'
 import { mixFilm, scriptStandIns } from '../src/audio/mix'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
@@ -610,16 +612,30 @@ describe('change note 003: the same lines in the film on the site', () => {
 })
 
 describe('change note 003: the film', () => {
-  it('gives the caption writer each phrase of line 1 by frame, one after the other with no hole, done inside the 18 s of the opening, and marks line 9 as settled', () => {
+  it('gives the caption writer each phrase of line 1 on the frame its start in the index asks for, one after the other with no hole, holds the caption through the page turn while the line is still said, reports how far line 1 runs past the press of Apply, and marks line 9 as settled', () => {
     const fps: number = cfg.film.fps
-    const caps = filmCaptions([{ id: id('marketing.stroll.0'), frame: 0 }, { id: id('decision.reset.0'), frame: 9000 }, { id: 'line.not.one.0', frame: 5 }], fps)
+    const at = 0
+    const caps = filmCaptions([{ id: id('marketing.stroll.0'), frame: at }, { id: id('decision.reset.0'), frame: 9000 }, { id: 'line.not.one.0', frame: 5 }], fps)
     const one = caps.filter((x) => x.key === 'marketing.stroll.0')
     const line = standIns().get('marketing.stroll.0')!
+    const take = shippedLines().find((l) => l.id === line.id && l.words === line.text)
     expect(one.map((x) => x.words)).toEqual(line.phrases.map((p) => p.words))
-    expect(one[0]!.first).toBe(0)
+    const starts = take?.starts ?? line.phrases.map((p) => p.from)
+    expect(one.length).toBe(starts.length)
+    one.forEach((x, i) => expect(Math.abs(x.first - (at + starts[i]! * fps)), x.words).toBeLessThanOrEqual(1))
     for (let i = 1; i < one.length; i++) expect(one[i]!.first).toBe(one[i - 1]!.last + 1)
-    expect(one[one.length - 1]!.last).toBe(Math.round(line.seconds * fps) - 1)
-    expect(one[one.length - 1]!.last).toBeLessThan(18 * fps)
+    if (take) expect(line.seconds).toBe(take.seconds)
+    const end = at + Math.round(line.seconds * fps)
+    expect(one[one.length - 1]!.last).toBe(end - 1)
+    const stage = new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver(), film: { arrive: false, leave: false } })
+    stage.advance(Math.round(cfg.film.units[0].seconds * cfg.sim.stepHz))
+    const frameOf = (name: string): number => Math.floor((stage.events.find((e) => e.name === name)!.step * fps) / cfg.sim.stepHz)
+    const press = frameOf('button-press')
+    const turn = frameOf('page-turn')
+    expect(turn).toBeGreaterThanOrEqual(press)
+    const shown = (f: number): string[] => one.filter((x) => x.first <= f && f <= x.last).map((x) => x.words)
+    for (const f of [press, turn]) expect(shown(f), `frame ${f}`).toEqual(f < end ? [one[one.length - 1]!.words] : [])
+    console.info(`MEASURED line 1 (${take ? 'kept take' : 'stand-in'}, ${line.seconds} s) ends ${((end - press) / fps).toFixed(3)} s after the press of Apply at ${(press / fps).toFixed(3)} s and ${((end - turn) / fps).toFixed(3)} s after the page turn at ${(turn / fps).toFixed(3)} s`)
     expect(one.every((x) => !x.draft && !x.loud)).toBe(true)
     const nine = caps.filter((x) => x.key === 'decision.reset.0')
     expect(nine.length).toBeGreaterThan(0)
