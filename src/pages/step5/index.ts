@@ -7,7 +7,7 @@ import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic,
 import { HANDOFF } from '../../cursor/body'
 import { COUNTER_TOP, KEYS, makeLayout, MARK_ROT, markOf, SHEET_ROT, STAMP, placesOf, spotOf, turned, waitSpotOf } from './layout'
 import { CUES, grown, HIT, hopAt, LIE, pointerAt, reboundAt, STUCK, type Marks } from './script'
-import { AT } from './timeline'
+import { AT, FILM } from './timeline'
 
 type Phase = 'wait' | 'letter' | 'metrics' | 'reset'
 
@@ -397,7 +397,7 @@ export function makePage(): PageLogic {
         if (p >= AT.fling[1] || !pose) {
           s.held = false
           cursor.place(drop.x, drop.y, 0)
-          cursor.hurt('flattened', STUCK.heal)
+          cursor.hurt('flattened', s.mode === 'film' ? FILM.heal : STUCK.heal)
           cursor.release()
         } else if (p < AT.lift[0]) cursor.place(s.tx, s.ty, heights.paper)
         else {

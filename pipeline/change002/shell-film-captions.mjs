@@ -28,7 +28,13 @@ const settled = readJson(at('content', 'narration.json'))
 const drafts = fs.existsSync(at('content', 'narration-drafts.json')) ? readJson(at('content', 'narration-drafts.json')).film ?? {} : {}
 const script = { ...settled, film: { ...settled.film, ...Object.fromEntries(Object.entries(drafts).filter(([beat, ls]) => ls.length && !(settled.film[beat]?.length))) } }
 const lines = copy.timedLines(c, script).map((l) => ({ id: cues.filmLineId(l.beat, l.index), frame: Math.round(l.start * fps) })).filter((l) => l.frame < until * fps)
-const caps = standin.filmCaptions(lines, fps)
+// Each phrase lies where the live site's panel lies on the page it is said over: `CAPTION.lowOn` for the boss page and the decision page, `CAPTION.low` elsewhere.
+// A line set off by the turn of the page (line 9) is given the place of the page turned to for the whole of it, the half second of the turn too.
+const unitOf = (key) => c.film.beats.find((b) => b.id === key.slice(0, key.lastIndexOf('.')))?.unit ?? ''
+const caps = standin.filmCaptions(lines, fps).map((cap) => {
+  const page = cues.filmLinePage(cap.key, unitOf(cap.key))
+  return { ...cap, page, lowerEdgeY: said.captionLow(page) }
+})
 const fonts = [...metrics.FONTS]
 const low = said.CAPTION.low
 await close()
@@ -46,8 +52,12 @@ import { registerFont } from './${js('metrics')}'
 for (const name of ${JSON.stringify(fonts)}) registerFont(name, await (await fetch('./fonts/' + name + '.json')).json())
 let line = null
 const panel = makeCaption(() => ({ now: 1, lines: line ? [line] : [] }))
-window.show = async (words, loud) => {
-  line = { id: words, words, start: 0, end: 2, loud }
+window.show = async (words, loud, low, step, whole) => {
+  line = null
+  panel.wake()
+  for (let i = 0; i < 2; i++) await new Promise((r) => requestAnimationFrame(r))
+  panel.place(low)
+  line = { id: words, words, start: 0, end: 2, loud, ...(step ? { step, whole } : {}) }
   panel.wake()
   for (let i = 0; i < 6; i++) await new Promise((r) => requestAnimationFrame(r))
   const el = document.querySelector('[data-narrator-caption]')
@@ -68,7 +78,7 @@ try {
   await page.waitForFunction(() => window.ready === true)
   await new Promise((r) => setTimeout(r, 300))
   for (const [i, cap] of caps.entries()) {
-    const seen = await page.evaluate(([w, l]) => window.show(w, l), [cap.words, cap.loud])
+    const seen = await page.evaluate(([w, l, y, st, wh]) => window.show(w, l, y, st, wh), [cap.words, cap.loud, cap.lowerEdgeY, cap.step ?? null, cap.whole ?? null])
     const file = path.join(work, `${String(i).padStart(3, '0')}-${cap.key}-${cap.phrase}.png`)
     await page.screenshot({ path: file, omitBackground: true })
     list.push({ ...cap, file: path.relative(at(), file), panel: seen })
@@ -82,7 +92,7 @@ try {
 
 const filter = list.map((x, i) => `[${i === 0 ? '0:v' : `v${i}`}][${i + 1}:v]overlay=0:0:enable='between(n,${x.first},${x.last})'[v${i + 1}]`).join(';')
 const record = {
-  made: `node pipeline/change002/shell-film-captions.mjs${Number.isFinite(until) ? ` --until ${until}` : ''}${typeof a.fps === 'string' ? ` --fps ${fps}` : ''}`, browser: launched.version, fps, size: SIZE, lowerEdgeY: low,
+  made: `node pipeline/change002/shell-film-captions.mjs${Number.isFinite(until) ? ` --until ${until}` : ''}${typeof a.fps === 'string' ? ` --fps ${fps}` : ''}`, browser: launched.version, fps, size: SIZE, lowerEdgeY: low, lowerEdgeYOn: said.CAPTION.lowOn,
   note: 'every line is a silent stand-in; a line with draft true is a draft', lines, captions: list,
   filter, filterUse: 'ffmpeg -i FILM -i each picture in order -filter_complex FILTER -map [vN] -map 0:a? ...; n is the frame of the film'
 }
@@ -102,4 +112,4 @@ if (a.proof && list.length) {
 const listFile = typeof a.name === 'string' ? path.join(work, `${name}.json`) : at('pipeline', 'change002', 'shell-film-captions.json')
 writeJson(listFile, record)
 console.log(`captions: ${list.length} phrases of ${lines.length} lines${Number.isFinite(until) ? ` that start in the first ${until} s` : ''}, pictures in ${path.relative(at(), work)}, list in ${path.relative(at(), listFile)}`)
-for (const x of list) console.log(`  frames ${x.first} to ${x.last}${x.draft ? ' (draft)' : ''}: ${x.words}`)
+for (const x of list) console.log(`  frames ${x.first} to ${x.last}${x.draft ? ' (draft)' : ''}, ${x.page}, box ${x.panel.box.join(' ')}: ${x.words}`)
