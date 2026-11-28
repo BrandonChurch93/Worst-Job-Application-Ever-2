@@ -1,3 +1,4 @@
+import { earlyEnd } from '../../audio/cues'
 import { config } from '../../config'
 import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
@@ -498,7 +499,7 @@ export function makePage(): PageLogic {
         s.py = io.pointer.y
         s.alone = stirred ? 0 : s.alone + dt
         if (s.turned < 0 && ((s.mode === 'live' && io.pressed) || s.t >= LINE7.part0)) {
-          s.turned = LINE7.ends.find((e) => e >= s.t - 1e-6) ?? LINE7.part0
+          s.turned = earlyEnd(LINE7.ends, LINE7.sentences, s.t)
           io.emit('boss-turn', io.cursor.x, io.cursor.y, false)
         }
         const one = s.turned >= 0 ? s.turned + LINE7.gap : Infinity
