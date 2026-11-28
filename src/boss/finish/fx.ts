@@ -24,7 +24,7 @@ const SEED = 4107
 // How many pieces each level draws: flame tongues round the figure, flames of the ring, puffs.
 const PIECES = { low: { tongues: 7, ring: 10, puffs: 14 }, medium: { tongues: 11, ring: 16, puffs: 24 }, high: { tongues: 14, ring: 22, puffs: 36 }, film: { tongues: 16, ring: 26, puffs: 44 } } as const
 const MOST = PIECES.film
-const BACK = 5
+const BACK = 9
 
 const NOISE = /* glsl */ `
 float h21(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
@@ -58,12 +58,13 @@ function flameStuff(): THREE.ShaderMaterial {
         float t = clamp(y / tall, 0.0, 1.0);
         // A tongue: it leans one way, then the other, and comes to a point.
         float sway = sin(t * 4.2 + seed * 40.0 - uTime * 5.0) * 0.26 * t + (fbm(vec2(seed * 9.0, y * 3.0 - uTime * 2.6)) - 0.5) * 0.7 * t;
-        float x = (vUv.x - 0.5) * 2.0 - sway;
+        // vFlame.z: how far the tip curls over to one side, in half widths of the card.
+        float x = (vUv.x - 0.5) * 2.0 - sway - vFlame.z * t * t;
         float w = (0.1 + 0.52 * sin(3.14159 * pow(1.0 - t, 0.6))) * pow(1.0 - t, 0.4);
         float ax = abs(x);
         float body = smoothstep(w, w * 0.72, ax) * smoothstep(0.0, 0.05, y) * step(y, tall);
-        float inner = smoothstep(w * 0.75, w * 0.15, ax) * (1.0 - t * 0.75);
-        vec3 col = mix(vec3(1.35, 0.5, 0.02), vec3(2.2, 1.5, 0.4), clamp(inner, 0.0, 1.0));
+        float inner = smoothstep(w * 0.58, w * 0.1, ax) * (1.0 - t * 0.75);
+        vec3 col = mix(vec3(1.35, 0.5, 0.02), vec3(2.3, 1.75, 0.75), clamp(inner, 0.0, 1.0));
         float a = body * k * (0.72 + 0.28 * inner) * (1.0 - 0.35 * t);
         if (a < 0.003) discard;
         gl_FragColor = vec4(col, min(1.0, a));
@@ -323,17 +324,19 @@ export function makeFinishFx(): FinishFx {
       const low = fx.ring
       const mixed = (hi: number, lo: number): number => hi + (lo - hi) * low
       for (let j = 0; j < BACK; j++) {
-        const u = (j + 0.5) / BACK
+        // Outside the power-up only the first five stand, where they always stood.
+        const u = (Math.min(j, 4) + 0.5) / 5
         const th = Math.PI * (0.92 - 0.84 * u)
         const seed = hash01(j, 5, SEED)
-        // Five tall wisps: two at each side, one low behind the legs.
-        const wx = [-61, -47, 49, 63, 4][j]!
-        const wt = [80, 102, 106, 82, 30][j]!
+        // Full flames round the figure, as on the pose sheet: three at each side that lean and lick, taller than the fists, and three low ones behind the legs. They stand behind the figure, so the fists and the arrow are never covered.
+        const wx = [-72, -58, -45, 47, 60, 74, -20, 4, 24][j]!
+        const wt = [62, 92, 112, 116, 96, 66, 34, 28, 36][j]!
+        const curl = [-0.3, 0.34, -0.22, 0.24, -0.36, 0.3, 0.2, -0.2, 0.25][j]!
         const tall = mixed((96 + 34 * seed) * (0.8 + 0.3 * Math.sin(th)), wt * (0.9 + 0.2 * seed)) * grow
-        flames.setMatrixAt(n, card(p, mixed(2 + Math.cos(th) * 20, wx), mixed(26 + Math.sin(th) * 22, 0), -3.5, mixed(46 + 12 * seed, 13 + 4 * seed), tall, mixed(-Math.cos(th) * 0.42, -wx * 0.002)))
+        flames.setMatrixAt(n, card(p, mixed(2 + Math.cos(th) * 20, wx), mixed(26 + Math.sin(th) * 22, 0), -3.5, mixed(46 + 12 * seed, 34 + 8 * seed), tall, mixed(-Math.cos(th) * 0.42, -wx * 0.003)))
         d[n * 4] = seed + 0.61
-        d[n * 4 + 1] = mixed(0.5, 0.9) * Math.min(1, k) * (1 - 0.6 * fx.burst)
-        d[n * 4 + 2] = 0.15
+        d[n * 4 + 1] = mixed(0.5, 0.9) * Math.min(1, k) * (1 - 0.6 * fx.burst) * (j < 5 ? 1 : low)
+        d[n * 4 + 2] = mixed(0, curl)
         d[n * 4 + 3] = 0
         n++
       }
@@ -346,14 +349,14 @@ export function makeFinishFx(): FinishFx {
         const ry = 50
         // In the power-up: thin and short, along the ground from side to side, taller toward the sides.
         const lx = ((j + 0.5) / pieces.tongues - 0.5) * 136
-        const ltall = (8 + 12 * hash01(j, 2, SEED)) * (0.6 + 2.6 * Math.pow(Math.abs(lx) / 68, 3))
+        const ltall = (16 + 14 * hash01(j, 2, SEED)) * (0.8 + 1.9 * Math.pow(Math.abs(lx) / 68, 2))
         const bx = mixed(2 + Math.cos(th) * rx * 0.86, lx)
         const by = mixed(44 + Math.sin(th) * ry * 0.8, 0)
         const tall = mixed((44 + 38 * hash01(j, 2, SEED)) * (1.1 - 0.25 * Math.max(0, Math.sin(th))), ltall) * grow
-        flames.setMatrixAt(n, card(p, bx, by, -2.5, mixed(22 + 10 * seed, 8 + 5 * seed), tall, mixed(-Math.cos(th) * 0.5, (seed - 0.5) * 0.3)))
+        flames.setMatrixAt(n, card(p, bx, by, -2.5, mixed(22 + 10 * seed, 18 + 8 * seed), tall, mixed(-Math.cos(th) * 0.5, (seed - 0.5) * 0.5)))
         d[n * 4] = seed
         d[n * 4 + 1] = Math.min(1, k) * (1 - 0.6 * fx.burst)
-        d[n * 4 + 2] = 0.15
+        d[n * 4 + 2] = mixed(0, (hash01(j, 6, SEED) - 0.5) * 0.7)
         d[n * 4 + 3] = 0
         n++
       }
@@ -370,7 +373,7 @@ export function makeFinishFx(): FinishFx {
         flames.setMatrixAt(n, card(p, gx, -gy * Math.cos(a), gy * Math.sin(a), 8 + 5 * seed, tall, (seed - 0.5) * 0.5))
         d[n * 4] = seed + 0.37
         d[n * 4 + 1] = Math.min(1, k) * (1 - fx.burst) * fx.ring
-        d[n * 4 + 2] = 0.5
+        d[n * 4 + 2] = (seed - 0.5) * 0.5
         d[n * 4 + 3] = 1
         n++
       }
@@ -476,7 +479,8 @@ export function makeFinishFx(): FinishFx {
         const u = age / life
         const seed = hash01(j, 7 + hnd, SEED)
         const sway = Math.sin(u * 5 + seed * 6 + hnd) * (3 + 9 * u) * big
-        puff(s.x + sway, s.y - big * (3 + 58 * u), s.z + big * (6 + 30 * u), big * (6 + 17 * u), seed, 0.85 * s.k * Math.sin(Math.PI * Math.min(1, u * 1.15)) * (1 - 0.55 * u), 0.36)
+        // The smoke keeps low, under the figure: it drifts off behind it and never lies over the white face.
+        puff(s.x + sway, s.y - big * (3 + 58 * u), Math.min(s.z, big * (3 + 5 * u)), big * (6 + 17 * u), seed, 0.85 * s.k * Math.sin(Math.PI * Math.min(1, u * 1.15)) * (1 - 0.55 * u), 0.36)
       }
     })
     for (const dd of fx.dust) {

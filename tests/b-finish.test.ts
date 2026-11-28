@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, finishEvents, finishState, kneelSpot, powerPlan, type FinishInput } from '../src/boss/finish/acting'
+import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, emberOf, finishEvents, finishState, kneelSpot, powerPlan, type FinishInput } from '../src/boss/finish/acting'
 import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '../src/cursor/stand/rig'
 
 const FPS = 60
@@ -114,6 +114,36 @@ describe('the finish: the standing arrow', () => {
     expect(b.pose.hands[0][0]).toBeLessThan(0)
     expect(b.pose.hands[1][0]).toBeLessThan(0)
     expect(a.fx.beam).toBeNull()
+  })
+
+  it('with a thrust mark, holds the ball in front at both hands for a quarter second at least before the beam leaves', () => {
+    const film = (time: number): FinishInput => { const i = finish(time); return { ...i, marks: { ...i.marks!, thrust: M.fire - FIRE.ahead } } }
+    const leaves = M.fire + FIRE.lead
+    const front = (time: number): boolean => {
+      const s = finishState(film(time))
+      return s.fx.ball !== null && s.pose.hands[0][0] > 40 && s.pose.hands[1][0] > 40 && s.fx.beam === null
+    }
+    let first = Infinity
+    for (let n = 0; n < 60; n++) { const t = leaves - (n + 1) / FPS; if (front(t)) first = t; else break }
+    expect(leaves - first).toBeGreaterThanOrEqual(0.25)
+    // The hip pose stays until the thrust, and the marks' times are not moved by it.
+    expect(finishState(film(M.fire - FIRE.ahead - 0.01)).pose.hands[0][0]).toBeLessThan(0)
+    expect(finishState(film(leaves - 0.01)).fx.beam).toBeNull()
+    expect(finishState(film(leaves + 0.05)).fx.beam).not.toBeNull()
+    // The ball is not gone before the beam is there.
+    for (let n = 0; n < 4; n++) { const s = finishState(film(leaves + n / FPS)); expect(s.fx.ball !== null || s.fx.beam !== null).toBe(true) }
+    // Nothing pops on the way.
+    for (let n = 0; n < 60; n++) expect(step(finishState(film(M.fire - 0.6 + n / FPS)).pose, finishState(film(M.fire - 0.6 + (n + 1) / FPS)).pose)).toBeLessThan(30)
+  })
+
+  it('has its ember rim from the end of the beam on, unless the fight says otherwise', () => {
+    expect(emberOf(finish(M.end - 0.01))).toBe(0)
+    expect(emberOf(finish(M.end + 0.25))).toBeGreaterThan(0)
+    expect(emberOf(finish(M.end + 0.25))).toBeLessThan(1)
+    expect(emberOf(finish(PRESS))).toBe(1)
+    expect(emberOf({ ...finish(M.fire), ember: 0.7 })).toBeCloseTo(0.7)
+    expect(emberOf({ ...finish(PRESS), ember: 0 })).toBe(0)
+    expect(emberOf(power(2))).toBe(0)
   })
 
   it('draws back before the thrust, lets the beam go after its lead, and is shoved back', () => {

@@ -28,6 +28,9 @@ export const STAND = {
   hose: 6.2,
   // The arms on the standing figure: how much thicker the hose and how much larger the gloves than on the lying arrow.
   bulk: 1.3,
+  // The ember rim on the rubber: how far it stands out round a piece, in the figure's own px, and how strong it is at most.
+  rim: 1.0,
+  ember: 0.9,
   // How far down the outline the arms' roots slide at `tuck` 1, in outline units: the arms then leave the body low, and fists held at the shoulders bow the elbows out and down.
   tuck: 3.8,
   glove: 1.5,
@@ -93,6 +96,8 @@ export const POSES = {
   // The coil before the thrust: everything drawn back a little further.
   coil: P([2, 20], 0.3, [[-42, 34, 13], [-24, 16, 14]], [0.3, 0.3], [[-29, 0], [33, 0]], { strain: 0.6, stretch: 0.93 }),
   // The pose sheet's third figure: back leg stretched, both open hands pushed forward, wrists together.
+  // The ball in front at both hands, toward the target, before the beam leaves: the thrust held.
+  aim: P([9, 24], -0.12, [[50, 32, 14], [53, 24, 15]], [0.25, 0.25], [[-37, 0], [25, 0]], { strain: 0.8, stretch: 1.0, knees: [-1, 1], pitch: [0.15, 0], rise: 0.8, puff: 0.15 }),
   // It leans back from the blast (`rise` under 1): seen from straight above the white face shows more of its height, and the chest is puffed.
   fire: P([10, 25], -0.2, [[58, 30, 14], [60, 22, 15]], [0, 0], [[-39, 0], [24, 0]], { strain: 1, stretch: 1.04, knees: [-1, 1], pitch: [0.25, 0], rise: 0.6, puff: 0.3 }),
   // The thrust a hand's width too far, for the overshoot.
