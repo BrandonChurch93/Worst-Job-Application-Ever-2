@@ -515,3 +515,11 @@ Written 03:46 UTC. Merged in: origin/agent/merge55 81cf7955 and origin/agent/b-f
 - On the live site with the stand-in (`LOOK1_ON` false) the fallen button lies tilted by about 15 degrees with its word readable; with the look on the look's button is drawn level.
 - The picture of the stand-in's finish in the film (01:23) was not taken again after the words moved over the button; the live site's was (02:05).
 - `cut/` was not remade after line 6 moved the unit's marks (ordered: do not remake it).
+
+### The burst over the Submit button at the blast (addition of 03:31Z), written 03:53Z
+
+- Trial, MEASURED by picture (`node pipeline/change002/boss-frames.mjs --frames 10578,10584,10590`, once as it was, once with the stream `sparks(cx3, cy3, ...)` at strength 0 and the line `pop(GONE.hull[0], 0, 0, 9, 150)` taken out, `src/boss/look1/fx.ts` put back after): the white streaks that cross the word Submit at 55.00 and 55.10 s go when the two are off. Mean change in the button's box (frame x 1150 to 1490, y 700 to 820) between as it was and off: 2.4, 5.4 and 2.0 of 255 at 55.00, 55.10 and 55.20 s. So the two are the cause of the streaks, and of a small share of what lies over the button.
+- What they are not the cause of: the blue and white wash over the button from 55.20 s is the beam and its light, drawn by the finish; the V shaped piece that crosses the word at 55.20 s is a part of the boss flying off. Both are as they were.
+- Mend: `OVER_BUTTON` 0.25 in `src/boss/look1/fx.ts`: the stream's strength and the hull pop's flash and sparks are drawn at that share; the pops of the shield, wings, guns and legs are as they were. It is the look helper's file, so it is one commit of its own (5f86b1b9, subject starts `NEEDS:`) and the diff is at the end of `pipeline/change002/boss-NEEDS.patch`.
+- After, MEASURED: mean change in the button's box, before to after, 3.2, 1.3, 1.2, 1.4 and 2.4 of 255 at 55.10, 55.20, 55.30, 55.45 and 55.60 s. A few streaks still cross the button at each of the five times. Picture `B1-blast-button-before-after.jpg`.
+- The number 0.25 is a constant in `fx.ts`, not in `tune.ts`: STATED, the look helper may want it in its own table.
