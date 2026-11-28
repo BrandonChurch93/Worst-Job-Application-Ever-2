@@ -282,6 +282,7 @@ export interface LookKit {
   glassCrack: THREE.MeshBasicMaterial
   soot: THREE.MeshBasicMaterial
   ceramic: THREE.MeshPhysicalMaterial
+  scorched: THREE.MeshPhysicalMaterial
 }
 
 let look: LookKit | null = null
@@ -316,7 +317,8 @@ export function lookKit(): LookKit {
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1c1a19), roughness: 0.9, metalness: 0, specularIntensity: 0.1, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 })),
     glassCrack: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.86, 0.95, 0.9), transparent: true, opacity: 0.92, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
     soot: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.011, 0.01), transparent: true, opacity: 0.55, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
-    ceramic: m.ceramic
+    ceramic: m.ceramic,
+    scorched: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4a4744), roughness: 0.62, metalness: 0.7, specularIntensity: 0.5 }))
   }
   return look
 }
@@ -411,3 +413,41 @@ export function clipTo(g: THREE.BufferGeometry, outline: [number, number][]): TH
   o.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array((pos.length / 3) * 2), 2))
   return o
 }
+
+// A piece of a solid part inside a convex outline, with its heights, normals and brushing kept: the hull comes apart along these cuts.
+export function cutTo(g: THREE.BufferGeometry, outline: [number, number][]): THREE.BufferGeometry {
+  const src = g.index ? g.toNonIndexed() : g
+  const p = src.getAttribute('position')
+  const n = src.getAttribute('normal')
+  const u = src.getAttribute('uv')
+  let area = 0
+  for (let i = 0; i < outline.length; i++) { const a = outline[i]!; const b = outline[(i + 1) % outline.length]!; area += a[0] * b[1] - b[0] * a[1] }
+  const clip = area < 0 ? [...outline].reverse() : outline
+  const out: number[][] = []
+  const at = (i: number): number[] => [p.getX(i), p.getY(i), p.getZ(i), n.getX(i), n.getY(i), n.getZ(i), u ? u.getX(i) : 0, u ? u.getY(i) : 0]
+  for (let t = 0; t < p.count; t += 3) {
+    let poly: number[][] = [at(t), at(t + 1), at(t + 2)]
+    for (let i = 0; i < clip.length && poly.length > 0; i++) {
+      const a = clip[i]!
+      const b = clip[(i + 1) % clip.length]!
+      const side = (q: number[]): number => (b[0] - a[0]) * (q[1]! - a[1]) - (b[1] - a[1]) * (q[0]! - a[0])
+      const next: number[][] = []
+      for (let j = 0; j < poly.length; j++) {
+        const c = poly[j]!
+        const d = poly[(j + 1) % poly.length]!
+        const sc = side(c)
+        const sd = side(d)
+        if (sc >= 0) next.push(c)
+        if ((sc >= 0) !== (sd >= 0)) { const k = sc / (sc - sd); next.push(c.map((v, m) => v + (d[m]! - v) * k)) }
+      }
+      poly = next
+    }
+    for (let j = 1; j + 1 < poly.length; j++) out.push(poly[0]!, poly[j]!, poly[j + 1]!)
+  }
+  const o = new THREE.BufferGeometry()
+  o.setAttribute('position', new THREE.Float32BufferAttribute(out.flatMap((v) => [v[0]!, v[1]!, v[2]!]), 3))
+  o.setAttribute('normal', new THREE.Float32BufferAttribute(out.flatMap((v) => [v[3]!, v[4]!, v[5]!]), 3))
+  o.setAttribute('uv', new THREE.Float32BufferAttribute(out.flatMap((v) => [v[6]!, v[7]!]), 2))
+  return o
+}
+

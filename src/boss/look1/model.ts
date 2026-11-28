@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { roundedRect, sweep, plateProfile } from '../../shell/solids'
-import { across, along, blot, boxAt, chamfer, clipTo, crackStar, cutPlate, discAt, glowMaterial, hose, joined, lathe, lookKit, mesh, oct, pillOutline, plateAt, ringPlate, rod, screw, turnedAt, type V3 } from './kit'
+import { across, along, blot, boxAt, chamfer, clipTo, crackStar, cutPlate, cutTo, discAt, glowMaterial, hose, joined, lathe, lookKit, mesh, oct, pillOutline, plateAt, ringPlate, rod, screw, turnedAt, type V3 } from './kit'
 
 // Everything here is in the units of the target sheets (px of the 1920 wide pictures), forward along +x, z up from the ground, the hull's centre over the origin.
 
@@ -34,6 +34,9 @@ export interface Model {
   legs: LegParts[]
   cannon: CannonParts
   weak: THREE.MeshBasicMaterial
+  plates: { g: THREE.Group; at: [number, number, number] }[]
+  rim: THREE.Group
+  left: THREE.Group[]
 }
 
 const shared = new Map<string, THREE.BufferGeometry>()
@@ -389,6 +392,48 @@ export function buildModel(): Model {
   const weakLamp = mesh(geo('weak', () => joined([discAt(11, HATCH.cx - HATCH.hx - 2, 0, 128, 140, 2, 18).rotateY(0), boxAt(HATCH.cx - HATCH.hx - 9, -34, 120, HATCH.cx - HATCH.hx - 4, 34, 146, 1.5)])), weak, false, false)
   bay.add(weakLamp)
 
-  return { body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, shieldGlassB, shieldEdgeB, shieldStub, crackB, lids, slab, hatchSeam, damage: [d1, d2, d3], own: [seam, window, bore, slits, heat, weak, ember], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
+  // The finishing blast: the hull in pieces along a fan of cuts, each piece turning about its own middle.
+  const fan = [0.25, 1.1, 1.85, 2.8, 3.55, 4.4, 5.35]
+  const mid: [number, number] = [-34, 14]
+  const plates = fan.map((a0, i) => {
+    const a1 = i + 1 < fan.length ? fan[i + 1]! : fan[0]! + Math.PI * 2
+    const am = (a0 + a1) / 2
+    const ray = (a: number, r: number): [number, number] => [mid[0] + Math.cos(a) * r, mid[1] + Math.sin(a) * r]
+    const cut = [mid, ray(a0, 900), ray(am, 900), ray(a1, 900)]
+    const at: [number, number, number] = [mid[0] + Math.cos(am) * 190, mid[1] + Math.sin(am) * 120, HULL.top - HULL.tall / 2]
+    const piece = (name: string, from: string): THREE.BufferGeometry => geo(`${name}${i}`, () => cutTo(shared.get(from)!, cut).translate(-at[0], -at[1], -at[2]))
+    const g = new THREE.Group()
+    g.add(mesh(piece('piece', 'hull'), kit.hull), mesh(piece('piece.dark', 'hull.dark'), kit.dark), mesh(piece('piece.trim', 'hull.trim'), kit.bezel))
+    g.rotation.order = 'ZYX'
+    g.visible = false
+    body.add(g)
+    return { g, at }
+  })
+
+  // What is left: the button's own rim, scorched, and a claw, a bent plate and two bolts lying about.
+  const rim = new THREE.Group()
+  const rimOut = pillOutline(BTN.w + 38, BTN.h + 38, BTN.r + 17)
+  rim.add(
+    mesh(geo('rim', () => ringPlate(rimOut, pillOutline(BTN.w + 4, BTN.h + 4, BTN.r + 2), 12, 4)), kit.scorched),
+    mesh(geo('rim.pins', () => joined([-0.36, -0.12, 0.12, 0.36].flatMap((k) => [1, -1].map((s2) => discAt(4.2, k * BTN.w, s2 * (BTN.h / 2 + 11), 11, 14, 1, 10))))), kit.pin)
+  )
+  rim.visible = false
+  button.add(rim)
+  const claw = legs[0]!.foot.clone()
+  const bent = new THREE.Group()
+  bent.add(mesh(geo('left.plate', () => joined([
+    plateAt([[-70, -30], [6, -40], [10, 34], [-58, 30]], 0, 6, 2),
+    plateAt([[0, -40], [62, -22], [84, 8], [56, 40], [0, 34]], 0, 6, 2).rotateY(-0.24).translate(8, 0, 1),
+    plateAt([[-70, -30], [-58, 30], [-96, 12], [-90, -34]], 0, 6, 2).rotateY(0.18).translate(-4, 0, 0)
+  ])), kit.wing))
+  const bolt = (): THREE.Group => {
+    const g = new THREE.Group()
+    g.add(mesh(geo('left.bolt', () => joined([along([[0, -16], [6, -16], [6, 12], [0, 12]], 12), along([[0, 12], [10.5, 12], [10.5, 20], [0, 20]], 6)]).translate(0, 0, 10.5)), kit.steel))
+    return g
+  }
+  const left = [claw, bent, bolt(), bolt()]
+  for (const g of left) { g.rotation.order = 'ZYX'; g.visible = false }
+
+  return { plates, rim, left, body, hull, wings, button, hatch, seam, bay, shield, shieldGlass, shieldEdge, shieldGlassB, shieldEdgeB, shieldStub, crackB, lids, slab, hatchSeam, damage: [d1, d2, d3], own: [seam, window, bore, slits, heat, weak, ember], guns, legs, cannon: { carriage, root, ribs, sleeve, barrel, window, bore, slits, heat }, weak }
 }
 

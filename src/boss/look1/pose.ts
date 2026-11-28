@@ -46,8 +46,14 @@ export const TURRET = { hatch: [0.02, 0.16], rise: [0.14, 0.44], swing: [0.46, 0
 export const WALK = { pitch: 40, band: 0.14, lift: 38, bob: 5 }
 // The fall when he is beaten, as shares of boss.beaten: the cannon leaves, the glass bursts, the body drops on its belly.
 export const FALL = { off: [0, 0.4], glass: [0.05, 0.3], drop: [0.3, 0.7] } as const
-// The finishing blast, as shares of boss.gone: when each part leaves, and when the bare button comes down on the ground.
-export const GONE = { shield: [0.04, 0.3], wings: [[0.1, 0.42], [0.16, 0.48]], guns: [[0.08, 0.38], [0.2, 0.5]], legs: [[0.22, 0.56], [0.3, 0.64], [0.36, 0.7], [0.44, 0.78]], hull: [0.55, 0.9], button: [0.62, 0.9] } as const
+// The finishing blast, as shares of boss.gone: when each part leaves, when the hull comes apart, when the bare button comes down on the ground, when the last pieces land.
+export const GONE = { shield: [0.02, 0.6], wings: [[0.08, 0.7], [0.14, 0.76]], guns: [[0.05, 0.65], [0.1, 0.7]], legs: [[0.2, 0.8], [0.26, 0.86], [0.3, 0.9], [0.36, 0.96]], bay: [0.22, 0.8], hull: [0.28, 0.98], plate: [0.03, 0.5], button: [0.5, 0.9], left: [0.4, 0.92] } as const
+// How a piece leaves in the blast, in model units: far down the beam, wide to its own side, up from the ground.
+export const FLY = { far: 2700, wide: 1100, least: 0.6, high: 120, burst: [400, 250] }
+// Where the button lies when all else is gone (the fight's FALLEN), level on the page; and what lies about it, page px from its middle: a claw, a bent plate, two bolts.
+export const LEFT = { x: 960, y: 650, slide: [0.02, 0.62], lie: [[-76, 150, 2.5], [150, 72, -0.5], [-78, -104, 0.9], [48, 154, 2.2]] } as const
+// The fist's blow on the button that is left: it goes down in `down` seconds and springs back by `back`; `deep` is in model units, `squash` a share of its size.
+export const PRESS = { down: 0.07, back: 0.45, deep: 9, squash: 0.045 }
 // The face of the word as in the approved pictures: lighter and a little smaller than the page's own button (inter-600 at 26 px).
 export const WORD = { font: 'inter-400', px: 25 }
 export const BENT = { yaw: 0.26, droop: 0.2 }
@@ -81,7 +87,11 @@ export interface Pose {
   sag: number
   // The finishing blast: how far he is gone (0 to 1), how far each part has left (0 to 1), and the way the blast blows, in the look's own plane (y up).
   gone: number
-  away: { shield: number; wings: [number, number]; guns: [number, number]; legs: [number, number, number, number]; hull: number }
+  away: { shield: number; wings: [number, number]; guns: [number, number]; legs: [number, number, number, number]; bay: number; hull: number; plates: number[] }
+  // The pieces that stay: 0 in the body, 1 lying where they are left.
+  left: number
+  // 0 to 1: how far the button is down under the fist; a little below 0 on the spring back.
+  press: number
   blow: [number, number]
   // The middle of the word on the button, page px and height, and the turn of the button on the page.
   word: { x: number; y: number; z: number; rot: number; show: boolean }
@@ -152,9 +162,12 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const f = clamp01(b.form)
   const t = clamp01(b.turret)
   const beaten = clamp01(b.beaten)
-  const yaw = -b.heading
-  const wx = b.x - 960
-  const wy = 540 - b.y
+  // Beaten, he is thrown to where the button will lie, and turned level: the blast is aimed there.
+  const slide = prog(beaten, LEFT.slide[0], LEFT.slide[1])
+  const turn = Math.atan2(Math.sin(Math.PI - b.heading), Math.cos(Math.PI - b.heading))
+  const yaw = -b.heading - turn * slide
+  const wx = mix(b.x, LEFT.x, slide) - 960
+  const wy = 540 - mix(b.y, LEFT.y, slide)
 
   // The forming.
   const u = lin(f, FORM.launch, FORM.land)
@@ -233,17 +246,21 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
 
   if (gone > 0) {
     const down = lin(gone, GONE.button[0], GONE.button[1])
-    buttonZ = mix(buttonZ, -body.z, down * down)
+    buttonZ = mix(buttonZ, -body.z, down * down) 
   }
+  const pressAge = since(now, b.pressedAt ?? null)
+  const fist = pressAge < 0 ? 0 : pressAge < PRESS.down ? pressAge / PRESS.down : 1 - outBack(lin(pressAge, PRESS.down, PRESS.back), 2.4)
+  buttonZ -= PRESS.deep * fist
   const span = (r: readonly [number, number]): number => lin(gone, r[0], r[1])
   const away = {
     shield: span(GONE.shield), wings: [span(GONE.wings[0]), span(GONE.wings[1])] as [number, number], guns: [span(GONE.guns[0]), span(GONE.guns[1])] as [number, number],
-    legs: [span(GONE.legs[0]), span(GONE.legs[1]), span(GONE.legs[2]), span(GONE.legs[3])] as [number, number, number, number], hull: span(GONE.hull)
+    legs: [span(GONE.legs[0]), span(GONE.legs[1]), span(GONE.legs[2]), span(GONE.legs[3])] as [number, number, number, number], bay: span(GONE.bay), hull: span(GONE.hull),
+    plates: Array.from({ length: 7 }, (_, i) => lin(gone, GONE.hull[0] + GONE.plate[0] * i, GONE.hull[0] + GONE.plate[0] * i + GONE.plate[1]))
   }
   const fin = view.finish
   const from = fin ? [fin.x0, fin.y0] : [view.arrow.x, view.arrow.y]
-  const bl = Math.hypot(b.x - from[0]!, b.y - from[1]!) || 1
-  const blow: [number, number] = [(b.x - from[0]!) / bl, -(b.y - from[1]!) / bl]
+  const bl = Math.hypot(wx + 960 - from[0]!, 540 - wy - from[1]!) || 1
+  const blow: [number, number] = [(wx + 960 - from[0]!) / bl, -(540 - wy - from[1]!) / bl]
 
   // Legs.
   const legs: LegPose[] = HIPS.map(([hx, hy], i) => {
@@ -290,19 +307,19 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
   const wym = body.y * K
   const word = {
     x: 960 + wx + (wxm * cw - wym * sw2), y: 540 - (wy + (wxm * sw2 + wym * cw)), z: (body.z + buttonZ + BTN.tall) * K + 0.3,
-    rot: b.heading - Math.PI, show: !(cannon.show && sw > 0.55) || off >= 0.3
+    rot: -yaw - Math.PI, show: !(cannon.show && sw > 0.55) || off >= 0.3
   }
 
   return {
     x: wx, y: wy, shown: f > 0 || view.phase !== 'form', body, hull,
-    button: { z: buttonZ, sx, sy, jx, jy, glow: bump(f, 0, FORM.launch + 0.02) },
+    button: { z: buttonZ, sx: sx * (1 - PRESS.squash * fist), sy: sy * (1 - PRESS.squash * fist), jx, jy, glow: bump(f, 0, FORM.launch + 0.02) },
     wings: [wingA, wingB],
     hatch: { x: HATCH.cx - HATCH.slide * hatchOpen, z: HATCH.top + 7 * bump(t, TURRET.hatch[0], TURRET.hatch[0] + 0.06) + (hatchOpen > 0 ? 3 * hatchOpen : 0), seam: 1.4 + 3 * bump(t, 0, 0.2) + 0.6 * Math.sin(now * 3) * 0.3, gone: off },
     shield: { rise: shieldUp, slide: shieldOut, flash: kick(since(now, b.shield.glancedAt), TIMES.glance), broken: lin(beaten, FALL.glass[0], FALL.glass[1]), show: f >= FORM.shield[0] },
     guns, legs, cannon,
     weak: b.weak ? (b.weak.shownAt === null ? 0 : 2.2 + 3 * (0.5 + 0.5 * Math.sin((now - b.weak.shownAt) * 16))) : 0,
     weakOpen: b.weak && b.weak.shownAt !== null && beaten <= 0 ? smooth(lin(now - b.weak.shownAt, 0, 0.18)) : 0,
-    damage: f < 1 ? 0 : beaten > 0.02 ? 3 : b.stage, hurt, heal: healNow, sag: sagPart, gone, away, blow, lockAge, word
+    damage: f < 1 ? 0 : beaten > 0.02 ? 3 : b.stage, hurt, heal: healNow, sag: sagPart, gone, away, left: span(GONE.left), press: fist, blow, lockAge, word
   }
 }
 
@@ -344,3 +361,9 @@ export const SIZE = {
   button: { w: BTN.w * K, h: BTN.h * K },
   tall: { deck: HULL.top * K, knee: 250 * K, cannon: (CANNON.z + 79) * K }
 } as const
+
+// For the arrow's fist: where the button is on the page, its size and its turn, and how far it is down (0 to 1).
+export function buttonAt(view: BossView, o: LookOptions = DEFAULTS): { x: number; y: number; w: number; h: number; rot: number; top: number; press: number } {
+  const p = poseOf(view, o)
+  return { x: p.word.x, y: p.word.y, w: BTN.w * K * p.button.sx, h: BTN.h * K * p.button.sy, rot: p.word.rot, top: p.word.z, press: p.press }
+}

@@ -16,7 +16,8 @@ export const EVENTS = {
   'big-fire': { on: 'big.firedAt', at: 0, seconds: 0, sound: 1.5, note: 'the beam stands 0.3 s, the recoil 0.45 s, heat and smoke 1.2 s' },
   'turret-off': { on: 'beaten', at: FALL.off[0], seconds: 0, sound: 0.9, note: 'the cannon is blown off over beaten 0 to 0.4 (0.4 s of the 1.0 s fall), the glass bursts from 0.05' },
   'boss-fall': { on: 'beaten', at: FALL.drop[1], seconds: 0.7, sound: 0.8, note: 'the body drops from beaten 0.3 and hits the ground on its belly at 0.7; dust and a short settle follow' },
-  'finish-fire': { on: 'gone', at: 0, seconds: 0, sound: 2.1, note: 'the body burns white from gone 0; the glass frame, guns, wings and legs are torn off one by one from gone 0.04 to 0.78' },
-  'boss-gone': { on: 'gone', at: GONE.hull[1], seconds: 1.92, sound: 1, note: 'the hull burns away over gone 0.55 to 0.9 with a last flash; the look is hidden by the page at gone 1' },
-  'button-down': { on: 'gone', at: GONE.button[1], seconds: 1.92, sound: 0.4, note: 'the bare button comes down on the ground at gone 0.9' }
+  'finish-fire': { on: 'gone', at: 0, seconds: 0, sound: 2.1, note: 'the parts are torn off down the beam from gone 0.02; the hull comes apart in seven pieces from gone 0.28; the beam and its light are drawn by the finish' },
+  'boss-gone': { on: 'gone', at: 1, seconds: 2.13, sound: 1, note: 'the last piece is out of the picture by gone 0.98; the button, its rim, a claw, a bent plate and two bolts stay' },
+  'button-down': { on: 'gone', at: GONE.button[1], seconds: 1.92, sound: 0.4, note: 'the bare button is on the ground at gone 0.9; the fight sounds it later, at boss-gone + 1.4 s, when the look shows nothing new' },
+  'finish-press': { on: 'pressedAt', at: 0, seconds: 0, sound: 0.3, note: 'the button goes down under the fist in 0.07 s and is back by 0.45 s' }
 } as const

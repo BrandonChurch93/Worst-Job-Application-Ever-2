@@ -3,7 +3,7 @@ import type { BossView } from '../view'
 import type { Emitter } from '../../real/types'
 import { hash01 } from '../../core/random'
 import { CANNON, FEET, GUN, HATCH, HIPS, PAGE_BTN, SHIELD } from './numbers'
-import { FALL, FORM, GONE, K, TIMES, bigMuzzleOf, clamp01, kick, lin, mix, muzzleOf, outCubic, prog, smooth, type LookOptions, type Pose } from './pose'
+import { FALL, FORM, GONE, K, LEFT, TIMES, bigMuzzleOf, clamp01, kick, lin, mix, muzzleOf, outCubic, prog, smooth, type LookOptions, type Pose } from './pose'
 import { boxAt, crackStar, joined, lookKit, mesh, pillOutline, ringPlate } from './kit'
 
 // Everything round the body: the broken socket, the cracks where he lands, chunks, dust and smoke, bullets, flashes, the beam.
@@ -538,40 +538,36 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       }
     }
 
-    // The finishing blast: he burns white where the beam stands on him, his parts are torn off down the beam, and a last flash leaves the button bare.
+    // The finishing blast: the beam and its light are drawn by the finish; here only what his own parts throw off as they are torn away, and the smoke of what is left.
     if (p.shown && p.gone > 0 && p.gone < 1) {
       const age = p.gone * TIMES.gone
       const [cx3, cy3] = fromBody(p, 0, 0)
       const dir = Math.atan2(p.blow[1], p.blow[0])
       const on = Math.min(1, p.gone / 0.06) * (1 - smooth(lin(p.gone, 0.9, 1)))
-      const flick = 0.75 + 0.25 * hash01(Math.floor(now * 30), 7, o.seed)
-      flash(cx3, cy3, 96, (210 + 70 * flick) * on, HOT, 2.4 * on * flick)
-      glow.add(cx3, cy3, 95, 420 * on, 420 * on, 0, ORANGE, 0.7 * on)
-      lamp(cx3, cy3, 110, [1, 0.8, 0.55], 1.3 * on * flick, 420)
       const tick = Math.floor(age / 0.06)
-      for (let k = tick; k > tick - 8 && k >= 0; k--) sparks(cx3, cy3, 80, age - k * 0.06, 4, 1200 + k * 9, 760, 0.42, HOT, 2.6 * on, dir, 0.6)
-      plume(cx3, cy3, 70, now, 0.07, 1.1, 31, 34, SOOT, 0.6 * on, p.blow[0] * 150, p.blow[1] * 150)
+      for (let k = tick; k > tick - 8 && k >= 0; k--) sparks(cx3, cy3, 80, age - k * 0.06, 4, 1200 + k * 9, 760, 0.42, HOT, 2.2 * on, dir, 0.6)
       const pop = (share: number, bx: number, by: number, id: number, size: number): void => {
         const a = age - share * TIMES.gone
         if (a < 0) return
         const [x, y] = fromBody(p, bx, by)
-        if (a < 0.14) flash(x, y, 100, size * (1.4 - a / 0.14), HOT, 2.6 * (1 - a / 0.14))
+        if (a < 0.1) flash(x, y, 100, size * 0.5 * (1.4 - a / 0.1), [0.85, 0.92, 1], 1.6 * (1 - a / 0.1))
         sparks(x, y, 90, a, 9, 1300 + id * 17, 520, 0.4, HOT, 2.4, dir, 1.2)
-        burst(x, y, 70, a, 5, 1400 + id * 13, 150, 34, 0.5, SOOT, 0.6, 8)
+        burst(x, y, 70, a, 4, 1400 + id * 13, 150, 26, 0.5, SOOT, 0.45, 8)
       }
       pop(GONE.shield[0], 330, 0, 0, 90)
       GONE.wings.forEach((r, i) => pop(r[0], 0, (i === 0 ? 1 : -1) * 200, 1 + i, 110))
       GONE.guns.forEach((r, i) => pop(r[0], GUN.x, (i === 0 ? 1 : -1) * GUN.y, 3 + i, 80))
       GONE.legs.forEach((r, i) => pop(r[0], HIPS[i]![0], HIPS[i]![1], 5 + i, 100))
-      const last = age - GONE.hull[0] * TIMES.gone
-      if (last >= 0) {
-        const span = (GONE.hull[1] - GONE.hull[0]) * TIMES.gone
-        const u = Math.min(1, last / span)
-        flash(cx3, cy3, 120, 220 + 250 * Math.sin(Math.PI * u), [1, 0.97, 0.9], 3 * Math.sin(Math.PI * u))
-        marks.add(cx3, cy3, 6, 160 + 700 * outCubic(u), 160 + 700 * outCubic(u), 0, [0.9, 0.5, 0.2], 0.5 * (1 - u))
-        burst(cx3, cy3, 60, last, 14, 1500, 240, 60, 0.7, SOOT, 0.7, 30)
-        sparks(cx3, cy3, 90, last, 26, 1600, 820, 0.6, HOT, 2.8)
-      }
+      pop(GONE.hull[0], 0, 0, 9, 150)
+    }
+    if (p.shown && p.gone >= GONE.button[1]) {
+      const rise = smooth(lin(p.gone, GONE.button[1], 1))
+      const sx3 = p.x + 22
+      const sy3 = p.y + 14
+      plume(sx3, sy3, 30, now, 0.1, 3.6, 41, 26, SMOKE, 0.36 * rise, 8, 36)
+      plume(sx3 - 26, sy3 + 4, 30, now + 0.7, 0.17, 2.8, 42, 18, SMOKE, 0.3 * rise, 3, 30)
+      const lie = LEFT.lie[0]
+      plume(p.x + lie[0], p.y - lie[1], 20, now + 0.3, 0.3, 1.8, 43, 11, SMOKE, 0.3 * rise, 4, 20)
     }
 
     // Beaten: the cannon is blown off, the glass bursts, he smokes.

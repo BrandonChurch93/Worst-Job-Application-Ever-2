@@ -3,7 +3,8 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { BossView } from '../src/boss/view'
 import { EVENTS } from '../src/boss/look1/events'
-import { DEFAULTS, FORM, K, TURRET, bigMuzzleOf, muzzleOf, poseOf, wordAt } from '../src/boss/look1/pose'
+import { DEFAULTS, FORM, K, LEFT, PRESS, TURRET, bigMuzzleOf, buttonAt, muzzleOf, poseOf, wordAt } from '../src/boss/look1/pose'
+import { FALLEN } from '../src/boss/plan'
 
 const gun = (): { aim: number; tell: number; firedAt: number | null } => ({ aim: Math.PI, tell: 0, firedAt: null })
 const view = (more: Partial<BossView> = {}, boss: Partial<BossView['boss']> & { lockedAt?: number | null } = {}): BossView => {
@@ -103,7 +104,7 @@ describe('look 1 of the boss: the word, the turret, the places of the muzzles', 
     expect(wordAt(view({}, out)).show).toBe(false)
     expect(wordAt(view({ phase: 'beaten' }, { ...out, beaten: 1 })).show).toBe(true)
     const w = wordAt(view({ phase: 'beaten' }, { ...out, beaten: 1 }))
-    expect(Math.hypot(w.x - 960, w.y - 548)).toBeLessThan(0.01)
+    expect(Math.hypot(w.x - LEFT.x, w.y - LEFT.y)).toBeLessThan(0.01)
   })
 
   it('brings the cannon out only after the hatch has begun to open, and locks it at 0.94', () => {
@@ -152,14 +153,43 @@ describe('look 1: the finishing blast', () => {
     const before = poseOf(view({ phase: 'beaten' }, lying))
     expect(before.gone).toBe(0)
     expect(before.away.hull).toBe(0)
-    const mid = poseOf(view({ phase: 'beaten' }, { ...lying, gone: 0.5 } as never))
-    expect(mid.away.shield).toBe(1)
+    const mid = poseOf(view({ phase: 'beaten' }, { ...lying, gone: 0.5 }))
+    expect(mid.away.shield).toBeGreaterThan(0.5)
     expect(mid.away.legs[3]).toBeGreaterThan(0)
-    expect(mid.away.hull).toBe(0)
-    const end = poseOf(view({ phase: 'beaten' }, { ...lying, gone: 0.95 } as never))
+    expect(mid.away.legs[3]).toBeLessThan(mid.away.legs[0])
+    expect(mid.away.plates[0]).toBeGreaterThan(mid.away.plates[6]!)
+    const end = poseOf(view({ phase: 'beaten' }, { ...lying, gone: 1 }))
     expect(end.away.hull).toBe(1)
+    expect(end.away.plates.every((k) => k === 1)).toBe(true)
+    expect(end.left).toBe(1)
     expect(end.body.z + end.button.z).toBeCloseTo(0, 5)
     expect(Math.hypot(end.blow[0], end.blow[1])).toBeCloseTo(1, 5)
+  })
+
+  it('throws the beaten boss to where the fight lets the button lie, level, and keeps the button there', () => {
+    expect({ x: LEFT.x, y: LEFT.y }).toEqual({ x: FALLEN.x, y: FALLEN.y })
+    const lying = { turret: 1, locked: true, stage: 2 as const, health: 0, beaten: 1, x: 700, y: 500, heading: 2.2 }
+    const p = poseOf(view({ phase: 'beaten' }, lying))
+    expect(p.x + 960).toBeCloseTo(LEFT.x, 5)
+    expect(540 - p.y).toBeCloseTo(LEFT.y, 5)
+    const at = buttonAt(view({ phase: 'beaten' }, { ...lying, gone: 1 }))
+    expect(at.x).toBeCloseTo(LEFT.x, 5)
+    expect(at.y).toBeCloseTo(LEFT.y, 5)
+    expect(Math.sin(at.rot)).toBeCloseTo(0, 5)
+    expect(Math.cos(at.rot)).toBeCloseTo(1, 5)
+  })
+
+  it('sinks the button under the fist in 0.07 s and has it back by 0.45 s', () => {
+    const lying = { turret: 1, locked: true, stage: 2 as const, health: 0, beaten: 1, gone: 1 }
+    const at = (age: number): ReturnType<typeof buttonAt> => buttonAt(view({ phase: 'beaten', time: 60 + age }, { ...lying, pressedAt: 60 }))
+    expect(buttonAt(view({ phase: 'beaten', time: 59.9 }, { ...lying, pressedAt: null })).press).toBe(0)
+    expect(at(0).press).toBe(0)
+    expect(at(PRESS.down).press).toBeCloseTo(1, 5)
+    expect(at(PRESS.down).top).toBeLessThan(at(0).top)
+    expect(at(PRESS.down).w).toBeLessThan(at(0).w)
+    expect(at(PRESS.back).press).toBeCloseTo(0, 5)
+    expect(at(2).press).toBeCloseTo(0, 5)
+    expect(at(2).top).toBeCloseTo(at(0).top, 5)
     for (const name of ['boss-fall', 'finish-fire', 'boss-gone', 'button-down']) expect(EVENTS, name).toHaveProperty(name)
   })
 })
