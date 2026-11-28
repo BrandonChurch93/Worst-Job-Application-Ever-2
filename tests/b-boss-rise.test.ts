@@ -46,6 +46,24 @@ describe('the light of the power-up', () => {
     }
   })
 
+  it('lights the figure from its own flames: under each fist and low before the feet, in step with the flame, with no shadow', () => {
+    const r = at(FULL + 0.1)!
+    expect(r.own.length).toBe(3)
+    for (const [n, l] of r.own.entries()) {
+      expect(l.shadow).toBeUndefined()
+      expect(l.power).toBeCloseTo((n < 2 ? RISE_LIGHT.fist.power : RISE_LIGHT.foot.power) * r.level, 9)
+      expect(l.z).toBeGreaterThanOrEqual(r.ground + 6)
+    }
+    expect(r.own[0]!.x).toBeLessThan(r.x)
+    expect(r.own[1]!.x).toBeGreaterThan(r.x)
+    expect(r.own[2]!.x).toBe(r.x)
+    expect(r.own[2]!.z).toBeLessThan(Math.min(r.own[0]!.z, r.own[1]!.z))
+    const early = at(FISTS + 0.05)
+    expect(early === null || early.own.every((l) => l.power < r.own[0]!.power * 0.5)).toBe(true)
+    expect(RISE_LIGHT.near.hole).toBeGreaterThan(RISE_LIGHT.ring.from)
+    expect(RISE_LIGHT.near.high).toBeGreaterThan(0)
+  })
+
   it('lifts the near pane and, with the boss there, the shield, by lights that throw no shadow', () => {
     const alone = at(FULL + 0.1)!
     expect(alone.lamps.length).toBe(1)
