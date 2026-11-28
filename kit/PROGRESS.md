@@ -26,22 +26,21 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 201, 2026-11-28T09:03Z, Phase 5.
+Status 202, 2026-11-28T09:23Z, Phase 5.
 
-1. `out/stills/status/01-the-blast-from-behind-with-the-pillar-in-shade-f.jpg`: One film frame, 11121, at 1200 by 675. A low view from behind and to the side of the arrow: the arrow from its back, white, pointing up, right of the middle; a tall pillar of the arena straight behind it, mid grey, so that the arrow's whole outline stands out against it; orange flame tongues showing over the pillar; the blast as a white band with blue rays running to the left of the frame; small debris on the pale floor; a near black backdrop.
-2. `out/stills/status/02-the-blast-stays-in-view-from-behind-every-second.jpg`: Film frames 11065 to 11115, every second one, in rows, 1200 by 670 in all. One steady view from behind the arrow: the white arrow head right of the middle, the mid grey pillar behind it, gold flames round it. In the first eight tiles, 11065 to 11079, a ball of light sits at the hands and grows. The beam first leaves in the tile of frame 11081 and from 11083 to 11115 lies as a white band over the left half of the frame, with the boss's orange button a small shape inside the white at the left.
-3. `out/stills/status/03-the-decision-page-timed-to-the-lines-without-pau.jpg`: Twenty film frames of the Decision page, half a second apart from 5.433 s to 14.883 s of the piece, four in a row, 1200 by 1013 in all, with the second and the phrase being said under each. Row one: a red stamp block on the letter Position Filled, the block lifted, the red REJECTED mark on the letter with the block coming down beside it, the block at rest with the orange Accept Rejection button under it. Row two: the three clocks of the glass panel at 03:28, 14:32 and 02:00 and the view moving closer tile by tile. Row three: the closest view with the mark, the block, the arrow and the button, then the view going back out with the arrow on its way to the button. Row four: the whole page with the arrow on the pressed button, then the careers page coming in at an angle and lying flat. Row five: the careers page at rest with the arrow at Apply for a Job and nothing said.
-4. `out/stills/status/04-the-shout-leaves-the-screen-as-the-view-rises-th.jpg`: Two halves of six tiles each, 1440 by 1252 in all. Above, film frames of the camera branch with the caption pictures laid on: frame 10852, the words I HAVE in a small pale panel at the top over a slanted view from above of the arrow on its legs; 10960, I HAVE FIVE YEARS over the close view that faces the arrow and its ball of light; 11090 and 11112, the whole line I HAVE FIVE YEARS OF EXPERIENCE in a wide panel over the blast seen from behind; 11113 and 11131, no panel, the second from above with the Submit button. Below, the site's own sound engine and panel in a browser over a kept still of step 4: I HAVE 3.78 s before the fire, I HAVE FIVE YEARS 2.84 s before it, the whole line 0.25 s and 0.76 s after it, and no panel 1.27 s and 2.49 s after it.
+1. `out/stills/status/01-the-sound-effects-first-takes-32-sounds-as-wavef.jpg`: A dark sheet, 1600 by 860, of 32 small waveform panels in four rows of eight, each drawn to its own peak and titled with the sound's name and its length in seconds, with three numbers in a box: the peak in dB, the share of its energy under 150 Hz and the share over 4 kHz. Top row in orange, the five sounds the change notes name: turret-cannon, slab-slam, keys-break, button-burst, big-fire; then in blue pin-bumper, pin-target, pin-bell. Second row, blue: pin-kick, pin-coins, pin-frenzy, vacuum-roar as one solid block, vacuum-gulp, vacuum-slip, cannon-fire, cannon-tell. Third row, blue: boss-heal, shield-glance, arena-split, arena-rise, healthbar-drop, power-up, boss-fall, pillar-break. Bottom row in green: reel-stop, stop-press, date-miss, volume-sign, row-close, folder-open, slot-in, wind-gust.
+2. `out/stills/status/02-the-boss-kept-a-part-out-of-place-between-film-p.jpg`: Two pictures side by side, 1170 by 520 in all, of the same film frame, 10700, seen from above: the boss's grey body with an orange ribbed core and a lit orange square, three jointed arms with claws, the back cannon at the upper left, the pale cracked floor of the arena with orange seams. On the left the frame drawn alone. On the right the frame drawn after pictures of the blast, before the mend: the same, and a dark eight sided plate with orange strokes standing out of the hull at the right of the body.
+3. `out/stills/status/03-the-arrow-lands-on-apply-at-the-end-of-the-film-.jpg`: Fifteen crops in three rows of five, 1197 by 553 in all, cut to the arrow at the orange Apply for a Job button of the careers page and shown at twice the size, each with its second of the Decision part under it, from 13.000 s to 14.867 s. The white arrow lies flat on the button at 13.0 s; stands upright at 13.2, 13.4 and 13.5 s; is tipped far over to the left from 13.6 to 14.133 s; stands upright again from 14.2 s and looks the same from 14.3 s to the end. Above and below the button the page's small grey text.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 374 at 2026-11-28T09:03:41Z, allowance: continuation 4
-time used in this phase: 3.04 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 3.04 h of 12.00 h allowed
-time used: 75.18 of 84.00 hours before the review
+clock: phase 5, tick 375 at 2026-11-28T09:23:15Z, allowance: continuation 4
+time used in this phase: 3.37 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 3.37 h of 12.00 h allowed
+time used: 75.51 of 84.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: reached
