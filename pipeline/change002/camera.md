@@ -277,3 +277,33 @@ MEASURED at 25.7 s, 1920x1080, the option on, with e787a97e laid over: share of 
 From above, MEASURED `compare -metric AE` on this branch's own tree: 48.0 s against 179236a1: 0; 42.0 s against 07e3edf4: 0; 32.0 s against the tree without the backdrop: 114 in the whole frame, 0 with the smoke box painted over.
 
 No test of the cap is written: it is a term of a shader and is shown by the frames. Picture: `proof/camera/rise4-face-25.7-before-after.jpg`.
+
+## Ninth pass: the face's room, and a frame that is the same picture whatever was drawn before it
+
+### Room
+
+`CAMERA.power.face.room` is 1.1 (knee 0.5). MEASURED at 25.7 s, 1920x1080, the option on, with e787a97e laid over: the face's middle (30x30 at 740,420) reads (248, 246, 240); the share of the box 691,269 to 845,632 at 253 or more on all three channels is 0.0 percent (any channel 0.3); the fists read (92, 80, 48) and (81, 70, 43). Room 0.62 gave (240, 236, 227), room 0.85 (245, 242, 235), room 1.3 (249, 247, 242) with 0.0 on all channels and 0.7 on any. The middle that was asked for and a share of 2 to 8 percent do not meet with this one number: the face is warm, its blue stays under 253. The middle was chosen. 24.47 s with the option on against off, each first in its session: `compare -metric AE` 0. Picture: `proof/camera/rise4-face-25.7-room.jpg`.
+
+### 48.0 s after other frames
+
+The order was to make the scorch a function of the film time. MEASURED first: the scorch is not the cause. Row sums of the scorch's data and of the wounds' data at 48.0 s, rendered alone and after 42.0 s: 0 of 1080 and 0 of 810 rows differ, both textures uploaded at the same version. `src/arena/finish.ts` is not touched.
+
+What the runs showed, each at 1920x1080 under trial timing with the option on:
+
+- 48.0 s alone against after 42.0 s: 708 px in the box 202x46 at 439,925, at most 3 levels of 255, the frame after 42.0 s the lighter one. After 44.0 s: the same picture as after 42.0 s. After 20.0 s of the same unit, and after a frame of the unit before: the same picture as alone (0 and 1 px). So it is not the first frame of a session; it is whether a frame of the finish was drawn before.
+- With the whole finish hidden at 48.0 s: 0. With only its effects hidden: 708. So it is the standing arrow.
+- Every matrix, attribute, uniform, texture, light and material flag of the scene was the same in both orders at both samples of the frame. What was not: three.js puts see-through pieces of one `renderOrder` in order by the middle of a sphere round each piece, and works that sphere out once, at the first draw, then keeps it. The standing arrow's legs, arms and body bend, and its shoes and gloves are instanced, so their spheres were those of the pose of the first frame drawn. The long shadow's pieces write depth and pass only where no other piece of the shadow was drawn (`depthFunc` Less), so which piece comes first decides the edge where two of them meet.
+
+The mend, in `src/cursor/stand/figure.ts` only: every instanced piece of the figure, and every piece whose shape is rewritten each frame, gets a fixed sphere when the figure is made (middle at its own origin, reach 1e4). The order is then a function of the pieces' places in the frame alone, and no piece can be left out of a frame by a sphere of an older pose. Nothing is worked out per frame for it.
+
+MEASURED after the mend, 1920x1080, trial timing, the option on, each job drawing a frame once in its session, `compare -metric AE`:
+
+- 48.0 s alone against 48.0 s in one session after 42.0, 45.5, 46.5 and 47.5 s: 0 (before: 708).
+- 48.0 s alone against 48.0 s at the end of a run from 34.0 s in steps of 1 s: 1 px, at 1269,354, far from the standing arrow (before: 708). That one pixel is not mended and its cause is not found here.
+- 45.5 s, 46.5 s and 47.5 s, each alone against the same frame in the session that began at 42.0 s: 0, 0 and 0.
+- 42.0 s as the first frame of a session against 42.0 s in the run from 34.0 s: 64 px in the box 229x203 at 1005,618. Not a frame of the bar and not mended here; the boss helper's note on the lamp's far plane (`src/core/renderer.ts` line 293) names a cause of that kind.
+- The picture at 48.0 s is not the picture of before: 3151 px (alone) and 2688 px (after 42.0 s) differ from the frames of before the mend, in the box 245x53 at 396,922, the long shadow at the standing arrow's feet. Picture: `proof/camera/rise5-48.0-order.jpg` (before, after 42.0 s | after the mend | red where alone and after 42.0 s differed before).
+
+Live frame time: UNKNOWN, not measured. STATED: the mend sets the spheres once when the figure is made and adds nothing per frame.
+
+Test: `tests/b-camera.test.ts`, "the standing arrow drawn in pieces of the film". It makes two figures, draws one at an earlier pose first, and asks that the spheres' middles at the later pose are the same. On the figure of before it failed with `expected [ '20.102,-34.757,4.234', ...(21) ] to deeply equal [ '20.041,-34.819,4.234', ...(21) ]`.

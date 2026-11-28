@@ -10,7 +10,8 @@ import { FALLEN, UNFOLD } from '../src/boss/plan'
 import { CAMERA, CLOSE, LAST, LOOK1_ON, SHOUT } from '../src/boss/tune'
 import { finishNow, viewOf } from '../src/boss/viewof'
 import { config, stepHz } from '../src/config'
-import { toPage } from '../src/cursor/stand/rig'
+import { makeStand } from '../src/cursor/stand/figure'
+import { POSES, at, toPage } from '../src/cursor/stand/rig'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
 import { basis, frame, project, toWorld } from '../src/stage/camera'
@@ -760,5 +761,41 @@ describe('the arena\'s pillars in shade for a low lens (NEEDS)', () => {
     expect(now.standing.envMapIntensity).toBe(mirrored)
     plain.dispose()
     told.dispose()
+  })
+})
+
+describe('the standing arrow drawn in pieces of the film', () => {
+  const centres = (o: THREE.Object3D): string[] => {
+    const out: string[] = []
+    o.traverse((x) => {
+      const m = x as THREE.Mesh
+      if (!m.isMesh) return
+      const inst = m as unknown as THREE.InstancedMesh
+      if (inst.isInstancedMesh) {
+        if (inst.boundingSphere === null) inst.computeBoundingSphere()
+        out.push(inst.boundingSphere!.center.toArray().map((v) => v.toFixed(3)).join(','))
+      } else {
+        if (m.geometry.boundingSphere === null) m.geometry.computeBoundingSphere()
+        out.push(m.geometry.boundingSphere!.center.toArray().map((v) => v.toFixed(3)).join(','))
+      }
+    })
+    return out
+  }
+
+  it('the middles its see-through pieces are put in order by are the same whether an earlier pose was drawn first or not', () => {
+    const early = at(POSES.set, 300, 400)
+    const late = at(POSES.ready, 520, 610)
+    const run = makeStand()
+    run.apply(early, 1)
+    centres(run.object)
+    run.apply(late, 2)
+    const alone = makeStand()
+    alone.apply(late, 2)
+    const a = centres(alone.object)
+    const b = centres(run.object)
+    expect(a.length).toBeGreaterThan(10)
+    expect(b).toEqual(a)
+    run.dispose()
+    alone.dispose()
   })
 })

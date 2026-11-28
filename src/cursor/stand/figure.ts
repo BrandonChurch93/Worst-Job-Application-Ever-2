@@ -45,6 +45,8 @@ function shoeShape(): THREE.BufferGeometry {
   return g
 }
 
+const STILL_REACH = 1e4
+
 // The long shadow: every piece of the figure once more, laid flat on the ground the way the key's shadows fall, from the shoes outward.
 // The site's light keeps the shadow of anything tall short; a figure that stands needs the one that starts at its feet and runs.
 function shadeStuff(): THREE.ShaderMaterial {
@@ -403,6 +405,19 @@ export function makeStand(): Stand {
     normal.needsUpdate = true
     shoes.instanceMatrix.needsUpdate = true
   }
+
+  const bent = new Set<THREE.BufferGeometry>([geometry])
+  arms.root.traverse((o) => {
+    const m = o as THREE.Mesh
+    if (m.isMesh && !(m as unknown as THREE.InstancedMesh).isInstancedMesh) bent.add(m.geometry)
+  })
+  object.traverse((o) => {
+    const m = o as THREE.Mesh
+    if (!m.isMesh) return
+    const inst = m as unknown as THREE.InstancedMesh
+    if (inst.isInstancedMesh) inst.boundingSphere = new THREE.Sphere(new THREE.Vector3(), STILL_REACH)
+    else if (bent.has(m.geometry) || Object.values(m.geometry.attributes).some((x) => (x as THREE.BufferAttribute).usage === THREE.DynamicDrawUsage)) m.geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), STILL_REACH)
+  })
 
   return {
     object,
