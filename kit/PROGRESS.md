@@ -26,21 +26,20 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 202, 2026-11-28T09:23Z, Phase 5.
+Status 203, 2026-11-28T09:48Z, Phase 5.
 
-1. `out/stills/status/01-the-sound-effects-first-takes-32-sounds-as-wavef.jpg`: A dark sheet, 1600 by 860, of 32 small waveform panels in four rows of eight, each drawn to its own peak and titled with the sound's name and its length in seconds, with three numbers in a box: the peak in dB, the share of its energy under 150 Hz and the share over 4 kHz. Top row in orange, the five sounds the change notes name: turret-cannon, slab-slam, keys-break, button-burst, big-fire; then in blue pin-bumper, pin-target, pin-bell. Second row, blue: pin-kick, pin-coins, pin-frenzy, vacuum-roar as one solid block, vacuum-gulp, vacuum-slip, cannon-fire, cannon-tell. Third row, blue: boss-heal, shield-glance, arena-split, arena-rise, healthbar-drop, power-up, boss-fall, pillar-break. Bottom row in green: reel-stop, stop-press, date-miss, volume-sign, row-close, folder-open, slot-in, wind-gust.
-2. `out/stills/status/02-the-boss-kept-a-part-out-of-place-between-film-p.jpg`: Two pictures side by side, 1170 by 520 in all, of the same film frame, 10700, seen from above: the boss's grey body with an orange ribbed core and a lit orange square, three jointed arms with claws, the back cannon at the upper left, the pale cracked floor of the arena with orange seams. On the left the frame drawn alone. On the right the frame drawn after pictures of the blast, before the mend: the same, and a dark eight sided plate with orange strokes standing out of the hull at the right of the body.
-3. `out/stills/status/03-the-arrow-lands-on-apply-at-the-end-of-the-film-.jpg`: Fifteen crops in three rows of five, 1197 by 553 in all, cut to the arrow at the orange Apply for a Job button of the careers page and shown at twice the size, each with its second of the Decision part under it, from 13.000 s to 14.867 s. The white arrow lies flat on the button at 13.0 s; stands upright at 13.2, 13.4 and 13.5 s; is tipped far over to the left from 13.6 to 14.133 s; stands upright again from 14.2 s and looks the same from 14.3 s to the end. Above and below the button the page's small grey text.
+1. `out/stills/status/01-the-first-takes-on-small-speakers-what-a-laptop-.jpg`: A dark chart, 1600 by 900. Thirty-two rows, one for each sound, named on the left with its class. For each row a blue dot shows how many dB the sound falls under its own level on a laptop and an orange diamond the same on a phone, joined by a grey line. A red band begins at 6 dB with the words more than 6 dB lost: the weight is gone. From the top: big-fire 16.3 dB, arena-rise 17.9, cannon-fire 16.0, slab-slam 10.6, shield-glance 11.0, turret-cannon 10.1, boss-heal 6.5, row-close 7.5, boss-fall 2.9; the remaining rows sit at or near zero. Five names are orange: big-fire, slab-slam, turret-cannon, button-burst and keys-break.
+2. `out/stills/status/02-what-a-listener-told-nothing-heard-in-the-ten-he.jpg`: A dark table, 1600 by 900, of ten rows: turret-cannon, slab-slam, keys-break, button-burst, big-fire (these five in orange), cannon-fire, arena-rise, arena-split, boss-fall and pillar-break. The columns are the sound's name with its loss on a phone, what it has to be, what was heard the first time, what was heard the second time, and two coloured squares with the power marks out of 10. Seventeen squares are red with marks from 1 to 3, one is yellow with 4, two are green with 6 and 7.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 375 at 2026-11-28T09:23:15Z, allowance: continuation 4
-time used in this phase: 3.37 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 3.37 h of 12.00 h allowed
-time used: 75.51 of 84.00 hours before the review
+clock: phase 5, tick 376 at 2026-11-28T09:48:19Z, allowance: continuation 4
+time used in this phase: 3.79 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 3.79 h of 12.00 h allowed
+time used: 75.92 of 84.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: reached
