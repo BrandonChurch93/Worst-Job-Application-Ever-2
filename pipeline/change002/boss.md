@@ -533,3 +533,9 @@ Written 03:46 UTC. Merged in: origin/agent/merge55 81cf7955 and origin/agent/b-f
 - Marks MEASURED after the merge (`node /tmp/ev.mjs`): power-up 34.68, turret-lock 37.83, flatten 42.80, boss-heal 43.15, power-down 49.77, finish-fire 54.90, finish-walk 57.43, finish-kneel 60.22, finish-fist 61.52, finish-press and button-press 62.42, page-turn 63.10. None moved.
 - Checks at the merge with the look on, each alone: b-boss EXIT 0 (35), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-finish EXIT 0 (22), bosslook-pose EXIT 0 (14, run at 5f86b1b9), `npx tsc --noEmit -p .` EXIT 0. The look-off run was last made at a5f023a4, not since.
 - Not yet taken when this was written: the finish helper's 356fbeaf (the power-up flames lean and curl more). The pictures T4c and L1b are from before it.
+
+### The finish helper's 356fbeaf taken (written 04:05Z)
+
+- Merged `origin/agent/b-finish` 356fbeaf (merge 0fe1507c). Checks after it with the look on, each alone: b-boss EXIT 0 (35), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-finish EXIT 0 (22), `npx tsc --noEmit -p .` EXIT 0.
+- Pictures made again on it: `T4d-power-up-closer.jpg` (film, 34.90 to 37.90 s) and `L1c-live-keen-power-up-at-pillar-3.jpg` (keen visitor, 14.30 to 17.60 s).
+- Seen in them and not measured: with the wider flames the left flame comes to the edge of the glass pane at 36.90 s of the film, and to the side of pillar.3 at 16.50 s for the keen visitor. `RAISE.box` (x0 -90) was read by eye off the flames as they were before 356fbeaf, so the test of item 1 holds for that box and not for the flames as they are now. Unknown by how many px the flames now pass the box.
