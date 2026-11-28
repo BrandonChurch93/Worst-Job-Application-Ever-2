@@ -159,7 +159,7 @@ describe('arena scorch', () => {
   })
 
   it('cracks the black into a fine net of plates', () => {
-    // Plates of about 24 px: over a square of the heart of the burn, cracks take a small share of the ground and no place is far from one.
+    // Plates of about 17 px: over a square of the heart of the burn, cracks take a small share of the ground and no place is far from one.
     let cracked = 0, n = 0, far = 0
     for (let x = 900; x < 1020; x += 2) {
       for (let y = 560; y < 620; y += 2) {

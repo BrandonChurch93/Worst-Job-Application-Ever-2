@@ -9,7 +9,7 @@ import { ARENA, PAGE, PANES, PILLARS, SEAMS, paneBox } from './layout'
 // ahead: px in front of the arrow's centre at which the trench starts. thin: the half width of the trench there. half: its half width where it runs into the burn. burn: the radius of the burn. long: how many times longer the burn is along the line than across it.
 // far: the half width of the band downrange where it leaves the page. net: the size of a plate of the cracked crust, px. words: the box, from the middle of the burn, that the fight keeps clear for the words over the button; no chip lands in it.
 // seconds: how long the blast burns when the view does not say (the fight's SHOUT.gone - SHOUT.fire). chips: the bits of ceramic thrown out, at the high level.
-export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 140, long: 1.7, far: 14, net: 24, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 } }
+export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 140, long: 1.7, far: 14, net: 17, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 } }
 
 // The line of the finishing blast as the view gives it: the arrow's centre and the place the boss fell.
 export interface BlastLine { x0: number; y0: number; x1: number; y1: number }
@@ -161,11 +161,12 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
       // The crust is cracked into a fine net of plates, inside the black only: the cracks black and cut in, each plate a little paler than the next.
       let depth = 0.14 * step(0, -30, e.px) * mid
       if (e.px < -4) {
-        const c = crust(x + 9 * (fbm(x / 40, y / 40, seed + 49) - 0.5), y + 9 * (fbm(x / 40 + 5.3, y / 40, seed + 49) - 0.5), seed)
+        const c = crust(x + 16 * (fbm(x / 28, y / 28, seed + 49) - 0.5), y + 16 * (fbm(x / 28 + 5.3, y / 28, seed + 49) - 0.5), seed)
         const within = step(-4, -18, e.px)
-        const line = step(1.5, 0.5, c.crack) * within
-        soot = Math.max(soot * (1 - within * (0.07 + 0.13 * c.plate)), line)
-        depth = Math.max(depth, 0.6 * line)
+        // Hairlines, and not every one of them: a crack shows where the crust is brittle.
+        const line = step(1.0, 0.35, c.crack) * within * step(0.3, 0.5, fbm(x / 34 + 2.2, y / 34 + 8.1, seed + 54) + 0.25 * c.plate)
+        soot = Math.max(soot * (1 - within * 0.05 * c.plate), line)
+        depth = Math.max(depth, 0.22 * line)
       }
       // Embers: at the rim of the burn, down the middle of the trench, and a few strays in the black. Small and orange: coals in soot, not the light of a broken slab.
       let ember = 0
