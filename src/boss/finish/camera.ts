@@ -10,7 +10,8 @@ import { CAMERA, CLOSE, LAST, SHOUT } from '../tune'
 type V3 = [number, number, number]
 export interface Rig { at: V3; az: number; el: number; tall: number; fov: number }
 export interface Key { at: readonly [number, number, number]; az: number; el: number; tall: number; fov: number }
-export interface Marks { arms: number; turn: number; fire: number; round: number }
+// kick: s after the fire mark at which the view is thrown back: 0 where the beam leaves on the mark. due: the time the view from behind closes in toward: the fire mark, or where it is expected while it is not there yet.
+export interface Marks { arms: number; turn: number; fire: number; round: number; kick?: number; due?: number }
 export type ViewName = 'above' | 'charge' | 'fire' | 'blast' | 'end'
 export interface Shot { pose: CameraPose; rig: Rig; low: number; tip: number; view: ViewName; glare: number }
 
@@ -55,7 +56,12 @@ const shot = (rig: Rig, view: ViewName, shake: readonly [number, number] = [0, 0
   return { pose: poseOf(rig, shake), rig, low, tip: CAMERA.upright * low, view, glare }
 }
 
-export const marksOf = (film: boolean, arms: number, thrust: number, fire: number): Marks => (film ? { arms, turn: arms + SHOUT.fire - SHOUT.arms - CAMERA.ahead, fire, round: CAMERA.round } : { arms, turn: thrust >= 0 ? thrust : fire, fire, round: CAMERA.roundLive })
+export const marksOf = (film: boolean, arms: number, thrust: number, fire: number, lead?: number): Marks => {
+  const kick = lead === undefined ? (film ? 0 : CAMERA.back[0]) : lead > 0 ? CAMERA.back[0] : 0
+  if (film) return { arms, turn: arms + SHOUT.fire - SHOUT.arms - CAMERA.ahead, fire, round: CAMERA.round, kick, due: arms + SHOUT.fire - SHOUT.arms }
+  const turn = thrust >= 0 ? thrust : fire
+  return { arms, turn, fire, round: CAMERA.roundLive, kick, due: fire >= 0 ? fire : thrust >= 0 ? thrust + CAMERA.roundLive : -1 }
+}
 
 export const LAST_LOW = CAMERA.rise[1] + CAMERA.hold + CAMERA.turn
 
@@ -107,10 +113,17 @@ export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; s
     rig = mixRig(rig, keyAt(CAMERA.fire), w.k, soon(w.k, CAMERA.lead), w.k, late(w.k, CAMERA.lag))
     glare = w.glare
     view = 'fire'
+    // From the crossing behind the arrow to the fire mark the view closes in, slowly at first and the most as the beam leaves.
+    const from = m.turn + CAMERA.cross * m.round
+    const due = m.due ?? m.fire
+    if (due > from) rig = { ...rig, tall: rig.tall * (1 - CAMERA.creep * clamp((Math.min(time, due) - from) / (due - from)) ** 2) }
   }
   if (m.fire >= 0 && time > m.fire) {
     const f = time - m.fire
-    rig = mixRig(rig, keyAt(CAMERA.blast), ease(f, CAMERA.back[0], CAMERA.back[1]))
+    const kick = m.kick ?? CAMERA.back[0]
+    const span = CAMERA.back[1] - CAMERA.back[0]
+    // Thrown back on the mark itself, the view goes fastest on its first frame; where the beam leaves later it eases off as it did.
+    rig = mixRig(rig, keyAt(CAMERA.blast), kick > 0 ? ease(f, kick, kick + span) : 1 - (1 - clamp(f / span)) ** 3)
     const up = ease(f, CAMERA.rise[0], CAMERA.rise[1])
     rig = mixRig(rig, TOP, up, soon(up, CAMERA.lift), soon(up, CAMERA.lift), up, soon(up, CAMERA.lift))
     if (up > 0 && up < 1) rig = { ...rig, tall: rig.tall * (1 + CAMERA.wide * Math.sin(Math.PI * up)) }
@@ -120,9 +133,9 @@ export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; s
       const tall = Math.exp(lerp(Math.log(TOP.tall), Math.log(ABOVE.tall), late(turn, CAMERA.lift)))
       rig = { at: [lerp(TOP.at[0], ABOVE.at[0], to), lerp(TOP.at[1], ABOVE.at[1], to), 0], az: lerp(TOP.az, ABOVE.az, turn), el: 90, tall, fov: ABOVE.fov }
     }
-    if (f > CAMERA.back[0]) {
+    if (f > kick) {
       view = f < CAMERA.rise[0] ? 'blast' : up < 1 ? 'end' : 'above'
-      const b = f - CAMERA.back[0]
+      const b = f - kick
       const k = CAMERA.shake * Math.exp(-b / CAMERA.shakeDies) * smooth(b / 0.05) * (1 - up)
       shake = [k * Math.sin(b * 83), k * Math.sin(b * 67 + 1.3)]
     }
@@ -246,7 +259,7 @@ let kept: { time: number; m: Marks; out: Record<string, number> | null } | null 
 
 export function fadesOf(time: number, m: Marks): Record<string, number> | null {
   if (!CAMERA.on || m.arms < 0) return null
-  if (kept && kept.time === time && kept.m.arms === m.arms && kept.m.turn === m.turn && kept.m.fire === m.fire && kept.m.round === m.round) return kept.out
+  if (kept && kept.time === time && kept.m.arms === m.arms && kept.m.turn === m.turn && kept.m.fire === m.fire && kept.m.round === m.round && kept.m.kick === m.kick && kept.m.due === m.due) return kept.out
   const n = Math.round(CAMERA.fade.over * 60)
   let out: Record<string, number> | null = null
   for (let i = -n; i <= n; i++) {
