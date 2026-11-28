@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
-import { HEADER_OUT, isHeader, liveFlow, slideHeader, Stage, type Chrome, type Driver, type DrawList, type Frame, type PageMaker } from '../src/stage/stage'
+import { HEADER_OUT, isHeader, liveFlow, railFields, slideHeader, Stage, type Chrome, type Driver, type DrawList, type Frame, type PageMaker } from '../src/stage/stage'
 
 const still: Driver = { name: 'bot', input: () => ({ x: 960, y: 900, down: false }) }
 
@@ -17,14 +17,16 @@ const frameOf = (id: string, chrome?: Chrome | null): Frame => {
 }
 
 describe('the header hook', () => {
-  it('leaves every page of the build as it was: none but step 4 says anything of the header, step 4 says it is in place before its fight, and the frame holds what the page drew', () => {
+  it('leaves every page of the build as it was: none but the careers page and step 4 says anything of the header, the careers page has its own navigation and says no header and its caption line, step 4 says it is in place before its fight, and the frame holds what the page drew', () => {
     for (const { page } of liveFlow().slice(0, 6)) {
       const s = new Stage({ mode: 'live', flow: [{ page }], pages, driver: still, seed: config.seed })
       s.advance(30)
       if (page === 'step4') expect(s.page.chrome!(), page).toEqual({ header: 1 })
+      else if (page === 'marketing') expect(s.page.chrome!(), page).toEqual({ header: 0, caption: 980 })
       else expect(s.page.chrome, page).toBeUndefined()
       const list: DrawList = []
       s.page.draw(list)
+      railFields(list, s.page.fields?.() ?? null)
       expect(s.frameAt(s.step / stepHz).list, page).toEqual(list)
     }
   })
