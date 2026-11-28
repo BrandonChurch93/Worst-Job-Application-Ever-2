@@ -158,11 +158,11 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
         const line = e.pxB > 0 ? Math.exp(-((e.off / (0.5 * e.wide + 3)) ** 2)) * step(0.04, 0.16, e.t) : 0
         const patch = step(0.36, 0.6, noise(x / 64 + s.tag * 3.7, y / 64 + 5.5, seed + 50))
         const where = Math.max(rim * (0.3 + 0.7 * patch), line * (0.45 + 0.55 * patch), 0.14 * step(-10, -40, e.px) * patch)
-        const blob = fbm(x / 8 + 50, y / 8, seed + 51)
-        ember = 0.86 * step(0.54, 0.66, blob) * (0.4 + 0.6 * step(0.36, 0.56, fine)) * where
+        const blob = fbm(x / 6 + 50, y / 6, seed + 51)
+        ember = 0.62 * step(0.57, 0.68, blob) * (0.3 + 0.7 * step(0.4, 0.6, fine)) * where
         // And the cracks of the crust glow in places.
         const vein = 1 - Math.abs(2 * fbm(x / 26 + 9.1, y / 26 + 2.3, seed + 53) - 1)
-        ember = Math.max(ember, 0.74 * step(0.94, 0.992, vein) * step(0.42, 0.58, blot) * Math.max(rim, 0.7 * line, 0.2 * patch) * step(2, -14, e.px))
+        ember = Math.max(ember, 0.66 * step(0.95, 0.992, vein) * step(0.42, 0.58, blot) * Math.max(rim, 0.7 * line, 0.2 * patch) * step(2, -14, e.px))
       }
       if (soot < 0.012 && ember < 0.012) continue
       // When it burns: the front runs out along the line in the first part of the blast, and the black spreads from the middle to the rim for the rest of it.
