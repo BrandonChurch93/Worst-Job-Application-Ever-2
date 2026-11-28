@@ -312,11 +312,15 @@ export function makeFinishFx(): FinishFx {
       const grow = 0.3 + 0.7 * Math.min(1, k) + 0.9 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))
       const d = flameData.array as Float32Array
       let n = 0
+      // In the power-up (`ring` 1) the fire is low: it laps at the feet and the ring, and a few thin licks rise past the arms. Without the ring it stands behind the whole figure.
+      const low = fx.ring
+      const mixed = (hi: number, lo: number): number => hi + (lo - hi) * low
       for (let j = 0; j < BACK; j++) {
         const u = (j + 0.5) / BACK
         const th = Math.PI * (0.92 - 0.84 * u)
         const seed = hash01(j, 5, SEED)
-        flames.setMatrixAt(n, card(p, 2 + Math.cos(th) * 20, 26 + Math.sin(th) * 22, -3.5, 46 + 12 * seed, (96 + 34 * seed) * grow * (0.8 + 0.3 * Math.sin(th)), -Math.cos(th) * 0.42))
+        const tall = mixed((96 + 34 * seed) * (0.8 + 0.3 * Math.sin(th)), 30 + 12 * seed) * grow
+        flames.setMatrixAt(n, card(p, mixed(2 + Math.cos(th) * 20, (u - 0.5) * 84), mixed(26 + Math.sin(th) * 22, 0), -3.5, mixed(46 + 12 * seed, 40 + 8 * seed), tall, -Math.cos(th) * mixed(0.42, 0.2)))
         d[n * 4] = seed + 0.61
         d[n * 4 + 1] = 0.5 * Math.min(1, k) * (1 - 0.6 * fx.burst)
         d[n * 4 + 2] = 0.15
@@ -330,10 +334,14 @@ export function makeFinishFx(): FinishFx {
         const seed = hash01(j, 1, SEED)
         const rx = 37 + 8 * seed
         const ry = 50
-        const bx = 2 + Math.cos(th) * rx * 0.86
-        const by = 44 + Math.sin(th) * ry * 0.8
-        const tall = (44 + 38 * hash01(j, 2, SEED)) * grow * (1.1 - 0.25 * Math.max(0, Math.sin(th)))
-        flames.setMatrixAt(n, card(p, bx, by, -2.5, 22 + 10 * seed, tall, -Math.cos(th) * 0.5))
+        // The first three are the licks: thin, and as tall as the fists.
+        const lick = j < 3
+        const lx = lick ? [-47, 49, -58][j]! : ((j - 3 + 0.5) / (pieces.tongues - 3) - 0.5) * 112
+        const ltall = lick ? [84, 92, 58][j]! * (0.85 + 0.3 * seed) : 20 + 16 * hash01(j, 2, SEED)
+        const bx = mixed(2 + Math.cos(th) * rx * 0.86, lx)
+        const by = mixed(44 + Math.sin(th) * ry * 0.8, 0)
+        const tall = mixed((44 + 38 * hash01(j, 2, SEED)) * (1.1 - 0.25 * Math.max(0, Math.sin(th))), ltall) * grow
+        flames.setMatrixAt(n, card(p, bx, by, -2.5, mixed(22 + 10 * seed, lick ? 11 + 3 * seed : 17 + 8 * seed), tall, mixed(-Math.cos(th) * 0.5, (seed - 0.5) * 0.3)))
         d[n * 4] = seed
         d[n * 4 + 1] = Math.min(1, k) * (1 - 0.6 * fx.burst)
         d[n * 4 + 2] = 0.15
@@ -346,10 +354,11 @@ export function makeFinishFx(): FinishFx {
         const seed = hash01(j, 3, SEED)
         const gx = Math.cos(ph) * 56 * wide
         const gy = Math.sin(ph) * 21 * wide
-        const tall = (11 + 15 * hash01(j, 4, SEED)) * grow
+        // The ring is the main fire.
+        const tall = (22 + 22 * hash01(j, 4, SEED)) * grow
         // On the ground: the card's foot is carried from the page to the figure's plane at height 0.
         const a = STAND.rise * p.rise
-        flames.setMatrixAt(n, card(p, gx, -gy * Math.cos(a), gy * Math.sin(a), 9 + 5 * seed, tall, (seed - 0.5) * 0.5))
+        flames.setMatrixAt(n, card(p, gx, -gy * Math.cos(a), gy * Math.sin(a), 13 + 7 * seed, tall, (seed - 0.5) * 0.5))
         d[n * 4] = seed + 0.37
         d[n * 4 + 1] = Math.min(1, k) * (1 - fx.burst) * fx.ring
         d[n * 4 + 2] = 0.5
