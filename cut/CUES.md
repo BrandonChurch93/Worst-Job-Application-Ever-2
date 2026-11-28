@@ -2,7 +2,7 @@
 
 Made by `npm run cut`. Do not edit by hand.
 
-Film B: 11406 frames at 60 a second, 190.1 s. Times are in seconds from the first frame of the film. A frame is counted from 0.
+Film B: 11331 frames at 60 a second, 188.85 s. Times are in seconds from the first frame of the film. A frame is counted from 0.
 
 ## Beats
 
@@ -39,12 +39,12 @@ Film B: 11406 frames at 60 a second, 190.1 s. Times are in seconds from the firs
 | `boss.popups` | 155.700 | 9342 | 9455 | `popup` | 156.254 | 9375 | yes |
 | `boss.lastStand` | 157.600 | 9456 | 9593 | `session-expired` | 157.742 | 9464 | yes |
 | `boss.collapse` | 159.900 | 9594 | 9665 | `power-down` | 160.113 | 9606 | yes |
-| `boss.finish` | 161.100 | 9666 | 10439 | `finish-fire` | 165.242 | 9914 | yes |
-| `boss.press` | 174.000 | 10440 | 10511 | `button-press` | 174.071 | 10444 | yes |
-| `decision.wait` | 175.200 | 10512 | 10631 | `hold-music` | 175.600 | 10536 | yes |
-| `decision.letter` | 177.200 | 10632 | 10871 | `stamp` | 180.633 | 10838 | yes |
-| `decision.metrics` | 181.200 | 10872 | 11213 | `button-press` | 186.533 | 11192 | yes |
-| `decision.reset` | 186.900 | 11214 | 11405 | `page-turn` | 186.988 | 11219 | yes |
+| `boss.finish` | 161.100 | 9666 | 10364 | `finish-fire` | 163.963 | 9837 | yes |
+| `boss.press` | 172.750 | 10365 | 10436 | `button-press` | 172.825 | 10369 | yes |
+| `decision.wait` | 173.950 | 10437 | 10556 | `hold-music` | 174.350 | 10461 | yes |
+| `decision.letter` | 175.950 | 10557 | 10796 | `stamp` | 179.383 | 10763 | yes |
+| `decision.metrics` | 179.950 | 10797 | 11138 | `button-press` | 185.283 | 11117 | yes |
+| `decision.reset` | 185.650 | 11139 | 11330 | `page-turn` | 185.738 | 11144 | yes |
 
 ## Events with a cue
 
@@ -1338,35 +1338,35 @@ Film B: 11406 frames at 60 a second, 190.1 s. Times are in seconds from the firs
 | 160.071 | 9604 | `boss.collapse` | `dart-hit` | `dart-hit` | no |
 | 160.071 | 9604 | `boss.collapse` | `shot-round` | `dart-hit` | no |
 | 160.113 | 9606 | `boss.collapse` | `power-down` | `power-down` | no |
-| 165.242 | 9914 | `boss.finish` | `finish-fire` | `finish-fire` | no |
-| 174.071 | 10444 | `boss.press` | `button-press` | `button-press` | no |
-| 174.700 | 10482 | `boss.press` | `page-turn` | `page-turn` | no |
-| 175.600 | 10536 | `decision.wait` | `hold-music` | `hold-music` | no |
-| 175.854 | 10551 | `decision.wait` | `step` | `step` | no |
-| 175.887 | 10553 | `decision.wait` | `step` | `step` | no |
-| 175.912 | 10554 | `decision.wait` | `step` | `step` | no |
-| 175.938 | 10556 | `decision.wait` | `step` | `step` | no |
-| 175.958 | 10557 | `decision.wait` | `step` | `step` | no |
-| 175.979 | 10558 | `decision.wait` | `step` | `step` | no |
-| 176.000 | 10560 | `decision.wait` | `step` | `step` | no |
-| 176.021 | 10561 | `decision.wait` | `step` | `step` | no |
-| 176.046 | 10562 | `decision.wait` | `step` | `step` | no |
-| 176.071 | 10564 | `decision.wait` | `step` | `step` | no |
-| 176.104 | 10566 | `decision.wait` | `step` | `step` | no |
-| 176.158 | 10569 | `decision.wait` | `step` | `step` | no |
-| 178.000 | 10680 | `decision.letter` | `letter-drop` | `letter-drop` | no |
-| 178.000 | 10680 | `decision.letter` | `paper-slide` | `paper-slide` | no |
-| 178.400 | 10704 | `decision.letter` | `metrics-card` | `metrics-card` | no |
-| 179.813 | 10788 | `decision.letter` | `step` | `step` | no |
-| 179.867 | 10792 | `decision.letter` | `step` | `step` | no |
-| 179.917 | 10795 | `decision.letter` | `step` | `step` | no |
-| 179.967 | 10798 | `decision.letter` | `step` | `step` | no |
-| 180.042 | 10802 | `decision.letter` | `step` | `step` | no |
-| 180.633 | 10838 | `decision.letter` | `stamp` | `stamp` | yes |
-| 180.633 | 10838 | `decision.letter` | `flatten` | `flatten` | yes |
-| 182.971 | 10978 | `decision.metrics` | `peel-up` | `peel-up` | no |
-| 186.533 | 11192 | `decision.metrics` | `button-press` | `button-press` | no |
-| 186.988 | 11219 | `decision.reset` | `page-turn` | `page-turn` | no |
+| 163.963 | 9837 | `boss.finish` | `finish-fire` | `finish-fire` | no |
+| 172.825 | 10369 | `boss.press` | `button-press` | `button-press` | no |
+| 173.450 | 10407 | `boss.press` | `page-turn` | `page-turn` | no |
+| 174.350 | 10461 | `decision.wait` | `hold-music` | `hold-music` | no |
+| 174.604 | 10476 | `decision.wait` | `step` | `step` | no |
+| 174.637 | 10478 | `decision.wait` | `step` | `step` | no |
+| 174.662 | 10479 | `decision.wait` | `step` | `step` | no |
+| 174.688 | 10481 | `decision.wait` | `step` | `step` | no |
+| 174.708 | 10482 | `decision.wait` | `step` | `step` | no |
+| 174.729 | 10483 | `decision.wait` | `step` | `step` | no |
+| 174.750 | 10485 | `decision.wait` | `step` | `step` | no |
+| 174.771 | 10486 | `decision.wait` | `step` | `step` | no |
+| 174.796 | 10487 | `decision.wait` | `step` | `step` | no |
+| 174.821 | 10489 | `decision.wait` | `step` | `step` | no |
+| 174.854 | 10491 | `decision.wait` | `step` | `step` | no |
+| 174.908 | 10494 | `decision.wait` | `step` | `step` | no |
+| 176.750 | 10605 | `decision.letter` | `letter-drop` | `letter-drop` | no |
+| 176.750 | 10605 | `decision.letter` | `paper-slide` | `paper-slide` | no |
+| 177.150 | 10629 | `decision.letter` | `metrics-card` | `metrics-card` | no |
+| 178.563 | 10713 | `decision.letter` | `step` | `step` | no |
+| 178.617 | 10717 | `decision.letter` | `step` | `step` | no |
+| 178.667 | 10720 | `decision.letter` | `step` | `step` | no |
+| 178.717 | 10723 | `decision.letter` | `step` | `step` | no |
+| 178.792 | 10727 | `decision.letter` | `step` | `step` | no |
+| 179.383 | 10763 | `decision.letter` | `stamp` | `stamp` | yes |
+| 179.383 | 10763 | `decision.letter` | `flatten` | `flatten` | yes |
+| 181.721 | 10903 | `decision.metrics` | `peel-up` | `peel-up` | no |
+| 185.283 | 11117 | `decision.metrics` | `button-press` | `button-press` | no |
+| 185.738 | 11144 | `decision.reset` | `page-turn` | `page-turn` | no |
 
 ## Narrator lines
 
@@ -1383,6 +1383,6 @@ Film B: 11406 frames at 60 a second, 190.1 s. Times are in seconds from the firs
 | `line.boss.verify.0` | `boss.verify` | 125.100 | 7506 | 133.590 | 8014 | take | -3.286 | They declare themselves human. / The form / takes that as a threat. |
 | `line.boss.unfold.0` | `boss.unfold` | 130.304 | 7818 | 153.628 | 9217 | take | -11.699 | The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab. |
 | `line.boss.unfold.1` | `boss.unfold` | 141.929 | 8516 | 147.519 | 8850 | take | -2.805 | But then / they remember / their student loans. |
-| `line.boss.unfold.2` | `boss.unfold` | 144.714 | 8683 | 148.668 | 8919 | take | 31.965 | They turn back. / One more round. |
-| `line.decision.letter.0` | `decision.letter` | 180.633 | 10838 | 193.375 | 11602 | take | -6.387 | After careful consideration, / the company / has decided / to move forward / with other candidates. |
-| `line.decision.reset.0` | `decision.reset` | 186.988 | 11219 | 190.186 | 11410 | take |  | On to / the next application. |
+| `line.boss.unfold.2` | `boss.unfold` | 144.714 | 8683 | 148.668 | 8919 | take | 30.715 | They turn back. / One more round. |
+| `line.decision.letter.0` | `decision.letter` | 179.383 | 10763 | 192.125 | 11527 | take | -6.387 | After careful consideration, / the company / has decided / to move forward / with other candidates. |
+| `line.decision.reset.0` | `decision.reset` | 185.738 | 11144 | 188.936 | 11335 | take |  | On to / the next application. |

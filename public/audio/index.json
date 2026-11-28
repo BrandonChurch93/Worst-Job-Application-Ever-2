@@ -947,6 +947,21 @@
   ],
   "lines": [
     {
+      "id": "line.boss.finish.0",
+      "file": "line.boss.finish.0.mp3",
+      "seconds": 4.015,
+      "mime": "audio/mpeg",
+      "bytes": 97845,
+      "sha256": "bbc4a3cadbadb66d110e0239981973b3267f4651c42a526adb1c0b6558a90720",
+      "words": "I have / five years / of experience",
+      "starts": [
+        0.1,
+        0.66,
+        1.3
+      ],
+      "peak": 1.85
+    },
+    {
       "id": "line.boss.unfold.0",
       "file": "line.boss.unfold.0.mp3",
       "seconds": 11.325,
@@ -1128,5 +1143,5 @@
       ]
     }
   ],
-  "totalBytes": 7263004
+  "totalBytes": 7360849
 }
