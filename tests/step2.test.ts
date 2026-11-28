@@ -75,7 +75,7 @@ describe('step 2, the layout', () => {
     for (const row of ROWS) for (const leaf of ['label', 'helper']) want.push(`rows.${row}.${leaf}`)
     want.push('rows.phone.panel', 'rows.phone.gaveUp', 'rows.birth.recorded', 'rows.volume.done')
     for (const leaf of want) expect(keys, leaf).toContain(`copy:step2.${leaf}`)
-    for (const leaf of ['birth.placeholder', 'birth.stop', 'birth.missed', 'birth.panel', 'volume.sign']) expect(keys, leaf).toContain(`copy:drafts.step2.${leaf}`)
+    for (const leaf of ['birth.placeholder', 'birth.stop', 'birth.missed', 'birth.stopPanel', 'volume.sign']) expect(keys, leaf).toContain(`copy:step2.rows.${leaf}`)
   })
 
   it('draws only shapes whose words are keys, in the film and on the sheet', () => {
