@@ -346,6 +346,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const voices = new Map<Booking, Voice>()
   const marks = new Map<Booking, string>()
   const stepped = new WeakMap<Booking, number[]>()
+  const hidden = new WeakMap<Booking, number>()
   const byMark = new Set<string>()
   const entries: SoundLogEntry[] = []
   const note = (e: SoundLogEntry) => {
@@ -605,6 +606,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   }
 
   // A line whose phrases come on marks of its page: each mark shows the next phrase, the last mark the last phrase, and the end mark ends the line.
+  // The mark its row names as hides takes its caption away from then on; the voice is not touched.
   const step = (name: string, page: string) => {
     const now = backend!.now()
     for (const [b, l] of [...speaking]) {
@@ -623,6 +625,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
             cut(b)
           }
         }
+      } else if (steps.hides !== undefined && name === steps.hides) {
+        if (!hidden.has(b)) hidden.set(b, at)
       } else if (steps.ends !== undefined && name === steps.ends) {
         desk.shorten(now, b, at, [])
         cut(b)
@@ -814,7 +818,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
           const got = spoken[l.key]?.steps ? stepped.get(b) ?? [] : null
           l.phrases.forEach((p, k) => {
             const start = got ? got[k] : b.start + p.from
-            const end = Math.min(b.end, got ? got[k + 1] ?? b.end : b.start + p.to)
+            const end = Math.min(b.end, hidden.get(b) ?? b.end, got ? got[k + 1] ?? b.end : b.start + p.to)
             if (start !== undefined && start < end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: got ? builtTo(l, k) : p.words, start, end, draft: l.draft, loud: l.loud, ...(got ? { step: { k, n: l.phrases.length }, whole: builtTo(l, l.phrases.length - 1) } : {}) })
           })
         }

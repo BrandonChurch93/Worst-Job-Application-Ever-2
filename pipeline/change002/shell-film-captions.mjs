@@ -4,6 +4,7 @@
 // with --size they are as given, and with neither they are 1920 by 1080. The panel is the page's own, which is drawn smaller on a smaller page.
 // The list is kept beside this file when no --name is given: shell-film-captions.json, or shell-film-captions-960x540.json for --size 960x540.
 // The lines and their frames are the ones the film gives (timedLines of src/copy.ts); the phrases are those of src/audio/standin.ts; the panel is the one of src/ui/said.ts.
+// A line that leaves on a mark of the film (steps.hides of its row) is ended on that mark's frame in cut/CUTLIST.json.
 // --proof lays them over a kept still of the careers page held for the length asked, to show the timing; it is not the film.
 import fs from 'node:fs'
 import os from 'node:os'
@@ -49,7 +50,12 @@ const lines = copy.timedLines(c, script).map((l) => ({ id: cues.filmLineId(l.bea
 // Each phrase lies where the live site's panel lies on the page it is said over: `CAPTION.lowOn` for the boss page and the decision page, `CAPTION.low` elsewhere.
 // A line set off by the turn of the page (line 9) is given the place of the page turned to for the whole of it, the half second of the turn too.
 const unitOf = (key) => c.film.beats.find((b) => b.id === key.slice(0, key.lastIndexOf('.')))?.unit ?? ''
-const caps = standin.filmCaptions(lines, fps).map((cap) => {
+// The film's marks by frame are the cut list's (cut/CUTLIST.json, made by npm run cut). A line whose row names a mark as steps.hides leaves on it: see filmCaptions.
+const cutFile = at('cut', 'CUTLIST.json')
+const cut = fs.existsSync(cutFile) ? readJson(cutFile) : { fps, events: [] }
+const hideNames = new Set(Object.values(cues.spoken).map((row) => row.steps?.hides).filter((n) => n !== undefined))
+const marks = cut.events.filter((e) => hideNames.has(e.name)).map((e) => ({ name: e.name, frame: Math.round(e.frame * fps / cut.fps) }))
+const caps = standin.filmCaptions(lines, fps, undefined, marks).map((cap) => {
   const page = cues.filmLinePage(cap.key, unitOf(cap.key))
   return { ...cap, page, lowerEdgeY: said.captionLow(page) }
 })
@@ -115,6 +121,7 @@ const record = {
   drawn: 'each picture is drawn at this size, the size of the film it is laid over, and is laid without scaling; lowerEdgeY and lowerEdgeYOn are in pixels of the 1920 by 1080 page, each box is in pixels of the picture',
   outside, lowerEdgeY: low, lowerEdgeYOn: said.CAPTION.lowOn,
   note: 'every line is a silent stand-in; a line with draft true is a draft', lines, captions: list,
+  hides: { what: 'the marks of the cut list on which a caption leaves before its line ends (steps.hides of its row in src/audio/cues.ts), by frame at the frames a second of this list; none when the film sends no such mark', names: [...hideNames], marks },
   filter, filterUse: 'ffmpeg -i FILM -i each picture in order -filter_complex FILTER -map [vN] -map 0:a? ...; n is the frame of the film'
 }
 const lay = (film, out, fit = false) => execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...film, ...list.flatMap((x) => ['-i', at(x.file)]), '-filter_complex', fit ? `[0:v]scale=${SIZE.width}:${SIZE.height}[v0];${filter.replace('[0:v]', '[v0]')}` : filter, '-map', `[v${list.length}]`, '-r', String(fps), '-pix_fmt', 'yuv420p', out])
