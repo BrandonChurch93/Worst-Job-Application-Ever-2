@@ -26,22 +26,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 191, 2026-11-28T04:22Z, Phase 5.
+Status 192, 2026-11-28T04:52Z, Phase 5.
 
-1. `out/stills/status/01-the-fall-to-the-press-on-the-real-boss-page-with.jpg`: One sheet, 1200 by 741, nine film frames in three rows with their times printed. The fall: the whole arena with the fallen boss burning at the centre and the health bar alone on top. The arms: the closer view, the white arrow at the left standing on two feet. The charge: a blue-white ball at the arrow's hip and a low gold flame. The blast: a blue-white beam across the frame, parts of the boss flying, the Submit button tilted inside the wash. Two frames of the black crater with smoke and the words Click to submit above, the arrow walking on legs with a thin orange rim on legs and arms. The arrow on its knees left of the button. The fist raised. The fist down on Submit.
-2. `out/stills/status/02-the-power-up-at-the-closer-view-on-the-real-boss.jpg`: One strip, 1440 by 450, eight film frames with their times printed. First the whole arena with the arrow standing left of the middle beside a glass pane. Then five frames of the closer view: the arrow on two legs with both fists up, a gold ring on the ground and gold flames that grow and then sink. Then the whole page again with the turret out of the boss, and last the arrow small again with a dark mark on it.
-3. `out/stills/status/03-the-power-up-flames-fourth-pass-your-pose-sheet-.jpg`: One sheet, 1200 by 358, three panels. Left, the approved pose sheet's Powering up figure: a thick glossy white arrow with its fists beside its body, a wide even squat, thin curling gold flames one can see through and a ring of flames on the ground. Middle, the build from the side: the flat white arrow on bent legs with both fists raised, the left fist higher, a gold ring on the ground and many tall wide flames with pale cores standing behind and beside it, one small flame in front of the right shoe. Right, the build seen straight down as the film sees it: the figure foreshortened and the flames short.
-4. `out/stills/status/04-the-ball-held-in-front-before-the-beam-43-frames.jpg`: One sheet, 1204 by 517, 43 small frames in rows from the finish helper's test page, from half a second before the beam to a fifth of a second after it. In every frame before the beam a blue-white ball with lightning round it is held in front of the arrow at both hands. At the beam's moment the ball shrinks, in the next frame the beam leaves the hands, and a tenth of a second later it is at its full width.
+1. `out/stills/status/01-the-power-up-the-ball-before-the-beam-the-walk-t.jpg`: One sheet, 1200 by 494, six film frames in two rows with their times printed. Top row: at 44.80 s the arrow stands small beside a glass pane with gold flames round it and the boss with its Submit button to the right; at 63.00 s the arena is scorched and the arrow holds a white ball of light in front of itself; at 66.50 s the arrow walks on two legs toward the Submit button lying in a black crater, a grey wisp of smoke over the button's right end. Bottom row: at 67.50 s the arrow is nearer and the words Click to submit stand above; at 69.00 s it kneels left of the button; at 70.20 s one fist is raised.
+2. `out/stills/status/02-the-power-up-flames-sixth-pass-your-pose-sheet-b.jpg`: One sheet, 1198 by 690. Top row, three panels: the approved pose sheet's Powering up figure, a glossy white arrow in a wide squat with fists beside its body, low gold flames and a ring of flames on the ground; the build before in the film's view from above, with tall thin pale flames standing far over the figure; the build after, with lower flames, orange gold at their edges, and a bright pool of light on the ground. Bottom row: the build from the side before and after, the arrow on bent legs with both fists raised.
+3. `out/stills/status/03-the-closer-view-at-the-power-up-the-kept-size-le.jpg`: One sheet, 1200 by 682, four panels. Top left, the whole frame at 1.6 times: the arrow with both fists up and flames round its feet beside a glass pane, grey blocks on the pale ground, the boss with its orange Submit button at the right. Top right, the same frame at 2.2 times: the arrow larger, only the boss's left arms and green shield still in the picture. Bottom row: the arrow's fist, leg and the flames at real size for each, where the flames end in a straight upright edge.
+4. `out/stills/status/04-decision-with-the-slow-move-in-during-line-8-a-f.jpg`: One sheet, 1197 by 1006, whole film frames of the Decision page in rows of five with the time and the spoken words printed under each, from 5.5 s to 18.5 s. First row: a red stamp comes down on a letter and leaves the word REJECTED, three counters run. Then the view comes closer step by step: the page's header leaves the top, and the letter with REJECTED, the red stamp at rest, a small arrow beside it and the orange Accept Rejection button fill the frame for seven frames. The last four frames show the whole page again, the arrow on the button, and the words On to.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 360 at 2026-11-28T04:22:32Z, allowance: continuation 3
-time used in this phase: 10.49 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 10.49 h of 12.00 h allowed
-time used: 70.55 of 72.00 hours before the review
+clock: phase 5, tick 361 at 2026-11-28T04:52:49Z, allowance: continuation 3
+time used in this phase: 11.00 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 11.00 h of 12.00 h allowed
+time used: 71.06 of 72.00 hours before the review
 extra rounds: no
 half point: reached
 box end: reached
