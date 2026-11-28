@@ -916,7 +916,7 @@ Nothing but tools, one patch file and these notes was committed. Every knock-out
 7. Not done. No test of the spheres in my test file: the mend is in the camera helper's file and its own test (tests/b-camera.test.ts at 55f111c9) holds it; a case of mine would fail on this branch, which does not carry the mend. Not measured on trial/p15: UNKNOWN whether the three numbers are 0 there. Two top-level see-through things sit at places 21 and 22 of their parent alone and at 71 and 72 after the earlier frames; they are drawn at the same places in the order (161, 162) and the picture is 0 px with the spheres fixed; what they are was not looked up.
 8. The tool: pipeline/change002/boss-draws.mjs, one record for every shadow draw inside a film frame (each light's slot, place, distance, strength, near, far, projection, map, the things handed to each map, the spheres of the bent things, and the order the things are then drawn in). It needs the one line in src/main.ts for the run only, as boss-lamps does.
 
-## The Builder's ruling of 13:43Z, November 28: the trial measured, the lamp line and the aim line (written 14:00Z)
+## The Builder's ruling of 13:43Z, November 28: the trial measured, the lamp line and the aim line (written 13:59Z)
 
 A detached checkout of agent/trial-p15 dbb3b410 beside this one, my tools copied into its working tree, nothing committed or pushed there. hd 1920x1080, draft tier. The trial holds the fast lengths; the boss unit is frames 7278 to 10511.
 
