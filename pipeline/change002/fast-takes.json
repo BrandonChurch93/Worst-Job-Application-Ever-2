@@ -1,0 +1,225 @@
+{
+ "what": "The lengths and the phrase starts of the narrator's lines as they are without pause marks, for timing the pages before such takes are kept. They are provisional: public/audio/index.json holds the kept takes, and nothing here is one. Lines 2 to 9 are the free mend of the kept takes (pauses cut, 0.7 times as long, the pitch brought to about 102 Hz); the files are in the Builder's working tree only. Line 1 is the one new take. Brandon's decision on the takes is with Partner (mail of 06:05Z November 28, 2026).",
+ "measured": "2026-11-28, by the Builder (wja-scratch/p14/mendall.py and setindex.py); seconds of each file and the second each phrase starts at",
+ "use": "A page that is timed ahead of the kept takes types these numbers where it types the kept take's today, on a branch that is not merged before the takes are kept; its test that holds the numbers to public/audio/index.json holds them to this file until then.",
+ "lines": {
+  "line.marketing.stroll.0": {
+   "words": "Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026.",
+   "seconds": 7.802,
+   "starts": [
+    0.13,
+    1.16,
+    1.62,
+    2.84,
+    3.83,
+    4.67,
+    5.61,
+    6.57
+   ],
+   "keptSeconds": 19.46,
+   "keptStarts": [
+    0.004,
+    1.844,
+    3.912,
+    6.858,
+    9.464,
+    12.198,
+    14.596,
+    17.238
+   ],
+   "source": "the one new take at the saved voice settings, 55 credits, not yet kept; its phrase starts are estimated from its gaps and syllable counts"
+  },
+  "line.step1.firstName.0": {
+   "words": "The application / has sensed / a candidate. / ATS turrets rise.",
+   "seconds": 4.457,
+   "starts": [
+    0.03,
+    0.996,
+    1.889,
+    2.869
+   ],
+   "keptSeconds": 9.242,
+   "keptStarts": [
+    0.004,
+    2.43,
+    4.706,
+    6.992
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.step1.shredded.0": {
+   "words": "The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway.",
+   "seconds": 5.925,
+   "starts": [
+    0.031,
+    0.752,
+    1.659,
+    3.255,
+    4.637,
+    5.397
+   ],
+   "keptSeconds": 13.394,
+   "keptStarts": [
+    0.002,
+    2.072,
+    4.364,
+    7.578,
+    10.596,
+    12.652
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.step2.crank.0": {
+   "words": "The applicant / must turn the volume / all the way up.",
+   "seconds": 2.899,
+   "starts": [
+    0.03,
+    0.765,
+    2.151
+   ],
+   "keptSeconds": 6.282,
+   "keptStarts": [
+    0.004,
+    2.172,
+    5.232
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.step2.crank.1": {
+   "words": "They will regret that.",
+   "seconds": 1.11,
+   "starts": [
+    0.03
+   ],
+   "keptSeconds": 1.586,
+   "keptStarts": [
+    0.002
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.pinball.seal.0": {
+   "words": "The company / gently collects / the applicant / for an unpaid assessment.",
+   "seconds": 4.047,
+   "starts": [
+    0.03,
+    0.685,
+    1.836,
+    2.662
+   ],
+   "keptSeconds": 8.882,
+   "keptStarts": [
+    0.004,
+    1.998,
+    4.69,
+    6.906
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.boss.verify.0": {
+   "words": "They declare themselves human. / The form / takes that as a threat.",
+   "seconds": 4.27,
+   "starts": [
+    0.032,
+    1.974,
+    2.818
+   ],
+   "keptSeconds": 8.49,
+   "keptStarts": [
+    0.004,
+    3.958,
+    6.43
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.boss.unfold.0": {
+   "words": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
+   "seconds": 11.325,
+   "starts": [
+    0.031,
+    0.843,
+    2.264,
+    3.986,
+    5.197,
+    6.177,
+    8.319,
+    9.53
+   ],
+   "keptSeconds": 23.324,
+   "keptStarts": [
+    0.006,
+    2.208,
+    5.182,
+    8.524,
+    11.356,
+    13.856,
+    17.88,
+    20.772
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.boss.unfold.1": {
+   "words": "But then / they remember / their student loans.",
+   "seconds": 2.485,
+   "starts": [
+    0.031,
+    0.494,
+    1.228
+   ],
+   "keptSeconds": 5.59,
+   "keptStarts": [
+    0.004,
+    1.736,
+    3.806
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.boss.unfold.2": {
+   "words": "They turn back. / One more round.",
+   "seconds": 1.91,
+   "starts": [
+    0.031,
+    1.057
+   ],
+   "keptSeconds": 3.954,
+   "keptStarts": [
+    0.004,
+    2.754
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.decision.letter.0": {
+   "words": "After careful consideration, / the company / has decided / to move forward / with other candidates.",
+   "seconds": 6.049,
+   "starts": [
+    0.03,
+    1.721,
+    2.491,
+    3.569,
+    4.822
+   ],
+   "keptSeconds": 12.742,
+   "keptStarts": [
+    0.006,
+    3.466,
+    5.616,
+    8.166,
+    11.01
+   ],
+   "source": "the free mend of the kept take"
+  },
+  "line.decision.reset.0": {
+   "words": "On to / the next application.",
+   "seconds": 1.339,
+   "starts": [
+    0.031,
+    0.395
+   ],
+   "keptSeconds": 3.198,
+   "keptStarts": [
+    0.002,
+    1.862
+   ],
+   "source": "the free mend of the kept take"
+  }
+ }
+}
