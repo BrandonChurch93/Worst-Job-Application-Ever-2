@@ -153,7 +153,7 @@ export const stopId = (r: number): string => `slot-stop-${r}`
 export const PLATE_TYPE = { font: 'inter-600', px: 34, align: 'centre' as const }
 export const PLATE_Y = ROW_Y - 14
 // The openings of the page: the phone's round one and the slot machine's hatch, in page pixels, and how deep they go.
-export const HOLE = { deep: 64, flush: 2, iris: 208, seat: 112, hatch: 26, hatchR: 18, clear: 40, pit: 26, gone: 190 }
+export const HOLE = { deep: 64, flush: 2, iris: 208, seat: 112, hatch: 26, hatchR: 18, clear: 40, pit: 26, gone: 190, under: 58 }
 
 const centred = (id: string, key: string, state: string, i: number): LayoutNode => text(id, key, PROMPT_TYPE, FX + SW(i) / 2, PROMPT_Y, { part: 'type', on: TRAY_Z, states: [state] })
 

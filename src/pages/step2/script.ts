@@ -69,9 +69,9 @@ const ARRIVE = { look: 0.52, there: 0.8 }
 const HAUL = 0.42
 const EASY = { eye: 1.02, load: 1.03, stroll: 1.12, there: 1.66, tap: T.phone - 0.14, steps: 3, hop: 14, tall: 1.26, low: 0.9, land: 0.05, chest: 0.14 }
 // A row opens under it. The first time it only starts, the second time it rears, the third time it has lost its temper and stamps the field open.
-const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: 8.98, go: T.birth + 0.5 } }
+const DREAD = { phone: { start: T.phone + 0.08, go: T.phone + 0.27 }, birth: { rear: 8.93, go: T.birth + 0.5 } }
 // The page opens under it and a machine comes up: it hops back off the place, stands clear and watches, and steps onto the machine once the machine stands. The date's machine comes by itself when the date is whole, 0.14 s after the last key.
-const SHY = { phone: T.phone + 0.1, birth: 9.0, volume: T.volume + 0.08, long: 0.14, hop: 46, to: [{ x: 1235, y: 452 }, { x: 640, y: 452 }, { x: 850, y: 400 }] as P[] }
+const SHY = { phone: T.phone + 0.03, birth: 8.95, volume: T.volume + 0.08, long: 0.14, hop: 46, to: [{ x: 1235, y: 452 }, { x: 628, y: 436 }, { x: 850, y: 400 }] as P[] }
 // The stops: it has learnt to be careful, so it stands over the first button before the reels turn, and takes each reel as its own legend comes.
 const PULL = { leave: 9.2, there: 9.75, tap: 0.09, on: 0.12 }
 // The coins: it hides, shakes them off where it is safe, and comes back angry. The temper is spent on the stamp: it takes the crank with a cool head.

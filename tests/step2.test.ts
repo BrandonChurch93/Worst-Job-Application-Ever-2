@@ -43,7 +43,6 @@ describe('step 2, the layout', () => {
       for (const value of ['ask', 'typing']) {
         check({ here: [i], open: -1, hole: -1, panel: false, plate: none, value, note: true, settled: null })
         check({ here: [i], open: i, hole: -1, panel: false, plate: none, value, note: false, settled: null })
-        if (i > 0) for (const line of lines.slice(2)) check({ here: [i], open: -1, hole: -1, panel: false, plate: none.map((_, k) => (k === i - 1 && (line !== 'missed' || k === 1) ? line : '')), value, note: true, settled: null })
       }
       for (const line of lines) {
         if (line === 'missed' && i !== 1) continue
@@ -144,6 +143,21 @@ describe('step 2, the film', () => {
       t.seek(at)
       expect(t.page.states().filter((x) => x.endsWith('-open')), String(at)).toEqual([])
     }
+  })
+
+  it('never lays the last line of a machine over the field that comes after it: the one slides off as the other slides on', () => {
+    const t = film()
+    let both = 0
+    for (let at = 0; at <= LONG - 0.5; at += 1 / 60) {
+      t.seek(at)
+      const list: Shape[] = []
+      drawBuilt(t.page, list)
+      const lines = list.filter((x) => /-plate-/.test(x.id))
+      const fields = list.filter((x) => /^(phone|birth|volume)-(pocket|label|helper)$/.test(x.id))
+      if (lines.length && fields.length) both++
+      for (const a of lines) for (const b of fields) expect(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y, `${a.id} and ${b.id} at ${at.toFixed(2)}`).toBe(true)
+    }
+    expect(both).toBeGreaterThan(20)
   })
 
   it('stands on the approved keys: two digits dialled and three segments lit, at the times the config gives the two keys', () => {

@@ -65,6 +65,7 @@ const seg = (t: number, a: number, b: number): number => Math.min(1, Math.max(0,
 const out3 = (u: number): number => 1 - (1 - u) * (1 - u) * (1 - u)
 const back = (u: number): number => 1 + 2.70158 * (u - 1) * (u - 1) * (u - 1) + 1.70158 * (u - 1) * (u - 1)
 const hop = (u: number): number => Math.sin(Math.PI * u)
+const unfold = (u: number): number => (u < 0.78 ? 1.07 * (u / 0.78) * (u / 0.78) * (3 - (2 * u) / 0.78) : 1.07 - 0.07 * ((u - 0.78) / 0.22) ** 2 * (3 - (2 * (u - 0.78)) / 0.22))
 const CRANK_BODY = ['crank-base', 'crank-arm', 'crank-hub', 'crank-grip']
 // A legend is not drawn while its part lies further than this under where it stands: type has no page to hide under.
 const UNDER = 1.5
@@ -931,11 +932,12 @@ export function makePage(): PageLogic {
         const gape = t < 0.3 ? out3(seg(t, 0, 0.1)) : 1 - smooth(seg(t, 0.3, 0.42))
         const rise = seg(t, 0.08, 0.24)
         const under = HOLE.gone * (1 - rise * rise)
+        const leap = 30 * hop(seg(t, 0.24, 0.46)) + 9 * hop(seg(t, 0.46, 0.56))
         return {
-          ...STANDING, hole: hatch(gape, HOLE.pit), sink: under - 30 * hop(seg(t, 0.24, 0.46)) - 9 * hop(seg(t, 0.46, 0.56)),
+          ...STANDING, hole: hatch(gape, HOLE.pit), sink: under - leap,
           jolt: t > 0.46 ? 5 * Math.exp(-16 * (t - 0.46)) * Math.sin(60 * (t - 0.46)) : 0,
           lever: t < 0.4 ? 1 : 1 - back(seg(t, 0.4, 0.64)),
-          drop: (id) => (stop(id) < 0 ? 0 : 40 * (1 - back(seg(t, 0.46 + 0.07 * stop(id), 0.58 + 0.07 * stop(id))))),
+          drop: (id) => (stop(id) < 0 ? 0 : HOLE.under * (1 - back(seg(t, 0.46 + 0.07 * stop(id), 0.58 + 0.07 * stop(id)))) + (t < 0.46 + 0.07 * stop(id) ? leap : 0)),
           shown: t >= 0.05
         }
       }
@@ -946,7 +948,7 @@ export function makePage(): PageLogic {
       const midX = (x0 + x1) / 2
       return {
         ...STANDING, hole: hatch(gape, HOLE.pit), sink: under - 14 * hop(seg(t, 0.03, 0.17)), lever: smooth(seg(t, 0, 0.14)),
-        drop: (id) => (stop(id) < 0 ? 0 : 40 * seg(t, 0.03 * (2 - stop(id)), 0.03 * (2 - stop(id)) + 0.08) ** 2),
+        drop: (id) => (stop(id) < 0 ? 0 : HOLE.under * seg(t, 0.03 * (2 - stop(id)), 0.03 * (2 - stop(id)) + 0.08) ** 2),
         coin: (n, x, y) => {
           const from = SWEEP.from + SWEEP.each * (n % 7)
           const u = seg(t, from, from + SWEEP.long)
@@ -959,7 +961,7 @@ export function makePage(): PageLogic {
     const bar = (id: string): number => (id.startsWith('meter-') ? Number(id.slice(6)) : -1)
     if (coming)
       return {
-        ...STANDING, swing: -TAU * 1.5 * (1 - out3(seg(t, 0.02, 0.52))), sign: t < 0.27 ? 0 : back(seg(t, 0.27, 0.77)),
+        ...STANDING, swing: -TAU * 1.5 * (1 - out3(seg(t, 0.02, 0.52))), sign: t < 0.27 ? 0 : unfold(seg(t, 0.27, 0.77)),
         drop: (id) => (CRANK_BODY.includes(id) ? 100 * (1 - back(seg(t, 0, 0.34))) : bar(id) > 0 ? BAR_UNDER * (1 - back(seg(t, 0.14 + 0.03 * bar(id), 0.27 + 0.03 * bar(id)))) : 0)
       }
     const u = seg(t, 0.14, 0.46)
