@@ -1,20 +1,21 @@
-// What the finishing blast leaves on the ground: a scorched trench that starts narrow in front of the arrow and widens along the beam, and at its end a round burn, wider than the trench, where the boss lay and the button now lies. It scorches; it breaks no slab through. Pure, no three.js.
+// What the finishing blast leaves on the ground: a scorched trench that starts narrow in front of the arrow and widens along the beam, a burn wider than the trench where the boss lay and the button now lies, and beyond it a band that narrows on downrange to the edge of the page. After references/approved-002/finish-button-left.png. It scorches; it breaks no slab through. Pure, no three.js.
 import type { BossView } from '../boss/view'
 import { FALLEN } from '../boss/plan'
 import { fbm, noise } from './breaks'
 import { clamp01, rnd } from './change'
+import { KEEP as LAST } from './clear'
 import { ARENA, PAGE, PANES, PILLARS, SEAMS, paneBox } from './layout'
 
 // ahead: px in front of the arrow's centre at which the trench starts. thin: the half width of the trench there. half: its half width where it runs into the burn. burn: the radius of the burn. long: how many times longer the burn is along the line than across it.
-// tail: how far beyond the burn the soot of the blast thins out to nothing, px. words: the box, from the middle of the burn, that the fight keeps clear for the words over the button; no chip lands in it.
+// far: the half width of the band downrange where it leaves the page. net: the size of a plate of the cracked crust, px. words: the box, from the middle of the burn, that the fight keeps clear for the words over the button; no chip lands in it.
 // seconds: how long the blast burns when the view does not say (the fight's SHOUT.gone - SHOUT.fire). chips: the bits of ceramic thrown out, at the high level.
-export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 138, long: 1.1, tail: 320, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 } }
+export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 140, long: 1.7, far: 14, net: 24, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 } }
 
 // The line of the finishing blast as the view gives it: the arrow's centre and the place the boss fell.
 export interface BlastLine { x0: number; y0: number; x1: number; y1: number }
 
 // The same line made ready: where the trench starts and where it leaves the page, the direction, the lengths.
-// (sx, sy) the start of the trench; (ex, ey) where the beam's line leaves the page; (bx, by) the middle of the burn; `at` px from the start to the middle of the burn; `long` px from the start to (ex, ey); `end` px from the start to where the last soot lies.
+// (sx, sy) the start of the trench; (ex, ey) where the beam's line leaves the page; (bx, by) the middle of the burn; `at` px from the start to the middle of the burn; `long` px from the start to (ex, ey); `end` px from the start to where the last soot lies, which is `long`.
 export interface Scorch { sx: number; sy: number; ex: number; ey: number; bx: number; by: number; ux: number; uy: number; long: number; at: number; end: number; tag: number }
 
 const step = (a: number, b: number, x: number): number => {
@@ -35,7 +36,7 @@ export function scorchFrom(l: BlastLine): Scorch {
   const at = Math.max(0, d - SCORCH.ahead)
   const long = Math.max(at + SCORCH.burn, far + 40)
   const tag = (Math.round(l.x0) * 7 + Math.round(l.y0) * 13 + Math.round(l.x1) * 17 + Math.round(l.y1) * 19) & 0xffff
-  return { sx, sy, ex: sx + ux * long, ey: sy + uy * long, bx: l.x1, by: l.y1, ux, uy, long, at, end: at + SCORCH.burn * SCORCH.long + SCORCH.tail, tag }
+  return { sx, sy, ex: sx + ux * long, ey: sy + uy * long, bx: l.x1, by: l.y1, ux, uy, long, at, end: long, tag }
 }
 
 export const lineKeyOf = (l: BlastLine): string => `${l.x0.toFixed(1)},${l.y0.toFixed(1)},${l.x1.toFixed(1)},${l.y1.toFixed(1)}`
@@ -61,33 +62,51 @@ export function aimOf(view: BossView): BlastLine | null {
   return { x0: view.arrow.x, y0: view.arrow.y, x1: FALLEN.x, y1: FALLEN.y }
 }
 
-// How far outside the black a place lies, in px: below 0 inside the trench or the burn, above 0 outside them. `inner` is how deep the black is there.
-// `pxB` is the same for the burn alone, `off` the distance from the wandering middle of the trench, `wide` the trench's half width there, `t` how far along the trench (0 at its start, 1 at the burn), `ba` and `bc` the place along and across the line from the middle of the burn.
-export interface Edge { px: number; inner: number; along: number; across: number; r: number; pxB: number; off: number; wide: number; t: number; ba: number; bc: number }
+// How far outside the black a place lies, in px: below 0 inside the trench, the burn or the band downrange, above 0 outside them. `inner` is how deep the black is there.
+// `pxB` is the same for the burn alone and `pxL` for the trench and the band downrange alone; `off` the distance from the wandering middle of the trench or band, `wide` its half width there, `t` how far along the trench (0 at its start, 1 at the burn), `ba` and `bc` the place along and across the line from the middle of the burn.
+export interface Edge { px: number; inner: number; along: number; across: number; r: number; pxB: number; pxL: number; off: number; wide: number; t: number; ba: number; bc: number }
 
 export function edgeAt(s: Scorch, x: number, y: number, seed: number): Edge {
   const rx = x - s.sx, ry = y - s.sy
   const along = rx * s.ux + ry * s.uy, across = -rx * s.uy + ry * s.ux
   const t = clamp01(along / Math.max(1, s.at))
-  // The middle of the trench wanders: no straight line anywhere.
+  const ba = along - s.at
+  // How far downrange of the burn, 0 at its middle and 1 where the line leaves the page.
+  const d = clamp01(ba / Math.max(1, s.long - s.at))
+  // The middle wanders: no straight line anywhere.
   const off = across - 30 * Math.sqrt(t) * (noise(along / 150 + s.tag * 1.3, 3.1, seed + 41) - 0.5) - 14 * t * (noise(along / 52 + 8.2, 6.7, seed + 40) - 0.5)
-  // Narrow at the hands, wider with every step along the beam.
-  const wide = SCORCH.thin + (SCORCH.half - SCORCH.thin) * t ** 0.7
+  // Narrow at the hands, wider with every step along the beam up to the burn, and narrowing again from the burn to the edge of the page.
+  const wide = ba <= 0 ? SCORCH.thin + (SCORCH.half - SCORCH.thin) * t ** 0.7 : SCORCH.far + (SCORCH.half - SCORCH.far) * (1 - d) ** 1.3
   const big = fbm(x / 62, y / 62, seed + 42), mid = fbm(x / 17, y / 17, seed + 43)
   // Its edge is broken at the size of a hand and of a finger, more so where it is wide.
   const rag = 0.3 + 0.7 * (wide / SCORCH.half)
-  const pxT = Math.hypot(along - t * s.at, off) - wide + rag * (46 * (big - 0.5) + 40 * (mid - 0.5))
-  // The burn: round, a little longer along the beam, its rim eaten in and out.
-  const bx = x - s.bx, by = y - s.by
-  const ba = bx * s.ux + by * s.uy, bc = -bx * s.uy + by * s.ux
+  const pxL = Math.hypot(Math.min(0, along), off) - wide + rag * (46 * (big - 0.5) + 40 * (mid - 0.5))
+  // The burn: wider than the trench, longer along the beam than across it, its rim eaten in and out.
+  const bc = across
   const r = Math.hypot(ba / SCORCH.long, bc)
   const edgeB = SCORCH.burn * (0.86 + 0.5 * (fbm(x / 78 + 9.1, y / 78, seed + 44) - 0.5)) + 34 * (mid - 0.5)
   const pxB = r - edgeB
   // The two run into each other without a corner.
   const k = 52
-  const h = clamp01(0.5 + (0.5 * (pxB - pxT)) / k)
-  const px = pxB + (pxT - pxB) * h - k * h * (1 - h)
-  return { px, inner: pxB < pxT ? edgeB : Math.max(6, wide), along, across, r, pxB, off, wide, t, ba, bc }
+  const h = clamp01(0.5 + (0.5 * (pxB - pxL)) / k)
+  const px = pxB + (pxL - pxB) * h - k * h * (1 - h)
+  return { px, inner: pxB < pxL ? edgeB : Math.max(6, wide), along, across, r, pxB, pxL, off, wide, t, ba, bc }
+}
+
+// The crust of the black is cracked into plates: how near a place is to the nearest crack between two plates, px, and a number from 0 to 1 that is the plate's own.
+export function crust(x: number, y: number, seed: number): { crack: number; plate: number } {
+  const size = SCORCH.net
+  const cx = Math.floor(x / size), cy = Math.floor(y / size)
+  let d1 = 1e9, d2 = 1e9, own = 0
+  for (let j = -1; j <= 1; j++) {
+    for (let i = -1; i <= 1; i++) {
+      const gx = cx + i, gy = cy + j
+      const tag = (gx * 73856093) ^ (gy * 19349663)
+      const d = Math.hypot(x - (gx + 0.15 + 0.7 * rnd(seed, 470, tag)) * size, y - (gy + 0.15 + 0.7 * rnd(seed, 471, tag)) * size)
+      if (d < d1) { d2 = d1; d1 = d; own = rnd(seed, 472, tag) } else if (d < d2) d2 = d
+    }
+  }
+  return { crack: (d2 - d1) / 2, plate: own }
 }
 
 // The part of the picture the scorch can reach: columns i0 to i1, rows j0 to j1.
@@ -118,17 +137,7 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
     for (let i = i0; i <= i1; i++) {
       const x = (i + 0.5) * fx
       const e = edgeAt(s, x, y, seed)
-      // Beyond the burn the blast leaves no black, only soot that thins out in a widening fan.
-      let tail = 0
-      if (e.ba > 0 && e.pxB > -30) {
-        const far = e.ba / (SCORCH.burn * SCORCH.long + SCORCH.tail)
-        if (far < 1) {
-          const fan = SCORCH.burn * 0.62 + e.ba * 0.2
-          const side = step(fan, fan * 0.2, Math.abs(e.bc) + 70 * (fbm(x / 62, y / 62, seed + 42) - 0.5))
-          tail = 0.56 * side * (1 - far) ** 1.5
-        }
-      }
-      if (e.px > REACH && tail <= 0) continue
+      if (e.px > REACH) continue
       const fine = fbm(x / 5, y / 5, seed + 45)
       const mid = fbm(x / 24, y / 24, seed + 46)
       const blot = fbm(x / 10, y / 10, seed + 47)
@@ -138,33 +147,40 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
       const px = e.px + 22 * soft * (blot - 0.5)
       let soot = step(30 * soft, -26 * soft, px)
       // Darkest in the middle.
-      soot *= 0.7 + 0.3 * step(0, -Math.max(6, e.inner * 0.45), e.px)
+      soot *= 0.92 + 0.08 * step(0, -Math.max(6, e.inner * 0.45), e.px)
       soot *= 1 - 0.6 * soft * step(-30, 6, e.px) * step(0.54, 0.4, blot)
       // Soot round it and beyond it, fading to the clean ground: a hand's width at the hands, wide round the burn.
       const out = 46 + 64 * (e.pxB < e.px + 40 ? 1 : e.wide / SCORCH.half)
-      const haze = Math.max(0.62 * step(out, -14, e.px) ** 1.4, tail) * (0.3 + 0.7 * mid) * (0.7 + 0.3 * blot)
+      const haze = 0.62 * step(out, -14, e.px) ** 1.4 * (0.3 + 0.7 * mid) * (0.7 + 0.3 * blot)
       soot = Math.max(soot, haze)
       // Specks thrown wide of it.
       if (e.px < out * 0.8 && e.px > -10 && mid > 0.5) {
         const speck = fbm(x / 4.2, y / 4.2, seed + 48)
         if (speck > 0.71) soot = Math.max(soot, 0.8 * step(out * 0.8, 10, e.px) * step(0.71, 0.79, speck))
       }
-      // The crust is crazed: hairline cracks with no direction, inside the black only.
-      const fissure = step(0.965, 0.995, 1 - Math.abs(2 * fbm(x / 19 + 3.3, y / 19 + 7.7, seed + 49) - 1)) * step(-8, -30, e.px) * step(0.4, 0.55, mid)
-      soot = Math.max(soot, 0.92 * fissure)
-      const depth = 0.14 * step(0, -30, e.px) * mid + 0.3 * fissure
+      // The crust is cracked into a fine net of plates, inside the black only: the cracks black and cut in, each plate a little paler than the next.
+      let depth = 0.14 * step(0, -30, e.px) * mid
+      if (e.px < -4) {
+        const c = crust(x + 9 * (fbm(x / 40, y / 40, seed + 49) - 0.5), y + 9 * (fbm(x / 40 + 5.3, y / 40, seed + 49) - 0.5), seed)
+        const within = step(-4, -18, e.px)
+        const line = step(1.5, 0.5, c.crack) * within
+        soot = Math.max(soot * (1 - within * (0.07 + 0.13 * c.plate)), line)
+        depth = Math.max(depth, 0.6 * line)
+      }
       // Embers: at the rim of the burn, down the middle of the trench, and a few strays in the black. Small and orange: coals in soot, not the light of a broken slab.
       let ember = 0
-      if (e.px < 2) {
-        const rim = Math.exp(-(((e.pxB + 22) / 17) ** 2))
-        const line = e.pxB > 0 ? Math.exp(-((e.off / (0.5 * e.wide + 3)) ** 2)) * step(0.04, 0.16, e.t) : 0
+      if (e.px < 4) {
+        const rim = Math.exp(-(((e.pxB + 20) / 16) ** 2))
+        // Two glowing edges run along the trench from the hands to the burn, and on along the band downrange.
+        const edges = e.pxB > 6 ? Math.exp(-(((e.pxL + 5) / 4.5) ** 2)) * step(0.02, 0.1, e.t) : 0
         const patch = step(0.36, 0.6, noise(x / 64 + s.tag * 3.7, y / 64 + 5.5, seed + 50))
-        const where = Math.max(rim * (0.3 + 0.7 * patch), line * (0.45 + 0.55 * patch), 0.14 * step(-10, -40, e.px) * patch)
+        const where = Math.max(rim * (0.3 + 0.7 * patch), 0.12 * step(-10, -40, e.px) * patch)
         const blob = fbm(x / 6 + 50, y / 6, seed + 51)
         ember = 0.62 * step(0.57, 0.68, blob) * (0.3 + 0.7 * step(0.4, 0.6, fine)) * where
-        // And the cracks of the crust glow in places.
+        ember = Math.max(ember, 0.8 * edges * step(0.36, 0.5, blob) * (0.55 + 0.45 * step(0.35, 0.6, fine)))
+        // And the cracks of the crust glow in places near the rim.
         const vein = 1 - Math.abs(2 * fbm(x / 26 + 9.1, y / 26 + 2.3, seed + 53) - 1)
-        ember = Math.max(ember, 0.66 * step(0.95, 0.992, vein) * step(0.42, 0.58, blot) * Math.max(rim, 0.7 * line, 0.2 * patch) * step(2, -14, e.px))
+        ember = Math.max(ember, 0.66 * step(0.95, 0.992, vein) * step(0.42, 0.58, blot) * Math.max(rim, 0.2 * patch) * step(2, -14, e.px))
       }
       if (soot < 0.012 && ember < 0.012) continue
       // When it burns: the front runs out along the line in the first part of the blast, and the black spreads from the middle to the rim for the rest of it.
@@ -235,6 +251,8 @@ export function chipsOf(s: Scorch, seed: number, count = SCORCH.chips): Chip[] {
       }
       if (!free(x, y)) continue
       if (x - s.bx > SCORCH.words.x0 - 12 && x - s.bx < SCORCH.words.x1 + 12 && y - s.by > SCORCH.words.y0 - 12 && y - s.by < SCORCH.words.y1 + 12) continue
+      // Nor onto the place the arrow stands or kneels.
+      if (Math.hypot(x - LAST.stand.x, y - LAST.stand.y) < 64 || Math.hypot(x - LAST.kneel.x, y - LAST.kneel.y) < 64) continue
       if (edgeAt(s, x, y, seed).px < 6) continue
       const big = rnd(seed, 446 + s.tag, k)
       out.push({ x, y, fx, fy, size: 3.5 + 9 * big * big * big + 3 * big, turn: rnd(seed, 447 + s.tag, k) * Math.PI, when })
