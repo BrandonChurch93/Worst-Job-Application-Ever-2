@@ -279,6 +279,8 @@ export function makePage(): PageLogic {
   let seed: number = config.seed
 
   const allDone = (): boolean => s.field >= FIELDS
+  // Live site only: the narrator still owes this page a line, so Continue is not ready yet. Never set in the film.
+  let held = false
   const inStop = (p: { x: number; y: number }, r: number): boolean => p.x >= stops[r]!.x - STOP.reach && p.x <= stops[r]!.x + stops[r]!.w + STOP.reach && p.y >= stops[r]!.y - STOP.reach && p.y <= stops[r]!.y + stops[r]!.h + STOP.reach
   const fieldAt = (i: number): { x: number; y: number } => ({ x: FX + FW / 2, y: rowY(i) + FH / 2 })
   const inField = (p: { x: number; y: number }, i: number): boolean => p.x >= FX && p.x <= FX + FW && p.y >= rowY(i) && p.y <= rowY(i) + FH
@@ -977,6 +979,7 @@ export function makePage(): PageLogic {
     },
     step(io: StepIo) {
       rng.restore(s.rng)
+      held = io.wait === true
       s.time = io.time
       s.px = io.pointer.x
       s.py = io.pointer.y
@@ -1027,7 +1030,7 @@ export function makePage(): PageLogic {
         } else if (i < FIELDS && s.slide < 0) {
           if (i === 1) stepBirth(io)
           else if ((io.pressed && inField(io.pointer, i)) || s.idle >= LIMIT) openRow(i, io)
-        } else if (i >= FIELDS && !s.pressed && ((io.pressed && overGo(io.pointer)) || s.idle >= LIMIT || s.skipping)) press(io)
+        } else if (i >= FIELDS && !s.pressed && (s.skipping || (!held && ((io.pressed && overGo(io.pointer)) || s.idle >= LIMIT)))) press(io)
       } else {
         const i = s.open
         s.rowT += dt
@@ -1320,7 +1323,7 @@ export function makePage(): PageLogic {
     if (shown >= 0) {
       overMachine(over, shown, s, 1, null, a)
     }
-    if (allDone()) {
+    if (allDone() && !held) {
       over['continue-cap'] = { tone: 'accent', ...(s.pressed ? { z1: heights.button - heights.keyTravel } : {}) }
       over['continue-label'] = { tone: 'inkLight', ...(s.pressed ? { z0: heights.button - heights.keyTravel, z1: heights.button - heights.keyTravel } : {}) }
     }

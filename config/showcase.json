@@ -585,7 +585,7 @@
     ],
     "narratorMaxTakesPerLine": 3,
     "lineGapSeconds": 0.3,
-    "liveNarratorMinGapSeconds": 6,
+    "liveNarratorMinGapSeconds": 0.3,
     "contactSyncFrames": 1,
     "creditCap": 10000,
     "creditReserveAfterReview": 2000,
