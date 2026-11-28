@@ -1,0 +1,173 @@
+{
+  "about": "The shout test of change note 003 update 4. Brandon's go covered these two shouts only, up to four takes of each. Each text is exactly what was sent to the speech endpoint; the words in square brackets are directions to the model and are not spoken. The numbers under measured come from the files (the length of each beat and the middle pitch of its voiced part, by autocorrelation; a rough measure). How a take sounds is UNKNOWN until Brandon has listened: a model cannot hear.",
+  "voice": {
+    "name": "Worst-Job-Application-Ever",
+    "id": "eFAEy5Egqu7dR7KfdpSZ"
+  },
+  "settings": {
+    "model_id": "eleven_v3",
+    "stability": 0,
+    "output": "mp3, 44.1 kHz, 128 kbit/s"
+  },
+  "calmNarratorPitchHz": "about 108 to 126 on the kept take of the old line 1 (the same rough measure)",
+  "credits": 225,
+  "takes": [
+    {
+      "shout": "A",
+      "take": 1,
+      "file": "shout-a-take-1.mp3",
+      "ledgerRow": 181,
+      "credits": 32,
+      "seconds": 4.32,
+      "text": "[shouting, drawn out] FIVE... YEARS... [screaming, drawn out] EXPERIENCE!",
+      "measured": {
+        "beats": [
+          {
+            "word": "FIVE",
+            "seconds": 0.97,
+            "pitchHz": 240
+          },
+          {
+            "word": "YEARS",
+            "seconds": 1.25,
+            "pitchHz": 208
+          },
+          {
+            "word": "EXPERIENCE",
+            "seconds": 1.48,
+            "pitchHz": 261
+          }
+        ]
+      }
+    },
+    {
+      "shout": "A",
+      "take": 2,
+      "file": "shout-a-take-2.mp3",
+      "ledgerRow": 183,
+      "credits": 48,
+      "seconds": 8.48,
+      "best": true,
+      "text": "[screaming, drawn out] FIIIIIVE... [louder] YEEEEEARS... [screaming at the top of his lungs] EXPEEEEERIENCE!",
+      "measured": {
+        "beats": [
+          {
+            "word": "FIVE",
+            "seconds": 1.45,
+            "pitchHz": 142
+          },
+          {
+            "word": "YEARS",
+            "seconds": 1.39,
+            "pitchHz": 185
+          },
+          {
+            "word": "EXPERIENCE",
+            "seconds": 3.09,
+            "pitchHz": 339
+          }
+        ]
+      }
+    },
+    {
+      "shout": "B",
+      "take": 1,
+      "file": "shout-b-take-1.mp3",
+      "ledgerRow": 182,
+      "credits": 36,
+      "seconds": 5.2,
+      "text": "[shouting, drawn out] KAH... MEH... HAH... MEH... [screaming, drawn out] HAAAAAAH",
+      "measured": {
+        "beats": [
+          {
+            "seconds": 0.45,
+            "pitchHz": 137
+          },
+          {
+            "seconds": 0.5,
+            "pitchHz": 146
+          },
+          {
+            "seconds": 0.43,
+            "pitchHz": 272
+          },
+          {
+            "seconds": 0.65,
+            "pitchHz": 153
+          },
+          {
+            "seconds": 1.7,
+            "pitchHz": 220
+          }
+        ]
+      }
+    },
+    {
+      "shout": "B",
+      "take": 2,
+      "file": "shout-b-take-2.mp3",
+      "ledgerRow": 184,
+      "credits": 53,
+      "seconds": 8.48,
+      "text": "[shouting, slow and drawn out] KAAAAH... MEEEEH... HAAAAH... MEEEEH... [screaming at the top of his lungs] HAAAAAAAAAAAH!",
+      "measured": {
+        "beats": [
+          {
+            "seconds": 1.29,
+            "pitchHz": 197
+          },
+          {
+            "seconds": 1.2,
+            "pitchHz": 222
+          },
+          {
+            "seconds": 1.04,
+            "pitchHz": 261
+          },
+          {
+            "seconds": 1.56,
+            "pitchHz": 294
+          },
+          {
+            "seconds": 1.31,
+            "pitchHz": 345
+          }
+        ]
+      }
+    },
+    {
+      "shout": "B",
+      "take": 3,
+      "file": "shout-b-take-3.mp3",
+      "ledgerRow": 185,
+      "credits": 56,
+      "seconds": 6.24,
+      "best": true,
+      "text": "[shouting, drawn out] KAAAH... MEEEH... HAAAH... MEEEH... [screaming at the top of his lungs, held long] HAAAAAAAAAAAAAAAAAAAAH!",
+      "measured": {
+        "beats": [
+          {
+            "seconds": 0.78,
+            "pitchHz": 227
+          },
+          {
+            "seconds": 0.82,
+            "pitchHz": 262
+          },
+          {
+            "seconds": 0.63,
+            "pitchHz": 329
+          },
+          {
+            "seconds": 0.97,
+            "pitchHz": 322
+          },
+          {
+            "seconds": 2.08,
+            "pitchHz": 294
+          }
+        ]
+      }
+    }
+  ]
+}
