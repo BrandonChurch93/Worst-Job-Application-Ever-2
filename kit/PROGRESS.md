@@ -38,15 +38,15 @@ Status 192, 2026-11-28T04:52Z, Phase 5.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 361 at 2026-11-28T04:52:49Z, allowance: continuation 3
-time used in this phase: 11.00 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 11.00 h of 12.00 h allowed
-time used: 71.06 of 72.00 hours before the review
+clock: phase 5, tick 362 at 2026-11-28T05:02:53Z, allowance: continuation 3
+time used in this phase: 11.17 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 11.17 h of 12.00 h allowed
+time used: 71.22 of 72.00 hours before the review
 extra rounds: no
 half point: reached
 box end: reached
 budget report: not due
-minutes since the last status: 0
+minutes since the last status: 10
 ```
 
 ## Phases
