@@ -70,6 +70,20 @@
   box-shadow: none;
 }
 
+/* The careers page: its own bar with the company's name stands where the row stands on the steps, so the row goes to the lower left corner of the picture, on a pale capsule. */
+.root[data-mode='live'][data-step='0'][data-row='strip'] .live,
+.root[data-mode='live'][data-step='0'][data-row='over'] .live {
+  --quiet: rgba(38, 37, 34, 0.86);
+  left: max(12px, calc(var(--u) * 24));
+  top: auto;
+  bottom: max(12px, calc(var(--u) * 24));
+  transform: none;
+  margin-left: 0;
+  background-color: #ffffff;
+  transition: none;
+  box-shadow: 0 0 0 1px rgba(38, 37, 34, 0.16), 0 max(2px, calc(var(--u) * 4)) max(6px, calc(var(--u) * 14)) rgba(38, 37, 34, 0.14);
+}
+
 .icon,
 .link {
   appearance: none;

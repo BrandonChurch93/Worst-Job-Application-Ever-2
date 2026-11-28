@@ -249,6 +249,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   let hasFilm: boolean | null = null
   let skipDue: boolean | null = null
   let backing = ''
+  let stepShown = -1
   let heading = ''
   let playing: boolean | null = null
   let started: boolean | null = null
@@ -310,6 +311,13 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
       const m = mode
       showFilm()
       if (m === 'live') {
+        // The careers page has no empty strip at its top: its own bar with the company's name is there. The row then stands in the lower left corner of the picture.
+        const stepNow = api.step()
+        if (stepNow !== stepShown) {
+          stepShown = stepNow
+          root.dataset.step = String(stepNow)
+          place()
+        }
         liveSound.update()
         const below = api.backing ? api.backing() : 'page'
         const under = below === 'page' && root.dataset.row === 'over' ? 'light' : below
