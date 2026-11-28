@@ -81,7 +81,7 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
     const emissive = '#include <emissivemap_fragment>'
     if (!shader.fragmentShader.includes(colour) || !shader.fragmentShader.includes(emissive)) throw new Error('The surface code of this three.js release is not the one the arena was written for')
     shader.fragmentShader = head + shader.fragmentShader
-      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.15, 0.115 ), smoothstep( 0.0, 0.5, arenaW.r ) * 0.85 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.03, 0.027, 0.025 ), smoothstep( 0.3, 1.0, arenaW.r ) );\n\tfloat arenaHole = smoothstep( 0.56, 0.64, arenaW.a );\n\tdiffuseColor.rgb *= mix( 1.0, 0.5, smoothstep( 0.3, 0.56, arenaW.a ) ) * ( 1.0 - 0.97 * arenaHole );`)
+      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.15, 0.115 ), smoothstep( 0.0, 0.5, arenaW.r ) * 0.85 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.03, 0.027, 0.025 ), smoothstep( 0.3, 1.0, arenaW.r ) );\n\tfloat arenaHole = smoothstep( 0.56, 0.64, arenaW.a );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.25, 0.235, 0.225 ), 0.8 * smoothstep( 0.03, 0.36, arenaW.a ) );\n\tdiffuseColor.rgb *= mix( 1.0, 0.45, smoothstep( 0.3, 0.56, arenaW.a ) ) * ( 1.0 - 0.97 * arenaHole );`)
       .replace(emissive, `${emissive}
 \t{
 \t\tvec2 arenaT = ${texel};
@@ -171,10 +171,10 @@ function slotOutline(insetBy: number): THREE.Vector2[] {
 // The walls of a seam are dull copper, lit from the bed below: dark at the lip, copper down the wall, glowing at its foot. The bed is the light itself.
 const WALL_TOP: V3 = [0.15, 0.052, 0.024]
 const WALL_MID: V3 = [0.36, 0.118, 0.045]
-const WALL_FOOT: V3 = [1.0, 0.3, 0.045]
-const BED: V3 = [2.4, 0.85, 0.15]
+const WALL_FOOT: V3 = [0.78, 0.215, 0.034]
+const BED: V3 = [1.55, 0.44, 0.05]
 const BED_INSET = 2.5
-const WALL_SPLIT = 0.62
+const WALL_SPLIT = 0.7
 
 // The tops of the nine slabs with their bevels, and the walls of the seams below them.
 function slabs(): { tops: THREE.BufferGeometry; walls: THREE.BufferGeometry; bed: THREE.BufferGeometry } {
