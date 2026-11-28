@@ -202,7 +202,7 @@ describe.each([[false, 'with the switch off, the path as it was built'], [true, 
     expect(x.shown()).toBe(1)
     x.ctx.currentTime = 103 + run + riseAfterFire() + 0.01
     expect(x.shown()).toBe(0)
-    expect(x.s.log().filter((l) => l.line === ID).map((l) => l.what)).toEqual(['spoken', 'spoken'])
+    expect(x.s.log().filter((l) => l.line === ID).map((l) => l.what)).toEqual(['spoken'])
   })
 
   it.runIf(on)('with a kept take pressed as the arms come out waits for the camera: the file starts whole and its peak comes no sooner than the turn can end', async () => {

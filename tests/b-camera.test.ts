@@ -954,7 +954,9 @@ describe('the marks of the shout, worked out from the line', () => {
 
     expect(cues.spoken[SHOUT_LINE]!.event).toBe('finish-arms')
     const laid = await import('../src/audio/change')
-    for (const n of ['finish-arms', 'finish-charge', 'finish-fire', 'boss-gone']) expect(laid.changeCuesOf(n, 'step4').map((c) => c.id), n).toContain(n)
+    for (const n of ['finish-arms', 'finish-fire', 'boss-gone']) expect(laid.changeCuesOf(n, 'step4').map((c) => c.id), n).toContain(n)
+    expect(laid.changeCuesOf('finish-charge', 'step4').map((c) => c.id)).toEqual([])
+    expect(laid.changeCue('finish-charge')!.lands).toMatchObject({ on: 'finish-fire', from: 'finish-arms' })
     expect(after(fire) - STAND_IN.fire).toBeLessThan(-0.2)
   })
 })

@@ -593,10 +593,12 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
 
   // The shout on the live site while FINISH.onVoice: booked on its event as ever, its voice and its words wait for the first charge mark, the visitor's press.
   // Until then the booking is held open for as long as the page waits before it presses by itself.
+  // The log names it spoken once, at the press, where its voice is made.
   const waits = new Map<Booking, { step: number | undefined; at: number }>()
   const onVoice = new Set<Booking>()
+  const waitsForPress = (line: StandIn): boolean => FINISH.onVoice && lastMode === 'live' && line.key === SHOUT_LINE && spoken[line.key]?.steps !== undefined
   const speak = (booking: Booking, line: StandIn) => {
-    if (FINISH.onVoice && lastMode === 'live' && line.key === SHOUT_LINE && spoken[line.key]?.steps) {
+    if (waitsForPress(line)) {
       waits.set(booking, { step: heard, at: booking.start })
       booking.end = booking.start + FINISH.alone + line.seconds
     }
@@ -643,7 +645,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       note({ at: round(now), line: line.id, trigger, what: 'dropped', why: narrator.why ?? '' })
       return
     }
-    note({ at: round(now), line: line.id, trigger, what: 'spoken', start: round(booking.start), seconds: round(line.seconds) })
+    if (!waitsForPress(line)) note({ at: round(now), line: line.id, trigger, what: 'spoken', start: round(booking.start), seconds: round(line.seconds) })
     told.add(key)
     speak(booking, line)
     for (const [next, r] of Object.entries(spoken)) if (r.after === key) say(next, `after ${line.id}`, mode, booking.end)
@@ -694,6 +696,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
           if (wait) {
             waits.delete(b)
             b.end = at
+            note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'dropped', why: 'the fire came and no press before it' })
           } else if (steps.hidesOnRise && !hidden.has(b)) hidden.set(b, at + riseAfterFire())
         } else continue
         caption?.wake()
