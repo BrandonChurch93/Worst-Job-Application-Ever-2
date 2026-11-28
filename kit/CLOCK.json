@@ -1,7 +1,7 @@
 {
   "version": 1,
   "lastMark": {
-    "at": 1795890740709,
+    "at": 1795890771056,
     "boot": "df551acd-542a-4cfe-8bc6-11afd76c75c3"
   },
   "epochs": [
@@ -78,6 +78,17 @@
       "phaseSeconds": {
         "5": 45072.316999999995
       }
+    },
+    {
+      "kind": "build",
+      "label": "continuation 5",
+      "continuation": 5,
+      "allowedHours": 12,
+      "boxes": {
+        "5": 12
+      },
+      "seconds": 0,
+      "phaseSeconds": {}
     }
   ],
   "reviewApproved": false,
@@ -109,15 +120,9 @@
     "5": 181086.86400000003
   },
   "lastPrint": [
-    "clock: phase 5, tick 398 at 2026-11-28T18:32:20Z, allowance: continuation 4",
-    "time used in this phase: 12.52 h of its box of 12.00 h, of which 2.00 h is the reserve",
-    "time used under the allowance in force: 12.52 h of 12.00 h allowed",
-    "time used: 84.66 of 84.00 hours before the review",
-    "extra rounds: no",
-    "half point: reached",
-    "box end: reached",
-    "budget report: due",
-    "minutes since the last status: 0"
+    "clock: continuation 5 at 2026-11-28T18:32:51Z",
+    "12.00 h added",
+    "new boxes: phase 5 12.00 h"
   ],
   "firstMarkAt": 1795584754000
 }
