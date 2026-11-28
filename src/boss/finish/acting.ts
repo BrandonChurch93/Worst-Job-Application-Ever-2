@@ -51,6 +51,7 @@ export interface FinishInput {
   eye?: readonly [number, number, number]
   glare?: number
   under?: number
+  tear?: { x: number; y: number; size: number; k: number }
 }
 
 export interface Fx {
@@ -74,6 +75,7 @@ export interface Fx {
   dust: { x: number; y: number; age: number; size: number }[]
   lens?: { low: number; eye: readonly [number, number, number]; glare: number }
   under?: number
+  tear?: { x: number; y: number; size: number; k: number }
   // The scuff each landed step left: page px, and how long.
   scuffs: { x: number; y: number; long: number }[]
 }
@@ -239,6 +241,7 @@ export function finishState(i: FinishInput): FinishState {
   const fx = none()
   if (i.low && i.eye) fx.lens = { low: i.low, eye: i.eye, glare: i.glare ?? 0 }
   if (i.under) fx.under = i.under
+  if (i.tear) fx.tear = i.tear
   const shot = clamp01(i.shot ?? i.charge ?? 1)
   // The rise plays under whatever follows it. A blast let go before it is over quickens what is left of it to end as the beam leaves.
   let risen = t - rise0

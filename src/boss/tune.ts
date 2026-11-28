@@ -291,6 +291,7 @@ export const CAMERA = {
   lowEl: [30, 80] as const,
   down: [0, 0.95] as const,
   dive: [1.2, 4] as const,
+  tear: { life: 0.28, size: [170, 200, 230, 200, 330], z: 60 },
   swing: 2,
   push: 0.08,
   pushOver: 6,

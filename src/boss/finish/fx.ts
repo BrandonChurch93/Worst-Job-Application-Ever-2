@@ -297,6 +297,33 @@ function puffStuff(): THREE.ShaderMaterial {
   })
 }
 
+function tearStuff(): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: false, toneMapped: false,
+    uniforms: { uK: { value: 0 } },
+    vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: /* glsl */ `
+      varying vec2 vUv; uniform float uK;
+      ${NOISE}
+      void main() {
+        vec2 p = (vUv - 0.5) * 2.0;
+        float r = length(p);
+        float at = 0.22 + 0.72 * (1.0 - (1.0 - uK) * (1.0 - uK));
+        float thick = 0.11 * (1.0 - 0.55 * uK);
+        float ring = smoothstep(thick, 0.0, abs(r - at));
+        float hot = smoothstep(thick * 0.45, 0.0, abs(r - at));
+        float soot = smoothstep(thick * 2.4, thick, abs(r - at));
+        float flash = smoothstep(0.55, 0.0, r) * max(0.0, 1.0 - uK * 3.0);
+        float rays = 0.55 + 0.45 * vn(p / max(r, 0.001) * 3.0 + 7.0);
+        float lit = max(ring * rays, flash);
+        float a = max(lit, soot * 0.4) * (1.0 - uK * uK);
+        if (a < 0.004) discard;
+        vec3 col = mix(vec3(0.8, 0.22, 0.02), vec3(1.0, 0.86, 0.5), max(hot * rays, flash));
+        gl_FragColor = vec4(mix(vec3(0.13, 0.1, 0.07), col, smoothstep(0.0, 0.45, lit)), a);
+      }`
+  })
+}
+
 export function makeFinishFx(): FinishFx {
   const object = new THREE.Group()
   object.name = 'finish-fx'
@@ -320,6 +347,8 @@ export function makeFinishFx(): FinishFx {
   const beam = new THREE.Mesh(along, beamMat)
   const sunkMat = beamStuff(true)
   const sunk = new THREE.Mesh(along, sunkMat)
+  const tearMat = tearStuff()
+  const tear = new THREE.Mesh(quad, tearMat)
   const markGeo = new THREE.InstancedBufferGeometry().copy(along as unknown as THREE.InstancedBufferGeometry)
   const markData = new THREE.InstancedBufferAttribute(new Float32Array(12 * 2), 2).setUsage(THREE.DynamicDrawUsage)
   markGeo.setAttribute('aMark', markData)
@@ -336,7 +365,7 @@ export function makeFinishFx(): FinishFx {
   dusk.renderOrder = -50
   dusk.visible = false
   object.add(dusk)
-  const all: THREE.Mesh[] = [marks, glow, flames, puffs, beam, ball, flare, sunk]
+  const all: THREE.Mesh[] = [marks, glow, flames, puffs, beam, ball, flare, sunk, tear]
   all.forEach((m, i) => {
     m.frustumCulled = false
     m.castShadow = false
@@ -552,6 +581,12 @@ export function makeFinishFx(): FinishFx {
     }
 
     const under = fx.under ?? 0
+    tear.visible = fx.tear !== undefined
+    if (fx.tear) {
+      tearMat.uniforms.uK!.value = fx.tear.k
+      tear.matrixAutoUpdate = false
+      tear.matrix.copy(flat(fx.tear.x, fx.tear.y, CAMERA.tear.z, fx.tear.size * 2, fx.tear.size * 2, 0))
+    }
     flare.visible = fx.beam !== null
     beam.visible = fx.beam !== null && under < 1
     sunk.visible = fx.beam !== null && under > 0
@@ -678,7 +713,7 @@ export function makeFinishFx(): FinishFx {
     },
     dispose(): void {
       for (const g of [quad, standing, along, flameGeo, markGeo, puffGeo]) g.dispose()
-      for (const m of [flameMat, glowMat, ballMat, flareMat, beamMat, sunkMat, markMat, puffMat, duskMat]) m.dispose()
+      for (const m of [flameMat, glowMat, ballMat, flareMat, beamMat, sunkMat, tearMat, markMat, puffMat, duskMat]) m.dispose()
       dusk.geometry.dispose()
       flames.dispose()
       marks.dispose()

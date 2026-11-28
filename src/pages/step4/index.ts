@@ -228,6 +228,11 @@ export function makePage(): PageLogic {
     if (!LOOK1_ON || !v || (r < 0 && s.fin.arms < 0)) return null
     const m = s.fin
     const b = buttonAt(v)
+    let tear: { x: number; y: number; size: number; k: number } | null = null
+    BREAKS.forEach((at, n) => {
+      const age = s.fired - s.lag - at * (BLAST - s.lag)
+      if (s.fired >= 0 && age >= 0 && age < CAMERA.tear.life) tear = { x: b.x, y: b.y, size: CAMERA.tear.size[n] ?? CAMERA.tear.size[0], k: age / CAMERA.tear.life }
+    })
     const under = m.arms < 0 ? 0 : underOf(s.clock - LEAD, marksOf(s.mode === 'film', m.arms, s.round >= 0 ? s.round : m.thrust, m.fire))
     return {
       time: v.time,
@@ -239,7 +244,8 @@ export function makePage(): PageLogic {
       walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
       button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
       ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye, glare: low.glare } : {}),
-      ...(under > 0 ? { under } : {})
+      ...(under > 0 ? { under } : {}),
+      ...(tear ? { tear } : {})
     }
   }
   const stands = (): boolean => {
