@@ -154,7 +154,7 @@ function chunkGeo(): THREE.BufferGeometry {
 }
 
 // Scraps in the finishing blast: seconds each is seen, page px a second down the beam, page px to the side.
-const CRACKS = { least: 0.7, most: 1.5, gone: [0.12, 0.42] }
+const CRACKS = { least: 0.7, most: 1.3, gone: [0.12, 0.42] }
 const SCRAP = { life: 0.75 }
 const COUNTS = { low: { chunks: 10, puffs: 40, lamps: 2 }, medium: { chunks: 18, puffs: 90, lamps: 5 }, high: { chunks: 26, puffs: 150, lamps: 8 }, film: { chunks: 26, puffs: 150, lamps: 10 } }
 
