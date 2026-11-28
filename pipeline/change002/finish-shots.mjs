@@ -23,7 +23,8 @@ const samples = Number(flag('--samples') ?? 8)
 const FPS = 60
 
 // The script the proofs are drawn from. The fight helper owns the real marks: these stand in for them.
-const ARROW = { x: 690, y: 548 }
+// From the third task on the arrow stands further left, where the approved pictures have it: the walk to the button is then four steps long.
+const ARROW = { x: 520, y: 500 }
 const BOSS = { x: 960, y: 650, heading: Math.PI }
 const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
 const LONG = 2.8
@@ -37,7 +38,7 @@ const smooth = (v) => { const t = Math.min(1, Math.max(0, v)); return t * t * (3
 
 // The whole finish at one view time.
 function finish(time) {
-  const input = { time, arrow: ARROW, marks: { ...M }, target: { x: BOSS.x, y: BOSS.y }, button: BUTTON, scale: SCALE, charge: Math.min(1, Math.max(0, (time - M.charge) / (M.fire - M.charge - 0.3))), shot: 1 }
+  const input = { time, arrow: ARROW, marks: { ...M, thrust: M.fire - 0.45 }, target: { x: BOSS.x, y: BOSS.y }, button: BUTTON, scale: SCALE, charge: Math.min(1, Math.max(0, (time - M.charge) / (M.fire - M.charge - 0.3))), shot: 1 }
   let gone = 0
   if (time >= M.fire) gone = Math.min(1, (time - M.fire - 0.14) / (M.end - M.fire - 0.14))
   if (WALK) {
@@ -54,6 +55,15 @@ function finish(time) {
   return { input, boss: { ...BOSS, gone: Math.max(0, gone) }, cam: CLOSE }
 }
 const power = (time) => ({ input: { time, arrow: ARROW, power: POWER, scale: SCALE }, cam: CLOSE, arrow: true })
+
+// A plain click: the visitor clicks once, `SMALL.after` s after the arms come out, and the shot is `SMALL.shot` of a full blast (the fight's FINISH.small).
+const SMALL = { after: 0.32, shot: 0.25, long: 2.13 }
+function small(time) {
+  const fire = M.arms + SMALL.after
+  const input = { time, arrow: ARROW, marks: { arms: M.arms, charge: fire, fire, end: fire + SMALL.long }, target: { x: BOSS.x, y: BOSS.y }, button: BUTTON, scale: SCALE, charge: 0, shot: SMALL.shot }
+  const gone = time >= fire ? Math.min(1, Math.max(0, (time - fire - 0.14) / (SMALL.long - 0.14))) : 0
+  return { input, boss: { ...BOSS, gone }, cam: CLOSE }
+}
 
 // Frames in a row: every frame for the first twelve, then every second.
 const row = (from, count) => { const out = []; for (let i = 0; i < count; i++) out.push(from + (i < 12 ? i : 12 + (i - 12) * 2) / FPS); return out }
@@ -103,7 +113,21 @@ const JOBS = {
   blow: (page) => { const p = finish(M.walk + 1).input.marks.press; return frames(page, 'blow', row(p - 12 / FPS, 30), finish, kneelBox()) },
   // Every frame round the press: from 6 frames before it to 14 after.
   blownear: (page) => { const p = finish(M.walk + 1).input.marks.press; const ts = []; for (let i = -6; i <= 14; i++) ts.push(p + i / FPS); return frames(page, 'blownear', ts, finish, kneelBox()) },
-  walk: (page) => frames(page, 'walk', row(M.walk, 44).map((t, i) => M.walk - 4 / FPS + i * 4 / FPS), finish, { x: ARROW.x - 110, y: ARROW.y - 40, w: 420, h: 200 })
+  walk: (page) => frames(page, 'walk', row(M.walk, 44).map((t, i) => M.walk - 4 / FPS + i * 4 / FPS), finish, { x: 400, y: 470, w: 520, h: 220 }),
+  // The small shot of a plain click: six frames in a row from the frame before the beam leaves the hands, then four in a row in the middle of the shot, then two late ones.
+  small: (page) => { const f = M.arms + SMALL.after; const e = Math.round(SMALL.long * FPS); const ts = (args.includes('--small-end') ? [11, 12, 13, 14, e - 12, e - 8, e - 5, e - 3, e - 2, e - 1, e, e + 12] : [5, 6, 7, 8, 9, 10, 18, 19, 20, 21, 30, 45]).map((n) => f + n / FPS); return frames(page, args.includes('--small-end') ? 'smallend' : 'small', ts, small, { x: 440, y: 400, w: 640, h: 340 }) },
+  // The charge to the beam: every frame from 0.5 s before the beam leaves the hands to 0.2 s after.
+  thrust: (page) => { const b = M.fire + 0.2; const ts = []; for (let n = -30; n <= 12; n++) ts.push(b + n / FPS); return frames(page, 'thrust', ts, finish, { x: ARROW.x - 110, y: ARROW.y - 60, w: 300, h: 220 }) },
+  // Eight frames of the fist strip (its frames 0, 3, 6, 9, 12, 16, 20, 25) and six frames in a row of the small shot, from the frame before the beam leaves the hands.
+  fistfew: (page) => { const k = finish(M.walk + 1).input.marks.fist; const all = row(k - 2 / FPS, 26); return frames(page, 'fistfew', [0, 3, 6, 9, 12, 16, 20, 25].map((n) => all[n]), finish, kneelBox()) },
+  smallrow: (page) => { const f = M.arms + SMALL.after; return frames(page, 'smallrow', [11, 12, 13, 14, 15, 16, 17, 18].map((n) => f + n / FPS), small, { x: 440, y: 400, w: 640, h: 340 }) },
+  // Three frames for the body's brightness: the walk, the knees, the fist.
+  white: async (page) => { const f = finish(M.walk + 1).input.marks; const ts = [M.walk + 1.4, f.kneel + 0.9, f.fist + 0.6]; for (let n = 0; n < 3; n++) await shot(page, { ...finish(ts[n]), name: `white-${n}`, samples: 1 }) },
+  powerpose: async (page) => {
+    const a = { name: 'pose-power', ...power(2.9), cam: 'front', arena: false }
+    await shot(page, a)
+    await shot(page, { ...a, name: 'pose-power-above', cam: { x: ARROW.x + 50 - 160 * SCALE, y: ARROW.y + 92 - 152 * SCALE, w: 320 * SCALE, h: 180 * SCALE }, arena: true })
+  }
 }
 const kneelBox = () => ({ x: WALK.x1 - 90, y: WALK.y1 - 150, w: 240, h: 200 })
 

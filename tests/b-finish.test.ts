@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, finishEvents, finishState, kneelSpot, type FinishInput } from '../src/boss/finish/acting'
+import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, emberOf, finishEvents, finishState, kneelSpot, powerPlan, type FinishInput } from '../src/boss/finish/acting'
 import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '../src/cursor/stand/rig'
 
 const FPS = 60
@@ -87,7 +87,10 @@ describe('the finish: the standing arrow', () => {
     const held = finishState(power(4.3))
     expect(held.up).toBe(true)
     expect(held.fx.aura).toBeGreaterThan(0.9)
-    expect(held.pose.hands[0][1]).toBeGreaterThan(55)
+    // The fists are at the shoulders, as on the pose sheet: well over the hands at ease, under the top of the arrow.
+    expect(held.pose.hands[0][1]).toBeCloseTo(POSES.power.hands[0][1], 6)
+    expect(POSES.power.hands[0][1]).toBeGreaterThan(POSES.ready.hands[0][1] + 15)
+    expect(POSES.power.hands[0][1]).toBeLessThan(62)
     expect(held.pose.grip).toEqual([1, 1])
     const last = finishState(power(4.4 + POWER.burst + LIEDOWN - 1 / FPS)).pose
     expect(last.rise).toBeLessThan(0.02)
@@ -111,6 +114,36 @@ describe('the finish: the standing arrow', () => {
     expect(b.pose.hands[0][0]).toBeLessThan(0)
     expect(b.pose.hands[1][0]).toBeLessThan(0)
     expect(a.fx.beam).toBeNull()
+  })
+
+  it('with a thrust mark, holds the ball in front at both hands for a quarter second at least before the beam leaves', () => {
+    const film = (time: number): FinishInput => { const i = finish(time); return { ...i, marks: { ...i.marks!, thrust: M.fire - FIRE.ahead } } }
+    const leaves = M.fire + FIRE.lead
+    const front = (time: number): boolean => {
+      const s = finishState(film(time))
+      return s.fx.ball !== null && s.pose.hands[0][0] > 40 && s.pose.hands[1][0] > 40 && s.fx.beam === null
+    }
+    let first = Infinity
+    for (let n = 0; n < 60; n++) { const t = leaves - (n + 1) / FPS; if (front(t)) first = t; else break }
+    expect(leaves - first).toBeGreaterThanOrEqual(0.25)
+    // The hip pose stays until the thrust, and the marks' times are not moved by it.
+    expect(finishState(film(M.fire - FIRE.ahead - 0.01)).pose.hands[0][0]).toBeLessThan(0)
+    expect(finishState(film(leaves - 0.01)).fx.beam).toBeNull()
+    expect(finishState(film(leaves + 0.05)).fx.beam).not.toBeNull()
+    // The ball is not gone before the beam is there.
+    for (let n = 0; n < 4; n++) { const s = finishState(film(leaves + n / FPS)); expect(s.fx.ball !== null || s.fx.beam !== null).toBe(true) }
+    // Nothing pops on the way.
+    for (let n = 0; n < 60; n++) expect(step(finishState(film(M.fire - 0.6 + n / FPS)).pose, finishState(film(M.fire - 0.6 + (n + 1) / FPS)).pose)).toBeLessThan(30)
+  })
+
+  it('has its ember rim from the end of the beam on, unless the fight says otherwise', () => {
+    expect(emberOf(finish(M.end - 0.01))).toBe(0)
+    expect(emberOf(finish(M.end + 0.25))).toBeGreaterThan(0)
+    expect(emberOf(finish(M.end + 0.25))).toBeLessThan(1)
+    expect(emberOf(finish(PRESS))).toBe(1)
+    expect(emberOf({ ...finish(M.fire), ember: 0.7 })).toBeCloseTo(0.7)
+    expect(emberOf({ ...finish(PRESS), ember: 0 })).toBe(0)
+    expect(emberOf(power(2))).toBe(0)
   })
 
   it('draws back before the thrust, lets the beam go after its lead, and is shoved back', () => {
@@ -272,5 +305,54 @@ describe('the legs rule: the arrow has legs in the power-up and in the finish on
     }
     walk(src)
     expect(takers).toEqual([])
+  })
+})
+
+describe('the power-up fitted to a window', () => {
+  // The fight's window: 3.15 s from the first frame of the power-up to the turret's lock.
+  const pw = { at: 34.68, until: 37.83 }
+  const inPose = (t: number): boolean => {
+    const h = finishState({ time: t, arrow: ARROW, power: pw }).pose.hands
+    return [0, 1].every((n) => [0, 1, 2].every((a) => Math.abs(h[n]![a]! - POSES.power.hands[n]![a]!) < 0.5))
+  }
+
+  it('holds both fists in the sheet\'s pose for a second at least and lies again by the end of the window', () => {
+    let held = 0
+    for (let f = 0; f <= 4 * FPS; f++) if (inPose(pw.at + f / FPS)) held++
+    expect(held / FPS).toBeGreaterThanOrEqual(1)
+    expect(finishState({ time: pw.until - 1 / FPS, arrow: ARROW, power: pw }).up).toBe(true)
+    const after = finishState({ time: pw.until, arrow: ARROW, power: pw })
+    expect(after.up).toBe(false)
+    expect(after.pose.legs).toBe(0)
+    const plan = powerPlan(pw)
+    expect(plan.over).toBeCloseTo(3.15, 6)
+    expect(plan.end - POWER.up[1] * plan.quick).toBeGreaterThanOrEqual(1)
+    expect(plan.quick).toBeGreaterThan(0.6)
+  })
+
+  it('plays as written when the window is long enough, and when only `end` is given', () => {
+    expect(powerPlan({ at: 0, until: 6 }).quick).toBe(1)
+    const plain = powerPlan({ at: 1, end: 4.4 })
+    expect(plain.quick).toBe(1)
+    expect(plain.end).toBeCloseTo(3.4, 9)
+    expect(plain.over).toBeCloseTo(3.4 + POWER.burst + LIEDOWN, 9)
+    expect(powerPlan({ at: 1 }).end).toBeCloseTo(POWER.hold, 9)
+  })
+
+  it('does not pop, and names its four sounds once, inside the window', () => {
+    let worst = 0
+    let before = finishState({ time: pw.at, arrow: ARROW, power: pw })
+    const seen: Record<string, number> = {}
+    for (let f = 1; f <= 3.15 * FPS - 1; f++) {
+      const a = { time: pw.at + (f - 1) / FPS, arrow: ARROW, power: pw }
+      const b = { time: pw.at + f / FPS, arrow: ARROW, power: pw }
+      const now = finishState(b)
+      worst = Math.max(worst, step(before.pose, now.pose))
+      before = now
+      for (const e of finishEvents(a, b)) seen[e.name] = (seen[e.name] ?? 0) + 1
+    }
+    expect(worst).toBeLessThan(28)
+    expect(seen).toEqual({ 'power-up-rise': 1, 'power-up-burst': 1, 'finish-liedown': 1 })
+    expect(finishEvents({ time: pw.at - 1 / FPS, arrow: ARROW, power: pw }, { time: pw.at, arrow: ARROW, power: pw }).map((e) => e.name)).toEqual(['finish-standup'])
   })
 })

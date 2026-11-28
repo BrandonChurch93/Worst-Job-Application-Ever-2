@@ -62,26 +62,26 @@ Frames 4758 to 7277.
 
 ## boss
 
-Frames 7278 to 11093.
+Frames 7278 to 11585.
 
 | Beat | Frames | Camera | Move | Framing at the start | Framing at the end |
 | --- | --- | --- | --- | --- | --- |
 | `boss.verify` | 7278 to 7697 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `boss.unfold` | 7698 to 9443 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `boss.slabs` | 9444 to 10001 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `boss.popups` | 10002 to 10115 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `boss.lastStand` | 10116 to 10253 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `boss.collapse` | 10254 to 10325 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 300, y 270, 960 by 540 |
-| `boss.finish` | 10326 to 11021 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
-| `boss.press` | 11022 to 11093 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
+| `boss.unfold` | 7698 to 9935 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 0, y 208, 1200 by 675 |
+| `boss.slabs` | 9936 to 10493 | `view`, then `home` | follows, eases out | x 0, y 208, 1200 by 675 | x 0, y 0, 1920 by 1080 |
+| `boss.popups` | 10494 to 10607 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `boss.lastStand` | 10608 to 10745 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `boss.collapse` | 10746 to 10817 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 299.4, y 269.5, 961.8 by 541 |
+| `boss.finish` | 10818 to 11513 | `view` | holds, shakes | x 299.9, y 269.9, 960.2 by 540.1 | x 300, y 270, 960 by 540 |
+| `boss.press` | 11514 to 11585 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
 
 ## decision
 
-Frames 11094 to 12119.
+Frames 11586 to 12611.
 
 | Beat | Frames | Camera | Move | Framing at the start | Framing at the end |
 | --- | --- | --- | --- | --- | --- |
-| `decision.wait` | 11094 to 11213 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.letter` | 11214 to 11453 | `home` | holds, shakes | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.metrics` | 11454 to 11921 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.reset` | 11922 to 12119 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.wait` | 11586 to 11705 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.letter` | 11706 to 11945 | `home` | holds, shakes | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.metrics` | 11946 to 12413 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.reset` | 12414 to 12611 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |

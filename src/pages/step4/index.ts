@@ -7,6 +7,7 @@ import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, 
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
+import { clearSpot as clearOf } from '../../boss/spot'
 import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
 import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
@@ -66,7 +67,7 @@ interface State {
   gainFrom: number
   gainT: number
   fig: { x: number; y: number } | null
-  fin: Record<'power' | 'arms' | 'charge' | 'fire' | 'walk' | 'kneel' | 'fist', number> & { walked: number; pace: number; x: number; y: number; held: boolean }
+  fin: Record<'power' | 'arms' | 'charge' | 'fire' | 'walk' | 'kneel' | 'fist', number> & { walked: number; pace: number; x: number; y: number; tx: number; ty: number; held: boolean }
   dash: number
   close: number
   burn: { x: number; y: number } | null
@@ -107,7 +108,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -183,6 +184,26 @@ export function makePage(): PageLogic {
   // What the standing arrow is told: the look's figure of the power-up and of the finish stands in the arrow's place for as long as it is up.
   const RAISED = LINE7.part2 - LINE7.power - RAISE.early
   const raising = (): number => (s.fin.power < 0 || s.fin.arms >= 0 || s.clock - LEAD - s.fin.power >= RAISED ? -1 : s.clock - LEAD - s.fin.power)
+  const ease = (u: number): number => {
+    const k = Math.min(1, Math.max(0, u))
+    return k * k * (3 - 2 * k)
+  }
+  const spot = (r: number): { x: number; y: number } => {
+    const k = ease(r / RAISE.near)
+    return { x: s.fin.x + (s.fin.tx - s.fin.x) * k, y: s.fin.y + (s.fin.ty - s.fin.y) * k }
+  }
+  const closer = (): { x: number; y: number; z: number } | null => {
+    const r = raising()
+    if (!LOOK1_ON || r < 0 || r >= RAISE.back[1]) return null
+    const k = r < RAISE.back[0] ? ease(r / RAISE.near) : 1 - ease((r - RAISE.back[0]) / (RAISE.back[1] - RAISE.back[0]))
+    const z = 1 + (RAISE.zoom - 1) * k
+    const at = spot(r)
+    const w = 1920 / z
+    const h = 1080 / z
+    const cx = Math.min(1920 - w / 2, Math.max(w / 2, at.x + (RAISE.box.x0 + RAISE.box.x1) / 2))
+    const cy = Math.min(1080 - h / 2, Math.max(h / 2, at.y + (RAISE.box.y0 + RAISE.box.y1) / 2))
+    return { x: 960 + (cx - 960) * k, y: 540 + (cy - 540) * k, z }
+  }
   const figure = (): FinishInput | null => {
     const v = view()
     const r = raising()
@@ -191,7 +212,7 @@ export function makePage(): PageLogic {
     const b = buttonAt(v)
     return {
       time: v.time,
-      arrow: r < 0 ? { x: s.cx, y: s.cy } : { x: m.x, y: m.y },
+      arrow: r < 0 ? { x: s.cx, y: s.cy } : spot(r),
       power: r < 0 ? null : { at: m.power, until: m.power + RAISED },
       marks: { arms: mark(m.arms), charge: mark(m.charge), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
       charge: s.charge < 0 ? 0 : level(s.charge),
@@ -515,6 +536,9 @@ export function makePage(): PageLogic {
             stamp('power')
             s.fin.x = io.cursor.x
             s.fin.y = io.cursor.y
+            const to = LOOK1_ON ? clearOf({ x: s.fin.x, y: s.fin.y }) : { x: s.fin.x, y: s.fin.y }
+            s.fin.tx = to.x
+            s.fin.ty = to.y
             io.cursor.act('angry')
           }
           if (s.t >= two + LINE7.part2 - BIG.lock) {
@@ -529,7 +553,7 @@ export function makePage(): PageLogic {
         const hits = f.hits
         const ups = f.popupCount
         const health = f.health
-        stepFight(f, io, arena)
+        stepFight(f, io, arena, LOOK1_ON && f.turret < 1)
         if (f.health < health) s.struck = 0
         else if (s.struck >= 0) s.struck += dt
         if (f.health > health + 0.01 && !(f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1])) {
@@ -547,7 +571,7 @@ export function makePage(): PageLogic {
           io.cursor.react(f.popupCount === 1 ? 'flinch' : 'fume')
           s.busy = 0.7
         }
-        if (io.pressed && !f.over) {
+        if (io.pressed && !f.over && (!LOOK1_ON || f.turret >= 1)) {
           const dx = f.x - io.cursor.x
           const dy = f.y - io.cursor.y
           const d = Math.hypot(dx, dy) || 1
@@ -674,7 +698,8 @@ export function makePage(): PageLogic {
       if (LOOK1_ON && s.fin.power >= 0 && !s.fig) {
         if (raising() >= 0) {
           if (!io.cursor.taken) io.cursor.take('boss')
-          io.cursor.drive(s.fin.x, s.fin.y)
+          const at = spot(raising())
+          io.cursor.drive(at.x, at.y)
           s.fin.held = true
         } else if (s.fin.held) {
           s.fin.held = false
@@ -815,6 +840,8 @@ export function makePage(): PageLogic {
     },
     scroll: () => 0,
     view(): CameraPose | null {
+      const c = s.close <= 0 ? closer() : null
+      if (c) return frame({ x: c.x - 960 / c.z, y: c.y - 540 / c.z, w: 1920 / c.z, h: 1080 / c.z })
       if (s.close <= 0) return null
       const n = near()
       return frame({ x: n.x - 960 / n.z, y: n.y - 540 / n.z, w: 1920 / n.z, h: 1080 / n.z })

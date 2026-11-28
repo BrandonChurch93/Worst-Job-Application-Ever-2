@@ -195,3 +195,39 @@ Commits of the second task: `8ab57b5d` (size 1.5), `d45017e8` (the blow), then t
 
 Report of the second task sent to the Builder at 03:02Z with four pictures (report-t2-walk, report-t2-power, report-t2-blow-near, report-t2-fire). The fight helper was told the new default size, the kneel spot (793, 659) and the step count.
 Open after it: the power-up's fists stand above the head, the sheet's at the shoulders (suggested hands (-36, 54) and (38, 56), not done); the walk and the fist strips are not re-rendered after the mend of 23; the whole `npm test` was not run on this head.
+
+
+## Third task (Builder's mail of 03:03Z)
+
+### Decisions
+24. The power-up pose to the sheet (item 1). `POSES.power` hands are now `[-30, 50, 7]` and `[32, 52, 7]`: at the height of the shoulders, beside the body. The Builder's suggested hands (-36, 54) and (38, 56) were tried first: with the arms' roots where they were, the hoses arched out over the fists and the arms read as held out to the sides. So the pose has a new field `tuck` (0 to 1; `STAND.tuck` 3.8 outline units): the arms leave the body that much lower, for this pose only, and rise to the fists as on the sheet. Every other pose has `tuck` 0 and is drawn as before. Against the sheet, as I see it: the fists are at the shoulders and close to the body; the sheet's elbows stand further out than mine (my hoses rise in a shallow bow, the sheet's arms have a sharp elbow); my right fist touches the edge of the arrow.
+25. The flames to the sheet (item 1). In the power-up the fire is five tall thin wisps (two at each side, 80 to 106 px tall before the size, one low behind the legs), thin short tongues along the ground that are taller toward the sides, and the ring (flames 8 to 13 wide, 10 to 28 tall). No broad fan. Against the sheet: the wisps are thin and reach the fists and over on both sides; the sheet's wisps curl, mine are straight spikes.
+26. The power-up fitted to its window (item 2). Cause, MEASURED by reading the fight helper's `src/pages/step4/index.ts` line 192: it gave `power.end` 1.85 s after `at`, my moves up took 1.6 s, so the fists were held 0.25 s. New input `power: { at, until }`: `until` is the view time by which the figure must lie on the page again. The moves (getting up, the dip, the fists up, the burst, lying down) are then played in a share `quick` of their own time so that the fists are held `POWER.held` 1.1 s; never quicker than `POWER.quickest` 0.55 unless the window is shorter than the moves. `powerPlan(pw)` returns `{ quick, end, over }` in seconds after `at`. `power.end` and no end at all work as before; no name the fight calls is changed. For the fight's 3.15 s: quick 0.707, fists in the pose at 1.13 s, held 1.10 s, burst at 2.23 s, lying at 3.15 s (STATED from the formula; that both fists are within half a px of the pose for at least 1.0 s and that the figure lies at `until` is MEASURED by the test "the power-up fitted to a window").
+27. The charge and the blast (item 4). Behind the figure the ground is darkened to amber while it charges and fires (`uDark` in the glow), the crackle is thinner and kept off the figure, the ball throws fewer rays. The beam at the hands is core 13 px and glow 30 px half-width before the size (they were 4 and 15).
+28. What of the look hides the beam on the real page (STATED from reading `src/boss/look1/fx.ts` on merge55, block "The finishing blast", lines 546 to 566; not tested by switching it off): the stream of `sparks` at the body's middle (8 ticks, HOT at 2.2) and each part's `pop` (a `flash` of colour [0.85, 0.92, 1] at 1.6, HOT `sparks` at 2.4, a SOOT `burst`). Mailed to the fight helper; that file is not touched.
+29. The fire pose (item 5): left as it is. No further try was made.
+
+### Proof (all from my harness, not the real page; the strips one sample a frame)
+- `proof/finish/report-t3-power.png`: the sheet's "Powering up" figure, the build at a right angle, the build straight down.
+- `proof/finish/report-t3-stills.png`: the charge and the blast at 1.5 in the close view beside the approved pictures.
+- `proof/finish/report-t3-walk-a.png`, `report-t3-walk-b.png`: the walk after the mend of 23, all 44 frames. The harness's arrow now lies at (520, 500), so the walk is about four steps and the framing is not that of the earlier strips.
+- `proof/finish/report-t3-fist.png`: the fist, 26 frames, after the mend.
+What they show, as I see them: every frame of the walk and of the fist strip looked at. The hand nearer the button is held back and stays off the button and its rim in every frame, also at the standstill; the fist rises and stays on the screen. In the charge the arrow and its hands read against the amber ground. In the blast the beam is as thick as the approved picture's from the hands on; over the button the look's white and orange burst still covers it.
+
+### Open
+- The real page was not rendered by me: whether the fight holds the pose there depends on the fight helper taking `until`.
+- The fire pose: fault 2 eased, not closed.
+- The whole `npm test` was not run in this task.
+
+### Draw calls (third task)
+The finish alone in the power-up at 1.5: 14 draw calls, 31,088 triangles (MEASURED, harness, film tier, on the last pose render). Charge and blast: no mesh was added (the dark ground is a uniform of the glow that was there), so 15 and 17 as before (STATED; the log of that render was not kept).
+
+### Runs of the third task (MEASURED, with exit codes)
+On head `5853431c`, the last change to any source file:
+- `npx vitest run tests/b-finish.test.ts`: EXIT 0, 20 of 20, at 03:20Z.
+- `npx tsc --noEmit -p .`: EXIT 0 at 03:20Z.
+- `npm run determinism`: EXIT 0 at 03:25Z ("pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders").
+- `npm run bots`: EXIT 0 at 03:25Z ("bots: all clear").
+- The whole `npm test`: not run.
+Commits of the third task: `0f4d1075` (the input `until`), `8f7bc9e6` (the pose), `5853431c` (wisps, charge, beam), then the tools, the proofs and these notes.
+The fight helper was told at 03:11Z: the input `power: { at, until }`, `powerPlan`, and the part of the look that hides the beam.
