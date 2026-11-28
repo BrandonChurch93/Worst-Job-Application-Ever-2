@@ -3,7 +3,7 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, 
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
-import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { WORD, wordAt } from '../../boss/look1/pose'
@@ -28,6 +28,7 @@ interface State {
   stage: StageName
   t: number
   ticked: number
+  since: number
   selfTick: boolean
   cracked: boolean
   opened: boolean
@@ -104,7 +105,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -188,7 +189,7 @@ export function makePage(): PageLogic {
   const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= 0 && s.fired < BLAST ? { power: s.shot, since: s.fired } : null, last: s.end && s.fig ? { phase: s.end.phase, since: s.end.t, x: s.fig.x, y: s.fig.y, to: { x: FALLEN.x, y: FALLEN.y }, led: !s.end.go } : null, close: s.close, pressedFor: s.end ? s.pressed : -1, scorch: s.burn }))
   const inBox = (b: { x: number; y: number; w: number; h: number }, p: { x: number; y: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const fallenBox = { x: FALLEN.x - 150, y: FALLEN.y - 62, w: 300, h: 124 }
-  const wake = (): number => (s.mode === 'film' ? WAKE_AFTER_TICK.film : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
+  const wake = (): number => (s.mode === 'film' ? Math.max(WAKE_AFTER_TICK.film, LINE6.after - UNFOLD.end) : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
   const card = (): string => {
     if (s.ticked < 0.3) return 'rest'
     if (s.mode === 'film') return 'confirmed-film'
@@ -370,12 +371,14 @@ export function makePage(): PageLogic {
       else if (s.skipping && (s.stage === 'fight' || s.stage === 'hold')) toCollapse(io, rigNow()!)
       if (s.gold >= 0) s.gold += dt
       if (s.gainT >= 0) s.gainT += dt
+      if (s.since >= 0) s.since += dt
 
       if (s.stage === 'verify') {
         if (s.ticked < 0) {
           const self = s.t >= GAG_MAX
           if ((io.pressed && inBox(L.checkRow, io.pointer, 8)) || self) {
             s.ticked = 0
+            s.since = 0
             s.selfTick = self
             io.emit('checkbox', L.checkbox.cx, L.checkbox.cy, false)
             io.cursor.act(self ? 'plain' : 'proud')
@@ -413,6 +416,10 @@ export function makePage(): PageLogic {
           s.px = io.pointer.x
           s.py = io.pointer.y
         }
+      } else if (s.stage === 'hold' && s.fight && s.since < LINE6.after - 1e-6) {
+        s.t = 0
+        s.px = io.pointer.x
+        s.py = io.pointer.y
       } else if (s.stage === 'hold' && s.fight) {
         const was = s.t - dt
         const stirred = Math.hypot(io.pointer.x - s.px, io.pointer.y - s.py) > 0.5 || io.pointer.down

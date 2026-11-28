@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
-import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
-import { HOLD, UNIT_SECONDS } from '../src/pages/step4/script'
+import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
+import { SHIFT, UNIT_SECONDS } from '../src/pages/step4/script'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
 import { project, toWorld } from '../src/stage/camera'
@@ -119,7 +119,7 @@ describe('how the boss plays (change 002, item 15)', () => {
     const drops: number[] = []
     let was = -1
     let glanced = 0
-    while (stage.time < 11.4 + HOLD && !stage.events.some((e) => e.name === 'shot-round')) {
+    while (stage.time < 11.4 + SHIFT && !stage.events.some((e) => e.name === 'shot-round')) {
       stage.advance(1)
       const now = stage.events.filter((e) => e.name === 'shield-glance').length
       const fill = (stage.frameAt(stage.time).list as Shape[]).find((s) => s.id === 'health-fill')
@@ -341,6 +341,30 @@ describe('how the boss plays (change 002, item 15)', () => {
     }
     expect(offsets.some((o) => o.time > off + BIG.off + 0.05)).toBe(true)
     expect(stage.events.some((e) => e.name === 'button-press')).toBe(true)
+  })
+
+  it('mail of 01:00. starts line 7 no sooner than line 6 has ended: in the film the boss is formed that long after the tick, and for a visitor the clock of line 7 waits for it while the pointer stays his', () => {
+    const at = (stage: Stage, n: string): number => stage.events.find((e) => e.name === n)!.step / stepHz
+    const f = film()
+    f.advance(Math.round(40 * stepHz))
+    expect(at(f, 'boss-formed') - at(f, 'checkbox')).toBeGreaterThanOrEqual(LINE6.after - 1e-6)
+    expect(at(f, 'boss-formed') - at(f, 'checkbox')).toBeLessThan(LINE6.after + 0.05)
+    for (const kind of ['keen', 'clumsy'] as const) {
+      const stage = live(new BotDriver(kind, config.seed))
+      let taken = 0
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'turret-lock') && stage.time < 120) {
+        stage.advance(1)
+        const formed = stage.events.find((e) => e.name === 'boss-formed')
+        const tick = stage.events.find((e) => e.name === 'checkbox')
+        if (formed && tick && stage.time < tick.step / stepHz + LINE6.after && stage.cursor.taken) taken++
+      }
+      const tick = at(stage, 'checkbox')
+      expect(at(stage, 'boss-formed') - tick, kind).toBeLessThan(LINE6.after)
+      expect(taken, kind).toBe(0)
+      expect(at(stage, 'boss-turn') - tick, kind).toBeGreaterThanOrEqual(LINE6.after)
+      expect(at(stage, 'boss-music') - tick, kind).toBeGreaterThanOrEqual(LINE6.after + LINE7.ends[0] + LINE7.gap + LINE7.music - 0.01)
+      expect(at(stage, 'turret-lock') - tick, kind).toBeGreaterThanOrEqual(LINE6.after + LINE7.ends[0] + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.part2 - 0.01)
+    }
   })
 
   it('emits every event of the rules in the film, each inside the time the film gives step 4', () => {

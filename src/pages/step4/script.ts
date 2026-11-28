@@ -1,6 +1,6 @@
 import type { Reaction } from '../../cursor/body'
 import { FALLEN } from '../../boss/plan'
-import { BIG, FINISH, LAST as LAST_MOMENT, LINE7, SHOUT } from '../../boss/tune'
+import { BIG, FINISH, LAST as LAST_MOMENT, LINE6, LINE7, SHOUT } from '../../boss/tune'
 import type { Pointer } from '../../stage/types'
 import type { Step4Layout } from './layout'
 
@@ -21,9 +21,12 @@ export interface FilmScript { pointer(time: number): Pointer; reactions: { at: n
 // The finish: it stands where its last shot left it, its arms come out, it charges for as long as the film holds the button and fires; when the body is gone it walks to the button that is left and presses it.
 // The times of the film hang on these: the tick, the crack that follows it, the lengths of line 7 and of the finish in the tuning file, and the length of the fight as the film plays it.
 const TICK = 3.8
-const FORMED = 9
+// The forming waits for line 6: `boss-formed` comes LINE6.after after the tick. BASE is the second the fight's own table counts the forming at, as it was seen when the table was tuned; WAIT is what the wait adds, spent under the answer.
+const FORMED = Number((TICK + LINE6.after).toFixed(3))
+const BASE = 9.004
+const WAIT = Number((FORMED - BASE).toFixed(3))
 export const HOLD = LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.part2 - BIG.lock
-const SHIFT = HOLD
+export const SHIFT = HOLD + WAIT
 const TWO = FORMED + LINE7.part0 + LINE7.gap + LINE7.part1 + LINE7.gap
 export const FIGHT = 13.69
 // The last charge, in seconds of the fight's own table: when it leaves the right for the shield's face, and when it leaves that for the high side.
@@ -35,8 +38,8 @@ const GONE = DOWN + FINISH.fall + SHOUT.gone
 const WALKED = GONE + LAST_MOMENT.wait + (FALLEN.x - LAST_MOMENT.reach - LAST_MOMENT.stand[0]) / LAST_MOMENT.speed
 const STRUCK = WALKED + LAST_MOMENT.knees + LAST_MOMENT.breath + LAST_MOMENT.fist + LAST_MOMENT.blow
 const late = (t: number): number => Number((t + SHIFT).toFixed(3))
-export const ACT = { flinch: 1.95, windup: 3.36, tap: 3.72, take: 4.62, hide: 7.1, cower: 7.6, brace: late(10.55), snap: late(11.5), charge: late(LAST[0]), ram: late(FIGHT + FORMED - 0.15), gather: Number(WALKED.toFixed(3)), press: Number(STRUCK.toFixed(3)) } as const
-export const UNIT_SECONDS = Math.ceil((ACT.press + LAST_MOMENT.hold + 0.62) * 30) / 30
+export const ACT = { flinch: 1.95, windup: 3.36, tap: 3.72, take: 4.62, hide: 7.1 + WAIT, cower: 7.6 + WAIT, brace: late(10.55), snap: late(11.5), charge: late(LAST[0]), ram: late(FIGHT + BASE - 0.15), gather: Number(WALKED.toFixed(3)), press: Number(STRUCK.toFixed(3)) } as const
+export const UNIT_SECONDS = Math.ceil((ACT.press + LAST_MOMENT.hold + 0.62) * 10) / 10
 
 export const STAND = { x: 150, y: 96, near: 190 } as const
 const SHORT = { x: 70, y: 60 } as const
@@ -64,12 +67,12 @@ export function makeScript(L: Step4Layout): FilmScript {
     [11.55, GLANCE.x, GLANCE.y], [11.75, 940, 236], [11.95, FLANK.x, FLANK.y, 'out'],
     [13.3, FLANK.x, FLANK.y], [13.44, 720, 236], [13.58, 440, 430], [13.72, OTHER.x, OTHER.y, 'out'],
     [17.2, OTHER.x, OTHER.y], [17.36, 900, 950], [17.55, RIGHT.x, RIGHT.y, 'out'], [LAST[0], RIGHT.x, RIGHT.y], [LAST[0] + 0.16, 940, 236], [LAST[0] + 0.35, GLANCE.x, GLANCE.y, 'out'],
-    [LAST[1], GLANCE.x, GLANCE.y], [LAST[1] + 0.14, 940, 236], [LAST[1] + 0.28, OVER.x, OVER.y, 'out'], [FIGHT + FORMED, OVER.x, OVER.y]
+    [LAST[1], GLANCE.x, GLANCE.y], [LAST[1] + 0.14, 940, 236], [LAST[1] + 0.28, OVER.x, OVER.y, 'out'], [FIGHT + BASE, OVER.x, OVER.y]
   ]
   const path: Key[] = [
     [0, 960, 560], [0.5, 960, 560],
     [1.2, short.x, short.y, 'out'], [1.97, short.x, short.y], [2.2, back.x, back.y, 'out'], [3.45, back.x, back.y], [3.72, cb.cx, cb.cy + 2, 'in'], [3.98, cb.cx, cb.cy + 2],
-    [4.34, answer.x, answer.y, 'out'], [5.3, answer.x, answer.y], [6.04, 820, 890], [6.1, 822, 892], [6.25, SHOCK.x, SHOCK.y, 'out'], [ACT.hide, SHOCK.x, SHOCK.y], [7.46, COVER.x, COVER.y, 'out'], [FORMED, COVER.x, COVER.y],
+    [4.34, answer.x, answer.y, 'out'], [5.3 + WAIT, answer.x, answer.y], [6.04 + WAIT, 820, 890], [6.1 + WAIT, 822, 892], [6.25 + WAIT, SHOCK.x, SHOCK.y, 'out'], [ACT.hide, SHOCK.x, SHOCK.y], [7.46 + WAIT, COVER.x, COVER.y, 'out'], [FORMED, COVER.x, COVER.y],
     [FORMED + LINE7.part0 * 0.4, DRIFT[0].x, DRIFT[0].y], [FORMED + LINE7.part0, DRIFT[1].x, DRIFT[1].y], [TWO, DRIFT[1].x, DRIFT[1].y], [TWO + 0.5, GLANCE.x, GLANCE.y, 'out'],
     ...fight.map((k): Key => (k[3] ? [late(k[0]), k[1], k[2], k[3]] : [late(k[0]), k[1], k[2]])),
     [UNIT_SECONDS, OVER.x, OVER.y]
@@ -85,7 +88,7 @@ export function makeScript(L: Step4Layout): FilmScript {
   burst(late(16.0), late(16.5), 0.17)
   burst(late(17.6), late(LAST[0] - 0.05), 0.17)
   burst(late(LAST[0] + 0.4), late(LAST[1] - 0.05), 0.15)
-  burst(late(LAST[1] + 0.3), late(FIGHT + FORMED), 0.1)
+  burst(late(LAST[1] + 0.3), late(FIGHT + BASE), 0.1)
   const pointer = (time: number): Pointer => {
     let x = path[0]![1]
     let y = path[0]![2]
