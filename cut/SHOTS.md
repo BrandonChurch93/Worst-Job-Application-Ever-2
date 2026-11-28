@@ -72,7 +72,7 @@ Frames 7278 to 11585.
 | `boss.popups` | 10494 to 10607 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `boss.lastStand` | 10608 to 10745 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `boss.collapse` | 10746 to 10817 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 299.4, y 269.5, 961.8 by 541 |
-| `boss.finish` | 10818 to 11513 | `view` | holds, shakes | x 299.9, y 269.9, 960.2 by 540.1 | x 300, y 270, 960 by 540 |
+| `boss.finish` | 10818 to 11513 | `view` | follows | x 299.9, y 269.9, 960.2 by 540.1 | x 300, y 270, 960 by 540 |
 | `boss.press` | 11514 to 11585 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
 
 ## decision
