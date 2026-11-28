@@ -144,7 +144,7 @@ Crops, mine left and the picture right: `node pipeline/change002/careers-differe
 
 ## Tests of other units that this change breaks
 
-MEASURED at e80848bc (the head with `origin/main` 5ee40d5a merged; unit 19.0 s, turn at 18.5 s), the whole `npm test`: 15 files failed, 163 passed, 13 skipped; 33 tests failed, 2161 passed, 17 skipped; 276.3 s. The same 33 at b13d25f9, before the type pass. Before this work: 176 files passed, 2177 tests. None of the 15 files is mine and none is touched. At f8b9221e (unit 19.25 s) it was 40 tests in 18 files: the 7 of `tests/harness-plan.test.ts`, `tests/harness-keep.test.ts` and `tests/roughcut.test.ts` were the half preview frame and are green at 19.0 s.
+MEASURED at f9a7b76e (the last commit that changes the source, with `origin/main` 5ee40d5a merged; unit 19.0 s, turn at 18.5 s), the whole `npm test`: 15 files failed, 163 passed, 13 skipped; 33 tests failed, 2161 passed, 17 skipped; 276.0 s. The same 33 with the same messages at e80848bc, and at b13d25f9 before the type pass (there the cut list gave 1014 events). Before this work: 176 files passed, 2177 tests. None of the 15 files is mine and none is touched. At f8b9221e (unit 19.25 s) it was 40 tests in 18 files: the 7 of `tests/harness-plan.test.ts`, `tests/harness-keep.test.ts` and `tests/roughcut.test.ts` were the half preview frame and are green at 19.0 s.
 
 The third column is the test's own message: the value it sees now comes first, the value it pinned comes after "to be", "to equal" or the comparison.
 
