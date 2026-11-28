@@ -252,6 +252,7 @@ export const TOP = {
   clear: 24, // px kept clear under the bar's box: nothing of the boss comes nearer
   muzzle: 2, // px across the big cannon's muzzle, for the same band
   spare: 0.5, // px more than the band that the boss's own bound on his place keeps
+  lift: 14, // px the raised muzzle of the big cannon is drawn higher than its place on the page when it is under the bar (12 to 15 px read off the live picture)
   move: 0.6 // s the form takes to leave and to come back, and the bar to go up and down
 } as const
 
