@@ -3,10 +3,10 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, 
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
-import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
-import { finishState, kneelSpot, LIEDOWN, POWER, type FinishInput } from '../../boss/finish/acting'
+import { finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
 import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
 import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
@@ -66,7 +66,7 @@ interface State {
   gainFrom: number
   gainT: number
   fig: { x: number; y: number } | null
-  fin: Record<'power' | 'arms' | 'charge' | 'fire' | 'walk' | 'kneel' | 'fist', number> & { walked: number; pace: number }
+  fin: Record<'power' | 'arms' | 'charge' | 'fire' | 'walk' | 'kneel' | 'fist', number> & { walked: number; pace: number; x: number; y: number; held: boolean }
   dash: number
   close: number
   burn: { x: number; y: number } | null
@@ -107,7 +107,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0 }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -181,15 +181,18 @@ export function makePage(): PageLogic {
   }
   const mark = (v: number): number | undefined => (v < 0 ? undefined : v)
   // What the standing arrow is told: the look's figure of the power-up and of the finish stands in the arrow's place for as long as it is up.
+  const RAISED = LINE7.part2 - LINE7.power - RAISE.early
+  const raising = (): number => (s.fin.power < 0 || s.fin.arms >= 0 || s.clock - LEAD - s.fin.power >= RAISED ? -1 : s.clock - LEAD - s.fin.power)
   const figure = (): FinishInput | null => {
     const v = view()
-    if (!LOOK1_ON || !v || (s.fin.power < 0 && s.fin.arms < 0)) return null
+    const r = raising()
+    if (!LOOK1_ON || !v || (r < 0 && s.fin.arms < 0)) return null
     const m = s.fin
     const b = buttonAt(v)
     return {
       time: v.time,
-      arrow: { x: s.cx, y: s.cy },
-      power: m.power < 0 ? null : { at: m.power, end: m.power + LINE7.part2 - LINE7.power - POWER.burst - LIEDOWN },
+      arrow: r < 0 ? { x: s.cx, y: s.cy } : { x: m.x, y: m.y },
+      power: r < 0 ? null : { at: m.power, until: m.power + RAISED },
       marks: { arms: mark(m.arms), charge: mark(m.charge), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
@@ -335,8 +338,8 @@ export function makePage(): PageLogic {
       if (e.t < 0) return
       if (!waited) {
         io.emit('finish-walk', io.cursor.x, io.cursor.y, false)
-        const told = figure()
-        if (told) s.fig = { ...finishState(told).feet }
+        const now = figure()
+        if (now) s.fig = { ...finishState(now).feet }
         s.fin.walked = 0
         stamp('walk')
       }
@@ -510,6 +513,8 @@ export function makePage(): PageLogic {
             s.gold = 0
             io.emit('power-up', io.cursor.x, io.cursor.y, false)
             stamp('power')
+            s.fin.x = io.cursor.x
+            s.fin.y = io.cursor.y
             io.cursor.act('angry')
           }
           if (s.t >= two + LINE7.part2 - BIG.lock) {
@@ -666,6 +671,16 @@ export function makePage(): PageLogic {
         }
       }
       io.cursor.setGround(groundAt(io.cursor.x, io.cursor.y))
+      if (LOOK1_ON && s.fin.power >= 0 && !s.fig) {
+        if (raising() >= 0) {
+          if (!io.cursor.taken) io.cursor.take('boss')
+          io.cursor.drive(s.fin.x, s.fin.y)
+          s.fin.held = true
+        } else if (s.fin.held) {
+          s.fin.held = false
+          io.cursor.release()
+        }
+      }
       if (LOOK1_ON) io.cursor.setOnPage(!stands())
     },
     save: () => JSON.parse(JSON.stringify(s)) as State,

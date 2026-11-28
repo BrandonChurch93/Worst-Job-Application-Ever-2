@@ -11026,8 +11026,8 @@
       "unit": "boss",
       "beat": "boss.slabs",
       "page": "step4",
-      "x": 470,
-      "y": 500,
+      "x": 469.3,
+      "y": 500.4,
       "hitsCursor": false,
       "cue": "dart-fire"
     },
@@ -11039,8 +11039,8 @@
       "unit": "boss",
       "beat": "boss.slabs",
       "page": "step4",
-      "x": 468,
-      "y": 499.8,
+      "x": 467.6,
+      "y": 500.1,
       "hitsCursor": false,
       "cue": "dart-fire"
     },
@@ -11066,7 +11066,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 839.8,
-      "y": 536.2,
+      "y": 536.3,
       "hitsCursor": false,
       "cue": null
     },
@@ -11078,8 +11078,8 @@
       "unit": "boss",
       "beat": "boss.slabs",
       "page": "step4",
-      "x": 470,
-      "y": 500,
+      "x": 469.8,
+      "y": 500.1,
       "hitsCursor": false,
       "cue": "dart-fire"
     },
@@ -11091,8 +11091,8 @@
       "unit": "boss",
       "beat": "boss.slabs",
       "page": "step4",
-      "x": 470,
-      "y": 500,
+      "x": 469.8,
+      "y": 500.1,
       "hitsCursor": false,
       "cue": "dart-fire"
     },
@@ -11104,8 +11104,8 @@
       "unit": "boss",
       "beat": "boss.slabs",
       "page": "step4",
-      "x": 824.9,
-      "y": 534.7,
+      "x": 824.8,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -11117,7 +11117,7 @@
       "unit": "boss",
       "beat": "boss.slabs",
       "page": "step4",
-      "x": 468.1,
+      "x": 468.2,
       "y": 499.8,
       "hitsCursor": false,
       "cue": "dart-fire"
@@ -11144,7 +11144,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 810.7,
-      "y": 533.4,
+      "y": 533.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -11157,7 +11157,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 810.7,
-      "y": 533.4,
+      "y": 533.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -11495,7 +11495,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 709.6,
-      "y": 523.2,
+      "y": 523.3,
       "hitsCursor": false,
       "cue": null
     },
@@ -11807,7 +11807,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.1,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -11820,7 +11820,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.1,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -11833,7 +11833,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.1,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -11846,7 +11846,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.1,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -11885,7 +11885,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -11898,7 +11898,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -11963,7 +11963,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -11976,7 +11976,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -12041,7 +12041,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12054,7 +12054,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12067,7 +12067,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12080,7 +12080,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12119,7 +12119,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12132,7 +12132,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -12197,7 +12197,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12210,7 +12210,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12223,7 +12223,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12236,7 +12236,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12275,7 +12275,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12288,7 +12288,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -12353,7 +12353,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12366,7 +12366,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12379,7 +12379,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12392,7 +12392,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12431,7 +12431,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12444,7 +12444,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -12509,7 +12509,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12522,7 +12522,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12535,7 +12535,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12548,7 +12548,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12587,7 +12587,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12600,7 +12600,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -12613,7 +12613,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12626,7 +12626,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -12665,7 +12665,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12678,7 +12678,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 938.4,
-      "y": 525.4,
+      "y": 525.5,
       "hitsCursor": false,
       "cue": null
     },
@@ -12795,7 +12795,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12808,7 +12808,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 936.6,
-      "y": 525.7,
+      "y": 525.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -12925,7 +12925,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 937,
-      "y": 525.5,
+      "y": 525.6,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12938,7 +12938,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 937,
-      "y": 525.5,
+      "y": 525.6,
       "hitsCursor": false,
       "cue": null
     },
@@ -12951,7 +12951,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 937,
-      "y": 525.5,
+      "y": 525.6,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -12964,7 +12964,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 937,
-      "y": 525.5,
+      "y": 525.6,
       "hitsCursor": false,
       "cue": null
     },
@@ -13029,7 +13029,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 794.2,
-      "y": 428.3,
+      "y": 428.4,
       "hitsCursor": false,
       "cue": null
     },
@@ -13184,7 +13184,7 @@
       "unit": "boss",
       "beat": "boss.slabs",
       "page": "step4",
-      "x": 722.9,
+      "x": 723,
       "y": 575.5,
       "hitsCursor": false,
       "cue": "dart-hit"
@@ -13197,7 +13197,7 @@
       "unit": "boss",
       "beat": "boss.slabs",
       "page": "step4",
-      "x": 722.9,
+      "x": 723,
       "y": 575.5,
       "hitsCursor": false,
       "cue": null
@@ -13588,7 +13588,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 724.5,
-      "y": 574.5,
+      "y": 574.6,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -13601,7 +13601,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 724.5,
-      "y": 574.5,
+      "y": 574.6,
       "hitsCursor": false,
       "cue": null
     },
@@ -13640,7 +13640,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13653,7 +13653,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13692,7 +13692,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13705,7 +13705,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13744,7 +13744,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13757,7 +13757,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13770,7 +13770,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 920.4,
-      "y": 551,
+      "y": 551.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13809,7 +13809,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13822,7 +13822,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13861,7 +13861,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13874,7 +13874,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13913,7 +13913,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13926,7 +13926,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13952,7 +13952,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13965,7 +13965,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -13991,7 +13991,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -14004,7 +14004,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 712.9,
-      "y": 578,
+      "y": 578.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -14030,7 +14030,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 770.1,
-      "y": 503.5,
+      "y": 503.6,
       "hitsCursor": false,
       "cue": "slab-fire"
     },
@@ -14498,7 +14498,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 0,
-      "y": 875.5,
+      "y": 875.4,
       "hitsCursor": false,
       "cue": null
     },
@@ -14641,7 +14641,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 941.4,
-      "y": 534.9,
+      "y": 535,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -14654,7 +14654,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 941.4,
-      "y": 534.9,
+      "y": 535,
       "hitsCursor": false,
       "cue": null
     },
@@ -14771,7 +14771,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -14784,7 +14784,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -14797,7 +14797,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 941.8,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -14810,7 +14810,7 @@
       "beat": "boss.slabs",
       "page": "step4",
       "x": 941.8,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -14927,7 +14927,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -14940,7 +14940,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15083,7 +15083,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15096,7 +15096,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15239,7 +15239,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15252,7 +15252,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15265,7 +15265,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15278,7 +15278,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15408,7 +15408,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15421,7 +15421,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 941.9,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15564,7 +15564,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15577,7 +15577,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15590,7 +15590,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15603,7 +15603,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15720,7 +15720,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15733,7 +15733,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15746,7 +15746,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15759,7 +15759,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15889,7 +15889,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15902,7 +15902,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -15915,7 +15915,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -15928,7 +15928,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -16045,7 +16045,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16058,7 +16058,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -16071,7 +16071,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16084,7 +16084,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -16201,7 +16201,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16214,7 +16214,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942.1,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -16227,7 +16227,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16240,7 +16240,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 942,
-      "y": 534.8,
+      "y": 534.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -16279,7 +16279,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16292,7 +16292,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -16305,7 +16305,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16318,7 +16318,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -16435,7 +16435,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16448,7 +16448,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -16461,7 +16461,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16474,7 +16474,7 @@
       "beat": "boss.popups",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -16591,7 +16591,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16604,7 +16604,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -16617,7 +16617,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16630,7 +16630,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -16773,7 +16773,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16786,7 +16786,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -16799,7 +16799,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16812,7 +16812,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -16968,7 +16968,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -16981,7 +16981,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 943.2,
-      "y": 534.7,
+      "y": 534.8,
       "hitsCursor": false,
       "cue": null
     },
@@ -17045,7 +17045,7 @@
       "unit": "boss",
       "beat": "boss.lastStand",
       "page": "step4",
-      "x": 940.8,
+      "x": 940.9,
       "y": 526.1,
       "hitsCursor": false,
       "cue": "dart-hit"
@@ -17058,7 +17058,7 @@
       "unit": "boss",
       "beat": "boss.lastStand",
       "page": "step4",
-      "x": 940.8,
+      "x": 940.9,
       "y": 526.1,
       "hitsCursor": false,
       "cue": null
@@ -17462,7 +17462,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 715.5,
-      "y": 529.8,
+      "y": 529.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -17475,7 +17475,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 715.5,
-      "y": 529.8,
+      "y": 529.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -17514,7 +17514,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 715.3,
-      "y": 529.8,
+      "y": 529.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -17527,7 +17527,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 715.3,
-      "y": 529.8,
+      "y": 529.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -17592,7 +17592,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 717,
-      "y": 530,
+      "y": 530.1,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -17605,7 +17605,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 717,
-      "y": 530,
+      "y": 530.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -17670,7 +17670,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 715.4,
-      "y": 529.8,
+      "y": 529.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -17683,7 +17683,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 715.4,
-      "y": 529.8,
+      "y": 529.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -17748,7 +17748,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 717,
-      "y": 530,
+      "y": 530.1,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -17761,7 +17761,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 717,
-      "y": 530,
+      "y": 530.1,
       "hitsCursor": false,
       "cue": null
     },
@@ -17813,7 +17813,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 715.4,
-      "y": 529.8,
+      "y": 529.9,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -17826,7 +17826,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 715.4,
-      "y": 529.8,
+      "y": 529.9,
       "hitsCursor": false,
       "cue": null
     },
@@ -18294,7 +18294,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 922.7,
-      "y": 487.6,
+      "y": 487.7,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -18307,7 +18307,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 922.7,
-      "y": 487.6,
+      "y": 487.7,
       "hitsCursor": false,
       "cue": null
     },
@@ -18566,7 +18566,7 @@
       "unit": "boss",
       "beat": "boss.lastStand",
       "page": "step4",
-      "x": 921.9,
+      "x": 922,
       "y": 487.8,
       "hitsCursor": false,
       "cue": "dart-hit"
@@ -18579,7 +18579,7 @@
       "unit": "boss",
       "beat": "boss.lastStand",
       "page": "step4",
-      "x": 921.9,
+      "x": 922,
       "y": 487.8,
       "hitsCursor": false,
       "cue": null
@@ -18684,7 +18684,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 920.7,
-      "y": 488.5,
+      "y": 488.6,
       "hitsCursor": false,
       "cue": "dart-hit"
     },
@@ -18697,7 +18697,7 @@
       "beat": "boss.lastStand",
       "page": "step4",
       "x": 920.7,
-      "y": 488.5,
+      "y": 488.6,
       "hitsCursor": false,
       "cue": null
     },
@@ -18956,7 +18956,7 @@
       "unit": "boss",
       "beat": "boss.collapse",
       "page": "step4",
-      "x": 921.1,
+      "x": 921.2,
       "y": 488.3,
       "hitsCursor": false,
       "cue": "dart-hit"
@@ -18969,7 +18969,7 @@
       "unit": "boss",
       "beat": "boss.collapse",
       "page": "step4",
-      "x": 921.1,
+      "x": 921.2,
       "y": 488.3,
       "hitsCursor": false,
       "cue": null
@@ -19177,8 +19177,8 @@
       "unit": "boss",
       "beat": "boss.finish",
       "page": "step4",
-      "x": 840.5,
-      "y": 656,
+      "x": 817.5,
+      "y": 659,
       "hitsCursor": false,
       "cue": null
     },
@@ -19190,8 +19190,8 @@
       "unit": "boss",
       "beat": "boss.finish",
       "page": "step4",
-      "x": 840.5,
-      "y": 656,
+      "x": 817.5,
+      "y": 659,
       "hitsCursor": false,
       "cue": null
     },
