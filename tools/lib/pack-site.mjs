@@ -456,15 +456,21 @@ export const PORTS = ['flippers', 'drop']
 export const ARROW = ['type', 'taken', 'given-back']
 // The machine page's scripted scene (change note 002 item 8), on one sheet of whole frames at its own events in order. A name the scene's manifest holds is that event,
 // `strike` is the scene's first strike of the grade `grade`, any other name is the gag `gag` + name as the visit reaches it, and `back` is the step at which the arrow is the visitor's again.
+// The launch is shown at the plunger's strike and the firehouse at the scoop's kick, the hit itself in each (ruled at 07:30Z on 28 November), not at the gags that begin round them.
 // A frame of the film is drawn by the site's film path at `tier`, as the page's video was: in the visit's own picture the page stands on the film's first frame while the film plays.
-export const SCENE = { moment: 'scene', data: 'src/pages/step3/video/manifest.json', tier: 'draft', grade: 3, gag: 'pinball.', strike: 'strike', back: 'hand-back', shows: ['tube-run', 'launch', 'strike', 'coffee', 'replyAll', 'fired', 'flipper-save', 'drain', 'hand-back'] }
+export const SCENE = { moment: 'scene', data: 'src/pages/step3/video/manifest.json', tier: 'draft', grade: 3, gag: 'pinball.', strike: 'strike', back: 'hand-back', shows: ['tube-run', 'plunger', 'coffee', 'strike', 'replyAll', 'scoop-kick', 'flipper-save', 'drain', 'hand-back'] }
 export const sceneOf = () => readJson(at(SCENE.data))
 // The scene's events as the visit has them, from `film`, the step at which the film takes the page: the step of each in the visit and its frame of the film, counted from the film's first.
+// A frame of the film gathers light from its first step for the open part of its shutter: an event's frame is the one whose open shutter holds it, and the next one where it falls
+// in the closed part, so that the frame shows the event and not the moment before it. A gag's frame is the frame of the step at which the visit reaches it.
 // The hand back is a step of the visit and no frame of the film: the first step after the film's last frame at which the arrow has moved. They come out in the order the visit has them.
-export function sceneMarks(run, scene, film) {
+export function sceneMarks(cfg, run, scene, film) {
   const rows = run.rows
   const last = rows.length - 1
   const per = VISITOR.hz / scene.fps
+  const stride = scene.stepHz / scene.fps
+  const open = (cfg.film.shutterDegrees / 360) * stride
+  const frameOf = (at) => Math.floor(at / stride) + (at % stride < open ? 0 : 1)
   const end = film + scene.frames * per
   const out = []
   for (const name of SCENE.shows) {
@@ -477,8 +483,8 @@ export function sceneMarks(run, scene, film) {
     }
     const e = scene.events.find((x) => (name === SCENE.strike ? x.name.startsWith(`${SCENE.strike}:`) && x.name.endsWith(`:${SCENE.grade}`) : x.name === name))
     const g = e ? null : (run.gags || []).find((x) => x.gag === SCENE.gag + name && x.step >= film && x.step < end)
-    const frame = e ? Math.floor((e.at / scene.stepHz) * scene.fps) : g ? Math.floor((g.step - film) / per) : null
-    if (frame !== null) out.push({ name, label: e ? e.name : g.gag, step: film + frame * per, frame })
+    const frame = e ? frameOf(e.at) : g ? Math.floor((g.step - film) / per) : null
+    if (frame !== null && frame < scene.frames) out.push({ name, label: e ? e.name : g.gag, step: film + frame * per, frame })
   }
   return out.filter((x) => x.step <= last).sort((x, y) => x.step - y.step)
 }
@@ -1475,7 +1481,7 @@ export function motionPlan(cfg, run) {
   if (filmed) {
     // The scripted scene of the machine page, whole frames at its own events in order: the film's frames, and the visit's own picture at the hand back.
     const scene = sceneOf()
-    const marks = sceneMarks(run, scene, film)
+    const marks = sceneMarks(cfg, run, scene, film)
     const steps = marks.map((x) => x.step)
     const films = marks.filter((x) => x.frame !== null).length
     const heading = `The machine page plays its scripted scene as a film, ${timeOf(film)} to ${timeOf(film + (scene.frames * VISITOR.hz) / scene.fps)} of the visit: whole frames at the scene's own events in order, not consecutive, at ${whole}% of the page's size. Under a frame: its time in the visit and its event. Frames 1 to ${films} are frames of the film, drawn anew by the site's film path at the tier ${SCENE.tier} from the unit the page's video is cut from: in the visit's own picture the page stands on the film's first frame while the film plays.${films < marks.length ? ` Frame ${marks.length} is the visit's own picture at the step the arrow is the visitor's again.` : ''}`

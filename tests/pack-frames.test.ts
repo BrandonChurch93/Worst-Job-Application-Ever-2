@@ -399,7 +399,8 @@ describe('the motion pack of a recorded visit', () => {
   it('the scripted scene on one sheet of whole frames at its own events in order: the film\'s frames by the scene\'s manifest, and the visit\'s own picture where the arrow is the visitor\'s again', () => {
     // Ruled by the Builder at 06:06Z on 28 November: the critic pack shows the film the machine page plays (change note 002 item 8) on one set of sheets of whole frames, no window,
     // at the scene's own events in order. Which events is the ruling's own list, so the names are pinned; where each falls is found from the scene's manifest and the walk's gags, and no step is pinned.
-    expect(SHOWN.shows).toEqual(['tube-run', 'launch', 'strike', 'coffee', 'replyAll', 'fired', 'flipper-save', 'drain', 'hand-back'])
+    // Ruled at 07:30Z: the launch stands on the plunger's strike and the firehouse on the scoop's kick, the hit itself in each, where the gags `pinball.launch` and `pinball.fired` stood before.
+    expect(SHOWN.shows).toEqual(['tube-run', 'plunger', 'coffee', 'strike', 'replyAll', 'scoop-kick', 'flipper-save', 'drain', 'hand-back'])
     type Shown = Sheet & { page: string; film: (number | null)[]; labels: string[]; scene: { unit: string; tier: string; from: number; fps: number }; apart: number | null }
     const sheets = of(SHOWN.moment) as Shown[]
     expect(sheets.length).toBe(1)
@@ -409,7 +410,12 @@ describe('the motion pack of a recorded visit', () => {
     expect(f.scene).toEqual({ unit: manifest.unit, tier: SHOWN.tier, from: manifest.from.frame, fps: manifest.fps })
     // A frame of the film is counted from the film's first, and a step of the walk is a frame of the film: the walk and the film both go at 60 to the second.
     expect(VISITOR.hz).toBe(manifest.fps)
-    const frameOf = (e: { at: number }) => Math.floor((e.at / manifest.stepHz) * manifest.fps)
+    // A frame of the film gathers light from its first step for the open part of its shutter. The frame of an event is the one whose open shutter holds the event, and the next one
+    // where the event falls in the closed part: the first frame that shows the hit, and never one that ends before it.
+    const stride = manifest.stepHz / manifest.fps
+    const open = (cfg.film.shutterDegrees / 360) * stride
+    expect(open).toBeGreaterThan(0)
+    const frameOf = (e: { at: number }) => Math.floor(e.at / stride) + (e.at % stride < open ? 0 : 1)
     const named = (name: string) => {
       const e = events.find((x) => x.name === name)!
       return { label: e.name, step: filmIn + frameOf(e), film: frameOf(e) as number | null }
@@ -421,10 +427,19 @@ describe('the motion pack of a recorded visit', () => {
     let back = over
     while (at(back)[0] === at(back - 1)[0] && at(back)[1] === at(back - 1)[1]) back += 1
     const want = [
-      named(VIDEO.inEvent), gagged('launch'), { label: strike.name, step: filmIn + frameOf(strike), film: frameOf(strike) as number | null }, gagged('coffee'), gagged('replyAll'), gagged('fired'),
+      named(VIDEO.inEvent), named('plunger'), { label: strike.name, step: filmIn + frameOf(strike), film: frameOf(strike) as number | null }, gagged('coffee'), gagged('replyAll'), named('scoop-kick'),
       named(SAVE.names.find((n) => events.some((e) => e.name === n))!), named('drain'), { label: 'the arrow is the visitor\'s again', step: back, film: null as number | null }
     ].sort((a, b) => a.step - b.step)
     expect(SHOWN.grade).toBe(SCENE.hardest)
+    // Each of the scene's own events lies inside the open shutter of its frame or in the closed part just before it: the frame before it has closed by the event.
+    for (const e of [events.find((x) => x.name === VIDEO.inEvent)!, events.find((x) => x.name === 'plunger')!, strike, events.find((x) => x.name === 'scoop-kick')!, events.find((x) => SAVE.names.includes(x.name))!, events.find((x) => x.name === 'drain')!]) {
+      expect(e.at).toBeLessThan(frameOf(e) * stride + open)
+      expect(e.at).toBeGreaterThanOrEqual((frameOf(e) - 1) * stride + open)
+    }
+    // The plunger's strike is the scene's own strike on the plunger, and the scoop's kick is a hit the walk carries too, on the step of its tile within one frame.
+    expect(events.some((e) => e.name.startsWith('strike:plunger:') && e.at === events.find((x) => x.name === 'plunger')!.at)).toBe(true)
+    const kicked = sceneHits.find((h) => h.name === 'scoop-kick')!
+    expect(Math.abs(kicked.step - (filmIn + frameOf(events.find((x) => x.name === 'scoop-kick')!)))).toBeLessThanOrEqual(1)
     expect(f.steps).toEqual(want.map((w) => w.step))
     expect(f.run).toEqual(f.steps)
     expect(f.film).toEqual(want.map((w) => w.film))
