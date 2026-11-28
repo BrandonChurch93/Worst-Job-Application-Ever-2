@@ -114,7 +114,7 @@ export const BIG = {
   every: 13, // s from one blast to the next tell
   last: 0.6, // s after the banner of the last stand at which it tells once more, whatever is left of `every` (not in the film)
   tell: 1.6, // s the line of the blast lies on the ground before the blast; the boss and its shield hold still
-  wide: 65, // px to each side of the line that the blast takes: 130 px across
+  wide: 0.5,
   beam: 0.3, // s the blast stands
   muzzle: SHAPE.big, // px ahead of his centre where the blast starts
   swing: 0.04, // rad, the step in which an aim that would cross the health bar's box is turned away from it
@@ -186,7 +186,7 @@ export const FINISH = {
   small: 0.25, // share of a full blast that a plain click fires
   steady: 0.5, // share of the charge that grows all the time from the first press to the fire mark; the rest comes in one step on each mark
   settle: 1.4, // s the button takes to settle on the ground after the body is gone (`button-down`)
-  wide: 90, // px to each side of the full blast's line as drawn
+  wide: 0.5,
   ball: 120 // px across of the full charge as drawn
 } as const
 
@@ -293,14 +293,18 @@ export const CAMERA = {
   pushOver: 6,
   ahead: 0.9,
   round: 0.8,
+  lead: 2,
   roundLive: 0.55,
   back: [0.2, 0.36] as const,
   rise: [0.4, 0.85] as const,
-  wide: 0.25,
+  lift: 2,
+  lag: 2,
+  wide: 0.5,
+  wall: { x: 420, top: 600, soft: 350 },
   shake: 5,
   shakeDies: 0.22,
   open: 5,
   charge: { at: [-50, 0, 82], az: -120, el: -3, tall: 195, fov: 54 },
-  fire: { at: [200, 0, 52], az: -208.7, el: 7.5, tall: 310, fov: 40 },
-  blast: { at: [200, 0, 52], az: -210.7, el: 8.9, tall: 400, fov: 46 }
+  fire: { at: [170, 0, 52], az: -208.7, el: 7.5, tall: 325, fov: 50 },
+  blast: { at: [170, 0, 52], az: -210.7, el: 8.9, tall: 400, fov: 60 }
 } as const

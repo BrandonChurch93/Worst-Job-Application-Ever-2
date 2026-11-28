@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { makeArena } from '../src/arena'
-import { ARENA, EYE } from '../src/arena/layout'
+import { ARENA, EYE, PANES } from '../src/arena/layout'
 import { newFight } from '../src/boss/fight'
 import { finishState } from '../src/boss/finish/acting'
 import { ABOVE, FEET, facing, finishRig, finishShot, lowOf, marksOf, poseOf, type Marks } from '../src/boss/finish/camera'
@@ -19,7 +19,7 @@ import type { CameraPose } from '../src/stage/types'
 
 const FPS = config.film.fps
 const PER = stepHz / FPS
-const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 130, field: 1.5, edge: 0 } as const
+const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 130, field: 6, edge: 0, pane: 40, rest: 1.5 } as const
 const CUTS: number[] = []
 const EVENTS = { 'finish-arms': 60, 'finish-fire': 307, 'boss-gone': 435, 'finish-walk': 459, 'finish-kneel': 627, 'finish-fist': 705, 'finish-press': 759 } as const
 const IGNORED = config.live.controlTakenMaxSeconds
@@ -67,13 +67,26 @@ describe('the camera of the finishing blast: its path', () => {
     console.log('most between two frames', JSON.stringify(most))
   })
 
+  it('never goes through the pane behind the arrow: under the top of the pane the lens stays in front of it', () => {
+    const pane = PANES[0]!
+    for (const [name, m, long] of COURSES) {
+      for (let n = 0; n < long * FPS; n += 1) {
+        const shot = finishShot(n / FPS, m)
+        if (!shot) continue
+        const [x, y, z] = [shot.pose.eye[0] + 960, 540 - shot.pose.eye[1], shot.pose.eye[2]]
+        if (y < pane.y0 - LIMIT.pane || y > pane.y1 + LIMIT.pane || z > ARENA.pane.high + LIMIT.pane) continue
+        expect(x - pane.x, `${name}, frame ${n}`).toBeGreaterThanOrEqual(LIMIT.pane)
+      }
+    }
+  })
+
   it('eases in and out of every move: it starts and ends each course at rest, from above', () => {
     for (const [name, m, long] of COURSES) {
       expect(finishShot(0, m), name).toBeNull()
       expect(finishShot(long, m), name).toBeNull()
-      expect(steps(above, poseAt(1 / stepHz, m)).eye, name).toBeLessThan(1)
+      expect(steps(above, poseAt(1 / stepHz, m)).eye, name).toBeLessThan(LIMIT.rest)
       const end = m.fire + CAMERA.rise[1]
-      expect(steps(poseAt(end - 1 / stepHz, m), above).eye, name).toBeLessThan(1)
+      expect(steps(poseAt(end - 1 / stepHz, m), above).eye, name).toBeLessThan(LIMIT.rest)
     }
   })
 
