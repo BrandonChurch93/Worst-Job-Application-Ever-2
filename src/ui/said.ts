@@ -68,7 +68,7 @@ export function makeSaid(): Said {
 export const sayable = (text: string, pauseMark: string): string => text.split(pauseMark).map((p) => p.trim()).filter((p) => p.length > 0).join(' ')
 
 // loud: the words are one short phrase shown in capitals, large.
-export interface CaptionLine { id: string; words: string; start: number; end: number; loud?: boolean; step?: { k: number; n: number } }
+export interface CaptionLine { id: string; words: string; start: number; end: number; loud?: boolean; step?: { k: number; n: number }; whole?: string }
 export interface CaptionSource { now: number; lines: CaptionLine[] }
 
 // The line that is being spoken at the clock's time, if one is.
@@ -82,9 +82,10 @@ export const CAPTION = {
   low: 1044,
   // The y of the lower edge on a page that names none and has a thing at the foot of its middle: on the boss page, just above the cracks round the slot.
   lowOn: { step4: 828 } as Record<string, number>,
-  // A line shown one word a mark (the shout of the boss): px of the first word, the growth a word, px of the last, the y of the panel's upper edge under the health bar,
-  // the widest it gets (a longer word is drawn smaller), its line height, and the px and turns a second by which the last word shakes.
-  shout: { firstPx: 150, grow: 1.12, lastPx: 240, top: 306, wide: 1100, lineHigh: 1, shakePx: 5, shakeHz: 17 },
+  // A line that builds one part a mark on one row (the shout of the boss): px of the first step, the growth a step, the most px of the last, the y of the panel's upper edge
+  // and the lowest its lower edge may come (the top band of the screen), the widest it gets, its line height, and the px and turns a second by which the last step shakes.
+  // The whole line at its last step is fitted into that band, and every step before it is one growth smaller, so the type never shrinks.
+  shout: { firstPx: 150, grow: 1.12, lastPx: 240, top: 96, low: 330, wide: 1760, lineHigh: 1, shakePx: 5, shakeHz: 17 },
   fontPx: 26,
   // The size of a loud phrase, shown in capitals.
   loudFontPx: 64,
@@ -103,8 +104,11 @@ export const CAPTION = {
   logMax: 60
 }
 
-// The size of word k of n of a line shown one word a mark, in page pixels.
-export const shoutPx = (k: number, n: number): number => (k >= n - 1 ? CAPTION.shout.lastPx : CAPTION.shout.firstPx * CAPTION.shout.grow ** k)
+// The size of step k of n of a line that builds on marks, in page pixels. `most` is the size at which the whole line fits its band.
+export const shoutPx = (k: number, n: number, most: number = CAPTION.shout.lastPx): number => {
+  const last = Math.min(CAPTION.shout.lastPx, most)
+  return Math.min(k >= n - 1 ? last : CAPTION.shout.firstPx * CAPTION.shout.grow ** k, last / CAPTION.shout.grow ** Math.max(0, n - 1 - k))
+}
 
 // How far the last word of such a line is off its place at a time of the sound's clock, in page pixels.
 export const shoutShake = (now: number): { x: number; y: number } => ({ x: CAPTION.shout.shakePx * Math.sin(now * CAPTION.shout.shakeHz * 2 * Math.PI), y: CAPTION.shout.shakePx * Math.sin(now * CAPTION.shout.shakeHz * 2.74 * Math.PI + 1) })
@@ -147,6 +151,8 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
   let words = ''
   let loud = false
   let step: { k: number; n: number } | null = null
+  let whole = ''
+  let fit: { whole: string; u: number; most: number } | null = null
   let now = 0
   let frame = 0
   let want = CAPTION.low
@@ -164,6 +170,7 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
   }
   void import('./glyphs').then((g) => {
     drawWords = (to, text) => g.draw(to, text, CAPTION.face, { wrap: true })
+    fit = null
     if (on) write()
   }).catch(() => undefined)
   const put = () => {
@@ -175,18 +182,29 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
     st.padding = `${CAPTION.padY * u}px ${CAPTION.padX * u}px`
     st.borderRadius = `${CAPTION.round * u}px`
     if (step) {
-      const px = shoutPx(step.k, step.n) * u
-      const wide = Math.min(window.innerWidth - 16, CAPTION.shout.wide * u)
       const off = step.k >= step.n - 1 ? shoutShake(now) : { x: 0, y: 0 }
-      st.fontSize = `${px}px`
       st.lineHeight = String(CAPTION.shout.lineHigh)
       st.whiteSpace = 'nowrap'
       st.maxWidth = 'none'
       st.bottom = 'auto'
       st.top = `${top + CAPTION.shout.top * u}px`
       st.transform = `translate(calc(-50% + ${(off.x * u).toFixed(2)}px), ${(off.y * u).toFixed(2)}px)`
-      const is = el.getBoundingClientRect().width
-      if (is > wide) st.fontSize = `${(px * wide) / is}px`
+      if (!fit || fit.whole !== whole || fit.u !== u) {
+        const trial = 100 * u
+        const said = words
+        st.fontSize = `${trial}px`
+        words = whole
+        write()
+        const box = el.getBoundingClientRect()
+        words = said
+        write()
+        const padW = 2 * CAPTION.padX * u
+        const padH = 2 * CAPTION.padY * u
+        const wide = Math.min(window.innerWidth - 16, CAPTION.shout.wide * u) - padW
+        const high = (CAPTION.shout.low - CAPTION.shout.top - CAPTION.shout.shakePx) * u - padH
+        fit = { whole, u, most: (100 * Math.min(wide / Math.max(1, box.width - padW), high / Math.max(1, box.height - padH))) }
+      }
+      st.fontSize = `${shoutPx(step.k, step.n, fit.most) * u}px`
     } else {
       st.fontSize = `${Math.max(CAPTION.minFontPx, (loud ? CAPTION.loudFontPx : CAPTION.fontPx) * u)}px`
       st.lineHeight = String(CAPTION.lineHigh)
@@ -221,12 +239,14 @@ export function makeCaption(read: () => CaptionSource): Caption | null {
       words = line.loud ? line.words.toUpperCase() : line.words
       loud = line.loud === true
       step = line.step ?? null
+      whole = line.whole ?? words
+      if (step && line.loud) whole = whole.toUpperCase()
       el.dataset.line = line.id
       write()
       keep()
     }
-    if (on) put()
     st.display = on ? 'block' : 'none'
+    if (on) put()
     if (s.lines.length) frame = window.requestAnimationFrame(tick)
   }
   return {

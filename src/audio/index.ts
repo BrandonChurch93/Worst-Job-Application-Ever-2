@@ -11,7 +11,7 @@ import { allCues, alsoStarts, cueOfEvent, eventCues, loopCues, markStandsFor, op
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
-import { phraseStart, standIns, type StandIn, lineKey } from './standin'
+import { builtTo, phraseStart, standIns, type StandIn, lineKey } from './standin'
 import shipped from '../../public/audio/index.json'
 
 export type SoundMode = 'live' | 'film'
@@ -46,7 +46,7 @@ export interface SoundApi {
 export interface SoundLogEntry { at: number; line: string; trigger: string; what: 'spoken' | 'dropped' | 'taken back' | 'cut'; start?: number; seconds?: number; why?: string }
 
 // One phrase of a line: id is the line's id, a # and the phrase's place in the line. draft: the line comes from content/narration-drafts.json.
-export interface SaidLine { id: string; line: string; words: string; start: number; end: number; draft: boolean; loud: boolean; step?: { k: number; n: number } }
+export interface SaidLine { id: string; line: string; words: string; start: number; end: number; draft: boolean; loud: boolean; step?: { k: number; n: number }; whole?: string }
 
 export interface SoundIndex {
   version: number
@@ -573,8 +573,12 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (name === steps.next) {
         if (got.length < l.phrases.length - 1) got.push(at)
       } else if (name === steps.last) {
-        while (got.length < l.phrases.length) got.push(at)
-      } else if (name === steps.ends) {
+        if (got.length < l.phrases.length) {
+          while (got.length < l.phrases.length) got.push(at)
+          const lasts = l.seconds - (l.phrases[l.phrases.length - 1]?.from ?? 0)
+          if (at + lasts < b.end) desk.shorten(now, b, at + lasts, [])
+        }
+      } else if (steps.ends !== undefined && name === steps.ends) {
         desk.shorten(now, b, at, [])
         if (b.start >= b.end) speaking.delete(b)
         note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'its moment ended on the mark of its page' })
@@ -728,7 +732,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
           l.phrases.forEach((p, k) => {
             const start = got ? got[k] : b.start + p.from
             const end = Math.min(b.end, got ? got[k + 1] ?? b.end : b.start + p.to)
-            if (start !== undefined && start < end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: p.words, start, end, draft: l.draft, loud: l.loud, ...(got ? { step: { k, n: l.phrases.length } } : {}) })
+            if (start !== undefined && start < end - 1e-9) out.push({ id: `${b.id}#${k}`, line: b.id, words: got ? builtTo(l, k) : p.words, start, end, draft: l.draft, loud: l.loud, ...(got ? { step: { k, n: l.phrases.length }, whole: builtTo(l, l.phrases.length - 1) } : {}) })
           })
         }
       }

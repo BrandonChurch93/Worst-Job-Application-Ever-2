@@ -24,9 +24,9 @@ export function phrasesOf(text: string, pauseMark: string, wordsPerSecond: numbe
   return out
 }
 
-export interface StandIn { key: string; id: string; beat: string; index: number; page: string; at: number; text: string; words: string; seconds: number; phrases: Phrase[]; draft: boolean; loud: boolean }
+export interface StandIn { key: string; id: string; beat: string; index: number; page: string; at: number; text: string; words: string; seconds: number; phrases: Phrase[]; draft: boolean; loud: boolean; join: string }
 
-type Film = Record<string, { at: number; text: string; loud?: boolean; standIn?: { seconds: number; starts: number[] } }[]>
+type Film = Record<string, { at: number; text: string; loud?: boolean; join?: string; standIn?: { seconds: number; starts: number[] } }[]>
 
 // The phrases of a line at the times of its stand-in: each from its start to the start of the next, the last to the end.
 export function phrasesAt(text: string, pauseMark: string, starts: number[], seconds: number): Phrase[] {
@@ -57,7 +57,7 @@ export function standIns(film: Film = narration.film as Film, drafts: Film = dra
     const line = settled ?? drafts[beat]?.[index]
     if (!line) continue
     const phrases = line.standIn ? phrasesAt(line.text, pauseMark, line.standIn.starts, line.standIn.seconds) : phrasesOf(line.text, pauseMark, wordsPerSecond)
-    out.set(key, { key, id: `line.${key}`, beat, index, page: keyPage(key), at: line.at, text: line.text, words: sayable(line.text, pauseMark), seconds: phrases.length ? phrases[phrases.length - 1]!.to : 0, phrases, draft: !settled, loud: line.loud === true || spoken[key]?.loud === true })
+    out.set(key, { key, id: `line.${key}`, beat, index, page: keyPage(key), at: line.at, text: line.text, words: sayable(line.text, pauseMark), seconds: phrases.length ? phrases[phrases.length - 1]!.to : 0, phrases, draft: !settled, loud: line.loud === true || spoken[key]?.loud === true, join: line.join ?? ' ' })
   }
   return out
 }
@@ -65,7 +65,10 @@ export function standIns(film: Film = narration.film as Film, drafts: Film = dra
 // The seconds from the start of a line to the start of one of its phrases; a phrase counted from the end is negative.
 export const phraseStart = (line: StandIn, phrase: number): number => line.phrases[phrase < 0 ? line.phrases.length + phrase : phrase]?.from ?? 0
 
-export interface FilmCaption { id: string; key: string; phrase: number; words: string; first: number; last: number; draft: boolean; loud: boolean; step?: { k: number; n: number } }
+export interface FilmCaption { id: string; key: string; phrase: number; words: string; first: number; last: number; draft: boolean; loud: boolean; step?: { k: number; n: number }; whole?: string }
+
+// A line that builds on marks: what has been said up to its phrase k, joined as its row says.
+export const builtTo = (line: { phrases: { words: string }[]; join: string }, k: number): string => line.phrases.slice(0, k + 1).map((p) => p.words).join(line.join)
 
 // The captions of the film by frame: each phrase of a line from its first frame to its last, the line starting on the frame the film gives it.
 export function filmCaptions(lines: { id: string; frame: number }[], fps: number, script: Map<string, StandIn> = standIns()): FilmCaption[] {
@@ -77,7 +80,8 @@ export function filmCaptions(lines: { id: string; frame: number }[], fps: number
     line.phrases.forEach((p, k) => {
       const first = at.frame + Math.round(p.from * fps)
       const last = at.frame + Math.round(p.to * fps) - 1
-      if (last >= first) out.push({ id: line.id, key: line.key, phrase: k, words: p.words, first, last, draft: line.draft, loud: line.loud, ...(spoken[line.key]?.steps ? { step: { k, n: line.phrases.length } } : {}) })
+      const built = spoken[line.key]?.steps !== undefined
+      if (last >= first) out.push({ id: line.id, key: line.key, phrase: k, words: built ? builtTo(line, k) : p.words, first, last, draft: line.draft, loud: line.loud, ...(built ? { step: { k, n: line.phrases.length }, whole: builtTo(line, line.phrases.length - 1) } : {}) })
     })
   }
   return out

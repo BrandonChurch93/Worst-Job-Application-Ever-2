@@ -5,7 +5,7 @@ import { makeSound, type SoundIndex } from '../src/audio/index'
 import { cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysFor, unitPage } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
 import { CAPTION, shoutPx, shoutShake } from '../src/ui/said'
-import { draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, standIns, wordCount } from '../src/audio/standin'
+import { builtTo, draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, standIns, wordCount } from '../src/audio/standin'
 import { mixFilm, scriptStandIns } from '../src/audio/mix'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
@@ -397,19 +397,21 @@ describe('change note 003: the parts of one moment', () => {
   })
 })
 
-describe('the shout of the boss: a draft shown one word a mark of the page', () => {
+describe('the shout of the boss: a draft that builds on one row, a part a mark of the page', () => {
   it('takes its times from the stand-in of the drafts file, not from the pace of the narrator, and is large and a draft', () => {
     const l = standIns(film, drafts).get('boss.finish.0')!
     expect(l.phrases).toEqual([{ words: 'ka', from: 0.5, to: 1.5 }, { words: 'me', from: 1.5, to: 3 }, { words: 'ha', from: 3, to: 6 }])
     expect([l.seconds, l.draft, l.loud, l.page]).toEqual([6, true, true, 'step4'])
-    expect(filmCaptions([{ id: id('boss.finish.0'), frame: 600 }], 60, standIns(film, drafts)).map((c) => [c.words, c.first, c.last, c.loud, c.draft])).toEqual([['ka', 630, 689, true, true], ['me', 690, 779, true, true], ['ha', 780, 959, true, true]])
+    expect(filmCaptions([{ id: id('boss.finish.0'), frame: 600 }], 60, standIns(film, drafts)).map((c) => [c.words, c.first, c.last, c.loud, c.draft])).toEqual([['ka', 630, 689, true, true], ['ka me', 690, 779, true, true], ['ka me ha', 780, 959, true, true]])
     const real = standIns().get('boss.finish.0')!
     expect(real.draft && real.loud).toBe(true)
     expect(real.text).toBe(draftFilm()['boss.finish']![0]!.text)
     expect(real.phrases.length).toBe(real.text.split(mark).length)
+    expect(real.join).toBe((draftFilm()['boss.finish']![0] as { join?: string }).join ?? ' ')
+    expect(builtTo(real, real.phrases.length - 1)).toBe(real.phrases.map((x) => x.words).join(real.join))
   })
 
-  it('shows nothing on finish-arms, one word on each finish-charge until the next mark, the last word on finish-fire, and nothing after boss-gone', async () => {
+  it('shows nothing on finish-arms, adds a part on each finish-charge and the last on finish-fire, keeps what was shouted, and goes when the last part has been held for its length', async () => {
     const { s, ctx } = await ready('step4')
     const words = () => s.said().lines.filter((l) => l.start <= ctx.currentTime && ctx.currentTime < l.end).map((l) => [l.words, l.loud])
     ctx.currentTime = 100
@@ -424,30 +426,33 @@ describe('the shout of the boss: a draft shown one word a mark of the page', () 
     ctx.currentTime = 102
     s.event(ev('finish-charge', 'step4'), 'live')
     ctx.currentTime = 102.5
-    expect(words()).toEqual([['me', true]])
+    expect(words()).toEqual([['ka me', true]])
     s.event(ev('finish-charge', 'step4'), 'live')
-    expect(words()).toEqual([['me', true]])
+    expect(words()).toEqual([['ka me', true]])
     ctx.currentTime = 103
     s.event(ev('finish-fire', 'step4'), 'live')
     ctx.currentTime = 104
-    expect(words()).toEqual([['ha', true]])
-    s.event(ev('boss-gone', 'step4'), 'live')
-    ctx.currentTime = 104.01
+    expect(words()).toEqual([['ka me ha', true]])
+    ctx.currentTime = 105.9
+    expect(words()).toEqual([['ka me ha', true]])
+    ctx.currentTime = 106.01
     expect(s.said().lines).toEqual([])
   })
 
-  it('tells the panel which word of how many it shows, grows each word by the rate of the panel and makes the last the largest, and names a higher place for the panel on the boss page', async () => {
+  it('tells the panel which step of how many it shows and the whole line, grows each step by the rate of the panel and never shrinks, and keeps to the top band', async () => {
     const { s, ctx } = await ready('step4')
     ctx.currentTime = 10
     s.event(ev('finish-arms', 'step4'), 'live')
     s.event(ev('finish-charge', 'step4'), 'live')
     ctx.currentTime = 11
     s.event(ev('finish-fire', 'step4'), 'live')
-    expect(s.said().lines.map((l) => [l.words, l.step])).toEqual([['ka', { k: 0, n: 3 }], ['ha', { k: 2, n: 3 }]])
+    expect(s.said().lines.map((l) => [l.words, l.step, l.whole])).toEqual([['ka', { k: 0, n: 3 }, 'ka me ha'], ['ka me ha', { k: 2, n: 3 }, 'ka me ha']])
     expect(filmCaptions([{ id: id('boss.finish.0'), frame: 0 }], 60, standIns(film, drafts)).map((c) => c.step)).toEqual([{ k: 0, n: 3 }, { k: 1, n: 3 }, { k: 2, n: 3 }])
     expect(filmCaptions([{ id: id('boss.verify.0'), frame: 0 }], 60, standIns(film, drafts)).every((c) => c.step === undefined)).toBe(true)
     expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5)))).toEqual([150, 168, 188, 211, 240])
     expect([0, 1, 2].map((k) => Math.round(shoutPx(k, 3)))).toEqual([150, 168, 240])
+    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5, 166)))).toEqual([105, 118, 132, 148, 166])
+    for (const n of [3, 4, 5, 6]) for (const most of [60, 166, 240, 400]) for (let k = 1; k < n; k++) expect(shoutPx(k, n, most)).toBeGreaterThan(shoutPx(k - 1, n, most))
     for (const t of [0, 0.01, 0.37, 2.2]) {
       const off = shoutShake(t)
       expect(Math.abs(off.x)).toBeLessThanOrEqual(CAPTION.shout.shakePx)
@@ -455,10 +460,10 @@ describe('the shout of the boss: a draft shown one word a mark of the page', () 
     }
     expect(shoutShake(0.37)).toEqual(shoutShake(0.37))
     expect(CAPTION.lowOn.step4).toBeLessThan(CAPTION.low)
-    expect(CAPTION.shout.top + CAPTION.shout.lastPx).toBeLessThan(CAPTION.lowOn.step4!)
+    expect([CAPTION.shout.top, CAPTION.shout.low]).toEqual([96, 330])
   })
 
-  it('shows the last word on a finish-fire that comes early, and takes the shout back when boss-gone comes before it began', async () => {
+  it('shows the whole line on a finish-fire that comes early and ends it the last part\'s length after that mark, and takes the shout back when boss-gone comes before it began', async () => {
     const { s, ctx } = await ready('step4')
     const words = () => s.said().lines.filter((l) => l.start <= ctx.currentTime && ctx.currentTime < l.end).map((l) => l.words)
     ctx.currentTime = 10
@@ -468,7 +473,11 @@ describe('the shout of the boss: a draft shown one word a mark of the page', () 
     ctx.currentTime = 10.6
     s.event(ev('finish-fire', 'step4'), 'live')
     ctx.currentTime = 10.7
-    expect(words()).toEqual(['ha'])
+    expect(words()).toEqual(['ka me ha'])
+    ctx.currentTime = 13.5
+    expect(words()).toEqual(['ka me ha'])
+    ctx.currentTime = 13.61
+    expect(s.said().lines).toEqual([])
     const late = await ready('step4')
     late.s.event(ev('checkbox', 'step4'), 'live')
     late.ctx.currentTime = 1
