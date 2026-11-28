@@ -3,6 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
+import { FILM as DECISION } from '../src/pages/step5/timeline'
 import { look } from '../src/post/look'
 import { ScriptDriver, Stage, TURN_HALF, wholeFilmFlow, type Frame } from '../src/stage/stage'
 import { arriveTurn, leaveLight, leaveSpeed, leaveTurn, LIGHT, shiverSeconds, TURN } from '../src/stage/turn'
@@ -180,12 +181,41 @@ describe('polish, every turn of the film from its seat on', () => {
   const rest = (f: Frame): string => JSON.stringify({ list: f.list, cursor: f.cursor, scroll: f.scroll, page: f.page, view: f.view, time: f.time, settle: f.settle ?? null })
   const starts = config.film.units.slice(0, -1).map((_, i) => Math.round((config.film.units.slice(0, i + 1).reduce((sum, u) => sum + u.seconds, 0) - TURN_HALF) * stepHz))
 
-  // The sixth turn is not by the clock: step 5 is done on step 2341 of the last unit and the careers page comes back. It starts a step after a frame of the film.
-  const SIXTH = Math.round(config.film.units.slice(0, -1).reduce((sum, u) => sum + u.seconds, 0) * stepHz) + 2341
+  // A turn starts on the last step whose angle is 0. The third stage is asked where: the first step from `from` on at which it leaves a page, once any turn it is in has ended.
+  const PER = stepHz / 60
+  const flow = wholeFilmFlow()
+  const probe = make()
+  const END = Math.round(config.film.units.reduce((sum, u) => sum + u.seconds, 0) * stepHz)
+  const leavesAt = (from: number): { step: number; index: number } => {
+    let s = from
+    probe.goto(s)
+    while (probe.turning && s < END) probe.goto(++s)
+    while (!probe.turning && s < END) probe.goto(++s)
+    const step = [s - 1, s].find((t) => probe.frameAt(t / stepHz).turn === 0 && probe.frameAt((t + 1) / stepHz).turn !== 0)!
+    probe.goto(step)
+    return { step, index: probe.entryIndex }
+  }
+  const byClock = starts.map((s, i) => leavesAt(i === 0 ? 0 : starts[i - 1]! + HALF_STEPS))
+  // The sixth turn is not by the clock: it starts when step 5 is done, inside the last unit, and the careers page comes back. Where that is comes from the stage and is held to step 5's own timeline below, not to a typed step.
+  const sixth = leavesAt(starts[starts.length - 1]! + HALF_STEPS)
+  const SIXTH = sixth.step
 
-  it('turns five pages by the clock, at 13.5, 45.5, 66.5, 108.5 and 140.5 s, and a sixth on step 36181', () => {
-    expect(starts.map((s) => s / stepHz)).toEqual([13.5, 45.5, 66.5, 108.5, 140.5])
-    expect(SIXTH).toBe(36181)
+  it('turns one page by the clock for each unit but the last, half a turn before the unit ends and on a frame of the film, and one more inside the last unit, from the page before the last to the last', () => {
+    expect(leaveTurn(1 / HALF_STEPS)).not.toBe(0)
+    expect(starts.length).toBe(config.film.units.length - 1)
+    expect(byClock.map((t) => t.step)).toEqual(starts)
+    expect(starts.every((s) => s % PER === 0)).toBe(true)
+    expect(new Set(byClock.map((t) => t.index)).size).toBe(starts.length)
+    const lastUnit = Math.round(config.film.units.slice(0, -1).reduce((sum, u) => sum + u.seconds, 0) * stepHz)
+    expect(SIXTH).toBeGreaterThan(lastUnit)
+    expect(SIXTH + 2 * HALF_STEPS).toBeLessThan(END)
+    // Step 5 says in its own film timeline when it is done (`FILM.leave`); the stage turns on the step after the page says so.
+    const late = SIXTH - lastUnit - DECISION.leave * stepHz
+    expect(late).toBeGreaterThan(0)
+    expect(late).toBeLessThanOrEqual(2)
+    expect(sixth.index).toBe(flow.length - 2)
+    expect(now.frameAt(SIXTH / stepHz).page).toBe(flow[flow.length - 2]!.page)
+    expect(now.frameAt((SIXTH + HALF_STEPS) / stepHz).page).toBe(flow[flow.length - 1]!.page)
   })
 
   it('holds every value of the stage equal to before on every step from the seat on, the angle through the leaving half apart, and nothing else differs before the seat', () => {
@@ -200,7 +230,7 @@ describe('polish, every turn of the film from its seat on', () => {
         const a = now.frameAt((start + k) / stepHz)
         const b = then.frameAt((start + k) / stepHz)
         expect(rest(a), `step ${k} of the turn at ${start / stepHz} s`).toBe(rest(b))
-        if ((start + k) % (stepHz / 60) === 0 && a.turn !== b.turn) frames.push((start + k) / (stepHz / 60))
+        if ((start + k) % PER === 0 && a.turn !== b.turn) frames.push((start + k) / PER)
         if (k <= 0) expect(a.turn).toBe(0)
         else if (k < HALF_STEPS) {
           expect(a.turn).toBe(leaveTurn(k / HALF_STEPS))
@@ -219,15 +249,15 @@ describe('polish, every turn of the film from its seat on', () => {
       }
       changed.push([frames[0]!, frames[frames.length - 1]!, frames.length])
     }
-    // The frames of the film, of 60 a second, whose angle is not the one of before: 29 at each turn by the clock, from the frame after the turn's first step to the last of the leaving half, and 30 at the sixth, which starts between two frames. The seats are frames 858, 2778, 4038, 6558 and 8478, and at the sixth turn step 36373, first seen on frame 9094.
-    expect(changed).toEqual([
-      [811, 839, 29],
-      [2731, 2759, 29],
-      [3991, 4019, 29],
-      [6511, 6539, 29],
-      [8431, 8459, 29],
-      [9046, 9075, 30]
-    ])
+    // The frames of the film, of 60 a second, whose angle is not the one of before: from the first frame after the turn's first step to the last frame before the hand over. That is one frame fewer than a half turn where the turn starts on a frame, as the turns by the clock do, and a whole half turn of frames where it starts between two.
+    const span = (start: number): number[] => {
+      const first = Math.floor(start / PER) + 1
+      const last = Math.ceil((start + HALF_STEPS) / PER) - 1
+      return [first, last, last - first + 1]
+    }
+    expect(changed).toEqual([...starts, SIXTH].map(span))
+    for (const start of starts) expect(span(start)[2]).toBe(HALF - 1)
+    expect(span(SIXTH)[2]).toBe(SIXTH % PER === 0 ? HALF - 1 : HALF)
     expect(differ).toBeGreaterThan(6 * (HALF_STEPS - 10))
   }, 240000)
 })
