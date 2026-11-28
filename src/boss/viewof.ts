@@ -2,11 +2,12 @@ import type { FinishInput } from './finish/acting'
 import { smooth } from './body'
 import { blastLine, cornerAt, cursorCentre, muzzle, newFight, SPARK_SECONDS, weakSide, type Fight } from './fight'
 import { COLLAPSE_SECONDS, DART, FALLEN, HOME, SOCKET, UNFOLD } from './plan'
+import { ringReaches } from './rise'
 import { BIG, CORNER, FLAT, GUARD, GUN } from './tune'
 import type { BossView, ViewCorner, ViewGun, ViewLast, ViewPhase } from './view'
 
 // What the page knows when it fills the view. `clock` runs from the page's first step of the break-out; `base` is that clock at the fight's first step and `fell` at the boss's fall, each -1 until then.
-export interface ViewInput { clock: number; unfold: number; fight: Fight | null; base: number; fell: number; pressed: boolean; arrow: { x: number; y: number }; fall?: number; gone?: number; power?: number; arms?: number; charge?: number; blast?: { power: number; since: number } | null; last?: ViewLast | null; close?: number; pressedFor?: number; scorch?: { x: number; y: number } | null }
+export interface ViewInput { clock: number; unfold: number; fight: Fight | null; base: number; fell: number; pressed: boolean; arrow: { x: number; y: number }; fall?: number; gone?: number; power?: number; arms?: number; charge?: number; blast?: { power: number; since: number } | null; last?: ViewLast | null; close?: number; pressedFor?: number; scorch?: { x: number; y: number } | null; burst?: { at: number; x: number; y: number } | null }
 
 // The view's clock: 0 at `button-crack`. The body is whole at FORMED, and the fight's own clock starts there.
 export const LEAD = UNFOLD.crack
@@ -35,6 +36,9 @@ export function viewOf(i: ViewInput): BossView | null {
   const go = smooth(Math.min(1, Math.max(0, (form - TRAVEL[0]) / (TRAVEL[1] - TRAVEL[0]))))
   const place = formed ? { x: b.x, y: b.y } : { x: SOCKET.x + (HOME.x - SOCKET.x) * go, y: SOCKET.y + (HOME.y - SOCKET.y) * go }
   const c = cursorCentre(i.arrow)
+  // The ring of the power-up's burst passes the shield's glass: the glass flashes as it does when a dart glances off it.
+  const pass = i.burst ? ringReaches(Math.hypot(place.x - i.burst.x, place.y - i.burst.y) - GUARD.radius) : null
+  const passed = i.burst && pass !== null && time >= i.burst.at + pass ? i.burst.at + pass : null
   const gun = (n: 0 | 1): ViewGun => ({ aim: muzzle({ ...b, x: place.x, y: place.y }, n).rot, tell: b.windup >= 0 && b.cannon === n ? Math.min(1, b.windup / GUN.tell) : 0, firedAt: at(b.at.gun[n]) })
   const line = blastLine(b, b.big.a)
   const corner = (n: 0 | 1 | 2 | 3): ViewCorner => {
@@ -50,7 +54,7 @@ export function viewOf(i: ViewInput): BossView | null {
       form,
       turret: i.fell >= 0 ? 0 : b.turret, locked: i.fell < 0 && b.turret >= 1, lockedAt: b.turret >= 1 ? at(BIG.lock) : null,
       health: Math.max(0, b.shown) / 100, stage: b.phase,
-      shield: { glancedAt: at(b.at.glance), half: GUARD.cover },
+      shield: { glancedAt: at(b.at.glance) ?? passed, half: GUARD.cover },
       guns: [gun(0), gun(1)],
       big: b.big.t >= 0 || b.big.beam > 0 ? { tell: b.big.t >= 0 ? Math.min(1, b.big.t / BIG.tell) : 1, aim: b.big.a, firedAt: b.big.t >= 0 ? null : at(b.at.big), x0: line.x0, y0: line.y0, x1: line.x1, y1: line.y1, width: BIG.wide * 2 } : null,
       weak: b.weak > 0 ? { ...weakSide(b), shownAt: at(b.at.weak) } : null,

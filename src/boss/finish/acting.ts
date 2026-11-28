@@ -31,7 +31,8 @@ export interface FinishInput {
   arrow: { x: number; y: number }
   // The power-up: when it gets up, and when the flame lets go and it lies down again. Without `end` it lets go `POWER.hold` after `at`.
   // `until`, when given, is the view time by which it must lie on the page again: the whole power-up is fitted between `at` and `until`, its moves played quicker so the fists are held for `POWER.held` at least. It takes the place of `end`.
-  power?: { at: number; end?: number; until?: number } | null
+  // `fists`, with `until`: the view time by which the fists are up; the moves are played at the pace that gives. `full`: the view time at which the flame is full; it builds from `fists` and is held full from then to the burst.
+  power?: { at: number; end?: number; until?: number; fists?: number; full?: number } | null
   marks?: FinishMarks
   // How full the charge is now, 0 to 1, and how full it was when it was let go.
   charge?: number
@@ -75,6 +76,7 @@ export interface Fx {
   // Dust: where, how old in seconds, how big.
   dust: { x: number; y: number; age: number; size: number }[]
   lens?: { low: number; eye: readonly [number, number, number]; glare: number }
+  sky?: { low: number; eye: readonly [number, number, number] }
   under?: number
   tear?: { x: number; y: number; size: number; k: number }
   // The scuff each landed step left: page px, and how long.
@@ -183,7 +185,7 @@ export function emberOf(i: FinishInput): number {
 }
 
 // How a power-up is laid out in time, in seconds after `at`: `quick` is the share of their own time its moves take (1 as written), `end` is when the flame lets go, `over` is when it lies on the page again.
-export function powerPlan(pw: { at: number; end?: number; until?: number }): { quick: number; end: number; over: number } {
+export function powerPlan(pw: { at: number; end?: number; until?: number; fists?: number }): { quick: number; end: number; over: number } {
   const tail = POWER.burst + LIEDOWN
   if (pw.until === undefined) {
     const end = (pw.end ?? pw.at + POWER.hold) - pw.at
@@ -191,7 +193,7 @@ export function powerPlan(pw: { at: number; end?: number; until?: number }): { q
   }
   const whole = Math.max(0.3, pw.until - pw.at)
   const moves = POWER.up[1] + tail
-  const quick = Math.min(1, Math.max((whole - POWER.held) / moves, Math.min(POWER.quickest, whole / moves)))
+  const quick = pw.fists !== undefined ? Math.min(1, Math.max(0.1, (pw.fists - pw.at) / POWER.up[1])) : Math.min(1, Math.max((whole - POWER.held) / moves, Math.min(POWER.quickest, whole / moves)))
   return { quick, end: whole - tail * quick, over: whole }
 }
 
@@ -207,10 +209,11 @@ function powerUp(i: FinishInput, feet: { x: number; y: number }): FinishState | 
   let pose = getUp(t)
   pose = mixPose(pose, POSES.powerDip, smooth(span(t, POWER.dip[0], POWER.dip[1])))
   pose = mixPose(pose, POSES.power, outBack(span(t, POWER.up[0], POWER.up[1]), 2.2))
-  const build = smooth(span(now, POWER.lead * plan.quick, end))
+  const build = pw.full === undefined ? smooth(span(now, POWER.lead * plan.quick, end)) : smooth(span(now, (pw.fists ?? pw.at + POWER.lead * plan.quick) - pw.at, Math.min(end, pw.full - pw.at)))
   const held = span(now, POWER.up[1] * plan.quick, end)
   if (t >= POWER.up[1]) pose = { ...pose, tremble: 0.15 + 0.5 * held, hip: [0, pose.hip[1] - 2.5 * held], puff: 0.35 + 0.3 * held }
   const fx = none()
+  if (i.low && i.eye) fx.sky = { low: i.low, eye: i.eye }
   fx.ring = 1
   const u = (now - end) / plan.quick
   if (u < 0) fx.aura = 0.12 + 0.88 * build

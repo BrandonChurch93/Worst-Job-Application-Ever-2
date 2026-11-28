@@ -196,3 +196,125 @@ The power-up of line 7 with `CAMERA.powerUp` on (in the working tree only, never
 The whole suite alone, 09:53Z to 09:59Z on 72db9a77: exit 1; 31 failed, 2367 passed, 29 skipped of 2427; 5 files of 209; 406.9 s; no timeouts. The reds, none of them mine to edit: `tests/config.test.ts` (26 tests: film.units adds up to 216.1 s, more than film.maxSeconds 165), `tests/b-shell-turn.test.ts:80`, `tests/polish-hand.test.ts:316`, `tests/polish-keys2.test.ts:145`, `tests/polish-turn2.test.ts:187` and `:206`. Whether they are red without this branch: UNKNOWN, not run.
 
 The whole suite alone again with the fade, 10:33Z to 10:41Z on 8a9265a8: exit 1; 31 failed, 2370 passed, 29 skipped of 2430; 5 files of 209; 427.0 s. The same five files red, with the same counts (26, 1, 1, 1, 2).
+
+## Fifth pass (task of 10:44Z; written 11:06Z; branch `agent/b-camera-rise`, a trial, not for merge)
+
+The task: the view that faces the arrow at the power-up of line 7, as an option behind `CAMERA.powerUp`, false in every commit.
+
+The base: `agent/b-camera` 1eda9dd8 with `origin/agent/b-boss-fast` fb485a3b merged in (fdf0193d). Two files clashed. `config/showcase.json` is not mine: I took the boss helper's beats and kept the longer finish of this unit (boss 53.9 s, `boss.finish` 39.8 to 52.7, `boss.press` 52.7 to 53.9). `src/pages/step4/index.ts` keeps both sides. The gold light the boss helper built after fb485a3b is not in this branch.
+
+The course, in `src/boss/finish/camera.ts` (`riseRig`, `riseShot`, `riseFades`) and `CAMERA.power` in `src/boss/tune.ts`. It is keyed to three marks of the page (`FISTS`, `BURST`, `RAISED`, all from `LINE7`) and to the figure's feet, with no frame number of its own:
+1. Until both fists are up: the view from above as it is. MEASURED: the first frame whose view differs from the option off is within 4 frames after `power-up`.
+2. From fists up the lens comes down and round in 0.5 s, eased, no cut, to a key beside the figure: 4 degrees under the fists looking up, 128 degrees round, the target moved 125 px toward the boss so that the figure stands in the left third and the boss right of and behind it.
+3. It holds through the build of the gold and the 0.8 s at full, pushing in 4 percent from fists up to the burst.
+4. From the burst to the lock (`RAISED`) it glides back to the view from above; at the lock the view is the fight's view. The lens is set on the way back so that the eye's distance grows evenly.
+5. The fade of the fourth pass (camera-NEEDS-7, no new patch) runs while the view is at least half low. In this window it fades `pillar.3` only.
+
+MEASURED, `npx vitest run tests/b-camera.test.ts` 11:05Z, exit 0, 27 passed (the three new tests are in the describe "the view that faces the arrow at the power-up of line 7, an option"):
+- Film, on against off: 677 events up to `finish-press`, the same in name, step and place; 638 of them from the figure's lying down (0.05 s before the lock) on. The views are the same before the fists and from the lock to the end.
+- First low frame 12 frames after fists up, last 125, the figure lies again 141 frames (2.35 s) after fists up.
+- Most between two frames: eye 120.2 px, turn 6.27 degrees, roll 6.23 degrees, screen (the feet) 27.4 px, field 1.30 degrees. The finish's limits are 130, 12, 9, 140, 1.5. The eye is faster here, on the pull back, than anywhere in the finish (57.5 there).
+- No block before the figure's box unless faded to 1; feet and head inside the frame in every low frame.
+- The figure's share of the frame's height: about 47 percent at 25.0 s and at 25.7 s, read by eye on the 1920x1080 frames with a ruled grid (tip of the arrow at row 345, soles at row 855 at 25.7 s), give or take a percent. By projection in the test, with the figure taken as 150 px high: 0.323 to 0.521 over all frames fully low, the start of the pull back among them.
+- Live, the keen visitor: events the same on and off; the page holds the pointer 3.2 s round the power-up (from the getup to the lock) with or without the option; `longestIgnored.pointer` 3.208 s up to 8 s after `power-up`, on and off alike, under 8. With the option on the view is low for 141 frames. So the same code can run live. Only the keen visitor is measured; I made no browser render of the live site with the option on.
+
+One test of my own was red after the merge and before any change of mine (`git stash`, 11:04Z): `tests/b-camera.test.ts:343`, "the film's events are where they were, in frames after the boss's fall", `finish-arms` 61 for 60. The boss helper's timing moves the fall to step 9315, the last step of a frame, so the floor of each side rounded apart. The steps from the fall to each event are 241, 1231, 2055, 2151, 2820, 3133, 3350, and those whole frames are the pinned ones. I changed the line to floor the difference; the pinned numbers are the same.
+
+The caption panel, STATED from `pipeline/change002/shell-film-captions.json` (made at the kept timing): on step 4 "One more round." is the box [821.6, 766, 276.8, 62] of 1920x1080, x 43 to 57 percent, y 71 to 77 percent. `rise-on-25.0-caption-box.jpg` has that box drawn in red by me on the frame at 25.0 s: it lies on the floor between the figure's right foot and the boss's near claw, over the low flames right of the foot and touching the claw. It is clear of the fists, the arrow and the left foot. The line ends when the gold is full, so the 0.8 s at full has no panel. The film's own captions are not drawn in any of these frames.
+
+The pictures, `pipeline/change002/proof/camera/`: `rise-strip-1.jpg`, `-2.jpg`, `-3.jpg` (23.6 s to 26.9 s of the boss unit every 0.1 s, tiles 320 wide, option on); `rise-on-25.0.jpg`, `rise-off-25.0.jpg`, `rise-on-25.7.jpg`, `rise-off-25.7.jpg` (1280x720; 25.7 s is in the 0.8 s at full); `rise-on-and-off-24.47.jpg` (the start of "One more round."; on and off are one picture there: `compare -metric AE` of the two 1920x1080 frames is 0). How they were made: the trial timing set in the working tree only (`pipeline/change002/fast-takes.json` into `public/audio/index.json`, `narratorMaxWordsPerSecond` 3, `npm run -s retime`), the switch on in the working tree only, `node pipeline/change002/boss-talk.mjs --from 23.6 --to 26.9 --every 0.1` and `--at 24.47,25.0,25.7 --format hd`; all of it put back before the commit.
+
+What I SEE:
+- 23.6 to 24.5: the film from above as it is. 24.6 to 24.9: the lens comes down and round. 25.0 to 26.1: the low view, horizon level; the arrow's white face, both fists up, flames round the feet and a bright disc of gold on the floor under them; the boss right of and behind the figure, its turret standing up from 25.6. 26.2: the burst. 26.3 to 26.5: up and back. 26.6 on: from above.
+- The fists are black against a near black ground. I read them by their lit rims; they do not stand out.
+- A tall pillar lit gold stands at the left edge of the frame, cut by the edge, beside the figure and not before it. It is not faded.
+- A green pane stands behind the figure's right fist and a pale one at the right edge behind the boss.
+
+Not done: no live browser render; the whole suite not run on this branch; the boss helper's later gold light not merged; `facing()` of the fourth pass is left in `camera.ts`, unused by the page.
+
+## Sixth pass (ruling of 11:12Z; written 11:30Z; same branch `agent/b-camera-rise`)
+
+1. The backdrop. A fault of mine, found now: the dusk dome of the second pass (`duskStuff` in `src/boss/finish/fx.ts`, `CAMERA.dusk`) was a sphere of radius 5200 px, and the camera's far plane stands at the eye's distance to its target plus 3000 (`src/app.ts:263`, not my file). In a low view that is about 3400, so the dome was cut away whole and never drawn. MEASURED: the pixel behind the figure was the renderer's clear colour (28, 28, 31) at 25.7 s and at 42.0 s, before and after I changed the dome's colours. The radius is 2800 now. The dome is a haze: `top` at the zenith, `low` at the horizon, mixed by `exp(-(h / reach)^2)` with `reach` 0.22 (h is the sine of the height over the horizon), with the thin warm band at the horizon kept but weaker. MEASURED on the 1920x1080 frame at 25.7 s (a first render of this pass): top of the frame (32, 33, 40), half way up (58, 53, 54), beside the left fist (96, 85, 78). The power-up's low view had no dome at all (its state carried no lens); it has one now (`fx.sky`, set in `powerUp` of `acting.ts`). All in my files, no NEEDS patch. The approved pictures I looked at (`references/approved-002/boss-turret-out.png`, `finish-charge.png`) are from above and show nothing behind the boss; the tone is my choice: a warm grey-brown.
+   From above nothing changes: the dome is drawn only while the view is low. MEASURED with `compare -metric AE`: the finish's top view at 48.0 s (960x540), 179236a1 against the final tree: 0. The fight at 32.0 s (1920x1080): 106 px differ against the tree without the backdrop, all inside a box round the lying arrow's smoke (87 x 102 px at 353, 666); two renders of the same final tree in the same order differ there by 90 px too; with the box 330,640 to 470,790 painted over in both, 0 against the tree without the backdrop, 0 against 179236a1, 0 against itself. So that frame is not the same from one render to the next in the arrow's smoke, which is not mine, and outside it nothing changed. The frame at 48.0 s rendered alone differs by 192 px from the same frame rendered after 42.0 s; I did not look into where.
+2. The pillar. It is `pillar.1`, 1.5 times as far from the lens as the figure, so it is background, not foreground. I moved the view instead of fading it: `CAMERA.power.key.at[0]` 125 to 80. Its lit face and its foot are whole in the frame now. The price: the figure stands nearer the middle (about 39 percent from the left) and is about 44 percent of the frame's height (tip row 228, soles row 522 of 675, by eye), and the caption panel lies over its right foot (below). A fade of blocks cut by the frame's edge was tried and dropped: it also took a pane.
+3. The boss helper's light: `origin/agent/b-boss-fast` 7a91ef5e and then 1086c2e4 merged (553c07cc). One clash each in `step4/index.ts` (both imports) and `step4/real/index.ts` (my hooks kept, its `lit` line taken), resolved in the first merge.
+4. The caption: `node pipeline/change002/shell-film-captions.mjs --name trial` under the trial timing (it writes to `out/work/captions-trial/`, not kept). "One more round." is on film frames 8746 to 8797, 24.47 s to 25.32 s of the unit. Its picture laid over the ON frame at 25.0 s without scaling: `rise2-on-25.0-with-caption.jpg`. I SEE the panel over the figure's right foot and the flames beside it; fists, arrow and left foot are clear.
+
+MEASURED, `npx vitest run tests/b-camera.test.ts`: 27 passed. Most between two frames now: eye 120.4 px, turn 6.27 degrees, roll 6.23 degrees, screen 21.6 px, field 1.30 degrees. Faded in the rise: `pillar.3` only. Events on against off as before (677, 638 from the lock on). Live as before (3.208 s).
+
+Pictures, `pipeline/change002/proof/camera/`: `rise2-25.7-before-after.jpg`, `rise2-26.2-before-after.jpg` (before: 179236a1; after: this pass with the helper's light), `rise2-finish-42.0-before-after.jpg`, `rise2-on-25.7.jpg`, `rise2-on-26.2.jpg` (1280x720), `rise2-on-25.0-with-caption.jpg`.
+
+A second fault of this pass, found at 11:33Z on the pair of the finish at 42.0 s and mended at 11:35Z: drawn as a see-through shell, the dome wiped the finish's wheel of flames and its long rays wherever they stood against it (they came back with the dome pushed out of reach again: `compare -metric AE` 0 against 179236a1). The dome is solid now (drawn with the solid things, before every flame) and is mixed toward the renderer's own clear colour by how low the view is, so it still comes in evenly. The pictures named above are of this mended state; the strip of the unmended state is taken out and not made again. MEASURED again after the mend: 48.0 s from above against 179236a1: 0; 32.0 s outside the box round the arrow's smoke against the tree without the backdrop: 0 (whole frame 101, in the box). At 25.7 s: top (32, 33, 40), half way up (58, 53, 54), beside the left fist (105, 92, 84). I SEE the flames and rays of the finish paler against the haze than against the black.
+
+## Seventh pass (orders A and B of 11:40Z, on 8794bae4)
+
+A. The haze has a strength and a reach per view: `CAMERA.dusk.finish` is `{ k: 0.7, reach: 0.1 }`, so in the finish's low views it lies only along the horizon and the wheel of flames stands against the dark again. The power-up's haze is as it was (strength 1, reach 0.22). MEASURED at 42.0 s on 960x540, mean colour of 12x12 patches: wheel at 470,200 and ground beside it at 395,215. Before (179236a1): wheel (142, 114, 72), ground (29, 29, 33), apart by 146.7. At 8794bae4: (154, 126, 89) and (84, 75, 71), apart by 88.5, that is 60 percent. After: (142, 114, 74) and (37, 36, 41), apart by 134.9, that is 92 percent. A second pair, wheel at 440,158 and ground at 400,110: 106.9 before, 106.1 after.
+
+B. The power-up's view is pitched down from the same eye: `CAMERA.power.key.at[2]` 85 to 52, `el` -4 to 0.3. MEASURED at 25.0 s on 1920x1080: the caption panel's top edge is row 765; the lowest dark row of the right foot is 701 and of the left foot 731. The pillar's top is inside the frame.
+
+From above, MEASURED `compare -metric AE`: 48.0 s against 179236a1: 0. 32.0 s against the tree without the backdrop: 88 in the whole frame, 0 with the box 330,640 to 470,790 round the lying arrow's smoke painted over.
+
+Where the 192 px of 48.0 s rendered alone against 48.0 s rendered after 42.0 s lie: one box of 100x22 at 220,463 on 960x540, on the floor beside the standing arrow's left foot and hands: soot specks and one grey chip. `src/arena/finish.ts` (the arena's, not mine) paints the scorch "a few rows a frame, while the arrow charges" and starts "once it has lain still from one call to the next", so what is painted by a given frame depends on the calls before it. That it is the cause is read from the code, not proven by a run.
+
+Pictures: `proof/camera/rise3-on-25.0-with-caption.jpg`, `rise3-on-25.7.jpg`, `rise3-on-26.2.jpg`, `rise3-finish-42.0-before-now-after.jpg`.
+
+## Eighth pass (point C of 11:46Z: the white face in the facing view)
+
+What reaches the arrow's face at 25.7 s in the facing view, read from the code of this branch with e787a97e of `agent/b-boss-fast` laid over it in the working tree only (not committed, not pushed):
+
+- the key: `src/post/look.ts:5`, colour (1, 0.975, 0.945), intensity 5.47, from (-0.65, 0.6, 0.36); and the dome (fill), `look.ts:20`, same colour, intensity 0.2; the studio's reflection in the clear coat (`look.ts:42`).
+- my face light: `src/boss/finish/index.ts:16` and `:60`, colour (1, 0.975, 0.945), power 0.8 x rise x (1 - 0.6 x aura) = 0.32 at full gold, reach 160, 17 px up the page and 73 px over the feet.
+- my light of the flames: `src/boss/finish/fx.ts:561`, gold (1, 0.66, 0.2), power 1.3 at full gold times a flicker of 0.85 to 1 (and 2.5 more at the burst), reach 620, 44 px over the floor.
+- the boss helper's: `src/pages/step4/real/rise.ts:52` two lights under the fists, (1, 0.74, 0.25), power 2 x level, reach 85; `:53` one before the feet, power 0.25 x level, reach 100; `:57` and `:60` two lamps for the pane and the boss's near side, power 1.3 x level, reach 420, 140 px up.
+- the pool: `src/post/look.ts:30` holds 6 lamps; `src/post/emitters.ts:41` joins the two nearest and weakest of a frame's emitters until 6 are left.
+- the body's own material, `src/cursor/model/material.ts:370` and `:338` (the cursor model's, not mine): on the plain enamel 85 percent of the lamps' diffuse light is turned to its brightness in the key's warm white, and then lifted by 1.3. So a gold lamp does not gild the face, it whitens it. Its glow terms (`:113` on) are for burnt and sealed states and are 0 here (STATED from reading).
+- drawn over it, added: the flames (`fx.ts:53`).
+
+The mend, in my files: the standing arrow's body material gets a soft cap on its outgoing light, only in the facing view of the power-up (`stand.cap(low)`, `src/cursor/stand/figure.ts`; `CAMERA.power.face { knee: 0.5, room: 0.62 }`). Below the knee nothing changes; above it the brightest channel is bent toward knee + room. At 0 the term is skipped, so every other view is as it was. No number of the boss helper is touched.
+
+MEASURED at 25.7 s, 1920x1080, the option on, with e787a97e laid over: share of the box 691,269 to 845,632 (my box round the face; it holds some ground too, so it is not the boss helper's box) with all three channels at 253 or more: 30.4 percent before, 0.0 after (any channel: 36.6 and 0.2). The face's middle (30x30 at 740,420): (255, 254, 254) before, (240, 236, 227) after. Fists, mean of 40x40 at 540,400 and 895,405: (92, 80, 48) and (81, 71, 43) before, (92, 80, 48) and (81, 70, 43) after. At 26.2 s without e787a97e: 8.9 percent before, 0.0 after.
+
+From above, MEASURED `compare -metric AE` on this branch's own tree: 48.0 s against 179236a1: 0; 42.0 s against 07e3edf4: 0; 32.0 s against the tree without the backdrop: 114 in the whole frame, 0 with the smoke box painted over.
+
+No test of the cap is written: it is a term of a shader and is shown by the frames. Picture: `proof/camera/rise4-face-25.7-before-after.jpg`.
+
+## Ninth pass: the face's room, and a frame that is the same picture whatever was drawn before it
+
+### Room
+
+`CAMERA.power.face.room` is 1.1 (knee 0.5). MEASURED at 25.7 s, 1920x1080, the option on, with e787a97e laid over: the face's middle (30x30 at 740,420) reads (248, 246, 240); the share of the box 691,269 to 845,632 at 253 or more on all three channels is 0.0 percent (any channel 0.3); the fists read (92, 80, 48) and (81, 70, 43). Room 0.62 gave (240, 236, 227), room 0.85 (245, 242, 235), room 1.3 (249, 247, 242) with 0.0 on all channels and 0.7 on any. The middle that was asked for and a share of 2 to 8 percent do not meet with this one number: the face is warm, its blue stays under 253. The middle was chosen. 24.47 s with the option on against off, each first in its session: `compare -metric AE` 0. Picture: `proof/camera/rise4-face-25.7-room.jpg`.
+
+### 48.0 s after other frames
+
+The order was to make the scorch a function of the film time. MEASURED first: the scorch is not the cause. Row sums of the scorch's data and of the wounds' data at 48.0 s, rendered alone and after 42.0 s: 0 of 1080 and 0 of 810 rows differ, both textures uploaded at the same version. `src/arena/finish.ts` is not touched.
+
+What the runs showed, each at 1920x1080 under trial timing with the option on:
+
+- 48.0 s alone against after 42.0 s: 708 px in the box 202x46 at 439,925, at most 3 levels of 255, the frame after 42.0 s the lighter one. After 44.0 s: the same picture as after 42.0 s. After 20.0 s of the same unit, and after a frame of the unit before: the same picture as alone (0 and 1 px). So it is not the first frame of a session; it is whether a frame of the finish was drawn before.
+- With the whole finish hidden at 48.0 s: 0. With only its effects hidden: 708. So it is the standing arrow.
+- Every matrix, attribute, uniform, texture, light and material flag of the scene was the same in both orders at both samples of the frame. What was not: three.js puts see-through pieces of one `renderOrder` in order by the middle of a sphere round each piece, and works that sphere out once, at the first draw, then keeps it. The standing arrow's legs, arms and body bend, and its shoes and gloves are instanced, so their spheres were those of the pose of the first frame drawn. The long shadow's pieces write depth and pass only where no other piece of the shadow was drawn (`depthFunc` Less), so which piece comes first decides the edge where two of them meet.
+
+The mend, in `src/cursor/stand/figure.ts` only: every instanced piece of the figure, and every piece whose shape is rewritten each frame, gets a fixed sphere when the figure is made (middle at its own origin, reach 1e4). The order is then a function of the pieces' places in the frame alone, and no piece can be left out of a frame by a sphere of an older pose. Nothing is worked out per frame for it.
+
+MEASURED after the mend, 1920x1080, trial timing, the option on, each job drawing a frame once in its session, `compare -metric AE`:
+
+- 48.0 s alone against 48.0 s in one session after 42.0, 45.5, 46.5 and 47.5 s: 0 (before: 708).
+- 48.0 s alone against 48.0 s at the end of a run from 34.0 s in steps of 1 s: 1 px, at 1269,354, far from the standing arrow (before: 708). That one pixel is not mended and its cause is not found here.
+- 45.5 s, 46.5 s and 47.5 s, each alone against the same frame in the session that began at 42.0 s: 0, 0 and 0.
+- 42.0 s as the first frame of a session against 42.0 s in the run from 34.0 s: 64 px in the box 229x203 at 1005,618. Not a frame of the bar and not mended here; the boss helper's note on the lamp's far plane (`src/core/renderer.ts` line 293) names a cause of that kind.
+- The picture at 48.0 s is not the picture of before: 3151 px (alone) and 2688 px (after 42.0 s) differ from the frames of before the mend, in the box 245x53 at 396,922, the long shadow at the standing arrow's feet. Picture: `proof/camera/rise5-48.0-order.jpg` (before, after 42.0 s | after the mend | red where alone and after 42.0 s differed before).
+
+Live frame time: UNKNOWN, not measured. STATED: the mend sets the spheres once when the figure is made and adds nothing per frame.
+
+Test: `tests/b-camera.test.ts`, "the standing arrow drawn in pieces of the film". It makes two figures, draws one at an earlier pose first, and asks that the spheres' middles at the later pose are the same. On the figure of before it failed with `expected [ '20.102,-34.757,4.234', ...(21) ] to deeply equal [ '20.041,-34.819,4.234', ...(21) ]`.
+
+### The lamp line, tried and not committed
+
+The Builder asked for a trial of one line in `src/core/renderer.ts` (after line 293, `lamp.shadow.camera.updateProjectionMatrix()`), in the working tree only. MEASURED as above:
+
+- 48.0 s alone against after 42.0 s, the line in and the figure of before: 708 px in the same box. The line does not mend that case. With the figure's mend and the line: 0.
+- The line against no line, each frame alone in its session: 25.0 s 0, 45.5 s 0, 48.0 s 0, 42.0 s 0.
+- 32.0 s alone differs by 114 px between two sessions with no line at all (box 81x99 at 359,666, the cracked edge of the flat arrow), so nothing about the line can be read from that frame.
+- The line against no line in a run from 34.0 s in steps of 1 s: 0 from 34 to 40, 655 px at 41, 64 at 42, 170 at 43, 5837 at 44, 0 from 45 to 48.
+- 42.0 s as the first frame of a session against 42.0 s in that run: 64 px without the line, 0 with it.
+- 48.0 s alone against the end of that run: 1 px at 1269,354 with the line and without it.

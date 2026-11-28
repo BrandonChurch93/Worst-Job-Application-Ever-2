@@ -10,7 +10,7 @@ import { FIRE, finishState, POWER, powerPlan } from '../src/boss/finish/acting'
 import { BEAM } from '../src/boss/finish/fx'
 import { drawnBoxes, figureBox } from '../src/boss/spot'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
-import { BODY, DART, FALLEN, HOME, SOCKET } from '../src/boss/plan'
+import { BODY, DART, FALLEN, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../src/boss/plan'
 import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
 import type { BossView } from '../src/boss/view'
 import { finishNow, viewNow } from '../src/boss/viewof'
@@ -318,7 +318,7 @@ describe('how the boss plays (change 002, item 15)', () => {
   it('note of 21:27. keeps the stand-in boss no larger than the boss of the build before', () => {
     const { all } = watch(film(), 2, 28)
     for (const f of all) {
-      const far = f.list.filter((s) => /^(boss-|guard-wing-)/.test(s.id) && s.id !== 'boss-shade' && !s.id.startsWith('boss-turret')).map((s) => {
+      const far = f.list.filter((s) => /^(boss-|guard-wing-)/.test(s.id) && s.id !== 'boss-look' && s.id !== 'boss-shade' && !s.id.startsWith('boss-turret')).map((s) => {
         const b = reach(s)
         return Math.max(Math.hypot(b.x0 - f.fight.x, b.y0 - f.fight.y), Math.hypot(b.x1 - f.fight.x, b.y1 - f.fight.y))
       })
@@ -407,8 +407,9 @@ describe('how the boss plays (change 002, item 15)', () => {
     const at = (stage: Stage, n: string): number => stage.events.find((e) => e.name === n)!.step / stepHz
     const f = film()
     f.advance(Math.round(40 * stepHz))
-    expect(at(f, 'boss-formed') - at(f, 'checkbox')).toBeGreaterThanOrEqual(LINE6.after - 1e-6)
-    expect(at(f, 'boss-formed') - at(f, 'checkbox')).toBeLessThan(LINE6.after + 0.05)
+    const whole = Math.max(LINE6.after, WAKE_AFTER_TICK.film + UNFOLD.end)
+    expect(at(f, 'boss-formed') - at(f, 'checkbox')).toBeGreaterThanOrEqual(whole - 1e-6)
+    expect(at(f, 'boss-formed') - at(f, 'checkbox')).toBeLessThan(whole + 0.05)
     for (const kind of ['keen', 'clumsy'] as const) {
       const stage = live(new BotDriver(kind, config.seed))
       let taken = 0
@@ -419,11 +420,11 @@ describe('how the boss plays (change 002, item 15)', () => {
         if (formed && tick && stage.time < tick.step / stepHz + LINE6.after && stage.cursor.taken) taken++
       }
       const tick = at(stage, 'checkbox')
-      expect(at(stage, 'boss-formed') - tick, kind).toBeLessThan(LINE6.after)
+      const start = Math.max(LINE6.after, at(stage, 'boss-formed') - tick)
       expect(taken, kind).toBe(0)
-      expect(at(stage, 'boss-turn') - tick, kind).toBeGreaterThanOrEqual(LINE6.after)
-      expect(at(stage, 'boss-music') - tick, kind).toBeGreaterThanOrEqual(LINE6.after + LINE7.ends[0] + LINE7.gap + LINE7.music - 0.01)
-      expect(at(stage, 'turret-lock') - tick, kind).toBeGreaterThanOrEqual(LINE6.after + LINE7.ends[0] + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.part2 - 0.01)
+      expect(at(stage, 'boss-turn') - tick, kind).toBeGreaterThanOrEqual(start)
+      expect(at(stage, 'boss-music') - tick, kind).toBeGreaterThanOrEqual(start + LINE7.ends[0] + LINE7.gap + LINE7.music - 0.01)
+      expect(at(stage, 'turret-lock') - tick, kind).toBeGreaterThanOrEqual(start + LINE7.ends[0] + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.rise - 0.01)
     }
   })
 
@@ -751,7 +752,7 @@ describe('how the boss plays (change 002, item 15)', () => {
       const power = stage.events.find((e) => e.name === 'power-up')!.step / stepHz
       const lock = stage.events.find((e) => e.name === 'turret-lock')!.step / stepHz
       expect(widest).toBeCloseTo(RAISE.zoom, 2)
-      expect(after - power).toBeLessThanOrEqual(RAISE.back[1] + 2 / stepHz)
+      expect(after - power).toBeLessThanOrEqual(LINE7.rise - LINE7.power + 2 / stepHz)
       expect(after).toBeLessThan(lock)
     }
   })
@@ -917,14 +918,13 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(least).toBeGreaterThanOrEqual(TOP.clear)
   }, 240000)
   it('rulings of 04:46, 3. the boss never turns before line 6 has been said to its end: a press between the forming and the first tenth of a second of line 7 is kept and acts then, so that the first sentence of line 7 is said whole, a later one acts at once, and line 7 always ends at the end of a sentence, on the near path and the self-tick path, for six kinds of visitor', () => {
-    const end = LINE6.after
-    const kinds: [string, (sinceTick: number, sinceFormed: number) => boolean, number][] = [
-      ['who presses as soon as the boss is formed', (_t, f) => f >= 0.02 && f < 0.1, end + LINE7.lead],
-      ['who presses half way between the forming and the end of line 6', (t, f) => f >= 0 && t >= end - 1.5 && t < end - 1.42, end + LINE7.lead],
-      ['who presses a tenth of a second before line 6 has ended', (t) => t >= end - 0.1 && t < end - 0.02, end + LINE7.lead],
-      ['who presses as line 7 starts', (t) => t >= end && t < end + 0.03, end + LINE7.lead],
-      ['who presses a second after line 6 has ended', (t) => t >= end + 1 && t < end + 1.08, end + 1],
-      ['who never presses', () => false, end + LINE7.part0]
+    const kinds: [string, (sinceStart: number, sinceFormed: number, wait: number) => boolean, number][] = [
+      ['who presses as soon as the boss is formed', (_t, f) => f >= 0.02 && f < 0.1, LINE7.lead],
+      ['who presses half way between the forming and the start of line 7', (_t, f, wait) => f >= wait / 2 && f < wait / 2 + 0.08, LINE7.lead],
+      ['who presses a tenth of a second before line 7 starts, or as the boss is formed when that is later', (_t, f, wait) => f >= Math.max(0, wait - 0.1) && f < Math.max(0, wait - 0.1) + 0.08, LINE7.lead],
+      ['who presses as line 7 starts', (t) => t >= 0 && t < 0.03, LINE7.lead],
+      ['who presses a second after line 7 has started', (t) => t >= 1 && t < 1.08, 1],
+      ['who never presses', () => false, LINE7.part0]
     ]
     let longest = 0
     let early = Infinity
@@ -953,7 +953,8 @@ describe('how the boss plays (change 002, item 15)', () => {
             }
             const formed = when('boss-formed')
             last = self ? { x: 300, y: 700 } : { x: SOCKET.x, y: SOCKET.y }
-            return { ...last, down: press(v.time - tick, formed < 0 ? -1 : v.time - formed) }
+            const wait = formed < 0 ? 0 : Math.max(0, tick + LINE6.after - formed)
+            return { ...last, down: formed >= 0 && press(v.time - formed - wait, v.time - formed, wait) }
           }
         })
         while (stage.page.id === 'step4' && stage.time < 300) stage.advance(4)
@@ -963,22 +964,22 @@ describe('how the boss plays (change 002, item 15)', () => {
         const turns = stage.events.filter((e) => e.name === 'boss-turn')
         expect(turns.length, name).toBe(1)
         const turn = turns[0]!.step / stepHz - tick
-        expect(formed - tick, name).toBeLessThan(end - 2)
-        expect(turn, name).toBeGreaterThanOrEqual(end - 1e-6)
-        expect(turn, name).toBeGreaterThanOrEqual(due - 2 / stepHz)
-        expect(turn, name).toBeLessThan(due + 0.03)
+        const end = Math.max(LINE6.after, formed - tick)
+        expect(turn, name).toBeGreaterThanOrEqual(LINE6.after - 1e-6)
+        expect(turn, name).toBeGreaterThanOrEqual(end + due - 2 / stepHz)
+        expect(turn, name).toBeLessThan(end + due + 0.03)
         const said = earlyEnd(LINE7.ends, LINE7.sentences, turn - end)
         expect(turn - end, name).toBeGreaterThanOrEqual(LINE7.lead - 2 / stepHz)
         expect((LINE7.sentences as readonly number[]).includes(said), name).toBe(true)
         expect(Math.abs(when('boss-music') - tick - (end + said + LINE7.gap + LINE7.music)), name).toBeLessThanOrEqual(2 / stepHz + 1 / config.film.fps)
-        expect(Math.abs(when('turret-lock') - tick - (end + said + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.part2)), name).toBeLessThanOrEqual(2 / stepHz + 1 / config.film.fps)
+        expect(Math.abs(when('turret-lock') - tick - (end + said + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.rise)), name).toBeLessThanOrEqual(2 / stepHz + 1 / config.film.fps)
         expect(stage.longestIgnored.pointer, name).toBeLessThan(config.live.controlTakenMaxSeconds)
         longest = Math.max(longest, stage.longestIgnored.pointer)
         early = Math.min(early, turn)
         if (process.env.BOSS_SAY) console.log(name, 'formed', (formed - tick).toFixed(3), 'turn', turn.toFixed(3), 'said', said, 'music', (when('boss-music') - tick).toFixed(3), 'power-up', (when('power-up') - tick).toFixed(3), 'lock', (when('turret-lock') - tick).toFixed(3), 'held', stage.longestIgnored.pointer.toFixed(3))
       }
     }
-    expect(early).toBeGreaterThanOrEqual(end - 1e-6)
+    expect(early).toBeGreaterThanOrEqual(LINE6.after - 1e-6)
     expect(longest).toBeLessThan(config.live.controlTakenMaxSeconds)
   }, 240000)
 })

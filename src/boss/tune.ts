@@ -148,22 +148,26 @@ export const MERCY = {
 
 // Line 6 of the narrator starts on the tick. Line 7 starts when the boss is formed, and no sooner than line 6 has ended.
 export const LINE6 = {
-  after: 8.79 // s from the tick before line 7's clock may start: line 6's kept take (8.49 s, take 2 of 03:46Z November 28) plus the gap of 0.3 s; tests/takes-timing.test.ts holds it to the index
+  after: 4.57 // s from the tick before line 7's clock may start: line 6 without pauses (4.27 s, pipeline/change002/fast-takes.json; the kept take is 8.49 s) plus the gap of 0.3 s; tests/b-boss-fast.test.ts holds it to that file
 } as const
 
-// Line 7 of the narrator, said between the forming and the fight (change note 003). The lengths and the phrase ends are those of the kept takes in public/audio/index.json (recorded November 27, kept 03:46Z November 28).
-// tests/takes-timing.test.ts holds every one of them to the index, so a new take or an edited one fails a test here and does not drift.
+// Line 7 of the narrator, said between the forming and the fight (change note 003). The lengths and the phrase ends are those of the lines without pauses in pipeline/change002/fast-takes.json, typed ahead of the takes being kept; the kept takes in public/audio/index.json are longer.
+// tests/b-boss-fast.test.ts holds every one of them to that file. tests/takes-timing.test.ts holds them to the index and fails until such takes are kept.
 export const LINE7 = {
-  part0: 23.324, // s of `boss.unfold.0`, from `boss-formed`
-  ends: [2.208, 5.182, 8.524, 11.356, 13.856, 17.88, 20.772, 23.324] as const, // s at which its phrases end (the start of the next one, and the end of the file): where the shell stops it after a `boss-turn`
-  sentences: [5.182, 8.524, 17.88, 23.324] as const, // s at which its sentences end, each one of `ends`: a click ends the line there when that is near enough, by `earlyEnd` of src/audio/cues.ts, which the voice reads too
+  part0: 11.325, // s of `boss.unfold.0`, from `boss-formed`
+  ends: [0.843, 2.264, 3.986, 5.197, 6.177, 8.319, 9.53, 11.325] as const, // s at which its phrases end (the start of the next one, and the end of the file): where the shell stops it after a `boss-turn`
+  sentences: [2.264, 3.986, 8.319, 11.325] as const, // s at which its sentences end, each one of `ends`: a click ends the line there when that is near enough, by `earlyEnd` of src/audio/cues.ts, which the voice reads too
   lead: 0.1, // s of line 7 that are said before a press may turn the boss: a press before that is kept and acts then, so that the turn never reaches the voice before the line has started
   gap: 0.3, // s of silence the shell leaves before the next part
-  part1: 5.59, // s of `boss.unfold.1`
-  music: 3.806, // s into part 1 at which "their student loans." and the music start (`boss-music`)
-  part2: 3.954, // s of `boss.unfold.2`; the turret locks on its last word
-  power: 0.6, // s into part 2 at which the gold starts to build (`power-up`), after the arrow has turned round
-  glow: 2, // s the gold builds
+  part1: 2.485, // s of `boss.unfold.1`
+  recall: 0.494, // s into part 1 at which "they remember" starts: the arrow lifts its tip
+  music: 1.228, // s into part 1 at which "their student loans." and the music start (`boss-music`): the arrow straightens out of its sag
+  part2: 1.91, // s of `boss.unfold.2`
+  getup: 0.2, // s into part 2, on "They turn back.", at which the figure starts to get up, after the arrow has turned round
+  power: 1.057, // s into part 2 at which "One more round." starts: the fists are up and the gold starts to build (`power-up`)
+  glow: 0.853, // s the gold builds: to the end of part 2, so that it is full on the last word
+  full: 0.8, // s the full gold is held before it bursts and the view goes back
+  rise: 3.456, // s from the start of part 2 to the turret's lock: part 2, the hold of the full gold, the 0.696 s in which the figure bursts and lies down again at the pace its fists went up, and `RAISE.early`
   alone: 1.5, // s without a move or a press after which the arrow droops and starts to drift (live)
   drift: 26, // px/s it drifts toward the top right while it is left alone
   most: 6, // s at most that the drift holds the arrow on the live site
@@ -231,13 +235,26 @@ export const IDLE = {
 // `early`: s before the turret locks by which the standing figure of the power-up lies on the page again. Its moves are fitted to that window by the figure's own module.
 export const RAISE = {
   early: 0.05,
-  near: 0.5, // s from `power-up` over which the view comes close and the figure steps to its clear spot
-  back: [2.35, 2.92] as const, // s after `power-up` between which the view goes back to the whole page
+  near: 0.5, // s from the figure's getting up over which the view comes close (live site) and the figure steps to its clear spot; the view goes back to the whole page from the burst until the figure lies on the page again
   zoom: 1.6, // times: the figure about 200 px tall in the film's frame, as on the walk
   box: { x0: -90, y0: -35, x1: 115, y1: 125 }, // px round the arrow's spot that the figure, its raised fists and its ring of flames fill; read by eye at 03:10Z. The flames of the finish at 739a4e33 measure -92 to 187 across and -127 to 125 down; a box that wide is not kept yet, see the notes on the rulings of 04:17Z
   step: 6, // px between the rings on which a clear spot is looked for
   turns: 72, // spots tried on each ring
   most: 720 // px, the widest ring
+} as const
+// What the gold of the power-up lights, in step with the flame's level: nothing at `none`, all of it at 1, flickering as the flame does.
+export const RISE_LIGHT = {
+  none: 0.12, // the flame's level at which nothing is lit
+  colour: [1, 0.74, 0.25] as const,
+  floor: { reach: 290, most: 0.55 }, // px from the feet to which the floor is warm (three widths of the figure), and how much of the floor's colour is the gold's at the feet
+  pool: { most: 0.85, colour: [1, 0.5, 0.1] as const, top: 2 }, // the floor under that light is so bright that it shows pale, so over the same reach no colour of it may be brighter than this gold: wholly so where `most` times the light is 1, not at all (`top`) where it is 0
+  near: { hole: 104, soft: 44, reach: 420, most: 2.2, high: 10 }, // the warm lift on what stands near (the boss's claws and plate, the shield): none within `hole` px of the feet, where the figure is, full `soft` px further, none at `reach`; on all that stands more than `high` px over the floor
+  lamp: { power: 1.3, reach: 420, off: 110, high: 140 }, // the lift on the near pane's face and on the shield and the boss's near side: a light with no shadow, `off` px before each and `high` px up
+  fist: { power: 2, reach: 120, drop: 40, front: 28, in: 0.8 }, // the flames' light on the figure's own rubber: under each fist a light with no shadow, `drop` px toward the feet and `front` px before the fist in the figure's own px, `in` of the fist's way out from the middle
+  foot: { power: 0.4, reach: 100, up: 4, front: 34 }, // and one low before the feet for the arrow's lower edge and the legs
+  ring: { seconds: 0.35, from: 84, reach: 600, wide: 56, most: 1 }, // the burst's ring on the floor: from the ring of flames out to half the width of the closer view, and fading
+  flash: { power: 2.6, reach: 360, near: 150 }, // the shield's glass as the ring passes: at its most when the ring is there, none `near` px before and after
+  shake: { seconds: 0.3, px: 3, hz: 27 } // the film's view at the burst
 } as const
 // `spare` is the health the film keeps over the end of a stage until that stage's time is up, with the look on, so that every stage ends at its time whatever the darts meet.
 export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const, ends: [9.83, 11.02, 13.69] as const, spare: 0.5 } as const
@@ -287,6 +304,7 @@ export const SOLID = {
 export const CAMERA = {
   on: true,
   powerUp: false,
+  power: { down: 0.5, ramp: 0.2, low: 0.5, push: 0.04, dive: [1.2, 2] as const, swing: 1.5, body: [95, 230] as const, face: { knee: 0.5, room: 1.1 }, key: { at: [80, 10, 52], az: -128, el: 0.3, tall: 375, fov: 46 } },
   upright: 0.75,
   lowEl: [30, 80] as const,
   down: [0, 0.95] as const,
@@ -321,7 +339,7 @@ export const CAMERA = {
   shake: 5,
   shakeDies: 0.22,
   open: 5,
-  dusk: { far: 5200, high: 2600, top: [0.012, 0.014, 0.03], low: [0.05, 0.045, 0.07], band: [0.2, 0.11, 0.06], bandHigh: 0.07 },
+  dusk: { far: 2800, high: 2600, top: [0.012, 0.013, 0.02], low: [0.15, 0.115, 0.095], reach: 0.22, band: [0.07, 0.04, 0.02], bandHigh: 0.07, finish: { k: 0.7, reach: 0.1 } },
   charge: { at: [-50, 0, 82], az: -120, el: -3, tall: 195, fov: 54 },
   fire: { at: [127, -13, 52], az: -225, el: 7.5, tall: 325, fov: 50 },
   blast: { at: [150, 0, 56], az: -224, el: 9, tall: 380, fov: 54 }

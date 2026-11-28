@@ -143,6 +143,27 @@ export function facing(from: Rig, feet: V3, k: number): Shot | null {
   return shot(mixRig(from, keyAt(CAMERA.charge, feet), smooth(k)), 'charge')
 }
 
+export interface Rise { fists: number; burst: number; end: number }
+
+export function riseRig(r: number, p: Rise, feet: V3, from: Rig): { rig: Rig; k: number } {
+  const w = CAMERA.power
+  const key = keyAt(w.key, feet)
+  const k = Math.min(ease(r, p.fists, p.fists + w.down), 1 - glide((r - p.burst) / (p.end - p.burst), w.ramp))
+  if (k <= 0) return { rig: from, k: 0 }
+  const push = 1 - w.push * clamp((r - p.fists) / (p.burst - p.fists))
+  const to = { ...key, tall: key.tall * push }
+  const far = (from.tall / Math.tan((from.fov * RAD) / 2)) / (to.tall / Math.tan((to.fov * RAD) / 2))
+  const lens = r > p.burst && far > 1 ? 1 - Math.log(1 + (far - 1) * (1 - k)) / Math.log(far) : k
+  const rig = mixRig(from, to, k, soon(k, w.dive[0]), late(k, w.dive[1]), lens)
+  return { rig: { ...rig, az: lerp(from.az, key.az, soon(k, w.swing)) }, k }
+}
+
+export function riseShot(r: number, p: Rise, feet: V3, from: Rig): Shot | null {
+  if (!CAMERA.on) return null
+  const at = riseRig(r, p, feet, from)
+  return at.k <= 0 ? null : shot(at.rig, 'charge')
+}
+
 export interface Block { id: string; lo: V3; hi: V3 }
 export const BLOCKS: Block[] = [
   ...PILLARS.map((p): Block => {
@@ -158,12 +179,12 @@ export const BLOCKS: Block[] = [
   })
 ]
 
-const SPOTS = ((): V3[] => {
-  const [half, high] = CAMERA.fade.body
+const spotsAt = (feet: readonly number[], [half, high]: readonly [number, number]): V3[] => {
   const out: V3[] = []
-  for (const x of [-1, 0, 1]) for (const y of [-1, 0, 1]) for (const z of [0.03, 0.36, 0.7, 1]) out.push([FEET[0] + x * half * (z < 0.1 ? CAMERA.fade.feet : 1), FEET[1] + y * half * (z < 0.1 ? CAMERA.fade.feet : 1), z * high])
+  for (const x of [-1, 0, 1]) for (const y of [-1, 0, 1]) for (const z of [0.03, 0.36, 0.7, 1]) out.push([feet[0]! + x * half * (z < 0.1 ? CAMERA.fade.feet : 1), feet[1]! + y * half * (z < 0.1 ? CAMERA.fade.feet : 1), z * high])
   return out
-})()
+}
+const SPOTS = spotsAt(FEET, [CAMERA.fade.body[0]!, CAMERA.fade.body[1]!])
 
 export const nearOf = (eye: readonly number[], b: Block): number => Math.hypot(Math.max(0, b.lo[0] - eye[0]!, eye[0]! - b.hi[0]), Math.max(0, b.lo[1] - eye[1]!, eye[1]! - b.hi[1]), Math.max(0, b.lo[2] - eye[2]!, eye[2]! - b.hi[2]))
 
@@ -197,10 +218,28 @@ const seen = (pose: CameraPose, b: Block, t: readonly [number, number]): boolean
   return false
 }
 
-export function hides(pose: CameraPose, b: Block, low: number): boolean {
+export function hides(pose: CameraPose, b: Block, low: number, spots: readonly V3[] = SPOTS): boolean {
   const t = tilt(b, low)
   const eye = flat(pose.eye, t)
-  return (nearOf(eye, b) < CAMERA.fade.near && seen(pose, b, t)) || SPOTS.some((p) => crosses(eye, flat(p, t), b))
+  return (nearOf(eye, b) < CAMERA.fade.near && seen(pose, b, t)) || spots.some((p) => crosses(eye, flat(p, t), b))
+}
+
+export function riseFades(r: number, p: Rise, feet: V3, from: Rig): Record<string, number> | null {
+  if (!CAMERA.on) return null
+  const n = Math.round(CAMERA.fade.over * 60)
+  const spots = spotsAt(feet, CAMERA.power.body)
+  let out: Record<string, number> | null = null
+  for (let i = -n; i <= n; i++) {
+    const s = riseShot(r + i / 60, p, feet, from)
+    if (!s || s.low < CAMERA.power.low) continue
+    const w = smooth(1 - Math.abs(i) / n)
+    for (const b of BLOCKS) {
+      if (w <= (out?.[b.id] ?? 0) || !hides(s.pose, b, s.low, spots)) continue
+      out ??= {}
+      out[b.id] = w
+    }
+  }
+  return out
 }
 
 let kept: { time: number; m: Marks; out: Record<string, number> | null } | null = null
