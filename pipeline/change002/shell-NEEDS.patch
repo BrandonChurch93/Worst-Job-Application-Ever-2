@@ -285,3 +285,39 @@ index f8151aac..bbe08075 100644
 -const FILM_TURN = ['809 marketing leave 508.00 440.00 13.96 11.69', '810 marketing leave 534.49 445.86 48.84 10.27', '819 marketing leave 968.26 541.83 206.66 -18.96', '838 marketing leave 959.81 539.96 257.08 39.87', '839 step1 arrive 960.00 540.00 260.00 0.00', '857 step1 arrive 960.00 540.00 260.00 -11.10', '869 step1  960.00 540.00 260.00 -11.10', '879 step1  960.00 540.00 225.83 -11.10', '899 step1  960.00 540.00 4.00 -11.10']
 +const FILM_TURN = ['809 marketing leave 508.00 440.00 13.96 11.69', '810 marketing leave 508.00 440.00 13.96 11.50', '819 marketing leave 508.00 440.00 13.96 -16.06', '838 marketing leave 508.00 440.00 13.96 39.80', '839 step1 arrive 960.00 540.00 260.00 0.00', '857 step1 arrive 960.00 540.00 260.00 -11.10', '869 step1  960.00 540.00 260.00 -11.10', '879 step1  960.00 540.00 225.83 -11.10', '899 step1  960.00 540.00 4.00 -11.10']
  const FILM_HIT = ['348 -12.0', '349 -5.7', '350 1.9', '351 8.7', '352 14.0', '353 17.7', '354 19.4', '355 17.9', '356 18.0', '357 19.6', '358 21.8', '359 24.2', '360 26.4', '361 28.3', '362 29.8', '363 31.0']
+
+# 00:14Z content/narration-drafts.json: the draft row of the shout says what joins its parts (`join`), in the row and in both candidates; its `live` word follows the ruling
+diff --git a/content/narration-drafts.json b/content/narration-drafts.json
+index 04be2ab7..c898ccfa 100644
+--- a/content/narration-drafts.json
++++ b/content/narration-drafts.json
+@@ -16,7 +16,8 @@
+         "text": "KA / ME / HA / ME / HA",
+         "state": "draft",
+         "loud": true,
+-        "live": "the boss's shout: one syllable a mark of the boss page, large and in capitals, each until the next mark",
++        "join": "",
++        "live": "the boss's shout: one word that builds on one row, a part added at each mark of the boss page, large and in capitals, gone when the last part has been held for its length",
+         "standIn": {
+           "candidate": "B",
+           "seconds": 6.26,
+@@ -45,7 +46,8 @@
+                 4.76,
+                 7.9
+               ]
+-            ]
++            ],
++            "join": " "
+           },
+           "B": {
+             "text": "KA / ME / HA / ME / HA",
+@@ -71,7 +73,8 @@
+                 4.13,
+                 6.26
+               ]
+-            ]
++            ],
++            "join": ""
+           }
+         }
+       }

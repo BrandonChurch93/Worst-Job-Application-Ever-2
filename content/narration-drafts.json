@@ -16,7 +16,8 @@
         "text": "KA / ME / HA / ME / HA",
         "state": "draft",
         "loud": true,
-        "live": "the boss's shout: one syllable a mark of the boss page, large and in capitals, each until the next mark",
+        "join": "",
+        "live": "the boss's shout: one word that builds on one row, a part added at each mark of the boss page, large and in capitals, gone when the last part has been held for its length",
         "standIn": {
           "candidate": "B",
           "seconds": 6.26,
@@ -45,7 +46,8 @@
                 4.76,
                 7.9
               ]
-            ]
+            ],
+            "join": " "
           },
           "B": {
             "text": "KA / ME / HA / ME / HA",
@@ -71,7 +73,8 @@
                 4.13,
                 6.26
               ]
-            ]
+            ],
+            "join": ""
           }
         }
       }
