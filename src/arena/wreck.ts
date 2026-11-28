@@ -53,6 +53,8 @@ function stumpGeometry(seed: number, id: number, high: number): { sides: THREE.B
     tri(top, [pi.x, pi.y, pi.z], [qi.x, qi.y, qi.z], mid, [0, 0, 1])
   }
   const g = geometryOf(sides)
+  // A stump's sides are sides: the left half of the column's second set of places.
+  g.setAttribute('uv1', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 2).fill(0.25), 2))
   // The brushing runs up the column, as on the whole one.
   const p = g.getAttribute('position'), nor = g.getAttribute('normal'), uv = g.getAttribute('uv') as THREE.BufferAttribute
   for (let i = 0; i < p.count; i++) uv.setXY(i, p.getZ(i) * 1.7, (Math.abs(nor.getX(i)) > Math.abs(nor.getY(i)) ? p.getY(i) : p.getX(i)) * 6)

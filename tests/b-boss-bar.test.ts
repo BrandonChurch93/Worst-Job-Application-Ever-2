@@ -25,8 +25,8 @@ const word = (list: Shape[]): boolean => list.some((s) => s.id === 'health-label
 const anchor = (list: Shape[]): Shape => list.find((s) => s.id === 'arena')!
 
 describe('the health bar after the kill, behind its switch', () => {
-  it('is off as it is shipped, and off the word and the bar stay to the end of the page', () => {
-    expect(was).toBe(false)
+  it('is on as it is shipped; turned off, the word and the bar stay to the end of the page', () => {
+    expect(was).toBe(true)
     set(false)
     const stage = film()
     const gone = stage.events.find((e) => e.name === 'boss-gone')!.step / stepHz

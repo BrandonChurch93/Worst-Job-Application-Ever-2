@@ -234,7 +234,7 @@ export const CLOSE = {
 // The health bar after the kill, behind a switch. Off: the empty bar and its word stay on the floor to the page's end.
 // On: at `boss-gone` the word goes, as it came when the bar landed, and the bar goes back up the way it came down, its own drop run backwards, and is gone.
 export const BAR_GONE = {
-  on: false,
+  on: true,
   seconds: 0.42 // s from `boss-gone` to the bar gone: the time its drop took
 } as const
 
