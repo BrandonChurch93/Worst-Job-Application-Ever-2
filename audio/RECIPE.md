@@ -1520,10 +1520,11 @@ Words: They turn back. / One more round.
 
 ### line.decision.reset.0
 
-Takes used: 1 of 3 in round script-003.
+Takes used: 2 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | script-003 | 2026-11-28T02:32:56.402Z | 3.204 s | -2.24 dB | -20.22 LUFS | 3 | 17 | no |  |
+| 2 | script-003 | 2026-11-28T02:46:12.582Z | 3.39 s | -1.99 dB | -17.8 LUFS | 2 | 17 | no |  |
 
 Words: On to / the next application.
