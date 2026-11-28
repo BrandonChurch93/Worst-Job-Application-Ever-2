@@ -937,7 +937,7 @@ A detached checkout of agent/trial-p15 dbb3b410 beside this one, my tools copied
 6. The 1 px at 48.0 s (one level, at 1269,354) is there with and without the lamp line and with the aim line; it comes after frames of the finish (41 to 44) and not after 25 and 32 alone. Its cause was not looked for in this unit.
 7. Not measured: the final tier, the other formats, a session as long as one of the sixteen pieces, the live site.
 
-## The Builder's unit of 14:05Z, November 28: the turn from the boss page to Decision (written 14:22Z)
+## The Builder's unit of 14:05Z, November 28: the turn from the boss page to Decision (written 14:21Z)
 
 Branch agent/b-boss-turn, from the trial dbb3b410, with agent/b-boss-fast 404bac93 merged in for the tools and these notes (no source of the site in that merge).
 
