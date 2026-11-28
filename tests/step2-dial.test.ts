@@ -1,10 +1,11 @@
+import { drawBuilt } from '../src/pages/step2/index'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { stepHz } from '../src/config'
 import { pages } from '../src/pages'
-import { DIAL, DIAL_BODY, dialPlate, dialTop, ROW_HELPER, ROW_TITLE, TOP, TRAY, TRAY_H, TRAY_Z, VALUE_Z } from '../src/pages/step2/layout'
-import { dial, edgesGeometry, faceGeometry, holeShadeGeometry, housingGeometry, hubGeometry, plateGeometry, seatGeometry, stopGeometry } from '../src/pages/step2/real/dial'
-import { rows, trayFloor, trayFoot, trayJoint, trayLiner, trayRim, trayWallShade } from '../src/pages/step2/real/rows'
+import { DIAL, DIAL_BODY, dialPlate, dialTop, HOLE, ROW_HELPER, ROW_TITLE, TOP, TRAY_Z, VALUE_Z } from '../src/pages/step2/layout'
+import { plainDial as dial, edgesGeometry, faceGeometry, holeShadeGeometry, housingGeometry, hubGeometry, plateGeometry, seatGeometry, stopGeometry } from '../src/pages/step2/real/dial'
+import { pitFoot, rows } from '../src/pages/step2/real/rows'
 import type { RealContext } from '../src/real/types'
 import type { Shape } from '../src/stage/types'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
@@ -15,7 +16,7 @@ function listAt(seconds: number): Shape[] {
   const s = film()
   s.advance(Math.round(seconds * stepHz))
   const list: DrawList = []
-  s.page.draw(list)
+  drawBuilt(s.page, list)
   return list as Shape[]
 }
 
@@ -138,30 +139,20 @@ describe('the dial on the page', () => {
     expect(dialTop(0)).toBe(DIAL_BODY.rest)
   })
 
-  it('lies under the floor of a field, hub and stop drawn down, until the tray has opened over it', () => {
+  it('comes up out of the page whole: on every step it is in the list it is as tall as it stands, and it is not in the list before its field is pressed', () => {
     let seen = 0
-    for (const t of [1.9, 1.94, 1.98, 2.02, 2.06]) {
+    for (const t of [2.1, 2.3, 2.5, 2.75, 3.63, 7.3, 7.5]) {
       const list = listAt(t)
-      const ctx = context(list, t)
       const wheel = list.find((s) => s.id === 'dial-wheel')
-      const tray = list.find((s) => s.id === 'phone-tray')
-      if (!wheel || !tray || tray.h >= TRAY_H * 0.9) continue
+      if (!wheel) continue
       seen++
-      const o = dial.make(wheel, ctx)
-      dial.pose!(o, wheel, ctx)
-      const kept = o.userData.dial as { body: THREE.Group }
-      o.updateMatrixWorld(true)
-      expect(new THREE.Box3().setFromObject(kept.body).max.z + wheel.z0, `at ${t}`).toBeLessThan(VALUE_Z)
-      if (wheel.z1 - wheel.z0 <= DIAL_BODY.rest) {
-        const hub = (o.userData.dial as { hub: THREE.Mesh }).hub
-        const box = new THREE.Box3().setFromObject(hub)
-        expect(box.max.z - new THREE.Box3().setFromObject(kept.body.children[0]!).max.z, `hub at ${t}`).toBeLessThan(3)
-        expect(hub.scale.z).toBeCloseTo(DIAL_BODY.hubFlat, 6)
-      }
+      expect(wheel.z1 - wheel.z0, `at ${t}`).toBeCloseTo(DIAL_BODY.tall, 6)
       for (const n of list.filter((v) => v.id.startsWith('dial-numeral-'))) expect(n.z1, n.id).toBeGreaterThan(TRAY_Z)
     }
-    expect(seen).toBeGreaterThan(0)
+    expect(seen).toBeGreaterThan(4)
+    expect(listAt(1).find((s) => s.id === 'dial-wheel')).toBeUndefined()
   })
+
 
   it('lacquers the hub and cuts the face finer under the shared studio rules, never with a material of another law', () => {
     const list = listAt(3.2)
@@ -180,24 +171,17 @@ describe('the dial on the page', () => {
     expect(hub.ior).toBe(DIAL_BODY.hubIor)
   })
 
-  it('lays its soft shade on the floor away from the key only when it has risen, and keeps it under the plate', () => {
-    const at = (t: number): { cast: THREE.Mesh; wheel: Shape } => {
-      const list = listAt(t)
-      const wheel = list.find((s) => s.id === 'dial-wheel')!
-      const ctx = context(list, t)
-      const o = dial.make(wheel, ctx)
-      dial.pose!(o, wheel, ctx)
-      return { cast: (o.userData.dial as { cast: THREE.Mesh }).cast, wheel }
-    }
-    const risen = at(3.2).cast
+  it('lays its soft shade on the page away from the key once it stands, and keeps it under the plate', () => {
+    const list = listAt(3.63)
+    const wheel = list.find((s) => s.id === 'dial-wheel')!
+    const ctx = context(list, 3.63)
+    const o = dial.make(wheel, ctx)
+    dial.pose!(o, wheel, ctx)
+    const risen = (o.userData.dial as { cast: THREE.Mesh }).cast
     expect(risen.scale.x).toBeCloseTo(1, 6)
     expect(Math.hypot(risen.position.x, risen.position.y)).toBeCloseTo(DIAL_BODY.castAway, 6)
     expect(risen.position.z).toBeLessThan(DIAL_BODY.plateLeast)
     expect(risen.castShadow).toBe(false)
-    const low = at(1.9)
-    expect(low.wheel.z1 - low.wheel.z0).toBeLessThanOrEqual(DIAL_BODY.rest)
-    expect(low.cast.scale.x * (DIAL.r + DIAL_BODY.bezel + DIAL_BODY.castOut)).toBeLessThan(DIAL.r)
-    expect(Math.hypot(low.cast.position.x, low.cast.position.y)).toBeCloseTo(0, 6)
   })
 
   it('shows its numerals as words of the legends, never as shapes of its own', () => {
@@ -213,29 +197,32 @@ describe('the dial on the page', () => {
 
 describe('the rows as they are built', () => {
   it('makes every shape of the rows real on every beat', () => {
-    for (const t of [1, 2.2, 3.2, 8.4, 9.5, 14.3, 15.2, 20.5]) {
+    for (const t of [1, 2.2, 3.63, 8.4, 9.6, 14.3, 15.9, 21.5]) {
       const list = listAt(t)
       const ctx = context(list, t)
       for (const s of list.filter((n) => n.part === 'rows')) expect(rows.key(s, ctx), `${s.id} at ${t}`).not.toBeNull()
     }
   })
 
-  it('cuts the open tray into the page as a pocket with round corners, never taller than its plan', () => {
-    for (const t of [2.1, 2.2, 2.3, 2.5, 3.2]) {
-      const tray = listAt(t).find((s) => s.id === 'phone-tray')
-      if (!tray) continue
-      expect(tray.pocket).toBe(true)
-      expect(tray.kind).toBe('box')
-      expect(tray.z0).toBe(TRAY_Z)
-      expect(tray.h).toBeLessThanOrEqual(TRAY_H)
-      expect(tray.r!).toBeLessThanOrEqual(tray.h / 2)
+  it('cuts the hole into the page as a round pocket, as deep as its plan and never wider', () => {
+    let seen = 0
+    for (const t of [2, 2.1, 2.3, 2.5, 7.3, 7.5]) {
+      const hole = listAt(t).find((s) => s.id === 'phone-hole')
+      if (!hole) continue
+      seen++
+      expect(hole.pocket).toBe(true)
+      expect(hole.kind).toBe('box')
+      expect(hole.z0).toBe(-HOLE.pit)
+      expect(hole.w).toBeLessThanOrEqual(2 * HOLE.iris + 1e-6)
+      expect(hole.h).toBeCloseTo(hole.w, 6)
+      expect(hole.r!).toBeCloseTo(hole.w / 2, 6)
     }
-    const open = listAt(3.2).find((s) => s.id === 'phone-tray')!
-    expect(open.h).toBe(TRAY_H)
+    expect(seen).toBeGreaterThan(3)
+    expect(listAt(3.63).find((s) => s.id === 'phone-hole')).toBeUndefined()
   })
 
-  it('lights the open field with one ring and one caret, both lying in its pocket', () => {
-    const list = listAt(3.2)
+  it('lights the pressed field with one ring lying in its pocket, and none before the press', () => {
+    const list = listAt(1.9)
     const pocket = list.find((s) => s.id === 'phone-pocket')!
     const focus = list.filter((s) => s.id === 'field-focus')
     expect(focus.length).toBe(1)
@@ -247,73 +234,45 @@ describe('the rows as they are built', () => {
     expect(listAt(1).filter((s) => s.id === 'field-focus').length).toBe(0)
   })
 
-  it('builds the tray as a joint, a rim, a liner, a floor and a shade, all finite, with unit normals, the same every time', () => {
-    const tray = listAt(3.2).find((n) => n.id === 'phone-tray')!
-    for (const [name, make] of Object.entries({ joint: trayJoint, rim: trayRim, liner: trayLiner, floor: trayFloor, shade: trayWallShade })) {
-      const g = make(tray)
-      const p = g.getAttribute('position')
-      const n = g.getAttribute('normal')
-      expect(p.count, name).toBeGreaterThan(8)
+  it('builds the hole as a lit lip, a wall that darkens to its foot and a dark floor, all finite, inside the hole and no deeper than its plan', () => {
+    const list = listAt(2.3)
+    const hole = list.find((n) => n.id === 'phone-hole')!
+    expect(pitFoot(HOLE.pit)).toBeLessThan(hole.w / 2)
+    const o = rows.make(hole, context(list, 2.3))
+    const meshes = o.children as THREE.Mesh[]
+    expect(meshes.length).toBe(3)
+    for (const [k, m] of meshes.entries()) {
+      const p = m.geometry.getAttribute('position')
+      expect(p.count, `solid ${k}`).toBeGreaterThan(8)
       for (let i = 0; i < p.count; i++) {
-        expect(Number.isFinite(p.getX(i)) && Number.isFinite(p.getY(i)) && Number.isFinite(p.getZ(i)), name).toBe(true)
-        expect(Math.abs(Math.hypot(n.getX(i), n.getY(i), n.getZ(i)) - 1), name).toBeLessThan(1e-3)
-        expect(p.getZ(i), name).toBeLessThanOrEqual(-TRAY_Z + 0.1)
-        expect(p.getZ(i), name).toBeGreaterThanOrEqual(-0.5)
+        expect(Number.isFinite(p.getX(i)) && Number.isFinite(p.getY(i)) && Number.isFinite(p.getZ(i)), `solid ${k}`).toBe(true)
+        expect(Math.hypot(p.getX(i), p.getY(i)), `solid ${k}`).toBeLessThanOrEqual(hole.w / 2 + 1)
+        expect(p.getZ(i), `solid ${k}`).toBeLessThanOrEqual(HOLE.pit + 0.1)
+        expect(p.getZ(i), `solid ${k}`).toBeGreaterThanOrEqual(-0.5)
       }
-      expect(Array.from(make(tray).getAttribute('position').array), name).toEqual(Array.from(p.array))
     }
-  })
-
-  it('lays the tray\'s floor in the shade of the wall on the light\'s side, and inside the foot of the wall', () => {
-    const tray = listAt(3.2).find((n) => n.id === 'phone-tray')!
-    const g = trayFloor(tray)
-    const p = g.getAttribute('position')
-    const c = g.getAttribute('color')
-    const foot = trayFoot(-TRAY_Z)
-    expect(foot).toBeGreaterThan(TRAY.joint + TRAY.rim)
-    let shaded = 0
+    const wall = meshes[1]!.geometry
+    const p = wall.getAttribute('position')
+    const c = wall.getAttribute('color')
     let lit = 0
-    let ns = 0
     let nl = 0
+    let dark = 0
+    let nd = 0
     for (let i = 0; i < p.count; i++) {
-      expect(Math.abs(p.getX(i))).toBeLessThanOrEqual(tray.w / 2 - foot + 0.6)
-      expect(Math.abs(p.getY(i))).toBeLessThanOrEqual(tray.h / 2 - foot + 0.6)
-      if (p.getY(i) > tray.h / 2 - foot - 6 && Math.abs(p.getX(i)) < tray.w / 4) { shaded += c.getX(i); ns++ }
-      if (p.getY(i) < -(tray.h / 2 - foot - 6) && Math.abs(p.getX(i)) < tray.w / 4) { lit += c.getX(i); nl++ }
+      if (p.getZ(i) > HOLE.pit * 0.8) { lit += c.getY(i); nl++ }
+      if (p.getZ(i) < HOLE.pit * 0.1) { dark += c.getY(i); nd++ }
     }
-    expect(ns).toBeGreaterThan(4)
-    expect(nl).toBeGreaterThan(4)
-    expect(shaded / ns).toBeLessThan(lit / nl - 0.2)
+    expect(nl).toBeGreaterThan(8)
+    expect(nd).toBeGreaterThan(8)
+    expect(lit / nl).toBeGreaterThan(0.5)
+    expect(dark / nd).toBeLessThan(0.25)
+    rows.drop?.(o)
   })
 
-  it('rolls the rim under the page and lays the deep shade of the floor over the words on it, never over a thing standing on it', () => {
-    const list = listAt(3.2)
-    const tray = list.find((n) => n.id === 'phone-tray')!
-    const rim = trayRim(tray).getAttribute('position')
-    let top = -Infinity
-    for (let i = 0; i < rim.count; i++) top = Math.max(top, rim.getZ(i))
-    expect(top).toBeCloseTo(-TRAY_Z - TRAY.sink, 3)
-    const soak = trayFloor(tray, TRAY.soak).getAttribute('color')
-    let least = Infinity
-    let most = -Infinity
-    for (let i = 0; i < soak.count; i++) {
-      least = Math.min(least, soak.getX(i))
-      most = Math.max(most, soak.getX(i))
-    }
-    expect(least).toBeGreaterThan(0.05)
-    expect(least).toBeLessThan(0.5)
-    expect(most).toBeLessThanOrEqual(1)
-    expect(TRAY.soakOver).toBeGreaterThan(0)
-    expect(TRAY.soakOver).toBeLessThan(DIAL_BODY.rest)
-    const o = rows.make(tray, context(list, 3.2))
-    const multiplied = o.children.filter((c) => ((c as THREE.Mesh).material as THREE.Material).blending === THREE.CustomBlending)
-    expect(multiplied.length).toBe(2)
-    expect(multiplied.some((c) => c.position.z === TRAY.soakOver)).toBe(true)
-  })
 
   it('sets the row titles semi-bold over a regular helper line, each a key of the copy', () => {
-    const list = listAt(1.0)
-    for (const name of ['phone', 'birth', 'volume']) {
+    for (const [name, at] of [['phone', 1.0], ['birth', 8.5], ['volume', 14.9]] as const) {
+      const list = listAt(at)
       const title = list.find((n) => n.id === `${name}-label`)!
       const helper = list.find((n) => n.id === `${name}-helper`)!
       expect(title.type?.font).toBe(ROW_TITLE.font)
@@ -326,26 +285,21 @@ describe('the rows as they are built', () => {
     }
   })
 
-  it('never leaves a reel\'s legend lying bare on the floor of a tray: a legend is in the list only while its own reel and the cabinet are drawn by their makers, and it lies on its reel\'s face, opening and shutting', () => {
-    const DRAWN = 0.02
-    const CABINET = TOP + 20 - TRAY_Z
-    const REEL = 4
-    const sides: [string, number, number][] = [['opening', 8.1, 8.7], ['shutting', 13.2, 13.7]]
+  it('never leaves a reel\'s legend lying bare on the page: a legend is in the list only while its own reel is, it lies on its reel\'s face, and the machine is in the list without its legends on some steps of its coming and of its going', () => {
+    const sides: [string, number, number][] = [['coming', 9.4, 10.3], ['going', 13.95, 14.4]]
     for (const [side, from, to] of sides) {
-      let housed = 0
+      let under = 0
       let lying = 0
       for (let t = from; t < to; t += 0.02) {
         const at = `${side} at ${t.toFixed(2)}`
         const list = listAt(t)
         const cabinet = list.find((s) => s.id === 'slot-cabinet')
         const legends = list.filter((s) => s.id.startsWith('reel-'))
-        const cabinetUp = cabinet ? (cabinet.z1 - cabinet.z0) / CABINET : 0
-        if (cabinetUp <= DRAWN) expect(legends.length, at).toBe(0)
-        if (cabinet && cabinet.z1 - cabinet.z0 <= 2) housed++
+        if (!cabinet) expect(legends.length, at).toBe(0)
+        else if (legends.length === 0) under++
         for (const legend of legends) {
           const reel = list.find((s) => s.id === `slot-reel-${legend.id.split('-')[1]}`)
           expect(reel, `${at} ${legend.id}`).toBeDefined()
-          expect((reel!.z1 - reel!.z0) / REEL, `${at} ${legend.id}`).toBeGreaterThan(DRAWN)
           expect(legend.x, `${at} ${legend.id}`).toBeGreaterThanOrEqual(reel!.x)
           expect(legend.x + legend.w, `${at} ${legend.id}`).toBeLessThanOrEqual(reel!.x + reel!.w)
           expect(legend.y, `${at} ${legend.id}`).toBeGreaterThanOrEqual(reel!.y)
@@ -354,19 +308,18 @@ describe('the rows as they are built', () => {
           lying++
         }
       }
-      expect(housed, side).toBeGreaterThan(0)
+      expect(under, side).toBeGreaterThan(0)
       expect(lying, side).toBeGreaterThan(0)
     }
   })
 
-  it('builds a tray on its way open for the height it has', () => {
-    const list = listAt(2.15)
-    const tray = list.find((n) => n.id === 'phone-tray')
-    if (!tray) return
-    const o = rows.make(tray, context(list, 2.15))
+  it('builds a hole on its way open for the width it has', () => {
+    const list = listAt(2)
+    const hole = list.find((n) => n.id === 'phone-hole')!
+    const o = rows.make(hole, context(list, 2))
     const box = new THREE.Box3().setFromObject(o)
-    expect(box.max.y - box.min.y).toBeLessThanOrEqual(tray.h + 1)
-    expect(box.max.x - box.min.x).toBeLessThanOrEqual(tray.w + 1)
+    expect(box.max.y - box.min.y).toBeLessThanOrEqual(hole.h + 1)
+    expect(box.max.x - box.min.x).toBeLessThanOrEqual(hole.w + 1)
     rows.drop?.(o)
   })
 })

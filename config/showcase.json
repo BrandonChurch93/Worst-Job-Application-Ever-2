@@ -55,7 +55,7 @@
     "units": [
       { "id": "marketing", "seconds": 19 },
       { "id": "step1", "seconds": 35.4 },
-      { "id": "step2", "seconds": 21 },
+      { "id": "step2", "seconds": 24.9 },
       { "id": "pinball", "seconds": 42 },
       { "id": "boss", "seconds": 32 },
       { "id": "decision", "seconds": 12 }
@@ -71,11 +71,11 @@
       { "id": "step1.resume", "unit": "step1", "from": 17.9, "to": 21.4, "event": "paper-slide" },
       { "id": "step1.tug", "unit": "step1", "from": 21.4, "to": 27.65, "event": "arms-out" },
       { "id": "step1.shredded", "unit": "step1", "from": 27.65, "to": 35.4, "event": "strips-zip" },
-      { "id": "step2.open", "unit": "step2", "from": 0, "to": 2, "event": null },
-      { "id": "step2.dial", "unit": "step2", "from": 2, "to": 8, "event": "dial-fling" },
-      { "id": "step2.slot", "unit": "step2", "from": 8, "to": 14, "event": "coins" },
-      { "id": "step2.crank", "unit": "step2", "from": 14, "to": 20, "event": "flatten" },
-      { "id": "step2.continue", "unit": "step2", "from": 20, "to": 21, "event": "button-press" },
+      { "id": "step2.open", "unit": "step2", "from": 0, "to": 1.9, "event": null },
+      { "id": "step2.dial", "unit": "step2", "from": 1.9, "to": 7.8, "event": "dial-fling" },
+      { "id": "step2.slot", "unit": "step2", "from": 7.8, "to": 14.4, "event": "coins" },
+      { "id": "step2.crank", "unit": "step2", "from": 14.4, "to": 22.8, "event": "flatten" },
+      { "id": "step2.continue", "unit": "step2", "from": 22.8, "to": 24.9, "event": "button-press" },
       { "id": "pinball.seal", "unit": "pinball", "from": 0, "to": 4, "event": "ball-seal" },
       { "id": "pinball.reveal", "unit": "pinball", "from": 4, "to": 7.6, "event": "power-on" },
       { "id": "pinball.launch", "unit": "pinball", "from": 7.6, "to": 11, "event": "plunger" },
@@ -261,7 +261,7 @@
       "id": "step2-dial",
       "unit": "step2",
       "beat": "step2.dial",
-      "at": 0.2,
+      "at": 0.293,
       "camera": "home",
       "image": "references/approved/step2-dial.png",
       "settled": ["The image's dial numerals are wrong. The build's dial reads 1 to 9 and then 0, in order."]
@@ -270,7 +270,7 @@
       "id": "step2-crank",
       "unit": "step2",
       "beat": "step2.crank",
-      "at": 0.2,
+      "at": 0.383,
       "camera": "home",
       "image": "references/approved/step2-crank.png",
       "settled": ["The image leaves the input empty. The build shows the level as a percentage."]

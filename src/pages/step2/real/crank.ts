@@ -349,10 +349,10 @@ function lamp(s: Shape, ctx: RealContext): void {
   }
 }
 
-// Where a segment stands: on the floor of its tray, or on the page when the list has no tray for it (the sheet).
+// Where a segment stands: where the page puts it, which may be under the page's face while it comes up through it, or on the page on the sheet.
 function standOf(s: Shape, ctx: RealContext): number {
   const tag = s.id.slice(0, s.id.lastIndexOf('meter-'))
-  return ctx.byId.has(`${tag}${ROWS[2]}-tray`) ? s.z0 : Math.max(s.z0, 0)
+  return tag === '' ? s.z0 : Math.max(s.z0, 0)
 }
 
 const kindOf = (s: Shape): 'base' | 'hub' | 'arm' | 'grip' | 'meter' | null => {
@@ -365,7 +365,7 @@ const kindOf = (s: Shape): 'base' | 'hub' | 'arm' | 'grip' | 'meter' | null => {
   return null
 }
 
-const plainCrank: PartMaker = {
+export const plainCrank: PartMaker = {
   key(s) {
     if (s.kind === 'text') return null
     const kind = kindOf(s)

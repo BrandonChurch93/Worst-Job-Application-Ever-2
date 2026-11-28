@@ -77,3 +77,14 @@ Decisions taken without asking, in the order they were met.
 - The slot's window is rounded (`SLOT_LOOK.window`), its drums 97 px wide with a bright plateau (`drum.dark`, `drum.full`). The meter's lamps: `CRANK_LOOK.lamp`.
 - The keeper's notes, decisions and counts: `pipeline/phase4/step2-keeper.md`. Recipes: `assets-src/step2-keeper/RECIPE.md`.
 - A Skip with the crank's row open and the arm outside `CRANK_HOME`: the row does not go to closing on that step. The arm turns on in the run's direction (`skipHome`: its own speed, never under `SKIP_HOME.least` rad a second, falling to it over the last `SKIP_HOME.soft` rad) to the arc's near end, and the row goes to closing on the first step the arm is in the arc (`crankHome`). At most 98 steps. Everything else of the Skip is as it was, and the film has no Skip.
+
+## Change note 002 (items 6, 12, 13, 14)
+
+The full notes, with every number and the tests that changed, are in `pipeline/change002/step2.md`. What a reader of this folder has to know:
+
+- One field at a time. `field` is the field that is up (0 to 3), `count` how many are done, `fields()` reports `{ done, total: 3 }` to the shell's rail. Every row is laid out at the same place (`rowY()`, `trayY()` take no row); `-here` states say which are drawn, and a slide moves the leaving and the coming field by `SLIDE.far`.
+- The stage is the tray: `FW` by `TRAY_H` (792 by 372). The machines stand in it at their built size.
+- The dial and its fling are untouched but for `DIAL.cx`, `DIAL.cy`. `pipeline/change002/step2-fling.mjs` records and compares the fling.
+- The date is typed (`stepBirth`, keys from `io.pointer.key`), held to the reels' strips by `ownDate`, and the reels are stopped by the visitor (`stopReel`). `SLOT.speed` are legends a second; `reelWindow(r)` is the time one legend is the nearest. The film's stops are in `FILM` of `script.ts`.
+- The crank's level is driven by the crank's own turning (`RUN`), so one can never run without the other.
+- The lowest `BAND` (150) page px hold nothing of the stages: the shell's spoken words go there.
