@@ -10,10 +10,10 @@ import { ARENA, PAGE, PANES, PILLARS, SEAMS, paneBox } from './layout'
 // far: the half width of the band downrange where it leaves the page. net: the size of a plate of the cracked crust, px. words: the box, from the middle of the burn, that the fight keeps clear for the words over the button; no chip lands in it.
 // seconds: how long the blast burns when the view does not say (the fight's SHOUT.gone - SHOUT.fire). chips: the bits of ceramic thrown out, at the high level.
 // furrow: the bed the blast ploughs along its line and the lip of crust it throws up on either side. lip: how far from the middle of the line the top of a lip lies, px, and what the half width there adds to it. crown: the half width of a lip, px, and what the half width there adds to it.
-// crumb: the size of one crumb of a lip, px. gone: the share of the crumbs that are missing. ash: how much paler than the black the face of a crumb is. wander: how far a lip strays from its line, px. shelf: how deep the ground has sunk at the foot of a lip, of 1. deep: how deep the bed is.
-// slope: px outside a lip over which the ground comes back up. pale: how much of its soot the bed has lost. web: the size of a plate of the bed between its glowing cracks, px. hair: the half width of such a crack, px. glow: px from the middle line at which the cracks have lost most of their glow, and what the half width there adds to it.
-// core: px from the middle of the burn between which the furrow dies away. relief: how strongly the ground's shader bends its light by all this.
-export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 140, long: 1.7, far: 14, net: 17, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 }, furrow: { lip: [8, 0.5], crown: [3, 0.1], crumb: 4.5, gone: 0.3, ash: 0.34, wander: 11, shelf: 0.55, deep: 1, slope: 22, pale: 0.16, web: 14, hair: 0.7, glow: [3, 0.13], core: [84, 124], relief: 0.6 } }
+// crumb: the sizes of the small and of the large crumbs of a lip, px. stray: how far a crumb is pushed out of its row, px. gone: the share of the crumbs that are missing. ash: how much paler than the black the face of a crumb is. wander: how far a lip strays from its line, px.
+// shelf: how deep the ground has sunk at the foot of a lip, of 1. deep: how deep the bed is. slope: px outside a lip over which the ground comes back up. pale: how much of its soot the bed has lost. web: the size of a plate of the bed between its cracks, px. hair: the half width of such a crack, px.
+// glow: the share of the bed's half width, from the middle line, within which its cracks glow. piece: how strongly a lit crack glows between two knots, of 1. knot: the size of the bright knot where lit cracks meet, px. few: how strongly the few lit pieces outside that glow. core: px from the middle of the burn between which the furrow dies away. relief: how strongly the ground's shader bends its light by all this.
+export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 140, long: 1.7, far: 14, net: 17, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 }, furrow: { lip: [8, 0.5], crown: [3.4, 0.11], crumb: [5, 11.5], stray: 13, gone: 0.42, ash: 0.5, wander: 11, shelf: 0.55, deep: 1, slope: 22, pale: 0.16, web: 14, hair: 0.45, glow: 0.36, piece: 0.58, knot: 2.1, few: 0.5, core: [84, 124], relief: 0.6 } }
 
 // The line of the finishing blast as the view gives it: the arrow's centre and the place the boss fell.
 export interface BlastLine { x0: number; y0: number; x1: number; y1: number }
@@ -113,6 +113,21 @@ export function crust(x: number, y: number, seed: number): { crack: number; plat
   return { crack: (d2 - d1) / 2, plate: own }
 }
 
+// A net of cells of one size: how near a place is to the nearest line between two cells, px, how near to the nearest point where three cells meet, px, and a number from 0 to 1 that is the cell's own.
+function cells(x: number, y: number, seed: number, size: number): { crack: number; knot: number; plate: number } {
+  const cx = Math.floor(x / size), cy = Math.floor(y / size)
+  let d1 = 1e9, d2 = 1e9, d3 = 1e9, own = 0
+  for (let j = -1; j <= 1; j++) {
+    for (let i = -1; i <= 1; i++) {
+      const gx = cx + i, gy = cy + j
+      const tag = (gx * 73856093) ^ (gy * 19349663)
+      const d = Math.hypot(x - (gx + 0.1 + 0.8 * rnd(seed, 473, tag)) * size, y - (gy + 0.1 + 0.8 * rnd(seed, 474, tag)) * size)
+      if (d < d1) { d3 = d2; d2 = d1; d1 = d; own = rnd(seed, 475, tag) } else if (d < d2) { d3 = d2; d2 = d } else if (d < d3) d3 = d
+    }
+  }
+  return { crack: (d2 - d1) / 2, knot: (d3 - d1) / 2, plate: own }
+}
+
 // The part of the picture the scorch can reach: columns i0 to i1, rows j0 to j1.
 export function scorchReach(s: Scorch, W: number, H: number): { i0: number; i1: number; j0: number; j1: number } {
   const fx = PAGE.w / W, fy = PAGE.h / H
@@ -180,36 +195,52 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
       const q = Math.hypot(Math.min(0, e.along), e.off) + F.wander * (mid - 0.5 + 0.6 * (blot - 0.5))
       const top = F.lip[0]! + F.lip[1]! * e.wide
       const crown = F.crown[0]! + F.crown[1]! * e.wide
-      // A lip is a heap of separate crumbs: each a mound with its own height and a groove round its foot, and some are missing.
-      const kc = SCORCH.net / F.crumb
-      const heap = crust((x + 5 * (blot - 0.5)) * kc, (y + 5 * (fine - 0.5)) * kc, seed + 7)
-      const mound = heap.plate < F.gone ? 0 : step(0, F.crumb * 0.3, heap.crack / kc) * (0.5 + 0.5 * heap.plate)
       const ridge = open * (0.45 + 0.55 * step(0.36, 0.54, fbm(x / 9 + 3.3, y / 9, seed + 55))) * Math.exp(-(((q - top) / crown) ** 2))
-      const lip = Math.min(1, 1.5 * ridge) * mound
+      const heap = Math.min(1, 1.5 * ridge)
+      // A lip is a heap of separate crumbs, small ones and large ones, pushed out of any row: each a mound with its own height and a dark foot, and many are missing.
+      let lip = 0, foot = 0
+      if (heap > 0.004) {
+        const wx = x + F.stray * (mid - 0.5) + 5 * (blot - 0.5), wy = y + F.stray * (fbm(x / 24 + 4.1, y / 24, seed + 58) - 0.5) + 5 * (fine - 0.5)
+        const large = step(0.45, 0.55, fbm(x / 15 + 1.9, y / 15, seed + 57))
+        for (let n = 0; n < 2; n++) {
+          const share = n === 0 ? 1 - large : large
+          if (share <= 0) continue
+          const size = F.crumb[n]!
+          const c = cells(wx + 40 * n, wy, seed + 7 + n, size)
+          if (c.plate < F.gone) continue
+          const up = step(0, size * 0.3, c.crack)
+          lip += share * heap * up * (0.5 + 0.5 * (c.plate - F.gone) / (1 - F.gone))
+          foot += share * heap * (1 - up)
+        }
+      }
       const bed = open * step(top - crown * 0.6, top - crown * 2, q)
       const sunk = open * F.shelf * step(top + crown + F.slope, top + crown, q) * (1 - lip)
       depth = Math.min(1, depth + sunk + (F.deep * (0.85 + 0.15 * mid) - sunk) * bed)
-      soot = Math.max(soot * (1 - F.pale * bed * (0.6 + 0.4 * blot)), 0.96 * Math.min(1, 1.5 * ridge) * (1 - mound)) * (1 - F.ash * lip)
+      // The bed is cracked into a net of its own: fine dark lines, of which those near the middle line glow.
+      let hair = 0, knot = 0
+      if (bed > 0.004) {
+        const net = cells(x + 14 * (mid - 0.5) + 31.7, y + 14 * (blot - 0.5), seed + 9, F.web)
+        hair = bed * step(F.hair, F.hair * 0.3, net.crack)
+        knot = bed * step(F.knot, F.knot * 0.4, net.knot)
+        depth = Math.min(1, depth + 0.05 * hair)
+      }
+      soot = Math.max(soot * (1 - F.pale * bed * (0.6 + 0.4 * blot)), 0.96 * foot, 0.9 * hair) * (1 - F.ash * lip)
       // Embers: at the rim of the burn, down the middle of the trench, and a few strays in the black. Small and orange: coals in soot, not the light of a broken slab.
       let ember = 0
       if (e.px < 4) {
         const rim = Math.exp(-(((e.pxB + 20) / 16) ** 2))
-        // The cracks of the crust glow near the two edges of the trench, from the hands to the burn, and on along the band downrange: short straight pieces, no line of their own.
-        const edges = e.pxB > 6 ? Math.exp(-(((e.pxL + 8) / 5) ** 2)) * split * step(0.02, 0.1, e.t) : 0
         const patch = step(0.36, 0.6, noise(x / 64 + s.tag * 3.7, y / 64 + 5.5, seed + 50))
         const where = Math.max(rim * (0.3 + 0.7 * patch), 0.12 * step(-10, -40, e.px) * patch)
         const blob = fbm(x / 6 + 50, y / 6, seed + 51)
         ember = 0.62 * step(0.57, 0.68, blob) * (0.3 + 0.7 * step(0.4, 0.6, fine)) * where
-        ember = Math.max(ember, 0.6 * edges * step(0.46, 0.6, blob) * (0.55 + 0.45 * step(0.35, 0.6, fine)))
-        // The bed is cracked into a net of its own, and its cracks glow: brightest along the middle line, fading toward the lips, and not every one of them.
-        const kw = SCORCH.net / F.web
-        const net = crust((x + 14 * (mid - 0.5)) * kw + 31.7, (y + 14 * (blot - 0.5)) * kw, seed + 9)
-        const hair = step(F.hair, F.hair * 0.3, net.crack / kw)
-        const near = Math.exp(-((q / (F.glow[0]! + F.glow[1]! * e.wide)) ** 2))
-        const lit = step(0.49, 0.63, fbm(x / 13 + 7.7, y / 13, seed + 56) + 0.22 * near)
-        ember = Math.max(ember, bed * hair * (0.06 + 0.94 * near) * lit * step(0.02, 0.1, e.t + Math.max(0, e.ba)))
-        // And the cracks of the crust glow in places near the rim.
-        ember = Math.max(ember, 0.66 * split * step(0.42, 0.58, blot) * Math.max(rim, 0.12 * patch) * step(2, -14, e.px))
+        // Outside the middle of the bed only a crack piece here and there glows, short and dim: near the two edges of the trench, near the rim of the burn, and in the bed toward its lips.
+        const few = F.few * step(0.6, 0.68, fbm(x / 8 + 2.2, y / 8, seed + 59))
+        const edges = e.pxB > 6 ? Math.exp(-(((e.pxL + 8) / 5) ** 2)) * step(0.02, 0.1, e.t) : 0
+        ember = Math.max(ember, few * split * Math.max(edges, step(0.42, 0.58, blot) * Math.max(rim, 0.12 * patch) * step(2, -14, e.px)), few * hair)
+        // Down the middle line the cracks of the bed glow, not every one of them: deep orange between the knots where they meet, and the knots bright.
+        const near = step(F.glow * 1.3, F.glow * 0.7, q / Math.max(4, top - crown)) * step(0.02, 0.1, e.t + Math.max(0, e.ba))
+        const lit = step(0.4, 0.48, fbm(x / 13 + 7.7, y / 13, seed + 56))
+        ember = Math.max(ember, near * lit * Math.max(F.piece * hair, knot))
       }
       if (soot < 0.012 && ember < 0.012) continue
       // When it burns: the front runs out along the line in the first part of the blast, and the black spreads from the middle to the rim for the rest of it.

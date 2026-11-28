@@ -41,13 +41,13 @@ export function wispShare(w: { x: number; y: number; size: number }, fig: { x: n
   return k * k * (3 - 2 * k)
 }
 
-// The wisps over a scorch at a time: thin columns that stand over the burn and the trench. `strong` is 0 to 1; `fig` is where the figure of the last moment stands, or null.
+// The wisps over a scorch at a time: thin columns that stand over the burn and on the middle line of the trench. `strong` is 0 to 1; `fig` is where the figure of the last moment stands, or null.
 export function wispsOf(s: Scorch, seed: number, t: number, strong: number, fig: { x: number; y: number } | null, each: (w: Wisp) => void): void {
   const n = Math.floor(SCORCH.smoke / COLUMNS)
   const w: Wisp = { x: 0, y: 0, z: 0, size: 0, turn: 0, thick: 0 }
   for (let c = 0; c < COLUMNS; c++) {
     const along = c < 2 ? s.at + (0.1 + 0.6 * rnd(seed, 460, c)) * SCORCH.burn : s.at * (0.2 + 0.2 * rnd(seed, 461, c))
-    const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 1.3 : SCORCH.half * 0.6)
+    const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 1.3 : SCORCH.half * 0.1)
     const x = s.sx + s.ux * along - s.uy * across, y = s.sy + s.uy * along + s.ux * across
     const period = 2.6 + 1.2 * rnd(seed, 463, c)
     for (let j = 0; j < n; j++) {
