@@ -494,7 +494,7 @@ describe('how the boss plays (change 002, item 15)', () => {
       expect(at('finish-charge').length, `seed ${seed}`).toBe(charges)
       expect(wide, `seed ${seed}`).toBeCloseTo(power, 2)
       if (LOOK1_ON) {
-        if (power === FINISH.small) expect(gap, `seed ${seed}`).toBeNull()
+        if (power === FINISH.small) expect(gap, `seed ${seed}`).toBeCloseTo(FIRE.ahead, 2)
         else if (name.startsWith('who holds')) expect(gap, `seed ${seed}`).toBeCloseTo(Math.min(FIRE.ahead, CAMERA.roundLive), 2)
         else expect(gap ?? -1, `seed ${seed}`).toBeGreaterThanOrEqual(0)
       }
@@ -856,9 +856,8 @@ describe('how the boss plays (change 002, item 15)', () => {
         }
       }
       expect(beamAt, name).toBeGreaterThan(0)
-      const lead = name === 'plain click' ? FIRE.lead : 0
-      expect(beamAt - fire, name).toBeGreaterThanOrEqual(lead - 2 / stepHz)
-      expect(beamAt - fire, name).toBeLessThan(lead + 0.05)
+      expect(beamAt - fire, name).toBeGreaterThanOrEqual(0)
+      expect(beamAt - fire, name).toBeLessThan(0.05)
       expect(burnAt, name).toBeGreaterThanOrEqual(beamAt)
       expect(burnAt - beamAt, name).toBeLessThan(0.2)
     }

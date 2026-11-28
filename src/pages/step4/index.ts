@@ -722,7 +722,7 @@ export function makePage(): PageLogic {
             if (s.due < 0 || !s.own) s.charge += dt
             if (s.mode === 'film' ? u >= SHOUT.fire - FIRE.ahead : !kept && !s.own && !down && s.charge >= whole - FIRE.ahead) stamp('thrust')
             if (s.due >= 0) {
-              if (u >= s.due - FIRE.ahead && level(s.charge) > FINISH.small) stamp('thrust')
+              if (u >= s.due - FIRE.ahead) stamp('thrust')
               if (u >= s.due) fire()
             } else if (!s.own && down) s.own = true
             else if (!kept) {
