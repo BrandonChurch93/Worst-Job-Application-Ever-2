@@ -173,7 +173,47 @@ Red by this stage (MEASURED, 18 tests; the reason is STATED from reading each te
 - tests/step1.test.ts "lands the reset at least 1.4 s before the page turns": reads up to 32 s; the turn is at 37 s with the patch, and the hold is 5.5 s.
 - tests/step1.test.ts "the Continue button is drawn light while the form is empty at rest and dark once the form can be sent": asks the dark button at 30.2 s; it is dark from 31.5 s. Pins the old second.
 - tests/cursor-act.test.ts "in the film of step 1 the arms are in the tug and nowhere else": pins the old seconds of the arms.
-- tests/polish-keys2.test.ts "holds the same events at the same frames in the film": 284 events against 268; the new events and the later frames.
+- tests/polish-keys2.test.ts "holds the same events at the same frames in the film": 283 events against 268; the new events and the later frames.
 - tests/polish-tug3.test.ts "the arrow in the tug of the film is as it was": a sum over the frames' numbers and poses; the frames are 90 later and the first 24 differ as measured above.
 - tests/polish-tug3.test.ts "moves no event of the tug" and "turns no more than the named degrees in a frame ...: visitor"; tests/polish-tug2.test.ts "hauls the arrow in fastest in the first frames and ends with a stop" for the visitor and for the keen bot; tests/polish-tug.test.ts "reaches before it grabs ...": the live take, item 1 of "What is off".
 - tests/polish-tug-strips.test.ts is green since the mend of the strips (item 3 of "What is off"): 5 passed, 1 skipped.
+
+## The 31 red tests, one table (for pinning at the merge)
+
+MEASURED from the run of `npm test` at 00:30Z to 00:34Z on the tree of 5e171b29 with the config patch (unit 37.5 s). "Reads now" is what the failing line received; "asks" is what it expected. Causes: OLD is red at a5508ada before this work; UNIT is red only by the unit's growth of 5.5 s; SHIFT is the stage's 1.5 s later bite and the 5.5 s hold; LIVE is the one hold on the live site. The step 1 helper's cut of 2.1 s (eca20421) will move every film second and frame below again; the numbers hold for this tree only.
+
+| # | File | Test | Cause | Reads now | Asks |
+|---|------|------|-------|-----------|------|
+| 1 | tests/b-shell-chrome.test.ts | leaves every page of the build as it was: none says anything of the header | OLD | step1: a list of 24 that differs | the old list of 24 |
+| 2 | tests/b-shell-fields.test.ts | leaves every page of the build as it was: none reports fields | OLD | step1 has a `fields` function | undefined |
+| 3 | tests/b-shell-fields.test.ts | draws a page with a rail that reports nothing, null, or no fields at all as 0 of 1 | OLD | another rail string for null | the old string |
+| 4 | tests/pack-site.test.ts | R4: a key of the page keyboard at every step | OLD | false | true |
+| 5 | tests/polish-hand.test.ts | turn 1: while the tray under the arrow hops on the seat | OLD | 0 | more than 8 |
+| 6 | tests/site-finish.test.ts | a keen hand through this driver finishes as the keen bot does | OLD (the gag step1.lastName is listed and not built) | 36 gags | 37 |
+| 7 | tests/cut-of-build.test.ts | the files of cut/ are, byte for byte, what this build gives | OLD (cut/ not run on the branch) | 3 files differ | run `npm run cut` |
+| 8 | tests/cut-of-build.test.ts | the plan a mix is laid by is read from the committed cut list | OLD (same) | the build gives 940 events and 20 lines; event 36 is step at frame 903 | cut/CUTLIST.json: 977 events, event 36 at frame 905 |
+| 9 | tests/film-cut.test.ts | matches cut/CUTLIST.json in its frame counts | UNIT | 9510 frames in the build | 9180 on disk |
+| 10 | tests/pack-hit.test.ts | gives the machine its own sheets | UNIT | frame 4350 | 4158 |
+| 11 | tests/polish-sharp-shadow.test.ts | had the shadow on in the film while the ball was in the tube | UNIT | frames 4595, 4866 | 4265, 4536 |
+| 12 | tests/polish-turn2.test.ts | turns five pages by the clock | UNIT | 13.5, 51, 72, 114, 146 s | 13.5, 45.5, 66.5, 108.5, 140.5 s |
+| 13 | tests/polish-turn2.test.ts | holds every value of the stage equal to before on every step from the seat on | UNIT | frame pairs 3061/3089, 4321/4349, 6841/6869, 8761/8789 (the first, 811/839, as before) | 2731/2759, 3991/4019, 6511/6539, 8431/8459 |
+| 14 | tests/step1-script.test.ts | keeps the cursor, the hands and the slot well inside the frame all through the tug | SHIFT (counts up to a fixed second) | 882 steps | more than 1080 |
+| 15 | tests/step1-script.test.ts | empties the form a field at a time before it says the resume was received | SHIFT (reads up to 31 s; empty at 31.5 s) | '11', '10' | '11', '10', '00' |
+| 16 | tests/step1-script.test.ts | hangs strips of paper under the hood from the first bite ... frames them at the key picture | SHIFT (reads at 25.125 s; that moment is at 26.625 s) | 0.104 | more than 0.15 |
+| 17 | tests/step1-script.test.ts | moves straight in to one frame 590 px of page wide ... stands dead still there from before the first bite | SHIFT (the bite is at 23.525 s) | camera stands from 23.3 s | before 22.03 s |
+| 18 | tests/step1-script.test.ts | draws the upload glyph above the prompt of the drop zone until the resume is received | SHIFT (asks the message by 31 s; it shows at 31.5 s) | false | true |
+| 19 | tests/step1.test.ts | shows no word that is not a key, at any moment of the film or of a live run | SHIFT (reads the film up to 31.4 s) | step1.resume.received not seen | seen |
+| 20 | tests/step1.test.ts | shows arms only in the tug, never takes the pointer for long, and hands a whole cursor over | SHIFT (asks a whole cursor at 31.45 s; whole at 31.685 s) | arms at 31.45 s: true | false |
+| 21 | tests/step1.test.ts | fights the tug in every second | SHIFT (counts up to 28.2 s) | 1122 steps | more than 1200 |
+| 22 | tests/step1.test.ts | lands the reset at least 1.4 s before the page turns | SHIFT (reads up to 32 s; the turn is at 37 s, the hold 5.5 s) | -32.5 | at least 1.4 |
+| 23 | tests/step1.test.ts | the Continue button is drawn light while the form is empty at rest and dark once the form can be sent | SHIFT (asks the dark button at 30.2 s; dark from 31.5 s) | 'metal', 'ink' | 'accent', 'inkLight' |
+| 24 | tests/cursor-act.test.ts | in the film of step 1 the arms are in the tug and nowhere else | SHIFT (pins the old seconds of the arms; arms from 23.525 s to 31.685 s) | true | false |
+| 25 | tests/polish-keys2.test.ts | holds the same events at the same frames in the film | SHIFT and the new events | 283 events | 268 |
+| 26 | tests/polish-tug3.test.ts | the arrow in the tug of the film is as it was | SHIFT (frames 90 later; the first 24 poses differ) | sum 3c7f089aa9df | 3fd04e799d7e |
+| 27 | tests/polish-tug3.test.ts | the arrow at a strain of the paper, live: moves no event of the tug | LIVE | strains at frames 139 and 356 after the bite; the other nine lines as before | 138 and 355 |
+| 28 | tests/polish-tug3.test.ts | turns no more than the named degrees in a frame ...: visitor | LIVE | frame 1915: 5.64, 1928: 11.53, 1929: 6.04 degrees | none over the named degrees |
+| 29 | tests/polish-tug2.test.ts | the page takes the arrow from the visitor: hauls the arrow in fastest in the first frames and ends with a stop | LIVE | fastest frame of the haul is frame 8 (0.4, 2.6, 2.2, 2.8, 2.1, 3.1, 2.7, 0.9, 3.7, 1.1 px a frame) | frame 2 or sooner |
+| 30 | tests/polish-tug2.test.ts | the page takes the arrow from the keen: hauls the arrow in fastest in the first frames and ends with a stop | LIVE | fastest frame is frame 3 (3.2, 2.8, 3.4, 3.5, 3.2, 2.9, 2.5, 2.0, 1.6, -2.0 px a frame) | frame 2 or sooner |
+| 31 | tests/polish-tug.test.ts | reaches before it grabs: ... the body leans toward the paper as they go | LIVE | lean 0.0369 rad (hands close 0.079 s after the bite; arms 0.18, 0.47, 0.73, 0.91) | more than 0.05 |
+
+Film moments of this tree to pin from (MEASURED, unit seconds, steps of 240 a second): browse-press step 5004 (20.850 s), folder-open 5029 (20.954), file-pick 21.500, slot-in 22.075, wind-gust 5357 (22.321), bite with shredder and arms-out 5646 (23.525), resume-received 7560 (31.500), page turn 8880 (37.000). Live, keen bot: wind 18.975 s, bite 20.333 s, the hold after the loss 28.733 to 32.971 s.
