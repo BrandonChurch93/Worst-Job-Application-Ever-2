@@ -7,6 +7,7 @@ import * as configModule from '../src/config'
 import { endsSentence, spoken } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
 import { keyPage, standIns } from '../src/audio/standin'
+import { LINE7 } from '../src/boss/tune'
 import { config } from '../src/config'
 import { visit } from '../tools/lib/sound-visit.mjs'
 
@@ -139,7 +140,7 @@ describe('a whole visit of the live site through the stage and the sound engine'
   })
 
   for (const bot of ['keen', 'clumsy']) {
-    it(`on the ${bot} visit says the two parts after the first part of line 7 whole, has nothing of line 7 taken back by the turrets, and has the music, the gold and the lock of the page on their words`, async () => {
+    it(`on the ${bot} visit says the two parts after the first part of line 7 whole, has nothing of line 7 taken back by the turrets, has the music and the gold of the page on their words, and the lock where the page's rise ends`, async () => {
       const calls: Call[] = []
       const v: Visit = await visit(load, config, bot, config.seed, calls as never, true)
       const at = (name: string) => calls.filter((x) => x.event?.name === name && x.event.page === 'step4').map((x) => x.at)
@@ -158,7 +159,9 @@ describe('a whole visit of the live site through the stage and the sound engine'
       expect(Math.abs(at('boss-music')[0]! - (one + script.get('boss.unfold.1')!.phrases.at(-1)!.from))).toBeLessThanOrEqual(frame + 0.006)
       expect(at('power-up')[0]! - two).toBeGreaterThanOrEqual(-0.006)
       expect(at('turret-rise').at(-1)!).toBeGreaterThan(two)
-      expect(Math.abs(at('turret-lock').at(-1)! - (two + script.get('boss.unfold.2')!.seconds))).toBeLessThanOrEqual(frame + 0.006)
+      // Since b6ffb6e6 the lock is not on the last word of part 2: it comes LINE7.rise after part 2 starts, when the gold has been held and the figure lies down again.
+      expect(LINE7.rise).toBeGreaterThan(script.get('boss.unfold.2')!.seconds)
+      expect(Math.abs(at('turret-lock').at(-1)! - (two + LINE7.rise))).toBeLessThanOrEqual(frame + 0.006)
     })
   }
 
@@ -187,12 +190,22 @@ describe('a whole visit of the live site through the stage and the sound engine'
     }
 
     it(`on the ${bot} visit with the press of Decision made in a later phrase of line 8, ends line 8 at the pause of that phrase and turns the page one gap after it, with line 9 on the turn`, async () => {
-      const calls: Call[] = []
-      const v: Visit = await visit(load, config, bot, config.seed, calls as never, false, { page: 'step5', line: 'line.decision.letter.0', seconds: 9 } as never)
-      const turn = calls.find((x) => x.event?.name === 'page-turn' && x.event.page === 'step5')!.at
-      const eight = v.voices.filter((x) => x.id === 'line.decision.letter.0')
-      const pauses = script.get('decision.letter.0')!.phrases.map((p) => p.to)
-      const pause = pauses.find((t) => t >= 9)!
+      // The old test rested until 9 s of a take that is 6 s long today. The visitor now rests until a middle phrase of the take starts; where the press then falls is read from the visit, and the first visit is taken whose press lies after the first pause, before the last phrase and further than the voice's fade from the pause it is in.
+      const phrases = script.get('decision.letter.0')!.phrases
+      const pauses = phrases.map((p) => p.to)
+      let found: { v: Visit; turn: number; eight: Visit['voices']; pause: number } | undefined
+      for (const rest of phrases.slice(1, -1)) {
+        const calls: Call[] = []
+        const v: Visit = await visit(load, config, bot, config.seed, calls as never, false, { page: 'step5', line: 'line.decision.letter.0', seconds: rest.from } as never)
+        const eight = v.voices.filter((x) => x.id === 'line.decision.letter.0')
+        const press = calls.find((x) => x.event?.name === 'button-press' && x.event.page === 'step5')!.at - eight[0]!.start
+        const pause = pauses.find((t) => t >= press)
+        if (pause === undefined || press <= pauses[0]! || pause >= pauses.at(-1)! || pause - press <= LIVE.voiceFadeSeconds) continue
+        found = { v, turn: calls.find((x) => x.event?.name === 'page-turn' && x.event.page === 'step5')!.at, eight, pause }
+        break
+      }
+      expect(found, 'no rest puts the press in a middle phrase of line 8').toBeDefined()
+      const { v, turn, eight, pause } = found!
       expect(pause).toBeLessThan(pauses.at(-1)!)
       expect(eight.length).toBe(1)
       expect(Math.abs(eight[0]!.stop! - (eight[0]!.start + pause))).toBeLessThanOrEqual(0.006)
