@@ -118,6 +118,8 @@ const JOBS = {
   small: (page) => { const f = M.arms + SMALL.after; const e = Math.round(SMALL.long * FPS); const ts = (args.includes('--small-end') ? [11, 12, 13, 14, e - 12, e - 8, e - 5, e - 3, e - 2, e - 1, e, e + 12] : [5, 6, 7, 8, 9, 10, 18, 19, 20, 21, 30, 45]).map((n) => f + n / FPS); return frames(page, args.includes('--small-end') ? 'smallend' : 'small', ts, small, { x: 440, y: 400, w: 640, h: 340 }) },
   // The charge to the beam: every frame from 0.5 s before the beam leaves the hands to 0.2 s after.
   thrust: (page) => { const b = M.fire + 0.2; const ts = []; for (let n = -30; n <= 12; n++) ts.push(b + n / FPS); return frames(page, 'thrust', ts, finish, { x: ARROW.x - 110, y: ARROW.y - 60, w: 300, h: 220 }) },
+  // The visitor lets go of a charged shot: the thrust mark is the fire mark's own time. Every frame from 2 before the release to 15 after.
+  live: (page) => { const ts = []; for (let n = -2; n <= 15; n++) ts.push(M.fire + n / FPS); return frames(page, 'live', ts, (t) => { const f = finish(t); f.input.marks = { ...f.input.marks, thrust: M.fire }; return f }, { x: ARROW.x - 110, y: ARROW.y - 60, w: 300, h: 220 }) },
   // Eight frames of the fist strip (its frames 0, 3, 6, 9, 12, 16, 20, 25) and six frames in a row of the small shot, from the frame before the beam leaves the hands.
   fistfew: (page) => { const k = finish(M.walk + 1).input.marks.fist; const all = row(k - 2 / FPS, 26); return frames(page, 'fistfew', [0, 3, 6, 9, 12, 16, 20, 25].map((n) => all[n]), finish, kneelBox()) },
   smallrow: (page) => { const f = M.arms + SMALL.after; return frames(page, 'smallrow', [11, 12, 13, 14, 15, 16, 17, 18].map((n) => f + n / FPS), small, { x: 440, y: 400, w: 640, h: 340 }) },

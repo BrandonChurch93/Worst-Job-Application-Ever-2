@@ -57,9 +57,33 @@ export const FILM = {
   read: flat + SAID[3],
   hop: flat + SAID[4] - 1,
   sag: flat + SAID[4],
+  // The beaten walk to the button starts here.
+  toButton: press - 1.02,
   press,
   leave: press + AT.hold
 } as const
+
+// The film only: a slow push-in under the narrator's line, through the page's `view()`. From the arrow's landing the view goes, eased, from the whole page to `zoom` times closer, centred on `at` (page px),
+// and is there as "to move forward" starts. It holds through the puff, the hop and the sag (`hold` s after the sag is cued), and is back at the whole page as the walk to the button starts, so the press and the turn are seen whole.
+// `at` and `zoom` hold the REJECTED mark, the block at rest and the arrow where it lies and acts, with the lower edge of the view on the lower edge of the page. x stays 960, so the caption, which lies still on the screen, passes over as little of the metrics panel as it can on the way in. 1.5 is the most asked for.
+// The caption is not in the view: the film lays it over the finished frame at a fixed place (y 202 to 264, centred on x 960), so the view does not move or scale it; `clear` is the screen y the three things stay below.
+export const VIEW = { zoom: 1.5, at: [960, 720], in: [AT.decide + AT.fling[1], flat + SAID[3]], hold: 0.2, out: [flat + SAID[4] + 0.2, press - 1.02], clear: 264 } as const
+
+const ease = (u: number): number => {
+  const k = Math.min(1, Math.max(0, u))
+  return k * k * (3 - 2 * k)
+}
+// How far in the view is at a second of the unit: 0 the whole page, 1 the closer view.
+export const pushAt = (time: number): number => (time <= VIEW.in[0] || time >= VIEW.out[1] ? 0 : time < VIEW.in[1] ? ease((time - VIEW.in[0]) / (VIEW.in[1] - VIEW.in[0])) : time <= VIEW.out[0] ? 1 : 1 - ease((time - VIEW.out[0]) / (VIEW.out[1] - VIEW.out[0])))
+// The part of the page the view shows at that second, in page px: null when it is the whole page.
+export function windowAt(time: number): { x: number; y: number; w: number; h: number } | null {
+  const u = pushAt(time)
+  if (u <= 0) return null
+  const zoom = 1 + (VIEW.zoom - 1) * u
+  const cx = 960 + (VIEW.at[0] - 960) * u
+  const cy = 540 + (VIEW.at[1] - 540) * u
+  return { x: cx - 960 / zoom, y: cy - 540 / zoom, w: 1920 / zoom, h: 1080 / zoom }
+}
 
 // The live site. A press while the line is being said is seen at once; the page then holds until the phrase being said has ended (the next phrase's start, or the line's end) and the gap between two lines, and never less than `AT.hold`.
 // `sinceHit` is the seconds from the stamp's hit to the press; under 0 means no line was started. A press after the line has ended holds `AT.hold`, as before.
