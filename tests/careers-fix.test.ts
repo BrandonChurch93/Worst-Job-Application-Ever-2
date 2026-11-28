@@ -1,115 +1,195 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
-import { careersLayout, FIRST_CARDS, perkStates, TICKER } from '../src/pages/marketing/layout'
-import { edgeLight, GLASS, troughGeometry } from '../src/pages/marketing/real/perk-cards'
-import { glassHeights, PICTURE } from '../src/pages/marketing/real/glass-picture'
-import { brushedHeights, BRUSHED } from '../src/pages/marketing/real/medal-picture'
-import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
-import type { DrawList } from '../src/stage/types'
-import type { LayoutNode } from '../src/copy'
+import { FLIP_SECONDS, LEAVE } from '../src/pages/marketing'
+import { careersLayout, perkStates, T, TICKER, WIDTH } from '../src/pages/marketing/layout'
+import { OPENING } from '../src/pages/marketing/script'
+import { block } from '../src/shell/metrics'
+import { words } from '../src/shell/words'
+import { fitPicture } from '../src/core/levelFit'
+import { BotDriver } from '../src/stage/bots'
+import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, type Driver, type DriverView } from '../src/stage/stage'
+import type { DrawList, Pointer, Shape } from '../src/stage/types'
 
+const seconds = (n: number): number => Math.round(n * stepHz)
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('marketing'), pages, driver: new ScriptDriver(), film: filmOptions('marketing') })
-const drawn = (s: Stage): DrawList => {
-  const list: DrawList = []
-  s.page.draw(list)
-  return list
-}
-const apply = config.film.beats.find((b) => b.id === 'marketing.apply')!
+const live = (driver: Driver): Stage => new Stage({ mode: 'live', flow: liveFlow(), pages, driver, seed: config.seed })
 
-describe('the careers page after critic round 7', () => {
-  it('shows whole items in the middle of the ticker at rest and at the key, with the same clear glass on both sides of them', () => {
+function drawn(stage: Stage): Shape[] {
+  const list: DrawList = []
+  stage.page.draw(list)
+  return list as Shape[]
+}
+
+function boxOf(id: string): number[] {
+  let found: number[] | null = null
+  const walk = (n: { id: string; box: number[]; children?: unknown[] }): void => {
+    if (n.id === id) found = n.box
+    for (const c of (n.children ?? []) as { id: string; box: number[] }[]) walk(c)
+  }
+  walk(careersLayout().layout)
+  return found!
+}
+
+// The mouse of a visitor who has wheeled down to the cards: outside the first card, into it at `enter`, out of it at `leave`.
+function mouse(enter: number, leave: number): Driver {
+  const card = boxOf('perk-0')
+  const to = card[1]! - 240
+  return {
+    name: 'bot',
+    input(v: DriverView): Pointer {
+      const wheel = v.scroll < to - 1 && v.step % 4 === 0 ? { wheel: Math.min(160, to - v.scroll) } : {}
+      const on = v.time >= enter && v.time < leave
+      return { x: on ? card[0]! + 180 : card[0]! - 120, y: card[1]! + 160 - v.scroll, down: false, ...wheel }
+    }
+  }
+}
+
+describe('fault A: a card flips back when the pointer leaves', () => {
+  it('turns to its back with the fine print large under the arrow, and back to its face when the arrow leaves', () => {
+    const s = live(mouse(4, 6))
+    const st = perkStates(0)
+    s.advance(seconds(3.9))
+    expect(s.page.states()).toContain(st.shut)
+    expect(s.events.filter((e) => e.name === 'card-flip').length).toBe(0)
+    s.advance(seconds(1.9))
+    expect(s.page.states()).toContain(st.open)
+    expect(s.events.filter((e) => e.name === 'card-flip').length).toBe(1)
+    expect(s.events.filter((e) => e.name === 'card-flip-back').length).toBe(0)
+    const back = drawn(s).filter((d) => d.kind === 'text' && d.id.startsWith('perk-0-'))
+    expect(back.map((d) => d.id)).toEqual(['perk-0-fine-large'])
+    expect(back[0]!.words).toBe('copy:marketing.perks.items.0.finePrint')
+    expect(back[0]!.type!.px).toBeGreaterThan(T.small.px + 6)
+    s.advance(seconds(2.2))
+    expect(s.page.states()).toContain(st.shut)
+    expect(s.events.filter((e) => e.name === 'card-flip').length).toBe(1)
+    expect(s.events.filter((e) => e.name === 'card-flip-back').length).toBe(1)
+    const face = drawn(s).filter((d) => d.kind === 'text' && d.id.startsWith('perk-0-'))
+    expect(face.map((d) => d.id)).toEqual(['perk-0-title', 'perk-0-promise', 'perk-0-fine'])
+    for (const d of face) expect(d.v).toBeUndefined()
+    expect(drawn(s).find((d) => d.id === 'perk-0')!.v).toBeUndefined()
+  })
+
+  it('takes the time of one flip each way, shows one side at a time, and never leaves its place', () => {
+    const s = live(mouse(4, 6))
+    const card = boxOf('perk-0')
+    const seen: number[] = []
+    let from = 0
+    let to = 0
+    for (let i = 0; i < seconds(8); i++) {
+      s.advance(1)
+      const slab = drawn(s).find((d) => d.id === 'perk-0')!
+      expect([slab.x, slab.y, slab.w, slab.h]).toEqual(card)
+      const c = slab.v?.[0] ?? 1
+      seen.push(c)
+      if (c < 1 && !from) from = i
+      if (c <= -1 && !to) to = i
+      const texts = drawn(s).filter((d) => d.kind === 'text' && d.id.startsWith('perk-0-'))
+      const large = texts.some((d) => d.id === 'perk-0-fine-large')
+      expect(large).toBe(c <= 0)
+      expect(texts.length).toBe(large ? 1 : 3)
+      for (const d of texts) {
+        expect(d.y).toBeGreaterThanOrEqual(card[1]! - 0.01)
+        expect(d.y + d.h).toBeLessThanOrEqual(card[1]! + card[3]! + 0.01)
+      }
+    }
+    expect((to - from + 1) / stepHz).toBeCloseTo(FLIP_SECONDS, 1)
+    expect(Math.min(...seen)).toBe(-1)
+    expect(seen[seen.length - 1]).toBe(1)
+    for (let i = 1; i < seen.length; i++) expect(Math.abs(seen[i]! - seen[i - 1]!)).toBeLessThan(0.12)
+  })
+
+  it('does not flutter at the edge: it goes back only when the arrow is clear of the card', () => {
+    const card = boxOf('perk-0')
+    const to = card[1]! - 240
+    const edge: Driver = {
+      name: 'bot',
+      input(v: DriverView): Pointer {
+        const wheel = v.scroll < to - 1 && v.step % 4 === 0 ? { wheel: Math.min(160, to - v.scroll) } : {}
+        const x = v.time < 4 ? card[0]! - 120 : v.time < 5 ? card[0]! + 30 : card[0]! - LEAVE + 6 + (v.step % 2) * 4
+        return { x, y: card[1]! + 160 - v.scroll, down: false, ...wheel }
+      }
+    }
+    const s = live(edge)
+    s.advance(seconds(9))
+    expect(s.events.filter((e) => e.name === 'card-flip').length).toBe(1)
+    expect(s.events.filter((e) => e.name === 'card-flip-back').length).toBe(0)
+  })
+
+  it('flips one card in the film, the one with the salary, and it goes back when the arrow leaves', () => {
     const s = film()
-    for (const at of [0, apply.from]) {
-      s.advance(Math.round(at * stepHz) - s.step)
-      const list = drawn(s)
-      const strip = list.find((d) => d.id === 'ticker-glass')!
-      const clearFrom = strip.x + strip.v![0]! + strip.v![1]!
-      const clearTo = strip.x + strip.w - strip.v![0]! - strip.v![1]!
-      const runs = list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-') && d.type?.cut !== true)
-      const inside = runs.filter((r) => r.x >= clearFrom - 0.01 && r.x + r.w <= clearTo + 0.01)
-      expect(inside.length, `whole items at ${at} s`).toBeGreaterThanOrEqual(3)
-      expect(inside.length, `every run in sight at ${at} s is whole`).toBe(runs.length)
-      const first = Math.min(...inside.map((r) => r.x))
-      const last = Math.max(...inside.map((r) => r.x + r.w))
-      expect(Math.abs(first - strip.x - (strip.x + strip.w - last)), `centred at ${at} s`).toBeLessThan(1)
-      const solidFrom = strip.x + strip.v![0]!
-      const solidTo = strip.x + strip.w - strip.v![0]!
-      for (const r of list.filter((d) => d.kind === 'text' && d.id.startsWith('ticker-') && d.type?.cut === true)) {
-        expect(r.x < solidFrom || r.x > solidTo, `${r.id} at ${at} s is under the solid frost`).toBe(true)
+    s.advance(seconds(9))
+    const flips = s.events.filter((e) => e.name === 'card-flip')
+    const backs = s.events.filter((e) => e.name === 'card-flip-back').map((e) => e.step / stepHz)
+    expect(flips.length).toBe(1)
+    expect(backs.length).toBe(1)
+    const card = boxOf('perk-1')
+    expect(flips[0]!.x).toBeCloseTo(card[0]! + card[2]! / 2, 3)
+    expect(backs[0]! - flips[0]!.step / stepHz).toBeGreaterThan(FLIP_SECONDS + 0.4)
+    for (let i = 0; i < 8; i++) expect(s.page.states()).toContain(perkStates(i).shut)
+  })
+})
+
+describe('fault B: the ticker is a band from edge to edge', () => {
+  it('has its band from x 0 to 1920 on the first screen, and the picture fills the window at every width from 1280 to 2560', () => {
+    const band = boxOf('ticker-window')
+    expect([band[0], band[2]]).toEqual([0, WIDTH])
+    expect([TICKER.x, TICKER.w, TICKER.clip]).toEqual([0, WIDTH, 0])
+    expect(band[1]! + band[3]!).toBeLessThanOrEqual(1080)
+    for (const w of [1280, 1440, 1920, 2560]) {
+      const fit = fitPicture(w, Math.round((w * 9) / 16), 1, 1, false)
+      expect(fit.cssWidth, `${w}`).toBe(w)
+    }
+  })
+
+  it('carries type the whole way across at every moment, in whole glyphs at both ends', () => {
+    for (const t of [0, 1.3, 4.7, 9.1, 11, 12.6]) {
+      const s = film()
+      s.advance(seconds(t))
+      const runs = drawn(s).filter((d) => d.id.includes('-run')).sort((a, b) => a.x - b.x)
+      expect(runs.length, `${t}`).toBeGreaterThan(3)
+      expect(runs[0]!.x, `${t}`).toBeLessThan(TICKER.gap + 30)
+      const last = runs[runs.length - 1]!
+      expect(last.x + last.w, `${t}`).toBeGreaterThan(WIDTH - TICKER.gap - 30)
+      for (let i = 0; i < runs.length; i++) {
+        const r = runs[i]!
+        expect(r.x, `${t} ${r.id}`).toBeGreaterThanOrEqual(0)
+        expect(r.x + r.w, `${t} ${r.id}`).toBeLessThanOrEqual(WIDTH)
+        if (i > 0) expect(r.x - (runs[i - 1]!.x + runs[i - 1]!.w), `${t} ${r.id}`).toBeGreaterThanOrEqual(TICKER.gap - 0.01)
+        const whole = block(T.tape.font, words(r.words!), T.tape.px).width
+        if (r.type!.cut) expect(r.w).toBeLessThan(whole)
+        else expect(r.w).toBeCloseTo(whole, 3)
       }
     }
   })
 
-  it('keeps the ends of the strip under solid frost at every quarter second of the film, so no word is cut by the end of the strip in sight', () => {
+  it('runs at one speed and stands at the key with a whole item at its mark', () => {
     const s = film()
-    for (let i = 0; i < 56; i++) {
-      s.advance(Math.round(0.25 * stepHz))
-      const strip = drawn(s).find((d) => d.id === 'ticker-glass')!
-      expect(strip.v![0]!).toBeGreaterThanOrEqual(TICKER.clip + TICKER.solid)
-      expect(strip.v![1]!).toBeLessThan(TICKER.gap)
-    }
+    s.advance(seconds(OPENING.key))
+    const key = drawn(s).find((d) => d.id === `ticker-${TICKER.keyItem}-run`)!
+    expect(key.x).toBeCloseTo(TICKER.keyAt, 3)
+    s.advance(seconds(0.5))
+    const later = drawn(s).find((d) => d.id === `ticker-${TICKER.keyItem}-run`)!
+    expect(key.x - later.x).toBeCloseTo(TICKER.speed * 0.5, 3)
   })
+})
 
-  it('lays the title, the promise and the rule on a shut card where the open card has them', () => {
-    const find = (n: LayoutNode, id: string): LayoutNode | null => (n.id === id ? n : (n.children ?? []).map((c: LayoutNode) => find(c, id)).find(Boolean) ?? null)
-    const root = careersLayout().layout
-    for (let i = 0; i < FIRST_CARDS; i++) {
-      const st = perkStates(i)
-      const y = (id: string): number => (find(root, id)!.box as number[])[1]!
-      expect(y(`perk-${i}-title`)).toBe(y(`perk-${i}-title-open`))
-      expect(y(`perk-${i}-promise`)).toBe(y(`perk-${i}-promise-open`))
-      expect(y(`perk-${i}-rule-shut`)).toBe(y(`perk-${i}-rule`))
-      expect(find(root, `perk-${i}-rule-shut`)!.states).toEqual([st.shut])
-      expect(find(root, `perk-${i}-fine`)!.states).toEqual([st.open])
+describe('the careers page under the keen visitor', () => {
+  it('reaches each of its four beats and turns to step 1 by its own press', () => {
+    const s = live(new BotDriver('keen', config.seed))
+    let steps = 0
+    while (s.entryIndex === 0 && steps < 30 * stepHz) {
+      s.advance(1)
+      steps++
     }
-  })
-
-  it('gives the glass a bright hairline and a shade toward the light, a pale rim away from it, and nothing on the flat face', () => {
-    expect(edgeLight(0.4, 1)).toBeGreaterThan(1)
-    expect(edgeLight(4, 1)).toBeLessThan(0.6)
-    expect(edgeLight(4, 0.3)).toBeGreaterThan(edgeLight(4, 1))
-    expect(edgeLight(0.5, -1)).toBeGreaterThan(1.5)
-    expect(edgeLight(60, 1)).toBe(1)
-    expect(edgeLight(60, -1)).toBe(1)
-    expect(GLASS.bend).toBeGreaterThan(0)
-  })
-
-  it('computes its two pictures from the seed alone: the same seed gives the same picture, and both stay inside 0 to 1', () => {
-    const a = glassHeights(config.seed)
-    const b = glassHeights(config.seed)
-    expect(a.length).toBe(PICTURE.size * PICTURE.size)
-    let same = true
-    let low = 1
-    let high = 0
-    for (let i = 0; i < a.length; i += 97) {
-      if (a[i] !== b[i]) same = false
-      low = Math.min(low, a[i]!)
-      high = Math.max(high, a[i]!)
-    }
-    expect(same).toBe(true)
-    expect(low).toBeGreaterThan(0.75)
-    expect(high).toBeLessThan(1.02)
-    const m = brushedHeights(config.seed)
-    const n = brushedHeights(config.seed + 1)
-    expect(m.length).toBe(BRUSHED.size * BRUSHED.size)
-    let differs = 0
-    for (let i = 0; i < m.length; i += 211) if (m[i] !== n[i]) differs++
-    expect(differs).toBeGreaterThan(100)
-  })
-
-  it('beds a turning card in a trough of the page that is never darker than half the page', () => {
-    const g = troughGeometry({ id: 'x', part: 'perk-cards', kind: 'box', x: 0, y: 0, w: 540, h: 248, z0: 0, z1: 12, tone: 'glass' })
-    const c = g.getAttribute('color')
-    const p = g.getAttribute('position')
-    let least = 1
-    let deepest = 0
-    for (let i = 0; i < c.count; i++) {
-      least = Math.min(least, c.getX(i))
-      deepest = Math.min(deepest, p.getZ(i))
-    }
-    expect(least).toBeGreaterThan(0.4)
-    expect(deepest).toBeLessThan(-124)
-    g.dispose()
+    expect(s.entryIndex).toBe(1)
+    const mine = config.film.beats.filter((b) => b.unit === 'marketing').map((b) => b.id)
+    expect(mine.length).toBe(4)
+    expect(s.gagsReached.filter((g) => g.startsWith('marketing.'))).toEqual(mine)
+    const names = s.events.filter((e) => e.page === 'marketing').map((e) => e.name)
+    expect(names).toContain('card-flip')
+    expect(names).toContain('button-press')
+    expect(names).not.toContain('skip')
+    expect(steps / stepHz).toBeLessThan(12)
   })
 })

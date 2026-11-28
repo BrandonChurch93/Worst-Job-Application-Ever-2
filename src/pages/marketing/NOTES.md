@@ -1,63 +1,11 @@
-# Careers page (unit `marketing`): decisions
+# Careers page (unit `marketing`)
 
-Phase 2 blockout. Stand-in shapes only. Every word is a key of `content/copy.json`.
+The page was rebuilt in change 002 to the approved picture `references/approved-002/careers-page.png`, and its film opening in change note 003. The decisions, the measurements, the differences from the picture and what is left are in `pipeline/change002/careers.md`.
 
 ## Files
 
-- `layout.ts`: the whole page as a layout tree (`careersLayout()`), 1920 wide, one column 128 to 1792.
-- `index.ts`: `makePage()`, the page logic: scroll, ticker, perk cards, the three apply buttons, phases, hint, skip.
-- `script.ts`: the film pointer path and the film-only acting cues.
-- `tests/marketing.test.ts`: layout, words, film events, self-ending gags, the three buttons, the rejected variant, `load(save())`, the keen bot.
-
-## Layout
-
-- First screen follows `references/approved/marketing-top.png`: top bar, hero with the big button, one medallion (award 0), perk cards 0 to 2, ticker strip at y 990 to 1048.
-- Below: perks (cards 3 to 7 in a 3 by 2 grid, `perks.closing` in the sixth cell), awards 1 to 4, testimonials, comparison table, five-step process, questions, final call to action, footer.
-- Section gap 170, heading to content 140, foot margin 128. These three numbers are chosen so that the judged scroll stills (0.25, 0.5, 1 of the scroll range) start in a gap between rows, 25 to 29 px above a row, and not through a card.
-- `copy:marketing.hero.sublineLong` is the hero subline in long form. The approved first screen uses the short one, so the long one stands in the footer as the line about the company, under the brand.
-- The ticker texts are layout nodes with their own states (`tape-N`, `tape-after`) so they count in the type register; the moving tape is drawn by the page, in a well cut into the page.
-
-## Gags
-
-- Phases, the same in live and film: stroll (2 s), perks (at least 6 s, and until the three first-screen cards are open), ticker (3 s), then idle (`gag()` is null). The page waits for the press.
-- Perk card: when the cursor tip enters a card the whole slab turns over as one piece, about its long axis through its centre, and stays open. Event `card-flip` at the start, `FLIP_SECONDS` 0.63 as before. While it turns the card lies in a well `perk-i-pit` cut under it (half the card's height plus 8 deep), so the lower half has room. The slab is one shape, `perk-i-slab` (part `perk-cards`), built round its middle with both faces ground to the same bevel and its thickness in `v[0]`; the words and the rule that ride it are `perk-i-slab-<n>`. The shut words ride the upper face, the open words, the rule and the fine print ride the under face. The well is cut in the page's own ceramic (`tone: 'page'`), so it reads as a routed tray with the card's shadow in it, and a grey seal lies in its mouth while the slab turns. The raised edge stands at most half the card's height (124 px) above the card top; the cursor rides it up and down by `cursor.setGround`. Nothing hurts the cursor. Shut or open and at rest the card is the layout's own node, unchanged.
-- Perk card, the fall toward the right: by the approved image a card further right is darker (180, 167, 150 across the row). The light of the set gives part of it; the rest is `FALL` of `perk-cards.ts`, a factor on the glass's vertex colour that falls evenly with the page's x (`darker()`), in the resting slab and the turning slab alike. Each card of a row has its own geometry for it (`slabKey` holds the factor).
-- Perk card, the far corner: by the approved image the corner turned full away from the light holds a short bright bow a little way in from its rim, and the far rim is about 2 px wide. `GLASS.spark` and `GLASS.sparkAt` (how far in, how wide, how far turned) and the first rows of `FAR` in `perk-cards.ts` hold it. The Decision page's glass takes the same, since it is the same `slabGeometry`.
-- Medal, the flange: the flat band between the body and the scallops is mid grey with one thin bright lip, darker on the side away from the light. `polished()` and `MEDAL_LOOK.flat` of `careers-page.ts` hold it, read off the approved image by twelve sectors.
-- Medal, the face's far side: the outer part of the face on the side that looks away from the light is duller, by `MEDAL_LOOK.away` through `sheen()`. It starts outside the words, so M4 on the medal's type is not touched by it.
-- Perk card, the shade of the under side: the key light comes from the upper left, so the under side of the slab is turned from it between 90 and about 126 degrees and gets only the fill. The turn eases by a steeper curve (`TURN_SHARP` 5, a tanh curve, still 0.63 s from end to end), so the slab passes that range fast. The stand-in tones of Phase 2 (`BACK_TONES`) are gone: the slab is the perk cards' own pale glass (`cardGlass()` in `real/perk-cards.ts`) on both faces.
-- Perk card, the slant at half open: the raised edge of the slab is nearer to the camera, and the camera looks from above the middle of the screen, so on the left and right cards that edge is drawn further out than the sunk edge. It is the scene's own perspective, the same that every raised part has. Left as it is: the page cannot change the camera.
-- With a still or wrong pointer the three first-screen cards open by themselves from 20 s into the perks phase (`live.skipLinkAfterSeconds`), half a second apart.
-- Double take: once, when the "Unlimited PTO" card shows its fine print with the cursor on it.
-- Apply: a press on any of the three caps (`nav-cta`, `hero-cta`, `final-cta`). The page takes the cursor (about 1.2 s, far under the 8 s limit), it backs off 44 px, jumps 96 px high onto the right part of the cap, clear of the label, `button-press` on landing, the cap sinks 10 px with the label and the cursor on it, `done()` 0.3 s later. `skip()` does the same on the hero button.
-- Variant `rejected`: ticker repeats `copy:marketing.tickerAfterRejection`, footer shows `copy:step5.closing` in place of the plot twist, cards still turn, the buttons sink and come back, `done()` stays false, `gag()` is null, the cursor acts `exhausted`.
-- The landing in the variant `rejected` (`LANDING` in `script.ts`, the film's beat `decision.reset`): the page lets the arrow down while the stage still holds it in the air, so it touches at 0.25 s of the page's time, as the page comes flat. In the film it lands flat and laid over (`duck` at 0.22), gets up and stands, takes half a step toward Apply for a Job and leans at it (`recoil` at 1.24) to the end. `tests/careers-fix-landing.test.ts` holds the three reads to at least 0.4 s each, 12 frames at 30 a second, and in that order.
-
-## Differences from the brief, told to the Builder
-
-- The kit names a perk card as one slab that turns over on its long axis, or a face that slides aside. Here it is the first: one slab that turns over (the four slats of the first version are gone, asked by the Builder at 10:03 UTC).
-- `hint()` points at the first unopened first-screen card during the stroll and perks phases (and, once the three are open, at the stand beside the hero button, without a press), and at the hero button from the ticker phase on (with a pulsing press). Only the bots read `hint()`: nothing in `src/ui/` or `src/app.ts` draws it, so a visitor never sees it point at the bare page. Reason: the bots walk to the hint, and the keen bot has to reach the perks and ticker gags before the press ends the page. In the rejected variant it points at the hero button without a press.
-- The cursor rides surfaces with `cursor.setGround` (on `main` since f6c1585), so it stands on cards, caps and medallions and is not hidden under them.
-
-## Film timing (page seconds)
-
-Rewritten in phase 4 for the critics of round 7 (R4 motion, R9 acting). The path is `path()` of `script.ts`, the states and moves are `CUES`, the times of a card's visit are `VISITS`.
-
-- Where it stands: on the page, never on a card. A card is poked from under its bottom edge: the tip goes 24 px into the card (`TOUCH.poke`), the body stays on the page between the cards and the ticker, so its outline is against the page in every pose.
-- 0.2 to 0.92 it struts down the left margin to the corner under the first card, plants there (0.92 to 1.1), and struts along under the card to its place (1.8, a small overshoot, planted from 1.92).
-- A visit, the same at each of the three cards: planted, a poke up into the edge (0.05 s), `card-flip` on the step the tip is in the card (steps 498, 1180, 1684: 2.08, 4.92, 7.02), and on that step the page calls `startle`, a hop back and a stretch; the pointer steps back 44 right and 8 down (`TOUCH.back`), and it stands there while the card turns and seats (0.63 s). Then `proud`, a step home under the card, a stand of 0.36 s or more, and on.
-- The double take, first card only: the fine print comes into view at the turn's 0.8 (2.58) and the page calls `doubleTake` and `shocked` for 0.8 s (`SHOCK`), as before; the film's pointer steps back a further 72 px at 2.6 (`TOUCH.take`) and it stands there tall until 3.44. The page now asks only that the cursor is within 150 px of the card (`TAKE_NEAR`), since it reads the card from the page beside it.
-- The walks between cards are 566 px in 0.66 s at one speed (`e: 'line'`), so the strut's hops are even, with 16 px of overshoot and a plant of 0.1 s before the poke.
-- The ticker beat: from 7.82 to 8.86 it stands `proud` and upright under the third card, its back to the strip that runs just below it. Nothing is cued there: the dusting off is gone (it was read as a struggle). Then it goes round the card, never over it (`ROUND` of `script.ts`, `marks.round`): a step aside to the page's right margin (9.06), up the margin at one speed to the level above the cards (9.34), along above the cards to the lane (9.72), a plant (9.8), and fast to the stand right of the hero button (10.3, overshoot, at rest from 10.44). Nothing moves between 10.5 and 11.0, the key. `tests/careers-finish.test.ts` holds that the tip is never in a card nor on the medal on that walk.
-- The press: 11.02 `anticipate` (a crouch, 0.35 s); 11.38 `jump`, one bound to the perch at the button's top right corner (`marks.perch`); 11.75 the pointer presses, and the page winds it up (0.36 s: backs off 56 px, crouches, rises), leaps it 110 px high on to the cap (0.42 s), calls `stamp` 0.14 s before it lands so the squash is at the contact. `button-press` at step 3007 (12.53). The cap is down for 0.3 s, comes back to a fifth of its travel over 0.18 s with the cursor on it (13.01), and stands. The stage turns the page at 13.5 (`TURN_AT`).
-- The turn's first half second: 13.3 `anticipate`, so it is crouched as the page starts to go and stretches as it is lifted; 13.66 `shocked` and `startle`, tall and laid back, held to the unit's end.
-- One word for each beat: stroll "struts in", perks "pokes, jumps back, a double take, unbothered", ticker "does not look down", apply "bounds, winds up, jumps on it".
-- `tests/careers-acting.test.ts` holds the events on their steps, the hop back on the step of each flip, the card seated before it moves on, one double take, the still half second before the key, the wind-up, the leap, the squash on the cap, and the cap back up before the turn.
-
-## Other
-
-- The ticker is closed-form: its offset is a function of the page time, 120 px a second (`tapeSpeed`), set so that at 11.0 s (the key) and, after the rejection, at 1.7 s the whole items that fit lie centred in the clear middle of the strip (`leadOf()`). The strip's two ends are frosted through, so a run fades in and out there and is never cut.
-- The value of the wait field sits at the pocket floor as the shell's `field()` places it; the blockout view of main 8c84635 lifts type on a flat pocket by itself, so the page no longer lifts it.
-- The ticker is a strip of the cards' glass lying on the page (`ticker-glass`, `TICKER.thick` high, corner radius `TICKER.r`), hollow over the shallow channel `ticker-window` (a pocket `TICKER.floor` deep, `TICKER.edge` in from the strip's outline) that the ground cuts. A run that crosses an end of the hollow (`TICKER.clip` in from the strip's ends) is drawn from a 2 px box inside it. The tape `ticker-tape` and the words run in the channel: the page hides them past its ends, and the strip's ground edge hides the channel's walls from the camera. Nothing in it gives off light (`TICKER_LOOK` in `real/ticker.ts`).
-- The tape is clipped by the page: a run of the tape lies below the surface, so the part of it outside the window is under the slab. The blockout view of main 8c84635 lifts sunk type whose box centre is outside every well onto the page, which would spill a run that crosses the window's edge. A crossing run is therefore drawn with a 2 px box at its inner end (left aligned as it comes in, right aligned as it goes out), so its centre stays inside the well.
-- The three links of the top bar work in the live site, as on a real page: `Perks & Benefits` scrolls to the perks section, `Our Values` to the awards (the page has no section of that name; the awards and the testimonials are what it has to say about itself), `Open Positions` to the final call to action, whose body says there are none. A link only scrolls. It starts no gag and takes no control.
+- `layout.ts`: the whole page as a layout tree (`careersLayout()`), 1920 wide, with the type scale `T`, the colours `COLOUR` and the measures of each section.
+- `index.ts`: `makePage()`, the page logic: scroll, ticker, cards that flip under the pointer and back, the three Apply buttons, the variant `rejected`; `careersOpening()`, where the film's arrow stands at each of the five places.
+- `script.ts`: `OPENING`, every number of the film's opening on the page, the scroll plan and the arrow's way.
+- `real/`: what draws it. `flat.ts` (flat paint), `careers-page.ts` (the sheets and the type), `perk-cards.ts`, `ticker.ts`, `apply-button.ts`; `card-glass.ts` is the glass of the earlier page, still used by step 4 and step 5.
+- Tests: `tests/marketing.test.ts` and `tests/careers-*.test.ts`.

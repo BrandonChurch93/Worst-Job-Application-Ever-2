@@ -12,7 +12,7 @@ export interface BakedFont {
   kern: Record<string, number[]>
 }
 
-export const FONTS = ['inter-400', 'inter-500', 'inter-600', 'inter-display-600', 'playfair-700', 'playfair-900'] as const
+export const FONTS = ['inter-400', 'inter-500', 'inter-600', 'inter-display-600', 'inter-display-800', 'playfair-700', 'playfair-900'] as const
 
 const fonts = new Map<string, BakedFont>()
 const kernMaps = new Map<string, Map<number, number>>()
