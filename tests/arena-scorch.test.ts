@@ -179,6 +179,8 @@ describe('arena scorch', () => {
     expect(chipsOf(s, SEED, 40)).toEqual(chips.slice(0, chipsOf(s, SEED, 40).length))
     for (const c of chips) {
       expect(edgeAt(s, c.x, c.y, SEED).px).toBeGreaterThanOrEqual(6)
+      // And none in the box of the words over the button: x 840 to 1080, y 340 to 400.
+      expect(c.x > 840 && c.x < 1080 && c.y > 340 && c.y < 400).toBe(false)
       expect(c.size).toBeLessThan(17)
       expect(c.x).toBeGreaterThan(0)
       expect(c.x).toBeLessThan(PAGE.w)

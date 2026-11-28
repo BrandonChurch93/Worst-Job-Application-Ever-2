@@ -5,6 +5,7 @@ import type { BossView, ViewBreak } from '../boss/view'
 import type { Emitter } from '../real/types'
 import { layOver, lineOf, paintLayer, paintWounds, reachOf } from './breaks'
 import { clamp01, rnd } from './change'
+import { RUBBLE_EACH, SHARDS_EACH, columnLie, rubbleRest, shardRest } from './clear'
 import { DAMAGE, fresh, geometryOf, tri, type V3, type Wounds } from './ground'
 import { ARENA, PAGE, PANES, PILLARS, SEAMS } from './layout'
 import { columnGeometry, softDot, stand, type Kit, type Pane, type Pillar } from './props'
@@ -17,8 +18,6 @@ export interface Wreck { object: THREE.Group; pose(view: BossView, light?: (e: E
 
 // How long each part of a break lasts, in seconds.
 export const BREAK = { flash: 0.24, sparks: 0.7, fly: 0.55, smoke: 1.7, glint: 0.18, light: 0.5 }
-const RUBBLE_EACH = 11
-const SHARDS_EACH = 22
 const SPARKS_EACH = 64
 const SMOKE_EACH = 20
 const DUST = 96
@@ -321,28 +320,26 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
       p.root.visible = false
       const age = t - k.at
       const l = lineOf(k, seed)
-      // Away from the line of the blast.
-      const side = -(p.x - k.x0) * l.uy + (p.y - k.y0) * l.ux >= 0 ? 1 : -1
-      const ax = -l.uy * side, ay = l.ux * side
       const fly = clamp01(age / BREAK.fly)
       const out = 1 - (1 - fly) * (1 - fly)
       if (s.lying) {
-        const turn = Math.atan2(-(ay + 0.55 * l.uy * (rnd(seed, 905, i) - 0.3)), ax + 0.55 * l.ux * (rnd(seed, 905, i) - 0.3))
+        // Away from the line of the blast, and never onto the ground kept clear for the arrow's last stand.
+        const lie = columnLie(seed, i, k)
+        const turn = Math.atan2(-lie.dy, lie.dx)
         const down = fly * fly
         // It tips over about its broken end: upright at the break, flat on the ground at the end.
         e.set(0, (Math.PI / 2) * down, turn, 'ZYX')
         s.lying.quaternion.setFromEuler(e)
-        const off = 34
+        const off = lie.off
         s.lying.position.set(wx(p.x) + Math.cos(turn) * off * down + leanX * (1 - down) * s.high, wy(p.y) + Math.sin(turn) * off * down + lean * (1 - down) * s.high, (1 - down) * s.high + down * (ARENA.pillar.side / 2))
       }
       for (let j = 0; j < RUBBLE_EACH; j++) {
-        const a = Math.atan2(-ay, ax) + (rnd(seed, 910 + i, j) - 0.5) * 2.6
-        const far = 34 + 120 * rnd(seed, 920 + i, j) ** 1.5
-        const size = 14 + 38 * rnd(seed, 930 + i, j) ** 1.7
+        const rest = rubbleRest(seed, i, j, k)
+        const size = rest.size
         const z = size * 0.3 + Math.sin(Math.PI * fly) * (30 + 60 * rnd(seed, 935 + i, j))
         e.set(rnd(seed, 940 + i, j) * 6 + fly * 5, rnd(seed, 941 + i, j) * 6 + fly * 4, rnd(seed, 942 + i, j) * 6)
         q.setFromEuler(e)
-        m4.compose(v.set(wx(p.x) + Math.cos(a) * far * out + leanX * z, wy(p.y) + Math.sin(a) * far * out + lean * z, z), q, sc.set(size, size * (0.6 + 0.5 * rnd(seed, 943 + i, j)), size * 0.62))
+        m4.compose(v.set(wx(p.x + (rest.x - p.x) * out) + leanX * z, wy(p.y + (rest.y - p.y) * out) + lean * z, z), q, sc.set(size, size * (0.6 + 0.5 * rnd(seed, 943 + i, j)), size * 0.62))
         rubble.setMatrixAt(nRubble++, m4)
       }
     })
@@ -368,19 +365,14 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
       const age = t - k.at
       const fly = clamp01(age / BREAK.fly)
       const out = 1 - (1 - fly) * (1 - fly)
-      const push = l.ux >= 0 ? 1 : -1
       for (let j = 0; j < SHARDS_EACH; j++) {
-        const along = p.y0 + (p.y1 - p.y0) * rnd(seed, 960 + i, j)
-        const near = 1 - Math.min(1, Math.abs(along - at) / 260)
-        // Most fall the way the blast went, some the other way.
-        const dir = rnd(seed, 961 + i, j) < 0.7 ? push : -push
-        const far = (24 + 170 * rnd(seed, 962 + i, j) ** 1.3) * (0.5 + 0.7 * near) * dir
-        const size = 26 + 66 * rnd(seed, 963 + i, j) ** 1.8
+        const rest = shardRest(seed, i, j, k, at)
+        const size = rest.size
         const z = 2 + size * 0.14 + Math.sin(Math.PI * fly) * (40 + 80 * rnd(seed, 964 + i, j)) + (1 - fly) * 60
         const flat = fly * fly
         e.set((1 - flat) * (rnd(seed, 965 + i, j) * 5 + 1) + 0.5 * (rnd(seed, 975 + i, j) - 0.5), (1 - flat) * (rnd(seed, 966 + i, j) * 5) + 0.5 * (rnd(seed, 976 + i, j) - 0.5), rnd(seed, 967 + i, j) * 6.283)
         q.setFromEuler(e)
-        m4.compose(v.set(wx(p.x) + far * out + leanX * z, wy(along + (rnd(seed, 968 + i, j) - 0.5) * 60 * out) + lean * z, z), q, sc.set(size, size * (0.5 + 0.9 * rnd(seed, 969 + i, j)), size))
+        m4.compose(v.set(wx(p.x + (rest.x - p.x) * out) + leanX * z, wy(rest.along + (rest.y - rest.along) * out) + lean * z, z), q, sc.set(size, size * (0.5 + 0.9 * rnd(seed, 969 + i, j)), size))
         if (j % 2) splinters.setMatrixAt(nSplinters++, m4)
         else shards.setMatrixAt(nShards++, m4)
       }

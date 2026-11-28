@@ -163,7 +163,7 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
       const strong = clamp01((share - 0.35) / 0.4)
       const each = Math.floor(SCORCH.smoke / COLUMNS)
       for (let c = 0; c < COLUMNS; c++) {
-        const along = c < 2 ? s.at + (rnd(seed, 460, c) - 0.5) * SCORCH.burn * 1.5 : s.at * (0.12 + 0.6 * rnd(seed, 461, c))
+        const along = c < 2 ? s.at + (0.1 + 0.6 * rnd(seed, 460, c)) * SCORCH.burn : s.at * (0.2 + 0.2 * rnd(seed, 461, c))
         const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 1.3 : SCORCH.half * 0.6)
         const x = s.sx + s.ux * along - s.uy * across, y = s.sy + s.uy * along + s.ux * across
         const period = 2.6 + 1.2 * rnd(seed, 463, c)
