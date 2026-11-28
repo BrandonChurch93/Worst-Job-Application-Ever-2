@@ -177,24 +177,32 @@ export const LINE7 = {
 
 // The finishing blast (mail of 22:45, item 3). Plain stand-ins; the look is the Builder's picture round.
 // The finishing blast runs on the marks of the shout. They are worked out from the line's own times: the kept take's once one is in the sound index, the stand-in's of the drafts file until then.
-// The first two charge marks and the fire mark are the starts of the line's three phrases. The two charge marks between keep their share of the gap from the second start to the fire mark.
-// The body is gone `held` s after the line ends, for the boss to leave in groups (the camera's second pass).
-export interface ShoutMarks { arms: number; beats: readonly [number, number, number, number]; fire: number; gone: number }
+// The marks of the shout, read from its line. The camera's charge view asks for `floor` s from the arms to the fire mark: its way down, its rest and the turn ahead of the fire.
+// lead: s after the arms at which the line is shouted, so that its last phrase lands on the fire mark: 0 when the line's last phrase starts at the floor or later.
+// The first two charge marks are the starts of the line's first two phrases, stretched with the fire mark; the two charge marks between keep their share of the gap from the second to the fire mark.
+// The body is gone `held` s after the line ends, for the boss to leave in groups (the camera's second pass), and no sooner than the camera is level with the page again after the fire mark: its rise, its hold and its turn back.
+export interface ShoutMarks { arms: number; lead: number; beats: readonly [number, number, number, number]; fire: number; gone: number }
 export const SHOUT_LINE = 'boss.finish.0'
 export const SHOUT_RULE = { between: [0.3398, 0.6019] as const, held: 1.3, standIn: { starts: [0.1, 1.04, 4.13] as const, seconds: 6.26 } } as const
 const ms = (t: number): number => Number(t.toFixed(3))
+export const shoutFloor = (): number => ms(CAMERA.down[1] + CAMERA.rest + CAMERA.ahead)
 export function shoutOf(line: { starts: readonly number[]; seconds: number } | null): ShoutMarks {
   const t = line && line.starts.length >= 3 && line.seconds > 0 ? line : SHOUT_RULE.standIn
-  const a = t.starts[0]!
-  const b = t.starts[1]!
-  const fire = t.starts[t.starts.length - 1]!
-  return { arms: 0, beats: [a, b, ms(b + SHOUT_RULE.between[0] * (fire - b)), ms(b + SHOUT_RULE.between[1] * (fire - b))], fire, gone: ms(t.seconds + SHOUT_RULE.held) }
+  const last = t.starts[t.starts.length - 1]!
+  const lead = ms(Math.max(0, shoutFloor() - last))
+  const fire = lead > 0 ? shoutFloor() : last
+  const on = (x: number): number => (lead > 0 ? ms((x * fire) / last) : x)
+  const a = on(t.starts[0]!)
+  const b = on(t.starts[1]!)
+  const level = CAMERA.rise[1] + CAMERA.hold + CAMERA.turn
+  return { arms: 0, lead, beats: [a, b, ms(b + SHOUT_RULE.between[0] * (fire - b)), ms(b + SHOUT_RULE.between[1] * (fire - b))], fire, gone: Math.max(ms(lead + t.seconds + SHOUT_RULE.held), ms(fire + level)) }
 }
 let marks: ShoutMarks | null = null
 const shout = (): ShoutMarks => (marks ??= shoutOf(lineTimes(SHOUT_LINE)))
 // Read when first asked for, not when this file loads: the sound code's script reads this file for the camera's rise, so neither may need the other while loading.
 export const SHOUT: ShoutMarks = {
   arms: 0, // s after the fall at which the arrow's arms come out (`finish-arms`)
+  get lead() { return shout().lead }, // s after the arms at which the line is shouted
   get beats() { return shout().beats }, // s at which each charge word or syllable starts; the glow steps up on each (`finish-charge` on each)
   get fire() { return shout().fire }, // s at which the last word starts: the blast is let go there (`finish-fire`)
   get gone() { return shout().gone } // s at which the body is gone (`boss-gone`): the blast has held that long
@@ -331,6 +339,7 @@ export const CAMERA = {
   swing: 2,
   push: 0.08,
   pushOver: 6,
+  rest: 2,
   ahead: 0.9,
   round: 0.8,
   lead: 2,
