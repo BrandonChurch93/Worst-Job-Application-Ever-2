@@ -9,7 +9,7 @@ import { spoken, waitsFor } from '../src/audio/cues'
 import * as dsp from '../src/audio/dsp'
 import * as levels from '../src/audio/levels'
 import { DUCK, LIVE, db } from '../src/audio/levels'
-import { phrasesOf, standIns, type KeptLine } from '../src/audio/standin'
+import { filmCaptions, phrasesOf, phrasesOver, standIns, wordCount, type KeptLine } from '../src/audio/standin'
 import { mixFilm, scriptStandIns } from '../src/audio/mix'
 import { pack, phraseStarts, places } from '../tools/sound.mjs'
 import { keptTakes } from '../tools/mix.mjs'
@@ -426,5 +426,66 @@ describe('the narrator\'s voice: the pack', () => {
     expect(read.kept).toBe(true)
     expect(read.phrases.map((p) => p.words)).toEqual(['a b', 'c d', 'e'])
     expect(read.phrases[2]!.to).toBe(6)
+  })
+})
+
+describe('the narrator\'s voice: the index of this tree', () => {
+  const real: SoundIndex = read('public', 'audio', 'index.json')
+  const script = standIns()
+  const bare = [...script.values()].filter((l) => l.kept && real.lines.find((x) => x.id === l.id)?.starts === undefined)
+  const realSite = () => {
+    const enc = new TextEncoder()
+    const files = new Map<string, Uint8Array>([[real.pack!.file, new Uint8Array(real.pack!.bytes)]])
+    for (const f of [...real.loops, ...real.lines]) files.set(f.file, enc.encode(f.id))
+    vi.stubGlobal('fetch', async (url: string) => {
+      const bytes = files.get(url.replace('./audio/', ''))
+      if (!bytes) return { ok: false, status: 404 }
+      return { ok: true, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.length) }
+    })
+    return makeSound({ base: './audio/', index: real })
+  }
+
+  it('spreads the caption of each kept line that has no starts over its file by its words: no word before the file begins, none after it ends, no hole', () => {
+    console.info(`MEASURED kept lines of the index with no starts: ${bare.map((l) => `${l.id} ${l.seconds} s`).join(', ') || 'none'}`)
+    for (const line of bare) {
+      const n = wordCount(line.words)
+      expect(line.phrases, line.id).toEqual(phrasesOver(line.text, mark, line.seconds))
+      expect(line.phrases.map((p) => p.words).join(' '), line.id).toBe(line.words)
+      expect(line.phrases[0]!.from, line.id).toBe(0)
+      expect(line.phrases[line.phrases.length - 1]!.to, line.id).toBeCloseTo(line.seconds, 9)
+      line.phrases.forEach((p, k) => {
+        if (k > 0) expect(p.from, `${line.id} ${k}`).toBe(line.phrases[k - 1]!.to)
+        expect(p.to - p.from, `${line.id} ${k}`).toBeCloseTo((line.seconds * wordCount(p.words)) / n, 9)
+      })
+      const fps: number = cfg.film.fps
+      const caps = filmCaptions([{ id: line.id, frame: 600 }], fps)
+      expect(caps.map((c) => c.words), line.id).toEqual(line.phrases.map((p) => p.words))
+      expect(caps[0]!.first, line.id).toBe(600)
+      expect(caps[caps.length - 1]!.last, line.id).toBe(600 + Math.round(line.seconds * fps) - 1)
+      for (let k = 1; k < caps.length; k++) expect(caps[k]!.first, `${line.id} ${k}`).toBe(caps[k - 1]!.last + 1)
+    }
+  })
+
+  it('says such a line from its file on the live site and shows none of its words before the file starts or after it ends', async () => {
+    for (const line of bare) {
+      const row = spoken[line.key]!
+      const s = realSite()
+      s.page(line.page)
+      await s.unlock()
+      const ctx = made[made.length - 1]!
+      ctx.currentTime = 40
+      s.event(ev(row.event!, line.page), 'live')
+      const entry = s.log().find((e) => e.what === 'spoken' && e.line === line.id)!
+      expect(entry.seconds, line.id).toBe(line.seconds)
+      const start = entry.start!
+      expect(start).toBeGreaterThanOrEqual(40)
+      expect(ctx.sources.filter((x) => x.buffer?.id === line.id).map((x) => [x.started, x.stopped]), line.id).toEqual([[start, null]])
+      const mine = s.said().lines.filter((l) => l.line === line.id || l.id === line.id)
+      expect(mine.map((l) => l.words), line.id).toEqual(line.phrases.map((p) => p.words))
+      expect(mine[0]!.start, line.id).toBeCloseTo(start, 9)
+      expect(mine[mine.length - 1]!.end, line.id).toBeCloseTo(start + line.seconds, 9)
+      for (let k = 1; k < mine.length; k++) expect(mine[k]!.start, `${line.id} ${k}`).toBeCloseTo(mine[k - 1]!.end, 9)
+      s.stop()
+    }
   })
 })
