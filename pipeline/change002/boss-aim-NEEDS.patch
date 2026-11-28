@@ -1,0 +1,49 @@
+diff --git a/src/core/renderer.ts b/src/core/renderer.ts
+index a713d217..852b49c0 100644
+--- a/src/core/renderer.ts
++++ b/src/core/renderer.ts
+@@ -225,7 +225,7 @@ export class LightRig {
+     light.shadow.camera.up.copy(this.up)
+     light.target.updateMatrixWorld()
+     light.updateMatrixWorld()
+-    this.m.lookAt(light.position, light.target.position, light.up).setPosition(light.position).invert()
++    this.m.identity().lookAt(light.position, light.target.position, light.up).setPosition(light.position).invert()
+     const lean = square ? squareLean(this.m) : 0
+     let minX = Infinity
+     let maxX = -Infinity
+diff --git a/tests/b-boss-same.test.ts b/tests/b-boss-same.test.ts
+index 3cb01005..b92362b8 100644
+--- a/tests/b-boss-same.test.ts
++++ b/tests/b-boss-same.test.ts
+@@ -1,5 +1,7 @@
+ import { describe, expect, it } from 'vitest'
+ import { config, stepHz } from '../src/config'
++import { LightRig } from '../src/core/renderer'
++import { samples } from '../src/core/sampler'
+ import { LOOK1_ON } from '../src/boss/tune'
+ import { finishNow, seatView, viewNow } from '../src/boss/viewof'
+ import { pages } from '../src/pages'
+@@ -78,3 +80,23 @@ describe('a picture of the boss is the same however often and in whatever order
+     expect(picture(a, fight)).toEqual(one)
+   })
+ })
++
++describe('the lights of a picture are aimed from scratch', () => {
++  const frames = (rig: LightRig): number[] => [rig.key, rig.dome].flatMap((l) => {
++    const c = l.shadow.camera
++    return [c.left, c.right, c.top, c.bottom, c.near, c.far, l.shadow.bias]
++  })
++
++  it('gives the key and the fill the same shadow frames whatever was aimed before', () => {
++    const two = samples(2)
++    const eight = samples(8)
++    const fresh = new LightRig()
++    const used = new LightRig()
++    for (let i = 0; i < 48; i++) used.place(eight[i % 8]!)
++    for (const s of two) {
++      fresh.place(s)
++      used.place(s)
++      expect(frames(used)).toEqual(frames(fresh))
++    }
++  })
++})
