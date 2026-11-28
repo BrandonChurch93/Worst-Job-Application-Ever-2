@@ -63,7 +63,7 @@ describe('step 1: the layout', () => {
   it('is a full page with every beat of the film as a gag', () => {
     const page = makePage()
     expect(page.gags.map((g) => g.id)).toEqual(beats.map((b) => b.id))
-    expect(page.gags.map((g) => g.event)).toEqual(['keyboard-rise', 'bolt-hit-cursor', 'keys-shuffle', 'slab-drop', 'paper-slide', 'arms-out', 'strips-zip'])
+    expect(page.gags.map((g) => g.event)).toEqual(['keyboard-rise', 'bolt-hit-cursor', 'slab-drop', 'paper-slide', 'arms-out', 'strips-zip'])
   })
 
   it('uses every word of the copy of step 1', () => {

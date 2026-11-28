@@ -613,7 +613,7 @@ describe('the packs of the unit site', () => {
     expect(LONG + 132 - KEYS.before).toBeGreaterThanOrEqual(LONG + 50 + KEYS.spent)
     const shown = motion(later).items.filter((x) => x.moment === 'type')
     expect(shown[0]!.steps![0]).toBe(LONG + 132 - KEYS.before)
-    expect(shown[0]!.heading).toContain(`. Press 2 of the visitor's 2 on the keyboard, the first whose frames begin after the turrets have stopped: the page went on to the last name at 0:05.83 and its turrets fire no more from then; these frames begin 1.32 s later, so no bolt lands in them. ${FIELD_WORDS.last}. The visitor rests `)
+    expect(shown[0]!.heading).toContain(`. Press 2 of the visitor's 2 on the keyboard, the first whose frames begin after the turrets have stopped: the page went on to the last name at 0:05.83 and its turrets fire no more from then; these frames begin 1.32 s later, so no bolt lands in them. ${FIELD_WORDS.first}. The visitor rests `)
     // Before that one the sheet takes a press on the Email field, where the keys stay in their seats: the first whose frames begin KEYS.home steps or more after the page goes on to that field
     // and end before the first red slab drops and before the page asks for the resume. The heading names the field and says in one sentence what the page does to its keys there.
     const mail = madeRun()

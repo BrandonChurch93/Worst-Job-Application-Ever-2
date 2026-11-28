@@ -69,7 +69,7 @@ describe('site finish: the visitors the four bots are not', () => {
   it('the measure itself: a keen hand through this driver finishes as the keen bot does', () => {
     holds(keen, 'keen')
     expect(keen.arrived.length).toBe(LAST + 1)
-    expect(config.film.beats.map((b) => b.id).filter((id) => !keen.stage.gagsReached.includes(id))).toEqual(['step1.lastName'])
+    expect(config.film.beats.map((b) => b.id).filter((id) => !keen.stage.gagsReached.includes(id))).toEqual([])
     expect(keen.stage.gagsReached.length).toBe(36)
   })
 

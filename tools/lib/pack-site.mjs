@@ -29,7 +29,7 @@ export const VISITOR = { hz: 60, speed: 1500, reactSteps: 11, typeEvery: 8, whee
 // Where the turrets fire: from the gag `from` of the page `page` until the gag `until`, the visitor walks to the key nearest the middle of the key block,
 // far from both turrets, and stands still there, hands off, until the site tells of one hit named `hit` far from both muzzles. `mostSteps` ends the wait if no such bolt ever lands.
 // With no key block given it stands where it is and any hit of that name ends the wait.
-export const STANDS = { page: 'step1', from: 'step1.firstName', until: 'step1.lastName', hit: 'bolt-hit-cursor', mostSteps: 900 }
+export const STANDS = { page: 'step1', from: 'step1.firstName', until: 'step1.email', hit: 'bolt-hit-cursor', mostSteps: 900 }
 // The key block of step 1 and its two turrets, as the page's own files set them (src/pages/step1/keyboard.ts and turrets.ts): the top of the deck,
 // the width of each end where a turret stands, the gap above the keys, what the deck is taller than its keys by and the length of a barrel.
 // `share` is the part of the key block's width a hit must be from the nearer muzzle for its bolt to be seen in flight. A stepped test holds these against the page.
@@ -771,7 +771,7 @@ export function momentsOf(cfg, run) {
   const stroke = (within.length ? within : strokes).reduce((best, x) => (!best || x.held > best.held ? x : best), null)
   const blow = stroke ? stroke.step : null
 
-  // A key of the page's keyboard pressed by the arrow: the first press of the mouse button inside the key block of step 1 once the page asks for the first name, and its release.
+  // A key of the page's keyboard pressed by the arrow: the first press of the mouse button inside the key block of step 1 once the page asks for the name, and its release.
   let type = null
   if (s1) {
     const block = keyBlock(cfg)
@@ -789,7 +789,7 @@ export function momentsOf(cfg, run) {
       presses.push({ press: i, release: up })
     }
     // The press that is shown: the first whose frames begin once the turrets fire no more and nothing of theirs is left. They stop at the hit on the arrow that overheats them
-    // (live.step1.hitsBeforeTurretsOverheat) or when the page goes on to the last name (STANDS.until), whichever comes first; KEYS.spent steps later no bolt is in the air. With no such press, the first.
+    // (live.step1.hitsBeforeTurretsOverheat) or when the Name is done and the page goes on to the Email field (STANDS.until), whichever comes first; KEYS.spent steps later no bolt is in the air. With no such press, the first.
     const shots = bolts(run.hits || [])
     const hot = shots[cfg.live.step1.hitsBeforeTurretsOverheat - 1] || null
     const on = run.gags.find((g) => g.gag === STANDS.until && g.step >= s1.first && g.step <= s1.last) || null
@@ -804,8 +804,7 @@ export function momentsOf(cfg, run) {
     const end = Math.min(s1.last + 1, next ? next.step : Infinity, slab ? slab.step : Infinity)
     const seated = email && last ? presses.find((x) => x.press - KEYS.before >= Math.max(email.step + KEYS.home, last.step + KEYS.spent) && x.release + KEYS.after < end) || null : null
     const shown = seated || clear || presses[0] || null
-    const named = run.gags.find((g) => g.gag === STANDS.until && inS1(g)) || null
-    const field = !shown ? null : email && shown.press >= email.step ? 'email' : named && shown.press >= named.step ? 'last' : 'first'
+    const field = !shown ? null : email && shown.press >= email.step ? 'email' : 'first'
     if (shown) type = { ...shown, nth: presses.indexOf(shown) + 1, of: presses.length, clear: Boolean(seated || clear), spent: last ? last.step : null, why: last ? last.why : null, field, seated: seated ? email.step : null, key: seated ? keyAt(cfg, rows[seated.press][COL.pointerX], rows[seated.press][COL.pointerY] + rows[seated.press][COL.scroll]) : null }
   }
   return { ...run, pages, turns, moments: { walk, hit, struck: struck ? struck.name : null, taken, back, released, thrown, flippers, leaves, left, flip, met: blow, stroke, strokes, blows, save, saves, gate, unsaved, type, turn: turns[0] || null, falls: fallsOf(cfg, rows, s3), reveal: revealOf(cfg, rows, s3) } }
@@ -1025,8 +1024,7 @@ export const KEYS = { before: 3, after: 8, mark: 'down', rest: 6, spent: 78, hom
 // What the page does to its keys on each field, by its design (kit/02-SUBJECT.md, "Field by field").
 export const FIELD_WORDS = {
   email: 'By the page\'s design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go',
-  last: 'This press lies on the last name, where by the page\'s design the keys change places after every letter: the keys that fly in these frames do so by that design',
-  first: 'This press lies on the first name, where by the page\'s design the turrets fire at the arrow'
+  first: 'This press lies on the Name field, where by the page\'s design the turrets fire at the arrow'
 }
 export const KEY_WORDS = `Under a frame, "${KEYS.mark}": the visitor holds the mouse button in it.`
 // The mark under frame i: picture i is the site before the visitor's events of step i, so it shows the button as row i - 1 holds it.
@@ -1278,9 +1276,9 @@ export function motionPlan(cfg, run) {
     // Which press it is, in true words, and a hit on the arrow inside the run, so that what it does to the page is not read as a press.
     const hit = (run.hits || []).find((h) => HITS.includes(h.name) && h.step >= steps[0] && h.step <= steps[steps.length - 1])
     const nth = cfg.live.step1.hitsBeforeTurretsOverheat
-    const stopped = m.type.why === 'hot' ? `bolt ${nth} hit the arrow at ${timeOf(m.type.spent)} and the turrets fire no more after it` : `the page went on to the last name at ${timeOf(m.type.spent)} and its turrets fire no more from then`
+    const stopped = m.type.why === 'hot' ? `bolt ${nth} hit the arrow at ${timeOf(m.type.spent)} and the turrets fire no more after it` : `the Name was done and the page went on to the Email field at ${timeOf(m.type.spent)} and its turrets fire no more from then`
     const which = m.type.seated !== null && m.type.seated !== undefined
-      ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard${m.type.key ? `, on the key ${m.type.key} (the arrow's tip lies on its letter)` : ''}, the first on the Email field after its keys have come home: the page went on to that field at ${timeOf(m.type.seated)} and these frames begin ${((from - m.type.seated) / VISITOR.hz).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}`
+      ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard${m.type.key ? `, on the key ${m.type.key} (the arrow's tip lies on its letter)` : ''}, the first on the Email field after its keys have come home: the page went on to that field at ${timeOf(m.type.seated)} and these frames begin ${((from - m.type.seated) / VISITOR.hz).toFixed(2)} s later; the turrets went down when the Name was done and no bolt lands in these frames. ${FIELD_WORDS.email}`
       : m.type.clear
       ? `Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, the first whose frames begin after the turrets have stopped: ${stopped}; these frames begin ${((from - m.type.spent) / VISITOR.hz).toFixed(2)} s later, so no bolt lands in them`
       : `The first press of the visitor's on the keyboard; the turrets may fire in these frames`

@@ -41,9 +41,8 @@
       { "at": 0, "text": "First name. / Under fire. / Standard onboarding.", "live": "the visitor clicks the First name field" },
       { "at": 0.72, "text": "Hit. / It keeps typing. / It has bills.", "live": "the first bolt hits the cursor" }
     ],
-    "step1.lastName": [],
     "step1.email": [
-      { "at": 0, "text": "A valid email. / Rejected. / The system / is working as designed.", "live": "the first error slab lands" }
+      { "at": 0.5, "text": "A valid email. / Rejected. / The system / is working as designed.", "live": "the first error slab lands" }
     ],
     "step1.resume": [],
     "step1.tug": [
