@@ -231,3 +231,41 @@ On head `5853431c`, the last change to any source file:
 - The whole `npm test`: not run.
 Commits of the third task: `0f4d1075` (the input `until`), `8f7bc9e6` (the pose), `5853431c` (wisps, charge, beam), then the tools, the proofs and these notes.
 The fight helper was told at 03:11Z: the input `power: { at, until }`, `powerPlan`, and the part of the look that hides the beam.
+
+
+## Fourth task (Builder's mail of about 03:38Z, with the Builder's note of 03:28Z and the fight helper's mail of 03:29Z)
+
+### Decisions
+30. The grey body (item 1). Cause, found by measuring and by moving the light: when the figure stands, the white face is tipped 40 degrees away from the key, and my own fill light (`FACE` in `src/boss/finish/index.ts`) was weak (0.3) and stood below and beside the face, nearer the ground than the face. The body was white in the power-up and the charge only because the gold light and the ball's light were on. It is not the material, not the long shadow, and in my harness not smoke. Mend: the light stands on the face's own normal, 45 px from it, power 0.8, reach 160; it is turned down while the gold aura is on. My own hand smoke is kept low under the figure.
+31. Brightness of the body (MEASURED in my harness; mean of the pixels of the white face, of 255, found by flood fill from a seed on the face). Before, on `4dde340f`: walk 170.3 and 168.9, fist 164.9; eight frames of the fist strip 162.6 to 169.0. After: walk 251.3, knees 250.6, fist 250.9; the same eight frames of the fist strip 248.1 to 250.9. The standing figure of the power-up: 227.8 before, 242.2 after. So the walk, the knees and the fist are 3.5 to 3.8 percent above the standing figure. NOT measured on the real page.
+32. The ember rim (the fight helper's mail, the Builder's ruling). A thin orange rim on the legs, the arms and the gloves: each rubber piece once more as an inverted hull (`rimStuff` in `src/cursor/stand/figure.ts`), five more draw calls while it shows. The module shows it by itself from `marks.end` on, eased in over 0.5 s; the optional input `ember` (0 to 1) overrides. The white body has none.
+33. The figure above the smoke: NOT done. The figure is solid and is drawn before every see-through thing, so no draw order number lifts it over smoke that lies higher than it. The arena's wisps (read on `origin/agent/b-boss`, `src/arena/finish.ts`) rise to z = 8 + 230 g, 300 for the two over the burn; the figure's top is about 100 px above the ground. Either the arena keeps its wisps low near the figure or the figure moves to the late pass; the second touches the cursor's shared materials and was not tried. The fight helper was told.
+34. The flames (item 2). In the power-up: nine full flames behind the figure (three at each side, 62 to 116 px tall before the size, three low ones behind the legs), each with a curl of its own (`aFlame.z`), a livelier sway, a paler core; the ground tongues are wider; the ring is kept. As I see the picture: fuller and leaning, gold with a pale core, fists and arrow clear; still more blade than curl against the sheet, and one low tongue stands in front of the right shoe.
+35. The charge (item 3). New optional mark `marks.thrust`: from it the figure coils 0.1 s, thrusts the ball forward with both hands in 0.2 s (`POSES.aim`) and holds it until the beam leaves at `fire + FIRE.lead`. The film passes `fire - FIRE.ahead` (0.45), which holds the ball in front for 0.35 s (STATED from the timeline; a test holds 0.25 s at least; seen in all 43 frames). The marks' times do not move. The ball stays and is spent into the beam while it opens (it used to go out two frames before the beam showed). Without the mark (the live visitor, where nobody knows ahead when he lets go) the shot plays as before: no hold.
+36. The small shot (item 4, the Builder's note). Rendered in my harness with the fight's numbers (a plain click 0.32 s after the arms, shot 0.25): blue-white in every frame; my beam shader has no orange in it. The fight helper's 54.75 s frame was taken on the old thin beam (core about 2 px at shot 0.25), so the orange is most likely the arena's ember trench under it (STATED, not verified on the real page). Nothing was changed for this item.
+
+### Proof (all from my harness, not the real page; strips one sample a frame)
+- `proof/finish/report-t4-white.png`: eight frames of the fist strip before and after, each with its measured brightness.
+- `proof/finish/report-t4-power.png`: the sheet's figure, the build at a right angle, the build straight down.
+- `proof/finish/report-t4-thrust.png`: every frame from 0.50 s before the beam leaves to 0.20 s after.
+- `proof/finish/report-t4-small.png`: eight frames in a row of the small shot, from the frame before the beam leaves.
+
+### Draw calls (fourth task, MEASURED, harness, film tier, finish alone at 1.5)
+Power-up 14 (31,088 triangles); charge and thrust 15; blast 17 to 18; walk and knees 19, fist 18 (38,560 triangles with the five rim pieces); small shot 12 to 18.
+
+### Open
+- The real page was not rendered by me in this task: the white body, the rim and the small shot are shown in my harness only.
+- The figure above the smoke (33).
+- The live visitor's shot has no hold of the ball in front (35).
+- The flames are not yet the sheet's curling flames (34). The fire pose is unchanged.
+- The whole `npm test` was not run in this task.
+
+### Runs of the fourth task (MEASURED, with exit codes)
+On head `356fbeaf`, the last change to any source file:
+- `npx vitest run tests/b-finish.test.ts`: EXIT 0, 22 of 22, at 03:59Z (two new tests: the held thrust, the ember rim).
+- `npx tsc --noEmit -p .`: EXIT 0 at 03:59Z.
+- `npm run determinism`: EXIT 0 at 04:04Z ("pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders").
+- `npm run bots`: EXIT 0 at 04:04Z ("bots: all clear").
+- The whole `npm test`: not run.
+Commits of the fourth task: `ae5d4269` (white body, ember rim, thrust held), `9a966641` (flames, low smoke), `356fbeaf` (flames curl more, tools, proofs), then these notes.
+The fight helper was told at 03:55Z and 04:00Z: the rim by itself from `marks.end`, the optional `ember` and `marks.thrust`, the cause of the grey, the draw order answer, the small shot.
