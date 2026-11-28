@@ -502,7 +502,8 @@ export function makePage(): PageLogic {
         s.px = io.pointer.x
         s.py = io.pointer.y
         s.alone = stirred ? 0 : s.alone + dt
-        if (s.turned < 0 && ((s.mode === 'live' && (io.pressed || s.asked)) || s.t >= LINE7.part0)) {
+        if (s.mode === 'live' && io.pressed) s.asked = true
+        if (s.turned < 0 && ((s.asked && s.t >= LINE7.lead - 1e-6) || s.t >= LINE7.part0)) {
           s.turned = earlyEnd(LINE7.ends, LINE7.sentences, s.t)
           io.emit('boss-turn', io.cursor.x, io.cursor.y, false)
         }

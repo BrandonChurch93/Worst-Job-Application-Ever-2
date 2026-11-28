@@ -644,3 +644,29 @@ Taken first: `origin/agent/merge55` 0429b87e (the page keeps time by the recorde
 - Look on: b-boss EXIT 0 (40), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-finish EXIT 0 (23), takes-timing EXIT 0 (7), tsc EXIT 0. Film marks the same as at 27f7eeef.
 - Not run at this tree: the look off (last run at 40c05ed8), the whole chain of tests, the cut, the build, determinism and the bots' gate.
 - Pictures: `S1-` and `S2-set-down-under-the-bar-live-60-a-second.jpg`, 48 frames in a row at 60 a second from 48.704 s to 49.487 s, 1 to 1 from the 960 px live picture, the crop 180 by 240 px under the bar. The last 0.02 s of the set-down are not in them.
+
+## The kept press and line 7 (ruling of 06:52Z November 28)
+
+Fault of d25d7845, MEASURED by the Builder on merge55 b38b9fc0 + d25d7845: three tests of tests/audio-visit.test.ts red on the keen visit.
+
+Cause, MEASURED (a dump of the keen and the clumsy visit through tools/lib/sound-visit.mjs, before the mend): the page took the kept press on the first step of its own clock of line 7, which is 8.792 s after the tick. The voice starts line 7 at 8.790 s after the tick as it hears the tick, and it hears every event at the start of its frame. For the keen visitor the turn reached the voice at 105.300 s and the line was to start at 105.307 s. A turn that comes before the line has started drops the whole line (src/audio/index.ts, `jump`: the end is the start), and the two last parts followed at once, while the page still counted 5.182 s of a first sentence. So the music came 5.467 s after its words. For the clumsy visitor the frame fell the other way (turn 124.950 s, line from 124.940 s) and the sentence was said.
+
+Mend, in my files only: `LINE7.lead` 0.1 s (src/boss/tune.ts). A press from `boss-formed` on is kept (`asked`), and the turn is taken when line 7's clock is at `lead` or later. A press later than that acts at once. The film never sets `asked`. The line `s.turned = earlyEnd(LINE7.ends, LINE7.sentences, s.t)` is as it was.
+
+Why 0.1 s: the page and the voice are one frame apart at most in the stepped runs (0.017 s). On a visitor's machine the frames may be longer; 0.1 s covers a frame of a tenth of a second. STATED, not measured in a browser.
+
+MEASURED after the mend (`BOSS_SAY=1 npx vitest run tests/b-boss.test.ts -t "rulings of 04:46, 3"`, near path and self-tick path, the same numbers on both, seconds after the tick):
+- pressed as soon as formed, 1.5 s before the end of line 6, 0.1 s before it, or as line 7 starts: boss-turn 8.887, first sentence of line 7 ends 13.972 (8.790 + 5.182), boss-music 18.079, power-up 20.762, turret-lock 24.121. Pointer held 3.304 s at the longest.
+- pressed 1 s after the end of line 6: boss-turn 9.792, the rest the same.
+- never presses: boss-turn 32.112, boss-music 36.221, power-up 38.904, turret-lock 42.263. Pointer held 6.004 s at the longest.
+- Line 7's part 0 ends at 5.182 s or at 23.324 s of itself in all six, each the end of a sentence.
+
+MEASURED through the voice (the same dump, after the mend), keen visit, seconds after the tick: line 6 from 0 to 8.490; line 7 part 0 from 8.790, cut at 5.182 s of itself, 13.972; part 1 from 14.273 to 19.863; boss-music heard at 18.066; part 2 from 20.163 to 24.117; power-up 20.750; turret-lock 24.116. Clumsy visit: the same but the turn at 8.883.
+
+The film: `node /tmp/ev.mjs` gives the same marks as at 27f7eeef (diff empty).
+
+The chain of the Builder on this tree (merge55 b38b9fc0 merged), 06:55Z to 07:00Z: TSC EXIT 0, RETIME EXIT 0, CUT EXIT 0, BUILD EXIT 0, VITEST EXIT 1 with 3 failed, 768 passed, 13 skipped of 784. The three: tests/b-shell-turn.test.ts "on step 1 is lifted", tests/polish-tug3.test.ts "is as it was", tests/site-finish-film.test.ts "finds the worst moments". tests/audio-visit.test.ts: 14 passed.
+
+Not run: look off, a browser, the bots' gate, determinism.
+
+The retime to come (not done): src/audio/standin.ts already reads public/audio/index.json, and tests/takes-timing.test.ts reads the lengths and phrase ends from it. `LINE6.after`, `LINE7.part0`, `ends`, `sentences`, `part1`, `music` and `part2` can be worked out from `standIns()` in src/boss/tune.ts, so that a kept take needs no number typed. Three numbers are set by hand and do not fit a part 2 of 1.9 s: `LINE7.power` 0.6 + `LINE7.glow` 2 = 2.6 s, and `RAISE.early`. They want a ruling.

@@ -157,6 +157,7 @@ export const LINE7 = {
   part0: 23.324, // s of `boss.unfold.0`, from `boss-formed`
   ends: [2.208, 5.182, 8.524, 11.356, 13.856, 17.88, 20.772, 23.324] as const, // s at which its phrases end (the start of the next one, and the end of the file): where the shell stops it after a `boss-turn`
   sentences: [5.182, 8.524, 17.88, 23.324] as const, // s at which its sentences end, each one of `ends`: a click ends the line there when that is near enough, by `earlyEnd` of src/audio/cues.ts, which the voice reads too
+  lead: 0.1, // s of line 7 that are said before a press may turn the boss: a press before that is kept and acts then, so that the turn never reaches the voice before the line has started
   gap: 0.3, // s of silence the shell leaves before the next part
   part1: 5.59, // s of `boss.unfold.1`
   music: 3.806, // s into part 1 at which "their student loans." and the music start (`boss-music`)
