@@ -59,6 +59,8 @@ export interface ViewBoss {
   beaten: number
   // 0 until the finishing blast is fired, to 1 over the blast: at 1 the body is gone and only the button lies on the ground. Absent before the finish exists.
   gone?: number
+  // The view's time of the fist's blow on the button that is left (`finish-press`). Null or absent until then.
+  pressedAt?: number | null
 }
 
 export interface ViewBullet {
@@ -121,6 +123,19 @@ export interface ViewFinish {
   firedAt: number
 }
 
+// The last moment, from `boss-gone`: where the arrow stands on the ground, what it does and for how long it has done it.
+// `walk` to the button, `kneel` (the knees, and in the film one breath), `fist` (the right fist goes up), `blow` (it comes down), `pressed` (the blow has landed).
+export interface ViewLast {
+  phase: 'walk' | 'kneel' | 'fist' | 'blow' | 'pressed'
+  since: number
+  x: number
+  y: number
+  // The middle of the button it walks to and strikes.
+  to: ViewPoint
+  // True while the visitor leads the walk; false when the arrow goes by itself.
+  led: boolean
+}
+
 export interface ViewBreak {
   id: number
   at: number
@@ -142,6 +157,11 @@ export interface BossView {
   arrow: ViewArrow
   breaks: ViewBreak[]
   finish?: ViewFinish | null
+  // The line of the finishing blast, kept from the frame it is fired to the end: the ground stays scorched along it. The same four numbers as `finish`.
+  scorch?: { x0: number; y0: number; x1: number; y1: number } | null
+  last?: ViewLast | null
+  // 0 to 1: how far the picture has come in to the close view of the finish.
+  close?: number
 }
 
 export interface ViewSolid {

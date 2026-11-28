@@ -3,7 +3,7 @@ import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, 
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
 import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
-import { BIG, CHANGE, FINISH, FLAT, GUARD, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { wordAt } from '../../boss/look1/pose'
@@ -12,7 +12,7 @@ import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/wea
 import { frame } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
 import { SCREEN_H, TYPE } from '../../shell/parts'
-import type { DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
+import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
 import { makeLayout } from './layout'
 import { makeScript, STAND } from './script'
 import { TICK_Z } from './real/verify-card'
@@ -63,6 +63,11 @@ interface State {
   blown: boolean
   gainFrom: number
   gainT: number
+  fig: { x: number; y: number } | null
+  dash: number
+  close: number
+  burn: { x: number; y: number } | null
+  end: { phase: 'walk' | 'kneel' | 'fist' | 'blow' | 'pressed'; t: number; idle: number; go: boolean; px: number; py: number } | null
 }
 
 const heights = config.scale.heights
@@ -99,7 +104,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -136,12 +141,51 @@ export function makePage(): PageLogic {
   }
   const WHOLE = SHOUT.fire - SHOUT.beats[0]!
   const level = (held: number): number => FINISH.steady * Math.min(1, held / WHOLE) + (1 - FINISH.steady) * steps(held)
-  const armsOut = (): boolean => s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms && s.fired < BLAST
+  const armsOut = (): boolean => (s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms && s.fired < BLAST) || fist() !== null
   const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : level(s.charge))
+  const KNEEL = { x: FALLEN.x - LAST.reach, y: FALLEN.y }
+  const near = (): { x: number; y: number; z: number } => {
+    const k = s.close * s.close * (3 - 2 * s.close)
+    const w = 1920 + (CLOSE.w - 1920) * k
+    return { x: 960 + (CLOSE.x + CLOSE.w / 2 - 960) * k, y: 540 + (CLOSE.y + CLOSE.h / 2 - 540) * k, z: 1920 / w }
+  }
+  const ground = (p: { x: number; y: number }): { x: number; y: number } => {
+    const n = near()
+    return { x: n.x + (p.x - 960) / n.z, y: n.y + (p.y - 540) / n.z }
+  }
+  const screen = (p: { x: number; y: number }): { x: number; y: number } => {
+    const n = near()
+    return { x: 960 + (p.x - n.x) * n.z, y: 540 + (p.y - n.y) * n.z }
+  }
+  const walk = (to: { x: number; y: number }, speed: number, dt: number): boolean => {
+    const f = s.fig!
+    const d = Math.hypot(to.x - f.x, to.y - f.y)
+    const step = speed * dt
+    if (d <= step) {
+      f.x = to.x
+      f.y = to.y
+      return true
+    }
+    f.x += ((to.x - f.x) / d) * step
+    f.y += ((to.y - f.y) / d) * step
+    return false
+  }
+  const fist = (): [{ x: number; y: number; z: number }, { x: number; y: number; z: number }] | null => {
+    const e = s.end
+    if (!e || !s.fig || e.phase === 'walk' || e.phase === 'kneel') return null
+    const from = { x: s.fig.x + 30, y: s.fig.y + 20, z: 30 }
+    const up = { x: s.fig.x + 26, y: s.fig.y - 84, z: 120 }
+    const hit = { x: FALLEN.x - 60, y: FALLEN.y, z: 30 }
+    const k = e.phase === 'fist' ? prog(e.t, 0, LAST.fist) : 1
+    const down = e.phase === 'blow' ? prog(e.t, 0, LAST.blow) ** 2 : e.phase === 'pressed' ? 1 : 0
+    const mix = (a: number, b: number, u: number): number => a + (b - a) * u
+    const raised = { x: mix(from.x, up.x, k), y: mix(from.y, up.y, k), z: mix(from.z, up.z, k) }
+    return [{ x: s.fig.x - 34, y: s.fig.y + 30, z: 30 }, { x: mix(raised.x, hit.x, down), y: mix(raised.y, hit.y, down), z: mix(raised.z, hit.z, down) }]
+  }
   const strip = (rig: Rig, k: number): Rig => ({ ...rig, plate: { ...rig.plate, k: rig.plate.k * k }, sides: rig.sides.map((q) => ({ ...q, k: q.k * k })), legs: rig.legs.map((q) => ({ ...q, k: q.k * k })), cannons: rig.cannons.map((q) => ({ ...q, k: q.k * k })), shield: { ...rig.shield, k: rig.shield.k * k } })
   const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
   const NONE = { breaks: [], fallen: [] as string[] }
-  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= 0 && s.fired < BLAST ? { power: s.shot, since: s.fired } : null }))
+  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= 0 && s.fired < BLAST ? { power: s.shot, since: s.fired } : null, last: s.end && s.fig ? { phase: s.end.phase, since: s.end.t, x: s.fig.x, y: s.fig.y, to: { x: FALLEN.x, y: FALLEN.y }, led: !s.end.go } : null, close: s.close, pressedFor: s.end ? s.pressed : -1, scorch: s.burn }))
   const inBox = (b: { x: number; y: number; w: number; h: number }, p: { x: number; y: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const fallenBox = { x: FALLEN.x - 150, y: FALLEN.y - 62, w: 300, h: 124 }
   const wake = (): number => (s.mode === 'film' ? WAKE_AFTER_TICK.film : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
@@ -217,11 +261,77 @@ export function makePage(): PageLogic {
     if (blast) {
       io.emit('boss-fall', from.cap.x, from.cap.y, false)
       io.cursor.act('angry')
+      s.fig = { x: io.cursor.x, y: io.cursor.y }
+      s.dash = Math.hypot(LAST.stand[0] - s.fig.x, LAST.stand[1] - s.fig.y) / FINISH.fall
       return
     }
     io.cursor.hurt('scorched')
     io.cursor.act('plain')
     io.cursor.aim(null)
+  }
+
+  const lead = (io: StepIo): void => {
+    if (!s.fig) return
+    if (!io.cursor.taken) io.cursor.take('boss')
+    io.cursor.drive(s.fig.x, s.fig.y)
+  }
+  const last = (io: StepIo): void => {
+    const e = s.end!
+    const dt = io.dt
+    const press = (): void => {
+      e.phase = 'pressed'
+      e.t = 0
+      s.pressed = 0
+      io.emit('finish-press', FALLEN.x, FALLEN.y, false)
+      io.emit('button-press', FALLEN.x, FALLEN.y, false)
+    }
+    if (e.phase === 'pressed') {
+      e.t += dt
+      s.pressed += dt
+      if (s.pressed >= (s.mode === 'film' ? LAST.hold : LAST.held)) {
+        s.done = true
+        io.cursor.release()
+      }
+      return
+    }
+    if (s.skipping && s.blown) {
+      press()
+      return
+    }
+    if (e.phase === 'walk') {
+      e.t += dt
+      const at = ground(io.pointer)
+      if (!e.go) {
+        const moved = Math.hypot(io.pointer.x - e.px, io.pointer.y - e.py) > 2
+        e.idle = moved || io.pointer.down ? 0 : e.idle + dt
+        e.px = io.pointer.x
+        e.py = io.pointer.y
+        if ((io.pressed && s.blown && inBox(fallenBox, at, 4)) || e.idle >= LAST.alone || e.t >= LAST.led) {
+          e.go = true
+          s.dash = Math.max(LAST.speed, Math.hypot(KNEEL.x - s.fig!.x, KNEEL.y - s.fig!.y) / LAST.most)
+        }
+      } else if (e.t <= dt) s.dash = LAST.speed
+      const to = e.go || inBox(fallenBox, at, LAST.reach - fallenBox.w / 2) ? KNEEL : { x: Math.min(CLOSE.x + CLOSE.w - CLOSE.edge, Math.max(CLOSE.x + CLOSE.edge, at.x)), y: Math.min(CLOSE.y + CLOSE.h - CLOSE.edge, Math.max(CLOSE.y + CLOSE.edge, at.y)) }
+      const there = walk(to, e.go ? s.dash : LAST.speed, dt)
+      if (e.go && there && s.blown) {
+        e.phase = 'kneel'
+        e.t = 0
+        io.emit('finish-kneel', KNEEL.x, KNEEL.y, false)
+        io.cursor.aim(0)
+      }
+      return
+    }
+    e.t += dt
+    if (e.phase === 'kneel' && e.t >= LAST.knees + (s.mode === 'film' ? LAST.breath : 0)) {
+      e.phase = 'fist'
+      e.t = 0
+      io.emit('finish-fist', KNEEL.x, KNEEL.y, false)
+    } else if (e.phase === 'fist' && e.t >= LAST.fist) {
+      e.phase = 'blow'
+      e.t = 0
+    } else if (e.phase === 'blow' && e.t >= LAST.blow) press()
+    const hands = fist()
+    if (hands) io.cursor.setArms(true, hands)
   }
 
   const page: PageLogic = {
@@ -416,9 +526,12 @@ export function makePage(): PageLogic {
         if (f.over) toCollapse(io, rigNow()!, true)
       } else if (s.stage === 'finish') {
         const u = s.t - FINISH.fall
+        s.close = Math.min(1, s.close + dt / FINISH.fall)
+        if (!s.end) walk({ x: LAST.stand[0], y: LAST.stand[1] }, s.dash, dt)
+        lead(io)
         if (u >= SHOUT.arms && u - dt < SHOUT.arms) io.emit('finish-arms', io.cursor.x, io.cursor.y, false)
-        aimAt(io, FALLEN)
-        if (armsOut()) io.cursor.setArms(true, finishHands(io.cursor, FALLEN, charged(), s.fired >= 0).hands)
+        if (!s.end) aimAt(io, FALLEN)
+        if (s.fired < BLAST && armsOut()) io.cursor.setArms(true, finishHands(io.cursor, FALLEN, charged(), s.fired >= 0).hands)
         if (s.fired < 0 && u >= SHOUT.arms) {
           const down = io.pointer.down
           const whole = WHOLE
@@ -426,6 +539,7 @@ export function makePage(): PageLogic {
           const fire = (): void => {
             s.shot = Math.max(FINISH.small, s.charge < 0 ? 0 : level(s.charge))
             s.fired = 0
+            s.burn = { x: io.cursor.x, y: io.cursor.y }
             io.emit('finish-fire', io.cursor.x, io.cursor.y, false)
             const d = Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) || 1
             io.cursor.knock(((io.cursor.x - FALLEN.x) / d) * KICK.popup * s.shot, ((io.cursor.y - FALLEN.y) / d) * KICK.popup * s.shot)
@@ -450,8 +564,11 @@ export function makePage(): PageLogic {
             io.cursor.act('exhausted')
             io.cursor.aim(null)
             io.cursor.setArms(false)
+            s.end = { phase: 'walk', t: 0, idle: 0, go: s.mode === 'film', px: io.pointer.x, py: io.pointer.y }
+            io.emit('finish-walk', io.cursor.x, io.cursor.y, false)
           }
-          if (s.fired >= BLAST + FINISH.settle) {
+          if (s.end) last(io)
+          if (s.fired >= BLAST + FINISH.settle && s.stage === 'finish') {
             io.emit('button-down', FALLEN.x, FALLEN.y, false)
             s.blown = true
             s.stage = 'press'
@@ -463,6 +580,9 @@ export function makePage(): PageLogic {
           s.stage = 'press'
           s.t = 0
         } else if (s.t >= SAG_AT && s.t - dt < SAG_AT) io.cursor.act('exhausted')
+      } else if (s.stage === 'press' && s.end) {
+        lead(io)
+        last(io)
       } else if (s.stage === 'press') {
         if (s.pressed < 0) {
           const target = s.inSocket ? L.cap : fallenBox
@@ -612,11 +732,16 @@ export function makePage(): PageLogic {
       if ((s.stage === 'collapse' && s.t > CAP_LANDS) || (s.stage === 'finish' && s.t > FINISH.fall) || (s.stage === 'press' && !s.inSocket)) drawSmoke(out, FALLEN.x, FALLEN.y, s.time)
     },
     scroll: () => 0,
-    view: () => null,
+    view(): CameraPose | null {
+      if (s.close <= 0) return null
+      const n = near()
+      return frame({ x: n.x - 960 / n.z, y: n.y - 540 / n.z, w: 1920 / n.z, h: 1080 / n.z })
+    },
     camera: () => null,
     script: (time: number): Pointer => film.pointer(time),
     chrome: () => ({ header: 1 - gone() }),
     arms: () => armsOut(),
+    led: () => s.fig !== null && !page.ignoring(),
     hint(): Hint | null {
       const blink = Math.floor(s.time * 6) % 2 === 0
       if (s.stage === 'verify' && s.ticked < WAKE_AFTER_TICK.near) return { x: L.checkbox.cx, y: L.checkbox.cy, down: s.ticked < 0 && blink }
@@ -673,7 +798,7 @@ export function makePage(): PageLogic {
         if (hot) out.dodge = { x: spot[0], y: spot[1] }
         return out
       }
-      const at = s.inSocket ? SOCKET : FALLEN
+      const at = s.inSocket ? SOCKET : s.end ? screen(FALLEN) : FALLEN
       return { x: at.x, y: at.y, down: s.stage === 'press' && s.pressed < 0 && blink }
     },
     skip() {
@@ -688,7 +813,12 @@ export function makePage(): PageLogic {
       if (s.stage === 'collapse' || s.stage === 'finish') return 'boss.collapse'
       return 'boss.press'
     },
-    ignoring: () => s.stage === 'fight' && s.fight !== null && s.fight.flat > 0,
+    ignoring(): boolean {
+      if (s.stage === 'fight') return s.fight !== null && s.fight.flat > 0
+      if (!s.fig) return false
+      if (s.end) return s.end.go || s.end.phase !== 'walk'
+      return s.t < FINISH.fall + SHOUT.arms || s.fired >= 0
+    },
     states(): string[] {
       const out = [card()]
       const bar = (s.stage === 'unfold' && s.t >= UNFOLD.bar[0]) || s.stage === 'hold' || s.stage === 'fight' || s.stage === 'finish' || ((s.stage === 'collapse' || s.stage === 'press') && !s.inSocket)

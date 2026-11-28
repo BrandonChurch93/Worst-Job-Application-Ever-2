@@ -183,6 +183,31 @@ export const FINISH = {
   ball: 120 // px across of the full charge as drawn
 } as const
 
+// The close view of the finish: the part of the floor the picture shows from the boss's fall to the press of Submit.
+export const CLOSE = {
+  x: 300, // px, left edge
+  y: 270, // px, top edge
+  w: 960, // px across
+  h: 540, // px down
+  edge: 40 // px inside the edge that the arrow keeps to when it is led
+} as const
+
+// The last moment: when the body is gone the arrow walks to the button that is left, drops to its knees and strikes it with its right fist.
+export const LAST = {
+  stand: [440, 650], // px, where the arrow stands for the charge and the blast
+  reach: 200, // px left of the button's middle at which it kneels
+  speed: 178, // px/s of its walk: 1.8 s from where it stood to the button
+  alone: 6, // s without a move or a press after which it walks there and strikes by itself, live site
+  led: 20, // s of being led about after which it walks there and strikes by itself, live site
+  most: 2, // s at most that its walk to the button takes when it goes by itself
+  knees: 0.7, // s to drop to its knees (`finish-kneel`)
+  breath: 0.6, // s it breathes on its knees, film only
+  fist: 0.6, // s the right fist takes to go up (`finish-fist`)
+  blow: 0.3, // s from the top of the fist to the blow on the button (`finish-press`)
+  hold: 0.5, // s the film holds after the blow before the page turns
+  held: 0.35 // s the live site holds after the blow
+} as const
+
 // E. The visitor who does nothing: the old rule that the boss tires by the clock, kept for him alone.
 export const IDLE = {
   after: config.live.idleSeconds, // s without a shot before the boss starts to give up
