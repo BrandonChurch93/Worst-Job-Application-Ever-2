@@ -18027,6 +18027,429 @@
         "power-up"
       ],
       "why": "A layer made for free from paid first takes. The cue is the arrow's gold power-up on the words One more round, so its line now says that. A listening model that was told the new line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a fast swell of energy rising into a bright ringing chime; all three call it synthesized). The first take fit the old line 2 of 3 and the first layer 0 of 3. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "finish-arms",
+      "kind": "cue",
+      "cue": "finish-arms",
+      "take": 1,
+      "round": "change-002-layer",
+      "file": "take-1.wav",
+      "sha256": "5b6fd4f54103efe33510dfc9aa0554fb6488e67c5f76b2d5c7d3ae8c637cf4e0",
+      "filed": "2026-11-28T17:00:10.429Z",
+      "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): as layer L1, with each piece brought to full level before mixing: the kept arms-out pop twice, a third and a fourth lower, 0.08 s apart, now the loudest part, each with a short low thud under it (slab-slam take 1 raised); noise with the colour of vacuum-roar take 1 rising over 0.5 s, 8 dB under, as air drawn in; at 0.54 s the stance locking 3 dB under the pops: the clunk of pin-kick lowered, the thud again and the click of stop-press",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.724,
+        "peakDb": -1.01,
+        "rmsDb": -18.44,
+        "lufs": -21.99,
+        "truePeakDb": -1,
+        "low": 0.773,
+        "mid": 0.19,
+        "high": 0.037,
+        "tailDb": -22.39,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.702,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "Three quick, sharp mechanical clicks occur in rapid succession. / Two swift mechanical sliding and clicking noises occur in rapid succession. / A quick, spring-loaded metallic snapping and locking sequence.",
+        "madeOf": "Metal and plastic mechanical parts. / Synthetic metallic snaps and servo sliding sounds. / Metal, springs, mechanical components.",
+        "events": "3 / 2 / 3",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sequence of three distinct mechanical snaps perfectly matches the timing of two arms deploying followed by a final locking click.",
+          "The two distinct, rapid mechanical deployment and locking sounds perfectly emulate two robot arms extending and snapping into position one after the other.",
+          "The quick succession of a springy metallic deployment noise followed by a sharp double click perfectly matches the idea of two mechanical arms popping out and locking into place."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "finish-arms"
+      ],
+      "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as three quick, sharp mechanical clicks occur in rapid succession). A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "button-down",
+      "kind": "cue",
+      "cue": "button-down",
+      "take": 1,
+      "round": "change-002-layer",
+      "file": "take-1.wav",
+      "sha256": "864ad5a27adb9ceb05f914a76837f31563a12b5ae99e75a5e50cc0eab1528553",
+      "filed": "2026-11-28T17:00:14.348Z",
+      "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): as layer L1 (the kept slab-drop with slab-slam take 1 raised under it and a quiet clank), with the rocking of the cap made louder and longer: the kept button-press a third lower four times, at 0.15, 0.26, 0.36 and 0.45 s, 5, 8, 11 and 14 dB under the landing",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.536,
+        "peakDb": -1.01,
+        "rmsDb": -18.72,
+        "lufs": -23.99,
+        "truePeakDb": -1.01,
+        "low": 0.768,
+        "mid": 0.231,
+        "high": 0.001,
+        "tailDb": -35.04,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.504,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A small, hard plastic object drops onto a solid surface and rattles rapidly before coming to a complete rest. / A small, hard object drops onto a solid surface and rapidly rattles as it settles. / A small, hard plastic object drops and rapidly bounces and rocks to a stop on a hard surface.",
+        "madeOf": "Hard plastic and a hard floor or table. / Hard plastic on a hard floor or table. / Hard plastic, hard floor",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sharp initial impact followed by a fast, accelerating sequence of clicks perfectly matches the acoustic behavior of a flat plastic object rocking until it settles.",
+          "The sharp initial impact followed by a fast, diminishing clicking perfectly matches the sound of a plastic button hitting a hard floor and rocking to a stop.",
+          "The sharp initial impact followed by an accelerating rattle perfectly matches the sound of a hard plastic disc falling and rocking to a stop on a solid floor."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "button-down"
+      ],
+      "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a small, hard plastic object drops onto a solid surface and rattles rapidly before coming to a complete rest). A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "finish-walk",
+      "kind": "cue",
+      "cue": "finish-walk",
+      "take": 1,
+      "round": "change-002-layer",
+      "file": "take-1.wav",
+      "sha256": "db3538d6283000e182426be845d39caa106ca46730365291259710cbd68a0c72",
+      "filed": "2026-11-28T17:00:18.021Z",
+      "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): four soft steps at 0.02, 0.27, 0.52 and 0.77 s: the clunk of pin-kick lowered by a fourth and by a fifth in turn, kept under 1.6 kHz, each with a very short piece of the snap of keys-break take 1 14 dB under as grit",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 1,
+        "start": 0.02,
+        "end": 0.886,
+        "peakDb": -1.01,
+        "rmsDb": -22.62,
+        "lufs": -23.6,
+        "truePeakDb": -1.01,
+        "low": 0.238,
+        "mid": 0.746,
+        "high": 0.016,
+        "tailDb": -23.24,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.02,
+            "end": 0.124,
+            "peakDb": -1.01
+          },
+          {
+            "start": 0.27,
+            "end": 0.378,
+            "peakDb": -5.77
+          },
+          {
+            "start": 0.52,
+            "end": 0.624,
+            "peakDb": -1.61
+          },
+          {
+            "start": 0.77,
+            "end": 0.878,
+            "peakDb": -6.22
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "Four light, quick taps in succession. / Four distinct, soft tapping noises played in quick succession. / Four quick, light tapping sounds in rapid succession.",
+        "madeOf": "A hard surface such as wood or tile being struck lightly, resembling footsteps. / Small hard objects impacting a solid surface. / Hard material like wood or plastic striking a solid, hard surface.",
+        "events": "4 / 4 / 4",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "There are exactly four distinct, light tapping impacts that sound like the quiet, quick steps of a small character on a hard surface.",
+          "The four light, quick tapping sounds perfectly match the description of a small figure's footsteps on a hard floor.",
+          "The audio contains exactly four distinct, light, and crisp rhythmic taps that perfectly resemble the rapid pitter-patter of tiny feet on a solid floor."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "finish-walk"
+      ],
+      "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as four light, quick taps in succession). A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "finish-kneel",
+      "kind": "cue",
+      "cue": "finish-kneel",
+      "take": 1,
+      "round": "change-002-layer",
+      "file": "take-1.wav",
+      "sha256": "5a5c5fd277b4c51ae7769699388906e068388bdb94f0be7f9673cffbcf8a4a00",
+      "filed": "2026-11-28T17:00:21.661Z",
+      "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): a short rustle from the loudest moment of folder-open take 1, lowered, 7 dB under; two dull knocks at 0.12 and 0.22 s (the clunk of pin-kick an octave lower, under 900 Hz, the second a little lower and quieter) with the kept flatten of the first build under the first; the rustle once more at 0.30 s, 13 dB under, as the figure settling",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.5,
+        "start": 0,
+        "end": 0.454,
+        "peakDb": -1.01,
+        "rmsDb": -18.4,
+        "lufs": -18.67,
+        "truePeakDb": -1.01,
+        "low": 0.428,
+        "mid": 0.57,
+        "high": 0.002,
+        "tailDb": -50.59,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.004,
+            "end": 0.398,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A quick rustling sound followed by two dull, hollow thuds. / A short rustling noise followed quickly by two dull impacts. / A quick rustling noise is followed by two consecutive dull thuds.",
+        "madeOf": "Fabric or clothing, and a hard surface like wood or linoleum. / Fabric and a hard surface like wood or linoleum. / Fabric or clothing and a hard wooden or hollow floor surface.",
+        "events": "3 / 3 / 3",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio contains exactly a short fabric rustle followed by two distinct, dull impacts, perfectly matching the sound of someone dropping to their knees on a hard floor.",
+          "The audio perfectly matches the description by starting with a brief fabric rustle and concluding with two distinct, muted knocks that sound like knees hitting a solid floor.",
+          "The sound perfectly matches the description, featuring a brief fabric rustle that immediately leads into two distinct, dull impacts sounding like knees hitting a hard floor."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "finish-kneel"
+      ],
+      "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a quick rustling sound followed by two dull, hollow thuds). A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "finish-fist",
+      "kind": "cue",
+      "cue": "finish-fist",
+      "take": 1,
+      "round": "change-002-layer",
+      "file": "take-1.wav",
+      "sha256": "29f6f35676aaf684fac6e8ca6eba15b6c0d154d10e6688c56736fe62e72b491f",
+      "filed": "2026-11-28T17:00:25.286Z",
+      "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): 0.3 s of noise with the colour of vacuum-roar take 1 at full level, rising in brightness and swelling and fading once, 3 dB under, as the arm swinging up; from 0.22 s a fifth of a second of the kept paper-strain of the first build as the fist tightening; at 0.31 s the fist closed: the clunk of pin-kick a little lowered, the same an octave lower and under 800 Hz for body, and the click of stop-press",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 0.5,
+        "start": 0,
+        "end": 0.466,
+        "peakDb": -1.01,
+        "rmsDb": -14.85,
+        "lufs": -13.23,
+        "truePeakDb": -1.01,
+        "low": 0.088,
+        "mid": 0.852,
+        "high": 0.06,
+        "tailDb": -21.97,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.008,
+            "end": 0.45,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A quick whoosh followed by a sharp, tight impact. / A quick, airy swish followed by a tight, muffled grabbing or clenching impact. / A rapid whoosh of air is immediately followed by a short, tight thud.",
+        "madeOf": "Synthesized noise and a percussive hit. / Air movement and skin, leather, or thick cloth. / Air friction and a leather or cloth impact.",
+        "events": "2 / 2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio consists of a fast, airy swish immediately followed by a sharp, percussive knock, perfectly matching the described action.",
+          "The audio features a fast whoosh that matches an arm swinging, immediately followed by a sharp, muffled impact sounding exactly like a tight fist clenching.",
+          "The audio features exactly a quick swishing noise followed by a small, firm knocking sound, perfectly matching an arm swinging and a fist clenching."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "finish-fist"
+      ],
+      "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a quick whoosh followed by a sharp, tight impact). A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "boss-gone",
+      "kind": "cue",
+      "cue": "boss-gone",
+      "take": 1,
+      "round": "change-002-layer",
+      "file": "take-1.wav",
+      "sha256": "ec5a7c834c5cbf6d377d571dea65d9fcb1470e14b449e80a962b05f0c261393e",
+      "filed": "2026-11-28T17:00:28.903Z",
+      "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L1 of the free layering round of November 28 on the eight sounds of the finish): at its start, as one deep blow: slab-slam take 2 raised by a third and big-fire take 1 a little raised, both from their loudest moment; from 0.01 s a crash of noise with the colour of button-burst take 1, uneven, dying over 0.2 s; four strokes of the healthbar-drop clank lowered by up to an octave at 0.05, 0.16, 0.30 and 0.47 s, as plates; 30 pieces of the thud of turret-cannon take 1 and the snaps of keys-break takes 1 and 2 at many pitches from 0.08 to 0.92 s, growing quieter, as pieces flying and landing; a compressor; overtones of the deep part added for small speakers",
+      "settings": {
+        "made": "layered for free from paid takes",
+        "call": null,
+        "recipe": "wja-scratch/sound/pass1/layer/made.json"
+      },
+      "askedSeconds": null,
+      "cost": "0",
+      "measured": {
+        "seconds": 1,
+        "start": 0,
+        "end": 0.954,
+        "peakDb": -1.01,
+        "rmsDb": -15.08,
+        "lufs": -16.57,
+        "truePeakDb": -1.01,
+        "low": 0.621,
+        "mid": 0.364,
+        "high": 0.014,
+        "tailDb": -35.93,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.928,
+            "peakDb": -1.01
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A heavy impact followed by metallic pieces crashing and scattering. / A heavy, explosive impact followed by the loud clattering and scattering of rigid debris. / A heavy, muffled impact is immediately followed by a loud, resonant crash and the clattering of metallic debris.",
+        "madeOf": "Metal, debris / Explosive force, metallic debris, and rigid fragments. / Metal, debris, explosive force",
+        "events": "2 / 2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio matches the description by starting with a strong initial blow and ending with the distinct clattering of metallic debris.",
+          "The sound features an initial deep, forceful impact followed immediately by a chaotic, metallic crashing and clattering that matches the description of a machine breaking apart and its pieces scattering.",
+          "The audio matches the description perfectly because it starts with a deep, bass-heavy thud and transitions right into the chaotic crashing and scattering of resonant metal pieces."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "boss-gone"
+      ],
+      "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a heavy impact followed by metallic pieces crashing and scattering). A model cannot hear as a person does; Brandon's ear decides on the live site."
     }
   ]
 }

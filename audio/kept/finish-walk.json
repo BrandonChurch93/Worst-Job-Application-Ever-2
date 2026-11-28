@@ -1,0 +1,147 @@
+{
+  "id": "finish-walk",
+  "kind": "cue",
+  "cue": "finish-walk",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "The walk to the button",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): four soft steps at 0.02, 0.27, 0.52 and 0.77 s: the clunk of pin-kick lowered by a fourth and by a fifth in turn, kept under 1.6 kHz, each with a very short piece of the snap of keys-break take 1 14 dB under as grit",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 1,
+    "round": "change-002-layer",
+    "file": "take-1.wav",
+    "sha256": "db3538d6283000e182426be845d39caa106ca46730365291259710cbd68a0c72",
+    "filed": "2026-11-28T17:00:18.021Z",
+    "measured": {
+      "seconds": 1,
+      "start": 0.02,
+      "end": 0.886,
+      "peakDb": -1.01,
+      "rmsDb": -22.62,
+      "lufs": -23.6,
+      "truePeakDb": -1.01,
+      "low": 0.238,
+      "mid": 0.746,
+      "high": 0.016,
+      "tailDb": -23.24,
+      "hits": 4,
+      "hitsAt": [
+        {
+          "start": 0.02,
+          "end": 0.124,
+          "peakDb": -1.01
+        },
+        {
+          "start": 0.27,
+          "end": 0.378,
+          "peakDb": -5.77
+        },
+        {
+          "start": 0.52,
+          "end": 0.624,
+          "peakDb": -1.61
+        },
+        {
+          "start": 0.77,
+          "end": 0.878,
+          "peakDb": -6.22
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.018,
+    "trimEnd": 0.886,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -14.99,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.868,
+    "start": 0.002,
+    "end": 0.86,
+    "peakDb": -16,
+    "rmsDb": -38,
+    "lufs": -38.73,
+    "truePeakDb": -16,
+    "low": 0.227,
+    "mid": 0.757,
+    "high": 0.016,
+    "tailDb": -29.6,
+    "hits": 4,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.106,
+        "peakDb": -16
+      },
+      {
+        "start": 0.252,
+        "end": 0.36,
+        "peakDb": -20.34
+      },
+      {
+        "start": 0.502,
+        "end": 0.606,
+        "peakDb": -16.6
+      },
+      {
+        "start": 0.752,
+        "end": 0.85,
+        "peakDb": -21.68
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "Four light, quick taps in succession. / Four distinct, soft tapping noises played in quick succession. / Four quick, light tapping sounds in rapid succession.",
+    "madeOf": "A hard surface such as wood or tile being struck lightly, resembling footsteps. / Small hard objects impacting a solid surface. / Hard material like wood or plastic striking a solid, hard surface.",
+    "events": "4 / 4 / 4",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "There are exactly four distinct, light tapping impacts that sound like the quiet, quick steps of a small character on a hard surface.",
+      "The four light, quick tapping sounds perfectly match the description of a small figure's footsteps on a hard floor.",
+      "The audio contains exactly four distinct, light, and crisp rhythmic taps that perfectly resemble the rapid pitter-patter of tiny feet on a solid floor."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as four light, quick taps in succession). A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "finish-walk.wav",
+  "seconds": 0.868,
+  "sha256": "3ed23c43883a7cb4b9cb84b23bddf627584229391263a7e3552a545de9d4ff82"
+}
