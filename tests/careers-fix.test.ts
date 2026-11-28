@@ -59,7 +59,7 @@ describe('fault A: a card flips back when the pointer leaves', () => {
     const back = drawn(s).filter((d) => d.kind === 'text' && d.id.startsWith('perk-0-'))
     expect(back.map((d) => d.id)).toEqual(['perk-0-fine-large'])
     expect(back[0]!.words).toBe('copy:marketing.perks.items.0.finePrint')
-    expect(back[0]!.type!.px).toBeGreaterThan(T.small.px + 6)
+    expect(back[0]!.type!.px).toBeGreaterThan(T.lead.px + 6)
     s.advance(seconds(2.2))
     expect(s.page.states()).toContain(st.shut)
     expect(s.events.filter((e) => e.name === 'card-flip').length).toBe(1)
