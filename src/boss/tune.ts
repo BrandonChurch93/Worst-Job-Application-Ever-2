@@ -178,7 +178,8 @@ export const LINE7 = {
 // The finishing blast (mail of 22:45, item 3). Plain stand-ins; the look is the Builder's picture round.
 // The finishing blast runs on the marks of the shout. They are worked out from the line's own times: the kept take's once one is in the sound index, the stand-in's of the drafts file until then.
 // The marks of the shout, read from its line. The camera's charge view asks for `floor` s from the arms to the fire mark: its way down, its rest and the turn ahead of the fire.
-// lead: s after the arms at which the line is shouted, so that its last phrase lands on the fire mark: 0 when the line's last phrase starts at the floor or later.
+// peak: s into the line at which the blast is let go: where the take says, and the start of the last phrase where it does not.
+// lead: s after the arms at which the line is shouted, so that its peak lands on the fire mark: 0 when the peak is at the floor or later.
 // The first two charge marks are the starts of the line's first two phrases, stretched with the fire mark; the two charge marks between keep their share of the gap from the second to the fire mark.
 // The body is gone `held` s after the line ends, for the boss to leave in groups (the camera's second pass), and no sooner than the camera is level with the page again after the fire mark: its rise, its hold and its turn back.
 export interface ShoutMarks { arms: number; lead: number; beats: readonly [number, number, number, number]; fire: number; gone: number }
@@ -186,12 +187,12 @@ export const SHOUT_LINE = 'boss.finish.0'
 export const SHOUT_RULE = { between: [0.3398, 0.6019] as const, held: 1.3, standIn: { starts: [0.1, 1.04, 4.13] as const, seconds: 6.26 } } as const
 const ms = (t: number): number => Number(t.toFixed(3))
 export const shoutFloor = (): number => ms(CAMERA.down[1] + CAMERA.rest + CAMERA.ahead)
-export function shoutOf(line: { starts: readonly number[]; seconds: number } | null): ShoutMarks {
+export function shoutOf(line: { starts: readonly number[]; seconds: number; peak?: number } | null, floor: number = shoutFloor()): ShoutMarks {
   const t = line && line.starts.length >= 3 && line.seconds > 0 ? line : SHOUT_RULE.standIn
-  const last = t.starts[t.starts.length - 1]!
-  const lead = ms(Math.max(0, shoutFloor() - last))
-  const fire = lead > 0 ? shoutFloor() : last
-  const on = (x: number): number => (lead > 0 ? ms((x * fire) / last) : x)
+  const peak = line === t && line.peak !== undefined && line.peak > 0 ? line.peak : t.starts[t.starts.length - 1]!
+  const lead = ms(Math.max(0, floor - peak))
+  const fire = lead > 0 ? floor : peak
+  const on = (x: number): number => (lead > 0 ? ms((x * fire) / peak) : x)
   const a = on(t.starts[0]!)
   const b = on(t.starts[1]!)
   const level = CAMERA.rise[1] + CAMERA.hold + CAMERA.turn
