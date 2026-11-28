@@ -55,6 +55,7 @@ interface State {
   base: number
   fell: number
   turned: number
+  asked: boolean
   alone: number
   drifted: number
   led: boolean
@@ -111,7 +112,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, asked: false, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -491,6 +492,7 @@ export function makePage(): PageLogic {
           s.py = io.pointer.y
         }
       } else if (s.stage === 'hold' && s.fight && s.since < LINE6.after - 1e-6) {
+        if (s.mode === 'live' && io.pressed) s.asked = true
         s.t = 0
         s.px = io.pointer.x
         s.py = io.pointer.y
@@ -500,7 +502,8 @@ export function makePage(): PageLogic {
         s.px = io.pointer.x
         s.py = io.pointer.y
         s.alone = stirred ? 0 : s.alone + dt
-        if (s.turned < 0 && ((s.mode === 'live' && io.pressed) || s.t >= LINE7.part0)) {
+        if (s.mode === 'live' && io.pressed) s.asked = true
+        if (s.turned < 0 && ((s.asked && s.t >= LINE7.lead - 1e-6) || s.t >= LINE7.part0)) {
           s.turned = earlyEnd(LINE7.ends, LINE7.sentences, s.t)
           io.emit('boss-turn', io.cursor.x, io.cursor.y, false)
         }

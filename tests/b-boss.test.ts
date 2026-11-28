@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
+import { earlyEnd } from '../src/audio/cues'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
 import { ARENA as GROUND } from '../src/arena/layout'
 import { barDrop, clamp01 } from '../src/arena/change'
@@ -9,7 +10,7 @@ import { FIRE, finishState, POWER, powerPlan } from '../src/boss/finish/acting'
 import { BEAM } from '../src/boss/finish/fx'
 import { drawnBoxes, figureBox } from '../src/boss/spot'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
-import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
+import { BODY, DART, FALLEN, HOME, SOCKET } from '../src/boss/plan'
 import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
 import type { BossView } from '../src/boss/view'
 import { finishNow, viewNow } from '../src/boss/viewof'
@@ -914,5 +915,70 @@ describe('how the boss plays (change 002, item 15)', () => {
     }
     expect(who).not.toBe('')
     expect(least).toBeGreaterThanOrEqual(TOP.clear)
+  }, 240000)
+  it('rulings of 04:46, 3. the boss never turns before line 6 has been said to its end: a press between the forming and the first tenth of a second of line 7 is kept and acts then, so that the first sentence of line 7 is said whole, a later one acts at once, and line 7 always ends at the end of a sentence, on the near path and the self-tick path, for six kinds of visitor', () => {
+    const end = LINE6.after
+    const kinds: [string, (sinceTick: number, sinceFormed: number) => boolean, number][] = [
+      ['who presses as soon as the boss is formed', (_t, f) => f >= 0.02 && f < 0.1, end + LINE7.lead],
+      ['who presses half way between the forming and the end of line 6', (t, f) => f >= 0 && t >= end - 1.5 && t < end - 1.42, end + LINE7.lead],
+      ['who presses a tenth of a second before line 6 has ended', (t) => t >= end - 0.1 && t < end - 0.02, end + LINE7.lead],
+      ['who presses as line 7 starts', (t) => t >= end && t < end + 0.03, end + LINE7.lead],
+      ['who presses a second after line 6 has ended', (t) => t >= end + 1 && t < end + 1.08, end + 1],
+      ['who never presses', () => false, end + LINE7.part0]
+    ]
+    let longest = 0
+    let early = Infinity
+    for (const self of [false, true]) {
+      for (const [kind, press, due] of kinds) {
+        const name = `${self ? 'the self-tick path' : 'the near path'}, one ${kind}`
+        const bot = new BotDriver('keen', config.seed)
+        let own = false
+        let last = { x: 300, y: 700 }
+        const when = (n: string): number => {
+          const e = stage.events.find((k) => k.name === n)
+          return e ? e.step / stepHz : -1
+        }
+        const stage: Stage = live({
+          name: 'bot',
+          input(v: DriverView): Pointer {
+            const tick = when('checkbox')
+            if (tick < 0) {
+              const h = v.page.hint()
+              return self || !h ? { x: 300, y: 700, down: false } : { x: h.x, y: h.y, down: h.down }
+            }
+            if (when('turret-lock') >= 0) {
+              if (!own) bot.moveTo(last.x, last.y)
+              own = true
+              return bot.input(v)
+            }
+            const formed = when('boss-formed')
+            last = self ? { x: 300, y: 700 } : { x: SOCKET.x, y: SOCKET.y }
+            return { ...last, down: press(v.time - tick, formed < 0 ? -1 : v.time - formed) }
+          }
+        })
+        while (stage.page.id === 'step4' && stage.time < 300) stage.advance(4)
+        expect(stage.page.id, name).not.toBe('step4')
+        const tick = when('checkbox')
+        const formed = when('boss-formed')
+        const turns = stage.events.filter((e) => e.name === 'boss-turn')
+        expect(turns.length, name).toBe(1)
+        const turn = turns[0]!.step / stepHz - tick
+        expect(formed - tick, name).toBeLessThan(end - 2)
+        expect(turn, name).toBeGreaterThanOrEqual(end - 1e-6)
+        expect(turn, name).toBeGreaterThanOrEqual(due - 2 / stepHz)
+        expect(turn, name).toBeLessThan(due + 0.03)
+        const said = earlyEnd(LINE7.ends, LINE7.sentences, turn - end)
+        expect(turn - end, name).toBeGreaterThanOrEqual(LINE7.lead - 2 / stepHz)
+        expect((LINE7.sentences as readonly number[]).includes(said), name).toBe(true)
+        expect(Math.abs(when('boss-music') - tick - (end + said + LINE7.gap + LINE7.music)), name).toBeLessThanOrEqual(2 / stepHz + 1 / config.film.fps)
+        expect(Math.abs(when('turret-lock') - tick - (end + said + LINE7.gap + LINE7.part1 + LINE7.gap + LINE7.part2)), name).toBeLessThanOrEqual(2 / stepHz + 1 / config.film.fps)
+        expect(stage.longestIgnored.pointer, name).toBeLessThan(config.live.controlTakenMaxSeconds)
+        longest = Math.max(longest, stage.longestIgnored.pointer)
+        early = Math.min(early, turn)
+        if (process.env.BOSS_SAY) console.log(name, 'formed', (formed - tick).toFixed(3), 'turn', turn.toFixed(3), 'said', said, 'music', (when('boss-music') - tick).toFixed(3), 'power-up', (when('power-up') - tick).toFixed(3), 'lock', (when('turret-lock') - tick).toFixed(3), 'held', stage.longestIgnored.pointer.toFixed(3))
+      }
+    }
+    expect(early).toBeGreaterThanOrEqual(end - 1e-6)
+    expect(longest).toBeLessThan(config.live.controlTakenMaxSeconds)
   }, 240000)
 })
