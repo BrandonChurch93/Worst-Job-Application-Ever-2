@@ -269,7 +269,7 @@ function post(c, ledger, call, a) {
 async function main() {
   const a = args()
   const c = config()
-  if (a.speech || a.effect || a.quota || a.models || a['voice-info'] || a['review-reached']) lock()
+  if (a.speech || a.effect || a.quota || a.models || a['voice-info'] || a['add-voice'] || a['review-reached']) lock()
   try {
     const ledger = readLedger()
     if (a['review-reached']) {
@@ -303,6 +303,38 @@ async function main() {
       console.log(JSON.stringify({ ok: true, said, total: totalOf(ledger) }))
       return
     }
+    if (a['add-voice']) {
+      // Puts one voice of the service's library on the account's own list, so that the key may speak with it.
+      // The service names no charge for it; the account's usage is read straight before and straight after, and what moved is counted.
+      const str = (v) => (v && v !== true ? String(v) : '')
+      const owner = str(a.owner)
+      const id = str(a.voice)
+      const name = str(a.name)
+      const what = str(a.what)
+      if (!owner || !id || !name || !what) throw new Error('--add-voice needs --owner ID --voice ID --name NAME --what W')
+      const L = limits(c, ledger)
+      if (totalOf(ledger) >= L.limit) throw new Error(`the running total ${totalOf(ledger)} has reached ${L.limit}: no call is made`)
+      const dir = at('out', 'work', 'audio', 'calls')
+      fs.mkdirSync(dir, { recursive: true })
+      const bodyFile = path.join(dir, `${String(ledger.rows.length + 1).padStart(4, '0')}-add-voice.request.json`)
+      writeJson(bodyFile, { new_name: name })
+      const before = usage()
+      const time = now()
+      const r = curl(['-X', 'POST', '-H', 'Content-Type: application/json', '--data-binary', `@${bodyFile}`, '-w', '\n%{http_code}', `${HOST}/v1/voices/add/${owner}/${id}`])
+      const after = usage()
+      const text = String(r.stdout)
+      const status = Number(text.trim().slice(-3))
+      let got = null
+      try {
+        got = JSON.parse(text.slice(0, text.lastIndexOf('\n')))
+      } catch {}
+      const cost = Math.max(0, after.used - before.used)
+      addRow(ledger, { time, endpoint: 'POST /v1/voices/add', what, asked: `the library voice "${name}" on the account's list`, answer: `HTTP ${status}${status === 200 ? `, voice ${got?.voice_id ?? '?'}` : `: ${text.slice(0, 160).replace(/\s+/g, ' ')}`}`, cost, how: `measured: the account's usage read ${before.used} straight before and ${after.used} straight after` })
+      save(ledger, c)
+      console.log(JSON.stringify({ ok: status === 200, status, voice: got?.voice_id ?? null, cost, total: totalOf(ledger) }))
+      if (status !== 200) process.exitCode = 2
+      return
+    }
     if (a.speech || a.effect) {
       const what = a.what && a.what !== true ? String(a.what) : ''
       if (!what) throw new Error('say what the call is for: --what "the line or the cue, and which take"')
@@ -319,7 +351,7 @@ async function main() {
     console.log(`credits: ${total} of ${L.cap} used in ${ledger.rows.length} calls. ${L.limit - total} left before ${L.hard && L.hard.limit === L.limit ? `the hard limit of ${L.hard.limit}` : ledger.reviewReached ? 'the cap' : `the review's reserve of ${L.reserve}`}.`)
     if (L.hard) console.log(`credits: the hard limit is from ${L.hard.from}.`)
     console.log(`credits: speech ${ledger.rates.speech ? `${ledger.rates.speech.perCharacter} a character` : 'not measured'}, effects ${ledger.rates.effect ? `${ledger.rates.effect.perSecond} a second` : 'not measured'}`)
-    console.log('credits: --quota reads the account. --speech --what W --text T | --text-file F [--speed N --stability N --similarity N --style N --model ID --voice ID --out F] speaks a line. --effect --what W --prompt P | --prompt-file F --seconds N [--loop --influence N --out F] makes an effect. --measure reads the usage round a call. --extra marks a call section 2 of the addendum calls extra.')
+    console.log('credits: --quota reads the account. --speech --what W --text T | --text-file F [--speed N --stability N --similarity N --style N --model ID --voice ID --out F] speaks a line. --effect --what W --prompt P | --prompt-file F --seconds N [--loop --influence N --out F] makes an effect. --add-voice --owner ID --voice ID --name NAME --what W puts a library voice on the list of the account. --measure reads the usage round a call. --extra marks a call section 2 of the addendum calls extra.')
   } finally {
     unlock()
   }
