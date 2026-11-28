@@ -66,7 +66,7 @@
         "live": "the crank appears"
       },
       {
-        "at": 0.84558,
+        "at": 0.79861,
         "text": "They will regret that.",
         "live": "the crank reaches the top, after a pause"
       }
@@ -90,24 +90,24 @@
     "pinball.drain": [],
     "boss.verify": [
       {
-        "at": 0.54286,
+        "at": 0.76,
         "text": "They declare themselves human. / The form / takes that as a threat.",
         "live": "the visitor ticks the checkbox"
       }
     ],
     "boss.unfold": [
       {
-        "at": 0.14992,
+        "at": 0.19922,
         "text": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
         "live": "the boss has formed and the applicant stops"
       },
       {
-        "at": 0.78328,
+        "at": 0.77758,
         "text": "But then / they remember / their student loans.",
         "live": "straight after the line before it; the boss music starts on the words their student loans"
       },
       {
-        "at": 0.94119,
+        "at": 0.91614,
         "text": "They turn back. / One more round.",
         "live": "straight after the line before it, over the boss music"
       }
@@ -129,7 +129,7 @@
     "decision.metrics": [],
     "decision.reset": [
       {
-        "at": 0.02652,
+        "at": 0.02735,
         "text": "On to / the next application.",
         "live": "after the line on the stamp, as the page turns back to the start"
       }

@@ -499,7 +499,7 @@
   "assets": { "maxTakesPerAsset": 6, "maxTuningLooksPerPart": 40, "maxStudySources": 12 },
   "audio": {
     "narratorVoice": "Worst-Job-Application-Ever",
-    "narratorMaxWordsPerSecond": 1.6,
+    "narratorMaxWordsPerSecond": 3,
     "music": false,
     "holdMusicSeconds": 2,
     "sampleRate": 48000,

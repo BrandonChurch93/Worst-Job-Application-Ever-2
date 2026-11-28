@@ -949,182 +949,182 @@
     {
       "id": "line.boss.unfold.0",
       "file": "line.boss.unfold.0.mp3",
-      "seconds": 23.324,
+      "seconds": 11.325,
       "mime": "audio/mpeg",
       "bytes": 373632,
       "sha256": "093e6583f1e5a15e762db50603ea74e18684475e7c7639d8c004100976ce40d6",
       "words": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
       "starts": [
-        0.006,
-        2.208,
-        5.182,
-        8.524,
-        11.356,
-        13.856,
-        17.88,
-        20.772
+        0.031,
+        0.843,
+        2.264,
+        3.986,
+        5.197,
+        6.177,
+        8.319,
+        9.53
       ]
     },
     {
       "id": "line.boss.unfold.1",
       "file": "line.boss.unfold.1.mp3",
-      "seconds": 5.59,
+      "seconds": 2.485,
       "mime": "audio/mpeg",
       "bytes": 89856,
       "sha256": "1a4cbad659e7b7accbcacbff703b24dfc34826754bedc47a3d83e18cdaa81616",
       "words": "But then / they remember / their student loans.",
       "starts": [
-        0.004,
-        1.736,
-        3.806
+        0.031,
+        0.494,
+        1.228
       ]
     },
     {
       "id": "line.boss.unfold.2",
       "file": "line.boss.unfold.2.mp3",
-      "seconds": 3.954,
+      "seconds": 1.91,
       "mime": "audio/mpeg",
       "bytes": 63744,
       "sha256": "51d929e0e4dc7add7c120cfd13d67fb37578f8eae1dac9fd40a89097d62cf6e6",
       "words": "They turn back. / One more round.",
       "starts": [
-        0.004,
-        2.754
+        0.031,
+        1.057
       ]
     },
     {
       "id": "line.boss.verify.0",
       "file": "line.boss.verify.0.mp3",
-      "seconds": 8.49,
+      "seconds": 4.27,
       "mime": "audio/mpeg",
       "bytes": 136320,
       "sha256": "b4ddda83a62ba5d98fd7cf823410552569f8e3c71a2e7bef38d17cd788219d38",
       "words": "They declare themselves human. / The form / takes that as a threat.",
       "starts": [
-        0.004,
-        3.958,
-        6.43
+        0.032,
+        1.974,
+        2.818
       ]
     },
     {
       "id": "line.decision.letter.0",
       "file": "line.decision.letter.0.mp3",
-      "seconds": 12.742,
+      "seconds": 6.049,
       "mime": "audio/mpeg",
       "bytes": 204288,
       "sha256": "4020ae7b423f57eed682a4bd899b2a16e0282d475ef492a6442ed922d3616e17",
       "words": "After careful consideration, / the company / has decided / to move forward / with other candidates.",
       "starts": [
-        0.006,
-        3.466,
-        5.616,
-        8.166,
-        11.01
+        0.03,
+        1.721,
+        2.491,
+        3.569,
+        4.822
       ]
     },
     {
       "id": "line.decision.reset.0",
       "file": "line.decision.reset.0.mp3",
-      "seconds": 3.198,
+      "seconds": 1.339,
       "mime": "audio/mpeg",
       "bytes": 51840,
       "sha256": "11d24b68f106fa4d9c6592749e7e84f28eebc932bbe0f21d4e18e5cf444325ce",
       "words": "On to / the next application.",
       "starts": [
-        0.002,
-        1.862
+        0.031,
+        0.395
       ]
     },
     {
       "id": "line.marketing.stroll.0",
       "file": "line.marketing.stroll.0.mp3",
-      "seconds": 19.46,
+      "seconds": 7.802,
       "mime": "audio/mpeg",
       "bytes": 311808,
       "sha256": "0d51a9fec52481a2ce00d58cc2f5c2ab3826610c290c8ae6f12524f3aa3d260e",
       "words": "Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026.",
       "starts": [
-        0.004,
-        1.844,
-        3.912,
-        6.858,
-        9.464,
-        12.198,
-        14.596,
-        17.238
+        0.13,
+        1.16,
+        1.62,
+        2.84,
+        3.83,
+        4.67,
+        5.61,
+        6.57
       ]
     },
     {
       "id": "line.pinball.seal.0",
       "file": "line.pinball.seal.0.mp3",
-      "seconds": 8.882,
+      "seconds": 4.047,
       "mime": "audio/mpeg",
       "bytes": 142848,
       "sha256": "26b1f2455a513940da8f05c46297530ea33f72f99ce9841a8d0753c10072e07c",
       "words": "The company / gently collects / the applicant / for an unpaid assessment.",
       "starts": [
-        0.004,
-        1.998,
-        4.69,
-        6.906
+        0.03,
+        0.685,
+        1.836,
+        2.662
       ]
     },
     {
       "id": "line.step1.firstName.0",
       "file": "line.step1.firstName.0.mp3",
-      "seconds": 9.242,
+      "seconds": 4.457,
       "mime": "audio/mpeg",
       "bytes": 148608,
       "sha256": "4474be9e446818a4426fc28c63581cd11587a5c15add8e8015f87dc219709642",
       "words": "The application / has sensed / a candidate. / ATS turrets rise.",
       "starts": [
-        0.004,
-        2.43,
-        4.706,
-        6.992
+        0.03,
+        0.996,
+        1.889,
+        2.869
       ]
     },
     {
       "id": "line.step1.shredded.0",
       "file": "line.step1.shredded.0.mp3",
-      "seconds": 13.394,
+      "seconds": 5.925,
       "mime": "audio/mpeg",
       "bytes": 215040,
       "sha256": "ad0e6fbe753c10a0a42073662451acbe026510bf91bb0f5a18e0cbfd97d7cb71",
       "words": "The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway.",
       "starts": [
-        0.002,
-        2.072,
-        4.364,
-        7.578,
-        10.596,
-        12.652
+        0.031,
+        0.752,
+        1.659,
+        3.255,
+        4.637,
+        5.397
       ]
     },
     {
       "id": "line.step2.crank.0",
       "file": "line.step2.crank.0.mp3",
-      "seconds": 6.282,
+      "seconds": 2.899,
       "mime": "audio/mpeg",
       "bytes": 100992,
       "sha256": "274daf12bc58c7d2ddc4de9440be8092e9bcd193fc1fda9aa6ec4699fe5e1d36",
       "words": "The applicant / must turn the volume / all the way up.",
       "starts": [
-        0.004,
-        2.172,
-        5.232
+        0.03,
+        0.765,
+        2.151
       ]
     },
     {
       "id": "line.step2.crank.1",
       "file": "line.step2.crank.1.mp3",
-      "seconds": 1.586,
+      "seconds": 1.11,
       "mime": "audio/mpeg",
       "bytes": 26112,
       "sha256": "4421c91206116d825c74a34f79fb5c3d30362ec833b1015b28b04b1ff86f9e2c",
       "words": "They will regret that.",
       "starts": [
-        0.002
+        0.03
       ]
     }
   ],

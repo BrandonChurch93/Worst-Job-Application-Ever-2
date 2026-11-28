@@ -62,26 +62,26 @@ Frames 4758 to 7277.
 
 ## boss
 
-Frames 7278 to 11663.
+Frames 7278 to 10511.
 
 | Beat | Frames | Camera | Move | Framing at the start | Framing at the end |
 | --- | --- | --- | --- | --- | --- |
-| `boss.verify` | 7278 to 7697 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `boss.unfold` | 7698 to 9935 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 0, y 208, 1200 by 675 |
-| `boss.slabs` | 9936 to 10493 | `view`, then `home` | follows, eases out | x 0, y 208, 1200 by 675 | x 0, y 0, 1920 by 1080 |
-| `boss.popups` | 10494 to 10607 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `boss.lastStand` | 10608 to 10745 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `boss.collapse` | 10746 to 10817 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 299.4, y 269.5, 961.8 by 541 |
-| `boss.finish` | 10818 to 11591 | `view` | holds, follows, pushes in, eases out, cuts 2 times (on frame 11037, 11038) | x 299.9, y 269.9, 960.2 by 540.1 | x 300, y 270, 960 by 540 |
-| `boss.press` | 11592 to 11663 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
+| `boss.verify` | 7278 to 7577 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `boss.unfold` | 7578 to 8783 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 92.5, y 207.5, 1200 by 675 |
+| `boss.slabs` | 8784 to 9341 | `view`, then `home` | follows, eases out | x 92.5, y 207.5, 1200 by 675 | x 0, y 0, 1920 by 1080 |
+| `boss.popups` | 9342 to 9455 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `boss.lastStand` | 9456 to 9593 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `boss.collapse` | 9594 to 9665 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 299, y 269.1, 963.1 by 541.8 |
+| `boss.finish` | 9666 to 10439 | `view` | holds, follows, pushes in, eases out, cuts 2 times (on frame 9885, 9886) | x 299.8, y 269.8, 960.8 by 540.4 | x 300, y 270, 960 by 540 |
+| `boss.press` | 10440 to 10511 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
 
 ## decision
 
-Frames 11664 to 12965.
+Frames 10512 to 11405.
 
 | Beat | Frames | Camera | Move | Framing at the start | Framing at the end |
 | --- | --- | --- | --- | --- | --- |
-| `decision.wait` | 11664 to 11783 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.letter` | 11784 to 12023 | `home` | holds, shakes | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.metrics` | 12024 to 12767 | `home`, then `view`, then `home` | follows | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.reset` | 12768 to 12965 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.wait` | 10512 to 10631 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.letter` | 10632 to 10871 | `home` | holds, shakes | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.metrics` | 10872 to 11213 | `home`, then `view`, then `home` | follows | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.reset` | 11214 to 11405 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
