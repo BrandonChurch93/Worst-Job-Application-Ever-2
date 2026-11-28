@@ -18,7 +18,9 @@ const FLAT = { page: 2, screen: 4, after: 2, z: 1 }
 // FLAT.screen is measured without the view's jolt on the seat. With it, stepped as the renderer does it, the arrow is carried with the page it lies on, px from where it comes to rest on the screen:
 // `seat` on the `frames` frames from the contact (the jolt and the tray's hop), `knock` on the frames of the first knock after them, `still` from `from` frames after the contact.
 // For a pointer 604 px left of the middle and 69 px over it, as on turn 1: the jolt carries what lies on the page by JOLT.push of its distance from the middle and JOLT.rise up.
-const CARRY = { seat: 9, frames: 4, knock: 2.5, from: 9, still: 1 }
+// `knock` was 2.5 at the old careers page's button, 604 px left of the middle (MEASURED there on today's tree: 1.59). A visitor's hand now rests on the new page's button, 1 px left of the middle and 296 px over it, where the same seat carries the page 5.79 px on the first knock.
+// 6.5 is a pin of the seat as the critic rounds judged it, read at that place, and not a new allowance. `rides` is the most the arrow's own place on the page may change from `before` frames before the seat to `after` frames after it.
+const CARRY = { seat: 9, frames: 4, knock: 6.5, from: 9, still: 1, rides: 0.5, before: 2, after: 8 }
 // Under a hand that strokes 560 px in 70 frames through the turn: the furthest the arrow may lie from the pointer's place on the slab, at the step the page is given to play, and the frames after which it is within FLAT.page.
 const MOVING = { far: 40, atPlay: 20, joined: 12 }
 // What an arriving page may do to the length and the angle of an arrow that rode in on the slab under a resting hand, from `before` frames before play to `after` frames after it:
@@ -155,12 +157,21 @@ describe('the arrow under a hand through a page turn', () => {
     const t = turns[0]!
     const seat = t.half + Math.round(0.6 * (t.flat - t.half))
     const seen: { i: number; x: number; y: number }[] = []
+    const own: { i: number; x: number; y: number; rides: boolean }[] = []
     forked(v, t.start, t.flat - t.start + 31, resting, LEAD, (s, i) => {
       const f = s.frameAt(s.time)
+      own.push({ i, x: f.cursor.x, y: f.cursor.y, rides: Boolean(f.cursor.rides) })
       seen.push({ i, ...onScreenJolted(f.cursor.x, f.cursor.y, f.cursor.z, f.scroll, f.cursor.rides ? f.turn : 0, f.settle === undefined ? 0 : joltAt(f.settle)) })
     })
     const rest = seen[seen.length - 1]!
     const carry = (i: number): number => { const a = seen.find((d) => d.i === i)!; return Math.hypot(a.x - rest.x, a.y - rest.y) }
+    const first = own.find((d) => d.i === seat - CARRY.before)!
+    const ridden = own.filter((d) => d.i >= seat - CARRY.before && d.i <= seat + CARRY.after)
+    expect(ridden.length).toBe(CARRY.before + CARRY.after + 1)
+    for (const d of ridden) {
+      expect(d.rides, `frame ${d.i}`).toBe(true)
+      expect(Math.hypot(d.x - first.x, d.y - first.y), `frame ${d.i}`).toBeLessThanOrEqual(CARRY.rides)
+    }
     expect(carry(seat)).toBeGreaterThan(FLAT.screen)
     for (let i = seat; i < seat + CARRY.frames; i++) expect(carry(i)).toBeLessThanOrEqual(CARRY.seat)
     for (let i = seat + CARRY.frames; i < seat + CARRY.from; i++) expect(carry(i)).toBeLessThanOrEqual(CARRY.knock)
