@@ -46,6 +46,8 @@ export interface ViewBoss {
   form: number
   turret: number
   locked: boolean
+  // The time at which `locked` became true, or null before it.
+  lockedAt?: number | null
   health: number
   stage: 0 | 1 | 2
   shield: ViewShield
@@ -55,6 +57,8 @@ export interface ViewBoss {
   healedAt: number | null
   hitAt: number | null
   beaten: number
+  // 0 until the finishing blast is fired, to 1 over the blast: at 1 the body is gone and only the button lies on the ground. Absent before the finish exists.
+  gone?: number
 }
 
 export interface ViewBullet {
@@ -99,6 +103,22 @@ export interface ViewArrow {
   y: number
   flat: number
   flatAt: number | null
+  // 0 to 1: the gold that builds round the arrow from `power-up`.
+  power?: number
+  // 0 to 1: how far the arrow's arms are out for the finishing blast.
+  arms?: number
+  // 0 to 1: how far the finishing blast is charged.
+  charge?: number
+}
+
+// The finishing blast, from the arrow to the fallen boss, while it stands. `power` is 0 to 1: how full the charge was when it was let go.
+export interface ViewFinish {
+  x0: number
+  y0: number
+  x1: number
+  y1: number
+  power: number
+  firedAt: number
 }
 
 export interface ViewBreak {
@@ -121,6 +141,7 @@ export interface BossView {
   corners: [ViewCorner, ViewCorner, ViewCorner, ViewCorner]
   arrow: ViewArrow
   breaks: ViewBreak[]
+  finish?: ViewFinish | null
 }
 
 export interface ViewSolid {

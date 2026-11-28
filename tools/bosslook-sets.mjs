@@ -110,10 +110,12 @@ const MORE = {
     ['heal, 0.2 s after healedAt', viewOf({ time: 30.2 }, { ...out, stage: 1, healedAt: 30 })]
   ], near, 3),
 
+  gone: (c) => moments(c, 'gone', [0.03, 0.2, 0.4, 0.6, 0.8, 0.95].map((g) => [`gone ${g.toFixed(2)} (${(g * 2.13).toFixed(2)} s)`, viewOf({ time: 46 + g * 2.13, phase: 'beaten' }, { ...out, stage: 2, health: 0, beaten: 1, gone: g })]), { cx: 960, cy: 548, zoom: 1.7 }, 3),
+
   async beaten({ look, sharp, at, outDir, workDir, tier }) {
     const cells = [{ png: target(at, 'LOOK-1-STATE-3-beaten.png', 'references/drafts/round-9'), caption: 'GUIDE, not picked: beaten' }]
-    for (const [caption, b] of [['beaten 0.06', 0.06], ['beaten 0.2', 0.2], ['beaten 0.45', 0.45], ['beaten 0.7', 0.7], ['beaten 1.0', 1]]) {
-      const r = await look.render({ view: viewOf({ time: 40 + b, phase: 'beaten' }, { ...out, stage: 2, health: 0, beaten: b }), ...sheetCam, width: 1920, height: 1080, tier })
+    for (const [caption, b] of [['beaten 0.08', 0.08], ['beaten 0.3', 0.3], ['beaten 0.55', 0.55], ['beaten 0.75', 0.75], ['beaten 1.0, lying', 1]]) {
+      const r = await look.render({ view: viewOf({ time: 40 + b + (b >= 1 ? 2 : 0), phase: 'beaten' }, { ...out, stage: 2, health: 0, beaten: b }), ...sheetCam, width: 1920, height: 1080, tier })
       fs.writeFileSync(path.join(workDir, `beaten-${cells.length}.png`), r.png)
       cells.push({ png: r.png, caption: `BUILD: ${caption}` })
     }
@@ -133,5 +135,31 @@ const MORE = {
       { png: b.png, caption: 'BUILD: the whole page, a fight frame' }, { png: d.png, caption: 'BUILD: the whole page, the big blast at 0.1 s' }
     ], 2, 700)
   }
+}
+
+// What he costs, MEASURED on this machine: his own triangles and draws by state, and the frame time at each live level with and without him.
+MORE.counts = async ({ look, at, outDir }) => {
+  const full = { cx: 960, cy: 540, zoom: 1, width: 1920, height: 1080 }
+  const states = {
+    'turret inside': viewOf(),
+    'turret out': viewOf({}, out),
+    'forming, form 0.36': forming(0.36),
+    'fight frame: 12 bullets, a gun firing, stage 2': viewOf({ time: 11, bullets: Array.from({ length: 12 }, (_, i) => bullet(i, 300 + i * 110, 300 + (i % 4) * 150, 300, 200)) }, { ...out, stage: 2, guns: [g(2.5, 0.7), g(-2.6, 0, 10.97)] }),
+    'big blast at 0.1 s': viewOf({ time: 21.1 }, { ...out, big: big(1, 21) }),
+    'beaten 0.2': viewOf({ time: 40.2, phase: 'beaten' }, { ...out, stage: 2, beaten: 0.2 })
+  }
+  const rows = []
+  const file = path.join(outDir, 'counts.json')
+  const levels = (process.env.BOSSLOOK_LEVELS ?? 'low,medium,high').split(',')
+  const old = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')).rows.filter((r) => !levels.includes(r.level)) : []
+  for (const level of levels) {
+    for (const [name, view] of Object.entries(states)) {
+      const r = await look.timing({ view, ...full, level }, 5)
+      rows.push({ level, state: name, ownTriangles: Math.round(r.own.triangles), ownDraws: r.own.draws, frameTriangles: r.frame.triangles, frameDrawCalls: r.frame.drawCalls, bareTriangles: r.bare.triangles, bareDrawCalls: r.bare.drawCalls, msWith: +r.withMs.toFixed(2), msWithout: +r.withoutMs.toFixed(2) })
+      console.log('  ' + JSON.stringify(rows[rows.length - 1]))
+    }
+  }
+  fs.writeFileSync(file, JSON.stringify({ note: 'MEASURED by tools/bosslook.mjs counts in the headless browser of the helper machine, 1920 by 1080; own = the meshes of the boss alone in one pass, frame = the whole frame with him over all passes, bare = the same frame without him; ms is the median of 5 frames drawn by the software renderer of that machine, so only the two columns against each other mean anything', rows: [...old, ...rows] }, null, 2) + '\n')
+  return file
 }
 Object.assign(SETS, MORE)

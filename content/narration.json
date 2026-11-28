@@ -95,6 +95,7 @@
       { "at": 0, "text": "Session expired. / A classic.", "live": "the boss's last phase starts" }
     ],
     "boss.collapse": [],
+    "boss.finish": [],
     "boss.press": [],
     "decision.wait": [],
     "decision.letter": [

@@ -1,12 +1,17 @@
 import { config } from '../../config'
-import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
-import { bearing, clearSpot, newFight, SPARK_SECONDS, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
+import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
+import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
-import { GUARD, STANDS, TOP } from '../../boss/tune'
-import { drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
+import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
+import { BIG, CHANGE, FINISH, FLAT, GUARD, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
+import { ARENA as GROUND } from '../../arena/layout'
+import { STANDS as GROUND_STANDS } from '../../arena/solids'
+import { wordAt } from '../../boss/look1/pose'
+import { setView, viewOf } from '../../boss/viewof'
+import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
-import { SCREEN_H } from '../../shell/parts'
+import { SCREEN_H, TYPE } from '../../shell/parts'
 import type { DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
 import { makeLayout } from './layout'
 import { makeScript, STAND } from './script'
@@ -15,7 +20,7 @@ import { TICK_Z } from './real/verify-card'
 const CAP_LANDS = 1.2
 const CAP_CLEARS = 0.6
 const SAG_AT = 1.7
-type StageName = 'verify' | 'unfold' | 'fight' | 'collapse' | 'press'
+type StageName = 'verify' | 'unfold' | 'hold' | 'fight' | 'finish' | 'collapse' | 'press'
 
 interface State {
   mode: Mode
@@ -41,6 +46,23 @@ interface State {
   cx: number
   cy: number
   away: number
+  clock: number
+  base: number
+  fell: number
+  turned: number
+  alone: number
+  drifted: number
+  led: boolean
+  px: number
+  py: number
+  gold: number
+  charge: number
+  own: boolean
+  fired: number
+  shot: number
+  blown: boolean
+  gainFrom: number
+  gainT: number
 }
 
 const heights = config.scale.heights
@@ -54,7 +76,11 @@ const LOOKS = { first: [0.56, 0.9], second: [1.12, 1.64], take: 1.02, at: [-10, 
 const KICK = { shot: 150, popup: 200 } as const
 const RELIEF = { pose: 0.42, hold: 1.5 } as const
 const PRESS = { down: 0.03, deep: 12, hold: 0.06, back: 0.07, over: 0.4, ring: 0.5, stand: 16, shove: [7, -10], rock: -0.07 } as const
+const TIP_AT_REST = 1.965
+const AIM_LIFT = 0.72
 const STRUCK_GLOW = 0.14
+const HEAL_STEP = 0.7
+const GOLD_OUT = 0.4
 const GAIN = { from: 25, glow: [1.0, 1.6] } as const
 const SEAT = 0.2
 const LIFT = 7
@@ -68,11 +94,12 @@ const PHASE_GAG = ['boss.slabs', 'boss.popups', 'boss.lastStand'] as const
 const SPOTS: [number, number][] = [[560, 800], [430, 640], [330, 900], [760, 900], [1150, 940], [1420, 950], [1690, 960]]
 const STAND_GRID: [number, number][] = []
 for (let y = 220; y <= 1000; y += 130) for (let x = 140; x <= 1780; x += 205) STAND_GRID.push([x, y])
-const FORM_OFF = UNFOLD.cannons[0] + 0.3
+const FORM_OFF = UNFOLD.crack
+const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -80,6 +107,8 @@ export function makePage(): PageLogic {
   const beats = config.film.beats.filter((b) => b.unit === 'boss')
   const gags: GagInfo[] = beats.map((b) => ({ id: b.id, event: (b as { event?: string }).event ?? null }))
   const arena: Arena = { popups: L.weapons.popups.map((p) => ({ box: p.box, buttons: p.buttons.map((b) => b.box) })) }
+  if (LOOK1_ON) arena.walls = GROUND_STANDS.map((w) => ({ id: w.id, kind: w.kind, x0: w.box.x0, y0: w.box.y0, x1: w.box.x1, y1: w.box.y1 }))
+  const solidsNow = (): { kind: string; x0: number; y0: number; x1: number; y1: number }[] => (arena.walls ? arena.walls.filter((w) => !(s.fight?.fallen ?? []).includes(w.id)) : standing(s.fight ?? NONE))
   let s = fresh('live')
   const kept = new Set<string>([L.tree.id])
   const keepAll = (n: { id: string; children?: unknown[] }): void => {
@@ -89,7 +118,30 @@ export function makePage(): PageLogic {
   for (const c of L.tree.children ?? []) if (KEPT.includes(c.id)) keepAll(c)
   const gone = (): number => easeOut(Math.min(1, Math.max(0, s.away)))
   const barLift = (): number => (TOP.bar - L.track.y) * gone()
+  const labelBox = L.tree.children!.find((c) => c.id === 'health')!.children![0]!.box
+  const barShift = (): number => (BAR.x - labelBox[0]!) * gone()
+  const barTrack = (): { x: number; w: number } => {
+    const x = L.track.x + barShift()
+    return { x, w: L.track.w + (BAR.right - (L.track.x + BAR.x - labelBox[0]!) - L.track.w) * gone() }
+  }
 
+  const BLAST = SHOUT.gone - SHOUT.fire
+  const steps = (held: number): number => SHOUT.beats.filter((b) => b - SHOUT.beats[0]! <= held + 1e-6).length / SHOUT.beats.length
+  const gone2 = (): number => (s.blown ? 1 : s.stage === 'finish' && s.fired >= 0 ? Math.min(1, s.fired / BLAST) : 0)
+  const power = (): number => (s.gold < 0 ? 0 : Math.min(1, s.gold / LINE7.glow))
+  const arms = (): number => {
+    if (s.stage !== 'finish') return 0
+    if (s.fired >= BLAST) return 1 - prog(s.fired, BLAST, BLAST + FINISH.settle * 0.5)
+    return prog(s.t, FINISH.fall + SHOUT.arms, FINISH.fall + SHOUT.arms + FINISH.arms)
+  }
+  const WHOLE = SHOUT.fire - SHOUT.beats[0]!
+  const level = (held: number): number => FINISH.steady * Math.min(1, held / WHOLE) + (1 - FINISH.steady) * steps(held)
+  const armsOut = (): boolean => s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms && s.fired < BLAST
+  const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : level(s.charge))
+  const strip = (rig: Rig, k: number): Rig => ({ ...rig, plate: { ...rig.plate, k: rig.plate.k * k }, sides: rig.sides.map((q) => ({ ...q, k: q.k * k })), legs: rig.legs.map((q) => ({ ...q, k: q.k * k })), cannons: rig.cannons.map((q) => ({ ...q, k: q.k * k })), shield: { ...rig.shield, k: rig.shield.k * k } })
+  const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
+  const NONE = { breaks: [], fallen: [] as string[] }
+  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= 0 && s.fired < BLAST ? { power: s.shot, since: s.fired } : null }))
   const inBox = (b: { x: number; y: number; w: number; h: number }, p: { x: number; y: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const fallenBox = { x: FALLEN.x - 150, y: FALLEN.y - 62, w: 300, h: 124 }
   const wake = (): number => (s.mode === 'film' ? WAKE_AFTER_TICK.film : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
@@ -102,7 +154,7 @@ export function makePage(): PageLogic {
   const feetOf = (f: Fight): { x: number; y: number; z: number }[] => f.feet.map((foot) => ({ x: foot.x, y: foot.y, z: foot.t >= 0 ? Math.sin(Math.PI * Math.min(1, foot.t)) * 16 : 0 }))
   const rigNow = (): Rig | null => {
     if (s.stage === 'unfold') return unfoldRig(s.t)
-    if (s.stage === 'fight' && s.fight) {
+    if ((s.stage === 'fight' || s.stage === 'hold') && s.fight) {
       const f = s.fight
       const rig = fightRig(f.x, f.y, feetOf(f), f.recoil, Math.sin(f.clock * 7) * 1.6, { aim: f.look, flash: Math.max(0, f.flash) / 0.12, hurt: 1 - f.shown / 100 })
       rig.shield.x = f.x + Math.cos(f.face) * GUARD.radius
@@ -111,7 +163,8 @@ export function makePage(): PageLogic {
       return rig
     }
     if (s.stage === 'collapse' && s.from) return collapseRig(s.from, s.t)
-    if (s.stage === 'press' && s.from) return collapseRig(s.from, COLLAPSE_SECONDS)
+    if (s.stage === 'finish' && s.from) return strip(collapseRig(s.from, Math.min(1, s.t / FINISH.fall) * COLLAPSE_SECONDS), 1 - gone2())
+    if (s.stage === 'press' && s.from) return strip(collapseRig(s.from, COLLAPSE_SECONDS), s.blown ? 0 : 1)
     return null
   }
   const sunk = (): number => {
@@ -127,20 +180,32 @@ export function makePage(): PageLogic {
     let z = s.away < 0.5 && inBox({ x: L.card.x, y: L.card.y, w: L.card.w, h: L.card.h - shut() }, p) ? heights.card : 0
     if ((s.stage === 'verify' || s.inSocket) && inBox(L.cap, p)) z = heights.button
     if (s.stage === 'press' && !s.inSocket && inBox(fallenBox, p, -24)) z = PRESS.stand - PRESS.deep * sunk()
+    if (raised() >= 1) {
+      for (const w of solidsNow()) if (p.x >= w.x0 && p.x <= w.x1 && p.y >= w.y0 && p.y <= w.y1) z = Math.max(z, w.kind === 'pane' ? SOLID.tall.pane : SOLID.tall.pillar)
+    }
     if (s.stage === 'fight' && s.fight) {
       for (const up of s.fight.popups) if (up.closing < 0 && up.t > 0.14 && inBox(L.weapons.popups[up.slot]!.box, p)) z = Math.max(z, heights.card)
     }
     return z
   }
-  const toCollapse = (io: StepIo, from: Rig): void => {
+  const aimAt = (io: StepIo, eye: { x: number; y: number }): void => {
+    const to = TIP_AT_REST - AIM_LIFT - Math.atan2(io.cursor.y - eye.y, eye.x - io.cursor.x)
+    io.cursor.aim(Math.atan2(Math.sin(to), Math.cos(to)))
+  }
+  const letGo = (io: StepIo): void => {
+    if (s.led) io.cursor.release()
+    s.led = false
+  }
+  const toCollapse = (io: StepIo, from: Rig, blast = false): void => {
+    letGo(io)
     s.from = from
-    s.stage = 'collapse'
+    s.fell = s.clock
+    s.stage = blast ? 'finish' : 'collapse'
     s.t = 0
     if (s.fight) {
       s.fight.over = true
       s.fight.health = 0
       s.fight.balls = []
-      s.fight.marks = []
       s.fight.popups = []
       s.fight.darts = []
       s.fight.sparks = []
@@ -149,13 +214,15 @@ export function makePage(): PageLogic {
     io.emit('power-down', from.cap.x, from.cap.y, false)
     io.emit('turret-off', from.cap.x, from.cap.y, false)
     io.cursor.heal()
+    if (blast) {
+      io.emit('boss-fall', from.cap.x, from.cap.y, false)
+      io.cursor.act('angry')
+      return
+    }
     io.cursor.hurt('scorched')
     io.cursor.act('plain')
     io.cursor.aim(null)
   }
-
-  const TIP_AT_REST = 1.965
-  const AIM_LIFT = 0.72
 
   const page: PageLogic = {
     id: 'step4', unit: 'boss', width: 1920, height: SCREEN_H, layout: L.tree, gags, start: { x: 700, y: 820 }, control: 'pointer',
@@ -172,7 +239,13 @@ export function makePage(): PageLogic {
       if (s.mode === 'film') {
         while (s.cue < film.reactions.length && s.time >= film.reactions[s.cue]!.at) io.cursor.react(film.reactions[s.cue++]!.name)
       }
-      const off = (s.stage === 'unfold' && s.t >= FORM_OFF) || s.stage === 'fight'
+      if (s.clock >= 0) {
+        const was = s.clock - UNFOLD.crack
+        s.clock += dt
+        const now = s.clock - UNFOLD.crack
+        for (const [name, at] of [['arena-split', CHANGE.split], ['arena-rise', CHANGE.rise], ['healthbar-drop', CHANGE.bar]] as const) if (now >= at && was < at && !s.inSocket) io.emit(name, SOCKET.x, SOCKET.y, false)
+      }
+      const off = s.cracked && !s.inSocket && s.stage !== 'verify'
       s.away = Math.min(1, Math.max(0, s.away + ((off ? 1 : -1) * dt) / TOP.move))
       if (s.fight && s.stage !== 'fight') s.fight.shown += (s.fight.health - s.fight.shown) * Math.min(1, dt * 12)
       if (s.skipping && (s.stage === 'verify' || (s.stage === 'unfold' && s.t < UNFOLD.crack))) {
@@ -181,7 +254,9 @@ export function makePage(): PageLogic {
         s.t = 0
         io.cursor.act('plain')
       } else if (s.skipping && s.stage === 'unfold') toCollapse(io, unfoldRig(s.t))
-      else if (s.skipping && s.stage === 'fight') toCollapse(io, rigNow()!)
+      else if (s.skipping && (s.stage === 'fight' || s.stage === 'hold')) toCollapse(io, rigNow()!)
+      if (s.gold >= 0) s.gold += dt
+      if (s.gainT >= 0) s.gainT += dt
 
       if (s.stage === 'verify') {
         if (s.ticked < 0) {
@@ -199,6 +274,7 @@ export function makePage(): PageLogic {
           if (s.ticked >= wake() || near) {
             s.stage = 'unfold'
             s.t = 0
+            s.clock = 0
           }
         }
       } else if (s.stage === 'unfold') {
@@ -217,9 +293,62 @@ export function makePage(): PageLogic {
         if (s.t >= HORROR.scared && s.t < UNFOLD.end) io.cursor.act('scared')
         if (s.t >= UNFOLD.end) {
           s.fight = newFight(HOME.x, HOME.y)
-          s.stage = 'fight'
+          s.base = s.clock
+          io.emit('boss-formed', HOME.x, HOME.y, false)
+          s.stage = 'hold'
           s.t = 0
-          io.cursor.act('confident')
+          s.px = io.pointer.x
+          s.py = io.pointer.y
+        }
+      } else if (s.stage === 'hold' && s.fight) {
+        const was = s.t - dt
+        const stirred = Math.hypot(io.pointer.x - s.px, io.pointer.y - s.py) > 0.5 || io.pointer.down
+        s.px = io.pointer.x
+        s.py = io.pointer.y
+        s.alone = stirred ? 0 : s.alone + dt
+        if (s.turned < 0 && ((s.mode === 'live' && io.pressed) || s.t >= LINE7.part0)) {
+          s.turned = LINE7.ends.find((e) => e >= s.t - 1e-6) ?? LINE7.part0
+          io.emit('boss-turn', io.cursor.x, io.cursor.y, false)
+        }
+        const one = s.turned >= 0 ? s.turned + LINE7.gap : Infinity
+        const two = one + LINE7.part1 + LINE7.gap
+        const at = (t: number): boolean => s.t >= t && was < t
+        if (s.t < one) {
+          const droop = s.mode === 'film' || s.alone >= LINE7.alone
+          io.cursor.act(droop ? 'exhausted' : 'plain')
+          if (droop) aimAt(io, { x: LINE7.to[0], y: LINE7.to[1] })
+          else io.cursor.aim(null)
+          if (s.mode === 'live' && droop && s.turned < 0 && s.drifted < LINE7.most) {
+            if (!s.led) {
+              io.cursor.take('boss')
+              s.led = true
+            }
+            s.drifted += dt
+            const d = Math.hypot(LINE7.to[0] - io.cursor.x, LINE7.to[1] - io.cursor.y) || 1
+            io.cursor.drive(io.cursor.x + ((LINE7.to[0] - io.cursor.x) / d) * LINE7.drift, io.cursor.y + ((LINE7.to[1] - io.cursor.y) / d) * LINE7.drift)
+          } else letGo(io)
+        } else {
+          letGo(io)
+          if (at(one)) {
+            io.cursor.act('plain')
+            io.cursor.aim(null)
+          }
+          if (at(one + LINE7.music)) io.emit('boss-music', io.cursor.x, io.cursor.y, false)
+          if (at(two)) {
+            io.cursor.act('confident')
+            io.cursor.react('snap')
+          }
+          if (s.t >= two) aimAt(io, s.fight)
+          if (at(two + LINE7.power)) {
+            s.gold = 0
+            io.emit('power-up', io.cursor.x, io.cursor.y, false)
+            io.cursor.act('angry')
+          }
+          if (s.t >= two + LINE7.part2 - BIG.lock) {
+            s.base = s.clock
+            s.stage = 'fight'
+            s.t = 0
+          }
         }
       } else if (s.stage === 'fight' && s.fight) {
         const f = s.fight
@@ -230,6 +359,10 @@ export function makePage(): PageLogic {
         stepFight(f, io, arena)
         if (f.health < health) s.struck = 0
         else if (s.struck >= 0) s.struck += dt
+        if (f.health > health + 0.01 && !(f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1])) {
+          s.gainFrom = health
+          s.gainT = 0
+        }
         s.busy = Math.max(0, s.busy - dt)
         const calm = (): void => { io.cursor.act(f.phase === 0 ? 'confident' : 'angry') }
         if (f.hits > hits) {
@@ -251,8 +384,7 @@ export function makePage(): PageLogic {
         const e = f.phase === 2 ? f.expired : -1
         const atBar = (e >= LOOKS.first[0] && e < LOOKS.first[1]) || (e >= LOOKS.second[0] && e < LOOKS.second[1])
         const eye = atBar ? { x: io.cursor.x + LOOKS.at[0], y: io.cursor.y + LOOKS.at[1] } : f
-        const to = TIP_AT_REST - AIM_LIFT - Math.atan2(io.cursor.y - eye.y, eye.x - io.cursor.x)
-        io.cursor.aim(Math.atan2(Math.sin(to), Math.cos(to)))
+        aimAt(io, eye)
         if (f.phase !== before) {
           s.t = 0
           s.busy = 0
@@ -281,7 +413,51 @@ export function makePage(): PageLogic {
             io.cursor.react('fume')
           }
         }
-        if (f.over) toCollapse(io, rigNow()!)
+        if (f.over) toCollapse(io, rigNow()!, true)
+      } else if (s.stage === 'finish') {
+        const u = s.t - FINISH.fall
+        if (u >= SHOUT.arms && u - dt < SHOUT.arms) io.emit('finish-arms', io.cursor.x, io.cursor.y, false)
+        aimAt(io, FALLEN)
+        if (armsOut()) io.cursor.setArms(true, finishHands(io.cursor, FALLEN, charged(), s.fired >= 0).hands)
+        if (s.fired < 0 && u >= SHOUT.arms) {
+          const down = io.pointer.down
+          const whole = WHOLE
+          const had = s.charge < 0 ? 0 : steps(s.charge)
+          const fire = (): void => {
+            s.shot = Math.max(FINISH.small, s.charge < 0 ? 0 : level(s.charge))
+            s.fired = 0
+            io.emit('finish-fire', io.cursor.x, io.cursor.y, false)
+            const d = Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) || 1
+            io.cursor.knock(((io.cursor.x - FALLEN.x) / d) * KICK.popup * s.shot, ((io.cursor.y - FALLEN.y) / d) * KICK.popup * s.shot)
+          }
+          if (s.charge < 0) {
+            if (down || u >= SHOUT.arms + FINISH.alone - whole) {
+              s.charge = 0
+              s.own = down
+              io.cursor.react('anticipate')
+            }
+          } else {
+            s.charge += dt
+            if (!s.own && down) s.own = true
+            else if (s.own ? !down || s.charge >= whole + FINISH.late : s.charge >= whole) fire()
+          }
+          if (s.fired < 0 && s.charge >= 0 && steps(s.charge) > had) io.emit('finish-charge', io.cursor.x, io.cursor.y, false)
+        } else if (s.fired >= 0) {
+          const was = s.fired
+          s.fired += dt
+          if (s.fired >= BLAST && was < BLAST) {
+            io.emit('boss-gone', FALLEN.x, FALLEN.y, false)
+            io.cursor.act('exhausted')
+            io.cursor.aim(null)
+            io.cursor.setArms(false)
+          }
+          if (s.fired >= BLAST + FINISH.settle) {
+            io.emit('button-down', FALLEN.x, FALLEN.y, false)
+            s.blown = true
+            s.stage = 'press'
+            s.t = 0
+          }
+        }
       } else if (s.stage === 'collapse') {
         if (s.t >= COLLAPSE_SECONDS) {
           s.stage = 'press'
@@ -367,6 +543,11 @@ export function makePage(): PageLogic {
           const shape = out[i]!
           if (shape.id.startsWith('health-')) {
             shape.y += up
+            if (shape.id === 'health-track') {
+              const t = barTrack()
+              shape.x = t.x + (shape.x - L.track.x)
+              shape.w = t.w
+            } else shape.x += barShift()
             shape.moved = true
           } else if (!kept.has(shape.id) && !shape.id.startsWith('submit') && !ofHeader(shape.id)) {
             if (s.away >= 1) out.splice(i, 1)
@@ -377,45 +558,72 @@ export function makePage(): PageLogic {
           }
         }
       }
-      const fillAt = (w: number): Shape => ({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: L.track.x + FILL_GAP + slide, y: L.track.y + FILL_GAP + up, w, h: L.track.h - FILL_GAP * 2, z0: heights.progressRail + lift, z1: FILL_TOP + lift, tone: 'accent', v: [L.track.w - FILL_GAP * 2], moved: lift > 0 || up !== 0 })
+      const track = barTrack()
+      const fillAt = (w: number): Shape => ({ id: 'health-fill', part: 'health-bar', kind: 'capsule', x: track.x + FILL_GAP + slide, y: L.track.y + FILL_GAP + up, w, h: L.track.h - FILL_GAP * 2, z0: heights.progressRail + lift, z1: FILL_TOP + lift, tone: 'accent', v: [L.track.w - FILL_GAP * 2], moved: lift > 0 || up !== 0 })
       if (states.includes('fight')) {
-        const full = L.track.w - FILL_GAP * 2
+        const full = track.w - FILL_GAP * 2
         const w = s.fight ? Math.max(0, full * (s.fight.shown / 100)) : full
         if (w >= L.track.h - FILL_GAP * 2) out.push(fillAt(w))
         const f = s.fight
         const h0 = L.track.h - FILL_GAP * 2
-        if (f && s.stage === 'fight' && s.struck >= 0 && s.struck < STRUCK_GLOW && w >= h0 && !(f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1])) out.push({ ...fillAt(h0), id: 'health-gain', x: L.track.x + FILL_GAP + w - h0 * 0.5, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - s.struck / STRUCK_GLOW] })
+        if (f && s.stage === 'fight' && s.struck >= 0 && s.struck < STRUCK_GLOW && w >= h0 && !(f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1])) out.push({ ...fillAt(h0), id: 'health-gain', x: track.x + FILL_GAP + w - h0 * 0.5, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - s.struck / STRUCK_GLOW] })
+        if (f && s.stage === 'fight' && s.gainT >= 0 && s.gainT < HEAL_STEP && w >= h0) {
+          const won = Math.max(h0, (full * Math.max(0, f.shown - s.gainFrom)) / 100)
+          out.push({ ...fillAt(Math.min(w, won)), id: 'health-gain', x: track.x + FILL_GAP + w - Math.min(w, won), z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - s.gainT / HEAL_STEP] })
+        }
         if (f && s.stage === 'fight' && f.phase === 2 && f.expired >= 0 && f.expired < GAIN.glow[1]) {
           const gained = Math.min(w, (full * Math.max(0, f.shown - GAIN.from)) / 100)
           const h = L.track.h - FILL_GAP * 2
-          if (gained >= h) out.push({ ...fillAt(gained), id: 'health-gain', x: L.track.x + FILL_GAP + w - gained, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - prog(f.expired, GAIN.glow[0], GAIN.glow[1])] })
+          if (gained >= h) out.push({ ...fillAt(gained), id: 'health-gain', x: track.x + FILL_GAP + w - gained, z1: FILL_TOP + 0.5, v: [full * 0.16, 1 - prog(f.expired, GAIN.glow[0], GAIN.glow[1])] })
         }
       }
       if (s.cracked && !s.inSocket) drawSocket(out, SOCKET.x, SOCKET.y, prog(s.stage === 'unfold' ? s.t : 9, UNFOLD.crack, UNFOLD.crack + 0.25), 'socket-open', undefined, s.stage === 'unfold' && s.t < UNFOLD.lift + CAP_CLEARS ? 'dark' : 'ink')
+      const v = view()
+      const look = LOOK1_ON && v !== null
       const rig = rigNow()
       const give = s.inSocket || s.stage !== 'press' ? 0 : sunk()
-      if (rig) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
-      if (s.stage === 'fight' && s.fight) {
-        drawRules(out, s.fight)
-        drawWeapons(out, s.fight, L.weapons)
+      if (rig && (!look || s.blown)) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
+      setView(v)
+      if (look && v) {
+        const whole = { x: 0, y: 0, w: 1920, h: SCREEN_H, z1: 0, tone: 'dark' as const }
+        if (v.time >= GROUND.clearAt) out.push({ ...whole, id: 'arena-well', part: 'boss-arena', kind: 'well', z0: -GROUND.wellDepth })
+        out.push({ ...whole, id: 'arena', part: 'boss-arena', kind: 'anchor', z0: 0 })
+        out.push({ ...whole, id: 'boss-look', part: 'boss-look1', kind: 'anchor', z0: 0 })
+        for (let i = out.length - 1; i >= first; i--) if (out[i]!.id.startsWith('health-')) out.splice(i, 1)
+        if (v.time >= GROUND.barLands) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
+        const w = wordAt(v)
+        if (w.show && !s.blown) out.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, TYPE.button, w.z, 'inkLight', w.rot))
       }
+      if (s.clock >= 0 && !s.inSocket && !look) drawArena(out, s.fight ?? NONE, raised())
+      if ((s.stage === 'fight' || s.stage === 'hold') && s.fight) {
+        drawRules(out, s.fight, look)
+        drawWeapons(out, s.fight, L.weapons)
+        const f = s.fight
+        if (f.at.flat >= 0 && f.mark) drawPancake(out, f.mark.x, f.mark.y, f.clock - f.at.flat)
+      }
+      const lit = LINE7.part2 - LINE7.power
+      if (s.gold >= 0 && s.gold < lit + GOLD_OUT && (s.stage === 'hold' || s.stage === 'fight')) drawPower(out, s.cx, s.cy, power() * (1 - prog(s.gold, lit, lit + GOLD_OUT)))
+      if (s.stage === 'finish') drawFinish(out, finishHands({ x: s.cx, y: s.cy }, FALLEN, charged(), s.fired >= 0).ball, FALLEN, charged(), s.fired >= 0 && s.fired < BLAST ? { power: s.shot, u: s.fired / BLAST } : null)
       if (s.stage === 'collapse' && s.from) {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)
         if (sparks.length) drawWeapons(out, { ...newFight(), sparks }, L.weapons)
-        if (s.fight) drawTurretOff(out, s.from.cap.x, s.from.cap.y, s.fight.face, s.t)
+        if (s.fight && !look) drawTurretOff(out, s.from.cap.x, s.from.cap.y, s.fight.face, s.t)
       }
-      if ((s.stage === 'collapse' && s.t > CAP_LANDS) || (s.stage === 'press' && !s.inSocket)) drawSmoke(out, FALLEN.x, FALLEN.y, s.time)
+      if ((s.stage === 'collapse' && s.t > CAP_LANDS) || (s.stage === 'finish' && s.t > FINISH.fall) || (s.stage === 'press' && !s.inSocket)) drawSmoke(out, FALLEN.x, FALLEN.y, s.time)
     },
     scroll: () => 0,
     view: () => null,
     camera: () => null,
     script: (time: number): Pointer => film.pointer(time),
     chrome: () => ({ header: 1 - gone() }),
+    arms: () => armsOut(),
     hint(): Hint | null {
       const blink = Math.floor(s.time * 6) % 2 === 0
       if (s.stage === 'verify' && s.ticked < WAKE_AFTER_TICK.near) return { x: L.checkbox.cx, y: L.checkbox.cy, down: s.ticked < 0 && blink }
       if (s.stage === 'verify') return { x: SOCKET.x, y: SOCKET.y, down: blink }
       if (s.stage === 'unfold') return { x: SPOTS[0]![0], y: SPOTS[0]![1], down: false }
+      if (s.stage === 'hold') return { x: SPOTS[0]![0], y: SPOTS[0]![1], down: s.turned < 0 && blink }
+      if (s.stage === 'finish') return { x: SPOTS[0]![0], y: SPOTS[0]![1], down: s.t >= FINISH.fall + SHOUT.arms && s.fired < 0 && blink }
       if (s.stage === 'fight' && s.fight) {
         const f = s.fight
         const near = (list: [number, number][]): [number, number] | null => {
@@ -474,15 +682,16 @@ export function makePage(): PageLogic {
     done: () => s.done,
     gag(): string | null {
       if (s.stage === 'verify') return 'boss.verify'
-      if (s.stage === 'unfold') return 'boss.unfold'
+      if (s.stage === 'unfold' || s.stage === 'hold') return 'boss.unfold'
       if (s.stage === 'fight') return PHASE_GAG[s.fight ? s.fight.phase : 0]!
-      if (s.stage === 'collapse') return 'boss.collapse'
+      if (s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms) return 'boss.finish'
+      if (s.stage === 'collapse' || s.stage === 'finish') return 'boss.collapse'
       return 'boss.press'
     },
     ignoring: () => s.stage === 'fight' && s.fight !== null && s.fight.flat > 0,
     states(): string[] {
       const out = [card()]
-      const bar = (s.stage === 'unfold' && s.t >= UNFOLD.bar[0]) || s.stage === 'fight' || ((s.stage === 'collapse' || s.stage === 'press') && !s.inSocket)
+      const bar = (s.stage === 'unfold' && s.t >= UNFOLD.bar[0]) || s.stage === 'hold' || s.stage === 'fight' || s.stage === 'finish' || ((s.stage === 'collapse' || s.stage === 'press') && !s.inSocket)
       if (bar) out.push('fight')
       if (s.stage === 'press' && !s.inSocket) out.push('down')
       return out

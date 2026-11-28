@@ -1,6 +1,7 @@
 // The harness of look 1: the site's own engine, light, studio and ground on an empty page, with the boss added from a hand-written view.
 import { App } from '../../src/app'
 import { makeBoss, type BossLook } from '../../src/boss/look1'
+import * as THREE from 'three'
 import type { BossView } from '../../src/boss/view'
 import { label } from '../../src/boss/body'
 import { restPose } from '../../src/cursor/body'
@@ -60,5 +61,43 @@ async function counts(spec: Spec): Promise<{ with: { triangles: number; drawCall
   return { with: a, without }
 }
 
-declare global { interface Window { bosslook: { ready: Promise<void>; render: typeof render; counts: typeof counts } } }
-window.bosslook = { ready, render, counts }
+// What the boss himself costs: the triangles and the draws of his own meshes as they stand now, one pass.
+function tally(): { triangles: number; draws: number } {
+  let triangles = 0
+  let draws = 0
+  boss!.object.traverseVisible((o) => {
+    const m = o as THREE.Mesh & { count?: number; isInstancedMesh?: boolean }
+    if (!m.isMesh) return
+    const g = m.geometry
+    const n = (g.index ? g.index.count : g.getAttribute('position').count) / 3
+    const k = m.isInstancedMesh ? (m.count ?? 1) : 1
+    if (k === 0) return
+    triangles += n * k
+    draws += 1
+  })
+  return { triangles, draws }
+}
+
+// Frame time at a live level: the median of `n` frames with the boss and of `n` without, in turn.
+async function timing(spec: Spec, n: number): Promise<{ own: { triangles: number; draws: number }; frame: { triangles: number; drawCalls: number }; bare: { triangles: number; drawCalls: number }; withMs: number; withoutMs: number }> {
+  await render(spec)
+  const own = tally()
+  const frame = { ...app.engine.lastCounts }
+  const shot = async (): Promise<number> => { const t0 = performance.now(); await app.engine.picture(app.shot(), { samples: 1, frame: 0, diagnostic: 'beauty' }); return performance.now() - t0 }
+  const mid = (a: number[]): number => a.sort((x, y) => x - y)[Math.floor(a.length / 2)]!
+  const a: number[] = []
+  const b: number[] = []
+  let bare = frame
+  for (let i = 0; i < n; i++) {
+    boss!.object.visible = true
+    a.push(await shot())
+    boss!.object.visible = false
+    b.push(await shot())
+    bare = { ...app.engine.lastCounts }
+  }
+  boss!.object.visible = true
+  return { own, frame, bare, withMs: mid(a), withoutMs: mid(b) }
+}
+
+declare global { interface Window { bosslook: { ready: Promise<void>; render: typeof render; counts: typeof counts; timing: typeof timing } } }
+window.bosslook = { ready, render, counts, timing }

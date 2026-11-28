@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
 import { BODY, DART, HOME } from '../src/boss/plan'
-import { BIG, CORNER, FLAT, GUARD, GUN, HEAL, REAL_DART, TOP } from '../src/boss/tune'
+import { BIG, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
+import { HOLD, UNIT_SECONDS } from '../src/pages/step4/script'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
 import { filmFlow, filmOptions, isHeader, ScriptDriver, Stage, type Driver, type DriverView, type FlowEntry, type Pointer } from '../src/stage/stage'
@@ -16,7 +17,7 @@ const arena: Arena = { popups: [] }
 const FIGHT = /^boss\.(slabs|popups|lastStand)$/
 
 const io = (pressed: boolean, cursor: { x: number; y: number }, events: string[], mode = 'live'): StepIo =>
-  ({ dt: 1 / stepHz, time: 0, mode, pressed, pointer: { ...cursor, down: pressed }, cursor: { ...cursor, damaged: false, act: () => undefined, react: () => undefined, hurt: () => undefined, knock: () => undefined }, emit: (name: string) => void events.push(name) }) as unknown as StepIo
+  ({ dt: 1 / stepHz, time: 0, mode, pressed, pointer: { ...cursor, down: pressed }, cursor: { ...cursor, damaged: false, act: () => undefined, react: () => undefined, hurt: () => undefined, knock: () => undefined, press: () => undefined, spread: () => undefined }, emit: (name: string) => void events.push(name) }) as unknown as StepIo
 
 const volley = (f: Fight, at: { x: number; y: number }, events: string[]): void => {
   stepFight(f, io(true, at, events), arena)
@@ -34,12 +35,36 @@ const reach = (s: Shape): { x0: number; y0: number; x1: number; y1: number } => 
   const hy = (s.w * n + s.h * c) / 2
   return { x0: cx - hx, y0: cy - hy, x1: cx + hx, y1: cy + hy }
 }
+// How far a shape stays from a box: the least distance between the sides of the two, with the shape turned as it is drawn, so that a long line that is turned counts by where it lies and not by the box round it. Below zero when they overlap.
+const gapTo = (s: Shape, box: readonly [number, number, number, number]): number => {
+  const b = reach(s)
+  const flat = Math.max(box[0] - b.x1, b.x0 - box[2], box[1] - b.y1, b.y0 - box[3])
+  if (!s.rot) return flat
+  const cx = s.x + s.w / 2
+  const cy = s.y + s.h / 2
+  const c = Math.cos(s.rot)
+  const n = Math.sin(s.rot)
+  const mine = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([i, j]) => [cx + (i! * s.w * c - j! * s.h * n) / 2, cy + (i! * s.w * n + j! * s.h * c) / 2])
+  const its = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]], [box[0], box[3]]]
+  const local = its.map(([x, y]) => [(x! - cx) * c + (y! - cy) * n, -(x! - cx) * n + (y! - cy) * c])
+  const apart = (i: number, half: number): boolean => local.every((k) => k[i]! > half) || local.every((k) => k[i]! < -half)
+  if (flat <= 0 && !apart(0, s.w / 2) && !apart(1, s.h / 2)) return flat
+  const toSide = (p: number[], a: number[], z: number[]): number => {
+    const dx = z[0]! - a[0]!
+    const dy = z[1]! - a[1]!
+    const u = Math.min(1, Math.max(0, ((p[0]! - a[0]!) * dx + (p[1]! - a[1]!) * dy) / (dx * dx + dy * dy || 1)))
+    return Math.hypot(p[0]! - a[0]! - dx * u, p[1]! - a[1]! - dy * u)
+  }
+  let least = Infinity
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) least = Math.min(least, toSide(mine[i]!, its[j]!, its[(j + 1) % 4]!), toSide(its[i]!, mine[j]!, mine[(j + 1) % 4]!))
+  return least
+}
 const onScreen = (s: Shape): boolean => {
   const b = reach(s)
   return b.x1 > 0 && b.x0 < SCREEN.w && b.y1 > 0 && b.y0 < SCREEN.h
 }
-const OF_THE_FIGHT = /^(boss-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open)/
-const OF_THE_VISITOR = /^(muzzle-|dart-)/
+const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open|power-|arrow-dent|arrow-crack-|arrow-dust-|finish-|smoke)/
+const OF_THE_VISITOR = /^(muzzle-|dart-|arrow-dent|arrow-crack-|arrow-dust-)/
 
 interface Seen { time: number; list: Shape[]; fight: Fight }
 
@@ -93,7 +118,7 @@ describe('how the boss plays (change 002, item 15)', () => {
     const drops: number[] = []
     let was = -1
     let glanced = 0
-    while (stage.time < 11.4 && !stage.events.some((e) => e.name === 'shot-round')) {
+    while (stage.time < 11.4 + HOLD && !stage.events.some((e) => e.name === 'shot-round')) {
       stage.advance(1)
       const now = stage.events.filter((e) => e.name === 'shield-glance').length
       const fill = (stage.frameAt(stage.time).list as Shape[]).find((s) => s.id === 'health-fill')
@@ -129,19 +154,18 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(events.filter((e) => e === 'shot-round').length).toBeLessThan(events.filter((e) => e === 'shield-glance').length / 20)
   })
 
-  it('C. sets the four cannons in the four corners of the screen, the upper two under the clear band', () => {
-    const barBottom = TOP.bar + 30
+  it('C. sets the four cannons in the four corners of the whole screen, aside of the box round the health bar', () => {
     expect(CORNER.at.length).toBe(4)
     for (const [x, y] of CORNER.at) {
       expect(Math.min(x, SCREEN.w - x)).toBeLessThanOrEqual(CORNER.base * 2)
-      expect(Math.min(y, SCREEN.h - y)).toBeLessThanOrEqual(CORNER.base * 4)
-      expect(y - CORNER.base).toBeGreaterThanOrEqual(barBottom + TOP.clear)
+      expect(Math.min(y, SCREEN.h - y)).toBeLessThanOrEqual(CORNER.base * 2.1)
+      expect(y - CORNER.base).toBeGreaterThanOrEqual(0)
       expect(y + CORNER.base).toBeLessThanOrEqual(SCREEN.h)
       expect(x - CORNER.base).toBeGreaterThanOrEqual(0)
       expect(x + CORNER.base).toBeLessThanOrEqual(SCREEN.w)
+      expect(x + CORNER.base <= SOLID.bar[0] - TOP.clear || x - CORNER.base >= SOLID.bar[2] + TOP.clear).toBe(true)
     }
     expect(new Set(CORNER.at.map(([x, y]) => `${x < SCREEN.w / 2}${y < SCREEN.h / 2}`)).size).toBe(4)
-    expect(CORNER.band).toBeGreaterThanOrEqual(barBottom + TOP.clear)
   })
 
   it('C. aims its shots ahead of a moving arrow, and never the whole way', () => {
@@ -185,11 +209,12 @@ describe('how the boss plays (change 002, item 15)', () => {
       }
     }
     const stage = live(stand)
-    while (stage.page.id === 'step4' && stage.time < 150) stage.advance(12)
+    const clock = (): number => (stage.page.save() as { fight: Fight | null }).fight?.clock ?? 0
+    while (stage.page.id === 'step4' && clock() < MERCY.from - 1) stage.advance(12)
     expect(stage.page.id).toBe('step4')
     const f = (stage.page.save() as { fight: Fight }).fight
     const flat = stage.events.filter((e) => e.name === 'flatten').length
-    expect(flat).toBeGreaterThan(10)
+    expect(flat).toBeGreaterThan(4)
     expect(stage.events.filter((e) => e.name === 'peel-up').length).toBeGreaterThanOrEqual(flat - 1)
     expect(f.healed).toBeLessThan(15)
     expect(f.health).toBeGreaterThan(50)
@@ -213,26 +238,32 @@ describe('how the boss plays (change 002, item 15)', () => {
 
   it.each(runs)('note of 21:27. in %s the health bar stands alone at the top, and the boss, its shield, its turret, the cannons, the bullets and every flash keep the band under it clear', (name, make, every) => {
     const { frames } = watch(make(), every, 120)
+    const [fx0, fy0, fx1, fy1] = SOLID.frame
     let least = Infinity
     let who = ''
     for (const f of frames) {
       const track = f.list.find((s) => s.id === 'health-track')!
       expect(track.y).toBeCloseTo(TOP.bar, 3)
-      const floor = track.y + track.h + TOP.clear
+      for (const s of f.list) {
+        if (!s.id.startsWith('health-')) continue
+        expect(s.x, s.id).toBeGreaterThanOrEqual(fx0)
+        expect(s.x + s.w, s.id).toBeLessThanOrEqual(fx1)
+        expect(s.y, s.id).toBeGreaterThanOrEqual(fy0)
+        expect(s.y + s.h, s.id).toBeLessThanOrEqual(fy1)
+      }
       for (const s of f.list) {
         if (s.id.startsWith('health-') || isHeader(s.id)) continue
         if (name !== 'the film' && OF_THE_VISITOR.test(s.id)) continue
-        const top = reach(s).y0
-        if (top < least) {
-          least = top
+        const gap = gapTo(s, SOLID.frame)
+        if (gap < least) {
+          least = gap
           who = `${s.id} at ${f.time.toFixed(2)}`
         }
-        expect(top, `${s.id} at ${f.time.toFixed(2)}`).toBeGreaterThanOrEqual(floor)
+        expect(gap, `${s.id} at ${f.time.toFixed(2)}`).toBeGreaterThanOrEqual(TOP.clear)
       }
-      for (const s of f.list) if (s.id.startsWith('health-')) expect(s.y + s.h).toBeLessThanOrEqual(track.y + track.h + 1)
     }
     expect(who).not.toBe('')
-    expect(least).toBeGreaterThanOrEqual(TOP.bar + 30 + TOP.clear)
+    expect(least).toBeGreaterThanOrEqual(TOP.clear)
   })
 
   it('note of 21:27. keeps the stand-in boss no larger than the boss of the build before', () => {
@@ -277,7 +308,7 @@ describe('how the boss plays (change 002, item 15)', () => {
     const stage = film()
     const offsets: { time: number; dx: number; dy: number; w: number; h: number; turret: boolean; over: boolean }[] = []
     let label: Shape | null = null
-    while (stage.page.id === 'step4' && stage.time < 31.4) {
+    while (stage.page.id === 'step4' && stage.time < UNIT_SECONDS - 0.6) {
       stage.advance(2)
       const list = stage.frameAt(stage.time).list as Shape[]
       label ??= list.find((s) => s.id === 'submit-label') ?? null
@@ -313,13 +344,70 @@ describe('how the boss plays (change 002, item 15)', () => {
 
   it('emits every event of the rules in the film, each inside the time the film gives step 4', () => {
     const stage = film()
-    stage.advance(Math.round(31 * stepHz))
+    stage.advance(Math.round((UNIT_SECONDS - 1) * stepHz))
     const names = new Set(stage.events.map((e) => e.name))
-    for (const n of ['shield-glance', 'shot-round', 'weak-tell', 'cannon-tell', 'cannon-fire', 'slab-fire', 'flatten', 'peel-up', 'boss-heal', 'boss-move', 'turret-rise', 'turret-lock', 'big-tell', 'big-fire', 'arena-break', 'power-down', 'turret-off']) expect(names.has(n), n).toBe(true)
+    for (const n of ['shield-glance', 'shot-round', 'weak-tell', 'cannon-tell', 'cannon-fire', 'slab-fire', 'flatten', 'peel-up', 'boss-heal', 'boss-move', 'turret-rise', 'turret-lock', 'big-tell', 'big-fire', 'arena-break', 'power-down', 'turret-off', 'boss-formed', 'boss-turn', 'boss-music', 'power-up', 'boss-fall', 'finish-arms', 'finish-charge', 'finish-fire', 'boss-gone', 'button-down']) expect(names.has(n), n).toBe(true)
     const flat = stage.events.filter((e) => e.name === 'flatten')
     expect(flat.length).toBe(1)
     expect(flat[0]!.hitsCursor).toBe(true)
     expect(stage.events.filter((e) => e.hitsCursor).length).toBe(1)
+  })
+
+  it('mail of 23:13. runs the finish on the marks of the shout in the film: the arms, one finish-charge on each beat, the blast let go on the last word and held for its length', () => {
+    const stage = film()
+    stage.advance(Math.round((UNIT_SECONDS - 1) * stepHz))
+    const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+    const fall = at('boss-fall')[0]! + FINISH.fall
+    expect(at('finish-arms')[0]! - fall).toBeCloseTo(SHOUT.arms, 1)
+    const beats = at('finish-charge').map((t) => t - fall)
+    expect(beats.length).toBe(SHOUT.beats.length)
+    beats.forEach((t, i) => expect(t).toBeCloseTo(SHOUT.beats[i]!, 1))
+    expect(at('finish-fire').length).toBe(1)
+    expect(at('finish-fire')[0]! - fall).toBeCloseTo(SHOUT.fire, 1)
+    expect(at('boss-gone')[0]! - fall).toBeCloseTo(SHOUT.gone, 1)
+    expect(at('button-down')[0]! - fall).toBeCloseTo(SHOUT.gone + FINISH.settle, 1)
+  })
+
+  const grown = (held: number, steps: number): number => FINISH.steady * (held / (SHOUT.fire - SHOUT.beats[0])) + ((1 - FINISH.steady) * steps) / SHOUT.beats.length
+
+  it.each([
+    ['who presses nothing', (): boolean => false, FINISH.alone, 4, 1],
+    ['who holds the button and never lets go', (): boolean => true, SHOUT.fire - SHOUT.beats[0] + FINISH.late, 4, 1],
+    ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2, 2, grown(1.5, 2)],
+    ['who clicks once and lets go', (u: number): boolean => u >= 0.5 && u < 0.7, 0.7, 1, FINISH.small],
+    ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.2, 3, grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], 3)]
+  ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (_name, down, fires, charges, power) => {
+    for (const seed of [config.seed, 7, 1234]) {
+      const bot = new BotDriver('keen', seed)
+      let since = -1
+      const driver: Driver = {
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          if (v.page.gag() !== 'boss.collapse' && v.page.gag() !== 'boss.finish') return bot.input(v)
+          if (since < 0) since = v.time
+          return { x: v.cursor.x, y: v.cursor.y, down: down(v.time - since - FINISH.fall) }
+        }
+      }
+      const stage = new Stage({ mode: 'live', flow, pages, driver, seed })
+      let wide = 0
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'button-down') && stage.time < 140) {
+        stage.advance(1)
+        const q = (stage.frameAt(stage.time).list as Shape[]).find((x) => x.id === 'finish-blast')
+        if (q) wide = Math.max(wide, q.h / 2 / FINISH.wide)
+      }
+      const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+      const fall = at('boss-fall')[0]! + FINISH.fall
+      expect(at('finish-arms').length, `seed ${seed}`).toBe(1)
+      expect(at('finish-fire').length, `seed ${seed}`).toBe(1)
+      expect(at('finish-fire')[0]! - fall, `seed ${seed}`).toBeCloseTo(fires, 1)
+      expect(at('finish-charge').length, `seed ${seed}`).toBe(charges)
+      expect(wide, `seed ${seed}`).toBeCloseTo(power, 2)
+      expect(at('boss-gone')[0]! - at('finish-fire')[0]!).toBeCloseTo(SHOUT.gone - SHOUT.fire, 1)
+      expect(at('button-down').length).toBe(1)
+      expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
+      while (stage.page.id === 'step4' && stage.time < 160) stage.advance(1)
+      expect(stage.page.id, `seed ${seed}`).not.toBe('step4')
+    }
   })
 
   it('E. ends on the skip link at any moment of the fight, with the header and the rail off the screen', () => {

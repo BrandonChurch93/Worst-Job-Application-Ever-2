@@ -279,7 +279,7 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x7f8388), roughness: 0.6, metalness: 0.4, specularIntensity: 0.5 })
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0xa4a8ad), roughness: 0.58, metalness: 0.22, specularIntensity: 0.5 })
   const brushed = (hex: number): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); return studio(c) }
   look = {
     hull: brushed(0x777b80),
@@ -300,7 +300,7 @@ export function lookKit(): LookKit {
     glass: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6fae92), roughness: 0.3, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.2, specularIntensity: 0.6, envMapIntensity: 0.5, transparent: true, opacity: 0.62, depthWrite: false })),
     glassEdge: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9fcdb6), roughness: 0.22, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1 })),
     crack: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x1c1a19), roughness: 0.9, metalness: 0, specularIntensity: 0.1, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 })),
-    soot: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.018, 0.017, 0.016), transparent: true, opacity: 0.4, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
+    soot: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.011, 0.01), transparent: true, opacity: 0.55, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
     ceramic: m.ceramic
   }
   return look
