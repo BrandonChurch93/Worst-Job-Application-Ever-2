@@ -1,0 +1,46 @@
+commit 6c572db76373486fbdeec789081f87bb34dcc0f9
+Author: Brandon Church <200545962+BrandonChurch93@users.noreply.github.com>
+Date:   Sat Nov 28 09:27:59 2026 +0000
+
+    NEEDS: the boss unit is 53.1 s in film.units (was 71.8), its beats moved with it
+    
+    Measured on the page as timed for the lines without pauses: the press at 51.97 s, the page turn after it. boss.verify ends at 5 as it did before the forming waited for line 6 (the crack is at 6.11 s, the unfold at 6.71 s); every later beat is 18.7 s sooner and as long as it was: boss.unfold 5 to 25.6, boss.slabs to 34.9, boss.popups to 36.8, boss.lastStand to 39.1, boss.collapse to 40.3, boss.finish to 51.9, boss.press to 53.1. film.plannedSeconds, film.maxSeconds and every other key are as they were.
+    
+    Co-authored-by: Perplexity <noreply@perplexity.ai>
+
+diff --git a/config/showcase.json b/config/showcase.json
+index 23d665b8..25430803 100644
+--- a/config/showcase.json
++++ b/config/showcase.json
+@@ -57,7 +57,7 @@
+       { "id": "step1", "seconds": 35.4 },
+       { "id": "step2", "seconds": 24.9 },
+       { "id": "pinball", "seconds": 42 },
+-      { "id": "boss", "seconds": 71.8 },
++      { "id": "boss", "seconds": 53.1 },
+       { "id": "decision", "seconds": 21.7 }
+     ],
+     "beats": [
+@@ -86,14 +86,14 @@
+       { "id": "pinball.highway", "unit": "pinball", "from": 29.5, "to": 34, "event": "ramp-roll" },
+       { "id": "pinball.save", "unit": "pinball", "from": 34, "to": 37, "event": "flipper-save" },
+       { "id": "pinball.drain", "unit": "pinball", "from": 37, "to": 42, "event": "drain" },
+-      { "id": "boss.verify", "unit": "boss", "from": 0, "to": 7, "event": "checkbox" },
+-      { "id": "boss.unfold", "unit": "boss", "from": 7, "to": 44.3, "event": "unfold" },
+-      { "id": "boss.slabs", "unit": "boss", "from": 44.3, "to": 53.6, "event": "slab-fire" },
+-      { "id": "boss.popups", "unit": "boss", "from": 53.6, "to": 55.5, "event": "popup" },
+-      { "id": "boss.lastStand", "unit": "boss", "from": 55.5, "to": 57.8, "event": "session-expired" },
+-      { "id": "boss.collapse", "unit": "boss", "from": 57.8, "to": 59, "event": "power-down" },
+-      { "id": "boss.finish", "unit": "boss", "from": 59, "to": 70.6, "event": "finish-fire" },
+-      { "id": "boss.press", "unit": "boss", "from": 70.6, "to": 71.8, "event": "button-press" },
++      { "id": "boss.verify", "unit": "boss", "from": 0, "to": 5, "event": "checkbox" },
++      { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 25.6, "event": "unfold" },
++      { "id": "boss.slabs", "unit": "boss", "from": 25.6, "to": 34.9, "event": "slab-fire" },
++      { "id": "boss.popups", "unit": "boss", "from": 34.9, "to": 36.8, "event": "popup" },
++      { "id": "boss.lastStand", "unit": "boss", "from": 36.8, "to": 39.1, "event": "session-expired" },
++      { "id": "boss.collapse", "unit": "boss", "from": 39.1, "to": 40.3, "event": "power-down" },
++      { "id": "boss.finish", "unit": "boss", "from": 40.3, "to": 51.9, "event": "finish-fire" },
++      { "id": "boss.press", "unit": "boss", "from": 51.9, "to": 53.1, "event": "button-press" },
+       { "id": "decision.wait", "unit": "decision", "from": 0, "to": 2, "event": "hold-music" },
+       { "id": "decision.letter", "unit": "decision", "from": 2, "to": 6, "event": "stamp" },
+       { "id": "decision.metrics", "unit": "decision", "from": 6, "to": 18.4, "event": "button-press" },
