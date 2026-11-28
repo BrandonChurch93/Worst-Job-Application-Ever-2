@@ -492,9 +492,9 @@ describe('the shout of the boss: a draft that builds on one row, a part a mark o
     expect(s.said().lines.map((l) => [l.words, l.step, l.whole])).toEqual([['ka', { k: 0, n: 3 }, 'ka me ha'], ['ka me ha', { k: 2, n: 3 }, 'ka me ha']])
     expect(filmCaptions([{ id: id('boss.finish.0'), frame: 0 }], 60, standIns(film, drafts)).map((c) => c.step)).toEqual([{ k: 0, n: 3 }, { k: 1, n: 3 }, { k: 2, n: 3 }])
     expect(filmCaptions([{ id: id('boss.verify.0'), frame: 0 }], 60, standIns(film, drafts)).every((c) => c.step === undefined)).toBe(true)
-    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5)))).toEqual([150, 168, 188, 211, 240])
-    expect([0, 1, 2].map((k) => Math.round(shoutPx(k, 3)))).toEqual([150, 168, 240])
-    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5, 166)))).toEqual([105, 118, 132, 148, 166])
+    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5)))).toEqual([98, 123, 154, 192, 240])
+    expect([0, 1, 2].map((k) => Math.round(shoutPx(k, 3)))).toEqual([150, 188, 240])
+    expect([0, 1, 2, 3, 4].map((k) => Math.round(shoutPx(k, 5, 166)))).toEqual([68, 85, 106, 133, 166])
     for (const n of [3, 4, 5, 6]) for (const most of [60, 166, 240, 400]) for (let k = 1; k < n; k++) expect(shoutPx(k, n, most)).toBeGreaterThan(shoutPx(k - 1, n, most))
     for (const t of [0, 0.01, 0.37, 2.2]) {
       const off = shoutShake(t)

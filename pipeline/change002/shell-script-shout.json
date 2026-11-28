@@ -7,7 +7,7 @@
   "marks": [
     {
       "mark": "finish-arms",
-      "at": 0,
+      "at": 0.012,
       "panel": null
     },
     {
@@ -15,16 +15,16 @@
       "at": 0.102,
       "panel": {
         "words": "I HAVE",
-        "fontPx": 78,
+        "fontPx": 62,
         "top": 96,
-        "bottom": 218,
-        "left": 801,
+        "bottom": 199,
+        "left": 825,
         "type": {
-          "left": 833,
-          "right": 1085,
-          "wide": 252
+          "left": 858,
+          "right": 1061,
+          "wide": 203
         },
-        "right": 1119,
+        "right": 1095,
         "baked": true
       }
     },
@@ -33,16 +33,16 @@
       "at": 1.042,
       "panel": {
         "words": "I HAVE FIVE YEARS",
-        "fontPx": 87,
+        "fontPx": 78,
         "top": 96,
-        "bottom": 229,
-        "left": 525,
+        "bottom": 218,
+        "left": 566,
         "type": {
-          "left": 557,
-          "right": 1369,
-          "wide": 812
+          "left": 599,
+          "right": 1326,
+          "wide": 728
         },
-        "right": 1395,
+        "right": 1354,
         "baked": true
       }
     },
@@ -52,21 +52,21 @@
       "panel": {
         "words": "I HAVE FIVE YEARS OF EXPERIENCE",
         "fontPx": 97,
-        "top": 101,
-        "bottom": 246,
-        "left": 88,
+        "top": 95,
+        "bottom": 241,
+        "left": 82,
         "type": {
-          "left": 121,
-          "right": 1846,
+          "left": 114,
+          "right": 1839,
           "wide": 1725
         },
-        "right": 1838,
+        "right": 1832,
         "baked": true
       }
     },
     {
       "mark": "(no mark: its own end)",
-      "at": 6.362,
+      "at": 6.371,
       "panel": null
     }
   ],
@@ -100,11 +100,11 @@
   },
   "log": [
     {
-      "at": 0.401,
+      "at": 0.421,
       "line": "line.boss.finish.0",
       "trigger": "event finish-arms",
       "what": "spoken",
-      "start": 0.401,
+      "start": 0.421,
       "seconds": 6.26
     }
   ],

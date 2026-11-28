@@ -86,7 +86,7 @@ export const CAPTION = {
   // A line that builds one part a mark on one row (the shout of the boss): px of the first step, the growth a step, the most px of the last, the y of the panel's upper edge
   // and the lowest its lower edge may come (the top band of the screen), the widest it gets, its line height, and the px and turns a second by which the last step shakes.
   // The whole line at its last step is fitted into that band, and every step before it is one growth smaller, so the type never shrinks.
-  shout: { firstPx: 150, grow: 1.12, lastPx: 240, top: 96, low: 330, wide: 1760, lineHigh: 1, shakePx: 5, shakeHz: 17 },
+  shout: { firstPx: 150, grow: 1.25, lastPx: 240, top: 96, low: 330, wide: 1760, lineHigh: 1, shakePx: 5, shakeHz: 17 },
   fontPx: 26,
   // The size of a loud phrase, shown in capitals.
   loudFontPx: 64,
