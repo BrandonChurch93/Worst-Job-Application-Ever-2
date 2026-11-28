@@ -17,7 +17,7 @@ const proof = path.join(root, 'pipeline', 'change002', 'proof', 'finish')
 const refs = path.join(root, 'references', 'approved-002')
 const args = process.argv.slice(2)
 const flag = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : undefined }
-const wanted = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--level', '--samples', '--scale'].includes(args[i - 1])))
+const wanted = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--level', '--samples', '--scale', '--frame-samples'].includes(args[i - 1])))
 const level = flag('--level') ?? null
 const samples = Number(flag('--samples') ?? 8)
 const FPS = 60
@@ -71,7 +71,7 @@ const JOBS = {
     await beside('poses', path.join(refs, 'finish-poses.png'), tiles, 3)
     // The same three as the film sees them, from straight above.
     const above = []
-    for (const a of asks) above.push(await sharp(await shot(page, { ...a, name: a.name + '-above', cam: { x: ARROW.x - 110, y: ARROW.y - 60, w: 320, h: 180 }, arena: true })).resize(640, 360).png().toBuffer())
+    for (const a of asks) above.push(await sharp(await shot(page, { ...a, name: a.name + '-above', cam: { x: ARROW.x + 50 - 160 * SCALE, y: ARROW.y + 92 - 152 * SCALE, w: 320 * SCALE, h: 180 * SCALE }, arena: true })).resize(640, 360).png().toBuffer())
     await strip('poses-above', above, 3)
   },
   // One pose at two rises, with its shadow: at film size and at three times.
@@ -89,6 +89,8 @@ const JOBS = {
     }
     await strip('rise-40-60', tiles, 3)
   },
+  // The figure standing at ease in the close view, alone on the page: for measuring how tall it is in film px.
+  size: async (page) => { await shot(page, { name: 'size', ...power(0.96), arena: false, arrow: false }) },
   charge: async (page) => { await beside('charge', path.join(refs, 'finish-charge.png'), [await shot(page, { name: 'charge', ...finish(3.95) })], 1) },
   blast: async (page) => { await beside('blast', path.join(refs, 'finish-blast.png'), [await shot(page, { name: 'blast', ...finish(5.3) })], 1) },
   after: async (page) => { await beside('after', path.join(refs, 'finish-button-left.png'), [await shot(page, { name: 'after', ...finish(7.12) })], 1) },
@@ -99,6 +101,8 @@ const JOBS = {
   knees: (page) => { const k = finish(M.walk + 1).input.marks.kneel; return frames(page, 'knees', row(k - 2 / FPS, 34), finish, kneelBox()) },
   fist: (page) => { const k = finish(M.walk + 1).input.marks.fist; return frames(page, 'fist', row(k - 2 / FPS, 26), finish, kneelBox()) },
   blow: (page) => { const p = finish(M.walk + 1).input.marks.press; return frames(page, 'blow', row(p - 12 / FPS, 30), finish, kneelBox()) },
+  // Every frame round the press: from 6 frames before it to 14 after.
+  blownear: (page) => { const p = finish(M.walk + 1).input.marks.press; const ts = []; for (let i = -6; i <= 14; i++) ts.push(p + i / FPS); return frames(page, 'blownear', ts, finish, kneelBox()) },
   walk: (page) => frames(page, 'walk', row(M.walk, 44).map((t, i) => M.walk - 4 / FPS + i * 4 / FPS), finish, { x: ARROW.x - 110, y: ARROW.y - 40, w: 420, h: 200 })
 }
 const kneelBox = () => ({ x: WALK.x1 - 90, y: WALK.y1 - 150, w: 240, h: 200 })
@@ -121,7 +125,7 @@ async function frames(page, name, times, script, box) {
   const tiles = []
   for (let i = 0; i < times.length; i++) {
     const a = script(times[i])
-    const file = await shot(page, { ...a, name: `${name}-${String(i).padStart(2, '0')}`, cam: view, samples: Math.min(samples, 3) })
+    const file = await shot(page, { ...a, name: `${name}-${String(i).padStart(2, '0')}`, cam: view, samples: Number(flag('--frame-samples') ?? Math.min(samples, 3)) })
     tiles.push(await sharp(file).extract({ left: Math.round(960 - box.w * scale / 2), top: Math.round(540 - box.h * scale / 2), width: box.w * scale, height: box.h * scale }).resize(Math.round(box.w * 1.2), Math.round(box.h * 1.2)).png().toBuffer())
   }
   await strip(name, tiles, Math.min(tiles.length, Math.max(4, Math.floor(1900 / (box.w * 1.2 + 4)))))

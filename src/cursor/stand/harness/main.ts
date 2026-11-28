@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { App } from '../../../app'
 import { ARENA, arenaPart } from '../../../arena'
 import { makeBoss, poseOf, SIZE, type BossLook } from '../../../boss/look1'
-import { finishPart, finishState, kneelSpot, makeFinish, type FinishInput } from '../../../boss/finish/index'
+import { SCALE, finishPart, finishState, kneelSpot, makeFinish, type FinishInput } from '../../../boss/finish/index'
 import type { BossView, ViewCorner } from '../../../boss/view'
 import type { QualityId } from '../../../core/quality'
 import { restPose } from '../../body'
@@ -83,8 +83,9 @@ function camera(a: Ask): CameraPose {
   const r = STAND.rise * s.pose.rise
   const c = Math.cos(r)
   const sn = Math.sin(r)
-  const mid = 42
-  const far = 760
+  const big = a.input.scale ?? SCALE
+  const mid = 42 * big
+  const far = 760 * big
   const at: [number, number, number] = [s.pose.x - 960, 540 - s.pose.y + mid * c, mid * sn]
   return { eye: [at[0], at[1] - sn * far, at[2] + c * far], target: at, fov: 20, up: [0, c, sn] }
 }
