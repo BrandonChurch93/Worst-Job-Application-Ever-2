@@ -52,10 +52,12 @@ describe('the boss page keeps time by the kept takes of lines 6 and 7', () => {
     expect(LINE7.music).toBeCloseTo(l.phrases[l.phrases.length - 1]!.from, 6)
   })
 
-  it('part 2 of line 7 has the length of its kept take, and the gold starts inside it', () => {
+  // Since b6ffb6e6 the gold builds over the last phrase of part 2 and is full on its last word: it starts where that phrase starts and ends where the take ends.
+  it('part 2 of line 7 has the length of its kept take, and the gold builds from the start of its last phrase to its end', () => {
     const l = line('boss.unfold.2')
     expect(LINE7.part2).toBeCloseTo(l.seconds, 6)
     expect(LINE7.power).toBeGreaterThan(0)
-    expect(LINE7.power + LINE7.glow).toBeLessThan(l.seconds)
+    expect(LINE7.power).toBeCloseTo(l.phrases[l.phrases.length - 1]!.from, 6)
+    expect(LINE7.power + LINE7.glow).toBeCloseTo(l.seconds, 6)
   })
 })
