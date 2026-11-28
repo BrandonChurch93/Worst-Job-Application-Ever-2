@@ -4,10 +4,10 @@ Branch `agent/b-decision`, from `agent/merge55` at 1804108e. Every fact here is 
 
 ## What changed
 
-1. The unit is 17.3 s (it was 12). The beats `decision.wait` and `decision.letter` are as they were. `decision.metrics` runs 6 to 13.8 (it was 6 to 10). `decision.reset` runs 13.8 to 17.3 (it was 10 to 12). `film.plannedSeconds` and `film.maxSeconds` are not touched.
+1. The unit is 17.1 s (it was 12). The beats `decision.wait` and `decision.letter` are as they were. `decision.metrics` runs 6 to 13.8 (it was 6 to 10). `decision.reset` runs 13.8 to 17.1 (it was 10 to 12). `film.plannedSeconds` and `film.maxSeconds` are not touched.
 2. The press of the button is no longer a number written down. `FILM.press` in `src/pages/step5/timeline.ts` is the first whole frame (of 30 a second) from which the page turns no sooner than the end of line 8 plus `audio.lineGapSeconds`. With today's words and pace that is 13.433 s, and the page turns at 13.8875 s.
 3. The 8 s between the stamp and the press are acted (the table under "The acting").
-4. `content/narration-drafts.json`: the draft line 9 starts at 0.025 of `decision.reset` (it was 0). `npm run retime` wrote it. `content/narration.json` did not change: line 8 still starts on the stamp, at 0.85833 of `decision.letter`.
+4. `content/narration-drafts.json`: the draft line 9 starts at 0.02652 of `decision.reset` (it was 0). `npm run retime` wrote it. `content/narration.json` did not change: line 8 still starts on the stamp, at 0.85833 of `decision.letter`.
 5. `cut/` is rewritten by `npm run cut`.
 6. A tool for the pictures, `pipeline/change002/decision-frames.mjs`: frames of the unit with the caption of that frame laid over, as a sheet.
 
@@ -38,15 +38,24 @@ If the puffing up is too much, the other word is `nervous`: one word in `CUES` i
 
 Why the peel starts 0.34 s before "has decided" and not on it. The arrow must be whole within `cursor.damageHealSeconds` (4 s) of the first hurt, which is the stamp at 5.433. With a film heal of 2.3 s it is whole 3.93 s after the stamp. A later peel breaks that rule. A second film hurt to put it off was not taken: every hurt kicks the arrow with a squash, and there would be no cause for it on the screen.
 
-Why 17.3 s and not shorter. Line 9 ends at 17.0125 s. The unit's seconds times 30 must be whole, so the shortest unit that holds the line is 17.1 s (0.0875 s after the last word). I chose 17.3 s: 0.2875 s after the last word, just under the gap the film keeps after every other line, and inside the 0.4 s the brief allows. The line is a silent stand-in at the narrator's fastest pace; a real voice will not be faster. To take the shorter end: `seconds` of the unit and `to` of `decision.reset` to 17.1 in `config/showcase.json`, then `npm run retime` and `npm run cut`. No test pins 17.3.
+Why 17.1 s. Line 9 ends at 17.0125 s, and the unit's seconds times 30 must be whole, so 17.1 s is the shortest unit that holds the line: the film ends 0.0875 s (5 frames of 60) after the last word. The brief allows up to 0.4 s and names "about 17.4 s"; I tried the longer ends and each one cost something:
+
+- 17.3 s broke four tests of other units by arithmetic alone: the sum of the six units in floating point is 200.20000000000002, and those tests ask that the sum times the frame rate be a whole number. 17.1 s gives 200 exactly.
+- 17.4 s broke a test of the careers page's landing: in the last step of the unit the arrow, on its walk, starts to rise off the page (MEASURED: its height 10 where the test allows 6).
+- More time after the line only shows more of a move that cannot finish inside the unit (next paragraph). The owner asked for the short end and no padding, so the short end it is.
+
+A fault this leaves, and it is not mine to mend alone. The careers page, turned back to, plays its own script, which is another unit's and which I did not touch (MEASURED by stepping the unit): the page is entered at 14.3875 s; the arrow comes down and lies flat (14.61 to 15.16), stands, steps left and leans at the Apply button (15.52 to 16.07), holds there, and at 16.79 s (`LANDING.walk`, 2.4 s after it enters) it sets off to the place it stands at when the film starts, a walk of 0.85 s that ends at 17.6375 s. Before, the unit ended at 12 s, 1.75 s after the page was entered, on the lean; the walk was never in the film. Line 9 ends 0.22 s after the walk starts, so with any length the brief allows the film now ends with the arrow in the middle of that walk: at 17.1 s it is 0.31 s into it (the arrow has gone about 40 px of the way). Two ways to mend it, both outside what I was given:
+
+- `LANDING.walk` in `src/pages/marketing/script.ts` later than the unit's end (it is read by the film only), so the film ends on the arrow leaning at the Apply button, held, under "the next application." That shows nothing the reset did not show before. It is the one I would take.
+- The unit 17.9 s: the walk ends and the arrow stands 0.26 s at its opening place. That is 0.89 s after line 9 ends, more than the 0.4 s allowed.
 
 ## Every time that moved (seconds of the unit, the film)
 
 | What | Old | New |
 | --- | --- | --- |
-| The unit's length | 12 | 17.3 |
+| The unit's length | 12 | 17.1 |
 | `decision.metrics` ends | 10 | 13.8 |
-| `decision.reset` | 10 to 12 | 13.8 to 17.3 |
+| `decision.reset` | 10 to 12 | 13.8 to 17.1 |
 | The landed arrow is whole after (`FILM.heal`, was `STUCK.heal`) | 0.78 | 2.3 |
 | It lies flat until | 7.457 | 8.217 |
 | The event `peel-up` | 7.708 | 8.954 |
@@ -60,9 +69,10 @@ Why 17.3 s and not shorter. Line 9 ends at 17.0125 s. The unit's seconds times 3
 | The page turns, event `page-turn` (`FILM.leave`) | 9.754 | 13.8875 |
 | Line 8 (`decision.letter.0`), start to end | 5.433 to 13.558 | 5.433 to 13.558 (not moved; it now ends inside the unit) |
 | Line 9 (draft, `decision.reset.0`), start to end | 13.858 to 16.983, past the unit's end, 4.104 s after its event | 13.8875 to 17.0125, on its event |
-| Line 9's `at` in `content/narration-drafts.json` | 0 | 0.025 |
+| Line 9's `at` in `content/narration-drafts.json` | 0 | 0.02652 |
+| The careers page, once entered (0.5 s after the turn), is seen for | 1.746 s (ends on its lean at the button) | 2.7125 s (ends 0.31 s into its walk to the opening place, which starts at 16.7875) |
 | The key `decision`, `at` of its beat | 0.3 | 0.15385 (still 7.2 s of the unit) |
-| The film B | 194.9 s, 11694 frames | 200.2 s, 12012 frames |
+| The film B | 194.9 s, 11694 frames | 200 s, 12000 frames |
 
 Not moved: the wait, the letter's fall, the stamp (in 4.57, contact 5.433, lifted to 5.97, carried to 6.40, laid down by 6.63), the landing at 7.067, all live timings.
 
@@ -76,15 +86,16 @@ All of these are MEASURED from `cut/CUES.md`, `npm run retime` and the constants
 | `tests/step5.test.ts` | keeps every drawn part on the page and every run of type readable, in every state | 9.7 s | `FILM.leave + 0.25` | the same |
 | `tests/step5.test.ts` | resolves every word it shows to a key | 9.7 s | `FILM.leave + 0.25` | the same |
 | `tests/step5.test.ts` | lets the film cursor walk to the letter by itself, and holds it only while the stamp is over it or carries it | 9.7 s | `FILM.leave + 0.25` | the same |
-| `tests/step5.test.ts` | reports the event of every beat inside its beat | film run for 12 s | the unit's seconds from the config (17.3) | the unit is longer; at 12 s the press had not happened |
-| `tests/step5.test.ts` | plays the beats in the order the film tells them | 12 s | the unit's seconds (17.3) | the same; the order asked for is not changed |
+| `tests/step5.test.ts` | reports the event of every beat inside its beat | film run for 12 s | the unit's seconds from the config (17.1) | the unit is longer; at 12 s the press had not happened |
+| `tests/step5.test.ts` | plays the beats in the order the film tells them | 12 s | the unit's seconds (17.1) | the same; the order asked for is not changed |
 | `tests/step5.test.ts` | flattens the cursor under the stamp, shows it flat at the key moment and whole again before the button | press 9.3 | `FILM.press` (13.433) | the press moved |
-| `tests/step5.test.ts` | never gives the cursor arms and never changes its size | 12 s | the unit's seconds (17.3) | so the whole unit is looked at |
-| `tests/step5.test.ts` | is a pure function of time in its script | 12 s | the unit's seconds (17.3) | the same |
+| `tests/step5.test.ts` | never gives the cursor arms and never changes its size | 12 s | the unit's seconds (17.1) | so the whole unit is looked at |
+| `tests/step5.test.ts` | is a pure function of time in its script | 12 s | the unit's seconds (17.1) | the same |
 | `tests/step5.test.ts` | continues exactly after load(save()), in the film | run to 11 s, cuts to 9.35 | run to 15 s, three more cuts: 10.5, 12.2, 13.5 | so a save is taken inside each new pose and after the new press |
 | `tests/step5.test.ts` | gives the same frames by seeking as by playing | first seek to 11 s, times to 9.4 | first seek to 15 s, three more times: 13.5, 10.5, 12.2 | the same |
 | `tests/decision-fix.test.ts` | the flat arrow comes down over at least 14 frames, after the block is down, and lies still before the key | `STUCK.heal` (0.78) in two lines | `FILM.heal` (2.3) | the test is of the film; the film's heal is its own number now |
 | `tests/decision-acting.test.ts` | every cue of the acting sits inside the twelve seconds and in order, now named "every cue of the acting sits before the press and in order" | every cue before 10 s | every cue before `FILM.press` (13.433) | the unit is not twelve seconds and two cues are after 10 s |
+| `tests/careers-fix-landing.test.ts` | the landing back on the careers page: holds three poses long enough to be read: flat on landing, stood again, leant at the button | the deep lean (under -0.45) ends on the unit's last step | the arrow stays at the leant place to the unit's last step or to the page's own walk (`LANDING.walk`), whichever is first, give or take 0.03 s | the reset is longer: the `recoil` that makes the deep lean ends 0.62 s after it starts and the lean eases, and then the page's script reaches its walk; the three holds of 0.4 s and their order are asked as before, and the old config passes the new line too |
 
 New tests in `tests/decision-acting.test.ts`: "the phrase times the acting keeps are those of line 8 at the narrator's rate" (holds `SAID` to the words of `content/narration.json` and `audio.narratorMaxWordsPerSecond`) and "the arrow acts the line: flat through the first two phrases, whole in the third, up on the fourth, down on the fifth, each pose held" (the holds, the heal inside 4 s, the press on a whole frame at or before the line's end, the page turn no sooner than the line's end plus the gap and less than one frame of 30 after it).
 
@@ -96,7 +107,7 @@ No test was loosened to pass: where a number was a film time that moved, the tes
 
 ## What follows from the longer film, not mended here
 
-- The film B is 200.2 s. `film.maxSeconds` is 165 and `film.plannedSeconds` is the owner's; it was over before (194.9 s). Not touched.
+- The film B is 200 s. `film.maxSeconds` is 165 and `film.plannedSeconds` is the owner's; it was over before (194.9 s). Not touched.
 - "Your Time" on the metrics panel is the film's length in film mode, so it reads 03:20 where it read 03:14 (STATED by the code, `filmSeconds()`; read off the sheet).
 
 ## UNKNOWN
@@ -105,6 +116,7 @@ No test was loosened to pass: where a number was a film time that moved, the tes
 - How it sounds. The two lines are silent stand-ins; no sound was made or heard.
 - Whether a real voice fits. The times are the soonest the lines can end at 1.6 words a second. A slower voice makes line 8 end after the press and line 9 run past the unit; `npm run retime` will say so when the real lengths are in.
 - Whether the caption sits well on this page. On the stills it lies just under the Accept Rejection button, over the share link, and the arrow presses the button right beside it. The caption's place is the shell's, not this page's; I did not move it.
+- How the unfinished walk at the very end reads (see "A fault this leaves").
 - Whether the owner wants line 9 over the careers page as it plays at its start (the hero and the Apply button rising), which is what the reset shows.
 
 ## Not done

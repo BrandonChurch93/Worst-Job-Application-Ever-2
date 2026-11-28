@@ -77,11 +77,11 @@ Frames 7278 to 10973.
 
 ## decision
 
-Frames 10974 to 12011.
+Frames 10974 to 11999.
 
 | Beat | Frames | Camera | Move | Framing at the start | Framing at the end |
 | --- | --- | --- | --- | --- | --- |
 | `decision.wait` | 10974 to 11093 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `decision.letter` | 11094 to 11333 | `home` | holds, shakes | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `decision.metrics` | 11334 to 11801 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.reset` | 11802 to 12011 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.reset` | 11802 to 11999 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |

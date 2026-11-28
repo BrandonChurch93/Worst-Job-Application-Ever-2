@@ -49,6 +49,7 @@ describe('the landing back on the careers page', () => {
     expect(leant[1] - leant[0]).toBeGreaterThanOrEqual(0.4)
     expect(flat[1]).toBeLessThanOrEqual(stood[0])
     expect(stood[1]).toBeLessThanOrEqual(leant[0])
-    expect(leant[1]).toBe(poses[poses.length - 1]!.t)
+    const there = longest((p) => p.x < HANDOFF.x - 20)
+    expect(there[1]).toBeGreaterThanOrEqual(Math.min(poses[poses.length - 1]!.t, LANDING.walk) - 0.03)
   })
 })

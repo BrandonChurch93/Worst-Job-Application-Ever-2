@@ -1,8 +1,8 @@
 {
   "what": "The cut list of film B, with the opening of film A and the card loop. Made by npm run cut from film.units, film.beats, the narrator's film lines and the events of the whole film run in film mode. Frames are counted from 0 at film.fps.",
   "fps": 60,
-  "frameCount": 12012,
-  "seconds": 200.2,
+  "frameCount": 12000,
+  "seconds": 200,
   "beatToleranceSeconds": 0.25,
   "beatToleranceFrames": 15,
   "units": [
@@ -39,8 +39,8 @@
     {
       "id": "decision",
       "first": 10974,
-      "last": 12011,
-      "frames": 1038
+      "last": 11999,
+      "frames": 1026
     }
   ],
   "beats": [
@@ -540,8 +540,8 @@
       "id": "decision.reset",
       "unit": "decision",
       "first": 11802,
-      "last": 12011,
-      "frames": 210,
+      "last": 11999,
+      "frames": 198,
       "event": {
         "name": "page-turn",
         "frame": 11807,

@@ -2,7 +2,7 @@
 
 Made by `npm run cut`. Do not edit by hand.
 
-Film B: 12012 frames at 60 a second, 200.2 s. Times are in seconds from the first frame of the film. A frame is counted from 0.
+Film B: 12000 frames at 60 a second, 200 s. Times are in seconds from the first frame of the film. A frame is counted from 0.
 
 ## Beats
 
@@ -44,7 +44,7 @@ Film B: 12012 frames at 60 a second, 200.2 s. Times are in seconds from the firs
 | `decision.wait` | 182.900 | 10974 | 11093 | `hold-music` | 183.300 | 10998 | yes |
 | `decision.letter` | 184.900 | 11094 | 11333 | `stamp` | 188.333 | 11300 | yes |
 | `decision.metrics` | 188.900 | 11334 | 11801 | `button-press` | 196.333 | 11780 | yes |
-| `decision.reset` | 196.700 | 11802 | 12011 | `page-turn` | 196.787 | 11807 | yes |
+| `decision.reset` | 196.700 | 11802 | 11999 | `page-turn` | 196.787 | 11807 | yes |
 
 ## Events with a cue
 

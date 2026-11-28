@@ -58,7 +58,7 @@
       { "id": "step2", "seconds": 24.9 },
       { "id": "pinball", "seconds": 42 },
       { "id": "boss", "seconds": 61.6 },
-      { "id": "decision", "seconds": 17.3 }
+      { "id": "decision", "seconds": 17.1 }
     ],
     "beats": [
       { "id": "marketing.stroll", "unit": "marketing", "from": 0, "to": 3, "event": "step" },
@@ -97,7 +97,7 @@
       { "id": "decision.wait", "unit": "decision", "from": 0, "to": 2, "event": "hold-music" },
       { "id": "decision.letter", "unit": "decision", "from": 2, "to": 6, "event": "stamp" },
       { "id": "decision.metrics", "unit": "decision", "from": 6, "to": 13.8, "event": "button-press" },
-      { "id": "decision.reset", "unit": "decision", "from": 13.8, "to": 17.3, "event": "page-turn" }
+      { "id": "decision.reset", "unit": "decision", "from": 13.8, "to": 17.1, "event": "page-turn" }
     ]
   },
   "intro": {

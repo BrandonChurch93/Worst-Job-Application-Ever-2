@@ -5,7 +5,7 @@
   "film": {
     "decision.reset": [
       {
-        "at": 0.025,
+        "at": 0.02652,
         "text": "On to / the next application.",
         "live": "after the line on the stamp, as the page turns back to the start"
       }
