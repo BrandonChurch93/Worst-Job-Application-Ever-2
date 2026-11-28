@@ -2,13 +2,14 @@
 // A row's events play its cue once its sound is kept and packed. Until then they play what they play today: the row's stand-in, or nothing.
 // The table of cues (cues.ts) may import nothing, so the list is read here, by the audio code and the tools only.
 import list from '../../audio/CHANGE-CUES.json'
-import { cueOfEvent, type CueClass } from './cues'
+import { cueOfEvent, variantId, type CueClass } from './cues'
 
 export interface ChangeCue {
   id: string
   seconds: number
   class: CueClass
   loop?: boolean
+  variants?: number
   made: boolean
   events: string[]
   page?: string
@@ -44,15 +45,22 @@ export function changeCuesOf(name: string, page?: string | null): ChangeCue[] {
   return changeCues.filter((c) => onPage(c, page) && c.events.some((p) => eventMatches(p, name)))
 }
 
+// Whether a row's sound is kept: its file, or one of its variants' files, is among the sounds there are.
+export function keptChange(c: ChangeCue, has: (id: string) => boolean): boolean {
+  const v = Math.max(1, Math.floor(c.variants ?? 1))
+  for (let i = 0; i < v; i++) if (has(variantId(c.id, i, v))) return true
+  return false
+}
+
 // The cue an event plays: its row's own cue when that sound is kept, otherwise what the table of cues gives it today.
 export function cueFor(name: string, page: string | undefined | null, has: (id: string) => boolean): string | undefined {
-  const own = changeCuesOf(name, page).find((c) => has(c.id))
+  const own = changeCuesOf(name, page).find((c) => keptChange(c, has))
   return own ? own.id : cueOfEvent(name)
 }
 
 // The cue that covers an event: a kept cue of the list that plays in the same step and carries this event's sound in its own.
 export function coverOf(name: string, has: (id: string) => boolean): ChangeCue | undefined {
-  return changeCues.find((c) => (c.covers?.includes(name) ?? false) && has(c.id))
+  return changeCues.find((c) => (c.covers?.includes(name) ?? false) && keptChange(c, has))
 }
 
 export const changeLoops: string[] = changeCues.filter((c) => c.loop).map((c) => c.id)

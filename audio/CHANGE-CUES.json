@@ -1,5 +1,5 @@
 {
-  "about": "The cues Brandon's change notes 002 to 004 ordered: a third list beside audio.sfx of config/showcase.json (the kit's) and audio/EXTRA-CUES.json (the build's own, inside audio.extraCuesMax). By the Builder's ruling these do not count against audio.extraCuesMax. src/audio/change.ts and tools/sound.mjs read this file, and no length here is written anywhere else. A row: seconds, the length the kept sound is cut to; class, its level class of src/audio/levels.ts; loop, it repeats until stopped; made, a first take exists (false: the sound is still to be made, and its describes line is the list's own until its prompt is written); events, the events that play it once its sound is kept and packed, where * stands for any run of letters; page, the only page those events count on; standIn, the cue those events play until then, or null where nothing plays; covers, events that play nothing in the step where this cue plays, once it is kept; stops, events that end a loop; describes, what is heard, the line the listener is asked against.",
+  "about": "The cues Brandon's change notes 002 to 004 ordered: a third list beside audio.sfx of config/showcase.json (the kit's) and audio/EXTRA-CUES.json (the build's own, inside audio.extraCuesMax). By the Builder's ruling these do not count against audio.extraCuesMax. src/audio/change.ts and tools/sound.mjs read this file, and no length here is written anywhere else. A row: seconds, the length the kept sound is cut to; class, its level class of src/audio/levels.ts; loop, it repeats until stopped; made, a first take exists (false: the sound is still to be made, and its describes line is the list's own until its prompt is written); events, the events that play it once its sound is kept and packed, where * stands for any run of letters; page, the only page those events count on; standIn, the cue those events play until then, or null where nothing plays; covers, events that play nothing in the step where this cue plays, once it is kept; stops, events that end a loop; describes, what is heard, the line the listener is asked against. The cut list, cut/CUES.md and the mix's record keep naming an event by the cue the table of cues gives it (a row's standIn) after the row's sound is kept, so that keeping a sound does not change the cut: in audio/mix/review.json placed[].cue is that cue and placed[].id is the sound that was laid, and the picture of the mix draws such a sound in the colour of its stand-in's class, which may not be its own.",
   "cues": [
     {
       "id": "turret-cannon",
@@ -81,6 +81,9 @@
         "strike:*.bumper.*"
       ],
       "standIn": null,
+      "covers": [
+        "bumper"
+      ],
       "describes": "One pinball pop bumper struck by a steel ball: a short rubber and solenoid thwack, no bell",
       "playedBy": "The pinball table, the clear ball striking a pop bumper",
       "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
@@ -94,6 +97,9 @@
         "strike:*.drop.*"
       ],
       "standIn": null,
+      "covers": [
+        "drop-target"
+      ],
       "describes": "One steel ball striking a small plastic target on a pinball table: a short hard clack",
       "playedBy": "The pinball table, the clear ball striking a drop target",
       "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
@@ -122,6 +128,9 @@
         "strike:street.firehouse:*"
       ],
       "standIn": null,
+      "covers": [
+        "scoop-kick"
+      ],
       "describes": "One pinball kicker firing a steel ball out of a saucer hole: a hard solenoid clunk",
       "playedBy": "The pinball table, the firehouse throwing the ball out",
       "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"
@@ -185,7 +194,7 @@
     {
       "id": "vacuum-slip",
       "seconds": 0.35,
-      "class": "tick",
+      "class": "mechanism",
       "made": true,
       "events": [
         "vacuum-slip"
@@ -440,6 +449,9 @@
         "strike:*.sling.*"
       ],
       "standIn": null,
+      "covers": [
+        "sling"
+      ],
       "describes": "One pinball slingshot struck by a steel ball: a dry rubber snap",
       "playedBy": "The pinball table, the clear ball striking a slingshot",
       "orderedBy": "Brandon's change note 002, by the list pipeline/change002/shell-sounds-to-make.json"

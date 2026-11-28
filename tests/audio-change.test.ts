@@ -37,7 +37,7 @@ describe('the list of the change notes, audio/CHANGE-CUES.json', () => {
       expect(Array.isArray(r.events) && r.events.length > 0, r.id).toBe(true)
       expect(r.standIn === null || kit.includes(r.standIn), `${r.id} stands in ${r.standIn}`).toBe(true)
       expect(typeof r.describes === 'string' && r.describes.length > 8 && !r.describes.includes('\\n'), r.id).toBe(true)
-      for (const key of Object.keys(r)) expect(['id', 'seconds', 'class', 'loop', 'made', 'events', 'page', 'standIn', 'covers', 'stops', 'describes', 'playedBy', 'orderedBy'], `${r.id}.${key}`).toContain(key)
+      for (const key of Object.keys(r)) expect(['id', 'seconds', 'class', 'loop', 'variants', 'made', 'events', 'page', 'standIn', 'covers', 'stops', 'describes', 'playedBy', 'orderedBy'], `${r.id}.${key}`).toContain(key)
       if (r.page !== undefined) expect(['step1', 'step2', 'step3', 'step4', 'step5'], r.id).toContain(r.page)
     }
   })
@@ -83,6 +83,9 @@ describe('the list of the change notes, audio/CHANGE-CUES.json', () => {
       expect(r.made, id).toBe(true)
     }
     expect(row('slab-slam').covers).toEqual(['page-crack'])
+    expect(Object.fromEntries(rows.filter((r) => r.covers).map((r) => [r.id, r.covers]))).toEqual({ 'slab-slam': ['page-crack'], 'pin-bumper': ['bumper'], 'pin-target': ['drop-target'], 'pin-kick': ['scoop-kick'], 'pin-sling': ['sling'] })
+    expect(row('vacuum-slip').class).toBe('mechanism')
+    expect(row('volume-sign').class).toBe('tick')
     expect(rows.filter((r) => r.loop).map((r) => r.id)).toEqual(['vacuum-roar'])
     expect(changeLoops).toEqual(['vacuum-roar'])
     for (const id of changeLoops) expect(loopCues, id).not.toContain(id)

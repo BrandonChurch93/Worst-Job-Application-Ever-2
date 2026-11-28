@@ -7,6 +7,7 @@ import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
 import { CAPTION, type Caption, type CaptionSource } from '../ui/said'
+import { changeCue, changeLoops, changeStops, coverOf, cueFor } from './change'
 import { allCues, alsoStarts, cueOfEvent, earlyEnd, endsSentence, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, turnWaitsFor, unitPage, waitsFor } from './cues'
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
@@ -340,6 +341,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const lengths = new Map<string, number>()
   const counts = new Map<string, number>()
   const lastPlay = new Map<string, number>()
+  const coveredAt = new Map<string, number>()
   const running = new Map<string, Voice[]>()
   const speaking = new Map<Booking, StandIn>()
   const turnHeld = new Map<string, number>()
@@ -453,18 +455,28 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     return e.name === 'page-turn' && mode === 'live' && page !== null && pageAfter[page] === quietPage
   }
 
+  const has = (id: string): boolean => loaded.has(id)
+  // A kept cue of the change list that carries another event's sound in its own: that event plays nothing at the moment the cue plays.
+  const covers = (cue: string, now: number) => {
+    for (const name of changeCue(cue)?.covers ?? []) coveredAt.set(name, now)
+  }
+  const covered = (name: string, now: number): boolean => {
+    const at = coveredAt.get(name)
+    return at !== undefined && coverOf(name, has) !== undefined && Math.abs(now - at) < LIVE.sameCueSeconds
+  }
+
   const playCue = (cue: string, x: number, when?: number) => {
     const b = backend!
     const now = Math.max(when ?? 0, b.now())
     const last = lastPlay.get(cue)
     if (last !== undefined && Math.abs(now - last) < LIVE.sameCueSeconds) return
     lastPlay.set(cue, now)
-    const spec = allCues(audio.sfx as { id: string; seconds: number; variants?: number }[]).find((s) => s.id === cue)
+    const spec = allCues(audio.sfx as { id: string; seconds: number; variants?: number }[]).find((s) => s.id === cue) ?? changeCue(cue)
     const count = counts.get(cue) ?? 0
     counts.set(cue, count + 1)
-    const pick = pickVariant(cue, count, spec?.variants ?? 1, (id) => loaded.has(id))
+    const pick = pickVariant(cue, count, spec?.variants ?? 1, has)
     if (!pick) return
-    const loop = loopCues.includes(cue)
+    const loop = loopCues.includes(cue) || changeLoops.includes(cue)
     const pan = Math.max(-1, Math.min(1, (x - 960) / 960)) * LIVE.panWidth
     let until: number | undefined
     let fade = 0
@@ -752,12 +764,15 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       backend.resume()
       flowing = true
       startTone()
-      for (const cue of stopEvents[e.name] ?? []) stopCue(cue)
-      if (e.name === 'page-turn' || e.name === 'skip') for (const cue of loopCues) if (cue !== 'room-tone') stopCue(cue)
-      const cue = cueOfEvent(e.name)
+      for (const cue of [...(stopEvents[e.name] ?? []), ...changeStops(e.name)]) stopCue(cue)
+      if (e.name === 'page-turn' || e.name === 'skip') for (const cue of [...loopCues, ...changeLoops]) if (cue !== 'room-tone') stopCue(cue)
+      const cue = cueFor(e.name, e.page ?? here, has)
       const mark = markStandsFor[e.name]
       const marked = mark !== undefined && cue !== undefined && byMark.has(cue)
-      if (cue && cue !== 'room-tone' && !marked && !hushed(e, mode, cue)) playCue(cue, e.x)
+      if (cue && cue !== 'room-tone' && !marked && !hushed(e, mode, cue) && !covered(e.name, backend.now())) {
+        playCue(cue, e.x)
+        covers(cue, backend.now())
+      }
       for (const more of alsoStarts[e.name] ?? []) if (!hushed(e, mode, more)) playCue(more, e.x)
       if (e.name === 'page-turn' && e.page !== undefined) turnFrom(e.page, mode)
       const page = e.page ?? desk.page ?? here
