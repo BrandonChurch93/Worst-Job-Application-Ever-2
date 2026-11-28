@@ -188,7 +188,7 @@ export function walkPose(walked: number, dir: number): StandPose {
   }
   const swing = Math.sin((walked / stride) * Math.PI * 2 - 0.9)
   const surge = WALK.surge * Math.sin((walked / WALK.step) * Math.PI * 2 - 1.2)
-  return P([(4 + surge) * dir, 25 - WALK.dip * dip], -0.24 * dir - WALK.sway * swing, [[-25 - 5 * swing, 21 + 1.5 * dip, 8], [36 - 5 * swing, 20 + 1.5 * dip, 8]], [0, 0], feet, { toes: [dir, dir], pitch, knees: [dir, dir], stretch: 0.97 - 0.015 * dip })
+  return P([(4 + surge) * dir, 25 - WALK.dip * dip], -0.24 * dir - WALK.sway * swing, [[-35 - 5 * swing, 23 + 1.5 * dip, 5], [46 - 5 * swing, 22 + 1.5 * dip, 5]], [0, 0], feet, { toes: [dir, dir], pitch, knees: [dir, dir], stretch: 0.97 - 0.015 * dip })
 }
 
 // How many steps have landed by a distance walked: a footstep sounds when this number grows.
