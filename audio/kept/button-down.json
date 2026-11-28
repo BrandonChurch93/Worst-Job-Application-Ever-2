@@ -1,0 +1,117 @@
+{
+  "id": "button-down",
+  "kind": "cue",
+  "cue": "button-down",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "The button coming down",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "Made for free from paid takes of this build, with no call to the sound service (layer L2 of the free layering round of November 28 on the eight sounds of the finish): as layer L1 (the kept slab-drop with slab-slam take 1 raised under it and a quiet clank), with the rocking of the cap made louder and longer: the kept button-press a third lower four times, at 0.15, 0.26, 0.36 and 0.45 s, 5, 8, 11 and 14 dB under the landing",
+  "settings": {
+    "made": "layered for free from paid takes",
+    "call": null,
+    "recipe": "wja-scratch/sound/pass1/layer/made.json"
+  },
+  "askedSeconds": null,
+  "cost": "0",
+  "take": {
+    "number": 1,
+    "round": "change-002-layer",
+    "file": "take-1.wav",
+    "sha256": "864ad5a27adb9ceb05f914a76837f31563a12b5ae99e75a5e50cc0eab1528553",
+    "filed": "2026-11-28T17:00:14.348Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.536,
+      "peakDb": -1.01,
+      "rmsDb": -18.72,
+      "lufs": -23.99,
+      "truePeakDb": -1.01,
+      "low": 0.768,
+      "mid": 0.231,
+      "high": 0.001,
+      "tailDb": -35.04,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.504,
+          "peakDb": -1.01
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.536,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -1.7,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.536,
+    "start": 0,
+    "end": 0.518,
+    "peakDb": -5,
+    "rmsDb": -23.03,
+    "lufs": -25.14,
+    "truePeakDb": -5,
+    "low": 0.575,
+    "mid": 0.424,
+    "high": 0.001,
+    "tailDb": -35.62,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.488,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A small, hard plastic object drops onto a solid surface and rattles rapidly before coming to a complete rest. / A small, hard object drops onto a solid surface and rapidly rattles as it settles. / A small, hard plastic object drops and rapidly bounces and rocks to a stop on a hard surface.",
+    "madeOf": "Hard plastic and a hard floor or table. / Hard plastic on a hard floor or table. / Hard plastic, hard floor",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The sharp initial impact followed by a fast, accelerating sequence of clicks perfectly matches the acoustic behavior of a flat plastic object rocking until it settles.",
+      "The sharp initial impact followed by a fast, diminishing clicking perfectly matches the sound of a plastic button hitting a hard floor and rocking to a stop.",
+      "The sharp initial impact followed by an accelerating rattle perfectly matches the sound of a hard plastic disc falling and rocking to a stop on a solid floor."
+    ],
+    "sameRoom": null
+  },
+  "why": "A layer made for free from paid takes of this build. A listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain (heard as a small, hard plastic object drops onto a solid surface and rattles rapidly before coming to a complete rest). A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "button-down.wav",
+  "seconds": 0.5359,
+  "sha256": "097d035100759ddba23d90211d16206ef4e04e42f0a969b16e30a90186990138"
+}

@@ -3,8 +3,8 @@
   "sampleRate": 48000,
   "pack": {
     "file": "sfx.bin",
-    "bytes": 3642857,
-    "sha256": "6c8ccece71f11fd26c6119cf1494120d72bb409442671e9493ba57b84bd0e84f"
+    "bytes": 3818705,
+    "sha256": "476a8913c5e98c0feaba874a0b7707deebeca3a7495f1b8e1a91bcc858554423"
   },
   "sfx": [
     {
@@ -92,820 +92,862 @@
       "mime": "audio/flac"
     },
     {
-      "id": "boss-heal",
+      "id": "boss-gone",
       "at": 275543,
+      "bytes": 57431,
+      "seconds": 0.954,
+      "mime": "audio/flac"
+    },
+    {
+      "id": "boss-heal",
+      "at": 332974,
       "bytes": 22891,
       "seconds": 0.57,
       "mime": "audio/flac"
     },
     {
       "id": "bumper.1",
-      "at": 298434,
+      "at": 355865,
       "bytes": 25394,
       "seconds": 0.3,
       "mime": "audio/flac"
     },
     {
       "id": "bumper.2",
-      "at": 323828,
+      "at": 381259,
       "bytes": 19793,
       "seconds": 0.3,
       "mime": "audio/flac"
     },
     {
       "id": "bumper.3",
-      "at": 343621,
+      "at": 401052,
       "bytes": 20597,
       "seconds": 0.3,
       "mime": "audio/flac"
     },
     {
       "id": "bumper.4",
-      "at": 364218,
+      "at": 421649,
       "bytes": 13947,
       "seconds": 0.1583,
       "mime": "audio/flac"
     },
     {
       "id": "button-burst",
-      "at": 378165,
+      "at": 435596,
       "bytes": 66698,
       "seconds": 1.148,
       "mime": "audio/flac"
     },
     {
       "id": "button-crack",
-      "at": 444863,
+      "at": 502294,
       "bytes": 14900,
       "seconds": 0.208,
       "mime": "audio/flac"
     },
     {
+      "id": "button-down",
+      "at": 517194,
+      "bytes": 26940,
+      "seconds": 0.5359,
+      "mime": "audio/flac"
+    },
+    {
       "id": "button-press",
-      "at": 459763,
+      "at": 544134,
       "bytes": 21952,
       "seconds": 0.4,
       "mime": "audio/flac"
     },
     {
       "id": "cannon-fire",
-      "at": 481715,
+      "at": 566086,
       "bytes": 25059,
       "seconds": 0.42,
       "mime": "audio/flac"
     },
     {
       "id": "cannon-tell",
-      "at": 506774,
+      "at": 591145,
       "bytes": 33575,
       "seconds": 0.8,
       "mime": "audio/flac"
     },
     {
       "id": "card-flip",
-      "at": 540349,
+      "at": 624720,
       "bytes": 19772,
       "seconds": 0.48,
       "mime": "audio/flac"
     },
     {
       "id": "carpet-roll",
-      "at": 560121,
+      "at": 644492,
       "bytes": 28620,
       "seconds": 0.866,
       "mime": "audio/flac"
     },
     {
       "id": "checkbox",
-      "at": 588741,
+      "at": 673112,
       "bytes": 10055,
       "seconds": 0.0433,
       "mime": "audio/flac"
     },
     {
       "id": "coins.1",
-      "at": 598796,
+      "at": 683167,
       "bytes": 76685,
       "seconds": 1.2575,
       "mime": "audio/flac"
     },
     {
       "id": "coins.2",
-      "at": 675481,
+      "at": 759852,
       "bytes": 80919,
       "seconds": 1.3976,
       "mime": "audio/flac"
     },
     {
       "id": "crank-runaway",
-      "at": 756400,
+      "at": 840771,
       "bytes": 79323,
       "seconds": 1.752,
       "mime": "audio/flac"
     },
     {
       "id": "crank-turn",
-      "at": 835723,
+      "at": 920094,
       "bytes": 34339,
       "seconds": 0.67,
       "mime": "audio/flac"
     },
     {
       "id": "dart-fire.1",
-      "at": 870062,
+      "at": 954433,
       "bytes": 12953,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "dart-fire.2",
-      "at": 883015,
+      "at": 967386,
       "bytes": 13108,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "dart-fire.3",
-      "at": 896123,
+      "at": 980494,
       "bytes": 13046,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "dart-fire.4",
-      "at": 909169,
+      "at": 993540,
       "bytes": 12815,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "dart-hit.1",
-      "at": 921984,
+      "at": 1006355,
       "bytes": 15111,
       "seconds": 0.2,
       "mime": "audio/flac"
     },
     {
       "id": "dart-hit.2",
-      "at": 937095,
+      "at": 1021466,
       "bytes": 15384,
       "seconds": 0.2,
       "mime": "audio/flac"
     },
     {
       "id": "dart-hit.3",
-      "at": 952479,
+      "at": 1036850,
       "bytes": 16428,
       "seconds": 0.2,
       "mime": "audio/flac"
     },
     {
       "id": "dart-hit.4",
-      "at": 968907,
+      "at": 1053278,
       "bytes": 14607,
       "seconds": 0.2,
       "mime": "audio/flac"
     },
     {
       "id": "date-miss",
-      "at": 983514,
+      "at": 1067885,
       "bytes": 29184,
       "seconds": 0.542,
       "mime": "audio/flac"
     },
     {
       "id": "dial-fling",
-      "at": 1012698,
+      "at": 1097069,
       "bytes": 23472,
       "seconds": 0.601,
       "mime": "audio/flac"
     },
     {
       "id": "dial-return",
-      "at": 1036170,
+      "at": 1120541,
       "bytes": 29116,
       "seconds": 0.804,
       "mime": "audio/flac"
     },
     {
       "id": "dial-wind",
-      "at": 1065286,
+      "at": 1149657,
       "bytes": 18540,
       "seconds": 0.38,
       "mime": "audio/flac"
     },
     {
       "id": "doors-slam",
-      "at": 1083826,
+      "at": 1168197,
       "bytes": 20791,
       "seconds": 0.406,
       "mime": "audio/flac"
     },
     {
       "id": "drain",
-      "at": 1104617,
+      "at": 1188988,
       "bytes": 41107,
       "seconds": 0.934,
       "mime": "audio/flac"
     },
     {
       "id": "drop-target.1",
-      "at": 1145724,
+      "at": 1230095,
       "bytes": 13564,
       "seconds": 0.182,
       "mime": "audio/flac"
     },
     {
       "id": "drop-target.2",
-      "at": 1159288,
+      "at": 1243659,
       "bytes": 17677,
       "seconds": 0.3,
       "mime": "audio/flac"
     },
     {
+      "id": "finish-arms",
+      "at": 1261336,
+      "bytes": 32106,
+      "seconds": 0.724,
+      "mime": "audio/flac"
+    },
+    {
+      "id": "finish-fist",
+      "at": 1293442,
+      "bytes": 20871,
+      "seconds": 0.3961,
+      "mime": "audio/flac"
+    },
+    {
+      "id": "finish-kneel",
+      "at": 1314313,
+      "bytes": 16282,
+      "seconds": 0.4372,
+      "mime": "audio/flac"
+    },
+    {
+      "id": "finish-walk",
+      "at": 1330595,
+      "bytes": 22218,
+      "seconds": 0.868,
+      "mime": "audio/flac"
+    },
+    {
       "id": "firehouse-take",
-      "at": 1176965,
+      "at": 1352813,
       "bytes": 21501,
       "seconds": 0.5887,
       "mime": "audio/flac"
     },
     {
       "id": "flasher",
-      "at": 1198466,
+      "at": 1374314,
       "bytes": 15120,
       "seconds": 0.3921,
       "mime": "audio/flac"
     },
     {
       "id": "flatten",
-      "at": 1213586,
+      "at": 1389434,
       "bytes": 23903,
       "seconds": 0.4,
       "mime": "audio/flac"
     },
     {
       "id": "flipper-save",
-      "at": 1237489,
+      "at": 1413337,
       "bytes": 12841,
       "seconds": 0.1024,
       "mime": "audio/flac"
     },
     {
       "id": "flipper.1",
-      "at": 1250330,
+      "at": 1426178,
       "bytes": 17922,
       "seconds": 0.2,
       "mime": "audio/flac"
     },
     {
       "id": "flipper.2",
-      "at": 1268252,
+      "at": 1444100,
       "bytes": 12398,
       "seconds": 0.0896,
       "mime": "audio/flac"
     },
     {
       "id": "flipper.3",
-      "at": 1280650,
+      "at": 1456498,
       "bytes": 17513,
       "seconds": 0.2,
       "mime": "audio/flac"
     },
     {
       "id": "folder-open",
-      "at": 1298163,
+      "at": 1474011,
       "bytes": 22582,
       "seconds": 0.3783,
       "mime": "audio/flac"
     },
     {
       "id": "healthbar-drop",
-      "at": 1320745,
+      "at": 1496593,
       "bytes": 24352,
       "seconds": 0.48,
       "mime": "audio/flac"
     },
     {
       "id": "hold-music",
-      "at": 1345097,
+      "at": 1520945,
       "bytes": 77431,
       "seconds": 4,
       "mime": "audio/flac"
     },
     {
       "id": "inbox-take",
-      "at": 1422528,
+      "at": 1598376,
       "bytes": 18587,
       "seconds": 0.3988,
       "mime": "audio/flac"
     },
     {
       "id": "key-press.1",
-      "at": 1441115,
+      "at": 1616963,
       "bytes": 12889,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "key-press.2",
-      "at": 1454004,
+      "at": 1629852,
       "bytes": 13538,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "key-press.3",
-      "at": 1467542,
+      "at": 1643390,
       "bytes": 12626,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "key-press.4",
-      "at": 1480168,
+      "at": 1656016,
       "bytes": 12107,
       "seconds": 0.0954,
       "mime": "audio/flac"
     },
     {
       "id": "key-press.5",
-      "at": 1492275,
+      "at": 1668123,
       "bytes": 12217,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "key-press.6",
-      "at": 1504492,
+      "at": 1680340,
       "bytes": 13621,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "key-tap",
-      "at": 1518113,
+      "at": 1693961,
       "bytes": 10781,
       "seconds": 0.1,
       "mime": "audio/flac"
     },
     {
       "id": "keyboard-rise",
-      "at": 1528894,
+      "at": 1704742,
       "bytes": 46472,
       "seconds": 1,
       "mime": "audio/flac"
     },
     {
       "id": "keys-break",
-      "at": 1575366,
+      "at": 1751214,
       "bytes": 40335,
       "seconds": 0.578,
       "mime": "audio/flac"
     },
     {
       "id": "keys-shuffle",
-      "at": 1615701,
+      "at": 1791549,
       "bytes": 22659,
       "seconds": 0.41,
       "mime": "audio/flac"
     },
     {
       "id": "letter-drop",
-      "at": 1638360,
+      "at": 1814208,
       "bytes": 14607,
       "seconds": 0.2082,
       "mime": "audio/flac"
     },
     {
       "id": "lever-pull",
-      "at": 1652967,
+      "at": 1828815,
       "bytes": 19927,
       "seconds": 0.272,
       "mime": "audio/flac"
     },
     {
       "id": "lift",
-      "at": 1672894,
+      "at": 1848742,
       "bytes": 37454,
       "seconds": 1,
       "mime": "audio/flac"
     },
     {
       "id": "lights-down",
-      "at": 1710348,
+      "at": 1886196,
       "bytes": 73797,
       "seconds": 1.48,
       "mime": "audio/flac"
     },
     {
       "id": "metrics-card",
-      "at": 1784145,
+      "at": 1959993,
       "bytes": 15849,
       "seconds": 0.3116,
       "mime": "audio/flac"
     },
     {
       "id": "page-turn",
-      "at": 1799994,
+      "at": 1975842,
       "bytes": 26072,
       "seconds": 1.0951,
       "mime": "audio/flac"
     },
     {
       "id": "paper-slide",
-      "at": 1826066,
+      "at": 2001914,
       "bytes": 34123,
       "seconds": 0.6,
       "mime": "audio/flac"
     },
     {
       "id": "paper-strain",
-      "at": 1860189,
+      "at": 2036037,
       "bytes": 53393,
       "seconds": 1.48,
       "mime": "audio/flac"
     },
     {
       "id": "peel-up",
-      "at": 1913582,
+      "at": 2089430,
       "bytes": 34108,
       "seconds": 0.6,
       "mime": "audio/flac"
     },
     {
       "id": "pin-bell",
-      "at": 1947690,
+      "at": 2123538,
       "bytes": 16923,
       "seconds": 0.4,
       "mime": "audio/flac"
     },
     {
       "id": "pin-bumper",
-      "at": 1964613,
+      "at": 2140461,
       "bytes": 16969,
       "seconds": 0.25,
       "mime": "audio/flac"
     },
     {
       "id": "pin-coins",
-      "at": 1981582,
+      "at": 2157430,
       "bytes": 43384,
       "seconds": 0.88,
       "mime": "audio/flac"
     },
     {
       "id": "pin-frenzy",
-      "at": 2024966,
+      "at": 2200814,
       "bytes": 145010,
       "seconds": 2.34,
       "mime": "audio/flac"
     },
     {
       "id": "pin-kick",
-      "at": 2169976,
+      "at": 2345824,
       "bytes": 16225,
       "seconds": 0.2403,
       "mime": "audio/flac"
     },
     {
       "id": "pin-target",
-      "at": 2186201,
+      "at": 2362049,
       "bytes": 15540,
       "seconds": 0.25,
       "mime": "audio/flac"
     },
     {
       "id": "plunger",
-      "at": 2201741,
+      "at": 2377589,
       "bytes": 36110,
       "seconds": 0.7955,
       "mime": "audio/flac"
     },
     {
       "id": "popup-close",
-      "at": 2237851,
+      "at": 2413699,
       "bytes": 11747,
       "seconds": 0.082,
       "mime": "audio/flac"
     },
     {
       "id": "popup.1",
-      "at": 2249598,
+      "at": 2425446,
       "bytes": 16445,
       "seconds": 0.4,
       "mime": "audio/flac"
     },
     {
       "id": "popup.2",
-      "at": 2266043,
+      "at": 2441891,
       "bytes": 12954,
       "seconds": 0.136,
       "mime": "audio/flac"
     },
     {
       "id": "popup.3",
-      "at": 2278997,
+      "at": 2454845,
       "bytes": 25511,
       "seconds": 0.4,
       "mime": "audio/flac"
     },
     {
       "id": "power-down",
-      "at": 2304508,
+      "at": 2480356,
       "bytes": 54119,
       "seconds": 1.648,
       "mime": "audio/flac"
     },
     {
       "id": "power-on",
-      "at": 2358627,
+      "at": 2534475,
       "bytes": 93641,
       "seconds": 2.234,
       "mime": "audio/flac"
     },
     {
       "id": "power-up",
-      "at": 2452268,
+      "at": 2628116,
       "bytes": 34734,
       "seconds": 0.762,
       "mime": "audio/flac"
     },
     {
       "id": "ramp-roll",
-      "at": 2487002,
+      "at": 2662850,
       "bytes": 69499,
       "seconds": 1.934,
       "mime": "audio/flac"
     },
     {
       "id": "reel-stop",
-      "at": 2556501,
+      "at": 2732349,
       "bytes": 16677,
       "seconds": 0.1909,
       "mime": "audio/flac"
     },
     {
       "id": "reels-spin",
-      "at": 2573178,
+      "at": 2749026,
       "bytes": 121588,
       "seconds": 2.428,
       "mime": "audio/flac"
     },
     {
       "id": "row-close",
-      "at": 2694766,
+      "at": 2870614,
       "bytes": 18360,
       "seconds": 0.3,
       "mime": "audio/flac"
     },
     {
       "id": "row-open",
-      "at": 2713126,
+      "at": 2888974,
       "bytes": 23384,
       "seconds": 0.6,
       "mime": "audio/flac"
     },
     {
       "id": "scoop-kick",
-      "at": 2736510,
+      "at": 2912358,
       "bytes": 22979,
       "seconds": 0.5996,
       "mime": "audio/flac"
     },
     {
       "id": "session-expired",
-      "at": 2759489,
+      "at": 2935337,
       "bytes": 38834,
       "seconds": 0.8,
       "mime": "audio/flac"
     },
     {
       "id": "shield-glance",
-      "at": 2798323,
+      "at": 2974171,
       "bytes": 18035,
       "seconds": 0.2,
       "mime": "audio/flac"
     },
     {
       "id": "sizzle",
-      "at": 2816358,
+      "at": 2992206,
       "bytes": 64766,
       "seconds": 1.2,
       "mime": "audio/flac"
     },
     {
       "id": "skip",
-      "at": 2881124,
+      "at": 3056972,
       "bytes": 13134,
       "seconds": 0.3,
       "mime": "audio/flac"
     },
     {
       "id": "slab-drop.1",
-      "at": 2894258,
+      "at": 3070106,
       "bytes": 16777,
       "seconds": 0.4897,
       "mime": "audio/flac"
     },
     {
       "id": "slab-drop.2",
-      "at": 2911035,
+      "at": 3086883,
       "bytes": 13118,
       "seconds": 0.1918,
       "mime": "audio/flac"
     },
     {
       "id": "slab-drop.3",
-      "at": 2924153,
+      "at": 3100001,
       "bytes": 33681,
       "seconds": 0.8,
       "mime": "audio/flac"
     },
     {
       "id": "slab-fire.1",
-      "at": 2957834,
+      "at": 3133682,
       "bytes": 25576,
       "seconds": 0.48,
       "mime": "audio/flac"
     },
     {
       "id": "slab-fire.2",
-      "at": 2983410,
+      "at": 3159258,
       "bytes": 18689,
       "seconds": 0.48,
       "mime": "audio/flac"
     },
     {
       "id": "slab-fire.3",
-      "at": 3002099,
+      "at": 3177947,
       "bytes": 24300,
       "seconds": 0.48,
       "mime": "audio/flac"
     },
     {
       "id": "slab-slam",
-      "at": 3026399,
+      "at": 3202247,
       "bytes": 46529,
       "seconds": 0.97,
       "mime": "audio/flac"
     },
     {
       "id": "sling.1",
-      "at": 3072928,
+      "at": 3248776,
       "bytes": 19171,
       "seconds": 0.25,
       "mime": "audio/flac"
     },
     {
       "id": "sling.2",
-      "at": 3092099,
+      "at": 3267947,
       "bytes": 18432,
       "seconds": 0.25,
       "mime": "audio/flac"
     },
     {
       "id": "slot-in",
-      "at": 3110531,
+      "at": 3286379,
       "bytes": 22641,
       "seconds": 0.3,
       "mime": "audio/flac"
     },
     {
       "id": "spinner",
-      "at": 3133172,
+      "at": 3309020,
       "bytes": 28126,
       "seconds": 0.458,
       "mime": "audio/flac"
     },
     {
       "id": "spiral",
-      "at": 3161298,
+      "at": 3337146,
       "bytes": 47025,
       "seconds": 1.832,
       "mime": "audio/flac"
     },
     {
       "id": "stamp",
-      "at": 3208323,
+      "at": 3384171,
       "bytes": 32092,
       "seconds": 0.6,
       "mime": "audio/flac"
     },
     {
       "id": "step.1",
-      "at": 3240415,
+      "at": 3416263,
       "bytes": 13887,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "step.2",
-      "at": 3254302,
+      "at": 3430150,
       "bytes": 12884,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "step.3",
-      "at": 3267186,
+      "at": 3443034,
       "bytes": 14044,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "step.4",
-      "at": 3281230,
+      "at": 3457078,
       "bytes": 11696,
       "seconds": 0.125,
       "mime": "audio/flac"
     },
     {
       "id": "stop-press",
-      "at": 3292926,
+      "at": 3468774,
       "bytes": 14957,
       "seconds": 0.15,
       "mime": "audio/flac"
     },
     {
       "id": "strips-zip",
-      "at": 3307883,
+      "at": 3483731,
       "bytes": 38334,
       "seconds": 0.82,
       "mime": "audio/flac"
     },
     {
       "id": "tier-fall",
-      "at": 3346217,
+      "at": 3522065,
       "bytes": 19598,
       "seconds": 0.4694,
       "mime": "audio/flac"
     },
     {
       "id": "tube-run",
-      "at": 3365815,
+      "at": 3541663,
       "bytes": 46891,
       "seconds": 1.48,
       "mime": "audio/flac"
     },
     {
       "id": "tug-lost",
-      "at": 3412706,
+      "at": 3588554,
       "bytes": 35638,
       "seconds": 0.6,
       "mime": "audio/flac"
     },
     {
       "id": "turret-cannon",
-      "at": 3448344,
+      "at": 3624192,
       "bytes": 31355,
       "seconds": 0.766,
       "mime": "audio/flac"
     },
     {
       "id": "turret-rise",
-      "at": 3479699,
+      "at": 3655547,
       "bytes": 25518,
       "seconds": 0.6,
       "mime": "audio/flac"
     },
     {
       "id": "ui-send",
-      "at": 3505217,
+      "at": 3681065,
       "bytes": 13972,
       "seconds": 0.3,
       "mime": "audio/flac"
     },
     {
       "id": "ui-tick",
-      "at": 3519189,
+      "at": 3695037,
       "bytes": 9804,
       "seconds": 0.0333,
       "mime": "audio/flac"
     },
     {
       "id": "unfold",
-      "at": 3528993,
+      "at": 3704841,
       "bytes": 58709,
       "seconds": 1.868,
       "mime": "audio/flac"
     },
     {
       "id": "vacuum-gulp",
-      "at": 3587702,
+      "at": 3763550,
       "bytes": 21018,
       "seconds": 0.4158,
       "mime": "audio/flac"
     },
     {
       "id": "vacuum-slip",
-      "at": 3608720,
+      "at": 3784568,
       "bytes": 21926,
       "seconds": 0.35,
       "mime": "audio/flac"
     },
     {
       "id": "volume-sign",
-      "at": 3630646,
+      "at": 3806494,
       "bytes": 12211,
       "seconds": 0.1225,
       "mime": "audio/flac"
@@ -1128,5 +1170,5 @@
       ]
     }
   ],
-  "totalBytes": 7263004
+  "totalBytes": 7438852
 }
