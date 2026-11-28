@@ -32,11 +32,11 @@ export const DOWN = Number((FORMED + HOLD + FIGHT).toFixed(3))
 const ARMED = DOWN + FINISH.fall + SHOUT.beats[0]
 const FIRE = DOWN + FINISH.fall + SHOUT.fire
 const GONE = DOWN + FINISH.fall + SHOUT.gone
-const WALKED = GONE + (FALLEN.x - LAST_MOMENT.reach - LAST_MOMENT.stand[0]) / LAST_MOMENT.speed
+const WALKED = GONE + LAST_MOMENT.wait + (FALLEN.x - LAST_MOMENT.reach - LAST_MOMENT.stand[0]) / LAST_MOMENT.speed
 const STRUCK = WALKED + LAST_MOMENT.knees + LAST_MOMENT.breath + LAST_MOMENT.fist + LAST_MOMENT.blow
 const late = (t: number): number => Number((t + SHIFT).toFixed(3))
 export const ACT = { flinch: 1.95, windup: 3.36, tap: 3.72, take: 4.62, hide: 7.1, cower: 7.6, brace: late(10.55), snap: late(11.5), charge: late(LAST[0]), ram: late(FIGHT + FORMED - 0.15), gather: Number(WALKED.toFixed(3)), press: Number(STRUCK.toFixed(3)) } as const
-export const UNIT_SECONDS = Number((ACT.press + LAST_MOMENT.hold + 0.62).toFixed(2))
+export const UNIT_SECONDS = Math.ceil((ACT.press + LAST_MOMENT.hold + 0.62) * 30) / 30
 
 export const STAND = { x: 150, y: 96, near: 190 } as const
 const SHORT = { x: 70, y: 60 } as const

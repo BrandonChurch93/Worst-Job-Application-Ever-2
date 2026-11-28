@@ -430,7 +430,7 @@ describe('how the boss plays (change 002, item 15)', () => {
           const u = v.time - gone
           if (how === 'nobody') return { x: 400, y: 300, down: false }
           if (how === 'strays') return { x: 960 + 900 * Math.sin(u * 1.3), y: 540 + 500 * Math.cos(u * 0.9), down: false }
-          const down = u >= 2.4 && u < 2.5
+          const down = u >= LAST.wait + LAST.most + 0.2 && u < LAST.wait + LAST.most + 0.3
           if (down && clicked < 0) clicked = v.time
           return { x: button.x, y: button.y, down }
         }
@@ -455,20 +455,20 @@ describe('how the boss plays (change 002, item 15)', () => {
       }
       const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
       for (const n of ['finish-walk', 'finish-kneel', 'finish-fist', 'finish-press', 'button-press']) expect(at(n).length, `${n}, seed ${seed}`).toBe(1)
-      expect(at('finish-walk')[0]!).toBeCloseTo(at('boss-gone')[0]!, 2)
+      expect(at('finish-walk')[0]! - at('boss-gone')[0]!).toBeCloseTo(LAST.wait, 1)
       expect(at('finish-kneel')[0]!).toBeGreaterThanOrEqual(at('button-down')[0]!)
-      expect(at('finish-fist')[0]! - at('finish-kneel')[0]!).toBeCloseTo(LAST.knees, 1)
+      expect(at('finish-fist')[0]! - at('finish-kneel')[0]!).toBeCloseTo(LAST.knees + LAST.pause, 1)
       expect(at('finish-press')[0]! - at('finish-fist')[0]!).toBeCloseTo(LAST.fist + LAST.blow, 1)
       expect(at('button-press')[0]!).toBe(at('finish-press')[0]!)
       expect(out, `steps outside the close view, seed ${seed}`).toBe(0)
       expect(fast, `seed ${seed}`).toBeLessThanOrEqual(Math.hypot(CLOSE.w, CLOSE.h) / LAST.most * 1.6)
       if (how === 'leads') {
-        expect(at('finish-kneel')[0]! - at('boss-gone')[0]!, `seed ${seed}`).toBeLessThanOrEqual(2.5)
-        expect(at('finish-press')[0]! - clicked, `seed ${seed}`).toBeLessThanOrEqual(LAST.knees + LAST.fist + LAST.blow + 0.1)
+        expect(at('finish-kneel')[0]! - at('boss-gone')[0]!, `seed ${seed}`).toBeLessThanOrEqual(LAST.wait + LAST.most + 0.3)
+        expect(at('finish-press')[0]! - clicked, `seed ${seed}`).toBeLessThanOrEqual(LAST.knees + LAST.pause + LAST.fist + LAST.blow + 0.1)
         expect(off).toBeGreaterThan(0)
         expect(off, 'the button lies under the hand that points at it').toBeLessThan(3)
       } else {
-        expect(at('finish-kneel')[0]! - at('boss-gone')[0]!, `seed ${seed}`).toBeLessThanOrEqual((how === 'nobody' ? LAST.alone + 0.5 : LAST.led) + LAST.most + 0.1)
+        expect(at('finish-kneel')[0]! - at('boss-gone')[0]!, `seed ${seed}`).toBeLessThanOrEqual((how === 'nobody' ? LAST.alone + 0.5 : LAST.led) + LAST.wait + LAST.most + 0.1)
       }
       expect(stage.longestIgnored.pointer, `seed ${seed}`).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
       expect(stage.page.id, `seed ${seed}`).not.toBe('step4')

@@ -196,12 +196,14 @@ export const CLOSE = {
 export const LAST = {
   stand: [440, 650], // px, where the arrow stands for the charge and the blast
   reach: 200, // px left of the button's middle at which it kneels
-  speed: 178, // px/s of its walk: 1.8 s from where it stood to the button
+  wait: 0.4, // s after the body is gone before it sets off (`finish-walk`), while its arms go on dropping
+  speed: 114.3, // px/s of its walk: 2.8 s for the 320 px from where it stood to the button
   alone: 6, // s without a move or a press after which it walks there and strikes by itself, live site
   led: 20, // s of being led about after which it walks there and strikes by itself, live site
-  most: 2, // s at most that its walk to the button takes when it goes by itself
+  most: 2.8, // s at most that its walk to the button takes when it goes by itself
   knees: 0.7, // s to drop to its knees (`finish-kneel`)
-  breath: 0.6, // s it breathes on its knees, film only
+  breath: 0.6, // s it breathes on its knees in the film
+  pause: 0.3, // s it stays on its knees on the live site before the fist goes up
   fist: 0.6, // s the right fist takes to go up (`finish-fist`)
   blow: 0.3, // s from the top of the fist to the blow on the button (`finish-press`)
   hold: 0.5, // s the film holds after the blow before the page turns
