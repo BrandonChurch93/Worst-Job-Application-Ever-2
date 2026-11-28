@@ -2,10 +2,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
+import type { CursorPose } from '../src/cursor/body'
 import { pages } from '../src/pages'
 import { FILM as DECISION } from '../src/pages/step5/timeline'
 import { look } from '../src/post/look'
-import { ScriptDriver, Stage, TURN_HALF, wholeFilmFlow, type Frame } from '../src/stage/stage'
+import { homeDistance } from '../src/stage/camera'
+import { CLEAR, ScriptDriver, Stage, TURN_HALF, wholeFilmFlow, type Frame } from '../src/stage/stage'
 import { arriveTurn, leaveLight, leaveSpeed, leaveTurn, LIGHT, shiverSeconds, TURN } from '../src/stage/turn'
 import { TURNS } from '../tools/lib/pack-site.mjs'
 
@@ -178,7 +180,16 @@ describe('polish, every turn of the film from its seat on', () => {
   const inner = then as unknown as { phase: string; phaseStep: number; turnAt: () => number }
   const own = inner.turnAt.bind(then)
   inner.turnAt = () => (inner.phase === 'leave' ? leaveBefore(Math.min(1, inner.phaseStep / HALF_STEPS)) : own())
-  const rest = (f: Frame): string => JSON.stringify({ list: f.list, cursor: f.cursor, scroll: f.scroll, page: f.page, view: f.view, time: f.time, settle: f.settle ?? null })
+  const rest = (f: Frame): string => JSON.stringify({ list: f.list, scroll: f.scroll, page: f.page, view: f.view, time: f.time, settle: f.settle ?? null })
+  // The stage's own law of the film's lifted arrow, with the stage's numbers: past `CLEAR.from` of tilt it stands on its line of sight at the least height that clears the slab, so in the leaving half its place follows the angle of its own stage.
+  const tipped = (f: Frame): boolean => Math.abs(f.turn) >= CLEAR.from
+  const clearOf = (c: CursorPose, f: Frame): CursorPose => {
+    if (!tipped(f)) return c
+    const need = Math.min(CLEAR.near, (f.turn < 0 ? CLEAR.under : CLEAR.over) * Math.tan(Math.abs(f.turn))) + CLEAR.by
+    if (need <= c.z) return c
+    const k = (homeDistance() - need) / (homeDistance() - c.z)
+    return { ...c, x: 960 + (c.x - 960) * k, y: f.scroll + 540 + (c.y - f.scroll - 540) * k, z: need, scale: c.scale * k }
+  }
   const starts = config.film.units.slice(0, -1).map((_, i) => Math.round((config.film.units.slice(0, i + 1).reduce((sum, u) => sum + u.seconds, 0) - TURN_HALF) * stepHz))
 
   // A turn starts on the last step whose angle is 0. The third stage is asked where: the first step from `from` on at which it leaves a page, once any turn it is in has ended.
@@ -218,9 +229,10 @@ describe('polish, every turn of the film from its seat on', () => {
     expect(now.frameAt((SIXTH + HALF_STEPS) / stepHz).page).toBe(flow[flow.length - 1]!.page)
   })
 
-  it('holds every value of the stage equal to before on every step from the seat on, the angle through the leaving half apart, and nothing else differs before the seat', () => {
+  it('holds every value of the stage equal to before on every step from the seat on, the angle through the leaving half apart and with it the place of the lifted arrow where a slab is tipped past 60 degrees, each by the law of its own angle, and nothing else differs before the seat', () => {
     const tail = Math.round((shiverSeconds + 0.5) * stepHz)
     let differ = 0
+    let cleared = 0
     const changed: number[][] = []
     for (const start of [...starts, SIXTH]) {
       const frames: number[] = []
@@ -229,7 +241,15 @@ describe('polish, every turn of the film from its seat on', () => {
       for (let k = -4; k <= 2 * HALF_STEPS + tail; k++) {
         const a = now.frameAt((start + k) / stepHz)
         const b = then.frameAt((start + k) / stepHz)
-        expect(rest(a), `step ${k} of the turn at ${start / stepHz} s`).toBe(rest(b))
+        const at = `step ${k} of the turn at ${start / stepHz} s`
+        expect(rest(a), at).toBe(rest(b))
+        if (k > 0 && k < HALF_STEPS && a.cursor.rides !== true && (tipped(a) || tipped(b))) {
+          const plain = now.cursor.pose()
+          expect(JSON.stringify(then.cursor.pose()), at).toBe(JSON.stringify(plain))
+          expect(JSON.stringify(a.cursor), at).toBe(JSON.stringify(clearOf(plain, a)))
+          expect(JSON.stringify(b.cursor), at).toBe(JSON.stringify(clearOf(plain, b)))
+          if (a.cursor.z > plain.z) cleared++
+        } else expect(JSON.stringify(a.cursor), at).toBe(JSON.stringify(b.cursor))
         if ((start + k) % PER === 0 && a.turn !== b.turn) frames.push((start + k) / PER)
         if (k <= 0) expect(a.turn).toBe(0)
         else if (k < HALF_STEPS) {
@@ -259,5 +279,6 @@ describe('polish, every turn of the film from its seat on', () => {
     for (const start of starts) expect(span(start)[2]).toBe(HALF - 1)
     expect(span(SIXTH)[2]).toBe(SIXTH % PER === 0 ? HALF - 1 : HALF)
     expect(differ).toBeGreaterThan(6 * (HALF_STEPS - 10))
+    expect(cleared).toBeGreaterThan(0)
   }, 240000)
 })
