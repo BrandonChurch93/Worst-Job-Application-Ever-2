@@ -6,6 +6,7 @@ import { spoken } from '../src/audio/cues'
 import { scriptStandIns } from '../src/audio/mix'
 import { draftFilm, lineTimes, standIns, type KeptLine } from '../src/audio/standin'
 import { SHOUT } from '../src/boss/tune'
+import { riseAfterFire } from '../src/ui/rise'
 
 // The shout of the boss page: its times are the kept take's once one is in the sound index, and the stand-in's of the drafts file until then.
 // Every take in this file is a row of numbers made in the test: none is a sound.
@@ -54,10 +55,11 @@ describe('the shout: its times', () => {
     expect(scriptStandIns([take({ words: 'other words' })]).get(ID)).toBe(draft.standIn!.seconds)
   })
 
-  it('are the marks of the boss page: the first two charge marks, the fire mark and the end of SHOUT are the starts and the length the sound code uses', () => {
+  // Since the finish's camera holds the blast for the boss to leave in groups (merge 81), the body is gone later than the last word ends: the two are no longer one number.
+  it('are the marks of the boss page: the first two charge marks and the fire mark are the starts the sound code uses, and the body is gone no sooner than the last word ends', () => {
     const now = lineTimes(KEY)!
     expect([SHOUT.beats[0], SHOUT.beats[1], SHOUT.fire]).toEqual(now.starts)
-    expect(SHOUT.gone).toBe(now.seconds)
+    expect(SHOUT.gone).toBeGreaterThanOrEqual(now.seconds)
   })
 })
 
@@ -143,26 +145,44 @@ describe('the shout on the site', () => {
     return { ...x, t }
   }
 
-  it('with no take asks for no file of the shout, plays none, and holds the last phrase for the stand-in\'s length after the fire mark', async () => {
+  // The shout's row has hidesOnRise (merge 82): its panel leaves when the camera's rise begins, riseAfterFire() after the fire mark, or when the line ends if that is sooner. The voice is not cut by it.
+  const leaves = (t: { starts: number[]; seconds: number }) => Math.min(t.seconds, t.starts[t.starts.length - 1]! + riseAfterFire())
+
+  it('with no take asks for no file of the shout, plays none, and holds the last phrase until the camera\'s rise begins after the fire mark, sooner than the stand-in ends', async () => {
     const { ctx, shown, asked, voice, t } = await run([])
     expect(t.kept).toBe(false)
     expect(asked).not.toContain(`${ID}.mp3`)
     expect(voice()).toEqual([])
-    ctx.currentTime = 100 + t.seconds - 0.01
+    expect(leaves(t)).toBeLessThan(t.seconds)
+    ctx.currentTime = 100 + leaves(t) - 0.01
     expect(shown()).toBe(1)
-    ctx.currentTime = 100 + t.seconds + 0.01
+    ctx.currentTime = 100 + leaves(t) + 0.01
     expect(shown()).toBe(0)
   })
 
-  it('with a kept take plays its file from the arms mark and holds the last phrase to the end of the file, not of the stand-in', async () => {
+  it('with a kept take plays its file from the arms mark and holds the last phrase until the rise begins after the take\'s own fire mark, not the stand-in\'s', async () => {
     const { ctx, shown, asked, voice, t } = await run([take()])
     expect(t).toEqual({ starts: [0.2, 1.3, 3.9], seconds: 5.5, kept: true })
     expect(asked).toContain(`${ID}.mp3`)
     expect(voice().map((v) => v.started)).toEqual([100])
-    ctx.currentTime = 100 + 5.5 - 0.01
+    expect(leaves(t)).toBeLessThan(5.5)
+    ctx.currentTime = 100 + leaves(t) - 0.01
     expect(shown()).toBe(1)
-    ctx.currentTime = 100 + 5.5 + 0.01
+    ctx.currentTime = 100 + leaves(t) + 0.01
     expect(shown()).toBe(0)
-    expect(5.5).not.toBe(draft.standIn!.seconds)
+    expect(leaves(t)).not.toBe(leaves({ starts: draft.standIn!.starts, seconds: draft.standIn!.seconds }))
+  })
+
+  it('with a kept take whose last phrase ends before the rise holds it to the end of the file, not of the stand-in', async () => {
+    const seconds = 3.9 + riseAfterFire() / 2
+    const { ctx, shown, voice, t } = await run([take({ seconds })])
+    expect(t).toEqual({ starts: [0.2, 1.3, 3.9], seconds, kept: true })
+    expect(voice().map((v) => v.started)).toEqual([100])
+    expect(leaves(t)).toBe(seconds)
+    ctx.currentTime = 100 + seconds - 0.01
+    expect(shown()).toBe(1)
+    ctx.currentTime = 100 + seconds + 0.01
+    expect(shown()).toBe(0)
+    expect(seconds).not.toBe(draft.standIn!.seconds)
   })
 })

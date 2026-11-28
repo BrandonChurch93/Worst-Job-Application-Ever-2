@@ -176,7 +176,7 @@ export const SHOUT = {
   arms: 0, // s after the fall at which the arrow's arms come out (`finish-arms`)
   beats: [0.1, 1.04, 2.09, 2.9], // s at which each charge word or syllable starts; the glow steps up on each (`finish-charge` on each)
   fire: 4.13, // s at which the last word starts: the blast is let go there (`finish-fire`)
-  gone: 7.56 // s at which the last word ends: the blast has held that long and the body is gone (`boss-gone`)
+  gone: 7.56 // s at which the body is gone (`boss-gone`): the blast has held that long. No sooner than the last word ends (6.26 s for the stand-in); 1.3 s after it since the camera's second pass, for the boss to leave in groups
 } as const
 
 export const FINISH = {
