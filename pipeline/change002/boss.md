@@ -451,6 +451,57 @@ Written 03:23 UTC. Code at a2923452 on agent/b-boss; merged in: origin/agent/mer
 - `boss-heal` has no cue in the cut. No cue for `finish-fire` checked by ear. `npm test` whole, `npm run bots` and `npm run determinism` not run again at a2923452 (last run at 1e29f3f7).
 - A visitor's clicks in the 1.75 s before the lock can still fire darts while the figure is up (STATED, from the code; not tested).
 
+## The rulings of 03:27Z and the addition of 03:31Z
+
+Written 03:46 UTC. Merged in: origin/agent/merge55 81cf7955 and origin/agent/b-finish 4dde340f.
+
+### What changed in my files
+
+- `src/boss/spot.ts` (new): the boxes the arena's standing things are drawn in (pillars and panes from the arena's own `STANDS`, `ARENA.lean`, `ARENA.leanX` and heights; the four corner guns by `ARENA.gun.reach`), the figure's box with its ring of flames (`RAISE.box`), and `clearSpot`, the nearest spot on rings of `RAISE.step` px at which the figure's box meets none of them and lies on the page.
+- `src/pages/step4/index.ts`: at `power-up` the page asks `clearSpot` for the spot; the figure and the held pointer go there eased over `RAISE.near` (0.5 s); the pointer is handed back with the cursor's own `release()` when the figure lies. `closer()` gives the view of the power-up: in over `RAISE.near`, held, out between `RAISE.back` (2.35 to 2.92 s after `power-up`), `RAISE.zoom` 1.6 times, centred on the figure's box and kept on the page. `stepFight(..., deaf)` with `deaf` true until the turret has locked (look on), and the arrow's kick on a click is held back as long.
+- `src/boss/fight.ts`: `stepFight` takes `deaf`: no click fires a dart in that step.
+- `src/boss/tune.ts`: `RAISE` (`near`, `back`, `zoom`, `box`, `step`, `turns`, `most`); `LAST.stand` (550, 650) with the look (was (440, 650)), `LAST.far` 319.5, `LAST.speed` 114.11 with the look.
+
+### Decisions
+
+- The view of the power-up is kept on the page, so a figure near an edge is not in the middle of the frame (the film's stand at (470, 500) sits at four tenths of the width).
+- The guns' box is a square of `ARENA.gun.reach` round each corner: wider than the gun as drawn.
+- `RAISE.box` is read off the film frames at the module's size 1.5 (STATED: measured by eye in T4b, 205 by 160 px).
+- The film's finish stand went 110 px to the right in two goes (520, then 550), so that the flame's arcs do not reach the pane; the walk's speed went down with it so that no mark moves.
+- The ember rim, the white of the body on the walk and the draw order over smoke are drawn in the finish module: asked of the finish helper at 03:29Z, not made by me.
+- The burst over the button at the blast is in `src/boss/look1/fx.ts`, the look helper's file: not touched; see Not done.
+
+### New tests, by name (look on only)
+
+- "rulings of 03:27, item 1. wherever of 12 spots a visitor stands at the power-up, pillar.3 among them, nothing of the arena as it is drawn overlaps the figure while its fists are up, and it gets there without a jump"
+- "rulings of 03:27, item 2. the view comes close on the figure for the power-up, in the film and for a visitor, and is the whole page again before the turret locks"
+- "rulings of 03:27, item 7. no click fires a dart from the power-up to the lock of the turret, and clicks fire again after it"
+- "mail of 03:02, item 4b" now reads the power-up after the figure has stepped clear.
+
+### MEASURED, 03:31 to 03:46 UTC, look on unless said
+
+- `bash /tmp/five.sh` at a5f023a4: b-boss EXIT 0 (35 passed), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17).
+- With `LOOK1_ON` false: `npx tsc --noEmit -p .` EXIT 0; b-boss EXIT 0 (30 passed, 5 skipped), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17); the film's events `cmp` EXIT 0 against the list from before the look. With it true again: `npx tsc --noEmit -p .` EXIT 0.
+- Film events (`node /tmp/ev.mjs`): power-up 34.68, turret-lock 37.83, flatten 42.80, boss-heal 43.15, power-down 49.77, finish-fire 54.90, finish-walk 57.43, finish-kneel 60.22, finish-fist 61.52, finish-press 62.42 (one frame of 240 earlier than before, inside the older test's two steps), page-turn 63.10; shot-round 153 as before.
+- `node /tmp/sp.mjs`: a visitor at (563, 925) is stepped to (695, 925), 132 px; the film's stand (470, 500) is not moved; the farthest of 13 spots tried is (185, 372), stepped 300 px to (475, 450).
+- Control taken: keen 4.24 s with no wait, 7.52 s with every turn held 4 s.
+- Item 5, `node /tmp/cur.mjs`: at 37.90 s the film's cursor has `damage []` and `wounds []`, acting `angry`, reaction `rear`; the first `dart-fire` is at 37.92 s, after the lock at 37.83 s. The mark at the tip is the arrow's own first shot, not damage, and no dart is fired before the lock. Nothing changed.
+- Item 6, read in the code: `src/film/cut.ts` line 201 gives a cut event `cue: eventCues[e.name] ?? null`, the first table only. The site (`src/audio/index.ts` line 679) and the mix (`src/audio/mix.ts` line 125) play `cueOfEvent(e.name)`, which also reads `extraCues`, `newEventCues` (where `boss-heal` is `power-on`, `src/audio/cues.ts` line 125) and `prefixCues`. The mend is in `src/film/cut.ts`, lines 1 and 201: `cueOfEvent(e.name) ?? null`. Not my file; not made.
+
+### Pictures (a5f023a4)
+
+- `/tmp/pics/T1c-fall-to-press.jpg`: nine film frames. The figure at the charge stands clear of the pane; at the blast its nearest arc of flame is about 15 px from the pane's edge and about 180 px from the frame's left edge (read off a 1 to 1 crop).
+- `/tmp/pics/T4c-power-up-closer.jpg`: eight whole film frames, 34.90 to 37.90 s: the view close from 35.20 to 37.20, whole again at 37.50; the figure about 200 px tall in the frame at 36.40.
+- `/tmp/pics/L1b-live-keen-power-up-at-pillar-3.jpg`: nine whole frames of a keen visitor, 14.30 to 17.60 s: the figure stands to the right of pillar.3, both fists up at 15.50 to 16.50, the whole page back at 17.30.
+
+### Below the bar
+
+- The figure is still black on the black burn from the walk to the press, and its body still reads grey there: waits for the finish helper.
+- The burst over the button at the blast is not thinned.
+- A visitor in a crowded corner is stepped up to 300 px in half a second.
+- The view of the power-up is not centred on a figure near an edge.
+- `boss-heal` has no cue in the cut until `src/film/cut.ts` reads `cueOfEvent`.
+
 ## Not done
 
 - `LOOK1_ON` is true in what is pushed since c23b830d (see "The switch to the real look").
