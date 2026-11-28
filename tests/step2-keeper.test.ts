@@ -12,7 +12,7 @@ import type { RealContext } from '../src/real/types'
 import type { Shape } from '../src/stage/types'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList } from '../src/stage/stage'
 
-const LONG = 24.85
+const LONG = 24.9
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2').map((f) => (f.closes !== undefined ? { ...f, closes: LONG } : f)), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
 
 function listAt(seconds: number): Shape[] {

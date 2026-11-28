@@ -6,7 +6,7 @@ import { actingAt, filmAt, pointerAt, reactions } from '../src/pages/step2/scrip
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 
 const KEYS = [0.95, 3.63, 17.62]
-const LONG = 24.85
+const LONG = 24.9
 const MARKS = { fling: 6.01, strike: 12.78 }
 const HELD: Record<string, [number, number]> = { tap: [0.02, 0.14], startle: [0.1, 0.08], rear: [0.17, 0.09], dustOff: [0, 0.7], stamp: [0, 0.17], cower: [0, 0.5], doubleTake: [0, 0.6], jump: [0, 0.2], anticipate: [0, 0.1], duck: [0, 0.36], dart: [0.34, 0.3], fume: [0, 0.2], snap: [0, 0.4] }
 
@@ -60,6 +60,6 @@ describe('the acting of step 2', () => {
     expect(at('crank-runaway')).toEqual([17.58])
     expect(at('flatten')).toEqual([20.08])
     expect(at('peel-up')).toEqual([23.85])
-    expect(at('button-press')).toEqual([24.24])
+    expect(at('button-press')).toEqual([24.29])
   })
 })

@@ -6,7 +6,7 @@ import { scaleOf, STAGE, DIAL, HOLE } from '../src/pages/step2/layout'
 import { filmAt } from '../src/pages/step2/script'
 import { filmFlow, filmOptions, ScriptDriver, Stage, type DrawList, type Shape } from '../src/stage/stage'
 
-const LONG = 24.85
+const LONG = 24.9
 const BAND_TOP = 948
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2').map((f) => (f.closes !== undefined ? { ...f, closes: LONG } : f)), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
 const to = (s: Stage, seconds: number): Shape[] => {

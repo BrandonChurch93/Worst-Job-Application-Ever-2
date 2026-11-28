@@ -10,8 +10,8 @@ import { filmFlow, filmOptions, ScriptDriver, Stage, StillDriver, type Driver, t
 
 const beats = config.film.beats.filter((b) => b.unit === 'step2')
 const tolerance = config.film.beatToleranceSeconds
-// The film of the page at the length it plays since change note 003, update 5 (24.85 s), whatever the config says the unit is.
-const LONG = 24.85
+// The film of the page at the length it plays since change note 003, update 5 (24.9 s), whatever the config says the unit is.
+const LONG = 24.9
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2').map((f) => (f.closes !== undefined ? { ...f, closes: LONG } : f)), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver, seed })
 const state = (s: Stage) => JSON.stringify({ page: s.page.save(), cursor: s.cursor.save(), id: s.page.id })

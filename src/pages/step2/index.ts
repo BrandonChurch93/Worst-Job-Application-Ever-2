@@ -1171,7 +1171,7 @@ export function makePage(): PageLogic {
     typing: () => s.open < 0 && s.field === 1 && s.birth.focus && !s.done[1] && !s.pressed && !s.skipping,
     fields: (): FieldProgress => ({ done: s.eased, total: FIELDS }),
     ignoring: () => s.pressed || s.skipping,
-    volume: () => (s.crank.set && !s.done[2] ? Math.max(0.1, s.crank.level) : 1),
+    volume: () => (s.crank.set && !s.done[2] ? Math.max(0.1, Math.floor(s.crank.level * 10 + 1e-9) / 10) : 1),
     states: () => {
       const i = s.open
       const plate = ['', '', '']

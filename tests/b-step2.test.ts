@@ -18,8 +18,8 @@ interface Saved {
   crank: { b: number; level: number; phase: string; total: number }
 }
 
-// The film of the page at the length it plays (change note 003, update 5: the unit runs to 24.85 s), whatever the config says the unit is.
-const LONG = 24.85
+// The film of the page at the length it plays (change note 003, update 5: the unit runs to 24.9 s), whatever the config says the unit is.
+const LONG = 24.9
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('step2').map((f) => (f.closes !== undefined ? { ...f, closes: LONG } : f)), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
 const MADE = ['dial', 'slot', 'crank']
 const live = (driver: Driver, seed = config.seed): Stage => new Stage({ mode: 'live', flow: [{ page: 'step2' }, { page: 'step3' }], pages, driver, seed })
