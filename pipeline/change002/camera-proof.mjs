@@ -15,10 +15,10 @@ const ARMS = 10818
 const FIRE = 11065
 const row = (from, count, every = 1) => Array.from({ length: count }, (_, i) => from + i * every)
 const JOBS = {
-  views: { frames: [11000, 11064, 11093, 11150], single: ['v1-charge', 'v2-fire', 'v3-blast', 'v4-above'] },
+  views: { frames: [11005, 11064, 11087, 11150], single: ['v1-charge', 'v2-fire', 'v3-blast', 'v4-above'] },
   film16: { frames: row(ARMS, 20, 21), cols: 4 },
-  turn: { frames: row(11030, 12), cols: 4 },
-  rise: { frames: row(FIRE + 38, 12), cols: 4 },
+  turn: { frames: row(11036, 12), cols: 4 },
+  rise: { frames: row(FIRE + 27, 12), cols: 4 },
   apart: { frames: row(FIRE + 18, 24, 5), cols: 4 }
 }
 const only = a.only ? String(a.only).split(',') : Object.keys(JOBS)

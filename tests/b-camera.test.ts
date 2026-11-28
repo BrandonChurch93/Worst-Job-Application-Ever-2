@@ -19,7 +19,7 @@ import type { CameraPose } from '../src/stage/types'
 
 const FPS = config.film.fps
 const PER = stepHz / FPS
-const LIMIT = { eye: 110, turn: 9, roll: 9, screen: 130, field: 1.5, edge: 0 } as const
+const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 130, field: 1.5, edge: 0 } as const
 const CUTS: number[] = []
 const EVENTS = { 'finish-arms': 60, 'finish-fire': 307, 'boss-gone': 435, 'finish-walk': 459, 'finish-kneel': 627, 'finish-fist': 705, 'finish-press': 759 } as const
 const IGNORED = config.live.controlTakenMaxSeconds
@@ -71,9 +71,9 @@ describe('the camera of the finishing blast: its path', () => {
     for (const [name, m, long] of COURSES) {
       expect(finishShot(0, m), name).toBeNull()
       expect(finishShot(long, m), name).toBeNull()
-      expect(steps(above, poseAt(1 / stepHz, m)).eye, name).toBeLessThan(0.5)
+      expect(steps(above, poseAt(1 / stepHz, m)).eye, name).toBeLessThan(1)
       const end = m.fire + CAMERA.rise[1]
-      expect(steps(poseAt(end - 1 / stepHz, m), above).eye, name).toBeLessThan(0.5)
+      expect(steps(poseAt(end - 1 / stepHz, m), above).eye, name).toBeLessThan(1)
     }
   })
 

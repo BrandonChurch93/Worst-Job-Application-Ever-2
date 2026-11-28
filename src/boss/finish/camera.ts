@@ -55,7 +55,9 @@ export const over = (time: number, m: Marks): boolean => m.arms < 0 || time <= m
 export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; shake: [number, number] } {
   const t = time - m.arms
   const charge = keyAt(CAMERA.charge)
-  let rig = mixRig(ABOVE, { ...charge, tall: charge.tall * (1 - CAMERA.push * smooth(t / CAMERA.pushOver)) }, ease(t, CAMERA.down[0], CAMERA.down[1]))
+  const down = ease(t, CAMERA.down[0], CAMERA.down[1])
+  let rig = mixRig(ABOVE, { ...charge, tall: charge.tall * (1 - CAMERA.push * smooth(t / CAMERA.pushOver)) }, down)
+  rig = { ...rig, az: lerp(ABOVE.az, charge.az, 1 - (1 - down) ** CAMERA.swing) }
   let view: ViewName = t <= CAMERA.down[0] ? 'above' : 'charge'
   let shake: [number, number] = [0, 0]
   if (m.turn >= 0 && time > m.turn) {
