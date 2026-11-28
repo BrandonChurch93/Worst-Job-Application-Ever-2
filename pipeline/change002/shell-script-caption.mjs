@@ -108,7 +108,10 @@ try {
     const log = await page.evaluate(() => window.log())
     const n = files.length
     const cell = `scale=${VIEW.width / 3}:${VIEW.height / 3}`
-    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...files.flatMap((f) => ['-i', f]), '-filter_complex', `${files.map((_, i) => `[${i}:v]${cell}[s${i}]`).join(';')};[s0][s1][s2]hstack=inputs=3[a];${n > 5 ? '[s3][s4][s5]hstack=inputs=3[b]' : `[s3][s4]hstack=inputs=2,pad=${VIEW.width}:${VIEW.height / 3}[b]`};[a][b]vstack=inputs=2[o]`, '-map', '[o]', '-frames:v', '1', path.join(pictures, 'script-shout.png')])
+    const bands = []
+    for (let i = 0; i < n; i += 3) bands.push(files.slice(i, i + 3).map((_, k) => `[s${i + k}]`))
+    const band = (cells, r) => `${cells.join('')}${cells.length > 1 ? `hstack=inputs=${cells.length},` : ''}pad=${VIEW.width}:${VIEW.height / 3}:color=white[b${r}]`
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...files.flatMap((f) => ['-i', f]), '-filter_complex', `${files.map((_, i) => `[${i}:v]${cell}[s${i}]`).join(';')};${bands.map(band).join(';')};${bands.map((_, r) => `[b${r}]`).join('')}${bands.length > 1 ? `vstack=inputs=${bands.length}` : 'null'}[o]`, '-map', '[o]', '-frames:v', '1', path.join(pictures, 'script-shout.png')])
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', files[n - 2], '-frames:v', '1', path.join(pictures, 'script-shout-last.png')])
     await page.goto(`${site.url}/index.html?standing`)
     await page.waitForFunction(() => typeof window.mark === 'function' && window.ready !== undefined, null, { timeout: 8000 })
