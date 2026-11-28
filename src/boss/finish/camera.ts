@@ -1,5 +1,7 @@
 import { config } from '../../config'
 import { feetFor } from '../../cursor/stand/rig'
+
+export { feetFor }
 import { toWorld } from '../../stage/camera'
 import type { CameraPose } from '../../stage/types'
 import { CAMERA, CLOSE, LAST, SHOUT } from '../tune'
