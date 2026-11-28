@@ -398,6 +398,59 @@ As seen: the figure is drawn in the place of the arrow at the power-up, from the
 - `npm test` whole was not run in this stretch.
 - No test of mine pins that the arrow is hidden while the figure is up; it was seen in the frames only.
 
+## The mails of 03:02Z and 03:03Z (the pillar, the power-up pose, the size, the arrow, the live strip, the cues)
+
+Written 03:23 UTC. Code at a2923452 on agent/b-boss; merged in: origin/agent/merge55 1daa9b64 and origin/agent/b-finish e7361785 and 0f4d1075.
+
+### What changed in my files
+
+- `src/pages/step4/index.ts`: the power-up gives the figure's module `power: { at, until }`, `until` = `power-up` + `LINE7.part2 - LINE7.power - RAISE.early`. The module fits its own moves to that window (its input `power.until`, from b-finish 0f4d1075). A time map of my own that I wrote first (a0996d26) is gone again at a2923452. In the window the page takes the pointer and holds it on the spot where `power-up` was stamped, and hands it back once when the window ends; the figure stands on that spot, not on the pointer.
+- `src/boss/tune.ts`: `RAISE = { early: 0.05 }` (s the figure lies before the lock); `LAST.far` 426.5 and `LAST.speed` 152.32 with the look (the module's shove back is 57 px now and its kneel spot moved).
+- `tests/b-boss.test.ts`: four new tests, below.
+- Not changed: the boss part's length, the lock, plannedSeconds, film.maxSeconds, copy, the number 8, `src/boss/view.ts`.
+
+### Decisions
+
+- The module's own input is used for the pose, not a speed of mine.
+- No size is set by me: no `scale` is passed, so the module's default 1.5 holds, and the kneel spot is the module's `kneelSpot` for my button (177 px wide), which gives (817.5, 659).
+- The closer view: the finish already has it (`CLOSE`, twice the film size from the fall to the press), so the figure of the finish is at 1.5 times 2. The power-up has no closer view and I added none: it would move the picture of the fight's start, which nobody asked for by name. Said to the Builder as open.
+- Item 4b: a pointer cannot move the figure in the power-up nor in the finish before it fires; on the walk it follows the hand, as the mail of 00:01 asked (pinned by the older test "leads it about the floor").
+- The live power-up behind a pillar (below) is not fixed: where a visitor stands is the visitor's, and drawing the figure over a pillar is the arena's order of parts.
+
+### New tests, by name
+
+- "mail of 03:02, item 4a. in the film the plain arrow is off the page for as long as the standing figure is up, and on it at every other moment" and the same "in a keen visitor": every other step to the page turn, `cursor.onPage` is the opposite of the figure being up, and the part `finish-figure` is in the frame while it is up.
+- "mail of 03:02, item 2. in the film both fists are raised for a second or more inside the power-up, and the figure is down before the turret locks" (look on only).
+- "mail of 03:02, item 4b. a visitor who throws the pointer about cannot move the standing figure off its spot in the power-up, nor in the finish once it has run to its stand and until it fires" (look on only): the feet stay within 1 px.
+
+### MEASURED, 03:05 to 03:22 UTC, look on unless said
+
+- `bash /tmp/five.sh` (each file alone) at a2923452: b-boss EXIT 0, 32 passed; boss EXIT 0, 38 passed; boss-closer-acting EXIT 0, 5 passed; boss-fight EXIT 0, 13 passed; site-loading EXIT 0, 17 passed. With `LOOK1_ON` false: b-boss EXIT 0, 30 passed and 2 skipped; the other four EXIT 0 with the same counts.
+- `npx tsc --noEmit -p .` EXIT 0.
+- `node /tmp/pw.mjs` (film): figure up 34.68 to 37.78 s, fists raised 35.79 to 36.88 s = 1.10 s, `turret-lock` 37.83; steps with the figure and the plain arrow both drawn: 0. `node /tmp/pw.mjs live` (keen): up 14.38 to 17.48 s, fists raised 1.10 s, lock 17.53, both drawn 0 steps.
+- Film events (`node /tmp/ev.mjs`): power-up 34.68, turret-lock 37.83, flatten 42.80, boss-heal 43.15, boss-fall 49.77, finish-fire 54.90, finish-walk 57.43, finish-kneel 60.22, finish-fist 61.52, button-press 62.43, page-turn 63.10; cover-hit 0.
+- Look off: `node /tmp/dump.mjs /tmp/x.txt; cmp /tmp/ev_off_before.txt /tmp/x.txt` EXIT 0 (the film's events as before the look).
+- Control taken (`tests/site-loading.test.ts` printout): keen 4.24 s with no wait, 7.52 s with every turn held 4 s. Not moved by the 3.10 s hold of the power-up.
+- `npm run cut` EXIT 0, "every beat's event fell inside its beat". `cut/CUES.md` is byte for byte the committed one; `cut/CUTLIST.json` differs in 322 lines, every one an `x` or `y` of an event by under a pixel. `flatten` in the boss part: cue `flatten` at 164.096 s, frame 9845, beat `boss.slabs`, inside yes; the event is 121.3 + 42.796 = 164.096 s. `boss-heal`: in CUTLIST.json at 164.4458 s, frame 9866, with `"cue": null`: no sound cue is tied to it in the cut. `cut/` put back with `git checkout -- cut/`.
+- Size, read off a 1 to 1 crop with 50 px ticks: about 200 px from the arrow's tip to the feet on the walk (59.03 s); about 125 px in the power-up (35.90 s), where the view is not closer.
+
+### Pictures (film frames at 60 a second and live frames, look on, a2923452)
+
+- `/tmp/pics/T1b-fall-to-press.jpg`, nine film frames, 50.03 to 62.50 s.
+- `/tmp/pics/T4b-power-up.jpg`, eight film frames, 35.00 to 37.90 s, cut round the stand.
+- `/tmp/pics/T2b-close.jpg`, five film frames at 1 to 1.
+- `/tmp/pics/L1-live-keen-forming-to-press.jpg`, nine live frames of a keen visitor, 5.50 to 61.60 s of the visit.
+
+### Below the bar
+
+- Live, 16.00 s of a keen visitor: the figure powers up where the visitor stands, which is behind pillar.3 at (563, 925); the pillar covers its left half, one fist and one foot. Not fixed.
+- The figure is black on the black burn from the knees to the press: its legs and arms are hard to tell from the ground in T2b at 60.37, 61.87 and 62.50.
+- The power-up figure is about 125 px tall, not 210: no closer view there.
+- At 53.53 (charge) the figure's left hand lies over the standing glass pane at the left edge of the close view; at 55.37 its flame is cut by the left edge of the picture.
+- At 37.90, just after the lock, the plain arrow shows a burn mark and smoke; I have not traced which hit gives it.
+- `boss-heal` has no cue in the cut. No cue for `finish-fire` checked by ear. `npm test` whole, `npm run bots` and `npm run determinism` not run again at a2923452 (last run at 1e29f3f7).
+- A visitor's clicks in the 1.75 s before the lock can still fire darts while the figure is up (STATED, from the code; not tested).
+
 ## Not done
 
 - `LOOK1_ON` is true in what is pushed since c23b830d (see "The switch to the real look").
