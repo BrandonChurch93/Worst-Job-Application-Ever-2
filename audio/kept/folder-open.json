@@ -1,0 +1,118 @@
+{
+  "id": "folder-open",
+  "kind": "cue",
+  "cue": "folder-open",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A stiff paper folder flipped open on a desk: one soft flap of card and paper",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A stiff paper folder flipped open on a desk, one soft flap of card and paper, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 244
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "006bcf12be16204fe78f94422cc6220e12c4c6ea4cbea5760bfaa75f5087afe2",
+    "filed": "2026-11-28T11:39:26.939Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -25.84,
+      "rmsDb": -50.84,
+      "lufs": -44.25,
+      "truePeakDb": -25.02,
+      "low": 0.101,
+      "mid": 0.673,
+      "high": 0.226,
+      "tailDb": -54.2,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.386,
+          "peakDb": -25.84
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.102,
+    "trimEnd": 0.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 94.58,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 9.88,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.378,
+    "start": 0,
+    "end": 0.33,
+    "peakDb": -16,
+    "rmsDb": -40.07,
+    "lufs": -38.92,
+    "truePeakDb": -15.98,
+    "low": 0.091,
+    "mid": 0.716,
+    "high": 0.193,
+    "tailDb": -48.65,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.276,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A single, firm flap or thwack of a stiff material. / A single soft flap of stiff paper or cardboard hitting a surface. / A single soft flap of thick paper or cardstock.",
+    "madeOf": "Thick paper, cardstock, or cardboard. / Stiff paper, cardboard, desk surface. / Stiff paper and cardboard.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The sound is a quick, dull flap that closely resembles thick paper or a cardstock folder being opened or dropped flat onto a desk.",
+      "The sound is a brief, dull slap characteristic of stiff paper or cardstock hitting a hard surface, which matches the description of a folder being flipped open.",
+      "The brief, somewhat stiff rustling noise sounds exactly like a heavy paper folder being flipped open."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "folder-open.wav",
+  "seconds": 0.3783,
+  "sha256": "72ff2f9a84947391a9d760dc89fb6760e75c999121d6589fda3a3b39b5605786"
+}

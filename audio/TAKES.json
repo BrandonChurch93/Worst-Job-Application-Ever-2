@@ -15756,6 +15756,1869 @@
         "big-fire"
       ],
       "why": "Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line"
+    },
+    {
+      "key": "pin-bumper",
+      "kind": "cue",
+      "cue": "pin-bumper",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "46c872d269f0da025ec600c921a9dd193cd0b831bf278cf32e0aec1bbd1edf9c",
+      "filed": "2026-11-28T11:38:10.942Z",
+      "prompt": "One pinball pop bumper struck by a steel ball, a short rubber and solenoid thwack, no bell, medium weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 220
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -18.51,
+        "rmsDb": -40.79,
+        "lufs": -36.56,
+        "truePeakDb": -18.2,
+        "low": 0.08,
+        "mid": 0.893,
+        "high": 0.027,
+        "tailDb": -54.22,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.156,
+            "peakDb": -18.51
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A sharp, electromechanical thwack. / A short, sharp mechanical thwack. / A short, sharp mechanical impact.",
+        "madeOf": "Solenoid, plastic, and rubber. / mechanical parts, plastic, and rubber / Metal, rubber, and a solenoid mechanism.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a single, abrupt electromechanical impact characteristic of a pinball solenoid and rubber bumper firing without any bell sound.",
+          "The audio features a quick, mechanical, and slightly rubbery impact sound consistent with a solenoid-driven pop bumper without any bell ringing.",
+          "The audio features a quick, punchy mechanical thwack typical of a pinball pop bumper firing, and it lacks any bell or chime sounds."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "pin-bumper"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "pin-target",
+      "kind": "cue",
+      "cue": "pin-target",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "22fe03aabc5e28821f76da9bd6b4cc80a9de79612a42ebf27f101740bf4b283d",
+      "filed": "2026-11-28T11:38:14.110Z",
+      "prompt": "One steel ball striking a small plastic standup target on a pinball table, a short hard clack, light, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 221
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.002,
+        "end": 0.34,
+        "peakDb": -9.44,
+        "rmsDb": -32.97,
+        "lufs": -30.32,
+        "truePeakDb": -9.22,
+        "low": 0.15,
+        "mid": 0.817,
+        "high": 0.033,
+        "tailDb": -53.8,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.016,
+            "end": 0.174,
+            "peakDb": -9.44
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A short, sharp, and hard clacking sound. / A sharp, quick clack of two hard objects colliding. / A sharp, short clack of a solid object striking a hard surface.",
+        "madeOf": "Hard plastic and metal. / Hard plastic and metal or wood. / Steel, hard plastic",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, abrupt, percussive clack that matches the sharp impact of a metal ball against a hard plastic target.",
+          "The audio features a brief, sharp impact noise that perfectly matches a short, hard clack of metal hitting a plastic target.",
+          "The audio consists of a single, quick, hard clack that sounds exactly like a heavy steel ball impacting a rigid plastic pinball target."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "pin-target"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "pin-bell",
+      "kind": "cue",
+      "cue": "pin-bell",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "c7caf04c0315526f7abb7c1559e3eb460b543061c3d0569e1faa5fe6f788d87a",
+      "filed": "2026-11-28T11:38:17.341Z",
+      "prompt": "One steel ball striking a small brass bell on a pinball table, a single clear ding that dies fast, light, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 222
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -5.58,
+        "rmsDb": -24.53,
+        "lufs": -17.49,
+        "truePeakDb": -5.48,
+        "low": 0.001,
+        "mid": 0.2,
+        "high": 0.799,
+        "tailDb": -58.78,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.206,
+            "peakDb": -5.58
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single, bright metallic ding with a quick decay. / A single, clear, high-pitched metallic ding. / A single, clear, high-pitched metallic ding with a quick decay.",
+        "madeOf": "Metal, brass. / Metal, such as a small brass bell. / Metal, such as a small brass or steel bell.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a single, clear, and fast-decaying metallic chime that perfectly matches the description of a steel ball hitting a small brass bell on a pinball table.",
+          "The sound is a crisp, high-pitched metallic strike with a rapid decay, precisely matching the description of a pinball hitting a small bell.",
+          "The audio features a sharp, clear metallic strike that rings briefly and fades quickly, matching the description of a pinball hit."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "pin-bell"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "pin-kick",
+      "kind": "cue",
+      "cue": "pin-kick",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "dfbdae68086b242f26c6bd2e0145a1c1ab6837073110eede8160a4abc2ddfa98",
+      "filed": "2026-11-28T11:38:20.461Z",
+      "prompt": "One pinball kicker firing a steel ball out of a saucer hole, a hard solenoid clunk and the ball leaving on wood, medium weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 223
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.3,
+        "peakDb": -0.25,
+        "rmsDb": -22.55,
+        "lufs": -20.53,
+        "truePeakDb": -0.16,
+        "low": 0.116,
+        "mid": 0.848,
+        "high": 0.036,
+        "tailDb": -53.67,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.226,
+            "peakDb": -0.25
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A sharp, metallic mechanical clunk. / A sharp, metallic electromechanical clunk. / A sharp, mechanical metallic clack.",
+        "madeOf": "metal, electromechanical components / Metal and electromechanical components. / Metal, mechanical parts, solenoid.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sharp, resonant metallic impact perfectly matches the sound of a hard solenoid clunk from a pinball machine.",
+          "The sharp, sudden metallic impact has the distinct electromechanical resonance of a solenoid firing in a pinball machine.",
+          "The sharp, forceful metallic click sounds exactly like an electromechanical solenoid firing to kick a ball in a pinball machine."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "pin-kick"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "pin-coins",
+      "kind": "cue",
+      "cue": "pin-coins",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "43edb7e1d4af8d95c36037cc98cf3c1dd5b53db52669322c3a65aa80128d20f6",
+      "filed": "2026-11-28T11:38:23.491Z",
+      "prompt": "A short spill of metal coins into a steel tray, bright and quick, light weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.9,
+        "loop": false,
+        "influence": null,
+        "call": 224
+      },
+      "askedSeconds": 0.9,
+      "cost": "10",
+      "measured": {
+        "seconds": 0.88,
+        "start": 0,
+        "end": 0.88,
+        "peakDb": -4.54,
+        "rmsDb": -24.44,
+        "lufs": -15.04,
+        "truePeakDb": -1.76,
+        "low": 0.002,
+        "mid": 0.074,
+        "high": 0.924,
+        "tailDb": -64.55,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.424,
+            "peakDb": -4.54
+          },
+          {
+            "start": 0.494,
+            "end": 0.542,
+            "peakDb": -31.51
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A quick rattle of small metallic objects dropping onto a hard surface. / A quick, bright metallic clinking sound like a few small coins dropping. / A quick succession of bright metallic clinks.",
+        "madeOf": "Metal coins and a hard metallic or glass surface. / Metal coins. / Metal coins and a hard metallic surface.",
+        "events": "3 / 2 / 3",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The bright, rapid metallic clinking perfectly matches the description of coins spilling quickly into a steel tray.",
+          "The sound consists of a bright, high-pitched metallic clink that strongly resembles small coins dropping quickly onto a hard surface.",
+          "The sharp, bright, and rapid metallic clinking perfectly matches the sound of a short spill of coins into a steel tray."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "pin-coins"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "pin-frenzy",
+      "kind": "cue",
+      "cue": "pin-frenzy",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "3729f7668164a3cd4c07f9f41ea7b63ef1ebb4b90e1182932a6113c5c7a32ab6",
+      "filed": "2026-11-28T11:38:26.712Z",
+      "prompt": "A pinball machine going into a frenzy, relays chattering fast and mechanical bells ringing in a quick rising run, bright steel and brass, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 2.4,
+        "loop": false,
+        "influence": null,
+        "call": 225
+      },
+      "askedSeconds": 2.4,
+      "cost": "26",
+      "measured": {
+        "seconds": 2.4,
+        "start": 0,
+        "end": 1.942,
+        "peakDb": -4.4,
+        "rmsDb": -24.05,
+        "lufs": -17.24,
+        "truePeakDb": -4.38,
+        "low": 0.004,
+        "mid": 0.148,
+        "high": 0.848,
+        "tailDb": -51.28,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 1.638,
+            "peakDb": -4.4
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A mechanical bell ringing rapidly and continuously. / A rapid, continuous ringing of a mechanical bell. / A small mechanical bell ringing rapidly and continuously.",
+        "madeOf": "Metal bell, mechanical clapper. / Metal bell and mechanical clapper. / Metal, mechanical bell parts.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 3 no",
+        "basis": [
+          "The sound is a single, continuous ringing of a bell, lacking the chattering relays and rising sequence described in the text.",
+          "The sound is a steady, single-pitch mechanical ringing similar to an alarm clock, lacking the chattering relays and rising pitch of the described pinball frenzy.",
+          "The sound is a steady, single-pitch ringing of a mechanical bell, lacking the chattering relays and rising run of multiple bells described."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "vacuum-roar",
+      "kind": "cue",
+      "cue": "vacuum-roar",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "6064e05d2f28a8e42047642d2fcda71698fb8fc2429c08eb1e6404b6aecd1777",
+      "filed": "2026-11-28T11:38:30.063Z",
+      "prompt": "A large shop vacuum running at full power, a steady roar of air through a wide plastic hose, even from start to end so it can loop, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 3,
+        "loop": true,
+        "influence": null,
+        "call": 226
+      },
+      "askedSeconds": 3,
+      "cost": "33",
+      "measured": {
+        "seconds": 3,
+        "start": 0,
+        "end": 3,
+        "peakDb": -1.85,
+        "rmsDb": -15.54,
+        "lufs": -9.87,
+        "truePeakDb": -1.61,
+        "low": 0.023,
+        "mid": 0.584,
+        "high": 0.393,
+        "tailDb": -15.33,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 3,
+            "peakDb": -1.85
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played once, as a loop, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A steady, loud roaring sound of rushing air combined with an electric motor hum. / A loud, continuous roar and whine of a powerful electric motor and rushing air. / A steady, loud roar of rushing air driven by a powerful electric motor.",
+        "madeOf": "Airflow and an electric motor. / An electric motor and rushing air. / Air suction and electric motor.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The continuous, broadband roar of suction and motor clearly sounds like a powerful shop vacuum.",
+          "The loud, steady motor whine mixed with the heavy sound of rushing air perfectly matches the description of a running shop vacuum.",
+          "The sound is a continuous, loud broadband rushing noise that perfectly matches the description of a large shop vacuum's motor and air flow."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "vacuum-roar"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "vacuum-gulp",
+      "kind": "cue",
+      "cue": "vacuum-gulp",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "fcc80ac3ae2d4b60113f70917adcc579a9f21ed43616471335a09488f8b87128",
+      "filed": "2026-11-28T11:38:33.215Z",
+      "prompt": "A vacuum hose swallowing a steel ball, one hollow gulp of air in a plastic tube and a dull knock inside, medium weight, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 227
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -15.54,
+        "rmsDb": -31.64,
+        "lufs": -28.56,
+        "truePeakDb": -15.38,
+        "low": 0.282,
+        "mid": 0.712,
+        "high": 0.006,
+        "tailDb": -38.37,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.004,
+            "end": 0.198,
+            "peakDb": -15.54
+          },
+          {
+            "start": 0.28,
+            "end": 0.328,
+            "peakDb": -45.43
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single, resonant plop of a liquid drop. / A single, hollow gulp or bloop sound. / A hollow, resonant liquid drop or a cartoonish gulping sound.",
+        "madeOf": "Liquid or water. / Air and a hollow tube or container. / Liquid or a simulated hollow cavity.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "1 yes, 2 no",
+        "basis": [
+          "The audio is a wet, splashing liquid drop sound rather than a hollow intake of air and a metallic knock.",
+          "The audio features a quick, resonant suction noise with a dull impact, matching the description of a hollow gulp and a knock.",
+          "The audio is a classic liquid 'bloop' or swallow sound effect, completely lacking the continuous suction noise of a vacuum hose or the metallic clank of a steel ball."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "vacuum-slip",
+      "kind": "cue",
+      "cue": "vacuum-slip",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "9b06106b180c42edc1845b48cf0e4234a21b7974b6cc67c193a23c66a44ca9aa",
+      "filed": "2026-11-28T11:38:36.403Z",
+      "prompt": "A steel ball slipping free of a suction hose mouth, one short wet pop of air on rubber, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 228
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -20.93,
+        "rmsDb": -43.07,
+        "lufs": -36.13,
+        "truePeakDb": -20.58,
+        "low": 0.002,
+        "mid": 0.464,
+        "high": 0.534,
+        "tailDb": -61.41,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.142,
+            "peakDb": -20.93
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single, short, sharp pop of suction releasing. / A short, resonant pop sound like suction being suddenly released. / A short, wet popping sound caused by a sudden release of suction.",
+        "madeOf": "Air and a rubber or wet surface. / Air and suction. / Air, moisture, and a hollow tube or hose.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio is a quick, slightly wet popping noise that perfectly matches the description of a sudden suction release.",
+          "The audio features a quick, slightly wet popping noise that perfectly resembles the sudden release of air and suction described in the prompt.",
+          "The audio consists of a single, brief, wet pop that perfectly represents the sudden release of air pressure or suction."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "vacuum-slip"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "cannon-fire",
+      "kind": "cue",
+      "cue": "cannon-fire",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "27f5232c8338059bc7d2397d9c63975d6fe6790683f50ce4ca096c2caa2b5db2",
+      "filed": "2026-11-28T11:38:39.467Z",
+      "prompt": "One heavy cannon shot, a low heavy thump of a steel barrel with a short push of air, large and weighty, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 229
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -16.11,
+        "rmsDb": -31.83,
+        "lufs": -28.7,
+        "truePeakDb": -14.05,
+        "low": 0.886,
+        "mid": 0.114,
+        "high": 0.001,
+        "tailDb": -50.07,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.362,
+            "peakDb": -16.11
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A low, heavy, muffled thump or explosion. / A short, hollow popping or suction sound. / A single, muffled, low-pitched thump or thud.",
+        "madeOf": "Explosive, air pressure, metal barrel / Rubber, plastic, or a suction cup. / Wood or a heavy solid object striking a surface.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "1 yes, 2 no",
+        "basis": [
+          "The sound is a single, deep, muffled explosive thump that strongly resembles a heavy cannon firing with a burst of air.",
+          "The sound is a light, comical suction pop that lacks the explosive power, heavy low frequencies, and metallic resonance of a cannon shot.",
+          "While it is a low thump, it lacks the explosive power of a cannon shot and the metallic resonance of a steel barrel, sounding more like a dull, wooden impact."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "cannon-tell",
+      "kind": "cue",
+      "cue": "cannon-tell",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "ccae290a9566fda45eea0a9b269b01997caa8384410824c2ed14323cd519c50d",
+      "filed": "2026-11-28T11:38:42.531Z",
+      "prompt": "A heavy cannon winding up before it fires, a low motor whine rising with a steel ratchet clicking faster, large, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 230
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -9.99,
+        "rmsDb": -31.02,
+        "lufs": -27.14,
+        "truePeakDb": -9.48,
+        "low": 0.198,
+        "mid": 0.408,
+        "high": 0.394,
+        "tailDb": -69.37,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.372,
+            "peakDb": -9.99
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A mechanical winding up sound featuring a rising hum and accelerating clicks. / A quick, sharp metallic whoosh or slicing sound. / A rapid, mechanical ratcheting sound accompanied by a synthetic tone that rises in pitch.",
+        "madeOf": "Synthesizer, mechanical ratchet sounds, motor whine. / Metal, synthetic sound design / Synthesized mechanical clicking and electronic tones.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 1 no",
+        "basis": [
+          "The audio contains a low motor whine that rises in pitch along with a clicking noise that gets faster, perfectly matching the description of a cannon winding up.",
+          "The sound is a brief, high-pitched metallic whoosh that lacks the low motor whine, rising pitch, and ratchet clicking of a winding cannon.",
+          "The audio features a fast, accelerating clicking noise paired with an upward-bending pitch, matching the description of a ratchet clicking and a motor whine rising to wind up."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "cannon-tell"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 2 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "boss-heal",
+      "kind": "cue",
+      "cue": "boss-heal",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "f95a72aa3b7c046e7d6c41503b99a79770e5c1a6d0f9fe2670115e6ee147e32f",
+      "filed": "2026-11-28T11:38:45.692Z",
+      "prompt": "A large machine mending itself, a warm low hum rising quickly with a soft bright shimmer of glass at its top, medium weight, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 231
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.6,
+        "peakDb": -3.32,
+        "rmsDb": -14.05,
+        "lufs": -13.6,
+        "truePeakDb": -3.23,
+        "low": 0.847,
+        "mid": 0.153,
+        "high": 0,
+        "tailDb": -58.04,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.502,
+            "peakDb": -3.32
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A short, descending electronic beep sounds once. / A short, low-pitched, synthetic buzz reminiscent of a retro video game error or interaction. / A quick, bright synthetic sequence of notes rises in pitch and ends with a sparkling chime.",
+        "madeOf": "Synthesizer / Digital synthesizer / Synthesizer, digital audio tones.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "1 yes, 2 no",
+        "melody": false,
+        "melodyVotes": "1 yes, 2 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 3 no",
+        "basis": [
+          "The audio features a short, descending electronic tone, completely contradicting the prompt's description of a rising hum with a bright shimmer.",
+          "The sound is a flat, abrupt electronic buzz rather than a warm, rising hum with a bright shimmer.",
+          "Although it features a quick rise and a bright shimmer at the end, the sound completely lacks the warm low hum and heavy presence expected of a large machine."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "shield-glance",
+      "kind": "cue",
+      "cue": "shield-glance",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "518b09b002681bbafd0cddf3402329b7993e55dae5874ff6dfe3e292d5d3955e",
+      "filed": "2026-11-28T11:38:48.805Z",
+      "prompt": "One small dart glancing off a curved glass shield, a tiny bright ping that slides away, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 232
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -43.53,
+        "rmsDb": -54.45,
+        "lufs": -59.28,
+        "truePeakDb": -42.42,
+        "low": 0.987,
+        "mid": 0.011,
+        "high": 0.002,
+        "tailDb": -30.21,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.48,
+            "peakDb": -43.53
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A sharp, high-pitched pinging sound of a small object striking a hard surface. / A short, high-pitched clink or ping. / A sharp, high-pitched metallic or glassy ping.",
+        "madeOf": "metal, glass / Metal or glass / Glass or metal",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio is a short, sharp, and highly resonant high-pitched ping that perfectly matches the description of a small hard object glancing off glass.",
+          "The sound is a clear, high-pitched resonant impact that perfectly matches the description of a tiny bright ping.",
+          "The audio consists of a high-frequency, resonant impact with a quick decay that perfectly matches the description of a tiny, bright ping deflecting off a hard surface."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "shield-glance"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "arena-split",
+      "kind": "cue",
+      "cue": "arena-split",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "7fc4702e28010caac736b2308a46d5727b99b80821552544800c743832e774e3",
+      "filed": "2026-11-28T11:38:51.939Z",
+      "prompt": "A large sheet of thick paper and glass cracking along one straight line, a sharp dry split, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 233
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.492,
+        "peakDb": -0.23,
+        "rmsDb": -23.17,
+        "lufs": -17.37,
+        "truePeakDb": 0.1,
+        "low": 0.003,
+        "mid": 0.402,
+        "high": 0.595,
+        "tailDb": -54.07,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.356,
+            "peakDb": -0.23
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "I hear a quick, sharp, and dry cracking or snapping sound. / A sharp, quick mechanical click resembling a camera shutter taking a photo. / A crisp, wet crunch like someone biting into a fresh apple.",
+        "madeOf": "Glass, thick paper, dry wood, or stiff plastic. / Plastic and metal mechanical parts. / An apple or other crisp, juicy fruit or vegetable.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "1 yes, 2 no",
+        "basis": [
+          "The audio features a sudden, crisp, and dry snapping noise that perfectly aligns with the description of a sharp split in a stiff material.",
+          "The sound is a brief, mechanical snap rather than the tearing or shattering noise characteristic of paper splitting or glass cracking.",
+          "The sound is a wet, squelchy crunch typical of biting into juicy fruit, lacking the dry, sharp qualities of cracking glass or tearing paper."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "arena-rise",
+      "kind": "cue",
+      "cue": "arena-rise",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "e6acce73c514f6f21633f43e5b7edaa1be1b10fd840fb8565a43f5604267f607",
+      "filed": "2026-11-28T11:38:55.004Z",
+      "prompt": "A heavy stone and steel platform rising out of the floor, a low grinding rumble that ends in a locking thud, very heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.9,
+        "loop": false,
+        "influence": null,
+        "call": 234
+      },
+      "askedSeconds": 0.9,
+      "cost": "10",
+      "measured": {
+        "seconds": 0.88,
+        "start": 0,
+        "end": 0.88,
+        "peakDb": -29.66,
+        "rmsDb": -43.53,
+        "lufs": -41.72,
+        "truePeakDb": -29.62,
+        "low": 0.897,
+        "mid": 0.103,
+        "high": 0,
+        "tailDb": -52.35,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.764,
+            "peakDb": -29.66
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single droplet of water splashing into a small pool of liquid. / A quick, high-pitched electronic whoosh or sweep. / I hear a rapid sequence of quick percussive taps resembling a short drum roll or fast knocking.",
+        "madeOf": "Water. / Synthesized audio. / Wood, hard plastic, or a small drum being struck.",
+        "events": "1 / 1 / 6",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 3 no",
+        "basis": [
+          "The sound is a short, high-pitched liquid drip rather than a sustained, low-pitched grinding rumble of stone and steel.",
+          "The sound is a fast, high-pitched digital whoosh that lacks any low rumble, grinding noise, or heavy locking thud.",
+          "The audio consists of rapid, light percussive tapping, entirely lacking the low grinding rumble and heavy locking thud described."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "healthbar-drop",
+      "kind": "cue",
+      "cue": "healthbar-drop",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "a8e994d2333a6b2a61ed66dfa956266eed7e6ec37d7e21168c052ae85f0d44bb",
+      "filed": "2026-11-28T11:38:58.326Z",
+      "prompt": "A long steel bar dropping into two brackets, one solid clank with a short ring, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 235
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -24.91,
+        "rmsDb": -45.78,
+        "lufs": -39.46,
+        "truePeakDb": -23.24,
+        "low": 0.03,
+        "mid": 0.862,
+        "high": 0.107,
+        "tailDb": -46.47,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.176,
+            "peakDb": -24.91
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A solid metallic clank with a brief ring. / A solid metallic clank with a short ringing tail. / A solid metallic clank with a brief ringing resonance.",
+        "madeOf": "Metal / metal / Metal.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sound features a single, sharp metallic impact with a short, ringing decay, perfectly matching the description of a steel bar dropping into metal brackets.",
+          "The audio features a distinct, heavy metallic impact followed by a brief resonant ring, perfectly aligning with the description of a steel bar dropping into brackets.",
+          "The sound consists of a single sharp metallic impact followed by a short decay, perfectly matching a steel bar dropping into brackets."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "healthbar-drop"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "power-up",
+      "kind": "cue",
+      "cue": "power-up",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "114b6c486b22efece13f95a909a16645bac95b0c3f586402eeaf4abff3aae36c",
+      "filed": "2026-11-28T11:39:01.534Z",
+      "prompt": "A small machine charging up, a clean electric hum rising for under a second into a soft bright ping, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 236
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.8,
+        "peakDb": -22.92,
+        "rmsDb": -35.36,
+        "lufs": -28.35,
+        "truePeakDb": -22.47,
+        "low": 0.001,
+        "mid": 0.379,
+        "high": 0.619,
+        "tailDb": -34.62,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.74,
+            "peakDb": -22.92
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "An ascending electronic pulse that culminates in a bright synthetic chime. / A short, rising electronic hum that ends with a bright chime. / A rapid sequence of retro 8-bit electronic beeps rising in pitch and ending in a higher chime.",
+        "madeOf": "Synthesized electronic tones. / Synthesizer. / Synthesizer or chiptune audio generator.",
+        "events": "2 / 2 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "2 yes, 1 no",
+        "basis": [
+          "The audio features a clean, rising electronic tone that ends with a distinct bright ping, perfectly matching the description of a machine charging up.",
+          "The audio consists of an ascending synthesized tone that ends with a clear, high-pitched chime, exactly matching the description of a charging hum and a bright ping.",
+          "The audio consists of distinctly stepped, retro video game-style beeps rather than a smooth, continuous electric hum."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "boss-fall",
+      "kind": "cue",
+      "cue": "boss-fall",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "911a4392ab8a6a3240ae79b70ac54c49fe2afdb2416a5045bd3e046cf5d482fb",
+      "filed": "2026-11-28T11:39:04.763Z",
+      "prompt": "A large machine of glass and steel collapsing to the floor, a heavy slump of plates and one deep thud, very heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 237
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0,
+        "end": 0.648,
+        "peakDb": -0.92,
+        "rmsDb": -19.02,
+        "lufs": -17.29,
+        "truePeakDb": -0.89,
+        "low": 0.394,
+        "mid": 0.579,
+        "high": 0.028,
+        "tailDb": -52.69,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.48,
+            "peakDb": -0.92
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single, sharp impact like a heavy piece of wood or hollow material being struck. / A sharp metallic clack or mechanical latch engaging. / A quick metallic clack followed immediately by a hollow thud, like a heavy latch or mechanical lock engaging.",
+        "madeOf": "wood, hard plastic, or hollow metal / Metal. / Metal.",
+        "events": "1 / 1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 3 no",
+        "basis": [
+          "The sound is a brief, single clunk and lacks the shattering glass, heavy metallic slump, and deep thud of a large collapsing machine.",
+          "The sound is a single, brief metallic clack like a small latch, which lacks the complex crashing, breaking glass, and heavy slump expected from a large machine collapsing.",
+          "The sound is a very brief mechanical clack and thud, lacking the extended noise of a heavy collapse, shattering glass, or slumping metal plates."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "pillar-break",
+      "kind": "cue",
+      "cue": "pillar-break",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "764d7f370e06783e9ad364107fc22fbf9ce2f4a6054c750cdf4dfc37a33e0ce4",
+      "filed": "2026-11-28T11:39:07.974Z",
+      "prompt": "One stone pillar breaking in two and its top half falling, a hard crack and a heavy tumble of rubble, very heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.8,
+        "loop": false,
+        "influence": null,
+        "call": 238
+      },
+      "askedSeconds": 0.8,
+      "cost": "9",
+      "measured": {
+        "seconds": 0.8,
+        "start": 0.028,
+        "end": 0.66,
+        "peakDb": -11.15,
+        "rmsDb": -38.64,
+        "lufs": -34.29,
+        "truePeakDb": -11.04,
+        "low": 0.009,
+        "mid": 0.947,
+        "high": 0.044,
+        "tailDb": -55.73,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.118,
+            "end": 0.22,
+            "peakDb": -11.15
+          },
+          {
+            "start": 0.332,
+            "end": 0.426,
+            "peakDb": -13.21
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single, sharp click like a computer mouse or a light switch. / A sharp, short mechanical click like a computer mouse button being pressed. / A sharp, quick double click resembling a computer mouse or a small plastic switch being pressed and released.",
+        "madeOf": "Plastic or metal. / Plastic and metal. / Plastic and small mechanical components.",
+        "events": "1 / 1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 3 no",
+        "basis": [
+          "The sound is a brief, tiny click without the loud cracking, heavy impact, or tumbling rubble sounds expected from a collapsing stone pillar.",
+          "The audio is a tiny mechanical click rather than the loud, heavy, and crumbling impact of a massive stone pillar breaking and falling.",
+          "The sound is a tiny, quiet plastic click, completely lacking the massive, heavy crash and rumbling debris required for a falling stone pillar."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
+    },
+    {
+      "key": "reel-stop",
+      "kind": "cue",
+      "cue": "reel-stop",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "7743a0249e39c7dec0ef2cc54757e521bf7ab3fb1215c0cba78d409c5eec7e65",
+      "filed": "2026-11-28T11:39:11.348Z",
+      "prompt": "One slot machine reel stopping, a hard plastic and steel clack with a short ratchet tick, small and firm, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 239
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0.088,
+        "end": 0.296,
+        "peakDb": -4.11,
+        "rmsDb": -28.92,
+        "lufs": -24.54,
+        "truePeakDb": -3.37,
+        "low": 0.002,
+        "mid": 0.209,
+        "high": 0.789,
+        "tailDb": -55.83,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0.094,
+            "end": 0.236,
+            "peakDb": -4.11
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A sharp mechanical clack followed by a quick ratcheting tick. / A sharp mechanical clack followed immediately by a quick ticking sound. / A sharp, mechanical clack followed immediately by a quick ratcheting tick.",
+        "madeOf": "Hard plastic and metal. / Hard plastic and metal. / Hard plastic and steel mechanical components.",
+        "events": "2 / 1 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sound consists of a firm plastic and metallic impact followed by a short ticking noise, accurately matching the description of a slot machine reel locking into place.",
+          "The combination of a heavy mechanical clack and a brief ratchet tick perfectly matches the description of a slot machine reel locking into place.",
+          "The recording contains a distinct, hard mechanical clack combined with a brief ratcheting tick, perfectly matching the description of a slot machine reel stopping."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "reel-stop"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "stop-press",
+      "kind": "cue",
+      "cue": "stop-press",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "49df9ee2a3eb32479bae6cca656f0c55526f5c8b0c35f22a42c06ae5b14390f0",
+      "filed": "2026-11-28T11:39:14.461Z",
+      "prompt": "One small plastic stop button pressed, a short dry click, very light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 240
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -38.07,
+        "rmsDb": -60.71,
+        "lufs": -55.39,
+        "truePeakDb": -37.99,
+        "low": 0.055,
+        "mid": 0.729,
+        "high": 0.216,
+        "tailDb": -47.08,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.324,
+            "peakDb": -38.07
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A short, sharp, dry click. / A short, sharp, dry click. / A single, short, and dry click.",
+        "madeOf": "Plastic and small mechanical components. / Hard plastic and a small mechanical switch. / Hard plastic and a small mechanical switch.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio consists of a single, brief, and dry mechanical click that perfectly matches the description of a small plastic button being pressed.",
+          "The audio features a single, crisp, dry click that perfectly matches the description of a small plastic button being pressed.",
+          "The sound is a brief, sharp, non-resonant click that closely resembles the pressing of a small plastic button."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "stop-press"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "date-miss",
+      "kind": "cue",
+      "cue": "date-miss",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "241b645a4c6aa31d2587dfc72cabde9c42763ea3f080ea4d98d8b7394db04b45",
+      "filed": "2026-11-28T11:39:17.614Z",
+      "prompt": "A slot machine reel slipping past its stop, a short descending ratchet rattle that ends in a dull plastic thud, small, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.6,
+        "loop": false,
+        "influence": null,
+        "call": 241
+      },
+      "askedSeconds": 0.6,
+      "cost": "7",
+      "measured": {
+        "seconds": 0.6,
+        "start": 0,
+        "end": 0.542,
+        "peakDb": -17.7,
+        "rmsDb": -43.09,
+        "lufs": -38.21,
+        "truePeakDb": -16.79,
+        "low": 0.002,
+        "mid": 0.097,
+        "high": 0.901,
+        "tailDb": -53.03,
+        "hits": 2,
+        "hitsAt": [
+          {
+            "start": 0.03,
+            "end": 0.274,
+            "peakDb": -17.7
+          },
+          {
+            "start": 0.346,
+            "end": 0.374,
+            "peakDb": -30.38
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A rapid mechanical ratcheting sound that concludes with a dull thud. / A rapid mechanical ratcheting sound that concludes with a solid, hollow thud. / A rapid mechanical ratcheting sound that slows down and drops in pitch before ending in a dull thud.",
+        "madeOf": "Plastic and mechanical gear components. / Plastic, mechanical gears, ratchet mechanism. / Plastic and mechanical gears.",
+        "events": "2 / 2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The fast, descending clicking noise sounds exactly like a slipping ratchet, and it ends perfectly with the specified dull, plastic thud.",
+          "The fast clicking sound perfectly represents a ratcheting mechanism slipping and abruptly stopping with a dull plastic clunk just as described.",
+          "The audio features a short, decelerating clicking noise that terminates with a hollow, plastic-sounding impact, perfectly matching the description of a slipping slot machine reel."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "date-miss"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "volume-sign",
+      "kind": "cue",
+      "cue": "volume-sign",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "56f1905df3a73d6d4c6102721d338d50eb79a79fc0f0f50ceebcf634e4d42d87",
+      "filed": "2026-11-28T11:39:20.704Z",
+      "prompt": "A small lit sign switching on, one soft relay click and a short faint electric buzz that settles, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 242
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -8.76,
+        "rmsDb": -30.01,
+        "lufs": -27.2,
+        "truePeakDb": -5.63,
+        "low": 0.781,
+        "mid": 0.019,
+        "high": 0.2,
+        "tailDb": -46.36,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.4,
+            "peakDb": -8.76
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A mechanical click is followed by a brief, low-frequency electrical hum. / A sharp mechanical click is followed by a brief electrical buzzing sound. / A soft click is followed by a faint, steady electrical buzz.",
+        "madeOf": "Mechanical switch and electrical current. / A mechanical switch and electric current. / A mechanical switch and electrical current.",
+        "events": "2 / 2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sound features a distinct relay click followed immediately by a short, faint electrical buzz that quickly stabilizes, matching the description perfectly.",
+          "The clear mechanical click followed by a low, steady electrical hum perfectly matches the description of a relay switch turning on a lit sign.",
+          "The combination of a distinct relay click and a continuous subtle electrical hum accurately represents a small lit sign switching on."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "volume-sign"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "row-close",
+      "kind": "cue",
+      "cue": "row-close",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "b3561548d1078351871e4d6f3c13c28eb8b1d92b054e6c1e8f8bf62520cbeff2",
+      "filed": "2026-11-28T11:39:23.823Z",
+      "prompt": "A small drawer mechanism sliding shut and stopping with a soft thunk, a single short movement, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 243
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -20.8,
+        "rmsDb": -38.48,
+        "lufs": -35.33,
+        "truePeakDb": -19.84,
+        "low": 0.672,
+        "mid": 0.322,
+        "high": 0.005,
+        "tailDb": -37.31,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.436,
+            "peakDb": -20.8
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A brief mechanical slide followed by a soft thud. / A short sliding sound followed immediately by a soft thud. / A quick sliding scrape followed by a soft, hollow thud.",
+        "madeOf": "Plastic, metal track, or wood. / Wood, plastic, and a mechanical sliding track. / Wood, plastic, and a sliding track mechanism.",
+        "events": "2 / 2 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a short sliding friction noise that abruptly ends with a gentle stopping impact, perfectly matching a small drawer closing.",
+          "The brief frictional scraping noise that terminates in a gentle mechanical impact perfectly matches the action of closing a small drawer.",
+          "The audio consists of a brief friction noise ending with a soft impact, which perfectly matches a small drawer mechanism sliding shut and stopping."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "row-close"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "folder-open",
+      "kind": "cue",
+      "cue": "folder-open",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "006bcf12be16204fe78f94422cc6220e12c4c6ea4cbea5760bfaa75f5087afe2",
+      "filed": "2026-11-28T11:39:26.939Z",
+      "prompt": "A stiff paper folder flipped open on a desk, one soft flap of card and paper, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 244
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -25.84,
+        "rmsDb": -50.84,
+        "lufs": -44.25,
+        "truePeakDb": -25.02,
+        "low": 0.101,
+        "mid": 0.673,
+        "high": 0.226,
+        "tailDb": -54.2,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.386,
+            "peakDb": -25.84
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A single, firm flap or thwack of a stiff material. / A single soft flap of stiff paper or cardboard hitting a surface. / A single soft flap of thick paper or cardstock.",
+        "madeOf": "Thick paper, cardstock, or cardboard. / Stiff paper, cardboard, desk surface. / Stiff paper and cardboard.",
+        "events": "1 / 1 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The sound is a quick, dull flap that closely resembles thick paper or a cardstock folder being opened or dropped flat onto a desk.",
+          "The sound is a brief, dull slap characteristic of stiff paper or cardstock hitting a hard surface, which matches the description of a folder being flipped open.",
+          "The brief, somewhat stiff rustling noise sounds exactly like a heavy paper folder being flipped open."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "folder-open"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "slot-in",
+      "kind": "cue",
+      "cue": "slot-in",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "fda410623a512d1afb41009814ee452dc76b06aa552b3e8c8f247f5926b3bf93",
+      "filed": "2026-11-28T11:39:30.204Z",
+      "prompt": "A sheet of paper fed into the slot of a machine, a short slide of paper on steel and a soft catch, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 0.5,
+        "loop": false,
+        "influence": null,
+        "call": 245
+      },
+      "askedSeconds": 0.5,
+      "cost": "6",
+      "measured": {
+        "seconds": 0.48,
+        "start": 0,
+        "end": 0.48,
+        "peakDb": -25.28,
+        "rmsDb": -43.49,
+        "lufs": -36.76,
+        "truePeakDb": -25.15,
+        "low": 0.004,
+        "mid": 0.505,
+        "high": 0.491,
+        "tailDb": -52.75,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.394,
+            "peakDb": -25.28
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A short slide of paper against a hard surface ending with a soft catch. / A short, dry scraping slide followed immediately by a soft mechanical click. / A quick, airy slide of a thin material ending with a faint clicking catch.",
+        "madeOf": "Paper and metal or plastic. / Paper, plastic, metal. / Paper and hard plastic or metal.",
+        "events": "2 / 2 / 2",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": true,
+        "fitsVotes": "3 yes, 0 no",
+        "basis": [
+          "The audio features a brief, dry sliding friction noise characteristic of paper, followed immediately by a soft mechanical thud or catch.",
+          "The audio features a brief friction noise followed by a subtle thud or click, matching the described slide of paper and subsequent soft catch in a machine.",
+          "The papery friction of the slide combined with the subtle concluding tap perfectly matches the description of a sheet of paper being fed into a machine slot."
+        ],
+        "sameRoom": null
+      },
+      "kept": true,
+      "keptAs": [
+        "slot-in"
+      ],
+      "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site."
+    },
+    {
+      "key": "wind-gust",
+      "kind": "cue",
+      "cue": "wind-gust",
+      "take": 1,
+      "round": "change-002",
+      "file": "take-1.mp3",
+      "sha256": "5e9d4bc86a219c141ad2ab850ce3ee94fc8a0d8cdf4de8b29fe5a105d54e8908",
+      "filed": "2026-11-28T11:39:33.368Z",
+      "prompt": "One gust of wind through an open office window, a soft rush of air that swells and fades with loose paper lifting, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+      "settings": {
+        "seconds": 1.2,
+        "loop": false,
+        "influence": null,
+        "call": 246
+      },
+      "askedSeconds": 1.2,
+      "cost": "13",
+      "measured": {
+        "seconds": 1.2,
+        "start": 0,
+        "end": 1.2,
+        "peakDb": -33.15,
+        "rmsDb": -51.13,
+        "lufs": -50.47,
+        "truePeakDb": -30.27,
+        "low": 0.841,
+        "mid": 0.143,
+        "high": 0.015,
+        "tailDb": -50.11,
+        "hits": 1,
+        "hitsAt": [
+          {
+            "start": 0,
+            "end": 0.984,
+            "peakDb": -33.15
+          }
+        ]
+      },
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+        "asks": 3,
+        "whole": 3,
+        "heard": "A mechanical sliding sound, like a heavy drawer or tray being pushed shut. / A heavy metal drawer or sliding door rolls open on tracks and stops with a clunk. / A sharp, mechanical sliding and clacking sound, similar to a heavy paper cutter or a plastic tray closing.",
+        "madeOf": "Metal and plastic. / Metal, mechanical tracks, rollers. / Metal, plastic, and possibly paper.",
+        "events": "1 / 2 / 1",
+        "voice": false,
+        "voiceVotes": "0 yes, 3 no",
+        "word": false,
+        "wordVotes": "0 yes, 3 no",
+        "music": false,
+        "musicVotes": "0 yes, 3 no",
+        "melody": false,
+        "melodyVotes": "0 yes, 3 no",
+        "fits": false,
+        "fitsVotes": "0 yes, 3 no",
+        "basis": [
+          "The sound is a harsh, mechanical sliding noise like a metal drawer closing, which lacks the airy rush of wind or the fluttering of loose paper.",
+          "The audio features a mechanical sliding noise ending in a solid thud rather than the airy, soft sound of wind and rustling paper.",
+          "The audio features a sudden, sharp mechanical sliding and clicking impact rather than the soft, swelling rush of air characteristic of wind."
+        ],
+        "sameRoom": null
+      },
+      "kept": false,
+      "keptAs": [],
+      "why": ""
     }
   ]
 }

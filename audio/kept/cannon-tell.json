@@ -1,0 +1,118 @@
+{
+  "id": "cannon-tell",
+  "kind": "cue",
+  "cue": "cannon-tell",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A heavy cannon winding up before it fires: a low motor whine rising with a ratchet clicking faster",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A heavy cannon winding up before it fires, a low motor whine rising with a steel ratchet clicking faster, large, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.8,
+    "loop": false,
+    "influence": null,
+    "call": 230
+  },
+  "askedSeconds": 0.8,
+  "cost": "9",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "ccae290a9566fda45eea0a9b269b01997caa8384410824c2ed14323cd519c50d",
+    "filed": "2026-11-28T11:38:42.531Z",
+    "measured": {
+      "seconds": 0.8,
+      "start": 0,
+      "end": 0.8,
+      "peakDb": -9.99,
+      "rmsDb": -31.02,
+      "lufs": -27.14,
+      "truePeakDb": -9.48,
+      "low": 0.198,
+      "mid": 0.408,
+      "high": 0.394,
+      "tailDb": -69.37,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.372,
+          "peakDb": -9.99
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.8,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -0.72,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.8,
+    "start": 0,
+    "end": 0.514,
+    "peakDb": -10,
+    "rmsDb": -30.2,
+    "lufs": -31.02,
+    "truePeakDb": -9.9,
+    "low": 0.136,
+    "mid": 0.435,
+    "high": 0.429,
+    "tailDb": -53.51,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.372,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A mechanical winding up sound featuring a rising hum and accelerating clicks. / A quick, sharp metallic whoosh or slicing sound. / A rapid, mechanical ratcheting sound accompanied by a synthetic tone that rises in pitch.",
+    "madeOf": "Synthesizer, mechanical ratchet sounds, motor whine. / Metal, synthetic sound design / Synthesized mechanical clicking and electronic tones.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "2 yes, 1 no",
+    "basis": [
+      "The audio contains a low motor whine that rises in pitch along with a clicking noise that gets faster, perfectly matching the description of a cannon winding up.",
+      "The sound is a brief, high-pitched metallic whoosh that lacks the low motor whine, rising pitch, and ratchet clicking of a winding cannon.",
+      "The audio features a fast, accelerating clicking noise paired with an upward-bending pitch, matching the description of a ratchet clicking and a motor whine rising to wind up."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 2 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "cannon-tell.wav",
+  "seconds": 0.8,
+  "sha256": "4b771b96fc16944d1652e7e98a953df2ff297777fc8fa29cebc81aab8b8249cc"
+}

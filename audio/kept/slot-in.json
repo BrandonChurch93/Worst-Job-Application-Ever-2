@@ -1,0 +1,118 @@
+{
+  "id": "slot-in",
+  "kind": "cue",
+  "cue": "slot-in",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A sheet of paper fed into the slot of a machine: a short slide of paper on steel and a soft catch",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A sheet of paper fed into the slot of a machine, a short slide of paper on steel and a soft catch, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 245
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "fda410623a512d1afb41009814ee452dc76b06aa552b3e8c8f247f5926b3bf93",
+    "filed": "2026-11-28T11:39:30.204Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -25.28,
+      "rmsDb": -43.49,
+      "lufs": -36.76,
+      "truePeakDb": -25.15,
+      "low": 0.004,
+      "mid": 0.505,
+      "high": 0.491,
+      "tailDb": -52.75,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.394,
+          "peakDb": -25.28
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.03,
+    "trimEnd": 0.33,
+    "cutToSeconds": 0.3,
+    "fadeInMs": 3,
+    "fadeOutMs": 75,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 9.52,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.3,
+    "start": 0,
+    "end": 0.3,
+    "peakDb": -16,
+    "rmsDb": -32.43,
+    "lufs": -29.5,
+    "truePeakDb": -15.86,
+    "low": 0.001,
+    "mid": 0.499,
+    "high": 0.5,
+    "tailDb": -35.27,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.294,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A short slide of paper against a hard surface ending with a soft catch. / A short, dry scraping slide followed immediately by a soft mechanical click. / A quick, airy slide of a thin material ending with a faint clicking catch.",
+    "madeOf": "Paper and metal or plastic. / Paper, plastic, metal. / Paper and hard plastic or metal.",
+    "events": "2 / 2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio features a brief, dry sliding friction noise characteristic of paper, followed immediately by a soft mechanical thud or catch.",
+      "The audio features a brief friction noise followed by a subtle thud or click, matching the described slide of paper and subsequent soft catch in a machine.",
+      "The papery friction of the slide combined with the subtle concluding tap perfectly matches the description of a sheet of paper being fed into a machine slot."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "slot-in.wav",
+  "seconds": 0.3,
+  "sha256": "10046b949b86a52615c19908cce00dc66cbb0d22c9b51f04f9fd0970d9c2c128"
+}

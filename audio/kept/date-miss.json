@@ -1,0 +1,128 @@
+{
+  "id": "date-miss",
+  "kind": "cue",
+  "cue": "date-miss",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A slot machine reel slipping past its stop: a short falling ratchet rattle that ends in a dull plastic thud",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A slot machine reel slipping past its stop, a short descending ratchet rattle that ends in a dull plastic thud, small, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.6,
+    "loop": false,
+    "influence": null,
+    "call": 241
+  },
+  "askedSeconds": 0.6,
+  "cost": "7",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "241b645a4c6aa31d2587dfc72cabde9c42763ea3f080ea4d98d8b7394db04b45",
+    "filed": "2026-11-28T11:39:17.614Z",
+    "measured": {
+      "seconds": 0.6,
+      "start": 0,
+      "end": 0.542,
+      "peakDb": -17.7,
+      "rmsDb": -43.09,
+      "lufs": -38.21,
+      "truePeakDb": -16.79,
+      "low": 0.002,
+      "mid": 0.097,
+      "high": 0.901,
+      "tailDb": -53.03,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0.03,
+          "end": 0.274,
+          "peakDb": -17.7
+        },
+        {
+          "start": 0.346,
+          "end": 0.374,
+          "peakDb": -30.38
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.542,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 7.66,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.542,
+    "start": 0,
+    "end": 0.462,
+    "peakDb": -10,
+    "rmsDb": -34.74,
+    "lufs": -32.31,
+    "truePeakDb": -9.37,
+    "low": 0.001,
+    "mid": 0.097,
+    "high": 0.902,
+    "tailDb": -54.63,
+    "hits": 2,
+    "hitsAt": [
+      {
+        "start": 0.03,
+        "end": 0.274,
+        "peakDb": -10
+      },
+      {
+        "start": 0.346,
+        "end": 0.372,
+        "peakDb": -22.77
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A rapid mechanical ratcheting sound that concludes with a dull thud. / A rapid mechanical ratcheting sound that concludes with a solid, hollow thud. / A rapid mechanical ratcheting sound that slows down and drops in pitch before ending in a dull thud.",
+    "madeOf": "Plastic and mechanical gear components. / Plastic, mechanical gears, ratchet mechanism. / Plastic and mechanical gears.",
+    "events": "2 / 2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The fast, descending clicking noise sounds exactly like a slipping ratchet, and it ends perfectly with the specified dull, plastic thud.",
+      "The fast clicking sound perfectly represents a ratcheting mechanism slipping and abruptly stopping with a dull plastic clunk just as described.",
+      "The audio features a short, decelerating clicking noise that terminates with a hollow, plastic-sounding impact, perfectly matching the description of a slipping slot machine reel."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "date-miss.wav",
+  "seconds": 0.542,
+  "sha256": "de66070e6877e2b322c538f391836d358d102dd6e8fb82b0956e3abf212619a9"
+}

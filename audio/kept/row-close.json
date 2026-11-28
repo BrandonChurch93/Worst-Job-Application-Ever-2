@@ -1,0 +1,118 @@
+{
+  "id": "row-close",
+  "kind": "cue",
+  "cue": "row-close",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small drawer mechanism sliding shut and stopping with a soft thunk",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small drawer mechanism sliding shut and stopping with a soft thunk, a single short movement, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 243
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "b3561548d1078351871e4d6f3c13c28eb8b1d92b054e6c1e8f8bf62520cbeff2",
+    "filed": "2026-11-28T11:39:23.823Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -20.8,
+      "rmsDb": -38.48,
+      "lufs": -35.33,
+      "truePeakDb": -19.84,
+      "low": 0.672,
+      "mid": 0.322,
+      "high": 0.005,
+      "tailDb": -37.31,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.436,
+          "peakDb": -20.8
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.3,
+    "cutToSeconds": 0.3,
+    "fadeInMs": 3,
+    "fadeOutMs": 75,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 10.85,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.3,
+    "start": 0,
+    "end": 0.282,
+    "peakDb": -10,
+    "rmsDb": -25.56,
+    "lufs": -26.69,
+    "truePeakDb": -9.96,
+    "low": 0.657,
+    "mid": 0.338,
+    "high": 0.005,
+    "tailDb": -49.06,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.192,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A brief mechanical slide followed by a soft thud. / A short sliding sound followed immediately by a soft thud. / A quick sliding scrape followed by a soft, hollow thud.",
+    "madeOf": "Plastic, metal track, or wood. / Wood, plastic, and a mechanical sliding track. / Wood, plastic, and a sliding track mechanism.",
+    "events": "2 / 2 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio features a short sliding friction noise that abruptly ends with a gentle stopping impact, perfectly matching a small drawer closing.",
+      "The brief frictional scraping noise that terminates in a gentle mechanical impact perfectly matches the action of closing a small drawer.",
+      "The audio consists of a brief friction noise ending with a soft impact, which perfectly matches a small drawer mechanism sliding shut and stopping."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "row-close.wav",
+  "seconds": 0.3,
+  "sha256": "5adc23f3fe7045ee0191183c9b254a7eae490a1bec40f03388410592379acb7b"
+}

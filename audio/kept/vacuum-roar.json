@@ -1,0 +1,123 @@
+{
+  "id": "vacuum-roar",
+  "kind": "cue",
+  "cue": "vacuum-roar",
+  "variant": null,
+  "class": "mechanism",
+  "loop": true,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A large shop vacuum running at full power: a steady roar of air through a wide hose. Loops",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A large shop vacuum running at full power, a steady roar of air through a wide plastic hose, even from start to end so it can loop, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 3,
+    "loop": true,
+    "influence": null,
+    "call": 226
+  },
+  "askedSeconds": 3,
+  "cost": "33",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "6064e05d2f28a8e42047642d2fcda71698fb8fc2429c08eb1e6404b6aecd1777",
+    "filed": "2026-11-28T11:38:30.063Z",
+    "measured": {
+      "seconds": 3,
+      "start": 0,
+      "end": 3,
+      "peakDb": -1.85,
+      "rmsDb": -15.54,
+      "lufs": -9.87,
+      "truePeakDb": -1.61,
+      "low": 0.023,
+      "mid": 0.584,
+      "high": 0.393,
+      "tailDb": -15.33,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 3,
+          "peakDb": -1.85
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 3,
+    "cutToSeconds": null,
+    "fadeInMs": 0,
+    "fadeOutMs": 0,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": -7.93,
+    "channels": 1,
+    "loop": {
+      "crossMs": 600,
+      "seamStepDb": 2.82,
+      "seamLevelDb": 0.31,
+      "holds": true
+    }
+  },
+  "measured": {
+    "seconds": 2.4,
+    "start": 0,
+    "end": 2.4,
+    "peakDb": -10,
+    "rmsDb": -23.18,
+    "lufs": -20.76,
+    "truePeakDb": -9.73,
+    "low": 0.024,
+    "mid": 0.584,
+    "high": 0.392,
+    "tailDb": -13.11,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 2.4,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played once, as a loop, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A steady, loud roaring sound of rushing air combined with an electric motor hum. / A loud, continuous roar and whine of a powerful electric motor and rushing air. / A steady, loud roar of rushing air driven by a powerful electric motor.",
+    "madeOf": "Airflow and an electric motor. / An electric motor and rushing air. / Air suction and electric motor.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The continuous, broadband roar of suction and motor clearly sounds like a powerful shop vacuum.",
+      "The loud, steady motor whine mixed with the heavy sound of rushing air perfectly matches the description of a running shop vacuum.",
+      "The sound is a continuous, loud broadband rushing noise that perfectly matches the description of a large shop vacuum's motor and air flow."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "vacuum-roar.wav",
+  "seconds": 2.4,
+  "sha256": "351bdc43d494f7314d3833fd4488050ef6142875eee9db62b672f755fa53b63b"
+}

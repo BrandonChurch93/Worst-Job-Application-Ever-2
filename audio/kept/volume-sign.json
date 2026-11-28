@@ -1,0 +1,118 @@
+{
+  "id": "volume-sign",
+  "kind": "cue",
+  "cue": "volume-sign",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A small lit sign switching on: one soft relay click and a short faint electric buzz that settles",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A small lit sign switching on, one soft relay click and a short faint electric buzz that settles, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 242
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "56f1905df3a73d6d4c6102721d338d50eb79a79fc0f0f50ceebcf634e4d42d87",
+    "filed": "2026-11-28T11:39:20.704Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -8.76,
+      "rmsDb": -30.01,
+      "lufs": -27.2,
+      "truePeakDb": -5.63,
+      "low": 0.781,
+      "mid": 0.019,
+      "high": 0.2,
+      "tailDb": -46.36,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.4,
+          "peakDb": -8.76
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.357,
+    "trimEnd": 0.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 30.64,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -7.31,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.123,
+    "start": 0,
+    "end": 0.106,
+    "peakDb": -16,
+    "rmsDb": -37.76,
+    "lufs": -35.28,
+    "truePeakDb": -15.84,
+    "low": 0.064,
+    "mid": 0.088,
+    "high": 0.848,
+    "tailDb": -52.51,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.032,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A mechanical click is followed by a brief, low-frequency electrical hum. / A sharp mechanical click is followed by a brief electrical buzzing sound. / A soft click is followed by a faint, steady electrical buzz.",
+    "madeOf": "Mechanical switch and electrical current. / A mechanical switch and electric current. / A mechanical switch and electrical current.",
+    "events": "2 / 2 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The sound features a distinct relay click followed immediately by a short, faint electrical buzz that quickly stabilizes, matching the description perfectly.",
+      "The clear mechanical click followed by a low, steady electrical hum perfectly matches the description of a relay switch turning on a lit sign.",
+      "The combination of a distinct relay click and a continuous subtle electrical hum accurately represents a small lit sign switching on."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "volume-sign.wav",
+  "seconds": 0.1225,
+  "sha256": "2dd4070838497e8256706419a1bc02296d7d4be0f79bbc5de4ebdeb2e29a0221"
+}

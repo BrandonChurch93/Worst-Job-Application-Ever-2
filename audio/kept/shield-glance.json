@@ -1,0 +1,118 @@
+{
+  "id": "shield-glance",
+  "kind": "cue",
+  "cue": "shield-glance",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One small dart glancing off a curved glass shield: a tiny bright ping that slides away",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One small dart glancing off a curved glass shield, a tiny bright ping that slides away, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 232
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "518b09b002681bbafd0cddf3402329b7993e55dae5874ff6dfe3e292d5d3955e",
+    "filed": "2026-11-28T11:38:48.805Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -43.53,
+      "rmsDb": -54.45,
+      "lufs": -59.28,
+      "truePeakDb": -42.42,
+      "low": 0.987,
+      "mid": 0.011,
+      "high": 0.002,
+      "tailDb": -30.21,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.48,
+          "peakDb": -43.53
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.2,
+    "cutToSeconds": 0.2,
+    "fadeInMs": 3,
+    "fadeOutMs": 50,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 37.07,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.2,
+    "start": 0,
+    "end": 0.2,
+    "peakDb": -16,
+    "rmsDb": -26.12,
+    "lufs": -28.87,
+    "truePeakDb": -15.95,
+    "low": 0.907,
+    "mid": 0.077,
+    "high": 0.015,
+    "tailDb": -22.61,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.2,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A sharp, high-pitched pinging sound of a small object striking a hard surface. / A short, high-pitched clink or ping. / A sharp, high-pitched metallic or glassy ping.",
+    "madeOf": "metal, glass / Metal or glass / Glass or metal",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio is a short, sharp, and highly resonant high-pitched ping that perfectly matches the description of a small hard object glancing off glass.",
+      "The sound is a clear, high-pitched resonant impact that perfectly matches the description of a tiny bright ping.",
+      "The audio consists of a high-frequency, resonant impact with a quick decay that perfectly matches the description of a tiny, bright ping deflecting off a hard surface."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "shield-glance.wav",
+  "seconds": 0.2,
+  "sha256": "6d65f44510de9a30c856edc0ac9ab1ba69c3da6bdcfc71779431900962ae70df"
+}

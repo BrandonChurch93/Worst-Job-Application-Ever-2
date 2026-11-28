@@ -1,0 +1,118 @@
+{
+  "id": "healthbar-drop",
+  "kind": "cue",
+  "cue": "healthbar-drop",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A long steel bar dropping into two brackets: one solid clank with a short ring",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A long steel bar dropping into two brackets, one solid clank with a short ring, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 235
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "a8e994d2333a6b2a61ed66dfa956266eed7e6ec37d7e21168c052ae85f0d44bb",
+    "filed": "2026-11-28T11:38:58.326Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -24.91,
+      "rmsDb": -45.78,
+      "lufs": -39.46,
+      "truePeakDb": -23.24,
+      "low": 0.03,
+      "mid": 0.862,
+      "high": 0.107,
+      "tailDb": -46.47,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.176,
+          "peakDb": -24.91
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.48,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 21.29,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.48,
+    "start": 0,
+    "end": 0.406,
+    "peakDb": -5,
+    "rmsDb": -24.36,
+    "lufs": -22.3,
+    "truePeakDb": -4.92,
+    "low": 0.032,
+    "mid": 0.852,
+    "high": 0.115,
+    "tailDb": -54.81,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.178,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A solid metallic clank with a brief ring. / A solid metallic clank with a short ringing tail. / A solid metallic clank with a brief ringing resonance.",
+    "madeOf": "Metal / metal / Metal.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The sound features a single, sharp metallic impact with a short, ringing decay, perfectly matching the description of a steel bar dropping into metal brackets.",
+      "The audio features a distinct, heavy metallic impact followed by a brief resonant ring, perfectly aligning with the description of a steel bar dropping into brackets.",
+      "The sound consists of a single sharp metallic impact followed by a short decay, perfectly matching a steel bar dropping into brackets."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "healthbar-drop.wav",
+  "seconds": 0.48,
+  "sha256": "a7c8f37a293e3d33f715a8e6dac88802be553a18028a916bd7805606528dc8b0"
+}

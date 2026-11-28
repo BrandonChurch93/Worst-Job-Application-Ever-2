@@ -1,0 +1,118 @@
+{
+  "id": "vacuum-slip",
+  "kind": "cue",
+  "cue": "vacuum-slip",
+  "variant": null,
+  "class": "mechanism",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A steel ball slipping free of a suction hose mouth: one short wet pop of air",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A steel ball slipping free of a suction hose mouth, one short wet pop of air on rubber, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 228
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "9b06106b180c42edc1845b48cf0e4234a21b7974b6cc67c193a23c66a44ca9aa",
+    "filed": "2026-11-28T11:38:36.403Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -20.93,
+      "rmsDb": -43.07,
+      "lufs": -36.13,
+      "truePeakDb": -20.58,
+      "low": 0.002,
+      "mid": 0.464,
+      "high": 0.534,
+      "tailDb": -61.41,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.142,
+          "peakDb": -20.93
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.35,
+    "cutToSeconds": 0.35,
+    "fadeInMs": 3,
+    "fadeOutMs": 87.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -10,
+    "gainDb": 10.87,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.35,
+    "start": 0,
+    "end": 0.304,
+    "peakDb": -10,
+    "rmsDb": -30.28,
+    "lufs": -27.81,
+    "truePeakDb": -10,
+    "low": 0.002,
+    "mid": 0.469,
+    "high": 0.529,
+    "tailDb": -54.54,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.142,
+        "peakDb": -10
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A single, short, sharp pop of suction releasing. / A short, resonant pop sound like suction being suddenly released. / A short, wet popping sound caused by a sudden release of suction.",
+    "madeOf": "Air and a rubber or wet surface. / Air and suction. / Air, moisture, and a hollow tube or hose.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio is a quick, slightly wet popping noise that perfectly matches the description of a sudden suction release.",
+      "The audio features a quick, slightly wet popping noise that perfectly resembles the sudden release of air and suction described in the prompt.",
+      "The audio consists of a single, brief, wet pop that perfectly represents the sudden release of air pressure or suction."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "vacuum-slip.wav",
+  "seconds": 0.35,
+  "sha256": "1bd906c76387ca94450f53937e16c07934dd1921d74acc1a77932b6cdbbb0adb"
+}

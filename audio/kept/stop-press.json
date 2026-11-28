@@ -1,0 +1,118 @@
+{
+  "id": "stop-press",
+  "kind": "cue",
+  "cue": "stop-press",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One small plastic stop button pressed: a short dry click",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One small plastic stop button pressed, a short dry click, very light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 240
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "49df9ee2a3eb32479bae6cca656f0c55526f5c8b0c35f22a42c06ae5b14390f0",
+    "filed": "2026-11-28T11:39:14.461Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -38.07,
+      "rmsDb": -60.71,
+      "lufs": -55.39,
+      "truePeakDb": -37.99,
+      "low": 0.055,
+      "mid": 0.729,
+      "high": 0.216,
+      "tailDb": -47.08,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.324,
+          "peakDb": -38.07
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.15,
+    "cutToSeconds": 0.15,
+    "fadeInMs": 3,
+    "fadeOutMs": 37.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": 22.2,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.15,
+    "start": 0,
+    "end": 0.148,
+    "peakDb": -16,
+    "rmsDb": -34.36,
+    "lufs": -32.94,
+    "truePeakDb": -15.89,
+    "low": 0.03,
+    "mid": 0.747,
+    "high": 0.223,
+    "tailDb": -38.99,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.136,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A short, sharp, dry click. / A short, sharp, dry click. / A single, short, and dry click.",
+    "madeOf": "Plastic and small mechanical components. / Hard plastic and a small mechanical switch. / Hard plastic and a small mechanical switch.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio consists of a single, brief, and dry mechanical click that perfectly matches the description of a small plastic button being pressed.",
+      "The audio features a single, crisp, dry click that perfectly matches the description of a small plastic button being pressed.",
+      "The sound is a brief, sharp, non-resonant click that closely resembles the pressing of a small plastic button."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "stop-press.wav",
+  "seconds": 0.15,
+  "sha256": "cda4804260606358462701e27e16156b5e52b129cf4d8505d964e13758960555"
+}

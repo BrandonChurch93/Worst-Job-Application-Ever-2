@@ -1,0 +1,118 @@
+{
+  "id": "pin-kick",
+  "kind": "cue",
+  "cue": "pin-kick",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One pinball kicker firing a steel ball out of a saucer hole: a hard solenoid clunk",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One pinball kicker firing a steel ball out of a saucer hole, a hard solenoid clunk and the ball leaving on wood, medium weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 223
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "dfbdae68086b242f26c6bd2e0145a1c1ab6837073110eede8160a4abc2ddfa98",
+    "filed": "2026-11-28T11:38:20.461Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.3,
+      "peakDb": -0.25,
+      "rmsDb": -22.55,
+      "lufs": -20.53,
+      "truePeakDb": -0.16,
+      "low": 0.116,
+      "mid": 0.848,
+      "high": 0.036,
+      "tailDb": -53.67,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.226,
+          "peakDb": -0.25
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.06,
+    "trimEnd": 0.3,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 60.07,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -4.6,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.24,
+    "start": 0,
+    "end": 0.212,
+    "peakDb": -5,
+    "rmsDb": -26.01,
+    "lufs": -26.24,
+    "truePeakDb": -5,
+    "low": 0.109,
+    "mid": 0.854,
+    "high": 0.038,
+    "tailDb": -49.13,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.166,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A sharp, metallic mechanical clunk. / A sharp, metallic electromechanical clunk. / A sharp, mechanical metallic clack.",
+    "madeOf": "metal, electromechanical components / Metal and electromechanical components. / Metal, mechanical parts, solenoid.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The sharp, resonant metallic impact perfectly matches the sound of a hard solenoid clunk from a pinball machine.",
+      "The sharp, sudden metallic impact has the distinct electromechanical resonance of a solenoid firing in a pinball machine.",
+      "The sharp, forceful metallic click sounds exactly like an electromechanical solenoid firing to kick a ball in a pinball machine."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "pin-kick.wav",
+  "seconds": 0.2403,
+  "sha256": "2feadf6c8a07483046c471f1537f4f0f9de1383f94d76ac19b9b2c4dd6dc0b2d"
+}

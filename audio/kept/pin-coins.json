@@ -1,0 +1,128 @@
+{
+  "id": "pin-coins",
+  "kind": "cue",
+  "cue": "pin-coins",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "A short spill of metal coins into a steel tray, bright and quick",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "A short spill of metal coins into a steel tray, bright and quick, light weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.9,
+    "loop": false,
+    "influence": null,
+    "call": 224
+  },
+  "askedSeconds": 0.9,
+  "cost": "10",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "43edb7e1d4af8d95c36037cc98cf3c1dd5b53db52669322c3a65aa80128d20f6",
+    "filed": "2026-11-28T11:38:23.491Z",
+    "measured": {
+      "seconds": 0.88,
+      "start": 0,
+      "end": 0.88,
+      "peakDb": -4.54,
+      "rmsDb": -24.44,
+      "lufs": -15.04,
+      "truePeakDb": -1.76,
+      "low": 0.002,
+      "mid": 0.074,
+      "high": 0.924,
+      "tailDb": -64.55,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.424,
+          "peakDb": -4.54
+        },
+        {
+          "start": 0.494,
+          "end": 0.542,
+          "peakDb": -31.51
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.88,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -0.32,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.88,
+    "start": 0,
+    "end": 0.562,
+    "peakDb": -5,
+    "rmsDb": -22.86,
+    "lufs": -19.97,
+    "truePeakDb": -4.37,
+    "low": 0.001,
+    "mid": 0.075,
+    "high": 0.924,
+    "tailDb": -42.56,
+    "hits": 2,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.424,
+        "peakDb": -5
+      },
+      {
+        "start": 0.494,
+        "end": 0.542,
+        "peakDb": -31.32
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A quick rattle of small metallic objects dropping onto a hard surface. / A quick, bright metallic clinking sound like a few small coins dropping. / A quick succession of bright metallic clinks.",
+    "madeOf": "Metal coins and a hard metallic or glass surface. / Metal coins. / Metal coins and a hard metallic surface.",
+    "events": "3 / 2 / 3",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The bright, rapid metallic clinking perfectly matches the description of coins spilling quickly into a steel tray.",
+      "The sound consists of a bright, high-pitched metallic clink that strongly resembles small coins dropping quickly onto a hard surface.",
+      "The sharp, bright, and rapid metallic clinking perfectly matches the sound of a short spill of coins into a steel tray."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "pin-coins.wav",
+  "seconds": 0.88,
+  "sha256": "c13ffadddec69fec9b94660a154b90aeae6663a9d0a9272f47dc8500d74bc7c7"
+}

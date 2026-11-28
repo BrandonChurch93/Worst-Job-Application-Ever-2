@@ -1,0 +1,118 @@
+{
+  "id": "reel-stop",
+  "kind": "cue",
+  "cue": "reel-stop",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One slot machine reel stopping: a hard plastic and steel clack with a short ratchet tick",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One slot machine reel stopping, a hard plastic and steel clack with a short ratchet tick, small and firm, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 239
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "7743a0249e39c7dec0ef2cc54757e521bf7ab3fb1215c0cba78d409c5eec7e65",
+    "filed": "2026-11-28T11:39:11.348Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0.088,
+      "end": 0.296,
+      "peakDb": -4.11,
+      "rmsDb": -28.92,
+      "lufs": -24.54,
+      "truePeakDb": -3.37,
+      "low": 0.002,
+      "mid": 0.209,
+      "high": 0.789,
+      "tailDb": -55.83,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0.094,
+          "end": 0.236,
+          "peakDb": -4.11
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0.105,
+    "trimEnd": 0.296,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 47.72,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": -0.91,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.191,
+    "start": 0,
+    "end": 0.166,
+    "peakDb": -5,
+    "rmsDb": -28.91,
+    "lufs": -26.2,
+    "truePeakDb": -4.91,
+    "low": 0.002,
+    "mid": 0.21,
+    "high": 0.789,
+    "tailDb": -52.45,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.132,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A sharp mechanical clack followed by a quick ratcheting tick. / A sharp mechanical clack followed immediately by a quick ticking sound. / A sharp, mechanical clack followed immediately by a quick ratcheting tick.",
+    "madeOf": "Hard plastic and metal. / Hard plastic and metal. / Hard plastic and steel mechanical components.",
+    "events": "2 / 1 / 2",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The sound consists of a firm plastic and metallic impact followed by a short ticking noise, accurately matching the description of a slot machine reel locking into place.",
+      "The combination of a heavy mechanical clack and a brief ratchet tick perfectly matches the description of a slot machine reel locking into place.",
+      "The recording contains a distinct, hard mechanical clack combined with a brief ratcheting tick, perfectly matching the description of a slot machine reel stopping."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "reel-stop.wav",
+  "seconds": 0.1909,
+  "sha256": "e15585c414485db447c52d4d664e72a3b0a8f5a707440caf1cf460cdf850630b"
+}

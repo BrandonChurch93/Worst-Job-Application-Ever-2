@@ -1,0 +1,118 @@
+{
+  "id": "pin-bumper",
+  "kind": "cue",
+  "cue": "pin-bumper",
+  "variant": null,
+  "class": "hit",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One pinball pop bumper struck by a steel ball: a short rubber and solenoid thwack, no bell",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One pinball pop bumper struck by a steel ball, a short rubber and solenoid thwack, no bell, medium weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 220
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "46c872d269f0da025ec600c921a9dd193cd0b831bf278cf32e0aec1bbd1edf9c",
+    "filed": "2026-11-28T11:38:10.942Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -18.51,
+      "rmsDb": -40.79,
+      "lufs": -36.56,
+      "truePeakDb": -18.2,
+      "low": 0.08,
+      "mid": 0.893,
+      "high": 0.027,
+      "tailDb": -54.22,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.156,
+          "peakDb": -18.51
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.25,
+    "cutToSeconds": 0.25,
+    "fadeInMs": 3,
+    "fadeOutMs": 62.5,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -5,
+    "gainDb": 16.07,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.25,
+    "start": 0,
+    "end": 0.23,
+    "peakDb": -5,
+    "rmsDb": -22.1,
+    "lufs": -22.09,
+    "truePeakDb": -4.97,
+    "low": 0.08,
+    "mid": 0.896,
+    "high": 0.023,
+    "tailDb": -51.37,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.16,
+        "peakDb": -5
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A sharp, electromechanical thwack. / A short, sharp mechanical thwack. / A short, sharp mechanical impact.",
+    "madeOf": "Solenoid, plastic, and rubber. / mechanical parts, plastic, and rubber / Metal, rubber, and a solenoid mechanism.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio features a single, abrupt electromechanical impact characteristic of a pinball solenoid and rubber bumper firing without any bell sound.",
+      "The audio features a quick, mechanical, and slightly rubbery impact sound consistent with a solenoid-driven pop bumper without any bell ringing.",
+      "The audio features a quick, punchy mechanical thwack typical of a pinball pop bumper firing, and it lacks any bell or chime sounds."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "pin-bumper.wav",
+  "seconds": 0.25,
+  "sha256": "bfa96dddffa3b879d50de4cf45b3ce5b399139073558441514cc30746107739d"
+}

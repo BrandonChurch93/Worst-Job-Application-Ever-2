@@ -1588,3 +1588,273 @@ Takes used: 2 of 3 in round change-002, 1 of 3 in round change-002-layer.
 | 3 | change-002-layer | 2026-11-28T10:52:15.709Z | 1.5 s | -1.01 dB | -14.45 LUFS | 1 | 0 | yes, as big-fire | Chosen by measure for Brandon's words in change note 002 (powerful, not a laser pew): on a laptop it is the loudest and fullest of the takes and layers of this cue. A layer made for free from the paid takes; a listener told nothing did not name it by its line |
 
 Prompt: Made for free from paid takes, with no call to the sound service (layer L1 of the free layering rounds of November 28): big-fire take 2 as it is, the deep boom of take 1 3 dB under at its loudest moment, the thud of turret-cannon take 1 an octave lower 5 dB under, overtones of the deep part, a gentle saturation. The takes named are filed under their own cues.
+
+### pin-bumper
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:10.942Z | 0.48 s | -18.51 dB | -36.56 LUFS | 1 | 6 | yes, as pin-bumper | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: One pinball pop bumper struck by a steel ball, a short rubber and solenoid thwack, no bell, medium weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### pin-target
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:14.110Z | 0.48 s | -9.44 dB | -30.32 LUFS | 1 | 6 | yes, as pin-target | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: One steel ball striking a small plastic standup target on a pinball table, a short hard clack, light, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### pin-bell
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:17.341Z | 0.48 s | -5.58 dB | -17.49 LUFS | 1 | 6 | yes, as pin-bell | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: One steel ball striking a small brass bell on a pinball table, a single clear ding that dies fast, light, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### pin-kick
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:20.461Z | 0.48 s | -0.25 dB | -20.53 LUFS | 1 | 6 | yes, as pin-kick | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: One pinball kicker firing a steel ball out of a saucer hole, a hard solenoid clunk and the ball leaving on wood, medium weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### pin-coins
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:23.491Z | 0.88 s | -4.54 dB | -15.04 LUFS | 2 | 10 | yes, as pin-coins | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A short spill of metal coins into a steel tray, bright and quick, light weight, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### pin-frenzy
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:26.712Z | 2.4 s | -4.4 dB | -17.24 LUFS | 1 | 26 | no |  |
+
+Prompt: A pinball machine going into a frenzy, relays chattering fast and mechanical bells ringing in a quick rising run, bright steel and brass, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### vacuum-roar
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:30.063Z | 3 s | -1.85 dB | -9.87 LUFS | 1 | 33 | yes, as vacuum-roar | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A large shop vacuum running at full power, a steady roar of air through a wide plastic hose, even from start to end so it can loop, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### vacuum-gulp
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:33.215Z | 0.48 s | -15.54 dB | -28.56 LUFS | 2 | 6 | no |  |
+
+Prompt: A vacuum hose swallowing a steel ball, one hollow gulp of air in a plastic tube and a dull knock inside, medium weight, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### vacuum-slip
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:36.403Z | 0.48 s | -20.93 dB | -36.13 LUFS | 1 | 6 | yes, as vacuum-slip | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A steel ball slipping free of a suction hose mouth, one short wet pop of air on rubber, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### cannon-fire
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:39.467Z | 0.48 s | -16.11 dB | -28.7 LUFS | 1 | 6 | no |  |
+
+Prompt: One heavy cannon shot, a low heavy thump of a steel barrel with a short push of air, large and weighty, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### cannon-tell
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:42.531Z | 0.8 s | -9.99 dB | -27.14 LUFS | 1 | 9 | yes, as cannon-tell | First take, the only one: a listening model that was told the cue's line said it fits, 2 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A heavy cannon winding up before it fires, a low motor whine rising with a steel ratchet clicking faster, large, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### boss-heal
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:45.692Z | 0.6 s | -3.32 dB | -13.6 LUFS | 1 | 7 | no |  |
+
+Prompt: A large machine mending itself, a warm low hum rising quickly with a soft bright shimmer of glass at its top, medium weight, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### shield-glance
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:48.805Z | 0.48 s | -43.53 dB | -59.28 LUFS | 1 | 6 | yes, as shield-glance | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: One small dart glancing off a curved glass shield, a tiny bright ping that slides away, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### arena-split
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:51.939Z | 0.6 s | -0.23 dB | -17.37 LUFS | 1 | 7 | no |  |
+
+Prompt: A large sheet of thick paper and glass cracking along one straight line, a sharp dry split, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### arena-rise
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:55.004Z | 0.88 s | -29.66 dB | -41.72 LUFS | 1 | 10 | no |  |
+
+Prompt: A heavy stone and steel platform rising out of the floor, a low grinding rumble that ends in a locking thud, very heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### healthbar-drop
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:38:58.326Z | 0.48 s | -24.91 dB | -39.46 LUFS | 1 | 6 | yes, as healthbar-drop | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A long steel bar dropping into two brackets, one solid clank with a short ring, heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### power-up
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:01.534Z | 0.8 s | -22.92 dB | -28.35 LUFS | 1 | 9 | no |  |
+
+Prompt: A small machine charging up, a clean electric hum rising for under a second into a soft bright ping, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### boss-fall
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:04.763Z | 0.8 s | -0.92 dB | -17.29 LUFS | 1 | 9 | no |  |
+
+Prompt: A large machine of glass and steel collapsing to the floor, a heavy slump of plates and one deep thud, very heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### pillar-break
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:07.974Z | 0.8 s | -11.15 dB | -34.29 LUFS | 2 | 9 | no |  |
+
+Prompt: One stone pillar breaking in two and its top half falling, a hard crack and a heavy tumble of rubble, very heavy, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### reel-stop
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:11.348Z | 0.48 s | -4.11 dB | -24.54 LUFS | 1 | 6 | yes, as reel-stop | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: One slot machine reel stopping, a hard plastic and steel clack with a short ratchet tick, small and firm, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### stop-press
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:14.461Z | 0.48 s | -38.07 dB | -55.39 LUFS | 1 | 6 | yes, as stop-press | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: One small plastic stop button pressed, a short dry click, very light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### date-miss
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:17.614Z | 0.6 s | -17.7 dB | -38.21 LUFS | 2 | 7 | yes, as date-miss | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A slot machine reel slipping past its stop, a short descending ratchet rattle that ends in a dull plastic thud, small, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### volume-sign
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:20.704Z | 0.48 s | -8.76 dB | -27.2 LUFS | 1 | 6 | yes, as volume-sign | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A small lit sign switching on, one soft relay click and a short faint electric buzz that settles, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### row-close
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:23.823Z | 0.48 s | -20.8 dB | -35.33 LUFS | 1 | 6 | yes, as row-close | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A small drawer mechanism sliding shut and stopping with a soft thunk, a single short movement, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### folder-open
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:26.939Z | 0.48 s | -25.84 dB | -44.25 LUFS | 1 | 6 | yes, as folder-open | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A stiff paper folder flipped open on a desk, one soft flap of card and paper, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### slot-in
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:30.204Z | 0.48 s | -25.28 dB | -36.76 LUFS | 1 | 6 | yes, as slot-in | First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site. |
+
+Prompt: A sheet of paper fed into the slot of a machine, a short slide of paper on steel and a soft catch, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### wind-gust
+
+Takes used: 1 of 3 in round change-002.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | change-002 | 2026-11-28T11:39:33.368Z | 1.2 s | -33.15 dB | -50.47 LUFS | 1 | 13 | no |  |
+
+Prompt: One gust of wind through an open office window, a soft rush of air that swells and fades with loose paper lifting, light, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice

@@ -1,0 +1,118 @@
+{
+  "id": "pin-bell",
+  "kind": "cue",
+  "cue": "pin-bell",
+  "variant": null,
+  "class": "tick",
+  "loop": false,
+  "beat": null,
+  "liveKey": null,
+  "group": null,
+  "describes": "One steel ball striking a small brass bell on a pinball table: a single clear ding that dies fast",
+  "index": null,
+  "words": null,
+  "text": null,
+  "prompt": "One steel ball striking a small brass bell on a pinball table, a single clear ding that dies fast, light, inside a wooden cabinet, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice",
+  "settings": {
+    "seconds": 0.5,
+    "loop": false,
+    "influence": null,
+    "call": 222
+  },
+  "askedSeconds": 0.5,
+  "cost": "6",
+  "take": {
+    "number": 1,
+    "round": "change-002",
+    "file": "take-1.mp3",
+    "sha256": "c7caf04c0315526f7abb7c1559e3eb460b543061c3d0569e1faa5fe6f788d87a",
+    "filed": "2026-11-28T11:38:17.341Z",
+    "measured": {
+      "seconds": 0.48,
+      "start": 0,
+      "end": 0.48,
+      "peakDb": -5.58,
+      "rmsDb": -24.53,
+      "lufs": -17.49,
+      "truePeakDb": -5.48,
+      "low": 0.001,
+      "mid": 0.2,
+      "high": 0.799,
+      "tailDb": -58.78,
+      "hits": 1,
+      "hitsAt": [
+        {
+          "start": 0,
+          "end": 0.206,
+          "peakDb": -5.58
+        }
+      ]
+    },
+    "line": null
+  },
+  "chain": {
+    "trimStart": 0,
+    "trimEnd": 0.4,
+    "cutToSeconds": 0.4,
+    "fadeInMs": 3,
+    "fadeOutMs": 100,
+    "lowCutHz": 60,
+    "levelMeasure": "peak",
+    "levelDb": -16,
+    "gainDb": -6.04,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 0.4,
+    "start": 0,
+    "end": 0.372,
+    "peakDb": -16,
+    "rmsDb": -29.7,
+    "lufs": -26.81,
+    "truePeakDb": -15.91,
+    "low": 0,
+    "mid": 0.2,
+    "high": 0.8,
+    "tailDb": -45.78,
+    "hits": 1,
+    "hitsAt": [
+      {
+        "start": 0,
+        "end": 0.274,
+        "peakDb": -16
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 3 whole, 0 void. It heard the sound as the site plays it, after the build's chain, played three times in a row, and was told the cue's line, as the sheet's eighth question asks",
+    "asks": 3,
+    "whole": 3,
+    "heard": "A single, bright metallic ding with a quick decay. / A single, clear, high-pitched metallic ding. / A single, clear, high-pitched metallic ding with a quick decay.",
+    "madeOf": "Metal, brass. / Metal, such as a small brass bell. / Metal, such as a small brass or steel bell.",
+    "events": "1 / 1 / 1",
+    "voice": false,
+    "voiceVotes": "0 yes, 3 no",
+    "word": false,
+    "wordVotes": "0 yes, 3 no",
+    "music": false,
+    "musicVotes": "0 yes, 3 no",
+    "melody": false,
+    "melodyVotes": "0 yes, 3 no",
+    "fits": true,
+    "fitsVotes": "3 yes, 0 no",
+    "basis": [
+      "The audio features a single, clear, and fast-decaying metallic chime that perfectly matches the description of a steel ball hitting a small brass bell on a pinball table.",
+      "The sound is a crisp, high-pitched metallic strike with a rapid decay, precisely matching the description of a pinball hitting a small bell.",
+      "The audio features a sharp, clear metallic strike that rings briefly and fades quickly, matching the description of a pinball hit."
+    ],
+    "sameRoom": null
+  },
+  "why": "First take, the only one: a listening model that was told the cue's line said it fits, 3 of 3, on the sound as the site plays it after the chain. A model cannot hear as a person does; Brandon's ear decides on the live site.",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "pin-bell.wav",
+  "seconds": 0.4,
+  "sha256": "004ae8316047d896af1b2c4c4c29f7da4f98a1508724fe464c7ad28a9a8e4770"
+}
