@@ -32,9 +32,17 @@ const ctxOf = (f: Frame): RealContext => {
 const railOf = (f: Frame): Shape => f.list.find((s) => s.id === 'progress-rail')!
 
 describe('the field progress contract', () => {
-  it('draws a page with a rail that reports nothing, null, or no fields at all as 0 of 1: bare on step 1, filled up to the collar of the step in hand after it', () => {
-    const plain = frameOf('step1')
+  it('draws a page with a rail that reports nothing, null, or no fields at all as 0 of 1: bare on step 1, filled up to the collar of the step in hand after it, and steps 1 and 2, which take one field at a time, report 0 of 3 at their start with a notch at each boundary', () => {
+    const plain = frameOf('step1', null)
     const key = controls.key(railOf(plain), ctxOf(plain))
+    expect(railOf(plain).v).toBeUndefined()
+    const own = frameOf('step1')
+    expect(railOf(own).v).toEqual([0, 3])
+    expect(railFill(railOf(own), ctxOf(own))).toEqual([])
+    const cuts = railNotches(railOf(own), ctxOf(own))
+    expect(cuts.length).toBe(2)
+    expect(cuts[1]!).toBeGreaterThan(cuts[0]!)
+    expect(controls.key(railOf(own), ctxOf(own))).toBe(`${key}${cuts.map((x) => `:n${x}`).join('')}`)
     for (const fields of [null, { done: 0, total: 0 }, { done: 0, total: 1 }]) {
       const f = frameOf('step1', fields)
       expect(controls.key(railOf(f), ctxOf(f)), JSON.stringify(fields)).toBe(key)
@@ -51,7 +59,7 @@ describe('the field progress contract', () => {
       expect(fill[0]![0], page).toBe(0)
       expect(fill[0]![1], page).toBeGreaterThan(cur.x - rail.x - 8)
       expect(fill[0]![1], page).toBeLessThan(cur.x - rail.x)
-      expect(railNotches(rail, ctxOf(f)), page).toEqual([])
+      expect(railNotches(rail, ctxOf(f)), page).toEqual(page === 'step2' ? cuts.map((x) => x + pitch) : [])
     }
   })
 

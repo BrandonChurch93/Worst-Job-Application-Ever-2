@@ -162,9 +162,15 @@ describe('the review page with things to show', () => {
     html = page(dir)
   })
 
-  it('has the seven parts in order and no empty part', () => {
+  it('has the seven parts in order and no empty part: the script has no live-only line since change note 003, so that one list alone says it is empty', () => {
     expect(headings(html)).toEqual(PARTS)
-    expect(html).not.toContain(NOTHING)
+    const liveOnly = Object.entries(narration.liveOnly as Record<string, unknown>).filter(([k, v]) => k !== 'about' && Array.isArray(v)).reduce((n, [, v]) => n + (v as unknown[]).length, 0)
+    expect(liveOnly).toBe(0)
+    expect(html.split(NOTHING).length - 1).toBe(1)
+    const sound = part(html, 'sound')
+    const from = sound.indexOf('<h4>Live-only lines</h4>')
+    expect(from).toBeGreaterThan(0)
+    expect(sound.slice(from, sound.indexOf('<h3>Cues</h3>'))).toContain(NOTHING)
   })
 
   it('empties dist/review/ first and leaves the rest of dist/ alone', () => {

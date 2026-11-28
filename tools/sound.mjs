@@ -474,13 +474,22 @@ function writeAssetRows(P) {
 const encode = (wav, argv) => run('ffmpeg', ['-v', 'error', '-i', wav, '-map_metadata', '-1', '-fflags', '+bitexact', '-flags:a', '+bitexact', ...argv, '-'])
 
 // Where each phrase of a kept line starts, in seconds from the start of its file: the first sound, then the end of each pause.
-// A phrase is the words between two pause marks. When the pauses found are not as many as the marks, no starts are given.
+// A phrase is the words between two pause marks. When the pauses found are not as many as the marks, no starts are given,
+// with one exception: more pauses than marks, where a short breath inside a phrase was counted. Then the marks' pauses are the longest ones,
+// but only when the shortest of them is at least twice as long as every other pause found; otherwise no starts are given.
 export function phraseStarts(mono, sampleRate, words, M) {
   const marks = words.split(/\s+/).filter((w) => w === narration().pauseMark).length
   const first = M.dsp.loudSpans(mono, sampleRate, M.levels.CHAIN.pauseDb, 0, 0)[0]
-  const pauses = M.dsp.findPauses(mono, sampleRate)
-  if (!first || pauses.length !== marks) return { marks, found: pauses.length, starts: null }
-  return { marks, found: pauses.length, starts: [first.start, ...pauses.map((p) => p.end)].map((n) => Number((n / sampleRate).toFixed(3))) }
+  const found = M.dsp.findPauses(mono, sampleRate)
+  let pauses = found
+  if (marks > 0 && found.length > marks) {
+    const long = [...found].sort((p, q) => q.end - q.start - (p.end - p.start))
+    const least = long[marks - 1]
+    const next = long[marks]
+    if (least.end - least.start >= 2 * (next.end - next.start)) pauses = long.slice(0, marks).sort((p, q) => p.start - q.start)
+  }
+  if (!first || pauses.length !== marks) return { marks, found: found.length, starts: null }
+  return { marks, found: found.length, starts: [first.start, ...pauses.map((p) => p.end)].map((n) => Number((n / sampleRate).toFixed(3))) }
 }
 
 // Builds what the site ships: one packed file of the short sounds with its index, the loops, the narrator's lines.

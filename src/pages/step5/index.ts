@@ -7,7 +7,7 @@ import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic,
 import { HANDOFF } from '../../cursor/body'
 import { COUNTER_TOP, KEYS, makeLayout, MARK_ROT, markOf, SHEET_ROT, STAMP, placesOf, spotOf, turned, waitSpotOf } from './layout'
 import { CUES, grown, HIT, hopAt, LIE, pointerAt, reboundAt, STUCK, type Marks } from './script'
-import { AT, FILM } from './timeline'
+import { AT, FILM, holdAfterPress } from './timeline'
 
 type Phase = 'wait' | 'letter' | 'metrics' | 'reset'
 
@@ -34,6 +34,8 @@ interface State {
   flat: boolean
   peeled: boolean
   jolt: number
+  hit: number
+  turn: number
   your: number
   self: number
   shared: boolean
@@ -60,7 +62,7 @@ export const secondsOf = (value: string): number => {
 export const spun = (value: string, u: number): string => value.replace(/\d/g, (d) => String(Math.ceil(Number(d) * (1 - clamp(u)))))
 
 const fresh = (mode: Mode): State => ({
-  n: 0, phase: 'wait', at: 0, lt: -1, acted: 0, mode, music: false, landed: false, loomed: false, stamped: false, held: false, pull: -1, fx: 0, fy: 0, tx: 0, ty: 0, lx: 0, ly: 0, air: null, flat: false, peeled: false, jolt: -1, your: 0, self: -1, shared: false, done: false, cue: 0, skip: false
+  n: 0, phase: 'wait', at: 0, lt: -1, acted: 0, mode, music: false, landed: false, loomed: false, stamped: false, held: false, pull: -1, fx: 0, fy: 0, tx: 0, ty: 0, lx: 0, ly: 0, air: null, flat: false, peeled: false, jolt: -1, hit: -1, turn: AT.hold, your: 0, self: -1, shared: false, done: false, cue: 0, skip: false
 })
 
 function carry(over: Over, root: LayoutNode, m: Move): void {
@@ -128,8 +130,12 @@ export function makePage(): PageLogic {
     s.ty = y
   }
 
-  const press = (io: StepIo): void => {
+  // The press is seen at once. If the narrator's line on the stamp is being said, the page holds until the phrase being said has ended and the gap (`holdAfterPress`); the skip link turns at once, as it did.
+  const press = (io: StepIo, atOnce: boolean = false): void => {
     if (io.cursor.damaged) io.cursor.hurt('flattened', AT.hold - 0.12)
+    s.turn = atOnce || s.hit < 0 ? AT.hold : holdAfterPress((s.n - s.hit) / stepHz)
+    // A visitor who is made to wait sees the arrow's blow on the button, as the film's arrow gives it.
+    if (s.mode !== 'film' && s.turn > AT.hold) io.cursor.react('stamp')
     s.phase = 'reset'
     s.at = s.n
     io.emit('button-press', places.accept.cx, places.accept.cy, false)
@@ -282,7 +288,7 @@ export function makePage(): PageLogic {
       if (s.skip) {
         s.skip = false
         settle(io)
-        if (s.phase === 'metrics') press(io)
+        if (s.phase === 'metrics') press(io, true)
       }
       if (s.mode === 'film') {
         while (s.cue < CUES.length && t >= CUES[s.cue]!.at) {
@@ -339,6 +345,7 @@ export function makePage(): PageLogic {
         if (!s.stamped && p >= AT.slam[1]) {
           s.stamped = true
           s.jolt = s.n
+          s.hit = s.n
           const hit = underStamp(cursor)
           io.emit('stamp', hit ? cursor.x : mark.cx, hit ? cursor.y : mark.cy, hit)
           if (hit) {
@@ -385,12 +392,13 @@ export function makePage(): PageLogic {
         }
       } else if (!s.done) {
         if (s.self >= 0 && cursor.taken) cursor.drive(marks.press.x, marks.press.y, heights.button - heights.keyTravel + heights.cursorHover)
-        if (seconds() >= AT.hold) {
+        if (seconds() >= s.turn) {
           s.done = true
           if (s.self >= 0) cursor.release()
         }
       }
-      if (s.held && s.stamped && s.phase !== 'reset') {
+      // A press in the last steps of the throw used to end the page 0.45 s later with the arrow still held. Now the page holds for the phrase being said, so the throw is let finish and the arrow is given back.
+      if (s.held && s.stamped && (s.phase !== 'reset' || s.turn > AT.hold)) {
         const p = since()
         const pose = stampPose()
         s.air = null
