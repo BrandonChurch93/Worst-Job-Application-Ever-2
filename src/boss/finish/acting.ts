@@ -28,7 +28,8 @@ export interface FinishInput {
   // Where the tip of the lying arrow is when it gets up, page px.
   arrow: { x: number; y: number }
   // The power-up: when it gets up, and when the flame lets go and it lies down again. Without `end` it lets go `POWER.hold` after `at`.
-  power?: { at: number; end?: number } | null
+  // `until`, when given, is the view time by which it must lie on the page again: the whole power-up is fitted between `at` and `until`, its moves played quicker so the fists are held for `POWER.held` at least. It takes the place of `end`.
+  power?: { at: number; end?: number; until?: number } | null
   marks?: FinishMarks
   // How full the charge is now, 0 to 1, and how full it was when it was let go.
   charge?: number
@@ -87,7 +88,9 @@ export const POWER = {
   dip: [0.95, 1.22] as const, // s: the dip before the fists go up
   up: [1.22, 1.6] as const, // s: the fists go up
   burst: 0.5, // s from the burst to the start of lying down
-  lead: 0.75 // s after getting up at which the flame starts to build
+  lead: 0.75, // s after getting up at which the flame starts to build
+  held: 1.1, // s the fists are held when the power-up is fitted to `until`
+  quickest: 0.55 // the moves are never played in less than this share of their own time, unless the window is shorter than they are
 } as const
 export const CHARGE = { sweep: 0.45, ball: 21, least: 0.25, aura: 0.3 } as const
 export const FIRE = {
@@ -154,21 +157,37 @@ export function kneelSpot(button: { x: number; y: number; w?: number }, scale = 
   return { x: button.x - (button.w ?? 110) / 2 - KNEEL.clear * scale, y: button.y + KNEEL.below * scale }
 }
 
+// How a power-up is laid out in time, in seconds after `at`: `quick` is the share of their own time its moves take (1 as written), `end` is when the flame lets go, `over` is when it lies on the page again.
+export function powerPlan(pw: { at: number; end?: number; until?: number }): { quick: number; end: number; over: number } {
+  const tail = POWER.burst + LIEDOWN
+  if (pw.until === undefined) {
+    const end = (pw.end ?? pw.at + POWER.hold) - pw.at
+    return { quick: 1, end, over: end + tail }
+  }
+  const whole = Math.max(0.3, pw.until - pw.at)
+  const moves = POWER.up[1] + tail
+  const quick = Math.min(1, Math.max((whole - POWER.held) / moves, Math.min(POWER.quickest, whole / moves)))
+  return { quick, end: whole - tail * quick, over: whole }
+}
+
 function powerUp(i: FinishInput, feet: { x: number; y: number }): FinishState | null {
   const pw = i.power
   if (!pw) return null
-  const t = i.time - pw.at
-  const end = (pw.end ?? pw.at + POWER.hold) - pw.at
-  if (t < 0 || t >= end + POWER.burst + LIEDOWN) return null
+  const plan = powerPlan(pw)
+  const end = plan.end
+  const now = i.time - pw.at
+  if (now < 0 || now >= plan.over) return null
+  // The moves run on their own time; the hold between them runs on the view's.
+  const t = now / plan.quick
   let pose = getUp(t)
   pose = mixPose(pose, POSES.powerDip, smooth(span(t, POWER.dip[0], POWER.dip[1])))
   pose = mixPose(pose, POSES.power, outBack(span(t, POWER.up[0], POWER.up[1]), 2.2))
-  const build = smooth(span(t, POWER.lead, end))
-  const held = span(t, POWER.up[1], end)
+  const build = smooth(span(now, POWER.lead * plan.quick, end))
+  const held = span(now, POWER.up[1] * plan.quick, end)
   if (t >= POWER.up[1]) pose = { ...pose, tremble: 0.15 + 0.5 * held, hip: [0, pose.hip[1] - 2.5 * held], puff: 0.35 + 0.3 * held }
   const fx = none()
   fx.ring = 1
-  const u = t - end
+  const u = (now - end) / plan.quick
   if (u < 0) fx.aura = 0.12 + 0.88 * build
   else {
     // The burst: everything flung open for a moment, then let go.
@@ -366,11 +385,11 @@ export function finishEvents(a: FinishInput, b: FinishInput): FinishEvent[] {
   }
   const pw = b.power
   if (pw) {
-    const end = pw.end ?? pw.at + POWER.hold
+    const plan = powerPlan(pw)
     hit('finish-standup', pw.at)
-    hit('power-up-rise', pw.at + POWER.lead)
-    hit('power-up-burst', end)
-    hit('finish-liedown', end + POWER.burst)
+    hit('power-up-rise', pw.at + POWER.lead * plan.quick)
+    hit('power-up-burst', pw.at + plan.end)
+    hit('finish-liedown', pw.at + plan.end + POWER.burst * plan.quick)
   }
   const m = b.marks ?? {}
   hit('finish-standup', m.arms === undefined ? undefined : m.stand ?? m.arms - LEAD)
