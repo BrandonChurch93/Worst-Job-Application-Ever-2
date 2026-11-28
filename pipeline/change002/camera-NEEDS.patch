@@ -1,0 +1,48 @@
+diff --git a/src/arena/index.ts b/src/arena/index.ts
+index 252f29e3..419168e4 100644
+--- a/src/arena/index.ts
++++ b/src/arena/index.ts
+@@ -8,7 +8,7 @@ import type { Shape } from '../stage/types'
+ import { rise, seamLight } from './change'
+ import { makeFinish, type BeamDriver } from './finish'
+ import { makeGround } from './ground'
+-import { ARENA, PAGE } from './layout'
++import { ARENA, EYE, PAGE } from './layout'
+ import { makeBar, makeGuns, makeKit, makePanes, makePillars, poseBar, poseGun } from './props'
+ import { makeWreck } from './wreck'
+ 
+@@ -37,7 +37,8 @@ export function arenaWell(view: BossView | null): { x: number; y: number; w: num
+ const SEAM_LAMPS: { x: number; y: number }[] = [{ x: 598, y: 438 }, { x: 1368, y: 655 }, { x: 960, y: 812 }]
+ 
+ // `beam`: who drives the arena's answer to a cold beam (the light on the ground from its line, the long shadows of what stands). Left out, the arena reads the finishing blast from the view (beamOf).
+-export interface ArenaOptions { seed?: number; beam?: BeamDriver }
++// `upright`: 0 to 1, how far what stands is stood upright for a low lens. 0, and left out, is the picture's own lean.
++export interface ArenaOptions { seed?: number; beam?: BeamDriver; upright?: () => number }
+ 
+ export function makeArena(o: ArenaOptions = {}): Arena {
+   const seed = o.seed ?? config.seed
+@@ -78,6 +79,14 @@ export function makeArena(o: ArenaOptions = {}): Arena {
+     poseBar(bar.bar, view)
+     wreck.pose(view, light)
+     finish.pose(view, light, o.beam)
++    const k = Math.min(1, Math.max(0, o.upright?.() ?? 0))
++    for (const g of [pillars.object, panes.object, wreck.object]) {
++      if (k > 0) {
++        g.matrixAutoUpdate = false
++        g.matrix.set(1, 0, -k * ARENA.leanX, 0, 0, 1, -k * ARENA.lean, 0, 0, 0, 1, 0, 0, 0, -k / EYE, 1)
++        g.matrixWorldNeedsUpdate = true
++      } else g.matrixAutoUpdate = true
++    }
+     // Once every pillar is up, the eight are drawn as one body and one set of feet.
+     const settled = t >= ARENA.riseTo + 0.1
+     pillars.one.bodies.visible = settled
+diff --git a/src/pages/step4/real/index.ts b/src/pages/step4/real/index.ts
+index f2818aa1..54ae2f94 100644
+--- a/src/pages/step4/real/index.ts
++++ b/src/pages/step4/real/index.ts
+@@ -51,4 +51,4 @@ const shaken = (inner: PartMaker): PartMaker => ({
+   }
+ })
+ 
+-export const real: PageReal = { parts: { 'verify-card': verifyCard, 'health-bar': healthBar, 'boss-weapons': bossWeapons, 'boss-body': bossBody, 'boss-transform': bossTransform, 'boss-arena': shaken(arenaPart(viewNow, { beam: () => { const i = finishNow(); return i ? beamLight(finishState(i)) : null } })), 'boss-look1': shaken(bossLook), 'boss-finish': finishPart(finishNow) } }
++export const real: PageReal = { parts: { 'verify-card': verifyCard, 'health-bar': healthBar, 'boss-weapons': bossWeapons, 'boss-body': bossBody, 'boss-transform': bossTransform, 'boss-arena': shaken(arenaPart(viewNow, { beam: () => { const i = finishNow(); return i ? beamLight(finishState(i)) : null }, upright: () => finishNow()?.low ?? 0 })), 'boss-look1': shaken(bossLook), 'boss-finish': finishPart(finishNow) } }
