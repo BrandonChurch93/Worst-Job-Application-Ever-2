@@ -55,6 +55,39 @@ One path, `src/boss/finish/camera.ts`, as numbers in the block `CAMERA` of `src/
 - The taking apart, STATED from `GONE` in `src/boss/look1/pose.ts` and the page's `gone2` (the beam reaches the boss 0.298 s after the fire; the shares run over the 1.835 s left): the parts start to leave at fire + 0.34 s (shield), 0.39 and 0.48 (guns), 0.45 and 0.56 (wings), 0.67, 0.78, 0.85, 0.96 (legs), 0.70 (bay), and the hull's seven pieces at 0.81, 0.92, 1.03, 1.14, 1.25, 1.36, 1.47; the button comes down from 1.22 to 1.95. So 9 of the 17 starts fall before the view is from above (fire + 0.85) and 8 after it.
 - SEEN in `proof/camera/apart.jpg` (24 frames, fire + 18 to fire + 133, five frames apart): from behind (frames 1 to 3) the boss is whole, then white. In the rise and just after (frames 5 to 8, fire + 0.63 to 0.88 s) leg parts and two plates are in the air over the beam. From above (frames 9 to 13, fire + 0.97 to 1.30 s) three to five grey pieces drift right over the beam's upper edge and fade. From frame 14 (fire + 1.38 s) to the end I can tell no piece leaving: the button, the beam, dust. The hull's pieces go under the white core of the beam, which covers the boss's place from above. So the pieces cannot be counted one by one: what is seen is a handful of parts in about 0.7 s, then 0.75 s in which nothing leaves.
 
+## The live site (strips made 07:11Z to 07:22Z on f0ce65df's code, `node pipeline/change002/camera-live.mjs`)
+
+- The pointer while the lens is low: no input code changed. STATED: during the charge only press and hold is read; from the fire to `boss-gone` the pointer is ignored; the lens is from above again 0.85 s after the fire.
+- MEASURED in `tests/b-camera.test.ts`, `stage.longestIgnored.pointer`: 3.304 s for each of the five visitors (holds 2 s and lets go; clicks once; never presses; holds and never lets go; keen bot). Arms to fire 2.308 / 0.3875 / 6.0 / 5.142 / 0.233 s; fire to gone 2.133 s each; seconds with the lens low 3.13 / 1.22 / 6.83 / 5.98 / 1.07.
+- SEEN, `proof/camera/live-hold.jpg`: on the way down one picture with a dark grey block over the right third; then the facing view with a fallen pillar and a pale green slab at the left; the thrust; from behind with the beam; the rise with the picture turned; from above. No green wash.
+- SEEN, `proof/camera/live-click.jpg`: no facing view. The fire comes 0.39 s after the arms and the way down takes 0.95 s. The same dark block in one picture; then the figure edge on with the beam out; from behind; the rise; from above.
+- SEEN, `proof/camera/live-never.jpg`: on the way down a grey block low in the middle of one picture; the facing view for eleven pictures, the first three with no ball and no flames (nothing is lit until the charge begins by itself), then the ball and the ring grow; from behind; the beam; from above.
+- The dark block is `pillar.3` (563, 925) where it still stands. MEASURED with a scratch test (the eye against the pillar's column at the eye's height, the lean taken off by how low the lens is): the eye passes 74 px beside it at 0.60 s after the arms, at height 201 of the pillar's 210; 115 px for the visitor who clicks once. Not through it. Not mended.
+- Frame time, MEASURED (stepped live site, quality high, 1920 by 1080 backing, software GL, the draw without the PNG): hold, median of 3: from above before the arms 5512 ms, low in the charge 5192 ms, from above after `boss-gone` 4360 ms. Click, median of 3: 5356, 5548, 4434 ms. On 6570b145, hold, median of 7: 5130, 5088, 4324 ms. Low costs 0.94 to 1.04 of the picture from above before it. The numbers of the "never" run are one draw each with tests running beside it and are not a measure.
+
+## Tried and dropped
+
+- 07:21Z: the turn of the rise run ahead of the rest (so that the picture turns while the lens is still low). MEASURED in the test: the most roll between two frames went from 7.8 to 8.9 degrees (ahead by 2) and 9.06 (by 3), and the arrow's feet left the frame. Dropped, nothing committed.
+
+## What is weak, as I see it (07:23Z)
+
+1. The figure is a line for about 8 frames of the move V1 to V2 (film 11040 to 11047). A cut would not show it.
+2. The rise turns the picture about its middle, up to 7.8 degrees a frame; at film 11103 the beam points up the frame, 13 frames before it lies as from above.
+3. V3: the beam fills about the upper left half of the frame, not the frame.
+4. The taking apart cannot be told piece by piece (see Measures).
+5. A visitor who fires within 0.95 s of the arms never gets the facing view.
+6. `pillar.3` close to the lens for a picture on the way down, where it stands.
+7. Past the page's edge is plain dark.
+8. In the move, film 11036 to 11039, the arrow's point touches the top edge.
+9. The field's step went from 1.44 to 4.26 degrees a frame at most with the guard for the pane.
+
+## What is left (07:23Z)
+
+- The shout's panel and a low view in one picture: UNKNOWN.
+- The whole suite on the head (running since 07:22Z).
+- The Builder's head of `agent/merge55`, the merge, the pixel check on the merge.
+- The power-up's switch (`CAMERA.powerUp`) is off and was never rendered on.
+
 ## A fault of mine, 06:53Z to 07:00Z
 
 The commits 0515f0a4, 5bcd5681 and 385399d1 carry `wide: 0.5` at lines 117 and 189 of `src/boss/tune.ts`, which are the blast's width in the fight (65) and the full blast's as drawn (90), not the camera's. A replace run to tune `CAMERA.wide` matched every line that starts with `  wide:`. MEASURED with `npm run cut` on that tree: the event `pillar-break` at film frame 10478 was gone, so the fight before `finish-arms` was changed. 100c30ec puts both lines back: `git diff ff31d776 -- src/boss/tune.ts` removes no line. The Builder was told at 07:01Z and takes 100c30ec or later only. Every picture in `proof/camera/` and the pixel check of 07:10Z were made after the mend.
