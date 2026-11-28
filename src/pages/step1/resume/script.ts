@@ -16,13 +16,13 @@ export const END = { sag: 0.03 }
 // The resume: a wind-up where it stands, a strut to the place under the drop zone where the sheet comes in, an eager start as it arrives, a crouch on its corner, a heave that tips the body back and a dip under its weight,
 // the sheet held up high and still with the chest out, a strut to the slot with it, and a short stop over the slot before it lets go.
 export const RESUME = {
-  leave: 19.9, walk: [20.04, 20.42] as [number, number], eager: 20.5, beside: { x: 22, y: 10 }, step: [20.8, 20.88] as [number, number], crouch: 20.78, grab: 20.96,
+  leave: 17.8, walk: [17.94, 18.32] as [number, number], eager: 18.4, beside: { x: 22, y: 10 }, step: [18.7, 18.78] as [number, number], crouch: 18.68, grab: 18.86,
   hold: { x: 5, y: 46 }, raise: 34, high: 16,
-  hoist: [20.99, 21.07] as [number, number], up: { x: -10, y: -50 }, dip: [21.08, 21.14] as [number, number], weight: 9, proud: 21.0, dust: 21.1,
-  carry: [21.36, 21.54] as [number, number], drop: 21.62
+  hoist: [18.89, 18.97] as [number, number], up: { x: -10, y: -50 }, dip: [18.98, 19.04] as [number, number], weight: 9, proud: 18.9, dust: 19.0,
+  carry: [19.26, 19.44] as [number, number], drop: 19.52
 }
 // The temper of the tug: a stamp as the sheet is caught, a wind-up before each haul, a second stamp, and nothing in the half second before the key picture. Then the big bite: a start, and it stands scared and still, pulled thin, until the sheet goes.
-export const TEMPER = { stamps: [22.24, 24.12], stamp: 330, hauls: [22.3, 23.0, 23.76, 24.56], scared: 25.3, back: [25.62, 26.06], lost: [0, 0.46] as [number, number] }
+export const TEMPER = { stamps: [20.14, 22.02], stamp: 330, hauls: [20.2, 20.9, 21.66, 22.46], scared: 23.2, back: [23.52, 23.96], lost: [0, 0.46] as [number, number] }
 
 const TUG_CURVE: [number, number, number, number][] = [
   [0, 0.125, 0.2, 4], [0.3, 0.15, 0.14, 0], [0.8, 0.11, 0.28, 25], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.42, 22], [1.8, 0.37, 0.06, 0], [2.3, 0.33, 0.52, 24],
@@ -118,7 +118,7 @@ export function planResume(w: Writer): { drop: number; bite: number; lost: numbe
 const TUG_EDGE = HALF_X - 16
 const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 205 }
 const tugFrame = (): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - TUG_FRAME.w, TUG_FRAME.mid - TUG_FRAME.w / 2), y: TUG_FRAME.top, w: TUG_FRAME.w, h: (TUG_FRAME.w * 9) / 16 })
-export const CAMERA = { in: [20.3, 21.1] as [number, number], key: 25.125, out: [28.3, 28.9] as [number, number] }
+export const CAMERA = { in: [18.2, 19.0] as [number, number], key: 23.025, out: [26.2, 26.8] as [number, number] }
 const glide = (t: number): number => {
   const u = Math.min(1, Math.max(0, t))
   return u * u * u * (u * (u * 6 - 15) + 10)
