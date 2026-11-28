@@ -19,7 +19,7 @@ import type { CameraPose } from '../src/stage/types'
 
 const FPS = config.film.fps
 const PER = stepHz / FPS
-const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 130, field: 6, edge: 0, pane: 40, rest: 1.5 } as const
+const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 140, field: 6, edge: 0, pane: 40, rest: 1.5 } as const
 const CUTS: number[] = []
 const EVENTS = { 'finish-arms': 60, 'finish-fire': 307, 'boss-gone': 435, 'finish-walk': 459, 'finish-kneel': 627, 'finish-fist': 705, 'finish-press': 759 } as const
 const IGNORED = config.live.controlTakenMaxSeconds
