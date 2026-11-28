@@ -88,7 +88,7 @@ export const POSES = {
   // The thrust a hand's width too far, for the overshoot.
   fireOver: P([15, 25], -0.3, [[66, 45, 14], [68, 36, 15]], [0, 0], [[-39, 0], [24, 0]], { strain: 1, stretch: 1.08, pitch: [0.3, 0] }),
   // After the beam: arms hanging, body slumped.
-  spent: P([2, 27], -0.2, [[-14, 17, 6], [26, 16, 6]], [0, 0], [[-13, 0], [15, 0]], { stretch: 0.97 }),
+  spent: P([2, 27], -0.2, [[-27, 22, 8], [37, 21, 8]], [0, 0], [[-13, 0], [15, 0]], { stretch: 0.97 }),
   // On its knees: the shins lie on the ground behind.
   knees: P([4, 15], -0.12, [[-8, 6, 6], [26, 5, 6]], [0, 0], [[-30, 0], [-17, 0]], { toes: [-1, -1], pitch: [1.2, 1.2], knees: [1, 1], stretch: 0.95 }),
   // The same, as it lands: lower, and squashed.
@@ -146,7 +146,7 @@ export const feetFor = (tip: { x: number; y: number }): { x: number; y: number }
 
 // The walk of a spent figure, by how far it has come: which foot is in the air and how high, how far each foot is from the middle, and the body's dip.
 // One stride is two steps. A foot is on the ground for `stance` of its cycle and is dragged, toe down, for the rest: it never clears the ground by more than `lift`.
-export const WALK = { step: 26, stance: 0.62, lift: 2.6, dip: 3.2, sway: 0.07, reach: 15 }
+export const WALK = { step: 54, stance: 0.52, lift: 3, dip: 4.2, sway: 0.08, reach: 27, surge: 5 }
 export function walkPose(walked: number, dir: number): StandPose {
   const stride = WALK.step * 2
   const feet: [V2, V2] = [[0, 0], [0, 0]]
@@ -167,7 +167,8 @@ export function walkPose(walked: number, dir: number): StandPose {
     dip += Math.pow(Math.max(0, Math.cos(Math.PI * 2 * (u - 0.12))), 4)
   }
   const swing = Math.sin((walked / stride) * Math.PI * 2 - 0.9)
-  return P([3 * dir, 26 - WALK.dip * dip], -0.2 * dir - WALK.sway * swing, [[-13 - 5 * swing, 15 + 1.5 * dip, 6], [27 - 5 * swing, 14 + 1.5 * dip, 6]], [0, 0], feet, { toes: [dir, dir], pitch, knees: [dir, dir], stretch: 0.97 - 0.015 * dip })
+  const surge = WALK.surge * Math.sin((walked / WALK.step) * Math.PI * 2 - 1.2)
+  return P([(4 + surge) * dir, 25 - WALK.dip * dip], -0.24 * dir - WALK.sway * swing, [[-25 - 5 * swing, 21 + 1.5 * dip, 8], [36 - 5 * swing, 20 + 1.5 * dip, 8]], [0, 0], feet, { toes: [dir, dir], pitch, knees: [dir, dir], stretch: 0.97 - 0.015 * dip })
 }
 
 // How many steps have landed by a distance walked: a footstep sounds when this number grows.

@@ -5,12 +5,12 @@ import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '..
 const FPS = 60
 const ARROW = { x: 690, y: 548 }
 const BUTTON = { x: 960, y: 650, w: 177, top: 9.5 }
-const M = { arms: 0, charge: 1.25, fire: 4.13, end: 6.26, walk: 7.7 }
+const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
 const spot = kneelSpot(BUTTON)
 const start = { x: feetFor(ARROW).x - FIRE.shove, y: feetFor(ARROW).y }
 const far = Math.hypot(spot.x - start.x, spot.y - start.y)
-const LONG = far / 62 + 0.6
-const KNEEL = M.walk + LONG + 0.25
+const LONG = 2.8
+const KNEEL = M.walk + LONG
 const FIST = KNEEL + LAST.gaps[0]
 const PRESS = FIST + LAST.gaps[1]
 const smooth = (v: number): number => { const t = Math.min(1, Math.max(0, v)); return t * t * (3 - 2 * t) }
@@ -133,8 +133,8 @@ describe('the finish: the standing arrow', () => {
     expect(finishState(finish(M.end + FIRE.close + 0.01)).fx.beam).toBeNull()
     const after = finishState(finish(M.end + 1.2))
     expect(after.fx.smoke.length).toBe(2)
-    expect(after.pose.hands[0][1]).toBeLessThan(22)
-    expect(after.pose.hands[1][1]).toBeLessThan(22)
+    expect(after.pose.hands[0][1]).toBeLessThan(26)
+    expect(after.pose.hands[1][1]).toBeLessThan(26)
   })
 
   it('walks with a foot always on the ground and scuffs its shoes', () => {
@@ -147,7 +147,8 @@ describe('the finish: the standing arrow', () => {
       steps = Math.max(steps, s.fx.scuffs.length)
     }
     expect(steps).toBeGreaterThan(3)
-    expect(stepsBy(far)).toBeGreaterThan(6)
+    expect(stepsBy(far)).toBeGreaterThan(3)
+    expect(stepsBy(320)).toBe(6)
   })
 
   it('falls to its knees, breathes once, raises the fist and holds it', () => {

@@ -3,8 +3,9 @@
 import { POSES, STAND, WALK, at, clamp01, feetFor, inCubic, mixPose, outBack, outCubic, smooth, span, stepsBy, toPage, walkPose, type StandPose, type V3 } from '../../cursor/stand/rig'
 
 export interface FinishMarks {
-  // The arms come out: the arrow gets up.
+  // The arms come out. The arrow starts to get up `LEAD` before, or at `stand` when it is given.
   arms?: number
+  stand?: number
   // The charge begins: the hands go to the hip.
   charge?: number
   // The blast is let go.
@@ -44,6 +45,8 @@ export interface Fx {
   // The gold flame, 0 to 1 and a little over at the burst, and where it stands.
   aura: number
   burst: number
+  // The ring of flame on the ground, 0 to 1.
+  ring: number
   // The ball between the hands: its place, its size in px and how bright, 0 to 1.
   ball: { x: number; y: number; z: number; size: number; glow: number } | null
   // The beam: from the wrists, its heading on the page, how open it is (0 to 1), how full, and the seconds since it left the hands.
@@ -71,6 +74,7 @@ export interface FinishState {
 }
 
 export const GETUP = 0.95
+export const LEAD = 0
 export const LIEDOWN = 0.8
 export const POWER = {
   hold: 3.4, // s from getting up to the burst when no end is given
@@ -89,26 +93,26 @@ export const FIRE = {
   shove: 38, // px a full blast shoves the figure back
   slide: 0.24, // s, the time constant of the skid
   close: 0.32, // s the beam takes to die after its end
-  hang: 0.2, // s after the end the arms stay out
-  drop: 0.7, // s the arms take to fall
+  hang: 0.12, // s after the end the arms stay out
+  drop: 0.6, // s the arms take to fall
   smoke: 3.6 // s the hands smoke
 } as const
 export const LAST = {
-  sway: 0.12, // s it sways before the knees give
-  land: 0.42, // s after the mark at which the knees land
-  down: 0.75, // s after the mark at which it has settled on its knees
-  breath: 0.9, // s one breath takes
-  dip: 0.14, // s it dips before the fist goes up
-  up: 0.5, // s after the fist mark at which the fist is high
-  back: 0.27, // s before the press at which the fist draws back a last time
-  blow: 0.15, // s the fist takes to come down
+  sway: 0.1, // s it sways before the knees give
+  land: 0.4, // s after the mark at which the knees land
+  down: 0.68, // s after the mark at which it has settled on its knees
+  breath: 0.6, // s one breath takes
+  dip: 0.1, // s it dips before the fist goes up
+  up: 0.42, // s after the fist mark at which the fist is high
+  back: 0.3, // s before the press at which the fist draws back a last time
+  blow: 0.14, // s the fist takes to come down
   sag: 0.35, // s the body takes to sink over the fist after the blow
   // What a helper who sets the marks should leave between them: kneel to fist, fist to press.
-  gaps: [1.75, 1.15] as const
+  gaps: [1.3, 0.9] as const
 } as const
 
 const inQuad = (v: number): number => clamp01(v) * clamp01(v)
-const none = (): Fx => ({ aura: 0, burst: 0, ball: null, beam: null, skid: [], smoke: [], dust: [], scuffs: [] })
+const none = (): Fx => ({ aura: 0, burst: 0, ring: 0, ball: null, beam: null, skid: [], smoke: [], dust: [], scuffs: [] })
 
 function getUp(t: number): StandPose {
   const a = mixPose(POSES.lying, POSES.set, outBack(span(t, 0, 0.22)))
@@ -151,6 +155,7 @@ function powerUp(i: FinishInput, feet: { x: number; y: number }): FinishState | 
   const held = span(t, POWER.up[1], end)
   if (t >= POWER.up[1]) pose = { ...pose, tremble: 0.15 + 0.5 * held, hip: [0, pose.hip[1] - 2.5 * held], puff: 0.35 + 0.3 * held }
   const fx = none()
+  fx.ring = 1
   const u = t - end
   if (u < 0) fx.aura = 0.12 + 0.88 * build
   else {
@@ -170,14 +175,19 @@ export function finishState(i: FinishInput): FinishState {
   const home = feetFor(i.arrow)
   const m = i.marks ?? {}
   const t = i.time
-  if (m.arms === undefined || t < m.arms) {
+  const rise0 = m.arms === undefined ? undefined : m.stand ?? m.arms - LEAD
+  if (rise0 === undefined || t < rise0) {
     const p = powerUp(i, home)
     if (p) return p
     return { up: false, pose: at(POSES.lying, home.x, home.y), fx: none(), feet: home, press: 0 }
   }
   const fx = none()
   const shot = clamp01(i.shot ?? i.charge ?? 1)
-  let pose = breathe(getUp(t - m.arms), t, smooth(span(t - m.arms, GETUP, GETUP + 0.5)))
+  // The rise plays under whatever follows it. A blast let go before it is over quickens what is left of it to end as the beam leaves.
+  let risen = t - rise0
+  if (m.fire !== undefined && t >= m.fire && m.fire - rise0 < GETUP) risen = m.fire - rise0 + ((t - m.fire) / FIRE.lead) * (GETUP - (m.fire - rise0))
+  const rising = getUp(risen)
+  let pose = breathe(rising, t, smooth(span(risen, GETUP, GETUP + 0.5)))
   let feet = { ...home }
   let press = 0
 
@@ -236,25 +246,23 @@ export function finishState(i: FinishInput): FinishState {
         const swing = 5 * Math.sin((over - FIRE.hang) * 9) * Math.exp(-(over - FIRE.hang) * 2.6) * (over > FIRE.hang ? 1 : 0)
         pose.hands = [[pose.hands[0][0] + swing, pose.hands[0][1], pose.hands[0][2]], [pose.hands[1][0] + swing * 0.8, pose.hands[1][1], pose.hands[1][2]]]
         pose = breathe(pose, t, 2.2 * smooth(span(over, FIRE.hang + FIRE.drop, FIRE.hang + FIRE.drop + 0.4)))
-        const k = smooth(span(over, 0.05, 0.5)) * (1 - smooth(span(over, FIRE.smoke - 1.2, FIRE.smoke)))
-        if (k > 0.01) {
-          for (let n = 0; n < 2; n++) {
-            const hand = pose.hands[n]!
-            const w = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise }, hand[0], hand[1] - 2, hand[2])
-            fx.smoke.push({ x: w.x, y: w.y, z: w.z, k, age: over })
-          }
-        }
       }
     }
   }
+
+  if (risen < GETUP) pose = { ...pose, rise: rising.rise, legs: rising.legs, arms: rising.arms, stretch: pose.stretch * rising.stretch }
 
   let dir = 1
   if (m.walk !== undefined && t >= m.walk) {
     const w = i.walk ?? { x: feet.x, y: feet.y, walked: 0 }
     dir = i.button && i.button.x < w.x ? -1 : 1
     const stride = walkPose(w.walked, dir)
-    const moving = smooth(span(t - m.walk, 0, 0.3)) * clamp01(w.pace ?? 1)
+    const moving = smooth(span(t - m.walk, 0, 0.4)) * clamp01(w.pace ?? 1)
+    const falling = pose.hands
     pose = mixPose({ ...pose, toes: [dir, dir], knees: [dir, dir] }, stride, moving)
+    // The arms go on dropping through the first step.
+    const own = smooth(span(t - m.walk, 0.25, 0.85))
+    pose.hands = [0, 1].map((n) => falling[n]!.map((v, a) => v + (stride.hands[n]![a]! - v) * own)) as unknown as StandPose['hands']
     feet = { x: w.x, y: w.y }
     const landed = stepsBy(w.walked)
     for (let n = Math.max(1, landed - 7); n <= landed; n++) {
@@ -280,7 +288,8 @@ export function finishState(i: FinishInput): FinishState {
     if (k >= LAST.land) fx.dust.push({ x: feet.x + 4, y: feet.y, age: k - LAST.land, size: 30 })
 
     if (m.fist !== undefined && t >= m.fist) {
-      const f = t - m.fist
+      const room = m.press !== undefined ? Math.min(1, (m.press - m.fist) / (LAST.up + LAST.back)) : 1
+      const f = (t - m.fist) / Math.max(0.2, room)
       const btn = i.button ?? { x: feet.x + POSES.blow.hands[1][0], y: feet.y - 12 }
       const top = btn.top ?? 8
       const a = STAND.rise * POSES.knees.rise
@@ -308,6 +317,17 @@ export function finishState(i: FinishInput): FinishState {
       pose = q
     }
   }
+  if (m.end !== undefined && m.fire !== undefined && t >= m.end) {
+    const over = t - m.end
+    const k = smooth(span(over, 0.05, 0.5)) * (1 - smooth(span(over, FIRE.smoke - 1.2, FIRE.smoke)))
+    if (k > 0.01) {
+      for (let n = 0; n < 2; n++) {
+        const hand = pose.hands[n]!
+        const w = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise }, hand[0], hand[1] - 2, hand[2])
+        fx.smoke.push({ x: w.x, y: w.y, z: w.z, k, age: over })
+      }
+    }
+  }
   return { up: true, pose: at(pose, feet.x, feet.y), fx, feet, press }
 }
 
@@ -329,7 +349,7 @@ export function finishEvents(a: FinishInput, b: FinishInput): FinishEvent[] {
     hit('finish-liedown', end + POWER.burst)
   }
   const m = b.marks ?? {}
-  hit('finish-standup', m.arms)
+  hit('finish-standup', m.arms === undefined ? undefined : m.stand ?? m.arms - LEAD)
   hit('finish-charge', m.charge)
   hit('finish-fire', m.fire === undefined ? undefined : m.fire + FIRE.lead)
   hit('finish-beam-end', m.end)

@@ -24,10 +24,10 @@ const FPS = 60
 // The script the proofs are drawn from. The fight helper owns the real marks: these stand in for them.
 const ARROW = { x: 690, y: 548 }
 const BOSS = { x: 960, y: 650, heading: Math.PI }
-const M = { arms: 0, charge: 1.25, fire: 4.13, end: 6.26, walk: 7.7 }
+const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
+const LONG = 2.8
 const POWER = { at: 0, end: 3.4 }
 const CLOSE = { x: 520, y: 370, w: 960, h: 540 }
-const SPEED = 62
 let BUTTON = null
 let WALK = null
 
@@ -39,15 +39,15 @@ function finish(time) {
   let gone = 0
   if (time >= M.fire) gone = Math.min(1, (time - M.fire - 0.14) / (M.end - M.fire - 0.14))
   if (WALK) {
-    const long = WALK.far / SPEED + 0.6
+    const long = LONG
     const u = (time - M.walk) / long
     // It sets off slowly and comes to rest slowly.
-    const share = u <= 0 ? 0 : u >= 1 ? 1 : smooth(smooth(u) * 0.5 + u * 0.5)
+    const share = u <= 0 ? 0 : u >= 1 ? 1 : smooth(u) * 0.3 + u * 0.7
     const pace = u <= 0 || u >= 1 ? 0 : Math.min(1, Math.min(u, 1 - u) * long / 0.35)
     input.walk = { x: WALK.x0 + (WALK.x1 - WALK.x0) * share, y: WALK.y0 + (WALK.y1 - WALK.y0) * share, walked: WALK.far * share, pace }
-    input.marks.kneel = M.walk + long + 0.25
-    input.marks.fist = input.marks.kneel + 1.75
-    input.marks.press = input.marks.fist + 1.15
+    input.marks.kneel = M.walk + long
+    input.marks.fist = input.marks.kneel + 1.3
+    input.marks.press = input.marks.fist + 0.9
   }
   return { input, boss: { ...BOSS, gone: Math.max(0, gone) }, cam: CLOSE }
 }
@@ -77,26 +77,27 @@ const JOBS = {
     const tiles = []
     for (const deg of [40, 60]) {
       const rise = (deg * Math.PI) / 180
-      const base = { ...finish(1.15), rise, boss: null }
+      const base = { ...power(2.9), rise }
       const film = await shot(page, { ...base, name: `rise-${deg}-film`, cam: null })
       tiles.push(await sharp(film).extract({ left: 320, top: 310, width: 640, height: 480 }).png().toBuffer())
       const near = await shot(page, { ...base, name: `rise-${deg}-x3`, cam: { x: ARROW.x - 300, y: ARROW.y - 130, w: 640, h: 360 } })
       tiles.push(await sharp(near).extract({ left: 480, top: 60, width: 960, height: 720 }).resize(640, 480).png().toBuffer())
-      const pw = await shot(page, { ...power(2.9), rise, name: `rise-${deg}-power-x3`, cam: { x: ARROW.x - 300, y: ARROW.y - 130, w: 640, h: 360 } })
+      const pw = await shot(page, { ...finish(5.2), boss: null, rise, name: `rise-${deg}-fire-x3`, cam: { x: ARROW.x - 300, y: ARROW.y - 130, w: 640, h: 360 } })
       tiles.push(await sharp(pw).extract({ left: 480, top: 60, width: 960, height: 720 }).resize(640, 480).png().toBuffer())
     }
     await strip('rise-40-60', tiles, 3)
   },
   charge: async (page) => { await beside('charge', path.join(refs, 'finish-charge.png'), [await shot(page, { name: 'charge', ...finish(3.95) })], 1) },
   blast: async (page) => { await beside('blast', path.join(refs, 'finish-blast.png'), [await shot(page, { name: 'blast', ...finish(5.3) })], 1) },
-  after: async (page) => { await beside('after', path.join(refs, 'finish-button-left.png'), [await shot(page, { name: 'after', ...finish(7.3) })], 1) },
-  getup: (page) => frames(page, 'getup', row(-1 / FPS, 34), finish, { x: ARROW.x - 100, y: ARROW.y - 60, w: 240, h: 200 }),
+  after: async (page) => { await beside('after', path.join(refs, 'finish-button-left.png'), [await shot(page, { name: 'after', ...finish(7.12) })], 1) },
+  getup: (page) => frames(page, 'getup', row(-1 / FPS, 36), finish, { x: ARROW.x - 100, y: ARROW.y - 60, w: 240, h: 200 }),
   powerup: (page) => frames(page, 'powerup', row(0.9, 34), power, { x: ARROW.x - 100, y: ARROW.y - 60, w: 240, h: 200 }),
   liedown: (page) => frames(page, 'liedown', row(POWER.end - 2 / FPS, 44), power, { x: ARROW.x - 100, y: ARROW.y - 60, w: 240, h: 200 }),
   fire: (page) => frames(page, 'fire', row(M.fire - 2 / FPS, 30), finish, { x: ARROW.x - 130, y: ARROW.y - 40, w: 420, h: 200 }),
   knees: (page) => { const k = finish(M.walk + 1).input.marks.kneel; return frames(page, 'knees', row(k - 2 / FPS, 34), finish, kneelBox()) },
-  blow: (page) => { const p = finish(M.walk + 1).input.marks.press; return frames(page, 'blow', row(p - 22 / FPS, 36), finish, kneelBox()) },
-  walk: (page) => frames(page, 'walk', row(M.walk, 40).map((t, i) => M.walk + i * 4 / FPS), finish, { x: ARROW.x - 110, y: ARROW.y - 40, w: 420, h: 200 })
+  fist: (page) => { const k = finish(M.walk + 1).input.marks.fist; return frames(page, 'fist', row(k - 2 / FPS, 26), finish, kneelBox()) },
+  blow: (page) => { const p = finish(M.walk + 1).input.marks.press; return frames(page, 'blow', row(p - 12 / FPS, 30), finish, kneelBox()) },
+  walk: (page) => frames(page, 'walk', row(M.walk, 44).map((t, i) => M.walk - 4 / FPS + i * 4 / FPS), finish, { x: ARROW.x - 110, y: ARROW.y - 40, w: 420, h: 200 })
 }
 const kneelBox = () => ({ x: WALK.x1 - 90, y: WALK.y1 - 150, w: 240, h: 200 })
 
