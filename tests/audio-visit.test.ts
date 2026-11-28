@@ -138,6 +138,30 @@ describe('a whole visit of the live site through the stage and the sound engine'
     expect(skipper.volumeSteps.map((x) => x.output)).toEqual([1])
   })
 
+  for (const bot of ['keen', 'clumsy']) {
+    it(`on the ${bot} visit says the two parts after the first part of line 7 whole, has nothing of line 7 taken back by the turrets, and has the music, the gold and the lock of the page on their words`, async () => {
+      const calls: Call[] = []
+      const v: Visit = await visit(load, config, bot, config.seed, calls as never, true)
+      const at = (name: string) => calls.filter((x) => x.event?.name === name && x.event.page === 'step4').map((x) => x.at)
+      const seven = v.log.filter((e) => e.line.startsWith('line.boss.unfold.'))
+      expect(seven.filter((e) => e.what === 'taken back')).toEqual([])
+      expect(seven.filter((e) => e.what === 'cut').map((e) => e.line)).toEqual(['line.boss.unfold.0'])
+      const heard = (key: string) => v.voices.filter((x) => x.id === `line.${key}` && (x.stop === null || x.stop > x.start))
+      for (const key of ['boss.unfold.1', 'boss.unfold.2']) {
+        expect(heard(key).length, key).toBe(1)
+        expect(heard(key)[0]!.stop, key).toBeNull()
+      }
+      const one = heard('boss.unfold.1')[0]!.start
+      const two = heard('boss.unfold.2')[0]!.start
+      const frame = 1 / config.film.fps
+      expect(at('boss-music').length).toBe(1)
+      expect(Math.abs(at('boss-music')[0]! - (one + script.get('boss.unfold.1')!.phrases.at(-1)!.from))).toBeLessThanOrEqual(frame + 0.006)
+      expect(at('power-up')[0]! - two).toBeGreaterThanOrEqual(-0.006)
+      expect(at('turret-rise').at(-1)!).toBeGreaterThan(two)
+      expect(Math.abs(at('turret-lock').at(-1)! - (two + script.get('boss.unfold.2')!.seconds))).toBeLessThanOrEqual(frame + 0.006)
+    })
+  }
+
   // The Decision page that holds its turn is not merged yet. ASSUMED for `held`: the page stands still, and gives no event, from the frame it would have turned
   // until the narrator owes it nothing (sound.owed('step5')), and then turns.
   for (const bot of ['keen', 'clumsy']) {
