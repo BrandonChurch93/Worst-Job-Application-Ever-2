@@ -57,10 +57,12 @@ function flameStuff(): THREE.ShaderMaterial {
         float tall = 0.6 + 0.4 * m;
         float t = clamp(y / tall, 0.0, 1.0);
         // A tongue: it leans one way, then the other, and comes to a point.
-        float sway = sin(t * 4.2 + seed * 40.0 - uTime * 5.0) * 0.26 * t + (fbm(vec2(seed * 9.0, y * 3.0 - uTime * 2.6)) - 0.5) * 0.7 * t;
+        float bent = min(1.0, abs(vFlame.z) * 3.0);
+        float sway = sin(t * (4.2 + 1.6 * bent) + seed * 40.0 - uTime * 5.0) * (0.26 + 0.06 * bent) * t + (fbm(vec2(seed * 9.0, y * 3.0 - uTime * 2.6)) - 0.5) * (0.7 - 0.2 * bent) * t;
         // vFlame.z: how far the tip curls over to one side, in half widths of the card.
         float x = (vUv.x - 0.5) * 2.0 - sway - vFlame.z * t * t;
-        float w = (0.1 + 0.52 * sin(3.14159 * pow(1.0 - t, 0.6))) * pow(1.0 - t, 0.4);
+        // A flame that curls is drawn a little narrower on its card, so that its tip has room to lean over.
+        float w = (0.1 + 0.52 * sin(3.14159 * pow(1.0 - t, 0.6))) * pow(1.0 - t, 0.4) * (1.0 - 0.3 * bent);
         float ax = abs(x);
         float body = smoothstep(w, w * 0.72, ax) * smoothstep(0.0, 0.05, y) * step(y, tall);
         float inner = smoothstep(w * 0.58, w * 0.1, ax) * (1.0 - t * 0.75);
@@ -331,9 +333,9 @@ export function makeFinishFx(): FinishFx {
         // Full flames round the figure, as on the pose sheet: three at each side that lean and lick, taller than the fists, and three low ones behind the legs. They stand behind the figure, so the fists and the arrow are never covered.
         const wx = [-72, -58, -45, 47, 60, 74, -20, 4, 24][j]!
         const wt = [62, 92, 112, 116, 96, 66, 34, 28, 36][j]!
-        const curl = [-0.3, 0.34, -0.22, 0.24, -0.36, 0.3, 0.2, -0.2, 0.25][j]!
+        const curl = [-0.46, 0.44, -0.36, 0.38, -0.46, 0.44, 0.3, -0.3, 0.34][j]!
         const tall = mixed((96 + 34 * seed) * (0.8 + 0.3 * Math.sin(th)), wt * (0.9 + 0.2 * seed)) * grow
-        flames.setMatrixAt(n, card(p, mixed(2 + Math.cos(th) * 20, wx), mixed(26 + Math.sin(th) * 22, 0), -3.5, mixed(46 + 12 * seed, 34 + 8 * seed), tall, mixed(-Math.cos(th) * 0.42, -wx * 0.003)))
+        flames.setMatrixAt(n, card(p, mixed(2 + Math.cos(th) * 20, wx), mixed(26 + Math.sin(th) * 22, 0), -3.5, mixed(46 + 12 * seed, 50 + 10 * seed), tall, mixed(-Math.cos(th) * 0.42, -wx * 0.003)))
         d[n * 4] = seed + 0.61
         d[n * 4 + 1] = mixed(0.5, 0.9) * Math.min(1, k) * (1 - 0.6 * fx.burst) * (j < 5 ? 1 : low)
         d[n * 4 + 2] = mixed(0, curl)
