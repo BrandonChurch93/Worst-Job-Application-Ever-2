@@ -203,3 +203,46 @@ On the branch with `origin/main` `77785c55` merged in (merge `802760cc`), one af
 - `npm test`: 179 files passed and 13 skipped of 192; 2211 tests passed and 17 skipped of 2228. No test was set to skip by this unit.
 - `npx vitest run tests/b-video.test.ts`: 16 of 16. `npx tsc --noEmit -p .`: exit 0.
 
+## The stand-in made again on the scene of merge 55 (2026-11-28, 01:37Z to 02:10Z)
+
+Branch `agent/b-video2` from `origin/agent/merge55` at `6259284c`. Every number above this section is of the scene before it and of the stand-in before it; the numbers here are of the scene as it now is.
+
+### The tool
+
+- `node tools/pinball-video.mjs --tier draft --middle preview --ends 3 --every 24 --codec h264 --edge final`, EXIT 0. The tool was not changed: it found the joins of the new scene by its events. MEASURED (its print): join in frame 450 (7.500 s, hash `2acd56e0`), join out frame 2369 (39.483 s, hash `b444f09a`), 1920 frames, 32.000 s, 243 events between the joins (60 before). It rendered 85 frames in 13.3 min: 6 at 1920 by 1080, tier final (the first 3 and the last 3), 79 at 960 by 540, tier draft, enlarged and each held for 24 frames.
+- The file, MEASURED: 29.72 MB (31 161 633 bytes), 7.79 Mbit/s, H.264 yuv420p; against its frames on 30 frames PSNR mean 43.65 dB, least 39.48 dB; SSIM mean 0.9859, least 0.9396. It stays a stand-in: `render.standIn: true` in the manifest.
+- Two pieces now (three before), not committed: `pinball.mp4.0.part` 16 777 216 bytes, sha256 `3c72fdfa3d7737afdb22e32ac268d9edf84723747678becd9853c786e5ac5316`; `pinball.mp4.1.part` 14 384 417 bytes, sha256 `2be1c8cf6942499b0f1a93bc65dc9c4e5704038a2ee8c38108d4087ee2420784`.
+- `npx vitest run tests/b-video.test.ts`: 16 of 16, EXIT 0 (01:53Z). No test was changed.
+
+### The joins: the join in is no longer the same picture twice
+
+`npm run build` EXIT 0, then `node pipeline/change002/video-join.mjs --pictures`, EXIT 0, `out/work/video-join/joins-merge55-pictures.json`. MEASURED, mean difference R, G, B of 255 / largest / share of the pixels that differ by more than 8:
+
+| size | join in: live frame against the video's first frame | join out: the video's last frame against the live frame |
+|---|---|---|
+| 1920x1080 @1 | 50.03, 49.11, 47.52 / 242 / 76.1 % | 5.20, 5.64, 5.90 / 192 / 25.7 % |
+| 1920x1080 @2 | 48.32, 47.42, 45.85 / 237 / 71.4 % | 4.20, 4.76, 5.12 / 104 / 10.7 % |
+| 1280x720 @1 | 48.74, 47.84, 46.25 / 238 / 72.1 % | 4.86, 5.36, 5.66 / 117 / 18.0 % |
+| 1280x720 @2 | 48.44, 47.54, 45.97 / 240 / 71.7 % | 4.26, 4.81, 5.16 / 145 / 11.7 % |
+| 390x844 | 47.88, 46.97, 45.35 / 231 / 71.7 % | 5.69, 6.14, 6.42 / 136 / 23.5 % |
+| 844x390 | 48.21, 47.29, 45.68 / 234 / 71.1 % | 5.11, 5.58, 5.86 / 126 / 21.9 % |
+
+- The join out is as it was (5.61, 6.00, 6.21 / 190 / 29.4 % at 1920x1080 @1 before): the same picture, the veil of the tier's light and edges. The first live frame after the hand-back differs from the one before by 0.60 to 0.90.
+- The join in was 5.70, 6.17, 6.40 / 182 / 27.0 % at 1920x1080 @1 and is now 50.03, 49.11, 47.52 / 242 / 76.1 %. Looked at (`in-live.png`, `in-video.png`): the live frame is the page as the visitor has it, with the headline, the text of the step and the port small at the right; the video's first frame is close on the port, which fills the picture. The state is the same (the arrow sealed in the ball in the cup, the test `shows the same picture at the join in whatever the visitor did` passes, it compares the list of what is drawn); the camera is not.
+- The cause, STATED from the code: the new scene gave the film a push in on the port while it pulls (`PUSH` and the entry `[T.arrive, 'port', PUSH.seconds]` in the list `FILM` of `src/pages/step3/index.ts`), which is over before the join in. The live page does not make that move: its view is `follow()`, the page's own. Before this scene the film's camera at the join in was the page's own view too.
+- What a visitor gets now: at the join the page fades in 0.2 s from the whole page to the close picture of the port. No dead screen, no black, but a cut that can be seen, not a seamless join.
+- Not mended in this timebox. The mend that keeps the film's frames: the live page makes the film's push in itself while it pulls (its view eased from `follow()` to the pose `port` over `PUSH.seconds` from the moment the pull begins, and eased back if the video is given up and the table is played), so that the last live picture is the film's picture again. That is an edit of the live view in `src/pages/step3/index.ts` (the line `view:` of the page), with a test of the pose at the join and the join pictures taken again. The other way, a join in before the push in, would put the film's arrow in place of the visitor's during the pull and was ruled out (join in after the seal).
+
+### The real clock
+
+`node pipeline/change002/video-join.mjs --only 1280x720@1 --quality low --hide 12 --out out/work/video-join-time3`, EXIT 0, 02:00Z to 02:03Z, `out/work/video-join-time3/joins.json`. All MEASURED on this machine (no graphics card; a live picture of this page takes 0.7 to 1.5 s here).
+
+- Cues: 243 of 243 sounded. Late by, mean of the absolute values / worst: first third 4.56 / 8.10 ms, middle third 4.49 / 7.93 ms, last third 7.69 / 200 ms, all 5.58 / 200 ms, the 201 after the tab was hidden and shown 5.85 / 200 ms. The mean is under one display frame; the worst is not under 50 ms, by one cue of the last third, as before (above); which cue: not read.
+- Times: asked to fade 3047 ms (2 live pictures), fade in 1483 ms, play asked to first moving frame 183.3 ms (11 display frames), 1928 decoded, 46 dropped, gap median 16.7 ms, p99 33.4 ms, largest 2033 ms; last frame to fade 2068 ms, fade out 1281 ms, faded to left 15.2 ms (0.91 display frames).
+- The pictures of this run: join in 48.86, 47.97, 46.38; join out 4.83, 5.40, 5.74 (mean R, G, B).
+- The screen at the join out, pictures of the screencast in a row: light 204.08, 204.09, 204.09, 203.99, largest step 0.52 over 20 pictures. At the join in: within 4 s of it the largest step between two pictures is 56.72 of 255 (53 pictures, light 165.59 to 203.62); the row at the join reads 203.47, 203.41, 203.62, 201.50, 201.50.
+
+### Sheets
+
+`node pipeline/change002/video-sheet.mjs joins <out.jpg> "out/work/video-join/1920x1080@1" 1425,337 104,289` (a row a join: live frame, video frame, difference times 8, cut at full size, 396 by 300 each) and `node pipeline/change002/video-sheet.mjs twelve <out.jpg> out/work/pinball-video/pinball.mp4` (frames 0, 174, 349, 523, 698, 872, 1047, 1221, 1396, 1570, 1745, 1919).
+
