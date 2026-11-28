@@ -193,5 +193,5 @@ On head `ca874b5f`, the last change to any source file:
 - The whole `npm test` was not run again in this task (it takes 6 minutes; the last whole run was on `db0b0929`, EXIT 1, 43 red, none mine by what they test).
 Commits of the second task: `8ab57b5d` (size 1.5), `d45017e8` (the blow), then the power-up, the fire pose, the legs test, the tools and notes, and `ca874b5f` (the mend of the kneel spot).
 
-Report of the second task sent to the Builder at 03:04Z with four pictures (report-t2-walk, report-t2-power, report-t2-blow-near, report-t2-fire). The fight helper was told the new default size, the kneel spot (793, 659) and the step count.
+Report of the second task sent to the Builder at 03:02Z with four pictures (report-t2-walk, report-t2-power, report-t2-blow-near, report-t2-fire). The fight helper was told the new default size, the kneel spot (793, 659) and the step count.
 Open after it: the power-up's fists stand above the head, the sheet's at the shoulders (suggested hands (-36, 54) and (38, 56), not done); the walk and the fist strips are not re-rendered after the mend of 23; the whole `npm test` was not run on this head.
