@@ -131,7 +131,7 @@ export const FLAT = {
   heal: 0.35, // s after the hit at which the boss wins health back
   spread: 1.35, // times its size, in both directions, that the flat arrow is drawn at while it lies
   mark: 2.6, // s the dent, its cracks and the dust stay on the ground after a hit
-  dent: 150, // px across of the dent
+  dent: 190, // px across of the dent
   dust: 0.55 // s the ring of dust takes to leave
 } as const
 export const HEAL = {
@@ -208,7 +208,7 @@ export const TOP = {
 export const CHANGE = {
   split: 0.7, // s after the crack at which the floor splits (`arena-split`)
   rise: 1, // s after the crack at which the slabs, pillars and panes start to rise (`arena-rise`)
-  bar: 2.1 // s after the crack at which the health bar's frame drops in (`healthbar-drop`)
+  bar: 1.7 // s after the crack at which the health bar's frame starts to drop (`healthbar-drop`); it lands at 2.12 in the arena
 } as const
 
 // Where a visitor may stand to fire, for the hint the bots follow.

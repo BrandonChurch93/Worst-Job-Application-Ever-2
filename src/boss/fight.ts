@@ -310,7 +310,7 @@ function strike(f: Fight, io: StepIo, x: number, y: number, by: 0 | 1 | 2 | 3): 
   f.dust = FLAT.life
   f.hits++
   f.at.flat = f.clock
-  f.mark = { x, y }
+  f.mark = { x: io.cursor.x, y: io.cursor.y }
   io.cursor.hurt('flattened', FLAT.life)
   io.cursor.spread(FLAT.spread, FLAT.down)
   io.emit('flatten', x, y, true)

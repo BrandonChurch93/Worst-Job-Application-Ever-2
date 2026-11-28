@@ -2,7 +2,7 @@ import { config } from '../../config'
 import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
-import { drawFinish, drawPancake, drawPower } from '../../boss/finish'
+import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/finish'
 import { BIG, CHANGE, FINISH, FLAT, GUARD, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
@@ -136,6 +136,7 @@ export function makePage(): PageLogic {
   }
   const WHOLE = SHOUT.fire - SHOUT.beats[0]!
   const level = (held: number): number => FINISH.steady * Math.min(1, held / WHOLE) + (1 - FINISH.steady) * steps(held)
+  const armsOut = (): boolean => s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms && s.fired < BLAST
   const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : level(s.charge))
   const strip = (rig: Rig, k: number): Rig => ({ ...rig, plate: { ...rig.plate, k: rig.plate.k * k }, sides: rig.sides.map((q) => ({ ...q, k: q.k * k })), legs: rig.legs.map((q) => ({ ...q, k: q.k * k })), cannons: rig.cannons.map((q) => ({ ...q, k: q.k * k })), shield: { ...rig.shield, k: rig.shield.k * k } })
   const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
@@ -417,6 +418,7 @@ export function makePage(): PageLogic {
         const u = s.t - FINISH.fall
         if (u >= SHOUT.arms && u - dt < SHOUT.arms) io.emit('finish-arms', io.cursor.x, io.cursor.y, false)
         aimAt(io, FALLEN)
+        if (armsOut()) io.cursor.setArms(true, finishHands(io.cursor, FALLEN, charged(), s.fired >= 0).hands)
         if (s.fired < 0 && u >= SHOUT.arms) {
           const down = io.pointer.down
           const whole = WHOLE
@@ -447,6 +449,7 @@ export function makePage(): PageLogic {
             io.emit('boss-gone', FALLEN.x, FALLEN.y, false)
             io.cursor.act('exhausted')
             io.cursor.aim(null)
+            io.cursor.setArms(false)
           }
           if (s.fired >= BLAST + FINISH.settle) {
             io.emit('button-down', FALLEN.x, FALLEN.y, false)
@@ -600,7 +603,7 @@ export function makePage(): PageLogic {
       }
       const lit = LINE7.part2 - LINE7.power
       if (s.gold >= 0 && s.gold < lit + GOLD_OUT && (s.stage === 'hold' || s.stage === 'fight')) drawPower(out, s.cx, s.cy, power() * (1 - prog(s.gold, lit, lit + GOLD_OUT)))
-      if (s.stage === 'finish') drawFinish(out, { x: s.cx, y: s.cy }, FALLEN, arms(), charged(), s.fired >= 0 && s.fired < BLAST ? { power: s.shot, u: s.fired / BLAST } : null)
+      if (s.stage === 'finish') drawFinish(out, finishHands({ x: s.cx, y: s.cy }, FALLEN, charged(), s.fired >= 0).ball, FALLEN, charged(), s.fired >= 0 && s.fired < BLAST ? { power: s.shot, u: s.fired / BLAST } : null)
       if (s.stage === 'collapse' && s.from) {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)
         if (sparks.length) drawWeapons(out, { ...newFight(), sparks }, L.weapons)
@@ -613,6 +616,7 @@ export function makePage(): PageLogic {
     camera: () => null,
     script: (time: number): Pointer => film.pointer(time),
     chrome: () => ({ header: 1 - gone() }),
+    arms: () => armsOut(),
     hint(): Hint | null {
       const blink = Math.floor(s.time * 6) % 2 === 0
       if (s.stage === 'verify' && s.ticked < WAKE_AFTER_TICK.near) return { x: L.checkbox.cx, y: L.checkbox.cy, down: s.ticked < 0 && blink }
