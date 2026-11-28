@@ -28,6 +28,8 @@ export const STAND = {
   hose: 6.2,
   // The arms on the standing figure: how much thicker the hose and how much larger the gloves than on the lying arrow.
   bulk: 1.3,
+  // How far down the outline the arms' roots slide at `tuck` 1, in outline units: the arms then leave the body low, and fists held at the shoulders bow the elbows out and down.
+  tuck: 3.8,
   glove: 1.5,
   // The long shadow: how far it runs for each px of height, as a share of what the key's own direction gives, and how dark it is at the feet.
   shadow: 0.62,
@@ -45,6 +47,8 @@ export interface StandPose {
   rise: number
   // The figure's size about its feet: 1 is the cursor's own size.
   scale?: number
+  // 0 to 1: the arms leave the body low (see STAND.tuck). Only the power-up uses it.
+  tuck?: number
   // 0 the legs are in the body, 1 out. The same for the arms.
   legs: number
   arms: number
@@ -79,8 +83,8 @@ export const POSES = {
   set: P([0, 31], 0, [[-12, 44, 3], [12, 44, 3]], [1, 1], [[-13, 0], [13, 0]], { rise: 0, arms: 0 }),
   // Standing, at ease: arms out to the sides, hands open and low.
   ready: P([0, 31], -0.1, [[-34, 34, 5], [36, 36, 5]], [0.15, 0.15], [[-15, 0], [17, 0]]),
-  // The pose sheet's first figure: legs wide, both fists raised.
-  power: P([0, 27], -0.14, [[-27, 67, 7], [29, 70, 7]], [1, 1], [[-27, 0], [29, 0]], { puff: 0.35, strain: 0.5 }),
+  // The pose sheet's first figure: legs wide, both fists raised to the shoulders, elbows bent and close to the body.
+  power: P([0, 27], -0.14, [[-30, 50, 7], [32, 52, 7]], [1, 1], [[-27, 0], [29, 0]], { puff: 0.35, strain: 0.5, tuck: 1 }),
   // The dip before the fists go up.
   powerDip: P([0, 21], -0.06, [[-30, 30, 6], [32, 30, 6]], [1, 1], [[-24, 0], [26, 0]], { stretch: 0.93 }),
   // The pose sheet's second figure: crouched, both hands cupped at the hip. `charge0` is the first cup, `charge1` the deepest.
@@ -133,7 +137,8 @@ export function mixPose(a: StandPose, b: StandPose, t: number): StandPose {
     feet: [mix2(a.feet[0], b.feet[0], s), mix2(a.feet[1], b.feet[1], s)],
     toes: [lerp(a.toes[0], b.toes[0], s), lerp(a.toes[1], b.toes[1], s)],
     pitch: [lerp(a.pitch[0], b.pitch[0], s), lerp(a.pitch[1], b.pitch[1], s)],
-    knees: [lerp(a.knees[0], b.knees[0], s), lerp(a.knees[1], b.knees[1], s)]
+    knees: [lerp(a.knees[0], b.knees[0], s), lerp(a.knees[1], b.knees[1], s)],
+    tuck: lerp(a.tuck ?? 0, b.tuck ?? 0, s)
   }
 }
 
