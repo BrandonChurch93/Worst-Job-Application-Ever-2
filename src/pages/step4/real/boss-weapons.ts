@@ -352,7 +352,7 @@ function makeMuzzle(): THREE.Object3D {
 }
 
 // One of each thing the weapons show, for the warm-up to copy the materials from. They are never shown themselves.
-export const weaponsOnce = (): THREE.Object3D[] => [makeDart(), makeSpark(), makeMuzzle()]
+export const weaponsOnce = { make: (): THREE.Object3D[] => [makeDart(), makeSpark(), makeMuzzle()], drop: (o: THREE.Object3D): void => bossWeapons?.drop?.(o) }
 
 export const RING = { parts: 48, from: 24, to: 60, flat: 0.44, ahead: 44, z: 34 }
 let ringMade: THREE.BufferGeometry | null = null

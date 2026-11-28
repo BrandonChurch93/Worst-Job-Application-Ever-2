@@ -41,6 +41,8 @@ function standIns(o: THREE.Object3D, seen: Set<string>, out: THREE.Object3D[]): 
   }
 }
 
+export interface Once { make(): THREE.Object3D[]; drop(o: THREE.Object3D): void }
+
 function clear(group: THREE.Object3D): void {
   const hall = group.userData.hall as THREE.Group | null
   if (!hall) return
@@ -52,7 +54,7 @@ function clear(group: THREE.Object3D): void {
   group.userData.hall = null
 }
 
-export function warmed(inner: PartMaker, more?: () => THREE.Object3D[]): PartMaker {
+export function warmed(inner: PartMaker, more?: Once): PartMaker {
   return {
     key: (s: Shape, ctx: RealContext): string | null => inner.key(s, ctx),
     make(s: Shape, ctx: RealContext): THREE.Object3D {
@@ -61,14 +63,17 @@ export function warmed(inner: PartMaker, more?: () => THREE.Object3D[]): PartMak
       hall.name = 'warm-up'
       const seen = new Set<string>()
       const list: THREE.Object3D[] = []
+      const once = more?.make() ?? []
       group.traverse((c) => standIns(c, seen, list))
-      for (const x of more?.() ?? []) x.traverse((c) => standIns(c, seen, list))
+      for (const x of once) x.traverse((c) => standIns(c, seen, list))
       for (const t of list) hall.add(t)
       hall.visible = false
       group.add(hall)
       group.userData.hall = hall
-      group.userData.drawn = 0
-      if (list.length > 0) list[0]!.onBeforeRender = () => { group.userData.drawn = (group.userData.drawn as number) + 1 }
+      group.userData.once = once
+      group.userData.drawn = false
+      group.userData.frames = 0
+      if (list.length > 0) list[0]!.onBeforeRender = () => { group.userData.drawn = true }
       else clear(group)
       return group
     },
@@ -76,12 +81,18 @@ export function warmed(inner: PartMaker, more?: () => THREE.Object3D[]): PartMak
       inner.pose?.(group, s, ctx)
       const hall = group.userData.hall as THREE.Group | null
       if (!hall) return
+      if (group.userData.drawn) {
+        group.userData.drawn = false
+        group.userData.frames = (group.userData.frames as number) + 1
+      }
       const view = viewNow()
       hall.visible = view !== null && view.time >= WARM.after
-      if ((group.userData.drawn as number) >= WARM.frames) clear(group)
+      if ((group.userData.frames as number) >= WARM.frames) clear(group)
     },
     drop(group: THREE.Object3D): void {
       clear(group)
+      for (const x of group.userData.once as THREE.Object3D[]) more?.drop(x)
+      group.userData.once = []
       inner.drop?.(group)
     }
   }
