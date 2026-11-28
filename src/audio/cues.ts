@@ -95,8 +95,14 @@ export const extraCues: { id: string; seconds: number; event: string }[] = [
   { id: 'skip', seconds: 0.3, event: 'skip' }
 ]
 
+// Cues whose sound is to be made in the effects batch. Each is named here with its length, so that its event has its cue now. It is no cue of allCues yet:
+// nothing plays for it, no take is asked for it and no check counts it, until its row is in audio.sfx and its file is kept.
+export const cuesToMake: { id: string; seconds: number; event: string }[] = [
+  { id: 'finish-fire', seconds: 2.2, event: 'finish-fire' }
+]
+
 export function cueOfEvent(name: string): string | undefined {
-  const known = eventCues[name] ?? extraCues.find((x) => x.event === name)?.id ?? newEventCues[name]
+  const known = eventCues[name] ?? extraCues.find((x) => x.event === name)?.id ?? newEventCues[name] ?? cuesToMake.find((x) => x.event === name)?.id
   if (known !== undefined) return known
   for (const p of prefixCues) if (name.startsWith(p.prefix)) return p.cue(name.slice(p.prefix.length))
   return undefined

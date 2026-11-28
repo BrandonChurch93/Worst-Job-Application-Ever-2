@@ -1,0 +1,450 @@
+{
+ "what": "The sounds with no kept file today, each with the seconds it should run. state: table = listed in src/audio/cues.ts as file to come; named = named in cuesToMake; new = an event with no cue at all today.",
+ "creditsPerSecond": 12,
+ "capCredits": 700,
+ "sounds": [
+  {
+   "id": "shield-glance",
+   "seconds": 0.2,
+   "events": [
+    "shield-glance"
+   ],
+   "state": "table",
+   "what": "a shot glancing off the shield; plays dart-hit until made"
+  },
+  {
+   "id": "cannon-fire",
+   "seconds": 0.5,
+   "events": [
+    "cannon-fire"
+   ],
+   "state": "table",
+   "what": "a low heavy thump; plays slab-fire until made"
+  },
+  {
+   "id": "boss-heal",
+   "seconds": 0.6,
+   "events": [
+    "boss-heal"
+   ],
+   "state": "table",
+   "what": "the boss mending; plays power-on until made"
+  },
+  {
+   "id": "reel-stop",
+   "seconds": 0.3,
+   "events": [
+    "reel-stop"
+   ],
+   "state": "table",
+   "what": "a reel of the date stopping"
+  },
+  {
+   "id": "stop-press",
+   "seconds": 0.15,
+   "events": [
+    "date-hit"
+   ],
+   "state": "table",
+   "what": "the stop press that lands on the date"
+  },
+  {
+   "id": "date-miss",
+   "seconds": 0.6,
+   "events": [
+    "date-miss"
+   ],
+   "state": "table",
+   "what": "the stop press that misses"
+  },
+  {
+   "id": "vacuum-slip",
+   "seconds": 0.35,
+   "events": [
+    "vacuum-slip"
+   ],
+   "state": "table",
+   "what": "the ball slipping from the vacuum"
+  },
+  {
+   "id": "vacuum-gulp",
+   "seconds": 0.5,
+   "events": [
+    "vacuum-lose"
+   ],
+   "state": "table",
+   "what": "the vacuum taking the ball"
+  },
+  {
+   "id": "pin-frenzy",
+   "seconds": 2.4,
+   "events": [
+    "frenzy-on"
+   ],
+   "state": "table",
+   "what": "the frenzy coming on"
+  },
+  {
+   "id": "pin-coins",
+   "seconds": 0.9,
+   "events": [
+    "loot"
+   ],
+   "state": "table",
+   "what": "coins of the loot"
+  },
+  {
+   "id": "cannon-tell",
+   "seconds": 0.8,
+   "events": [
+    "cannon-tell"
+   ],
+   "state": "table",
+   "what": "the cannon winding up; silent until made"
+  },
+  {
+   "id": "volume-sign",
+   "seconds": 0.5,
+   "events": [
+    "volume-sign"
+   ],
+   "state": "table",
+   "what": "the sign of the volume row; silent until made"
+  },
+  {
+   "id": "vacuum-roar",
+   "seconds": 3.0,
+   "events": [
+    "vacuum-on"
+   ],
+   "state": "table",
+   "what": "the vacuum running, can loop; silent until made"
+  },
+  {
+   "id": "pin-bumper",
+   "seconds": 0.25,
+   "events": [
+    "strike:*"
+   ],
+   "state": "table",
+   "what": "strike on a bumper"
+  },
+  {
+   "id": "pin-sling",
+   "seconds": 0.2,
+   "events": [
+    "strike:*"
+   ],
+   "state": "table",
+   "what": "strike on a sling"
+  },
+  {
+   "id": "pin-target",
+   "seconds": 0.25,
+   "events": [
+    "strike:*"
+   ],
+   "state": "table",
+   "what": "strike on a target"
+  },
+  {
+   "id": "pin-bell",
+   "seconds": 0.4,
+   "events": [
+    "strike:*"
+   ],
+   "state": "table",
+   "what": "strike on a bell"
+  },
+  {
+   "id": "pin-kick",
+   "seconds": 0.3,
+   "events": [
+    "strike:*"
+   ],
+   "state": "table",
+   "what": "strike on a kicker"
+  },
+  {
+   "id": "finish-fire",
+   "seconds": 2.2,
+   "events": [
+    "finish-fire"
+   ],
+   "state": "named",
+   "what": "the last shot of the finish; boss-gone comes 2.13 s after it in the cut list; named in cuesToMake"
+  },
+  {
+   "id": "finish-arms",
+   "seconds": 0.8,
+   "events": [
+    "finish-arms"
+   ],
+   "state": "new",
+   "what": "the arms coming out for the finish; line boss.finish.0 starts on it"
+  },
+  {
+   "id": "finish-charge",
+   "seconds": 0.9,
+   "events": [
+    "finish-charge"
+   ],
+   "state": "new",
+   "what": "one charge of four, 0.93 s apart in the cut list"
+  },
+  {
+   "id": "boss-gone",
+   "seconds": 1.0,
+   "events": [
+    "boss-gone"
+   ],
+   "state": "new",
+   "what": "the boss gone"
+  },
+  {
+   "id": "finish-walk",
+   "seconds": 1.0,
+   "events": [
+    "finish-walk"
+   ],
+   "state": "new",
+   "what": "the walk to the button, 1.0 s to button-down in the cut list"
+  },
+  {
+   "id": "button-down",
+   "seconds": 0.6,
+   "events": [
+    "button-down"
+   ],
+   "state": "new",
+   "what": "the button coming down"
+  },
+  {
+   "id": "finish-kneel",
+   "seconds": 0.5,
+   "events": [
+    "finish-kneel"
+   ],
+   "state": "new",
+   "what": "the kneel"
+  },
+  {
+   "id": "finish-fist",
+   "seconds": 0.5,
+   "events": [
+    "finish-fist"
+   ],
+   "state": "new",
+   "what": "the fist raised"
+  },
+  {
+   "id": "arena-split",
+   "seconds": 0.6,
+   "events": [
+    "arena-split"
+   ],
+   "state": "new",
+   "what": "the page splitting for the arena"
+  },
+  {
+   "id": "arena-rise",
+   "seconds": 0.9,
+   "events": [
+    "arena-rise"
+   ],
+   "state": "new",
+   "what": "the arena rising, 0.69 s to healthbar-drop"
+  },
+  {
+   "id": "healthbar-drop",
+   "seconds": 0.5,
+   "events": [
+    "healthbar-drop"
+   ],
+   "state": "new",
+   "what": "the health bar dropping in"
+  },
+  {
+   "id": "power-up",
+   "seconds": 0.8,
+   "events": [
+    "power-up"
+   ],
+   "state": "new",
+   "what": "the power up before the turret rises, 1.55 s before turret-rise"
+  },
+  {
+   "id": "boss-fall",
+   "seconds": 0.8,
+   "events": [
+    "boss-fall"
+   ],
+   "state": "new",
+   "what": "the boss falling; same frame as power-down, which is kept"
+  },
+  {
+   "id": "big-tell",
+   "seconds": 0.8,
+   "events": [
+    "big-tell"
+   ],
+   "state": "new",
+   "what": "the tell of the big shot; silent in the table today"
+  },
+  {
+   "id": "weak-tell",
+   "seconds": 0.3,
+   "events": [
+    "weak-tell"
+   ],
+   "state": "new",
+   "what": "the tell of the weak spot"
+  },
+  {
+   "id": "pillar-break",
+   "seconds": 0.8,
+   "events": [
+    "pillar-break"
+   ],
+   "state": "new",
+   "what": "a pillar breaking; same frame as big-fire"
+  },
+  {
+   "id": "pane-shatter",
+   "seconds": 0.8,
+   "events": [
+    "pane-shatter"
+   ],
+   "state": "new",
+   "what": "a pane shattering; same frame as big-fire"
+  },
+  {
+   "id": "cover-hit",
+   "seconds": 0.25,
+   "events": [
+    "cover-hit"
+   ],
+   "state": "new",
+   "what": "a shot on the cover; live site only"
+  },
+  {
+   "id": "browse-press",
+   "seconds": 0.15,
+   "events": [
+    "browse-press"
+   ],
+   "state": "new",
+   "what": "the press of Browse"
+  },
+  {
+   "id": "folder-open",
+   "seconds": 0.4,
+   "events": [
+    "folder-open"
+   ],
+   "state": "new",
+   "what": "the folder opening"
+  },
+  {
+   "id": "file-pick",
+   "seconds": 0.15,
+   "events": [
+    "file-pick"
+   ],
+   "state": "new",
+   "what": "the file picked"
+  },
+  {
+   "id": "slot-in",
+   "seconds": 0.3,
+   "events": [
+    "slot-in"
+   ],
+   "state": "new",
+   "what": "the file going into the slot"
+  },
+  {
+   "id": "wind-gust",
+   "seconds": 1.2,
+   "events": [
+    "wind-gust"
+   ],
+   "state": "new",
+   "what": "the gust, 1.2 s before the shredder"
+  },
+  {
+   "id": "row-close",
+   "seconds": 0.3,
+   "events": [
+    "stage-out-phone",
+    "stage-out-birth",
+    "stage-out-volume"
+   ],
+   "state": "new",
+   "what": "a row of step 2 closing; one sound for the three"
+  }
+ ],
+ "noSoundAsked": [
+  {
+   "events": "boss-formed",
+   "why": "carries line 7 only"
+  },
+  {
+   "events": "boss-turn",
+   "why": "the jump of line 7 only"
+  },
+  {
+   "events": "candidate-sensed",
+   "why": "carries line 2 only, same frame as turret-rise"
+  },
+  {
+   "events": "resume-received",
+   "why": "carries a line only"
+  },
+  {
+   "events": "boss-move",
+   "why": "silent in the table (newSilent); 2 in the film, 7 live"
+  },
+  {
+   "events": "turret-off",
+   "why": "silent in the table; same frame as power-down"
+  },
+  {
+   "events": "slab-shadow",
+   "why": "silent in the table; slab-drop follows it"
+  },
+  {
+   "events": "field-next",
+   "why": "silent in the table"
+  },
+  {
+   "events": "frenzy-off",
+   "why": "silent in the table"
+  },
+  {
+   "events": "stage-in-phone, stage-in-birth, stage-in-volume",
+   "why": "same frame as row-open, which is kept"
+  },
+  {
+   "events": "finish-press",
+   "why": "same frame as button-press, which is kept"
+  },
+  {
+   "events": "card-flip-back",
+   "why": "on the careers page, which has no effect but the press of its button (change note 002, item 10)"
+  },
+  {
+   "events": "count-run",
+   "why": "silent in the table on purpose (silentEvents); a run of ticks would be 1.5 s if it is wanted, not in the sum"
+  },
+  {
+   "events": "video-in, video-out",
+   "why": "live site only, the video of step 3; UNKNOWN what the video itself sounds, so no sound is asked"
+  }
+ ],
+ "count": 42,
+ "seconds": 28.75,
+ "credits": 345.0,
+ "secondsIfHalfSecondIsTheLeast": 32.5,
+ "creditsIfHalfSecondIsTheLeast": 390.0
+}
