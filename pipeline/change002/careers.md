@@ -11,7 +11,7 @@ Branch `agent/b-careers`. Every item below is MEASURED (the command and the numb
 ## Decisions
 
 1. Flat white on the stage: the white sheet is drawn unlit at 251.6 (MEASURED: mean of a 40 by 40 px patch of the draft still of the first screen, with sharp). Nothing in `src/post/` or the ground was changed.
-2. One type scale, Inter: `T` in `layout.ts`. Display 82 (headline), 72 (the benefits heading), 56 (the closing call), 44 (the other section headings), 32, 24, 20, 16, 14: nine sizes. Headline and headings in Inter Display 800, baked to `public/fonts/inter-display-800.json` (183588 bytes, sha256 starts 9bc2142f6987a04c; MEASURED with `wc -c` and `sha256sum`), one entry `'inter-display-800'` added to `FONTS` at `src/shell/metrics.ts:15`.
+2. One type scale, Inter: `T` in `layout.ts`. Display 82 (headline), 72 (the benefits heading), 56 (the closing call and the process heading), 44 (the other section headings), 32, 24, 20, 16, 14: nine sizes. Headline and headings in Inter Display 800, baked to `public/fonts/inter-display-800.json` (183588 bytes, sha256 starts 9bc2142f6987a04c; MEASURED with `wc -c` and `sha256sum`), one entry `'inter-display-800'` added to `FONTS` at `src/shell/metrics.ts:15`.
 3. Every word is a key of `content/copy.json`. Cases where the picture's word is not in the copy are under "Words".
 4. Cards: face with icon, title, promise and the fine print small. The pointer on a card flips it to the back with the fine print large. It flips back when the pointer is clear of the card by `LEAVE`. Events `card-flip` and `card-flip-back`.
 5. Apply is live from the first frame in the navigation, the hero and the closing call. Each runs the press (wind-up 0.36 s, jump 0.42 s, `button-press` on landing, hold 0.7 s) and the page turns into step 1.
@@ -28,6 +28,7 @@ Branch `agent/b-careers`. Every item below is MEASURED (the command and the numb
 16. The label stays on a pressed Apply: the darker pill shown while the cap is down lay over the label; it lies under the cap's face now (`real/apply-button.ts`, b13d25f9).
 17. One opening in the script (the owner's pick), no second setting (b13d25f9).
 18. The unit is 19.0 s: `OPENING.after` 1.0, the turn at 18.5 (the Builder's word, 23:42Z).
+19. Type pass after the owner's pick: the promise on a card 24 (was 20), the process heading 56 (was 44), each staff role under its own quote and each row of quote cards as tall as its tallest card (was one height for all six, the role at one line for all). The page keeps its height of 5679 and the opening's five scroll stops keep their px (983, 1913, 3800, 4191, 4599. MEASURED by printing `careersOpening()` before and after), so the film's scroll is to the frame what the owner approved. The badge line stands 28 px higher on the screen at its stop, and 50 px of white stand under the staff footnote.
 
 ## Events
 
@@ -96,12 +97,13 @@ Other:
 - The arrow is the build's own, at its real size (decision 10).
 - The compare command shows the arrow at its start place in each tile it stitches.
 
-Seen in the crops and not meant, to mend in the polish pass (type scale):
+Seen in the crops and not meant, and still there (type):
 
 - Lead lines under headings: mine 3d3934, the picture's a little lighter (its darkest 1 percent of pixels in the hero subline is 65,61,56; mine 51,47,42. MEASURED with sharp on both pictures).
-- Staff quotes: the picture's quote and role are about 22 px and its bracket notes are in a typewriter face about 16 px; mine 20 px and Inter 14.
-- Process: the picture's step titles sit on one line where mine wrap ("Find Our Job Posting"), and its step text is about 20 px; mine 16.
-- Closing call: the picture's heading is about 54 px and its text 24; mine 44 and 20.
+- Staff quotes: the picture's quote and role are about 22 px and its bracket notes are in a typewriter face about 16 px; mine 20 px and Inter 16. The scale has 20 and 24; at 24 the quotes run to five lines in a card 408 wide.
+- Card titles: mine 24, the picture's about 30 in a narrower face. At 32 "Growth Opportunities" wraps in the card.
+- The fine print on a card's face: mine 16 by decision 4, the picture's about 24.
+- Process: the picture's step titles are about 22 to 24; mine 20. Tried at 24 and taken back: "Professional Ghosting" is 256 px of the 266 px between two steps, so the five titles stand almost against each other.
 - The picture's arrow is about one and a half times the build's and stands on the button's right end.
 
 Crops, mine left and the picture right: `node pipeline/change002/careers-differences.mjs` writes `out/work/careers/careers-differs-<name>.jpg` for type-headline, cursor-button, glow, awards, navigation, benefits-heading, cards, quotes, table, steps, closing. It reads the pictures of the two other commands.
@@ -123,14 +125,14 @@ Crops, mine left and the picture right: `node pipeline/change002/careers-differe
 ## Scroll and cost
 
 - The stage scrolls a page by its own `scroll()`: the page reports its height and its scroll, the stage moves the camera down the page. A page of 5679 px is one layout; its parts are built once and stay in the scene, and what is off the screen is not drawn. STATED from reading the stage; the counts below are MEASURED.
-- MEASURED per screen by the renderer's own count (`node pipeline/change002/careers-page.mjs`, draft tier, f8b9221e):
+- MEASURED per screen by the renderer's own count (`node pipeline/change002/careers-page.mjs`, draft tier, after the type pass):
 
 | scrolled | triangles | draw calls |
 | --- | --- | --- |
 | 0 px | 220288 | 66 |
-| 1080 px | 255080 | 84 |
+| 1080 px | 265994 | 84 |
 | 2160 px | 232428 | 59 |
-| 3240 px | 122962 | 51 |
+| 3240 px | 129478 | 52 |
 | 4320 px | 183611 | 54 |
 | 4599 px (bottom) | 181226 | 47 |
 

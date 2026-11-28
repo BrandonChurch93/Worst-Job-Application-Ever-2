@@ -132,11 +132,11 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
   const cx = x + CARD.w / 2
   const wrap = CARD.w - CARD.pad * 2
   const at = { part: PAGE, on: Z.cardType }
-  const promise = { ...mid(T.body), wrap }
+  const promise = { ...mid(T.lead), wrap, lead: 30 }
   const fine = { ...mid(T.small), wrap }
   const large = { ...mid(T.lead), wrap, lead: 34 }
-  const promiseY = y + 181
-  const fineY = promiseY + tall(promise, `${k}.promise`, wrap) + 22
+  const promiseY = y + 178
+  const fineY = promiseY + tall(promise, `${k}.promise`, wrap) + 14
   return node(`perk-${i}`, 'perkCard', [x, y, CARD.w, CARD.h], {
     part: CARDS, r: CARD.r, floor: Z.sheet, height: Z.card,
     children: [
@@ -167,33 +167,34 @@ function quotes(y0: number): { node: LayoutNode; bottom: number } {
   const role = { ...T.label, wrap }
   const quote = { ...T.body, wrap }
   const note = { ...T.small, wrap }
-  let quoteH = 0
-  let roleH = 0
-  let noteH = 0
-  m.testimonials.items.forEach((_, i) => {
-    quoteH = Math.max(quoteH, tall(quote, `copy:marketing.testimonials.items.${i}.quote`, wrap))
-    roleH = Math.max(roleH, tall(role, `copy:marketing.testimonials.items.${i}.role`, wrap))
-    noteH = Math.max(noteH, tall(note, `copy:marketing.testimonials.items.${i}.note`, wrap))
-  })
-  const h = Math.ceil(28 + quoteH + 22 + roleH + 12 + noteH + 26)
+  const items = m.testimonials.items
+  const key = (i: number): string => `copy:marketing.testimonials.items.${i}`
+  const quoteH = items.map((_, i) => tall(quote, `${key(i)}.quote`, wrap))
+  const roleH = items.map((_, i) => tall(role, `${key(i)}.role`, wrap))
+  const noteH = items.map((_, i) => tall(note, `${key(i)}.note`, wrap))
+  const own = (i: number): number => 28 + quoteH[i]! + 22 + roleH[i]! + 12 + noteH[i]! + 26
+  const rowOf = (i: number): number => Math.floor(i / 3)
+  const rows = Array.from({ length: Math.ceil(items.length / 3) }, (_, r) => Math.ceil(Math.max(...items.map((_, i) => (rowOf(i) === r ? own(i) : 0)))))
+  const h = Math.ceil(28 + Math.max(...quoteH) + 22 + Math.max(...roleH) + 12 + Math.max(...noteH) + 26)
   const first = y0 + 162
-  m.testimonials.items.forEach((_, i) => {
-    const k = `copy:marketing.testimonials.items.${i}`
+  const rowY = rows.map((_, r) => first + rows.slice(0, r).reduce((a, b) => a + b + 26, 0))
+  items.forEach((_, i) => {
+    const k = key(i)
     const x = QUOTE.x + (i % 3) * (QUOTE.w + QUOTE.gap)
-    const y = first + Math.floor(i / 3) * (h + 26)
-    const roleY = y + 28 + quoteH + 22
-    out.push(node(`quote-${i}`, 'quoteCard', [x, y, QUOTE.w, h], {
+    const y = rowY[rowOf(i)]!
+    const roleY = y + 28 + quoteH[i]! + 22
+    out.push(node(`quote-${i}`, 'quoteCard', [x, y, QUOTE.w, rows[rowOf(i)]!], {
       part: PAGE, r: QUOTE.r, floor: Z.sheet, height: Z.sheet + 0.6,
       children: [
         text(`quote-${i}-quote`, `${k}.quote`, quote, x + QUOTE.pad, y + 28, on),
         text(`quote-${i}-role`, `${k}.role`, role, x + QUOTE.pad, roleY, on),
-        text(`quote-${i}-note`, `${k}.note`, note, x + QUOTE.pad, roleY + tall(role, `${k}.role`, wrap) + 12, { ...on, tone: 'accent' })
+        text(`quote-${i}-note`, `${k}.note`, note, x + QUOTE.pad, roleY + roleH[i]! + 12, { ...on, tone: 'accent' })
       ]
     }))
   })
-  const footY = first + h * 2 + 26 + 26
+  const footY = rowY[rows.length - 1]! + rows[rows.length - 1]! + 26
   out.push(centred('testimonials-footnote', 'copy:marketing.testimonials.footnote', T.small, footY, { tone: 'metal' }))
-  const bottom = Math.ceil(footY + cap(T.small) + 40)
+  const bottom = Math.ceil(first + h * 2 + 26 + 26 + cap(T.small) + 40)
   return { node: sheet('testimonials', y0, bottom - y0, out), bottom }
 }
 
@@ -241,7 +242,7 @@ function comparison(y0: number): LayoutNode {
 
 function process(y0: number): LayoutNode {
   const out: LayoutNode[] = []
-  out.push(centred('process-heading', 'copy:marketing.process.heading', T.heading, y0 + 93))
+  out.push(centred('process-heading', 'copy:marketing.process.heading', T.closing, y0 + 87))
   out.push(centred('process-subline', 'copy:marketing.process.subline', soft(T.lead), y0 + 165))
   const railY = y0 + 233
   const n = m.process.items.length

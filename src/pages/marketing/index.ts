@@ -89,7 +89,7 @@ export function careersOpening(): { marks: Marks; plan: Plan } {
   const mid = (cy: number): number => Math.min(maxScroll, Math.max(0, Math.round(cy - SCREEN_H / 2)))
   const stops = [
     { x: salary.x + salary.w - 70, y: salary.y + 34, scroll: mid(salary.cy) },
-    { x: badge.x + badge.w + 22, y: badge.cy - 2, scroll: mid(badge.cy - 60) },
+    { x: badge.x + badge.w + 22, y: badge.cy - 2, scroll: mid(badge.cy - 32) },
     { x: lol.cx + 70, y: lol.cy + 2, scroll: mid(lol.cy - 150) },
     { x: ghosting.x + ghosting.w / 2 + 20, y: ghosting.y + ghosting.h + 96, scroll: mid(ghosting.cy - 220) },
     { x: last.x + last.w + 92, y: last.cy - 2, scroll: maxScroll }

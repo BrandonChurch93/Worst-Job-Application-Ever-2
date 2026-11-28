@@ -23,7 +23,7 @@ const crops = [
   { name: 'cards', from: page, box: [190, 1340, 1540, 370], what: 'cards: the fine print small on the face, no star before it' },
   { name: 'quotes', from: page, box: [300, 2180, 1320, 700], theirs: [300, 2180, 1320, 430], what: 'six quotes in two rows, no quotation marks, roles in deeper orange' },
   { name: 'table', from: page, box: [300, 3700, 1320, 420], shift: MORE, what: 'the middle column\'s words in deeper orange' },
-  { name: 'steps', from: page, box: [300, 4700, 1320, 300], shift: MORE, what: 'step discs in the deeper orange' },
+  { name: 'steps', from: page, box: [300, 4700, 1320, 400], theirs: [300, 4400, 1320, 400], what: 'step discs in the deeper orange, titles 20' },
   { name: 'closing', from: page, box: [400, 5225, 1120, 300], shift: MORE, what: 'the closing call' }
 ]
 
