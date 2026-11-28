@@ -88,8 +88,9 @@ export function windowAt(time: number): { x: number; y: number; w: number; h: nu
 
 // The live site. A press while the line is being said is seen at once; the page then holds until the phrase being said has ended (the next phrase's start, or the line's end) and the gap between two lines, and never less than `AT.hold`.
 // `sinceHit` is the seconds from the stamp's hit to the press; under 0 means no line was started. A press after the line has ended holds `AT.hold`, as before.
-export function holdAfterPress(sinceHit: number): number {
+// `fade` is how long the voice takes to go out after the press (0 in the film, where the line is said whole): a pause nearer than that is passed before the voice is out, so the gap is counted from the end of the fade.
+export function holdAfterPress(sinceHit: number, fade: number = 0): number {
   if (sinceHit < 0 || sinceHit >= SAID[5]) return AT.hold
   const next = SAID.find((at, i) => i > 0 && at > sinceHit) ?? SAID[5]
-  return Math.max(AT.hold, next - sinceHit + config.audio.lineGapSeconds)
+  return Math.max(AT.hold, Math.max(next - sinceHit, fade) + config.audio.lineGapSeconds)
 }

@@ -375,6 +375,9 @@ export function openingEvents(o: OpeningPlan, fps: number): { name: string; fram
   return out
 }
 
+// How long a line with a voice takes to go out when it ends sooner than its file, in seconds. It is a number of this table because the page that holds its turn
+// for line 8 (step 5) reads it too: a press nearer to the next pause than this is heard out for this long, and the turn waits for that.
+export const VOICE_FADE_SECONDS = 0.2
 // A phrase that ends a sentence of the script: its words end in a full stop, a question mark or an exclamation mark.
 export const endsSentence = (words: string): boolean => /[.?!]$/.test(words.trim())
 // The longest a visitor's event waits for the sentence being said to end, in seconds: the first sentence of line 7, "The applicant is ready to give up.",

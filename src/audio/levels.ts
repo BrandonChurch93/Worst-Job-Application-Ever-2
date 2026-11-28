@@ -1,6 +1,6 @@
 // Every number of the sound side that the config does not hold. The chain, the mix and the site all read them here.
 import { TURN_HALF } from '../stage/stage'
-import type { CueClass } from './cues'
+import { VOICE_FADE_SECONDS, type CueClass } from './cues'
 
 // The level each class is set to by the chain. Effects are set by their peak, the room tone by its mean level, the voice by its loudness.
 export const CLASS_LEVEL: Record<CueClass | 'voice', { measure: 'peak' | 'rms' | 'lufs'; db: number }> = {
@@ -73,7 +73,7 @@ export const LIVE = {
   // Whether the effects are held down under a line that is a silent stand-in. Off: nothing is heard to make room for. A line with a voice holds them down always.
   standInDucks: false,
   // A line with a voice that ends sooner than its file, at a pause, on a mark or because it is taken back, goes out over this long.
-  voiceFadeSeconds: 0.2,
+  voiceFadeSeconds: VOICE_FADE_SECONDS,
   // Line 1 belongs to the careers page: when that page's button is pressed or the page is turned while it is being said, it goes out over this long.
   openingFadeSeconds: 0.3,
   // The seconds line 1 waits after sound is allowed, so that a press of Apply by the same gesture is seen first and takes it back.
