@@ -11,7 +11,7 @@ import { FIRE, finishState, kneelSpot, type FinishInput } from '../../boss/finis
 import { ABOVE, facing, feetFor, finishShot, marksOf, underOf, type Shot } from '../../boss/finish/camera'
 import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
-import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
+import { BREAKS, buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
 import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame, toWorld } from '../../stage/camera'
@@ -688,6 +688,10 @@ export function makePage(): PageLogic {
         } else if (s.fired >= 0) {
           const was = s.fired
           s.fired += dt
+          if (LOOK1_ON) {
+            if (s.fired >= FIRE.lead && was < FIRE.lead) io.emit('finish-beam', io.cursor.x, io.cursor.y, false)
+            for (const b of BREAKS) if (s.fired - s.lag >= b * (BLAST - s.lag) && was - s.lag < b * (BLAST - s.lag)) io.emit('finish-break', FALLEN.x, FALLEN.y, false)
+          }
           if (s.fired >= BLAST && was < BLAST) {
             io.emit('boss-gone', FALLEN.x, FALLEN.y, false)
             io.cursor.act('exhausted')
