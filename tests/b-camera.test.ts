@@ -5,7 +5,7 @@ import { makeArena } from '../src/arena'
 import { ARENA, EYE, PANES, PILLARS } from '../src/arena/layout'
 import { newFight } from '../src/boss/fight'
 import { finishState } from '../src/boss/finish/acting'
-import { ABOVE, BLOCKS, FEET, LAST_LOW, THIN, facing, fadesOf, finishRig, finishShot, lowOf, marksOf, poseOf, sideOf, type Block, type Marks } from '../src/boss/finish/camera'
+import { ABOVE, BLOCKS, FEET, LAST_LOW, THIN, facing, fadesOf, feetFor, finishRig, finishShot, lowOf, marksOf, poseOf, sideOf, type Block, type Marks } from '../src/boss/finish/camera'
 import { FALLEN, UNFOLD } from '../src/boss/plan'
 import { CAMERA, CLOSE, LAST, LOOK1_ON, SHOUT } from '../src/boss/tune'
 import { finishNow, viewOf } from '../src/boss/viewof'
@@ -39,10 +39,12 @@ const steps = (a: CameraPose, b: CameraPose): { eye: number; turn: number; roll:
 }
 const inside = (p: { x: number; y: number; depth: number }, edge = LIMIT.edge): boolean => p.depth > 0 && p.x >= edge && p.x <= 1920 - edge && p.y >= edge && p.y <= 1080 - edge
 
+const FEET0 = FEET
+const TALL = 150
 const WAY = { near: 90, share: 0.03, half: 30, high: 140, step: 0.17 } as const
 type P3 = [number, number, number]
 const leanOf = (b: Block, low: number): [number, number] => [(1 - low) * (ARENA.leanX - (b.lo[0] + b.hi[0]) / 2 / EYE), (1 - low) * (ARENA.lean - (b.lo[1] + b.hi[1]) / 2 / EYE)]
-const inTheWay = (pose: CameraPose, low: number): { covers: string[]; fills: string[] } => {
+const inTheWay = (pose: CameraPose, low: number, FEET: readonly number[] = FEET0): { covers: string[]; fills: string[] } => {
   const covers: string[] = []
   const fills: string[] = []
   const xs: number[] = []
@@ -338,7 +340,7 @@ describe.runIf(LOOK1_ON)('the camera of the finishing blast: in the film', () =>
   }
 
   it("the film's events are where they were, in frames after the boss's fall", () => {
-    for (const [name, frames] of Object.entries(EVENTS)) expect(Math.floor(seen(stage, name) / PER) - Math.floor(fall / PER), name).toBe(frames)
+    for (const [name, frames] of Object.entries(EVENTS)) expect(Math.floor((seen(stage, name) - fall) / PER), name).toBe(frames)
   })
 
   it('the view is from above, as it was, before the arms come out and from the end of the rise on', () => {
@@ -488,6 +490,134 @@ describe.runIf(LOOK1_ON)('the low lens and the blocks of the arena, with the vis
     }
     console.log('five places', JSON.stringify(told))
   }, 240000)
+})
+
+describe.runIf(LOOK1_ON)('the view that faces the arrow at the power-up of line 7, an option', () => {
+  interface Run { events: string[]; views: (CameraPose | null)[]; lows: number[]; feet: (P3 | null)[]; fades: (Readonly<Record<string, number>> | null)[]; up: number; lock: number }
+  const run = (on: boolean): Run => {
+    const sw = CAMERA as unknown as { powerUp: boolean }
+    const was = sw.powerUp
+    sw.powerUp = on
+    try {
+      const stage = film()
+      const out: Run = { events: [], views: [], lows: [], feet: [], fades: [], up: -1, lock: -1 }
+      while (stage.page.id === 'step4' && stage.time < 400 && seen(stage, 'finish-press') < 0) {
+        stage.advance(PER)
+        const f = stage.frameAt(stage.time)
+        const i = finishNow()
+        out.views.push(f.view)
+        out.lows.push(f.view && f.view.up !== undefined ? i?.low ?? 0 : 0)
+        const at = i && i.power ? feetFor(i.arrow) : null
+        out.feet.push(at ? toWorld(at.x, at.y, 0) : null)
+        out.fades.push(i?.fade ?? null)
+        if (out.up < 0 && seen(stage, 'power-up') >= 0) out.up = out.views.length - 1
+        if (out.up >= 0 && out.lock < 0 && !i?.power) out.lock = out.views.length - 1
+      }
+      out.events = stage.events.map((e) => `${e.name} ${e.step} ${Math.round(e.x)} ${Math.round(e.y)}`)
+      return out
+    } finally {
+      sw.powerUp = was
+    }
+  }
+
+  it('on the live site moves no event and keeps the pointer no longer: the stretch round the power-up is the same with the option on, and under the limit', () => {
+    const sw = CAMERA as unknown as { powerUp: boolean }
+    const was = sw.powerUp
+    const told: Record<string, unknown> = {}
+    const got: string[][] = []
+    try {
+      for (const on of [false, true]) {
+        sw.powerUp = on
+        const stage = live(new BotDriver('keen', config.seed))
+        let taken = 0
+        let run = 0
+        let from = -1
+        let low = 0
+        let up = -1
+        while (stage.page.id === 'step4' && stage.time < 400 && (up < 0 || stage.time < up + 8)) {
+          stage.advance(PER)
+          if (up < 0 && seen(stage, 'power-up') >= 0) up = stage.time
+          const f = stage.frameAt(stage.time)
+          if (f.view && f.view.up !== undefined && seen(stage, 'finish-arms') < 0) low++
+          if (stage.cursor.taken) {
+            if (run === 0) from = stage.time
+            run++
+          } else {
+            if (up >= 0 && from <= up && run > taken) taken = run
+            run = 0
+          }
+        }
+        expect(up).toBeGreaterThan(0)
+        expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
+        got.push(stage.events.map((e) => `${e.name} ${e.step} ${Math.round(e.x)} ${Math.round(e.y)}`))
+        told[on ? 'on' : 'off'] = { takenRoundThePowerUp: Math.round((taken / FPS) * 1000) / 1000, longestIgnored: stage.longestIgnored.pointer, lowFrames: low }
+      }
+    } finally {
+      sw.powerUp = was
+    }
+    expect(got[1]).toEqual(got[0])
+    console.log('the rise live', JSON.stringify(told))
+  }, 120000)
+
+  it('is off as committed', () => {
+    expect(CAMERA.powerUp).toBe(false)
+  })
+
+  it('comes down from the fists up, holds, and is the view of today again when the figure lies; no event of the page moves; no step over the limits; no block before the figure', () => {
+    const off = run(false)
+    const on = run(true)
+    expect(on.events).toEqual(off.events)
+    expect(on.events.length).toBeGreaterThan(100)
+    expect(on.views.length).toBe(off.views.length)
+    expect(on.up).toBe(off.up)
+    expect(on.lock).toBe(off.lock)
+    expect(on.up).toBeGreaterThan(0)
+    expect(on.lock).toBeGreaterThan(on.up)
+    const lows = on.lows.slice(0, on.lock + 60)
+    const first = lows.findIndex((l) => l > 0)
+    const last = lows.length - 1 - [...lows].reverse().findIndex((l) => l > 0)
+    let begins = 0
+    while (begins < on.views.length && JSON.stringify(on.views[begins]) === JSON.stringify(off.views[begins])) begins++
+    expect(begins).toBeGreaterThanOrEqual(on.up)
+    expect(begins - on.up).toBeLessThan(4)
+    for (let n = on.lock; n < on.views.length; n++) expect(on.views[n], `frame ${n}`).toEqual(off.views[n])
+    expect(off.lows.slice(0, off.lock + 60).every((l) => l === 0)).toBe(true)
+    const most = { eye: 0, turn: 0, roll: 0, screen: 0, field: 0 }
+    let held = 0
+    const share: number[] = []
+    for (let n = Math.max(1, on.up - 60); n < Math.min(on.views.length, on.lock + 60); n++) {
+      const a = on.views[n - 1] ?? poseOf({ ...ABOVE, at: [0, 0, 0], tall: 1080 })
+      const b = on.views[n] ?? poseOf({ ...ABOVE, at: [0, 0, 0], tall: 1080 })
+      const feet = on.feet[n] ?? on.feet[n - 1]
+      const p = basis(a)
+      const q = basis(b)
+      const d = { eye: Math.hypot(b.eye[0] - a.eye[0], b.eye[1] - a.eye[1], b.eye[2] - a.eye[2]), turn: angle(p.forward, q.forward), roll: angle(p.up, q.up), screen: 0, field: Math.abs(b.fov - a.fov) }
+      if (feet && on.feet[n - 1]) {
+        const fa = project(a, on.feet[n - 1]!)
+        const fb = project(b, feet)
+        d.screen = Math.hypot(fb.x - fa.x, fb.y - fa.y)
+      }
+      for (const k of ['eye', 'turn', 'roll', 'screen', 'field'] as const) {
+        most[k] = Math.max(most[k], d[k])
+        expect(d[k], `frame ${n - on.up} after the fists, ${k}`).toBeLessThanOrEqual(LIMIT[k])
+      }
+      if (on.lows[n]! > 0 && feet) {
+        const way = inTheWay(b, on.lows[n]!, feet)
+        for (const id of way.covers) expect(on.fades[n]?.[id], `frame ${n - on.up}, ${id} before the figure`).toBe(1)
+        for (const id of way.fills) expect(on.fades[n]?.[id], `frame ${n - on.up}, ${id} fills the frame`).toBe(1)
+        expect(inside(project(b, feet)), `frame ${n - on.up}, the feet`).toBe(true)
+        expect(inside(project(b, [feet[0], feet[1], TALL])), `frame ${n - on.up}, the head`).toBe(true)
+      }
+      if (on.lows[n]! >= 1 && feet) {
+        held++
+        share.push(Math.abs(project(b, [feet[0], feet[1], TALL]).y - project(b, feet).y) / 1080)
+      }
+    }
+    expect(held).toBeGreaterThan(40)
+    const afterLock = on.events.filter((e) => Number(e.split(' ')[1]) >= (on.lock * PER)).length
+    const faded = [...new Set(on.fades.slice(on.up, on.lock + 1).flatMap((f) => Object.keys(f ?? {})))]
+    console.log('the rise', JSON.stringify({ events: on.events.length, frames: on.views.length, afterLock, faded, fistsUp: on.up, firstLow: first - on.up, lastLow: last - on.up, lock: on.lock - on.up, held, share: [Math.min(...share), Math.max(...share)].map((v) => Math.round(v * 1000) / 1000), most }))
+  }, 120000)
 })
 
 describe('a block of the arena faded for a low lens (NEEDS)', () => {

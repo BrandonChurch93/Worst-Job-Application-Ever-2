@@ -196,3 +196,38 @@ The power-up of line 7 with `CAMERA.powerUp` on (in the working tree only, never
 The whole suite alone, 09:53Z to 09:59Z on 72db9a77: exit 1; 31 failed, 2367 passed, 29 skipped of 2427; 5 files of 209; 406.9 s; no timeouts. The reds, none of them mine to edit: `tests/config.test.ts` (26 tests: film.units adds up to 216.1 s, more than film.maxSeconds 165), `tests/b-shell-turn.test.ts:80`, `tests/polish-hand.test.ts:316`, `tests/polish-keys2.test.ts:145`, `tests/polish-turn2.test.ts:187` and `:206`. Whether they are red without this branch: UNKNOWN, not run.
 
 The whole suite alone again with the fade, 10:33Z to 10:41Z on 8a9265a8: exit 1; 31 failed, 2370 passed, 29 skipped of 2430; 5 files of 209; 427.0 s. The same five files red, with the same counts (26, 1, 1, 1, 2).
+
+## Fifth pass (task of 10:44Z; written 11:06Z; branch `agent/b-camera-rise`, a trial, not for merge)
+
+The task: the view that faces the arrow at the power-up of line 7, as an option behind `CAMERA.powerUp`, false in every commit.
+
+The base: `agent/b-camera` 1eda9dd8 with `origin/agent/b-boss-fast` fb485a3b merged in (fdf0193d). Two files clashed. `config/showcase.json` is not mine: I took the boss helper's beats and kept the longer finish of this unit (boss 53.9 s, `boss.finish` 39.8 to 52.7, `boss.press` 52.7 to 53.9). `src/pages/step4/index.ts` keeps both sides. The gold light the boss helper built after fb485a3b is not in this branch.
+
+The course, in `src/boss/finish/camera.ts` (`riseRig`, `riseShot`, `riseFades`) and `CAMERA.power` in `src/boss/tune.ts`. It is keyed to three marks of the page (`FISTS`, `BURST`, `RAISED`, all from `LINE7`) and to the figure's feet, with no frame number of its own:
+1. Until both fists are up: the view from above as it is. MEASURED: the first frame whose view differs from the option off is within 4 frames after `power-up`.
+2. From fists up the lens comes down and round in 0.5 s, eased, no cut, to a key beside the figure: 4 degrees under the fists looking up, 128 degrees round, the target moved 125 px toward the boss so that the figure stands in the left third and the boss right of and behind it.
+3. It holds through the build of the gold and the 0.8 s at full, pushing in 4 percent from fists up to the burst.
+4. From the burst to the lock (`RAISED`) it glides back to the view from above; at the lock the view is the fight's view. The lens is set on the way back so that the eye's distance grows evenly.
+5. The fade of the fourth pass (camera-NEEDS-7, no new patch) runs while the view is at least half low. In this window it fades `pillar.3` only.
+
+MEASURED, `npx vitest run tests/b-camera.test.ts` 11:05Z, exit 0, 27 passed (the three new tests are in the describe "the view that faces the arrow at the power-up of line 7, an option"):
+- Film, on against off: 677 events up to `finish-press`, the same in name, step and place; 638 of them from the figure's lying down (0.05 s before the lock) on. The views are the same before the fists and from the lock to the end.
+- First low frame 12 frames after fists up, last 125, the figure lies again 141 frames (2.35 s) after fists up.
+- Most between two frames: eye 120.2 px, turn 6.27 degrees, roll 6.23 degrees, screen (the feet) 27.4 px, field 1.30 degrees. The finish's limits are 130, 12, 9, 140, 1.5. The eye is faster here, on the pull back, than anywhere in the finish (57.5 there).
+- No block before the figure's box unless faded to 1; feet and head inside the frame in every low frame.
+- The figure's share of the frame's height: about 47 percent at 25.0 s and at 25.7 s, read by eye on the 1920x1080 frames with a ruled grid (tip of the arrow at row 345, soles at row 855 at 25.7 s), give or take a percent. By projection in the test, with the figure taken as 150 px high: 0.323 to 0.521 over all frames fully low, the start of the pull back among them.
+- Live, the keen visitor: events the same on and off; the page holds the pointer 3.2 s round the power-up (from the getup to the lock) with or without the option; `longestIgnored.pointer` 3.208 s up to 8 s after `power-up`, on and off alike, under 8. With the option on the view is low for 141 frames. So the same code can run live. Only the keen visitor is measured; I made no browser render of the live site with the option on.
+
+One test of my own was red after the merge and before any change of mine (`git stash`, 11:04Z): `tests/b-camera.test.ts:343`, "the film's events are where they were, in frames after the boss's fall", `finish-arms` 61 for 60. The boss helper's timing moves the fall to step 9315, the last step of a frame, so the floor of each side rounded apart. The steps from the fall to each event are 241, 1231, 2055, 2151, 2820, 3133, 3350, and those whole frames are the pinned ones. I changed the line to floor the difference; the pinned numbers are the same.
+
+The caption panel, STATED from `pipeline/change002/shell-film-captions.json` (made at the kept timing): on step 4 "One more round." is the box [821.6, 766, 276.8, 62] of 1920x1080, x 43 to 57 percent, y 71 to 77 percent. `rise-on-25.0-caption-box.jpg` has that box drawn in red by me on the frame at 25.0 s: it lies on the floor between the figure's right foot and the boss's near claw, over the low flames right of the foot and touching the claw. It is clear of the fists, the arrow and the left foot. The line ends when the gold is full, so the 0.8 s at full has no panel. The film's own captions are not drawn in any of these frames.
+
+The pictures, `pipeline/change002/proof/camera/`: `rise-strip-1.jpg`, `-2.jpg`, `-3.jpg` (23.6 s to 26.9 s of the boss unit every 0.1 s, tiles 320 wide, option on); `rise-on-25.0.jpg`, `rise-off-25.0.jpg`, `rise-on-25.7.jpg`, `rise-off-25.7.jpg` (1280x720; 25.7 s is in the 0.8 s at full); `rise-on-and-off-24.47.jpg` (the start of "One more round."; on and off are one picture there: `compare -metric AE` of the two 1920x1080 frames is 0). How they were made: the trial timing set in the working tree only (`pipeline/change002/fast-takes.json` into `public/audio/index.json`, `narratorMaxWordsPerSecond` 3, `npm run -s retime`), the switch on in the working tree only, `node pipeline/change002/boss-talk.mjs --from 23.6 --to 26.9 --every 0.1` and `--at 24.47,25.0,25.7 --format hd`; all of it put back before the commit.
+
+What I SEE:
+- 23.6 to 24.5: the film from above as it is. 24.6 to 24.9: the lens comes down and round. 25.0 to 26.1: the low view, horizon level; the arrow's white face, both fists up, flames round the feet and a bright disc of gold on the floor under them; the boss right of and behind the figure, its turret standing up from 25.6. 26.2: the burst. 26.3 to 26.5: up and back. 26.6 on: from above.
+- The fists are black against a near black ground. I read them by their lit rims; they do not stand out.
+- A tall pillar lit gold stands at the left edge of the frame, cut by the edge, beside the figure and not before it. It is not faded.
+- A green pane stands behind the figure's right fist and a pale one at the right edge behind the boss.
+
+Not done: no live browser render; the whole suite not run on this branch; the boss helper's later gold light not merged; `facing()` of the fourth pass is left in `camera.ts`, unused by the page.
