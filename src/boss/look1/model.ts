@@ -200,14 +200,14 @@ export function buildModel(): Model {
   const body = new THREE.Group()
   const hull = new THREE.Group()
   const hg = geo('hull', () => { const h = hullGeo(); shared.set('hull.dark', h.dark); shared.set('hull.trim', h.trim); shared.set('hull.bed', h.bed); shared.set('hull.pins', h.pins); shared.set('hull.joints', h.joints); return h.plate })
-  hull.add(mesh(hg, kit.hull), mesh(shared.get('hull.dark')!, kit.dark), mesh(shared.get('hull.trim')!, kit.bezel), mesh(shared.get('hull.bed')!, kit.bed), mesh(shared.get('hull.pins')!, kit.limb), mesh(shared.get('hull.joints')!, kit.joint))
+  hull.add(mesh(hg, kit.hull), mesh(shared.get('hull.dark')!, kit.dark), mesh(shared.get('hull.trim')!, kit.bezel), mesh(shared.get('hull.bed')!, kit.bed), mesh(shared.get('hull.pins')!, kit.gunBody), mesh(shared.get('hull.joints')!, kit.joint))
   body.add(hull)
 
   const wings = [1, -1].map((side) => {
     const g = new THREE.Group()
     const name = `wing${side}`
     const p = geo(name, () => { const w = wingGeo(side); shared.set(`${name}.dark`, w.dark); shared.set(`${name}.pins`, w.pins); shared.set(`${name}.base`, w.base); return w.plate })
-    g.add(mesh(p, kit.wing), mesh(shared.get(`${name}.dark`)!, kit.dark), mesh(shared.get(`${name}.pins`)!, kit.limb), mesh(shared.get(`${name}.base`)!, kit.joint))
+    g.add(mesh(p, kit.wing), mesh(shared.get(`${name}.dark`)!, kit.dark), mesh(shared.get(`${name}.pins`)!, kit.gunBody), mesh(shared.get(`${name}.base`)!, kit.joint))
     body.add(g)
     return g
   }) as [THREE.Group, THREE.Group]
@@ -234,7 +234,7 @@ export function buildModel(): Model {
   hatch.add(
     mesh(geo('hatch.plate', () => joined([chamfer(ho, -14, -4, 10, 4.5), ringPlate(oct(HATCH.hx - 12, HATCH.hy - 12, HATCH.c - 6), oct(HATCH.hx - 19, HATCH.hy - 19, HATCH.c - 9), 3, 0.8).translate(0, 0, -4.4)])), kit.hatch),
     hatchSeam,
-    mesh(geo('hatch.pins', () => screwsAt([[-80, -100], [80, -100], [-80, 100], [80, 100]], 0, 4.4, 7)), kit.limb)
+    mesh(geo('hatch.pins', () => screwsAt([[-80, -100], [80, -100], [-80, 100], [80, 100]], 0, 4.4, 7)), kit.gunBody)
   )
   const weak = glowMaterial(0xff2a12, 0)
   const lids = [-1, 1].map((side) => {
