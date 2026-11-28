@@ -407,6 +407,18 @@ describe('the narrator\'s voice: the pack', () => {
     expect(phraseStarts(new Float32Array(SR), SR, 'a b', M).starts).toBeNull()
   })
 
+  it('takes the longest pauses for the marks when a short breath inside a phrase was counted too, and gives no starts when the breath is not clearly shorter', () => {
+    const x = bursts(8, [[0.1, 1.0], [2.2, 2.9], [3.1, 3.6], [4.8, 5.8]])
+    const got = phraseStarts(x, SR, `a b ${mark} c d ${mark} e`, M)
+    expect(got.marks).toBe(2)
+    expect(got.found).toBe(3)
+    const starts: number[] = got.starts ?? []
+    expect(starts.length).toBe(3)
+    ;[0.1, 2.2, 4.8].forEach((t, k) => expect(Math.abs(starts[k]! - t)).toBeLessThan(0.005))
+    const y = bursts(8, [[0.1, 1.0], [2.2, 2.9], [3.6, 4.0], [4.8, 5.8]])
+    expect(phraseStarts(y, SR, `a b ${mark} c d ${mark} e`, M)).toEqual({ marks: 2, found: 3, starts: null })
+  })
+
   it('writes into the index of each line its words and its starts, in two lengths of the same words, and no starts where the pauses are not the marks', () => {
     const words = `a b ${mark} c d ${mark} e`
     keep('marketing.stroll.0', words, bursts(6, [[0.1, 1.2], [2.4, 3.5], [4.8, 5.8]]))
@@ -428,6 +440,57 @@ describe('the narrator\'s voice: the pack', () => {
     expect(read.kept).toBe(true)
     expect(read.phrases.map((p) => p.words)).toEqual(['a b', 'c d', 'e'])
     expect(read.phrases[2]!.to).toBe(6)
+  })
+})
+
+describe('the narrator\'s voice: lines 8 and 9 at the turn back to the careers page', () => {
+  const LETTER = { seconds: 12.7, starts: [0.1, 4, 8] }
+  const takes = { ...TAKES, 'decision.letter.0': LETTER }
+  const fade = LIVE.voiceFadeSeconds
+
+  it('ends line 8 at its next pause when Decision\'s button is pressed while it is said, owes the page its turn until that pause and the gap, and says line 9 on the turn', async () => {
+    const { s, ctx } = await ready('step5', takes)
+    ctx.currentTime = 50
+    s.event(ev('stamp', 'step5'), 'live')
+    expect(booked(s)).toEqual([[id('decision.letter.0'), 50]])
+    ctx.currentTime = 51.5
+    expect(s.owed('step5')).toBe(false)
+    s.event(ev('button-press', 'step5'), 'live')
+    expect(s.log().filter((e) => e.what === 'cut').map((e) => [e.line, e.start, e.seconds])).toEqual([[id('decision.letter.0'), 50, 4]])
+    expect(times(ctx, 'decision.letter.0')).toEqual([[50, 54]])
+    expect(s.owed('step5')).toBe(true)
+    ctx.currentTime = 54 + gap - 0.01
+    expect(s.owed('step5')).toBe(true)
+    ctx.currentTime = 54 + gap
+    expect(s.owed('step5')).toBe(false)
+    s.event(ev('page-turn', 'step5'), 'live')
+    expect(booked(s)[1]).toEqual([id('decision.reset.0'), near(54 + gap)])
+    expect(s.log().filter((e) => e.what === 'cut').length).toBe(1)
+    expect(s.said().lines.filter((l) => l.line === id('decision.letter.0') && l.end > 54 + 1e-9)).toEqual([])
+  })
+
+  it('lets line 8 out over the voice fade when the careers page comes while it is still said, and says line 9 after the fade and the gap', async () => {
+    const { s, ctx } = await ready('step5', takes)
+    ctx.currentTime = 50
+    s.event(ev('stamp', 'step5'), 'live')
+    ctx.currentTime = 52
+    s.event(ev('page-turn', 'step5'), 'live')
+    expect(times(ctx, 'decision.letter.0')).toEqual([[50, near(52 + fade)]])
+    expect(s.log().filter((e) => e.what === 'cut').map((e) => [e.line, e.seconds, e.why])).toEqual([[id('decision.letter.0'), near(2 + fade), 'the careers page came while it was said']])
+    expect(booked(s)[1]).toEqual([id('decision.reset.0'), near(52 + fade + gap)])
+    expect(s.owed('step5')).toBe(false)
+  })
+
+  it('says line 8 whole in the film, whatever is pressed, and owes the page nothing', async () => {
+    const { s, ctx } = await ready(null, takes)
+    ctx.currentTime = 50
+    s.event(ev('stamp', 'step5'), 'film')
+    ctx.currentTime = 51.5
+    s.event(ev('button-press', 'step5'), 'film')
+    s.event(ev('page-turn', 'step5'), 'film')
+    expect(times(ctx, 'decision.letter.0')).toEqual([[50, null]])
+    expect(s.log().filter((e) => e.what === 'cut')).toEqual([])
+    expect(s.owed('step5')).toBe(false)
   })
 })
 

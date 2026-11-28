@@ -214,7 +214,7 @@ describe('the film itself', () => {
     expect(lines.length).toBeGreaterThan(0)
     expect(new Set(lines.map((l) => l.id)).size).toBe(lines.length)
     const r = mixFilm({ sampleRate: 8000, fps: FPS, seconds, events, lines, sounds: new Map(), sfx: cfg.audio.sfx, duckDb: cfg.audio.duckDb, holdMusicSeconds: cfg.audio.holdMusicSeconds, targetLufs: cfg.audio.filmLoudnessLufs, truePeakDb: cfg.audio.truePeakDb, standIns: scriptStandIns([]) })
-    expect(r.sound.channels[0]!.length).toBe(seconds * 8000)
+    expect(r.sound.channels[0]!.length).toBe(Math.round(seconds * 8000))
     expect(r.mastered.silent).toBe(true)
     expect(r.missingLines).toEqual([])
     expect(r.placed.filter((p) => p.kind === 'line')).toEqual([])

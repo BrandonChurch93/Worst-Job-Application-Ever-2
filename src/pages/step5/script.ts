@@ -31,17 +31,24 @@ export const LIE = { turn: Math.PI / 2, rot: -0.17 } as const
 export const ARRIVE = { look: 0.52, there: 0.86 } as const
 // The letter: shocked, then proud, then scared. It starts as the counter spins, does its double take as the sheet lands and holds a tilt toward it; puffs up and holds; dusts itself off; struts to the sheet's corner; and the shadow is on it.
 export const HOPE = { spin: 2.03, tilt: 3.06, lean: -0.36, proud: 3.5, dust: 3.94, walk: [4.44, 4.8] } as const
-// Under the narrator's line the arrow lies flat through the first two phrases and peels itself up into the third (`FILM.heal`). On the fourth, the one that sounds like good news, it puffs up and leans to the letter as it did when the letter fell; on the fifth it sags.
-export const READ = { look: FILM.read, lean: HOPE.lean, sag: FILM.sag } as const
+// Under the narrator's line, the kept take, which has a pause before each phrase. The arrow lies flat under the first phrase and peels itself up in the pause after it (`FILM.heal`; the 4 s a damage may last end as the second phrase starts).
+// In the pause before the third phrase it dusts itself off (`dust`); on the third it turns to the letter, on edge (`hear`); in the pause before the fourth it draws a breath (`breath`).
+// On the fourth, the one that sounds like good news, it puffs up and leans to the letter as it did when the letter fell (`look`); in the pause after it, it hops (`hop`); on the fifth it sags (`sag`).
+export const READ = { dust: FILM.dust, hear: FILM.hear, breath: FILM.breath, look: FILM.read, lean: HOPE.lean, hop: FILM.hop, sag: FILM.sag } as const
 // The button: the word is beaten. It looks at the one button there is, drags itself there, leans back from it for 0.3 s, rises and drives its tip into it as the line ends.
-export const GIVE = { look: FILM.press - 1.42, walk: [FILM.press - 1.01, FILM.press - 0.4], strike: FILM.press - 0.1 } as const
+// The last phrase of the take is 1.73 s long and the press is 0.14 s before its end, so the look comes 0.31 s after the sag and the walk 0.26 s after the look.
+export const GIVE = { look: FILM.press - 1.28, walk: [FILM.press - 1.02, FILM.press - 0.41], strike: FILM.press - 0.1 } as const
 
 export const CUES: Cue[] = [
   { at: HOPE.spin, react: 'flinch' },
   { at: HOPE.tilt, aim: HOPE.lean },
   { at: HOPE.proud, aim: null },
   { at: HOPE.dust, react: 'dustOff' },
+  { at: READ.dust, react: 'dustOff' },
+  { at: READ.hear, act: 'nervous', aim: READ.lean },
+  { at: READ.breath, react: 'anticipate' },
   { at: READ.look, act: 'proud', aim: READ.lean },
+  { at: READ.hop, react: 'jump' },
   { at: READ.sag, act: 'exhausted', aim: null },
   { at: GIVE.look, react: 'doubleTake' },
   { at: GIVE.strike, react: 'stamp' }

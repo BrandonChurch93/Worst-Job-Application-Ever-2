@@ -272,7 +272,7 @@ describe('change note 003: line 1, the moment sound is allowed on the careers pa
     expect(booked(s)).toEqual([])
   })
 
-  it('says the line of the turn back to the start after line 8 and the gap, keeps it through the turn, and says nothing else on the restart: line 1 is said once a visit', async () => {
+  it('says the line of the turn back to the start on that turn: line 8, still being said, goes out over the voice fade, line 9 follows after the gap and is kept through the turn, and nothing else is said on the restart: line 1 is said once a visit', async () => {
     const { s, ctx } = await ready('marketing')
     ctx.currentTime = 100
     s.event(ev('page-turn', 'marketing'), 'live')
@@ -281,7 +281,8 @@ describe('change note 003: line 1, the moment sound is allowed on the careers pa
     ctx.currentTime = 102
     s.event(ev('page-turn', 'step5'), 'live')
     s.page('marketing')
-    expect(booked(s).slice(1)).toEqual([[id('decision.letter.0'), 100], [id('decision.reset.0'), 100 + L + gap]])
+    expect(booked(s).slice(1)).toEqual([[id('decision.letter.0'), 100], [id('decision.reset.0'), 102 + LIVE.voiceFadeSeconds + gap]])
+    expect(s.log().filter((e) => e.what === 'cut').map((e) => [e.line, e.seconds])).toEqual([[id('decision.letter.0'), 2 + LIVE.voiceFadeSeconds]])
     expect(back(s)).toEqual([])
     ctx.currentTime = 300
     s.event(ev('step', 'marketing'), 'live')
@@ -349,9 +350,12 @@ describe('change note 003: no line talks over another', () => {
     const heard = s.log().filter((e) => e.what === 'spoken' && !gone.has(`${e.line}@${e.start}`)).sort((a, b) => a.start! - b.start!)
     expect(new Set(heard.map((e) => e.line)).size).toBe(heard.length)
     expect(heard.length).toBeGreaterThanOrEqual(6)
+    // A line that was cut lasts what its cut says: line 8 is, when the careers page comes while it is said.
+    const cut = new Map(s.log().filter((e) => e.what === 'cut').map((e) => [`${e.line}@${e.start}`, e.seconds!]))
     for (let i = 1; i < heard.length; i++) {
       const parts = heard[i]!.line === id('boss.unfold.1') || heard[i]!.line === id('boss.unfold.2')
-      expect(heard[i]!.start! - (heard[i - 1]!.start! + heard[i - 1]!.seconds!), heard[i]!.line).toBeGreaterThanOrEqual((parts ? lineGap : gap) - 1e-9)
+      const before = heard[i - 1]!
+      expect(heard[i]!.start! - (before.start! + (cut.get(`${before.line}@${before.start}`) ?? before.seconds!)), heard[i]!.line).toBeGreaterThanOrEqual((parts ? lineGap : gap) - 1e-3)
     }
   })
 })

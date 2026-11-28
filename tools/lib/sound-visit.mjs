@@ -73,7 +73,9 @@ function fakeFetch(index) {
   }
 }
 
-export async function visit(load, c, bot, seed = c.seed, calls = null) {
+// held: the visit is run as if each page held its turn while the narrator owes it (sound.owed): the stage stands still for that long before the turn is told to the sound.
+// The times of the visit are then those of the sound's clock, the stage's time plus what was held.
+export async function visit(load, c, bot, seed = c.seed, calls = null, held = false) {
   const index = JSON.parse(fs.readFileSync(at('public', 'audio', 'index.json'), 'utf8'))
   const heard = []
   const made = []
@@ -118,39 +120,46 @@ export async function visit(load, c, bot, seed = c.seed, calls = null) {
     let volume = -1
     let entry = -1
     let idle = false
+    let heldFor = 0
     while (!stage.finished && stage.step < limit) {
       stage.advance(Math.round(stepHz / 60))
-      ctx.currentTime = stage.time
-      if (stage.entryIndex !== entry) {
-        entry = stage.entryIndex
-        turns.push({ at: Number(stage.time.toFixed(2)), page: stage.page.id })
-      }
+      ctx.currentTime = stage.time + heldFor
       for (; sent < stage.events.length; sent++) {
         const e = stage.events[sent]
         events[e.name] = (events[e.name] ?? 0) + 1
-        calls?.push({ at: stage.time, event: { ...e } })
+        if (held && e.name === 'page-turn' && e.page !== undefined) {
+          while (sound.owed(e.page)) {
+            heldFor += 1 / 60
+            ctx.currentTime = stage.time + heldFor
+          }
+        }
+        calls?.push({ at: stage.time + heldFor, event: { ...e } })
         sound.event(e, 'live')
+      }
+      if (stage.entryIndex !== entry) {
+        entry = stage.entryIndex
+        turns.push({ at: Number((stage.time + heldFor).toFixed(2)), page: stage.page.id })
       }
       const reached = stage.gagsReached
       for (; gags < reached.length; gags++) {
-        calls?.push({ at: stage.time, gag: reached[gags] })
+        calls?.push({ at: stage.time + heldFor, gag: reached[gags] })
         sound.beat(reached[gags], 'live')
       }
       const v = stage.page.volume?.() ?? 1
       if (v !== volume) {
         volume = v
-        calls?.push({ at: stage.time, volume: v })
+        calls?.push({ at: stage.time + heldFor, volume: v })
         sound.setVolume(v)
-        steps.push({ at: Number(stage.time.toFixed(2)), page: stage.page.id, volume: Number(v.toFixed(3)), output: Number(ctx.gains[0].gain.value.toFixed(3)) })
+        steps.push({ at: Number((stage.time + heldFor).toFixed(2)), page: stage.page.id, volume: Number(v.toFixed(3)), output: Number(ctx.gains[0].gain.value.toFixed(3)) })
         const last = volumes[volumes.length - 1]
-        const row = { at: Number(stage.time.toFixed(2)), page: stage.page.id, volume: Number(v.toFixed(3)) }
+        const row = { at: Number((stage.time + heldFor).toFixed(2)), page: stage.page.id, volume: Number(v.toFixed(3)) }
         if (last && last.page === row.page && row.at - last.at < 0.5 && volumes.length > 1 && volumes[volumes.length - 2].page === row.page && row.at - volumes[volumes.length - 2].at < 0.5) volumes[volumes.length - 1] = row
         else volumes.push(row)
       }
       const still = stage.time - lastInput
       if (calls && (still >= c.live.idleSeconds) !== idle) {
         idle = !idle
-        calls.push({ at: stage.time, quiet: still })
+        calls.push({ at: stage.time + heldFor, quiet: still })
       }
       sound.quiet(still)
     }
@@ -158,7 +167,7 @@ export async function visit(load, c, bot, seed = c.seed, calls = null) {
     const log = sound.log().map((e) => ({ ...e, page: pageAt(e.at) }))
     const loops = heard.filter((h) => h.loop || h.id === 'hold-music').map((h) => ({ id: h.id, page: pageAt(h.asked), start: Number(h.start.toFixed(2)), stop: h.stop === null ? null : Number(h.stop.toFixed(2)) }))
     return {
-      bot, seed, finished: stage.finished, seconds: Number(stage.time.toFixed(2)), skips: events.skip ?? 0, turns, gags: stage.gagsReached,
+      bot, seed, finished: stage.finished, seconds: Number((stage.time + heldFor).toFixed(2)), heldSeconds: Number(heldFor.toFixed(2)), skips: events.skip ?? 0, turns, gags: stage.gagsReached,
       sounds: heard.length, lines: heard.filter((h) => h.id.startsWith('line.')).length, voices: heard.filter((h) => h.id.startsWith('line.')).map((h) => ({ id: h.id, start: Number(h.start.toFixed(2)), stop: h.stop === null ? null : Number(h.stop.toFixed(2)) })), log, loops, volumes, volumeSteps: steps, events
     }
   } finally {
