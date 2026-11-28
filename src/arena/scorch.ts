@@ -92,7 +92,6 @@ export function scorchReach(s: Scorch, W: number, H: number): { i0: number; i1: 
   }
 }
 
-const CRACKS = 19
 
 // Rows `from` up to `to` of the scorch, written into `data` (W by H texels over the page, RGBA, row 0 at the bottom of the page):
 // red the soot, green how deep the surface is burnt away, blue the embers, alpha when the place burns: 1/255 at once, 255 as the blast ends. 0 where the ground is clean.
@@ -114,7 +113,6 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
       if (e.px > 150) continue
       const fine = fbm(x / 5, y / 5, seed + 44)
       const mid = fbm(x / 24, y / 24, seed + 45)
-      // The rim is ragged at the size of a hand, and soft: the black thins out into a brown grey haze.
       // The rim is drawn out into streaks that run with the beam, ragged at the size of a hand, and soft: the black thins out into a brown grey haze.
       const streak = noise(e.along / 110 + 3.3, e.across / 7.5, seed + 46)
       const px = e.px + 20 * (fbm(x / 30, y / 30, seed + 52) - 0.5) + 34 * (streak - 0.5)
@@ -125,36 +123,25 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
         const speck = fbm(x / 4.2, y / 4.2, seed + 47)
         if (speck > 0.69) soot = Math.max(soot, 0.9 * step(120, 14, px) * step(0.69, 0.77, speck))
       }
-      // Hairline cracks: along the trench inside it, and out from the burn like the spokes of a wheel.
+      // Hairline cracks along the trench, inside the black only.
       const fissure = step(0.91, 0.975, 1 - Math.abs(2 * noise(e.along / 52 + 7.7, e.across / 6, seed + 48) - 1)) * step(6, -18, e.px)
-      let spoke = 0
-      {
-        const bx = x - s.bx, by = y - s.by
-        const r = Math.hypot(bx, by)
-        const turn = (Math.atan2(by, bx) / (Math.PI * 2) + 0.5) * CRACKS
-        const n = Math.round(turn) % CRACKS
-        const reach = SCORCH.burn * (1.3 + 1.1 * rnd(seed, 430 + s.tag, n))
-        if (r > SCORCH.burn * 0.5 && r < reach) {
-          const bend = 0.34 * (rnd(seed, 431 + s.tag, n) - 0.5) + 0.26 * (noise(r / 34, n * 3.7, seed + 49) - 0.5)
-          let off = turn - Math.round(turn) - bend
-          if (off > 0.5) off -= 1
-          const dist = Math.abs(off) * ((Math.PI * 2) / CRACKS) * r
-          const thick = 0.3 + 0.7 * (1 - r / reach)
-          spoke = step(thick + 0.7, thick * 0.4, dist) * (rnd(seed, 432 + s.tag, n) > 0.36 ? 1 : 0)
-        }
-      }
-      soot = Math.max(soot, 0.92 * fissure, 0.8 * spoke)
+      soot = Math.max(soot, 0.92 * fissure)
       const core = step(0, -30, px)
-      const depth = 0.16 * core * mid + 0.6 * Math.max(fissure, spoke)
+      const depth = 0.16 * core * mid + 0.6 * fissure
       // Embers: short streaks down the middle of the trench, and a loose ring of them inside the rim of the burn.
       let ember = 0
       if (px < -6) {
         // Two loose rows of them down the line, right through the burn, and a few strays in the black beside the rows.
-        const band = Math.max(Math.exp(-(((Math.abs(e.across) - SCORCH.half * 0.34) / (SCORCH.half * 0.24)) ** 2)), 0.22 * step(-10, -40, px))
-        const patch = step(0.42, 0.62, noise(e.along / 85 + s.tag * 3.7, e.across / 85 + 5.5, seed + 50))
+        const band = Math.max(Math.exp(-(((Math.abs(e.across) - SCORCH.half * 0.34) / (SCORCH.half * 0.3)) ** 2)), 0.3 * step(-10, -40, px))
+        const patch = step(0.38, 0.6, noise(e.along / 85 + s.tag * 3.7, e.across / 85 + 5.5, seed + 50))
         const blob = fbm(e.along / 14 + 50, e.across / 5, seed + 51)
         // Small and orange: coals in soot, not the light of a broken slab.
         ember = 0.62 * step(0.6, 0.7, blob) * (0.35 + 0.65 * step(0.36, 0.56, fine)) * patch * band
+        // And veins of them: the cracks of the charred crust glow, drawn out a little along the beam.
+        const vein = 1 - Math.abs(2 * fbm(e.along / 34 + 9.1, e.across / 17 + 2.3, seed + 53) - 1)
+        const lit = step(0.3, 0.55, noise(e.along / 120 + 1.7, e.across / 70 + 8.8, seed + 54))
+        const broken = step(0.42, 0.58, fbm(x / 9, y / 9, seed + 55))
+        ember = Math.max(ember, 0.74 * step(0.95, 0.995, vein) * lit * broken * step(-4, -30, px) * (0.5 + 0.5 * fine))
       }
       if (soot < 0.012 && ember < 0.012) continue
       // When it burns: the front runs out along the line in the first part of the blast, and the black spreads from the middle to the rim for the rest of it.
