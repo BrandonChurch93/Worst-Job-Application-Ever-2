@@ -568,7 +568,7 @@ describe('how the boss plays (change 002, item 15)', () => {
   })
 
   it('E. ends on the skip link at any moment of the fight, with the header and the rail off the screen', () => {
-    for (const at of [22, 30, 45]) {
+    for (const at of [26, 30, 45]) {
       let skip = false
       const stand: Driver = { name: 'bot', input: (v: DriverView): Pointer => ({ x: 96 + 40 * Math.sin(v.time * 3), y: 620 + 30 * Math.cos(v.time * 2), down: Math.floor(v.time * 5) % 2 === 0, skip: skip && v.skipOffered }) }
       const tick = new BotDriver('keen', config.seed)

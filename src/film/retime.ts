@@ -2,7 +2,7 @@
 // A line with an event starts when the film gives that event on the line's page. A later part of a line starts straight after the part before it.
 // No line starts sooner than the end of the line before it plus the gap between two lines (audio.lineGapSeconds): it waits, as it does on the live site.
 // The start is kept in the script as `at`, a share of the line's beat. `at` is rounded up, so that a start is never sooner than it should be.
-import { spoken, type SpokenRow } from '../audio/cues'
+import { jumpsLiveOnly, spoken, type SpokenRow } from '../audio/cues'
 import { keyBeat, standIns, type StandIn } from '../audio/standin'
 import { config, type Config } from '../config'
 
@@ -57,7 +57,7 @@ export function lineStarts(events: FilmEvent[], script: Map<string, StandIn> = s
     let start = Math.max(wanted, lastEnd + gap)
     const waited = start - wanted
     // A wait is a fault where the page keeps time by the line: a line with a jump, or one that later parts follow. Elsewhere it is a pause before the line.
-    const led = row.jump !== undefined || Object.values(rows).some((r) => r.after === key)
+    const led = (row.jump !== undefined && !jumpsLiveOnly(key)) || Object.values(rows).some((r) => r.after === key)
     if (row.after === undefined && waited > c.film.beatToleranceSeconds) (led ? problems : notes).push(`the line ${key} waits ${waited.toFixed(3)} s for the line before it to end${led ? ': its page keeps time by it, and the picture runs that far ahead of the words' : ''}`)
     if (start < from) {
       if (from - start > c.film.beatToleranceSeconds) problems.push(`the line ${key} starts ${(from - start).toFixed(3)} s before its beat ${beat.id}, more than film.beatToleranceSeconds`)

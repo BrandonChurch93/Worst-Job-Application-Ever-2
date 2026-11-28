@@ -210,7 +210,8 @@ export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'ste
 // until: the events on that page that end the line's moment. A line that has not started by then is not said. A turn or a skip of its page ends every moment.
 // after: the line is a later part of the line named: it is said straight after it, with the gap between two lines of a beat.
 // mark: an event the narrator itself gives out when that phrase of the line starts (-1 is the last phrase); the cue of that event is played then.
-// jump: an event on the line's page that ends the line at its next pause mark: the phrase being said is said to its end, the rest is dropped, and the parts after it follow at once.
+// jump: an event on the line's page that ends the line early, where earlyEnd says: the rest is dropped, and the parts after it follow at once.
+// A line its page's turn waits for (turnWaitsFor) ends at its next pause mark, so that the visitor is not held for a sentence.
 // keeps: the line is not taken back when its page is left; it is set off by the turn away from that page.
 // loud: the caption shows the line in capitals, large.
 export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string }; jump?: string[]; keeps?: boolean; loud?: boolean; steps?: { next: string; last: string; ends?: string } }
@@ -374,3 +375,19 @@ export function openingEvents(o: OpeningPlan, fps: number): { name: string; fram
   for (const t of o.linesDone) out.push({ name: 'ui-tick', frame: frame(t), x: 960 })
   return out
 }
+
+// A phrase that ends a sentence of the script: its words end in a full stop, a question mark or an exclamation mark.
+export const endsSentence = (words: string): boolean => /[.?!]$/.test(words.trim())
+// The longest a visitor's event waits for the sentence being said to end, in seconds: the first sentence of line 7, "The applicant is ready to give up.",
+// is 5.182 s in its kept take, so a click in it is always answered with the whole sentence, and no click waits longer than this.
+export const SENTENCE_WAIT_SECONDS = 5.2
+// Where a line that a visitor's event ends early stops, in seconds from the line's start: at the end of the sentence being said when that is no more than
+// SENTENCE_WAIT_SECONDS after the event, otherwise at its next pause. ends: the end of each phrase; sentenceEnds: those of them that end a sentence; at: when the event came.
+// The voice (src/audio/index.ts) and the page that keeps time by the line (step 4) both read this, so they stop at the same moment.
+export function earlyEnd(ends: readonly number[], sentenceEnds: readonly number[], at: number): number {
+  const pause = ends.find((e) => e >= at - 1e-6) ?? ends[ends.length - 1] ?? 0
+  const sentence = sentenceEnds.find((e) => e >= at - 1e-6)
+  return sentence !== undefined && sentence - at <= SENTENCE_WAIT_SECONDS ? sentence : pause
+}
+// A line that jumps on the live site only: in the film it is said whole, so nothing of the film keeps time by its jump.
+export const jumpsLiveOnly = (key: string): boolean => Object.values(turnWaitsFor).includes(key)
