@@ -191,7 +191,7 @@ export const FINISH = {
 // The close view of the finish: the part of the floor the picture shows from the boss's fall to the press of Submit.
 export const CLOSE = {
   x: 300, // px, left edge
-  y: 270, // px, top edge
+  y: 270, // px, top edge: the arrow, the button and the burn 110 px under mid height, and clean ground over the burn for the words
   w: 960, // px across
   h: 540, // px down
   edge: 40 // px inside the edge that the arrow keeps to when it is led
@@ -200,9 +200,10 @@ export const CLOSE = {
 // The last moment: when the body is gone the arrow walks to the button that is left, drops to its knees and strikes it with its right fist.
 export const LAST = {
   stand: [440, 650], // px, where the arrow stands for the charge and the blast
-  reach: 200, // px left of the button's middle at which it kneels
+  reach: LOOK1_ON ? 144 : 200, // px left of the button's middle at which it kneels: with the look, 31 px left of the end of its 226 px button
+  words: -290, // px from the button's middle to the words "Click to submit", so they stand over it: the arena's burn is black to 138 px and sooty to about 230 px from it, and under it lie the cracks of the place the button was torn from
   wait: 0.4, // s after the body is gone before it sets off (`finish-walk`), while its arms go on dropping
-  speed: 114.3, // px/s of its walk: 2.8 s for the 320 px from where it stood to the button
+  speed: LOOK1_ON ? 134.3 : 114.3, // px/s of its walk: 2.8 s from where it stood to its knees, 376 px with the look and 320 px without
   alone: 6, // s without a move or a press after which it walks there and strikes by itself, live site
   led: 20, // s of being led about after which it walks there and strikes by itself, live site
   most: 2.8, // s at most that its walk to the button takes when it goes by itself

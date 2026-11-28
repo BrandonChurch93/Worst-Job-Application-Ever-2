@@ -156,6 +156,32 @@ Looked at with the switch `true` in a second work tree, at 84e223bc.
 
 - So the switch stays `false`. To turn it on: those nine tests must read the look's and the arena's shapes, and the finish helper's module must be in.
 
+## As seen in the pictures of 01:23 (stand-in, `LOOK1_ON` false, pop-ups off)
+
+- Film, `npm run sheet -- --beat boss.finish --tier draft` (2:39.80 to 2:51.37 of the film, 12 frames): the ball grows at the arrow over four frames; the blast is a flat orange block with a pale band from the arrow to the button; after it the button lies alone, smoking; the arrow walks to it; the words "Click to submit" are under the button from 2:48.20; the last frame shows the arm drawn back. The knees are not told apart from the walk at this size.
+- Live site, `node pipeline/change002/boss-live.mjs --at 53.9,54.45,55.4,57.6,59.2,60.4,61.5,61.95` (keen bot, seed 20261124, seconds of step 4): the charge at 54.45, the beam at 55.40, the arrow led to the button at 57.60, on its knees at 60.40, the arm up at 61.50, the blow at 61.95.
+- Two black bands lie on the floor through the whole finish on the live site: the scars of the big cannon's blasts (`break-N` in `drawArena`, the stand-in's arena). One of them lies over the words under the button, so only "Click" can be read. A grey block of the arena stands between the arrow and the button and the beam goes through it. Neither was changed: both are the stand-in's drawing, and with the look on the arena draws its own floor.
+- Live site, `npm run sheet -- --live --bot keen --step 4`: the corner cannon's lane and the big blast's scar are black bands in the stand-in.
+
+## As seen on the real page at 01:51 (the Builder's merge 56 at 6259284c, merged with e9341149, `LOOK1_ON` true in a trial tree only, pop-ups off)
+
+`node pipeline/change002/boss-frames.mjs --frames 10280,10330,10490,10600,10790,10820,10900,10990,11028` (film frames at 60 a second; the unit starts at 121.3 s of that film): the fall, the arms, the charge, the blast, the button on the ground, the walk, the knees, the fist, the press.
+
+- The button after the blast: face up, level, the word Submit readable, its middle at (961, 650) MEASURED in frame 10790, on the burn. The burn in this tree is a long streak from the arrow's place to past the button; the arena helper's round burn of 01:40 was not in the tree.
+- The words "Click to submit" at (960, 360): dark on bare pale ground in frames 10790 to 11028; two specks beside them.
+- A toppled grey pillar on its star base lies over the place the arrow stands for the charge and the blast, (440, 650): the slab covers about x 372 to 548, y 476 to 640. In "the arms" and "the charge" the arrow's body is half hidden under its lower edge. Not fixed: the pillar is not my drawing, and `LAST.stand` is the start of the arena's trench and of the finish helper's figure. Mailed to the arena helper and the Builder at 01:53.
+- The arrow, its arms, the ball and the beam in these frames are my stand-in (`src/boss/finish.ts`): the ball is a flat orange disc beside the arrow, the beam a flat orange block with a pale band. The finish helper's figure is not in these frames.
+- The knees: the arrow is 144 px left of the button's middle, not told apart from the walk at sheet size; the fist: an arm drawn back over the arrow; the press: a black arm from the arrow to the button's left end.
+
+## As seen on the real page at 02:07 (merge 56 at 4a11790b, the arena at 876b2e5c and my e9341149 merged in a trial tree, `LOOK1_ON` true there only, pop-ups off)
+
+The same nine frames, taken again after the arena helper's mail of 02:06 (the pillar no longer falls on the stand; the round burn).
+
+- The arms and the charge: the arrow at (440, 650) is in plain view; the pillar's base is a low stump at about (563, 722), under the line to the button.
+- The button on the ground: face up, level, the word readable, in the middle of a round burn; its middle at (961, 650) as before.
+- The words "Click to submit" at (960, 360): on bare pale ground in the five frames from the button on the ground to the press.
+- The ball, the beam, the arms and the arrow are still my stand-in.
+
 ## Decisions
 
 1. The boss's measures are one object, `SHAPE`, chosen by `LOOK1_ON`.
@@ -192,6 +218,9 @@ Looked at with the switch `true` in a second work tree, at 84e223bc.
 32. `BASE` in `src/pages/step4/script.ts` is 9.004, the second the forming was seen at when the fight's table was tuned, so the table keeps its place against the forming to the step. With 9 the first volley of the film let one dart by the shield (MEASURED: test "A. moves the health bar by less than a pixel for a whole volley on the shield", 3 glances in place of 5).
 33. A click on the button while the arrow still walks is a wish and no longer takes the walk (above).
 34. The key `boss-fight` at 0.46 of its beat (a `NEEDS:` commit of one number), so the key picture has darts in flight.
+35. The Builder's mail of 01:31, thing 2: one point for the fallen button, (960, 650). It is `FALLEN` in `src/boss/plan.ts`, `view.finish.x1, y1`, `view.scorch.x1, y1` (the middle of the arena's burn, STATED by the arena helper from `scorchFrom` in `src/arena/scorch.ts`) and the look's `LEFT`. The finish helper's kneel spot is (816, 656) in its code; my page's own kneel with the look on is (816, 650): `LAST.reach` is 144 with the look on and 200 with it off, and `LAST.speed` is 134.3 px/s with the look on and 114.3 with it off, so the film's walk of 376 px or of 320 px takes 2.8 s either way. Mailed to the arena and finish helpers at 01:39.
+36. The same mail, thing 3: the words "Click to submit" stand over the button, at (960, 360), 290 px above its middle (`LAST.words` -290 in `src/boss/tune.ts`). The close view is where it was (x 300 to 1260, y 270 to 810). Why over and not under: the arena's burn is black from about y 512 to y 788 at the button and sooty to about y 880 (STATED by the arena helper, mail of 01:40); under that, from about y 840 to the frame's edge, lie the cracks and the hole of the place the button was torn from. Tried first and dropped (pushed at e5701a20, seen in the picture of the real page): the words at (960, 895) with the view 110 px lower; they stood on those cracks, 25 px from the frame's edge. MEASURED at (960, 360) on the Builder's merge 55 with the look on, frames 10790 and 10990 of the film: the words are dark on the pale ground, with no burn, crack or wreck under them; two specks lie beside them.
+37. The Builder's ruling of 01:31 on the crack: `button-crack` at 8.079 s of the unit, 4.279 s after the tick and 0.096 s before the words "takes that as a threat", stays as it is.
 
 ## Events
 
@@ -271,7 +300,30 @@ Tests of my own page that pinned a thing the note or a mail changed:
 
 ## Checks at the last push
 
-CHECKS_TABLE
+All at e9341149, `origin/main` (b66ff094) merged in, 01:51 to 02:01 UTC, one after another. Pop-ups off, `LOOK1_ON` false.
+
+| Check | EXIT | Its own line |
+| --- | --- | --- |
+| `npx vitest run tests/b-boss.test.ts tests/boss.test.ts tests/boss-closer-acting.test.ts tests/boss-fight.test.ts` | 0 | "Tests 84 passed (84)" |
+| `npm run determinism` | 0 | "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders" |
+| `npm run bots` | 0 | "keen reached every one of the 38 gags on every seed", "bots: all clear"; keen: pointer ignored 4.24 s on each of five seeds |
+| `npm test` | 1 | "Test Files 8 failed, 176 passed, 13 skipped (197)", "Tests 34 failed, 2214 passed, 17 skipped (2265)" |
+| `npx tsc --noEmit -p .` | 0 | no output |
+
+The 34 red tests, none in a file of mine:
+
+| File | Red | Its own line | Why |
+| --- | --- | --- | --- |
+| `tests/config.test.ts` | 26 | the start check: film.units 184.6 s is over film.maxSeconds 165 | the note made the unit 63.6 s; `film.maxSeconds` stays 165 by the Builder's ruling; carried |
+| `tests/cut-of-build.test.ts` | 2 | "are, byte for byte, what this build gives: run npm run cut and commit cut/ when this fails"; "is read from the committed cut list and carries the sum of that file" | `cut/` is not remade, as ordered |
+| `tests/film-cut.test.ts` | 1 | "expected 10956 to be 11076" | the same: the cut list is of the film before line 6 |
+| `tests/polish-turn2.test.ts` | 2 | the last turn "expected 140.5", now 172.1 | the film is longer by the note |
+| `tests/roughcut.test.ts` | the file | "rough cut: the plan has no entry for beat boss.finish" | the rough cut's plan is not my file |
+| `tests/audio-cues.test.ts` | 1 | "finish-fire: expected [...] to include undefined" | no cue for the new event; the cues are the Builder's |
+| `tests/site-finish-film.test.ts` | 1 | "expected 1 to be greater than or equal to 3" | pop-ups are off in every run sent |
+| `tests/site-finish.test.ts` | 1 | "expected 38 to be 37" | the new beat `boss.finish` |
+
+My page's two tests of the visitor's hand are green: `tests/site-loading.test.ts` (the keen bot's pointer is ignored 4.24 s with no wait and 7.52 s with every turn held 4 s, under `live.controlTakenMaxSeconds` 8) and `tests/site-pointer.test.ts`.
 
 ## Not done
 
@@ -283,4 +335,8 @@ CHECKS_TABLE
 - No sound of mine is in: each new event plays the nearest cue the build has, or none. `button-down`: the look's button is on the ground 0.21 s before `boss-gone`, 1.6 s before my mark; the look helper says the sound belongs there. My mark stays, because the live click on Submit is live from it.
 - The body's release of a taken arrow after 7.5 s is worked round by taking it again (above).
 - 12 of 200 keen~ fights are under 25 s and 5 are over 45 s (table above).
-- After the blast, with the look on, the arena helper measured the stand-in's plain button near (735, 610) while the burn is at (960, 650), and the words "Click to submit" dark on the dark scorch near (990, 780). Not looked into by me: with the look on the look's own button is drawn, and mine is not, from 12d42968 on; the words' colour on the scorch is open.
+- After the blast, with the look on, the arena helper measured a plain button near (735, 610). In my frames of the real page the button lies at (961, 650) (above); I did not find where the other picture came from.
+- The arrow under the toppled pillar at `LAST.stand`: fixed by the arena helper at 876b2e5c (STATED by it, with `tests/arena-clear.test.ts`; seen by me in the frames of 02:07). Not in the Builder's merge when I looked (4a11790b).
+- On the live site with the stand-in (`LOOK1_ON` false) the fallen button lies tilted by about 15 degrees with its word readable; with the look on the look's button is drawn level.
+- The picture of the stand-in's finish in the film (01:23) was not taken again after the words moved over the button; the live site's was (02:05).
+- `cut/` was not remade after line 6 moved the unit's marks (ordered: do not remake it).

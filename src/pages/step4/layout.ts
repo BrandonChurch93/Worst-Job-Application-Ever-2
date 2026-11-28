@@ -5,7 +5,7 @@ import { block } from '../../shell/metrics'
 import { button, buttonWidth, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { ARENA, FALLEN, HOME, SLAB_H, SOCKET } from '../../boss/plan'
-import { BANNER_LEFT, POPUP_RIGHT, RACK_GAP } from '../../boss/tune'
+import { BANNER_LEFT, LAST, POPUP_RIGHT, RACK_GAP } from '../../boss/tune'
 import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../boss/weapons'
 
 const heights = config.scale.heights
@@ -89,7 +89,7 @@ export function makeLayout(): Step4Layout {
     { states: ['fight'], part: 'health-bar' }
   )
 
-  const defeated = text('defeated', 'copy:step4.defeated', { ...TYPE.value, align: 'centre' }, FALLEN.x, FALLEN.y + 84, { part: 'type', states: ['down'] })
+  const defeated = text('defeated', 'copy:step4.defeated', { ...TYPE.value, align: 'centre' }, FALLEN.x, FALLEN.y + LAST.words, { part: 'type', states: ['down'] })
 
   const slabPlans: SlabPlan[] = SLAB_KEYS.map((key) => {
     const b = block(SLAB_TYPE.font, words(key), SLAB_TYPE.px)
