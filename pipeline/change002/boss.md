@@ -655,13 +655,13 @@ Mend, in my files only: `LINE7.lead` 0.1 s (src/boss/tune.ts). A press from `bos
 
 Why 0.1 s: the page and the voice are one frame apart at most in the stepped runs (0.017 s). On a visitor's machine the frames may be longer; 0.1 s covers a frame of a tenth of a second. STATED, not measured in a browser.
 
-MEASURED after the mend (`BOSS_SAY=1 npx vitest run tests/b-boss.test.ts -t "rulings of 04:46, 3"`, near path and self-tick path, the same numbers on both, seconds after the tick):
+MEASURED after the mend (`BOSS_SAY=1 npx vitest run tests/b-boss.test.ts -t "rulings of 04:46, 3"`, near path and self-tick path, the same numbers on both but for power-up, which is 0.001 s later on the self-tick path, seconds after the tick):
 - pressed as soon as formed, 1.5 s before the end of line 6, 0.1 s before it, or as line 7 starts: boss-turn 8.887, first sentence of line 7 ends 13.972 (8.790 + 5.182), boss-music 18.079, power-up 20.762, turret-lock 24.121. Pointer held 3.304 s at the longest.
 - pressed 1 s after the end of line 6: boss-turn 9.792, the rest the same.
 - never presses: boss-turn 32.112, boss-music 36.221, power-up 38.904, turret-lock 42.263. Pointer held 6.004 s at the longest.
 - Line 7's part 0 ends at 5.182 s or at 23.324 s of itself in all six, each the end of a sentence.
 
-MEASURED through the voice (the same dump, after the mend), keen visit, seconds after the tick: line 6 from 0 to 8.490; line 7 part 0 from 8.790, cut at 5.182 s of itself, 13.972; part 1 from 14.273 to 19.863; boss-music heard at 18.066; part 2 from 20.163 to 24.117; power-up 20.750; turret-lock 24.116. Clumsy visit: the same but the turn at 8.883.
+MEASURED through the voice (the same dump, after the mend), keen visit, seconds after the tick: line 6 from 0 to 8.490; line 7 part 0 from 8.790, cut at 5.182 s of itself, 13.972; part 1 from 14.273 to 19.863; boss-music heard at 18.066; part 2 from 20.163 to 24.117; power-up 20.750; turret-lock 24.116. Clumsy visit: line 7 part 0 from 8.790, turn 8.883, part 1 from 14.270, boss-music 18.083, part 2 from 20.160, turret-lock 24.117.
 
 The film: `node /tmp/ev.mjs` gives the same marks as at 27f7eeef (diff empty).
 
@@ -669,4 +669,4 @@ The chain of the Builder on this tree (merge55 b38b9fc0 merged), 06:55Z to 07:00
 
 Not run: look off, a browser, the bots' gate, determinism.
 
-The retime to come (not done): src/audio/standin.ts already reads public/audio/index.json, and tests/takes-timing.test.ts reads the lengths and phrase ends from it. `LINE6.after`, `LINE7.part0`, `ends`, `sentences`, `part1`, `music` and `part2` can be worked out from `standIns()` in src/boss/tune.ts, so that a kept take needs no number typed. Three numbers are set by hand and do not fit a part 2 of 1.9 s: `LINE7.power` 0.6 + `LINE7.glow` 2 = 2.6 s, and `RAISE.early`. They want a ruling.
+The retime to come (not done): src/audio/standin.ts already reads public/audio/index.json, and tests/takes-timing.test.ts reads the lengths and phrase ends from it. `LINE6.after`, `LINE7.part0`, `ends`, `sentences`, `part1`, `music` and `part2` can be worked out from `standIns()` in src/boss/tune.ts, so that a kept take needs no number typed. Two numbers set by hand do not fit a part 2 of 1.9 s: `LINE7.power` 0.6 + `LINE7.glow` 2 = 2.6 s, and tests/takes-timing.test.ts wants that sum under the length of part 2. They want a ruling. The window in which the figure of the power-up stands (part 2 less `power` less `RAISE.early`) is 3.304 s now and would be 1.25 s; whether the figure's moves fit it is UNKNOWN.
