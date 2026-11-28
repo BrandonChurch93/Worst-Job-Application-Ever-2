@@ -194,8 +194,7 @@ export function makePage(): PageLogic {
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
       walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
-      button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
-      target: { x: v.boss.x, y: v.boss.y }
+      button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top }
     }
   }
   const stands = (): boolean => {
