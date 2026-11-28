@@ -194,7 +194,7 @@ export function makeStand(): Stand {
     if (arms.root.visible) {
       for (let i = 0; i < 2; i++) {
         const s = STAND.shoulders[i]!
-        onBody(s[0], s[1], from[i]!)
+        onBody(s[0], s[1] + STAND.tuck * Math.min(1, Math.max(0, p.tuck ?? 0)), from[i]!)
         const h = p.hands[i]!
         to[i]!.set(h[0], h[1], h[2]).lerpVectors(from[i]!, to[i]!, Math.min(1.12, p.arms))
       }

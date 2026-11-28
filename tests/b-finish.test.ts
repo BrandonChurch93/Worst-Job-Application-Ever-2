@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, finishEvents, finishState, kneelSpot, type FinishInput } from '../src/boss/finish/acting'
+import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, finishEvents, finishState, kneelSpot, powerPlan, type FinishInput } from '../src/boss/finish/acting'
 import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '../src/cursor/stand/rig'
 
 const FPS = 60
@@ -87,7 +87,10 @@ describe('the finish: the standing arrow', () => {
     const held = finishState(power(4.3))
     expect(held.up).toBe(true)
     expect(held.fx.aura).toBeGreaterThan(0.9)
-    expect(held.pose.hands[0][1]).toBeGreaterThan(55)
+    // The fists are at the shoulders, as on the pose sheet: well over the hands at ease, under the top of the arrow.
+    expect(held.pose.hands[0][1]).toBeCloseTo(POSES.power.hands[0][1], 6)
+    expect(POSES.power.hands[0][1]).toBeGreaterThan(POSES.ready.hands[0][1] + 15)
+    expect(POSES.power.hands[0][1]).toBeLessThan(62)
     expect(held.pose.grip).toEqual([1, 1])
     const last = finishState(power(4.4 + POWER.burst + LIEDOWN - 1 / FPS)).pose
     expect(last.rise).toBeLessThan(0.02)
@@ -272,5 +275,54 @@ describe('the legs rule: the arrow has legs in the power-up and in the finish on
     }
     walk(src)
     expect(takers).toEqual([])
+  })
+})
+
+describe('the power-up fitted to a window', () => {
+  // The fight's window: 3.15 s from the first frame of the power-up to the turret's lock.
+  const pw = { at: 34.68, until: 37.83 }
+  const inPose = (t: number): boolean => {
+    const h = finishState({ time: t, arrow: ARROW, power: pw }).pose.hands
+    return [0, 1].every((n) => [0, 1, 2].every((a) => Math.abs(h[n]![a]! - POSES.power.hands[n]![a]!) < 0.5))
+  }
+
+  it('holds both fists in the sheet\'s pose for a second at least and lies again by the end of the window', () => {
+    let held = 0
+    for (let f = 0; f <= 4 * FPS; f++) if (inPose(pw.at + f / FPS)) held++
+    expect(held / FPS).toBeGreaterThanOrEqual(1)
+    expect(finishState({ time: pw.until - 1 / FPS, arrow: ARROW, power: pw }).up).toBe(true)
+    const after = finishState({ time: pw.until, arrow: ARROW, power: pw })
+    expect(after.up).toBe(false)
+    expect(after.pose.legs).toBe(0)
+    const plan = powerPlan(pw)
+    expect(plan.over).toBeCloseTo(3.15, 6)
+    expect(plan.end - POWER.up[1] * plan.quick).toBeGreaterThanOrEqual(1)
+    expect(plan.quick).toBeGreaterThan(0.6)
+  })
+
+  it('plays as written when the window is long enough, and when only `end` is given', () => {
+    expect(powerPlan({ at: 0, until: 6 }).quick).toBe(1)
+    const plain = powerPlan({ at: 1, end: 4.4 })
+    expect(plain.quick).toBe(1)
+    expect(plain.end).toBeCloseTo(3.4, 9)
+    expect(plain.over).toBeCloseTo(3.4 + POWER.burst + LIEDOWN, 9)
+    expect(powerPlan({ at: 1 }).end).toBeCloseTo(POWER.hold, 9)
+  })
+
+  it('does not pop, and names its four sounds once, inside the window', () => {
+    let worst = 0
+    let before = finishState({ time: pw.at, arrow: ARROW, power: pw })
+    const seen: Record<string, number> = {}
+    for (let f = 1; f <= 3.15 * FPS - 1; f++) {
+      const a = { time: pw.at + (f - 1) / FPS, arrow: ARROW, power: pw }
+      const b = { time: pw.at + f / FPS, arrow: ARROW, power: pw }
+      const now = finishState(b)
+      worst = Math.max(worst, step(before.pose, now.pose))
+      before = now
+      for (const e of finishEvents(a, b)) seen[e.name] = (seen[e.name] ?? 0) + 1
+    }
+    expect(worst).toBeLessThan(28)
+    expect(seen).toEqual({ 'power-up-rise': 1, 'power-up-burst': 1, 'finish-liedown': 1 })
+    expect(finishEvents({ time: pw.at - 1 / FPS, arrow: ARROW, power: pw }, { time: pw.at, arrow: ARROW, power: pw }).map((e) => e.name)).toEqual(['finish-standup'])
   })
 })

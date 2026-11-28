@@ -23,7 +23,8 @@ const samples = Number(flag('--samples') ?? 8)
 const FPS = 60
 
 // The script the proofs are drawn from. The fight helper owns the real marks: these stand in for them.
-const ARROW = { x: 690, y: 548 }
+// From the third task on the arrow stands further left, where the approved pictures have it: the walk to the button is then four steps long.
+const ARROW = { x: 520, y: 500 }
 const BOSS = { x: 960, y: 650, heading: Math.PI }
 const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
 const LONG = 2.8
@@ -103,7 +104,13 @@ const JOBS = {
   blow: (page) => { const p = finish(M.walk + 1).input.marks.press; return frames(page, 'blow', row(p - 12 / FPS, 30), finish, kneelBox()) },
   // Every frame round the press: from 6 frames before it to 14 after.
   blownear: (page) => { const p = finish(M.walk + 1).input.marks.press; const ts = []; for (let i = -6; i <= 14; i++) ts.push(p + i / FPS); return frames(page, 'blownear', ts, finish, kneelBox()) },
-  walk: (page) => frames(page, 'walk', row(M.walk, 44).map((t, i) => M.walk - 4 / FPS + i * 4 / FPS), finish, { x: ARROW.x - 110, y: ARROW.y - 40, w: 420, h: 200 })
+  walk: (page) => frames(page, 'walk', row(M.walk, 44).map((t, i) => M.walk - 4 / FPS + i * 4 / FPS), finish, { x: 400, y: 470, w: 520, h: 220 }),
+  // The power-up's held pose alone: at a right angle to the figure, and from straight above.
+  powerpose: async (page) => {
+    const a = { name: 'pose-power', ...power(2.9), cam: 'front', arena: false }
+    await shot(page, a)
+    await shot(page, { ...a, name: 'pose-power-above', cam: { x: ARROW.x + 50 - 160 * SCALE, y: ARROW.y + 92 - 152 * SCALE, w: 320 * SCALE, h: 180 * SCALE }, arena: true })
+  }
 }
 const kneelBox = () => ({ x: WALK.x1 - 90, y: WALK.y1 - 150, w: 240, h: 200 })
 
