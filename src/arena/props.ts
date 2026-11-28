@@ -83,11 +83,16 @@ export function stand(x: number, y: number): { lean: THREE.Group; root: THREE.Gr
   return { lean, root }
 }
 
-export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; dispose(): void } {
+// After the rise nothing of a pillar moves: the eight bodies are then drawn as one thing and the eight feet as another. `show` says which bodies stand, a bit each.
+export interface PillarsAsOne { bodies: THREE.Mesh; feet: THREE.Mesh; show(standing: number): void }
+
+export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; one: PillarsAsOne; dispose(): void } {
   const P = ARENA.pillar
   const body = columnGeometry(P.side, P.high)
   const plate = sweep(roundedRect(P.foot, P.foot, 5, 6), profile([[0, 0, true], [0, P.footHigh - 2], [2, P.footHigh], [9, P.footHigh]]), true)
   const object = new THREE.Group()
+  const baked: THREE.BufferGeometry[] = []
+  const plates: THREE.BufferGeometry[] = []
   const list: Pillar[] = PILLARS.map((p, i) => {
     const { lean, root } = stand(p.x, p.y)
     const b = lit(body, kit.aluminium)
@@ -95,11 +100,43 @@ export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; di
     foot.position.set(wx(p.x), wy(p.y), 0)
     root.add(b)
     object.add(foot, lean)
+    baked.push(body.clone().applyMatrix4(lean.matrix))
+    plates.push(plate.clone().translate(wx(p.x), wy(p.y), 0))
     // The inner four first, then the outer four.
     const inner = Math.abs(p.x - 960) < 500
     return { root, foot, body: b, x: p.x, y: p.y, order: (inner ? 0 : 0.28) + 0.04 * (i % 4) }
   })
-  return { object, list, dispose: () => { body.dispose(); plate.dispose() } }
+  const allBodies = merge(baked)
+  const allFeet = merge(plates)
+  for (const g of [...baked, ...plates]) g.dispose()
+  const each = body.getIndex()!.count
+  const index = allBodies.getIndex()!
+  const whole = Uint32Array.from(index.array as ArrayLike<number>)
+  index.setUsage(THREE.DynamicDrawUsage)
+  const bodies = lit(allBodies, kit.aluminium)
+  const feet = lit(allFeet, kit.satin)
+  bodies.name = 'arena-pillars'
+  feet.name = 'arena-feet'
+  for (const x of [bodies, feet]) {
+    x.frustumCulled = false
+    x.visible = false
+    object.add(x)
+  }
+  let shown = (1 << PILLARS.length) - 1
+  const show = (standing: number): void => {
+    if (standing === shown) return
+    shown = standing
+    const to = index.array as Uint32Array
+    let n = 0
+    for (let i = 0; i < PILLARS.length; i++) {
+      if (!(standing & (1 << i))) continue
+      to.set(whole.subarray(i * each, (i + 1) * each), n)
+      n += each
+    }
+    index.needsUpdate = true
+    allBodies.setDrawRange(0, n)
+  }
+  return { object, list, one: { bodies, feet, show }, dispose: () => { body.dispose(); plate.dispose(); allBodies.dispose(); allFeet.dispose() } }
 }
 
 export interface Pane { root: THREE.Group; foot: THREE.Mesh; shade: THREE.Mesh; whole: THREE.Group; x: number; y0: number; y1: number; order: number }

@@ -78,6 +78,20 @@ export function makeArena(o: ArenaOptions = {}): Arena {
     poseBar(bar.bar, view)
     wreck.pose(view, light)
     finish.pose(view, light, o.beam)
+    // Once every pillar is up, the eight are drawn as one body and one set of feet.
+    const settled = t >= ARENA.riseTo + 0.1
+    pillars.one.bodies.visible = settled
+    pillars.one.feet.visible = settled
+    if (settled) {
+      let standing = 0
+      pillars.list.forEach((p, i) => {
+        if (p.root.visible) standing |= 1 << i
+        p.root.visible = false
+        p.foot.visible = false
+      })
+      pillars.one.show(standing)
+      pillars.one.bodies.visible = standing !== 0
+    }
     // The surge of light as the page splits.
     if (light && t >= ARENA.splitAt && t < ARENA.splitAt + 1.1) {
       const surge = seamLight(t) - 1

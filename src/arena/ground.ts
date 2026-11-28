@@ -8,6 +8,9 @@ import { ARENA, PAGE, SEAMS, SLABS, inset, type Pt, type Slab } from './layout'
 const wx = (x: number): number => x - PAGE.w / 2
 const wy = (y: number): number => PAGE.h / 2 - y
 
+// Noise for the surfaces, the same in every one of the arena's shaders: a number per cell, the same smoothed, and the slow unevenness of the seams' light along the ground (0 to 1, by the place in px from the middle of the page).
+const NOISE = 'float arenaHash( vec2 p ) { return fract( sin( dot( p, vec2( 127.1, 311.7 ) ) ) * 43758.5453 ); }\nfloat arenaVal( vec2 p ) { vec2 i = floor( p ); vec2 f = fract( p ); f = f * f * ( 3.0 - 2.0 * f ); return mix( mix( arenaHash( i ), arenaHash( i + vec2( 1.0, 0.0 ) ), f.x ), mix( arenaHash( i + vec2( 0.0, 1.0 ) ), arenaHash( i + vec2( 1.0, 1.0 ) ), f.x ), f.y ); }\nfloat arenaUneven( vec2 w ) { return 0.7 * arenaVal( w / 190.0 + 3.7 ) + 0.3 * arenaVal( w / 61.0 + 11.3 ); }\n'
+
 // The picture the ground reads its wounds from: red soot, green depth of a cut, blue embers, alpha the light from below where a slab is broken through. Three texels to four page px.
 export const DAMAGE = { w: 1440, h: 810 }
 const SPILL = { w: 960, h: 540 }
@@ -89,13 +92,13 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
     shader.uniforms.arenaBeam = w.beam
     shader.uniforms.arenaCold = w.cold
     shader.vertexShader = 'varying vec2 vArenaUv;\n' + shader.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>\n\tvArenaUv = vec2( position.x / ${PAGE.w.toFixed(1)} + 0.5, position.y / ${PAGE.h.toFixed(1)} + 0.5 );`)
-    const head = `varying vec2 vArenaUv;\nuniform sampler2D arenaWounds;\nuniform float arenaTime;\nuniform float arenaEmber;\nuniform sampler2D arenaSpill;\nuniform float arenaSeam;\nuniform sampler2D arenaScorch;\nuniform vec2 arenaBurn;\nuniform vec4 arenaBeam;\nuniform float arenaCold;\nfloat arenaHash( vec2 p ) { return fract( sin( dot( p, vec2( 127.1, 311.7 ) ) ) * 43758.5453 ); }\n`
+    const head = `varying vec2 vArenaUv;\nuniform sampler2D arenaWounds;\nuniform float arenaTime;\nuniform float arenaEmber;\nuniform sampler2D arenaSpill;\nuniform float arenaSeam;\nuniform sampler2D arenaScorch;\nuniform vec2 arenaBurn;\nuniform vec4 arenaBeam;\nuniform float arenaCold;\n${NOISE}`
     const texel = `vec2( ${(1.5 / DAMAGE.w).toFixed(6)}, ${(1.5 / DAMAGE.h).toFixed(6)} )`
     const colour = '#include <color_fragment>'
     const emissive = '#include <emissivemap_fragment>'
     if (!shader.fragmentShader.includes(colour) || !shader.fragmentShader.includes(emissive)) throw new Error('The surface code of this three.js release is not the one the arena was written for')
     shader.fragmentShader = head + shader.fragmentShader
-      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tvec4 arenaS4 = texture2D( arenaScorch, vArenaUv );\n\tfloat arenaRev = ( arenaBurn.x <= 0.0 || arenaS4.a <= 0.0 ) ? 0.0 : smoothstep( arenaS4.a - 0.06, arenaS4.a + 0.06, arenaBurn.x * 1.12 );\n\tfloat arenaSoot = arenaS4.r * arenaRev * ( 0.9 + 0.2 * arenaHash( floor( vArenaUv * vec2( ${(PAGE.w * 1.6).toFixed(1)}, ${(PAGE.h * 1.6).toFixed(1)} ) ) ) );\n\tarenaW.r = max( arenaW.r, min( 1.0, arenaSoot ) );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.15, 0.115 ), smoothstep( 0.0, 0.5, arenaW.r ) * 0.85 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.03, 0.027, 0.025 ), smoothstep( 0.3, 1.0, arenaW.r ) );\n\tfloat arenaHole = smoothstep( 0.56, 0.64, arenaW.a );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.25, 0.235, 0.225 ), 0.8 * smoothstep( 0.03, 0.36, arenaW.a ) );\n\tdiffuseColor.rgb *= mix( 1.0, 0.45, smoothstep( 0.3, 0.56, arenaW.a ) ) * ( 1.0 - 0.97 * arenaHole );`)
+      .replace(colour, `${colour}\n\tvec4 arenaW = texture2D( arenaWounds, vArenaUv );\n\tvec4 arenaS4 = texture2D( arenaScorch, vArenaUv );\n\tfloat arenaRev = ( arenaBurn.x <= 0.0 || arenaS4.a <= 0.0 ) ? 0.0 : smoothstep( arenaS4.a - 0.06, arenaS4.a + 0.06, arenaBurn.x * 1.12 );\n\tfloat arenaSoot = arenaS4.r * arenaRev * ( 0.9 + 0.2 * arenaHash( floor( vArenaUv * vec2( ${(PAGE.w * 1.6).toFixed(1)}, ${(PAGE.h * 1.6).toFixed(1)} ) ) ) );\n\tarenaW.r = max( arenaW.r, min( 1.0, arenaSoot ) );\n\tvec2 arenaWp = ( vArenaUv - 0.5 ) * vec2( ${PAGE.w.toFixed(1)}, ${PAGE.h.toFixed(1)} );\n\tdiffuseColor.rgb *= 1.0 + min( 1.0, arenaSeam ) * ( ( arenaHash( floor( arenaWp * 0.9 ) ) - 0.5 ) * 0.03 + ( arenaVal( arenaWp / 9.0 ) - 0.5 ) * 0.018 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.15, 0.115 ), smoothstep( 0.0, 0.5, arenaW.r ) * 0.85 );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.03, 0.027, 0.025 ), smoothstep( 0.3, 1.0, arenaW.r ) );\n\tfloat arenaHole = smoothstep( 0.56, 0.64, arenaW.a );\n\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.1, 0.088, 0.082 ), 0.9 * smoothstep( 0.03, 0.36, arenaW.a ) );\n\tdiffuseColor.rgb *= mix( 1.0, 0.45, smoothstep( 0.3, 0.56, arenaW.a ) ) * ( 1.0 - 0.97 * arenaHole );`)
       .replace(emissive, `${emissive}
 \t{
 \t\tvec2 arenaT = ${texel};
@@ -119,7 +122,7 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
 \t\t\tvec2 arenaE = arenaBeam.zw - arenaBeam.xy;
 \t\t\tfloat arenaU = clamp( dot( arenaP - arenaBeam.xy, arenaE ) / max( 1.0, dot( arenaE, arenaE ) ), 0.0, 1.0 );
 \t\t\tfloat arenaD = distance( arenaP, arenaBeam.xy + arenaE * arenaU );
-\t\t\ttotalEmissiveRadiance += diffuseColor.rgb * vec3( 0.62, 0.8, 1.25 ) * arenaCold * ( 0.16 + 1.5 * exp( - arenaD / 150.0 ) + 0.5 * exp( - arenaD / 520.0 ) );
+\t\t\ttotalEmissiveRadiance += diffuseColor.rgb * vec3( 0.62, 0.8, 1.25 ) * arenaCold * ( 0.05 + 0.62 * exp( - arenaD / 140.0 ) + 0.2 * exp( - arenaD / 520.0 ) );
 \t\t}
 \t\tif ( arenaW.a > 0.5 ) {
 \t\t\t// Where a slab is broken through, the picture looks under its upper left edge: the broken side of the slab shows there as a wall, copper at its top and lit at its foot, and past the wall lies the light itself.
@@ -138,11 +141,13 @@ export function woundedCeramic(w: Wounds): THREE.MeshPhysicalMaterial {
 \t\t\tvec2 arenaCell = floor( vArenaUv * vec2( ${(PAGE.w / 1.7).toFixed(1)}, ${(PAGE.h / 1.7).toFixed(1)} ) );
 \t\t\tfloat arenaGrain = 0.72 + 0.56 * arenaHash( arenaCell ) * ( 0.6 + 0.4 * arenaHash( vec2( arenaCell.x * 0.25, 7.0 ) ) );
 \t\t\tvec3 arenaSide = mix( vec3( 0.13, 0.043, 0.017 ), vec3( 0.62, 0.16, 0.022 ), arenaDepth * arenaDepth ) * arenaGrain;
-\t\t\tvec3 arenaBelow = vec3( 1.05, 0.235, 0.016 ) * ( 0.92 + 0.08 * arenaFlick );
+\t\t\t// The light below is strongest away from the rim of the hole: deep orange under the broken edge, brighter toward the middle.
+\t\t\tfloat arenaIn = clamp( ( arenaW.a - 0.62 ) / 0.38, 0.0, 1.0 );
+\t\t\tvec3 arenaBelow = mix( vec3( 0.8, 0.15, 0.01 ), vec3( 1.5, 0.52, 0.045 ), smoothstep( 0.08, 1.0, arenaIn ) ) * ( 0.9 + 0.2 * arenaVal( arenaWp / 46.0 ) ) * ( 0.94 + 0.06 * arenaFlick );
 \t\t\ttotalEmissiveRadiance += arenaHole * ( arenaFound ? arenaSide : arenaBelow );
 \t\t}
 \t\tfloat arenaS = texture2D( arenaSpill, vArenaUv ).r;
-\t\ttotalEmissiveRadiance += vec3( 0.8, 0.2, 0.03 ) * arenaS * arenaS * arenaSeam * ( 1.0 - arenaW.r );
+\t\ttotalEmissiveRadiance += vec3( 0.62, 0.155, 0.023 ) * arenaS * arenaS * arenaSeam * ( 1.0 - arenaW.r ) * mix( 0.5, 1.12, arenaUneven( arenaWp ) );
 \t}`)
   }
   m.customProgramCacheKey = () => `${base.customProgramCacheKey()}-arena-wounds`
@@ -200,8 +205,8 @@ function slotOutline(insetBy: number): THREE.Vector2[] {
 // The walls of a seam are dull copper, lit from the bed below: dark at the lip, copper down the wall, glowing at its foot. The bed is the light itself.
 const WALL_TOP: V3 = [0.15, 0.052, 0.024]
 const WALL_MID: V3 = [0.36, 0.118, 0.045]
-const WALL_FOOT: V3 = [0.78, 0.215, 0.034]
-const BED: V3 = [1.55, 0.44, 0.05]
+const WALL_FOOT: V3 = [0.64, 0.172, 0.028]
+const BED: V3 = [1.22, 0.33, 0.034]
 const BED_INSET = 2.5
 const WALL_SPLIT = 0.7
 
@@ -344,9 +349,9 @@ export function makeGround(seed: number): Ground {
   // The copper of the walls is rough: a grain that lies on the ground, not on the screen.
   wallStuff.onBeforeCompile = (shader) => {
     shader.vertexShader = 'varying vec2 vArenaAt;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvArenaAt = position.xy + position.z * vec2( 0.37, 0.61 );')
-    shader.fragmentShader = 'varying vec2 vArenaAt;\n' + shader.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n\t{\n\t\tvec2 arenaC = floor( vArenaAt * 1.6 );\n\t\tfloat arenaG = fract( sin( dot( arenaC, vec2( 127.1, 311.7 ) ) ) * 43758.5453 );\n\t\tfloat arenaLit = clamp( ( diffuseColor.r - 0.5 ) * 2.0, 0.0, 1.0 );\n\t\tdiffuseColor.rgb *= 1.0 + ( arenaG - 0.5 ) * 0.5 * ( 1.0 - arenaLit );\n\t}')
+    shader.fragmentShader = 'varying vec2 vArenaAt;\n' + NOISE + shader.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n\t{\n\t\tvec2 arenaC = floor( vArenaAt * 1.6 );\n\t\tfloat arenaG = arenaHash( arenaC );\n\t\tfloat arenaLit = clamp( ( diffuseColor.r - 0.5 ) * 2.0, 0.0, 1.0 );\n\t\tdiffuseColor.rgb *= ( 1.0 + ( arenaG - 0.5 ) * 0.5 * ( 1.0 - arenaLit ) ) * mix( 0.5, 1.12, arenaUneven( vArenaAt ) );\n\t}')
   }
-  wallStuff.customProgramCacheKey = () => 'arena-seam-walls'
+  wallStuff.customProgramCacheKey = () => 'arena-seam-walls-2'
   const walls = new THREE.Mesh(s.walls, wallStuff)
   const bed = new THREE.Mesh(s.bed, wallStuff)
   walls.frustumCulled = false

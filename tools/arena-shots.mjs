@@ -39,7 +39,7 @@ const second = line(2, 12.0, 1010, 520, Math.atan2(700 - 520, 60 - 1010))
 const third = line(3, 18.0, 960, 500, Math.atan2(1080 - 500, 640 - 960))
 const boss = { x: 960, y: 550, heading: Math.PI / 2 }
 // The line of the finishing blast: the arrow's centre at the moment of firing, and the place the boss fell.
-const SCORCHED = { x0: 420, y0: 640, x1: 960, y1: 650 }
+const SCORCHED = { x0: 478, y0: 565, x1: 960, y1: 650 }
 
 // Every set: the views it draws, and the target it sits beside.
 const SETS = {

@@ -6,10 +6,10 @@ import type { Emitter } from '../real/types'
 import { clamp01, rise, rnd } from './change'
 import { SCORCHED, type Wounds } from './ground'
 import { ARENA, PAGE, PANES, PILLARS } from './layout'
-import type { Kit } from './props'
+import { softDot, type Kit } from './props'
 import { SCORCH, aimOf, beamOf, beamShadow, chipsOf, lineKeyOf, paintScorch, scorchFrom, scorchOf, scorchReach, type BeamLight, type BlastLine, type Chip, type Scorch } from './scorch'
 import { STANDS, brokenBy } from './solids'
-import { greyDot, lumpGeometry } from './wreck'
+import { lumpGeometry } from './wreck'
 
 const wx = (x: number): number => x - PAGE.w / 2
 const wy = (y: number): number => PAGE.h / 2 - y
@@ -19,6 +19,8 @@ const AHEAD_FRAMES = 48
 // How long a chip flies, as a share of the blast.
 const CHIP_FLIGHT = 0.16
 const COLUMNS = 4
+// Up the screen and a little to the left, as everything that stands in the picture leans.
+const UP = Math.atan2(ARENA.lean, ARENA.leanX) - Math.PI / 2
 
 export type BeamDriver = (view: BossView) => BeamLight | null
 
@@ -27,7 +29,7 @@ export interface Finish { object: THREE.Group; pose(view: BossView, light?: (e: 
 export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
   const root = new THREE.Group()
   root.name = 'arena-finish'
-  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v = new THREE.Vector3(), sc = new THREE.Vector3(), col = new THREE.Color()
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v = new THREE.Vector3(), sc = new THREE.Vector3()
   const lean = ARENA.lean, leanX = ARENA.leanX
 
   const lump = lumpGeometry(seed + 7)
@@ -42,17 +44,24 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
   chips.userData.small = 'count'
   root.add(chips)
 
+  // Wisps of smoke: grey, lighter than the black they stand over and darker than the white beside it. Each has its own strength.
   const plane = new THREE.PlaneGeometry(1, 1)
-  const grey = greyDot()
-  const smokeStuff = new THREE.MeshBasicMaterial({ map: grey, color: new THREE.Color(1, 1, 1), transparent: true, blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.ZeroFactor, blendDst: THREE.OneMinusSrcColorFactor, blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor, depthWrite: false, toneMapped: false })
+  const fade = new THREE.InstancedBufferAttribute(new Float32Array(SCORCH.smoke), 1)
+  fade.setUsage(THREE.DynamicDrawUsage)
+  plane.setAttribute('arenaFade', fade)
+  const dot = softDot()
+  const smokeStuff = new THREE.MeshBasicMaterial({ map: dot, color: new THREE.Color(0.42, 0.42, 0.43), transparent: true, depthWrite: false, toneMapped: false, fog: false })
+  smokeStuff.onBeforeCompile = (shader) => {
+    shader.vertexShader = 'attribute float arenaFade;\nvarying float vArenaFade;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n\tvArenaFade = arenaFade;')
+    shader.fragmentShader = 'varying float vArenaFade;\n' + shader.fragmentShader.replace('#include <map_fragment>', '#include <map_fragment>\n\tdiffuseColor.a *= vArenaFade;')
+  }
+  smokeStuff.customProgramCacheKey = () => 'arena-wisps'
   const smoke = new THREE.InstancedMesh(plane, smokeStuff, SCORCH.smoke)
   smoke.name = 'arena-wisps'
   smoke.count = 0
   smoke.visible = false
   smoke.frustumCulled = false
   smoke.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
-  for (let i = 0; i < SCORCH.smoke; i++) smoke.setColorAt(i, col.setRGB(0, 0, 0))
-  smoke.instanceColor!.setUsage(THREE.DynamicDrawUsage)
   smoke.userData.small = 'count'
   smoke.renderOrder = 5
   root.add(smoke)
@@ -121,7 +130,7 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
       aimedLast = key
     }
     const share = burnt ? burnt.share : 0
-    wounds.burn.value.set(share, 1 + 2.4 * Math.sqrt(Math.max(0, Math.sin(Math.PI * share))))
+    wounds.burn.value.set(share, 1 + 1.4 * Math.sqrt(Math.max(0, Math.sin(Math.PI * share))))
 
     // The chips: thrown out as the front passes, then they lie.
     let nChips = 0
@@ -153,20 +162,20 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
       const strong = clamp01((share - 0.35) / 0.4)
       const each = Math.floor(SCORCH.smoke / COLUMNS)
       for (let c = 0; c < COLUMNS; c++) {
-        const along = c < 2 ? s.at + (rnd(seed, 460, c) - 0.5) * SCORCH.burn * 1.3 : s.at * (0.12 + 0.6 * rnd(seed, 461, c))
-        const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 0.9 : SCORCH.half)
+        const along = c < 2 ? s.at + (rnd(seed, 460, c) - 0.5) * SCORCH.burn * 2.6 : s.at * (0.12 + 0.6 * rnd(seed, 461, c))
+        const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 1.1 : SCORCH.half)
         const x = s.sx + s.ux * along - s.uy * across, y = s.sy + s.uy * along + s.ux * across
         const period = 2.6 + 1.2 * rnd(seed, 463, c)
         for (let j = 0; j < each; j++) {
           const g = (((t / period + j / each + rnd(seed, 464, c)) % 1) + 1) % 1
-          const dark = 0.34 * strong * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g) ** 1.2
-          const size = 22 + 96 * g
+          const thick = 0.34 * strong * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g) ** 1.2
+          const size = 12 + 62 * g
           const z = 8 + 230 * g
           const sway = 16 * g * Math.sin(t * 1.3 + c * 2.1 + g * 5)
-          q.setFromAxisAngle(v.set(0, 0, 1), rnd(seed, 465, c * 8 + j) * 6 + g)
-          m4.compose(v.set(wx(x) + sway + leanX * z, wy(y) + lean * z, z), q, sc.set(size, size * 1.25, 1))
+          q.setFromAxisAngle(v.set(0, 0, 1), UP + 0.5 * (rnd(seed, 465, c * 8 + j) - 0.5))
+          m4.compose(v.set(wx(x) + sway + leanX * z, wy(y) + lean * z, z), q, sc.set(size, size * 1.9, 1))
           smoke.setMatrixAt(nSmoke, m4)
-          smoke.setColorAt(nSmoke++, col.setRGB(dark * 0.9, dark * 0.94, dark))
+          fade.setX(nSmoke++, thick)
         }
       }
     }
@@ -174,7 +183,7 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
     smoke.visible = nSmoke > 0
     if (nSmoke > 0) {
       smoke.instanceMatrix.needsUpdate = true
-      smoke.instanceColor!.needsUpdate = true
+      fade.needsUpdate = true
     }
 
     // The cold beam: light on the ground from its line, and the shadows of what stands.
@@ -230,7 +239,7 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
     dispose(): void {
       lump.dispose()
       plane.dispose()
-      grey.dispose()
+      dot.dispose()
       smokeStuff.dispose()
       shadowGeo.dispose()
       shadowStuff.dispose()
