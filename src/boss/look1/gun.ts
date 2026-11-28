@@ -24,7 +24,7 @@ function parts(): Record<string, THREE.BufferGeometry> {
   if (cache) return cache
   const a = GUN.axis
   const mount = joined([
-    turnedAt([[0, 0], [54, 0], [54, 5], [50, 9], [47, 9], [45, 16], [38, 25], [26, 31], [0, 33]], 0, 0, 0, 36),
+    turnedAt([[0, 0], [60, 0], [60, 4], [56, 8], [50, 8], [47, 11], [44, 18], [36, 26], [24, 31], [0, 33]], 0, 0, 0, 36),
     turnedAt([[0, 0], [20, 0], [20, 6], [0, 6]], 0, 0, 32, 20)
   ])
   const cradle = joined([
@@ -72,8 +72,8 @@ export function makeGun(): Gun {
   const flash = mesh(g.flash!, flashMat, false, false)
   flash.position.set(GUN.reach, 0, GUN.axis)
   flash.visible = false
-  turret.add(mesh(g.cradle!, kit.limb), mesh(g.receiver!, kit.housing), mesh(g.dark!, kit.bed), barrels, flash, mesh(g.lamp!, lamp, false, false))
-  root.add(mesh(g.mount!, kit.housing), turret)
+  turret.add(mesh(g.cradle!, kit.limb), mesh(g.receiver!, kit.gunBody), mesh(g.dark!, kit.bed), barrels, flash, mesh(g.lamp!, lamp, false, false))
+  root.add(mesh(g.mount!, kit.gunBase), turret)
   return { root, turret, barrels, lamp, flash, dispose: () => { lamp.dispose(); flashMat.dispose() } }
 }
 

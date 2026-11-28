@@ -6,7 +6,7 @@ import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/fini
 import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
-import { wordAt } from '../../boss/look1/pose'
+import { WORD, wordAt } from '../../boss/look1/pose'
 import { setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
@@ -702,7 +702,7 @@ export function makePage(): PageLogic {
       const look = LOOK1_ON && v !== null
       const rig = rigNow()
       const give = s.inSocket || s.stage !== 'press' ? 0 : sunk()
-      if (rig && (!look || s.blown)) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
+      if (rig && !look) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
       setView(v)
       if (look && v) {
         const whole = { x: 0, y: 0, w: 1920, h: SCREEN_H, z1: 0, tone: 'dark' as const }
@@ -712,7 +712,7 @@ export function makePage(): PageLogic {
         for (let i = out.length - 1; i >= first; i--) if (out[i]!.id.startsWith('health-')) out.splice(i, 1)
         if (v.time >= GROUND.barLands) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
         const w = wordAt(v)
-        if (w.show && !s.blown) out.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, TYPE.button, w.z, 'inkLight', w.rot))
+        if (w.show) out.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, WORD as typeof TYPE.button, w.z, 'inkLight', w.rot))
       }
       if (s.clock >= 0 && !s.inSocket && !look) drawArena(out, s.fight ?? NONE, raised())
       if ((s.stage === 'fight' || s.stage === 'hold') && s.fight) {

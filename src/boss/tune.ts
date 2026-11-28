@@ -215,7 +215,8 @@ export const IDLE = {
 } as const
 
 // The film's fight is shorter than any visitor's: a dart that reaches the body does `dart` times as much, by phase, and a phase may end in `floor` of its least length.
-export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const } as const
+// `ends`: the second of the fight at which each phase ends in the film at the latest, whatever the darts did, so the film's marks do not move with the boss's shape.
+export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const, ends: [9.83, 11.02, 13.69] as const } as const
 
 // The right edge of the pop-ups, which stand left of the boss's fence.
 export const POPUP_RIGHT = 1040

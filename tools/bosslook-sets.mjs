@@ -112,6 +112,19 @@ const MORE = {
 
   gone: (c) => moments(c, 'gone', [0.03, 0.2, 0.4, 0.6, 0.8, 0.95].map((g) => [`gone ${g.toFixed(2)} (${(g * 2.13).toFixed(2)} s)`, viewOf({ time: 46 + g * 2.13, phase: 'beaten' }, { ...out, stage: 2, health: 0, beaten: 1, gone: g })]), { cx: 960, cy: 548, zoom: 1.7 }, 3),
 
+  // The boss at the size he has in the film: one output pixel is one pixel of the 1920 wide frame.
+  async film({ look, sharp, at, outDir, workDir, tier }) {
+    const cam = { cx: 960, cy: 548, zoom: 2, width: 700, height: 540, tier }
+    const arena = await sharp(target(at, 'boss-arena.png')).resize({ width: 1920 }).extract({ left: 610, top: 270, width: 700, height: 540 }).png().toBuffer()
+    const cells = [{ png: arena, caption: 'TARGET: the arena, his size in the film' }]
+    for (const [caption, view] of [['stage 0', viewOf({ time: 30 }, { ...out })], ['stage 1', viewOf({ time: 30 }, { ...out, stage: 1, health: 0.6 })], ['stage 2', viewOf({ time: 30 }, { ...out, stage: 2, health: 0.25 })], ['turret inside', viewOf()], ['open flank', viewOf({ time: 30.3 }, { ...out, stage: 1, weak: { x: CENTRE.x + 196, y: CENTRE.y, shownAt: 30 } })]]) {
+      const r = await look.render({ view, ...cam })
+      fs.writeFileSync(path.join(workDir, `film-${cells.length}.png`), r.png)
+      cells.push({ png: r.png, caption: `BUILD at film size: ${caption}` })
+    }
+    return sheet(sharp, path.join(outDir, 'film.jpg'), cells, 2, 700)
+  },
+
   async beaten({ look, sharp, at, outDir, workDir, tier }) {
     const cells = [{ png: target(at, 'LOOK-1-STATE-3-beaten.png', 'references/drafts/round-9'), caption: 'GUIDE, not picked: beaten' }]
     for (const [caption, b] of [['beaten 0.08', 0.08], ['beaten 0.3', 0.3], ['beaten 0.55', 0.55], ['beaten 0.75', 0.75], ['beaten 1.0, lying', 1]]) {

@@ -216,6 +216,13 @@ export function ringPlate(outer: [number, number][], inner: [number, number][], 
   return g
 }
 
+// A plate with a wide, shallow chamfer round its top: the face that looks at the light catches it, the far one falls into shade.
+export function chamfer(points: [number, number][], z0: number, z1: number, run: number, rise: number): THREE.BufferGeometry {
+  const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y)))
+  const g = new THREE.ExtrudeGeometry(shape, { depth: Math.max(0.1, z1 - z0 - 2 * rise), bevelEnabled: true, bevelThickness: rise, bevelSize: run, bevelOffset: -run, bevelSegments: 1, steps: 1, curveSegments: 1 })
+  return g.translate(0, 0, z0 + rise)
+}
+
 export const plateAt = (points: [number, number][], z0: number, z1: number, bevel = 3): THREE.BufferGeometry => cutPlate(points, z1 - z0, Math.min(bevel, (z1 - z0) / 2.2)).translate(0, 0, z0)
 
 export function boxAt(x0: number, y0: number, z0: number, x1: number, y1: number, z1: number, bevel = 1.5): THREE.BufferGeometry {
@@ -257,7 +264,10 @@ export interface LookKit {
   hull: THREE.MeshPhysicalMaterial
   wing: THREE.MeshPhysicalMaterial
   hatch: THREE.MeshPhysicalMaterial
+  gunBody: THREE.MeshPhysicalMaterial
+  gunBase: THREE.MeshPhysicalMaterial
   bezel: THREE.MeshPhysicalMaterial
+  steel: THREE.MeshPhysicalMaterial
   dark: THREE.MeshPhysicalMaterial
   housing: THREE.MeshPhysicalMaterial
   joint: THREE.MeshPhysicalMaterial
@@ -279,13 +289,16 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0xa4a8ad), roughness: 0.58, metalness: 0.22, specularIntensity: 0.5 })
-  const brushed = (hex: number): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); return studio(c) }
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x84888d), roughness: 0.56, metalness: 0.3, specularIntensity: 0.5 })
+  const brushed = (hex: number, metal: number, rough = 0.46): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); c.metalness = metal; c.roughness = rough; return studio(c) }
   look = {
-    hull: brushed(0x777b80),
-    wing: brushed(0x5f6368),
-    hatch: brushed(0x8e9297),
-    bezel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xc6cacf), roughness: 0.24, metalness: 0.95 })),
+    hull: brushed(0x9da0a4, 0.3, 0.55),
+    wing: brushed(0x8f9296, 0.3, 0.55),
+    hatch: brushed(0x8a8e94, 0.6, 0.44),
+    bezel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x595d62), roughness: 0.32, metalness: 0.85 })),
+    steel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xaeb1b5), roughness: 0.46, metalness: 0.5, specularIntensity: 0.6 })),
+    gunBody: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x90949a), roughness: 0.5, metalness: 0.45, specularIntensity: 0.6 })),
+    gunBase: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4b7bb), roughness: 0.42, metalness: 0.5, specularIntensity: 0.6 })),
     plate: b.plate,
     plateLight: studio(plateLight),
     limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
