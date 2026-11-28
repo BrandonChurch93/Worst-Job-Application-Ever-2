@@ -206,6 +206,7 @@ export function makeStand(): Stand {
       arms.grown = p.arms
       arms.bulk = 1 + (STAND.bulk - 1) * Math.min(1, p.legs)
       arms.glove = 1 + (STAND.glove - 1) * Math.min(1, p.legs)
+      arms.clench = Math.min(1, p.legs)
       arms.over = 2 * Math.max(from[0]!.z, from[1]!.z)
       look.arms.grip = [p.grip[0], p.grip[1]]
       look.arms.strain = p.strain
