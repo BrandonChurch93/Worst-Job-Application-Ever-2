@@ -349,7 +349,9 @@ function poseHatch(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   d.doors.instanceMatrix.needsUpdate = true
 }
 
-interface BoltData { head: THREE.Mesh; tails: THREE.InstancedMesh }
+interface BoltData { head: THREE.Mesh; tails: THREE.InstancedMesh; sparks: THREE.InstancedMesh }
+
+const BLAST_LOOK = { sparks: 14, life: 0.34, drift: 70, spread: 26, rise: 30 }
 
 function makeBolt(): THREE.Object3D {
   const f = fx()
@@ -362,30 +364,48 @@ function makeBolt(): THREE.Object3D {
   tails.frustumCulled = false
   tails.setColorAt(0, new THREE.Color(1.1, 1.1, 1.1))
   tails.setColorAt(1, new THREE.Color(2.4, 5, 12))
-  root.add(tails, head)
-  const data: BoltData = { head, tails }
+  const sparks = overlay(new THREE.InstancedMesh(f.orb, f.sparkMaterial, BLAST_LOOK.sparks), 5) as THREE.InstancedMesh
+  sparks.frustumCulled = false
+  root.add(tails, sparks, head)
+  const data: BoltData = { head, tails, sparks }
   root.userData.bolt = data
   return root
 }
 
-// A bolt is lobbed: it leaves the muzzle on its line, rides a little above and beside it, and comes down on its mark.
+// A blast is a teardrop, fat at the front and thin behind, and sheds sparks that fall back from it. It is lobbed: it leaves the muzzle on its line, rides a little above and beside it, and comes down on its mark.
 function poseBolt(o: THREE.Object3D, s: Shape, ctx: RealContext): void {
   const d = o.userData.bolt as BoltData
   const born = s.v ? Math.min(1, Math.max(0, s.v[1] ?? 1)) : 1
   const u = s.v ? Math.min(1, Math.max(0, s.v[0] ?? 0)) : 0
+  const age = s.v?.[2] ?? 0
+  const seed = s.v?.[3] ?? 0
+  const k = s.v?.[4] ?? 1
+  const fat = k > 1
   const a = s.rot ?? 0
   const side = Math.cos(a) >= 0 ? 1 : -1
   const from = ctx.byId.get(`turret-${side > 0 ? 0 : 1}`)
   const gone = from ? Math.hypot(s.x + s.w / 2 + Math.cos(a) * TURRET.bolt * 0.5 - from.x - from.w / 2, s.y + s.h / 2 + Math.sin(a) * TURRET.bolt * 0.5 - from.y - from.h / 2) - TURRET.barrel : 0
   const far = u > 0.02 && from ? Math.max(0, gone) / u : TURRET_LOOK.lob / TURRET_LOOK.lobShare
   const lob = Math.min(TURRET_LOOK.lob, far * TURRET_LOOK.lobShare) * Math.sin(Math.PI * u) ** 0.4
+  const r = fat ? 7.5 * k * (0.7 + 0.3 * born) : 2.4
+  d.head.scale.set(fat ? r * 1.15 : 8, r, r)
   d.head.position.set(TURRET.bolt / 2 - 8, side * lob, 10 + lob * 0.5)
-  v3.set(TURRET.bolt / 2 - 12, side * lob, 10 + lob * 0.5)
-  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(26 + 50 * born, 2, 2)))
-  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(14 + 26 * born, 1.1, 1.1)))
+  v3.set(TURRET.bolt / 2 - (fat ? 8 : 12), side * lob, 10 + lob * 0.5)
+  d.tails.setMatrixAt(0, m4.compose(v3, q4.identity(), w3.set(fat ? 30 + 62 * born : 26 + 50 * born, fat ? r * 0.98 : 2, fat ? r * 0.98 : 2)))
+  d.tails.setMatrixAt(1, m4.compose(v3, q4, w3.set(fat ? 18 + 30 * born : 14 + 26 * born, fat ? r * 0.55 : 1.1, fat ? r * 0.55 : 1.1)))
   d.tails.instanceMatrix.needsUpdate = true
+  d.sparks.visible = fat
+  for (let i = 0; fat && i < BLAST_LOOK.sparks; i++) {
+    const life = (age / BLAST_LOOK.life + hash01(i, seed, 41)) % 1
+    const turn = hash01(i, seed + Math.floor(age / BLAST_LOOK.life + hash01(i, seed, 41)), 42) * Math.PI * 2
+    const out = BLAST_LOOK.spread * life * (0.4 + 0.6 * hash01(i, seed, 43))
+    const size = age < 0.02 ? 0 : (1.1 + 1.5 * hash01(i, seed, 44)) * (1 - life) ** 0.7
+    d.sparks.setMatrixAt(i, m4.compose(v3.set(TURRET.bolt / 2 - 14 - BLAST_LOOK.drift * life, side * lob + Math.cos(turn) * out, 10 + lob * 0.5 + Math.sin(turn) * out + BLAST_LOOK.rise * life * (1 - life)), q4.identity(), w3.set(size * 2.2, size, size)))
+  }
+  if (fat) d.sparks.instanceMatrix.needsUpdate = true
   const half = TURRET.bolt / 2 - 9
-  ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half + side * Math.sin(a) * lob, y: s.y + s.h / 2 + Math.sin(a) * half - side * Math.cos(a) * lob, z: s.z0 + 8 + lob * 0.5, colour: EMIT.bolt.colour, power: EMIT.bolt.power, reach: EMIT.bolt.reach, shadow: true })
+  const lamp = fat ? EMIT.blast : EMIT.bolt
+  ctx.light({ x: s.x + s.w / 2 + Math.cos(a) * half + side * Math.sin(a) * lob, y: s.y + s.h / 2 + Math.sin(a) * half - side * Math.cos(a) * lob, z: s.z0 + 8 + lob * 0.5, colour: lamp.colour, power: lamp.power, reach: lamp.reach, shadow: true })
 }
 
 interface ScorchData {

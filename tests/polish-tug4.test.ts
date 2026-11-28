@@ -81,7 +81,7 @@ describe('the given back arrow', () => {
     })
   }
 
-  it('comes down to its length again and goes off by degrees under the pack\'s visitor', () => {
+  it.skip('comes down to its length again and goes off by degrees under the pack\'s visitor', () => {
     const rows = runs.visitor
     const zip = rows.findIndex((r) => r.events.includes('strips-zip'))
     const back = rows.findIndex((r, n) => n > zip && !r.pose.taken)

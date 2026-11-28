@@ -97,7 +97,7 @@ describe('the register of this repo', () => {
     expect(found.flags['cursor-body']).toBeUndefined()
     for (const n of ['shell', 'type', 'opening', 'boss-body', 'flippers', 'model-beach', 'keyboard']) expect(found.flags[n]?.length, n).toBeGreaterThan(0)
     expect(found.flags['boss-body']).toEqual(['src/boss/body.ts'])
-    expect(found.flags.slabs).toEqual(['src/pages/step1/layout.ts'])
+    expect(found.flags.slabs).toEqual(['src/pages/step1/index.ts', 'src/pages/step1/layout.ts'])
   })
   it('holds sorted files and a hash that was made from them for every part with a hash', () => {
     for (const p of reg.parts) {

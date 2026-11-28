@@ -1,5 +1,4 @@
 import { config } from '../../config'
-import { Random } from '../../core/random'
 import { registerData } from '../../shell/words'
 import data from './keyboard.json'
 
@@ -33,7 +32,6 @@ data.rows.forEach((row, r) => {
 })
 
 export const seatIndex: Record<string, number> = Object.fromEntries(seats.map((s, i) => [s.name, i]))
-export const letterSeats: number[] = seats.map((s, i) => (s.letter ? i : -1)).filter((i) => i >= 0)
 export const homePlaces = (): number[] => seats.map((_, i) => i)
 export const legendKey = (name: string): string | null => (name in data.keys ? `data:keyboard.keys.${name}` : null)
 export const typed = (name: string): string | null => (data.types as Record<string, string>)[name] ?? null
@@ -48,28 +46,6 @@ export const tipOf = (e: number): number => {
   if (e < TIP.hold) return 1
   const t = (e - TIP.hold) / (TIP.seconds - TIP.hold)
   return Math.cos(t * Math.PI * 1.5) * (1 - t) ** 1.5
-}
-
-const REACH = PITCH * 2.3
-
-export function shuffled(places: number[], rng: Random): number[] {
-  const order = rng.shuffle(letterSeats.slice())
-  const to = new Map<number, number>()
-  const near = (a: number, b: number): boolean => Math.hypot(seats[a]!.cx - seats[b]!.cx, seats[a]!.cy - seats[b]!.cy) <= REACH
-  for (const a of order) {
-    if (to.has(a)) continue
-    const free = order.filter((b) => b !== a && !to.has(b) && near(a, b))
-    if (free.length) {
-      const b = rng.pick(free)
-      to.set(a, b)
-      to.set(b, a)
-      continue
-    }
-    const b = rng.pick(order.filter((c) => c !== a && near(a, c)))
-    to.set(a, to.get(b)!)
-    to.set(b, a)
-  }
-  return places.map((seat) => to.get(seat) ?? seat)
 }
 
 export function keyAt(places: number[], x: number, y: number): number {

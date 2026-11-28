@@ -1,83 +1,48 @@
 import { config } from '../../config'
-import { stream } from '../../core/random'
 import { HANDOFF, type Acting, type Reaction } from '../../cursor/body'
-import { frame, homePose, mixPose, smooth } from '../../stage/camera'
-import type { CameraPose, Pointer } from '../../stage/types'
-import { DECK, homePlaces, seatIndex, seats, shuffled } from './keyboard'
-import { FIELD_X, FIELD_Y, PAPER, PAPER_REST, SLOT, ZONE } from './layout'
+import { smooth } from '../../stage/camera'
+import type { Pointer } from '../../stage/types'
+import { DECK, seatIndex, seats } from './keyboard'
+import { FIELD_X, FIELD_Y } from './layout'
+import { planResume, RESUME_TIMES, type MoveOptions } from './resume/script'
+
+export { BITE, CAMERA, END, filmCamera, FRINGE, HOOD, PILE, raised, RESUME, SHRED, TEMPER, TRUDGE, TUG, tugCurve, tugReach } from './resume/script'
 
 const sizes = config.scale.sizes
 
 export const START = { x: 1180, y: 800 }
 export const TIMES = {
-  riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.72, shuffleSeconds: 0.32, pressWait: 0.16,
-  slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.2, slabFall: 0.2, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
-  paperSlide: 0.42, bite: 0.4, tugFilm: 4.52, lost: 0.3, lostFilm: 0.84
+  riseSeconds: 0.8, sinkSeconds: 0.6, turretDelay: 0.72, pressWait: 0.16,
+  slabCount: 3, slabFirst: 0.4, slabEvery: 0.55, slabHang: 0.6, slabFall: 0.3, slabSettle: 0.12, slabLie: 0.25, slabLift: 0.18,
+  ...RESUME_TIMES
 }
-export const TUG = { stiff: 2600, damp: 36, strainPx: 9.6, lead: 0.4, shoulder: { x: 14, y: 30 }, hands: 31, rateLag: 0.07, inside: 4, least: 28, reach: { rest: 43, min: 37, max: 52, bite: 26, haul: 70 } }
 export const SPOT = { x: -12, y: -14 }
-export const BITE = { x: SLOT.cx - PAPER.w / 2, y: SLOT.cy - PAPER.h + 11, jerk: 9, settle: 0.5, snap: 0.72 }
-export const HOOD = { y: SLOT.cy + 17, z: 26 }
-export const FRINGE = { from: 0.12, step: 0.03, rate: 1.2, most: 0.34 }
-export const PILE = { x: SLOT.cx - 20, y: SLOT.cy + 60 }
-export const SHRED = { in: 0.3, gone: 0.46, strips: 0.12, pile: 0.64, pileSeconds: 1.14, empty: 1.56, emptySeconds: 0.75, hold: 0.3, zip: 1.78, zipSeconds: 1.0, end: 2.8 }
+// A stage change: the stage that is done stays for `out` seconds, the page is bare until `in`, and from then the next stage stands on it.
+export const SWAP = { out: 0.3, in: 0.5 }
 
-// The film's first name: every time is a second of the unit. The turrets are up at 3.52 and fire at 4.12, 4.57, 5.02, 5.47, 5.92, and so on.
-// 6.0 is the frame of the approved image: the shot of 5.02 has just landed on L, the shot of 5.47 is a hand's width from the cursor, the shot of 5.92 has left the barrel, and the cursor has snapped out of the way to the row above, a key short of 5 (short), and holds there, still.
-// It ducks flat and slides a key along, so the shot of 6.37 lands where it was. It stretches out of the duck, takes the pause for a win, and the shot of 6.82 hits it at 7.14: it is thrown across the board on to the bare deck by the right hatch and holds its shock there.
+// The film's first name: every time is a second of the unit. The turrets are up at 3.52. The left one loads at 3.62 on the key the arrow stands on and fires at 4.32; the arrow has leapt clear and the blast lands on the empty key at 5.52.
+// The arrow takes that for a win and stands proud. The right turret loads at 5.12, fires at 5.82, and the blast reaches the arrow at 6.82: it sees it late, is hit, is thrown and holds its shock, then types the rest of the name.
 export const FIRST = {
   tap: 1.5,
   keys: [[2.18, 2.56], [2.64, 2.97], [3.06, 3.25], [3.86, 4.1], [4.16, 4.3]] as [number, number][],
   notice: 3.42, dodge: 3.86, cocky: [4.42, 4.58] as [number, number], proud: 4.7,
-  stand: { x: 1072, y: 870 }, see: 6.335, flee: [6.335, 6.415] as [number, number], aside: { x: -170, y: -64 }, snap: 6.37,
-  duck: 7.14, slide: [7.16, 7.28] as [number, number], under: { x: -200, y: 64 }, up: 7.6,
+  stand: { x: 1072, y: 870 }, see: 6.5, hit: 6.82, up: 7.6,
   after: [[7.716, 8.0], [8.07, 8.3], [8.36, 8.54], [8.6, 8.86], [8.92, 9.1], [9.16, 9.32]] as [number, number][],
   enter: [9.4, 9.6] as [number, number]
 }
-// The last name: at each of the first hunts it pulls up off the keys on to the bare page above the deck (above), rears back there, and dives for the key where it is now.
-export const LAST = { at: [10.3, 10.95, 11.55, 12.1, 12.62, 13.12, 13.62, 14.12], hunts: 3, above: -50, clear: 820, thrown: 0.03, toss: 400, temper: 0.04, up: [0.08, 0.16] as [number, number], dive: [0.09, 0.09, 0.14], enter: [14.34, 14.6] as [number, number] }
+// The Name stage ends and the Email stage comes up: a look at the bare page as the field goes, a walk up to the new field, a tap on it, and back down to the keys. `from` is the second it leaves the Enter key.
+export const NEXT = { look: 0.42, walk: [0.9, 1.3] as [number, number], tap: 1.62, back: [2.3, 2.7] as [number, number], on: { x: 152, y: 4 } }
 // The email: one careful key, then it backs off it (wait, from the key) and waits there, nervous, for what the key will do. There is no bare place it can reach and leave again in the third of a second before the run without moving the time of a key.
-export const MAIL = { first: 15.16, run: 15.5, every: 0.092, enter: 17.42, wait: { x: 700, y: -46 }, back: [15.18, 15.24] as [number, number], go: 0.022, sure: 0.1 }
+export const MAIL = { first: 12.56, run: 12.9, every: 0.092, enter: 14.82, wait: { x: 700, y: -46 }, back: [12.58, 12.64] as [number, number], go: 0.022, sure: 0.1 }
 // The slabs: struck is how long after the click on Enter the key is struck, which is when the page starts to count.
 // Where it goes from the slabs: clear on to the bare page above the deck, then into the corner of the Email field, where it stays.
-export const DIVES = [{ x: 1100, y: 676 }, { x: 1716, y: FIELD_Y[2]! + 46 }]
-export const DIVE = { struck: 0.06, doubt: 0.04, see: [0.04, 0.07], start: [0.12, 0.2], seconds: 0.16, jolt: 0.06, duck: 0.03 }
-export const TRUDGE = { x: 96, y: 84, first: [0.42, 0.62] as [number, number], share: 0.42, second: [0.8, 1.02] as [number, number] }
-export const END = { sag: 0.03 }
+export const DIVES = [{ x: 1100, y: 676 }, { x: 1716, y: 610 }]
+export const DIVE = { struck: 0.06, doubt: 0.04, see: [0.14, 0.17], start: [0.56, 0.62], seconds: 0.16, jolt: 0.06, duck: 0.03 }
 export const STRUT = { hop: 300, seconds: 0.17, past: { x: 12, y: -8 }, wind: 1.32, back: { x: -22, y: 18 }, rear: 1.64 }
-// The resume: a wind-up where it stands, a strut to the place under the drop zone where the sheet comes in, an eager start as it arrives, a crouch on its corner, a heave that tips the body back and a dip under its weight,
-// the sheet held up high and still with the chest out, a strut to the slot with it, and a short stop over the slot before it lets go.
-export const RESUME = {
-  leave: 19.9, walk: [20.04, 20.42] as [number, number], eager: 20.5, beside: { x: 22, y: 10 }, step: [20.8, 20.88] as [number, number], crouch: 20.78, grab: 20.96,
-  hold: { x: 5, y: 46 }, raise: 34, high: 16,
-  hoist: [20.99, 21.07] as [number, number], up: { x: -10, y: -50 }, dip: [21.08, 21.14] as [number, number], weight: 9, proud: 21.0, dust: 21.1,
-  carry: [21.36, 21.54] as [number, number], drop: 21.62
-}
-// The temper of the tug: a stamp as the sheet is caught, a wind-up before each haul, a second stamp, and nothing in the half second before the key picture. Then the big bite: a start, and it stands scared and still, pulled thin, until the sheet goes.
-export const TEMPER = { stamps: [22.24, 24.12], stamp: 330, hauls: [22.3, 23.0, 23.76, 24.56], scared: 25.3, back: [25.62, 26.06], lost: [0, 0.46] as [number, number] }
-
-const TUG_CURVE: [number, number, number, number][] = [
-  [0, 0.125, 0.2, 4], [0.3, 0.15, 0.14, 0], [0.8, 0.11, 0.28, 25], [1.05, 0.26, -0.12, 5], [1.55, 0.22, 0.42, 22], [1.8, 0.37, 0.06, 0], [2.3, 0.33, 0.52, 24],
-  [2.6, 0.48, 0.16, 1], [2.95, 0.455, 0.47, 17], [3.2, 0.44, 0.47, 18], [3.48, 0.6, 0.1, 5], [3.62, 0.61, 0.1, 22], [3.9, 0.655, 0.12, 20], [4.2, 0.63, 0.13, 25], [4.52, 0.95, 0, 3]
-]
-
-function tugAt(t: number, column: 1 | 2 | 3): number {
-  if (t <= 0) return TUG_CURVE[0]![column]
-  for (let i = 1; i < TUG_CURVE.length; i++) {
-    const a = TUG_CURVE[i - 1]!
-    const b = TUG_CURVE[i]!
-    if (t <= b[0]) return a[column] + (b[column] - a[column]) * smooth((t - a[0]) / (b[0] - a[0]))
-  }
-  return TUG_CURVE[TUG_CURVE.length - 1]![column]
-}
-
-export const tugCurve = (t: number): number => tugAt(t, 1)
-
-export const tugReach = (rate: number): number => Math.min(TUG.reach.max, Math.max(TUG.reach.min, TUG.reach.rest + rate * (rate > 0 ? TUG.reach.bite : TUG.reach.haul)))
 
 export interface Cue { at: number; act?: Acting; react?: Reaction; hop?: number }
 
-type Ease = 'smooth' | 'line' | 'in' | 'out' | 'snap' | 'stomp'
+type Ease = NonNullable<MoveOptions['ease']>
 const EASE: Record<Ease, (u: number) => number> = {
   smooth,
   line: (u) => u,
@@ -88,13 +53,12 @@ const EASE: Record<Ease, (u: number) => number> = {
 }
 
 interface Move { t0: number; t1: number; x0: number; y0: number; x1: number; y1: number; arc: number; side: number; ease: Ease }
-interface MoveOptions { arc?: number; side?: number; ease?: Ease; hop?: boolean }
 
 export interface Plan { moves: Move[]; clicks: [number, number][]; cues: Cue[]; drop: number; bite: number; lost: number }
 
 const keySpot = (seat: number): { x: number; y: number } => ({ x: seats[seat]!.cx + SPOT.x, y: seats[seat]!.cy + SPOT.y })
 
-export function makePlan(seed: number, first: string, last: string, email: string): Plan {
+export function makePlan(first: string, email: string): Plan {
   const moves: Move[] = []
   const clicks: [number, number][] = []
   const cues: Cue[] = []
@@ -125,7 +89,7 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   const enter = seatIndex.enter!
 
   // step1.keyboard: set down, one long strut hop straight to the field and past it, a squash where it lands, drawn back and up, a tap struck long into the field, a proud settle, and when the page opens under it it packs down small and laid back, held
-  const field = { x: FIELD_X + 152, y: FIELD_Y[0]! + 36 + sizes.field / 2 + 4 }
+  const field = { x: FIELD_X + NEXT.on.x, y: FIELD_Y + 36 + sizes.field / 2 + NEXT.on.y }
   cue(0.52, { act: 'confident' })
   cue(1.0, { hop: STRUT.hop })
   to(1.0, 1.0 + STRUT.seconds, field.x + STRUT.past.x, field.y + STRUT.past.y, { arc: 34, ease: 'out' })
@@ -151,15 +115,10 @@ export function makePlan(seed: number, first: string, last: string, email: strin
     }
   }
   const stand = FIRST.stand
-  const aside = { x: stand.x + FIRST.aside.x, y: stand.y + FIRST.aside.y }
   leap(FIRST.cocky[0], FIRST.cocky[1], stand.x, stand.y, { arc: 20 })
   cue(FIRST.proud, { act: 'proud' })
   cue(FIRST.proud + 0.06, { react: 'dustOff' })
-  cue(FIRST.see, { react: 'anticipate' })
-  leap(FIRST.flee[0], FIRST.flee[1], aside.x, aside.y, { arc: 30, ease: 'smooth', hop: false })
-  cue(FIRST.snap, { react: 'snap' })
-  cue(FIRST.duck, { react: 'duck' })
-  to(FIRST.slide[0], FIRST.slide[1], aside.x + FIRST.under.x, aside.y + FIRST.under.y, { ease: 'out' })
+  cue(FIRST.see, { react: 'doubleTake' })
   cue(FIRST.up, { react: 'anticipate' })
   for (let i = before - 1; i < keys.length; i++) {
     const n = i - (before - 1)
@@ -172,43 +131,19 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   cue(FIRST.enter[1] + 0.14, { act: 'confident' })
   cue(FIRST.enter[1] + 0.34, { react: 'dustOff' })
 
-  // step1.lastName: the keys move, it pulls up off them on to the bare page, rears back, and dives for the letter where it is now. Then it stops looking and stomps
-  const rng = stream('step1:shuffle', seed)
-  let places = homePlaces()
-  let was = places
-  const lastKeys = [...last].map(nameOf)
-  lastKeys.forEach((ch, i) => {
-    const t = LAST.at[i] ?? LAST.at[LAST.at.length - 1]! + (i - LAST.at.length + 1) * 0.5
-    const key = seatIndex[ch]!
-    const prev = i === 0 ? 0 : (LAST.at[i - 1] ?? t - 0.5)
-    if (i === 0) stomp(t - 0.34, t, places[key]!)
-    else if (i <= LAST.hunts) {
-      const old = keySpot(was[key]!)
-      const now = keySpot(places[key]!)
-      cue(prev + LAST.thrown, { react: 'flinch' })
-      cue(prev + LAST.up[0], { hop: LAST.toss })
-      leap(prev + LAST.up[0], prev + LAST.up[1], Math.max(LAST.clear, (old.x + now.x) / 2), DECK.y + LAST.above, { arc: 10, ease: 'out', hop: false })
-      cue(prev + LAST.up[0] + 0.02, { react: i === 1 ? 'rear' : i === 2 ? 'doubleTake' : 'fume' })
-      const dive = LAST.dive[i - 1]!
-      stomp(t - dive, t, places[key]!, { arc: 14, ease: 'snap' })
-    } else {
-      cue(prev + LAST.temper, { react: 'fume' })
-      stomp(t - 0.26, t, places[key]!, { arc: 46 + i * 5 })
-    }
-    if (i === LAST.hunts) cue(t + 0.2, { act: 'angry' })
-    was = places
-    places = shuffled(places, rng)
-  })
-  cue(LAST.enter[0] - 0.1, { react: 'anticipate' })
-  stomp(LAST.enter[0], LAST.enter[1], enter, { arc: 84 })
-  cue(LAST.enter[1] + 0.01, { react: 'stamp' })
+  // The stage changes: the Name field goes and the Email field comes up. It looks at the bare page, walks up to the new field, taps it as it would any field, and comes back down to the keys
+  const from = FIRST.enter[1]
+  cue(from + NEXT.look, { react: 'doubleTake' })
+  to(from + NEXT.walk[0], from + NEXT.walk[1], field.x, field.y, { arc: 40 })
+  click(from + NEXT.tap, 0.09)
+  cue(from + NEXT.tap + 0.02, { react: 'tap' })
 
   // step1.email: one careful key, a flinch, a step back and a nervous wait, nothing happens, then the whole address in one run and a proud Enter
   const mail = [...email].map(nameOf)
   const a = keySpot(seatIndex[mail[0]!]!)
   const bare = { x: DECK.x + MAIL.wait.x, y: DECK.y + MAIL.wait.y }
-  cue(LAST.enter[1] + 0.06, { act: 'nervous' })
-  to(LAST.enter[1] + 0.1, MAIL.first - 0.18, a.x + 44, a.y - 30, { arc: 30 })
+  cue(from + NEXT.back[0] - 0.06, { act: 'nervous' })
+  to(from + NEXT.back[0], from + NEXT.back[1], a.x + 44, a.y - 30, { arc: 30 })
   to(MAIL.first - 0.12, MAIL.first - 0.02, a.x, a.y, { ease: 'out' })
   click(MAIL.first)
   cue(MAIL.back[0], { react: 'dart' })
@@ -241,64 +176,9 @@ export function makePlan(seed: number, first: string, last: string, email: strin
   cue(slab(2) + landed + DIVE.duck, { react: 'duck' })
   cue(slab(2) + landed + DIVE.duck, { act: 'scared' })
 
-  // step1.resume: a wind-up, a strut to where its paper comes in, an eager start, a crouch on the corner, a heave, the sheet held up proud and still, a strut to the slot, a stop over it
-  const grab = { x: PAPER_REST.x + PAPER.w - RESUME.hold.x, y: PAPER_REST.y + RESUME.hold.y }
-  cue(RESUME.leave, { react: 'anticipate' })
-  cue(RESUME.leave + 0.02, { act: 'confident' })
-  to(RESUME.walk[0], RESUME.walk[1], PAPER_REST.x + PAPER.w + RESUME.beside.x, PAPER_REST.y + RESUME.beside.y, { arc: -34 })
-  cue(RESUME.eager, { react: 'tap' })
-  cue(RESUME.crouch, { react: 'anticipate' })
-  to(RESUME.step[0], RESUME.step[1], grab.x, grab.y, { ease: 'out' })
-  clicks.push([RESUME.grab, RESUME.drop])
-  cue(RESUME.hoist[0], { hop: 150 })
-  to(RESUME.hoist[0], RESUME.hoist[1], grab.x + RESUME.up.x, grab.y + RESUME.up.y, { ease: 'out' })
-  cue(RESUME.proud, { act: 'proud' })
-  to(RESUME.dip[0], RESUME.dip[1], grab.x + RESUME.up.x, grab.y + RESUME.up.y + RESUME.weight, { ease: 'out' })
-  cue(RESUME.dust, { react: 'dustOff' })
-  to(RESUME.carry[0], RESUME.carry[1], BITE.x + (grab.x - PAPER_REST.x), BITE.y - BITE.jerk - 14 + (grab.y - PAPER_REST.y), { arc: 26 })
-
-  // step1.tug: the paper's curve places the pointer, so the body leans, loses ground and wins a little of it back
-  const bite = RESUME.drop + TIMES.bite
-  const lost = bite + TIMES.tugFilm
-  const over = tugPoint(0)
-  to(RESUME.drop + 0.03, bite - 0.05, over.x, over.y, { arc: 10, ease: 'out' })
-  for (let at = bite + 0.15; at < lost; at += 0.05) {
-    const p = tugPoint(at - bite)
-    to(Math.max(free, at - 0.05), at, p.x, p.y, { ease: 'line' })
-  }
-  for (const at of TEMPER.stamps) {
-    cue(at, { hop: TEMPER.stamp })
-    cue(at + 0.02, { react: 'tap' })
-  }
-  for (const at of TEMPER.hauls) cue(at, { react: 'anticipate' })
-  cue(TEMPER.scared, { react: 'startle' })
-  for (const at of TEMPER.back) cue(at, { react: 'rear' })
-  cue(TEMPER.scared + 0.02, { act: 'scared' })
-  cue(lost + TEMPER.lost[0], { react: 'recoil' })
-  cue(lost + TEMPER.lost[1], { react: 'cower' })
-
-  // step1.shredded: where it comes back together. It sags at what the form says and stays an arrow, then drags itself off the slot in two pulls with a stop between, bent and low
-  const whole = lost + TIMES.lostFilm + SHRED.end
-  to(lost + 0.1, lost + 0.2, PILE.x, PILE.y, { ease: 'out' })
-  cue(whole + END.sag, { act: 'exhausted' })
-  to(whole + TRUDGE.first[0], whole + TRUDGE.first[1], PILE.x + TRUDGE.x * TRUDGE.share, PILE.y + TRUDGE.y * TRUDGE.share, { ease: 'out' })
-  to(whole + TRUDGE.second[0], whole + TRUDGE.second[1], PILE.x + TRUDGE.x, PILE.y + TRUDGE.y, { ease: 'out' })
+  const resume = planResume({ to, cue, hold: (t0, t1) => clicks.push([t0, t1]), free: () => free })
   cues.sort((p, q) => p.at - q.at)
-  return { moves, clicks, cues, drop: RESUME.drop, bite, lost }
-}
-
-function tugPoint(tau: number): { x: number; y: number } {
-  const amount = tugCurve(tau)
-  const reach = tugReach((tugCurve(tau + 0.03) - tugCurve(tau - 0.03)) / 0.06)
-  const lean = tugAt(tau, 2)
-  const strain = (tugAt(tau, 3) + 4 * Math.sin(tau * 23)) * TUG.lead
-  const far = Math.max(TUG.least, PAPER.h * (1 - amount) - TUG.inside) + strain * (1 + TUG.stiff / 480) + reach
-  return { x: SLOT.cx - Math.sin(lean) * far - TUG.shoulder.x, y: SLOT.cy - Math.cos(lean) * far - TUG.shoulder.y }
-}
-
-// How far the held sheet is raised over the place it is gripped: up as it is heaved, held, and down again on the way to the slot.
-export function raised(time: number): number {
-  return smooth((time - RESUME.hoist[0]) / 0.1) * (1 - smooth((time - RESUME.carry[0] - 0.03) / (RESUME.carry[1] - RESUME.carry[0] - 0.03)))
+  return { moves, clicks, cues, ...resume }
 }
 
 export function pointerAt(plan: Plan, time: number): Pointer {
@@ -318,21 +198,4 @@ export function pointerAt(plan: Plan, time: number): Pointer {
   const u = EASE[s.ease]((time - s.t0) / (s.t1 - s.t0))
   const bulge = 4 * u * (1 - u)
   return { x: s.x0 + (s.x1 - s.x0) * u + s.side * bulge, y: s.y0 + (s.y1 - s.y0) * u - s.arc * bulge, down }
-}
-
-// The film camera in the tug: one straight move in, one still frame, one straight move out. The eye goes down one line from home to the frame with one ease on all of it and looks straight down the whole way, so one point of the page keeps its place on the screen. The frame holds the drop zone's lower rim, the slot, the machine, the whole cursor with its arms and where the pile lands, and stands still from before the first bite until the pile is down.
-const TUG_EDGE = FIELD_X - 16
-const TUG_FRAME = { w: 620, mid: SLOT.cx + 4, top: SLOT.cy - 205 }
-const tugFrame = (): { x: number; y: number; w: number; h: number } => ({ x: Math.min(TUG_EDGE - TUG_FRAME.w, TUG_FRAME.mid - TUG_FRAME.w / 2), y: TUG_FRAME.top, w: TUG_FRAME.w, h: (TUG_FRAME.w * 9) / 16 })
-export const CAMERA = { in: [20.3, 21.1] as [number, number], key: 25.125, out: [28.3, 28.9] as [number, number] }
-const glide = (t: number): number => {
-  const u = Math.min(1, Math.max(0, t))
-  return u * u * u * (u * (u * 6 - 15) + 10)
-}
-
-export function filmCamera(time: number): CameraPose {
-  const home = homePose(0)
-  if (time <= CAMERA.in[0] || time >= CAMERA.out[1]) return home
-  const u = glide((time - CAMERA.in[0]) / (CAMERA.in[1] - CAMERA.in[0])) * (1 - glide((time - CAMERA.out[0]) / (CAMERA.out[1] - CAMERA.out[0])))
-  return mixPose(home, frame(tugFrame()), u)
 }

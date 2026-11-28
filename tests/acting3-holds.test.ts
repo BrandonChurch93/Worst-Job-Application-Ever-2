@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { stepHz } from '../src/config'
+import { config, stepHz } from '../src/config'
 import { FEEL } from '../src/cursor/act/feel'
 import { pages } from '../src/pages'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
@@ -17,6 +17,8 @@ function trace(): Sample[] {
   return out
 }
 
+const MAIL_TO = config.film.beats.find((b) => b.id === 'step1.email')!.to
+const inMail = (seconds: number): number => seconds - 20 + MAIL_TO
 const all = trace()
 const span = (from: number, to: number): Sample[] => all.filter((p) => p.t >= from && p.t <= to)
 const still = (list: Sample[], within = 4): boolean => list.every((p) => Math.hypot(p.x - list[0]!.x, p.y - list[0]!.y) <= within)
@@ -33,9 +35,9 @@ describe('the held poses of step 1 outside the tug', () => {
   })
 
   it('is squashed in the first frames of the hit and then holds one tall recoil, still, to the dash', () => {
-    const blow = span(5.82, 5.86)
+    const blow = span(6.8, 6.84)
     expect(Math.min(...blow.map((p) => p.squash))).toBeLessThan(0.8)
-    const hold = span(6.05, 6.3)
+    const hold = span(7.02, 7.27)
     expect(still(hold)).toBe(true)
     for (const p of hold) {
       expect(p.acting).toBe('shocked')
@@ -45,21 +47,21 @@ describe('the held poses of step 1 outside the tug', () => {
       expect(p.lean).toBeLessThan(-0.4)
       expect(Math.abs(p.spin)).toBeLessThan(0.2)
     }
-    const turns = span(5.82, 6.33).map((p) => p.spin)
+    const turns = span(6.8, 7.31).map((p) => p.spin)
     let flips = 0
     for (let i = 2; i < turns.length; i++) if ((turns[i]! - turns[i - 1]!) * (turns[i - 1]! - turns[i - 2]!) < -1e-6) flips++
     expect(flips).toBeLessThanOrEqual(2)
   })
 
   it('stands nervous and still on Enter before the first slab is seen', () => {
-    const hold = span(17.8, 17.9)
+    const hold = span(inMail(17.3), inMail(17.39))
     expect(still(hold)).toBe(true)
     for (const p of hold) expect(p.acting).toBe('nervous')
   })
 
   it('holds a cower under each slab in a different place', () => {
-    const first = span(18.45, 18.65)
-    const second = span(19.1, 19.4)
+    const first = span(inMail(18.38), inMail(18.57))
+    const second = span(inMail(19.1), inMail(19.4))
     for (const hold of [first, second]) {
       expect(still(hold)).toBe(true)
       for (const p of hold) {

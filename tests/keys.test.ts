@@ -82,44 +82,6 @@ describe('the keys answer what strikes them', () => {
   })
 })
 
-describe('the shuffle is springs, not a drift', () => {
-  it('launches the letters at different moments, flies each one a short way up and has every cap seated when the keys answer again', () => {
-    const s = film()
-    let started = -1
-    const left = new Map<string, number>()
-    const peak = new Map<string, number>()
-    let tray = 0
-    let done = false
-    for (let i = 0; i < at(11.2) && !done; i++) {
-      s.advance(1)
-      const st = s.page.save() as { phase: string; shuffle: number; blocks: boolean; shuffles: number }
-      if (st.phase !== 'lastName' || st.shuffles < 1) continue
-      if (started < 0) started = i
-      const list = drawn(s)
-      tray = Math.max(tray, Math.abs(list.find((q) => q.id === 'keyboard-deck')!.y - DECK.y))
-      for (const seat of seats) {
-        if (!seat.letter) continue
-        const key = list.find((q) => q.id === `key-${seat.name}`)!
-        const hop = key.v![1]!
-        if (hop > 1 && !left.has(seat.name)) left.set(seat.name, i - started)
-        peak.set(seat.name, Math.max(peak.get(seat.name) ?? 0, hop))
-        if (!st.blocks) expect(key.z1, seat.name).toBeLessThanOrEqual(heights.keycap + 1)
-      }
-      if (!st.blocks) done = true
-    }
-    expect(done).toBe(true)
-    expect(left.size).toBeGreaterThan(13)
-    const starts = [...left.values()]
-    expect(Math.max(...starts) - Math.min(...starts)).toBeGreaterThan(at(0.06))
-    expect(new Set(starts).size).toBeGreaterThan(8)
-    for (const [name, hop] of peak) if (left.has(name)) {
-      expect(hop, name).toBeGreaterThan(20)
-      expect(hop, name).toBeLessThan(70)
-    }
-    expect(tray).toBeGreaterThan(1)
-  })
-})
-
 describe('the slabs come in, strike, lie and leave', () => {
   const run = (s: Stage, until: number): { most: number; boxes: Map<string, { x: number; y: number }>; high: Map<string, number>; flown: Map<string, number>; resume: number; gone: number; pulse: number } => {
     const boxes = new Map<string, { x: number; y: number }>()

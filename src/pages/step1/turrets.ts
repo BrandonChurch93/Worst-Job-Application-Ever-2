@@ -11,13 +11,17 @@ export const TURRET = {
 // The longest, in seconds, one shot is held back for held keys on the live site.
 export const STAY = 0.7
 
+
 // How far, in px, the barrel stands back along its line: it creeps back `creep` over the whole wind-up and is cocked `cock` further over its last `cockSeconds`; on the step of the shot it is thrown back to `kick` and rings down, dying over `tau` at `hz` swings a second, still after `ring` seconds, and it is read at whole frames of `frames` a second so the frame of the shot always holds the whole kick. The head gives `head` of it.
 export const RECOIL = { creep: 2, cock: 8, cockSeconds: 0.084, kick: 22, tau: 0.04, hz: 9, ring: 0.15, frames: 60, head: 0.22 }
-export const recoilOf = (charge: number, since: number): number => {
-  if (charge > 0) return RECOIL.creep * charge + RECOIL.cock * ease((charge - 1 + RECOIL.cockSeconds / TURRET.windup) / (RECOIL.cockSeconds / TURRET.windup))
+export interface Tune { period: number; firstShot: number; stagger: number; windup: number; boltSpeed: number; creep: number; draw: number; kick: number; size: number }
+export const BOLT: Tune = { period: TURRET.period, firstShot: TURRET.firstShot, stagger: TURRET.stagger, windup: TURRET.windup, boltSpeed: TURRET.boltSpeed, creep: RECOIL.creep, draw: 0, kick: RECOIL.kick, size: 1 }
+export const BLAST: Tune = { period: 3, firstShot: 0.8, stagger: 1.5, windup: 0.7, boltSpeed: 520, creep: 12, draw: 0.3, kick: 34, size: 1.6 }
+export const recoilOf = (charge: number, since: number, tune: Tune = BOLT): number => {
+  if (charge > 0) return tune.creep * (tune.draw > 0 ? ease(charge / tune.draw) : charge) + RECOIL.cock * ease((charge - 1 + RECOIL.cockSeconds / tune.windup) / (RECOIL.cockSeconds / tune.windup))
   const t = Math.floor(since * RECOIL.frames + 1e-6) / RECOIL.frames
   if (since < 0 || t >= RECOIL.ring) return 0
-  return RECOIL.kick * Math.exp(-t / RECOIL.tau) * Math.cos(t * RECOIL.hz * Math.PI * 2) * (1 - ease((t - RECOIL.ring * 0.6) / (RECOIL.ring * 0.4)))
+  return tune.kick * Math.exp(-t / RECOIL.tau) * Math.cos(t * RECOIL.hz * Math.PI * 2) * (1 - ease((t - RECOIL.ring * 0.6) / (RECOIL.ring * 0.4)))
 }
 
 const ease = (t: number): number => {
@@ -47,27 +51,27 @@ export interface TurretsState {
   late: [number, number]
 }
 
-const fresh = (at: [Place, Place]): TurretsState => ({
+const fresh = (at: [Place, Place], tune: Tune): TurretsState => ({
   wanted: false, overheated: false, up: 0, clock: 0, aim: { x: (at[0].x + at[1].x) / 2, y: at[0].y }, angle: [0, Math.PI], lock: [null, null],
-  next: [TURRET.firstShot, TURRET.firstShot + TURRET.stagger], bolts: [], scorches: [], nextId: 0, hits: 0, heat: 0, late: [0, 0]
+  next: [tune.firstShot, tune.firstShot + tune.stagger], bolts: [], scorches: [], nextId: 0, hits: 0, heat: 0, late: [0, 0]
 })
 
 export class Turrets {
   s: TurretsState
 
-  constructor(readonly at: [Place, Place], readonly base: number, readonly maxHits: number, readonly surface: (x: number, y: number) => number) {
-    this.s = fresh(at)
+  constructor(readonly at: [Place, Place], readonly base: number, readonly maxHits: number, readonly surface: (x: number, y: number) => number, readonly tune: Tune = BOLT) {
+    this.s = fresh(at, tune)
   }
 
   reset(): void {
-    this.s = fresh(this.at)
+    this.s = fresh(this.at, this.tune)
   }
 
   raise(emit: Emit): void {
     if (this.s.wanted) return
     this.s.wanted = true
     this.s.clock = 0
-    this.s.next = [TURRET.firstShot, TURRET.firstShot + TURRET.stagger]
+    this.s.next = [this.tune.firstShot, this.tune.firstShot + this.tune.stagger]
     for (const p of this.at) emit('turret-rise', p.x, p.y, false)
   }
 
@@ -81,7 +85,7 @@ export class Turrets {
     const s = this.s
     if (!this.firing) return
     for (let i = 0; i < 2; i++) {
-      const add = s.clock + dt * 2 + TURRET.windup - s.next[i]!
+      const add = s.clock + dt * 2 + this.tune.windup - s.next[i]!
       if (add <= 0 || s.late[i]! + add > STAY) continue
       s.next[i] = s.next[i]! + add
       s.late[i] = s.late[i]! + add
@@ -117,17 +121,20 @@ export class Turrets {
       s.clock += dt
       for (let i = 0; i < 2; i++) {
         const p = this.at[i]!
-        if (s.lock[i] === null && s.clock >= s.next[i]! - TURRET.windup) s.lock[i] = { x: s.aim.x, y: s.aim.y }
+        if (s.lock[i] === null && s.clock >= s.next[i]! - this.tune.windup) {
+          s.lock[i] = { x: s.aim.x, y: s.aim.y }
+          emit('turret-load', p.x, p.y, false)
+        }
         if (s.clock >= s.next[i]!) {
           const l = s.lock[i] ?? { x: s.aim.x, y: s.aim.y }
           const a = Math.atan2(l.y - p.y, l.x - p.x)
           const x0 = p.x + Math.cos(a) * TURRET.barrel
           const y0 = p.y + Math.sin(a) * TURRET.barrel
           const d = Math.hypot(l.x - x0, l.y - y0)
-          s.bolts.push({ id: s.nextId++, from: i, x0, y0, tx: l.x, ty: l.y, age: 0, flight: Math.max(0.08, d / TURRET.boltSpeed), z: this.surface(l.x, l.y) })
+          s.bolts.push({ id: s.nextId++, from: i, x0, y0, tx: l.x, ty: l.y, age: 0, flight: Math.max(0.08, d / this.tune.boltSpeed), z: this.surface(l.x, l.y) })
           emit('bolt-fire', x0, y0, false)
           s.lock[i] = null
-          s.next[i] = s.next[i]! + TURRET.period
+          s.next[i] = s.next[i]! + this.tune.period
           s.late[i] = 0
         }
       }
@@ -180,12 +187,12 @@ export class Turrets {
         const tone = s.overheated ? 'danger' : 'metal'
         const stands = top >= heights.machineMinTop
         const winding = s.lock[i] !== null
-        const charge = winding ? Math.min(1, (TURRET.windup - (s.next[i]! - s.clock)) / TURRET.windup) : 0
+        const charge = winding ? Math.min(1, (this.tune.windup - (s.next[i]! - s.clock)) / this.tune.windup) : 0
         const a = s.overheated ? (i === 0 ? 0.5 : Math.PI - 0.5) : s.angle[i]!
-        const first = TURRET.firstShot + (i === 0 ? 0 : TURRET.stagger)
-        const since = this.firing && s.next[i]! > first + 1e-9 ? Math.min(1, s.clock - (s.next[i]! - TURRET.period)) : 1
-        const back = recoilOf(charge, since)
-        const shots = Math.round((s.next[i]! - first) / TURRET.period)
+        const first = this.tune.firstShot + (i === 0 ? 0 : this.tune.stagger)
+        const since = this.firing && s.next[i]! > first + 1e-9 ? Math.min(1, s.clock - (s.next[i]! - this.tune.period)) : 1
+        const back = recoilOf(charge, since, this.tune)
+        const shots = Math.round((s.next[i]! - first) / this.tune.period)
         const heat = s.overheated ? Math.min(1, s.heat / 0.6) : 0
         out.push({
           id: `turret-${i}`, part: 'turrets', kind: 'disc', x: p.x - TURRET.body / 2, y: p.y - TURRET.body / 2, w: TURRET.body, h: TURRET.body, z0: this.base + lift, z1: top, tone, mechanism: stands,
@@ -213,6 +220,7 @@ export class Turrets {
         }
       }
     }
+    const k = this.tune.size
     for (const b of s.bolts) {
       const u = Math.min(1, b.age / b.flight)
       const x = b.x0 + (b.tx - b.x0) * u
@@ -224,9 +232,9 @@ export class Turrets {
       const cy = y - Math.sin(a) * len * 0.5
       const tx = x - Math.cos(a) * (len + 14)
       const ty = y - Math.sin(a) * (len + 14)
-      out.push({ id: `bolt-${b.id}-edge`, part: 'turrets', kind: 'capsule', x: cx - len / 2 - 5, y: cy - 13, w: len + 10, h: 26, z0: z - 10, z1: z + 6, rot: a, tone: 'dark' })
+      out.push({ id: `bolt-${b.id}-edge`, part: 'turrets', kind: 'capsule', x: cx - len / 2 - 5, y: cy - 13 * k, w: len + 10, h: 26 * k, z0: z - 10, z1: z + 6, rot: a, tone: 'dark' })
       out.push({ id: `bolt-${b.id}-tail`, part: 'turrets', kind: 'capsule', x: tx - 18, y: ty - 4, w: 36, h: 8, z0: z - 6, z1: z + 2, rot: a, tone: 'dark' })
-      out.push({ id: `bolt-${b.id}`, part: 'turrets', kind: 'capsule', x: cx - len / 2, y: cy - 8, w: len, h: 16, z0: z - 8, z1: z + 9, rot: a, tone: 'light', v: [u, Math.min(1, b.age / 0.05)] })
+      out.push({ id: `bolt-${b.id}`, part: 'turrets', kind: 'capsule', x: cx - len / 2, y: cy - 8 * k, w: len, h: 16 * k, z0: z - 8, z1: z + 9, rot: a, tone: 'light', v: [u, Math.min(1, b.age / 0.05), b.age, b.id, k] })
     }
   }
 }
