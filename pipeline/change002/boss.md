@@ -670,3 +670,35 @@ The chain of the Builder on this tree (merge55 b38b9fc0 merged), 06:55Z to 07:00
 Not run: look off, a browser, the bots' gate, determinism.
 
 The retime to come (not done): src/audio/standin.ts already reads public/audio/index.json, and tests/takes-timing.test.ts reads the lengths and phrase ends from it. `LINE6.after`, `LINE7.part0`, `ends`, `sentences`, `part1`, `music` and `part2` can be worked out from `standIns()` in src/boss/tune.ts, so that a kept take needs no number typed. Two numbers set by hand do not fit a part 2 of 1.9 s: `LINE7.power` 0.6 + `LINE7.glow` 2 = 2.6 s, and tests/takes-timing.test.ts wants that sum under the length of part 2. They want a ruling. The window in which the figure of the power-up stands (part 2 less `power` less `RAISE.early`) is 3.304 s now and would be 1.25 s; whether the figure's moves fit it is UNKNOWN.
+
+## The boss kept state between pictures; the keys of step 4 that are never drawn (asked 08:50Z November 28)
+
+Branch agent/b-boss-state, cut from origin/agent/merge55 e5b2dcb5.
+
+### 1. A picture must hang on its frame number alone
+
+MEASURED on merge55 e5b2dcb5 (`node pipeline/change002/boss-frames.mjs --frames ... --out dir`, tier draft, 1920 by 1080, pictures compared pixel by pixel):
+- Frame 11200 (after boss-gone), then 9000, 10700, 10790, 10817 in the same page, against the four drawn alone in rising order: 0 px differ. A frame after gone leaves nothing behind.
+- Frames 11080, 11100, 11150, 11190, 11200, 11300, 11450, then the same four, in one page: 9,890, 22,961, 29,991 and 49,018 px differ (largest difference of a channel 219 to 230). So merge55 has the fault; it did not come in with the camera branch.
+
+Cause, MEASURED by a test that was red on exactly this and nothing else: `fling` in src/boss/look1/index.ts adds to a part's place and to its turn. The top of `apply` sets both afresh for every flung part but one: the bay (`m.bay`) had its place set and its turn never. A pose in which the bay is in flight left it turned for every later pose of the same boss. In the picture of frame 10700 drawn after blast frames the bay stands out of the hull. The carriage of the cannon is a child of the body and is set in every pose; on merge55 it was not the part at fault.
+
+Mend: one line in `apply`, `m.bay.rotation.set(0, 0, 0)`, beside the line that sets its place. It is not among the lines the camera helper is changing (31, 132, 267).
+
+Test: tests/b-boss-state.test.ts poses one boss with 14 late views (12 through the blast, 2 after gone) and then each of 6 early views, and compares every object of the boss that is seen (place, turn, scale, kind of material, colour, glow, see-through, name) with the same early view posed alone on a new boss; and a late view after a later one. Red before the mend on the bay's turn only (0.0443, -0.0043, 0.0314, 0.9985 against 0, 0, 0, 1); passes after.
+
+MEASURED after the mend: the same eleven frames in the same order against the four drawn alone: 0, 0, 0, 0 px. The four drawn alone, mended against before: 0 px.
+
+THE FILM CHANGES, in the blast. Before the mend the bay's turn in a frame was the sum of the turns of every pose made before it in that page, so it hung on the order of drawing and on the number of samples of a frame (draft 2, final 24). MEASURED, frames 11110, 11120, 11130, 11140, 11150, 11160 drawn in a row, before against mended: 12,273 px (largest 39), 6,702 (largest 143), 702 (largest 104), 0, 0, 0. In the order of eleven, frames 11080, 11100, 11150, 11190, 11200, 11300, 11450 mended against before: 0 px. The first and the last frame that change are UNKNOWN; they lie where the bay flies in view, between 11101 and 11139.
+
+Not covered by the test: the arena (src/arena/wreck.ts keeps things), the figure of the finish, the weapons, the health bar. The pixel compare of the four frames is 0 after the mend, which covers them for those four frames and that order only. The camera branch (8304177b) was not drawn; UNKNOWN whether its changes leave further state.
+
+### 2. Gate G11, the share of step 4
+
+Before (`npm run -s gate -- --phase 5 --only G11`, EXIT 1): step 4's layout names copy:step4.errorSlabs.0, .1, .3, .4, .5, copy:step4.popups.0.title, copy:step4.popups.0.buttons.0 and .1, and 4 more keys, never drawn.
+
+Decision: in src/pages/step4/layout.ts the rack of slabs and the pop-up windows are in the group `fight-type` only while `POPUPS_ON` (src/boss/tune.ts, false) is true; the banner is always there. The plans, `SLAB_KEYS`, `POPUPS`, the words in the copy and the switch are all kept. tests/boss.test.ts asked that every string of step 4 be in the register; it now asks that the 12 keys (5 slabs, 7 of the pop-up windows) hold words in the copy and are not in the register while the switch is off, and that everything else is.
+
+After (the same command, EXIT 1): no line of step 4. What is left is step 2's `data:step2.years.*` (8 lines and "2 more"), not mine.
+
+MEASURED with the switch set to true for one run and put back: the 7 keys of the pop-up windows are drawn; the 5 slabs (errorSlabs.0, .1, .3, .4, .5) are named and never drawn. No code of the fight draws the slabs under either setting (`drawWeapons` draws the pop-up windows and the banner). So whoever turns the switch on meets those 5 lines again. Not mended: it is outside what was asked, and the note says keep and do not delete.
