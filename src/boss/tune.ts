@@ -340,7 +340,7 @@ export const CAMERA = {
   swing: 2,
   push: 0.08,
   pushOver: 6,
-  rest: 2,
+  rest: 1,
   ahead: 0.9,
   round: 0.8,
   lead: 2,

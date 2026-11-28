@@ -273,16 +273,18 @@ describe('the camera of the finishing blast: its path', () => {
     }
   })
 
-  it('the four views are there in the film, each held: the charge 2 s and more, the fire, the blast, and from above for the larger share of the burn', () => {
+  // The charge view rests 1 s and more, not 2: the Builder set CAMERA.rest to 1 on 28 November, because every part is built to its short end with no padding, and with 2 s the view rested over a second with no word.
+  it('the four views are there in the film, each held: the charge 1 s and more, the fire, the blast, and from above for the larger share of the burn', () => {
     const m = COURSES[0]![1]
+    const rests = (CAMERA.down[1] + m.turn) / 2
     const held = (t: number): number => steps(poseAt(t, m), poseAt(t + 1 / FPS, m)).turn
     const view = (t: number): string => finishRig(t, m).view
-    expect(view(2)).toBe('charge')
+    expect(view(rests)).toBe('charge')
     expect(view(m.fire)).toBe('fire')
     expect(view(m.fire + CAMERA.back[1])).toBe('blast')
     expect(view(m.fire + CAMERA.rise[0] + 0.1)).toBe('end')
-    expect(held(2)).toBeLessThan(0.05)
-    expect(m.turn - CAMERA.down[1]).toBeGreaterThanOrEqual(2)
+    expect(held(rests)).toBeLessThan(0.05)
+    expect(m.turn - CAMERA.down[1]).toBeGreaterThanOrEqual(1)
     expect(m.turn + m.round).toBeLessThanOrEqual(m.fire)
     const burn = SHOUT.gone - SHOUT.fire
     expect(burn - CAMERA.rise[1]).toBeGreaterThan(burn / 2)
@@ -831,6 +833,8 @@ describe('the marks of the shout, worked out from the line', () => {
     expect(shoutOf({ starts: [0.1, 1.04, 4.13], peak: 4.13, seconds: 6.26 })).toEqual(STAND_IN)
     expect(shoutOf({ starts: [0.1, 1.04, 3.6], peak: 4.13, seconds: 6.26 })).toEqual(STAND_IN)
     expect(shoutOf({ starts: [0.1, 0.54, 1.46], peak: 2.08, seconds: 3.52 }, 2.85)).toEqual({ arms: 0, lead: 0.77, beats: [0.137, 0.74, 1.457, 2.01], fire: 2.85, gone: 6.28 })
+    expect(shoutOf({ starts: [0.1, 0.66, 1.3], peak: 1.85, seconds: 4.01 }, 3.85)).toEqual({ arms: 0, lead: 2, beats: [0.208, 1.374, 2.215, 2.864], fire: 3.85, gone: 7.31 })
+    expect(shoutFloor()).toBe(2.85)
     expect(SHOUT_RULE.standIn).toEqual({ starts: [0.1, 1.04, 4.13], seconds: 6.26 })
     const now = lineTimes(SHOUT_LINE)!
     expect({ arms: SHOUT.arms, lead: SHOUT.lead, beats: SHOUT.beats, fire: SHOUT.fire, gone: SHOUT.gone }).toEqual(shoutOf(now))
@@ -851,10 +855,10 @@ describe('the marks of the shout, worked out from the line', () => {
 
   it('a take whose last phrase starts sooner than the floor is shouted that much after the arms: the fire mark is the floor, the charge marks are stretched with it, and the charge view rests as long as with the stand-in or longer', () => {
     const takes: [string, { starts: number[]; seconds: number; peak?: number }, ShoutMarks][] = [
-      ['4.0 s', { starts: [0.05, 0.7, 1.8], seconds: 4.0 }, { arms: 0, lead: 2.05, beats: [0.107, 1.497, 2.297, 2.913], fire: 3.85, gone: 7.35 }],
-      ['3.3 s', { starts: [0.05, 0.6, 1.5], seconds: 3.3 }, { arms: 0, lead: 2.35, beats: [0.128, 1.54, 2.325, 2.93], fire: 3.85, gone: 7.28 }],
-      ['the take as recorded, 3.52 s with its peak at 2.08 s', { starts: [0.1, 0.82, 1.46], peak: 2.08, seconds: 3.52 }, { arms: 0, lead: 1.77, beats: [0.185, 1.518, 2.31, 2.922], fire: 3.85, gone: 7.28 }],
-      ['the take mended, 4.01 s with its peak at 1.85 s', { starts: [0.1, 0.66, 1.3], peak: 1.85, seconds: 4.01 }, { arms: 0, lead: 2, beats: [0.208, 1.374, 2.215, 2.864], fire: 3.85, gone: 7.31 }]
+      ['4.0 s', { starts: [0.05, 0.7, 1.8], seconds: 4.0 }, { arms: 0, lead: 1.05, beats: [0.079, 1.108, 1.7, 2.157], fire: 2.85, gone: 6.35 }],
+      ['3.3 s', { starts: [0.05, 0.6, 1.5], seconds: 3.3 }, { arms: 0, lead: 1.35, beats: [0.095, 1.14, 1.721, 2.169], fire: 2.85, gone: 6.28 }],
+      ['the take as recorded, 3.52 s with its peak at 2.08 s', { starts: [0.1, 0.82, 1.46], peak: 2.08, seconds: 3.52 }, { arms: 0, lead: 0.77, beats: [0.137, 1.124, 1.71, 2.163], fire: 2.85, gone: 6.28 }],
+      ['the take mended, 4.01 s with its peak at 1.85 s', { starts: [0.1, 0.66, 1.3], peak: 1.85, seconds: 4.01 }, { arms: 0, lead: 1, beats: [0.154, 1.017, 1.64, 2.12], fire: 2.85, gone: 6.31 }]
     ]
     for (const [name, take, want] of takes) {
       const m = shoutOf(take)
