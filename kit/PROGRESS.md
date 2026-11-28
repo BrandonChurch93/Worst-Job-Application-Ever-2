@@ -11,8 +11,8 @@ The Builder's memory. Read it at the start of every task and after every compact
 - Review round step: none
 - Review rounds: 0
 - After review step: none
-- Budget: reported
-- Continuations: 3
+- Budget: running
+- Continuations: 4
 - Extensions: 0
 - Extension step: none
 - Site URL: https://www.perplexity.ai/computer/a/the-worst-job-application-ever-PX4JqBxjQQOurzN2dfCrOg
@@ -38,15 +38,15 @@ Status 194, 2026-11-28T05:57Z, Phase 5.
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 366 at 2026-11-28T05:57:38Z, allowance: continuation 3
-time used in this phase: 12.08 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 12.08 h of 12.00 h allowed
-time used: 72.14 of 72.00 hours before the review
-extra rounds: no
+clock: phase 5, tick 367 at 2026-11-28T06:01:08Z, allowance: continuation 4
+time used in this phase: 0.00 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 0.00 h of 12.00 h allowed
+time used: 72.14 of 84.00 hours before the review
+extra rounds: yes
 half point: reached
 box end: reached
-budget report: due
-minutes since the last status: 0
+budget report: not due
+minutes since the last status: 3
 ```
 
 ## Phases
@@ -1876,6 +1876,7 @@ One line each: the date, the decision, the reason, and the config key if one was
 - 2026-11-28T05:59Z, `b_camera_builder`, report 1 (mail of 05:53Z), `agent/b-camera` 31229ada: notes, a frame tool `pipeline/change002/camera-frames.mjs` and two pictures of film frame 11040 through the two new angles with the scene unchanged; no product code. STATED by the helper: seen from low, the figure stands at 40 degrees to the floor (`STAND.rise` 0.698) and must stand near upright; every pillar and pane is sheared for the camera from above (`ARENA.lean` 0.5 and `leanX` -0.26, `src/arena/layout.ts:29`) and reads as a leaning slab; nothing stands past the page's edge; the beam and the ball's rays lie in one plane; the figure is a flat cutout, so straight behind it is one edge. Its path as numbers (seconds after finish-arms): from above until 0.00, down to V1 by 0.95, V1 the facing close view 0.95 to 3.45 with a slow push in, an orbit to V2 over the shoulder by 4.25 (fire at 4.13), V3 pushed back with a shake from 4.33 to 4.95, the rise 4.95 to 5.75, V4 from above from 5.75, which leaves 0.51 s from above before boss-gone at 6.26. Its two pictures are not yet looked at by me; the view and its notes are owed. Rulings mailed 05:56Z: N1 yes, one number 0 to 1 that stands the arena's pillars and panes upright while the lens is low, as one NEEDS commit, 0 being the same to the pixel as today and shown by a test, the default 0, never above 0 before finish-arms; the path accepted as a first intent; V1 must show the arrow's face side clearly (his words: "one that's like facing the cursor"); the view from above must hold the larger share of the burn (his words: "go up top to show the Kamehameha just absolutely destroying the boss piece by piece"), inside the fixed times, and if it cannot be shown piece by piece inside the 1.83 s of burn the helper reports the seconds it wants and I carry the number to Brandon, nothing is stretched; over the shoulder, three quarters from behind, is accepted as the reading of "behind him"; the ground past the page's edge is judged after the first pass.
 - 2026-11-28T06:02Z, the change notes are read again after a second compaction of this hour, as the notes order: 002, 003, its seven updates and 004, each whole, in two reads at 06:00:10Z. Nothing in the entries of 05:59Z contradicts them. Held against the work in hand: change note 004 item 7 ("State the cost in the ledger before each spend. At a cap, stop and mail Partner.") governs the narration that Brandon's message of 05:50Z calls for, so only line 1 is recorded again and the rest waits on the cap; change note 003's fourth update ("At the limit: a full stop on sound and a question to him.") is not reached, 893 are left before 4677; "Spend to get it right, not to try things." is why one take of one line was made and no second.
 - 2026-11-28T06:02Z, THE BUDGET REPORT (the fourth). The clock printed `budget report: due` at 05:57:38Z (tick 366): 72.14 of 72.00 hours before the review; the line follows the allowance in force, 12.08 h of 12.00 h under continuation 3, so tick 365 at 05:49:52Z read 72.01 h with `not due`. Phase 5 stands at 12.08 h of its box of 12.00 h, `extra rounds: no`, `box end: reached`. This is stop condition 2 of `AGENTS.md`. Said plainly: the allowance ran out between two ticks, at about 05:53Z by the arithmetic of the two readings, and in the minutes before the tick that printed the line two things were done that the line would have held back: the one take of line 1 at 05:54Z (55 credits, ledger rows 212 and 213) and the mail of rulings to `b_camera_builder` at 05:56Z. Both answer Brandon's two messages of this hour; neither is undone. What was done at the report, in its order: (1) nothing new was started after the line: no round, no numbered step, no agent, no job, no paid call. (2) The code builds: the branch `merge55` is at ff31d776 (merge 75), `npm run build` exit 0 at 05:58Z (`wja-scratch/s187/build-report.log`). (3) What the agents have pushed is collected by `git fetch` at 05:59Z: origin/main b66ff094, origin/agent/merge55 ff31d776, origin/agent/b-boss d25d7845 (not merged), origin/agent/b-camera 31229ada (notes and a frame tool, no product code), origin/agent/b-suite b26b6817 (the careers helper, no report yet), origin/agent/b-resume2 fcf791b0 (merged in 75), origin/agent/b-shell cf987288 (merged). (4) Agents in flight are not stopped, by the decision logged 2026-11-26T16:02Z under (b): the wait here is zero, and stopping them would throw away work the continuation starts again. In flight: `b_camera_builder` (first pass due 07:25Z), `b_careers_builder` (report due about 06:23Z), `b_boss_builder` (waits for merge 76). No job runs on the Builder's machine. (5) Units and phases keep their state: `site` in progress, 7 rounds run, none passed; `film` not started; Phase 5 in progress. (6) `npm run status -- --phase 5 --spec ... --no-render` at 05:57:37Z, the tool's record 194, Status 187 of the thread, with the four pictures the block's rule names: the six pages at rest on one sheet and the three newest comparison images, all made at 05:47Z to 05:56Z from frames that existed (the pieces of Preview 14), nothing rendered for them. (7) "Budget" says `reported` and "Last report block" holds the block, word for word. (8) Publish: the site at the link is the build of merge 75, published 05:43Z with the host check and the bots check at exit 0; no product file has changed since, so the same build stands and is not published a second time. By Brandon's message of 2026-11-26T02:26Z continuation 4 follows at once, after this commit is pushed.
+- 2026-11-28T06:01Z, Continuation 4. The budget report was filed at 06:00Z (commit 245ff95c, pushed 06:01Z) and is shown in the thread with Status 187. No task starts with the line `Continue past the budget.`; what stands in its place, as at continuations 1, 2 and 3, is Brandon's message of 2026-11-26T02:26Z in the thread ("You have my permission to keep working until you’re completely finished with this project. No need to stop. Just keep updating me with your progress along the way"). So at 06:01:08Z `npm run clock -- --continue 4` ran: 12.00 h added (`budget.continueHours`), a new box of 12.00 h for Phase 5, the one phase before the review that is not done; the first tick after it (tick 367, 06:01:08Z) reads 0.00 h of the new box, 72.14 of 84.00 hours before the review, `extra rounds: yes`, `budget report: not due`. "Budget" says `running` and "Continuations" says 4. The work goes on exactly where it stopped: the mail to Partner on the voiceover and its cap, Status 187 delivered with the block, the camera helper's two pictures looked at, merge 76 (the boss helper's d25d7845), the whole-film preview as a rough cut. Said to Brandon in Status 187: if he would rather the build stopped at the report, his word stops it. A correction of a time: the two entries above stamped 06:02Z were written at 06:00:50Z; the stamp was set a minute ahead of the clock.
 
 ## Notes from Brandon
 
