@@ -2,7 +2,7 @@
 // Nothing here is created, fetched or played before unlock(), which the visitor's first click or key press calls.
 // The narrator's lines are silent stand-ins (change note 003): no take is fetched or played, a line holds its time and gives its caption.
 // The index of the sound files is part of the build, so the engine knows from the start whether there is any sound to play.
-import { config } from '../config'
+import { config, stepHz } from '../config'
 import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
@@ -13,6 +13,7 @@ import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
 import { riseAfterFire } from '../ui/rise'
+import { FINISH, SHOUT, SHOUT_LINE, voiceShout } from '../boss/tune'
 import { builtTo, phraseStart, standIns, type StandIn, lineKey } from './standin'
 import shipped from '../../public/audio/index.json'
 
@@ -26,7 +27,7 @@ export interface SoundApi {
   muted(): boolean
   setVolume(v: number): void
   volume(): number
-  event(e: { name: string; x: number; y: number; hitsCursor: boolean; page?: string }, mode: SoundMode): void
+  event(e: { name: string; x: number; y: number; hitsCursor: boolean; page?: string; step?: number }, mode: SoundMode): void
   beat(id: string, mode: SoundMode, into?: number): void
   trigger(name: string): void
   quiet(seconds: number): void
@@ -62,7 +63,8 @@ export interface SoundIndex {
 }
 
 type Bus = 'fx' | 'voice' | 'tone'
-interface PlayOptions { bus: Bus; when: number; cents: number; pan: number; loop: boolean; until?: number; fade?: number; fadeIn?: number }
+// offset: the seconds of the sound that are left out at its start.
+interface PlayOptions { bus: Bus; when: number; cents: number; pan: number; loop: boolean; until?: number; fade?: number; fadeIn?: number; offset?: number }
 // stop: it goes out from now over the fade. until: it is out at a time to come, having gone down over the fade before it, or from now when that is later.
 interface Voice { stop(fade: number): void; until(at: number, fade: number): void }
 interface Backend {
@@ -132,7 +134,8 @@ function graphBackend(Maker: ContextMaker): Backend {
         pan.connect(buses[o.bus])
       } else gain.connect(buses[o.bus])
       const when = Math.max(o.when, ctx.currentTime)
-      src.start(when)
+      if (o.offset) src.start(when, o.offset)
+      else src.start(when)
       if (o.fadeIn) {
         gain.gain.setValueAtTime(0, when)
         gain.gain.linearRampToValueAtTime(1, when + o.fadeIn)
@@ -253,7 +256,7 @@ function elementBackend(): Backend {
         el.playbackRate = Math.pow(2, o.cents / 1200)
         el.volume = volume(o.bus)
         try {
-          el.currentTime = 0
+          el.currentTime = o.offset ?? 0
         } catch {
           return
         }
@@ -345,6 +348,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const coveredAt = new Map<string, number>()
   const running = new Map<string, Voice[]>()
   const speaking = new Map<Booking, StandIn>()
+  let heard: number | undefined
   const turnHeld = new Map<string, number>()
   const voices = new Map<Booking, Voice>()
   const marks = new Map<Booking, string>()
@@ -534,11 +538,11 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   }
 
   // The take of a line with a voice, set on the sound clock at the start of its booking. A line that is a stand-in, or whose file did not come, plays nothing.
-  const voice = (booking: Booking, line: StandIn) => {
+  const voice = (booking: Booking, line: StandIn, offset = 0) => {
     voices.get(booking)?.stop(0)
     voices.delete(booking)
-    if (!line.kept || !loaded.has(line.id)) return
-    const v = backend!.play(line.id, { bus: 'voice', when: booking.start, cents: 0, pan: 0, loop: false })
+    if (waits.has(booking) || !line.kept || !loaded.has(line.id)) return
+    const v = backend!.play(line.id, { bus: 'voice', when: booking.start, cents: 0, pan: 0, loop: false, ...(offset > 0 ? { offset } : {}) })
     if (v) voices.set(booking, v)
   }
 
@@ -552,7 +556,15 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     } else v.until(booking.end, fade)
   }
 
+  // The shout on the live site while FINISH.onVoice: booked on its event as ever, its voice and its words wait for the first charge mark, the visitor's press.
+  // Until then the booking is held open for as long as the page waits before it presses by itself.
+  const waits = new Map<Booking, { step: number | undefined; at: number }>()
+  const onVoice = new Set<Booking>()
   const speak = (booking: Booking, line: StandIn) => {
+    if (FINISH.onVoice && lastMode === 'live' && line.key === SHOUT_LINE && spoken[line.key]?.steps) {
+      waits.set(booking, { step: heard, at: booking.start })
+      booking.end = booking.start + FINISH.alone + line.seconds
+    }
     speaking.set(booking, line)
     voice(booking, line)
     setMark(booking, line)
@@ -620,6 +632,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
 
   // A line whose phrases come on marks of its page: each mark shows the next phrase, the last mark the last phrase, and the end mark ends the line.
   // A row with hidesOnRise: its caption leaves riseAfterFire() after the first last mark and stays away; the voice is not touched.
+  // The shout on the live site while FINISH.onVoice: the first charge mark is the press. The file starts there, whole but for its silent lead-in, so that its peak
+  // comes where voiceShout puts the blast, and each phrase is shown as the file reaches it. The later marks and the letting go move nothing; the fire mark takes the caption away on the rise.
   const step = (name: string, page: string) => {
     const now = backend!.now()
     for (const [b, l] of [...speaking]) {
@@ -627,6 +641,29 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (!steps || l.page !== page || b.end <= now) continue
       const got = stepped.get(b) ?? []
       const at = Math.max(now, b.start)
+      const wait = waits.get(b)
+      if (wait || onVoice.has(b)) {
+        if (wait && name === steps.next) {
+          const press = SHOUT.arms + (heard !== undefined && wait.step !== undefined ? (heard - wait.step) / stepHz : now - wait.at)
+          const v = voiceShout(press, { starts: l.phrases.map((p) => p.from), seconds: l.seconds, ...(l.peak !== undefined ? { peak: l.peak } : {}) })
+          const start = at + v.from - press
+          waits.delete(b)
+          onVoice.add(b)
+          b.start = start
+          b.end = start + l.seconds - v.skip
+          voice(b, l, v.skip)
+          stepped.set(b, v.says.map((x) => start + x - v.from))
+          note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'spoken', start: round(start), seconds: round(b.end - start), why: `its voice starts with the press, ${round(v.skip)} s into its file, and its peak comes ${round(v.due - press)} s after the press` })
+          reduck()
+        } else if (name === steps.last) {
+          if (wait) {
+            waits.delete(b)
+            b.end = at
+          } else if (steps.hidesOnRise && !hidden.has(b)) hidden.set(b, at + riseAfterFire())
+        } else continue
+        caption?.wake()
+        continue
+      }
       if (name === steps.next) {
         if (got.length < l.phrases.length - 1) got.push(at)
       } else if (name === steps.last) {
@@ -787,6 +824,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (closes && mode !== 'film') closeOpening(now, e.name)
       if (mode === 'live' && (e.name === 'page-turn' || e.name === 'skip')) hushTurn(now, e.name, page)
       jump(e.name, page, mode)
+      heard = e.step
       step(e.name, page)
       if (e.name === 'skip' || e.name === 'page-turn') takeBack(desk.leave(now, page), e.name === 'skip' ? 'its page was skipped' : 'its page was turned')
       if (closes) openingOpen = false

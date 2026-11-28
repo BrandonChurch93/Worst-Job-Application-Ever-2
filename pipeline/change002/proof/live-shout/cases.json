@@ -1,0 +1,480 @@
+{
+ "take": {
+  "id": "line.boss.finish.0",
+  "file": "line.boss.finish.0.mp3",
+  "seconds": 4.01,
+  "mime": "audio/mpeg",
+  "words": "I have / five years / of experience",
+  "starts": [
+   0.1,
+   0.66,
+   1.3
+  ],
+  "peak": 1.85
+ },
+ "cases": {
+  "a": {
+   "press": 2,
+   "charges": [
+    2
+   ],
+   "file": [
+    {
+     "start": 2.004,
+     "offset": 0.1
+    }
+   ],
+   "stopped": [
+    null
+   ],
+   "shown": [
+    {
+     "k": 0,
+     "at": 2.004,
+     "words": "I have"
+    },
+    {
+     "k": 1,
+     "at": 2.567,
+     "words": "I have five years"
+    },
+    {
+     "k": 2,
+     "at": 3.204,
+     "words": "I have five years of experience"
+    }
+   ],
+   "gone": 4.85,
+   "turn": 3.2,
+   "blast": 3.75,
+   "heard": 3.754,
+   "size": 0.25,
+   "log": [
+    "spoken event finish-arms",
+    "spoken event finish-charge: its voice starts with the press, 0.1 s into its file, and its peak comes 1.75 s after the press"
+   ],
+   "said": [
+    {
+     "words": "I have",
+     "start": 2.004,
+     "end": 2.564,
+     "loud": true,
+     "step": {
+      "k": 0,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years",
+     "start": 2.564,
+     "end": 3.204,
+     "loud": true,
+     "step": {
+      "k": 1,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years of experience",
+     "start": 3.204,
+     "end": 4.854,
+     "loud": true,
+     "step": {
+      "k": 2,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    }
+   ]
+  },
+  "b": {
+   "press": 2,
+   "charges": [
+    2,
+    2.563
+   ],
+   "file": [
+    {
+     "start": 2.004,
+     "offset": 0.1
+    }
+   ],
+   "stopped": [
+    null
+   ],
+   "shown": [
+    {
+     "k": 0,
+     "at": 2.004,
+     "words": "I have"
+    },
+    {
+     "k": 1,
+     "at": 2.567,
+     "words": "I have five years"
+    },
+    {
+     "k": 2,
+     "at": 3.204,
+     "words": "I have five years of experience"
+    }
+   ],
+   "gone": 4.85,
+   "turn": 3.2,
+   "blast": 3.75,
+   "heard": 3.754,
+   "size": 0.583,
+   "log": [
+    "spoken event finish-arms",
+    "spoken event finish-charge: its voice starts with the press, 0.1 s into its file, and its peak comes 1.75 s after the press"
+   ],
+   "said": [
+    {
+     "words": "I have",
+     "start": 2.004,
+     "end": 2.564,
+     "loud": true,
+     "step": {
+      "k": 0,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years",
+     "start": 2.564,
+     "end": 3.204,
+     "loud": true,
+     "step": {
+      "k": 1,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years of experience",
+     "start": 3.204,
+     "end": 4.854,
+     "loud": true,
+     "step": {
+      "k": 2,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    }
+   ]
+  },
+  "c": {
+   "press": 2,
+   "charges": [
+    2,
+    2.563,
+    3.2
+   ],
+   "file": [
+    {
+     "start": 2.004,
+     "offset": 0.1
+    }
+   ],
+   "stopped": [
+    null
+   ],
+   "shown": [
+    {
+     "k": 0,
+     "at": 2.004,
+     "words": "I have"
+    },
+    {
+     "k": 1,
+     "at": 2.567,
+     "words": "I have five years"
+    },
+    {
+     "k": 2,
+     "at": 3.204,
+     "words": "I have five years of experience"
+    }
+   ],
+   "gone": 4.85,
+   "turn": 3.2,
+   "blast": 3.75,
+   "heard": 3.754,
+   "size": 1,
+   "log": [
+    "spoken event finish-arms",
+    "spoken event finish-charge: its voice starts with the press, 0.1 s into its file, and its peak comes 1.75 s after the press"
+   ],
+   "said": [
+    {
+     "words": "I have",
+     "start": 2.004,
+     "end": 2.564,
+     "loud": true,
+     "step": {
+      "k": 0,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years",
+     "start": 2.564,
+     "end": 3.204,
+     "loud": true,
+     "step": {
+      "k": 1,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years of experience",
+     "start": 3.204,
+     "end": 4.854,
+     "loud": true,
+     "step": {
+      "k": 2,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    }
+   ]
+  },
+  "d": {
+   "press": 2,
+   "charges": [
+    2,
+    2.563,
+    3.2
+   ],
+   "file": [
+    {
+     "start": 2.004,
+     "offset": 0.1
+    }
+   ],
+   "stopped": [
+    null
+   ],
+   "shown": [
+    {
+     "k": 0,
+     "at": 2.004,
+     "words": "I have"
+    },
+    {
+     "k": 1,
+     "at": 2.567,
+     "words": "I have five years"
+    },
+    {
+     "k": 2,
+     "at": 3.204,
+     "words": "I have five years of experience"
+    }
+   ],
+   "gone": 4.85,
+   "turn": 3.2,
+   "blast": 3.75,
+   "heard": 3.754,
+   "size": 1,
+   "log": [
+    "spoken event finish-arms",
+    "spoken event finish-charge: its voice starts with the press, 0.1 s into its file, and its peak comes 1.75 s after the press"
+   ],
+   "said": [
+    {
+     "words": "I have",
+     "start": 2.004,
+     "end": 2.564,
+     "loud": true,
+     "step": {
+      "k": 0,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years",
+     "start": 2.564,
+     "end": 3.204,
+     "loud": true,
+     "step": {
+      "k": 1,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years of experience",
+     "start": 3.204,
+     "end": 4.854,
+     "loud": true,
+     "step": {
+      "k": 2,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    }
+   ]
+  },
+  "e": {
+   "press": null,
+   "charges": [
+    4.246,
+    4.808,
+    5.446
+   ],
+   "file": [
+    {
+     "start": 4.25,
+     "offset": 0.09999999999999964
+    }
+   ],
+   "stopped": [
+    null
+   ],
+   "shown": [
+    {
+     "k": 0,
+     "at": 4.25,
+     "words": "I have"
+    },
+    {
+     "k": 1,
+     "at": 4.813,
+     "words": "I have five years"
+    },
+    {
+     "k": 2,
+     "at": 5.45,
+     "words": "I have five years of experience"
+    }
+   ],
+   "gone": 7.1,
+   "turn": 5.446,
+   "blast": 6,
+   "heard": 6.004,
+   "size": 1,
+   "log": [
+    "spoken event finish-arms",
+    "spoken event finish-charge: its voice starts with the press, 0.1 s into its file, and its peak comes 1.75 s after the press"
+   ],
+   "said": [
+    {
+     "words": "I have",
+     "start": 4.25,
+     "end": 4.81,
+     "loud": true,
+     "step": {
+      "k": 0,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years",
+     "start": 4.81,
+     "end": 5.45,
+     "loud": true,
+     "step": {
+      "k": 1,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years of experience",
+     "start": 5.45,
+     "end": 7.104,
+     "loud": true,
+     "step": {
+      "k": 2,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    }
+   ]
+  },
+  "f": {
+   "press": 0.2,
+   "charges": [
+    0.2
+   ],
+   "file": [
+    {
+     "start": 0.204,
+     "offset": 0.1
+    }
+   ],
+   "stopped": [
+    null
+   ],
+   "shown": [
+    {
+     "k": 0,
+     "at": 0.204,
+     "words": "I have"
+    },
+    {
+     "k": 1,
+     "at": 0.767,
+     "words": "I have five years"
+    },
+    {
+     "k": 2,
+     "at": 1.404,
+     "words": "I have five years of experience"
+    }
+   ],
+   "gone": 3.054,
+   "turn": 1.4,
+   "blast": 1.95,
+   "heard": 1.954,
+   "size": 0.25,
+   "log": [
+    "spoken event finish-arms",
+    "spoken event finish-charge: its voice starts with the press, 0.1 s into its file, and its peak comes 1.75 s after the press"
+   ],
+   "said": [
+    {
+     "words": "I have",
+     "start": 0.204,
+     "end": 0.764,
+     "loud": true,
+     "step": {
+      "k": 0,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years",
+     "start": 0.764,
+     "end": 1.404,
+     "loud": true,
+     "step": {
+      "k": 1,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    },
+    {
+     "words": "I have five years of experience",
+     "start": 1.404,
+     "end": 3.054,
+     "loud": true,
+     "step": {
+      "k": 2,
+      "n": 3
+     },
+     "whole": "I have five years of experience"
+    }
+   ]
+  }
+ }
+}

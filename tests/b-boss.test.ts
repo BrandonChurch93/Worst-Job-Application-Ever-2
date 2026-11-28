@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, onTestFinished } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { earlyEnd } from '../src/audio/cues'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
@@ -11,7 +11,7 @@ import { BEAM } from '../src/boss/finish/fx'
 import { drawnBoxes, figureBox } from '../src/boss/spot'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../src/boss/plan'
-import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
+import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP, shoutTake, voiceLevel, voiceShout } from '../src/boss/tune'
 import type { BossView } from '../src/boss/view'
 import { finishNow, viewNow } from '../src/boss/viewof'
 import { SHIFT, UNIT_SECONDS } from '../src/pages/step4/script'
@@ -463,7 +463,10 @@ describe('how the boss plays (change 002, item 15)', () => {
     ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2.55, marksBy(1.5), grown(1.5, marksBy(1.5))],
     ['who clicks once and lets go', (u: number): boolean => u >= 0.5 && u < 0.7, 1.8, 1, FINISH.small],
     ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.76, marksBy(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0]), grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], marksBy(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0]))]
-  ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (name, down, fires, charges, power) => {
+  ])('mail of 23:38, item 4. on the live site, with FINISH.onVoice off, the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (name, down, fires, charges, power) => {
+    const sw = FINISH as { onVoice: boolean }
+    sw.onVoice = false
+    onTestFinished(() => { sw.onVoice = true })
     for (const seed of [config.seed, 7, 1234]) {
       const bot = new BotDriver('keen', seed)
       let since = -1
@@ -498,6 +501,56 @@ describe('how the boss plays (change 002, item 15)', () => {
         else if (name.startsWith('who holds')) expect(gap, `seed ${seed}`).toBeCloseTo(0.45, 2)
         else expect(gap ?? -1, `seed ${seed}`).toBeGreaterThanOrEqual(0)
       }
+      expect(at('boss-gone')[0]! - at('finish-fire')[0]!).toBeCloseTo(SHOUT.gone - SHOUT.fire, 1)
+      expect(at('button-down').length).toBe(1)
+      expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
+      while (stage.page.id === 'step4' && stage.time < 160) stage.advance(1)
+      expect(stage.page.id, `seed ${seed}`).not.toBe('step4')
+    }
+  })
+
+  // The Builder's rule of 28 November, behind FINISH.onVoice: the shout starts with the press and the blast comes on the take's peak, whenever the button is let go.
+  // Every number is worked out from the shout's line as this tree's sound index has it, a kept take or the stand-in.
+  const voice = (press: number) => voiceShout(press, shoutTake())
+  // The press of these visitors: 2 s after the arms, or sooner where the take is so long that the arrow would have started by itself before then.
+  const P = Math.min(2, voice(0).alone / 2)
+  const sized = (held: number): number => Math.max(FINISH.small, voiceLevel(Math.min(held, voice(0).whole), voice(0)))
+  it.each([
+    ['who presses nothing', (): boolean => false, voice(voice(0).alone).due, 3, 1],
+    ['who holds the button and never lets go', (u: number): boolean => u >= P, voice(P).due, 3, 1],
+    ['who holds for the whole charge and lets go', (u: number): boolean => u >= P && u < P + voice(0).whole + 2 / stepHz, voice(P).due, 3, 1],
+    ['who holds for half the charge and lets go', (u: number): boolean => u >= P && u < P + voice(0).whole / 2, voice(P).due, voice(0).marks.filter((m) => m <= voice(0).whole / 2).length, sized(voice(0).whole / 2)],
+    ['who clicks once and lets go', (u: number): boolean => u >= P && u < P + 0.02, voice(P).due, 1, FINISH.small],
+    ['who clicks as the arms come out', (u: number): boolean => u >= 0 && u < 0.02, voice(0).due, 1, FINISH.small],
+    ['who presses after the arrow has started by itself', (u: number): boolean => u >= voice(0).alone + 0.3, voice(voice(0).alone).due, 3, 1]
+  ])('the rule of 28 November. on the live site, with FINISH.onVoice on, the finish of a visitor %s fires once, at the moment set by the press, destroys the body and leaves the button, and he goes on, on every seed tried', (_name, down, fires, charges, power) => {
+    expect(FINISH.onVoice).toBe(true)
+    for (const seed of [config.seed, 7, 1234]) {
+      const bot = new BotDriver('keen', seed)
+      const driver: Driver = {
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          if (v.page.gag() !== 'boss.collapse' && v.page.gag() !== 'boss.finish') return bot.input(v)
+          const arms = stage.events.find((e) => e.name === 'finish-arms')
+          return { x: v.cursor.x, y: v.cursor.y, down: arms !== undefined && down((stage.step - arms.step) / stepHz) }
+        }
+      }
+      const stage = new Stage({ mode: 'live', flow, pages, driver, seed })
+      let wide = 0
+      while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'button-down') && stage.time < 140) {
+        stage.advance(1)
+        stage.frameAt(stage.time)
+        const told = finishNow()
+        if (LOOK1_ON && told?.marks?.fire !== undefined) wide = Math.max(wide, told.shot ?? 0)
+      }
+      const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+      const arms = at('finish-arms')[0]!
+      expect(at('finish-arms').length, `seed ${seed}`).toBe(1)
+      expect(at('finish-fire').length, `seed ${seed}`).toBe(1)
+      expect(at('finish-fire')[0]! - arms, `seed ${seed}`).toBeCloseTo(fires, 1)
+      expect(Math.abs(at('finish-fire')[0]! - arms - fires), `seed ${seed}`).toBeLessThanOrEqual(2 / stepHz + 1e-9)
+      expect(at('finish-charge').length, `seed ${seed}`).toBe(charges)
+      if (LOOK1_ON) expect(wide, `seed ${seed}`).toBeCloseTo(power, 2)
       expect(at('boss-gone')[0]! - at('finish-fire')[0]!).toBeCloseTo(SHOUT.gone - SHOUT.fire, 1)
       expect(at('button-down').length).toBe(1)
       expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
