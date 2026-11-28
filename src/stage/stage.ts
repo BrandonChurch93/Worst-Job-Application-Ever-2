@@ -203,8 +203,10 @@ export class Stage {
 
   private broughtPose(c: CursorPose): CursorPose {
     const from = this.brought ?? this.leftBefore()
-    if (!from || this.phase !== 'arrive' || this.phaseStep >= broughtSteps) return c
-    const e = 1 - (1 - this.phaseStep / broughtSteps) ** 3
+    if (!from || this.phase !== 'arrive') return c
+    const a = this.turnAt()
+    if (this.phaseStep >= broughtSteps && a === 0) return c
+    const e = 1 - (1 - Math.min(1, this.phaseStep / broughtSteps)) ** 3
     const d = homeDistance()
     const scroll = this.page.scroll()
     const to = d / (d - c.z)
@@ -213,13 +215,15 @@ export class Stage {
     let z = from.z + (c.z - from.z) * e
     const k = d / (d - z)
     let v = (540 - sy) / k
-    const a = this.turnAt()
     const under = BROUGHT.clear - (z * Math.cos(a) - v * Math.sin(a))
     if (under > 0) {
       v -= under * Math.sin(a)
       z += under * Math.cos(a)
     }
-    return { ...c, x: 960 + ((sx - 960) * (d - z)) / d, y: scroll + 540 - v, z }
+    const x = 960 + ((sx - 960) * (d - z)) / d
+    if (a === 0) return { ...c, x, y: scroll + 540 - v, z }
+    // Until the arriving slab is seated the arrow lies in the slab's plane at that same point of the room, so that the slab's near half never covers it.
+    return { ...c, x, y: scroll + 540 - (v * Math.cos(a) + z * Math.sin(a)), z: z * Math.cos(a) - v * Math.sin(a), rides: true }
   }
 
   private turnAt(): number {

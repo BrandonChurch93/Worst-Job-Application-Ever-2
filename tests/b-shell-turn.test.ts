@@ -11,7 +11,9 @@ const run = (frames: number): At[] => {
   const rows: At[] = []
   for (let i = 0; i < frames; i++) {
     const f = s.frameAt(((i + 1) * PER) / stepHz)
-    rows.push({ i, page: s.page.unit, turning: s.turning, x: f.cursor.x, y: f.cursor.y - f.scroll, z: f.cursor.z, rides: f.cursor.rides === true })
+    const a = f.cursor.rides === true && s.page.unit !== 'marketing' ? f.turn : 0
+    const v = 540 - (f.cursor.y - f.scroll)
+    rows.push({ i, page: s.page.unit, turning: s.turning, x: f.cursor.x, y: 540 - (v * Math.cos(a) - f.cursor.z * Math.sin(a)), z: v * Math.sin(a) + f.cursor.z * Math.cos(a), rides: f.cursor.rides === true })
   }
   return rows
 }
@@ -43,11 +45,18 @@ describe("the film's arrow at a page turn", () => {
     expect(Math.abs(rows[k]!.x - out[29]!.x)).toBeLessThanOrEqual(20)
     expect(Math.abs(rows[k]!.z - out[29]!.z)).toBeLessThanOrEqual(1)
     for (let j = 0; j < BROUGHT.frames; j++) {
-      expect(rows[k + j]!.rides).toBe(false)
+      expect(rows[k + j]!.rides).toBe(true)
       expect(far(rows[k + j + 1]!)).toBeLessThan(far(rows[k + j]!))
       expect(rows[k + j + 1]!.z).toBeGreaterThan(rows[k + j]!.z)
     }
-    for (let j = BROUGHT.frames; j < BROUGHT.frames + 6; j++) expect([rows[k + j]!.x, rows[k + j]!.y, rows[k + j]!.z]).toEqual([960, 540, 260])
+    for (let j = BROUGHT.frames; j < BROUGHT.frames + 6; j++) {
+      expect(rows[k + j]!.x).toBe(960)
+      expect(rows[k + j]!.y).toBeCloseTo(540, 6)
+      expect(rows[k + j]!.z).toBeCloseTo(260, 6)
+    }
+    const seated = rows.slice(k).find((r) => !r.rides)!
+    expect(seated.i - k).toBeLessThanOrEqual(30)
+    expect([seated.x, seated.y, seated.z]).toEqual([960, 540, 260])
   })
 
   it('does the same in the film, where each unit has a stage of its own', () => {
@@ -56,9 +65,11 @@ describe("the film's arrow at a page turn", () => {
     const unit = new Stage({ mode: 'film', flow: filmFlow('step1'), pages, driver: new ScriptDriver(), film: filmOptions('step1') })
     for (let j = 0; j < BROUGHT.frames + 2; j++) {
       const f = unit.frameAt((j * PER) / stepHz)
+      const a = f.cursor.rides === true ? f.turn : 0
+      const v = 540 - (f.cursor.y - f.scroll)
       expect(Math.abs(f.cursor.x - rows[k + j]!.x)).toBeLessThanOrEqual(1e-6)
-      expect(Math.abs(f.cursor.y - f.scroll - rows[k + j]!.y)).toBeLessThanOrEqual(1e-6)
-      expect(Math.abs(f.cursor.z - rows[k + j]!.z)).toBeLessThanOrEqual(1e-6)
+      expect(Math.abs(540 - (v * Math.cos(a) - f.cursor.z * Math.sin(a)) - rows[k + j]!.y)).toBeLessThanOrEqual(1e-6)
+      expect(Math.abs(v * Math.sin(a) + f.cursor.z * Math.cos(a) - rows[k + j]!.z)).toBeLessThanOrEqual(1e-6)
     }
     const two = new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
     expect([two.frameAt(0).cursor.x, two.frameAt(0).cursor.z]).toEqual([960, 260])
