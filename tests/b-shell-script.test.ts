@@ -460,6 +460,8 @@ describe('the shout of the boss: a draft that builds on one row, a part a mark o
     }
     expect(shoutShake(0.37)).toEqual(shoutShake(0.37))
     expect(CAPTION.lowOn.step4).toBeLessThan(CAPTION.low)
+    expect(CAPTION.lowOn.step5).toBeGreaterThanOrEqual(168 + 62)
+    expect(CAPTION.lowOn.step5).toBeLessThanOrEqual(298)
     expect([CAPTION.shout.top, CAPTION.shout.low]).toEqual([96, 330])
   })
 

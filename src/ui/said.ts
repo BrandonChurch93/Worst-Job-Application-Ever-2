@@ -80,8 +80,9 @@ export const CAPTION = {
   wide: 900,
   high: 96,
   low: 1044,
-  // The y of the lower edge on a page that names none and has a thing at the foot of its middle: on the boss page, just above the cracks round the slot.
-  lowOn: { step4: 828 } as Record<string, number>,
+  // The y of the lower edge on a page that names none and has a thing at the foot of its middle: on the boss page, just above the cracks round the slot;
+  // on the decision page, in the clear band between the head of the page and the letter, since the button and the link fill the foot.
+  lowOn: { step4: 828, step5: 264 } as Record<string, number>,
   // A line that builds one part a mark on one row (the shout of the boss): px of the first step, the growth a step, the most px of the last, the y of the panel's upper edge
   // and the lowest its lower edge may come (the top band of the screen), the widest it gets, its line height, and the px and turns a second by which the last step shakes.
   // The whole line at its last step is fitted into that band, and every step before it is one growth smaller, so the type never shrinks.

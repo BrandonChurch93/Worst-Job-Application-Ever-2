@@ -23,6 +23,8 @@ const fight = at('out', 'stills', 'key-boss-down-hd-final.jpg')
 if (fs.existsSync(fight)) fs.copyFileSync(fight, path.join(dir, 'fight.jpg'))
 const standing = at('out', 'stills', 'key-boss-fight-hd-final.jpg')
 if (fs.existsSync(standing)) fs.copyFileSync(standing, path.join(dir, 'standing.jpg'))
+const decided = at('out', 'stills', 'key-decision-hd-final.jpg')
+if (fs.existsSync(decided)) fs.copyFileSync(decided, path.join(dir, 'decision.jpg'))
 const css = fs.readdirSync(dir).filter((f) => f.endsWith('.css'))
 const js = (name) => fs.readdirSync(dir).find((f) => f.startsWith(name) && /\.m?js$/.test(f))
 fs.writeFileSync(path.join(dir, 'index.html'), `<!doctype html><meta charset="utf-8"><title>caption</title>${css.map((f) => `<link rel="stylesheet" href="./${f}">`).join('')}<body style="margin:0;background:#16130f url(./page.jpg) center/cover no-repeat;height:100vh"><script type="module">
@@ -35,11 +37,12 @@ const AC = window.AudioContext
 window.AudioContext = function (...x) { ctx = new AC(...x); return ctx }
 window.AudioContext.prototype = AC.prototype
 const sound = makeSound({ base: './audio/', caption: makeCaption })
-const shout = location.search === '?shout' || location.search === '?standing'
-if (shout) document.body.style.backgroundImage = location.search === '?standing' ? 'url(./standing.jpg)' : 'url(./fight.jpg)'
-window.box = () => { const el = [...document.querySelectorAll('[data-narrator-caption]')].find((e) => e.style.display !== 'none'); if (!el) return null; const r = el.getBoundingClientRect(); const k = 1920 / window.innerWidth; return { words: el.textContent, fontPx: Math.round(parseFloat(getComputedStyle(el).fontSize) * k), top: Math.round(r.top * k), bottom: Math.round(r.bottom * k), left: Math.round(r.left * k), right: Math.round(r.right * k), baked: el.dataset.drawn !== undefined } }
-sound.page(shout ? 'step4' : 'marketing')
-window.mark = (name) => sound.event({ name, step: 0, page: 'step4', x: 960, y: 540, hitsCursor: false }, 'live')
+const shout = location.search === '?shout' || location.search === '?standing' || location.search === '?decision'
+const on = location.search === '?decision' ? 'step5' : 'step4'
+if (shout) document.body.style.backgroundImage = location.search === '?decision' ? 'url(./decision.jpg)' : location.search === '?standing' ? 'url(./standing.jpg)' : 'url(./fight.jpg)'
+window.box = () => { const el = [...document.querySelectorAll('[data-narrator-caption]')].find((e) => e.style.display !== 'none'); if (!el) return null; const r = el.getBoundingClientRect(); const k = 1920 / window.innerWidth; return { words: el.textContent, fontPx: Math.round(parseFloat(getComputedStyle(el).fontSize) * k), top: Math.round(r.top * k), bottom: Math.round(r.bottom * k), left: Math.round(r.left * k), type: (() => { const g = document.createRange(); g.selectNodeContents(el); const b = g.getBoundingClientRect(); return { left: Math.round(b.left * k), right: Math.round(b.right * k), wide: Math.round(b.width * k) } })(), right: Math.round(r.right * k), baked: el.dataset.drawn !== undefined } }
+sound.page(shout ? on : 'marketing')
+window.mark = (name) => sound.event({ name, step: 0, page: on, x: 960, y: 540, hitsCursor: false }, 'live')
 window.now = () => (ctx ? ctx.currentTime : null)
 window.said = () => sound.said()
 window.log = () => sound.log()
@@ -82,8 +85,10 @@ try {
   }
   if (process.argv.includes('--shout')) {
     const d = JSON.parse(fs.readFileSync(at('content', 'narration-drafts.json'), 'utf8')).film['boss.finish'][0]
-    const marks = [['finish-arms', 0], ...d.standIn.starts.slice(0, -1).map((t) => ['finish-charge', t]), ['finish-fire', d.standIn.starts[d.standIn.starts.length - 1]], ['boss-gone', d.standIn.seconds]]
-    page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()) })
+    const marks = [['finish-arms', 0], ...d.standIn.starts.slice(0, -1).map((t) => ['finish-charge', t]), ['finish-fire', d.standIn.starts[d.standIn.starts.length - 1]], ['(no mark: its own end)', d.standIn.seconds + 0.1]]
+    const missing = []
+    page.on('response', (r) => { if (r.status() === 404) missing.push(r.url().replace(site.url, '')) })
+    page.on('console', (m) => { if (m.type() === 'error') { errors.push(m.text()); missing.push(`${page.url().split('?')[1]}: ${m.location().url.replace(site.url, '')}`) } })
     await page.goto(`${site.url}/index.html?shout`)
     await page.waitForFunction(() => typeof window.now === 'function' && window.ready !== undefined, null, { timeout: 8000 }).catch(() => { console.log(`page did not start: ${errors.join('; ')}`); process.exit(1) })
     await page.evaluate(() => window.ready)
@@ -92,7 +97,7 @@ try {
     const rows = []
     for (const [name, t] of marks) {
       while ((await page.evaluate(() => window.now())) < t0 + t) await new Promise((r) => setTimeout(r, 5))
-      const sent = await page.evaluate((n) => { window.mark(n); return window.now() }, name)
+      const sent = await page.evaluate((n) => { if (!n.startsWith('(')) window.mark(n); return window.now() }, name)
       if (name === 'finish-arms') { rows.push({ mark: name, at: Number((sent - t0).toFixed(3)), panel: await page.evaluate(() => window.box()) }); continue }
       await new Promise((r) => setTimeout(r, 250))
       rows.push({ mark: name, at: Number((sent - t0).toFixed(3)), panel: await page.evaluate(() => window.box()) })
@@ -112,10 +117,18 @@ try {
     await new Promise((r) => setTimeout(r, 700))
     const pill = await page.evaluate(() => window.box())
     await page.screenshot({ path: path.join(pictures, 'script-boss-pill.png') })
-    writeJson(path.join(out, 'shell-script-shout.json'), { made: 'node pipeline/change002/shell-script-caption.mjs --shout', browser: launched.version, behind: 'kept stills of the boss page, not the running site', text: d.text, draft: true, marks: rows, line6OnTheBossPage: pill, log, pageErrors: errors })
+    await page.goto(`${site.url}/index.html?decision`)
+    await page.waitForFunction(() => typeof window.mark === 'function' && window.ready !== undefined, null, { timeout: 8000 })
+    await page.evaluate(() => window.ready)
+    await page.evaluate(() => window.mark('stamp'))
+    await new Promise((r) => setTimeout(r, 700))
+    const decision = await page.evaluate(() => window.box())
+    await page.screenshot({ path: path.join(pictures, 'script-decision-pill.png') })
+    writeJson(path.join(out, 'shell-script-shout.json'), { made: 'node pipeline/change002/shell-script-caption.mjs --shout', browser: launched.version, behind: 'kept stills of the boss page, not the running site', text: d.text, draft: true, marks: rows, line6OnTheBossPage: pill, line8OnTheDecisionPage: decision, log, pageErrors: errors, missing })
     for (const r of rows) console.log(`shout: ${r.mark} at ${r.at} s, panel ${r.panel === null ? 'shows nothing' : JSON.stringify(r.panel)}`)
     console.log(`line 6 on the boss page: ${JSON.stringify(pill)}`)
-    console.log(`page errors: ${errors.length}`)
+    console.log(`line 8 on the decision page: ${JSON.stringify(decision)}`)
+    console.log(`page errors: ${errors.length}; 404: ${JSON.stringify(missing)}`)
     await context.close()
     await launched.browser.close()
     await site.close?.()
