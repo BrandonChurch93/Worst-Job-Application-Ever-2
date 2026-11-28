@@ -913,6 +913,8 @@ export function makePage(): PageLogic {
         out.push({ ...whole, id: 'boss-look', part: 'boss-look1', kind: 'anchor', z0: 0, v: at })
         out.push({ ...whole, id: 'finish-figure', part: 'boss-finish', kind: 'anchor', z0: 0, v: at })
         for (let i = out.length - 1; i >= first; i--) if (out[i]!.id.startsWith('health-')) out.splice(i, 1)
+        const said = out.findIndex((u, i) => i >= first && u.id === 'defeated')
+        if (said >= 0) out.push(...out.splice(said, 1))
         if (v.time >= GROUND.barLands && barLeft() <= 0) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
         const w = wordAt(v)
         if (w.show) out.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, WORD as typeof TYPE.button, w.z, 'inkLight', w.rot))
