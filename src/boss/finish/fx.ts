@@ -682,7 +682,7 @@ export function makeFinishFx(): FinishFx {
         const seed = hash01(j, 7 + hnd, SEED)
         const sway = Math.sin(u * 5 + seed * 6 + hnd) * (3 + 9 * u) * big
         // The smoke keeps low, under the figure: it drifts off behind it and never lies over the white face.
-        puff(s.x + sway, s.y - big * (3 + 58 * u), Math.min(s.z, big * (3 + 5 * u)), big * (6 + 17 * u), seed, 0.85 * s.k * Math.sin(Math.PI * Math.min(1, u * 1.15)) * (1 - 0.55 * u), 0.36)
+        puff(s.x + sway + (s.x < p.x ? -1 : 1) * big * (4 + 14 * u), s.y - big * (3 + 58 * u), Math.min(s.z, big * (3 + 5 * u)), big * (7 + 19 * u), seed, 1.7 * s.k * Math.sin(Math.PI * Math.min(1, u * 1.15)) * (1 - 0.55 * u), 0.36)
       }
     })
     for (const dd of fx.dust) {
