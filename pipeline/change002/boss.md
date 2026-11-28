@@ -936,3 +936,22 @@ A detached checkout of agent/trial-p15 dbb3b410 beside this one, my tools copied
 5. The aim line (pipeline/change002/boss-aim-NEEDS.patch applied in the trial's working tree, lamp line in). Against the trial as it is: 0 px on every one of 23 frames: the 13 boss frames of the table, and careers 10.0, step 1 7.5, step 2 20.0, the machine 18.25 and Decision 5.0, each drawn alone and all five in one session. Each of the five shows cast shadows (cards, keys and arrow, lever and button, the machine's parts, the paper and the red button). The five drawn in one session against alone, without the aim line: 0, 0, 0, 0, 0. tests/b-boss-same.test.ts on the trial with the patch: 12 of 12, EXIT 0.
 6. The 1 px at 48.0 s (one level, at 1269,354) is there with and without the lamp line and with the aim line; it comes after frames of the finish (41 to 44) and not after 25 and 32 alone. Its cause was not looked for in this unit.
 7. Not measured: the final tier, the other formats, a session as long as one of the sixteen pieces, the live site.
+
+## The Builder's unit of 14:05Z, November 28: the turn from the boss page to Decision (written 14:22Z)
+
+Branch agent/b-boss-turn, from the trial dbb3b410, with agent/b-boss-fast 404bac93 merged in for the tools and these notes (no source of the site in that merge).
+
+1. The cause, MEASURED from the stage. The slab's angle is not behind: on the page's last eight film frames at 60 a second it is 42.19, 46.92, 51.98, 57.39, 63.16, 69.29, 75.80, 82.70 degrees on the boss page and the same eight on step 1 (and on careers, step 2 and the machine). What differed is where the picture is taken from: src/pages/step4/index.ts, `view()` (line 931 at dbb3b410) gave the close view of the finish to the page's end, eye 1531.2 over the point 180 px left of the middle, where every other page turns seen from 3062.5 over its middle. So the turn was seen at twice the size and off centre, and the view jumped at the join.
+2. The mend, in my files. `CLOSE.back` 0.4 in src/boss/tune.ts and one line in the last moment of src/pages/step4/index.ts: in the film the close view goes back to the whole page over the last 0.4 s of the 0.5 s the film holds after the blow on Submit (`LAST.hold`). MEASURED: the blow stays at 52.7708 s, the view is whole from 53.27 s, the turn starts at 53.4 s as before. No step of the press or of the turn moves; the part keeps its 3,234 frames, cost 0 frames. The live site is not changed.
+3. MEASURED on the preview format 960x540, draft tier (`node pipeline/change002/boss-same.mjs --runs "<the three joins, eight frames each>" --format preview --out /tmp/turnA` before and `/tmp/turnB` after, EXIT 0 each), the rows above y 470 of which more than 30 percent are brighter than 70:
+
+| join | before | after |
+| --- | --- | --- |
+| careers to step 1 | 411, 346, 258, 144 then 25, 146, 233, 297 | the same, 0 px changed |
+| step 1 to step 2 | 411, 346, 256, 138 then 25, 146, 234, 298 | the same, 0 px changed |
+| boss to Decision | 470, 470, 456, 372 then 23, 146, 231, 295 | 468, 415, 334, 227 then 23, 146, 231, 295 |
+
+   The change between the two pictures at the join (mean over the pixels of the three channels' differences added): careers 142.4, step 1 71.0, the boss 199.7 before and 161.6 after.
+4. What is left, and why. The boss page's rows are still more than the other pages' (227 against 144 on the last picture). MEASURED: the page's slab is thicker. src/shell/real/ground.ts line 242 makes a slab as thick as its deepest well and 10 more, and the empty socket of the Submit button is a well 150 deep (`HOLE.floor` in src/boss/body.ts), so the slab is 160 thick where step 1's is 28; in the picture at film frame 10510 its upper side stands 85 px tall, on step 1 at 3262 15 px. With the socket 18 deep, in the working tree only and not kept, the rows are 458, 381, 290, 176. The rest is what stands tall on the floor. Neither was changed: the socket's depth is part of the look.
+5. tests/b-boss-turn.test.ts, 4 cases: the eight angles equal step 1's; the page is seen whole from the step its slab starts to turn; it is still close at the blow and until the way back starts; the press and the turn stand where they stood. Without the line in the page 2 of the 4 fail (EXIT 1).
+6. Not measured: the hd format and the final tier; the sound of the last moment against the picture; the live site's own turn, which still leaves from the close view.
