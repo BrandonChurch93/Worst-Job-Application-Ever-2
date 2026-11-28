@@ -299,7 +299,10 @@ export function makePage(): PageLogic {
       return
     }
     if (e.phase === 'walk') {
+      const waited = e.t >= 0
       e.t += dt
+      if (e.t < 0) return
+      if (!waited) io.emit('finish-walk', io.cursor.x, io.cursor.y, false)
       const at = ground(io.pointer)
       if (!e.go) {
         const moved = Math.hypot(io.pointer.x - e.px, io.pointer.y - e.py) > 2
@@ -310,7 +313,7 @@ export function makePage(): PageLogic {
           e.go = true
           s.dash = Math.max(LAST.speed, Math.hypot(KNEEL.x - s.fig!.x, KNEEL.y - s.fig!.y) / LAST.most)
         }
-      } else if (e.t <= dt) s.dash = LAST.speed
+      } else if (!waited) s.dash = LAST.speed
       const to = e.go || inBox(fallenBox, at, LAST.reach - fallenBox.w / 2) ? KNEEL : { x: Math.min(CLOSE.x + CLOSE.w - CLOSE.edge, Math.max(CLOSE.x + CLOSE.edge, at.x)), y: Math.min(CLOSE.y + CLOSE.h - CLOSE.edge, Math.max(CLOSE.y + CLOSE.edge, at.y)) }
       const there = walk(to, e.go ? s.dash : LAST.speed, dt)
       if (e.go && there && s.blown) {
@@ -322,7 +325,7 @@ export function makePage(): PageLogic {
       return
     }
     e.t += dt
-    if (e.phase === 'kneel' && e.t >= LAST.knees + (s.mode === 'film' ? LAST.breath : 0)) {
+    if (e.phase === 'kneel' && e.t >= LAST.knees + (s.mode === 'film' ? LAST.breath : LAST.pause)) {
       e.phase = 'fist'
       e.t = 0
       io.emit('finish-fist', KNEEL.x, KNEEL.y, false)
@@ -564,8 +567,7 @@ export function makePage(): PageLogic {
             io.cursor.act('exhausted')
             io.cursor.aim(null)
             io.cursor.setArms(false)
-            s.end = { phase: 'walk', t: 0, idle: 0, go: s.mode === 'film', px: io.pointer.x, py: io.pointer.y }
-            io.emit('finish-walk', io.cursor.x, io.cursor.y, false)
+            s.end = { phase: 'walk', t: -LAST.wait, idle: 0, go: s.mode === 'film', px: io.pointer.x, py: io.pointer.y }
           }
           if (s.end) last(io)
           if (s.fired >= BLAST + FINISH.settle && s.stage === 'finish') {
@@ -816,7 +818,7 @@ export function makePage(): PageLogic {
     ignoring(): boolean {
       if (s.stage === 'fight') return s.fight !== null && s.fight.flat > 0
       if (!s.fig) return false
-      if (s.end) return s.end.go || s.end.phase !== 'walk'
+      if (s.end) return s.end.go || s.end.phase !== 'walk' || s.end.t < 0
       return s.t < FINISH.fall + SHOUT.arms || s.fired >= 0
     },
     states(): string[] {

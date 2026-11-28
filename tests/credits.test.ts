@@ -55,6 +55,29 @@ describe('the cap on sound credits', () => {
     expect(allow({ kind: 'speech', what: 'x', text: 'y' }, spent(cfg.audio.creditCap), cfg).ok).toBe(false)
   })
 
+  it('makes no call that would pass a hard limit Brandon has set under the cap', () => {
+    const l: any = spent(4660)
+    l.rates.effect = { perSecond: 12, how: 'measured' }
+    l.hardLimits = [{ limit: 4677, from: 'Brandon, by Partner', words: '"the ledger does not pass 4,677 without his word".' }]
+    expect(limits(cfg, l).limit).toBe(4677)
+    expect(allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 1 }, l, cfg).ok).toBe(true)
+    const no = allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 2 }, l, cfg)
+    expect(no.ok).toBe(false)
+    expect(no.why).toContain('4677')
+    expect(sheetOf(l, cfg)).toContain('Hard limit: 4677')
+    l.hardLimits[0].lifted = 'his word'
+    expect(allow({ kind: 'effect', what: 'x', prompt: 'p', seconds: 2 }, l, cfg).ok).toBe(true)
+  })
+
+  it('checks a model that has no measured rate at the dearest known rate', () => {
+    const l: any = emptyLedger()
+    l.rates.speech = { perCharacter: 0.439, how: 'measured' }
+    expect(estimate({ kind: 'speech', text: 'x'.repeat(40) }, l)).toBe(18)
+    expect(estimate({ kind: 'speech', text: 'x'.repeat(40), model: 'other' }, l)).toBe(40 * WORST.speech)
+    l.rates.speechByModel = { other: { perCharacter: 0.6, how: 'measured' } }
+    expect(estimate({ kind: 'speech', text: 'x'.repeat(40), model: 'other' }, l)).toBe(24)
+  })
+
   it('makes nothing extra once the extras line is passed', () => {
     const past: any = spent(cfg.audio.creditCap * cfg.audio.creditExtrasStopFraction + 1)
     past.reviewReached = true
