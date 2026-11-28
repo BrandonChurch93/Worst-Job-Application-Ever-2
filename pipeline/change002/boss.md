@@ -780,3 +780,28 @@ MEASURED 09:32Z to 09:37Z (`node pipeline/change002/boss-talk.mjs ...`, which op
 1. The index must hold takes of the new lengths. For a trial I set the seconds and the phrase starts of the four boss lines in public/audio/index.json from fast-takes.json in my working tree and put the file back after; nothing of it is committed and no sound file was touched.
 2. `npm run retime` with that index (RETIME EXIT 0) moves the starts of the lines in content/narration.json: boss.verify.0 `at` 0.54286 to 0.76, boss.unfold.0 0.14992 to 0.19438, boss.unfold.1 0.78328 to 0.75871, boss.unfold.2 0.94119 to 0.89391, and in content/narration-drafts.json boss.finish.0 0.00072 to 0.00144. In the film: line 6 from 125.100 to 129.370 s, part 0 from 130.304 to 141.629, part 1 from 141.929 to 144.414, part 2 from 144.715 to 146.625. Not committed (the ruling is not to touch content/narration.json); it is in pipeline/change002/boss-fast-narration-NEEDS.patch, and the same command gives it.
 3. After both, the site still does not start: the check `contentProblems` in src/copy.ts gives every line of the film the length of its words at `audio.narratorMaxWordsPerSecond` (1.6, config), not the length of its take, and the lines without pauses are quicker than that. By that check line 6 runs 6.875 s (11 words) and has 4.904 s, part 0 has 11.325 s for 29 words, part 1 has 2.486 s for 7 words: the boss lines need 2.82 words a second or more, or the check must read the takes' lengths. For the pictures only I ran with that number at 3 in my working tree and put it back.
+
+### The pictures and how they were made (working tree only, all put back)
+
+1. The seconds and the phrase starts of line.boss.verify.0 and line.boss.unfold.0, .1, .2 in public/audio/index.json set from pipeline/change002/fast-takes.json (a few lines of Python outside the repo; no other field, no sound file).
+2. `"narratorMaxWordsPerSecond": 1.6` set to 3 in config/showcase.json.
+3. `npm run -s retime` (RETIME EXIT 0; the five starts named above).
+4. `node pipeline/change002/boss-talk.mjs --from 3.8 --to 28.3 --every 0.5 --out /tmp/talk` and `--from 23.2 --to 27.6 --every 0.2 --out /tmp/rise`: film frames at 960 by 540, tier draft, the site built at the opening of the session.
+5. `git checkout -- public/audio/index.json content/ config/showcase.json`.
+The strips are put together outside the repo: each frame at 240 by 135 with its second, its film frame and, under it, the phrase that fast-takes.json has being said at that second (line 6 from the tick at 3.80 s, part 0 from 9.004 s, part 1 from 20.629 s, part 2 from 23.414 s). The words under the frames are lettered by that tool; they are not the film's own captions, which were not drawn.
+
+### Read off the pictures and the events
+
+- The stillest stretch, MEASURED on the half-second frames (pixels of 518,400 that differ by more than 12 from the frame before): 588 at 21.3 s, 42 at 21.8, 5 at 22.3, 0 at 22.8, 0 at 23.3. From about 21.3 s to the turn back at 23.41 s nothing moves in the picture, 2.1 s, while "they remember / their student loans." is said and the music comes in (21.86 s). The arrow stops at 20.33 s. Under the kept takes the arrow stood from 35.92 to 42.11 s, 6.19 s, STATED from the script, not drawn.
+- During part 0 (9.0 to 20.3 s) 2,440 to 9,448 pixels change each half second: the arrow's drift and nothing else that I can name.
+- Without a line: 8.07 to 9.00 s (the forming), 25.32 s to the lock at 27.38 s (the rise), and the whole fight after it.
+- The rise against the words has changed, and this is the one thing I would have ruled on: under the kept take "One more round." started 2.15 s after `power-up`, when the gold was nearly full (it is full 2.0 s after). Now it starts 0.46 s after `power-up` (24.47 s) and ends at 25.32 s, while the figure is getting up and the gold has just begun; the gold is full at 26.02 s and the fists are held with no line. The power-up cannot start sooner than the turn back that precedes it.
+- The figure of the rise stands against the left pane of glass in the film, at the stand it had before this change (`RAISE` and the script's stand are not touched). UNKNOWN whether that was looked at before.
+
+### Checks on this branch (kept index, as pushed)
+
+One at a time: TSC EXIT 0; b-boss EXIT 0 (40), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-boss-state EXIT 0 (1), b-finish EXIT 0 (23), b-boss-fast EXIT 0 (5), takes-timing EXIT 1 (5 failed, 2 passed).
+The whole suite, 09:37Z to 09:44Z: WHOLE EXIT 1, 10 files and 50 tests failed, 2,333 passed, 29 skipped of 2,412.
+- Red on 1c0522a3 too (MEASURED there, the same nine files run alone, 31 failed): tests/b-shell-turn.test.ts 1, tests/config.test.ts 26 (the film is longer than film.maxSeconds), tests/polish-hand.test.ts 1, tests/polish-keys2.test.ts 1, tests/polish-turn2.test.ts 2.
+- New with this branch, 19: tests/takes-timing.test.ts 5 and tests/audio-visit.test.ts 3 (the index and the voice still hold the kept takes), tests/content.test.ts 8 (the three boss lines run into the next by the start check), tests/cut-of-build.test.ts 2 and tests/film-cut.test.ts 1 (cut/ is the kept film's; `npm run cut` was not run).
+Not run: RETIME and CUT as checks of the chain (RETIME only on the trial index of the four boss lines, to get the starts), the gates, a browser on the live site, tier final.
