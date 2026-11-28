@@ -371,7 +371,7 @@ Brandon: "create the animation first, that way we know how long that part should
 
 MEASURED, each with its own EXIT line:
 
-- With the stand-in the lead is 0 and no mark moves (`shoutOf` test). 47 frames, 38.5 to 50.0 s every 0.25 s, 1920 by 1080, draft, against the run of 37da1773: AE 0 on 47 of 47, at bfdccffb (the rule on the last phrase's start). The two commits after it change nothing for a line with no peak that the test of the marks can see; the 47 frames were not run again on them at the time of writing.
+- With the stand-in the lead is 0 and no mark moves (`shoutOf` test). 47 frames, 38.5 to 50.0 s every 0.25 s, 1920 by 1080, draft, against the run of 37da1773: AE 0 on 47 of 47, run twice: at bfdccffb (the rule on the last phrase's start) and again at 9aec0b44 (the peak and the 0.03 s in).
 - Marks by test (`tests/b-camera.test.ts`, "a take whose last phrase starts sooner than the floor"), s after the arms:
 
 | take | lead | charge marks | fire | gone | arms to button down |
