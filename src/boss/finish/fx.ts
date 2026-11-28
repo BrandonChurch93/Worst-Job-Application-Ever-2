@@ -32,11 +32,14 @@ const LICK = {
   wide: 66,
   shoe: 15,
   tall: [
-    [-86, -3, 62, 0.46, -0.6], [-67, -9, 93, 0.22, 0.62], [-49, -5, 74, 0.04, -0.55],
-    [51, -5, 78, -0.06, 0.58], [69, -9, 98, -0.24, -0.6], [88, -3, 64, -0.48, 0.6],
-    [-22, -15, 99, 0.12, 0.6], [6, -17, 90, -0.04, -0.62], [30, -15, 80, -0.14, 0.55]
+    [-86, -3, 30, 0.46, -0.6], [-67, -9, 62, 0.22, 0.62], [-49, -5, 40, 0.04, -0.55],
+    [51, -5, 44, -0.06, 0.58], [69, -9, 64, -0.24, -0.6], [88, -3, 32, -0.3, -0.55],
+    [-22, -15, 59, 0.12, 0.6], [6, -17, 46, -0.04, -0.62], [30, -15, 36, -0.14, 0.55]
   ]
 } as const
+
+// The power-up's glow card, in px before the size: how wide and how deep it is, how far behind the feet its middle lies, and how far behind the feet the middle of the glow round the figure lies as the film sees it.
+const GLOW = { w: 440, h: 380, up: 70, mid: 42 } as const
 
 const NOISE = /* glsl */ `
 float h21(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
@@ -88,10 +91,12 @@ function flameStuff(): THREE.ShaderMaterial {
           float lw = 0.018 * (1.0 - lt) + 0.17 * pow(lt, 0.6) * pow(1.0 - lt, 1.2) / 0.318;
           float la = abs(lx);
           float lbody = smoothstep(lw, lw * 0.8, la) * step(0.004, lw);
-          float edge = lbody * smoothstep(lw * 0.45, lw * 0.95, la);
-          float core = smoothstep(lw * 0.36, 0.0, la);
-          col = mix(vec3(1.7, 0.52, 0.0), vec3(2.3, 1.8, 0.8), clamp(0.9 * core, 0.0, 1.0));
-          a = lbody * k * (0.4 + 0.6 * edge + 0.3 * core) * smoothstep(0.0, 0.1, lt) * (1.0 - 0.45 * lt * lt);
+          float edge = lbody * smoothstep(lw * 0.3, lw * 0.78, la);
+          float core = smoothstep(lw * 0.3, 0.0, la) * (1.0 - 0.6 * lt);
+          // Gold: deep orange gold at the edge, white hot in the core, a lighter gold between that one sees through.
+          col = mix(vec3(1.5, 0.75, 0.02), vec3(1.5, 0.45, 0.0), clamp(edge, 0.0, 1.0));
+          col = mix(col, vec3(2.2, 2.0, 1.5), clamp(core, 0.0, 1.0));
+          a = lbody * k * min(1.0, 0.5 + 0.45 * edge + 0.5 * core) * smoothstep(0.0, 0.1, lt) * (1.0 - 0.22 * lt * lt);
         }
         if (a < 0.003) discard;
         gl_FragColor = vec4(col, min(1.0, a));
@@ -102,14 +107,16 @@ function flameStuff(): THREE.ShaderMaterial {
 function glowStuff(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     ...add,
-    uniforms: { uTime: { value: 0 }, uK: { value: 0 }, uBurst: { value: 0 }, uRing: { value: 1 }, uCrackle: { value: 0 }, uDark: { value: 0 } },
+    uniforms: { uTime: { value: 0 }, uK: { value: 0 }, uBurst: { value: 0 }, uRing: { value: 1 }, uCrackle: { value: 0 }, uDark: { value: 0 }, uWide: { value: new THREE.Vector4(1, 1, 0, 0) } },
     vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
-      uniform float uTime; uniform float uK; uniform float uBurst; uniform float uRing; uniform float uCrackle; uniform float uDark;
+      uniform float uTime; uniform float uK; uniform float uBurst; uniform float uRing; uniform float uCrackle; uniform float uDark; uniform vec4 uWide;
       varying vec2 vUv;
       ${NOISE}
       void main() {
-        vec2 p = (vUv - 0.5) * 2.0;
+        vec2 whole = (vUv - 0.5) * 2.0;
+        // In the power-up the card is larger than the ring's own: uWide carries the ring's card back onto it.
+        vec2 p = vec2(whole.x * uWide.x, whole.y * uWide.y + uWide.z);
         float r = length(p);
         float ang = atan(p.y, p.x);
         float lick = fbm(vec2(cos(ang), sin(ang)) * 3.0 + uTime * vec2(0.4, -0.9));
@@ -124,10 +131,19 @@ function glowStuff(): THREE.ShaderMaterial {
         float shade = exp(-r * r * 3.6) * uDark;
         float bright = min(0.85, ((ring * (1.0 - uBurst) + pool * (1.0 - uDark)) * uK + arcs) * smoothstep(1.0, 0.75, r));
         float a = max(bright, shade * 0.6);
-        if (a < 0.002) discard;
+        // The power-up lights the air: a soft warm glow round the whole figure and a brighter pool on the ground inside the ring. Both are brighter than white and thin, so they add light; neither has an edge.
+        vec2 h = vec2(whole.x, whole.y + uWide.w) * vec2(1.25, 1.1);
+        float soft = smoothstep(1.0, 0.6, abs(whole.x)) * smoothstep(1.0, 0.6, abs(whole.y));
+        float halo = exp(-dot(h, h) * 3.4) * 0.18 * min(1.0, uK) * uRing * (1.0 - 0.5 * uBurst) * soft;
+        float hot = exp(-r * r * 7.0) * 0.42 * min(1.0, uK) * uRing * (1.0 - uBurst);
+        if (max(a, max(halo, hot)) < 0.002) discard;
         vec3 col = mix(mix(vec3(1.5, 0.72, 0.1), vec3(1.9, 1.3, 0.4), clamp(ring, 0.0, 1.0)), vec3(2.4, 1.25, 0.1), clamp(arcs * 1.6, 0.0, 1.0));
         col = mix(vec3(0.3, 0.17, 0.06), col, clamp(bright / max(a, 1e-4), 0.0, 1.0));
-        gl_FragColor = vec4(col, a);
+        float lit = 1.0 - (1.0 - halo) * (1.0 - hot);
+        vec3 light = (vec3(2.0, 1.6, 0.9) * halo + vec3(2.4, 2.0, 1.1) * hot) / max(halo + hot, 1e-4);
+        float all = 1.0 - (1.0 - a) * (1.0 - lit);
+        col = (col * a + light * lit * (1.0 - a)) / max(all, 1e-4);
+        gl_FragColor = vec4(col, all);
       }`
   })
 }
@@ -399,7 +415,7 @@ export function makeFinishFx(): FinishFx {
           // The power-up: short licks on the ground behind the feet, every second place left empty, and none where a shoe stands.
           const gx = ((j + 0.5) / pieces.tongues - 0.5) * 150
           const shoe = Math.min(Math.abs(gx - p.feet[0][0]), Math.abs(gx - p.feet[1][0])) < LICK.shoe
-          const tall = (26 + 22 * hash01(j, 2, SEED)) * (0.8 + 0.9 * Math.pow(Math.abs(gx) / 75, 2)) * grow
+          const tall = (20 + 16 * hash01(j, 2, SEED)) * (0.8 + 0.5 * Math.pow(Math.abs(gx) / 75, 2)) * grow
           flames.setMatrixAt(n, lick(p, gx, -4 - 9 * seed, 40 + 10 * seed, tall, -gx * 0.004 + (seed - 0.5) * 0.5))
           d[n * 4] = seed
           d[n * 4 + 1] = j % 2 === 0 && !shoe ? Math.min(1, k) * (1 - 0.6 * fx.burst) : 0
@@ -446,7 +462,15 @@ export function makeFinishFx(): FinishFx {
       flames.instanceMatrix.needsUpdate = true
       flameData.needsUpdate = true
       glow.matrixAutoUpdate = false
-      glow.matrix.copy(flat(p.x, p.y - 30 * big * (1 - fx.ring), p.ground + 0.6, big * (230 + 50 * fx.ring), big * (200 - 95 * fx.ring), 0))
+      const shape = glowMat.uniforms.uWide!.value as THREE.Vector4
+      if (fx.ring > 0.5) {
+        // The power-up's card: wide enough for the glow round the figure as the film sees it, its middle `GLOW.up` px behind the feet. The ring keeps its own size on it.
+        glow.matrix.copy(flat(p.x, p.y - GLOW.up * big, p.ground + 0.6, big * GLOW.w, big * GLOW.h, 0))
+        shape.set(GLOW.w / 280, GLOW.h / 105, (2 * GLOW.up) / 105, (2 * (GLOW.up - GLOW.mid)) / GLOW.h)
+      } else {
+        glow.matrix.copy(flat(p.x, p.y - 30 * big, p.ground + 0.6, big * 230, big * 200, 0))
+        shape.set(1, 1, 0, 0)
+      }
       const flick = 0.85 + 0.15 * Math.sin(time * 23) * Math.sin(time * 7.3)
       light?.({ x: p.x, y: p.y - 26 * big, z: p.ground + 44 * big, colour: GOLD, power: (1.3 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
     }
