@@ -121,7 +121,7 @@ No test was loosened to pass: where a number was a film time that moved, the tes
 
 ## Not done
 
-- Not pushed. This sandbox has no sign-in to GitHub (MEASURED: `git push` exits 128, "could not read Username"). The commit is local; a git bundle and a patch against 1804108e go with the report.
+- Pushed to `agent/b-decision` only. Early in the work `git push` exited 128 (no sign-in in the sandbox); at the end it went through.
 - The reset itself: untouched, as told.
 - No film render, no sound.
 - The one fault `npm run retime -- --check` still names on this base, boss.unfold.0, is not mine and not touched. The Builder says it is already mended on origin `agent/merge55` (STATED).
