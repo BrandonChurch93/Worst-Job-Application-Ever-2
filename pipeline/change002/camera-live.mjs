@@ -1,5 +1,5 @@
-// node pipeline/change002/camera-live.mjs [--only hold,click,never] [--level high] [--place x,y --tag name]
-// `--place`: where the visitor's pointer is put, in px of the window, from the moment the finish begins; `--tag` names the files of that run.
+// node pipeline/change002/camera-live.mjs [--only hold,click,never] [--level high] [--place x,y --at step --tag name]
+// `--place`: where the visitor's pointer is put, in px of the window, from the moment the finish begins, or from step `--at` of the walk when that is given (a few steps before the boss falls, so that the arrow is elsewhere at the fall); `--tag` names the files of that run.
 // The built live site, stepped, from step 4: the pack's visitor fights the boss until the arms come out, then a hand as named below takes the button.
 // Each kind: a strip of twenty pictures at even steps from just before the arms to just after the boss is gone, and the seconds a picture costs with the lens low and from above. Software GL.
 import fs from 'node:fs'
@@ -30,6 +30,7 @@ const AFTER = 0.6
 const SHOTS = 20
 const only = a.only ? String(a.only).split(',') : Object.keys(KINDS)
 const place = a.place ? String(a.place).split(',').map(Number) : null
+const early = a.at === undefined ? null : Number(a.at)
 const tag = a.tag ? `-${a.tag}` : ''
 
 const send = async (page, act) => {
@@ -81,13 +82,16 @@ try {
     let t = await tell(page, 0)
     let steps = 0
     while (!t.gags.includes('boss.finish') && steps < VISITOR.mostSeconds * VISITOR.hz && !t.finished) {
-      for (const act of v.act(t)) await send(page, act)
+      const away = place && early !== null && steps >= early
+      if (away && steps === early) await send(page, { move: place })
+      for (const act of v.act(t)) if (!away || !('move' in act)) await send(page, act)
       t = await tell(page, 1 / VISITOR.hz)
       steps += 1
     }
     if (!t.gags.includes('boss.finish')) throw new Error(`${name}: the arms never came out in ${steps} steps`)
     for (const act of v.end()) await send(page, act)
     if (place) await send(page, { move: place })
+    const hero = t.hero ? [Math.round(t.hero.x), Math.round(t.hero.y)] : null
     const arms = t.time
     const span = Math.round((LEAD + kind.fire + GONE + AFTER) * VISITOR.hz)
     const wanted = Array.from({ length: SHOTS }, (_, i) => Math.round((i * span) / (SHOTS - 1)) - Math.round(LEAD * VISITOR.hz))
@@ -115,7 +119,7 @@ try {
       rows.push({ sixtieths: i, seconds: Math.round((t.time - arms) * 1000) / 1000, held, gag: t.gags.at(-1), control: t.control })
     }
     await sharp({ create: { width: w * 4, height: h * Math.ceil(SHOTS / 4), channels: 3, background: '#000' } }).composite(tiles).jpeg({ quality: 90 }).toFile(path.join(out, `live-${name}${tag}.jpg`))
-    report.kinds[name] = { says: kind.says, place, stepsToArms: steps, armsAt: arms, rows, drawMs: costs, problems: [...new Set(problems)].slice(0, 5) }
+    report.kinds[name] = { says: kind.says, place, placedAtStep: early, heroAtArms: hero, stepsToArms: steps, armsAt: arms, rows, drawMs: costs, problems: [...new Set(problems)].slice(0, 5) }
     console.log(name, 'arms at', arms, 'draw ms', JSON.stringify(costs), 'problems', problems.length)
     await context.close()
   }

@@ -169,3 +169,28 @@ Not done in this pass:
 - The whole suite alone.
 - What holds the boss's state between pictures: UNKNOWN (`apply()` in `src/boss/look1/index.ts` sets every part anew for each pose; the cause was not found).
 - The warm band of the dusk is not seen; `CAMERA.powerUp` was never rendered on.
+
+## Fourth pass (ruling of 09:58Z; written 10:26Z)
+
+The live click path. The grey slab across the foot of tile 3 was standing pillar.3: its top leans up the screen while the lens is not yet low, and the way down passes it.
+
+Built: a block of the arena that stands in the way of the low lens fades out whole and comes back.
+- `fadesOf(time, marks)` in `src/boss/finish/camera.ts`, a pure function of the finish's clock. Blocks: the eight pillars (56 x 56 x 210) and the two panes (14 thick, 240 high), each leaning as the arena leans at that moment. A block is in the way when it is nearer than `CAMERA.fade.near` (95 px) to the lens and in the frame, or when a line from the lens to one of 36 spots of the figure's box crosses it. The fade is the greatest over 9 frames each side, eased, so it takes 0.15 s each way. Only before the fire and only while the view is low.
+- The arena's part is a NEEDS commit, 5b6400e9, `pipeline/change002/camera-NEEDS-7.patch`: `ArenaOptions.fade` in `src/arena/index.ts`, and one line in `src/pages/step4/real/index.ts`. A fading pillar leaves the one merged body and is drawn by itself, thin; its shadow goes at half the fade.
+- The same code in the film: pillar.3 fades from frame 24 to 50 of the finish (film 10842 to 10868), full from 32 to 42. No other block fades on any of the six courses.
+
+MEASURED:
+- `compare -metric AE` of film 9000 and 10790 on the fade build against the frames of before: 0 and 0 px.
+- `npx vitest run tests/b-camera.test.ts tests/b-finish.test.ts tests/b-boss.test.ts tests/bosslook-pose.test.ts` at 10:23Z: 101 passed of 101, exit 0. `npx tsc --noEmit -p .` exit 0. `npm run -s retime -- --check` exit 0.
+- The test at five places: on the click path and the hold path, with the pointer put at four other places 0.05 s before the boss falls (the arrow then stood at 902,239; 1281,241; 950,405; 1274,454; and 1168,220 for the proof's own run), the arrow is within 0.6 px of its stand in the facing view, no block covers a spot of the figure's box there, and every block within 90 px of the lens that fills over 3 percent of the frame is faded to 1. The pointer could not be moved sooner without the fight not ending, so the four places are not the four quarters of the floor; they are spread over 380 by 230 px of it.
+- STATED from the code: the figure walks to `LAST.stand` during the fall from wherever it stood, and the lens is set from that stand, so the lens and the figure do not depend on the visitor's place. Which pillars still stand does depend on the fight; the geometric test takes every block as standing.
+
+The proof, `pipeline/change002/proof/camera/`: `live-click.jpg` and `live-hold.jpg` (made again, 10:13Z and 10:17Z), `live-click-far.jpg` (10:29Z, `--place 300,400 --at 4227`: the pointer put at the lower left of the window 4 steps before the fall), `live-rows-fade.jpg` (the first four tiles of the three), `way-down-fade.jpg` (film 10822 to 10876).
+- I SEE in tile 3 of the click path (0.617 s) the arrow standing whole with its feet and its shadow on the floor and no slab across the foot of the frame; the edge of a pane at the left edge of the frame and a grey block in the upper left corner, neither over the figure.
+- The row from the second place looks the same as the first: `compare -metric AE` of the two sheets is 40997 px, 4 percent. The arms come 1 s after the fall, the first tile is at the arms, and by then the figure has walked to its stand. So this row does not show a different place; the test above is what holds for the five places.
+
+Not covered by the fade: stumps and the lying parts of broken pillars, shards, raised cells. None of them came between the lens and the figure in the tiles I looked at.
+
+The power-up of line 7 with `CAMERA.powerUp` on (in the working tree only, never committed on): `pipeline/change002/proof/camera/powerup-on.jpg`, film 9852 to 10020 every 12 frames. I SEE the figure behind a pale green pane from 9864 to 9984; it is a faint shape and the gold is not read. The fade of this pass does not reach it: it runs from the arms of the finish on.
+
+The whole suite alone, 09:53Z to 09:59Z on 72db9a77: exit 1; 31 failed, 2367 passed, 29 skipped of 2427; 5 files of 209; 406.9 s; no timeouts. The reds, none of them mine to edit: `tests/config.test.ts` (27 tests: film.units adds up to 216.1 s, more than film.maxSeconds 165), `tests/b-shell-turn.test.ts:80`, `tests/polish-hand.test.ts:316`, `tests/polish-keys2.test.ts:145`, `tests/polish-turn2.test.ts:187` and `:206`. Whether they are red without this branch: UNKNOWN, not run. It was not run again after the fade.
