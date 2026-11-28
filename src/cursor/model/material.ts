@@ -182,7 +182,7 @@ vec3 wjaSurface( vec3 enamel, vec3 edge ) {
 
   // Crazing: a web of hairline cracks, and each plate between them tipped a hair its own way.
   float crack = uMarks.x * face;
-  if ( crack > 0.0 ) {
+  if ( uMarks.x > 0.0 ) {
     vec2 cq = q + ( mid.gb - 0.5 ) * 0.8 + ( wide.gb - 0.5 ) * 2.4;
     vec3 cell = wjaCells( cq / 4.2 + vec2( 0.37, 0.61 ) );
     vec3 twig = wjaCells( cq / 1.9 + vec2( 0.11, 0.83 ) );
