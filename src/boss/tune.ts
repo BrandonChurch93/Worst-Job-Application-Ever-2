@@ -304,7 +304,7 @@ export const CAMERA = {
   glare: [3, 1, 1, 6] as const,
   flash: 160,
   back: [0.08, 0.3] as const,
-  rise: [0.8, 1.4] as const,
+  rise: [1.1, 1.7] as const,
   lift: 2,
   lag: 2,
   wide: 0.15,

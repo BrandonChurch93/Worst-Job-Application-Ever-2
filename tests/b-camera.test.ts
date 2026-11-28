@@ -44,9 +44,9 @@ const COURSES: [string, Marks, number][] = [
   ['the film', marksOf(true, 0, 3.68, 4.1167), 7.5],
   ['a visitor who clicks once at 0.3 s', marksOf(false, 0, HELD, HELD + CAMERA.roundLive), 5],
   ['a visitor who lets go at 0.8 s, in the middle of the way down', marksOf(false, 0, HELD, HELD + CAMERA.roundLive), 5],
-  ['a visitor who holds 2 s and lets go', marksOf(false, 0, 2.3, 2.3 + CAMERA.roundLive), 6],
-  ['a visitor who holds to the end', marksOf(false, 0, 4.83, 4.83 + CAMERA.roundLive), 8.5],
-  ['a visitor who never presses', marksOf(false, 0, 6 - CAMERA.roundLive, 6), 9]
+  ['a visitor who holds 2 s and lets go', marksOf(false, 0, 2.3, 2.3 + CAMERA.roundLive), 6.5],
+  ['a visitor who holds to the end', marksOf(false, 0, 4.83, 4.83 + CAMERA.roundLive), 9],
+  ['a visitor who never presses', marksOf(false, 0, 6 - CAMERA.roundLive, 6), 9.5]
 ]
 
 describe('the camera of the finishing blast: its path', () => {
@@ -332,7 +332,7 @@ describe.runIf(LOOK1_ON)('the camera of the finishing blast: on the live site', 
         const l = r.looks[n]!
         expect(l.arrow, `${r.name}: arrow, step ${l.step}, ${l.name}`).toBe(true)
         if (l.name === 'blast' || l.name === 'end') expect(l.boss, `${r.name}: boss, step ${l.step}`).toBe(true)
-        if (l.step >= gone - stepHz * 0.5) expect(l.low, `${r.name}: step ${l.step}`).toBe(false)
+        if (l.step >= gone - stepHz * 0.2) expect(l.low, `${r.name}: step ${l.step}`).toBe(false)
       }
       jumps(r.looks, r.name)
       expect(r.looks.some((l) => l.low), r.name).toBe(true)
