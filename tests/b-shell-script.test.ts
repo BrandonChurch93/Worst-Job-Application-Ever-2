@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
-import { cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysFor, unitPage } from '../src/audio/cues'
+import { SENTENCE_WAIT_SECONDS, cueOfEvent, liveTriggers, markStandsFor, quietPage, spoken, spokenKeysFor, unitPage } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
 import { CAPTION, shoutPx, shoutShake } from '../src/ui/said'
 import { builtTo, draftFilm, filmCaptions, keyPage, phraseStart, phrasesOf, shippedLines, standIns, wordCount } from '../src/audio/standin'
@@ -61,9 +61,13 @@ class FakeContext {
 const eight = (a: string) => `${a} one two ${mark} three four five ${mark} six seven`
 const film = Object.fromEntries(['marketing.stroll', 'step1.firstName', 'step1.shredded', 'pinball.seal', 'boss.verify', 'decision.letter'].map((b) => [b, [{ at: 0, text: eight(b) }]]))
 film['step2.crank'] = [{ at: 0, text: eight('crank') }, { at: 0.5, text: eight('top') }]
-// The first part of line 7 has two sentences: its second phrase ends the first.
-const sentences = (a: string) => `${a} one two ${mark} three four five. ${mark} six seven.`
-film['boss.unfold'] = [{ at: 0, text: sentences('beaten') }, { at: 0.5, text: eight('loans') }, { at: 0.8, text: eight('ready') }]
+// The first part of line 7 has two sentences: its second phrase ends the first. The first sentence is as many of the eight words as are said within
+// SENTENCE_WAIT_SECONDS at the config's pace, six at most, with one pause inside it: a click at its first moment is answered with the whole sentence at any pace.
+const WORDS = ['beaten', 'one', 'two', 'three', 'four', 'five', 'six', 'seven']
+const FIRST = Math.min(6, Math.floor(SENTENCE_WAIT_SECONDS * wps))
+const INNER = Math.ceil(FIRST / 2)
+const PARTS = [WORDS.slice(0, INNER).join(' '), `${WORDS.slice(INNER, FIRST).join(' ')}.`, `${WORDS.slice(FIRST).join(' ')}.`]
+film['boss.unfold'] = [{ at: 0, text: PARTS.join(` ${mark} `) }, { at: 0.5, text: eight('loans') }, { at: 0.8, text: eight('ready') }]
 const shout = { seconds: 6, starts: [0.5, 1.5, 3] }
 const drafts = { 'decision.reset': [{ at: 0, text: eight('next') }], 'boss.finish': [{ at: 0, text: `ka ${mark} me ${mark} ha`, loud: true, standIn: shout }] }
 const L = 8 / wps
@@ -631,11 +635,12 @@ describe('change note 003: line 7 and the fight music', () => {
     const { s, ctx } = await ready('step4')
     ctx.currentTime = 50
     s.event(ev('boss-formed', 'step4'), 'live')
-    ctx.currentTime = 50 + 1 / wps
+    expect(FIRST).toBeGreaterThanOrEqual(2)
+    ctx.currentTime = 50 + INNER / (2 * wps)
     s.event(ev('boss-turn', 'step4'), 'live')
-    const pause = 50 + 6 / wps
+    const pause = 50 + FIRST / wps
     const lines = s.said().lines
-    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, l.end])).toEqual([['beaten one two', 50 + 3 / wps], ['three four five.', pause]])
+    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, near(l.end)])).toEqual([[PARTS[0], near(50 + INNER / wps)], [PARTS[1], near(pause)]])
     expect(lines.filter((l) => l.line === id('boss.unfold.1'))[0]!.start).toBeCloseTo(pause + lineGap, 9)
     expect(lines.filter((l) => l.line === id('boss.unfold.2'))[0]!.start).toBeCloseTo(pause + lineGap + L + lineGap, 9)
     const music = loops(ctx, 'boss-loop')
@@ -659,8 +664,8 @@ describe('change note 003: line 7 and the fight music', () => {
     s.event(ev('boss-turn', 'step4'), 'live')
     const lines = s.said().lines
     const first = 50 + L + gap
-    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, near(l.start), near(l.end)])).toEqual([['beaten one two', near(first), near(first + 3 / wps)], ['three four five.', near(first + 3 / wps), near(first + 6 / wps)]])
-    expect(lines.filter((l) => l.line === id('boss.unfold.1'))[0]!.start).toBeCloseTo(first + 6 / wps + lineGap, 9)
+    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, near(l.start), near(l.end)])).toEqual([[PARTS[0], near(first), near(first + INNER / wps)], [PARTS[1], near(first + INNER / wps), near(first + FIRST / wps)]])
+    expect(lines.filter((l) => l.line === id('boss.unfold.1'))[0]!.start).toBeCloseTo(first + FIRST / wps + lineGap, 9)
     expect(s.log().filter((e) => e.what === 'cut').map((e) => e.line)).toEqual([id('boss.unfold.0')])
   })
 
@@ -668,11 +673,12 @@ describe('change note 003: line 7 and the fight music', () => {
     const { s, ctx } = await ready('step4')
     ctx.currentTime = 50
     s.event(ev('checkbox', 'step4'), 'live')
-    ctx.currentTime = 51
+    // Both events come while line 6 is said, whatever its length.
+    ctx.currentTime = 50 + L / 5
     s.event(ev('boss-formed', 'step4'), 'live')
     const first = 50 + L + gap
     expect(booked(s).slice(1)).toEqual([[id('boss.unfold.0'), near(first)], [id('boss.unfold.1'), near(first + L + lineGap)], [id('boss.unfold.2'), near(first + 2 * (L + lineGap))]])
-    ctx.currentTime = 52
+    ctx.currentTime = 50 + (2 * L) / 5
     s.event(ev('turret-rise', 'step4'), 'live')
     expect(back(s).sort()).toEqual([id('boss.unfold.0'), id('boss.unfold.1'), id('boss.unfold.2')])
     expect(loops(ctx, 'boss-loop').every((x) => x.stopped !== null)).toBe(true)
