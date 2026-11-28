@@ -203,8 +203,8 @@ export const LAST = {
   reach: LOOK1_ON ? 144 : 200, // px left of the button's middle at which it kneels: with the look, 31 px left of the end of its 226 px button
   words: -290, // px from the button's middle to the words "Click to submit", so they stand over it: the arena's burn is black to 138 px and sooty to about 230 px from it, and under it lie the cracks of the place the button was torn from
   wait: 0.4, // s after the body is gone before it sets off (`finish-walk`), while its arms go on dropping
-  far: 431, // px the standing figure walks in the film with the look: from its feet after a whole blast to its own kneeling place, with the step it waits
-  speed: LOOK1_ON ? 153.93 : 114.3, // px/s of its walk: 2.8 s from where it stood to its knees, `far` with the look and 320 px without
+  far: 426.5, // px the standing figure walks in the film with the look: from its feet after a whole blast to its own kneeling place, with the step it waits
+  speed: LOOK1_ON ? 152.32 : 114.3, // px/s of its walk: 2.8 s from where it stood to its knees, `far` with the look and 320 px without
   alone: 6, // s without a move or a press after which it walks there and strikes by itself, live site
   led: 20, // s of being led about after which it walks there and strikes by itself, live site
   most: 2.8, // s at most that its walk to the button takes when it goes by itself
@@ -225,6 +225,9 @@ export const IDLE = {
 
 // The film's fight is shorter than any visitor's: a dart that reaches the body does `dart` times as much, by phase, and a phase may end in `floor` of its least length.
 // `ends`: the second of the fight at which each phase ends in the film at the latest, whatever the darts did, so the film's marks do not move with the boss's shape.
+// The power-up of the standing figure, in seconds of the page from `power-up`: it is up with both fists raised after `rise`, holds them `held`, bursts, and is down again `down` after the burst has ended.
+// The four together stay inside `LINE7.part2 - LINE7.power`, so that it lies before the turret locks.
+export const RAISE = { rise: 0.9, held: 1.05, down: 0.65 } as const
 // `spare` is the health the film keeps over the end of a stage until that stage's time is up, with the look on, so that every stage ends at its time whatever the darts meet.
 export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const, ends: [9.83, 11.02, 13.69] as const, spare: 0.5 } as const
 

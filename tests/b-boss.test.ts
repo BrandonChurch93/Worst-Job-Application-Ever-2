@@ -3,9 +3,10 @@ import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
 import { ARENA as GROUND } from '../src/arena/layout'
 import { barDrop } from '../src/arena/change'
+import { finishState, POWER } from '../src/boss/finish/acting'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
-import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
+import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
 import type { BossView } from '../src/boss/view'
 import { finishNow, viewNow } from '../src/boss/viewof'
 import { SHIFT, UNIT_SECONDS } from '../src/pages/step4/script'
@@ -96,6 +97,7 @@ const lookBoxes = (v: BossView): Shape[] => {
 }
 // With the look the word rides the button on the hull, which rocks with each step and is thrown back by the big cannon's shot (22.4 px in the film): px it may move against the boss's centre.
 const WORD_ROAMS = 30
+const SETTLES = 0.5
 const OF_THE_VISITOR = /^(muzzle-|dart-|arrow-dent|arrow-crack-|arrow-dust-)/
 
 interface Seen { time: number; list: Shape[]; fight: Fight; view: BossView | null }
@@ -571,6 +573,88 @@ describe('how the boss plays (change 002, item 15)', () => {
       expect(stage.events.some((e) => e.name === 'skip')).toBe(true)
       expect(stage.page.id, `skip at ${at}`).not.toBe('step4')
       expect(stage.time - from).toBeLessThan(4)
+    }
+  })
+
+  const upNow = (): boolean => {
+    const i = finishNow()
+    return LOOK1_ON && i !== null && finishState(i).up
+  }
+
+  it.each([
+    ['the film', (): Stage => film()],
+    ['a keen visitor', (): Stage => live(new BotDriver('keen', config.seed))]
+  ])('mail of 03:02, item 4a. in %s the plain arrow is off the page for as long as the standing figure is up, and on it at every other moment', (_name, make) => {
+    const stage = make()
+    let ups = 0
+    let plain = 0
+    while (stage.page.id === 'step4' && stage.time < 140) {
+      stage.advance(2)
+      if (stage.page.id !== 'step4' || stage.events.some((e) => e.name === 'page-turn')) break
+      const frame = stage.frameAt(stage.time)
+      const up = upNow()
+      expect(frame.cursor.onPage, `at ${stage.time.toFixed(2)}`).toBe(!up)
+      if (up) {
+        ups++
+        expect((frame.list as Shape[]).some((x) => x.id === 'finish-figure'), `the figure's part at ${stage.time.toFixed(2)}`).toBe(true)
+      } else plain++
+    }
+    expect(plain).toBeGreaterThan(0)
+    if (LOOK1_ON) expect(ups / (stepHz / 2)).toBeGreaterThan(RAISE.rise + RAISE.held + POWER.burst + SHOUT.gone)
+    else expect(ups).toBe(0)
+  })
+
+  it.runIf(LOOK1_ON)('mail of 03:02, item 2. in the film both fists are raised for a second or more inside the power-up, and the figure is down before the turret locks', () => {
+    const stage = film()
+    let raised = 0
+    let lastUp = -1
+    let power = -1
+    while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'turret-lock')) {
+      stage.advance(1)
+      stage.frameAt(stage.time)
+      const i = finishNow()
+      if (!i || !finishState(i).up) continue
+      lastUp = stage.time
+      if (i.power && i.time - i.power.at >= POWER.up[1] && i.time < (i.power.end ?? 0)) raised++
+    }
+    power = stage.events.find((e) => e.name === 'power-up')!.step / stepHz
+    const lock = stage.events.find((e) => e.name === 'turret-lock')!.step / stepHz
+    expect(raised / stepHz).toBeGreaterThanOrEqual(1)
+    expect(lastUp).toBeGreaterThan(power)
+    expect(lastUp).toBeLessThan(lock)
+    expect(RAISE.rise + RAISE.held + POWER.burst + RAISE.down).toBeLessThanOrEqual(LINE7.part2 - LINE7.power)
+  })
+
+  it.runIf(LOOK1_ON)('mail of 03:02, item 4b. a visitor who throws the pointer about cannot move the standing figure off its spot in the power-up, nor in the finish once it has run to its stand and until it fires', () => {
+    const bot = new BotDriver('keen', config.seed)
+    let away = false
+    const driver: Driver = {
+      name: 'bot',
+      input(v: DriverView): Pointer {
+        if (!away) return bot.input(v)
+        const turn = v.time * 9
+        return { x: 960 + 700 * Math.cos(turn), y: 560 + 380 * Math.sin(turn), down: false }
+      }
+    }
+    const stage = live(driver)
+    const seen = (n: string): boolean => stage.events.some((e) => e.name === n)
+    const spots: Record<'power' | 'finish', { x: number; y: number }[]> = { power: [], finish: [] }
+    while (stage.page.id === 'step4' && !seen('finish-walk') && stage.time < 140) {
+      stage.advance(1)
+      stage.frameAt(stage.time)
+      const i = finishNow()
+      const up = i !== null && finishState(i).up
+      away = up && !seen('finish-fire')
+      if (!up || seen('finish-fire')) continue
+      spots[seen('boss-fall') ? 'finish' : 'power'].push({ ...finishState(i).feet })
+    }
+    expect(seen('finish-walk')).toBe(true)
+    for (const k of ['power', 'finish'] as const) {
+      const list = spots[k]
+      expect(list.length / stepHz, k).toBeGreaterThan(0.9)
+      const rest = k === 'power' ? list : list.slice(Math.round(SETTLES * stepHz))
+      const end = rest[rest.length - 1]!
+      for (const f of rest) expect(Math.hypot(f.x - end.x, f.y - end.y), k).toBeLessThanOrEqual(1)
     }
   })
 })
