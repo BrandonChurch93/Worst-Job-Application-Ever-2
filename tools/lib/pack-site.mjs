@@ -1335,10 +1335,12 @@ export function motionPlan(cfg, run) {
       ? `In this run the arrow lies still to ${timeOf(m.back - 1)}, it moves from ${timeOf(t.first)} to ${timeOf(t.stand - 1)}, stands still from ${timeOf(t.stand)} to ${timeOf(t.handed - 1)} and moves again from ${timeOf(t.handed)}${comes}`
       : `In this run the arrow lies still to ${timeOf(m.back - 1)} and moves from ${timeOf(m.back)}${comes}`}. ${GIVES_WORDS}`
   }
-  // The flippers stand under a heading only where the ball leaves the port under the visitor's hand. Where the machine page plays its scene as a film (change note 002 item 8)
-  // the visitor gets no flipper, the arrow stays sealed in the port and the rows hold no ball and no camera: no sheet is made, and the plan says so.
-  if (have(m.flippers) && !have(m.leaves)) leftOut.push('flippers: the machine page plays its scripted scene as a film, the visitor gets no flipper and the ball never leaves the port in the rows, so no sheet stands under that heading')
-  if (have(m.flippers) && have(m.leaves)) {
+  // Where the machine page plays its scene as a film (change note 002 item 8) the visitor gets no flipper: the site says the control is the flippers' only for the push into the port
+  // and takes it back on the same page before a ball has left the port. The arrow stays sealed, the rows hold no ball and no camera: no sheet is made, and the plan says so.
+  let filmed = false
+  if (have(m.flippers) && !have(m.leaves)) for (let i = m.flippers + 1; i <= last && !filmed && rows[i][COL.page] === rows[m.flippers][COL.page]; i++) filmed = !rows[i][COL.control]
+  if (filmed) leftOut.push('flippers: the machine page plays its scripted scene as a film, the visitor gets no flipper and the ball never leaves the port in the rows, so no sheet stands under that heading')
+  if (have(m.flippers) && !filmed) {
     // One run from the seal until the ball is out of the port, where two sheets hold it. Where the ball lies longer in the port than that,
     // the moment is two runs of one sheet each: the seal, and the ball leaving the port.
     const out = !have(m.left) ? null : m.left + PORT.tail
