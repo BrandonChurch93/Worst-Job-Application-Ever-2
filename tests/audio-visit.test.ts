@@ -43,7 +43,10 @@ describe('a whole visit of the live site through the stage and the sound engine'
       if (!keeps(e.line) && !partOf(e.line)) expect(e.start!, `${e.line} starts before its page is left`).toBeLessThan(leftAt(v, e.at))
     }
     const order = lines.slice().sort((a, b) => a.start! - b.start!)
-    for (let i = 1; i < order.length; i++) expect(order[i]!.start! - (order[i - 1]!.start! + order[i - 1]!.seconds!), `${order[i - 1]!.line} then ${order[i]!.line}`).toBeGreaterThanOrEqual((partOf(order[i]!.line) ? lineGap : gap) - 1e-6)
+    // A line that was cut, as line 1 is when the careers page is closed, lasts what its cut says.
+    const cut = new Map(v.log.filter((e) => e.what === 'cut').map((e) => [`${e.line}@${e.start}`, e.seconds!]))
+    const lasts = (e: Entry): number => cut.get(`${e.line}@${e.start}`) ?? e.seconds!
+    for (let i = 1; i < order.length; i++) expect(order[i]!.start! - (order[i - 1]!.start! + lasts(order[i - 1]!)), `${order[i - 1]!.line} then ${order[i]!.line}`).toBeGreaterThanOrEqual((partOf(order[i]!.line) ? lineGap : gap) - 1e-6)
     const restart = v.turns.filter((t) => t.page === 'marketing').pop()!.at
     const first = lines.filter((e) => e.at < restart).map((e) => e.line)
     expect(new Set(first).size).toBe(first.length)

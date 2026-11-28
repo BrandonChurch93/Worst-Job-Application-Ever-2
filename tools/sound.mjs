@@ -432,6 +432,16 @@ function writeAssetRows(P) {
 
 const encode = (wav, argv) => run('ffmpeg', ['-v', 'error', '-i', wav, '-map_metadata', '-1', '-fflags', '+bitexact', '-flags:a', '+bitexact', ...argv, '-'])
 
+// Where each phrase of a kept line starts, in seconds from the start of its file: the first sound, then the end of each pause.
+// A phrase is the words between two pause marks. When the pauses found are not as many as the marks, no starts are given.
+export function phraseStarts(mono, sampleRate, words, M) {
+  const marks = words.split(/\s+/).filter((w) => w === narration().pauseMark).length
+  const first = M.dsp.loudSpans(mono, sampleRate, M.levels.CHAIN.pauseDb, 0, 0)[0]
+  const pauses = M.dsp.findPauses(mono, sampleRate)
+  if (!first || pauses.length !== marks) return { marks, found: pauses.length, starts: null }
+  return { marks, found: pauses.length, starts: [first.start, ...pauses.map((p) => p.end)].map((n) => Number((n / sampleRate).toFixed(3))) }
+}
+
 // Builds what the site ships: one packed file of the short sounds with its index, the loops, the narrator's lines.
 export function pack(P, c, M, quiet = false) {
   refuseStale(staleKept(P), 'the pack')
@@ -441,6 +451,7 @@ export function pack(P, c, M, quiet = false) {
   const index = { version: 1, sampleRate: c.audio.sampleRate, pack: null, sfx: [], loops: [], lines: [], totalBytes: 0 }
   const chunks = []
   const linePeaks = []
+  const noStarts = []
   let offset = 0
   for (const r of records) {
     const wav = path.join(P.kept, r.file)
@@ -450,7 +461,9 @@ export function pack(P, c, M, quiet = false) {
       fs.writeFileSync(path.join(P.pub, file), bytes)
       const decoded = decodeFile(path.join(P.pub, file), c.audio.sampleRate)
       linePeaks.push({ id: r.id, db: M.levels.toDb(M.dsp.peak(decoded.channels[0])) })
-      index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length, sha256: sha(bytes) })
+      const times = phraseStarts(M.dsp.toMono(decodeFile(wav, c.audio.sampleRate)), c.audio.sampleRate, r.words ?? '', M)
+      if (!times.starts) noStarts.push(`${r.id} (${times.found} pauses for ${times.marks} marks)`)
+      index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length, sha256: sha(bytes), words: r.words ?? '', ...(times.starts ? { starts: times.starts } : {}) })
     } else if (r.loop) {
       const bytes = encode(wav, ['-c:a', 'flac', '-sample_fmt', 's16', '-compression_level', '8', '-f', 'flac'])
       const file = `${r.id}.flac`
@@ -478,10 +491,12 @@ export function pack(P, c, M, quiet = false) {
     const over = linePeaks.filter((l) => l.db > 0).sort((x, y) => y.db - x.db)
     const top = linePeaks.slice().sort((x, y) => y.db - x.db)[0]
     if (top) console.log(`pack: the narrator lines at ${M.levels.PACK.lineKbps} kbit decode with their largest sample at ${top.db.toFixed(2)} dB (${top.id})`)
+    const timed = index.lines.filter((l) => l.starts).length
+    if (index.lines.length) console.log(`pack: ${timed} of ${index.lines.length} narrator lines carry the start of each phrase${noStarts.length ? `; NO STARTS for ${noStarts.join(', ')}: the pauses found are not the marks of the words, so the caption of each is spread over its file by its words` : ''}`)
     if (over.length) console.log(`pack: OVER FULL SCALE. ${over.length} packed lines decode over 0 dB, which a browser's decoder cuts flat: ${over.map((l) => `${l.id} ${l.db.toFixed(2)} dB`).join(', ')}`)
     if (mb > c.audio.appMaxMb) console.log(`pack: OVER THE LIMIT. The site's sound files are ${mb.toFixed(2)} MB and audio.appMaxMb is ${c.audio.appMaxMb}`)
   }
-  return index
+  return Object.assign(index, { noStarts })
 }
 
 // The kept sounds as waveforms on one picture.

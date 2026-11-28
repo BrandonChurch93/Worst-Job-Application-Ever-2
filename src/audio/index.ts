@@ -55,12 +55,14 @@ export interface SoundIndex {
   pack: { file: string; bytes: number; sha256?: string } | null
   sfx: { id: string; at: number; bytes: number; seconds: number; mime: string }[]
   loops: { id: string; file: string; seconds: number; mime: string; bytes?: number; sha256?: string }[]
-  lines: { id: string; file: string; seconds: number; mime: string; bytes?: number; sha256?: string }[]
+  // words: the text the take was recorded from, with its pause marks. starts: the seconds from the file's start at which each phrase starts.
+  lines: { id: string; file: string; seconds: number; mime: string; bytes?: number; sha256?: string; words?: string; starts?: number[] }[]
 }
 
 type Bus = 'fx' | 'voice' | 'tone'
 interface PlayOptions { bus: Bus; when: number; cents: number; pan: number; loop: boolean; until?: number; fade?: number; fadeIn?: number }
-interface Voice { stop(fade: number): void }
+// stop: it goes out from now over the fade. until: it is out at a time to come, having gone down over the fade before it, or from now when that is later.
+interface Voice { stop(fade: number): void; until(at: number, fade: number): void }
 interface Backend {
   readonly kind: 'graph' | 'elements'
   now(): number
@@ -150,6 +152,19 @@ function graphBackend(Maker: ContextMaker): Backend {
             gain.gain.setValueAtTime(gain.gain.value, t)
             gain.gain.linearRampToValueAtTime(0, t + fade)
             src.stop(t + fade)
+          } catch {
+            return
+          }
+        },
+        until(at, fade) {
+          try {
+            const t = ctx.currentTime
+            const from = Math.max(t, when, at - fade)
+            const to = Math.max(at, from + fade)
+            gain.gain.cancelScheduledValues(t)
+            gain.gain.setValueAtTime(1, from)
+            gain.gain.linearRampToValueAtTime(0, to)
+            src.stop(to)
           } catch {
             return
           }
@@ -245,7 +260,7 @@ function elementBackend(): Backend {
       if (o.when > wallSeconds() + 0.005) e.timers.push(later(o.when, start))
       else start()
       if (o.until !== undefined) e.timers.push(later(o.until, stop))
-      return { stop }
+      return { stop, until: (at) => { e.timers.push(later(at, stop)) } }
     },
     duck(spans, low) {
       for (const t of timers) window.clearTimeout(t)
@@ -296,7 +311,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const narrator = new Narrator({ minGap: audio.liveNarratorMinGapSeconds, lineGap: audio.lineGapSeconds, beatLate: LIVE.beatLateSeconds, liveLate: LIVE.liveLateSeconds })
   const unitOfBeat = (beat: string): string | undefined => config.film.beats.find((x) => x.id === beat)?.unit
   const pageOfBeat = (beat: string): string | null => unitPage[unitOfBeat(beat) ?? ''] ?? null
-  const lines = o.script ? standIns(o.script.film, o.script.drafts) : standIns()
+  const lines = standIns(o.script?.film, o.script?.drafts, undefined, undefined, (o.index ?? (shipped as SoundIndex)).lines)
   const desk = new LiveDesk(narrator, Object.fromEntries([...lines.values()].filter((l) => !spoken[l.key]?.keeps).map((l) => [l.id, l.page])))
   const index = o.index ?? (shipped as unknown as SoundIndex)
   const lists = index.sfx.length + index.loops.length + index.lines.length > 0
@@ -327,6 +342,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const lastPlay = new Map<string, number>()
   const running = new Map<string, Voice[]>()
   const speaking = new Map<Booking, StandIn>()
+  const voices = new Map<Booking, Voice>()
   const marks = new Map<Booking, string>()
   const stepped = new WeakMap<Booking, number[]>()
   const byMark = new Set<string>()
@@ -366,7 +382,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       const bytes = await pack.arrayBuffer()
       await Promise.all(index.sfx.map((s) => b.add(s.id, bytes.slice(s.at, s.at + s.bytes), s.mime).then(keep(s.id, s.seconds))))
     }
-    const jobs = index.loops.map(async (f) => {
+    const voiced = new Set([...lines.values()].filter((l) => l.kept).map((l) => l.id))
+    const jobs = [...index.loops, ...index.lines.filter((f) => voiced.has(f.id))].map(async (f) => {
       const file = await fetch(`${base}${f.file}`)
       if (!file.ok) return
       const mend = f.id === 'room-tone' && TONE.dehum ? (x: Float32Array, rate: number) => dehum(x, rate, TONE) : undefined
@@ -478,7 +495,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const reduck = () => {
     if (!backend) return
     const now = backend.now()
-    backend.duck(LIVE.standInDucks ? duckSpans(narrator.bookings(now).filter((b) => b.end > now), DUCK.attackSeconds, DUCK.releaseSeconds) : [], db(-audio.duckDb))
+    backend.duck(duckSpans([...speaking.keys()].filter((b) => b.end > now && b.end > b.start && (LIVE.standInDucks || voices.has(b))), DUCK.attackSeconds, DUCK.releaseSeconds), db(-audio.duckDb))
   }
 
   const inMode = (mode: SoundMode) => {
@@ -501,8 +518,28 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     byMark.add(cue)
   }
 
+  // The take of a line with a voice, set on the sound clock at the start of its booking. A line that is a stand-in, or whose file did not come, plays nothing.
+  const voice = (booking: Booking, line: StandIn) => {
+    voices.get(booking)?.stop(0)
+    voices.delete(booking)
+    if (!line.kept || !loaded.has(line.id)) return
+    const v = backend!.play(line.id, { bus: 'voice', when: booking.start, cents: 0, pan: 0, loop: false })
+    if (v) voices.set(booking, v)
+  }
+
+  // A line that now ends sooner than its file: its voice is out at the booking's end. One that will not be said at all is stopped before it starts.
+  const cut = (booking: Booking, fade: number = LIVE.voiceFadeSeconds) => {
+    const v = voices.get(booking)
+    if (!v) return
+    if (booking.start >= booking.end) {
+      v.stop(0)
+      voices.delete(booking)
+    } else v.until(booking.end, fade)
+  }
+
   const speak = (booking: Booking, line: StandIn) => {
     speaking.set(booking, line)
+    voice(booking, line)
     setMark(booking, line)
     if (!caption && o.caption) caption = o.caption(() => api.said())
     caption?.place(captionAt ?? CAPTION.lowOn[here ?? ''])
@@ -513,6 +550,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     for (const c of list) {
       const gone = speaking.get(c)
       speaking.delete(c)
+      voices.get(c)?.stop(0)
+      voices.delete(c)
       if (gone) {
         told.delete(gone.key)
         const later = [...speaking].filter(([b, l]) => l.beat === gone.beat && l.index > gone.index && desk.drop(backend!.now(), b)).map(([b]) => b)
@@ -578,10 +617,14 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         if (got.length < l.phrases.length) {
           while (got.length < l.phrases.length) got.push(at)
           const lasts = l.seconds - (l.phrases[l.phrases.length - 1]?.from ?? 0)
-          if (at + lasts < b.end) desk.shorten(now, b, at + lasts, [])
+          if (at + lasts < b.end) {
+            desk.shorten(now, b, at + lasts, [])
+            cut(b)
+          }
         }
       } else if (steps.ends !== undefined && name === steps.ends) {
         desk.shorten(now, b, at, [])
+        cut(b)
         if (b.start >= b.end) speaking.delete(b)
         note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'its moment ended on the mark of its page' })
       } else continue
@@ -600,8 +643,12 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       if (end >= b.end) continue
       const parts = partsAfter(l.key)
       desk.shorten(now, b, end, parts.map(([x]) => x))
+      cut(b)
       if (b.start >= b.end) speaking.delete(b)
-      for (const [x, part] of parts) setMark(x, part)
+      for (const [x, part] of parts) {
+        voice(x, part)
+        setMark(x, part)
+      }
       note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'it ends at its next pause and its next part follows' })
       caption?.wake()
       reduck()
@@ -610,6 +657,18 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
 
   // The line that hangs on no event: it is said when sound is allowed while its page stands at rest on screen, once a visit.
   // A press of the page's button or a turn away from it closes it for the visit; it starts a moment late so that the press that allowed the sound is seen first.
+  // Line 1 belongs to the careers page. When that page is closed while the line is being said, the line ends there: it goes out and the next line may follow.
+  const closeOpening = (now: number, name: string) => {
+    for (const [b, l] of [...speaking]) {
+      if (l.key !== openingKey || b.start > now || b.end <= now + LIVE.openingFadeSeconds) continue
+      desk.shorten(now, b, now + LIVE.openingFadeSeconds, [])
+      cut(b, LIVE.openingFadeSeconds)
+      note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'its page was closed while it was said' })
+      caption?.wake()
+      reduck()
+    }
+  }
+
   function wantOpening(trigger: string): void {
     if (!openingOpen) return
     if (state !== 'ready' || !backend) {
@@ -687,6 +746,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       const now = backend.now()
       takeBack(desk.at(now, page), 'its page was left')
       takeBack(desk.ended(now, page, e.name), `its moment ended with ${e.name}`)
+      if (closes && mode !== 'film') closeOpening(now, e.name)
       jump(e.name, page)
       step(e.name, page)
       if (e.name === 'skip' || e.name === 'page-turn') takeBack(desk.leave(now, page), e.name === 'skip' ? 'its page was skipped' : 'its page was turned')
@@ -729,6 +789,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         if (b.end <= now) {
           speaking.delete(b)
           marks.delete(b)
+          voices.delete(b)
         } else {
           const got = spoken[l.key]?.steps ? stepped.get(b) ?? [] : null
           l.phrases.forEach((p, k) => {
@@ -779,6 +840,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       narrator.clear()
       desk.clear()
       speaking.clear()
+      voices.clear()
       marks.clear()
       byMark.clear()
       running.clear()
