@@ -54,8 +54,7 @@ fs.writeFileSync(`${OUT}/careers-page.png`, whole)
 const approved = await sharp(APPROVED).metadata()
 const beside = async (name, mine, theirs) => {
   const tall = Math.max(mine.h, theirs.h)
-  const k = Math.min(1, LONG / Math.max(tall, 1920 * 2 + GAP))
-  const w = Math.round(1920 * k)
+  const w = Math.min(Math.floor((LONG - GAP) / 2), Math.floor((1920 * LONG) / tall))
   const left = await sharp(whole).extract({ left: 0, top: Math.round(mine.y), width: 1920, height: Math.round(mine.h) }).resize({ width: w }).toBuffer()
   const right = await sharp(APPROVED).extract({ left: 0, top: Math.round(theirs.y), width: 1920, height: Math.round(theirs.h) }).resize({ width: w }).toBuffer()
   const file = `${OUT}/${name}.jpg`
