@@ -283,6 +283,7 @@ export interface LookKit {
   soot: THREE.MeshBasicMaterial
   ceramic: THREE.MeshPhysicalMaterial
   scorched: THREE.MeshPhysicalMaterial
+  torn: THREE.MeshPhysicalMaterial
   under: THREE.MeshPhysicalMaterial
 }
 
@@ -320,9 +321,23 @@ export function lookKit(): LookKit {
     soot: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.011, 0.01), transparent: true, opacity: 0.55, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
     ceramic: m.ceramic,
     scorched: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4a4744), roughness: 0.62, metalness: 0.7, specularIntensity: 0.5 })),
+    torn: torn(),
     under: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6a6d72), roughness: 0.6, metalness: 0.4, specularIntensity: 0.5 }))
   }
   return look
+}
+
+// A part the blast is tearing off: burnt dark, and hot where its faces turn away from the eye.
+export const TORN = { colour: 0x24211f, rim: [2.6, 0.72, 0.12], power: 2.2 } as const
+function torn(): THREE.MeshPhysicalMaterial {
+  const m = studio(new THREE.MeshPhysicalMaterial({ color: srgb(TORN.colour), roughness: 0.8, metalness: 0.4, specularIntensity: 0.3, side: THREE.DoubleSide }))
+  const lit = m.onBeforeCompile
+  m.onBeforeCompile = (shader, renderer) => {
+    lit.call(m, shader, renderer)
+    shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>\n\ttotalEmissiveRadiance += vec3( ${TORN.rim.map((v) => v.toFixed(3)).join(', ')} ) * pow( 1.0 - clamp( abs( dot( normalize( normal ), normalize( vViewPosition ) ) ), 0.0, 1.0 ), ${TORN.power.toFixed(2)} );`)
+  }
+  m.customProgramCacheKey = () => 'wja-studio-torn'
+  return m
 }
 
 // Light that is its own source: brighter than the picture's white, so the lens spreads it.

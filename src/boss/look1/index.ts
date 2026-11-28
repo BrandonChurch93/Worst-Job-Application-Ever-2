@@ -35,8 +35,21 @@ const char = (g: THREE.Object3D, on: boolean): void => g.traverse((o) => {
   me.material = on ? lookKit().scorched : me.userData.own
 })
 
+const tear = (g: THREE.Object3D, on: boolean): void => g.traverse((o) => {
+  const me = o as THREE.Mesh
+  if (!me.isMesh) return
+  if (on) {
+    me.userData.whole ??= me.material
+    me.material = lookKit().torn
+  } else if (me.userData.whole) me.material = me.userData.whole
+})
+
 function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   const b = m.body
+  if (b.userData.torn) {
+    for (const o of [m.bay, ...m.wings, ...m.guns.map((g) => g.root), ...m.legs.flatMap((l) => [l.upper, l.lower, l.foot]), ...m.plates.map((q) => q.g)]) tear(o, false)
+    b.userData.torn = false
+  }
   b.position.set(0, 0, 0)
   b.rotation.set(0, 0, p.body.yaw)
   b.rotation.order = 'ZYX'
@@ -132,6 +145,7 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     const fling = (o: THREE.Object3D, k: number, id: number, dx: number, dy: number, ox: number, oy: number): void => {
       if (k <= 0) return
       if (k >= 1) { o.visible = false; return }
+      if (o !== m.shield) { tear(o, true); b.userData.torn = true }
       const e = k * (0.3 + 0.7 * k)
       const d = Math.hypot(ox, oy) || 1
       const h = (n: number): number => hash01(id, n, 77) - 0.5
