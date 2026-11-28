@@ -147,7 +147,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
         noticeState = 'gone'
         notice.hidden = true
       }, NOTICE_LEAVE_MS)
-    } else if (noticeState === 'never' && api.sound.blocked && api.sound.available() && !wanted && api.sound.blocked() === false && api.step() !== 0) noticeState = 'gone'
+    } else if (noticeState === 'never' && api.mode() === 'live' && api.step() !== 0) noticeState = 'gone'
   }
   press(accept, () => {
     api.sound.allow?.()
@@ -230,6 +230,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   bar.addEventListener('focusin', wake)
 
   const look = window.setInterval(() => {
+    if (noticeState === 'shown') root.style.setProperty('--row', `${live.offsetLeft + live.offsetWidth}px`)
     liveSound.update()
     barSound.update()
   }, SOUND_LOOK_MS)

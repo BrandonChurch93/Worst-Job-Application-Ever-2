@@ -154,13 +154,13 @@ describe('the words of the interface', () => {
     expect(word('watchFilm')).toBe(copy.live.watchFilm)
     expect(word('touchTitle')).toBe(copy.live.touchOnly.title)
     expect(word('touchBody')).toBe(copy.live.touchOnly.body)
-    expect(word('touchLink')).toBe(copy.live.touchOnly.link)
     expect(word('title')).toBe(copy.site.title)
     expect(word('careers')).toBe(config.employer.name)
   })
 
-  it('uses every word of copy:live', () => {
-    const used = new Set(Object.values(WORDS).map((k) => lookup(copy, k)))
+  it('uses every word of copy:live but the words of the portfolio link, which change note 004 cut', () => {
+    const used = new Set([...Object.values(WORDS).map((k) => lookup(copy, k)), copy.live.touchOnly.link])
+    expect(Object.values(WORDS)).not.toContain('copy:live.touchOnly.link')
     const all: string[] = []
     const walk = (v: unknown) => {
       if (typeof v === 'string') all.push(v)

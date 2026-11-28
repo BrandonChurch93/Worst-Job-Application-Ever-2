@@ -10,7 +10,6 @@ export const WORDS = {
   soundAccept: 'copy:drafts.live.soundBar.accept',
   touchTitle: 'copy:live.touchOnly.title',
   touchBody: 'copy:live.touchOnly.body',
-  touchLink: 'copy:live.touchOnly.link',
   careers: 'employer.name'
 } as const
 
