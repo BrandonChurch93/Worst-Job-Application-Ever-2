@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, finishEvents, finishState, kneelSpot, type FinishInput } from '../src/boss/finish/acting'
+import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, finishEvents, finishState, kneelSpot, type FinishInput } from '../src/boss/finish/acting'
 import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '../src/cursor/stand/rig'
 
 const FPS = 60
@@ -7,7 +7,7 @@ const ARROW = { x: 690, y: 548 }
 const BUTTON = { x: 960, y: 650, w: 177, top: 9.5 }
 const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
 const spot = kneelSpot(BUTTON)
-const start = { x: feetFor(ARROW).x - FIRE.shove, y: feetFor(ARROW).y }
+const start = { x: feetFor(ARROW).x - FIRE.shove * SCALE, y: feetFor(ARROW).y }
 const far = Math.hypot(spot.x - start.x, spot.y - start.y)
 const LONG = 2.8
 const KNEEL = M.walk + LONG
@@ -146,8 +146,8 @@ describe('the finish: the standing arrow', () => {
       for (const foot of s.pose.feet) expect(foot[1]).toBeLessThanOrEqual(WALK.lift + 1e-6)
       steps = Math.max(steps, s.fx.scuffs.length)
     }
-    expect(steps).toBeGreaterThan(2)
-    expect(stepsBy(far)).toBeGreaterThan(2)
+    expect(steps).toBeGreaterThan(1)
+    expect(stepsBy(far / SCALE)).toBeGreaterThan(1)
     expect(stepsBy(320)).toBe(6)
   })
 
@@ -192,7 +192,7 @@ describe('the finish: the standing arrow', () => {
     expect(seen['finish-knees']).toBe(1)
     expect(seen['finish-fist']).toBe(1)
     expect(seen['finish-press']).toBe(1)
-    expect(seen['finish-step']).toBe(stepsBy(far))
+    expect(seen['finish-step']).toBe(stepsBy(far / SCALE))
     const pw: Record<string, number> = {}
     for (let f = 0; f <= 7 * FPS; f++) for (const e of finishEvents(power((f - 1) / FPS), power(f / FPS))) pw[e.name] = (pw[e.name] ?? 0) + 1
     expect(pw).toEqual({ 'finish-standup': 1, 'power-up-rise': 1, 'power-up-burst': 1, 'finish-liedown': 1 })

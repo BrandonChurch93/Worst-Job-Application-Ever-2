@@ -138,14 +138,15 @@ function beamStuff(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     ...add,
     depthTest: false,
-    uniforms: { uTime: { value: 0 }, uOpen: { value: 0 }, uPower: { value: 1 }, uAge: { value: 0 }, uKeep: { value: new THREE.Vector4(0, 0, -1, -1) } },
+    uniforms: { uTime: { value: 0 }, uOpen: { value: 0 }, uPower: { value: 1 }, uAge: { value: 0 }, uWide: { value: 1 }, uKeep: { value: new THREE.Vector4(0, 0, -1, -1) } },
     vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
-      uniform float uTime; uniform float uOpen; uniform float uPower; uniform float uAge; uniform vec4 uKeep;
+      uniform float uTime; uniform float uOpen; uniform float uPower; uniform float uAge; uniform float uWide; uniform vec4 uKeep;
       varying vec2 vUv;
       ${NOISE}
       void main() {
         float d = vUv.x * ${BEAM.long.toFixed(1)};
+        // Across the beam everything is measured in the figure's own px: a larger figure throws a wider beam.
         float y = (vUv.y - 0.5) * 2.0 * ${BEAM.wide.toFixed(1)};
         float s = (0.35 + 0.65 * uPower) * uOpen;
         float coreH = (${BEAM.core[0].toFixed(1)} + d * ${BEAM.core[1].toFixed(3)}) * s;
@@ -177,9 +178,9 @@ function beamStuff(): THREE.ShaderMaterial {
         float alpha = clamp(core + glow * 0.9 + streak * 0.85 + bolt, 0.0, 1.0) * reach * smoothstep(0.0, 14.0, d) * uOpen;
         // The button is not the beam's to hide: the light parts round it and closes again behind.
         if (uKeep.z > 0.0) {
-          vec2 q = abs(vec2(d, y) - uKeep.xy) - uKeep.zw + 12.0;
+          vec2 q = abs(vec2(d, y * uWide) - uKeep.xy) - uKeep.zw + 12.0;
           float sd = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - 12.0;
-          float lee = smoothstep(uKeep.z * 3.5, 0.0, d - uKeep.x) * step(uKeep.x, d) * smoothstep(uKeep.w * 1.15, uKeep.w * 0.4, abs(y - uKeep.y));
+          float lee = smoothstep(uKeep.z * 3.5, 0.0, d - uKeep.x) * step(uKeep.x, d) * smoothstep(uKeep.w * 1.15, uKeep.w * 0.4, abs(y * uWide - uKeep.y));
           alpha *= 1.0 - 0.94 * max(smoothstep(7.0, -2.0, sd), lee * 0.75);
           col = mix(col, vec3(1.7), exp(-max(sd, 0.0) / 9.0) * 0.5 * core);
         }
@@ -299,6 +300,7 @@ export function makeFinishFx(): FinishFx {
 
   const pose = (fx: Fx, p: StandPose, time: number, light?: (e: Emitter) => void): void => {
     const k = fx.aura
+    const big = p.scale ?? 1
     flames.visible = glow.visible = k > 0.01 || fx.crackle > 0.01
     if (flames.visible) {
       flameMat.uniforms.uTime!.value = time
@@ -358,9 +360,9 @@ export function makeFinishFx(): FinishFx {
       flames.instanceMatrix.needsUpdate = true
       flameData.needsUpdate = true
       glow.matrixAutoUpdate = false
-      glow.matrix.copy(flat(p.x, p.y - 30 * (1 - fx.ring), p.ground + 0.6, 230 + 50 * fx.ring, 200 - 95 * fx.ring, 0))
+      glow.matrix.copy(flat(p.x, p.y - 30 * big * (1 - fx.ring), p.ground + 0.6, big * (230 + 50 * fx.ring), big * (200 - 95 * fx.ring), 0))
       const flick = 0.85 + 0.15 * Math.sin(time * 23) * Math.sin(time * 7.3)
-      light?.({ x: p.x, y: p.y - 26, z: p.ground + 44, colour: GOLD, power: (1.3 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
+      light?.({ x: p.x, y: p.y - 26 * big, z: p.ground + 44 * big, colour: GOLD, power: (1.3 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
     }
 
     ball.visible = fx.ball !== null
@@ -384,6 +386,7 @@ export function makeFinishFx(): FinishFx {
       u.uOpen!.value = b.open
       u.uPower!.value = b.power
       u.uAge!.value = b.age
+      u.uWide!.value = big
       const keep = u.uKeep!.value as THREE.Vector4
       if (b.keep) {
         const kx = b.keep.x - b.x
@@ -391,14 +394,14 @@ export function makeFinishFx(): FinishFx {
         keep.set(kx * Math.cos(b.aim) + ky * Math.sin(b.aim), kx * Math.sin(b.aim) - ky * Math.cos(b.aim), b.keep.w / 2, b.keep.h / 2)
       } else keep.set(0, 0, -1, -1)
       beam.matrixAutoUpdate = false
-      beam.matrix.copy(flat(b.x, b.y, b.z, BEAM.long, BEAM.wide * 2, b.aim))
+      beam.matrix.copy(flat(b.x, b.y, b.z, BEAM.long, BEAM.wide * 2 * big, b.aim))
       const f = flareMat.uniforms
       f.uTime!.value = time * 1.7
       f.uGlow!.value = Math.min(1.4, b.open * 1.4)
       f.uCore!.value = 0.1
       f.uRays!.value = 1
       ;(f.uAim!.value as THREE.Vector2).set(Math.cos(b.aim), -Math.sin(b.aim))
-      f.uSize!.value = (120 + 70 * b.power) * (0.5 + 0.5 * b.open) * (1 + 0.5 * Math.exp(-b.age * 9))
+      f.uSize!.value = big * (120 + 70 * b.power) * (0.5 + 0.5 * b.open) * (1 + 0.5 * Math.exp(-b.age * 9))
       flare.position.set(b.x - 960, 540 - b.y, b.z + 2)
       const s = (0.4 + 0.6 * b.power) * b.open * (0.92 + 0.08 * Math.sin(time * 61))
       const c = Math.cos(b.aim)
@@ -413,14 +416,14 @@ export function makeFinishFx(): FinishFx {
     for (const s of fx.skid) {
       if (n >= 12 || s.k <= 0.01) continue
       const long = Math.hypot(s.x1 - s.x0, s.y1 - s.y0)
-      marks.setMatrixAt(n, flat(s.x0, s.y0, 0.35, long, 6.5, Math.atan2(s.y1 - s.y0, s.x1 - s.x0)))
+      marks.setMatrixAt(n, flat(s.x0, s.y0, 0.35, long, 6.5 * big, Math.atan2(s.y1 - s.y0, s.x1 - s.x0)))
       md[n * 2] = s.k
       md[n * 2 + 1] = 0.3 + n
       n++
     }
     for (const s of fx.scuffs) {
       if (n >= 12) continue
-      marks.setMatrixAt(n, flat(s.x - s.long / 2, s.y, 0.35, s.long, 4.5, 0))
+      marks.setMatrixAt(n, flat(s.x - s.long / 2, s.y, 0.35, s.long, 4.5 * big, 0))
       md[n * 2] = 0.7
       md[n * 2 + 1] = 2.1 + n
       n++
@@ -453,8 +456,8 @@ export function makeFinishFx(): FinishFx {
         if (s.age < born) continue
         const u = age / life
         const seed = hash01(j, 7 + hnd, SEED)
-        const sway = Math.sin(u * 5 + seed * 6 + hnd) * (3 + 9 * u)
-        puff(s.x + sway, s.y - 3 - 58 * u, s.z + 6 + 30 * u, 6 + 17 * u, seed, 0.85 * s.k * Math.sin(Math.PI * Math.min(1, u * 1.15)) * (1 - 0.55 * u), 0.36)
+        const sway = Math.sin(u * 5 + seed * 6 + hnd) * (3 + 9 * u) * big
+        puff(s.x + sway, s.y - big * (3 + 58 * u), s.z + big * (6 + 30 * u), big * (6 + 17 * u), seed, 0.85 * s.k * Math.sin(Math.PI * Math.min(1, u * 1.15)) * (1 - 0.55 * u), 0.36)
       }
     })
     for (const dd of fx.dust) {

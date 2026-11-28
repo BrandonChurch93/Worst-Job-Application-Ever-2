@@ -11,8 +11,8 @@ import { buildInfoPlugin } from '../../tools/lib/hashes.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const work = path.join(root, 'out', 'work', 'finish-harness')
-const SCALE = Number((() => { const i = process.argv.indexOf('--scale'); return i >= 0 ? process.argv[i + 1] : 1 })())
-const shots = path.join(root, 'out', 'work', SCALE === 1 ? 'finish-shots' : `finish-shots-x${SCALE}`)
+const SCALE = Number((() => { const i = process.argv.indexOf('--scale'); return i >= 0 ? process.argv[i + 1] : 1.5 })())
+const shots = path.join(root, 'out', 'work', SCALE === 1.5 ? 'finish-shots' : `finish-shots-x${SCALE}`)
 const proof = path.join(root, 'pipeline', 'change002', 'proof', 'finish')
 const refs = path.join(root, 'references', 'approved-002')
 const args = process.argv.slice(2)
@@ -28,7 +28,8 @@ const BOSS = { x: 960, y: 650, heading: Math.PI }
 const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
 const LONG = 2.8
 const POWER = { at: 0, end: 3.4 }
-const CLOSE = { x: 520, y: 370, w: 960, h: 540 }
+// The fight's close view (STATED by the fight helper, 01:47Z): x 300 to 1260, y 270 to 810.
+const CLOSE = { x: 300, y: 270, w: 960, h: 540 }
 let BUTTON = null
 let WALK = null
 
@@ -173,7 +174,7 @@ async function main() {
   b.kneel = { x: BUTTON.x - BUTTON.w / 2 - 31 * SCALE, y: BUTTON.y + 6 * SCALE }
   const start = await page.evaluate((a) => window.finishHarness.draw(a).then(() => null), { ...finish(M.walk - 0.01), samples: 1 })
   void start
-  const feet = { x: ARROW.x + 17.3 - 38, y: ARROW.y + 91.8 }
+  const feet = { x: ARROW.x + 17.3 - 38 * SCALE, y: ARROW.y + 91.8 }
   WALK = { x0: feet.x, y0: feet.y, x1: b.kneel.x, y1: b.kneel.y, far: Math.hypot(b.kneel.x - feet.x, b.kneel.y - feet.y) }
   console.log('button', JSON.stringify(b), 'walk', JSON.stringify(WALK))
   for (const name of wanted.length ? wanted : Object.keys(JOBS)) {
