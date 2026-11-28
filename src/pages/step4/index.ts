@@ -68,7 +68,7 @@ interface State {
   dash: number
   close: number
   burn: { x: number; y: number } | null
-  end: { phase: 'walk' | 'kneel' | 'fist' | 'blow' | 'pressed'; t: number; idle: number; go: boolean; px: number; py: number } | null
+  end: { phase: 'walk' | 'kneel' | 'fist' | 'blow' | 'pressed'; t: number; idle: number; go: boolean; want: boolean; alone: boolean; px: number; py: number } | null
 }
 
 const heights = config.scale.heights
@@ -310,14 +310,23 @@ export function makePage(): PageLogic {
         e.idle = moved || io.pointer.down ? 0 : e.idle + dt
         e.px = io.pointer.x
         e.py = io.pointer.y
-        if ((io.pressed && s.blown && inBox(fallenBox, at, 4)) || e.idle >= LAST.alone || e.t >= LAST.led) {
+        if (io.pressed && inBox(fallenBox, at, 4)) e.want = true
+        if (moved || io.pointer.down) e.alone = false
+        else if (e.idle >= LAST.alone && !e.alone) {
+          e.alone = true
+          s.dash = Math.max(LAST.speed, Math.hypot(KNEEL.x - s.fig!.x, KNEEL.y - s.fig!.y) / LAST.most)
+        }
+        if (e.t >= LAST.led) {
           e.go = true
           s.dash = Math.max(LAST.speed, Math.hypot(KNEEL.x - s.fig!.x, KNEEL.y - s.fig!.y) / LAST.most)
         }
       } else if (!waited) s.dash = LAST.speed
-      const to = e.go || inBox(fallenBox, at, LAST.reach - fallenBox.w / 2) ? KNEEL : { x: Math.min(CLOSE.x + CLOSE.w - CLOSE.edge, Math.max(CLOSE.x + CLOSE.edge, at.x)), y: Math.min(CLOSE.y + CLOSE.h - CLOSE.edge, Math.max(CLOSE.y + CLOSE.edge, at.y)) }
-      const there = walk(to, e.go ? s.dash : LAST.speed, dt)
-      if (e.go && there && s.blown) {
+      const sure = e.go || e.alone
+      const home = sure || inBox(fallenBox, at, LAST.reach - fallenBox.w / 2)
+      const to = home ? KNEEL : { x: Math.min(CLOSE.x + CLOSE.w - CLOSE.edge, Math.max(CLOSE.x + CLOSE.edge, at.x)), y: Math.min(CLOSE.y + CLOSE.h - CLOSE.edge, Math.max(CLOSE.y + CLOSE.edge, at.y)) }
+      const there = walk(to, sure ? s.dash : LAST.speed, dt)
+      if (home && (sure || e.want) && there && s.blown) {
+        e.go = true
         e.phase = 'kneel'
         e.t = 0
         io.emit('finish-kneel', KNEEL.x, KNEEL.y, false)
@@ -574,7 +583,7 @@ export function makePage(): PageLogic {
             io.cursor.act('exhausted')
             io.cursor.aim(null)
             io.cursor.setArms(false)
-            s.end = { phase: 'walk', t: -LAST.wait, idle: 0, go: s.mode === 'film', px: io.pointer.x, py: io.pointer.y }
+            s.end = { phase: 'walk', t: -LAST.wait, idle: 0, go: s.mode === 'film', want: false, alone: false, px: io.pointer.x, py: io.pointer.y }
           }
           if (s.end) last(io)
           if (s.fired >= BLAST + FINISH.settle && s.stage === 'finish') {
