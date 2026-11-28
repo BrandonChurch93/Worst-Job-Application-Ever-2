@@ -7,7 +7,7 @@ import { ARENA, PAGE, PANES, PILLARS, SEAMS, paneBox } from './layout'
 
 // ahead: px in front of the arrow's centre at which the trench starts. half: the half width of the black of the trench. burn: the radius of the burn across the line. long: how many times longer the burn is along the line.
 // seconds: how long the blast burns when the view does not say (the fight's SHOUT.gone - SHOUT.fire). chips: the bits of ceramic thrown out, at the high level.
-export const SCORCH = { ahead: 70, half: 36, burn: 108, long: 2.1, seconds: 2.13, chips: 120, smoke: 24 }
+export const SCORCH = { ahead: 70, half: 36, burn: 108, long: 2.1, seconds: 2.13, chips: 120, smoke: 40 }
 
 // The line of the finishing blast as the view gives it: the arrow's centre and the place the boss fell.
 export interface BlastLine { x0: number; y0: number; x1: number; y1: number }
@@ -136,7 +136,9 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
         const patch = step(0.38, 0.6, noise(e.along / 85 + s.tag * 3.7, e.across / 85 + 5.5, seed + 50))
         const blob = fbm(e.along / 14 + 50, e.across / 5, seed + 51)
         // Small and orange: coals in soot, not the light of a broken slab.
-        ember = 0.62 * step(0.6, 0.7, blob) * (0.35 + 0.65 * step(0.36, 0.56, fine)) * patch * band
+        // Thickest and hottest in the trench between the arrow and the burn, where the beam stood longest.
+        const trench = step(s.at - SCORCH.burn * 0.5, s.at - SCORCH.burn * 1.5, e.along)
+        ember = (0.62 + 0.26 * trench) * step(0.6 - 0.1 * trench, 0.7 - 0.1 * trench, blob) * (0.35 + 0.65 * step(0.36, 0.56, fine)) * Math.max(patch, 0.8 * trench) * band
         // And veins of them: the cracks of the charred crust glow, drawn out a little along the beam.
         const vein = 1 - Math.abs(2 * fbm(e.along / 34 + 9.1, e.across / 17 + 2.3, seed + 53) - 1)
         const lit = step(0.3, 0.55, noise(e.along / 120 + 1.7, e.across / 70 + 8.8, seed + 54))

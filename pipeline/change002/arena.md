@@ -99,7 +99,7 @@ As a function, like the blasts (`scorch.ts`, no three.js):
 - `scorchFrom(line)`: a start place and a direction. `line` is `{ x0, y0, x1, y1 }` in page px: the arrow's centre at firing and the place where the boss lay. The trench starts 70 px ahead of the arrow (`SCORCH.ahead`), is 36 px to each side (`SCORCH.half`), runs through the boss's place and on past the edge of the page; round the boss's place it widens into a burn of 108 px, drawn out 2.1 times along the beam (`SCORCH.burn`, `SCORCH.long`).
 - `scorchOf(view)`: the line and a share from 0 to 1 while the beam burns. The line is `view.scorch` (STATED by the fight helper at 00:16Z: set in the frame of `finish-fire` and kept to the end), else `view.finish`. The share is `view.boss.gone`, else the blast's clock over 2.13 s.
 - `paintScorch(...)`: the scorch as four numbers a texel (soot, depth, embers, and when it burns), 1920 by 1080 over the page. `shownAt(when, share)` says how much of a texel shows at a share: the front runs out along the line first, then the black spreads from the middle to the rim, with a glowing edge while it spreads.
-- The settled state is the same picture at share 1: warm mottled black with veins and two loose rows of small embers that keep a low flicker, a soft rim drawn out into streaks along the beam, specks thrown wide, 120 chips of ceramic thrown out to both sides (fewer at the low level, never a different layout), wisps of smoke (4 columns of 6 puffs).
+- The settled state is the same picture at share 1: warm mottled black with veins and two loose rows of small embers that keep a low flicker, a soft rim drawn out into streaks along the beam, specks thrown wide, 120 chips of ceramic thrown out to both sides (fewer at the low level, never a different layout), smoke in four columns of ten puffs, the two over the burn taller and fuller.
 
 The ceramic's shader reads this picture beside the wounds of the cannon, so the scorch is lit and shadowed like the rest of the ground and costs no draw call of its own. It is painted ahead over 48 frames while the arrow's aim lies still (`aimOf(view)`), and at once if the blast arrives without that (about 0.1 s here). MEASURED: `tests/arena-scorch.test.ts`, 7 tests pass: the line starts in front of the arrow, runs through the fallen boss and leaves the page; the same line and seed give the same picture, and slices equal the whole; it is a trench that widens into a round burn where the boss lay, with nothing behind the arrow; it burns in from the arrow outward and from the middle to the rim; the line and the share are read from the view; the chips land clear of the black, the seams, the feet and the socket, the same every run; the beam stands as long as the blast and the shadows fall away from it.
 
@@ -124,52 +124,66 @@ Standing things lean in the picture so that their height reads from straight abo
 
 All MEASURED on this machine, which draws with software GL (no graphics card), so the times say how the arena compares with the empty page here and not what a visitor's machine will take.
 
-At the low level, one sample, `node tools/arena-shots.mjs --measure` (median of six pictures after three thrown away; counts are the engine's, summed over the passes of one sample):
+At the low level, one sample, `node tools/arena-shots.mjs --measure` at 78fd9689 (median of six pictures after three thrown away; counts are the engine's, summed over the passes of one sample; `proof/arena/measure-low.json`):
 
-| View | Triangles | Draw calls | ms a picture |
-| --- | --- | --- | --- |
-| the page's ground alone, no arena | 24 | 6 | 1679 |
-| arena at rest | 45,679 | 115 | 2405 |
-| mid change, 1.30 s | 15,992 | 55 | 2273 |
-| 0.20 s after a blast | 46,691 | 130 | 2433 |
-| after three blasts | 47,267 | 126 | 2423 |
+| View | Triangles | Draw calls | ms a picture | At the first pass (23:32Z) |
+| --- | --- | --- | --- | --- |
+| the page's ground alone, no arena | 24 | 6 | 1680 | 24 / 6 / 1679 |
+| arena at rest | 48,224 | 87 | 2587 | 45,679 / 115 / 2405 |
+| mid change, 1.30 s | 17,991 | 55 | 2413 | 15,992 / 55 / 2273 |
+| 0.20 s after a blast | 49,396 | 109 | 2595 | 46,691 / 130 / 2433 |
+| after three blasts | 50,052 | 107 | 2504 | 47,267 / 126 / 2423 |
+| after the finishing blast, close camera | 29,689 | 56 | 2359 | |
+| after the finishing blast, whole page | 50,732 | 107 | 2578 | |
+| the cold beam burning, whole page | 50,760 | 109 | 2536 | |
 
-So the arena at rest adds 45,655 triangles and 109 draw calls at the low level, and here 0.73 s to a picture that takes 1.68 s with nothing in it. UNKNOWN: the frame time on a real graphics card.
+So the arena at rest adds 48,200 triangles and 81 draw calls at the low level, and here 0.91 s to a picture that takes 1.68 s with nothing in it. Against the first pass that is 28 draw calls fewer and 0.18 s slower: the ceramic's shader now also reads the scorch, the grain, the uneven seams and the hole's depth for every texel of the ground, and software GL pays for that in full. UNKNOWN: the frame time on a real graphics card.
 
-At the full level the engine counts 99,842 triangles and 219 draw calls for the first picture at rest (it includes the pass that draws the shadows) and about 64,000 and 167 for later ones.
+Where the draw calls are. MEASURED in node at rest: 48 meshes are drawn, of which 32 are the four corner guns (the look's rotary gun, 8 meshes each, parts that turn and recoil), 6 the ground, 2 the eight pillars (bodies as one mesh and feet as one, once they are up; while they rise they are single meshes), and 8 the panes and the health bar. UNKNOWN: what exactly the other 33 calls are; most likely the pass that draws the shadows, which draws each thing that throws one a second time. The guns are not mine to join: their file is the look helper's.
 
-Built geometry, counted in node: 34,313 triangles in 96 meshes, of which the four guns 12,544, the ground 11,324, the wreck's pools 4,426 (mostly not drawn until something breaks), the bar 3,487, the pillars 2,208, the panes 324.
+At the full level and four samples the engine counts, for one picture: at rest 65,901 triangles and 121 draw calls (163 before the pillars were joined), after two blasts 73,409 and 151 (184 before), after the finishing blast 78,215 and 150 on the whole page and 43,028 and 66 in the close camera. The first picture after loading counts about twice that, since it includes the pass that draws the shadows.
 
-Painting the wound of one blast: 56 to 115 ms at once for three different lines (node, this machine, while it was also drawing pictures). To keep it off the frame of the blast it is painted ahead while the cannon aims, a slice a frame over 36 frames (about 3 ms a frame), once the line has lain still from one frame to the next; what is left is done on the frame of the blast. The picture is the same either way (MEASURED: `tests/arena-breaks.test.ts`, slices equal the whole).
+The real page with the boss's look on (local switch, LOOK1_ON true, at 26291694), the whole frame with everything of every helper in it: 223,620 triangles and 307 draw calls at 12 s; 267,910 and 399 at 43.5 s, just after a blast; 96,088 and 98 at 54.4 s, after the finishing blast in the close camera (that frame and the other four of the finish at b362215a). At the interim (c6028fcb) the same moments counted 340,043 and 481, and 385,543 and 569. UNKNOWN: how much of that drop is the joined pillars and how much the other helpers' work merged since.
 
-Tests: `tests/arena-solids.test.ts`, `tests/arena-layout.test.ts`, `tests/arena-breaks.test.ts`, 22 tests, all pass. Whole suite at 23:44Z on 93d14a1e (agent/b-bosslook merged in): 182 files pass (2,238 tests), 13 skipped, 1 fails, `tests/cut-of-build.test.ts` (2 tests), which is red on branches until the Builder runs the cut.
+Painting the wound of one blast: 56 to 115 ms at once for three different lines (node, this machine, while it was also drawing pictures, MEASURED at the first pass and not again). To keep it off the frame of the blast it is painted ahead while the cannon aims, a slice a frame over 36 frames (about 3 ms a frame), once the line has lain still from one frame to the next; what is left is done on the frame of the blast. The picture is the same either way (MEASURED: `tests/arena-breaks.test.ts`, slices equal the whole). The scorch of the finishing blast is painted the same way over 48 frames; MEASURED in node: the two tests that paint it whole and again in slices take about 3.9 s each, checks included.
 
-## What differs from the two pictures, and why
+Tests: `tests/arena-solids.test.ts`, `tests/arena-layout.test.ts`, `tests/arena-breaks.test.ts`, `tests/arena-scorch.test.ts`, 29 tests, all pass. Whole suite at 00:52Z on 78fd9689 (agent/b-boss 84e223bc and agent/b-bosslook 0060b885 merged in): 171 files pass (2,201 tests), 13 skipped, 13 files fail (45 tests). None of the 13 is a test of the arena. MEASURED: the same 13 files fail with the same count each (45 tests) on origin/agent/b-boss 84e223bc alone, run in a separate checkout: `tests/config.test.ts` (26; the film's units now add up to 181.18 s against a limit of 165 s), `tests/boss-fight.test.ts` (3), `tests/boss-closer-acting.test.ts` (3), `tests/harness-plan.test.ts` (3), `tests/polish-turn2.test.ts` (2), `tests/cut-of-build.test.ts` (2, red on branches until the Builder runs the cut), and one each in `tests/audio-cues.test.ts`, `tests/film-cut.test.ts`, `tests/harness-keep.test.ts`, `tests/roughcut.test.ts` (the plan has no entry for the beat boss.finish), `tests/site-finish-film.test.ts`, `tests/site-finish.test.ts`, `tests/stage.test.ts`. They come in with the fight's new beat and film lengths, not from `src/arena`. Before that merge, at 23:44Z on 93d14a1e, the whole suite had one red file, `tests/cut-of-build.test.ts`.
+
+## What differs from the pictures, and why
 
 Picture one (the arena at rest):
 
 - The lean. The picture is drawn with a wide lens, so things lean away from its middle. The site's camera looks straight down with a narrow lens; I lean every standing thing the same way instead, so that no foot lies about where it is.
-- The seams are thinner and glow more than the picture's copper channels, as the Builder asked at 22:52Z.
+- The seams are bevelled grooves with a wall that is dark at the lip and lit at the foot, and the light comes from inside and spills a little onto the ceramic. After the Builder's word at 00:19Z they are dimmer and uneven along their length; STATED from looking at the sheet beside the picture: they still read a little cleaner and more even than the picture's copper channels.
 - The corner guns are the look's rotary gun at 0.62; their domed foot is about 67 px across where the picture's is about 100.
-- The ground is the site's ceramic and grain, not the picture's.
+- The ground is the site's ceramic with a little grain of my own in the shader (no draw call); the picture's grain is coarser.
 - Bullets, the boss, the arrow and its trail are not mine.
 
 Picture two (after the cannon):
 
-- The pane. In the picture the broken pane still stands tall with a gap torn through it. Mine falls to a row of teeth along its whole shoe, because by the rule a broken pane stops no shot, and tall glass that stops nothing would lie.
+- The pane. In the picture the broken pane still stands tall with a gap torn through it. Mine falls to low teeth with at most three thin splinters, because by the rule a broken pane stops no shot, and tall glass that stops nothing would lie. Asked for this way by the Builder at 23:52Z: low teeth and a few tall splinters.
 - The trench starts where the break's line starts (the muzzle), not under the boss.
 - The hole is split where it meets a foot or a corner gun.
 - The beam and its burst are the look helper's.
 
+The finish (finish-button-left.png):
+
+- The picture's scorch is one ragged shape with dense embers along the trench near the arrow. Mine is the same plan (trench, round burn, on to the edge) with a softer rim drawn out along the beam and smaller, sparser embers.
+- The picture's smoke is two tall curling plumes. Mine is four thin wisps of grey puffs.
+- The button, the arrow, the boss's wreck and the beam are not mine. On the real page the plain button lay near (735, 610) at 54.4 s while the burn is centred on the boss's place (960, 650) as the view says: told to the fight helper.
+
 ## What is off
 
-- Not yet seen on the real page with the fight running; everything here is from the harness.
-- Glass: the shards are one shape at different sizes, and the teeth are thin from above. They read as glass, not yet as the big standing splinters of the picture.
-- Stumps: the tops are grey and faceted, not the rough stone of the picture.
-- The dust of the split is faint on the white ceramic.
-- Draw calls are high for what is drawn (96 meshes); pillars, feet and guns could be joined or instanced.
-- The frame time is known only in software GL.
+- The finishing blast has been seen on the real page only with the fight's plain stand-in for the beam and the button, not with the finish helper's arrow and beam (agent/b-finish is not merged here). The hook is agreed in words with that helper and not run.
+- The cold wash still lifts the ground near the beam almost to white in my harness; with a driver the finish helper's lights replace my three, UNKNOWN how bright the two are together.
+- The beam's drawn shadows also fall on the bodies of pillars that stand in them (they are drawn on whatever lies over the ground there). That reads as the far side of a pillar in shade; it is not a true shadow.
+- The scorch is below the picture: fewer and smaller embers, a rim that reads a little painted, thin smoke.
+- Draw calls: 81 added at rest at the low level. 32 of the 48 meshes are the look's guns. The panes and the bar (8 meshes) could still be joined.
+- The frame time is known only in software GL, and there the arena became 0.18 s a picture slower tonight for what the ground's shader now does.
+- The fallen column is grey at 43.2, dark grey at 43.5 and light grey at 44.5 s on the real page: no longer black then white, but its faces still change a good deal as it turns.
+- The dust of the split is drawn as light taken away (it cannot be brighter than the white ceramic), so it reads as soft pale-grey shade along the seams, not as bright dust.
 - If a blast arrives with no tell before it (a film jumped to a time), its wound is painted at once, about 0.1 s.
+- `tests/cut-of-build.test.ts` is red on this branch, as on every branch until the Builder runs the cut on the merged tree.
 
 ## Proof
 
@@ -177,9 +191,11 @@ Picture two (after the cannon):
 
 - `rest.png`: at rest.
 - `change.png`: 0.05, 0.35, 0.80, 1.30 and 1.90 s into the change.
-- `blast.png`: the warning band, then 0.03, 0.20 and 0.70 s after a blast, with the boss as a plain box 226 wide.
+- `blast.png`: the warning light, then 0.03, 0.20 and 0.70 s after a blast, with the boss as a plain box 226 wide.
 - `breaks.png`: after one, two and three blasts along different lines.
 - `box.png`: at rest with the box and a glint on a pillar.
+- `finish.png`: the finishing blast at share 0.15 and 0.60 with the beam's light, settled in the close camera, settled on the whole page, and the beam's light and shadows on the whole page.
+- `real-change.png`, `real-fight.png`, `real-finish.png`: the real page with the fight and the boss's look on (LOOK1_ON true, a local switch, not pushed), at 6.9, 7.3, 8.4 and 12 s; at 42.9, 43.2, 43.5 and 44.5 s (both at 26291694); at 52.6, 53.3, 54.4, 56.0 and 58.5 s of the page (at b362215a). In the finish frames the orange and white bar, the button, the wreck, the black cracks and the green bits are the fight's and the look's, not the arena's.
 - `measure-low.json`: the table above.
 
-Made with `node tools/arena-shots.mjs [rest|change|breaks|blast|box] [--no-build] [--level low] [--samples N]`.
+Made with `node tools/arena-shots.mjs [rest|change|breaks|blast|box|finish] [--no-build] [--level low] [--samples N] [--measure]`. The real page frames were made with the site's own still tool (`tools/lib/capture.mjs`, page `boss`, tier draft) from a local copy of this branch.

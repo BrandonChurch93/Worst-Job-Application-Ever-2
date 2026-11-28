@@ -169,9 +169,11 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
         const period = 2.6 + 1.2 * rnd(seed, 463, c)
         for (let j = 0; j < each; j++) {
           const g = (((t / period + j / each + rnd(seed, 464, c)) % 1) + 1) % 1
-          const thick = 0.34 * strong * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g) ** 1.2
-          const size = 12 + 62 * g
-          const z = 8 + 230 * g
+          // The two over the burn are plumes, taller and fuller than the wisps along the trench.
+          const big = c < 2 ? 1 : 0
+          const thick = (0.34 + 0.1 * big) * strong * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g) ** 1.2
+          const size = 12 + (62 + 60 * big) * g
+          const z = 8 + (230 + 130 * big) * g
           const sway = 16 * g * Math.sin(t * 1.3 + c * 2.1 + g * 5)
           q.setFromAxisAngle(v.set(0, 0, 1), UP + 0.5 * (rnd(seed, 465, c * 8 + j) - 0.5))
           m4.compose(v.set(wx(x) + sway + leanX * z, wy(y) + lean * z, z), q, sc.set(size, size * 1.9, 1))
