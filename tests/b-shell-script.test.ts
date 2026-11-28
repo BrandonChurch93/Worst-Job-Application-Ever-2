@@ -313,7 +313,7 @@ describe('change note 003: no line talks over another', () => {
       s.event(ev('page-turn', 'marketing'), 'live')
       ctx.currentTime = 4.5
       s.event(ev('candidate-sensed', 'step1'), 'live')
-      ctx.currentTime = 6
+      ctx.currentTime = Math.min(6, W + L + gap - 0.05)
       s.event(ev(end, 'step1'), 'live')
       expect(back(s), end).toEqual([id('step1.firstName.0')])
       ctx.currentTime = L + gap + 0.1
@@ -394,6 +394,36 @@ describe('change note 003: the parts of one moment', () => {
     both.ctx.currentTime = 3
     both.s.event(ev('field-done', 'step2'), 'live')
     expect(back(both.s).sort()).toEqual([id('step2.crank.0'), id('step2.crank.1')])
+  })
+})
+
+describe('change note 004, item 3: what the narrator owes a page', () => {
+  it('owes step 2 the second part of line 4 from its event to its end, spoken or with the sound off, and nothing before or after', async () => {
+    for (const muted of [false, true]) {
+      const { s, ctx } = await ready('step2')
+      if (muted) s.setMuted(true)
+      ctx.currentTime = 10
+      s.event(ev('volume-sign', 'step2'), 'live')
+      expect(s.owed('step2'), 'the first part alone').toBe(false)
+      ctx.currentTime = 11
+      s.event(ev('crank-full', 'step2'), 'live')
+      expect(s.owed('step2'), 'booked behind the first part').toBe(true)
+      ctx.currentTime = 12
+      s.event(ev('field-done', 'step2'), 'live')
+      expect(s.owed('step2')).toBe(true)
+      ctx.currentTime = 10 + L + lineGap + L - 0.05
+      expect(s.owed('step2'), 'in its last moment').toBe(true)
+      ctx.currentTime = 10 + L + lineGap + L + 0.05
+      expect(s.owed('step2'), 'after its end').toBe(false)
+      expect(s.owed('step1')).toBe(false)
+    }
+  })
+
+  it('owes nothing while sound is not allowed', () => {
+    const s = make()
+    s.page('step2')
+    s.event(ev('crank-full', 'step2'), 'live')
+    expect(s.owed('step2')).toBe(false)
   })
 })
 

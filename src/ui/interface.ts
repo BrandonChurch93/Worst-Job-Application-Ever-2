@@ -22,6 +22,8 @@ const STRIP = 56
 const ROW_ROOM = 6
 // How often the sound controls look for the sound by themselves, so they come and change without waiting for a drawn frame.
 const SOUND_LOOK_MS = 250
+// How long the sound bar takes to leave, the same as its move in the style sheet.
+const NOTICE_LEAVE_MS = 260
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string | undefined, parent?: HTMLElement): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag)
@@ -120,6 +122,38 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   const watch = typeof ResizeObserver === 'function' ? new ResizeObserver(place) : null
   watch?.observe(api.canvas)
 
+  // The sound bar of the careers page (change note 004, item 6): one line and one button across the foot, while the browser still blocks sound.
+  const notice = el('div', css.notice, root)
+  root.insertBefore(notice, live)
+  notice.hidden = true
+  const noticeWords = el('p', css.noticeWords, notice)
+  draw(noticeWords, word('soundBar'), 'inter-400')
+  const accept = el('button', css.accept, notice)
+  accept.type = 'button'
+  draw(accept, word('soundAccept'), 'inter-600')
+  // never: not shown yet. shown: on the page. leaving: on its short way out. gone: for the rest of the visit.
+  let noticeState: 'never' | 'shown' | 'leaving' | 'gone' = 'never'
+  const showNotice = () => {
+    const wanted = api.mode() === 'live' && api.step() === 0 && api.sound.blocked?.() === true
+    if (noticeState === 'never' && wanted) {
+      noticeState = 'shown'
+      notice.hidden = false
+      root.style.setProperty('--row', `${live.offsetLeft + live.offsetWidth}px`)
+    } else if (noticeState === 'shown' && !wanted) {
+      noticeState = 'leaving'
+      notice.dataset.leaving = 'true'
+      if (notice.contains(document.activeElement)) accept.blur()
+      window.setTimeout(() => {
+        noticeState = 'gone'
+        notice.hidden = true
+      }, NOTICE_LEAVE_MS)
+    } else if (noticeState === 'never' && api.mode() === 'live' && api.step() !== 0) noticeState = 'gone'
+  }
+  press(accept, () => {
+    api.sound.allow?.()
+    showNotice()
+  })
+
   const liveSound = soundButton(api, live)
   const film = el('a', css.link, live)
   film.href = '?mode=film'
@@ -196,6 +230,8 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
   bar.addEventListener('focusin', wake)
 
   const look = window.setInterval(() => {
+    if (noticeState === 'shown') root.style.setProperty('--row', `${live.offsetLeft + live.offsetWidth}px`)
+    showNotice()
     liveSound.update()
     barSound.update()
   }, SOUND_LOOK_MS)
@@ -319,6 +355,7 @@ export function mountInterface(host: HTMLElement, api: InterfaceApi): Mounted {
           place()
         }
         liveSound.update()
+        showNotice()
         const below = api.backing ? api.backing() : 'page'
         const under = below === 'page' && root.dataset.row === 'over' ? 'light' : below
         if (under !== backing) {

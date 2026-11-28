@@ -19,7 +19,7 @@ import { fitPicture } from './core/levelFit'
 import { levelIsFixedOf, startLevelOf } from './core/levelStart'
 
 declare global {
-  interface Window { showcase: Showcase; liveRun?: { state(): LiveShot; advance(seconds: number, quiet?: boolean): LiveShot; told(): LiveTold } }
+  interface Window { showcase: Showcase; liveRun?: { state(): LiveShot; advance(seconds: number, quiet?: boolean): LiveShot; told(): LiveTold; owe(until: number): void } }
 }
 
 interface LiveShot { time: number; page: string; gag: string | null; finished: boolean; png: string }
@@ -171,6 +171,9 @@ function probe(): void {
   mountProbe(host, run)
 }
 
+// The keys that do not allow sound by themselves.
+const FOCUS_KEYS: readonly string[] = ['Tab', 'Shift', 'Control', 'Alt', 'Meta']
+
 function play(first: PlayMode): void {
   let now: PlayMode = first
   const size = sizer(() => now === 'film')
@@ -179,18 +182,19 @@ function play(first: PlayMode): void {
   const stepped = params.get('clock') === 'steps'
 
   let sound: Sound | null = null
+  let pressedOnce = false
+  const unlock = () => {
+    pressedOnce = true
+    void sound?.unlock()
+  }
   if (!stepped) {
-    let touched = false
-    const unlock = () => {
-      touched = true
-      void sound?.unlock()
-    }
     window.addEventListener('pointerdown', unlock, { capture: true })
-    window.addEventListener('keydown', unlock, { capture: true })
+    // A key that only moves the focus or is held with another does not count as a press: Accept on the sound bar is reached by Tab.
+    window.addEventListener('keydown', (e) => { if (!FOCUS_KEYS.includes(e.key)) unlock() }, { capture: true })
     void Promise.all([import('./audio/index'), import('./ui/said')]).then(([{ makeSound }, { makeCaption }]) => {
       sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/`, caption: makeCaption })
       if (!flowing()) sound.stop()
-      if (touched) void sound.unlock()
+      if (pressedOnce) void sound.unlock()
     })
   }
   const soundMode = () => (now === 'live' ? 'live' : 'film')
@@ -201,7 +205,9 @@ function play(first: PlayMode): void {
   const driver = (): Driver => (botName ? new BotDriver(botName as BotName, Number(params.get('seed') ?? 1)) : mouse)
   const asked = Number(params.get('step') ?? 0)
   let base = asked >= 1 && asked <= 5 ? asked : 0
-  const makeStage = () => new Stage({ mode: 'live', flow: liveFlow().slice(base), pages, driver: driver() })
+  const makeStage = (): Stage => new Stage({ mode: 'live', flow: liveFlow().slice(base), pages, driver: driver(), waits: (page): boolean => (stepped ? stage.pageTime < owedUntil : sound?.owed(page) ?? false) })
+  // The stepped site has no sound: the line the narrator owes a page is stood in for by the seconds of the page until which it is owed, set through liveRun.owe.
+  let owedUntil = 0
   let stage = makeStage()
   let sent = 0
   let gags = 0
@@ -378,7 +384,9 @@ function play(first: PlayMode): void {
     sound: {
       available: () => sound?.available() ?? false,
       muted: () => sound?.muted() ?? true,
-      setMuted: (m) => sound?.setMuted(m)
+      setMuted: (m) => sound?.setMuted(m),
+      blocked: () => !pressedOnce && sound !== null && sound.state() === 'locked',
+      allow: unlock
     },
     quality: { levels: [...qualityIds], level: size.level, set: size.set, auto: () => !levelIsFixed() },
     diagnostics: [...views],
@@ -426,7 +434,7 @@ function play(first: PlayMode): void {
       const pose = stage.cursor.pose()
       return { time: stage.time, pageTime: stage.pageTime, page: stage.page.id, gag: stage.gagsReached.at(-1) ?? null, gags: stage.gagsReached, finished: stage.finished, turning: stage.turning, skipOffered: stage.skipOffered, scroll: stage.page.scroll(), hint: stage.page.hint(), hero: { x: pose.x, y: pose.y }, hits: stage.events.filter((e) => e.hitsCursor).map((e) => ({ name: e.name, time: e.step / stepHz, page: e.page, x: e.x, y: e.y })), control: stage.page.control ?? null }
     }
-    window.liveRun = { state: shot, advance: (seconds, quiet) => { stage.advance(Math.round(seconds * stepHz)); return quiet ? quietShot() : shot() }, told }
+    window.liveRun = { state: shot, advance: (seconds, quiet) => { stage.advance(Math.round(seconds * stepHz)); return quiet ? quietShot() : shot() }, told, owe: (until) => { owedUntil = until } }
     return
   }
 

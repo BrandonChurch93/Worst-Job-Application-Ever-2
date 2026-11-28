@@ -12,6 +12,10 @@ export interface SoundApi {
   available(): boolean
   muted(): boolean
   setMuted(muted: boolean): void
+  // Optional. True while the browser still blocks sound because the visitor has pressed nothing yet: the sound bar of the careers page is shown then.
+  blocked?(): boolean
+  // Optional. Allows sound from a press of the sound bar's button.
+  allow?(): void
 }
 
 export interface QualityApi {

@@ -321,3 +321,85 @@ index 04be2ab7..c898ccfa 100644
            }
          }
        }
+# 02:25Z change note 004 item 3: config/showcase.json audio.liveNarratorMinGapSeconds 6 to 0.3 (his word); src/pages/step2/index.ts: on the live site Continue is not ready and cannot be pressed while io.wait is set (the narrator owes line 4b); the skip link is not held; never set in the film
+diff --git a/config/showcase.json b/config/showcase.json
+index 3f4f641a..bf2b3c6e 100644
+--- a/config/showcase.json
++++ b/config/showcase.json
+@@ -585,7 +585,7 @@
+     ],
+     "narratorMaxTakesPerLine": 3,
+     "lineGapSeconds": 0.3,
+-    "liveNarratorMinGapSeconds": 6,
++    "liveNarratorMinGapSeconds": 0.3,
+     "contactSyncFrames": 1,
+     "creditCap": 10000,
+     "creditReserveAfterReview": 2000,
+diff --git a/src/pages/step2/index.ts b/src/pages/step2/index.ts
+index d6d46234..705f175f 100644
+--- a/src/pages/step2/index.ts
++++ b/src/pages/step2/index.ts
+@@ -279,6 +279,8 @@ export function makePage(): PageLogic {
+   let seed: number = config.seed
+ 
+   const allDone = (): boolean => s.field >= FIELDS
++  // Live site only: the narrator still owes this page a line, so Continue is not ready yet. Never set in the film.
++  let held = false
+   const inStop = (p: { x: number; y: number }, r: number): boolean => p.x >= stops[r]!.x - STOP.reach && p.x <= stops[r]!.x + stops[r]!.w + STOP.reach && p.y >= stops[r]!.y - STOP.reach && p.y <= stops[r]!.y + stops[r]!.h + STOP.reach
+   const fieldAt = (i: number): { x: number; y: number } => ({ x: FX + FW / 2, y: rowY(i) + FH / 2 })
+   const inField = (p: { x: number; y: number }, i: number): boolean => p.x >= FX && p.x <= FX + FW && p.y >= rowY(i) && p.y <= rowY(i) + FH
+@@ -977,6 +979,7 @@ export function makePage(): PageLogic {
+     },
+     step(io: StepIo) {
+       rng.restore(s.rng)
++      held = io.wait === true
+       s.time = io.time
+       s.px = io.pointer.x
+       s.py = io.pointer.y
+@@ -1027,7 +1030,7 @@ export function makePage(): PageLogic {
+         } else if (i < FIELDS && s.slide < 0) {
+           if (i === 1) stepBirth(io)
+           else if ((io.pressed && inField(io.pointer, i)) || s.idle >= LIMIT) openRow(i, io)
+-        } else if (i >= FIELDS && !s.pressed && ((io.pressed && overGo(io.pointer)) || s.idle >= LIMIT || s.skipping)) press(io)
++        } else if (i >= FIELDS && !s.pressed && (s.skipping || (!held && ((io.pressed && overGo(io.pointer)) || s.idle >= LIMIT)))) press(io)
+       } else {
+         const i = s.open
+         s.rowT += dt
+@@ -1320,7 +1323,7 @@ export function makePage(): PageLogic {
+     if (shown >= 0) {
+       overMachine(over, shown, s, 1, null, a)
+     }
+-    if (allDone()) {
++    if (allDone() && !held) {
+       over['continue-cap'] = { tone: 'accent', ...(s.pressed ? { z1: heights.button - heights.keyTravel } : {}) }
+       over['continue-label'] = { tone: 'inkLight', ...(s.pressed ? { z0: heights.button - heights.keyTravel, z1: heights.button - heights.keyTravel } : {}) }
+     }
+# 02:28Z change note 004 item 6: content/copy-drafts.json gets the draft words of the sound bar (words.live.soundBar.words, words.live.soundBar.accept) and what each serves
+diff --git a/content/copy-drafts.json b/content/copy-drafts.json
+index 1c11fbe3..0f4bb5d5 100644
+--- a/content/copy-drafts.json
++++ b/content/copy-drafts.json
+@@ -22,6 +22,12 @@
+       "volume": {
+         "sign": "TURN IT UP"
+       }
++    },
++    "live": {
++      "soundBar": {
++        "words": "This application uses sound to enhance your candidate experience.",
++        "accept": "Accept"
++      }
+     }
+   },
+   "serves": {
+@@ -33,7 +39,9 @@
+     "step2.birth.stop": "item 13, the stop button of each reel",
+     "step2.birth.missed": "item 13, the line when the stopped date is not the visitor's own",
+     "step2.birth.panel": "item 13, the line in the date's tray; the locked line step2.rows.birth.panel says to pull the lever, and the lever now pulls itself",
+-    "step2.volume.sign": "item 14, the big sign over the crank"
++    "step2.volume.sign": "item 14, the big sign over the crank",
++    "live.soundBar.words": "change note 004, item 6: the one line of the sound bar at the foot of the careers page, shown while the browser still blocks sound",
++    "live.soundBar.accept": "change note 004, item 6: the button of the sound bar; a press allows sound and line 1 starts"
+   },
+   "notNew": "The pinball signs of item 5 use the eight building names the locked copy already holds under step3.table.buildings."
+ }

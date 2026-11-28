@@ -329,3 +329,66 @@
     transition: none;
   }
 }
+
+/* The sound bar of the careers page: a flat white strip across the foot of the picture, as a cookie notice sits on a company's site. 84 page pixels high, so its upper edge (996) lies under the caption's panel (lower edge 980). */
+.notice {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  height: max(48px, calc(var(--u) * 84));
+  /* The row of live controls stands in the lower left corner on this page, over the bar: the words start to its right. */
+  padding: 0 max(16px, calc(var(--u) * 40)) 0 calc(var(--row, 0px) + max(16px, calc(var(--u) * 40)));
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: max(14px, calc(var(--u) * 32));
+  background-color: #ffffff;
+  box-shadow: 0 -1px 0 rgba(17, 17, 17, 0.14), 0 calc(var(--u) * -6) calc(var(--u) * 18) rgba(17, 17, 17, 0.06);
+  color: #111111;
+  pointer-events: auto;
+  cursor: default;
+  transform: translateY(0);
+  transition: transform 0.26s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.notice[data-leaving='true'] {
+  transform: translateY(110%);
+}
+
+.noticeWords {
+  margin: 0 auto 0 0;
+  font-size: max(13px, calc(var(--u) * 24));
+  line-height: 1.25;
+}
+
+.accept {
+  appearance: none;
+  flex: none;
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  min-height: max(32px, calc(var(--u) * 52));
+  padding: 0 max(18px, calc(var(--u) * 36));
+  border-radius: 999px;
+  background-color: #c4531b;
+  color: #ffffff;
+  font: inherit;
+  font-size: max(13px, calc(var(--u) * 24));
+  cursor: pointer;
+}
+
+.accept:hover {
+  background-color: #a94514;
+}
+
+.accept:focus-visible {
+  outline: max(2px, calc(var(--u) * 3)) solid #111111;
+  outline-offset: max(2px, calc(var(--u) * 3));
+}
+
+/* On this page the row of live controls is drawn over the bar. */
+.root[data-mode='live'][data-step='0'] .live {
+  z-index: 1;
+}

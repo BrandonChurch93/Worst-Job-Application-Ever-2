@@ -29,6 +29,8 @@ export interface StageOptions {
   seed?: number
   // `after` names the unit of the film that ends where this one starts.
   film?: { arrive: boolean; leave: boolean; after?: string }
+  // Live site only: asked each step whether the narrator still owes the page on screen a line its own way on waits for.
+  waits?: (page: string) => boolean
 }
 
 type Phase = 'arrive' | 'play' | 'leave' | 'end'
@@ -265,7 +267,7 @@ export class Stage {
     if (this.phase !== 'end') {
       const down = this.o.mode === 'live' ? this.told(pointer) : pointer.down
       const pressed = down && !this.down
-      page.step({ step: this.pageStep, time: this.pageTime, elapsed: this.time, dt, pointer: this.o.mode === 'live' ? this.landed({ ...pointer, down }, pressed) : pointer, pressed, released: !down && this.down, cursor: this.cursor, emit, mode: this.o.mode })
+      page.step({ step: this.pageStep, time: this.pageTime, elapsed: this.time, dt, pointer: this.o.mode === 'live' ? this.landed({ ...pointer, down }, pressed) : pointer, pressed, released: !down && this.down, cursor: this.cursor, emit, mode: this.o.mode, ...(this.o.mode === 'live' && this.o.waits?.(this.page.id) ? { wait: true } : {}) })
       const gag = page.gag()
       if (gag) this.reached.add(gag)
       const inBeat = this.o.mode === 'live' || (this.index === 0 && this.pageTime >= armsBeat.from && this.pageTime < armsBeat.to)

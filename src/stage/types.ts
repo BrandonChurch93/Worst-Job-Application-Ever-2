@@ -115,6 +115,8 @@ export interface StepIo {
   cursor: CursorBody
   emit: Emit
   mode: Mode
+  // Live site only: the narrator still owes this page a line that must be said before the page may be left by its own button.
+  wait?: boolean
 }
 
 export interface GagInfo {
