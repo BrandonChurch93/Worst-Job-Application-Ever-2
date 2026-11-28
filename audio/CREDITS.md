@@ -4,14 +4,14 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 4080 of 10000. Calls: 246.
+Running total: 4137 of 10000. Calls: 252.
 
-Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 597. No call is made that would pass it.
+Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 540. No call is made that would pass it.
 
 ## Caps
 
 - narration: 618 of 650 used, 32 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: "Recording: lines 1 to 9 may be recorded now. Caps, all inside the hard limit of 4,677, which does not change: narration 650 in all (one pass plus single lines done again), sound effects 700, the shout 150. That is 1,500 of the 1,511 left. State the cost in the ledger before each spend. At a cap, stop and mail Partner."
-- effects: 296 of 700 used, 404 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
+- effects: 353 of 700 used, 347 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
 - shout: 0 of 150 used, 150 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
 
 ## Rates
@@ -271,3 +271,9 @@ Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,
 | 244 | 2026-11-28T09:14:20Z | POST /v1/sound-generation | folder-open take 1, change notes 002 to 004, first pass | 0.5 s | HTTP 200, 1.8 s | 6 | reported by the response | 4061 |
 | 245 | 2026-11-28T09:14:22Z | POST /v1/sound-generation | slot-in take 1, change notes 002 to 004, first pass | 0.5 s | HTTP 200, 2.0 s | 6 | reported by the response | 4067 |
 | 246 | 2026-11-28T09:14:24Z | POST /v1/sound-generation | wind-gust take 1, change notes 002 to 004, first pass | 1.2 s | HTTP 200, 1.7 s | 13 | reported by the response | 4080 |
+| 247 | 2026-11-28T09:59:47Z | none: a statement before a spend | second takes of the five named sounds, cost stated before the spend | nothing, no call | Before the spend, as change note 004 item 7 orders. Second takes of the five sounds his words name (change note 002 items 2, 7 and 17: the turret's cannon shot, the slab, the keys breaking, the button breaking out, the big cannon). Why a second take: MEASURED on the first takes, most of their force lies under 150 Hz (big-fire 97 percent, turret-cannon 82 percent), so through the site's chain a laptop loses 5.6 to 12.1 dB and a phone 10.1 to 16.3 dB of them, and a listener told nothing heard a thud, a chime, a ding, a whirr and a click. The new prompts ask for the sharp crack and the mid-range body first and name no machine, no ceramic and no deep boom; prompt influence 0.5. One take each at the set lengths 0.8, 1.0, 0.6, 1.2 and 1.5 s: 9 + 11 + 7 + 13 + 17 = 57 credits expected. The effects cap then stands at 353 of 700 and the ledger at 4,137 of 4,677. Takes are chosen by measure and by his words, not by the highest mark. | 0 | a statement costs nothing | 4080 |
+| 248 | 2026-11-28T09:59:47Z | POST /v1/sound-generation | turret-cannon take 2, change notes 002 to 004, crack and body first | 0.8 s, influence 0.5 | HTTP 200, 3.0 s | 9 | reported by the response | 4089 |
+| 249 | 2026-11-28T09:59:50Z | POST /v1/sound-generation | slab-slam take 2, change notes 002 to 004, crack and body first | 1 s, influence 0.5 | HTTP 200, 2.3 s | 11 | reported by the response | 4100 |
+| 250 | 2026-11-28T09:59:53Z | POST /v1/sound-generation | keys-break take 2, change notes 002 to 004, crack and body first | 0.6 s, influence 0.5 | HTTP 200, 1.8 s | 7 | reported by the response | 4107 |
+| 251 | 2026-11-28T09:59:55Z | POST /v1/sound-generation | button-burst take 2, change notes 002 to 004, crack and body first | 1.2 s, influence 0.5 | HTTP 200, 3.3 s | 13 | reported by the response | 4120 |
+| 252 | 2026-11-28T09:59:59Z | POST /v1/sound-generation | big-fire take 2, change notes 002 to 004, crack and body first | 1.5 s, influence 0.5 | HTTP 200, 2.3 s | 17 | reported by the response | 4137 |

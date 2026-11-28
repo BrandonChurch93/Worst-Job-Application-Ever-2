@@ -2558,6 +2558,72 @@
       "cost": 13,
       "how": "reported by the response",
       "cap": "effects"
+    },
+    {
+      "n": 247,
+      "time": "2026-11-28T09:59:47Z",
+      "endpoint": "none: a statement before a spend",
+      "what": "second takes of the five named sounds, cost stated before the spend",
+      "asked": "nothing, no call",
+      "answer": "Before the spend, as change note 004 item 7 orders. Second takes of the five sounds his words name (change note 002 items 2, 7 and 17: the turret's cannon shot, the slab, the keys breaking, the button breaking out, the big cannon). Why a second take: MEASURED on the first takes, most of their force lies under 150 Hz (big-fire 97 percent, turret-cannon 82 percent), so through the site's chain a laptop loses 5.6 to 12.1 dB and a phone 10.1 to 16.3 dB of them, and a listener told nothing heard a thud, a chime, a ding, a whirr and a click. The new prompts ask for the sharp crack and the mid-range body first and name no machine, no ceramic and no deep boom; prompt influence 0.5. One take each at the set lengths 0.8, 1.0, 0.6, 1.2 and 1.5 s: 9 + 11 + 7 + 13 + 17 = 57 credits expected. The effects cap then stands at 353 of 700 and the ledger at 4,137 of 4,677. Takes are chosen by measure and by his words, not by the highest mark.",
+      "cost": 0,
+      "how": "a statement costs nothing",
+      "cap": "effects"
+    },
+    {
+      "n": 248,
+      "time": "2026-11-28T09:59:47Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "turret-cannon take 2, change notes 002 to 004, crack and body first",
+      "asked": "0.8 s, influence 0.5",
+      "answer": "HTTP 200, 3.0 s",
+      "cost": 9,
+      "how": "reported by the response",
+      "cap": "effects"
+    },
+    {
+      "n": 249,
+      "time": "2026-11-28T09:59:50Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "slab-slam take 2, change notes 002 to 004, crack and body first",
+      "asked": "1 s, influence 0.5",
+      "answer": "HTTP 200, 2.3 s",
+      "cost": 11,
+      "how": "reported by the response",
+      "cap": "effects"
+    },
+    {
+      "n": 250,
+      "time": "2026-11-28T09:59:53Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "keys-break take 2, change notes 002 to 004, crack and body first",
+      "asked": "0.6 s, influence 0.5",
+      "answer": "HTTP 200, 1.8 s",
+      "cost": 7,
+      "how": "reported by the response",
+      "cap": "effects"
+    },
+    {
+      "n": 251,
+      "time": "2026-11-28T09:59:55Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "button-burst take 2, change notes 002 to 004, crack and body first",
+      "asked": "1.2 s, influence 0.5",
+      "answer": "HTTP 200, 3.3 s",
+      "cost": 13,
+      "how": "reported by the response",
+      "cap": "effects"
+    },
+    {
+      "n": 252,
+      "time": "2026-11-28T09:59:59Z",
+      "endpoint": "POST /v1/sound-generation",
+      "what": "big-fire take 2, change notes 002 to 004, crack and body first",
+      "asked": "1.5 s, influence 0.5",
+      "answer": "HTTP 200, 2.3 s",
+      "cost": 17,
+      "how": "reported by the response",
+      "cap": "effects"
     }
   ]
 }
