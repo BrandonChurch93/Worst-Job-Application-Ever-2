@@ -194,10 +194,12 @@ export const CLOSE = {
 
 // The last moment: when the body is gone the arrow walks to the button that is left, drops to its knees and strikes it with its right fist.
 export const LAST = {
-  stand: [500, 650], // px, where the arrow stands for the charge and the blast
-  reach: 140, // px left of the button's middle at which it kneels
+  stand: [440, 650], // px, where the arrow stands for the charge and the blast
+  reach: 200, // px left of the button's middle at which it kneels
   speed: 178, // px/s of its walk: 1.8 s from where it stood to the button
   alone: 6, // s without a move or a press after which it walks there and strikes by itself, live site
+  led: 20, // s of being led about after which it walks there and strikes by itself, live site
+  most: 2, // s at most that its walk to the button takes when it goes by itself
   knees: 0.7, // s to drop to its knees (`finish-kneel`)
   breath: 0.6, // s it breathes on its knees, film only
   fist: 0.6, // s the right fist takes to go up (`finish-fist`)

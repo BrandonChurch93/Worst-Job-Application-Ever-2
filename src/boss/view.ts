@@ -157,6 +157,8 @@ export interface BossView {
   arrow: ViewArrow
   breaks: ViewBreak[]
   finish?: ViewFinish | null
+  // The line of the finishing blast, kept from the frame it is fired to the end: the ground stays scorched along it. The same four numbers as `finish`.
+  scorch?: { x0: number; y0: number; x1: number; y1: number } | null
   last?: ViewLast | null
   // 0 to 1: how far the picture has come in to the close view of the finish.
   close?: number

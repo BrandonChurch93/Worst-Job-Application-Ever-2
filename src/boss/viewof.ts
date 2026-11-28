@@ -5,7 +5,7 @@ import { BIG, CORNER, FLAT, GUARD, GUN } from './tune'
 import type { BossView, ViewCorner, ViewGun, ViewLast, ViewPhase } from './view'
 
 // What the page knows when it fills the view. `clock` runs from the page's first step of the break-out; `base` is that clock at the fight's first step and `fell` at the boss's fall, each -1 until then.
-export interface ViewInput { clock: number; unfold: number; fight: Fight | null; base: number; fell: number; pressed: boolean; arrow: { x: number; y: number }; fall?: number; gone?: number; power?: number; arms?: number; charge?: number; blast?: { power: number; since: number } | null; last?: ViewLast | null; close?: number; pressedFor?: number }
+export interface ViewInput { clock: number; unfold: number; fight: Fight | null; base: number; fell: number; pressed: boolean; arrow: { x: number; y: number }; fall?: number; gone?: number; power?: number; arms?: number; charge?: number; blast?: { power: number; since: number } | null; last?: ViewLast | null; close?: number; pressedFor?: number; scorch?: { x: number; y: number } | null }
 
 // The view's clock: 0 at `button-crack`. The body is whole at FORMED, and the fight's own clock starts there.
 export const LEAD = UNFOLD.crack
@@ -60,6 +60,7 @@ export function viewOf(i: ViewInput): BossView | null {
     arrow: { x: c.x, y: c.y, flat: b.flat > 0 ? 1 : flatAt !== null ? Math.max(0, 1 - (time - flatAt - FLAT.down) / (FLAT.life - FLAT.down)) : 0, flatAt, power: i.power ?? 0, arms: i.arms ?? 0, charge: i.charge ?? 0 },
     breaks: b.breaks.map((k) => ({ id: k.n, at: i.base - LEAD + k.at, x0: k.x0, y0: k.y0, x1: k.x1, y1: k.y1, width: k.width })),
     finish: i.blast ? { x0: c.x, y0: c.y, x1: FALLEN.x, y1: FALLEN.y, power: i.blast.power, firedAt: time - i.blast.since } : null,
+    scorch: i.scorch ? { x0: cursorCentre(i.scorch).x, y0: cursorCentre(i.scorch).y, x1: FALLEN.x, y1: FALLEN.y } : null,
     last: i.last ?? null,
     close: i.close ?? 0
   }
