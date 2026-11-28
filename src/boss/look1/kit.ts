@@ -292,7 +292,7 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x7a7e83), roughness: 0.54, metalness: 0.35, specularIntensity: 0.5 })
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x64686d), roughness: 0.54, metalness: 0.3, specularIntensity: 0.5 })
   const brushed = (hex: number, metal: number, rough = 0.46): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); c.metalness = metal; c.roughness = rough; return studio(c) }
   look = {
     hull: brushed(0x9c9fa3, 0.35, 0.52),
@@ -304,7 +304,7 @@ export function lookKit(): LookKit {
     gunBase: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4b7bb), roughness: 0.42, metalness: 0.5, specularIntensity: 0.6 })),
     plate: b.plate,
     plateLight: studio(plateLight),
-    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8e9297), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
+    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x74787d), roughness: 0.5, metalness: 0.35, specularIntensity: 0.6 })),
     dark: b.plateSide,
     housing: b.housing,
     joint: b.joint,

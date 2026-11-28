@@ -56,6 +56,8 @@ export const LEFT = { x: 960, y: 650, slide: [0.02, 0.92], lie: [[-76, 128, 2.5]
 export const PRESS = { down: 0.07, back: 0.38, deep: 9, squash: 0.045 }
 // The floor of light his parts keep inside the beam, as a share of their own colour: a tilted plate stays light grey.
 export const BEAMLIT = 0.42
+// The floor of light the legs keep always, so a leg that leans away from the key does not go dark.
+export const LEGLIT = 0.65
 export const WORD = { font: 'inter-400', px: 25 }
 export const BENT = { yaw: 0.26, droop: 0.2 }
 export const TIMES = { form: 2.9, turret: 1.6, beaten: 1, gone: 2.13, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }

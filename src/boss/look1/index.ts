@@ -3,7 +3,7 @@ import type { BossView } from '../view'
 import type { Emitter } from '../../real/types'
 import { buildModel, type Model } from './model'
 import { CANNON, GUN, HATCH, SHIELD, WING, HULL } from './numbers'
-import { BEAMLIT, BENT, DEFAULTS, FLY, K, LEFT, clamp01, poseOf, type LookOptions, type Pose } from './pose'
+import { BEAMLIT, LEGLIT, BENT, DEFAULTS, FLY, K, LEFT, clamp01, poseOf, type LookOptions, type Pose } from './pose'
 import { hash01 } from '../../core/random'
 import { lookKit, setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
@@ -238,6 +238,7 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
   object.add(figure)
   const kit = lookKit()
   const lit = [kit.hull, kit.wing, kit.hatch, kit.bezel, kit.steel, kit.gunBody, kit.gunBase, kit.plateLight, kit.limb, kit.under]
+  const floor = new Map<THREE.Material, number>([[kit.plateLight, LEGLIT], [kit.limb, LEGLIT]])
   const fx: Fx = makeFx(o, ctx.level ?? null)
   object.add(fx.object)
   const pose = (view: BossView, _dt: number, light?: (e: Emitter) => void): void => {
@@ -245,7 +246,7 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
     figure.visible = p.shown
     figure.position.set(p.x, p.y, 0)
     if (p.shown) { apply(model, figure, p); shade.pose(p) }
-    for (const mat of lit) mat.emissive.copy(mat.color).multiplyScalar(p.shown ? BEAMLIT * p.lit : 0)
+    for (const mat of lit) mat.emissive.copy(mat.color).multiplyScalar(p.shown ? (floor.get(mat) ?? 0) + BEAMLIT * p.lit : 0)
     fx.pose(view, p, light)
   }
   const dispose = (): void => {

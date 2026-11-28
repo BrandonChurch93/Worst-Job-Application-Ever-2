@@ -82,7 +82,8 @@ MEASURED with a script on `references/approved-002/boss-turret-inside.png` and m
 | Wing right of the gun | 132, 131 | 126, 133 |
 | Hatch lid | 123, 124 | 123, 124 |
 | Gun barrels | 154, 159 | 146, 135 |
-| Leg, upper right | 123, 109 | 105, 104 |
+| Leg, upper right | 123, 109 | 118, 122 |
+| Leg, lower left | 107, 100 | 124, 131 |
 | Ground | 237, 237 | 223, 223 |
 
 The hull's mean is within 3% of the target's, but the target has a bright sweep across the plate that mine lacks: mine is flatter (13% lighter above the button, 14% darker left of it). The bevel boxes read 15 to 20% lighter than the target's; I do not trust those two boxes after the hull changed shape and give them as UNKNOWN.
@@ -162,7 +163,7 @@ The ms are the software renderer's, about 100 times slower than a real card, so 
 
 - The body beside the two approved states reads as the same machine, not yet as a photograph of it: plates flatter than the target's, less small detail on the legs and the gun mounts, edges that face away from the key not clearly darker than the face (not finished, point 1 of the Builder's tone list).
 - Stage 1 against stage 2 at film size is a small step (`film.jpg`): soot, a cracked shield and smoke at 1; a torn plate, fire and a broken top edge of the glass at 2.
-- A lifted upper leg on the side away from the key light turns darker for the length of its step (MEASURED in `walking.jpg`).
+- The legs keep a floor of light of 0.65 of their own colour (`LEGLIT` in `pose.ts`) over a darker steel, because the site's one low key left a leg that leans away from it nearly black (MEASURED in the sheets before the change). All four now read alike (MEASURED in `states.jpg` and `walking.jpg`), but flatter than the target's legs, which have deeper shading along the rails.
 - All four feet in the air in 5 to 9% of frames on a diagonal while turning. A step lasts about 0.06 s at 190 px a second, so it does not read as a hop, but the bar was two feet down always.
 - The forming works and lands hard, but it does not yet feel as powerful as the brief asks: no camera shake is mine to give, the flash at the landing is small on a pale ground.
 - Additive glows nearly vanish on the pale ground (MEASURED). The rings that must read (open flank, last flash) are drawn with normal blending instead.
