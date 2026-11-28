@@ -82,9 +82,17 @@ The dial's entrance is 104 steps longer, a whole number, so the script is read o
 
 - Again after main b66ff094 was merged in (86353820), same working copy: `npm run determinism` 00:47Z to 00:51Z, the same line, exit 0; `npm run bots` 00:51Z to 00:52Z, the same two lines, exit 0; `npm test` 00:52Z to 00:56Z, 7 files failed, 171 passed, 9 skipped, 10 tests failed, 2139 passed, 13 skipped, 273.65 s, exit 1, the same ten by name; the unit's own files (`npx vitest run tests/b-step2 tests/step2`) 8 files, 96 tests, 0 failed, exit 0; `npx tsc --noEmit -p .` at 00:57Z, no line printed, exit 0.
 
+### The tray's code taken out (Builder's mail of 01:00Z)
+
+- Out, because nothing reached it: in `real/rows.ts` the whole maker of a tray (`tray`, `trayJoint`, `trayRim`, `trayLiner`, `trayWallShade`, `trayFloor`, `trayFoot`, the kit and its key, 224 lines out and 5 in); in `layout.ts` `TRAY` and `TRAY_R`; in `index.ts` `COVER` and `SINK`, each only declared. The one shape of role `machineTray` the page makes is a hole (`layout.ts`, `<name>-hole`), so `rows` now sends every such shape to the hole's maker. The save shape is as it was.
+- Left in, because it runs: `HOUSED` is in the height of the slot and the crank while they come and go (`risen`), and `CRANK_HOME`, `crankInTray`, `homeward`, `crankHome` and `skipHome` steer where the crank's arm ends on the live site and what a Skip does while the crank stands. Their words still speak of a tray. Taking them out changes pictures or the live site's steps, which the Builder's terms of 01:00Z do not allow. My report of 00:58Z called them dead: that was wrong for these six.
+
+- Checks with that code out, patch on the working copy, MEASURED: `npx vitest run tests/b-step2 tests/step2` 01:01Z, 8 files, 96 tests, 0 failed, exit 0; `npm test` 01:01Z to 01:06Z, 7 files failed, 171 passed, 9 skipped, 10 tests failed, 2139 passed, 13 skipped, 275.75 s, exit 1, the list of red tests the same ten lines as the run before (`diff`, no difference); `npm run determinism` 01:06Z to 01:10Z, "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders", exit 0; `npm run bots` 01:10Z to 01:11Z, "bots: all clear", exit 0.
+- No picture changed, MEASURED: six film frames with the hole in them (`node pipeline/change002/step2-frames.mjs --show stage --at 2.0,9.5 --count 3 --every 10 --columns 3`, frames 2880, 2890, 2900, 3330, 3340, 3350) rendered with the code out and, by `git stash push -- src/pages/step2`, with it in: the two sheets are the same byte for byte (`cmp`, md5 c0846abc0cc1703d6d76b0ffff136f83). The live sheet `step2-live-slot.jpg` rendered again: the same byte for byte as the one of 00:43Z (md5 bd5760b3d26bedded79b7226dd2e2aa0). Not measured: every other frame of the film.
+
 ### Not done
 
-- The makers of the tray (`tray`, `trayRim`, `trayFloor` and the rest in `real/rows.ts`, `TRAY` in `layout.ts`) and the crank's parking in its tray (`CRANK_HOME`, `skipHome`, `HOUSED`, `SINK`, `COVER` in `index.ts`) are still in the code. Nothing draws a tray. They were left because the limit was near.
+- `HOUSED`, `CRANK_HOME` and the four functions round it, as said above.
 - No sound: the new events have no cue (the Builder spends the credits).
 
 ## What the page is now

@@ -214,8 +214,6 @@ function rowParts(tree: LayoutNode, prefix: string): RowIds {
   return { ids }
 }
 
-// A machine that has sunk under the page is covered by its tray as the tray shuts: the tray starts to shut at this share of the lift, not after the machine has gone.
-const COVER = 0.25
 // The slot and the crank are housed in the floor of their trays, as the dial is: they lie there at this share of their height while the tray opens over them and while it shuts over them, and rise from it. Their makers draw a part above 0.02 of its height, and at 0.0256 the slot's knob would reach the floor of the field below (`scale.heights.field`), whose pocket passes over the machine as the tray opens.
 export const HOUSED = 0.022
 // How far below its centre the dial reaches on the page, its seat ring and 4 px more: while the tray's opening ends above that, part of the dial lies under the page, and the live site tells the dial's maker where the opening ends, so that it draws what is under the page low (`levelDial` in real/dial.ts). The film is not told.
@@ -236,8 +234,6 @@ function machineParts(tree: LayoutNode, tray: string): { id: string; floor: numb
 
 // The shapes of a page as its machines were built: each shape the page drew larger is given back as it was before.
 const builtOf = new WeakMap<Shape, Shape>()
-// A machine that lies down in its tray's floor is drawn no taller for being drawn larger: it is let into the floor by what it would stand higher, and that is given up as it rises to `whole` px.
-const SINK = { flat: 2, whole: 8 }
 export function drawBuilt(page: { draw(out: DrawList): void }, out: DrawList): void {
   const list: DrawList = []
   page.draw(list)
