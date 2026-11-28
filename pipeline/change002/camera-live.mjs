@@ -19,12 +19,12 @@ const raw = String(a.raw ?? '/tmp/cam/live')
 fs.mkdirSync(out, { recursive: true })
 fs.mkdirSync(raw, { recursive: true })
 const KINDS = {
-  hold: { says: 'holds 2 s and lets go', down: (t) => t >= 0.3 && t < 2.3, fire: 2.308 },
-  click: { says: 'clicks once', down: (t) => t >= 0.3 && t < 0.38, fire: 0.3875 },
-  never: { says: 'never presses', down: () => false, fire: 6 }
+  hold: { says: 'holds 2 s and lets go', down: (t) => t >= 0.3 && t < 2.3, fire: 2.858 },
+  click: { says: 'clicks once', down: (t) => t >= 0.3 && t < 0.38, fire: 1.796 },
+  never: { says: 'never presses', down: () => false, fire: 6.004 }
 }
 const LEAD = 0
-const GONE = 2.133
+const GONE = 3.433
 const AFTER = 0.6
 const SHOTS = 20
 const only = a.only ? String(a.only).split(',') : Object.keys(KINDS)
