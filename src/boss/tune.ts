@@ -225,9 +225,8 @@ export const IDLE = {
 
 // The film's fight is shorter than any visitor's: a dart that reaches the body does `dart` times as much, by phase, and a phase may end in `floor` of its least length.
 // `ends`: the second of the fight at which each phase ends in the film at the latest, whatever the darts did, so the film's marks do not move with the boss's shape.
-// The power-up of the standing figure, in seconds of the page from `power-up`: it is up with both fists raised after `rise`, holds them `held`, bursts, and is down again `down` after the burst has ended.
-// The four together stay inside `LINE7.part2 - LINE7.power`, so that it lies before the turret locks.
-export const RAISE = { rise: 0.9, held: 1.05, down: 0.65 } as const
+// `early`: s before the turret locks by which the standing figure of the power-up lies on the page again. Its moves are fitted to that window by the figure's own module.
+export const RAISE = { early: 0.05 } as const
 // `spare` is the health the film keeps over the end of a stage until that stage's time is up, with the look on, so that every stage ends at its time whatever the darts meet.
 export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const, ends: [9.83, 11.02, 13.69] as const, spare: 0.5 } as const
 

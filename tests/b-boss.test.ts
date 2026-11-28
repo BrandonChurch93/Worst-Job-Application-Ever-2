@@ -3,7 +3,7 @@ import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
 import { ARENA as GROUND } from '../src/arena/layout'
 import { barDrop } from '../src/arena/change'
-import { finishState, POWER } from '../src/boss/finish/acting'
+import { finishState, POWER, powerPlan } from '../src/boss/finish/acting'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
 import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, RAISE, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
@@ -600,7 +600,7 @@ describe('how the boss plays (change 002, item 15)', () => {
       } else plain++
     }
     expect(plain).toBeGreaterThan(0)
-    if (LOOK1_ON) expect(ups / (stepHz / 2)).toBeGreaterThan(RAISE.rise + RAISE.held + POWER.burst + SHOUT.gone)
+    if (LOOK1_ON) expect(ups / (stepHz / 2)).toBeGreaterThan(POWER.held + POWER.burst + SHOUT.gone)
     else expect(ups).toBe(0)
   })
 
@@ -615,14 +615,17 @@ describe('how the boss plays (change 002, item 15)', () => {
       const i = finishNow()
       if (!i || !finishState(i).up) continue
       lastUp = stage.time
-      if (i.power && i.time - i.power.at >= POWER.up[1] && i.time < (i.power.end ?? 0)) raised++
+      if (!i.power) continue
+      const plan = powerPlan(i.power)
+      const now = i.time - i.power.at
+      if (now >= POWER.up[1] * plan.quick && now < plan.end) raised++
     }
     power = stage.events.find((e) => e.name === 'power-up')!.step / stepHz
     const lock = stage.events.find((e) => e.name === 'turret-lock')!.step / stepHz
     expect(raised / stepHz).toBeGreaterThanOrEqual(1)
     expect(lastUp).toBeGreaterThan(power)
     expect(lastUp).toBeLessThan(lock)
-    expect(RAISE.rise + RAISE.held + POWER.burst + RAISE.down).toBeLessThanOrEqual(LINE7.part2 - LINE7.power)
+    expect(lock - lastUp).toBeGreaterThanOrEqual(RAISE.early - 2 / stepHz)
   })
 
   it.runIf(LOOK1_ON)('mail of 03:02, item 4b. a visitor who throws the pointer about cannot move the standing figure off its spot in the power-up, nor in the finish once it has run to its stand and until it fires', () => {

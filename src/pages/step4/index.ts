@@ -6,7 +6,7 @@ import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/fini
 import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
-import { finishState, kneelSpot, LIEDOWN, POWER, type FinishInput } from '../../boss/finish/acting'
+import { finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
 import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
 import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
@@ -181,15 +181,8 @@ export function makePage(): PageLogic {
   }
   const mark = (v: number): number | undefined => (v < 0 ? undefined : v)
   // What the standing arrow is told: the look's figure of the power-up and of the finish stands in the arrow's place for as long as it is up.
-  // The power-up plays the figure's own getting up, fists and lying down at the page's lengths: the time it is told runs faster through the rise and the lying down and at its own pace while the fists are held.
-  const RAISED = RAISE.rise + RAISE.held + POWER.burst + RAISE.down
+  const RAISED = LINE7.part2 - LINE7.power - RAISE.early
   const raising = (): number => (s.fin.power < 0 || s.fin.arms >= 0 || s.clock - LEAD - s.fin.power >= RAISED ? -1 : s.clock - LEAD - s.fin.power)
-  const told = (r: number): number => {
-    const up = POWER.up[1]
-    if (r < RAISE.rise) return (r * up) / RAISE.rise
-    if (r < RAISED - RAISE.down) return up + r - RAISE.rise
-    return up + RAISE.held + POWER.burst + ((r - (RAISED - RAISE.down)) * LIEDOWN) / RAISE.down
-  }
   const figure = (): FinishInput | null => {
     const v = view()
     const r = raising()
@@ -197,9 +190,9 @@ export function makePage(): PageLogic {
     const m = s.fin
     const b = buttonAt(v)
     return {
-      time: r < 0 ? v.time : m.power + told(r),
+      time: v.time,
       arrow: r < 0 ? { x: s.cx, y: s.cy } : { x: m.x, y: m.y },
-      power: r < 0 ? null : { at: m.power, end: m.power + POWER.up[1] + RAISE.held },
+      power: r < 0 ? null : { at: m.power, until: m.power + RAISED },
       marks: { arms: mark(m.arms), charge: mark(m.charge), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
