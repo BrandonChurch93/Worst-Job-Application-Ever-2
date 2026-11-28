@@ -6,12 +6,11 @@ import type { BossView } from '../../src/boss/view'
 import { label } from '../../src/boss/body'
 import { restPose } from '../../src/cursor/body'
 import { homeDistance } from '../../src/stage/camera'
-import { TYPE } from '../../src/shell/parts'
 import type { Emitter } from '../../src/real/types'
 import type { Frame } from '../../src/stage/stage'
 import type { CameraPose, Shape } from '../../src/stage/types'
 import { tierSamples } from '../../src/config'
-import { wordAt } from '../../src/boss/look1'
+import { WORD, wordAt } from '../../src/boss/look1'
 
 interface Spec { view: BossView; cx: number; cy: number; zoom: number; width: number; height: number; tier?: string; level?: 'low' | 'medium' | 'high'; word?: boolean; options?: Record<string, unknown> }
 
@@ -33,7 +32,7 @@ async function render(spec: Spec): Promise<{ triangles: number; drawCalls: numbe
   }
   const list: Shape[] = []
   const w = wordAt(spec.view)
-  if (spec.word !== false && w.show) list.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, TYPE.button, w.z, 'inkLight', w.rot))
+  if (spec.word !== false && w.show) list.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, WORD, w.z, 'inkLight', w.rot))
   const frame: Frame = { list, cursor: restPose(-400, -400, { onPage: false }), turn: 0, scroll: 0, page: 'bosslook', view: null, time: spec.view.time }
   const pose: CameraPose = { eye: [spec.cx - 960, 540 - spec.cy, homeDistance() / spec.zoom], target: [spec.cx - 960, 540 - spec.cy, 0], fov: 20 }
   app.engine.setSize(spec.width, spec.height)
