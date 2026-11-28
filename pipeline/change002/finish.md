@@ -84,4 +84,40 @@ Whole-frame draw calls in the harness (the arena and the look of this branch, no
 
 ## Proof
 
-`pipeline/change002/proof/finish/report-*.png` (each at most 1200 px): `report-rise` (40 and 60 degrees beside the pose sheet), `report-poses`, `report-stills` (charge, blast, after beside the approved three), `report-walk` (walk and knees), `report-blow` (fist and blow), `report-getup` (getting up, fire, the power-up's burst and lying down). Made by `node pipeline/change002/finish-shots.mjs` then `node pipeline/change002/finish-sheets.mjs`. The harness draws no ordinary arrow in the finish script, so the frame before the `arms` mark in the getting-up strip is empty ground: the page draws the pointer there.
+`pipeline/change002/proof/finish/report-*.png` (each at most 1200 px). Made by `node pipeline/change002/finish-shots.mjs` then `node pipeline/change002/finish-sheets.mjs`, all in my harness (`src/cursor/stand/harness`), not on the real page: the fight helper has not wired `finishPart`.
+
+Third pass (rise 40 degrees, thick limbs, big gloves and shoes, softer lights, crackle, bluer beam), rendered 01:38Z to 01:47Z at 1 sample:
+- `report-poses`: the three poses from the side beside `finish-poses.png`, and from straight above.
+- `report-rise`: the pose at 40 and at 60 degrees with its shadow, film size and three times.
+- `report-stills`: charge, blast and after at 1920 by 1080 beside the three approved pictures.
+- `report-strips`: the fire, the fall to the knees and the blow, every frame for twelve, then every second.
+- `report-four`: power-up, charge, blast, the fist on Submit.
+
+First pass only, NOT rendered again (thin limbs, rise 35.5 degrees, old flame): `report-getup` (getting up, the power-up's burst, lying down), `report-walk` (the walk), and the fist rows of `report-blow`. The moves in them are the same code as now; the look of the figure in them is out of date.
+
+The harness draws no ordinary arrow in the finish script, so the frame before the `arms` mark in the getting-up strip is empty ground: the page draws the pointer there.
+
+## Size (Builder's fault 6)
+
+- The standing figure is 91.8 px from the soles to the tip in its own plane (STATED: `STAND.tip`, hip 31 px plus 16.5 outline units of 70 / 19 px), about 82 px in the charge's crouch. Seen straight down at a rise of 40 degrees that is 70 px of page (63 px crouched), so 70 film px at 1920 by 1080 with no close view and about 141 film px in the fight helper's 2x close view (STATED, computed; not measured on the real page, which does not draw it yet).
+- In `finish-charge.png` and `finish-blast.png` scaled to 1920 wide the figure is about 210 px tall and 300 to 385 px wide (MEASURED by eye on a 600 px copy, give or take 15 percent).
+- So with the 2x close view a `scale` of about 1.5 brings the figure to the pictures' size; without the close view about 3. `FinishInput.scale` is the one number; 1 by default. No picture was made at another value (UNKNOWN how it looks).
+
+## Known weak points at the last push
+
+- The raised hand before the blow and the two hands of the power-up read as open gloves, not fists: the approved hand's fist is only its curl, and at 1.5 times the fingers show.
+- In the charge the arrow leans so far forward that from straight above its face is narrow.
+- The figure is about half the pictures' size until `scale` is set.
+- The look's white and orange burst covers Submit during the blast in my harness (the look helper's).
+- The beam's lightning is thin and shows in patches; the picture's is heavier.
+- `report-getup`, `report-walk` and the fist rows are first pass pictures.
+
+## Runs (MEASURED, with exit codes)
+
+All on this branch after the merge of `origin/main` (b66ff094) at 01:39Z, head `0f7d5f56` (only notes, the shots tool and proof pictures were committed after it):
+- `npm run determinism`: EXIT 0 at 01:51Z ("pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders").
+- `npm run bots`: EXIT 0 at 01:52Z ("bots: all clear").
+- `npm test`, whole, alone, detached, 01:52Z to 01:58Z (342.7 s): EXIT 1. 43 failed, 2205 passed, 17 skipped of 2265; 12 files failed, 172 passed, 13 skipped of 197. None of the red ones is mine: `tests/b-finish.test.ts` passed 13 of 13 in that run. The red files: `config.test.ts` 26, `boss-closer-acting.test.ts` 3, `boss-fight.test.ts` 3, `cut-of-build.test.ts` 2, `harness-plan.test.ts` 2, `polish-turn2.test.ts` 2, `audio-cues.test.ts` 1, `film-cut.test.ts` 1, `harness-keep.test.ts` 1, `site-finish-film.test.ts` 1, `site-finish.test.ts` 1, `roughcut.test.ts` (the file fails to load). I did not run the whole set on the branch before my work, so "not mine" rests on what they test (the config, the fight's film, the cut list, the page turns' times), not on a before and after (STATED).
+- `npx vitest run tests/b-finish.test.ts`: EXIT 0, 13 of 13, at 01:59Z.
+- `npx tsc --noEmit -p .`: EXIT 0 at 01:59Z.
+

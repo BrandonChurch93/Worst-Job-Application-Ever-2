@@ -11,12 +11,13 @@ import { buildInfoPlugin } from '../../tools/lib/hashes.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const work = path.join(root, 'out', 'work', 'finish-harness')
-const shots = path.join(root, 'out', 'work', 'finish-shots')
+const SCALE = Number((() => { const i = process.argv.indexOf('--scale'); return i >= 0 ? process.argv[i + 1] : 1 })())
+const shots = path.join(root, 'out', 'work', SCALE === 1 ? 'finish-shots' : `finish-shots-x${SCALE}`)
 const proof = path.join(root, 'pipeline', 'change002', 'proof', 'finish')
 const refs = path.join(root, 'references', 'approved-002')
 const args = process.argv.slice(2)
 const flag = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : undefined }
-const wanted = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--level', '--samples'].includes(args[i - 1])))
+const wanted = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--level', '--samples', '--scale'].includes(args[i - 1])))
 const level = flag('--level') ?? null
 const samples = Number(flag('--samples') ?? 8)
 const FPS = 60
@@ -35,7 +36,7 @@ const smooth = (v) => { const t = Math.min(1, Math.max(0, v)); return t * t * (3
 
 // The whole finish at one view time.
 function finish(time) {
-  const input = { time, arrow: ARROW, marks: { ...M }, target: { x: BOSS.x, y: BOSS.y }, button: BUTTON, charge: Math.min(1, Math.max(0, (time - M.charge) / (M.fire - M.charge - 0.3))), shot: 1 }
+  const input = { time, arrow: ARROW, marks: { ...M }, target: { x: BOSS.x, y: BOSS.y }, button: BUTTON, scale: SCALE, charge: Math.min(1, Math.max(0, (time - M.charge) / (M.fire - M.charge - 0.3))), shot: 1 }
   let gone = 0
   if (time >= M.fire) gone = Math.min(1, (time - M.fire - 0.14) / (M.end - M.fire - 0.14))
   if (WALK) {
@@ -51,7 +52,7 @@ function finish(time) {
   }
   return { input, boss: { ...BOSS, gone: Math.max(0, gone) }, cam: CLOSE }
 }
-const power = (time) => ({ input: { time, arrow: ARROW, power: POWER }, cam: CLOSE, arrow: true })
+const power = (time) => ({ input: { time, arrow: ARROW, power: POWER, scale: SCALE }, cam: CLOSE, arrow: true })
 
 // Frames in a row: every frame for the first twelve, then every second.
 const row = (from, count) => { const out = []; for (let i = 0; i < count; i++) out.push(from + (i < 12 ? i : 12 + (i - 12) * 2) / FPS); return out }
@@ -169,7 +170,7 @@ async function main() {
   const b = await page.evaluate(([boss, arrow]) => window.finishHarness.button(boss, arrow), [BOSS, ARROW])
   // The look's button as it lies at the end: 226 by 61 page px (STATED by the look helper; `buttonAt(view)` is not on this branch yet).
   BUTTON = { x: b.x, y: b.y, w: 226, h: 61, top: b.top }
-  b.kneel = { x: BUTTON.x - BUTTON.w / 2 - 31, y: BUTTON.y + 6 }
+  b.kneel = { x: BUTTON.x - BUTTON.w / 2 - 31 * SCALE, y: BUTTON.y + 6 * SCALE }
   const start = await page.evaluate((a) => window.finishHarness.draw(a).then(() => null), { ...finish(M.walk - 0.01), samples: 1 })
   void start
   const feet = { x: ARROW.x + 17.3 - 38, y: ARROW.y + 91.8 }

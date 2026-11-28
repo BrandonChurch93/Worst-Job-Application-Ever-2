@@ -15,8 +15,8 @@ const GAP = 2
 const label = (text) => Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="22"><rect width="100%" height="100%" fill="#0b0b0c"/><text x="6" y="16" font-family="sans-serif" font-size="14" fill="#e8e8e8">${text}</text></svg>`)
 
 // One strip: the frames of a move, each cut to the same box of its shot (shot px), `per` to a row.
-async function rows(name, text, box, per, every = 1) {
-  const files = fs.readdirSync(shots).filter((f) => new RegExp(`^${name}-\\d\\d\\.png$`).test(f)).sort().filter((_, i) => i % every === 0)
+async function rows(name, text, box, per, every = 1, most = 999) {
+  const files = fs.readdirSync(shots).filter((f) => new RegExp(`^${name}-\\d\\d\\.png$`).test(f)).sort().filter((_, i) => i % every === 0).slice(0, most)
   const tw = Math.floor((W - GAP * (per - 1)) / per)
   const th = Math.round((tw * box.height) / box.width)
   const tiles = []
@@ -80,6 +80,10 @@ const JOBS = {
     await rows('fire', 'third pass. fire: from 2 frames before the fire mark, every frame for twelve, then every second', { left: 450, top: 396, width: 900, height: 360 }, 8),
     await rows('knees', 'knees: from 2 frames before the kneel mark, every frame for twelve, then every second', KNEEL, 12),
     await rows('blow', 'blow: from 12 frames before the press, every frame for twelve, then every second', KNEEL, 12)
+  ]),
+  'report-fist': async () => stack('report-fist', [
+    await rows('fist', 'third pass, larger. fist: from 2 frames before the fist mark, every second frame of the strip', { left: 660, top: 380, width: 440, height: 380 }, 6, 2),
+    await rows('blow', 'blow: from 12 frames before the press, every frame for twelve, then every second; the press is the 13th tile', { left: 660, top: 380, width: 440, height: 380 }, 6, 1, 18)
   ]),
   'report-four': async () => {
     const w = (W - GAP) / 2
