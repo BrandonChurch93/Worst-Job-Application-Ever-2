@@ -80,6 +80,8 @@ The dial's entrance is 104 steps longer, a whole number, so the script is read o
 - `npm run determinism`, 00:32Z: "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders"; exit 0.
 - `npm run bots`, 00:33Z: "keen reached every one of the 37 gags on every seed", "bots: all clear"; exit 0.
 
+- Again after main b66ff094 was merged in (86353820), same working copy: `npm run determinism` 00:47Z to 00:51Z, the same line, exit 0; `npm run bots` 00:51Z to 00:52Z, the same two lines, exit 0; `npm test` 00:52Z to 00:56Z, 7 files failed, 171 passed, 9 skipped, 10 tests failed, 2139 passed, 13 skipped, 273.65 s, exit 1, the same ten by name; the unit's own files (`npx vitest run tests/b-step2 tests/step2`) 8 files, 96 tests, 0 failed, exit 0; `npx tsc --noEmit -p .` at 00:57Z, no line printed, exit 0.
+
 ### Not done
 
 - The makers of the tray (`tray`, `trayRim`, `trayFloor` and the rest in `real/rows.ts`, `TRAY` in `layout.ts`) and the crank's parking in its tray (`CRANK_HOME`, `skipHome`, `HOUSED`, `SINK`, `COVER` in `index.ts`) are still in the code. Nothing draws a tray. They were left because the limit was near.
