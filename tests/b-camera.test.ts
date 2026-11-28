@@ -120,6 +120,27 @@ describe('the camera of the finishing blast: its path', () => {
     }
   })
 
+  it('from above shows nothing past the floor of the arena: the four corners of every frame lie on the page', () => {
+    let least = Infinity
+    for (const [name, m, long] of COURSES) {
+      for (let n = 0; n < long * FPS; n++) {
+        const shot = finishShot(n / FPS, m)
+        if (!shot || shot.low > 0) continue
+        const b = basis(shot.pose)
+        const h = Math.tan((shot.pose.fov * Math.PI) / 360)
+        for (const [sx, sy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]] as const) {
+          const d = [0, 1, 2].map((i) => b.forward[i]! + b.right[i]! * sx * h * (16 / 9) + b.up[i]! * sy * h)
+          const t = -shot.pose.eye[2] / d[2]!
+          const [x, y] = [shot.pose.eye[0] + d[0]! * t, shot.pose.eye[1] + d[1]! * t]
+          least = Math.min(least, 960 - Math.abs(x), 540 - Math.abs(y))
+          expect(Math.abs(x), `${name}, frame ${n}, x`).toBeLessThanOrEqual(960)
+          expect(Math.abs(y), `${name}, frame ${n}, y`).toBeLessThanOrEqual(540)
+        }
+      }
+    }
+    console.log('from above, the nearest a corner of the frame comes to the edge of the floor, px', least.toFixed(1))
+  })
+
   it('passes no pillar close: the lens keeps its distance from every pillar it is not above', () => {
     let least = Infinity
     for (const [name, m, long] of COURSES) {

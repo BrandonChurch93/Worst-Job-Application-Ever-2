@@ -111,7 +111,7 @@ export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; s
     const f = time - m.fire
     rig = mixRig(rig, keyAt(CAMERA.blast), ease(f, CAMERA.back[0], CAMERA.back[1]))
     const up = ease(f, CAMERA.rise[0], CAMERA.rise[1])
-    rig = mixRig(rig, TOP, up, up, soon(up, CAMERA.lift))
+    rig = mixRig(rig, TOP, up, soon(up, CAMERA.lift), soon(up, CAMERA.lift), up, soon(up, CAMERA.lift))
     if (up > 0 && up < 1) rig = { ...rig, tall: rig.tall * (1 + CAMERA.wide * Math.sin(Math.PI * up)) }
     const turn = glide((f - CAMERA.rise[1] - CAMERA.hold) / CAMERA.turn, CAMERA.ramp)
     if (turn > 0) {

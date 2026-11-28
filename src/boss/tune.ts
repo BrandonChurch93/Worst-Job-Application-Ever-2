@@ -307,7 +307,7 @@ export const CAMERA = {
   rise: [1.1, 1.7] as const,
   lift: 2,
   lag: 2,
-  wide: 0.15,
+  wide: 0,
   top: { at: [322.7, 161.8, 0], az: -180, tall: 500 },
   hold: 0.4,
   turn: 1.3,
