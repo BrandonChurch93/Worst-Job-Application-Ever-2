@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
+import { ARENA as GROUND } from '../src/arena/layout'
+import { barDrop } from '../src/arena/change'
+import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
-import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
+import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
+import type { BossView } from '../src/boss/view'
+import { finishNow, viewNow } from '../src/boss/viewof'
 import { SHIFT, UNIT_SECONDS } from '../src/pages/step4/script'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
@@ -64,10 +69,36 @@ const onScreen = (s: Shape): boolean => {
   const b = reach(s)
   return b.x1 > 0 && b.x0 < SCREEN.w && b.y1 > 0 && b.y0 < SCREEN.h
 }
-const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open|power-|arrow-dent|arrow-crack-|arrow-dust-|finish-|smoke)/
+const OF_THE_FIGHT = /^(boss-|solid-|break-|guard-wing-|weak-lamp|gun-tell|corner-|bullet-|big-|scorch-|popup-up-|banner-up|muzzle-|dart-|spark-|health-|socket-open|rim-socket-open|power-|arrow-dent|arrow-crack-|arrow-dust-|finish-|smoke|arena$|arena-well$)/
+// How long the health bar's fill is, px: the stand-in's own shape, or with the look the arena's bar, whose fill is its whole length times the health the view gives (`poseBar`).
+const BAR_FULL = GROUND.bar.x1 - GROUND.bar.x0 - GROUND.bar.trackInset * 2 - 17
+const fillOf = (list: Shape[]): number | null => {
+  if (!LOOK1_ON) return list.find((s) => s.id === 'health-fill')?.w ?? null
+  const v = viewNow()
+  return v ? BAR_FULL * Math.min(1, Math.max(0, v.boss.health)) : null
+}
+// What the look draws of the boss, as boxes on the page: the hull with its wings, the shield's glass, the feet's reach, the muzzles of the two guns and of the big cannon.
+const lookBoxes = (v: BossView): Shape[] => {
+  const b = v.boss
+  const box = (id: string, cx: number, cy: number, w: number, h: number, rot = 0): Shape => ({ id, part: 'boss-look1', kind: 'slab', x: cx - w / 2, y: cy - h / 2, w, h, z0: 0, z1: 0, rot }) as unknown as Shape
+  const out = [box('look-hull', b.x, b.y, SIZE.hull.long, SIZE.wings.wide, b.heading), box('look-feet', b.x, b.y, SIZE.feet.long, SIZE.feet.wide, b.heading)]
+  const ahead = SIZE.shield.ahead
+  out.push(box('look-shield', b.x + Math.cos(b.heading) * ahead, b.y + Math.sin(b.heading) * ahead, 2 * GUARD.thick, 2 * SIZE.shield.half, b.heading))
+  for (const i of [0, 1] as const) {
+    const m = muzzleOf(v, i)
+    out.push(box(`look-gun-${i}`, m.x, m.y, 2, 2))
+  }
+  if (b.turret > 0 && v.phase !== 'beaten') {
+    const m = bigMuzzleOf(v)
+    out.push(box('look-big', m.x, m.y, 2, 2))
+  }
+  return out
+}
+// With the look the word rides the button on the hull, which rocks with each step and is thrown back by the big cannon's shot (22.4 px in the film): px it may move against the boss's centre.
+const WORD_ROAMS = 30
 const OF_THE_VISITOR = /^(muzzle-|dart-|arrow-dent|arrow-crack-|arrow-dust-)/
 
-interface Seen { time: number; list: Shape[]; fight: Fight }
+interface Seen { time: number; list: Shape[]; fight: Fight; view: BossView | null }
 
 function watch(stage: Stage, every: number, until: number): { frames: Seen[]; all: Seen[] } {
   const frames: Seen[] = []
@@ -82,7 +113,8 @@ function watch(stage: Stage, every: number, until: number): { frames: Seen[]; al
       continue
     }
     if (since < 0) since = stage.time
-    const seen = { time: stage.time, list: stage.frameAt(stage.time).list as Shape[], fight: (stage.page.save() as { fight: Fight }).fight }
+    const list = stage.frameAt(stage.time).list as Shape[]
+    const seen = { time: stage.time, list, fight: (stage.page.save() as { fight: Fight }).fight, view: viewNow() }
     all.push(seen)
     if (stage.time - since >= TOP.move + 0.1) frames.push(seen)
   }
@@ -122,9 +154,9 @@ describe('how the boss plays (change 002, item 15)', () => {
     while (stage.time < 11.4 + SHIFT && !stage.events.some((e) => e.name === 'shot-round')) {
       stage.advance(1)
       const now = stage.events.filter((e) => e.name === 'shield-glance').length
-      const fill = (stage.frameAt(stage.time).list as Shape[]).find((s) => s.id === 'health-fill')
-      if (fill && was >= 0 && now > glanced) drops.push(was - fill.w)
-      if (fill) was = fill.w
+      const fill = fillOf(stage.frameAt(stage.time).list as Shape[])
+      if (fill !== null && was >= 0 && now > glanced) drops.push(was - fill)
+      if (fill !== null) was = fill
       glanced = now
     }
     expect(drops.length).toBeGreaterThanOrEqual(5)
@@ -134,7 +166,7 @@ describe('how the boss plays (change 002, item 15)', () => {
   it('A. shows the open side after six darts in a row have glanced off, and again every few seconds, on the flank away from the shield', () => {
     const f = newFight(HOME.x, HOME.y)
     const events: string[] = []
-    const at = { x: 450, y: 700 }
+    const at = { x: HOME.x - GUARD.radius - 228, y: 700 }
     let first = -1
     const tells: number[] = []
     for (let i = 0; i < stepHz * 12; i++) {
@@ -243,17 +275,26 @@ describe('how the boss plays (change 002, item 15)', () => {
     let least = Infinity
     let who = ''
     for (const f of frames) {
-      const track = f.list.find((s) => s.id === 'health-track')!
-      expect(track.y).toBeCloseTo(TOP.bar, 3)
+      if (LOOK1_ON) {
+        expect(f.view, `the view at ${f.time.toFixed(2)}`).not.toBeNull()
+        expect(barDrop(f.view!.time)).toEqual({ lift: expect.closeTo(0, 1), shown: 1 })
+        expect([GROUND.bar.x0, GROUND.bar.y0, GROUND.bar.x1, GROUND.bar.y1]).toEqual([fx0, fy0, fx1, fy1])
+        const label = f.list.find((s) => s.id === 'health-label')!
+        expect(label.x).toBeGreaterThanOrEqual(fx0)
+        expect(label.x + label.w).toBeLessThanOrEqual(fx1)
+        expect(label.y).toBeGreaterThanOrEqual(0)
+        expect(label.y + label.h).toBeLessThanOrEqual(fy0)
+      } else expect(f.list.find((s) => s.id === 'health-track')!.y).toBeCloseTo(TOP.bar, 3)
       for (const s of f.list) {
-        if (!s.id.startsWith('health-')) continue
+        if (LOOK1_ON || !s.id.startsWith('health-')) continue
         expect(s.x, s.id).toBeGreaterThanOrEqual(fx0)
         expect(s.x + s.w, s.id).toBeLessThanOrEqual(fx1)
         expect(s.y, s.id).toBeGreaterThanOrEqual(fy0)
         expect(s.y + s.h, s.id).toBeLessThanOrEqual(fy1)
       }
-      for (const s of f.list) {
+      for (const s of LOOK1_ON ? [...f.list, ...lookBoxes(f.view!)] : f.list) {
         if (s.id.startsWith('health-') || isHeader(s.id)) continue
+        if (LOOK1_ON && (s.kind === 'anchor' || s.kind === 'well')) continue
         if (name !== 'the film' && OF_THE_VISITOR.test(s.id)) continue
         const gap = gapTo(s, SOLID.frame)
         if (gap < least) {
@@ -313,6 +354,16 @@ describe('how the boss plays (change 002, item 15)', () => {
       stage.advance(2)
       const list = stage.frameAt(stage.time).list as Shape[]
       label ??= list.find((s) => s.id === 'submit-label') ?? null
+      const v = viewNow()
+      if (LOOK1_ON) {
+        if (!v || (v.boss.gone ?? 0) > 0) continue
+        expect(list.some((s) => s.id === 'boss-word'), `the word drawn when the look shows it at ${stage.time.toFixed(2)}`).toBe(poseOf(v).word.show)
+        const pose = poseOf(v)
+        const lain = v.boss.beaten > 0 && offsets.length > 0
+        if (!pose.cannon.show) expect(pose.word.show, `the word in the open at ${stage.time.toFixed(2)}`).toBe(true)
+        offsets.push({ time: stage.time, dx: lain ? offsets[0]!.dx : pose.word.x - v.boss.x, dy: lain ? offsets[0]!.dy : pose.word.y - v.boss.y, w: 0, h: 0, turret: pose.cannon.show, over: pose.cannon.show && v.boss.locked })
+        continue
+      }
       const cap = list.find((s) => s.id === 'boss-cap')
       const word = list.find((s) => s.id === 'boss-cap-word')
       const turret = list.find((s) => s.id === 'boss-turret')
@@ -330,10 +381,12 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(off).toBe(at('power-down'))
     expect(label).not.toBeNull()
     for (const o of offsets) {
-      expect(Math.abs(o.dx - offsets[0]!.dx), `across at ${o.time.toFixed(2)}`).toBeLessThan(1.5)
-      expect(Math.abs(o.dy - offsets[0]!.dy), `down at ${o.time.toFixed(2)}`).toBeLessThan(1.5)
-      expect(o.w).toBeCloseTo(label!.w, 3)
-      expect(o.h).toBeCloseTo(label!.h, 3)
+      expect(Math.abs(o.dx - offsets[0]!.dx), `across at ${o.time.toFixed(2)}`).toBeLessThan(LOOK1_ON ? WORD_ROAMS : 1.5)
+      expect(Math.abs(o.dy - offsets[0]!.dy), `down at ${o.time.toFixed(2)}`).toBeLessThan(LOOK1_ON ? WORD_ROAMS : 1.5)
+      if (!LOOK1_ON) {
+        expect(o.w).toBeCloseTo(label!.w, 3)
+        expect(o.h).toBeCloseTo(label!.h, 3)
+      }
       if (o.time < rise) expect(o.turret, `no turret at ${o.time.toFixed(2)}`).toBe(false)
       if (o.time < rise + BIG.up - BIG.rise) expect(o.over, `the word clear at ${o.time.toFixed(2)}`).toBe(false)
       if (o.time > lock + 0.05 && o.time < off) expect(o.over, `the turret over the word at ${o.time.toFixed(2)}`).toBe(true)
@@ -419,6 +472,8 @@ describe('how the boss plays (change 002, item 15)', () => {
         stage.advance(1)
         const q = (stage.frameAt(stage.time).list as Shape[]).find((x) => x.id === 'finish-blast')
         if (q) wide = Math.max(wide, q.h / 2 / FINISH.wide)
+        const told = finishNow()
+        if (LOOK1_ON && told?.marks?.fire !== undefined) wide = Math.max(wide, told.shot ?? 0)
       }
       const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
       const fall = at('boss-fall')[0]! + FINISH.fall

@@ -325,11 +325,82 @@ The 34 red tests, none in a file of mine:
 
 My page's two tests of the visitor's hand are green: `tests/site-loading.test.ts` (the keen bot's pointer is ignored 4.24 s with no wait and 7.52 s with every turn held 4 s, under `live.controlTakenMaxSeconds` 8) and `tests/site-pointer.test.ts`.
 
+## The switch to the real look (mails of 02:11Z and 02:17Z)
+
+Written 02:53 UTC. `LOOK1_ON` is true in what is pushed. On `origin/agent/merge55` 004819fb, merged into the branch. Not merged by me: `agent/b-arena` f3295958 (pillar.3 moved to (563, 925)) and `agent/b-finish` after 0271c279.
+
+### What the page does with the look on
+
+- The view gives the health as 0 to 1 (`src/boss/viewof.ts`, `health: shown / 100`). It gave 0 to 100; the arena's bar clamps to 0 to 1, so the bar stood full on the real page until the health fell under 1 point. `src/boss/view.ts` is not changed.
+- `src/boss/viewof.ts` keeps, beside the view, what the page tells the standing figure (`setFinish`, `finishNow`, a `FinishInput`). The page fills it at every drawing: the view's time, the arrow's place, `power { at, end }`, the marks `arms, charge, fire, end, walk, kneel, fist, press` (each the view's time when my page emits `finish-arms`, the first `finish-charge`, `finish-fire`, fire plus the blast's length, `finish-walk`, `finish-kneel`, `finish-fist`, fist plus `LAST.fist + LAST.blow`), the charge now, the shot, the walk's place and length, and the look's button (`buttonAt(view)`). No size is given: the module's own default is used.
+- `src/pages/step4/real/index.ts`: a part `boss-finish` (`finishPart(finishNow)`) on an anchor `finish-figure` over the whole page, and the arena's beam from the module (`arenaPart(viewNow, { beam })` with `beamLight(finishState(input))`).
+- The stand-in's arrow arms, disc, block and gold glow are not drawn and `PageLogic.arms` is false. They stay behind the switch.
+- The ordinary arrow is hidden while the figure is up with the body's own `setOnPage(false)` (the shell's view does not draw an arrow that is off the page). No file outside mine is changed for it.
+- The beam is aimed at the button on the ground (no `target` given): the view's `boss.x, y` stays where the fight ended, (829, 543) in the film, and the body lies at (960, 650).
+- The walk starts from the figure's feet (`finishState(input).feet`), (420, 742) in the film after a whole blast, and ends at the module's own kneeling place, `kneelSpot` with the look's button (width 177 px): (840.5, 656). The finish helper's (816, 656) is what the same call gives for a button 226 px wide.
+- `LAST.far` 431 (px of that walk in the film) and `LAST.speed` 153.93 with the look keep the walk 2.8 s.
+- The power-up: `power.at` is the event `power-up`, `power.end` is `LINE7.part2 - LINE7.power - POWER.burst - LIEDOWN` after it, so that the figure lies down again as the turret locks. That leaves 0.25 s between the fists being up and the burst.
+- The film's two stands `FLANK` and `OTHER` (`src/pages/step4/script.ts`) are (1400, 450) and (440, 660) with the look; at (1400, 380) and (440, 790) a pillar of the ground stood in the line to the boss.
+- `FILM.spare` 0.5: with the look the film keeps half a point of health over the end of a stage until that stage's time, so the fall stays at 49.77 s whatever the darts meet. Not applied with the stand-in.
+
+### The tests, by name, and what each reads with the look on
+
+All of them pass at both settings (table below).
+
+| File | Test | Reads with the look on |
+| --- | --- | --- |
+| `tests/b-boss.test.ts` | "A. moves the health bar by less than a pixel for a whole volley on the shield" | the arena bar's length (682 px) times the view's health |
+| the same | "A. shows the open side after six darts ..." | the same, from a stand 228 px before the smaller shield |
+| the same | "note of 21:27 ... nothing of the header, the rail or the form is inside the screen" (film, keen, clumsy) | the same list; the page's anchors `arena`, `arena-well`, `boss-look`, `finish-figure` are allowed |
+| the same | "note of 21:27 ... the health bar stands alone at the top ..." (film, keen, clumsy) | `barDrop(view.time)` landed, the arena's bar equal to `SOLID.frame`, the label over it, and the look's hull, feet, shield, muzzles and every page shape at least `TOP.clear` from it |
+| the same | "note of 21:47. raises the big turret only when the body is whole ..." | `poseOf(view)`: the word within 30 px of its first place while the boss stands (22.35 px at 45.09 s), `boss-word` in the list exactly when the look shows it until the body is gone, `pose.cannon.show` for the turret |
+| the same | "mail of 23:38, item 4 ..." (five visitors) | the shot handed to the figure once its `fire` mark is set (`finishNow().shot`), in the place of the stand-in block's height |
+| `tests/boss-closer-acting.test.ts` | "shows the bar going back up at the last stand" | the view's health |
+| `tests/boss-fight.test.ts` | "keeps every number that changes each frame out of the keys" | no `health-fill` shape and the anchor `arena` in the list |
+| the same | "shows, in the key picture of the fight, a stream of darts, a spark and the health bar, and no slab in flight" | the ids `arena` and `health-label`; the darts and sparks as before |
+| the same | "shows the fight of the key ..." | the view's health at the key moment |
+
+### MEASURED, 02:36 to 02:53 UTC, look on unless said
+
+| Check | EXIT | Its own line |
+| --- | --- | --- |
+| `npx tsc --noEmit -p .` | 0 | no output |
+| `npx vitest run tests/b-boss.test.ts` | 0 | "Tests 28 passed (28)" |
+| `npx vitest run tests/boss.test.ts` | 0 | "Tests 38 passed (38)" |
+| `npx vitest run tests/boss-closer-acting.test.ts` | 0 | "Tests 5 passed (5)" |
+| `npx vitest run tests/boss-fight.test.ts` | 0 | "Tests 13 passed (13)" |
+| `npx vitest run tests/site-loading.test.ts` | 0 | "Tests 17 passed (17)"; "keen: longest pointer ignored 4.24 s with no wait, 7.52 s with every turn held 4 s" |
+| the same five files with `LOOK1_ON` false | 0 each | 28, 38, 5, 13, 17 passed |
+| `npm run bots` | 0 | "keen reached every one of the 37 gags on every seed", "bots: all clear"; keen and clumsy pointer ignored 4.24 s, random at most 4.27 s, skipper 3.57 s |
+| `npm run determinism` | 0 | "determinism: pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders" |
+
+All of them at the code of 1e29f3f7.
+
+The film's marks with the look on (`node /tmp/ev.mjs`, the stage at 240 steps a second): power-up 34.68, turret-lock 37.83, power-down 49.77, finish-arms 50.77, finish-charge 50.87, 51.81, 52.86, 53.67, finish-fire 54.90, boss-gone 57.03, finish-walk 57.43, button-down 58.43, finish-kneel 60.22, finish-fist 61.52, button-press 62.43, page-turn 63.10. With the stand-in the kneel is 60.23 and the rest the same.
+
+The film's fight with the look on: 0 `cover-hit` (63 before the two stands moved), 153 `shot-round`, at the key moment (40.4 s) 6 darts, 6 sparks, health 76. Later than with the stand-in: `flatten` 42.80 against 42.19, `boss-heal` 43.15 against 42.54, `big-tell` 43.50 against 43.48, `big-fire` 45.10 against 45.09.
+
+With `LOOK1_ON` false the film's 685 events are the same, step for step and place for place, before and after the changes of this stretch to `fight.ts`, `tune.ts`, `script.ts` and the page (`cmp` of two dumps).
+
+### Pictures (film frames of the real page at 60 a second, look on, 1e29f3f7)
+
+`node pipeline/change002/boss-frames.mjs --frames ... --out /tmp/fr`, frame = (121.3 + t) x 60. The nine frames from the fall to the press at 400 px each; the knees at 60.25, 60.45, 60.65, 60.85, 61.20 s; the fist at 61.55, 61.75, 61.95, 62.15, 62.30, 62.47 s; the power-up at 35.40, 36.20, 36.45, 36.80 s.
+
+As seen: the figure is drawn in the place of the arrow at the power-up, from the arms to the press, and none of the 24 frames, as far as I looked at them (nine whole, fifteen as cuts round the figure), shows the arrow and the figure together. The beam runs level from its hands to the button. In the knees strip the figure stands at 60.25 s and is lower with its legs folded from 60.65 s. In the fist strip one arm is up from 61.75 s to 62.30 s and lies on the button at 62.47 s. At the power-up the arms are out to the sides at 36.20 s with a low flame and a ring on the ground, and flung wide at 36.80 s.
+
+### Below the bar
+
+- In the film the pillar of the ground at (563, 722) stands before the figure's feet at the power-up, and its stump lies under the figure's walk. The arena helper moved it at f3295958, which is not in this branch.
+- The figure is small at the fight's wide view (about 100 px tall on a 1920 px frame). Its size is the module's default; the finish helper raises it.
+- At the power-up the fists are up for 0.25 s before the burst, because the figure is made to lie down again by the turret's lock. A longer hold means the figure still standing in the first second of the fight.
+- On the live site a visitor may move the arrow during the power-up; the figure then stands where the arrow is at each moment. Not looked at: no picture of the live site with the look on was taken in this stretch.
+- With the look on the film's `flatten` and `boss-heal` are 0.61 s later than with the stand-in, because the stand `OTHER` moved. No cue was checked against it.
+- `npm test` whole was not run in this stretch.
+- No test of mine pins that the arrow is hidden while the figure is up; it was seen in the frames only.
+
 ## Not done
 
-- `LOOK1_ON` is false in what is pushed (see "LOOK1_ON as seen", with the nine tests by name and what each must read).
-- The finish helper's module (`src/boss/finish/index`, branch `agent/b-finish`) is not wired. What the wiring needs, from its mails of 00:30, 00:37 and 00:46: hang `finishPart` on an anchor of the whole screen; hide the ordinary arrow while `state.up`; give it `marks` (arms, charge, fire, end, walk, kneel, fist, press, with `press` set when `fist` is set), `charge`, `shot`, `walk { x, y, walked, pace }` with the place of the feet, `button: buttonAt(view)` from the look and `target`; give the arena `beam` from its state so the ground is not lit twice; and move the kneel place to `kneelSpot(buttonAt(view))`, (816, 656) for the look's button, which is `LAST.reach` 144 in place of 200. With the reach at 144 the way from the stand is 376 px, so at `LAST.speed` the film's walk is 3.3 s; to keep 2.8 s the speed goes to 134.3 px/s.
-- The power-up before the fight is my stand-in (a gold glow); the pose sheet's first figure is the finish helper's (`power { at, end }` in its input). Its mark is the event `power-up`.
+- `LOOK1_ON` is true in what is pushed since c23b830d (see "The switch to the real look").
 - The skip link's real press in a browser during the fight was not tested by me. Tested at the stage: `skip()` at any moment of the fight ends it (`tests/b-boss.test.ts`, "E. ends on the skip link at any moment of the fight"). Whether the shell's link is on the screen and pressable while the header is off is UNKNOWN to me; the link is the shell's.
 - The gun's shot is still the event `slab-fire`; `bullet-fire` is not an event.
 - No sound of mine is in: each new event plays the nearest cue the build has, or none. `button-down`: the look's button is on the ground 0.21 s before `boss-gone`, 1.6 s before my mark; the look helper says the sound belongs there. My mark stays, because the live click on Submit is live from it.

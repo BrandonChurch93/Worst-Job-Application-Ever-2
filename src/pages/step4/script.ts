@@ -1,6 +1,6 @@
 import type { Reaction } from '../../cursor/body'
 import { FALLEN } from '../../boss/plan'
-import { BIG, FINISH, LAST as LAST_MOMENT, LINE6, LINE7, SHOUT } from '../../boss/tune'
+import { BIG, FINISH, LAST as LAST_MOMENT, LINE6, LINE7, LOOK1_ON, SHOUT } from '../../boss/tune'
 import type { Pointer } from '../../stage/types'
 import type { Step4Layout } from './layout'
 
@@ -35,7 +35,7 @@ export const DOWN = Number((FORMED + HOLD + FIGHT).toFixed(3))
 const ARMED = DOWN + FINISH.fall + SHOUT.beats[0]
 const FIRE = DOWN + FINISH.fall + SHOUT.fire
 const GONE = DOWN + FINISH.fall + SHOUT.gone
-const WALKED = GONE + LAST_MOMENT.wait + (FALLEN.x - LAST_MOMENT.reach - LAST_MOMENT.stand[0]) / LAST_MOMENT.speed
+const WALKED = GONE + LAST_MOMENT.wait + (LOOK1_ON ? LAST_MOMENT.far : FALLEN.x - LAST_MOMENT.reach - LAST_MOMENT.stand[0]) / LAST_MOMENT.speed
 const STRUCK = WALKED + LAST_MOMENT.knees + LAST_MOMENT.breath + LAST_MOMENT.fist + LAST_MOMENT.blow
 const late = (t: number): number => Number((t + SHIFT).toFixed(3))
 export const ACT = { flinch: 1.95, windup: 3.36, tap: 3.72, take: 4.62, hide: 7.1 + WAIT, cower: 7.6 + WAIT, brace: late(10.55), snap: late(11.5), charge: late(LAST[0]), ram: late(FIGHT + BASE - 0.15), gather: Number(WALKED.toFixed(3)), press: Number(STRUCK.toFixed(3)) } as const
@@ -48,8 +48,9 @@ const SHOCK = { x: 610, y: 800 } as const
 const COVER = { x: 446, y: 688 } as const
 // Where it stands in the fight, in the order it comes to them: before the shield, on the open flank, on the other side where the corner cannon's bullet finds it, on the right, behind a pillar on the line of the big blast, aside from that line.
 const GLANCE = { x: 470, y: 500 } as const
-const FLANK = { x: 1400, y: 380 } as const
-const OTHER = { x: 440, y: 790 } as const
+// With the look on the ground has its own pillars: the two stands that had one between the arrow and the boss are moved to where the line is clear.
+const FLANK = { x: 1400, y: LOOK1_ON ? 450 : 380 } as const
+const OTHER = { x: 440, y: LOOK1_ON ? 660 : 790 } as const
 const RIGHT = { x: 1400, y: 500 } as const
 // The last charge is three stands on opposite sides of the boss, each one taken before the shield has come round.
 const LOW = { x: 1300, y: 880 } as const

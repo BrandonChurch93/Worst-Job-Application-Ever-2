@@ -735,6 +735,7 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
   darts(f, io, arena, used, wallsOf(f, arena))
   if (!(f.phase === 2 && f.expired < 0.5)) f.health = Math.min(f.health, ceiling(f.phase, f.tired))
   if (io.mode === 'film' && f.clock >= FILM.ends[f.phase]!) f.health = THRESHOLD[f.phase]!
+  else if (io.mode === 'film' && LOOK1_ON) f.health = Math.max(f.health, THRESHOLD[f.phase]! + FILM.spare)
   if (!f.slow && f.clock >= SLOW_SECONDS) {
     f.slow = true
     if (io.mode === 'live' && f.health > HEALTH / 2) io.emit('boss-slow', f.x, f.y, false)

@@ -1,3 +1,4 @@
+import type { FinishInput } from './finish/acting'
 import { smooth } from './body'
 import { blastLine, cornerAt, cursorCentre, muzzle, newFight, SPARK_SECONDS, weakSide, type Fight } from './fight'
 import { COLLAPSE_SECONDS, DART, FALLEN, HOME, SOCKET, UNFOLD } from './plan'
@@ -16,6 +17,11 @@ export const TRAVEL = [0.06, 0.34] as const
 let now: BossView | null = null
 export const viewNow = (): BossView | null => now
 export const setView = (v: BossView | null): void => { now = v }
+
+// What the page says to the standing arrow of the power-up and the finish at its last drawing, for the part that draws it and for the arena's beam.
+let figure: FinishInput | null = null
+export const finishNow = (): FinishInput | null => figure
+export const setFinish = (i: FinishInput | null): void => { figure = i }
 
 export function viewOf(i: ViewInput): BossView | null {
   if (i.clock < 0) return null
@@ -43,7 +49,7 @@ export function viewOf(i: ViewInput): BossView | null {
       x: place.x, y: place.y, vx: b.speed.x, vy: b.speed.y, heading: b.face, walked: b.walked,
       form,
       turret: i.fell >= 0 ? 0 : b.turret, locked: i.fell < 0 && b.turret >= 1, lockedAt: b.turret >= 1 ? at(BIG.lock) : null,
-      health: Math.max(0, b.shown), stage: b.phase,
+      health: Math.max(0, b.shown) / 100, stage: b.phase,
       shield: { glancedAt: at(b.at.glance), half: GUARD.cover },
       guns: [gun(0), gun(1)],
       big: b.big.t >= 0 || b.big.beam > 0 ? { tell: b.big.t >= 0 ? Math.min(1, b.big.t / BIG.tell) : 1, aim: b.big.a, firedAt: b.big.t >= 0 ? null : at(b.at.big), x0: line.x0, y0: line.y0, x1: line.x1, y1: line.y1, width: BIG.wide * 2 } : null,
