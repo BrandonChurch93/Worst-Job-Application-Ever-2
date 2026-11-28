@@ -322,3 +322,11 @@ The finish alone in the power-up at 1.5: 14 draw calls, 31,088 triangles, as bef
 - Nothing of this task was rendered on the real page by me.
 - The glow is weaker than the sheet's and the legs are not as even as the sheet's.
 - The whole `npm test` was not run in this task.
+
+### Runs of the sixth task (MEASURED, with exit codes)
+On the tree of `a2158a43`, the last change to any source file:
+- `npx vitest run tests/b-finish.test.ts`: EXIT 0, 23 of 23, at 04:50Z.
+- `npx tsc --noEmit -p .`: EXIT 0 at 04:50Z.
+- `npm run determinism`: EXIT 0 at 04:54Z ("pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders").
+- `npm run bots`: EXIT 0 at 04:55Z ("bots: all clear").
+- The whole `npm test`: not run.
