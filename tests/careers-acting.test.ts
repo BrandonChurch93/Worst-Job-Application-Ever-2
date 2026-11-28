@@ -119,7 +119,7 @@ describe('the opening of the film on the careers page', () => {
         expect(Math.abs(at(t).y - (hero[1]! + hero[3]! / 2))).toBeLessThan(30)
       }
       const cap = boxOf('final-cta-cap')
-      expect(CUES.map((c) => c.react).filter(Boolean)).toEqual(['anticipate', 'jump', 'anticipate', 'startle'])
+      expect(CUES.map((c) => c.react).filter(Boolean)).toEqual(['anticipate', 'jump', 'startle'])
       expect(when('button-press').length).toBe(1)
       const press = when('button-press')[0]!
       expect(Math.abs(press - OPENING.total)).toBeLessThanOrEqual(0.03)

@@ -29,6 +29,7 @@ Branch `agent/b-careers`. Every item below is MEASURED (the command and the numb
 17. One opening in the script (the owner's pick), no second setting (b13d25f9).
 18. The unit is 19.0 s: `OPENING.after` 1.0, the turn at 18.5 (the Builder's word, 23:42Z).
 19. Type pass after the owner's pick: the promise on a card 24 (was 20), the process heading 56 (was 44), each staff role under its own quote and each row of quote cards as tall as its tallest card (was one height for all six, the role at one line for all). The page keeps its height of 5679 and the opening's five scroll stops keep their px (983, 1913, 3800, 4191, 4599. MEASURED by printing `careersOpening()` before and after), so the film's scroll is to the frame what the owner approved. The badge line stands 28 px higher on the screen at its stop, and 50 px of white stand under the staff footnote.
+20. The arrow's second gathering, 0.2 s before the turn, is out of the page's cues (the Builder's word, 00:36Z, from the shell helper's measure: it stood the arrow upright in film frames 1135 to 1139). The cues are: gather, jump, press, startle on the turn. Seen after it in film frames 1130 to 1142 (`node pipeline/change002/careers-proof.mjs --only frames --from 1130 --to 1142`): the arrow lies at its usual slant in every frame from 1130 to 1139.
 
 ## Events
 

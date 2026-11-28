@@ -1,4 +1,4 @@
-// node pipeline/change002/careers-proof.mjs [--only film,apply,press,turn,top,card,ticker,cost]
+// node pipeline/change002/careers-proof.mjs [--only film,apply,press,turn,top,card,ticker,cost] [--only frames --from 1130 --to 1142]
 // The proof pictures of the careers page, each at most 1200 px on its long edge, in out/work/careers/:
 // the first screen beside the approved one, twelve frames of a card under a real mouse, the ticker in windows 1920 and 2560 wide,
 // the press of Apply with the first frames of the turn, and the film's opening on the page as twelve frames.
@@ -17,6 +17,7 @@ const GROUND = '#d81b60'
 fs.mkdirSync(OUT, { recursive: true })
 const beats = config().film.beats.filter((b) => b.unit === 'marketing')
 const made = []
+const ARROW = { left: 780, top: 340, width: 400, height: 300 }
 const PRESS = { box: { left: 560, top: 800, width: 800, height: 200 }, times: [17.8, 17.9, 17.95, 17.98, 18, 18.03, 18.08, 18.2, 18.3, 18.38, 18.44, 18.49] }
 
 async function grid(name, frames, across, width) {
@@ -88,6 +89,28 @@ if (only.includes('turn')) {
       frames.push({ png: await readCanvas(session.page), label: `${t.toFixed(2)} s` })
     }
     await grid('careers-turn', frames, 4, 295)
+  } finally {
+    await session.close()
+  }
+}
+
+// Film frames by number, every one from --from to --to, whole and cut to the arrow's place.
+if (only.includes('frames')) {
+  const session = await openSession({ format: 'hd', assets: 'full' })
+  try {
+    const whole = []
+    const near = []
+    for (let n = Number(a.from); n <= Number(a.to); n++) {
+      await session.page.evaluate(async ([f, tier]) => {
+        window.showcase.setDiagnostic('beauty')
+        await window.showcase.renderFilmFrame(f, tier)
+      }, [n, a.tier || 'draft'])
+      const png = await readCanvas(session.page)
+      whole.push({ png, label: `frame ${n}` })
+      near.push({ png: await sharp(png).extract(ARROW).png().toBuffer(), label: `frame ${n}` })
+    }
+    await grid(`careers-frames-${a.from}-${a.to}`, whole, 5, 235)
+    await grid(`careers-frames-${a.from}-${a.to}-arrow`, near, 4, 295)
   } finally {
     await session.close()
   }

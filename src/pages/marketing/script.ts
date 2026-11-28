@@ -174,7 +174,6 @@ export const CUES: Cue[] = [
   { at: 0, act: 'confident' },
   { at: PRESS_AT - PRESS.ready, react: 'anticipate' },
   { at: PRESS_AT - PRESS.hop, react: 'jump' },
-  { at: TURN_AT - 0.2, react: 'anticipate' },
   { at: TURN_AT + 0.16, act: 'shocked', react: 'startle' }
 ]
 
