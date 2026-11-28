@@ -75,7 +75,8 @@ function fakeFetch(index) {
 
 // held: the visit is run as if each page held its turn while the narrator owes it (sound.owed): the stage stands still for that long before the turn is told to the sound.
 // The times of the visit are then those of the sound's clock, the stage's time plus what was held.
-export async function visit(load, c, bot, seed = c.seed, calls = null, held = false) {
+// rest, when given, is { page, line, seconds }: on that page the visitor does nothing from the moment that line is booked until so many seconds of it have been said.
+export async function visit(load, c, bot, seed = c.seed, calls = null, held = false, rest = null) {
   const index = JSON.parse(fs.readFileSync(at('public', 'audio', 'index.json'), 'utf8'))
   const heard = []
   const made = []
@@ -96,11 +97,17 @@ export async function visit(load, c, bot, seed = c.seed, calls = null, held = fa
     globalThis.window = before.window
     const inner = new BotDriver(bot, seed)
     let lastInput = 0
+    let stood = { x: 960, y: 540, down: false }
     let was = ''
     const driver = {
       name: inner.name,
       input(view) {
+        if (rest && view.page.id === rest.page) {
+          const booked = sound.log().find((e) => e.what === 'spoken' && e.line === rest.line)
+          if (booked && view.time < booked.start + rest.seconds) return stood
+        }
         const p = inner.input(view)
+        stood = { x: p.x, y: p.y, down: false }
         const key = JSON.stringify(p)
         if (key !== was) {
           was = key

@@ -10,7 +10,8 @@
     "shield-glance"
    ],
    "state": "table",
-   "what": "a shot glancing off the shield; plays dart-hit until made"
+   "what": "a shot glancing off the shield; plays dart-hit until made",
+   "prompt": "One small dart glancing off a curved glass shield, a tiny bright ping that slides away, light, dry and close, no music, no voice"
   },
   {
    "id": "cannon-fire",
@@ -19,7 +20,8 @@
     "cannon-fire"
    ],
    "state": "table",
-   "what": "a low heavy thump; plays slab-fire until made"
+   "what": "a low heavy thump; plays slab-fire until made",
+   "prompt": "One heavy cannon shot, a low heavy thump of a steel barrel with a short push of air, large and weighty, dry close room, no music, no voice"
   },
   {
    "id": "boss-heal",
@@ -28,7 +30,8 @@
     "boss-heal"
    ],
    "state": "table",
-   "what": "the boss mending; plays power-on until made"
+   "what": "the boss mending; plays power-on until made",
+   "prompt": "A large machine mending itself, a warm low hum rising quickly with a soft bright shimmer of glass at its top, medium weight, dry close room, no music, no voice"
   },
   {
    "id": "reel-stop",
@@ -37,7 +40,8 @@
     "reel-stop"
    ],
    "state": "table",
-   "what": "a reel of the date stopping"
+   "what": "a reel of the date stopping",
+   "prompt": "One slot machine reel stopping, a hard plastic and steel clack with a short ratchet tick, small and firm, close microphone, no music, no voice"
   },
   {
    "id": "stop-press",
@@ -46,7 +50,8 @@
     "date-hit"
    ],
    "state": "table",
-   "what": "the stop press that lands on the date"
+   "what": "the stop press that lands on the date",
+   "prompt": "One small plastic stop button pressed, a short dry click, very light, close microphone, no music, no voice"
   },
   {
    "id": "date-miss",
@@ -55,7 +60,8 @@
     "date-miss"
    ],
    "state": "table",
-   "what": "the stop press that misses"
+   "what": "the stop press that misses",
+   "prompt": "A slot machine reel slipping past its stop, a short descending ratchet rattle that ends in a dull plastic thud, small, dry and close, no music, no voice"
   },
   {
    "id": "vacuum-slip",
@@ -64,7 +70,8 @@
     "vacuum-slip"
    ],
    "state": "table",
-   "what": "the ball slipping from the vacuum"
+   "what": "the ball slipping from the vacuum",
+   "prompt": "A steel ball slipping free of a suction hose mouth, one short wet pop of air on rubber, light, dry and close, no music, no voice"
   },
   {
    "id": "vacuum-gulp",
@@ -73,7 +80,8 @@
     "vacuum-lose"
    ],
    "state": "table",
-   "what": "the vacuum taking the ball"
+   "what": "the vacuum taking the ball",
+   "prompt": "A vacuum hose swallowing a steel ball, one hollow gulp of air in a plastic tube and a dull knock inside, medium weight, close, no music, no voice"
   },
   {
    "id": "pin-frenzy",
@@ -82,7 +90,8 @@
     "frenzy-on"
    ],
    "state": "table",
-   "what": "the frenzy coming on"
+   "what": "the frenzy coming on",
+   "prompt": "A pinball machine going into a frenzy, relays chattering fast and mechanical bells ringing in a quick rising run, bright steel and brass, inside a wooden cabinet, no music, no voice"
   },
   {
    "id": "pin-coins",
@@ -91,7 +100,8 @@
     "loot"
    ],
    "state": "table",
-   "what": "coins of the loot"
+   "what": "coins of the loot",
+   "prompt": "A short spill of metal coins into a steel tray, bright and quick, light weight, inside a wooden cabinet, no music, no voice"
   },
   {
    "id": "cannon-tell",
@@ -100,7 +110,8 @@
     "cannon-tell"
    ],
    "state": "table",
-   "what": "the cannon winding up; silent until made"
+   "what": "the cannon winding up; silent until made",
+   "prompt": "A heavy cannon winding up before it fires, a low motor whine rising with a steel ratchet clicking faster, large, dry close room, no music, no voice"
   },
   {
    "id": "volume-sign",
@@ -109,7 +120,8 @@
     "volume-sign"
    ],
    "state": "table",
-   "what": "the sign of the volume row; silent until made"
+   "what": "the sign of the volume row; silent until made",
+   "prompt": "A small lit sign switching on, one soft relay click and a short faint electric buzz that settles, light, quiet office room, no music, no voice"
   },
   {
    "id": "vacuum-roar",
@@ -118,7 +130,8 @@
     "vacuum-on"
    ],
    "state": "table",
-   "what": "the vacuum running, can loop; silent until made"
+   "what": "the vacuum running, can loop; silent until made",
+   "prompt": "A large shop vacuum running at full power, a steady roar of air through a wide plastic hose, even from start to end so it can loop, heavy, close, no music, no voice"
   },
   {
    "id": "pin-bumper",
@@ -127,7 +140,8 @@
     "strike:*"
    ],
    "state": "table",
-   "what": "strike on a bumper"
+   "what": "strike on a bumper",
+   "prompt": "One pinball pop bumper struck by a steel ball, a short rubber and solenoid thwack, no bell, medium weight, inside a wooden cabinet, no music, no voice"
   },
   {
    "id": "pin-sling",
@@ -136,7 +150,8 @@
     "strike:*"
    ],
    "state": "table",
-   "what": "strike on a sling"
+   "what": "strike on a sling",
+   "prompt": "One pinball slingshot kicking a steel ball, a quick snap of a rubber band and a solenoid, light, inside a wooden cabinet, no music, no voice"
   },
   {
    "id": "pin-target",
@@ -145,7 +160,8 @@
     "strike:*"
    ],
    "state": "table",
-   "what": "strike on a target"
+   "what": "strike on a target",
+   "prompt": "One steel ball striking a small plastic standup target on a pinball table, a short hard clack, light, inside a wooden cabinet, no music, no voice"
   },
   {
    "id": "pin-bell",
@@ -154,7 +170,8 @@
     "strike:*"
    ],
    "state": "table",
-   "what": "strike on a bell"
+   "what": "strike on a bell",
+   "prompt": "One steel ball striking a small brass bell on a pinball table, a single clear ding that dies fast, light, inside a wooden cabinet, no music, no voice"
   },
   {
    "id": "pin-kick",
@@ -163,7 +180,8 @@
     "strike:*"
    ],
    "state": "table",
-   "what": "strike on a kicker"
+   "what": "strike on a kicker",
+   "prompt": "One pinball kicker firing a steel ball out of a saucer hole, a hard solenoid clunk and the ball leaving on wood, medium weight, inside a wooden cabinet, no music, no voice"
   },
   {
    "id": "finish-fire",
@@ -172,7 +190,8 @@
     "finish-fire"
    ],
    "state": "named",
-   "what": "the last shot of the finish; boss-gone comes 2.13 s after it in the cut list; named in cuesToMake"
+   "what": "the last shot of the finish; boss-gone comes 2.13 s after it in the cut list; named in cuesToMake",
+   "prompt": "One huge beam of energy fired from close range, a hard crack at the start, then a broad roaring rush of force that holds for two seconds and stops dead, very heavy, large open room, no music, no voice"
   },
   {
    "id": "finish-arms",
@@ -181,7 +200,8 @@
     "finish-arms"
    ],
    "state": "new",
-   "what": "the arms coming out for the finish; line boss.finish.0 starts on it"
+   "what": "the arms coming out for the finish; line boss.finish.0 starts on it",
+   "prompt": "Two heavy mechanical arms swinging out and locking in place, servo whirr and two steel latches clacking home, heavy, dry close room, no music, no voice"
   },
   {
    "id": "finish-charge",
@@ -190,7 +210,9 @@
     "finish-charge"
    ],
    "state": "new",
-   "what": "one charge of four, 0.93 s apart in the cut list"
+   "what": "one charge of four, 0.93 s apart in the cut list",
+   "prompt": "One pulse of energy gathering between two hands, a short rising electric swell with a crackle at its top, medium weight, dry close room, no music, no voice",
+   "note": "one file for the four charges; the engine can play it higher each time"
   },
   {
    "id": "boss-gone",
@@ -199,7 +221,8 @@
     "boss-gone"
    ],
    "state": "new",
-   "what": "the boss gone"
+   "what": "the boss gone",
+   "prompt": "A large body of glass and steel breaking apart into dust and blowing away, a soft crumble that thins into a hiss of fine grit, large but light, open room, no music, no voice"
   },
   {
    "id": "finish-walk",
@@ -208,7 +231,10 @@
     "finish-walk"
    ],
    "state": "new",
-   "what": "the walk to the button, 1.0 s to button-down in the cut list"
+   "what": "the walk to the button, 1.0 s to button-down in the cut list",
+   "prompt": "Three slow soft taps of a small enamel coated metal tip crossing a glazed ceramic tile floor, unhurried, light, quiet empty room, no music, no voice",
+   "note": "cut first: the kept cue step can be played three times instead",
+   "cutFirst": true
   },
   {
    "id": "button-down",
@@ -217,7 +243,8 @@
     "button-down"
    ],
    "state": "new",
-   "what": "the button coming down"
+   "what": "the button coming down",
+   "prompt": "A large heavy plastic push button on a steel column lowering out of the ceiling and settling on the floor, a slow motor hum and one soft heavy thud, large room, no music, no voice"
   },
   {
    "id": "finish-kneel",
@@ -226,7 +253,10 @@
     "finish-kneel"
    ],
    "state": "new",
-   "what": "the kneel"
+   "what": "the kneel",
+   "prompt": "One knee of a small metal figure coming down on a ceramic tile, a single soft clink and a short scrape, light, quiet empty room, no music, no voice",
+   "note": "cut first: small and under the line of the finish",
+   "cutFirst": true
   },
   {
    "id": "finish-fist",
@@ -235,7 +265,10 @@
     "finish-fist"
    ],
    "state": "new",
-   "what": "the fist raised"
+   "what": "the fist raised",
+   "prompt": "A small fist raised fast, one short whoosh of air and a soft cloth snap at the top, light, quiet empty room, no music, no voice",
+   "note": "cut first: small and under the line of the finish",
+   "cutFirst": true
   },
   {
    "id": "arena-split",
@@ -244,7 +277,8 @@
     "arena-split"
    ],
    "state": "new",
-   "what": "the page splitting for the arena"
+   "what": "the page splitting for the arena",
+   "prompt": "A large sheet of thick paper and glass cracking along one straight line, a sharp dry split, heavy, close microphone, no music, no voice"
   },
   {
    "id": "arena-rise",
@@ -253,7 +287,8 @@
     "arena-rise"
    ],
    "state": "new",
-   "what": "the arena rising, 0.69 s to healthbar-drop"
+   "what": "the arena rising, 0.69 s to healthbar-drop",
+   "prompt": "A heavy stone and steel platform rising out of the floor, a low grinding rumble that ends in a locking thud, very heavy, large room, no music, no voice"
   },
   {
    "id": "healthbar-drop",
@@ -262,7 +297,8 @@
     "healthbar-drop"
    ],
    "state": "new",
-   "what": "the health bar dropping in"
+   "what": "the health bar dropping in",
+   "prompt": "A long steel bar dropping into two brackets, one solid clank with a short ring, heavy, dry close room, no music, no voice"
   },
   {
    "id": "power-up",
@@ -271,7 +307,8 @@
     "power-up"
    ],
    "state": "new",
-   "what": "the power up before the turret rises, 1.55 s before turret-rise"
+   "what": "the power up before the turret rises, 1.55 s before turret-rise",
+   "prompt": "A small machine charging up, a clean electric hum rising for under a second into a soft bright ping, light, dry close room, no music, no voice"
   },
   {
    "id": "boss-fall",
@@ -280,7 +317,8 @@
     "boss-fall"
    ],
    "state": "new",
-   "what": "the boss falling; same frame as power-down, which is kept"
+   "what": "the boss falling; same frame as power-down, which is kept",
+   "prompt": "A large machine of glass and steel collapsing to the floor, a heavy slump of plates and one deep thud, very heavy, large room, no music, no voice"
   },
   {
    "id": "big-tell",
@@ -289,7 +327,8 @@
     "big-tell"
    ],
    "state": "new",
-   "what": "the tell of the big shot; silent in the table today"
+   "what": "the tell of the big shot; silent in the table today",
+   "prompt": "A very large weapon gathering power before a shot, a deep hum swelling with a rattle of loose steel plates, very heavy, large room, no music, no voice"
   },
   {
    "id": "weak-tell",
@@ -298,7 +337,10 @@
     "weak-tell"
    ],
    "state": "new",
-   "what": "the tell of the weak spot"
+   "what": "the tell of the weak spot",
+   "prompt": "A small panel of glass sliding open on a machine, one quick light chime of glass and a soft click, light, close, no music, no voice",
+   "note": "cut first: it falls on the same frame as shots that are kept",
+   "cutFirst": true
   },
   {
    "id": "pillar-break",
@@ -307,7 +349,8 @@
     "pillar-break"
    ],
    "state": "new",
-   "what": "a pillar breaking; same frame as big-fire"
+   "what": "a pillar breaking; same frame as big-fire",
+   "prompt": "One stone pillar breaking in two and its top half falling, a hard crack and a heavy tumble of rubble, very heavy, large room, no music, no voice"
   },
   {
    "id": "pane-shatter",
@@ -316,7 +359,8 @@
     "pane-shatter"
    ],
    "state": "new",
-   "what": "a pane shattering; same frame as big-fire"
+   "what": "a pane shattering; same frame as big-fire",
+   "prompt": "One large window pane shattering, a sharp burst and shards raining on a tile floor, medium weight, large room, no music, no voice"
   },
   {
    "id": "cover-hit",
@@ -325,7 +369,10 @@
     "cover-hit"
    ],
    "state": "new",
-   "what": "a shot on the cover; live site only"
+   "what": "a shot on the cover; live site only",
+   "prompt": "One small dart striking a thick stone slab, a short dull chip with a little grit falling, light, close, no music, no voice",
+   "note": "cut first: the kept cue dart-hit can stand for it; live site only",
+   "cutFirst": true
   },
   {
    "id": "browse-press",
@@ -334,7 +381,9 @@
     "browse-press"
    ],
    "state": "new",
-   "what": "the press of Browse"
+   "what": "the press of Browse",
+   "prompt": "One small flat plastic button on a desk device pressed, a short soft click, very light, close microphone, no music, no voice",
+   "note": "sixth to cut: the kept cue key-press could stand for it"
   },
   {
    "id": "folder-open",
@@ -343,7 +392,8 @@
     "folder-open"
    ],
    "state": "new",
-   "what": "the folder opening"
+   "what": "the folder opening",
+   "prompt": "A stiff paper folder flipped open on a desk, one soft flap of card and paper, light, quiet office room, no music, no voice"
   },
   {
    "id": "file-pick",
@@ -352,7 +402,8 @@
     "file-pick"
    ],
    "state": "new",
-   "what": "the file picked"
+   "what": "the file picked",
+   "prompt": "One sheet of paper pinched and lifted from a stack, a short dry rustle, very light, close microphone, no music, no voice"
   },
   {
    "id": "slot-in",
@@ -361,7 +412,8 @@
     "slot-in"
    ],
    "state": "new",
-   "what": "the file going into the slot"
+   "what": "the file going into the slot",
+   "prompt": "A sheet of paper fed into the slot of a machine, a short slide of paper on steel and a soft catch, light, quiet office room, no music, no voice"
   },
   {
    "id": "wind-gust",
@@ -370,7 +422,8 @@
     "wind-gust"
    ],
    "state": "new",
-   "what": "the gust, 1.2 s before the shredder"
+   "what": "the gust, 1.2 s before the shredder",
+   "prompt": "One gust of wind through an open office window, a soft rush of air that swells and fades with loose paper lifting, light, office room, no music, no voice"
   },
   {
    "id": "row-close",
@@ -381,7 +434,9 @@
     "stage-out-volume"
    ],
    "state": "new",
-   "what": "a row of step 2 closing; one sound for the three"
+   "what": "a row of step 2 closing; one sound for the three",
+   "prompt": "A small drawer mechanism sliding shut and stopping with a soft thunk, a single short movement, light, quiet office room, no music, no voice",
+   "note": "one file for the three rows of step 2 (stage-out-phone, stage-out-birth, stage-out-volume)"
   }
  ],
  "noSoundAsked": [
@@ -446,5 +501,89 @@
  "seconds": 28.75,
  "credits": 345.0,
  "secondsIfHalfSecondIsTheLeast": 32.5,
- "creditsIfHalfSecondIsTheLeast": 390.0
+ "creditsIfHalfSecondIsTheLeast": 390.0,
+ "oneFileForSeveralEvents": [
+  {
+   "id": "row-close",
+   "events": [
+    "stage-out-phone",
+    "stage-out-birth",
+    "stage-out-volume"
+   ]
+  },
+  {
+   "id": "finish-charge",
+   "events": [
+    "finish-charge, four times in the film"
+   ]
+  },
+  {
+   "id": "pin-bumper, pin-sling, pin-target, pin-bell, pin-kick",
+   "events": [
+    "the strike: events, about 30 names, each layout part on the file of its kind"
+   ]
+  },
+  {
+   "id": "vacuum-roar",
+   "events": [
+    "vacuum-on; looped while the vacuum runs"
+   ]
+  },
+  {
+   "id": "pin-coins",
+   "events": [
+    "loot, 63 times in the film"
+   ]
+  },
+  {
+   "id": "shield-glance",
+   "events": [
+    "shield-glance, 33 times in the film"
+   ]
+  }
+ ],
+ "couldShareAFileIfTheCapIsShort": [
+  {
+   "one": "cannon-tell",
+   "for": [
+    "cannon-tell",
+    "big-tell"
+   ],
+   "saves": 0.8
+  },
+  {
+   "one": "pillar-break",
+   "for": [
+    "pillar-break",
+    "pane-shatter"
+   ],
+   "saves": 0.8,
+   "why": "both fall on the frame of big-fire"
+  },
+  {
+   "one": "stop-press",
+   "for": [
+    "date-hit",
+    "browse-press"
+   ],
+   "saves": 0.15
+  },
+  {
+   "one": "pin-target",
+   "for": [
+    "pin-target",
+    "pin-sling"
+   ],
+   "saves": 0.2
+  }
+ ],
+ "cutFirst": [
+  "finish-walk",
+  "finish-kneel",
+  "finish-fist",
+  "weak-tell",
+  "cover-hit"
+ ],
+ "cutFirstSeconds": 2.55,
+ "cutFirstCredits": 30.6
 }
