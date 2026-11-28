@@ -90,6 +90,26 @@ describe('the health bar after the kill, behind its switch', () => {
     }
   })
 
+  it('the words on the floor are drawn after the floor on their own count, with the word of the bar in the list or out of it', () => {
+    for (const on of [false, true]) {
+      set(on)
+      const stage = film()
+      const gone = stage.events.find((e) => e.name === 'boss-gone')!.step / stepHz
+      const turns = stage.events.find((e) => e.name === 'page-turn')!.step / stepHz
+      let seen = 0
+      for (let t = gone + 0.5; t < turns; t += 0.25) {
+        const list = stage.frameAt(t).list
+        const said = list.findIndex((s) => s.id === 'defeated')
+        if (said < 0) continue
+        seen++
+        expect(word(list), `at ${t.toFixed(3)} s`).toBe(!on)
+        for (const id of ['arena', 'boss-look', 'finish-figure']) expect(said, `${id} at ${t.toFixed(3)} s`).toBeGreaterThan(list.findIndex((s) => s.id === id))
+        expect(list.filter((s) => s.id === 'defeated')).toHaveLength(1)
+      }
+      expect(seen).toBeGreaterThan(8)
+    }
+  })
+
   it.each(['keen', 'clumsy'] as const)('on, on the live site with a %s visitor: the same, within 0.5 s of boss-gone', (kind) => {
     set(true)
     const flow: FlowEntry[] = [{ page: 'step4' }, { page: 'step5' }]
