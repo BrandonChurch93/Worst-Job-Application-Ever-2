@@ -300,3 +300,25 @@ On head `739a4e33`, the last change to any source file:
 - `npm run bots`: EXIT 0 at 04:33Z ("bots: all clear").
 - The whole `npm test`: not run.
 Commits of the fifth task: `ca844027` (the live thrust), then the stance, the flames, the proof `739a4e33`, then the tool job `live`, its proof and these notes.
+
+## Sixth task (Builder's mail of 04:41Z)
+
+Only the power-up's flames; all of it in `src/boss/finish/fx.ts`, commit `a2158a43`.
+
+### Decisions
+42. Height (item 1). The nine licks of `LICK.tall` are lower: 30 to 64 high (they were up to about 100), the tallest three beside the fists and behind (62, 64 and 59), the others 30 to 46; the low ground licks are 20 to 36 times a side factor. MEASURED in my harness's film view (px at 1920 by 1080, from the feet line at row 911 to the highest flame pixel): tallest flame 425 px with the faint tip counted, 401 px for the solid part; the figure's top 366 px; so 1.16 times the figure (1.10 for the solid part). Before, by the same two rules: 635 px and 521 px against the same 366. The two rules: a flame pixel is red over 225, green over 150 and red minus blue over 55 (faint tip counted) or over 100 (solid part), in connected patches of more than 3000 px.
+43. Colour (item 2). The lick's edge is deep orange gold (1.5, 0.45, 0.0), its body gold (1.5, 0.75, 0.02), its core white hot (2.2, 2.0, 1.5) and narrower than it was, so the gold is not washed out; still see-through with gaps. MEASURED on the film view: the share of flame pixels that are deep orange (green under 200, blue under 110) went from 0.03 to 0.21; the mean flame colour from (251, 218, 133) to (253, 217, 122).
+44. Glow (item 2). No new draw call: the glow card that was already drawn under the ring is made wider in the power-up (`GLOW`: 440 by 380, its middle 70 px behind the feet) and carries two soft things besides the ring: a warm halo round the figure and a brighter pool on the ground inside the ring. Both fall off as a bell curve, so there is no hard disc. The ring keeps its own size through the new uniform `uWide`. Outside the power-up the card is as it was. MEASURED: the air beside the figure went from (232, 224, 212) to (237, 230, 214), a far patch stayed (223, 218, 210) to (224, 219, 211). It is a soft glow, weaker than the sheet's; a stronger one washed the licks out through the bloom, so I stopped there.
+45. One lick lay nearly flat on the ground at the right (its lean and its curl went the same way; it did so before this task too). Its curl is turned the other way and its lean is less; it now stands.
+46. Legs (item 3): left as they are. Not a five minute change: the two legs leave the arrow's body at different places, so even knees need the leg roots moved, which touches every pose.
+
+### Proof (my harness, not the real page)
+- `proof/finish/report-t6-power.png`: the sheet, the film view before and after, and below them the side view before and after.
+
+### Draw calls (sixth task, MEASURED, harness, film tier)
+The finish alone in the power-up at 1.5: 14 draw calls, 31,088 triangles, as before. None added.
+
+### Open
+- Nothing of this task was rendered on the real page by me.
+- The glow is weaker than the sheet's and the legs are not as even as the sheet's.
+- The whole `npm test` was not run in this task.
