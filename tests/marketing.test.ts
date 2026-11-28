@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
+import { copy } from '../src/copy'
 import { pages } from '../src/pages'
 import { makePage } from '../src/pages/marketing'
-import { careersLayout, FIRST_SCREEN, WIDTH } from '../src/pages/marketing/layout'
+import { careersLayout, FIRST_SCREEN, QUOTE, WIDTH } from '../src/pages/marketing/layout'
 import { OPENING } from '../src/pages/marketing/script'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords, words } from '../src/shell/words'
@@ -84,11 +85,13 @@ describe('the careers page', () => {
     expect(sheets.reduce((a, s) => a + s.h, 0)).toBeCloseTo(height, 3)
   })
 
-  it('takes every word from the copy, and holds all six staff quotes, all eight benefits, all five awards with their fine print', () => {
+  it('takes every word from the copy, and holds the three staff quotes of the picture in one row, all eight benefits, all five awards with their fine print', () => {
     const { layout } = careersLayout()
     const used = new Set(typeRegister(layout).map((r) => r.key))
     for (const key of used) expect(key).toMatch(/^(copy:|data:)/)
-    for (let i = 0; i < 6; i++) for (const part of ['quote', 'role', 'note']) expect(used.has(`copy:marketing.testimonials.items.${i}.${part}`), `quote ${i} ${part}`).toBe(true)
+    expect(QUOTE.shown.map((i) => copy.marketing.testimonials.items[i]!.role)).toEqual(['Ex-VP of Mandatory Fun', 'Previously: Unpaid Intern (CEO Track)', 'Ex-Chief Happiness Officer'])
+    expect(copy.marketing.testimonials.items.length).toBe(6)
+    for (let i = 0; i < 6; i++) for (const part of ['quote', 'role', 'note']) expect(used.has(`copy:marketing.testimonials.items.${i}.${part}`), `quote ${i} ${part}`).toBe(QUOTE.shown.includes(i))
     for (let i = 0; i < 8; i++) for (const part of ['title', 'promise', 'finePrint']) expect(used.has(`copy:marketing.perks.items.${i}.${part}`), `perk ${i} ${part}`).toBe(true)
     for (let i = 0; i < 5; i++) for (const part of ['title', 'from', 'finePrint']) expect(used.has(`copy:marketing.awards.items.${i}.${part}`), `award ${i} ${part}`).toBe(true)
     expect(used.has('copy:step5.closing')).toBe(true)
@@ -97,9 +100,10 @@ describe('the careers page', () => {
       s.advance(seconds(t))
       checkWords(drawn(s), `film ${t}`)
     }
-    const rows = [0, 1].map((r) => [0, 1, 2].map((c) => boxOf(`quote-${r * 3 + c}`)))
-    for (const row of rows) for (const b of row) expect(b[1]).toBe(row[0]![1])
-    expect(rows[1]![0]![1]!).toBeGreaterThan(rows[0]![0]![1]! + rows[0]![0]![3]!)
+    const row = QUOTE.shown.map((i) => boxOf(`quote-${i}`))
+    for (const b of row) expect([b[1], b[2], b[3]]).toEqual([row[0]![1], row[0]![2], row[0]![3]])
+    expect(row.map((b) => b[0])).toEqual([0, 1, 2].map((n) => QUOTE.x + n * (QUOTE.w + QUOTE.gap)))
+    expect(Math.abs(row[0]![0]! - (1920 - (row[2]![0]! + row[2]![2]!)))).toBeLessThanOrEqual(1)
   })
 
   it('keeps each beat and its event inside its window in the film: one card turned, one press at 18 s, then the turn', () => {

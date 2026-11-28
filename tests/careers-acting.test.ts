@@ -10,7 +10,7 @@ const steps = (seconds: number): number => Math.round(seconds * stepHz)
 const unit = config.film.units.find((u) => u.id === 'marketing')!
 const { height } = careersLayout()
 // The four slow places of the opening the owner picked: from when to when the page creeps at each, in seconds of the film.
-const STOPS = [[4.98, 6.28], [8.08, 9.08], [12.49, 13.49], [14.41, 15.41]]
+const STOPS = [[5.12, 6.42], [8.41, 9.41], [12.39, 13.39], [14.36, 15.36]]
 
 function boxOf(id: string): number[] {
   let found: number[] | null = null

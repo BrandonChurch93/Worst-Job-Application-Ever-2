@@ -9,7 +9,7 @@ Film B: 12120 frames at 60 a second, 202 s. Times are in seconds from the first 
 | Beat | Start s | First frame | Last frame | Event | Event s | Event frame | Inside |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `marketing.stroll` | 0.000 | 0 | 179 | `step` | 0.371 | 22 | yes |
-| `marketing.perks` | 3.000 | 180 | 419 | `card-flip` | 4.771 | 286 | yes |
+| `marketing.perks` | 3.000 | 180 | 419 | `card-flip` | 4.900 | 294 | yes |
 | `marketing.ticker` | 7.000 | 420 | 986 | none |  |  |  |
 | `marketing.apply` | 16.450 | 987 | 1139 | `page-turn` | 18.500 | 1110 | yes |
 | `step1.keyboard` | 19.000 | 1140 | 1259 | `keyboard-rise` | 20.500 | 1230 | yes |
@@ -48,7 +48,7 @@ Film B: 12120 frames at 60 a second, 202 s. Times are in seconds from the first 
 
 ## Events with a cue
 
-1026 of the film's 1466 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+1024 of the film's 1464 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
@@ -63,63 +63,61 @@ Film B: 12120 frames at 60 a second, 202 s. Times are in seconds from the first 
 | 1.142 | 68 | `marketing.stroll` | `step` | `step` | no |
 | 1.238 | 74 | `marketing.stroll` | `step` | `step` | no |
 | 1.337 | 80 | `marketing.stroll` | `step` | `step` | no |
-| 3.479 | 208 | `marketing.perks` | `step` | `step` | no |
-| 3.650 | 219 | `marketing.perks` | `step` | `step` | no |
-| 3.817 | 229 | `marketing.perks` | `step` | `step` | no |
-| 3.987 | 239 | `marketing.perks` | `step` | `step` | no |
-| 4.154 | 249 | `marketing.perks` | `step` | `step` | no |
-| 4.325 | 259 | `marketing.perks` | `step` | `step` | no |
-| 4.492 | 269 | `marketing.perks` | `step` | `step` | no |
-| 4.771 | 286 | `marketing.perks` | `card-flip` | `card-flip` | no |
-| 4.804 | 288 | `marketing.perks` | `step` | `step` | no |
-| 6.558 | 393 | `marketing.perks` | `step` | `step` | no |
-| 6.608 | 396 | `marketing.perks` | `step` | `step` | no |
-| 6.646 | 398 | `marketing.perks` | `step` | `step` | no |
-| 6.679 | 400 | `marketing.perks` | `step` | `step` | no |
+| 3.500 | 210 | `marketing.perks` | `step` | `step` | no |
+| 3.683 | 221 | `marketing.perks` | `step` | `step` | no |
+| 3.867 | 232 | `marketing.perks` | `step` | `step` | no |
+| 4.050 | 243 | `marketing.perks` | `step` | `step` | no |
+| 4.233 | 254 | `marketing.perks` | `step` | `step` | no |
+| 4.421 | 265 | `marketing.perks` | `step` | `step` | no |
+| 4.604 | 276 | `marketing.perks` | `step` | `step` | no |
+| 4.900 | 294 | `marketing.perks` | `card-flip` | `card-flip` | no |
+| 4.938 | 296 | `marketing.perks` | `step` | `step` | no |
 | 6.713 | 402 | `marketing.perks` | `step` | `step` | no |
-| 6.746 | 404 | `marketing.perks` | `step` | `step` | no |
-| 6.804 | 408 | `marketing.perks` | `step` | `step` | no |
-| 6.896 | 413 | `marketing.perks` | `step` | `step` | no |
-| 6.992 | 419 | `marketing.perks` | `step` | `step` | no |
-| 7.088 | 425 | `marketing.ticker` | `step` | `step` | no |
-| 7.183 | 431 | `marketing.ticker` | `step` | `step` | no |
-| 7.279 | 436 | `marketing.ticker` | `step` | `step` | no |
-| 7.379 | 442 | `marketing.ticker` | `step` | `step` | no |
-| 7.475 | 448 | `marketing.ticker` | `step` | `step` | no |
-| 7.571 | 454 | `marketing.ticker` | `step` | `step` | no |
-| 7.671 | 460 | `marketing.ticker` | `step` | `step` | no |
-| 7.763 | 465 | `marketing.ticker` | `step` | `step` | no |
-| 7.825 | 469 | `marketing.ticker` | `step` | `step` | no |
-| 7.883 | 473 | `marketing.ticker` | `step` | `step` | no |
-| 7.963 | 477 | `marketing.ticker` | `step` | `step` | no |
-| 9.525 | 571 | `marketing.ticker` | `step` | `step` | no |
-| 9.688 | 581 | `marketing.ticker` | `step` | `step` | no |
-| 9.850 | 591 | `marketing.ticker` | `step` | `step` | no |
-| 10.012 | 600 | `marketing.ticker` | `step` | `step` | no |
-| 10.175 | 610 | `marketing.ticker` | `step` | `step` | no |
-| 10.333 | 620 | `marketing.ticker` | `step` | `step` | no |
-| 10.496 | 629 | `marketing.ticker` | `step` | `step` | no |
-| 10.658 | 639 | `marketing.ticker` | `step` | `step` | no |
-| 10.821 | 649 | `marketing.ticker` | `step` | `step` | no |
-| 10.983 | 659 | `marketing.ticker` | `step` | `step` | no |
-| 11.146 | 668 | `marketing.ticker` | `step` | `step` | no |
-| 11.304 | 678 | `marketing.ticker` | `step` | `step` | no |
-| 11.467 | 688 | `marketing.ticker` | `step` | `step` | no |
-| 11.629 | 697 | `marketing.ticker` | `step` | `step` | no |
-| 11.792 | 707 | `marketing.ticker` | `step` | `step` | no |
-| 11.954 | 717 | `marketing.ticker` | `step` | `step` | no |
-| 12.113 | 726 | `marketing.ticker` | `step` | `step` | no |
-| 12.304 | 738 | `marketing.ticker` | `step` | `step` | no |
-| 13.813 | 828 | `marketing.ticker` | `step` | `step` | no |
-| 13.912 | 834 | `marketing.ticker` | `step` | `step` | no |
-| 13.992 | 839 | `marketing.ticker` | `step` | `step` | no |
-| 14.071 | 844 | `marketing.ticker` | `step` | `step` | no |
-| 14.158 | 849 | `marketing.ticker` | `step` | `step` | no |
-| 14.275 | 856 | `marketing.ticker` | `step` | `step` | no |
-| 15.833 | 950 | `marketing.ticker` | `step` | `step` | no |
-| 15.979 | 958 | `marketing.ticker` | `step` | `step` | no |
-| 16.121 | 967 | `marketing.ticker` | `step` | `step` | no |
-| 16.317 | 979 | `marketing.ticker` | `step` | `step` | no |
+| 6.767 | 406 | `marketing.perks` | `step` | `step` | no |
+| 6.808 | 408 | `marketing.perks` | `step` | `step` | no |
+| 6.842 | 410 | `marketing.perks` | `step` | `step` | no |
+| 6.875 | 412 | `marketing.perks` | `step` | `step` | no |
+| 6.912 | 414 | `marketing.perks` | `step` | `step` | no |
+| 6.975 | 418 | `marketing.perks` | `step` | `step` | no |
+| 7.075 | 424 | `marketing.ticker` | `step` | `step` | no |
+| 7.175 | 430 | `marketing.ticker` | `step` | `step` | no |
+| 7.283 | 437 | `marketing.ticker` | `step` | `step` | no |
+| 7.388 | 443 | `marketing.ticker` | `step` | `step` | no |
+| 7.492 | 449 | `marketing.ticker` | `step` | `step` | no |
+| 7.596 | 455 | `marketing.ticker` | `step` | `step` | no |
+| 7.700 | 462 | `marketing.ticker` | `step` | `step` | no |
+| 7.804 | 468 | `marketing.ticker` | `step` | `step` | no |
+| 7.912 | 474 | `marketing.ticker` | `step` | `step` | no |
+| 8.017 | 481 | `marketing.ticker` | `step` | `step` | no |
+| 8.096 | 485 | `marketing.ticker` | `step` | `step` | no |
+| 8.158 | 489 | `marketing.ticker` | `step` | `step` | no |
+| 8.229 | 493 | `marketing.ticker` | `step` | `step` | no |
+| 8.346 | 500 | `marketing.ticker` | `step` | `step` | no |
+| 9.863 | 591 | `marketing.ticker` | `step` | `step` | no |
+| 10.029 | 601 | `marketing.ticker` | `step` | `step` | no |
+| 10.200 | 612 | `marketing.ticker` | `step` | `step` | no |
+| 10.367 | 622 | `marketing.ticker` | `step` | `step` | no |
+| 10.537 | 632 | `marketing.ticker` | `step` | `step` | no |
+| 10.704 | 642 | `marketing.ticker` | `step` | `step` | no |
+| 10.875 | 652 | `marketing.ticker` | `step` | `step` | no |
+| 11.042 | 662 | `marketing.ticker` | `step` | `step` | no |
+| 11.208 | 672 | `marketing.ticker` | `step` | `step` | no |
+| 11.379 | 682 | `marketing.ticker` | `step` | `step` | no |
+| 11.546 | 692 | `marketing.ticker` | `step` | `step` | no |
+| 11.717 | 703 | `marketing.ticker` | `step` | `step` | no |
+| 11.883 | 713 | `marketing.ticker` | `step` | `step` | no |
+| 12.054 | 723 | `marketing.ticker` | `step` | `step` | no |
+| 12.283 | 737 | `marketing.ticker` | `step` | `step` | no |
+| 13.725 | 823 | `marketing.ticker` | `step` | `step` | no |
+| 13.833 | 830 | `marketing.ticker` | `step` | `step` | no |
+| 13.921 | 835 | `marketing.ticker` | `step` | `step` | no |
+| 14.004 | 840 | `marketing.ticker` | `step` | `step` | no |
+| 14.096 | 845 | `marketing.ticker` | `step` | `step` | no |
+| 14.217 | 853 | `marketing.ticker` | `step` | `step` | no |
+| 15.804 | 948 | `marketing.ticker` | `step` | `step` | no |
+| 15.958 | 957 | `marketing.ticker` | `step` | `step` | no |
+| 16.113 | 966 | `marketing.ticker` | `step` | `step` | no |
+| 16.321 | 979 | `marketing.ticker` | `step` | `step` | no |
 | 18.000 | 1080 | `marketing.apply` | `button-press` | `button-press` | no |
 | 18.500 | 1110 | `marketing.apply` | `page-turn` | `page-turn` | no |
 | 20.063 | 1203 | `step1.keyboard` | `step` | `step` | no |

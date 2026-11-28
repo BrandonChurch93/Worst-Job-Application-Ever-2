@@ -5,7 +5,7 @@ Branch `agent/b-careers`. Every item below is MEASURED (the command and the numb
 ## What is built
 
 - The page of `references/approved-002/careers-page.png` as a flat white website on the site's stage, in `src/pages/marketing/*`. Eight sections: top (navigation, hero, awards, ticker), benefits, staff quotes, questions, comparison, process, closing call, footer.
-- `careersLayout()` height 5679 px at 1920 wide (the picture is 5357; the 322 more is the second row of quotes and their bracket notes at 16 px on two lines). Scroll range 0 to 4599. MEASURED: printed from `careersLayout()` in a test run.
+- `careersLayout()` height 5366 px at 1920 wide since change note 004 item 8 (the picture is 5357); scroll range 0 to 4286. Before that 5679 px and 0 to 4599: the 322 more was the second row of quotes. MEASURED: printed from `careersLayout()` in a test run.
 - The film's opening on this page: 18 s from the first frame to the press of the last Apply, the turn half a second later, the unit 19.0 s. See "The opening".
 
 ## Decisions
@@ -16,7 +16,7 @@ Branch `agent/b-careers`. Every item below is MEASURED (the command and the numb
 4. Cards: face with icon, title, promise and the fine print small. The pointer on a card flips it to the back with the fine print large. It flips back when the pointer is clear of the card by `LEAVE`. Events `card-flip` and `card-flip-back`.
 5. Apply is live from the first frame in the navigation, the hero and the closing call. Each runs the press (wind-up 0.36 s, jump 0.42 s, `button-press` on landing, hold 0.7 s) and the page turns into step 1.
 6. The ticker is one band from the left edge to the right edge of the website at every width.
-7. Six staff quotes in two rows of three.
+7. Six staff quotes in two rows of three. Overruled by change note 004 item 8: three, in one row.
 8. The awards keep their fine print, small, under each.
 9. The comparison ticks are drawn as in the picture: green box ticks in the right column.
 10. The build's own arrow at its real size.
@@ -86,11 +86,11 @@ Contrast (the Builder's ruling of 21:50: every run of type 4.5 to 1 against what
 
 Other:
 
-- The page is 322 px taller: six quotes in two rows (decision 7); the picture has three.
+- The page is 9 px taller than the picture (5366 against 5357): the cards are 27 px taller each (see "Change note 004 item 8"). Three quotes in one row as in the picture.
 - The awards carry their fine print (decision 8); the picture has none.
-- Type: Inter in one scale of eight sizes; the picture's sizes vary by a few px from section to section.
+- Type: Inter in one scale of ten sizes (30 for the card titles and 32 for a card's back came with change note 004); the picture's sizes vary by a few px from section to section.
 - Staff quotes have no quotation marks and the fine print has no "* " in front: the copy has neither.
-- The fine print is on the face of a card, small (decision 4); the picture's face has it too but the back is not in the picture.
+- The fine print is on the face of a card at 24 px in the grey of small type; the picture's is black. The back is not in the picture.
 - A card flips by a flat squash about its upright middle, with its shadow.
 - The questions are closed rows; nothing opens.
 - The wreaths of the awards are simpler: 8 leaves a side.
@@ -102,9 +102,8 @@ Seen in the crops and not meant, and still there (type):
 
 - Lead lines under headings: mine 3d3934, the picture's a little lighter (its darkest 1 percent of pixels in the hero subline is 65,61,56; mine 51,47,42. MEASURED with sharp on both pictures).
 - Staff quotes: the picture's quote and role are about 22 px and its bracket notes are in a typewriter face about 16 px; mine 20 px and Inter 16. The scale has 20 and 24; at 24 the quotes run to five lines in a card 408 wide.
-- Card titles: mine 24, the picture's about 30 in a narrower face. At 32 "Growth Opportunities" wraps in the card.
-- The fine print on a card's face: mine 16 by decision 4, the picture's about 24.
-- Process: the picture's step titles are about 22 to 24; mine 20. Tried at 24 and taken back: "Professional Ghosting" is 256 px of the 266 px between two steps, so the five titles stand almost against each other.
+- Card titles, small print and step titles: settled by change note 004 item 8, see that section.
+- The promise line of a card: mine 24 px, the picture's cap is 19 px high, which is about 26 px of Inter. Not named in the decision and left.
 - The picture's arrow is about one and a half times the build's and stands on the button's right end.
 
 Crops, mine left and the picture right: `node pipeline/change002/careers-differences.mjs` writes `out/work/careers/careers-differs-<name>.jpg` for type-headline, cursor-button, glow, awards, navigation, benefits-heading, cards, quotes, table, steps, closing. It reads the pictures of the two other commands.
@@ -198,6 +197,62 @@ Causes:
 - `tools/assets/approved-boxes.json:183`: boxes of the old first screen.
 - The four judged stills of the page (`rest-marketing` scroll 0, `marketing-perks` 0.25, `marketing-proof` 0.5, `marketing-foot` 1; `config/showcase.json` lines 472 to 475): the page is another page now and is taller.
 - The settled list of the key.
+
+## Change note 004 item 8 (Brandon through Partner, 7:12 PM MT; branch `agent/b-careers2` from 004819fb)
+
+His decision: keep the deeper orange; card titles about 30 px and small print about 24 px; step titles 22 to 24 px; three staff quotes as in his picture; the rest left as built.
+
+What is built, `src/pages/marketing/layout.ts`:
+
+- Card title: Inter 600 at 30 px (`T.card`), its top 132 px under the card's top as in the picture.
+- Card small print: Inter 400 at 24 px with 28 px from line to line, 24 px under the promise, in the grey of small type (5c636f) as before.
+- Card: 354 px tall, not the picture's 327, and 20 px of room at each side, not 30. Why: at 24 px in Inter the small print takes three lines on four cards of eight, with 20 px of room at the sides and with 16 px too (the picture's face is narrower and gets every card into two lines, or one line of promise and three of small print). Two lines of promise and three of small print end 1 px above the lower edge of a 327 px card. Not shrunk: the card grew by one line, 27 px, and the lower row and all under it moved down 54 px (`CARD.grow`).
+- The back of a card: Inter 400 at 32 px (`T.back`), so it is still larger than the face. The cards flip back when the pointer leaves, as before (`tests/careers-fix.test.ts`).
+- Step titles: Inter 600 at 24 px (`T.strong`). The upper end of his 22 to 24: the picture's cap is 19 px, which is more than 24 px of Inter gives (17). They do not touch: see the numbers below.
+- Quotes: items 0, 1 and 3 of `marketing.testimonials.items` (`QUOTE.shown`), one row, each card 408 wide, from x 323 to 1598, all of one height. Items 2, 4 and 5 stay in `content/copy.json` and are not laid.
+- Decision: the promise line stays 24 px (the picture's is about 26). It was not named.
+- Decision: the type scale has ten sizes now, not nine; `tests/careers-finish.test.ts` says at most ten.
+
+MEASURED on `out/work/careers/careers-page.png` (the page drawn 1920 wide by `node pipeline/change002/careers-page.mjs`) against `references/approved-002/careers-page.png`, rows or columns of ink darker than 120 of 255:
+
+| What | Built | Picture |
+|---|---|---|
+| Page | 1920 by 5366 | 1920 by 5357 |
+| Card title, cap of the U of "Unlimited PTO" | y 1491 to 1511, 21 px | y 1491 to 1512, 22 px |
+| Card title, width of "Unlimited PTO" | 203 px | 182 px |
+| Card small print, cap of the first P | y 1609 to 1624, 16 px | y 1610 to 1626, 17 px |
+| Card small print, lines of the first card | 3, their ink from y 1608 to 1685 | 2, from y 1609 to 1658 |
+| Card, top to bottom | 1359 to 1713 (354) | 1359 to 1686 (327) |
+| Step title, cap of the F of "Find Our Job Posting" | 17 px | 19 px |
+| Step titles, widths of the five | 239, 234, 160, 216, 252 | 233, 231, 156, 213, 247 |
+| Step titles, least room between two | 31 px (1 and 2), then 34 px (4 and 5) | 37 px, then 39 px |
+
+STATED (the numbers of the layout, not read off a picture): the type sizes 30, 24, 24 and 32 px; the 28 px from line to line; the quotes' place.
+
+The opening: no number of `OPENING` changed. The plan fits itself to the page: one speed between the stops so that the page stands at the bottom at 16.45 s.
+
+| | Before (page 5679) | Now (page 5366) |
+|---|---|---|
+| Way to scroll | 4599 px | 4286 px |
+| Speed between stops | 602.59 px a second | 561.58 px a second |
+| The stops, px scrolled | 983, 1913, 3800, 4191, 4599 | 996, 1967, 3487, 3880, 4286 |
+| Salary card held | 4.98 to 6.28 s | 5.12 to 6.42 s |
+| Badge note held | 8.08 to 9.08 s | 8.41 to 9.41 s |
+| lol held | 12.49 to 13.49 s | 12.39 to 13.39 s |
+| Professional Ghosting held | 14.41 to 15.41 s | 14.36 to 15.36 s |
+| `card-flip` | 4.771 s, frame 286 | 4.900 s, frame 294 |
+| At the bottom | 16.45 s | 16.45 s |
+| `button-press`, `page-turn` | 18.000 s, 18.500 s | 18.000 s, 18.500 s |
+
+The phrases of line 1 under the holds (1.6 words a second, by the site's own rule in `src/audio/standin.ts`): the salary card under "Desperately hoping" and "to pay their rent." before and now; the badge under "to pay their rent." for its first 0.05 s and then "Poor fool." before, under "Poor fool." now, and 0.04 s into "They must have forgotten"; lol under "it is 2026." before and now.
+
+The film's frames carry no caption panel: the panel is an HTML element of the live site, made with the sound (`src/ui/said.ts`), and a frame of the film is the canvas. The twelve frames are sent with the phrase on at each time written beside them.
+
+`npm run cut` writes `cut/CUES.md`, `cut/CUTLIST.json` and `cut/SHOTS.md` anew (the arrow's steps and the card's flip on this page move; 1464 events, not 1466). Those are the Builder's: the difference is in `pipeline/change002/careers-cut-NEEDS.patch` and `cut/` is left as it was.
+
+The whole suite, `npx vitest run`, MEASURED at 02:42Z: 59 red in 26 files on this branch, 57 red in 25 files at 004819fb (run in a second work tree of that commit). The two more are both in `tests/cut-of-build.test.ts`, which wants `cut/` made again; with the patch laid on, that file is 21 of 21 green.
+
+Pictures: `node pipeline/change002/careers-change.mjs` (needs `careers-page-before.png`, the page as it was at 004819fb, beside `careers-page.png` in `out/work/careers/`) writes `careers-change-cards.png`, `-steps.png`, `-quotes.png`; `node pipeline/change002/careers-proof.mjs --only opening` writes `careers-opening-1.jpg` to `-3.jpg`.
 
 ## What is left
 

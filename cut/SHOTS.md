@@ -14,9 +14,9 @@ Frames 0 to 1139.
 | Beat | Frames | Camera | Move | Framing at the start | Framing at the end |
 | --- | --- | --- | --- | --- | --- |
 | `marketing.stroll` | 0 to 179 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `marketing.perks` | 180 to 419 | `home` | follows | x 0, y 0, 1920 by 1080 | x 0, y 1334.2, 1920 by 1080 |
-| `marketing.ticker` | 420 to 986 | `home` | follows | x 0, y 1344.3, 1920 by 1080 | x 0, y 4599, 1920 by 1080 |
-| `marketing.apply` | 987 to 1139 | `home` | holds | x 0, y 4599, 1920 by 1080 | x 0, y 4599, 1920 by 1080 |
+| `marketing.perks` | 180 to 419 | `home` | follows | x 0, y 0, 1920 by 1080 | x 0, y 1243.4, 1920 by 1080 |
+| `marketing.ticker` | 420 to 986 | `home` | follows | x 0, y 1252.8, 1920 by 1080 | x 0, y 4286, 1920 by 1080 |
+| `marketing.apply` | 987 to 1139 | `home` | holds | x 0, y 4286, 1920 by 1080 | x 0, y 4286, 1920 by 1080 |
 
 ## step1
 

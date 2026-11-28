@@ -29,6 +29,8 @@ export const T = {
   heading: { font: 'inter-display-800', px: 44, lead: 50 },
   closing: { font: 'inter-display-800', px: 56, lead: 62 },
   brand: { font: 'inter-600', px: 32 },
+  back: { font: 'inter-400', px: 32, lead: 40 },
+  card: { font: 'inter-600', px: 30, lead: 36 },
   lead: { font: 'inter-400', px: 24, lead: 38 },
   strong: { font: 'inter-600', px: 24, lead: 30 },
   label: { font: 'inter-600', px: 20, lead: 26 },
@@ -40,8 +42,8 @@ export const T = {
 } satisfies Record<string, TypeSpec>
 
 export const TICKER = { x: 0, w: 1920, clip: 0, y: 1009, h: 70, gap: 52, dot: 8, speed: 96, keyAt: 420, keyItem: 1 }
-export const CARD = { x: 202, w: 355, h: 327, gap: 32, r: 16, rows: [1359, 1718], tile: { x: 27, y: 28, size: 77, r: 14 }, pad: 30 }
-export const QUOTE = { x: 323, w: 408, gap: 25.5, r: 16, pad: 26 }
+export const CARD = { x: 202, w: 355, h: 354, gap: 32, r: 16, rows: [1359, 1745], tile: { x: 27, y: 28, size: 77, r: 14 }, pad: 20, grow: 54 }
+export const QUOTE = { x: 323, w: 408, gap: 25.5, r: 16, pad: 26, shown: [0, 1, 3] }
 export const TABLE = { x: 318, w: 1285, r: 16, pad: 24, head: 81, row: 66.4, feature: 357, us: [733, 1187] as const, usAt: 960, themAt: 1385, tick: 26 }
 export const FAQ = { x: 597, w: 727, h: 52, pitch: 64.4, pad: 24 }
 export const STEPS = { first: 426.5, pitch: 266.5, d: 51, wrap: 236, title: 258, body: 250 }
@@ -133,14 +135,14 @@ function perkCard(i: number, x: number, y: number): LayoutNode {
   const wrap = CARD.w - CARD.pad * 2
   const at = { part: PAGE, on: Z.cardType }
   const promise = { ...mid(T.lead), wrap, lead: 30 }
-  const fine = { ...mid(T.small), wrap }
-  const large = { ...mid(T.lead), wrap, lead: 34 }
+  const fine = { ...mid(T.lead), wrap, lead: 28 }
+  const large = { ...mid(T.back), wrap }
   const promiseY = y + 178
-  const fineY = promiseY + tall(promise, `${k}.promise`, wrap) + 14
+  const fineY = promiseY + tall(promise, `${k}.promise`, wrap) + 24
   return node(`perk-${i}`, 'perkCard', [x, y, CARD.w, CARD.h], {
     part: CARDS, r: CARD.r, floor: Z.sheet, height: Z.card,
     children: [
-      text(`perk-${i}-title`, `${k}.title`, mid(T.strong), cx, y + 135, { ...at, states: [st.shut] }),
+      text(`perk-${i}-title`, `${k}.title`, mid(T.card), cx, y + 132, { ...at, states: [st.shut] }),
       text(`perk-${i}-promise`, `${k}.promise`, promise, cx, promiseY, { ...at, states: [st.shut] }),
       text(`perk-${i}-fine`, `${k}.finePrint`, fine, cx, fineY, { ...at, tone: 'metal', states: [st.shut] }),
       text(`perk-${i}-fine-large`, `${k}.finePrint`, large, cx, y + (CARD.h - tall(large, `${k}.finePrint`, wrap)) / 2, { ...at, states: [st.open] })
@@ -155,8 +157,8 @@ function perks(y0: number): LayoutNode {
   out.push(centred('perks-heading', 'copy:marketing.perks.heading', T.section, 1186 + d))
   out.push(centred('perks-subline', 'copy:marketing.perks.subline', soft(T.lead), 1283 + d))
   m.perks.items.forEach((_, i) => out.push(perkCard(i, CARD.x + (i % 4) * (CARD.w + CARD.gap), CARD.rows[Math.floor(i / 4)]! + d)))
-  out.push(centred('perks-closing', 'copy:marketing.perks.closing', soft(T.lead), 2105 + d))
-  return sheet('perks', y0, 1090, out)
+  out.push(centred('perks-closing', 'copy:marketing.perks.closing', soft(T.lead), 2105 + CARD.grow + d))
+  return sheet('perks', y0, 1090 + CARD.grow, out)
 }
 
 function quotes(y0: number): { node: LayoutNode; bottom: number } {
@@ -167,34 +169,29 @@ function quotes(y0: number): { node: LayoutNode; bottom: number } {
   const role = { ...T.label, wrap }
   const quote = { ...T.body, wrap }
   const note = { ...T.small, wrap }
-  const items = m.testimonials.items
+  const items = QUOTE.shown
   const key = (i: number): string => `copy:marketing.testimonials.items.${i}`
-  const quoteH = items.map((_, i) => tall(quote, `${key(i)}.quote`, wrap))
-  const roleH = items.map((_, i) => tall(role, `${key(i)}.role`, wrap))
-  const noteH = items.map((_, i) => tall(note, `${key(i)}.note`, wrap))
-  const own = (i: number): number => 28 + quoteH[i]! + 22 + roleH[i]! + 12 + noteH[i]! + 26
-  const rowOf = (i: number): number => Math.floor(i / 3)
-  const rows = Array.from({ length: Math.ceil(items.length / 3) }, (_, r) => Math.ceil(Math.max(...items.map((_, i) => (rowOf(i) === r ? own(i) : 0)))))
-  const h = Math.ceil(28 + Math.max(...quoteH) + 22 + Math.max(...roleH) + 12 + Math.max(...noteH) + 26)
-  const first = y0 + 162
-  const rowY = rows.map((_, r) => first + rows.slice(0, r).reduce((a, b) => a + b + 26, 0))
-  items.forEach((_, i) => {
+  const quoteH = items.map((i) => tall(quote, `${key(i)}.quote`, wrap))
+  const roleH = items.map((i) => tall(role, `${key(i)}.role`, wrap))
+  const noteH = items.map((i) => tall(note, `${key(i)}.note`, wrap))
+  const h = Math.ceil(Math.max(...items.map((_, n) => 28 + quoteH[n]! + 22 + roleH[n]! + 12 + noteH[n]! + 26)))
+  const y = y0 + 162
+  items.forEach((i, n) => {
     const k = key(i)
-    const x = QUOTE.x + (i % 3) * (QUOTE.w + QUOTE.gap)
-    const y = rowY[rowOf(i)]!
-    const roleY = y + 28 + quoteH[i]! + 22
-    out.push(node(`quote-${i}`, 'quoteCard', [x, y, QUOTE.w, rows[rowOf(i)]!], {
+    const x = QUOTE.x + n * (QUOTE.w + QUOTE.gap)
+    const roleY = y + 28 + quoteH[n]! + 22
+    out.push(node(`quote-${i}`, 'quoteCard', [x, y, QUOTE.w, h], {
       part: PAGE, r: QUOTE.r, floor: Z.sheet, height: Z.sheet + 0.6,
       children: [
         text(`quote-${i}-quote`, `${k}.quote`, quote, x + QUOTE.pad, y + 28, on),
         text(`quote-${i}-role`, `${k}.role`, role, x + QUOTE.pad, roleY, on),
-        text(`quote-${i}-note`, `${k}.note`, note, x + QUOTE.pad, roleY + roleH[i]! + 12, { ...on, tone: 'accent' })
+        text(`quote-${i}-note`, `${k}.note`, note, x + QUOTE.pad, roleY + roleH[n]! + 12, { ...on, tone: 'accent' })
       ]
     }))
   })
-  const footY = rowY[rows.length - 1]! + rows[rows.length - 1]! + 26
+  const footY = y + h + 26
   out.push(centred('testimonials-footnote', 'copy:marketing.testimonials.footnote', T.small, footY, { tone: 'metal' }))
-  const bottom = Math.ceil(first + h * 2 + 26 + 26 + cap(T.small) + 40)
+  const bottom = Math.ceil(footY + cap(T.small) + 40)
   return { node: sheet('testimonials', y0, bottom - y0, out), bottom }
 }
 
@@ -247,7 +244,7 @@ function process(y0: number): LayoutNode {
   const railY = y0 + 233
   const n = m.process.items.length
   out.push(node('process-rail', 'hairline', [STEPS.first, railY + STEPS.d / 2 - 1, STEPS.pitch * (n - 1), 2], { part: PAGE, floor: Z.sheet, height: Z.sheet + 0.6 }))
-  const title = { ...mid(T.label), wrap: STEPS.title }
+  const title = { ...mid(T.strong), wrap: STEPS.title }
   const body = { ...mid(T.body), wrap: STEPS.body }
   for (let i = 0; i < n; i++) {
     const cx = STEPS.first + i * STEPS.pitch
@@ -302,7 +299,7 @@ let made: Careers | null = null
 
 export function careersLayout(): Careers {
   if (made) return made
-  const sections: Record<string, number> = { top: 0, perks: 1080, testimonials: 2170 }
+  const sections: Record<string, number> = { top: 0, perks: 1080, testimonials: 2170 + CARD.grow }
   const nodes: LayoutNode[] = [top(), perks(sections.perks!)]
   const q = quotes(sections.testimonials!)
   nodes.push(q.node)
