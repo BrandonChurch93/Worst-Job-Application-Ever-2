@@ -107,3 +107,6 @@ export function beamLight(s: FinishState | null): { x0: number; y0: number; x1: 
   if (!b) return null
   return { x0: b.x, y0: b.y, x1: b.x + Math.cos(b.aim) * 2400, y1: b.y + Math.sin(b.aim) * 2400, strength: (0.4 + 0.6 * b.power) * b.open }
 }
+
+// How far the standing figure's plane is tilted up from the page, in radians, at a pose's `rise`.
+export const standTilt = (rise: number): number => STAND.rise * rise
