@@ -3,9 +3,11 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
-import { BLOW, CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
+import { CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TAKES, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
 import { FORM_BOTTOM, PAPER, SLOT, ZONE } from '../src/pages/step1/layout'
-import { BALL, FLIP, MID, MOUTH, PORT } from '../src/table/layout'
+import { BALL, MOUTH, PORT } from '../src/table/layout'
+import manifest from '../src/pages/step3/video/manifest.json'
+import { VIDEO } from '../src/pages/step3/video/plan'
 import { HEADER, progressCentre } from '../src/shell/parts'
 
 const root = path.resolve(__dirname, '..')
@@ -17,8 +19,9 @@ const hd = cfg.formats.hd as { width: number; height: number }
 
 type Sheet = { name?: string; kind: string; heading: string; steps: number[]; run: number[]; moment: string; every: number; at?: number; hands?: string[]; part: number[] | null; px?: number; windows?: number[][]; percent?: number; columns?: number; tileW?: number; tileH?: number; lines?: number }
 
-// One recorded walk of the pack's visitor through the live site of commit b3e4f902, cut by pipeline/phase5/pack-frames-rows.mjs:
-// its moments, hits and gags, every row the motion plan reads, and the rows round every release on the page's keyboard. A row the plan would read and the file does not hold is no row.
+// One recorded walk of the pack's visitor through the built live site, cut by pipeline/phase5/pack-frames-rows.mjs: its moments, hits and gags, every row the motion plan reads,
+// the rows round every release on the page's keyboard and the rows of the machine page's scripted scene. A row the plan would read and the file does not hold is no row.
+// The tests find each moment by its event in the walk and hold what follows from it, not the step at which it fell: a merge that moves time moves the moments and leaves the tests as they are.
 const rec = JSON.parse(fs.readFileSync(path.join(root, 'pipeline/phase5/pack-frames-rows.json'), 'utf8')) as {
   steps: number; format: string; moments: Record<string, unknown>; hits: unknown[]; gags: unknown[]; releases: number[]; sheets: number; rows: Record<string, (number | string)[]>
 }
@@ -32,19 +35,47 @@ const at = (i: number): [number, number] => [num(i, COL.heroX), num(i, COL.heroY
 const span = (a: number, b: number) => Array.from({ length: b - a + 1 }, (_, i) => a + i)
 const time = (i: number) => `${Math.floor(i / 60 / 60)}:${(i / 60 - Math.floor(i / 60 / 60) * 60).toFixed(2).padStart(5, '0')}`
 const linesOf = (f: Sheet) => wrap(f.heading, f.columns! * f.tileW! + 8 * (f.columns! - 1) - 16, 15).length
-const m = rec.moments as { turn: { first: number; last: number }; taken: number; back: number; thrown: { first: number; stand: number; handed: number }; leaves: number; met: number; gate: { take: number; kick: number }; type: { press: number; release: number; nth: number; of: number; clear: boolean; spent: number; why: string; field: string; seated: number; key: string } }
+const m = rec.moments as { turn: { first: number; last: number }; taken: number; back: number; thrown: { first: number; stand: number; handed: number }; flippers: number; leaves: number | null; met: number | null; gate: { take: number; kick: number } | null; type: { press: number; release: number; nth: number; of: number; clear: boolean; spent: number; why: string; field: string; seated: number; key: string } }
 const NEAR = ['seat', 'type', 'taken', 'given-back', 'drop', 'flip-close', 'save']
+const gags = rec.gags as { gag: string; step: number }[]
+const hits = rec.hits as { name: string; step: number; page: string; x: number; y: number }[]
+const gagAt = (name: string) => gags.find((g) => g.gag === name)!.step
+
+// The machine page on the live site, as built by change note 002 item 8 ("that pinball area is like a prescriptive thing that you watch like a little mini film inside of this application"):
+// the arrow is sealed in the port, the page gives the flippers for the push into the port and then plays its scripted scene as a film. No flipper belongs to the visitor,
+// so the visitor presses none, the gags of the scene pass with no press, and the rows hold no ball: the arrow stands in the port and the page's own view does not move until the film is over.
+// What the walk carries of the scene: its gags by name, and the events the scene marks as hits, each at the scene's own time and place.
+const SCENE = { unit: 'pinball.', launch: 'pinball.launch', reveal: 'pinball.reveal', save: 'pinball.save', after: 'pinball.drain', hardest: 3, room: 0.06, late: 0.5 }
+const events = manifest.events as { at: number; name: string; x: number; y: number; hits: boolean }[]
+// The film takes the page at the first step, after the flippers were given, at which the site no longer says the control is the flippers'.
+let filmIn = m.flippers
+while (num(filmIn, COL.control)) filmIn += 1
+const page = rows[filmIn]![COL.page]
+const sceneStep = (at: number) => filmIn + at / manifest.stepHz * VISITOR.hz
+const sceneGags = gags.filter((g) => g.gag.startsWith(SCENE.unit))
+const sceneHits = hits.filter((h) => h.page === page && h.step >= filmIn)
+// A frame of the film: on the machine page, no turn, the control not the flippers', no flipper held by the visitor, the arrow where it was sealed and the view where it stood when the film came in.
+const inFilm = (i: number) => {
+  expect(rows[i]).toBeDefined()
+  expect([rows[i]![COL.page], num(i, COL.turning), num(i, COL.control), num(i, COL.left), num(i, COL.right)]).toEqual([page, 0, 0, 0, 0])
+  expect([...at(i), num(i, COL.scroll)]).toEqual([...at(filmIn), num(filmIn, COL.scroll)])
+}
 
 describe('the motion pack of a recorded visit', () => {
-  it('holds every run whole, on four sets within the limit, and takes nothing away', () => {
+  it('holds every run whole, one set to a group within the limit, and leaves out only the blow of a bat the visitor does not have', () => {
     expect(plan.limitTook).toEqual([])
-    expect(plan.leftOut).toEqual([])
     expect(plan.missing).toEqual([])
+    // Change note 002 item 8: the visitor has no flipper on the live machine page, so the plan names the one heading it cannot fill, and makes no sheet of a ball's drop, a bat's blow or a save.
+    expect(plan.leftOut.length).toBe(1)
+    expect(plan.leftOut[0]).toContain("flip: the run holds no step at which the visitor's own flipper meets the ball")
+    expect([m.leaves, m.met, m.gate]).toEqual([null, null, null])
+    expect([...of('drop'), ...of('flip'), ...of('flip-close'), ...of('save')]).toEqual([])
     expect(plan.items.length).toBe(rec.sheets)
-    expect(plan.groups.map((g) => [g.id, g.items.length])).toEqual([['pages', 9], ['arrow', 10], ['port', 6], ['bats', 7]])
-    expect(plan.groups.map((g) => [...new Set(g.items.map((f) => f.moment))])).toEqual([['walk', 'turn', 'seat', 'hit'], ['type', 'taken', 'given-back'], ['flippers', 'drop'], ['save', 'flip', 'flip-close']])
+    expect(plan.groups.flatMap((g) => g.items).length).toBe(rec.sheets)
+    // The groups and their moments are the point here, so they are named: the pages, the arrow on step 1, and the machine page up to the film.
+    expect(plan.groups.map((g) => [g.id, [...new Set(g.items.map((f) => f.moment))]])).toEqual([['pages', ['walk', 'turn', 'seat', 'hit']], ['arrow', ['type', 'taken', 'given-back']], ['machine', ['flippers']]])
     const sets = (packPlan(cfg, { role: 'R4', round: 25, unit: SITE, facts: run as never }) as { sets: { set: string; groups: string[]; files: Sheet[] }[] }).sets
-    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual([['A', 'pages', 9], ['B', 'arrow', 10], ['C', 'port', 6], ['D', 'bats', 7]])
+    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual(plan.groups.map((g, k) => ['ABC'[k], g.id, g.items.length]))
     for (const s of sets) {
       expect(s.files.length).toBeLessThanOrEqual(most)
       // A run is never cut by the end of a set.
@@ -55,11 +86,6 @@ describe('the motion pack of a recorded visit', () => {
     // The runs the brief asks for at every frame of 60 are there to their last frame: none is shortened to fit a sheet or a set.
     expect(of('seat').flatMap((f) => f.steps).length).toBe(SEAT.before + SEAT.after + 1)
     expect(of('type').flatMap((f) => f.steps)).toEqual(span(m.type.press - KEYS.before, m.type.release + KEYS.after))
-    expect(of('drop').flatMap((f) => f.steps)).toEqual(span(m.leaves - DROP.before, m.leaves + DROP.after))
-    expect(of('flip-close').flatMap((f) => f.steps)).toEqual(span(m.met - CLOSE.before, m.met + CLOSE.after))
-    const save = of('save').flatMap((f) => f.steps)
-    expect(save[0]).toBe(m.gate.take - SAVE.before)
-    expect(save[save.length - 1]).toBeGreaterThanOrEqual(m.gate.kick + SAVE.after)
   })
 
   it('says in every heading the stride, the scale, the count and the event its frames hold', () => {
@@ -99,15 +125,17 @@ describe('the motion pack of a recorded visit', () => {
 
   it('the seat, close: from 6 frames before the slab meets its seat to 14 after, the page edge, the head with the whole step row and the tray corner in each frame at 100%', () => {
     const seat = of('seat')
-    // MEASURED on this run's pictures (node pipeline/phase5/pack-frames-gap.mjs): the dark gap over the page's upper edge is 152, 126, 99, 71, 44, 19 px on steps 639 to 644
-    // and 0 px on step 645. The stage seats the page TURNS.seat steps after the new page's first step, 627: the mark "contact" stands under step 645.
+    // MEASURED on the pictures of the walk of commit b3e4f902 (node pipeline/phase5/pack-frames-gap.mjs): the dark gap over the page's upper edge was 152, 126, 99, 71, 44, 19 px on the six steps
+    // before the seat and 0 px on it, TURNS.seat steps after the new page's first step. The pictures of a later walk were not measured again: held here is that relation,
+    // the stage seats the page TURNS.seat steps after the first step of the new page, and the mark "contact" stands under that step and no other.
     let first = m.turn.first
     while (rows[first]![COL.page] === rows[m.turn.first]![COL.page]) first += 1
-    expect(first).toBe(627)
-    expect(first + TURNS.seat).toBe(645)
-    expect(seat.flatMap((f) => f.steps)).toEqual(span(645 - SEAT.before, 645 + SEAT.after))
+    expect(first).toBeGreaterThan(m.turn.first)
+    expect(first).toBeLessThanOrEqual(m.turn.last)
+    const seated = first + TURNS.seat
+    expect(seat.flatMap((f) => f.steps)).toEqual(span(seated - SEAT.before, seated + SEAT.after))
     expect(seat.map((f) => f.steps.length)).toEqual([6, 6, 6, 3])
-    expect(seat.flatMap((f) => f.steps.filter((_, j) => f.hands![j]!.split(' ').includes(SEAT.mark)))).toEqual([645])
+    expect(seat.flatMap((f) => f.steps.filter((_, j) => f.hands![j]!.split(' ').includes(SEAT.mark)))).toEqual([seated])
     const wins = seatWindows(cfg) as number[][]
     for (const f of seat) expect(f.windows).toEqual(wins)
     // The strip: 176 px from the page's upper edge, to the page's right edge, with the whole step row, its knobs and the rule under it; beside it the tray's corner, 290 by 176 at x 780, y 290.
@@ -123,26 +151,30 @@ describe('the motion pack of a recorded visit', () => {
     expect(wins[1]![0]!).toBeGreaterThan(ZONE.x + ZONE.w / 2)
     expect(wins[1]![0]! + wins[1]![2]!).toBeGreaterThan(ZONE.x + ZONE.w)
     expect(wins[1]![1]!).toBeLessThan(ZONE.y)
-    for (const f of seat) expect(f.heading).toContain(`the page's seat, close: every frame from 6 frames before the stage seats the page (${time(645)}) to 14 frames after, two fixed windows side by side in each frame, ${FULL_WORDS}`)
+    for (const f of seat) expect(f.heading).toContain(`the page's seat, close: every frame from 6 frames before the stage seats the page (${time(seated)}) to 14 frames after, two fixed windows side by side in each frame, ${FULL_WORDS}`)
   })
 
-  it('the take: from 6 frames before the take to 6 after the arrow arrives, on four sheets, one window at 100% on the arrow at the button, the paper, its holder and the tray corner', () => {
+  it('the take: from 6 frames before the take to 6 after the arrow arrives, on sheets of one run, one window at 100% on the arrow at the button, the paper, its holder and the tray corner', () => {
     const taken = of('taken')
     const steps = taken.flatMap((f) => f.steps)
-    expect(m.taken).toBe(1884)
+    // The take is the step at which the page's tug begins.
+    expect(m.taken).toBe(gagAt(TAKES))
     expect(steps[0]).toBe(m.taken - TAKEN.before)
     // The arrow arrives at the first step, after it has moved TAKEN.moves px or more in a step, at which it moves under TAKEN.rest px: read here from the rows once more.
     const speed = (i: number) => Math.hypot(num(i, COL.heroX) - num(i - 1, COL.heroX), num(i, COL.heroY) - num(i - 1, COL.heroY))
     let rest = m.taken + 1
     while (speed(rest) < TAKEN.moves) rest += 1
     while (speed(rest) >= TAKEN.rest) rest += 1
-    expect(rest).toBe(1912)
+    expect(rest).toBeGreaterThan(m.taken)
+    expect(rest - m.taken).toBeLessThanOrEqual(TAKEN.most)
     expect(steps[steps.length - 1]).toBe(rest + TAKEN.after)
     // It settles in the frames after: under 2 px a step, and it ends where the paper's slot is, TAKEN.room or less from it.
     for (const i of span(rest, rest + TAKEN.after)) expect(speed(i)).toBeLessThan(2)
     for (const f of taken) expect(f.heading).toContain(`every frame from ${TAKEN.before} frames before the take (${time(m.taken)}) to ${TAKEN.after} frames after the arrow arrives (${time(rest)}, the first frame after its travel in which it moves under ${TAKEN.rest} px)`)
-    expect(taken.length).toBe(4)
-    taken.forEach((f, j) => expect(f.heading).toContain(`sheet ${j + 1} of 4 of one run`))
+    // As many sheets as the run needs at the first sheet's count of frames, each named by its place.
+    expect(taken.length).toBe(Math.ceil(steps.length / taken[0]!.steps.length))
+    expect(taken.length).toBeGreaterThan(1)
+    taken.forEach((f, j) => expect(f.heading).toContain(`sheet ${j + 1} of ${taken.length} of one run`))
     const w = taken[0]!.windows![0]!
     for (const f of taken) expect(f.windows).toEqual([w])
     expect([w[2], w[3]]).toEqual([taken[0]!.tileW, taken[0]!.tileH])
@@ -168,16 +200,19 @@ describe('the motion pack of a recorded visit', () => {
     expect(steps.filter((_, j) => marks[j]!.split(' ').includes(KEYS.mark))).toEqual(span(m.type.press + 1, m.type.release))
     // The press taken: the first on the Email field whose frames begin KEYS.home steps or more after the page went on to that field (its keys fly home there: src/pages/step1/index.ts, advance()),
     // and end before the first red slab drops and before the page asks for the resume. On that field the keys stay in their seats (kit/02-SUBJECT.md, "Field by field").
-    expect(m.type).toEqual({ press: 1479, release: 1491, nth: 10, of: 13, clear: true, spent: 1220, why: 'on', field: 'email', seated: 1420, key: 'A' })
-    const gags = rec.gags as { gag: string; step: number }[]
-    const hits = rec.hits as { name: string; step: number }[]
-    expect(gags.find((g) => g.gag === 'step1.lastName')!.step).toBe(m.type.spent)
-    expect(gags.find((g) => g.gag === KEYS.field)!.step).toBe(m.type.seated)
+    // The page has one Name field: its turrets stop when the Name is done and the page goes on to the Email field (STANDS.until), and that is the field whose keys stay seated (KEYS.field).
+    expect(m.type).toMatchObject({ clear: true, why: 'on', field: 'email' })
+    expect(STANDS.until).toBe(KEYS.field)
+    expect(gagAt(STANDS.until)).toBe(m.type.spent)
+    expect(gagAt(KEYS.field)).toBe(m.type.seated)
+    expect(m.type.release).toBeGreaterThan(m.type.press)
+    expect(m.type.nth).toBeLessThanOrEqual(m.type.of)
+    expect(typeof m.type.key).toBe('string')
     expect(steps[0]! - m.type.spent).toBeGreaterThanOrEqual(KEYS.spent)
     expect(steps[0]! - m.type.seated).toBeGreaterThanOrEqual(KEYS.home)
     expect(steps[steps.length - 1]!).toBeLessThan(Math.min(gags.find((g) => g.gag === KEYS.until)!.step, hits.find((h) => h.name === KEYS.slab && h.step >= m.type.seated)!.step))
     expect(hits.filter((h) => h.step >= steps[0]! && h.step <= steps[steps.length - 1]!)).toEqual([])
-    for (const f of type) expect(f.heading).toContain(`. Press 10 of the visitor's 13 on the keyboard, on the key A (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at ${time(1420)} and these frames begin ${((steps[0]! - 1420) / 60).toFixed(2)} s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. The visitor rests ${KEYS.rest} frames after it lets a key go. `)
+    for (const f of type) expect(f.heading).toContain(`. Press ${m.type.nth} of the visitor's ${m.type.of} on the keyboard, on the key ${m.type.key} (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at ${time(m.type.seated)} and these frames begin ${((steps[0]! - m.type.seated) / 60).toFixed(2)} s later; the turrets went down when the Name was done and no bolt lands in these frames. ${FIELD_WORDS.email}. The visitor rests ${KEYS.rest} frames after it lets a key go. `)
     // The window: the key under the pointer and the arrow in every frame, inside the key block, at 100%.
     const w = type[0]!.windows![0]!
     for (const i of steps) expect(holdsBox(w, [at(i)[0] - TAKEN.room, at(i)[1] - TAKEN.room, at(i)[0] + TAKEN.room, at(i)[1] + TAKEN.room])).toBe(true)
@@ -185,7 +220,9 @@ describe('the motion pack of a recorded visit', () => {
     expect(holdsBox([block.x, block.y, block.x + block.w, block.y + block.h], [num(m.type.press, COL.pointerX), num(m.type.press, COL.pointerY), num(m.type.press, COL.pointerX), num(m.type.press, COL.pointerY)])).toBe(true)
     // After every release on the keyboard in this walk the pointer stays where it was, the button up, for KEYS.rest steps or more.
     expect(KEYS.rest).toBeGreaterThanOrEqual(6)
-    expect(rec.releases.length).toBe(13)
+    // Every press the plan counted on the keyboard has its release in the file.
+    expect(rec.releases.length).toBe(m.type.of)
+    expect(rec.releases).toContain(m.type.release)
     for (const r of rec.releases) {
       expect(num(r - 1, COL.down)).toBe(1)
       for (const i of span(r, r + KEYS.rest - 1)) {
@@ -228,7 +265,13 @@ describe('the motion pack of a recorded visit', () => {
     const back = of('given-back')
     const steps = back.flatMap((f) => f.steps)
     const marks = back.flatMap((f) => f.hands!.map((h) => h.split(' ')))
-    expect(m.thrown).toEqual({ first: 2618, stand: 2622, handed: 2643 })
+    // The page throws the arrow back at the step it gives it back, the arrow stands within GIVES.throwMost steps, and the hand has it again within GIVES.stands steps of that.
+    expect(m.thrown.first).toBe(m.back)
+    expect(m.back).toBeGreaterThan(m.taken)
+    expect(m.thrown.stand).toBeGreaterThan(m.thrown.first)
+    expect(m.thrown.stand - m.thrown.first).toBeLessThanOrEqual(GIVES.throwMost)
+    expect(m.thrown.handed).toBeGreaterThan(m.thrown.stand)
+    expect(m.thrown.handed - m.thrown.stand).toBeLessThanOrEqual(GIVES.stands)
     expect(steps[0]).toBe(m.back - GIVES.before)
     expect(steps[steps.length - 1]).toBeGreaterThanOrEqual(m.thrown.handed + GIVES.after - 1)
     steps.forEach((i, j) => {
@@ -255,87 +298,86 @@ describe('the motion pack of a recorded visit', () => {
     }
   })
 
-  it('the drop from the port: from 6 frames before the ball first moves to 24 after, the cup, the collar and the first stretch of the tube in every frame at 100%', () => {
-    const drop = of('drop')
-    const steps = drop.flatMap((f) => f.steps)
-    expect(m.leaves).toBe(5953)
-    expect(steps).toEqual(span(m.leaves - DROP.before, m.leaves + DROP.after))
-    // The ball lies still in the cup until the step before, and moves at the step the run is hung on.
-    expect(at(m.leaves - 1)).toEqual(at(m.leaves - DROP.before))
-    expect(num(m.leaves, COL.heroY)).toBeGreaterThan(num(m.leaves - 1, COL.heroY))
-    // The port as the table lays it out, in px of the page.
+  it('the drop from the port, as the scripted scene plays it: the film takes the page with the arrow sealed in the port, the ball leaves the cup in its first frames, and the launch follows', () => {
+    // The port as the table lays it out, in px of the page, and the arrow sealed in it at the step the site gives the flippers.
     expect(DROP.port).toEqual([PORT.x * BALL, PORT.y * BALL])
     expect([DROP.ring, DROP.cup]).toEqual([PORT.ring * BALL, PORT.cup * BALL])
-    const w = drop[0]!.windows![0]!
-    for (const f of drop) expect(f.windows).toEqual([w])
-    expect([w[2], w[3]]).toEqual([drop[0]!.tileW, drop[0]!.tileH])
-    for (const i of steps) {
-      const y = DROP.port[1]! - num(i, COL.scroll)
-      // The cup whole, the collar's ring to both sides, and DROP.tube px of tube under the ring, in this frame's view.
-      expect(holdsBox(w, [DROP.port[0]! - DROP.ring / 2, y - DROP.cup / 2, DROP.port[0]! + DROP.ring / 2, y + DROP.ring / 2 + DROP.tube])).toBe(true)
+    expect(hits.find((h) => h.name === 'ball-seal')).toMatchObject({ step: m.flippers, x: DROP.port[0], y: DROP.port[1] })
+    // The site says the control is the flippers' only while the view pushes into the port; the visitor presses none, and the arrow lies still in the port.
+    expect(filmIn).toBeGreaterThan(m.flippers)
+    for (const i of span(m.flippers, filmIn - 1)) expect([num(i, COL.control), num(i, COL.left), num(i, COL.right), ...at(i)]).toEqual([1, 0, 0, ...DROP.port])
+    expect(at(filmIn)).toEqual(DROP.port)
+    // The ball leaves the cup at the scene's first event, the one the film is joined on (VIDEO.inEvent). The scene does not mark it as a hit, so the walk does not carry it:
+    // its step is the film's first step and the event's own time. It falls before the scene's launch, the gag the walk does carry.
+    expect(events[0]!.name).toBe(VIDEO.inEvent)
+    const leaves = Math.round(sceneStep(events[0]!.at))
+    const launch = gagAt(SCENE.launch)
+    expect(leaves).toBeGreaterThan(filmIn)
+    expect(leaves).toBeLessThan(launch)
+    expect(gagAt(SCENE.reveal)).toBeLessThan(launch)
+    // From DROP.before frames before the ball leaves to DROP.after after: no flipper of the visitor's, the arrow in the port, and from the film's first step every frame is the film's.
+    for (const i of span(leaves - DROP.before, leaves + DROP.after)) {
+      expect([num(i, COL.left), num(i, COL.right), ...at(i)]).toEqual([0, 0, ...DROP.port])
+      if (i >= filmIn) inFilm(i)
     }
-    // The ball starts in the cup, inside the window.
-    expect(holdsBox(w, [at(steps[0]!)[0] - BALL / 2, at(steps[0]!)[1] - BALL / 2, at(steps[0]!)[0] + BALL / 2, at(steps[0]!)[1] + BALL / 2])).toBe(true)
-    const moved = num(steps[steps.length - 1]!, COL.scroll) - num(steps[0]!, COL.scroll)
-    for (const f of drop) expect(f.heading).toContain(`. The page's view moves ${Math.round(moved)} px down the page in these frames, so the port stands higher in the later ones. `)
+    // The same round the launch.
+    for (const i of span(launch - DROP.before, launch + DROP.after)) inFilm(i)
+    // The plan hangs its sheet of the drop on a ball that moves in the visitor's rows. The film's ball is in the film's picture and not in the rows, so the plan finds no such step and makes no such sheet:
+    // the cup, the collar and the tube in a window at 100% are not held by this file on a live walk.
+    expect(m.leaves).toBe(null)
+    expect(of('drop')).toEqual([])
   })
 
-  it('the blow, close: the ball whole in every frame of the sheets', () => {
-    const blow = of('flip-close')
-    const steps = blow.flatMap((f) => f.steps)
-    expect(m.met).toBe(7580)
-    expect(blow.map((f) => f.steps.length)).toEqual([6, 6])
-    const w = blow[0]!.windows![0]!
-    for (const f of blow) {
-      expect(f.windows).toEqual([w])
-      expect(f.heading).toContain('. The ball is whole in the window in every frame. ')
-    }
-    for (const i of steps) expect(holdsBox(w, [at(i)[0] - BALL / 2 - BLOW.room, at(i)[1] - BALL / 2 - BLOW.room, at(i)[0] + BALL / 2 + BLOW.room, at(i)[1] + BALL / 2 + BLOW.room])).toBe(true)
-    // The ball goes more than its own width in a step after the blow: a window the size of a tile of twelve, set on the blow, would not hold it.
-    const way = Math.max(...steps.map((i) => at(i)[1])) - Math.min(...steps.map((i) => at(i)[1]))
-    expect(way + BALL).toBeGreaterThan(278)
+  it('the blow, as the scripted scene plays it: the walk carries the scene\'s marked events at their own time and place, and the frames round its hardest strike are the film\'s', () => {
+    // Every hit the walk carries from the film's first step on is the scene's own marked event of that name, in the scene's order, at its place within SCENE.room px
+    // and at its time within SCENE.late of a step; the scene marks no other.
+    const marked = events.filter((e) => e.hits)
+    expect(sceneHits.map((h) => h.name)).toEqual(marked.map((e) => e.name))
+    sceneHits.forEach((h, k) => {
+      const e = marked[k]!
+      expect(Math.abs(h.x - e.x)).toBeLessThanOrEqual(SCENE.room)
+      expect(Math.abs(h.y - e.y)).toBeLessThanOrEqual(SCENE.room)
+      expect(Math.abs(h.step - sceneStep(e.at))).toBeLessThanOrEqual(SCENE.late)
+    })
+    // The gag at which the scene strikes hardest. The scene grades its strikes 1 to 3 in their names (`strike:<part>:<grade>`); chosen is the gag that holds the most strikes of grade SCENE.hardest.
+    const hard = events.filter((e) => new RegExp(`^strike:.+:${SCENE.hardest}$`).test(e.name))
+    const held = sceneGags.map((g, k) => hard.filter((e) => sceneStep(e.at) >= g.step && sceneStep(e.at) < (sceneGags[k + 1]?.step ?? Infinity)).length)
+    const top = Math.max(...held)
+    expect(top).toBeGreaterThan(0)
+    expect(held.filter((n) => n === top).length).toBe(1)
+    const nth = held.indexOf(top)
+    // The name is the choice, so it is pinned: the coffee gag, the frenzy of the office tier's bumper, rail and sling.
+    expect(sceneGags[nth]!.gag).toBe('pinball.coffee')
+    // The blow: the first hit the walk carries in that gag that is itself a strike of that grade in the scene.
+    const k = sceneHits.findIndex((h, j) => h.step >= sceneGags[nth]!.step && h.step < sceneGags[nth + 1]!.step && hard.some((e) => e.at === marked[j]!.at))
+    expect(k).toBeGreaterThanOrEqual(0)
+    const blow = sceneHits[k]!.step
+    for (const i of span(blow - CLOSE.before, blow + CLOSE.after)) inFilm(i)
+    // The plan hangs its close sheet of a blow on the visitor's own bat meeting a ball in the rows. The visitor has no bat and the rows hold no ball,
+    // so the ball's way in a step and the window that holds it whole are not held by this file on a live walk.
+    expect(m.met).toBe(null)
+    expect(of('flip-close')).toEqual([])
   })
 
-  it('the save: the gate wire, its posts and both bat tips at 100%, and 20 px under the wire where the page shows them', () => {
-    const save = of('save')
-    const steps = save.flatMap((f) => f.steps)
-    expect(m.gate).toMatchObject({ take: 6800, kick: 6814 })
-    const w = save[0]!.windows![0]!
-    for (const f of save) expect(f.windows).toEqual([w])
-    expect([w[2], w[3]]).toEqual([save[0]!.tileW, save[0]!.tileH])
-    const tier = Math.floor((num(m.gate.kick, COL.heroY) / BALL - (hd.height / BALL + cfg.table.marqueeHeightBalls)) / cfg.table.tierHeightBalls)
-    const top = (hd.height / BALL + cfg.table.marqueeHeightBalls + cfg.table.tierHeightBalls * tier) * BALL
-    // The wire's lowest place in a frame: its line at rest (MOUTH.hole), or the foot of the ball while it lies in the mouth, and the wire's thickness under it.
-    const wire = (i: number) => {
-      const inMouth = Math.abs(num(i, COL.heroX) / BALL - MID) <= MOUTH.half && num(i, COL.heroY) >= top && num(i, COL.heroY) < top + cfg.table.tierHeightBalls * BALL
-      return top + Math.max(MOUTH.hole * BALL, inMouth ? num(i, COL.heroY) - top + BALL / 2 : 0) + GATE.wire - num(i, COL.scroll)
-    }
+  it('the save, as the scripted scene plays it: the scene\'s one save falls in the gag the page names for it, and the frames round the gag and round the save are the film\'s', () => {
+    const from = gagAt(SCENE.save)
+    const to = gagAt(SCENE.after)
+    expect(to).toBeGreaterThan(from)
+    // The scene's save is the event the page tells of by one of SAVE.names. The scene has one and does not mark it as a hit, so the walk does not carry it:
+    // its step is the film's first step and the event's own time.
+    const saves = events.filter((e) => SAVE.names.includes(e.name))
+    expect(saves.length).toBe(1)
+    expect(saves[0]!.hits).toBe(false)
+    const kick = Math.round(sceneStep(saves[0]!.at))
+    expect(kick).toBeGreaterThanOrEqual(from)
+    expect(kick).toBeLessThan(to)
+    for (const i of span(from - SAVE.before, from + SAVE.after)) inFilm(i)
+    for (const i of span(kick - SAVE.before, kick + SAVE.after)) inFilm(i)
+    // The gate's hole is the mouth's, as the table lays it out.
     expect(GATE.hole).toBe(MOUTH.hole)
-    // The posts stand at the mouth's two sides, and both bats' tips lie between them.
-    expect(w[0]!).toBeLessThanOrEqual((MID - MOUTH.half) * BALL - GATE.room)
-    expect(w[0]! + w[2]!).toBeGreaterThanOrEqual((MID + MOUTH.half) * BALL + GATE.room)
-    const tipU = FLIP.pivotU + Math.cos((FLIP.rest * Math.PI) / 180) * (FLIP.length - FLIP.tip)
-    const tipV = FLIP.pivotV + Math.sin((FLIP.rest * Math.PI) / 180) * (FLIP.length - FLIP.tip)
-    for (const i of steps) {
-      const y = top + tipV * BALL - num(i, COL.scroll)
-      expect(holdsBox(w, [tipU * BALL, y, (2 * MID - tipU) * BALL, y])).toBe(true)
-      // Under the wire's lowest place in this frame the window holds GATE.under px, or it ends on the foot of the page's own picture.
-      const under = w[1]! + w[3]! - wire(i)
-      expect(under >= GATE.under || w[1]! + w[3]! === hd.height).toBe(true)
-    }
-    const low = Math.max(...steps.map(wire))
-    const under = w[1]! + w[3]! - low
-    // What the heading says of it is what the rows hold.
-    // In this visit the page's view goes down with the lost ball, so the page shows more than GATE.under px under the wire, and the window's foot lies a whole px or less under those.
-    expect(under).toBeGreaterThanOrEqual(GATE.under)
-    expect(under).toBeLessThan(GATE.under + 1)
-    expect(w[1]! + w[3]!).toBeLessThan(hd.height)
-    expect(new Set(steps.map((i) => num(i, COL.scroll))).size).toBeGreaterThan(1)
-    // The view's way is said from the rows: up to its highest place, then down to the last frame.
-    const views = steps.map((i) => num(i, COL.scroll))
-    const high = Math.min(...views)
-    const when = steps[views.indexOf(high)]!
-    for (const f of save) expect(f.heading).toContain(`. The page's view moves in these frames, ${Math.round(views[0]! - high)} px up the page from the first frame to ${time(when)}, then ${Math.round(views[views.length - 1]! - high)} px down the page from there to the last frame, so the gate, its posts and the bats stand lower, then higher in the window as it goes. The window holds ${GATE.under} px or more under the wire's lowest place in every frame. `)
-    expect(Math.round(views[views.length - 1]! - high)).toBe(69)
+    // The plan finds a save by a ball that lies in the mouth and is thrown up again in the rows. The rows hold no ball, so it finds none and makes no sheet of one:
+    // the wire, its posts and the bat tips in a window at 100% are not held by this file on a live walk.
+    expect(m.gate).toBe(null)
+    expect(of('save')).toEqual([])
   })
 })
