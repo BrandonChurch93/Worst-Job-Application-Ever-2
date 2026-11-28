@@ -52,8 +52,8 @@ export const GONE = { shield: [0.02, 0.6], wings: [[0.08, 0.7], [0.14, 0.76]], g
 export const FLY = { far: 2700, wide: 1100, least: 0.6, high: 120, burst: [400, 250] }
 // Where the button lies when all else is gone (the fight's FALLEN), level on the page; and what lies about it, page px from its middle: a claw, a bent plate, two bolts.
 export const LEFT = { x: 960, y: 650, slide: [0.02, 0.62], lie: [[-76, 150, 2.5], [150, 72, -0.5], [-78, -104, 0.9], [48, 154, 2.2]] } as const
-// The fist's blow on the button that is left: it goes down in `down` seconds and springs back by `back`; `deep` is in model units, `squash` a share of its size.
-export const PRESS = { down: 0.07, back: 0.45, deep: 9, squash: 0.045 }
+// The fist's blow on the button that is left: it goes down in `down` seconds and springs back by `back` to `rest` (0 is all the way up, 1 stays down); `deep` is in model units, `squash` a share of its size.
+export const PRESS = { down: 0.07, back: 0.45, deep: 9, squash: 0.045, rest: 0 }
 // The face of the word as in the approved pictures: lighter and a little smaller than the page's own button (inter-600 at 26 px).
 export const WORD = { font: 'inter-400', px: 25 }
 export const BENT = { yaw: 0.26, droop: 0.2 }
@@ -249,7 +249,7 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
     buttonZ = mix(buttonZ, -body.z, down * down) 
   }
   const pressAge = since(now, b.pressedAt ?? null)
-  const fist = pressAge < 0 ? 0 : pressAge < PRESS.down ? pressAge / PRESS.down : 1 - outBack(lin(pressAge, PRESS.down, PRESS.back), 2.4)
+  const fist = pressAge < 0 ? 0 : pressAge < PRESS.down ? pressAge / PRESS.down : 1 - (1 - PRESS.rest) * outBack(lin(pressAge, PRESS.down, PRESS.back), 2.4)
   buttonZ -= PRESS.deep * fist
   const span = (r: readonly [number, number]): number => lin(gone, r[0], r[1])
   const away = {
