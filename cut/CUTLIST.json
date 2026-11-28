@@ -1,8 +1,8 @@
 {
   "what": "The cut list of film B, with the opening of film A and the card loop. Made by npm run cut from film.units, film.beats, the narrator's film lines and the events of the whole film run in film mode. Frames are counted from 0 at film.fps.",
   "fps": 60,
-  "frameCount": 11694,
-  "seconds": 194.9,
+  "frameCount": 12012,
+  "seconds": 200.2,
   "beatToleranceSeconds": 0.25,
   "beatToleranceFrames": 15,
   "units": [
@@ -39,8 +39,8 @@
     {
       "id": "decision",
       "first": 10974,
-      "last": 11693,
-      "frames": 720
+      "last": 12011,
+      "frames": 1038
     }
   ],
   "beats": [
@@ -526,12 +526,12 @@
       "id": "decision.metrics",
       "unit": "decision",
       "first": 11334,
-      "last": 11573,
-      "frames": 240,
+      "last": 11801,
+      "frames": 468,
       "event": {
         "name": "button-press",
-        "frame": 11532,
-        "seconds": 192.2,
+        "frame": 11780,
+        "seconds": 196.3333,
         "inside": true,
         "offByFrames": 0
       }
@@ -539,15 +539,15 @@
     {
       "id": "decision.reset",
       "unit": "decision",
-      "first": 11574,
-      "last": 11693,
-      "frames": 120,
+      "first": 11802,
+      "last": 12011,
+      "frames": 210,
       "event": {
         "name": "page-turn",
-        "frame": 11559,
-        "seconds": 192.6542,
+        "frame": 11807,
+        "seconds": 196.7875,
         "inside": true,
-        "offByFrames": 15
+        "offByFrames": 0
       }
     }
   ],
@@ -19729,9 +19729,9 @@
     },
     {
       "name": "peel-up",
-      "frame": 11436,
-      "step": 45746,
-      "seconds": 190.6083,
+      "frame": 11511,
+      "step": 46045,
+      "seconds": 191.8542,
       "unit": "decision",
       "beat": "decision.metrics",
       "page": "step5",
@@ -19742,9 +19742,9 @@
     },
     {
       "name": "button-press",
-      "frame": 11532,
-      "step": 46128,
-      "seconds": 192.2,
+      "frame": 11780,
+      "step": 47120,
+      "seconds": 196.3333,
       "unit": "decision",
       "beat": "decision.metrics",
       "page": "step5",
@@ -19755,11 +19755,11 @@
     },
     {
       "name": "page-turn",
-      "frame": 11559,
-      "step": 46237,
-      "seconds": 192.6542,
+      "frame": 11807,
+      "step": 47229,
+      "seconds": 196.7875,
       "unit": "decision",
-      "beat": "decision.metrics",
+      "beat": "decision.reset",
       "page": "step5",
       "x": 960,
       "y": 540,

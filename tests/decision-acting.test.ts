@@ -1,6 +1,8 @@
 import { expect, test } from 'vitest'
-import { ARRIVE, CUES, GIVE, HOPE, pointerAt, type Marks } from '../src/pages/step5/script'
-import { AT, FILM } from '../src/pages/step5/timeline'
+import { config } from '../src/config'
+import { narration } from '../src/copy'
+import { ARRIVE, CUES, GIVE, HOPE, READ, pointerAt, type Marks } from '../src/pages/step5/script'
+import { AT, FILM, SAID } from '../src/pages/step5/timeline'
 
 const marks: Marks = { hand: { x: 960, y: 540 }, wait: { x: 1400, y: 780 }, spot: { x: 700, y: 620 }, drop: { x: 1300, y: 700 }, press: { x: 900, y: 800 } }
 const moved = (a: number, b: number): number => {
@@ -41,10 +43,41 @@ test('the beaten walk to the button is slow, ends in a hold of at least 0.4 s an
   expect(pointerAt(marks, FILM.press + 0.3).down).toBe(false)
 })
 
-test('every cue of the acting sits inside the twelve seconds and in order', () => {
+test('every cue of the acting sits before the press and in order', () => {
   for (let i = 0; i < CUES.length; i++) {
     expect(CUES[i]!.at).toBeGreaterThan(0)
-    expect(CUES[i]!.at).toBeLessThan(10)
+    expect(CUES[i]!.at).toBeLessThan(FILM.press)
     if (i > 0) expect(CUES[i]!.at).toBeGreaterThan(CUES[i - 1]!.at + 0.3)
   }
+})
+
+test('the phrase times the acting keeps are those of line 8 at the narrator\'s rate', () => {
+  const line = narration.film['decision.letter'][0]!.text
+  const rate = config.audio.narratorMaxWordsPerSecond
+  const phrases = line.split(' / ')
+  let words = 0
+  for (let i = 0; i < phrases.length; i++) {
+    expect(SAID[i]).toBeCloseTo(words / rate, 6)
+    words += phrases[i]!.split(' ').length
+  }
+  expect(SAID).toHaveLength(phrases.length + 1)
+  expect(SAID[phrases.length]).toBeCloseTo(words / rate, 6)
+})
+
+test('the arrow acts the line: flat through the first two phrases, whole in the third, up on the fourth, down on the fifth, each pose held', () => {
+  const frame = 1 / 30
+  expect(FILM.landed + FILM.heal / 2).toBeGreaterThan(FILM.flat + SAID[2]! - 0.5)
+  expect(FILM.landed + FILM.heal).toBeGreaterThan(FILM.flat + SAID[2]!)
+  expect(FILM.landed + FILM.heal).toBeLessThan(FILM.flat + SAID[3]! - 0.2)
+  expect(FILM.heal + (FILM.landed - FILM.flat)).toBeLessThan(config.cursor.damageHealSeconds)
+  expect(READ.look).toBeCloseTo(FILM.flat + SAID[3]!, 6)
+  expect(READ.sag).toBeCloseTo(FILM.flat + SAID[4]!, 6)
+  expect(READ.sag - READ.look).toBeGreaterThanOrEqual(0.2)
+  expect(GIVE.look - READ.sag).toBeGreaterThanOrEqual(0.2)
+  const said = CUES.filter((c) => c.at >= READ.look)
+  expect(said.map((c) => c.act ?? c.react)).toEqual(['proud', 'exhausted', 'doubleTake', 'stamp'])
+  expect(FILM.press).toBeLessThanOrEqual(FILM.flat + SAID[5]!)
+  expect(FILM.leave).toBeGreaterThanOrEqual(FILM.flat + SAID[5]! + config.audio.lineGapSeconds - 1e-9)
+  expect(FILM.leave).toBeLessThan(FILM.flat + SAID[5]! + config.audio.lineGapSeconds + frame)
+  expect(Math.abs(FILM.press * 30 - Math.round(FILM.press * 30))).toBeLessThan(1e-6)
 })

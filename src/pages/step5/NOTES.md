@@ -91,3 +91,23 @@ What is above is as it was built; where this section differs, this section holds
 | The letter read, 3.5 to 4.9 s | proud | puffs up and holds (3.5 to 3.94), dusts itself off (3.94), struts to the sheet's corner (4.44 to 4.8) |
 | The stamp, 4.9 to 5.43 s | scared | the shadow is on it at 4.93: rears, then small, pale and laid back, held to the hit |
 | The peel and the button, 7.07 to 10 s | exhausted | lies flat 0.4 s, peels itself up with nothing else moving, looks at the button (7.88), drags itself there (8.29 to 8.9), holds 0.3 s, then one strike (`stamp` reaction at 9.2, press at 9.3) |
+
+## After change 002 (the narrator's lines 8 and 9, the film only)
+
+What is above is as it was built; where this section differs, this section holds. The reasons, the tables of times and of re-pinned tests are in `pipeline/change002/decision.md`.
+
+- The unit is 17.3 s in the film (it was 12). Beats: the wait 0 to 2, the letter 2 to 6, the metrics 6 to 13.8, the reset 13.8 to 17.3.
+- Nothing a visitor sees or does has changed. The stamp, the carry, the fling and the landing at 7.07 s are as they were in both modes. The film has three numbers of its own in `FILM` (`timeline.ts`): `heal`, how long the landed arrow takes to be whole (2.3 s; a visitor's is still `STUCK.heal`, 0.78 s); `read` and `sag`, when it acts the fourth and fifth phrases of the line; and `press`, which is worked out from the line's end.
+- `SAID` in `timeline.ts` is when each phrase of line 8 starts after the stamp, and its end. A test holds it to the words in `content/narration.json` and the narrator's pace in the config, so a change of the line or the pace fails a test and does not drift.
+- The press is the first whole frame (of 30 a second) from which the page turns no sooner than the line's end and the gap between two lines: 13.433 s. The page turns at 13.8875 s. The walk to the button keeps the gaps it had, counted back from the press (`GIVE`).
+
+| Beat | Word | What the film cursor does |
+| --- | --- | --- |
+| "After careful consideration," and "the company", 5.43 to 8.56 s | (flat) | struck, carried, flung, lies flat right of the block from 7.07 to 8.22 s with nothing else moving |
+| "has decided", 8.56 to 9.81 s | exhausted | peels itself up (8.22 to 8.86), is whole at 9.37, slumps and holds |
+| "to move forward", 9.81 to 11.68 s | proud | puffs up and leans to the letter, as it did when the letter fell, and holds |
+| "with other candidates.", 11.68 to 13.56 s | exhausted | sags (11.68), holds 0.33 s, looks at the one button (12.01), drags itself there (12.42 to 13.03), holds 0.3 s, strikes (13.33), presses (13.43) |
+| "On to / the next application." (a draft), 13.89 to 17.01 s | plain | the page has turned back to the careers page, which plays as it does at the start |
+
+- The peel cannot start later than it does: the arrow must be whole inside `cursor.damageHealSeconds` (4 s) of the stamp, and it is whole 3.93 s after it.
+- The key `decision` in the config is at 0.15385 of its beat (it was 0.3): the same 7.2 s of the unit as before, now that the beat is longer.

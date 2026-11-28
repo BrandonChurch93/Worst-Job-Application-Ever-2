@@ -21,7 +21,7 @@ export const reboundAt = (age: number): number => (age <= HIT.reboundAt || age >
 export const hopAt = (age: number): number => (age <= 0 || age >= HIT.sheetSeconds ? 0 : Math.sin((Math.PI * age) / HIT.sheetSeconds))
 
 // Struck flat, the cursor sticks to the rubber with its tail out from under the block's edge, rises with the block and is carried off with it.
-// Over its place the block shakes once (`shakeX`, `shakeRot`); the cursor is thrown `clear` of it in the first `off` of the way and `up` a little, comes down swaying (`sway` px, `swings` times) until `fall`, skids `skid` px and lies flat: `right` of the block's edge and `down` from its middle. `heal` is the seconds it then lies flat, peels and fills. `shade` and `shadeDark` are its soft shade on the page while it is in the air.
+// Over its place the block shakes once (`shakeX`, `shakeRot`); the cursor is thrown `clear` of it in the first `off` of the way and `up` a little, comes down swaying (`sway` px, `swings` times) until `fall`, skids `skid` px and lies flat: `right` of the block's edge and `down` from its middle. `heal` is the seconds a visitor's arrow then lies flat, peels and fills (the film's is `FILM.heal`). `shade` and `shadeDark` are its soft shade on the page while it is in the air.
 export const STUCK = { right: 79, down: 36, heal: 0.78, hang: 110, fall: 0.86, off: 0.15, up: 26, clear: 64, sway: 38, swings: 2.5, float: 10, skid: 18, shakeRot: 0.17, shakeX: 30, shade: 30, shadeDark: 0.62 } as const
 
 // Set down, the stamp is laid on its side, grip away from the reader, a little off square: `turn` about its long axis, `rot` on the page.
@@ -31,14 +31,18 @@ export const LIE = { turn: Math.PI / 2, rot: -0.17 } as const
 export const ARRIVE = { look: 0.52, there: 0.86 } as const
 // The letter: shocked, then proud, then scared. It starts as the counter spins, does its double take as the sheet lands and holds a tilt toward it; puffs up and holds; dusts itself off; struts to the sheet's corner; and the shadow is on it.
 export const HOPE = { spin: 2.03, tilt: 3.06, lean: -0.36, proud: 3.5, dust: 3.94, walk: [4.44, 4.8] } as const
-// The button: the word is beaten. Whole again it looks at the one button there is, drags itself there, leans back from it for 0.3 s, rises and drives its tip into it.
-export const GIVE = { look: 7.88, walk: [8.29, 8.9], strike: 9.2 } as const
+// Under the narrator's line the arrow lies flat through the first two phrases and peels itself up into the third (`FILM.heal`). On the fourth, the one that sounds like good news, it puffs up and leans to the letter as it did when the letter fell; on the fifth it sags.
+export const READ = { look: FILM.read, lean: HOPE.lean, sag: FILM.sag } as const
+// The button: the word is beaten. It looks at the one button there is, drags itself there, leans back from it for 0.3 s, rises and drives its tip into it as the line ends.
+export const GIVE = { look: FILM.press - 1.42, walk: [FILM.press - 1.01, FILM.press - 0.4], strike: FILM.press - 0.1 } as const
 
 export const CUES: Cue[] = [
   { at: HOPE.spin, react: 'flinch' },
   { at: HOPE.tilt, aim: HOPE.lean },
   { at: HOPE.proud, aim: null },
   { at: HOPE.dust, react: 'dustOff' },
+  { at: READ.look, act: 'proud', aim: READ.lean },
+  { at: READ.sag, act: 'exhausted', aim: null },
   { at: GIVE.look, react: 'doubleTake' },
   { at: GIVE.strike, react: 'stamp' }
 ]
@@ -53,8 +57,7 @@ function keys(m: Marks): Key[] {
     { t: FILM.flat, x: m.spot.x, y: m.spot.y },
     { t: FILM.landed, x: m.drop.x, y: m.drop.y },
     { t: GIVE.walk[0], x: m.drop.x, y: m.drop.y },
-    { t: GIVE.walk[1], x: m.press.x, y: m.press.y },
-    { t: 12, x: m.press.x, y: m.press.y }
+    { t: GIVE.walk[1], x: m.press.x, y: m.press.y }
   ]
 }
 
