@@ -4,7 +4,7 @@ import * as stageModule from '../src/stage/stage'
 import * as botsModule from '../src/stage/bots'
 import * as pagesModule from '../src/pages'
 import * as configModule from '../src/config'
-import { spoken } from '../src/audio/cues'
+import { endsSentence, spoken } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
 import { keyPage, standIns } from '../src/audio/standin'
 import { config } from '../src/config'
@@ -141,8 +141,12 @@ describe('a whole visit of the live site through the stage and the sound engine'
   // The Decision page that holds its turn is not merged yet. ASSUMED for `held`: the page stands still, and gives no event, from the frame it would have turned
   // until the narrator owes it nothing (sound.owed('step5')), and then turns.
   for (const bot of ['keen', 'clumsy']) {
-    it(`on the ${bot} visit with the turn of Decision held as ruled, lets nothing of line 8 sound after the page turn and starts line 9 on the turn`, async () => {
+    it(`on the ${bot} visit with the turn of Decision held as ruled, lets nothing of line 8 sound after the page turn, starts line 9 on the turn, and ends line 7 at the end of a sentence`, async () => {
       const { v, turn } = await runWith(bot, true)
+      const sentenceEnds = script.get('boss.unfold.0')!.phrases.filter((p) => endsSentence(p.words)).map((p) => p.to)
+      const seven = v.log.filter((e) => e.line === 'line.boss.unfold.0' && e.what === 'cut')
+      expect(seven.length).toBe(1)
+      expect(sentenceEnds.some((t) => Math.abs(t - seven[0]!.seconds!) < 2e-3), `${seven[0]!.seconds}`).toBe(true)
       expect(v.finished).toBe(true)
       expect(v.heldSeconds).toBeGreaterThan(0)
       const eight = v.voices.filter((x) => x.id === 'line.decision.letter.0')

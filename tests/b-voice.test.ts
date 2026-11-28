@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
-import { spoken, waitsFor } from '../src/audio/cues'
+import { endsSentence, jumpsLiveOnly, spoken, turnWaitsFor, waitsFor } from '../src/audio/cues'
 import * as dsp from '../src/audio/dsp'
 import * as levels from '../src/audio/levels'
 import { DUCK, LIVE, db } from '../src/audio/levels'
@@ -66,7 +66,9 @@ class FakeContext {
 const eight = (a: string) => `${a} one two ${mark} three four five ${mark} six seven`
 const film = Object.fromEntries(['marketing.stroll', 'step1.firstName', 'step1.shredded', 'pinball.seal', 'boss.verify', 'decision.letter'].map((b) => [b, [{ at: 0, text: eight(b) }]]))
 film['step2.crank'] = [{ at: 0, text: eight('crank') }, { at: 0.5, text: eight('top') }]
-film['boss.unfold'] = [{ at: 0, text: eight('beaten') }, { at: 0.5, text: eight('loans') }, { at: 0.8, text: eight('ready') }]
+// The first part of line 7 has two sentences: its second phrase ends the first.
+const sentences = (a: string) => `${a} one two ${mark} three four five. ${mark} six seven.`
+film['boss.unfold'] = [{ at: 0, text: sentences('beaten') }, { at: 0.5, text: eight('loans') }, { at: 0.8, text: eight('ready') }]
 const drafts = { 'decision.reset': [{ at: 0, text: eight('next') }], 'boss.finish': [{ at: 0, text: `ka ${mark} me ${mark} ha`, loud: true, standIn: { seconds: 6, starts: [0.5, 1.5, 3] } }] }
 const L = 8 / wps
 const id = (key: string) => `line.${key}`
@@ -277,7 +279,7 @@ describe('the narrator\'s voice: the engine', () => {
     expect(of(ctx, 'step1.firstName.0')[0]!.stopped!).toBeLessThan(of(ctx, 'step1.firstName.0')[0]!.started!)
   })
 
-  it('at a jump lets the voice of line 6a out by the start of its next phrase and sets the voices of 6b and 6c again at their new starts', async () => {
+  it('at a jump lets the voice of line 6a out at the end of the sentence being said, the start of the phrase after it, and sets the voices of 6b and 6c again at their new starts', async () => {
     const { s, ctx } = await ready('step4')
     ctx.currentTime = 10
     s.event(ev('boss-formed', 'step4'), 'live')
@@ -288,7 +290,7 @@ describe('the narrator\'s voice: the engine', () => {
     expect(booked(s)).toEqual([[id('boss.unfold.0'), 10], [id('boss.unfold.1'), near(b0)], [id('boss.unfold.2'), near(c0)]])
     ctx.currentTime = 12
     s.event(ev('boss-turn', 'step4'), 'live')
-    const end = 10 + a.starts![1]!
+    const end = 10 + a.starts![2]!
     expect(times(ctx, 'boss.unfold.0')).toEqual([[10, near(end)]])
     expect(times(ctx, 'boss.unfold.1')).toEqual([[near(b0), 12], [near(end + gap), null]])
     expect(times(ctx, 'boss.unfold.2')).toEqual([[near(c0), 12], [near(end + gap + b.seconds + gap), null]])
@@ -603,5 +605,30 @@ describe('the narrator\'s voice: another form of a kept line in a preview mix', 
     writeFileSync(path.join(altDir, `${one}.wav`), tone(0.5, SR / 2))
     await expect(makeMix(P, cfg, M, path.join(P.mix, 'no.wav'), 'review-alt', plan(), altDir)).rejects.toThrow(/^the mix is refused: .* Hz and the kept take of line\.marketing\.stroll\.0 is at .* Hz$/)
     expect(altTakes(path.join(root, 'none'), [], new Map(), M)).toEqual([])
+  })
+})
+
+describe('where a line that the visitor ends early stops', () => {
+  const all = standIns()
+  const ends = (key: string) => all.get(key)!.phrases.filter((p) => endsSentence(p.words)).map((p) => p.to)
+
+  it('knows a sentence end by the last mark of a phrase of the script', () => {
+    expect(['is ready to give up.', 'Is it?', 'No!', 'The applicant', 'with other candidates. '].map(endsSentence)).toEqual([true, true, true, false, true])
+  })
+
+  it('finds in the script of this tree a sentence end for every line with a jump, the last of them the end of the line', () => {
+    for (const [key, row] of Object.entries(spoken)) {
+      if (!row.jump) continue
+      const line = all.get(key)!
+      expect(ends(key).length, key).toBeGreaterThan(0)
+      expect(ends(key).at(-1), key).toBeCloseTo(line.seconds, 9)
+    }
+  })
+
+  it('ends line 8, whose only sentence end is its end, at its next pause: it is the line its page holds its turn for, and it jumps on the live site only', () => {
+    expect(turnWaitsFor.step5).toBe('decision.letter.0')
+    expect(ends('decision.letter.0').length).toBe(1)
+    expect(jumpsLiveOnly('decision.letter.0')).toBe(true)
+    expect(jumpsLiveOnly('boss.unfold.0')).toBe(false)
   })
 })

@@ -59,7 +59,9 @@ class FakeContext {
 const eight = (a: string) => `${a} one two ${mark} three four five ${mark} six seven`
 const film = Object.fromEntries(['marketing.stroll', 'step1.firstName', 'step1.shredded', 'pinball.seal', 'boss.verify', 'decision.letter'].map((b) => [b, [{ at: 0, text: eight(b) }]]))
 film['step2.crank'] = [{ at: 0, text: eight('crank') }, { at: 0.5, text: eight('top') }]
-film['boss.unfold'] = [{ at: 0, text: eight('beaten') }, { at: 0.5, text: eight('loans') }, { at: 0.8, text: eight('ready') }]
+// The first part of line 7 has two sentences: its second phrase ends the first.
+const sentences = (a: string) => `${a} one two ${mark} three four five. ${mark} six seven.`
+film['boss.unfold'] = [{ at: 0, text: sentences('beaten') }, { at: 0.5, text: eight('loans') }, { at: 0.8, text: eight('ready') }]
 const shout = { seconds: 6, starts: [0.5, 1.5, 3] }
 const drafts = { 'decision.reset': [{ at: 0, text: eight('next') }], 'boss.finish': [{ at: 0, text: `ka ${mark} me ${mark} ha`, loud: true, standIn: shout }] }
 const L = 8 / wps
@@ -548,15 +550,15 @@ describe('change note 003: line 7 and the fight music', () => {
     expect(music[0]!.stopped).not.toBeNull()
   })
 
-  it('ends the first part at its next pause when the visitor clicks, never inside a phrase, and lets the second part and the music follow at once', async () => {
+  it('ends the first part at the end of the sentence being said when the visitor clicks, not at the pause inside it, and lets the second part and the music follow at once', async () => {
     const { s, ctx } = await ready('step4')
     ctx.currentTime = 50
     s.event(ev('boss-formed', 'step4'), 'live')
-    ctx.currentTime = 50 + 4 / wps
+    ctx.currentTime = 50 + 1 / wps
     s.event(ev('boss-turn', 'step4'), 'live')
     const pause = 50 + 6 / wps
     const lines = s.said().lines
-    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, l.end])).toEqual([['beaten one two', 50 + 3 / wps], ['three four five', pause]])
+    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, l.end])).toEqual([['beaten one two', 50 + 3 / wps], ['three four five.', pause]])
     expect(lines.filter((l) => l.line === id('boss.unfold.1'))[0]!.start).toBeCloseTo(pause + lineGap, 9)
     expect(lines.filter((l) => l.line === id('boss.unfold.2'))[0]!.start).toBeCloseTo(pause + lineGap + L + lineGap, 9)
     const music = loops(ctx, 'boss-loop')

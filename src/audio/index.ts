@@ -7,7 +7,7 @@ import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
 import { CAPTION, type Caption, type CaptionSource } from '../ui/said'
-import { allCues, alsoStarts, cueOfEvent, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, turnWaitsFor, unitPage, waitsFor } from './cues'
+import { allCues, alsoStarts, cueOfEvent, endsSentence, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, turnWaitsFor, unitPage, waitsFor } from './cues'
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
@@ -634,14 +634,15 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     }
   }
 
-  // An event that makes a line jump to its next part: the phrase being said is said to its end and no further.
+  // An event that makes a line jump to its next part: the sentence being said is said to its end and no further.
   // A line its page's turn waits for jumps on the live site only: in the film it is said whole, as the mix lays it.
   const jump = (name: string, page: string, mode: SoundMode) => {
     const now = backend!.now()
     for (const [b, l] of [...speaking]) {
       if (b.end <= now || l.page !== page || !spoken[l.key]?.jump?.includes(name) || (mode !== 'live' && turnWaitsFor[page] === l.key)) continue
-      const at = l.phrases.find((p) => b.start + p.to > now)
-      const end = b.start <= now && at ? b.start + at.to : b.start
+      const held = turnWaitsFor[page] === l.key
+      const at = l.phrases.find((p) => b.start + p.to > now && (held || endsSentence(p.words)))
+      const end = b.start <= now ? (at ? b.start + at.to : b.end) : b.start
       if (end >= b.end) continue
       const parts = partsAfter(l.key)
       desk.shorten(now, b, end, parts.map(([x]) => x))
@@ -651,7 +652,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         voice(x, part)
         setMark(x, part)
       }
-      note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'it ends at its next pause and its next part follows' })
+      note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: held ? 'it ends at its next pause and its page may turn' : 'it ends with the sentence being said and its next part follows' })
       if (turnWaitsFor[page] === l.key) turnHeld.set(page, b.end + audio.liveNarratorMinGapSeconds)
       caption?.wake()
       reduck()

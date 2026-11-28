@@ -19128,7 +19128,7 @@
       "x": 550,
       "y": 650,
       "hitsCursor": false,
-      "cue": null
+      "cue": "finish-fire"
     },
     {
       "name": "boss-gone",
