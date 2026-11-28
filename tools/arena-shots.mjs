@@ -38,6 +38,8 @@ const first = line(1, 6.0, 900, 560, Math.atan2(700 - 560, 1920 - 900))
 const second = line(2, 12.0, 1010, 520, Math.atan2(700 - 520, 60 - 1010))
 const third = line(3, 18.0, 960, 500, Math.atan2(1080 - 500, 640 - 960))
 const boss = { x: 960, y: 550, heading: Math.PI / 2 }
+// The line of the finishing blast: the arrow's centre at the moment of firing, and the place the boss fell.
+const SCORCHED = { x0: 478, y0: 565, x1: 960, y1: 650 }
 
 // Every set: the views it draws, and the target it sits beside.
 const SETS = {
@@ -61,6 +63,17 @@ const SETS = {
       { name: 'blast-0.03', ask: { time: 6.03, breaks: [first], boss: { x: 900, y: 560, heading: Math.atan2(140, 1020) } } },
       { name: 'blast-0.20', ask: { time: 6.2, breaks: [first], boss: { x: 900, y: 560, heading: Math.atan2(140, 1020) } } },
       { name: 'blast-0.70', ask: { time: 6.7, breaks: [first], boss: { x: 900, y: 560, heading: Math.atan2(140, 1020) } } }
+    ]
+  },
+  // The finish, seen as the page shows it: the cold beam over the arena, the scorch half burnt in, and the ground it leaves.
+  finish: {
+    target: 'finish-button-left.png',
+    views: [
+      { name: 'finish-0.15', ask: { time: 60.3, breaks: [first], scorch: SCORCHED, gone: 0.15, beam: true, close: true } },
+      { name: 'finish-0.60', ask: { time: 61.3, breaks: [first], scorch: SCORCHED, gone: 0.6, beam: true, close: true } },
+      { name: 'finish-after', ask: { time: 64, breaks: [first], scorch: SCORCHED, gone: 1, close: true } },
+      { name: 'finish-wide', ask: { time: 64, breaks: [first], scorch: SCORCHED, gone: 1 } },
+      { name: 'finish-beam-wide', ask: { time: 61, breaks: [first], scorch: SCORCHED, gone: 0.45, beam: true } }
     ]
   },
   none: { target: 'boss-arena.png', views: [{ name: 'none', ask: { time: -1 } }] },
@@ -88,7 +101,7 @@ async function main() {
   if (failed) throw new Error(failed)
   if (args.includes('--measure')) {
     // The cost of the arena: each view drawn nine times at one sample, the first three thrown away, the median of the rest kept. `none` is the page's own ground with no arena.
-    const views = [...SETS.none.views, ...SETS.rest.views, SETS.change.views[3], SETS.blast.views[2], SETS.breaks.views[2]]
+    const views = [...SETS.none.views, ...SETS.rest.views, SETS.change.views[3], SETS.blast.views[2], SETS.breaks.views[2], SETS.finish.views[2], SETS.finish.views[3], SETS.finish.views[4]]
     const out = {}
     for (const v of views) {
       const runs = []

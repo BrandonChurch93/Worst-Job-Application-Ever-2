@@ -90,7 +90,7 @@ export function holeAt(l: Line, x: number, y: number, seed: number): boolean {
 }
 
 // Paints every wound of the blasts given into `data` (W by H texels over the page, RGBA, row 0 at the bottom of the page):
-// red the soot, green how deep the trench is cut, blue the embers, alpha the slab broken through (1 the light below, about 0.2 the broken wall under its upper edge).
+// red the soot, green how deep the trench is cut, blue the embers, alpha the slab broken through (0.62 at the rim of the hole, 1 deep inside it; the shader draws the broken side wall under the upper edge).
 export function paintWounds(data: Uint8Array, W: number, H: number, active: readonly ViewBreak[], seed: number): void {
   data.fill(0)
   for (const k of active) paintBreak(data, W, H, k, seed)
@@ -141,7 +141,6 @@ export function layOver(data: Uint8Array, layer: Uint8Array, W: number, H: numbe
 // Rows `from` up to `to` of one blast alone, written into `layer`: the work can be done a few rows at a time before the blast, and gives the same picture as done at once.
 export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak, seed: number, from: number, to: number): void {
   const sx = PAGE.w / W, sy = PAGE.h / H
-  const wall = 15
   const l = lineOf(k, seed)
   const half = k.width / 2
   const reach = half + 60
@@ -166,8 +165,7 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
   }
   // Rows run up the page: a row more is a step toward the top.
   const far = Math.max(1, Math.round(14 / sx)), near = Math.max(1, Math.round(10 / sx))
-  const ring: [number, number][] = [[far, 0], [-far, 0], [0, far], [0, -far], [near, near], [-near, near], [near, -near], [-near, -near], [2 * far, 0], [-2 * far, 0], [0, 2 * far], [0, -2 * far], [2 * near, 2 * near], [-2 * near, 2 * near], [2 * near, -2 * near], [-2 * near, -2 * near]]
-  const wallJ = Math.max(1, Math.round(wall / sy)), wallI = Math.max(1, Math.round((wall * 0.5) / sx))
+  const ring: [number, number][] = [[far, 0], [-far, 0], [0, far], [0, -far], [near, near], [-near, near], [near, -near], [-near, -near], [2 * far, 0], [-2 * far, 0], [0, 2 * far], [0, -2 * far], [2 * near, 2 * near], [-2 * near, 2 * near], [2 * near, -2 * near], [-2 * near, -2 * near], [3 * far, 0], [-3 * far, 0], [0, 3 * far], [0, -3 * far], [3 * near, 3 * near], [-3 * near, 3 * near], [3 * near, -3 * near], [-3 * near, -3 * near]]
   for (let j = j0; j <= j1; j++) {
     const y = PAGE.h - (j + 0.5) * sy
     layer.fill(0, (j * W + i0) * 4, (j * W + i1 + 1) * 4)
@@ -184,8 +182,7 @@ export function paintLayer(layer: Uint8Array, W: number, H: number, k: ViewBreak
         // How far inside the hole: the light is strongest away from its rim, and under its upper edge the broken wall of the slab shows.
         let inside = 0
         for (const [oi, oj] of ring) if (hole(i + oi, j + oj)) inside++
-        const lit = hole(i, j + wallJ) && hole(i - wallI, j + wallJ)
-        data[at + 3] = lit ? Math.round(255 * (0.62 + 0.38 * (inside / 16))) : 52
+        data[at + 3] = Math.round(255 * (0.62 + 0.38 * (inside / ring.length)))
         continue
       }
       const id = l.tag

@@ -5,9 +5,9 @@ import { fbm, noise } from './breaks'
 import { clamp01, rnd } from './change'
 import { ARENA, PAGE, PANES, PILLARS, SEAMS, paneBox } from './layout'
 
-// ahead: px in front of the arrow's centre at which the trench starts. half: the half width of the black of the trench. burn: the radius of the round burn.
+// ahead: px in front of the arrow's centre at which the trench starts. half: the half width of the black of the trench. burn: the radius of the burn across the line. long: how many times longer the burn is along the line.
 // seconds: how long the blast burns when the view does not say (the fight's SHOUT.gone - SHOUT.fire). chips: the bits of ceramic thrown out, at the high level.
-export const SCORCH = { ahead: 70, half: 48, burn: 165, seconds: 2.13, chips: 96, smoke: 12 }
+export const SCORCH = { ahead: 70, half: 36, burn: 108, long: 2.1, seconds: 2.13, chips: 120, smoke: 24 }
 
 // The line of the finishing blast as the view gives it: the arrow's centre and the place the boss fell.
 export interface BlastLine { x0: number; y0: number; x1: number; y1: number }
@@ -67,14 +67,14 @@ export function edgeAt(s: Scorch, x: number, y: number, seed: number): { px: num
   const taper = step(-34, 60, along) * step(s.long + 10, s.long - 20, along)
   const edgeT = SCORCH.half * taper * (0.74 + 0.52 * noise(along / 95 + s.tag * 1.3, 3.1, seed + 41)) + 12 * (mid - 0.5) * taper
   const pxT = taper <= 0 ? 999 : Math.abs(across) - edgeT
-  // The burn is a little longer along the beam than across it, and its rim is ragged.
+  // The burn is drawn out along the beam, and its rim is ragged.
   const bx = x - s.bx, by = y - s.by
   const ba = bx * s.ux + by * s.uy, bc = -bx * s.uy + by * s.ux
-  const r = Math.hypot(ba / 1.16, bc)
+  const r = Math.hypot(ba / SCORCH.long, bc)
   const edgeB = SCORCH.burn * (0.84 + 0.32 * fbm(x / 70 + 9.1, y / 70, seed + 42)) + 14 * (mid - 0.5)
   const pxB = r - edgeB
   // The two run into each other without a corner.
-  const k = 46
+  const k = 60
   const h = clamp01(0.5 + (0.5 * (pxB - pxT)) / k)
   const px = pxB + (pxT - pxB) * h - k * h * (1 - h)
   return { px, inner: pxB < pxT ? edgeB : Math.max(1, edgeT), along, across, r }
@@ -83,7 +83,7 @@ export function edgeAt(s: Scorch, x: number, y: number, seed: number): { px: num
 // The part of the picture the scorch can reach: columns i0 to i1, rows j0 to j1.
 export function scorchReach(s: Scorch, W: number, H: number): { i0: number; i1: number; j0: number; j1: number } {
   const fx = PAGE.w / W, fy = PAGE.h / H
-  const pad = SCORCH.half * 1.3 + 110, round = SCORCH.burn * 1.4 + 150
+  const pad = SCORCH.half * 1.3 + 130, round = SCORCH.burn * SCORCH.long * 1.2 + 170
   const x0 = Math.min(s.sx - pad, s.ex - pad, s.bx - round), x1 = Math.max(s.sx + pad, s.ex + pad, s.bx + round)
   const y0 = Math.min(s.sy - pad, s.ey - pad, s.by - round), y1 = Math.max(s.sy + pad, s.ey + pad, s.by + round)
   return {
@@ -92,7 +92,6 @@ export function scorchReach(s: Scorch, W: number, H: number): { i0: number; i1: 
   }
 }
 
-const CRACKS = 19
 
 // Rows `from` up to `to` of the scorch, written into `data` (W by H texels over the page, RGBA, row 0 at the bottom of the page):
 // red the soot, green how deep the surface is burnt away, blue the embers, alpha when the place burns: 1/255 at once, 255 as the blast ends. 0 where the ground is clean.
@@ -100,7 +99,7 @@ const CRACKS = 19
 export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, seed: number, from: number, to: number): void {
   const fx = PAGE.w / W, fy = PAGE.h / H
   const { i0, i1 } = scorchReach(s, W, H)
-  const wide = SCORCH.half * 1.3 + 110, round = SCORCH.burn * 1.4 + 150
+  const wide = SCORCH.half * 1.3 + 130, round = SCORCH.burn * SCORCH.long * 1.2 + 170
   for (let j = from; j < to; j++) {
     const y = PAGE.h - (j + 0.5) * fy
     data.fill(0, (j * W + i0) * 4, (j * W + i1 + 1) * 4)
@@ -114,48 +113,39 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
       if (e.px > 150) continue
       const fine = fbm(x / 5, y / 5, seed + 44)
       const mid = fbm(x / 24, y / 24, seed + 45)
-      const hair = noise(e.along / 70 + 31.7, e.across / 3.2, seed + 46)
-      // The black, with a brown grey haze round it.
-      let soot = step(10, -16, e.px) ** 1.3 * (0.84 + 0.16 * fine) * (0.88 + 0.12 * hair)
-      soot = Math.max(soot, 0.46 * step(84, -4, e.px) * (0.3 + 0.7 * mid))
+      // The rim is drawn out into streaks that run with the beam, ragged at the size of a hand, and soft: the black thins out into a brown grey haze.
+      const streak = noise(e.along / 110 + 3.3, e.across / 7.5, seed + 46)
+      const px = e.px + 20 * (fbm(x / 30, y / 30, seed + 52) - 0.5) + 34 * (streak - 0.5)
+      let soot = Math.min(1, 1.1 * step(34, -34, px) ** 1.15 * (0.9 + 0.1 * fine))
+      soot = Math.max(soot, 0.5 * step(104, -8, px) * (0.2 + 0.8 * mid) * (0.6 + 0.4 * streak))
       // Specks thrown wide of it.
-      if (e.px < 120 && mid > 0.4) {
+      if (px < 120 && mid > 0.4) {
         const speck = fbm(x / 4.2, y / 4.2, seed + 47)
-        if (speck > 0.69) soot = Math.max(soot, 0.9 * step(120, 14, e.px) * step(0.69, 0.77, speck))
+        if (speck > 0.69) soot = Math.max(soot, 0.9 * step(120, 14, px) * step(0.69, 0.77, speck))
       }
-      // Hairline cracks: along the trench inside it, and out from the burn like the spokes of a wheel.
+      // Hairline cracks along the trench, inside the black only.
       const fissure = step(0.91, 0.975, 1 - Math.abs(2 * noise(e.along / 52 + 7.7, e.across / 6, seed + 48) - 1)) * step(6, -18, e.px)
-      let spoke = 0
-      {
-        const bx = x - s.bx, by = y - s.by
-        const r = Math.hypot(bx, by)
-        const turn = (Math.atan2(by, bx) / (Math.PI * 2) + 0.5) * CRACKS
-        const n = Math.round(turn) % CRACKS
-        const reach = SCORCH.burn * (0.95 + 0.9 * rnd(seed, 430 + s.tag, n))
-        if (r > SCORCH.burn * 0.42 && r < reach) {
-          const bend = 0.34 * (rnd(seed, 431 + s.tag, n) - 0.5) + 0.26 * (noise(r / 34, n * 3.7, seed + 49) - 0.5)
-          let off = turn - Math.round(turn) - bend
-          if (off > 0.5) off -= 1
-          const dist = Math.abs(off) * ((Math.PI * 2) / CRACKS) * r
-          const thick = 0.5 + 1.1 * (1 - r / reach)
-          spoke = step(thick + 0.9, thick * 0.4, dist) * (rnd(seed, 432 + s.tag, n) > 0.2 ? 1 : 0)
-        }
-      }
-      soot = Math.max(soot, 0.92 * fissure, 0.88 * spoke)
-      const core = step(0, -30, e.px)
-      const depth = core * (0.35 + 0.65 * mid) * (0.6 + 0.4 * fine) + 0.5 * Math.max(fissure, spoke)
+      soot = Math.max(soot, 0.92 * fissure)
+      const core = step(0, -30, px)
+      const depth = 0.16 * core * mid + 0.6 * fissure
       // Embers: short streaks down the middle of the trench, and a loose ring of them inside the rim of the burn.
       let ember = 0
-      if (e.px < -4) {
-        const inBurn = e.r < e.inner && e.inner > SCORCH.half * 1.4
-        const band = inBurn ? Math.exp(-(((e.r / e.inner - 0.72) / 0.2) ** 2)) : Math.exp(-(((Math.abs(e.across) - SCORCH.half * 0.3) / (SCORCH.half * 0.2)) ** 2))
-        const patch = step(0.42, 0.62, noise(e.along / 85 + s.tag * 3.7, e.across / 85 + 5.5, seed + 50))
-        const blob = inBurn ? fbm(x / 8 + 50, y / 8, seed + 51) : fbm(e.along / 19 + 50, e.across / 6.5, seed + 51)
-        ember = step(0.55, 0.66, blob) * (0.35 + 0.65 * step(0.36, 0.56, fine)) * patch * band
+      if (px < -6) {
+        // Two loose rows of them down the line, right through the burn, and a few strays in the black beside the rows.
+        const band = Math.max(Math.exp(-(((Math.abs(e.across) - SCORCH.half * 0.34) / (SCORCH.half * 0.3)) ** 2)), 0.3 * step(-10, -40, px))
+        const patch = step(0.38, 0.6, noise(e.along / 85 + s.tag * 3.7, e.across / 85 + 5.5, seed + 50))
+        const blob = fbm(e.along / 14 + 50, e.across / 5, seed + 51)
+        // Small and orange: coals in soot, not the light of a broken slab.
+        ember = 0.62 * step(0.6, 0.7, blob) * (0.35 + 0.65 * step(0.36, 0.56, fine)) * patch * band
+        // And veins of them: the cracks of the charred crust glow, drawn out a little along the beam.
+        const vein = 1 - Math.abs(2 * fbm(e.along / 34 + 9.1, e.across / 17 + 2.3, seed + 53) - 1)
+        const lit = step(0.3, 0.55, noise(e.along / 120 + 1.7, e.across / 70 + 8.8, seed + 54))
+        const broken = step(0.42, 0.58, fbm(x / 9, y / 9, seed + 55))
+        ember = Math.max(ember, 0.74 * step(0.95, 0.995, vein) * lit * broken * step(-4, -30, px) * (0.5 + 0.5 * fine))
       }
       if (soot < 0.012 && ember < 0.012) continue
       // When it burns: the front runs out along the line in the first part of the blast, and the black spreads from the middle to the rim for the rest of it.
-      const when = 0.2 * clamp01(e.along / s.long) + 0.6 * clamp01((e.px + e.inner) / (e.inner + 84)) + 0.12 * fine
+      const when = 0.2 * clamp01(e.along / s.long) + 0.6 * clamp01((px + e.inner) / (e.inner + 100)) + 0.12 * fine
       const at = (j * W + i) * 4
       data[at] = Math.round(255 * Math.min(1, soot))
       data[at + 1] = Math.round(255 * Math.min(1, depth))
@@ -203,8 +193,8 @@ export function chipsOf(s: Scorch, seed: number, count = SCORCH.chips): Chip[] {
       const out2 = rnd(seed, 441 + s.tag, k)
       if (round) {
         const a = rnd(seed, 442 + s.tag, k) * Math.PI * 2
-        const r = SCORCH.burn * (1.05 + 1.15 * out2 * out2)
-        x = s.bx + Math.cos(a) * r
+        const r = SCORCH.burn * (1.15 + 1.5 * out2 * out2)
+        x = s.bx + Math.cos(a) * r * (1 + (SCORCH.long - 1) * Math.abs(Math.cos(a)))
         y = s.by + Math.sin(a) * r
         fx = s.bx + Math.cos(a) * SCORCH.burn * 0.5
         fy = s.by + Math.sin(a) * SCORCH.burn * 0.5
@@ -223,9 +213,46 @@ export function chipsOf(s: Scorch, seed: number, count = SCORCH.chips): Chip[] {
       if (!free(x, y)) continue
       if (edgeAt(s, x, y, seed).px < 6) continue
       const big = rnd(seed, 446 + s.tag, k)
-      out.push({ x, y, fx, fy, size: 3 + 8 * big * big * big + 2 * big, turn: rnd(seed, 447 + s.tag, k) * Math.PI, when })
+      out.push({ x, y, fx, fy, size: 3.5 + 9 * big * big * big + 3 * big, turn: rnd(seed, 447 + s.tag, k) * Math.PI, when })
       break
     }
   }
   return out
+}
+
+// A cold beam over the arena, for as long as it burns: its line in page px and how strong its light is, 0 to 1.
+// The ground answers it with cold light that falls off from the line, and every pillar and pane that stands throws a long sharp shadow away from it.
+export interface BeamLight { x0: number; y0: number; x1: number; y1: number; strength: number }
+
+// The beam the view shows when nobody drives it: the finishing blast from in front of the arrow to where it leaves the page, up in a twentieth of a second and down over the last fifth of the blast.
+export function beamOf(view: BossView): BeamLight | null {
+  const f = view.finish
+  if (!f) return null
+  const s = scorchFrom(f)
+  const share = scorchOf(view)?.share ?? 0
+  const up = clamp01((view.time - f.firedAt) / 0.05)
+  const strength = up * (1 - step(0.8, 1, share)) * (0.6 + 0.4 * clamp01(f.power))
+  return strength > 0 ? { x0: s.sx, y0: s.sy, x1: s.ex, y1: s.ey, strength } : null
+}
+
+export interface BeamShadow { x: number[]; y: number[]; dark: number; glass: boolean }
+
+// The shadow a standing thing throws away from the beam, as a four-cornered patch on the ground: the two corners at the thing first, then the two far ones. Null for a thing the beam runs through.
+export function beamShadow(b: BeamLight, ends: [{ x: number; y: number }, { x: number; y: number }], high: number, glass: boolean): BeamShadow | null {
+  const ex = b.x1 - b.x0, ey = b.y1 - b.y0, l2 = ex * ex + ey * ey || 1
+  const away = (p: { x: number; y: number }): { dx: number; dy: number; d: number; side: number } => {
+    const u = clamp01(((p.x - b.x0) * ex + (p.y - b.y0) * ey) / l2)
+    const dx = p.x - b.x0 - ex * u, dy = p.y - b.y0 - ey * u
+    const d = Math.hypot(dx, dy)
+    return { dx: dx / (d || 1), dy: dy / (d || 1), d, side: Math.sign(-(p.x - b.x0) * ey + (p.y - b.y0) * ex) }
+  }
+  const a0 = away(ends[0]), a1 = away(ends[1])
+  if (a0.d < 34 || a1.d < 34 || a0.side !== a1.side) return null
+  // The beam lies low: what stands higher than it throws its shadow far.
+  const long = Math.min(1300, high * 5.2)
+  return {
+    x: [ends[0].x, ends[1].x, ends[1].x + a1.dx * long, ends[0].x + a0.dx * long],
+    y: [ends[0].y, ends[1].y, ends[1].y + a1.dy * long, ends[0].y + a0.dy * long],
+    dark: (glass ? 0.32 : 0.64) * clamp01(b.strength), glass
+  }
 }

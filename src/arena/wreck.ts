@@ -61,7 +61,7 @@ function stumpGeometry(seed: number, id: number, high: number): { sides: THREE.B
 }
 
 // A lump of broken metal or ceramic, one unit across.
-function lumpGeometry(seed: number): THREE.BufferGeometry {
+export function lumpGeometry(seed: number): THREE.BufferGeometry {
   const g = new THREE.IcosahedronGeometry(0.5, 0)
   const p = g.getAttribute('position')
   const moved = new Map<string, number>()
@@ -135,7 +135,7 @@ function bandTexture(): THREE.DataTexture {
 }
 
 // The same soft dot as a grey picture, for the things that are blended by their colour.
-function greyDot(): THREE.DataTexture {
+export function greyDot(): THREE.DataTexture {
   const src = softDot().image.data as Uint8Array
   const data = new Uint8Array(src.length)
   for (let i = 0; i < src.length; i += 4) data.set([src[i + 3]!, src[i + 3]!, src[i + 3]!, 255], i)
@@ -445,9 +445,10 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
         const born = 0.1 * rnd(seed, 990, d.k)
         const g = clamp01((since - born) / (DUST_SECONDS - born))
         // Up in a few frames, then it hangs and thins.
-        const dark = 0.5 * Math.sin(Math.PI * g ** 0.4) * (1 - g * 0.4)
+        // Pale and warm: it takes away a third of the light at most, and more of the blue than of the red.
+        const dark = (0.24 + 0.14 * rnd(seed, 994, d.k)) * Math.sin(Math.PI * g ** 0.4) * (1 - g * 0.4)
         const size = 52 + 150 * Math.sqrt(g) + 46 * rnd(seed, 991, d.k)
-        put(smoke, nSmoke++, wx(d.x) + 24 * g * (rnd(seed, 992, d.k) - 0.5), wy(d.y) + 30 * g, 10 + 40 * g, rnd(seed, 993, d.k) * 6, size, size, dark * 0.86, dark * 0.9, dark)
+        put(smoke, nSmoke++, wx(d.x) + 24 * g * (rnd(seed, 992, d.k) - 0.5), wy(d.y) + 30 * g, 10 + 40 * g, rnd(seed, 993, d.k) * 6, size, size * (0.7 + 0.5 * rnd(seed, 996, d.k)), dark * 0.74, dark * 0.86, dark)
       }
     }
 

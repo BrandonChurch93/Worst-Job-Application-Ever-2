@@ -6,6 +6,7 @@ import { config } from '../config'
 import type { Emitter, PartMaker, RealContext } from '../real/types'
 import type { Shape } from '../stage/types'
 import { rise, seamLight } from './change'
+import { makeFinish, type BeamDriver } from './finish'
 import { makeGround } from './ground'
 import { ARENA, PAGE } from './layout'
 import { makeBar, makeGuns, makeKit, makePanes, makePillars, poseBar, poseGun } from './props'
@@ -14,6 +15,8 @@ import { makeWreck } from './wreck'
 export { ARENA, MIDDLE, PANES, PILLARS, SEAMS, SLABS } from './layout'
 export { solids, standing, brokenBy, breaksBox } from './solids'
 export { shake, KNOCKS, BLAST_KNOCK } from './change'
+export { SCORCH, beamOf, scorchFrom, scorchOf, type BeamLight, type BlastLine } from './scorch'
+export type { BeamDriver } from './finish'
 
 export type Light = (e: Emitter) => void
 
@@ -33,7 +36,10 @@ export function arenaWell(view: BossView | null): { x: number; y: number; w: num
 // The light the seams throw on what stands near them, where the three brightest joints are.
 const SEAM_LAMPS: { x: number; y: number }[] = [{ x: 598, y: 438 }, { x: 1368, y: 655 }, { x: 960, y: 812 }]
 
-export function makeArena(o: { seed?: number } = {}): Arena {
+// `beam`: who drives the arena's answer to a cold beam (the light on the ground from its line, the long shadows of what stands). Left out, the arena reads the finishing blast from the view (beamOf).
+export interface ArenaOptions { seed?: number; beam?: BeamDriver }
+
+export function makeArena(o: ArenaOptions = {}): Arena {
   const seed = o.seed ?? config.seed
   const root = new THREE.Group()
   root.name = 'arena'
@@ -44,7 +50,8 @@ export function makeArena(o: { seed?: number } = {}): Arena {
   const guns = makeGuns(kit)
   const bar = makeBar(kit)
   const wreck = makeWreck(seed, kit, ground.wounds, pillars.list, panes.list)
-  root.add(ground.object, pillars.object, panes.object, guns.object, bar.bar.root, wreck.object)
+  const finish = makeFinish(seed, kit, ground.wounds)
+  root.add(ground.object, pillars.object, panes.object, guns.object, bar.bar.root, wreck.object, finish.object)
 
   const pose = (view: BossView, _dt?: number, light?: Light): void => {
     const t = view.time
@@ -70,6 +77,21 @@ export function makeArena(o: { seed?: number } = {}): Arena {
     guns.list.forEach((g, i) => poseGun(g, view.corners[i]!, t, light))
     poseBar(bar.bar, view)
     wreck.pose(view, light)
+    finish.pose(view, light, o.beam)
+    // Once every pillar is up, the eight are drawn as one body and one set of feet.
+    const settled = t >= ARENA.riseTo + 0.1
+    pillars.one.bodies.visible = settled
+    pillars.one.feet.visible = settled
+    if (settled) {
+      let standing = 0
+      pillars.list.forEach((p, i) => {
+        if (p.root.visible) standing |= 1 << i
+        p.root.visible = false
+        p.foot.visible = false
+      })
+      pillars.one.show(standing)
+      pillars.one.bodies.visible = standing !== 0
+    }
     // The surge of light as the page splits.
     if (light && t >= ARENA.splitAt && t < ARENA.splitAt + 1.1) {
       const surge = seamLight(t) - 1
@@ -87,17 +109,18 @@ export function makeArena(o: { seed?: number } = {}): Arena {
       guns.dispose()
       bar.dispose()
       wreck.dispose()
+      finish.dispose()
       kit.own.forEach((m) => m.dispose())
     }
   }
 }
 
 // The same thing as a maker of the site: one shape of kind `anchor` over the whole page (x 0, y 0, w 1920, h 1080, z0 0) is all it wants.
-export function arenaPart(viewOf: () => BossView | null): PartMaker {
+export function arenaPart(viewOf: () => BossView | null, o: ArenaOptions = {}): PartMaker {
   return {
     key: (s: Shape): string | null => (s.kind === 'anchor' ? 'arena' : ''),
     make(): THREE.Object3D {
-      const arena = makeArena()
+      const arena = makeArena(o)
       arena.object.userData.arena = arena
       arena.object.visible = false
       return arena.object
