@@ -292,6 +292,7 @@ export const CAMERA = {
   down: [0, 0.95] as const,
   dive: [1.2, 4] as const,
   tear: { life: 0.28, size: [170, 200, 230, 200, 330], z: 60 },
+  fade: { near: 95, over: 0.15, body: [36, 150], feet: 1.7 },
   swing: 2,
   push: 0.08,
   pushOver: 6,

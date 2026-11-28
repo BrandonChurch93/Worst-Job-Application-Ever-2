@@ -2,7 +2,8 @@ import { config } from '../../config'
 import { feetFor, STAND } from '../../cursor/stand/rig'
 
 export { feetFor }
-import { toWorld } from '../../stage/camera'
+import { ARENA, EYE, PANES, PILLARS } from '../../arena/layout'
+import { project, toWorld } from '../../stage/camera'
 import type { CameraPose } from '../../stage/types'
 import { CAMERA, CLOSE, LAST, SHOUT } from '../tune'
 
@@ -140,4 +141,88 @@ export const underOf = (time: number, m: Marks): number => (!CAMERA.on || m.fire
 export function facing(from: Rig, feet: V3, k: number): Shot | null {
   if (!CAMERA.on || k <= 0) return null
   return shot(mixRig(from, keyAt(CAMERA.charge, feet), smooth(k)), 'charge')
+}
+
+export interface Block { id: string; lo: V3; hi: V3 }
+export const BLOCKS: Block[] = [
+  ...PILLARS.map((p): Block => {
+    const c = toWorld(p.x, p.y, 0)
+    const h = ARENA.pillar.side / 2
+    return { id: p.id, lo: [c[0] - h, c[1] - h, 0], hi: [c[0] + h, c[1] + h, ARENA.pillar.high] }
+  }),
+  ...PANES.map((p): Block => {
+    const a = toWorld(p.x, p.y1, 0)
+    const b = toWorld(p.x, p.y0, 0)
+    const h = ARENA.pane.thick / 2
+    return { id: p.id, lo: [a[0] - h, a[1], 0], hi: [b[0] + h, b[1], ARENA.pane.high] }
+  })
+]
+
+const SPOTS = ((): V3[] => {
+  const [half, high] = CAMERA.fade.body
+  const out: V3[] = []
+  for (const x of [-1, 0, 1]) for (const y of [-1, 0, 1]) for (const z of [0.03, 0.36, 0.7, 1]) out.push([FEET[0] + x * half * (z < 0.1 ? CAMERA.fade.feet : 1), FEET[1] + y * half * (z < 0.1 ? CAMERA.fade.feet : 1), z * high])
+  return out
+})()
+
+export const nearOf = (eye: readonly number[], b: Block): number => Math.hypot(Math.max(0, b.lo[0] - eye[0]!, eye[0]! - b.hi[0]), Math.max(0, b.lo[1] - eye[1]!, eye[1]! - b.hi[1]), Math.max(0, b.lo[2] - eye[2]!, eye[2]! - b.hi[2]))
+
+export function crosses(eye: readonly number[], to: readonly number[], b: Block): boolean {
+  let t0 = 0
+  let t1 = 1
+  for (let i = 0; i < 3; i++) {
+    const d = to[i]! - eye[i]!
+    if (Math.abs(d) < 1e-9) {
+      if (eye[i]! < b.lo[i]! || eye[i]! > b.hi[i]!) return false
+      continue
+    }
+    const a = (b.lo[i]! - eye[i]!) / d
+    const c = (b.hi[i]! - eye[i]!) / d
+    t0 = Math.max(t0, Math.min(a, c))
+    t1 = Math.min(t1, Math.max(a, c))
+    if (t0 > t1) return false
+  }
+  return true
+}
+
+const tilt = (b: Block, low: number): [number, number] => [(1 - low) * (ARENA.leanX - (b.lo[0] + b.hi[0]) / 2 / EYE), (1 - low) * (ARENA.lean - (b.lo[1] + b.hi[1]) / 2 / EYE)]
+const flat = (p: readonly number[], t: readonly [number, number]): V3 => [p[0]! - t[0] * p[2]!, p[1]! - t[1] * p[2]!, p[2]!]
+
+const seen = (pose: CameraPose, b: Block, t: readonly [number, number]): boolean => {
+  for (const x of [0, 0.5, 1]) for (const y of [0, 0.5, 1]) for (const z of [0, 0.34, 0.67, 1]) {
+    const high = lerp(b.lo[2], b.hi[2], z)
+    const p = project(pose, [lerp(b.lo[0], b.hi[0], x) + t[0] * high, lerp(b.lo[1], b.hi[1], y) + t[1] * high, high])
+    if (p.depth > 0 && p.x >= 0 && p.x <= 1920 && p.y >= 0 && p.y <= 1080) return true
+  }
+  return false
+}
+
+export function hides(pose: CameraPose, b: Block, low: number): boolean {
+  const t = tilt(b, low)
+  const eye = flat(pose.eye, t)
+  return (nearOf(eye, b) < CAMERA.fade.near && seen(pose, b, t)) || SPOTS.some((p) => crosses(eye, flat(p, t), b))
+}
+
+let kept: { time: number; m: Marks; out: Record<string, number> | null } | null = null
+
+export function fadesOf(time: number, m: Marks): Record<string, number> | null {
+  if (!CAMERA.on || m.arms < 0) return null
+  if (kept && kept.time === time && kept.m.arms === m.arms && kept.m.turn === m.turn && kept.m.fire === m.fire && kept.m.round === m.round) return kept.out
+  const n = Math.round(CAMERA.fade.over * 60)
+  let out: Record<string, number> | null = null
+  for (let i = -n; i <= n; i++) {
+    const at = time + i / 60
+    if (m.fire >= 0 && at > m.fire) continue
+    const s = finishShot(at, m)
+    if (!s || s.low <= 0) continue
+    const k = smooth(1 - Math.abs(i) / n)
+    if (k <= 0) continue
+    for (const b of BLOCKS) {
+      if (!hides(s.pose, b, s.low)) continue
+      out ??= {}
+      out[b.id] = Math.max(out[b.id] ?? 0, k)
+    }
+  }
+  kept = { time, m, out }
+  return out
 }

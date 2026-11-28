@@ -52,6 +52,7 @@ export interface FinishInput {
   glare?: number
   under?: number
   tear?: { x: number; y: number; size: number; k: number }
+  fade?: Readonly<Record<string, number>>
 }
 
 export interface Fx {

@@ -1,4 +1,5 @@
-// node pipeline/change002/camera-live.mjs [--only hold,click,never] [--level high]
+// node pipeline/change002/camera-live.mjs [--only hold,click,never] [--level high] [--place x,y --tag name]
+// `--place`: where the visitor's pointer is put, in px of the window, from the moment the finish begins; `--tag` names the files of that run.
 // The built live site, stepped, from step 4: the pack's visitor fights the boss until the arms come out, then a hand as named below takes the button.
 // Each kind: a strip of twenty pictures at even steps from just before the arms to just after the boss is gone, and the seconds a picture costs with the lens low and from above. Software GL.
 import fs from 'node:fs'
@@ -28,6 +29,8 @@ const GONE = 3.433
 const AFTER = 0.6
 const SHOTS = 20
 const only = a.only ? String(a.only).split(',') : Object.keys(KINDS)
+const place = a.place ? String(a.place).split(',').map(Number) : null
+const tag = a.tag ? `-${a.tag}` : ''
 
 const send = async (page, act) => {
   if (act.move) await page.mouse.move(act.move[0], act.move[1])
@@ -84,6 +87,7 @@ try {
     }
     if (!t.gags.includes('boss.finish')) throw new Error(`${name}: the arms never came out in ${steps} steps`)
     for (const act of v.end()) await send(page, act)
+    if (place) await send(page, { move: place })
     const arms = t.time
     const span = Math.round((LEAD + kind.fire + GONE + AFTER) * VISITOR.hz)
     const wanted = Array.from({ length: SHOTS }, (_, i) => Math.round((i * span) / (SHOTS - 1)) - Math.round(LEAD * VISITOR.hz))
@@ -110,12 +114,12 @@ try {
       tiles.push({ input: await sharp(png).resize(w, h).png().toBuffer(), left: (tiles.length % 4) * w, top: Math.floor(tiles.length / 4) * h })
       rows.push({ sixtieths: i, seconds: Math.round((t.time - arms) * 1000) / 1000, held, gag: t.gags.at(-1), control: t.control })
     }
-    await sharp({ create: { width: w * 4, height: h * Math.ceil(SHOTS / 4), channels: 3, background: '#000' } }).composite(tiles).jpeg({ quality: 90 }).toFile(path.join(out, `live-${name}.jpg`))
-    report.kinds[name] = { says: kind.says, stepsToArms: steps, armsAt: arms, rows, drawMs: costs, problems: [...new Set(problems)].slice(0, 5) }
+    await sharp({ create: { width: w * 4, height: h * Math.ceil(SHOTS / 4), channels: 3, background: '#000' } }).composite(tiles).jpeg({ quality: 90 }).toFile(path.join(out, `live-${name}${tag}.jpg`))
+    report.kinds[name] = { says: kind.says, place, stepsToArms: steps, armsAt: arms, rows, drawMs: costs, problems: [...new Set(problems)].slice(0, 5) }
     console.log(name, 'arms at', arms, 'draw ms', JSON.stringify(costs), 'problems', problems.length)
     await context.close()
   }
-  fs.writeFileSync(path.join(out, 'live.json'), JSON.stringify(report, null, 1) + '\n')
+  fs.writeFileSync(path.join(out, `live${tag}.json`), JSON.stringify(report, null, 1) + '\n')
 } finally {
   await browser.close()
   await server.close()

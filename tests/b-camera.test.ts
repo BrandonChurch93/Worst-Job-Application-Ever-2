@@ -5,9 +5,9 @@ import { makeArena } from '../src/arena'
 import { ARENA, EYE, PANES, PILLARS } from '../src/arena/layout'
 import { newFight } from '../src/boss/fight'
 import { finishState } from '../src/boss/finish/acting'
-import { ABOVE, FEET, LAST_LOW, THIN, facing, finishRig, finishShot, lowOf, marksOf, poseOf, sideOf, type Marks } from '../src/boss/finish/camera'
+import { ABOVE, BLOCKS, FEET, LAST_LOW, THIN, facing, fadesOf, finishRig, finishShot, lowOf, marksOf, poseOf, sideOf, type Block, type Marks } from '../src/boss/finish/camera'
 import { FALLEN, UNFOLD } from '../src/boss/plan'
-import { CAMERA, CLOSE, LOOK1_ON, SHOUT } from '../src/boss/tune'
+import { CAMERA, CLOSE, LAST, LOOK1_ON, SHOUT } from '../src/boss/tune'
 import { finishNow, viewOf } from '../src/boss/viewof'
 import { config, stepHz } from '../src/config'
 import { toPage } from '../src/cursor/stand/rig'
@@ -38,6 +38,44 @@ const steps = (a: CameraPose, b: CameraPose): { eye: number; turn: number; roll:
   return { eye: Math.hypot(b.eye[0] - a.eye[0], b.eye[1] - a.eye[1], b.eye[2] - a.eye[2]), turn: angle(p.forward, q.forward), roll: angle(p.up, q.up), screen: Math.hypot(fb.x - fa.x, fb.y - fa.y), field: Math.abs(b.fov - a.fov) }
 }
 const inside = (p: { x: number; y: number; depth: number }, edge = LIMIT.edge): boolean => p.depth > 0 && p.x >= edge && p.x <= 1920 - edge && p.y >= edge && p.y <= 1080 - edge
+
+const WAY = { near: 90, share: 0.03, half: 30, high: 140, step: 0.17 } as const
+type P3 = [number, number, number]
+const leanOf = (b: Block, low: number): [number, number] => [(1 - low) * (ARENA.leanX - (b.lo[0] + b.hi[0]) / 2 / EYE), (1 - low) * (ARENA.lean - (b.lo[1] + b.hi[1]) / 2 / EYE)]
+const inTheWay = (pose: CameraPose, low: number): { covers: string[]; fills: string[] } => {
+  const covers: string[] = []
+  const fills: string[] = []
+  const xs: number[] = []
+  const ys: number[] = []
+  for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [0, 1]) {
+    const p = project(pose, [FEET[0] + x * WAY.half, FEET[1] + y * WAY.half, z * WAY.high])
+    xs.push(p.x)
+    ys.push(p.y)
+  }
+  const box = { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys), depth: project(pose, [FEET[0], FEET[1], WAY.high / 2]).depth }
+  for (const b of BLOCKS) {
+    const t = leanOf(b, low)
+    const eye: P3 = [pose.eye[0] - t[0] * pose.eye[2], pose.eye[1] - t[1] * pose.eye[2], pose.eye[2]]
+    const near = Math.hypot(Math.max(0, b.lo[0] - eye[0], eye[0] - b.hi[0]), Math.max(0, b.lo[1] - eye[1], eye[1] - b.hi[1]), Math.max(0, b.lo[2] - eye[2], eye[2] - b.hi[2]))
+    const n = [0, 1, 2].map((i) => Math.ceil((b.hi[i]! - b.lo[i]!) / 14) + 1)
+    let over = false
+    let [x0, x1, y0, y1] = [Infinity, -Infinity, Infinity, -Infinity]
+    for (let i = 0; i < n[0]!; i++) for (let j = 0; j < n[1]!; j++) for (let k = 0; k < n[2]!; k++) {
+      const z = b.lo[2] + ((b.hi[2] - b.lo[2]) * k) / (n[2]! - 1)
+      const p = project(pose, [b.lo[0] + ((b.hi[0] - b.lo[0]) * i) / (n[0]! - 1) + t[0] * z, b.lo[1] + ((b.hi[1] - b.lo[1]) * j) / (n[1]! - 1) + t[1] * z, z])
+      if (p.depth <= 0) continue
+      if (p.depth < box.depth && p.x >= box.x0 && p.x <= box.x1 && p.y >= box.y0 && p.y <= box.y1 && inside(p)) over = true
+      if (!inside(p)) continue
+      x0 = Math.min(x0, p.x)
+      x1 = Math.max(x1, p.x)
+      y0 = Math.min(y0, p.y)
+      y1 = Math.max(y1, p.y)
+    }
+    if (over) covers.push(b.id)
+    if (near < WAY.near && x1 > x0 && ((x1 - x0) * (y1 - y0)) / (1920 * 1080) > WAY.share) fills.push(b.id)
+  }
+  return { covers, fills }
+}
 
 const HELD = CAMERA.down[1] + CAMERA.stay
 const COURSES: [string, Marks, number][] = [
@@ -158,6 +196,34 @@ describe('the camera of the finishing blast: its path', () => {
     }
     console.log('nearest body of a pillar to the lens, px', least.toFixed(1), where)
     expect(least, where).toBeGreaterThanOrEqual(LIMIT.pillar)
+  })
+
+  it('fades out a pillar or a pane that stands in the way of the low lens before the fire: none covers the figure in the facing view, none nearer than 90 px fills over 3 percent of the frame, and each comes and goes over 0.15 s', () => {
+    const told: Record<string, string> = {}
+    for (const [name, m, long] of COURSES) {
+      let was: Record<string, number> = {}
+      const span: Record<string, [number, number]> = {}
+      for (let n = 0; n < long * FPS; n++) {
+        const t = n / FPS
+        const shot = finishShot(t, m)
+        const now = fadesOf(t, m) ?? {}
+        for (const b of BLOCKS) {
+          expect(Math.abs((now[b.id] ?? 0) - (was[b.id] ?? 0)), `${name}, frame ${n}, ${b.id}`).toBeLessThanOrEqual(WAY.step)
+          if ((now[b.id] ?? 0) > 0) span[b.id] = [span[b.id]?.[0] ?? n, n]
+        }
+        was = now
+        if (!shot || shot.low <= 0 || t > m.fire) {
+          if (!shot || t > m.fire + CAMERA.fade.over) expect(now, `${name}, frame ${n}`).toEqual({})
+          continue
+        }
+        const way = inTheWay(shot.pose, shot.low)
+        for (const id of way.fills) expect(now[id], `${name}, frame ${n}, ${id} fills the frame`).toBe(1)
+        if (shot.view === 'charge' && t >= m.arms + CAMERA.down[1]) for (const id of way.covers) expect(now[id], `${name}, frame ${n}, ${id} covers the figure`).toBe(1)
+      }
+      expect(fadesOf(37 / FPS, m)?.['pillar.3'], name).toBe(1)
+      told[name] = JSON.stringify(span)
+    }
+    console.log('blocks faded, first and last frame of each', told)
   })
 
   it('eases in and out of every move: it starts and ends each course at rest, from above', () => {
@@ -361,6 +427,114 @@ describe.runIf(LOOK1_ON)('the camera of the finishing blast: on the live site', 
       jumps(r.looks, r.name)
       expect(r.looks.some((l) => l.low), r.name).toBe(true)
     }
+  })
+})
+
+describe.runIf(LOOK1_ON)('the low lens and the blocks of the arena, with the visitor at five places', () => {
+  const PLACES: [string, [number, number] | null][] = [['the place of the proof', null], ['upper left', [480, 270]], ['upper right', [1440, 270]], ['lower left', [480, 810]], ['lower right', [1440, 810]]]
+  const STOOD = 40
+  const EARLY = 0.05
+  const PATHS: [string, Act][] = [['click', (t) => t >= 0.3 && t < 0.38], ['hold', (t) => t >= 0.3 && t < 2.3]]
+
+  it('on the click path and the hold path the arrow stands at the same place for the arms, no block covers the figure in the facing view, and none nearer than 90 px fills over 3 percent of the frame', () => {
+    const told: Record<string, unknown> = {}
+    let fall = -1
+    for (const [path, act] of PATHS) {
+      for (const [where, place] of PLACES) {
+        const bot = new BotDriver('keen', config.seed)
+        let arms = -1
+        const stage: Stage = live({
+          name: 'bot',
+          input(v: DriverView): Pointer {
+            const p = bot.input(v)
+            const q = place && fall > 0 && v.time >= fall - EARLY ? { ...p, x: place[0], y: place[1] } : p
+            if (seen(stage, 'boss-fall') < 0) return q
+            if (arms < 0 && seen(stage, 'finish-arms') >= 0) arms = v.time
+            return arms < 0 ? q : { ...q, down: act(v.time - arms) }
+          }
+        })
+        const name = `${path}, ${where}`
+        while (seen(stage, 'boss-fall') < 0 && stage.time < 400) stage.advance(PER)
+        expect(seen(stage, 'boss-fall'), name).toBeGreaterThan(0)
+        if (fall < 0) fall = stage.time
+        const stood = [Math.round(stage.cursor.x), Math.round(stage.cursor.y)]
+        while (stage.page.id === 'step4' && seen(stage, 'finish-arms') < 0 && stage.time < 400) stage.advance(PER)
+        const at = stage.events.find((e) => e.name === 'finish-arms')!
+        expect(Math.hypot(at.x - LAST.stand[0], at.y - LAST.stand[1]), name).toBeLessThan(STOOD)
+        let faded = 0
+        let facing = 0
+        let off = 0
+        while (stage.page.id === 'step4' && seen(stage, 'finish-fire') < 0 && stage.time < 500) {
+          stage.advance(PER)
+          const view = stage.frameAt(stage.time).view
+          const i = finishNow()
+          if (!view || view.up === undefined || !i) continue
+          const way = inTheWay(view, i.low ?? 0)
+          const still = (i.fade?.['pillar.3'] ?? 0) === 0 && (i.low ?? 0) >= 1
+          for (const id of way.fills) expect(i.fade?.[id], `${name}, step ${stage.step}, ${id} fills the frame`).toBe(1)
+          if (still) {
+            facing++
+            off = Math.max(off, Math.hypot(stage.cursor.x - LAST.stand[0], stage.cursor.y - LAST.stand[1]))
+            expect(way.covers, `${name}, step ${stage.step}`).toEqual([])
+          }
+          if ((i.fade?.['pillar.3'] ?? 0) >= 1) faded++
+        }
+        expect(seen(stage, 'finish-fire'), name).toBeGreaterThan(0)
+        expect(faded, name).toBeGreaterThan(5)
+        expect(facing, name).toBeGreaterThan(5)
+        expect(off, name).toBeLessThan(2)
+        told[name] = { stood, arms: [Math.round(at.x), Math.round(at.y)], off: Math.round(off * 10) / 10, faded, facing }
+      }
+    }
+    console.log('five places', JSON.stringify(told))
+  }, 240000)
+})
+
+describe('a block of the arena faded for a low lens (NEEDS)', () => {
+  const view = viewOf({ clock: UNFOLD.end + 40, unfold: UNFOLD.end, fight: newFight(), base: UNFOLD.end, fell: -1, pressed: false, arrow: { x: 500, y: 500 } })!
+  const read = (root: THREE.Object3D): { drawn: number; ghosts: number[]; panes: number } => {
+    const one = root.getObjectByName('arena-pillars') as THREE.Mesh
+    const ghosts: number[] = []
+    let panes = 0
+    root.traverse((c) => {
+      const m = (c as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
+      if (!m || !m.isMeshPhysicalMaterial) return
+      let seenNow = true
+      for (let o: THREE.Object3D | null = c; o; o = o.parent) if (!o.visible) seenNow = false
+      if (seenNow && m.transparent && m.metalness > 0.5 && m.opacity < 1) ghosts.push(m.opacity)
+      if (seenNow && (c as THREE.Mesh).renderOrder === 4) panes++
+    })
+    const count = one.geometry.drawRange.count
+    return { drawn: Number.isFinite(count) ? count : one.geometry.getIndex()!.count, ghosts, panes }
+  }
+
+  it('with nothing said it is the arena as it was; a faded pillar leaves the one body and is drawn thin by itself, at 1 it is not drawn; a pane likewise; and all of it comes back', () => {
+    const plain = makeArena()
+    plain.pose(view)
+    const was = read(plain.object)
+    let f: Record<string, number> | null = null
+    const told = makeArena({ fade: () => f })
+    told.pose(view)
+    expect(read(told.object)).toEqual(was)
+    expect(was.ghosts).toEqual([])
+    expect(was.panes).toBe(2)
+    f = { 'pillar.3': 0.25, 'pane.0': 0.5 }
+    told.pose(view)
+    let now = read(told.object)
+    expect(now.drawn).toBe((was.drawn * 7) / 8)
+    expect(now.ghosts).toEqual([0.75])
+    expect(now.panes).toBe(2)
+    f = { 'pillar.3': 1, 'pane.0': 1 }
+    told.pose(view)
+    now = read(told.object)
+    expect(now.drawn).toBe((was.drawn * 7) / 8)
+    expect(now.ghosts).toEqual([])
+    expect(now.panes).toBe(1)
+    f = null
+    told.pose(view)
+    expect(read(told.object)).toEqual(was)
+    plain.dispose()
+    told.dispose()
   })
 })
 

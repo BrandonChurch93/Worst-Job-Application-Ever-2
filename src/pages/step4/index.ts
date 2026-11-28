@@ -8,7 +8,7 @@ import { BIG, CAMERA, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LO
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
 import { FIRE, finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
-import { ABOVE, facing, feetFor, finishShot, marksOf, underOf, type Shot } from '../../boss/finish/camera'
+import { ABOVE, facing, fadesOf, feetFor, finishShot, marksOf, underOf, type Shot } from '../../boss/finish/camera'
 import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
 import { BREAKS, buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
@@ -228,6 +228,7 @@ export function makePage(): PageLogic {
     if (!LOOK1_ON || !v || (r < 0 && s.fin.arms < 0)) return null
     const m = s.fin
     const b = buttonAt(v)
+    const fade = m.arms < 0 ? null : fadesOf(s.clock - LEAD, marksOf(s.mode === 'film', m.arms, s.round >= 0 ? s.round : m.thrust, m.fire))
     let tear: { x: number; y: number; size: number; k: number } | null = null
     BREAKS.forEach((at, n) => {
       const age = s.fired - s.lag - at * (BLAST - s.lag)
@@ -245,7 +246,8 @@ export function makePage(): PageLogic {
       button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
       ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye, glare: low.glare } : {}),
       ...(under > 0 ? { under } : {}),
-      ...(tear ? { tear } : {})
+      ...(tear ? { tear } : {}),
+      ...(fade ? { fade } : {})
     }
   }
   const stands = (): boolean => {
