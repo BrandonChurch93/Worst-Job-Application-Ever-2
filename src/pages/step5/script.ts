@@ -37,7 +37,7 @@ export const HOPE = { spin: 2.03, tilt: 3.06, lean: -0.36, proud: 3.5, dust: 3.9
 export const READ = { dust: FILM.dust, hear: FILM.hear, breath: FILM.breath, look: FILM.read, lean: HOPE.lean, hop: FILM.hop, sag: FILM.sag } as const
 // The button: the word is beaten. It looks at the one button there is, drags itself there, leans back from it for 0.3 s, rises and drives its tip into it as the line ends.
 // The last phrase of the take is 1.73 s long and the press is 0.14 s before its end, so the look comes 0.31 s after the sag and the walk 0.26 s after the look.
-export const GIVE = { look: FILM.press - 1.28, walk: [FILM.press - 1.02, FILM.press - 0.41], strike: FILM.press - 0.1 } as const
+export const GIVE = { look: FILM.press - 1.28, walk: [FILM.toButton, FILM.press - 0.41], strike: FILM.press - 0.1 } as const
 
 export const CUES: Cue[] = [
   { at: HOPE.spin, react: 'flinch' },

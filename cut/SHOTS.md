@@ -83,5 +83,5 @@ Frames 11586 to 12887.
 | --- | --- | --- | --- | --- | --- |
 | `decision.wait` | 11586 to 11705 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `decision.letter` | 11706 to 11945 | `home` | holds, shakes | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.metrics` | 11946 to 12689 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.metrics` | 11946 to 12689 | `home`, then `view`, then `home` | follows | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `decision.reset` | 12690 to 12887 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |

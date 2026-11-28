@@ -4,7 +4,7 @@ import * as stageModule from '../src/stage/stage'
 import * as botsModule from '../src/stage/bots'
 import * as pagesModule from '../src/pages'
 import * as configModule from '../src/config'
-import { spoken } from '../src/audio/cues'
+import { endsSentence, spoken } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
 import { keyPage, standIns } from '../src/audio/standin'
 import { config } from '../src/config'
@@ -138,36 +138,70 @@ describe('a whole visit of the live site through the stage and the sound engine'
     expect(skipper.volumeSteps.map((x) => x.output)).toEqual([1])
   })
 
-  // The Decision page that holds its turn is not merged yet. ASSUMED for `held`: the page stands still, and gives no event, from the frame it would have turned
-  // until the narrator owes it nothing (sound.owed('step5')), and then turns.
   for (const bot of ['keen', 'clumsy']) {
-    it(`on the ${bot} visit with the turn of Decision held as ruled, lets nothing of line 8 sound after the page turn and starts line 9 on the turn`, async () => {
-      const { v, turn } = await runWith(bot, true)
-      expect(v.finished).toBe(true)
-      expect(v.heldSeconds).toBeGreaterThan(0)
-      const eight = v.voices.filter((x) => x.id === 'line.decision.letter.0')
-      expect(eight.length).toBe(1)
-      expect(eight[0]!.stop).not.toBeNull()
-      expect(eight[0]!.stop!).toBeLessThanOrEqual(turn - gap + 0.02)
-      const others = v.voices.filter((x) => x.id !== 'line.decision.reset.0' && x.start < turn && (x.stop ?? x.start + script.get(x.id.slice(5))!.seconds) > turn + 1e-6 && (x.stop === null || x.stop > x.start))
-      expect(others).toEqual([])
-      const nine = v.log.filter((e) => e.line === 'line.decision.reset.0' && e.what === 'spoken')
-      expect(nine.length).toBe(1)
-      expect(nine[0]!.start! - turn).toBeGreaterThanOrEqual(-1e-3)
-      expect(nine[0]!.start! - turn).toBeLessThanOrEqual(0.02)
-      expect(v.log.filter((e) => e.what === 'cut' && e.why === 'the careers page came while it was said')).toEqual([])
+    it(`on the ${bot} visit says the two parts after the first part of line 7 whole, has nothing of line 7 taken back by the turrets, and has the music, the gold and the lock of the page on their words`, async () => {
+      const calls: Call[] = []
+      const v: Visit = await visit(load, config, bot, config.seed, calls as never, true)
+      const at = (name: string) => calls.filter((x) => x.event?.name === name && x.event.page === 'step4').map((x) => x.at)
+      const seven = v.log.filter((e) => e.line.startsWith('line.boss.unfold.'))
+      expect(seven.filter((e) => e.what === 'taken back')).toEqual([])
+      expect(seven.filter((e) => e.what === 'cut').map((e) => e.line)).toEqual(['line.boss.unfold.0'])
+      const heard = (key: string) => v.voices.filter((x) => x.id === `line.${key}` && (x.stop === null || x.stop > x.start))
+      for (const key of ['boss.unfold.1', 'boss.unfold.2']) {
+        expect(heard(key).length, key).toBe(1)
+        expect(heard(key)[0]!.stop, key).toBeNull()
+      }
+      const one = heard('boss.unfold.1')[0]!.start
+      const two = heard('boss.unfold.2')[0]!.start
+      const frame = 1 / config.film.fps
+      expect(at('boss-music').length).toBe(1)
+      expect(Math.abs(at('boss-music')[0]! - (one + script.get('boss.unfold.1')!.phrases.at(-1)!.from))).toBeLessThanOrEqual(frame + 0.006)
+      expect(at('power-up')[0]! - two).toBeGreaterThanOrEqual(-0.006)
+      expect(at('turret-rise').at(-1)!).toBeGreaterThan(two)
+      expect(Math.abs(at('turret-lock').at(-1)! - (two + script.get('boss.unfold.2')!.seconds))).toBeLessThanOrEqual(frame + 0.006)
     })
+  }
 
-    it(`on the ${bot} visit with the Decision page as it is today, has line 8 out one voice fade after the page turn and line 9 said after the gap`, async () => {
-      const { v, turn } = await runWith(bot, false)
-      expect(v.heldSeconds).toBe(0)
+  for (const bot of ['keen', 'clumsy']) {
+    for (const held of [true, false]) {
+      it(`on the ${bot} visit${held ? ', with the visit holding the turn of Decision as well as the page does,' : ''} lets nothing of line 8 sound after the page turn, starts line 9 on the turn, finds nothing left to hold, and ends line 7 at the end of a sentence`, async () => {
+        const { v, turn } = await runWith(bot, held)
+        const sentenceEnds = script.get('boss.unfold.0')!.phrases.filter((p) => endsSentence(p.words)).map((p) => p.to)
+        const seven = v.log.filter((e) => e.line === 'line.boss.unfold.0' && e.what === 'cut')
+        expect(seven.length).toBe(1)
+        expect(sentenceEnds.some((t) => Math.abs(t - seven[0]!.seconds!) < 2e-3), `${seven[0]!.seconds}`).toBe(true)
+        expect(v.finished).toBe(true)
+        expect(v.heldSeconds).toBeLessThanOrEqual(1 / config.film.fps + 0.006)
+        const eight = v.voices.filter((x) => x.id === 'line.decision.letter.0')
+        expect(eight.length).toBe(1)
+        expect(eight[0]!.stop).not.toBeNull()
+        expect(eight[0]!.stop!).toBeLessThanOrEqual(turn - gap + 0.02)
+        const others = v.voices.filter((x) => x.id !== 'line.decision.reset.0' && x.start < turn && (x.stop ?? x.start + script.get(x.id.slice(5))!.seconds) > turn + 1e-6 && (x.stop === null || x.stop > x.start))
+        expect(others).toEqual([])
+        const nine = v.log.filter((e) => e.line === 'line.decision.reset.0' && e.what === 'spoken')
+        expect(nine.length).toBe(1)
+        expect(nine[0]!.start! - turn).toBeGreaterThanOrEqual(-1e-3)
+        expect(nine[0]!.start! - turn).toBeLessThanOrEqual(0.02)
+        expect(v.log.filter((e) => e.what === 'cut' && e.why === 'the careers page came while it was said')).toEqual([])
+      })
+    }
+
+    it(`on the ${bot} visit with the press of Decision made in a later phrase of line 8, ends line 8 at the pause of that phrase and turns the page one gap after it, with line 9 on the turn`, async () => {
+      const calls: Call[] = []
+      const v: Visit = await visit(load, config, bot, config.seed, calls as never, false, { page: 'step5', line: 'line.decision.letter.0', seconds: 9 } as never)
+      const turn = calls.find((x) => x.event?.name === 'page-turn' && x.event.page === 'step5')!.at
       const eight = v.voices.filter((x) => x.id === 'line.decision.letter.0')
+      const pauses = script.get('decision.letter.0')!.phrases.map((p) => p.to)
+      const pause = pauses.find((t) => t >= 9)!
+      expect(pause).toBeLessThan(pauses.at(-1)!)
       expect(eight.length).toBe(1)
-      expect(eight[0]!.stop!).toBeLessThanOrEqual(turn + LIVE.voiceFadeSeconds + 0.02)
+      expect(Math.abs(eight[0]!.stop! - (eight[0]!.start + pause))).toBeLessThanOrEqual(0.006)
+      expect(turn - eight[0]!.stop!).toBeGreaterThanOrEqual(gap - 0.02)
+      expect(turn - eight[0]!.stop!).toBeLessThanOrEqual(gap + 1 / config.film.fps + 0.006)
       const nine = v.log.filter((e) => e.line === 'line.decision.reset.0' && e.what === 'spoken')
       expect(nine.length).toBe(1)
-      expect(nine[0]!.start! - turn).toBeLessThanOrEqual(LIVE.voiceFadeSeconds + gap + 0.02)
-      expect(nine[0]!.start!).toBeGreaterThanOrEqual(eight[0]!.stop! + gap - 0.02)
+      expect(Math.abs(nine[0]!.start! - turn)).toBeLessThanOrEqual(0.02)
+      expect(v.heldSeconds).toBe(0)
     })
   }
 })

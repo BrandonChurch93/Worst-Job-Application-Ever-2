@@ -156,6 +156,7 @@ export const LINE6 = {
 export const LINE7 = {
   part0: 23.324, // s of `boss.unfold.0`, from `boss-formed`
   ends: [2.208, 5.182, 8.524, 11.356, 13.856, 17.88, 20.772, 23.324] as const, // s at which its phrases end (the start of the next one, and the end of the file): where the shell stops it after a `boss-turn`
+  sentences: [5.182, 8.524, 17.88, 23.324] as const, // s at which its sentences end, each one of `ends`: a click ends the line there when that is near enough, by `earlyEnd` of src/audio/cues.ts, which the voice reads too
   gap: 0.3, // s of silence the shell leaves before the next part
   part1: 5.59, // s of `boss.unfold.1`
   music: 3.806, // s into part 1 at which "their student loans." and the music start (`boss-music`)
@@ -232,7 +233,7 @@ export const RAISE = {
   near: 0.5, // s from `power-up` over which the view comes close and the figure steps to its clear spot
   back: [2.35, 2.92] as const, // s after `power-up` between which the view goes back to the whole page
   zoom: 1.6, // times: the figure about 200 px tall in the film's frame, as on the walk
-  box: { x0: -90, y0: -35, x1: 115, y1: 125 }, // px round the arrow's spot that the figure, its raised fists and its ring of flames fill
+  box: { x0: -90, y0: -35, x1: 115, y1: 125 }, // px round the arrow's spot that the figure, its raised fists and its ring of flames fill; read by eye at 03:10Z. The flames of the finish at 739a4e33 measure -92 to 187 across and -127 to 125 down; a box that wide is not kept yet, see the notes on the rulings of 04:17Z
   step: 6, // px between the rings on which a clear spot is looked for
   turns: 72, // spots tried on each ring
   most: 720 // px, the widest ring
@@ -249,6 +250,8 @@ export const RACK_GAP = 36 // page px between the old validation slabs in the la
 export const TOP = {
   bar: 86, // px from the top to the health bar's track: inside the frame of the picked picture (y 66 to 137)
   clear: 24, // px kept clear under the bar's box: nothing of the boss comes nearer
+  muzzle: 2, // px across the big cannon's muzzle, for the same band
+  spare: 0.5, // px more than the band that the boss's own bound on his place keeps
   move: 0.6 // s the form takes to leave and to come back, and the bar to go up and down
 } as const
 

@@ -1,3 +1,4 @@
+import { earlyEnd } from '../../audio/cues'
 import { config } from '../../config'
 import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
@@ -6,7 +7,8 @@ import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/fini
 import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
-import { finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
+import { FIRE, finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
+import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
 import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
 import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
@@ -62,12 +64,13 @@ interface State {
   charge: number
   own: boolean
   fired: number
+  lag: number
   shot: number
   blown: boolean
   gainFrom: number
   gainT: number
   fig: { x: number; y: number } | null
-  fin: Record<'power' | 'arms' | 'charge' | 'fire' | 'walk' | 'kneel' | 'fist', number> & { walked: number; pace: number; x: number; y: number; tx: number; ty: number; held: boolean }
+  fin: Record<'power' | 'arms' | 'charge' | 'thrust' | 'fire' | 'walk' | 'kneel' | 'fist', number> & { walked: number; pace: number; x: number; y: number; tx: number; ty: number; held: boolean }
   dash: number
   close: number
   burn: { x: number; y: number } | null
@@ -108,7 +111,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -136,7 +139,7 @@ export function makePage(): PageLogic {
 
   const BLAST = SHOUT.gone - SHOUT.fire
   const steps = (held: number): number => SHOUT.beats.filter((b) => b - SHOUT.beats[0]! <= held + 1e-6).length / SHOUT.beats.length
-  const gone2 = (): number => (s.blown ? 1 : s.stage === 'finish' && s.fired >= 0 ? Math.min(1, s.fired / BLAST) : 0)
+  const gone2 = (): number => (s.blown ? 1 : s.stage === 'finish' && s.fired >= 0 ? Math.min(1, Math.max(0, (s.fired - s.lag) / (BLAST - s.lag))) : 0)
   const power = (): number => (s.gold < 0 ? 0 : Math.min(1, s.gold / LINE7.glow))
   const arms = (): number => {
     if (s.stage !== 'finish') return 0
@@ -177,7 +180,7 @@ export function makePage(): PageLogic {
     return false
   }
   // The view's time at which a thing of the power-up or the finish began, kept for the figure that acts it.
-  const stamp = (k: 'power' | 'arms' | 'charge' | 'fire' | 'walk' | 'kneel' | 'fist'): void => {
+  const stamp = (k: 'power' | 'arms' | 'charge' | 'thrust' | 'fire' | 'walk' | 'kneel' | 'fist'): void => {
     if (s.fin[k] < 0) s.fin[k] = s.clock - LEAD
   }
   const mark = (v: number): number | undefined => (v < 0 ? undefined : v)
@@ -214,7 +217,7 @@ export function makePage(): PageLogic {
       time: v.time,
       arrow: r < 0 ? { x: s.cx, y: s.cy } : spot(r),
       power: r < 0 ? null : { at: m.power, until: m.power + RAISED },
-      marks: { arms: mark(m.arms), charge: mark(m.charge), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
+      marks: { arms: mark(m.arms), charge: mark(m.charge), thrust: mark(m.thrust), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
       walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
@@ -240,7 +243,7 @@ export function makePage(): PageLogic {
   const strip = (rig: Rig, k: number): Rig => ({ ...rig, plate: { ...rig.plate, k: rig.plate.k * k }, sides: rig.sides.map((q) => ({ ...q, k: q.k * k })), legs: rig.legs.map((q) => ({ ...q, k: q.k * k })), cannons: rig.cannons.map((q) => ({ ...q, k: q.k * k })), shield: { ...rig.shield, k: rig.shield.k * k } })
   const raised = (): number => (s.clock < 0 || s.inSocket ? 0 : prog(s.clock, UNFOLD.crack + SOLID.rise[0], UNFOLD.crack + SOLID.rise[1]))
   const NONE = { breaks: [], fallen: [] as string[] }
-  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= 0 && s.fired < BLAST ? { power: s.shot, since: s.fired } : null, last: s.end && s.fig ? { phase: s.end.phase, since: s.end.t, x: s.fig.x, y: s.fig.y, to: { x: FALLEN.x, y: FALLEN.y }, led: !s.end.go } : null, close: s.close, pressedFor: s.end ? s.pressed : -1, scorch: s.burn }))
+  const view = (): ReturnType<typeof viewOf> => (s.inSocket ? null : viewOf({ clock: s.clock, unfold: s.stage === 'unfold' ? s.t : UNFOLD.end, fight: s.fight, base: s.base, fell: s.fell, pressed: s.pressed >= 0, arrow: { x: s.cx, y: s.cy }, fall: s.stage === 'collapse' || (s.stage === 'press' && !s.blown) ? COLLAPSE_SECONDS : FINISH.fall, gone: gone2(), power: power(), arms: arms(), charge: charged(), blast: s.stage === 'finish' && s.fired >= s.lag && s.fired < BLAST ? { power: s.shot, since: s.fired - s.lag } : null, last: s.end && s.fig ? { phase: s.end.phase, since: s.end.t, x: s.fig.x, y: s.fig.y, to: { x: FALLEN.x, y: FALLEN.y }, led: !s.end.go } : null, close: s.close, pressedFor: s.end ? s.pressed : -1, scorch: s.burn }))
   const inBox = (b: { x: number; y: number; w: number; h: number }, p: { x: number; y: number }, grow = 0): boolean => p.x >= b.x - grow && p.x <= b.x + b.w + grow && p.y >= b.y - grow && p.y <= b.y + b.h + grow
   const fallenBox = { x: FALLEN.x - 150, y: FALLEN.y - 62, w: 300, h: 124 }
   const wake = (): number => (s.mode === 'film' ? Math.max(WAKE_AFTER_TICK.film, LINE6.after - UNFOLD.end) : s.selfTick ? WAKE_AFTER_TICK.near : WAKE_AFTER_TICK.live)
@@ -498,7 +501,7 @@ export function makePage(): PageLogic {
         s.py = io.pointer.y
         s.alone = stirred ? 0 : s.alone + dt
         if (s.turned < 0 && ((s.mode === 'live' && io.pressed) || s.t >= LINE7.part0)) {
-          s.turned = LINE7.ends.find((e) => e >= s.t - 1e-6) ?? LINE7.part0
+          s.turned = earlyEnd(LINE7.ends, LINE7.sentences, s.t)
           io.emit('boss-turn', io.cursor.x, io.cursor.y, false)
         }
         const one = s.turned >= 0 ? s.turned + LINE7.gap : Infinity
@@ -536,7 +539,7 @@ export function makePage(): PageLogic {
             stamp('power')
             s.fin.x = io.cursor.x
             s.fin.y = io.cursor.y
-            const to = LOOK1_ON ? clearOf({ x: s.fin.x, y: s.fin.y }) : { x: s.fin.x, y: s.fin.y }
+            const to = LOOK1_ON && s.mode === 'live' ? clearOf({ x: s.fin.x, y: s.fin.y }) : { x: s.fin.x, y: s.fin.y }
             s.fin.tx = to.x
             s.fin.ty = to.y
             io.cursor.act('angry')
@@ -630,7 +633,9 @@ export function makePage(): PageLogic {
             s.shot = Math.max(FINISH.small, s.charge < 0 ? 0 : level(s.charge))
             s.fired = 0
             s.burn = { x: io.cursor.x, y: io.cursor.y }
+            s.lag = LOOK1_ON ? FIRE.lead + Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) / BEAM.speed : 0
             io.emit('finish-fire', io.cursor.x, io.cursor.y, false)
+            if (s.shot > FINISH.small) stamp('thrust')
             stamp('fire')
             const d = Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) || 1
             io.cursor.knock(((io.cursor.x - FALLEN.x) / d) * KICK.popup * s.shot, ((io.cursor.y - FALLEN.y) / d) * KICK.popup * s.shot)
@@ -643,6 +648,7 @@ export function makePage(): PageLogic {
             }
           } else {
             s.charge += dt
+            if (s.mode === 'film' ? u >= SHOUT.fire - FIRE.ahead : !s.own && !down && s.charge >= whole - FIRE.ahead) stamp('thrust')
             if (!s.own && down) s.own = true
             else if (s.own ? !down || s.charge >= whole + FINISH.late : s.charge >= whole) fire()
           }
