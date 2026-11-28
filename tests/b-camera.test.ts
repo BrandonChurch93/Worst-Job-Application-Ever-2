@@ -100,6 +100,14 @@ describe('the camera of the finishing blast: its path', () => {
       expect(sideOf(finishRig(m.fire, m).rig), name).toBeLessThan(-40)
       expect(sideOf(finishRig(m.fire + CAMERA.rise[0], m).rig), name).toBeLessThan(-40)
     }
+    const m = COURSES[0]![1]
+    const off = (t: number): string => sideOf(finishRig(t, m).rig).toFixed(1)
+    const crossed: string[] = []
+    for (let n = Math.round((m.fire - 1.2) * FPS); n <= (m.fire + CAMERA.rise[1]) * FPS; n++) {
+      const r = finishRig(n / FPS, m)
+      if (lowOf(r.rig) > 0.5 && Math.abs(sideOf(r.rig)) < CAMERA.thin) crossed.push(`${(n / FPS - m.fire).toFixed(3)} s: ${sideOf(r.rig).toFixed(1)}, glare ${r.glare.toFixed(2)}`)
+    }
+    console.log('degrees off the plane of the figure', JSON.stringify({ charge: off(m.fire - 1.5), fire: off(m.fire), held: off(m.fire + CAMERA.rise[0]), under: crossed }))
   })
 
   it('goes round no faster than the top limit once it is straight above: the picture comes round to the lie of the page slowly', () => {
