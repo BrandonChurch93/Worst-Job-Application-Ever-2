@@ -571,7 +571,7 @@ describe('change note 003: line 7 and the fight music', () => {
     expect(s.log().filter((e) => e.what === 'cut').length).toBe(1)
   })
 
-  it('drops the first part whole when the click comes before it has begun, and starts the second where the first would have', async () => {
+  it('takes a click that comes before the first part has begun as one at its first moment: the part is said to the end of its first sentence and the second follows it', async () => {
     const { s, ctx } = await ready('step4')
     ctx.currentTime = 50
     s.event(ev('checkbox', 'step4'), 'live')
@@ -580,8 +580,10 @@ describe('change note 003: line 7 and the fight music', () => {
     ctx.currentTime = 52
     s.event(ev('boss-turn', 'step4'), 'live')
     const lines = s.said().lines
-    expect(lines.filter((l) => l.line === id('boss.unfold.0'))).toEqual([])
-    expect(lines.filter((l) => l.line === id('boss.unfold.1'))[0]!.start).toBeCloseTo(50 + L + gap, 9)
+    const first = 50 + L + gap
+    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, l.start, l.end])).toEqual([['beaten one two', near(first), near(first + 3 / wps)], ['three four five.', near(first + 3 / wps), near(first + 6 / wps)]])
+    expect(lines.filter((l) => l.line === id('boss.unfold.1'))[0]!.start).toBeCloseTo(first + 6 / wps + lineGap, 9)
+    expect(s.log().filter((e) => e.what === 'cut').map((e) => e.line)).toEqual([id('boss.unfold.0')])
   })
 
   it('says nothing of line 7 that has not started once the turrets rise, takes its music back with it, and lets the event of the stage bring the music in then', async () => {

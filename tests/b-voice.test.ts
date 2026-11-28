@@ -300,6 +300,28 @@ describe('the narrator\'s voice: the engine', () => {
     }
   })
 
+  it('takes a turn that comes before the first part of line 7 has begun as one at its first moment: the part is said to the end of its first sentence, not dropped, and the parts after it follow', async () => {
+    const starts = [0.1, 2.208, 5.182, 8.524, 11.356, 13.856, 17.88, 20.772]
+    const takes = { ...TAKES, 'boss.unfold.0': { seconds: 23.324, starts } }
+    for (const early of [0.007, 0, 3]) {
+      const { s, ctx } = await ready('step4', takes)
+      ctx.currentTime = 10
+      s.event(ev('checkbox', 'step4'), 'live')
+      ctx.currentTime = 10.5
+      s.event(ev('boss-formed', 'step4'), 'live')
+      const begins = booked(s).find((x) => x[0] === id('boss.unfold.0'))![1] as number
+      expect(begins).toBeGreaterThan(13)
+      ctx.currentTime = begins - early
+      s.event(ev('boss-turn', 'step4'), 'live')
+      const end = begins + starts[2]!
+      expect(times(ctx, 'boss.unfold.0'), `${early}`).toEqual([[near(begins), near(end)]])
+      expect(times(ctx, 'boss.unfold.1').at(-1), `${early}`).toEqual([near(end + gap), null])
+      expect(s.log().filter((e) => e.what === 'cut').map((e) => [e.line, e.seconds])).toEqual([[id('boss.unfold.0'), near(starts[2]!)]])
+      ctx.currentTime = begins + 1
+      expect(s.said().lines.filter((l) => l.start <= ctx.currentTime && l.end > ctx.currentTime).map((l) => l.line)).toEqual([id('boss.unfold.0')])
+    }
+  })
+
   it('keeps Continue on step 2 waiting until the file of line 4b has ended, whatever its length', async () => {
     expect(waitsFor.step2).toBe('step2.crank.1')
     for (const seconds of [1.89, 3.4]) {
