@@ -199,12 +199,12 @@ export const CLOSE = {
 
 // The last moment: when the body is gone the arrow walks to the button that is left, drops to its knees and strikes it with its right fist.
 export const LAST = {
-  stand: [440, 650], // px, where the arrow stands for the charge and the blast
+  stand: (LOOK1_ON ? [550, 650] : [440, 650]) as readonly [number, number], // px, where the arrow stands for the charge and the blast
   reach: LOOK1_ON ? 144 : 200, // px left of the button's middle at which it kneels: with the look, 31 px left of the end of its 226 px button
   words: -290, // px from the button's middle to the words "Click to submit", so they stand over it: the arena's burn is black to 138 px and sooty to about 230 px from it, and under it lie the cracks of the place the button was torn from
   wait: 0.4, // s after the body is gone before it sets off (`finish-walk`), while its arms go on dropping
-  far: 426.5, // px the standing figure walks in the film with the look: from its feet after a whole blast to its own kneeling place, with the step it waits
-  speed: LOOK1_ON ? 152.32 : 114.3, // px/s of its walk: 2.8 s from where it stood to its knees, `far` with the look and 320 px without
+  far: 319.5, // px the standing figure walks in the film with the look: from its feet after a whole blast to its own kneeling place, with the step it waits
+  speed: LOOK1_ON ? 114.11 : 114.3, // px/s of its walk: 2.8 s from where it stood to its knees, `far` with the look and 320 px without
   alone: 6, // s without a move or a press after which it walks there and strikes by itself, live site
   led: 20, // s of being led about after which it walks there and strikes by itself, live site
   most: 2.8, // s at most that its walk to the button takes when it goes by itself
@@ -226,7 +226,16 @@ export const IDLE = {
 // The film's fight is shorter than any visitor's: a dart that reaches the body does `dart` times as much, by phase, and a phase may end in `floor` of its least length.
 // `ends`: the second of the fight at which each phase ends in the film at the latest, whatever the darts did, so the film's marks do not move with the boss's shape.
 // `early`: s before the turret locks by which the standing figure of the power-up lies on the page again. Its moves are fitted to that window by the figure's own module.
-export const RAISE = { early: 0.05 } as const
+export const RAISE = {
+  early: 0.05,
+  near: 0.5, // s from `power-up` over which the view comes close and the figure steps to its clear spot
+  back: [2.35, 2.92] as const, // s after `power-up` between which the view goes back to the whole page
+  zoom: 1.6, // times: the figure about 200 px tall in the film's frame, as on the walk
+  box: { x0: -90, y0: -35, x1: 115, y1: 125 }, // px round the arrow's spot that the figure, its raised fists and its ring of flames fill
+  step: 6, // px between the rings on which a clear spot is looked for
+  turns: 72, // spots tried on each ring
+  most: 720 // px, the widest ring
+} as const
 // `spare` is the health the film keeps over the end of a stage until that stage's time is up, with the look on, so that every stage ends at its time whatever the darts meet.
 export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const, ends: [9.83, 11.02, 13.69] as const, spare: 0.5 } as const
 
