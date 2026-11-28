@@ -859,4 +859,60 @@ describe('how the boss plays (change 002, item 15)', () => {
       expect(burnAt - beamAt, name).toBeLessThan(0.2)
     }
   })
+  it.runIf(LOOK1_ON)('rulings of 04:46, 2. in every course of the fight nothing the boss is drawn with comes nearer than the clear band under the frame of the health bar: five kinds of visitor on ten seeds each, twenty looks a second', () => {
+    const after = (seed: number, where: (time: number) => [number, number]): Stage => {
+      const bot = new BotDriver('keen', seed)
+      let formed = false
+      const stage: Stage = live({
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          formed = formed || stage.events.some((e) => e.name === 'boss-formed')
+          if (!formed) return bot.input(v)
+          const [x, y] = where(v.time)
+          return { x, y, down: Math.floor(v.time * 12) % 2 === 0 }
+        }
+      })
+      return stage
+    }
+    const leg = (time: number): number => Math.floor(time / 1.5)
+    const kinds: [string, (seed: number) => Stage, number][] = [
+      ['keen', (seed) => live(new BotDriver('keen', seed)), 1000],
+      ['clumsy', (seed) => live(new BotDriver('clumsy', seed)), 1000],
+      ['one who keeps under the bar', (seed) => after(seed, (t) => [600 + ((seed * 97 + leg(t) * 211) % 720), 180 + ((seed * 31 + leg(t) * 17) % 90)]), 1000],
+      ['one who runs round the boss', (seed) => after(seed, (t) => [960 + 620 * Math.cos(t * 0.9 + seed), 540 + 400 * Math.sin(t * 0.9 + seed)]), 1000],
+      ['one who stands in one place', (seed) => after(seed, () => [200 + ((seed * 131) % 1520), 150 + ((seed * 71) % 800)]), 1000],
+      ['random', (seed) => live(new BotDriver('random', seed)), 0],
+      ['skipper', (seed) => live(new BotDriver('skipper', seed)), 0]
+    ]
+    let least = Infinity
+    let who = ''
+    for (const [kind, make, enough] of kinds) {
+      let looks = 0
+      let mine = Infinity
+      for (let n = 0; n < 10; n++) {
+        const stage = make(config.seed + n)
+        while (stage.page.id === 'step4' && stage.time < 400) {
+          stage.advance(12)
+          if (stage.page.id !== 'step4') break
+          if (!FIGHT.test(stage.page.gag() ?? '')) continue
+          stage.frameAt(stage.time)
+          const v = viewNow()
+          if (!v) continue
+          looks++
+          for (const b of lookBoxes(v)) {
+            const gap = gapTo(b, SOLID.frame)
+            mine = Math.min(mine, gap)
+            if (gap < least) {
+              least = gap
+              who = `${b.id} of ${kind}, seed ${n}, at ${stage.time.toFixed(2)}`
+            }
+          }
+        }
+      }
+      expect(looks, kind).toBeGreaterThanOrEqual(enough)
+      expect(mine, kind).toBeGreaterThanOrEqual(TOP.clear)
+    }
+    expect(who).not.toBe('')
+    expect(least).toBeGreaterThanOrEqual(TOP.clear)
+  }, 240000)
 })

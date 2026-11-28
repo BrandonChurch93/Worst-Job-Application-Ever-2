@@ -249,6 +249,8 @@ export const RACK_GAP = 36 // page px between the old validation slabs in the la
 export const TOP = {
   bar: 86, // px from the top to the health bar's track: inside the frame of the picked picture (y 66 to 137)
   clear: 24, // px kept clear under the bar's box: nothing of the boss comes nearer
+  muzzle: 2, // px across the big cannon's muzzle, for the same band
+  spare: 0.5, // px more than the band that the boss's own bound on his place keeps
   move: 0.6 // s the form takes to leave and to come back, and the bar to go up and down
 } as const
 
