@@ -193,3 +193,13 @@ A correction to the first report: the presses reported then (28.42 s, 31.43 s, 3
 - Why the film's renderer gives a darker frame at tier final than at draft (7.0 of 255 on the join in frame): UNKNOWN, outside this unit; told to the Builder.
 - The limit of 50 ms at worst for a cue is not kept by one cue on this machine (the second run of the real clock, below). Not mended.
 - `npm run hostcheck` with the pieces in place: not run (it builds a clean copy, on which the stand-in's pieces are not present).
+
+## The checks at the end
+
+On the branch with `origin/main` `77785c55` merged in (merge `802760cc`), one after the other, 23:58Z to 00:08Z on 2026-11-28:
+
+- `npm run determinism`: `pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders`.
+- `npm run bots`: `bots: all clear`, keen reached every one of the 37 gags on every seed.
+- `npm test`: 179 files passed and 13 skipped of 192; 2211 tests passed and 17 skipped of 2228. No test was set to skip by this unit.
+- `npx vitest run tests/b-video.test.ts`: 16 of 16. `npx tsc --noEmit -p .`: exit 0.
+
