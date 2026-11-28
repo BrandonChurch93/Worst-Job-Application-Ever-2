@@ -37,20 +37,34 @@ export const AT = {
   selfAfter: config.live.skipLinkAfterSeconds
 } as const
 
-// The film only. The narrator's line on the stamp starts at the hit. `SAID` is the seconds after the hit at which each of its five phrases starts, and its end, at the narrator's fastest pace; tests/decision-acting.test.ts holds them to the script.
-export const SAID = [0, 1.875, 3.125, 4.375, 6.25, 8.125] as const
+// The narrator's line on the stamp starts at the hit. `SAID` is the seconds after the hit at which each of its five phrases starts, and its end, in the kept take (`public/audio/index.json`, `line.decision.letter.0`).
+// tests/decision-acting.test.ts holds them to the take exactly: a new take fails the test, and the acting is timed again.
+export const SAID = [0.006, 3.466, 5.616, 8.166, 11.01, 12.742] as const
 
 const flat = AT.decide + AT.slam[1]
 // The press is the first whole frame from which the page turns no sooner than the end of that line and the gap between two lines.
 const press = Math.ceil((flat + SAID[5] + config.audio.lineGapSeconds - AT.hold) * 30 - 1e-6) / 30
 
-// `heal` is how long the arrow, landed flat, takes to be whole in the film: it lies flat for half of it. A visitor's arrow takes `STUCK.heal`.
+// The film only. `heal` is how long the arrow, landed flat, takes to be whole: it lies flat for half of it, peels and fills. No damage may last longer than `cursor.damageHealSeconds` from the hit, so the heal cannot be longer than this. A visitor's arrow takes `STUCK.heal`.
+// The take has a pause before each phrase. `dust`, `breath` and `hop` are what the arrow does in the pauses before the third, fourth and fifth phrases; the peel fills the pause before the second.
 export const FILM = {
   flat,
   landed: AT.decide + AT.fling[1],
   heal: 2.3,
+  dust: flat + SAID[2] - 1.12,
+  hear: flat + SAID[2],
+  breath: flat + SAID[3] - 0.95,
   read: flat + SAID[3],
+  hop: flat + SAID[4] - 1,
   sag: flat + SAID[4],
   press,
   leave: press + AT.hold
 } as const
+
+// The live site. A press while the line is being said is seen at once; the page then holds until the phrase being said has ended (the next phrase's start, or the line's end) and the gap between two lines, and never less than `AT.hold`.
+// `sinceHit` is the seconds from the stamp's hit to the press; under 0 means no line was started. A press after the line has ended holds `AT.hold`, as before.
+export function holdAfterPress(sinceHit: number): number {
+  if (sinceHit < 0 || sinceHit >= SAID[5]) return AT.hold
+  const next = SAID.find((at, i) => i > 0 && at > sinceHit) ?? SAID[5]
+  return Math.max(AT.hold, next - sinceHit + config.audio.lineGapSeconds)
+}
