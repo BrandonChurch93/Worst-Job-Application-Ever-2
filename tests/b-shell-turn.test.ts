@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
+import { homeDistance } from '../src/stage/camera'
 import { BROUGHT, filmFlow, filmOptions, ScriptDriver, Stage, STAYS_ON, wholeFilmFlow } from '../src/stage/stage'
 
 const PER = Math.round(stepHz / 60)
@@ -76,7 +77,10 @@ describe("the film's arrow at a page turn", () => {
       expect(Math.abs(v * Math.sin(a) + f.cursor.z * Math.cos(a) - rows[k + j]!.z)).toBeLessThanOrEqual(1e-6)
     }
     const two = new Stage({ mode: 'film', flow: filmFlow('step2'), pages, driver: new ScriptDriver(), film: filmOptions('step2') })
-    expect([two.frameAt(0).cursor.x, two.frameAt(0).cursor.z]).toEqual([960, 260])
+    // The arrow of the next unit starts on the line of sight of the hand over place and is drawn as large as it is there: it may stand nearer the eye while the slab is edge on.
+    const c = two.frameAt(0).cursor
+    expect(c.x).toBe(960)
+    expect((c.scale * homeDistance()) / (homeDistance() - c.z)).toBeCloseTo(homeDistance() / (homeDistance() - 260), 9)
   })
 
   it('on step 1 is lifted to the hand over place as before and does not ride', () => {

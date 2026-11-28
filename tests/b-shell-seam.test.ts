@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { homeDistance } from '../src/stage/camera'
-import { BROUGHT, filmFlow, filmOptions, ScriptDriver, Stage, STAYS_ON, wholeFilmFlow } from '../src/stage/stage'
+import { BROUGHT, CLEAR, filmFlow, filmOptions, ScriptDriver, Stage, STAYS_ON, wholeFilmFlow } from '../src/stage/stage'
 
 const PER = Math.round(stepHz / 60)
 const WHOLE = Math.round(config.film.units.reduce((n, u) => n + u.seconds, 0) * 60)
-interface At { i: number; index: number; page: string; turning: boolean; x: number; y: number; z: number }
-interface Seam { from: string; to: string; last: At; first: At; jump: number; rise: number; step: number; steps: number[] }
+interface At { i: number; index: number; page: string; turning: boolean; x: number; y: number; z: number; turn: number; rides: boolean; size: number; sx: number; sy: number }
+interface Seam { from: string; to: string; last: At; first: At; jump: number; rise: number; step: number; steps: number[]; lifted: boolean; turning: At[] }
 
 const run = (): At[] => {
   const s = new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver() })
@@ -19,7 +19,8 @@ const run = (): At[] => {
     const v = 540 - (f.cursor.y - f.scroll)
     const page = s.page.unit
     if (rows.length > 0 && rows[rows.length - 1]!.page !== page) index++
-    rows.push({ i, index, page, turning: s.turning, x: f.cursor.x, y: 540 - (v * Math.cos(a) - f.cursor.z * Math.sin(a)), z: v * Math.sin(a) + f.cursor.z * Math.cos(a) })
+    const near = homeDistance() / (homeDistance() - f.cursor.z)
+    rows.push({ i, index, page, turning: s.turning, x: f.cursor.x, y: 540 - (v * Math.cos(a) - f.cursor.z * Math.sin(a)), z: v * Math.sin(a) + f.cursor.z * Math.cos(a), turn: f.turn, rides: f.cursor.rides === true, size: f.cursor.scale * near, sx: 960 + (f.cursor.x - 960) * near, sy: 540 - v * near })
   }
   return rows
 }
@@ -32,10 +33,12 @@ const seams = (rows: At[]): Seam[] => {
     if (last.index === first.index) continue
     const half = rows.filter((r) => r.index === last.index && r.turning && r.i > last.i - 60)
     const before = rows[half[0]!.i - 1]!
-    const steps = [before, ...half].slice(1).map((r, j) => Math.hypot(r.x - [before, ...half][j]!.x, r.y - [before, ...half][j]!.y))
+    const steps = [before, ...half].slice(1).map((r, j) => Math.hypot(r.sx - [before, ...half][j]!.sx, r.sy - [before, ...half][j]!.sy))
+    const lifted = !STAYS_ON.includes(last.page)
     const edge = homeDistance() / (homeDistance() - (540 - last.y))
-    const jump = STAYS_ON.includes(last.page) ? Math.hypot(first.x - (960 + (last.x - 960) * edge), 540 - first.y - Math.max(BROUGHT.clear, last.z * edge)) : Math.hypot(first.x - last.x, first.y - last.y)
-    out.push({ from: last.page, to: first.page, last, first, jump, rise: Math.abs(first.z - last.z), step: Math.max(...steps), steps })
+    const jump = STAYS_ON.includes(last.page) ? Math.hypot(first.x - (960 + (last.x - 960) * edge), 540 - first.y - Math.max(BROUGHT.clear, last.z * edge)) : Math.hypot(first.sx - last.sx, first.sy - last.sy)
+    const arriving = rows.filter((r) => r.index === first.index && r.turning && r.i < first.i + 60 && r.turn !== 0)
+    out.push({ from: last.page, to: first.page, last, first, jump, rise: Math.abs(first.z - last.z), step: Math.max(...steps), steps, lifted, turning: [before, ...half, ...arriving] })
   }
   return out
 }
@@ -50,6 +53,27 @@ describe("the film's arrow across every page turn", () => {
   for (const s of all) {
     it(`from ${s.from} to ${s.to} moves no further across the seam than in the largest step of its leaving half`, () => {
       expect(s.jump).toBeLessThanOrEqual(STAYS_ON.includes(s.from) ? 1 : s.step)
+    })
+  }
+
+  // A lifted arrow stands in the room while the slab turns under it. On every frame of a turn it stands higher than the slab's body under its figure, by the numbers of src/stage/stage.ts,
+  // and across the seam it is drawn on the place of the frame before, and on every frame within 2 parts in 100 of the size of the frame before: standing nearer the eye never moves it or makes it larger.
+  for (const s of all.filter((t) => t.lifted)) {
+    it(`from ${s.from} to ${s.to} the lifted arrow stands clear of the slab on every frame of the turn, and is drawn as large as on the frame before`, () => {
+      const frames = s.turning.slice(1)
+      expect(frames.length).toBeGreaterThan(30)
+      for (const r of frames) {
+        expect(r.rides).toBe(false)
+        const tilt = Math.abs(r.turn)
+        const reach = r.turn < 0 ? CLEAR.under : CLEAR.over
+        if (tilt >= CLEAR.from) expect(r.z, `frame ${r.i + 1}`).toBeGreaterThanOrEqual(Math.min(CLEAR.near, reach * Math.tan(tilt)) - 1e-6)
+      }
+      for (let j = 1; j < s.turning.length; j++) {
+        const a = s.turning[j - 1]!
+        const b = s.turning[j]!
+        if (a.index !== b.index) expect(Math.hypot(b.sx - a.sx, b.sy - a.sy), `frame ${b.i + 1}`).toBeLessThanOrEqual(Math.max(s.step, 1))
+        expect(Math.abs(b.size / a.size - 1), `frame ${b.i + 1}`).toBeLessThanOrEqual(0.02)
+      }
     })
   }
 
