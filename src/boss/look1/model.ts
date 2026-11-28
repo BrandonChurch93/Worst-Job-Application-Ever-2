@@ -403,7 +403,7 @@ export function buildModel(): Model {
     const at: [number, number, number] = [mid[0] + Math.cos(am) * 190, mid[1] + Math.sin(am) * 120, HULL.top - HULL.tall / 2]
     const piece = (name: string, from: string): THREE.BufferGeometry => geo(`${name}${i}`, () => cutTo(shared.get(from)!, cut).translate(-at[0], -at[1], -at[2]))
     const g = new THREE.Group()
-    g.add(mesh(piece('piece', 'hull'), kit.hull), mesh(piece('piece.dark', 'hull.dark'), kit.dark), mesh(piece('piece.trim', 'hull.trim'), kit.bezel))
+    g.add(mesh(piece('piece', 'hull'), kit.hull), mesh(piece('piece.dark', 'hull.dark'), kit.under), mesh(piece('piece.trim', 'hull.trim'), kit.bezel))
     g.rotation.order = 'ZYX'
     g.visible = false
     body.add(g)

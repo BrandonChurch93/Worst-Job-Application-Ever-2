@@ -47,15 +47,15 @@ export const WALK = { pitch: 40, band: 0.14, lift: 38, bob: 5 }
 // The fall when he is beaten, as shares of boss.beaten: the cannon leaves, the glass bursts, the body drops on its belly.
 export const FALL = { off: [0, 0.4], glass: [0.05, 0.3], drop: [0.3, 0.7] } as const
 // The finishing blast, as shares of boss.gone: when each part leaves, when the hull comes apart, when the bare button comes down on the ground, when the last pieces land.
-export const GONE = { shield: [0.02, 0.6], wings: [[0.08, 0.7], [0.14, 0.76]], guns: [[0.05, 0.65], [0.1, 0.7]], legs: [[0.2, 0.8], [0.26, 0.86], [0.3, 0.9], [0.36, 0.96]], bay: [0.22, 0.8], hull: [0.28, 0.98], plate: [0.03, 0.5], button: [0.5, 0.9], left: [0.4, 0.92], land: [[0.44, 0.92], [0.5, 0.93], [0.56, 0.95]] } as const
+export const GONE = { shield: [0.02, 0.6], wings: [[0.08, 0.7], [0.14, 0.76]], guns: [[0.05, 0.65], [0.1, 0.7]], legs: [[0.2, 0.8], [0.26, 0.86], [0.3, 0.9], [0.36, 0.96]], bay: [0.22, 0.8], hull: [0.28, 0.98], plate: [0.06, 0.34], button: [0.5, 0.9], left: [0.4, 0.92], land: [[0.44, 0.92], [0.5, 0.93], [0.56, 0.95], [0.52, 0.94]] } as const
 // How a piece leaves in the blast, in model units: far down the beam, wide to its own side, up from the ground.
 export const FLY = { far: 2700, wide: 1100, least: 0.6, high: 120, burst: [400, 250] }
-// Where the button lies when all else is gone (the fight's FALLEN), level on the page; and what lies about it, page px from its middle: a claw, a bent plate, two bolts, and three torn pieces of the hull (which piece, where, its turn), `small` of their size.
-export const LEFT = { x: 960, y: 650, slide: [0.02, 0.92], lie: [[-76, 150, 2.5], [150, 72, -0.5], [-78, -104, 0.9], [-24, 116, 2.2]], plates: [[1, 66, -118, 0.5], [3, 214, -34, -0.9], [5, 112, 168, 1.4]], small: 0.62 } as const
+// Where the button lies when all else is gone (the fight's FALLEN), level on the page; and what lies about it, page px from its middle: a claw, a bent plate, two bolts, and four torn pieces of the hull (which piece, where, its turn), `small` of their size.
+export const LEFT = { x: 960, y: 650, slide: [0.02, 0.92], lie: [[-76, 128, 2.5], [150, 72, -0.5], [-150, -110, 0.9], [-24, 112, 2.2]], plates: [[0, -70, -108, 0.5], [3, 214, -20, -0.9], [2, 66, 142, 1.4], [4, 150, -124, 0.3]], small: 0.8 } as const
 // The fist on the button that is left: it goes down in `down` seconds and stays down while the fist is on it; when the fist leaves it springs back in `back` seconds with a small overshoot. `deep` is in model units, `squash` a share of its size.
 export const PRESS = { down: 0.07, back: 0.38, deep: 9, squash: 0.045 }
 // The floor of light his parts keep inside the beam, as a share of their own colour: a tilted plate stays light grey.
-export const BEAMLIT = 0.34
+export const BEAMLIT = 0.42
 export const WORD = { font: 'inter-400', px: 25 }
 export const BENT = { yaw: 0.26, droop: 0.2 }
 export const TIMES = { form: 2.9, turret: 1.6, beaten: 1, gone: 2.13, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
@@ -91,7 +91,7 @@ export interface Pose {
   away: { shield: number; wings: [number, number]; guns: [number, number]; legs: [number, number, number, number]; bay: number; hull: number; plates: number[] }
   // The pieces that stay: 0 in the body, 1 lying where they are left.
   left: number
-  // The three pieces of the hull that stay: 0 on the body, 1 lying flat where they are left. And how much of the beam's light is on his parts, 0 to 1.
+  // The four pieces of the hull that stay: 0 on the body, 1 lying flat where they are left. And how much of the beam's light is on his parts, 0 to 1.
   landed: number[]
   lit: number
   // 0 to 1: how far the button is down under the fist; a little below 0 on the spring back when the fist leaves.

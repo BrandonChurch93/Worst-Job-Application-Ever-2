@@ -237,7 +237,7 @@ export function makeBoss(ctx: BossLookContext = {}): BossLook {
   model.button.traverse((c) => { c.castShadow = true })
   object.add(figure)
   const kit = lookKit()
-  const lit = [kit.hull, kit.wing, kit.hatch, kit.bezel, kit.steel, kit.gunBody, kit.gunBase, kit.plateLight, kit.limb, kit.dark, kit.joint, kit.pin, kit.plate]
+  const lit = [kit.hull, kit.wing, kit.hatch, kit.bezel, kit.steel, kit.gunBody, kit.gunBase, kit.plateLight, kit.limb, kit.under]
   const fx: Fx = makeFx(o, ctx.level ?? null)
   object.add(fx.object)
   const pose = (view: BossView, _dt: number, light?: (e: Emitter) => void): void => {

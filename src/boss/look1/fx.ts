@@ -580,8 +580,8 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       const rise = smooth(lin(p.gone, GONE.button[1], 1))
       const sx3 = p.x + 22
       const sy3 = p.y + 14
-      plume(sx3, sy3, 30, now, 0.07, 3.8, 41, 20, STEAM, 0.5 * rise, 9, 36)
-      plume(sx3 - 22, sy3 + 2, 30, now + 0.7, 0.11, 3.2, 42, 15, STEAM, 0.38 * rise, 5, 32)
+      plume(sx3, sy3, 30, now, 0.06, 3.8, 41, 27, STEAM, 0.62 * rise, 9, 38)
+      plume(sx3 - 18, sy3 + 2, 30, now + 0.7, 0.09, 3.4, 42, 20, STEAM, 0.48 * rise, 4, 34)
       const lie = LEFT.lie[0]
       plume(p.x + lie[0], p.y - lie[1], 20, now + 0.3, 0.2, 2, 43, 10, STEAM, 0.3 * rise, 4, 22)
     }

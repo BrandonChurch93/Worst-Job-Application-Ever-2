@@ -114,19 +114,19 @@ const MORE = {
     ['heal, 0.2 s after healedAt', viewOf({ time: 30.2 }, { ...out, stage: 1, healedAt: 30 })]
   ], near, 3),
 
-  // The finish in the close view of the film (x 300 to 1260, y 270 to 810): the two approved pictures, then the boss coming apart, what is left, and the button under the fist.
+  // The finish in the close view of the film (x 300 to 1260, y 315 to 855): the two approved pictures, then the boss coming apart, what is left, and the button under the fist.
   async gone(c) {
     const { sharp, at, outDir } = c
     const fin = { x0: 470, y0: 650, x1: 960, y1: 650, power: 1, firedAt: 46 }
     const lying = { ...out, x: 960, y: 650, stage: 2, health: 0, beaten: 1 }
-    const items = [0.12, 0.3, 0.5, 0.7, 0.86].map((g) => [`BUILD: gone ${g.toFixed(2)} (${(g * 2.13).toFixed(2)} s)`, viewOf({ time: 46 + g * 2.13, phase: 'beaten', finish: fin, arrow: { x: 440, y: 650, flat: 0, flatAt: null } }, { ...lying, gone: g })])
+    const items = [0.12, 0.3, 0.5, 0.7, 0.86, 0.92].map((g) => [`BUILD: gone ${g.toFixed(2)} (${(g * 2.13).toFixed(2)} s)`, viewOf({ time: 46 + g * 2.13, phase: 'beaten', finish: fin, arrow: { x: 440, y: 650, flat: 0, flatAt: null } }, { ...lying, gone: g })])
     items.push(['BUILD: gone 1, what is left', viewOf({ time: 50, phase: 'beaten' }, { ...lying, gone: 1 })])
     items.push(['BUILD: the fist is down (0.07 s after pressedAt)', viewOf({ time: 52.07, phase: 'beaten' }, { ...lying, gone: 1, pressedAt: 52 })])
-    items.push(['BUILD: springing back (0.2 s after)', viewOf({ time: 52.2, phase: 'beaten' }, { ...lying, gone: 1, pressedAt: 52 })])
+    items.push(['BUILD: the fist has left (0.15 s after releasedAt)', viewOf({ time: 54.15, phase: 'beaten' }, { ...lying, gone: 1, pressedAt: 52, releasedAt: 54 })])
     const cells = []
     for (const name of ['finish-blast.png', 'finish-button-left.png']) cells.push({ png: await sharp(target(at, name)).resize({ width: 960 }).png().toBuffer(), caption: `TARGET: ${name}` })
     for (const [caption, view] of items) {
-      const r = await c.look.render({ view, cx: 780, cy: 540, zoom: 2, width: 960, height: 540, tier: c.tier })
+      const r = await c.look.render({ view, cx: 780, cy: 585, zoom: 2, width: 960, height: 540, tier: c.tier })
       fs.writeFileSync(path.join(c.workDir, `gone-${cells.length}.png`), r.png)
       cells.push({ png: r.png, caption })
     }

@@ -283,6 +283,7 @@ export interface LookKit {
   soot: THREE.MeshBasicMaterial
   ceramic: THREE.MeshPhysicalMaterial
   scorched: THREE.MeshPhysicalMaterial
+  under: THREE.MeshPhysicalMaterial
 }
 
 let look: LookKit | null = null
@@ -291,7 +292,7 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x6e7277), roughness: 0.54, metalness: 0.35, specularIntensity: 0.5 })
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x7a7e83), roughness: 0.54, metalness: 0.35, specularIntensity: 0.5 })
   const brushed = (hex: number, metal: number, rough = 0.46): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); c.metalness = metal; c.roughness = rough; return studio(c) }
   look = {
     hull: brushed(0x9c9fa3, 0.35, 0.52),
@@ -303,7 +304,7 @@ export function lookKit(): LookKit {
     gunBase: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4b7bb), roughness: 0.42, metalness: 0.5, specularIntensity: 0.6 })),
     plate: b.plate,
     plateLight: studio(plateLight),
-    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x868a8f), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
+    limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x8e9297), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
     dark: b.plateSide,
     housing: b.housing,
     joint: b.joint,
@@ -318,7 +319,8 @@ export function lookKit(): LookKit {
     glassCrack: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.86, 0.95, 0.9), transparent: true, opacity: 0.92, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
     soot: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.011, 0.01), transparent: true, opacity: 0.55, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }),
     ceramic: m.ceramic,
-    scorched: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4a4744), roughness: 0.62, metalness: 0.7, specularIntensity: 0.5 }))
+    scorched: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x4a4744), roughness: 0.62, metalness: 0.7, specularIntensity: 0.5 })),
+    under: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x6a6d72), roughness: 0.6, metalness: 0.4, specularIntensity: 0.5 }))
   }
   return look
 }
