@@ -915,3 +915,24 @@ Nothing but tools, one patch file and these notes was committed. Every knock-out
 6. Offered, not applied: pipeline/change002/boss-aim-NEEDS.patch, the one line of 5 in src/core/renderer.ts and one case for tests/b-boss-same.test.ts (a rig aimed 48 times against a fresh rig). MEASURED: the case fails without the line (1 failed, 11 passed, EXIT 1) and passes with it (12 passed, EXIT 0). It changes no pixel of the eight frames measured; the other pages are UNKNOWN. It is not on my branch because the case fails there without the line and the line is not the cause.
 7. Not done. No test of the spheres in my test file: the mend is in the camera helper's file and its own test (tests/b-camera.test.ts at 55f111c9) holds it; a case of mine would fail on this branch, which does not carry the mend. Not measured on trial/p15: UNKNOWN whether the three numbers are 0 there. Two top-level see-through things sit at places 21 and 22 of their parent alone and at 71 and 72 after the earlier frames; they are drawn at the same places in the order (161, 162) and the picture is 0 px with the spheres fixed; what they are was not looked up.
 8. The tool: pipeline/change002/boss-draws.mjs, one record for every shadow draw inside a film frame (each light's slot, place, distance, strength, near, far, projection, map, the things handed to each map, the spheres of the bent things, and the order the things are then drawn in). It needs the one line in src/main.ts for the run only, as boss-lamps does.
+
+## The Builder's ruling of 13:43Z, November 28: the trial measured, the lamp line and the aim line (written 14:00Z)
+
+A detached checkout of agent/trial-p15 dbb3b410 beside this one, my tools copied into its working tree, nothing committed or pushed there. hd 1920x1080, draft tier. The trial holds the fast lengths; the boss unit is frames 7278 to 10511.
+
+1. The trial carries the lamp line. MEASURED: `git merge-base --is-ancestor f67abc88 dbb3b410` says yes, src/core/renderer.ts line 294 is there, and `git diff d7a1528d dbb3b410 -- src/core/renderer.ts` is empty. So "without" below is the trial with line 294 taken out in the working tree, and "with" is the trial as it is.
+2. The marks. MEASURED (`node pipeline/change002/boss-lamps.mjs --every 0.25 --out /tmp/trial-lamps.json`, EXIT 0): a lamp that throws a shadow sits on the boss page from 40.25 to 44.0 s (reach 181 to 363) and on step 1 from 4.5 to 9.25 s (reach 90), as on my branch. The moments stay 41.0, 42.5, 44.0 and 48.0.
+3. MEASURED, the same command three times (`node pipeline/change002/boss-same.mjs --runs "41/42.5/44/48/25,32,41,42.5,44,48/25,32,48[/five pages]" --out /tmp/tA`, then /tmp/tB, /tmp/tC, EXIT 0 each). A frame drawn after earlier frames against the frame drawn alone: pixels; pixels over 8 levels; box; largest level.
+
+| moment | with the lamp line (the trial as it is) | without the lamp line | with the lamp line and the aim line |
+| --- | --- | --- | --- |
+| 41.0 after 25, 32 | 0 | 827; 24; 1005,606 to 1919,1079; 18 | 0 |
+| 42.5 after 25, 32, 41 | 0 | 507; 0; 1021,577 to 1297,739; 6 | 0 |
+| 44.0 after 25, 32, 41, 42.5 | 0 | 12,762; 48; 1037,541 to 1919,774; 17 | 0 |
+| 48.0 after 25, 32, 41, 42.5, 44 | 1; 0; 1269,354; 1 | 1; 0; 1269,354; 1 | 1; 0; 1269,354; 1 |
+| 48.0 after 25, 32 | 0 | 0 | 0 |
+
+4. Which pixels without the line: at 44.0 s the shadow that the boss's plate throws away from the cold ball, to the right of the plate on the table; drawn alone it is there, drawn after earlier frames it is weaker. Without against with in forward order: 25.0 and 32.0 0, 41.0 834 px (most 18 levels), 42.5 507 (6), 44.0 12,794 (17), 48.0 0.
+5. The aim line (pipeline/change002/boss-aim-NEEDS.patch applied in the trial's working tree, lamp line in). Against the trial as it is: 0 px on every one of 23 frames: the 13 boss frames of the table, and careers 10.0, step 1 7.5, step 2 20.0, the machine 18.25 and Decision 5.0, each drawn alone and all five in one session. Each of the five shows cast shadows (cards, keys and arrow, lever and button, the machine's parts, the paper and the red button). The five drawn in one session against alone, without the aim line: 0, 0, 0, 0, 0. tests/b-boss-same.test.ts on the trial with the patch: 12 of 12, EXIT 0.
+6. The 1 px at 48.0 s (one level, at 1269,354) is there with and without the lamp line and with the aim line; it comes after frames of the finish (41 to 44) and not after 25 and 32 alone. Its cause was not looked for in this unit.
+7. Not measured: the final tier, the other formats, a session as long as one of the sixteen pieces, the live site.
