@@ -1061,3 +1061,24 @@ Branch agent/b-boss-turn. Commit 00087502 holds the mend of part 1.
 ## The Builder's rulings of 15:50Z, November 28 (written 16:15Z)
 
 (1) BAR_GONE is ON, by the Builder's ruling (the bar is the boss's own and leaves with it). One line in src/boss/tune.ts, and the first case of tests/b-boss-bar.test.ts now pins it on as shipped. MEASURED: film frame 10476 (53.3 s, 1920x1080, draft, `boss-same.mjs --runs "53.3" --out /tmp/bar533`, EXIT 0) shows no bar and no word SUBMIT above the arena; "Click to submit" stands. Checks with the switch on, one at a time: b-boss-bar 6 of 6, b-boss-turn 6 of 6, b-boss-same 11 of 11, b-boss 40 of 40, b-boss-state 1 of 1, boss 38 of 38, boss-closer-acting 5 of 5, b-finish 23 of 23, b-camera 28 of 28, site-standins 6 of 6, site-backing 3 of 3, EXIT 0 each; `npx tsc --noEmit -p .` EXIT 0. Not run: the other tests of the site; the live site with the switch on at this commit (it was measured on at dafc5190, part 8 of the unit before).
+
+(2) The white pillar tops, by the Builder's target (lower left top at mean 190 to 225 with 0 percent at 250 or above and its brushing seen; no other top darker by more than 5 levels). Written 16:18Z.
+1. The means: the top faces alone are rougher, on the arena's own copy of the kit's aluminium (`standing`), through a map of two points read by a second set of places on the column: the left point for the sides (the roughness as it is, 0.3), the right for the top (0.3 times `TOP_ROUGHER`). One material, one mesh, as before; no share of the mirrored light is taken. The kit's aluminium is not touched.
+2. Tried in the page first (`boss-tops.mjs --finish "0.3:1,0.45:1,0.6:1,0.75:1,0.6:0.9"`, EXIT 0, frame 10470, with the switch of the bar off as it was then). MEASURED on the lower left top: roughness 0.3: 246.5, 15.3 percent at 250 or above (0 px changed by drawing the tops as their own group); 0.45: 237.5, 1.0 percent; 0.6: 215.7, 0.1 percent; 0.75: 179.6, 0 percent, and the top at 80,223 darker by 15.9; 0.6 with a share of 0.9: 206.1, 0 percent.
+3. Built from the patch, MEASURED, film frames at 1920x1080, draft, against the same frames of the branch as it is (e2449a87), `boss-same.mjs --runs "53.2,5.0,8.0" --out /tmp/topsA` (as it is, EXIT 0), `/tmp/topsB` (`TOP_ROUGHER` 2, EXIT 0), `--runs "53.2,8.0" --out /tmp/topsC` (`TOP_ROUGHER` 2.2, EXIT 0). The boxes are the inner part of each changed patch.
+
+| frame | top | as it is: mean, at 250 or above, spread of rows | 2 (roughness 0.6) | 2.2 (roughness 0.66) |
+| --- | --- | --- | --- | --- |
+| 10470 (53.2 s) | lower left | 246.4, 13.9 %, 2.9 | 214.4, 0.1 %, 11.1 | 200.3, 0.0 %, 11.1 |
+| 10470 | upper left inner | 171.9, 0 %, 12.0 | 196.5, 0 %, 17.0 | 188.2, 0 %, 16.5 |
+| 10470 | upper left outer | 194.7, 0 %, 14.4 | 207.9, 0.1 %, 18.0 | 197.3, 0 %, 17.8 |
+| 10470 | the four on the right | 107.9 to 138.7, 0 % | 155.1 to 177.9, 0 % | 156.0 to 173.1, 0 % |
+| 7758 (8.0 s, all eight up) | lower left | 245.4, 14.7 %, 4.2 | 212.7, 0.1 %, 14.9 | 198.7, 0.0 %, 14.8 |
+| 7758 | left outer, lower | 241.6, 8.8 %, 7.6 | 219.2, 0.2 %, 15.5 | 205.4, 0.0 %, 16.0 |
+| 7758 | upper left inner and outer | 174.4 and 196.8, 0 % | 197.7 and 209.0, 0 % | 189.3 and 198.3, 0 % |
+| 7758 | the four on the right | 109.8 to 139.7, 0 % | 157.5 to 177.5, 0 % | 158.0 to 172.4, 0 % |
+
+4. Changed pixels, MEASURED at 2.2: 27,707 on frame 10470 in 7 patches and 29,424 on frame 7758 in 8 patches, each patch one top; 0 px outside the tops on both. Frame 7578 (5.0 s, the form before the arena) at 2: 0 px.
+5. Against the target at 2.2: the lower left top is at 200.3 and 198.7, 0 percent at 250 or above, spread of rows 11.1 and 14.8 (2.9 and 4.2 before). No top that was grey is darker: each is lighter, by 1.4 to 48.2 levels. One other top is darker by 36.2, the left outer lower one at 8.0 s: it was blown as well (241.6, 8.8 percent at 250 or above) and is at 205.4 after. That pillar is down at 53.2 s.
+6. What it costs, MEASURED: the dim tops on the right are 33 to 48 levels lighter (108 to 140 before, 156 to 173 after). The approved pictures have their tops at 193 to 223, so they move toward them; it is a change to seven tops, not to one.
+7. pipeline/change002/boss-tops-NEEDS.patch now holds this change (src/arena/props.ts: `TOP_ROUGHER = 2.2`, the second set of places on the column and on the eight as one, the map on `standing`; src/arena/wreck.ts: the stumps' sides say they are sides). `git apply --check` EXIT 0; `npx tsc --noEmit -p .` with it applied at 2 EXIT 0. NOT applied on the branch. Not run with it applied: any test, the live site, any frame but the three named. The stumps were in neither frame's changed pixels.

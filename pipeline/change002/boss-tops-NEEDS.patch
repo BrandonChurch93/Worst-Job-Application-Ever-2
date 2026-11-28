@@ -1,60 +1,67 @@
+diff --git a/src/arena/props.ts b/src/arena/props.ts
+index 537b8d90..eba2d46b 100644
 --- a/src/arena/props.ts
 +++ b/src/arena/props.ts
-@@ -19,6 +19,9 @@
+@@ -19,7 +19,10 @@ const lit = (g: THREE.BufferGeometry, m: THREE.Material, cast = true): THREE.Mes
    return out
  }
  
-+// The share of the room's mirrored light the top of a column keeps. Whole, a top that mirrors the studio's one soft light goes white and its brushing is lost.
-+export const TOP_KEEPS = 0.7
+-// A square column: four sides whose brushing runs up the column, and a top.
++// How many times rougher than its sides the top face of a column is. As smooth as the sides, a top that faces the studio's one soft light mirrors it whole: it goes white and its brushing is lost.
++export const TOP_ROUGHER = 2.2
 +
- // A square column: four sides whose brushing runs up the column, and a top.
++// A square column: four sides whose brushing runs up the column, and a top. Its second set of places says which is which: the left half a side, the right half the top.
  export function columnGeometry(side: number, high: number, bevel = 1.6): THREE.BufferGeometry {
    const o = roundedRect(side, side, 2.2, 3)
-@@ -27,12 +30,17 @@
+   const pts: ProfilePoint[] = [[0, 0, true], [0, high - bevel], [bevel, high]]
+@@ -27,8 +30,13 @@ export function columnGeometry(side: number, high: number, bevel = 1.6): THREE.B
    const p = wall.getAttribute('position')
    const uv = wall.getAttribute('uv') as THREE.BufferAttribute
    const n = wall.getAttribute('normal')
-+  const tint = new Float32Array(p.count * 3).fill(1)
++  const face = new Float32Array(p.count * 2).fill(0.25)
++  wall.setAttribute('uv1', new THREE.BufferAttribute(face, 2))
    for (let i = 0; i < p.count; i++) {
 -    if (n.getZ(i) > 0.9) continue
 +    if (n.getZ(i) > 0.9) {
-+      tint.fill(TOP_KEEPS, i * 3, i * 3 + 3)
++      face[i * 2] = 0.75
 +      continue
 +    }
      // Sides: the grain runs with the height.
      const round = Math.abs(n.getX(i)) > Math.abs(n.getY(i)) ? p.getY(i) : p.getX(i)
      uv.setXY(i, p.getZ(i) * 1.7, round * 6)
-   }
-+  wall.setAttribute('color', new THREE.BufferAttribute(tint, 3))
-   return wall
- }
- 
-@@ -70,6 +78,7 @@
+@@ -70,6 +78,11 @@ export function makeKit(): Kit {
    const chip = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.84, 0.83, 0.81), roughness: 0.6, metalness: 0, specularIntensity: 0.5, flatShading: true }))
    const hot = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 1.1, 0.16), toneMapped: false })
    const standing = studio(m.aluminium.clone())
-+  standing.vertexColors = true
++  const finish = new THREE.DataTexture(new Float32Array([0, 1, 0, 1, 0, TOP_ROUGHER, 0, 1]), 2, 1, THREE.RGBAFormat, THREE.FloatType)
++  finish.channel = 1
++  finish.needsUpdate = true
++  standing.roughnessMap = finish
++  standing.addEventListener('dispose', () => finish.dispose())
    return { aluminium: m.aluminium, standing, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, tooth, orange: m.orange, broken, fallen, hot, chip, own: [glass, glassEdge, shard, tooth, broken, fallen, hot, chip, standing] }
  }
  
-@@ -110,6 +119,10 @@
+@@ -110,6 +123,10 @@ export function makePillars(kit: Kit): { object: THREE.Group; list: Pillar[]; on
      return { root, foot, body: b, x: p.x, y: p.y, order: (inner ? 0 : 0.28) + 0.04 * (i % 4) }
    })
    const allBodies = merge(baked)
-+  const tint = body.getAttribute('color').array as Float32Array
-+  const tints = new Float32Array(tint.length * baked.length)
-+  baked.forEach((_, i) => tints.set(tint, i * tint.length))
-+  allBodies.setAttribute('color', new THREE.BufferAttribute(tints, 3))
++  const face = body.getAttribute('uv1').array as Float32Array
++  const faces = new Float32Array(face.length * baked.length)
++  baked.forEach((_, i) => faces.set(face, i * face.length))
++  allBodies.setAttribute('uv1', new THREE.BufferAttribute(faces, 2))
    const allFeet = merge(plates)
    for (const g of [...baked, ...plates]) g.dispose()
    const each = body.getIndex()!.count
+diff --git a/src/arena/wreck.ts b/src/arena/wreck.ts
+index a1f9c01c..13b862ba 100644
 --- a/src/arena/wreck.ts
 +++ b/src/arena/wreck.ts
-@@ -53,6 +53,7 @@
+@@ -53,6 +53,8 @@ function stumpGeometry(seed: number, id: number, high: number): { sides: THREE.B
      tri(top, [pi.x, pi.y, pi.z], [qi.x, qi.y, qi.z], mid, [0, 0, 1])
    }
    const g = geometryOf(sides)
-+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 3).fill(1), 3))
++  // A stump's sides are sides: the left half of the column's second set of places.
++  g.setAttribute('uv1', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 2).fill(0.25), 2))
    // The brushing runs up the column, as on the whole one.
    const p = g.getAttribute('position'), nor = g.getAttribute('normal'), uv = g.getAttribute('uv') as THREE.BufferAttribute
    for (let i = 0; i < p.count; i++) uv.setXY(i, p.getZ(i) * 1.7, (Math.abs(nor.getX(i)) > Math.abs(nor.getY(i)) ? p.getY(i) : p.getX(i)) * 6)
