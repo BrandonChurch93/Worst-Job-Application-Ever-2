@@ -28,6 +28,8 @@ All of it is a function of the marks and the view time. No clock, no random numb
 7. The walk is counted in px walked, one step per 54 px (six steps on 320 px): long dragging steps, a foot always on the ground, the body dropping onto each foot.
 8. The cold beam lights ask for no shadow: the arena draws the pillars' long shadows from `beamLight`, the figure draws its own.
 9. What burns is laid over the picture, not added to it (the page is nearly white), with colours above 1 so the finishing pass makes them glow.
+10. Second pass (01:14Z to 01:20Z): the ball's light and the three beam lights were about halved (ball 0.12 to 0.62, beam 1.0, 1.1, 0.9 times its opening) so the page does not go white and the arrow's white face holds; the gold round the figure during the charge and the blast is now a crackle of thin gold arcs on the ground that jump 15 times a second (`fx.crackle`, a function of view time), not a smear; the flame is five broad tongues behind eleven to sixteen narrow ones, orange at the edge, yellow white in the middle.
+11. The dark puff about 50 px ahead of the hands in the first third of a second of the beam is the look's own smoke on the boss's near corner (it stands in the charge picture too, before any beam); nothing of mine is drawn there (STATED from reading `acting.ts`: my smoke starts at the beam's end, my dust only at the knees and the blow).
 
 ## Events (for sounds; this unit makes no sound and spends nothing)
 
@@ -68,7 +70,7 @@ Draw calls of the finish alone (figure, its drawn shadow, what burns):
 
 | moment | film tier | low |
 | --- | --- | --- |
-| power-up (flame, ring, glow) | 14 | UNKNOWN (not yet run at low) |
+| power-up (flame, ring, glow) | 14 | 13 |
 | charge (ball, aura) | 15 | 14 |
 | blast (beam, flare, aura, skid) | 17 | 16 |
 | after (smoke, skid, scuffs) | 14 | 13 |

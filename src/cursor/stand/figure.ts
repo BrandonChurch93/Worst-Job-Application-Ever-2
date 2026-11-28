@@ -177,6 +177,7 @@ export function makeStand(): Stand {
 
   const pose = (p: StandPose, time: number): void => {
     object.position.set(p.x - 960, 540 - p.y, p.ground)
+    object.scale.setScalar(p.scale ?? 1)
     plane.rotation.set(STAND.rise * p.rise, 0, 0)
     const look = restLook(time)
     look.body.stretch = p.stretch
@@ -203,6 +204,8 @@ export function makeStand(): Stand {
       arms.axis = [ax / al, ay / al]
       arms.inward = [null, null]
       arms.grown = p.arms
+      arms.bulk = 1 + (STAND.bulk - 1) * Math.min(1, p.legs)
+      arms.glove = 1 + (STAND.glove - 1) * Math.min(1, p.legs)
       arms.over = 2 * Math.max(from[0]!.z, from[1]!.z)
       look.arms.grip = [p.grip[0], p.grip[1]]
       look.arms.strain = p.strain

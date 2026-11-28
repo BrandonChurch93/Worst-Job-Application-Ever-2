@@ -11,7 +11,7 @@ export type V3 = [number, number, number]
 
 export const STAND = {
   // How far the figure's plane is tipped up off the ground when it stands, in radians. The site's camera looks straight down, so a figure at a right angle to the ground would show only its top edge.
-  rise: 0.62,
+  rise: 0.698,
   // The point of the outline the body is carried by: low in the middle, between the hips. Outline units.
   pivot: [4.7, 16.5] as V2,
   // Where each leg leaves the body, in outline units: left, right.
@@ -22,10 +22,13 @@ export const STAND = {
   hip: 31,
   leg: 40,
   // The shoe: half its length, its height, half its depth, and how high the ankle is over the sole.
-  shoe: [8, 7.5, 5.5] as V3,
-  ankle: 5,
+  shoe: [11.5, 10, 8] as V3,
+  ankle: 6.5,
   // The hose of a leg, in px across.
-  hose: 3.3,
+  hose: 6.2,
+  // The arms on the standing figure: how much thicker the hose and how much larger the gloves than on the lying arrow.
+  bulk: 1.3,
+  glove: 1.5,
   // The long shadow: how far it runs for each px of height, as a share of what the key's own direction gives, and how dark it is at the feet.
   shadow: 0.62,
   shade: 0.3,
@@ -40,6 +43,8 @@ export interface StandPose {
   ground: number
   // 0 lying on the page, 1 standing.
   rise: number
+  // The figure's size about its feet: 1 is the cursor's own size.
+  scale?: number
   // 0 the legs are in the body, 1 out. The same for the arms.
   legs: number
   arms: number
@@ -134,11 +139,12 @@ export function mixPose(a: StandPose, b: StandPose, t: number): StandPose {
 export const at = (p: StandPose, x: number, y: number, ground = 0): StandPose => ({ ...p, x, y, ground })
 
 // A point of the figure's plane on the page: page px and the height over the page.
-export function toPage(p: { x: number; y: number; ground: number; rise: number }, fx: number, fy: number, fz: number): { x: number; y: number; z: number } {
+export function toPage(p: { x: number; y: number; ground: number; rise: number; scale?: number }, fx: number, fy: number, fz: number): { x: number; y: number; z: number } {
   const a = STAND.rise * p.rise
   const c = Math.cos(a)
   const s = Math.sin(a)
-  return { x: p.x + fx, y: p.y - (fy * c - fz * s), z: p.ground + fy * s + fz * c }
+  const k = p.scale ?? 1
+  return { x: p.x + k * fx, y: p.y - k * (fy * c - fz * s), z: p.ground + k * (fy * s + fz * c) }
 }
 
 // Where the middle of the feet is for an arrow that lies with its tip at a place of the page.

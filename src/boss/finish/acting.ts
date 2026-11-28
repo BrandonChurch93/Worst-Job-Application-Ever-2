@@ -39,6 +39,8 @@ export interface FinishInput {
   button?: { x: number; y: number; w?: number; h?: number; top?: number } | null
   // Where the blast goes: the fallen boss. Without it the blast goes to the button, or to the right.
   target?: { x: number; y: number } | null
+  // The figure's size during the power-up and the finish: 1 (the cursor's own size) when left out.
+  scale?: number
 }
 
 export interface Fx {
@@ -141,11 +143,11 @@ function handsMid(p: StandPose): V3 {
 
 // The knees stay `clear` px off the button's near end (its dark rim is about 19 px); the fist lands `on` px in from that end, at most `reach` px ahead of the feet.
 export const KNEEL = { clear: 31, on: 27, reach: 60, below: 6 } as const
-const fistX = (button: { x: number; w?: number }, feetX: number): number => Math.min(feetX + KNEEL.reach, button.x - (button.w ?? 110) / 2 + KNEEL.on)
+const fistX = (button: { x: number; w?: number }, feetX: number, scale = 1): number => Math.min(feetX + KNEEL.reach * scale, button.x - (button.w ?? 110) / 2 + KNEEL.on)
 
 // Where the feet's middle should be for the fist to land on the button: before its near end, never on it.
-export function kneelSpot(button: { x: number; y: number; w?: number }): { x: number; y: number } {
-  return { x: button.x - (button.w ?? 110) / 2 - KNEEL.clear, y: button.y + KNEEL.below }
+export function kneelSpot(button: { x: number; y: number; w?: number }, scale = 1): { x: number; y: number } {
+  return { x: button.x - (button.w ?? 110) / 2 - KNEEL.clear * scale, y: button.y + KNEEL.below * scale }
 }
 
 function powerUp(i: FinishInput, feet: { x: number; y: number }): FinishState | null {
@@ -173,7 +175,7 @@ function powerUp(i: FinishInput, feet: { x: number; y: number }): FinishState | 
     fx.aura = (1 - smooth(span(u, 0.1, 0.75))) * 1.0
     fx.burst = u < 0.6 ? u / 0.6 : 0
   }
-  return { up: true, pose: at(pose, feet.x, feet.y), fx, feet, press: 0 }
+  return { up: true, pose: { ...at(pose, feet.x, feet.y), scale: 1 + ((i.scale ?? 1) - 1) * clamp01(pose.legs) }, fx, feet, press: 0 }
 }
 
 // What the figure looks like and what burns round it at one moment.
@@ -181,6 +183,7 @@ export function finishState(i: FinishInput): FinishState {
   const home = feetFor(i.arrow)
   const m = i.marks ?? {}
   const t = i.time
+  const sc = i.scale ?? 1
   const rise0 = m.arms === undefined ? undefined : m.stand ?? m.arms - LEAD
   if (rise0 === undefined || t < rise0) {
     const p = powerUp(i, home)
@@ -216,7 +219,7 @@ export function finishState(i: FinishInput): FinishState {
         pose = mixPose(pose, POSES.fireOver, inQuad(span(fired, FIRE.coil, FIRE.thrust)))
       }
       const h = handsMid(pose)
-      const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise }, h[0], h[1], h[2])
+      const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc }, h[0], h[1], h[2])
       if (size > 1) fx.ball = { x: b.x, y: b.y, z: b.z, size, glow: clamp01((0.35 + 0.65 * share) * grown) * hot }
       fx.aura = CHARGE.aura * share * grown
       fx.crackle = share * grown
@@ -234,7 +237,7 @@ export function finishState(i: FinishInput): FinishState {
       // The beam's kick runs up the arms.
       pose.hands = [[pose.hands[0][0] - 2.5 * push * Math.sin(t * 47), pose.hands[0][1], pose.hands[0][2]], [pose.hands[1][0] - 2.5 * push * Math.sin(t * 47 + 1.3), pose.hands[1][1], pose.hands[1][2]]]
       const h = handsMid(pose)
-      const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise }, h[0] + 9, h[1], h[2])
+      const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc }, h[0] + 9, h[1], h[2])
       const to = i.target ?? i.button ?? { x: b.x + 800, y: b.y }
       const aim = Math.atan2(to.y - b.y, to.x - b.x)
       const open = smooth(span(fired, FIRE.lead, FIRE.lead + FIRE.open)) * push
@@ -244,7 +247,7 @@ export function finishState(i: FinishInput): FinishState {
       for (let k = 0; k < 2; k++) {
         const f = POSES.fire.feet[k]!
         const long = back + (k === 0 ? 10 : 4)
-        fx.skid.push({ x0: feet.x + f[0] + long, y0: feet.y + (k === 0 ? 2 : -3), x1: feet.x + f[0] - 3, y1: feet.y + (k === 0 ? 2 : -3), k: clamp01(back / 12) })
+        fx.skid.push({ x0: feet.x + sc * (f[0] + long), y0: feet.y + (k === 0 ? 2 : -3), x1: feet.x + sc * (f[0] - 3), y1: feet.y + (k === 0 ? 2 : -3), k: clamp01(back / 12) })
       }
       if (over >= 0) {
         const hang = mixPose(POSES.fire, { ...POSES.fire, strain: 0.2, hip: [7, 23], lean: -0.26, hands: [[55, 40, 14], [57, 31, 15]] }, smooth(span(over, 0, FIRE.hang)))
@@ -264,7 +267,7 @@ export function finishState(i: FinishInput): FinishState {
   if (m.walk !== undefined && t >= m.walk) {
     const w = i.walk ?? { x: feet.x, y: feet.y, walked: 0 }
     dir = i.button && i.button.x < w.x ? -1 : 1
-    const stride = walkPose(w.walked, dir)
+    const stride = walkPose(w.walked / sc, dir)
     const moving = smooth(span(t - m.walk, 0, 0.4)) * clamp01(w.pace ?? 1)
     const falling = pose.hands
     pose = mixPose({ ...pose, toes: [dir, dir], knees: [dir, dir] }, stride, moving)
@@ -272,7 +275,7 @@ export function finishState(i: FinishInput): FinishState {
     const own = smooth(span(t - m.walk, 0.25, 0.85))
     pose.hands = [0, 1].map((n) => falling[n]!.map((v, a) => v + (stride.hands[n]![a]! - v) * own)) as unknown as StandPose['hands']
     feet = { x: w.x, y: w.y }
-    const landed = stepsBy(w.walked)
+    const landed = stepsBy(w.walked / sc)
     for (let n = Math.max(1, landed - 7); n <= landed; n++) {
       const gone = w.walked - (n - 0.5) * WALK.step
       fx.scuffs.push({ x: w.x - dir * (gone - WALK.reach), y: w.y + (n % 2 === 0 ? 3 : -3), long: 9 })
@@ -303,7 +306,7 @@ export function finishState(i: FinishInput): FinishState {
       const a = STAND.rise * POSES.knees.rise
       const dy = feet.y - btn.y
       // The button's top in the figure's plane, a hand's thickness above it.
-      const fistAt: V3 = [fistX(btn, feet.x) - feet.x, dy * Math.cos(a) + (top + 4) * Math.sin(a), (top + 4) * Math.cos(a) - dy * Math.sin(a)]
+      const fistAt: V3 = [(fistX(btn, feet.x, sc) - feet.x) / sc, (dy * Math.cos(a) + (top + 4) * Math.sin(a)) / sc, ((top + 4) * Math.cos(a) - dy * Math.sin(a)) / sc]
       const down: StandPose = { ...POSES.blow, hands: [POSES.blow.hands[0], fistAt] }
       let q = mixPose(pose, POSES.fistDip, smooth(span(f, 0, LAST.dip)))
       q = mixPose(q, POSES.fistUp, outBack(span(f, LAST.dip, LAST.up), 1.8))
@@ -319,7 +322,7 @@ export function finishState(i: FinishInput): FinishState {
           q = breathe(q, t, 2 * smooth(span(r, LAST.sag, LAST.sag + 0.5)))
           q.hands = [q.hands[0], fistAt]
           press = outCubic(span(r, 0, 0.05))
-          fx.dust.push({ x: fistX(btn, feet.x), y: btn.y, age: r, size: 46 })
+          fx.dust.push({ x: fistX(btn, feet.x, sc), y: btn.y, age: r, size: 46 * sc })
         }
       }
       pose = q
@@ -331,12 +334,12 @@ export function finishState(i: FinishInput): FinishState {
     if (k > 0.01) {
       for (let n = 0; n < 2; n++) {
         const hand = pose.hands[n]!
-        const w = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise }, hand[0], hand[1] - 2, hand[2])
+        const w = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc }, hand[0], hand[1] - 2, hand[2])
         fx.smoke.push({ x: w.x, y: w.y, z: w.z, k, age: over })
       }
     }
   }
-  return { up: true, pose: at(pose, feet.x, feet.y), fx, feet, press }
+  return { up: true, pose: { ...at(pose, feet.x, feet.y), scale: 1 + ((i.scale ?? 1) - 1) * clamp01(pose.legs) }, fx, feet, press }
 }
 
 export interface FinishEvent { name: string; x: number; y: number }
@@ -362,8 +365,8 @@ export function finishEvents(a: FinishInput, b: FinishInput): FinishEvent[] {
   hit('finish-fire', m.fire === undefined ? undefined : m.fire + FIRE.lead)
   hit('finish-beam-end', m.end)
   if (m.walk !== undefined && b.time >= m.walk && b.walk) {
-    const before = a.walk ? stepsBy(a.walk.walked) : 0
-    for (let n = before; n < stepsBy(b.walk.walked); n++) out.push({ name: 'finish-step', x: b.walk.x, y: b.walk.y })
+    const before = a.walk ? stepsBy(a.walk.walked / (b.scale ?? 1)) : 0
+    for (let n = before; n < stepsBy(b.walk.walked / (b.scale ?? 1)); n++) out.push({ name: 'finish-step', x: b.walk.x, y: b.walk.y })
   }
   hit('finish-knees', m.kneel === undefined ? undefined : m.kneel + LAST.land)
   hit('finish-fist', m.fist)

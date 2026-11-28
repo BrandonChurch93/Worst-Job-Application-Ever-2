@@ -151,21 +151,30 @@ function beamStuff(): THREE.ShaderMaterial {
         float coreH = (${BEAM.core[0].toFixed(1)} + d * ${BEAM.core[1].toFixed(3)}) * s;
         float glowH = (${BEAM.glow[0].toFixed(1)} + d * ${BEAM.glow[1].toFixed(3)}) * s;
         float a = abs(y);
+        float rough = 1.0 + (fbm(vec2(d * 0.012 - uTime * 7.0, sign(y) * 3.0)) - 0.5) * 0.8;
         float yn = y / max(glowH, 1e-3);
+        float yr = y / max(glowH * rough, 1e-3);
         float head = uAge * ${BEAM.speed.toFixed(1)};
         float reach = smoothstep(head, head - 160.0, d);
         float wob = (fbm(vec2(d * 0.004 - uTime * 6.0, 1.7)) - 0.5) * 0.25;
-        float core = smoothstep(coreH * (1.0 + wob), coreH * 0.55, a);
-        float glow = exp(-yn * yn * 3.2);
+        float core = smoothstep(coreH * 0.7 * (1.0 + wob), coreH * 0.35, a);
+        float jump = floor(uTime * 18.0);
+        float z1 = (fbm(vec2(d * 0.012 - jump * 3.7, 9.0)) - 0.5) * 0.9 * glowH + (vn(vec2(d * 0.11, jump * 1.9)) - 0.5) * 14.0;
+        float z2 = (fbm(vec2(d * 0.015 + jump * 5.3, 4.0)) - 0.5) * 1.0 * glowH + (vn(vec2(d * 0.13, jump * 2.3 + 7.0)) - 0.5) * 16.0;
+        float lit = smoothstep(0.42, 0.6, vn(vec2(d * 0.005 + jump * 1.3, 2.0)));
+        float thinB = 2.2 + d * 0.003;
+        float bolt = max(smoothstep(thinB, 0.0, abs(y - z1)), smoothstep(thinB, 0.0, abs(y - z2)) * 0.8) * smoothstep(30.0, 90.0, d) * lit;
+        float glow = exp(-yr * yr * 3.2);
         // Streaks: thin lines that fan out with the beam and run along it.
         float lines = pow(vn(vec2(yn * 23.0, d * 0.003 - uTime * 9.0)), 6.0) * 2.6 + pow(vn(vec2(yn * 53.0 + 5.0, d * 0.005 - uTime * 13.0)), 8.0) * 2.8;
         float fan = pow(vn(vec2(yn * 6.0 + 11.0, d * 0.002 - uTime * 4.0)), 4.0);
         float streak = (lines * 2.2 + fan * 0.5) * smoothstep(1.25, 0.2, abs(yn));
         vec3 blue = vec3(0.06, 0.36, 1.0);
-        vec3 col = mix(blue, vec3(0.4, 0.72, 1.25), clamp(glow * glow * 0.8, 0.0, 1.0));
-        col = mix(col, vec3(0.86, 0.95, 1.4), clamp(streak, 0.0, 1.0));
+        vec3 col = mix(blue, vec3(0.22, 0.58, 1.35), clamp(glow * glow * 0.8, 0.0, 1.0));
+        col = mix(col, vec3(0.7, 0.88, 1.5), clamp(streak, 0.0, 1.0));
+        col = mix(col, vec3(1.3, 1.6, 2.3), bolt);
         col = mix(col, vec3(2.0), core);
-        float alpha = clamp(core + glow * 0.86 + streak * 0.85, 0.0, 1.0) * reach * smoothstep(0.0, 14.0, d) * uOpen;
+        float alpha = clamp(core + glow * 0.9 + streak * 0.85 + bolt, 0.0, 1.0) * reach * smoothstep(0.0, 14.0, d) * uOpen;
         // The button is not the beam's to hide: the light parts round it and closes again behind.
         if (uKeep.z > 0.0) {
           vec2 q = abs(vec2(d, y) - uKeep.xy) - uKeep.zw + 12.0;
@@ -274,8 +283,9 @@ export function makeFinishFx(): FinishFx {
     X.set(ct * w, st * c * w, st * s * w)
     Yv.set(-st * h, ct * c * h, ct * s * h)
     Zv.set(0, -s, c)
-    O.set(p.x - 960 + fx, 540 - p.y + fy * c - fz * s, p.ground + fy * s + fz * c)
-    return m4.makeBasis(X, Yv, Zv).setPosition(O)
+    const k = p.scale ?? 1
+    O.set(p.x - 960 + k * fx, 540 - p.y + k * (fy * c - fz * s), p.ground + k * (fy * s + fz * c))
+    return m4.makeBasis(X.multiplyScalar(k), Yv.multiplyScalar(k), Zv).setPosition(O)
   }
 
   const flat = (x: number, y: number, z: number, w: number, h: number, rot: number): THREE.Matrix4 => {
