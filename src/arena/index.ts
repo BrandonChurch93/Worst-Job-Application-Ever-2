@@ -8,7 +8,8 @@ import type { Shape } from '../stage/types'
 import { rise, seamLight } from './change'
 import { makeFinish, type BeamDriver } from './finish'
 import { makeGround } from './ground'
-import { ARENA, EYE, PAGE } from './layout'
+import { studio } from '../post/studio'
+import { ARENA, EYE, PAGE, PANES, PILLARS } from './layout'
 import { makeBar, makeGuns, makeKit, makePanes, makePillars, poseBar, poseGun } from './props'
 import { makeWreck } from './wreck'
 
@@ -39,7 +40,8 @@ const SEAM_LAMPS: { x: number; y: number }[] = [{ x: 598, y: 438 }, { x: 1368, y
 // `beam`: who drives the arena's answer to a cold beam (the light on the ground from its line, the long shadows of what stands). Left out, the arena reads the finishing blast from the view (beamOf).
 // `upright`: 0 to 1, how far what stands is stood upright for a low lens. 0, and left out, is the picture's own lean.
 // `shade`: 0 to 1, how far the pillars' bodies and the sides of their stumps stand in shade for a low lens: at 1 they keep 0.4 of their colour and of the light they mirror. 0, and left out, is the picture's own light.
-export interface ArenaOptions { seed?: number; beam?: BeamDriver; upright?: () => number; shade?: () => number }
+// `fade`: by the id of a pillar or a pane, 0 to 1, how far it has faded out of the picture for a low lens it stands in the way of. Nothing said, or 0, is the arena as it was.
+export interface ArenaOptions { seed?: number; beam?: BeamDriver; upright?: () => number; shade?: () => number; fade?: () => Readonly<Record<string, number>> | null }
 
 export function makeArena(o: ArenaOptions = {}): Arena {
   const seed = o.seed ?? config.seed
@@ -47,6 +49,13 @@ export function makeArena(o: ArenaOptions = {}): Arena {
   root.name = 'arena'
   const kit = makeKit()
   const metal = { colour: kit.standing.color.clone(), mirrored: kit.standing.envMapIntensity }
+  const ghosts: THREE.MeshPhysicalMaterial[] = []
+  const glasses: [THREE.MeshPhysicalMaterial, THREE.MeshPhysicalMaterial][] = []
+  const thin = <T extends THREE.MeshPhysicalMaterial>(m: T): T => {
+    const g = studio(m.clone())
+    g.transparent = true
+    return g
+  }
   const ground = makeGround(seed)
   const pillars = makePillars(kit)
   const panes = makePanes(kit)
@@ -92,6 +101,24 @@ export function makeArena(o: ArenaOptions = {}): Arena {
         g.matrixWorldNeedsUpdate = true
       } else g.matrixAutoUpdate = true
     }
+    const faded = o.fade?.() ?? null
+    panes.list.forEach((p, i) => {
+      const gone = Math.min(1, Math.max(0, faded?.[PANES[i]!.id] ?? 0))
+      const [sheet, cap] = p.whole.children as [THREE.Mesh, THREE.Mesh]
+      if (gone > 0 && p.whole.visible) {
+        if (gone >= 1) p.whole.visible = false
+        else {
+          const g = (glasses[i] ??= [thin(kit.glass), thin(kit.glassEdge)])
+          g[0].opacity = kit.glass.opacity * (1 - gone)
+          g[1].opacity = kit.glassEdge.opacity * (1 - gone)
+          sheet.material = g[0]
+          cap.material = g[1]
+        }
+      } else if (sheet.material !== kit.glass) {
+        sheet.material = kit.glass
+        cap.material = kit.glassEdge
+      }
+    })
     // Once every pillar is up, the eight are drawn as one body and one set of feet.
     const settled = t >= ARENA.riseTo + 0.1
     pillars.one.bodies.visible = settled
@@ -99,9 +126,22 @@ export function makeArena(o: ArenaOptions = {}): Arena {
     if (settled) {
       let standing = 0
       pillars.list.forEach((p, i) => {
-        if (p.root.visible) standing |= 1 << i
-        p.root.visible = false
+        const gone = Math.min(1, Math.max(0, faded?.[PILLARS[i]!.id] ?? 0))
+        const stands = p.root.visible
+        if (stands && gone <= 0) standing |= 1 << i
+        p.root.visible = stands && gone > 0 && gone < 1
         p.foot.visible = false
+        if (p.root.visible) {
+          const g = (ghosts[i] ??= thin(kit.standing))
+          g.color.copy(kit.standing.color)
+          g.envMapIntensity = kit.standing.envMapIntensity
+          g.opacity = 1 - gone
+          p.body.material = g
+          p.body.castShadow = gone < 0.5
+        } else if (p.body.material !== kit.standing) {
+          p.body.material = kit.standing
+          p.body.castShadow = true
+        }
       })
       pillars.one.show(standing)
       pillars.one.bodies.visible = standing !== 0
@@ -125,6 +165,8 @@ export function makeArena(o: ArenaOptions = {}): Arena {
       wreck.dispose()
       finish.dispose()
       kit.own.forEach((m) => m.dispose())
+      ghosts.forEach((m) => m.dispose())
+      glasses.forEach((g) => g.forEach((m) => m.dispose()))
     }
   }
 }
