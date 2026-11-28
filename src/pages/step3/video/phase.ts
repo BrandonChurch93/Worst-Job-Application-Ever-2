@@ -4,13 +4,17 @@ import manifest from './manifest.json'
 import { VIDEO } from './plan'
 import states from './states.json'
 
-export interface VideoState { phase: 'before' | 'play' | 'under' | 'after'; clock: number; sent: number; waited: number; stalled: number; leave: boolean; gaveUp: boolean }
+export interface VideoState { phase: 'before' | 'play' | 'under' | 'after'; clock: number; sent: number; waited: number; stalled: number; leave: boolean; gaveUp: boolean; push: number }
 export type VideoAct = null | 'hold' | { load: unknown }
 
-export const videoFresh = (): VideoState => ({ phase: 'before', clock: 0, sent: 0, waited: 0, stalled: 0, leave: false, gaveUp: false })
+export const videoFresh = (): VideoState => ({ phase: 'before', clock: 0, sent: 0, waited: 0, stalled: 0, leave: false, gaveUp: false, push: 0 })
 export const videoFrom = manifest.from.time
 export const videoSeconds = manifest.seconds
 export const videoOn = (v: VideoState): boolean => v.phase === 'play' || v.phase === 'under'
+export const videoWanted = (mode: string): boolean => !(mode === 'live' && bridge.off)
+export const videoPush = (v: VideoState, pulls: boolean, dt: number, seconds: number): void => {
+  v.push = v.phase === 'before' && pulls ? Math.min(seconds, v.push + dt) : v.phase === 'play' || v.phase === 'under' ? 0 : Math.max(0, v.push - dt)
+}
 
 const events = manifest.events as { at: number; name: string; x: number; y: number; hits: boolean }[]
 const pin = (io: StepIo): void => {
@@ -56,7 +60,7 @@ export function videoStep(v: VideoState, io: StepIo, due: boolean): VideoAct {
   }
   v.clock = now
   if (v.phase === 'play') {
-    if (now < end - VIDEO.underlay) {
+    if (now < end - VIDEO.underlay || v.sent < events.length) {
       io.cursor.load(states.from.cursor)
       return 'hold'
     }

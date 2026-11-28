@@ -246,3 +246,70 @@ Branch `agent/b-video2` from `origin/agent/merge55` at `6259284c`. Every number 
 
 `node pipeline/change002/video-sheet.mjs joins <out.jpg> "out/work/video-join/1920x1080@1" 1425,337 104,289` (a row a join: live frame, video frame, difference times 8, cut at full size, 396 by 300 each) and `node pipeline/change002/video-sheet.mjs twelve <out.jpg> out/work/pinball-video/pinball.mp4` (frames 0, 174, 349, 523, 698, 872, 1047, 1221, 1396, 1570, 1745, 1919).
 
+
+## The mend of the join in (ruling of 02:11Z)
+
+Times by `date -u`, 02:12Z to 02:45Z. Branch `agent/b-video2`, on top of `1df91334`.
+
+### What was changed
+
+- `src/pages/step3/index.ts`, the live view only. `view()` in live mode now returns the film's own pose at the frame of the join while the video plays (`filmPose(sceneOf(videoFrom))`), a mix of `follow` and `port` eased by `smooth` over `PUSH.seconds` while the push is on (`mixPose(named('follow'), named('port'), smooth(push / PUSH.seconds))`), and what it returned before in every other case. The film mode returns what it returned before, by the first line of the function. In `step()` the push counts up while the page pulls or is sealed and the video is wanted, and the video is asked for only when the push is whole.
+- `src/pages/step3/video/phase.ts`: the state of the video carries `push` (seconds of push in, 0 to `PUSH.seconds`); `videoPush` counts it up while the page pulls before the video, sets it to 0 while the video plays (the film's pose is used then), and counts it down in every other case, which is the ease back when the video is given up, switched off late, or the visitor has skipped; `videoWanted` is false where the video is switched off, so that page keeps its own view through the pull.
+- The same numbers as the film: `PUSH` is the film's constant, the pose `port` is the film's pose, the ease is `smooth` over 1.5 s as the entry `[T.arrive, 'port', PUSH.seconds]` of the film's list. Nothing was copied: one constant, one pose.
+- Not touched: config, `content/copy.json`, plannedSeconds, settled lines, the film's camera list, the manifest, the states, the pieces.
+
+### The film path is untouched
+
+- MEASURED: `node tools/pinball-video.mjs --out /tmp/toolprint ...` prints `scene: join in at frame 450 (7.500 s, hash 2acd56e0), join out at frame 2369 (39.483 s, hash b444f09a), 1920 frames, 32.000 s` (stopped after the print; nothing rendered).
+- MEASURED: the test `carries the state and the hash of the film at both joins, and its events between them` passes against the manifest and the states of `1df91334`; `git status` shows neither file changed.
+- MEASURED: the join out numbers below are the numbers of before the mend to the last digit printed.
+
+### The test of the camera (`tests/b-video.test.ts`, 5 new, 21 in all)
+
+- `is the camera of the film at the frame of the join, on the last live picture and under the video`: eye, target, field of view and up of the live view against `page.camera('film', manifest.from.time)` of a film stage advanced to `manifest.from.step`. MEASURED: largest difference of any number under 1e-6 on the last live step before `video-in`, under 1e-9 on the step of `video-in` and one second into the video; the film's pose is more than 100 units from the page's own view, so the test cannot pass on the old view.
+- `pushes in on the port while it pulls ...`: the view is the page's own on the step before `vacuum-on`; the largest step of the view is under twice the mean step of a 1.5 s move (no jump); at 0.75 s it is between 45 and 55 % of the way; at 1.5 s it is the film's pose; the video does not come in before the push is whole.
+- `eases back to the page's own view when the video is given up and the table plays`: with a player that is never ready the view leaves the film's pose on the step the page gives up, the largest step is under 2.5 times the mean step of the move, and 2 s after `tube-run` the view is the page's own view at its scroll (difference under 1e-6). MEASURED in that run: pull at step 168, seal at step 1006, the view leaves the film's pose at step 1367, `tube-run` at step 1379.
+- `keeps the page's own view where the video is switched off`: with `bridge.off` every view up to `ball-seal` is the page's own.
+- `sounds before the page draws its own picture under the video ...`: see the cue below.
+
+### The pictures at the six sizes
+
+`npm run build` EXIT 0, then `node pipeline/change002/video-join.mjs --pictures`, EXIT 0, 02:20Z to 02:27Z, `out/work/video-join/joins-mend-pictures.json`. MEASURED, mean difference R, G, B of 255 / largest / share of the pixels that differ by more than 8:
+
+| size | join in before the mend | join in now | join out now |
+|---|---|---|---|
+| 1920x1080 @1 | 50.03, 49.11, 47.52 / 242 / 76.1 % | 4.73, 5.08, 5.19 / 228 / 19.1 % | 5.20, 5.64, 5.90 / 192 / 25.7 % |
+| 1920x1080 @2 | 48.32, 47.42, 45.85 / 237 / 71.4 % | 3.87, 4.30, 4.45 / 185 / 9.4 % | 4.20, 4.76, 5.12 / 104 / 10.7 % |
+| 1280x720 @1 | 48.74, 47.84, 46.25 / 238 / 72.1 % | 4.75, 5.09, 5.16 / 216 / 18.5 % | 4.86, 5.36, 5.66 / 117 / 18.0 % |
+| 1280x720 @2 | 48.44, 47.54, 45.97 / 240 / 71.7 % | 3.93, 4.35, 4.50 / 201 / 10.0 % | 4.26, 4.81, 5.16 / 145 / 11.7 % |
+| 390x844 | 47.88, 46.97, 45.35 / 231 / 71.7 % | 6.98, 7.17, 7.19 / 215 / 29.2 % | 5.69, 6.14, 6.42 / 136 / 23.5 % |
+| 844x390 | 48.21, 47.29, 45.68 / 234 / 71.1 % | 6.97, 7.15, 7.17 / 231 / 28.7 % | 5.11, 5.58, 5.86 / 126 / 21.9 % |
+
+- The bar (mean under 8 of 255 at each size) is met at all six, MEASURED. Nearest to it: 390x844 at 7.19 and 844x390 at 7.17 (blue), 0.81 and 0.83 under the bar.
+- Looked at (`in-live.png`, `in-video.png`, `in-diff-x8.png` at 1920x1080 @1, 390x844 and 844x390): the same picture twice, the port at the same place and size, the arrow sealed in the ball. What is left is the grain of the wall, the edges of the port and the ball, and the light on the arrow, which is the stand-in's draft tier against the live tier, as at the join out.
+- The largest single difference is 185 to 231 of 255 at the join in (edges of the arrow and the ball). It is not under any bar that was set; no bar was set for it.
+
+### The cue that was 200 ms late
+
+- MEASURED before its mend (`node pipeline/change002/video-join.mjs --only 1280x720@1 --quality low --hide 12 --out out/work/video-join-time4`, EXIT 0, 02:16Z to 02:19Z; the script now prints the four latest cues by name): the cue is `peel-up`, the last of the 243, due at 31.800 s of the video, sounded at 32.000 s, 200.0 ms late. The next latest in that run: `tube-run`, the first, 34.4 ms late.
+- Whose: mine. `peel-up` is `VIDEO.outEvent`, and the video ends `VIDEO.outLag` (0.2 s) after it, so it always fell inside the last `VIDEO.underlay` (0.3 s), where `videoStep` in `src/pages/step3/video/phase.ts` loads the film's end state and the page draws its own picture under the video. On this machine that picture takes longer than the 0.2 s that are left, so the page looked again only after the video had ended and sounded the cue then.
+- The mend, in `phase.ts`, one condition: the page's own picture is not loaded while a cue is still to sound (`now < end - VIDEO.underlay || v.sent < events.length`). The cue sounds on its step and the load follows on the same step. The video's last frame holds until the page's picture is there, as before.
+- MEASURED after the mend (same command, `--out out/work/video-join-time5`, EXIT 0, 02:28Z to 02:31Z): 243 of 243 cues; late by, mean of the absolute values / worst: first third 3.73 / 7.67 ms, middle 4.30 / 7.70 ms, last 4.18 / 8.20 ms, all 4.07 / 8.20 ms, the 201 after the tab was hidden and shown 4.17 / 8.20 ms. The latest cue is `peel-up` at 8.2 ms. Both bars of the ruling on the clock (under one display frame at 60 Hz on average, under 50 ms at worst) are met in this run.
+- Times of that run, MEASURED: asked to fade 2983 ms (2 live pictures), fade in 1550 ms, play asked to first moving frame 183.3 ms (11 display frames), 1928 decoded, 51 dropped, gap median 16.7 ms, p99 33.4 ms, largest 2017 ms; last frame to fade 2205 ms (2068 ms before: the page's picture starts 0.1 s later), fade out 1395 ms, faded to left 7.4 ms. Join in of that run 4.89, 5.24, 5.31; join out 4.83, 5.40, 5.74.
+- One cue of one run was over one display frame without being over the bar: `tube-run` at 34.4 ms in the run of 02:16Z, 7.67 ms or less in the run of 02:28Z. It is the first cue, 0.05 s into the video, and falls where the video begins to move. Not mended; under the bar of 50 ms.
+
+### Below the bar, and not known
+
+- Below the bar: nothing MEASURED in this job is below a bar that was set.
+- UNKNOWN: how the push in feels under a hand. The camera now moves 1.5 s while the page pulls the arrow; the tests hold that no control is taken longer than before (`longestIgnored`), but no person has moved a pointer through it.
+- UNKNOWN: the ease back after a skip before the video. The code eases back (the push counts down once `skipped` is set), but the skip link is offered at 20 s on the table path and at once only during the video, so no run reaches it; no test.
+- STATED: on a page given up, the ease back runs while the table begins to play (the view leaves the film's pose at step 1367, `tube-run` at step 1379 in the test run), 1.5 s.
+- The stand-in is unchanged: same bytes, same sha256, not sent again.
+
+### The last checks
+
+- `npx vitest run tests/b-video.test.ts`: 21 of 21, EXIT 0 (02:32Z).
+- `npm run build`: EXIT 0 (02:21Z).
+- `npm test` (whole): EXIT 1, 53 failed, 2197 passed, 29 skipped, in 24 files (02:38Z). None is in a file of this unit. MEASURED: the same 24 files run on a clean checkout of `1df91334` (before the mend) fail the same 53 tests, name for name (`diff` of the two lists of failed tests is empty); 26 of them are in `tests/config.test.ts`. So the push in made no test untrue, and the 53 belong to the base of the branch (STATED: not looked into, not in my files).
+- `npm run bots`: EXIT 0, "bots: all clear", keen reached every one of the 37 gags on every seed (02:40Z).
+- `npx tsc --noEmit -p .`: EXIT 0 (02:40Z), run last.
