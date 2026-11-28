@@ -124,16 +124,21 @@ function legGeo(): { upper: Record<string, THREE.BufferGeometry>; lower: Record<
     ...link(B, 44, 20),
     orange: joined([hose([[12, 11, 5], [B * 0.3, 15, 13], [B * 0.6, -13, 12], [B - 18, -10, 5]], 3.8, 20, 7)])
   }
-  // A claw of two short thick hooks: each leaves the ankle high, turns inward at its knuckle and sinks its tip into the ground.
+  // A claw of two short thick talons side by side: each a curved blade that leaves the ankle high and sinks its point into the ground.
   const hook = (side: number): THREE.BufferGeometry[] => {
-    const root = cutPlate(pillOutline(74, 40, 20, 6).map(([x, y]) => [x + 30, y] as [number, number]), 34, 9).rotateY(0.16).translate(0, 0, 26)
-    const tip = cutPlate(pillOutline(60, 34, 17, 6).map(([x, y]) => [x + 24, y] as [number, number]), 30, 9).rotateY(0.26).rotateZ(-side * 0.5).translate(60, 0, 8)
-    return [root, tip].map((g) => g.rotateZ(side * 0.42).translate(0, side * 10, 0))
+    const L = 82
+    const n = 10
+    const mid = (t: number): number => side * (18 + 8 * Math.sin(Math.PI * t) - 4 * t * t)
+    const half = (t: number): number => 13.5 - 6 * Math.pow(t, 1.6)
+    const pts: [number, number][] = []
+    for (let i = 0; i <= n; i++) { const t = i / n; pts.push([t * L, mid(t) + half(t)]) }
+    for (let i = n; i >= 0; i--) { const t = i / n; pts.push([t * L, mid(t) - half(t)]) }
+    return [cutPlate(pts, 36, 5).rotateY(0.24).translate(-4, 0, 22)]
   }
   const foot = {
     plate: joined([...hook(1), ...hook(-1)]),
-    joint: joined([boxAt(-34, -32, 6, 22, 32, 52, 7), across(14, 38, 2, 14).translate(0, 0, 46)]),
-    pin: joined([discAt(6, 26, 30, 54, 58, 1.2, 10), discAt(6, 26, -30, 54, 58, 1.2, 10)]),
+    joint: joined([boxAt(-34, -34, 6, 26, 34, 54, 7), across(14, 40, 2, 14).translate(0, 0, 48)]),
+    pin: joined([discAt(6, 12, 20, 56, 60, 1.2, 10), discAt(6, 12, -20, 56, 60, 1.2, 10)]),
     dark: boxAt(-38, -24, 2, -30, 24, 30, 1)
   }
   return { upper, lower, foot }
@@ -302,7 +307,7 @@ export function buildModel(): Model {
   const legs: LegParts[] = HIPS.map(() => {
     const part = (name: string): THREE.Group => {
       const g = new THREE.Group()
-      g.add(mesh(shared.get(`leg.${name}.plate`)!, kit.plateLight), mesh(shared.get(`leg.${name}.joint`)!, kit.limb), mesh(shared.get(`leg.${name}.pin`)!, kit.pin))
+      g.add(mesh(shared.get(`leg.${name}.plate`)!, name === 'foot' ? kit.steel : kit.plateLight), mesh(shared.get(`leg.${name}.joint`)!, kit.limb), mesh(shared.get(`leg.${name}.pin`)!, kit.pin))
       const o = shared.get(`leg.${name}.orange`)
       if (o) g.add(mesh(o, kit.orange))
       const d = shared.get(`leg.${name}.dark`)
