@@ -571,7 +571,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       const [ux, uy] = p.blow
       const dir = Math.atan2(uy, ux)
       const S = LEFT.shards
-      const count = n.chunks * 2 + 28
+      const count = n.chunks * 2 + 44
       for (let i = 0; i < count; i++) {
         const a = age - (0.03 + 0.6 * rnd(i, 80)) * TIMES.gone
         if (a < 0) continue
