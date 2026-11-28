@@ -114,7 +114,25 @@ const MORE = {
     ['heal, 0.2 s after healedAt', viewOf({ time: 30.2 }, { ...out, stage: 1, healedAt: 30 })]
   ], near, 3),
 
-  gone: (c) => moments(c, 'gone', [0.03, 0.2, 0.4, 0.6, 0.8, 0.95].map((g) => [`gone ${g.toFixed(2)} (${(g * 2.13).toFixed(2)} s)`, viewOf({ time: 46 + g * 2.13, phase: 'beaten' }, { ...out, stage: 2, health: 0, beaten: 1, gone: g })]), { cx: 960, cy: 548, zoom: 1.7 }, 3),
+  // The finish in the close view of the film (x 300 to 1260, y 315 to 855): the two approved pictures, then the boss coming apart, what is left, and the button under the fist.
+  async gone(c) {
+    const { sharp, at, outDir } = c
+    const fin = { x0: 470, y0: 650, x1: 960, y1: 650, power: 1, firedAt: 46 }
+    const lying = { ...out, x: 960, y: 650, stage: 2, health: 0, beaten: 1 }
+    const items = [0.12, 0.3, 0.5, 0.7, 0.86, 0.92].map((g) => [`BUILD: gone ${g.toFixed(2)} (${(g * 2.13).toFixed(2)} s)`, viewOf({ time: 46 + g * 2.13, phase: 'beaten', finish: fin, arrow: { x: 440, y: 650, flat: 0, flatAt: null } }, { ...lying, gone: g })])
+    items.push(['BUILD: gone 1, what is left', viewOf({ time: 50, phase: 'beaten' }, { ...lying, gone: 1 })])
+    items.push(['BUILD: the fist is down (0.07 s after pressedAt)', viewOf({ time: 52.07, phase: 'beaten' }, { ...lying, gone: 1, pressedAt: 52 })])
+    items.push(['BUILD: the fist has left (0.15 s after releasedAt)', viewOf({ time: 54.15, phase: 'beaten' }, { ...lying, gone: 1, pressedAt: 52, releasedAt: 54 })])
+    const cells = []
+    for (const name of ['finish-blast.png', 'finish-button-left.png']) cells.push({ png: await sharp(target(at, name)).resize({ width: 960 }).png().toBuffer(), caption: `TARGET: ${name}` })
+    for (const [caption, view] of items) {
+      const r = await c.look.render({ view, cx: 780, cy: 585, zoom: 2, width: 960, height: 540, tier: c.tier })
+      fs.writeFileSync(path.join(c.workDir, `gone-${cells.length}.png`), r.png)
+      cells.push({ png: r.png, caption })
+    }
+    return sheet(sharp, path.join(outDir, 'gone.jpg'), cells, 2, 700)
+  },
+
 
   // The boss at the size he has in the film: one output pixel is one pixel of the 1920 wide frame.
   async film({ look, sharp, at, outDir, workDir, tier }) {
@@ -132,7 +150,7 @@ const MORE = {
   async beaten({ look, sharp, at, outDir, workDir, tier }) {
     const cells = [{ png: target(at, 'LOOK-1-STATE-3-beaten.png', 'references/drafts/round-9'), caption: 'GUIDE, not picked: beaten' }]
     for (const [caption, b] of [['beaten 0.08', 0.08], ['beaten 0.3', 0.3], ['beaten 0.55', 0.55], ['beaten 0.75', 0.75], ['beaten 1.0, lying', 1]]) {
-      const r = await look.render({ view: viewOf({ time: 40 + b + (b >= 1 ? 2 : 0), phase: 'beaten' }, { ...out, stage: 2, health: 0, beaten: b }), ...sheetCam, width: 1920, height: 1080, tier })
+      const r = await look.render({ view: viewOf({ time: 40 + b + (b >= 1 ? 2 : 0), phase: 'beaten' }, { ...out, y: 650, stage: 2, health: 0, beaten: b }), ...sheetCam, cy: sheetCam.cy + 102, width: 1920, height: 1080, tier })
       fs.writeFileSync(path.join(workDir, `beaten-${cells.length}.png`), r.png)
       cells.push({ png: r.png, caption: `BUILD: ${caption}` })
     }
