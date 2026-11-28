@@ -29,8 +29,8 @@ type Beat = 'field' | 'press' | 'folder' | 'lit' | 'fly' | 'lie' | 'wind' | 'fee
 const POP = { chip: 4, over: 5, tile: 1.2, arc: 54, high: 46, lean: 0.24, lie: 0.6, shiver: 0.07 }
 const WINDOW = ['resume-folder', 'resume-folder-bar', 'resume-folder-knob', 'resume-folder-title', 'resume-file', 'resume-file-name']
 const LIE = heights.card + 9
-// The live arrow's run after the sheet, as in the film: it starts `from` of the wind in and is by the slot, at the film's place, `to` of the wind in, on a path that bends `arc` px. `x` and `y` are where a visitor who follows the hint waits. It is given back over `back` seconds, `free` seconds before the bite.
-const CHASE = { on: true, from: 0.22, to: 0.8, x: -252, y: -155, arc: 16, back: 0.3, free: 0.55 }
+// The live arrow's run after the sheet, as in the film: it starts `from` of the wind in and is by the slot, at the film's place, `to` of the wind in, on a path that bends `arc` px. `x` and `y` are where a visitor who follows the hint waits. It is given back over `back` seconds at the bite, when the paper has it by the hands: one hold from the wind to the arms.
+const CHASE = { on: true, from: 0.22, to: 0.8, x: -252, y: -155, arc: 16, back: 0.3 }
 const JAW = { tug: 14, shred: 30, lag: 0.3 }
 const EATEN = -30
 const HEAP = { y: 20, spread: 34 }
@@ -166,7 +166,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
   const pace = (): typeof FLOW.film => (s.mode === 'film' || s.flow.fast ? FLOW.film : FLOW.live)
   const stand = { x: SLOT.cx + CHASE.x, y: SLOT.cy + CHASE.y }
   const near = { x: SLOT.cx + RESUME.near.x, y: SLOT.cy + RESUME.near.y }
-  // The live site takes the arrow for the wind: it runs after the sheet to the film's place by the slot, and is given back `free` seconds before the bite, so the bite finds it in the visitor's hand.
+  // The live site takes the arrow for the wind: it runs after the sheet to the film's place by the slot, stands there while the slot takes the sheet, and is given back at the bite.
   const chase = (io: StepIo, share: number): void => {
     const f = s.flow
     if (!CHASE.on) return
@@ -291,10 +291,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
       p.rot = WIND.swing * Math.sin(Math.PI * 2 * WIND.turns * e) * (1 - e) + POP.shiver * Math.sin(share * 70) * (1 - u)
       p.vx = (p.x - wx) / io.dt
       p.vy = (p.y - wy) / io.dt
-      if (!film && io.cursor.taken) {
-        chase(io, share)
-        if ((1 - share) * flow.wind + TIMES.bite <= CHASE.free) io.cursor.release(CHASE.back)
-      }
+      if (!film && io.cursor.taken) chase(io, share)
       if (film ? io.time >= RESUME.drop : f.t >= flow.wind) {
         beat('feed')
         p.rot = 0
@@ -303,11 +300,11 @@ export function makeResume(host: ResumeHost): ResumeStage {
         p.feed = 0
         p.fx = p.x
         p.fy = p.y
-        if (!film && io.cursor.taken) io.cursor.release(CHASE.back)
       }
       return
     }
     if (p.feed >= 0) {
+      if (!film && io.cursor.taken) chase(io, 1)
       p.feed += io.dt
       const share = p.feed / TIMES.bite
       const u = smooth(share / BITE.settle)
@@ -321,6 +318,7 @@ export function makeResume(host: ResumeHost): ResumeStage {
       p.vy = (p.y - wy) / io.dt
       if (p.feed >= TIMES.bite) {
         enter('tug')
+        if (!film && io.cursor.taken) io.cursor.release(CHASE.back)
         s.tug = { ...freshTug(), amount: tugCurve(0), cool: 0.5 }
         s.lost = -1
         s.last = -1
