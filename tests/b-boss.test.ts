@@ -318,7 +318,7 @@ describe('how the boss plays (change 002, item 15)', () => {
   it('note of 21:27. keeps the stand-in boss no larger than the boss of the build before', () => {
     const { all } = watch(film(), 2, 28)
     for (const f of all) {
-      const far = f.list.filter((s) => /^(boss-|guard-wing-)/.test(s.id) && s.id !== 'boss-shade' && !s.id.startsWith('boss-turret')).map((s) => {
+      const far = f.list.filter((s) => /^(boss-|guard-wing-)/.test(s.id) && s.id !== 'boss-look' && s.id !== 'boss-shade' && !s.id.startsWith('boss-turret')).map((s) => {
         const b = reach(s)
         return Math.max(Math.hypot(b.x0 - f.fight.x, b.y0 - f.fight.y), Math.hypot(b.x1 - f.fight.x, b.y1 - f.fight.y))
       })

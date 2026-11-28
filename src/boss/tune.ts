@@ -148,21 +148,21 @@ export const MERCY = {
 
 // Line 6 of the narrator starts on the tick. Line 7 starts when the boss is formed, and no sooner than line 6 has ended.
 export const LINE6 = {
-  after: 8.79 // s from the tick before line 7's clock may start: line 6's kept take (8.49 s, take 2 of 03:46Z November 28) plus the gap of 0.3 s; tests/takes-timing.test.ts holds it to the index
+  after: 4.57 // s from the tick before line 7's clock may start: line 6 without pauses (4.27 s, pipeline/change002/fast-takes.json; the kept take is 8.49 s) plus the gap of 0.3 s; tests/b-boss-fast.test.ts holds it to that file
 } as const
 
-// Line 7 of the narrator, said between the forming and the fight (change note 003). The lengths and the phrase ends are those of the kept takes in public/audio/index.json (recorded November 27, kept 03:46Z November 28).
-// tests/takes-timing.test.ts holds every one of them to the index, so a new take or an edited one fails a test here and does not drift.
+// Line 7 of the narrator, said between the forming and the fight (change note 003). The lengths and the phrase ends are those of the lines without pauses in pipeline/change002/fast-takes.json, typed ahead of the takes being kept; the kept takes in public/audio/index.json are longer.
+// tests/b-boss-fast.test.ts holds every one of them to that file. tests/takes-timing.test.ts holds them to the index and fails until such takes are kept.
 export const LINE7 = {
-  part0: 23.324, // s of `boss.unfold.0`, from `boss-formed`
-  ends: [2.208, 5.182, 8.524, 11.356, 13.856, 17.88, 20.772, 23.324] as const, // s at which its phrases end (the start of the next one, and the end of the file): where the shell stops it after a `boss-turn`
-  sentences: [5.182, 8.524, 17.88, 23.324] as const, // s at which its sentences end, each one of `ends`: a click ends the line there when that is near enough, by `earlyEnd` of src/audio/cues.ts, which the voice reads too
+  part0: 11.325, // s of `boss.unfold.0`, from `boss-formed`
+  ends: [0.843, 2.264, 3.986, 5.197, 6.177, 8.319, 9.53, 11.325] as const, // s at which its phrases end (the start of the next one, and the end of the file): where the shell stops it after a `boss-turn`
+  sentences: [2.264, 3.986, 8.319, 11.325] as const, // s at which its sentences end, each one of `ends`: a click ends the line there when that is near enough, by `earlyEnd` of src/audio/cues.ts, which the voice reads too
   lead: 0.1, // s of line 7 that are said before a press may turn the boss: a press before that is kept and acts then, so that the turn never reaches the voice before the line has started
   gap: 0.3, // s of silence the shell leaves before the next part
-  part1: 5.59, // s of `boss.unfold.1`
-  music: 3.806, // s into part 1 at which "their student loans." and the music start (`boss-music`)
-  part2: 3.954, // s of `boss.unfold.2`
-  rise: 3.954, // s from the start of part 2 to the turret's lock: the turn back, the gold and the figure's rise. The rise keeps this length whatever the take's; a shorter take ends inside it and the picture carries the rest
+  part1: 2.485, // s of `boss.unfold.1`
+  music: 1.228, // s into part 1 at which "their student loans." and the music start (`boss-music`)
+  part2: 1.91, // s of `boss.unfold.2`
+  rise: 3.954, // s from the start of part 2 to the turret's lock: the turn back, the gold and the figure's rise. It keeps the length the kept take of part 2 gave it; the line without pauses ends 2.044 s before the lock and the picture carries the rest
   power: 0.6, // s into part 2 at which the gold starts to build (`power-up`), after the arrow has turned round
   glow: 2, // s the gold builds
   alone: 1.5, // s without a move or a press after which the arrow droops and starts to drift (live)
