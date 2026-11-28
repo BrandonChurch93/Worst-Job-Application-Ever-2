@@ -445,9 +445,10 @@ export function makeWreck(seed: number, kit: Kit, wounds: Wounds, pillars: Pilla
         const born = 0.1 * rnd(seed, 990, d.k)
         const g = clamp01((since - born) / (DUST_SECONDS - born))
         // Up in a few frames, then it hangs and thins.
-        const dark = 0.5 * Math.sin(Math.PI * g ** 0.4) * (1 - g * 0.4)
+        // Pale and warm: it takes away a third of the light at most, and more of the blue than of the red.
+        const dark = (0.24 + 0.14 * rnd(seed, 994, d.k)) * Math.sin(Math.PI * g ** 0.4) * (1 - g * 0.4)
         const size = 52 + 150 * Math.sqrt(g) + 46 * rnd(seed, 991, d.k)
-        put(smoke, nSmoke++, wx(d.x) + 24 * g * (rnd(seed, 992, d.k) - 0.5), wy(d.y) + 30 * g, 10 + 40 * g, rnd(seed, 993, d.k) * 6, size, size, dark * 0.86, dark * 0.9, dark)
+        put(smoke, nSmoke++, wx(d.x) + 24 * g * (rnd(seed, 992, d.k) - 0.5), wy(d.y) + 30 * g, 10 + 40 * g, rnd(seed, 993, d.k) * 6, size, size * (0.7 + 0.5 * rnd(seed, 996, d.k)), dark * 0.74, dark * 0.86, dark)
       }
     }
 

@@ -211,6 +211,9 @@ const BED_INSET = 2.5
 const WALL_SPLIT = 0.7
 
 // The tops of the nine slabs with their bevels, and the walls of the seams below them.
+// How far the ceramic runs on past the edge of the page, px: more than the hardest knock of the shake and its roll.
+const APRON = 72
+
 function slabs(): { tops: THREE.BufferGeometry; walls: THREE.BufferGeometry; bed: THREE.BufferGeometry } {
   const tops = fresh()
   const walls = fresh()
@@ -251,6 +254,15 @@ function slabs(): { tops: THREE.BufferGeometry; walls: THREE.BufferGeometry; bed
       tri(walls, w0, f1, f0, out, [WALL_MID, WALL_FOOT, WALL_FOOT])
       tri(bed, f0, f1, m1, [0, 0, 1], [WALL_FOOT, WALL_FOOT, BED])
       tri(bed, f0, m1, m0, [0, 0, 1], [WALL_FOOT, BED, BED])
+    }
+  }
+  // An apron of the same ceramic round the page, off screen at rest: when the fight shakes the arena, the edge of the page never comes into the picture.
+  {
+    const w = PAGE.w / 2, h = PAGE.h / 2, o = APRON
+    const ring: [number, number, number, number][] = [[-w - o, h, w + o, h + o], [-w - o, -h - o, w + o, -h], [-w - o, -h, -w, h], [w, -h, w + o, h]]
+    for (const [x0, y0, x1, y1] of ring) {
+      tri(tops, [x0, y0, 0], [x1, y0, 0], [x1, y1, 0], [0, 0, 1])
+      tri(tops, [x0, y0, 0], [x1, y1, 0], [x0, y1, 0], [0, 0, 1])
     }
   }
   // Under every joint of three seams, where no slab's bed reaches: a patch of the same light.
