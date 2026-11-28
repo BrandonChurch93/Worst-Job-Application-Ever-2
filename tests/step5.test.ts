@@ -3,7 +3,7 @@ import { config, filmSeconds, stepHz } from '../src/config'
 import { copy } from '../src/copy'
 import { pages } from '../src/pages'
 import { clock, makePage, secondsOf, spun } from '../src/pages/step5'
-import { AT, FILM } from '../src/pages/step5/timeline'
+import { AT, FILM, SAID, holdAfterPress } from '../src/pages/step5/timeline'
 import { layoutProblems, typeRegister, walk } from '../src/shell/layout'
 import { hasWords, words } from '../src/shell/words'
 import { filmFlow, filmOptions, runBot, ScriptDriver, Stage, type Driver, type DriverView, type Pointer, type Shape } from '../src/stage/stage'
@@ -265,8 +265,39 @@ describe('step 5, the live site', () => {
     const press = s.events.find((e) => e.name === 'button-press')!
     expect(press.step / hz).toBeGreaterThanOrEqual(7)
     expect(press.step / hz).toBeLessThan(7.3)
-    expect(took).toBeLessThan(8.5)
+    // Was: turned inside 8.5 s. The narrator's line on the stamp is being said at that press (its first phrase), so by the ruling of change 002 the page holds until that phrase has ended and the gap, then turns.
+    const hit = s.events.find((e) => e.name === 'stamp')!.step / hz
+    const due = hit + SAID[1] + config.audio.lineGapSeconds
+    expect(holdAfterPress(press.step / hz - hit)).toBeCloseTo(due - press.step / hz, 2)
+    expect(took).toBeGreaterThanOrEqual(due)
+    expect(took).toBeLessThan(due + 0.6)
+    expect(s.events.find((e) => e.name === 'page-turn')!.step / hz).toBeGreaterThanOrEqual(due - 0.01)
+    expect(s.events.find((e) => e.name === 'page-turn')!.step / hz).toBeLessThan(due + 0.05)
+    expect(s.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
+    // While the page holds, the button is down and control is not taken.
+    const held = live(keen)
+    held.advance(press.step + Math.round(1 * hz))
+    expect(held.page.id).toBe('step5')
+    expect(held.page.gag!()).toBe('decision.reset')
+    expect(held.page.done()).toBe(false)
+    expect(held.page.ignoring!()).toBe(false)
+    expect(held.cursor.taken).toBe(false)
     expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor).toBe(true)
+  })
+
+  it('turns as before when the button is pressed after the narrator\'s line has ended', () => {
+    const page = makePage()
+    const cap = page.layout.children!.find((n) => n.id === 'accept')!.children![0]!.box
+    const from = AT.decide + AT.slam[1] + SAID[5] + 0.5
+    const patient: Driver = { name: 'bot', input: (v: DriverView): Pointer => ({ x: cap[0]! + cap[2]! / 2, y: cap[1]! + cap[3]! / 2, down: v.pageTime >= from && Math.floor(v.step / 24) % 2 === 0 }) }
+    const s = live(patient)
+    runUntilTurned(s, 60)
+    const press = s.events.find((e) => e.name === 'button-press')!
+    const turn = s.events.find((e) => e.name === 'page-turn')!
+    expect(press.step / hz).toBeGreaterThanOrEqual(from)
+    expect(press.step / hz).toBeLessThan(from + 0.25)
+    expect((turn.step - press.step) / hz).toBeGreaterThanOrEqual(AT.hold - 0.01)
+    expect((turn.step - press.step) / hz).toBeLessThan(AT.hold + 0.05)
   })
 
   it('hands the cursor on whole, however early the button is pressed after the stamp', () => {
@@ -284,7 +315,8 @@ describe('step 5, the live site', () => {
     }
     expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor).toBe(true)
     expect(s.events.some((e) => e.name === 'peel-up')).toBe(true)
-    expect(s.step / hz).toBeLessThan(7.6)
+    // Was: done inside 7.6 s. The press is under the line's first phrase, so the page now holds to that phrase's end and the gap (the ruling of change 002); the arrow is whole long before.
+    expect(s.step / hz).toBeLessThan(AT.decide + AT.slam[1] + SAID[1] + config.audio.lineGapSeconds + 0.05)
     expect(s.cursor.damaged).toBe(false)
     expect(longest / hz).toBeLessThanOrEqual(config.cursor.damageHealSeconds)
     const skipped = live(still(spot.x, spot.y))

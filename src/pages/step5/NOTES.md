@@ -111,3 +111,44 @@ What is above is as it was built; where this section differs, this section holds
 
 - The peel cannot start later than it does: the arrow must be whole inside `cursor.damageHealSeconds` (4 s) of the stamp, and it is whole 3.93 s after it.
 - The key `decision` in the config is at 0.15385 of its beat (it was 0.3): the same 7.2 s of the unit as before, now that the beat is longer.
+
+## After the real take of line 8 (the Builder's task of 04:10Z)
+
+What is above was timed to a stand-in of 8.125 s. Where this section differs, this section holds.
+
+The take (MEASURED by the Builder, `public/audio/index.json`): `line.decision.letter.0` is 12.742 s; its phrases start at 0.006, 3.466, 5.616, 8.166 and 11.01 s. `SAID` in `timeline.ts` holds those six numbers, and `tests/decision-acting.test.ts` holds `SAID` to `standIns().get('decision.letter.0')` exactly, so a new or edited take fails the test.
+
+The film (seconds of the unit, MEASURED from the code and from `npm run cut`):
+
+| What | When |
+| --- | --- |
+| The stamp (`stamp`), line 8 starts | 5.433 |
+| The arrow lands flat | 7.067 |
+| It peels itself up | 8.22 to 8.86, whole at 9.37 |
+| "the company" starts | 8.899 |
+| It dusts itself off (`READ.dust`, 0.9 s) | 9.929 |
+| "has decided" starts: it turns to the letter, on edge (`READ.hear`) | 11.049 |
+| It draws a breath (`READ.breath`, 0.35 s) | 12.649 |
+| "to move forward" starts: it puffs up and leans to the letter (`READ.look`) | 13.599 |
+| It hops (`READ.hop`, 0.5 s) | 15.443 |
+| "with other candidates." starts: it sags (`READ.sag`) | 16.443 |
+| It looks at the button (`GIVE.look`) | 16.753 |
+| It drags itself there (`GIVE.walk`) | 17.013 to 17.623 |
+| The blow (`GIVE.strike`) | 17.933 |
+| The press (`button-press`) | 18.033 |
+| Line 8 ends | 18.175 |
+| The turn (`page-turn`), line 9 starts | 18.4875 |
+| Line 9 ends (3.198 s) | 21.6855 |
+| The unit ends | 21.7 |
+
+- The unit is 21.7 s (it was 17.1). Beats: the metrics 6 to 18.4, the reset 18.4 to 21.7. The wait and the letter are as they were.
+- Not as the Builder wrote it, and why. He asked for the arrow flat through the first two phrases, peeling up into the third. No damage may last longer than `cursor.damageHealSeconds` (4 s; `src/stage/CONTRACT.md`, the cursor's body enforces it from the first hurt, and two tests hold it). The hit is where the line starts, so the arrow is whole at the latest 3.97 s into the line, 0.5 s into "the company"; the third phrase starts at 5.616. So the arrow lies flat under the first phrase, peels itself up in the pause after it and is whole as "the company" is said. `FILM.heal` is still 2.3. To have it down through the second phrase needs a ruling: a longer damage for this unit (the cursor's rule, not this page's), or the arrow lying down whole (the body's `spread`, as the boss page uses it), which I have not tried.
+- A move in each pause, none on top of another: the peel in the first, the dusting in the second, a breath in the third, a hop in the fourth. Each ends 0.2 s or more before the phrase that follows. The pauses are about 1.2 s (STATED by the Builder; the index holds only the starts, and the sound file is not in the repo, so I could not measure where each phrase's words end).
+- The last phrase is 1.73 s and the press is 0.14 s before its end, so the walk to the button starts 0.26 s after the look (it was 0.41 s).
+
+The live site (the Builder's ruling):
+
+- A press while line 8 is being said is seen at once: the button goes down, `button-press` is emitted, the arrow gives its blow (`react('stamp')`). The page then holds until the phrase being said has ended and `audio.lineGapSeconds`, and turns. `holdAfterPress` in `timeline.ts` gives the length from `SAID`. The longest hold is 3.14 s (a press as the fourth phrase starts).
+- "The phrase has ended" is the start of the next phrase, since the take's index holds only starts. That includes the pause after the words. If the shell ends the line at the pause, about 1.2 s of quiet come before the turn.
+- A press after the line has ended turns 0.45 s later, as before. So does the skip link, whenever it is used. The self walk comes 20 s into the metrics, after the line has ended, so it is as it was.
+- Control is not taken during the hold. One thing had to change for that: a press in the last 0.07 s of the throw used to end the page with the arrow still held by the page; now the throw is let finish and the arrow is given back.
