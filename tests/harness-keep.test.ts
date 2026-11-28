@@ -31,7 +31,8 @@ describe('the preview film that is kept', () => {
   })
 
   it('has the frames of the film at film.previewFps', () => {
-    expect(frames).toBe((cfg.film.units.reduce((n: number, u: { seconds: number }) => n + u.seconds, 0) * cfg.film.fps) / (cfg.film.fps / cfg.film.previewFps))
+    // Compared rounded: the unit lengths are decimal seconds and their sum is a float (214.79999999999998 for 214.8), so the product falls a hair short of the whole number of frames.
+    expect(frames).toBe(Math.round((cfg.film.units.reduce((n: number, u: { seconds: number }) => n + u.seconds, 0) * cfg.film.fps) / (cfg.film.fps / cfg.film.previewFps)))
   })
 
   it('is kept when its record is of this build and whole', () => {

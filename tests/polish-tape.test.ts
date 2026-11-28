@@ -19,7 +19,7 @@ const live = (rejected = false): Stage =>
 function runs(stage: Stage): Shape[] {
   const list: DrawList = []
   stage.page.draw(list)
-  return list.filter((d) => d.kind === 'text' && /^ticker-.*-run$/.test(d.id))
+  return list.filter((d) => d.kind === 'text' && /^ticker-.*-run(-b)?$/.test(d.id))
 }
 
 const wide = (key: string): number => block(T.tape.font, words(key), T.tape.px).width

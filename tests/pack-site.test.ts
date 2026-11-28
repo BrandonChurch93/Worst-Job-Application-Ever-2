@@ -600,20 +600,20 @@ describe('the packs of the unit site', () => {
     struck.hits.push({ name: 'bolt-hit-cursor', step: LONG + 44, page: 'step1', x: 0, y: 0 })
     const hit = motion(momentsOf(cfg, struck)).items.find((x) => x.moment === 'type')!
     expect(hit.heading).toContain(`. The first press of the visitor's on the keyboard; the turrets may fire in these frames. ${FIELD_WORDS.first}. In these frames a turret's bolt hits the arrow at 0:05.73. The visitor rests `)
-    // Among the visitor's presses the sheet takes the first whose frames begin after the turrets have stopped: KEYS.spent steps after the page goes on to the last name,
+    // Among the visitor's presses the sheet takes the first whose frames begin after the turrets have stopped: KEYS.spent steps after the Name is done and the page goes on to the Email field,
     // or after the bolt that overheats them, whichever the run holds first. The heading says which press it is and why no bolt lands in its frames.
     const twice = madeRun()
     for (let i = LONG + 132; i < LONG + 140; i++) {
       twice.rows[i]![COL.down] = 1
       for (const [c, v] of [[COL.pointerX, KEY.x], [COL.pointerY, KEY.y], [COL.heroX, KEY.x], [COL.heroY, KEY.y]] as [number, number][]) twice.rows[i]![c] = v
     }
-    twice.gags.push({ gag: 'step1.lastName', step: LONG + 50 })
+    twice.gags.push({ gag: KEYS.field, step: LONG + 50 }, { gag: KEYS.until, step: LONG + 148 })
     const later = momentsOf(cfg, twice)
-    expect(later.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 2, of: 2, clear: true, spent: LONG + 50, why: 'on', field: 'last', seated: null, key: null })
+    expect(later.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 2, of: 2, clear: true, spent: LONG + 50, why: 'on', field: 'email', seated: null, key: null })
     expect(LONG + 132 - KEYS.before).toBeGreaterThanOrEqual(LONG + 50 + KEYS.spent)
     const shown = motion(later).items.filter((x) => x.moment === 'type')
     expect(shown[0]!.steps![0]).toBe(LONG + 132 - KEYS.before)
-    expect(shown[0]!.heading).toContain(`. Press 2 of the visitor's 2 on the keyboard, the first whose frames begin after the turrets have stopped: the page went on to the last name at 0:05.83 and its turrets fire no more from then; these frames begin 1.32 s later, so no bolt lands in them. ${FIELD_WORDS.first}. The visitor rests `)
+    expect(shown[0]!.heading).toContain(`. Press 2 of the visitor's 2 on the keyboard, the first whose frames begin after the turrets have stopped: the Name was done and the page went on to the Email field at 0:05.83 and its turrets fire no more from then; these frames begin 1.32 s later, so no bolt lands in them. ${FIELD_WORDS.email}. The visitor rests `)
     // Before that one the sheet takes a press on the Email field, where the keys stay in their seats: the first whose frames begin KEYS.home steps or more after the page goes on to that field
     // and end before the first red slab drops and before the page asks for the resume. The heading names the field and says in one sentence what the page does to its keys there.
     const mail = madeRun()
@@ -621,14 +621,15 @@ describe('the packs of the unit site', () => {
       mail.rows[i]![COL.down] = 1
       for (const [c, v] of [[COL.pointerX, KEY.x], [COL.pointerY, KEY.y], [COL.heroX, KEY.x], [COL.heroY, KEY.y]] as [number, number][]) mail.rows[i]![c] = v
     }
-    mail.gags.push({ gag: 'step1.lastName', step: LONG + 10 }, { gag: KEYS.field, step: LONG + 80 })
+    mail.gags.push({ gag: KEYS.field, step: LONG + 20 })
     const seated = momentsOf(cfg, mail)
-    // The press at LONG + 100 lies on the Email field too, but its frames begin while the keys still fly home.
-    expect(LONG + 100 - KEYS.before - (LONG + 80)).toBeLessThan(KEYS.home)
-    expect(seated.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 3, of: 3, clear: true, spent: LONG + 10, why: 'on', field: 'email', seated: LONG + 80, key: 'G' })
+    // The press at LONG + 100 lies on the Email field too, but its frames begin one step short of KEYS.spent after the turrets stopped. With one Name field the turrets stop on the step the page goes on to the Email field, and KEYS.home is the shorter wait of the two.
+    expect(LONG + 100 - KEYS.before - (LONG + 20)).toBe(KEYS.spent - 1)
+    expect(KEYS.home).toBeLessThan(KEYS.spent)
+    expect(seated.moments.type).toEqual({ press: LONG + 132, release: LONG + 140, nth: 3, of: 3, clear: true, spent: LONG + 20, why: 'on', field: 'email', seated: LONG + 20, key: 'G' })
     const sat = motion(seated).items.filter((x) => x.moment === 'type')
     expect(sat[0]!.steps![0]).toBe(LONG + 132 - KEYS.before)
-    expect(sat[0]!.heading).toContain(`. Press 3 of the visitor's 3 on the keyboard, on the key G (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at 0:06.33 and these frames begin 0.82 s later; the turrets went down before the last name and no bolt lands in these frames. ${FIELD_WORDS.email}. The visitor rests 6 frames after it lets a key go. `)
+    expect(sat[0]!.heading).toContain(`. Press 3 of the visitor's 3 on the keyboard, on the key G (the arrow's tip lies on its letter), the first on the Email field after its keys have come home: the page went on to that field at 0:05.33 and these frames begin 1.82 s later; the turrets went down when the Name was done and no bolt lands in these frames. ${FIELD_WORDS.email}. The visitor rests 6 frames after it lets a key go. `)
     for (const f of sat) expect(linesOf(f)).toBeLessThanOrEqual(f.lines!)
     expect(FIELD_WORDS.email).toBe("By the page's design the keys stay in their seats on the Email field: a pressed key sinks, and comes back up when it is let go")
     // The key is named by the seat the press lies in, as its cap shows it; between two keys no key is named. The arrow's red tip and steam are said to be the page's design, as the kit has them.
@@ -647,12 +648,12 @@ describe('the packs of the unit site', () => {
       spoilt.gags.push(...mail.gags, ...spoil.gags)
       spoilt.hits.push(...spoil.hits)
       const t = momentsOf(cfg, spoilt).moments.type
-      expect(t).toMatchObject({ press: LONG + 100, nth: 2, seated: null, clear: true, field: 'email', key: null })
+      expect(t).toMatchObject({ press: LONG + 132, nth: 3, seated: null, clear: true, field: 'email', key: null })
     }
     expect(KEYS.home).toBe(32)
     // A press that begins sooner than that after the turrets' last shot is not taken for a clear one: the first press stands, with the plain word.
     const soon = madeRun()
-    soon.gags.push({ gag: 'step1.lastName', step: LONG + 10 })
+    soon.gags.push({ gag: KEYS.field, step: LONG + 10 })
     expect(momentsOf(cfg, soon).moments.type).toMatchObject({ press: LONG + 32, nth: 1, clear: false })
     // A bolt crosses the page in fewer steps than KEYS.spent: the page is 1920 px wide and the bolt flies TURRET.boltSpeed px a second (src/pages/step1/turrets.ts).
     const speed = Number(/boltSpeed: (\d+)/.exec(fs.readFileSync(path.join(root, 'src/pages/step1/turrets.ts'), 'utf8'))![1])

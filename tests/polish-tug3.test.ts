@@ -28,8 +28,11 @@ const HOLD = {
 // The strains, the grab and the loss of step 1 under the pack's visitor before this work, as frames counted from the step the arms come out, and name.
 const EVENTS = ['0 shredder arms-out', '30 paper-strain', '84 paper-strain', '138 paper-strain', '193 paper-strain', '247 paper-strain', '301 paper-strain', '355 paper-strain', '410 paper-strain', '464 paper-strain', '517 tug-lost']
 
-// The film's arrow from its grab to the frame before the slot takes it, as it was before this work: the first 12 letters of the sha1 of its poses.
-const FILM_POSES = '61d3d7851401'
+// The film's arrow from its grab to the frame before the slot takes it: the first 12 letters of the sha1 of its frames, poses and events.
+// Restated on the film as merge 70 (8cc4392c) left it, the step 1 work of merges 55 to 70 having moved the film's tug: the 271 rows of the tree of ff31d776 are those of 8cc4392c, row for row.
+// Against the tree of 7e747ba9 the grab falls 36 film frames sooner (2126 for 2162), the five strains fall the same 34, 88, 142, 197 and 251 frames after it, and the arrow's place differs by 0.35 px at most.
+// The live haul of merge 75 does not reach the film.
+const FILM_POSES = '6716d2638880'
 
 const deg = (r: number): number => (r * 180) / Math.PI
 const far = (r: Frame): number => {
