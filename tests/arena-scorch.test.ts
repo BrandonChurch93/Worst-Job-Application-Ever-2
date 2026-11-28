@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { BossView } from '../src/boss/view'
 import { PAGE } from '../src/arena/layout'
-import { SCORCH, aimOf, beamOf, beamShadow, chipsOf, edgeAt, paintScorch, scorchFrom, scorchOf, scorchReach, shownAt } from '../src/arena/scorch'
+import { SCORCH, aimOf, beamOf, beamShadow, chipsOf, crust, edgeAt, paintScorch, scorchFrom, scorchOf, scorchReach, shownAt } from '../src/arena/scorch'
 
 const W = 480, H = 270, SEED = 20261124
 const LINE = { x0: 420, y0: 640, x1: 960, y1: 650 }
@@ -59,7 +59,7 @@ describe('arena scorch', () => {
     return sum / 48
   }
 
-  it('is a trench that starts narrow and widens into a round burn where the boss lay, and nothing behind the arrow', () => {
+  it('is a trench that starts narrow and widens into a burn where the boss lay, a band that narrows on to the edge, and nothing behind the arrow', () => {
     const d = paint()
     // Black down the middle of the trench and at the boss.
     expect(texel(d, 700, 645)[0]).toBeGreaterThan(150)
@@ -70,20 +70,26 @@ describe('arena scorch', () => {
       for (let a = from; a <= to; a += 10) { sum += blackAt(a).wide; n++ }
       return sum / n
     }
-    const first = mean(10, 100), second = mean(120, 210), third = mean(230, 320), burn = blackAt(s.at).wide
+    const first = mean(10, 80), second = mean(90, 160), third = mean(170, 240), burn = mean(s.at - 60, s.at + 60)
     expect(first).toBeGreaterThan(8)
     expect(first).toBeLessThan(60)
     expect(second).toBeGreaterThan(first + 12)
     expect(third).toBeGreaterThan(second + 6)
     expect(burn).toBeGreaterThan(third + 60)
-    // The burn is round: about as long along the line as it is wide across it.
-    let ahead = 0
-    while (edgeAt(s, s.bx + s.ux * ahead, s.by + s.uy * ahead, SEED).px < 0) ahead += 2
-    expect(ahead / (burn / 2)).toBeGreaterThan(0.7)
-    expect(ahead / (burn / 2)).toBeLessThan(1.45)
-    // No black beyond the burn, and clean ground where the soot of the blast has thinned out.
-    expect(texel(d, 960 + ahead + 90, 652)[0]).toBeLessThan(128)
-    expect(texel(d, 1600, 662)).toEqual([0, 0, 0, 0])
+    // The black of the burn is longer along the line than across it: about 2.2 button widths by 1.3 (the button is 190 px wide).
+    let back = 0
+    while (blackAt(s.at - back).wide > third + 40) back += 4
+    expect(burn).toBeGreaterThan(200)
+    expect(burn).toBeLessThan(300)
+    expect(back).toBeGreaterThan(burn * 0.55)
+    expect(back).toBeLessThan(burn * 1.15)
+    // Downrange of the burn the band runs on to the edge of the page, narrowing.
+    const down1 = mean(s.at + 300, s.at + 400), down2 = mean(s.at + 700, s.at + 800)
+    expect(down1).toBeLessThan(burn - 60)
+    expect(down1).toBeGreaterThan(down2 + 10)
+    expect(down2).toBeGreaterThan(8)
+    expect(texel(d, 1600, 662)[0]).toBeGreaterThan(150)
+    expect(blackAt(PAGE.w - s.sx - 30).wide).toBeGreaterThan(0)
     // Behind the arrow and far to the side: clean ground.
     expect(texel(d, 380, 640)).toEqual([0, 0, 0, 0])
     expect(texel(d, 960, 200)).toEqual([0, 0, 0, 0])
@@ -106,23 +112,22 @@ describe('arena scorch', () => {
     }
     // Round the burn: black in the middle, less at the rim, soot outside it, next to nothing far out.
     const r0 = ring(d, 20), r1 = ring(d, SCORCH.burn * 0.9), r2 = ring(d, SCORCH.burn + 30), r3 = ring(d, SCORCH.burn + 150)
-    expect(r0).toBeGreaterThan(200)
+    expect(r0).toBeGreaterThan(190)
     expect(r1).toBeLessThan(r0)
     expect(r2).toBeLessThan(r1 - 30)
     expect(r2).toBeGreaterThan(8)
     expect(r2).toBeLessThan(128)
     expect(r3).toBeLessThan(r2 / 2)
-    // The words under the button stand on clean ground: next to no soot from 220 px under the middle of the burn on, 100 px to either side.
-    // Whatever the seed and wherever the arrow fired from.
+    // The words over the button stand on clean ground (x 840 to 1080, y 340 to 400 with the button at 960, 650), whatever the seed and wherever the arrow fired from on its side.
     for (let k = 0; k < 6; k++) {
-      const line = { x0: 420 + 40 * k, y0: 560 + 30 * k, x1: 960, y1: 650 }
+      const line = { x0: 420 + 40 * k, y0: 600 + 20 * k, x1: 960, y1: 650 }
       const sc = scorchFrom(line), dk = new Uint8Array(W * H * 4), r = scorchReach(sc, W, H)
       paintScorch(dk, W, H, sc, SEED + 977 * k, r.j0, r.j1 + 1)
-      let under = 0
-      for (let x = 860; x <= 1060; x += 4) for (let y = 870; y <= 1000; y += 4) under = Math.max(under, texel(dk, x, y)[0]!)
-      expect(under).toBeLessThan(26)
+      let over = 0
+      for (let x = 840; x <= 1080; x += 4) for (let y = 340; y <= 400; y += 4) over = Math.max(over, texel(dk, x, y)[0]!)
+      expect(over).toBeLessThan(26)
     }
-    // Embers lie in it, and few: it scorches, it does not glow like a broken slab. Most of the burn's lie at its rim.
+    // Embers lie in it, and few: it scorches, it does not glow like a broken slab. Most of the burn's lie at its rim, and two glowing edges run along the trench.
     let embers = 0, sooty = 0, rim = 0, heart = 0
     for (let j = 0; j < H; j++) {
       for (let i = 0; i < W; i++) {
@@ -138,6 +143,39 @@ describe('arena scorch', () => {
     expect(embers).toBeGreaterThan(10)
     expect(embers).toBeLessThan(sooty * 0.12)
     expect(rim).toBeGreaterThan(heart * 2)
+    // Along the trench, a third of the way to two thirds: embers at both edges of the black, more than down its middle.
+    let atEdge = 0, atMiddle = 0, upper = 0, lower = 0
+    for (let a = s.at * 0.1; a < s.at * 0.5; a += 4) {
+      const b = blackAt(a)
+      for (let across = b.lo - 6; across <= b.hi + 6; across += 2) {
+        const x = s.sx + s.ux * a - s.uy * across, y = s.sy + s.uy * a + s.ux * across
+        if (texel(d, x, y)[2]! <= 60) continue
+        if (across < b.lo + 14) { atEdge++; upper++ } else if (across > b.hi - 14) { atEdge++; lower++ } else atMiddle++
+      }
+    }
+    expect(upper).toBeGreaterThan(8)
+    expect(lower).toBeGreaterThan(8)
+    expect(atEdge).toBeGreaterThan(atMiddle * 2)
+  })
+
+  it('cracks the black into a fine net of plates', () => {
+    // Plates of about 17 px: over a square of the heart of the burn, cracks take a small share of the ground and no place is far from one.
+    let cracked = 0, n = 0, far = 0
+    for (let x = 900; x < 1020; x += 2) {
+      for (let y = 560; y < 620; y += 2) {
+        const c = crust(x, y, SEED)
+        n++
+        if (c.crack < 1) cracked++
+        far = Math.max(far, c.crack)
+        expect(c.plate).toBeGreaterThanOrEqual(0)
+        expect(c.plate).toBeLessThanOrEqual(1)
+      }
+    }
+    expect(cracked / n).toBeGreaterThan(0.05)
+    expect(cracked / n).toBeLessThan(0.3)
+    expect(far).toBeLessThan(SCORCH.net)
+    // None outside the black: the ground beside the trench carries no crack.
+    expect(edgeAt(s, 700, 480, SEED).px).toBeGreaterThan(40)
   })
 
   it('burns in from the arrow outward and from the middle to the rim', () => {

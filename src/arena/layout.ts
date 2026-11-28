@@ -41,9 +41,10 @@ export const ARENA = {
   wellDepth: 60
 } as const
 
+// pillar.3 stood at (563, 722) in the picture; ruled by the Builder at 02:11Z, it stands 203 px further down, so that neither its foot nor its drawn body comes within 140 px of the arrow's last stand and its line to the button (clear.ts).
 // The feet of the eight pillars: the middles of their foot plates. The first picture shows the plates; the brief's numbers were the middles of the drawn bodies.
 export const PILLARS: { id: string; x: number; y: number }[] = [
-  { id: 'pillar.0', x: 185, y: 372 }, { id: 'pillar.1', x: 577, y: 352 }, { id: 'pillar.2', x: 157, y: 712 }, { id: 'pillar.3', x: 563, y: 722 },
+  { id: 'pillar.0', x: 185, y: 372 }, { id: 'pillar.1', x: 577, y: 352 }, { id: 'pillar.2', x: 157, y: 712 }, { id: 'pillar.3', x: 563, y: 925 },
   { id: 'pillar.4', x: 1384, y: 352 }, { id: 'pillar.5', x: 1775, y: 373 }, { id: 'pillar.6', x: 1397, y: 722 }, { id: 'pillar.7', x: 1802, y: 712 }
 ]
 

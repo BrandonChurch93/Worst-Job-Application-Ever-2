@@ -74,19 +74,36 @@ describe('arena kept ground', () => {
       expect(columns).toBe(SEEDS.length * PILLARS.length * 72)
       expect(lumps).toBe(columns * RUBBLE_EACH)
       expect(shards).toBe(SEEDS.length * PANES.length * 72 * 4 * SHARDS_EACH)
-      // The pillar nearest the line has its piece thrown clear of it.
-      expect(moved).toBeGreaterThan(0)
+      // With every foot well away, no piece has to be thrown further than it falls by itself.
+      expect(moved).toBe(0)
     })
   }
 
-  it('says which standing things of the approved layout lie nearer than 140 px, and that nothing else of it does', () => {
-    // These stand where the approved picture has them and are not moved: the pillar at (563, 722), whether whole or a stump, and the pane at x 372, whether whole or its teeth.
-    const near = PILLARS.filter((p) => nearKeep(p.x, p.y).d < KEEP.clear + ARENA.pillar.foot / 2).map((p) => `${p.x},${p.y}`)
-    expect(near).toEqual(['563,722'])
-    expect(nearKeep(563, 722).d).toBeCloseTo(72)
-    const panes = PANES.filter((p) => nearKeep(p.x, Math.max(p.y0, Math.min(p.y1, 650))).d < KEEP.clear).map((p) => p.x)
-    expect(panes).toEqual([372])
+  it('stands every pillar, its foot and its drawn body from foot to top, at least 140 px away', () => {
+    // A standing thing is drawn leaning up the screen and to the left by its height; the whole of that is asked, not only the foot. No pillar is named.
+    for (const p of PILLARS) {
+      expect(nearKeep(p.x, p.y).d).toBeGreaterThanOrEqual(KEEP.clear + ARENA.pillar.foot / 2)
+      for (let z = 0; z <= ARENA.pillar.high; z += 10) {
+        expect(nearKeep(p.x + ARENA.leanX * z, p.y - ARENA.lean * z).d).toBeGreaterThanOrEqual(KEEP.clear + ARENA.pillar.side / 2)
+      }
+    }
+    // The one that was moved for it stands straight down the screen from where the picture has it.
+    expect(PILLARS[3]).toEqual({ id: 'pillar.3', x: 563, y: 925 })
+  })
+
+  it('names the pane at x 372 as the one exception, and draws it behind the figure at the stand, never over it', () => {
+    // Ruled by the Builder at 02:11Z: the approved picture has the figure standing close in front of that pane.
+    const near = PANES.filter((p) => nearKeep(p.x, Math.max(p.y0, Math.min(p.y1, 650))).d < KEEP.clear).map((p) => p.x)
+    expect(near).toEqual([372])
     expect(nearKeep(372, 650).d).toBeCloseTo(68)
+    // The pane is drawn from its shoe up the screen and to the left, away from the stand: nothing of it, at any height, reaches the 40 px to either side of the stand that the figure fills.
+    const p = PANES[0]!
+    for (let z = 0; z <= ARENA.pane.high; z += 10) {
+      const right = p.x + ARENA.leanX * z + ARENA.pane.thick / 2
+      expect(right).toBeLessThanOrEqual(p.x + ARENA.pane.thick / 2)
+      expect(right).toBeLessThan(KEEP.stand.x - 40 - 20)
+    }
+    expect(ARENA.leanX).toBeLessThan(0)
   })
 
   it('throws the chips of the last blast beside the trench and never onto the stand or the kneel spot', () => {

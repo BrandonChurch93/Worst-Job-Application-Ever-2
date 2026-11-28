@@ -2,49 +2,49 @@
   "none": {
     "triangles": 24,
     "drawCalls": 6,
-    "ms": 1680.4,
-    "least": 1663.7
+    "ms": 1711.1,
+    "least": 1694.7
   },
   "rest": {
     "triangles": 48224,
     "drawCalls": 87,
-    "ms": 2586.5,
-    "least": 2530.3
+    "ms": 2533.8,
+    "least": 2512.7
   },
   "change-1.30": {
     "triangles": 17991,
     "drawCalls": 55,
-    "ms": 2412.7,
-    "least": 2386.9
+    "ms": 2413.1,
+    "least": 2390.1
   },
   "blast-0.20": {
     "triangles": 49396,
     "drawCalls": 109,
-    "ms": 2594.6,
-    "least": 2515.7
+    "ms": 2570.2,
+    "least": 2533.3
   },
   "break-3": {
     "triangles": 50052,
     "drawCalls": 107,
-    "ms": 2503.6,
-    "least": 2476.2
+    "ms": 2570.8,
+    "least": 2548.1
   },
   "finish-after": {
-    "triangles": 29689,
+    "triangles": 29739,
     "drawCalls": 56,
-    "ms": 2359,
-    "least": 2303.1
+    "ms": 2309.9,
+    "least": 2269.9
   },
   "finish-wide": {
-    "triangles": 50732,
+    "triangles": 50782,
     "drawCalls": 107,
-    "ms": 2577.5,
-    "least": 2495.7
+    "ms": 2599.5,
+    "least": 2542.9
   },
   "finish-beam-wide": {
-    "triangles": 50760,
+    "triangles": 50810,
     "drawCalls": 109,
-    "ms": 2536.3,
-    "least": 2510.7
+    "ms": 2585.8,
+    "least": 2515.6
   }
 }
