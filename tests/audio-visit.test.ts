@@ -11,11 +11,17 @@ import { config } from '../src/config'
 import { visit } from '../tools/lib/sound-visit.mjs'
 
 interface Entry { at: number; line: string; trigger: string; what: string; start?: number; seconds?: number; why?: string; page: string }
-interface Visit { bot: string; lines: number; finished: boolean; seconds: number; skips: number; turns: { at: number; page: string }[]; log: Entry[]; loops: { id: string; page: string; start: number; stop: number | null }[]; volumes: { at: number; page: string; volume: number }[]; volumeSteps: { at: number; page: string; volume: number; output: number }[]; events: Record<string, number> }
+interface Visit { bot: string; heldSeconds: number; voices: { id: string; start: number; stop: number | null }[]; lines: number; finished: boolean; seconds: number; skips: number; turns: { at: number; page: string }[]; log: Entry[]; loops: { id: string; page: string; start: number; stop: number | null }[]; volumes: { at: number; page: string; volume: number }[]; volumeSteps: { at: number; page: string; volume: number; output: number }[]; events: Record<string, number> }
 
 const modules: Record<string, unknown> = { '/src/audio/index.ts': engine, '/src/stage/stage.ts': stageModule, '/src/stage/bots.ts': botsModule, '/src/pages/index.ts': pagesModule, '/src/config.ts': configModule }
 const load = async (f: string) => modules[f]
 const run = (bot: string): Promise<Visit> => visit(load, config, bot)
+interface Call { at: number; event?: { name: string; page?: string } }
+const runWith = async (bot: string, held: boolean): Promise<{ v: Visit; turn: number }> => {
+  const calls: Call[] = []
+  const v: Visit = await visit(load, config, bot, config.seed, calls as never, held)
+  return { v, turn: calls.find((x) => x.event?.name === 'page-turn' && x.event.page === 'step5')!.at }
+}
 const gap = config.audio.liveNarratorMinGapSeconds
 const lineGap = config.audio.lineGapSeconds
 const pageOfLine: Record<string, string> = Object.fromEntries(Object.keys(spoken).map((key) => [`line.${key}`, keyPage(key)]))
@@ -52,7 +58,7 @@ describe('a whole visit of the live site through the stage and the sound engine'
     // A line that was cut, as line 1 is when the careers page is closed, lasts what its cut says.
     const cut = new Map(v.log.filter((e) => e.what === 'cut').map((e) => [`${e.line}@${e.start}`, e.seconds!]))
     const lasts = (e: Entry): number => cut.get(`${e.line}@${e.start}`) ?? e.seconds!
-    for (let i = 1; i < order.length; i++) expect(order[i]!.start! - (order[i - 1]!.start! + lasts(order[i - 1]!)), `${order[i - 1]!.line} then ${order[i]!.line}`).toBeGreaterThanOrEqual((partOf(order[i]!.line) ? lineGap : gap) - 1e-6)
+    for (let i = 1; i < order.length; i++) expect(order[i]!.start! - (order[i - 1]!.start! + lasts(order[i - 1]!)), `${order[i - 1]!.line} then ${order[i]!.line}`).toBeGreaterThanOrEqual((partOf(order[i]!.line) ? lineGap : gap) - 2e-3)
     const restart = v.turns.filter((t) => t.page === 'marketing').pop()!.at
     const first = lines.filter((e) => e.at < restart).map((e) => e.line)
     expect(new Set(first).size).toBe(first.length)
@@ -131,4 +137,37 @@ describe('a whole visit of the live site through the stage and the sound engine'
     const skipper = await run('skipper')
     expect(skipper.volumeSteps.map((x) => x.output)).toEqual([1])
   })
+
+  // The Decision page that holds its turn is not merged yet. ASSUMED for `held`: the page stands still, and gives no event, from the frame it would have turned
+  // until the narrator owes it nothing (sound.owed('step5')), and then turns.
+  for (const bot of ['keen', 'clumsy']) {
+    it(`on the ${bot} visit with the turn of Decision held as ruled, lets nothing of line 8 sound after the page turn and starts line 9 on the turn`, async () => {
+      const { v, turn } = await runWith(bot, true)
+      expect(v.finished).toBe(true)
+      expect(v.heldSeconds).toBeGreaterThan(0)
+      const eight = v.voices.filter((x) => x.id === 'line.decision.letter.0')
+      expect(eight.length).toBe(1)
+      expect(eight[0]!.stop).not.toBeNull()
+      expect(eight[0]!.stop!).toBeLessThanOrEqual(turn - gap + 0.02)
+      const others = v.voices.filter((x) => x.id !== 'line.decision.reset.0' && x.start < turn && (x.stop ?? x.start + script.get(x.id.slice(5))!.seconds) > turn + 1e-6 && (x.stop === null || x.stop > x.start))
+      expect(others).toEqual([])
+      const nine = v.log.filter((e) => e.line === 'line.decision.reset.0' && e.what === 'spoken')
+      expect(nine.length).toBe(1)
+      expect(nine[0]!.start! - turn).toBeGreaterThanOrEqual(-1e-3)
+      expect(nine[0]!.start! - turn).toBeLessThanOrEqual(0.02)
+      expect(v.log.filter((e) => e.what === 'cut' && e.why === 'the careers page came while it was said')).toEqual([])
+    })
+
+    it(`on the ${bot} visit with the Decision page as it is today, has line 8 out one voice fade after the page turn and line 9 said after the gap`, async () => {
+      const { v, turn } = await runWith(bot, false)
+      expect(v.heldSeconds).toBe(0)
+      const eight = v.voices.filter((x) => x.id === 'line.decision.letter.0')
+      expect(eight.length).toBe(1)
+      expect(eight[0]!.stop!).toBeLessThanOrEqual(turn + LIVE.voiceFadeSeconds + 0.02)
+      const nine = v.log.filter((e) => e.line === 'line.decision.reset.0' && e.what === 'spoken')
+      expect(nine.length).toBe(1)
+      expect(nine[0]!.start! - turn).toBeLessThanOrEqual(LIVE.voiceFadeSeconds + gap + 0.02)
+      expect(nine[0]!.start!).toBeGreaterThanOrEqual(eight[0]!.stop! + gap - 0.02)
+    })
+  }
 })

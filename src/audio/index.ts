@@ -7,7 +7,7 @@ import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
 import { CAPTION, type Caption, type CaptionSource } from '../ui/said'
-import { allCues, alsoStarts, cueOfEvent, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, unitPage, waitsFor } from './cues'
+import { allCues, alsoStarts, cueOfEvent, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, turnWaitsFor, unitPage, waitsFor } from './cues'
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
@@ -342,6 +342,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   const lastPlay = new Map<string, number>()
   const running = new Map<string, Voice[]>()
   const speaking = new Map<Booking, StandIn>()
+  const turnHeld = new Map<string, number>()
   const voices = new Map<Booking, Voice>()
   const marks = new Map<Booking, string>()
   const stepped = new WeakMap<Booking, number[]>()
@@ -634,10 +635,11 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
   }
 
   // An event that makes a line jump to its next part: the phrase being said is said to its end and no further.
-  const jump = (name: string, page: string) => {
+  // A line its page's turn waits for jumps on the live site only: in the film it is said whole, as the mix lays it.
+  const jump = (name: string, page: string, mode: SoundMode) => {
     const now = backend!.now()
     for (const [b, l] of [...speaking]) {
-      if (b.end <= now || l.page !== page || !spoken[l.key]?.jump?.includes(name)) continue
+      if (b.end <= now || l.page !== page || !spoken[l.key]?.jump?.includes(name) || (mode !== 'live' && turnWaitsFor[page] === l.key)) continue
       const at = l.phrases.find((p) => b.start + p.to > now)
       const end = b.start <= now && at ? b.start + at.to : b.start
       if (end >= b.end) continue
@@ -650,6 +652,21 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         setMark(x, part)
       }
       note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'it ends at its next pause and its next part follows' })
+      if (turnWaitsFor[page] === l.key) turnHeld.set(page, b.end + audio.liveNarratorMinGapSeconds)
+      caption?.wake()
+      reduck()
+    }
+  }
+
+  // The careers page is silent apart from the line its turn sets off: a line still being said when the live site turns to it goes out there.
+  const hushTurn = (now: number, name: string, page: string) => {
+    turnHeld.delete(page)
+    if (pageAfter[page] !== quietPage) return
+    for (const [b, l] of [...speaking]) {
+      if (spoken[l.key]?.keeps || b.start > now || b.end <= now + LIVE.voiceFadeSeconds) continue
+      desk.shorten(now, b, now + LIVE.voiceFadeSeconds, [])
+      cut(b)
+      note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: 'the careers page came while it was said' })
       caption?.wake()
       reduck()
     }
@@ -747,7 +764,8 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       takeBack(desk.at(now, page), 'its page was left')
       takeBack(desk.ended(now, page, e.name), `its moment ended with ${e.name}`)
       if (closes && mode !== 'film') closeOpening(now, e.name)
-      jump(e.name, page)
+      if (mode === 'live' && (e.name === 'page-turn' || e.name === 'skip')) hushTurn(now, e.name, page)
+      jump(e.name, page, mode)
       step(e.name, page)
       if (e.name === 'skip' || e.name === 'page-turn') takeBack(desk.leave(now, page), e.name === 'skip' ? 'its page was skipped' : 'its page was turned')
       if (closes) openingOpen = false
@@ -803,8 +821,10 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
     },
     owed(page) {
       const key = waitsFor[page]
-      if (key === undefined || state !== 'ready' || !backend) return false
+      if (state !== 'ready' || !backend) return false
       const now = backend.now()
+      if ((turnHeld.get(page) ?? -Infinity) > now) return true
+      if (key === undefined) return false
       for (const [b, l] of speaking) if (l.key === key && b.end > now) return true
       return false
     },
@@ -841,6 +861,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
       desk.clear()
       speaking.clear()
       voices.clear()
+      turnHeld.clear()
       marks.clear()
       byMark.clear()
       running.clear()

@@ -431,6 +431,57 @@ describe('the narrator\'s voice: the pack', () => {
   })
 })
 
+describe('the narrator\'s voice: lines 8 and 9 at the turn back to the careers page', () => {
+  const LETTER = { seconds: 12.7, starts: [0.1, 4, 8] }
+  const takes = { ...TAKES, 'decision.letter.0': LETTER }
+  const fade = LIVE.voiceFadeSeconds
+
+  it('ends line 8 at its next pause when Decision\'s button is pressed while it is said, owes the page its turn until that pause and the gap, and says line 9 on the turn', async () => {
+    const { s, ctx } = await ready('step5', takes)
+    ctx.currentTime = 50
+    s.event(ev('stamp', 'step5'), 'live')
+    expect(booked(s)).toEqual([[id('decision.letter.0'), 50]])
+    ctx.currentTime = 51.5
+    expect(s.owed('step5')).toBe(false)
+    s.event(ev('button-press', 'step5'), 'live')
+    expect(s.log().filter((e) => e.what === 'cut').map((e) => [e.line, e.start, e.seconds])).toEqual([[id('decision.letter.0'), 50, 4]])
+    expect(times(ctx, 'decision.letter.0')).toEqual([[50, 54]])
+    expect(s.owed('step5')).toBe(true)
+    ctx.currentTime = 54 + gap - 0.01
+    expect(s.owed('step5')).toBe(true)
+    ctx.currentTime = 54 + gap
+    expect(s.owed('step5')).toBe(false)
+    s.event(ev('page-turn', 'step5'), 'live')
+    expect(booked(s)[1]).toEqual([id('decision.reset.0'), near(54 + gap)])
+    expect(s.log().filter((e) => e.what === 'cut').length).toBe(1)
+    expect(s.said().lines.filter((l) => l.line === id('decision.letter.0') && l.end > 54 + 1e-9)).toEqual([])
+  })
+
+  it('lets line 8 out over the voice fade when the careers page comes while it is still said, and says line 9 after the fade and the gap', async () => {
+    const { s, ctx } = await ready('step5', takes)
+    ctx.currentTime = 50
+    s.event(ev('stamp', 'step5'), 'live')
+    ctx.currentTime = 52
+    s.event(ev('page-turn', 'step5'), 'live')
+    expect(times(ctx, 'decision.letter.0')).toEqual([[50, near(52 + fade)]])
+    expect(s.log().filter((e) => e.what === 'cut').map((e) => [e.line, e.seconds, e.why])).toEqual([[id('decision.letter.0'), near(2 + fade), 'the careers page came while it was said']])
+    expect(booked(s)[1]).toEqual([id('decision.reset.0'), near(52 + fade + gap)])
+    expect(s.owed('step5')).toBe(false)
+  })
+
+  it('says line 8 whole in the film, whatever is pressed, and owes the page nothing', async () => {
+    const { s, ctx } = await ready(null, takes)
+    ctx.currentTime = 50
+    s.event(ev('stamp', 'step5'), 'film')
+    ctx.currentTime = 51.5
+    s.event(ev('button-press', 'step5'), 'film')
+    s.event(ev('page-turn', 'step5'), 'film')
+    expect(times(ctx, 'decision.letter.0')).toEqual([[50, null]])
+    expect(s.log().filter((e) => e.what === 'cut')).toEqual([])
+    expect(s.owed('step5')).toBe(false)
+  })
+})
+
 describe('the narrator\'s voice: the index of this tree', () => {
   const real: SoundIndex = read('public', 'audio', 'index.json')
   const script = standIns()

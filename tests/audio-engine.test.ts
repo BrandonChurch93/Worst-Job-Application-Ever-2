@@ -578,7 +578,8 @@ describe('the opening of film A on the site', () => {
 })
 
 describe('the audio code', () => {
-  it('is imported by no module outside src/audio, so capture mode never loads it', () => {
+  // The table of cues and the script read with the index (cues.ts, standin.ts) hold nothing that plays sound: a page or a film module may import those two, and nothing else of src/audio.
+  it('is imported by no module outside src/audio, so capture mode never loads it: only the table of cues and the script with its index are, and those two import nothing else of src/audio', () => {
     const bad: string[] = []
     const walk = (dir: string) => {
       for (const f of readdirSync(dir, { withFileTypes: true })) {
@@ -590,7 +591,7 @@ describe('the audio code', () => {
           for (const m of text.matchAll(/(?:from|import)\s*\(?\s*['"]([^'"]*\/audio(?:\/[\w-]+)?)['"]/g)) {
             const target = m[1]!
             const dynamic = /import\s*\(\s*['"]/.test(m[0])
-            if (target.endsWith('/audio/cues')) continue
+            if (target.endsWith('/audio/cues') || target.endsWith('/audio/standin')) continue
             if (dynamic && path.relative(process.cwd(), p) === path.join('src', 'main.ts')) continue
             bad.push(`${path.relative(process.cwd(), p)} imports ${target}`)
           }
@@ -599,6 +600,12 @@ describe('the audio code', () => {
     }
     walk(path.join(process.cwd(), 'src'))
     expect(bad).toEqual([])
+    for (const f of ['cues.ts', 'standin.ts']) {
+      const text = readFileSync(path.join(process.cwd(), 'src', 'audio', f), 'utf8')
+      const own = [...text.matchAll(/(?:from|import)\s*\(?\s*['"](\.\/[^'"]+)['"]/g)].map((m) => m[1]!)
+      expect(own.filter((x) => x !== './cues' && x !== './standin'), f).toEqual([])
+      expect(/AudioContext|new Audio\b|decodeAudioData/.test(text), f).toBe(false)
+    }
   })
 
   it('uses no random number and no clock of its own', () => {

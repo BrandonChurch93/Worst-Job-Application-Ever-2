@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { PITCH_CENTS, allCues, cueClass, cueOfEvent, eventCues, extraCues, filmLineId, liveLineId, liveTriggers, loopCues, spoken, spokenKeysFor, unitPage, pickVariant, silentEvents, stopEvents, variantAt, variantId } from '../src/audio/cues'
+import { PITCH_CENTS, allCues, cueClass, cueOfEvent, cuesToMake, eventCues, extraCues, filmLineId, liveLineId, liveTriggers, loopCues, spoken, spokenKeysFor, unitPage, pickVariant, silentEvents, stopEvents, variantAt, variantId } from '../src/audio/cues'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
 const cfg: any = read('config', 'showcase.json')
@@ -29,11 +29,17 @@ describe('the table of events to cues', () => {
     expect(eventCues.share).toBe('button-press')
   })
 
-  it('maps every event a beat of the film names', () => {
+  it('maps every event a beat of the film names to a cue of the table or to a cue named as to be made, and plays nothing for a cue that is to be made', () => {
     const events: string[] = cfg.film.beats.map((b: any) => b.event).filter((e: unknown) => typeof e === 'string')
     expect(events.length).toBeGreaterThan(0)
-    const every = allCues(sfx).map((c) => c.id)
+    const every = [...allCues(sfx), ...cuesToMake].map((c) => c.id)
     for (const e of events) expect(every, e).toContain(cueOfEvent(e))
+    expect(cueOfEvent('finish-fire')).toBe('finish-fire')
+    for (const c of cuesToMake) {
+      expect(c.seconds, c.id).toBeGreaterThan(0)
+      expect(cueOfEvent(c.event), c.id).toBe(c.id)
+      expect(allCues(sfx).some((x) => x.id === c.id), c.id).toBe(false)
+    }
     expect(eventCues['bolt-hit-cursor']).toBe('bolt-hit')
   })
 
