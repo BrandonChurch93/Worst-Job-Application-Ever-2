@@ -411,3 +411,17 @@ What I SEE in eight frames each of the film with take (d) and take (e) (`proof/c
 - The tool that draws these frames draws no caption, so the words on screen are not in them.
 
 A fault of mine, mended at 14:57Z: the two pictures of take (d) in 1f0b9f73 were take (e)'s build drawn at (d)'s times. The frame tool builds again only when the source hashes change (`buildIsCurrent` in `tools/lib/hashes.mjs`), and a new take in `public/audio/index.json` alone does not change them. Found because the two sets were equal to the pixel at five times. The pictures here are from a forced build (`out/work/build-info.json` removed before the run); against take (e) they differ at all five times. The frames of (b) and (c) were drawn the same way and show the same eight views, with the page's lines at 47.1 s (b) and 47.0 s (c) where they are at 47.6 s.
+
+## The floor at 2.85 s (the Builder's decision, 28 November)
+
+`CAMERA.rest` is 1, so `shoutFloor()` is 0.95 + 1 + 0.9 = 2.85 s. Reasons as the Builder gave them: every part is built to its short end with no padding, and at 3.85 s the charge view rested 1.15 s with no word. The design pin in `tests/b-camera.test.ts` asks for 1 s of rest and more, and samples the charge view in the middle of its rest.
+
+MEASURED
+- The stand-in's 47 frames (38.5 to 50 s, every 0.25 s) are the same to the pixel as at 37da1773: its peak is at 4.13 s, past the floor.
+- Marks at the floor 2.85, s after the arms: (b) lead 1.05, beats 0.079, 1.108, 1.7, 2.157, gone 6.35; (c) 1.35; 0.095, 1.14, 1.721, 2.169; 6.28; (d) 0.77; 0.137, 1.124, 1.71, 2.163; 6.28; (e) 1; 0.154, 1.017, 1.64, 2.12; 6.31. The fire is at 2.85 in all four.
+- Gone for (d) is 6.28 s, 376.8 frames after the arms; for (e) 6.31 s, 378.6 frames. Neither is a whole frame, and `tests/b-finish.test.ts:67` is green under both.
+- Under (d) and (e) at this floor `tests/b-finish.test.ts:114` is red without the tests-marks patch: it draws the ball at a typed 3.8 s, which is now after the fire. The patch reads both of its times from the marks.
+
+The charge in steps of 0.1 s, take (e), from the arms to 0.3 s after the fire: `proof/camera/charge-take-e-floor-2.85.jpg` (33 frames) and `proof/camera/charge-take-e-floor-3.85.jpg` (43 frames), the same tile size in both. Under each frame its film time and, in brackets, the seconds after the arms. What I SEE: the view is down by +0.98 in both; the camera then stands still for 10 frames (2.85) or 20 frames (3.85) while the light between the hands grows; the turn takes the next six frames, with the white glare in the fifth; six frames stand behind the arrow; the beam is in the last frame only, since it leaves the hands 0.2 s after the fire mark.
+
+One more typed number falls at this floor. Under take (e) the third charge mark comes 1.486 s after the first, so the visitor of `tests/b-boss.test.ts` who holds for a second and a half takes three charge steps where the row types 2 (the row at line 462, read at line 493; lines 463 and 494 once the tests-marks patch is in). `camera-way1-NEEDS-tests-marks-2.patch` goes on top of the tests-marks patch and reads the count from the marks.
