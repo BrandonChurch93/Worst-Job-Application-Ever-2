@@ -269,3 +269,34 @@ On head `356fbeaf`, the last change to any source file:
 - The whole `npm test`: not run.
 Commits of the fourth task: `ae5d4269` (white body, ember rim, thrust held), `9a966641` (flames, low smoke), `356fbeaf` (flames curl more, tools, proofs), then these notes.
 The fight helper was told at 03:55Z and 04:00Z: the rim by itself from `marks.end`, the optional `ember` and `marks.thrust`, the cause of the grey, the draw order answer, the small shot.
+
+
+## Fifth task (Builder's mail of 04:14Z)
+
+### Decisions
+37. The live thrust (item 2). No new name: on the live site, when the visitor lets go of a charged shot, the fight gives `marks.thrust` the fire mark's own time. With less room before the beam than the coil and the thrust take, there is no coil: the hands go forward with the ball in the first frame after the release (`FIRE.swift` 0.65 of the 0.2 s, so 0.13 s) and the beam leaves `FIRE.lead` 0.2 s after the release. A plain click leaves the mark out and plays the small shot as before. The film's value (fire minus 0.45) plays as in decision 35, whether or not `fire` is known when the thrust begins. The fight helper was told at 04:17Z.
+38. The flames of the power-up (item 1). They are now licks (`LICK` in `src/boss/finish/fx.ts`, style 2 of the flame shader): narrow at the foot, widest at a third of the height, drawn out into a tip that curls to its own side; the body see-through (0.4 of full, edge and core stronger), orange gold at the edge with a pale core; nine tall ones with gaps (three at each side, three behind the figure whose tips show over it), short ones on the ground behind the feet at every second place, the low ring kept. No lick and no flame of the ring stands within 15 px (before the size) of a shoe on its front side.
+39. The film's view. The licks stand in a plane of their own that has half the figure's rise (20 degrees from the ground instead of 40), feet on the ground, so the film, which looks straight down, sees 0.94 of their length (STATED, the cosine). Tallest flame in the film's view, from the feet line to the highest flame pixel, MEASURED in my harness's film view (a 480 px wide part of the page drawn at 1920 by 1080, so 4 px a page px): before 344 px (86 page px), after 635 px (159 page px). For scale: the figure's top stands 366 px over the feet line in the same view (MEASURED on an earlier render of the same pose, not on the last).
+40. The stance (item 1). `POSES.power`: hip (0, 25), hands (-35, 51) and (35, 51), feet (-30, 0) and (30, 0): an even wide squat, both fists at the same height. As I see the picture: fists level, both knees out; the two legs still differ a little because they leave the arrow's body at different places.
+41. The figure above the smoke (item 3): nothing done, by the Builder's ruling. The arena keeps its wisps away.
+
+### Proof (my harness, not the real page)
+- `proof/finish/report-t5-power.png`: the sheet, the film view before and after, and below them the side view before and after.
+
+### Open
+- Nothing of this task was rendered on the real page by me.
+- The flames are paler than the sheet's and have no white-hot glow round them; the legs are not yet as even as the sheet's.
+- The whole `npm test` was not run in this task.
+- `proof/finish/report-t5-live.png` (proof of 37): the live thrust, every frame from 2 before the release to 15 after. As I see it: at the hip up to the release, the ball at the body's middle one frame after, in front at both hands from 0.05 s, the beam from 0.2 s.
+
+### Draw calls (fifth task, MEASURED, harness, film tier)
+The finish alone in the power-up at 1.5: 14 draw calls, 31,088 triangles, as before: the licks are instances of the flame mesh that was there.
+
+### Runs of the fifth task (MEASURED, with exit codes)
+On head `739a4e33`, the last change to any source file:
+- `npx vitest run tests/b-finish.test.ts`: EXIT 0, 23 of 23, at 04:28Z (one new test: the live thrust).
+- `npx tsc --noEmit -p .`: EXIT 0 at 04:28Z.
+- `npm run determinism`: EXIT 0 at 04:33Z ("pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders").
+- `npm run bots`: EXIT 0 at 04:33Z ("bots: all clear").
+- The whole `npm test`: not run.
+Commits of the fifth task: `ca844027` (the live thrust), then the stance, the flames, the proof `739a4e33`, then the tool job `live`, its proof and these notes.
