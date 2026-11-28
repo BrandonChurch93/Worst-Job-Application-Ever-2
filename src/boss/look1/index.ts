@@ -3,7 +3,7 @@ import type { BossView } from '../view'
 import type { Emitter } from '../../real/types'
 import { buildModel, type Model } from './model'
 import { CANNON, GUN, HATCH, SHIELD, WING, HULL } from './numbers'
-import { DEFAULTS, K, poseOf, type LookOptions, type Pose } from './pose'
+import { BENT, DEFAULTS, K, poseOf, type LookOptions, type Pose } from './pose'
 import { setGlow } from './kit'
 import { makeFx, type Fx } from './fx'
 import { poseGun } from './gun'
@@ -68,6 +68,14 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   m.shieldGlass.visible = p.shield.broken < 0.02
   m.shieldEdge.visible = m.shieldGlass.visible
   m.shieldEdge.position.z = -(1 - Math.max(0.02, p.shield.rise)) * (SHIELD.z1 - SHIELD.z0 - 18)
+  const torn = p.damage >= 2
+  m.shieldGlassB.scale.copy(m.shieldGlass.scale)
+  m.shieldGlassB.position.z = m.shieldGlass.position.z
+  m.shieldEdgeB.position.z = m.shieldEdge.position.z
+  m.shieldGlassB.visible = m.shieldGlass.visible && !torn
+  m.shieldEdgeB.visible = m.shieldGlassB.visible
+  m.shieldStub.visible = torn && p.shield.rise >= 1
+  m.crackB.visible = !torn
 
   m.guns.forEach((g, i) => {
     const q = p.guns[i]!
@@ -76,6 +84,10 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     g.root.visible = p.hull.show && q.rise > 0.001
     g.root.position.set(GUN.x + p.hull.x, side * GUN.y + p.hull.y - side * (1 - out) * (WING.reach + 6), GUN.z - 3 + p.hull.z - (1 - q.rise) * 70)
     poseGun(g, q)
+    const bent = p.damage >= (i === 0 ? 1 : 2) ? 1 : 0
+    g.barrels.rotation.order = 'ZYX'
+    g.barrels.rotation.z = bent * BENT.yaw * (i === 0 ? 1 : -1)
+    g.barrels.rotation.y = bent * BENT.droop
     g.root.rotation.set(-side * 0.16 * p.sag, 0.2 * p.sag * side, 0)
     g.root.position.z -= 22 * p.sag
   })

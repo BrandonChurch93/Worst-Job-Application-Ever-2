@@ -50,6 +50,7 @@ export const FALL = { off: [0, 0.4], glass: [0.05, 0.3], drop: [0.3, 0.7] } as c
 export const GONE = { shield: [0.04, 0.3], wings: [[0.1, 0.42], [0.16, 0.48]], guns: [[0.08, 0.38], [0.2, 0.5]], legs: [[0.22, 0.56], [0.3, 0.64], [0.36, 0.7], [0.44, 0.78]], hull: [0.55, 0.9], button: [0.62, 0.9] } as const
 // The face of the word as in the approved pictures: lighter and a little smaller than the page's own button (inter-600 at 26 px).
 export const WORD = { font: 'inter-400', px: 25 }
+export const BENT = { yaw: 0.26, droop: 0.2 }
 export const TIMES = { form: 2.9, turret: 1.6, beaten: 1, gone: 2.13, gunKick: 0.25, glance: 0.3, hit: 0.35, heal: 0.6, beam: 0.3, recoil: 0.45, after: 1.2, weak: 1.2 }
 
 export interface LegPose { hip: [number, number, number]; knee: [number, number, number]; foot: [number, number, number]; yaw: number; up: number; yaw2: number; down: number; footYaw: number; lift: number; show: number; planted: [number, number] }
