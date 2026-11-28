@@ -363,6 +363,11 @@ export function makeFinishFx(): FinishFx {
     return m4.makeBasis(X, Yv, Zv).setPosition(x - 960, 540 - y, z)
   }
 
+  const backOf = (p: StandPose, eye: readonly [number, number, number]): boolean => {
+    const a = tilt(p)
+    return (eye[1] - (540 - p.y)) * -Math.sin(a) + (eye[2] - p.ground) * Math.cos(a) < 0
+  }
+
   const faceBeam = (m: THREE.Matrix4, b: { x: number; y: number; z: number; aim: number }, h: number, lens: { low: number; eye: readonly [number, number, number] }): void => {
     const c = Math.cos(b.aim)
     const s = Math.sin(b.aim)
@@ -386,6 +391,7 @@ export function makeFinishFx(): FinishFx {
     const k = fx.aura
     const big = p.scale ?? 1
     flames.visible = glow.visible = k > 0.01 || fx.crackle > 0.01
+    const side = fx.lens && backOf(p, fx.lens.eye) ? -1 : 1
     if (flames.visible) {
       flameMat.uniforms.uTime!.value = time
       glowMat.uniforms.uTime!.value = time
@@ -418,7 +424,7 @@ export function makeFinishFx(): FinishFx {
           continue
         }
         const tall = (96 + 34 * seed) * (0.8 + 0.3 * Math.sin(th)) * grow
-        flames.setMatrixAt(n, card(p, 2 + Math.cos(th) * 20, 26 + Math.sin(th) * 22, -3.5, 46 + 12 * seed, tall, -Math.cos(th) * 0.42))
+        flames.setMatrixAt(n, card(p, 2 + Math.cos(th) * 20, 26 + Math.sin(th) * 22, -3.5 * side, 46 + 12 * seed, tall, -Math.cos(th) * 0.42))
         d[n * 4] = seed + 0.61
         d[n * 4 + 1] = 0.5 * Math.min(1, k) * (1 - 0.6 * fx.burst) * (j < 5 ? 1 : 0)
         d[n * 4 + 2] = 0
@@ -451,7 +457,7 @@ export function makeFinishFx(): FinishFx {
         const bx = mixed(2 + Math.cos(th) * rx * 0.86, lx)
         const by = mixed(44 + Math.sin(th) * ry * 0.8, 0)
         const tall = mixed((44 + 38 * hash01(j, 2, SEED)) * (1.1 - 0.25 * Math.max(0, Math.sin(th))), ltall) * grow
-        flames.setMatrixAt(n, card(p, bx, by, -2.5, mixed(22 + 10 * seed, 18 + 8 * seed), tall, mixed(-Math.cos(th) * 0.5, (seed - 0.5) * 0.5)))
+        flames.setMatrixAt(n, card(p, bx, by, -2.5 * side, mixed(22 + 10 * seed, 18 + 8 * seed), tall, mixed(-Math.cos(th) * 0.5, (seed - 0.5) * 0.5)))
         d[n * 4] = seed
         d[n * 4 + 1] = Math.min(1, k) * (1 - 0.6 * fx.burst)
         d[n * 4 + 2] = mixed(0, (hash01(j, 6, SEED) - 0.5) * 0.7)

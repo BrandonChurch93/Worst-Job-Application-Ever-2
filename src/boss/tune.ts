@@ -295,6 +295,7 @@ export const CAMERA = {
   roundLive: 0.45,
   back: [0.2, 0.45] as const,
   rise: [0.5, 1.05] as const,
+  wide: 0.25,
   shake: 5,
   shakeDies: 0.22,
   open: 5,

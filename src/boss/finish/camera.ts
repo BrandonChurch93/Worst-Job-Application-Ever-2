@@ -67,6 +67,7 @@ export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; s
     rig = mixRig(rig, keyAt(CAMERA.blast), ease(f, CAMERA.back[0], CAMERA.back[1]))
     const up = ease(f, CAMERA.rise[0], CAMERA.rise[1])
     rig = mixRig(rig, ABOVE, up)
+    if (up > 0 && up < 1) rig = { ...rig, tall: rig.tall * (1 + CAMERA.wide * Math.sin(Math.PI * up)) }
     if (f > CAMERA.back[0]) {
       view = f < CAMERA.rise[0] ? 'blast' : up < 1 ? 'end' : 'above'
       const b = f - CAMERA.back[0]
