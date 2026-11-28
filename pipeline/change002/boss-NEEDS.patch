@@ -271,3 +271,88 @@ index 1c23d5b6..eeaaabf8 100644
      }
      // Small burnt shards torn off all through the blast: each is thrown down the beam, fans out as it goes, lands and stays, flat or half sunk. And soot on the ground and on the side of each large piece that faced the blast.
      if (p.shown && p.gone > 0) {
+diff --git a/src/arena/finish.ts b/src/arena/finish.ts
+index 00b4ac84..e5b89d97 100644
+--- a/src/arena/finish.ts
++++ b/src/arena/finish.ts
+@@ -26,6 +26,45 @@ export type BeamDriver = (view: BossView) => BeamLight | null
+ 
+ export interface Finish { object: THREE.Group; pose(view: BossView, light?: (e: Emitter) => void, beam?: BeamDriver): void; dispose(): void }
+ 
++// A wisp of smoke as it is drawn: its middle in page px (the lean of its height taken in), its height off the ground, its size, its turn and its strength.
++export interface Wisp { x: number; y: number; z: number; size: number; turn: number; thick: number }
++
++// Where no smoke is drawn in the last moment: the box of the figure that walks to the button, in px round the spot it stands on, and the px beyond it over which a wisp comes back to its whole strength.
++export const WISP_CLEAR = { x0: -110, y0: -180, x1: 120, y1: 80, soft: 90 }
++
++// How much of a wisp is left beside the figure: none where its picture reaches the figure's box, all of it `soft` px away.
++export function wispShare(w: { x: number; y: number; size: number }, fig: { x: number; y: number } | null): number {
++  if (!fig) return 1
++  const dx = Math.max(fig.x + WISP_CLEAR.x0 - w.x, 0, w.x - (fig.x + WISP_CLEAR.x1))
++  const dy = Math.max(fig.y + WISP_CLEAR.y0 - w.y, 0, w.y - (fig.y + WISP_CLEAR.y1))
++  const k = clamp01((Math.hypot(dx, dy) - w.size * 0.95) / WISP_CLEAR.soft)
++  return k * k * (3 - 2 * k)
++}
++
++// The wisps over a scorch at a time: thin columns that stand over the burn and the trench. `strong` is 0 to 1; `fig` is where the figure of the last moment stands, or null.
++export function wispsOf(s: Scorch, seed: number, t: number, strong: number, fig: { x: number; y: number } | null, each: (w: Wisp) => void): void {
++  const n = Math.floor(SCORCH.smoke / COLUMNS)
++  const w: Wisp = { x: 0, y: 0, z: 0, size: 0, turn: 0, thick: 0 }
++  for (let c = 0; c < COLUMNS; c++) {
++    const along = c < 2 ? s.at + (0.1 + 0.6 * rnd(seed, 460, c)) * SCORCH.burn : s.at * (0.2 + 0.2 * rnd(seed, 461, c))
++    const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 1.3 : SCORCH.half * 0.6)
++    const x = s.sx + s.ux * along - s.uy * across, y = s.sy + s.uy * along + s.ux * across
++    const period = 2.6 + 1.2 * rnd(seed, 463, c)
++    for (let j = 0; j < n; j++) {
++      const g = (((t / period + j / n + rnd(seed, 464, c)) % 1) + 1) % 1
++      // Thin smoke: the two over the burn stand a little taller than the wisps along the trench.
++      const big = c < 2 ? 1 : 0
++      w.size = 12 + (56 + 22 * big) * g
++      w.z = 8 + (230 + 70 * big) * g
++      w.x = x + 16 * g * Math.sin(t * 1.3 + c * 2.1 + g * 5) + ARENA.leanX * w.z
++      w.y = y - ARENA.lean * w.z
++      w.turn = UP + 0.5 * (rnd(seed, 465, c * 8 + j) - 0.5)
++      w.thick = (0.3 + 0.05 * big) * strong * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g) ** 1.2 * wispShare(w, fig)
++      each(w)
++    }
++  }
++}
++
+ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
+   const root = new THREE.Group()
+   root.name = 'arena-finish'
+@@ -159,28 +198,12 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
+     // Smoke: thin columns that stand over the burn and the trench once the black is there.
+     let nSmoke = 0
+     if (burnt && share > 0.35 && job) {
+-      const s = job.s
+-      const strong = clamp01((share - 0.35) / 0.4)
+-      const each = Math.floor(SCORCH.smoke / COLUMNS)
+-      for (let c = 0; c < COLUMNS; c++) {
+-        const along = c < 2 ? s.at + (0.1 + 0.6 * rnd(seed, 460, c)) * SCORCH.burn : s.at * (0.2 + 0.2 * rnd(seed, 461, c))
+-        const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 1.3 : SCORCH.half * 0.6)
+-        const x = s.sx + s.ux * along - s.uy * across, y = s.sy + s.uy * along + s.ux * across
+-        const period = 2.6 + 1.2 * rnd(seed, 463, c)
+-        for (let j = 0; j < each; j++) {
+-          const g = (((t / period + j / each + rnd(seed, 464, c)) % 1) + 1) % 1
+-          // Thin smoke: the two over the burn stand a little taller than the wisps along the trench.
+-          const big = c < 2 ? 1 : 0
+-          const thick = (0.3 + 0.05 * big) * strong * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g) ** 1.2
+-          const size = 12 + (56 + 22 * big) * g
+-          const z = 8 + (230 + 70 * big) * g
+-          const sway = 16 * g * Math.sin(t * 1.3 + c * 2.1 + g * 5)
+-          q.setFromAxisAngle(v.set(0, 0, 1), UP + 0.5 * (rnd(seed, 465, c * 8 + j) - 0.5))
+-          m4.compose(v.set(wx(x) + sway + leanX * z, wy(y) + lean * z, z), q, sc.set(size, size * 1.9, 1))
+-          smoke.setMatrixAt(nSmoke, m4)
+-          fade.setX(nSmoke++, thick)
+-        }
+-      }
++      wispsOf(job.s, seed, t, clamp01((share - 0.35) / 0.4), view.last ?? null, (w) => {
++        q.setFromAxisAngle(v.set(0, 0, 1), w.turn)
++        m4.compose(v.set(wx(w.x), wy(w.y), w.z), q, sc.set(w.size, w.size * 1.9, 1))
++        smoke.setMatrixAt(nSmoke, m4)
++        fade.setX(nSmoke++, w.thick)
++      })
+     }
+     smoke.count = nSmoke
+     smoke.visible = nSmoke > 0
