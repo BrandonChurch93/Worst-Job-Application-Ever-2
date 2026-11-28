@@ -1,6 +1,7 @@
 // The share of visits in which a visitor with a person's timing stops all three reels of the date of birth on their own date.
 // node pipeline/change002/step2-reels.mjs [visits] [speeds as a,b,c in legends a second]
 // The visitor knows the order of a reel, so sees its own legend coming. It sets off its press when the legend is REACT seconds from the middle of the window, and the press lands REACT seconds later, give or take SCATTER (one standard deviation, drawn from a seeded source).
+// The place of a STOP button on the page is taken from the page's own hint; when to press is the visitor's own.
 // A second visitor does not look ahead: it sets off when its own legend has become the nearest to the middle, and lands REACT seconds later, give or take SCATTER.
 import { logic } from '../../tools/lib/logic.mjs'
 
@@ -48,7 +49,7 @@ function visit(n, ahead) {
         if (r < 0) return { ...base, down: false }
         const len = SLOT.strips[r].length
         const pos = reelPos(st.slot, r)
-        const at = { x: SLOT.reelX(r) + SLOT.reelW / 2, y: SLOT.stopY + SLOT.stopH / 2 }
+        const at = { x: base.x, y: base.y }
         if (due[r] < 0) {
           const to = mod(st.slot.own[r] - pos, len) / SLOT.speed[r]
           const off = mod(pos - st.slot.own[r] + len / 2, len) - len / 2
