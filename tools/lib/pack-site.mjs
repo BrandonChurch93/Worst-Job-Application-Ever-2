@@ -1335,7 +1335,10 @@ export function motionPlan(cfg, run) {
       ? `In this run the arrow lies still to ${timeOf(m.back - 1)}, it moves from ${timeOf(t.first)} to ${timeOf(t.stand - 1)}, stands still from ${timeOf(t.stand)} to ${timeOf(t.handed - 1)} and moves again from ${timeOf(t.handed)}${comes}`
       : `In this run the arrow lies still to ${timeOf(m.back - 1)} and moves from ${timeOf(m.back)}${comes}`}. ${GIVES_WORDS}`
   }
-  if (have(m.flippers)) {
+  // The flippers stand under a heading only where the ball leaves the port under the visitor's hand. Where the machine page plays its scene as a film (change note 002 item 8)
+  // the visitor gets no flipper, the arrow stays sealed in the port and the rows hold no ball and no camera: no sheet is made, and the plan says so.
+  if (have(m.flippers) && !have(m.leaves)) leftOut.push('flippers: the machine page plays its scripted scene as a film, the visitor gets no flipper and the ball never leaves the port in the rows, so no sheet stands under that heading')
+  if (have(m.flippers) && have(m.leaves)) {
     // One run from the seal until the ball is out of the port, where two sheets hold it. Where the ball lies longer in the port than that,
     // the moment is two runs of one sheet each: the seal, and the ball leaving the port.
     const out = !have(m.left) ? null : m.left + PORT.tail

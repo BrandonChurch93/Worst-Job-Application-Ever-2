@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
-import { CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TAKES, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
+import { CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, HANDS, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TAKES, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
 import { FORM_BOTTOM, PAPER, SLOT, ZONE } from '../src/pages/step1/layout'
 import { BALL, MOUTH, PORT } from '../src/table/layout'
 import manifest from '../src/pages/step3/video/manifest.json'
@@ -62,20 +62,22 @@ const inFilm = (i: number) => {
 }
 
 describe('the motion pack of a recorded visit', () => {
-  it('holds every run whole, one set to a group within the limit, and leaves out only the blow of a bat the visitor does not have', () => {
+  it('holds every run whole, one set to a group within the limit, and leaves out only the flippers and the bat the visitor does not have', () => {
     expect(plan.limitTook).toEqual([])
     expect(plan.missing).toEqual([])
-    // Change note 002 item 8: the visitor has no flipper on the live machine page, so the plan names the one heading it cannot fill, and makes no sheet of a ball's drop, a bat's blow or a save.
-    expect(plan.leftOut.length).toBe(1)
-    expect(plan.leftOut[0]).toContain("flip: the run holds no step at which the visitor's own flipper meets the ball")
+    // Change note 002 item 8: the visitor has no flipper on the live machine page, so the plan names the two headings it cannot fill, and makes no sheet of the flippers given,
+    // of a ball's drop, of a bat's blow or of a save. The rows of the film hold no ball and no camera, so no sheet of the scene is made from them either.
+    expect(plan.leftOut.length).toBe(2)
+    expect(plan.leftOut[0]).toContain('flippers: the machine page plays its scripted scene as a film, the visitor gets no flipper')
+    expect(plan.leftOut[1]).toContain("flip: the run holds no step at which the visitor's own flipper meets the ball")
     expect([m.leaves, m.met, m.gate]).toEqual([null, null, null])
-    expect([...of('drop'), ...of('flip'), ...of('flip-close'), ...of('save')]).toEqual([])
+    expect(plan.items.filter((f) => HANDS.includes(f.moment))).toEqual([])
     expect(plan.items.length).toBe(rec.sheets)
     expect(plan.groups.flatMap((g) => g.items).length).toBe(rec.sheets)
-    // The groups and their moments are the point here, so they are named: the pages, the arrow on step 1, and the machine page up to the film.
-    expect(plan.groups.map((g) => [g.id, [...new Set(g.items.map((f) => f.moment))]])).toEqual([['pages', ['walk', 'turn', 'seat', 'hit']], ['arrow', ['type', 'taken', 'given-back']], ['machine', ['flippers']]])
+    // The groups and their moments are the point here, so they are named: the pages, and the arrow on step 1. The machine page has no group.
+    expect(plan.groups.map((g) => [g.id, [...new Set(g.items.map((f) => f.moment))]])).toEqual([['pages', ['walk', 'turn', 'seat', 'hit']], ['arrow', ['type', 'taken', 'given-back']]])
     const sets = (packPlan(cfg, { role: 'R4', round: 25, unit: SITE, facts: run as never }) as { sets: { set: string; groups: string[]; files: Sheet[] }[] }).sets
-    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual(plan.groups.map((g, k) => ['ABC'[k], g.id, g.items.length]))
+    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual(plan.groups.map((g, k) => ['AB'[k], g.id, g.items.length]))
     for (const s of sets) {
       expect(s.files.length).toBeLessThanOrEqual(most)
       // A run is never cut by the end of a set.
