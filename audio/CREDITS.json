@@ -2624,6 +2624,39 @@
       "cost": 17,
       "how": "reported by the response",
       "cap": "effects"
+    },
+    {
+      "n": 253,
+      "time": "2026-11-28T14:10:35Z",
+      "endpoint": "none: a statement before a spend",
+      "what": "Stated before the spend (change note 004 item 7): the shout, up to three takes",
+      "asked": "nothing, no call",
+      "answer": "The applicant's one line, the words I have five years of experience (his pick, change note 004), in the voice Jerry B. - Gruff and Gritty Commander (TxWZERZ5Hc6h9dGxVmXa), model eleven_v4, stability 0, speed 0.7: the recipe of the take he heard (round 2, A take 4). Up to three takes: take 1 of 84 characters is about 38 credits, take 2 of 92 characters about 41, a third at most 42; about 121 in all, under the cap of 150. The animation is built and measured (the camera reads the finish from the take's own phrase times, 74866ea1), and the take is laid inside the charge so that its third phrase lands on the fire. Chosen by his measures: low middle pitch, no gap inside, loudness rising to the end, the file not ending on a sounding voice; not the highest take.",
+      "cost": 0,
+      "how": "a statement costs nothing",
+      "cap": "shout"
+    },
+    {
+      "n": 254,
+      "time": "2026-11-28T14:10:50Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "The shout round 3 take 1, I have five years of experience, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 004 item 7)",
+      "asked": "84 characters, stability 0, speed 0.7, model eleven_v4",
+      "answer": "HTTP 200, 2.9 s",
+      "cost": 37,
+      "how": "reported by the response",
+      "cap": "shout"
+    },
+    {
+      "n": 255,
+      "time": "2026-11-28T14:10:53Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "The shout round 3 take 2, I have five years of experience with the first words drawn out, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 004 item 7)",
+      "asked": "92 characters, stability 0, speed 0.7, model eleven_v4",
+      "answer": "HTTP 200, 2.0 s",
+      "cost": 40,
+      "how": "reported by the response",
+      "cap": "shout"
     }
   ]
 }

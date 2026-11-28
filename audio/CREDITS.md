@@ -4,15 +4,15 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 4137 of 10000. Calls: 252.
+Running total: 4214 of 10000. Calls: 255.
 
-Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 540. No call is made that would pass it.
+Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 463. No call is made that would pass it.
 
 ## Caps
 
 - narration: 618 of 650 used, 32 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: "Recording: lines 1 to 9 may be recorded now. Caps, all inside the hard limit of 4,677, which does not change: narration 650 in all (one pass plus single lines done again), sound effects 700, the shout 150. That is 1,500 of the 1,511 left. State the cost in the ledger before each spend. At a cap, stop and mail Partner."
 - effects: 353 of 700 used, 347 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
-- shout: 0 of 150 used, 150 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
+- shout: 77 of 150 used, 73 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
 
 ## Rates
 
@@ -277,3 +277,6 @@ Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,
 | 250 | 2026-11-28T09:59:53Z | POST /v1/sound-generation | keys-break take 2, change notes 002 to 004, crack and body first | 0.6 s, influence 0.5 | HTTP 200, 1.8 s | 7 | reported by the response | 4107 |
 | 251 | 2026-11-28T09:59:55Z | POST /v1/sound-generation | button-burst take 2, change notes 002 to 004, crack and body first | 1.2 s, influence 0.5 | HTTP 200, 3.3 s | 13 | reported by the response | 4120 |
 | 252 | 2026-11-28T09:59:59Z | POST /v1/sound-generation | big-fire take 2, change notes 002 to 004, crack and body first | 1.5 s, influence 0.5 | HTTP 200, 2.3 s | 17 | reported by the response | 4137 |
+| 253 | 2026-11-28T14:10:35Z | none: a statement before a spend | Stated before the spend (change note 004 item 7): the shout, up to three takes | nothing, no call | The applicant's one line, the words I have five years of experience (his pick, change note 004), in the voice Jerry B. - Gruff and Gritty Commander (TxWZERZ5Hc6h9dGxVmXa), model eleven_v4, stability 0, speed 0.7: the recipe of the take he heard (round 2, A take 4). Up to three takes: take 1 of 84 characters is about 38 credits, take 2 of 92 characters about 41, a third at most 42; about 121 in all, under the cap of 150. The animation is built and measured (the camera reads the finish from the take's own phrase times, 74866ea1), and the take is laid inside the charge so that its third phrase lands on the fire. Chosen by his measures: low middle pitch, no gap inside, loudness rising to the end, the file not ending on a sounding voice; not the highest take. | 0 | a statement costs nothing | 4137 |
+| 254 | 2026-11-28T14:10:50Z | POST /v1/text-to-speech | The shout round 3 take 1, I have five years of experience, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 004 item 7) | 84 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 2.9 s | 37 | reported by the response | 4174 |
+| 255 | 2026-11-28T14:10:53Z | POST /v1/text-to-speech | The shout round 3 take 2, I have five years of experience with the first words drawn out, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 004 item 7) | 92 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 2.0 s | 40 | reported by the response | 4214 |
