@@ -6,8 +6,9 @@ import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/fini
 import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
-import { WORD, wordAt } from '../../boss/look1/pose'
-import { setView, viewOf } from '../../boss/viewof'
+import { finishState, POWER, type FinishInput } from '../../boss/finish/acting'
+import { buttonAt, WORD, wordAt } from '../../boss/look1/pose'
+import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
@@ -65,6 +66,7 @@ interface State {
   gainFrom: number
   gainT: number
   fig: { x: number; y: number } | null
+  fin: Record<'power' | 'arms' | 'charge' | 'fire' | 'walk' | 'kneel' | 'fist', number> & { walked: number; pace: number }
   dash: number
   close: number
   burn: { x: number; y: number } | null
@@ -105,7 +107,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0 }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -162,6 +164,8 @@ export function makePage(): PageLogic {
     const f = s.fig!
     const d = Math.hypot(to.x - f.x, to.y - f.y)
     const step = speed * dt
+    s.fin.pace = d > 0.01 ? 1 : 0
+    s.fin.walked += Math.min(d, step)
     if (d <= step) {
       f.x = to.x
       f.y = to.y
@@ -170,6 +174,33 @@ export function makePage(): PageLogic {
     f.x += ((to.x - f.x) / d) * step
     f.y += ((to.y - f.y) / d) * step
     return false
+  }
+  // The view's time at which a thing of the power-up or the finish began, kept for the figure that acts it.
+  const stamp = (k: 'power' | 'arms' | 'charge' | 'fire' | 'walk' | 'kneel' | 'fist'): void => {
+    if (s.fin[k] < 0) s.fin[k] = s.clock - LEAD
+  }
+  const mark = (v: number): number | undefined => (v < 0 ? undefined : v)
+  // What the standing arrow is told: the look's figure of the power-up and of the finish stands in the arrow's place for as long as it is up.
+  const figure = (): FinishInput | null => {
+    const v = view()
+    if (!LOOK1_ON || !v || (s.fin.power < 0 && s.fin.arms < 0)) return null
+    const m = s.fin
+    const b = buttonAt(v)
+    return {
+      time: v.time,
+      arrow: { x: s.cx, y: s.cy },
+      power: m.power < 0 ? null : { at: m.power, end: m.power + LINE7.part2 - LINE7.power - POWER.burst },
+      marks: { arms: mark(m.arms), charge: mark(m.charge), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
+      charge: s.charge < 0 ? 0 : level(s.charge),
+      shot: s.shot,
+      walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
+      button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
+      target: { x: v.boss.x, y: v.boss.y }
+    }
+  }
+  const stands = (): boolean => {
+    const i = figure()
+    return i !== null && finishState(i).up
   }
   const fist = (): [{ x: number; y: number; z: number }, { x: number; y: number; z: number }] | null => {
     const e = s.end
@@ -303,7 +334,11 @@ export function makePage(): PageLogic {
       const waited = e.t >= 0
       e.t += dt
       if (e.t < 0) return
-      if (!waited) io.emit('finish-walk', io.cursor.x, io.cursor.y, false)
+      if (!waited) {
+        io.emit('finish-walk', io.cursor.x, io.cursor.y, false)
+        s.fin.walked = 0
+        stamp('walk')
+      }
       const at = ground(io.pointer)
       if (!e.go) {
         const moved = Math.hypot(io.pointer.x - e.px, io.pointer.y - e.py) > 2
@@ -330,6 +365,7 @@ export function makePage(): PageLogic {
         e.phase = 'kneel'
         e.t = 0
         io.emit('finish-kneel', KNEEL.x, KNEEL.y, false)
+        stamp('kneel')
         io.cursor.aim(0)
       }
       return
@@ -339,12 +375,13 @@ export function makePage(): PageLogic {
       e.phase = 'fist'
       e.t = 0
       io.emit('finish-fist', KNEEL.x, KNEEL.y, false)
+      stamp('fist')
     } else if (e.phase === 'fist' && e.t >= LAST.fist) {
       e.phase = 'blow'
       e.t = 0
     } else if (e.phase === 'blow' && e.t >= LAST.blow) press()
     const hands = fist()
-    if (hands) io.cursor.setArms(true, hands)
+    if (hands && !LOOK1_ON) io.cursor.setArms(true, hands)
   }
 
   const page: PageLogic = {
@@ -471,6 +508,7 @@ export function makePage(): PageLogic {
           if (at(two + LINE7.power)) {
             s.gold = 0
             io.emit('power-up', io.cursor.x, io.cursor.y, false)
+            stamp('power')
             io.cursor.act('angry')
           }
           if (s.t >= two + LINE7.part2 - BIG.lock) {
@@ -548,9 +586,12 @@ export function makePage(): PageLogic {
         s.close = Math.min(1, s.close + dt / FINISH.fall)
         if (!s.end) walk({ x: LAST.stand[0], y: LAST.stand[1] }, s.dash, dt)
         lead(io)
-        if (u >= SHOUT.arms && u - dt < SHOUT.arms) io.emit('finish-arms', io.cursor.x, io.cursor.y, false)
+        if (u >= SHOUT.arms && u - dt < SHOUT.arms) {
+          io.emit('finish-arms', io.cursor.x, io.cursor.y, false)
+          stamp('arms')
+        }
         if (!s.end) aimAt(io, FALLEN)
-        if (s.fired < BLAST && armsOut()) io.cursor.setArms(true, finishHands(io.cursor, FALLEN, charged(), s.fired >= 0).hands)
+        if (s.fired < BLAST && armsOut() && !LOOK1_ON) io.cursor.setArms(true, finishHands(io.cursor, FALLEN, charged(), s.fired >= 0).hands)
         if (s.fired < 0 && u >= SHOUT.arms) {
           const down = io.pointer.down
           const whole = WHOLE
@@ -560,6 +601,7 @@ export function makePage(): PageLogic {
             s.fired = 0
             s.burn = { x: io.cursor.x, y: io.cursor.y }
             io.emit('finish-fire', io.cursor.x, io.cursor.y, false)
+            stamp('fire')
             const d = Math.hypot(FALLEN.x - io.cursor.x, FALLEN.y - io.cursor.y) || 1
             io.cursor.knock(((io.cursor.x - FALLEN.x) / d) * KICK.popup * s.shot, ((io.cursor.y - FALLEN.y) / d) * KICK.popup * s.shot)
           }
@@ -574,7 +616,10 @@ export function makePage(): PageLogic {
             if (!s.own && down) s.own = true
             else if (s.own ? !down || s.charge >= whole + FINISH.late : s.charge >= whole) fire()
           }
-          if (s.fired < 0 && s.charge >= 0 && steps(s.charge) > had) io.emit('finish-charge', io.cursor.x, io.cursor.y, false)
+          if (s.fired < 0 && s.charge >= 0 && steps(s.charge) > had) {
+            io.emit('finish-charge', io.cursor.x, io.cursor.y, false)
+            stamp('charge')
+          }
         } else if (s.fired >= 0) {
           const was = s.fired
           s.fired += dt
@@ -620,6 +665,7 @@ export function makePage(): PageLogic {
         }
       }
       io.cursor.setGround(groundAt(io.cursor.x, io.cursor.y))
+      if (LOOK1_ON) io.cursor.setOnPage(s.done || !stands())
     },
     save: () => JSON.parse(JSON.stringify(s)) as State,
     load(state) {
@@ -722,11 +768,13 @@ export function makePage(): PageLogic {
       const give = s.inSocket || s.stage !== 'press' ? 0 : sunk()
       if (rig && !look) drawRig(out, give === 0 ? rig : { ...rig, cap: { ...rig.cap, x: rig.cap.x + PRESS.shove[0] * give, y: rig.cap.y + PRESS.shove[1] * give, rot: rig.cap.rot + PRESS.rock * give } }, 'boss', s.inSocket ? (s.pressed >= 0 ? heights.keyTravel : 0) : PRESS.deep * give)
       setView(v)
+      setFinish(figure())
       if (look && v) {
         const whole = { x: 0, y: 0, w: 1920, h: SCREEN_H, z1: 0, tone: 'dark' as const }
         if (v.time >= GROUND.clearAt) out.push({ ...whole, id: 'arena-well', part: 'boss-arena', kind: 'well', z0: -GROUND.wellDepth })
         out.push({ ...whole, id: 'arena', part: 'boss-arena', kind: 'anchor', z0: 0 })
         out.push({ ...whole, id: 'boss-look', part: 'boss-look1', kind: 'anchor', z0: 0 })
+        out.push({ ...whole, id: 'finish-figure', part: 'boss-finish', kind: 'anchor', z0: 0 })
         for (let i = out.length - 1; i >= first; i--) if (out[i]!.id.startsWith('health-')) out.splice(i, 1)
         if (v.time >= GROUND.barLands) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
         const w = wordAt(v)
@@ -740,8 +788,8 @@ export function makePage(): PageLogic {
         if (f.at.flat >= 0 && f.mark) drawPancake(out, f.mark.x, f.mark.y, f.clock - f.at.flat)
       }
       const lit = LINE7.part2 - LINE7.power
-      if (s.gold >= 0 && s.gold < lit + GOLD_OUT && (s.stage === 'hold' || s.stage === 'fight')) drawPower(out, s.cx, s.cy, power() * (1 - prog(s.gold, lit, lit + GOLD_OUT)))
-      if (s.stage === 'finish') drawFinish(out, finishHands({ x: s.cx, y: s.cy }, FALLEN, charged(), s.fired >= 0).ball, FALLEN, charged(), s.fired >= 0 && s.fired < BLAST ? { power: s.shot, u: s.fired / BLAST } : null)
+      if (!look && s.gold >= 0 && s.gold < lit + GOLD_OUT && (s.stage === 'hold' || s.stage === 'fight')) drawPower(out, s.cx, s.cy, power() * (1 - prog(s.gold, lit, lit + GOLD_OUT)))
+      if (s.stage === 'finish' && !look) drawFinish(out, finishHands({ x: s.cx, y: s.cy }, FALLEN, charged(), s.fired >= 0).ball, FALLEN, charged(), s.fired >= 0 && s.fired < BLAST ? { power: s.shot, u: s.fired / BLAST } : null)
       if (s.stage === 'collapse' && s.from) {
         const sparks = [0, 1, 2, 3, 4, 5].map((i) => ({ n: 900 + i, x: s.from!.cap.x + [-120, 90, -30, 150, -160, 40][i]!, y: s.from!.cap.y + [-40, 50, 70, -60, 30, -80][i]!, t: s.t - i * 0.1 })).filter((k) => k.t >= 0 && k.t < SPARK_SECONDS)
         if (sparks.length) drawWeapons(out, { ...newFight(), sparks }, L.weapons)
@@ -758,7 +806,7 @@ export function makePage(): PageLogic {
     camera: () => null,
     script: (time: number): Pointer => film.pointer(time),
     chrome: () => ({ header: 1 - gone() }),
-    arms: () => armsOut(),
+    arms: () => !LOOK1_ON && armsOut(),
     led: () => s.fig !== null && !page.ignoring(),
     hint(): Hint | null {
       const blink = Math.floor(s.time * 6) % 2 === 0

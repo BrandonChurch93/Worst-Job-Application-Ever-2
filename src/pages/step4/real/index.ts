@@ -1,7 +1,8 @@
 import * as THREE from 'three'
 import { arenaPart, shake } from '../../../arena'
+import { beamLight, finishPart, finishState } from '../../../boss/finish/index'
 import { makeBoss, type BossLook } from '../../../boss/look1'
-import { viewNow } from '../../../boss/viewof'
+import { finishNow, viewNow } from '../../../boss/viewof'
 import type { PageReal, PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 import { verifyCard } from './verify-card'
@@ -50,4 +51,4 @@ const shaken = (inner: PartMaker): PartMaker => ({
   }
 })
 
-export const real: PageReal = { parts: { 'verify-card': verifyCard, 'health-bar': healthBar, 'boss-weapons': bossWeapons, 'boss-body': bossBody, 'boss-transform': bossTransform, 'boss-arena': shaken(arenaPart(viewNow)), 'boss-look1': shaken(bossLook) } }
+export const real: PageReal = { parts: { 'verify-card': verifyCard, 'health-bar': healthBar, 'boss-weapons': bossWeapons, 'boss-body': bossBody, 'boss-transform': bossTransform, 'boss-arena': shaken(arenaPart(viewNow, { beam: () => { const i = finishNow(); return i ? beamLight(finishState(i)) : null } })), 'boss-look1': shaken(bossLook), 'boss-finish': finishPart(finishNow) } }

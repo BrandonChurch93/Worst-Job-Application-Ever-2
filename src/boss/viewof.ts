@@ -1,3 +1,4 @@
+import type { FinishInput } from './finish/acting'
 import { smooth } from './body'
 import { blastLine, cornerAt, cursorCentre, muzzle, newFight, SPARK_SECONDS, weakSide, type Fight } from './fight'
 import { COLLAPSE_SECONDS, DART, FALLEN, HOME, SOCKET, UNFOLD } from './plan'
@@ -16,6 +17,11 @@ export const TRAVEL = [0.06, 0.34] as const
 let now: BossView | null = null
 export const viewNow = (): BossView | null => now
 export const setView = (v: BossView | null): void => { now = v }
+
+// What the page says to the standing arrow of the power-up and the finish at its last drawing, for the part that draws it and for the arena's beam.
+let figure: FinishInput | null = null
+export const finishNow = (): FinishInput | null => figure
+export const setFinish = (i: FinishInput | null): void => { figure = i }
 
 export function viewOf(i: ViewInput): BossView | null {
   if (i.clock < 0) return null
