@@ -1,7 +1,9 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { powerPlan } from '../src/boss/finish/acting'
 import { GUARD, LINE7, RAISE, RISE_LIGHT, SOLID } from '../src/boss/tune'
-import { setFinish, setView } from '../src/boss/viewof'
+import { HOME, UNFOLD } from '../src/boss/plan'
+import { ringAt, ringReaches } from '../src/boss/rise'
+import { LEAD, setFinish, setView, viewOf } from '../src/boss/viewof'
 import type { BossView } from '../src/boss/view'
 import { riseLight } from '../src/pages/step4/real/rise'
 
@@ -84,5 +86,17 @@ describe('the light of the power-up', () => {
     expect(Math.abs(when - (Math.hypot(960 - r.x, 548 - r.y) - GUARD.radius))).toBeLessThan(40)
     const after = at(BURST + RISE_LIGHT.ring.seconds + 0.01)
     expect(after === null || after.ring === null).toBe(true)
+  })
+
+  it('tells the look that the glass is struck when the ring is at the shield, and not before', () => {
+    const far = Math.hypot(HOME.x - AT.x, HOME.y - AT.y) - GUARD.radius
+    const pass = ringReaches(far)!
+    expect(ringAt(pass)).toBeCloseTo(far, 6)
+    expect(pass).toBeGreaterThan(0)
+    expect(pass).toBeLessThan(RISE_LIGHT.ring.seconds)
+    const ask = (time: number) => viewOf({ clock: time + LEAD, unfold: UNFOLD.end, fight: null, base: -1, fell: -1, pressed: false, arrow: AT, burst: { at: 20, x: AT.x, y: AT.y } })!
+    expect(ask(20 + pass - 0.01).boss.shield.glancedAt).toBeNull()
+    expect(ask(20 + pass + 0.01).boss.shield.glancedAt).toBeCloseTo(20 + pass, 6)
+    expect(viewOf({ clock: 25 + LEAD, unfold: UNFOLD.end, fight: null, base: -1, fell: -1, pressed: false, arrow: AT })!.boss.shield.glancedAt).toBeNull()
   })
 })

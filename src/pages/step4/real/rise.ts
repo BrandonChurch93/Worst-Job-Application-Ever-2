@@ -1,6 +1,7 @@
 // What the power-up's gold lights round the figure: the floor, the near pane, the shield and the boss's near side, and the ring that runs out at the burst.
 import * as THREE from 'three'
 import { finishState, powerPlan } from '../../../boss/finish/index'
+import { ringAt } from '../../../boss/rise'
 import { GUARD, RISE_LIGHT as L, SOLID } from '../../../boss/tune'
 import { finishNow, viewNow } from '../../../boss/viewof'
 import type { Emitter, PartMaker, RealContext } from '../../../real/types'
@@ -30,8 +31,8 @@ export function riseLight(): RiseLight | null {
   const x = s.pose.x
   const y = s.pose.y
   const since = i.time - pw.at - powerPlan(pw).end
-  const u = since / L.ring.seconds
-  const ring = u >= 0 && u < 1 ? { radius: L.ring.from + (L.ring.reach - L.ring.from) * (1 - (1 - u) ** 2), strength: L.ring.most * (1 - u) } : null
+  const radius = ringAt(since)
+  const ring = radius !== null ? { radius, strength: L.ring.most * (1 - since / L.ring.seconds) } : null
   const lamps: Emitter[] = []
   const colour: [number, number, number] = [L.colour[0], L.colour[1], L.colour[2]]
   const boss = viewNow()?.boss
