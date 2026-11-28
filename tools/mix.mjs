@@ -96,13 +96,17 @@ export async function filmPlanA(c, M) {
   return { plan: { source: `${b.source}, behind the opening from ${source}`, cutSha256: b.cutSha256 ?? null, fps: b.fps, seconds: frames / b.fps + b.seconds, events: [...events, ...M.mix.behindOpening(b.events, frames)], lines: M.mix.behindOpening(b.lines, frames), toneFromFrame: frames, openingFrames: frames, openingEvents: events.length } }
 }
 
+// The kept narrator takes as the script reads them: id, seconds and the words each was recorded from.
+export const keptTakes = (records) => records.filter((r) => r.kind !== 'cue').map((r) => ({ id: r.id, seconds: r.seconds, words: r.words }))
+
 export async function makeMix(P, c, M, out, name, given = null) {
   const plan = given ?? (await filmPlan(c, M))
   const { sounds, absent, stale } = keptSounds(P, M)
   refuseStale(stale, 'the mix')
   const result = M.mix.mixFilm({
     sampleRate: c.audio.sampleRate, fps: plan.fps, seconds: plan.seconds, events: plan.events, lines: plan.lines, sounds, sfx: c.audio.sfx,
-    duckDb: c.audio.duckDb, holdMusicSeconds: c.audio.holdMusicSeconds, targetLufs: c.audio.filmLoudnessLufs, truePeakDb: c.audio.truePeakDb, toneFromFrame: plan.toneFromFrame ?? 0
+    duckDb: c.audio.duckDb, holdMusicSeconds: c.audio.holdMusicSeconds, targetLufs: c.audio.filmLoudnessLufs, truePeakDb: c.audio.truePeakDb, toneFromFrame: plan.toneFromFrame ?? 0,
+    standIns: M.mix.scriptStandIns(keptTakes(keptRecords(P).filter((r) => sounds.has(r.id))))
   })
   const bytes = M.dsp.encodeWav(result.sound, M.levels.MIX.bitsPerSample)
   fs.mkdirSync(path.dirname(out), { recursive: true })
@@ -365,7 +369,7 @@ export async function soundChecks(a, P, c, M) {
     }
   }
 
-  const standIn = M.mix.scriptStandIns()
+  const standIn = M.mix.scriptStandIns(keptTakes(records))
   const oldTakes = records.filter((r) => r.kind !== 'cue' && (standIn.has(r.id) || !lineExists(r, c, M.cues)))
   const lineRecords = records.filter((r) => r.kind !== 'cue' && !oldTakes.includes(r))
   if (!lineRecords.length) add('A10', 'not yet', oldTakes.length ? `no take of the script is kept: its ${standIn.size} lines are silent stand-ins, and the ${oldTakes.length} kept takes are of lines that are gone or reworded and are played nowhere` : 'no narrator line is kept')

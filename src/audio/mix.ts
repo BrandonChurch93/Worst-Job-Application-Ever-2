@@ -5,7 +5,7 @@ export { openingEvents, type OpeningPlan } from './cues'
 import { dehum, master, repitch, type Mastered, type Sound } from './dsp'
 import { DUCK, LIVE, MIX, TONE, db } from './levels'
 import { duckAt, duckSpans } from './narrator'
-import { standIns } from './standin'
+import { standIns, type KeptLine } from './standin'
 
 // page: the page the event came from, when the list of events names it. A page-turn names the page it leaves.
 export interface FilmEvent { name: string; frame: number; x: number; page?: string }
@@ -26,13 +26,15 @@ export interface MixInput {
   targetLufs: number
   truePeakDb: number
   toneFromFrame?: number
-  // The lines that are silent stand-ins, by id, with their seconds. Left out, it is every line of the script: no take of it is kept yet.
+  // The lines that are silent stand-ins, by id, with their seconds. Left out, it is every line of the script with no take in the sound index recorded from its words.
   standIns?: Map<string, number>
 }
 
-// The lines of the script as silent stand-ins: id and seconds. A take kept under the id of one of them is not laid.
-export function scriptStandIns(): Map<string, number> {
-  return new Map([...standIns().values()].map((l) => [l.id, l.seconds]))
+// The lines of the script that are silent stand-ins: id and seconds. A take kept under the id of one of them is not laid.
+// takes: the kept takes with the words each was recorded from. A line whose take has the script's words is not a stand-in: its take is laid.
+export function scriptStandIns(takes?: KeptLine[]): Map<string, number> {
+  const all = takes ? standIns(undefined, undefined, undefined, undefined, takes) : standIns()
+  return new Map([...all.values()].filter((l) => !l.kept).map((l) => [l.id, l.seconds]))
 }
 
 // Film A is the opening and then film B unchanged: every event and line of film B moves back by the opening's frames.
