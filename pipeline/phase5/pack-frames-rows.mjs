@@ -1,9 +1,9 @@
 // node pipeline/phase5/pack-frames-rows.mjs RUN.json OUT.json: cuts from a run file written by pack-whole-walk.mjs what the tests of the close sheets hold:
-// the moments of the run, its hits and gags, every row the motion plan reads, the rows round every release on the page's keyboard,
+// the moments of the run, its hits and gags, every row the motion plan reads, the rows at the events of the scripted scene's sheet, the rows round every release on the page's keyboard,
 // and the rows of the scripted scene of the machine page: from the step before the site gives the flippers to the film's first frames, round every gag and every hit of that page, and round the scene's save.
 import fs from 'node:fs'
 import { config } from '../../tools/lib/paths.mjs'
-import { CLOSE, COL, DROP, KEYS, SAVE, VISITOR, keyBlock, momentsOf, motionPlan } from '../../tools/lib/pack-site.mjs'
+import { CLOSE, COL, DROP, KEYS, SAVE, SCENE as SHOWN, VISITOR, keyBlock, momentsOf, motionPlan } from '../../tools/lib/pack-site.mjs'
 
 const cfg = config()
 const run = momentsOf(cfg, JSON.parse(fs.readFileSync(process.argv[2], 'utf8')))
@@ -15,6 +15,8 @@ const rows = new Proxy(run.rows, {
   }
 })
 const plan = motionPlan(cfg, { ...run, rows })
+// The sheet of the machine page's scripted scene takes its steps from the scene's events: the row of each, and the one before it, are kept.
+for (const f of plan.items) if (f.moment === SHOWN.moment) for (const i of f.steps) for (const j of [i - 1, i]) read.add(j)
 // Every release of the mouse button over the key block of step 1, with the rows from the step before it to KEYS.rest steps after.
 const block = keyBlock(cfg)
 const s1 = run.pages.find((p) => p.page === 'step1')

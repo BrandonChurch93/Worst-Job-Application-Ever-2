@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { packPlan } from '../tools/lib/pack-plan.mjs'
 import { wrap } from '../tools/lib/pack-build.mjs'
-import { CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, HANDS, KEYS, MOVES, PAGE_HAS, SAVE, SEAT, SITE, STANDS, TAKEN, TAKES, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
+import { CLOSE, CLOSE_PX, COL, DROP, FIELD_WORDS, FULL_WORDS, GATE, GIVES, HANDS, KEYS, MOVES, PAGE_HAS, SAVE, SCENE as SHOWN, SEAT, SITE, STANDS, TAKEN, TAKES, TURNS, VISITOR, holdsBox, keyBlock, makeVisitor, motionPlan, seatWindows } from '../tools/lib/pack-site.mjs'
 import { FORM_BOTTOM, PAPER, SLOT, ZONE } from '../src/pages/step1/layout'
 import { BALL, MOUTH, PORT } from '../src/table/layout'
 import manifest from '../src/pages/step3/video/manifest.json'
@@ -66,7 +66,8 @@ describe('the motion pack of a recorded visit', () => {
     expect(plan.limitTook).toEqual([])
     expect(plan.missing).toEqual([])
     // Change note 002 item 8: the visitor has no flipper on the live machine page, so the plan names the two headings it cannot fill, and makes no sheet of the flippers given,
-    // of a ball's drop, of a bat's blow or of a save. The rows of the film hold no ball and no camera, so no sheet of the scene is made from them either.
+    // of a ball's drop, of a bat's blow or of a save: the rows of the film hold no ball and no camera, so no window is cut from them.
+    // The scene itself stands on one sheet of whole frames at its own events (ruled by the Builder at 06:06Z on 28 November), held by the last test of this file.
     expect(plan.leftOut.length).toBe(2)
     expect(plan.leftOut[0]).toContain('flippers: the machine page plays its scripted scene as a film, the visitor gets no flipper')
     expect(plan.leftOut[1]).toContain("flip: the run holds no step at which the visitor's own flipper meets the ball")
@@ -74,10 +75,20 @@ describe('the motion pack of a recorded visit', () => {
     expect(plan.items.filter((f) => HANDS.includes(f.moment))).toEqual([])
     expect(plan.items.length).toBe(rec.sheets)
     expect(plan.groups.flatMap((g) => g.items).length).toBe(rec.sheets)
-    // The groups and their moments are the point here, so they are named: the pages, and the arrow on step 1. The machine page has no group.
-    expect(plan.groups.map((g) => [g.id, [...new Set(g.items.map((f) => f.moment))]])).toEqual([['pages', ['walk', 'turn', 'seat', 'hit']], ['arrow', ['type', 'taken', 'given-back']]])
+    // The groups and their moments are the point here, so they are named: the pages, the arrow on step 1, and the machine page with its scripted scene and nothing else.
+    expect(plan.groups.map((g) => [g.id, [...new Set(g.items.map((f) => f.moment))]])).toEqual([['pages', ['walk', 'turn', 'seat', 'hit']], ['arrow', ['type', 'taken', 'given-back']], ['machine', [SHOWN.moment]]])
     const sets = (packPlan(cfg, { role: 'R4', round: 25, unit: SITE, facts: run as never }) as { sets: { set: string; groups: string[]; files: Sheet[] }[] }).sets
-    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual(plan.groups.map((g, k) => ['AB'[k], g.id, g.items.length]))
+    // A set holds whole groups in their order, and a group goes to the first set that has room for it whole: the one sheet of the machine page goes out with the pages.
+    const homes: [string, number][] = []
+    for (const g of plan.groups) {
+      const home = homes.find((h) => most - h[1] >= g.items.length)
+      if (home) {
+        home[0] += `+${g.id}`
+        home[1] += g.items.length
+      } else homes.push([g.id, g.items.length])
+    }
+    expect(sets.map((s) => [s.set, s.groups.join('+'), s.files.length])).toEqual(homes.map((h, k) => ['AB'[k], ...h]))
+    expect(homes.map((h) => h[0])).toEqual(['pages+machine', 'arrow'])
     for (const s of sets) {
       expect(s.files.length).toBeLessThanOrEqual(most)
       // A run is never cut by the end of a set.
@@ -91,7 +102,9 @@ describe('the motion pack of a recorded visit', () => {
   })
 
   it('says in every heading the stride, the scale, the count and the event its frames hold', () => {
-    for (const f of plan.items) {
+    // Every sheet of consecutive frames. The sheet of the scripted scene is frames at events, not consecutive, by the ruling of 06:06Z: its heading and its steps are held by the last test of this file.
+    expect(plan.items.filter((f) => f.moment === SHOWN.moment).length).toBe(1)
+    for (const f of plan.items.filter((g) => g.moment !== SHOWN.moment)) {
       const near = NEAR.includes(f.moment)
       expect(f.every).toBe(near ? 1 : 2)
       for (let i = 1; i < f.steps.length; i++) expect(f.steps[i]! - f.steps[i - 1]!).toBe(f.every)
@@ -381,5 +394,64 @@ describe('the motion pack of a recorded visit', () => {
     // the wire, its posts and the bat tips in a window at 100% are not held by this file on a live walk.
     expect(m.gate).toBe(null)
     expect(of('save')).toEqual([])
+  })
+
+  it('the scripted scene on one sheet of whole frames at its own events in order: the film\'s frames by the scene\'s manifest, and the visit\'s own picture where the arrow is the visitor\'s again', () => {
+    // Ruled by the Builder at 06:06Z on 28 November: the critic pack shows the film the machine page plays (change note 002 item 8) on one set of sheets of whole frames, no window,
+    // at the scene's own events in order. Which events is the ruling's own list, so the names are pinned; where each falls is found from the scene's manifest and the walk's gags, and no step is pinned.
+    expect(SHOWN.shows).toEqual(['tube-run', 'launch', 'strike', 'coffee', 'replyAll', 'fired', 'flipper-save', 'drain', 'hand-back'])
+    type Shown = Sheet & { page: string; film: (number | null)[]; labels: string[]; scene: { unit: string; tier: string; from: number; fps: number }; apart: number | null }
+    const sheets = of(SHOWN.moment) as Shown[]
+    expect(sheets.length).toBe(1)
+    const f = sheets[0]!
+    // Whole frames: the kind of the sheets of whole pictures, and no window, no close picture, no mark of a hand.
+    expect([f.kind, f.page, f.px, f.windows, f.percent, f.hands, f.part, f.every]).toEqual(['site-run-sheet', page, undefined, undefined, undefined, undefined, null, null])
+    expect(f.scene).toEqual({ unit: manifest.unit, tier: SHOWN.tier, from: manifest.from.frame, fps: manifest.fps })
+    // A frame of the film is counted from the film's first, and a step of the walk is a frame of the film: the walk and the film both go at 60 to the second.
+    expect(VISITOR.hz).toBe(manifest.fps)
+    const frameOf = (e: { at: number }) => Math.floor((e.at / manifest.stepHz) * manifest.fps)
+    const named = (name: string) => {
+      const e = events.find((x) => x.name === name)!
+      return { label: e.name, step: filmIn + frameOf(e), film: frameOf(e) as number | null }
+    }
+    const gagged = (name: string) => ({ label: SCENE.unit + name, step: gagAt(SCENE.unit + name), film: (gagAt(SCENE.unit + name) - filmIn) as number | null })
+    const strike = events.find((e) => new RegExp(`^strike:.+:${SCENE.hardest}$`).test(e.name))!
+    // The hand back: the first step from the film's last frame on at which the arrow has moved. It is a step of the visit and no frame of the film.
+    const over = filmIn + manifest.frames
+    let back = over
+    while (at(back)[0] === at(back - 1)[0] && at(back)[1] === at(back - 1)[1]) back += 1
+    const want = [
+      named(VIDEO.inEvent), gagged('launch'), { label: strike.name, step: filmIn + frameOf(strike), film: frameOf(strike) as number | null }, gagged('coffee'), gagged('replyAll'), gagged('fired'),
+      named(SAVE.names.find((n) => events.some((e) => e.name === n))!), named('drain'), { label: 'the arrow is the visitor\'s again', step: back, film: null as number | null }
+    ].sort((a, b) => a.step - b.step)
+    expect(SHOWN.grade).toBe(SCENE.hardest)
+    expect(f.steps).toEqual(want.map((w) => w.step))
+    expect(f.run).toEqual(f.steps)
+    expect(f.film).toEqual(want.map((w) => w.film))
+    expect(f.labels).toEqual(want.map((w) => w.label))
+    // In order, no two on one frame, and every frame of the film is a frame the film holds; the walk's rows at those steps are the film's (the arrow sealed, the view still) until the scene's own last pictures.
+    for (let i = 1; i < f.steps.length; i++) expect(f.steps[i]!).toBeGreaterThan(f.steps[i - 1]!)
+    const films = f.film.filter((n): n is number => n !== null)
+    for (const n of films) {
+      expect(n).toBeGreaterThanOrEqual(0)
+      expect(n).toBeLessThan(manifest.frames)
+    }
+    expect(films.length).toBe(f.film.length - 1)
+    f.steps.forEach((i, n) => {
+      if (f.film[n] !== null) inFilm(i)
+    })
+    // The hand back comes last, after the film, on the machine page, with the control not the flippers'; the arrow lay still through the film's last frames before it.
+    expect(f.film[f.film.length - 1]).toBe(null)
+    expect(back).toBeGreaterThanOrEqual(over)
+    expect([rows[back]![COL.page], num(back, COL.control)]).toEqual([page, 0])
+    expect(at(back - 1)).toEqual(at(over - 1))
+    // The heading says what the sheet is and where its pictures come from, and does not call them consecutive.
+    expect(f.heading.startsWith('The machine page plays its scripted scene as a film, ')).toBe(true)
+    expect(f.heading).toContain("whole frames at the scene's own events in order, not consecutive")
+    expect(f.heading).toContain(`Frames 1 to ${films.length} are frames of the film, drawn anew by the site's film path at the tier ${SHOWN.tier}`)
+    expect(f.heading).toContain("in the visit's own picture the page stands on the film's first frame while the film plays")
+    expect(f.heading).toContain(`Frame ${f.steps.length} is the visit's own picture at the step the arrow is the visitor's again`)
+    expect(f.heading).not.toContain('Consecutive')
+    expect(f.heading).toContain(`${time(filmIn)} to ${time(over)}`)
   })
 })

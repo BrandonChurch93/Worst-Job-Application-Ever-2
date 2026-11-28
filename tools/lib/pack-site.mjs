@@ -6,7 +6,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 import { at, readJson } from './paths.mjs'
-import { drawStill, ensureBuild, openSession, stillFrom } from './capture.mjs'
+import { drawStill, ensureBuild, openSession, renderJob, stillFrom } from './capture.mjs'
 import { launch } from './browser.mjs'
 import { serve } from './serve.mjs'
 import { controlBoxes, controlWindows, cut, grid, single, windowRound } from './pack-build.mjs'
@@ -454,6 +454,34 @@ export const HANDS = ['flippers', 'drop', 'flip', 'flip-close', 'save']
 export const PORTS = ['flippers', 'drop']
 // The moments of the arrow taken and given back: a group of their own when the sheets go out as more than one set.
 export const ARROW = ['type', 'taken', 'given-back']
+// The machine page's scripted scene (change note 002 item 8), on one sheet of whole frames at its own events in order. A name the scene's manifest holds is that event,
+// `strike` is the scene's first strike of the grade `grade`, any other name is the gag `gag` + name as the visit reaches it, and `back` is the step at which the arrow is the visitor's again.
+// A frame of the film is drawn by the site's film path at `tier`, as the page's video was: in the visit's own picture the page stands on the film's first frame while the film plays.
+export const SCENE = { moment: 'scene', data: 'src/pages/step3/video/manifest.json', tier: 'draft', grade: 3, gag: 'pinball.', strike: 'strike', back: 'hand-back', shows: ['tube-run', 'launch', 'strike', 'coffee', 'replyAll', 'fired', 'flipper-save', 'drain', 'hand-back'] }
+export const sceneOf = () => readJson(at(SCENE.data))
+// The scene's events as the visit has them, from `film`, the step at which the film takes the page: the step of each in the visit and its frame of the film, counted from the film's first.
+// The hand back is a step of the visit and no frame of the film: the first step after the film's last frame at which the arrow has moved. They come out in the order the visit has them.
+export function sceneMarks(run, scene, film) {
+  const rows = run.rows
+  const last = rows.length - 1
+  const per = VISITOR.hz / scene.fps
+  const end = film + scene.frames * per
+  const out = []
+  for (const name of SCENE.shows) {
+    if (name === SCENE.back) {
+      const still = (i) => rows[i][COL.heroX] === rows[i - 1][COL.heroX] && rows[i][COL.heroY] === rows[i - 1][COL.heroY]
+      let step = end
+      while (step < last && rows[step][COL.page] === rows[film][COL.page] && still(step)) step += 1
+      out.push({ name, label: 'the arrow is the visitor\'s again', step, frame: null })
+      continue
+    }
+    const e = scene.events.find((x) => (name === SCENE.strike ? x.name.startsWith(`${SCENE.strike}:`) && x.name.endsWith(`:${SCENE.grade}`) : x.name === name))
+    const g = e ? null : (run.gags || []).find((x) => x.gag === SCENE.gag + name && x.step >= film && x.step < end)
+    const frame = e ? Math.floor((e.at / scene.stepHz) * scene.fps) : g ? Math.floor((g.step - film) / per) : null
+    if (frame !== null) out.push({ name, label: e ? e.name : g.gag, step: film + frame * per, frame })
+  }
+  return out.filter((x) => x.step <= last).sort((x, y) => x.step - y.step)
+}
 // The blow of the visitor's bat once more, close: every step from `before` steps before the blow to `after` steps after it, in a fixed window at its real size
 // round where the ball is in the `round` steps before and after the blow.
 export const CLOSE = { before: 5, after: 6, round: 2 }
@@ -1337,8 +1365,9 @@ export function motionPlan(cfg, run) {
   }
   // Where the machine page plays its scene as a film (change note 002 item 8) the visitor gets no flipper: the site says the control is the flippers' only for the push into the port
   // and takes it back on the same page before a ball has left the port. The arrow stays sealed, the rows hold no ball and no camera: no sheet is made, and the plan says so.
-  let filmed = false
-  if (have(m.flippers) && !have(m.leaves)) for (let i = m.flippers + 1; i <= last && !filmed && rows[i][COL.page] === rows[m.flippers][COL.page]; i++) filmed = !rows[i][COL.control]
+  let film = null
+  if (have(m.flippers) && !have(m.leaves)) for (let i = m.flippers + 1; i <= last && film === null && rows[i][COL.page] === rows[m.flippers][COL.page]; i++) if (!rows[i][COL.control]) film = i
+  const filmed = film !== null
   if (filmed) leftOut.push('flippers: the machine page plays its scripted scene as a film, the visitor gets no flipper and the ball never leaves the port in the rows, so no sheet stands under that heading')
   if (have(m.flippers) && !filmed) {
     // One run from the seal until the ball is out of the port, where two sheets hold it. Where the ball lies longer in the port than that,
@@ -1443,14 +1472,24 @@ export function motionPlan(cfg, run) {
       items.push(item)
     }
   }
+  if (filmed) {
+    // The scripted scene of the machine page, whole frames at its own events in order: the film's frames, and the visit's own picture at the hand back.
+    const scene = sceneOf()
+    const marks = sceneMarks(run, scene, film)
+    const steps = marks.map((x) => x.step)
+    const films = marks.filter((x) => x.frame !== null).length
+    const heading = `The machine page plays its scripted scene as a film, ${timeOf(film)} to ${timeOf(film + (scene.frames * VISITOR.hz) / scene.fps)} of the visit: whole frames at the scene's own events in order, not consecutive, at ${whole}% of the page's size. Under a frame: its time in the visit and its event. Frames 1 to ${films} are frames of the film, drawn anew by the site's film path at the tier ${SCENE.tier} from the unit the page's video is cut from: in the visit's own picture the page stands on the film's first frame while the film plays, and the video's file is not among the site's sources here.${films < marks.length ? ` Frame ${marks.length} is the visit's own picture at the step the arrow is the visitor's again.` : ''}`
+    if (steps.length) items.push({ kind: 'site-run-sheet', moment: SCENE.moment, page: rows[film][COL.page], steps, run: steps, every: null, part: null, apart: null, film: marks.map((x) => x.frame), labels: marks.map((x) => x.label), scene: { unit: scene.unit, tier: SCENE.tier, from: scene.from.frame, fps: scene.fps }, heading })
+  }
   // In the order they happen, a run's sheets side by side.
   items.sort((x, y) => x.run[0] - y.run[0] || x.steps[0] - y.steps[0])
-  // One set while one message holds the sheets; else the pages in one group and the machine (the moments of HANDS) in another, each a whole of its own, cut only between runs.
+  // One set while one message holds the sheets; else the pages in one group and the machine (the moments of HANDS and the scripted scene) in another, each a whole of its own, cut only between runs.
   const pick = (id, test) => ({ id, items: items.filter(test) })
-  const machine = items.filter((f) => HANDS.includes(f.moment))
+  const onMachine = (f) => HANDS.includes(f.moment) || f.moment === SCENE.moment
+  const machine = items.filter(onMachine)
   const groups = items.length <= most
     ? [{ id: 'moments', items }]
-    : [pick('pages', (f) => !HANDS.includes(f.moment) && !ARROW.includes(f.moment)), pick('arrow', (f) => ARROW.includes(f.moment)), ...(machine.length <= most ? [{ id: 'machine', items: machine }] : [pick('port', (f) => PORTS.includes(f.moment)), pick('bats', (f) => HANDS.includes(f.moment) && !PORTS.includes(f.moment))])].filter((g) => g.items.length)
+    : [pick('pages', (f) => !onMachine(f) && !ARROW.includes(f.moment)), pick('arrow', (f) => ARROW.includes(f.moment)), ...(machine.length <= most ? [{ id: 'machine', items: machine }] : [pick('port', (f) => PORTS.includes(f.moment)), pick('bats', (f) => onMachine(f) && !PORTS.includes(f.moment))])].filter((g) => g.items.length)
   // A group larger than one message is cut between two runs, never inside one: a run's sheets stay side by side in one set.
   const uncut = (g) => {
     if (g.items.length <= most) return [g]
@@ -1627,16 +1666,46 @@ export async function buildSite({ cfg, session, files, built, about, log, cache,
   const run = needRun(facts, 'R4 or R5')
   const rf = cfg.formats[RUN.format]
   const near = (f) => !f.px
-  const planOf = (test) => (whole || files).filter((f) => (f.kind === 'site-run-sheet' || f.kind === 'site-hit-sheet') && test(f)).flatMap((f) => f.steps || [])
-  const frames = sheets.some(near) ? await replay(cfg, run, sheets.filter(near).flatMap((f) => f.steps), { plan: planOf(near), cache, log }) : new Map()
+  // A sheet of the scripted scene takes from the visit only the pictures that are no frame of the film.
+  const drawn = (f) => (f.film ? (f.steps || []).filter((_, n) => f.film[n] === null) : f.steps || [])
+  const planOf = (test) => (whole || files).filter((f) => (f.kind === 'site-run-sheet' || f.kind === 'site-hit-sheet') && test(f)).flatMap(drawn)
+  const frames = sheets.some(near) ? await replay(cfg, run, sheets.filter(near).flatMap(drawn), { plan: planOf(near), cache, log }) : new Map()
+  // The frames of the machine page's film, drawn by the site's film path as the page's video was: the film's frame of the unit, counted from the frame the video begins on.
+  const filmFrames = new Map()
+  for (const f of sheets.filter((x) => x.film)) {
+    let start = 0
+    for (const u of cfg.film.units) {
+      if (u.id === f.scene.unit) break
+      start += u.seconds
+    }
+    const base = Math.round(start * f.scene.fps) + f.scene.from
+    const keyOf = (i) => `${f.scene.tier}-${i}`
+    const fileOf = (i) => (cache ? path.join(cache, `site-scene-${rf.id}-${f.scene.tier}-${String(i).padStart(4, '0')}.png`) : null)
+    const want = f.film.filter((i) => i !== null)
+    for (const i of want) if (fileOf(i) && fs.existsSync(fileOf(i))) filmFrames.set(keyOf(i), fs.readFileSync(fileOf(i)))
+    if (want.every((i) => filmFrames.has(keyOf(i)))) continue
+    const shows = await openSession({ format: rf.id, assets: RUN.assets, mode: 'capture' })
+    try {
+      for (const i of want) {
+        if (filmFrames.has(keyOf(i))) continue
+        const png = await renderJob(shows, { kind: 'film', frame: base + i, tier: f.scene.tier })
+        filmFrames.set(keyOf(i), png)
+        if (fileOf(i)) fs.writeFileSync(fileOf(i), png)
+      }
+    } finally {
+      await shows.close()
+    }
+    log(`frames of the film of the machine page: ${want.length} at the tier ${f.scene.tier}`)
+  }
   // The close sheets' pictures: the same visit once more, drawn at CLOSE_PX device pixels to a pixel of the run's window, which is the page at its own size.
   const closeFrames = sheets.some((f) => f.px) ? await replay(cfg, run, sheets.filter((f) => f.px).flatMap((f) => f.steps), { plan: planOf((f) => f.px), cache, log, px: CLOSE_PX }) : new Map()
   const columns = 3
   const tileW = Math.floor((edge - GAP * (columns - 1)) / columns)
   for (const f of sheets.filter((x) => x.kind === 'site-run-sheet')) {
-    const tiles = f.steps.map((i, n) => ({ png: frames.get(i), label: f.hands && f.hands[n] ? `${timeOf(i)} ${f.hands[n]}` : timeOf(i) }))
+    const pictureOf = (i, n) => (f.film && f.film[n] !== null ? filmFrames.get(`${f.scene.tier}-${f.film[n]}`) : frames.get(i))
+    const tiles = f.steps.map((i, n) => ({ png: pictureOf(i, n), label: f.labels ? `${timeOf(i)} ${f.labels[n]}` : f.hands && f.hands[n] ? `${timeOf(i)} ${f.hands[n]}` : timeOf(i) }))
     built.set(f.name, await grid(tiles, f.heading, { edge, columns, tileW, tileH: Math.round((tileW * rf.height) / rf.width) }))
-    about.set(f.name, { moment: f.moment || null, page: f.page, steps: f.steps, run: f.run || f.steps, ...(f.hands ? { hands: f.hands } : {}), sha256: f.steps.map((i) => shaOf(frames.get(i))), format: rf.id, level: LEVEL, visitor: VISITOR })
+    about.set(f.name, { moment: f.moment || null, page: f.page, steps: f.steps, run: f.run || f.steps, ...(f.hands ? { hands: f.hands } : {}), ...(f.film ? { film: f.film, events: f.labels, scene: f.scene } : {}), sha256: f.steps.map((i, n) => shaOf(pictureOf(i, n))), format: rf.id, level: LEVEL, visitor: VISITOR })
     log(`${f.name}: ${f.moment ? `the moment ${f.moment}` : `the visit on ${f.page}`}`)
   }
   // A moment is a small thing in a whole picture: its sheet is the part of the picture round the arrow, uncut and unscaled, in one fixed window.
