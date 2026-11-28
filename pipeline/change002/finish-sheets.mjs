@@ -31,6 +31,14 @@ async function picture(file, text) {
   return [await sharp(label(text)).png().toBuffer(), await sharp(file).resize(W).png().toBuffer()]
 }
 
+async function pair(left, right, text) {
+  const w = (W - GAP) / 2
+  const a = await sharp(left).resize(w, Math.round((w * 9) / 16), { fit: 'cover' }).png().toBuffer()
+  const b = await sharp(right).resize(w, Math.round((w * 9) / 16), { fit: 'cover' }).png().toBuffer()
+  const body = await sharp({ create: { width: W, height: Math.round((w * 9) / 16), channels: 3, background: '#0b0b0c' } }).composite([{ input: a, left: 0, top: 0 }, { input: b, left: w + GAP, top: 0 }]).png().toBuffer()
+  return [await sharp(label(text)).png().toBuffer(), body]
+}
+
 async function stack(name, parts) {
   const flat = parts.flat()
   const hs = []
@@ -45,7 +53,7 @@ async function stack(name, parts) {
   console.log(name, m.width, m.height)
 }
 
-const KNEEL = { left: 810, top: 360, width: 480, height: 420 }
+const KNEEL = { left: 615, top: 360, width: 510, height: 435 }
 const JOBS = {
   'report-rise': async () => stack('report-rise', [await picture(path.join(refs, 'finish-poses.png'), 'approved: finish-poses.png'), await picture(path.join(proof, 'rise-40-60.png'), 'top row rise 40 degrees, bottom row 60 degrees: film size, three times, the fire pose at three times; camera straight down')]),
   'report-poses': async () => stack('report-poses', [await picture(path.join(proof, 'poses.png'), 'approved pose sheet above; below, the three poses seen at a right angle to the figure'), await picture(path.join(proof, 'poses-above.png'), 'the same three as the film sees them, straight down, at six times')]),
@@ -57,7 +65,11 @@ const JOBS = {
     await rows('fist', 'fist: from 2 frames before the fist mark, every frame for twelve, then every second', KNEEL, 9),
     await rows('blow', 'blow: from 12 frames before the press, every frame for twelve, then every second', KNEEL, 9)
   ]),
-  'report-stills': async () => stack('report-stills', [await picture(path.join(shots, 'charge.png'), 'charge (approved: finish-charge.png)'), await picture(path.join(shots, 'blast.png'), 'blast (approved: finish-blast.png)'), await picture(path.join(shots, 'after.png'), 'after the beam, first step (approved: finish-button-left.png)')]),
+  'report-stills': async () => stack('report-stills', [
+    await pair(path.join(refs, 'finish-charge.png'), path.join(shots, 'charge.png'), 'approved finish-charge.png | the charge, 1920 by 1080, twice the film size'),
+    await pair(path.join(refs, 'finish-blast.png'), path.join(shots, 'blast.png'), 'approved finish-blast.png | the blast'),
+    await pair(path.join(refs, 'finish-button-left.png'), path.join(shots, 'after.png'), 'approved finish-button-left.png | after the beam, on the first step')
+  ]),
   'report-getup': async () => stack('report-getup', [
     await rows('getup', 'getting up under the charge: from 1 frame before the arms mark', { left: 750, top: 366, width: 420, height: 420 }, 12),
     await rows('fire', 'fire: from 2 frames before the fire mark', { left: 450, top: 396, width: 900, height: 360 }, 6),

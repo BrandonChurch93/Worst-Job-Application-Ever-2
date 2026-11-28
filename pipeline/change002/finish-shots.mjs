@@ -167,7 +167,9 @@ async function main() {
   const failed = await page.evaluate(() => window.finishHarness.ready.then(() => null, (e) => String(e && e.stack ? e.stack : e)))
   if (failed) throw new Error(failed)
   const b = await page.evaluate(([boss, arrow]) => window.finishHarness.button(boss, arrow), [BOSS, ARROW])
-  BUTTON = { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top }
+  // The look's button as it lies at the end: 226 by 61 page px (STATED by the look helper; `buttonAt(view)` is not on this branch yet).
+  BUTTON = { x: b.x, y: b.y, w: 226, h: 61, top: b.top }
+  b.kneel = { x: BUTTON.x - BUTTON.w / 2 - 31, y: BUTTON.y + 6 }
   const start = await page.evaluate((a) => window.finishHarness.draw(a).then(() => null), { ...finish(M.walk - 0.01), samples: 1 })
   void start
   const feet = { x: ARROW.x + 17.3 - 38, y: ARROW.y + 91.8 }
