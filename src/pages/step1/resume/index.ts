@@ -39,8 +39,8 @@ const HEAP = { y: 20, spread: 34 }
 const TIDY = 0.3
 // The live takeover: the seconds the hands travel to the bitten paper before they close on it, then the seconds over which the taut arms haul the arrow in to arm's length, and the most the held paper leans from upright, in radians, wherever the arrow stands. On the step the hands close the paper swings to the arrow and a little past (`swing`: how fast it dies and how fast it turns, a second), and the arrow is drawn long (`long`) for `jolt` seconds and thrown toward the paper at `kick` px a second. Until that step the live sheet lies as the bite left it, and from it the sheet takes its held look over `crease` seconds, in the film too, where the sheet is at the hands' place from the first frame and shows `bare` of that look until then.
 const TAKE = { reach: 0.075, haul: 0.15, lean: 0.6, swing: { dies: 20, turns: 30 }, long: 1.2, jolt: 0.05, kick: 240, crease: 0.05, bare: 0.001 }
-// The way in on the taut arms, live: the arrow comes in from where it stood when the hands closed to where the arms' pull and the hand's meet, over `TAKE.haul` seconds, at `first` times the even pace on the first step down to `last` times on the last. Each step the page gives it the pace it is short of and `near` a second of the distance it is behind; a slack under `least` px is left to the spring.
-const WAY = { first: 1.6, last: 0.4, near: 120, least: 8 }
+// The way in on the taut arms, live: the arrow comes in from where it stood when the hands closed to where the arms' pull and the hand's meet, over `TAKE.haul` seconds, at `first` times the even pace on the first step, falling off as the `bow`th power of the way through, so that the first frames are the fastest and the last come to a stop (with `bow` 1 the pace falls evenly, to 2 less `first`). Each step the page gives it the pace it is short of and `near` a second of the distance it is behind; a slack under `least` px is left to the spring.
+const WAY = { first: 1.55, bow: 1.5, near: 120, least: 8 }
 // The stop at arm's length, live: what is left of the pace is taken out on one step and the arrow thrown `back` px a second the other way; for `still` seconds the page takes `grip` of the arrow's pace out of it each step, less and less, so it stands before the hand has it on the arms again; its length is pressed from `from` to `low` over `dip` seconds and the body's spring takes it up again.
 const STOP = { back: 220, still: 0.1, grip: 0.7, from: 1.24, low: 1.07, dip: 0.034 }
 // The live arrow's answer to a strain of the paper. On its first step the hands on the paper are jerked `jerk` px toward the slot, so the arms tighten; from the next step the body is asked to lean back from the slot, the asking rising to `lean` radians over `rise` seconds and let go over `back`, the hands coming back as it rises. No answer begins sooner than `rest` seconds after the hands close on the paper, which leaves the arrow 12 steps after its arrival before the first one. Its size is `least` of the whole at the tug's start and grows to the whole with the tug's age over `long` seconds or the paper eaten up to `whole`, whichever is further on; `side` is how far to one side of the shoulder, in px, the hands must be for the whole lean.
@@ -448,8 +448,8 @@ export function makeResume(host: ResumeHost): ResumeStage {
       const rest = hold + t.reach
       const asked = Math.hypot(io.pointer.x + TUG.shoulder.x - SLOT.cx, io.pointer.y + TUG.shoulder.y - SLOT.cy)
       const whole = Math.max(0, t.from - Math.min(asked, (TUG.stiff * rest + HAND.stiff * asked) / (TUG.stiff + HAND.stiff)))
-      const behind = far - (t.from - whole * (WAY.first * u - ((WAY.first - WAY.last) * u * u) / 2))
-      const a = Math.max(0, (whole / TAKE.haul) * lerp(WAY.first, WAY.last, u) + WAY.near * behind - coming)
+      const behind = far - (t.from - whole * (WAY.first * u - (WAY.first - 1) * u ** (WAY.bow + 1)))
+      const a = Math.max(0, (whole / TAKE.haul) * (WAY.first - (WAY.first - 1) * (WAY.bow + 1) * u ** WAY.bow) + WAY.near * behind - coming)
       io.cursor.knock((-tx / td) * a, (-ty / td) * a, 0)
     } else if (led && t.into < 0) {
       const a = Math.max(0, coming) + STOP.back
