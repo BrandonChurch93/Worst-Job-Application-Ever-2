@@ -26,21 +26,22 @@ The Builder's memory. Read it at the start of every task and after every compact
 
 The pictures of the newest status, with their captions and the time. Files are in `out/stills/status/`.
 
-Status 199, 2026-11-28T08:16Z, Phase 5.
+Status 200, 2026-11-28T08:42Z, Phase 5.
 
-1. `out/stills/status/01-the-narrator-lines-as-kept-and-without-the-pause.jpg`: One chart, 1500 by 760. A heading of two lines says the grey bars are the takes as kept today, 116.1 s of speech in all, the orange bars the same lines without the pauses, 53.6 s, and that the orange numbers are provisional. Twelve rows, one for each piece of narration in the film's order, each with its seconds at the ends of the two bars: 19.5 and 7.8; 9.2 and 4.5; 13.4 and 5.9; 6.3 and 2.9; 1.6 and 1.1; 8.9 and 4.0; 8.5 and 4.3; 23.3 and 11.3; 5.6 and 2.5; 4.0 and 1.9; 12.7 and 6.0; 3.2 and 1.3. A column at the right says what the film page does with each: the careers page, step 1 and the pinball do not change, step 2's Continue waits about 0.9 s less, the boss is timed again after the camera pass with the power-up keeping its 3.95 s, and Decision is being timed again now.
-2. `out/stills/status/02-the-film-part-by-part-with-the-estimate-correcte.jpg`: One chart, 1600 by 560, three rows of six coloured blocks for the careers page, step 1, step 2, the pinball, the boss and Decision. The plan in the config: 14, 32, 21, 42, 32 and 12, 153 s. The rough cut, Preview 14: 19, 35.4, 24.9, 42, 71.8 and 21.7, 214.8 s. Timed to the lines without pauses: 19, 35.4, 24, 42, 54.4 and 13.6, 188.4 s, an estimate. A red dashed line marks the ceiling of 165 s at 2:45.
-3. `out/stills/status/03-the-ball-drains-under-the-flippers-film-frames-1.jpg`: Four crops, 970 by 850 in all, film frames 1805 and 1806 above and 1807 and 1808 below. In each: the lower pinball table from above, two orange flippers, red, yellow and white round lamps, a small display, the plate Unemployment Office and the clear ball with the arrow in the gap under the flippers. In the lower two the ball is lower, on the plate's upper edge, and the three lamps are a little duller.
+1. `out/stills/status/01-the-close-view-that-faces-the-arrow-as-it-charge.jpg`: Twenty film frames, 11011 to 11030, four in a row, 1200 by 950 in all. In each: a low view that faces the white arrow, which stands a little left of the middle with its point up; two large dark hands with spread fingers are held forward round a white-blue ball at its chest, and pale blue rays fan out from the ball; a ring of orange flame tongues stands behind it; dark feet; the pale arena floor with orange cracks at the foot of the frame; a mint green block behind at the right; the fallen boss, dark with orange parts, low at the right; dark pillars against a near black backdrop. From frame to frame the lens slides to the figure's right and nearer and the hands and the ball grow.
+2. `out/stills/status/02-the-blast-seen-from-behind-the-arrow-twenty-film.jpg`: Twenty film frames, 11067 to 11105, every second one, four in a row, 1200 by 950 in all. One steady view from behind and to the side: the arrow from its back, a whole pale blue-white shape pointing up, a little right of the middle; a tall white pillar straight behind its right side with its top cut by the frame; orange flame tongues between the two; one black leg to the lower right; a white-blue ball at the arrow's left side; the boss low at the left with grey arms and the orange button; a mint block at the far left; a near black backdrop. The first seven tiles have no beam; the eighth a thin white streak to the left; from the ninth a white band with blue streaks fills the left half of the frame, with the orange button small inside it.
+3. `out/stills/status/03-the-view-from-above-as-the-blast-takes-the-boss-.jpg`: Twenty-four film frames from 11147 to 11277, four in a row, 1088 by 1050 in all. From above: a blue-white beam runs from the small white arrow, which stands in a burnt ring, to the orange Submit button; in the first two rows the picture is turned so that the beam runs up the frame, in the third it turns, and in the last three the page lies as on the site with the arrow at the left and the beam fanning to the right. Orange cracks cross the pale floor; long dark slots with cracks, grey blocks and mint shards stand at the edges. Small grey bits and dust lie beside and over the beam; two grey plates leave upward in the fifth row; in the last tiles the button stands alone under a small puff of smoke. Two tiles of the second row show a dark triangle at the lower right corner.
+4. `out/stills/status/04-the-shout-on-screen-over-the-new-camera-views-in.jpg`: A sheet of two columns and five rows, 792 by 1124, each cell a film frame at 392 by 220: frames 10852, 10960, 11090, 11131 and 11175. The left column has the caption panel in the top band, the right column the same panel at the foot. Row one, from above at a slant with the words I HAVE: the panel on bare floor at the top, and between the arrow's feet and a grey block at the foot. Row two, the low facing view with I HAVE FIVE YEARS: the panel in the dark sky over the flames, and across the fingers and a foot. Row three, from behind after the fire with the whole line: the panel across the top over the streaks of the beam, and across the floor and the leg. Rows four and five, the rise and the view from above: the panel at the top lies on the Submit button, and at the foot on the arrow.
 
 ## Clock
 
 Copied from the last tick of `npm run clock`.
 
 ```
-clock: phase 5, tick 372 at 2026-11-28T08:16:36Z, allowance: continuation 4
-time used in this phase: 2.26 h of its box of 12.00 h, of which 2.00 h is the reserve
-time used under the allowance in force: 2.26 h of 12.00 h allowed
-time used: 74.39 of 84.00 hours before the review
+clock: phase 5, tick 373 at 2026-11-28T08:42:04Z, allowance: continuation 4
+time used in this phase: 2.68 h of its box of 12.00 h, of which 2.00 h is the reserve
+time used under the allowance in force: 2.68 h of 12.00 h allowed
+time used: 74.82 of 84.00 hours before the review
 extra rounds: yes
 half point: reached
 box end: reached
