@@ -39,6 +39,8 @@ export const STAYS_ON: readonly string[] = ['marketing']
 // After such a page the arrow is brought from where it lay on the screen when its slab stood edge on to the hand over place, over the first `frames` frames of 60 of the arriving half, eased out, its height likewise. `clear` is the least it keeps over the face of the arriving slab.
 export const BROUGHT = { frames: 10, clear: 6 }
 const broughtSteps = Math.round((BROUGHT.frames * stepHz) / 60)
+// The film's lift is over by the last frame of 60 drawn of the leaving half, one frame before the half is out.
+const liftSteps = turnSteps - Math.round(stepHz / 60)
 
 interface Saved {
   step: number
@@ -338,7 +340,7 @@ export class Stage {
         this.phase = 'leave'
         this.phaseStep = 0
         const y = this.page.scroll() + HANDOFF.y
-        if (!this.staysOn()) this.cursor.lift(HANDOFF.x, y)
+        if (!this.staysOn()) this.cursor.lift(HANDOFF.x, y, this.o.mode === 'film' ? liftSteps : undefined)
         emit('page-turn', HANDOFF.x, y)
       }
       return
