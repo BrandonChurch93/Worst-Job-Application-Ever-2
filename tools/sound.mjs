@@ -410,6 +410,47 @@ export function refuseStale(stale, what) {
   throw new Error(`${what} is refused: ${stale.length} of the files in audio/kept ${stale.length === 1 ? 'is' : 'are'} not the ${stale.length === 1 ? 'file its record names' : 'files their records name'} (sha256 differs): ${stale.join(', ')}. The wav files are not in the repo. Copy them from the tree that kept them, or keep the sounds again`)
 }
 
+// The kept narrator lines whose words the script no longer has: the beat or the live key is gone, its place holds no line,
+// or other words stand there now.
+export function goneLines(P) {
+  const n = narration()
+  return keptRecords(P).filter((r) => r.kind !== 'cue').map((r) => {
+    const list = r.liveKey ? n.liveOnly[r.liveKey] : n.film[r.beat]
+    const entry = Array.isArray(list) ? list[r.index] : undefined
+    const text = entry === undefined ? null : typeof entry === 'string' ? entry : entry.text
+    return text === r.words ? null : { id: r.id, was: r.words, now: text }
+  }).filter(Boolean)
+}
+
+// Retires them. The record and its wav move from audio/kept to audio/retired, so the pack ships nothing the site will never play,
+// and the take in the ledger is no longer kept and says when and why. Nothing is deleted: the take files stay where they were filed.
+// Without --do it only lists them.
+export function retireLines(a, P, c) {
+  const gone = goneLines(P)
+  if (!gone.length) return console.log('retire: every kept narrator line still has its words in the script')
+  for (const g of gone) console.log(`${a.do ? 'retired' : 'would retire'}: ${g.id}. Kept words: "${g.was}". The script now: ${g.now === null ? 'no line at this place' : `"${g.now}"`}`)
+  if (!a.do) return console.log(`retire: ${gone.length} kept narrator lines are not in the script. Say --do to retire them`)
+  const retired = path.join(P.audio, 'retired')
+  fs.mkdirSync(retired, { recursive: true })
+  const ledger = readLedger(P)
+  const when = new Date().toISOString()
+  for (const g of gone) {
+    for (const ext of ['json', 'wav']) {
+      const from = path.join(P.kept, `${g.id}.${ext}`)
+      if (fs.existsSync(from)) fs.renameSync(from, path.join(retired, `${g.id}.${ext}`))
+    }
+    for (const t of ledger.takes) {
+      if (!(t.keptAs ?? []).includes(g.id)) continue
+      t.keptAs = t.keptAs.filter((id) => id !== g.id)
+      t.kept = t.keptAs.length > 0
+      t.retired = [...(t.retired ?? []), { id: g.id, when, why: g.now === null ? 'the script has no line at this place any more' : 'the script has other words at this place' }]
+    }
+  }
+  saveLedger(P, ledger, c)
+  writeAssetRows(P)
+  console.log(`retire: ${gone.length} kept narrator lines moved to ${rel(retired)}. Pack again: npm run sound -- --pack`)
+}
+
 // One row for each sound file under public/audio, so that every file the site ships is named.
 function shippedRows(P, head) {
   const file = path.join(P.pub, 'index.json')
@@ -1234,7 +1275,8 @@ async function main() {
       } finally {
         await site.close()
       }
-    } else if (a.pack) pack(P, c, M)
+    } else if (a['retire-lines']) retireLines(a, P, c)
+    else if (a.pack) pack(P, c, M)
     else if (a.sheet) {
       const out = a.out && a.out !== true ? path.resolve(a.out) : at('out', 'work', 'audio', P.scratch ? 'sheet-fixtures.png' : 'sheet.png')
       const s = await sheet(P, c, M, out)

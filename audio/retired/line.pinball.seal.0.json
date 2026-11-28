@@ -1,0 +1,205 @@
+{
+  "id": "line.pinball.seal.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "pinball.seal",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "The skills assessment. / No skills / will be assessed.",
+  "text": "The skills assessment. / No skills / will be assessed.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "The skills assessment. <break time=\"1.0s\" /> No skills <break time=\"1.0s\" /> will be assessed.",
+    "call": 21
+  },
+  "askedSeconds": null,
+  "cost": "32",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "1558888fdd4d0e910f28f10db0f2a3ec4c3c910e6cb2a82bc1854549fe092f8e",
+    "filed": "2026-11-25T18:05:47.066Z",
+    "measured": {
+      "seconds": 6.92,
+      "start": 0.042,
+      "end": 6.74,
+      "peakDb": -4.3,
+      "rmsDb": -21.46,
+      "lufs": -18.78,
+      "truePeakDb": -4.26,
+      "low": 0.329,
+      "mid": 0.311,
+      "high": 0.361,
+      "tailDb": -19.23,
+      "hits": 6,
+      "hitsAt": [
+        {
+          "start": 0.046,
+          "end": 0.362,
+          "peakDb": -4.3
+        },
+        {
+          "start": 0.436,
+          "end": 1.796,
+          "peakDb": -4.56
+        },
+        {
+          "start": 2.912,
+          "end": 3.44,
+          "peakDb": -5.53
+        },
+        {
+          "start": 3.512,
+          "end": 4.18,
+          "peakDb": -9.76
+        },
+        {
+          "start": 5.324,
+          "end": 6.552,
+          "peakDb": -4.57
+        },
+        {
+          "start": 6.622,
+          "end": 6.704,
+          "peakDb": -16.24
+        }
+      ]
+    },
+    "line": {
+      "words": 8,
+      "seconds": 6.698,
+      "wordsPerSecond": 1.194,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.104,
+        1.138
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 7.5,
+      "fits": true,
+      "beatSeconds": 4
+    }
+  },
+  "chain": {
+    "trimStart": 0.044,
+    "trimEnd": 6.74,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 0.6,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 6.696,
+    "start": 0,
+    "end": 6.67,
+    "peakDb": -3.72,
+    "rmsDb": -21,
+    "lufs": -18,
+    "truePeakDb": -3.67,
+    "low": 0.309,
+    "mid": 0.318,
+    "high": 0.373,
+    "tailDb": -18.83,
+    "hits": 6,
+    "hitsAt": [
+      {
+        "start": 0.002,
+        "end": 0.318,
+        "peakDb": -3.72
+      },
+      {
+        "start": 0.392,
+        "end": 1.752,
+        "peakDb": -4.33
+      },
+      {
+        "start": 2.872,
+        "end": 3.396,
+        "peakDb": -4.9
+      },
+      {
+        "start": 3.468,
+        "end": 4.136,
+        "peakDb": -9.11
+      },
+      {
+        "start": 5.282,
+        "end": 6.508,
+        "peakDb": -4
+      },
+      {
+        "start": 6.578,
+        "end": 6.646,
+        "peakDb": -17.63
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+    "asks": 8,
+    "whole": 1,
+    "transcript": "The skills assessment. No skills will be assessed.",
+    "transcripts": [
+      "The skills assessment. No skills will be assessed.",
+      "The skills assessment. No skills will be assessed.",
+      "The skills assessment. No skills will be assessed.",
+      "The skills assessment. No skills. Will be assessed."
+    ],
+    "transcriptAgreed": "4 of 4",
+    "attitudes": [
+      "deadpan and bureaucratic"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "middle"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "basis": [
+      "The measured, flat delivery of a contradictory statement gives the voice a decidedly dry, smug, and uninterested quality.",
+      "The deliberate, flat pacing used to deliver the contradictory statement conveys a highly sarcastic and smug tone.",
+      "The inherent irony and brevity of the contradictory statement strongly suggest a flat, deadpan, and mildly smug delivery.",
+      "The cynical phrasing and fragmented sentence structure strongly suggest a dry, sarcastic delivery that is entirely devoid of warmth or enthusiasm."
+    ]
+  },
+  "why": "tone not judged: 1 whole answers in 8 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.pinball.seal.0.wav",
+  "seconds": 6.696,
+  "sha256": "0e26dbadf1f0b4d731ef7aa504986d643280b636f1a53f88321885e0253562db"
+}

@@ -1,0 +1,171 @@
+{
+  "id": "line.step2.crank.1",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "step2.crank",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 1,
+  "words": "They will regret that.",
+  "text": "They will regret that.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 0,
+    "sent": "They will regret that.",
+    "call": 198
+  },
+  "askedSeconds": null,
+  "cost": "10",
+  "take": {
+    "number": 1,
+    "round": "script-003",
+    "file": "take-1.mp3",
+    "sha256": "0b294fa7e9c4564e8f661827e94fb9b33d16cb5d1be07252f364c60363a6e697",
+    "filed": "2026-11-28T02:32:29.100Z",
+    "measured": {
+      "seconds": 1.765,
+      "start": 0.032,
+      "end": 1.618,
+      "peakDb": -5.77,
+      "rmsDb": -21.26,
+      "lufs": -21.81,
+      "truePeakDb": -5.77,
+      "low": 0.372,
+      "mid": 0.589,
+      "high": 0.039,
+      "tailDb": -21.3,
+      "hits": 3,
+      "hitsAt": [
+        {
+          "start": 0.036,
+          "end": 0.968,
+          "peakDb": -5.77
+        },
+        {
+          "start": 1.102,
+          "end": 1.394,
+          "peakDb": -11.32
+        },
+        {
+          "start": 1.49,
+          "end": 1.592,
+          "peakDb": -11.2
+        }
+      ]
+    },
+    "line": {
+      "words": 4,
+      "seconds": 1.586,
+      "wordsPerSecond": 2.522,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 0,
+      "pausesFound": 0,
+      "pauses": [],
+      "paceHolds": false,
+      "pausesHold": true,
+      "room": 3.829,
+      "fits": true,
+      "beatSeconds": 8.4
+    }
+  },
+  "chain": {
+    "trimStart": 0.032,
+    "trimEnd": 1.618,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 3.61,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 1.586,
+    "start": 0.002,
+    "end": 1.564,
+    "peakDb": -1.7,
+    "rmsDb": -17.82,
+    "lufs": -18,
+    "truePeakDb": -1.54,
+    "low": 0.348,
+    "mid": 0.617,
+    "high": 0.035,
+    "tailDb": -23.13,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.938,
+        "peakDb": -1.7
+      },
+      {
+        "start": 1.07,
+        "end": 1.358,
+        "peakDb": -9.15
+      },
+      {
+        "start": 1.458,
+        "end": 1.536,
+        "peakDb": -8.47
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 20 asks, 2 whole, 18 void",
+    "asks": 20,
+    "whole": 2,
+    "transcript": "They will regret that.",
+    "transcripts": [
+      "They will regret that.",
+      "They will regret that.",
+      "They will regret that.",
+      "They will regret that."
+    ],
+    "transcriptAgreed": "4 of 4",
+    "attitudes": [
+      "smug and confident",
+      "ominous and threatening"
+    ],
+    "accents": [
+      "American",
+      "British"
+    ],
+    "pitches": [
+      "low",
+      "low"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": true,
+    "unimpressedAndSmugVotes": "2 yes, 0 no",
+    "basis": [
+      "The low, steady pitch and cold tone convey a menacing confidence lacking any warmth or excitement.",
+      "The threatening semantic content implies a cold, serious delivery with a lower pitch and a smug demeanor.",
+      "The speaker uses a steady, low-pitched delivery without any warmth or excitement, giving the short phrase a cold, confident, and smug feeling.",
+      "The speaker delivers the line with a deep, slow, resonant voice and crisp articulation, conveying a cold and confident threat."
+    ]
+  },
+  "why": "Four words said in 1.586 s without a pause mark, 2.522 words a second against the limit of 1.6. The limit is there so that a line has room in the film, and this take is 2.24 s shorter than its room. Kept as a known deviation; two whole answers of the listener hold its words. How it sounds is not known until Brandon hears it.",
+  "forced": true,
+  "problems": [
+    "it is spoken at 2.522 words a second and the limit is 1.6"
+  ],
+  "fixture": false,
+  "file": "line.step2.crank.1.wav",
+  "seconds": 1.586,
+  "sha256": "140a240fc95859f586e16d1e08446891dc697b86990cc14abda2f32e249b8edb"
+}

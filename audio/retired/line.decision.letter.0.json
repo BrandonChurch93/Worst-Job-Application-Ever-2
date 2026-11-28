@@ -1,0 +1,171 @@
+{
+  "id": "line.decision.letter.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "decision.letter",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "Rejected. / In under a second.",
+  "text": "Rejected. / In under a second.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.1,
+    "sent": "Rejected. <break time=\"1.1s\" /> In under a second.",
+    "call": 31
+  },
+  "askedSeconds": null,
+  "cost": "17",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "22b99e3296eda6596f4e3092bc0e96c331d6dbe334b9adc251440f8f7cf0cdb6",
+    "filed": "2026-11-25T18:06:00.204Z",
+    "measured": {
+      "seconds": 3.529,
+      "start": 0.026,
+      "end": 3.5,
+      "peakDb": -3.59,
+      "rmsDb": -21.39,
+      "lufs": -18.33,
+      "truePeakDb": -3.56,
+      "low": 0.427,
+      "mid": 0.387,
+      "high": 0.185,
+      "tailDb": -26.9,
+      "hits": 3,
+      "hitsAt": [
+        {
+          "start": 0.03,
+          "end": 0.442,
+          "peakDb": -4.87
+        },
+        {
+          "start": 0.59,
+          "end": 0.884,
+          "peakDb": -13.47
+        },
+        {
+          "start": 2.154,
+          "end": 3.466,
+          "peakDb": -3.59
+        }
+      ]
+    },
+    "line": {
+      "words": 5,
+      "seconds": 3.474,
+      "wordsPerSecond": 1.439,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        1.252
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 3.7,
+      "fits": true,
+      "beatSeconds": 4
+    }
+  },
+  "chain": {
+    "trimStart": 0.026,
+    "trimEnd": 3.5,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 0.31,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 3.474,
+    "start": 0.002,
+    "end": 3.448,
+    "peakDb": -2.57,
+    "rmsDb": -21.39,
+    "lufs": -18,
+    "truePeakDb": -2.56,
+    "low": 0.384,
+    "mid": 0.415,
+    "high": 0.201,
+    "tailDb": -29.61,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 0.416,
+        "peakDb": -4.75
+      },
+      {
+        "start": 0.564,
+        "end": 0.856,
+        "peakDb": -13.21
+      },
+      {
+        "start": 2.128,
+        "end": 3.402,
+        "peakDb": -2.57
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 6 asks, 2 whole, 4 void",
+    "asks": 6,
+    "whole": 2,
+    "transcript": "Rejected. In under a second.",
+    "transcripts": [
+      "Rejected. In under a second.",
+      "Rejected. In under a second.",
+      "rejected In under a second.",
+      "Rejected. In under a second."
+    ],
+    "transcriptAgreed": "4 of 4",
+    "attitudes": [
+      "dismissive and smug",
+      "smug and dismissive"
+    ],
+    "accents": [
+      "American",
+      "American"
+    ],
+    "pitches": [
+      "low",
+      "low"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": true,
+    "unimpressedAndSmugVotes": "2 yes, 0 no",
+    "basis": [
+      "The low pitch, deliberate pacing, and downward inflection create a cold, dismissive tone.",
+      "The answers rest on the speaker's deep, flat intonation and blunt, measured pacing which convey a sense of dismissive confidence.",
+      "The brevity and semantic content of the phrase strongly imply a smug, unimpressed, and dismissive delivery lacking warmth or excitement.",
+      "The speaker's flat, brief delivery and emphasis on the speed of the rejection project a cynical and arrogant demeanor."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "line.decision.letter.0.wav",
+  "seconds": 3.474,
+  "sha256": "d712a5f8345cea6c366a0cec966a3cd8c91c899e4b10095ce33619ae7de41b04"
+}

@@ -50,8 +50,8 @@ Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:35.681Z | 5.341 s | -1.17 dB | -21.23 LUFS | 5 | 27 | yes, as line.marketing.stroll.0 | too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks |
-| 2 | script-003 | 2026-11-28T02:32:38.473Z | 19.783 s | -2.02 dB | -20.32 LUFS | 17 | 89 | no |  |
+| 1 | build | 2026-11-25T18:05:35.681Z | 5.341 s | -1.17 dB | -21.23 LUFS | 5 | 27 | no | too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks |
+| 2 | script-003 | 2026-11-28T02:32:38.473Z | 19.783 s | -2.02 dB | -20.32 LUFS | 17 | 89 | yes, as line.marketing.stroll.0 | The listening check could not be made to hear this take: 0 whole answers in 25 asks (15 answers gave the words and said no sound was given). Its numbers hold: 1.131 words a second, 7 pauses for 7 marks. A speech-to-text read on this machine (Whisper base.en, out/work/audio/listen/s003-asr-base.en.json) gives every word of the line in order, with Ah for Ahh. Not judged by ear; how it sounds is not known until Brandon hears it. |
 
 Words: Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026.
 
@@ -61,7 +61,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:37.060Z | 6.92 s | -1.88 dB | -19.14 LUFS | 6 | 30 | yes, as line.marketing.perks.0 |  |
+| 1 | build | 2026-11-25T18:05:37.060Z | 6.92 s | -1.88 dB | -19.14 LUFS | 6 | 30 | no |  |
 
 Words: It spots unlimited PTO. / Poor thing / believes it.
 
@@ -71,8 +71,8 @@ Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:38.537Z | 5.433 s | -2.67 dB | -20.28 LUFS | 3 | 29 | yes, as line.step1.firstName.0 | too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks |
-| 2 | script-003 | 2026-11-28T02:32:39.901Z | 9.474 s | -1.26 dB | -17.58 LUFS | 8 | 40 | no |  |
+| 1 | build | 2026-11-25T18:05:38.537Z | 5.433 s | -2.67 dB | -20.28 LUFS | 3 | 29 | no | too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks |
+| 2 | script-003 | 2026-11-28T02:32:39.901Z | 9.474 s | -1.26 dB | -17.58 LUFS | 8 | 40 | yes, as line.step1.firstName.0 | tone not judged: 1 whole answers in 25 asks |
 
 Words: The application / has sensed / a candidate. / ATS turrets rise.
 
@@ -82,7 +82,7 @@ Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:39.807Z | 5.387 s | -1.96 dB | -18.9 LUFS | 4 | 25 | yes, as line.step1.firstName.1 | two whole answers heard no whisper, laugh, warmth or excitement and called it deadpan, but did not answer unimpressed and a little smug; the Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
+| 1 | build | 2026-11-25T18:05:39.807Z | 5.387 s | -1.96 dB | -18.9 LUFS | 4 | 25 | no | two whole answers heard no whisper, laugh, warmth or excitement and called it deadpan, but did not answer unimpressed and a little smug; the Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
 | 2 | build | 2026-11-25T18:44:17.337Z | 5.526 s | -3.31 dB | -19.94 LUFS | 5 | 25 | no |  |
 
 Words: Hit. / It keeps typing. / It has bills.
@@ -94,7 +94,7 @@ Takes used: 3 of 3.
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:41.273Z | 9.706 s | -3.98 dB | -21.68 LUFS | 8 | 40 | no | too long for its place: 9.508 s in 7.325 s, over by 2.183 s; tone not judged: 1 whole answers in 8 asks |
-| 2 | build | 2026-11-25T18:45:55.737Z | 7.663 s | -2.12 dB | -18.56 LUFS | 7 | 40 | yes, as line.step1.email.0 | the Builder's ruling of 19:11Z: take 2 is kept and the tug line moves 0.15 s later on main; transcript word for word in 2 of 2 answers that had one, 1 whole answer in 5 asks |
+| 2 | build | 2026-11-25T18:45:55.737Z | 7.663 s | -2.12 dB | -18.56 LUFS | 7 | 40 | no | the Builder's ruling of 19:11Z: take 2 is kept and the tug line moves 0.15 s later on main; transcript word for word in 2 of 2 answers that had one, 1 whole answer in 5 asks |
 | 3 | build | 2026-11-25T18:46:21.814Z | 6.316 s | -2.77 dB | -19.09 LUFS | 5 | 40 | no |  |
 
 Words: A valid email. / Rejected. / The system / is working as designed.
@@ -105,7 +105,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:42.706Z | 8.081 s | -2.15 dB | -19.03 LUFS | 5 | 35 | yes, as line.step1.tug.0 | tone not judged: 0 whole answers in 8 asks |
+| 1 | build | 2026-11-25T18:05:42.706Z | 8.081 s | -2.15 dB | -19.03 LUFS | 5 | 35 | no | tone not judged: 0 whole answers in 8 asks |
 
 Words: It fights for the resume. / Two pages. / One of them is true.
 
@@ -115,7 +115,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:44.408Z | 6.037 s | -3.57 dB | -19.67 LUFS | 4 | 31 | yes, as line.step2.dial.0 | tone not judged: 0 whole answers in 8 asks |
+| 1 | build | 2026-11-25T18:05:44.408Z | 6.037 s | -3.57 dB | -19.67 LUFS | 4 | 31 | no | tone not judged: 0 whole answers in 8 asks |
 
 Words: A rotary phone. / The applicant / has never seen one.
 
@@ -127,8 +127,8 @@ Takes used: 3 of 3 in the build, 1 of 3 in round script-003.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:45.642Z | 6.084 s | -4.63 dB | -19.9 LUFS | 5 | 29 | no |  |
 | 2 | build | 2026-11-25T18:44:18.654Z | 5.805 s | -3.54 dB | -22.28 LUFS | 6 | 29 | no |  |
-| 3 | build | 2026-11-25T18:44:54.436Z | 6.641 s | -1.51 dB | -20.32 LUFS | 6 | 29 | yes, as line.step2.crank.0 | tone not judged: 1 whole answers in 6 asks |
-| 4 | script-003 | 2026-11-28T02:32:42.616Z | 6.502 s | -1.27 dB | -17.36 LUFS | 6 | 32 | no |  |
+| 3 | build | 2026-11-25T18:44:54.436Z | 6.641 s | -1.51 dB | -20.32 LUFS | 6 | 29 | no | tone not judged: 1 whole answers in 6 asks |
+| 4 | script-003 | 2026-11-28T02:32:42.616Z | 6.502 s | -1.27 dB | -17.36 LUFS | 6 | 32 | yes, as line.step2.crank.0 | too long for its place: 6.282 s in 6.25 s, over by 0.032 s; listener: not unimpressed and a little smug (0 yes, 2 no; ["authoritative and formal","serious and instructional"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
 
 Words: The applicant / must turn the volume / all the way up.
 
@@ -138,8 +138,8 @@ Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:47.066Z | 6.92 s | -4.3 dB | -18.78 LUFS | 6 | 32 | yes, as line.pinball.seal.0 | tone not judged: 1 whole answers in 8 asks |
-| 2 | script-003 | 2026-11-28T02:32:44.421Z | 9.102 s | -2.81 dB | -19.32 LUFS | 12 | 44 | no |  |
+| 1 | build | 2026-11-25T18:05:47.066Z | 6.92 s | -4.3 dB | -18.78 LUFS | 6 | 32 | no | tone not judged: 1 whole answers in 8 asks |
+| 2 | script-003 | 2026-11-28T02:32:44.421Z | 9.102 s | -2.81 dB | -19.32 LUFS | 12 | 44 | yes, as line.pinball.seal.0 | tone not judged: 1 whole answers in 25 asks |
 
 Words: The company / gently collects / the applicant / for an unpaid assessment.
 
@@ -149,7 +149,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:48.292Z | 3.251 s | -3.42 dB | -20.26 LUFS | 3 | 14 | yes, as line.pinball.launch.0 | too long for its place: 3.094 s in 2.7 s, over by 0.394 s; tone not judged: 0 whole answers in 8 asks |
+| 1 | build | 2026-11-25T18:05:48.292Z | 3.251 s | -3.42 dB | -20.26 LUFS | 3 | 14 | no | too long for its place: 3.094 s in 2.7 s, over by 0.394 s; tone not judged: 0 whole answers in 8 asks |
 
 Words: A career. / In reverse.
 
@@ -159,7 +159,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:49.565Z | 3.808 s | -2.92 dB | -19 LUFS | 4 | 19 | yes, as line.pinball.lobby.0 | tone not judged: 0 whole answers in 10 asks |
+| 1 | build | 2026-11-25T18:05:49.565Z | 3.808 s | -2.92 dB | -19 LUFS | 4 | 19 | no | tone not judged: 0 whole answers in 10 asks |
 
 Words: Corporate headquarters. / So close.
 
@@ -169,7 +169,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:50.805Z | 4.087 s | -2.83 dB | -20.86 LUFS | 3 | 17 | yes, as line.pinball.coffee.0 | tone not judged: 0 whole answers in 8 asks |
+| 1 | build | 2026-11-25T18:05:50.805Z | 4.087 s | -2.83 dB | -20.86 LUFS | 3 | 17 | no | tone not judged: 0 whole answers in 8 asks |
 
 Words: It runs on coffee / and fear.
 
@@ -179,7 +179,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:52.358Z | 3.111 s | -5.26 dB | -26.63 LUFS | 4 | 15 | yes, as line.pinball.replyAll.0 |  |
+| 1 | build | 2026-11-25T18:05:52.358Z | 3.111 s | -5.26 dB | -26.63 LUFS | 4 | 15 | no |  |
 
 Words: Someone / hit reply all.
 
@@ -189,7 +189,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:53.597Z | 5.759 s | -2.61 dB | -22.28 LUFS | 3 | 28 | yes, as line.pinball.fired.0 | tone not judged: 0 whole answers in 8 asks |
+| 1 | build | 2026-11-25T18:05:53.597Z | 5.759 s | -2.61 dB | -22.28 LUFS | 3 | 28 | no | tone not judged: 0 whole answers in 8 asks |
 
 Words: Fired. / Before it was hired. / A new record.
 
@@ -199,7 +199,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:55.128Z | 4.783 s | -3.96 dB | -20.2 LUFS | 2 | 23 | yes, as line.pinball.drain.0 | tone not judged: 0 whole answers in 8 asks |
+| 1 | build | 2026-11-25T18:05:55.128Z | 4.783 s | -3.96 dB | -20.2 LUFS | 2 | 23 | no | tone not judged: 0 whole answers in 8 asks |
 
 Words: The unemployment office. / It knows the way.
 
@@ -209,8 +209,8 @@ Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:56.274Z | 5.387 s | -3.21 dB | -20.92 LUFS | 4 | 26 | yes, as line.boss.verify.0 |  |
-| 2 | script-003 | 2026-11-28T02:32:49.546Z | 8.684 s | -1.77 dB | -19.34 LUFS | 6 | 37 | no |  |
+| 1 | build | 2026-11-25T18:05:56.274Z | 5.387 s | -3.21 dB | -20.92 LUFS | 4 | 26 | no |  |
+| 2 | script-003 | 2026-11-28T02:32:49.546Z | 8.684 s | -1.77 dB | -19.34 LUFS | 6 | 37 | yes, as line.boss.verify.0 | too long for its place: 8.49 s in 6.875 s, over by 1.615 s |
 
 Words: They declare themselves human. / The form / takes that as a threat.
 
@@ -220,7 +220,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:57.883Z | 8.313 s | -2.71 dB | -19.59 LUFS | 13 | 37 | yes, as line.boss.slabs.0 |  |
+| 1 | build | 2026-11-25T18:05:57.883Z | 8.313 s | -2.71 dB | -19.59 LUFS | 13 | 37 | no |  |
 
 Words: The submit button fights back. / Even it / does not want this job.
 
@@ -230,7 +230,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:05:58.979Z | 3.669 s | -4.29 dB | -20.92 LUFS | 5 | 17 | yes, as line.boss.lastStand.0 | tone not judged: 0 whole answers in 8 asks |
+| 1 | build | 2026-11-25T18:05:58.979Z | 3.669 s | -4.29 dB | -20.92 LUFS | 5 | 17 | no | tone not judged: 0 whole answers in 8 asks |
 
 Words: Session expired. / A classic.
 
@@ -240,8 +240,8 @@ Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:06:00.204Z | 3.529 s | -3.59 dB | -18.33 LUFS | 3 | 17 | yes, as line.decision.letter.0 |  |
-| 2 | script-003 | 2026-11-28T02:32:55.302Z | 12.957 s | -2.17 dB | -18.81 LUFS | 10 | 59 | no |  |
+| 1 | build | 2026-11-25T18:06:00.204Z | 3.529 s | -3.59 dB | -18.33 LUFS | 3 | 17 | no |  |
+| 2 | script-003 | 2026-11-28T02:32:55.302Z | 12.957 s | -2.17 dB | -18.81 LUFS | 10 | 59 | yes, as line.decision.letter.0 | too long for its place: 12.742 s in 8.154 s, over by 4.588 s |
 
 Words: After careful consideration, / the company / has decided / to move forward / with other candidates.
 
@@ -251,7 +251,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:06:01.421Z | 5.898 s | -4.05 dB | -21.69 LUFS | 3 | 25 | yes, as line.decision.metrics.0 | tone not judged: 1 whole answers in 8 asks |
+| 1 | build | 2026-11-25T18:06:01.421Z | 5.898 s | -4.05 dB | -21.69 LUFS | 3 | 25 | no | tone not judged: 1 whole answers in 8 asks |
 
 Words: It will apply again tomorrow. / They always do.
 
@@ -1213,7 +1213,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:10.441Z | 8.22 s | -3.48 dB | -19.67 LUFS | 6 | 37 | yes, as line.live.idle.0 | the listener wrote "The applicant has frozen. A common defense. It does not work.": the same words in another spelling; tone not judged: 0 whole answers in 6 asks |
+| 1 | build | 2026-11-25T18:30:10.441Z | 8.22 s | -3.48 dB | -19.67 LUFS | 6 | 37 | no | the listener wrote "The applicant has frozen. A common defense. It does not work.": the same words in another spelling; tone not judged: 0 whole answers in 6 asks |
 
 Words: The applicant has frozen. / A common defence. / It does not work.
 
@@ -1225,7 +1225,7 @@ Takes used: 3 of 3.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:30:11.613Z | 5.016 s | -4.33 dB | -19.75 LUFS | 2 | 21 | no |  |
 | 2 | build | 2026-11-25T18:44:20.193Z | 4.923 s | -5.13 dB | -19.81 LUFS | 1 | 21 | no |  |
-| 3 | build | 2026-11-25T18:44:55.752Z | 5.294 s | -4.27 dB | -21.51 LUFS | 2 | 21 | yes, as line.live.idle.1 | tone not judged: 1 whole answers in 12 asks |
+| 3 | build | 2026-11-25T18:44:55.752Z | 5.294 s | -4.27 dB | -21.51 LUFS | 2 | 21 | no | tone not judged: 1 whole answers in 12 asks |
 
 Words: Take your time. / The job is not real.
 
@@ -1235,7 +1235,7 @@ Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:12.693Z | 0.789 s | -1.42 dB | -14.77 LUFS | 2 | 2 | yes, as line.live.hit.0 | one word in 0.586 s is 1.706 words a second by the arithmetic of the pace rule and take 2 at 0.542 s is faster; a single word has no pace to slow, and three whole answers heard no whisper, laugh, warmth or excitement |
+| 1 | build | 2026-11-25T18:30:12.693Z | 0.789 s | -1.42 dB | -14.77 LUFS | 2 | 2 | no | one word in 0.586 s is 1.706 words a second by the arithmetic of the pace rule and take 2 at 0.542 s is faster; a single word has no pace to slow, and three whole answers heard no whisper, laugh, warmth or excitement |
 | 2 | build | 2026-11-25T18:44:21.551Z | 0.604 s | -0.36 dB | -12.15 LUFS | 2 | 2 | no |  |
 
 Words: Hit.
@@ -1246,7 +1246,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:13.711Z | 0.789 s | -1.46 dB | -17.36 LUFS | 1 | 3 | yes, as line.live.hit.1 | listener: not unimpressed and a little smug (0 yes, 2 no; ["stern and demanding","stern and commanding"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
+| 1 | build | 2026-11-25T18:30:13.711Z | 0.789 s | -1.46 dB | -17.36 LUFS | 1 | 3 | no | listener: not unimpressed and a little smug (0 yes, 2 no; ["stern and demanding","stern and commanding"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
 
 Words: Again.
 
@@ -1256,7 +1256,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:14.847Z | 3.669 s | -5.15 dB | -23.81 LUFS | 3 | 17 | yes, as line.live.hit.2 | listener: not unimpressed and a little smug (1 yes, 1 no; ["detached and deadpan","deadpan and serious"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
+| 1 | build | 2026-11-25T18:30:14.847Z | 3.669 s | -5.15 dB | -23.81 LUFS | 3 | 17 | no | listener: not unimpressed and a little smug (1 yes, 1 no; ["detached and deadpan","deadpan and serious"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
 
 Words: Still typing. / It has bills.
 
@@ -1266,7 +1266,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:15.918Z | 3.344 s | -5.68 dB | -22.02 LUFS | 3 | 15 | yes, as line.live.hit.3 | tone not judged: 1 whole answers in 6 asks |
+| 1 | build | 2026-11-25T18:30:15.918Z | 3.344 s | -5.68 dB | -22.02 LUFS | 3 | 15 | no | tone not judged: 1 whole answers in 6 asks |
 
 Words: Resilient. / Or desperate.
 
@@ -1276,7 +1276,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:16.953Z | 2.926 s | -3.8 dB | -21.88 LUFS | 2 | 15 | yes, as line.live.slowTyping.0 | tone not judged: 1 whole answers in 6 asks |
+| 1 | build | 2026-11-25T18:30:16.953Z | 2.926 s | -3.8 dB | -21.88 LUFS | 2 | 15 | no | tone not judged: 1 whole answers in 6 asks |
 
 Words: One letter. / Well done.
 
@@ -1286,7 +1286,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:18.169Z | 3.808 s | -4.14 dB | -22.62 LUFS | 4 | 19 | yes, as line.live.realKeyboard.0 | tone not judged: 1 whole answers in 6 asks |
+| 1 | build | 2026-11-25T18:30:18.169Z | 3.808 s | -4.14 dB | -22.62 LUFS | 4 | 19 | no | tone not judged: 1 whole answers in 6 asks |
 
 Words: A real keyboard. / How optimistic.
 
@@ -1296,7 +1296,7 @@ Takes used: 2 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:19.369Z | 4.226 s | -3.31 dB | -19.26 LUFS | 4 | 18 | yes, as line.live.tugLost.0 | 18 asks brought no whole answer; two answers that were cut off before their end both wrote the transcript The shredder always eats first, word for word, one of them saying it had no audio; pace 1.245 words a second and 1 pause of 1 measured |
+| 1 | build | 2026-11-25T18:30:19.369Z | 4.226 s | -3.31 dB | -19.26 LUFS | 4 | 18 | no | 18 asks brought no whole answer; two answers that were cut off before their end both wrote the transcript The shredder always eats first, word for word, one of them saying it had no audio; pace 1.245 words a second and 1 pause of 1 measured |
 | 2 | build | 2026-11-25T20:06:02.082Z | 4.04 s | -2.86 dB | -18.12 LUFS | 4 | 18 | no |  |
 
 Words: The shredder / always eats first.
@@ -1307,7 +1307,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:20.759Z | 6.362 s | -2.31 dB | -18.58 LUFS | 6 | 31 | yes, as line.live.pinball.flipper.0 | tone not judged: 1 whole answers in 6 asks |
+| 1 | build | 2026-11-25T18:30:20.759Z | 6.362 s | -2.31 dB | -18.58 LUFS | 6 | 31 | no | tone not judged: 1 whole answers in 6 asks |
 
 Words: It found the flippers. / Hope / is a powerful thing.
 
@@ -1318,7 +1318,7 @@ Takes used: 2 of 3.
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:30:21.937Z | 4.18 s | -4.29 dB | -19.86 LUFS | 2 | 17 | no |  |
-| 2 | build | 2026-11-25T18:44:57.007Z | 4.18 s | -4.72 dB | -21.97 LUFS | 3 | 17 | yes, as line.live.boss.verify.0 | tone not judged: 1 whole answers in 6 asks |
+| 2 | build | 2026-11-25T18:44:57.007Z | 4.18 s | -4.72 dB | -21.97 LUFS | 3 | 17 | no | tone not judged: 1 whole answers in 6 asks |
 
 Words: It claims to be human. / Bold.
 
@@ -1329,7 +1329,7 @@ Takes used: 2 of 3.
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:30:23.133Z | 3.715 s | -1.77 dB | -18.95 LUFS | 4 | 20 | no |  |
-| 2 | build | 2026-11-25T18:44:22.709Z | 4.319 s | -2.55 dB | -18.55 LUFS | 4 | 20 | yes, as line.live.boss.slow.0 | tone not judged: 1 whole answers in 6 asks |
+| 2 | build | 2026-11-25T18:44:22.709Z | 4.319 s | -2.55 dB | -18.55 LUFS | 4 | 20 | no | tone not judged: 1 whole answers in 6 asks |
 
 Words: The button is winning. / The button.
 
@@ -1339,7 +1339,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:24.375Z | 5.898 s | -2.06 dB | -19.23 LUFS | 4 | 29 | yes, as line.live.skip.0 | tone not judged: 1 whole answers in 6 asks |
+| 1 | build | 2026-11-25T18:30:24.375Z | 5.898 s | -2.06 dB | -19.23 LUFS | 4 | 29 | no | tone not judged: 1 whole answers in 6 asks |
 
 Words: It skips ahead. / Efficient. / Still unemployed.
 
@@ -1349,7 +1349,7 @@ Takes used: 1 of 3.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | build | 2026-11-25T18:30:25.468Z | 4.087 s | -3.11 dB | -20.3 LUFS | 3 | 22 | yes, as line.live.watchFilm.0 | tone not judged: 1 whole answers in 6 asks |
+| 1 | build | 2026-11-25T18:30:25.468Z | 4.087 s | -3.11 dB | -20.3 LUFS | 3 | 22 | no | tone not judged: 1 whole answers in 6 asks |
 
 Words: It would rather watch. / Understandable.
 
@@ -1474,7 +1474,7 @@ Takes used: 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | script-003 | 2026-11-28T02:32:29.100Z | 1.765 s | -5.77 dB | -21.81 LUFS | 3 | 10 | no |  |
+| 1 | script-003 | 2026-11-28T02:32:29.100Z | 1.765 s | -5.77 dB | -21.81 LUFS | 3 | 10 | yes, as line.step2.crank.1 | Four words said in 1.586 s without a pause mark, 2.522 words a second against the limit of 1.6. The limit is there so that a line has room in the film, and this take is 2.24 s shorter than its room. Kept as a known deviation; two whole answers of the listener hold its words. How it sounds is not known until Brandon hears it. |
 
 Words: They will regret that.
 
@@ -1484,7 +1484,7 @@ Takes used: 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | script-003 | 2026-11-28T02:32:41.480Z | 13.7 s | -1.82 dB | -20.99 LUFS | 11 | 70 | no |  |
+| 1 | script-003 | 2026-11-28T02:32:41.480Z | 13.7 s | -1.82 dB | -20.99 LUFS | 11 | 70 | yes, as line.step1.shredded.0 | tone not judged: 1 whole answers in 25 asks |
 
 Words: The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway.
 
@@ -1494,7 +1494,7 @@ Takes used: 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | script-003 | 2026-11-28T02:32:51.500Z | 23.638 s | -3.36 dB | -20.6 LUFS | 16 | 101 | no |  |
+| 1 | script-003 | 2026-11-28T02:32:51.500Z | 23.638 s | -3.36 dB | -20.6 LUFS | 16 | 101 | yes, as line.boss.unfold.0 | too long for its place: 23.324 s in 18.125 s, over by 5.199 s; listener: not unimpressed and a little smug (1 yes, 1 no; ["serious and dramatic","detached, dramatic, and cold"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
 
 Words: The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.
 
@@ -1504,7 +1504,7 @@ Takes used: 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | script-003 | 2026-11-28T02:32:52.759Z | 5.851 s | -3.39 dB | -20.07 LUFS | 4 | 29 | no |  |
+| 1 | script-003 | 2026-11-28T02:32:52.759Z | 5.851 s | -3.39 dB | -20.07 LUFS | 4 | 29 | yes, as line.boss.unfold.1 | too long for its place: 5.592 s in 4.375 s, over by 1.217 s; listener: not unimpressed and a little smug (1 yes, 1 no; ["cynical and bleak","dramatic and cynical"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
 
 Words: But then / they remember / their student loans.
 
@@ -1514,7 +1514,7 @@ Takes used: 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | script-003 | 2026-11-28T02:32:53.837Z | 4.087 s | -4.37 dB | -18.85 LUFS | 3 | 18 | no |  |
+| 1 | script-003 | 2026-11-28T02:32:53.837Z | 4.087 s | -4.37 dB | -18.85 LUFS | 3 | 18 | yes, as line.boss.unfold.2 | listener: not unimpressed and a little smug (0 yes, 3 no; ["narrative and serious","serious and focused","serious and narrative"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence |
 
 Words: They turn back. / One more round.
 
@@ -1525,6 +1525,6 @@ Takes used: 2 of 3 in round script-003.
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | script-003 | 2026-11-28T02:32:56.402Z | 3.204 s | -2.24 dB | -20.22 LUFS | 3 | 17 | no |  |
-| 2 | script-003 | 2026-11-28T02:46:12.582Z | 3.39 s | -1.99 dB | -17.8 LUFS | 2 | 17 | no |  |
+| 2 | script-003 | 2026-11-28T02:46:12.582Z | 3.39 s | -1.99 dB | -17.8 LUFS | 2 | 17 | yes, as line.decision.reset.0 | The listening check could not be made to hear this take: 0 whole answers in 25 asks, each said no sound was given. Its numbers hold: 1.563 words a second, 1 pause for 1 mark. A speech-to-text read on this machine (Whisper base.en, out/work/audio/listen/s003-asr-base.en.json) gives the words: on to the next application. Not judged by ear; how it sounds is not known until Brandon hears it. |
 
 Words: On to / the next application.

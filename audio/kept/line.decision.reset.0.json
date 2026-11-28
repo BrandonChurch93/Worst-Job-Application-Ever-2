@@ -1,0 +1,154 @@
+{
+  "id": "line.decision.reset.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "decision.reset",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "On to / the next application.",
+  "text": "On to / the next application.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1.3,
+    "sent": "On to <break time=\"1.3s\" /> the next application.",
+    "call": 211
+  },
+  "askedSeconds": null,
+  "cost": "17",
+  "take": {
+    "number": 2,
+    "round": "script-003",
+    "file": "take-2.mp3",
+    "sha256": "66af8e88878c2b61e2d2f8aeca47e64e387daced6e6960d832bfb1100ab844df",
+    "filed": "2026-11-28T02:46:12.582Z",
+    "measured": {
+      "seconds": 3.39,
+      "start": 0.048,
+      "end": 3.246,
+      "peakDb": -1.99,
+      "rmsDb": -19.63,
+      "lufs": -17.8,
+      "truePeakDb": -1.98,
+      "low": 0.331,
+      "mid": 0.524,
+      "high": 0.144,
+      "tailDb": -20.99,
+      "hits": 2,
+      "hitsAt": [
+        {
+          "start": 0.054,
+          "end": 0.49,
+          "peakDb": -1.99
+        },
+        {
+          "start": 1.91,
+          "end": 3.196,
+          "peakDb": -2.59
+        }
+      ]
+    },
+    "line": {
+      "words": 5,
+      "seconds": 3.198,
+      "wordsPerSecond": 1.563,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 1,
+      "pausesFound": 1,
+      "pauses": [
+        1.418
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": null,
+      "fits": true,
+      "beatSeconds": 3.3000000000000007
+    }
+  },
+  "chain": {
+    "trimStart": 0.048,
+    "trimEnd": 3.246,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": -0.37,
+    "channels": 1,
+    "loop": null
+  },
+  "measured": {
+    "seconds": 3.198,
+    "start": 0,
+    "end": 3.172,
+    "peakDb": -1.47,
+    "rmsDb": -20.2,
+    "lufs": -18,
+    "truePeakDb": -1.45,
+    "low": 0.297,
+    "mid": 0.55,
+    "high": 0.152,
+    "tailDb": -22.13,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 0.44,
+        "peakDb": -1.47
+      },
+      {
+        "start": 1.862,
+        "end": 2.476,
+        "peakDb": -3.02
+      },
+      {
+        "start": 2.54,
+        "end": 3.146,
+        "peakDb": -7.32
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 25 asks, 0 whole, 25 void",
+    "asks": 25,
+    "whole": 0,
+    "transcript": null,
+    "transcripts": [],
+    "transcriptAgreed": "0 of 0",
+    "attitudes": [],
+    "accents": [],
+    "pitches": [],
+    "whisper": null,
+    "whisperVotes": "0 yes, 0 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 0 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 0 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 0 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "0 yes, 0 no",
+    "basis": []
+  },
+  "why": "The listening check could not be made to hear this take: 0 whole answers in 25 asks, each said no sound was given. Its numbers hold: 1.563 words a second, 1 pause for 1 mark. A speech-to-text read on this machine (Whisper base.en, out/work/audio/listen/s003-asr-base.en.json) gives the words: on to the next application. Not judged by ear; how it sounds is not known until Brandon hears it.",
+  "forced": true,
+  "problems": [
+    "the listener wrote \"\", which is not the line",
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered"
+  ],
+  "fixture": false,
+  "file": "line.decision.reset.0.wav",
+  "seconds": 3.198,
+  "sha256": "231a713360874e0745e08b35e3511f7e8b49c8ea966811e1a5964da014635460"
+}
