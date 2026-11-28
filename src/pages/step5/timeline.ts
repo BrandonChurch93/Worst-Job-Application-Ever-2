@@ -37,25 +37,25 @@ export const AT = {
   selfAfter: config.live.skipLinkAfterSeconds
 } as const
 
-// The narrator's line on the stamp starts at the hit. `SAID` is the seconds after the hit at which each of its five phrases starts, and its end, in the kept take (`public/audio/index.json`, `line.decision.letter.0`).
-// tests/decision-acting.test.ts holds them to the take exactly: a new take fails the test, and the acting is timed again.
-export const SAID = [0.006, 3.466, 5.616, 8.166, 11.01, 12.742] as const
+// The narrator's line on the stamp starts at the hit. `SAID` is the seconds after the hit at which each of its five phrases starts, and its end.
+// Provisional: the line as it is said without pauses (`pipeline/change002/fast-takes.json`, `line.decision.letter.0`), ahead of the kept take. The kept take in `public/audio/index.json` is 12.742 s today.
+// tests/decision-acting.test.ts holds them to that file exactly: other numbers fail the test, and the acting is timed again.
+export const SAID = [0.03, 1.721, 2.491, 3.569, 4.822, 6.049] as const
 
 const flat = AT.decide + AT.slam[1]
+const landed = AT.decide + AT.fling[1]
 // The press is the first whole frame from which the page turns no sooner than the end of that line and the gap between two lines.
 const press = Math.ceil((flat + SAID[5] + config.audio.lineGapSeconds - AT.hold) * 30 - 1e-6) / 30
 
-// The film only. `heal` is how long the arrow, landed flat, takes to be whole: it lies flat for half of it, peels and fills. No damage may last longer than `cursor.damageHealSeconds` from the hit, so the heal cannot be longer than this. A visitor's arrow takes `STUCK.heal`.
-// The take has a pause before each phrase. `dust`, `breath` and `hop` are what the arrow does in the pauses before the third, fourth and fifth phrases; the peel fills the pause before the second.
+// The film only. The line has no pauses and is 6 s, so the arrow does three things under it, each on a phrase, and no more.
+// `heal` is how long the arrow, landed flat, takes to be whole: it lies flat for half of it, peels and fills, and is whole as "the company" ends (the third phrase's start). A visitor's arrow takes `STUCK.heal`.
+// No damage may last longer than `cursor.damageHealSeconds` from the hit; this is well inside it.
+// `read`: on "to move forward" it puffs up and leans to the letter. `sag`: on "with other candidates." it sags, and drags itself to the button.
 export const FILM = {
   flat,
-  landed: AT.decide + AT.fling[1],
-  heal: 2.3,
-  dust: flat + SAID[2] - 1.12,
-  hear: flat + SAID[2],
-  breath: flat + SAID[3] - 0.95,
+  landed,
+  heal: flat + SAID[2] - landed,
   read: flat + SAID[3],
-  hop: flat + SAID[4] - 1,
   sag: flat + SAID[4],
   // The beaten walk to the button starts here.
   toButton: press - 1.02,
@@ -64,10 +64,11 @@ export const FILM = {
 } as const
 
 // The film only: a slow push-in under the narrator's line, through the page's `view()`. From the arrow's landing the view goes, eased, from the whole page to `zoom` times closer, centred on `at` (page px),
-// and is there as "to move forward" starts. It holds through the puff, the hop and the sag (`hold` s after the sag is cued), and is back at the whole page as the walk to the button starts, so the press and the turn are seen whole.
+// and is at its closest as "with other candidates." starts and the arrow sags. It comes back out with the arrow's walk to the button and is the whole page `whole` s before the press, so the press and the turn are seen whole.
 // `at` and `zoom` hold the REJECTED mark, the block at rest and the arrow where it lies and acts, with the lower edge of the view on the lower edge of the page. x stays 960, so the caption, which lies still on the screen, passes over as little of the metrics panel as it can on the way in. 1.5 is the most asked for.
 // The caption is not in the view: the film lays it over the finished frame at a fixed place (y 202 to 264, centred on x 960), so the view does not move or scale it; `clear` is the screen y the three things stay below.
-export const VIEW = { zoom: 1.5, at: [960, 720], in: [AT.decide + AT.fling[1], flat + SAID[3]], hold: 0.2, out: [flat + SAID[4] + 0.2, press - 1.02], clear: 264 } as const
+const whole = 0.1
+export const VIEW = { zoom: 1.5, at: [960, 720], in: [landed, flat + SAID[4]], whole, out: [press - 1.02, press - whole], clear: 264 } as const
 
 const ease = (u: number): number => {
   const k = Math.min(1, Math.max(0, u))

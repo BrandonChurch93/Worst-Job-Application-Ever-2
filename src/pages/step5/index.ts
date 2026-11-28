@@ -405,7 +405,9 @@ export function makePage(): PageLogic {
         if (p >= AT.fling[1] || !pose) {
           s.held = false
           cursor.place(drop.x, drop.y, 0)
-          cursor.hurt('flattened', s.mode === 'film' ? FILM.heal : STUCK.heal)
+          // Landed after the press, the arrow is whole before the page turns, as it is when it is pressed lying flat.
+          const heal = s.mode === 'film' ? FILM.heal : STUCK.heal
+          cursor.hurt('flattened', s.phase === 'reset' ? Math.max(0.1, Math.min(heal, s.turn - seconds() - 0.12)) : heal)
           cursor.release()
         } else if (p < AT.lift[0]) cursor.place(s.tx, s.ty, heights.paper)
         else {
