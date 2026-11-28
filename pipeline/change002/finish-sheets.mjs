@@ -106,16 +106,16 @@ const JOBS = {
 const KNEEL15 = { left: 600, top: 210, width: 690, height: 600 }
 const WALK15 = { left: 330, top: 240, width: 1260, height: 600 }
 Object.assign(JOBS, {
-  'task2-walk': async () => stack('task2-walk', [
+  'report-t2-walk': async () => stack('report-t2-walk', [
     await rows('walk', 'size 1.5. walk: every fourth frame, from 4 frames before the walk mark; 2.8 s', WALK15, 6),
     await rows('knees', 'knees: from 2 frames before the kneel mark, every frame for twelve, then every second', KNEEL15, 12)
   ]),
-  'task2-knees': async () => stack('task2-knees', [await rows('knees', 'size 1.5. knees: from 2 frames before the kneel mark, every frame for twelve, then every second', KNEEL15, 7)]),
-  'task2-fist': async () => stack('task2-fist', [await rows('fist', 'size 1.5. fist: from 2 frames before the fist mark, every frame for twelve, then every second', KNEEL15, 7)]),
-  'task2-blow': async () => stack('task2-blow', [await rows('blow', 'size 1.5. blow: from 12 frames before the press, every frame for twelve, then every second; the press is the 13th tile', KNEEL15, 6, 1, 24)]),
-  'task2-blow-near': async () => stack('task2-blow-near', [await rows('blownear', 'size 1.5. the blow, every frame, from 6 frames before the press: the fist lands on the 7th tile, the body comes down after it over the next six', KNEEL15, 7)]),
-  'task2-power': async () => {
-    const w = (W - 2 * GAP) / 3
+  'report-t2-knees': async () => stack('report-t2-knees', [await rows('knees', 'size 1.5. knees: from 2 frames before the kneel mark, every frame for twelve, then every second', KNEEL15, 7)]),
+  'report-t2-fist': async () => stack('report-t2-fist', [await rows('fist', 'size 1.5. fist: from 2 frames before the fist mark, every frame for twelve, then every second', KNEEL15, 7)]),
+  'report-t2-blow': async () => stack('report-t2-blow', [await rows('blow', 'size 1.5. blow: from 12 frames before the press, every frame for twelve, then every second; the press is the 13th tile', KNEEL15, 6, 1, 24)]),
+  'report-t2-blow-near': async () => stack('report-t2-blow-near', [await rows('blownear', 'size 1.5. the blow, every frame, from 6 frames before the press: the fist lands on the 7th tile, the body comes down after it over the next six', KNEEL15, 7)]),
+  'report-t2-power': async () => {
+    const w = Math.floor((W - 2 * GAP) / 3)
     const ref = await sharp(path.join(refs, 'finish-poses.png')).metadata()
     const k = ref.width / 1036
     const tiles = [
@@ -125,9 +125,9 @@ Object.assign(JOBS, {
     ]
     const h = Math.round(w * 275 / 330)
     const body = await sharp({ create: { width: W, height: h, channels: 3, background: '#0b0b0c' } }).composite(tiles.map((input, i) => ({ input, left: Math.round(i * (w + GAP)), top: 0 }))).png().toBuffer()
-    return stack('task2-power', [[await sharp(label('the pose sheet\'s "Powering up" figure | the build, seen at a right angle to the figure | the build as the film sees it, straight down')).png().toBuffer(), body]])
+    return stack('report-t2-power', [[await sharp(label('the pose sheet\'s "Powering up" figure | the build, seen at a right angle to the figure | the build as the film sees it, straight down')).png().toBuffer(), body]])
   },
-  'task2-fire': async () => {
+  'report-t2-fire': async () => {
     const w = (W - GAP) / 2
     const h = Math.round((w * 9) / 16)
     const one = path.join(root, 'out', 'work', 'finish-shots-x1')
@@ -138,9 +138,9 @@ Object.assign(JOBS, {
       await sharp(path.join(one, 'pose-fire.png')).extract({ left: 480, top: 270, width: 960, height: 540 }).resize(w, h).png().toBuffer()
     ]
     const body = await sharp({ create: { width: W, height: h * 2 + GAP, channels: 3, background: '#0b0b0c' } }).composite(tiles.map((input, i) => ({ input, left: (i % 2) * (w + GAP), top: Math.floor(i / 2) * (h + GAP) }))).png().toBuffer()
-    return stack('task2-fire', [[await sharp(label('the fire pose, both at size 1 for a like comparison. left before, right after. top: straight down at six times; bottom: at a right angle to the figure')).png().toBuffer(), body]])
+    return stack('report-t2-fire', [[await sharp(label('the fire pose, both at size 1 for a like comparison. left before, right after. top: straight down at six times; bottom: at a right angle to the figure')).png().toBuffer(), body]])
   },
-  'task2-stills': async () => stack('task2-stills', [
+  'report-t2-stills': async () => stack('report-t2-stills', [
     await pair(path.join(refs, 'finish-charge.png'), path.join(shots, 'charge.png'), 'size 1.5, the close view. approved finish-charge.png | the charge'),
     await pair(path.join(refs, 'finish-blast.png'), path.join(shots, 'blast.png'), 'approved finish-blast.png | the blast'),
     await pair(path.join(refs, 'finish-button-left.png'), path.join(shots, 'after.png'), 'approved finish-button-left.png | after the beam, on the first step')

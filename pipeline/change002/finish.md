@@ -152,8 +152,43 @@ Again after the fist change (head `db0b0929`, the last change to any source file
 
 Decisions:
 17. Size. `SCALE = 1.5` in `src/boss/finish/acting.ts` is the default of `FinishInput.scale` and of `kneelSpot(button, scale)`. With it grow: the figure about its feet (as the legs come out), the hands and the ball's place and size, the beam's width (the beam's shader measures across itself in the figure's own px), the flare at the hands, the smoke, the skid marks and how far the blast shoves the feet (38 px times the scale), the stride (54 px times the scale), the scuffs, the dust, the gold glow on the ground and the two small lights that belong to the figure. Not scaled: the beam's length and its three lights.
-18. Kneel spot at 1.5 for the 226 px button at (960, 650): (800.5, 659). That is `kneelSpot({ x: 960, y: 650, w: 226 })`. The fist lands at x 874, 27 px in from the button's near end.
+18. Kneel spot at 1.5 for the 226 px button at (960, 650): (793, 659). That is `kneelSpot({ x: 960, y: 650, w: 226 })`. The fist lands at x 874, 27 px in from the button's near end, 81 px ahead of the feet. (First it was (800.5, 659), with `KNEEL.clear` 31: see 23.)
 19. The blow was a snap in the figure, not the strip's step: the body went down on the fist's own curve (`inCubic` over 0.14 s), which does 32 percent of the whole move in the last frame before the press (STATED, from the curve). Now the fist keeps that curve and lands on the frame of the press; the body is thrown after it from 1 frame before the press to 6 frames after (`LAST.follow` 0.1 s), eased at both ends, at most 21 percent of the move in one frame (STATED, from the curve). The sag over the fist starts when the body is down.
 20. Power-up against the pose sheet's "Powering up" figure. While the ring burns (`fx.ring` 1, the power-up only) the fire is low: five broad low flames behind the legs, low tongues along the ground between the shoes, the ring's flames twice as tall as before and wider (the main fire), and three thin licks that rise past the arms (two on the left, one on the right). Without the ring (the charge and the blast) the gold stands round the whole figure as before. The fists are in and up: `POSES.power` hands at (-27, 67) and (29, 70), from (-33, 61) and (36, 63).
 21. Fault 2, the fire pose. Seen from straight above only the tilt of the figure's plane changes how much of the white face shows. In `POSES.fire` and `POSES.fireOver` the figure now leans back from the blast (`rise` 0.6: 24 degrees off the ground instead of 40), which shows 91 percent of the face's height instead of 77 (STATED, cosines), the chest is puffed (0.3), and the hands are 14 px lower so the arm that crosses the body crosses the tail, not the middle of the face.
 22. The legs rule is pinned in `tests/b-finish.test.ts` ("the legs rule"): at every frame of a 32 s script the figure has no legs, does not stand and is not drawn outside the power-up and the finish; it never stands when the fight gives neither a power-up nor the arms mark; the legs are back in before the power-up hands the arrow back; and no file of `src` outside `src/cursor/stand` and `src/boss/finish` takes the standing figure in. Not pinned: what three.js draws (the figure hides its hose and shoes when `legs` is at most 0.02; that line has no test, STATED).
+23. What broke at 1.5 and was mended. Looking at every frame of the knees strip, the figure stood at the end of its walk with its hanging right hand and its front toe on the button's rim. Two changes: `KNEEL.clear` is 36 (was 31), so the kneel spot is 5 px times the size further from the near end (at size 1 it moves from (816, 656) to (811, 656)); and on the walk a hand that hangs ahead of the body is held back to stay `KNEEL.hand` (10 px of the figure) short of the button's near end. Nothing else was seen to break in the walk, the knees, the fist and the blow at 1.5.
+
+### Size (MEASURED)
+The figure standing at ease (`out/work/finish-shots/size.png`: the close view x 300 to 1260, y 270 to 810, straight down, alone on the page, 1920 by 1080): its dark pixels (brightness under 70 of 255) span 231 px in height, shoes included, and 284 px in width, hands included. The approved pictures show about 210 px (MEASURED by eye, give or take 15 percent, as before).
+
+### Proof of the second task (all from my harness, size 1.5, the fight's close view where a whole frame is shown)
+- `proof/finish/report-t2-walk.png`: the walk (every fourth frame, 44 frames) and the knees. Rendered before the mend of 23: the last walk tiles show the hand on the button's rim. The walk here is short (151 px, two steps), because my script's arrow starts nearer the button than the film's.
+- `proof/finish/report-t2-knees.png`: the knees, 34 frames, after the mend of 23: the figure stops clear of the button, then falls.
+- `proof/finish/report-t2-fist.png`: the fist, 26 frames. Rendered before the mend of 23 (the figure stands 7.5 px nearer the button than it does now).
+- `proof/finish/report-t2-blow.png`: the blow as the first strip showed it (every frame for twelve, then every second). Before the mend of 23.
+- `proof/finish/report-t2-blow-near.png`: every frame from 6 before the press to 14 after, after the mend of 23. The fist lands on the 7th tile; the body turns down over tiles 8 to 12.
+- `proof/finish/report-t2-power.png`: the pose sheet's "Powering up" figure, the build at a right angle to the figure, the build from straight above.
+- `proof/finish/report-t2-fire.png`: the fire pose before and after, both at size 1 so the two can be compared.
+- `proof/finish/report-t2-stills.png`: charge, blast and after beside the approved pictures. Rendered before the mend of 23 and before the hands of the "arms stay out" moment were lowered; the charge and the blast are not touched by either.
+One sample a frame in the strips (they were three before): edges are rougher than the film's.
+
+### What the pictures of the second task show, as I see them
+- Size: 231 film px tall in the close view (MEASURED, see above). The figure reads at the size of the approved pictures.
+- Walk, knees, fist, blow at 1.5: every frame of the strips looked at. One fault found and mended (23). The shin and the shoe behind the kneeling figure read as a dark heap rather than as a leg; that was so at size 1 too.
+- The blow: the fist lands on the frame of the press; the body turns down over the next five frames. No frame now carries the whole turn.
+- Power-up: the fire is low and the ring is the main fire. Against the sheet: my fists are now above the head, the sheet's are at the height of the shoulders with the elbows bent close to the body; my flames are broader and more even than the sheet's thin wisps; the sheet has licks as high as the fists on both sides, mine are short and mostly on the left.
+- Fire pose: the face shows more of its height than before, but the gain is small to the eye. The arrow's own outline is narrow, and the arm still crosses it. Fault 2 is eased, not closed.
+- Stills at 1.5 in the close view: in the charge the figure is hard to read under the ball and the gold crackle. In the blast the look's white and orange burst over the button hides most of my beam; what shows of the beam is thinner than the approved picture's.
+
+### Draw calls at 1.5 (MEASURED, harness, film tier)
+The finish alone: power-up 14, charge 15, blast 17, after 14, knees and blow 14 (13 before the dust). Triangles 31,088. The same as at size 1.
+
+### Runs of the second task (MEASURED, with exit codes)
+On head `ca874b5f`, the last change to any source file:
+- `npm run determinism`: EXIT 0 at 03:00Z ("pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders").
+- `npm run bots`: EXIT 0 at 03:00Z ("bots: all clear").
+- `npx vitest run tests/b-finish.test.ts`: EXIT 0, 17 of 17, at 03:01Z.
+- `npx tsc --noEmit -p .`: EXIT 0 at 03:01Z.
+- The whole `npm test` was not run again in this task (it takes 6 minutes; the last whole run was on `db0b0929`, EXIT 1, 43 red, none mine by what they test).
+Commits of the second task: `8ab57b5d` (size 1.5), `d45017e8` (the blow), then the power-up, the fire pose, the legs test, the tools and notes, and `ca874b5f` (the mend of the kneel spot).
