@@ -9,10 +9,12 @@ import { spoken, waitsFor } from '../src/audio/cues'
 import * as dsp from '../src/audio/dsp'
 import * as levels from '../src/audio/levels'
 import { DUCK, LIVE, db } from '../src/audio/levels'
-import { phrasesOf, standIns, type KeptLine } from '../src/audio/standin'
+import { filmCaptions, phrasesOf, phrasesOver, standIns, wordCount, type KeptLine } from '../src/audio/standin'
 import { mixFilm, scriptStandIns } from '../src/audio/mix'
 import { pack, phraseStarts, places } from '../tools/sound.mjs'
-import { keptTakes } from '../tools/mix.mjs'
+import { altTakes, keptTakes, makeMix as mixOf } from '../tools/mix.mjs'
+import * as mixModule from '../src/audio/mix'
+import * as cuesModule from '../src/audio/cues'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
 const cfg: any = read('config', 'showcase.json')
@@ -426,5 +428,129 @@ describe('the narrator\'s voice: the pack', () => {
     expect(read.kept).toBe(true)
     expect(read.phrases.map((p) => p.words)).toEqual(['a b', 'c d', 'e'])
     expect(read.phrases[2]!.to).toBe(6)
+  })
+})
+
+describe('the narrator\'s voice: the index of this tree', () => {
+  const real: SoundIndex = read('public', 'audio', 'index.json')
+  const script = standIns()
+  const bare = [...script.values()].filter((l) => l.kept && real.lines.find((x) => x.id === l.id)?.starts === undefined)
+  const realSite = () => {
+    const enc = new TextEncoder()
+    const files = new Map<string, Uint8Array>([[real.pack!.file, new Uint8Array(real.pack!.bytes)]])
+    for (const f of [...real.loops, ...real.lines]) files.set(f.file, enc.encode(f.id))
+    vi.stubGlobal('fetch', async (url: string) => {
+      const bytes = files.get(url.replace('./audio/', ''))
+      if (!bytes) return { ok: false, status: 404 }
+      return { ok: true, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.length) }
+    })
+    return makeSound({ base: './audio/', index: real })
+  }
+
+  it('spreads the caption of each kept line that has no starts over its file by its words: no word before the file begins, none after it ends, no hole', () => {
+    console.info(`MEASURED kept lines of the index with no starts: ${bare.map((l) => `${l.id} ${l.seconds} s`).join(', ') || 'none'}`)
+    for (const line of bare) {
+      const n = wordCount(line.words)
+      expect(line.phrases, line.id).toEqual(phrasesOver(line.text, mark, line.seconds))
+      expect(line.phrases.map((p) => p.words).join(' '), line.id).toBe(line.words)
+      expect(line.phrases[0]!.from, line.id).toBe(0)
+      expect(line.phrases[line.phrases.length - 1]!.to, line.id).toBeCloseTo(line.seconds, 9)
+      line.phrases.forEach((p, k) => {
+        if (k > 0) expect(p.from, `${line.id} ${k}`).toBe(line.phrases[k - 1]!.to)
+        expect(p.to - p.from, `${line.id} ${k}`).toBeCloseTo((line.seconds * wordCount(p.words)) / n, 9)
+      })
+      const fps: number = cfg.film.fps
+      const caps = filmCaptions([{ id: line.id, frame: 600 }], fps)
+      expect(caps.map((c) => c.words), line.id).toEqual(line.phrases.map((p) => p.words))
+      expect(caps[0]!.first, line.id).toBe(600)
+      expect(caps[caps.length - 1]!.last, line.id).toBe(600 + Math.round(line.seconds * fps) - 1)
+      for (let k = 1; k < caps.length; k++) expect(caps[k]!.first, `${line.id} ${k}`).toBe(caps[k - 1]!.last + 1)
+    }
+  })
+
+  it('says such a line from its file on the live site and shows none of its words before the file starts or after it ends', async () => {
+    for (const line of bare) {
+      const row = spoken[line.key]!
+      const s = realSite()
+      s.page(line.page)
+      await s.unlock()
+      const ctx = made[made.length - 1]!
+      ctx.currentTime = 40
+      s.event(ev(row.event!, line.page), 'live')
+      const entry = s.log().find((e) => e.what === 'spoken' && e.line === line.id)!
+      expect(entry.seconds, line.id).toBe(line.seconds)
+      const start = entry.start!
+      expect(start).toBeGreaterThanOrEqual(40)
+      expect(ctx.sources.filter((x) => x.buffer?.id === line.id).map((x) => [x.started, x.stopped]), line.id).toEqual([[start, null]])
+      const mine = s.said().lines.filter((l) => l.line === line.id || l.id === line.id)
+      expect(mine.map((l) => l.words), line.id).toEqual(line.phrases.map((p) => p.words))
+      expect(mine[0]!.start, line.id).toBeCloseTo(start, 9)
+      expect(mine[mine.length - 1]!.end, line.id).toBeCloseTo(start + line.seconds, 9)
+      for (let k = 1; k < mine.length; k++) expect(mine[k]!.start, `${line.id} ${k}`).toBeCloseTo(mine[k - 1]!.end, 9)
+      s.stop()
+    }
+  })
+})
+
+describe('the narrator\'s voice: another form of a kept line in a preview mix', () => {
+  const makeMix = mixOf as (...a: unknown[]) => Promise<any>
+  const SR: number = cfg.audio.sampleRate
+  const M: any = { dsp, mix: mixModule, cues: cuesModule, levels }
+  const one = id('marketing.stroll.0')
+  const words: string = narration.film['marketing.stroll'][0].text
+  const sum = (b: Uint8Array) => createHash('sha256').update(b).digest('hex')
+  const tone = (seconds: number, rate = SR): Uint8Array => {
+    const x = new Float32Array(Math.round(seconds * rate))
+    for (let i = 0; i < x.length; i++) x[i] = 0.25 * Math.sin((2 * Math.PI * 220 * i) / rate)
+    return dsp.encodeWav({ sampleRate: rate, channels: [x] }, 24)
+  }
+  let root = ''
+  let P: any
+  let altDir = ''
+  const plan = () => ({ source: 'a test', fps: cfg.film.fps, seconds: 3, events: [], lines: [{ id: one, beat: 'marketing.stroll', frame: 30 }] })
+  const lineOf = (r: any) => r.placed.filter((p: any) => p.kind === 'line').map((p: any) => [p.id, p.frame, p.seconds])
+  beforeEach(() => {
+    root = mkdtempSync(path.join(tmpdir(), 'alt-'))
+    P = places(root)
+    altDir = path.join(root, 'alt')
+    mkdirSync(P.kept, { recursive: true })
+    mkdirSync(altDir, { recursive: true })
+    const bytes = tone(1)
+    writeFileSync(path.join(P.kept, `${one}.wav`), bytes)
+    writeFileSync(path.join(P.kept, `${one}.json`), JSON.stringify({ id: one, kind: 'line', beat: 'marketing.stroll', index: 0, file: `${one}.wav`, seconds: 1, words, sha256: sum(bytes) }))
+  })
+  afterEach(() => rmSync(root, { recursive: true, force: true }))
+
+  it('lays the kept take when no flag is given, though another form lies in the folder, and says nothing of it', async () => {
+    writeFileSync(path.join(altDir, `${one}.wav`), tone(0.6))
+    const r = await makeMix(P, cfg, M, path.join(P.mix, 'review.wav'), 'review', plan())
+    expect(lineOf(r)).toEqual([[one, 30, 1]])
+    expect('alt' in r).toBe(false)
+  })
+
+  it('lays the other form in place of the kept take when the folder is given, names it in the record with its sum, its length and the kept length, and writes nothing kept', async () => {
+    const other = tone(0.6)
+    writeFileSync(path.join(altDir, `${one}.wav`), other)
+    const before = [`${one}.wav`, `${one}.json`].map((f) => sum(readFileSync(path.join(P.kept, f))))
+    const r = await makeMix(P, cfg, M, path.join(P.mix, 'review-alt.wav'), 'review-alt', plan(), altDir)
+    expect(lineOf(r)).toEqual([[one, 30, 0.6]])
+    expect(r.alt).toEqual([{ id: one, file: `${one}.wav`, sha256: sum(other), seconds: 0.6, keptSeconds: 1, starts: null }])
+    expect(r.missingLines).toEqual([])
+    expect([`${one}.wav`, `${one}.json`].map((f) => sum(readFileSync(path.join(P.kept, f))))).toEqual(before)
+    const kept = await makeMix(P, cfg, M, path.join(P.mix, 'review.wav'), 'review', plan())
+    expect(kept.sha256).not.toBe(r.sha256)
+    expect(kept.keptSha256).toBe(r.keptSha256)
+  })
+
+  it('gives an empty list when the folder holds no form, and refuses a form of a line with no kept take or at another sample rate', async () => {
+    const r = await makeMix(P, cfg, M, path.join(P.mix, 'review-alt.wav'), 'review-alt', plan(), altDir)
+    expect(r.alt).toEqual([])
+    expect(lineOf(r)).toEqual([[one, 30, 1]])
+    writeFileSync(path.join(altDir, `${id('decision.reset.0')}.wav`), tone(0.5))
+    await expect(makeMix(P, cfg, M, path.join(P.mix, 'no.wav'), 'review-alt', plan(), altDir)).rejects.toThrow(/^the mix is refused: line\.decision\.reset\.0\.wav is another form of line\.decision\.reset\.0, and no take of that line is kept with its file$/)
+    rmSync(path.join(altDir, `${id('decision.reset.0')}.wav`))
+    writeFileSync(path.join(altDir, `${one}.wav`), tone(0.5, SR / 2))
+    await expect(makeMix(P, cfg, M, path.join(P.mix, 'no.wav'), 'review-alt', plan(), altDir)).rejects.toThrow(/^the mix is refused: .* Hz and the kept take of line\.marketing\.stroll\.0 is at .* Hz$/)
+    expect(altTakes(path.join(root, 'none'), [], new Map(), M)).toEqual([])
   })
 })

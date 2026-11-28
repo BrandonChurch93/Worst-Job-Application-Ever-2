@@ -159,7 +159,7 @@ export async function visit(load, c, bot, seed = c.seed, calls = null) {
     const loops = heard.filter((h) => h.loop || h.id === 'hold-music').map((h) => ({ id: h.id, page: pageAt(h.asked), start: Number(h.start.toFixed(2)), stop: h.stop === null ? null : Number(h.stop.toFixed(2)) }))
     return {
       bot, seed, finished: stage.finished, seconds: Number(stage.time.toFixed(2)), skips: events.skip ?? 0, turns, gags: stage.gagsReached,
-      sounds: heard.length, lines: heard.filter((h) => h.id.startsWith('line.')).length, log, loops, volumes, volumeSteps: steps, events
+      sounds: heard.length, lines: heard.filter((h) => h.id.startsWith('line.')).length, voices: heard.filter((h) => h.id.startsWith('line.')).map((h) => ({ id: h.id, start: Number(h.start.toFixed(2)), stop: h.stop === null ? null : Number(h.stop.toFixed(2)) })), log, loops, volumes, volumeSteps: steps, events
     }
   } finally {
     globalThis.window = before.window
