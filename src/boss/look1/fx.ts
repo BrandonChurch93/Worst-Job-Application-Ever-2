@@ -497,9 +497,6 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
         const age = now - b.weak.shownAt
         const beat = 0.5 + 0.5 * Math.sin(age * 16)
         const s = 44 + 14 * beat
-        marks.add(wx2, wy2, 80, s * 1.5, s * 1.5, 0, [0.95, 0.12, 0.03], 0.75 + 0.25 * beat)
-        const grow = (age * 1.4) % 1
-        marks.add(wx2, wy2, 80, s * (1.5 + 1.3 * grow), s * (1.5 + 1.3 * grow), 0, [0.95, 0.12, 0.03], 0.6 * (1 - grow))
         rings.add(wx2, wy2, 64, s, s, 0, [1, 0.3, 0.12], 1.2 + 0.8 * beat)
         glow.add(wx2, wy2, 63, 54, 54, 0, [1, 0.25, 0.1], 0.5 + 0.5 * beat)
         lamp(wx2, wy2, 60, [1, 0.3, 0.12], 0.2 + 0.15 * beat, 120)

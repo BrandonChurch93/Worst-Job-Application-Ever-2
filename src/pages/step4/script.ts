@@ -1,6 +1,6 @@
 import type { Reaction } from '../../cursor/body'
 import { FALLEN } from '../../boss/plan'
-import { BIG, FINISH, LINE7, SHOUT } from '../../boss/tune'
+import { BIG, FINISH, LAST as LAST_MOMENT, LINE7, SHOUT } from '../../boss/tune'
 import type { Pointer } from '../../stage/types'
 import type { Step4Layout } from './layout'
 
@@ -32,17 +32,17 @@ export const DOWN = Number((FORMED + HOLD + FIGHT).toFixed(3))
 const ARMED = DOWN + FINISH.fall + SHOUT.beats[0]
 const FIRE = DOWN + FINISH.fall + SHOUT.fire
 const GONE = DOWN + FINISH.fall + SHOUT.gone
-const SETTLED = GONE + FINISH.settle
+const WALKED = GONE + LAST_MOMENT.wait + (FALLEN.x - LAST_MOMENT.reach - LAST_MOMENT.stand[0]) / LAST_MOMENT.speed
+const STRUCK = WALKED + LAST_MOMENT.knees + LAST_MOMENT.breath + LAST_MOMENT.fist + LAST_MOMENT.blow
 const late = (t: number): number => Number((t + SHIFT).toFixed(3))
-export const ACT = { flinch: 1.95, windup: 3.36, tap: 3.72, take: 4.62, hide: 7.1, cower: 7.6, brace: late(10.55), snap: late(11.5), charge: late(LAST[0]), ram: late(FIGHT + FORMED - 0.15), gather: Number((SETTLED + 0.3).toFixed(3)), press: Number((SETTLED + 0.78).toFixed(3)) } as const
-export const UNIT_SECONDS = Number((ACT.press + 2.12).toFixed(2))
+export const ACT = { flinch: 1.95, windup: 3.36, tap: 3.72, take: 4.62, hide: 7.1, cower: 7.6, brace: late(10.55), snap: late(11.5), charge: late(LAST[0]), ram: late(FIGHT + FORMED - 0.15), gather: Number(WALKED.toFixed(3)), press: Number(STRUCK.toFixed(3)) } as const
+export const UNIT_SECONDS = Math.ceil((ACT.press + LAST_MOMENT.hold + 0.62) * 30) / 30
 
 export const STAND = { x: 150, y: 96, near: 190 } as const
 const SHORT = { x: 70, y: 60 } as const
 const ANSWER = { x: 64, y: 172 } as const
 const SHOCK = { x: 610, y: 800 } as const
 const COVER = { x: 446, y: 688 } as const
-const PRESS_AT = { x: 88, y: 20 } as const
 // Where it stands in the fight, in the order it comes to them: before the shield, on the open flank, on the other side where the corner cannon's bullet finds it, on the right, behind a pillar on the line of the big blast, aside from that line.
 const GLANCE = { x: 470, y: 500 } as const
 const FLANK = { x: 1400, y: 380 } as const
@@ -72,7 +72,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     [4.34, answer.x, answer.y, 'out'], [5.3, answer.x, answer.y], [6.04, 820, 890], [6.1, 822, 892], [6.25, SHOCK.x, SHOCK.y, 'out'], [ACT.hide, SHOCK.x, SHOCK.y], [7.46, COVER.x, COVER.y, 'out'], [FORMED, COVER.x, COVER.y],
     [FORMED + LINE7.part0 * 0.4, DRIFT[0].x, DRIFT[0].y], [FORMED + LINE7.part0, DRIFT[1].x, DRIFT[1].y], [TWO, DRIFT[1].x, DRIFT[1].y], [TWO + 0.5, GLANCE.x, GLANCE.y, 'out'],
     ...fight.map((k): Key => (k[3] ? [late(k[0]), k[1], k[2], k[3]] : [late(k[0]), k[1], k[2]])),
-    [GONE + 0.2, OVER.x, OVER.y], [SETTLED, FALLEN.x - 150, FALLEN.y + 74], [ACT.gather, FALLEN.x - 150, FALLEN.y + 74], [ACT.press - 0.12, FALLEN.x - PRESS_AT.x, FALLEN.y - PRESS_AT.y, 'in'], [UNIT_SECONDS, FALLEN.x - PRESS_AT.x, FALLEN.y - PRESS_AT.y]
+    [UNIT_SECONDS, OVER.x, OVER.y]
   ]
   const clicks: number[] = [tickAt]
   const holds: [number, number][] = [[ARMED, FIRE]]
@@ -86,7 +86,6 @@ export function makeScript(L: Step4Layout): FilmScript {
   burst(late(17.6), late(LAST[0] - 0.05), 0.17)
   burst(late(LAST[0] + 0.4), late(LAST[1] - 0.05), 0.15)
   burst(late(LAST[1] + 0.3), late(FIGHT + FORMED), 0.1)
-  clicks.push(ACT.press)
   const pointer = (time: number): Pointer => {
     let x = path[0]![1]
     let y = path[0]![2]
@@ -119,8 +118,7 @@ export function makeScript(L: Step4Layout): FilmScript {
     { at: ACT.brace, name: 'rear' },
     { at: ACT.snap, name: 'snap' },
     { at: ACT.charge, name: 'anticipate' },
-    { at: ACT.ram, name: 'stamp' },
-    { at: ACT.gather, name: 'anticipate' }
+    { at: ACT.ram, name: 'stamp' }
   ]
   return { pointer, reactions, tickAt }
 }

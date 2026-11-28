@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
-import { BODY, DART, HOME } from '../src/boss/plan'
-import { BIG, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
+import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
+import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
 import { HOLD, UNIT_SECONDS } from '../src/pages/step4/script'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
+import { project, toWorld } from '../src/stage/camera'
 import { filmFlow, filmOptions, isHeader, ScriptDriver, Stage, type Driver, type DriverView, type FlowEntry, type Pointer } from '../src/stage/stage'
 import type { Shape, StepIo } from '../src/stage/types'
 
@@ -406,6 +407,70 @@ describe('how the boss plays (change 002, item 15)', () => {
       expect(at('button-down').length).toBe(1)
       expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
       while (stage.page.id === 'step4' && stage.time < 160) stage.advance(1)
+      expect(stage.page.id, `seed ${seed}`).not.toBe('step4')
+    }
+  })
+
+  it.each([
+    ['who leads the arrow straight to the button and clicks it', 'leads'],
+    ['who does nothing more', 'nobody'],
+    ['who leads it about the floor and never clicks', 'strays']
+  ])('mail of 00:01, the last moment. after the blast the arrow of a visitor %s walks to the button, kneels, raises its fist and strikes it, and the blow is the press, on every seed tried', (_name, how) => {
+    for (const seed of [config.seed, 7, 1234]) {
+      const bot = new BotDriver('keen', seed)
+      let gone = -1
+      let clicked = -1
+      const button = { x: 960 + (FALLEN.x - (CLOSE.x + CLOSE.w / 2)) * 2, y: 540 + (FALLEN.y - (CLOSE.y + CLOSE.h / 2)) * 2 }
+      const driver: Driver = {
+        name: 'bot',
+        input(v: DriverView): Pointer {
+          const g = v.page.gag()
+          if (g !== 'boss.collapse' && g !== 'boss.finish' && g !== 'boss.press') return bot.input(v)
+          if (gone < 0) return { x: v.cursor.x, y: v.cursor.y, down: false }
+          const u = v.time - gone
+          if (how === 'nobody') return { x: 400, y: 300, down: false }
+          if (how === 'strays') return { x: 960 + 900 * Math.sin(u * 1.3), y: 540 + 500 * Math.cos(u * 0.9), down: false }
+          const down = u >= LAST.wait + LAST.most + 0.2 && u < LAST.wait + LAST.most + 0.3
+          if (down && clicked < 0) clicked = v.time
+          return { x: button.x, y: button.y, down }
+        }
+      }
+      const stage = new Stage({ mode: 'live', flow, pages, driver, seed })
+      let out = 0
+      let fast = 0
+      let off = 0
+      let was: { x: number; y: number } | null = null
+      while (stage.page.id === 'step4' && stage.time < 200) {
+        stage.advance(1)
+        if (gone < 0 && stage.events.some((e) => e.name === 'boss-gone')) gone = stage.time
+        if (gone < 0 || stage.page.id !== 'step4' || stage.events.some((e) => e.name === 'finish-press')) continue
+        const c = { x: stage.cursor.x, y: stage.cursor.y }
+        if (c.x < CLOSE.x || c.x > CLOSE.x + CLOSE.w || c.y < CLOSE.y || c.y > CLOSE.y + CLOSE.h) out++
+        if (was) fast = Math.max(fast, Math.hypot(c.x - was.x, c.y - was.y) * stepHz)
+        was = c
+        if (how === 'leads' && stage.events.some((e) => e.name === 'finish-kneel') && off === 0) {
+          const p = project(stage.page.view()!, toWorld(FALLEN.x, FALLEN.y, 0))
+          off = Math.hypot(p.x - button.x, p.y - button.y) + 0.001
+        }
+      }
+      const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
+      for (const n of ['finish-walk', 'finish-kneel', 'finish-fist', 'finish-press', 'button-press']) expect(at(n).length, `${n}, seed ${seed}`).toBe(1)
+      expect(at('finish-walk')[0]! - at('boss-gone')[0]!).toBeCloseTo(LAST.wait, 1)
+      expect(at('finish-kneel')[0]!).toBeGreaterThanOrEqual(at('button-down')[0]!)
+      expect(at('finish-fist')[0]! - at('finish-kneel')[0]!).toBeCloseTo(LAST.knees + LAST.pause, 1)
+      expect(at('finish-press')[0]! - at('finish-fist')[0]!).toBeCloseTo(LAST.fist + LAST.blow, 1)
+      expect(at('button-press')[0]!).toBe(at('finish-press')[0]!)
+      expect(out, `steps outside the close view, seed ${seed}`).toBe(0)
+      expect(fast, `seed ${seed}`).toBeLessThanOrEqual(Math.hypot(CLOSE.w, CLOSE.h) / LAST.most * 1.6)
+      if (how === 'leads') {
+        expect(at('finish-kneel')[0]! - at('boss-gone')[0]!, `seed ${seed}`).toBeLessThanOrEqual(LAST.wait + LAST.most + 0.3)
+        expect(at('finish-press')[0]! - clicked, `seed ${seed}`).toBeLessThanOrEqual(LAST.knees + LAST.pause + LAST.fist + LAST.blow + 0.1)
+        expect(off).toBeGreaterThan(0)
+        expect(off, 'the button lies under the hand that points at it').toBeLessThan(3)
+      } else {
+        expect(at('finish-kneel')[0]! - at('boss-gone')[0]!, `seed ${seed}`).toBeLessThanOrEqual((how === 'nobody' ? LAST.alone + 0.5 : LAST.led) + LAST.wait + LAST.most + 0.1)
+      }
+      expect(stage.longestIgnored.pointer, `seed ${seed}`).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
       expect(stage.page.id, `seed ${seed}`).not.toBe('step4')
     }
   })

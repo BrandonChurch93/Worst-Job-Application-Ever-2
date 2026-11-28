@@ -13,7 +13,12 @@ The rules of the fight changed with change note 002. They are written in `pipeli
 - During the fight the header is off the screen through `chrome()`, the heading, the card and the fine print slide off, the bar stands alone at the top (`TOP`) and the boss never enters the band under it.
 - The big turret rises out of the boss once the body is whole and locks over the button (`turret-rise`, `turret-lock`); the word Submit never moves on the button; `turret-off` at the power-down leaves the button bare.
 - The pop-ups end at x 1040.
-- The film's seconds are in `pipeline/change002/boss.md`, "The film"; the cursor is hit once in the film, at 15.24 s.
+- The film's seconds are in `pipeline/change002/boss.md`, "The film"; the cursor is hit once in the film, at 40.22 s of the unit.
+- The three pop-ups are off behind `POPUPS_ON`; the event `popup` is still sent.
+- Before the fight the narrator's line 7 is said while the boss stands formed (`boss-formed`, `boss-turn`, `boss-music`, `power-up`); nothing can hit the visitor before `turret-lock`.
+- From 60 s of fight the shield lets a share of each dart through (`MERCY`), so a visitor who stands and clicks wins too.
+- The fight ends in the finish, not in the old collapse: the boss falls, the page takes the arrow, the view comes in (`CLOSE`), the arrow charges and fires (`SHOUT`), walks to the button that is left, kneels and strikes it; the blow is the press of Submit (`LAST`). The skip link keeps the old short collapse.
+- The stand-in and LOOK 1 with the arena are behind one switch, `LOOK1_ON`.
 
 ## The form
 

@@ -272,7 +272,7 @@ export class Stage {
       this.cursor.step(pointer, emit, (gag === config.cursor.armsOnlyInBeat && inBeat) || page.arms?.() === true)
       this.down = down
     } else this.down = pointer.down
-    const ignored = !playing || page.ignoring() || page.control === 'film' || (page.control === 'pointer' && this.cursor.taken)
+    const ignored = !playing || page.ignoring() || page.control === 'film' || (page.control === 'pointer' && this.cursor.taken && page.led?.() !== true)
     if (ignored && this.phase !== 'end') {
       const key = page.control
       this.run = (key === 'film') === this.inFilm ? this.run + 1 : 1
