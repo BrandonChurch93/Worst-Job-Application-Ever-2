@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { finishState, powerPlan, standTilt } from '../../../boss/finish/index'
 import { ringAt } from '../../../boss/rise'
 import { GUARD, RISE_LIGHT as L, SOLID } from '../../../boss/tune'
-import { finishNow, viewNow } from '../../../boss/viewof'
+import { finishNow, seatView, viewNow } from '../../../boss/viewof'
 import type { Emitter, PartMaker, RealContext } from '../../../real/types'
 import type { Shape } from '../../../stage/types'
 
@@ -162,6 +162,7 @@ export function lit(inner: PartMaker): PartMaker {
       return group
     },
     pose(group: THREE.Object3D, s: Shape, ctx: RealContext): void {
+      seatView(s)
       inner.pose?.(group.userData.inner as THREE.Object3D, s, ctx)
       const floor = group.userData.floor as THREE.Mesh
       const ring = group.userData.ring as THREE.Mesh

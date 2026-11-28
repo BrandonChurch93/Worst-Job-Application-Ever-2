@@ -1,5 +1,5 @@
 import { earlyEnd } from '../../audio/cues'
-import { config } from '../../config'
+import { config, stepHz } from '../../config'
 import { collapseRig, drawRig, drawRim, drawSmoke, drawSocket, fightRig, label, restRig, unfoldRig, prog, bossPlaceAt, CANNON_FROM, type Rig } from '../../boss/body'
 import { bearing, clearSpot, newFight, SPARK_SECONDS, standing, stepFight, threat, turn, type Arena, type Fight } from '../../boss/fight'
 import { COLLAPSE_SECONDS, DOUBT_SECONDS, FALLEN, GAG_MAX, HOME, SOCKET, UNFOLD, WAKE_AFTER_TICK } from '../../boss/plan'
@@ -11,7 +11,7 @@ import { FIRE, finishState, kneelSpot, powerPlan, type FinishInput } from '../..
 import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
 import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
-import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
+import { keepView, LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
 import { drawLayout, type DrawOptions } from '../../shell/layout'
@@ -855,10 +855,11 @@ export function makePage(): PageLogic {
       setFinish(figure())
       if (look && v) {
         const whole = { x: 0, y: 0, w: 1920, h: SCREEN_H, z1: 0, tone: 'dark' as const }
+        const at = keepView(s.mode === 'film' ? 0 : 1, Math.round(s.time * stepHz))
         if (v.time >= GROUND.clearAt) out.push({ ...whole, id: 'arena-well', part: 'boss-arena', kind: 'well', z0: -GROUND.wellDepth })
-        out.push({ ...whole, id: 'arena', part: 'boss-arena', kind: 'anchor', z0: 0 })
-        out.push({ ...whole, id: 'boss-look', part: 'boss-look1', kind: 'anchor', z0: 0 })
-        out.push({ ...whole, id: 'finish-figure', part: 'boss-finish', kind: 'anchor', z0: 0 })
+        out.push({ ...whole, id: 'arena', part: 'boss-arena', kind: 'anchor', z0: 0, v: at })
+        out.push({ ...whole, id: 'boss-look', part: 'boss-look1', kind: 'anchor', z0: 0, v: at })
+        out.push({ ...whole, id: 'finish-figure', part: 'boss-finish', kind: 'anchor', z0: 0, v: at })
         for (let i = out.length - 1; i >= first; i--) if (out[i]!.id.startsWith('health-')) out.splice(i, 1)
         if (v.time >= GROUND.barLands) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
         const w = wordAt(v)
