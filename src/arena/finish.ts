@@ -163,17 +163,17 @@ export function makeFinish(seed: number, kit: Kit, wounds: Wounds): Finish {
       const strong = clamp01((share - 0.35) / 0.4)
       const each = Math.floor(SCORCH.smoke / COLUMNS)
       for (let c = 0; c < COLUMNS; c++) {
-        const along = c < 2 ? s.at + (rnd(seed, 460, c) - 0.5) * SCORCH.burn * 2.6 : s.at * (0.12 + 0.6 * rnd(seed, 461, c))
-        const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 1.1 : SCORCH.half)
+        const along = c < 2 ? s.at + (0.1 + 0.6 * rnd(seed, 460, c)) * SCORCH.burn : s.at * (0.2 + 0.2 * rnd(seed, 461, c))
+        const across = (rnd(seed, 462, c) - 0.5) * (c < 2 ? SCORCH.burn * 1.3 : SCORCH.half * 0.6)
         const x = s.sx + s.ux * along - s.uy * across, y = s.sy + s.uy * along + s.ux * across
         const period = 2.6 + 1.2 * rnd(seed, 463, c)
         for (let j = 0; j < each; j++) {
           const g = (((t / period + j / each + rnd(seed, 464, c)) % 1) + 1) % 1
-          // The two over the burn are plumes, taller and fuller than the wisps along the trench.
+          // Thin smoke: the two over the burn stand a little taller than the wisps along the trench.
           const big = c < 2 ? 1 : 0
-          const thick = (0.34 + 0.1 * big) * strong * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g) ** 1.2
-          const size = 12 + (62 + 60 * big) * g
-          const z = 8 + (230 + 130 * big) * g
+          const thick = (0.3 + 0.05 * big) * strong * Math.sin(Math.PI * Math.sqrt(g)) * (1 - g) ** 1.2
+          const size = 12 + (56 + 22 * big) * g
+          const z = 8 + (230 + 70 * big) * g
           const sway = 16 * g * Math.sin(t * 1.3 + c * 2.1 + g * 5)
           q.setFromAxisAngle(v.set(0, 0, 1), UP + 0.5 * (rnd(seed, 465, c * 8 + j) - 0.5))
           m4.compose(v.set(wx(x) + sway + leanX * z, wy(y) + lean * z, z), q, sc.set(size, size * 1.9, 1))
