@@ -22,6 +22,8 @@ export interface Arms extends ArmsModel {
   // How thick the hoses are and how large the hands, as a share of the approved arms: 1 everywhere but on the standing figure.
   bulk: number
   glove: number
+  // How much further a gripping hand closes, 0 to 1: 0 is the approved grip, 1 a fist with the fingers folded under.
+  clench: number
   // The height of the body's top face, in the same space as the shoulders.
   over: number
   // From the first shoulder to the second, a unit vector in the plane of the page: each hose bows away from the other.
@@ -146,7 +148,7 @@ class Limb {
     return length
   }
 
-  pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, axis: [number, number], inward: [number, number] | null, over: number, bulk = 1, glove = 1): void {
+  pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, axis: [number, number], inward: [number, number] | null, over: number, bulk = 1, glove = 1, clench = 0): void {
     const dx = to.x - from.x
     const dy = to.y - from.y
     const d = Math.max(1e-3, Math.hypot(dx, dy, to.z - from.z))
@@ -264,8 +266,8 @@ class Limb {
         f.tip.rotation.x = (-0.9 * grip - 0.1) * v - WRAP.flat * w
       } else {
         f.base.position.set(f.x, f.y, WRAP.under * w)
-        f.base.rotation.set((-HAND.curl * grip - 0.14) * v - WRAP.dive * w, 0, splay)
-        f.tip.rotation.x = (-HAND.knuckle * grip - 0.22) * v - WRAP.tip * w
+        f.base.rotation.set((-(HAND.curl + 1.15 * clench) * grip - 0.14) * v - WRAP.dive * w, 0, splay * (1 - 0.6 * clench * grip))
+        f.tip.rotation.x = (-(HAND.knuckle + 1.1 * clench) * grip - 0.22) * v - WRAP.tip * w
       }
     }
     this.hand.updateMatrixWorld(true)
@@ -329,11 +331,12 @@ export const makeArms: (() => Arms) | null = () => {
     grown: 1,
     bulk: 1,
     glove: 1,
+    clench: 0,
     over: 0,
     axis: [1, 0],
     inward: [null, null],
     apply(from: [THREE.Vector3, THREE.Vector3], to: [THREE.Vector3, THREE.Vector3], look: ArmsLook): void {
-      for (let i = 0; i < 2; i++) limbs[i]!.pose(draw, from[i]!, to[i]!, Math.min(1, Math.max(0, look.grip[i]!)), Math.min(1, Math.max(0, look.strain)), arms.grown, arms.axis, arms.inward[i]!, arms.over, arms.bulk, arms.glove)
+      for (let i = 0; i < 2; i++) limbs[i]!.pose(draw, from[i]!, to[i]!, Math.min(1, Math.max(0, look.grip[i]!)), Math.min(1, Math.max(0, look.strain)), arms.grown, arms.axis, arms.inward[i]!, arms.over, arms.bulk, arms.glove, arms.clench)
       position.needsUpdate = true
       normal.needsUpdate = true
       draw.palms.instanceMatrix.needsUpdate = true
