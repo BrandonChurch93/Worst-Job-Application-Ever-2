@@ -564,7 +564,8 @@ export function makeFinishFx(): FinishFx {
     const sky = fx.lens ?? fx.sky
     dusk.visible = sky !== undefined && sky.low > 0.004
     if (sky) {
-      duskMat.uniforms.uK!.value = sky.low
+      duskMat.uniforms.uK!.value = sky.low * (fx.lens ? CAMERA.dusk.finish.k : 1)
+      duskMat.uniforms.uReach!.value = fx.lens ? CAMERA.dusk.finish.reach : CAMERA.dusk.reach
       dusk.position.set(sky.eye[0], sky.eye[1], 0)
     }
     ball.visible = fx.ball !== null
