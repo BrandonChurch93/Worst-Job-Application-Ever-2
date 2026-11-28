@@ -307,3 +307,14 @@ MEASURED after the mend, 1920x1080, trial timing, the option on, each job drawin
 Live frame time: UNKNOWN, not measured. STATED: the mend sets the spheres once when the figure is made and adds nothing per frame.
 
 Test: `tests/b-camera.test.ts`, "the standing arrow drawn in pieces of the film". It makes two figures, draws one at an earlier pose first, and asks that the spheres' middles at the later pose are the same. On the figure of before it failed with `expected [ '20.102,-34.757,4.234', ...(21) ] to deeply equal [ '20.041,-34.819,4.234', ...(21) ]`.
+
+### The lamp line, tried and not committed
+
+The Builder asked for a trial of one line in `src/core/renderer.ts` (after line 293, `lamp.shadow.camera.updateProjectionMatrix()`), in the working tree only. MEASURED as above:
+
+- 48.0 s alone against after 42.0 s, the line in and the figure of before: 708 px in the same box. The line does not mend that case. With the figure's mend and the line: 0.
+- The line against no line, each frame alone in its session: 25.0 s 0, 45.5 s 0, 48.0 s 0, 42.0 s 0.
+- 32.0 s alone differs by 114 px between two sessions with no line at all (box 81x99 at 359,666, the cracked edge of the flat arrow), so nothing about the line can be read from that frame.
+- The line against no line in a run from 34.0 s in steps of 1 s: 0 from 34 to 40, 655 px at 41, 64 at 42, 170 at 43, 5837 at 44, 0 from 45 to 48.
+- 42.0 s as the first frame of a session against 42.0 s in that run: 64 px without the line, 0 with it.
+- 48.0 s alone against the end of that run: 1 px at 1269,354 with the line and without it.
