@@ -51,7 +51,7 @@ function hullGeo(): { plate: THREE.BufferGeometry; dark: THREE.BufferGeometry; t
   const { hx, hy, c, top, tall, belly } = HULL
   const bezelOut = pillOutline(BTN.w + 40, BTN.h + 40, BTN.r + 18)
   const bezelIn = pillOutline(BTN.w + 12, BTN.h + 12, BTN.r + 5)
-  const plate = chamfer(oct(hx, hy, c), top - tall, top, 15, 7)
+  const plate = chamfer(oct(hx, hy, c), top - tall, top, 14, 12)
   const dark = joined([
     plateAt(oct(hx - 16, hy - 14, c - 6), belly, top - tall + 1, 5),
     plateAt(oct(hx - 60, hy - 40, 20), belly - 22, belly + 1, 5)
@@ -71,7 +71,7 @@ function wingGeo(side: number): { plate: THREE.BufferGeometry; dark: THREE.Buffe
     const pts: [number, number][] = [[-WING.inner + inset, y0], [WING.inner - inset, y0], [WING.outer - inset * 0.8, y1 - inset - 14], [WING.outer - 14 - inset * 0.8, y1 - inset], [-WING.outer + 14 + inset * 0.8, y1 - inset], [-WING.outer + inset * 0.8, y1 - inset - 14]]
     return side > 0 ? pts : pts.map(([x, y]) => [x, -y] as [number, number]).reverse()
   }
-  const plate = chamfer(shape(0), WING.top - 22, WING.top, 13, 6)
+  const plate = chamfer(shape(0), WING.top - 22, WING.top, 12, 10)
   const fins: THREE.BufferGeometry[] = [plateAt(shape(14), WING.top - 70, WING.top - 21, 4)]
   for (let i = 0; i < 6; i++) fins.push(plateAt(shape(8 - (i % 2) * 0), WING.top - 66 + i * 7, WING.top - 63 + i * 7, 1))
   const dark = joined(fins)
@@ -112,20 +112,24 @@ function legGeo(): { upper: Record<string, THREE.BufferGeometry>; lower: Record<
     }
   }
   const upper = {
-    ...link(A, 38, 19),
+    ...link(A, 43, 20),
     orange: joined([hose([[10, -12, 6], [A * 0.3, -17, 15], [A * 0.62, 15, 15], [A - 12, 12, 6]], 4.2, 20, 7), hose([[14, 13, 4], [A * 0.3, 17, 11], [A * 0.58, -15, 11], [A - 16, -12, 4]], 3.6, 20, 7)])
   }
   const lower = {
-    ...link(B, 33, 17),
+    ...link(B, 38, 18),
     orange: joined([hose([[12, 11, 5], [B * 0.3, 15, 13], [B * 0.6, -13, 12], [B - 18, -10, 5]], 3.8, 20, 7)])
   }
-  // A claw of three fingers that grip: each a rounded bar that leaves the ankle high and dives into the ground at its tip.
-  const finger = (ang: number, len: number, w: number): THREE.BufferGeometry => cutPlate(pillOutline(len, w, w / 2, 6).map(([x, y]) => [x + len / 2 + 8, y] as [number, number]), 24, 7).rotateY(0.24).translate(0, 0, 32).rotateZ(ang)
+  // A claw of two short thick hooks: each leaves the ankle high, turns inward at its knuckle and sinks its tip into the ground.
+  const hook = (side: number): THREE.BufferGeometry[] => {
+    const root = cutPlate(pillOutline(74, 40, 20, 6).map(([x, y]) => [x + 30, y] as [number, number]), 34, 9).rotateY(0.16).translate(0, 0, 26)
+    const tip = cutPlate(pillOutline(60, 34, 17, 6).map(([x, y]) => [x + 24, y] as [number, number]), 30, 9).rotateY(0.5).rotateZ(-side * 0.5).translate(58, 0, 16)
+    return [root, tip].map((g) => g.rotateZ(side * 0.42).translate(0, side * 10, 0))
+  }
   const foot = {
-    plate: joined([finger(0, 122, 30), finger(0.5, 116, 30), finger(-0.5, 116, 30)]),
-    joint: joined([boxAt(-30, -30, 6, 26, 30, 50, 6), across(13, 36, 2, 14).translate(0, 0, 46)]),
-    pin: joined([discAt(5, 30, 0, 50, 54, 1.2, 10).rotateZ(0.5), discAt(5, 30, 0, 50, 54, 1.2, 10).rotateZ(-0.5), discAt(5, 30, 0, 50, 54, 1.2, 10)]),
-    dark: boxAt(-34, -24, 2, -26, 24, 30, 1)
+    plate: joined([...hook(1), ...hook(-1)]),
+    joint: joined([boxAt(-34, -32, 6, 22, 32, 52, 7), across(14, 38, 2, 14).translate(0, 0, 46)]),
+    pin: joined([discAt(6, 26, 30, 54, 58, 1.2, 10), discAt(6, 26, -30, 54, 58, 1.2, 10)]),
+    dark: boxAt(-38, -24, 2, -30, 24, 30, 1)
   }
   return { upper, lower, foot }
 }
@@ -145,7 +149,17 @@ function cannonGeo(): Record<string, THREE.BufferGeometry> {
     along([[r.breech + 0.6, b0 + 38], [r.breech + 2.5, b0 + 40], [r.breech + 2.5, b0 + 50], [r.breech + 0.6, b0 + 52]], 40),
     along([[r.breech + 0.6, b1 - 64], [r.breech + 2.5, b1 - 62], [r.breech + 2.5, b1 - 52], [r.breech + 0.6, b1 - 50]], 40)
   ])
-  const window = boxAt(b0 + 130, -30, r.breech + 7, b0 + 190, 30, r.breech + 11, 0.5)
+  const window = new THREE.PlaneGeometry(60, 60, 10, 10).translate(b0 + 160, 0, r.breech + 11)
+  {
+    const pos = window.getAttribute('position')
+    const col = new Float32Array(pos.count * 3)
+    for (let i = 0; i < pos.count; i++) {
+      const d = Math.min(1, Math.hypot(pos.getX(i) - b0 - 160, pos.getY(i)) / 40)
+      const k = (1 - d * d) * (1 - d * d)
+      col.set([0.5 + 2.2 * k, 0.4 + 4.6 * k, 0.3 + 16 * k], i * 3)
+    }
+    window.setAttribute('color', new THREE.BufferAttribute(col, 3))
+  }
   const slit = joined([-1, 1].flatMap((s) => [0, 1, 2].map((i) => boxAt(b1 - 38, -8, r.breech - 4.2, b1 - 18, 8, r.breech + 0.8, 0.4).rotateX(s * (0.5 + i * 0.36)))))
   const yoke = joined([across(38, 58, 4), across(20, 66, 3, 20)])
   const hoses = joined([-1, 1].flatMap((s) => [
@@ -293,6 +307,7 @@ export function buildModel(): Model {
   const carriage = new THREE.Group()
   const root = new THREE.Group()
   const window = glowMaterial(0xff7a14, 0.4)
+  window.vertexColors = true
   const bore = glowMaterial(0xff9a3a, 0.05)
   const slits = glowMaterial(0xff8a22, 0.3)
   const heat = glowMaterial(0xff5a10, 0)

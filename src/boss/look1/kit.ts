@@ -264,6 +264,8 @@ export interface LookKit {
   hull: THREE.MeshPhysicalMaterial
   wing: THREE.MeshPhysicalMaterial
   hatch: THREE.MeshPhysicalMaterial
+  gunBody: THREE.MeshPhysicalMaterial
+  gunBase: THREE.MeshPhysicalMaterial
   bezel: THREE.MeshPhysicalMaterial
   steel: THREE.MeshPhysicalMaterial
   dark: THREE.MeshPhysicalMaterial
@@ -287,14 +289,16 @@ export function lookKit(): LookKit {
   if (look) return look
   const b = bossKit()
   const m = materials()
-  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0xa4a8ad), roughness: 0.58, metalness: 0.22, specularIntensity: 0.5 })
+  const plateLight = new THREE.MeshPhysicalMaterial({ color: srgb(0x84888d), roughness: 0.56, metalness: 0.3, specularIntensity: 0.5 })
   const brushed = (hex: number, metal: number, rough = 0.46): THREE.MeshPhysicalMaterial => { const c = b.plate.clone(); c.color = srgb(hex); c.metalness = metal; c.roughness = rough; return studio(c) }
   look = {
-    hull: brushed(0xc9ccd0, 0.5),
-    wing: brushed(0xb6b9bd, 0.5),
-    hatch: brushed(0x70747a, 0.7, 0.4),
+    hull: brushed(0x9da0a4, 0.3, 0.55),
+    wing: brushed(0x8f9296, 0.3, 0.55),
+    hatch: brushed(0x8a8e94, 0.6, 0.44),
     bezel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x595d62), roughness: 0.32, metalness: 0.85 })),
-    steel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xd6d9dc), roughness: 0.36, metalness: 0.55, specularIntensity: 0.8 })),
+    steel: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xaeb1b5), roughness: 0.46, metalness: 0.5, specularIntensity: 0.6 })),
+    gunBody: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x90949a), roughness: 0.5, metalness: 0.45, specularIntensity: 0.6 })),
+    gunBase: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0xb4b7bb), roughness: 0.42, metalness: 0.5, specularIntensity: 0.6 })),
     plate: b.plate,
     plateLight: studio(plateLight),
     limb: studio(new THREE.MeshPhysicalMaterial({ color: srgb(0x9a9ea3), roughness: 0.5, metalness: 0.55, specularIntensity: 0.6 })),
