@@ -104,7 +104,7 @@ export const POSES = {
   // The thrust a hand's width too far, for the overshoot.
   fireOver: P([15, 25], -0.3, [[66, 31, 14], [68, 23, 15]], [0, 0], [[-39, 0], [24, 0]], { strain: 1, stretch: 1.08, pitch: [0.3, 0], rise: 0.6, puff: 0.3 }),
   // After the beam: arms hanging, body slumped.
-  spent: P([2, 27], -0.2, [[-27, 22, 8], [37, 21, 8]], [0, 0], [[-13, 0], [15, 0]], { stretch: 0.97 }),
+  spent: P([2, 27], -0.2, [[-37, 24, 5], [47, 23, 5]], [0, 0], [[-13, 0], [15, 0]], { stretch: 0.97 }),
   // On its knees: the shins lie on the ground behind.
   knees: P([4, 15], -0.12, [[-8, 6, 6], [26, 5, 6]], [0, 0], [[-30, 0], [-17, 0]], { toes: [-1, -1], pitch: [1.2, 1.2], knees: [1, 1], stretch: 0.95 }),
   // The same, as it lands: lower, and squashed.
