@@ -177,3 +177,23 @@ Not committed, as told: `content/narration.json` and `cut/`.
 ## The push-in under the line (the Builder's task of 04:29Z)
 
 The film only. `VIEW` in `src/pages/step5/timeline.ts` holds the numbers: zoom 1.5 centred on page (960, 720), in from 7.067 s to 13.599 s, held to 16.643 s, out by 17.013 s. The reasons, the caption's place and what is not as asked are in `src/pages/step5/NOTES.md`, section "The push-in under the line". Tests: `tests/decision-view.test.ts`. Strip: `node pipeline/change002/decision-frames.mjs --name push --at 5.5,6.0,...,18.5 --columns 5`.
+
+## Timed ahead for the lines without pauses (the Builder's task of 08:11Z November 28, branch `agent/b-decision`)
+
+The times, the reasons and what is not as asked are in `src/pages/step5/NOTES.md`, section "Timed ahead for the lines without pauses". In short: `SAID` is line 8's five starts and its end from `pipeline/change002/fast-takes.json`; the unit is 14.9 s; `stamp` 5.433, `button-press` 11.333, `page-turn` 11.7875; the arrow peels under "the company", puffs on "to move forward", sags on "with other candidates.".
+
+Tests re-pinned, each with a line of comment in the test:
+
+| File | Test | Was | Is | Why |
+| --- | --- | --- | --- | --- |
+| `tests/decision-acting.test.ts` | the phrase times are those of line 8 | held to the kept take in `public/audio/index.json` | held to `pipeline/change002/fast-takes.json` | the task; it goes back to the index when the take is kept |
+| `tests/decision-acting.test.ts` | the arrow acts the line | flat a second or more, a move in each pause, eight cues | lying still 0.4 s or more, whole as the third phrase starts, two moves a second or more apart, three cues | there are no pauses |
+| `tests/decision-acting.test.ts` | the beaten walk to the button | the walk starts 0.25 s or more after the look | the walk starts as the arrow sags, inside 0.2 s; no look | the last phrase is 1.23 s |
+| `tests/decision-fix.test.ts` | the flat arrow lies still before the key | whole before the look at the button | whole before the walk to the button | there is no look |
+| `tests/decision-view.test.ts` | the push-in's numbers | in to the fourth phrase, 4 s or more, held past the sag, out by the walk | in to the fifth phrase, 3 s or more, out with the walk, whole 0.1 s before the press | the line is 6 s |
+| `tests/decision-view.test.ts` | goes in slowly | 0.15 of a zoom a second at most | 0.25 | the same |
+| `tests/decision-view.test.ts` | the three things inside every frame | 40 px from the edge | 30 px | on the way out the arrow walks to the button, low on the page |
+| `tests/step5.test.ts` | waits for the press and takes it as soon as the button is up | turns at the first phrase's end and the gap; still held 1 s after that press | turns at that or 0.45 s after the press, whichever is later; the held page is looked at with a press as the fourth phrase starts | the first phrase ends 0.15 s after the button is up |
+| `tests/step5.test.ts` | hands the cursor on whole | done by the first phrase's end and the gap | done by that or 0.45 s after the press | the same |
+
+The strip: `node pipeline/change002/decision-frames.mjs --name fast --format preview --said 5.4333,11.7875 --at 5.434,5.934,... --columns 4` (the lettering under each frame is from `fast-takes.json`; the caption tool reads the kept takes). The silent piece: `npm run -s film -- --unit decision --format preview --tier draft`. Both need the site to start, see the last paragraph of the notes.

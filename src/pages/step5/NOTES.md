@@ -169,3 +169,48 @@ From 7.0 s to 16.0 s of the unit the frame did not change at frame size; the rea
 - The key `decision` (7.908 s of the unit) falls 0.84 s into the push-in, at a zoom of 1.023. Its `at` was not moved.
 
 Tests: `tests/decision-view.test.ts`.
+
+## Timed ahead for the lines without pauses (the Builder's task of 08:11Z November 28, branch `agent/b-decision`, not merged before the takes are kept)
+
+What is above was timed to the kept take of line 8, 12.742 s with a pause before each phrase. Where this section differs, this section holds. The numbers are provisional (`pipeline/change002/fast-takes.json`, MEASURED by the Builder): line 8 is 6.049 s, its phrases start at 0.03, 1.721, 2.491, 3.569 and 4.822 s; line 9 is 1.339 s. `SAID` in `timeline.ts` holds line 8's six numbers and `tests/decision-acting.test.ts` holds `SAID` to that file until the take is kept. The page types no number of line 9: it is said over the careers page, and only the unit's length in the config makes room for it.
+
+The film (seconds of the unit, MEASURED from the code and a run of the stage):
+
+| What | When |
+| --- | --- |
+| The stamp (`stamp`), "After careful consideration," starts | 5.433 |
+| The arrow, flat, is thrown off the block | 6.333 |
+| It lands flat; the push-in starts | 7.067 |
+| "the company" starts | 7.154 |
+| It peels itself up (`peel-up` at 7.771) and fills | 7.50 to 7.92 |
+| "has decided" starts: it is whole and stands slumped | 7.924 |
+| "to move forward" starts: it puffs up and leans to the letter (`READ.look`) | 9.002 |
+| "with other candidates." starts: it sags (`READ.sag`); the view is at its closest | 10.255 |
+| It drags itself to the button (`GIVE.walk`); the view comes back out with it | 10.313 to 10.923 |
+| The blow (`GIVE.strike`); the view is the whole page | 11.233 |
+| The press (`button-press`) | 11.333 |
+| Line 8 ends | 11.482 |
+| The turn (`page-turn`), line 9 starts | 11.7875 |
+| Line 9 ends | 13.127 |
+| The arrow on the careers page steps to the button and leans | 13.40 to 14.15 |
+| It stands again there and is at rest | 14.59 |
+| The unit ends | 14.9 |
+
+- The unit is 14.9 s (it was 21.7). Beats: the metrics 6 to 11.7, the reset 11.7 to 14.9. The wait and the letter are as they were. The film is 208.0 s, 12480 frames.
+- Why not shorter. Line 9 ends at 13.127 s. The film ends on the careers page, on the arrow's landing (`LANDING` in `src/pages/marketing/script.ts`, not this page's). There the arrow lies flat, stands, steps to the button and leans on it (13.40 to 14.15 s), stands again and is at rest at 14.59 s. `tests/careers-fix-landing.test.ts` holds it still over the unit's last 0.3 s, and 14.9 is the shortest tenth at which that test passes.
+- 14.6 and 14.1 were tried and put back (the Builder's ruling of 09:15Z, 28 November): the landing rests at 14.59 s and the 0.3 s after it is the film's last picture, not padding; 14.6 failed the landing's test; 14.1 would have cut the lean.
+- What is kept of the acting, and why. The hit, the arrow flat, the peel: flat from the hit for 2.06 s (under the block, carried, thrown, 0.43 s lying still), whole as "the company" ends. `FILM.heal` follows from `SAID`: 0.858 s, where a visitor's is 0.78. Then two moves and no more, each as its phrase starts: the puff and the lean to the letter on "to move forward", and the sag on "with other candidates.". The line is a false hope and its fall, and those two are the hope and the fall; the puff also holds the look at the letter, since the arrow leans to it. Each pose is held a second or more.
+- What is not played: the dusting, the turn to the letter on edge, the breath, the hop and the look at the button. They stood in the kept take's pauses and there are no pauses. The Builder's guess was the look at the letter on "has decided"; it would start in the same step as the peel ends, and it would leave "to move forward" with nothing.
+- The last phrase is 1.23 s and the press is 0.15 s before its end. The walk (0.61 s), the lean back (0.31 s) and the blow (0.1 s) fill it, so the walk starts 0.06 s after the sag is cued: the arrow sags and goes.
+- The push-in (`VIEW`): in from the landing (7.067) to the start of "with other candidates." (10.255), 3.19 s, at most 0.24 of a zoom a second; out with the walk, from 10.313 to 0.1 s before the press (11.233). There is no hold. To the fourth phrase it would have been 1.9 s, which is not slow.
+- The key `decision`: its `at` is 0.22807 of the shorter beat, 7.3 s of the unit: the letter stamped, the arrow lying flat (it lies from 7.07 to 7.50). Left at 0.15385 it would have shown the arrow in the air at 6.88 s.
+
+The live site:
+
+- The same `SAID`, so the hold after a press under the line is shorter. A press as soon as the button is up (7.0 s) falls 0.15 s before the first phrase's end; the page turns 0.45 s after it, as it did before change 002. The longest hold is 1.55 s (a press as "to move forward" starts); it was 3.14 s.
+- Nothing else a visitor meets has changed: the wait before the letter (2 s), the letter, the stamp at 5.43 s, the arrow whole 0.78 s after it lands, the button up at 7.0 s, the walk by itself after 20 s.
+- One mend. An arrow that lands after the press (a press in the last steps of the throw, with a hold only a little longer than 0.45 s) was given the whole heal and could be handed on flat. It is now given what is left of the hold, less 0.12 s, as a press on a lying arrow always was.
+
+Tests re-pinned: see `pipeline/change002/decision.md`.
+
+Not done here, and why: the site does not start on this branch. `contentProblems` in `src/copy.ts` takes a line's soonest end from `audio.narratorMaxWordsPerSecond` (1.6): line 8 is 13 words, 8.125 s by that rule, and line 9 starts 6.35 s after line 8. Without pauses the line is said at 2.15 words a second. The number is the config's, not this page's.

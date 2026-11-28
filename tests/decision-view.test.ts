@@ -32,16 +32,18 @@ const views = (): { t: number; view: CameraPose | null; cursor: { x: number; y: 
 describe('the push-in of the Decision unit in the film', () => {
   const all = views()
 
-  it('keeps its numbers in one place and in order: in from the landing to the start of the fourth phrase, held past the sag, out by the walk', () => {
+  it('keeps its numbers in one place and in order: in from the landing to the start of the fifth phrase, out with the walk, whole before the press', () => {
     expect(VIEW.zoom).toBeGreaterThan(1)
     expect(VIEW.zoom).toBeLessThanOrEqual(1.5)
     expect(VIEW.in[0]).toBe(FILM.landed)
-    expect(VIEW.in[1]).toBe(READ.look)
-    expect(VIEW.in[1]).toBeCloseTo(FILM.flat + SAID[3], 9)
-    expect(VIEW.in[1] - VIEW.in[0]).toBeGreaterThanOrEqual(4)
-    expect(VIEW.out[0]).toBeCloseTo(READ.sag + VIEW.hold, 9)
-    expect(VIEW.hold).toBeGreaterThanOrEqual(0.2)
-    expect(VIEW.out[1]).toBe(GIVE.walk[0])
+    expect(VIEW.in[1]).toBe(READ.sag)
+    expect(VIEW.in[1]).toBeCloseTo(FILM.flat + SAID[4], 9)
+    // Was 4 s or more under the take with pauses. The line is 6 s now and the arrow lands 1.6 s into it.
+    expect(VIEW.in[1] - VIEW.in[0]).toBeGreaterThanOrEqual(3)
+    expect(VIEW.out[0]).toBe(GIVE.walk[0])
+    expect(VIEW.out[0]).toBeGreaterThanOrEqual(VIEW.in[1])
+    expect(VIEW.out[1]).toBeCloseTo(FILM.press - VIEW.whole, 9)
+    expect(VIEW.whole).toBeGreaterThanOrEqual(0.1)
     expect(VIEW.out[1]).toBeGreaterThan(VIEW.out[0])
     expect(pushAt(VIEW.in[0])).toBe(0)
     expect(pushAt(VIEW.in[1])).toBe(1)
@@ -50,11 +52,11 @@ describe('the push-in of the Decision unit in the film', () => {
     expect(windowAt(VIEW.in[1])).toEqual({ x: VIEW.at[0] - 960 / VIEW.zoom, y: VIEW.at[1] - 540 / VIEW.zoom, w: 1920 / VIEW.zoom, h: 1080 / VIEW.zoom })
   })
 
-  it('shows the whole page before the stamp and from the walk to the button on, so the press and the turn are seen whole', () => {
+  it('shows the whole page before the stamp and from 0.1 s before the press on, so the press and the turn are seen whole', () => {
     expect(all.length).toBeGreaterThan(FILM.leave * hz)
     for (const f of all) {
       if (f.t < FILM.flat - 1 / hz) expect(f.view, `at ${f.t}`).toBeNull()
-      if (f.t >= GIVE.walk[0]) expect(f.view, `at ${f.t}`).toBeNull()
+      if (f.t >= VIEW.out[1]) expect(f.view, `at ${f.t}`).toBeNull()
       // The hit's jolt is the only other view, and it is the whole page shaken up and down.
       if (jolted(f.t) && f.view) expect(zoomOf(f.view)).toBeCloseTo(1, 9)
       if (f.t >= FILM.flat + 0.3 + 1 / hz && f.t <= VIEW.in[0]) expect(f.view, `at ${f.t}`).toBeNull()
@@ -62,7 +64,7 @@ describe('the push-in of the Decision unit in the film', () => {
     expect(all.some((f) => f.t >= FILM.press && f.t <= FILM.leave)).toBe(true)
   })
 
-  it('goes in slowly and never back until the hold is over, is at its closest as the fourth phrase starts, and never shows past the page', () => {
+  it('goes in slowly and never back until the walk, is at its closest as the fifth phrase starts, and never shows past the page', () => {
     let last = 1
     let closest = 1
     for (const f of all) {
@@ -72,8 +74,8 @@ describe('the push-in of the Decision unit in the film', () => {
       closest = Math.max(closest, zoom)
       if (f.t <= VIEW.out[0]) {
         expect(zoom, `at ${f.t}`).toBeGreaterThanOrEqual(last - 1e-9)
-        // Slow: no more than 0.15 of a zoom in any second on the way in.
-        expect(zoom - last, `at ${f.t}`).toBeLessThanOrEqual(0.15 / hz + 1e-9)
+        // Slow: no more than 0.25 of a zoom in any second on the way in (it was 0.15 under the take with pauses).
+        expect(zoom - last, `at ${f.t}`).toBeLessThanOrEqual(0.25 / hz + 1e-9)
       }
       if (f.t >= VIEW.in[1] && f.t <= VIEW.out[0]) expect(zoom, `at ${f.t}`).toBeCloseTo(VIEW.zoom, 9)
       last = zoom
@@ -96,7 +98,8 @@ describe('the push-in of the Decision unit in the film', () => {
     const block = [0, config.scale.heights.machineMinTop + 134].flatMap((z) => [[b.x - 24, b.y - 24], [b.x + b.w + 24, b.y - 24], [b.x + b.w + 24, b.y + b.h + 24], [b.x - 24, b.y + b.h + 24]].map(([x, y]) => ({ x: x!, y: y!, z })))
     // The arrow is 70 px long at this size and puffs up; 90 px each way from where it is holds it in every pose.
     const reach = config.cursor.heightPxAt1080 + 20
-    const edge = 40
+    // 30 px from the frame's edge: on the way out the arrow walks to the button, low on the page.
+    const edge = 30
     let seen = 0
     for (const f of all) {
       if (!f.view || jolted(f.t)) continue

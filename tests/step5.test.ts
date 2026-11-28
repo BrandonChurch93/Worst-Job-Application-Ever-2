@@ -269,14 +269,20 @@ describe('step 5, the live site', () => {
     const hit = s.events.find((e) => e.name === 'stamp')!.step / hz
     const due = hit + SAID[1] + config.audio.lineGapSeconds
     expect(holdAfterPress(press.step / hz - hit)).toBeCloseTo(due - press.step / hz, 2)
-    expect(took).toBeGreaterThanOrEqual(due)
-    expect(took).toBeLessThan(due + 0.6)
-    expect(s.events.find((e) => e.name === 'page-turn')!.step / hz).toBeGreaterThanOrEqual(due - 0.01)
-    expect(s.events.find((e) => e.name === 'page-turn')!.step / hz).toBeLessThan(due + 0.05)
+    // Without pauses that phrase ends 0.15 s after the button is up, so the hold is the least there is (AT.hold) when the phrase's end and the gap come sooner.
+    const turns = Math.max(due, press.step / hz + AT.hold)
+    expect(took).toBeGreaterThanOrEqual(turns)
+    expect(took).toBeLessThan(turns + 0.6)
+    expect(s.events.find((e) => e.name === 'page-turn')!.step / hz).toBeGreaterThanOrEqual(turns - 0.01)
+    expect(s.events.find((e) => e.name === 'page-turn')!.step / hz).toBeLessThan(turns + 0.05)
     expect(s.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
-    // While the page holds, the button is down and control is not taken.
-    const held = live(keen)
-    held.advance(press.step + Math.round(1 * hz))
+    // While the page holds, the button is down and control is not taken. Was: the same press, looked at 1 s later. Without pauses the first phrase ends 0.15 s after the button is up, so the press is made as the fourth phrase starts (a hold of 1.55 s) and looked at 1 s later.
+    const late = hit + SAID[3] + 0.02
+    const held = live({ name: 'bot', input: (v: DriverView): Pointer => ({ x: cap[0]! + cap[2]! / 2, y: cap[1]! + cap[3]! / 2, down: v.pageTime >= late && Math.floor(v.step / 24) % 2 === 0 }) })
+    while (!held.events.some((e) => e.name === 'button-press') && held.step < 20 * hz) held.advance(1)
+    expect(held.step / hz).toBeLessThan(late + 0.25)
+    expect(holdAfterPress(held.step / hz - hit)).toBeGreaterThan(1.2)
+    held.advance(Math.round(1 * hz))
     expect(held.page.id).toBe('step5')
     expect(held.page.gag!()).toBe('decision.reset')
     expect(held.page.done()).toBe(false)
@@ -316,7 +322,7 @@ describe('step 5, the live site', () => {
     expect(s.events.find((e) => e.name === 'stamp')!.hitsCursor).toBe(true)
     expect(s.events.some((e) => e.name === 'peel-up')).toBe(true)
     // Was: done inside 7.6 s. The press is under the line's first phrase, so the page now holds to that phrase's end and the gap (the ruling of change 002); the arrow is whole long before.
-    expect(s.step / hz).toBeLessThan(AT.decide + AT.slam[1] + SAID[1] + config.audio.lineGapSeconds + 0.05)
+    expect(s.step / hz).toBeLessThan(Math.max(AT.decide + AT.slam[1] + SAID[1] + config.audio.lineGapSeconds, s.events.find((e) => e.name === 'button-press')!.step / hz + AT.hold) + 0.05)
     expect(s.cursor.damaged).toBe(false)
     expect(longest / hz).toBeLessThanOrEqual(config.cursor.damageHealSeconds)
     const skipped = live(still(spot.x, spot.y))
