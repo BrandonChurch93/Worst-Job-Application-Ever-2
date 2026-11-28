@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { stepHz } from '../src/config'
+import { config, stepHz } from '../src/config'
 import { pages } from '../src/pages'
 import { BROUGHT, filmFlow, filmOptions, ScriptDriver, Stage, STAYS_ON, wholeFilmFlow } from '../src/stage/stage'
 
 const PER = Math.round(stepHz / 60)
 interface At { i: number; page: string; turning: boolean; x: number; y: number; z: number; rides: boolean }
 
-const run = (frames: number): At[] => {
+// The film is run until the page after step 1 is seated, and no further than the whole film of config/showcase.json: the units' lengths are read, not typed.
+const UNITS = config.film.units
+const WHOLE = Math.round(UNITS.reduce((n, u) => n + u.seconds, 0) * 60)
+const AFTER = UNITS[UNITS.findIndex((u) => u.id === 'step1') + 1]!.id
+const run = (): At[] => {
   const s = new Stage({ mode: 'film', flow: wholeFilmFlow(), pages, driver: new ScriptDriver() })
   const rows: At[] = []
-  for (let i = 0; i < frames; i++) {
+  for (let i = 0; i < WHOLE && !(s.page.unit === AFTER && !s.turning); i++) {
     const f = s.frameAt(((i + 1) * PER) / stepHz)
     const a = f.cursor.rides === true && s.page.unit !== 'marketing' ? f.turn : 0
     const v = 540 - (f.cursor.y - f.scroll)
@@ -19,7 +23,7 @@ const run = (frames: number): At[] => {
 }
 
 describe("the film's arrow at a page turn", () => {
-  const rows = run(50 * 60)
+  const rows = run()
   const leaving = (unit: string): At[] => rows.filter((r) => r.page === unit && r.turning && r.i > 120)
 
   it('names the careers page as the one whose arrow stays where it pressed', () => {

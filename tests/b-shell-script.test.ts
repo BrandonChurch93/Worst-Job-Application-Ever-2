@@ -303,12 +303,15 @@ describe('change note 003: line 1, the moment sound is allowed on the careers pa
 describe('change note 003: no line talks over another', () => {
   it('makes a line whose event comes while another is spoken wait for its end and the gap, and says it then if its moment still stands', async () => {
     const { s, ctx } = await ready('marketing')
-    ctx.currentTime = 4
+    // The page is turned half way through line 1, whatever its length, and line 2's event comes half way through the gap after the fade.
+    const turn = W + L / 2
+    ctx.currentTime = turn
+    expect(linesAt(s).length).toBe(1)
     s.event(ev('page-turn', 'marketing'), 'live')
-    ctx.currentTime = 4.5
+    ctx.currentTime = turn + LIVE.openingFadeSeconds + gap / 2
     s.event(ev('candidate-sensed', 'step1'), 'live')
     // Line 1 belongs to the careers page (ruling of 03:02Z): the turn ends it over LIVE.openingFadeSeconds, and line 2 waits for that end and the gap.
-    const after = 4 + LIVE.openingFadeSeconds + gap
+    const after = turn + LIVE.openingFadeSeconds + gap
     expect(booked(s)).toEqual([[id('marketing.stroll.0'), W], [id('step1.firstName.0'), near(after)]])
     ctx.currentTime = after + 0.1
     expect(linesAt(s)).toEqual([id('step1.firstName.0')])
@@ -321,14 +324,17 @@ describe('change note 003: no line talks over another', () => {
   it('drops the waiting line when its moment ends first: the event that ends it, a turn of its page or a skip', async () => {
     for (const end of ['field-done', 'page-turn', 'skip']) {
       const { s, ctx } = await ready('marketing')
-      ctx.currentTime = 4
+      // As above: the turn half way through line 1, line 2's event inside the fade, and the end of its moment just before it would have begun.
+      const turn = W + L / 2
+      ctx.currentTime = turn
+      expect(linesAt(s).length, end).toBe(1)
       s.event(ev('page-turn', 'marketing'), 'live')
-      ctx.currentTime = 4.1
+      ctx.currentTime = turn + LIVE.openingFadeSeconds / 3
       s.event(ev('candidate-sensed', 'step1'), 'live')
-      ctx.currentTime = 4 + LIVE.openingFadeSeconds + gap - 0.05
+      ctx.currentTime = turn + LIVE.openingFadeSeconds + gap - 0.05
       s.event(ev(end, 'step1'), 'live')
       expect(back(s), end).toEqual([id('step1.firstName.0')])
-      ctx.currentTime = L + gap + 0.1
+      ctx.currentTime = W + L + gap + 0.1
       expect(s.said().lines, end).toEqual([])
       s.event(ev('candidate-sensed', 'step1'), 'live')
       expect(booked(s).length, end).toBe(2)
@@ -380,7 +386,7 @@ describe('change note 003: the parts of one moment', () => {
     slow.s.event(ev('volume-sign', 'step2'), 'live')
     slow.ctx.currentTime = 10 + L + 5
     slow.s.event(ev('crank-full', 'step2'), 'live')
-    expect(booked(slow.s)[1]).toEqual([id('step2.crank.1'), 10 + L + 5])
+    expect(booked(slow.s)[1]).toEqual([id('step2.crank.1'), near(10 + L + 5)])
   })
 
   it('takes the second part back when the page turns before it began, and never says it when the first part was not said', async () => {
@@ -399,14 +405,15 @@ describe('change note 003: the parts of one moment', () => {
     expect(alone.s.log().filter((e) => e.what === 'dropped').map((e) => [e.line, e.why])).toEqual([[id('step2.crank.1'), 'the part before it was not said']])
     const both = await ready('step1')
     both.s.event(ev('resume-received', 'step1'), 'live')
-    both.ctx.currentTime = 1
+    // Three moments inside the line before, whatever its length: both parts of line 4 are booked and neither has begun.
+    both.ctx.currentTime = L / 5
     both.s.event(ev('page-turn', 'step1'), 'live')
     both.s.page('step2')
     both.s.event(ev('volume-sign', 'step2'), 'live')
-    both.ctx.currentTime = 2
+    both.ctx.currentTime = (2 * L) / 5
     both.s.event(ev('crank-full', 'step2'), 'live')
     expect(booked(both.s).map(([line, start]) => [line, near(start as number)])).toEqual([[id('step1.shredded.0'), 0], [id('step2.crank.0'), near(L + gap)], [id('step2.crank.1'), near(2 * L + gap + lineGap)]])
-    both.ctx.currentTime = 3
+    both.ctx.currentTime = (3 * L) / 5
     both.s.event(ev('field-done', 'step2'), 'live')
     expect(back(both.s).sort()).toEqual([id('step2.crank.0'), id('step2.crank.1')])
   })
@@ -645,13 +652,14 @@ describe('change note 003: line 7 and the fight music', () => {
     const { s, ctx } = await ready('step4')
     ctx.currentTime = 50
     s.event(ev('checkbox', 'step4'), 'live')
-    ctx.currentTime = 51
+    // Both events come while line 6 is said, whatever its length, so the first part of line 7 is booked and has not begun.
+    ctx.currentTime = 50 + L / 5
     s.event(ev('boss-formed', 'step4'), 'live')
-    ctx.currentTime = 52
+    ctx.currentTime = 50 + (2 * L) / 5
     s.event(ev('boss-turn', 'step4'), 'live')
     const lines = s.said().lines
     const first = 50 + L + gap
-    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, l.start, l.end])).toEqual([['beaten one two', near(first), near(first + 3 / wps)], ['three four five.', near(first + 3 / wps), near(first + 6 / wps)]])
+    expect(lines.filter((l) => l.line === id('boss.unfold.0')).map((l) => [l.words, near(l.start), near(l.end)])).toEqual([['beaten one two', near(first), near(first + 3 / wps)], ['three four five.', near(first + 3 / wps), near(first + 6 / wps)]])
     expect(lines.filter((l) => l.line === id('boss.unfold.1'))[0]!.start).toBeCloseTo(first + 6 / wps + lineGap, 9)
     expect(s.log().filter((e) => e.what === 'cut').map((e) => e.line)).toEqual([id('boss.unfold.0')])
   })
@@ -682,7 +690,7 @@ describe('change note 003: the same lines in the film on the site', () => {
     expect(booked(s)).toEqual([[id('marketing.stroll.0'), 30]])
     ctx.currentTime = 30 + L - 1
     s.event(ev('candidate-sensed', 'step1'), 'film')
-    expect(booked(s)[1]).toEqual([id('step1.firstName.0'), 30 + L + lineGap])
+    expect(booked(s)[1]).toEqual([id('step1.firstName.0'), near(30 + L + lineGap)])
     const late = await ready()
     late.s.beat('marketing.stroll', 'film', LIVE.beatLateSeconds + 1)
     expect(booked(late.s)).toEqual([])
