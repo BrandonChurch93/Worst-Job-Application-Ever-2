@@ -358,3 +358,54 @@ STATED, from the camera's numbers as they are (`down` 0.95, `ahead` 0.9, `rise` 
 ### The sound check's A3
 
 MEASURED with the walker of `tools/mix.mjs` lines 258 to 270 run by itself: on the base it names `src/film/retime.ts`; on this branch `src/boss/tune.ts` and `src/film/retime.ts`. A3 fails on the base already, and this adds one file to its list. The cheapest way round is one alternative in the pattern of line 266, `(?!cues)` to `(?!cues|standin)`, which clears both files; `standin.ts` holds the script's times and no sound engine. That file is the sound unit's and is not touched here. `npm run check` itself was not run.
+
+### The shout's rule: the animation keeps the time its camera needs, and the take is laid inside it (28 November, 14:05Z to 14:50Z)
+
+Brandon: "create the animation first, that way we know how long that part should be so it all matches up nicely". The rule is `shoutOf` in `src/boss/tune.ts`, one place, every number read from `CAMERA` and `SHOUT_RULE`:
+
+- floor = `CAMERA.down[1]` 0.95 + `CAMERA.rest` 2 (new, the one named rest) + `CAMERA.ahead` 0.9 = 3.85 s from the arms to the fire mark.
+- peak = the take's `peak` where it names one, the start of its last phrase where it does not. The blast is let go there.
+- lead = the later of 0 and floor less peak. The line is shouted lead s after the arms. The fire mark = lead + peak.
+- The first two charge marks are the first two phrase starts stretched by fire / peak; the two between keep their shares (0.3398, 0.6019) of the gap from the second to the fire mark. With lead 0 no mark is stretched.
+- gone = the later of lead + seconds + 1.3 and fire + 3.43: the camera's rise 1.7, hold 0.4 and turn back 1.3, and the 0.03 s the stand-in has after that (`SHOUT_RULE.level`). Without the 0.03 s two design tests were red by an equality: the view from above was half of the burn and not the larger share (`tests/b-camera.test.ts` line 288), and a visitor who never presses had one low step after the end (line 443).
+
+MEASURED, each with its own EXIT line:
+
+- With the stand-in the lead is 0 and no mark moves (`shoutOf` test). 47 frames, 38.5 to 50.0 s every 0.25 s, 1920 by 1080, draft, against the run of 37da1773: AE 0 on 47 of 47, at bfdccffb (the rule on the last phrase's start). The two commits after it change nothing for a line with no peak that the test of the marks can see; the 47 frames were not run again on them at the time of writing.
+- Marks by test (`tests/b-camera.test.ts`, "a take whose last phrase starts sooner than the floor"), s after the arms:
+
+| take | lead | charge marks | fire | gone | arms to button down |
+|---|---|---|---|---|---|
+| (a) stand-in [0.1, 1.04, 4.13], 6.26 s | 0 | 0.1, 1.04, 2.09, 2.9 | 4.13 | 7.56 | 8.96 |
+| (b) [0.05, 0.7, 1.8], 4.0 s | 2.05 | 0.107, 1.497, 2.297, 2.913 | 3.85 | 7.35 | 8.75 |
+| (c) [0.05, 0.6, 1.5], 3.3 s | 2.35 | 0.128, 1.54, 2.325, 2.93 | 3.85 | 7.28 | 8.68 |
+| (d) [0.1, 0.82, 1.46], peak 2.08, 3.52 s | 1.77 | 0.185, 1.518, 2.31, 2.922 | 3.85 | 7.28 | 8.68 |
+| (e) [0.1, 0.66, 1.3], peak 1.85, 4.01 s | 2.00 | 0.208, 1.374, 2.215, 2.864 | 3.85 | 7.31 | 8.71 |
+
+- Tests with take (d) and with take (e) in the sound index, in a scratch tree with the two patches `take-peak` and `line-start` applied: `tests/b-camera.test.ts` 33 of 33, `tests/b-finish.test.ts` 23 of 23, `b-boss-fast` 6, `b-boss-rise` 6. Red, the same three for both, all typed pins of other units: `tests/audio-shout-times.test.ts` line 61 (the marks equal the starts), `tests/b-boss.test.ts` line 492 (5.39 s typed for the visitor who holds to the end; 5.02 and 5.00 s now) and line 493 (3 charge marks typed for the visitor who presses while the arrow charges by itself; 2 now). With `camera-way1-NEEDS-tests-marks.patch` applied the three files pass under take (d): 72 of 72.
+
+What is not mine and is a patch under `pipeline/change002/`, each checked with `git apply --check`, none applied:
+
+- `camera-way1-NEEDS-take-peak.patch`: `src/audio/standin.ts` passes a take's `peak` through `lineTimes`.
+- `camera-way1-NEEDS-line-start.patch`: `src/film/retime.ts` starts the shout `SHOUT.lead` s after `finish-arms` in the film. The start is then written into `content/narration.json` by `npm run retime`, which is not mine to run.
+- `camera-way1-NEEDS-tests-marks.patch`: the three typed pins above and `tests/b-finish.test.ts` lines 111 and 112 read from `SHOUT`.
+- `camera-way1-NEEDS-mix-a3.patch`: `tools/mix.mjs` line 266. A3 names `src/boss/tune.ts, src/film/retime.ts` before and nothing after.
+- `camera-way1-NEEDS-audio-notes.patch`: decision 36 of `src/audio/NOTES.md`.
+
+STATED from the code, not measured: the live site lays the take on `finish-arms` and lets it run on its own clock (`src/audio/index.ts` lines 623 to 641). The visitor's press and let go set the fire, the phrases on screen come on his own charge marks, and the sound is cut the length of the last phrase after the fire. Nothing moves the take's phrases there, so the rule's lead is not applied on the live site and nothing was changed there.
+
+Film times in s after the arms (the arms are at 39.82 s of the film on this base), worked out from the marks above; the caption leaves `CAMERA.rise[0]` 1.1 s after the fire:
+
+| take | floor | first word | third phrase shown | fire | caption leaves | voice ends | gone |
+|---|---|---|---|---|---|---|---|
+| (d) | 3.85 | 1.87 | 3.23 | 3.85 | 4.95 | 5.04 | 7.28 |
+| (e) | 3.85 | 2.10 | 3.30 | 3.85 | 4.95 | 5.65 | 7.31 |
+| (d) | 2.85 | 0.87 | 2.23 | 2.85 | 3.95 | 4.04 | 6.28 |
+| (e) | 2.85 | 1.10 | 2.30 | 2.85 | 3.95 | 4.65 | 6.31 |
+
+What I SEE in eight frames each of the film with take (d) and take (e) (`proof/camera/rule-take-d-charge.jpg`, `rule-take-d-blast.jpg`, `rule-take-e-charge.jpg`, `rule-take-e-blast.jpg`; 40.9, 41.5 or 41.7, 42.0 or 42.3, 43.3, 43.8, 45.6, 47.0 or 47.1 and 47.6 s):
+
+- In the three frames of the charge view the camera and the arrow's pose are the same; the light between the hands, its rays and the ring of flames are larger in the second than in the first. From the second to the third the light is larger with take (e); with take (d) I cannot tell the two apart by size at this scale. The first two frames are before the first word.
+- At 43.3 s the view is close behind the arrow's shoulder in the turn; at 43.8 s it is behind the arrow with the boss ahead; at 45.6 s it is from above with the beam over the boss and pieces in the air.
+- At 47.0 s (take (d), 0.10 s before the body is gone) and at 47.1 s (take (e), 0.03 s before) the view is from above with the page's lines where they are at 47.6 s, the beam still burns and one last piece is leaving. At 47.6 s the beam is out and the arrow stands; the view does not turn under its walk.
+- The tool that draws these frames draws no caption, so the words on screen are not in them.
