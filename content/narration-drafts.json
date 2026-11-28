@@ -1,24 +1,22 @@
 {
   "about": "Narrator lines Brandon has not approved. They are stand-ins for timing and captions only and are never recorded. Same shape as content/narration.json. A line leaves this file for that one when Partner brings his words for it.",
-  "status": "Line 9 left this file for content/narration.json on change note 004 item 5 (approved as written, 7:12 PM MT November 27, 2026). The boss's shout is a draft from the Builder's mail of 23:19 UTC on the same day: two candidates, Brandon picks one; B is the stand-in.",
+  "status": "Line 9 left this file for content/narration.json on change note 004 item 5 (approved as written, 7:12 PM MT November 27, 2026). The applicant's shout at the boss: Brandon picked its words on November 27, 2026, about 7:00 PM MT, in the Partner chat (\"I think we should update the shout and say I have five years of experience\"), in the second voice of change note 003's seventh update. It is recorded after its animation is built and measured, so it stays a stand-in here: candidate C, its phrases on the marks of the boss page's stand-in table. Candidates A and B are the two shouts of the first test, kept as the record; neither is the line.",
   "pauseMark": "/",
   "film": {
     "boss.finish": [
       {
         "at": 0.00072,
-        "text": "KA / ME / HA / ME / HA",
+        "text": "I have / five years / of experience",
         "state": "draft",
         "loud": true,
-        "join": "",
-        "live": "the boss's shout: one word that builds on one row, a part added at each mark of the boss page, large and in capitals, gone when the last part has been held for its length",
+        "join": " ",
+        "live": "the applicant's shout at the boss: one line that builds on one row, a phrase added at each mark of the boss page, large and in capitals, gone when the last phrase has been held for its length",
         "standIn": {
-          "candidate": "B",
+          "candidate": "C",
           "seconds": 6.26,
           "starts": [
             0.1,
             1.04,
-            2.09,
-            2.9,
             4.13
           ]
         },
@@ -68,6 +66,11 @@
               ]
             ],
             "join": ""
+          },
+          "C": {
+            "text": "I have / five years / of experience",
+            "join": " ",
+            "note": "not recorded: the words are his, the starts are the first two charge marks and the fire mark of the boss page's stand-in table, as the live page shows them; the real marks come from the take"
           }
         }
       }

@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import * as THREE from 'three'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
@@ -5,7 +6,7 @@ import { pages } from '../src/pages'
 import { seatIndex, seats, SINK, TRAVEL } from '../src/pages/step1/keyboard'
 import { turrets as turretLook } from '../src/pages/step1/real/turrets'
 import { HOOD, PILE } from '../src/pages/step1/script'
-import { STAY, TURRET, Turrets } from '../src/pages/step1/turrets'
+import { BLAST, STAY, TURRET, Turrets } from '../src/pages/step1/turrets'
 import type { Emitter, RealContext } from '../src/real/types'
 import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { DrawList, Shape } from '../src/stage/types'
@@ -69,12 +70,33 @@ describe('polish keys: a key pressed on the live site', () => {
     expect(at(up.i + 9).all.get(name)!.top).toBeCloseTo(config.scale.heights.keycap, 1)
   })
 
-  it('has no turret winding up beside it while it is held', () => {
-    const { down, up } = press()
-    expect(Math.max(...at(down.i - 1).charge)).toBeGreaterThan(0.2)
-    for (let i = down.i; i < up.i; i++) expect(Math.max(...at(i).charge), `frame ${i}`).toBe(0)
-    const again = first(up.i, (r) => Math.max(...r.charge) > 0)
-    expect(again.i - up.i).toBeLessThanOrEqual(2)
+  it('shows no charge while a key is held under the arrow, lets every bolt be seen to load, and rests a turret between its bolts', () => {
+    expect(/new Turrets\(hatches, [^)]*, BLAST\)/.test(fs.readFileSync(new URL('../src/pages/step1/index.ts', import.meta.url), 'utf8'))).toBe(true)
+    const presses = rows.filter((r) => r.gag === 'step1.firstName' && r.down && r.events.includes('key-press'))
+    expect(presses.some((r) => Math.max(...at(r.i - 1).charge) > 0.2)).toBe(true)
+    let held = 0
+    for (const down of presses) {
+      const up = first(down.i, (r) => !r.down)
+      for (let i = down.i; i < up.i; i++, held++) expect(Math.max(...at(i).charge), `frame ${i}`).toBe(0)
+    }
+    expect(held).toBeGreaterThan(0)
+    const loads: number[] = []
+    const fires: number[][] = [[], []]
+    for (const r of rows.filter((x) => x.events.includes('bolt-fire'))) {
+      for (const t of [0, 1]) {
+        if (!((rows.find((x) => x.i === r.i - 1)?.charge[t] ?? 0) > 0) || r.charge[t]! > 0) continue
+        let k = r.i - 1
+        while ((rows.find((x) => x.i === k - 1)?.charge[t] ?? 0) > 0) k--
+        loads.push(r.i - k)
+        fires[t]!.push(r.i)
+      }
+    }
+    expect(loads.length).toBe(rows.reduce((n, r) => n + r.events.filter((e) => e === 'bolt-fire').length, 0))
+    expect(loads.length).toBeGreaterThanOrEqual(3)
+    for (const n of loads) expect(n).toBeGreaterThanOrEqual(Math.round(BLAST.windup * 60))
+    const gaps = fires.flatMap((f) => f.slice(1).map((i, k) => i - f[k]!))
+    expect(gaps.length).toBeGreaterThanOrEqual(2)
+    for (const g of gaps) expect(g).toBeGreaterThanOrEqual(Math.round(BLAST.period * 60))
   })
 
   it('types one letter for one press however long it is held', () => {

@@ -259,7 +259,7 @@ export function headroom(f: { face: number; turret: number }): number {
   const s = Math.sin(f.face)
   const c = Math.abs(Math.cos(f.face))
   const up = (long: number, wide: number, ahead = 0): number => -s * ahead + (long * Math.abs(s) + wide * c) / 2
-  const reach = Math.max(up(SIZE.feet.long, SIZE.feet.wide), up(SIZE.hull.long, SIZE.wings.wide), up(2 * GUARD.thick, 2 * SIZE.shield.half, SIZE.shield.ahead), f.turret > 0 ? up(TOP.muzzle, TOP.muzzle, SIZE.big.muzzle) : 0)
+  const reach = Math.max(up(SIZE.feet.long, SIZE.feet.wide), up(SIZE.hull.long, SIZE.wings.wide), up(2 * GUARD.thick, 2 * SIZE.shield.half, SIZE.shield.ahead), f.turret > 0 ? up(TOP.muzzle, TOP.muzzle, SIZE.big.muzzle) + TOP.lift : 0)
   return Math.max(MOVE.fence.y0, SOLID.frame[3] + TOP.clear + TOP.spare + reach)
 }
 
