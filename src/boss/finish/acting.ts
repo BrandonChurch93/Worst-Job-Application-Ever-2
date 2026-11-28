@@ -313,9 +313,11 @@ export function finishState(i: FinishInput): FinishState {
       const b = toPage({ x: feet.x, y: feet.y, ground: 0, rise: pose.rise, scale: sc, tip }, h[0] + 9, h[1], h[2])
       const to = i.target ?? i.button ?? { x: b.x + 800, y: b.y }
       const aim = Math.atan2(to.y - b.y, to.x - b.x)
-      const open = smooth(span(fired, lead, lead + FIRE.open)) * push
+      // A beam that leaves on the mark opens fastest in its first frame: it is seen at once.
+      const grow = (u: number): number => (lead > 0 ? smooth(u) : 1 - (1 - u) ** 3)
+      const open = grow(span(fired, lead, lead + FIRE.open)) * push
       // The ball does not go out before the beam is there: it is spent into the beam as it opens.
-      const opening = smooth(span(fired, lead, lead + FIRE.open))
+      const opening = grow(span(fired, lead, lead + FIRE.open))
       if (opening < 1) fx.ball = { x: b.x, y: b.y, z: b.z, size: sc * CHARGE.ball * (CHARGE.least + (1 - CHARGE.least) * shot) * (1 - 0.4 * opening), glow: clamp01(0.35 + 0.65 * shot) * 1.5 * (1 - opening) }
       if (open > 0.002) fx.beam = { x: b.x, y: b.y, z: b.z, aim, open, power: shot, age: fired - lead, keep: i.button ? { x: i.button.x, y: i.button.y, w: i.button.w ?? 110, h: i.button.h ?? (i.button.w ?? 110) * 0.36 } : null }
       fx.aura = CHARGE.aura * shot * push
