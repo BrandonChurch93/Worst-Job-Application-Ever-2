@@ -160,11 +160,14 @@ export const LINE7 = {
   lead: 0.1, // s of line 7 that are said before a press may turn the boss: a press before that is kept and acts then, so that the turn never reaches the voice before the line has started
   gap: 0.3, // s of silence the shell leaves before the next part
   part1: 2.485, // s of `boss.unfold.1`
-  music: 1.228, // s into part 1 at which "their student loans." and the music start (`boss-music`)
+  recall: 0.494, // s into part 1 at which "they remember" starts: the arrow lifts its tip
+  music: 1.228, // s into part 1 at which "their student loans." and the music start (`boss-music`): the arrow straightens out of its sag
   part2: 1.91, // s of `boss.unfold.2`
-  rise: 3.954, // s from the start of part 2 to the turret's lock: the turn back, the gold and the figure's rise. It keeps the length the kept take of part 2 gave it; the line without pauses ends 2.044 s before the lock and the picture carries the rest
-  power: 0.6, // s into part 2 at which the gold starts to build (`power-up`), after the arrow has turned round
-  glow: 2, // s the gold builds
+  getup: 0.2, // s into part 2, on "They turn back.", at which the figure starts to get up, after the arrow has turned round
+  power: 1.057, // s into part 2 at which "One more round." starts: the fists are up and the gold starts to build (`power-up`)
+  glow: 0.853, // s the gold builds: to the end of part 2, so that it is full on the last word
+  full: 0.8, // s the full gold is held before it bursts and the view goes back
+  rise: 3.456, // s from the start of part 2 to the turret's lock: part 2, the hold of the full gold, the 0.696 s in which the figure bursts and lies down again at the pace its fists went up, and `RAISE.early`
   alone: 1.5, // s without a move or a press after which the arrow droops and starts to drift (live)
   drift: 26, // px/s it drifts toward the top right while it is left alone
   most: 6, // s at most that the drift holds the arrow on the live site
@@ -232,8 +235,7 @@ export const IDLE = {
 // `early`: s before the turret locks by which the standing figure of the power-up lies on the page again. Its moves are fitted to that window by the figure's own module.
 export const RAISE = {
   early: 0.05,
-  near: 0.5, // s from `power-up` over which the view comes close and the figure steps to its clear spot
-  back: [2.35, 2.92] as const, // s after `power-up` between which the view goes back to the whole page
+  near: 0.5, // s from the figure's getting up over which the view comes close (live site) and the figure steps to its clear spot; the view goes back to the whole page from the burst until the figure lies on the page again
   zoom: 1.6, // times: the figure about 200 px tall in the film's frame, as on the walk
   box: { x0: -90, y0: -35, x1: 115, y1: 125 }, // px round the arrow's spot that the figure, its raised fists and its ring of flames fill; read by eye at 03:10Z. The flames of the finish at 739a4e33 measure -92 to 187 across and -127 to 125 down; a box that wide is not kept yet, see the notes on the rulings of 04:17Z
   step: 6, // px between the rings on which a clear spot is looked for

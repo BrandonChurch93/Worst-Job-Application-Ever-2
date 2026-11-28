@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { config } from '../src/config'
 import { earlyEnd, endsSentence } from '../src/audio/cues'
-import { LINE6, LINE7 } from '../src/boss/tune'
+import { POWER, powerPlan } from '../src/boss/finish/acting'
+import { LINE6, LINE7, RAISE } from '../src/boss/tune'
 
 // The boss page is timed ahead for the narrator's lines without pause marks (pipeline/change002/fast-takes.json).
 // Until such takes are kept these tests hold its clock to that file; tests/takes-timing.test.ts holds it to the kept takes and is red on this branch.
@@ -46,13 +47,20 @@ describe('the boss page keeps time by the lines without pauses', () => {
     expect(LINE7.music).toBeCloseTo(l.starts[l.starts.length - 1]!, 6)
   })
 
-  it('part 2 has the length of the line without pauses; the gold starts inside its first phrase, and the rise keeps the length the kept take gave it', () => {
+  it('part 1: "they remember" is its second phrase', () => {
+    expect(LINE7.recall).toBeCloseTo(line('boss.unfold.1').starts[1]!, 6)
+  })
+
+  it('part 2 has the length of the line without pauses; the figure gets up inside "They turn back.", its fists are up and the gold starts where "One more round." starts, the gold is full within 0.1 s of the end of the line and is held for `full`, and the rise ends when the figure lies on the page again', () => {
     const l = line('boss.unfold.2')
     expect(LINE7.part2).toBeCloseTo(l.seconds, 6)
-    expect(LINE7.power).toBeGreaterThan(l.starts[0]!)
-    expect(LINE7.power).toBeLessThan(l.starts[1]!)
-    expect(LINE7.rise).toBeCloseTo(l.keptSeconds, 6)
-    expect(LINE7.rise).toBeGreaterThanOrEqual(LINE7.part2)
-    expect(LINE7.power + LINE7.glow).toBeLessThan(LINE7.rise)
+    expect(LINE7.getup).toBeGreaterThan(l.starts[0]!)
+    expect(LINE7.getup).toBeLessThan(l.starts[1]!)
+    expect(LINE7.power).toBeCloseTo(l.starts[1]!, 6)
+    expect(Math.abs(LINE7.power + LINE7.glow - l.seconds)).toBeLessThanOrEqual(0.1)
+    const plan = powerPlan({ at: LINE7.getup, until: LINE7.rise - RAISE.early, fists: LINE7.power })
+    expect(LINE7.getup + POWER.up[1] * plan.quick).toBeCloseTo(LINE7.power, 6)
+    expect(LINE7.getup + plan.end).toBeCloseTo(LINE7.part2 + LINE7.full, 2)
+    expect(LINE7.rise).toBeLessThan(l.keptSeconds)
   })
 })

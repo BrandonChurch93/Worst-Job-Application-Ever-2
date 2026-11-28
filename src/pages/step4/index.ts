@@ -7,7 +7,7 @@ import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/fini
 import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, RAISE, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
-import { FIRE, finishState, kneelSpot, type FinishInput } from '../../boss/finish/acting'
+import { FIRE, finishState, kneelSpot, powerPlan, type FinishInput } from '../../boss/finish/acting'
 import { BEAM } from '../../boss/finish/fx'
 import { clearSpot as clearOf } from '../../boss/spot'
 import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
@@ -18,7 +18,7 @@ import { drawLayout, type DrawOptions } from '../../shell/layout'
 import { SCREEN_H, TYPE } from '../../shell/parts'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, SheetFrame, StepIo } from '../../stage/types'
 import { makeLayout } from './layout'
-import { makeScript, STAND } from './script'
+import { makeScript, STAND, TALK } from './script'
 import { TICK_Z } from './real/verify-card'
 
 const CAP_LANDS = 1.2
@@ -186,7 +186,9 @@ export function makePage(): PageLogic {
   }
   const mark = (v: number): number | undefined => (v < 0 ? undefined : v)
   // What the standing arrow is told: the look's figure of the power-up and of the finish stands in the arrow's place for as long as it is up.
-  const RAISED = LINE7.rise - LINE7.power - RAISE.early
+  const RAISED = LINE7.rise - LINE7.getup - RAISE.early
+  const FISTS = LINE7.power - LINE7.getup
+  const BURST = powerPlan({ at: 0, until: RAISED, fists: FISTS }).end
   const raising = (): number => (s.fin.power < 0 || s.fin.arms >= 0 || s.clock - LEAD - s.fin.power >= RAISED ? -1 : s.clock - LEAD - s.fin.power)
   const ease = (u: number): number => {
     const k = Math.min(1, Math.max(0, u))
@@ -198,15 +200,30 @@ export function makePage(): PageLogic {
   }
   const closer = (): { x: number; y: number; z: number } | null => {
     const r = raising()
-    if (!LOOK1_ON || r < 0 || r >= RAISE.back[1]) return null
-    const k = r < RAISE.back[0] ? ease(r / RAISE.near) : 1 - ease((r - RAISE.back[0]) / (RAISE.back[1] - RAISE.back[0]))
+    if (!LOOK1_ON || s.mode === 'film' || r < 0) return null
+    return closeOn(spot(r), r < BURST ? ease(r / RAISE.near) : 1 - ease((r - BURST) / (RAISED - BURST)))
+  }
+  const closeOn = (at: { x: number; y: number }, k: number): { x: number; y: number; z: number } | null => {
+    if (k <= 0) return null
     const z = 1 + (RAISE.zoom - 1) * k
-    const at = spot(r)
     const w = 1920 / z
     const h = 1080 / z
     const cx = Math.min(1920 - w / 2, Math.max(w / 2, at.x + (RAISE.box.x0 + RAISE.box.x1) / 2))
     const cy = Math.min(1080 - h / 2, Math.max(h / 2, at.y + (RAISE.box.y0 + RAISE.box.y1) / 2))
     return { x: 960 + (cx - 960) * k, y: 540 + (cy - 540) * k, z }
+  }
+  // The film's view of line 7: the whole page while its first sentence is said, then steadily closer on the arrow to the end of part 0; it goes with the arrow to the top edge, stands still from "But then", comes down to the stand through "They turn back.", and goes back to the whole page from the burst.
+  const talk = (): { x: number; y: number; z: number } | null => {
+    if (!LOOK1_ON || s.mode !== 'film') return null
+    const r = raising()
+    const down = (since: number): { x: number; y: number } => {
+      const u = ease(since / LINE7.power)
+      return { x: TALK.top.x + (TALK.stand.x - TALK.top.x) * u, y: TALK.top.y + (TALK.stand.y - TALK.top.y) * u }
+    }
+    if (r >= 0) return closeOn(r + LINE7.getup < LINE7.power ? down(r + LINE7.getup) : spot(r), r < BURST ? 1 : 1 - ease((r - BURST) / (RAISED - BURST)))
+    if (s.stage !== 'hold' || s.fin.power >= 0) return null
+    const two = s.turned < 0 ? Infinity : s.turned + LINE7.gap + LINE7.part1 + LINE7.gap
+    return closeOn(s.t < two ? { x: s.cx, y: s.cy } : down(s.t - two), Math.min(1, Math.max(0, (s.t - LINE7.ends[1]) / (LINE7.part0 - LINE7.ends[1]))))
   }
   const figure = (): FinishInput | null => {
     const v = view()
@@ -217,7 +234,7 @@ export function makePage(): PageLogic {
     return {
       time: v.time,
       arrow: r < 0 ? { x: s.cx, y: s.cy } : spot(r),
-      power: r < 0 ? null : { at: m.power, until: m.power + RAISED },
+      power: r < 0 ? null : { at: m.power, until: m.power + RAISED, fists: m.power + FISTS, full: m.power + LINE7.part2 - LINE7.getup },
       marks: { arms: mark(m.arms), charge: mark(m.charge), thrust: mark(m.thrust), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
@@ -526,11 +543,15 @@ export function makePage(): PageLogic {
           } else letGo(io)
         } else {
           letGo(io)
-          if (at(one)) {
+          if (at(one + LINE7.recall)) {
+            io.cursor.aim(null)
+            io.cursor.react('doubleTake')
+          }
+          if (at(one + LINE7.music)) {
             io.cursor.act('plain')
             io.cursor.aim(null)
+            io.emit('boss-music', io.cursor.x, io.cursor.y, false)
           }
-          if (at(one + LINE7.music)) io.emit('boss-music', io.cursor.x, io.cursor.y, false)
           if (at(two)) {
             io.cursor.act('confident')
             io.cursor.react('snap')
@@ -539,13 +560,15 @@ export function makePage(): PageLogic {
           if (at(two + LINE7.power)) {
             s.gold = 0
             io.emit('power-up', io.cursor.x, io.cursor.y, false)
+            io.cursor.act('angry')
+          }
+          if (at(two + LINE7.getup)) {
             stamp('power')
             s.fin.x = io.cursor.x
             s.fin.y = io.cursor.y
-            const to = LOOK1_ON && s.mode === 'live' ? clearOf({ x: s.fin.x, y: s.fin.y }) : { x: s.fin.x, y: s.fin.y }
+            const to = LOOK1_ON && s.mode === 'live' ? clearOf({ x: s.fin.x, y: s.fin.y }) : s.mode === 'film' ? { x: io.pointer.x, y: io.pointer.y } : { x: s.fin.x, y: s.fin.y }
             s.fin.tx = to.x
             s.fin.ty = to.y
-            io.cursor.act('angry')
           }
           if (s.t >= two + LINE7.rise - BIG.lock) {
             s.base = s.clock
@@ -706,6 +729,10 @@ export function makePage(): PageLogic {
       io.cursor.setGround(groundAt(io.cursor.x, io.cursor.y))
       if (LOOK1_ON && s.fin.power >= 0 && !s.fig) {
         if (raising() >= 0) {
+          if (s.mode === 'film') {
+            s.fin.tx = io.pointer.x
+            s.fin.ty = io.pointer.y
+          }
           if (!io.cursor.taken) io.cursor.take('boss')
           const at = spot(raising())
           io.cursor.drive(at.x, at.y)
@@ -837,7 +864,7 @@ export function makePage(): PageLogic {
         const f = s.fight
         if (f.at.flat >= 0 && f.mark) drawPancake(out, f.mark.x, f.mark.y, f.clock - f.at.flat)
       }
-      const lit = LINE7.rise - LINE7.power
+      const lit = LINE7.part2 + LINE7.full - LINE7.power
       if (!look && s.gold >= 0 && s.gold < lit + GOLD_OUT && (s.stage === 'hold' || s.stage === 'fight')) drawPower(out, s.cx, s.cy, power() * (1 - prog(s.gold, lit, lit + GOLD_OUT)))
       if (s.stage === 'finish' && !look) drawFinish(out, finishHands({ x: s.cx, y: s.cy }, FALLEN, charged(), s.fired >= 0).ball, FALLEN, charged(), s.fired >= 0 && s.fired < BLAST ? { power: s.shot, u: s.fired / BLAST } : null)
       if (s.stage === 'collapse' && s.from) {
@@ -849,7 +876,7 @@ export function makePage(): PageLogic {
     },
     scroll: () => 0,
     view(): CameraPose | null {
-      const c = s.close <= 0 ? closer() : null
+      const c = s.close <= 0 ? talk() ?? closer() : null
       if (c) return frame({ x: c.x - 960 / c.z, y: c.y - 540 / c.z, w: 1920 / c.z, h: 1080 / c.z })
       if (s.close <= 0) return null
       const n = near()

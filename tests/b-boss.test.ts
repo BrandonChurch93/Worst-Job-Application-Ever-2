@@ -752,7 +752,7 @@ describe('how the boss plays (change 002, item 15)', () => {
       const power = stage.events.find((e) => e.name === 'power-up')!.step / stepHz
       const lock = stage.events.find((e) => e.name === 'turret-lock')!.step / stepHz
       expect(widest).toBeCloseTo(RAISE.zoom, 2)
-      expect(after - power).toBeLessThanOrEqual(RAISE.back[1] + 2 / stepHz)
+      expect(after - power).toBeLessThanOrEqual(LINE7.rise - LINE7.power + 2 / stepHz)
       expect(after).toBeLessThan(lock)
     }
   })
