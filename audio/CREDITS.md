@@ -4,13 +4,13 @@ This build may spend at most 10000 ElevenLabs credits in all, on every call of e
 
 The count is of this build's own calls, never of what the account has left: the account is shared with other builds. Every call goes through `npm run credits`, which writes its row here before it returns and makes no call that would pass the limit. A sound effect is never asked for without its length. `kit/addenda/001-sound-budget-and-narrator.md` sets these rules. This file is written by the tool from `audio/CREDITS.json`.
 
-Running total: 3166 of 10000. Calls: 197.
+Running total: 3712 of 10000. Calls: 209.
 
-Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 1511. No call is made that would pass it.
+Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,000 ElevenLabs credits for everything in change notes 002 and 003 together: narration, the shout, and every new sound effect"; "the ledger does not pass 4,677 without his word". Left before it: 965. No call is made that would pass it.
 
 ## Caps
 
-- narration: 0 of 650 used, 650 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: "Recording: lines 1 to 9 may be recorded now. Caps, all inside the hard limit of 4,677, which does not change: narration 650 in all (one pass plus single lines done again), sound effects 700, the shout 150. That is 1,500 of the 1,511 left. State the cost in the ledger before each spend. At a cap, stop and mail Partner."
+- narration: 546 of 650 used, 104 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: "Recording: lines 1 to 9 may be recorded now. Caps, all inside the hard limit of 4,677, which does not change: narration 650 in all (one pass plus single lines done again), sound effects 700, the shout 150. That is 1,500 of the 1,511 left. State the cost in the ledger before each spend. At a cap, stop and mail Partner."
 - effects: 0 of 700 used, 700 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
 - shout: 0 of 150 used, 150 left. Brandon, by Partner, change note 004 item 7, 2026-11-27: The same sentence of the same note.
 
@@ -222,3 +222,15 @@ Hard limit: 4677. Brandon, by Partner, change note 003 update 4, 2026-11-27: "2,
 | 195 | 2026-11-28T00:30:38Z | POST /v1/text-to-speech | SHOUT B round 2 take 3, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7) | 86 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 1.5 s | 38 | reported by the response; the account's usage moved by 0 across the call | 3133 |
 | 196 | 2026-11-28T00:31:24Z | POST /v1/text-to-speech | SHOUT A round 2 take 4, voice Jerry B. Gruff and Gritty Commander, speed 0.7 (change note 003 update 7) | 74 characters, stability 0, speed 0.7, model eleven_v4 | HTTP 200, 1.4 s | 33 | reported by the response; the account's usage moved by 0 across the call | 3166 |
 | 197 | 2026-11-28T02:26:15Z | none: a statement before a spend | Stated before the spend (change note 004 item 7): one pass of lines 1 to 9 | nothing, no call | One pass of the script's 12 pieces (lines 1 to 9: 146 words, 37 pause marks, 1,647 characters sent) is about 549 credits. Worked out from this ledger's own 45 narrator calls with pause marks: 0.4518 a character of words and 4.098 a pause mark, worst miss 0.64 a call. That leaves about 101 of the cap of 650 for single lines done again. The check this tool makes before a call counts every sent character at 0.439 and so reads high: 728 for the pass. | 0 | a statement costs nothing | 3166 |
+| 198 | 2026-11-28T02:32:27Z | POST /v1/text-to-speech | line.step2.crank.1 take 1, breaks of 0.0 s | 22 characters, stability 0.75, speed 0.7 | HTTP 200, 1.3 s | 10 | reported by the response | 3176 |
+| 199 | 2026-11-28T02:32:36Z | POST /v1/text-to-speech | line.marketing.stroll.0 take 2, breaks of 1.0 s | 280 characters, stability 0.75, speed 0.7 | HTTP 200, 1.4 s | 89 | reported by the response | 3265 |
+| 200 | 2026-11-28T02:32:38Z | POST /v1/text-to-speech | line.step1.firstName.0 take 2, breaks of 1.0 s | 123 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 40 | reported by the response | 3305 |
+| 201 | 2026-11-28T02:32:39Z | POST /v1/text-to-speech | line.step1.shredded.0 take 1, breaks of 1.0 s | 214 characters, stability 0.75, speed 0.7 | HTTP 200, 1.2 s | 70 | reported by the response | 3375 |
+| 202 | 2026-11-28T02:32:41Z | POST /v1/text-to-speech | line.step2.crank.0 take 4, breaks of 1.1 s | 94 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 32 | reported by the response | 3407 |
+| 203 | 2026-11-28T02:32:42Z | POST /v1/text-to-speech | line.pinball.seal.0 take 2, breaks of 1.0 s | 133 characters, stability 0.75, speed 0.7 | HTTP 200, 0.9 s | 44 | reported by the response | 3451 |
+| 204 | 2026-11-28T02:32:44Z | POST /v1/text-to-speech | line.boss.verify.0 take 2, breaks of 1.3 s | 107 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 37 | reported by the response | 3488 |
+| 205 | 2026-11-28T02:32:49Z | POST /v1/text-to-speech | line.boss.unfold.0 take 1, breaks of 1.0 s | 306 characters, stability 0.75, speed 0.7 | HTTP 200, 1.5 s | 101 | reported by the response | 3589 |
+| 206 | 2026-11-28T02:32:51Z | POST /v1/text-to-speech | line.boss.unfold.1 take 1, breaks of 1.0 s | 87 characters, stability 0.75, speed 0.7 | HTTP 200, 1.0 s | 29 | reported by the response | 3618 |
+| 207 | 2026-11-28T02:32:52Z | POST /v1/text-to-speech | line.boss.unfold.2 take 1, breaks of 1.4 s | 53 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 18 | reported by the response | 3636 |
+| 208 | 2026-11-28T02:32:53Z | POST /v1/text-to-speech | line.decision.letter.0 take 2, breaks of 1.0 s | 179 characters, stability 0.75, speed 0.7 | HTTP 200, 1.1 s | 59 | reported by the response | 3695 |
+| 209 | 2026-11-28T02:32:55Z | POST /v1/text-to-speech | line.decision.reset.0 take 1, breaks of 1.1 s | 49 characters, stability 0.75, speed 0.7 | HTTP 200, 0.8 s | 17 | reported by the response | 3712 |

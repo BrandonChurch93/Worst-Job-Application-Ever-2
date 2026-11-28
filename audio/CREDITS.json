@@ -2019,6 +2019,138 @@
       "cost": 0,
       "how": "a statement costs nothing",
       "cap": "narration"
+    },
+    {
+      "n": 198,
+      "time": "2026-11-28T02:32:27Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.step2.crank.1 take 1, breaks of 0.0 s",
+      "asked": "22 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.3 s",
+      "cost": 10,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 199,
+      "time": "2026-11-28T02:32:36Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.marketing.stroll.0 take 2, breaks of 1.0 s",
+      "asked": "280 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.4 s",
+      "cost": 89,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 200,
+      "time": "2026-11-28T02:32:38Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.step1.firstName.0 take 2, breaks of 1.0 s",
+      "asked": "123 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.1 s",
+      "cost": 40,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 201,
+      "time": "2026-11-28T02:32:39Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.step1.shredded.0 take 1, breaks of 1.0 s",
+      "asked": "214 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.2 s",
+      "cost": 70,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 202,
+      "time": "2026-11-28T02:32:41Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.step2.crank.0 take 4, breaks of 1.1 s",
+      "asked": "94 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 0.9 s",
+      "cost": 32,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 203,
+      "time": "2026-11-28T02:32:42Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.pinball.seal.0 take 2, breaks of 1.0 s",
+      "asked": "133 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 0.9 s",
+      "cost": 44,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 204,
+      "time": "2026-11-28T02:32:44Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.boss.verify.0 take 2, breaks of 1.3 s",
+      "asked": "107 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.0 s",
+      "cost": 37,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 205,
+      "time": "2026-11-28T02:32:49Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.boss.unfold.0 take 1, breaks of 1.0 s",
+      "asked": "306 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.5 s",
+      "cost": 101,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 206,
+      "time": "2026-11-28T02:32:51Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.boss.unfold.1 take 1, breaks of 1.0 s",
+      "asked": "87 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.0 s",
+      "cost": 29,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 207,
+      "time": "2026-11-28T02:32:52Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.boss.unfold.2 take 1, breaks of 1.4 s",
+      "asked": "53 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 0.8 s",
+      "cost": 18,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 208,
+      "time": "2026-11-28T02:32:53Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.decision.letter.0 take 2, breaks of 1.0 s",
+      "asked": "179 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 1.1 s",
+      "cost": 59,
+      "how": "reported by the response",
+      "cap": "narration"
+    },
+    {
+      "n": 209,
+      "time": "2026-11-28T02:32:55Z",
+      "endpoint": "POST /v1/text-to-speech",
+      "what": "line.decision.reset.0 take 1, breaks of 1.1 s",
+      "asked": "49 characters, stability 0.75, speed 0.7",
+      "answer": "HTTP 200, 0.8 s",
+      "cost": 17,
+      "how": "reported by the response",
+      "cap": "narration"
     }
   ]
 }

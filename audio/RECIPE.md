@@ -46,13 +46,14 @@ For hold music the words about music are left out.
 
 ### line.marketing.stroll.0
 
-Takes used: 1 of 3.
+Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:35.681Z | 5.341 s | -1.17 dB | -21.23 LUFS | 5 | 27 | yes, as line.marketing.stroll.0 | too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks |
+| 2 | script-003 | 2026-11-28T02:32:38.473Z | 19.783 s | -2.02 dB | -20.32 LUFS | 17 | 89 | no |  |
 
-Words: Here we find / the applicant. / Rent is due.
+Words: Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026.
 
 ### line.marketing.perks.0
 
@@ -66,13 +67,14 @@ Words: It spots unlimited PTO. / Poor thing / believes it.
 
 ### line.step1.firstName.0
 
-Takes used: 1 of 3.
+Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:38.537Z | 5.433 s | -2.67 dB | -20.28 LUFS | 3 | 29 | yes, as line.step1.firstName.0 | too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks |
+| 2 | script-003 | 2026-11-28T02:32:39.901Z | 9.474 s | -1.26 dB | -17.58 LUFS | 8 | 40 | no |  |
 
-Words: First name. / Under fire. / Standard onboarding.
+Words: The application / has sensed / a candidate. / ATS turrets rise.
 
 ### line.step1.firstName.1
 
@@ -119,25 +121,27 @@ Words: A rotary phone. / The applicant / has never seen one.
 
 ### line.step2.crank.0
 
-Takes used: 3 of 3.
+Takes used: 3 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:45.642Z | 6.084 s | -4.63 dB | -19.9 LUFS | 5 | 29 | no |  |
 | 2 | build | 2026-11-25T18:44:18.654Z | 5.805 s | -3.54 dB | -22.28 LUFS | 6 | 29 | no |  |
 | 3 | build | 2026-11-25T18:44:54.436Z | 6.641 s | -1.51 dB | -20.32 LUFS | 6 | 29 | yes, as line.step2.crank.0 | tone not judged: 1 whole answers in 6 asks |
+| 4 | script-003 | 2026-11-28T02:32:42.616Z | 6.502 s | -1.27 dB | -17.36 LUFS | 6 | 32 | no |  |
 
-Words: Volume. / All the way up. / It will regret that.
+Words: The applicant / must turn the volume / all the way up.
 
 ### line.pinball.seal.0
 
-Takes used: 1 of 3.
+Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:47.066Z | 6.92 s | -4.3 dB | -18.78 LUFS | 6 | 32 | yes, as line.pinball.seal.0 | tone not judged: 1 whole answers in 8 asks |
+| 2 | script-003 | 2026-11-28T02:32:44.421Z | 9.102 s | -2.81 dB | -19.32 LUFS | 12 | 44 | no |  |
 
-Words: The skills assessment. / No skills / will be assessed.
+Words: The company / gently collects / the applicant / for an unpaid assessment.
 
 ### line.pinball.launch.0
 
@@ -201,13 +205,14 @@ Words: The unemployment office. / It knows the way.
 
 ### line.boss.verify.0
 
-Takes used: 1 of 3.
+Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:05:56.274Z | 5.387 s | -3.21 dB | -20.92 LUFS | 4 | 26 | yes, as line.boss.verify.0 |  |
+| 2 | script-003 | 2026-11-28T02:32:49.546Z | 8.684 s | -1.77 dB | -19.34 LUFS | 6 | 37 | no |  |
 
-Words: Not a robot, / it claims. / We will see.
+Words: They declare themselves human. / The form / takes that as a threat.
 
 ### line.boss.slabs.0
 
@@ -231,13 +236,14 @@ Words: Session expired. / A classic.
 
 ### line.decision.letter.0
 
-Takes used: 1 of 3.
+Takes used: 1 of 3 in the build, 1 of 3 in round script-003.
 
 | Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | build | 2026-11-25T18:06:00.204Z | 3.529 s | -3.59 dB | -18.33 LUFS | 3 | 17 | yes, as line.decision.letter.0 |  |
+| 2 | script-003 | 2026-11-28T02:32:55.302Z | 12.957 s | -2.17 dB | -18.81 LUFS | 10 | 59 | no |  |
 
-Words: Rejected. / In under a second.
+Words: After careful consideration, / the company / has decided / to move forward / with other candidates.
 
 ### line.decision.metrics.0
 
@@ -1461,3 +1467,63 @@ Takes used: 1 of 3.
 | 1 | build | 2026-11-25T19:24:52.881Z | 0.48 s | -17.92 dB | -39.53 LUFS | 1 | 6 | yes, as skip | not judged by ear: 0 whole answers in 6 asks |
 
 Prompt: One firm press of a wide plastic key bottoming out on a ceramic base, a single low click, close and dry, recorded in a quiet room, real materials, no music, no melody, no voice
+
+### line.step2.crank.1
+
+Takes used: 1 of 3 in round script-003.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | script-003 | 2026-11-28T02:32:29.100Z | 1.765 s | -5.77 dB | -21.81 LUFS | 3 | 10 | no |  |
+
+Words: They will regret that.
+
+### line.step1.shredded.0
+
+Takes used: 1 of 3 in round script-003.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | script-003 | 2026-11-28T02:32:41.480Z | 13.7 s | -1.82 dB | -20.99 LUFS | 11 | 70 | no |  |
+
+Words: The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway.
+
+### line.boss.unfold.0
+
+Takes used: 1 of 3 in round script-003.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | script-003 | 2026-11-28T02:32:51.500Z | 23.638 s | -3.36 dB | -20.6 LUFS | 16 | 101 | no |  |
+
+Words: The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.
+
+### line.boss.unfold.1
+
+Takes used: 1 of 3 in round script-003.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | script-003 | 2026-11-28T02:32:52.759Z | 5.851 s | -3.39 dB | -20.07 LUFS | 4 | 29 | no |  |
+
+Words: But then / they remember / their student loans.
+
+### line.boss.unfold.2
+
+Takes used: 1 of 3 in round script-003.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | script-003 | 2026-11-28T02:32:53.837Z | 4.087 s | -4.37 dB | -18.85 LUFS | 3 | 18 | no |  |
+
+Words: They turn back. / One more round.
+
+### line.decision.reset.0
+
+Takes used: 1 of 3 in round script-003.
+
+| Take | Round | Filed | Length | Peak | Loudness | Hits | Cost | Kept | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | script-003 | 2026-11-28T02:32:56.402Z | 3.204 s | -2.24 dB | -20.22 LUFS | 3 | 17 | no |  |
+
+Words: On to / the next application.

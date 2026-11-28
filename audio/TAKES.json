@@ -13089,6 +13089,1185 @@
         "room": null,
         "fits": true
       }
+    },
+    {
+      "key": "line.step2.crank.1",
+      "kind": "line",
+      "take": 1,
+      "round": "script-003",
+      "file": "take-1.mp3",
+      "sha256": "0b294fa7e9c4564e8f661827e94fb9b33d16cb5d1be07252f364c60363a6e697",
+      "filed": "2026-11-28T02:32:29.100Z",
+      "text": "They will regret that.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 0,
+        "sent": "They will regret that.",
+        "call": 198
+      },
+      "askedSeconds": null,
+      "cost": "10",
+      "measured": {
+        "seconds": 1.765,
+        "start": 0.032,
+        "end": 1.618,
+        "peakDb": -5.77,
+        "rmsDb": -21.26,
+        "lufs": -21.81,
+        "truePeakDb": -5.77,
+        "low": 0.372,
+        "mid": 0.589,
+        "high": 0.039,
+        "tailDb": -21.3,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.036,
+            "end": 0.968,
+            "peakDb": -5.77
+          },
+          {
+            "start": 1.102,
+            "end": 1.394,
+            "peakDb": -11.32
+          },
+          {
+            "start": 1.49,
+            "end": 1.592,
+            "peakDb": -11.2
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 4,
+        "seconds": 1.586,
+        "wordsPerSecond": 2.522,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 0,
+        "pausesFound": 0,
+        "pauses": [],
+        "paceHolds": false,
+        "pausesHold": true,
+        "room": 3.829,
+        "fits": true,
+        "beatSeconds": 8.4
+      }
+    },
+    {
+      "key": "line.marketing.stroll.0",
+      "kind": "line",
+      "take": 2,
+      "round": "script-003",
+      "file": "take-2.mp3",
+      "sha256": "55a586fbc776a8189ea8b16afd663a75ae0b0fb6b0baef3f3937042f3873076f",
+      "filed": "2026-11-28T02:32:38.473Z",
+      "text": "Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "Ahh. <break time=\"1.0s\" /> Here we have <break time=\"1.0s\" /> another job applicant. <break time=\"1.0s\" /> Desperately hoping <break time=\"1.0s\" /> to pay their rent. <break time=\"1.0s\" /> Poor fool. <break time=\"1.0s\" /> They must have forgotten <break time=\"1.0s\" /> it is 2026.",
+        "call": 199
+      },
+      "askedSeconds": null,
+      "cost": "89",
+      "measured": {
+        "seconds": 19.783,
+        "start": 0.098,
+        "end": 19.558,
+        "peakDb": -2.02,
+        "rmsDb": -22.93,
+        "lufs": -20.32,
+        "truePeakDb": -2.02,
+        "low": 0.532,
+        "mid": 0.191,
+        "high": 0.277,
+        "tailDb": -17.58,
+        "hits": 17,
+        "hitsAt": [
+          {
+            "start": 0.114,
+            "end": 0.72,
+            "peakDb": -8.7
+          },
+          {
+            "start": 1.95,
+            "end": 2.862,
+            "peakDb": -5.49
+          },
+          {
+            "start": 4.012,
+            "end": 5.034,
+            "peakDb": -4.63
+          },
+          {
+            "start": 5.134,
+            "end": 5.698,
+            "peakDb": -6.35
+          },
+          {
+            "start": 6.958,
+            "end": 7.21,
+            "peakDb": -2.44
+          },
+          {
+            "start": 7.282,
+            "end": 7.412,
+            "peakDb": -9.68
+          },
+          {
+            "start": 7.488,
+            "end": 7.906,
+            "peakDb": -7.56
+          },
+          {
+            "start": 8.01,
+            "end": 8.378,
+            "peakDb": -9.17
+          },
+          {
+            "start": 9.57,
+            "end": 9.718,
+            "peakDb": -4.63
+          },
+          {
+            "start": 9.832,
+            "end": 11.024,
+            "peakDb": -6.82
+          },
+          {
+            "start": 12.296,
+            "end": 13.412,
+            "peakDb": -8.11
+          },
+          {
+            "start": 14.706,
+            "end": 15.754,
+            "peakDb": -2.02
+          },
+          {
+            "start": 15.868,
+            "end": 16.156,
+            "peakDb": -13.89
+          },
+          {
+            "start": 17.336,
+            "end": 17.728,
+            "peakDb": -3.47
+          },
+          {
+            "start": 17.79,
+            "end": 18.24,
+            "peakDb": -4.6
+          },
+          {
+            "start": 18.304,
+            "end": 19.052,
+            "peakDb": -3.79
+          },
+          {
+            "start": 19.174,
+            "end": 19.518,
+            "peakDb": -3.71
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 22,
+        "seconds": 19.46,
+        "wordsPerSecond": 1.131,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 7,
+        "pausesFound": 7,
+        "pauses": [
+          1.204,
+          1.144,
+          1.252,
+          1.174,
+          1.26,
+          1.254,
+          1.168
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 21.721,
+        "fits": true,
+        "beatSeconds": 3
+      }
+    },
+    {
+      "key": "line.step1.firstName.0",
+      "kind": "line",
+      "take": 2,
+      "round": "script-003",
+      "file": "take-2.mp3",
+      "sha256": "2f938d0a3ee681c9dbd14a33316ece21446689c39802478415c19b58eba569b5",
+      "filed": "2026-11-28T02:32:39.901Z",
+      "text": "The application / has sensed / a candidate. / ATS turrets rise.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "The application <break time=\"1.0s\" /> has sensed <break time=\"1.0s\" /> a candidate. <break time=\"1.0s\" /> ATS turrets rise.",
+        "call": 200
+      },
+      "askedSeconds": null,
+      "cost": "40",
+      "measured": {
+        "seconds": 9.474,
+        "start": 0.048,
+        "end": 9.29,
+        "peakDb": -1.26,
+        "rmsDb": -20.58,
+        "lufs": -17.58,
+        "truePeakDb": -1.26,
+        "low": 0.325,
+        "mid": 0.322,
+        "high": 0.353,
+        "tailDb": -20.18,
+        "hits": 8,
+        "hitsAt": [
+          {
+            "start": 0.054,
+            "end": 0.392,
+            "peakDb": -3.11
+          },
+          {
+            "start": 0.474,
+            "end": 0.616,
+            "peakDb": -4.46
+          },
+          {
+            "start": 0.692,
+            "end": 1.344,
+            "peakDb": -7.18
+          },
+          {
+            "start": 2.492,
+            "end": 3.63,
+            "peakDb": -2.92
+          },
+          {
+            "start": 4.754,
+            "end": 4.888,
+            "peakDb": -4.28
+          },
+          {
+            "start": 4.986,
+            "end": 5.812,
+            "peakDb": -5.99
+          },
+          {
+            "start": 7.04,
+            "end": 7.71,
+            "peakDb": -1.26
+          },
+          {
+            "start": 7.782,
+            "end": 9.262,
+            "peakDb": -3.52
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 9,
+        "seconds": 9.242,
+        "wordsPerSecond": 0.974,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 3,
+        "pausesFound": 3,
+        "pauses": [
+          1.118,
+          1.114,
+          1.216
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 26.079,
+        "fits": true,
+        "beatSeconds": 8
+      }
+    },
+    {
+      "key": "line.step1.shredded.0",
+      "kind": "line",
+      "take": 1,
+      "round": "script-003",
+      "file": "take-1.mp3",
+      "sha256": "a6f396ad737d0d584425c0878d674904f9f28ada6c8fa73dae1223014baf3ea1",
+      "filed": "2026-11-28T02:32:41.480Z",
+      "text": "The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "The applicant <break time=\"1.0s\" /> need not worry <break time=\"1.0s\" /> about the shredded resume. <break time=\"1.0s\" /> They will have to type it all in <break time=\"1.0s\" /> by hand <break time=\"1.0s\" /> anyway.",
+        "call": 201
+      },
+      "askedSeconds": null,
+      "cost": "70",
+      "measured": {
+        "seconds": 13.7,
+        "start": 0.03,
+        "end": 13.424,
+        "peakDb": -1.82,
+        "rmsDb": -22.43,
+        "lufs": -20.99,
+        "truePeakDb": -1.79,
+        "low": 0.59,
+        "mid": 0.317,
+        "high": 0.093,
+        "tailDb": -22.77,
+        "hits": 11,
+        "hitsAt": [
+          {
+            "start": 0.032,
+            "end": 0.406,
+            "peakDb": -1.82
+          },
+          {
+            "start": 0.498,
+            "end": 0.982,
+            "peakDb": -10.1
+          },
+          {
+            "start": 2.104,
+            "end": 3.25,
+            "peakDb": -6.96
+          },
+          {
+            "start": 4.398,
+            "end": 4.758,
+            "peakDb": -4.88
+          },
+          {
+            "start": 4.832,
+            "end": 6.318,
+            "peakDb": -3.91
+          },
+          {
+            "start": 7.614,
+            "end": 8.11,
+            "peakDb": -4.13
+          },
+          {
+            "start": 8.178,
+            "end": 8.284,
+            "peakDb": -9.92
+          },
+          {
+            "start": 8.352,
+            "end": 8.556,
+            "peakDb": -5.15
+          },
+          {
+            "start": 8.622,
+            "end": 9.448,
+            "peakDb": -7.53
+          },
+          {
+            "start": 10.626,
+            "end": 11.562,
+            "peakDb": -7.79
+          },
+          {
+            "start": 12.692,
+            "end": 13.386,
+            "peakDb": -7.02
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 20,
+        "seconds": 13.394,
+        "wordsPerSecond": 1.493,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 5,
+        "pausesFound": 5,
+        "pauses": [
+          1.112,
+          1.136,
+          1.27,
+          1.174,
+          1.11
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 20.621,
+        "fits": true,
+        "beatSeconds": 7.75
+      }
+    },
+    {
+      "key": "line.step2.crank.0",
+      "kind": "line",
+      "take": 4,
+      "round": "script-003",
+      "file": "take-4.mp3",
+      "sha256": "1281d8464bea3b48f4a67bce8771f442865d6b760634994149ca8bca7b1eed15",
+      "filed": "2026-11-28T02:32:42.616Z",
+      "text": "The applicant / must turn the volume / all the way up.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.1,
+        "sent": "The applicant <break time=\"1.1s\" /> must turn the volume <break time=\"1.1s\" /> all the way up.",
+        "call": 202
+      },
+      "askedSeconds": null,
+      "cost": "32",
+      "measured": {
+        "seconds": 6.502,
+        "start": 0.038,
+        "end": 6.32,
+        "peakDb": -1.27,
+        "rmsDb": -19.24,
+        "lufs": -17.36,
+        "truePeakDb": -1.25,
+        "low": 0.515,
+        "mid": 0.358,
+        "high": 0.127,
+        "tailDb": -18.6,
+        "hits": 6,
+        "hitsAt": [
+          {
+            "start": 0.044,
+            "end": 0.414,
+            "peakDb": -1.27
+          },
+          {
+            "start": 0.492,
+            "end": 1.014,
+            "peakDb": -8.96
+          },
+          {
+            "start": 2.21,
+            "end": 2.562,
+            "peakDb": -2.63
+          },
+          {
+            "start": 2.686,
+            "end": 4.046,
+            "peakDb": -3.49
+          },
+          {
+            "start": 5.27,
+            "end": 6.148,
+            "peakDb": -2.07
+          },
+          {
+            "start": 6.252,
+            "end": 6.272,
+            "peakDb": -20.51
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 10,
+        "seconds": 6.282,
+        "wordsPerSecond": 1.592,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.19,
+          1.208
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 6.25,
+        "fits": false,
+        "beatSeconds": 8.4
+      }
+    },
+    {
+      "key": "line.pinball.seal.0",
+      "kind": "line",
+      "take": 2,
+      "round": "script-003",
+      "file": "take-2.mp3",
+      "sha256": "b6732531e212a70abccea27b5fcb5d5c3dd35131146f1fb77ee0867a959b6096",
+      "filed": "2026-11-28T02:32:44.421Z",
+      "text": "The company / gently collects / the applicant / for an unpaid assessment.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "The company <break time=\"1.0s\" /> gently collects <break time=\"1.0s\" /> the applicant <break time=\"1.0s\" /> for an unpaid assessment.",
+        "call": 203
+      },
+      "askedSeconds": null,
+      "cost": "44",
+      "measured": {
+        "seconds": 9.102,
+        "start": 0.04,
+        "end": 8.926,
+        "peakDb": -2.81,
+        "rmsDb": -23.29,
+        "lufs": -19.32,
+        "truePeakDb": -2.4,
+        "low": 0.375,
+        "mid": 0.195,
+        "high": 0.43,
+        "tailDb": -15.97,
+        "hits": 12,
+        "hitsAt": [
+          {
+            "start": 0.048,
+            "end": 0.164,
+            "peakDb": -4.67
+          },
+          {
+            "start": 0.242,
+            "end": 0.462,
+            "peakDb": -2.81
+          },
+          {
+            "start": 0.528,
+            "end": 0.894,
+            "peakDb": -14.54
+          },
+          {
+            "start": 2.042,
+            "end": 2.536,
+            "peakDb": -4.03
+          },
+          {
+            "start": 2.618,
+            "end": 3.028,
+            "peakDb": -7.56
+          },
+          {
+            "start": 3.216,
+            "end": 3.556,
+            "peakDb": -3.07
+          },
+          {
+            "start": 4.734,
+            "end": 5.066,
+            "peakDb": -10.96
+          },
+          {
+            "start": 5.178,
+            "end": 5.306,
+            "peakDb": -13.27
+          },
+          {
+            "start": 5.368,
+            "end": 5.584,
+            "peakDb": -12.31
+          },
+          {
+            "start": 5.698,
+            "end": 5.786,
+            "peakDb": -16.13
+          },
+          {
+            "start": 6.96,
+            "end": 8.762,
+            "peakDb": -3.27
+          },
+          {
+            "start": 8.836,
+            "end": 8.882,
+            "peakDb": -14.89
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 10,
+        "seconds": 8.886,
+        "wordsPerSecond": 1.125,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 3,
+        "pausesFound": 3,
+        "pauses": [
+          1.12,
+          1.172,
+          1.154
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 44.8,
+        "fits": true,
+        "beatSeconds": 7.6
+      }
+    },
+    {
+      "key": "line.boss.verify.0",
+      "kind": "line",
+      "take": 2,
+      "round": "script-003",
+      "file": "take-2.mp3",
+      "sha256": "4cf13132338b3f0fd4c149f6b0ff5e4908286130e020470935c5551034ca921d",
+      "filed": "2026-11-28T02:32:49.546Z",
+      "text": "They declare themselves human. / The form / takes that as a threat.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.3,
+        "sent": "They declare themselves human. <break time=\"1.3s\" /> The form <break time=\"1.3s\" /> takes that as a threat.",
+        "call": 204
+      },
+      "askedSeconds": null,
+      "cost": "37",
+      "measured": {
+        "seconds": 8.684,
+        "start": 0.028,
+        "end": 8.518,
+        "peakDb": -1.77,
+        "rmsDb": -22.16,
+        "lufs": -19.34,
+        "truePeakDb": -1.76,
+        "low": 0.385,
+        "mid": 0.322,
+        "high": 0.294,
+        "tailDb": -23.07,
+        "hits": 6,
+        "hitsAt": [
+          {
+            "start": 0.032,
+            "end": 0.498,
+            "peakDb": -2.56
+          },
+          {
+            "start": 0.574,
+            "end": 2.512,
+            "peakDb": -1.77
+          },
+          {
+            "start": 3.988,
+            "end": 5.046,
+            "peakDb": -7.84
+          },
+          {
+            "start": 6.46,
+            "end": 6.674,
+            "peakDb": -5.24
+          },
+          {
+            "start": 6.746,
+            "end": 8.132,
+            "peakDb": -3.52
+          },
+          {
+            "start": 8.294,
+            "end": 8.48,
+            "peakDb": -4.58
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 11,
+        "seconds": 8.49,
+        "wordsPerSecond": 1.296,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.446,
+          1.402
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 6.875,
+        "fits": false,
+        "beatSeconds": 7
+      }
+    },
+    {
+      "key": "line.boss.unfold.0",
+      "kind": "line",
+      "take": 1,
+      "round": "script-003",
+      "file": "take-1.mp3",
+      "sha256": "c98c4a28dbc0fb1fb5b2cbe6051ce426b2c9306def0b2f239291aa12dde1aa6d",
+      "filed": "2026-11-28T02:32:51.500Z",
+      "text": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "The applicant <break time=\"1.0s\" /> is ready to give up. <break time=\"1.0s\" /> There is no salary listed. <break time=\"1.0s\" /> No guarantee <break time=\"1.0s\" /> their resume <break time=\"1.0s\" /> makes it past the ATS. <break time=\"1.0s\" /> Their hand moves <break time=\"1.0s\" /> to close the Chrome tab.",
+        "call": 205
+      },
+      "askedSeconds": null,
+      "cost": "101",
+      "measured": {
+        "seconds": 23.638,
+        "start": 0.094,
+        "end": 23.418,
+        "peakDb": -3.36,
+        "rmsDb": -22.84,
+        "lufs": -20.6,
+        "truePeakDb": -2.89,
+        "low": 0.577,
+        "mid": 0.141,
+        "high": 0.282,
+        "tailDb": -19.23,
+        "hits": 16,
+        "hitsAt": [
+          {
+            "start": 0.1,
+            "end": 0.514,
+            "peakDb": -8.74
+          },
+          {
+            "start": 0.624,
+            "end": 1.18,
+            "peakDb": -5.61
+          },
+          {
+            "start": 2.31,
+            "end": 3.08,
+            "peakDb": -6.7
+          },
+          {
+            "start": 3.142,
+            "end": 3.776,
+            "peakDb": -4.55
+          },
+          {
+            "start": 3.898,
+            "end": 3.984,
+            "peakDb": -19.52
+          },
+          {
+            "start": 5.28,
+            "end": 7.404,
+            "peakDb": -3.73
+          },
+          {
+            "start": 8.618,
+            "end": 8.962,
+            "peakDb": -10.57
+          },
+          {
+            "start": 9.024,
+            "end": 10.208,
+            "peakDb": -7.31
+          },
+          {
+            "start": 11.45,
+            "end": 12.72,
+            "peakDb": -4.21
+          },
+          {
+            "start": 13.952,
+            "end": 14.546,
+            "peakDb": -3.36
+          },
+          {
+            "start": 14.638,
+            "end": 15.274,
+            "peakDb": -5.23
+          },
+          {
+            "start": 15.338,
+            "end": 16.672,
+            "peakDb": -4.2
+          },
+          {
+            "start": 17.992,
+            "end": 19.584,
+            "peakDb": -3.49
+          },
+          {
+            "start": 20.87,
+            "end": 21.016,
+            "peakDb": -5.14
+          },
+          {
+            "start": 21.096,
+            "end": 21.926,
+            "peakDb": -5.22
+          },
+          {
+            "start": 21.988,
+            "end": 23.36,
+            "peakDb": -5.27
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 29,
+        "seconds": 23.324,
+        "wordsPerSecond": 1.243,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 7,
+        "pausesFound": 7,
+        "pauses": [
+          1.128,
+          1.262,
+          1.208,
+          1.23,
+          1.216,
+          1.306,
+          1.272
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 18.125,
+        "fits": false,
+        "beatSeconds": 29.1
+      }
+    },
+    {
+      "key": "line.boss.unfold.1",
+      "kind": "line",
+      "take": 1,
+      "round": "script-003",
+      "file": "take-1.mp3",
+      "sha256": "964b4e7397d9fe10e5bcb0d23ee9690eafac7a902392d51f5b0fca8976e10d5c",
+      "filed": "2026-11-28T02:32:52.759Z",
+      "text": "But then / they remember / their student loans.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "But then <break time=\"1.0s\" /> they remember <break time=\"1.0s\" /> their student loans.",
+        "call": 206
+      },
+      "askedSeconds": null,
+      "cost": "29",
+      "measured": {
+        "seconds": 5.851,
+        "start": 0.052,
+        "end": 5.644,
+        "peakDb": -3.39,
+        "rmsDb": -22.1,
+        "lufs": -20.07,
+        "truePeakDb": -3.38,
+        "low": 0.616,
+        "mid": 0.177,
+        "high": 0.207,
+        "tailDb": -17.67,
+        "hits": 4,
+        "hitsAt": [
+          {
+            "start": 0.058,
+            "end": 0.146,
+            "peakDb": -11.29
+          },
+          {
+            "start": 0.268,
+            "end": 0.638,
+            "peakDb": -4.97
+          },
+          {
+            "start": 1.794,
+            "end": 2.708,
+            "peakDb": -8.51
+          },
+          {
+            "start": 3.86,
+            "end": 5.626,
+            "peakDb": -3.39
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 7,
+        "seconds": 5.592,
+        "wordsPerSecond": 1.252,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 2,
+        "pausesFound": 2,
+        "pauses": [
+          1.15,
+          1.144
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 4.375,
+        "fits": false,
+        "beatSeconds": 29.1
+      }
+    },
+    {
+      "key": "line.boss.unfold.2",
+      "kind": "line",
+      "take": 1,
+      "round": "script-003",
+      "file": "take-1.mp3",
+      "sha256": "e98d7aa4b2188b49f959175ba99cf022a18f8f25ef2ff6210bc07ba76200713a",
+      "filed": "2026-11-28T02:32:53.837Z",
+      "text": "They turn back. / One more round.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.4,
+        "sent": "They turn back. <break time=\"1.4s\" /> One more round.",
+        "call": 207
+      },
+      "askedSeconds": null,
+      "cost": "18",
+      "measured": {
+        "seconds": 4.087,
+        "start": 0.028,
+        "end": 3.98,
+        "peakDb": -4.37,
+        "rmsDb": -20.5,
+        "lufs": -18.85,
+        "truePeakDb": -4.24,
+        "low": 0.506,
+        "mid": 0.456,
+        "high": 0.038,
+        "tailDb": -23.23,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.028,
+            "end": 1.044,
+            "peakDb": -4.37
+          },
+          {
+            "start": 1.12,
+            "end": 1.218,
+            "peakDb": -14.28
+          },
+          {
+            "start": 2.78,
+            "end": 3.932,
+            "peakDb": -4.75
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 6,
+        "seconds": 3.952,
+        "wordsPerSecond": 1.518,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.546
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 34.658,
+        "fits": true,
+        "beatSeconds": 29.1
+      }
+    },
+    {
+      "key": "line.decision.letter.0",
+      "kind": "line",
+      "take": 2,
+      "round": "script-003",
+      "file": "take-2.mp3",
+      "sha256": "8db54143553a7fc4819393713ed6ee88da2f3d43116d4e7e94a72430657f2eca",
+      "filed": "2026-11-28T02:32:55.302Z",
+      "text": "After careful consideration, / the company / has decided / to move forward / with other candidates.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1,
+        "sent": "After careful consideration, <break time=\"1.0s\" /> the company <break time=\"1.0s\" /> has decided <break time=\"1.0s\" /> to move forward <break time=\"1.0s\" /> with other candidates.",
+        "call": 208
+      },
+      "askedSeconds": null,
+      "cost": "59",
+      "measured": {
+        "seconds": 12.957,
+        "start": 0.026,
+        "end": 12.768,
+        "peakDb": -2.17,
+        "rmsDb": -21.15,
+        "lufs": -18.81,
+        "truePeakDb": -2.17,
+        "low": 0.55,
+        "mid": 0.202,
+        "high": 0.249,
+        "tailDb": -17.52,
+        "hits": 10,
+        "hitsAt": [
+          {
+            "start": 0.032,
+            "end": 0.398,
+            "peakDb": -2.17
+          },
+          {
+            "start": 0.48,
+            "end": 2.362,
+            "peakDb": -3.14
+          },
+          {
+            "start": 3.496,
+            "end": 3.628,
+            "peakDb": -7.44
+          },
+          {
+            "start": 3.72,
+            "end": 4.458,
+            "peakDb": -8.08
+          },
+          {
+            "start": 5.662,
+            "end": 5.964,
+            "peakDb": -4.04
+          },
+          {
+            "start": 6.036,
+            "end": 7.06,
+            "peakDb": -2.83
+          },
+          {
+            "start": 8.2,
+            "end": 9.85,
+            "peakDb": -2.7
+          },
+          {
+            "start": 11.036,
+            "end": 11.658,
+            "peakDb": -7.03
+          },
+          {
+            "start": 11.72,
+            "end": 12.34,
+            "peakDb": -9.69
+          },
+          {
+            "start": 12.432,
+            "end": 12.75,
+            "peakDb": -2.33
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 13,
+        "seconds": 12.742,
+        "wordsPerSecond": 1.02,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 4,
+        "pausesFound": 4,
+        "pauses": [
+          1.122,
+          1.174,
+          1.126,
+          1.178
+        ],
+        "paceHolds": true,
+        "pausesHold": true,
+        "room": 8.154,
+        "fits": false,
+        "beatSeconds": 4
+      }
+    },
+    {
+      "key": "line.decision.reset.0",
+      "kind": "line",
+      "take": 1,
+      "round": "script-003",
+      "file": "take-1.mp3",
+      "sha256": "0f85c3d776c4c4b7ccb1845db91af666cba7eec5efba678c58b2b9290efcb04e",
+      "filed": "2026-11-28T02:32:56.402Z",
+      "text": "On to / the next application.",
+      "settings": {
+        "speed": 0.7,
+        "stability": 0.75,
+        "breakSeconds": 1.1,
+        "sent": "On to <break time=\"1.1s\" /> the next application.",
+        "call": 209
+      },
+      "askedSeconds": null,
+      "cost": "17",
+      "measured": {
+        "seconds": 3.204,
+        "start": 0.036,
+        "end": 3.128,
+        "peakDb": -2.24,
+        "rmsDb": -23.17,
+        "lufs": -20.22,
+        "truePeakDb": -2.22,
+        "low": 0.417,
+        "mid": 0.279,
+        "high": 0.303,
+        "tailDb": -23.33,
+        "hits": 3,
+        "hitsAt": [
+          {
+            "start": 0.038,
+            "end": 0.43,
+            "peakDb": -4.85
+          },
+          {
+            "start": 1.676,
+            "end": 2.24,
+            "peakDb": -2.24
+          },
+          {
+            "start": 2.322,
+            "end": 3.06,
+            "peakDb": -6.78
+          }
+        ]
+      },
+      "listener": null,
+      "kept": false,
+      "keptAs": [],
+      "why": "",
+      "line": {
+        "words": 5,
+        "seconds": 3.092,
+        "wordsPerSecond": 1.617,
+        "maxWordsPerSecond": 1.6,
+        "pauseMarks": 1,
+        "pausesFound": 1,
+        "pauses": [
+          1.242
+        ],
+        "paceHolds": false,
+        "pausesHold": true,
+        "room": null,
+        "fits": true,
+        "beatSeconds": 3.3000000000000007
+      }
     }
   ]
 }
