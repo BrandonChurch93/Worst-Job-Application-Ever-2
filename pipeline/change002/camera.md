@@ -318,3 +318,43 @@ The Builder asked for a trial of one line in `src/core/renderer.ts` (after line 
 - The line against no line in a run from 34.0 s in steps of 1 s: 0 from 34 to 40, 655 px at 41, 64 at 42, 170 at 43, 5837 at 44, 0 from 45 to 48.
 - 42.0 s as the first frame of a session against 42.0 s in that run: 64 px without the line, 0 with it.
 - 48.0 s alone against the end of that run: 1 px at 1269,354 with the line and without it.
+
+## Way 1: the shout's marks from the line's own times
+
+Base: `agent/trial-p15` dbb3b410. Branch `agent/b-camera-way1`. Files changed: `src/boss/tune.ts`, `tests/b-camera.test.ts`, this file, two pictures. None of the trial commit's files.
+
+### What changed
+
+`SHOUT` in `src/boss/tune.ts` was four numbers typed by hand. It is now `shoutOf(lineTimes('boss.finish.0'))`: the first two charge marks and the fire mark are the starts of the line's three phrases, the two charge marks between stand at 0.3398 and 0.6019 of the gap from the second start to the fire mark, and the body is gone 1.3 s after the line ends. Marks worked out are rounded to 0.001 s. A line with fewer than three starts, or none, gives the stand-in's numbers, which `SHOUT_RULE.standIn` holds.
+
+`SHOUT` reads the line when a mark is first asked for, not when the file loads. STATED, not measured in a build: `src/audio/standin.ts` imports `src/ui/rise.ts`, which imports `src/boss/tune.ts`; with the marks read at load, a program that loads the sound code's script first would ask it for the line before its own tables are set. MEASURED: in the tests it does not happen either way (`tests/audio-shout-times.test.ts` passes 9 of 9 with the marks read at load too), because the tests' setup loads the pages first.
+
+### Proof
+
+1. MEASURED by `tests/b-camera.test.ts`, "the marks of the shout, worked out from the line": with starts [0.1, 1.04, 4.13] and 6.26 s the marks are { arms 0, beats [0.1, 1.04, 2.09, 2.9], fire 4.13, gone 7.56 }, and `SHOUT` in this tree is the same.
+   MEASURED by render: 47 film frames of the boss unit, 38.5 s to 50.0 s in steps of 0.25 s (the fall is at 38.81 s, the press after 48.78 s), 1920x1080, draft tier, the option off, one session each in the same order, the base against this branch: `compare -metric AE` 0 on all 47.
+2. MEASURED by the third test of that group. A take of starts [0.2, 1.3, 3.9] and 5.5 s is put into the sound index the code reads, the code is loaded again and the film's boss unit is played. The marks are { beats [0.2, 1.3, 2.183, 2.865], fire 3.9, gone 6.8 }. The four `finish-charge`, `finish-fire` and `boss-gone` come within 2.5 steps of them after `finish-arms`. Every low frame of the page's camera is, to 1e-6 px of the eye, the camera of marks with the turn 3.9 s less `CAMERA.ahead` after the arms; against the stand-in's turn the best fit is off by over 50 px. The three captions of the shout start within one frame of the first two charge marks and the fire mark, and the last leaves when the rise begins after the take's fire mark. The line starts on `finish-arms`, and a sound cue is laid on each of `finish-arms`, `finish-charge`, `finish-fire`, `boss-gone`.
+
+### A real take of about 3.5 s
+
+MEASURED with a made-up take of starts [0.05, 0.6, 2.3] and 3.5 s (the stand-in's shares), in a tree of its own, not committed. Marks: beats [0.05, 0.6, 1.178, 1.623], fire 2.3, gone 4.8.
+
+Tests that turn red with it, none red with the stand-in:
+
+- `tests/b-camera.test.ts` line 274: 2 s after the arms the camera is already in the turn to behind (the turn starts 0.9 s before the fire mark, at 1.4 s). The charge view is at rest from 0.95 s to 1.4 s, 0.45 s, where today it is 2.28 s and the test asks 2 s.
+- `tests/b-camera.test.ts` line 345: the events of the film are pinned by frame (`finish-fire` at frame 198, pinned 307).
+- `tests/b-camera.test.ts` line 429, live site, one who holds 2 s and lets go: the view is not from above again when the body is gone.
+- `tests/b-finish.test.ts` line 67: a joint of the figure moves 28.66 px in one frame, limit 28. Line 114: the test reads the ball at 2.2 s and 3.8 s, typed times.
+- `tests/b-boss.test.ts` lines 492 and 493, three kinds of live visitor: the times and counts of the table at lines 460 to 464 are typed for today's marks (fire wanted at 5.39 s, found at 3.61 s).
+
+What I SEE in eight frames of the film with it (`proof/camera/way1-take-3.5s-charge.jpg`, `way1-take-3.5s-blast.jpg`): the charge view, the white frame of the turn, the beam from behind and the boss in pieces from above are all there. At 0.11 s before the body is gone the view from above is still turning. 0.7 s after the body is gone the arrow is already walking and the view is still turning toward the lie of the page: the camera needs 3.4 s after the fire mark to be level again, the body is gone after 2.5 s and the walk starts 0.4 s later.
+
+STATED, from the camera's numbers as they are (`down` 0.95, `ahead` 0.9, `rise` to 1.7, `hold` 0.4, `turn` 1.3):
+
+- Every pin of today holds when the fire mark is 3.85 s or later and the last phrase lasts 2.1 s or longer: a take of 5.95 s. The stand-in has 4.13 s and 2.13 s.
+- The view is level before the arrow walks when the last phrase lasts 1.7 s or longer. With 1 s of the charge view at rest (fire mark at 2.85 s) that is a take of 4.55 s. Under that the finish is all there but no view is held.
+- The cheapest help for a short last phrase, not done: the body gone no sooner than 3.4 s after the fire mark. It costs film time (0.9 s for the take above).
+
+### The sound check's A3
+
+MEASURED with the walker of `tools/mix.mjs` lines 258 to 270 run by itself: on the base it names `src/film/retime.ts`; on this branch `src/boss/tune.ts` and `src/film/retime.ts`. A3 fails on the base already, and this adds one file to its list. The cheapest way round is one alternative in the pattern of line 266, `(?!cues)` to `(?!cues|standin)`, which clears both files; `standin.ts` holds the script's times and no sound engine. That file is the sound unit's and is not touched here. `npm run check` itself was not run.
