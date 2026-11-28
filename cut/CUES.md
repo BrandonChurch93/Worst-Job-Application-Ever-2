@@ -24,16 +24,16 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `step2.slot` | 54.000 | 3240 | 3599 | `coins` | 57.962 | 3477 | yes |
 | `step2.crank` | 60.000 | 3600 | 3959 | `flatten` | 62.800 | 3768 | yes |
 | `step2.continue` | 66.000 | 3960 | 4019 | `button-press` | 66.421 | 3985 | yes |
-| `pinball.seal` | 67.000 | 4020 | 4259 | `ball-seal` | 69.300 | 4158 | yes |
-| `pinball.reveal` | 71.000 | 4260 | 4475 | `power-on` | 74.200 | 4452 | yes |
-| `pinball.launch` | 74.600 | 4476 | 4679 | `plunger` | 77.450 | 4647 | yes |
-| `pinball.lobby` | 78.000 | 4680 | 4919 | `doors-slam` | 80.100 | 4806 | yes |
-| `pinball.coffee` | 82.000 | 4920 | 5159 | `bumper` | 82.696 | 4961 | yes |
-| `pinball.replyAll` | 86.000 | 5160 | 5579 | `ball-drop` | 87.779 | 5266 | yes |
-| `pinball.fired` | 93.000 | 5580 | 5789 | `scoop-kick` | 96.358 | 5781 | yes |
-| `pinball.highway` | 96.500 | 5790 | 6059 | `ramp-roll` | 97.621 | 5857 | yes |
+| `pinball.seal` | 67.000 | 4020 | 4475 | `ball-seal` | 73.900 | 4434 | yes |
+| `pinball.reveal` | 74.600 | 4476 | 4691 | `power-on` | 77.904 | 4674 | yes |
+| `pinball.launch` | 78.200 | 4692 | 4859 | `plunger` | 80.154 | 4809 | yes |
+| `pinball.lobby` | 81.000 | 4860 | 5069 | `doors-slam` | 82.804 | 4968 | yes |
+| `pinball.coffee` | 84.500 | 5070 | 5321 | `bumper` | 84.642 | 5078 | yes |
+| `pinball.replyAll` | 88.700 | 5322 | 5579 | `ball-drop` | 90.483 | 5429 | yes |
+| `pinball.fired` | 93.000 | 5580 | 5789 | `scoop-kick` | 96.362 | 5781 | yes |
+| `pinball.highway` | 96.500 | 5790 | 6059 | `ramp-roll` | 97.617 | 5857 | yes |
 | `pinball.save` | 101.000 | 6060 | 6239 | `flipper-save` | 102.617 | 6157 | yes |
-| `pinball.drain` | 104.000 | 6240 | 6539 | `drain` | 104.629 | 6277 | yes |
+| `pinball.drain` | 104.000 | 6240 | 6539 | `drain` | 104.608 | 6276 | yes |
 | `boss.verify` | 109.000 | 6540 | 6839 | `checkbox` | 112.800 | 6768 | yes |
 | `boss.unfold` | 114.000 | 6840 | 7079 | `unfold` | 115.708 | 6942 | yes |
 | `boss.slabs` | 118.000 | 7080 | 7499 | `slab-fire` | 118.862 | 7131 | yes |
@@ -48,7 +48,7 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 
 ## Events with a cue
 
-976 of the film's 977 events have a cue in the table of events to cues. A cue starts on the frame of its event.
+1004 of the film's 1161 events have a cue in the table of events to cues. A cue starts on the frame of its event.
 
 | Time s | Frame | Beat | Event | Cue | Hits the cursor |
 | --- | --- | --- | --- | --- | --- |
@@ -508,72 +508,100 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | 66.421 | 3985 | `step2.continue` | `button-press` | `button-press` | no |
 | 66.475 | 3988 | `step2.continue` | `step` | `step` | no |
 | 66.500 | 3990 | `step2.continue` | `page-turn` | `page-turn` | no |
-| 67.979 | 4078 | `pinball.seal` | `step` | `step` | no |
-| 68.121 | 4087 | `pinball.seal` | `step` | `step` | no |
-| 68.250 | 4095 | `pinball.seal` | `step` | `step` | no |
-| 68.371 | 4102 | `pinball.seal` | `step` | `step` | no |
-| 68.871 | 4132 | `pinball.seal` | `step` | `step` | no |
-| 69.300 | 4158 | `pinball.seal` | `ball-seal` | `ball-seal` | yes |
-| 70.296 | 4217 | `pinball.seal` | `tube-run` | `tube-run` | no |
-| 71.096 | 4265 | `pinball.reveal` | `lights-down` | `lights-down` | no |
-| 74.200 | 4452 | `pinball.reveal` | `power-on` | `power-on` | no |
-| 77.450 | 4647 | `pinball.launch` | `plunger` | `plunger` | no |
-| 79.300 | 4758 | `pinball.lobby` | `sling` | `sling` | no |
-| 79.479 | 4768 | `pinball.lobby` | `carpet-roll` | `carpet-roll` | no |
-| 79.950 | 4797 | `pinball.lobby` | `spinner` | `spinner` | no |
-| 80.100 | 4806 | `pinball.lobby` | `doors-slam` | `doors-slam` | yes |
-| 81.458 | 4887 | `pinball.lobby` | `tier-fall` | `tier-fall` | no |
-| 81.938 | 4916 | `pinball.lobby` | `flasher` | `flasher` | yes |
-| 82.308 | 4938 | `pinball.coffee` | `drop-target` | `drop-target` | no |
-| 82.313 | 4938 | `pinball.coffee` | `drop-target` | `drop-target` | no |
-| 82.325 | 4939 | `pinball.coffee` | `drop-target` | `drop-target` | no |
-| 82.342 | 4940 | `pinball.coffee` | `drop-target` | `drop-target` | no |
-| 82.525 | 4951 | `pinball.coffee` | `sling` | `sling` | no |
-| 82.696 | 4961 | `pinball.coffee` | `bumper` | `bumper` | yes |
-| 83.042 | 4982 | `pinball.coffee` | `bumper` | `bumper` | yes |
-| 83.138 | 4988 | `pinball.coffee` | `sling` | `sling` | no |
-| 83.304 | 4998 | `pinball.coffee` | `bumper` | `bumper` | yes |
-| 84.258 | 5055 | `pinball.coffee` | `flipper` | `flipper` | no |
-| 84.392 | 5063 | `pinball.coffee` | `bumper` | `bumper` | yes |
-| 84.508 | 5070 | `pinball.coffee` | `sling` | `sling` | no |
-| 84.675 | 5080 | `pinball.coffee` | `bumper` | `bumper` | yes |
-| 84.779 | 5086 | `pinball.coffee` | `sling` | `sling` | no |
-| 84.950 | 5097 | `pinball.coffee` | `bumper` | `bumper` | yes |
-| 85.271 | 5116 | `pinball.coffee` | `flipper` | `flipper` | no |
-| 85.404 | 5124 | `pinball.coffee` | `bumper` | `bumper` | yes |
-| 85.542 | 5132 | `pinball.coffee` | `flipper` | `flipper` | no |
-| 85.779 | 5146 | `pinball.coffee` | `inbox-take` | `inbox-take` | yes |
-| 87.779 | 5266 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
-| 87.779 | 5266 | `pinball.replyAll` | `flasher` | `flasher` | yes |
-| 87.879 | 5272 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
-| 87.979 | 5278 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
-| 88.250 | 5295 | `pinball.replyAll` | `flipper` | `flipper` | no |
-| 88.258 | 5295 | `pinball.replyAll` | `flasher` | `flasher` | yes |
-| 88.392 | 5303 | `pinball.replyAll` | `flasher` | `flasher` | yes |
-| 88.496 | 5309 | `pinball.replyAll` | `sling` | `sling` | no |
-| 88.658 | 5319 | `pinball.replyAll` | `flasher` | `flasher` | yes |
-| 88.763 | 5325 | `pinball.replyAll` | `sling` | `sling` | no |
+| 73.900 | 4434 | `pinball.seal` | `ball-seal` | `ball-seal` | yes |
+| 74.550 | 4473 | `pinball.seal` | `tube-run` | `tube-run` | no |
+| 75.350 | 4521 | `pinball.reveal` | `lights-down` | `lights-down` | no |
+| 77.904 | 4674 | `pinball.reveal` | `power-on` | `power-on` | no |
+| 80.154 | 4809 | `pinball.launch` | `plunger` | `plunger` | no |
+| 82.004 | 4920 | `pinball.lobby` | `sling` | `sling` | no |
+| 82.183 | 4931 | `pinball.lobby` | `carpet-roll` | `carpet-roll` | no |
+| 82.654 | 4959 | `pinball.lobby` | `spinner` | `spinner` | no |
+| 82.804 | 4968 | `pinball.lobby` | `doors-slam` | `doors-slam` | yes |
+| 84.162 | 5049 | `pinball.lobby` | `tier-fall` | `tier-fall` | no |
+| 84.642 | 5078 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 85.013 | 5100 | `pinball.coffee` | `drop-target` | `drop-target` | no |
+| 85.017 | 5101 | `pinball.coffee` | `drop-target` | `drop-target` | no |
+| 85.029 | 5101 | `pinball.coffee` | `drop-target` | `drop-target` | no |
+| 85.046 | 5102 | `pinball.coffee` | `drop-target` | `drop-target` | no |
+| 85.229 | 5113 | `pinball.coffee` | `sling` | `sling` | no |
+| 85.400 | 5124 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 85.746 | 5144 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 85.842 | 5150 | `pinball.coffee` | `sling` | `sling` | no |
+| 86.008 | 5160 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 86.958 | 5217 | `pinball.coffee` | `flipper` | `flipper` | no |
+| 87.092 | 5225 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 87.267 | 5236 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 87.338 | 5240 | `pinball.coffee` | `sling` | `sling` | no |
+| 87.408 | 5244 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 87.558 | 5253 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 87.633 | 5258 | `pinball.coffee` | `sling` | `sling` | no |
+| 87.713 | 5262 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 87.787 | 5267 | `pinball.coffee` | `sling` | `sling` | no |
+| 87.862 | 5271 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 87.938 | 5276 | `pinball.coffee` | `sling` | `sling` | no |
+| 87.971 | 5278 | `pinball.coffee` | `flipper` | `flipper` | no |
+| 88.017 | 5281 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 88.092 | 5285 | `pinball.coffee` | `sling` | `sling` | no |
+| 88.167 | 5290 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 88.242 | 5294 | `pinball.coffee` | `flipper` | `flipper` | no |
+| 88.317 | 5299 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 88.392 | 5303 | `pinball.coffee` | `sling` | `sling` | no |
+| 88.471 | 5308 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 88.546 | 5312 | `pinball.coffee` | `sling` | `sling` | no |
+| 88.621 | 5317 | `pinball.coffee` | `bumper` | `bumper` | yes |
+| 88.696 | 5321 | `pinball.coffee` | `sling` | `sling` | no |
+| 88.775 | 5326 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 88.850 | 5331 | `pinball.replyAll` | `sling` | `sling` | no |
 | 88.929 | 5335 | `pinball.replyAll` | `flasher` | `flasher` | yes |
-| 89.417 | 5365 | `pinball.replyAll` | `flipper` | `flipper` | no |
-| 89.554 | 5373 | `pinball.replyAll` | `flasher` | `flasher` | yes |
-| 89.667 | 5380 | `pinball.replyAll` | `sling` | `sling` | no |
-| 89.833 | 5390 | `pinball.replyAll` | `flasher` | `flasher` | yes |
-| 89.933 | 5396 | `pinball.replyAll` | `sling` | `sling` | no |
-| 90.096 | 5405 | `pinball.replyAll` | `flasher` | `flasher` | yes |
-| 91.800 | 5508 | `pinball.replyAll` | `tier-fall` | `tier-fall` | no |
-| 92.721 | 5563 | `pinball.replyAll` | `flipper` | `flipper` | no |
-| 93.258 | 5595 | `pinball.fired` | `firehouse-take` | `firehouse-take` | yes |
-| 96.358 | 5781 | `pinball.fired` | `scoop-kick` | `scoop-kick` | yes |
+| 89.004 | 5340 | `pinball.replyAll` | `sling` | `sling` | no |
+| 89.079 | 5344 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 89.154 | 5349 | `pinball.replyAll` | `sling` | `sling` | no |
+| 89.233 | 5354 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 89.308 | 5358 | `pinball.replyAll` | `sling` | `sling` | no |
+| 89.383 | 5363 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 89.537 | 5372 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 89.633 | 5378 | `pinball.replyAll` | `sling` | `sling` | no |
+| 90.483 | 5429 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
+| 90.537 | 5432 | `pinball.replyAll` | `inbox-take` | `inbox-take` | yes |
+| 90.542 | 5432 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 90.583 | 5435 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
+| 90.683 | 5441 | `pinball.replyAll` | `ball-drop` | `ball-drop` | no |
+| 90.792 | 5447 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 90.950 | 5457 | `pinball.replyAll` | `flipper` | `flipper` | no |
+| 91.112 | 5466 | `pinball.replyAll` | `flasher` | `flasher` | no |
+| 91.146 | 5468 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 91.208 | 5472 | `pinball.replyAll` | `flasher` | `flasher` | no |
+| 91.321 | 5479 | `pinball.replyAll` | `flasher` | `flasher` | no |
+| 91.971 | 5518 | `pinball.replyAll` | `flasher` | `flasher` | no |
+| 92.117 | 5527 | `pinball.replyAll` | `flipper` | `flipper` | no |
+| 92.171 | 5530 | `pinball.replyAll` | `flasher` | `flasher` | yes |
+| 92.283 | 5537 | `pinball.replyAll` | `flasher` | `flasher` | no |
+| 93.454 | 5607 | `pinball.fired` | `tier-fall` | `tier-fall` | no |
+| 93.900 | 5634 | `pinball.fired` | `sling` | `sling` | no |
+| 94.058 | 5643 | `pinball.fired` | `sling` | `sling` | no |
+| 94.121 | 5647 | `pinball.fired` | `flipper` | `flipper` | no |
+| 94.433 | 5666 | `pinball.fired` | `sling` | `sling` | no |
+| 94.596 | 5675 | `pinball.fired` | `sling` | `sling` | no |
+| 95.029 | 5701 | `pinball.fired` | `sling` | `sling` | no |
+| 95.179 | 5710 | `pinball.fired` | `sling` | `sling` | no |
+| 95.550 | 5733 | `pinball.fired` | `sling` | `sling` | no |
+| 95.787 | 5747 | `pinball.fired` | `drop-target` | `drop-target` | no |
+| 95.787 | 5747 | `pinball.fired` | `drop-target` | `drop-target` | no |
+| 95.787 | 5747 | `pinball.fired` | `drop-target` | `drop-target` | no |
+| 95.787 | 5747 | `pinball.fired` | `drop-target` | `drop-target` | no |
+| 95.792 | 5747 | `pinball.fired` | `drop-target` | `drop-target` | no |
+| 95.804 | 5748 | `pinball.fired` | `firehouse-take` | `firehouse-take` | yes |
+| 96.362 | 5781 | `pinball.fired` | `scoop-kick` | `scoop-kick` | yes |
 | 97.404 | 5844 | `pinball.highway` | `flipper` | `flipper` | no |
-| 97.621 | 5857 | `pinball.highway` | `ramp-roll` | `ramp-roll` | no |
-| 99.996 | 5999 | `pinball.highway` | `spiral` | `spiral` | no |
+| 97.617 | 5857 | `pinball.highway` | `ramp-roll` | `ramp-roll` | no |
+| 100.000 | 6000 | `pinball.highway` | `spiral` | `spiral` | no |
 | 102.617 | 6157 | `pinball.save` | `flipper` | `flipper` | no |
 | 102.617 | 6157 | `pinball.save` | `flipper-save` | `flipper-save` | no |
-| 103.513 | 6210 | `pinball.save` | `sling` | `sling` | no |
-| 104.629 | 6277 | `pinball.drain` | `drain` | `drain` | no |
-| 105.817 | 6349 | `pinball.drain` | `ball-open` | `ball-open` | yes |
-| 105.817 | 6349 | `pinball.drain` | `flatten` | `flatten` | yes |
-| 106.321 | 6379 | `pinball.drain` | `peel-up` | `peel-up` | yes |
+| 103.517 | 6211 | `pinball.save` | `sling` | `sling` | no |
+| 104.608 | 6276 | `pinball.drain` | `drain` | `drain` | no |
+| 105.796 | 6347 | `pinball.drain` | `ball-open` | `ball-open` | yes |
+| 105.796 | 6347 | `pinball.drain` | `flatten` | `flatten` | yes |
+| 106.300 | 6378 | `pinball.drain` | `peel-up` | `peel-up` | yes |
 | 108.000 | 6480 | `pinball.drain` | `button-press` | `button-press` | no |
 | 108.500 | 6510 | `pinball.drain` | `page-turn` | `page-turn` | no |
 | 109.600 | 6576 | `boss.verify` | `step` | `step` | no |
@@ -1042,12 +1070,12 @@ Film B: 9180 frames at 60 a second, 153 s. Times are in seconds from the first f
 | `line.step1.email.0` | `step1.email` | 29.000 | 1740 | 36.472 | 2187 | take | 0.309 | A valid email. / Rejected. / The system / is working as designed. |
 | `line.step1.tug.0` | `step1.tug` | 36.781 | 2207 | 44.597 | 2675 | take | 3.403 | It fights for the resume. / Two pages. / One of them is true. |
 | `line.step2.dial.0` | `step2.dial` | 48.000 | 2880 | 53.864 | 3231 | take | 6.136 | A rotary phone. / The applicant / has never seen one. |
-| `line.step2.crank.0` | `step2.crank` | 60.000 | 3600 | 66.454 | 3986 | take | 0.746 | Volume. / All the way up. / It will regret that. |
-| `line.pinball.seal.0` | `pinball.seal` | 67.200 | 4032 | 73.896 | 4433 | take | 0.704 | The skills assessment. / No skills / will be assessed. |
-| `line.pinball.launch.0` | `pinball.launch` | 74.600 | 4476 | 77.692 | 4661 | take | 0.308 | A career. / In reverse. |
-| `line.pinball.lobby.0` | `pinball.lobby` | 78.000 | 4680 | 81.672 | 4899 | take | 0.328 | Corporate headquarters. / So close. |
-| `line.pinball.coffee.0` | `pinball.coffee` | 82.000 | 4920 | 85.936 | 5155 | take | 0.764 | It runs on coffee / and fear. |
-| `line.pinball.replyAll.0` | `pinball.replyAll` | 86.700 | 5202 | 89.662 | 5379 | take | 3.338 | Someone / hit reply all. |
+| `line.step2.crank.0` | `step2.crank` | 60.000 | 3600 | 66.454 | 3986 | take | 0.926 | Volume. / All the way up. / It will regret that. |
+| `line.pinball.seal.0` | `pinball.seal` | 67.380 | 4043 | 74.076 | 4444 | take | 4.124 | The skills assessment. / No skills / will be assessed. |
+| `line.pinball.launch.0` | `pinball.launch` | 78.200 | 4692 | 81.292 | 4877 | take | -0.292 | A career. / In reverse. |
+| `line.pinball.lobby.0` | `pinball.lobby` | 81.000 | 4860 | 84.672 | 5079 | take | -0.172 | Corporate headquarters. / So close. |
+| `line.pinball.coffee.0` | `pinball.coffee` | 84.500 | 5070 | 88.436 | 5305 | take | 0.694 | It runs on coffee / and fear. |
+| `line.pinball.replyAll.0` | `pinball.replyAll` | 89.130 | 5348 | 92.092 | 5525 | take | 0.908 | Someone / hit reply all. |
 | `line.pinball.fired.0` | `pinball.fired` | 93.000 | 5580 | 98.540 | 5911 | take | 5.460 | Fired. / Before it was hired. / A new record. |
 | `line.pinball.drain.0` | `pinball.drain` | 104.000 | 6240 | 108.558 | 6512 | take | 0.442 | The unemployment office. / It knows the way. |
 | `line.boss.verify.0` | `boss.verify` | 109.000 | 6540 | 114.220 | 6852 | take | 3.780 | Not a robot, / it claims. / We will see. |
