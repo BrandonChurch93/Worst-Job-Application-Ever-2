@@ -150,7 +150,7 @@ const MORE = {
   async beaten({ look, sharp, at, outDir, workDir, tier }) {
     const cells = [{ png: target(at, 'LOOK-1-STATE-3-beaten.png', 'references/drafts/round-9'), caption: 'GUIDE, not picked: beaten' }]
     for (const [caption, b] of [['beaten 0.08', 0.08], ['beaten 0.3', 0.3], ['beaten 0.55', 0.55], ['beaten 0.75', 0.75], ['beaten 1.0, lying', 1]]) {
-      const r = await look.render({ view: viewOf({ time: 40 + b + (b >= 1 ? 2 : 0), phase: 'beaten' }, { ...out, stage: 2, health: 0, beaten: b }), ...sheetCam, width: 1920, height: 1080, tier })
+      const r = await look.render({ view: viewOf({ time: 40 + b + (b >= 1 ? 2 : 0), phase: 'beaten' }, { ...out, y: 650, stage: 2, health: 0, beaten: b }), ...sheetCam, cy: sheetCam.cy + 102, width: 1920, height: 1080, tier })
       fs.writeFileSync(path.join(workDir, `beaten-${cells.length}.png`), r.png)
       cells.push({ png: r.png, caption: `BUILD: ${caption}` })
     }

@@ -117,7 +117,7 @@ export function makeShade(): Shade {
     material.opacity = (1 - SHADE.dark) * fade
     const [ox, oy] = world(p.body.x + p.hull.x, p.body.y + p.hull.y)
     const [sx, sy2] = at(ox, oy, high)
-    body.visible = p.hull.show && gone > 0.5 && Math.min(p.wings[0]!, p.wings[1]!) > 0.5
+    body.visible = p.hull.show && gone >= 1 && Math.min(p.wings[0]!, p.wings[1]!) > 0.5
     body.position.set(sx, sy2, 0.4)
     body.rotation.z = p.body.yaw
     p.legs.forEach((l, i) => {

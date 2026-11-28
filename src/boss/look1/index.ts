@@ -194,7 +194,7 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   m.lids.forEach((l, i) => { l.position.y = (i === 0 ? -1 : 1) * 17 * p.weakOpen })
   m.slab.visible = p.weakOpen > 0
   m.hatchSeam.visible = p.weakOpen < 0.5
-  const burnt = p.away.hull > 0
+  const burnt = p.gone > 0.08
   m.damage[0].visible = p.damage >= 1 && !burnt
   m.damage[1].visible = p.damage >= 2 && !burnt
   m.damage[2].visible = p.damage >= 3 && !burnt
