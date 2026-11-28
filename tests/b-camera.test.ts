@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import { describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it, vi } from 'vitest'
 import * as THREE from 'three'
 import { makeArena } from '../src/arena'
 import { ARENA, EYE, PANES, PILLARS } from '../src/arena/layout'
@@ -7,7 +7,8 @@ import { newFight } from '../src/boss/fight'
 import { finishState } from '../src/boss/finish/acting'
 import { ABOVE, BLOCKS, FEET, LAST_LOW, THIN, facing, fadesOf, feetFor, finishRig, finishShot, lowOf, marksOf, poseOf, sideOf, type Block, type Marks } from '../src/boss/finish/camera'
 import { FALLEN, UNFOLD } from '../src/boss/plan'
-import { CAMERA, CLOSE, LAST, LOOK1_ON, SHOUT } from '../src/boss/tune'
+import { lineTimes } from '../src/audio/standin'
+import { CAMERA, CLOSE, LAST, LOOK1_ON, SHOUT, SHOUT_LINE, SHOUT_RULE, shoutOf } from '../src/boss/tune'
 import { finishNow, viewOf } from '../src/boss/viewof'
 import { config, stepHz } from '../src/config'
 import { makeStand } from '../src/cursor/stand/figure'
@@ -797,5 +798,92 @@ describe('the standing arrow drawn in pieces of the film', () => {
     expect(b).toEqual(a)
     run.dispose()
     alone.dispose()
+  })
+})
+
+describe('the marks of the shout, worked out from the line', () => {
+  const STAND_IN = { arms: 0, beats: [0.1, 1.04, 2.09, 2.9], fire: 4.13, gone: 7.56 }
+  const TAKE = { starts: [0.2, 1.3, 3.9], seconds: 5.5 }
+  const MOVED = { arms: 0, beats: [0.2, 1.3, 2.183, 2.865], fire: 3.9, gone: 6.8 }
+  const INDEX = '../public/audio/index.json'
+  afterAll(() => { vi.doUnmock(INDEX); vi.resetModules() })
+
+  it('with the stand-in of the drafts file every mark is the number that was typed here before', () => {
+    expect(shoutOf({ starts: [0.1, 1.04, 4.13], seconds: 6.26 })).toEqual(STAND_IN)
+    expect(shoutOf(null)).toEqual(STAND_IN)
+    expect(shoutOf({ starts: [0.5], seconds: 2 })).toEqual(STAND_IN)
+    expect(SHOUT_RULE.standIn).toEqual({ starts: [0.1, 1.04, 4.13], seconds: 6.26 })
+    const now = lineTimes(SHOUT_LINE)!
+    expect({ arms: SHOUT.arms, beats: SHOUT.beats, fire: SHOUT.fire, gone: SHOUT.gone }).toEqual(shoutOf(now))
+    if (!now.kept) expect({ arms: SHOUT.arms, beats: SHOUT.beats, fire: SHOUT.fire, gone: SHOUT.gone }).toEqual(STAND_IN)
+  })
+
+  it('with a made-up take the two middle marks keep their share of the gap, and the body is gone 1.3 s after the line ends', () => {
+    expect(shoutOf(TAKE)).toEqual(MOVED)
+    const m = shoutOf({ starts: [0, 0.6, 2.2], seconds: 3.5 })
+    expect(m.beats[2] - m.beats[1]).toBeCloseTo(0.3398 * 1.6, 3)
+    expect(m.beats[3] - m.beats[1]).toBeCloseTo(0.6019 * 1.6, 3)
+    expect(m.gone).toBe(4.8)
+  })
+
+  it.runIf(LOOK1_ON)('with a made-up take in the sound index the page\'s events, the camera, the caption of the shouted words and the sound cues all stand on the take\'s times', async () => {
+    vi.resetModules()
+    vi.doMock(INDEX, async (real: () => Promise<{ default: { lines: { id: string }[] } }>) => {
+      const was = (await real()).default
+      return { default: { ...was, lines: [...was.lines.filter((l) => l.id !== `line.${SHOUT_LINE}`), { id: `line.${SHOUT_LINE}`, seconds: TAKE.seconds, words: 'I have / five years / of experience', starts: TAKE.starts }] } }
+    })
+    const tune = await import('../src/boss/tune')
+    const sound = await import('../src/audio/standin')
+    const cues = await import('../src/audio/cues')
+    const cam = await import('../src/boss/finish/camera')
+    const st = await import('../src/stage/stage')
+    const metrics = await import('../src/shell/metrics')
+    for (const name of metrics.FONTS) metrics.registerFont(name, JSON.parse(fs.readFileSync(`public/fonts/${name}.json`, 'utf8')))
+    const { pages: fresh, preparePages } = await import('../src/pages')
+    await preparePages()
+    const { riseAfterFire } = await import('../src/ui/rise')
+
+    expect(sound.lineTimes(SHOUT_LINE)).toEqual({ ...TAKE, kept: true })
+    expect({ arms: tune.SHOUT.arms, beats: tune.SHOUT.beats, fire: tune.SHOUT.fire, gone: tune.SHOUT.gone }).toEqual(MOVED)
+
+    const stage = new st.Stage({ mode: 'film', flow: st.filmFlow('boss'), pages: fresh, driver: new st.ScriptDriver(), film: st.filmOptions('boss') })
+    const views: { step: number; view: CameraPose | null }[] = []
+    while (stage.page.id === 'step4' && seen(stage, 'boss-fall') < 0 && stage.time < 200) stage.advance(PER)
+    while (stage.page.id === 'step4' && seen(stage, 'finish-press') < 0 && stage.time < 260) {
+      stage.advance(PER)
+      views.push({ step: stage.step, view: stage.frameAt(stage.time).view })
+    }
+    const steps = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step)
+    const arms = steps('finish-arms')[0]!
+    const fire = steps('finish-fire')[0]!
+    const after = (step: number): number => (step - arms) / stepHz
+    const near = 2.5 / stepHz
+
+    expect(after(steps('boss-fall')[0]!)).toBeCloseTo(-tune.FINISH.fall, 1)
+    const charges = steps('finish-charge').map(after)
+    expect(charges.length).toBe(4)
+    charges.forEach((t, k) => expect(Math.abs(t - MOVED.beats[k]!), `charge mark ${k}`).toBeLessThanOrEqual(near))
+    expect(Math.abs(after(fire) - MOVED.fire)).toBeLessThanOrEqual(near)
+    expect(Math.abs(after(steps('boss-gone')[0]!) - MOVED.gone)).toBeLessThanOrEqual(near)
+
+    const low = views.filter((v) => v.view !== null && v.view.up !== undefined)
+    expect(low.length).toBeGreaterThan((MOVED.fire + LAST_LOW) * FPS - 6)
+    const off = (marks: Marks): number => Math.max(...low.map((v) => { const e = v.view!.eye; const w = cam.finishShot(after(v.step), marks)?.pose.eye ?? [1e6, 1e6, 1e6]; return Math.hypot(e[0] - w[0]!, e[1] - w[1]!, e[2] - w[2]!) }))
+    const grid = [-3, -2, -1, 0, 1, 2, 3].map((d) => d / stepHz)
+    const best = (turn: number): number => Math.min(...grid.flatMap((a) => grid.map((f) => off({ arms: a, turn: a + turn, fire: after(fire) + f, round: CAMERA.round }))))
+    expect(best(TAKE.starts[2]! - CAMERA.ahead)).toBeLessThan(1e-6)
+    expect(best(STAND_IN.fire - CAMERA.ahead)).toBeGreaterThan(50)
+
+    const frameOf = (step: number): number => Math.floor(step / PER)
+    const shown = sound.filmCaptions([{ id: `line.${SHOUT_LINE}`, frame: frameOf(arms) }], FPS, sound.standIns(), stage.events.map((e) => ({ name: e.name, frame: frameOf(e.step) })))
+    const marked = [steps('finish-charge')[0]!, steps('finish-charge')[1]!, fire].map(frameOf)
+    expect(shown.map((c) => c.words)).toEqual(['I have', 'I have five years', 'I have five years of experience'])
+    shown.forEach((c, k) => expect(Math.abs(c.first - marked[k]!), `phrase ${k}`).toBeLessThanOrEqual(1))
+    expect(shown[2]!.last).toBe(frameOf(fire) + Math.round(riseAfterFire() * FPS) - 1)
+
+    expect(cues.spoken[SHOUT_LINE]!.event).toBe('finish-arms')
+    const laid = await import('../src/audio/change')
+    for (const n of ['finish-arms', 'finish-charge', 'finish-fire', 'boss-gone']) expect(laid.changeCuesOf(n, 'step4').map((c) => c.id), n).toContain(n)
+    expect(after(fire) - STAND_IN.fire).toBeLessThan(-0.2)
   })
 })

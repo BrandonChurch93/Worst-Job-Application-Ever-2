@@ -1,3 +1,4 @@
+import { lineTimes } from '../audio/standin'
 import { config } from '../config'
 
 // Every number of the boss's rules (change note 002, item 15) that is tuned. One line each.
@@ -175,13 +176,29 @@ export const LINE7 = {
 } as const
 
 // The finishing blast (mail of 22:45, item 3). Plain stand-ins; the look is the Builder's picture round.
-// The finishing blast runs on the marks of the shout, one table that is swapped when the take is picked. These are the stand-in's.
-export const SHOUT = {
+// The finishing blast runs on the marks of the shout. They are worked out from the line's own times: the kept take's once one is in the sound index, the stand-in's of the drafts file until then.
+// The first two charge marks and the fire mark are the starts of the line's three phrases. The two charge marks between keep their share of the gap from the second start to the fire mark.
+// The body is gone `held` s after the line ends, for the boss to leave in groups (the camera's second pass).
+export interface ShoutMarks { arms: number; beats: readonly [number, number, number, number]; fire: number; gone: number }
+export const SHOUT_LINE = 'boss.finish.0'
+export const SHOUT_RULE = { between: [0.3398, 0.6019] as const, held: 1.3, standIn: { starts: [0.1, 1.04, 4.13] as const, seconds: 6.26 } } as const
+const ms = (t: number): number => Number(t.toFixed(3))
+export function shoutOf(line: { starts: readonly number[]; seconds: number } | null): ShoutMarks {
+  const t = line && line.starts.length >= 3 && line.seconds > 0 ? line : SHOUT_RULE.standIn
+  const a = t.starts[0]!
+  const b = t.starts[1]!
+  const fire = t.starts[t.starts.length - 1]!
+  return { arms: 0, beats: [a, b, ms(b + SHOUT_RULE.between[0] * (fire - b)), ms(b + SHOUT_RULE.between[1] * (fire - b))], fire, gone: ms(t.seconds + SHOUT_RULE.held) }
+}
+let marks: ShoutMarks | null = null
+const shout = (): ShoutMarks => (marks ??= shoutOf(lineTimes(SHOUT_LINE)))
+// Read when first asked for, not when this file loads: the sound code's script reads this file for the camera's rise, so neither may need the other while loading.
+export const SHOUT: ShoutMarks = {
   arms: 0, // s after the fall at which the arrow's arms come out (`finish-arms`)
-  beats: [0.1, 1.04, 2.09, 2.9], // s at which each charge word or syllable starts; the glow steps up on each (`finish-charge` on each)
-  fire: 4.13, // s at which the last word starts: the blast is let go there (`finish-fire`)
-  gone: 7.56 // s at which the body is gone (`boss-gone`): the blast has held that long. No sooner than the last word ends (6.26 s for the stand-in); 1.3 s after it since the camera's second pass, for the boss to leave in groups
-} as const
+  get beats() { return shout().beats }, // s at which each charge word or syllable starts; the glow steps up on each (`finish-charge` on each)
+  get fire() { return shout().fire }, // s at which the last word starts: the blast is let go there (`finish-fire`)
+  get gone() { return shout().gone } // s at which the body is gone (`boss-gone`): the blast has held that long
+}
 
 export const FINISH = {
   fall: 1, // s the beaten boss takes to fall (`boss-fall`); the marks of the shout count from its end
