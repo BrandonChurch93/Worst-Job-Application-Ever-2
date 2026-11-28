@@ -153,7 +153,7 @@ describe('look 1: the finishing blast', () => {
     const before = poseOf(view({ phase: 'beaten' }, lying))
     expect(before.gone).toBe(0)
     expect(before.away.hull).toBe(0)
-    const mid = poseOf(view({ phase: 'beaten' }, { ...lying, gone: 0.5 }))
+    const mid = poseOf(view({ phase: 'beaten' }, { ...lying, gone: 0.9 }))
     expect(mid.away.shield).toBeGreaterThan(0.5)
     expect(mid.away.legs[3]).toBeGreaterThan(0)
     expect(mid.away.legs[3]).toBeLessThan(mid.away.legs[0])
