@@ -37,17 +37,17 @@ All seconds from the end of the boss's fall (`boss-fall` + `FINISH.fall` 1.0 s).
 
 | Mark | Event | Film, s of the unit | What happens |
 | --- | --- | --- | --- |
-| fall | `power-down`, `turret-off`, `boss-fall` | 47.79 | the boss falls for 1.0 s; the page takes the arrow and walks it to `LAST.stand` (440, 650); the view comes in to `CLOSE` (x 300 to 1260, y 270 to 810) |
-| arms | `finish-arms` | 48.80 | the arrow's arms come out |
-| charge | `finish-charge` | 48.89, 49.83, 50.88, 51.69 | one unbroken build; a step up on each mark |
-| fire | `finish-fire` | 52.92 | the blast, held 2.13 s |
-| gone | `boss-gone` | 55.05 | the body is gone |
-| walk | `finish-walk` | 55.45 | 0.4 s later (`LAST.wait`) the arrow sets off for the button: 2.8 s for the 320 px |
-| | `button-down` | 56.45 | the button has settled on the ground |
-| knees | `finish-kneel` | 58.25 | 0.7 s down, then 0.6 s of breath in the film, 0.3 s on the live site |
-| fist | `finish-fist` | 59.55 | the start of the raise: 0.6 s up, 0.3 s down |
-| blow | `finish-press`, `button-press` | 60.46 | the step the fist lands: the blow is the press of Submit |
-| | `page-turn` | 61.10 | |
+| fall | `power-down`, `turret-off`, `boss-fall` | 49.77 | the boss falls for 1.0 s; the page takes the arrow and walks it to `LAST.stand` (440, 650); the view comes in to `CLOSE` (x 300 to 1260, y 270 to 810) |
+| arms | `finish-arms` | 50.77 | the arrow's arms come out |
+| charge | `finish-charge` | 50.87, 51.81, 52.86, 53.67 | one unbroken build; a step up on each mark |
+| fire | `finish-fire` | 54.90 | the blast, held 2.13 s |
+| gone | `boss-gone` | 57.03 | the body is gone |
+| walk | `finish-walk` | 57.43 | 0.4 s later (`LAST.wait`) the arrow sets off for the button: 2.8 s for the 320 px |
+| | `button-down` | 58.43 | the button has settled on the ground |
+| knees | `finish-kneel` | 60.23 | 0.7 s down, then 0.6 s of breath in the film, 0.3 s on the live site |
+| fist | `finish-fist` | 61.53 | the start of the raise: 0.6 s up, 0.3 s down |
+| blow | `finish-press`, `button-press` | 62.43 | the step the fist lands: the blow is the press of Submit |
+| | `page-turn` | 63.10 | |
 
 MEASURED: `node pipeline/change002/boss-film.mjs --every 0.5`. The seconds between the marks are the Builder's of 00:36: arms to the first charge 0.1 s; `boss-gone` to the walk 0.4; the walk 2.8; kneel to fist 1.3 in the film and 1.0 on the live site; fist to press 0.9; the film holds 0.5 after the blow.
 
@@ -59,20 +59,22 @@ How the arrow and the light look in the power-up and the finish is the finish he
 
 ### The hand during the finish (`live.controlTakenMaxSeconds` is 8 and was not changed)
 
-MEASURED at 9224e167: `node pipeline/change002/boss-spans.mjs`, seed 20261124, seconds from `boss-fall`.
+MEASURED at 89179ba3: `node pipeline/change002/boss-spans.mjs`, seed 20261124, seconds from `boss-fall`.
 
 | Visitor after the fall | arms | fire | gone | kneel | press | page left | longest time not obeyed, as the stage counts it with `PageLogic.led` |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| the keen bot | 1.00 | 1.34 | 3.47 | 6.68 | 8.59 | 9.45 | 4.28 s |
-| nobody | 1.00 | 7.00 | 9.14 | 17.91 | 19.82 | 20.67 | 5.13 s |
-| holds the button and stays | 1.00 | 5.84 | 7.97 | 30.74 | 32.65 | 33.50 | 5.13 s |
-| stands and clicks four times a second | 1.00 | 1.21 | 3.34 | 26.11 | 28.02 | 28.88 | 5.13 s |
+| the keen bot | 1.00 | 1.24 | 3.38 | 6.59 | 8.50 | 9.35 | 2.76 s |
+| nobody | 1.00 | 7.00 | 9.14 | 17.97 | 19.88 | 20.74 | 2.76 s |
+| holds the button and stays | 1.00 | 5.84 | 7.97 | 30.81 | 32.72 | 33.57 | 5.20 s |
+| stands and clicks four times a second | 1.00 | 1.21 | 3.25 | 26.08 | 27.99 | 28.85 | 5.20 s |
 
-With the hook (`led()` is true only where the hand or the button changes what happens, the Builder's bound of 00:19) the stretches that count as control taken are: the fall, 1.0 s; the blast and the wait after it, 2.13 + 0.4 = 2.53 s; and the end, at most 2.8 s of walk by itself + 1.0 + 0.6 + 0.3 + 0.35 = 5.05 s (5.13 measured). Each is under 8. (With the times before the ruling of 00:36 they were 1.0, 2.13 and 4.0 s.)
+Before 89179ba3 the first two rows read 4.28 s and 5.13 s, and `tests/site-loading.test.ts` ("hands the cursor back within live.controlTakenMaxSeconds for every bot when every turn is held for the whole wait") was red with "keen: expected 8.775 to be less than or equal to 8". Now a click on the button while the arrow still walks is only a wish: the walk stays the hand's, and the arrow kneels when it has arrived with the wish and the button is down. The walk by itself after 6 s of a still hand gives way to a hand that moves or presses. Only the forced walk after 20 s (`LAST.led`) is counted as taken. MEASURED with that test: keen 4.24 s with no wait and 7.52 s with every turn held 4 s; clumsy 4.24 and 7.52; random and skipper 2.48 and 6.48.
 
-Without the hook the stage would count every step in which the page holds the arrow: from the fall to the page turn, 9.45 s for the keen bot and 20.67 s for nobody (the column "page left").
+With the hook (`led()` is true only where the hand or the button changes what happens, the Builder's bound of 00:19) the stretches that count as control taken are: the fall, 1.0 s; the blast and the wait after it, 2.13 + 0.4 = 2.53 s; and the end from the knees, 0.7 + 0.3 + 0.6 + 0.3 + 0.35 = 2.25 s and the turn (2.76 measured), or 5.20 s with the forced walk.
 
-The longest stretch in which the place of the hand does nothing (fall, charge and blast together, the button still works in the charge): the column "gone". 3.47 s for the keen bot, 9.14 s for nobody (1.0 + 6.0 + 2.13), 7.97 s for one who holds the button down. After that the place of the hand leads the walk.
+Without the hook the stage would count every step in which the page holds the arrow: from the fall to the page turn, 9.35 s for the keen bot and 20.74 s for nobody (the column "page left").
+
+The longest stretch in which the place of the hand does nothing (fall, charge and blast together, the button still works in the charge): the column "gone". 3.38 s for the keen bot, 9.14 s for nobody (1.0 + 6.0 + 2.13), 7.97 s for one who holds the button down. After that the place of the hand leads the walk.
 
 The body lets a taken arrow go by itself after 7.5 s (`src/cursor/body.ts`); the page takes it again on the next step. That is a crutch of the stand-in.
 
@@ -106,31 +108,34 @@ What hit the arrow, mean per fight (the boss's guns, a corner cannon, the body, 
 
 ## The film
 
-Unit `boss`, 61.6 s, 1848 frames at 30 a second (`UNIT_SECONDS` in `src/pages/step4/script.ts`). MEASURED: `node pipeline/change002/boss-film.mjs --every 0.5`, `LOOK1_ON` false.
+Unit `boss`, 63.6 s, 1908 frames at 30 a second (`UNIT_SECONDS` in `src/pages/step4/script.ts`). MEASURED at 5e4d3d76: `node pipeline/change002/boss-film.mjs --every 0.5`, `LOOK1_ON` false.
 
 | s of the unit | Event |
 | --- | --- |
 | 3.80 | `checkbox` |
-| 6.11 | `button-crack` |
-| 6.71 | `unfold` |
-| 9.00 | `boss-formed` (line 7 starts) |
-| 27.13 | `boss-turn` |
-| 29.93 | `boss-music` |
-| 32.71 | `power-up` |
-| 34.26 | `turret-rise` |
-| 35.86 | `turret-lock`: the fight starts |
-| 38.61, 39.51 | `cannon-tell`, `cannon-fire` |
-| 40.22, 40.57, 40.92 | `flatten` (the one hit on the arrow), `boss-heal`, `peel-up` |
-| 41.51, 43.12 | `big-tell`, `big-fire` |
-| 43.93 | `popup` (no pop-up is drawn) |
-| 45.42 | `session-expired` |
-| 47.79 to 61.10 | the finish, table above |
+| 8.08 | `button-crack` (4.28 s after the tick) |
+| 8.68 | `unfold` |
+| 8.78, 9.08, 9.78 | `arena-split`, `arena-rise`, `healthbar-drop` |
+| 10.975 | `boss-formed` (line 7 starts): the tick + `LINE6.after` 7.175 s |
+| 29.10 | `boss-turn` |
+| 31.90 | `boss-music` |
+| 34.68 | `power-up` |
+| 36.23 | `turret-rise` |
+| 37.83 | `turret-lock`: the fight starts |
+| 40.58, 41.48 | `cannon-tell`, `cannon-fire` |
+| 42.19, 42.54, 42.89 | `flatten` (the one hit on the arrow), `boss-heal`, `peel-up` |
+| 43.48, 45.09 | `big-tell`, `big-fire` |
+| 45.83 | `popup` (no pop-up is drawn) |
+| 47.40 | `session-expired` |
+| 49.77 to 63.10 | the finish, table above |
 
-Beats (config, as `NEEDS:` commits): verify 0 to 5, unfold 5 to 34.1, slabs 34.1 to 43.4, popups 43.4 to 45.3, lastStand 45.3 to 47.6, collapse 47.6 to 48.8, finish 48.8 to 60.4, press 60.4 to 61.6. Key picture `boss-fight` at 38.75 s; key picture `boss-down` moved into `boss.finish`.
+Line 6 (the Builder's mail of 01:00). Line 6 is 11 words, 6.875 s at the narrator's 1.6 words a second, and starts on the tick; with the gap of 0.3 s line 7 may start 7.175 s after the tick. `LINE6.after` in `src/boss/tune.ts` is that number. In the film the forming's clock starts 3.575 s after the tick, so `boss-formed` is at 10.975 s. The tick stays at 3.8 s: with the tick at 3.0 s the held pull back of the doubt would go from 1.25 s to 0.45 s. The cost is 0.8 s of film. The arrow holds on the answer from 4.34 to 7.275 s. The crack is 4.279 s after the tick, 0.096 s before the phrase "takes that as a threat" starts (4.375 s); `LINE6.after` 7.275 would put it on the phrase and was not taken (no padding). On the live site the page holds line 7's clock at zero until the tick + 7.175 s, and the pointer stays the visitor's in that wait. MEASURED (seconds after the tick, the stage's bots): keen `boss-formed` +6.08, `boss-turn` +7.30, `boss-music` +11.22, `power-up` +14.00, `turret-lock` +17.15; clumsy +7.17, +7.45, +11.22, +14.00, +17.15.
 
-The film is 182.6 s against `film.maxSeconds` 165. The Builder's word: no padding, the number left alone, the red length check carried as known. The start check carries a film over its length so the site still starts (`carryLength`, NEEDS 327ba55d).
+Beats (config, as `NEEDS:` commits): verify 0 to 7, unfold 7 to 36.1, slabs 36.1 to 45.4, popups 45.4 to 47.3, lastStand 47.3 to 49.6, collapse 49.6 to 50.8, finish 50.8 to 62.4, press 62.4 to 63.6. Key picture `boss-fight` at 0.46 of `boss.slabs`, 40.38 s (at 0.5, 40.75 s, no dart is in flight: MEASURED, 0 darts and 6 sparks in that frame, 4 darts and 8 sparks at 40.35 s); key picture `boss-down` moved into `boss.finish`.
 
-The film's fight is 11.9 s, shorter than any visitor's: `FILM.dart` makes a dart on the body worth more, `FILM.floor` lets a phase end sooner, and `FILM.ends` ends each phase at a set second of the fight at the latest. The rules of the fight are the same.
+The film is 184.6 s (11076 frames) against `film.maxSeconds` 165. The Builder's word: no padding, the number left alone, the red length check carried as known. The start check carries a film over its length so the site still starts (`carryLength`, NEEDS 327ba55d).
+
+The film's fight is 11.9 s from `turret-lock` to `power-down`, shorter than any visitor's: `FILM.dart` makes a dart on the body worth more, `FILM.floor` lets a phase end sooner, and `FILM.ends` ends each phase at a set second of the fight at the latest. The rules of the fight are the same.
 
 ## LOOK1_ON as seen
 
@@ -149,7 +154,6 @@ Looked at with the switch `true` in a second work tree, at 84e223bc.
 | "note of 21:27. in the film / a keen visitor / a clumsy visitor the health bar stands alone at the top, and the boss, its shield, its turret, the cannons, the bullets and every flash keep the band under it clear" (three) | "Cannot read properties of undefined (reading 'y')" | the stand-in's `health-track` and every shape of the stand-in boss | the bar's place from the arena (`barDrop` in `src/arena/change.ts`, the bar in `props.ts`) and the boss's bounds from the look (`poseOf`, `SIZE`, `bigMuzzleOf` in `src/boss/look1/pose.ts`), because with the look nothing of the boss is in the page's list of shapes |
 | "note of 21:47. raises the big turret only when the body is whole, leaves the word Submit in its place on the button the whole time, and blows the turret off when the boss falls" | "expected false to be true" | the stand-in's cap, its word and `boss-turret` | `wordAt(view)` and the turret's state from `poseOf` (`TURRET`) |
 
-LOOK_MORE
 - So the switch stays `false`. To turn it on: those nine tests must read the look's and the arena's shapes, and the finish helper's module must be in.
 
 ## Decisions
@@ -184,6 +188,10 @@ LOOK_MORE
 28. `FILM.ends`: the film's phases end by a set second, so the marks hold with either shape of the boss.
 29. `LOOK1_ON` stays off (above).
 30. "Click to submit" under the fallen button is old copy: `step4.defeated` in `content/copy.json`. No new word was added to the screen; nothing was added to `content/copy-drafts.json`.
+31. Line 6: the tick stays at 3.8 s and the forming waits (above); `LINE6.after` 7.175 is one number beside `LINE7`.
+32. `BASE` in `src/pages/step4/script.ts` is 9.004, the second the forming was seen at when the fight's table was tuned, so the table keeps its place against the forming to the step. With 9 the first volley of the film let one dart by the shield (MEASURED: test "A. moves the health bar by less than a pixel for a whole volley on the shield", 3 glances in place of 5).
+33. A click on the button while the arrow still walks is a wish and no longer takes the walk (above).
+34. The key `boss-fight` at 0.46 of its beat (a `NEEDS:` commit of one number), so the key picture has darts in flight.
 
 ## Events
 
@@ -217,13 +225,15 @@ The arena's own sounds are in `pipeline/change002/arena-sounds.md`.
 | Commit | What |
 | --- | --- |
 | 417ef7ef | two tests of other units follow step 4: `tests/b-shell-chrome.test.ts`, `tests/site-pointer.test.ts` |
-| 40ffdeab, cbeda7f2, c913d8ae, 13253279, 2a9992e8 | `config/showcase.json`: the unit's seconds, its beats, the beat `boss.finish`, the key `boss-down` |
+| 40ffdeab, cbeda7f2, c913d8ae, 13253279, 2a9992e8 (to 61.6 s) | `config/showcase.json`: the unit's seconds, its beats, the beat `boss.finish`, the key `boss-down` |
 | 327ba55d | `film.maxSeconds` back at 165; the start check carries a film over its length |
 | fa022e84 | `src/cursor/body.ts`: `spread(scale, seconds)` lays the arrow flat |
 | a5ccabc1 | `content/narration.json`: an empty list for `boss.finish` |
 | 3e861112 | stage: `PageLogic.arms` |
 | 742ab065 | stage: `PageLogic.led` |
-| the commit "NEEDS: cut" | `cut/CUTLIST.json`, `cut/CUES.md`, `cut/SHOTS.md` made again by `npm run cut`: film B is 10956 frames (182.6 s), 36 of 36 beat events inside their beat |
+| df2933b4 | `cut/CUTLIST.json`, `cut/CUES.md`, `cut/SHOTS.md` made again by `npm run cut`: film B was 10956 frames (182.6 s), 36 of 36 beat events inside their beat. Not made again after line 6 (the Builder's order); the film is now 11076 frames |
+| 5e4d3d76 | `config/showcase.json`: the unit at 63.6 s and its beats moved for line 6 |
+| 9a8d308f | `config/showcase.json`: the key `boss-fight` at 0.46 of its beat |
 
 The patch file holds the changes to `config/`, `content/narration.json`, `src/config.ts`, `src/app.ts`, `src/cursor/body.ts`, `src/stage/*` and the two tests of other units, as a diff against `origin/main` b66ff094. The three files in `cut/` are not in it (326 kB): `npm run cut` makes them.
 
@@ -231,7 +241,7 @@ In `src/boss/view.ts` (told to the look, arena and finish helpers; all optional)
 
 ## Tests
 
-`tests/b-boss.test.ts` and `tests/boss.test.ts`: 65 tests.
+`tests/b-boss.test.ts` and `tests/boss.test.ts`: 66 tests. The new one: "mail of 01:00. starts line 7 no sooner than line 6 has ended".
 
 Tests of my own page that pinned a thing the note or a mail changed:
 
@@ -251,7 +261,13 @@ Tests of my own page that pinned a thing the note or a mail changed:
 | `tests/boss-fight.test.ts` "stops a dart from the left on the glass shield" | spark on the plane 290 px left | spark on the shield's arc at 282 px | "shield tracks" |
 | `tests/boss-fight.test.ts` two key picture tests | a slab in flight, three slabs in the air | no slab in any frame, darts, a spark | "The red validation slabs are no longer fired at all" |
 | `tests/boss-fight.test.ts` "keeps the tail of a fired slab at the mouth" | the slab's tail | a bullet flies straight with its trail | "Bullets, not validations" |
-| `tests/boss-closer-acting.test.ts` "shows the bar going back up at the last stand" | old seconds | the film's new seconds | film retimed |
+| `tests/boss-closer-acting.test.ts` "stands shocked at the crack and then scared and still for a second or more while the machine builds" | read 5.4 to 9 s | reads from `button-crack` to `boss-formed` | the Builder's mail of 01:00: the forming waits for line 6 |
+| `tests/boss-closer-acting.test.ts` "squares up before the anger and answers the session expired with a held pose that is not a hurt one" | proud before the anger; shocked in 22 to 27 s | confident in the half second before `power-up`, where the anger starts; shocked 1.2 s or more between `session-expired` and `power-down` | line 7 in three parts; the film retimed |
+| `tests/boss-closer-acting.test.ts` "shows the bar going back up at the last stand" | more than 100 px in 22 to 24 s | more than 8 in 100 of the whole bar in the 0.9 s after `session-expired` | the film retimed; the stand-in's bar is 560 px |
+| `tests/boss-closer-acting.test.ts` "sags at the key of the fallen button and holds the relief for a second and a half after the press", now "is angry through the finish, sags when the boss is gone and stays so to the press and the turn" | exhausted at the fallen button, proud for 1.5 s after the press | angry from the fall to `boss-gone`, exhausted from there to `button-press`, the page turns within 1 s | the finish and the last moment: the blow of the fist is the press (mails of 23:13, 00:01, 00:36) |
+| `tests/boss-fight.test.ts` "holds the doubt, the look at the answer and the wait before the press for 0.4 s or more" | the wait read at 28.6 to 29.5 s | read in the 0.9 s before `ACT.press` | the film retimed |
+| `tests/boss-fight.test.ts` the two key picture tests and "cues nothing in the half second before a key picture" | the key at the middle of `boss.slabs`; health over 0.75 | the key's `at` read from the config; health under full and over a half | rules A to D; decision 34 |
+| `tests/boss-fight.test.ts` "sends each bullet of the film straight" and the frames of the file | the first 33 s | the whole unit | the film retimed |
 
 ## Checks at the last push
 

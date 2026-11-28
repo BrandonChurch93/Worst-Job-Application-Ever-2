@@ -1,43 +1,205 @@
 diff --git a/config/showcase.json b/config/showcase.json
-index 067ca527..204a0da6 100644
+index 067ca527..9f998e9d 100644
 --- a/config/showcase.json
 +++ b/config/showcase.json
-@@ -50,14 +50,14 @@
-     "hookSeconds": 2,
-     "unitTuneFraction": 0.2,
-     "beatToleranceSeconds": 0.25,
--    "maxSeconds": 165,
-+    "maxSeconds": 185,
-     "plannedSeconds": { "marketing": 14, "step1": 32, "step2": 21, "pinball": 42, "boss": 32, "decision": 12 },
-     "units": [
-       { "id": "marketing", "seconds": 14 },
+@@ -57,7 +57,7 @@
        { "id": "step1", "seconds": 32 },
        { "id": "step2", "seconds": 21 },
        { "id": "pinball", "seconds": 42 },
 -      { "id": "boss", "seconds": 32 },
-+      { "id": "boss", "seconds": 61.5 },
++      { "id": "boss", "seconds": 63.6 },
        { "id": "decision", "seconds": 12 }
      ],
      "beats": [
-@@ -88,12 +88,12 @@
+@@ -87,13 +87,14 @@
+       { "id": "pinball.highway", "unit": "pinball", "from": 29.5, "to": 34, "event": "ramp-roll" },
        { "id": "pinball.save", "unit": "pinball", "from": 34, "to": 37, "event": "flipper-save" },
        { "id": "pinball.drain", "unit": "pinball", "from": 37, "to": 42, "event": "drain" },
-       { "id": "boss.verify", "unit": "boss", "from": 0, "to": 5, "event": "checkbox" },
+-      { "id": "boss.verify", "unit": "boss", "from": 0, "to": 5, "event": "checkbox" },
 -      { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 9, "event": "unfold" },
 -      { "id": "boss.slabs", "unit": "boss", "from": 9, "to": 16, "event": "slab-fire" },
 -      { "id": "boss.popups", "unit": "boss", "from": 16, "to": 22, "event": "popup" },
 -      { "id": "boss.lastStand", "unit": "boss", "from": 22, "to": 27, "event": "session-expired" },
 -      { "id": "boss.collapse", "unit": "boss", "from": 27, "to": 29, "event": "power-down" },
 -      { "id": "boss.press", "unit": "boss", "from": 29, "to": 32, "event": "button-press" },
-+      { "id": "boss.unfold", "unit": "boss", "from": 5, "to": 34.1, "event": "unfold" },
-+      { "id": "boss.slabs", "unit": "boss", "from": 34.1, "to": 41.1, "event": "slab-fire" },
-+      { "id": "boss.popups", "unit": "boss", "from": 41.1, "to": 47.1, "event": "popup" },
-+      { "id": "boss.lastStand", "unit": "boss", "from": 47.1, "to": 52.1, "event": "session-expired" },
-+      { "id": "boss.collapse", "unit": "boss", "from": 52.1, "to": 58.6, "event": "power-down" },
-+      { "id": "boss.press", "unit": "boss", "from": 58.6, "to": 61.5, "event": "button-press" },
++      { "id": "boss.verify", "unit": "boss", "from": 0, "to": 7, "event": "checkbox" },
++      { "id": "boss.unfold", "unit": "boss", "from": 7, "to": 36.1, "event": "unfold" },
++      { "id": "boss.slabs", "unit": "boss", "from": 36.1, "to": 45.4, "event": "slab-fire" },
++      { "id": "boss.popups", "unit": "boss", "from": 45.4, "to": 47.3, "event": "popup" },
++      { "id": "boss.lastStand", "unit": "boss", "from": 47.3, "to": 49.6, "event": "session-expired" },
++      { "id": "boss.collapse", "unit": "boss", "from": 49.6, "to": 50.8, "event": "power-down" },
++      { "id": "boss.finish", "unit": "boss", "from": 50.8, "to": 62.4, "event": "finish-fire" },
++      { "id": "boss.press", "unit": "boss", "from": 62.4, "to": 63.6, "event": "button-press" },
        { "id": "decision.wait", "unit": "decision", "from": 0, "to": 2, "event": "hold-music" },
        { "id": "decision.letter", "unit": "decision", "from": 2, "to": 6, "event": "stamp" },
        { "id": "decision.metrics", "unit": "decision", "from": 6, "to": 10, "event": "button-press" },
+@@ -380,7 +381,7 @@
+       "id": "boss-fight",
+       "unit": "boss",
+       "beat": "boss.slabs",
+-      "at": 0.5,
++      "at": 0.46,
+       "camera": "home",
+       "image": "references/approved/boss-fight.png",
+       "settled": ["The image shows a spark on the shield with no dart at it. In the build every spark has a dart."]
+@@ -388,7 +389,7 @@
+     {
+       "id": "boss-down",
+       "unit": "boss",
+-      "beat": "boss.collapse",
++      "beat": "boss.finish",
+       "at": 1,
+       "camera": "home",
+       "image": "references/approved/boss-down.png",
+diff --git a/content/narration.json b/content/narration.json
+index d402c163..d8c1ab04 100644
+--- a/content/narration.json
++++ b/content/narration.json
+@@ -95,6 +95,7 @@
+       { "at": 0, "text": "Session expired. / A classic.", "live": "the boss's last phase starts" }
+     ],
+     "boss.collapse": [],
++    "boss.finish": [],
+     "boss.press": [],
+     "decision.wait": [],
+     "decision.letter": [
+diff --git a/src/app.ts b/src/app.ts
+index 954a2cb1..7ccb8e6b 100644
+--- a/src/app.ts
++++ b/src/app.ts
+@@ -82,7 +82,7 @@ export class App {
+ 
+   static check(): void {
+     const layouts = App.layouts()
+-    const problems = [...configProblems(config, { approved: build.approved, eventCues }), ...contentProblems(config, copy, narration, layouts)]
++    const problems = [...configProblems(config, { approved: build.approved, eventCues, carryLength: true }), ...contentProblems(config, copy, narration, layouts)]
+     for (const [id, make] of Object.entries(pages)) {
+       const p = make()
+       if (p.id !== id) problems.push(`pages: the page "${id}" calls itself "${p.id}"`)
+diff --git a/src/config.ts b/src/config.ts
+index 8a772ce3..bd7beffb 100644
+--- a/src/config.ts
++++ b/src/config.ts
+@@ -10,6 +10,8 @@ export interface Checks {
+   approved: string[] | null
+   // The table of events to cues, from src/audio/cues.ts.
+   eventCues: Record<string, string>
++  // The film over film.maxSeconds is carried as a known problem where this is set: the site still starts.
++  carryLength?: boolean
+ }
+ 
+ const TOP_KEYS = ['name', 'slug', 'seed', 'repo', 'host', 'employer', 'table', 'applicant', 'film', 'intro', 'formats', 'platform', 'export', 'previewFilm', 'tiers', 'cursor',
+@@ -74,7 +76,7 @@ export function configProblems(c: Config, checks: Checks): string[] {
+     for (const b of mine) if (!(b.to > b.from)) out.push(`config: the beat "${b.id}" has no length`)
+     if (!near(mine[mine.length - 1]!.to, u.seconds)) out.push(`config: the beats of "${u.id}" end at ${mine[mine.length - 1]!.to} s and the page is ${u.seconds} s long`)
+   }
+-  if (total > c.film.maxSeconds + 1e-9) out.push(`config: film.units adds up to ${total} s, which is more than film.maxSeconds, ${c.film.maxSeconds} s`)
++  if (total > c.film.maxSeconds + 1e-9 && !checks.carryLength) out.push(`config: film.units adds up to ${total} s, which is more than film.maxSeconds, ${c.film.maxSeconds} s`)
+ 
+   const phaseTotal = Object.values(c.budget.phaseHours).reduce((s, v) => s + v, 0)
+   if (!near(phaseTotal, c.budget.runHours)) out.push(`config: budget.phaseHours adds up to ${phaseTotal} h and budget.runHours is ${c.budget.runHours} h`)
+diff --git a/src/cursor/body.ts b/src/cursor/body.ts
+index bf0cbb83..a4b15c49 100644
+--- a/src/cursor/body.ts
++++ b/src/cursor/body.ts
+@@ -57,6 +57,8 @@ const MOVE = { off: 60, pull: 3, tip: 2.6, long: 0.3, per: 5200, land: 4.8 }
+ const ARM = { rest: 40, strain: 13, shed: 0.3, snap: 0.035, lean: 0.35, back: 0.45, grow: { k: 1300, c: 47 }, toward: 0.3, closed: 0.999 }
+ // The seconds over which the arrow is eased from where a page left it to the pointer, unless the page that gives it back names its own.
+ const HANDBACK = 0.35
++// Laid flat: `lie` is its height over the ground while it lies, `back` the spring its size comes back on (it goes once past its size), `most` the largest it is drawn.
++const SPREAD = { lie: 0.6, back: { k: 420, c: 16 }, most: 1.6 }
+ // What the body can be drawn at: the springs may ask for more, the pose never does.
+ // Leaning right is held short of 0.42, where the arrow would stand upright on its tail and stop reading as a cursor.
+ const LIMIT = { short: 0.55, long: 1.4, left: 0.6, right: 0.34 }
+@@ -187,6 +189,10 @@ interface State {
+   // What the page asks of the body over its springs: an angle struck and held, a length pressed and held, a reaction held at its phase, a swing that dies away.
+   struck: { turn: number; left: number } | null
+   pressed: { squash: number; left: number } | null
++  // Laid flat on the ground: its size as drawn, the spring that takes it back, and what holds it there.
++  size?: number
++  sizeV?: number
++  spread?: { to: number; left: number } | null
+   held: number
+   sway: { amount: number; hz: number; whole: number; t: number } | null
+   swing: number
+@@ -400,6 +406,14 @@ export class CursorBody {
+     s.squashV = 0
+   }
+ 
++  // Laid flat on the ground for `seconds`: the outline is drawn `scale` times its size in both directions and lies on the ground with no height under it. Then it springs back, once past its size.
++  spread(scale: number, seconds: number): void {
++    const s = this.s
++    s.spread = { to: Math.min(SPREAD.most, Math.max(1, scale)), left: Math.max(dt, seconds) }
++    s.size = s.spread.to
++    s.sizeV = 0
++  }
++
+   // The running reaction stops at the phase it has reached and stays there for `seconds`: a held pose. A new reaction ends the hold.
+   hold(seconds: number): void {
+     if (this.s.reaction !== null) this.s.held = Math.max(0, seconds)
+@@ -565,6 +579,21 @@ export class CursorBody {
+       s.z = floor
+       s.vz = Math.max(0, s.vz)
+     }
++    if (s.spread) {
++      s.size = s.spread.to
++      s.sizeV = 0
++      s.z = s.ground + SPREAD.lie
++      s.vz = 0
++      s.spread.left -= dt
++      if (s.spread.left <= dt / 2) s.spread = null
++    } else if (s.size !== undefined && (s.size !== 1 || s.sizeV)) {
++      s.sizeV = (s.sizeV ?? 0) + (SPREAD.back.k * (1 - s.size) - SPREAD.back.c * (s.sizeV ?? 0)) * dt
++      s.size += s.sizeV * dt
++      if (Math.abs(s.size - 1) < 0.002 && Math.abs(s.sizeV) < 0.02) {
++        s.size = 1
++        s.sizeV = 0
++      }
++    }
+     for (const key of FEEL_KEYS) s.feel[key] += (FEEL[s.acting][key] - s.feel[key]) * Math.min(1, (dt * 3) / FEEL_EASE[key])
+     const pose = s.reaction ? reactionPose(s.reaction, 1 - s.reactionLeft / REACTION_SECONDS[s.reaction], s.dir) : null
+     const dragging = s.acting === 'exhausted' && !s.air && s.taken === null && !s.inBall && now > 30
+@@ -700,7 +729,7 @@ export class CursorBody {
+     return {
+       ...(this.hand && s.air ? { rides: true } : {}), x: s.x, y: s.y, z: s.z, squash: softSquash(s.squash), lean: softLean(s.lean), spin: this.hand && s.drawn !== undefined ? s.drawn - softLean(s.lean) : s.spin + s.swing, acting: s.acting, reaction: s.reaction,
+       reactionAt: s.reaction ? 1 - s.reactionLeft / REACTION_SECONDS[s.reaction] : 0,
+-      damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, centred: s.inBall && s.centred, taken: s.taken !== null, scale: 1,
++      damage: s.damage.map((d) => d.kind), healing, arms: arms && hands !== null, hands: arms && hands ? [{ ...hands[0] }, { ...hands[1] }] : null, onPage: s.onPage, inBall: s.inBall, face: s.inBall && s.face ? { ...s.face } : null, centred: s.inBall && s.centred, taken: s.taken !== null, scale: s.size ?? 1,
+       bend: s.bend, feel: { ...s.feel }, gulp: s.gulp,
+       wounds: s.damage.map((d) => ({ kind: d.kind, at: Math.min(1, Math.max(0, 1 - d.left / Math.max(d.whole, dt))), x: d.x, y: d.y })),
+       strips: s.strips ? s.strips.map(emerged) : null,
+diff --git a/src/stage/stage.ts b/src/stage/stage.ts
+index e400abc1..a7f0baeb 100644
+--- a/src/stage/stage.ts
++++ b/src/stage/stage.ts
+@@ -198,10 +198,10 @@ export class Stage {
+       const gag = page.gag()
+       if (gag) this.reached.add(gag)
+       const inBeat = this.o.mode === 'live' || (this.index === 0 && this.pageTime >= armsBeat.from && this.pageTime < armsBeat.to)
+-      this.cursor.step(pointer, emit, gag === config.cursor.armsOnlyInBeat && inBeat)
++      this.cursor.step(pointer, emit, (gag === config.cursor.armsOnlyInBeat && inBeat) || page.arms?.() === true)
+       this.down = down
+     } else this.down = pointer.down
+-    const ignored = !playing || page.ignoring() || (page.control === 'pointer' && this.cursor.taken)
++    const ignored = !playing || page.ignoring() || (page.control === 'pointer' && this.cursor.taken && page.led?.() !== true)
+     if (ignored && this.phase !== 'end') {
+       this.run++
+       const key = page.control
+diff --git a/src/stage/types.ts b/src/stage/types.ts
+index 5a862789..865d1618 100644
+--- a/src/stage/types.ts
++++ b/src/stage/types.ts
+@@ -195,6 +195,10 @@ export interface PageLogic {
+   volume?(): number
+   fields?(): FieldProgress | null
+   chrome?(): Chrome | null
++  // True while the page needs the arrow's arms outside the beat `cursor.armsOnlyInBeat`.
++  arms?(): boolean
++  // True while the page drives the arrow itself and still obeys the visitor's hand: such steps do not count as control taken.
++  led?(): boolean
+ }
+ 
+ export type PageMaker = () => PageLogic
 diff --git a/tests/b-shell-chrome.test.ts b/tests/b-shell-chrome.test.ts
 index 62112b61..275d5c5c 100644
 --- a/tests/b-shell-chrome.test.ts
