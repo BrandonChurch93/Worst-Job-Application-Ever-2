@@ -187,8 +187,8 @@ function play(first: PlayMode): void {
     }
     window.addEventListener('pointerdown', unlock, { capture: true })
     window.addEventListener('keydown', unlock, { capture: true })
-    void import('./audio/index').then(({ makeSound }) => {
-      sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/` })
+    void Promise.all([import('./audio/index'), import('./ui/said')]).then(([{ makeSound }, { makeCaption }]) => {
+      sound = makeSound({ base: `${import.meta.env.BASE_URL}audio/`, caption: makeCaption })
       if (!flowing()) sound.stop()
       if (touched) void sound.unlock()
     })
@@ -304,6 +304,7 @@ function play(first: PlayMode): void {
       gags = stage.gagsReached.length
       return
     }
+    sound.page(stage.page.id, stage.page.chrome?.()?.caption)
     for (; sent < stage.events.length; sent++) sound.event(stage.events[sent]!, 'live')
     const reached = stage.gagsReached
     for (; gags < reached.length; gags++) sound.beat(reached[gags]!, 'live')
@@ -357,6 +358,7 @@ function play(first: PlayMode): void {
       base = to
       stage = makeStage()
       sound?.stop()
+      sound?.page(liveFlow()[to]!.page)
       if (flowing()) sound?.start()
       sent = 0
       gags = 0

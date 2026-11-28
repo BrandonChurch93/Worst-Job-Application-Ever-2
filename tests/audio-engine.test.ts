@@ -222,9 +222,11 @@ describe('with sound', () => {
     return { s, ctx: made[0]! }
   }
 
-  it('loads once, on the unlock, and loops the room tone under everything', async () => {
+  it('loads once, on the unlock, and loops the room tone under everything once the page on screen is known and is not the careers page', async () => {
     const { s, ctx } = await ready()
     await s.unlock()
+    expect(playsOf(ctx, 'room-tone').length).toBe(0)
+    s.page('step1')
     expect(made.length).toBe(1)
     expect(fetched.filter((u) => u.endsWith('index.json')).length).toBe(0)
     expect(fetched.filter((u) => u.endsWith('sfx.bin')).length).toBe(1)
@@ -280,6 +282,7 @@ describe('with sound', () => {
 
   it('plays nothing and throws nothing on an event with no cue, and on an added cue whose sound is not loaded', async () => {
     const { s, ctx } = await ready()
+    s.page('step1')
     const before = ctx.sources.length
     ctx.currentTime = 2
     for (const mode of ['film', 'live'] as const) {
@@ -309,102 +312,6 @@ describe('with sound', () => {
     expect(music.started).toBe(10)
     expect(music.stopped).toBeCloseTo(10 + cfg.audio.holdMusicSeconds, 9)
     expect((music.to as Gain).gain.calls).toEqual([])
-  })
-
-  it('speaks the lines of a beat each at its place and lowers the effects under them', async () => {
-    const { s, ctx } = await ready()
-    ctx.currentTime = 20
-    s.beat(beatId, 'film')
-    const lines: { at: number }[] = narration.film[beatId]
-    lines.forEach((l, i) => {
-      const src = playsOf(ctx, `line.${beatId}.${i}`)
-      expect(src.length).toBe(1)
-      if (i === 0) expect(src[0]!.started).toBeCloseTo(20 + l.at * (beat.to - beat.from), 6)
-      else expect(src[0]!.started!).toBeGreaterThanOrEqual(20 + l.at * (beat.to - beat.from) - 1e-9)
-    })
-    const fx = ctx.gains[1]!
-    expect(fx.gain.calls.some((c) => c[0] === 'ramp' && Math.abs(c[1] - db(-cfg.audio.duckDb)) < 1e-9)).toBe(true)
-    expect(ctx.gains[3]!.gain.calls).toEqual([])
-    s.beat('no.such.beat', 'film')
-  })
-
-  it('after a seek into a beat speaks the lines still to come at their places and none that has begun', async () => {
-    const two = cfg.film.beats.find((b: any) => (narration.film[b.id] ?? []).length >= 2 && narration.film[b.id][1].at > narration.film[b.id][0].at)
-    const site = fixtureSite()
-    const enc = new TextEncoder()
-    narration.film[two.id].forEach((_: unknown, i: number) => {
-      const id = `line.${two.id}.${i}`
-      site.index.lines.push({ id, file: `${id}.mp3`, seconds: 1, mime: 'audio/mpeg' })
-      site.files.set(`${id}.mp3`, enc.encode(id))
-    })
-    serve(site.files)
-    const s = makeSound({ base: './audio/', index: site.index })
-    await s.unlock()
-    const ctx = made[0]!
-    const span = two.to - two.from
-    const second = narration.film[two.id][1].at * span
-    const into = (narration.film[two.id][0].at * span + second) / 2
-    ctx.currentTime = 40
-    s.beat(two.id, 'film', into)
-    expect(playsOf(ctx, `line.${two.id}.0`).length).toBe(0)
-    const later = playsOf(ctx, `line.${two.id}.1`)
-    expect(later.length).toBe(1)
-    expect(later[0]!.started).toBeCloseTo(40 + second - into, 6)
-    s.stop()
-    s.start()
-    ctx.currentTime = 60
-    s.beat(two.id, 'film', span + 1)
-    expect(playsOf(ctx, `line.${two.id}.0`).length).toBe(0)
-    expect(playsOf(ctx, `line.${two.id}.1`).length).toBe(1)
-    s.beat(beatId, 'film', Number.NaN)
-    expect(playsOf(ctx, `line.${beatId}.0`).length).toBe(1)
-  })
-
-  it('never lets a live line interrupt, keeps the gap, and drops the late line', async () => {
-    const { s, ctx } = await ready()
-    const live = () => ctx.sources.filter((x) => x.buffer?.id.startsWith('line.live.')).map((x) => x.buffer!.id)
-    ctx.currentTime = 30
-    s.trigger('idle')
-    expect(live()).toEqual(['line.live.idle.0'])
-    ctx.currentTime = 30.5
-    s.trigger('hit')
-    ctx.currentTime = 31.6
-    s.trigger('hit')
-    ctx.currentTime = 31.5 + cfg.audio.liveNarratorMinGapSeconds - 1
-    s.trigger('hit')
-    expect(live()).toEqual(['line.live.idle.0'])
-    ctx.currentTime = 31.5 + cfg.audio.liveNarratorMinGapSeconds + 0.01
-    s.trigger('hit')
-    expect(live()).toEqual(['line.live.idle.0', 'line.live.hit.0'])
-    ctx.currentTime += 1.5 + cfg.audio.liveNarratorMinGapSeconds + 0.01
-    s.trigger('hit')
-    expect(live()).toEqual(['line.live.idle.0', 'line.live.hit.0', 'line.live.hit.1'])
-    s.trigger('no-such-line')
-    s.trigger('about')
-  })
-
-  it('sets the live lines off from the events of the stage in live mode only', async () => {
-    const { s, ctx } = await ready()
-    const live = () => ctx.sources.filter((x) => x.buffer?.id.startsWith('line.live.')).map((x) => x.buffer!.id)
-    const far = 2 + cfg.audio.liveNarratorMinGapSeconds
-    ctx.currentTime = 40
-    s.event(hit('bolt-hit-cursor', true), 'film')
-    s.event(hit('checkbox'), 'film')
-    expect(live()).toEqual([])
-    ctx.currentTime += far
-    s.event(hit('bolt-hit-cursor', true), 'live')
-    expect(live()).toEqual(['line.live.hit.0'])
-    ctx.currentTime += far
-    s.event(hit('flipper'), 'live')
-    ctx.currentTime += far
-    s.event(hit('flipper'), 'live')
-    expect(live()).toEqual(['line.live.hit.0', 'line.live.pinball.flipper.0'])
-    ctx.currentTime += far
-    s.event(hit('checkbox'), 'live')
-    ctx.currentTime += far
-    s.event(hit('tug-lost'), 'live')
-    expect(live()).toEqual(['line.live.hit.0', 'line.live.pinball.flipper.0', 'line.live.boss.verify.0', 'line.live.tugLost.0'])
-    expect(ctx.sources.filter((x) => x.buffer?.id.startsWith('flipper.')).map((x) => x.buffer!.id)).toEqual(['flipper.1', 'flipper.2'])
   })
 
   it('stops a loop at its stop event and at the turn of the page', async () => {
@@ -454,6 +361,7 @@ describe('with sound', () => {
 
   it('is fully silent after stop() and has the room tone back at once at start()', async () => {
     const { s, ctx } = await ready()
+    s.page('step1')
     ctx.currentTime = 10
     s.stop()
     expect(playsOf(ctx, 'room-tone')[0]!.stopped).not.toBeNull()
@@ -644,6 +552,7 @@ describe('the opening of film A on the site', () => {
   it('cuts a running tone when the film is sent back into the opening, and stays out of it through a pause', async () => {
     const { s, unlock } = await ready()
     const ctx = await unlock()
+    s.page('step1')
     expect(playsOf(ctx, 'room-tone').length).toBe(1)
     s.stop()
     s.opening(2, 2)

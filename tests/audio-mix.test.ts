@@ -216,7 +216,9 @@ describe('the film itself', () => {
     const r = mixFilm({ sampleRate: 8000, fps: FPS, seconds, events, lines, sounds: new Map(), sfx: cfg.audio.sfx, duckDb: cfg.audio.duckDb, holdMusicSeconds: cfg.audio.holdMusicSeconds, targetLufs: cfg.audio.filmLoudnessLufs, truePeakDb: cfg.audio.truePeakDb })
     expect(r.sound.channels[0]!.length).toBe(seconds * 8000)
     expect(r.mastered.silent).toBe(true)
-    expect(r.missingLines.length).toBe(lines.length)
+    expect(r.missingLines).toEqual([])
+    expect(r.placed.filter((p) => p.kind === 'line')).toEqual([])
+    expect(r.placed.filter((p) => p.kind === 'stand-in').map((p) => p.id)).toEqual(lines.slice().sort((a, b) => a.frame - b.frame).map((l) => l.id))
   })
 })
 

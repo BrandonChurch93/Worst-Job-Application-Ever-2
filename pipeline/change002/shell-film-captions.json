@@ -1,0 +1,283 @@
+{
+  "made": "node pipeline/change002/shell-film-captions.mjs --until 18",
+  "browser": "159.0.8154.6",
+  "fps": 60,
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "lowerEdgeY": 1044,
+  "note": "every line is a silent stand-in; a line with draft true is a draft",
+  "lines": [
+    {
+      "id": "line.marketing.stroll.0",
+      "frame": 0
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "frame": 1022
+    }
+  ],
+  "captions": [
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 0,
+      "words": "Ahh.",
+      "first": 0,
+      "last": 37,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/000-marketing.stroll.0-0.png",
+      "panel": {
+        "words": "Ahh.",
+        "glyphs": true,
+        "box": [
+          897.2,
+          982,
+          125.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 1,
+      "words": "Here we have",
+      "first": 38,
+      "last": 149,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/001-marketing.stroll.0-1.png",
+      "panel": {
+        "words": "Here we have",
+        "glyphs": true,
+        "box": [
+          841.3,
+          982,
+          237.4,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 2,
+      "words": "another job applicant.",
+      "first": 150,
+      "last": 262,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/002-marketing.stroll.0-2.png",
+      "panel": {
+        "words": "another job applicant.",
+        "glyphs": true,
+        "box": [
+          790.8,
+          982,
+          338.5,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 3,
+      "words": "Desperately hoping",
+      "first": 263,
+      "last": 337,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/003-marketing.stroll.0-3.png",
+      "panel": {
+        "words": "Desperately hoping",
+        "glyphs": true,
+        "box": [
+          804.9,
+          982,
+          310.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 4,
+      "words": "to pay their rent.",
+      "first": 338,
+      "last": 487,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/004-marketing.stroll.0-4.png",
+      "panel": {
+        "words": "to pay their rent.",
+        "glyphs": true,
+        "box": [
+          823.9,
+          982,
+          272.3,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 5,
+      "words": "Poor fool.",
+      "first": 488,
+      "last": 562,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/005-marketing.stroll.0-5.png",
+      "panel": {
+        "words": "Poor fool.",
+        "glyphs": true,
+        "box": [
+          866.1,
+          982,
+          187.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 6,
+      "words": "They must have forgotten",
+      "first": 563,
+      "last": 712,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/006-marketing.stroll.0-6.png",
+      "panel": {
+        "words": "They must have forgotten",
+        "glyphs": true,
+        "box": [
+          766.5,
+          982,
+          386.9,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.marketing.stroll.0",
+      "key": "marketing.stroll.0",
+      "phrase": 7,
+      "words": "it is 2026.",
+      "first": 713,
+      "last": 824,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/007-marketing.stroll.0-7.png",
+      "panel": {
+        "words": "it is 2026.",
+        "glyphs": true,
+        "box": [
+          865,
+          982,
+          190,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "key": "step1.firstName.0",
+      "phrase": 0,
+      "words": "The application",
+      "first": 1022,
+      "last": 1096,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/008-step1.firstName.0-0.png",
+      "panel": {
+        "words": "The application",
+        "glyphs": true,
+        "box": [
+          830.2,
+          982,
+          259.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "key": "step1.firstName.0",
+      "phrase": 1,
+      "words": "has sensed",
+      "first": 1097,
+      "last": 1171,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/009-step1.firstName.0-1.png",
+      "panel": {
+        "words": "has sensed",
+        "glyphs": true,
+        "box": [
+          855.2,
+          982,
+          209.6,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "key": "step1.firstName.0",
+      "phrase": 2,
+      "words": "a candidate.",
+      "first": 1172,
+      "last": 1246,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/010-step1.firstName.0-2.png",
+      "panel": {
+        "words": "a candidate.",
+        "glyphs": true,
+        "box": [
+          849.7,
+          982,
+          220.5,
+          62
+        ]
+      }
+    },
+    {
+      "id": "line.step1.firstName.0",
+      "key": "step1.firstName.0",
+      "phrase": 3,
+      "words": "ATS turrets rise.",
+      "first": 1247,
+      "last": 1359,
+      "draft": false,
+      "loud": false,
+      "file": "out/work/captions/011-step1.firstName.0-3.png",
+      "panel": {
+        "words": "ATS turrets rise.",
+        "glyphs": true,
+        "box": [
+          826,
+          982,
+          268,
+          62
+        ]
+      }
+    }
+  ],
+  "filter": "[0:v][1:v]overlay=0:0:enable='between(n,0,37)'[v1];[v1][2:v]overlay=0:0:enable='between(n,38,149)'[v2];[v2][3:v]overlay=0:0:enable='between(n,150,262)'[v3];[v3][4:v]overlay=0:0:enable='between(n,263,337)'[v4];[v4][5:v]overlay=0:0:enable='between(n,338,487)'[v5];[v5][6:v]overlay=0:0:enable='between(n,488,562)'[v6];[v6][7:v]overlay=0:0:enable='between(n,563,712)'[v7];[v7][8:v]overlay=0:0:enable='between(n,713,824)'[v8];[v8][9:v]overlay=0:0:enable='between(n,1022,1096)'[v9];[v9][10:v]overlay=0:0:enable='between(n,1097,1171)'[v10];[v10][11:v]overlay=0:0:enable='between(n,1172,1246)'[v11];[v11][12:v]overlay=0:0:enable='between(n,1247,1359)'[v12]",
+  "filterUse": "ffmpeg -i FILM -i each picture in order -filter_complex FILTER -map [vN] -map 0:a? ...; n is the frame of the film",
+  "proof": {
+    "what": "the pictures laid over a kept still of the careers page held for the length asked: the timing of the captions, not the film",
+    "file": "out/work/captions/proof.mp4",
+    "seconds": 18,
+    "frames": 1080
+  }
+}

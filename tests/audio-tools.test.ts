@@ -25,11 +25,11 @@ describe('what an id on the command line names', () => {
     expect(target({ cue: 'room-tone' }, cfg, cues).loop).toBe(true)
   })
 
-  it('finds a line of the film and a live line by their place, with the words as written', () => {
+  it('finds a line of the film by its place, with the words as written, and no live line: the script has none', () => {
     const t = target({ line: `${beat}:${index}` }, cfg, cues)
     expect(t).toMatchObject({ kind: 'line', id: cues.filmLineId(beat, index), beat, index, text, max: cfg.audio.narratorMaxTakesPerLine })
-    const live = target({ line: 'live.hit:1' }, cfg, cues)
-    expect(live).toMatchObject({ kind: 'line', id: cues.liveLineId('hit', 1), beat: null, liveKey: 'hit', text: narration.liveOnly.hit[1] })
+    expect(narration.liveOnly.hit).toEqual([])
+    expect(() => target({ line: 'live.hit:1' }, cfg, cues)).toThrow()
   })
 
   it('refuses a name that is not there', () => {
@@ -140,12 +140,10 @@ describe('what the numbers say about a line', () => {
     expect(lineNumbers(line, { start: 0, end: slow }, [], cfg, copy).pausesHold).toBe(marks === 0)
   })
 
-  it('knows the room a line of the film has and gives a live line none', () => {
+  it('knows the room a line of the film has', () => {
     const n = lineNumbers(line, { start: 0, end: 0.2 }, pauses, cfg, copy)
     expect(n.fits).toBe(true)
     if (n.room !== null) expect(lineNumbers(line, { start: 0, end: n.room + 1 }, pauses, cfg, copy).fits).toBe(false)
-    const live = target({ line: 'live.hit:0' }, cfg, cues)
-    expect(lineNumbers(live, { start: 0, end: 30 }, [], cfg, copy)).toMatchObject({ room: null, fits: true })
   })
 })
 

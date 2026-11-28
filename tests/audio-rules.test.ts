@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makeSound, type SoundIndex } from '../src/audio/index'
-import { filmKeysForGag, filmLive, filmLineId, liveLineId, liveTriggers, unitPage } from '../src/audio/cues'
+import { filmLineId, unitPage } from '../src/audio/cues'
+import { standIns } from '../src/audio/standin'
 import { LIVE, db } from '../src/audio/levels'
 
 const read = (...p: string[]) => JSON.parse(readFileSync(path.join(process.cwd(), ...p), 'utf8'))
@@ -62,8 +63,7 @@ const LINE = 2
 const SHORT = ['step.1', 'button-press', 'bumper.1', 'boss-hit', 'unfold', 'power-down']
 function site(): { index: SoundIndex; files: Map<string, Uint8Array> } {
   const enc = new TextEncoder()
-  const ids = Object.keys(filmLive).map(idOf)
-  for (const [name, list] of Object.entries(narration.liveOnly as Record<string, unknown>)) if (Array.isArray(list)) list.forEach((_, i) => ids.push(liveLineId(name, i)))
+  const ids = [...standIns().values()].map((l) => l.id)
   const parts = SHORT.map((id) => enc.encode(id))
   const pack = new Uint8Array(parts.reduce((n, p) => n + p.length, 0))
   const sfx: SoundIndex['sfx'] = []
@@ -116,139 +116,6 @@ const far = LINE + gap + 0.5
 const sounding = (ctx: FakeContext, t: number, seconds: (id: string) => number) => ctx.sources.filter((x) => x.started !== null && x.started <= t && (x.stopped === null || x.stopped > t) && (x.loop || x.started + seconds(x.buffer!.id) > t)).map((x) => x.buffer!.id)
 const lengthOf = (id: string) => (id.startsWith('line.') ? LINE : id === 'room-tone' || id === 'shredder' || id === 'boss-loop' ? 8 : 0.2)
 
-describe('the rules of the narrator on the live site, each at the level of the engine', () => {
-  it('speaks the film lines of a beat when the gag of that beat starts, and not before', async () => {
-    const { s, ctx } = await ready()
-    const gags = [...new Set(Object.keys(filmLive).filter((k) => filmLive[k]!.on === 'gag').map(beatOf))]
-    expect(gags.length).toBeGreaterThan(0)
-    let now = 10
-    for (const gag of gags) {
-      const ids = filmKeysForGag(gag).map(idOf)
-      ctx.currentTime = now
-      s.event(ev('step', pageOf(`${gag}.0`)), 'live')
-      for (const id of ids) expect(starts(ctx, id)).toEqual([])
-      now += far
-      ctx.currentTime = now
-      s.beat(gag, 'live')
-      expect(starts(ctx, ids[0]!)).toEqual([now])
-      expect(s.log().filter((e) => e.line === ids[0])).toEqual([{ at: now, line: ids[0], trigger: `gag ${gag}`, what: 'spoken', start: now, seconds: LINE }])
-      now += far
-    }
-  })
-
-  it('speaks a line only the live site has when its trigger happens: each key of liveOnly by its own event, hit or call', async () => {
-    const names = Object.keys(narration.liveOnly).filter((k) => Array.isArray(narration.liveOnly[k]))
-    expect(names.sort()).toEqual(Object.keys(liveTriggers).sort())
-    for (const name of names) {
-      if (name === 'watchFilm') continue
-      const { s, ctx } = await ready()
-      made = []
-      ctx.currentTime = 50
-      const t = liveTriggers[name]!
-      const id = liveLineId(name, 0)
-      expect(starts(ctx, id)).toEqual([])
-      if (t.on === 'call') s.trigger(name)
-      else if (t.on === 'hit') s.event(ev('no-cue-of-its-own', 'step1', true), 'live')
-      else s.event(ev(t.event, 'no-page-of-the-film'), 'live')
-      expect(starts(ctx, id), name).toEqual([50])
-      expect(lines(ctx).length, name).toBe(1)
-    }
-  })
-
-  it('says the idle line once the visitor has neither moved nor clicked for live.idleSeconds, once, and again only after the next movement', async () => {
-    const { s, ctx } = await ready()
-    const idle = (i: number) => starts(ctx, liveLineId('idle', i))
-    ctx.currentTime = 20
-    s.quiet(cfg.live.idleSeconds - 0.01)
-    expect(lines(ctx)).toEqual([])
-    ctx.currentTime = 20.02
-    s.quiet(cfg.live.idleSeconds + 0.01)
-    expect(idle(0)).toEqual([20.02])
-    ctx.currentTime = 20.02 + far
-    s.quiet(cfg.live.idleSeconds + 0.01 + far)
-    ctx.currentTime += far
-    s.quiet(cfg.live.idleSeconds + 0.01 + 2 * far)
-    expect(lines(ctx).length).toBe(1)
-    s.quiet(0)
-    ctx.currentTime += cfg.live.idleSeconds
-    s.quiet(cfg.live.idleSeconds)
-    expect(idle(1)).toEqual([ctx.currentTime])
-    expect(lines(ctx).length).toBe(2)
-  })
-
-  it('says the slow typing line at the event the page sends after live.slowTypingSeconds between two letters, and the page sends it by that number', async () => {
-    const { s, ctx } = await ready()
-    ctx.currentTime = 30
-    s.event(ev('slow-typing', 'step1'), 'live')
-    expect(starts(ctx, liveLineId('slowTyping', 0))).toEqual([30])
-    const page = readFileSync(path.join(process.cwd(), 'src', 'pages', 'step1', 'index.ts'), 'utf8')
-    expect(page).toContain("s.slow >= live.slowTypingSeconds")
-    expect(page.split("io.emit('slow-typing'").length - 1).toBe(1)
-  })
-
-  it('says the line of the slow fight at the event the page sends, in live mode only, and keeps no clock of the fight itself', async () => {
-    const { s, ctx } = await ready()
-    const id = liveLineId('boss.slow', 0)
-    ctx.currentTime = 40
-    s.event(ev('unfold', 'step4'), 'live')
-    ctx.currentTime = 40 + cfg.live.bossSlowSeconds * 3
-    s.event(ev('step', 'step4'), 'live')
-    expect(starts(ctx, id)).toEqual([])
-    s.event(ev('boss-slow', 'step4'), 'film')
-    expect(starts(ctx, id)).toEqual([])
-    s.event(ev('boss-slow', 'step4'), 'live')
-    expect(starts(ctx, id)).toEqual([ctx.currentTime])
-    const fight = readFileSync(path.join(process.cwd(), 'src', 'boss', 'fight.ts'), 'utf8')
-    expect(fight.split("io.emit('boss-slow'").length - 1).toBe(1)
-    expect(fight).toContain("f.clock >= SLOW_SECONDS")
-    expect(fight).toContain("io.mode === 'live' && f.health > HEALTH / 2")
-  })
-
-  it('never lets a line interrupt another: the one being spoken runs to its end and the next starts after it', async () => {
-    const { s, ctx } = await ready()
-    ctx.currentTime = 10
-    s.event(ev('keyboard-rise', 'step1'), 'live')
-    ctx.currentTime = 10.5
-    s.event(ev('slab-drop', 'step1'), 'live')
-    s.trigger('idle')
-    s.event(ev('bolt-hit-cursor', 'step1', true), 'live')
-    const first = lines(ctx).find((x) => x.buffer!.id === idOf('step1.firstName.0'))!
-    expect(first.started).toBe(10)
-    expect(first.stopped).toBeNull()
-    for (const x of lines(ctx)) if (x !== first) expect(x.started!).toBeGreaterThanOrEqual(10 + LINE)
-  })
-
-  it('keeps two lines at least audio.liveNarratorMinGapSeconds apart, from the end of one to the start of the next', async () => {
-    const { s, ctx } = await ready()
-    ctx.currentTime = 10
-    s.event(ev('keyboard-rise', 'step1'), 'live')
-    ctx.currentTime = 11
-    s.event(ev('slab-drop', 'step1'), 'live')
-    expect(starts(ctx, idOf('step1.email.0'))[0]!).toBeCloseTo(10 + LINE + gap, 9)
-    ctx.currentTime = 10 + LINE + gap - 0.5
-    s.trigger('idle')
-    const booked = lines(ctx).filter((x) => x.stopped === null).map((x) => x.started!).sort((a, b) => a - b)
-    for (let i = 1; i < booked.length; i++) expect(booked[i]! - (booked[i - 1]! + LINE)).toBeGreaterThanOrEqual(gap - 1e-9)
-  })
-
-  it('drops a line that would be late, and writes in its log why', async () => {
-    const { s, ctx } = await ready()
-    ctx.currentTime = 10
-    s.event(ev('keyboard-rise', 'step1'), 'live')
-    ctx.currentTime = 10.1
-    s.event(ev('bolt-hit', 'step1', true), 'live')
-    const hit = liveLineId('hit', 0)
-    expect(starts(ctx, hit)).toEqual([])
-    const row = s.log().find((e) => e.line === hit)!
-    expect(row.what).toBe('dropped')
-    expect(row.trigger).toBe('hit by bolt-hit')
-    expect(row.why).toContain(`may wait ${LIVE.waitSeconds['hit']!.toFixed(2)} s`)
-    ctx.currentTime = 10 + LINE + gap - LIVE.waitSeconds['hit']! + 0.01
-    s.event(ev('bolt-hit', 'step1', true), 'live')
-    expect(starts(ctx, hit).length).toBe(1)
-  })
-})
-
 describe('the volume and the sound control', () => {
   it('follows the volume it is given at five points from 0 to 100 percent, at the output of the whole engine, with one fixed headroom after it', async () => {
     const { s, ctx } = await ready()
@@ -268,15 +135,15 @@ describe('the volume and the sound control', () => {
     expect(ctx.gains.slice(1, 4).every((bus) => bus.to === out)).toBe(true)
   })
 
-  it('mutes everything at once, a line being spoken and a loop included, and gives all of it back', async () => {
+  it('mutes everything at once, a loop included, and gives all of it back', async () => {
     const { s, ctx } = await ready()
     const out = ctx.gains[0]!
     ctx.currentTime = 10
-    s.event(ev('unfold', 'step4'), 'live')
+    s.event(ev('boss-music', 'step4'), 'live')
     s.event(ev('checkbox', 'step4'), 'live')
     ctx.currentTime = 10.5
     const before = sounding(ctx, 10.5, lengthOf)
-    expect(before).toEqual(expect.arrayContaining(['room-tone', 'boss-loop', idOf('boss.verify.0')]))
+    expect(before).toEqual(expect.arrayContaining(['room-tone', 'boss-loop']))
     for (const x of ctx.sources) {
       let n: Node | null = x
       while (n && n !== out) n = n.to
@@ -327,7 +194,7 @@ describe('the fallback: plain audio elements, one for each sound', () => {
     expect(s.backend()).toBe('elements')
     expect(s.state()).toBe('ready')
     expect(s.available()).toBe(true)
-    expect(El.all.length).toBe(index.sfx.length + index.loops.length + index.lines.length)
+    expect(El.all.length).toBe(index.sfx.length + index.loops.length)
     expect(errors).not.toHaveBeenCalled()
   })
 
@@ -335,9 +202,8 @@ describe('the fallback: plain audio elements, one for each sound', () => {
     const { s } = await forced(undefined)
     expect(s.backend()).toBe('elements')
     const playing = () => El.all.filter((e) => !e.paused).length
-    s.event(ev('button-press', 'marketing'), 'live')
-    s.trigger('idle')
-    expect(playing()).toBe(3)
+    s.event(ev('button-press', 'step1'), 'live')
+    expect(playing()).toBe(2)
     s.setMuted(true)
     for (const e of El.all.filter((x) => !x.paused)) expect(e.volume).toBe(0)
     s.setMuted(false)
@@ -351,7 +217,7 @@ describe('the edges: nothing is left hanging and nothing is doubled', () => {
   it('leaves for the film with everything stopped, and comes back with one room tone and no line of the page that was left', async () => {
     const { s, ctx } = await ready()
     ctx.currentTime = 10
-    s.event(ev('unfold', 'step4'), 'live')
+    s.event(ev('boss-music', 'step4'), 'live')
     s.event(ev('checkbox', 'step4'), 'live')
     ctx.currentTime = 11
     s.stop()
@@ -372,35 +238,12 @@ describe('the edges: nothing is left hanging and nothing is doubled', () => {
     expect(sounding(ctx, 40.5, lengthOf).filter((id) => id.startsWith('line.') || id === 'boss-loop')).toEqual([])
   })
 
-  it('at a skip in the middle of a line lets that line end by itself, stops the loops, takes back the lines that wait and doubles nothing', async () => {
-    const { s, ctx } = await ready()
-    ctx.currentTime = 10
-    s.event(ev('unfold', 'step4'), 'live')
-    s.event(ev('checkbox', 'step4'), 'live')
-    ctx.currentTime = 10.4
-    s.event(ev('slab-fire', 'step4'), 'live')
-    expect(starts(ctx, idOf('boss.slabs.0'))).toEqual([10 + LINE + gap])
-    ctx.currentTime = 11
-    s.event(ev('skip', 'step4'), 'live')
-    const spoken = lines(ctx).filter((x) => x.buffer!.id === idOf('boss.verify.0'))
-    expect(spoken.length).toBe(1)
-    expect(spoken[0]!.stopped).toBeNull()
-    expect(starts(ctx, idOf('boss.slabs.0'))).toEqual([])
-    expect(sounding(ctx, 11.5, lengthOf).sort()).toEqual([idOf('boss.verify.0'), 'room-tone'].sort())
-    expect(sounding(ctx, 10 + LINE + 0.01, lengthOf).filter((id) => id !== liveLineId('skip', 0))).toEqual(['room-tone'])
-    ctx.currentTime = 30
-    s.event(ev('checkbox', 'step4'), 'live')
-    s.event(ev('slab-fire', 'step4'), 'live')
-    expect(lines(ctx).filter((x) => x.buffer!.id === idOf('boss.verify.0')).length).toBe(1)
-    expect(starts(ctx, idOf('boss.slabs.0'))).toEqual([])
-  })
-
   it('holds everything while the tab is in the background and carries on with the same sounds, none started twice', async () => {
     const doc = { visibilityState: 'visible', listeners: [] as (() => void)[], addEventListener(_: string, fn: () => void) { this.listeners.push(fn) } }
     vi.stubGlobal('document', doc)
     const { s, ctx } = await ready()
     ctx.currentTime = 10
-    s.event(ev('unfold', 'step4'), 'live')
+    s.event(ev('boss-music', 'step4'), 'live')
     s.event(ev('checkbox', 'step4'), 'live')
     const count = ctx.sources.length
     doc.visibilityState = 'hidden'
@@ -411,6 +254,6 @@ describe('the edges: nothing is left hanging and nothing is doubled', () => {
     expect(ctx.state).toBe('running')
     expect(ctx.sources.length).toBe(count)
     for (const x of ctx.sources) expect(x.stopped === null || x.stopped > ctx.currentTime, x.buffer!.id).toBe(true)
-    expect(sounding(ctx, 10.5, lengthOf).sort()).toEqual(['boss-loop', idOf('boss.verify.0'), 'room-tone'].sort())
+    expect(sounding(ctx, 10.5, lengthOf).sort()).toEqual(['boss-loop', 'room-tone'].sort())
   })
 })

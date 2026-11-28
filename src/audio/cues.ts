@@ -95,12 +95,82 @@ export const extraCues: { id: string; seconds: number; event: string }[] = [
   { id: 'skip', seconds: 0.3, event: 'skip' }
 ]
 
-export const cueOfEvent = (name: string): string | undefined => eventCues[name] ?? extraCues.find((x) => x.event === name)?.id
+export function cueOfEvent(name: string): string | undefined {
+  const known = eventCues[name] ?? extraCues.find((x) => x.event === name)?.id ?? newEventCues[name]
+  if (known !== undefined) return known
+  for (const p of prefixCues) if (name.startsWith(p.prefix)) return p.cue(name.slice(p.prefix.length))
+  return undefined
+}
+
+// The one page with no sound effect but the press of its button: the careers page. Change note 002, item 10.
+// A turn to it or away from it is silent, and the room tone is not played on it.
+export const quietPage = 'marketing'
+export const quietPageCues: string[] = ['button-press']
+// The page a turn of the live site leads to, by the page it leaves: the order of liveFlow in src/stage/stage.ts.
+export const pageAfter: Record<string, string> = { 'marketing': 'step1', 'step1': 'step2', 'step2': 'step3', 'step3': 'step4', 'step4': 'step5', 'step5': 'marketing' }
 
 // Every cue with its length and its variants: the rows of audio.sfx, and the added cues that audio.sfx does not hold yet.
 export function allCues<T extends { id: string; seconds: number }>(sfx: T[]): (T | { id: string; seconds: number; variants?: number })[] {
   return [...sfx, ...extraCues.filter((x) => !sfx.some((s) => s.id === x.id)).map((x) => ({ id: x.id, seconds: x.seconds }))]
 }
+
+// The events the units of change 002 added, each on the nearest cue that is kept until its own sound is made. To give one its own sound,
+// add the cue to audio.sfx and write its id in place of the stand-in here. A name in newSilent plays nothing.
+// file to come: the sound the Builder named for it, with its length in seconds.
+export const newEventCues: Record<string, string> = {
+  // boss
+  'shield-glance': 'bolt-hit',          // file to come: shield-glance, a dull glassy tick, 0.2
+  'shot-round': 'dart-hit',
+  'cannon-fire': 'slab-fire',           // file to come: cannon-fire, a low heavy thump, 0.5
+  'boss-heal': 'power-on',              // file to come: boss-heal, a short rising power-up, 0.6
+  'bullet-fire': 'bolt-fire',
+  'turret-lock': 'lever-pull',
+  'big-fire': 'slab-fire',
+  'arena-break': 'button-crack',
+  // step 1
+  'turret-load': 'lever-pull',
+  'keys-break': 'button-crack',
+  'page-crack': 'button-crack',
+  // step 2
+  'date-key': 'key-press',
+  'reel-stop': 'drop-target',           // file to come: reel-stop, 0.3
+  'date-hit': 'checkbox',               // file to come: stop-press, 0.15
+  'date-miss': 'popup-close',           // file to come: date-miss, 0.6
+  'crank-full': 'crank-runaway',
+  'field-done': 'checkbox',
+  // pinball
+  'vacuum-slip': 'ball-drop',           // file to come: vacuum-slip, 0.35
+  'vacuum-lose': 'scoop-kick',          // file to come: vacuum-gulp, 0.5
+  'frenzy-on': 'flasher',               // file to come: pin-frenzy, 2.4
+  'loot': 'coins',                      // file to come: pin-coins, 0.9
+  // the narrator's script, change note 003: the fight music comes in on a phrase of line 7. A stand-in, the old loop; nothing new is made.
+  'boss-music': 'boss-loop',
+  'music-in': 'boss-loop'
+}
+
+export const newSilent: string[] = [
+  'boss-move',
+  'cannon-tell',                        // file to come: cannon-tell, a rising charge whine, 0.8
+  'big-tell',
+  'turret-off',
+  'slab-shadow',
+  'volume-sign',                        // file to come: volume-sign, 0.5
+  'field-next',
+  'vacuum-on',                          // file to come: vacuum-roar, 3.0, can loop
+  'frenzy-off',
+  // the events that only carry a line of the narrator
+  'candidate-sensed',
+  'resume-received',
+  'boss-formed',
+  'boss-turn'
+]
+
+// Events named by a prefix: strike:<layout id>:<n> beside every strike of the pinball table, n 1 soft, 2 hard, 3 frenzy.
+// The old event of the same strike keeps its old cue, so the prefix plays nothing until its own sounds are made; then write the cue for each n.
+// files to come: pin-bumper 0.25, pin-sling 0.2, pin-target 0.25, pin-bell 0.4, pin-kick 0.3.
+export const prefixCues: { prefix: string; cue: (rest: string) => string | undefined }[] = [
+  { prefix: 'strike:', cue: () => undefined }
+]
 
 // Events that are left without a sound on purpose. count-run has no cue made yet: it carries a line of the narrator.
 export const silentEvents: string[] = ['count-run']
@@ -115,101 +185,52 @@ export const stopEvents: Record<string, string[]> = {
   'letter-drop': ['hold-music']
 }
 
-// An event that starts a second sound beside its own. Addendum 001: the fight music runs under the boss battle from boss.unfold to boss.collapse.
-// The boss starts to unfold on the event unfold; power-down, the start of the collapse, stops the loop.
-export const alsoStarts: Record<string, string[]> = {
-  'unfold': ['boss-loop']
-}
+// An event that starts a second sound beside its own. None does now: the fight music comes in on the phrase of the narrator's line 7 that names it
+// (change note 003), by the event boss-music of the stage or the narrator's own mark music-in; power-down, the start of the collapse, stops the loop.
+export const alsoStarts: Record<string, string[]> = {}
 
 // Cues that repeat until they are stopped.
 export const loopCues: string[] = ['room-tone', 'shredder', 'boss-loop']
 
-// What sets each live line of the narrator off. The keys are the keys of liveOnly in content/narration.json.
-export type LiveTrigger =
-  | { on: 'hit' }
-  | { on: 'event'; event: string; once?: boolean }
-  | { on: 'call' }
-
-export const liveTriggers: Record<string, LiveTrigger> = {
-  'idle': { on: 'call' },
-  'hit': { on: 'hit' },
-  'slowTyping': { on: 'event', event: 'slow-typing' },
-  'realKeyboard': { on: 'event', event: 'real-keyboard' },
-  'tugLost': { on: 'event', event: 'tug-lost' },
-  'pinball.flipper': { on: 'event', event: 'flipper', once: true },
-  'boss.verify': { on: 'event', event: 'checkbox' },
-  'boss.slow': { on: 'event', event: 'boss-slow' },
-  'skip': { on: 'event', event: 'skip' },
-  'watchFilm': { on: 'call' }
-}
+// No line is only on the live site any more (change note 003). The table is kept, empty, for the tools that read it.
+export const liveTriggers: Record<string, { on: string; event?: string }> = {}
 
 // The page each unit of the film is on the live site. An event of the stage carries the page it happened on.
 export const unitPage: Record<string, string> = { 'marketing': 'marketing', 'step1': 'step1', 'step2': 'step2', 'pinball': 'step3', 'boss': 'step4', 'decision': 'step5' }
 
-// What sets each line of the film off on the live site, by beat and by the line's place in the beat.
-// event: the first event of that name on the line's page. gag: the stage reporting that the line's own beat is reached.
-export type FilmLive =
-  | { on: 'event'; event: string }
-  | { on: 'gag' }
+// The narrator's script (change note 003): every line that is spoken, on the live site and in the film, by beat and by the line's place in the beat.
+// The page of a line is the page of the unit its key starts with.
+// event: the event of the stage, on the line's page, that sets it off; null for the line said when sound is allowed with its page on screen (in the film: at the start of its beat).
+// until: the events on that page that end the line's moment. A line that has not started by then is not said. A turn or a skip of its page ends every moment.
+// after: the line is a later part of the line named: it is said straight after it, with the gap between two lines of a beat.
+// mark: an event the narrator itself gives out when that phrase of the line starts (-1 is the last phrase); the cue of that event is played then.
+// jump: an event on the line's page that ends the line at its next pause mark: the phrase being said is said to its end, the rest is dropped, and the parts after it follow at once.
+// keeps: the line is not taken back when its page is left; it is set off by the turn away from that page.
+// loud: the caption shows the line in capitals, large.
+export interface SpokenRow { event: string | null; until: string[]; after?: string; mark?: { phrase: number; event: string }; jump?: string[]; keeps?: boolean; loud?: boolean; steps?: { next: string; last: string; ends?: string } }
 
-export const filmLive: Record<string, FilmLive> = {
-  'marketing.stroll.0': { on: 'event', event: 'step' },
-  'marketing.perks.0': { on: 'event', event: 'card-flip' },
-  'step1.firstName.0': { on: 'event', event: 'keyboard-rise' },
-  'step1.firstName.1': { on: 'event', event: 'bolt-hit-cursor' },
-  'step1.email.0': { on: 'event', event: 'slab-drop' },
-  'step1.tug.0': { on: 'event', event: 'arms-out' },
-  'step2.dial.0': { on: 'gag' },
-  'step2.crank.0': { on: 'gag' },
-  'pinball.seal.0': { on: 'event', event: 'ball-seal' },
-  'pinball.launch.0': { on: 'event', event: 'plunger' },
-  'pinball.lobby.0': { on: 'event', event: 'carpet-roll' },
-  'pinball.coffee.0': { on: 'event', event: 'bumper' },
-  'pinball.replyAll.0': { on: 'event', event: 'inbox-take' },
-  'pinball.fired.0': { on: 'event', event: 'firehouse-take' },
-  'pinball.drain.0': { on: 'event', event: 'drain' },
-  'boss.verify.0': { on: 'event', event: 'checkbox' },
-  'boss.slabs.0': { on: 'event', event: 'slab-fire' },
-  'boss.lastStand.0': { on: 'event', event: 'session-expired' },
-  'decision.letter.0': { on: 'event', event: 'stamp' },
-  'decision.metrics.0': { on: 'event', event: 'count-run' }
+export const spoken: Record<string, SpokenRow> = {
+  'marketing.stroll.0': { event: null, until: ['button-press'] },
+  'step1.firstName.0': { event: 'candidate-sensed', until: ['field-done'] },
+  'step1.shredded.0': { event: 'resume-received', until: [] },
+  'step2.crank.0': { event: 'volume-sign', until: ['field-done'] },
+  'step2.crank.1': { event: 'crank-full', until: [] },
+  'pinball.seal.0': { event: 'vacuum-on', until: ['ball-seal'] },
+  'boss.verify.0': { event: 'checkbox', until: ['boss-formed'] },
+  'boss.unfold.0': { event: 'boss-formed', until: ['turret-rise', 'power-down'], jump: ['boss-turn'] },
+  'boss.unfold.1': { event: null, after: 'boss.unfold.0', until: ['turret-rise', 'power-down'], mark: { phrase: -1, event: 'music-in' } },
+  'boss.unfold.2': { event: null, after: 'boss.unfold.1', until: ['turret-rise', 'power-down'] },
+  'boss.finish.0': { event: 'finish-arms', until: ['boss-gone'], steps: { next: 'finish-charge', last: 'finish-fire' } },
+  'decision.letter.0': { event: 'stamp', until: [] },
+  'decision.reset.0': { event: 'page-turn', until: [], keeps: true }
 }
 
-export const filmLiveKey = (beat: string, index: number): string => `${beat}.${index}`
+// The event of the stage that also stands for a mark of the narrator: its cue is played only when the narrator has not booked the line that gives the mark.
+export const markStandsFor: Record<string, string> = { 'boss-music': 'music-in' }
 
-// The lines of the film an event of the stage sets off: those tied to that event whose beat is on the page the event came from.
-export function filmKeysForEvent(name: string, page: string, unitOfBeat: (beat: string) => string | undefined): string[] {
-  const out: string[] = []
-  for (const [key, t] of Object.entries(filmLive)) {
-    if (t.on !== 'event' || t.event !== name) continue
-    const unit = unitOfBeat(key.slice(0, key.lastIndexOf('.')))
-    if (unit !== undefined && unitPage[unit] === page) out.push(key)
-  }
-  return out
-}
-
-// The lines of the film a beat sets off when the stage reports that it is reached.
-export function filmKeysForGag(beat: string): string[] {
-  return Object.entries(filmLive).filter(([key, t]) => t.on === 'gag' && key.slice(0, key.lastIndexOf('.')) === beat).map(([key]) => key)
-}
-
-// Live lines that belong to no page: a page turn does not take them back.
-export const pagelessLive: string[] = ['idle', 'skip', 'watchFilm']
-
-// The live lines an event of the stage sets off, in table order.
-export function liveKeysFor(e: { name: string; hitsCursor: boolean }, seen: Set<string>): string[] {
-  const out: string[] = []
-  for (const [key, t] of Object.entries(liveTriggers)) {
-    if (t.on === 'hit' && e.hitsCursor) out.push(key)
-    if (t.on === 'event' && t.event === e.name) {
-      if (t.once) {
-        if (seen.has(key)) continue
-        seen.add(key)
-      }
-      out.push(key)
-    }
-  }
-  return out
+// The lines an event of the stage on a page sets off, in table order.
+export function spokenKeysFor(name: string, page: string): string[] {
+  return Object.entries(spoken).filter(([key, r]) => r.event === name && unitPage[key.slice(0, key.indexOf('.'))] === page).map(([key]) => key)
 }
 
 // The level class of each cue: room tone is quietest, then the walking and the small ticks, then the mechanisms, then the hits and slams.

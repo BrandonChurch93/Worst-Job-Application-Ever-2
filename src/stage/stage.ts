@@ -1,7 +1,7 @@
 import { beat, config, stepHz } from '../config'
 import { blendPose, CursorBody, HANDOFF, type CursorPose } from '../cursor/body'
 import { BotDriver, type BotName, type BotRun } from './bots'
-import { homePose, smooth } from './camera'
+import { homeDistance, homePose, smooth } from './camera'
 import { arriveTurn, holdsTurn, leaveTurn, shiverAt, shiverBase, shiverDelay, shiverSeconds, SHIVER, TURN } from './turn'
 import type { CameraPose, Chrome, Driver, DrawList, FieldProgress, FlowEntry, Mode, PageLogic, PageMaker, Pointer, Shape, StageEvent } from './types'
 
@@ -27,10 +27,16 @@ export interface StageOptions {
   pages: Record<string, PageMaker>
   driver: Driver
   seed?: number
-  film?: { arrive: boolean; leave: boolean }
+  // `after` names the unit of the film that ends where this one starts.
+  film?: { arrive: boolean; leave: boolean; after?: string }
 }
 
 type Phase = 'arrive' | 'play' | 'leave' | 'end'
+// The pages whose arrow, in the film, is not lifted to the hand over place when the page turns: it stays where it stands, on the button it has pressed, and goes over with its slab.
+export const STAYS_ON: readonly string[] = ['marketing']
+// After such a page the arrow is brought from where it lay on the screen when its slab stood edge on to the hand over place, over the first `frames` frames of 60 of the arriving half, eased out, its height likewise. `clear` is the least it keeps over the face of the arriving slab.
+export const BROUGHT = { frames: 10, clear: 6 }
+const broughtSteps = Math.round((BROUGHT.frames * stepHz) / 60)
 
 interface Saved {
   step: number
@@ -44,6 +50,7 @@ interface Saved {
   run: number
   max: { pointer: number; flippers: number }
   lag: { x: number; y: number; left: number }
+  brought?: { sx: number; sy: number; z: number } | null
   late?: { raw: boolean; wait: number }
   reached: string[]
   visited: string[]
@@ -69,6 +76,8 @@ export interface Frame { list: DrawList; cursor: CursorPose; turn: number; scrol
 
 const applicant = { firstName: config.applicant.filmFirstName, lastName: config.applicant.filmLastName, email: config.applicant.filmEmail }
 
+const left = new WeakMap<object, Map<string, { sx: number; sy: number; z: number }>>()
+
 export class Stage {
   step = 0
   events: StageEvent[] = []
@@ -84,6 +93,8 @@ export class Stage {
   private run = 0
   private max = { pointer: 0, flippers: 0 }
   private lag = { x: 0, y: 0, left: 0 }
+  private brought: { sx: number; sy: number; z: number } | null = null
+  private leftOn: { sx: number; sy: number; z: number } | null = null
   private late = { raw: false, wait: 0 }
   private reached = new Set<string>()
   private visited = new Set<string>()
@@ -124,6 +135,8 @@ export class Stage {
     this.visited.add(entry.page)
     // Under a visitor's hand the arrow comes in with its page where the hand is. The film's arrow is handed over at the middle.
     const at = this.cursor.hand && hand ? hand : HANDOFF
+    this.brought = arrive && this.leftOn ? this.leftOn : null
+    this.leftOn = null
     if (arrive) this.cursor.reset(at.x, this.page.scroll() + at.y, true)
     else this.cursor.reset(this.page.start.x, this.page.start.y)
   }
@@ -154,6 +167,58 @@ export class Stage {
   get longestIgnored(): { pointer: number; flippers: number } { return { pointer: this.max.pointer / stepHz, flippers: this.max.flippers / stepHz } }
   get gagsReached(): string[] { return [...this.reached] }
   get pagesVisited(): string[] { return [...this.visited] }
+
+  private staysOn(): boolean { return this.o.mode === 'film' && STAYS_ON.includes(this.page.unit) }
+
+  private edgeOn(): { sx: number; sy: number; z: number } {
+    const c = this.cursor.pose()
+    const k = homeDistance() / (homeDistance() - (540 - (c.y - this.page.scroll())))
+    return { sx: 960 + (c.x - 960) * k, sy: 540 + c.z * k, z: c.z }
+  }
+
+  // A unit of the film has a stage of its own. Where the arrow of the unit before it lay when that unit's slab stood edge on, when that unit keeps its arrow on the page.
+  private leftBefore(): { sx: number; sy: number; z: number } | null {
+    const after = this.o.film?.after
+    if (this.o.mode !== 'film' || this.index !== 0 || !this.o.film?.arrive || after === undefined || !STAYS_ON.includes(after)) return null
+    const key = `${after} ${this.o.seed ?? config.seed}`
+    let known = left.get(this.o.pages)
+    if (!known) left.set(this.o.pages, (known = new Map()))
+    let at = known.get(key)
+    if (!at) {
+      const before = new Stage({ mode: 'film', flow: filmFlow(after), pages: this.o.pages, driver: new ScriptDriver(), film: filmOptions(after), ...(this.o.seed === undefined ? {} : { seed: this.o.seed }) })
+      at = before.leftAt()
+      known.set(key, at)
+    }
+    return at
+  }
+
+  // Run to the end of its last leaving half: where its arrow then lies on the screen.
+  leftAt(): { sx: number; sy: number; z: number } {
+    const most = Math.round((this.o.flow.reduce((t, e) => t + (e.closes ?? 0), 0) + 2 * TURN_HALF) * stepHz) + this.step
+    while (this.phase !== 'end' && this.step < most) this.advance(1)
+    return this.edgeOn()
+  }
+
+  private broughtPose(c: CursorPose): CursorPose {
+    const from = this.brought ?? this.leftBefore()
+    if (!from || this.phase !== 'arrive' || this.phaseStep >= broughtSteps) return c
+    const e = 1 - (1 - this.phaseStep / broughtSteps) ** 3
+    const d = homeDistance()
+    const scroll = this.page.scroll()
+    const to = d / (d - c.z)
+    const sx = from.sx + (960 + (c.x - 960) * to - from.sx) * e
+    const sy = from.sy + (540 + (c.y - scroll - 540) * to - from.sy) * e
+    let z = from.z + (c.z - from.z) * e
+    const k = d / (d - z)
+    let v = (540 - sy) / k
+    const a = this.turnAt()
+    const under = BROUGHT.clear - (z * Math.cos(a) - v * Math.sin(a))
+    if (under > 0) {
+      v -= under * Math.sin(a)
+      z += under * Math.cos(a)
+    }
+    return { ...c, x: 960 + ((sx - 960) * (d - z)) / d, y: scroll + 540 - v, z }
+  }
 
   private turnAt(): number {
     const u = Math.min(1, this.phaseStep / turnSteps)
@@ -264,7 +329,7 @@ export class Stage {
         this.phase = 'leave'
         this.phaseStep = 0
         const y = this.page.scroll() + HANDOFF.y
-        this.cursor.lift(HANDOFF.x, y)
+        if (!this.staysOn()) this.cursor.lift(HANDOFF.x, y)
         emit('page-turn', HANDOFF.x, y)
       }
       return
@@ -273,13 +338,16 @@ export class Stage {
       if (last) {
         this.phase = 'end'
         this.phaseStep = 0
-      } else this.enter(this.index + 1, true, hand)
+      } else {
+        this.leftOn = this.staysOn() ? this.edgeOn() : null
+        this.enter(this.index + 1, true, hand)
+      }
     }
   }
 
   private save(): Saved {
     return {
-      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max }, lag: { ...this.lag }, late: { ...this.late },
+      step: this.step, index: this.index, pageStep: this.pageStep, unitStep: this.unitStep, phase: this.phase, phaseStep: this.phaseStep, down: this.down, skipped: this.skipped, run: this.run, max: { ...this.max }, lag: { ...this.lag }, ...(this.brought ? { brought: { ...this.brought } } : {}), late: { ...this.late },
       reached: [...this.reached], visited: [...this.visited], events: this.events.length, page: JSON.parse(JSON.stringify(this.page.save() ?? null)), cursor: this.cursor.save()
     }
   }
@@ -301,6 +369,7 @@ export class Stage {
     this.run = s.run
     this.max = { ...s.max }
     this.lag = { ...(s.lag ?? { x: 0, y: 0, left: 0 }) }
+    this.brought = s.brought ? { ...s.brought } : null
     this.late = { ...(s.late ?? { raw: s.down, wait: 0 }) }
     this.reached = new Set(s.reached)
     this.visited = new Set(s.visited)
@@ -350,7 +419,7 @@ export class Stage {
       railFields(list, this.page.fields?.() ?? null)
       slideHeader(list, this.page.chrome?.() ?? null)
     }
-    const made: Frame = { list, cursor: this.cursor.pose(), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
+    const made: Frame = { list, cursor: this.phase === 'leave' && this.staysOn() ? { ...this.cursor.pose(), rides: true } : this.broughtPose(this.cursor.pose()), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     const settle = this.settledFor()
     if (settle !== undefined) {
       made.settle = settle
@@ -529,9 +598,9 @@ export function runBot(pages: Record<string, PageMaker>, bot: BotName, seed: num
 
 export const liveFlow = (): FlowEntry[] => [{ page: 'marketing' }, { page: 'step1' }, { page: 'step2' }, { page: 'step3' }, { page: 'step4' }, { page: 'step5' }, { page: 'marketing', variant: 'rejected' }]
 
-export function filmOptions(unit: string): { arrive: boolean; leave: boolean } {
+export function filmOptions(unit: string): { arrive: boolean; leave: boolean; after?: string } {
   const units = config.film.units
   const i = units.findIndex((u) => u.id === unit)
   if (i < 0) throw new Error(`No page called "${unit}" in film.units`)
-  return { arrive: i > 0, leave: i < units.length - 1 }
+  return { arrive: i > 0, leave: i < units.length - 1, ...(i > 0 ? { after: units[i - 1]!.id } : {}) }
 }
