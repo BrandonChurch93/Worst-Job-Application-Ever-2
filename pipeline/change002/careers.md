@@ -250,6 +250,8 @@ The film's frames carry no caption panel: the panel is an HTML element of the li
 
 `npm run cut` writes `cut/CUES.md`, `cut/CUTLIST.json` and `cut/SHOTS.md` anew (the arrow's steps and the card's flip on this page move; 1464 events, not 1466). Those are the Builder's: the difference is in `pipeline/change002/careers-cut-NEEDS.patch` and `cut/` is left as it was.
 
+The whole suite, `npx vitest run`, MEASURED at 02:42Z: 59 red in 26 files on this branch, 57 red in 25 files at 004819fb (run in a second work tree of that commit). The two more are both in `tests/cut-of-build.test.ts`, which wants `cut/` made again; with the patch laid on, that file is 21 of 21 green.
+
 Pictures: `node pipeline/change002/careers-change.mjs` (needs `careers-page-before.png`, the page as it was at 004819fb, beside `careers-page.png` in `out/work/careers/`) writes `careers-change-cards.png`, `-steps.png`, `-quotes.png`; `node pipeline/change002/careers-proof.mjs --only opening` writes `careers-opening-1.jpg` to `-3.jpg`.
 
 ## What is left
