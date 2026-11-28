@@ -19,7 +19,8 @@ export const actingLook: LookMaker | null = (pose, look) => {
   const busy = pose.arms ? clamp(pose.sprout, 0, 1) : 0
   b.heat = clamp(f.heat * (0.92 + 0.08 * Math.sin(look.body.time * 7.3)) * (1 - BUSY.heat * busy), 0, 1)
   b.melt = clamp(f.melt, 0, 1)
-  b.gulp = pose.gulp
+  // An arrow held in the room over a page that is coming in does not swallow: the lump's own shade crossed its face as the page seated.
+  b.gulp = pose.over ? -1 : pose.gulp
   e.sweat = clamp(f.sweat, 0, 1)
   e.steam = clamp(f.steam * (1 - busy), 0, 1)
   if (pose.reaction === 'dustOff') e.dust = clamp(pose.reactionAt, 0, 1)
