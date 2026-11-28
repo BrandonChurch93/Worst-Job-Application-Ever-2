@@ -197,6 +197,8 @@ export interface PageLogic {
   chrome?(): Chrome | null
   // True while the page needs the arrow's arms outside the beat `cursor.armsOnlyInBeat`.
   arms?(): boolean
+  // True while the page drives the arrow itself and still obeys the visitor's hand: such steps do not count as control taken.
+  led?(): boolean
 }
 
 export type PageMaker = () => PageLogic
