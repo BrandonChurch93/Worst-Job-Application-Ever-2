@@ -1,173 +1,588 @@
 {
-  "about": "The shout test of change note 003 update 4. Brandon's go covered these two shouts only, up to four takes of each. Each text is exactly what was sent to the speech endpoint; the words in square brackets are directions to the model and are not spoken. The numbers under measured come from the files (the length of each beat and the middle pitch of its voiced part, by autocorrelation; a rough measure). How a take sounds is UNKNOWN until Brandon has listened: a model cannot hear.",
-  "voice": {
-    "name": "Worst-Job-Application-Ever",
-    "id": "eFAEy5Egqu7dR7KfdpSZ"
+ "about": "The shout test of change note 003 update 4. Brandon's go covered these two shouts only, up to four takes of each. Each text is exactly what was sent to the speech endpoint; the words in square brackets are directions to the model and are not spoken. The numbers under measured come from the files (the length of each beat and the middle pitch of its voiced part, by autocorrelation; a rough measure). How a take sounds is UNKNOWN until Brandon has listened: a model cannot hear.",
+ "voice": {
+  "name": "Worst-Job-Application-Ever",
+  "id": "eFAEy5Egqu7dR7KfdpSZ"
+ },
+ "settings": {
+  "model_id": "eleven_v3",
+  "stability": 0,
+  "output": "mp3, 44.1 kHz, 128 kbit/s"
+ },
+ "calmNarratorPitchHz": "about 108 to 126 on the kept take of the old line 1 (the same rough measure)",
+ "credits": 225,
+ "takes": [
+  {
+   "shout": "A",
+   "take": 1,
+   "file": "shout-a-take-1.mp3",
+   "ledgerRow": 181,
+   "credits": 32,
+   "seconds": 4.32,
+   "text": "[shouting, drawn out] FIVE... YEARS... [screaming, drawn out] EXPERIENCE!",
+   "measured": {
+    "beats": [
+     {
+      "word": "FIVE",
+      "seconds": 0.97,
+      "pitchHz": 240
+     },
+     {
+      "word": "YEARS",
+      "seconds": 1.25,
+      "pitchHz": 208
+     },
+     {
+      "word": "EXPERIENCE",
+      "seconds": 1.48,
+      "pitchHz": 261
+     }
+    ]
+   }
   },
-  "settings": {
-    "model_id": "eleven_v3",
-    "stability": 0,
-    "output": "mp3, 44.1 kHz, 128 kbit/s"
+  {
+   "shout": "A",
+   "take": 2,
+   "file": "shout-a-take-2.mp3",
+   "ledgerRow": 183,
+   "credits": 48,
+   "seconds": 8.48,
+   "best": true,
+   "text": "[screaming, drawn out] FIIIIIVE... [louder] YEEEEEARS... [screaming at the top of his lungs] EXPEEEEERIENCE!",
+   "measured": {
+    "beats": [
+     {
+      "word": "FIVE",
+      "seconds": 1.45,
+      "pitchHz": 142
+     },
+     {
+      "word": "YEARS",
+      "seconds": 1.39,
+      "pitchHz": 185
+     },
+     {
+      "word": "EXPERIENCE",
+      "seconds": 3.09,
+      "pitchHz": 339
+     }
+    ]
+   }
   },
-  "calmNarratorPitchHz": "about 108 to 126 on the kept take of the old line 1 (the same rough measure)",
-  "credits": 225,
+  {
+   "shout": "B",
+   "take": 1,
+   "file": "shout-b-take-1.mp3",
+   "ledgerRow": 182,
+   "credits": 36,
+   "seconds": 5.2,
+   "text": "[shouting, drawn out] KAH... MEH... HAH... MEH... [screaming, drawn out] HAAAAAAH",
+   "measured": {
+    "beats": [
+     {
+      "seconds": 0.45,
+      "pitchHz": 137
+     },
+     {
+      "seconds": 0.5,
+      "pitchHz": 146
+     },
+     {
+      "seconds": 0.43,
+      "pitchHz": 272
+     },
+     {
+      "seconds": 0.65,
+      "pitchHz": 153
+     },
+     {
+      "seconds": 1.7,
+      "pitchHz": 220
+     }
+    ]
+   }
+  },
+  {
+   "shout": "B",
+   "take": 2,
+   "file": "shout-b-take-2.mp3",
+   "ledgerRow": 184,
+   "credits": 53,
+   "seconds": 8.48,
+   "text": "[shouting, slow and drawn out] KAAAAH... MEEEEH... HAAAAH... MEEEEH... [screaming at the top of his lungs] HAAAAAAAAAAAH!",
+   "measured": {
+    "beats": [
+     {
+      "seconds": 1.29,
+      "pitchHz": 197
+     },
+     {
+      "seconds": 1.2,
+      "pitchHz": 222
+     },
+     {
+      "seconds": 1.04,
+      "pitchHz": 261
+     },
+     {
+      "seconds": 1.56,
+      "pitchHz": 294
+     },
+     {
+      "seconds": 1.31,
+      "pitchHz": 345
+     }
+    ]
+   }
+  },
+  {
+   "shout": "B",
+   "take": 3,
+   "file": "shout-b-take-3.mp3",
+   "ledgerRow": 185,
+   "credits": 56,
+   "seconds": 6.24,
+   "best": true,
+   "text": "[shouting, drawn out] KAAAH... MEEEH... HAAAH... MEEEH... [screaming at the top of his lungs, held long] HAAAAAAAAAAAAAAAAAAAAH!",
+   "measured": {
+    "beats": [
+     {
+      "seconds": 0.78,
+      "pitchHz": 227
+     },
+     {
+      "seconds": 0.82,
+      "pitchHz": 262
+     },
+     {
+      "seconds": 0.63,
+      "pitchHz": 329
+     },
+     {
+      "seconds": 0.97,
+      "pitchHz": 322
+     },
+     {
+      "seconds": 2.08,
+      "pitchHz": 294
+     }
+    ]
+   }
+  }
+ ],
+ "round2": {
+  "about": "Change note 003 update 7: the shout in a second voice, the applicant's. Voices found at no cost in the service's library (previews are free); both are library voices at rate 1.0, used straight by their ids, nothing added to the account's list. Every measure below is MEASURED by audio/shout-test/m2.py (Praat's pitch, loudness and harmonics) and hear.py (a speech recogniser, model base); how it SOUNDS is UNKNOWN until Brandon listens.",
+  "limitOfTheRound": 300,
+  "spent": 264,
+  "ledgerAfter": 3166,
+  "measuresExplained": {
+   "f0_median": "middle pitch of the voiced part, Hz; the calm narrator sits at 108 to 126, the refused takes at 227 to 345",
+   "f0_thirds": "middle pitch of the first, second and last third of the shout",
+   "longest_gap": "longest stretch inside the shout more than 25 dB under its loudest moment, seconds",
+   "db_thirds": "mean loudness of each third, dB",
+   "rise_db": "last third minus first third, dB",
+   "hnr_db": "harmonics to noise; lower is rougher",
+   "tail_under_rms_db": "level of the file's last 0.08 s against the whole, dB; far under means the file does not end on a sounding voice"
+  },
   "takes": [
-    {
-      "shout": "A",
-      "take": 1,
-      "file": "shout-a-take-1.mp3",
-      "ledgerRow": 181,
-      "credits": 32,
-      "seconds": 4.32,
-      "text": "[shouting, drawn out] FIVE... YEARS... [screaming, drawn out] EXPERIENCE!",
-      "measured": {
-        "beats": [
-          {
-            "word": "FIVE",
-            "seconds": 0.97,
-            "pitchHz": 240
-          },
-          {
-            "word": "YEARS",
-            "seconds": 1.25,
-            "pitchHz": 208
-          },
-          {
-            "word": "EXPERIENCE",
-            "seconds": 1.48,
-            "pitchHz": 261
-          }
-        ]
-      }
-    },
-    {
-      "shout": "A",
-      "take": 2,
-      "file": "shout-a-take-2.mp3",
-      "ledgerRow": 183,
-      "credits": 48,
-      "seconds": 8.48,
-      "best": true,
-      "text": "[screaming, drawn out] FIIIIIVE... [louder] YEEEEEARS... [screaming at the top of his lungs] EXPEEEEERIENCE!",
-      "measured": {
-        "beats": [
-          {
-            "word": "FIVE",
-            "seconds": 1.45,
-            "pitchHz": 142
-          },
-          {
-            "word": "YEARS",
-            "seconds": 1.39,
-            "pitchHz": 185
-          },
-          {
-            "word": "EXPERIENCE",
-            "seconds": 3.09,
-            "pitchHz": 339
-          }
-        ]
-      }
-    },
-    {
-      "shout": "B",
-      "take": 1,
-      "file": "shout-b-take-1.mp3",
-      "ledgerRow": 182,
-      "credits": 36,
-      "seconds": 5.2,
-      "text": "[shouting, drawn out] KAH... MEH... HAH... MEH... [screaming, drawn out] HAAAAAAH",
-      "measured": {
-        "beats": [
-          {
-            "seconds": 0.45,
-            "pitchHz": 137
-          },
-          {
-            "seconds": 0.5,
-            "pitchHz": 146
-          },
-          {
-            "seconds": 0.43,
-            "pitchHz": 272
-          },
-          {
-            "seconds": 0.65,
-            "pitchHz": 153
-          },
-          {
-            "seconds": 1.7,
-            "pitchHz": 220
-          }
-        ]
-      }
-    },
-    {
-      "shout": "B",
-      "take": 2,
-      "file": "shout-b-take-2.mp3",
-      "ledgerRow": 184,
-      "credits": 53,
-      "seconds": 8.48,
-      "text": "[shouting, slow and drawn out] KAAAAH... MEEEEH... HAAAAH... MEEEEH... [screaming at the top of his lungs] HAAAAAAAAAAAH!",
-      "measured": {
-        "beats": [
-          {
-            "seconds": 1.29,
-            "pitchHz": 197
-          },
-          {
-            "seconds": 1.2,
-            "pitchHz": 222
-          },
-          {
-            "seconds": 1.04,
-            "pitchHz": 261
-          },
-          {
-            "seconds": 1.56,
-            "pitchHz": 294
-          },
-          {
-            "seconds": 1.31,
-            "pitchHz": 345
-          }
-        ]
-      }
-    },
-    {
-      "shout": "B",
-      "take": 3,
-      "file": "shout-b-take-3.mp3",
-      "ledgerRow": 185,
-      "credits": 56,
-      "seconds": 6.24,
-      "best": true,
-      "text": "[shouting, drawn out] KAAAH... MEEEH... HAAAH... MEEEH... [screaming at the top of his lungs, held long] HAAAAAAAAAAAAAAAAAAAAH!",
-      "measured": {
-        "beats": [
-          {
-            "seconds": 0.78,
-            "pitchHz": 227
-          },
-          {
-            "seconds": 0.82,
-            "pitchHz": 262
-          },
-          {
-            "seconds": 0.63,
-            "pitchHz": 329
-          },
-          {
-            "seconds": 0.97,
-            "pitchHz": 322
-          },
-          {
-            "seconds": 2.08,
-            "pitchHz": 294
-          }
-        ]
-      }
+   {
+    "shout": "A",
+    "take": 1,
+    "voice": "Jerry B. - Heroic Action Protagonist",
+    "voiceId": "NPVegEkwslClHaSZqnyS",
+    "file": "round2/a-heroic-1.mp3",
+    "text": "[shouting, deep battle cry] FIIIVE YEEEARS EXPEEERIEEENCE!",
+    "characters": 58,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": "not set (1.0)",
+    "credits": 26,
+    "ledgerRow": 188,
+    "time": "2026-11-28T00:26:48Z",
+    "recogniserHears": "Five years experience!",
+    "measures": {
+     "seconds": 2.64,
+     "sounding": [
+      0.22,
+      2.48
+     ],
+     "f0_median": 319.0,
+     "f0_p10": 110.0,
+     "f0_p90": 357.0,
+     "f0_thirds": [
+      329.0,
+      323.0,
+      137.0
+     ],
+     "voiced": 0.58,
+     "longest_gap": 0.08,
+     "gaps": 2,
+     "db_thirds": [
+      73.8,
+      65.9,
+      65.7
+     ],
+     "rise_db": -8.0,
+     "hnr_db": 6.0,
+     "tail_under_rms_db": -55.7,
+     "low_share": 0.196
     }
-  ]
+   },
+   {
+    "shout": "B",
+    "take": 1,
+    "voice": "Jerry B. - Heroic Action Protagonist",
+    "voiceId": "NPVegEkwslClHaSZqnyS",
+    "file": "round2/b-heroic-1.mp3",
+    "text": "[shouting, deep battle cry] KAAAMEHHAAAMEHHAAAAAAAAAA!",
+    "characters": 54,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": "not set (1.0)",
+    "credits": 24,
+    "ledgerRow": 189,
+    "time": "2026-11-28T00:27:10Z",
+    "recogniserHears": "Kamehameha!",
+    "measures": {
+     "seconds": 2.64,
+     "sounding": [
+      0.13,
+      2.25
+     ],
+     "f0_median": 341.0,
+     "f0_p10": 199.0,
+     "f0_p90": 420.0,
+     "f0_thirds": [
+      254.0,
+      401.0,
+      341.0
+     ],
+     "voiced": 0.77,
+     "longest_gap": 0.0,
+     "gaps": 0,
+     "db_thirds": [
+      73.3,
+      76.5,
+      74.5
+     ],
+     "rise_db": 1.2,
+     "hnr_db": 6.0,
+     "tail_under_rms_db": -66.4,
+     "low_share": 0.044
+    }
+   },
+   {
+    "shout": "A",
+    "take": 1,
+    "voice": "Jerry B. - Gruff and Gritty Commander",
+    "voiceId": "TxWZERZ5Hc6h9dGxVmXa",
+    "file": "round2/a-gruff-1.mp3",
+    "text": "[shouting, deep battle cry] FIIIVE YEEEARS EXPEEERIEEENCE!",
+    "characters": 58,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": "not set (1.0)",
+    "credits": 26,
+    "ledgerRow": 190,
+    "time": "2026-11-28T00:27:15Z",
+    "recogniserHears": "Five years experience!",
+    "measures": {
+     "seconds": 2.72,
+     "sounding": [
+      0.26,
+      2.46
+     ],
+     "f0_median": 308.0,
+     "f0_p10": 106.0,
+     "f0_p90": 372.0,
+     "f0_thirds": [
+      310.0,
+      319.0,
+      129.0
+     ],
+     "voiced": 0.79,
+     "longest_gap": 0.16,
+     "gaps": 3,
+     "db_thirds": [
+      75.0,
+      62.3,
+      68.9
+     ],
+     "rise_db": -6.1,
+     "hnr_db": 8.0,
+     "tail_under_rms_db": -53.1,
+     "low_share": 0.208
+    }
+   },
+   {
+    "shout": "B",
+    "take": 1,
+    "voice": "Jerry B. - Gruff and Gritty Commander",
+    "voiceId": "TxWZERZ5Hc6h9dGxVmXa",
+    "file": "round2/b-gruff-1.mp3",
+    "text": "[shouting, deep battle cry] KAAAMEHHAAAMEHHAAAAAAAAAA!",
+    "characters": 54,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": "not set (1.0)",
+    "credits": 24,
+    "ledgerRow": 191,
+    "time": "2026-11-28T00:27:24Z",
+    "recogniserHears": "Kamehameha!",
+    "measures": {
+     "seconds": 2.88,
+     "sounding": [
+      0.1,
+      2.52
+     ],
+     "f0_median": 307.0,
+     "f0_p10": 218.0,
+     "f0_p90": 403.0,
+     "f0_thirds": [
+      272.0,
+      385.0,
+      285.0
+     ],
+     "voiced": 0.8,
+     "longest_gap": 0.0,
+     "gaps": 0,
+     "db_thirds": [
+      72.6,
+      74.3,
+      73.2
+     ],
+     "rise_db": 0.6,
+     "hnr_db": 7.5,
+     "tail_under_rms_db": -53.6,
+     "low_share": 0.044
+    }
+   },
+   {
+    "shout": "A",
+    "take": 2,
+    "voice": "Jerry B. - Gruff and Gritty Commander",
+    "voiceId": "TxWZERZ5Hc6h9dGxVmXa",
+    "file": "round2/a-gruff-2.mp3",
+    "text": "[low growl building into a roar] fiiive yeeeaaars EXPEEEERIEEEEEENCE!",
+    "characters": 69,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": 0.8,
+    "credits": 30,
+    "ledgerRow": 192,
+    "time": "2026-11-28T00:29:57Z",
+    "recogniserHears": "Five years experience!",
+    "measures": {
+     "seconds": 3.68,
+     "sounding": [
+      0.39,
+      3.38
+     ],
+     "f0_median": 284.0,
+     "f0_p10": 206.0,
+     "f0_p90": 444.0,
+     "f0_thirds": [
+      224.0,
+      298.0,
+      375.0
+     ],
+     "voiced": 0.56,
+     "longest_gap": 0.15,
+     "gaps": 1,
+     "db_thirds": [
+      72.2,
+      63.4,
+      70.5
+     ],
+     "rise_db": -1.7,
+     "hnr_db": 5.5,
+     "tail_under_rms_db": -64.1,
+     "low_share": 0.211
+    }
+   },
+   {
+    "shout": "B",
+    "take": 2,
+    "voice": "Jerry B. - Gruff and Gritty Commander",
+    "voiceId": "TxWZERZ5Hc6h9dGxVmXa",
+    "file": "round2/b-gruff-2.mp3",
+    "text": "[low growl building into a roar] kaaaaamehhaaaaamehHAAAAAAAAAAAAAAAA!",
+    "characters": 69,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": 0.8,
+    "credits": 30,
+    "ledgerRow": 193,
+    "time": "2026-11-28T00:30:02Z",
+    "recogniserHears": "Kamehameha!",
+    "measures": {
+     "seconds": 3.52,
+     "sounding": [
+      0.26,
+      3.25
+     ],
+     "f0_median": 297.0,
+     "f0_p10": 99.0,
+     "f0_p90": 384.0,
+     "f0_thirds": [
+      203.0,
+      311.0,
+      323.0
+     ],
+     "voiced": 0.63,
+     "longest_gap": 0.0,
+     "gaps": 0,
+     "db_thirds": [
+      67.7,
+      74.2,
+      75.6
+     ],
+     "rise_db": 7.9,
+     "hnr_db": 4.6,
+     "tail_under_rms_db": -65.4,
+     "low_share": 0.047
+    }
+   },
+   {
+    "shout": "A",
+    "take": 3,
+    "voice": "Jerry B. - Gruff and Gritty Commander",
+    "voiceId": "TxWZERZ5Hc6h9dGxVmXa",
+    "file": "round2/a-gruff-3.mp3",
+    "text": "[deep low growl building into a roar] five years EXPEEEEEERIEEEEEEEEEEENCE!",
+    "characters": 75,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": 0.7,
+    "credits": 33,
+    "ledgerRow": 194,
+    "time": "2026-11-28T00:30:32Z",
+    "recogniserHears": "Five years' experience!",
+    "measures": {
+     "seconds": 3.28,
+     "sounding": [
+      0.2,
+      2.98
+     ],
+     "f0_median": 174.0,
+     "f0_p10": 105.0,
+     "f0_p90": 265.0,
+     "f0_thirds": [
+      195.0,
+      137.0,
+      114.0
+     ],
+     "voiced": 0.54,
+     "longest_gap": 0.18,
+     "gaps": 1,
+     "db_thirds": [
+      71.7,
+      61.1,
+      68.7
+     ],
+     "rise_db": -3.0,
+     "hnr_db": 4.1,
+     "tail_under_rms_db": -64.0,
+     "low_share": 0.188
+    }
+   },
+   {
+    "shout": "B",
+    "take": 3,
+    "voice": "Jerry B. - Gruff and Gritty Commander",
+    "voiceId": "TxWZERZ5Hc6h9dGxVmXa",
+    "file": "round2/b-gruff-3.mp3",
+    "text": "[deep low growl building into a roar] kaaaaaaamehhaaaaaaamehHAAAAAAAAAAAAAAAAAAAAAAAA!",
+    "characters": 86,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": 0.7,
+    "credits": 38,
+    "ledgerRow": 195,
+    "time": "2026-11-28T00:30:38Z",
+    "recogniserHears": "Kamehameha!",
+    "measures": {
+     "seconds": 3.68,
+     "sounding": [
+      0.18,
+      3.4
+     ],
+     "f0_median": 225.0,
+     "f0_p10": 80.0,
+     "f0_p90": 404.0,
+     "f0_thirds": [
+      104.0,
+      137.0,
+      379.0
+     ],
+     "voiced": 0.83,
+     "longest_gap": 0.05,
+     "gaps": 1,
+     "db_thirds": [
+      69.1,
+      73.9,
+      75.0
+     ],
+     "rise_db": 5.9,
+     "hnr_db": 5.5,
+     "tail_under_rms_db": -65.0,
+     "low_share": 0.069
+    }
+   },
+   {
+    "shout": "A",
+    "take": 4,
+    "voice": "Jerry B. - Gruff and Gritty Commander",
+    "voiceId": "TxWZERZ5Hc6h9dGxVmXa",
+    "file": "round2/a-gruff-4.mp3",
+    "text": "[deep low growl building into a roar] five years expEEEEEEEEEEEEEEERIENCE!",
+    "characters": 74,
+    "model": "eleven_v4",
+    "stability": 0,
+    "speed": 0.7,
+    "credits": 33,
+    "ledgerRow": 196,
+    "time": "2026-11-28T00:31:24Z",
+    "recogniserHears": "Five years experience!",
+    "measures": {
+     "seconds": 3.12,
+     "sounding": [
+      0.19,
+      2.98
+     ],
+     "f0_median": 165.0,
+     "f0_p10": 96.0,
+     "f0_p90": 412.0,
+     "f0_thirds": [
+      168.0,
+      393.0,
+      112.0
+     ],
+     "voiced": 0.56,
+     "longest_gap": 0.16,
+     "gaps": 1,
+     "db_thirds": [
+      71.4,
+      65.4,
+      70.6
+     ],
+     "rise_db": -0.8,
+     "hnr_db": 4.4,
+     "tail_under_rms_db": -65.3,
+     "low_share": 0.293
+    }
+   }
+  ],
+  "picked": {
+   "A": {
+    "file": "round2/a-gruff-4.mp3",
+    "why": "Lowest middle pitch of the five A takes (165 Hz; the others 174, 284, 308, 319). Its loudest quarter second lies near the end (78 dB against 74 at the start). One stop of 0.16 s, inside the word experience where x and p close the mouth; no pause between the words. The file ends in silence. Not the highest take."
+   },
+   "B": {
+    "file": "round2/b-gruff-3.mp3",
+    "why": "Lowest middle pitch of the four B takes (225 Hz; the others 297, 307, 341). It starts as a low growl at 78 to 118 Hz for about 1.5 s and rises to 335 to 401 Hz; loudness rises 5.9 dB from the first third to the last. No stop inside it (0.05 s at the first consonant). The recogniser hears one word. The file ends in silence. Not the highest take."
+   }
+  },
+  "notDone": "No free work yet (weight, room, layering for the blast); it follows his pick and never replaces a take."
+ }
 }
