@@ -202,7 +202,7 @@ export const CLOSE = {
   w: 960, // px across
   h: 540, // px down
   edge: 40, // px inside the edge that the arrow keeps to when it is led
-  back: 0.4 // s the film's view takes back to the whole page after the blow on Submit, the last of `LAST.hold`: the page turns seen whole, as every other page does
+  back: 0.4 // s the view takes back to the whole page after the blow on Submit, the last of `LAST.hold` in the film; on the live site it takes all of `LAST.held`, which is shorter, so the visitor waits no longer: the page turns seen whole, as every other page does
 } as const
 
 // The last moment: when the body is gone the arrow walks to the button that is left, drops to its knees and strikes it with its right fist.
