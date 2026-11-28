@@ -375,11 +375,15 @@ export function openingEvents(o: OpeningPlan, fps: number): { name: string; fram
   return out
 }
 
+// How long a line with a voice takes to go out when it ends sooner than its file, in seconds. It is a number of this table because the page that holds its turn
+// for line 8 (step 5) reads it too: a press nearer to the next pause than this is heard out for this long, and the turn waits for that.
+export const VOICE_FADE_SECONDS = 0.2
 // A phrase that ends a sentence of the script: its words end in a full stop, a question mark or an exclamation mark.
 export const endsSentence = (words: string): boolean => /[.?!]$/.test(words.trim())
 // The longest a visitor's event waits for the sentence being said to end, in seconds: the first sentence of line 7, "The applicant is ready to give up.",
-// is 5.182 s in its kept take, so a click in it is always answered with the whole sentence, and no click waits longer than this.
-export const SENTENCE_WAIT_SECONDS = 5.2
+// ends at 2.264 s in its take (line.boss.unfold.0, 11.325 s in public/audio/index.json), so a click in it is always answered with the whole sentence, and no click waits longer than this.
+// tests/b-voice.test.ts and tests/audio-own-times.test.ts hold it to the index.
+export const SENTENCE_WAIT_SECONDS = 2.3
 // Where a line that a visitor's event ends early stops, in seconds from the line's start: at the end of the sentence being said when that is no more than
 // SENTENCE_WAIT_SECONDS after the event, otherwise at its next pause. ends: the end of each phrase; sentenceEnds: those of them that end a sentence; at: when the event came.
 // The voice (src/audio/index.ts) and the page that keeps time by the line (step 4) both read this, so they stop at the same moment.

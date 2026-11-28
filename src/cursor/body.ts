@@ -34,6 +34,20 @@ const GAIT: Record<Acting, { stiff: number; damp: number; stride: number; hop: n
 const DART = { fall: 9000 }
 // A rear gets to its place fast, so the lean is held there.
 const REAR = { settle: 0.36 }
+// The film's lift to the hand over place. One that would end the leaving half further than `near` px from the place is drawn in to it over that half; a nearer one is left as it is.
+export const LIFT = { near: 15 }
+interface Pull { x: number; y: number; vx: number; vy: number; n: number; of: number }
+const glide = (p: { x: number; y: number; vx: number; vy: number }, tx: number, ty: number, f: { stiff: number; damp: number; top: number }): void => {
+  p.vx += (f.stiff * (tx - p.x) - f.damp * p.vx) * dt
+  p.vy += (f.stiff * (ty - p.y) - f.damp * p.vy) * dt
+  const speed = Math.hypot(p.vx, p.vy)
+  if (speed > f.top) {
+    p.vx *= f.top / speed
+    p.vy *= f.top / speed
+  }
+  p.x += p.vx * dt
+  p.y += p.vy * dt
+}
 // The frame of a hit: the body is short and bent away from the blow at once, with no spring to build it, and stands a body's width along the blow, clear of the flash.
 const HIT = { squash: 0.58, bend: 0.5, shove: 60, lift: 0.7, hold: 0.07, back: 0.1 }
 // The live site's hand: how the body follows a visitor's mouse, whatever it is acting. A 600 px move is 90% done in 100 ms, goes 2.6% past and is at rest in 271 ms. The film keeps each gait's own numbers.
@@ -176,7 +190,7 @@ interface State {
   onPage: boolean
   inBall: boolean
   face: Face | null
-  air: { x: number; y: number; led?: boolean } | null
+  air: { x: number; y: number; led?: boolean; pull?: Pull } | null
   ground: number
   aloft: boolean
   taken: string | null
@@ -444,14 +458,20 @@ export class CursorBody {
     this.s.ground = z
   }
 
-  // Under a visitor's hand the arrow is not carried anywhere: it lies where it stood, and where the hand had it the hand keeps it through the turn.
-  lift(x: number = HANDOFF.x, y: number = HANDOFF.y): void {
+  // Under a visitor's hand the arrow is not carried anywhere: it lies where it stood, where the hand had it the hand keeps it through the turn, and a hand back under way runs on to the hand.
+  // `steps` is the length of the leaving half, given in the film: the lift as it is runs ahead that far, and where it would not arrive it is kept beside the arrow and the arrow is drawn in from it.
+  lift(x: number = HANDOFF.x, y: number = HANDOFF.y, steps?: number): void {
     const s = this.s
     if (!this.hand) {
       s.air = { x, y }
+      if (steps !== undefined) {
+        const ahead = { x: s.x, y: s.y, vx: s.vx, vy: s.vy }
+        for (let i = 0; i < steps; i++) glide(ahead, x, y, GAIT[s.acting])
+        if (Math.hypot(ahead.x - x, ahead.y - y) > LIFT.near) s.air.pull = { x: s.x, y: s.y, vx: s.vx, vy: s.vy, n: 0, of: steps }
+      }
       return
     }
-    s.air = { x: s.x, y: s.y, led: s.taken === null && !s.inBall && s.onPage && s.handback >= 1 }
+    s.air = { x: s.x, y: s.y, led: s.taken === null && !s.inBall && s.onPage }
     if (!s.air.led) {
       s.vx = 0
       s.vy = 0
@@ -491,6 +511,12 @@ export class CursorBody {
       tx = led ? target.x : s.air.x
       ty = led ? target.y : s.air.y
       tz = HANDOFF.z
+      if (led && s.handback < 1) {
+        s.handback = Math.min(1, s.handback + dt / (s.from.over ?? HANDBACK))
+        const u = s.handback * s.handback * (3 - 2 * s.handback)
+        tx = s.from.x + (target.x - s.from.x) * u
+        ty = s.from.y + (target.y - s.from.y) * u
+      }
     } else if (s.taken !== null) {
       tx = s.drive ? s.drive.x : s.x
       ty = s.drive ? s.drive.y : s.y
@@ -528,6 +554,15 @@ export class CursorBody {
         s.vy *= HAND.top / speed
       }
       if (u >= 1) s.shove = null
+    } else if (s.air?.pull) {
+      s.shove = null
+      const p = s.air.pull
+      glide(p, tx, ty, gait)
+      p.n = Math.min(p.of, p.n + 1)
+      const u = p.n / p.of
+      const k = u * u * (3 - 2 * u)
+      s.vx = (p.x + (tx - p.x) * k - s.x) / dt
+      s.vy = (p.y + (ty - p.y) * k - s.y) / dt
     } else {
       s.shove = null
       const follow = this.hand && (!s.air || s.air.led === true) && s.taken === null && !s.inBall ? HAND : gait

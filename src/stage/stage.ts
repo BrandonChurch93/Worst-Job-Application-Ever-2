@@ -39,6 +39,10 @@ export const STAYS_ON: readonly string[] = ['marketing']
 // After such a page the arrow is brought from where it lay on the screen when its slab stood edge on to the hand over place, over the first `frames` frames of 60 of the arriving half, eased out, its height likewise. `clear` is the least it keeps over the face of the arriving slab.
 export const BROUGHT = { frames: 10, clear: 6 }
 const broughtSteps = Math.round((BROUGHT.frames * stepHz) / 60)
+// The film's lift is over by the last frame of 60 drawn of the leaving half, one frame before the half is out.
+const liftSteps = turnSteps - Math.round(stepHz / 60)
+// The film's lifted arrow stands nearer the eye, on its own line of sight, while a slab near edge on would cut through it: `under` px of figure below its tip, `over` px of slab and of what stands on it past the tip, `near` the height of the slab's near edge when edge on, `by` the room left between, `from` the tilt in radians where this starts.
+export const CLEAR = { under: 60, over: 100, near: 600, by: 20, from: Math.PI / 3 }
 
 interface Saved {
   step: number
@@ -228,6 +232,17 @@ export class Stage {
     return { ...c, x, y: scroll + 540 - (v * Math.cos(a) + z * Math.sin(a)), z: z * Math.cos(a) - v * Math.sin(a), rides: true }
   }
 
+  private clearPose(c: CursorPose): CursorPose {
+    if (this.o.mode !== 'film' || c.rides === true || (this.phase !== 'leave' && this.phase !== 'arrive')) return c
+    const a = this.turnAt()
+    if (Math.abs(a) < CLEAR.from) return c
+    const need = Math.min(CLEAR.near, (a < 0 ? CLEAR.under : CLEAR.over) * Math.tan(Math.abs(a))) + CLEAR.by
+    if (need <= c.z) return c
+    const scroll = this.page.scroll()
+    const k = (homeDistance() - need) / (homeDistance() - c.z)
+    return { ...c, x: 960 + (c.x - 960) * k, y: scroll + 540 + (c.y - scroll - 540) * k, z: need, scale: c.scale * k }
+  }
+
   private turnAt(): number {
     const u = Math.min(1, this.phaseStep / turnSteps)
     if (this.phase === 'arrive') return arriveTurn(u)
@@ -338,7 +353,7 @@ export class Stage {
         this.phase = 'leave'
         this.phaseStep = 0
         const y = this.page.scroll() + HANDOFF.y
-        if (!this.staysOn()) this.cursor.lift(HANDOFF.x, y)
+        if (!this.staysOn()) this.cursor.lift(HANDOFF.x, y, this.o.mode === 'film' ? liftSteps : undefined)
         emit('page-turn', HANDOFF.x, y)
       }
       return
@@ -428,7 +443,7 @@ export class Stage {
       railFields(list, this.page.fields?.() ?? null)
       slideHeader(list, this.page.chrome?.() ?? null)
     }
-    const made: Frame = { list, cursor: this.phase === 'leave' && this.staysOn() ? { ...this.cursor.pose(), rides: true } : this.broughtPose(this.cursor.pose()), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
+    const made: Frame = { list, cursor: this.phase === 'leave' && this.staysOn() ? { ...this.cursor.pose(), rides: true } : this.clearPose(this.broughtPose(this.cursor.pose())), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     const settle = this.settledFor()
     if (settle !== undefined) {
       made.settle = settle

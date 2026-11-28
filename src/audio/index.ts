@@ -670,7 +670,7 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         setMark(x, part)
       }
       note({ at: round(now), line: b.id, trigger: `event ${name}`, what: 'cut', start: round(b.start), seconds: round(b.end - b.start), why: held ? 'it ends at its next pause and its page may turn' : 'it ends with its sentence, or at its next pause when the sentence is long, and its next part follows' })
-      if (turnWaitsFor[page] === l.key) turnHeld.set(page, b.end + audio.liveNarratorMinGapSeconds)
+      if (turnWaitsFor[page] === l.key) turnHeld.set(page, Math.max(b.end, now + LIVE.voiceFadeSeconds) + audio.liveNarratorMinGapSeconds)
       caption?.wake()
       reduck()
     }

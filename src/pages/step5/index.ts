@@ -1,3 +1,4 @@
+import { VOICE_FADE_SECONDS } from '../../audio/cues'
 import { config, filmSeconds, stepHz } from '../../config'
 import type { LayoutNode } from '../../copy'
 import { drawLayout, find, shapeOf, walk } from '../../shell/layout'
@@ -133,7 +134,7 @@ export function makePage(): PageLogic {
   // The press is seen at once. If the narrator's line on the stamp is being said, the page holds until the phrase being said has ended and the gap (`holdAfterPress`); the skip link turns at once, as it did.
   const press = (io: StepIo, atOnce: boolean = false): void => {
     if (io.cursor.damaged) io.cursor.hurt('flattened', AT.hold - 0.12)
-    s.turn = atOnce || s.hit < 0 ? AT.hold : holdAfterPress((s.n - s.hit) / stepHz)
+    s.turn = atOnce || s.hit < 0 ? AT.hold : holdAfterPress((s.n - s.hit) / stepHz, s.mode === 'film' ? 0 : VOICE_FADE_SECONDS)
     // A visitor who is made to wait sees the arrow's blow on the button, as the film's arrow gives it.
     if (s.mode !== 'film' && s.turn > AT.hold) io.cursor.react('stamp')
     s.phase = 'reset'

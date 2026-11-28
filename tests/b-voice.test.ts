@@ -305,23 +305,30 @@ describe('the narrator\'s voice: the engine', () => {
   })
 
   it('takes a turn that comes before the first part of line 7 has begun as one at its first moment: the part is said to the end of its first sentence, not dropped, and the parts after it follow', async () => {
-    const starts = [0.1, 2.208, 5.182, 8.524, 11.356, 13.856, 17.88, 20.772]
-    const takes = { ...TAKES, 'boss.unfold.0': { seconds: 23.324, starts } }
-    for (const early of [0.007, 0, 3]) {
+    // A take whose first sentence ends just inside the wait, so a turn at its first moment is answered with the whole sentence: its times follow SENTENCE_WAIT_SECONDS, they are not typed.
+    const sentence = SENTENCE_WAIT_SECONDS - 0.02
+    const starts = [0.1, sentence / 2, sentence]
+    const takes = { ...TAKES, 'boss.unfold.0': { seconds: sentence * 2, starts } }
+    // The turn comes a part of a frame before the part begins, at that moment, and half way between the event that booked it and its start, while line 6 is still said.
+    for (const early of [0.007, 0, 'half'] as const) {
       const { s, ctx } = await ready('step4', takes)
       ctx.currentTime = 10
       s.event(ev('checkbox', 'step4'), 'live')
-      ctx.currentTime = 10.5
+      const formed = 10 + L / 10
+      ctx.currentTime = formed
       s.event(ev('boss-formed', 'step4'), 'live')
       const begins = booked(s).find((x) => x[0] === id('boss.unfold.0'))![1] as number
-      expect(begins).toBeGreaterThan(13)
-      ctx.currentTime = begins - early
+      expect(begins).toBeCloseTo(10 + L + gap, 3)
+      const turn = early === 'half' ? (formed + begins) / 2 : begins - early
+      expect(turn).toBeGreaterThan(formed)
+      if (early === 'half') expect(turn).toBeLessThan(10 + L)
+      ctx.currentTime = turn
       s.event(ev('boss-turn', 'step4'), 'live')
       const end = begins + starts[2]!
       expect(times(ctx, 'boss.unfold.0'), `${early}`).toEqual([[near(begins), near(end)]])
       expect(times(ctx, 'boss.unfold.1').at(-1), `${early}`).toEqual([near(end + gap), null])
       expect(s.log().filter((e) => e.what === 'cut').map((e) => [e.line, e.seconds])).toEqual([[id('boss.unfold.0'), near(starts[2]!)]])
-      ctx.currentTime = begins + 1
+      ctx.currentTime = begins + sentence / 2
       expect(s.said().lines.filter((l) => l.start <= ctx.currentTime && l.end > ctx.currentTime).map((l) => l.line)).toEqual([id('boss.unfold.0')])
     }
   })
