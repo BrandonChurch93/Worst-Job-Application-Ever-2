@@ -41,6 +41,8 @@ export const BROUGHT = { frames: 10, clear: 6 }
 const broughtSteps = Math.round((BROUGHT.frames * stepHz) / 60)
 // The film's lift is over by the last frame of 60 drawn of the leaving half, one frame before the half is out.
 const liftSteps = turnSteps - Math.round(stepHz / 60)
+// The film's lifted arrow stands nearer the eye, on its own line of sight, while a slab near edge on would cut through it: `under` px of figure below its tip, `over` px of slab behind its face, `near` the height of the slab's near edge when edge on, `by` the room left between, `from` the tilt in radians where this starts.
+export const CLEAR = { under: 60, over: 10, near: 600, by: 20, from: Math.PI / 3 }
 
 interface Saved {
   step: number
@@ -228,6 +230,17 @@ export class Stage {
     if (a === 0) return { ...c, x, y: scroll + 540 - v, z }
     // Until the arriving slab is seated the arrow lies in the slab's plane at that same point of the room, so that the slab's near half never covers it.
     return { ...c, x, y: scroll + 540 - (v * Math.cos(a) + z * Math.sin(a)), z: z * Math.cos(a) - v * Math.sin(a), rides: true }
+  }
+
+  private clearPose(c: CursorPose): CursorPose {
+    if (this.o.mode !== 'film' || c.rides === true || (this.phase !== 'leave' && this.phase !== 'arrive')) return c
+    const a = this.turnAt()
+    if (Math.abs(a) < CLEAR.from) return c
+    const need = Math.min(CLEAR.near, (a < 0 ? CLEAR.under : CLEAR.over) * Math.tan(Math.abs(a))) + CLEAR.by
+    if (need <= c.z) return c
+    const scroll = this.page.scroll()
+    const k = (homeDistance() - need) / (homeDistance() - c.z)
+    return { ...c, x: 960 + (c.x - 960) * k, y: scroll + 540 + (c.y - scroll - 540) * k, z: need, scale: c.scale * k }
   }
 
   private turnAt(): number {
@@ -430,7 +443,7 @@ export class Stage {
       railFields(list, this.page.fields?.() ?? null)
       slideHeader(list, this.page.chrome?.() ?? null)
     }
-    const made: Frame = { list, cursor: this.phase === 'leave' && this.staysOn() ? { ...this.cursor.pose(), rides: true } : this.broughtPose(this.cursor.pose()), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
+    const made: Frame = { list, cursor: this.phase === 'leave' && this.staysOn() ? { ...this.cursor.pose(), rides: true } : this.clearPose(this.broughtPose(this.cursor.pose())), turn: this.turnAt(), scroll: this.page.scroll(), page: this.page.id, view: this.page.view(), time: this.step / stepHz }
     const settle = this.settledFor()
     if (settle !== undefined) {
       made.settle = settle
