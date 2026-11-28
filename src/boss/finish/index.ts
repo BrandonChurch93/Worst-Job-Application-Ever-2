@@ -6,14 +6,14 @@ import { STAND } from '../../cursor/stand/rig'
 import { look } from '../../post/look'
 import type { Emitter, PartMaker, RealContext } from '../../real/types'
 import type { Shape } from '../../stage/types'
-import { finishState, type FinishInput, type FinishState } from './acting'
+import { emberOf, finishState, type FinishInput, type FinishState } from './acting'
 import { makeFinishFx, type Level } from './fx'
 
-export { finishState, finishEvents, kneelSpot, powerPlan, KNEEL, SCALE, GETUP, LEAD, LIEDOWN, POWER, CHARGE, FIRE, LAST } from './acting'
+export { finishState, finishEvents, kneelSpot, powerPlan, emberOf, KNEEL, SCALE, GETUP, LEAD, LIEDOWN, POWER, CHARGE, FIRE, LAST } from './acting'
 export type { FinishInput, FinishMarks, FinishState, FinishEvent, Fx } from './acting'
 export type { Level } from './fx'
 
-const FACE = { y: 46, z: 78, colour: [1, 0.975, 0.945] as [number, number, number], power: 0.3, reach: 190 }
+const FACE = { y: -17, z: 73, colour: [1, 0.975, 0.945] as [number, number, number], power: 0.8, reach: 160 }
 // The shadow the beam throws behind the figure: px of shadow for each px of height, a little down the page, and how much darker than the key's.
 const BLAST = { fall: 2.6, down: -0.35, dark: 0.5 }
 
@@ -48,11 +48,12 @@ export function makeFinish(): Finish {
         const fall: [number, number] = beam ? [kx + (-Math.cos(beam.aim) * BLAST.fall - kx) * open, ky + (Math.sin(beam.aim) * BLAST.fall + BLAST.down - ky) * open] : [kx, ky]
         const lit = Math.max(0.75 * Math.min(1, s.fx.aura) * (1 - open), s.fx.ball ? 0.5 * Math.min(1, s.fx.ball.glow) : 0)
         stand.apply(s.pose, input.time, (1 - lit) * (1 + BLAST.dark * open), fall)
+        stand.rim(emberOf(input) * Math.min(1, s.pose.legs))
         fx.pose(s.fx, s.pose, input.time, light)
         // The white face is tipped away from the key when it stands: a little of the page's own light comes back up onto it.
         const up = Math.min(1, s.pose.rise * 1.5)
         const big = s.pose.scale ?? 1
-        if (light && up > 0.02) light({ x: s.pose.x, y: s.pose.y + FACE.y * big, z: s.pose.ground + FACE.z * big, colour: FACE.colour, power: FACE.power * up * (1 - 0.8 * open), reach: FACE.reach })
+        if (light && up > 0.02) light({ x: s.pose.x, y: s.pose.y + FACE.y * big, z: s.pose.ground + FACE.z * big, colour: FACE.colour, power: FACE.power * up * (1 - 0.8 * open) * (1 - 0.6 * Math.min(1, s.fx.aura)), reach: FACE.reach })
       }
       return s
     },

@@ -48,7 +48,9 @@ async function stack(name, parts) {
   const comp = flat.map((input, i) => { const at = { input, left: 0, top }; top += hs[i] + GAP; return at })
   const whole = await sharp({ create: { width: W, height: H, channels: 3, background: '#0b0b0c' } }).composite(comp).png().toBuffer()
   const out = path.join(proof, `${name}.png`)
-  await sharp(whole).resize(1200, 1200, { fit: 'inside', withoutEnlargement: true }).png({ compressionLevel: 9 }).toFile(out)
+  // At most 1200 px on the long edge and under 1.15 megapixels.
+  const fit = Math.min(1, 1200 / Math.max(W, H), Math.sqrt(1140000 / (W * H)))
+  await sharp(whole).resize(Math.floor(W * fit), Math.floor(H * fit), { fit: 'inside', withoutEnlargement: true }).png({ compressionLevel: 9 }).toFile(out)
   const m = await sharp(out).metadata()
   console.log(name, m.width, m.height)
 }
@@ -144,6 +146,42 @@ Object.assign(JOBS, {
     await pair(path.join(refs, 'finish-charge.png'), path.join(shots, 'charge.png'), 'size 1.5, the close view. approved finish-charge.png | the charge'),
     await pair(path.join(refs, 'finish-blast.png'), path.join(shots, 'blast.png'), 'approved finish-blast.png | the blast'),
     await pair(path.join(refs, 'finish-button-left.png'), path.join(shots, 'after.png'), 'approved finish-button-left.png | after the beam, on the first step')
+  ])
+})
+
+
+// The third task.
+const WALKT3 = { left: 180, top: 210, width: 1560, height: 660 }
+Object.assign(JOBS, {
+  'report-t3-walk-a': async () => stack('report-t3-walk-a', [await rows('walk', 'size 1.5, after the mend. walk: every fourth frame from 4 frames before the walk mark, frames 1 to 24 of 44', WALKT3, 4, 1, 24)]),
+  'report-t3-walk-b': async () => {
+    const all = fs.readdirSync(shots).filter((f) => /^walk-\d\d\.png$/.test(f)).sort().slice(24)
+    const per = 4
+    const tw = Math.floor((W - GAP * (per - 1)) / per)
+    const th = Math.round((tw * WALKT3.height) / WALKT3.width)
+    const tiles = []
+    for (const f of all) tiles.push(await sharp(path.join(shots, f)).extract(WALKT3).resize(tw, th).png().toBuffer())
+    const n = Math.ceil(tiles.length / per)
+    const body = await sharp({ create: { width: W, height: n * th + (n - 1) * GAP, channels: 3, background: '#0b0b0c' } }).composite(tiles.map((input, i) => ({ input, left: (i % per) * (tw + GAP), top: Math.floor(i / per) * (th + GAP) }))).png().toBuffer()
+    return stack('report-t3-walk-b', [[await sharp(label('size 1.5, after the mend. walk: frames 25 to 44 of 44, to the standstill before the knees give')).png().toBuffer(), body]])
+  },
+  'report-t3-fist': async () => stack('report-t3-fist', [await rows('fist', 'size 1.5, after the mend. fist: from 2 frames before the fist mark, every frame for twelve, then every second', KNEEL15, 7)]),
+  'report-t3-power': async () => {
+    const w = Math.floor((W - 2 * GAP) / 3)
+    const h = Math.round(w * 275 / 330)
+    const ref = await sharp(path.join(refs, 'finish-poses.png')).metadata()
+    const k = ref.width / 1036
+    const tiles = [
+      await sharp(path.join(refs, 'finish-poses.png')).extract({ left: Math.round(25 * k), top: Math.round(165 * k), width: Math.round(330 * k), height: Math.round(275 * k) }).resize(w, h).png().toBuffer(),
+      await sharp(path.join(shots, 'pose-power.png')).extract({ left: 660, top: 290, width: 600, height: 500 }).resize(w, h, { fit: 'cover' }).png().toBuffer(),
+      await sharp(path.join(shots, 'pose-power-above.png')).extract({ left: 370, top: 90, width: 1080, height: 900 }).resize(w, h, { fit: 'cover' }).png().toBuffer()
+    ]
+    const body = await sharp({ create: { width: W, height: h, channels: 3, background: '#0b0b0c' } }).composite(tiles.map((input, i) => ({ input, left: Math.round(i * (w + GAP)), top: 0 }))).png().toBuffer()
+    return stack('report-t3-power', [[await sharp(label('the pose sheet\'s "Powering up" figure | the build at the same size, seen at a right angle to the figure | the build as the film sees it, straight down')).png().toBuffer(), body]])
+  },
+  'report-t3-stills': async () => stack('report-t3-stills', [
+    await pair(path.join(refs, 'finish-charge.png'), path.join(shots, 'charge.png'), 'size 1.5, the close view. approved finish-charge.png | the charge'),
+    await pair(path.join(refs, 'finish-blast.png'), path.join(shots, 'blast.png'), 'approved finish-blast.png | the blast')
   ])
 })
 

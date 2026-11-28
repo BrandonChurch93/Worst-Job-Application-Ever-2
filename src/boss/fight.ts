@@ -635,7 +635,8 @@ function darts(f: Fight, io: StepIo, arena: Arena, used: boolean, walls: Wall[])
   f.flashes = f.flashes.filter((m) => m.t < FLASH_SECONDS)
 }
 
-export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
+// `deaf`: no click fires a dart in this step.
+export function stepFight(f: Fight, io: StepIo, arena: Arena, deaf = false): void {
   if (f.over) return
   const dt = io.dt
   f.clock += dt
@@ -732,7 +733,7 @@ export function stepFight(f: Fight, io: StepIo, arena: Arena): void {
   big(f, io, walls)
   corners(f, io, walls)
   const used = popups(f, io, arena)
-  darts(f, io, arena, used, wallsOf(f, arena))
+  darts(f, io, arena, used || deaf, wallsOf(f, arena))
   if (!(f.phase === 2 && f.expired < 0.5)) f.health = Math.min(f.health, ceiling(f.phase, f.tired))
   if (io.mode === 'film' && f.clock >= FILM.ends[f.phase]!) f.health = THRESHOLD[f.phase]!
   else if (io.mode === 'film' && LOOK1_ON) f.health = Math.max(f.health, THRESHOLD[f.phase]! + FILM.spare)

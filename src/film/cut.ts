@@ -1,4 +1,4 @@
-import { eventCues } from '../audio/cues'
+import { cueOfEvent } from '../audio/cues'
 import { config, filmSeconds, stepHz, unitStart } from '../config'
 import { narration, timedLines } from '../copy'
 import { basis, homePose } from '../stage/camera'
@@ -198,7 +198,7 @@ export function makeCut(pages: Record<string, PageMaker>, kept: KeptTake[] = [])
   const events: CutEvent[] = stage.events.filter((e) => e.step < frameCount * stepsPerFrame).map((e) => {
     const frame = Math.floor(e.step / stepsPerFrame)
     const b = beatAt(frame)
-    return { name: e.name, frame, step: e.step, seconds: round(e.step / stepHz, 4), unit: b.unit, beat: b.id, page: e.page, x: round(e.x, 1), y: round(e.y, 1), hitsCursor: e.hitsCursor, cue: eventCues[e.name] ?? null }
+    return { name: e.name, frame, step: e.step, seconds: round(e.step / stepHz, 4), unit: b.unit, beat: b.id, page: e.page, x: round(e.x, 1), y: round(e.y, 1), hitsCursor: e.hitsCursor, cue: cueOfEvent(e.name) ?? null }
   })
 
   for (const b of beats) {
