@@ -458,7 +458,7 @@ export class CursorBody {
     this.s.ground = z
   }
 
-  // Under a visitor's hand the arrow is not carried anywhere: it lies where it stood, and where the hand had it the hand keeps it through the turn.
+  // Under a visitor's hand the arrow is not carried anywhere: it lies where it stood, where the hand had it the hand keeps it through the turn, and a hand back under way runs on to the hand.
   // `steps` is the length of the leaving half, given in the film: the lift as it is runs ahead that far, and where it would not arrive it is kept beside the arrow and the arrow is drawn in from it.
   lift(x: number = HANDOFF.x, y: number = HANDOFF.y, steps?: number): void {
     const s = this.s
@@ -471,7 +471,7 @@ export class CursorBody {
       }
       return
     }
-    s.air = { x: s.x, y: s.y, led: s.taken === null && !s.inBall && s.onPage && s.handback >= 1 }
+    s.air = { x: s.x, y: s.y, led: s.taken === null && !s.inBall && s.onPage }
     if (!s.air.led) {
       s.vx = 0
       s.vy = 0
@@ -511,6 +511,12 @@ export class CursorBody {
       tx = led ? target.x : s.air.x
       ty = led ? target.y : s.air.y
       tz = HANDOFF.z
+      if (led && s.handback < 1) {
+        s.handback = Math.min(1, s.handback + dt / (s.from.over ?? HANDBACK))
+        const u = s.handback * s.handback * (3 - 2 * s.handback)
+        tx = s.from.x + (target.x - s.from.x) * u
+        ty = s.from.y + (target.y - s.from.y) * u
+      }
     } else if (s.taken !== null) {
       tx = s.drive ? s.drive.x : s.x
       ty = s.drive ? s.drive.y : s.y
