@@ -397,6 +397,36 @@ describe('change note 003: the parts of one moment', () => {
   })
 })
 
+describe('change note 004, item 3: what the narrator owes a page', () => {
+  it('owes step 2 the second part of line 4 from its event to its end, spoken or with the sound off, and nothing before or after', async () => {
+    for (const muted of [false, true]) {
+      const { s, ctx } = await ready('step2')
+      if (muted) s.setMuted(true)
+      ctx.currentTime = 10
+      s.event(ev('volume-sign', 'step2'), 'live')
+      expect(s.owed('step2'), 'the first part alone').toBe(false)
+      ctx.currentTime = 11
+      s.event(ev('crank-full', 'step2'), 'live')
+      expect(s.owed('step2'), 'booked behind the first part').toBe(true)
+      ctx.currentTime = 12
+      s.event(ev('field-done', 'step2'), 'live')
+      expect(s.owed('step2')).toBe(true)
+      ctx.currentTime = 10 + L + lineGap + L - 0.05
+      expect(s.owed('step2'), 'in its last moment').toBe(true)
+      ctx.currentTime = 10 + L + lineGap + L + 0.05
+      expect(s.owed('step2'), 'after its end').toBe(false)
+      expect(s.owed('step1')).toBe(false)
+    }
+  })
+
+  it('owes nothing while sound is not allowed', () => {
+    const s = make()
+    s.page('step2')
+    s.event(ev('crank-full', 'step2'), 'live')
+    expect(s.owed('step2')).toBe(false)
+  })
+})
+
 describe('the shout of the boss: a draft that builds on one row, a part a mark of the page', () => {
   it('takes its times from the stand-in of the drafts file, not from the pace of the narrator, and is large and a draft', () => {
     const l = standIns(film, drafts).get('boss.finish.0')!
