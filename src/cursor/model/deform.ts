@@ -63,6 +63,8 @@ export class Deform {
   peel = 0
   gulp = -1
   time = 0
+  // The share of the tremble a point takes: a strip still under the shredder's hood takes none of the body's shake and takes it up as it comes out, so it does not jump at its birth.
+  shake = 1
   private wide = 1
   private shakeX = 0
   private shakeY = 0
@@ -300,8 +302,8 @@ export class Deform {
       }
     }
     if (this.tremble > 0) {
-      x += this.shakeX - this.shakeTurn * y
-      y += this.shakeY + this.shakeTurn * x
+      x += (this.shakeX - this.shakeTurn * y) * this.shake
+      y += (this.shakeY + this.shakeTurn * x) * this.shake
     }
     out.x = (x + this.slantX * z) * UNIT
     out.y = -(y + this.slantY * z) * UNIT
