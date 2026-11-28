@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { config, stepHz } from '../src/config'
 import { healNext, leadAim, newFight, shielded, stepFight, weakSide, type Arena, type Fight } from '../src/boss/fight'
 import { ARENA as GROUND } from '../src/arena/layout'
-import { barDrop } from '../src/arena/change'
-import { finishState, POWER, powerPlan } from '../src/boss/finish/acting'
+import { barDrop, clamp01 } from '../src/arena/change'
+import { WISP_CLEAR, wispsOf } from '../src/arena/finish'
+import { scorchFrom, scorchOf } from '../src/arena/scorch'
+import { FIRE, finishState, POWER, powerPlan } from '../src/boss/finish/acting'
 import { drawnBoxes, figureBox } from '../src/boss/spot'
 import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
@@ -457,7 +459,7 @@ describe('how the boss plays (change 002, item 15)', () => {
     ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2, 2, grown(1.5, 2)],
     ['who clicks once and lets go', (u: number): boolean => u >= 0.5 && u < 0.7, 0.7, 1, FINISH.small],
     ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.2, 3, grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], 3)]
-  ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (_name, down, fires, charges, power) => {
+  ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (name, down, fires, charges, power) => {
     for (const seed of [config.seed, 7, 1234]) {
       const bot = new BotDriver('keen', seed)
       let since = -1
@@ -471,12 +473,14 @@ describe('how the boss plays (change 002, item 15)', () => {
       }
       const stage = new Stage({ mode: 'live', flow, pages, driver, seed })
       let wide = 0
+      let gap: number | null = null
       while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'button-down') && stage.time < 140) {
         stage.advance(1)
         const q = (stage.frameAt(stage.time).list as Shape[]).find((x) => x.id === 'finish-blast')
         if (q) wide = Math.max(wide, q.h / 2 / FINISH.wide)
         const told = finishNow()
         if (LOOK1_ON && told?.marks?.fire !== undefined) wide = Math.max(wide, told.shot ?? 0)
+        if (told?.marks?.fire !== undefined && told.marks.thrust !== undefined) gap = told.marks.fire - told.marks.thrust
       }
       const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
       const fall = at('boss-fall')[0]! + FINISH.fall
@@ -485,6 +489,11 @@ describe('how the boss plays (change 002, item 15)', () => {
       expect(at('finish-fire')[0]! - fall, `seed ${seed}`).toBeCloseTo(fires, 1)
       expect(at('finish-charge').length, `seed ${seed}`).toBe(charges)
       expect(wide, `seed ${seed}`).toBeCloseTo(power, 2)
+      if (LOOK1_ON) {
+        if (power === FINISH.small) expect(gap, `seed ${seed}`).toBeNull()
+        else if (name.startsWith('who holds')) expect(gap, `seed ${seed}`).toBe(0)
+        else expect(gap ?? -1, `seed ${seed}`).toBeGreaterThanOrEqual(0)
+      }
       expect(at('boss-gone')[0]! - at('finish-fire')[0]!).toBeCloseTo(SHOUT.gone - SHOUT.fire, 1)
       expect(at('button-down').length).toBe(1)
       expect(stage.longestIgnored.pointer).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
@@ -755,5 +764,50 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(stage.events.filter((e) => e.name === 'dart-fire' && e.step >= power && e.step <= lock)).toEqual([])
     stage.advance(stepHz)
     expect(stage.events.filter((e) => e.name === 'dart-fire' && e.step > lock).length).toBeGreaterThan(0)
+  })
+
+  it.runIf(LOOK1_ON)('rulings of 04:17, B. from the walk to the turn of the page no wisp of smoke stronger than 0.05 lies over the box of the figure, in the film, and smoke still stands beside it', () => {
+    const stage = film()
+    let seen = 0
+    let strong = 0
+    let would = 0
+    while (stage.page.id === 'step4' && stage.time < 120) {
+      stage.advance(2)
+      if (!stage.events.some((e) => e.name === 'finish-walk')) continue
+      stage.frameAt(stage.time)
+      const view = viewNow()
+      const burnt = view ? scorchOf(view) : null
+      if (!view || !view.last || !burnt) continue
+      seen++
+      const fig = view.last
+      const s = scorchFrom(burnt.line)
+      const k = clamp01((burnt.share - 0.35) / 0.4)
+      const over = (w: { x: number; y: number; size: number }): boolean => {
+        const r = w.size * 0.95
+        return w.x + r > fig.x + WISP_CLEAR.x0 && w.x - r < fig.x + WISP_CLEAR.x1 && w.y + r > fig.y + WISP_CLEAR.y0 && w.y - r < fig.y + WISP_CLEAR.y1
+      }
+      wispsOf(s, config.seed, view.time, k, fig, (w) => {
+        if (w.thick <= 0.05) return
+        strong++
+        expect(over(w)).toBe(false)
+      })
+      wispsOf(s, config.seed, view.time, k, null, (w) => {
+        if (w.thick > 0.05 && over(w)) would++
+      })
+    }
+    expect((seen * 2) / stepHz).toBeGreaterThan(4)
+    expect(strong).toBeGreaterThan(seen)
+    expect(would).toBeGreaterThan(0)
+  })
+
+  it.runIf(LOOK1_ON)('rulings of 04:17, A. in the film the hands thrust the ball forward 0.45 s before the blast is let go', () => {
+    const stage = film()
+    while (stage.page.id === 'step4' && !stage.events.some((e) => e.name === 'finish-fire') && stage.time < 120) stage.advance(1)
+    stage.advance(1)
+    stage.frameAt(stage.time)
+    const m = finishNow()!.marks!
+    expect(m.fire).toBeDefined()
+    expect(m.thrust).toBeDefined()
+    expect(Math.abs(m.fire! - m.thrust! - FIRE.ahead)).toBeLessThanOrEqual(2 / stepHz)
   })
 })

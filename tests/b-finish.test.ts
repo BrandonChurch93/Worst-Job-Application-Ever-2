@@ -136,6 +136,26 @@ describe('the finish: the standing arrow', () => {
     for (let n = 0; n < 60; n++) expect(step(finishState(film(M.fire - 0.6 + n / FPS)).pose, finishState(film(M.fire - 0.6 + (n + 1) / FPS)).pose)).toBeLessThan(30)
   })
 
+  it('thrusts at once when the visitor lets go of a charged shot: seen in the first frame, the beam 0.2 s after the release', () => {
+    const live = (time: number): FinishInput => { const i = finish(time); return { ...i, marks: { ...i.marks!, thrust: M.fire } } }
+    const before = finishState(live(M.fire - 1 / FPS)).pose
+    const first = finishState(live(M.fire + 1 / FPS)).pose
+    // The hip pose before, and the hands well on their way forward one frame after the release: no drawing back first.
+    expect(before.hands[0][0]).toBeLessThan(0)
+    expect(first.hands[0][0] - before.hands[0][0]).toBeGreaterThan(10)
+    expect(first.hands[1][0] - before.hands[1][0]).toBeGreaterThan(10)
+    for (let n = 1; n < 12; n++) expect(finishState(live(M.fire + (n + 1) / FPS)).pose.hands[0][0]).toBeGreaterThanOrEqual(finishState(live(M.fire + n / FPS)).pose.hands[0][0] - 3)
+    // In front with the ball before the beam, and the beam leaves at the lead.
+    const there = finishState(live(M.fire + FIRE.lead - 2 / FPS))
+    expect(there.pose.hands[0][0]).toBeGreaterThan(40)
+    expect(there.fx.ball).not.toBeNull()
+    expect(there.fx.beam).toBeNull()
+    expect(finishState(live(M.fire + FIRE.lead + 0.05)).fx.beam).not.toBeNull()
+    // A plain click, with no thrust mark, is what it was: it draws back first.
+    const plain = finishState(finish(M.fire + FIRE.coil)).pose
+    expect(plain.hands[0][0]).toBeLessThan(finishState(finish(M.fire - 0.01)).pose.hands[0][0])
+  })
+
   it('has its ember rim from the end of the beam on, unless the fight says otherwise', () => {
     expect(emberOf(finish(M.end - 0.01))).toBe(0)
     expect(emberOf(finish(M.end + 0.25))).toBeGreaterThan(0)

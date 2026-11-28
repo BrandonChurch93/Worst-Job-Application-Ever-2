@@ -87,7 +87,7 @@ export const POSES = {
   // Standing, at ease: arms out to the sides, hands open and low.
   ready: P([0, 31], -0.1, [[-34, 34, 5], [36, 36, 5]], [0.15, 0.15], [[-15, 0], [17, 0]]),
   // The pose sheet's first figure: legs wide, both fists raised to the shoulders, elbows bent and close to the body.
-  power: P([0, 27], -0.14, [[-30, 50, 7], [32, 52, 7]], [1, 1], [[-27, 0], [29, 0]], { puff: 0.35, strain: 0.5, tuck: 1 }),
+  power: P([0, 25], -0.14, [[-35, 51, 7], [35, 51, 7]], [1, 1], [[-30, 0], [30, 0]], { puff: 0.35, strain: 0.5, tuck: 1 }),
   // The dip before the fists go up.
   powerDip: P([0, 21], -0.06, [[-30, 30, 6], [32, 30, 6]], [1, 1], [[-24, 0], [26, 0]], { stretch: 0.93 }),
   // The pose sheet's second figure: crouched, both hands cupped at the hip. `charge0` is the first cup, `charge1` the deepest.
