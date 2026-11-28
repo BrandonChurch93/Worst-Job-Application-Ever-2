@@ -2331,6 +2331,51 @@ Update 7 (the shout gets its own voice; mode), received 2026-11-27T23:39Z (4:39 
 >
 > Paste both parts under the note in kit/PROGRESS.md.
 
+## Change note 004 from Brandon, by Partner
+
+Received 2026-11-28 between 02:12Z and 02:14Z (the clock read 02:14:16Z in the first step after it; 7:14 PM MT, November 27) by mail from Brandon's Partner session (bdbb2938), which speaks for him. Pasted word for word at 02:14Z. Read it again after every compaction, with change notes 002 and 003 and their updates. The copy on disk: `wja-scratch/change004/note.md`.
+
+> # Worst Job Application Ever - Change Note 004
+>
+> From Partner, under rule 23. Partner chat: https://www.perplexity.ai/computer/tasks/bdbb2938-8540-483e-906c-8485c8c301e1
+>
+> Brandon's words there, 7:12 PM MT November 27, 2026, in answer to Partner's two lists of decisions 1 to 13 (7:03 PM and 7:06 PM MT):
+>
+> "Yeah, all of these look great. I don't wanna link to my portfolio on the application though so if there is one we can cut that."
+>
+> Partner's reading: each of Partner's recommendations 1 to 13 is approved as it was put to him, except the portfolio button in 13, which is cut. Where a kit rule or number changes, this note is the addendum.
+>
+> ## Decided
+>
+> 1. Power-up look: the approved pose sheet's "Powering up" figure (fists raised, low gold flame, ring of flames on the ground). POWER 1, 2 and 3 are not chosen.
+> 2. Legs: the arrow has legs in the power-up and in the finish only. Everywhere else it has none. This amends the kit's "never has legs".
+> 3. Narrator pause on the live site: 0.3 s between lines, and Continue on step 2 waits until "They will regret that." has been said. The film is not changed by this.
+> 4. Step 2 direction: approved as in Still 176-4 (the dial, the reels with STOP buttons, the crank and its sign, each out of the bare page with no field box). Polish continues.
+> 5. Line 9: approved as written, "On to / the next application.", then the page turns back to the start.
+> 6. Sound bar: yes, build the cookie-style bar with its Accept button. Its words are a draft until he has seen them: mail them to Partner.
+> 7. Recording: lines 1 to 9 may be recorded now. Caps, all inside the hard limit of 4,677, which does not change: narration 650 in all (one pass plus single lines done again), sound effects 700, the shout 150. That is 1,500 of the 1,511 left. State the cost in the ledger before each spend. At a cap, stop and mail Partner. Partner's reading: the sound effects cap is his budget for that batch, so the batch may be made when your plan reaches it.
+> 8. Careers page, Partner's recommendation as he approved it (you recommended keeping all six; his answer came after he was shown both views):
+>    - Keep the deeper orange on the Apply button, the step discs, the table's orange words and the closing button.
+>    - Go back to his PAGE B picture on the text sizes: perk card titles about 30 px and small print about 24 px; the steps' titles 22 to 24 px. If the steps' titles touch at that size, show Partner the closest fit in a picture and do not shrink them without word.
+>    - Three staff quotes as in his picture (Ex-VP of Mandatory Fun; Previously: Unpaid Intern; Ex-Chief Happiness Officer), not six.
+>    - Not named by Partner and so left as built: no star, no quotation marks, the bracket notes' typeface, the awards' small print, the arrow at its real size.
+> 9. On-screen words: all nine drafts approved and may move into the locked copy: Name; Documents; Resume.pdf; SHREDDER; MM / DD / YYYY; STOP; Close enough. Date of birth recorded.; Stop each reel on your date of birth.; TURN IT UP.
+> 10. Step 1 stages: approved as shown in Still 174-3 (the keyboard a metal deck on the bare page, the drop zone a frosted glass panel, the shredder out of the page under it).
+> 11. The start of the rotary dial: stays as it is. Change note 002 item 19 is closed.
+> 12. Skip link words on the live site: "Accept Defeat" is kept.
+> 13. Phones and the portfolio: no link to his portfolio anywhere on the application. links.portfolioWork stays empty, and if any portfolio link exists on the live site, cut it. The phone notice gets one button, to the film's review page (https://www.perplexity.ai/computer/a/the-worst-job-application-ever-11C.YCwbSEaDnRs_ar70Dw). The button's words are a draft: mail them to Partner with the sound bar's words.
+>
+> ## Still held, unchanged
+>
+> - The film's length: decided after the whole-film preview.
+> - The boss music file: he brings it.
+> - The shout: recorded after its animation is built and measured.
+> - 4K, 1080p or both: asked at the final render.
+> - live.controlTakenMaxSeconds stays 8 (your mend, 7:11 PM MT).
+>
+>
+> No answer needed beyond one line that it is logged, and a mail if anything here cannot be done as written. Keep working.
+
 ## Probe results
 
 none

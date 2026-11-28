@@ -2,7 +2,7 @@
 
 Made by `npm run cut`. Do not edit by hand.
 
-Film B: 11814 frames at 60 a second, 196.9 s. Times are in seconds from the first frame of the film. A frame is counted from 0.
+Film B: 12120 frames at 60 a second, 202 s. Times are in seconds from the first frame of the film. A frame is counted from 0.
 
 ## Beats
 
@@ -43,8 +43,8 @@ Film B: 11814 frames at 60 a second, 196.9 s. Times are in seconds from the firs
 | `boss.press` | 183.700 | 11022 | 11093 | `button-press` | 183.733 | 11024 | yes |
 | `decision.wait` | 184.900 | 11094 | 11213 | `hold-music` | 185.300 | 11118 | yes |
 | `decision.letter` | 186.900 | 11214 | 11453 | `stamp` | 190.333 | 11420 | yes |
-| `decision.metrics` | 190.900 | 11454 | 11693 | `button-press` | 194.200 | 11652 | yes |
-| `decision.reset` | 194.900 | 11694 | 11813 | `page-turn` | 194.654 | 11679 | yes |
+| `decision.metrics` | 190.900 | 11454 | 11921 | `button-press` | 198.333 | 11900 | yes |
+| `decision.reset` | 198.700 | 11922 | 12119 | `page-turn` | 198.787 | 11927 | yes |
 
 ## Events with a cue
 
@@ -1075,9 +1075,9 @@ Film B: 11814 frames at 60 a second, 196.9 s. Times are in seconds from the firs
 | 189.742 | 11384 | `decision.letter` | `step` | `step` | no |
 | 190.333 | 11420 | `decision.letter` | `stamp` | `stamp` | yes |
 | 190.333 | 11420 | `decision.letter` | `flatten` | `flatten` | yes |
-| 192.608 | 11556 | `decision.metrics` | `peel-up` | `peel-up` | no |
-| 194.200 | 11652 | `decision.metrics` | `button-press` | `button-press` | no |
-| 194.654 | 11679 | `decision.metrics` | `page-turn` | `page-turn` | no |
+| 193.854 | 11631 | `decision.metrics` | `peel-up` | `peel-up` | no |
+| 198.333 | 11900 | `decision.metrics` | `button-press` | `button-press` | no |
+| 198.787 | 11927 | `decision.reset` | `page-turn` | `page-turn` | no |
 
 ## Narrator lines
 
