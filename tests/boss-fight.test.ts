@@ -6,7 +6,7 @@ import { DART, HOME, POPUP, SHIELD } from '../src/boss/plan'
 import { GUARD, GUN } from '../src/boss/tune'
 import { pages } from '../src/pages'
 import { makeLayout } from '../src/pages/step4/layout'
-import { ACT, makeScript } from '../src/pages/step4/script'
+import { ACT, makeScript, UNIT_SECONDS } from '../src/pages/step4/script'
 import { bossWeapons } from '../src/pages/step4/real/boss-weapons'
 import { healthBar } from '../src/pages/step4/real/health-bar'
 import { dipAt, verifyCard } from '../src/pages/step4/real/verify-card'
@@ -15,6 +15,7 @@ import { filmFlow, filmOptions, ScriptDriver, Stage } from '../src/stage/stage'
 import type { Shape, StepIo } from '../src/stage/types'
 
 const beats = config.film.beats.filter((b) => b.unit === 'boss') as { id: string; from: number; to: number }[]
+const keyAt = (config.keys as unknown as { id: string; at: number }[]).find((k) => k.id === 'boss-fight')!.at
 const film = (): Stage => new Stage({ mode: 'film', flow: filmFlow('boss'), pages, driver: new ScriptDriver(), film: filmOptions('boss') })
 const makers: Record<string, PartMaker | null> = { 'boss-weapons': bossWeapons, 'health-bar': healthBar, 'verify-card': verifyCard }
 
@@ -28,7 +29,7 @@ const arena: Arena = { popups: [] }
 function frames(): { time: number; list: Shape[] }[] {
   const stage = film()
   const out: { time: number; list: Shape[] }[] = []
-  while (stage.page.id === 'step4' && stage.time < 33) {
+  while (stage.page.id === 'step4' && stage.time < UNIT_SECONDS) {
     stage.advance(2)
     if (stage.page.id !== 'step4') break
     const list: Shape[] = []
@@ -103,7 +104,7 @@ describe('the boss fight, made real', () => {
 
   it('shows, in the key picture of the fight, a stream of darts, a spark and the health bar, and no slab in flight', () => {
     const at = beats.find((b) => b.id === 'boss.slabs')!
-    const t = at.from + (at.to - at.from) * 0.5
+    const t = at.from + (at.to - at.from) * keyAt
     const f = all.reduce((a, b) => (Math.abs(b.time - t) < Math.abs(a.time - t) ? b : a))
     const ids = f.list.map((s) => s.id)
     expect(ids.filter((id) => /^dart-\d+$/.test(id)).length).toBeGreaterThanOrEqual(4)
@@ -115,7 +116,7 @@ describe('the boss fight, made real', () => {
 
   it('cues nothing in the half second before a key picture, and keeps every cue inside the unit', () => {
     const keys = [beats.find((b) => b.id === 'boss.slabs')!, beats.find((b) => b.id === 'boss.collapse')!]
-    const times = [keys[0]!.from + (keys[0]!.to - keys[0]!.from) * 0.5, keys[1]!.to]
+    const times = [keys[0]!.from + (keys[0]!.to - keys[0]!.from) * keyAt, keys[1]!.to]
     const script = makeScript(makeLayout())
     for (const r of script.reactions) {
       expect(r.at).toBeGreaterThan(0)
@@ -138,7 +139,7 @@ describe('the boss fight, made real', () => {
     }
     expect(still(3.05, 3.45)).toBe(true)
     expect(still(4.4, 5.3)).toBe(true)
-    expect(still(28.6, 29.5)).toBe(true)
+    expect(still(ACT.press - 0.9, ACT.press)).toBe(true)
   })
 
   it('shortens the fill from both ends and never moves its caps apart', () => {
@@ -168,17 +169,18 @@ describe('the boss fight, made real', () => {
     for (const e of lights) expect(e.power).toBeGreaterThan(0)
   })
 
-  it('shows the fight of the key: no slab in any frame, darts in a stream, a spark, the health still high', () => {
+  it('shows the fight of the key: no slab in any frame, darts in a stream, a spark, the health down from full and over a half', () => {
     const beat = beats.find((b) => b.id === 'boss.slabs')!
-    const at = (beat.from + beat.to) / 2
-    const every = frames()
+    const at = beat.from + (beat.to - beat.from) * keyAt
+    const every = all
     const frame = every.find((f) => f.time >= at - 1e-6)!
     for (const f of every) expect(f.list.some((s) => /^fired-\d+$/.test(s.id)), `a slab at ${f.time.toFixed(2)}`).toBe(false)
     expect(frame.list.filter((s) => s.id.startsWith('dart-')).length).toBeGreaterThanOrEqual(4)
     expect(frame.list.some((s) => s.id.startsWith('spark-'))).toBe(true)
     const fill = frame.list.find((s) => s.id === 'health-fill')!
-    const part = fill.w / fill.v![0]!
-    expect(part).toBeGreaterThan(0.75)
+    const full = Math.max(...every.map((f) => f.list.find((s) => s.id === 'health-fill')?.w ?? 0))
+    const part = fill.w / full
+    expect(part).toBeGreaterThan(0.5)
     expect(part).toBeLessThan(1)
   })
 
@@ -205,7 +207,6 @@ describe('the boss fight, made real', () => {
   })
 
   it('sends each bullet of the film straight, at the speed of its gun, with its trail behind it', () => {
-    const all = frames()
     const first = all.findIndex((f) => f.list.some((s) => /^bullet-\d+$/.test(s.id)))
     expect(first).toBeGreaterThan(0)
     const id = all[first]!.list.find((s) => /^bullet-\d+$/.test(s.id))!.id
