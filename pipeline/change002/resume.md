@@ -180,7 +180,7 @@ Red by this stage (MEASURED, 18 tests; the reason is STATED from reading each te
 
 ## The 31 red tests, one table (for pinning at the merge)
 
-MEASURED from the run of `npm test` at 00:30Z to 00:34Z on the tree of 5e171b29 with the config patch (unit 37.5 s). "Reads now" is what the failing line received; "asks" is what it expected. Causes: OLD is red at a5508ada before this work; UNIT is red only by the unit's growth of 5.5 s; SHIFT is the stage's 1.5 s later bite and the 5.5 s hold; LIVE is the one hold on the live site. The step 1 helper's cut of 2.1 s (eca20421) will move every film second and frame below again; the numbers hold for this tree only.
+MEASURED from the run of `npm test` at 00:30Z to 00:34Z on the tree of 5e171b29 with the config patch (unit 37.5 s). "Reads now" is what the failing line received; "asks" is what it expected. Causes: OLD is red at a5508ada before this work; UNIT is red only by the unit's growth of 5.5 s; SHIFT is the stage's 1.5 s later bite and the 5.5 s hold; LIVE is the one hold on the live site. The step 1 helper's cut of 2.1 s (eca20421) will move every film second and frame below again; the numbers hold for this tree only. The columns "Reads now" and "Asks" are MEASURED from the run's log; the column "Cause" and the words in brackets are STATED from reading each test, and the seconds in brackets were measured earlier this night on the same film times, not again in this run.
 
 | # | File | Test | Cause | Reads now | Asks |
 |---|------|------|-------|-----------|------|
