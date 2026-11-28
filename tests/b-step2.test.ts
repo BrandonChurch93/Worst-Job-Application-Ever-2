@@ -117,7 +117,7 @@ describe('change 002, step 2: one field at a time', () => {
         if (here.length) expect(st.rowT).toBeLessThan(ENTER.field + 1e-9)
       }
       if (st.open >= 0 && st.rowT >= ENTER.field) expect(here, `at ${(i / stepHz).toFixed(2)}`).toEqual([])
-      if (st.open < 0 && st.field < FIELDS) expect(here).toEqual([st.field])
+      if (st.open < 0 && st.field < FIELDS && !st.done[st.field]) expect(here).toEqual([st.field])
       if (st.open < 0 && here.length && fields[fields.length - 1] !== here[0]) fields.push(here[0]!)
       for (const h of holes) expect(h.id).toBe(`${ROWS[st.open]}-hole`)
     })

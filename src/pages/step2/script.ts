@@ -85,8 +85,8 @@ const RISE = { heave: 18.45, heaved: 2.35, there: 19.6, flop: 19.73, life: 0.6, 
 const CRANKED = { hand: 1.05, cower: 16.2, wait: 0.9, flat: 17.1, lie: 0.5 }
 // The film's clock against the script's. The script's times are those of its acting; the film gives each machine the time to come out of the page, and the crank the time of the narrator's line. Each entry: from this time of the script to that one (the same time twice is a wait), the film takes this much longer.
 const LONGER: [number, number, number][] = [
-  [T.phone + 0.26, T.phone + 0.26, 0.43],
-  [PULL.leave - 0.01, PULL.leave - 0.01, 0.39],
+  [T.phone + 0.26, T.phone + 0.26, 104 / 240],
+  [PULL.leave - 0.01, PULL.leave - 0.01, 0.82 - 104 / 240],
   [TEMPER.stamp - 0.02, TEMPER.stamp - 0.02, 0.1],
   [T.volume + 0.2, T.volume + 0.2, 0.45],
   [T.crank, T.runaway + 0.01, CRANKED.hand],

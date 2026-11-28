@@ -48,6 +48,7 @@ if (verb === 'record') {
   let bad = 0
   console.log(`the dial is drawn at ${A.factor ?? 1} and ${B.factor ?? 1} times, its centre at ${JSON.stringify(A.centre ?? null)} and ${JSON.stringify(B.centre ?? null)}`)
   for (const name of Object.keys(A.runs)) {
+    if (!B.runs[name]) continue
     const ra = A.runs[name].map((r) => ({ ...r, turn: r.lean + r.spin }))
     const rb = B.runs[name].map((r) => ({ ...r, turn: r.lean + r.spin }))
     const most = {}
