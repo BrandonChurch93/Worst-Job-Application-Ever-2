@@ -6,6 +6,7 @@ import { UNIT, restLook, type BodyModel } from '../contract'
 import { makeBody } from '../model/body'
 import { look as picture } from '../../post/look'
 import { STAND, tilt, type StandPose } from './rig'
+import { CAMERA } from '../../boss/tune'
 
 const ALONG = 22
 const ROUND = 10
@@ -19,6 +20,7 @@ export interface Stand {
   // A thin warm rim on the legs, the arms and the gloves, 0 to 1: the light of embers on black rubber over burnt ground. The white body has none.
   rim(k: number): void
   back(k: number, light: number): void
+  cap(k: number): void
   // The live site's level: at `low` the long shadow is thrown by fewer pieces.
   setLevel(level: 'low' | 'medium' | 'high' | null): void
   // What it is drawn with: draw calls and triangles, for the report.
@@ -208,6 +210,29 @@ export function makeStand(): Stand {
       if (on && inst.isInstancedMesh) (r.twin as THREE.InstancedMesh).count = inst.count
     }
   }
+  const capK = { value: 0 }
+  const f = CAMERA.power.face
+  body.root.traverse((o) => {
+    const m = (o as THREE.Mesh).material as THREE.MeshPhysicalMaterial | undefined
+    if (!m || !m.isMeshPhysicalMaterial || m.userData.standCap) return
+    m.userData.standCap = true
+    const law = m.onBeforeCompile
+    const key = m.customProgramCacheKey
+    m.onBeforeCompile = (shader, renderer) => {
+      law.call(m, shader, renderer)
+      shader.uniforms.uStandCap = capK
+      shader.fragmentShader = 'uniform float uStandCap;\n' + shader.fragmentShader.replace('#include <opaque_fragment>', `if ( uStandCap > 0.0 ) {
+	float standMost = max( outgoingLight.r, max( outgoingLight.g, outgoingLight.b ) );
+	float standOver = max( standMost - ${f.knee.toFixed(3)}, 0.0 );
+	float standTo = ${f.knee.toFixed(3)} + standOver * ${f.room.toFixed(3)} / ( standOver + ${f.room.toFixed(3)} );
+	outgoingLight *= mix( 1.0, standTo / max( standMost, 1e-4 ), uStandCap * step( ${f.knee.toFixed(3)}, standMost ) );
+}
+#include <opaque_fragment>`)
+    }
+    m.customProgramCacheKey = () => key.call(m) + '-stand'
+    m.needsUpdate = true
+  })
+  const cap = (k: number): void => { capK.value = Math.min(1, Math.max(0, k)) }
   const backMat = backStuff()
   const backs: THREE.Mesh[] = []
   body.root.traverse((o) => {
@@ -384,6 +409,7 @@ export function makeStand(): Stand {
     apply,
     rim,
     back,
+    cap,
     setLevel(level: 'low' | 'medium' | 'high' | null): void {
       few = level === 'low'
     },

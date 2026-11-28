@@ -304,7 +304,7 @@ export const SOLID = {
 export const CAMERA = {
   on: true,
   powerUp: false,
-  power: { down: 0.5, ramp: 0.2, low: 0.5, push: 0.04, dive: [1.2, 2] as const, swing: 1.5, body: [95, 230] as const, key: { at: [80, 10, 52], az: -128, el: 0.3, tall: 375, fov: 46 } },
+  power: { down: 0.5, ramp: 0.2, low: 0.5, push: 0.04, dive: [1.2, 2] as const, swing: 1.5, body: [95, 230] as const, face: { knee: 0.5, room: 0.62 }, key: { at: [80, 10, 52], az: -128, el: 0.3, tall: 375, fov: 46 } },
   upright: 0.75,
   lowEl: [30, 80] as const,
   down: [0, 0.95] as const,

@@ -257,3 +257,23 @@ From above, MEASURED `compare -metric AE`: 48.0 s against 179236a1: 0. 32.0 s ag
 Where the 192 px of 48.0 s rendered alone against 48.0 s rendered after 42.0 s lie: one box of 100x22 at 220,463 on 960x540, on the floor beside the standing arrow's left foot and hands: soot specks and one grey chip. `src/arena/finish.ts` (the arena's, not mine) paints the scorch "a few rows a frame, while the arrow charges" and starts "once it has lain still from one call to the next", so what is painted by a given frame depends on the calls before it. That it is the cause is read from the code, not proven by a run.
 
 Pictures: `proof/camera/rise3-on-25.0-with-caption.jpg`, `rise3-on-25.7.jpg`, `rise3-on-26.2.jpg`, `rise3-finish-42.0-before-now-after.jpg`.
+
+## Eighth pass (point C of 11:46Z: the white face in the facing view)
+
+What reaches the arrow's face at 25.7 s in the facing view, read from the code of this branch with e787a97e of `agent/b-boss-fast` laid over it in the working tree only (not committed, not pushed):
+
+- the key: `src/post/look.ts:5`, colour (1, 0.975, 0.945), intensity 5.47, from (-0.65, 0.6, 0.36); and the dome (fill), `look.ts:20`, same colour, intensity 0.2; the studio's reflection in the clear coat (`look.ts:42`).
+- my face light: `src/boss/finish/index.ts:16` and `:60`, colour (1, 0.975, 0.945), power 0.8 x rise x (1 - 0.6 x aura) = 0.32 at full gold, reach 160, 17 px up the page and 73 px over the feet.
+- my light of the flames: `src/boss/finish/fx.ts:561`, gold (1, 0.66, 0.2), power 1.3 at full gold times a flicker of 0.85 to 1 (and 2.5 more at the burst), reach 620, 44 px over the floor.
+- the boss helper's: `src/pages/step4/real/rise.ts:52` two lights under the fists, (1, 0.74, 0.25), power 2 x level, reach 85; `:53` one before the feet, power 0.25 x level, reach 100; `:57` and `:60` two lamps for the pane and the boss's near side, power 1.3 x level, reach 420, 140 px up.
+- the pool: `src/post/look.ts:30` holds 6 lamps; `src/post/emitters.ts:41` joins the two nearest and weakest of a frame's emitters until 6 are left.
+- the body's own material, `src/cursor/model/material.ts:370` and `:338` (the cursor model's, not mine): on the plain enamel 85 percent of the lamps' diffuse light is turned to its brightness in the key's warm white, and then lifted by 1.3. So a gold lamp does not gild the face, it whitens it. Its glow terms (`:113` on) are for burnt and sealed states and are 0 here (STATED from reading).
+- drawn over it, added: the flames (`fx.ts:53`).
+
+The mend, in my files: the standing arrow's body material gets a soft cap on its outgoing light, only in the facing view of the power-up (`stand.cap(low)`, `src/cursor/stand/figure.ts`; `CAMERA.power.face { knee: 0.5, room: 0.62 }`). Below the knee nothing changes; above it the brightest channel is bent toward knee + room. At 0 the term is skipped, so every other view is as it was. No number of the boss helper is touched.
+
+MEASURED at 25.7 s, 1920x1080, the option on, with e787a97e laid over: share of the box 691,269 to 845,632 (my box round the face; it holds some ground too, so it is not the boss helper's box) with all three channels at 253 or more: 30.4 percent before, 0.0 after (any channel: 36.6 and 0.2). The face's middle (30x30 at 740,420): (255, 254, 254) before, (240, 236, 227) after. Fists, mean of 40x40 at 540,400 and 895,405: (92, 80, 48) and (81, 71, 43) before, (92, 80, 48) and (81, 70, 43) after. At 26.2 s without e787a97e: 8.9 percent before, 0.0 after.
+
+From above, MEASURED `compare -metric AE` on this branch's own tree: 48.0 s against 179236a1: 0; 42.0 s against 07e3edf4: 0; 32.0 s against the tree without the backdrop: 114 in the whole frame, 0 with the smoke box painted over.
+
+No test of the cap is written: it is a term of a shader and is shown by the frames. Picture: `proof/camera/rise4-face-25.7-before-after.jpg`.

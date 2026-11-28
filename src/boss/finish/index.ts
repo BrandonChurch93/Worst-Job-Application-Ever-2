@@ -56,6 +56,7 @@ export function makeFinish(): Finish {
         const lens = s.fx.lens
         const behind = lens ? Math.min(1, Math.max(0, (lens.eye[1] - (540 - s.pose.y)) / 60)) * Math.min(1, lens.low * 2) : 0
         stand.back(behind, Math.min(1, (s.fx.ball ? s.fx.ball.glow : 0) + open))
+        stand.cap(s.fx.sky ? s.fx.sky.low : 0)
         if (light && up > 0.02) light({ x: s.pose.x, y: s.pose.y + FACE.y * big, z: s.pose.ground + FACE.z * big, colour: FACE.colour, power: FACE.power * up * (1 - 0.8 * open) * (1 - 0.6 * Math.min(1, s.fx.aura)), reach: FACE.reach })
       }
       return s
