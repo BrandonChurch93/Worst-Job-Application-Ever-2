@@ -10,7 +10,7 @@ const PER = Math.round(stepHz / 60)
 const WHOLE = Math.round(config.film.units.reduce((n, u) => n + u.seconds, 0) * 60)
 // How far the turn given to the room's lights may stand off the turn of the stand, as the largest difference of one number of the two: the sums are exact but for rounding.
 const OFF = 1e-12
-interface Row { i: number; turn: number; rides: boolean; over: boolean; turning: boolean; off: number; plain: boolean }
+interface Row { i: number; turn: number; rides: boolean; over: boolean; turning: boolean; off: number; plain: boolean; held: number; shown: number }
 
 // The film is run whole. On every frame the cursor's view is put where the shell puts it (a stand that turns against the page) and given the frame's cursor; what is read back is the turn the room's two lights get before they light the body.
 // This holds the sums only: the tone of the face on the picture is measured on rendered frames and written in pipeline/change002/shell.md, section 11z.
@@ -31,9 +31,10 @@ const run = (): Row[] => {
     ctx.scroll = f.scroll
     ctx.turning = s.turning
     view.apply(f.cursor, ctx)
-    const lit = (view as unknown as { body: { lit: THREE.Matrix3 } }).body.lit
+    const body = (view as unknown as { body: { lit: THREE.Matrix3; deform: { gulp: number } } }).body
+    const lit = body.lit
     room.setFromMatrix4(stand.matrix)
-    rows.push({ i, turn: f.turn, rides: f.cursor.rides === true, over: f.cursor.over === true, turning: s.turning, off: Math.max(...lit.elements.map((e, k) => Math.abs(e - room.elements[k]!))), plain: lit.equals(new THREE.Matrix3()) })
+    rows.push({ i, turn: f.turn, rides: f.cursor.rides === true, over: f.cursor.over === true, turning: s.turning, off: Math.max(...lit.elements.map((e, k) => Math.abs(e - room.elements[k]!))), plain: lit.equals(new THREE.Matrix3()), held: f.cursor.gulp, shown: body.deform.gulp })
   }
   view.dispose()
   return rows
@@ -64,5 +65,14 @@ describe("the light on the film's lifted arrow while a page comes in", () => {
     const back = rows.filter((r) => r.turning && !r.rides && !r.over && r.turn < 0)
     expect(first(back).length).toBe(5)
     expect(back.every((r) => r.plain)).toBe(true)
+  })
+
+  it('shows no swallow on an arrow held over a page that comes in, and the swallow the stage holds on every other frame', () => {
+    const over = rows.filter((r) => r.over)
+    expect(over.filter((r) => r.held >= 0).length).toBeGreaterThan(0)
+    expect(over.filter((r) => r.shown !== -1).map((r) => r.i + 1)).toEqual([])
+    const rest = rows.filter((r) => !r.over)
+    expect(rest.filter((r) => r.held >= 0).length).toBeGreaterThan(0)
+    expect(rest.filter((r) => r.shown !== (r.held < 0 ? -1 : Math.min(1, Math.max(0, r.held)))).map((r) => r.i + 1)).toEqual([])
   })
 })
