@@ -153,6 +153,8 @@ function chunkGeo(): THREE.BufferGeometry {
   return g
 }
 
+// Scraps in the finishing blast: seconds each is seen, page px a second down the beam, page px to the side.
+const SCRAP = { life: 0.9, speed: 620, wide: 210 }
 const COUNTS = { low: { chunks: 10, puffs: 40, lamps: 2 }, medium: { chunks: 18, puffs: 90, lamps: 5 }, high: { chunks: 26, puffs: 150, lamps: 8 }, film: { chunks: 26, puffs: 150, lamps: 10 } }
 
 export function makeFx(o: LookOptions, level0: Level): Fx {
@@ -184,6 +186,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
   const shards = new Bits(24, new THREE.TetrahedronGeometry(1, 0), kit.glassEdge, true)
   const ballMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.35, 0.36, 0.05) })
   const balls = new Bits(96, new THREE.IcosahedronGeometry(1, 2), ballMat, true)
+  const scraps = new Bits(96, new THREE.BoxGeometry(1, 1, 0.2), kit.steel, true)
   balls.mesh.receiveShadow = false
 
   // The ground he breaks: the socket and the cracks where he lands.
@@ -213,7 +216,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
     ground.add(m)
     return m
   })
-  object.add(ground, chunks.mesh, shards.mesh, balls.mesh, shade.mesh, smoke.mesh, marks.mesh, glow.mesh, rings.mesh, bars.mesh)
+  object.add(ground, chunks.mesh, shards.mesh, balls.mesh, scraps.mesh, shade.mesh, smoke.mesh, marks.mesh, glow.mesh, rings.mesh, bars.mesh)
 
   const rnd = (i: number, j: number): number => hash01(i, j, o.seed)
 
@@ -282,7 +285,7 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       lamps++
       light({ x: x + 960, y: 540 - y, z, colour, power, reach })
     }
-    smoke.begin(); marks.begin(); glow.begin(); rings.begin(); bars.begin(); chunks.begin(); shards.begin(); balls.begin()
+    smoke.begin(); marks.begin(); glow.begin(); rings.begin(); bars.begin(); chunks.begin(); shards.begin(); balls.begin(); scraps.begin()
 
     // The forming.
     const tf = f * TIMES.form
@@ -559,6 +562,19 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
       GONE.guns.forEach((r, i) => pop(r[0], GUN.x, (i === 0 ? 1 : -1) * GUN.y, 3 + i, 80))
       GONE.legs.forEach((r, i) => pop(r[0], HIPS[i]![0], HIPS[i]![1], 5 + i, 100))
       pop(GONE.hull[0], 0, 0, 9, 150)
+      // Scraps of plate torn off all through the blast: each leaves to its own side of the beam and is carried down it.
+      const count = n.chunks * 3
+      const [ux, uy] = p.blow
+      for (let i = 0; i < count; i++) {
+        const a = age - (0.03 + 0.85 * (i / count)) * TIMES.gone
+        if (a < 0 || a >= SCRAP.life) continue
+        const u = a / SCRAP.life
+        const side = (rnd(i, 81) < 0.5 ? -1 : 1) * (0.3 + 0.9 * rnd(i, 82))
+        const fwd = SCRAP.speed * (0.5 + 0.9 * rnd(i, 83)) * a * (0.4 + 0.6 * u)
+        const out = (34 + SCRAP.wide * Math.pow(u, 0.7)) * side
+        const size = 6 + 18 * rnd(i, 84) * rnd(i, 85)
+        scraps.add(cx3 + ux * (fwd - 40 * rnd(i, 86)) - uy * out, cy3 + uy * (fwd - 40 * rnd(i, 86)) + ux * out, 10 + 90 * Math.sin(Math.PI * Math.min(1, u * 1.2)), size * (1 + rnd(i, 87)), size, size, rnd(i, 88) * 6.28 + a * 9, rnd(i, 89) * 6.28 + a * 7, rnd(i, 90) * 6.28)
+      }
     }
     if (p.shown && p.gone >= GONE.button[1]) {
       const rise = smooth(lin(p.gone, GONE.button[1], 1))
@@ -662,12 +678,12 @@ export function makeFx(o: LookOptions, level0: Level): Fx {
         lamp(x, y, 30, [1, 0.3, 0.15], 0.4 * k, 140)
       }
     }
-    smoke.end(); marks.end(); glow.end(); rings.end(); bars.end(); chunks.end(); shards.end(); balls.end()
+    smoke.end(); marks.end(); glow.end(); rings.end(); bars.end(); chunks.end(); shards.end(); balls.end(); scraps.end()
   }
 
   const dispose = (): void => {
     for (const s of [smoke, marks, glow, rings, bars]) s.dispose()
-    for (const s of [chunks, shards, balls]) s.dispose()
+    for (const s of [chunks, shards, balls, scraps]) s.dispose()
     ballMat.dispose()
     tex.blob.dispose(); tex.puff.dispose(); tex.ring.dispose(); tex.bar.dispose()
     ground.traverse((x) => { if ((x as THREE.Mesh).isMesh) (x as THREE.Mesh).geometry.dispose() })
