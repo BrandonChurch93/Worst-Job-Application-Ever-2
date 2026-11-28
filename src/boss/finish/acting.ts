@@ -112,7 +112,8 @@ export const LAST = {
   up: 0.42, // s after the fist mark at which the fist is high
   back: 0.3, // s before the press at which the fist draws back a last time
   blow: 0.14, // s the fist takes to come down
-  sag: 0.35, // s the body takes to sink over the fist after the blow
+  follow: 0.1, // s after the fist lands in which the body is thrown down after it
+  sag: 0.35, // s the body takes to sink over the fist after that
   // What a helper who sets the marks should leave between them: kneel to fist, fist to press.
   gaps: [1.3, 0.9] as const
 } as const
@@ -317,11 +318,15 @@ export function finishState(i: FinishInput): FinishState {
         const high: StandPose = { ...POSES.fistUp, hands: [POSES.fistUp.hands[0], [34, 101, 12]], stretch: 1.1, lean: 0.17, hip: [2, 19] }
         q = { ...q, tremble: 0.2 * smooth(span(f, LAST.up, LAST.up + 0.3)) * (r < -LAST.blow ? 1 : 0) }
         q = mixPose(q, high, smooth(span(r, -LAST.back, -LAST.blow)))
-        q = mixPose(q, down, inCubic(span(r, -LAST.blow, 0)))
+        // The fist comes down first and fast. The body is thrown after it: it starts a frame before the fist lands and takes `follow` to come down.
+        const fist = mixPose(q, down, inCubic(span(r, -LAST.blow, 0)))
+        q = mixPose(q, down, smooth(span(r, -1 / 60, LAST.follow)))
+        q.hands = [q.hands[0], fist.hands[1]]
+        q.grip = fist.grip
         if (r >= 0) {
           const sag: StandPose = { ...down, hip: [11, 8], lean: -0.62, stretch: 0.86, hands: [[2, 2, 6], fistAt] }
-          q = mixPose(q, sag, outBack(span(r, 0, LAST.sag), 2.4))
-          q = breathe(q, t, 2 * smooth(span(r, LAST.sag, LAST.sag + 0.5)))
+          q = mixPose(q, sag, outBack(span(r, LAST.follow, LAST.follow + LAST.sag), 2.4))
+          q = breathe(q, t, 2 * smooth(span(r, LAST.follow + LAST.sag, LAST.follow + LAST.sag + 0.5)))
           q.hands = [q.hands[0], fistAt]
           press = outCubic(span(r, 0, 0.05))
           fx.dust.push({ x: fistX(btn, feet.x, sc), y: btn.y, age: r, size: 46 * sc })
