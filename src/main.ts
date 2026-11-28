@@ -201,7 +201,7 @@ function play(first: PlayMode): void {
   const driver = (): Driver => (botName ? new BotDriver(botName as BotName, Number(params.get('seed') ?? 1)) : mouse)
   const asked = Number(params.get('step') ?? 0)
   let base = asked >= 1 && asked <= 5 ? asked : 0
-  const makeStage = () => new Stage({ mode: 'live', flow: liveFlow().slice(base), pages, driver: driver() })
+  const makeStage = () => new Stage({ mode: 'live', flow: liveFlow().slice(base), pages, driver: driver(), waits: (page) => sound?.owed(page) ?? false })
   let stage = makeStage()
   let sent = 0
   let gags = 0

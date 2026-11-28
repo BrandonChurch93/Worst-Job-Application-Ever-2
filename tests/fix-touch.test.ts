@@ -43,10 +43,11 @@ describe('the page of a touch-only device, built from the materials of the site'
     expect(sheet.match(/font-size:/g)?.length).toBe(sizes.length + fixed.length)
   })
   it('writes no word of its own: what it shows comes from the copy by its key', () => {
-    expect([...code.matchAll(/word\('(\w+)'\)/g)].map((m) => m[1])).toEqual(['title', 'touchTitle', 'touchBody', 'touchLink'])
+    expect([...code.matchAll(/word\('(\w+)'\)/g)].map((m) => m[1])).toEqual(['title', 'touchTitle', 'touchBody', 'watchFilm'])
     const quoted = [...code.matchAll(/'([^'\n]*)'/g)].map((m) => m[1]!).filter((s) => / /.test(s))
     expect(quoted).toEqual([])
-    expect(code).toMatch(/if \(address\) \{/)
+    expect(code).not.toMatch(/portfolio/i)
+    expect(code).toMatch(/link\.href = FILM_PAGE/)
   })
   it('keeps the conventions: no long dash and no exclamation point in what it says', () => {
     for (const text of [sheet, code, first]) {

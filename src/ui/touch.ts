@@ -1,9 +1,9 @@
-import { config } from '../config'
 import { draw } from './glyphs'
 import css from './touch.module.css'
 import { word } from './words'
 
-export const portfolioAddress = (): string => config.links.portfolioWork.trim()
+// The film's review page, where the film plays on a phone too. The one way on from this notice (change note 004, item 13); no other address is linked.
+export const FILM_PAGE = 'https://www.perplexity.ai/computer/a/the-worst-job-application-ever-11C.YCwbSEaDnRs_ar70Dw'
 
 // The message takes the focus, so that a screen reader starts at it.
 export function mountTouchMessage(host: HTMLElement): { destroy(): void } {
@@ -27,14 +27,11 @@ export function mountTouchMessage(host: HTMLElement): { destroy(): void } {
   words.className = css.words!
   draw(words, word('touchBody'), 'inter-400', { wrap: true })
   body.append(title, words)
-  const address = portfolioAddress()
-  if (address) {
-    const link = document.createElement('a')
-    link.className = css.link!
-    link.href = address
-    draw(link, word('touchLink'), 'inter-600', { wrap: true })
-    body.append(link)
-  }
+  const link = document.createElement('a')
+  link.className = css.link!
+  link.href = FILM_PAGE
+  draw(link, word('watchFilm'), 'inter-600', { wrap: true })
+  body.append(link)
   page.append(head, body)
   page.tabIndex = -1
   host.append(page)

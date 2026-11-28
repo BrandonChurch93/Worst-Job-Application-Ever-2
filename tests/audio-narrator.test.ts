@@ -51,7 +51,7 @@ describe('the live narrator', () => {
   it('does not speak a live line into a line of the beat that is about to start', () => {
     const n = make()
     n.beat(0, 'boss.verify', [{ id: 'line.boss.verify.0', offset: 3, seconds: 2 }])
-    expect(n.live(0.5, 'x', 'hit', 1)).toBeNull()
+    expect(n.live(3 - Math.min(gap, 2.5) - 0.5, 'x', 'hit', 1)).toBeNull()
     expect(n.live(5 + gap, 'y', 'hit', 1)).not.toBeNull()
   })
 })

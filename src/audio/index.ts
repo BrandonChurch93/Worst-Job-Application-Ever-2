@@ -7,7 +7,7 @@ import { narration } from '../copy'
 import { openingFrames, openingTimes } from '../film/opening'
 import { wallSeconds } from '../ui/clock'
 import { CAPTION, type Caption, type CaptionSource } from '../ui/said'
-import { allCues, alsoStarts, cueOfEvent, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, unitPage } from './cues'
+import { allCues, alsoStarts, cueOfEvent, eventCues, loopCues, markStandsFor, openingEvents, pageAfter, pickVariant, quietPage, quietPageCues, spoken, spokenKeysFor, stopEvents, unitPage, waitsFor } from './cues'
 import { dehum } from './dsp'
 import { DUCK, LIVE, TONE, db } from './levels'
 import { duckSpans, LiveDesk, Narrator, type Booking } from './narrator'
@@ -33,6 +33,8 @@ export interface SoundApi {
   page(id: string, caption?: number): void
   // The phrases of the lines that are booked or being spoken, each with its words and its start and end on the sound's clock, and that clock's time now.
   said(): { now: number; lines: SaidLine[] }
+  // True while the line that page's own way on waits for is booked and has not ended: spoken, or with the sound off the span of its caption.
+  owed(page: string): boolean
   opening(from: number, to: number): void
   start(): void
   stop(): void
@@ -737,6 +739,13 @@ export function makeSound(o: { base: string; index?: SoundIndex; caption?: (read
         }
       }
       return { now, lines: out.sort((a, b) => a.start - b.start) }
+    },
+    owed(page) {
+      const key = waitsFor[page]
+      if (key === undefined || state !== 'ready' || !backend) return false
+      const now = backend.now()
+      for (const [b, l] of speaking) if (l.key === key && b.end > now) return true
+      return false
     },
     opening(from, to) {
       lead = to < openingFrames() / config.film.fps

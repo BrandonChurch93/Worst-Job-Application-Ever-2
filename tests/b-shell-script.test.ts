@@ -313,7 +313,7 @@ describe('change note 003: no line talks over another', () => {
       s.event(ev('page-turn', 'marketing'), 'live')
       ctx.currentTime = 4.5
       s.event(ev('candidate-sensed', 'step1'), 'live')
-      ctx.currentTime = 6
+      ctx.currentTime = Math.min(6, W + L + gap - 0.05)
       s.event(ev(end, 'step1'), 'live')
       expect(back(s), end).toEqual([id('step1.firstName.0')])
       ctx.currentTime = L + gap + 0.1

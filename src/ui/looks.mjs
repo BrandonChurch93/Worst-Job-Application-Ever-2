@@ -305,7 +305,7 @@ if (wants('touch')) {
     await page.screenshot({ path: path.join(out, `looks-touch-${name}.png`) })
     check(`touch, ${name}: the message stands in place of the site`, text.includes("We're sorry.") && (await page.evaluate(() => document.getElementById('stage').hidden)), text.replace(/\n+/g, ' / '))
     check(`touch, ${name}: no page module, no asset and no sound is asked for`, k.pages.length === 0 && k.sounds.length === 0 && k.assets.length === 0 && k.foreign.length === 0, `${k.paths.length} requests: ${k.pages.length} page modules, ${k.assets.length} assets, ${k.sounds.length} sounds, ${k.foreign.length} from elsewhere`)
-    check(`touch, ${name}: with no address in links.portfolioWork no link is drawn`, links.length === 0, `links: ${JSON.stringify(links)}`)
+    check(`touch, ${name}: one link, to the film's review page`, links.length === 1 && /^https:\/\/www\.perplexity\.ai\/computer\/a\/the-worst-job-application-ever-11C\./.test(links[0]), `links: ${JSON.stringify(links)}`)
     check(`touch, ${name}: no error on the page`, page.errors.length === 0, page.errors.slice(0, 3).join(' | '))
     await page.context().close()
   }

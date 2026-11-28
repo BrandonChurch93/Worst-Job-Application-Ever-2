@@ -225,6 +225,9 @@ export const spoken: Record<string, SpokenRow> = {
   'decision.reset.0': { event: 'page-turn', until: [], keeps: true }
 }
 
+// The line a page's own way on waits for on the live site: its button cannot be pressed and does not look ready until the line has ended. The skip link does not wait.
+export const waitsFor: Record<string, string> = { step2: 'step2.crank.1' }
+
 // The event of the stage that also stands for a mark of the narrator: its cue is played only when the narrator has not booked the line that gives the mark.
 export const markStandsFor: Record<string, string> = { 'boss-music': 'music-in' }
 
