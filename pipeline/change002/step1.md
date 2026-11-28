@@ -192,3 +192,19 @@ One commit, subject starting `NEEDS:`. Files outside this unit in it: `config/sh
 - `content/narration.json` and `tools/assets/roughcut-plan.json`: the key `step1.lastName` removed (the tests of content, live audio and rough cut ask that the keys be the beats, exactly).
 - `tests/step1.test.ts`: `keys-shuffle` out of the list of events of the beats.
 - Left red for the Builder, because they pin the old steps: `tests/pack-site.test.ts` R4 and `tests/pack-frames.test.ts` "the key press".
+
+## The seconds this stage needs (measured 00:09 UTC on 5eef40a7, the film's script run step by step, unit seconds)
+
+- Name: the field stands from 0.00; the keyboard rises at 1.50; the Name is in hand from 2.30; turrets up 3.02; blasts land 5.52 to 9.35 (the one that hits the arrow 6.79); `field-done` 9.72; its last frame on the page 10.02 (0.3 s after).
+- Email: the stage is in hand from 9.73 and on the page from 10.23; the arrow taps the field at 11.22 and is back at the keys at 12.30; first key 14.66; Enter 16.92; slab shadows 17.40, 17.95, 18.50; slabs land 18.30, 18.85, 19.40; `field-done` 19.83; last frame on the page 20.13. Between 12.30 and 14.66 the arrow only waits (2.36 s left from the cut of Last name; read from the script's numbers, not from frames).
+- Resume (the resume helper's stage, as it is on this branch): in hand from 19.84, on the page from 20.34; `paper-slide` 20.44; tug 22.03; shredded 27.39; `strips-zip` 29.17; received 30.19; `page-turn` 31.50; the unit ends at 32.
+
+## Rulings of 00:06 UTC
+
+`step1.email` 10 to 20 stands until the merge. The edit of `content/narration.json` is a proposal only (the script helper's file wins at the merge) and is not touched again. The two red pack tests stay red; the visit is recorded again by the Builder. The cue `keys-shuffle`, the copy key `lastName.label` and `filmLastName` are left.
+
+## Checks on 5eef40a7 (00:08 to 00:14 UTC)
+
+- Whole `npm test`: 5 files failed, 174 passed, 13 skipped; 7 tests failed, 2175 passed, 33 skipped. Red: `tests/cut-of-build.test.ts` 2 (left red by the Builder's word, `cut/` is not committed); `tests/b-shell-fields.test.ts` 2 and `tests/b-shell-chrome.test.ts` 1 (the shell's, they ask that no page reports `fields()` and step 1 now does); `tests/pack-site.test.ts` R4 and `tests/pack-frames.test.ts` "the key press" (pin the Last name step, left red by the Builder's word).
+- `npm run bots`: "keen reached every one of the 36 gags on every seed", "bots: all clear", exit 0.
+- `npm run determinism`: "pass, 12 pictures at hd, tier draft, identical across two fresh loads and two orders", exit 0.
