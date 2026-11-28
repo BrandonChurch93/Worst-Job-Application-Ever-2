@@ -65,6 +65,8 @@ interface State {
   gold: number
   charge: number
   own: boolean
+  due: number
+  round: number
   fired: number
   lag: number
   shot: number
@@ -113,7 +115,7 @@ const BAR = { x: 604, right: 1320, label: 6 } as const
 const KEPT = ['health', 'submit', 'defeated', 'fight-type']
 const ofHeader = (id: string): boolean => id === 'header-title' || id === 'header-rule' || id.startsWith('progress-')
 
-const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, asked: false, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
+const fresh = (mode: Mode): State => ({ mode, time: 0, stage: 'verify', t: 0, ticked: -1, since: -1, selfTick: false, cracked: false, opened: false, fight: null, from: null, inSocket: false, pressed: -1, struck: -1, skipping: false, damaged: false, done: false, cue: 0, busy: 0, mad: -1, last: -9, cx: 700, cy: 820, away: 0, turned: -1, asked: false, alone: 0, drifted: 0, led: false, px: 0, py: 0, gold: -1, charge: -1, own: false, due: -1, round: -1, fired: -1, lag: 0, shot: 0, blown: false, gainFrom: 0, gainT: -1, fig: null, fin: { power: -1, arms: -1, charge: -1, thrust: -1, fire: -1, walk: -1, kneel: -1, fist: -1, walked: 0, pace: 0, x: 0, y: 0, tx: 0, ty: 0, held: false }, dash: 0, close: 0, end: null, burn: null, clock: -1, base: -1, fell: -1 })
 
 export function makePage(): PageLogic {
   const L = makeLayout()
@@ -211,7 +213,7 @@ export function makePage(): PageLogic {
   }
   const shotNow = (): Shot | null => {
     if (!LOOK1_ON || s.inSocket || s.clock < 0) return null
-    if (s.fin.arms >= 0) return finishShot(s.clock - LEAD, marksOf(s.mode === 'film', s.fin.arms, s.fin.thrust, s.fin.fire))
+    if (s.fin.arms >= 0) return finishShot(s.clock - LEAD, marksOf(s.mode === 'film', s.fin.arms, s.round >= 0 ? s.round : s.fin.thrust, s.fin.fire))
     if (!CAMERA.powerUp) return null
     const c = closer()
     const r = raising()
@@ -235,7 +237,7 @@ export function makePage(): PageLogic {
       shot: s.shot,
       walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
       button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
-      ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye } : {})
+      ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye, glare: low.glare } : {})
     }
   }
   const stands = (): boolean => {
@@ -663,10 +665,19 @@ export function makePage(): PageLogic {
               io.cursor.react('anticipate')
             }
           } else {
-            s.charge += dt
-            if (s.mode === 'film' ? u >= SHOUT.fire - FIRE.ahead : !s.own && !down && s.charge >= whole - FIRE.ahead) stamp('thrust')
-            if (!s.own && down) s.own = true
-            else if (s.own ? !down || s.charge >= whole + FINISH.late : s.charge >= whole) fire()
+            const kept = LOOK1_ON && CAMERA.on && s.mode !== 'film'
+            if (s.due < 0 || !s.own) s.charge += dt
+            if (s.mode === 'film' ? u >= SHOUT.fire - FIRE.ahead : !kept && !s.own && !down && s.charge >= whole - FIRE.ahead) stamp('thrust')
+            if (s.due >= 0) {
+              if (u >= s.due - FIRE.ahead && level(s.charge) > FINISH.small) stamp('thrust')
+              if (u >= s.due) fire()
+            } else if (!s.own && down) s.own = true
+            else if (!kept) {
+              if (s.own ? !down || s.charge >= whole + FINISH.late : s.charge >= whole) fire()
+            } else if (s.own ? !down || s.charge >= whole + FINISH.late : s.charge >= whole - CAMERA.roundLive) {
+              s.due = Math.max(u, SHOUT.arms + CAMERA.down[1] + CAMERA.stay) + CAMERA.roundLive
+              s.round = s.clock - LEAD + s.due - CAMERA.roundLive - u
+            }
           }
           if (s.fired < 0 && s.charge >= 0 && steps(s.charge) > had) {
             io.emit('finish-charge', io.cursor.x, io.cursor.y, false)

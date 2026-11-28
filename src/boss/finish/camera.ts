@@ -1,5 +1,5 @@
 import { config } from '../../config'
-import { feetFor } from '../../cursor/stand/rig'
+import { feetFor, STAND } from '../../cursor/stand/rig'
 
 export { feetFor }
 import { toWorld } from '../../stage/camera'
@@ -11,7 +11,7 @@ export interface Rig { at: V3; az: number; el: number; tall: number; fov: number
 export interface Key { at: readonly [number, number, number]; az: number; el: number; tall: number; fov: number }
 export interface Marks { arms: number; turn: number; fire: number; round: number }
 export type ViewName = 'above' | 'charge' | 'fire' | 'blast' | 'end'
-export interface Shot { pose: CameraPose; rig: Rig; low: number; tip: number; view: ViewName }
+export interface Shot { pose: CameraPose; rig: Rig; low: number; tip: number; view: ViewName; glare: number }
 
 const RAD = Math.PI / 180
 const clamp = (v: number): number => Math.min(1, Math.max(0, v))
@@ -48,45 +48,87 @@ export function poseOf(r: Rig, shake: readonly [number, number] = [0, 0]): Camer
   return pose
 }
 
-const shot = (rig: Rig, view: ViewName, shake: readonly [number, number] = [0, 0]): Shot => {
+const shot = (rig: Rig, view: ViewName, shake: readonly [number, number] = [0, 0], glare = 0): Shot => {
   const low = lowOf(rig)
-  return { pose: poseOf(rig, shake), rig, low, tip: CAMERA.upright * low, view }
+  return { pose: poseOf(rig, shake), rig, low, tip: CAMERA.upright * low, view, glare }
 }
 
 export const marksOf = (film: boolean, arms: number, thrust: number, fire: number): Marks => (film ? { arms, turn: arms + SHOUT.fire - SHOUT.arms - CAMERA.ahead, fire, round: CAMERA.round } : { arms, turn: thrust >= 0 ? thrust : fire, fire, round: CAMERA.roundLive })
 
-export const over = (time: number, m: Marks): boolean => m.arms < 0 || time <= m.arms + CAMERA.down[0] || (m.fire >= 0 && time >= m.fire + CAMERA.rise[1])
+export const LAST_LOW = CAMERA.rise[1] + CAMERA.turn
 
-const clear = (rig: Rig): Rig => {
-  const eye = poseOf(rig).eye
-  const short = toWorld(CAMERA.wall.x, 0, 0)[0] - eye[0]
-  const k = smooth((CAMERA.wall.top - eye[2]) / CAMERA.wall.soft)
-  if (short <= 0 || k <= 0) return rig
-  const reach = 2 * (poseOf({ ...rig, tall: rig.tall / 2 }).eye[0] - eye[0])
-  if (reach <= short) return rig
-  const near = 1 - (short * k) / reach
-  return { ...rig, fov: (2 * Math.atan(Math.tan((rig.fov * Math.PI) / 360) / near) * 180) / Math.PI }
+export const over = (time: number, m: Marks): boolean => m.arms < 0 || time <= m.arms + CAMERA.down[0] || (m.fire >= 0 && time >= m.fire + LAST_LOW)
+
+export const TOP: Rig = { at: [FEET[0] + CAMERA.top.at[0], FEET[1] + CAMERA.top.at[1], CAMERA.top.at[2]], az: CAMERA.top.az, el: 90, tall: CAMERA.top.tall, fov: ABOVE.fov }
+
+const flat = (az: number): [[number, number], [number, number]] => [[-Math.sin(az * RAD), Math.cos(az * RAD)], [-Math.cos(az * RAD), -Math.sin(az * RAD)]]
+const spot = (r: Rig): [number, number] => {
+  const [right, up] = flat(r.az)
+  const d = [FEET[0] - r.at[0], FEET[1] - r.at[1]]
+  return [(d[0]! * right[0] + d[1]! * right[1]) / r.tall, (d[0]! * up[0] + d[1]! * up[1]) / r.tall]
+}
+const SPOT = [spot(TOP), spot(ABOVE)] as const
+
+const HALF = 55
+export const sideOf = (r: Rig): number => {
+  const e = poseOf(r).eye
+  const a = STAND.rise + CAMERA.upright * lowOf(r)
+  const v: V3 = [e[0] - FEET[0], e[1] - FEET[1] - HALF * Math.cos(a), e[2] - HALF * Math.sin(a)]
+  return Math.asin((-v[1] * Math.sin(a) + v[2] * Math.cos(a)) / Math.hypot(v[0], v[1], v[2])) / RAD
 }
 
-export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; shake: [number, number] } {
+const orbit = (k: number): Rig => mixRig(keyAt(CAMERA.charge), keyAt(CAMERA.fire), k, soon(k, CAMERA.lead), k, late(k, CAMERA.lag))
+export const THIN = ((): [number, number] => {
+  let from = 1
+  let to = 0
+  for (let i = 0; i <= 4000; i++) {
+    if (Math.abs(sideOf(orbit(i / 4000))) >= CAMERA.thin) continue
+    from = Math.min(from, i / 4000)
+    to = Math.max(to, i / 4000)
+  }
+  return [from, to]
+})()
+
+export const whip = (u: number, round: number): { k: number; glare: number } => {
+  const step = 1 / 60 / round
+  const a = CAMERA.cross - (CAMERA.whip * step) / 2
+  const b = a + CAMERA.whip * step
+  const k = u <= 0 ? 0 : u >= 1 ? 1 : u < a ? THIN[0] * (u / a) ** 2 : u <= b ? lerp(THIN[0], THIN[1], (u - a) / (b - a)) : 1 - (1 - THIN[1]) * ((1 - u) / (1 - b)) ** 2
+  const g = CAMERA.glare
+  const glare = Math.min(ease(u, a - g[0] * step, a - g[1] * step), 1 - ease(u, b + g[2] * step, b + g[3] * step))
+  return { k, glare }
+}
+
+export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; shake: [number, number]; glare: number } {
   const t = time - m.arms
   const charge = keyAt(CAMERA.charge)
   const down = ease(t, CAMERA.down[0], CAMERA.down[1])
-  let rig = mixRig(ABOVE, { ...charge, tall: charge.tall * (1 - CAMERA.push * smooth(t / CAMERA.pushOver)) }, down)
+  let rig = mixRig(ABOVE, { ...charge, tall: charge.tall * (1 - CAMERA.push * smooth(t / CAMERA.pushOver)) }, down, soon(down, CAMERA.lead), late(down, CAMERA.lag))
   rig = { ...rig, az: lerp(ABOVE.az, charge.az, soon(down, CAMERA.swing)) }
   let view: ViewName = t <= CAMERA.down[0] ? 'above' : 'charge'
   let shake: [number, number] = [0, 0]
+  let glare = 0
   if (m.turn >= 0 && time > m.turn) {
-    const round = ease(time, m.turn, m.turn + m.round)
-    rig = mixRig(rig, keyAt(CAMERA.fire), round, soon(round, CAMERA.lead))
+    const w = whip((time - m.turn) / m.round, m.round)
+    rig = mixRig(rig, keyAt(CAMERA.fire), w.k, soon(w.k, CAMERA.lead), w.k, late(w.k, CAMERA.lag))
+    glare = w.glare
     view = 'fire'
   }
   if (m.fire >= 0 && time > m.fire) {
     const f = time - m.fire
     rig = mixRig(rig, keyAt(CAMERA.blast), ease(f, CAMERA.back[0], CAMERA.back[1]))
     const up = ease(f, CAMERA.rise[0], CAMERA.rise[1])
-    rig = mixRig(rig, ABOVE, up, up, soon(up, CAMERA.lift), late(up, CAMERA.lag))
+    rig = mixRig(rig, TOP, up, up, soon(up, CAMERA.lift))
     if (up > 0 && up < 1) rig = { ...rig, tall: rig.tall * (1 + CAMERA.wide * Math.sin(Math.PI * up)) }
+    const turn = ease(f, CAMERA.rise[1], LAST_LOW)
+    if (turn > 0) {
+      const az = lerp(TOP.az, ABOVE.az, turn)
+      const tall = Math.exp(lerp(Math.log(TOP.tall), Math.log(ABOVE.tall), turn))
+      const [r, u] = flat(az)
+      const a = lerp(SPOT[0][0], SPOT[1][0], turn) * tall
+      const b = lerp(SPOT[0][1], SPOT[1][1], turn) * tall
+      rig = { at: [FEET[0] - r[0] * a - u[0] * b, FEET[1] - r[1] * a - u[1] * b, 0], az, el: 90, tall, fov: ABOVE.fov }
+    }
     if (f > CAMERA.back[0]) {
       view = f < CAMERA.rise[0] ? 'blast' : up < 1 ? 'end' : 'above'
       const b = f - CAMERA.back[0]
@@ -94,13 +136,13 @@ export function finishRig(time: number, m: Marks): { rig: Rig; view: ViewName; s
       shake = [k * Math.sin(b * 83), k * Math.sin(b * 67 + 1.3)]
     }
   }
-  return { rig: clear(rig), view, shake }
+  return { rig, view, shake, glare }
 }
 
 export function finishShot(time: number, m: Marks): Shot | null {
   if (!CAMERA.on || over(time, m)) return null
   const r = finishRig(time, m)
-  return shot(r.rig, r.view, r.shake)
+  return shot(r.rig, r.view, r.shake, r.glare)
 }
 
 export function facing(from: Rig, feet: V3, k: number): Shot | null {

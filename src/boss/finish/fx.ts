@@ -6,6 +6,7 @@ import { hash01 } from '../../core/random'
 import type { Emitter } from '../../real/types'
 import { STAND, tilt, type StandPose } from '../../cursor/stand/rig'
 import type { Fx } from './acting'
+import { CAMERA } from '../tune'
 
 export type Level = 'low' | 'medium' | 'high' | null
 
@@ -144,6 +145,26 @@ function glowStuff(): THREE.ShaderMaterial {
         float all = 1.0 - (1.0 - a) * (1.0 - lit);
         col = (col * a + light * lit * (1.0 - a)) / max(all, 1e-4);
         gl_FragColor = vec4(col, all);
+      }`
+  })
+}
+
+function duskStuff(): THREE.ShaderMaterial {
+  const d = CAMERA.dusk
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, toneMapped: false, fog: false, side: THREE.BackSide,
+    uniforms: { uK: { value: 0 }, uTop: { value: new THREE.Vector3(...d.top) }, uLow: { value: new THREE.Vector3(...d.low) }, uBand: { value: new THREE.Vector3(...d.band) }, uHigh: { value: d.bandHigh } },
+    vertexShader: /* glsl */ `varying vec3 vDir; void main() { vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: /* glsl */ `
+      uniform float uK; uniform vec3 uTop; uniform vec3 uLow; uniform vec3 uBand; uniform float uHigh;
+      varying vec3 vDir;
+      void main() {
+        float h = normalize(vDir).z;
+        float up = max(h, 0.0);
+        float under = max(-h, 0.0);
+        vec3 col = mix(uLow, uTop, smoothstep(0.0, 0.55, up)) * (1.0 - 0.75 * smoothstep(0.0, 0.3, under));
+        col += uBand * exp(-h * h / (uHigh * uHigh)) * (h < 0.0 ? 0.6 : 1.0);
+        gl_FragColor = vec4(col, uK);
       }`
   })
 }
@@ -307,6 +328,12 @@ export function makeFinishFx(): FinishFx {
   puffGeo.setAttribute('aPuff', puffData)
   const puffMat = puffStuff()
   const puffs = new THREE.InstancedMesh(puffGeo, puffMat, MOST.puffs)
+  const duskMat = duskStuff()
+  const dusk = new THREE.Mesh(new THREE.SphereGeometry(CAMERA.dusk.far, 24, 16).rotateX(Math.PI / 2), duskMat)
+  dusk.frustumCulled = false
+  dusk.renderOrder = -50
+  dusk.visible = false
+  object.add(dusk)
   const all: THREE.Mesh[] = [marks, glow, flames, puffs, beam, ball, flare]
   all.forEach((m, i) => {
     m.frustumCulled = false
@@ -500,16 +527,22 @@ export function makeFinishFx(): FinishFx {
       light?.({ x: p.x, y: p.y - 26 * big, z: p.ground + 44 * big, colour: GOLD, power: (1.3 * Math.min(1, k) + 2.5 * Math.sin(Math.PI * Math.min(1, fx.burst * 1.6))) * flick, reach: 620 })
     }
 
+    dusk.visible = fx.lens !== undefined && fx.lens.low > 0.004
+    if (fx.lens) {
+      duskMat.uniforms.uK!.value = fx.lens.low
+      dusk.position.set(fx.lens.eye[0], fx.lens.eye[1], 0)
+    }
     ball.visible = fx.ball !== null
     if (fx.ball) {
       const b = fx.ball
       const u = ballMat.uniforms
       u.uTime!.value = time
-      u.uGlow!.value = Math.min(1.5, b.glow * 1.25)
-      u.uCore!.value = 0.07
+      const g = fx.lens?.glare ?? 0
+      u.uGlow!.value = Math.max(Math.min(1.5, b.glow * 1.25), 1.5 * g)
+      u.uCore!.value = 0.07 + 0.55 * g
       // Few rays while it is held at the hip: they would cross the figure.
       u.uRays!.value = 0.1 + 0.25 * Math.min(1, b.glow)
-      u.uSize!.value = b.size * 11
+      u.uSize!.value = b.size * 11 + (CAMERA.flash * big - b.size * 11) * g
       ball.position.set(b.x - 960, 540 - b.y, b.z + b.size * 0.3)
       light?.({ x: b.x, y: b.y, z: b.z + 6, colour: COLD, power: 0.12 + 0.5 * b.glow, reach: 170 + 170 * b.glow, shadow: true })
     }
@@ -629,7 +662,8 @@ export function makeFinishFx(): FinishFx {
     },
     dispose(): void {
       for (const g of [quad, standing, along, flameGeo, markGeo, puffGeo]) g.dispose()
-      for (const m of [flameMat, glowMat, ballMat, flareMat, beamMat, markMat, puffMat]) m.dispose()
+      for (const m of [flameMat, glowMat, ballMat, flareMat, beamMat, markMat, puffMat, duskMat]) m.dispose()
+      dusk.geometry.dispose()
       flames.dispose()
       marks.dispose()
       puffs.dispose()

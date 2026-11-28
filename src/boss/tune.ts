@@ -176,7 +176,7 @@ export const SHOUT = {
   arms: 0, // s after the fall at which the arrow's arms come out (`finish-arms`)
   beats: [0.1, 1.04, 2.09, 2.9], // s at which each charge word or syllable starts; the glow steps up on each (`finish-charge` on each)
   fire: 4.13, // s at which the last word starts: the blast is let go there (`finish-fire`)
-  gone: 6.26 // s at which the last word ends: the blast has held that long and the body is gone (`boss-gone`)
+  gone: 7.56 // s at which the last word ends: the blast has held that long and the body is gone (`boss-gone`)
 } as const
 
 export const FINISH = {
@@ -297,16 +297,26 @@ export const CAMERA = {
   round: 0.8,
   lead: 2,
   roundLive: 0.55,
-  back: [0.2, 0.36] as const,
-  rise: [0.4, 0.85] as const,
+  stay: 0.3,
+  thin: 30,
+  cross: 0.5,
+  whip: 2.5,
+  glare: [3, 1, 1, 6] as const,
+  flash: 250,
+  back: [0.08, 0.3] as const,
+  rise: [0.6, 1.2] as const,
   lift: 2,
   lag: 2,
-  wide: 0.5,
+  wide: 0.15,
+  top: { at: [244, 202, 0], az: -180, tall: 640 },
+  turn: 1.5,
+  over: 1.6,
   wall: { x: 420, top: 600, soft: 350 },
   shake: 5,
   shakeDies: 0.22,
   open: 5,
+  dusk: { far: 5200, high: 2600, top: [0.012, 0.014, 0.03], low: [0.05, 0.045, 0.07], band: [0.2, 0.11, 0.06], bandHigh: 0.07 },
   charge: { at: [-50, 0, 82], az: -120, el: -3, tall: 195, fov: 54 },
-  fire: { at: [170, 0, 52], az: -208.7, el: 7.5, tall: 325, fov: 50 },
-  blast: { at: [170, 0, 52], az: -210.7, el: 8.9, tall: 400, fov: 60 }
+  fire: { at: [127, -13, 52], az: -225, el: 7.5, tall: 325, fov: 50 },
+  blast: { at: [150, 0, 56], az: -224, el: 9, tall: 380, fov: 54 }
 } as const

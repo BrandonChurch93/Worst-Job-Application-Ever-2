@@ -2,10 +2,10 @@ import fs from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { makeArena } from '../src/arena'
-import { ARENA, EYE, PANES } from '../src/arena/layout'
+import { ARENA, EYE, PANES, PILLARS } from '../src/arena/layout'
 import { newFight } from '../src/boss/fight'
 import { finishState } from '../src/boss/finish/acting'
-import { ABOVE, FEET, facing, finishRig, finishShot, lowOf, marksOf, poseOf, type Marks } from '../src/boss/finish/camera'
+import { ABOVE, FEET, LAST_LOW, THIN, facing, finishRig, finishShot, lowOf, marksOf, poseOf, sideOf, type Marks } from '../src/boss/finish/camera'
 import { FALLEN, UNFOLD } from '../src/boss/plan'
 import { CAMERA, CLOSE, LOOK1_ON, SHOUT } from '../src/boss/tune'
 import { finishNow, viewOf } from '../src/boss/viewof'
@@ -19,14 +19,17 @@ import type { CameraPose } from '../src/stage/types'
 
 const FPS = config.film.fps
 const PER = stepHz / FPS
-const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 140, field: 6, edge: 0, pane: 40, rest: 1.5 } as const
+const LIMIT = { eye: 130, turn: 12, roll: 9, screen: 140, field: 1.5, edge: 0, pane: 25, rest: 1.5, top: 1.55, thin: 3, pillar: 120 } as const
+const WHIP = { eye: 420, turn: 60, roll: 60, screen: 2600, field: 1.5 } as const
+const ADDED = 78
 const CUTS: number[] = []
-const EVENTS = { 'finish-arms': 60, 'finish-fire': 307, 'boss-gone': 435, 'finish-walk': 459, 'finish-kneel': 627, 'finish-fist': 705, 'finish-press': 759 } as const
+const EVENTS = { 'finish-arms': 60, 'finish-fire': 307, 'boss-gone': 435 + ADDED, 'finish-walk': 459 + ADDED, 'finish-kneel': 627 + ADDED, 'finish-fist': 705 + ADDED, 'finish-press': 759 + ADDED } as const
 const IGNORED = config.live.controlTakenMaxSeconds
 
 const above = poseOf(ABOVE)
 const angle = (a: readonly number[], b: readonly number[]): number => (Math.acos(Math.min(1, Math.max(-1, a[0]! * b[0]! + a[1]! * b[1]! + a[2]! * b[2]!))) * 180) / Math.PI
 const poseAt = (t: number, m: Marks): CameraPose => finishShot(t, m)?.pose ?? above
+const glared = (t: number, m: Marks): boolean => (finishShot(t, m)?.glare ?? 0) >= 1
 const steps = (a: CameraPose, b: CameraPose): { eye: number; turn: number; roll: number; screen: number; field: number } => {
   const p = basis(a)
   const q = basis(b)
@@ -36,13 +39,14 @@ const steps = (a: CameraPose, b: CameraPose): { eye: number; turn: number; roll:
 }
 const inside = (p: { x: number; y: number; depth: number }, edge = LIMIT.edge): boolean => p.depth > 0 && p.x >= edge && p.x <= 1920 - edge && p.y >= edge && p.y <= 1080 - edge
 
+const HELD = CAMERA.down[1] + CAMERA.stay
 const COURSES: [string, Marks, number][] = [
-  ['the film', marksOf(true, 0, 3.68, 4.1167), 6.5],
-  ['a visitor who clicks once at 0.3 s', marksOf(false, 0, -1, 0.3), 3],
-  ['a visitor who lets go at 0.8 s, in the middle of the way down', marksOf(false, 0, -1, 0.8), 3.5],
-  ['a visitor who holds 2 s and lets go', marksOf(false, 0, 2.3, 2.3), 5],
-  ['a visitor who holds to the end', marksOf(false, 0, -1, 4.83), 7.5],
-  ['a visitor who never presses', marksOf(false, 0, 5.55, 6), 8.5]
+  ['the film', marksOf(true, 0, 3.68, 4.1167), 7.5],
+  ['a visitor who clicks once at 0.3 s', marksOf(false, 0, HELD, HELD + CAMERA.roundLive), 5],
+  ['a visitor who lets go at 0.8 s, in the middle of the way down', marksOf(false, 0, HELD, HELD + CAMERA.roundLive), 5],
+  ['a visitor who holds 2 s and lets go', marksOf(false, 0, 2.3, 2.3 + CAMERA.roundLive), 6],
+  ['a visitor who holds to the end', marksOf(false, 0, 4.83, 4.83 + CAMERA.roundLive), 8.5],
+  ['a visitor who never presses', marksOf(false, 0, 6 - CAMERA.roundLive, 6), 9]
 ]
 
 describe('the camera of the finishing blast: its path', () => {
@@ -58,9 +62,10 @@ describe('the camera of the finishing blast: its path', () => {
     for (const [name, m, long] of COURSES) {
       for (let n = -3; n <= long * FPS; n++) {
         const d = steps(poseAt(n / FPS, m), poseAt((n + 1) / FPS, m))
+        const whip = glared(n / FPS, m) && glared((n + 1) / FPS, m)
         for (const k of ['eye', 'turn', 'roll', 'screen', 'field'] as const) {
-          most[k] = Math.max(most[k], d[k])
-          expect(d[k], `${name}, frame ${n}, ${k}`).toBeLessThanOrEqual(LIMIT[k])
+          if (!whip) most[k] = Math.max(most[k], d[k])
+          expect(d[k], `${name}, frame ${n}, ${k}`).toBeLessThanOrEqual(whip ? WHIP[k] : LIMIT[k])
         }
       }
     }
@@ -80,12 +85,57 @@ describe('the camera of the finishing blast: its path', () => {
     }
   })
 
+  it('the figure is never seen edge on: its plane is crossed in at most 3 frames, under the full glare of the ball, and from behind the lens stands well off the plane', () => {
+    expect(THIN[0]).toBeLessThan(THIN[1])
+    for (const [name, m, long] of COURSES) {
+      let thin = 0
+      for (let n = 0; n <= long * FPS; n++) {
+        const r = finishRig(n / FPS, m)
+        if (lowOf(r.rig) <= 0.5 || n / FPS >= m.fire + CAMERA.rise[0]) continue
+        if (Math.abs(sideOf(r.rig)) >= CAMERA.thin - 0.5) continue
+        thin++
+        expect(r.glare, `${name}, frame ${n}`).toBe(1)
+      }
+      expect(thin, name).toBeLessThanOrEqual(LIMIT.thin)
+      expect(sideOf(finishRig(m.fire, m).rig), name).toBeLessThan(-40)
+      expect(sideOf(finishRig(m.fire + CAMERA.rise[0], m).rig), name).toBeLessThan(-40)
+    }
+  })
+
+  it('goes round no faster than the top limit once it is straight above: the picture comes round to the lie of the page slowly', () => {
+    for (const [name, m] of COURSES) {
+      for (let n = 0; n < (LAST_LOW - CAMERA.rise[1]) * FPS + 2; n++) {
+        const t = m.fire + CAMERA.rise[1] + n / FPS
+        const d = steps(poseAt(t, m), poseAt(t + 1 / FPS, m))
+        expect(d.roll, `${name}, frame ${n}`).toBeLessThanOrEqual(LIMIT.top)
+      }
+    }
+  })
+
+  it('passes no pillar close: the lens keeps its distance from every pillar it is not above', () => {
+    let least = Infinity
+    for (const [name, m, long] of COURSES) {
+      for (let n = 0; n < long * FPS; n++) {
+        const shot = finishShot(n / FPS, m)
+        if (!shot) continue
+        const [x, y, z] = [shot.pose.eye[0] + 960, 540 - shot.pose.eye[1], shot.pose.eye[2]]
+        if (z > ARENA.pillar.high + LIMIT.pillar) continue
+        for (const p of PILLARS) {
+          const d = Math.hypot(x - p.x, y - p.y)
+          least = Math.min(least, d)
+          expect(d, `${name}, frame ${n}, ${p.id}`).toBeGreaterThanOrEqual(LIMIT.pillar)
+        }
+      }
+    }
+    console.log('nearest pillar to the lens, px', least.toFixed(1))
+  })
+
   it('eases in and out of every move: it starts and ends each course at rest, from above', () => {
     for (const [name, m, long] of COURSES) {
       expect(finishShot(0, m), name).toBeNull()
       expect(finishShot(long, m), name).toBeNull()
       expect(steps(above, poseAt(1 / stepHz, m)).eye, name).toBeLessThan(LIMIT.rest)
-      const end = m.fire + CAMERA.rise[1]
+      const end = m.fire + LAST_LOW
       expect(steps(poseAt(end - 1 / stepHz, m), above).eye, name).toBeLessThan(LIMIT.rest)
     }
   })
@@ -111,7 +161,7 @@ describe('the camera of the finishing blast: its path', () => {
     expect(above.fov).toBe(old.fov)
     expect(lowOf(ABOVE)).toBe(0)
     for (const [name, m] of COURSES) {
-      const s = finishShot(m.fire + CAMERA.rise[1] - 0.02, m)!
+      const s = finishShot(m.fire + LAST_LOW - 0.02, m)!
       expect(s.low, name).toBe(0)
       expect(s.tip, name).toBe(0)
     }
@@ -167,6 +217,17 @@ const look = (stage: Stage, filmed = false): Look => {
   return { step: stage.step, view, low, arrow, boss: inside(project(pose, toWorld(FALLEN.x, FALLEN.y, 0))), name }
 }
 
+const jumps = (looks: Look[], name: string): void => {
+  const over: number[] = []
+  for (let n = 1; n < looks.length; n++) {
+    const d = steps(looks[n - 1]!.view ?? above, looks[n]!.view ?? above)
+    for (const k of ['eye', 'turn', 'roll', 'field'] as const) expect(d[k], `${name}: step ${looks[n]!.step}, ${k}`).toBeLessThanOrEqual(WHIP[k])
+    if ((['eye', 'turn', 'roll', 'field'] as const).some((k) => d[k] > LIMIT[k])) over.push(n)
+  }
+  expect(over.length, name).toBeLessThanOrEqual(4)
+  if (over.length) expect(over[over.length - 1]! - over[0]!, name).toBeLessThanOrEqual(4)
+}
+
 describe.runIf(LOOK1_ON)('the camera of the finishing blast: in the film', () => {
   const stage = film()
   const looks: Look[] = []
@@ -188,7 +249,7 @@ describe.runIf(LOOK1_ON)('the camera of the finishing blast: in the film', () =>
     const fire = seen(stage, 'finish-fire')
     const old = frame({ x: CLOSE.x, y: CLOSE.y, w: CLOSE.w, h: CLOSE.h })
     for (const l of looks) {
-      const lowTime = l.step > arms && l.step < fire + CAMERA.rise[1] * stepHz
+      const lowTime = l.step > arms && l.step < fire + LAST_LOW * stepHz
       if (!lowTime) {
         expect(l.low, `step ${l.step}`).toBe(false)
         if (l.step >= fire) expect(l.view, `step ${l.step}`).toEqual(old)
@@ -206,11 +267,8 @@ describe.runIf(LOOK1_ON)('the camera of the finishing blast: in the film', () =>
     expect(looks.find((l) => l.step >= fire)!.boss).toBe(true)
   })
 
-  it('no two frames of the film jump over the named limits', () => {
-    for (let n = 1; n < looks.length; n++) {
-      const d = steps(looks[n - 1]!.view ?? above, looks[n]!.view ?? above)
-      for (const k of ['eye', 'turn', 'roll', 'field'] as const) expect(d[k], `step ${looks[n]!.step}, ${k}`).toBeLessThanOrEqual(LIMIT[k])
-    }
+  it('no two frames of the film jump over the named limits, but the three of the whip', () => {
+    jumps(looks, 'the film')
   })
 })
 
@@ -267,11 +325,8 @@ describe.runIf(LOOK1_ON)('the camera of the finishing blast: on the live site', 
         expect(l.arrow, `${r.name}: arrow, step ${l.step}, ${l.name}`).toBe(true)
         if (l.name === 'blast' || l.name === 'end') expect(l.boss, `${r.name}: boss, step ${l.step}`).toBe(true)
         if (l.step >= gone - stepHz * 0.5) expect(l.low, `${r.name}: step ${l.step}`).toBe(false)
-        if (n) {
-          const d = steps(r.looks[n - 1]!.view ?? above, l.view ?? above)
-          for (const k of ['eye', 'turn', 'roll', 'field'] as const) expect(d[k], `${r.name}: step ${l.step}, ${k}`).toBeLessThanOrEqual(LIMIT[k])
-        }
       }
+      jumps(r.looks, r.name)
       expect(r.looks.some((l) => l.low), r.name).toBe(true)
     }
   })

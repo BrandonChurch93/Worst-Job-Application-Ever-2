@@ -62,7 +62,7 @@ Frames 4758 to 7277.
 
 ## boss
 
-Frames 7278 to 11585.
+Frames 7278 to 11663.
 
 | Beat | Frames | Camera | Move | Framing at the start | Framing at the end |
 | --- | --- | --- | --- | --- | --- |
@@ -72,16 +72,16 @@ Frames 7278 to 11585.
 | `boss.popups` | 10494 to 10607 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `boss.lastStand` | 10608 to 10745 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
 | `boss.collapse` | 10746 to 10817 | `home`, then `view` | follows, pushes in | x 0, y 0, 1920 by 1080 | x 299.4, y 269.5, 961.8 by 541 |
-| `boss.finish` | 10818 to 11513 | `view` | follows | x 299.9, y 269.9, 960.2 by 540.1 | x 300, y 270, 960 by 540 |
-| `boss.press` | 11514 to 11585 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
+| `boss.finish` | 10818 to 11591 | `view` | holds, follows, pushes in, eases out, cuts 2 times (on frame 11037, 11038) | x 299.9, y 269.9, 960.2 by 540.1 | x 300, y 270, 960 by 540 |
+| `boss.press` | 11592 to 11663 | `view` | holds | x 300, y 270, 960 by 540 | x 300, y 270, 960 by 540 |
 
 ## decision
 
-Frames 11586 to 12887.
+Frames 11664 to 12965.
 
 | Beat | Frames | Camera | Move | Framing at the start | Framing at the end |
 | --- | --- | --- | --- | --- | --- |
-| `decision.wait` | 11586 to 11705 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.letter` | 11706 to 11945 | `home` | holds, shakes | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.metrics` | 11946 to 12689 | `home`, then `view`, then `home` | follows | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
-| `decision.reset` | 12690 to 12887 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.wait` | 11664 to 11783 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.letter` | 11784 to 12023 | `home` | holds, shakes | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.metrics` | 12024 to 12767 | `home`, then `view`, then `home` | follows | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
+| `decision.reset` | 12768 to 12965 | `home` | holds | x 0, y 0, 1920 by 1080 | x 0, y 0, 1920 by 1080 |
