@@ -67,8 +67,12 @@ export const LIVE = {
   beatLateSeconds: 1.5,
   // The wait the narrator's arithmetic allows a live line when it is given none. The script's lines are given no limit: they wait for the line before and the gap.
   liveLateSeconds: 0.4,
-  // Whether the effects are held down under a line that is a silent stand-in. Off: nothing is heard to make room for. Turn it on when the lines are recorded.
+  // Whether the effects are held down under a line that is a silent stand-in. Off: nothing is heard to make room for. A line with a voice holds them down always.
   standInDucks: false,
+  // A line with a voice that ends sooner than its file, at a pause, on a mark or because it is taken back, goes out over this long.
+  voiceFadeSeconds: 0.2,
+  // Line 1 belongs to the careers page: when that page's button is pressed or the page is turned while it is being said, it goes out over this long.
+  openingFadeSeconds: 0.3,
   // The seconds line 1 waits after sound is allowed, so that a press of Apply by the same gesture is seen first and takes it back.
   openingWaitSeconds: 0.15,
   // The same cue set off twice within this time sounds once.

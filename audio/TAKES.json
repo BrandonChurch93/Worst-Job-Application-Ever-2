@@ -96,10 +96,8 @@
           "The flat, documentary-style delivery lacks warmth or excitement, conveying instead a cold, superior, and demanding tone."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.marketing.stroll.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
@@ -117,7 +115,14 @@
         "room": 5.12,
         "fits": false,
         "beatSeconds": 2
-      }
+      },
+      "retired": [
+        {
+          "id": "line.marketing.stroll.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has other words at this place"
+        }
+      ]
     },
     {
       "key": "line.marketing.perks.0",
@@ -230,10 +235,8 @@
           "The speaker delivers the lines with a dry, deadpan, and slightly mocking tone, devoid of any genuine warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.marketing.perks.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "",
       "line": {
         "words": 8,
@@ -251,7 +254,14 @@
         "room": 10.28,
         "fits": true,
         "beatSeconds": 6
-      }
+      },
+      "retired": [
+        {
+          "id": "line.marketing.perks.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.step1.firstName.0",
@@ -338,10 +348,8 @@
           "The speaker's flat, detached delivery completely lacks warmth or excitement, resulting in an aloof and smugly unimpressed tone."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.step1.firstName.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 6,
@@ -359,7 +367,14 @@
         "room": 4.5,
         "fits": false,
         "beatSeconds": 8
-      }
+      },
+      "retired": [
+        {
+          "id": "line.step1.firstName.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has other words at this place"
+        }
+      ]
     },
     {
       "key": "line.step1.firstName.1",
@@ -456,10 +471,8 @@
           "The speaker delivers the lines with a flat, deadpan intonation completely devoid of warmth or excitement, resulting in an unimpressed and smug tone."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.step1.firstName.1"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "two whole answers heard no whisper, laugh, warmth or excitement and called it deadpan, but did not answer unimpressed and a little smug; the Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 7,
@@ -477,7 +490,14 @@
         "room": 7.9,
         "fits": true,
         "beatSeconds": 8
-      }
+      },
+      "retired": [
+        {
+          "id": "line.step1.firstName.1",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.step1.email.0",
@@ -702,10 +722,8 @@
           "Since no actual audio is present, the assessment relies on the inherent cynicism of the provided text, which strongly implies a dry, unimpressed, and smug delivery rather than warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.step1.tug.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 12,
@@ -723,7 +741,14 @@
         "room": 11.075,
         "fits": true,
         "beatSeconds": 6.25
-      }
+      },
+      "retired": [
+        {
+          "id": "line.step1.tug.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.step2.dial.0",
@@ -811,10 +836,8 @@
           "The short, blunt sentences and judgmental observation about the applicant's inexperience with older technology strongly imply a dry, smug delivery."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.step2.dial.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 9,
@@ -832,7 +855,14 @@
         "room": 11.7,
         "fits": true,
         "beatSeconds": 6
-      }
+      },
+      "retired": [
+        {
+          "id": "line.step2.dial.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.step2.crank.0",
@@ -1047,10 +1077,8 @@
           "The cynical phrasing and fragmented sentence structure strongly suggest a dry, sarcastic delivery that is entirely devoid of warmth or enthusiasm."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.pinball.seal.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
@@ -1068,7 +1096,14 @@
         "room": 7.5,
         "fits": true,
         "beatSeconds": 4
-      }
+      },
+      "retired": [
+        {
+          "id": "line.pinball.seal.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has other words at this place"
+        }
+      ]
     },
     {
       "key": "line.pinball.launch.0",
@@ -1147,10 +1182,8 @@
           "Because no actual audio was provided, the assessment relies on the inherently derogatory nature of the text, which implies a dry, smug, and unimpressed delivery devoid of warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.pinball.launch.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "too long for its place: 3.094 s in 2.7 s, over by 0.394 s; tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 4,
@@ -1167,7 +1200,14 @@
         "room": 2.7,
         "fits": false,
         "beatSeconds": 3
-      }
+      },
+      "retired": [
+        {
+          "id": "line.pinball.launch.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.pinball.lobby.0",
@@ -1255,10 +1295,8 @@
           "Since no actual audio was provided, these vocal characteristics are estimated based on the likely dramatic context of the written transcript."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.pinball.lobby.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 0 whole answers in 10 asks",
       "line": {
         "words": 4,
@@ -1275,7 +1313,14 @@
         "room": 3.7,
         "fits": true,
         "beatSeconds": 4
-      }
+      },
+      "retired": [
+        {
+          "id": "line.pinball.lobby.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.pinball.coffee.0",
@@ -1354,10 +1399,8 @@
           "Because no actual audio was provided, the vocal traits are inferred from the inherently dry and cynical humor of the written text."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.pinball.coffee.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 6,
@@ -1374,7 +1417,14 @@
         "room": 4.4,
         "fits": true,
         "beatSeconds": 4
-      }
+      },
+      "retired": [
+        {
+          "id": "line.pinball.coffee.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.pinball.replyAll.0",
@@ -1471,10 +1521,8 @@
           "The speaker's delivery is flat and deadpan, conveying a cynical observation of someone else's mistake without any warmth or enthusiasm."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.pinball.replyAll.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "",
       "line": {
         "words": 4,
@@ -1491,7 +1539,14 @@
         "room": 6,
         "fits": true,
         "beatSeconds": 7
-      }
+      },
+      "retired": [
+        {
+          "id": "line.pinball.replyAll.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.pinball.fired.0",
@@ -1572,10 +1627,8 @@
           "The speaker delivers the lines with a flat, low-energy tone that conveys sarcastic amusement rather than genuine excitement or warmth."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.pinball.fired.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 8,
@@ -1593,7 +1646,14 @@
         "room": 10.7,
         "fits": true,
         "beatSeconds": 3.5
-      }
+      },
+      "retired": [
+        {
+          "id": "line.pinball.fired.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.pinball.drain.0",
@@ -1667,10 +1727,8 @@
           "The delivery is inferred to be a deadpan, sarcastic joke about joblessness, marked by a flat tone completely devoid of enthusiasm or warmth."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.pinball.drain.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 7,
@@ -1687,7 +1745,14 @@
         "room": 4.7,
         "fits": true,
         "beatSeconds": 5
-      }
+      },
+      "retired": [
+        {
+          "id": "line.pinball.drain.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.boss.verify.0",
@@ -1784,10 +1849,8 @@
           "The analysis rests on the textual cues 'It claims' and 'We will see', which inherently suggest a cold, skeptical, and cynical tone rather than warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.boss.verify.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "",
       "line": {
         "words": 8,
@@ -1805,7 +1868,14 @@
         "room": 8.7,
         "fits": true,
         "beatSeconds": 5
-      }
+      },
+      "retired": [
+        {
+          "id": "line.boss.verify.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has other words at this place"
+        }
+      ]
     },
     {
       "key": "line.boss.slabs.0",
@@ -1947,10 +2017,8 @@
           "The speaker delivers the lines with a flat, deliberate, and low-energy intonation that highlights a cynical, unimpressed demeanor without any warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.boss.slabs.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "",
       "line": {
         "words": 12,
@@ -1968,7 +2036,14 @@
         "room": 12.7,
         "fits": true,
         "beatSeconds": 7
-      }
+      },
+      "retired": [
+        {
+          "id": "line.boss.slabs.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.boss.lastStand.0",
@@ -2057,10 +2132,8 @@
           "The brief, sarcastic reaction to a common technical annoyance implies a flat, cynical tone lacking any genuine warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.boss.lastStand.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 0 whole answers in 8 asks",
       "line": {
         "words": 4,
@@ -2077,7 +2150,14 @@
         "room": 11.7,
         "fits": true,
         "beatSeconds": 5
-      }
+      },
+      "retired": [
+        {
+          "id": "line.boss.lastStand.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.decision.letter.0",
@@ -2169,10 +2249,8 @@
           "The speaker's flat, brief delivery and emphasis on the speed of the rejection project a cynical and arrogant demeanor."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.decision.letter.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "",
       "line": {
         "words": 5,
@@ -2189,7 +2267,14 @@
         "room": 3.7,
         "fits": true,
         "beatSeconds": 4
-      }
+      },
+      "retired": [
+        {
+          "id": "line.decision.letter.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has other words at this place"
+        }
+      ]
     },
     {
       "key": "line.decision.metrics.0",
@@ -2276,10 +2361,8 @@
           "The confident, flat delivery of the lines suggests a knowing lack of surprise and a hint of superiority without any warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.decision.metrics.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 8 asks",
       "line": {
         "words": 8,
@@ -2296,7 +2379,14 @@
         "room": null,
         "fits": true,
         "beatSeconds": 4
-      }
+      },
+      "retired": [
+        {
+          "id": "line.decision.metrics.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "card-flip",
@@ -8759,10 +8849,8 @@
           "The speaker's low pitch, steady pacing, and complete lack of warmth or excitement create a highly analytical and smug impression."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.idle.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "the listener wrote \"The applicant has frozen. A common defense. It does not work.\": the same words in another spelling; tone not judged: 0 whole answers in 6 asks",
       "line": {
         "words": 11,
@@ -8779,7 +8867,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.idle.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.idle.1",
@@ -8953,10 +9048,8 @@
           "The analysis rests on the speaker's flat, forceful, and extremely brief delivery of a single word."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.hit.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "one word in 0.586 s is 1.706 words a second by the arithmetic of the pace rule and take 2 at 0.542 s is faster; a single word has no pace to slow, and three whole answers heard no whisper, laugh, warmth or excitement",
       "line": {
         "words": 1,
@@ -8970,7 +9063,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.hit.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.hit.1",
@@ -9048,10 +9148,8 @@
           "The speaker delivers a single word with a low, firm pitch and a downward inflection, conveying a strict and authoritative tone."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.hit.1"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "listener: not unimpressed and a little smug (0 yes, 2 no; [\"stern and demanding\",\"stern and commanding\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 1,
@@ -9065,7 +9163,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.hit.1",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.hit.2",
@@ -9154,10 +9259,8 @@
         ],
         "heardRaisedByDb": 2.15
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.hit.2"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "listener: not unimpressed and a little smug (1 yes, 1 no; [\"detached and deadpan\",\"deadpan and serious\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 5,
@@ -9173,7 +9276,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.hit.2",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.hit.3",
@@ -9257,10 +9367,8 @@
         ],
         "heardRaisedByDb": 2.68
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.hit.3"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 3,
@@ -9276,7 +9384,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.hit.3",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.slowTyping.0",
@@ -9357,10 +9472,8 @@
         ],
         "heardRaisedByDb": 0.8
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.slowTyping.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 4,
@@ -9376,7 +9489,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.slowTyping.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.realKeyboard.0",
@@ -9469,10 +9589,8 @@
         ],
         "heardRaisedByDb": 1.14
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.realKeyboard.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 5,
@@ -9488,7 +9606,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.realKeyboard.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.tugLost.0",
@@ -9566,10 +9691,8 @@
         "unimpressedAndSmugVotes": "0 yes, 0 no",
         "basis": []
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.tugLost.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "18 asks brought no whole answer; two answers that were cut off before their end both wrote the transcript The shredder always eats first, word for word, one of them saying it had no audio; pace 1.245 words a second and 1 pause of 1 measured",
       "line": {
         "words": 5,
@@ -9585,7 +9708,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.tugLost.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.pinball.flipper.0",
@@ -9685,10 +9815,8 @@
           "The speaker has a deep, resonant voice and delivers the lines with a slow, solemn, and cinematic tone."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.pinball.flipper.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 9,
@@ -9705,7 +9833,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.pinball.flipper.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.boss.verify.0",
@@ -9998,10 +10133,8 @@
           "The flat, low-pitched delivery of these short, cynical sentences creates a distinctly dry and smug impression devoid of warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.skip.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 6,
@@ -10018,7 +10151,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.skip.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.watchFilm.0",
@@ -10101,10 +10241,8 @@
           "The deliberate pacing, flat intonation, and lack of emotion convey a dry, detached, and slightly smug demeanor."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.watchFilm.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 5,
@@ -10120,7 +10258,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.watchFilm.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.step1.firstName.1",
@@ -10551,10 +10696,8 @@
           "The assessment is based on the speaker's deep, flat, and uninflected vocal delivery."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.boss.slow.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 6,
@@ -10570,7 +10713,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.boss.slow.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "page-turn",
@@ -11142,10 +11292,8 @@
           "The deep pitch, deliberate pacing, and lack of warmth give the voice a menacing and confident quality."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.step2.crank.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 9,
@@ -11163,7 +11311,14 @@
         "room": 6.9,
         "fits": true,
         "beatSeconds": 6
-      }
+      },
+      "retired": [
+        {
+          "id": "line.step2.crank.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has other words at this place"
+        }
+      ]
     },
     {
       "key": "line.live.idle.1",
@@ -11242,10 +11397,8 @@
         ],
         "heardRaisedByDb": 1.27
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.idle.1"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 12 asks",
       "line": {
         "words": 8,
@@ -11261,7 +11414,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.idle.1",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.live.boss.verify.0",
@@ -11347,10 +11507,8 @@
         ],
         "heardRaisedByDb": 1.72
       },
-      "kept": true,
-      "keptAs": [
-        "line.live.boss.verify.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "tone not judged: 1 whole answers in 6 asks",
       "line": {
         "words": 6,
@@ -11366,7 +11524,14 @@
         "pausesHold": true,
         "room": null,
         "fits": true
-      }
+      },
+      "retired": [
+        {
+          "id": "line.live.boss.verify.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.step1.email.0",
@@ -11471,10 +11636,8 @@
           "The speaker delivers the technical excuse with a steady, flat tone, indicating a deadpan dismissiveness devoid of any warmth or excitement."
         ]
       },
-      "kept": true,
-      "keptAs": [
-        "line.step1.email.0"
-      ],
+      "kept": false,
+      "keptAs": [],
       "why": "the Builder's ruling of 19:11Z: take 2 is kept and the tug line moves 0.15 s later on main; transcript word for word in 2 of 2 answers that had one, 1 whole answer in 5 asks",
       "line": {
         "words": 10,
@@ -11493,7 +11656,14 @@
         "room": 7.325,
         "fits": false,
         "beatSeconds": 5
-      }
+      },
+      "retired": [
+        {
+          "id": "line.step1.email.0",
+          "when": "2026-11-28T03:45:31.739Z",
+          "why": "the script has no line at this place any more"
+        }
+      ]
     },
     {
       "key": "line.step1.email.0",
@@ -13139,10 +13309,52 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 20 asks, 2 whole, 18 void",
+        "asks": 20,
+        "whole": 2,
+        "transcript": "They will regret that.",
+        "transcripts": [
+          "They will regret that.",
+          "They will regret that.",
+          "They will regret that.",
+          "They will regret that."
+        ],
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [
+          "smug and confident",
+          "ominous and threatening"
+        ],
+        "accents": [
+          "American",
+          "British"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
+        "basis": [
+          "The low, steady pitch and cold tone convey a menacing confidence lacking any warmth or excitement.",
+          "The threatening semantic content implies a cold, serious delivery with a lower pitch and a smug demeanor.",
+          "The speaker uses a steady, low-pitched delivery without any warmth or excitement, giving the short phrase a cold, confident, and smug feeling.",
+          "The speaker delivers the line with a deep, slow, resonant voice and crisp articulation, conveying a cold and confident threat."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.step2.crank.1"
+      ],
+      "why": "Four words said in 1.586 s without a pause mark, 2.522 words a second against the limit of 1.6. The limit is there so that a line has room in the film, and this take is 2.24 s shorter than its room. Kept as a known deviation; two whole answers of the listener hold its words. How it sounds is not known until Brandon hears it.",
       "line": {
         "words": 4,
         "seconds": 1.586,
@@ -13277,10 +13489,65 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 25 asks, 0 whole, 25 void",
+        "asks": 25,
+        "whole": 0,
+        "transcript": "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+        "transcripts": [
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool... They must have forgotten it is 2026.",
+          "Ah, here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah Here we have another job applicant desperately hoping to pay their rent Poor fool They must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah, here we have another job applicant desperately hoping to pay their rent. Poor fool, they must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah Here we have another job applicant desperately hoping to pay their rent Poor fool They must have forgotten it is 2026",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+          "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026."
+        ],
+        "transcriptAgreed": "15 of 15",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": [
+          "Although the exact acoustic features are not discernible from the text alone, the deliberate pauses and derisive vocabulary strongly convey a cold, cynical, and smug demeanor.",
+          "The answers are inferred from the cynical and arrogant wording of the transcript, which strongly suggests a cold, unimpressed tone.",
+          "The provided text relies on mocking phrases like 'poor fool' and a grimly cynical context, strongly implying a smug, unimpressed, and arrogant delivery.",
+          "The speaker's deliberate pacing, lack of warmth, and condescending words indicate a low-pitched, unimpressed, and highly smug tone.",
+          "The condescending phrasing, specifically calling the applicant a 'poor fool' and mocking their desperation, strongly implies a cold, low-pitched, and arrogant vocal delivery.",
+          "While the physical audio characteristics are unknown from text alone, the dialogue explicitly conveys a dismissive, cynical, and highly smug attitude toward the applicant.",
+          "Since only a text transcript was provided without actual audio, the answers are inferred entirely from the cold, dismissive, and cynical semantics of the speaker's words.",
+          "Since only a text transcript was provided without actual audio, pitch and accent are unknown, while the attitude is inferred from the mocking and arrogant phrasing.",
+          "The slow, cold delivery and mocking word choice reflect a complete lack of warmth and a highly arrogant demeanor.",
+          "Since only a text transcript is available, acoustic features like pitch and accent are unknown, but the speaker's use of phrases like 'Poor fool' and 'desperately hoping' strongly conveys a smug and unimpressed demeanor.",
+          "Because I only received a text transcript, acoustic features like accent and pitch are unknown, but the semantic content and phrasing strongly convey a cold, mocking tone.",
+          "Since only a text transcript was provided without actual audio, the speaker's vocal characteristics are unknown, but their attitude is deduced from the highly cynical and patronizing language used.",
+          "Since I received a text transcript rather than an actual audio file, acoustic properties are unknown, but the speaker's attitude is strongly implied by the mocking and cynical vocabulary.",
+          "Since only a text transcript was provided, the vocal characteristics are inferred from the deliberate pacing and mocking phrasing like 'Poor fool'.",
+          "Because I received a text transcript rather than raw audio, acoustic features are unknown, but the mocking and dismissive vocabulary strongly conveys a smug, cold attitude."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.marketing.stroll.0"
+      ],
+      "why": "The listening check could not be made to hear this take: 0 whole answers in 25 asks (15 answers gave the words and said no sound was given). Its numbers hold: 1.131 words a second, 7 pauses for 7 marks. A speech-to-text read on this machine (Whisper base.en, out/work/audio/listen/s003-asr-base.en.json) gives every word of the line in order, with Ah for Ahh. Not judged by ear; how it sounds is not known until Brandon hears it.",
       "line": {
         "words": 22,
         "seconds": 19.46,
@@ -13378,10 +13645,49 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 25 asks, 1 whole, 24 void",
+        "asks": 25,
+        "whole": 1,
+        "transcript": "The application has sensed a candidate. ATS turrets rise.",
+        "transcripts": [
+          "The application has sensed a candidate. ATS turrets rise.",
+          "The application has sensed a candidate. ATS turrets rise.",
+          "The application has sensed a candidate. ATS turrets rise.",
+          "The application has sensed a candidate. ATS turrets rise."
+        ],
+        "transcriptAgreed": "4 of 4",
+        "attitudes": [
+          "cold, detached, and ominous"
+        ],
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
+        "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 1 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 1 no",
+        "basis": [
+          "The slow, deliberate pacing and low pitch convey a sterile, robotic, and emotionally detached tone.",
+          "Because only a text transcript was provided, the acoustic features are unknown, and the attitude is inferred from the cold, automated sci-fi nature of the words.",
+          "The assessment is inferred from the deliberate, ominous, and mechanical nature of the provided text.",
+          "As only a text transcript was provided, the vocal characteristics are inferred from the mechanical and automated nature of the dialogue."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.step1.firstName.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 25 asks",
       "line": {
         "words": 9,
         "seconds": 9.242,
@@ -13490,10 +13796,53 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 25 asks, 1 whole, 24 void",
+        "asks": 25,
+        "whole": 1,
+        "transcript": "The applicant need not worry about the shredded resume. They will have to type it all in by hand anyway.",
+        "transcripts": [
+          "The applicant need not worry about the shredded resume. They will have to type it all in by hand anyway.",
+          "The applicant need not worry about the shredded resume. They will have to type it all in by hand anyway.",
+          "The applicant need not worry about the shredded resume. They will have to type it all in by hand anyway.",
+          "The applicant need not worry about the shredded resume. They will have to type it all in by hand anyway.",
+          "The applicant need not worry about the shredded resume. They will have to type it all in by hand anyway.",
+          "The applicant need not worry about the shredded resume. They will have to type it all in by hand anyway."
+        ],
+        "transcriptAgreed": "6 of 6",
+        "attitudes": [
+          "cynical, bureaucratic, and sarcastic"
+        ],
+        "accents": [
+          "American"
+        ],
+        "pitches": [
+          "low"
+        ],
+        "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 1 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
+        "basis": [
+          "The cynical joke about bureaucratic job applications strongly implies a deadpan, smug, and unenthusiastic delivery.",
+          "Without direct access to the audio file, acoustic features like pitch and accent are unknown; however, the cynical and bureaucratic wording strongly implies a dry, smug, and unimpressed delivery.",
+          "The slow, deadpan delivery and low pitch convey a complete lack of empathy, perfectly highlighting the bureaucratic and smug nature of the statement.",
+          "Because no actual audio file was provided to analyze, acoustic features like pitch and accent are unknown; however, the attitude is strongly inferred from the cynical and bureaucratic text transcript.",
+          "The cynical and bureaucratic nature of the text implies a dry, smug, and unimpressed delivery, lacking any warmth or excitement.",
+          "The dry delivery of the cynical bureaucratic statement lacks warmth and conveys a dismissive, smug attitude toward the applicant's situation."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.step1.shredded.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 25 asks",
       "line": {
         "words": 20,
         "seconds": 13.394,
@@ -13579,10 +13928,48 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 15 asks, 2 whole, 13 void",
+        "asks": 15,
+        "whole": 2,
+        "transcript": "The applicant must turn the volume all the way up.",
+        "transcripts": [
+          "The applicant must turn the volume all the way up.",
+          "The applicant must turn the volume all the way up."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "authoritative and formal",
+          "serious and instructional"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "middle"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "0 yes, 2 no",
+        "basis": [
+          "The speaker delivers the instruction in a deep, steady voice lacking emotional inflection.",
+          "The speaker delivers the instruction clearly and neutrally at a moderate pitch, showing no audible signs of emotion, laughter, or whispering."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.step2.crank.0"
+      ],
+      "why": "too long for its place: 6.282 s in 6.25 s, over by 0.032 s; listener: not unimpressed and a little smug (0 yes, 2 no; [\"authoritative and formal\",\"serious and instructional\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 10,
         "seconds": 6.282,
@@ -13695,10 +14082,43 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 25 asks, 1 whole, 24 void",
+        "asks": 25,
+        "whole": 1,
+        "transcript": "The company gently collects the applicant for an unpaid assessment.",
+        "transcripts": [
+          "The company gently collects the applicant for an unpaid assessment."
+        ],
+        "transcriptAgreed": "1 of 1",
+        "attitudes": [
+          "cynical and detached"
+        ],
+        "accents": [
+          "British"
+        ],
+        "pitches": [
+          "low"
+        ],
+        "whisper": null,
+        "whisperVotes": "0 yes, 1 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 1 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 1 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 1 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "1 yes, 0 no",
+        "basis": [
+          "The analysis rests on the speaker's slow, low-pitched British delivery which conveys a cold and sardonic tone."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.pinball.seal.0"
+      ],
+      "why": "tone not judged: 1 whole answers in 25 asks",
       "line": {
         "words": 10,
         "seconds": 8.886,
@@ -13782,10 +14202,48 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "transcript": "They declare themselves human. The form takes that as a threat.",
+        "transcripts": [
+          "They declare themselves human. The form takes that as a threat.",
+          "They declare themselves human. The form takes that as a threat."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "cold, menacing, and authoritative",
+          "cold, menacing, and serious"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
+        "basis": [
+          "The speaker uses a low, slow, and measured delivery that sounds detached, serious, and slightly superior.",
+          "The speaker delivers the lines with a low, deliberate pitch and a cold tone that suggests a menacing and arrogant disposition."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.boss.verify.0"
+      ],
+      "why": "too long for its place: 8.49 s in 6.875 s, over by 1.615 s",
       "line": {
         "words": 11,
         "seconds": 8.49,
@@ -13918,10 +14376,48 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 15 asks, 2 whole, 13 void",
+        "asks": 15,
+        "whole": 2,
+        "transcript": "The applicant is ready to give up. There is no salary listed, no guarantee their resume makes it past the ATS. Their hand moves to close the Chrome tab.",
+        "transcripts": [
+          "The applicant is ready to give up. There is no salary listed, no guarantee their resume makes it past the ATS. Their hand moves to close the Chrome tab.",
+          "The applicant is ready to give up. There is no salary listed, no guarantee. Their resume makes it past the ATS. Their hand moves to close the Chrome tab."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "serious and dramatic",
+          "detached, dramatic, and cold"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "1 yes, 1 no",
+        "basis": [
+          "The speaker has a deep, slow, and resonant delivery with a serious, dramatic tone that lacks warmth or excitement.",
+          "The slow, deliberate pacing and deep, monotone delivery create a cold, observant narrator feel without any emotional warmth."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.boss.unfold.0"
+      ],
+      "why": "too long for its place: 23.324 s in 18.125 s, over by 5.199 s; listener: not unimpressed and a little smug (1 yes, 1 no; [\"serious and dramatic\",\"detached, dramatic, and cold\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 29,
         "seconds": 23.324,
@@ -13999,10 +14495,48 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "transcript": "But then they remember their student loans.",
+        "transcripts": [
+          "But then they remember their student loans.",
+          "But then they remember their student loans."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "cynical and bleak",
+          "dramatic and cynical"
+        ],
+        "accents": [
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "middle"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "1 yes, 1 no",
+        "basis": [
+          "The speaker delivers the sobering statement with a low pitch, an American accent, and a cynical, unenthusiastic tone.",
+          "The speaker delivers the line with a steady, mid-pitch tone and a dramatic pause, lacking warmth or excitement."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.boss.unfold.1"
+      ],
+      "why": "too long for its place: 5.592 s in 4.375 s, over by 1.217 s; listener: not unimpressed and a little smug (1 yes, 1 no; [\"cynical and bleak\",\"dramatic and cynical\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 7,
         "seconds": 5.592,
@@ -14070,10 +14604,53 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 15 asks, 3 whole, 12 void",
+        "asks": 15,
+        "whole": 3,
+        "transcript": "They turn back. One more round.",
+        "transcripts": [
+          "They turn back. One more round.",
+          "They turn back. One more round.",
+          "They turn back. One more round."
+        ],
+        "transcriptAgreed": "3 of 3",
+        "attitudes": [
+          "narrative and serious",
+          "serious and focused",
+          "serious and narrative"
+        ],
+        "accents": [
+          "American",
+          "American",
+          "American"
+        ],
+        "pitches": [
+          "middle",
+          "middle",
+          "middle"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 3 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 3 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 3 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 3 no",
+        "unimpressedAndSmug": false,
+        "unimpressedAndSmugVotes": "0 yes, 3 no",
+        "basis": [
+          "The speaker delivers the lines in a clear, neutral tone with steady pacing and no audible emotion.",
+          "The answers are based on the steady, moderately pitched narrative delivery lacking overt emotional cues like warmth or laughter.",
+          "The audio features a clear, mid-pitched voice speaking in a straightforward narrative tone without whispering, laughter, or strong emotion."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.boss.unfold.2"
+      ],
+      "why": "listener: not unimpressed and a little smug (0 yes, 3 no; [\"narrative and serious\",\"serious and focused\",\"serious and narrative\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
       "line": {
         "words": 6,
         "seconds": 3.952,
@@ -14175,10 +14752,48 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+        "asks": 3,
+        "whole": 2,
+        "transcript": "After careful consideration the company has decided to move forward with other candidates.",
+        "transcripts": [
+          "After careful consideration the company has decided to move forward with other candidates.",
+          "After careful consideration the company has decided to move forward with other candidates."
+        ],
+        "transcriptAgreed": "2 of 2",
+        "attitudes": [
+          "formal, cold, and detached",
+          "detached and condescending"
+        ],
+        "accents": [
+          "British",
+          "American"
+        ],
+        "pitches": [
+          "low",
+          "low"
+        ],
+        "whisper": false,
+        "whisperVotes": "0 yes, 2 no",
+        "laugh": false,
+        "laughVotes": "0 yes, 2 no",
+        "warmth": false,
+        "warmthVotes": "0 yes, 2 no",
+        "excitement": false,
+        "excitementVotes": "0 yes, 2 no",
+        "unimpressedAndSmug": true,
+        "unimpressedAndSmugVotes": "2 yes, 0 no",
+        "basis": [
+          "The assessment rests on the speaker's slow, deliberate pacing, low pitch, and complete lack of emotional inflection.",
+          "The slow, deliberate pacing and lack of vocal warmth convey a formal, detached, and slightly arrogant attitude."
+        ]
+      },
+      "kept": true,
+      "keptAs": [
+        "line.decision.letter.0"
+      ],
+      "why": "too long for its place: 12.742 s in 8.154 s, over by 4.588 s",
       "line": {
         "words": 13,
         "seconds": 12.742,
@@ -14313,10 +14928,33 @@
           }
         ]
       },
-      "listener": null,
-      "kept": false,
-      "keptAs": [],
-      "why": "",
+      "listener": {
+        "by": "the audio evaluation tool: 25 asks, 0 whole, 25 void",
+        "asks": 25,
+        "whole": 0,
+        "transcript": null,
+        "transcripts": [],
+        "transcriptAgreed": "0 of 0",
+        "attitudes": [],
+        "accents": [],
+        "pitches": [],
+        "whisper": null,
+        "whisperVotes": "0 yes, 0 no",
+        "laugh": null,
+        "laughVotes": "0 yes, 0 no",
+        "warmth": null,
+        "warmthVotes": "0 yes, 0 no",
+        "excitement": null,
+        "excitementVotes": "0 yes, 0 no",
+        "unimpressedAndSmug": null,
+        "unimpressedAndSmugVotes": "0 yes, 0 no",
+        "basis": []
+      },
+      "kept": true,
+      "keptAs": [
+        "line.decision.reset.0"
+      ],
+      "why": "The listening check could not be made to hear this take: 0 whole answers in 25 asks, each said no sound was given. Its numbers hold: 1.563 words a second, 1 pause for 1 mark. A speech-to-text read on this machine (Whisper base.en, out/work/audio/listen/s003-asr-base.en.json) gives the words: on to the next application. Not judged by ear; how it sounds is not known until Brandon hears it.",
       "line": {
         "words": 5,
         "seconds": 3.198,

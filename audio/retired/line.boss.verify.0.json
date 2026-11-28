@@ -1,0 +1,204 @@
+{
+  "id": "line.boss.verify.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "boss.verify",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "Not a robot, / it claims. / We will see.",
+  "text": "Not a robot, / it claims. / We will see.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "Not a robot, <break time=\"1.0s\" /> it claims. <break time=\"1.0s\" /> We will see.",
+    "call": 28
+  },
+  "askedSeconds": null,
+  "cost": "26",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "f8324df3ee5ed4adfbeddedd85e0230c44c2ecd86e51a78f32bf85f9caf7b203",
+    "filed": "2026-11-25T18:05:56.274Z",
+    "measured": {
+      "seconds": 5.387,
+      "start": 0.028,
+      "end": 5.25,
+      "peakDb": -3.21,
+      "rmsDb": -24.16,
+      "lufs": -20.92,
+      "truePeakDb": -3.09,
+      "low": 0.453,
+      "mid": 0.222,
+      "high": 0.325,
+      "tailDb": -17.28,
+      "hits": 4,
+      "hitsAt": [
+        {
+          "start": 0.034,
+          "end": 1.04,
+          "peakDb": -8.06
+        },
+        {
+          "start": 2.196,
+          "end": 2.29,
+          "peakDb": -11.75
+        },
+        {
+          "start": 2.424,
+          "end": 3.094,
+          "peakDb": -4.25
+        },
+        {
+          "start": 4.322,
+          "end": 5.204,
+          "peakDb": -3.21
+        }
+      ]
+    },
+    "line": {
+      "words": 8,
+      "seconds": 5.222,
+      "wordsPerSecond": 1.532,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.144,
+        1.214
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 8.7,
+      "fits": true,
+      "beatSeconds": 5
+    }
+  },
+  "chain": {
+    "trimStart": 0.03,
+    "trimEnd": 5.25,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 2.95,
+    "channels": 1,
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.2,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": -0.1,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 0.93,
+      "lufsBefore": -18.14,
+      "lufsAfter": -18.24
+    }
+  },
+  "measured": {
+    "seconds": 5.22,
+    "start": 0,
+    "end": 5.194,
+    "peakDb": -1.2,
+    "rmsDb": -21.92,
+    "lufs": -18.24,
+    "truePeakDb": -1.06,
+    "low": 0.371,
+    "mid": 0.257,
+    "high": 0.372,
+    "tailDb": -16.76,
+    "hits": 4,
+    "hitsAt": [
+      {
+        "start": 0.006,
+        "end": 1.01,
+        "peakDb": -6.14
+      },
+      {
+        "start": 2.166,
+        "end": 2.262,
+        "peakDb": -8.7
+      },
+      {
+        "start": 2.392,
+        "end": 3.066,
+        "peakDb": -1.26
+      },
+      {
+        "start": 4.292,
+        "end": 5.156,
+        "peakDb": -1.2
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 2 whole, 6 void",
+    "asks": 8,
+    "whole": 2,
+    "transcript": "Not a robot, it claims. We will see.",
+    "transcripts": [
+      "Not a robot, it claims. We will see.",
+      "Not a robot, it claims. We will see.",
+      "Not a robot. It claims. We will see.",
+      "Not a robot. It claims. We will see."
+    ],
+    "transcriptAgreed": "4 of 4",
+    "attitudes": [
+      "skeptical and cynical",
+      "suspicious and cynical"
+    ],
+    "accents": [
+      "American",
+      "American"
+    ],
+    "pitches": [
+      "low",
+      "low"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": true,
+    "unimpressedAndSmugVotes": "2 yes, 0 no",
+    "basis": [
+      "The speaker uses a deep, slow, and deliberate tone that conveys doubt and a lack of enthusiasm.",
+      "The low pitch and deliberate, slow pacing convey a strong sense of skepticism and smug superiority without any warmth or excitement.",
+      "The text expresses overt doubt and challenges a claim, which inherently suggests a cynical, suspicious, and unimpressed tone.",
+      "The analysis rests on the textual cues 'It claims' and 'We will see', which inherently suggest a cold, skeptical, and cynical tone rather than warmth or excitement."
+    ]
+  },
+  "why": "",
+  "forced": false,
+  "problems": [],
+  "fixture": false,
+  "file": "line.boss.verify.0.wav",
+  "seconds": 5.22,
+  "sha256": "f5094070b98b8cfa78ed48f93657fc28166b7f72642f9ea66092c95d66712baa",
+  "rekept": {
+    "when": "2026-11-26T17:46:32Z",
+    "why": "its levelled true peak was -0.1 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
+    "was": {
+      "sha256": "e13250260bb8e9c861f064641d945afff253c736f6859265de884370b705dcf3",
+      "truePeakDb": -0.13,
+      "lufs": -18.14
+    }
+  }
+}

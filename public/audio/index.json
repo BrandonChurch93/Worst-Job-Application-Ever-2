@@ -750,277 +750,180 @@
   ],
   "lines": [
     {
-      "id": "line.boss.lastStand.0",
-      "file": "line.boss.lastStand.0.mp3",
-      "seconds": 3.512,
+      "id": "line.boss.unfold.0",
+      "file": "line.boss.unfold.0.mp3",
+      "seconds": 23.324,
       "mime": "audio/mpeg",
-      "bytes": 56832,
-      "sha256": "16b66196f8ada4adef059b16a4375e0029584509d9fd64510ea743a8854267c2"
+      "bytes": 373632,
+      "sha256": "093e6583f1e5a15e762db50603ea74e18684475e7c7639d8c004100976ce40d6",
+      "words": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
+      "starts": [
+        0.006,
+        2.208,
+        5.182,
+        8.524,
+        11.356,
+        13.856,
+        17.88,
+        20.772
+      ]
     },
     {
-      "id": "line.boss.slabs.0",
-      "file": "line.boss.slabs.0.mp3",
-      "seconds": 8.038,
+      "id": "line.boss.unfold.1",
+      "file": "line.boss.unfold.1.mp3",
+      "seconds": 5.59,
       "mime": "audio/mpeg",
-      "bytes": 129024,
-      "sha256": "e9e81c4f3a5a5857626c6ed503ed97b4988d3ed970333635522788daaaf636c6"
+      "bytes": 89856,
+      "sha256": "1a4cbad659e7b7accbcacbff703b24dfc34826754bedc47a3d83e18cdaa81616",
+      "words": "But then / they remember / their student loans.",
+      "starts": [
+        0.004,
+        1.736,
+        3.806
+      ]
+    },
+    {
+      "id": "line.boss.unfold.2",
+      "file": "line.boss.unfold.2.mp3",
+      "seconds": 3.954,
+      "mime": "audio/mpeg",
+      "bytes": 63744,
+      "sha256": "51d929e0e4dc7add7c120cfd13d67fb37578f8eae1dac9fd40a89097d62cf6e6",
+      "words": "They turn back. / One more round.",
+      "starts": [
+        0.004,
+        2.754
+      ]
     },
     {
       "id": "line.boss.verify.0",
       "file": "line.boss.verify.0.mp3",
-      "seconds": 5.22,
+      "seconds": 8.49,
       "mime": "audio/mpeg",
-      "bytes": 84096,
-      "sha256": "2281a70fb991f112ed8673098c9bffba232b4578dee317364db15df28ed9f217"
+      "bytes": 136320,
+      "sha256": "b4ddda83a62ba5d98fd7cf823410552569f8e3c71a2e7bef38d17cd788219d38",
+      "words": "They declare themselves human. / The form / takes that as a threat.",
+      "starts": [
+        0.004,
+        3.958,
+        6.43
+      ]
     },
     {
       "id": "line.decision.letter.0",
       "file": "line.decision.letter.0.mp3",
-      "seconds": 3.474,
+      "seconds": 12.742,
       "mime": "audio/mpeg",
-      "bytes": 56064,
-      "sha256": "d6a6085cfbf26edaecfb4075df29920d4cd1b5922b5cc568b7e2feedcd3bbde7"
+      "bytes": 204288,
+      "sha256": "4020ae7b423f57eed682a4bd899b2a16e0282d475ef492a6442ed922d3616e17",
+      "words": "After careful consideration, / the company / has decided / to move forward / with other candidates.",
+      "starts": [
+        0.006,
+        3.466,
+        5.616,
+        8.166,
+        11.01
+      ]
     },
     {
-      "id": "line.decision.metrics.0",
-      "file": "line.decision.metrics.0.mp3",
-      "seconds": 5.736,
+      "id": "line.decision.reset.0",
+      "file": "line.decision.reset.0.mp3",
+      "seconds": 3.198,
       "mime": "audio/mpeg",
-      "bytes": 92160,
-      "sha256": "2360378d40917c6b1a393f3beb9e949e4afd93b2ecf98f6e90053136f492708e"
-    },
-    {
-      "id": "line.live.boss.slow.0",
-      "file": "line.live.boss.slow.0.mp3",
-      "seconds": 4.192,
-      "mime": "audio/mpeg",
-      "bytes": 67584,
-      "sha256": "02037173a65de2ebba35077277aebf99249d6c9bf7a6c54782b394503b2e3017"
-    },
-    {
-      "id": "line.live.boss.verify.0",
-      "file": "line.live.boss.verify.0.mp3",
-      "seconds": 4.072,
-      "mime": "audio/mpeg",
-      "bytes": 65664,
-      "sha256": "43e1bd93fba5a7b84c1308c775914251c7fd509d6e86ad8baaa4948291f9d354"
-    },
-    {
-      "id": "line.live.hit.0",
-      "file": "line.live.hit.0.mp3",
-      "seconds": 0.578,
-      "mime": "audio/mpeg",
-      "bytes": 9984,
-      "sha256": "c7f9c5eb59f00dc9ed4d5be0d2ac7f1f016c71a2904daf4936db7c1c42e5f829"
-    },
-    {
-      "id": "line.live.hit.1",
-      "file": "line.live.hit.1.mp3",
-      "seconds": 0.72,
-      "mime": "audio/mpeg",
-      "bytes": 11904,
-      "sha256": "f4d6a902ff690c5d2d2b633d11c8dc43cb622d30bb6f3a5cc032d56d88ba5df1"
-    },
-    {
-      "id": "line.live.hit.2",
-      "file": "line.live.hit.2.mp3",
-      "seconds": 3.48,
-      "mime": "audio/mpeg",
-      "bytes": 56064,
-      "sha256": "55b222650416e362389fdfc53e7bf8c98085bdaa06120716318106caef5bd374"
-    },
-    {
-      "id": "line.live.hit.3",
-      "file": "line.live.hit.3.mp3",
-      "seconds": 3.166,
-      "mime": "audio/mpeg",
-      "bytes": 51072,
-      "sha256": "a5be8a20b23f26f9d8c4e6713346fa2a393d5c03dbd44c5916b2d64933370821"
-    },
-    {
-      "id": "line.live.idle.0",
-      "file": "line.live.idle.0.mp3",
-      "seconds": 8.014,
-      "mime": "audio/mpeg",
-      "bytes": 128640,
-      "sha256": "091c85236d139d5ba992cd83af110cf84621bd032d9cf7c87ed6e7919b431ff9"
-    },
-    {
-      "id": "line.live.idle.1",
-      "file": "line.live.idle.1.mp3",
-      "seconds": 5.162,
-      "mime": "audio/mpeg",
-      "bytes": 83328,
-      "sha256": "62daa9dd792a7e274b8f73806ced40abbd370b16a7574ec00c9a480e0a697bee"
-    },
-    {
-      "id": "line.live.pinball.flipper.0",
-      "file": "line.live.pinball.flipper.0.mp3",
-      "seconds": 6.186,
-      "mime": "audio/mpeg",
-      "bytes": 99456,
-      "sha256": "3717192a45088a3f00c6e1ed92c0150b41f09256dcb579f66e7b62ec52a56090"
-    },
-    {
-      "id": "line.live.realKeyboard.0",
-      "file": "line.live.realKeyboard.0.mp3",
-      "seconds": 3.632,
-      "mime": "audio/mpeg",
-      "bytes": 58752,
-      "sha256": "7d68ebe8b6f874d5caebdacf006f9cfda234b7e4a3671800c92a1cce7fa6e9e0"
-    },
-    {
-      "id": "line.live.skip.0",
-      "file": "line.live.skip.0.mp3",
-      "seconds": 5.644,
-      "mime": "audio/mpeg",
-      "bytes": 91008,
-      "sha256": "8ff58e6dd59261728d3e7ea66caea71602792ee45efb7f367c6893234fbc144f"
-    },
-    {
-      "id": "line.live.slowTyping.0",
-      "file": "line.live.slowTyping.0.mp3",
-      "seconds": 2.766,
-      "mime": "audio/mpeg",
-      "bytes": 44928,
-      "sha256": "0140aa2a75cf25fb51c5ded57e2bf9d98fa62f64c7b617126e9b1a9377b6893b"
-    },
-    {
-      "id": "line.live.tugLost.0",
-      "file": "line.live.tugLost.0.mp3",
-      "seconds": 4.018,
-      "mime": "audio/mpeg",
-      "bytes": 64896,
-      "sha256": "2d2d58470a366bab0a9601b0870dfd1a24739f4b4da987db3a5efa108833d838"
-    },
-    {
-      "id": "line.live.watchFilm.0",
-      "file": "line.live.watchFilm.0.mp3",
-      "seconds": 4.016,
-      "mime": "audio/mpeg",
-      "bytes": 64896,
-      "sha256": "0d6f02f49cc0268181369d64824c25c6332f6c843ff2e38ed0ce434b4caa2e02"
-    },
-    {
-      "id": "line.marketing.perks.0",
-      "file": "line.marketing.perks.0.mp3",
-      "seconds": 6.728,
-      "mime": "audio/mpeg",
-      "bytes": 108288,
-      "sha256": "2e80d4b557b8e147f04b31ddc8fcd92ef1ac93de8c86f83b08781ec01aff9dd4"
+      "bytes": 51840,
+      "sha256": "11d24b68f106fa4d9c6592749e7e84f28eebc932bbe0f21d4e18e5cf444325ce",
+      "words": "On to / the next application.",
+      "starts": [
+        0.002,
+        1.862
+      ]
     },
     {
       "id": "line.marketing.stroll.0",
       "file": "line.marketing.stroll.0.mp3",
-      "seconds": 5.122,
+      "seconds": 19.46,
       "mime": "audio/mpeg",
-      "bytes": 82560,
-      "sha256": "1ee9b0f87a463152f98030c3b1d4eb09e9c5de735e9b2933e0a8d7cbb0b70100"
-    },
-    {
-      "id": "line.pinball.coffee.0",
-      "file": "line.pinball.coffee.0.mp3",
-      "seconds": 3.936,
-      "mime": "audio/mpeg",
-      "bytes": 63360,
-      "sha256": "8ca257363536e7e0bcf21a27bd12e4f0b2e85cab1caa779d379136e9e6101c36"
-    },
-    {
-      "id": "line.pinball.drain.0",
-      "file": "line.pinball.drain.0.mp3",
-      "seconds": 4.558,
-      "mime": "audio/mpeg",
-      "bytes": 73344,
-      "sha256": "cb406d7b8eae8328cb0b8efbbefe371ba31dfc1ec3fca13d7f24b10e406875ac"
-    },
-    {
-      "id": "line.pinball.fired.0",
-      "file": "line.pinball.fired.0.mp3",
-      "seconds": 5.54,
-      "mime": "audio/mpeg",
-      "bytes": 89088,
-      "sha256": "c40f84224dc05f9cc2bfcb40c2bb38fab27e1fcb6fb309b14e706ffcfe2f26fb"
-    },
-    {
-      "id": "line.pinball.launch.0",
-      "file": "line.pinball.launch.0.mp3",
-      "seconds": 3.092,
-      "mime": "audio/mpeg",
-      "bytes": 49920,
-      "sha256": "89d0922af2f344609072d5d334f6e957453bc73cc8eb3107b878b680f603493e"
-    },
-    {
-      "id": "line.pinball.lobby.0",
-      "file": "line.pinball.lobby.0.mp3",
-      "seconds": 3.672,
-      "mime": "audio/mpeg",
-      "bytes": 59136,
-      "sha256": "9ec5823a643e56b1b406c6d04b5fb0afac22737e6293940f98e90ff80db1285f"
-    },
-    {
-      "id": "line.pinball.replyAll.0",
-      "file": "line.pinball.replyAll.0.mp3",
-      "seconds": 2.962,
-      "mime": "audio/mpeg",
-      "bytes": 48000,
-      "sha256": "db6d263d69dc260291e5c8c56c49479ada7a628be1e708e0f72819abf9722091"
+      "bytes": 311808,
+      "sha256": "0d51a9fec52481a2ce00d58cc2f5c2ab3826610c290c8ae6f12524f3aa3d260e",
+      "words": "Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026.",
+      "starts": [
+        0.004,
+        1.844,
+        3.912,
+        6.858,
+        9.464,
+        12.198,
+        14.596,
+        17.238
+      ]
     },
     {
       "id": "line.pinball.seal.0",
       "file": "line.pinball.seal.0.mp3",
-      "seconds": 6.696,
+      "seconds": 8.882,
       "mime": "audio/mpeg",
-      "bytes": 107520,
-      "sha256": "639d6b6d9300c7525ce4eb21b00583f1e08567f94b55b4b5d0a109d6cb28cd24"
-    },
-    {
-      "id": "line.step1.email.0",
-      "file": "line.step1.email.0.mp3",
-      "seconds": 7.472,
-      "mime": "audio/mpeg",
-      "bytes": 120192,
-      "sha256": "aa72df9858ace73c7800f1f335af3a51de8b0a21bf311d0acea400a9cf5fbea9"
+      "bytes": 142848,
+      "sha256": "26b1f2455a513940da8f05c46297530ea33f72f99ce9841a8d0753c10072e07c",
+      "words": "The company / gently collects / the applicant / for an unpaid assessment."
     },
     {
       "id": "line.step1.firstName.0",
       "file": "line.step1.firstName.0.mp3",
-      "seconds": 5.344,
+      "seconds": 9.242,
       "mime": "audio/mpeg",
-      "bytes": 86016,
-      "sha256": "c7ca67d787ffc3cf57981aa971c553202db9ea4fd8aed0b6553c6d29f5ed39b6"
+      "bytes": 148608,
+      "sha256": "4474be9e446818a4426fc28c63581cd11587a5c15add8e8015f87dc219709642",
+      "words": "The application / has sensed / a candidate. / ATS turrets rise.",
+      "starts": [
+        0.004,
+        2.43,
+        4.706,
+        6.992
+      ]
     },
     {
-      "id": "line.step1.firstName.1",
-      "file": "line.step1.firstName.1.mp3",
-      "seconds": 5.184,
+      "id": "line.step1.shredded.0",
+      "file": "line.step1.shredded.0.mp3",
+      "seconds": 13.394,
       "mime": "audio/mpeg",
-      "bytes": 83328,
-      "sha256": "3b3ffe2300a98cf1a25f444a9ac3eb172578603dd466f5729f24e3609208780d"
-    },
-    {
-      "id": "line.step1.tug.0",
-      "file": "line.step1.tug.0.mp3",
-      "seconds": 7.816,
-      "mime": "audio/mpeg",
-      "bytes": 125568,
-      "sha256": "16714d2b6e765c906669167357c0de3882d8a0f1ca6f03258c1acc8218058b95"
+      "bytes": 215040,
+      "sha256": "ad0e6fbe753c10a0a42073662451acbe026510bf91bb0f5a18e0cbfd97d7cb71",
+      "words": "The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway.",
+      "starts": [
+        0.002,
+        2.072,
+        4.364,
+        7.578,
+        10.596,
+        12.652
+      ]
     },
     {
       "id": "line.step2.crank.0",
       "file": "line.step2.crank.0.mp3",
-      "seconds": 6.454,
+      "seconds": 6.282,
       "mime": "audio/mpeg",
-      "bytes": 103680,
-      "sha256": "a268a41ed41300d2bb1abbcb328c2cb27dd87ebf4d5235f9c2f335cd9089439e"
+      "bytes": 100992,
+      "sha256": "274daf12bc58c7d2ddc4de9440be8092e9bcd193fc1fda9aa6ec4699fe5e1d36",
+      "words": "The applicant / must turn the volume / all the way up.",
+      "starts": [
+        0.004,
+        2.172,
+        5.232
+      ]
     },
     {
-      "id": "line.step2.dial.0",
-      "file": "line.step2.dial.0.mp3",
-      "seconds": 5.864,
+      "id": "line.step2.crank.1",
+      "file": "line.step2.crank.1.mp3",
+      "seconds": 1.586,
       "mime": "audio/mpeg",
-      "bytes": 94464,
-      "sha256": "5754e4fdc5d990143207b06f14fd09808470a30bc01cff7b94485bc90e9f91bd"
+      "bytes": 26112,
+      "sha256": "4421c91206116d825c74a34f79fb5c3d30362ec833b1015b28b04b1ff86f9e2c",
+      "words": "They will regret that.",
+      "starts": [
+        0.002
+      ]
     }
   ],
-  "totalBytes": 6987452
+  "totalBytes": 6241724
 }

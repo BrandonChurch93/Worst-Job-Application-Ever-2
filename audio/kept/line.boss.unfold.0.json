@@ -1,0 +1,319 @@
+{
+  "id": "line.boss.unfold.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "boss.unfold",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
+  "text": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "The applicant <break time=\"1.0s\" /> is ready to give up. <break time=\"1.0s\" /> There is no salary listed. <break time=\"1.0s\" /> No guarantee <break time=\"1.0s\" /> their resume <break time=\"1.0s\" /> makes it past the ATS. <break time=\"1.0s\" /> Their hand moves <break time=\"1.0s\" /> to close the Chrome tab.",
+    "call": 205
+  },
+  "askedSeconds": null,
+  "cost": "101",
+  "take": {
+    "number": 1,
+    "round": "script-003",
+    "file": "take-1.mp3",
+    "sha256": "c98c4a28dbc0fb1fb5b2cbe6051ce426b2c9306def0b2f239291aa12dde1aa6d",
+    "filed": "2026-11-28T02:32:51.500Z",
+    "measured": {
+      "seconds": 23.638,
+      "start": 0.094,
+      "end": 23.418,
+      "peakDb": -3.36,
+      "rmsDb": -22.84,
+      "lufs": -20.6,
+      "truePeakDb": -2.89,
+      "low": 0.577,
+      "mid": 0.141,
+      "high": 0.282,
+      "tailDb": -19.23,
+      "hits": 16,
+      "hitsAt": [
+        {
+          "start": 0.1,
+          "end": 0.514,
+          "peakDb": -8.74
+        },
+        {
+          "start": 0.624,
+          "end": 1.18,
+          "peakDb": -5.61
+        },
+        {
+          "start": 2.31,
+          "end": 3.08,
+          "peakDb": -6.7
+        },
+        {
+          "start": 3.142,
+          "end": 3.776,
+          "peakDb": -4.55
+        },
+        {
+          "start": 3.898,
+          "end": 3.984,
+          "peakDb": -19.52
+        },
+        {
+          "start": 5.28,
+          "end": 7.404,
+          "peakDb": -3.73
+        },
+        {
+          "start": 8.618,
+          "end": 8.962,
+          "peakDb": -10.57
+        },
+        {
+          "start": 9.024,
+          "end": 10.208,
+          "peakDb": -7.31
+        },
+        {
+          "start": 11.45,
+          "end": 12.72,
+          "peakDb": -4.21
+        },
+        {
+          "start": 13.952,
+          "end": 14.546,
+          "peakDb": -3.36
+        },
+        {
+          "start": 14.638,
+          "end": 15.274,
+          "peakDb": -5.23
+        },
+        {
+          "start": 15.338,
+          "end": 16.672,
+          "peakDb": -4.2
+        },
+        {
+          "start": 17.992,
+          "end": 19.584,
+          "peakDb": -3.49
+        },
+        {
+          "start": 20.87,
+          "end": 21.016,
+          "peakDb": -5.14
+        },
+        {
+          "start": 21.096,
+          "end": 21.926,
+          "peakDb": -5.22
+        },
+        {
+          "start": 21.988,
+          "end": 23.36,
+          "peakDb": -5.27
+        }
+      ]
+    },
+    "line": {
+      "words": 29,
+      "seconds": 23.324,
+      "wordsPerSecond": 1.243,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 7,
+      "pausesFound": 7,
+      "pauses": [
+        1.128,
+        1.262,
+        1.208,
+        1.23,
+        1.216,
+        1.306,
+        1.272
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 18.125,
+      "fits": false,
+      "beatSeconds": 29.1
+    }
+  },
+  "chain": {
+    "trimStart": 0.094,
+    "trimEnd": 23.418,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 3.19,
+    "channels": 1,
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.74,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": 0.32,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 1.61,
+      "lufsBefore": -18,
+      "lufsAfter": -18.21
+    }
+  },
+  "measured": {
+    "seconds": 23.324,
+    "start": 0,
+    "end": 23.292,
+    "peakDb": -1.74,
+    "rmsDb": -21.34,
+    "lufs": -18.21,
+    "truePeakDb": -1.05,
+    "low": 0.412,
+    "mid": 0.199,
+    "high": 0.389,
+    "tailDb": -19.87,
+    "hits": 16,
+    "hitsAt": [
+      {
+        "start": 0.008,
+        "end": 0.42,
+        "peakDb": -6.3
+      },
+      {
+        "start": 0.53,
+        "end": 1.086,
+        "peakDb": -2.26
+      },
+      {
+        "start": 2.218,
+        "end": 3.19,
+        "peakDb": -1.74
+      },
+      {
+        "start": 3.254,
+        "end": 3.684,
+        "peakDb": -4.64
+      },
+      {
+        "start": 3.804,
+        "end": 3.876,
+        "peakDb": -16.69
+      },
+      {
+        "start": 5.184,
+        "end": 7.308,
+        "peakDb": -1.74
+      },
+      {
+        "start": 8.524,
+        "end": 8.862,
+        "peakDb": -6.01
+      },
+      {
+        "start": 8.928,
+        "end": 10.114,
+        "peakDb": -3.59
+      },
+      {
+        "start": 11.356,
+        "end": 12.628,
+        "peakDb": -1.74
+      },
+      {
+        "start": 13.86,
+        "end": 14.452,
+        "peakDb": -1.74
+      },
+      {
+        "start": 14.544,
+        "end": 15.18,
+        "peakDb": -1.99
+      },
+      {
+        "start": 15.244,
+        "end": 16.582,
+        "peakDb": -1.74
+      },
+      {
+        "start": 17.898,
+        "end": 19.492,
+        "peakDb": -1.74
+      },
+      {
+        "start": 20.776,
+        "end": 20.92,
+        "peakDb": -1.9
+      },
+      {
+        "start": 21.002,
+        "end": 21.832,
+        "peakDb": -1.86
+      },
+      {
+        "start": 21.894,
+        "end": 23.256,
+        "peakDb": -2.12
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 15 asks, 2 whole, 13 void",
+    "asks": 15,
+    "whole": 2,
+    "transcript": "The applicant is ready to give up. There is no salary listed, no guarantee their resume makes it past the ATS. Their hand moves to close the Chrome tab.",
+    "transcripts": [
+      "The applicant is ready to give up. There is no salary listed, no guarantee their resume makes it past the ATS. Their hand moves to close the Chrome tab.",
+      "The applicant is ready to give up. There is no salary listed, no guarantee. Their resume makes it past the ATS. Their hand moves to close the Chrome tab."
+    ],
+    "transcriptAgreed": "2 of 2",
+    "attitudes": [
+      "serious and dramatic",
+      "detached, dramatic, and cold"
+    ],
+    "accents": [
+      "American",
+      "American"
+    ],
+    "pitches": [
+      "low",
+      "low"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": false,
+    "unimpressedAndSmugVotes": "1 yes, 1 no",
+    "basis": [
+      "The speaker has a deep, slow, and resonant delivery with a serious, dramatic tone that lacks warmth or excitement.",
+      "The slow, deliberate pacing and deep, monotone delivery create a cold, observant narrator feel without any emotional warmth."
+    ]
+  },
+  "why": "too long for its place: 23.324 s in 18.125 s, over by 5.199 s; listener: not unimpressed and a little smug (1 yes, 1 no; [\"serious and dramatic\",\"detached, dramatic, and cold\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
+  "forced": true,
+  "problems": [
+    "the listener did not hear an unimpressed, slightly smug speaker",
+    "it is 23.324 s long and its place in the film has 18.125 s"
+  ],
+  "fixture": false,
+  "file": "line.boss.unfold.0.wav",
+  "seconds": 23.324,
+  "sha256": "b17022aad40c00531a91f6579202ee9f11dcc496c79d53dd591f23f2c5c5c135"
+}

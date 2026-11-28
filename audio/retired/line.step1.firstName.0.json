@@ -1,0 +1,196 @@
+{
+  "id": "line.step1.firstName.0",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "step1.firstName",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 0,
+  "words": "First name. / Under fire. / Standard onboarding.",
+  "text": "First name. / Under fire. / Standard onboarding.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "First name. <break time=\"1.0s\" /> Under fire. <break time=\"1.0s\" /> Standard onboarding.",
+    "call": 15
+  },
+  "askedSeconds": null,
+  "cost": "29",
+  "take": {
+    "number": 1,
+    "round": "build",
+    "file": "take-1.mp3",
+    "sha256": "df124bfeadafa7906106ba753329af591385bf4a5cec7949e92c05981b80bb7b",
+    "filed": "2026-11-25T18:05:38.537Z",
+    "measured": {
+      "seconds": 5.433,
+      "start": 0.03,
+      "end": 5.376,
+      "peakDb": -2.67,
+      "rmsDb": -22.59,
+      "lufs": -20.28,
+      "truePeakDb": -2.54,
+      "low": 0.554,
+      "mid": 0.204,
+      "high": 0.242,
+      "tailDb": -22.3,
+      "hits": 3,
+      "hitsAt": [
+        {
+          "start": 0.04,
+          "end": 0.808,
+          "peakDb": -2.67
+        },
+        {
+          "start": 1.96,
+          "end": 2.804,
+          "peakDb": -7.01
+        },
+        {
+          "start": 3.954,
+          "end": 5.32,
+          "peakDb": -2.9
+        }
+      ]
+    },
+    "line": {
+      "words": 6,
+      "seconds": 5.346,
+      "wordsPerSecond": 1.122,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.132,
+        1.128
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 4.5,
+      "fits": false,
+      "beatSeconds": 8
+    }
+  },
+  "chain": {
+    "trimStart": 0.032,
+    "trimEnd": 5.376,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 2.59,
+    "channels": 1,
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.23,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": 0.06,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 1.18,
+      "lufsBefore": -18,
+      "lufsAfter": -18.46
+    }
+  },
+  "measured": {
+    "seconds": 5.344,
+    "start": 0,
+    "end": 5.318,
+    "peakDb": -1.23,
+    "rmsDb": -21.16,
+    "lufs": -18.46,
+    "truePeakDb": -1.07,
+    "low": 0.466,
+    "mid": 0.258,
+    "high": 0.277,
+    "tailDb": -22.29,
+    "hits": 3,
+    "hitsAt": [
+      {
+        "start": 0.008,
+        "end": 0.782,
+        "peakDb": -1.23
+      },
+      {
+        "start": 1.928,
+        "end": 2.776,
+        "peakDb": -5.97
+      },
+      {
+        "start": 3.922,
+        "end": 5.27,
+        "peakDb": -1.23
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
+    "asks": 8,
+    "whole": 1,
+    "transcript": "First name. Under fire. Standard onboarding.",
+    "transcripts": [
+      "First name. Under fire. Standard onboarding.",
+      "First name. Under fire. Standard onboarding.",
+      "First name under fire standard onboarding."
+    ],
+    "transcriptAgreed": "3 of 3",
+    "attitudes": [
+      "serious and factual"
+    ],
+    "accents": [
+      "American"
+    ],
+    "pitches": [
+      "low"
+    ],
+    "whisper": null,
+    "whisperVotes": "0 yes, 1 no",
+    "laugh": null,
+    "laughVotes": "0 yes, 1 no",
+    "warmth": null,
+    "warmthVotes": "0 yes, 1 no",
+    "excitement": null,
+    "excitementVotes": "0 yes, 1 no",
+    "unimpressedAndSmug": null,
+    "unimpressedAndSmugVotes": "0 yes, 1 no",
+    "basis": [
+      "The speaker delivers the phrases with a steady, low-pitched tone, lacking any laughter, whispering, or emotional warmth.",
+      "The speaker's delivery is flat, clinical, and somewhat arrogant, showing no signs of warmth, excitement, laughter, or whispering.",
+      "The speaker's flat, detached delivery completely lacks warmth or excitement, resulting in an aloof and smugly unimpressed tone."
+    ]
+  },
+  "why": "too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks",
+  "forced": true,
+  "problems": [
+    "the listener left \"whisper\" unanswered",
+    "the listener left \"laugh\" unanswered",
+    "the listener left \"warmth\" unanswered",
+    "the listener left \"excitement\" unanswered",
+    "the listener left \"unimpressedAndSmug\" unanswered",
+    "it is 5.346 s long and its place in the film has 4.5 s"
+  ],
+  "fixture": false,
+  "file": "line.step1.firstName.0.wav",
+  "seconds": 5.344,
+  "sha256": "0a9c334b7571c5ca70514575f47b5819fdf98626d458e5ba27da0be30f205de1",
+  "rekept": {
+    "when": "2026-11-26T17:46:32Z",
+    "why": "its levelled true peak was 0.06 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
+    "was": {
+      "sha256": "308e7465879c3056736c7190f3ddd7a46bc44e4bc1886890805692df612f8435",
+      "truePeakDb": 0.06,
+      "lufs": -18
+    }
+  }
+}

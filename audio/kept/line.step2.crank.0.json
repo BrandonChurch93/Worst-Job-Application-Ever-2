@@ -10,212 +10,187 @@
   "group": null,
   "describes": null,
   "index": 0,
-  "words": "Volume. / All the way up. / It will regret that.",
-  "text": "Volume. / All the way up. / It will regret that.",
+  "words": "The applicant / must turn the volume / all the way up.",
+  "text": "The applicant / must turn the volume / all the way up.",
   "prompt": null,
   "settings": {
     "speed": 0.7,
     "stability": 0.75,
-    "breakSeconds": 1.3,
-    "sent": "Volume. <break time=\"1.3s\" /> All the way up. <break time=\"1.3s\" /> It will regret that.",
-    "call": 152
+    "breakSeconds": 1.1,
+    "sent": "The applicant <break time=\"1.1s\" /> must turn the volume <break time=\"1.1s\" /> all the way up.",
+    "call": 202
   },
   "askedSeconds": null,
-  "cost": "29",
+  "cost": "32",
   "take": {
-    "number": 3,
-    "round": "build",
-    "file": "take-3.mp3",
-    "sha256": "23707810f8b8d9c084582b3d9ef986020efcd11945e50e8441a89867d40aa468",
-    "filed": "2026-11-25T18:44:54.436Z",
+    "number": 4,
+    "round": "script-003",
+    "file": "take-4.mp3",
+    "sha256": "1281d8464bea3b48f4a67bce8771f442865d6b760634994149ca8bca7b1eed15",
+    "filed": "2026-11-28T02:32:42.616Z",
     "measured": {
-      "seconds": 6.641,
-      "start": 0.022,
-      "end": 6.476,
-      "peakDb": -1.51,
-      "rmsDb": -21.34,
-      "lufs": -20.32,
-      "truePeakDb": -1.5,
-      "low": 0.766,
-      "mid": 0.191,
-      "high": 0.043,
-      "tailDb": -19.4,
+      "seconds": 6.502,
+      "start": 0.038,
+      "end": 6.32,
+      "peakDb": -1.27,
+      "rmsDb": -19.24,
+      "lufs": -17.36,
+      "truePeakDb": -1.25,
+      "low": 0.515,
+      "mid": 0.358,
+      "high": 0.127,
+      "tailDb": -18.6,
       "hits": 6,
       "hitsAt": [
         {
-          "start": 0.026,
-          "end": 0.796,
-          "peakDb": -4.11
+          "start": 0.044,
+          "end": 0.414,
+          "peakDb": -1.27
         },
         {
-          "start": 2.292,
-          "end": 3.206,
-          "peakDb": -2.94
+          "start": 0.492,
+          "end": 1.014,
+          "peakDb": -8.96
         },
         {
-          "start": 3.316,
-          "end": 3.336,
-          "peakDb": -11.3
+          "start": 2.21,
+          "end": 2.562,
+          "peakDb": -2.63
         },
         {
-          "start": 4.912,
-          "end": 5.84,
-          "peakDb": -1.51
+          "start": 2.686,
+          "end": 4.046,
+          "peakDb": -3.49
         },
         {
-          "start": 5.916,
-          "end": 6.254,
-          "peakDb": -4.5
+          "start": 5.27,
+          "end": 6.148,
+          "peakDb": -2.07
         },
         {
-          "start": 6.332,
-          "end": 6.442,
-          "peakDb": -5.48
+          "start": 6.252,
+          "end": 6.272,
+          "peakDb": -20.51
         }
       ]
     },
     "line": {
-      "words": 9,
-      "seconds": 6.454,
-      "wordsPerSecond": 1.394,
+      "words": 10,
+      "seconds": 6.282,
+      "wordsPerSecond": 1.592,
       "maxWordsPerSecond": 1.6,
       "pauseMarks": 2,
       "pausesFound": 2,
       "pauses": [
-        1.478,
-        1.562
+        1.19,
+        1.208
       ],
       "paceHolds": true,
       "pausesHold": true,
-      "room": 6.9,
-      "fits": true,
-      "beatSeconds": 6
+      "room": 6.25,
+      "fits": false,
+      "beatSeconds": 8.4
     }
   },
   "chain": {
-    "trimStart": 0.022,
-    "trimEnd": 6.476,
+    "trimStart": 0.038,
+    "trimEnd": 6.32,
     "cutToSeconds": null,
     "fadeInMs": 3,
     "fadeOutMs": 120,
     "lowCutHz": 80,
     "levelMeasure": "lufs",
     "levelDb": -18,
-    "gainDb": 3.93,
+    "gainDb": -0.75,
     "channels": 1,
-    "loop": null,
-    "peak": {
-      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
-      "boundDb": -1,
-      "limitDb": -1.13,
-      "attackMs": 5,
-      "releaseMs": 50,
-      "rounds": 2,
-      "truePeakBeforeDb": 4.23,
-      "truePeakAfterDb": -1.02,
-      "reductionDb": 5.24,
-      "lufsBefore": -18,
-      "lufsAfter": -18.37
-    }
+    "loop": null
   },
   "measured": {
-    "seconds": 6.454,
-    "start": 0,
-    "end": 6.43,
-    "peakDb": -1.13,
-    "rmsDb": -19.79,
-    "lufs": -18.37,
-    "truePeakDb": -1.02,
-    "low": 0.637,
-    "mid": 0.294,
-    "high": 0.069,
-    "tailDb": -17.55,
-    "hits": 6,
+    "seconds": 6.282,
+    "start": 0.002,
+    "end": 6.256,
+    "peakDb": -1.11,
+    "rmsDb": -20.3,
+    "lufs": -18,
+    "truePeakDb": -1.11,
+    "low": 0.482,
+    "mid": 0.381,
+    "high": 0.137,
+    "tailDb": -19.62,
+    "hits": 5,
     "hitsAt": [
       {
-        "start": 0.004,
-        "end": 0.79,
-        "peakDb": -1.13
+        "start": 0.008,
+        "end": 0.374,
+        "peakDb": -1.11
       },
       {
-        "start": 2.27,
-        "end": 3.19,
-        "peakDb": -1.13
+        "start": 0.454,
+        "end": 0.976,
+        "peakDb": -10.91
       },
       {
-        "start": 3.294,
-        "end": 3.316,
-        "peakDb": -6.01
+        "start": 2.172,
+        "end": 2.522,
+        "peakDb": -3.37
       },
       {
-        "start": 4.89,
-        "end": 5.822,
-        "peakDb": -1.13
+        "start": 2.648,
+        "end": 4.006,
+        "peakDb": -2.78
       },
       {
-        "start": 5.894,
-        "end": 6.234,
-        "peakDb": -1.13
-      },
-      {
-        "start": 6.308,
-        "end": 6.41,
-        "peakDb": -1.92
+        "start": 5.234,
+        "end": 6.1,
+        "peakDb": -1.3
       }
     ]
   },
   "listener": {
-    "by": "the audio evaluation tool: 6 asks, 1 whole, 5 void",
-    "asks": 6,
-    "whole": 1,
-    "transcript": "Volume all the way up. It will regret that.",
+    "by": "the audio evaluation tool: 15 asks, 2 whole, 13 void",
+    "asks": 15,
+    "whole": 2,
+    "transcript": "The applicant must turn the volume all the way up.",
     "transcripts": [
-      "Volume all the way up. It will regret that."
+      "The applicant must turn the volume all the way up.",
+      "The applicant must turn the volume all the way up."
     ],
-    "transcriptAgreed": "1 of 1",
+    "transcriptAgreed": "2 of 2",
     "attitudes": [
-      "ominous and threatening"
+      "authoritative and formal",
+      "serious and instructional"
     ],
     "accents": [
+      "American",
       "American"
     ],
     "pitches": [
-      "low"
+      "low",
+      "middle"
     ],
-    "whisper": null,
-    "whisperVotes": "0 yes, 1 no",
-    "laugh": null,
-    "laughVotes": "0 yes, 1 no",
-    "warmth": null,
-    "warmthVotes": "0 yes, 1 no",
-    "excitement": null,
-    "excitementVotes": "0 yes, 1 no",
-    "unimpressedAndSmug": null,
-    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": false,
+    "unimpressedAndSmugVotes": "0 yes, 2 no",
     "basis": [
-      "The deep pitch, deliberate pacing, and lack of warmth give the voice a menacing and confident quality."
+      "The speaker delivers the instruction in a deep, steady voice lacking emotional inflection.",
+      "The speaker delivers the instruction clearly and neutrally at a moderate pitch, showing no audible signs of emotion, laughter, or whispering."
     ]
   },
-  "why": "tone not judged: 1 whole answers in 6 asks",
+  "why": "too long for its place: 6.282 s in 6.25 s, over by 0.032 s; listener: not unimpressed and a little smug (0 yes, 2 no; [\"authoritative and formal\",\"serious and instructional\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
   "forced": true,
   "problems": [
-    "the listener left \"whisper\" unanswered",
-    "the listener left \"laugh\" unanswered",
-    "the listener left \"warmth\" unanswered",
-    "the listener left \"excitement\" unanswered",
-    "the listener left \"unimpressedAndSmug\" unanswered"
+    "the listener did not hear an unimpressed, slightly smug speaker",
+    "it is 6.282 s long and its place in the film has 6.25 s"
   ],
   "fixture": false,
   "file": "line.step2.crank.0.wav",
-  "seconds": 6.454,
-  "sha256": "d01b9d011e510859290375b999661b8f6d6eb0baf6cdf40585f81c3dd0ad5765",
-  "rekept": {
-    "when": "2026-11-26T17:46:32Z",
-    "why": "its levelled true peak was 4.23 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
-    "was": {
-      "sha256": "bc6d06a5fa19e11791edd533ae9f341b0d4438f8be07b03c55a3dd1869af6fc1",
-      "truePeakDb": 4.22,
-      "lufs": -18
-    }
-  }
+  "seconds": 6.282,
+  "sha256": "bf5f8d0add26b314a784198218058a0f9f2d9478d0115c05d56d08abdfbc4532"
 }

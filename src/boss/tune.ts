@@ -148,17 +148,18 @@ export const MERCY = {
 
 // Line 6 of the narrator starts on the tick. Line 7 starts when the boss is formed, and no sooner than line 6 has ended.
 export const LINE6 = {
-  after: 7.175 // s from the tick before line 7's clock may start: line 6's length at the narrator's fastest pace (11 words at 1.6 a second, 6.875 s) plus the gap of 0.3 s
+  after: 8.79 // s from the tick before line 7's clock may start: line 6's kept take (8.49 s, take 2 of 03:46Z November 28) plus the gap of 0.3 s; tests/takes-timing.test.ts holds it to the index
 } as const
 
-// Line 7 of the narrator, said between the forming and the fight (change note 003). Lengths are the Builder's of 22:45 and the shell's of 22:48; they move the day the voice is recorded.
+// Line 7 of the narrator, said between the forming and the fight (change note 003). The lengths and the phrase ends are those of the kept takes in public/audio/index.json (recorded November 27, kept 03:46Z November 28).
+// tests/takes-timing.test.ts holds every one of them to the index, so a new take or an edited one fails a test here and does not drift.
 export const LINE7 = {
-  part0: 18.125, // s of `boss.unfold.0`, from `boss-formed`
-  ends: [1.25, 4.375, 7.5, 8.75, 10, 13.125, 15, 18.125] as const, // s at which its phrases end: where the shell stops it after a `boss-turn`
+  part0: 23.324, // s of `boss.unfold.0`, from `boss-formed`
+  ends: [2.208, 5.182, 8.524, 11.356, 13.856, 17.88, 20.772, 23.324] as const, // s at which its phrases end (the start of the next one, and the end of the file): where the shell stops it after a `boss-turn`
   gap: 0.3, // s of silence the shell leaves before the next part
-  part1: 4.375, // s of `boss.unfold.1`
-  music: 2.5, // s into part 1 at which "their student loans." and the music start (`boss-music`)
-  part2: 3.75, // s of `boss.unfold.2`; the turret locks on its last word
+  part1: 5.59, // s of `boss.unfold.1`
+  music: 3.806, // s into part 1 at which "their student loans." and the music start (`boss-music`)
+  part2: 3.954, // s of `boss.unfold.2`; the turret locks on its last word
   power: 0.6, // s into part 2 at which the gold starts to build (`power-up`), after the arrow has turned round
   glow: 2, // s the gold builds
   alone: 1.5, // s without a move or a press after which the arrow droops and starts to drift (live)

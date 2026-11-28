@@ -65,40 +65,18 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `audio/kept/lever-pull.wav` | Sound effect `lever-pull` | Generated with the sound tool, take 1 (build) | `audio/kept/lever-pull.json` |
 | `audio/kept/lift.wav` | Sound effect `lift` | Generated with the sound tool, take 1 (build) | `audio/kept/lift.json` |
 | `audio/kept/lights-down.wav` | Sound effect `lights-down` | Generated with the sound tool, take 1 (build) | `audio/kept/lights-down.json` |
-| `audio/kept/line.boss.lastStand.0.wav` | Narrator line: Session expired. / A classic. | Generated with the sound tool, take 1 (build) | `audio/kept/line.boss.lastStand.0.json` |
-| `audio/kept/line.boss.slabs.0.wav` | Narrator line: The submit button fights back. / Even it / does not want this job. | Generated with the sound tool, take 1 (build) | `audio/kept/line.boss.slabs.0.json` |
-| `audio/kept/line.boss.verify.0.wav` | Narrator line: Not a robot, / it claims. / We will see. | Generated with the sound tool, take 1 (build) | `audio/kept/line.boss.verify.0.json` |
-| `audio/kept/line.decision.letter.0.wav` | Narrator line: Rejected. / In under a second. | Generated with the sound tool, take 1 (build) | `audio/kept/line.decision.letter.0.json` |
-| `audio/kept/line.decision.metrics.0.wav` | Narrator line: It will apply again tomorrow. / They always do. | Generated with the sound tool, take 1 (build) | `audio/kept/line.decision.metrics.0.json` |
-| `audio/kept/line.live.boss.slow.0.wav` | Narrator line: The button is winning. / The button. | Generated with the sound tool, take 2 (build) | `audio/kept/line.live.boss.slow.0.json` |
-| `audio/kept/line.live.boss.verify.0.wav` | Narrator line: It claims to be human. / Bold. | Generated with the sound tool, take 2 (build) | `audio/kept/line.live.boss.verify.0.json` |
-| `audio/kept/line.live.hit.0.wav` | Narrator line: Hit. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.hit.0.json` |
-| `audio/kept/line.live.hit.1.wav` | Narrator line: Again. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.hit.1.json` |
-| `audio/kept/line.live.hit.2.wav` | Narrator line: Still typing. / It has bills. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.hit.2.json` |
-| `audio/kept/line.live.hit.3.wav` | Narrator line: Resilient. / Or desperate. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.hit.3.json` |
-| `audio/kept/line.live.idle.0.wav` | Narrator line: The applicant has frozen. / A common defence. / It does not work. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.idle.0.json` |
-| `audio/kept/line.live.idle.1.wav` | Narrator line: Take your time. / The job is not real. | Generated with the sound tool, take 3 (build) | `audio/kept/line.live.idle.1.json` |
-| `audio/kept/line.live.pinball.flipper.0.wav` | Narrator line: It found the flippers. / Hope / is a powerful thing. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.pinball.flipper.0.json` |
-| `audio/kept/line.live.realKeyboard.0.wav` | Narrator line: A real keyboard. / How optimistic. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.realKeyboard.0.json` |
-| `audio/kept/line.live.skip.0.wav` | Narrator line: It skips ahead. / Efficient. / Still unemployed. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.skip.0.json` |
-| `audio/kept/line.live.slowTyping.0.wav` | Narrator line: One letter. / Well done. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.slowTyping.0.json` |
-| `audio/kept/line.live.tugLost.0.wav` | Narrator line: The shredder / always eats first. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.tugLost.0.json` |
-| `audio/kept/line.live.watchFilm.0.wav` | Narrator line: It would rather watch. / Understandable. | Generated with the sound tool, take 1 (build) | `audio/kept/line.live.watchFilm.0.json` |
-| `audio/kept/line.marketing.perks.0.wav` | Narrator line: It spots unlimited PTO. / Poor thing / believes it. | Generated with the sound tool, take 1 (build) | `audio/kept/line.marketing.perks.0.json` |
-| `audio/kept/line.marketing.stroll.0.wav` | Narrator line: Here we find / the applicant. / Rent is due. | Generated with the sound tool, take 1 (build) | `audio/kept/line.marketing.stroll.0.json` |
-| `audio/kept/line.pinball.coffee.0.wav` | Narrator line: It runs on coffee / and fear. | Generated with the sound tool, take 1 (build) | `audio/kept/line.pinball.coffee.0.json` |
-| `audio/kept/line.pinball.drain.0.wav` | Narrator line: The unemployment office. / It knows the way. | Generated with the sound tool, take 1 (build) | `audio/kept/line.pinball.drain.0.json` |
-| `audio/kept/line.pinball.fired.0.wav` | Narrator line: Fired. / Before it was hired. / A new record. | Generated with the sound tool, take 1 (build) | `audio/kept/line.pinball.fired.0.json` |
-| `audio/kept/line.pinball.launch.0.wav` | Narrator line: A career. / In reverse. | Generated with the sound tool, take 1 (build) | `audio/kept/line.pinball.launch.0.json` |
-| `audio/kept/line.pinball.lobby.0.wav` | Narrator line: Corporate headquarters. / So close. | Generated with the sound tool, take 1 (build) | `audio/kept/line.pinball.lobby.0.json` |
-| `audio/kept/line.pinball.replyAll.0.wav` | Narrator line: Someone / hit reply all. | Generated with the sound tool, take 1 (build) | `audio/kept/line.pinball.replyAll.0.json` |
-| `audio/kept/line.pinball.seal.0.wav` | Narrator line: The skills assessment. / No skills / will be assessed. | Generated with the sound tool, take 1 (build) | `audio/kept/line.pinball.seal.0.json` |
-| `audio/kept/line.step1.email.0.wav` | Narrator line: A valid email. / Rejected. / The system / is working as designed. | Generated with the sound tool, take 2 (build) | `audio/kept/line.step1.email.0.json` |
-| `audio/kept/line.step1.firstName.0.wav` | Narrator line: First name. / Under fire. / Standard onboarding. | Generated with the sound tool, take 1 (build) | `audio/kept/line.step1.firstName.0.json` |
-| `audio/kept/line.step1.firstName.1.wav` | Narrator line: Hit. / It keeps typing. / It has bills. | Generated with the sound tool, take 1 (build) | `audio/kept/line.step1.firstName.1.json` |
-| `audio/kept/line.step1.tug.0.wav` | Narrator line: It fights for the resume. / Two pages. / One of them is true. | Generated with the sound tool, take 1 (build) | `audio/kept/line.step1.tug.0.json` |
-| `audio/kept/line.step2.crank.0.wav` | Narrator line: Volume. / All the way up. / It will regret that. | Generated with the sound tool, take 3 (build) | `audio/kept/line.step2.crank.0.json` |
-| `audio/kept/line.step2.dial.0.wav` | Narrator line: A rotary phone. / The applicant / has never seen one. | Generated with the sound tool, take 1 (build) | `audio/kept/line.step2.dial.0.json` |
+| `audio/kept/line.boss.unfold.0.wav` | Narrator line: The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab. | Generated with the sound tool, take 1 (script-003) | `audio/kept/line.boss.unfold.0.json` |
+| `audio/kept/line.boss.unfold.1.wav` | Narrator line: But then / they remember / their student loans. | Generated with the sound tool, take 1 (script-003) | `audio/kept/line.boss.unfold.1.json` |
+| `audio/kept/line.boss.unfold.2.wav` | Narrator line: They turn back. / One more round. | Generated with the sound tool, take 1 (script-003) | `audio/kept/line.boss.unfold.2.json` |
+| `audio/kept/line.boss.verify.0.wav` | Narrator line: They declare themselves human. / The form / takes that as a threat. | Generated with the sound tool, take 2 (script-003) | `audio/kept/line.boss.verify.0.json` |
+| `audio/kept/line.decision.letter.0.wav` | Narrator line: After careful consideration, / the company / has decided / to move forward / with other candidates. | Generated with the sound tool, take 2 (script-003) | `audio/kept/line.decision.letter.0.json` |
+| `audio/kept/line.decision.reset.0.wav` | Narrator line: On to / the next application. | Generated with the sound tool, take 2 (script-003) | `audio/kept/line.decision.reset.0.json` |
+| `audio/kept/line.marketing.stroll.0.wav` | Narrator line: Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026. | Generated with the sound tool, take 2 (script-003) | `audio/kept/line.marketing.stroll.0.json` |
+| `audio/kept/line.pinball.seal.0.wav` | Narrator line: The company / gently collects / the applicant / for an unpaid assessment. | Generated with the sound tool, take 2 (script-003) | `audio/kept/line.pinball.seal.0.json` |
+| `audio/kept/line.step1.firstName.0.wav` | Narrator line: The application / has sensed / a candidate. / ATS turrets rise. | Generated with the sound tool, take 2 (script-003) | `audio/kept/line.step1.firstName.0.json` |
+| `audio/kept/line.step1.shredded.0.wav` | Narrator line: The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway. | Generated with the sound tool, take 1 (script-003) | `audio/kept/line.step1.shredded.0.json` |
+| `audio/kept/line.step2.crank.0.wav` | Narrator line: The applicant / must turn the volume / all the way up. | Generated with the sound tool, take 4 (script-003) | `audio/kept/line.step2.crank.0.json` |
+| `audio/kept/line.step2.crank.1.wav` | Narrator line: They will regret that. | Generated with the sound tool, take 1 (script-003) | `audio/kept/line.step2.crank.1.json` |
 | `audio/kept/metrics-card.wav` | Sound effect `metrics-card` | Generated with the sound tool, take 1 (build) | `audio/kept/metrics-card.json` |
 | `audio/kept/page-turn.wav` | Sound effect `page-turn` | Generated with the sound tool, take 2 (build) | `audio/kept/page-turn.json` |
 | `audio/kept/paper-slide.wav` | Sound effect `paper-slide` | Generated with the sound tool, take 1 (build) | `audio/kept/paper-slide.json` |
@@ -152,37 +130,15 @@ One row for each kept sound, and after `--pack` one for each sound file the site
 | `public/audio/boss-loop.flac` | The site's copy of `boss-loop` | Made by `npm run sound -- --pack` from `audio/kept/boss-loop.wav` | `audio/kept/boss-loop.json` |
 | `public/audio/room-tone.flac` | The site's copy of `room-tone` | Made by `npm run sound -- --pack` from `audio/kept/room-tone.wav` | `audio/kept/room-tone.json` |
 | `public/audio/shredder.flac` | The site's copy of `shredder` | Made by `npm run sound -- --pack` from `audio/kept/shredder.wav` | `audio/kept/shredder.json` |
-| `public/audio/line.boss.lastStand.0.mp3` | The site's copy of `line.boss.lastStand.0` | Made by `npm run sound -- --pack` from `audio/kept/line.boss.lastStand.0.wav` | `audio/kept/line.boss.lastStand.0.json` |
-| `public/audio/line.boss.slabs.0.mp3` | The site's copy of `line.boss.slabs.0` | Made by `npm run sound -- --pack` from `audio/kept/line.boss.slabs.0.wav` | `audio/kept/line.boss.slabs.0.json` |
+| `public/audio/line.boss.unfold.0.mp3` | The site's copy of `line.boss.unfold.0` | Made by `npm run sound -- --pack` from `audio/kept/line.boss.unfold.0.wav` | `audio/kept/line.boss.unfold.0.json` |
+| `public/audio/line.boss.unfold.1.mp3` | The site's copy of `line.boss.unfold.1` | Made by `npm run sound -- --pack` from `audio/kept/line.boss.unfold.1.wav` | `audio/kept/line.boss.unfold.1.json` |
+| `public/audio/line.boss.unfold.2.mp3` | The site's copy of `line.boss.unfold.2` | Made by `npm run sound -- --pack` from `audio/kept/line.boss.unfold.2.wav` | `audio/kept/line.boss.unfold.2.json` |
 | `public/audio/line.boss.verify.0.mp3` | The site's copy of `line.boss.verify.0` | Made by `npm run sound -- --pack` from `audio/kept/line.boss.verify.0.wav` | `audio/kept/line.boss.verify.0.json` |
 | `public/audio/line.decision.letter.0.mp3` | The site's copy of `line.decision.letter.0` | Made by `npm run sound -- --pack` from `audio/kept/line.decision.letter.0.wav` | `audio/kept/line.decision.letter.0.json` |
-| `public/audio/line.decision.metrics.0.mp3` | The site's copy of `line.decision.metrics.0` | Made by `npm run sound -- --pack` from `audio/kept/line.decision.metrics.0.wav` | `audio/kept/line.decision.metrics.0.json` |
-| `public/audio/line.live.boss.slow.0.mp3` | The site's copy of `line.live.boss.slow.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.boss.slow.0.wav` | `audio/kept/line.live.boss.slow.0.json` |
-| `public/audio/line.live.boss.verify.0.mp3` | The site's copy of `line.live.boss.verify.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.boss.verify.0.wav` | `audio/kept/line.live.boss.verify.0.json` |
-| `public/audio/line.live.hit.0.mp3` | The site's copy of `line.live.hit.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.hit.0.wav` | `audio/kept/line.live.hit.0.json` |
-| `public/audio/line.live.hit.1.mp3` | The site's copy of `line.live.hit.1` | Made by `npm run sound -- --pack` from `audio/kept/line.live.hit.1.wav` | `audio/kept/line.live.hit.1.json` |
-| `public/audio/line.live.hit.2.mp3` | The site's copy of `line.live.hit.2` | Made by `npm run sound -- --pack` from `audio/kept/line.live.hit.2.wav` | `audio/kept/line.live.hit.2.json` |
-| `public/audio/line.live.hit.3.mp3` | The site's copy of `line.live.hit.3` | Made by `npm run sound -- --pack` from `audio/kept/line.live.hit.3.wav` | `audio/kept/line.live.hit.3.json` |
-| `public/audio/line.live.idle.0.mp3` | The site's copy of `line.live.idle.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.idle.0.wav` | `audio/kept/line.live.idle.0.json` |
-| `public/audio/line.live.idle.1.mp3` | The site's copy of `line.live.idle.1` | Made by `npm run sound -- --pack` from `audio/kept/line.live.idle.1.wav` | `audio/kept/line.live.idle.1.json` |
-| `public/audio/line.live.pinball.flipper.0.mp3` | The site's copy of `line.live.pinball.flipper.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.pinball.flipper.0.wav` | `audio/kept/line.live.pinball.flipper.0.json` |
-| `public/audio/line.live.realKeyboard.0.mp3` | The site's copy of `line.live.realKeyboard.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.realKeyboard.0.wav` | `audio/kept/line.live.realKeyboard.0.json` |
-| `public/audio/line.live.skip.0.mp3` | The site's copy of `line.live.skip.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.skip.0.wav` | `audio/kept/line.live.skip.0.json` |
-| `public/audio/line.live.slowTyping.0.mp3` | The site's copy of `line.live.slowTyping.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.slowTyping.0.wav` | `audio/kept/line.live.slowTyping.0.json` |
-| `public/audio/line.live.tugLost.0.mp3` | The site's copy of `line.live.tugLost.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.tugLost.0.wav` | `audio/kept/line.live.tugLost.0.json` |
-| `public/audio/line.live.watchFilm.0.mp3` | The site's copy of `line.live.watchFilm.0` | Made by `npm run sound -- --pack` from `audio/kept/line.live.watchFilm.0.wav` | `audio/kept/line.live.watchFilm.0.json` |
-| `public/audio/line.marketing.perks.0.mp3` | The site's copy of `line.marketing.perks.0` | Made by `npm run sound -- --pack` from `audio/kept/line.marketing.perks.0.wav` | `audio/kept/line.marketing.perks.0.json` |
+| `public/audio/line.decision.reset.0.mp3` | The site's copy of `line.decision.reset.0` | Made by `npm run sound -- --pack` from `audio/kept/line.decision.reset.0.wav` | `audio/kept/line.decision.reset.0.json` |
 | `public/audio/line.marketing.stroll.0.mp3` | The site's copy of `line.marketing.stroll.0` | Made by `npm run sound -- --pack` from `audio/kept/line.marketing.stroll.0.wav` | `audio/kept/line.marketing.stroll.0.json` |
-| `public/audio/line.pinball.coffee.0.mp3` | The site's copy of `line.pinball.coffee.0` | Made by `npm run sound -- --pack` from `audio/kept/line.pinball.coffee.0.wav` | `audio/kept/line.pinball.coffee.0.json` |
-| `public/audio/line.pinball.drain.0.mp3` | The site's copy of `line.pinball.drain.0` | Made by `npm run sound -- --pack` from `audio/kept/line.pinball.drain.0.wav` | `audio/kept/line.pinball.drain.0.json` |
-| `public/audio/line.pinball.fired.0.mp3` | The site's copy of `line.pinball.fired.0` | Made by `npm run sound -- --pack` from `audio/kept/line.pinball.fired.0.wav` | `audio/kept/line.pinball.fired.0.json` |
-| `public/audio/line.pinball.launch.0.mp3` | The site's copy of `line.pinball.launch.0` | Made by `npm run sound -- --pack` from `audio/kept/line.pinball.launch.0.wav` | `audio/kept/line.pinball.launch.0.json` |
-| `public/audio/line.pinball.lobby.0.mp3` | The site's copy of `line.pinball.lobby.0` | Made by `npm run sound -- --pack` from `audio/kept/line.pinball.lobby.0.wav` | `audio/kept/line.pinball.lobby.0.json` |
-| `public/audio/line.pinball.replyAll.0.mp3` | The site's copy of `line.pinball.replyAll.0` | Made by `npm run sound -- --pack` from `audio/kept/line.pinball.replyAll.0.wav` | `audio/kept/line.pinball.replyAll.0.json` |
 | `public/audio/line.pinball.seal.0.mp3` | The site's copy of `line.pinball.seal.0` | Made by `npm run sound -- --pack` from `audio/kept/line.pinball.seal.0.wav` | `audio/kept/line.pinball.seal.0.json` |
-| `public/audio/line.step1.email.0.mp3` | The site's copy of `line.step1.email.0` | Made by `npm run sound -- --pack` from `audio/kept/line.step1.email.0.wav` | `audio/kept/line.step1.email.0.json` |
 | `public/audio/line.step1.firstName.0.mp3` | The site's copy of `line.step1.firstName.0` | Made by `npm run sound -- --pack` from `audio/kept/line.step1.firstName.0.wav` | `audio/kept/line.step1.firstName.0.json` |
-| `public/audio/line.step1.firstName.1.mp3` | The site's copy of `line.step1.firstName.1` | Made by `npm run sound -- --pack` from `audio/kept/line.step1.firstName.1.wav` | `audio/kept/line.step1.firstName.1.json` |
-| `public/audio/line.step1.tug.0.mp3` | The site's copy of `line.step1.tug.0` | Made by `npm run sound -- --pack` from `audio/kept/line.step1.tug.0.wav` | `audio/kept/line.step1.tug.0.json` |
+| `public/audio/line.step1.shredded.0.mp3` | The site's copy of `line.step1.shredded.0` | Made by `npm run sound -- --pack` from `audio/kept/line.step1.shredded.0.wav` | `audio/kept/line.step1.shredded.0.json` |
 | `public/audio/line.step2.crank.0.mp3` | The site's copy of `line.step2.crank.0` | Made by `npm run sound -- --pack` from `audio/kept/line.step2.crank.0.wav` | `audio/kept/line.step2.crank.0.json` |
-| `public/audio/line.step2.dial.0.mp3` | The site's copy of `line.step2.dial.0` | Made by `npm run sound -- --pack` from `audio/kept/line.step2.dial.0.wav` | `audio/kept/line.step2.dial.0.json` |
+| `public/audio/line.step2.crank.1.mp3` | The site's copy of `line.step2.crank.1` | Made by `npm run sound -- --pack` from `audio/kept/line.step2.crank.1.wav` | `audio/kept/line.step2.crank.1.json` |

@@ -410,6 +410,47 @@ export function refuseStale(stale, what) {
   throw new Error(`${what} is refused: ${stale.length} of the files in audio/kept ${stale.length === 1 ? 'is' : 'are'} not the ${stale.length === 1 ? 'file its record names' : 'files their records name'} (sha256 differs): ${stale.join(', ')}. The wav files are not in the repo. Copy them from the tree that kept them, or keep the sounds again`)
 }
 
+// The kept narrator lines whose words the script no longer has: the beat or the live key is gone, its place holds no line,
+// or other words stand there now.
+export function goneLines(P) {
+  const n = narration()
+  return keptRecords(P).filter((r) => r.kind !== 'cue').map((r) => {
+    const list = r.liveKey ? n.liveOnly[r.liveKey] : n.film[r.beat]
+    const entry = Array.isArray(list) ? list[r.index] : undefined
+    const text = entry === undefined ? null : typeof entry === 'string' ? entry : entry.text
+    return text === r.words ? null : { id: r.id, was: r.words, now: text }
+  }).filter(Boolean)
+}
+
+// Retires them. The record and its wav move from audio/kept to audio/retired, so the pack ships nothing the site will never play,
+// and the take in the ledger is no longer kept and says when and why. Nothing is deleted: the take files stay where they were filed.
+// Without --do it only lists them.
+export function retireLines(a, P, c) {
+  const gone = goneLines(P)
+  if (!gone.length) return console.log('retire: every kept narrator line still has its words in the script')
+  for (const g of gone) console.log(`${a.do ? 'retired' : 'would retire'}: ${g.id}. Kept words: "${g.was}". The script now: ${g.now === null ? 'no line at this place' : `"${g.now}"`}`)
+  if (!a.do) return console.log(`retire: ${gone.length} kept narrator lines are not in the script. Say --do to retire them`)
+  const retired = path.join(P.audio, 'retired')
+  fs.mkdirSync(retired, { recursive: true })
+  const ledger = readLedger(P)
+  const when = new Date().toISOString()
+  for (const g of gone) {
+    for (const ext of ['json', 'wav']) {
+      const from = path.join(P.kept, `${g.id}.${ext}`)
+      if (fs.existsSync(from)) fs.renameSync(from, path.join(retired, `${g.id}.${ext}`))
+    }
+    for (const t of ledger.takes) {
+      if (!(t.keptAs ?? []).includes(g.id)) continue
+      t.keptAs = t.keptAs.filter((id) => id !== g.id)
+      t.kept = t.keptAs.length > 0
+      t.retired = [...(t.retired ?? []), { id: g.id, when, why: g.now === null ? 'the script has no line at this place any more' : 'the script has other words at this place' }]
+    }
+  }
+  saveLedger(P, ledger, c)
+  writeAssetRows(P)
+  console.log(`retire: ${gone.length} kept narrator lines moved to ${rel(retired)}. Pack again: npm run sound -- --pack`)
+}
+
 // One row for each sound file under public/audio, so that every file the site ships is named.
 function shippedRows(P, head) {
   const file = path.join(P.pub, 'index.json')
@@ -432,6 +473,16 @@ function writeAssetRows(P) {
 
 const encode = (wav, argv) => run('ffmpeg', ['-v', 'error', '-i', wav, '-map_metadata', '-1', '-fflags', '+bitexact', '-flags:a', '+bitexact', ...argv, '-'])
 
+// Where each phrase of a kept line starts, in seconds from the start of its file: the first sound, then the end of each pause.
+// A phrase is the words between two pause marks. When the pauses found are not as many as the marks, no starts are given.
+export function phraseStarts(mono, sampleRate, words, M) {
+  const marks = words.split(/\s+/).filter((w) => w === narration().pauseMark).length
+  const first = M.dsp.loudSpans(mono, sampleRate, M.levels.CHAIN.pauseDb, 0, 0)[0]
+  const pauses = M.dsp.findPauses(mono, sampleRate)
+  if (!first || pauses.length !== marks) return { marks, found: pauses.length, starts: null }
+  return { marks, found: pauses.length, starts: [first.start, ...pauses.map((p) => p.end)].map((n) => Number((n / sampleRate).toFixed(3))) }
+}
+
 // Builds what the site ships: one packed file of the short sounds with its index, the loops, the narrator's lines.
 export function pack(P, c, M, quiet = false) {
   refuseStale(staleKept(P), 'the pack')
@@ -441,6 +492,7 @@ export function pack(P, c, M, quiet = false) {
   const index = { version: 1, sampleRate: c.audio.sampleRate, pack: null, sfx: [], loops: [], lines: [], totalBytes: 0 }
   const chunks = []
   const linePeaks = []
+  const noStarts = []
   let offset = 0
   for (const r of records) {
     const wav = path.join(P.kept, r.file)
@@ -450,7 +502,9 @@ export function pack(P, c, M, quiet = false) {
       fs.writeFileSync(path.join(P.pub, file), bytes)
       const decoded = decodeFile(path.join(P.pub, file), c.audio.sampleRate)
       linePeaks.push({ id: r.id, db: M.levels.toDb(M.dsp.peak(decoded.channels[0])) })
-      index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length, sha256: sha(bytes) })
+      const times = phraseStarts(M.dsp.toMono(decodeFile(wav, c.audio.sampleRate)), c.audio.sampleRate, r.words ?? '', M)
+      if (!times.starts) noStarts.push(`${r.id} (${times.found} pauses for ${times.marks} marks)`)
+      index.lines.push({ id: r.id, file, seconds: r.seconds, mime: 'audio/mpeg', bytes: bytes.length, sha256: sha(bytes), words: r.words ?? '', ...(times.starts ? { starts: times.starts } : {}) })
     } else if (r.loop) {
       const bytes = encode(wav, ['-c:a', 'flac', '-sample_fmt', 's16', '-compression_level', '8', '-f', 'flac'])
       const file = `${r.id}.flac`
@@ -478,10 +532,12 @@ export function pack(P, c, M, quiet = false) {
     const over = linePeaks.filter((l) => l.db > 0).sort((x, y) => y.db - x.db)
     const top = linePeaks.slice().sort((x, y) => y.db - x.db)[0]
     if (top) console.log(`pack: the narrator lines at ${M.levels.PACK.lineKbps} kbit decode with their largest sample at ${top.db.toFixed(2)} dB (${top.id})`)
+    const timed = index.lines.filter((l) => l.starts).length
+    if (index.lines.length) console.log(`pack: ${timed} of ${index.lines.length} narrator lines carry the start of each phrase${noStarts.length ? `; NO STARTS for ${noStarts.join(', ')}: the pauses found are not the marks of the words, so the caption of each is spread over its file by its words` : ''}`)
     if (over.length) console.log(`pack: OVER FULL SCALE. ${over.length} packed lines decode over 0 dB, which a browser's decoder cuts flat: ${over.map((l) => `${l.id} ${l.db.toFixed(2)} dB`).join(', ')}`)
     if (mb > c.audio.appMaxMb) console.log(`pack: OVER THE LIMIT. The site's sound files are ${mb.toFixed(2)} MB and audio.appMaxMb is ${c.audio.appMaxMb}`)
   }
-  return index
+  return Object.assign(index, { noStarts })
 }
 
 // The kept sounds as waveforms on one picture.
@@ -1219,7 +1275,8 @@ async function main() {
       } finally {
         await site.close()
       }
-    } else if (a.pack) pack(P, c, M)
+    } else if (a['retire-lines']) retireLines(a, P, c)
+    else if (a.pack) pack(P, c, M)
     else if (a.sheet) {
       const out = a.out && a.out !== true ? path.resolve(a.out) : at('out', 'work', 'audio', P.scratch ? 'sheet-fixtures.png' : 'sheet.png')
       const s = await sheet(P, c, M, out)

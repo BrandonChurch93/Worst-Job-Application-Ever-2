@@ -12,6 +12,8 @@ references/cache/
 __pycache__/
 audio/kept/*
 !audio/kept/*.json
+audio/retired/*
+!audio/retired/*.json
 audio/mix/*
 !audio/mix/*.json
 !audio/mix/*.md

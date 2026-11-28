@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { eventCues } from '../src/audio/cues'
+import { cueOfEvent } from '../src/audio/cues'
 import { config, filmSeconds } from '../src/config'
 import { narration, timedLines } from '../src/copy'
 import { cuesText, equivalentMm, framing, makeCut, moveOf, shotsText, type Cut } from '../src/film/cut'
@@ -82,7 +82,8 @@ describe('the cut list', () => {
       expect(e.frame).toBe(Math.floor((e.step * fps) / config.sim.stepHz))
       const b = cut.list.beats.find((x) => x.id === e.beat)!
       expect(e.frame >= b.first && e.frame <= b.last, `${e.name} on ${e.frame}`).toBe(true)
-      expect(e.cue).toBe(eventCues[e.name] ?? null)
+      // the cue the site and the mix play for the event (`cueOfEvent`), not the first table alone: the cut list names what is heard
+      expect(e.cue).toBe(cueOfEvent(e.name) ?? null)
     }
   })
 

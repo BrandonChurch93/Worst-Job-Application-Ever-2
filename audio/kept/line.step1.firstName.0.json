@@ -10,143 +10,187 @@
   "group": null,
   "describes": null,
   "index": 0,
-  "words": "First name. / Under fire. / Standard onboarding.",
-  "text": "First name. / Under fire. / Standard onboarding.",
+  "words": "The application / has sensed / a candidate. / ATS turrets rise.",
+  "text": "The application / has sensed / a candidate. / ATS turrets rise.",
   "prompt": null,
   "settings": {
     "speed": 0.7,
     "stability": 0.75,
     "breakSeconds": 1,
-    "sent": "First name. <break time=\"1.0s\" /> Under fire. <break time=\"1.0s\" /> Standard onboarding.",
-    "call": 15
+    "sent": "The application <break time=\"1.0s\" /> has sensed <break time=\"1.0s\" /> a candidate. <break time=\"1.0s\" /> ATS turrets rise.",
+    "call": 200
   },
   "askedSeconds": null,
-  "cost": "29",
+  "cost": "40",
   "take": {
-    "number": 1,
-    "round": "build",
-    "file": "take-1.mp3",
-    "sha256": "df124bfeadafa7906106ba753329af591385bf4a5cec7949e92c05981b80bb7b",
-    "filed": "2026-11-25T18:05:38.537Z",
+    "number": 2,
+    "round": "script-003",
+    "file": "take-2.mp3",
+    "sha256": "2f938d0a3ee681c9dbd14a33316ece21446689c39802478415c19b58eba569b5",
+    "filed": "2026-11-28T02:32:39.901Z",
     "measured": {
-      "seconds": 5.433,
-      "start": 0.03,
-      "end": 5.376,
-      "peakDb": -2.67,
-      "rmsDb": -22.59,
-      "lufs": -20.28,
-      "truePeakDb": -2.54,
-      "low": 0.554,
-      "mid": 0.204,
-      "high": 0.242,
-      "tailDb": -22.3,
-      "hits": 3,
+      "seconds": 9.474,
+      "start": 0.048,
+      "end": 9.29,
+      "peakDb": -1.26,
+      "rmsDb": -20.58,
+      "lufs": -17.58,
+      "truePeakDb": -1.26,
+      "low": 0.325,
+      "mid": 0.322,
+      "high": 0.353,
+      "tailDb": -20.18,
+      "hits": 8,
       "hitsAt": [
         {
-          "start": 0.04,
-          "end": 0.808,
-          "peakDb": -2.67
+          "start": 0.054,
+          "end": 0.392,
+          "peakDb": -3.11
         },
         {
-          "start": 1.96,
-          "end": 2.804,
-          "peakDb": -7.01
+          "start": 0.474,
+          "end": 0.616,
+          "peakDb": -4.46
         },
         {
-          "start": 3.954,
-          "end": 5.32,
-          "peakDb": -2.9
+          "start": 0.692,
+          "end": 1.344,
+          "peakDb": -7.18
+        },
+        {
+          "start": 2.492,
+          "end": 3.63,
+          "peakDb": -2.92
+        },
+        {
+          "start": 4.754,
+          "end": 4.888,
+          "peakDb": -4.28
+        },
+        {
+          "start": 4.986,
+          "end": 5.812,
+          "peakDb": -5.99
+        },
+        {
+          "start": 7.04,
+          "end": 7.71,
+          "peakDb": -1.26
+        },
+        {
+          "start": 7.782,
+          "end": 9.262,
+          "peakDb": -3.52
         }
       ]
     },
     "line": {
-      "words": 6,
-      "seconds": 5.346,
-      "wordsPerSecond": 1.122,
+      "words": 9,
+      "seconds": 9.242,
+      "wordsPerSecond": 0.974,
       "maxWordsPerSecond": 1.6,
-      "pauseMarks": 2,
-      "pausesFound": 2,
+      "pauseMarks": 3,
+      "pausesFound": 3,
       "pauses": [
-        1.132,
-        1.128
+        1.118,
+        1.114,
+        1.216
       ],
       "paceHolds": true,
       "pausesHold": true,
-      "room": 4.5,
-      "fits": false,
+      "room": 26.079,
+      "fits": true,
       "beatSeconds": 8
     }
   },
   "chain": {
-    "trimStart": 0.032,
-    "trimEnd": 5.376,
+    "trimStart": 0.048,
+    "trimEnd": 9.29,
     "cutToSeconds": null,
     "fadeInMs": 3,
     "fadeOutMs": 120,
     "lowCutHz": 80,
     "levelMeasure": "lufs",
     "levelDb": -18,
-    "gainDb": 2.59,
+    "gainDb": -0.33,
     "channels": 1,
-    "loop": null,
-    "peak": {
-      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
-      "boundDb": -1,
-      "limitDb": -1.23,
-      "attackMs": 5,
-      "releaseMs": 50,
-      "rounds": 2,
-      "truePeakBeforeDb": 0.06,
-      "truePeakAfterDb": -1.02,
-      "reductionDb": 1.18,
-      "lufsBefore": -18,
-      "lufsAfter": -18.46
-    }
+    "loop": null
   },
   "measured": {
-    "seconds": 5.344,
+    "seconds": 9.242,
     "start": 0,
-    "end": 5.318,
-    "peakDb": -1.23,
-    "rmsDb": -21.16,
-    "lufs": -18.46,
-    "truePeakDb": -1.07,
-    "low": 0.466,
-    "mid": 0.258,
-    "high": 0.277,
-    "tailDb": -22.29,
-    "hits": 3,
+    "end": 9.222,
+    "peakDb": -1.31,
+    "rmsDb": -21.26,
+    "lufs": -18,
+    "truePeakDb": -1.3,
+    "low": 0.272,
+    "mid": 0.347,
+    "high": 0.381,
+    "tailDb": -21.24,
+    "hits": 9,
     "hitsAt": [
       {
         "start": 0.008,
-        "end": 0.782,
-        "peakDb": -1.23
+        "end": 0.34,
+        "peakDb": -1.97
       },
       {
-        "start": 1.928,
-        "end": 2.776,
-        "peakDb": -5.97
+        "start": 0.426,
+        "end": 0.57,
+        "peakDb": -3.86
       },
       {
-        "start": 3.922,
-        "end": 5.27,
-        "peakDb": -1.23
+        "start": 0.644,
+        "end": 1.298,
+        "peakDb": -5.52
+      },
+      {
+        "start": 2.444,
+        "end": 3.582,
+        "peakDb": -3.23
+      },
+      {
+        "start": 4.706,
+        "end": 4.84,
+        "peakDb": -2.96
+      },
+      {
+        "start": 4.938,
+        "end": 5.62,
+        "peakDb": -8.75
+      },
+      {
+        "start": 5.682,
+        "end": 5.764,
+        "peakDb": -10.16
+      },
+      {
+        "start": 6.994,
+        "end": 7.662,
+        "peakDb": -1.31
+      },
+      {
+        "start": 7.734,
+        "end": 9.196,
+        "peakDb": -2.33
       }
     ]
   },
   "listener": {
-    "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
-    "asks": 8,
+    "by": "the audio evaluation tool: 25 asks, 1 whole, 24 void",
+    "asks": 25,
     "whole": 1,
-    "transcript": "First name. Under fire. Standard onboarding.",
+    "transcript": "The application has sensed a candidate. ATS turrets rise.",
     "transcripts": [
-      "First name. Under fire. Standard onboarding.",
-      "First name. Under fire. Standard onboarding.",
-      "First name under fire standard onboarding."
+      "The application has sensed a candidate. ATS turrets rise.",
+      "The application has sensed a candidate. ATS turrets rise.",
+      "The application has sensed a candidate. ATS turrets rise.",
+      "The application has sensed a candidate. ATS turrets rise."
     ],
-    "transcriptAgreed": "3 of 3",
+    "transcriptAgreed": "4 of 4",
     "attitudes": [
-      "serious and factual"
+      "cold, detached, and ominous"
     ],
     "accents": [
       "American"
@@ -165,32 +209,23 @@
     "unimpressedAndSmug": null,
     "unimpressedAndSmugVotes": "0 yes, 1 no",
     "basis": [
-      "The speaker delivers the phrases with a steady, low-pitched tone, lacking any laughter, whispering, or emotional warmth.",
-      "The speaker's delivery is flat, clinical, and somewhat arrogant, showing no signs of warmth, excitement, laughter, or whispering.",
-      "The speaker's flat, detached delivery completely lacks warmth or excitement, resulting in an aloof and smugly unimpressed tone."
+      "The slow, deliberate pacing and low pitch convey a sterile, robotic, and emotionally detached tone.",
+      "Because only a text transcript was provided, the acoustic features are unknown, and the attitude is inferred from the cold, automated sci-fi nature of the words.",
+      "The assessment is inferred from the deliberate, ominous, and mechanical nature of the provided text.",
+      "As only a text transcript was provided, the vocal characteristics are inferred from the mechanical and automated nature of the dialogue."
     ]
   },
-  "why": "too long for its place: 5.346 s in 4.5 s, over by 0.846 s; tone not judged: 1 whole answers in 8 asks",
+  "why": "tone not judged: 1 whole answers in 25 asks",
   "forced": true,
   "problems": [
     "the listener left \"whisper\" unanswered",
     "the listener left \"laugh\" unanswered",
     "the listener left \"warmth\" unanswered",
     "the listener left \"excitement\" unanswered",
-    "the listener left \"unimpressedAndSmug\" unanswered",
-    "it is 5.346 s long and its place in the film has 4.5 s"
+    "the listener left \"unimpressedAndSmug\" unanswered"
   ],
   "fixture": false,
   "file": "line.step1.firstName.0.wav",
-  "seconds": 5.344,
-  "sha256": "0a9c334b7571c5ca70514575f47b5819fdf98626d458e5ba27da0be30f205de1",
-  "rekept": {
-    "when": "2026-11-26T17:46:32Z",
-    "why": "its levelled true peak was 0.06 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
-    "was": {
-      "sha256": "308e7465879c3056736c7190f3ddd7a46bc44e4bc1886890805692df612f8435",
-      "truePeakDb": 0.06,
-      "lufs": -18
-    }
-  }
+  "seconds": 9.242,
+  "sha256": "194f0ad46739c5c1866574f810ec21a089f167683922b5d3d94a06daa77ee94d"
 }

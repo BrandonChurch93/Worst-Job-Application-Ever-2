@@ -1,0 +1,194 @@
+{
+  "id": "line.boss.unfold.1",
+  "kind": "line",
+  "cue": null,
+  "variant": null,
+  "class": "voice",
+  "loop": false,
+  "beat": "boss.unfold",
+  "liveKey": null,
+  "group": null,
+  "describes": null,
+  "index": 1,
+  "words": "But then / they remember / their student loans.",
+  "text": "But then / they remember / their student loans.",
+  "prompt": null,
+  "settings": {
+    "speed": 0.7,
+    "stability": 0.75,
+    "breakSeconds": 1,
+    "sent": "But then <break time=\"1.0s\" /> they remember <break time=\"1.0s\" /> their student loans.",
+    "call": 206
+  },
+  "askedSeconds": null,
+  "cost": "29",
+  "take": {
+    "number": 1,
+    "round": "script-003",
+    "file": "take-1.mp3",
+    "sha256": "964b4e7397d9fe10e5bcb0d23ee9690eafac7a902392d51f5b0fca8976e10d5c",
+    "filed": "2026-11-28T02:32:52.759Z",
+    "measured": {
+      "seconds": 5.851,
+      "start": 0.052,
+      "end": 5.644,
+      "peakDb": -3.39,
+      "rmsDb": -22.1,
+      "lufs": -20.07,
+      "truePeakDb": -3.38,
+      "low": 0.616,
+      "mid": 0.177,
+      "high": 0.207,
+      "tailDb": -17.67,
+      "hits": 4,
+      "hitsAt": [
+        {
+          "start": 0.058,
+          "end": 0.146,
+          "peakDb": -11.29
+        },
+        {
+          "start": 0.268,
+          "end": 0.638,
+          "peakDb": -4.97
+        },
+        {
+          "start": 1.794,
+          "end": 2.708,
+          "peakDb": -8.51
+        },
+        {
+          "start": 3.86,
+          "end": 5.626,
+          "peakDb": -3.39
+        }
+      ]
+    },
+    "line": {
+      "words": 7,
+      "seconds": 5.592,
+      "wordsPerSecond": 1.252,
+      "maxWordsPerSecond": 1.6,
+      "pauseMarks": 2,
+      "pausesFound": 2,
+      "pauses": [
+        1.15,
+        1.144
+      ],
+      "paceHolds": true,
+      "pausesHold": true,
+      "room": 4.375,
+      "fits": false,
+      "beatSeconds": 29.1
+    }
+  },
+  "chain": {
+    "trimStart": 0.054,
+    "trimEnd": 5.644,
+    "cutToSeconds": null,
+    "fadeInMs": 3,
+    "fadeOutMs": 120,
+    "lowCutHz": 80,
+    "levelMeasure": "lufs",
+    "levelDb": -18,
+    "gainDb": 2.81,
+    "channels": 1,
+    "loop": null,
+    "peak": {
+      "by": "ffmpeg alimiter, no make-up gain, its own level control off",
+      "boundDb": -1,
+      "limitDb": -1.05,
+      "attackMs": 5,
+      "releaseMs": 50,
+      "rounds": 2,
+      "truePeakBeforeDb": -0.58,
+      "truePeakAfterDb": -1.02,
+      "reductionDb": 0.44,
+      "lufsBefore": -18,
+      "lufsAfter": -18.03
+    }
+  },
+  "measured": {
+    "seconds": 5.59,
+    "start": 0.002,
+    "end": 5.574,
+    "peakDb": -1.05,
+    "rmsDb": -20.25,
+    "lufs": -18.03,
+    "truePeakDb": -1.02,
+    "low": 0.54,
+    "mid": 0.214,
+    "high": 0.246,
+    "tailDb": -18.68,
+    "hits": 4,
+    "hitsAt": [
+      {
+        "start": 0.004,
+        "end": 0.088,
+        "peakDb": -4.7
+      },
+      {
+        "start": 0.214,
+        "end": 0.584,
+        "peakDb": -1.74
+      },
+      {
+        "start": 1.74,
+        "end": 2.654,
+        "peakDb": -2.63
+      },
+      {
+        "start": 3.806,
+        "end": 5.556,
+        "peakDb": -1.05
+      }
+    ]
+  },
+  "listener": {
+    "by": "the audio evaluation tool: 3 asks, 2 whole, 1 void",
+    "asks": 3,
+    "whole": 2,
+    "transcript": "But then they remember their student loans.",
+    "transcripts": [
+      "But then they remember their student loans.",
+      "But then they remember their student loans."
+    ],
+    "transcriptAgreed": "2 of 2",
+    "attitudes": [
+      "cynical and bleak",
+      "dramatic and cynical"
+    ],
+    "accents": [
+      "American",
+      "American"
+    ],
+    "pitches": [
+      "low",
+      "middle"
+    ],
+    "whisper": false,
+    "whisperVotes": "0 yes, 2 no",
+    "laugh": false,
+    "laughVotes": "0 yes, 2 no",
+    "warmth": false,
+    "warmthVotes": "0 yes, 2 no",
+    "excitement": false,
+    "excitementVotes": "0 yes, 2 no",
+    "unimpressedAndSmug": false,
+    "unimpressedAndSmugVotes": "1 yes, 1 no",
+    "basis": [
+      "The speaker delivers the sobering statement with a low pitch, an American accent, and a cynical, unenthusiastic tone.",
+      "The speaker delivers the line with a steady, mid-pitch tone and a dramatic pause, lacking warmth or excitement."
+    ]
+  },
+  "why": "too long for its place: 5.592 s in 4.375 s, over by 1.217 s; listener: not unimpressed and a little smug (1 yes, 1 no; [\"cynical and bleak\",\"dramatic and cynical\"]). The Builder's ruling of 18:46Z: the listener's tone answers are not evidence",
+  "forced": true,
+  "problems": [
+    "the listener did not hear an unimpressed, slightly smug speaker",
+    "it is 5.592 s long and its place in the film has 4.375 s"
+  ],
+  "fixture": false,
+  "file": "line.boss.unfold.1.wav",
+  "seconds": 5.59,
+  "sha256": "bc72331cda25c1fa5fc99fe7f5dedb08012d2c6eddecbec74cbcc2855c16c65b"
+}

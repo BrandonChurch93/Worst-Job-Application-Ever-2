@@ -6,7 +6,7 @@ import * as pagesModule from '../src/pages'
 import * as configModule from '../src/config'
 import { spoken } from '../src/audio/cues'
 import { LIVE } from '../src/audio/levels'
-import { keyPage } from '../src/audio/standin'
+import { keyPage, standIns } from '../src/audio/standin'
 import { config } from '../src/config'
 import { visit } from '../tools/lib/sound-visit.mjs'
 
@@ -19,6 +19,7 @@ const run = (bot: string): Promise<Visit> => visit(load, config, bot)
 const gap = config.audio.liveNarratorMinGapSeconds
 const lineGap = config.audio.lineGapSeconds
 const pageOfLine: Record<string, string> = Object.fromEntries(Object.keys(spoken).map((key) => [`line.${key}`, keyPage(key)]))
+const script = standIns()
 const partOf = (line: string) => spoken[line.slice(5)]?.after !== undefined
 const keeps = (line: string) => spoken[line.slice(5)]?.keeps === true
 const heard = (v: Visit): Entry[] => {
@@ -33,7 +34,12 @@ describe('a whole visit of the live site through the stage and the sound engine'
     expect(v.finished).toBe(true)
     const lines = heard(v)
     expect(lines.length).toBeGreaterThanOrEqual(3)
-    expect(v.lines).toBe(0)
+    const voiced = v.log.filter((e) => e.what === 'spoken' && script.get(e.line.slice(5))?.kept === true)
+    // A voice is made once for each kept line that is spoken, and once more for each later part of a line that a jump moves.
+    const root = (key: string): string => (spoken[key]?.after === undefined ? key : root(spoken[key]!.after!))
+    const jumped = new Set(v.log.filter((e) => e.what === 'cut' && spoken[e.line.slice(5)]?.jump !== undefined).map((e) => e.line.slice(5)))
+    const again = voiced.filter((e) => partOf(e.line) && jumped.has(root(e.line.slice(5))))
+    expect(v.lines).toBe(voiced.length + again.length)
     expect(lines[0]).toMatchObject({ line: 'line.marketing.stroll.0', page: 'marketing' })
     expect(lines[0]!.start!).toBeLessThan(0.1 + LIVE.openingWaitSeconds)
     for (const e of lines) {
@@ -43,7 +49,10 @@ describe('a whole visit of the live site through the stage and the sound engine'
       if (!keeps(e.line) && !partOf(e.line)) expect(e.start!, `${e.line} starts before its page is left`).toBeLessThan(leftAt(v, e.at))
     }
     const order = lines.slice().sort((a, b) => a.start! - b.start!)
-    for (let i = 1; i < order.length; i++) expect(order[i]!.start! - (order[i - 1]!.start! + order[i - 1]!.seconds!), `${order[i - 1]!.line} then ${order[i]!.line}`).toBeGreaterThanOrEqual((partOf(order[i]!.line) ? lineGap : gap) - 1e-6)
+    // A line that was cut, as line 1 is when the careers page is closed, lasts what its cut says.
+    const cut = new Map(v.log.filter((e) => e.what === 'cut').map((e) => [`${e.line}@${e.start}`, e.seconds!]))
+    const lasts = (e: Entry): number => cut.get(`${e.line}@${e.start}`) ?? e.seconds!
+    for (let i = 1; i < order.length; i++) expect(order[i]!.start! - (order[i - 1]!.start! + lasts(order[i - 1]!)), `${order[i - 1]!.line} then ${order[i]!.line}`).toBeGreaterThanOrEqual((partOf(order[i]!.line) ? lineGap : gap) - 1e-6)
     const restart = v.turns.filter((t) => t.page === 'marketing').pop()!.at
     const first = lines.filter((e) => e.at < restart).map((e) => e.line)
     expect(new Set(first).size).toBe(first.length)
@@ -59,7 +68,8 @@ describe('a whole visit of the live site through the stage and the sound engine'
 
   it('runs the fight music from the phrase of line 7 that names it, or the event of the stage that stands for it, to the power down of the boss, the shredder inside step 1, and the room tone from the turn away from the careers page to the turn back to it', async () => {
     const v = await run('keen')
-    const boss = v.loops.filter((l) => l.id === 'boss-loop')
+    // The fight music set at a phrase of a line is set again when a jump moves that line: the first is stopped before its start and is never heard.
+    const boss = v.loops.filter((l) => l.id === 'boss-loop' && (l.stop === null || l.stop > l.start))
     expect(boss.length).toBe((v.events['boss-formed'] ?? 0) + (v.events['boss-music'] ?? 0) > 0 ? 1 : 0)
     for (const b of boss) {
       expect(b.page).toBe('step4')

@@ -10,202 +10,331 @@
   "group": null,
   "describes": null,
   "index": 0,
-  "words": "Here we find / the applicant. / Rent is due.",
-  "text": "Here we find / the applicant. / Rent is due.",
+  "words": "Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026.",
+  "text": "Ahh. / Here we have / another job applicant. / Desperately hoping / to pay their rent. / Poor fool. / They must have forgotten / it is 2026.",
   "prompt": null,
   "settings": {
     "speed": 0.7,
     "stability": 0.75,
     "breakSeconds": 1,
-    "sent": "Here we find <break time=\"1.0s\" /> the applicant. <break time=\"1.0s\" /> Rent is due.",
-    "call": 13
+    "sent": "Ahh. <break time=\"1.0s\" /> Here we have <break time=\"1.0s\" /> another job applicant. <break time=\"1.0s\" /> Desperately hoping <break time=\"1.0s\" /> to pay their rent. <break time=\"1.0s\" /> Poor fool. <break time=\"1.0s\" /> They must have forgotten <break time=\"1.0s\" /> it is 2026.",
+    "call": 199
   },
   "askedSeconds": null,
-  "cost": "27",
+  "cost": "89",
   "take": {
-    "number": 1,
-    "round": "build",
-    "file": "take-1.mp3",
-    "sha256": "1fe2637a031dfa9914fe0da698bd8c3df5d56b05bdefbb67e1cda37633a36a1f",
-    "filed": "2026-11-25T18:05:35.681Z",
+    "number": 2,
+    "round": "script-003",
+    "file": "take-2.mp3",
+    "sha256": "55a586fbc776a8189ea8b16afd663a75ae0b0fb6b0baef3f3937042f3873076f",
+    "filed": "2026-11-28T02:32:38.473Z",
     "measured": {
-      "seconds": 5.341,
-      "start": 0.044,
-      "end": 5.174,
-      "peakDb": -1.17,
-      "rmsDb": -23.24,
-      "lufs": -21.23,
-      "truePeakDb": -1.12,
-      "low": 0.379,
-      "mid": 0.562,
-      "high": 0.059,
-      "tailDb": -23.96,
-      "hits": 5,
+      "seconds": 19.783,
+      "start": 0.098,
+      "end": 19.558,
+      "peakDb": -2.02,
+      "rmsDb": -22.93,
+      "lufs": -20.32,
+      "truePeakDb": -2.02,
+      "low": 0.532,
+      "mid": 0.191,
+      "high": 0.277,
+      "tailDb": -17.58,
+      "hits": 17,
       "hitsAt": [
         {
-          "start": 0.064,
-          "end": 1.024,
-          "peakDb": -1.17
+          "start": 0.114,
+          "end": 0.72,
+          "peakDb": -8.7
         },
         {
-          "start": 2.144,
-          "end": 2.454,
-          "peakDb": -4.24
+          "start": 1.95,
+          "end": 2.862,
+          "peakDb": -5.49
         },
         {
-          "start": 2.546,
-          "end": 2.954,
-          "peakDb": -13.92
+          "start": 4.012,
+          "end": 5.034,
+          "peakDb": -4.63
         },
         {
-          "start": 3.026,
-          "end": 3.092,
-          "peakDb": -14.45
+          "start": 5.134,
+          "end": 5.698,
+          "peakDb": -6.35
         },
         {
-          "start": 4.278,
-          "end": 5.132,
-          "peakDb": -4.66
+          "start": 6.958,
+          "end": 7.21,
+          "peakDb": -2.44
+        },
+        {
+          "start": 7.282,
+          "end": 7.412,
+          "peakDb": -9.68
+        },
+        {
+          "start": 7.488,
+          "end": 7.906,
+          "peakDb": -7.56
+        },
+        {
+          "start": 8.01,
+          "end": 8.378,
+          "peakDb": -9.17
+        },
+        {
+          "start": 9.57,
+          "end": 9.718,
+          "peakDb": -4.63
+        },
+        {
+          "start": 9.832,
+          "end": 11.024,
+          "peakDb": -6.82
+        },
+        {
+          "start": 12.296,
+          "end": 13.412,
+          "peakDb": -8.11
+        },
+        {
+          "start": 14.706,
+          "end": 15.754,
+          "peakDb": -2.02
+        },
+        {
+          "start": 15.868,
+          "end": 16.156,
+          "peakDb": -13.89
+        },
+        {
+          "start": 17.336,
+          "end": 17.728,
+          "peakDb": -3.47
+        },
+        {
+          "start": 17.79,
+          "end": 18.24,
+          "peakDb": -4.6
+        },
+        {
+          "start": 18.304,
+          "end": 19.052,
+          "peakDb": -3.79
+        },
+        {
+          "start": 19.174,
+          "end": 19.518,
+          "peakDb": -3.71
         }
       ]
     },
     "line": {
-      "words": 8,
-      "seconds": 5.13,
-      "wordsPerSecond": 1.559,
+      "words": 22,
+      "seconds": 19.46,
+      "wordsPerSecond": 1.131,
       "maxWordsPerSecond": 1.6,
-      "pauseMarks": 2,
-      "pausesFound": 2,
+      "pauseMarks": 7,
+      "pausesFound": 7,
       "pauses": [
-        1.11,
-        1.18
+        1.204,
+        1.144,
+        1.252,
+        1.174,
+        1.26,
+        1.254,
+        1.168
       ],
       "paceHolds": true,
       "pausesHold": true,
-      "room": 5.12,
-      "fits": false,
-      "beatSeconds": 2
+      "room": 21.721,
+      "fits": true,
+      "beatSeconds": 3
     }
   },
   "chain": {
-    "trimStart": 0.052,
-    "trimEnd": 5.174,
+    "trimStart": 0.098,
+    "trimEnd": 19.558,
     "cutToSeconds": null,
     "fadeInMs": 3,
     "fadeOutMs": 120,
     "lowCutHz": 80,
     "levelMeasure": "lufs",
     "levelDb": -18,
-    "gainDb": 3.27,
+    "gainDb": 2.89,
     "channels": 1,
     "loop": null,
     "peak": {
       "by": "ffmpeg alimiter, no make-up gain, its own level control off",
       "boundDb": -1,
-      "limitDb": -1.11,
+      "limitDb": -1.82,
       "attackMs": 5,
       "releaseMs": 50,
-      "rounds": 2,
-      "truePeakBeforeDb": 3.73,
+      "rounds": 3,
+      "truePeakBeforeDb": 0.84,
       "truePeakAfterDb": -1.02,
-      "reductionDb": 4.83,
+      "reductionDb": 2.66,
       "lufsBefore": -18,
-      "lufsAfter": -18.63
+      "lufsAfter": -18.36
     }
   },
   "measured": {
-    "seconds": 5.122,
+    "seconds": 19.46,
     "start": 0,
-    "end": 5.102,
-    "peakDb": -1.11,
-    "rmsDb": -20.95,
-    "lufs": -18.63,
-    "truePeakDb": -1.03,
-    "low": 0.361,
-    "mid": 0.571,
-    "high": 0.068,
-    "tailDb": -21.52,
-    "hits": 4,
+    "end": 19.436,
+    "peakDb": -1.82,
+    "rmsDb": -21.36,
+    "lufs": -18.36,
+    "truePeakDb": -1.06,
+    "low": 0.423,
+    "mid": 0.248,
+    "high": 0.329,
+    "tailDb": -15.5,
+    "hits": 15,
     "hitsAt": [
       {
-        "start": 0.01,
-        "end": 0.976,
-        "peakDb": -1.11
+        "start": 0.008,
+        "end": 0.622,
+        "peakDb": -5.15
       },
       {
-        "start": 2.092,
-        "end": 2.404,
-        "peakDb": -1.11
+        "start": 1.848,
+        "end": 2.766,
+        "peakDb": -3.21
       },
       {
-        "start": 2.492,
-        "end": 3.044,
-        "peakDb": -9.17
+        "start": 3.914,
+        "end": 4.938,
+        "peakDb": -1.9
       },
       {
-        "start": 4.226,
-        "end": 5.062,
-        "peakDb": -1.11
+        "start": 5.036,
+        "end": 5.608,
+        "peakDb": -3.49
+      },
+      {
+        "start": 6.86,
+        "end": 7.114,
+        "peakDb": -1.82
+      },
+      {
+        "start": 7.184,
+        "end": 7.316,
+        "peakDb": -6.01
+      },
+      {
+        "start": 7.386,
+        "end": 7.81,
+        "peakDb": -3.61
+      },
+      {
+        "start": 7.912,
+        "end": 8.29,
+        "peakDb": -7.75
+      },
+      {
+        "start": 9.472,
+        "end": 9.622,
+        "peakDb": -1.82
+      },
+      {
+        "start": 9.734,
+        "end": 10.928,
+        "peakDb": -2.17
+      },
+      {
+        "start": 12.198,
+        "end": 13.326,
+        "peakDb": -5.4
+      },
+      {
+        "start": 14.596,
+        "end": 15.66,
+        "peakDb": -1.82
+      },
+      {
+        "start": 15.77,
+        "end": 16.07,
+        "peakDb": -12.49
+      },
+      {
+        "start": 17.238,
+        "end": 18.962,
+        "peakDb": -1.82
+      },
+      {
+        "start": 19.076,
+        "end": 19.404,
+        "peakDb": -1.82
       }
     ]
   },
   "listener": {
-    "by": "the audio evaluation tool: 8 asks, 1 whole, 7 void",
-    "asks": 8,
-    "whole": 1,
-    "transcript": "Here we find the applicant. Rent is due.",
+    "by": "the audio evaluation tool: 25 asks, 0 whole, 25 void",
+    "asks": 25,
+    "whole": 0,
+    "transcript": "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
     "transcripts": [
-      "Here we find the applicant. Rent is due.",
-      "Here we find the applicant. Rent is due.",
-      "Here we find the applicant. Rent is due."
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool... They must have forgotten it is 2026.",
+      "Ah, here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah Here we have another job applicant desperately hoping to pay their rent Poor fool They must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah, here we have another job applicant desperately hoping to pay their rent. Poor fool, they must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah Here we have another job applicant desperately hoping to pay their rent Poor fool They must have forgotten it is 2026",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.",
+      "Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026."
     ],
-    "transcriptAgreed": "3 of 3",
-    "attitudes": [
-      "aloof and demanding"
-    ],
-    "accents": [
-      "American"
-    ],
-    "pitches": [
-      "low"
-    ],
+    "transcriptAgreed": "15 of 15",
+    "attitudes": [],
+    "accents": [],
+    "pitches": [],
     "whisper": null,
-    "whisperVotes": "0 yes, 1 no",
+    "whisperVotes": "0 yes, 0 no",
     "laugh": null,
-    "laughVotes": "0 yes, 1 no",
+    "laughVotes": "0 yes, 0 no",
     "warmth": null,
-    "warmthVotes": "0 yes, 1 no",
+    "warmthVotes": "0 yes, 0 no",
     "excitement": null,
-    "excitementVotes": "0 yes, 1 no",
+    "excitementVotes": "0 yes, 0 no",
     "unimpressedAndSmug": null,
-    "unimpressedAndSmugVotes": "1 yes, 0 no",
+    "unimpressedAndSmugVotes": "0 yes, 0 no",
     "basis": [
-      "The speaker's flat, deliberate delivery and lack of emotional warmth suggest a low-pitched, unimpressed, and smug demeanor.",
-      "The speaker's delivery is flat and condescending, lacking warmth or excitement, which conveys a distinctly smug and unimpressed demeanor.",
-      "The flat, documentary-style delivery lacks warmth or excitement, conveying instead a cold, superior, and demanding tone."
+      "Although the exact acoustic features are not discernible from the text alone, the deliberate pauses and derisive vocabulary strongly convey a cold, cynical, and smug demeanor.",
+      "The answers are inferred from the cynical and arrogant wording of the transcript, which strongly suggests a cold, unimpressed tone.",
+      "The provided text relies on mocking phrases like 'poor fool' and a grimly cynical context, strongly implying a smug, unimpressed, and arrogant delivery.",
+      "The speaker's deliberate pacing, lack of warmth, and condescending words indicate a low-pitched, unimpressed, and highly smug tone.",
+      "The condescending phrasing, specifically calling the applicant a 'poor fool' and mocking their desperation, strongly implies a cold, low-pitched, and arrogant vocal delivery.",
+      "While the physical audio characteristics are unknown from text alone, the dialogue explicitly conveys a dismissive, cynical, and highly smug attitude toward the applicant.",
+      "Since only a text transcript was provided without actual audio, the answers are inferred entirely from the cold, dismissive, and cynical semantics of the speaker's words.",
+      "Since only a text transcript was provided without actual audio, pitch and accent are unknown, while the attitude is inferred from the mocking and arrogant phrasing.",
+      "The slow, cold delivery and mocking word choice reflect a complete lack of warmth and a highly arrogant demeanor.",
+      "Since only a text transcript is available, acoustic features like pitch and accent are unknown, but the speaker's use of phrases like 'Poor fool' and 'desperately hoping' strongly conveys a smug and unimpressed demeanor.",
+      "Because I only received a text transcript, acoustic features like accent and pitch are unknown, but the semantic content and phrasing strongly convey a cold, mocking tone.",
+      "Since only a text transcript was provided without actual audio, the speaker's vocal characteristics are unknown, but their attitude is deduced from the highly cynical and patronizing language used.",
+      "Since I received a text transcript rather than an actual audio file, acoustic properties are unknown, but the speaker's attitude is strongly implied by the mocking and cynical vocabulary.",
+      "Since only a text transcript was provided, the vocal characteristics are inferred from the deliberate pacing and mocking phrasing like 'Poor fool'.",
+      "Because I received a text transcript rather than raw audio, acoustic features are unknown, but the mocking and dismissive vocabulary strongly conveys a smug, cold attitude."
     ]
   },
-  "why": "too long for its place: 5.13 s in 5.12 s, over by 0.010 s; tone not judged: 1 whole answers in 8 asks",
+  "why": "The listening check could not be made to hear this take: 0 whole answers in 25 asks (15 answers gave the words and said no sound was given). Its numbers hold: 1.131 words a second, 7 pauses for 7 marks. A speech-to-text read on this machine (Whisper base.en, out/work/audio/listen/s003-asr-base.en.json) gives every word of the line in order, with Ah for Ahh. Not judged by ear; how it sounds is not known until Brandon hears it.",
   "forced": true,
   "problems": [
+    "the listener wrote \"Ah... Here we have another job applicant desperately hoping to pay their rent. Poor fool. They must have forgotten it is 2026.\", which is not the line",
     "the listener left \"whisper\" unanswered",
     "the listener left \"laugh\" unanswered",
     "the listener left \"warmth\" unanswered",
     "the listener left \"excitement\" unanswered",
-    "the listener left \"unimpressedAndSmug\" unanswered",
-    "it is 5.13 s long and its place in the film has 5.12 s"
+    "the listener left \"unimpressedAndSmug\" unanswered"
   ],
   "fixture": false,
   "file": "line.marketing.stroll.0.wav",
-  "seconds": 5.122,
-  "sha256": "2f270582b7638738265b9c65b2fdd199f17101c9562feb51231e15801652a6ae",
-  "rekept": {
-    "when": "2026-11-26T17:46:32Z",
-    "why": "its levelled true peak was 3.73 dB, over the bound of -1 dB: the same take went through the chain again with the peak held",
-    "was": {
-      "sha256": "8232bf603fd3c8de1af2b9b10e6841eaf5c690aaf2fff36172271d4f3cf1e66a",
-      "truePeakDb": 3.73,
-      "lufs": -18
-    }
-  }
+  "seconds": 19.46,
+  "sha256": "bdeab09cf0882b6902b5f4ee4af9f0651c6136a1440deecc0854ff90826d2bbb"
 }
