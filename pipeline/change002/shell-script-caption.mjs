@@ -3,6 +3,7 @@
 // It writes shell-script-caption.json and the pictures shell-pictures/script-line1-phrases.png and script-loud.png.
 // With --place Y it does one thing instead: the longest phrase of line 1 on the careers page with the panel's lower edge at CAPTION.low and at Y, one picture under the other (shell-pictures/script-caption-place.png).
 // With --shout it runs the shout of the boss through the engine on the marks of the boss page, at the times of the stand-in, over a kept still of the fight (shell-pictures/script-shout.png).
+// The shout's panel leaves when the camera's rise begins (riseAfterFire() of src/audio/rise.ts after the fire mark): the run takes a picture a moment before and one after.
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -85,7 +86,12 @@ try {
   }
   if (process.argv.includes('--shout')) {
     const d = JSON.parse(fs.readFileSync(at('content', 'narration-drafts.json'), 'utf8')).film['boss.finish'][0]
-    const marks = [['finish-arms', 0], ...d.standIn.starts.slice(0, -1).map((t) => ['finish-charge', t]), ['finish-fire', d.standIn.starts[d.standIn.starts.length - 1]], ['(no mark: its own end)', d.standIn.seconds + 0.1]]
+    const fire = d.standIn.starts[d.standIn.starts.length - 1]
+    const { logic } = await import('../../tools/lib/logic.mjs')
+    const { load, close } = await logic()
+    const rise = (await load('/src/audio/rise.ts')).riseAfterFire()
+    await close()
+    const marks = [['finish-arms', 0], ...d.standIn.starts.slice(0, -1).map((t) => ['finish-charge', t]), ['finish-fire', fire], ['(no mark: a moment before the rise begins)', fire + rise - 0.3], ['(no mark: the rise begins)', fire + rise], ['(no mark: its own end)', d.standIn.seconds + 0.1]]
     const missing = []
     page.on('response', (r) => { if (r.status() === 404) missing.push(r.url().replace(site.url, '')) })
     page.on('console', (m) => { if (m.type() === 'error') { errors.push(m.text()); missing.push(`${page.url().split('?')[1]}: ${m.location().url.replace(site.url, '')}`) } })
@@ -100,7 +106,7 @@ try {
       const sent = await page.evaluate((n) => { if (!n.startsWith('(')) window.mark(n); return window.now() }, name)
       if (name === 'finish-arms') { rows.push({ mark: name, at: Number((sent - t0).toFixed(3)), panel: await page.evaluate(() => window.box()) }); continue }
       await new Promise((r) => setTimeout(r, 250))
-      rows.push({ mark: name, at: Number((sent - t0).toFixed(3)), panel: await page.evaluate(() => window.box()) })
+      rows.push({ mark: name, at: Number((sent - t0).toFixed(3)), panel: await page.evaluate(() => window.box()), captionLines: await page.evaluate((t) => window.said().lines.map((l) => [l.words, Number((l.start - t).toFixed(3)), Number((l.end - t).toFixed(3))]), t0) })
       const file = path.join(dir, `shout-${files.length}.png`)
       await page.screenshot({ path: file })
       files.push(file)
@@ -112,7 +118,7 @@ try {
     for (let i = 0; i < n; i += 3) bands.push(files.slice(i, i + 3).map((_, k) => `[s${i + k}]`))
     const band = (cells, r) => `${cells.join('')}${cells.length > 1 ? `hstack=inputs=${cells.length},` : ''}pad=${VIEW.width}:${VIEW.height / 3}:color=white[b${r}]`
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...files.flatMap((f) => ['-i', f]), '-filter_complex', `${files.map((_, i) => `[${i}:v]${cell}[s${i}]`).join(';')};${bands.map(band).join(';')};${bands.map((_, r) => `[b${r}]`).join('')}${bands.length > 1 ? `vstack=inputs=${bands.length}` : 'null'}[o]`, '-map', '[o]', '-frames:v', '1', path.join(pictures, 'script-shout.png')])
-    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', files[n - 2], '-frames:v', '1', path.join(pictures, 'script-shout-last.png')])
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', files[marks.findIndex(([name]) => name === 'finish-fire') - 1], '-frames:v', '1', path.join(pictures, 'script-shout-last.png')])
     await page.goto(`${site.url}/index.html?standing`)
     await page.waitForFunction(() => typeof window.mark === 'function' && window.ready !== undefined, null, { timeout: 8000 })
     await page.evaluate(() => window.ready)
@@ -127,7 +133,7 @@ try {
     await new Promise((r) => setTimeout(r, 700))
     const decision = await page.evaluate(() => window.box())
     await page.screenshot({ path: path.join(pictures, 'script-decision-pill.png') })
-    writeJson(path.join(out, 'shell-script-shout.json'), { made: 'node pipeline/change002/shell-script-caption.mjs --shout', browser: launched.version, behind: 'kept stills of the boss page, not the running site', text: d.text, draft: true, marks: rows, line6OnTheBossPage: pill, line8OnTheDecisionPage: decision, log, pageErrors: errors, missing })
+    writeJson(path.join(out, 'shell-script-shout.json'), { made: 'node pipeline/change002/shell-script-caption.mjs --shout', browser: launched.version, behind: 'kept stills of the boss page, not the running site', text: d.text, draft: true, riseAfterFire: rise, marks: rows, line6OnTheBossPage: pill, line8OnTheDecisionPage: decision, log, pageErrors: errors, missing })
     for (const r of rows) console.log(`shout: ${r.mark} at ${r.at} s, panel ${r.panel === null ? 'shows nothing' : JSON.stringify(r.panel)}`)
     console.log(`line 6 on the boss page: ${JSON.stringify(pill)}`)
     console.log(`line 8 on the decision page: ${JSON.stringify(decision)}`)

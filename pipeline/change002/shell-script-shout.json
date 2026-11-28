@@ -4,10 +4,11 @@
   "behind": "kept stills of the boss page, not the running site",
   "text": "I have / five years / of experience",
   "draft": true,
+  "riseAfterFire": 0.8,
   "marks": [
     {
       "mark": "finish-arms",
-      "at": 0.012,
+      "at": 0,
       "panel": null
     },
     {
@@ -26,7 +27,14 @@
         },
         "right": 1095,
         "baked": true
-      }
+      },
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          6.26
+        ]
+      ]
     },
     {
       "mark": "finish-charge",
@@ -44,7 +52,19 @@
         },
         "right": 1354,
         "baked": true
-      }
+      },
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          1.042
+        ],
+        [
+          "I have five years",
+          1.042,
+          6.26
+        ]
+      ]
     },
     {
       "mark": "finish-fire",
@@ -62,12 +82,87 @@
         },
         "right": 1832,
         "baked": true
-      }
+      },
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          1.042
+        ],
+        [
+          "I have five years",
+          1.042,
+          4.13
+        ],
+        [
+          "I have five years of experience",
+          4.13,
+          4.93
+        ]
+      ]
+    },
+    {
+      "mark": "(no mark: a moment before the rise begins)",
+      "at": 4.641,
+      "panel": {
+        "words": "I HAVE FIVE YEARS OF EXPERIENCE",
+        "fontPx": 97,
+        "top": 92,
+        "bottom": 238,
+        "left": 90,
+        "type": {
+          "left": 122,
+          "right": 1848,
+          "wide": 1725
+        },
+        "right": 1840,
+        "baked": true
+      },
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          1.042
+        ],
+        [
+          "I have five years",
+          1.042,
+          4.13
+        ],
+        [
+          "I have five years of experience",
+          4.13,
+          4.93
+        ]
+      ]
+    },
+    {
+      "mark": "(no mark: the rise begins)",
+      "at": 5.152,
+      "panel": null,
+      "captionLines": [
+        [
+          "I have",
+          0.102,
+          1.042
+        ],
+        [
+          "I have five years",
+          1.042,
+          4.13
+        ],
+        [
+          "I have five years of experience",
+          4.13,
+          4.93
+        ]
+      ]
     },
     {
       "mark": "(no mark: its own end)",
       "at": 6.371,
-      "panel": null
+      "panel": null,
+      "captionLines": []
     }
   ],
   "line6OnTheBossPage": {
@@ -149,10 +244,10 @@
     "shout: /favicon.ico",
     "/audio/line.boss.unfold.0.mp3",
     "standing: /audio/line.boss.unfold.0.mp3",
-    "/audio/line.boss.unfold.1.mp3",
-    "standing: /audio/line.boss.unfold.1.mp3",
     "/audio/line.boss.unfold.2.mp3",
     "standing: /audio/line.boss.unfold.2.mp3",
+    "/audio/line.boss.unfold.1.mp3",
+    "standing: /audio/line.boss.unfold.1.mp3",
     "/audio/line.decision.reset.0.mp3",
     "standing: /audio/line.decision.reset.0.mp3",
     "/audio/line.step1.shredded.0.mp3",
@@ -162,10 +257,10 @@
     "standing: /favicon.ico",
     "/audio/line.boss.unfold.0.mp3",
     "decision: /audio/line.boss.unfold.0.mp3",
-    "/audio/line.boss.unfold.1.mp3",
-    "decision: /audio/line.boss.unfold.1.mp3",
     "/audio/line.boss.unfold.2.mp3",
     "decision: /audio/line.boss.unfold.2.mp3",
+    "/audio/line.boss.unfold.1.mp3",
+    "decision: /audio/line.boss.unfold.1.mp3",
     "/audio/line.decision.reset.0.mp3",
     "decision: /audio/line.decision.reset.0.mp3",
     "/audio/line.step1.shredded.0.mp3",
