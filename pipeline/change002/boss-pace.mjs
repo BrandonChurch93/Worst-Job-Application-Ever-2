@@ -3,6 +3,8 @@
 // The time from one frame of the browser to the next is kept with the second of the page it fell in, and told for three stretches:
 // the power-up (1 s before `power-up` to 1 s after the burst), the finish (`finish-arms` to `boss-gone` and 1 s more), and 5 s of plain fight.
 // Outside the three stretches the page is stepped on without a picture, to 0.6 s before each (`--lead`); the seconds of `power-up` and `finish-arms` of that bot are given beforehand (`--power`, `--arms`) and read again from the page's events afterwards.
+// With each frame the count of shader programs, geometries and textures the renderer holds, the draw calls and triangles of the frame, and the counts of the kept shadows (bakes, kept frames, live frames, camera moved, kept changed, movers, kept) are kept, then the lamps that shine and the lamps that draw a shadow in it, so that a long frame can be laid beside a thing made new in it.
+// `--only power`, `--only plain` or `--only finish` plays one stretch alone.
 // Needs one line added to src/main.ts for the run only and never committed, after `let stage = makeStage()`:
 //   ;(window as unknown as { __live: unknown }).__live = { stage: () => stage, app, level: () => size.level() }
 // `--off` hides things for the run so that what they cost is seen: a list of names with commas, each a part (`part:boss-finish`), a named mesh (`name:arena-beam`), `lamps` or `shadows`.
@@ -45,23 +47,24 @@ try {
     const hz = 240
     const seen = (name) => { const e = live.stage().events.find((x) => x.name === name); return e ? e.step / hz : -1 }
     const skip = (to) => { const s = live.stage(); const n = Math.round((to - s.time) * hz); if (n > 0) s.advance(n) }
-    let phase = 0
-    skip(plan.power - 1 - plan.lead)
+    let phase = plan.only === 'plain' ? 1 : plan.only === 'finish' ? 2 : 0
+    skip((phase === 1 ? plan.plain : phase === 2 ? plan.arms : plan.power - 1) - plan.lead)
     const tick = (t) => {
       const s = live.stage()
-      if (last >= 0) rows.push([Math.round((t - last) * 100) / 100, Math.round(s.time * 1000) / 1000])
+      const info = live.app.engine.renderer.info
+      if (last >= 0) rows.push([Math.round((t - last) * 100) / 100, Math.round(s.time * 1000) / 1000, info.programs ? info.programs.length : -1, info.memory.geometries, info.memory.textures, live.app.engine.lastCounts ? live.app.engine.lastCounts.drawCalls : -1, live.app.engine.lastCounts ? live.app.engine.lastCounts.triangles : -1, ...(live.app.engine.stillShadows ? [live.app.engine.stillShadows.bakes, live.app.engine.stillShadows.keptFrames, live.app.engine.stillShadows.liveFrames, live.app.engine.stillShadows.cameraMoved, live.app.engine.stillShadows.keptChanged, live.app.engine.stillShadows.movers, live.app.engine.stillShadows.kept] : [0, 0, 0, 0, 0, 0, 0]), ((live.app.rig && live.app.rig.lamps) || []).filter((l) => l.intensity > 0).length, ((live.app.rig && live.app.rig.lamps) || []).filter((l) => l.castShadow && l.shadow.autoUpdate).length])
       last = t
       const power = seen('power-up')
       const gone = seen('boss-gone')
-      if (phase === 0 && power >= 0 && s.time >= power + plan.burst + 1 + 0.15) { phase = 1; skip(plan.plain - plan.lead) }
-      else if (phase === 1 && s.time >= plan.plain + 5 + 0.15) { phase = 2; skip(plan.arms - plan.lead) }
+      if (phase === 0 && power >= 0 && s.time >= power + plan.burst + 1 + 0.15) { if (plan.only) phase = 3; else { phase = 1; skip(plan.plain - plan.lead) } }
+      else if (phase === 1 && s.time >= plan.plain + 5 + 0.15) { if (plan.only) phase = 3; else { phase = 2; skip(plan.arms - plan.lead) } }
       else if (phase === 2 && gone >= 0 && s.time >= gone + 1 + 0.15) phase = 3
       if (phase < 3 && s.page.id === 'step4') requestAnimationFrame(tick)
       else window.__pace.done = true
     }
     window.__pace = { rows, done: false }
     requestAnimationFrame(tick)
-  }, { off, plan: { power: Number(a.power ?? 12.858), arms: Number(a.arms ?? 50.879), plain: Number(a.plain ?? 29), burst, lead: Number(a.lead ?? 0.6) } })
+  }, { off, plan: { power: Number(a.power ?? 12.858), arms: Number(a.arms ?? 50.879), plain: Number(a.plain ?? 29), burst, lead: Number(a.lead ?? 0.6), only: a.only ? String(a.only) : '' } })
   let state = null
   for (;;) {
     await new Promise((r) => setTimeout(r, 10000))
