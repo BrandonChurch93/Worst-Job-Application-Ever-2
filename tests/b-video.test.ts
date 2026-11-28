@@ -6,7 +6,7 @@ import manifest from '../src/pages/step3/video/manifest.json'
 import { frameStep, joinsOf, VIDEO } from '../src/pages/step3/video/plan'
 import states from '../src/pages/step3/video/states.json'
 import { BotDriver, type BotName } from '../src/stage/bots'
-import { filmFlow, filmOptions, liveFlow, ScriptDriver, Stage, type Driver, type DriverView, type Pointer } from '../src/stage/stage'
+import { filmFlow, filmOptions, liveFlow, liveView, ScriptDriver, Stage, type Driver, type DriverView, type Frame, type Pointer } from '../src/stage/stage'
 
 const STEP3 = liveFlow().findIndex((f) => f.page === 'step3')
 const LIMIT = config.live.botMaxSeconds * stepHz
@@ -262,5 +262,119 @@ describe('the video and the page', () => {
     t = manifest.seconds
     stage.advance(1)
     expect(stage.events.slice(had).map((e) => e.name)).toContain(last.name)
+  })
+})
+
+describe('the last cue of the video', () => {
+  const fake = (o: Partial<VideoPlayer>): VideoPlayer => ({ ready: () => true, enter: () => undefined, clock: () => 0, over: () => false, gone: () => true, leave: () => undefined, ...o })
+
+  it('sounds before the page draws its own picture under the video, though it falls in the stretch kept for that picture', () => {
+    let t = 0
+    let entered = false
+    bridge.player = fake({ enter: () => { entered = true }, clock: () => t, over: () => t >= manifest.seconds })
+    const stage = new Stage({ mode: 'live', flow: liveFlow().slice(STEP3), pages, driver: new BotDriver('keen', config.seed), seed: config.seed })
+    while (!entered && stage.step < LIMIT) stage.advance(1)
+    const phase = (): string => (stage.page.save() as { s: { phase: string } }).s.phase
+    const last = manifest.events[manifest.events.length - 1]!
+    expect(last.name).toBe(VIDEO.outEvent)
+    expect(manifest.seconds - last.at / stepHz).toBeLessThan(VIDEO.underlay)
+    t = last.at / stepHz - 2 * VIDEO.cueLead
+    expect(t).toBeGreaterThan(manifest.seconds - VIDEO.underlay)
+    stage.advance(1)
+    expect(phase()).toBe(states.from.page.s.phase)
+    expect(stage.events.some((e) => e.name === last.name)).toBe(false)
+    t = last.at / stepHz
+    stage.advance(1)
+    expect(stage.events[stage.events.length - 1]!.name).toBe(last.name)
+    expect(phase()).toBe(states.to.page.s.phase)
+    expect(states.to.page.s.phase).not.toBe(states.from.page.s.phase)
+  })
+})
+
+describe('the camera of the live page at the join in', () => {
+  const fake = (o: Partial<VideoPlayer>): VideoPlayer => ({ ready: () => true, enter: () => undefined, clock: () => 0, over: () => false, gone: () => true, leave: () => undefined, ...o })
+  type Pose = { eye: number[]; target: number[]; fov: number; up?: number[] }
+  const numbers = (p: Pose): number[] => [...p.eye, ...p.target, p.fov, ...(p.up ?? [0, 1, 0])]
+  const far = (a: Pose, b: Pose): number => Math.max(...numbers(a).map((v, i) => Math.abs(v - numbers(b)[i]!)))
+  const filmPose = (): Pose => {
+    const stage = film()
+    stage.advance(manifest.from.step)
+    return stage.page.camera('film', manifest.from.time) as Pose
+  }
+  const home = liveView({ view: null, scroll: 0 } as unknown as Frame) as Pose
+  // The view of every step of a visit to the first step with the name given, or to the end of the page.
+  const views = (until: string): { stage: Stage; list: Pose[]; pullAt: number; sealAt: number } => {
+    const stage = new Stage({ mode: 'live', flow: liveFlow().slice(STEP3), pages, driver: new BotDriver('keen', config.seed), seed: config.seed })
+    const list: Pose[] = []
+    let pullAt = -1
+    let sealAt = -1
+    while (stage.entryIndex === 0 && stage.step < LIMIT && !stage.events.some((e) => e.name === until)) {
+      stage.advance(1)
+      if (stage.entryIndex !== 0) break
+      list.push(liveView(stage.frameAt(stage.time)) as Pose)
+      if (pullAt < 0 && stage.events.some((e) => e.name === 'vacuum-on')) pullAt = list.length - 1
+      if (sealAt < 0 && stage.events.some((e) => e.name === 'ball-seal')) sealAt = list.length - 1
+    }
+    return { stage, list, pullAt, sealAt }
+  }
+
+  it('is the camera of the film at the frame of the join, on the last live picture and under the video', () => {
+    const w = views('video-in')
+    const want = filmPose()
+    expect(far(want, home)).toBeGreaterThan(100)
+    expect(far(w.list[w.list.length - 2]!, want)).toBeLessThan(1e-6)
+    expect(far(w.list[w.list.length - 1]!, want)).toBeLessThan(1e-9)
+    w.stage.advance(stepHz)
+    expect(w.stage.page.control).toBe('film')
+    expect(far(liveView(w.stage.frameAt(w.stage.time)) as Pose, want)).toBeLessThan(1e-9)
+  })
+
+  it('pushes in on the port while it pulls, from the page\'s own view, eased and without a jump, and the video waits for it', () => {
+    const w = views('video-in')
+    expect(w.pullAt).toBeGreaterThan(0)
+    expect(far(w.list[w.pullAt - 1]!, home)).toBeLessThan(1e-9)
+    const whole = far(home, filmPose())
+    let largest = 0
+    for (let i = w.pullAt; i < w.list.length; i++) largest = Math.max(largest, far(w.list[i]!, w.list[i - 1]!))
+    expect(largest).toBeLessThan((whole / (1.5 * stepHz)) * 2.01)
+    expect(far(w.list[w.pullAt + Math.round(0.75 * stepHz)]!, home) / whole).toBeGreaterThan(0.45)
+    expect(far(w.list[w.pullAt + Math.round(0.75 * stepHz)]!, home) / whole).toBeLessThan(0.55)
+    expect(far(w.list[w.pullAt + Math.round(1.5 * stepHz)]!, filmPose())).toBeLessThan(1e-6)
+    expect(w.list.length - w.pullAt).toBeGreaterThanOrEqual(Math.round(1.5 * stepHz))
+  })
+
+  it('eases back to the page\'s own view when the video is given up and the table plays', () => {
+    bridge.player = fake({ ready: () => false })
+    bridge.gaveUp = false
+    const w = views('tube-run')
+    expect(bridge.gaveUp).toBe(true)
+    expect(w.stage.events.some((e) => e.name === 'video-in')).toBe(false)
+    const before = w.list.length
+    const more: Pose[] = []
+    for (let i = 0; i < Math.round(2 * stepHz); i++) {
+      w.stage.advance(1)
+      more.push(liveView(w.stage.frameAt(w.stage.time)) as Pose)
+    }
+    const all = [...w.list, ...more]
+    const gave = all.findIndex((p, i) => i > w.sealAt && i > 0 && far(p, filmPose()) > 1e-6 && far(all[i - 1]!, filmPose()) < 1e-6)
+    expect(gave).toBeGreaterThan(w.sealAt)
+    const scrolled = (): Pose => liveView({ view: null, scroll: w.stage.page.scroll() } as unknown as Frame) as Pose
+    const whole = far(home, filmPose())
+    let largest = 0
+    for (let i = gave; i < all.length; i++) largest = Math.max(largest, far(all[i]!, all[i - 1]!))
+    expect(largest).toBeLessThan((whole / (1.5 * stepHz)) * 2.5)
+    expect(before).toBeGreaterThan(0)
+    const last = all[all.length - 1]!
+    expect(far(last, filmPose())).toBeGreaterThan(100)
+    expect(far(last, scrolled())).toBeLessThan(1e-6)
+    bridge.gaveUp = false
+  }, 120000)
+
+  it('keeps the page\'s own view where the video is switched off', () => {
+    bridge.off = true
+    const w = views('ball-seal')
+    bridge.off = false
+    expect(w.pullAt).toBeGreaterThan(0)
+    for (const p of w.list) expect(far(p, home)).toBeLessThan(1e-9)
   })
 })

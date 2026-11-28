@@ -195,7 +195,7 @@ for (const size of SIZES) {
       videoFramesSeen: f.length, presented: last.count - f[0].count + 1, total: t.quality.total, dropped: t.quality.dropped,
       frameGapMs: { median: Number(sorted[Math.floor(sorted.length / 2)].toFixed(2)), p99: Number(sorted[Math.floor(sorted.length * 0.99)].toFixed(2)), largest: Number(sorted[sorted.length - 1].toFixed(2)) },
       lastFrameMedia: last.media, lastFrameShown: last.shown, faded: t.trace.faded, left: t.trace.left, lastFrameToFadeMs: ms(t.trace.fell - last.shown), fadeOutMs: ms(t.trace.faded - t.trace.fell), fadedToLeftMs: ms(t.trace.left - t.trace.faded), fadedToLeftDisplayFrames: Number(((t.trace.left - t.trace.faded) / (1000 / 60)).toFixed(2)),
-      cuesLateMs: { start: stat(third(0)), middle: stat(third(1)), end: stat(third(2)), all: stat(late), afterHidden: hidden ? stat(late.slice(hidden.cuesBefore)) : null },
+      cuesLateMs: { start: stat(third(0)), middle: stat(third(1)), end: stat(third(2)), all: stat(late), afterHidden: hidden ? stat(late.slice(hidden.cuesBefore)) : null, latest: t.cues.map((c, i) => ({ index: i, name: c.name, at: Number(c.at.toFixed(4)), clock: Number(c.clock.toFixed(4)), ms: Number(late[i].toFixed(2)) })).sort((p, q) => Math.abs(q.ms) - Math.abs(p.ms)).slice(0, 4) },
       hidden, cues: t.cues.length, screencastPictures: seen.length, screencastLight: seen.length ? [Number(Math.min(...seen.map((c) => c.light)).toFixed(2)), Number(Math.max(...seen.map((c) => c.light)).toFixed(2))] : null
     }
     const near = (at, name) => {

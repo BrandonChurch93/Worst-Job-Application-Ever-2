@@ -21,7 +21,7 @@ import { CLOCK, filmOf, sceneOf } from './clock'
 import { fight, filmHand, LEAN, leanOf, LOOSE, looseOf, VAC, windOf } from './vacuum'
 import { FRENZY, noted, RIOT, riotAim, RUN, STRIKE, strikeJolt, strikeOf, strikeShapes } from './strikes'
 import { Machine, prepare as startPhysics, type MachineState, type TableEvent } from '../../table/physics'
-import { videoFresh, videoFrom, videoOn, videoStep, type VideoState } from './video/phase'
+import { videoFresh, videoFrom, videoOn, videoPush, videoStep, videoWanted, type VideoState } from './video/phase'
 import { mountVideo } from './video/player'
 
 export const prepare = (): Promise<void> => {
@@ -945,9 +945,10 @@ export function makePage(): PageLogic {
     },
     step(io: StepIo) {
       const mc = machine()
+      if (s.mode === 'live') videoPush(vid, videoWanted(io.mode) && !s.skipped && (s.phase === 'pull' || s.phase === 'sealed'), io.dt, PUSH.seconds)
       if (s.mode === 'live' && !(s.skipped && vid.phase === 'before')) {
         const was = videoOn(vid)
-        const act = videoStep(vid, io, s.phase === 'sealed' && filmOf(s.t) >= videoFrom)
+        const act = videoStep(vid, io, s.phase === 'sealed' && filmOf(s.t) >= videoFrom && (vid.push >= PUSH.seconds || !videoWanted(io.mode)))
         if (act !== null && act !== 'hold') {
           logic.load({ ...(act.load as object), v: vid })
           s.mode = 'live'
@@ -1183,7 +1184,7 @@ export function makePage(): PageLogic {
     load(state) {
       const x = state as { s: State; m: MachineState; v?: VideoState }
       s = { ...x.s, said: [...x.s.said] }
-      vid = x.v ? { ...x.v } : videoFresh()
+      vid = x.v ? { ...videoFresh(), ...x.v } : videoFresh()
       machine().load(x.m)
     },
     draw(out: DrawList) {
@@ -1250,7 +1251,12 @@ export function makePage(): PageLogic {
       out.push(hqPlate)
     },
     scroll: () => viewed(),
-    view: () => (s.floor === 0 ? null : follow()),
+    view: () => {
+      if (s.mode !== 'live') return s.floor === 0 ? null : follow()
+      if (vid.phase === 'play') return filmPose(sceneOf(videoFrom))
+      if (vid.push > 0) return mixPose(named('follow')!, named('port')!, smooth(vid.push / PUSH.seconds))
+      return s.floor === 0 ? null : follow()
+    },
     camera(name: string, time: number): CameraPose | null {
       return name === 'film' ? filmPose(sceneOf(time)) : named(name)
     },
