@@ -29,6 +29,7 @@
     "paths": "node tools/paths.mjs",
     "take": "node tools/take.mjs",
     "cut": "node tools/cut.mjs",
+    "retime": "node tools/retime.mjs",
     "sheet": "node tools/sheet.mjs",
     "seq": "node tools/seq.mjs",
     "film": "node tools/film.mjs",

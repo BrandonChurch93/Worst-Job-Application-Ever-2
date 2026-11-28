@@ -58,7 +58,9 @@ function takeOf(kept: KeptTake[], id: string, text: string): { seconds: number; 
   const plain = (t: unknown) => String(t ?? '').split(narration.pauseMark).join(' ').replace(/\s+/g, ' ').trim()
   for (const k of kept) {
     const r = k.record
-    if (r['id'] !== id && r['line'] !== id && plain(r['text']) !== plain(text)) continue
+    // A take is this line's only when it says this line's words. A take of other words, kept under the same id from an earlier script, is not.
+    const said = r['text'] ?? r['words']
+    if (said !== undefined ? plain(said) !== plain(text) : r['id'] !== id && r['line'] !== id) continue
     for (const key of ['seconds', 'lengthSeconds', 'durationSeconds', 'duration']) {
       const v = r[key]
       if (typeof v === 'number' && v > 0) return { seconds: v, file: k.file }

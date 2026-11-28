@@ -41,7 +41,7 @@
     "step1.keyboard": [],
     "step1.firstName": [
       {
-        "at": 0.13,
+        "at": 0.1276,
         "text": "The application / has sensed / a candidate. / ATS turrets rise.",
         "live": "the turrets rise at the Name field"
       }
@@ -51,7 +51,7 @@
     "step1.tug": [],
     "step1.shredded": [
       {
-        "at": 0.87,
+        "at": 0.22581,
         "text": "The applicant / need not worry / about the shredded resume. / They will have to type it all in / by hand / anyway.",
         "live": "the shredder has finished and the form shows its resume received message"
       }
@@ -61,12 +61,12 @@
     "step2.slot": [],
     "step2.crank": [
       {
-        "at": 0,
+        "at": 0.062,
         "text": "The applicant / must turn the volume / all the way up.",
         "live": "the crank appears"
       },
       {
-        "at": 0.9,
+        "at": 0.84177,
         "text": "They will regret that.",
         "live": "the crank reaches the top, after a pause"
       }
@@ -74,7 +74,7 @@
     "step2.continue": [],
     "pinball.seal": [
       {
-        "at": 0.17,
+        "at": 0.09211,
         "text": "The company / gently collects / the applicant / for an unpaid assessment.",
         "live": "the vacuum takes the cursor"
       }
@@ -90,24 +90,24 @@
     "pinball.drain": [],
     "boss.verify": [
       {
-        "at": 0,
+        "at": 0.76,
         "text": "They declare themselves human. / The form / takes that as a threat.",
         "live": "the visitor ticks the checkbox"
       }
     ],
     "boss.unfold": [
       {
-        "at": 0,
+        "at": 0.20533,
         "text": "The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab.",
         "live": "the boss has formed and the applicant stops"
       },
       {
-        "at": 0.6,
+        "at": 0.8385,
         "text": "But then / they remember / their student loans.",
         "live": "straight after the line before it; the boss music starts on the words their student loans"
       },
       {
-        "at": 0.9,
+        "at": 0.99916,
         "text": "They turn back. / One more round.",
         "live": "straight after the line before it, over the boss music"
       }
@@ -121,7 +121,7 @@
     "decision.wait": [],
     "decision.letter": [
       {
-        "at": 0,
+        "at": 0.85833,
         "text": "After careful consideration, / the company / has decided / to move forward / with other candidates.",
         "live": "the stamp lands"
       }
