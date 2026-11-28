@@ -279,6 +279,7 @@ export function makePage(): PageLogic {
       marks: { arms: mark(m.arms), charge: mark(m.charge), thrust: mark(m.thrust), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
+      ember: 0,
       walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
       button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
       ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye, glare: low.glare } : {}),
@@ -936,6 +937,8 @@ export function makePage(): PageLogic {
         out.push({ ...whole, id: 'boss-look', part: 'boss-look1', kind: 'anchor', z0: 0, v: at })
         out.push({ ...whole, id: 'finish-figure', part: 'boss-finish', kind: 'anchor', z0: 0, v: at })
         for (let i = out.length - 1; i >= first; i--) if (out[i]!.id.startsWith('health-')) out.splice(i, 1)
+        const said = out.findIndex((u, i) => i >= first && u.id === 'defeated')
+        if (said >= 0) out.push(...out.splice(said, 1))
         if (v.time >= GROUND.barLands && barLeft() <= 0) out.push(label('health-label', 'type', 'copy:step4.bossHealthLabel', GROUND.label.x, GROUND.label.y, { font: GROUND.label.font, px: GROUND.label.px }, 0, 'ink'))
         const w = wordAt(v)
         if (w.show) out.push(label('boss-word', 'boss-body', 'copy:step4.submit', w.x, w.y, WORD as typeof TYPE.button, w.z, 'inkLight', w.rot))

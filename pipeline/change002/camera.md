@@ -425,3 +425,25 @@ MEASURED
 The charge in steps of 0.1 s, take (e), from the arms to 0.3 s after the fire: `proof/camera/charge-take-e-floor-2.85.jpg` (33 frames) and `proof/camera/charge-take-e-floor-3.85.jpg` (43 frames), the same tile size in both. Under each frame its film time and, in brackets, the seconds after the arms. What I SEE: the view is down by +0.98 in both; the camera then stands still for 10 frames (2.85) or 20 frames (3.85) while the light between the hands grows; the turn takes the next six frames, with the white glare in the fifth; six frames stand behind the arrow; the beam is in the last frame only, since it leaves the hands 0.2 s after the fire mark.
 
 One more typed number falls at this floor. Under take (e) the third charge mark comes 1.486 s after the first, so the visitor of `tests/b-boss.test.ts` who holds for a second and a half takes three charge steps where the row types 2 (the row at line 462, read at line 493; lines 463 and 494 once the tests-marks patch is in). `camera-way1-NEEDS-tests-marks-2.patch` goes on top of the tests-marks patch and reads the count from the marks.
+
+## Four mends to what the new angles lay bare (the Builder's order, 28 November)
+
+Each is its own commit. The proof is the stand-in's 47 frames (38.5 to 50 s, every 0.25 s, format hd), each commit compared with the one before it to the pixel. In the stand-in the arms rise at 39.817 s, the fire is at 43.95 s and the beam ends at 47.38 s.
+
+| commit | what | file | frames that move | frames the same |
+|---|---|---|---|---|
+| 4a9c247d | the wisps at the hands drift outward and are fuller | `src/boss/finish/fx.ts` | 11: 47.5 to 50.0 s | 36 |
+| c278811c | the back of the arrow falls off darker toward the feet | `src/cursor/stand/figure.ts` | 7: 43.5 to 45.0 s | 40 |
+| 6f49bbc2 | no ember rim after the beam on the page | `src/pages/step4/index.ts`, one line in `figure()` | 11: 47.5 to 50.0 s | 36 |
+| 38b3311a | `POSES.spent`: hands higher and further out | `src/cursor/stand/rig.ts` | 5: 47.5 to 48.5 s | 42 |
+| 9caa3fd4 | `walkPose`: the same hands in the walk | `src/cursor/stand/rig.ts` | 8: 48.25 to 50.0 s | 39 |
+
+Why those frames may move: the wisps, the rim and the spent pose all start at the beam's end, 47.38 s, so the first frame they can touch is 47.5 s. The back is drawn only where the camera is behind the arrow, from the end of the turn until the view from above shows the face again. The walk takes the hands over from the spent pose during its first step, so the spent pose alone moved nothing after 48.5 s; the fifth commit is not in the order and is there because the row of hands and shoes the order names is seen in the walk. It can be taken out by itself.
+
+What I SEE
+- Wisps (`proof/camera/mend1-wisps.jpg`, 48.0 and 48.5 s): before, one faint puff beside the left arm and one behind the right; after, a grey wisp beside each arm that rises up the screen and does not cross the white face.
+- Back (`proof/camera/mend2-back.jpg`, 43.75 and 44.5 s): before, the back is one pale grey from tip to stem; after, it is pale at the tip and darker down to the stem. The frame at 43.25 s still shows the white face and did not move.
+- Rim (`proof/camera/mend3-rim.jpg`, 48.0 and 50.0 s): the orange line round the arms, hands and shoes is gone. At 48.0 s the hands and shoes are over the pale page and read as black shapes with their own highlights. At 50.0 s the arrow has walked onto the dark furrow: the left hand shows by its highlights, the right hand and the right shoe are hard to tell from each other and from the ground. That frame is 2.6 s after the beam's end, so a rim that is gone within 1 s would not reach it. No such rim is built.
+- Hands (`proof/camera/mend4-hands.jpg`, 48.0 and 49.0 s): before, hand, shoe, shoe, hand touch in one row; after, each hand is apart from the shoes with page between and a little higher on the screen. They are still close to level with the shoes.
+
+`emberOf` in `src/boss/finish/acting.ts` and its test (`tests/b-finish.test.ts:160` to 167) are as they were: the page now says `ember: 0`, which is the "unless the fight says otherwise" that test names. `tests/b-finish.test.ts:187` (the arms drop) is green.

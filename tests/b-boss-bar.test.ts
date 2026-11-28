@@ -25,8 +25,8 @@ const word = (list: Shape[]): boolean => list.some((s) => s.id === 'health-label
 const anchor = (list: Shape[]): Shape => list.find((s) => s.id === 'arena')!
 
 describe('the health bar after the kill, behind its switch', () => {
-  it('is off as it is shipped, and off the word and the bar stay to the end of the page', () => {
-    expect(was).toBe(false)
+  it('is on as it is shipped; turned off, the word and the bar stay to the end of the page', () => {
+    expect(was).toBe(true)
     set(false)
     const stage = film()
     const gone = stage.events.find((e) => e.name === 'boss-gone')!.step / stepHz
@@ -87,6 +87,26 @@ describe('the health bar after the kill, behind its switch', () => {
       part.pose!(o, end, ctx)
       expect(bar.visible).toBe(!on)
       part.drop?.(o)
+    }
+  })
+
+  it('the words on the floor are drawn after the floor on their own count, with the word of the bar in the list or out of it', () => {
+    for (const on of [false, true]) {
+      set(on)
+      const stage = film()
+      const gone = stage.events.find((e) => e.name === 'boss-gone')!.step / stepHz
+      const turns = stage.events.find((e) => e.name === 'page-turn')!.step / stepHz
+      let seen = 0
+      for (let t = gone + 0.5; t < turns; t += 0.25) {
+        const list = stage.frameAt(t).list
+        const said = list.findIndex((s) => s.id === 'defeated')
+        if (said < 0) continue
+        seen++
+        expect(word(list), `at ${t.toFixed(3)} s`).toBe(!on)
+        for (const id of ['arena', 'boss-look', 'finish-figure']) expect(said, `${id} at ${t.toFixed(3)} s`).toBeGreaterThan(list.findIndex((s) => s.id === id))
+        expect(list.filter((s) => s.id === 'defeated')).toHaveLength(1)
+      }
+      expect(seen).toBeGreaterThan(8)
     }
   })
 
