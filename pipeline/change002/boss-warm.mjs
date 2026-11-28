@@ -2,6 +2,7 @@
 // The boss page of the live build on the real clock, played by a bot at one fixed level of the live picture: stepped without a picture to `--from` seconds, then drawn.
 // The time from one frame of the browser to the next is kept with the second of the page it fell in, the count of shader programs the renderer holds, and the names of the things whose materials are shown for the first time in it.
 // Told for two stretches: the forming (`--from` to `boss-formed`) and the fight (`boss-formed` and `--seconds` more): the frames, the median, the frames over 33.3 ms, the longest, the frames over twice the median with their seconds, and the programs made.
+// `--stretch finish` plays the finish in place of the forming and the fight: stepped without a picture to 0.6 s before `--arms` (the second of `finish-arms` of that bot), drawn to 1 s after `boss-gone`, and told from `finish-arms` on.
 // Needs one line added to src/main.ts for the run only and never committed, after `let stage = makeStage()`:
 //   ;(window as unknown as { __live: unknown }).__live = { stage: () => stage, app, level: () => size.level() }
 import fs from 'node:fs'
@@ -11,7 +12,9 @@ import { openSession } from '../../tools/lib/capture.mjs'
 
 const a = args()
 const level = String(a.level ?? 'low')
-const seconds = Number(a.seconds ?? 15)
+const finish = String(a.stretch ?? '') === 'finish'
+const seconds = finish ? 1 : Number(a.seconds ?? 15)
+const from = finish ? Number(a.arms ?? 50.879) - 0.6 : Number(a.from ?? 3.2)
 const session = await openSession({ format: String(a.format ?? 'preview'), assets: 'web', mode: 'live', query: `&bot=${String(a.bot ?? 'keen')}&seed=${Number(a.seed ?? 1)}&step=4&quality=${level}` })
 try {
   const card = await session.page.evaluate(() => {
@@ -20,7 +23,7 @@ try {
     const c = document.getElementById('stage')
     return { renderer: String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER)), canvas: [c.width, c.height], ratio: window.devicePixelRatio, level: window.__live.level() }
   })
-  await session.page.evaluate(({ from, seconds: span }) => {
+  await session.page.evaluate(({ from, seconds: span, until }) => {
     const live = window.__live
     const hz = 240
     const rows = []
@@ -57,13 +60,13 @@ try {
       const news = fresh()
       if (last >= 0) rows.push([Math.round((t - last) * 100) / 100, Math.round(s.time * 1000) / 1000, info.programs ? info.programs.length : -1, news[0], news[1]])
       last = t
-      const formed = seen('boss-formed')
+      const formed = seen(until)
       if (!(formed >= 0 && s.time >= formed + span + 0.15) && s.page.id === 'step4') requestAnimationFrame(tick)
       else window.__warm.done = true
     }
     window.__warm = { rows, done: false }
     requestAnimationFrame(tick)
-  }, { from: Number(a.from ?? 3.2), seconds })
+  }, { from, seconds, until: finish ? 'boss-gone' : 'boss-formed' })
   let state = null
   for (;;) {
     await new Promise((r) => setTimeout(r, 10000))
@@ -74,8 +77,8 @@ try {
   const got = await session.page.evaluate(() => ({ rows: window.__warm.rows, events: window.__live.stage().events.map((e) => [e.name, e.step]), level: window.__live.level() }))
   const hz = 240
   const events = got.events.filter((e, i, all) => all.findIndex((x) => x[0] === e[0]) === i).map((e) => [e[0], e[1] / hz])
-  const formed = events.find((e) => e[0] === 'boss-formed')[1]
-  const told = [{ name: 'forming', from: Number(a.from ?? 3.2), to: formed }, { name: 'fight', from: formed, to: formed + seconds }].map((s) => {
+  const at = (name) => events.find((e) => e[0] === name)[1]
+  const told = (finish ? [{ name: 'finish', from: at('finish-arms'), to: at('boss-gone') + 1 }] : [{ name: 'forming', from, to: at('boss-formed') }, { name: 'fight', from: at('boss-formed'), to: at('boss-formed') + seconds }]).map((s) => {
     const rows = got.rows.filter((r) => r[1] >= s.from && r[1] < s.to)
     const ms = rows.map((r) => r[0]).sort((x, y) => x - y)
     const median = ms.length ? ms[Math.floor(ms.length / 2)] : -1
