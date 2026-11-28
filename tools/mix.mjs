@@ -263,7 +263,7 @@ export async function soundChecks(a, P, c, M) {
         if (p !== at('src', 'audio')) walk(p)
       } else if (/\.(ts|js)$/.test(f.name)) {
         const text = fs.readFileSync(p, 'utf8')
-        if (/from\s+['"][./]+\/audio(\/(?!cues)[\w-]+)?['"]/.test(text) || /from\s+['"]\.\/audio['"]/.test(text)) importers.push(rel(p))
+        if (/from\s+['"][./]+\/audio(\/(?!cues|standin)[\w-]+)?['"]/.test(text) || /from\s+['"]\.\/audio['"]/.test(text)) importers.push(rel(p))
       }
     }
   }

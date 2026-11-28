@@ -454,14 +454,15 @@ describe('how the boss plays (change 002, item 15)', () => {
     expect(at('button-down')[0]! - fall).toBeCloseTo(SHOUT.gone + FINISH.settle, 1)
   })
 
+  const marksBy = (held: number): number => SHOUT.beats.filter((b) => b - SHOUT.beats[0] <= held + 1e-6).length
   const grown = (held: number, steps: number): number => FINISH.steady * (held / (SHOUT.fire - SHOUT.beats[0])) + ((1 - FINISH.steady) * steps) / SHOUT.beats.length
 
   it.each([
     ['who presses nothing', (): boolean => false, FINISH.alone, 4, 1],
-    ['who holds the button and never lets go', (): boolean => true, 5.39, 4, 1],
+    ['who holds the button and never lets go', (): boolean => true, SHOUT.fire - SHOUT.beats[0] + FINISH.late + 0.56, 4, 1],
     ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2.55, 2, grown(1.5, 2)],
     ['who clicks once and lets go', (u: number): boolean => u >= 0.5 && u < 0.7, 1.8, 1, FINISH.small],
-    ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.76, 3, grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], 3)]
+    ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.76, marksBy(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0]), grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], marksBy(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0]))]
   ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (name, down, fires, charges, power) => {
     for (const seed of [config.seed, 7, 1234]) {
       const bot = new BotDriver('keen', seed)
