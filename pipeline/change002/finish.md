@@ -19,7 +19,7 @@ All of it is a function of the marks and the view time. No clock, no random numb
 ## Decisions
 
 1. The figure is the approved arrow (same body mesh and material, same arms), tip up, standing on its tail, with two legs of the arms' own hose and thickness and two shoes. Lying, it coincides with the pointer, so getting up and lying down start and end on the ordinary arrow.
-2. "Upright" for a camera that looks straight down is a rise of the figure's plane about the line of its feet (`STAND.rise`, 0.62 rad now; the Builder chooses between 40 and 60 degrees from `proof/finish/rise-40-60.png`). Height is sold by a long drawn shadow that starts at the shoes, by the head nearer the lens, and by a small light on the face.
+2. "Upright" for a camera that looks straight down is a rise of the figure's plane about the line of its feet (`STAND.rise`, 0.698 rad, 40 degrees, by the Builder's ruling of about 01:31Z; it was 0.62 rad in the first pass; see `proof/finish/rise-40-60.png`). Height is sold by a long drawn shadow that starts at the shoes, by the head nearer the lens, and by a small light on the face.
 3. The long shadow is my own mesh (the engine squashes tall shadows): every shadow-casting piece is drawn a second time, projected onto the ground along the key's direction. While the beam stands it swings to fall away from the hands.
 4. The beam is FINISH A (white core, blue edge, thin streaks), not gold; the power-up is the pose sheet's first figure with a gold flame. The hands go back to the hip first (the pose sheet's second figure).
 5. Legs exist from standing up to the page turn after the blow and nowhere else (Builder's ruling). After the blow the figure stays, fist on the button; there is no lying down after it. `finish-liedown` is only after the power-up's burst (0.5 s after the power's end).
@@ -30,6 +30,10 @@ All of it is a function of the marks and the view time. No clock, no random numb
 9. What burns is laid over the picture, not added to it (the page is nearly white), with colours above 1 so the finishing pass makes them glow.
 10. Second pass (01:14Z to 01:20Z): the ball's light and the three beam lights were about halved (ball 0.12 to 0.62, beam 1.0, 1.1, 0.9 times its opening) so the page does not go white and the arrow's white face holds; the gold round the figure during the charge and the blast is now a crackle of thin gold arcs on the ground that jump 15 times a second (`fx.crackle`, a function of view time), not a smear; the flame is five broad tongues behind eleven to sixteen narrow ones, orange at the edge, yellow white in the middle.
 11. The dark puff about 50 px ahead of the hands in the first third of a second of the beam is the look's own smoke on the boss's near corner (it stands in the charge picture too, before any beam); nothing of mine is drawn there (STATED from reading `acting.ts`: my smoke starts at the beam's end, my dust only at the knees and the blow).
+12. Third pass (01:33Z to 01:39Z, after the Builder's six faults): the limbs are thick black hose (legs 6.2 px across times the arms' own taper, arms 1.3 times the approved hose), the gloves 1.5 times the approved hand, the shoes 23 by 10 by 16 px. They grow to that with the legs, so the lying figure still coincides with the pointer. The arms' part of this is the NEEDS commit below.
+13. One number for the figure's size: `FinishInput.scale` (1 when left out). It grows in about the feet as the legs come out (the lying arrow is always the cursor's own size) and carries the hands, the ball, the flame, the skid, the stride of the walk (54 px times the scale per step), the fist's reach and `kneelSpot(button, scale)`. Not scaled: the beam's width and the smoke puffs' size. Rendered only at 1 (UNKNOWN how it looks at another value: no picture made).
+14. The beam: a narrower white core, a bluer body with a rough edge, and two thin lightning lines along it that jump 18 times a second and show in patches.
+15. The button's one point after the blast is (960, 650) (fight helper, 01:39Z); the kneel spot stays (816, 656) for the look's 226 px button.
 
 ## Events (for sounds; this unit makes no sound and spends nothing)
 
@@ -59,7 +63,7 @@ Power-up, seconds from `power.at`, with `end` = E (3.4 when left out):
 
 ## NEEDS
 
-None committed. No file outside my own was edited.
+One: `5a618eab` "NEEDS: the arms take a bulk and a glove size" in `src/cursor/act/arms.ts` (the arms' owner): two numbers on `Arms`, `bulk` and `glove`, both 1 by default, so nothing changes anywhere else; the standing figure sets 1.3 and 1.5. No other file outside my own was edited.
 - Look helper: `buttonAt(view)` gives the button's place; the button is held down from `state.press` (Builder, 00:41Z). Nothing of mine to change.
 - Fight helper: wires `finishPart`, hides the ordinary arrow while `state.up`, passes `beam: () => beamLight(state)` to the arena.
 - The no-legs rule: `AGENTS.md` line 228 ("The cursor never has ... legs, feet ... Check G12 tests it"). I found no line in `tools/` or `tests/` that reads legs or feet (STATED, by search), so no check should go red; the sentence itself wants re-pinning at the merge.

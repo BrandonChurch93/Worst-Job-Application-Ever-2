@@ -75,6 +75,26 @@ const JOBS = {
     await rows('fire', 'fire: from 2 frames before the fire mark', { left: 450, top: 396, width: 900, height: 360 }, 6),
     await rows('liedown', 'power-up: the burst, then lying down into the arrow: from 2 frames before the end of the power-up', { left: 750, top: 366, width: 420, height: 420 }, 12)
   ])
+,
+  'report-strips': async () => stack('report-strips', [
+    await rows('fire', 'third pass. fire: from 2 frames before the fire mark, every frame for twelve, then every second', { left: 450, top: 396, width: 900, height: 360 }, 8),
+    await rows('knees', 'knees: from 2 frames before the kneel mark, every frame for twelve, then every second', KNEEL, 12),
+    await rows('blow', 'blow: from 12 frames before the press, every frame for twelve, then every second', KNEEL, 12)
+  ]),
+  'report-four': async () => {
+    const w = (W - GAP) / 2
+    const h = Math.round((w * 9) / 16)
+    const cut = { left: 480, top: 270, width: 960, height: 540 }
+    const tiles = [
+      await sharp(path.join(shots, 'pose-power-above.png')).resize(w, h, { fit: 'cover' }).png().toBuffer(),
+      await sharp(path.join(shots, 'charge.png')).extract({ left: 0, top: 150, width: 960, height: 540 }).resize(w, h).png().toBuffer(),
+      await sharp(path.join(shots, 'blast.png')).resize(w, h, { fit: 'cover' }).png().toBuffer(),
+      await sharp(path.join(shots, 'blow-14.png')).extract(cut).resize(w, h).png().toBuffer()
+    ]
+    const body = await sharp({ create: { width: W, height: h * 2 + GAP, channels: 3, background: '#0b0b0c' } })
+      .composite(tiles.map((input, i) => ({ input, left: (i % 2) * (w + GAP), top: Math.floor(i / 2) * (h + GAP) }))).png().toBuffer()
+    return stack('report-four', [[await sharp(label('in my harness, not the real page: power-up | charge (cut in) / blast | the fist on Submit, 2 frames after the press')).png().toBuffer(), body]])
+  }
 }
 
 const wanted = process.argv.slice(2)
