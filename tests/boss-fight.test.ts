@@ -3,7 +3,8 @@ import * as THREE from 'three'
 import { config, stepHz } from '../src/config'
 import { newFight, stepFight, type Arena } from '../src/boss/fight'
 import { DART, HOME, POPUP, SHIELD } from '../src/boss/plan'
-import { GUARD, GUN } from '../src/boss/tune'
+import { GUARD, GUN, LOOK1_ON } from '../src/boss/tune'
+import { viewNow } from '../src/boss/viewof'
 import { pages } from '../src/pages'
 import { makeLayout } from '../src/pages/step4/layout'
 import { ACT, makeScript, UNIT_SECONDS } from '../src/pages/step4/script'
@@ -26,15 +27,15 @@ const io = (pressed: boolean, cursor: { x: number; y: number }, events: string[]
 
 const arena: Arena = { popups: [] }
 
-function frames(): { time: number; list: Shape[] }[] {
+function frames(): { time: number; list: Shape[]; health: number }[] {
   const stage = film()
-  const out: { time: number; list: Shape[] }[] = []
+  const out: { time: number; list: Shape[]; health: number }[] = []
   while (stage.page.id === 'step4' && stage.time < UNIT_SECONDS) {
     stage.advance(2)
     if (stage.page.id !== 'step4') break
     const list: Shape[] = []
     stage.page.draw(list)
-    out.push({ time: stage.time, list })
+    out.push({ time: stage.time, list, health: viewNow()?.boss.health ?? 0 })
   }
   return out
 }
@@ -71,6 +72,11 @@ describe('the boss fight, made real', () => {
     for (const [id, set] of keys) {
       const most = id === 'verify-card' ? 24 : id === 'verify-box' ? 2 : 1
       expect(set.size, id).toBeLessThanOrEqual(most)
+    }
+    if (LOOK1_ON) {
+      expect(keys.has('health-fill')).toBe(false)
+      expect(all.some((f) => f.list.some((s) => s.id === 'arena' && s.kind === 'anchor'))).toBe(true)
+      return
     }
     expect(keys.get('health-fill')!.size).toBe(1)
     expect(keys.get('health-track')!.size).toBe(1)
@@ -110,8 +116,7 @@ describe('the boss fight, made real', () => {
     expect(ids.filter((id) => /^dart-\d+$/.test(id)).length).toBeGreaterThanOrEqual(4)
     expect(ids.filter((id) => /^spark-\d+$/.test(id)).length).toBeGreaterThanOrEqual(1)
     expect(f.list.filter((s) => /^fired-\d+$/.test(s.id)).length).toBe(0)
-    expect(ids).toContain('health-fill')
-    expect(ids).toContain('health-track')
+    for (const id of LOOK1_ON ? ['arena', 'health-label'] : ['health-fill', 'health-track']) expect(ids).toContain(id)
   })
 
   it('cues nothing in the half second before a key picture, and keeps every cue inside the unit', () => {
@@ -177,9 +182,9 @@ describe('the boss fight, made real', () => {
     for (const f of every) expect(f.list.some((s) => /^fired-\d+$/.test(s.id)), `a slab at ${f.time.toFixed(2)}`).toBe(false)
     expect(frame.list.filter((s) => s.id.startsWith('dart-')).length).toBeGreaterThanOrEqual(4)
     expect(frame.list.some((s) => s.id.startsWith('spark-'))).toBe(true)
-    const fill = frame.list.find((s) => s.id === 'health-fill')!
+    const fill = frame.list.find((s) => s.id === 'health-fill')
     const full = Math.max(...every.map((f) => f.list.find((s) => s.id === 'health-fill')?.w ?? 0))
-    const part = fill.w / full
+    const part = LOOK1_ON ? frame.health : fill!.w / full
     expect(part).toBeGreaterThan(0.5)
     expect(part).toBeLessThan(1)
   })

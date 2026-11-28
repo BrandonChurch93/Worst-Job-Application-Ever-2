@@ -6,8 +6,8 @@ import { drawFinish, drawPancake, drawPower, finishHands } from '../../boss/fini
 import { BIG, CHANGE, CLOSE, FINISH, FLAT, GUARD, LAST, LINE6, LINE7, LOOK1_ON, SHOUT, SOLID, STANDS, TOP } from '../../boss/tune'
 import { ARENA as GROUND } from '../../arena/layout'
 import { STANDS as GROUND_STANDS } from '../../arena/solids'
-import { finishState, POWER, type FinishInput } from '../../boss/finish/acting'
-import { buttonAt, WORD, wordAt } from '../../boss/look1/pose'
+import { finishState, kneelSpot, LIEDOWN, POWER, type FinishInput } from '../../boss/finish/acting'
+import { buttonAt, SIZE, WORD, wordAt } from '../../boss/look1/pose'
 import { LEAD, setFinish, setView, viewOf } from '../../boss/viewof'
 import { drawArena, drawRules, drawTurretOff, drawWeapons } from '../../boss/weapons'
 import { frame } from '../../stage/camera'
@@ -146,7 +146,7 @@ export function makePage(): PageLogic {
   const level = (held: number): number => FINISH.steady * Math.min(1, held / WHOLE) + (1 - FINISH.steady) * steps(held)
   const armsOut = (): boolean => (s.stage === 'finish' && s.t >= FINISH.fall + SHOUT.arms && s.fired < BLAST) || fist() !== null
   const charged = (): number => (s.stage !== 'finish' || s.charge < 0 ? 0 : s.fired >= BLAST ? 0 : s.fired >= 0 ? s.shot : level(s.charge))
-  const KNEEL = { x: FALLEN.x - LAST.reach, y: FALLEN.y }
+  const KNEEL = LOOK1_ON ? kneelSpot({ x: FALLEN.x, y: FALLEN.y, w: SIZE.button.w }) : { x: FALLEN.x - LAST.reach, y: FALLEN.y }
   const near = (): { x: number; y: number; z: number } => {
     const k = s.close * s.close * (3 - 2 * s.close)
     const w = 1920 + (CLOSE.w - 1920) * k
@@ -189,7 +189,7 @@ export function makePage(): PageLogic {
     return {
       time: v.time,
       arrow: { x: s.cx, y: s.cy },
-      power: m.power < 0 ? null : { at: m.power, end: m.power + LINE7.part2 - LINE7.power - POWER.burst },
+      power: m.power < 0 ? null : { at: m.power, end: m.power + LINE7.part2 - LINE7.power - POWER.burst - LIEDOWN },
       marks: { arms: mark(m.arms), charge: mark(m.charge), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
@@ -336,6 +336,8 @@ export function makePage(): PageLogic {
       if (e.t < 0) return
       if (!waited) {
         io.emit('finish-walk', io.cursor.x, io.cursor.y, false)
+        const told = figure()
+        if (told) s.fig = { ...finishState(told).feet }
         s.fin.walked = 0
         stamp('walk')
       }
@@ -665,7 +667,7 @@ export function makePage(): PageLogic {
         }
       }
       io.cursor.setGround(groundAt(io.cursor.x, io.cursor.y))
-      if (LOOK1_ON) io.cursor.setOnPage(s.done || !stands())
+      if (LOOK1_ON) io.cursor.setOnPage(!stands())
     },
     save: () => JSON.parse(JSON.stringify(s)) as State,
     load(state) {

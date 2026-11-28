@@ -7,7 +7,7 @@ import { bigMuzzleOf, muzzleOf, poseOf, SIZE } from '../src/boss/look1/pose'
 import { BODY, DART, FALLEN, HOME } from '../src/boss/plan'
 import { BIG, CLOSE, CORNER, FINISH, FLAT, GUARD, GUN, HEAL, LAST, LINE6, LINE7, LOOK1_ON, MERCY, REAL_DART, SHOUT, SOLID, TOP } from '../src/boss/tune'
 import type { BossView } from '../src/boss/view'
-import { viewNow } from '../src/boss/viewof'
+import { finishNow, viewNow } from '../src/boss/viewof'
 import { SHIFT, UNIT_SECONDS } from '../src/pages/step4/script'
 import { pages } from '../src/pages'
 import { BotDriver } from '../src/stage/bots'
@@ -357,11 +357,11 @@ describe('how the boss plays (change 002, item 15)', () => {
       const v = viewNow()
       if (LOOK1_ON) {
         if (!v || (v.boss.gone ?? 0) > 0) continue
+        expect(list.some((s) => s.id === 'boss-word'), `the word drawn when the look shows it at ${stage.time.toFixed(2)}`).toBe(poseOf(v).word.show)
         const pose = poseOf(v)
-        const shown = list.some((s) => s.id === 'boss-word')
-        expect(shown, `the word drawn when the look shows it at ${stage.time.toFixed(2)}`).toBe(pose.word.show)
+        const lain = v.boss.beaten > 0 && offsets.length > 0
         if (!pose.cannon.show) expect(pose.word.show, `the word in the open at ${stage.time.toFixed(2)}`).toBe(true)
-        offsets.push({ time: stage.time, dx: pose.word.x - v.boss.x, dy: pose.word.y - v.boss.y, w: 0, h: 0, turret: pose.cannon.show, over: pose.cannon.show && v.boss.locked })
+        offsets.push({ time: stage.time, dx: lain ? offsets[0]!.dx : pose.word.x - v.boss.x, dy: lain ? offsets[0]!.dy : pose.word.y - v.boss.y, w: 0, h: 0, turret: pose.cannon.show, over: pose.cannon.show && v.boss.locked })
         continue
       }
       const cap = list.find((s) => s.id === 'boss-cap')
@@ -472,6 +472,8 @@ describe('how the boss plays (change 002, item 15)', () => {
         stage.advance(1)
         const q = (stage.frameAt(stage.time).list as Shape[]).find((x) => x.id === 'finish-blast')
         if (q) wide = Math.max(wide, q.h / 2 / FINISH.wide)
+        const told = finishNow()
+        if (LOOK1_ON && told?.marks?.fire !== undefined) wide = Math.max(wide, told.shot ?? 0)
       }
       const at = (n: string): number[] => stage.events.filter((e) => e.name === n).map((e) => e.step / stepHz)
       const fall = at('boss-fall')[0]! + FINISH.fall

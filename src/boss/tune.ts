@@ -3,7 +3,7 @@ import { config } from '../config'
 // Every number of the boss's rules (change note 002, item 15) that is tuned. One line each.
 
 // The one switch between the plain stand-in and LOOK 1 (mail of 22:19). false draws the stand-in and uses its measures.
-export const LOOK1_ON = false
+export const LOOK1_ON = true
 
 // The one switch that brings the three pop-ups back into the fight (mail of 22:19, rule e).
 export const POPUPS_ON = false
@@ -203,7 +203,8 @@ export const LAST = {
   reach: LOOK1_ON ? 144 : 200, // px left of the button's middle at which it kneels: with the look, 31 px left of the end of its 226 px button
   words: -290, // px from the button's middle to the words "Click to submit", so they stand over it: the arena's burn is black to 138 px and sooty to about 230 px from it, and under it lie the cracks of the place the button was torn from
   wait: 0.4, // s after the body is gone before it sets off (`finish-walk`), while its arms go on dropping
-  speed: LOOK1_ON ? 134.3 : 114.3, // px/s of its walk: 2.8 s from where it stood to its knees, 376 px with the look and 320 px without
+  far: 431, // px the standing figure walks in the film with the look: from its feet after a whole blast to its own kneeling place, with the step it waits
+  speed: LOOK1_ON ? 153.93 : 114.3, // px/s of its walk: 2.8 s from where it stood to its knees, `far` with the look and 320 px without
   alone: 6, // s without a move or a press after which it walks there and strikes by itself, live site
   led: 20, // s of being led about after which it walks there and strikes by itself, live site
   most: 2.8, // s at most that its walk to the button takes when it goes by itself
@@ -224,7 +225,8 @@ export const IDLE = {
 
 // The film's fight is shorter than any visitor's: a dart that reaches the body does `dart` times as much, by phase, and a phase may end in `floor` of its least length.
 // `ends`: the second of the fight at which each phase ends in the film at the latest, whatever the darts did, so the film's marks do not move with the boss's shape.
-export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const, ends: [9.83, 11.02, 13.69] as const } as const
+// `spare` is the health the film keeps over the end of a stage until that stage's time is up, with the look on, so that every stage ends at its time whatever the darts meet.
+export const FILM = { dart: [2.8, 9, 5] as const, floor: [1, 0.35, 0.5] as const, ends: [9.83, 11.02, 13.69] as const, spare: 0.5 } as const
 
 // The right edge of the pop-ups, which stand left of the boss's fence.
 export const POPUP_RIGHT = 1040
