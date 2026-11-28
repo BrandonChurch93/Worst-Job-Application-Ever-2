@@ -2,8 +2,9 @@ import { config } from '../config'
 import { TYPE } from '../shell/parts'
 import type { DrawList, TypeSpec } from '../stage/types'
 import { label, MUZZLE, prog, smooth } from './body'
-import { bannerUp, FLASH_SECONDS, SPARK_SECONDS, type Fight } from './fight'
-import { ARENA, POPUP, SLAB } from './plan'
+import { bannerUp, blastLine, cornerAt, FLASH_SECONDS, muzzle, SPARK_SECONDS, standing, weakSide, type Fight, type Wall } from './fight'
+import { ARENA, POPUP } from './plan'
+import { BIG, CORNER, GUARD, GUN, SOLID } from './tune'
 
 const heights = config.scale.heights
 const sizes = config.scale.sizes
@@ -15,22 +16,12 @@ export interface PopupPlan { title: string; box: Box; titleAt: { x: number; y: n
 export interface BannerPlan { key: string; w: number; h: number }
 export interface WeaponPlan { slabs: SlabPlan[]; popups: PopupPlan[]; banner: BannerPlan; slabType: TypeSpec; bannerType: TypeSpec; titleType: TypeSpec }
 
-// A slab is lobbed: it leaves the mouth, clears the top of the shield (z 80), comes down to its flying height and dives into the page over the last of its way.
-const FLY = { z0: 24, rise: 0.12, over: 112, fall: 0.5, dive: 150, hop: 5, hopFrom: 0.02, hopTo: 0.16, drop: 0.1 }
-const flightHeight = (t: number, left: number): number => {
-  const from = MUZZLE.z - heights.slab / 2
-  const up = prog(t, 0, FLY.rise)
-  const high = t < FLY.rise ? from + (FLY.over - from) * (1 - (1 - up) ** 2) : FLY.z0 + (FLY.over - FLY.z0) * (1 - smooth(prog(t, FLY.rise, FLY.fall)))
-  const near = Math.min(1, Math.max(0, left / FLY.dive))
-  return high * near * (2 - near)
-}
 export const DART_LONG = 26
 export const DART_Z = 17
 export const SPARK_Z = 30
 export const MUZZLE_Z = MUZZLE.z
 export const BANNER_Z = 64
 const BANNER_LEAST = 0.6
-const SLAB_LEAST = 0.12
 
 export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
   for (const p of f.popups) {
@@ -65,21 +56,6 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
       out.push({ id: `popup-up-${p.slot}-chip-${n}`, part, kind: 'disc', x: at.x, y: at.y, w: 40, h: 40, z0: top, z1: top + 0.6, tone: 'dark', v: [n + p.slot * 3] })
     }
   }
-  for (const s of f.slabs) {
-    const made = plan.slabs[s.m]!
-    const k = s.state === 0 ? Math.min(1, (2 * SLAB.speed[f.phase]! * s.t) / made.w) : 1
-    if (k < SLAB_LEAST) continue
-    const struck = s.push !== undefined
-    const fell = s.state === 0 ? 0 : flightHeight(s.air ?? 9, struck ? s.left : 0)
-    const hop = s.state === 1 && !struck ? FLY.hop * Math.sin(Math.PI * prog(s.t, FLY.hopFrom, FLY.hopTo)) : 0
-    const z0 = s.state === 0 ? flightHeight(s.t, s.left) : s.state === 1 ? fell * (1 - prog(s.t, 0, FLY.drop)) + hop : 0
-    const landed = s.state === 0 ? 9 : s.state === 1 ? s.t : s.t + 9
-    const sx = s.x
-    const sy = s.y
-    out.push({ id: `fired-${s.m}`, part, kind: 'box', x: sx - made.w / 2, y: sy - made.h / 2, w: made.w, h: made.h, z0, z1: z0 + heights.slab, tone: 'danger', r: 8, rot: s.rot, role: 'slab', v: [k, landed, s.state === 0 ? s.t : 9, struck || s.rim ? 1 : 0] })
-    const type = k >= 1 ? plan.slabType : { ...plan.slabType, px: plan.slabType.px * k }
-    if (k >= 0.25) out.push(label(`fired-${s.m}-words`, part, made.key, sx, sy, type, Math.max(0.3, z0 + heights.slab) + (s.state === 1 && s.t < 0.6 ? 1.2 : 0), 'inkLight', s.rot))
-  }
   const banner = bannerUp(f) ? Math.min(prog(f.expired, 0, 0.16), 1 - prog(f.expired, 1.3, 1.5)) : 0
   if (banner >= BANNER_LEAST) {
     const k = banner
@@ -101,6 +77,83 @@ export function drawWeapons(out: DrawList, f: Fight, plan: WeaponPlan): void {
   for (const s of f.sparks) {
     const z = Math.max(SPARK_Z, s.z ?? 0)
     out.push({ id: `spark-${s.n}`, part, kind: 'disc', x: s.x - 40, y: s.y - 40, w: 80, h: 80, z0: z, z1: z + 4, tone: 'light', v: [s.t / SPARK_SECONDS, s.n] })
+  }
+}
+
+const plain = 'shell'
+const WING = { w: 60, h: 190, tall: 24, z: 8 }
+const BARREL = { w: 84, h: 34 }
+const LAMP = 64
+const TELL = 40
+const BLINK = 8
+const TURRET = { base: 150, long: 250, wide: 52, z: 112, tall: 44, fly: 900, spin: 5 }
+const LINE = { z: 0.6, beamZ: 60, beamTall: 30 }
+const SCAR = { in: 12, z: 0.4 }
+
+function turret(out: DrawList, x: number, y: number, rot: number, z: number): void {
+  out.push({ id: 'boss-turret', part: plain, kind: 'disc', x: x - TURRET.base / 2, y: y - TURRET.base / 2, w: TURRET.base, h: TURRET.base, z0: z, z1: z + TURRET.tall, tone: 'dark' })
+  out.push({ id: 'boss-turret-barrel', part: plain, kind: 'box', x: x + Math.cos(rot) * TURRET.long * 0.42 - TURRET.long / 2, y: y + Math.sin(rot) * TURRET.long * 0.42 - TURRET.wide / 2, w: TURRET.long, h: TURRET.wide, z0: z + 8, z1: z + TURRET.tall + 8, tone: 'metal', r: 10, rot })
+}
+
+// The turret blown off the beaten boss: it flies away from the shield's side, turning, and is gone.
+export function drawTurretOff(out: DrawList, x: number, y: number, face: number, t: number): void {
+  if (t >= BIG.off) return
+  const go = TURRET.fly * t
+  turret(out, x - Math.cos(face) * go, y - Math.sin(face) * go - Math.sin((Math.PI * t) / BIG.off) * 120, face + t * TURRET.spin, TURRET.z + Math.sin((Math.PI * t) / BIG.off) * 80)
+}
+
+// The plainest things that show the rules: two side plates of the shield, the lamp on the open flank, the big turret with its line and its blast, the lamp of a gun that is about to fire, the four corner cannons with their tells, and the bullets.
+function lane(out: DrawList, id: string, l: { x0: number; y0: number; x1: number; y1: number }, half: number, z0: number, z1: number, tone: 'dark' | 'light' | 'danger'): void {
+  const long = Math.hypot(l.x1 - l.x0, l.y1 - l.y0)
+  if (long > 40) out.push({ id, part: plain, kind: 'box', x: (l.x0 + l.x1) / 2 - long / 2, y: (l.y0 + l.y1) / 2 - half, w: long, h: half * 2, z0, z1, tone, rot: Math.atan2(l.y1 - l.y0, l.x1 - l.x0), moved: true })
+}
+
+// The stand-in's arena: the pillars and panes that still stand, raised by `up` (0 to 1), and the scar of each blast.
+export function drawArena(out: DrawList, f: { breaks: Fight['breaks']; fallen: string[] }, up = 1, walls?: Wall[]): void {
+  for (const b of f.breaks) lane(out, `break-${b.n}`, b, b.width / 2 - SCAR.in, 0, SCAR.z, 'dark')
+  if (up <= 0) return
+  for (const w of walls ?? standing(f)) {
+    if (w.kind === 'bar') continue
+    out.push({ id: `solid-${w.id}`, part: plain, kind: 'box', x: w.x0, y: w.y0, w: w.x1 - w.x0, h: w.y1 - w.y0, z0: 0, z1: (w.kind === 'pane' ? SOLID.tall.pane : SOLID.tall.pillar) * up, tone: w.kind === 'pane' ? 'glass' : 'metal', r: 4 })
+  }
+}
+
+export function drawRules(out: DrawList, f: Fight, look = false): void {
+  if (f.big.t >= 0 && Math.floor(f.big.t * BLINK) % 2 === 0) lane(out, 'big-line', blastLine(f, f.big.a), BIG.wide, 0, LINE.z, 'danger')
+  else if (f.big.t < 0 && f.big.beam > 0) lane(out, 'big-beam', blastLine(f, f.big.a), BIG.wide, LINE.beamZ, LINE.beamZ + LINE.beamTall, 'light')
+  for (const side of look ? [] : [-1, 1]) {
+    const a = f.face + side * GUARD.wing
+    const x = f.x + Math.cos(a) * GUARD.radius
+    const y = f.y + Math.sin(a) * GUARD.radius
+    out.push({ id: `guard-wing-${side < 0 ? 0 : 1}`, part: plain, kind: 'box', x: x - WING.w / 2, y: y - WING.h / 2, w: WING.w, h: WING.h, z0: WING.z, z1: WING.z + WING.tall, tone: 'glass', r: 10, rot: a - Math.PI })
+  }
+  if (f.turret > 0 && !look) {
+    const up = Math.min(1, (f.turret * (BIG.lock - BIG.rise)) / (BIG.up - BIG.rise))
+    const over = f.turret >= 1 ? 1 : Math.max(0, (f.turret * (BIG.lock - BIG.rise) - (BIG.up - BIG.rise)) / (BIG.lock - BIG.up))
+    const back = BIG.back * (1 - smooth(over))
+    const rot = f.big.beam > 0 ? f.big.a : f.face
+    turret(out, f.x - Math.cos(f.face) * back, f.y - Math.sin(f.face) * back, rot, TURRET.z - (1 - smooth(up)) * (TURRET.tall + 20))
+  }
+  if (f.weak > 0 && Math.floor(f.weak * BLINK) % 2 === 0) {
+    const w = weakSide(f)
+    out.push({ id: 'weak-lamp', part: plain, kind: 'disc', x: w.x - LAMP / 2, y: w.y - LAMP / 2, w: LAMP, h: LAMP, z0: 112, z1: 118, tone: 'accent' })
+  }
+  if (f.windup >= 0 && Math.floor(f.windup * BLINK * 2) % 2 === 0) {
+    const m = muzzle(f, f.cannon)
+    out.push({ id: 'gun-tell', part: plain, kind: 'disc', x: m.x - TELL / 2, y: m.y - TELL / 2, w: TELL, h: TELL, z0: MUZZLE_Z + 4, z1: MUZZLE_Z + 10, tone: 'danger' })
+  }
+  CORNER.at.forEach((_, i) => {
+    const c = cornerAt(i)
+    const rot = Math.atan2(f.look.y - c.y, f.look.x - c.x)
+    if (!look) out.push({ id: `corner-${i}`, part: plain, kind: 'disc', x: c.x - CORNER.base, y: c.y - CORNER.base, w: CORNER.base * 2, h: CORNER.base * 2, z0: 0, z1: 22, tone: 'metal' })
+    if (!look) out.push({ id: `corner-${i}-barrel`, part: plain, kind: 'box', x: c.x + Math.cos(rot) * BARREL.w * 0.45 - BARREL.w / 2, y: c.y + Math.sin(rot) * BARREL.w * 0.45 - BARREL.h / 2, w: BARREL.w, h: BARREL.h, z0: 22, z1: 40, tone: 'dark', r: 8, rot })
+    if (f.tell && f.tell.i === i && Math.floor(f.tell.t * BLINK) % 2 === 0) out.push({ id: `corner-${i}-tell`, part: plain, kind: 'disc', x: c.x - TELL / 2, y: c.y - TELL / 2, w: TELL, h: TELL, z0: 40, z1: 46, tone: 'danger' })
+  })
+  for (const b of f.balls) {
+    const rot = Math.atan2(b.dy, b.dx)
+    const tail = Math.min(GUN.trail, b.t * b.v)
+    if (tail > GUN.r) out.push({ id: `bullet-${b.n}-trail`, part: plain, kind: 'capsule', x: b.x - (Math.cos(rot) * tail) / 2 - tail / 2, y: b.y - (Math.sin(rot) * tail) / 2 - GUN.r * 0.6, w: tail, h: GUN.r * 1.2, z0: 16, z1: 20, tone: 'light', rot, moved: true })
+    out.push({ id: `bullet-${b.n}`, part: plain, kind: 'ball', x: b.x - GUN.r, y: b.y - GUN.r, w: GUN.r * 2, h: GUN.r * 2, z0: 14, z1: 14 + GUN.r * 2, tone: 'danger' })
   }
 }
 

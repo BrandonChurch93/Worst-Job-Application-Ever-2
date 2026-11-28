@@ -2,6 +2,19 @@
 
 Unit `boss`, page `step4`. Logic in `src/pages/step4/`, the boss in `src/boss/`, tests in `tests/boss.test.ts`.
 
+## Change note 002 (item 15): what below no longer holds
+
+The rules of the fight changed with change note 002. They are written in `pipeline/change002/boss.md`; every tuned number is in `src/boss/tune.ts`; tests in `tests/b-boss.test.ts`. Where a line below says otherwise, that file wins:
+
+- No slab is fired. Every gun fires bullets (round, 28 px, with a trail): the boss's two guns in patterns, four corner cannons after a tell, and the big turret's blast after a long tell. The slab words stay in the layout tree and the type register and are not drawn in the fight.
+- The shield turns with the arrow at a speed that can be beaten, and a dart on it takes almost nothing (`shield-glance`). A dart that gets round it counts (`shot-round`).
+- A hit lays the arrow flat for a moment (`flatten`, `peel-up`) and the boss wins a little health back (`boss-heal`), less each time.
+- The phases end by health alone while the visitor shoots. The clock ends them only for a visitor who has not shot for `live.idleSeconds`.
+- During the fight the header is off the screen through `chrome()`, the heading, the card and the fine print slide off, the bar stands alone at the top (`TOP`) and the boss never enters the band under it.
+- The big turret rises out of the boss once the body is whole and locks over the button (`turret-rise`, `turret-lock`); the word Submit never moves on the button; `turret-off` at the power-down leaves the button bare.
+- The pop-ups end at x 1040.
+- The film's seconds are in `pipeline/change002/boss.md`, "The film"; the cursor is hit once in the film, at 15.24 s.
+
 ## The form
 
 - Left column at x 128, the shell's content line at y 336: the verify card, 680 wide. Inside it one column with even gaps: title, body, the checkbox row (a 44 px box and its label), a rule, and the answer line.

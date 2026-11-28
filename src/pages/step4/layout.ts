@@ -5,6 +5,7 @@ import { block } from '../../shell/metrics'
 import { button, buttonWidth, LEFT, page, RIGHT, SCREEN_H, stepHead, TYPE } from '../../shell/parts'
 import { words } from '../../shell/words'
 import { ARENA, FALLEN, HOME, SLAB_H, SOCKET } from '../../boss/plan'
+import { BANNER_LEFT, POPUP_RIGHT, RACK_GAP } from '../../boss/tune'
 import type { BannerPlan, Box, PopupPlan, SlabPlan, WeaponPlan } from '../../boss/weapons'
 
 const heights = config.scale.heights
@@ -98,7 +99,7 @@ export function makeLayout(): Step4Layout {
     'slab-rack',
     LEFT + 12,
     ARENA.y0 + 30,
-    16,
+    RACK_GAP,
     slabPlans.map((p, i) => (x: number, y: number) =>
       node(`slab-${i}`, 'slab', [x, y, p.w, p.h], {
         part: 'boss-weapons',
@@ -113,7 +114,7 @@ export function makeLayout(): Step4Layout {
   const popPad = 24
   const titleCap = block(titleType.font, 'X', titleType.px).cap
   const popH = popPad + titleCap + 22 + sizes.button + 10 + popPad - 6
-  const right = HOME.x - 260
+  const right = POPUP_RIGHT
   const tops = [CONTENT_Y, CONTENT_Y + popH + 16, CONTENT_Y + (popH + 16) * 2]
   const insets = [0, 100, 100]
   const popupPlans: PopupPlan[] = []
@@ -139,10 +140,10 @@ export function makeLayout(): Step4Layout {
 
   const bannerBlock = block(BANNER_TYPE.font, words(BANNER_KEY), BANNER_TYPE.px)
   const banner: BannerPlan = { key: BANNER_KEY, w: Math.round(bannerBlock.width + 72), h: 84 }
-  const bannerNode = node('banner', 'slab', [HOME.x - banner.w / 2, ARENA.y0 + 20, banner.w, banner.h], {
+  const bannerNode = node('banner', 'slab', [BANNER_LEFT, ARENA.y0 + 20, banner.w, banner.h], {
     part: 'boss-weapons',
     r: 10,
-    children: [text('banner-words', BANNER_KEY, { ...BANNER_TYPE, align: 'centre' }, HOME.x, ARENA.y0 + 20 + (banner.h - bannerBlock.cap) / 2, { part: 'boss-weapons', on: heights.slab, tone: 'inkLight' })]
+    children: [text('banner-words', BANNER_KEY, { ...BANNER_TYPE, align: 'centre' }, BANNER_LEFT + banner.w / 2, ARENA.y0 + 20 + (banner.h - bannerBlock.cap) / 2, { part: 'boss-weapons', on: heights.slab, tone: 'inkLight' })]
   })
 
   const fightType = group('fight-type', [rack, ...popupNodes, bannerNode], { over: true, states: ['fight'] })

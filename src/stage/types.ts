@@ -196,6 +196,8 @@ export interface PageLogic {
   volume?(): number
   fields?(): FieldProgress | null
   chrome?(): Chrome | null
+  // True while the page needs the arrow's arms outside the beat `cursor.armsOnlyInBeat`.
+  arms?(): boolean
 }
 
 export type PageMaker = () => PageLogic

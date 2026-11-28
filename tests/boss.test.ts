@@ -3,10 +3,12 @@ import { config, stepHz } from '../src/config'
 import { copy } from '../src/copy'
 import { pages } from '../src/pages'
 import { FLOOR, SOCKET, WAKE_AFTER_TICK } from '../src/boss/plan'
+import { GUARD, MERCY, POPUPS_ON } from '../src/boss/tune'
 import { makePage } from '../src/pages/step4'
-import { ACT } from '../src/pages/step4/script'
+import { ACT, HOLD } from '../src/pages/step4/script'
 import { layoutProblems, typeRegister } from '../src/shell/layout'
 import { hasWords } from '../src/shell/words'
+import { BotDriver } from '../src/stage/bots'
 import { filmFlow, filmOptions, runBot, ScriptDriver, Stage, type Driver, type DriverView, type FlowEntry, type Pointer } from '../src/stage/stage'
 
 const beats = config.film.beats.filter((b) => b.unit === 'boss') as { id: string; from: number; to: number; event?: string }[]
@@ -112,63 +114,79 @@ describe('step 4, the boss', () => {
     }
   })
 
-  it('scorches the cursor once at the power-down, over the key and the press, and no longer than the config lets a damage last', () => {
+  it('ends the film with the finishing blast: the arrow is hit before the power-down and never after it, fires once, is whole at the press and the page is done', () => {
     const stage = film()
-    const key = beats.find((b) => b.id === 'boss.collapse')!.to
-    const down = () => stage.events.find((e) => e.name === 'power-down')
-    let from = -1
-    let last = -1
-    let atKey = false
-    let atPress = false
-    const steps = Math.round((unit.seconds - 0.5) * stepHz)
-    for (let i = 0; i < steps; i++) {
-      stage.advance(1)
-      const d = down()
-      if (!d || stage.step < d.step) continue
-      if (stage.cursor.damaged) {
-        if (from < 0) from = stage.step
-        expect(last < 0 || last === stage.step - 1, 'the scorch does not come back once it is gone').toBe(true)
-        last = stage.step
-      }
-      if (stage.step === Math.round(key * stepHz)) atKey = stage.cursor.damaged
-      if (stage.step === Math.round(ACT.press * stepHz)) atPress = stage.cursor.damaged
-    }
-    expect(from - down()!.step).toBeGreaterThanOrEqual(0)
-    expect(from - down()!.step).toBeLessThanOrEqual(1)
-    expect(atKey).toBe(true)
-    expect(atPress).toBe(true)
-    expect((last - from + 1) / stepHz).toBeLessThanOrEqual(config.cursor.damageHealSeconds)
+    stage.advance(Math.round((unit.seconds - 0.5) * stepHz))
+    const at = (name: string): number => stage.events.find((e) => e.name === name)!.step
+    const power = at('power-down')
+    expect(at('boss-fall')).toBe(power)
+    expect(at('finish-arms')).toBeGreaterThan(power)
+    expect(at('finish-charge')).toBeGreaterThan(at('finish-arms'))
+    expect((at('finish-fire') - at('finish-charge')) / stepHz).toBeGreaterThan(1)
+    expect(at('boss-gone')).toBeGreaterThan(at('finish-fire'))
+    expect(at('button-down')).toBeGreaterThan(at('boss-gone'))
+    expect(at('button-press')).toBeGreaterThan(at('button-down'))
+    expect(Math.abs(at('button-press') - Math.round(ACT.press * stepHz))).toBeLessThanOrEqual(2)
+    expect(stage.events.filter((e) => e.name === 'finish-fire').length).toBe(1)
     expect(stage.cursor.damaged).toBe(false)
     expect(stage.page.done()).toBe(true)
-    const power = down()!
-    expect(stage.events.filter((e) => e.hitsCursor && e.step >= power.step)).toEqual([])
+    expect(stage.events.filter((e) => e.hitsCursor && e.step >= power)).toEqual([])
     const hits = stage.events.filter((e) => e.hitsCursor)
     expect(hits.length).toBeGreaterThan(0)
-    expect(hits.every((e) => e.step < power.step - 3 * stepHz)).toBe(true)
+    expect(hits.every((e) => e.step < power - 3 * stepHz)).toBe(true)
   })
 
-  it.each([['a still pointer', still], ['a wrong pointer', wrong]])('ends every gag by itself with %s', (_name, driver) => {
-    const run = play(live(driver as Driver))
+  it('ends every gag by itself with a still pointer, the fight within its limit after the idle seconds', () => {
+    const run = play(live(still))
     expect(run.seconds).toBeLessThan(140)
     for (const b of beats) {
       expect(run.gagSeconds[b.id], b.id).toBeGreaterThan(0)
-      expect(run.gagSeconds[b.id], b.id).toBeLessThanOrEqual(config.live.skipLinkAfterSeconds + 3)
+      expect(run.gagSeconds[b.id], b.id).toBeLessThanOrEqual(config.live.skipLinkAfterSeconds + 3 + (b.id === 'boss.unfold' ? HOLD : 0))
     }
     const fight = run.gagSeconds['boss.slabs']! + run.gagSeconds['boss.popups']! + run.gagSeconds['boss.lastStand']!
-    expect(fight).toBeLessThanOrEqual(config.live.boss.maxSeconds)
+    expect(fight).toBeLessThanOrEqual(config.live.idleSeconds + config.live.boss.maxSeconds)
     expect(run.ignored).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
     expect(run.damagedAtEnd).toBe(false)
     const down = run.events.find((e) => e.name === 'power-down')!
     expect(run.events.filter((e) => e.hitsCursor && e.time >= down.time)).toEqual([])
     for (const b of beats) expect(run.events.some((e) => e.name === b.event), b.event).toBe(true)
-    expect(run.events.filter((e) => e.name === 'boss-slow').length).toBe(driver === still ? 1 : 0)
+    expect(run.events.filter((e) => e.name === 'boss-slow').length).toBeLessThanOrEqual(1)
   })
 
-  it('lets a keen visitor win the fight well inside the limit and reach every gag', () => {
-    const run = play(live(keen()))
+  it('does not let a pointer that stands in one place and clicks win in the first minute of the fight, shows it the open side again and again, lets it win by the mercy rule after that, and still ends on a skip', () => {
+    const whole = play(live(wrong), 240)
+    const lock = whole.events.find((e) => e.name === 'turret-lock')!.time
+    const won = whole.events.find((e) => e.name === 'power-down')
+    expect(won).toBeDefined()
+    expect(won!.time - lock).toBeGreaterThan(MERCY.from - 2)
+    expect(won!.time - lock).toBeLessThan(150)
+    const run = { ...whole, events: whole.events.filter((e) => e.time < lock + MERCY.from - 2) }
+    const glances = run.events.filter((e) => e.name === 'shield-glance').length
+    const rounds = run.events.filter((e) => e.name === 'shot-round').length
+    expect(glances).toBeGreaterThan(100)
+    expect(rounds).toBeLessThan(glances / 20)
+    const tells = run.events.filter((e) => e.name === 'weak-tell').map((e) => e.time)
+    expect(tells.length).toBeGreaterThan(10)
+    for (let i = 1; i < tells.length; i++) expect(tells[i]! - tells[i - 1]!).toBeGreaterThanOrEqual(GUARD.tellEvery - 0.01)
+    expect(run.ignored).toBeLessThanOrEqual(config.live.controlTakenMaxSeconds)
+    let skip = false
+    const stage = live({ name: 'bot', input: (v: DriverView): Pointer => ({ ...wrong.input(v), skip }) })
+    while (stage.page.id === 'step4' && stage.time < 40 + HOLD) stage.advance(12)
+    expect(stage.page.id).toBe('step4')
+    expect(stage.page.gag()).toMatch(/^boss\.(slabs|popups|lastStand)$/)
+    skip = true
+    const from = stage.time
+    while (stage.page.id === 'step4' && stage.time < from + 10) stage.advance(1)
+    expect(stage.page.id).not.toBe('step4')
+    expect(stage.time - from).toBeLessThan(4)
+  })
+
+  it('lets a keen visitor win the fight inside the limit and reach every gag', () => {
+    const run = play(live(new BotDriver('keen', config.seed)))
     for (const b of beats) expect(run.gagSeconds[b.id], b.id).toBeGreaterThan(0)
     const fight = run.gagSeconds['boss.slabs']! + run.gagSeconds['boss.popups']! + run.gagSeconds['boss.lastStand']!
-    expect(fight).toBeLessThan(config.live.boss.maxSeconds - 5)
+    expect(fight).toBeLessThan(config.live.boss.maxSeconds)
+    expect(fight).toBeGreaterThan(25)
     expect(run.damagedAtEnd).toBe(false)
     expect(run.events.filter((e) => e.name === 'boss-slow').length).toBeLessThanOrEqual(1)
   })
@@ -300,39 +318,51 @@ describe('step 4, the boss', () => {
     expect(new Set(first).size).toBeGreaterThan(4)
   })
 
-  it('escalates in the film: one shield alone, then faster ones, the hit, the banner alone, and a fall that speeds up', () => {
+  it('escalates in the film: glances, the way round, a corner cannon, the hit, the second phase, the big blast, the banner alone, and a fall that speeds up', () => {
     const stage = film()
-    stage.advance(Math.round(28 * stepHz))
+    stage.advance(Math.round((28 + HOLD) * stepHz))
     const at = (name: string): number[] => stage.events.filter((e) => e.name === name).map((e) => e.step / stepHz)
     const ups = at('popup')
     const fires = at('slab-fire')
     const expired = at('session-expired')[0]!
     const down = at('power-down')[0]!
-    expect(ups.length).toBe(3)
-    expect(ups[1]! - ups[0]!).toBeGreaterThanOrEqual(1.7)
-    expect(ups[2]! - ups[1]!).toBeLessThan(ups[1]! - ups[0]! - 0.5)
-    expect(fires.filter((t) => t > ups[0]! - 1 && t < ups[2]!)).toEqual([])
-    const late = fires.filter((t) => t > ups[2]!)
-    expect(late.length).toBe(1)
-    const hits = stage.events.filter((e) => e.hitsCursor && e.step / stepHz > ups[2]!).map((e) => e.step / stepHz)
+    expect(at('turret-rise')[0]!).toBeLessThan(at('turret-lock')[0]!)
+    expect(at('turret-lock')[0]!).toBeLessThan(at('shield-glance')[0]!)
+    expect(at('shield-glance')[0]!).toBeLessThan(at('shot-round')[0]!)
+    expect(at('shot-round')[0]!).toBeLessThan(at('cannon-tell')[0]!)
+    expect(at('cannon-fire')[0]! - at('cannon-tell')[0]!).toBeGreaterThan(0.8)
+    const hits = stage.events.filter((e) => e.hitsCursor).map((e) => e.step / stepHz)
     expect(hits.length).toBe(1)
-    expect(hits[0]!).toBeLessThan(expired - 1.5)
+    expect(hits[0]!).toBeGreaterThan(at('cannon-fire')[0]!)
+    expect(at('flatten')).toEqual(hits)
+    expect(at('peel-up')[0]! - hits[0]!).toBeGreaterThan(0.5)
+    expect(at('boss-heal')[0]!).toBeGreaterThan(hits[0]!)
+    expect(at('boss-heal')[0]!).toBeLessThan(at('peel-up')[0]!)
+    expect(ups.length).toBe(POPUPS_ON ? 3 : 1)
+    expect(ups[0]!).toBeGreaterThan(hits[0]!)
+    expect(at('big-fire')[0]! - at('big-tell')[0]!).toBeGreaterThan(1.5)
+    expect(at('arena-break')[0]!).toBe(at('big-fire')[0]!)
+    expect(at('big-fire')[0]!).toBeLessThan(expired)
     expect(fires.filter((t) => t > expired)).toEqual([])
     expect(ups.filter((t) => t > expired)).toEqual([])
-    const struck = at('dart-hit').filter((t) => t > expired)
+    const struck = at('shot-round').filter((t) => t > expired + 0.8)
     expect(struck.length).toBeGreaterThanOrEqual(17)
-    expect(struck[0]!).toBeGreaterThan(expired + 1.5)
-    const third = (down - struck[0]!) / 3
-    const count = (k: number): number => struck.filter((t) => t >= struck[0]! + k * third && t < struck[0]! + (k + 1) * third).length
-    expect(count(1)).toBeGreaterThan(count(0))
-    expect(count(2)).toBeGreaterThan(count(1))
+    const stands: number[][] = []
+    for (const t of at('dart-fire').filter((x) => x > expired)) {
+      const last = stands[stands.length - 1]
+      if (last && t - last[last.length - 1]! < 0.15) last.push(t)
+      else stands.push([t])
+    }
+    const rate = stands.map((x) => (x.length - 1) / (x[x.length - 1]! - x[0]!))
+    expect(rate.length).toBe(3)
+    expect(rate[1]!).toBeGreaterThan(rate[0]!)
+    expect(rate[2]!).toBeGreaterThan(rate[1]!)
+    expect(at('turret-off')[0]!).toBe(down)
     const quiet = film()
-    quiet.seek(expired + 1.6)
-    const page = quiet.page.save() as { fight: { popups: unknown[]; slabs: unknown[] } }
     for (let t = expired + 1.6; t < down - 0.05; t += 0.1) {
       quiet.seek(t)
-      const f = (quiet.page.save() as typeof page).fight
-      expect(f.popups.length + f.slabs.length, `bare page at ${t.toFixed(1)}`).toBe(0)
+      const f = (quiet.page.save() as { fight: { popups: unknown[] } }).fight
+      expect(f.popups.length, `no pop-up at ${t.toFixed(1)}`).toBe(0)
     }
   })
 
