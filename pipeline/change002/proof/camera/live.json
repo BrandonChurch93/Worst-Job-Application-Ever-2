@@ -1,0 +1,317 @@
+{
+ "level": "high",
+ "browser": "159.0.8154.6",
+ "window": [
+  960,
+  540,
+  2
+ ],
+ "kinds": {
+  "hold": {
+   "says": "holds 2 s and lets go",
+   "stepsToArms": 4291,
+   "armsAt": 71.51666666666667,
+   "rows": [
+    {
+     "sixtieths": 0,
+     "seconds": 0,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 16,
+     "seconds": 0.267,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 32,
+     "seconds": 0.533,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 48,
+     "seconds": 0.8,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 64,
+     "seconds": 1.067,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 79,
+     "seconds": 1.317,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 95,
+     "seconds": 1.583,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 111,
+     "seconds": 1.85,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 127,
+     "seconds": 2.117,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 143,
+     "seconds": 2.383,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 159,
+     "seconds": 2.65,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 175,
+     "seconds": 2.917,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 191,
+     "seconds": 3.183,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 207,
+     "seconds": 3.45,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 223,
+     "seconds": 3.717,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 238,
+     "seconds": 3.967,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 254,
+     "seconds": 4.233,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 270,
+     "seconds": 4.5,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 286,
+     "seconds": 4.767,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 302,
+     "seconds": 5.033,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    }
+   ],
+   "drawMs": {
+    "above": 5511.60000000149,
+    "low": 5191.5,
+    "after": 4360.000000001863
+   },
+   "problems": []
+  },
+  "click": {
+   "says": "clicks once",
+   "stepsToArms": 4291,
+   "armsAt": 71.51666666666667,
+   "rows": [
+    {
+     "sixtieths": 0,
+     "seconds": 0,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 10,
+     "seconds": 0.167,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 20,
+     "seconds": 0.333,
+     "held": true,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 30,
+     "seconds": 0.5,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 39,
+     "seconds": 0.65,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 49,
+     "seconds": 0.817,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 59,
+     "seconds": 0.983,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 69,
+     "seconds": 1.15,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 79,
+     "seconds": 1.317,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 89,
+     "seconds": 1.483,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 98,
+     "seconds": 1.633,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 108,
+     "seconds": 1.8,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 118,
+     "seconds": 1.967,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 128,
+     "seconds": 2.133,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 138,
+     "seconds": 2.3,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 148,
+     "seconds": 2.467,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 157,
+     "seconds": 2.617,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 167,
+     "seconds": 2.783,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 177,
+     "seconds": 2.95,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    },
+    {
+     "sixtieths": 187,
+     "seconds": 3.117,
+     "held": false,
+     "gag": "boss.finish",
+     "control": "pointer"
+    }
+   ],
+   "drawMs": {
+    "above": 5356.10000000149,
+    "low": 5547.599999997765,
+    "after": 4433.699999999255
+   },
+   "problems": []
+  }
+ }
+}
