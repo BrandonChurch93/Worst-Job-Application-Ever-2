@@ -16,6 +16,7 @@ export interface ChangeCue {
   standIn: string | null
   covers?: string[]
   stops?: string[]
+  lands?: { on: string; from: string; tail: number }
   describes: string
   playedBy: string
   orderedBy: string
@@ -61,6 +62,16 @@ export function cueFor(name: string, page: string | undefined | null, has: (id: 
 // The cue that covers an event: a kept cue of the list that plays in the same step and carries this event's sound in its own.
 export function coverOf(name: string, has: (id: string) => boolean): ChangeCue | undefined {
   return changeCues.find((c) => (c.covers?.includes(name) ?? false) && keptChange(c, has))
+}
+
+// A row with `lands` is not laid at an event. It is played once so that the end of its body, its kept length less `tail`, falls on the event `on`,
+// and no sooner than the event `from`; the tail runs on under what `on` plays. room: the time there is from the earliest start to `on`.
+// With room to spare it waits. With less room than its body it starts that much later into itself, so its top still falls on `on`.
+// The three are in one unit, seconds on the live site and samples in the film's mix.
+export const landers: ChangeCue[] = changeCues.filter((c) => c.lands !== undefined)
+export function landing(length: number, tail: number, room: number): { wait: number; skip: number } {
+  const body = Math.max(0, length - tail)
+  return { wait: Math.max(0, room - body), skip: Math.max(0, body - room) }
 }
 
 export const changeLoops: string[] = changeCues.filter((c) => c.loop).map((c) => c.id)

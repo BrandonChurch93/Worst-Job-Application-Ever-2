@@ -85,6 +85,8 @@ export const LIVE = {
   // A loop comes in and goes out over this long, so it neither starts nor stops on a step. The room tone comes in slower.
   // The film's mix fades a loop, and a sound it cuts short, over the same.
   loopFadeSeconds: 0.03,
+  // On the live site the swell of the finish goes out over this long as the fire sounds. In the film its tail runs on under the fire.
+  landCutSeconds: 0.05,
   toneFadeInSeconds: 0.4,
   // The careers page stays on screen this long after the turn away from it begins, and comes on screen this long after the turn to it begins: half a turn.
   // The room tone is out by then on the way in, and starts then on the way out.

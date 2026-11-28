@@ -64,8 +64,9 @@ describe('a cue of the change list in the film\'s mix', () => {
     }
   })
 
+  // A row that lands on an event is not laid at its own event: tests/b-finish-swell-film.test.ts holds where it is laid.
   it('with its sound kept lays that sound on the frame of each of its events, under the name the table gives the event', () => {
-    for (const r of changeCues) for (const e of r.events) {
+    for (const r of changeCues.filter((x) => !x.lands)) for (const e of r.events) {
       const name = nameOf(e)
       const out = film([{ name, frame: 30, x: 960, page: pageOf(r) }], withKept(r.id))
       expect(cuesOf(out).length, `${r.id} on ${name}`).toBe(1)
@@ -278,7 +279,7 @@ describe('a cue of the change list on the site', () => {
 
   it('with its sound kept plays that sound and not the stand-in, and keeps a row with a page to that page', async () => {
     const { ctx, played, send } = await site(...changeCues.map((r) => r.id))
-    for (const r of changeCues) for (const e of r.events) {
+    for (const r of changeCues.filter((x) => !x.lands)) for (const e of r.events) {
       const from = ctx.sources.length
       ctx.currentTime += 40
       send(nameOf(e), pageOf(r))

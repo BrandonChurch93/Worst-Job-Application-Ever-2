@@ -37,7 +37,7 @@ describe('the list of the change notes, audio/CHANGE-CUES.json', () => {
       expect(Array.isArray(r.events) && r.events.length > 0, r.id).toBe(true)
       expect(r.standIn === null || kit.includes(r.standIn), `${r.id} stands in ${r.standIn}`).toBe(true)
       expect(typeof r.describes === 'string' && r.describes.length > 8 && !r.describes.includes('\\n'), r.id).toBe(true)
-      for (const key of Object.keys(r)) expect(['id', 'seconds', 'class', 'loop', 'variants', 'made', 'events', 'page', 'standIn', 'covers', 'stops', 'describes', 'playedBy', 'orderedBy'], `${r.id}.${key}`).toContain(key)
+      for (const key of Object.keys(r)) expect(['id', 'seconds', 'class', 'loop', 'variants', 'made', 'events', 'page', 'standIn', 'covers', 'stops', 'lands', 'describes', 'playedBy', 'orderedBy'], `${r.id}.${key}`).toContain(key)
       if (r.page !== undefined) expect(['step1', 'step2', 'step3', 'step4', 'step5'], r.id).toContain(r.page)
     }
   })
@@ -100,6 +100,15 @@ describe('the list of the change notes, audio/CHANGE-CUES.json', () => {
     for (const s of shell) {
       const r = row(s.id)
       expect(r, s.id).toBeDefined()
+      // The shell's list ordered four short charges. The Builder's word of 28 November made them one swell that lands on the fire: its length and its event are its own.
+      if (r.lands) {
+        expect(r.id).toBe('finish-charge')
+        expect(r.lands).toEqual({ on: 'finish-fire', from: 'finish-arms', tail: 0.2 })
+        expect(r.lands.tail).toBeLessThan(r.seconds)
+        expect(s.events).toEqual(['finish-charge'])
+        expect(r.events).toEqual(['finish-gather'])
+        continue
+      }
       expect(r.seconds, s.id).toBe(s.seconds)
       if (!s.events.some((e) => e.includes('*'))) expect(r.events, s.id).toEqual(s.events)
       else for (const e of r.events) expect(e.startsWith('strike:'), `${s.id} on ${e}`).toBe(true)
