@@ -51,6 +51,7 @@ export interface Kit {
   fallen: THREE.MeshPhysicalMaterial
   hot: THREE.MeshBasicMaterial
   own: THREE.Material[]
+  chip: THREE.Material
 }
 
 export function makeKit(): Kit {
@@ -63,8 +64,10 @@ export function makeKit(): Kit {
   const broken = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.34, 0.34, 0.355), roughness: 0.62, metalness: 0.55, specularIntensity: 0.7, flatShading: true }))
   // The upper part of a pillar that lies where it fell: the same metal, dulled by the blast, so that its broad side neither mirrors the sky nor goes black as it turns.
   const fallen = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.47, 0.47, 0.49), roughness: 0.74, metalness: 0.35, specularIntensity: 0.5 }))
+  // A bit of the ceramic, broken off: the page's white, matt where it broke.
+  const chip = studio(new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0.84, 0.83, 0.81), roughness: 0.6, metalness: 0, specularIntensity: 0.5, flatShading: true }))
   const hot = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 1.1, 0.16), toneMapped: false })
-  return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, tooth, orange: m.orange, broken, fallen, hot, own: [glass, glassEdge, shard, tooth, broken, fallen, hot] }
+  return { aluminium: m.aluminium, satin: m.aluminiumSatin, steel: m.steel, dark: m.gap, chrome: m.chrome, glass, glassEdge, shard, tooth, orange: m.orange, broken, fallen, hot, chip, own: [glass, glassEdge, shard, tooth, broken, fallen, hot, chip] }
 }
 
 export interface Pillar { root: THREE.Group; foot: THREE.Mesh; body: THREE.Mesh; x: number; y: number; order: number }

@@ -24,6 +24,11 @@ export interface Ask {
   level?: QualityId | null
   samples?: number
   shake?: boolean
+  // The finish: the line of the blast, how far it is burnt in, whether the beam still stands, and the picture brought in as the page does it.
+  scorch?: { x0: number; y0: number; x1: number; y1: number }
+  gone?: number
+  beam?: boolean
+  close?: boolean
 }
 
 const canvas = document.getElementById('stage') as HTMLCanvasElement
@@ -39,9 +44,10 @@ function viewOf(a: Ask): BossView {
     phase: a.time < 2.9 ? 'form' : a.time < 4.65 ? 'turret' : 'fight',
     boss: {
       x: a.boss?.x ?? 960, y: a.boss?.y ?? 550, vx: 0, vy: 0, heading: a.boss?.heading ?? Math.PI / 2, walked: 0, form: 1, turret: 1, locked: true, health: a.health ?? 1, stage: 0,
-      shield: { glancedAt: null, half: 0.6 }, guns: [gun, { ...gun }], big: a.big ?? null, weak: null, healedAt: null, hitAt: null, beaten: 0
+      shield: { glancedAt: null, half: 0.6 }, guns: [gun, { ...gun }], big: a.big ?? null, weak: null, healedAt: null, hitAt: null, beaten: 0, gone: a.gone ?? 0
     },
-    bullets: [], darts: [], hits: a.hits ?? [], corners, arrow: { x: 960, y: 900, flat: 0, flatAt: null }, breaks: a.breaks ?? []
+    bullets: [], darts: [], hits: a.hits ?? [], corners, arrow: { x: a.scorch?.x0 ?? 960, y: a.scorch?.y0 ?? 900, flat: 0, flatAt: null }, breaks: a.breaks ?? [],
+    scorch: a.scorch ?? null, finish: a.scorch && a.beam ? { ...a.scorch, power: 1, firedAt: a.time - (a.gone ?? 0) * 2.13 } : null
   }
 }
 
@@ -84,6 +90,11 @@ async function draw(a: Ask): Promise<{ triangles: number; drawCalls: number; ms:
     const s = shake(a.time, (a.breaks ?? []).map((b) => b.at))
     pose.eye = [pose.eye[0] + s.x, pose.eye[1] + s.y, pose.eye[2]]
     pose.target = [pose.target[0] + s.x, pose.target[1] + s.y, pose.target[2]]
+  }
+  if (a.close) {
+    // The part of the page from x 300 to 1260 and y 270 to 810, as the page shows the finish.
+    pose.eye = [-180, 0, pose.eye[2] / 2]
+    pose.target = [-180, 0, 0]
   }
   app.setLevel(a.level ?? null)
   app.put(frame, { width: 1920, height: 1080 }, pose)

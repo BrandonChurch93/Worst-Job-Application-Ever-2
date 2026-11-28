@@ -229,3 +229,40 @@ export function chipsOf(s: Scorch, seed: number, count = SCORCH.chips): Chip[] {
   }
   return out
 }
+
+// A cold beam over the arena, for as long as it burns: its line in page px and how strong its light is, 0 to 1.
+// The ground answers it with cold light that falls off from the line, and every pillar and pane that stands throws a long sharp shadow away from it.
+export interface BeamLight { x0: number; y0: number; x1: number; y1: number; strength: number }
+
+// The beam the view shows when nobody drives it: the finishing blast from in front of the arrow to where it leaves the page, up in a twentieth of a second and down over the last fifth of the blast.
+export function beamOf(view: BossView): BeamLight | null {
+  const f = view.finish
+  if (!f) return null
+  const s = scorchFrom(f)
+  const share = scorchOf(view)?.share ?? 0
+  const up = clamp01((view.time - f.firedAt) / 0.05)
+  const strength = up * (1 - step(0.8, 1, share)) * (0.6 + 0.4 * clamp01(f.power))
+  return strength > 0 ? { x0: s.sx, y0: s.sy, x1: s.ex, y1: s.ey, strength } : null
+}
+
+export interface BeamShadow { x: number[]; y: number[]; dark: number; glass: boolean }
+
+// The shadow a standing thing throws away from the beam, as a four-cornered patch on the ground: the two corners at the thing first, then the two far ones. Null for a thing the beam runs through.
+export function beamShadow(b: BeamLight, ends: [{ x: number; y: number }, { x: number; y: number }], high: number, glass: boolean): BeamShadow | null {
+  const ex = b.x1 - b.x0, ey = b.y1 - b.y0, l2 = ex * ex + ey * ey || 1
+  const away = (p: { x: number; y: number }): { dx: number; dy: number; d: number; side: number } => {
+    const u = clamp01(((p.x - b.x0) * ex + (p.y - b.y0) * ey) / l2)
+    const dx = p.x - b.x0 - ex * u, dy = p.y - b.y0 - ey * u
+    const d = Math.hypot(dx, dy)
+    return { dx: dx / (d || 1), dy: dy / (d || 1), d, side: Math.sign(-(p.x - b.x0) * ey + (p.y - b.y0) * ex) }
+  }
+  const a0 = away(ends[0]), a1 = away(ends[1])
+  if (a0.d < 34 || a1.d < 34 || a0.side !== a1.side) return null
+  // The beam lies low: what stands higher than it throws its shadow far.
+  const long = Math.min(1300, high * 5.2)
+  return {
+    x: [ends[0].x, ends[1].x, ends[1].x + a1.dx * long, ends[0].x + a0.dx * long],
+    y: [ends[0].y, ends[1].y, ends[1].y + a1.dy * long, ends[0].y + a0.dy * long],
+    dark: (glass ? 0.3 : 0.56) * clamp01(b.strength), glass
+  }
+}

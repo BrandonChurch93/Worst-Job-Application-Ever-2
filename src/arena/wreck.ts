@@ -61,7 +61,7 @@ function stumpGeometry(seed: number, id: number, high: number): { sides: THREE.B
 }
 
 // A lump of broken metal or ceramic, one unit across.
-function lumpGeometry(seed: number): THREE.BufferGeometry {
+export function lumpGeometry(seed: number): THREE.BufferGeometry {
   const g = new THREE.IcosahedronGeometry(0.5, 0)
   const p = g.getAttribute('position')
   const moved = new Map<string, number>()
@@ -135,7 +135,7 @@ function bandTexture(): THREE.DataTexture {
 }
 
 // The same soft dot as a grey picture, for the things that are blended by their colour.
-function greyDot(): THREE.DataTexture {
+export function greyDot(): THREE.DataTexture {
   const src = softDot().image.data as Uint8Array
   const data = new Uint8Array(src.length)
   for (let i = 0; i < src.length; i += 4) data.set([src[i + 3]!, src[i + 3]!, src[i + 3]!, 255], i)
