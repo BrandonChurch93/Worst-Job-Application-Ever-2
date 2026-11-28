@@ -84,3 +84,16 @@ index 067ca527..674d457c 100644
      {
        "id": "rail-cam",
        "unit": "pinball",
+diff --git a/tools/assets/roughcut-plan.json b/tools/assets/roughcut-plan.json
+index 9dd9c251..6661e4d1 100644
+--- a/tools/assets/roughcut-plan.json
++++ b/tools/assets/roughcut-plan.json
+@@ -34,7 +34,7 @@
+     "pinball.replyAll": [{ "image": "reply-all", "to": [0.6, 0.48, 1.6] }],
+     "pinball.fired": [
+       { "image": "tier-street", "to": [0.37, 0.37, 1.35] },
+-      { "image": "youre-fired", "at": 0.325, "to": [0.5, 0.6, 1.3] }
++      { "image": "youre-fired", "at": 0.7, "to": [0.5, 0.6, 1.3] }
+     ],
+     "pinball.highway": [{ "image": "rail-cam", "to": [0.5, 0.62, 1.35] }],
+     "pinball.save": [{ "image": "last-save", "to": [0.56, 0.62, 1.6] }],
