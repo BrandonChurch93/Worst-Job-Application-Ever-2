@@ -28,6 +28,13 @@ export interface BossLook {
   dispose(): void
 }
 
+const char = (g: THREE.Object3D, on: boolean): void => g.traverse((o) => {
+  const me = o as THREE.Mesh
+  if (!me.isMesh) return
+  me.userData.own ??= me.material
+  me.material = on ? lookKit().scorched : me.userData.own
+})
+
 function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
   const b = m.body
   b.position.set(0, 0, 0)
@@ -121,22 +128,28 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
     const syaw = Math.sin(-p.body.yaw)
     const bx = wx * cyaw - wy * syaw
     const by = wx * syaw + wy * cyaw
-    // A piece leaves to its own side of the beam first and is carried down it after: nothing crosses the button that stays.
+    // A piece leaves along the beam and fans out to its own side of it as it goes: nothing moves toward the arrow and nothing crosses the button that stays.
     const fling = (o: THREE.Object3D, k: number, id: number, dx: number, dy: number, ox: number, oy: number): void => {
       if (k <= 0) return
       if (k >= 1) { o.visible = false; return }
-      const e = k * k * (0.35 + 0.65 * k)
+      const e = k * (0.3 + 0.7 * k)
       const d = Math.hypot(ox, oy) || 1
       const h = (n: number): number => hash01(id, n, 77) - 0.5
       const across = ((ox / d) * -dy + (oy / d) * dx) + h(1) * 0.5
-      const side = (Math.abs(across) < FLY.least ? (across < 0 || (across === 0 && h(2) < 0) ? -FLY.least : FLY.least) : across) * FLY.wide * Math.pow(k, 1.2)
-      const back = Math.min(0, (ox / d) * dx + (oy / d) * dy) * FLY.wide * 0.25 * Math.sin(Math.PI * Math.min(1, k * 1.6))
-      o.position.x += dx * (FLY.far * e + back) - dy * side
-      o.position.y += dy * (FLY.far * e + back) + dx * side
+      const lean = Math.abs(across) < FLY.least ? (across < 0 || (across === 0 && h(2) < 0) ? -FLY.least : FLY.least) : across
+      const far = FLY.far * e * (0.75 + 0.5 * (h(6) + 0.5))
+      const side = lean * (FLY.wide * Math.pow(k, 0.6) + FLY.fan * far)
+      o.position.x += dx * far - dy * side
+      o.position.y += dy * far + dx * side
       o.position.z += FLY.high * Math.sqrt(k)
       o.rotation.x += h(3) * 11 * e
       o.rotation.y += h(4) * 9 * e
       o.rotation.z += h(5) * 6 * e
+    }
+    const laid = (along: number, acr: number): [number, number] => {
+      const X = along * wx + acr * wy
+      const Y = along * wy - acr * wx
+      return [(X * cyaw - Y * syaw) / K, (X * syaw + Y * cyaw) / K]
     }
     fling(m.shield, p.away.shield, 0, bx, by, 1, 0)
     m.wings.forEach((w, i) => fling(w, p.away.wings[i]!, 1 + i, bx, by, 0, i === 0 ? 1 : -1))
@@ -155,26 +168,29 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
         q.g.scale.setScalar(1)
         q.g.children[1]!.visible = true
         const stay = LEFT.plates.findIndex((l) => l[0] === i)
+        char(q.g, stay >= 0)
         if (stay >= 0) {
           const lie = LEFT.plates[stay]!
           const u = p.landed[stay]!
           const e = 1 - (1 - u) * (1 - u)
-          const tx = (lie[1] * cyaw + lie[2] * syaw) / K
-          const ty = (lie[1] * syaw - lie[2] * cyaw) / K
+          const [tx, ty] = laid(lie[1], lie[2])
           const h = (n: number): number => hash01(40 + i, n, 77) - 0.5
+          const size = 1 - (1 - lie[4]) * Math.min(1, e * 2)
           q.g.children[1]!.visible = u <= 0
           q.g.position.x += (tx - q.at[0]) * e
           q.g.position.y += (ty - q.at[1]) * e
-          q.g.position.z += (HULL.tall / 2 + 1 - p.body.z - q.g.position.z) * e + 260 * 4 * u * (1 - u) * (1 - u)
-          q.g.rotation.set(h(3) * 9 * (1 - e), h(4) * 8 * (1 - e), (lie[3] - p.body.yaw) * e + h(5) * 5 * (1 - e) * e)
-          q.g.scale.setScalar(1 - (1 - LEFT.small) * e)
+          q.g.position.z += ((HULL.tall / 2) * size * LEFT.sunk - p.body.z - q.g.position.z) * e + 260 * 4 * u * (1 - u) * (1 - u)
+          q.g.rotation.set(lie[5] * e + h(3) * 9 * (1 - e), lie[6] * e + h(4) * 8 * (1 - e), (lie[3] + Math.atan2(wy, wx) - p.body.yaw) * e + h(5) * 5 * (1 - e) * e)
+          q.g.scale.setScalar(size)
           return
         }
         const k = p.away.plates[i]!
         const jump = 1 - Math.pow(1 - Math.min(1, k * 3), 3)
         const d = Math.hypot(q.at[0], q.at[1]) || 1
-        q.g.position.x += (q.at[0] / d) * FLY.burst[0] * jump
-        q.g.position.y += (q.at[1] / d) * FLY.burst[1] * jump
+        const fwd = Math.max(0, (q.at[0] / d) * bx + (q.at[1] / d) * by)
+        const out = (q.at[0] / d) * -by + (q.at[1] / d) * bx
+        q.g.position.x += (bx * fwd * FLY.burst[0] - by * out * FLY.burst[1]) * jump
+        q.g.position.y += (by * fwd * FLY.burst[0] + bx * out * FLY.burst[1]) * jump
         fling(q.g, k, 30 + i, bx, by, q.at[0], q.at[1])
       })
       m.rim.visible = true
@@ -185,10 +201,12 @@ function apply(m: Model, legsRoot: THREE.Group, p: Pose): void {
         const lie = LEFT.lie[i]!
         const e = 1 - (1 - u) * (1 - u)
         const hop = u < 1 ? 4 * u * (1 - u) : 0
+        const tx = (lie[0] * wx + lie[1] * wy) / K
+        const ty = (lie[0] * wy - lie[1] * wx) / K
         g.visible = true
-        g.position.set((lie[0] / K) * e, (-lie[1] / K) * e, i === 0 ? -14 + 240 * hop : 2 + 240 * hop)
+        g.position.set(tx * e, ty * e, i === 0 ? -14 + 240 * hop : i === 1 ? -3 + 240 * hop : 2 + 240 * hop)
         g.scale.setScalar(i >= 2 ? 1.5 : i === 1 ? 1.25 : 1)
-        g.rotation.set((1 - e) * (5 + i * 2), (1 - e) * (4 - i), lie[2] + (1 - e) * 3)
+        g.rotation.set((1 - e) * (5 + i * 2) + (i === 1 ? 0.12 * e : 0), (1 - e) * (4 - i) + (i === 1 ? -0.16 * e : 0), lie[2] + Math.atan2(wy, wx) + (1 - e) * 3)
       })
     }
   }

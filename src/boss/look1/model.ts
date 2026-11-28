@@ -425,15 +425,16 @@ export function buildModel(): Model {
   rim.visible = false
   button.add(rim)
   const claw = legs[0]!.foot.clone()
+  claw.traverse((o) => { if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).material = kit.under })
   const bent = new THREE.Group()
   bent.add(mesh(geo('left.plate', () => joined([
     plateAt([[-70, -30], [6, -40], [10, 34], [-58, 30]], 0, 6, 2),
     plateAt([[0, -40], [62, -22], [84, 8], [56, 40], [0, 34]], 0, 6, 2).rotateY(-0.24).translate(8, 0, 1),
     plateAt([[-70, -30], [-58, 30], [-96, 12], [-90, -34]], 0, 6, 2).rotateY(0.18).translate(-4, 0, 0)
-  ])), kit.wing))
+  ])), kit.scorched))
   const bolt = (): THREE.Group => {
     const g = new THREE.Group()
-    g.add(mesh(geo('left.bolt', () => joined([along([[0, -16], [6, -16], [6, 12], [0, 12]], 12), along([[0, 12], [10.5, 12], [10.5, 20], [0, 20]], 6)]).translate(0, 0, 10.5)), kit.steel))
+    g.add(mesh(geo('left.bolt', () => joined([along([[0, -16], [6, -16], [6, 12], [0, 12]], 12), along([[0, 12], [10.5, 12], [10.5, 20], [0, 20]], 6)]).translate(0, 0, 10.5)), kit.under))
     return g
   }
   const left = [claw, bent, bolt(), bolt()]

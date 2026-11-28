@@ -49,9 +49,9 @@ export const FALL = { off: [0, 0.4], glass: [0.05, 0.3], drop: [0.3, 0.7] } as c
 // The finishing blast, as shares of boss.gone: when each part leaves, when the hull comes apart, when the bare button comes down on the ground, when the last pieces land.
 export const GONE = { shield: [0.02, 0.6], wings: [[0.08, 0.7], [0.14, 0.76]], guns: [[0.05, 0.65], [0.1, 0.7]], legs: [[0.2, 0.8], [0.26, 0.86], [0.3, 0.9], [0.36, 0.96]], bay: [0.22, 0.8], hull: [0.28, 0.98], plate: [0.06, 0.34], button: [0.5, 0.9], left: [0.4, 0.92], land: [[0.44, 0.92], [0.5, 0.93], [0.56, 0.95], [0.52, 0.94]] } as const
 // How a piece leaves in the blast, in model units: far down the beam, wide to its own side, up from the ground.
-export const FLY = { far: 2700, wide: 1100, least: 0.6, high: 120, burst: [400, 250] }
-// Where the button lies when all else is gone (the fight's FALLEN), level on the page; and what lies about it, page px from its middle: a claw, a bent plate, two bolts, and four torn pieces of the hull (which piece, where, its turn), `small` of their size.
-export const LEFT = { x: 960, y: 650, slide: [0.02, 0.92], lie: [[-76, 128, 2.5], [150, 72, -0.5], [-150, -110, 0.9], [-24, 112, 2.2]], plates: [[0, -70, -108, 0.5], [3, 214, -20, -0.9], [2, 66, 142, 1.4], [4, 150, -124, 0.3]], small: 0.8 } as const
+export const FLY = { far: 2700, wide: 420, fan: 0.42, least: 0.6, high: 120, burst: [400, 250] }
+// Where the button lies when all else is gone (the fight's FALLEN), level on the page; and what the blast leaves, all of it downrange. Places are [along the blast, across it] in page px from the button's middle. `lie`: a claw, a bent plate, two bolts, each with its turn. `plates`: torn pieces of the hull (which piece, along, across, turn, size, tilt about x, tilt about y). `shards`: the small burnt ones, from `near` to `far` along the blast in a fan of `fan` px across per px along, `sides` of them beside the button.
+export const LEFT = { x: 960, y: 650, slide: [0.02, 0.92], lie: [[30, 104, 2.5], [182, 70, -0.5], [92, -86, 0.9], [250, -30, 2.2]], plates: [[3, 236, -122, -0.9, 0.92, 0.3, -0.16], [0, 412, 96, 0.5, 0.6, -0.26, 0.22], [4, 588, -48, 1.9, 0.44, 0.2, 0.3], [2, 760, 170, 1.4, 0.3, -0.34, 0.1]], shards: { near: 136, far: 780, fan: 0.5, sides: 0.16 }, sunk: 0.45 } as const
 // The fist on the button that is left: it goes down in `down` seconds and stays down while the fist is on it; when the fist leaves it springs back in `back` seconds with a small overshoot. `deep` is in model units, `squash` a share of its size.
 export const PRESS = { down: 0.07, back: 0.38, deep: 9, squash: 0.045 }
 // The floor of light his parts keep inside the beam, as a share of their own colour: a tilted plate stays light grey.
@@ -266,10 +266,11 @@ export function poseOf(view: BossView, o: LookOptions = DEFAULTS): Pose {
     legs: [span(GONE.legs[0]), span(GONE.legs[1]), span(GONE.legs[2]), span(GONE.legs[3])] as [number, number, number, number], bay: span(GONE.bay), hull: span(GONE.hull),
     plates: Array.from({ length: 7 }, (_, i) => lin(gone, GONE.hull[0] + GONE.plate[0] * i, GONE.hull[0] + GONE.plate[0] * i + GONE.plate[1]))
   }
-  const fin = view.finish
+  const fin = view.finish ?? view.scorch
   const from = fin ? [fin.x0, fin.y0] : [view.arrow.x, view.arrow.y]
-  const bl = Math.hypot(wx + 960 - from[0]!, 540 - wy - from[1]!) || 1
-  const blow: [number, number] = [(wx + 960 - from[0]!) / bl, -(540 - wy - from[1]!) / bl]
+  const to = fin ? [fin.x1, fin.y1] : [wx + 960, 540 - wy]
+  const bl = Math.hypot(to[0]! - from[0]!, to[1]! - from[1]!) || 1
+  const blow: [number, number] = fin || gone < 1 ? [(to[0]! - from[0]!) / bl, -(to[1]! - from[1]!) / bl] : [1, 0]
 
   // Legs.
   const legs: LegPose[] = HIPS.map(([hx, hy], i) => {
