@@ -689,7 +689,8 @@ export function makePage(): PageLogic {
           const was = s.fired
           s.fired += dt
           if (LOOK1_ON) {
-            if (s.fired >= FIRE.lead && was < FIRE.lead) io.emit('finish-beam', io.cursor.x, io.cursor.y, false)
+            const seen = FIRE.lead + FIRE.open / 2
+            if (s.fired >= seen && was < seen) io.emit('finish-beam', io.cursor.x, io.cursor.y, false)
             for (const b of BREAKS) if (s.fired - s.lag >= b * (BLAST - s.lag) && was - s.lag < b * (BLAST - s.lag)) io.emit('finish-break', FALLEN.x, FALLEN.y, false)
           }
           if (s.fired >= BLAST && was < BLAST) {

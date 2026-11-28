@@ -19132,9 +19132,9 @@
     },
     {
       "name": "finish-beam",
-      "frame": 11077,
-      "step": 44311,
-      "seconds": 184.6292,
+      "frame": 11080,
+      "step": 44323,
+      "seconds": 184.6792,
       "unit": "boss",
       "beat": "boss.finish",
       "page": "step4",
