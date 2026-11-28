@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FIRE, GETUP, LAST, LIEDOWN, POWER, finishEvents, finishState, kneelSpot, type FinishInput } from '../src/boss/finish/acting'
+import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, finishEvents, finishState, kneelSpot, type FinishInput } from '../src/boss/finish/acting'
 import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '../src/cursor/stand/rig'
 
 const FPS = 60
@@ -146,8 +146,8 @@ describe('the finish: the standing arrow', () => {
       for (const foot of s.pose.feet) expect(foot[1]).toBeLessThanOrEqual(WALK.lift + 1e-6)
       steps = Math.max(steps, s.fx.scuffs.length)
     }
-    expect(steps).toBeGreaterThan(3)
-    expect(stepsBy(far)).toBeGreaterThan(3)
+    expect(steps).toBeGreaterThan(2)
+    expect(stepsBy(far)).toBeGreaterThan(2)
     expect(stepsBy(320)).toBe(6)
   })
 
@@ -170,7 +170,7 @@ describe('the finish: the standing arrow', () => {
     for (const t of [PRESS, PRESS + 0.5, PRESS + 3]) {
       const s = finishState(finish(t))
       const fist = toPage(s.pose, ...s.pose.hands[1])
-      expect(Math.abs(fist.x - (BUTTON.x - BUTTON.w * 0.2))).toBeLessThan(1)
+      expect(Math.abs(fist.x - (BUTTON.x - BUTTON.w / 2 + SPOT.on))).toBeLessThan(1)
       expect(Math.abs(fist.y - BUTTON.y)).toBeLessThan(1.5)
       expect(fist.z).toBeGreaterThan(BUTTON.top)
       expect(fist.z).toBeLessThan(BUTTON.top + 8)

@@ -137,9 +137,13 @@ function handsMid(p: StandPose): V3 {
   return [(p.hands[0][0] + p.hands[1][0]) / 2, (p.hands[0][1] + p.hands[1][1]) / 2, (p.hands[0][2] + p.hands[1][2]) / 2 + 3]
 }
 
-// Where the feet's middle should be for the fist to land on the button.
+// The knees stay `clear` px off the button's near end (its dark rim is about 19 px); the fist lands `on` px in from that end, at most `reach` px ahead of the feet.
+export const KNEEL = { clear: 31, on: 27, reach: 60, below: 6 } as const
+const fistX = (button: { x: number; w?: number }, feetX: number): number => Math.min(feetX + KNEEL.reach, button.x - (button.w ?? 110) / 2 + KNEEL.on)
+
+// Where the feet's middle should be for the fist to land on the button: before its near end, never on it.
 export function kneelSpot(button: { x: number; y: number; w?: number }): { x: number; y: number } {
-  return { x: button.x - (button.w ?? 110) * 0.2 - POSES.blow.hands[1][0], y: button.y + 12 }
+  return { x: button.x - (button.w ?? 110) / 2 - KNEEL.clear, y: button.y + KNEEL.below }
 }
 
 function powerUp(i: FinishInput, feet: { x: number; y: number }): FinishState | null {
@@ -295,7 +299,7 @@ export function finishState(i: FinishInput): FinishState {
       const a = STAND.rise * POSES.knees.rise
       const dy = feet.y - btn.y
       // The button's top in the figure's plane, a hand's thickness above it.
-      const fistAt: V3 = [btn.x - (btn.w ?? 110) * 0.2 - feet.x, dy * Math.cos(a) + (top + 4) * Math.sin(a), (top + 4) * Math.cos(a) - dy * Math.sin(a)]
+      const fistAt: V3 = [fistX(btn, feet.x) - feet.x, dy * Math.cos(a) + (top + 4) * Math.sin(a), (top + 4) * Math.cos(a) - dy * Math.sin(a)]
       const down: StandPose = { ...POSES.blow, hands: [POSES.blow.hands[0], fistAt] }
       let q = mixPose(pose, POSES.fistDip, smooth(span(f, 0, LAST.dip)))
       q = mixPose(q, POSES.fistUp, outBack(span(f, LAST.dip, LAST.up), 1.8))
@@ -311,7 +315,7 @@ export function finishState(i: FinishInput): FinishState {
           q = breathe(q, t, 2 * smooth(span(r, LAST.sag, LAST.sag + 0.5)))
           q.hands = [q.hands[0], fistAt]
           press = outCubic(span(r, 0, 0.05))
-          fx.dust.push({ x: btn.x - (btn.w ?? 110) * 0.2, y: btn.y, age: r, size: 46 })
+          fx.dust.push({ x: fistX(btn, feet.x), y: btn.y, age: r, size: 46 })
         }
       }
       pose = q

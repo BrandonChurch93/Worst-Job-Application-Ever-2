@@ -9,7 +9,7 @@ import type { Shape } from '../../stage/types'
 import { finishState, type FinishInput, type FinishState } from './acting'
 import { makeFinishFx, type Level } from './fx'
 
-export { finishState, finishEvents, kneelSpot, GETUP, LEAD, LIEDOWN, POWER, CHARGE, FIRE, LAST } from './acting'
+export { finishState, finishEvents, kneelSpot, KNEEL, GETUP, LEAD, LIEDOWN, POWER, CHARGE, FIRE, LAST } from './acting'
 export type { FinishInput, FinishMarks, FinishState, FinishEvent, Fx } from './acting'
 export type { Level } from './fx'
 
