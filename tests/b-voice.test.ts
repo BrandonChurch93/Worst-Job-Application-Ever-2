@@ -407,6 +407,18 @@ describe('the narrator\'s voice: the pack', () => {
     expect(phraseStarts(new Float32Array(SR), SR, 'a b', M).starts).toBeNull()
   })
 
+  it('takes the longest pauses for the marks when a short breath inside a phrase was counted too, and gives no starts when the breath is not clearly shorter', () => {
+    const x = bursts(8, [[0.1, 1.0], [2.2, 2.9], [3.1, 3.6], [4.8, 5.8]])
+    const got = phraseStarts(x, SR, `a b ${mark} c d ${mark} e`, M)
+    expect(got.marks).toBe(2)
+    expect(got.found).toBe(3)
+    const starts: number[] = got.starts ?? []
+    expect(starts.length).toBe(3)
+    ;[0.1, 2.2, 4.8].forEach((t, k) => expect(Math.abs(starts[k]! - t)).toBeLessThan(0.005))
+    const y = bursts(8, [[0.1, 1.0], [2.2, 2.9], [3.6, 4.0], [4.8, 5.8]])
+    expect(phraseStarts(y, SR, `a b ${mark} c d ${mark} e`, M)).toEqual({ marks: 2, found: 3, starts: null })
+  })
+
   it('writes into the index of each line its words and its starts, in two lengths of the same words, and no starts where the pauses are not the marks', () => {
     const words = `a b ${mark} c d ${mark} e`
     keep('marketing.stroll.0', words, bursts(6, [[0.1, 1.2], [2.4, 3.5], [4.8, 5.8]]))

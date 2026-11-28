@@ -864,7 +864,13 @@
       "mime": "audio/mpeg",
       "bytes": 142848,
       "sha256": "26b1f2455a513940da8f05c46297530ea33f72f99ce9841a8d0753c10072e07c",
-      "words": "The company / gently collects / the applicant / for an unpaid assessment."
+      "words": "The company / gently collects / the applicant / for an unpaid assessment.",
+      "starts": [
+        0.004,
+        1.998,
+        4.69,
+        6.906
+      ]
     },
     {
       "id": "line.step1.firstName.0",
