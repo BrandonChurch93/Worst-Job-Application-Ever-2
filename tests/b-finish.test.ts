@@ -108,8 +108,8 @@ describe('the finish: the standing arrow', () => {
   })
 
   it('cups the ball at the hip and grows it with the charge', () => {
-    const a = finishState(finish(2.2))
-    const b = finishState(finish(3.8))
+    const a = finishState(finish(M.charge + 0.52 * (M.fire - M.charge)))
+    const b = finishState(finish(M.fire - 0.33))
     expect(a.fx.ball).not.toBeNull()
     expect(b.fx.ball!.size).toBeGreaterThan(a.fx.ball!.size)
     expect(b.pose.hands[0][0]).toBeLessThan(0)

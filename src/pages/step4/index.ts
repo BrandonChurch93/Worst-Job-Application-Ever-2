@@ -275,6 +275,7 @@ export function makePage(): PageLogic {
       marks: { arms: mark(m.arms), charge: mark(m.charge), thrust: mark(m.thrust), fire: mark(m.fire), end: m.fire < 0 ? undefined : m.fire + BLAST, walk: mark(m.walk), kneel: mark(m.kneel), fist: mark(m.fist), press: m.fist < 0 ? undefined : m.fist + LAST.fist + LAST.blow },
       charge: s.charge < 0 ? 0 : level(s.charge),
       shot: s.shot,
+      ember: 0,
       walk: s.end && s.fig ? { x: s.fig.x, y: s.fig.y, walked: m.walked, pace: s.end.phase === 'walk' ? m.pace : 0 } : null,
       button: { x: b.x, y: b.y, w: b.w, h: b.h, top: b.top },
       ...(low && low.low > 0 ? { tip: low.tip, low: low.low, eye: low.pose.eye, glare: low.glare } : {}),

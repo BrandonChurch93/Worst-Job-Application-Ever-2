@@ -29,10 +29,11 @@ export function phrasesOf(text: string, pauseMark: string, wordsPerSecond: numbe
 }
 
 // kept: a take of the line is in the sound index and was recorded from these words, so the line has a voice. Otherwise it is a silent stand-in.
-export interface StandIn { key: string; id: string; beat: string; index: number; page: string; at: number; text: string; words: string; seconds: number; phrases: Phrase[]; draft: boolean; loud: boolean; join: string; kept: boolean }
+export interface StandIn { key: string; id: string; beat: string; index: number; page: string; at: number; text: string; words: string; seconds: number; phrases: Phrase[]; draft: boolean; loud: boolean; join: string; kept: boolean; peak?: number }
 
 // A narrator line of the sound index: the words its take was recorded from and the seconds, from the file's start, at which each phrase starts.
-export interface KeptLine { id: string; seconds: number; words?: string; starts?: number[] }
+// peak: the seconds, from the file's start, at which the line's blast is let go, where that is not the start of its last phrase.
+export interface KeptLine { id: string; seconds: number; words?: string; starts?: number[]; peak?: number }
 
 export const shippedLines = (): KeptLine[] => (shipped as { lines: KeptLine[] }).lines
 
@@ -76,15 +77,15 @@ export function standIns(film: Film = narration.film as Film, drafts: Film = dra
     const take = byId.get(`line.${key}`)
     const kept = take !== undefined && take.words === line.text && take.seconds > 0
     const phrases = kept ? (take.starts ? phrasesAt(line.text, pauseMark, take.starts, take.seconds) : phrasesOver(line.text, pauseMark, take.seconds)) : line.standIn ? phrasesAt(line.text, pauseMark, line.standIn.starts, line.standIn.seconds) : phrasesOf(line.text, pauseMark, wordsPerSecond)
-    out.set(key, { key, id: `line.${key}`, beat, index, page: keyPage(key), at: line.at, text: line.text, words: sayable(line.text, pauseMark), seconds: kept ? take.seconds : phrases.length ? phrases[phrases.length - 1]!.to : 0, phrases, draft: !settled, loud: line.loud === true || spoken[key]?.loud === true, join: line.join ?? ' ', kept })
+    out.set(key, { key, id: `line.${key}`, beat, index, page: keyPage(key), at: line.at, text: line.text, words: sayable(line.text, pauseMark), seconds: kept ? take.seconds : phrases.length ? phrases[phrases.length - 1]!.to : 0, phrases, draft: !settled, loud: line.loud === true || spoken[key]?.loud === true, join: line.join ?? ' ', kept, ...(kept && take.peak !== undefined ? { peak: take.peak } : {}) })
   }
   return out
 }
 
 // The times of a line: the start of each phrase and the length of the whole, from its kept take when it has one and from its stand-in until then.
-export function lineTimes(key: string, script: Map<string, StandIn> = standIns()): { starts: number[]; seconds: number; kept: boolean } | null {
+export function lineTimes(key: string, script: Map<string, StandIn> = standIns()): { starts: number[]; seconds: number; kept: boolean; peak?: number } | null {
   const line = script.get(key)
-  return line ? { starts: line.phrases.map((p) => p.from), seconds: line.seconds, kept: line.kept } : null
+  return line ? { starts: line.phrases.map((p) => p.from), seconds: line.seconds, kept: line.kept, ...(line.peak !== undefined ? { peak: line.peak } : {}) } : null
 }
 
 // The seconds from the start of a line to the start of one of its phrases; a phrase counted from the end is negative.

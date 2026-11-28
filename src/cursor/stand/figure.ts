@@ -80,21 +80,25 @@ function shadeStuff(): THREE.ShaderMaterial {
 function backStuff(): THREE.ShaderMaterial {
   return new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, toneMapped: false, fog: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -8,
-    uniforms: { uK: { value: 0 }, uLight: { value: 0 } },
+    uniforms: { uK: { value: 0 }, uLight: { value: 0 }, uToPlane: { value: new THREE.Matrix4() }, uTall: { value: STAND.tip[1] } },
     vertexShader: /* glsl */ `
-      varying vec3 vN; varying vec3 vV;
+      uniform mat4 uToPlane;
+      varying vec3 vN; varying vec3 vV; varying float vUp;
       void main() {
         vec4 at = modelViewMatrix * vec4(position, 1.0);
         vN = normalMatrix * normal;
         vV = -at.xyz;
+        vUp = (uToPlane * modelMatrix * vec4(position, 1.0)).y;
         gl_Position = projectionMatrix * at;
       }`,
     fragmentShader: /* glsl */ `
-      uniform float uK; uniform float uLight;
-      varying vec3 vN; varying vec3 vV;
+      uniform float uK; uniform float uLight; uniform float uTall;
+      varying vec3 vN; varying vec3 vV; varying float vUp;
       void main() {
         float facing = abs(dot(normalize(vN), normalize(vV)));
         vec3 col = vec3(0.56, 0.57, 0.6) * (0.5 + 0.5 * facing) + vec3(0.62, 0.8, 1.0) * pow(1.0 - facing, 2.0) * (0.35 + 1.1 * uLight) + vec3(0.1, 0.14, 0.2) * uLight;
+        // Darker toward the feet: the ball's light does not reach down the back.
+        col *= mix(0.45, 1.0, smoothstep(0.25, 1.0, vUp / uTall));
         gl_FragColor = vec4(col, uK);
       }`
   })
@@ -255,6 +259,8 @@ export function makeStand(): Stand {
   const back = (k: number, light: number): void => {
     backMat.uniforms.uK!.value = Math.min(1, Math.max(0, k))
     backMat.uniforms.uLight!.value = Math.min(1, Math.max(0, light))
+    plane.updateWorldMatrix(true, false)
+    ;(backMat.uniforms.uToPlane!.value as THREE.Matrix4).copy(plane.matrixWorld).invert()
     for (const b of backs) b.visible = k > 0.004
   }
   let few = false

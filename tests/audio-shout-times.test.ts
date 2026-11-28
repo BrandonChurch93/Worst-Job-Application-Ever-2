@@ -58,8 +58,12 @@ describe('the shout: its times', () => {
   // Since the finish's camera holds the blast for the boss to leave in groups (merge 81), the body is gone later than the last word ends: the two are no longer one number.
   it('are the marks of the boss page: the first two charge marks and the fire mark are the starts the sound code uses, and the body is gone no sooner than the last word ends', () => {
     const now = lineTimes(KEY)!
-    expect([SHOUT.beats[0], SHOUT.beats[1], SHOUT.fire]).toEqual(now.starts)
-    expect(SHOUT.gone).toBeGreaterThanOrEqual(now.seconds)
+    const peak = (now as { peak?: number }).peak ?? now.starts[2]!
+    expect(SHOUT.fire).toBeCloseTo(SHOUT.lead + peak, 3)
+    expect((SHOUT.beats[0] * peak) / SHOUT.fire).toBeCloseTo(now.starts[0]!, 2)
+    expect((SHOUT.beats[1] * peak) / SHOUT.fire).toBeCloseTo(now.starts[1]!, 2)
+    if (SHOUT.lead === 0 && peak === now.starts[2]) expect([SHOUT.beats[0], SHOUT.beats[1], SHOUT.fire]).toEqual(now.starts)
+    expect(SHOUT.gone).toBeGreaterThanOrEqual(SHOUT.lead + now.seconds)
   })
 })
 
