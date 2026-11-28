@@ -583,3 +583,38 @@ Taken first: `origin/agent/merge55` 0429b87e (the page keeps time by the recorde
 - Checks at this tree with the look on, each alone: b-boss EXIT 0 (37), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-finish EXIT 0 (23), takes-timing EXIT 0 (6), `npx tsc --noEmit -p .` EXIT 0.
 - Film marks (`node /tmp/ev.mjs`, by steps of 1/240 s): power-up 42.71, turret-lock 46.07, flatten 51.03, boss-heal 51.38, power-down 58.00, finish-fire 63.13, boss-gone 65.26, finish-walk 65.66, finish-press 70.66, page-turn 71.30. Each is 0 to 0.013 s after the Builder's list from the cut; I take that for the cut's frame grid, not checked.
 - Seen in `T5-power-up-thrust-walk-new-times.jpg`: the ball is in front at the hands at 63.00 s; no smoke over the figure at 66.50, 67.50, 69.00, 70.20 s; the two tall wisps stand over the Submit button through the walk and the press.
+
+## The rulings of 04:46Z (written 05:05Z November 28)
+
+### 1a. The ground burned before the beam
+
+- Traced: the orange line is the arena's burn (`scorchOf` share) and the look's coming apart of the boss, and both ran from what this page gives them: `view.boss.gone` and `view.finish.firedAt`, which started at the fire mark. Nothing in `src/arena` or `src/boss/look1` needed a change, so there is no `NEEDS:` commit for it.
+- Done in `src/pages/step4/index.ts` (commit e4b3c0d5): a new state `lag`, set in `fire()` to `FIRE.lead` plus the way from the hands to the boss over `BEAM.speed`. `gone2()` counts from `fired - lag`, and the view's `blast` exists only from then. The same lines serve the film, a plain click and a charged release. With the look off `lag` is 0.
+- MEASURED by the new test "rulings of 04:46, 1a" (film, plain click, charged shot let go): the beam is there 0.204 s after `finish-fire` in all three; the burning and the coming apart start 0.300 s after it; hands to boss 308, 291, 293 px; the beam's head is at 420 px by then. So the burn starts about 0.03 s after the beam's front has reached the boss.
+- Not done: the front of the burn does not run along the ground with the beam's front. The burn the arena draws for the blast lies at the boss and spreads from there; at 4200 px/s the beam crosses the 300 px in 0.07 s, about four frames of the film.
+
+### 1b. A plain click fires a smaller blast
+
+- STATED from `src/boss/finish/fx.ts` lines 185 to 187: the width is `(0.35 + 0.65 * power) * open`; a plain click has power 0.25, so 0.5125 of a full charge.
+- MEASURED on pictures, same view, 0.15 s after the beam's start, the run of pixels of brightness 245 and more across the beam at 60, 90 and 120 px from the hands, in the 960 px view: plain click (keen visitor, `finish-fire` 58.50 s, picture at 58.85 s) 18, 20, 22 px; full charge (the film, frame 11087, halved to the same view) 34, 39, 44 px. The ratios are 0.53, 0.51, 0.50. Nothing changed.
+- Picture `E2-beam-plain-above-charged-below.jpg`: three frames in a row, plain click above, charged below. The upper row is 1 to 1 from the live page; the lower row is the film's frame halved to the same view, because the film's frame is twice the size.
+
+### 2. The band under the bar on every course
+
+- MEASURED before the change by the new test "rulings of 04:46, 2" (twenty looks a second, ten seeds each): keen 74.85 px, clumsy 111.63, one who keeps under the bar -24.68, one who runs round the boss -45.05, one who stands in one place 40.61. So the band was broken by two kinds of visitor that no test had tried.
+- Done in `src/boss/fight.ts` (commit 636d3a90): `headroom(f)`, the least y of his centre for the way he faces, from the feet's box, the hull with its wings, the shield and, once the turret is up, the big cannon's muzzle (sizes from `src/boss/look1/pose`), plus `TOP.clear` and `TOP.spare` (0.5 px, new, in tune.ts) under the frame. `walk()` never aims higher than it, and when he turns faster than he walks he is set down to it in the same step, with the way counted as walked so his feet step.
+- MEASURED after: keen 74.85, clumsy 111.63, under the bar 24.50, round the boss 24.50, in one place 40.61; the smallest gap is 24.50 px (`look-feet`, one who runs round the boss, seed 4, at 23.35 s). The random and the skipper bots are in the test too but leave the fight at once (6 and 0 looks), so they prove nothing.
+- The film's marks are the same to the hundredth as at 27f7eeef (`node /tmp/ev.mjs` compared with `diff`): the bound does not bite in the film.
+- Not known: how the slide looks when he is set down while turning. No picture of it was made.
+
+### Checks at 40c05ed8 (merge55 8be20687 merged), each alone, 05:04Z to 05:11Z
+
+- Look on: b-boss EXIT 0 (39), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17), b-finish EXIT 0 (23), takes-timing EXIT 0 (6), tsc EXIT 0.
+- Look off: tsc EXIT 0, b-boss EXIT 0 (30 passed, 9 skipped), boss EXIT 0 (38), boss-closer-acting EXIT 0 (5), boss-fight EXIT 0 (13), site-loading EXIT 0 (17).
+- Film marks (`node /tmp/ev.mjs`) the same as at 27f7eeef. Keen visitor (`node /tmp/evl.mjs`): boss-formed 6.45, boss-turn 9.34, power-up 18.16, turret-lock 21.52, finish-fire 58.50, boss-gone 60.64, page-turn 66.39; longest control taken 3.30 s.
+
+### 3. F, boss-turn and line 6: not started
+
+- It waits for the head of merge55 with the shell helper's change of the line that sets `s.turned`. At 05:11Z merge55 is 8be20687 and that line is as it was.
+- Read in the code, not run: a press while `s.since < LINE6.after` (stage `hold`, the branch before the one that emits) is dropped today, not remembered. `boss-turn` cannot come before the tick plus `LINE6.after` (8.79 s) on any live path, because that branch holds the clock of line 7 at 0.
+- Decision for when it is built: a press counts from `boss-formed` on, not from the tick, so that a second click on the checkbox does not skip most of line 7.
