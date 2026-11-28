@@ -114,7 +114,7 @@ export const BIG = {
   every: 13, // s from one blast to the next tell
   last: 0.6, // s after the banner of the last stand at which it tells once more, whatever is left of `every` (not in the film)
   tell: 1.6, // s the line of the blast lies on the ground before the blast; the boss and its shield hold still
-  wide: 0.5,
+  wide: 65, // px to each side of the line that the blast takes: 130 px across
   beam: 0.3, // s the blast stands
   muzzle: SHAPE.big, // px ahead of his centre where the blast starts
   swing: 0.04, // rad, the step in which an aim that would cross the health bar's box is turned away from it
@@ -186,7 +186,7 @@ export const FINISH = {
   small: 0.25, // share of a full blast that a plain click fires
   steady: 0.5, // share of the charge that grows all the time from the first press to the fire mark; the rest comes in one step on each mark
   settle: 1.4, // s the button takes to settle on the ground after the body is gone (`button-down`)
-  wide: 0.5,
+  wide: 90, // px to each side of the full blast's line as drawn
   ball: 120 // px across of the full charge as drawn
 } as const
 
