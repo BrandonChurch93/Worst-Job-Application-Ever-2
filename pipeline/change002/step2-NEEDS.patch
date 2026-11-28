@@ -1,5 +1,5 @@
 diff --git a/config/showcase.json b/config/showcase.json
-index 067ca527..bf97064d 100644
+index 067ca527..12646c42 100644
 --- a/config/showcase.json
 +++ b/config/showcase.json
 @@ -51,11 +51,11 @@
@@ -33,3 +33,21 @@ index 067ca527..bf97064d 100644
        { "id": "pinball.seal", "unit": "pinball", "from": 0, "to": 4, "event": "ball-seal" },
        { "id": "pinball.reveal", "unit": "pinball", "from": 4, "to": 7.6, "event": "power-on" },
        { "id": "pinball.launch", "unit": "pinball", "from": 7.6, "to": 11, "event": "plunger" },
+@@ -262,7 +262,7 @@
+       "id": "step2-dial",
+       "unit": "step2",
+       "beat": "step2.dial",
+-      "at": 0.2,
++      "at": 0.293,
+       "camera": "home",
+       "image": "references/approved/step2-dial.png",
+       "settled": ["The image's dial numerals are wrong. The build's dial reads 1 to 9 and then 0, in order."]
+@@ -271,7 +271,7 @@
+       "id": "step2-crank",
+       "unit": "step2",
+       "beat": "step2.crank",
+-      "at": 0.2,
++      "at": 0.383,
+       "camera": "home",
+       "image": "references/approved/step2-crank.png",
+       "settled": ["The image leaves the input empty. The build shows the level as a percentage."]
