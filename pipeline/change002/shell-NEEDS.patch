@@ -374,3 +374,32 @@ index d6d46234..705f175f 100644
        over['continue-cap'] = { tone: 'accent', ...(s.pressed ? { z1: heights.button - heights.keyTravel } : {}) }
        over['continue-label'] = { tone: 'inkLight', ...(s.pressed ? { z0: heights.button - heights.keyTravel, z1: heights.button - heights.keyTravel } : {}) }
      }
+# 02:28Z change note 004 item 6: content/copy-drafts.json gets the draft words of the sound bar (words.live.soundBar.words, words.live.soundBar.accept) and what each serves
+diff --git a/content/copy-drafts.json b/content/copy-drafts.json
+index 1c11fbe3..0f4bb5d5 100644
+--- a/content/copy-drafts.json
++++ b/content/copy-drafts.json
+@@ -22,6 +22,12 @@
+       "volume": {
+         "sign": "TURN IT UP"
+       }
++    },
++    "live": {
++      "soundBar": {
++        "words": "This application uses sound to enhance your candidate experience.",
++        "accept": "Accept"
++      }
+     }
+   },
+   "serves": {
+@@ -33,7 +39,9 @@
+     "step2.birth.stop": "item 13, the stop button of each reel",
+     "step2.birth.missed": "item 13, the line when the stopped date is not the visitor's own",
+     "step2.birth.panel": "item 13, the line in the date's tray; the locked line step2.rows.birth.panel says to pull the lever, and the lever now pulls itself",
+-    "step2.volume.sign": "item 14, the big sign over the crank"
++    "step2.volume.sign": "item 14, the big sign over the crank",
++    "live.soundBar.words": "change note 004, item 6: the one line of the sound bar at the foot of the careers page, shown while the browser still blocks sound",
++    "live.soundBar.accept": "change note 004, item 6: the button of the sound bar; a press allows sound and line 1 starts"
+   },
+   "notNew": "The pinball signs of item 5 use the eight building names the locked copy already holds under step3.table.buildings."
+ }
