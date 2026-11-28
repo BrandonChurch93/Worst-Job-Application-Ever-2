@@ -575,7 +575,7 @@ describe('change note 003: the same lines in the film on the site', () => {
 })
 
 describe('change note 003: the film', () => {
-  it('gives the caption writer each phrase of line 1 by frame, one after the other with no hole, done inside the 18 s of the opening, and marks a draft', () => {
+  it('gives the caption writer each phrase of line 1 by frame, one after the other with no hole, done inside the 18 s of the opening, and marks line 9 as settled', () => {
     const fps: number = cfg.film.fps
     const caps = filmCaptions([{ id: id('marketing.stroll.0'), frame: 0 }, { id: id('decision.reset.0'), frame: 9000 }, { id: 'line.not.one.0', frame: 5 }], fps)
     const one = caps.filter((x) => x.key === 'marketing.stroll.0')
@@ -588,7 +588,9 @@ describe('change note 003: the film', () => {
     expect(one.every((x) => !x.draft && !x.loud)).toBe(true)
     const nine = caps.filter((x) => x.key === 'decision.reset.0')
     expect(nine.length).toBeGreaterThan(0)
-    expect(nine.every((x) => x.draft && x.first >= 9000)).toBe(true)
+    // Line 9 is settled since change note 004 item 5: it is no draft any more. The one draft left is the shout.
+    expect(nine.every((x) => !x.draft && x.first >= 9000)).toBe(true)
+    expect([...standIns().values()].filter((l) => l.draft).map((l) => l.key)).toEqual(['boss.finish.0'])
     expect(caps.some((x) => x.id === 'line.not.one.0')).toBe(false)
   })
 

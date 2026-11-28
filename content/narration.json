@@ -1,6 +1,6 @@
 {
   "about": "The narrator's lines. A wildlife documentary voice that watches the job applicant the way a nature film watches a small animal having a very bad day. The voice is the one saved in Brandon's ElevenLabs account under the name in audio.narratorVoice in config/showcase.json.",
-  "status": "Script of change note 003 (November 27, 2026) with its second and third updates, entered by the Builder as Brandon's words (AGENTS.md: a line of narration Brandon rewrites is replaced with his words). Lines 1 to 6 and line 8 are settled; line 7 is his pick B3, entered as three entries at its own pauses (giving up, the turn, the rise) with no word changed. Line 9 is a draft and is kept apart in content/narration-drafts.json. Every older line and every live-only line is gone, as the note orders: eight spoken moments, everything else silent. Nothing is recorded: no narrator take, no test take and no ElevenLabs credit on narration until Partner brings his word to record. The notes are pasted word for word in kit/PROGRESS.md.",
+  "status": "Script of change note 003 (November 27, 2026) with its second and third updates, entered by the Builder as Brandon's words (AGENTS.md: a line of narration Brandon rewrites is replaced with his words). Lines 1 to 6 and line 8 are settled; line 7 is his pick B3, entered as three entries at its own pauses (giving up, the turn, the rise) with no word changed. Line 9 is settled since change note 004 item 5 (his words of 7:12 PM MT November 27, 2026 on Partner's list: 'Yeah, all of these look great.'; the item: 'Line 9: approved as written, \"On to / the next application.\", then the page turns back to the start.') and was moved here from content/narration-drafts.json with no word changed. Every older line and every live-only line is gone, as note 003 orders: nine spoken moments with line 9, everything else silent. Recording of lines 1 to 9 is allowed by change note 004 item 7 inside its caps (narration 650 credits in all), the cost stated in the ledger before each spend. The notes are pasted word for word in kit/PROGRESS.md.",
   "direction": {
     "inBrandonsWords": "Kind of Australian, National Geographic vibe: talking real slow, with a pause every few words. Somebody narrating what the user is doing in a condescending way, but funny, all of it. Never mean or rude just to be mean and rude. Look at the pitiful applicant as it tries to pay its bills, desperately. More than just wildlife.",
     "hisExample": "The lion (pause) walks to the den of his friend (pause) and then (pause) pounces on him.",
@@ -127,7 +127,13 @@
       }
     ],
     "decision.metrics": [],
-    "decision.reset": []
+    "decision.reset": [
+      {
+        "at": 0.02652,
+        "text": "On to / the next application.",
+        "live": "after the line on the stamp, as the page turns back to the start"
+      }
+    ]
   },
   "liveOnly": {
     "about": "Empty since change note 003: the script has eight spoken moments and everything else is silent. The keys stay so that the site's code finds them.",

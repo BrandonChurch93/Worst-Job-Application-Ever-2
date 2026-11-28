@@ -1,15 +1,8 @@
 {
   "about": "Narrator lines Brandon has not approved. They are stand-ins for timing and captions only and are never recorded. Same shape as content/narration.json. A line leaves this file for that one when Partner brings his words for it.",
-  "status": "Line 9 is a draft from change note 003, third update (November 27, 2026). His words: 'Maybe we have one more line that's like onto the next application and then it kinda just restarts the application seamlessly if you wanna go through it again'. The boss's shout is a draft from the Builder's mail of 23:19 UTC on the same day: two candidates, Brandon picks one; B is the stand-in.",
+  "status": "Line 9 left this file for content/narration.json on change note 004 item 5 (approved as written, 7:12 PM MT November 27, 2026). The boss's shout is a draft from the Builder's mail of 23:19 UTC on the same day: two candidates, Brandon picks one; B is the stand-in.",
   "pauseMark": "/",
   "film": {
-    "decision.reset": [
-      {
-        "at": 0.02652,
-        "text": "On to / the next application.",
-        "live": "after the line on the stamp, as the page turns back to the start"
-      }
-    ],
     "boss.finish": [
       {
         "at": 0,

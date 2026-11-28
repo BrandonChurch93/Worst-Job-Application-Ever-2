@@ -704,6 +704,20 @@
       "seconds": 8.125,
       "length": "estimate",
       "take": null,
+      "gapToNextSeconds": 0.33
+    },
+    {
+      "id": "line.decision.reset.0",
+      "beat": "decision.reset",
+      "index": 0,
+      "text": "On to / the next application.",
+      "first": 11927,
+      "startSeconds": 198.788,
+      "last": 12114,
+      "endSeconds": 201.913,
+      "seconds": 3.125,
+      "length": "estimate",
+      "take": null,
       "gapToNextSeconds": null
     }
   ],

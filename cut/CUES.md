@@ -1081,7 +1081,7 @@ Film B: 12120 frames at 60 a second, 202 s. Times are in seconds from the first 
 
 ## Narrator lines
 
-11 lines, 0 with a kept take. The end of a line with no kept take is the soonest it can end at audio.narratorMaxWordsPerSecond, marked "estimate".
+12 lines, 0 with a kept take. The end of a line with no kept take is the soonest it can end at audio.narratorMaxWordsPerSecond, marked "estimate".
 
 | Line | Beat | Start s | Start frame | End s | Last frame | Length | Gap to next s | Text |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -1095,4 +1095,5 @@ Film B: 12120 frames at 60 a second, 202 s. Times are in seconds from the first 
 | `line.boss.unfold.0` | `boss.unfold` | 132.275 | 7937 | 150.400 | 9023 | estimate | 0.300 | The applicant / is ready to give up. / There is no salary listed. / No guarantee / their resume / makes it past the ATS. / Their hand moves / to close the Chrome tab. |
 | `line.boss.unfold.1` | `boss.unfold` | 150.700 | 9042 | 155.075 | 9304 | estimate | 0.301 | But then / they remember / their student loans. |
 | `line.boss.unfold.2` | `boss.unfold` | 155.376 | 9323 | 159.126 | 9547 | estimate | 31.207 | They turn back. / One more round. |
-| `line.decision.letter.0` | `decision.letter` | 190.333 | 11420 | 198.458 | 11906 | estimate |  | After careful consideration, / the company / has decided / to move forward / with other candidates. |
+| `line.decision.letter.0` | `decision.letter` | 190.333 | 11420 | 198.458 | 11906 | estimate | 0.330 | After careful consideration, / the company / has decided / to move forward / with other candidates. |
+| `line.decision.reset.0` | `decision.reset` | 198.788 | 11927 | 201.913 | 12114 | estimate |  | On to / the next application. |
