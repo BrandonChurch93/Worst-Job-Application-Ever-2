@@ -2,12 +2,12 @@ import { config, filmSeconds, stepHz } from '../../config'
 import type { LayoutNode } from '../../copy'
 import { drawLayout, find, shapeOf, walk } from '../../shell/layout'
 import { words } from '../../shell/words'
-import { homePose } from '../../stage/camera'
+import { frame, homePose } from '../../stage/camera'
 import type { CameraPose, DrawList, GagInfo, Hint, Mode, PageContext, PageLogic, Pointer, Shape, StepIo } from '../../stage/types'
 import { HANDOFF } from '../../cursor/body'
 import { COUNTER_TOP, KEYS, makeLayout, MARK_ROT, markOf, SHEET_ROT, STAMP, placesOf, spotOf, turned, waitSpotOf } from './layout'
 import { CUES, grown, HIT, hopAt, LIE, pointerAt, reboundAt, STUCK, type Marks } from './script'
-import { AT, FILM, holdAfterPress } from './timeline'
+import { AT, FILM, holdAfterPress, windowAt } from './timeline'
 
 type Phase = 'wait' | 'letter' | 'metrics' | 'reset'
 
@@ -452,11 +452,14 @@ export function makePage(): PageLogic {
     },
     scroll: () => 0,
     view(): CameraPose | null {
-      if (s.jolt < 0) return null
-      const j = (s.n - s.jolt) / stepHz
-      if (j >= 0.3) return null
-      const fade = 1 - j / 0.3
-      return homePose(-HIT.shake * fade * fade * Math.cos(j * 52))
+      const j = s.jolt < 0 ? 1 : (s.n - s.jolt) / stepHz
+      if (j < 0.3) {
+        const fade = 1 - j / 0.3
+        return homePose(-HIT.shake * fade * fade * Math.cos(j * 52))
+      }
+      // The film only: the slow push-in under the narrator's line (`VIEW` in timeline.ts). A visitor's view stays whole.
+      const part = s.mode === 'film' ? windowAt(s.n / stepHz) : null
+      return part ? frame(part) : null
     },
     camera: () => null,
     script: (time: number): Pointer => pointerAt(marks, time),
