@@ -11,7 +11,7 @@ const seconds = cfg.film.units.reduce((n: number, u: { seconds: number }) => n +
 
 describe('the film from the config', () => {
   it('has every frame of every page once and in order', () => {
-    expect(plan.frameCount).toBe(seconds * cfg.film.fps)
+    expect(plan.frameCount).toBe(Math.round(seconds * cfg.film.fps))
     expect(plan.units[0].first).toBe(0)
     for (let i = 1; i < plan.units.length; i++) expect(plan.units[i].first).toBe(plan.units[i - 1].last + 1)
     expect(plan.units[plan.units.length - 1].last).toBe(plan.frameCount - 1)
@@ -30,7 +30,7 @@ describe('the frames at the preview rate', () => {
   it('are the indices that are multiples of film.fps divided by film.previewFps', () => {
     expect(step).toBe(cfg.film.fps / cfg.film.previewFps)
     const frames = framesIn(0, plan.frameCount - 1, step)
-    expect(frames.length).toBe(seconds * cfg.film.previewFps)
+    expect(frames.length).toBe(Math.round(seconds * cfg.film.previewFps))
     expect(frames.every((f: number) => f % step === 0)).toBe(true)
     expect(framesIn(1195, 1262, 2)).toEqual(framesIn(1196, 1262, 2))
     expect(framesIn(1195, 1262, 2)[0]).toBe(1196)

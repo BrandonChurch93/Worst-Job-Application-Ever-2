@@ -45,6 +45,7 @@
     "boss.popups": [{ "image": "boss-fight", "to": [0.7, 0.5, 1.7] }],
     "boss.lastStand": [{ "image": "boss-fight", "to": [0.6, 0.48, 1.45] }],
     "boss.collapse": [{ "image": "boss-down", "to": [0.64, 0.57, 1.4] }],
+    "boss.finish": [{ "image": "boss-down", "from": [0.64, 0.57, 1.4], "to": [0.62, 0.6, 1.6] }],
     "boss.press": [{ "image": "boss-down", "to": [0.66, 0.66, 2] }],
 
     "decision.wait": [{ "image": "decision", "to": [0.45, 0.45, 1.08] }],
