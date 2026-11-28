@@ -98,7 +98,7 @@ export function mixFilm(o: MixInput): MixResult {
   const missingLines: string[] = []
   const at = (frame: number) => frameSample(frame, o.fps, sr)
   const has = (id: string) => o.sounds.has(id)
-  const fadeLen = Math.round(0.03 * sr)
+  const fadeLen = Math.round(LIVE.loopFadeSeconds * sr)
 
   const events = o.events.map((e, i) => ({ ...e, i })).sort((a, b) => a.frame - b.frame || a.i - b.i)
   const counts = new Map<string, number>()

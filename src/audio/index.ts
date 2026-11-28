@@ -258,7 +258,7 @@ function elementBackend(): Backend {
         }
         void el.play().catch(() => undefined)
       }
-      if (o.when > wallSeconds() + 0.005) e.timers.push(later(o.when, start))
+      if (o.when > wallSeconds() + LIVE.elementSoonSeconds) e.timers.push(later(o.when, start))
       else start()
       if (o.until !== undefined) e.timers.push(later(o.until, stop))
       return { stop, until: (at) => { e.timers.push(later(at, stop)) } }

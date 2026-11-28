@@ -1,4 +1,5 @@
 // Every number of the sound side that the config does not hold. The chain, the mix and the site all read them here.
+import { TURN_HALF } from '../stage/stage'
 import type { CueClass } from './cues'
 
 // The level each class is set to by the chain. Effects are set by their peak, the room tone by its mean level, the voice by its loudness.
@@ -63,6 +64,8 @@ export const DUCK = {
 export const LIVE = {
   // A plain audio element that has not become playable after this long counts as not loaded.
   elementLoadSeconds: 5,
+  // A sound of a plain audio element that is due later than this from now is set on a timer; one due sooner starts at once.
+  elementSoonSeconds: 0.005,
   // A line of a beat may start this late and still be spoken. Later than that it is dropped.
   beatLateSeconds: 1.5,
   // The wait the narrator's arithmetic allows a live line when it is given none. The script's lines are given no limit: they wait for the line before and the gap.
@@ -80,11 +83,12 @@ export const LIVE = {
   // A loop that nothing stops ends by itself after this long.
   loopMaxSeconds: 30,
   // A loop comes in and goes out over this long, so it neither starts nor stops on a step. The room tone comes in slower.
+  // The film's mix fades a loop, and a sound it cuts short, over the same.
   loopFadeSeconds: 0.03,
   toneFadeInSeconds: 0.4,
   // The careers page stays on screen this long after the turn away from it begins, and comes on screen this long after the turn to it begins: half a turn.
   // The room tone is out by then on the way in, and starts then on the way out.
-  quietTurnSeconds: 0.5,
+  quietTurnSeconds: TURN_HALF,
   volumeRampSeconds: 0.03,
   // One fixed gain after everything, in dB down, so the sum of a line and the effects stays at or under audio.truePeakDb. npm run sound -- --levels measures it.
   headroomDb: 1.5,
