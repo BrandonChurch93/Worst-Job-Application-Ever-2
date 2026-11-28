@@ -1,5 +1,7 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, finishEvents, finishState, kneelSpot, type FinishInput } from '../src/boss/finish/acting'
+import { FIRE, GETUP, KNEEL as SPOT, LAST, LIEDOWN, POWER, SCALE, finishEvents, finishState, kneelSpot, type FinishInput } from '../src/boss/finish/acting'
 import { POSES, STAND, WALK, feetFor, stepsBy, toPage, type StandPose } from '../src/cursor/stand/rig'
 
 const FPS = 60
@@ -7,7 +9,7 @@ const ARROW = { x: 690, y: 548 }
 const BUTTON = { x: 960, y: 650, w: 177, top: 9.5 }
 const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
 const spot = kneelSpot(BUTTON)
-const start = { x: feetFor(ARROW).x - FIRE.shove, y: feetFor(ARROW).y }
+const start = { x: feetFor(ARROW).x - FIRE.shove * SCALE, y: feetFor(ARROW).y }
 const far = Math.hypot(spot.x - start.x, spot.y - start.y)
 const LONG = 2.8
 const KNEEL = M.walk + LONG
@@ -146,8 +148,8 @@ describe('the finish: the standing arrow', () => {
       for (const foot of s.pose.feet) expect(foot[1]).toBeLessThanOrEqual(WALK.lift + 1e-6)
       steps = Math.max(steps, s.fx.scuffs.length)
     }
-    expect(steps).toBeGreaterThan(2)
-    expect(stepsBy(far)).toBeGreaterThan(2)
+    expect(steps).toBeGreaterThan(1)
+    expect(stepsBy(far / SCALE)).toBeGreaterThan(1)
     expect(stepsBy(320)).toBe(6)
   })
 
@@ -192,7 +194,7 @@ describe('the finish: the standing arrow', () => {
     expect(seen['finish-knees']).toBe(1)
     expect(seen['finish-fist']).toBe(1)
     expect(seen['finish-press']).toBe(1)
-    expect(seen['finish-step']).toBe(stepsBy(far))
+    expect(seen['finish-step']).toBe(stepsBy(far / SCALE))
     const pw: Record<string, number> = {}
     for (let f = 0; f <= 7 * FPS; f++) for (const e of finishEvents(power((f - 1) / FPS), power(f / FPS))) pw[e.name] = (pw[e.name] ?? 0) + 1
     expect(pw).toEqual({ 'finish-standup': 1, 'power-up-rise': 1, 'power-up-burst': 1, 'finish-liedown': 1 })
@@ -203,5 +205,72 @@ describe('the finish: the standing arrow', () => {
     expect(POSES.fire.feet[0][0]).toBeLessThan(-35)
     expect(Math.abs(POSES.fire.hands[0][0] - POSES.fire.hands[1][0])).toBeLessThan(4)
     expect(POSES.charge1.hip[1]).toBeLessThan(POSES.ready.hip[1] - 6)
+  })
+})
+
+describe('the legs rule: the arrow has legs in the power-up and in the finish only', () => {
+  const pw = { at: 1, end: 4.4 }
+  const marks = { arms: 20, charge: 20.1, fire: 24.13, end: 26.26 }
+
+  it('has no legs, does not stand and is not drawn at any moment outside the two', () => {
+    let lying = 0
+    let standing = 0
+    for (let f = -2 * FPS; f <= 30 * FPS; f++) {
+      const time = f / FPS
+      const s = finishState({ time, arrow: ARROW, power: pw, marks })
+      const inPower = time >= pw.at && time < pw.end + POWER.burst + LIEDOWN
+      const inFinish = time >= marks.arms
+      if (inPower || inFinish) {
+        standing++
+        expect(s.up).toBe(true)
+      } else {
+        lying++
+        expect(s.up).toBe(false)
+        expect(s.pose.legs).toBe(0)
+        expect(s.pose.arms).toBe(0)
+        expect(s.pose.rise).toBe(0)
+        expect(s.fx.aura).toBe(0)
+      }
+      // Legs out always means the figure is the one drawn, never the ordinary arrow.
+      if (s.pose.legs > 0) expect(s.up).toBe(true)
+    }
+    expect(lying).toBeGreaterThan(900)
+    expect(standing).toBeGreaterThan(700)
+  })
+
+  it('never stands when the fight gives neither a power-up nor the arms mark', () => {
+    for (let f = -60; f <= 40 * FPS; f += 7) {
+      const s = finishState({ time: f / FPS, arrow: ARROW, marks: { charge: 1, fire: 2, end: 3, walk: 4, kneel: 5, fist: 6, press: 7 }, button: BUTTON })
+      expect(s.up).toBe(false)
+      expect(s.pose.legs).toBe(0)
+    }
+  })
+
+  it('draws the legs back in before the power-up hands the arrow back', () => {
+    const last = finishState({ time: pw.end + POWER.burst + LIEDOWN - 1 / FPS, arrow: ARROW, power: pw })
+    expect(last.up).toBe(true)
+    expect(last.pose.legs).toBeLessThan(0.02)
+    expect(last.pose.rise).toBeLessThan(0.02)
+  })
+
+  it('is reached from nowhere but the finish: no other file of the site takes the standing figure in', () => {
+    const src = path.resolve(__dirname, '..', 'src')
+    const own = [path.join(src, 'cursor', 'stand'), path.join(src, 'boss', 'finish')]
+    const takers: string[] = []
+    const walk = (dir: string): void => {
+      for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+        const file = path.join(dir, e.name)
+        if (e.isDirectory()) walk(file)
+        else if (/\.(ts|tsx|js|mjs)$/.test(e.name) && !own.some((o) => file.startsWith(o + path.sep))) {
+          const text = fs.readFileSync(file, 'utf8')
+          for (const m of text.matchAll(/(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g)) {
+            const to = path.resolve(path.dirname(file), m[1]!)
+            if (m[1]!.startsWith('.') && (to === own[0] || to.startsWith(own[0] + path.sep))) takers.push(path.relative(src, file))
+          }
+        }
+      }
+    }
+    walk(src)
+    expect(takers).toEqual([])
   })
 })

@@ -11,12 +11,13 @@ import { buildInfoPlugin } from '../../tools/lib/hashes.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const work = path.join(root, 'out', 'work', 'finish-harness')
-const shots = path.join(root, 'out', 'work', 'finish-shots')
+const SCALE = Number((() => { const i = process.argv.indexOf('--scale'); return i >= 0 ? process.argv[i + 1] : 1.5 })())
+const shots = path.join(root, 'out', 'work', SCALE === 1.5 ? 'finish-shots' : `finish-shots-x${SCALE}`)
 const proof = path.join(root, 'pipeline', 'change002', 'proof', 'finish')
 const refs = path.join(root, 'references', 'approved-002')
 const args = process.argv.slice(2)
 const flag = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : undefined }
-const wanted = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--level', '--samples'].includes(args[i - 1])))
+const wanted = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--level', '--samples', '--scale', '--frame-samples'].includes(args[i - 1])))
 const level = flag('--level') ?? null
 const samples = Number(flag('--samples') ?? 8)
 const FPS = 60
@@ -27,7 +28,8 @@ const BOSS = { x: 960, y: 650, heading: Math.PI }
 const M = { arms: 0, charge: 0.1, fire: 4.13, end: 6.26, walk: 6.66 }
 const LONG = 2.8
 const POWER = { at: 0, end: 3.4 }
-const CLOSE = { x: 520, y: 370, w: 960, h: 540 }
+// The fight's close view (STATED by the fight helper, 01:47Z): x 300 to 1260, y 270 to 810.
+const CLOSE = { x: 300, y: 270, w: 960, h: 540 }
 let BUTTON = null
 let WALK = null
 
@@ -35,7 +37,7 @@ const smooth = (v) => { const t = Math.min(1, Math.max(0, v)); return t * t * (3
 
 // The whole finish at one view time.
 function finish(time) {
-  const input = { time, arrow: ARROW, marks: { ...M }, target: { x: BOSS.x, y: BOSS.y }, button: BUTTON, charge: Math.min(1, Math.max(0, (time - M.charge) / (M.fire - M.charge - 0.3))), shot: 1 }
+  const input = { time, arrow: ARROW, marks: { ...M }, target: { x: BOSS.x, y: BOSS.y }, button: BUTTON, scale: SCALE, charge: Math.min(1, Math.max(0, (time - M.charge) / (M.fire - M.charge - 0.3))), shot: 1 }
   let gone = 0
   if (time >= M.fire) gone = Math.min(1, (time - M.fire - 0.14) / (M.end - M.fire - 0.14))
   if (WALK) {
@@ -51,7 +53,7 @@ function finish(time) {
   }
   return { input, boss: { ...BOSS, gone: Math.max(0, gone) }, cam: CLOSE }
 }
-const power = (time) => ({ input: { time, arrow: ARROW, power: POWER }, cam: CLOSE, arrow: true })
+const power = (time) => ({ input: { time, arrow: ARROW, power: POWER, scale: SCALE }, cam: CLOSE, arrow: true })
 
 // Frames in a row: every frame for the first twelve, then every second.
 const row = (from, count) => { const out = []; for (let i = 0; i < count; i++) out.push(from + (i < 12 ? i : 12 + (i - 12) * 2) / FPS); return out }
@@ -69,7 +71,7 @@ const JOBS = {
     await beside('poses', path.join(refs, 'finish-poses.png'), tiles, 3)
     // The same three as the film sees them, from straight above.
     const above = []
-    for (const a of asks) above.push(await sharp(await shot(page, { ...a, name: a.name + '-above', cam: { x: ARROW.x - 110, y: ARROW.y - 60, w: 320, h: 180 }, arena: true })).resize(640, 360).png().toBuffer())
+    for (const a of asks) above.push(await sharp(await shot(page, { ...a, name: a.name + '-above', cam: { x: ARROW.x + 50 - 160 * SCALE, y: ARROW.y + 92 - 152 * SCALE, w: 320 * SCALE, h: 180 * SCALE }, arena: true })).resize(640, 360).png().toBuffer())
     await strip('poses-above', above, 3)
   },
   // One pose at two rises, with its shadow: at film size and at three times.
@@ -87,6 +89,8 @@ const JOBS = {
     }
     await strip('rise-40-60', tiles, 3)
   },
+  // The figure standing at ease in the close view, alone on the page: for measuring how tall it is in film px.
+  size: async (page) => { await shot(page, { name: 'size', ...power(0.96), arena: false, arrow: false }) },
   charge: async (page) => { await beside('charge', path.join(refs, 'finish-charge.png'), [await shot(page, { name: 'charge', ...finish(3.95) })], 1) },
   blast: async (page) => { await beside('blast', path.join(refs, 'finish-blast.png'), [await shot(page, { name: 'blast', ...finish(5.3) })], 1) },
   after: async (page) => { await beside('after', path.join(refs, 'finish-button-left.png'), [await shot(page, { name: 'after', ...finish(7.12) })], 1) },
@@ -97,6 +101,8 @@ const JOBS = {
   knees: (page) => { const k = finish(M.walk + 1).input.marks.kneel; return frames(page, 'knees', row(k - 2 / FPS, 34), finish, kneelBox()) },
   fist: (page) => { const k = finish(M.walk + 1).input.marks.fist; return frames(page, 'fist', row(k - 2 / FPS, 26), finish, kneelBox()) },
   blow: (page) => { const p = finish(M.walk + 1).input.marks.press; return frames(page, 'blow', row(p - 12 / FPS, 30), finish, kneelBox()) },
+  // Every frame round the press: from 6 frames before it to 14 after.
+  blownear: (page) => { const p = finish(M.walk + 1).input.marks.press; const ts = []; for (let i = -6; i <= 14; i++) ts.push(p + i / FPS); return frames(page, 'blownear', ts, finish, kneelBox()) },
   walk: (page) => frames(page, 'walk', row(M.walk, 44).map((t, i) => M.walk - 4 / FPS + i * 4 / FPS), finish, { x: ARROW.x - 110, y: ARROW.y - 40, w: 420, h: 200 })
 }
 const kneelBox = () => ({ x: WALK.x1 - 90, y: WALK.y1 - 150, w: 240, h: 200 })
@@ -119,7 +125,7 @@ async function frames(page, name, times, script, box) {
   const tiles = []
   for (let i = 0; i < times.length; i++) {
     const a = script(times[i])
-    const file = await shot(page, { ...a, name: `${name}-${String(i).padStart(2, '0')}`, cam: view, samples: Math.min(samples, 3) })
+    const file = await shot(page, { ...a, name: `${name}-${String(i).padStart(2, '0')}`, cam: view, samples: Number(flag('--frame-samples') ?? Math.min(samples, 3)) })
     tiles.push(await sharp(file).extract({ left: Math.round(960 - box.w * scale / 2), top: Math.round(540 - box.h * scale / 2), width: box.w * scale, height: box.h * scale }).resize(Math.round(box.w * 1.2), Math.round(box.h * 1.2)).png().toBuffer())
   }
   await strip(name, tiles, Math.min(tiles.length, Math.max(4, Math.floor(1900 / (box.w * 1.2 + 4)))))
@@ -169,10 +175,10 @@ async function main() {
   const b = await page.evaluate(([boss, arrow]) => window.finishHarness.button(boss, arrow), [BOSS, ARROW])
   // The look's button as it lies at the end: 226 by 61 page px (STATED by the look helper; `buttonAt(view)` is not on this branch yet).
   BUTTON = { x: b.x, y: b.y, w: 226, h: 61, top: b.top }
-  b.kneel = { x: BUTTON.x - BUTTON.w / 2 - 31, y: BUTTON.y + 6 }
+  b.kneel = { x: BUTTON.x - BUTTON.w / 2 - 36 * SCALE, y: BUTTON.y + 6 * SCALE }
   const start = await page.evaluate((a) => window.finishHarness.draw(a).then(() => null), { ...finish(M.walk - 0.01), samples: 1 })
   void start
-  const feet = { x: ARROW.x + 17.3 - 38, y: ARROW.y + 91.8 }
+  const feet = { x: ARROW.x + 17.3 - 38 * SCALE, y: ARROW.y + 91.8 }
   WALK = { x0: feet.x, y0: feet.y, x1: b.kneel.x, y1: b.kneel.y, far: Math.hypot(b.kneel.x - feet.x, b.kneel.y - feet.y) }
   console.log('button', JSON.stringify(b), 'walk', JSON.stringify(WALK))
   for (const name of wanted.length ? wanted : Object.keys(JOBS)) {

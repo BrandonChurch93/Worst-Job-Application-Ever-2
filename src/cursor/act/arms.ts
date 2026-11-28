@@ -19,6 +19,11 @@ const WRAP = { low: 0.76, rise: 0.22, dive: 1.05, tip: 0.5, under: -1.4, thumb: 
 export interface Arms extends ArmsModel {
   // How far the arms have grown, 0 to 1 and a little over: the hands swell with it.
   grown: number
+  // How thick the hoses are and how large the hands, as a share of the approved arms: 1 everywhere but on the standing figure.
+  bulk: number
+  glove: number
+  // How much further a gripping hand closes, 0 to 1: 0 is the approved grip, 1 a fist with the fingers folded under.
+  clench: number
   // The height of the body's top face, in the same space as the shoulders.
   over: number
   // From the first shoulder to the second, a unit vector in the plane of the page: each hose bows away from the other.
@@ -143,7 +148,7 @@ class Limb {
     return length
   }
 
-  pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, axis: [number, number], inward: [number, number] | null, over: number): void {
+  pose(d3: Draw, from: THREE.Vector3, to: THREE.Vector3, grip: number, strain: number, grown: number, axis: [number, number], inward: [number, number] | null, over: number, bulk = 1, glove = 1, clench = 0): void {
     const dx = to.x - from.x
     const dy = to.y - from.y
     const d = Math.max(1e-3, Math.hypot(dx, dy, to.z - from.z))
@@ -204,7 +209,7 @@ class Limb {
       // The shoulder end is closed to a round nose: an arm that starts on the body's face must not show an open tube.
       const nose = i === 0 ? 0.04 : i === 1 ? 0.6 : i === 2 ? 0.9 : 1
       const cuff = ARM.cuff[i - ARM.along + ARM.cuff.length - 1] ?? 1
-      const r = ARM.radius * thin * (ARM.thick - ARM.taper * u) * (0.35 + 0.65 * Math.min(1, grown)) * nose * cuff
+      const r = ARM.radius * thin * (ARM.thick - ARM.taper * u) * (0.35 + 0.65 * Math.min(1, grown)) * nose * cuff * bulk
       for (let j = 0; j <= ARM.round; j++) {
         const w = (j / ARM.round) * Math.PI * 2
         const cx = Math.cos(w)
@@ -249,7 +254,7 @@ class Limb {
     this.basis.makeBasis(this.n1, this.t, this.n2)
     this.hand.quaternion.setFromRotationMatrix(this.basis)
     this.hand.position.copy(to)
-    const size = (0.25 + 0.75 * Math.min(1.15, Math.max(0, grown))) * HAND_SCALE * (1 + FIST * grip)
+    const size = (0.25 + 0.75 * Math.min(1.15, Math.max(0, grown))) * HAND_SCALE * (1 + FIST * grip) * glove
     this.hand.scale.setScalar(size)
     const w = this.wrap
     const v = 1 - w
@@ -261,8 +266,8 @@ class Limb {
         f.tip.rotation.x = (-0.9 * grip - 0.1) * v - WRAP.flat * w
       } else {
         f.base.position.set(f.x, f.y, WRAP.under * w)
-        f.base.rotation.set((-HAND.curl * grip - 0.14) * v - WRAP.dive * w, 0, splay)
-        f.tip.rotation.x = (-HAND.knuckle * grip - 0.22) * v - WRAP.tip * w
+        f.base.rotation.set((-(HAND.curl + 1.15 * clench) * grip - 0.14) * v - WRAP.dive * w, 0, splay * (1 - 0.6 * clench * grip))
+        f.tip.rotation.x = (-(HAND.knuckle + 1.1 * clench) * grip - 0.22) * v - WRAP.tip * w
       }
     }
     this.hand.updateMatrixWorld(true)
@@ -324,11 +329,14 @@ export const makeArms: (() => Arms) | null = () => {
   const arms: Arms = {
     root,
     grown: 1,
+    bulk: 1,
+    glove: 1,
+    clench: 0,
     over: 0,
     axis: [1, 0],
     inward: [null, null],
     apply(from: [THREE.Vector3, THREE.Vector3], to: [THREE.Vector3, THREE.Vector3], look: ArmsLook): void {
-      for (let i = 0; i < 2; i++) limbs[i]!.pose(draw, from[i]!, to[i]!, Math.min(1, Math.max(0, look.grip[i]!)), Math.min(1, Math.max(0, look.strain)), arms.grown, arms.axis, arms.inward[i]!, arms.over)
+      for (let i = 0; i < 2; i++) limbs[i]!.pose(draw, from[i]!, to[i]!, Math.min(1, Math.max(0, look.grip[i]!)), Math.min(1, Math.max(0, look.strain)), arms.grown, arms.axis, arms.inward[i]!, arms.over, arms.bulk, arms.glove, arms.clench)
       position.needsUpdate = true
       normal.needsUpdate = true
       draw.palms.instanceMatrix.needsUpdate = true
