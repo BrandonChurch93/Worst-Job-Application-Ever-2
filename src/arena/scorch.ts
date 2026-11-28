@@ -8,7 +8,7 @@ import { ARENA, PAGE, PANES, PILLARS, SEAMS, paneBox } from './layout'
 // ahead: px in front of the arrow's centre at which the trench starts. thin: the half width of the trench there. half: its half width where it runs into the burn. burn: the radius of the burn. long: how many times longer the burn is along the line than across it.
 // tail: how far beyond the burn the soot of the blast thins out to nothing, px. words: the box, from the middle of the burn, that the fight keeps clear for the words over the button; no chip lands in it.
 // seconds: how long the blast burns when the view does not say (the fight's SHOUT.gone - SHOUT.fire). chips: the bits of ceramic thrown out, at the high level.
-export const SCORCH = { ahead: 70, thin: 10, half: 62, burn: 138, long: 1.1, tail: 320, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 } }
+export const SCORCH = { ahead: 70, thin: 13, half: 62, burn: 138, long: 1.1, tail: 320, seconds: 2.13, chips: 120, smoke: 40, words: { x0: -120, x1: 120, y0: -310, y1: -250 } }
 
 // The line of the finishing blast as the view gives it: the arrow's centre and the place the boss fell.
 export interface BlastLine { x0: number; y0: number; x1: number; y1: number }
@@ -133,11 +133,13 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
       const mid = fbm(x / 24, y / 24, seed + 46)
       const blot = fbm(x / 10, y / 10, seed + 47)
       // Soft and broken: the black gives way to brown soot over the width of a hand, and blots are eaten out of its rim.
-      const px = e.px + 22 * (blot - 0.5)
-      let soot = step(30, -26, px)
+      // Where the trench is narrow its edge is tighter, so that it reads from the hands on.
+      const soft = e.pxB < e.px + 40 ? 1 : 0.35 + 0.65 * Math.min(1, e.wide / 45)
+      const px = e.px + 22 * soft * (blot - 0.5)
+      let soot = step(30 * soft, -26 * soft, px)
       // Darkest in the middle.
-      soot *= 0.7 + 0.3 * step(0, -Math.max(14, e.inner * 0.45), e.px)
-      soot *= 1 - 0.6 * step(-30, 6, e.px) * step(0.54, 0.4, blot)
+      soot *= 0.7 + 0.3 * step(0, -Math.max(6, e.inner * 0.45), e.px)
+      soot *= 1 - 0.6 * soft * step(-30, 6, e.px) * step(0.54, 0.4, blot)
       // Soot round it and beyond it, fading to the clean ground: a hand's width at the hands, wide round the burn.
       const out = 46 + 64 * (e.pxB < e.px + 40 ? 1 : e.wide / SCORCH.half)
       const haze = Math.max(0.62 * step(out, -14, e.px) ** 1.4, tail) * (0.3 + 0.7 * mid) * (0.7 + 0.3 * blot)
