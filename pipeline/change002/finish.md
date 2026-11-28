@@ -61,3 +61,21 @@ None committed. No file outside my own was edited.
 - Look helper: `buttonAt(view)` gives the button's place; the button is held down from `state.press` (Builder, 00:41Z). Nothing of mine to change.
 - Fight helper: wires `finishPart`, hides the ordinary arrow while `state.up`, passes `beam: () => beamLight(state)` to the arena.
 - The no-legs rule: `AGENTS.md` line 228 ("The cursor never has ... legs, feet ... Check G12 tests it"). I found no line in `tools/` or `tests/` that reads legs or feet (STATED, by search), so no check should go red; the sentence itself wants re-pinning at the merge.
+
+## Counts (MEASURED in my harness, software GL, `out/work/finish-shots/counts*.json`)
+
+Draw calls of the finish alone (figure, its drawn shadow, what burns):
+
+| moment | film tier | low |
+| --- | --- | --- |
+| power-up (flame, ring, glow) | 14 | UNKNOWN (not yet run at low) |
+| charge (ball, aura) | 15 | 14 |
+| blast (beam, flare, aura, skid) | 17 | 16 |
+| after (smoke, skid, scuffs) | 14 | 13 |
+
+Triangles of the finish: 31,088 at the film tier (the figure 15,544, drawn twice: once for its shadow), 28,208 at low. Lights asked of the pool: 1 for the face, 1 gold, 1 for the ball, 3 for the beam (none with a shadow), at most 5 at once; the ball's asks for a shadow.
+Whole-frame draw calls in the harness (the arena and the look of this branch, not the page): charge 496, blast 334 to 602 by the moment, after 119 at the film tier; charge 285, blast 242, after 94 at low.
+
+## Proof
+
+`pipeline/change002/proof/finish/report-*.png` (each at most 1200 px): `report-rise` (40 and 60 degrees beside the pose sheet), `report-poses`, `report-stills` (charge, blast, after beside the approved three), `report-walk` (walk and knees), `report-blow` (fist and blow), `report-getup` (getting up, fire, the power-up's burst and lying down). Made by `node pipeline/change002/finish-shots.mjs` then `node pipeline/change002/finish-sheets.mjs`. The harness draws no ordinary arrow in the finish script, so the frame before the `arms` mark in the getting-up strip is empty ground: the page draws the pointer there.
