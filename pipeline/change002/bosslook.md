@@ -171,7 +171,7 @@ The ms are the software renderer's, about 100 times slower than a real card, so 
 - Draw calls: 116 to 146 for the boss alone. The parts that never move against each other could be joined into fewer meshes; not done.
 - Levels and tiers: the three live levels thin out the thrown chunks, the puffs of smoke, the scraps and the lamps (low 10, 40, 2; medium 18, 90, 5; high 26, 150, 8); the film draws 26, 150, 10 at every tier and the site's finishing does the rest. The solid shapes are the same at every level. The harness rendered every sheet at the draft tier; renders at the higher film tiers are UNKNOWN, not run.
 - Darts: not drawn by the look (left as today). The flattened cursor: nothing found missing, but I did not render it beside the boss; UNKNOWN.
-- `tests/cut-of-build.test.ts` is red on branches until the Builder runs the cut on the merged tree (STATED by the brief); left alone.
+- The whole suite, MEASURED at 01:12Z on this branch after the merge of 1178a395 (329 s): 2211 passed, 38 failed in 9 files, 17 skipped; `tests/bosslook-pose.test.ts` 13 of 13. None of the failing files is mine: `config` (26), `boss-fight` (3), `boss-closer-acting` (3), `polish-turn2` (2), `audio-cues`, `site-loading`, `site-finish`, `site-finish-film`, `roughcut`. MEASURED: the ten failures in `boss-fight`, `boss-closer-acting`, `polish-turn2`, `audio-cues` and `site-loading` are the same ten on `origin/agent/b-boss` without my work. The other four files I did not run there; at 23:58Z they failed on the film's length (180.35 s over the 165 s the config allows), which is the base branch's. `tests/cut-of-build.test.ts` passed in this run (21 of 21), though the brief expects it red on branches.
 
 ## The harness
 
