@@ -1,0 +1,25 @@
+diff --git a/src/film/retime.ts b/src/film/retime.ts
+index 4c60b16a..93121f4b 100644
+--- a/src/film/retime.ts
++++ b/src/film/retime.ts
+@@ -1,9 +1,10 @@
+ // Where each line of the script starts in the film, from the film's own events.
+-// A line with an event starts when the film gives that event on the line's page. A later part of a line starts straight after the part before it.
++// A line with an event starts when the film gives that event on the line's page. The shout starts `SHOUT.lead` s after its event, so that its last phrase lands on the fire mark. A later part of a line starts straight after the part before it.
+ // No line starts sooner than the end of the line before it plus the gap between two lines (audio.lineGapSeconds): it waits, as it does on the live site.
+ // The start is kept in the script as `at`, a share of the line's beat. `at` is rounded up, so that a start is never sooner than it should be.
+ import { jumpsLiveOnly, spoken, type SpokenRow } from '../audio/cues'
+ import { keyBeat, standIns, type StandIn } from '../audio/standin'
++import { SHOUT, SHOUT_LINE } from '../boss/tune'
+ import { config, type Config } from '../config'
+ 
+ export interface FilmEvent { name: string; seconds: number; unit: string }
+@@ -52,7 +53,7 @@ export function lineStarts(events: FilmEvent[], script: Map<string, StandIn> = s
+         continue
+       }
+       eventSeconds = e.seconds
+-      wanted = e.seconds
++      wanted = e.seconds + (key === SHOUT_LINE ? SHOUT.lead : 0)
+     }
+     let start = Math.max(wanted, lastEnd + gap)
+     const waited = start - wanted

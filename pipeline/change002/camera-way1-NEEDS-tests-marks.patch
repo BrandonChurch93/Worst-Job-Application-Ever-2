@@ -1,0 +1,56 @@
+diff --git a/tests/audio-shout-times.test.ts b/tests/audio-shout-times.test.ts
+index 822f2928..3c78a663 100644
+--- a/tests/audio-shout-times.test.ts
++++ b/tests/audio-shout-times.test.ts
+@@ -58,8 +58,12 @@ describe('the shout: its times', () => {
+   // Since the finish's camera holds the blast for the boss to leave in groups (merge 81), the body is gone later than the last word ends: the two are no longer one number.
+   it('are the marks of the boss page: the first two charge marks and the fire mark are the starts the sound code uses, and the body is gone no sooner than the last word ends', () => {
+     const now = lineTimes(KEY)!
+-    expect([SHOUT.beats[0], SHOUT.beats[1], SHOUT.fire]).toEqual(now.starts)
+-    expect(SHOUT.gone).toBeGreaterThanOrEqual(now.seconds)
++    const peak = (now as { peak?: number }).peak ?? now.starts[2]!
++    expect(SHOUT.fire).toBeCloseTo(SHOUT.lead + peak, 3)
++    expect((SHOUT.beats[0] * peak) / SHOUT.fire).toBeCloseTo(now.starts[0]!, 2)
++    expect((SHOUT.beats[1] * peak) / SHOUT.fire).toBeCloseTo(now.starts[1]!, 2)
++    if (SHOUT.lead === 0 && peak === now.starts[2]) expect([SHOUT.beats[0], SHOUT.beats[1], SHOUT.fire]).toEqual(now.starts)
++    expect(SHOUT.gone).toBeGreaterThanOrEqual(SHOUT.lead + now.seconds)
+   })
+ })
+ 
+diff --git a/tests/b-boss.test.ts b/tests/b-boss.test.ts
+index 1e2ba982..4538a454 100644
+--- a/tests/b-boss.test.ts
++++ b/tests/b-boss.test.ts
+@@ -454,14 +454,15 @@ describe('how the boss plays (change 002, item 15)', () => {
+     expect(at('button-down')[0]! - fall).toBeCloseTo(SHOUT.gone + FINISH.settle, 1)
+   })
+ 
++  const marksBy = (held: number): number => SHOUT.beats.filter((b) => b - SHOUT.beats[0] <= held + 1e-6).length
+   const grown = (held: number, steps: number): number => FINISH.steady * (held / (SHOUT.fire - SHOUT.beats[0])) + ((1 - FINISH.steady) * steps) / SHOUT.beats.length
+ 
+   it.each([
+     ['who presses nothing', (): boolean => false, FINISH.alone, 4, 1],
+-    ['who holds the button and never lets go', (): boolean => true, 5.39, 4, 1],
++    ['who holds the button and never lets go', (): boolean => true, SHOUT.fire - SHOUT.beats[0] + FINISH.late + 0.56, 4, 1],
+     ['who holds for a second and a half and lets go', (u: number): boolean => u >= 0.5 && u < 2, 2.55, 2, grown(1.5, 2)],
+     ['who clicks once and lets go', (u: number): boolean => u >= 0.5 && u < 0.7, 1.8, 1, FINISH.small],
+-    ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.76, 3, grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], 3)]
++    ['who presses while the arrow charges by itself and lets go', (u: number): boolean => u >= 3.5 && u < 4.2, 4.76, marksBy(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0]), grown(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0], marksBy(4.2 - FINISH.alone + SHOUT.fire - SHOUT.beats[0]))]
+   ])('mail of 23:38, item 4. on the live site the finish of a visitor %s fires once, destroys the body and leaves the button, and he goes on, on every seed tried', (name, down, fires, charges, power) => {
+     for (const seed of [config.seed, 7, 1234]) {
+       const bot = new BotDriver('keen', seed)
+diff --git a/tests/b-finish.test.ts b/tests/b-finish.test.ts
+index be40c0d7..9557a368 100644
+--- a/tests/b-finish.test.ts
++++ b/tests/b-finish.test.ts
+@@ -108,8 +108,8 @@ describe('the finish: the standing arrow', () => {
+   })
+ 
+   it('cups the ball at the hip and grows it with the charge', () => {
+-    const a = finishState(finish(2.2))
+-    const b = finishState(finish(3.8))
++    const a = finishState(finish(M.charge + 0.52 * (M.fire - M.charge)))
++    const b = finishState(finish(M.fire - 0.33))
+     expect(a.fx.ball).not.toBeNull()
+     expect(b.fx.ball!.size).toBeGreaterThan(a.fx.ball!.size)
+     expect(b.pose.hands[0][0]).toBeLessThan(0)
