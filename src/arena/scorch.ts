@@ -104,7 +104,7 @@ export function scorchReach(s: Scorch, W: number, H: number): { i0: number; i1: 
 }
 
 // How far outside the black the last soot and the last speck lie, px.
-const REACH = 190
+const REACH = 120
 
 // Rows `from` up to `to` of the scorch, written into `data` (W by H texels over the page, RGBA, row 0 at the bottom of the page):
 // red the soot, green how deep the surface is burnt away, blue the embers, alpha when the place burns: 1/255 at once, 255 as the blast ends. 0 where the ground is clean.
@@ -139,7 +139,7 @@ export function paintScorch(data: Uint8Array, W: number, H: number, s: Scorch, s
       soot *= 0.6 + 0.4 * step(0, -Math.max(14, e.inner * 0.7), e.px)
       soot *= 1 - 0.6 * step(-30, 6, e.px) * step(0.54, 0.4, blot)
       // Soot round it and beyond it, fading to the clean ground: a hand's width at the hands, wide round the burn.
-      const out = 46 + 124 * (e.pxB < e.px + 40 ? 1 : e.wide / SCORCH.half)
+      const out = 46 + 64 * (e.pxB < e.px + 40 ? 1 : e.wide / SCORCH.half)
       const haze = Math.max(0.62 * step(out, -14, e.px) ** 1.4, tail) * (0.3 + 0.7 * mid) * (0.7 + 0.3 * blot)
       soot = Math.max(soot, haze)
       // Specks thrown wide of it.

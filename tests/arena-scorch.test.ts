@@ -105,13 +105,23 @@ describe('arena scorch', () => {
       expect(turns).toBeGreaterThan(5)
     }
     // Round the burn: black in the middle, less at the rim, soot outside it, next to nothing far out.
-    const r0 = ring(d, 20), r1 = ring(d, SCORCH.burn * 0.9), r2 = ring(d, SCORCH.burn + 70), r3 = ring(d, SCORCH.burn + 190)
+    const r0 = ring(d, 20), r1 = ring(d, SCORCH.burn * 0.9), r2 = ring(d, SCORCH.burn + 30), r3 = ring(d, SCORCH.burn + 150)
     expect(r0).toBeGreaterThan(200)
     expect(r1).toBeLessThan(r0)
     expect(r2).toBeLessThan(r1 - 30)
     expect(r2).toBeGreaterThan(8)
     expect(r2).toBeLessThan(128)
     expect(r3).toBeLessThan(r2 / 2)
+    // The words under the button stand on clean ground: next to no soot from 220 px under the middle of the burn on, 100 px to either side.
+    // Whatever the seed and wherever the arrow fired from.
+    for (let k = 0; k < 6; k++) {
+      const line = { x0: 420 + 40 * k, y0: 560 + 30 * k, x1: 960, y1: 650 }
+      const sc = scorchFrom(line), dk = new Uint8Array(W * H * 4), r = scorchReach(sc, W, H)
+      paintScorch(dk, W, H, sc, SEED + 977 * k, r.j0, r.j1 + 1)
+      let under = 0
+      for (let x = 860; x <= 1060; x += 4) for (let y = 870; y <= 1000; y += 4) under = Math.max(under, texel(dk, x, y)[0]!)
+      expect(under).toBeLessThan(26)
+    }
     // Embers lie in it, and few: it scorches, it does not glow like a broken slab. Most of the burn's lie at its rim.
     let embers = 0, sooty = 0, rim = 0, heart = 0
     for (let j = 0; j < H; j++) {
